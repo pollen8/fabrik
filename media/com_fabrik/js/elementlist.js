@@ -44,6 +44,7 @@ FbElementList = new Class({
 	},
 
 	addNewEvent: function (action, js) {
+		var r, delegate, uid;
 		if (action === 'load') {
 			this.loadEvents.push(js);
 			this.runLoadEvent(js);
@@ -51,12 +52,12 @@ FbElementList = new Class({
 			c = this.form.form;
 
 			// Addded name^= for http://fabrikar.com/forums/showthread.php?t=30563 (js events to show hide multiple groups)
-			var delegate = action + ':relay(input[type=' + this.type + '][name^=' + this.options.fullName + '])';
+			delegate = action + ':relay(input[type=' + this.type + '][name^=' + this.options.fullName + '])';
 			if (typeOf(this.form.events[action]) === 'null') {
 				this.form.events[action] = {};
 			}
-			var r = new RegExp('[^a-z]', 'gi');
-			var uid = delegate + js.replace(r, '');
+			r = new RegExp('[^a-z|0-9]', 'gi');
+			uid = delegate + js.replace(r, '');
 			if (typeOf(this.form.events[action][uid]) === 'null') {
 				this.form.events[action][uid] = true;
 				
@@ -98,7 +99,7 @@ FbElementList = new Class({
 			alert(Joomla.JText._('PLG_ELEMENT_CHECKBOX_ENTER_VALUE_LABEL'));
 		}
 		else {
-			var r = this.subElements.getLast().findUp('li').clone();
+			var r = this.subElements.getLast().findClassUp('fabrikgrid_' + this.type).clone();
 			var i = r.getElement('input');
 			i.value = val;
 			i.checked = 'checked';
@@ -108,8 +109,8 @@ FbElementList = new Class({
 				var name = i.name.replace(/^(.*)\[.*\](.*?)$/, '$1$2');
 				i.name = name + '[' + (this.subElements.length) + ']';
 			}
-			r.getElement('span').set('text', label);
-			r.inject(this.subElements.getLast().findUp('li'), 'after');
+			r.getElement('.' + this.type + ' span').set('text', label);
+			r.inject(this.subElements.getLast().findClassUp('fabrikgrid_' + this.type), 'after');
 
 			var index = 0;
 			if (this.type === 'radio') {

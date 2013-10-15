@@ -51,12 +51,15 @@ class FabrikAdminControllerElement extends FabControllerForm
 		{
 			// Odd nes where redirect url was blank - caused blank pages when editing an element
 			$testUrl = $app->getUserState('com_fabrik.redirect', '');
+
 			if ($testUrl !== '')
 			{
 				$url = $testUrl;
 			}
 		}
+
 		$this->redirect = $url;
+
 		if ($msg !== null)
 		{
 			// Controller may have set this directly
@@ -64,6 +67,7 @@ class FabrikAdminControllerElement extends FabControllerForm
 		}
 		// Ensure the type is not overwritten by a previous call to setMessage.
 		$this->messageType = ($type === null || empty($this->messageType)) ? 'message' : $type;
+
 		return $this;
 	}
 
@@ -84,10 +88,12 @@ class FabrikAdminControllerElement extends FabControllerForm
 		$input = $app->input;
 		$append = parent::getRedirectToItemAppend($recordId, $urlVar);
 		$gid = $input->getInt('filter_groupId', 0);
+
 		if ($gid !== 0)
 		{
 			$append .= '&filter_groupId=' . $gid;
 		}
+
 		return $append;
 	}
 
@@ -122,6 +128,7 @@ class FabrikAdminControllerElement extends FabControllerForm
 		{
 			$msg = JText::_('COM_FABRIK_STRUCTURE_UPDATED');
 		}
+
 		if ($input->get('origtask') == 'save')
 		{
 			$this->setRedirect('index.php?option=com_fabrik&view=elements', $msg);
@@ -150,6 +157,7 @@ class FabrikAdminControllerElement extends FabControllerForm
 		$element->name = $input->getWord('oldname');
 		$element->plugin = $input->getWord('origplugin');
 		$element->store();
+
 		if ($input->get('origtask') == 'save')
 		{
 			$this->setRedirect('index.php?option=com_fabrik&view=elements', $msg);
@@ -172,11 +180,13 @@ class FabrikAdminControllerElement extends FabControllerForm
 	{
 		$ok = parent::save();
 		$app = JFactory::getApplication();
+
 		if (!is_null($app->getUserState('com_fabrik.redirect')))
 		{
 			$this->setRedirect($app->getUserState('com_fabrik.redirect'));
 			$app->setUserState('com_fabrik.redirect', null);
 		}
+
 		return $ok;
 	}
 
@@ -188,7 +198,7 @@ class FabrikAdminControllerElement extends FabControllerForm
 	 * @return  void
 	 */
 
-	function parentredirect()
+	public function parentredirect()
 	{
 		$app = JFactory::getApplication();
 		$input = $app->input;
@@ -203,5 +213,4 @@ class FabrikAdminControllerElement extends FabControllerForm
 		$to = $input->getInt('redirectto');
 		$this->setRedirect('index.php?option=com_fabrik&task=element.edit&id=' . $to);
 	}
-
 }

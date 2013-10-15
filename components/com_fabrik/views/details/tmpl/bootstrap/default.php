@@ -38,7 +38,7 @@ foreach ($this->groups as $group) :
 	$this->group = $group;
 	?>
 
-		<div class="fabrikGroup" id="group<?php echo $group->id;?>" style="<?php echo $group->css;?>">
+		<div class="<?php echo $group->class; ?>" id="group<?php echo $group->id;?>" style="<?php echo $group->css;?>">
 
 		<?php if (trim($group->title) !== '') :
 		?>

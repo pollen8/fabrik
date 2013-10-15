@@ -25,7 +25,6 @@ require_once JPATH_SITE . '/components/com_fabrik/models/visualization.php';
 
 class FabrikModelApprovals extends FabrikFEModelVisualization
 {
-
 	/**
 	 * Get the rows of data to show in the viz
 	 *
@@ -44,6 +43,7 @@ class FabrikModelApprovals extends FabrikFEModelVisualization
 		$contents = (array) $params->get('approvals_content_element');
 
 		$this->rows = array();
+
 		for ($x = 0; $x < count($ids); $x++)
 		{
 			$asfields = array();
@@ -77,14 +77,17 @@ class FabrikModelApprovals extends FabrikFEModelVisualization
 			$query->where(str_replace('___', '.', $approveEls[$x]) . ' = 0');
 			$db->setQuery($query, 0, 5);
 			$rows = $db->loadObjectList();
+
 			foreach ($rows as &$row)
 			{
 				$row->view = 'index.php?option=com_' . $package . '&task=form.view&formid=' . $formModel->getId() . '&rowid=' . $row->pk;
 				$row->rowid = $row->pk;
 				$row->listid = $ids[$x];
 			}
+
 			$this->rows = array_merge($this->rows, $rows);
 		}
+
 		return $this->rows;
 	}
 
@@ -127,6 +130,7 @@ class FabrikModelApprovals extends FabrikFEModelVisualization
 		$params = $this->getParams();
 		$ids = (array) $params->get('approvals_table');
 		$approveEls = (array) $params->get('approvals_approve_element');
+
 		foreach ($ids as $key => $listid)
 		{
 			if ($listid == $input->getInt('listid'))
@@ -141,7 +145,6 @@ class FabrikModelApprovals extends FabrikFEModelVisualization
 					->where($item->db_primary_key . ' = ' . $db->quote($input->get('rowid')));
 				$db->setQuery($query);
 				$db->execute();
-
 			}
 		}
 	}

@@ -23,7 +23,6 @@ jimport('joomla.application.component.view');
 
 class FabrikViewElement extends JViewLegacy
 {
-
 	/**
 	 * Element id (not used?)
 	 *
@@ -57,5 +56,4 @@ class FabrikViewElement extends JViewLegacy
 	public function display($tpl = null)
 	{
 	}
-
 }

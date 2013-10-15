@@ -44,6 +44,7 @@ class FabrikAdminModelGroup extends FabModelAdmin
 	public function getTable($type = 'Group', $prefix = 'FabrikTable', $config = array())
 	{
 		$config['dbo'] = FabrikWorker::getDbo(true);
+
 		return FabTable::getInstance($type, $prefix, $config);
 	}
 
@@ -60,10 +61,12 @@ class FabrikAdminModelGroup extends FabModelAdmin
 	{
 		// Get the form.
 		$form = $this->loadForm('com_fabrik.group', 'group', array('control' => 'jform', 'load_data' => $loadData));
+
 		if (empty($form))
 		{
 			return false;
 		}
+
 		return $form;
 	}
 
@@ -77,6 +80,7 @@ class FabrikAdminModelGroup extends FabModelAdmin
 	{
 		// Check the session for previously entered form data.
 		$data = JFactory::getApplication()->getUserState('com_fabrik.edit.group.data', array());
+
 		if (empty($data))
 		{
 			$data = $this->getItem();
@@ -100,12 +104,14 @@ class FabrikAdminModelGroup extends FabModelAdmin
 		{
 			return array();
 		}
+
 		JArrayHelper::toInteger($ids);
 		$db = FabrikWorker::getDbo();
 		$query = $db->getQuery(true);
 		$query->select('group_id')->from('#__{package}_formgroup')->where('form_id IN (' . implode(',', $ids) . ')');
 		$db->setQuery($query);
 		$res = $db->loadColumn();
+
 		return $res;
 	}
 
@@ -124,6 +130,7 @@ class FabrikAdminModelGroup extends FabModelAdmin
 		$listModel = $groupModel->getListModel();
 		$pk = FabrikString::safeColName($listModel->getTable()->db_primary_key);
 		$elementModels = $groupModel->getMyElements();
+
 		foreach ($elementModels as $elementModel)
 		{
 			if (FabrikString::safeColName($elementModel->getFullName(false, false)) == $pk)
@@ -131,6 +138,7 @@ class FabrikAdminModelGroup extends FabModelAdmin
 				return false;
 			}
 		}
+
 		return true;
 	}
 
@@ -150,14 +158,15 @@ class FabrikAdminModelGroup extends FabModelAdmin
 			$data['created_by'] = $user->get('id');
 			$data['created_by_alias'] = $user->get('username');
 			$data['created'] = JFactory::getDate()->toSql();
-
 		}
+
 		$makeJoin = false;
 		$unMakeJoin = false;
+
 		if ($this->checkRepeatAndPK($data))
 		{
-
 			$makeJoin = ($data['params']['repeat_group_button'] == 1);
+
 			if ($makeJoin)
 			{
 				$data['is_join'] = 1;
@@ -183,13 +192,15 @@ class FabrikAdminModelGroup extends FabModelAdmin
 				JFactory::getApplication()->enqueueMessage('You can not set the group containing the list primary key to be repeatable', 'notice');
 			}
 		}
+
 		$data['params'] = json_encode($data['params']);
 		$return = parent::save($data);
-
 		$data['id'] = $this->getState($this->getName() . '.id');
+
 		if ($return)
 		{
 			$this->makeFormGroup($data);
+
 			if ($makeJoin)
 			{
 				/**
@@ -213,10 +224,13 @@ class FabrikAdminModelGroup extends FabModelAdmin
 				{
 					$this->unMakeJoinedGroup($data);
 				}
+
 				$return = parent::save($data);
 			}
 		}
+
 		parent::cleanCache('com_fabrik');
+
 		return $return;
 	}
 
@@ -232,6 +246,7 @@ class FabrikAdminModelGroup extends FabModelAdmin
 	{
 		$item = FabTable::getInstance('Group', 'FabrikTable');
 		$item->load($id);
+
 		return $item->join_id == '' ? false : true;
 	}
 
@@ -249,10 +264,12 @@ class FabrikAdminModelGroup extends FabModelAdmin
 		{
 			return;
 		}
+
 		$formid = (int) $data['form'];
 		$id = (int) $data['id'];
 		$item = FabTable::getInstance('FormGroup', 'FabrikTable');
 		$item->load(array('form_id' => $formid, 'group_id' => $id));
+
 		if ($item->id == '')
 		{
 			// Get max group order
@@ -291,6 +308,7 @@ class FabrikAdminModelGroup extends FabModelAdmin
 		$fields = $listModel->getDBFields(null, 'Field');
 		$names['id'] = "id INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY";
 		$names['parent_id'] = "parent_id INT(11)";
+
 		foreach ($elements as $element)
 		{
 			$fname = $element->getElement()->name;
@@ -302,13 +320,16 @@ class FabrikAdminModelGroup extends FabModelAdmin
 			{
 				$str = FabrikString::safeColName($fname);
 				$field = JArrayHelper::getValue($fields, $fname);
+
 				if (is_object($field))
 				{
 					$str .= " " . $field->Type . " ";
+
 					if ($field->Null == 'NO')
 					{
 						$str .= "NOT NULL ";
 					}
+
 					$names[$fname] = $str;
 				}
 				else
@@ -316,11 +337,12 @@ class FabrikAdminModelGroup extends FabModelAdmin
 					$names[$fname] = $db->quoteName($fname) . ' ' . $element->getFieldDescription();
 				}
 			}
-
 		}
+
 		$db->setQuery("show tables");
 		$newTableName = $list->db_table_name . '_' . $data['id'] . '_repeat';
 		$existingTables = $db->loadColumn();
+
 		if (!in_array($newTableName, $existingTables))
 		{
 			// No existing repeat group table found so lets create it
@@ -331,7 +353,6 @@ class FabrikAdminModelGroup extends FabModelAdmin
 			// Create id and parent_id elements
 			$listModel->makeIdElement($data['id']);
 			$listModel->makeFkElement($data['id']);
-
 		}
 		else
 		{
@@ -339,16 +360,19 @@ class FabrikAdminModelGroup extends FabModelAdmin
 			{
 				// New group not attached to a form
 				$this->setError(JText::_('COM_FABRIK_GROUP_CANT_MAKE_JOIN_NO_DB_TABLE'));
+
 				return false;
 			}
 			// Repeat table already created - lets check its structure matches the group elements
 			$db->setQuery("DESCRIBE " . $db->quoteName($newTableName));
 			$existingFields = $db->loadObjectList('Field');
 			$newFields = array_diff(array_keys($names), array_keys($existingFields));
+
 			if (!empty($newFields))
 			{
 				$lastfield = array_pop($existingFields);
 				$lastfield = $lastfield->Field;
+
 				foreach ($newFields as $newField)
 				{
 					$info = $names[$newField];
@@ -374,6 +398,7 @@ class FabrikAdminModelGroup extends FabModelAdmin
 		// Update or save a new join
 		$join->store();
 		$data['is_join'] = 1;
+
 		return true;
 	}
 
@@ -392,6 +417,7 @@ class FabrikAdminModelGroup extends FabModelAdmin
 		{
 			return false;
 		}
+
 		$db = FabrikWorker::getDbo(true);
 		$query = $db->getQuery(true);
 		$query->delete('#__{package}_joins')->where('group_id = ' . $data['id']);
@@ -424,6 +450,7 @@ class FabrikAdminModelGroup extends FabModelAdmin
 		{
 			return true;
 		}
+
 		if (parent::delete($pks))
 		{
 			if ($this->deleteFormGroups($pks))
@@ -438,6 +465,7 @@ class FabrikAdminModelGroup extends FabModelAdmin
 				}
 			}
 		}
+
 		return false;
 	}
 
@@ -458,6 +486,7 @@ class FabrikAdminModelGroup extends FabModelAdmin
 		$db->setQuery($query);
 		$elids = $db->loadColumn();
 		$elementModel = JModelLegacy::getInstance('Element', 'FabrikAdminModel');
+
 		return $elementModel->delete($elids);
 	}
 
@@ -476,7 +505,7 @@ class FabrikAdminModelGroup extends FabModelAdmin
 		$query = $db->getQuery(true);
 		$query->delete('#__{package}_formgroup')->where('group_id IN (' . implode(',', $pks) . ')');
 		$db->setQuery($query);
+
 		return $db->execute();
 	}
-
 }

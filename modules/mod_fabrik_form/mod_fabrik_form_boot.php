@@ -19,6 +19,7 @@ if (!defined('COM_FABRIK_FRONTEND'))
 {
 	JError::raiseError(400, JText::_('COM_FABRIK_SYSTEM_PLUGIN_NOT_ACTIVE'));
 }
+
 $app = JFactory::getApplication();
 $input = $app->input;
 
@@ -37,21 +38,20 @@ JTable::addIncludePath(JPATH_ADMINISTRATOR . '/components/com_fabrik/tables');
 JModelLegacy::addIncludePath(COM_FABRIK_FRONTEND . '/models', 'FabrikFEModel');
 
 $formId = (int) $params->get('form_id', 1);
-$rowid = (int) $params->get('row_id', 0);
+$rowid = (string) $params->get('row_id', '');
 $layout = $params->get('template', 'default');
 $usersConfig = JComponentHelper::getParams('com_fabrik');
 $usersConfig->set('rowid', $rowid);
 
 $usekey = $params->get('usekey', '');
+
 if (!empty($usekey))
 {
 	$input->set('usekey', $usekey);
 }
 
 $moduleclass_sfx = $params->get('moduleclass_sfx', '');
-
 $moduleAjax = $params->get('formmodule_useajax', true);
-
 $origView = $input->get('view');
 
 $input->set('view', 'form');

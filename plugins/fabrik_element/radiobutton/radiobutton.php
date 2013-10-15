@@ -21,20 +21,13 @@ defined('_JEXEC') or die('Restricted access');
 
 class PlgFabrik_ElementRadiobutton extends PlgFabrik_ElementList
 {
-
 	/**
-	 * Does the element have a label
-	 * @var bool
+	 * Method to set the element id
+	 *
+	 * @param   int  $id  element ID number
+	 *
+	 * @return  void
 	 */
-	protected $hasLabel = true;
-
-	/**
-	* Method to set the element id
-	*
-	* @param   int  $id  element ID number
-	*
-	* @return  void
-	*/
 
 	public function setId($id)
 	{
@@ -64,10 +57,12 @@ class PlgFabrik_ElementRadiobutton extends PlgFabrik_ElementList
 		{
 			return '';
 		}
+
 		$labels = $this->getSubOptionLabels();
 		$values = $this->getSubOptionValues();
 		$key = array_search($value[0], $values);
 		$val = ($key === false) ? $value[0] : $labels[$key];
+
 		return $val;
 	}
 
@@ -92,6 +87,7 @@ class PlgFabrik_ElementRadiobutton extends PlgFabrik_ElementList
 		$opts->data = empty($arVals) ? array() : array_combine($arVals, $arTxt);
 		$opts->allowadd = $params->get('allow_frontend_addtoradio', false) ? true : false;
 		JText::script('PLG_ELEMENT_RADIO_ENTER_VALUE_LABEL');
+
 		return array('FbRadio', $id, $opts);
 	}
 
@@ -111,7 +107,6 @@ class PlgFabrik_ElementRadiobutton extends PlgFabrik_ElementList
 		$s = new stdClass;
 		$s->deps = array('fab/element', 'fab/elementlist');
 		$shim['element/radiobutton/radiobutton'] = $s;
-
 		parent::formJavascriptClass($srcs, $script, $shim);
 	}
 
@@ -129,14 +124,17 @@ class PlgFabrik_ElementRadiobutton extends PlgFabrik_ElementList
 	{
 		$values = $this->getSubOptionValues();
 		$labels = $this->getSubOptionLabels();
+
 		for ($i = 0; $i < count($labels); $i++)
 		{
 			if (JString::strtolower($labels[$i]) == JString::strtolower($value))
 			{
 				$val = $values[$i];
+
 				return $val;
 			}
 		}
+
 		return $value;
 	}
 
@@ -153,6 +151,7 @@ class PlgFabrik_ElementRadiobutton extends PlgFabrik_ElementList
 	{
 		$params = $this->getParams();
 		$element = $this->getElement();
+
 		if (!array_key_exists($element->name, $data))
 		{
 			$sel = $this->getSubInitialSelection();
@@ -176,6 +175,7 @@ class PlgFabrik_ElementRadiobutton extends PlgFabrik_ElementList
 	{
 		$value = $this->prepareFilterVal($value);
 		$return = parent::getFilterValue($value, $condition, $eval);
+
 		return $return;
 	}
 
@@ -214,6 +214,7 @@ class PlgFabrik_ElementRadiobutton extends PlgFabrik_ElementList
 		{
 			$v = $v[0];
 		}
+
 		return $v;
 	}
 }

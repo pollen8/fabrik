@@ -24,7 +24,6 @@ require_once COM_FABRIK_FRONTEND . '/models/validation_rule.php';
 
 class PlgFabrik_ValidationruleUserExists extends PlgFabrik_Validationrule
 {
-
 	/**
 	 * Plugin name
 	 *
@@ -51,6 +50,7 @@ class PlgFabrik_ValidationruleUserExists extends PlgFabrik_Validationrule
 		$user = JFactory::getUser();
 		jimport('joomla.user.helper');
 		$result = JUserHelper::getUserId($data);
+
 		if ($user->get('guest'))
 		{
 			if (!$result)
@@ -67,6 +67,7 @@ class PlgFabrik_ValidationruleUserExists extends PlgFabrik_Validationrule
 					return true;
 				}
 			}
+
 			return false;
 		}
 		else
@@ -82,28 +83,33 @@ class PlgFabrik_ValidationruleUserExists extends PlgFabrik_Validationrule
 			{
 				$user_field = $params->get('userexists_user_field');
 				$user_id = 0;
+
 				if ((int) $user_field !== 0)
 				{
 					$user_elementModel = FabrikWorker::getPluginManager()->getElementPlugin($user_field);
 					$user_fullName = $user_elementModel->getFullName(true, false);
 					$user_field = $user_elementModel->getFullName(false, false);
 				}
+
 				if (!empty($user_field))
 				{
 					// $$$ the array thing needs fixing, for now just grab 0
 					$formdata = $elementModel->getForm()->formData;
 					$user_id = JArrayHelper::getValue($formdata, $user_fullName . '_raw', JArrayHelper::getValue($formdata, $user_fullName, ''));
+
 					if (is_array($user_id))
 					{
 						$user_id = JArrayHelper::getValue($user_id, 0, '');
 					}
 				}
+
 				if ($user_id != 0)
 				{
 					if ($result == $user_id)
 					{
 						return ($ornot == 'fail_if_exists') ? true : false;
 					}
+
 					return false;
 				}
 				else
@@ -113,11 +119,12 @@ class PlgFabrik_ValidationruleUserExists extends PlgFabrik_Validationrule
 					{
 						return ($ornot == 'fail_if_exists') ? true : false;
 					}
+
 					return false;
 				}
 			}
+
 			return false;
 		}
 	}
-
 }

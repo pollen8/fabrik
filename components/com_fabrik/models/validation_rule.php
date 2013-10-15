@@ -24,7 +24,6 @@ require_once JPATH_SITE . '/components/com_fabrik/models/plugin.php';
 
 class PlgFabrik_Validationrule extends FabrikPlugin
 {
-
 	/**
 	 * Plugin name
 	 *
@@ -88,18 +87,22 @@ class PlgFabrik_Validationrule extends FabrikPlugin
 	{
 		$params = $this->getParams();
 		$condition = $params->get($this->pluginName . '-validation_condition');
+
 		if ($condition == '')
 		{
 			return true;
 		}
+
 		$w = new FabrikWorker;
 		$condition = trim($w->parseMessageForPlaceHolder($condition));
 		$formModel = $this->elementModel->getFormModel();
 		$res = @eval($condition);
+
 		if (is_null($res))
 		{
 			return true;
 		}
+
 		return $res;
 	}
 
@@ -115,13 +118,17 @@ class PlgFabrik_Validationrule extends FabrikPlugin
 		{
 			return $this->errorMsg;
 		}
+
 		$params = $this->getParams();
-		$v = $params->get($this->pluginName . '-message');
+		$v = $params->get($this->pluginName . '-message', '');
+
 		if ($v === '')
 		{
 			$v = 'COM_FABRIK_FAILED_VALIDATION';
 		}
+
 		$this->errorMsg = JText::_($v);
+
 		return $this->errorMsg;
 	}
 
@@ -170,6 +177,7 @@ class PlgFabrik_Validationrule extends FabrikPlugin
 	{
 		$plugin = JPluginHelper::getPlugin('fabrik_validationrule', $this->pluginName);
 		$params = new JRegistry($plugin->params);
+
 		return $params->get('icon', 'star');
 	}
 
@@ -185,6 +193,7 @@ class PlgFabrik_Validationrule extends FabrikPlugin
 	{
 		$name = $this->elementModel->validator->getIcon();
 		$i = FabrikHelperHTML::image($name, 'form', $tmpl, array('class' => $this->pluginName));
+
 		return $i . ' ' . $this->getLabel();
 	}
 
@@ -198,10 +207,12 @@ class PlgFabrik_Validationrule extends FabrikPlugin
 	{
 		$params = $this->getParams();
 		$tipText = $params->get('tip_text', '');
+
 		if ($tipText !== '')
 		{
 			return JText::_($tipText);
 		}
+
 		if ($this->allowEmpty())
 		{
 			return JText::_('PLG_VALIDATIONRULE_' . JString::strtoupper($this->pluginName) . '_ALLOWEMPTY_LABEL');

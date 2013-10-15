@@ -30,15 +30,21 @@ class JDatabaseDriverMySQL_Fab extends JDatabaseDriverMysql
 	 * This function replaces a string identifier <var>$prefix</var> with the
 	 * string held is the <var>_table_prefix</var> class variable.
 	 *
-	 * @param   string	The SQL query
-	 * @param   string	The common table prefix
+	 * @param   string  $sql    The SQL query
+	 * @param   string  $prefx  The common table prefix
 	 */
 	public function replacePrefix($sql, $prefix = '#__')
 	{
 		$app = JFactory::getApplication();
 		$package = $app->getUserStateFromRequest('com_fabrik.package', 'package', 'fabrik');
+
+		if ($package == '')
+		{
+			$package = 'fabrik';
+		}
+
 		$sql = str_replace('{package}', $package, $sql);
+
 		return parent::replacePrefix($sql, $prefix);
 	}
-
 }

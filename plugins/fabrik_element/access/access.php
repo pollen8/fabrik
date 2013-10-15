@@ -21,7 +21,6 @@ defined('_JEXEC') or die('Restricted access');
 
 class PlgFabrik_ElementAccess extends PlgFabrik_Element
 {
-
 	/**
 	 * If the element 'Include in search all' option is set to 'default' then this states if the
 	 * element should be ignored from search all.
@@ -57,12 +56,12 @@ class PlgFabrik_ElementAccess extends PlgFabrik_Element
 	public function render($data, $repeatCounter = 0)
 	{
 		$name = $this->getHTMLName($repeatCounter);
+		$id = $this->getHTMLId($repeatCounter);
 
 		$arSelected = array('');
 
 		if (isset($data[$name]))
 		{
-
 			if (!is_array($data[$name]))
 			{
 				$arSelected = explode(',', $data[$name]);
@@ -72,13 +71,17 @@ class PlgFabrik_ElementAccess extends PlgFabrik_Element
 				$arSelected = $data[$name];
 			}
 		}
+
 		$gtree = $this->getOpts();
+
 		if (!$this->isEditable())
 		{
 			$row = new stdClass;
+
 			return $this->renderListData($arSelected[0], $row);
 		}
-		return JHTML::_('select.genericlist', $gtree, $name, 'class="inputbox" size="6"', 'value', 'text', $arSelected[0]);
+
+		return JHTML::_('select.genericlist', $gtree, $name, 'class="inputbox" size="6"', 'value', 'text', $arSelected[0], $id);
 	}
 
 	/**
@@ -108,6 +111,7 @@ class PlgFabrik_ElementAccess extends PlgFabrik_Element
 		{
 			array_unshift($options, JHtml::_('select.option', '', JText::_('JOPTION_ACCESS_SHOW_ALL_GROUPS')));
 		}
+
 		return $options;
 	}
 
@@ -124,6 +128,7 @@ class PlgFabrik_ElementAccess extends PlgFabrik_Element
 	{
 		$gtree = $this->getOpts();
 		$filter = JFilterInput::getInstance(null, null, 1, 1);
+
 		foreach ($gtree as $o)
 		{
 			if ($o->value == $data)
@@ -142,10 +147,12 @@ class PlgFabrik_ElementAccess extends PlgFabrik_Element
 	public function getFieldDescription()
 	{
 		$p = $this->getParams();
+
 		if ($this->encryptMe())
 		{
 			return 'BLOB';
 		}
+
 		return "INT(3)";
 	}
 
@@ -161,7 +168,7 @@ class PlgFabrik_ElementAccess extends PlgFabrik_Element
 	{
 		$id = $this->getHTMLId($repeatCounter);
 		$opts = $this->getElementJSOptions($repeatCounter);
+
 		return array('FbAccess', $id, $opts);
 	}
-
 }

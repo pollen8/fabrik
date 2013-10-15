@@ -55,6 +55,7 @@ class JFormFieldPackageList extends JFormFieldList
 		$o->value = 0;
 		$o->text = JText::_('COM_FABRIK_NO_PACKAGE');
 		array_unshift($rows, $o);
+
 		return $rows;
 	}
 
@@ -74,7 +75,7 @@ class JFormFieldPackageList extends JFormFieldList
 		{
 			$this->element['readonly'] = 'true';
 		}
+
 		return parent::getInput();
 	}
-
 }

@@ -160,10 +160,4 @@ $rtlDirInv = $doc->direction === 'rtl' ? 'right' : 'left';
 
 	</div>
 
-
-
-
-
-
-
 </div>

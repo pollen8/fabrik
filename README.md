@@ -1,5 +1,7 @@
 Fabrik is the Joomla application builder
 
+[![Build Status](https://travis-ci.org/Fabrik/fabrik.png)](https://travis-ci.org/Fabrik/fabrik)
+
 Installation
 ================
 

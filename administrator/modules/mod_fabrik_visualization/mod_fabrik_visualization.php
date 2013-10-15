@@ -21,6 +21,7 @@ if (!defined('COM_FABRIK_FRONTEND'))
 {
 	throw new RuntimeException(JText::_('COM_FABRIK_SYSTEM_PLUGIN_NOT_ACTIVE'), 400);
 }
+
 jimport('joomla.application.component.model');
 jimport('joomla.application.component.helper');
 JModelLegacy::addIncludePath(COM_FABRIK_FRONTEND . '/models', 'FabrikFEModel');
@@ -60,6 +61,7 @@ $query->select('plugin')->from('#__{package}_visualizations')->where('id = ' . (
 $db->setQuery($query);
 $name = $db->loadResult();
 $path = JPATH_SITE . '/plugins/fabrik_visualization/' . $name . '/controllers/' . $name . '.php';
+
 if (file_exists($path))
 {
 	require_once $path;
@@ -67,8 +69,10 @@ if (file_exists($path))
 else
 {
 	$app->enqueueMessage('could not load viz:' . $name, 'notice');
+
 	return;
 }
+
 $controllerName = 'FabrikControllerVisualization' . $name;
 $controller = new $controllerName;
 $controller->addViewPath(JPATH_SITE . '/plugins/fabrik_visualization/' . $name . '/views');

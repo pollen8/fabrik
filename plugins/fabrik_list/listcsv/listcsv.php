@@ -24,7 +24,6 @@ require_once COM_FABRIK_FRONTEND . '/models/plugin-list.php';
 
 class PlgFabrik_ListListcsv extends PlgFabrik_List
 {
-
 	/**
 	 * determine if the table plugin is a button and can be activated only when rows are selected
 	 *
@@ -39,7 +38,7 @@ class PlgFabrik_ListListcsv extends PlgFabrik_List
 	/**
 	 * Prep the button if needed
 	 *
-	 * @param   array   &$args   Arguements
+	 * @param   array  &$args  Arguements
 	 *
 	 * @return  bool;
 	 */
@@ -47,25 +46,27 @@ class PlgFabrik_ListListcsv extends PlgFabrik_List
 	public function button(&$args)
 	{
 		parent::button($args);
+
 		return false;
 	}
 
 	/**
 	 * Called when we import a csv row
 	 *
-	 * @param   object  &$params  Plugin parameters
-	 *
 	 * @return boolean
 	 */
 
-	public function onImportCSVRow(&$params)
+	public function onImportCSVRow()
 	{
+		$params = $this->getParams();
 		$file = JFilterInput::clean($params->get('listcsv_import_php_file'), 'CMD');
+
 		if ($file == -1 || $file == '')
 		{
 			$code = $params->get('listcsv_import_php_code', '');
 			$ret = @eval($code);
 			FabrikWorker::logEval($ret, 'Caught exception on eval in onImportCSVRow : %s');
+
 			if ($ret === false)
 			{
 				return false;
@@ -75,7 +76,7 @@ class PlgFabrik_ListListcsv extends PlgFabrik_List
 		{
 			@require JPATH_ROOT . '/plugins/fabrik_list/listcsv/scripts/' . $file;
 		}
+
 		return true;
 	}
-
 }

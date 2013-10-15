@@ -13,24 +13,22 @@ defined('_JEXEC') or die('Restricted access');
 /**
  * Abstract Form Field class for the Joomla Platform.
  *
+ * IMPORTANT NOTE
+ *
+ * This file is  standard J! class, being overridden by the Fabrik component,
+ * with some non-intrusive changes to allow us to build repeating fieldsets.
+ * We make every effort to make sure this remains in sync with J!'s standard classes,
+ * but if you are reading this because you are debugging unexpected behavior
+ * in your component on the backed, try disabling the Fabrik system plugin.
+ * If that cures your problem, please contact the Fabrik authors at ...
+ *
+ * hugh.messenger@gmail.com
+ * rob@pollen-8.co.uk
+ *
  * @package     Joomla.Platform
  * @subpackage  Form
  * @since       11.1
  */
-
-/**
-* IMPORTANT NOTE
-*
-* This file is  standard J! class, being overridden by the Fabrik component,
-* with some non-intrusive changes to allow us to build repeating fieldsets.
-* We make every effort to make sure this remains in sync with J!'s standard classes,
-* but if you are reading this because you are debugging unexpected behavior
-* in your component on the backed, try disabling the Fabrik system plugin.
-* If that cures your problem, please contact the Fabrik authors at ...
-*
-* hugh.messenger@gmail.com
-* rob@pollen-8.co.uk
-*/
 
 abstract class JFormField
 {
@@ -228,6 +226,7 @@ abstract class JFormField
 		if (!isset($this->type))
 		{
 			$parts = JString::splitCamelCase(get_class($this));
+
 			if ($parts[0] == 'J')
 			{
 				$this->type = JString::ucfirst($parts[count($parts) - 1], '_');
@@ -347,9 +346,9 @@ abstract class JFormField
 		$multiple = (string) $element['multiple'];
 		$name = (string) $element['name'];
 		$required = (string) $element['required'];
+
 		// $$$ rob
 		$repeat = (string) $element['repeat'];
-
 
 		// Set the required and validation options.
 		$this->required = ($required == 'true' || $required == 'required' || $required == '1');
@@ -464,11 +463,13 @@ abstract class JFormField
 		{
 			$repeatCounter = empty($this->form->repeatCounter) ? 0 : $this->form->repeatCounter;
 			$id .= '-' . $repeatCounter;
+
 			if (get_class($this) === 'JFormFieldRadio')
 			{
 				$id .= '-';
 			}
 		}
+
 		return $id;
 	}
 
@@ -495,7 +496,6 @@ abstract class JFormField
 
 		if ($this->hidden)
 		{
-
 			return $title;
 		}
 
@@ -586,6 +586,7 @@ abstract class JFormField
 		{
 			// If we already have a name segment add the group control as another level.
 			$groups = explode('.', $this->group);
+
 			if ($name)
 			{
 				foreach ($groups as $group)
@@ -596,6 +597,7 @@ abstract class JFormField
 			else
 			{
 				$name .= array_shift($groups);
+
 				foreach ($groups as $group)
 				{
 					$name .= '[' . $group . ']';
@@ -646,16 +648,20 @@ abstract class JFormField
 		else
 		{
 			self::$count = self::$count + 1;
+
 			return self::$generated_fieldname . self::$count;
 		}
 	}
 
-	/*
+	/**
 	 * $$$ rob - useful func
+	 *
+	 * @param   string  $v  Value
+	 *
+	 * @return  void
 	 */
 	public function setValue($v)
 	{
 		$this->value = $v;
 	}
-
 }

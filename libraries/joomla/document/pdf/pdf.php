@@ -146,6 +146,14 @@ class JDocumentpdf extends JDocumentHTML
 
 	public function render($cache = false, $params = array())
 	{
+		// mb_encoding foo when content-type had been set to text/html; uft-8;
+ 		$this->_metaTags['http-equiv'] = array();
+		$this->_metaTags['http-equiv']['content-type'] = 'text/html';
+
+		// Testing using futural font see (http://stackoverflow.com/questions/5136067/dompdf-special-characters)
+ 		// $this->addStyleDeclaration('body: { font-family: futural !important; }');
+
+		// Unicode info: https://code.google.com/p/dompdf/wiki/CPDFUnicode
 		$pdf = $this->engine;
 		$data = parent::render();
 		$this->fullPaths($data);

@@ -23,7 +23,6 @@ jimport('joomla.application.component.view');
 
 class FabrikViewCsv extends JViewLegacy
 {
-
 	/**
 	 * Display the view
 	 *
@@ -44,11 +43,14 @@ class FabrikViewCsv extends JViewLegacy
 		$this->getManagementJS($data);
 		$this->id = $this->get('id');
 		$this->form = $this->get('Form');
+
 		if (!$listModel->canCSVExport())
 		{
 			throw new RuntimeException('Naughty naughty!', 400);
 		}
+
 		$this->addTemplatePath(JPATH_SITE . '/components/com_fabrik/views/csv/tmpl');
+
 		return parent::display($tpl);
 	}
 
@@ -72,10 +74,12 @@ class FabrikViewCsv extends JViewLegacy
 		$opts->headings = $model->jsonHeadings();
 		list($this->headings, $groupHeadings, $this->headingClass, $this->cellClass) = $this->get('Headings');
 		$labels = $this->headings;
+
 		foreach ($labels as &$l)
 		{
 			$l = strip_tags($l);
 		}
+
 		$listParams = $model->getParams();
 		$opts->labels = $labels;
 		$opts->csvChoose = (bool) $listParams->get('csv_frontend_selection');
@@ -86,10 +90,8 @@ class FabrikViewCsv extends JViewLegacy
 		$csvOpts->inccalcs = (int) $listParams->get('csv_include_calculations');
 		$csvOpts->custom_qs = $listParams->get('csv_custom_qs', '');
 		$opts->csvOpts = $csvOpts;
-
 		$opts->csvFields = $this->get('CsvFields');
 		$csvOpts->incfilters = 0;
-
 		$opts->view = 'csv';
 
 		// $$$rob if you are loading a table in a window from a form db join select record option

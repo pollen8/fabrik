@@ -24,7 +24,6 @@ jimport('joomla.application.component.controllerform');
 
 class FabControllerForm extends JControllerForm
 {
-
 	/**
 	 * Option
 	 *
@@ -44,6 +43,7 @@ class FabControllerForm extends JControllerForm
 		$app = JFactory::getApplication();
 		$input = $app->input;
 		$cid = $input->get('cid', array(), 'array');
+
 		if (empty($cid))
 		{
 			JError::raiseWarning(500, JText::_($this->text_prefix . '_NO_ITEM_SELECTED'));
@@ -56,6 +56,7 @@ class FabControllerForm extends JControllerForm
 				$this->setMessage(JText::plural($ntext, count($cid)));
 			}
 		}
+
 		$extension = $input->get('extension');
 		$extensionURL = ($extension) ? '&extension=' . $extension : '';
 		$this->setRedirect(JRoute::_('index.php?option=' . $this->option . '&view=' . $this->view_list . $extensionURL, false));
@@ -76,6 +77,7 @@ class FabControllerForm extends JControllerForm
 	public function edit($key = null, $urlVar = null)
 	{
 		$this->option = 'com_fabrik';
+
 		return parent::edit($key, $urlVar);
 	}
 }

@@ -28,7 +28,8 @@ var fabrikCalendar = new Class({
 		},
 		monthday: {'width': 90, 'height': 80},
 		restFilterStart: 'na',
-		j3: false
+		j3: false,
+		showFullDetails: false
 	},
 
 	initialize: function (el) {
@@ -116,7 +117,8 @@ var fabrikCalendar = new Class({
 				'border-right': '0',
 				'border-left': '0',
 				'overflow': 'auto',
-				'opacity': 0.6
+				'opacity': 0.6,
+				'padding': '0 4px'
 			};
 		if (opts.height) {
 			style.height = opts.height.toInt() + 'px';
@@ -152,7 +154,7 @@ var fabrikCalendar = new Class({
 				dataContent += '<hr /><div class=\"btn-group\" style=\"text-align:center\">' + buttons + '</div>';
 			}
 			eventCont = new Element('a', {
-				'class': 'fabrikEvent label',
+				'class': 'fabrikEvent label ' + entry.status,
 				'id': id,
 				'styles': style,
 				'rel': 'popover',
@@ -163,13 +165,16 @@ var fabrikCalendar = new Class({
 				'data-trigger' : 'click'
 			});
 			
-			
-			if (typeof(jQuery) !== 'undefined') {
-				jQuery(eventCont).popover();
-				eventCont.addEvent('click', function (e) {
-					this.popOver = eventCont;
-					
-				}.bind(this));
+			if (this.options.showFullDetails) {
+				eventCont.set('data-task', 'viewCalEvent');
+			} else {
+				if (typeof(jQuery) !== 'undefined') {
+					jQuery(eventCont).popover();
+					eventCont.addEvent('click', function (e) {
+						this.popOver = eventCont;
+						
+					}.bind(this));
+				}
 			}
 		} else {
 			eventCont = new Element('div', {
@@ -177,9 +182,13 @@ var fabrikCalendar = new Class({
 				'id': id,
 				'styles': style
 			});
-			eventCont.addEvent('mouseenter', function (e) {
-				this.doPopupEvent(e, entry, label);
-			}.bind(this));
+			if (this.options.showFullDetails) {
+				eventCont.set('data-task', 'viewCalEvent');
+			} else {
+				eventCont.addEvent('mouseenter', function (e) {
+					this.doPopupEvent(e, entry, label);
+				}.bind(this));
+			}
 		}
 
 		if (entry.link !== '' && this.options.readonly === false && this.options.j3 === false) {
@@ -197,7 +206,7 @@ var fabrikCalendar = new Class({
 						}
 					}.bind(this)
 			}
-			}).appendText(label);
+			}).set('html', label);
 		} else {
 			if (entry.custom) {
 				label = label === '' ? 'click' : label;
@@ -207,12 +216,11 @@ var fabrikCalendar = new Class({
 								Fabrik.fireEvent('fabrik.viz.calendar.event', [e]);
 							}
 					}
-				}).appendText(label);
+				}).set('html', label);
 			} else {
-				x = new Element('span').appendText(label);
+				x = new Element('span').set('html', label);
 			}
 		}
-
 		eventCont.adopt(x);
 		return eventCont;
 	},
@@ -859,7 +867,7 @@ var fabrikCalendar = new Class({
 	openAddEvent: function (e)
 	{
 		var rawd;
-		if (this.options.canAdd === 0) {
+		if (this.options.canAdd === false) {
 			return;
 		}
 		e.stop();
@@ -917,7 +925,7 @@ var fabrikCalendar = new Class({
 	addEvForm: function (o)
 	{
 		if (typeof(jQuery) !== 'undefined') {
-			jQuery(this.popOver).popover('toggle');
+			jQuery(this.popOver).popover('hide');
 		}
 		this.windowopts.id = 'addeventwin';
 		var url = 'index.php?option=com_fabrik&controller=visualization.calendar&view=visualization&task=addEvForm&format=raw&listid=' + o.listid + '&rowid=' + o.rowid;
@@ -934,9 +942,10 @@ var fabrikCalendar = new Class({
 		this.windowopts.type = 'window';
 		this.windowopts.contentURL = url;
 		var f = this.options.filters;
+	
 		this.windowopts.onContentLoaded = function (win)
 		{
-			var myfx = new Fx.Scroll(window).toElement('addeventwin');
+			//var myfx = new Fx.Scroll(window).toElement('addeventwin');
 			f.each(function (o) {
 				if (document.id(o.key)) {
 					switch (document.id(o.key).get('tag')) {
@@ -949,7 +958,7 @@ var fabrikCalendar = new Class({
 					}
 				}
 			});
-			win.fitToContent();
+			win.fitToContent(false);
 		}.bind(this);
 		Fabrik.getWindow(this.windowopts);
 	},
@@ -1210,6 +1219,11 @@ var fabrikCalendar = new Class({
 
 		document.addEvent('click:relay(button[data-task=viewCalEvent], a[data-task=viewCalEvent])', function (event, target) {
 			event.preventDefault();
+			
+			// If opening directly from a calendar entery activeHoverEvent is not yet set.
+			if (!this.activeHoverEvent) {
+				this.activeHoverEvent = target.hasClass('fabrikEvent') ? target : target.getParent('.fabrikEvent');
+			}
 			this.viewEntry();
 		}.bind(this));
 
@@ -1490,7 +1504,7 @@ var fabrikCalendar = new Class({
 			);
 			ul.appendChild(li);
 		}.bind(this));
-		new Element('div', {'class': 'legend'}).adopt([
+		new Element('div', {'class': 'calendar-legend'}).adopt([
 			new Element('h3').appendText(Joomla.JText._('PLG_VISUALIZATION_CALENDAR_KEY')),
 			ul
 		]).inject(this.el, 'after');

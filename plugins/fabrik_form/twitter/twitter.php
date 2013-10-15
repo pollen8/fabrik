@@ -29,7 +29,6 @@ if (!class_exists('TwitterOAuth'))
 
 class PlgFabrik_FormTwitter extends PlgFabrik_Form
 {
-
 	/**
 	 * Max length of message
 	 *
@@ -73,6 +72,7 @@ class PlgFabrik_FormTwitter extends PlgFabrik_Form
 		$form = $this->model->getForm();
 		$row = $this->getRow();
 		$row->params = $form->params;
+
 		return $this->model;
 	}
 
@@ -91,15 +91,15 @@ class PlgFabrik_FormTwitter extends PlgFabrik_Form
 		$input = $app->input;
 		$this->buildModel($input->get('formid'));
 		$params = $this->getParams();
-
 		$renderOrder = $input->getInt('renderOrder');
-
 		$consumer_key = $params->get('twitter_consumer_key');
+		$consumer_secret = $params->get('twitter_consumer_secret');
+
 		if (is_array($consumer_key))
 		{
 			$consumer_key = $consumer_key[$renderOrder];
 		}
-		$consumer_secret = $params->get('twitter_consumer_secret');
+
 		if (is_array($consumer_secret))
 		{
 			$consumer_secret = $consumer_secret[$renderOrder];
@@ -113,7 +113,7 @@ class PlgFabrik_FormTwitter extends PlgFabrik_Form
 		/* Save the access tokens. Normally these would be saved in a database for future use. */
 		// $_SESSION['access_token'] = $access_token;
 
-		/* Remove no longer needed request tokens */
+		// Remove no longer needed request tokens
 		unset($_SESSION['oauth_token']);
 		unset($_SESSION['oauth_token_secret']);
 
@@ -140,8 +140,10 @@ class PlgFabrik_FormTwitter extends PlgFabrik_Form
 		$input = $app->input;
 		$formdata = $session->get('com_' . $package . '.form.data');
 
-		// @TODO incorrect for API1.1 should implement this https://dev.twitter.com/docs/api/1.1/get/application/rate_limit_status. For now just use error msg
-		/* $content = $connection->get('account/rate_limit_status');
+		/*
+		 * @TODO incorrect for API1.1 should implement this
+		 * https://dev.twitter.com/docs/api/1.1/get/application/rate_limit_status. For now just use error msg
+		 * $content = $connection->get('account/rate_limit_status');
 
 		if ($content->remaining_hits <= 0)
 		{
@@ -169,6 +171,7 @@ class PlgFabrik_FormTwitter extends PlgFabrik_Form
 			default:
 				$app->enqueueMessage(JText::_('PLG_FORM_TWITTER_ERR'), "$connection->http_code : $status->error");
 		}
+
 		$url = $input->get('fabrik_referrer', '');
 		$context = $formModel->getRedirectContext();
 		$url = $session->get($context . 'url', array($url));
@@ -210,12 +213,12 @@ class PlgFabrik_FormTwitter extends PlgFabrik_Form
 
 		if ($params->get('twitter_oauth_token_secret') !== '')
 		{
-
 			$input->set('oauth_verifier', $params->get('twitter_oauth_verifier'));
 			$token = $params->get('twitter_oauth_token');
 			$secret = $params->get('twitter_oauth_token_secret');
 			$connection = new TwitterOAuth($consumer_key, $consumer_secret, $token, $secret);
 			$this->sendTweet($connection);
+
 			return;
 		}
 
@@ -231,10 +234,12 @@ class PlgFabrik_FormTwitter extends PlgFabrik_Form
 		{
 			throw new RuntimeException('Please enter your consumer key. You may need to save the form first before continuing');
 		}
+
 		if ($consumer_secret == '')
 		{
 			throw new RuntimeException('Please enter your consumer secret. You may need to save the form first before continuing');
 		}
+
 		$connection = new TwitterOAuth($consumer_key, $consumer_secret);
 
 		// Get temporary credentials.
@@ -286,6 +291,7 @@ class PlgFabrik_FormTwitter extends PlgFabrik_Form
 		$data['fabrik_viewlink'] = "<a href=\"{$data['fabrik_viewurl']}\">" . JText::_('VIEW') . "</a>";
 		$data['fabrik_edit_link'] = "<a href=\"{$data['fabrik_editurl']}\">" . JText::_('EDIT') . "</a>";
 		$data['fabrik_view_link'] = "<a href=\"{$data['fabrik_viewurl']}\">" . JText::_('VIEW') . "</a>";
+
 		return $data;
 	}
 
@@ -300,18 +306,22 @@ class PlgFabrik_FormTwitter extends PlgFabrik_Form
 	private function bitlifyCallback($url)
 	{
 		$return_url = $url[1];
+
 		if ($this->bitly === false)
 		{
 			return $return_url;
 		}
+
 		if (!strstr($url[1], 'bit.ly/') && $url[1] !== '')
 		{
 			$return_url = $this->bitly->shorten($url[1]);
+
 			if ($this->bitly->getError() > 0)
 			{
 				throw new RuntimeException('Error with bit.ly: ' . $this->bitly->getErrorMsg());
 			}
 		}
+
 		return $return_url;
 	}
 
@@ -326,11 +336,13 @@ class PlgFabrik_FormTwitter extends PlgFabrik_Form
 	private function bitlifyMessage($msg)
 	{
 		static $bitly;
+
 		if (!isset($bitly))
 		{
 			$params = $this->getParams();
 			$bitly_login = $params->get('twitter_bitly_api_login', '');
 			$bitly_key = $params->get('twitter_bitly_api_key', '');
+
 			if (!empty($bitly_login) && !empty($bitly_key))
 			{
 				require_once JPATH_SITE . '/components/com_fabrik/libs/bitly/bitly.php';
@@ -339,12 +351,15 @@ class PlgFabrik_FormTwitter extends PlgFabrik_Form
 			else
 			{
 				$this->bitly = $bitly = false;
+
 				return $msg;
 			}
 		}
+
 		$re = "#(?i)\b((?:[a-z][\w-]+:(?:/{1,3}|[a-z0-9%])|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}/)"
 			. "(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:'\".,<>?������]))#";
 		$msg = preg_replace_callback($re, array(&$this, 'bitlifyCallback'), $msg);
+
 		return $msg;
 	}
 
@@ -359,6 +374,7 @@ class PlgFabrik_FormTwitter extends PlgFabrik_Form
 		$params = $this->getParams();
 		$data = $this->getProcessData();
 		$twitter_msg_field_id = $params->get('twitter_msg_field', '');
+
 		if ($twitter_msg_field_id != '')
 		{
 			$elementModel = FabrikWorker::getPluginManager()->getElementPlugin($twitter_msg_field_id);
@@ -371,10 +387,12 @@ class PlgFabrik_FormTwitter extends PlgFabrik_Form
 			$w = new FabrikWorker;
 			$msg = $w->parseMessageForPlaceHolder($params->get('twitter_msg_tmpl'), $data);
 		}
+
 		$msg = $this->bitlifyMessage($msg);
 
 		// $$$ hugh - I thought the twitter class chopped the msg to 140, but apprently it doesn't ..
 		$msg = JString::substr($msg, 0, $this->max_msg_length);
+
 		return $msg;
 	}
 
@@ -450,7 +468,6 @@ class PlgFabrik_FormTwitter extends PlgFabrik_Form
 		$input = $app->input;
 		$formModel = $this->buildModel($input->getInt('formid'));
 		$params = $formModel->getParams();
-
 		$renderOrder = $input->getInt('repeatCounter');
 
 		$consumer_key = $params->get('twitter_consumer_key');
@@ -474,19 +491,22 @@ class PlgFabrik_FormTwitter extends PlgFabrik_Form
 			'twitter_oauth_user' => 'screen_name');
 
 		$js = array();
+
 		foreach ($pairs as $paramname => $requestname)
 		{
 			$tokens = (array) JArrayHelper::getValue($opts, $paramname);
 			$newtokens = array();
+
 			for ($i = 0; $i <= $counter; $i++)
 			{
 				$newtokens[$i] = ($i == $counter) ? $access_token[$requestname] : '';
 				$jsid = '#jform_params_' . $paramname . '-' . $i;
 				$js[] = "window.opener.document.getElement('$jsid').value = '$newtokens[$i]';";
-
 			}
+
 			$opts[$paramname] = $newtokens;
 		}
+
 		$row->params = json_encode($opts);
 
 		if (!$row->store())
@@ -500,7 +520,6 @@ class PlgFabrik_FormTwitter extends PlgFabrik_Form
 
 		// If we had already authorized the app then we will still be in the admin page - so update the fields:
 		echo JText::_('PLG_FORM_TWITTER_CREDITIALS_SAVED');
-		//JHTML::_('behavior.mootools');
 		$document = JFactory::getDocument();
 		$script = implode("\n", $js) . "
 		(function() {window.close()}).delay(4000);

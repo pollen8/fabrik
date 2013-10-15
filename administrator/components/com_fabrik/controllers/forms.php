@@ -37,20 +37,6 @@ class FabrikAdminControllerForms extends FabControllerAdmin
 	protected $view_item = 'forms';
 
 	/**
-	 * Constructor.
-	 *
-	 * @param   array  $config  An optional associative array of configuration settings.
-	 *
-	 * @see		JController
-	 * @since	1.6
-	 */
-
-	public function __construct($config = array())
-	{
-		parent::__construct($config);
-	}
-
-	/**
 	 * Proxy for getModel.
 	 *
 	 * @param   string  $name    Model name
@@ -64,6 +50,7 @@ class FabrikAdminControllerForms extends FabControllerAdmin
 	public function &getModel($name = 'Form', $prefix = 'FabrikAdminModel')
 	{
 		$model = parent::getModel($name, $prefix, array('ignore_request' => true));
+
 		return $model;
 	}
 
@@ -101,5 +88,4 @@ class FabrikAdminControllerForms extends FabControllerAdmin
 		$listid = $db->loadResult();
 		$this->setRedirect('index.php?option=com_fabrik&task=list.view&listid=' . $listid);
 	}
-
 }

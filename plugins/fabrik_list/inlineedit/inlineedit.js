@@ -77,6 +77,14 @@ var FbListInlineEdit = new Class({
 			this.watchControls(this.editCell);
 			this.setFocus(this.editCell);
 		}.bind(this));
+		
+		// Click outside list clears down selection
+		window.addEvent('click', function (e) {
+			if (!e.target.hasClass('fabrik_element') && this.td) {
+				this.td.removeClass(this.options.focusClass);
+				this.td = null;
+			}
+		}.bind(this));
 	},
 
 	setUp: function () {
@@ -202,6 +210,7 @@ var FbListInlineEdit = new Class({
 			e.stop();
 			if (!this.inedit) {
 				this.td.removeClass(this.options.focusClass);
+				this.td = null;
 			} else {
 				this.select(e, this.editing);
 				this.cancel(e);
@@ -210,6 +219,11 @@ var FbListInlineEdit = new Class({
 			break;
 		case 13:
 			//enter
+			
+			// Already editing or no cell selected
+			if (this.inedit || typeOf(this.td) !== 'element') {
+				return;
+			}
 			e.stop();
 			if (typeOf(this.editing) === 'element') {
 				// stop textarea elements from submitting when you press enter

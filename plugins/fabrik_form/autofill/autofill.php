@@ -37,7 +37,6 @@ require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
 
 class PlgFabrik_FormAutofill extends PlgFabrik_Form
 {
-
 	/**
 	 * Need to do this rather than on onLoad as otherwise in chrome form.js addevents is fired
 	 * before autocomplete class ini'd so then the autocomplete class never sets itself up
@@ -63,6 +62,7 @@ class PlgFabrik_FormAutofill extends PlgFabrik_Form
 		$opts->editOrig = $params->get('autofill_edit_orig', 0) == 0 ? false : true;
 		$opts->confirm = (bool) $params->get('autofill_confirm', true);
 		$opts->autofill_lookup_field = $params->get('autofill_lookup_field');
+
 		switch ($params->get('autofill_onload', '0'))
 		{
 			case '0':
@@ -79,14 +79,17 @@ class PlgFabrik_FormAutofill extends PlgFabrik_Form
 				$opts->fillOnLoad = true;
 				break;
 		}
+
 		$opts = json_encode($opts);
 		JText::script('PLG_FORM_AUTOFILL_DO_UPDATE');
 		JText::script('PLG_FORM_AUTOFILL_SEARCHING');
 		JText::script('PLG_FORM_AUTOFILL_NORECORDS_FOUND');
+
 		if (!isset($formModel->formPluginJS))
 		{
 			$formModel->formPluginJS = '';
 		}
+
 		$this->formJavascriptClass($params, $formModel);
 		$formModel->formPluginJS .= "\n" . 'var autofill = new Autofill(' . $opts . ');';
 	}
@@ -107,6 +110,7 @@ class PlgFabrik_FormAutofill extends PlgFabrik_Form
 		$value = $input->get('v', '', 'string');
 		$input->set('resetfilters', 1);
 		$input->set('usekey', '');
+
 		if ($cnn === 0 || $cnn == -1)
 		{
 			// No connection selected so query current forms' table data
@@ -121,6 +125,7 @@ class PlgFabrik_FormAutofill extends PlgFabrik_Form
 			$listModel = JModelLegacy::getInstance('list', 'FabrikFEModel');
 			$listModel->setId($input->getInt('table'));
 		}
+
 		if ($value !== '')
 		{
 			// Don't get the row if its empty
@@ -137,12 +142,15 @@ class PlgFabrik_FormAutofill extends PlgFabrik_Form
 				$db->setQuery($query);
 				$value = $db->loadResult();
 			}
+
 			$data = $listModel->getRow($value, true, true);
+
 			if (is_array($data))
 			{
 				$data = array_shift($data);
 			}
 		}
+
 		if (empty($data))
 		{
 			echo "{}";
@@ -151,6 +159,7 @@ class PlgFabrik_FormAutofill extends PlgFabrik_Form
 		{
 			$map = stripslashes($input->get('map', '', 'string'));
 			$map = json_decode($map);
+
 			if (!empty($map))
 			{
 				$newdata = new stdClass;
@@ -158,24 +167,30 @@ class PlgFabrik_FormAutofill extends PlgFabrik_Form
 				 * need __pk_val if 'edit original row'
 				 */
 				$newdata->__pk_val = $data->__pk_val;
+
 				foreach ($map as $from => $to)
 				{
 					$toraw = $to . '_raw';
 					$fromraw = $from . '_raw';
+
 					if (is_array($to))
 					{
 						foreach ($to as $to2)
 						{
 							$to2_raw = $to2 . '_raw';
+
 							if (!array_key_exists($from, $data))
 							{
 								throw new RuntimeException('autofill map json not correctly set', 500);
 							}
+
 							$newdata->$to2 = isset($data->$from) ? $data->$from : '';
+
 							if (!array_key_exists($fromraw, $data))
 							{
 								throw new RuntimeException('autofill toraw map json not correctly set?', 500);
 							}
+
 							$newdata->$to2_raw = isset($data->$fromraw) ? $data->$fromraw : '';
 						}
 					}
@@ -186,11 +201,14 @@ class PlgFabrik_FormAutofill extends PlgFabrik_Form
 						{
 							throw new RuntimeException('Couln\'t find from value in record data, is the element published?', 500);
 						}
+
 						$newdata->$to = isset($data->$from) ? $data->$from : '';
+
 						if (!array_key_exists($fromraw, $data))
 						{
 							throw new RuntimeException('autofill toraw map json not correctly set?', 500);
 						}
+
 						$newdata->$toraw = isset($data->$fromraw) ? $data->$fromraw : '';
 					}
 				}
@@ -199,8 +217,8 @@ class PlgFabrik_FormAutofill extends PlgFabrik_Form
 			{
 				$newdata = $data;
 			}
+
 			echo json_encode($newdata);
 		}
 	}
-
 }

@@ -47,6 +47,14 @@
 				description="PLG_VISUALIZATION_CALENDAR_COLOR_DESC"
 				label="PLG_VISUALIZATION_CALENDAR_COLOR_LABEL" />
 				
+			<field name="status_element"
+				type="element"
+				table="params_calendar_table"
+				connection="params_calendar_connection"
+				connection_in_repeat="false"
+				description="PLG_VISUALIZATION_CALENDAR_STATUS_ELEMENT_DESC"
+				label="PLG_VISUALIZATION_CALENDAR_STATUS_ELEMENT_LABEL" />
+				
 			<field name="legendtext"
 				type="text"
 				description="PLG_VISUALIZATION_CALENDAR_LEGEND_TEXT_DESC"
@@ -106,6 +114,16 @@
 					<option value="weekView">PLG_VISUALIZATION_CALENDAR_WEEK</option>
 					<option value="monthView">PLG_VISUALIZATION_CALENDAR_MONTH</option>
 			</field>
+			
+			<field name="show_full_details"
+				type="radio"
+				class="btn-group"
+				default="0"
+				label="PLG_VISUALIZATION_CALENDAR_SHOW_FULL_DETAILS_LABEL"
+				description="PLG_VISUALIZATION_CALENDAR_SHOW_FULL_DETAILS_DESC">
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>	
+			</field>
 						
 			<field name="yoffset"
 				type="text"
@@ -139,6 +157,16 @@
 				description="PLG_VISUALIAZATION_CALENDAR_TIME_FORMAT_DESC"
 				label="PLG_VISUALIAZATION_CALENDAR_TIME_FORMAT_LABEL" />
 
+			<field name="calendar_show_messages"
+				type="radio"
+				default="1"
+				class="btn-group"
+				description="PLG_VISUALIZATION_CALENDAR_SHOW_MESSAGES_DESC"
+				label="PLG_VISUALIZATION_CALENDAR_SHOW_MESSAGES_LABEL" >
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+			</field>
+			
 		</fieldset>
 	
 		<fieldset label="PLG_VISUALIZATION_CALENDAR_MONTH_VIEW_OPTIONS" name="plg-visualization-calendar-monthview">

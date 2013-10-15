@@ -42,7 +42,6 @@ class JFormFieldConnections extends JFormFieldList
 	 */
 	protected function getOptions()
 	{
-
 		// Initialize variables.
 		$options = array();
 		$db = FabrikWorker::getDbo(true);
@@ -59,6 +58,7 @@ class JFormFieldConnections extends JFormFieldList
 		$sel = JHtml::_('select.option', '', JText::_('COM_FABRIK_PLEASE_SELECT'));
 		$sel->default = false;
 		array_unshift($options, $sel);
+
 		return $options;
 	}
 
@@ -74,6 +74,7 @@ class JFormFieldConnections extends JFormFieldList
 		{
 			// Default to default connection on new form where no value specified
 			$options = (array) $this->getOptions();
+
 			foreach ($options as $opt)
 			{
 				if ($opt->default == 1)
@@ -82,6 +83,7 @@ class JFormFieldConnections extends JFormFieldList
 				}
 			}
 		}
+
 		if ((int) $this->form->getValue('id') == 0 || !$this->element['readonlyonedit'])
 		{
 			return parent::getInput();
@@ -90,6 +92,7 @@ class JFormFieldConnections extends JFormFieldList
 		{
 			$options = (array) $this->getOptions();
 			$v = '';
+
 			foreach ($options as $opt)
 			{
 				if ($opt->value == $this->value)
@@ -98,8 +101,8 @@ class JFormFieldConnections extends JFormFieldList
 				}
 			}
 		}
+
 		return '<input type="hidden" value="' . $this->value . '" name="' . $this->name . '" />' . '<input type="text" value="' . $v
 			. '" name="connection_justalabel" class="readonly" readonly="true" />';
 	}
-
 }

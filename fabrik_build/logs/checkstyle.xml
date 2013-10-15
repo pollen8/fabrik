@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<checkstyle version="1.5.0RC3">
+<file name="C:\xampp\htdocs\fabrik31x\plugins\fabrik_element\digsig\digsig.php">
+ <error line="117" column="3" severity="error" message="Please put a space between the // and the start of comment text; found &quot;//$data = FabrikWorker::JSONtoData($data, true);&quot;" source="Joomla.Commenting.SingleComment.NoSpace"/>
+ <error line="135" column="155" severity="warning" message="Line exceeds 150 characters; contains 154 characters" source="Generic.Files.LineLength.TooLong"/>
+</file>
+</checkstyle>

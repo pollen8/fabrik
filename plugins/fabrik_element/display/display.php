@@ -21,7 +21,6 @@ defined('_JEXEC') or die('Restricted access');
 
 class PlgFabrik_ElementDisplay extends PlgFabrik_Element
 {
-
 	/**
 	 * Db table field type
 	 *
@@ -44,7 +43,7 @@ class PlgFabrik_ElementDisplay extends PlgFabrik_Element
 	 * @return bool
 	 */
 
-	function setIsRecordedInDatabase()
+	public function setIsRecordedInDatabase()
 	{
 		$this->recordInDatabase = false;
 	}
@@ -62,10 +61,12 @@ class PlgFabrik_ElementDisplay extends PlgFabrik_Element
 	{
 		$params = $this->getParams();
 		$element = $this->getElement();
+
 		if (!$params->get('display_showlabel', true))
 		{
 			$element->label = $this->getValue(array());
 		}
+
 		return parent::getLabel($repeatCounter, $tmpl);
 	}
 
@@ -82,6 +83,7 @@ class PlgFabrik_ElementDisplay extends PlgFabrik_Element
 	{
 		unset($this->default);
 		$value = $this->getValue(JArrayHelper::fromObject($thisRow));
+
 		return parent::renderListData($value, $thisRow);
 	}
 
@@ -99,6 +101,7 @@ class PlgFabrik_ElementDisplay extends PlgFabrik_Element
 		$params = $this->getParams();
 		$id = $this->getHTMLId($repeatCounter);
 		$value = $params->get('display_showlabel', true) ? $this->getValue($data, $repeatCounter) : '';
+
 		return '<div class="fabrikSubElementContainer" id="' . $id . '">' . $value . '</div>';
 	}
 
@@ -117,7 +120,6 @@ class PlgFabrik_ElementDisplay extends PlgFabrik_Element
 
 	protected function getDefaultOnACL($data, $opts)
 	{
-
 		return JArrayHelper::getValue($opts, 'use_default', true) == false ? '' : $this->getDefaultValue($data);
 	}
 
@@ -136,18 +138,22 @@ class PlgFabrik_ElementDisplay extends PlgFabrik_Element
 		$element = $this->getElement();
 		$params = $this->getParams();
 		$value = $this->getDefaultOnACL($data, $opts);
+
 		if ($value === '')
 		{
 			// Query string for joined data
 			$value = JArrayHelper::getValue($data, $value);
 		}
+
 		$formModel = $this->getFormModel();
 
 		// Stops this getting called from form validation code as it messes up repeated/join group validations
+
 		if (array_key_exists('runplugins', $opts) && $opts['runplugins'] == 1)
 		{
 			FabrikWorker::getPluginManager()->runPlugins('onGetElementDefault', $formModel, 'form', $this);
 		}
+
 		return $value;
 	}
 
@@ -163,7 +169,7 @@ class PlgFabrik_ElementDisplay extends PlgFabrik_Element
 	{
 		$id = $this->getHTMLId($repeatCounter);
 		$opts = $this->getElementJSOptions($repeatCounter);
+
 		return array('FbDisplay', $id, $opts);
 	}
-
 }

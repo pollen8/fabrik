@@ -23,7 +23,6 @@ jimport('joomla.application.component.view');
 
 class FabrikViewNotification extends JViewLegacy
 {
-
 	/**
 	 * Still a wip access the view of subscribed notifcations with url:
 	 * http://localhost/fabrik30x/index.php?option=com_fabrik&task=cron.display&id=3
@@ -32,7 +31,7 @@ class FabrikViewNotification extends JViewLegacy
 	 *
 	 * @param   string  $tpl  Template
 	 *
-	 *   @return  void
+	 * @return  void
 	 */
 
 	public function display($tpl = 'default')
@@ -49,5 +48,4 @@ class FabrikViewNotification extends JViewLegacy
 		FabrikHelperHTML::stylesheetFromPath('plugins/fabrik_cron/notification/views/notification/tmpl/' . $tpl . '/template.css');
 		echo parent::display();
 	}
-
 }

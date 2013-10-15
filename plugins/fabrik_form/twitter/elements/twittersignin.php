@@ -31,10 +31,9 @@ class JFormFieldTwittersignin extends JFormField
 	/**
 	 * Element name
 	 *
-	 * @access	protected
-	 * @var		string
+	 * @var	string
 	 */
-	var	$_name = 'Twittersignin';
+	protected $name = 'Twittersignin';
 
 	/**
 	 * Get the input
@@ -55,17 +54,24 @@ class JFormFieldTwittersignin extends JFormField
 
 		$c = isset($this->form->repeatCounter) ? (int) $this->form->repeatCounter : 0;
 
-		$href = COM_FABRIK_LIVESITE . 'index.php?option=com_fabrik&task=plugin.pluginAjax&plugin=twitter&g=form&method=authenticateAdmin&tmpl=component&formid=' . $cid . '&repeatCounter=' . $c;
+		$href = COM_FABRIK_LIVESITE . 'index.php?option=com_fabrik&task=plugin.pluginAjax&plugin=twitter
+			&g=form&method=authenticateAdmin&tmpl=component&formid=' . $cid . '&repeatCounter=' . $c;
 
 		$clearjs = '$(\'jform_params_twitter_oauth_token-' . $c . '\').value = \'\';';
 		$clearjs .= '$(\'jform_params_twitter_oauth_token_secret-' . $c . '\').value = \'\';';
 		$clearjs .= '$(\'jform_params_twitter_oauth_user-' . $c . '\').value = \'\';';
 		$clearjs .= "return false;";
 
-		$js = "window.open('$href', 'twitterwins', 'width=800,height=460,toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=yes,resizable=yes');return false;";
-		$str = '<a href="#" onclick="' . $js . '"><img src="' . COM_FABRIK_LIVESITE . 'components/com_fabrik/libs/abraham-twitteroauth/images/lighter.png" alt="Sign in with Twitter"/></a>';
-		$str .= " | <button class=\"button btn\" href=\"#\" onclick=\"$clearjs\">" . JText::_('PLG_FORM_TWITTER_CLEAR_CREDENTIALS') . "</button><br/>";
-		$str .= "<br /><input type=\"hidden\" readonly=\"readonly\" name=\"" . $this->name . "\" id=\"" . $this->id . "\" value=\"" . $this->value . "\" />";
+		$src = COM_FABRIK_LIVESITE . 'components/com_fabrik/libs/abraham-twitteroauth/images/lighter.png';
+		$winOpts = 'width=800,height=460,toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=yes,resizable=yes';
+		$js = "window.open('$href', 'twitterwins', '" . $winOpts . "');return false;";
+		$str = '<a href="#" onclick="' . $js . '">';
+		$str .= '<img src="' . $src . '" alt="Sign in with Twitter"/></a>';
+		$str .= " | <button class=\"button btn\" href=\"#\" onclick=\"$clearjs\">";
+		$str .= JText::_('PLG_FORM_TWITTER_CLEAR_CREDENTIALS') . "</button><br/>";
+		$str .= "<br /><input type=\"hidden\" readonly=\"readonly\" name=\""
+			. $this->name . "\" id=\"" . $this->id . "\" value=\"" . $this->value . "\" />";
+
 		return $str;
 	}
 }

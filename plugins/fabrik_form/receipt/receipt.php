@@ -24,8 +24,7 @@ require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
 
 class PlgFabrik_FormReceipt extends PlgFabrik_Form
 {
-
-	var $html = null;
+	protected $html = null;
 
 	/**
 	 * Sets up HTML to be injected into the form's bottom
@@ -36,13 +35,16 @@ class PlgFabrik_FormReceipt extends PlgFabrik_Form
 	public function getBottomContent()
 	{
 		$params = $this->getParams();
+
 		if ($params->get('ask-receipt'))
 		{
 			$label = $params->get('receipt_button_label', '');
+
 			if ($label === '')
 			{
 				$label = JText::_('PLG_FORM_RECEIPT_EMAIL_ME_A_COPY');
 			}
+
 			$this->html = "
 			<label><input type=\"checkbox\" name=\"fabrik_email_copy\" class=\"contact_email_copy\" value=\"1\"  />
 			 " . $label . "</label>";
@@ -77,8 +79,10 @@ class PlgFabrik_FormReceipt extends PlgFabrik_Form
 	{
 		$params = $this->getParams();
 		$app = JFactory::getApplication();
+		$input = $app->input;
 		$formModel = $this->getModel();
 		$package = $app->getUserState('com_fabrik.package', 'fabrik');
+
 		if ($params->get('ask-receipt'))
 		{
 			if (!array_key_exists('fabrik_email_copy', $_POST))
@@ -86,16 +90,12 @@ class PlgFabrik_FormReceipt extends PlgFabrik_Form
 				return;
 			}
 		}
-		$app = JFactory::getApplication();
-		$input = $app->input;
+
 		$rowid = $input->get('rowid');
 		$config = JFactory::getConfig();
 		$w = new FabrikWorker;
-
 		$form = $formModel->getForm();
-
 		$data = $this->getProcessData();
-
 		$message = $params->get('receipt_message');
 		$editURL = COM_FABRIK_LIVESITE . "index.php?option=com_" . $package . "&amp;view=form&amp;fabrik=" . $formModel->get('id') . "&amp;rowid="
 			. $rowid;
@@ -111,6 +111,7 @@ class PlgFabrik_FormReceipt extends PlgFabrik_Form
 		$message = $w->parseMessageForPlaceHolder($message, $data, false);
 
 		$to = $w->parseMessageForPlaceHolder($params->get('receipt_to'), $data, false);
+
 		if (empty($to))
 		{
 			/* $$$ hugh - not much point trying to send if we don't have a To address
@@ -121,20 +122,23 @@ class PlgFabrik_FormReceipt extends PlgFabrik_Form
 		}
 
 		$subject = html_entity_decode($params->get('receipt_subject', ''));
-		$subject = $w->parseMessageForPlaceHolder($subject, null, false);
-		$from = $config->get('mailfrom');
-		$fromname = $config->get('fromname');
+		$subject = $w->parseMessageForPlaceHolder($subject, $data, false);
+		$from = $config->get('mailfrom', '');
+		$fromname = $config->get('fromname', '');
 
 		// Darn silly hack for poor joomfish settings where lang parameters are set to overide joomla global config but not mail translations entered
 		$rawconfig = new JConfig;
+
 		if ($from === '')
 		{
 			$from = $rawconfig->mailfrom;
 		}
+
 		if ($fromname === '')
 		{
 			$fromname = $rawconfig->fromname;
 		}
+
 		$mail = JFactory::getMailer();
 		$res = $mail->sendMail($from, $fromname, $to, $subject, $message, true);
 	}

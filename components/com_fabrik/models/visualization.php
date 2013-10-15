@@ -24,7 +24,6 @@ require_once JPATH_SITE . '/components/com_fabrik/models/plugin.php';
 
 class FabrikFEModelVisualization extends JModelLegacy
 {
-
 	protected $pluginParams = null;
 
 	protected $row = null;
@@ -91,6 +90,7 @@ class FabrikFEModelVisualization extends JModelLegacy
 		$app = JFactory::getApplication();
 		$input = $app->input;
 		$params = $this->getParams();
+
 		return (int) $input->get('showfilters', $params->get('show_filters')) === 1 ? true : false;
 	}
 
@@ -137,8 +137,8 @@ class FabrikFEModelVisualization extends JModelLegacy
 			// Needed to load the language file!
 			$pluginManager = FabrikWorker::getPluginManager();
 			$plugin = $pluginManager->getPlugIn($this->_row->plugin, 'visualization');
-
 		}
+
 		return $this->row;
 	}
 
@@ -165,6 +165,7 @@ class FabrikFEModelVisualization extends JModelLegacy
 		{
 			$this->tables = array();
 		}
+
 		foreach ($this->listids as $id)
 		{
 			if (!array_key_exists($id, $this->tables))
@@ -175,6 +176,7 @@ class FabrikFEModelVisualization extends JModelLegacy
 				$this->tables[$id] = $listModel;
 			}
 		}
+
 		return $this->tables;
 	}
 
@@ -189,6 +191,7 @@ class FabrikFEModelVisualization extends JModelLegacy
 	protected function &getlistModel($id)
 	{
 		$lists = $this->getlistModels();
+
 		return $lists[$id];
 	}
 
@@ -218,9 +221,11 @@ class FabrikFEModelVisualization extends JModelLegacy
 		$listModels = $this->getlistModels();
 		$js = array();
 		$i = 0;
+
 		foreach ($listModels as $listModel)
 		{
 			$show = (bool) JArrayHelper::getValue($showFilters, $i, true);
+
 			if ($show)
 			{
 				$ref = $this->getRenderContext();
@@ -228,10 +233,13 @@ class FabrikFEModelVisualization extends JModelLegacy
 				$filters[$listModel->getTable()->label] = $listModel->getFilters($this->getContainerId(), 'visualization', $id, $ref);
 				$js[] = $listModel->filterJs;
 			}
+
 			$i++;
 		}
+
 		$this->filterJs = implode("\n", $js);
 		$this->getRequireFilterMsg();
+
 		return $filters;
 	}
 
@@ -249,6 +257,7 @@ class FabrikFEModelVisualization extends JModelLegacy
 		{
 			$this->getFilters();
 		}
+
 		return $this->filterJs;
 	}
 
@@ -268,9 +277,11 @@ class FabrikFEModelVisualization extends JModelLegacy
 		$listModels = $this->getlistModels();
 		$js = array();
 		$i = 0;
+
 		foreach ($listModels as $listModel)
 		{
 			$params = $listModel->getParams();
+
 			if ($params->get('advanced-filter', '0'))
 			{
 				$table = $listModel->getTable();
@@ -283,6 +294,7 @@ class FabrikFEModelVisualization extends JModelLegacy
 				$links[$table->label] = $url;
 			}
 		}
+
 		$title = '<span>' . JText::_('COM_FABRIK_ADVANCED_SEARCH') . '</span>';
 		$opts = array('alt' => JText::_('COM_FABRIK_ADVANCED_SEARCH'), 'class' => 'fabrikTip', 'opts' => "{notice:true}", 'title' => $title);
 		$img = FabrikHelperHTML::image('find.png', 'list', '', $opts);
@@ -294,10 +306,12 @@ class FabrikFEModelVisualization extends JModelLegacy
 		else
 		{
 			$str = $img . '<ul>';
+
 			foreach ($links as $label => $url)
 			{
 				$str .= '<li><a href="' . $url . '" class="advanced-search-link">' . $label . '</a></li>';
 			}
+
 			$str = '</ul>';
 		}
 	}
@@ -345,6 +359,7 @@ class FabrikFEModelVisualization extends JModelLegacy
 		{
 			return $this->getFilterFormURL;
 		}
+
 		$app = JFactory::getApplication();
 		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$input = $app->input;
@@ -352,7 +367,6 @@ class FabrikFEModelVisualization extends JModelLegacy
 
 		// Get the router
 		$router = $app->getRouter();
-
 		$uri = clone (JURI::getInstance());
 		/**
 		 * $$$ rob force these to be 0 once the menu item has been loaded for the first time
@@ -360,24 +374,29 @@ class FabrikFEModelVisualization extends JModelLegacy
 		 * rest filters is set to 1 again
 		 */
 		$router->setVar('resetfilters', 0);
+
 		if ($option !== 'com_' . $package)
 		{
 			// $$$ rob these can't be set by the menu item, but can be set in {fabrik....}
 			$router->setVar('clearordering', 0);
 			$router->setVar('clearfilters', 0);
 		}
+
 		$queryvars = $router->getVars();
 		$page = 'index.php?';
+
 		foreach ($queryvars as $k => $v)
 		{
 			$qs[] = $k . '=' . $v;
 		}
+
 		$action = $page . implode("&amp;", $qs);
 
 		// Limitstart gets added in the pageination model
 		$action = preg_replace("/limitstart" . $this->getState('id') . "}=(.*)?(&|)/", '', $action);
 		$action = FabrikString::rtrimword($action, "&");
 		$this->getFilterFormURL = JRoute::_($action);
+
 		return $this->getFilterFormURL;
 	}
 
@@ -391,6 +410,7 @@ class FabrikFEModelVisualization extends JModelLegacy
 	{
 		$app = JFactory::getApplication();
 		$listModels = $this->getlistModels();
+
 		foreach ($listModels as $model)
 		{
 			if (!$model->gotAllRequiredFilters())
@@ -412,6 +432,7 @@ class FabrikFEModelVisualization extends JModelLegacy
 		$params = $this->getParams();
 		$prefilters = (array) $params->get('prefilters');
 		$c = 0;
+
 		foreach ($listModels as $listModel)
 		{
 			// Set prefilter params
@@ -419,19 +440,23 @@ class FabrikFEModelVisualization extends JModelLegacy
 			$prefilter = JArrayHelper::getValue($prefilters, $c);
 			$prefilter = JArrayHelper::fromObject(json_decode($prefilter));
 			$conditions = (array) $prefilter['filter-conditions'];
+
 			if (!empty($conditions))
 			{
 				$fields = $prefilter['filter-fields'];
+
 				foreach ($fields as &$f)
 				{
 					$f = FabrikString::safeColName($f);
 				}
+
 				$listParams->set('filter-fields', $fields);
 				$listParams->set('filter-conditions', $prefilter['filter-conditions']);
 				$listParams->set('filter-value', $prefilter['filter-value']);
 				$listParams->set('filter-access', $prefilter['filter-access']);
 				$listParams->set('filter-eval', $prefilter['filter-eval']);
 			}
+
 			$c ++;
 		}
 	}
@@ -446,6 +471,7 @@ class FabrikFEModelVisualization extends JModelLegacy
 	{
 		$listModels = $this->getListModels();
 		$filters = array();
+
 		foreach ($listModels as $listModel)
 		{
 			if (!$listModel->getRequiredFiltersFound())
@@ -453,6 +479,7 @@ class FabrikFEModelVisualization extends JModelLegacy
 				return false;
 			}
 		}
+
 		return true;
 	}
 
@@ -468,10 +495,12 @@ class FabrikFEModelVisualization extends JModelLegacy
 	public function getPluginJsClasses(&$srcs = array())
 	{
 		$listModels = $this->getListModels();
+
 		foreach ($listModels as $model)
 		{
 			$paths = $model->getPluginJsClasses($srcs);
 		}
+
 		return $srcs;
 	}
 
@@ -486,15 +515,18 @@ class FabrikFEModelVisualization extends JModelLegacy
 	{
 		$str = array();
 		$listModels = $this->getListModels();
+
 		foreach ($listModels as $model)
 		{
 			$src = $model->getPluginJsClasses($src);
 			$tmp = $model->getPluginJsObjects($this->getContainerId());
+
 			foreach ($tmp as $t)
 			{
 				$str[] = $t . ';';
 			}
 		}
+
 		return implode("\n", $str);
 	}
 
@@ -512,10 +544,12 @@ class FabrikFEModelVisualization extends JModelLegacy
 		$str = array();
 		$listModels = $this->getListModels();
 		$shim = array();
+
 		foreach ($listModels as $model)
 		{
 			$src = $model->getPluginJsClasses($src, $shim);
 		}
+
 		return $shim;
 	}
 
@@ -551,6 +585,7 @@ class FabrikFEModelVisualization extends JModelLegacy
 			$this->params = new JRegistry($v->params);
 			$this->params->set('show-title', $input->getInt('show-title', $this->params->get('show-title', 1)));
 		}
+
 		return $this->params;
 	}
 
@@ -564,5 +599,4 @@ class FabrikFEModelVisualization extends JModelLegacy
 	{
 		return $this->getState('id');
 	}
-
 }

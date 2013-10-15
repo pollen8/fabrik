@@ -44,6 +44,7 @@ class FabrikAdminModelVisualization extends FabModelAdmin
 	public function getTable($type = 'Visualization', $prefix = 'FabrikTable', $config = array())
 	{
 		$config['dbo'] = FabrikWorker::getDbo(true);
+
 		return FabTable::getInstance($type, $prefix, $config);
 	}
 
@@ -62,11 +63,14 @@ class FabrikAdminModelVisualization extends FabModelAdmin
 	{
 		// Get the form.
 		$form = $this->loadForm('com_fabrik.visualization', 'visualization', array('control' => 'jform', 'load_data' => $loadData));
+
 		if (empty($form))
 		{
 			return false;
 		}
+
 		$form->model = $this;
+
 		return $form;
 	}
 
@@ -81,10 +85,12 @@ class FabrikAdminModelVisualization extends FabModelAdmin
 	{
 		// Check the session for previously entered form data.
 		$data = JFactory::getApplication()->getUserState('com_fabrik.edit.visualization.data', array());
+
 		if (empty($data))
 		{
 			$data = $this->getItem();
 		}
+
 		return $data;
 	}
 
@@ -102,13 +108,16 @@ class FabrikAdminModelVisualization extends FabModelAdmin
 		$app = JFactory::getApplication();
 		$input = $app->input;
 		$item = $this->getItem();
+
 		if (is_null($plugin))
 		{
 			$plugin = $item->plugin;
 		}
+
 		$input->set('view', 'visualization');
 		JPluginHelper::importPlugin('fabrik_visualizaton', $plugin);
 		$pluginManager = JModelLegacy::getInstance('Pluginmanager', 'FabrikFEModel');
+
 		if ($plugin == '')
 		{
 			$str = JText::_('COM_FABRIK_SELECT_A_PLUGIN');
@@ -119,6 +128,7 @@ class FabrikAdminModelVisualization extends FabModelAdmin
 			$mode = FabrikWorker::j3() ? 'nav-tabs' : '';
 			$str = $plugin->onRenderAdminSettings(JArrayHelper::fromObject($item), null, $mode);
 		}
+
 		return $str;
 	}
 
@@ -138,6 +148,7 @@ class FabrikAdminModelVisualization extends FabModelAdmin
 	public function validate($form, $data, $group = null)
 	{
 		parent::validate($form, $data);
+
 		return $data;
 	}
 
@@ -152,7 +163,7 @@ class FabrikAdminModelVisualization extends FabModelAdmin
 	public function save($data)
 	{
 		parent::cleanCache('com_fabrik');
+
 		return parent::save($data);
 	}
-
 }

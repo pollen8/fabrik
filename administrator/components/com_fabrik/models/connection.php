@@ -49,8 +49,8 @@ class FabrikAdminModelConnection extends FabModelAdmin
 		 * which might cause issues when migrating from test to live sites???
 		 */
 		$config['dbo'] = FabrikWorker::getDbo(true);
-		return FabTable::getInstance($type, $prefix, $config);
 
+		return FabTable::getInstance($type, $prefix, $config);
 	}
 
 	/**
@@ -66,10 +66,12 @@ class FabrikAdminModelConnection extends FabModelAdmin
 	{
 		// Get the form.
 		$form = $this->loadForm('com_fabrik.connection', 'connection', array('control' => 'jform', 'load_data' => $loadData));
+
 		if (empty($form))
 		{
 			return false;
 		}
+
 		return $form;
 	}
 
@@ -83,10 +85,12 @@ class FabrikAdminModelConnection extends FabModelAdmin
 	{
 		// Check the session for previously entered form data.
 		$data = JFactory::getApplication()->getUserState('com_fabrik.edit.connection.data', array());
+
 		if (empty($data))
 		{
 			$data = $this->getItem();
 		}
+
 		return $data;
 	}
 
@@ -109,6 +113,7 @@ class FabrikAdminModelConnection extends FabModelAdmin
 		$query->update('#__fabrik_connections')->set($db->quoteName('default') . ' = 1')->where('id = ' . (int) $id);
 		$db->setQuery($query);
 		$db->execute();
+
 		return true;
 	}
 
@@ -124,9 +129,11 @@ class FabrikAdminModelConnection extends FabModelAdmin
 	{
 		$table = $this->getTable();
 		$app = JFactory::getApplication();
+
 		if ($item->id == 1)
 		{
 			$app->enqueueMessage(JText::_('COM_FABRIK_ORIGINAL_CONNECTION'));
+
 			if (!$this->matchesDefault($item))
 			{
 				$config = JFactory::getConfig();
@@ -150,6 +157,7 @@ class FabrikAdminModelConnection extends FabModelAdmin
 	protected function matchesDefault($item)
 	{
 		$config = JFactory::getConfig();
+
 		return $config->get('host') == $item->host && $config->get('user') == $item->user && $config->get('password') == $item->password
 			&& $config->get('db') == $item->database;
 	}
@@ -183,6 +191,7 @@ class FabrikAdminModelConnection extends FabModelAdmin
 		 * would need to clear out the session table i think - but that would then log out all users.
 		 */
 		$session->clear($key);
+
 		return parent::save($data);
 	}
 
@@ -204,8 +213,10 @@ class FabrikAdminModelConnection extends FabModelAdmin
 		if ($data['password'] !== $data['passwordConf'])
 		{
 			$this->setError(JText::_('COM_FABRIK_PASSWORD_MISMATCH'));
+
 			return false;
 		}
+
 		return parent::validate($form, $data);
 	}
 }

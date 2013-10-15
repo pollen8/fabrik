@@ -24,7 +24,6 @@ require_once COM_FABRIK_FRONTEND . '/models/validation_rule.php';
 
 class PlgFabrik_ValidationruleIsNot extends PlgFabrik_Validationrule
 {
-
 	/**
 	 * Plugin name
 	 *
@@ -47,9 +46,11 @@ class PlgFabrik_ValidationruleIsNot extends PlgFabrik_Validationrule
 		{
 			$data = implode('', $data);
 		}
+
 		$params = $this->getParams();
 		$isnot = $params->get('isnot-isnot');
 		$isnot = explode('|', $isnot);
+
 		foreach ($isnot as $i)
 		{
 			if ((string) $data === (string) $i)
@@ -57,6 +58,7 @@ class PlgFabrik_ValidationruleIsNot extends PlgFabrik_Validationrule
 				return false;
 			}
 		}
+
 		return true;
 	}
 
@@ -70,6 +72,7 @@ class PlgFabrik_ValidationruleIsNot extends PlgFabrik_Validationrule
 	{
 		$params = $this->getParams();
 		$isnot = $params->get('isnot-isnot');
+
 		return JText::sprintf('PLG_VALIDATIONRULE_ISNOT_LABEL', $isnot);
 	}
 }

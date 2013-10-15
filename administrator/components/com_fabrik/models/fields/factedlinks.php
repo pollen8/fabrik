@@ -43,14 +43,30 @@ class JFormFieldFactedlinks extends JFormFieldList
 	{
 		$feListModel = $this->form->model->getFEModel();
 		$joins = $feListModel->getJoinsToThisKey();
+
 		if (empty($joins))
 		{
 			return '<i>' . JText::_('COM_FABRIK_NO_RELATED_DATA') . '</i>';
 		}
+
+		$listParams = $feListModel->getParams();
+		$formOrder = json_decode($listParams->get('faceted_form_order'));
+		$listOrder = json_decode($listParams->get('faceted_list_order'));
 		$form = $this->form;
 		$this->value = (array) $this->value;
 		$linkedLists = JArrayHelper::getValue($this->value, 'linkedlist', array());
 		$linkedForms = JArrayHelper::getValue($this->value, 'linkedform', array());
+
+		if (empty($listOrder) || is_null($listOrder))
+		{
+			$listOrder = array_keys($linkedLists);
+		}
+
+		if (empty($formOrder) || is_null($formOrder))
+		{
+			$formOrder = array_keys($linkedForms);
+		}
+
 		$listHeaders = JArrayHelper::getValue($this->value, 'linkedlistheader', array());
 		$formHeaders = JArrayHelper::getValue($this->value, 'linkedformheader', array());
 		$formLinkTypes = JArrayHelper::getValue($this->value, 'linkedform_linktype', array());
@@ -88,8 +104,16 @@ class JFormFieldFactedlinks extends JFormFieldList
 					</tr>
 				</thead>
 				<tbody>';
-		foreach ($joins as $linkedList)
+
+		foreach ($listOrder as $order)
 		{
+			$linkedList = $this->findJoin($joins, $order);
+
+			if ($linkedList === false)
+			{
+				continue;
+			}
+
 			$key = $linkedList->list_id . '-' . $linkedList->form_id . '-' . $linkedList->element_id;
 			$label = str_replace(array("\n", "\r", '<br>', '</br>'), '', $linkedList->listlabel);
 			$hover = JText::_('ELEMENT') . ': ' . $linkedList->element_label . ' [' . $linkedList->plugin . ']';
@@ -127,6 +151,21 @@ class JFormFieldFactedlinks extends JFormFieldList
 			$listreturn[] = '</td>';
 			$listreturn[] = '</tr>';
 
+		}
+
+		foreach ($formOrder as $order)
+		{
+			$linkedList = $this->findJoin($joins, $order);
+
+			if ($linkedList === false)
+			{
+				continue;
+			}
+
+			$key = $linkedList->list_id . '-' . $linkedList->form_id . '-' . $linkedList->element_id;
+			$label = str_replace(array("\n", "\r", '<br>', '</br>'), '', $linkedList->listlabel);
+			$hover = JText::_('ELEMENT') . ': ' . $linkedList->element_label . ' [' . $linkedList->plugin . ']';
+
 			$yeschecked = JArrayHelper::getValue($linkedForms, $key, 0) != '0' ? 'checked="checked"' : '';
 			$nochecked = $yeschecked == '' ? 'checked="checked"' : '';
 
@@ -161,9 +200,36 @@ class JFormFieldFactedlinks extends JFormFieldList
 
 			$f++;
 		}
+
 		$listreturn[] = '</tbody></table>';
 		$formreturn[] = '</tbody></table>';
 		$return = array_merge($listreturn, $formreturn);
+		$return[] = '<input name="jform[params][faceted_form_order]" type="hidden" value="' . htmlspecialchars($listParams->get('faceted_form_order')) . '" />';
+		$return[] = '<input name="jform[params][faceted_list_order]" type="hidden" value="' . htmlspecialchars($listParams->get('faceted_list_order')) . '" />';
+
 		return implode("\n", $return);
+	}
+
+	/**
+	 * Find a join based on composite key
+	 *
+	 * @param   array   $joins      Joins
+	 * @param   string  $searchKey  Key
+	 *
+	 * @return  mixed   False if not found, join object if found
+	 */
+	protected function findJoin($joins, $searchKey)
+	{
+		foreach ($joins as $join)
+		{
+			$key = $join->list_id . '-' . $join->form_id . '-' . $join->element_id;
+
+			if ($searchKey === $key)
+			{
+				return $join;
+			}
+		}
+
+		return false;
 	}
 }

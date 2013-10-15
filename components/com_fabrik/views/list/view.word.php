@@ -25,7 +25,6 @@ require_once JPATH_SITE . '/components/com_fabrik/views/list/view.base.php';
 
 class FabrikViewList extends FabrikViewListBase
 {
-
 	/**
 	 * Display the template
 	 *
@@ -39,11 +38,13 @@ class FabrikViewList extends FabrikViewListBase
 		if (parent::display($tpl) !== false)
 		{
 			$app = JFactory::getApplication();
+
 			if (!$app->isAdmin())
 			{
 				$this->state = $this->get('State');
 				$this->params = $this->state->get('params');
 				$this->document = JFactory::getDocument();
+
 				if ($this->params->get('menu-meta_description'))
 				{
 					$this->document->setDescription($this->params->get('menu-meta_description'));
@@ -65,7 +66,6 @@ class FabrikViewList extends FabrikViewListBase
 			$name = $this->getModel()->getTable()->label;
 			$name = JStringNormalise::toDashSeparated($name);
 			JResponse::setHeader('Content-Disposition', "attachment;filename=\"" . $name . ".doc\"");
-
 			$this->document->setMimeEncoding('text/html; charset=Windows-1252', false);
 			$this->output();
 		}

@@ -24,7 +24,6 @@ require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
 
 class PlgFabrik_FormClone extends PlgFabrik_Form
 {
-
 	/**
 	 * Run right at the end of the form processing
 	 * form needs to be set to record in database for this to hook to be called
@@ -49,10 +48,12 @@ class PlgFabrik_FormClone extends PlgFabrik_Form
 		$formModel = $this->getModel();
 		$clone_times_field_id = $params->get('clone_times_field', '');
 		$clone_batchid_field_id = $params->get('clone_batchid_field', '');
+
 		if ($clone_times_field_id != '')
 		{
 			$elementModel = FabrikWorker::getPluginManager()->getElementPlugin($clone_times_field_id);
 			$element = $elementModel->getElement(true);
+
 			if ($clone_batchid_field_id != '')
 			{
 				$elementModel = FabrikWorker::getPluginManager()->getElementPlugin($clone_batchid_field_id);
@@ -68,18 +69,21 @@ class PlgFabrik_FormClone extends PlgFabrik_Form
 			}
 
 			$clone_times = $formModel->formData[$element->name];
+
 			if (is_numeric($clone_times))
 			{
 				$clone_times = (int) $clone_times;
 				$formModel->formData['Copy'] = 1;
+
 				for ($x = 1; $x < $clone_times; $x++)
 				{
 					$formModel->processToDB();
 				}
+
 				return true;
 			}
 		}
+
 		throw new RuntimeException("Couldn't find a valid number of times to clone!");
 	}
-
 }

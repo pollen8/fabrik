@@ -21,7 +21,11 @@ defined('_JEXEC') or die('Restricted access');
 
 class Com_FabrikInstallerScript
 {
-
+	/**
+	 * Dirvers
+	 *
+	 * @var array
+	 */
 	protected $drivers = array('mysql_fab.php', 'mysqli_fab.php');
 
 	/**
@@ -32,7 +36,7 @@ class Com_FabrikInstallerScript
 	 * @return bool
 	 */
 
-	function install($parent)
+	public function install($parent)
 	{
 		return true;
 	}
@@ -57,6 +61,7 @@ class Com_FabrikInstallerScript
 		$row->published = 1;
 		$row->default = 1;
 		$res = $db->insertObject('#__fabrik_connections', $row, 'id');
+
 		return $res;
 	}
 
@@ -85,11 +90,13 @@ class Com_FabrikInstallerScript
 			$query = $db->getQuery(true);
 			$query->update('#__extensions')->set('params = ' . $db->quote($json))->where('extension_id = ' . (int) $row->extension_id);
 			$db->setQuery($query);
+
 			if (!$db->execute())
 			{
 				return false;
 			}
 		}
+
 		return true;
 	}
 
@@ -107,9 +114,11 @@ class Com_FabrikInstallerScript
 		jimport('joomla.filesystem.file');
 		$componentFrontend = 'components/com_fabrik';
 		$docTypes = array('fabrikfeed', 'pdf');
+
 		foreach ($docTypes as $docType)
 		{
 			$dest = 'libraries/joomla/document/' . $docType;
+
 			if (!JFolder::exists(JPATH_ROOT . '/' . $dest))
 			{
 				JFolder::create(JPATH_ROOT . '/' . $dest);
@@ -117,9 +126,11 @@ class Com_FabrikInstallerScript
 			// $$$ hugh - have to use false as last arg (use_streams) on JFolder::copy(), otherwise
 			// it bypasses FTP layer, and will fail if web server does not have write access to J! folders
 			$moveRes = JFolder::copy($componentFrontend . '/' . $docType, $dest, JPATH_SITE, true, false);
+
 			if ($moveRes !== true)
 			{
 				echo "<p style=\"color:red\">failed to moved " . $componentFrontend . '/fabrikfeed to ' . $dest . '</p>';
+
 				return false;
 			}
 		}
@@ -127,9 +138,11 @@ class Com_FabrikInstallerScript
 		$dest = 'libraries/joomla/database/database';
 		$driverInstallLoc = $componentFrontend . '/dbdriver/';
 		$moveRes = JFolder::copy($driverInstallLoc, $dest, JPATH_SITE, true, false);
+
 		if ($moveRes !== true)
 		{
 			echo "<p style=\"color:red\">failed to moved " . $driverInstallLoc . ' to ' . $dest . '</p>';
+
 			return false;
 		}
 
@@ -138,21 +151,24 @@ class Com_FabrikInstallerScript
 		$driverInstallLoc = $componentFrontend . '/driver/';
 
 		$moveRes = JFolder::copy($driverInstallLoc, $dest, JPATH_SITE, true, false);
+
 		if ($moveRes !== true)
 		{
 			echo "<p style=\"color:red\">failed to moved " . $driverInstallLoc . ' to ' . $dest . '</p>';
+
 			return false;
 		}
 
 		$dest = 'libraries/joomla/database/query';
 		$driverInstallLoc = $componentFrontend . '/query/';
 		$moveRes = JFolder::copy($driverInstallLoc, $dest, JPATH_SITE, true, false);
+
 		if ($moveRes !== true)
 		{
 			echo "<p style=\"color:red\">failed to moved " . $driverInstallLoc . ' to ' . $dest . '</p>';
+
 			return false;
 		}
-
 
 		return true;
 	}
@@ -170,6 +186,7 @@ class Com_FabrikInstallerScript
 		jimport('joomla.filesystem.folder');
 		jimport('joomla.filesystem.file');
 		$dest = JPATH_SITE . '/libraries/joomla/document/fabrikfeed';
+
 		if (JFolder::exists($dest))
 		{
 			if (!JFolder::delete($dest))
@@ -177,7 +194,9 @@ class Com_FabrikInstallerScript
 				return false;
 			}
 		}
+
 		$dest = JPATH_SITE . '/libraries/joomla/database/database';
+
 		foreach ($this->drivers as $driver)
 		{
 			if (JFile::exists($dest . '/' . $driver))
@@ -221,6 +240,7 @@ class Com_FabrikInstallerScript
 		} else {
 		    echo "<p style=\"color:green\">Libray files moved</p>";
 		}*/
+
 		return true;
 	}
 
@@ -237,7 +257,6 @@ class Com_FabrikInstallerScript
 
 	public function preflight($type, $parent)
 	{
-
 	}
 
 	/**
@@ -258,6 +277,7 @@ class Com_FabrikInstallerScript
 		// Remove old update site
 		$db->setQuery("DELETE FROM #__update_sites WHERE location LIKE '%update/component/com_fabrik%'");
 		$db->execute();
+
 		if (!$db->execute())
 		{
 			echo "<P>didnt remove old update site</p>";
@@ -266,26 +286,31 @@ class Com_FabrikInstallerScript
 		{
 			echo "<p style=\"color:green\">removed old update site</p>";
 		}
+
 		$db
 			->setQuery(
 				"UPDATE #__extensions SET enabled = 1 WHERE type = 'plugin' AND (folder LIKE 'fabrik_%' OR (folder='system' AND element = 'fabrik'))");
 		$db->execute();
 		$this->fixmMenuComponentId();
+
 		if ($type !== 'update')
 		{
 			if (!$this->setConnection())
 			{
 				echo "<p style=\"color:red\">Didn't set connection. Aborting installation</p>";
 				exit;
+
 				return false;
 			}
 		}
+
 		echo "<p style=\"color:green\">Default connection created</p>";
 
 		if (!$this->moveFiles($parent))
 		{
 			echo "<p style=\"color:red\">Unable to move library files. Aborting installation</p>";
 			exit;
+
 			return false;
 		}
 		else
@@ -299,10 +324,11 @@ class Com_FabrikInstallerScript
 			{
 				echo "<p>couldnt set default properties</p>";
 				exit;
+
 				return false;
 			}
-
 		}
+
 		echo "<p>Installation finished</p>";
 		echo '<p><a target="_top" href="index.php?option=com_fabrik&amp;task=home.installSampleData">Click
 here to install sample data</a></p>
@@ -313,5 +339,4 @@ here to install sample data</a></p>
 
 		// $upgrade = JModelLegacy::getInstance('Upgrade', 'FabrikModel');
 	}
-
 }

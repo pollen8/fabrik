@@ -46,8 +46,9 @@
 			</field>
 			
 			<field name="fabriklayout"
-				type="folderlist"
-				directory="/components/com_fabrik/views/form/tmpl/"
+				type="fabriktemplate"
+				view="form"
+				hide_default="0" hide_none="1"
 				label="COM_FABRIK_FIELD_FORM_TEMPLATE_LABEL"
 				description="COM_FABRIK_FIELD_FORM_TEMPLATE_DESC"
 			/>		

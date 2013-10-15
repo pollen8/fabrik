@@ -24,7 +24,6 @@ require_once COM_FABRIK_FRONTEND . '/models/plugin-list.php';
 
 class PlgFabrik_ListJs extends PlgFabrik_List
 {
-
 	/**
 	 * Button prefix
 	 * @var  string
@@ -34,14 +33,15 @@ class PlgFabrik_ListJs extends PlgFabrik_List
 	/**
 	 * Prep the button if needed
 	 *
-	 * @param   array   &$args   Arguements
+	 * @param   array  &$args  Arguements
 	 *
 	 * @return  bool;
 	 */
 
-	 public function button(&$args)
+	public function button(&$args)
 	{
 		parent::button($args);
+
 		return true;
 	}
 
@@ -92,6 +92,7 @@ class PlgFabrik_ListJs extends PlgFabrik_List
 		$params = $this->getParams();
 		$opts = $this->getElementJSOptions();
 		$file = $params->get('js_file', '');
+
 		if ($file !== '' && $file !== '-1')
 		{
 			$opts->js_code = file_get_contents(JPATH_ROOT . '/plugins/fabrik_list/js/scripts/' . $file);
@@ -100,10 +101,11 @@ class PlgFabrik_ListJs extends PlgFabrik_List
 		{
 			$opts->js_code = $params->get('js_code', '');
 		}
+
 		$opts->statusMsg = $params->get('msg', '');
 		$opts = json_encode($opts);
 		$this->jsInstance = "new FbListJs($opts)";
+
 		return true;
 	}
-
 }

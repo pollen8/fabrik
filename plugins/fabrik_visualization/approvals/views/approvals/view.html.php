@@ -16,14 +16,13 @@ jimport('joomla.application.component.view');
 /**
  * Approval HTML View
  *
- * @package		Joomla.Plugin
- * @subpackage	Fabrik.visualization.slideshow
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.visualization.slideshow
  * @since       3.0.6
-*/
+ */
 
 class FabrikViewApprovals extends JView
 {
-
 	/**
 	 * Execute and display a template script.
 	 *
@@ -67,5 +66,4 @@ class FabrikViewApprovals extends JView
 		FabrikHelperHTML::runConentPlugins($text);
 		echo $text;
 	}
-
 }

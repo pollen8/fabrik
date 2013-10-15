@@ -8,9 +8,13 @@
 /** call back method when maps api is loaded*/
 function googlemapload() {
 	if (typeOf(Fabrik.googleMapRadius) === 'null') {
-		var script2 = document.createElement("script");
+		var script2 = document.createElement("script"),
+		l = document.location,
+		path = l.pathname.split('/');
+		path.pop();
+		path = path.join('/');
 		script2.type = "text/javascript";
-		script2.src = Fabrik.liveSite + 'components/com_fabrik/libs/googlemaps/distancewidget.js';
+		script2.src = l.protocol + '//' + l.host + path + '/components/com_fabrik/libs/googlemaps/distancewidget.js';
 		document.body.appendChild(script2);
 		Fabrik.googleMapRadius = true;
 	}
@@ -401,8 +405,10 @@ var FbGoogleMap = new Class({
 	},
 
 	updateFromLatLng: function () {
-		var lat = this.element.getElement('.lat').get('value').replace('° N', '').toFloat();
-		var lng = this.element.getElement('.lng').get('value').replace('° E', '').toFloat();
+		var lat = this.element.getElement('.lat').get('value').replace('° N', '');
+		lat = lat.replace(',', '.').toFloat();
+		var lng = this.element.getElement('.lng').get('value').replace('° E', '');
+		lng = lng.replace(',', '.').toFloat();
 		var pnt = new google.maps.LatLng(lat, lng);
 		this.marker.setPosition(pnt);
 		this.map.setCenter(pnt, this.map.getZoom());

@@ -11,10 +11,23 @@ defined('_JEXEC') or die('Restricted access');
 
 jimport('joomla.application.component.view');
 
-class fabrikViewPackage extends JViewLegacy
+/**
+ * Package HTML view class
+ *
+ * @package     Joomla
+ * @subpackage  Fabrik
+ * @since       3.0.6
+ */
+class FabrikViewPackage extends JViewLegacy
 {
-
-	function display($tpl = null)
+	/**
+	 * Display
+	 *
+	 * @param   string  $tpl  Template
+	 *
+	 * @return  void
+	 */
+	public function display($tpl = null)
 	{
 		FabrikHelperHTML::framework();
 		$app = JFactory::getApplication();
@@ -37,6 +50,7 @@ class fabrikViewPackage extends JViewLegacy
 		{
 			$item->component_name = 'fabrik';
 		}
+
 		$opts = JArrayHelper::getvalue($canvas, 'options', array());
 		$tabs = JArrayHelper::getValue($canvas, 'tabs', array('Page 1'));
 		$tabs = json_encode($tabs);
@@ -65,5 +79,4 @@ class fabrikViewPackage extends JViewLegacy
 		FabrikHelperHTML::runConentPlugins($text);
 		echo $text;
 	}
-
 }

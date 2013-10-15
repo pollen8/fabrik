@@ -34,21 +34,22 @@ class FabrikControllerCroncronnotification extends JControllerLegacy
 	public function display()
 	{
 		$document = JFactory::getDocument();
-
 		$viewName = 'cronnotification';
-
 		$viewType	= $document->getType();
 
 		// Set the default view name from the Request
 		$view = $this->getView($viewName, $viewType);
 
 		// Push a model into the view
+
 		if ($model	= &$this->getModel($viewName))
 		{
 			$view->setModel($model, true);
 		}
+
 		// Display the view
 		$view->error = $this->getError();
+
 		return $view->display();
 	}
 
@@ -64,5 +65,4 @@ class FabrikControllerCroncronnotification extends JControllerLegacy
 		$model->delete();
 		$this->setRedirect('index.php?option=com_fabrik&view=cron&controller=cron.cronnotification', JText::_('NOTIFICATIONS_REMOVED'));
 	}
-
 }

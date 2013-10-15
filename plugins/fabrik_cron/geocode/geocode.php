@@ -26,7 +26,6 @@ require_once JPATH_SITE . '/plugins/fabrik_cron/geocode/libs/gmaps2.php';
 
 class PlgFabrik_CronGeocode extends PlgFabrik_Cron
 {
-
 	/**
 	 * Check if the user can use the active element
 	 *
@@ -67,7 +66,6 @@ class PlgFabrik_CronGeocode extends PlgFabrik_Cron
 		 * because it can be arbitrarily filtered according to who happened to hit the page when cron
 		 * needed to run.
 		 */
-
 		$mydata = array();
 		$db = FabrikWorker::getDbo(false, $connection);
 		$query = $db->getQuery(true);
@@ -102,6 +100,7 @@ class PlgFabrik_CronGeocode extends PlgFabrik_Cron
 		// Run through our table data
 		$total_encoded = 0;
 		$total_attempts = 0;
+
 		foreach ($mydata as $gkey => $group)
 		{
 			if (is_array($group))
@@ -121,6 +120,7 @@ class PlgFabrik_CronGeocode extends PlgFabrik_Cron
 					 * 3: always
 					 */
 					$do_geocode = true;
+
 					if ($geocode_when == '1')
 					{
 						$do_geocode = empty($row->$geocode_map_element) || $row->$geocode_map_element == $geocode_is_empty;
@@ -129,6 +129,7 @@ class PlgFabrik_CronGeocode extends PlgFabrik_Cron
 					{
 						$do_geocode = empty($row->$geocode_map_element);
 					}
+
 					if ($do_geocode)
 					{
 						/*
@@ -149,6 +150,7 @@ class PlgFabrik_CronGeocode extends PlgFabrik_Cron
 								$a_full_addr[] = $row->$geocode_addr1_element;
 							}
 						}
+
 						if ($geocode_addr2_element)
 						{
 							if ($row->$geocode_addr2_element)
@@ -156,6 +158,7 @@ class PlgFabrik_CronGeocode extends PlgFabrik_Cron
 								$a_full_addr[] = $row->$geocode_addr2_element;
 							}
 						}
+
 						if ($geocode_city_element)
 						{
 							if ($row->$geocode_city_element)
@@ -163,6 +166,7 @@ class PlgFabrik_CronGeocode extends PlgFabrik_Cron
 								$a_full_addr[] = $row->$geocode_city_element;
 							}
 						}
+
 						if ($geocode_state_element)
 						{
 							if ($row->$geocode_state_element)
@@ -170,6 +174,7 @@ class PlgFabrik_CronGeocode extends PlgFabrik_Cron
 								$a_full_addr[] = $row->$geocode_state_element;
 							}
 						}
+
 						if ($geocode_zip_element)
 						{
 							if ($row->$geocode_zip_element)
@@ -177,6 +182,7 @@ class PlgFabrik_CronGeocode extends PlgFabrik_Cron
 								$a_full_addr[] = $row->$geocode_zip_element;
 							}
 						}
+
 						if ($geocode_country_element)
 						{
 							if ($row->$geocode_country_element)
@@ -193,14 +199,15 @@ class PlgFabrik_CronGeocode extends PlgFabrik_Cron
 							// OK!  Lets try and geocode it ...
 							$total_attempts++;
 							$res = $gmap->getLatLng($full_addr);
+
 							if ($res['status'] == 'OK')
 							{
 								$lat = $res['lat'];
 								$long = $res['lng'];
+
 								if (!empty($lat) && !empty($long))
 								{
 									$map_value = "($lat,$long):$geocode_zoom_level";
-
 									$query->clear();
 									$query->update($table_name)->set($geocode_map_element . ' = ' . $db->quote($map_value))
 									->where($primary_key . ' = ' . $db->quote($row->$primary_key_element));
@@ -214,6 +221,7 @@ class PlgFabrik_CronGeocode extends PlgFabrik_Cron
 								$logMsg = sprintf('Error (%s), no geocode result for: %s', $res['status'], $full_addr);
 								FabrikWorker::log('plg.cron.geocode.information', $logMsg);
 							}
+
 							if ($geocode_delay > 0)
 							{
 								usleep($geocode_delay);
@@ -227,7 +235,7 @@ class PlgFabrik_CronGeocode extends PlgFabrik_Cron
 				}
 			}
 		}
+
 		return $total_encoded;
 	}
-
 }

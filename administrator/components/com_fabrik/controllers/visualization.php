@@ -32,5 +32,4 @@ class FabrikAdminControllerVisualization extends FabControllerForm
 	 * @var	string
 	 */
 	protected $text_prefix = 'COM_FABRIK_VISUALIZATION';
-
 }

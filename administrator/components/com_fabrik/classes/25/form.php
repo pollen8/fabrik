@@ -85,13 +85,14 @@ class JForm
 
 	// $$$ rob repeat fieldset code
 	public $repeat = false;
+
 	// $$$ end
 
 	/**
 	 * Method to instantiate the form object.
 	 *
-* @param   string  $name     The name of the form.
-* @param   array   $options  An array of form options.
+	 * @param   string  $name     The name of the form.
+	 * @param   array   $options  An array of form options.
 	 *
 	 * @since   11.1
 	 */
@@ -110,7 +111,7 @@ class JForm
 	/**
 	 * Method to bind data to the form.
 	 *
-* @param   mixed  $data  An array or object of data to bind to the form.
+	 * @param   mixed  $data  An array or object of data to bind to the form.
 	 *
 	 * @return  boolean  True on success.
 	 *
@@ -153,7 +154,6 @@ class JForm
 		// Process the input data.
 		foreach ($data as $k => $v)
 		{
-
 			if ($this->findField($k))
 			{
 				// If the field exists set the value.
@@ -172,8 +172,8 @@ class JForm
 	/**
 	 * Method to bind data to the form for the group level.
 	 *
-* @param   string  $group  The dot-separated form group path on which to bind the data.
-* @param   mixed   $data   An array or object of data to bind to the form for the group level.
+	 * @param   string  $group  The dot-separated form group path on which to bind the data.
+	 * @param   mixed   $data   An array or object of data to bind to the form for the group level.
 	 *
 	 * @return  void
 	 *
@@ -187,7 +187,6 @@ class JForm
 		// Process the input data.
 		foreach ($data as $k => $v)
 		{
-
 			if ($this->findField($k, $group))
 			{
 				// If the field exists set the value.
@@ -204,8 +203,8 @@ class JForm
 	/**
 	 * Method to filter the form data.
 	 *
-* @param   array   $data   An array of field values to filter.
-* @param   string  $group  The dot-separated form group path on which to filter the fields.
+	 * @param   array   $data   An array of field values to filter.
+	 * @param   string  $group  The dot-separated form group path on which to filter the fields.
 	 *
 	 * @return  mixed  Array or false.
 	 *
@@ -225,6 +224,7 @@ class JForm
 
 		// Get the fields for which to filter the data.
 		$fields = $this->findFieldsByGroup($group);
+
 		if (!$fields)
 		{
 			// PANIC!
@@ -279,9 +279,9 @@ class JForm
 	/**
 	 * Method to get a form field represented as a JFormField object.
 	 *
-* @param   string  $name   The name of the form field.
-* @param   string  $group  The optional dot-separated form group path on which to find the field.
-* @param   mixed   $value  The optional value to use as the default for the field.
+	 * @param   string  $name   The name of the form field.
+	 * @param   string  $group  The optional dot-separated form group path on which to find the field.
+	 * @param   mixed   $value  The optional value to use as the default for the field.
 	 *
 	 * @return  mixed  The JFormField object for the field or boolean false on error.
 	 *
@@ -311,10 +311,10 @@ class JForm
 	 * Method to get an attribute value from a field XML element.  If the attribute doesn't exist or
 	 * is null then the optional default value will be used.
 	 *
-* @param   string  $name       The name of the form field for which to get the attribute value.
-* @param   string  $attribute  The name of the attribute for which to get a value.
-* @param   mixed   $default    The optional default value to use if no attribute value exists.
-* @param   string  $group      The optional dot-separated form group path on which to find the field.
+	 * @param   string  $name       The name of the form field for which to get the attribute value.
+	 * @param   string  $attribute  The name of the attribute for which to get a value.
+	 * @param   mixed   $default    The optional default value to use if no attribute value exists.
+	 * @param   string  $group      The optional dot-separated form group path on which to find the field.
 	 *
 	 * @return  mixed  The attribute value for the field.
 	 *
@@ -349,7 +349,7 @@ class JForm
 	 * Method to get an array of JFormField objects in a given fieldset by name.  If no name is
 	 * given then all fields are returned.
 	 *
-* @param   string  $set  The optional name of the fieldset.
+	 * @param   string  $set  The optional name of the fieldset.
 	 *
 	 * @return  array  The array of JFormField objects in the fieldset.
 	 *
@@ -398,7 +398,7 @@ class JForm
 	/**
 	 * Method to get an array of fieldset objects optionally filtered over a given field group.
 	 *
-* @param   string  $group  The dot-separated form group path on which to filter the fieldsets.
+	 * @param   string  $group  The dot-separated form group path on which to filter the fieldsets.
 	 *
 	 * @return  array  The array of fieldset objects.
 	 *
@@ -439,7 +439,6 @@ class JForm
 		// If no fieldsets are found return empty.
 		if (empty($sets))
 		{
-
 			return $fieldsets;
 		}
 
@@ -449,13 +448,12 @@ class JForm
 			// Are we dealing with a fieldset element?
 			if ((string) $set['name'])
 			{
-
 				// Only create it if it doesn't already exist.
 				if (empty($fieldsets[(string) $set['name']]))
 				{
-
 					// Build the fieldset object.
 					$fieldset = (object) array('name' => '', 'label' => '', 'description' => '');
+
 					foreach ($set->attributes() as $name => $value)
 					{
 						$fieldset->$name = (string) $value;
@@ -468,11 +466,9 @@ class JForm
 			// Must be dealing with a fieldset attribute.
 			else
 			{
-
 				// Only create it if it doesn't already exist.
 				if (empty($fieldsets[(string) $set]))
 				{
-
 					// Attempt to get the fieldset element for data (throughout the entire form document).
 					$tmp = $this->xml->xpath('//fieldset[@name="' . (string) $set . '"]');
 
@@ -485,6 +481,7 @@ class JForm
 					else
 					{
 						$fieldset = (object) array('name' => '', 'label' => '', 'description' => '');
+
 						foreach ($tmp[0]->attributes() as $name => $value)
 						{
 							$fieldset->$name = (string) $value;
@@ -562,9 +559,9 @@ class JForm
 	/**
 	 * Method to get a form field markup for the field input.
 	 *
-* @param   string  $name   The name of the form field.
-* @param   string  $group  The optional dot-separated form group path on which to find the field.
-* @param   mixed   $value  The optional value to use as the default for the field.
+	 * @param   string  $name   The name of the form field.
+	 * @param   string  $group  The optional dot-separated form group path on which to find the field.
+	 * @param   mixed   $value  The optional value to use as the default for the field.
 	 *
 	 * @return  string  The form field markup.
 	 *
@@ -584,8 +581,8 @@ class JForm
 	/**
 	 * Method to get the label for a field input.
 	 *
-* @param   string  $name   The name of the form field.
-* @param   string  $group  The optional dot-separated form group path on which to find the field.
+	 * @param   string  $name   The name of the form field.
+	 * @param   string  $group  The optional dot-separated form group path on which to find the field.
 	 *
 	 * @return  string  The form field label.
 	 *
@@ -617,9 +614,9 @@ class JForm
 	/**
 	 * Method to get the value of a field.
 	 *
-* @param   string  $name     The name of the field for which to get the value.
-* @param   string  $group    The optional dot-separated form group path on which to get the value.
-* @param   mixed   $default  The optional default value of the field value is empty.
+	 * @param   string  $name     The name of the field for which to get the value.
+	 * @param   string  $group    The optional dot-separated form group path on which to get the value.
+	 * @param   mixed   $default  The optional default value of the field value is empty.
 	 *
 	 * @return  mixed  The value of the field or the default value if empty.
 	 *
@@ -700,6 +697,7 @@ class JForm
 
 		// Get the XML elements to load.
 		$elements = array();
+
 		if ($xpath)
 		{
 			$elements = $data->xpath($xpath);
@@ -720,6 +718,7 @@ class JForm
 		{
 			// Get an array of fields with the correct name.
 			$fields = $element->xpath('descendant-or-self::field');
+
 			foreach ($fields as $field)
 			{
 				// Get the group names as strings for ancestor fields elements.
@@ -729,7 +728,6 @@ class JForm
 				// Check to see if the field exists in the current form.
 				if ($current = $this->findField((string) $field['name'], implode('.', $groups)))
 				{
-
 					// If set to replace found fields, replace the data and remove the field so we don't add it twice.
 					if ($replace)
 					{
@@ -778,7 +776,6 @@ class JForm
 		// Check to see if the path is an absolute path.
 		if (!is_file($file))
 		{
-
 			// Not an absolute path so let's attempt to find one using JPath.
 			$file = JPath::find(self::addFormPath(), strtolower($file) . '.xml');
 
@@ -797,8 +794,8 @@ class JForm
 	/**
 	 * Method to remove a field from the form definition.
 	 *
-* @param   string  $name   The name of the form field for which remove.
-* @param   string  $group  The optional dot-separated form group path on which to find the field.
+	 * @param   string  $name   The name of the form field for which remove.
+	 * @param   string  $group  The optional dot-separated form group path on which to find the field.
 	 *
 	 * @return  boolean  True on success.
 	 *
@@ -829,7 +826,7 @@ class JForm
 	/**
 	 * Method to remove a group from the form definition.
 	 *
-* @param   string  $group  The dot-separated form group path for the group to remove.
+	 * @param   string  $group  The dot-separated form group path for the group to remove.
 	 *
 	 * @return  boolean  True on success.
 	 *
@@ -846,6 +843,7 @@ class JForm
 
 		// Get the fields elements for a given group.
 		$elements = &$this->findGroup($group);
+
 		foreach ($elements as &$element)
 		{
 			$dom = dom_import_simplexml($element);
@@ -858,7 +856,7 @@ class JForm
 	/**
 	 * Method to reset the form data store and optionally the form XML definition.
 	 *
-* @param   bool  $xml  True to also reset the XML form definition.
+	 * @param   bool  $xml  True to also reset the XML form definition.
 	 *
 	 * @return  boolean  True on success.
 	 *
@@ -915,7 +913,6 @@ class JForm
 		// If an existing field is found and replace flag is false do nothing and return true.
 		if (!$replace && !empty($old))
 		{
-
 			return true;
 		}
 
@@ -929,7 +926,6 @@ class JForm
 		// If no existing field is found find a group element and add the field as a child of it.
 		if ($group)
 		{
-
 			// Get the fields elements for a given group.
 			$fields = &$this->findGroup($group);
 
@@ -954,10 +950,10 @@ class JForm
 	/**
 	 * Method to set an attribute value for a field XML element.
 	 *
-* @param   string  $name       The name of the form field for which to set the attribute value.
-* @param   string  $attribute  The name of the attribute for which to set a value.
-* @param   mixed   $value      The value to set for the attribute.
-* @param   string  $group      The optional dot-separated form group path on which to find the field.
+	 * @param   string  $name       The name of the form field for which to set the attribute value.
+	 * @param   string  $attribute  The name of the attribute for which to set a value.
+	 * @param   mixed   $value      The value to set for the attribute.
+	 * @param   string  $group      The optional dot-separated form group path on which to find the field.
 	 *
 	 * @return  boolean  True on success.
 	 *
@@ -979,7 +975,6 @@ class JForm
 		// If the element doesn't exist return false.
 		if (!($element instanceof SimpleXMLElement))
 		{
-
 			return false;
 		}
 		// Otherwise set the attribute and return true.
@@ -1030,11 +1025,11 @@ class JForm
 
 		// Set the fields.
 		$return = true;
+
 		foreach ($elements as $element)
 		{
 			if (!$this->setField($element, $group, $replace))
 			{
-
 				$return = false;
 			}
 		}
@@ -1049,9 +1044,9 @@ class JForm
 	 * Method to set the value of a field. If the field does not exist in the form then the method
 	 * will return false.
 	 *
-* @param   string  $name   The name of the field for which to set the value.
-* @param   string  $group  The optional dot-separated form group path on which to find the field.
-* @param   mixed   $value  The value to set for the field.
+	 * @param   string  $name   The name of the field for which to set the value.
+	 * @param   string  $group  The optional dot-separated form group path on which to find the field.
+	 * @param   mixed   $value  The value to set for the field.
 	 *
 	 * @return  boolean  True on success.
 	 *
@@ -1108,6 +1103,7 @@ class JForm
 
 		// Get the fields for which to validate the data.
 		$fields = $this->findFieldsByGroup($group);
+
 		if (!$fields)
 		{
 			// PANIC!
@@ -1146,6 +1142,7 @@ class JForm
 				{
 					case E_ERROR:
 						JError::raiseWarning(0, $valid->getMessage());
+
 						return false;
 						break;
 
@@ -1163,8 +1160,8 @@ class JForm
 	/**
 	 * Method to apply an input filter to a value based on field data.
 	 *
-* @param   string  $element  The XML element object representation of the form field.
-* @param   mixed   $value    The value to filter for the field.
+	 * @param   string  $element  The XML element object representation of the form field.
+	 * @param   mixed   $value    The value to filter for the field.
 	 *
 	 * @return  mixed   The filtered value.
 	 *
@@ -1189,10 +1186,12 @@ class JForm
 			// Access Control Rules.
 			case 'RULES':
 				$return = array();
+
 				foreach ((array) $value as $action => $ids)
 				{
 					// Build the rules array.
 					$return[$action] = array();
+
 					foreach ($ids as $id => $p)
 					{
 						if ($p !== '')
@@ -1219,6 +1218,7 @@ class JForm
 				{
 					$value = get_object_vars($value);
 				}
+
 				$value = is_array($value) ? $value : array($value);
 
 				JArrayHelper::toInteger($value);
@@ -1270,6 +1270,7 @@ class JForm
 				{
 					return;
 				}
+
 				$value = JFilterInput::getInstance()->clean($value, 'html');
 				$value = trim($value);
 
@@ -1282,6 +1283,7 @@ class JForm
 					|| (!$element['type'] == 'url' && !$protocol))
 				{
 					$protocol = 'http';
+
 					// If it looks like an internal link, then add the root.
 					if (substr($value, 0) == 'index.php')
 					{
@@ -1315,18 +1317,22 @@ class JForm
 
 			case 'TEL':
 				$value = trim($value);
+
 				// Does it match the NANP pattern?
 				if (preg_match('/^(?:\+?1[-. ]?)?\(?([2-9][0-8][0-9])\)?[-. ]?([2-9][0-9]{2})[-. ]?([0-9]{4})$/', $value) == 1)
 				{
 					$number = (string) preg_replace('/[^\d]/', '', $value);
+
 					if (substr($number, 0, 1) == 1)
 					{
 						$number = substr($number, 1);
 					}
+
 					if (substr($number, 0, 2) == '+1')
 					{
 						$number = substr($number, 2);
 					}
+
 					$result = '1.' . $number;
 				}
 				// If not, does it match ITU-T?
@@ -1346,8 +1352,8 @@ class JForm
 						$xpos = strpos($value, 'x');
 						$value = substr($value, 0, $xpos);
 					}
-					$result = str_replace('+', '', $value);
 
+					$result = str_replace('+', '', $value);
 				}
 				// Maybe it is already ccc.nnnnnnn?
 				elseif (preg_match('/[0-9]{1,3}\.[0-9]{4,14}$/', $value) == 1)
@@ -1358,14 +1364,15 @@ class JForm
 				else
 				{
 					$value = (string) preg_replace('/[^\d]/', '', $value);
+
 					if ($value != null && strlen($value) <= 15)
 					{
 						$length = strlen($value);
-						// if it is fewer than 13 digits assume it is a local number
+
+						// If it is fewer than 13 digits assume it is a local number
 						if ($length <= 12)
 						{
 							$result = '.' . $value;
-
 						}
 						else
 						{
@@ -1380,6 +1387,7 @@ class JForm
 						$result = '';
 					}
 				}
+
 				$return = $result;
 
 				break;
@@ -1408,8 +1416,8 @@ class JForm
 	/**
 	 * Method to get a form field represented as an XML element object.
 	 *
-* @param   string  $name   The name of the form field.
-* @param   string  $group  The optional dot-separated form group path on which to find the field.
+	 * @param   string  $name   The name of the form field.
+	 * @param   string  $group  The optional dot-separated form group path on which to find the field.
 	 *
 	 * @return  mixed  The XML element object for the field or boolean false on error.
 	 *
@@ -1430,7 +1438,6 @@ class JForm
 		// Let's get the appropriate field element based on the method arguments.
 		if ($group)
 		{
-
 			// Get the fields elements for a given group.
 			$elements = &$this->findGroup($group);
 
@@ -1452,6 +1459,7 @@ class JForm
 
 			// Use the first correct match in the given group.
 			$groupNames = explode('.', $group);
+
 			foreach ($fields as &$field)
 			{
 				// Get the group names as strings for ancestor fields elements.
@@ -1501,7 +1509,7 @@ class JForm
 	 * Method to get an array of <field /> elements from the form XML document which are
 	 * in a specified fieldset by name.
 	 *
-* @param   string  $name  The name of the fieldset.
+	 * @param   string  $name  The name of the fieldset.
 	 *
 	 * @return  mixed  Boolean false on error or array of SimpleXMLElement objects.
 	 *
@@ -1524,8 +1532,9 @@ class JForm
 		 * the appropriate fieldset attribute.
 		 */
 		// $fields = $this->xml->xpath('//fieldset[@name="' . $name . '"]//field | //field[@fieldset="' . $name . '"]');
+
 		// $$$ rob changed so that only immediate field descendants of the fieldset are selected.
-		$fields = $this->xml->xpath('//fieldset[@name="'.$name.'"]/field | //field[@fieldset="'.$name.'"]');
+		$fields = $this->xml->xpath('//fieldset[@name="' . $name . '"]/field | //field[@fieldset="' . $name . '"]');
 
 		return $fields;
 	}
@@ -1558,18 +1567,15 @@ class JForm
 		// Get only fields in a specific group?
 		if ($group)
 		{
-
 			// Get the fields elements for a given group.
 			$elements = &$this->findGroup($group);
 
 			// Get all of the field elements for the fields elements.
 			foreach ($elements as $element)
 			{
-
 				// If there are field elements add them to the return result.
 				if ($tmp = $element->xpath('descendant::field'))
 				{
-
 					// If we also want fields in nested groups then just merge the arrays.
 					if ($nested)
 					{
@@ -1579,6 +1585,7 @@ class JForm
 					else
 					{
 						$groupNames = explode('.', $group);
+
 						foreach ($tmp as $field)
 						{
 							// Get the names of the groups that the field is in.
@@ -1633,9 +1640,9 @@ class JForm
 
 		// Make sure there is actually a group to find.
 		$group = explode('.', $group);
+
 		if (!empty($group))
 		{
-
 			// Get any fields elements with the correct group name.
 			$elements = $this->xml->xpath('//fields[@name="' . (string) $group[0] . '"]');
 
@@ -1695,9 +1702,9 @@ class JForm
 	/**
 	 * Method to load, setup and return a JFormField object based on field data.
 	 *
-* @param   string  $element  The XML element object representation of the form field.
-* @param   string  $group    The optional dot-separated form group path on which to find the field.
-* @param   mixed   $value    The optional value to use as the default for the field.
+	 * @param   string  $element  The XML element object representation of the form field.
+	 * @param   string  $group    The optional dot-separated form group path on which to find the field.
+	 * @param   mixed   $value    The optional value to use as the default for the field.
 	 *
 	 * @return  mixed  The JFormField object for the field or boolean false on error.
 	 *
@@ -1723,16 +1730,20 @@ class JForm
 			$field = $this->loadFieldType('text');
 		}
 
-		// Get the value for the form field if not set.
-		// Default to the translated version of the 'default' attribute
-		// if 'translate_default' attribute if set to 'true' or '1'
-		// else the value of the 'default' attribute for the field.
+		/*
+		 * Get the value for the form field if not set.
+		 * Default to the translated version of the 'default' attribute
+		 * if 'translate_default' attribute if set to 'true' or '1'
+		 * else the value of the 'default' attribute for the field.
+		 */
 		if ($value === null)
 		{
 			$default = (string) $element['default'];
+
 			if (($translate = $element['translate_default']) && ((string) $translate == 'true' || (string) $translate == '1'))
 			{
 				$lang = JFactory::getLanguage();
+
 				if ($lang->hasKey($default))
 				{
 					$debug = $lang->setDebug(false);
@@ -1744,6 +1755,7 @@ class JForm
 					$default = JText::_($default);
 				}
 			}
+
 			$value = $this->getValue((string) $element['name'], $group, $default);
 		}
 
@@ -1763,8 +1775,8 @@ class JForm
 	/**
 	 * Proxy for {@link JFormHelper::loadFieldType()}.
 	 *
-* @param   string   $type  The field type.
-* @param   bool  $new   Flag to toggle whether we should get a new instance of the object.
+	 * @param   string  $type  The field type.
+	 * @param   bool    $new   Flag to toggle whether we should get a new instance of the object.
 	 *
 	 * @return  mixed  JFormField object on success, false otherwise.
 	 *
@@ -1778,8 +1790,8 @@ class JForm
 	/**
 	 * Proxy for JFormHelper::loadRuleType().
 	 *
-* @param   string   $type  The rule type.
-* @param   bool  $new   Flag to toggle whether we should get a new instance of the object.
+	 * @param   string  $type  The rule type.
+	 * @param   bool    $new   Flag to toggle whether we should get a new instance of the object.
 	 *
 	 * @return  mixed  JFormRule object on success, false otherwise.
 	 *
@@ -1875,7 +1887,6 @@ class JForm
 			// If the field is required and the value is empty return an error message.
 			if (($value === '') || ($value === null))
 			{
-
 				// Does the field have a defined error message?
 				if ($element['message'])
 				{
@@ -1891,8 +1902,10 @@ class JForm
 					{
 						$message = JText::_($element['name']);
 					}
+
 					$message = JText::sprintf('JLIB_FORM_VALIDATE_FIELD_REQUIRED', $message);
 				}
+
 				return new JException($message, 2, E_WARNING);
 			}
 		}
@@ -1922,7 +1935,6 @@ class JForm
 		// Check if the field is valid.
 		if ($valid === false)
 		{
-
 			// Does the field have a defined error message?
 			$message = (string) $element['message'];
 
@@ -1942,7 +1954,7 @@ class JForm
 	/**
 	 * Proxy for {@link JFormHelper::addFieldPath()}.
 	 *
-* @param   mixed  $new  A path or array of paths to add.
+	 * @param   mixed  $new  A path or array of paths to add.
 	 *
 	 * @return  array  The list of paths that have been added.
 	 *
@@ -1956,7 +1968,7 @@ class JForm
 	/**
 	 * Proxy for JFormHelper::addFormPath().
 	 *
-* @param   mixed  $new  A path or array of paths to add.
+	 * @param   mixed  $new  A path or array of paths to add.
 	 *
 	 * @return  array  The list of paths that have been added.
 	 *
@@ -1971,7 +1983,7 @@ class JForm
 	/**
 	 * Proxy for JFormHelper::addRulePath().
 	 *
-* @param   mixed  $new  A path or array of paths to add.
+	 * @param   mixed  $new  A path or array of paths to add.
 	 *
 	 * @return  array  The list of paths that have been added.
 	 *
@@ -2006,7 +2018,6 @@ class JForm
 		// Only instantiate the form if it does not already exist.
 		if (!isset($forms[$name]))
 		{
-
 			$data = trim($data);
 
 			if (empty($data))
@@ -2044,8 +2055,8 @@ class JForm
 	/**
 	 * Adds a new child SimpleXMLElement node to the source.
 	 *
-* @param   SimpleXMLElement  $source  The source element on which to append.
-* @param   SimpleXMLElement  $new     The new element to append.
+	 * @param   SimpleXMLElement  $source  The source element on which to append.
+	 * @param   SimpleXMLElement  $new     The new element to append.
 	 *
 	 * @return  void
 	 *
@@ -2073,8 +2084,8 @@ class JForm
 	/**
 	 * Adds a new child SimpleXMLElement node to the source.
 	 *
-* @param   SimpleXMLElement  $source  The source element on which to append.
-* @param   SimpleXMLElement  $new     The new element to append.
+	 * @param   SimpleXMLElement  $source  The source element on which to append.
+	 * @param   SimpleXMLElement  $new     The new element to append.
 	 *
 	 * @return  void
 	 *
@@ -2101,8 +2112,8 @@ class JForm
 	/**
 	 * Merges new elements into a source <fields> element.
 	 *
-* @param   SimpleXMLElement  $source  The source element.
-* @param   SimpleXMLElement  $new     The new element to merge.
+	 * @param   SimpleXMLElement  $source  The source element.
+	 * @param   SimpleXMLElement  $new     The new element to merge.
 	 *
 	 * @return  void
 	 *

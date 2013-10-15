@@ -44,6 +44,7 @@ class FabrikAdminModelHome extends FabModelAdmin
 	public function getTable($type = 'Cron', $prefix = 'FabrikTable', $config = array())
 	{
 		$config['dbo'] = FabrikWorker::getDbo(true);
+
 		return parent::getTable($type, $prefix, $config);
 	}
 
@@ -72,8 +73,8 @@ class FabrikAdminModelHome extends FabModelAdmin
 		//  Get RSS parsed object - Turn off error reporting as SimplePie creates strict error notices.
 		$origError = error_reporting();
 		error_reporting(0);
-
 		$version = new JVersion;
+
 		if ($version->RELEASE == 2.5)
 		{
 			//  get RSS parsed object
@@ -87,6 +88,7 @@ class FabrikAdminModelHome extends FabModelAdmin
 		{
 			$rssDoc = JSimplepieFactory::getFeedParser('http://feeds.feedburner.com/fabrik', 86400);
 		}
+
 		if ($rssDoc == false)
 		{
 			$output = JText::_('Error: Feed not retrieved');
@@ -102,6 +104,7 @@ class FabrikAdminModelHome extends FabModelAdmin
 
 			$items = array_slice($rssDoc->get_items(), 0, 3);
 			$numItems = count($items);
+
 			if ($numItems == 0)
 			{
 				$output .= '<tr><th>' . JText::_('No news items found') . '</th></tr>';
@@ -109,17 +112,20 @@ class FabrikAdminModelHome extends FabModelAdmin
 			else
 			{
 				$k = 0;
+
 				for ($j = 0; $j < $numItems; $j++)
 				{
 					$item = $items[$j];
 					$output .= '<tr><td class="row' . $k . '">';
 					$output .= '<a href="' . $item->get_link() . '" target="_blank">' . $item->get_title() . '</a>';
 					$output .= '<br />' . $item->get_date('Y-m-d');
+
 					if ($item->get_description())
 					{
 						$description = FabrikString::truncate($item->get_description(), array('wordcount' => 50));
 						$output .= '<br />' . $description;
 					}
+
 					$output .= '</td></tr>';
 					$k = 1 - $k;
 				}
@@ -127,7 +133,9 @@ class FabrikAdminModelHome extends FabModelAdmin
 
 			$output .= '</table>';
 		}
+
 		error_reporting($origError);
+
 		return $output;
 	}
 
@@ -151,10 +159,12 @@ class FabrikAdminModelHome extends FabModelAdmin
 		$group->name = "Contact Details";
 		$group->label = "Contact Details";
 		$group->published = 1;
+
 		if (!$group->store())
 		{
 			return JError::raiseWarning(500, $group->getError());
 		}
+
 		$groupId = $db->insertid();
 
 		$defaulDb->dropTable($dbTableName);
@@ -171,6 +181,7 @@ class FabrikAdminModelHome extends FabModelAdmin
 		{
 			return JError::raiseWarning(500, $group->getError());
 		}
+
 		$group2Id = $db->insertid();
 		echo "<li>Group 'Your Enquiry' created</li>";
 
@@ -191,12 +202,14 @@ class FabrikAdminModelHome extends FabModelAdmin
 		{
 			return JError::raiseWarning(500, $form->getError());
 		}
+
 		echo "<li>Form 'Contact Us' created</li>";
 		$formId = $db->insertid();
 
 		$query = $db->getQuery(true);
 		$query->insert('#__{package}_formgroup')->set(array('form_id=' . (int) $formId, 'group_id=' . (int) $groupId, 'ordering=0'));
 		$db->setQuery($query);
+
 		if (!$db->execute())
 		{
 			echo $db->getErrorMsg();
@@ -206,11 +219,13 @@ class FabrikAdminModelHome extends FabModelAdmin
 		$query = $db->getQuery(true);
 		$query->insert('#__{package}_formgroup')->set(array('form_id=' . (int) $formId, 'group_id=' . (int) $group2Id, 'ordering=1'));
 		$db->setQuery($query);
+
 		if (!$db->execute())
 		{
 			echo $db->getErrorMsg();
 			exit;
 		}
+
 		echo "<li>Groups added to 'Contact Us' form</li>";
 		$listModel = JModelLegacy::getInstance('List', 'FabrikAdminModel');
 		$list = $this->getTable('List');
@@ -282,6 +297,7 @@ class FabrikAdminModelHome extends FabModelAdmin
 		$query->select("connection_id, db_table_name")->from('#__{package}_lists');
 		$db->setQuery($query);
 		$rows = $db->loadObjectList();
+
 		foreach ($rows as $row)
 		{
 			$connModel->setId($row->connection_id);
@@ -290,5 +306,4 @@ class FabrikAdminModelHome extends FabModelAdmin
 			$fabrikDb->dropTable($row->db_table_name);
 		}
 	}
-
 }

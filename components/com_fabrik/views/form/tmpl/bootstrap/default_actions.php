@@ -19,20 +19,22 @@ if ($this->hasActions) : ?>
 		<div class="span4">
 			<div class="btn-group">
 			<?php
-			echo $form->submitButton;
-			echo $form->applyButton;
+			echo $form->submitButton . ' ';
+			echo $form->applyButton . ' ';
 			echo $form->copyButton;
 			?>
 			</div>
 		</div>
-		<div class="span4">
+		<div class="span1"></div>
+		<div class="span2">
 			<div class="btn-group">
 				<?php echo $form->prevButton . ' ' . $form->nextButton; ?>
 			</div>
 		</div>
+		<div class="span1"></div>
 
 		<div class="span4">
-			<div class="btn-group">
+			<div class="pull-right btn-group">
 				<?php
 				echo $form->gobackButton  . ' ' . $this->message;
 				echo $form->resetButton . ' ';

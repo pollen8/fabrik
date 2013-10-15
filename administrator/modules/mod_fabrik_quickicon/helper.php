@@ -40,9 +40,11 @@ abstract class ModFabrik_QuickIconHelper
 	public static function &getButtons($params)
 	{
 		$key = (string) $params;
+
 		if (!isset(self::$buttons[$key]))
 		{
 			$context = $params->get('context', 'mod_fabrik_quickicon');
+
 			if ($context == 'mod_fabrik_quickicon')
 			{
 				// Load mod_quickicon language file in case this method is called before rendering the module
@@ -61,6 +63,12 @@ abstract class ModFabrik_QuickIconHelper
 						'image' => '/components/com_fabrik/images/header/fabrik-form.png',
 						'text' => JText::_('MOD_FABRIK_QUICKICON_FORMS'),
 						'access' => array('core.manage', 'com_fabrik')
+					),
+					array(
+							'link' => JRoute::_('index.php?option=com_fabrik&view=groups'),
+							'image' => '/components/com_fabrik/images/header/fabrik-group.png',
+							'text' => JText::_('MOD_FABRIK_QUICKICON_GROUPS'),
+							'access' => array('core.manage', 'com_fabrik')
 					),
 					array(
 							'link' => JRoute::_('index.php?option=com_fabrik&view=elements'),
@@ -91,23 +99,26 @@ abstract class ModFabrik_QuickIconHelper
 							'image' => '/components/com_fabrik/images/header/fabrik-schedule.png',
 							'text' => JText::_('MOD_FABRIK_QUICKICON_SCHEDULED_TASKS'),
 							'access' => array('core.manage', 'com_fabrik')
-					),
-
+					)
 				);
 			}
 			else
 			{
 				self::$buttons[$key] = array();
 			}
-
 		}
 
 		$html = array();
+
 		foreach (self::$buttons[$key] as &$button)
 		{
-			$html[] = self::button($button);
+			$btn = self::button($button);
+
+			if ($btn !== false)
+			{
+				$html[] = $btn;
+			}
 		}
-		self::$buttons[$key] = implode("\n", $html);
 
 		return self::$buttons[$key];
 	}
@@ -122,13 +133,14 @@ abstract class ModFabrik_QuickIconHelper
 	public static function button($button)
 	{
 		$user = JFactory::getUser();
+
 		if (!empty($button['access']))
 		{
 			if (is_bool($button['access']))
 			{
 				if ($button['access'] == false)
 				{
-					return '';
+					return false;
 				}
 			}
 			else
@@ -138,26 +150,13 @@ abstract class ModFabrik_QuickIconHelper
 				{
 					if (!$user->authorise($button['access'][$i], $button['access'][$i + 1]))
 					{
-						return '';
+						return false;
 					}
 				}
 			}
 		}
-		$html[] = '<div class="row-striped">';
-		$html[] = '<div class="row-fluid"' . (empty($button['id']) ? '' : (' id="' . $button['id'] . '"')) . '>';
-		$html[] = '<div class="span12">';
-		$html[] = '<a href="' . $button['link'] . '"';
-		$html[] = (empty($button['target']) ? '' : (' target="' . $button['target'] . '"'));
-		$html[] = (empty($button['onclick']) ? '' : (' onclick="' . $button['onclick'] . '"'));
-		$html[] = (empty($button['title']) ? '' : (' title="' . htmlspecialchars($button['title']) . '"'));
-		$html[] = '>';
-		$html[] = '<img style="width:16px" src="' . JURI::base(true) . $button['image'] . '" /> ';
-		$html[] = (empty($button['text'])) ? '' : ('<span>' . $button['text'] . '</span>');
-		$html[] = '</a>';
-		$html[] = '</div>';
-		$html[] = '</div>';
-		$html[] = '</div>';
-		return implode($html);
+
+		return $button;
 	}
 
 	/**
@@ -171,6 +170,7 @@ abstract class ModFabrik_QuickIconHelper
 	public static function getTitle($params, $module)
 	{
 		$key = $params->get('context', 'mod_fabrik_quickicon') . '_title';
+
 		if (JFactory::getLanguage()->hasKey($key))
 		{
 			return JText::_($key);

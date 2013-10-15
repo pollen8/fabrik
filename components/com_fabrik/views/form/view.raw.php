@@ -23,7 +23,6 @@ jimport('joomla.application.component.view');
 
 class FabrikViewForm extends JViewLegacy
 {
-
 	/**
 	 * Access value
 	 *
@@ -54,20 +53,24 @@ class FabrikViewForm extends JViewLegacy
 		$model->render();
 
 		$listModel = $model->getListModel();
+
 		if (!$model->canPublish())
 		{
 			if (!$app->isAdmin())
 			{
 				echo JText::_('COM_FABRIK_FORM_NOT_PUBLISHED');
+
 				return false;
 			}
 		}
 
 		$this->access = $model->checkAccessFromListSettings();
+
 		if ($this->access == 0)
 		{
 			return JError::raiseWarning(500, JText::_('JERROR_ALERTNOAUTHOR'));
 		}
+
 		if (is_object($listModel))
 		{
 			$joins = $listModel->getJoins();
@@ -78,8 +81,8 @@ class FabrikViewForm extends JViewLegacy
 		$params->def('icons', $app->getCfg('icons'));
 		$pop = ($input->get('tmpl') == 'component') ? 1 : 0;
 		$params->set('popup', $pop);
-
 		$view = $input->get('view', 'form');
+
 		if ($view == 'details')
 		{
 			$model->setEditable(false);
@@ -109,6 +112,7 @@ class FabrikViewForm extends JViewLegacy
 					$joinModel = $groupModel->getJoinModel();
 					$joinTable = $joinModel->getJoin();
 					$foreignKey = '';
+
 					if (is_object($joinTable))
 					{
 						$foreignKey = $joinTable->table_join_key;
@@ -118,6 +122,7 @@ class FabrikViewForm extends JViewLegacy
 						{
 							continue;
 						}
+
 						$elementModels = $groupModel->getPublishedElements();
 						reset($elementModels);
 						$tmpElement = current($elementModels);
@@ -126,13 +131,16 @@ class FabrikViewForm extends JViewLegacy
 					}
 				}
 			}
+
 			$groupModel->repeatTotal = $repeatGroup;
 			$aSubGroups = array();
+
 			for ($c = 0; $c < $repeatGroup; $c++)
 			{
 				$aSubGroupElements = array();
 				$elCount = 0;
 				$elementModels = $groupModel->getPublishedElements();
+
 				foreach ($elementModels as $elementModel)
 				{
 					if (!$model->isEditable())
@@ -148,6 +156,7 @@ class FabrikViewForm extends JViewLegacy
 					// Force reload?
 					$elementModel->HTMLids = null;
 					$elementHTMLId = $elementModel->getHTMLId($c);
+
 					if (!$model->isEditable())
 					{
 						$JSONarray[$elementHTMLId] = $elementModel->getROValue($model->data, $c);
@@ -162,13 +171,14 @@ class FabrikViewForm extends JViewLegacy
 						$elementModel->HTMLids = null;
 						$elementModel->inDetailedView = true;
 					}
+
 					$JSONHtml[$elementHTMLId] = htmlentities($elementModel->render($model->data, $c), ENT_QUOTES, 'UTF-8');
 				}
 			}
 		}
+
 		$data = array("id" => $model->getId(), 'model' => 'table', "errors" => $model->errors, "data" => $JSONarray, 'html' => $JSONHtml,
 			'post' => $_REQUEST);
 		echo json_encode($data);
 	}
-
 }

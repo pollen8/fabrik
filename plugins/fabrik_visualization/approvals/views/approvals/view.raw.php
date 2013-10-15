@@ -23,7 +23,6 @@ jimport('joomla.application.component.view');
 
 class FabrikViewApprovals extends JView
 {
-
 	/**
 	 * Display view
 	 *
@@ -39,9 +38,7 @@ class FabrikViewApprovals extends JView
 		$usersConfig = JComponentHelper::getParams('com_fabrik');
 		$id = $input->get('id', $usersConfig->get('visualizationid', $input->getInt('visualizationid', 0)));
 		$model->setId($id);
-
 		$this->plugin = $this->get('Plugin');
 		$model->runPluginTask();
 	}
-
 }

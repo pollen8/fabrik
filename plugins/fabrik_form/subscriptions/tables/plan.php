@@ -23,7 +23,6 @@ require_once JPATH_ADMINISTRATOR . '/components/com_fabrik/tables/fabtable.php';
 
 class FabrikTablePlan extends JTable
 {
-
 	/**
 	 * Constructor
 	 *
@@ -34,5 +33,4 @@ class FabrikTablePlan extends JTable
 	{
 		parent::__construct('#__fabrik_subs_plans', 'id', $db);
 	}
-
 }

@@ -1,27 +1,23 @@
 <?php
 /**
  *
- * DO NOT USE IN FABRIK 3.x TILL THIS NOTICE IS REMOVED!  We are in the process of porting
- * this plugin from 2.x to 3.x, and this code was written for Joomla 1.5, and WILL NOT WORK
- * for adding a user in 2.5.
- *
  * Some example code for creating J! users when importing CSV file.
  *
  * Instructions:
  *
- * 1) Install the tablecsv plugin, and add it to the Table you are importing to.
+ * 1) Install the listcsv plugin, and add it to the List you are importing to.
  *
- * 2) Copy and rename this file, to whatever name you want, in the same directoyr,
+ * 2) Copy and rename this file, to whatever name you want, in the same directory,
  * to avoid having your changes overwritten next time you update Fabrik.
  *
  * 3) Modify the REQUIRED 'changethis' options below to match your full element names.
  *
  * 4) Set any of the OPTIONAL options below.
  *
- * 5) On your Table plugin settings for Table CSV, select the renamed file from step 2
+ * 5) On your List plugin settings for the List CSV plugin, select the renamed file from step 2
  *
  * 6) Run your CSV import.  This plugin will run once for each row being imported, and
- * attempt to either create or modify a J! user accordingly.
+ * attempt to either create or modify a J! user accordingly. Modification occurs if username already exists
  *
  */
 defined('_JEXEC') or die();

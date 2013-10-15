@@ -39,6 +39,7 @@ class JFormFieldAscendingdescending extends JFormFieldList
 	{
 		$opts[] = JHTML::_('select.option', 'ASC', JText::_('COM_FABRIK_ASCENDING'));
 		$opts[] = JHTML::_('select.option', 'DESC', JText::_('COM_FABRIK_DESCENDING'));
+
 		return $opts;
 	}
 }

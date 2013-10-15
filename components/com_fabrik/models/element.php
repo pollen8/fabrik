@@ -19,7 +19,7 @@ jimport('joomla.filesystem.file');
  *
  * @package  Fabrik
  * @since    3.0
-*/
+ */
 
 class PlgFabrik_Element extends FabrikPlugin
 {
@@ -75,7 +75,7 @@ class PlgFabrik_Element extends FabrikPlugin
 	/**
 	 *  Stores possible element names to avoid repeat db queries
 	 *
-	 *  @var array
+	 * @var array
 	 */
 	public $fullNames = array();
 
@@ -83,7 +83,7 @@ class PlgFabrik_Element extends FabrikPlugin
 	 * Group model
 	 *
 	 * @var object
-	*/
+	 */
 	protected $group = null;
 
 	/**
@@ -140,7 +140,7 @@ class PlgFabrik_Element extends FabrikPlugin
 	 * Is the element in a detailed view?
 	 *
 	 * @var bool
-	*/
+	 */
 	public $inDetailedView = false;
 
 	/**
@@ -154,7 +154,7 @@ class PlgFabrik_Element extends FabrikPlugin
 	 * The element's HTML ids based on $repeatCounter
 	 *
 	 * @var array
-	*/
+	 */
 	public $HTMLids = null;
 
 	/**
@@ -228,6 +228,11 @@ class PlgFabrik_Element extends FabrikPlugin
 	protected $elementError = '';
 
 	/**
+	 * Multi-db join option - can we add duplicate options (set to false in tags element)
+	 * @var  bool
+	 */
+	protected $allowDuplicates = true;
+	/**
 	 * Constructor
 	 *
 	 * @param   object  &$subject  The object to observe
@@ -292,6 +297,7 @@ class PlgFabrik_Element extends FabrikPlugin
 				$p = $this->getParams();
 			}
 		}
+
 		return $this->element;
 	}
 
@@ -306,6 +312,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		if (!isset($this->parent))
 		{
 			$element = $this->getElement();
+
 			if ((int) $element->parent_id !== 0)
 			{
 				$this->parent = FabTable::getInstance('element', 'FabrikTable');
@@ -316,6 +323,7 @@ class PlgFabrik_Element extends FabrikPlugin
 				$this->parent = $element;
 			}
 		}
+
 		return $this->parent;
 	}
 
@@ -337,11 +345,14 @@ class PlgFabrik_Element extends FabrikPlugin
 			JTable::addIncludePath(JPATH_ADMINISTRATOR . '/components/com_fabrik/tables');
 			$this->element = FabTable::getInstance('Element', 'FabrikTable');
 		}
+
 		if (is_object($row))
 		{
 			$row = JArrayHelper::fromObject($row);
 		}
+
 		$this->element->bind($row);
+
 		return $this->element;
 	}
 
@@ -376,6 +387,7 @@ class PlgFabrik_Element extends FabrikPlugin
 			$groupModel = $this->getGroup();
 			$this->list = $groupModel->getListModel();
 		}
+
 		return $this->list;
 	}
 
@@ -394,6 +406,7 @@ class PlgFabrik_Element extends FabrikPlugin
 			$element = $this->getElement();
 			$groupId = $element->group_id;
 		}
+
 		if (is_null($this->group) || $this->group->getId() != $groupId)
 		{
 			$model = JModelLegacy::getInstance('Group', 'FabrikFEModel');
@@ -401,6 +414,7 @@ class PlgFabrik_Element extends FabrikPlugin
 			$model->getGroup();
 			$this->group = $model;
 		}
+
 		return $this->group;
 	}
 
@@ -461,6 +475,7 @@ class PlgFabrik_Element extends FabrikPlugin
 			$this->form->setId($table->form_id);
 			$this->form->getForm();
 		}
+
 		return $this->form;
 	}
 
@@ -526,25 +541,31 @@ class PlgFabrik_Element extends FabrikPlugin
 		if ($data == '')
 		{
 			$this->iconsSet = false;
+
 			return $data;
 		}
-		$params = $this->getParams();
 
+		$params = $this->getParams();
+		$listModel = $this->getListModel();
 		$iconFile = (string) $params->get('icon_file', '');
+
 		if ((int) $params->get('icon_folder', 0) === 0 && $iconFile === '')
 		{
 			$this->iconsSet = false;
+
 			return $data;
 		}
-		$listModel = $this->getListModel();
+
 		if (in_array($listModel->getOutPutFormat(), array('csv', 'rss')))
 		{
 			$this->iconsSet = false;
+
 			return $data;
 		}
 
 		$cleanData = empty($iconfile) ? FabrikString::clean(strip_tags($data)) : $iconfile;
 		$cleanDatas = array($this->getElement()->name . '_' . $cleanData, $cleanData);
+
 		foreach ($cleanDatas as $cleanData)
 		{
 			foreach ($this->imageExtensions as $ex)
@@ -552,6 +573,7 @@ class PlgFabrik_Element extends FabrikPlugin
 				$f = JPath::clean($cleanData . '.' . $ex);
 				$opts = array('forceImage' => true);
 				$img = FabrikHelperHTML::image($cleanData . '.' . $ex, $view, $tmpl, array(), false, $opts);
+
 				if ($img !== '')
 				{
 					$this->iconsSet = true;
@@ -567,10 +589,12 @@ class PlgFabrik_Element extends FabrikPlugin
 						$html->loadXML($data);
 						$as = $html->getElementsBytagName('a');
 					}
+
 					if ($params->get('icon_hovertext', true))
 					{
 						$ahref = '#';
 						$target = '';
+
 						if (class_exists('DOMDocument') && $as->length)
 						{
 							// Data already has an <a href="foo"> lets get that for use in hover text
@@ -579,6 +603,7 @@ class PlgFabrik_Element extends FabrikPlugin
 							$target = $a->getAttribute('target');
 							$target = 'target="' . $target . '"';
 						}
+
 						$data = htmlspecialchars($data, ENT_QUOTES);
 						$img = '<a class="fabrikTip" ' . $target . ' href="' . $ahref . '" opts=\'' . $opts . '\' title="' . $data . '">' . $img . '</a>';
 					}
@@ -596,13 +621,16 @@ class PlgFabrik_Element extends FabrikPlugin
 							$img->setAttribute('src', FabrikHelperHTML::image($cleanData . '.' . $ex, $view, $tmpl, array(), true));
 							$as->item(0)->nodeValue = '';
 							$as->item(0)->appendChild($img);
+
 							return $html->saveHTML();
 						}
 					}
+
 					return $img;
 				}
 			}
 		}
+
 		return $data;
 	}
 
@@ -627,10 +655,12 @@ class PlgFabrik_Element extends FabrikPlugin
 		$fullElName = $db->quoteName($dbtable . '___' . $this->element->name);
 		$sql = '(SELECT GROUP_CONCAT(' . $jkey . ' SEPARATOR \'' . GROUPSPLITTER . '\') FROM ' . $jointable . ' WHERE parent_id = '
 				. $table->db_primary_key . ')';
+
 		if ($addAs)
 		{
 			$sql .= ' AS ' . $fullElName;
 		}
+
 		return $sql;
 	}
 
@@ -652,8 +682,8 @@ class PlgFabrik_Element extends FabrikPlugin
 		$db = JFactory::getDbo();
 		$table = $this->getListModel()->getTable();
 		$fullElName = $db->quoteName($dbtable . '___' . $this->element->name . '_raw');
-
 		$pkField = $this->groupConcactJoinKey();
+
 		return '(SELECT GROUP_CONCAT(id SEPARATOR \'' . GROUPSPLITTER . '\') FROM ' . $jointable . ' WHERE parent_id = ' . $pkField
 		. ') AS ' . $fullElName;
 	}
@@ -671,6 +701,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		$group = $this->getGroupModel()->getGroup();
 		$name = $this->getFullName(true, false);
 		$rawname = $name . '_raw';
+
 		return array($name, $rawname);
 	}
 
@@ -693,17 +724,21 @@ class PlgFabrik_Element extends FabrikPlugin
 		$fName = $dbtable . '.' . $this->element->name;
 		$k = $db->quoteName($fName);
 		$secret = JFactory::getConfig()->get('secret');
+
 		if ($this->encryptMe())
 		{
 			$k = 'AES_DECRYPT(' . $k . ', ' . $db->quote($secret) . ')';
 		}
+
 		if ($this->isJoin())
 		{
 			$jkey = $this->element->name;
+
 			if ($this->encryptMe())
 			{
 				$jkey = 'AES_DECRYPT(' . $jkey . ', ' . $db->quote($secret) . ')';
 			}
+
 			$jointable = $this->getJoinModel()->getJoin()->table_join;
 			$fullElName = JArrayHelper::getValue($opts, 'alias', $k);
 			$str = $this->buildQueryElementConcat($jkey);
@@ -712,6 +747,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		{
 			$str = $k . ' AS ' . $fullElName;
 		}
+
 		if ($table->db_primary_key == $fullElName)
 		{
 			array_unshift($aFields, $fullElName);
@@ -724,11 +760,14 @@ class PlgFabrik_Element extends FabrikPlugin
 				$aFields[] = $str;
 				$aAsFields[] = $fullElName;
 			}
+
 			$k = $db->quoteName($dbtable . '.' . $this->element->name);
+
 			if ($this->encryptMe())
 			{
 				$k = 'AES_DECRYPT(' . $k . ', ' . $db->quote($secret) . ')';
 			}
+
 			if ($this->isJoin())
 			{
 				$pkField = $this->groupConcactJoinKey();
@@ -747,6 +786,7 @@ class PlgFabrik_Element extends FabrikPlugin
 				$fullElName = $db->quoteName($dbtable . '___' . $this->element->name . '_raw');
 				$str = $k . ' AS ' . $fullElName;
 			}
+
 			if (!in_array($str, $aFields))
 			{
 				$aFields[] = $str;
@@ -767,7 +807,8 @@ class PlgFabrik_Element extends FabrikPlugin
 	protected function groupConcactJoinKey()
 	{
 		$table = $this->getListModel()->getTable();
-		if ($this->getGroupModel()->isJoin() && !$this->isJoin())
+
+		if ($this->getGroupModel()->isJoin() && $this->isJoin())
 		{
 			$groupJoin = $this->getGroupModel()->getJoinModel()->getJoin();
 			$pkField = $groupJoin->table_join . '.' . $groupJoin->table_key;
@@ -776,6 +817,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		{
 			$pkField = $table->db_primary_key;
 		}
+
 		return $pkField;
 	}
 
@@ -791,6 +833,7 @@ class PlgFabrik_Element extends FabrikPlugin
 	{
 		$n = $this->getFullName($useStep, false);
 		$n .= '_raw`';
+
 		return $n;
 	}
 
@@ -837,6 +880,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		$prop = $view == 'form' ? 'view_access' : 'list_view_access';
 		$params = $this->getParams();
 		$user = JFactory::getUser();
+
 		if (!is_object($this->access) || !array_key_exists($key, $this->access))
 		{
 			$groups = $user->getAuthorisedViewLevels();
@@ -857,8 +901,8 @@ class PlgFabrik_Element extends FabrikPlugin
 				$value = $formModel->getElementData($fullName, true);
 				$this->access->$key = ($user->get('id') == $value) ? true : false;
 			}
-
 		}
+
 		return $this->access->$key;
 	}
 
@@ -882,6 +926,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		{
 			$this->access = new stdClass;
 		}
+
 		if (!is_object($this->access) || !array_key_exists('use', $this->access))
 		{
 			/**
@@ -899,6 +944,7 @@ class PlgFabrik_Element extends FabrikPlugin
 				$this->access->use = in_array($this->getElement()->access, $groups);
 			}
 		}
+
 		return $this->access->use;
 	}
 
@@ -912,6 +958,7 @@ class PlgFabrik_Element extends FabrikPlugin
 	{
 		$params = $this->getParams();
 		$element = $this->getElement();
+
 		if (!is_object($this->access) || !array_key_exists('filter', $this->access))
 		{
 			$user = JFactory::getUser();
@@ -923,6 +970,7 @@ class PlgFabrik_Element extends FabrikPlugin
 			$filter_access = $filter_access == '0' ? '1' : $filter_access;
 			$this->access->filter = in_array($filter_access, $groups);
 		}
+
 		return $this->access->filter;
 	}
 
@@ -993,6 +1041,7 @@ class PlgFabrik_Element extends FabrikPlugin
 	{
 		$id = $this->getHTMLId($repeatCounter);
 		$ar = array('id' => $id, 'triggerEvent' => 'blur');
+
 		return array($ar);
 	}
 
@@ -1011,6 +1060,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		{
 			$val = array_shift($val);
 		}
+
 		if (is_array($val) || is_object($val))
 		{
 			return json_encode($val);
@@ -1115,6 +1165,7 @@ class PlgFabrik_Element extends FabrikPlugin
 			$w = new FabrikWorker;
 			$element = $this->getElement();
 			$default = $w->parseMessageForPlaceHolder($element->default, $data);
+
 			if ($element->eval == "1" && is_string($default))
 			{
 				/**
@@ -1137,12 +1188,14 @@ class PlgFabrik_Element extends FabrikPlugin
 					$this->_default = $default === false ? '' : $default;
 				}
 			}
+
 			if (is_array($default))
 			{
 				foreach ($default as &$d)
 				{
 					$d = JText::_($d);
 				}
+
 				$this->default = $default;
 			}
 			else
@@ -1150,6 +1203,7 @@ class PlgFabrik_Element extends FabrikPlugin
 				$this->default = JText::_($default);
 			}
 		}
+
 		return $this->default;
 	}
 
@@ -1168,12 +1222,14 @@ class PlgFabrik_Element extends FabrikPlugin
 		$name = $this->getFullName(true, false);
 		$opts = array('raw' => true);
 		$group = $this->getGroup();
+
 		if ($group->canRepeat())
 		{
 			if (!array_key_exists($name, $values))
 			{
 				$values[$name]['data'] = array();
 			}
+
 			$values[$name]['data'][$c] = $this->getValue($data, $c, $opts);
 		}
 		else
@@ -1280,20 +1336,25 @@ class PlgFabrik_Element extends FabrikPlugin
 	{
 		$app = JFactory::getApplication();
 		$input = $app->input;
+
 		if (!isset($this->defaults))
 		{
 			$this->defaults = array();
 		}
+
 		$key = $repeatCounter . '.' . serialize($opts);
+
 		if (!array_key_exists($key, $this->defaults))
 		{
 			$groupRepeat = $this->getGroupModel()->canRepeat();
 			$default = $this->getDefaultOnACL($data, $opts);
 			$name = $this->getFullName(true, false);
+
 			if (JArrayHelper::getValue($opts, 'raw', 0) == 1)
 			{
 				$name .= '_raw';
 			}
+
 			$values = JArrayHelper::getValue($data, $name, $default);
 
 			// Querystring override (seems on http://fabrikar.com/subscribe/form/22 querystring var was not being set into $data)
@@ -1303,12 +1364,14 @@ class PlgFabrik_Element extends FabrikPlugin
 				{
 					// Trying to avoid errors if value is an array
 					$values = $input->get($name, null, 'array');
+
 					if (is_null($values) || (count($values) === 1 && $values[0] == ''))
 					{
 						$values = $input->get($name, '', 'string');
 					}
 				}
 			}
+
 			if ($groupRepeat)
 			{
 				$values = (array) $values;
@@ -1320,8 +1383,10 @@ class PlgFabrik_Element extends FabrikPlugin
 				$formModel = $this->getFormModel();
 				FabrikWorker::getPluginManager()->runPlugins('onGetElementDefault', $formModel, 'form', $this);
 			}
+
 			$this->defaults[$key] = $values;
 		}
+
 		return $this->defaults[$key];
 	}
 
@@ -1334,6 +1399,7 @@ class PlgFabrik_Element extends FabrikPlugin
 	protected function isHidden()
 	{
 		$element = $this->getElement();
+
 		return ($element->hidden == true) ? true : false;
 	}
 
@@ -1363,23 +1429,29 @@ class PlgFabrik_Element extends FabrikPlugin
 	private function isTipped($mode = 'form')
 	{
 		$formModel = $this->getFormModel();
+
 		if ($formModel->getParams()->get('tiplocation', 'tip') !== 'tip' && $mode === 'form')
 		{
 			return false;
 		}
+
 		$params = $this->getParams();
+
 		if ($params->get('rollover', '') === '')
 		{
 			return false;
 		}
+
 		if ($mode == 'form' && (!$formModel->isEditable() && $params->get('labelindetails', true) == false))
 		{
 			return false;
 		}
+
 		if ($mode === 'list' && $params->get('labelinlist', false) == false)
 		{
 			return false;
 		}
+
 		return true;
 	}
 
@@ -1393,6 +1465,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		$params = $this->getParams();
 		$element = $this->getElement();
 		$label = $params->get('alt_list_heading') == '' ? $element->label : $params->get('alt_list_heading');
+
 		return JText::_($label);
 	}
 
@@ -1414,61 +1487,77 @@ class PlgFabrik_Element extends FabrikPlugin
 		$elementHTMLId = $this->getHTMLId($repeatCounter);
 		$this->modHTMLId($elementHTMLId);
 		$view = $app->input->get('view', 'form');
+
 		if ($view == 'form' && !($this->canUse() || $this->canView()))
 		{
 			return '';
 		}
+
 		if ($view == 'details' && !$this->canView())
 		{
 			return '';
 		}
+
 		$params = $this->getParams();
 		$str = '';
 		$j3 = FabrikWorker::j3();
+
 		if ($this->canView() || $this->canUse())
 		{
 			$rollOver = $this->isTipped();
 			$labelClass = 'fabrikLabel control-label';
+
 			if (empty($element->label))
 			{
 				$labelClass .= ' fabrikEmptyLabel';
 			}
+
 			if ($rollOver)
 			{
 				$labelClass .= ' fabrikHover';
 			}
+
 			if ($bLabel && !$this->isHidden())
 			{
 				$model = $this->getFormModel();
 				$tip = $this->tipHtml($model->data);
+
 				if ($tip !== '')
 				{
 					$labelClass .= ' fabrikTip';
 				}
+
 				$str .= '<label for="' . $elementHTMLId . '" class="' . $labelClass . '" ' . $tip . '>';
 			}
 			elseif (!$bLabel && !$this->isHidden())
 			{
 				$str .= '<span class="' . $labelClass . ' faux-label">';
 			}
-			$l = $j3 ? '' : $element->label;
+
+			$labelText = JText::_($element->label);
+			$l = $j3 ? '' : $labelText;
 			$iconOpts = array('icon-class' => 'small');
+
 			if ($rollOver)
 			{
 				$l .= FabrikHelperHTML::image('question-sign.png', 'form', $tmpl, $iconOpts) . ' ';
 			}
+
 			if ($this->isEditable())
 			{
 				$validations = array_unique($this->validator->findAll());
+
 				if (count($validations) > 0)
 				{
 					$emptyIcon = $this->validator->getIcon();
 					$l .= FabrikHelperHTML::image($emptyIcon, 'form', $tmpl, $iconOpts) . ' ';
 				}
 			}
-			$l .= $j3 ? JText::_($element->label) : '';
+
+			$l .= $j3 ? $labelText : '';
 			$model = $this->getFormModel();
 			$str .= $l;
+
 			if ($bLabel && !$this->isHidden())
 			{
 				$str .= '</label>';
@@ -1478,6 +1567,7 @@ class PlgFabrik_Element extends FabrikPlugin
 				$str .= '</span>';
 			}
 		}
+
 		return $str;
 	}
 
@@ -1495,16 +1585,18 @@ class PlgFabrik_Element extends FabrikPlugin
 		$err = $this->getErrorMsg($repeatCounter);
 		$err = htmlspecialchars($err, ENT_QUOTES);
 		$str = '<span class="fabrikErrorMessage">';
+
 		if ($err !== '')
 		{
 			$err = '<span>' . $err . '</span>';
-
 			$usersConfig = JComponentHelper::getParams('com_fabrik');
 			$icon = FabrikWorker::j3() ? $usersConfig->get('error_icon', 'exclamation-sign') . '.png' : 'alert.png';
 			$str .= '<a href="#" class="fabrikTip" title="' . $err . '" opts="{notice:true}">' . FabrikHelperHTML::image($icon, 'form', $tmpl)
 			. '</a>';
 		}
+
 		$str .= '</span>';
+
 		return $str;
 	}
 
@@ -1525,7 +1617,9 @@ class PlgFabrik_Element extends FabrikPlugin
 		{
 			$data = JArrayHelper::fromObject($data);
 		}
+
 		$rollOver = $this->tipHtml($data, $mode);
+
 		return $rollOver !== '' ? '<span class="fabrikTip" ' . $rollOver . '">' . $txt . '</span>' : $txt;
 	}
 
@@ -1549,11 +1643,13 @@ class PlgFabrik_Element extends FabrikPlugin
 		if ($this->editable)
 		{
 			$validations = array_unique($this->validator->findAll());
+
 			if (count($validations) > 0)
 			{
 				$opts->heading = JText::_('COM_FABRIK_VALIDATION');
 			}
 		}
+
 		return $opts;
 	}
 
@@ -1571,14 +1667,18 @@ class PlgFabrik_Element extends FabrikPlugin
 		$lines = array();
 		$validations = array();
 		$tmpl = $this->getFormModel()->getTmpl();
+
 		if ($this->isEditable() && $mode === 'form')
 		{
 			$validations = array_unique($this->validator->findAll());
 		}
-		if (count($validations) > 0 || $this->isTipped($mode))
+
+		if (count($validations) == 0 && !$this->isTipped($mode))
 		{
-			$lines[] = '<div><ul class="validation-notices" style="list-style:none">';
+			return '';
 		}
+
+		$lines[] = '<ul class="validation-notices" style="list-style:none">';
 
 		if ($this->isTipped($mode))
 		{
@@ -1589,15 +1689,18 @@ class PlgFabrik_Element extends FabrikPlugin
 		{
 			$lines[] = '<li>' . $validation->getHoverText($tmpl) . '</li>';
 		}
+
 		if (count($lines) > 0)
 		{
-			$lines[] = '</ul></div>';
+			$lines[] = '</ul>';
 		}
+
 		$lines = array_unique($lines);
 		$rollOver = implode('', $lines);
 
 		// $$$ rob - looks like htmlspecialchars is needed otherwise invalid markup created and pdf output issues.
 		$rollOver = htmlspecialchars($rollOver, ENT_QUOTES);
+
 		return $rollOver;
 	}
 
@@ -1615,20 +1718,35 @@ class PlgFabrik_Element extends FabrikPlugin
 		{
 			$data = $this->getFormModel()->data;
 		}
+
 		$model = $this->getFormModel();
 		$params = $this->getParams();
+
 		if (!$model->isEditable() && !$params->get('labelindetails'))
 		{
 			return '';
 		}
+
 		$w = new FabrikWorker;
 		$tip = $w->parseMessageForPlaceHolder($params->get('rollover'), $data);
+
 		if ($params->get('tipseval'))
 		{
-			$tip = @eval($tip);
-			FabrikWorker::logEval($tip, 'Caught exception on eval of ' . $this->getElement()->name . ' tip: %s');
+			if (FabrikHelperHTML::isDebug())
+			{
+				$res = eval($tip);
+			}
+			else
+			{
+				$res = @eval($tip);
+			}
+
+			FabrikWorker::logEval($res, 'Caught exception (%s) on eval of ' . $this->getElement()->name . ' tip: ' . $tip);
+			$tip = $res;
 		}
+
 		$tip = JText::_($tip);
+
 		return $tip;
 	}
 
@@ -1699,15 +1817,17 @@ class PlgFabrik_Element extends FabrikPlugin
 
 		$key = $element->id . '.' . $groupModel->get('id') . '_' . $formModel->getId() . '_' . $useStep . '_'
 				. $incRepeatGroup;
+
 		if (isset($this->fullNames[$key]))
 		{
 			return $this->fullNames[$key];
 		}
+
 		$table = $listModel->getTable();
 		$db_table_name = $table->db_table_name;
-
 		$thisStep = ($useStep) ? $formModel->joinTableElementStep : '.';
 		$group = $groupModel->getGroup();
+
 		if ($groupModel->isJoin())
 		{
 			$joinModel = $groupModel->getJoinModel();
@@ -1718,11 +1838,14 @@ class PlgFabrik_Element extends FabrikPlugin
 		{
 			$fullName = $db_table_name . $thisStep . $element->name;
 		}
+
 		if ($groupModel->canRepeat() == 1 && $incRepeatGroup)
 		{
 			$fullName .= '[]';
 		}
+
 		$this->fullNames[$key] = $fullName;
+
 		return $fullName;
 	}
 
@@ -1769,18 +1892,22 @@ class PlgFabrik_Element extends FabrikPlugin
 	{
 		$app = JFactory::getApplication();
 		$rule = FabTable::getInstance('Element', 'FabrikTable');
+
 		if ($rule->load((int) $id))
 		{
 			$rule->id = null;
 			$rule->label = sprintf($copytxt, $rule->label);
+
 			if (!is_null($groupid))
 			{
 				$rule->group_id = $groupid;
 			}
+
 			if (!is_null($name))
 			{
 				$rule->name = $name;
 			}
+
 			$groupModel = JModelLegacy::getInstance('Group', 'FabrikFEModel');
 			$groupModel->setId($groupid);
 			$groupListModel = $groupModel->getListModel();
@@ -1793,6 +1920,7 @@ class PlgFabrik_Element extends FabrikPlugin
 					return JError::raiseWarning(500, JText::_('COM_FABRIK_ELEMENT_NAME_IN_USE'));
 				}
 			}
+
 			$date = JFactory::getDate();
 			$tz = new DateTimeZone($app->getCfg('offset'));
 			$date->setTimezone($tz);
@@ -1801,6 +1929,7 @@ class PlgFabrik_Element extends FabrikPlugin
 			$params->parent_linked = 1;
 			$rule->params = json_encode($params);
 			$rule->parent_id = $id;
+
 			if (!$rule->store())
 			{
 				return JError::raiseWarning($rule->getError());
@@ -1831,6 +1960,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		$query->select('id')->from('#__{package}_jsactions')->where('element_id = ' . (int) $id);
 		$db->setQuery($query);
 		$actions = $db->loadColumn();
+
 		foreach ($actions as $id)
 		{
 			$jscode = FabTable::getInstance('Jsaction', 'FabrikTable');
@@ -1839,6 +1969,7 @@ class PlgFabrik_Element extends FabrikPlugin
 			$jscode->element_id = $rule->id;
 			$jscode->store();
 		}
+
 		return $rule;
 	}
 
@@ -1857,10 +1988,12 @@ class PlgFabrik_Element extends FabrikPlugin
 	{
 		$model = $this->getFormModel();
 		$groupModel = $this->getGroup();
+
 		if (!$this->canUse() && !$this->canView())
 		{
 			return false;
 		}
+
 		if (!$this->canUse())
 		{
 			$this->setEditable(false);
@@ -1870,6 +2003,7 @@ class PlgFabrik_Element extends FabrikPlugin
 			$editable = $model->isEditable() ? true : false;
 			$this->setEditable($editable);
 		}
+
 		$params = $this->getParams();
 
 		// Force reload?
@@ -1911,6 +2045,7 @@ class PlgFabrik_Element extends FabrikPlugin
 			$w = new FabrikWorker;
 			$element->label = $w->parseMessageForPlaceHolder($l, $model->data);
 		}
+
 		$element->errorTag = $this->addErrorHTML($c, $tmpl);
 		$element->element_ro = $this->getROElement($model->data, $c);
 		$element->value = $this->getValue($model->data, $c);
@@ -1923,6 +2058,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		{
 			$element->element_raw = array_key_exists($elHTMLName, $model->data) ? $model->data[$elHTMLName] : $element->value;
 		}
+
 		if ($this->dataConsideredEmpty($element->element_ro, $c))
 		{
 			$element->containerClass .= ' fabrikDataEmpty';
@@ -1930,10 +2066,12 @@ class PlgFabrik_Element extends FabrikPlugin
 
 		// Tips (if not rendered as hovers)
 		$tip = $this->getTipText();
+
 		if ($tip !== '')
 		{
-			$tip = '<div class="fabrikInlineTip">' . FabrikHelperHTML::image('question-sign.png', 'form', $tmpl) . ' ' . $tip . '</div>';
+			$tip = FabrikHelperHTML::image('question-sign.png', 'form', $tmpl) . ' ' . $tip;
 		}
+
 		switch ($model->getParams()->get('tiplocation'))
 		{
 			default:
@@ -1958,11 +2096,15 @@ class PlgFabrik_Element extends FabrikPlugin
 				$element->tipSide = $tip;
 				break;
 		}
+
 		return $element;
 	}
 
 	/**
-	 * Buidl the tip HTML
+	 * Build the tip HTML
+	 *
+	 * @param   array   $data  Data
+	 * @param   string  $mode  Mode Form/List
 	 *
 	 * @return string
 	 */
@@ -1972,6 +2114,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		$title = $this->tipTextAndValidations($mode, $data);
 		$opts = $this->tipOpts();
 		$opts = json_encode($opts);
+
 		return $title !== '' ? 'title="' . $title . '" opts=\'' . $opts . '\'' : '';
 	}
 
@@ -1989,6 +2132,7 @@ class PlgFabrik_Element extends FabrikPlugin
 	{
 		$item = $this->getElement();
 		$c = array('fabrikElementContainer', 'plg-' . $item->plugin, $element->className, $item->name, $item->name . '_' . $item->group_id);
+
 		if ($element->hidden)
 		{
 			$c[] = 'fabrikHide';
@@ -2003,15 +2147,18 @@ class PlgFabrik_Element extends FabrikPlugin
 			 * easier for custom styling when the element ID isn't constant.
 			 */
 			$groupModel = $this->getGroupModel();
+
 			if ($groupModel->canRepeat())
 			{
 				$c[] = 'fabrikRepeatGroup___' . $this->getFullName(true, false);
 			}
 		}
+
 		if ($element->error != '')
 		{
 			$c[] = 'fabrikError';
 		}
+
 		return implode(' ', $c);
 	}
 
@@ -2056,6 +2203,7 @@ class PlgFabrik_Element extends FabrikPlugin
 	public function preRenderElement($data, $repeatCounter = 0)
 	{
 		$groupModel = $this->getGroupModel();
+
 		if (!$this->canView() && !$this->canUse())
 		{
 			return '';
@@ -2065,6 +2213,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		$this->_inJoin = $groupModel->isJoin();
 		$opts = array('runplugins' => 1);
 		$this->getValue($data, $repeatCounter, $opts);
+
 		if ($this->isEditable())
 		{
 			return $this->render($data, $repeatCounter);
@@ -2079,6 +2228,7 @@ class PlgFabrik_Element extends FabrikPlugin
 			// Placeholder to be updated by ajax code
 			$v = $this->getROElement($data, $repeatCounter);
 			$v = $v == '' ? '&nbsp;' : $v;
+
 			return '<div id="' . $htmlid . '">' . $v . '</div>';
 		}
 	}
@@ -2096,15 +2246,18 @@ class PlgFabrik_Element extends FabrikPlugin
 	public function getROElement($data, $repeatCounter = 0)
 	{
 		$groupModel = $this->getGroup();
+
 		if (!$this->canView() && !$this->canUse())
 		{
 			return '';
 		}
+
 		$editable = $this->isEditable();
 		$this->setEditable(false);
 		$v = $this->render($data, $repeatCounter);
 		$this->addCustomLink($v, $data, $repeatCounter);
 		$this->setEditable($editable);
+
 		return $v;
 	}
 
@@ -2124,22 +2277,28 @@ class PlgFabrik_Element extends FabrikPlugin
 		{
 			return $v;
 		}
+
 		$params = $this->getParams();
 		$customLink = $params->get('custom_link');
+
 		if ($customLink !== '' && $this->getElement()->link_to_detail == '1' && $params->get('custom_link_indetails', true))
 		{
 			$w = new FabrikWorker;
+
 			foreach ($data as $k => $val)
 			{
 				$repData[$k] = $val;
 			}
+
 			$customLink = $w->parseMessageForPlaceHolder($customLink, $data);
 			$customLink = $this->getListModel()->parseMessageForRowHolder($customLink, $data);
+
 			if (trim($customLink) !== '')
 			{
 				$v = '<a href="' . $customLink . '">' . $v . '</a>';
 			}
 		}
+
 		return $v;
 	}
 
@@ -2157,6 +2316,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		$parsed_name = $this->getFullName();
 		$err_msg = '';
 		$parsed_name = FabrikString::rtrimword($parsed_name, '[]');
+
 		if (isset($arErrors[$parsed_name]))
 		{
 			if (array_key_exists($repeatCount, $arErrors[$parsed_name]))
@@ -2171,6 +2331,7 @@ class PlgFabrik_Element extends FabrikPlugin
 				}
 			}
 		}
+
 		return $err_msg;
 	}
 
@@ -2199,10 +2360,11 @@ class PlgFabrik_Element extends FabrikPlugin
 	 * @return string
 	 */
 
-	protected function getHiddenField($name, $value, $id = '', $class = '')
+	protected function getHiddenField($name, $value, $id = '', $class = 'fabrikinput inputbox hidden')
 	{
 		$value = htmlspecialchars($value, ENT_COMPAT, 'UTF-8');
-		$opts = array('class' => 'fabrikinput inputbox', 'type' => 'hidden', 'name' => $name, 'value' => $value, 'id' => $id);
+		$opts = array('class' => $class, 'type' => 'hidden', 'name' => $name, 'value' => $value, 'id' => $id);
+
 		return $this->buildInput('input', $opts);
 	}
 
@@ -2218,11 +2380,14 @@ class PlgFabrik_Element extends FabrikPlugin
 	protected function buildInput($node = 'input', $bits = array())
 	{
 		$str = '<' . $node . ' ';
+
 		foreach ($bits as $key => $val)
 		{
-			$str .= $key . ' = "' . $val . '" ';
+			$str .= $key . '="' . $val . '" ';
 		}
+
 		$str .= '/>';
+
 		return $str;
 	}
 
@@ -2241,6 +2406,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		$element = $this->getElement();
 		$params = $this->getParams();
 		$size = (int) $element->width < 0 ? 1 : (int) $element->width;
+
 		if (!isset($type))
 		{
 			// Changes by JF Questiaux - info@betterliving.be
@@ -2266,13 +2432,17 @@ class PlgFabrik_Element extends FabrikPlugin
 			}
 			// End of changes
 		}
+
 		$maxlength = $params->get('maxlength');
+
 		if ($maxlength == "0" or $maxlength == '')
 		{
 			$maxlength = $size;
 		}
+
 		$class = array();
 		$bootstrapClass = $params->get('bootstrap_class', '');
+
 		if ($bootstrapClass !== '')
 		{
 			$class[] = $bootstrapClass;
@@ -2300,21 +2470,24 @@ class PlgFabrik_Element extends FabrikPlugin
 				case 'input-xxlarge':
 					$size = 60;
 					break;
-
 			}
 		}
+
 		if ($this->elementError != '')
 		{
 			$class[] = ' elementErrorHighlight';
 		}
+
 		if ($element->hidden == '1')
 		{
 			$class[] = ' hidden';
 			$type = 'hidden';
 		}
+
 		$bits['type'] = $type;
 		$bits['id'] = $this->getHTMLId($repeatCounter);
 		$bits['name'] = $this->getHTMLName($repeatCounter);
+
 		if (!$element->hidden)
 		{
 			$bits['size'] = $size;
@@ -2323,10 +2496,12 @@ class PlgFabrik_Element extends FabrikPlugin
 
 		$class[] = 'fabrikinput inputbox';
 		$bits['class'] = implode(' ', $class);
+
 		if ($params->get('placeholder', '') !== '')
 		{
 			$bits['placeholder'] = $params->get('placeholder');
 		}
+
 		if ($params->get('autocomplete', 1) == 0)
 		{
 			$bits['autocomplete'] = 'off';
@@ -2339,12 +2514,14 @@ class PlgFabrik_Element extends FabrikPlugin
 				$bits['readonly'] = "readonly";
 				$bits['class'] .= " readonly";
 			}
+
 			if ($params->get('disable'))
 			{
 				$bits['class'] .= " disabled";
 				$bits['disabled'] = 'disabled';
 			}
 		}
+
 		return $bits;
 	}
 
@@ -2362,6 +2539,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		{
 			$this->HTMLids = array();
 		}
+
 		if (!array_key_exists((int) $repeatCounter, $this->HTMLids))
 		{
 			$groupModel = $this->getGroup();
@@ -2369,6 +2547,7 @@ class PlgFabrik_Element extends FabrikPlugin
 			$table = $listModel->getTable();
 			$groupTable = $groupModel->getGroup();
 			$element = $this->getElement();
+
 			if ($groupModel->isJoin())
 			{
 				$joinModel = $groupModel->getJoinModel();
@@ -2385,12 +2564,15 @@ class PlgFabrik_Element extends FabrikPlugin
 			{
 				$fullName .= '_ro';
 			}
+
 			if ($groupModel->canRepeat())
 			{
 				$fullName .= '_' . $repeatCounter;
 			}
+
 			$this->HTMLids[$repeatCounter] = $fullName;
 		}
+
 		return $this->HTMLids[$repeatCounter];
 	}
 
@@ -2409,6 +2591,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		$table = $this->getListModel()->getTable();
 		$group = $groupModel->getGroup();
 		$element = $this->getElement();
+
 		if ($groupModel->isJoin())
 		{
 			$joinModel = $groupModel->getJoinModel();
@@ -2419,11 +2602,13 @@ class PlgFabrik_Element extends FabrikPlugin
 		{
 			$fullName = $table->db_table_name . '___' . $element->name;
 		}
+
 		if ($groupModel->canRepeat())
 		{
 			// $$$ rob - always use repeatCounter in html names - avoids ajax post issues with mootools1.1
 			$fullName .= '[' . $repeatCounter . ']';
 		}
+
 		if ($this->hasSubElements)
 		{
 			$fullName .= '[]';
@@ -2431,6 +2616,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		// @TODO: check this - repeated elements do need to have something applied to thier id based on their order in the repeated groups
 
 		$this->elementHTMLName = $fullName;
+
 		return $this->elementHTMLName;
 	}
 
@@ -2446,6 +2632,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		{
 			$this->params = new JRegistry($this->getElement()->params);
 		}
+
 		return $this->params;
 	}
 
@@ -2459,12 +2646,14 @@ class PlgFabrik_Element extends FabrikPlugin
 
 	protected function loadPluginParams()
 	{
-		if (isset($this->_xmlPath))
+		if (isset($this->xmlPath))
 		{
 			$element = $this->getElement();
 			$pluginParams = new JRegistry($element->params);
+
 			return $pluginParams;
 		}
+
 		return false;
 	}
 
@@ -2498,6 +2687,7 @@ class PlgFabrik_Element extends FabrikPlugin
 			$this->_db->setQuery($query);
 			$this->jsActions = $this->_db->loadObjectList();
 		}
+
 		return $this->jsActions;
 	}
 
@@ -2524,38 +2714,44 @@ class PlgFabrik_Element extends FabrikPlugin
 		$element = $this->getElement();
 		$form = $this->form->getForm();
 		$w = new FabrikWorker;
+
 		if (array_key_exists($element->id, $allJsActions))
 		{
 			$fxadded = array();
 			$elId = $this->getHTMLId($repeatCount);
+
 			foreach ($allJsActions[$element->id] as $jsAct)
 			{
 				$js = $jsAct->code;
 				$js = str_replace(array("\n", "\r"), "", $js);
+
 				if ($jsAct->action == 'load')
 				{
 					// JS code is already stored in the db as htmlspecialchars() 09/08/2013
 					$quote = '&#039;';
 					$js = preg_replace('#\bthis\b#', 'document.id(' . $quote . $elId . $quote . ')', $js);
 				}
+
 				if ($jsAct->action != '' && $js !== '')
 				{
-					$jsStr .= $jsControllerKey . ".dispatchEvent('$element->plugin', '$elId', '$jsAct->action', '$js');\n";
+					$jsSlashes = addslashes($js);
+					$jsStr .= $jsControllerKey . ".dispatchEvent('$element->plugin', '$elId', '$jsAct->action', '$jsSlashes');\n";
 				}
 				else
 				{
-
 					// Build wysiwyg code
 					if (isset($jsAct->js_e_event) && $jsAct->js_e_event != '')
 					{
 						// $$$ rob get the correct element id based on the repeat counter
 						$triggerEl = $this->getFormModel()->getElement(str_replace('fabrik_trigger_element_', '', $jsAct->js_e_trigger));
 						$triggerid = is_object($triggerEl) ? 'element_' . $triggerEl->getHTMLId($repeatCount) : $jsAct->js_e_trigger;
+
 						if (!array_key_exists($jsAct->js_e_trigger, $fxadded))
 						{
 							$jsStr .= $jsControllerKey . ".addElementFX('$triggerid', '$jsAct->js_e_event');\n";
 							$fxadded[$jsAct->js_e_trigger] = true;
 						}
+
 						$f = JFilterInput::getInstance();
 						$post = $f->clean($_POST, 'array');
 						$jsAct->js_e_value = $w->parseMessageForPlaceHolder(htmlspecialchars_decode($jsAct->js_e_value), $post);
@@ -2570,11 +2766,15 @@ class PlgFabrik_Element extends FabrikPlugin
 						}
 						elseif ($jsAct->js_e_condition == 'CONTAINS')
 						{
-							$js = "if (Array.from(this.get('value')).contains('$jsAct->js_e_value')) {";
+							$js = "if (Array.from(this.get('value')).contains('$jsAct->js_e_value')";
+							$js .= " || this.get('value').contains('$jsAct->js_e_value')";
+							$js .= ") {";
 						}
 						elseif ($jsAct->js_e_condition == '!CONTAINS')
 						{
-							$js = "if (!Array.from(this.get('value')).contains('$jsAct->js_e_value')) {";
+							$js = "if (!Array.from(this.get('value')).contains('$jsAct->js_e_value')";
+							$js .= " || !this.get('value').contains('$jsAct->js_e_value')";
+							$js .= ") {";
 						}
 						// $$$ hugh if we always quote the js_e_value, numeric comparison doesn't work, as '100' < '3'.
 						// So let's assume if they use <, <=, > or >= they mean numbers.
@@ -2595,6 +2795,7 @@ class PlgFabrik_Element extends FabrikPlugin
 						{
 							$js .= $jsControllerKey . ".doElementFX('fabrik_trigger_" . $triggerid . "', '$jsAct->js_e_event', this)";
 						}
+
 						$js .= "}";
 						$js = addslashes($js);
 						$js = str_replace(array("\n", "\r"), "", $js);
@@ -2603,6 +2804,7 @@ class PlgFabrik_Element extends FabrikPlugin
 				}
 			}
 		}
+
 		return $jsStr;
 	}
 
@@ -2624,6 +2826,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		{
 			return '';
 		}
+
 		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$listModel = $this->getListModel();
 		$filters = $listModel->getFilterArray();
@@ -2635,8 +2838,8 @@ class PlgFabrik_Element extends FabrikPlugin
 		$data = $f->clean($_REQUEST, 'array');
 
 		// See if the data is in the request array - can use tablename___elementname=filterval in query string
-
 		$default = '';
+
 		if (array_key_exists($elName, $data))
 		{
 			if (is_array($data[$elName]))
@@ -2644,6 +2847,7 @@ class PlgFabrik_Element extends FabrikPlugin
 				$default = @$data[$elName]['value'];
 			}
 		}
+
 		$context = 'com_' . $package . '.list' . $listModel->getRenderContext() . '.filter.' . $elid;
 		$context .= $normal ? '.normal' : '.advanced';
 
@@ -2654,6 +2858,7 @@ class PlgFabrik_Element extends FabrikPlugin
 			{
 				return '';
 			}
+
 			if (array_key_exists('elementid', $filters))
 			{
 				/**
@@ -2663,9 +2868,11 @@ class PlgFabrik_Element extends FabrikPlugin
 				 * $k = $normal == true ? array_search($elid, $filters['elementid']) : $counter;
 				 */
 				$k = false;
+
 				if ($normal)
 				{
 					$keys = array_keys($filters['elementid'], $elid);
+
 					foreach ($keys as $key)
 					{
 						/**
@@ -2686,17 +2893,22 @@ class PlgFabrik_Element extends FabrikPlugin
 				// Is there a filter with this elements name
 				if ($k !== false)
 				{
-					/**
-					 * if its a search all filter dont use its value.
-					 * if we did the next time the filter form is submitted its value is turned
-					 * from a search all filter into an element filter
-					 */
 					$searchType = JArrayHelper::getValue($filters['search_type'], $k);
-					if (!is_null($searchType) && $searchType != 'searchall')
+
+					// Check element name is the same as the filter (could occur in advanced search when swapping element type)
+					if ($searchType <> 'advanced' || $filters['key'][$k] === $app->input->getString('element'))
 					{
-						if ($searchType != 'prefilter')
+						/**
+						 * if its a search all filter dont use its value.
+						 * if we did the next time the filter form is submitted its value is turned
+						 * from a search all filter into an element filter
+						 */
+						if (!is_null($searchType) && $searchType != 'searchall')
 						{
-							$default = JArrayHelper::getValue($filters['origvalue'], $k);
+							if ($searchType != 'prefilter')
+							{
+								$default = JArrayHelper::getValue($filters['origvalue'], $k);
+							}
 						}
 					}
 				}
@@ -2705,9 +2917,11 @@ class PlgFabrik_Element extends FabrikPlugin
 
 		$default = $app->getUserStateFromRequest($context, $elid, $default);
 		$fType = $this->getElement()->filter_type;
+
 		if ($this->multiOptionFilter())
 		{
 			$default = (is_array($default) && array_key_exists('value', $default)) ? $default['value'] : $default;
+
 			if (is_array($default))
 			{
 				// Hidden querystring filters can be using ranged valued though
@@ -2722,6 +2936,7 @@ class PlgFabrik_Element extends FabrikPlugin
 				$default = stripslashes($default);
 			}
 		}
+
 		return $default;
 	}
 
@@ -2734,6 +2949,7 @@ class PlgFabrik_Element extends FabrikPlugin
 	protected function multiOptionFilter()
 	{
 		$fType = $this->getElement()->filter_type;
+
 		return in_array($fType, array('range', 'checkbox', 'multiselect'));
 	}
 
@@ -2766,6 +2982,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		$listModel = $this->getListModel();
 		$v = 'fabrik___filter[list_' . $listModel->getRenderContext() . '][value]';
 		$v .= $normal ? '[' . $counter . ']' : '[]';
+
 		return $v;
 	}
 
@@ -2784,10 +3001,12 @@ class PlgFabrik_Element extends FabrikPlugin
 		$listModel = $this->getListModel();
 		$formModel = $listModel->getFormModel();
 		$dbElName = $this->getFullName(false, false);
+
 		if (!$formModel->hasElement($dbElName))
 		{
 			return '';
 		}
+
 		$table = $listModel->getTable();
 		$element = $this->getElement();
 		$elName = $this->getFullName(true, false);
@@ -2802,13 +3021,16 @@ class PlgFabrik_Element extends FabrikPlugin
 		{
 			$rows = $this->filterValueList($normal);
 			$this->unmergeFilterSplits($rows);
+
 			if (!in_array($element->filter_type,  array('checkbox', 'multiselect')))
 			{
 				array_unshift($rows, JHTML::_('select.option', '', $this->filterSelectLabel()));
 			}
 		}
+
 		$size = (int) $this->getParams()->get('filter_length', 20);
 		$class = $this->filterClass();
+
 		switch ($element->filter_type)
 		{
 			case 'range':
@@ -2846,6 +3068,7 @@ class PlgFabrik_Element extends FabrikPlugin
 					$default = htmlspecialchars($default);
 					$return[] = '<input type="hidden" name="' . $v . '" class="' . $class . '" value="' . $default . '" id="' . $id . '" />';
 				}
+
 				break;
 
 			case 'auto-complete':
@@ -2853,7 +3076,9 @@ class PlgFabrik_Element extends FabrikPlugin
 				$return = array_merge($return, $autoComplete);
 				break;
 		}
+
 		$return[] = $normal ? $this->getFilterHiddenFields($counter, $elName) : $this->getAdvancedFilterHiddenFields();
+
 		return implode("\n", $return);
 	}
 
@@ -2871,6 +3096,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		$classes = array('inputbox fabrik_filter');
 		$bootstrapClass = $params->get('filter_class', 'input-small');
 		$classes[] = $bootstrapClass;
+
 		return implode(' ', $classes);
 	}
 
@@ -2890,12 +3116,15 @@ class PlgFabrik_Element extends FabrikPlugin
 	{
 		$values = array();
 		$labels = array();
+
 		foreach ($rows as $row)
 		{
 			$values[] = $row->value;
 			$labels[] = $row->text;
 		}
+
 		$default = (array) $default;
+
 		return implode("\n", FabrikHelperHTML::grid($values, $labels, $default, $v, 'checkbox', false, 1, array('input' => array('fabrik_filter'))));
 	}
 
@@ -2919,21 +3148,21 @@ class PlgFabrik_Element extends FabrikPlugin
 		$class = $this->filterClass();
 		$attribs = 'class="' . $class . '" size="1" ';
 		$default = (array) $default;
-		$default0 = array_key_exists('value', $default) ? $default['value'][0] : $default[0];
-		$default1 = array_key_exists('value', $default) ? $default['value'][1] : $default[1];
+		$def0 = array_key_exists('value', $default) ? $default['value'][0] : $default[0];
+		$def1 = array_key_exists('value', $default) ? $default['value'][1] : $default[1];
 
 		if ($type === 'list')
 		{
 			$return[] = JText::_('COM_FABRIK_BETWEEN');
-			$return[] = JHTML::_('select.genericlist', $rows, $v . '[0]', $attribs, 'value', 'text', $default0, $element->name . '_filter_range_0');
+			$return[] = JHTML::_('select.genericlist', $rows, $v . '[0]', $attribs, 'value', 'text', $def0, $element->name . '_filter_range_0');
 
 			$return[] = '<br /> ' . JText::_('COM_FABRIK_AND') . ' ';
-			$return[] = JHTML::_('select.genericlist', $rows, $v . '[1]', $attribs, 'value', 'text', $default1, $element->name . '_filter_range_1');
+			$return[] = JHTML::_('select.genericlist', $rows, $v . '[1]', $attribs, 'value', 'text', $def1, $element->name . '_filter_range_1');
 		}
 		else
 		{
-			$return[] = '<input type="hidden" class="' . $class . '" name="' . $v . '[0]" value="' . $default0 . '" id="' . $element->name . '_filter_range_0" />';
-			$return[] = '<input type="hidden" class="' . $class . '" name="' . $v . '[1]" value="' . $default1 . '" id="' . $element->name . '_filter_range_1" />';
+			$return[] = '<input type="hidden" class="' . $class . '" name="' . $v . '[0]" value="' . $def0 . '" id="' . $element->name . '_filter_range_0" />';
+			$return[] = '<input type="hidden" class="' . $class . '" name="' . $v . '[1]" value="' . $def1 . '" id="' . $element->name . '_filter_range_1" />';
 		}
 	}
 
@@ -2951,11 +3180,12 @@ class PlgFabrik_Element extends FabrikPlugin
 
 	protected function autoCompleteFilter($default, $v, $labelValue = null, $normal = true)
 	{
-		$listModel = $this->getListModel();
 		if (is_null($labelValue))
 		{
 			$labelValue = $default;
 		}
+
+		$listModel = $this->getListModel();
 		$default = stripslashes($default);
 		$default = htmlspecialchars($default);
 		$id = $this->getHTMLId() . 'value';
@@ -2969,8 +3199,8 @@ class PlgFabrik_Element extends FabrikPlugin
 		$return[] = '<input type="hidden" name="' . $v . '" class="' . $class . ' ' . $id . '" value="' . $default . '" />';
 		$return[] = '<input type="text" name="' . 'auto-complete' . $this->getElement()->id . '" class="' . $class . ' autocomplete-trigger '
 				. $id . '-auto-complete" size="' . $size . '" value="' . $labelValue . '" />';
-
 		$opts = array();
+
 		if ($normal)
 		{
 			$opts['menuclass'] = 'auto-complete-container';
@@ -2981,9 +3211,11 @@ class PlgFabrik_Element extends FabrikPlugin
 			$selector = '.advancedSeach_' . $listModel->getRenderContext() . ' .' . $id;
 			$opts['menuclass'] = 'auto-complete-container advanced';
 		}
+
 		$element = $this->getElement();
 		$formid = $this->getFormModel()->getId();
 		FabrikHelperHTML::autoComplete($selector, $element->id, $formid, $element->plugin, $opts);
+
 		return $return;
 	}
 
@@ -2996,6 +3228,7 @@ class PlgFabrik_Element extends FabrikPlugin
 	protected function filterSelectLabel()
 	{
 		$params = $this->getParams();
+
 		return $params->get('filter_required') == 1 ? JText::_('COM_FABRIK_PLEASE_SELECT') : JText::_('COM_FABRIK_FILTER_PLEASE_SELECT');
 	}
 
@@ -3030,21 +3263,26 @@ class PlgFabrik_Element extends FabrikPlugin
 		)
 		*/
 		$allvalues = array();
+
 		foreach ($rows as $row)
 		{
 			$allvalues[] = $row->value;
 		}
+
 		$c = count($rows) - 1;
+
 		for ($j = $c; $j >= 0; $j--)
 		{
 			$vals = FabrikWorker::JSONtoData($rows[$j]->value, true);
 			$txt = FabrikWorker::JSONtoData($rows[$j]->text, true);
+
 			if (is_array($vals))
 			{
 				for ($i = 0; $i < count($vals); $i++)
 				{
 					$vals2 = FabrikWorker::JSONtoData($vals[$i], true);
 					$txt2 = FabrikWorker::JSONtoData(JArrayHelper::getValue($txt, $i), true);
+
 					for ($jj = 0; $jj < count($vals2); $jj++)
 					{
 						if (!in_array($vals2[$jj], $allvalues))
@@ -3054,12 +3292,14 @@ class PlgFabrik_Element extends FabrikPlugin
 						}
 					}
 				}
+
 				if (FabrikWorker::isJSON($rows[$j]->value))
 				{
 					// $$$ rob 01/10/2012 - if not unset then you could get json values in standard dd filter (checkbox)
 					unset($rows[$j]);
 				}
 			}
+
 			if (count($vals) > 1)
 			{
 				unset($rows[$j]);
@@ -3080,14 +3320,17 @@ class PlgFabrik_Element extends FabrikPlugin
 		$element = $this->getElement();
 		$values = $this->getSubOptionValues();
 		$labels = $this->getSubOptionLabels();
+
 		foreach ($rows as &$row)
 		{
 			$k = array_search($row->value, $values);
+
 			if ($k !== false)
 			{
 				$row->text = $labels[$k];
 			}
 		}
+
 		$rows = array_values($rows);
 	}
 
@@ -3100,6 +3343,7 @@ class PlgFabrik_Element extends FabrikPlugin
 	protected function getSubOptionValues()
 	{
 		$phpOpts = $this->getPhpOptions();
+
 		if (!$phpOpts)
 		{
 			$params = $this->getParams();
@@ -3115,16 +3359,19 @@ class PlgFabrik_Element extends FabrikPlugin
 			 **/
 			if (!is_array($phpOpts) || !$phpOpts[0] || !is_object($phpOpts[0]) || !$phpOpts[0]->value || !$phpOpts[0]->text)
 			{
-				FabrikWorker::logError(sprintf(JText::_('COM_FABRIK_ELEMENT_SUBOPTION_ERROR'),$this->element->name, var_export($phpOpts,true)),'error');
+				FabrikWorker::logError(sprintf(JText::_('COM_FABRIK_ELEMENT_SUBOPTION_ERROR'), $this->element->name, var_export($phpOpts, true)), 'error');
+
 				return array();
 			}
 
 			$opts = array();
+
 			foreach ($phpOpts as $phpOpt)
 			{
 				$opts[] = $phpOpt->value;
 			}
 		}
+
 		return $opts;
 	}
 
@@ -3137,6 +3384,7 @@ class PlgFabrik_Element extends FabrikPlugin
 	protected function getSubOptionLabels()
 	{
 		$phpOpts = $this->getPhpOptions();
+
 		if (!$phpOpts)
 		{
 			$params = $this->getParams();
@@ -3152,20 +3400,24 @@ class PlgFabrik_Element extends FabrikPlugin
 			 **/
 			if (!is_array($phpOpts) || !$phpOpts[0] || !is_object($phpOpts[0]) || !$phpOpts[0]->value || !$phpOpts[0]->text)
 			{
-				FabrikWorker::logError(sprintf(JText::_('COM_FABRIK_ELEMENT_SUBOPTION_ERROR'),$this->element->name, var_export($phpOpts,true)),'error');
+				FabrikWorker::logError(sprintf(JText::_('COM_FABRIK_ELEMENT_SUBOPTION_ERROR'), $this->element->name, var_export($phpOpts, true)), 'error');
+
 				return array();
 			}
 
 			$opts = array();
+
 			foreach ($phpOpts as $phpOpt)
 			{
 				$opts[] = $phpOpt->text;
 			}
 		}
+
 		foreach ($opts as &$opt)
 		{
 			$opt = JText::_($opt);
 		}
+
 		return $opts;
 	}
 
@@ -3181,6 +3433,7 @@ class PlgFabrik_Element extends FabrikPlugin
 	{
 		$params = $this->getParams();
 		$pop = $params->get('dropdown_populate', '');
+
 		if ($pop !== '')
 		{
 			if (FabrikHelperHTML::isDebug())
@@ -3191,9 +3444,12 @@ class PlgFabrik_Element extends FabrikPlugin
 			{
 				$res = @eval($pop);
 			}
+
 			FabrikWorker::logEval($res, 'Eval exception : ' . $this->element->name . '::getPhpOptions() : ' . $pop . ' : %s');
+
 			return $res;
 		}
+
 		return false;
 	}
 
@@ -3234,10 +3490,12 @@ class PlgFabrik_Element extends FabrikPlugin
 		$usersConfig = JComponentHelper::getParams('com_fabrik');
 		$params = $this->getParams();
 		$filter_build = $params->get('filter_build_method', 0);
+
 		if ($filter_build == 0)
 		{
 			$filter_build = $usersConfig->get('filter_build_method');
 		}
+
 		return $filter_build;
 	}
 
@@ -3257,6 +3515,7 @@ class PlgFabrik_Element extends FabrikPlugin
 	public function filterValueList($normal, $tableName = '', $label = '', $id = '', $incjoin = true)
 	{
 		$filter_build = $this->getFilterBuildMethod();
+
 		if ($filter_build == 2 && $this->hasSubElements)
 		{
 			return $this->filterValueList_All($normal, $tableName, $label, $id, $incjoin);
@@ -3304,6 +3563,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		$elName = $this->getFullName(true, false);
 		$params = $this->getParams();
 		$elName2 = $this->getFullName(false, false);
+
 		if (!$this->isJoin())
 		{
 			$ids = $listModel->getColumnData($elName2);
@@ -3321,6 +3581,7 @@ class PlgFabrik_Element extends FabrikPlugin
 				}
 			}
 		}
+
 		$incjoin = $this->isJoin() ? false : $incjoin;
 		/**
 		 * filter the drop downs lists if the table_view_own_details option is on
@@ -3347,21 +3608,26 @@ class PlgFabrik_Element extends FabrikPlugin
 				}
 			}
 		}
+
 		$elName = FabrikString::safeColName($elName);
+
 		if ($label == '')
 		{
 			$label = $this->isJoin() ? $this->getElement()->name : $elName;
 		}
+
 		if ($id == '')
 		{
 			$id = $this->isJoin() ? 'id' : $elName;
 		}
+
 		if ($this->encryptMe())
 		{
 			$secret = JFactory::getConfig()->getValue('secret');
 			$label = 'AES_DECRYPT(' . $label . ', ' . $fabrikDb->quote($secret) . ')';
 			$id = 'AES_DECRYPT(' . $id . ', ' . $fabrikDb->quote($secret) . ')';
 		}
+
 		$origTable = $tableName == '' ? $origTable : $tableName;
 		/**
 		 * $$$ rob - 2nd sql was blowing up for me on my test table - why did we change to it?
@@ -3378,6 +3644,7 @@ class PlgFabrik_Element extends FabrikPlugin
 			$sql = 'SELECT DISTINCT(' . $label . ') AS ' . $fabrikDb->quoteName('text') . ', ' . $id . ' AS ' . $fabrikDb->quoteName('value')
 			. ' FROM ' . $fabrikDb->quoteName($fromTable) . ' ' . $joinStr . "\n";
 		}
+
 		if (!$this->isJoin())
 		{
 			$sql .= 'WHERE ' . $id . ' IN (\'' . implode("','", $ids) . '\')';
@@ -3385,13 +3652,14 @@ class PlgFabrik_Element extends FabrikPlugin
 
 		// Apply element where/order by statements to the filter (e.g. dbjoins 'Joins where and/or order by statement')
 		$elementWhere = $this->buildQueryWhere(array(), true, null, array('mode' => 'filter'));
+
 		if (JString::stristr($sql, 'WHERE ') && JString::stristr($elementWhere, 'WHERE '))
 		{
 			// $$$ hugh - only replace the WHERE with AND if it's the first word, so we don't munge sub-queries
 			// $elementWhere = JString::str_ireplace('WHERE ', 'AND ', $elementWhere);
 			$elementWhere = preg_replace("#^(\s*)(WHERE)(.*)#i", "$1AND$3", $elementWhere);
-
 		}
+
 		$sql .= ' ' . $elementWhere;
 		$sql .= "\n" . $groupBy;
 		$sql = $listModel->pluginQuery($sql);
@@ -3406,8 +3674,8 @@ class PlgFabrik_Element extends FabrikPlugin
 		{
 			throw new ErrorException('filter query error: ' . $this->getElement()->name . ' ' . $fabrikDb->getErrorMsg(), 500);
 		}
-		return $rows;
 
+		return $rows;
 	}
 
 	/**
@@ -3425,14 +3693,15 @@ class PlgFabrik_Element extends FabrikPlugin
 		if (in_array($this->getFilterType(), array('range', 'range-hidden')))
 		{
 			$return = array();
+
 			foreach ($data as $d)
 			{
 				$return[] = $this->getROElement($d);
-
 			}
-			return JText::_('COM_FABRIK_BETWEEN') . '<br />' . implode('<br />' . JText::_('COM_FABRIK_AND') . "<br />", $return);
 
+			return JText::_('COM_FABRIK_BETWEEN') . '<br />' . implode('<br />' . JText::_('COM_FABRIK_AND') . "<br />", $return);
 		}
+
 		return $this->getROElement($data);
 	}
 
@@ -3476,10 +3745,12 @@ class PlgFabrik_Element extends FabrikPlugin
 		$vals = $this->getSubOptionValues();
 		$labels = $this->getSubOptionLabels();
 		$return = array();
+
 		for ($i = 0; $i < count($vals); $i++)
 		{
 			$return[] = JHTML::_('select.option', $vals[$i], $labels[$i]);
 		}
+
 		return $return;
 	}
 
@@ -3505,8 +3776,8 @@ class PlgFabrik_Element extends FabrikPlugin
 		{
 			$elName = FabrikString::safeColName($elName);
 		}
-		$hidden = $hidden ? 1 : 0;
 
+		$hidden = $hidden ? 1 : 0;
 		$table = $this->getListModel()->getTable();
 		$match = $this->isExactMatch(array('match' => $element->filter_exact_match));
 		$return = array();
@@ -3537,6 +3808,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		$return[] = $prefix . '[grouped_to_previous][' . $counter . ']" value="0" />';
 		$return[] = $prefix . '[hidden][' . $counter . ']" value="' . $hidden . '" />';
 		$return[] = $prefix . '[elementid][' . $counter . ']" value="' . $element->id . '" />';
+
 		return implode("\n", $return);
 	}
 
@@ -3557,6 +3829,7 @@ class PlgFabrik_Element extends FabrikPlugin
 			$match = $this->isExactMatch(array('match' => $this->getElement()->filter_exact_match));
 			$cond = ($match == 1) ? '=' : 'contains';
 		}
+
 		return $cond;
 	}
 
@@ -3575,10 +3848,12 @@ class PlgFabrik_Element extends FabrikPlugin
 		$app = JFactory::getApplication();
 		$qsFilter = $app->input->get($name, array(), 'array');
 		$qsValues = JArrayHelper::getValue($qsFilter, 'value', array());
+
 		if (count($qsValues) > 1)
 		{
 			$type = $type === 'hidden' ? 'range-hidden' : 'range';
 		}
+
 		return $type;
 	}
 
@@ -3592,10 +3867,12 @@ class PlgFabrik_Element extends FabrikPlugin
 	{
 		$element = $this->getElement();
 		$elName = $this->getFilterFullName();
+
 		if (!is_a($this, 'PlgFabrik_ElementDatabasejoin'))
 		{
 			$elName = FabrikString::safeColName($elName);
 		}
+
 		$listModel = $this->getListModel();
 		$element = $this->getElement();
 		$return = array();
@@ -3623,6 +3900,7 @@ class PlgFabrik_Element extends FabrikPlugin
 	{
 		$db = FabrikWorker::getDbo();
 		$element = $this->getElement();
+
 		if ($element->filter_type === 'range')
 		{
 			if (is_numeric($value[0]) && is_numeric($value[1]))
@@ -3633,6 +3911,7 @@ class PlgFabrik_Element extends FabrikPlugin
 			{
 				$value = $db->quote($value[0]) . ' AND ' . $db->quote($value[1]);
 			}
+
 			$condition = 'BETWEEN';
 		}
 		else
@@ -3643,10 +3922,13 @@ class PlgFabrik_Element extends FabrikPlugin
 				{
 					$v = $db->quote($v);
 				}
+
 				$value = ' (' . implode(',', $value) . ')';
 			}
+
 			$condition = 'IN';
 		}
+
 		return array($value, $condition);
 	}
 
@@ -3667,6 +3949,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		{
 			$value = preg_quote($value);
 		}
+
 		/**
 		 * If doing a search via a querystring for O'Fallon then the ' is backslahed
 		 * in FabrikModelListfilter::getQuerystringFilters()
@@ -3699,7 +3982,9 @@ class PlgFabrik_Element extends FabrikPlugin
 		{
 			return;
 		}
+
 		$this->escapedQueryValue = true;
+
 		if (is_array($value))
 		{
 			foreach ($value as &$val)
@@ -3727,6 +4012,7 @@ class PlgFabrik_Element extends FabrikPlugin
 	{
 		$this->escapeQueryValue($condition, $value);
 		$db = FabrikWorker::getDbo();
+
 		if (is_array($value))
 		{
 			// Ranged search
@@ -3792,8 +4078,8 @@ class PlgFabrik_Element extends FabrikPlugin
 					$condition = 'NOT IN';
 					$value = ($eval == FABRIKFILTER_QUERY) ? '(' . $value . ')' : '(' . $value . ')';
 					break;
-
 			}
+
 			switch ($condition)
 			{
 				case '>':
@@ -3820,12 +4106,14 @@ class PlgFabrik_Element extends FabrikPlugin
 				$value = JString::ltrim($value, "'");
 				$value = JString::rtrim($value, "'");
 			}
+
 			if ($condition == '=' && $value == "'_null_'")
 			{
 				$condition = " IS NULL ";
 				$value = '';
 			}
 		}
+
 		return array($value, $condition);
 	}
 
@@ -3845,6 +4133,7 @@ class PlgFabrik_Element extends FabrikPlugin
 	public function getFilterQuery($key, $condition, $value, $originalValue, $type = 'normal')
 	{
 		$this->encryptFieldName($key);
+
 		switch ($condition)
 		{
 			case 'earlierthisyear':
@@ -3890,8 +4179,10 @@ class PlgFabrik_Element extends FabrikPlugin
 				{
 					$query = " $key $condition $value ";
 				}
+
 				break;
 		}
+
 		return $query;
 	}
 
@@ -3924,10 +4215,12 @@ class PlgFabrik_Element extends FabrikPlugin
 	{
 		$params = $this->getParams();
 		$fieldDesc = $this->getFieldDescription();
+
 		if (JString::stristr($fieldDesc, 'INT') || $this->getElement()->filter_exact_match == 1)
 		{
 			return '=';
 		}
+
 		return 'REGEXP';
 	}
 
@@ -3961,6 +4254,7 @@ class PlgFabrik_Element extends FabrikPlugin
 	public function onSave($data)
 	{
 		$params = $this->getParams();
+
 		if (!$this->canEncrypt() && $params->get('encrypt'))
 		{
 			throw new RuntimeException('The encryption option is only available for field and text area plugins');
@@ -3985,6 +4279,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		$id = (int) $this->getElement()->id;
 		$query->delete()->from('#__{package}_jsactions')->where('element_id =' . $id);
 		$db->setQuery($query);
+
 		try
 		{
 			$db->execute();
@@ -3993,6 +4288,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		{
 			throw new RuntimeException('didnt delete js actions for element ' . $id);
 		}
+
 		return true;
 	}
 
@@ -4041,6 +4337,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		{
 			$v = $params->get('sub_default_label');
 		}
+
 		return ($key === false) ? $v : JArrayHelper::getValue($labels, $key, $defaultLabel);
 	}
 
@@ -4063,12 +4360,14 @@ class PlgFabrik_Element extends FabrikPlugin
 		{
 			$label = 'CONCAT(' . implode(', " & " , ', $labels) . ')  AS label';
 		}
+
 		$item = $listModel->getTable();
 		$joinSQL = $listModel->buildQueryJoin();
 		$whereSQL = $listModel->buildQueryWhere();
 		$name = $this->getFullName(false, false);
 		$groupModel = $this->getGroup();
 		$roundTo = (int) $this->getParams()->get('avg_round');
+
 		if ($groupModel->isJoin())
 		{
 			// Element is in a joined column - lets presume the user wants to sum all cols, rather than reducing down to the main cols totals
@@ -4081,7 +4380,6 @@ class PlgFabrik_Element extends FabrikPlugin
 			return "SELECT ROUND(AVG(value), $roundTo) AS value, label
 			FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label FROM " . FabrikString::safeColName($item->db_table_name)
 			. " $joinSQL $whereSQL) AS t";
-
 		}
 	}
 
@@ -4104,11 +4402,13 @@ class PlgFabrik_Element extends FabrikPlugin
 		{
 			$label = 'CONCAT(' . implode(', " & " , ', $labels) . ')  AS label';
 		}
+
 		$item = $listModel->getTable();
 		$joinSQL = $listModel->buildQueryJoin();
 		$whereSQL = $listModel->buildQueryWhere();
 		$name = $this->getFullName(false, false);
 		$groupModel = $this->getGroup();
+
 		if ($groupModel->isJoin())
 		{
 			// Element is in a joined column - lets presume the user wants to sum all cols, rather than reducing down to the main cols totals
@@ -4120,7 +4420,6 @@ class PlgFabrik_Element extends FabrikPlugin
 			return "SELECT SUM(value) AS value, label
 			FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label FROM " . FabrikString::safeColName($item->db_table_name)
 			. " $joinSQL $whereSQL) AS t";
-
 		}
 	}
 
@@ -4142,11 +4441,13 @@ class PlgFabrik_Element extends FabrikPlugin
 		$whereSQL = $listModel->buildQueryWhere();
 		$name = $this->getFullName(false, false);
 		$groupModel = $this->getGroup();
+
 		if ($groupModel->isJoin())
 		{
 			// Element is in a joined column - lets presume the user wants to sum all cols, rather than reducing down to the main cols totals
 			// $custom_query = sprintf($custom_query, $name);
 			$custom_query = str_replace('%s', $name, $custom_query);
+
 			return "SELECT $custom_query AS value, $label AS label FROM " . FabrikString::safeColName($item->db_table_name) . " $joinSQL $whereSQL";
 		}
 		else
@@ -4154,6 +4455,7 @@ class PlgFabrik_Element extends FabrikPlugin
 			// Need to do first query to get distinct records as if we are doing left joins the sum is too large
 			// $custom_query = sprintf($custom_query, 'value');
 			$custom_query = str_replace('%s', 'value', $custom_query);
+
 			return "SELECT $custom_query AS value, label FROM (SELECT DISTINCT " . FabrikString::safeColName($item->db_table_name)
 			. ".*, $name AS value, $label AS label FROM " . FabrikString::safeColName($item->db_table_name) . " $joinSQL $whereSQL) AS t";
 		}
@@ -4178,9 +4480,11 @@ class PlgFabrik_Element extends FabrikPlugin
 		{
 			$label = 'CONCAT(' . implode(', " & " , ', $labels) . ')  AS label';
 		}
+
 		$item = $listModel->getTable();
 		$joinSQL = $listModel->buildQueryJoin();
 		$whereSQL = $listModel->buildQueryWhere();
+
 		return "SELECT {$this->getFullName(false, false, false)} AS value, $label FROM " . FabrikString::safeColName($item->db_table_name)
 		. " $joinSQL $whereSQL ";
 	}
@@ -4204,6 +4508,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		{
 			$label = 'CONCAT(' . implode(', " & " , ', $labels) . ')  AS label';
 		}
+
 		$db = FabrikWorker::getDbo();
 		$item = $listModel->getTable();
 		$joinSQL = $listModel->buildQueryJoin();
@@ -4213,6 +4518,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		// $$$ hugh - need to account for 'count value' here!
 		$params = $this->getParams();
 		$count_condition = $params->get('count_condition', '');
+
 		if (!empty($count_condition))
 		{
 			if (!empty($whereSQL))
@@ -4224,7 +4530,9 @@ class PlgFabrik_Element extends FabrikPlugin
 				$whereSQL = "WHERE $name = " . $db->quote($count_condition);
 			}
 		}
+
 		$groupModel = $this->getGroup();
+
 		if ($groupModel->isJoin())
 		{
 			// Element is in a joined column - lets presume the user wants to sum all cols, rather than reducing down to the main cols totals
@@ -4237,6 +4545,7 @@ class PlgFabrik_Element extends FabrikPlugin
 			FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label FROM " . FabrikString::safeColName($item->db_table_name)
 			. " $joinSQL $whereSQL) AS t";
 		}
+
 		return $query;
 	}
 
@@ -4258,12 +4567,15 @@ class PlgFabrik_Element extends FabrikPlugin
 		$app = JFactory::getApplication();
 		$pluginManager = FabrikWorker::getPluginManager();
 		$requestGroupBy = $app->input->get('group_by', '');
+
 		if ($requestGroupBy == '0')
 		{
 			$requestGroupBy = '';
 		}
+
 		$groupBys = array();
 		$splitName = array();
+
 		if ($requestGroupBy !== '')
 		{
 			$formModel = $this->getFormModel();
@@ -4273,6 +4585,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		else
 		{
 			$listGroupBy = $listModel->getTable()->group_by;
+
 			if ($listGroupBy !== '')
 			{
 				$groupBys[] = $listGroupBy;
@@ -4281,6 +4594,7 @@ class PlgFabrik_Element extends FabrikPlugin
 
 		$params = $this->getParams();
 		$splitSum = $params->get($splitParam, null);
+
 		if (!is_null($splitSum))
 		{
 			$groupBys[] = $splitSum;
@@ -4290,6 +4604,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		{
 			$plugin = $pluginManager->getElementPlugin($gById);
 			$sName = method_exists($plugin, 'getJoinLabelColumn') ? $plugin->getJoinLabelColumn() : $plugin->getFullName(false, false, false);
+
 			if (!stristr($sName, 'CONCAT'))
 			{
 				$gById = FabrikString::safeColName($sName);
@@ -4304,6 +4619,7 @@ class PlgFabrik_Element extends FabrikPlugin
 				}
 			}
 		}
+
 		return $groupBys;
 	}
 
@@ -4319,7 +4635,6 @@ class PlgFabrik_Element extends FabrikPlugin
 
 	protected function formatCalValues(&$rows)
 	{
-
 	}
 
 	/**
@@ -4341,6 +4656,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		$groupBys = $this->calcGroupBys('sum_split', $listModel);
 		$split = empty($groupBys) ? false : true;
 		$calcLabel = $params->get('sum_label', JText::_('COM_FABRIK_SUM'));
+
 		if ($split)
 		{
 			$pluginManager = FabrikWorker::getPluginManager();
@@ -4352,10 +4668,12 @@ class PlgFabrik_Element extends FabrikPlugin
 			$results2 = $db->loadObjectList('label');
 			$this->formatCalValues($results2);
 			$uberTotal = 0;
+
 			foreach ($results2 as $pair)
 			{
 				$uberTotal += $pair->value;
 			}
+
 			$uberObject = new stdClass;
 			$uberObject->value = $uberTotal;
 			$uberObject->label = JText::_('COM_FABRIK_TOTAL');
@@ -4373,7 +4691,9 @@ class PlgFabrik_Element extends FabrikPlugin
 			$results = $db->loadObjectList('label');
 			$this->formatCalValues($results);
 		}
+
 		$res = $this->formatCalcs($results, $calcLabel, $split);
+
 		return array($res, $results);
 	}
 
@@ -4407,10 +4727,12 @@ class PlgFabrik_Element extends FabrikPlugin
 			$results2 = $db->loadObjectList('label');
 			$this->formatCalValues($results2);
 			$uberTotal = 0;
+
 			foreach ($results2 as $pair)
 			{
 				$uberTotal += $pair->value;
 			}
+
 			$uberObject = new stdClass;
 			$uberObject->value = $uberTotal / count($results2);
 			$uberObject->label = JText::_('COM_FABRIK_AVERAGE');
@@ -4429,7 +4751,9 @@ class PlgFabrik_Element extends FabrikPlugin
 			$results = $db->loadObjectList('label');
 			$this->formatCalValues($results);
 		}
+
 		$res = $this->formatCalcs($results, $calcLabel, $split);
+
 		return array($res, $results);
 	}
 
@@ -4444,6 +4768,7 @@ class PlgFabrik_Element extends FabrikPlugin
 	public function getFormatString()
 	{
 		$params = $this->getParams();
+
 		return $params->get('text_format_string');
 	}
 
@@ -4471,6 +4796,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		$res = '';
 		$calcLabel = $params->get('median_label', JText::_('COM_FABRIK_MEDIAN'));
 		$results = array();
+
 		if ($split)
 		{
 			$pluginManager = FabrikWorker::getPluginManager();
@@ -4488,10 +4814,12 @@ class PlgFabrik_Element extends FabrikPlugin
 			$db->setQuery($sql);
 			$res = $this->_median($db->loadColumn());
 			$o = new stdClass;
+
 			if ($format != '')
 			{
 				$res = sprintf($format, $res);
 			}
+
 			$o->value = $res;
 			$label = $this->getListHeading();
 			$o->elLabel = $label;
@@ -4499,7 +4827,9 @@ class PlgFabrik_Element extends FabrikPlugin
 			$o->label = 'calc';
 			$results = array('calc' => $o);
 		}
+
 		$res = $this->formatCalcs($results, $calcLabel, $split, true, false);
+
 		return array($res, $results);
 	}
 
@@ -4549,6 +4879,7 @@ class PlgFabrik_Element extends FabrikPlugin
 			{
 				$uberTotal += $pair->value;
 			}
+
 			$uberObject = new stdClass;
 			$uberObject->value = count($results2) == 0 ? 0 : $uberTotal;
 			$uberObject->label = JText::_('COM_FABRIK_TOTAL');
@@ -4565,7 +4896,9 @@ class PlgFabrik_Element extends FabrikPlugin
 			$db->setQuery($sql);
 			$results = $db->loadObjectList('label');
 		}
+
 		$res = $this->formatCalcs($results, $calcLabel, $split, false, false);
+
 		return array($res, $results);
 	}
 
@@ -4586,6 +4919,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		$splitCustom = $params->get('custom_calc_split', '');
 		$split = $splitCustom == '' ? false : true;
 		$calcLabel = $params->get('custom_calc_label', JText::_('COM_FABRIK_CUSTOM'));
+
 		if ($split)
 		{
 			$pluginManager = FabrikWorker::getPluginManager();
@@ -4606,7 +4940,9 @@ class PlgFabrik_Element extends FabrikPlugin
 			$db->setQuery($sql);
 			$results = $db->loadObjectList('label');
 		}
+
 		$res = $this->formatCalcs($results, $calcLabel, $split);
+
 		return array($res, $results);
 	}
 
@@ -4631,6 +4967,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		{
 			return $results;
 		}
+
 		foreach ($results2 as $key => $val)
 		{
 			if (isset($val->special) && $val->special)
@@ -4639,6 +4976,7 @@ class PlgFabrik_Element extends FabrikPlugin
 				$results[$val->label] = $val;
 				continue;
 			}
+
 			if ($plugin->hasSubElements)
 			{
 				$val->label = ($type == 'median') ? $plugin->getLabelForValue($val->label) : $plugin->getLabelForValue($key, $key);
@@ -4649,6 +4987,7 @@ class PlgFabrik_Element extends FabrikPlugin
 				$d->$name = $val->label;
 				$val->label = $plugin->renderListData($val->label, $d);
 			}
+
 			if (array_key_exists($val->label, $results))
 			{
 				/** $$$ rob the $result data is keyed on the raw database result - however, we are intrested in
@@ -4658,6 +4997,7 @@ class PlgFabrik_Element extends FabrikPlugin
 				{
 					$tomerge[$val->label][] = $results[$val->label]->value;
 				}
+
 				$results[$val->label] = '';
 				$tomerge[$val->label][] = $val->value;
 			}
@@ -4666,9 +5006,11 @@ class PlgFabrik_Element extends FabrikPlugin
 				$results[$val->label] = $val;
 			}
 		}
+
 		foreach ($tomerge as $label => $data)
 		{
 			$o = new stdClass;
+
 			switch ($type)
 			{
 				case 'avg':
@@ -4686,6 +5028,7 @@ class PlgFabrik_Element extends FabrikPlugin
 				case 'custom_calc':
 					$params = $this->getParams();
 					$custom_calc_php = $params->get('custom_calc_php', '');
+
 					if (!empty($custom_calc_php))
 					{
 						$o->value = @eval((string) stripslashes($custom_calc_php));
@@ -4695,15 +5038,17 @@ class PlgFabrik_Element extends FabrikPlugin
 					{
 						$o->value = $data;
 					}
+
 					break;
 				default:
 					$o->value = $data;
 					break;
-
 			}
+
 			$o->label = $label;
 			$results[$label] = $o;
 		}
+
 		return $results;
 	}
 
@@ -4757,20 +5102,25 @@ class PlgFabrik_Element extends FabrikPlugin
 		$element = $this->getElement();
 		$format = $this->getFormatString();
 		$label = $this->getListHeading();
+
 		foreach ($results as $key => $o)
 		{
 			$o->label = ($o->label == 'calc') ? '' : $o->label;
 			$o->elLabel = $label . ' ' . $o->label;
+
 			if ($numberFormat)
 			{
 				$o->value = $this->numberFormat($o->value);
 			}
+
 			if ($format != '' && $sprintFFormat)
 			{
 				$o->value = sprintf($format, $o->value);
 			}
+
 			$o->calLabel = $calcLabel;
 			$class = isset($o->class) ? ' class="' . $o->class . '"' : '';
+
 			if ($split)
 			{
 				$res[] = '<dd' . $class . '><span class="calclabel">' . $o->label . ':</span> ' . $o->value . '</dd>';
@@ -4780,8 +5130,10 @@ class PlgFabrik_Element extends FabrikPlugin
 				$res[] = $o->value . '</li>';
 			}
 		}
+
 		ksort($results);
 		$res[] = $split ? '</dl>' : '</ul>';
+
 		return implode("\n", $res);
 	}
 
@@ -4797,16 +5149,19 @@ class PlgFabrik_Element extends FabrikPlugin
 	{
 		$results = (array) $results;
 		sort($results);
+
 		if ((count($results) % 2) == 1)
 		{
 			/* odd */
 			$midKey = floor(count($results) / 2);
+
 			return $results[$midKey];
 		}
 		else
 		{
 			$midKey = floor(count($results) / 2) - 1;
 			$midKey2 = floor(count($results) / 2);
+
 			return $this->simpleAvg(array(JArrayHelper::getValue($results, $midKey), JArrayHelper::getValue($results, $midKey2)));
 		}
 	}
@@ -4860,6 +5215,9 @@ class PlgFabrik_Element extends FabrikPlugin
 		$groupModel = $this->getGroup();
 		$opts->canRepeat = (bool) $groupModel->canRepeat();
 		$opts->isGroupJoin = (bool) $groupModel->isJoin();
+		$validations = $this->validator->findAll();
+		$opts->validations = empty($validations) ? false : true;
+
 		if ($this->isJoin())
 		{
 			$opts->joinid = (int) $this->getJoinModel()->getJoin()->id;
@@ -4868,6 +5226,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		{
 			$opts->joinid = (int) $groupModel->getGroup()->join_id;
 		}
+
 		return $opts;
 	}
 
@@ -4906,9 +5265,7 @@ class PlgFabrik_Element extends FabrikPlugin
 	public function formJavascriptClass(&$srcs, $script = '', &$shim = array())
 	{
 		$name = $this->getElement()->plugin;
-
 		$ext = FabrikHelperHTML::isDebug() ? '.js' : '-min.js';
-
 		$shimKey = 'element/' . $name . '/' . $name;
 
 		if (!array_key_exists($shimKey, $shim))
@@ -4919,6 +5276,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		}
 
 		static $elementclasses;
+
 		if (!isset($elementclasses))
 		{
 			$elementclasses = array();
@@ -4928,6 +5286,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		{
 			$script = 'plugins/fabrik_element/' . $name . '/' . $name . $ext;
 		}
+
 		if (empty($elementclasses[$script]))
 		{
 			$srcs[] = $script;
@@ -4947,6 +5306,7 @@ class PlgFabrik_Element extends FabrikPlugin
 	{
 		$p = $this->getElement()->plugin;
 		$src = 'plugins/fabrik_element/' . $p . '/list-' . $p . '.js';
+
 		if (JFile::exists($src))
 		{
 			$srcs[] = $src;
@@ -4973,6 +5333,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		 * $$$ hugh - added test for empty id, i.e. new element, otherwise we try and delete a crapload of join table rows
 		 * we shouldn't be deleting!  Also adding defensive code to deleteJoins() to test for empty ID.
 		*/
+
 		if (!empty($post['id']) && !$this->isJoin() && !$dbjoinEl)
 		{
 			$this->deleteJoins((int) $post['id']);
@@ -4994,6 +5355,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		{
 			return;
 		}
+
 		$element = $this->getElement();
 		$db = FabrikWorker::getDbo(true);
 		$query = $db->getQuery(true);
@@ -5006,6 +5368,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		->where('e.parent_id = ' . $id);
 		$db->setQuery($query);
 		$join_ids = $db->loadColumn();
+
 		if (!empty($join_ids))
 		{
 			$query->clear();
@@ -5040,9 +5403,10 @@ class PlgFabrik_Element extends FabrikPlugin
 
 	public function getEmailValue($value, $data = array(), $repeatCounter = 0)
 	{
-		if ($this->inRepeatGroup)
+		if ($this->inRepeatGroup && is_array($value))
 		{
 			$val = array();
+
 			foreach ($value as $v2)
 			{
 				$val[] = $this->getIndEmailValue($v2, $data, $repeatCounter);
@@ -5052,6 +5416,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		{
 			$val = $this->getIndEmailValue($value, $data, $repeatCounter);
 		}
+
 		return $val;
 	}
 
@@ -5134,6 +5499,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		{
 			return $this->getJoinModel()->getJoin();
 		}
+
 		return false;
 	}
 
@@ -5149,11 +5515,14 @@ class PlgFabrik_Element extends FabrikPlugin
 		$plugin = JPluginHelper::getPlugin('fabrik_element', $element);
 		$fparams = new JRegistry($plugin->params);
 		$p = $this->getParams();
+
 		if ($this->encryptMe())
 		{
 			return 'BLOB';
 		}
+
 		$group = $this->getGroup();
+
 		if ($group->isJoin() == 0 && $group->canRepeat())
 		{
 			return "TEXT";
@@ -5163,7 +5532,9 @@ class PlgFabrik_Element extends FabrikPlugin
 			$size = $p->get('maxlength', $this->fieldSize);
 			$objtype = sprintf($this->fieldDesc, $size);
 		}
+
 		$objtype = $fparams->get('defaultFieldType', $objtype);
+
 		return $objtype;
 	}
 
@@ -5177,7 +5548,6 @@ class PlgFabrik_Element extends FabrikPlugin
 
 	public function onDeleteRows($groups)
 	{
-
 	}
 
 	/**
@@ -5196,6 +5566,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		{
 			return false;
 		}
+
 		$element = $this->getElement();
 
 		// We should not process this element if it is unpublished
@@ -5204,12 +5575,15 @@ class PlgFabrik_Element extends FabrikPlugin
 		{
 			return false;
 		}
+
 		$shortName = $element->name;
 		$listModel = $this->getListModel();
+
 		if ($this->encryptMe())
 		{
 			$listModel->encrypt[] = $shortName;
 		}
+
 		$formModel = $this->getFormModel();
 		$name = $this->getFullName(true, false);
 
@@ -5221,11 +5595,14 @@ class PlgFabrik_Element extends FabrikPlugin
 		{
 			$this->getEmptyDataValue($data);
 		}
+
 		$v = $this->getValue($formModel->formDataWithTableName, $repeatCounter);
+
 		if (!$this->ignoreOnUpdate($v))
 		{
 			$data[$shortName] = $v;
 		}
+
 		return true;
 	}
 
@@ -5243,6 +5620,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		$params = $this->getParams();
 		$listModel = $this->getListModel();
 		$data = FabrikWorker::JSONtoData($data, true);
+
 		foreach ($data as $i => &$d)
 		{
 			if ($params->get('icon_folder') == '1')
@@ -5250,9 +5628,11 @@ class PlgFabrik_Element extends FabrikPlugin
 				// $$$ rob was returning here but that stoped us being able to use links and icons together
 				$d = $this->replaceWithIcons($d, 'list', $listModel->getTmpl());
 			}
+
 			$d = $this->rollover($d, $thisRow, 'list');
 			$d = $listModel->_addLink($d, $this, $thisRow, $i);
 		}
+
 		return $this->renderListDataFinal($data);
 	}
 
@@ -5284,12 +5664,14 @@ class PlgFabrik_Element extends FabrikPlugin
 					$this->convertDataToString($o);
 				}
 			}
+
 			$r = '<ul class="fabrikRepeatData"><li>' . implode('</li><li>', $data) . '</li></ul>';
 		}
 		else
 		{
 			$r = empty($data) ? '' : array_shift($data);
 		}
+
 		return $r;
 	}
 
@@ -5306,14 +5688,17 @@ class PlgFabrik_Element extends FabrikPlugin
 		if (is_object($o))
 		{
 			$s = '<ul>';
+
 			foreach ($o as $k => $v)
 			{
 				if (!is_string($v))
 				{
 					$v = json_encode($v);
 				}
+
 				$s .= '<li>' . $v . '</li>';
 			}
+
 			$s .= '</ul>';
 			$o = $s;
 		}
@@ -5334,42 +5719,6 @@ class PlgFabrik_Element extends FabrikPlugin
 	}
 
 	/**
-	 * Determines if the element should be shown in the list view
-	 *
-	 * @param   object  &$listModel  list model
-	 *
-	 * @deprecated - not used
-	 *
-	 * @return  bool
-	 */
-
-	public function inTableFields(&$listModel)
-	{
-		$params = $this->getParams();
-		$element = $this->getElement();
-		$table = $listModel->getTable();
-		$elFullName = $this->getFullName(false, false);
-		if ($listModel->getOutPutFormat() === 'rss')
-		{
-			$bAddElement = ($params->get('show_in_rss_feed') == '1');
-			/* if its the date ordering col we should add it to the list of allowed elements */
-			if ($elFullName == $listModel->getParams()->get('feed_date', ''))
-			{
-				$bAddElement = true;
-			}
-		}
-		else
-		{
-			$bAddElement = $element->show_in_list_summary;
-		}
-		if ($table->db_primary_key == $elFullName)
-		{
-			$listModel->temp_db_key_addded = true;
-		}
-		return $bAddElement;
-	}
-
-	/**
 	 * Builds some html to allow certain elements to display the option to add in new options
 	 * e.g. pciklists, dropdowns radiobuttons
 	 *
@@ -5381,12 +5730,13 @@ class PlgFabrik_Element extends FabrikPlugin
 
 	protected function getAddOptionFields($repeatCounter, $onlylabel = false)
 	{
-
 		$params = $this->getParams();
+
 		if (!$params->get('allow_frontend_addto'))
 		{
 			return;
 		}
+
 		$id = $this->getHTMLId($repeatCounter);
 		$valueid = $id . '_ddVal';
 		$labelid = $id . '_ddLabel';
@@ -5397,11 +5747,13 @@ class PlgFabrik_Element extends FabrikPlugin
 		$str[] = '</a>';
 		$str[] = '<div style="clear:left">';
 		$str[] = '<div class="addoption"><div>' . JText::_('COM_FABRIK_ADD_A_NEW_OPTION_TO_THOSE_ABOVE') . '</div>';
+
 		if (!$params->get('allowadd-onlylabel') && $params->get('savenewadditions'))
 		{
 			// $$$ rob dont wrap in <dl> as the html is munged when rendered inside form tab template
 			$str[] = '<label for="' . $valueid . '">' . JText::_('COM_FABRIK_VALUE') . '</label>';
 			$str[] = $value;
+
 			if (!$onlylabel)
 			{
 				$str[] = '<label for="' . $labelid . '">' . JText::_('COM_FABRIK_LABEL') . '</label>';
@@ -5412,10 +5764,12 @@ class PlgFabrik_Element extends FabrikPlugin
 		{
 			$str[] = $label;
 		}
+
 		$str[] = '<input class="button btn btn-success" type="button" id="' . $id . '_dd_add_entry" value="' . JText::_('COM_FABRIK_ADD') . '" />';
 		$str[] = $this->getHiddenField($id . "_additions", '', $id . "_additions");
 		$str[] = '</div>';
 		$str[] = '</div>';
+
 		return implode("\n", $str);
 	}
 
@@ -5430,24 +5784,6 @@ class PlgFabrik_Element extends FabrikPlugin
 	public function requiresAJAXSubmit()
 	{
 		return false;
-	}
-
-	/**
-	 * Called on failed form validation.
-	 * Ensures submitted form data is converted back into the format
-	 * that the form would expect to get it in, if the data had been
-	 * draw from the database record
-	 *
-	 * @param   string  $str  submitted form value
-	 *
-	 * @deprecated since 3.1b2 (not used by any plugin)
-	 *
-	 * @return  string	formated value
-	 */
-
-	public function toDbVal($str)
-	{
-		return $str;
 	}
 
 	/**
@@ -5497,16 +5833,19 @@ class PlgFabrik_Element extends FabrikPlugin
 	public function storeAttribs()
 	{
 		$element = $this->getElement();
+
 		if (!$element)
 		{
 			return false;
 		}
+
 		$db = FabrikWorker::getDbo(true);
 		$element->params = $this->getParams()->toString();
 		$query = $db->getQuery(true);
 		$query->update('#__{package}_elements')->set('params = ' . $db->quote($element->params))->where('id = ' . (int) $element->id);
 		$db->setQuery($query);
 		$res = $db->execute();
+
 		return $res;
 	}
 
@@ -5531,6 +5870,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		$item->published = '1';
 		$item->show_in_list_summary = '1';
 		$item->link_to_detail = '1';
+
 		return $item;
 	}
 
@@ -5607,6 +5947,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		$o->median_access = 0;
 		$o->count_on = 0;
 		$o->count_access = 0;
+
 		return json_encode($o);
 	}
 
@@ -5659,10 +6000,12 @@ class PlgFabrik_Element extends FabrikPlugin
 		$element = $this->getElement();
 		$filterExactMatch = isset($val['match']) ? $val['match'] : $element->filter_exact_match;
 		$group = $this->getGroup();
+
 		if (!$group->isJoin() && $group->canRepeat())
 		{
 			$filterExactMatch = false;
 		}
+
 		return $filterExactMatch;
 	}
 
@@ -5680,12 +6023,15 @@ class PlgFabrik_Element extends FabrikPlugin
 		$input = $app->input;
 		$rDir = $input->get('dir');
 		$folders = JFolder::folders($rDir);
+
 		if ($folders === false)
 		{
 			// $$$ hugh - need to echo empty JSON array otherwise we break JS which assumes an array
 			echo json_encode(array());
+
 			return false;
 		}
+
 		sort($folders);
 		echo json_encode($folders);
 	}
@@ -5721,21 +6067,27 @@ class PlgFabrik_Element extends FabrikPlugin
 		{
 			return false;
 		}
+
 		$listModel = $this->getListModel();
 		$listParams = $listModel->getParams();
 		$searchElements = $listParams->get('list_search_elements', '');
+
 		if ($searchElements === '')
 		{
 			return false;
 		}
+
 		$searchElements = json_decode($searchElements);
+
 		if (!isset($searchElements->search_elements))
 		{
 			return false;
 		}
+
 		if (in_array($this->getId(), $searchElements->search_elements))
 		{
 			$advancedMode = $listParams->get('search-mode-advanced');
+
 			return $this->canIncludeInSearchAll($advancedMode);
 		}
 	}
@@ -5755,19 +6107,24 @@ class PlgFabrik_Element extends FabrikPlugin
 	public function canIncludeInSearchAll($advancedMode)
 	{
 		$params = $this->getParams();
+
 		if (!$advancedMode)
 		{
 			return true;
 		}
+
 		if ($this->ignoreSearchAllDefault)
 		{
 			return false;
 		}
+
 		$format = $params->get('text_format');
+
 		if ($format == 'integer' || $format == 'decimal')
 		{
 			return false;
 		}
+
 		return true;
 	}
 
@@ -5882,11 +6239,13 @@ class PlgFabrik_Element extends FabrikPlugin
 		$query = $listModel->pluginQuery($query);
 		$db->setQuery($query);
 		$tmp = $db->loadObjectList();
+
 		foreach ($tmp as &$t)
 		{
 			$elementModel->toLabel($t->text);
 			$t->text = strip_tags($t->text);
 		}
+
 		return json_encode($tmp);
 	}
 
@@ -5902,6 +6261,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		$listModel = $this->getListModel();
 		$table = $listModel->getTable();
 		$groupModel = $this->getGroup();
+
 		if ($groupModel->isJoin())
 		{
 			$joinModel = $groupModel->getJoinModel();
@@ -5912,6 +6272,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		{
 			$name = $table->db_table_name;
 		}
+
 		return $name;
 	}
 
@@ -5925,7 +6286,6 @@ class PlgFabrik_Element extends FabrikPlugin
 
 	protected function toLabel(&$v)
 	{
-
 	}
 
 	/**
@@ -5951,14 +6311,17 @@ class PlgFabrik_Element extends FabrikPlugin
 	{
 		$params = $this->getParams();
 		$where = '';
+
 		if ($params->get('append_table_where', false))
 		{
 			if (method_exists($this, 'buildQueryWhere'))
 			{
 				$where = trim($this->buildQueryWhere(array()));
+
 				if ($where != '')
 				{
 					$where = JString::substr($where, 5, JString::strlen($where) - 5);
+
 					if (!in_array($where, $whereArray))
 					{
 						$whereArray[] = $where;
@@ -6000,6 +6363,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		{
 			return $data == $compare;
 		}
+
 		return false;
 	}
 
@@ -6023,6 +6387,7 @@ class PlgFabrik_Element extends FabrikPlugin
 	public function encryptMe()
 	{
 		$params = $this->getParams();
+
 		return ($this->canEncrypt() && $params->get('encrypt', false));
 	}
 
@@ -6037,10 +6402,12 @@ class PlgFabrik_Element extends FabrikPlugin
 	protected function numberFormat($data)
 	{
 		$params = $this->getParams();
+
 		if (!$params->get('field_use_number_format', false))
 		{
 			return $data;
 		}
+
 		$decimal_length = (int) $params->get('decimal_length', 2);
 		$decimal_sep = $params->get('field_decimal_sep', '.');
 		$thousand_sep = $params->get('field_thousand_sep', ',');
@@ -6050,6 +6417,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		{
 			$thousand_sep = ' ';
 		}
+
 		return number_format((float) $data, $decimal_length, $decimal_sep, $thousand_sep);
 	}
 
@@ -6064,6 +6432,7 @@ class PlgFabrik_Element extends FabrikPlugin
 	public function unNumberFormat($val)
 	{
 		$params = $this->getParams();
+
 		if (!$params->get('field_use_number_format', false))
 		{
 			return $val;
@@ -6076,6 +6445,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		$thousand_sep = $params->get('field_thousand_sep', ',');
 		$val = str_replace($thousand_sep, '', $val);
 		$val = str_replace($decimal_sep, '.', $val);
+
 		return $val;
 	}
 
@@ -6093,17 +6463,20 @@ class PlgFabrik_Element extends FabrikPlugin
 		{
 			$id = $this->id;
 		}
+
 		$db = FabrikWorker::getDbo(true);
 		$query = $db->getQuery(true);
 		$query->select('id')->from('#__{package}_elements')->where('parent_id = ' . (int) $id);
 		$db->setQuery($query);
 		$kids = $db->loadObjectList();
 		$all_kids = array();
+
 		foreach ($kids as $kid)
 		{
 			$all_kids[] = $kid->id;
 			$all_kids = array_merge($this->getElementDescendents($kid->id), $all_kids);
 		}
+
 		return $all_kids;
 	}
 
@@ -6121,14 +6494,19 @@ class PlgFabrik_Element extends FabrikPlugin
 		{
 			return $this->actualTable;
 		}
+
 		$groupModel = $this->getGroup();
+
 		if ($groupModel->isJoin())
 		{
 			$joinModel = $groupModel->getJoinModel();
+
 			return $joinModel->getJoin()->table_join;
 		}
+
 		$listModel = $this->getListModel();
 		$this->actualTable = $listModel->getTable()->db_table_name;
+
 		return $this->actualTable;
 	}
 
@@ -6199,6 +6577,7 @@ class PlgFabrik_Element extends FabrikPlugin
 			$this->joinModel->getJoinFromKey('element_id', $this->getParent()->id);
 			$this->joinModel->getJoin()->element_id = $this->getElement()->id;
 		}
+
 		return $this->joinModel;
 	}
 
@@ -6232,11 +6611,13 @@ class PlgFabrik_Element extends FabrikPlugin
 		$ids = $db->loadColumn();
 		$teskPk = $db->quoteName($item->db_table_name . '.' . $oldName);
 		$newPk = $db->quoteName($item->db_table_name . '.' . $newName);
+
 		foreach ($ids as $id)
 		{
 			$join = FabTable::getInstance('Join', 'FabrikTable');
 			$join->load($id);
 			$params = new JRegistry($join->params);
+
 			if ($params->get('pk') === $teskPk)
 			{
 				$params->set('pk', $newPk);
@@ -6415,10 +6796,12 @@ class PlgFabrik_Element extends FabrikPlugin
 		$classes[] = 'fabrik_element';
 		$classes[] = 'fabrik_list_' . $this->getListModel()->getId() . '_group_' . $this->getGroupModel()->getId();
 		$c = $params->get('tablecss_cell_class', '');
+
 		if ($c !== '')
 		{
 			$classes[] = $c;
 		}
+
 		return implode(' ', $classes);
 	}
 
@@ -6439,6 +6822,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		$classes[] = $this->getElement()->id . '_order';
 		$classes[] = 'fabrik_list_' . $this->getListModel()->getId() . '_group_' . $this->getGroupModel()->getId();
 		$classes[] = $this->getParams()->get('tablecss_header_class');
+
 		return implode(' ', $classes);
 	}
 
@@ -6497,15 +6881,18 @@ class PlgFabrik_Element extends FabrikPlugin
 	public function setRowClass(&$data)
 	{
 		$rowclass = $this->getParams()->get('use_as_row_class');
+
 		if ($rowclass == 1)
 		{
 			$col = $this->getFullName(true, false);
 			$rawcol = $col . '_raw';
+
 			foreach ($data as $groupk => $group)
 			{
 				for ($i = 0; $i < count($group); $i++)
 				{
 					$c = false;
+
 					if (isset($data[$groupk][$i]->data->$rawcol))
 					{
 						$c = $data[$groupk][$i]->data->$rawcol;
@@ -6514,6 +6901,7 @@ class PlgFabrik_Element extends FabrikPlugin
 					{
 						$c = $data[$groupk][$i]->data->$col;
 					}
+
 					if ($c !== false)
 					{
 						$c = preg_replace('/[^A-Z|a-z|0-9]/', '-', $c);
@@ -6525,6 +6913,7 @@ class PlgFabrik_Element extends FabrikPlugin
 						{
 							$c = $this->getElement()->name . $c;
 						}
+
 						$data[$groupk][$i]->class .= ' ' . $c;
 					}
 				}
@@ -6598,6 +6987,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		$params = $this->getParams();
 		$element = $this->getElement();
 		$alwaysRender = $params->get('always_render', '0');
+
 		return $not_shown_only ? $element->show_in_list_summary == 0 && $alwaysRender == '1' : $alwaysRender == '1';
 	}
 
@@ -6617,6 +7007,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		{
 			return;
 		}
+
 		$groupModel = $this->getGroupModel();
 		$listModel = $this->getListModel();
 		$joinModel = $this->getJoinModel();
@@ -6632,35 +7023,36 @@ class PlgFabrik_Element extends FabrikPlugin
 		$join = $this->getJoin();
 
 		// The submitted element's values
-		$allJoinValues = $formData[$name];
+		$allJoinValues = (array) $formData[$name];
+
 		if ($groupModel->isJoin())
 		{
 			$groupJoinModel = $groupModel->getJoinModel();
 			$idKey = $join->table_join . '___id';
 			$paramsKey = $join->table_join . '___params';
-			$k = $groupJoinModel->getForeignKey();
+			$k = str_replace('`', '', str_replace('.', '___', $groupJoinModel->getJoin()->params->get('pk')));
 			$parentIds = (array) $formData[$k];
-
 		}
 		else
 		{
 			$k = 'rowid';
 			$idKey = $name . '___id';
 			$paramsKey = $name . '___params';
-			$parentIds = array_fill(0, count($allJoinValues), $formData[$k]);
-
+			$parentIds = empty($allJoinValues) ? array() : array_fill(0, count($allJoinValues), $formData[$k]);
 		}
+
 		$allJoinIds = JArrayHelper::getValue($formData, $idKey, array());
 		$allParams = array_values(JArrayHelper::getValue($formData, $paramsKey, array()));
-
 		$i = 0;
 		$idsToKeep = array();
+
 		foreach ($parentIds as $parentId)
 		{
 			if (!array_key_exists($parentId, $idsToKeep))
 			{
 				$idsToKeep[$parentId] = array();
 			}
+
 			if ($groupModel->canRepeat())
 			{
 				$joinValues = JArrayHelper::getValue($allJoinValues, $i, array());
@@ -6669,6 +7061,7 @@ class PlgFabrik_Element extends FabrikPlugin
 			{
 				$joinValues = $allJoinValues;
 			}
+
 			$joinValues = (array) $joinValues;
 
 			// Get existing records
@@ -6683,16 +7076,17 @@ class PlgFabrik_Element extends FabrikPlugin
 				$db->setQuery($query);
 				$ids = (array) $db->loadObjectList($shortName);
 			}
+
 			foreach ($joinValues as $jIndex => $jid)
 			{
 				$record = new stdClass;
 				$record->parent_id = $parentId;
-				$fkVal = $joinValues[$jIndex];
+				$fkVal = JArrayHelper::getValue($joinValues, $jIndex);
 				$record->$shortName = $fkVal;
 				$record->params = JArrayHelper::getValue($allParams, $jIndex);
 
 				// Stop notice with fileupload where fkVal is an array
-				if (is_string($fkVal) && array_key_exists($fkVal, $ids))
+				if (array_key_exists($fkVal, $ids))
 				{
 					$record->id = $ids[$fkVal]->id;
 					$idsToKeep[$parentId][] = $record->id;
@@ -6701,28 +7095,38 @@ class PlgFabrik_Element extends FabrikPlugin
 				{
 					$record->id = 0;
 				}
+
 				if ($record->id == 0)
 				{
 					$ok = $listModel->insertObject($join->table_join, $record);
 					$lastInsertId = $listModel->getDb()->insertid();
+
+					if (!$this->allowDuplicates)
+					{
+						$newid = new stdClass;
+						$newid->id = $lastInsertId;
+						$newid->$shortName = $record->$shortName;
+						$ids[$record->$shortName] = $newid;
+					}
+
 					$idsToKeep[$parentId][] = $lastInsertId;
 				}
 				else
 				{
 					$ok = $listModel->updateObject($join->table_join, $record, 'id');
-
 				}
+
 				if (!$ok)
 				{
 					throw new RuntimeException('didnt save db joined repeat element');
 				}
 			}
+
 			$i ++;
 		}
 
 		// Delete any records that were unselected.
 		$this->deleteDeselectedItems($idsToKeep, $k);
-
 	}
 
 	/**
@@ -6740,6 +7144,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		$join = $this->getJoin();
 		$db = $listModel->getDb();
 		$query = $db->getQuery(true);
+
 		if (empty($idsToKeep))
 		{
 			$formData = $this->getFormModel()->formDataWithTableName;
@@ -6748,17 +7153,19 @@ class PlgFabrik_Element extends FabrikPlugin
 			$db->setQuery($query);
 			$db->execute();
 		}
+
 		foreach ($idsToKeep as $parentId => $ids)
 		{
 			$query->clear();
 			$query->delete($join->table_join)->where('parent_id = ' . $parentId);
+
 			if (!empty($ids))
 			{
 				$query->where('id NOT IN ( ' . implode($ids, ',') . ')');
 			}
+
 			$db->setQuery($query);
 			$db->execute();
 		}
 	}
-
 }

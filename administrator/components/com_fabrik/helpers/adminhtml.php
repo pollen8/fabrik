@@ -22,7 +22,6 @@ defined('_JEXEC') or die('Restricted access');
 
 class FabrikHelperAdminHTML
 {
-
 	/**
 	 * Get a list of directories
 	 *
@@ -35,15 +34,19 @@ class FabrikHelperAdminHTML
 	public static function fabrikListDirs($path, $fullpath = false)
 	{
 		$arr = array();
+
 		if (!@is_dir($path))
 		{
 			return $arr;
 		}
+
 		$handle = opendir($path);
+
 		while ($file = readdir($handle))
 		{
 			$dir = JPath::clean($path . '/' . $file);
 			$isDir = is_dir($dir);
+
 			if (($file != ".") && ($file != "..") && ($file != ".svn"))
 			{
 				if ($isDir)
@@ -59,8 +62,10 @@ class FabrikHelperAdminHTML
 				}
 			}
 		}
+
 		closedir($handle);
 		asort($arr);
+
 		return $arr;
 	}
 
@@ -84,18 +89,20 @@ class FabrikHelperAdminHTML
 		$imgs = array('publish_x.png', 'tick.png', 'alert.png'), $alts = array('JPUBLISHED', 'JUNPUBLISHED', 'NOTICE'), $prefix = '')
 	{
 		$index = array_search($selected, $values);
+
 		if ($index === false)
 		{
 			$index = 0;
 		}
+
 		$task = JArrayHelper::getValue($tasks, $index);
 		$alt = JText::_(JArrayHelper::getValue($alts, $index));
 
 		$img = JArrayHelper::getValue($imgs, $index);
 		$href = '
 			<a href="#" onclick="return listItemTask(\'cb' . $i . '\',\'' . $prefix . $task . '\')" title="' . $alt . '">'
-			.  'todo mulitstateimg' . '</a>';
+			. 'todo mulitstateimg' . '</a>';
+
 		return $href;
 	}
-
 }

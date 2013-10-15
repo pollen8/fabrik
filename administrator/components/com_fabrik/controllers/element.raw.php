@@ -78,5 +78,4 @@ class FabrikAdminControllerElement extends JControllerForm
 		$this->mode = 'readonly';
 		$this->display();
 	}
-
 }

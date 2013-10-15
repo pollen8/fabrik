@@ -23,7 +23,6 @@ require_once JPATH_ADMINISTRATOR . '/components/com_fabrik/tables/fabtable.php';
 
 class FabrikTableFormGroup extends FabTable
 {
-
 	/**
 	 * Constructor
 	 *
@@ -34,5 +33,4 @@ class FabrikTableFormGroup extends FabTable
 	{
 		parent::__construct('#__{package}_formgroup', 'id', $db);
 	}
-
 }

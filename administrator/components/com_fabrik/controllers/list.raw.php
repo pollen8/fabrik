@@ -49,12 +49,14 @@ class FabrikAdminControllerList extends FabControllerForm
 		$table = $input->get('table', '');
 		$fieldNames = array();
 		$name = $input->get('name', 'jform[params][table_key][]', '', 'string');
+
 		if ($table != '')
 		{
 			$table = FabrikString::safeColName($table);
 			$sql = 'DESCRIBE ' . $table;
 			$db->setQuery($sql);
 			$aFields = $db->loadObjectList();
+
 			if (is_array($aFields))
 			{
 				foreach ($aFields as $oField)
@@ -63,6 +65,7 @@ class FabrikAdminControllerList extends FabControllerForm
 				}
 			}
 		}
+
 		$fieldDropDown = JHTML::_('select.genericlist', $fieldNames, $name, "class=\"inputbox\"  size=\"1\" ", 'value', 'text', '');
 		echo $fieldDropDown;
 	}
@@ -88,19 +91,22 @@ class FabrikAdminControllerList extends FabControllerForm
 		$oldtotal = $model->getTotalRecords();
 		$model->deleteRows($ids);
 		$total = $oldtotal - count($ids);
+
 		if ($total >= $limitstart)
 		{
 			$newlimitstart = $limitstart - $length;
+
 			if ($newlimitstart < 0)
 			{
 				$newlimitstart = 0;
 			}
+
 			$context = 'com_fabrik.list' . $model->getRenderContext() . '.list.';
 			$app->setUserState($context . 'limitstart' . $listid, $newlimitstart);
 		}
+
 		$input->set('view', 'list');
 		$this->view();
-
 	}
 
 	/**

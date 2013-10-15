@@ -23,7 +23,6 @@ require_once JPATH_SITE . '/components/com_fabrik/views/list/view.base.php';
 
 class FabrikViewList extends FabrikViewListBase
 {
-
 	/**
 	 * Display the template
 	 *
@@ -39,10 +38,12 @@ class FabrikViewList extends FabrikViewListBase
 		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$model = $this->getModel();
 		$model->setId($input->getInt('listid'));
+
 		if (!parent::access($model))
 		{
 			exit;
 		}
+
 		$table = $model->getTable();
 		$params = $model->getParams();
 		$rowid = $input->getString('rowid', '', 'string');
@@ -52,11 +53,13 @@ class FabrikViewList extends FabrikViewListBase
 		$nav = $model->getPagination();
 		$form = $model->getFormModel();
 		$c = 0;
+
 		foreach ($data as $groupk => $group)
 		{
 			foreach ($group as $i => $x)
 			{
 				$o = new stdClass;
+
 				if (is_object($data[$groupk]))
 				{
 					$o->data = JArrayHelper::fromObject($data[$groupk]);
@@ -65,14 +68,17 @@ class FabrikViewList extends FabrikViewListBase
 				{
 					$o->data = $data[$groupk][$i];
 				}
+
 				if (array_key_exists($groupk, $model->groupTemplates))
 				{
 					$o->groupHeading = $model->groupTemplates[$groupk] . ' ( ' . count($group) . ' )';
 				}
+
 				$o->cursor = $i + $nav->limitstart;
 				$o->total = $nav->total;
 				$o->id = 'list_' . $model->getRenderContext() . '_row_' . @$o->data->__pk_val;
 				$o->class = 'fabrik_row oddRow' . $c;
+
 				if (is_object($data[$groupk]))
 				{
 					$data[$groupk] = $o;
@@ -81,20 +87,24 @@ class FabrikViewList extends FabrikViewListBase
 				{
 					$data[$groupk][$i] = $o;
 				}
+
 				$c = 1 - $c;
 			}
 		}
 
 		$groups = $form->getGroupsHiarachy();
+
 		foreach ($groups as $groupModel)
 		{
 			$elementModels = $groupModel->getPublishedElements();
+
 			foreach ($elementModels as $elementModel)
 			{
 				$elementModel->setContext($groupModel, $form, $model);
 				$elementModel->setRowClass($data);
 			}
 		}
+
 		$d = array('id' => $table->id, 'listRef' => $input->get('listref'), 'rowid' => $rowid, 'model' => 'list', 'data' => $data,
 			'headings' => $this->headings, 'formid' => $model->getTable()->form_id,
 			'lastInsertedRow' => JFactory::getSession()->get('lastInsertedRow', 'test'));
@@ -107,11 +117,13 @@ class FabrikViewList extends FabrikViewListBase
 		// $$$ hugh - see if we have a message to include, set by a list plugin
 		$context = 'com_' . $package . '.list' . $model->getRenderContext() . '.msg';
 		$session = JFactory::getSession();
+
 		if ($session->has($context))
 		{
 			$d['msg'] = $session->get($context);
 			$session->clear($context);
 		}
+
 		echo json_encode($d);
 	}
 
@@ -128,9 +140,11 @@ class FabrikViewList extends FabrikViewListBase
 		$model = $this->getModel();
 		$table = $model->getTable();
 		$params = $model->getParams();
+
 		if ($app->isAdmin())
 		{
 			$tmpl = $params->get('admin_template');
+
 			if ($tmpl == -1 || $tmpl == '')
 			{
 				$tmpl = $input->get('layout', $table->template);
@@ -140,6 +154,7 @@ class FabrikViewList extends FabrikViewListBase
 		{
 			$tmpl = $input->get('layout', $table->template);
 		}
+
 		return $tmpl;
 	}
 }

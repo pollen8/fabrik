@@ -23,7 +23,6 @@ jimport('joomla.plugin.plugin');
 
 class PlgContentFabrik extends JPlugin
 {
-
 	/**
 	 * Constructor
 	 *
@@ -95,7 +94,6 @@ class PlgContentFabrik extends JPlugin
 		// $$$ hugh - having to change this to use {[]}
 		$regex = "/{" . $botRegex . "\s*.*?}/i";
 		$row->text = preg_replace_callback($regex, array($this, 'replace'), $row->text);
-
 	}
 
 	/**
@@ -111,6 +109,7 @@ class PlgContentFabrik extends JPlugin
 		$match = $match[0];
 		$match = JString::str_ireplace('<p>', '<div>', $match);
 		$match = JString::str_ireplace('</p>', '</div>', $match);
+
 		return $match;
 	}
 
@@ -134,6 +133,7 @@ class PlgContentFabrik extends JPlugin
 		 * ranged filters and 'complex' filters
 		 */
 		$match2 = array();
+
 		foreach (explode(" ", $match) as $m)
 		{
 			if (strstr($m, '='))
@@ -148,12 +148,14 @@ class PlgContentFabrik extends JPlugin
 				$match2[] = $m;
 			}
 		}
+
 		$match = implode(' ', $match2);
 		$w->replaceRequest($match);
 
 		// Stop [] for ranged filters from being removed
 		// $match = str_replace('{}', '[]', $match);
 		$match = $w->parseMessageForPlaceHolder($match);
+
 		return $match;
 	}
 
@@ -193,7 +195,7 @@ class PlgContentFabrik extends JPlugin
 		$origLayout = $input->get('layout');
 		$origFFlayout = $input->get('flayout');
 		$layoutFound = false;
-		$rowid = 0;
+		$rowid = '';
 		$usekey = '';
 		$defaultLayout = FabrikWorker::j3() ? 'bootstrap' : 'default';
 		$session = JFactory::getSession();
@@ -205,6 +207,7 @@ class PlgContentFabrik extends JPlugin
 
 			// $$$ hugh - deal with %20 as space in arguments
 			$m[1] = urldecode(JArrayHelper::getValue($m, 1));
+
 			switch ($m[0])
 			{
 				case 'view':
@@ -231,6 +234,7 @@ class PlgContentFabrik extends JPlugin
 						{
 							$row = $user->get('id');
 						}
+
 						$usersConfig->set('rowid', $row);
 
 						// Set the rowid in the session so that print pages can grab it again
@@ -276,12 +280,15 @@ class PlgContentFabrik extends JPlugin
 			}
 		}
 		// Get the rowid in the session so that print pages can use it
-		$rowid = $session->get('fabrik.plgcontent.rowid', $rowid);
+
+		// Commented out - was messing with element rendering and seems to general to be correct. IE what if more than one content plugin being used
+		// $rowid = $session->get('fabrik.plgcontent.rowid', $rowid);
 		if ($viewName == 'table')
 		{
 			// Some backwards compat with fabrik 2
 			$viewName = 'list';
 		}
+
 		// Moved out of switch as otherwise first plugin to use this will effect all subsequent plugins
 		$input->set('usekey', $usekey);
 
@@ -290,6 +297,7 @@ class PlgContentFabrik extends JPlugin
 		{
 			$input->set('layout', $defaultLayout);
 		}
+
 		/* $$$ hugh - added this so the fabrik2article plugin can arrange to have form CSS
 		 * included when the article is rendered by com_content, by inserting ...
 		 * {fabrik view=form_css id=X layout=foo}
@@ -305,10 +313,12 @@ class PlgContentFabrik extends JPlugin
 			$controller = $this->getController('form', $id);
 			$view = $this->getView($controller, 'form', $id);
 			$model = $this->getModel($controller, 'form', $id);
+
 			if (!$model)
 			{
 				return;
 			}
+
 			$model->setId($id);
 			$model->setEditable(false);
 			$form = $model->getForm();
@@ -317,24 +327,31 @@ class PlgContentFabrik extends JPlugin
 			$layout = !empty($layout) ? $layout : 'default';
 			$view->setModel($model, true);
 			$model->getFormCss($layout);
+
 			return '';
 		}
+
 		$this->generalIncludes($viewName);
+
 		if ($element !== false)
 		{
 			// Special case for rendering element data
 			$controller = $this->getController('list', $listid);
 			$model = $this->getModel($controller, 'list', $listid);
+
 			if (!$model)
 			{
 				return;
 			}
+
 			$model->setId($listid);
 			$formModel = $model->getFormModel();
 			$groups = $formModel->getGroupsHiarachy();
+
 			foreach ($groups as $groupModel)
 			{
 				$elements = $groupModel->getMyElements();
+
 				foreach ($elements as &$elementModel)
 				{
 					// $$$ rob 26/05/2011 changed it so that you can pick up joined elements without specifying plugin
@@ -346,34 +363,64 @@ class PlgContentFabrik extends JPlugin
 					}
 				}
 			}
+
 			// $$$ hugh in case they have a typo in their elementname
 			if (empty($activeEl))
 			{
 				throw new RuntimeException('You are trying to embed an element called ' . $element . ' which is not present in the list');
 			}
-			$row = $model->getRow($rowid, false, true);
 
-			if (substr($element, JString::strlen($element) - 4, JString::strlen($element)) !== '_raw')
+			if ($rowid === '')
 			{
-				$element = $element . '_raw';
+				$rows = $model->getData();
+				$group = array_shift($rows);
+				$row = array_shift($group);
+				$res = $row->$element;
 			}
-			// $$$ hugh - need to pass all row data, or calc elements that use {placeholders} won't work
-			$defaultdata = is_object($row) ? get_object_vars($row) : $row;
+			else
+			{
+				$row = $model->getRow($rowid, false, true);
 
-			/* $$$ hugh - if we don't do this, our passed data gets blown away when render() merges the form data
-			 * not sure why, but apparently if you do $foo =& $bar and $bar is NULL ... $foo ends up NULL
-			 */
-			$activeEl->getFormModel()->data = $defaultdata;
-			$activeEl->editable = false;
+				if (substr($element, JString::strlen($element) - 4, JString::strlen($element)) !== '_raw')
+				{
+					$element = $element . '_raw';
+				}
+				// $$$ hugh - need to pass all row data, or calc elements that use {placeholders} won't work
+				$defaultdata = is_object($row) ? get_object_vars($row) : $row;
 
-			// Set row id for things like user element
-			$origRowid = $input->get('rowid');
-			$input->set('rowid', $rowid);
+				/* $$$ hugh - if we don't do this, our passed data gets blown away when render() merges the form data
+				 * not sure why, but apparently if you do $foo =& $bar and $bar is NULL ... $foo ends up NULL
+				 */
+				$activeEl->getFormModel()->data = $defaultdata;
+				$activeEl->editable = false;
 
-			$defaultdata = (array) $defaultdata;
-			unset($activeEl->defaults);
-			$res = $activeEl->render($defaultdata, $repeatcounter);
-			$input->set('rowid', $origRowid);
+				// Set row id for things like user element
+				$origRowid = $input->get('rowid');
+				$input->set('rowid', $rowid);
+
+				$defaultdata = (array) $defaultdata;
+				unset($activeEl->defaults);
+
+				if ($repeatcounter === 'all')
+				{
+					$repeat = $activeEl->getGroupModel()->repeatCount();
+					$res = array();
+
+					for ($j = 0; $j < $repeat; $j ++)
+					{
+					$res[] = $activeEl->render($defaultdata, $j);
+					}
+
+					$res = count($res) > 1 ? '<ul><li>' . implode('</li><li>', $res) . '</li></ul>' : $res[0];
+				}
+				else
+				{
+					$res = $activeEl->render($defaultdata, $repeatcounter);
+				}
+
+				$input->set('rowid', $origRowid);
+			}
+
 			return $res;
 		}
 
@@ -402,6 +449,7 @@ class PlgContentFabrik extends JPlugin
 		$viewType = $document->getType();
 		$controller = $this->getController($viewName, $id);
 		$view = $this->getView($controller, $viewName, $id);
+
 		if ($model = $this->getModel($controller, $viewName, $id))
 		{
 			$view->setModel($model, true);
@@ -423,8 +471,10 @@ class PlgContentFabrik extends JPlugin
 				if ($id === 0)
 				{
 					JError::raiseWarning(500, 'No id set in fabrik plugin declaration');
+
 					return;
 				}
+
 				$model->ajax = true;
 				$model->setId($id);
 
@@ -448,6 +498,7 @@ class PlgContentFabrik extends JPlugin
 				{
 					$input->set('activelistid', $input->getId('listid'));
 				}
+
 				$input->set('listid', $id);
 				$this->_setRequest($unused);
 				$input->set('showfilters', $showfilters);
@@ -457,8 +508,10 @@ class PlgContentFabrik extends JPlugin
 				if ($id === 0)
 				{
 					JError::raiseWarning(500, 'No id set in fabrik plugin declaration');
+
 					return;
 				}
+
 				$model->setId($id);
 				$model->isMambot = true;
 
@@ -466,6 +519,7 @@ class PlgContentFabrik extends JPlugin
 				$input->set('fabrik_show_in_list', array());
 				$model->ajax = 1;
 				$task = $input->get('task');
+
 				if (method_exists($controller, $task) && $input->getInt('activetableid') == $id)
 				{
 					/*
@@ -479,6 +533,7 @@ class PlgContentFabrik extends JPlugin
 					$result = ob_get_contents();
 					ob_end_clean();
 				}
+
 				$model->setOrderByAndDir();
 				$formModel = $model->getFormModel();
 				break;
@@ -490,19 +545,24 @@ class PlgContentFabrik extends JPlugin
 				$this->_setRequest($unused);
 				break;
 		}
+
 		// Hack for gallery viz as it may not use the default view
 		$controller->isMambot = true;
+
 		if (!$displayed)
 		{
 			ob_start();
+
 			if (method_exists($model, 'reset'))
 			{
 				$model->reset();
 			}
+
 			$controller->display($model);
 			$result = ob_get_contents();
 			ob_end_clean();
 		}
+
 		$input->set('id', $origid);
 		$input->set('view', $origView);
 
@@ -510,11 +570,14 @@ class PlgContentFabrik extends JPlugin
 		{
 			$input->set('layout', $origLayout);
 		}
+
 		if ($origFFlayout != '')
 		{
 			$input->set('flayout', $origFFlayout);
 		}
+
 		$this->resetRequest();
+
 		return $result;
 	}
 
@@ -531,6 +594,15 @@ class PlgContentFabrik extends JPlugin
 		$app = JFactory::getApplication();
 		$input = $app->input;
 
+		// Ensure &gt; conditions set in {fabrik} are converted to >
+		foreach ($unused as &$v)
+		{
+			if (is_string($v))
+			{
+				$v = htmlspecialchars_decode($v);
+			}
+		}
+
 		/*
 		 * $$$ hugh - in order to allow complex filters to work in lists, like ...
 		 * foo___bar[value][]=1 foo___bar[value[]=9 foo___bar[condition]=BETWEEN
@@ -540,6 +612,7 @@ class PlgContentFabrik extends JPlugin
 		$qs_str = implode('&', $unused);
 		parse_str($qs_str, $qs_arr);
 		$this->origRequestVars = array();
+
 		foreach ($qs_arr as $k => $v)
 		{
 			$origVar = $input->get($k, '', 'string');
@@ -547,6 +620,7 @@ class PlgContentFabrik extends JPlugin
 			$_GET[$k] = $v;
 			$input->set($k, $v);
 		}
+
 		/*
 		 * $$$ rob set this array here - we will use in the tablefilter::getQuerystringFilters()
 		 * code to determine if the filter is a querystring filter or one set from the plugin
@@ -566,6 +640,7 @@ class PlgContentFabrik extends JPlugin
 	{
 		$app = JFactory::getApplication();
 		$input = $app->input;
+
 		foreach ($this->origRequestVars as $k => $v)
 		{
 			if (!is_null($v))
@@ -598,28 +673,36 @@ class PlgContentFabrik extends JPlugin
 		{
 			$viewName = $this->getPluginVizName($id);
 		}
+
 		if ($viewName == 'details')
 		{
 			$viewName = 'form';
 		}
+
 		if ($viewName == 'csv')
 		{
 			$viewName = 'list';
 		}
+
 		$prefix = '';
+
 		if ($viewName == 'form' || $viewName == 'list')
 		{
 			$prefix = 'FabrikFEModel';
 		}
+
 		if (!isset($controller->_model))
 		{
 			$modelpaths = JModelLegacy::addIncludePath(COM_FABRIK_FRONTEND . '/models', $prefix);
+
 			if (!$controller->_model = $controller->getModel($viewName, $prefix))
 			{
 				throw new RuntimeException('Fabrik Content Plug-in: could not create model');
+
 				return false;
 			}
 		}
+
 		return $controller->_model;
 	}
 
@@ -636,11 +719,14 @@ class PlgContentFabrik extends JPlugin
 	protected function getView(&$controller, $viewName, $id)
 	{
 		$viewType = JFactory::getDocument()->getType();
+
 		if ($viewName == 'details')
 		{
 			$viewName = 'form';
 		}
+
 		$view = $controller->getView($viewName, $viewType);
+
 		return $view;
 	}
 
@@ -658,6 +744,7 @@ class PlgContentFabrik extends JPlugin
 		{
 			$this->pluginVizName = array();
 		}
+
 		if (!array_key_exists($id, $this->pluginVizName))
 		{
 			$db = FabrikWorker::getDbo(true);
@@ -666,6 +753,7 @@ class PlgContentFabrik extends JPlugin
 			$db->setQuery($query);
 			$this->pluginVizName[$id] = $db->loadResult();
 		}
+
 		return $this->pluginVizName[$id];
 	}
 
@@ -684,6 +772,7 @@ class PlgContentFabrik extends JPlugin
 		{
 			$this->controllers = array();
 		}
+
 		switch ($viewName)
 		{
 			case 'visualization':
@@ -696,7 +785,7 @@ class PlgContentFabrik extends JPlugin
 				$controller = new FabrikControllerDetails;
 				break;
 			case 'list':
-			// $$$ hugh - had to add [$id] for cases where we have multiple plugins with different tableid's
+				// $$$ hugh - had to add [$id] for cases where we have multiple plugins with different tableid's
 				if (array_key_exists('list', $this->controllers))
 				{
 					if (!array_key_exists($id, $this->controllers['list']))
@@ -708,6 +797,7 @@ class PlgContentFabrik extends JPlugin
 				{
 					$this->controllers['list'][$id] = new FabrikControllerList;
 				}
+
 				$controller = $this->controllers['list'][$id];
 				break;
 			case 'package':
@@ -717,8 +807,10 @@ class PlgContentFabrik extends JPlugin
 				$controller = new FabrikController;
 				break;
 		}
+
 		// Set a cacheId so that the controller grabs/creates unique caches for each form/table rendered
 		$controller->cacheId = $id;
+
 		return $controller;
 	}
 
@@ -737,21 +829,25 @@ class PlgContentFabrik extends JPlugin
 		require_once COM_FABRIK_FRONTEND . '/controller.php';
 
 		// If in admin form or details view and embedding a list - this gave an error - if only needed for 3.0.x
+
 		if ($view !== 'list')
 		{
 			require_once COM_FABRIK_FRONTEND . '/controllers/form.php';
 			require_once COM_FABRIK_FRONTEND . '/controllers/details.php';
 		}
+
 		require_once COM_FABRIK_FRONTEND . '/controllers/package.php';
 		require_once COM_FABRIK_FRONTEND . '/controllers/list.php';
 		require_once COM_FABRIK_FRONTEND . '/controllers/visualization.php';
 		JTable::addIncludePath(JPATH_ADMINISTRATOR . '/components/com_fabrik/tables');
 		JModelLegacy::addIncludePath(COM_FABRIK_FRONTEND . '/models');
 		JModelLegacy::addIncludePath(COM_FABRIK_FRONTEND . '/models', 'FabrikFEModel');
+
 		if ($view == 'details')
 		{
 			$view = 'form';
 		}
+
 		if ($view == '')
 		{
 			throw new RuntimeException('Please specify a view in your fabrik {} code', 500);
@@ -760,10 +856,10 @@ class PlgContentFabrik extends JPlugin
 		// $$$rob looks like including the view does something to the layout variable
 		$layout = $input->get('layout', 'default');
 		require_once COM_FABRIK_FRONTEND . '/views/' . $view . '/view.html.php';
+
 		if (!is_null($layout))
 		{
 			$input->set('layout', $layout);
 		}
 	}
-
 }

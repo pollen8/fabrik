@@ -32,17 +32,6 @@ class FabrikAdminControllerPackage extends JControllerForm
 	protected $text_prefix = 'COM_FABRIK_PACKAGE';
 
 	/**
-	 * Constructor
-	 *
-	 * @param   array  $config  options
-	 */
-
-	public function __construct($config = array())
-	{
-		parent::__construct($config);
-	}
-
-	/**
 	 * list of items
 	 *
 	 * @return  null
@@ -57,13 +46,16 @@ class FabrikAdminControllerPackage extends JControllerForm
 		$list = $input->get('list', 'form');
 		$selected = $input->get('selected');
 		$query->select('id, label')->from('#__fabrik_' . $list . 's');
+
 		if ($selected != '')
 		{
 			// $query->where('id NOT IN ('.$selected.')');
 		}
+
 		$db->setQuery($query);
 		$rows = $db->loadObjectList();
 		echo "<ul id=\"$list-additems\">";
+
 		if (empty($rows))
 		{
 			echo "<li>" . JText::sprintf('COM_FABRIK_NO_FREE_ITEMS_FOUND') . "</li>";
@@ -75,11 +67,11 @@ class FabrikAdminControllerPackage extends JControllerForm
 				echo "<li><a href=\"#\" id=\"$row->id\">$row->label</a>";
 			}
 		}
+
 		echo "</ul>";
 		$script = "$('$list-additems').getElements('a').addEvent('click', function(e){
 			Fabrik.fireEvent('fabrik.package.item.selected', [e]);
 		});";
 		FabrikHelperHTML::addScriptDeclaration($script);
 	}
-
 }

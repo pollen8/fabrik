@@ -54,10 +54,12 @@ class JFormFieldFabrikTables extends JFormFieldList
 	protected function getOptions()
 	{
 		$app = JFactory::getApplication();
+
 		if (!isset($fabriktables))
 		{
 			$fabriktables = array();
 		}
+
 		$connectionDd = $this->element['observe'];
 		$db = FabrikWorker::getDbo(true);
 		$id = $this->id;
@@ -66,7 +68,9 @@ class JFormFieldFabrikTables extends JFormFieldList
 		{
 			$package = $app->setUserState('com_fabrik.package', $this->element['package']);
 		}
+
 		$fullName = $this->name;
+
 		if ($connectionDd == '')
 		{
 			// We are not monitoring a connection drop down so load in all tables
@@ -79,6 +83,7 @@ class JFormFieldFabrikTables extends JFormFieldList
 		{
 			$rows = array(JHTML::_('select.option', '', JText::_('COM_FABRIK_SELECT_A_CONNECTION_FIRST'), 'value', 'text'));
 		}
+
 		return $rows;
 	}
 
@@ -92,14 +97,18 @@ class JFormFieldFabrikTables extends JFormFieldList
 	{
 		$c = isset($this->form->repeatCounter) ? (int) $this->form->repeatCounter : 0;
 		$connectionDd = $this->element['observe'];
+
 		if (!isset($fabriktables))
 		{
 			$fabriktables = array();
 		}
+
 		$script = array();
+
 		if ($connectionDd != '' && !array_key_exists($this->id, $fabriktables))
 		{
 			$repeatCounter = empty($this->form->repeatCounter) ? 0 : $this->form->repeatCounter;
+
 			if ($this->form->repeat)
 			{
 				// In repeat fieldset/group
@@ -109,6 +118,7 @@ class JFormFieldFabrikTables extends JFormFieldList
 			{
 				$connectionDd = ($c === false || $this->element['connection_in_repeat'] == 'false') ? $connectionDd : $connectionDd . '-' . $c;
 			}
+
 			$opts = new stdClass;
 			$opts->livesite = COM_FABRIK_LIVESITE;
 			$opts->conn = 'jform_' . $connectionDd;
@@ -128,6 +138,7 @@ class JFormFieldFabrikTables extends JFormFieldList
 			$src[] = 'administrator/components/com_fabrik/models/fields/fabriktables.js';
 			FabrikHelperHTML::script($src, $script);
 		}
+
 		$script = implode("\n", $script);
 
 		$html = parent::getInput();
@@ -136,7 +147,7 @@ class JFormFieldFabrikTables extends JFormFieldList
 		$script = '<script type="text/javascript">' . $script . '</script>';
 		FabrikHelperHTML::framework();
 		FabrikHelperHTML::iniRequireJS();
+
 		return $html;
 	}
-
 }

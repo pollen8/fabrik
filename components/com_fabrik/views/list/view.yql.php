@@ -3,7 +3,7 @@
  * Display the template
  *
  * @package     Joomla
- * @subpackage	Fabik
+ * @subpackage  Fabik
  * @copyright   Copyright (C) 2005-2013 fabrikar.com - All rights reserved.
  * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
@@ -13,9 +13,16 @@ defined('_JEXEC') or die('Restricted access');
 
 require_once JPATH_SITE . '/components/com_fabrik/views/list/view.base.php';
 
+/**
+ * List YQL view class
+ *
+ * @package     Joomla
+ * @subpackage  Fabrik
+ * @since       3.0.6
+ */
+
 class FabrikViewList extends FabrikViewListBase
 {
-
 	/**
 	 * Display the template
 	 *
@@ -34,13 +41,10 @@ class FabrikViewList extends FabrikViewListBase
 		$model->setId($input->getInt('listid', $usersConfig->get('listid')));
 		$model->render();
 		$table = $model->getTable();
-
 		$document->title = $table->label;
 		$document->description = $table->introduction;
 		$document->copyright = '';
 		$document->listid = $table->id;
-
 		$document->items = $model->getData();
-
 	}
 }

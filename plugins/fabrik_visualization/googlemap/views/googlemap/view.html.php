@@ -23,7 +23,6 @@ jimport('joomla.application.component.view');
 
 class FabrikViewGooglemap extends JViewLegacy
 {
-
 	/**
 	 * Execute and display a template script.
 	 *
@@ -55,6 +54,7 @@ class FabrikViewGooglemap extends JViewLegacy
 		$srcs[] = 'media/com_fabrik/js/listfilter.js';
 
 		$uri = JURI::getInstance();
+
 		if ($params->get('fb_gm_center') == 'userslocation')
 		{
 			$srcs[] = 'components/com_fabrik/libs/geo-location/geo.js';
@@ -63,6 +63,7 @@ class FabrikViewGooglemap extends JViewLegacy
 		$model->getPluginJsClasses($srcs);
 
 		global $ispda;
+
 		if ($ispda == 1)
 		{
 			// Pdabot
@@ -99,6 +100,7 @@ class FabrikViewGooglemap extends JViewLegacy
 
 			$template = null;
 		}
+
 		$js .= $model->getPluginJsObjects();
 		$js .= $model->getFilterJs();
 
@@ -116,6 +118,7 @@ class FabrikViewGooglemap extends JViewLegacy
 		$this->filterFormURL = $model->getFilterFormURL();
 		$this->sidebarPosition = $params->get('fb_gm_use_overlays_sidebar');
 		$this->showOverLays = (bool) $params->get('fb_gm_use_overlays');
+
 		if ($model->getShowSideBar())
 		{
 			$this->showSidebar = 1;
@@ -126,10 +129,10 @@ class FabrikViewGooglemap extends JViewLegacy
 		{
 			$this->showSidebar = 0;
 		}
+
 		$this->_setPath('template', $tmplpath);
 		$this->containerId = $model->getContainerId();
 		$this->groupTemplates = $model->getGroupTemplates();
 		echo parent::display($template);
 	}
-
 }

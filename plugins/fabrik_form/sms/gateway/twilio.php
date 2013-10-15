@@ -12,23 +12,22 @@
 defined('_JEXEC') or die('Restricted access');
 
 /**
-* Twilio SMS gateway class
-*
-* @package     Joomla.Plugin
-* @subpackage  Fabrik.form.sms
-* @since       3.0
-*/
+ * Twilio SMS gateway class
+ *
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.form.sms
+ * @since       3.0
+ */
 
 class Twilio extends JObject
 {
-
 	/**
-	* Send SMS
-	*
-	* @param   string  $message  sms message
-	*
-	* @return  void
-	*/
+	 * Send SMS
+	 *
+	 * @param   string  $message  sms message
+	 *
+	 * @return  void
+	 */
 
 	public function process($message = '')
 	{
@@ -41,6 +40,7 @@ class Twilio extends JObject
 		// From a valid Twilio number
 		$smsfrom = $params->get('sms-from');
 		$smstos = explode(",", $smsto);
+
 		foreach ($smstos as $smsto)
 		{
 			$client = new Services_Twilio($username, $token);
@@ -62,5 +62,4 @@ class Twilio extends JObject
 	{
 		return $this->params;
 	}
-
 }

@@ -35,8 +35,8 @@
 			</field>
 			
 			<field name="listlayout"
-				type="folderlist"
-				directory="/components/com_fabrik/views/list/tmpl/"
+				type="fabriktemplate"
+				view="list"
 				label="COM_FABRIK_MENU_LIST_TMPL_LABEL"
 				description="COM_FABRIK_MENU_LIST_TMPL_DESC"
 			/>
@@ -153,13 +153,13 @@
 				description="COM_FABRIK_FIELD_ROWS_PER_PAGE_DESC"
 			/>
 			
-			<field name="query_string"
+			<!-- <field name="query_string"
 				type="text"
 				class="input-xlarge"
 				size="40"
 				label="COM_FABRIK_MENU_LIST_QUERY_STRING_LABEL"
 				description="COM_FABRIK_MENU_LIST_QUERY_STRING_DESC"
-			/>
+			/> -->
 			
 		</fieldset>
 	</fields>

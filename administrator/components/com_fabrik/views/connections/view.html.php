@@ -66,13 +66,16 @@ class FabrikAdminViewConnections extends JViewLegacy
 		{
 			throw new RuntimeException(implode("\n", $errors), 500);
 		}
+
 		FabrikAdminHelper::setViewLayout($this);
 		$this->addToolbar();
 		FabrikAdminHelper::addSubmenu($input->getWord('view', 'lists'));
+
 		if (FabrikWorker::j3())
 		{
 			$this->sidebar = JHtmlSidebar::render();
 		}
+
 		FabrikHelperHTML::iniRequireJS();
 		parent::display($tpl);
 	}
@@ -89,16 +92,18 @@ class FabrikAdminViewConnections extends JViewLegacy
 	{
 		require_once JPATH_COMPONENT . '/helpers/fabrik.php';
 		$canDo	= FabrikAdminHelper::getActions($this->state->get('filter.category_id'));
-
 		JToolBarHelper::title(JText::_('COM_FABRIK_MANAGER_CONNECTIONS'), 'connections.png');
+
 		if ($canDo->get('core.create'))
 		{
 			JToolBarHelper::addNew('connection.add', 'JTOOLBAR_NEW');
 		}
+
 		if ($canDo->get('core.edit'))
 		{
 			JToolBarHelper::editList('connection.edit', 'JTOOLBAR_EDIT');
 		}
+
 		if ($canDo->get('core.edit.state'))
 		{
 			if ($this->state->get('filter.state') != 2)
@@ -108,10 +113,12 @@ class FabrikAdminViewConnections extends JViewLegacy
 				JToolBarHelper::custom('connections.unpublish', 'unpublish.png', 'unpublish_f2.png', 'JTOOLBAR_UNPUBLISH', true);
 			}
 		}
+
 		if (JFactory::getUser()->authorise('core.manage', 'com_checkin'))
 		{
 			JToolBarHelper::custom('connections.checkin', 'checkin.png', 'checkin_f2.png', 'JTOOLBAR_CHECKIN', true);
 		}
+
 		if ($this->state->get('filter.published') == -2 && $canDo->get('core.delete'))
 		{
 			JToolBarHelper::deleteList('', 'connections.delete', 'JTOOLBAR_EMPTY_TRASH');
@@ -120,11 +127,13 @@ class FabrikAdminViewConnections extends JViewLegacy
 		{
 			JToolBarHelper::trash('connections.trash', 'JTOOLBAR_TRASH');
 		}
+
 		if ($canDo->get('core.admin'))
 		{
 			JToolBarHelper::divider();
 			JToolBarHelper::preferences('com_fabrik');
 		}
+
 		JToolBarHelper::divider();
 		JToolBarHelper::help('JHELP_COMPONENTS_FABRIK_CONNECTIONS', false, JText::_('JHELP_COMPONENTS_FABRIK_CONNECTIONS'));
 

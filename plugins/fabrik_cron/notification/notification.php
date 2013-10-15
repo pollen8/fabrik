@@ -24,7 +24,6 @@ require_once COM_FABRIK_FRONTEND . '/models/plugin-cron.php';
 
 class PlgFabrik_Cronnotification extends PlgFabrik_Cron
 {
-
 	/**
 	 * Check if the user can use the active element
 	 *
@@ -73,6 +72,7 @@ class PlgFabrik_Cronnotification extends PlgFabrik_Cron
 
 		$successMails = array();
 		$failedMails = array();
+
 		foreach ($rows as $row)
 		{
 			/*
@@ -84,22 +84,26 @@ class PlgFabrik_Cronnotification extends PlgFabrik_Cron
 
 			$url = JRoute::_('index.php?option=com_fabrik&view=details&listid=' . $listid . '&formid=' . $formid . '&rowid=' . $rowid);
 			$msg = JText::sprintf('FABRIK_NOTIFICATION_EMAIL_PART', $row->creator_name, $url, $event);
+
 			if (!array_key_exists($row->observer_id, $usermsgs))
 			{
 				$usermsgs[$row->observer_email] = array();
 			}
-			$usermsgs[$row->observer_email][] = $msg;
 
+			$usermsgs[$row->observer_email][] = $msg;
 			$query->clear();
 			$query->insert('#__{package}_notification_event_sent')
 			->set(array('notification_event_id = ' . $row->event_id, 'user_id = ' . $row->observer_id, 'sent = 1'));
 			$sent[] = (string) $query;
 		}
+
 		$subject = $sitename . ": " . JText::_('FABRIK_NOTIFICATION_EMAIL_SUBJECT');
+
 		foreach ($usermsgs as $email => $messages)
 		{
 			$msg = implode(' ', $messages);
 			$mailer = JFactory::getMailer();
+
 			if ($mailer->sendMail($email_from, $email_from, $email, $subject, $msg, true))
 			{
 				$successMails[] = $email;
@@ -108,21 +112,23 @@ class PlgFabrik_Cronnotification extends PlgFabrik_Cron
 			{
 				$failedMails[] = $email;
 			}
-
 		}
+
 		if (!empty($sent))
 		{
 			$sent = implode(';', $sent);
 			$db->setQuery($sent);
 			$db->execute();
 		}
+
 		$this->log = count($sent) . ' notifications sent.<br />';
 		$this->log .= 'Emailed users: <ul><li>' . implode('</li><li>', $successMails) . '</li></ul>';
+
 		if (!empty($failedMails))
 		{
 			$this->log .= 'Failed emails: <ul><li>' . implode('</li><li>', $failedMails) . '</li></ul>';
 		}
+
 		return count($successMails);
 	}
-
 }

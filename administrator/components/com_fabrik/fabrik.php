@@ -31,6 +31,7 @@ $app = JFactory::getApplication();
 $input = $app->input;
 
 jimport('joomla.filesystem.file');
+
 if ($input->get('format', 'html') === 'html')
 {
 	FabrikHelperHTML::framework();
@@ -49,14 +50,18 @@ if (!defined('COM_FABRIK_FRONTEND'))
 
 // Check for plugin views (e.g. list email plugin's "email form"
 $cName = $input->getCmd('controller');
+
 if (JString::strpos($cName, '.') != false)
 {
 	list($type, $name) = explode('.', $cName);
+
 	if ($type == 'visualization')
 	{
 		require_once JPATH_COMPONENT . '/controllers/visualization.php';
 	}
+
 	$path = JPATH_SITE . '/plugins/fabrik_' . $type . '/' . $name . '/controllers/' . $name . '.php';
+
 	if (JFile::exists($path))
 	{
 		require_once $path;
@@ -82,6 +87,7 @@ $db = JFactory::getDbo();
 $query = $db->getQuery(true);
 $query->select('COUNT(extension_id)')->from('#__extensions')->where('enabled = 1 AND folder = "fabrik_element"');
 $db->setQuery($query);
+
 if (count($db->loadResult()) === 0)
 {
 	$app->enqueueMessage(JText::_('COM_FABRIK_PUBLISH_AT_LEAST_ONE_ELEMENT_PLUGIN'), 'notice');

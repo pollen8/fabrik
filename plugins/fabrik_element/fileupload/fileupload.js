@@ -15,11 +15,7 @@ var FbFileUpload = new Class({
 			this.ajaxFolder();
 		}
 
-		this.submitEvent = function (form, json) {
-			this.onSubmit(form);
-		}.bind(this);
-
-		Fabrik.addEvent('fabrik.form.submit.start', this.submitEvent);
+		//Fabrik.addEvent('fabrik.form.submit.start', this.submitEvent);
 		if (this.options.ajax_upload && this.options.editable !== false) {
 			this.watchAjax();
 			this.options.files = $H(this.options.files);
@@ -119,7 +115,7 @@ var FbFileUpload = new Class({
 	 * as it still references the files uploaded in the first form
 	 */
 	removeCustomEvents: function () {
-		Fabrik.removeEvent('fabrik.form.submit.start', this.submitEvent);
+		//Fabrik.removeEvent('fabrik.form.submit.start', this.submitEvent);
 	},
 
 	cloned: function (c) {
@@ -237,7 +233,8 @@ var FbFileUpload = new Class({
 			silverlight_xap_url: this.options.ajax_silverlight_path,
 			chunk_size: this.options.ajax_chunk_size + 'kb',
 			dragdrop : true,
-			multipart: true
+			multipart: true,
+			filters: this.options.filters
 		};
 		this.uploader = new plupload.Uploader(plupopts);
 
@@ -259,6 +256,7 @@ var FbFileUpload = new Class({
 		// (2) ON FILES ADDED ACTION
 		this.uploader.bind('FilesAdded', function (up, files) {
 			this.removeDropArea();
+			this.lastAddedFiles = files;
 			this.container.getElement('thead').show();
 			var count = this.droplist.getElements('li').length;
 			this.startbutton.removeClass('disabled');
@@ -330,8 +328,15 @@ var FbFileUpload = new Class({
 		});
 
 		this.uploader.bind('Error', function (up, err) {
-			fconsole('Plupload Error:' + err.message);
-		});
+			this.lastAddedFiles.each(function (file) {
+				var row = document.id(file.id);
+				if (typeOf(row) !== 'null') {
+					row.destroy();
+					alert(err.message);
+				}
+				this.addDropArea();
+			}.bind(this));
+		}.bind(this));
 
 		this.uploader.bind('ChunkUploaded', function (up, file, response) {
 			response = JSON.decode(response.response);
@@ -391,7 +396,7 @@ var FbFileUpload = new Class({
 
 			document.id(file.id).removeClass('plupload_file_action').addClass('plupload_done');
 
-
+			this.isSumbitDone();
 		}.bind(this));
 
 		// (4) UPLOAD FILES FIRE STARTER
@@ -411,13 +416,14 @@ var FbFileUpload = new Class({
 		return ['jpg', 'jpeg', 'png', 'gif'].contains(ext);
 	},
 
-	pluploadRemoveFile : function (e, file) {
+	pluploadRemoveFile: function (e, file) {
 		e.stop();
 		if (!confirm(Joomla.JText._('PLG_ELEMENT_FILEUPLOAD_CONFIRM_HARD_DELETE'))) {
 			return;
 		}
 		var id = e.target.getParent().getParent().id.split('_').getLast();// alreadyuploaded_8_13
-		var f = e.target.getParent().getParent().getElement('.plupload_file_name span').get('text');
+		// $$$ hugh - removed ' span' from the getElement(), as this blows up on some templates
+		var f = e.target.getParent().getParent().getElement('.plupload_file_name').get('text');
 
 		// Get a list of all of the uploaders files except the one to be deleted
 		var newFiles = [];
@@ -431,6 +437,7 @@ var FbFileUpload = new Class({
 		this.uploader.files = newFiles;
 
 		// Send a request to delete the file from the server.
+		console.log(this);
 		new Request({
 			url: '',
 			data: {
@@ -441,7 +448,8 @@ var FbFileUpload = new Class({
 				'method': 'ajax_deleteFile',
 				'element_id': this.options.id,
 				'file': f,
-				'recordid': id
+				'recordid': id,
+				'repeatCounter': this.options.repeatCounter
 			}
 		}).send();
 		var li = e.target.getParent('.plupload_delete');
@@ -460,20 +468,46 @@ var FbFileUpload = new Class({
 		}
 	},
 
-	pluploadResize : function (e) {
+	pluploadResize: function (e) {
 		e.stop();
 		var a = e.target.getParent();
 		if (this.widget) {
 			this.widget.setImage(a.href, a.retrieve('filepath'));
 		}
 	},
-
-	onSubmit : function (form) {
-		if (!this.allUploaded()) {
-			alert(Joomla.JText._('PLG_ELEMENT_FILEUPLOAD_UPLOAD_ALL_FILES'));
-			form.result = false;
-			return false;
+	
+	/**
+	 * Once the upload fires a FileUploaded bound function we test if all images for this element have been uploaded
+	 * If they have then we save the crop widget state and fire the callback - which is handled by FbFormSubmit()
+	 */
+	isSumbitDone: function () {
+		if (this.allUploaded() && typeof(this.submitCallBack) === 'function') {
+			this.saveWidgetState();
+			this.submitCallBack(true);
+			delete this.submitCallBack;
 		}
+	},
+
+	/**
+	 * Called from FbFormSubmit.submit() handles testing.
+	 * If not yet uploaded, triggers the upload and defers the callback until the upload is complete.
+	 * If complete then saves widget state and calls parent onsubmit(). 
+	 */
+	onsubmit: function (cb) {
+		this.submitCallBack = cb;
+		if (!this.allUploaded()) {
+			this.uploader.start();
+			// alert(Joomla.JText._('PLG_ELEMENT_FILEUPLOAD_UPLOAD_ALL_FILES'));
+		} else {
+			this.saveWidgetState();
+			this.parent(cb);
+		}
+	},
+	
+	/**
+	 * Save the crop widget state as a json object
+	 */
+	saveWidgetState: function () {
 		if (typeOf(this.widget) !== 'null') {
 			this.widget.images.each(function (image, key) {
 				key = key.split('\\').getLast();
@@ -494,7 +528,6 @@ var FbFileUpload = new Class({
 				}
 			});
 		}
-		return true;
 	},
 
 	allUploaded : function () {
@@ -654,12 +687,15 @@ var ImageWidget = new Class({
 	setImage: function (uri, filepath, params) {
 		this.activeFilePath = filepath;
 		if (!this.images.has(filepath)) {
-
+			
+			// Needed to ensure they are available in onLoad
+			var tmpParams = params;
+			
 			// New image
 			var img = Asset.image(uri, {
 				onLoad: function () {
 
-					var params = this.storeImageDimensions(filepath, img, params);
+					var params = this.storeImageDimensions(filepath, img, tmpParams);
 					this.img = params.img;
 					this.setInterfaceDimensions(params);
 					this.showWin();
@@ -950,7 +986,7 @@ var ImageWidget = new Class({
 
 		var win = document.id(this.windowopts.id);
 		if (typeOf(win) === 'null') {
-			console.log('storeActiveImageData no window found for ' + this.windowopts.id);
+			fconsole('storeActiveImageData no window found for ' + this.windowopts.id);
 			return;
 		}
 		var canvas = win.getElement('canvas');

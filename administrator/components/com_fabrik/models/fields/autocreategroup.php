@@ -38,6 +38,7 @@ class JFormFieldAutoCreateGroup extends JFormFieldRadio
 	protected function getInput()
 	{
 		$this->value = $this->form->getValue('id') == 0 ? 1 : 0;
+
 		return parent::getInput();
 	}
 }

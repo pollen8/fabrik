@@ -49,18 +49,22 @@ class JFormFieldFormList extends JFormFieldList
 	protected function getOptions()
 	{
 		$app = JFactory::getApplication();
+
 		if ($this->element['package'])
 		{
 			$package = $app->setUserState('com_fabrik.package', $this->element['package']);
 		}
+
 		$db = FabrikWorker::getDbo(true);
 		$query = $db->getQuery(true);
 		$query->select('id AS value, label AS ' . $db->quote('text') . ', published');
 		$query->from('#__{package}_forms');
+
 		if (!$this->element['showtrashed'])
 		{
 			$query->where('published <> -2');
 		}
+
 		$query->order('published DESC, label ASC');
 		$db->setQuery($query);
 		$rows = $db->loadObjectList();
@@ -77,6 +81,7 @@ class JFormFieldFormList extends JFormFieldList
 					break;
 			}
 		}
+
 		$o = new stdClass;
 		$o->value = '';
 		$o->text = '';
@@ -96,6 +101,7 @@ class JFormFieldFormList extends JFormFieldList
 		$app = JFactory::getApplication();
 		$input = $app->input;
 		$option = $input->get('option');
+
 		if (!in_array($option, array('com_modules', 'com_menus', 'com_advancedmodules')))
 		{
 			$db = FabrikWorker::getDbo(true);
@@ -105,7 +111,7 @@ class JFormFieldFormList extends JFormFieldList
 			$this->value = $db->loadResult();
 			$this->form->setValue('form', null, $this->value);
 		}
+
 		return parent::getInput();
 	}
-
 }

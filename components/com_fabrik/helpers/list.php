@@ -21,7 +21,6 @@ defined('_JEXEC') or die('Restricted access');
 
 class FabrikHelperList
 {
-
 	/**
 	 * Get a list of elements which match a set of criteria
 	 *
@@ -36,15 +35,17 @@ class FabrikHelperList
 	public static function getElements($listModel, $filter = array())
 	{
 		$found = array();
-
 		$groups = $listModel->getFormGroupElementData();
+
 		foreach ($groups as $groupModel)
 		{
 			$elementModels = $groupModel->getMyElements();
+
 			foreach ($elementModels as $elementModel)
 			{
 				$item = $elementModel->getElement();
 				$ok = true;
+
 				foreach ($filter as $key => $val)
 				{
 					if ($item->$key != $val)
@@ -52,11 +53,11 @@ class FabrikHelperList
 						$ok = false;
 					}
 				}
+
 				if ($ok)
 				{
 					$found[] = $elementModel;
 				}
-
 			}
 		}
 
@@ -65,6 +66,7 @@ class FabrikHelperList
 			$filterNames = implode(', ', $filter);
 			throw new Exception(JText::sprintf('COM_FABRIK_ERR_NO_ELEMENTS_MATCHED_FILTER', $filterNames));
 		}
+
 		return $found;
 	}
 }

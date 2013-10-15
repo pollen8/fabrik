@@ -40,10 +40,30 @@ class JFormFieldTextorwysiwyg extends JFormFieldText
 	protected function getInput()
 	{
 		$config = JComponentHelper::getParams('com_fabrik');
+
 		if ($config->get('fbConf_wysiwyg_label', '0') == '0')
 		{
-			return parent::getInput();
+			// Initialize some field attributes.
+			$size = $this->element['size'] ? ' size="' . (int) $this->element['size'] . '"' : '';
+			$maxLength = $this->element['maxlength'] ? ' maxlength="' . (int) $this->element['maxlength'] . '"' : '';
+			$class = $this->element['class'] ? ' class="' . (string) $this->element['class'] . '"' : '';
+			$readonly = ((string) $this->element['readonly'] == 'true') ? ' readonly="readonly"' : '';
+			$disabled = ((string) $this->element['disabled'] == 'true') ? ' disabled="disabled"' : '';
+			$required = $this->required ? ' required="required" aria-required="true"' : '';
+
+			// Initialize JavaScript field attributes.
+			$onchange = $this->element['onchange'] ? ' onchange="' . (string) $this->element['onchange'] . '"' : '';
+
+			// Correctly deal with double quotes
+			$value = htmlspecialchars($this->value, ENT_COMPAT, 'UTF-8');
+
+			// Re-replace "&amp;lt;" with "&gt;" -don't ask
+			$value = htmlspecialchars_decode($value, ENT_NOQUOTES);
+
+			return '<input type="text" name="' . $this->name . '" id="' . $this->id . '" value="'
+				. $value . '"' . $class . $size . $disabled . $readonly . $onchange . $maxLength . $required . '/>';
 		}
+
 		// Initialize some field attributes.
 		$rows = (int) $this->element['rows'];
 		$cols = (int) $this->element['cols'];
@@ -68,6 +88,7 @@ class JFormFieldTextorwysiwyg extends JFormFieldText
 		{
 			$buttons = explode(',', $buttons);
 		}
+
 		$hide = ((string) $this->element['hide']) ? explode(',', (string) $this->element['hide']) : array();
 
 		// Get an editor object.
@@ -75,6 +96,7 @@ class JFormFieldTextorwysiwyg extends JFormFieldText
 		$value = htmlspecialchars($this->value, ENT_COMPAT, 'UTF-8');
 		$btns = $buttons ? (is_array($buttons) ? array_merge($buttons, $hide) : $hide) : false;
 		$auth = $this->form->getValue($authorField);
+
 		return $editor->display($this->name, $value, $width, $height, $cols, $rows, $btns, $this->id, $asset, $auth);
 	}
 
@@ -128,7 +150,7 @@ class JFormFieldTextorwysiwyg extends JFormFieldText
 			// Create the JEditor intance based on the given editor.
 			$this->editor = JFactory::getEditor($editor ? $editor : null);
 		}
+
 		return $this->editor;
 	}
-
 }

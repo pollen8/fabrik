@@ -43,6 +43,7 @@ class JFormFieldElement extends JFormFieldList
 	protected function getOptions()
 	{
 		$cnns = array(JHTML::_('select.option', '-1', JText::_('COM_FABRIK_PLEASE_SELECT')));
+
 		return;
 	}
 
@@ -55,22 +56,27 @@ class JFormFieldElement extends JFormFieldList
 	protected function getInput()
 	{
 		static $fabrikelements;
+
 		if (!isset($fabrikelements))
 		{
 			$fabrikelements = array();
 		}
+
 		$src[] = 'administrator/components/com_fabrik/views/namespace.js';
 		$c = (int) @$this->form->repeatCounter;
 		$table = $this->element['table'];
+
 		if ($table == '')
 		{
 			$table = $this->form->getValue('params.list_id');
 		}
+
 		$include_calculations = (int) $this->element['include_calculations'];
 		$published = (int) $this->element['published'];
 		$showintable = (int) $this->element['showintable'];
 		$highlightpk = (bool) JArrayHelper::getValue($this->element, 'highlightpk', false);
 		$mode = (string) $this->element['mode'];
+
 		if ($include_calculations != 1)
 		{
 			$include_calculations = 0;
@@ -81,6 +87,7 @@ class JFormFieldElement extends JFormFieldList
 		 * if (!array_key_exists($this->id, $fabrikelements)) {
 		 */
 		$opts = new stdClass;
+
 		if ($this->form->repeat)
 		{
 			// In repeat fieldset/group
@@ -121,8 +128,10 @@ class JFormFieldElement extends JFormFieldList
 			$return .= '<img style="margin-left:10px;display:none" id="' . $this->id
 				. '_loader" src="components/com_fabrik/images/ajax-loader.gif" alt="' . JText::_('COM_FABRIK_LOADING') . '" />';
 		}
+
 		FabrikHelperHTML::framework();
 		FabrikHelperHTML::iniRequireJS();
+
 		return $return;
 	}
 
@@ -138,6 +147,7 @@ class JFormFieldElement extends JFormFieldList
 		$str[] = '<textarea cols="20" row="3" id="' . $this->id . '" name="' . $this->name . '">' . $this->value . '</textarea>';
 		$str[] = '<button class="button btn">' . JText::_('COM_FABRIK_ADD') . '</button>';
 		$str[] = '<select class="elements"></select>';
+
 		return implode("\n", $str);
 	}
 }

@@ -36,6 +36,13 @@ $lang->load('com_fabrik', JPATH_BASE . '/components/com_fabrik');
 
 $app = JFactory::getApplication();
 $input = $app->input;
+
+// Clear out other filters (e.g. content/module previously rendered which used the same list but different filter)
+if ($params->get('clearfilters'))
+{
+	$input->set('clearfilters', 1);
+}
+
 $document = JFactory::getDocument();
 
 // Ensure the package is set to fabrik
@@ -56,14 +63,14 @@ $layout	= $params->get('fabriklayout', '');
 $input->set('layout', $layout);
 
 $moduleclass_sfx = $params->get('moduleclass_sfx', '');
-
 $listId	= intval($params->get('list_id', 0));
+$listels = json_decode($params->get('list_elements'));
+
 if ($listId === 0)
 {
 	JError::raiseError(500, 'no list specified');
 }
 
-$listels = json_decode($params->get('list_elements'));
 if (isset($listels->show_in_list))
 {
 	$input->set('fabrik_show_in_list', $listels->show_in_list);
@@ -102,6 +109,7 @@ if ($params->get('show_nav', '') !== '')
 {
 	$listParams->set('show-table-nav', $params->get('show_nav'));
 }
+
 $listParams->set('show_into', $params->get('show_into', 1));
 $listParams->set('show_outro', $params->get('show_outro', 1));
 $origShowFilters = $app->input->get('showfilters', 1);
@@ -115,6 +123,7 @@ if ($showTitle !== '')
 $ordering = JArrayHelper::fromObject(json_decode($params->get('ordering')));
 $orderBy = (array) $ordering['order_by'];
 $orderDir = (array) $ordering['order_dir'];
+
 if (!empty($orderBy))
 {
 	$model->getTable()->order_by = json_encode($orderBy);
@@ -125,6 +134,7 @@ if (!empty($orderBy))
 
 $prefilters = JArrayHelper::fromObject(json_decode($params->get('prefilters')));
 $conditions = (array) $prefilters['filter-conditions'];
+
 if (!empty($conditions))
 {
 	$listParams->set('filter-join', $prefilters['filter-join']);
@@ -136,10 +146,12 @@ if (!empty($conditions))
 }
 
 $model->randomRecords = $random;
+
 if (!JError::isError($model))
 {
 	$view->setModel($model, true);
 }
+
 $view->isMambot = true;
 
 // Display the view

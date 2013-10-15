@@ -1,0 +1,15 @@
+.picklist{
+	list-style:none;
+}
+
+.picklist li, li.picklist{
+	background-color:#FFFFFF;
+	margin:3px;
+	padding:5px !important;
+	cursor:move;
+}
+
+li.emptyplicklist{
+	background-color:transparent;
+	cursor:pointer;
+}

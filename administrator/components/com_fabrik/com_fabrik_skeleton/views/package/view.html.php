@@ -23,7 +23,6 @@ jimport('joomla.application.component.view');
  */
 class SkeletonViewPackage extends JViewLegacy
 {
-
 	/**
 	 * Display
 	 *
@@ -40,5 +39,4 @@ class SkeletonViewPackage extends JViewLegacy
 		 * admin menu options.
 		 */
 	}
-
 }

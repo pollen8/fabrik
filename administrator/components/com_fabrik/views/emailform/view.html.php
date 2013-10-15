@@ -16,14 +16,13 @@ jimport('joomla.application.component.view');
 /**
  * View when emailing a form to a user
  *
- * @package		Joomla.Administrator
- * @subpackage	Fabrik
- * @since		3.0
+ * @package     Joomla.Administrator
+ * @subpackage  Fabrik
+ * @since       3.0
  */
 
-class fabrikViewEmailform extends JViewLegacy
+class FabrikViewEmailform extends JViewLegacy
 {
-
 	/**
 	 * Display
 	 *
@@ -39,6 +38,7 @@ class fabrikViewEmailform extends JViewLegacy
 		$model = JModelLegacy::getInstance('form', 'FabrikFEModel');
 		$app = JFactory::getApplication();
 		$input = $app->input;
+
 		if (!$input->get('youremail', false))
 		{
 			FabrikHelperHTML::emailForm($model);
@@ -54,20 +54,22 @@ class fabrikViewEmailform extends JViewLegacy
 	/**
 	 * Send a mail
 	 *
-	 * @param   string  $email  Email address
+	 * @param   string  &$email  Email address
 	 *
 	 * @return  void
 	 */
 
-	function sendMail(&$email)
+	public function sendMail(&$email)
 	{
 		JSession::checkToken() or die('Invalid Token');
 		$app = JFactory::getApplication();
 		$input = $app->input;
 
-		// First, make sure the form was posted from a browser.
-		// For basic web-forms, we don't care about anything
-		// other than requests from a browser:
+		/*
+		 * First, make sure the form was posted from a browser.
+		 * For basic web-forms, we don't care about anything
+		 * other than requests from a browser:
+		 */
 		if (!isset($_SERVER['HTTP_USER_AGENT']))
 		{
 			throw new RuntimeException(JText::_('JERROR_ALERTNOAUTHOR'), 500);
@@ -123,5 +125,4 @@ class fabrikViewEmailform extends JViewLegacy
 		// Mail function
 		JUTility::sendMail($youremail, $yourname, $email, $subject, $msg);
 	}
-
 }

@@ -24,7 +24,6 @@ require_once COM_FABRIK_FRONTEND . '/models/validation_rule.php';
 
 class PlgFabrik_ValidationruleSpecialChars extends PlgFabrik_Validationrule
 {
-
 	/**
 	 * Plugin name
 	 *
@@ -48,12 +47,15 @@ class PlgFabrik_ValidationruleSpecialChars extends PlgFabrik_Validationrule
 		{
 			$data = implode('', $data);
 		}
+
 		$params = $this->getParams();
 		$domatch = $params->get('specialchars-match');
+
 		if ($domatch)
 		{
 			$v = $params->get('specalchars');
 			$v = explode(',', $v);
+
 			foreach ($v as $c)
 			{
 				if (strstr($data, $c))
@@ -62,6 +64,7 @@ class PlgFabrik_ValidationruleSpecialChars extends PlgFabrik_Validationrule
 				}
 			}
 		}
+
 		return true;
 	}
 
@@ -79,21 +82,26 @@ class PlgFabrik_ValidationruleSpecialChars extends PlgFabrik_Validationrule
 	{
 		$params = $this->getParams();
 		$domatch = $params->get('specialchars-match');
+
 		if (!$domatch)
 		{
 			$v = $params->get($this->pluginName . '-expression');
 			$replace = $params->get('specialchars-replacestring');
+
 			if ($replace === '_default')
 			{
 				$replace = '';
 			}
+
 			$v = $params->get('specalchars');
 			$v = explode(',', $v);
+
 			foreach ($v as $c)
 			{
 				$data = str_replace($c, $replace, $data);
 			}
 		}
+
 		return $data;
 	}
 }

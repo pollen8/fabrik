@@ -21,9 +21,8 @@ jimport('joomla.application.component.view');
  * @since       3.0
  */
 
-class fabrikViewFusion_gantt_chart extends JViewLegacy
+class FabrikViewFusion_Gantt_Chart extends JViewLegacy
 {
-
 	/**
 	 * Execute and display a template script.
 	 *
@@ -32,7 +31,7 @@ class fabrikViewFusion_gantt_chart extends JViewLegacy
 	 * @return  mixed  A string if successful, otherwise a JError object.
 	 */
 
-	function display($tpl = 'default')
+	public function display($tpl = 'default')
 	{
 		$app = JFactory::getApplication();
 		$input = $app->input;
@@ -43,16 +42,21 @@ class fabrikViewFusion_gantt_chart extends JViewLegacy
 		$usersConfig = JComponentHelper::getParams('com_fabrik');
 		$model->setId($input->getInt('id', $usersConfig->get('visualizationid', $input->getInt('visualizationid', 0))));
 		$this->row = $model->getVisualization();
+
 		if ($this->row->published == 0)
 		{
 			JError::raiseWarning(500, JText::_('JERROR_ALERTNOAUTHOR'));
+
 			return '';
 		}
+
 		$this->requiredFiltersFound = $this->get('RequiredFiltersFound');
+
 		if ($this->requiredFiltersFound)
 		{
 			$this->chart = $this->get('Chart');
 		}
+
 		$params = $model->getParams();
 		$this->params = $params;
 		$viewName = $this->getName();
@@ -77,5 +81,4 @@ class fabrikViewFusion_gantt_chart extends JViewLegacy
 
 		echo parent::display();
 	}
-
 }

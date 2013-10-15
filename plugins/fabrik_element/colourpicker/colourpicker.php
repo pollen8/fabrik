@@ -21,7 +21,6 @@ defined('_JEXEC') or die('Restricted access');
 
 class PlgFabrik_ElementColourpicker extends PlgFabrik_Element
 {
-
 	/**
 	 * Db table field type
 	 *
@@ -49,10 +48,12 @@ class PlgFabrik_ElementColourpicker extends PlgFabrik_Element
 	{
 		$data = FabrikWorker::JSONtoData($data, true);
 		$str = '';
+
 		foreach ($data as $d)
 		{
 			$str .= '<div style="width:15px;height:15px;background-color:rgb(' . $d . ')"></div>';
 		}
+
 		return $str;
 	}
 
@@ -68,6 +69,7 @@ class PlgFabrik_ElementColourpicker extends PlgFabrik_Element
 	public function storeDatabaseFormat($val, $data)
 	{
 		$val = parent::storeDatabaseFormat($val, $data);
+
 		return $val;
 	}
 
@@ -85,6 +87,7 @@ class PlgFabrik_ElementColourpicker extends PlgFabrik_Element
 		{
 			return array();
 		}
+
 		FabrikHelperHTML::addPath(COM_FABRIK_BASE . 'plugins/fabrik_element/colourpicker/images/', 'image', 'form', false);
 		$params = $this->getParams();
 		$element = $this->getElement();
@@ -123,6 +126,7 @@ class PlgFabrik_ElementColourpicker extends PlgFabrik_Element
 	{
 		$value = parent::getValue($data, $repeatCounter, $opts);
 		$value = strstr($value, '#') ? FabrikString::hex2rgb($value) : $value;
+
 		return $value;
 	}
 
@@ -144,6 +148,7 @@ class PlgFabrik_ElementColourpicker extends PlgFabrik_Element
 		$str[] = '<div class="fabrikSubElementContainer">';
 		$str[] = '<input class="fabrikinput" type="hidden" name="' . $name . '" id="' . $id
 			. '" /><div class="colourpicker_bgoutput img-rounded " style="float:left;width:25px;height:25px;background-color:rgb(' . $value . ')"></div>';
+
 		if ($this->isEditable())
 		{
 			$str[] = '<div class="colourPickerBackground colourpicker-widget fabrikWindow" style="display:none;min-width:350px;min-height:250px;">';
@@ -159,8 +164,8 @@ class PlgFabrik_ElementColourpicker extends PlgFabrik_Element
 			{
 				$str[] = FabrikHelperHTML::image("close.gif", 'form', @$this->tmpl, array());
 			}
-			$str[] = '</div>';
 
+			$str[] = '</div>';
 			$str[] = '<div class="itemContentPadder">';
 			$str[] = '<div class="row-fluid">';
 			$str[] = '  <div class="span7">';
@@ -180,7 +185,9 @@ class PlgFabrik_ElementColourpicker extends PlgFabrik_Element
 			$str[] = '</div>';
 			$str[] = '</div>';
 		}
+
 		$str[] = '</div>';
+
 		return implode("\n", $str);
 	}
 
@@ -193,11 +200,12 @@ class PlgFabrik_ElementColourpicker extends PlgFabrik_Element
 	public function getFieldDescription()
 	{
 		$p = $this->getParams();
+
 		if ($this->encryptMe())
 		{
 			return 'BLOB';
 		}
+
 		return "VARCHAR(30)";
 	}
-
 }

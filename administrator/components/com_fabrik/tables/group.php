@@ -23,12 +23,11 @@ require_once JPATH_ADMINISTRATOR . '/components/com_fabrik/tables/fabtable.php';
 
 class FabrikTableGroup extends FabTable
 {
-
 	/**
 	 * Join ID - not sure its used?
 	 * @var int
 	 */
-	var $join_id = null;
+	public $join_id = null;
 
 	/**
 	 * Constructor
@@ -52,8 +51,10 @@ class FabrikTableGroup extends FabTable
 		if (trim($this->name) == '')
 		{
 			$this->_error = JText::_("YOUR GROUP MUST CONTAIN A NAME");
+
 			return false;
 		}
+
 		return true;
 	}
 
@@ -81,6 +82,7 @@ class FabrikTableGroup extends FabTable
 			{
 				return true;
 			}
+
 			$keys = array($keyName => $keyValue);
 		}
 		elseif (!is_array($keys))
@@ -103,6 +105,7 @@ class FabrikTableGroup extends FabTable
 		{
 			$query->where($db->quoteName('#__{package}_groups') . '.' . $db->quoteName($field) . ' = ' . $db->quote($value));
 		}
+
 		$query->where(" (( element_id = 0 OR is_join = 0) OR element_id IS NULL)");
 		$db->setQuery($query);
 		$row = $db->loadAssoc();
@@ -132,6 +135,7 @@ class FabrikTableGroup extends FabTable
 	public function store($updateNulls = false)
 	{
 		unset($this->join_id);
+
 		return parent::store($updateNulls);
 	}
 }

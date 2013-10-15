@@ -23,7 +23,6 @@ jimport('joomla.application.component.view');
 
 class FabrikViewNvd3_Chart extends JViewLegacy
 {
-
 	/**
 	 * Execute and display a template script.
 	 *
@@ -41,9 +40,7 @@ class FabrikViewNvd3_Chart extends JViewLegacy
 		$model = $this->getModel();
 		$usersConfig = JComponentHelper::getParams('com_fabrik');
 		$model->setId($input->getInt('id', $usersConfig->get('visualizationid', $input->getInt('visualizationid', 0))));
-
 		$srcs = FabrikHelperHTML::framework();
-
 		FabrikHelperHTML::styleSheet('plugins/fabrik_visualization/nvd3_chart/lib/novus-nvd3/src/nv.d3.css');
 
 		$srcs[] = 'media/com_fabrik/js/listfilter.js';
@@ -62,15 +59,16 @@ class FabrikViewNvd3_Chart extends JViewLegacy
 		$document->addScript($lib . 'src/models/lineChart.js');
 		$document->addScript($lib . 'src/models/multiBar.js');
 		$document->addScript($lib . 'src/models/multiBarChart.js');
-
 		$this->row = $model->getVisualization();
+
 		if ($this->row->published == 0)
 		{
 			JError::raiseWarning(500, JText::_('JERROR_ALERTNOAUTHOR'));
+
 			return '';
 		}
-		$this->requiredFiltersFound = $model->getRequiredFiltersFound();
 
+		$this->requiredFiltersFound = $model->getRequiredFiltersFound();
 		$params = $model->getParams();
 		$js = $model->js();
 		FabrikHelperHTML::addScriptDeclaration($js);
@@ -100,7 +98,6 @@ class FabrikViewNvd3_Chart extends JViewLegacy
 
 		FabrikHelperHTML::iniRequireJs($model->getShim());
 		FabrikHelperHTML::script($srcs, $js);
-
 		echo parent::display();
 	}
 }

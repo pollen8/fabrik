@@ -163,7 +163,7 @@ var FbVisTimeline = new Class({
 			cal.hide();
 		};
 		params.onSelect = function () {
-			if (this.cal.dateClicked) {
+			if (this.cal.dateClicked || this.cal.hiliteToday) {
 				this.cal.callCloseHandler();
 				dateEl.value = this.cal.date.format(dateFmt);
 				this.tl.getBand(0).setCenterVisibleDate(this.cal.date);

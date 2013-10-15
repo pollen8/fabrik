@@ -23,7 +23,6 @@ require_once JPATH_SITE . '/components/com_fabrik/models/element.php';
 
 class PlgFabrik_ElementGoogleometer extends PlgFabrik_Element
 {
-
 	/**
 	 * Db table field type
 	 *
@@ -60,6 +59,7 @@ class PlgFabrik_ElementGoogleometer extends PlgFabrik_Element
 		$fullName = $this->getDataElementFullName();
 		$data = JArrayHelper::getValue($data, $fullName);
 		$str = $this->_renderListData($data, $range);
+
 		return $str;
 	}
 
@@ -73,6 +73,7 @@ class PlgFabrik_ElementGoogleometer extends PlgFabrik_Element
 	{
 		$dataelement = $this->getDataElement();
 		$fullName = $dataelement->getFullName();
+
 		return $fullName;
 	}
 
@@ -88,6 +89,7 @@ class PlgFabrik_ElementGoogleometer extends PlgFabrik_Element
 		$elementid = (int) $params->get('googleometer_element');
 		$element = FabrikWorker::getPluginManager()->getPlugIn('', 'element');
 		$element->setId($elementid);
+
 		return $element;
 	}
 
@@ -108,6 +110,7 @@ class PlgFabrik_ElementGoogleometer extends PlgFabrik_Element
 		->from($listModel->getTable()->db_table_name);
 		$db->setQuery($query);
 		$range = $db->loadObject();
+
 		return $range;
 	}
 
@@ -124,13 +127,16 @@ class PlgFabrik_ElementGoogleometer extends PlgFabrik_Element
 	{
 		static $range;
 		static $fullName;
+
 		if (!isset($range))
 		{
 			$range = $this->getRange();
 			$fullName = $this->getDataElementFullName();
 		}
+
 		$data = $thisRow->$fullName;
 		$data = $this->_renderListData($data, $range);
+
 		return parent::renderListData($data, $thisRow);
 	}
 
@@ -154,7 +160,7 @@ class PlgFabrik_ElementGoogleometer extends PlgFabrik_Element
 		$options['range'] = 'chds=' . $range->min . ',' . $range->max;
 		$options = implode('&amp;', $options);
 		$str = '<img alt="Google-o-meter" src="http://chart.apis.google.com/chart?' . $options . '"/>';
+
 		return $str;
 	}
-
 }

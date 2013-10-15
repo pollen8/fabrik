@@ -59,6 +59,7 @@ class JFormFieldFabrikModalrepeat extends JFormField
 
 		$input = $app->input;
 		$view = $input->get('view', 'list');
+
 		switch ($view)
 		{
 			case 'item':
@@ -73,6 +74,7 @@ class JFormFieldFabrikModalrepeat extends JFormField
 				$id = $input->getInt('id');
 				break;
 		}
+
 		if ($view === 'element')
 		{
 			$pluginManager = FabrikWorker::getPluginManager();
@@ -88,15 +90,18 @@ class JFormFieldFabrikModalrepeat extends JFormField
 
 		// Hack for order by elements which we now want to store as ids
 		$v = json_decode($this->value);
+
 		if (isset($v->order_by))
 		{
 			$formModel = $feModel->getFormModel();
+
 			foreach ($v->order_by as &$orderBy)
 			{
 				$elementModel = $formModel->getElement($orderBy, true);
 				$orderBy = $elementModel ? $elementModel->getId() : $orderBy;
 			}
 		}
+
 		$this->value = json_encode($v);
 
 		/*
@@ -121,6 +126,7 @@ class JFormFieldFabrikModalrepeat extends JFormField
 		$str[] = '<thead><tr class="row0">';
 		$names = array();
 		$attributes = $this->element->attributes();
+
 		foreach ($subForm->getFieldset($attributes->name . '_modal') as $field)
 		{
 			$names[] = (string) $field->element->attributes()->name;
@@ -128,6 +134,7 @@ class JFormFieldFabrikModalrepeat extends JFormField
 			$str[] = '<br /><small style="font-weight:normal">' . JText::_($field->description) . '</small>';
 			$str[] = '</th>';
 		}
+
 		if (FabrikWorker::j3())
 		{
 			$str[] = '<th><a href="#" class="add btn button btn-success"><i class="icon-plus"></i> </a></th>';
@@ -136,6 +143,7 @@ class JFormFieldFabrikModalrepeat extends JFormField
 		{
 			$str[] = '<th><a href="#" class="add"><img src="' . $path . '/icon-16-new.png" alt="' . JText::_('ADD') . '" /></a></th>';
 		}
+
 		$str[] = '</tr></thead>';
 
 		$str[] = '<tbody><tr>';
@@ -144,6 +152,7 @@ class JFormFieldFabrikModalrepeat extends JFormField
 		{
 			$str[] = '<td>' . $field->getInput() . '</td>';
 		}
+
 		$str[] = '<td>';
 
 		if (FabrikWorker::j3())
@@ -156,27 +165,31 @@ class JFormFieldFabrikModalrepeat extends JFormField
 			$str[] = '<a href="#" class="add"><img src="' . $path . '/icon-16-new.png" alt="' . JText::_('ADD') . '" /></a>';
 			$str[] = '<a href="#" class="remove"><img src="' . $path . '/icon-16-delete.png" alt="' . JText::_('REMOVE') . '" /></a>';
 		}
+
 		$str[] = '</td>';
 		$str[] = '</tr></tbody>';
 		$str[] = '</table>';
 		$str[] = '</div>';
 		$form = implode("\n", $str);
 		static $modalrepeat;
+
 		if (!isset($modalrepeat))
 		{
 			$modalrepeat = array();
 		}
+
 		if (!array_key_exists($modalid, $modalrepeat))
 		{
 			$modalrepeat[$modalid] = array();
 		}
+
 		if (!isset($this->form->repeatCounter))
 		{
 			$this->form->repeatCounter = 0;
 		}
+
 		if (!array_key_exists($this->form->repeatCounter, $modalrepeat[$modalid]))
 		{
-
 			// If loaded as js template then we don't want to repeat this again. (fabrik)
 			$names = json_encode($names);
 			$pane = str_replace('jform_params_', '', $modalid) . '-options';
@@ -184,6 +197,7 @@ class JFormFieldFabrikModalrepeat extends JFormField
 			$modalrepeat[$modalid][$this->form->repeatCounter] = true;
 			$script = str_replace('-', '', $modalid) . " = new FabrikModalRepeat('$modalid', $names, '$this->id');";
 			$option = $input->get('option');
+
 			if ($option === 'com_fabrik')
 			{
 				FabrikHelperHTML::script('administrator/components/com_fabrik/models/fields/fabrikmodalrepeat.js', $script);
@@ -193,10 +207,12 @@ class JFormFieldFabrikModalrepeat extends JFormField
 				if (FabrikWorker::j3())
 				{
 					$context = strtoupper($option);
+
 					if ($context === 'COM_ADVANCEDMODULES')
 					{
 						$context = 'COM_MODULES';
 					}
+
 					$j3pane = $context . '_' . str_replace('jform_params_', '', $modalid) . '_FIELDSET_LABEL';
 
 					$script = "window.addEvent('domready', function() {
@@ -231,12 +247,14 @@ class JFormFieldFabrikModalrepeat extends JFormField
 				FabrikHelperHTML::script('administrator/components/com_fabrik/models/fields/fabrikmodalrepeat.js', $script);
 			}
 		}
+
 		$close = "function(c){" . $modalid . ".onClose(c);}";
 
 		if (FabrikWorker::j3())
 		{
 			$icon = $this->element['icon'] ? '<i class="icon-' . $this->element['icon'] . '"></i> ' : '';
-			$str[] = '<button class="btn" id="' . $modalid . '_button" data-modal="' . $modalid . '">' . $icon . JText::_('JLIB_FORM_BUTTON_SELECT') . '</button>';
+			$icon .= JText::_('JLIB_FORM_BUTTON_SELECT');
+			$str[] = '<button class="btn" id="' . $modalid . '_button" data-modal="' . $modalid . '">' . $icon . '</button>';
 		}
 		else
 		{
@@ -251,11 +269,13 @@ class JFormFieldFabrikModalrepeat extends JFormField
 		{
 			$this->value = array_shift($this->value);
 		}
+
 		$value = htmlspecialchars($this->value, ENT_COMPAT, 'UTF-8');
 		$str[] = '<input type="hidden" name="' . $this->name . '" id="' . $this->id . '" value="' . $value . '" />';
 
 		FabrikHelperHTML::framework();
 		FabrikHelperHTML::iniRequireJS();
+
 		return implode("\n", $str);
 	}
 }

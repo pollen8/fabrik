@@ -16,10 +16,10 @@ jimport('joomla.application.component.view');
 /**
  * View to edit a form.
  *
- * @package		Joomla.Administrator
- * @subpackage	Fabrik
- * @since		3.0
-*/
+ * @package     Joomla.Administrator
+ * @subpackage  Fabrik
+ * @since       3.0
+ */
 
 class FabrikAdminViewForm extends JViewLegacy
 {
@@ -66,15 +66,18 @@ class FabrikAdminViewForm extends JViewLegacy
 			if (!$app->isAdmin())
 			{
 				echo JText::_('COM_FABRIK_FORM_NOT_PUBLISHED');
+
 				return false;
 			}
 		}
 
 		$this->access = $model->checkAccessFromListSettings();
+
 		if ($this->access == 0)
 		{
 			return JError::raiseWarning(500, JText::_('JERROR_ALERTNOAUTHOR'));
 		}
+
 		$model->getJoinGroupIds();
 		$groups = $model->getGroupsHiarachy();
 		$gkeys = array_keys($groups);
@@ -100,6 +103,7 @@ class FabrikAdminViewForm extends JViewLegacy
 					$joinModel = $groupModel->getJoinModel();
 					$joinTable = $joinModel->getJoin();
 					$foreignKey = '';
+
 					if (is_object($joinTable))
 					{
 						$foreignKey = $joinTable->table_join_key;
@@ -109,6 +113,7 @@ class FabrikAdminViewForm extends JViewLegacy
 						{
 							continue;
 						}
+
 						$elementModels = $groupModel->getPublishedElements();
 						reset($elementModels);
 						$tmpElement = current($elementModels);
@@ -117,13 +122,16 @@ class FabrikAdminViewForm extends JViewLegacy
 					}
 				}
 			}
+
 			$groupModel->repeatTotal = $repeatGroup;
 			$aSubGroups = array();
+
 			for ($c = 0; $c < $repeatGroup; $c++)
 			{
 				$aSubGroupElements = array();
 				$elCount = 0;
 				$elementModels = $groupModel->getPublishedElements();
+
 				foreach ($elementModels as $elementModel)
 				{
 					if (!$model->isEditable())
@@ -139,6 +147,7 @@ class FabrikAdminViewForm extends JViewLegacy
 					// Force reload?
 					$elementModel->HTMLids = null;
 					$elementHTMLId = $elementModel->getHTMLId($c);
+
 					if (!$model->isEditable())
 					{
 						$JSONarray[$elementHTMLId] = $elementModel->getROValue($model->data, $c);
@@ -153,10 +162,12 @@ class FabrikAdminViewForm extends JViewLegacy
 						$elementModel->HTMLids = null;
 						$elementModel->inDetailedView = true;
 					}
+
 					$JSONHtml[$elementHTMLId] = htmlentities($elementModel->render($model->data, $c), ENT_QUOTES, 'UTF-8');
 				}
 			}
 		}
+
 		$data = array("id" => $model->getId(), 'model' => 'table', "errors" => $model->errors, "data" => $JSONarray, 'html' => $JSONHtml,
 			'post' => $_REQUEST);
 		echo json_encode($data);
@@ -177,7 +188,7 @@ class FabrikAdminViewForm extends JViewLegacy
 	/**
 	 * Add the page title and toolbar.
 	 *
-	 * @reutrn  void
+	 * @return  void
 	 */
 
 	protected function addToolbar()
@@ -190,8 +201,8 @@ class FabrikAdminViewForm extends JViewLegacy
 		$isNew = ($this->item->id == 0);
 		$checkedOut = !($this->item->checked_out == 0 || $this->item->checked_out == $user->get('id'));
 		$canDo = FabrikAdminHelper::getActions($this->state->get('filter.category_id'));
-
 		JToolBarHelper::title($isNew ? JText::_('COM_FABRIK_MANAGER_FORM_NEW') : JText::_('COM_FABRIK_MANAGER_FORM_EDIT'), 'form.png');
+
 		if ($isNew)
 		{
 			// For new records, check the create permission.
@@ -201,11 +212,11 @@ class FabrikAdminViewForm extends JViewLegacy
 				JToolBarHelper::save('form.save', 'JTOOLBAR_SAVE');
 				JToolBarHelper::addNew('form.save2new', 'JTOOLBAR_SAVE_AND_NEW');
 			}
+
 			JToolBarHelper::cancel('form.cancel', 'JTOOLBAR_CANCEL');
 		}
 		else
 		{
-
 			// Can't save the record if it's checked out.
 			if (!$checkedOut)
 			{
@@ -222,25 +233,16 @@ class FabrikAdminViewForm extends JViewLegacy
 					}
 				}
 			}
+
 			if ($canDo->get('core.create'))
 			{
 				JToolBarHelper::custom('form.save2copy', 'save-copy.png', 'save-copy_f2.png', 'JTOOLBAR_SAVE_AS_COPY', false);
 			}
+
 			JToolBarHelper::cancel('form.cancel', 'JTOOLBAR_CLOSE');
 		}
 
 		JToolBarHelper::divider();
 		JToolBarHelper::help('JHELP_COMPONENTS_FABRIK_FORMS_EDIT');
 	}
-
-	/**
-	 * Not used?
-	 *
-	 * @return  void
-	 */
-	public function plugin()
-	{
-		echo "plugin";
-	}
-
 }

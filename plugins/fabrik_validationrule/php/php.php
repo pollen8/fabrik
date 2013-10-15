@@ -24,7 +24,6 @@ require_once COM_FABRIK_FRONTEND . '/models/validation_rule.php';
 
 class PlgFabrik_ValidationrulePhp extends PlgFabrik_Validationrule
 {
-
 	/**
 	 * Plugin name
 	 *
@@ -48,12 +47,15 @@ class PlgFabrik_ValidationrulePhp extends PlgFabrik_Validationrule
 		{
 			$data = implode('', $data);
 		}
+
 		$params = $this->getParams();
 		$domatch = $params->get('php-match');
+
 		if ($domatch)
 		{
 			return $this->_eval($data);
 		}
+
 		return true;
 	}
 
@@ -71,10 +73,12 @@ class PlgFabrik_ValidationrulePhp extends PlgFabrik_Validationrule
 	{
 		$params = $this->getParams();
 		$domatch = $params->get('php-match');
+
 		if (!$domatch)
 		{
 			return $this->_eval($data);
 		}
+
 		return $data;
 	}
 
@@ -95,8 +99,18 @@ class PlgFabrik_ValidationrulePhp extends PlgFabrik_Validationrule
 		$w = new FabrikWorker;
 		$phpCode = $params->get('php-code');
 		$phpCode = $w->parseMessageForPlaceHolder($phpCode, $formData, true, true);
+		/**
+		 * $$$ hugh - added trigger_error(""), which will "clear" any existing errors,
+		 * otherwise logEval will pick up and report notices and warnings generated
+		 * by the rest of our code, which can be VERY confusing.  Note that this required a tweak
+		 * to logEval, as error_get_last won't be null after doing this, but $error['message'] will
+		 * be empty.
+		 * $$$ hugh - moved the $trigger_error() into a helper func
+		 */
+		FabrikWorker::clearEval();
 		$retval = @eval($phpCode);
 		FabrikWorker::logEval($retval, 'Caught exception on php validation of ' . $elementModel->getFullName(true, false) . ': %s');
+
 		return $retval;
 	}
 }

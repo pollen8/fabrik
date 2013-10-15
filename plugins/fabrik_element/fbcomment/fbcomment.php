@@ -25,7 +25,6 @@ require_once JPATH_SITE . '/components/com_fabrik/models/element.php';
 
 class PlgFabrik_ElementFbcomment extends PlgFabrik_Element
 {
-
 	/**
 	 * Does the element have a label
 	 *
@@ -71,6 +70,7 @@ class PlgFabrik_ElementFbcomment extends PlgFabrik_Element
 		{
 			$app = JFactory::getApplication();
 			$rowid = $app->input->getString('rowid', '', 'string');
+
 			if ($rowid != '')
 			{
 				$formModel = $this->getForm();
@@ -80,22 +80,27 @@ class PlgFabrik_ElementFbcomment extends PlgFabrik_Element
 				$href = COM_FABRIK_LIVESITE_ROOT . $href;
 			}
 		}
+
 		if (!empty($href))
 		{
 			$w = new FabrikWorker;
 			$href = $w->parseMessageForPlaceHolder($href, $data);
 			$locale = $params->get('fbcomment_locale', 'en_US');
+
 			if (empty($locale))
 			{
 				$locale = "en_US";
 			}
+
 			$str .= FabrikHelperHTML::facebookGraphAPI($params->get('opengraph_applicationid'), $locale);
-			$str .= '<div id="fb-root"><fb:comments href="' . $href . '" nmigrated="1" um_posts="' . $num . '" width="' . $width . '"' . $colour . '></fb:comments>';
+			$str .= '<div id="fb-root"><fb:comments href="' . $href . '" nmigrated="1" um_posts="' . $num
+			. '" width="' . $width . '"' . $colour . '></fb:comments>';
 		}
 		else
 		{
 			$str .= JText::_('PLG_ELEMENT_FBCOMMENT_AVAILABLE_WHEN_SAVED');
 		}
+
 		return $str;
 	}
 
@@ -111,7 +116,7 @@ class PlgFabrik_ElementFbcomment extends PlgFabrik_Element
 	{
 		$id = $this->getHTMLId($repeatCounter);
 		$opts = $this->getElementJSOptions($repeatCounter);
+
 		return array('FbComment', $id, $opts);
 	}
-
 }

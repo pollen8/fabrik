@@ -68,6 +68,7 @@ class FabrikAdminControllerConnections extends FabControllerAdmin
 	public function &getModel($name = 'Connection', $prefix = 'FabrikAdminModel')
 	{
 		$model = parent::getModel($name, $prefix, array('ignore_request' => true));
+
 		return $model;
 	}
 
@@ -91,10 +92,12 @@ class FabrikAdminControllerConnections extends FabControllerAdmin
 		$data = array('setDefault' => 1, 'unsetDefault' => 0);
 		$task = $this->getTask();
 		$value = JArrayHelper::getValue($data, $task, 0, 'int');
+
 		if ($value == 0)
 		{
 			$this->setMessage(JText::_('COM_FABRIK_CONNECTION_CANT_UNSET_DEFAULT'));
 		}
+
 		if (empty($cid))
 		{
 			JError::raiseWarning(500, JText::_($this->text_prefix . '_NO_ITEM_SELECTED'));
@@ -119,7 +122,7 @@ class FabrikAdminControllerConnections extends FabControllerAdmin
 				}
 			}
 		}
+
 		$this->setRedirect(JRoute::_('index.php?option=' . $this->option . '&view=' . $this->view_list, false));
 	}
-
 }

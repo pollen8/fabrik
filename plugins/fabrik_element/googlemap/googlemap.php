@@ -24,7 +24,6 @@ require_once JPATH_SITE . '/components/com_fabrik/helpers/googlemap.php';
 
 class PlgFabrik_ElementGooglemap extends PlgFabrik_Element
 {
-
 	/**
 	 * Has the geoJS been loaded
 	 *
@@ -63,12 +62,14 @@ class PlgFabrik_ElementGooglemap extends PlgFabrik_Element
 		$h = (int) $params->get('fb_gm_table_mapheight');
 		$z = (int) $params->get('fb_gm_table_zoomlevel');
 		$data = FabrikWorker::JSONtoData($data, true);
+
 		foreach ($data as $i => &$d)
 		{
 			if ($params->get('fb_gm_staticmap_tableview'))
 			{
 				$d = $this->_staticMap($d, $w, $h, $z, $i, true, JArrayHelper::fromObject($thisRow));
 			}
+
 			if ($params->get('icon_folder') == '1')
 			{
 				// $$$ rob was returning here but that stoped us being able to use links and icons together
@@ -81,9 +82,11 @@ class PlgFabrik_ElementGooglemap extends PlgFabrik_Element
 					$d = $params->get('fb_gm_staticmap_tableview_type_coords', 'num') == 'dms' ? $this->_dmsformat($d) : $this->_microformat($d);
 				}
 			}
+
 			$d = $this->rollover($d, $thisRow, 'list');
 			$d = $listModel->_addLink($d, $this, $thisRow, $i);
 		}
+
 		return $this->renderListDataFinal($data);
 	}
 
@@ -100,10 +103,12 @@ class PlgFabrik_ElementGooglemap extends PlgFabrik_Element
 	{
 		$str = '';
 		$data = FabrikWorker::JSONtoData($data, true);
+
 		foreach ($data as $d)
 		{
 			$str .= $this->_georss($d);
 		}
+
 		return $str;
 	}
 
@@ -121,13 +126,16 @@ class PlgFabrik_ElementGooglemap extends PlgFabrik_Element
 		{
 			return $data;
 		}
+
 		$o = $this->_strToCoords($data, 0);
+
 		if ($data != '')
 		{
 			$lon = trim($o->coords[1]);
 			$lat = trim($o->coords[0]);
 			$data = "<georss:point>{$lat},{$lon}</georss:point>";
 		}
+
 		return $data;
 	}
 
@@ -143,6 +151,7 @@ class PlgFabrik_ElementGooglemap extends PlgFabrik_Element
 	{
 		$o = $this->_strToCoords($data, 0);
 		$str = array();
+
 		if ($data != '')
 		{
 			$str[] = '<div class="geo">';
@@ -150,6 +159,7 @@ class PlgFabrik_ElementGooglemap extends PlgFabrik_Element
 			$str[] = '<span class="longitude">' . $o->coords[1] . '</span>';
 			$str[] = '</div>';
 		}
+
 		return implode("\n", $str);
 	}
 
@@ -166,6 +176,7 @@ class PlgFabrik_ElementGooglemap extends PlgFabrik_Element
 	{
 		$dms = $this->_strToDMS($data);
 		$str = array();
+
 		if ($data != '')
 		{
 			$str[] = '<div class="geo">';
@@ -173,6 +184,7 @@ class PlgFabrik_ElementGooglemap extends PlgFabrik_Element
 			$str[] = '<span class="longitude">' . $dms->coords[1] . '</span>';
 			$str[] = '</div>';
 		}
+
 		return implode("\n", $str);
 	}
 
@@ -190,6 +202,7 @@ class PlgFabrik_ElementGooglemap extends PlgFabrik_Element
 		{
 			$document = JFactory::getDocument();
 			$params = $this->getParams();
+
 			if ($params->get('fb_gm_defaultloc'))
 			{
 				$uri = JURI::getInstance();
@@ -213,6 +226,7 @@ class PlgFabrik_ElementGooglemap extends PlgFabrik_Element
 		{
 			$document = JFactory::getDocument();
 			$params = $this->getParams();
+
 			if ((int) $params->get('fb_gm_radius', '0'))
 			{
 				FabrikHelperHTML::script('components/com_fabrik/libs/googlemaps/distancewidget.js');
@@ -268,42 +282,49 @@ class PlgFabrik_ElementGooglemap extends PlgFabrik_Element
 		$opts->geocode_fields = array();
 		$opts->auto_center = (bool) $params->get('fb_gm_auto_center', false);
 		$opts->styles = FabGoogleMapHelper::styleJs($params);
+
 		if ($opts->geocode == '2')
 		{
 			foreach (array('addr1', 'addr2', 'city', 'state', 'zip', 'country') as $which_field)
 			{
 				$field_id = '';
+
 				if ($field_id = $this->_getGeocodeFieldId($which_field, $repeatCounter))
 				{
 					$opts->geocode_fields[] = $field_id;
 				}
 			}
 		}
+
 		$opts->reverse_geocode = $params->get('fb_gm_reverse_geocode', '0') == '0' ? false : true;
+
 		if ($opts->reverse_geocode)
 		{
 			foreach (array('route' => 'addr1', 'neighborhood' => 'addr2', 'locality' => 'city', 'administrative_area_level_1' => 'state',
 				'postal_code' => 'zip', 'country' => 'country') as $google_field => $which_field)
 			{
 				$field_id = '';
+
 				if ($field_id = $this->_getGeocodeFieldId($which_field, $repeatCounter))
 				{
 					$opts->reverse_geocode_fields[$google_field] = $field_id;
 				}
 			}
 		}
-		$opts->center = (int) $params->get('fb_gm_defaultloc', 0);
 
+		$opts->center = (int) $params->get('fb_gm_defaultloc', 0);
 		$opts->use_radius = $params->get('fb_gm_radius', '0') == '0' || !$mapShown ? false : true;
 		$opts->radius_fitmap = $params->get('fb_gm_radius_fitmap', '0') == '0' ? false : true;
 		$opts->radius_write_element = $opts->use_radius ? $this->_getFieldId('fb_gm_radius_write_element', $repeatCounter) : false;
 		$opts->radius_read_element = $opts->use_radius ? $this->_getFieldId('fb_gm_radius_read_element', $repeatCounter) : false;
 		$opts->radius_ro_value = $opts->use_radius ? $this->_getFieldValue('fb_gm_radius_read_element', $data, $repeatCounter) : false;
 		$opts->radius_default = $params->get('fb_gm_radius_default', '50');
+
 		if ($opts->radius_ro_value === false)
 		{
 			$opts->radius_ro_value = $opts->radius_default;
 		}
+
 		$opts->radius_unit = $params->get('fb_gm_radius_unit', 'm');
 		$opts->radius_resize_icon = COM_FABRIK_LIVESITE . 'media/com_fabrik/images/radius_resize.png';
 		$opts->radius_resize_off_icon = COM_FABRIK_LIVESITE . 'media/com_fabrik/images/radius_resize.png';
@@ -325,15 +346,19 @@ class PlgFabrik_ElementGooglemap extends PlgFabrik_Element
 	{
 		$params = $this->getParams();
 		$field = $params->get($which_field, false);
+
 		if ($field)
 		{
 			$elementModel = FabrikWorker::getPluginManager()->getElementPlugin($field);
+
 			if (!$this->getFormModel()->isEditable())
 			{
 				$elementModel->inDetailedView = true;
 			}
+
 			return $elementModel->getValue($data, $repeatCounter);
 		}
+
 		return false;
 	}
 
@@ -351,15 +376,19 @@ class PlgFabrik_ElementGooglemap extends PlgFabrik_Element
 		$listModel = $this->getlistModel();
 		$params = $this->getParams();
 		$field = $params->get($which_field, false);
+
 		if ($field)
 		{
 			$elementModel = FabrikWorker::getPluginManager()->getElementPlugin($field);
+
 			if (!$this->getFormModel()->isEditable())
 			{
 				$elementModel->inDetailedView = true;
 			}
+
 			return $elementModel->getHTMLId($repeatCounter);
 		}
+
 		return false;
 	}
 
@@ -401,6 +430,7 @@ class PlgFabrik_ElementGooglemap extends PlgFabrik_Element
 				self::$usestatic = ($params->get('fb_gm_staticmap') == '1' && !$this->isEditable());
 			}
 		}
+
 		return self::$usestatic;
 	}
 
@@ -418,6 +448,7 @@ class PlgFabrik_ElementGooglemap extends PlgFabrik_Element
 		$o = new stdClass;
 		$o->coords = array('', '');
 		$o->zoomlevel = (int) $zoomlevel;
+
 		if (strstr($v, ","))
 		{
 			$ar = explode(":", $v);
@@ -430,6 +461,7 @@ class PlgFabrik_ElementGooglemap extends PlgFabrik_Element
 		{
 			$o->coords = array(0, 0);
 		}
+
 		return $o;
 	}
 
@@ -445,6 +477,7 @@ class PlgFabrik_ElementGooglemap extends PlgFabrik_Element
 	{
 		$dms = new stdClass;
 		$dms->coords = array('', '');
+
 		if (strstr($v, ","))
 		{
 			$ar = explode(":", $v);
@@ -461,6 +494,7 @@ class PlgFabrik_ElementGooglemap extends PlgFabrik_Element
 			{
 				$dms_lat_dir = 'N';
 			}
+
 			$dms_lat_deg = abs((int) $dms->coords[0]);
 			$dms_lat_min_float = 60 * (abs($dms->coords[0]) - $dms_lat_deg);
 			$dms_lat_min = (int) $dms_lat_min_float;
@@ -468,11 +502,13 @@ class PlgFabrik_ElementGooglemap extends PlgFabrik_Element
 
 			// Round the secs
 			$dms_lat_sec = round($dms_lat_sec_float, 0);
+
 			if ($dms_lat_sec == 60)
 			{
 				$dms_lat_min ++;
 				$dms_lat_sec = 0;
 			}
+
 			if ($dms_lat_min == 60)
 			{
 				$dms_lat_deg ++;
@@ -490,6 +526,7 @@ class PlgFabrik_ElementGooglemap extends PlgFabrik_Element
 			{
 				$dms_long_dir = 'E';
 			}
+
 			$dms_long_deg = abs((int) $dms->coords[1]);
 			$dms_long_min_float = 60 * (abs($dms->coords[1]) - $dms_long_deg);
 			$dms_long_min = (int) $dms_long_min_float;
@@ -497,11 +534,13 @@ class PlgFabrik_ElementGooglemap extends PlgFabrik_Element
 
 			// Round the secs
 			$dms_long_sec = round($dms_long_sec_float, 0);
+
 			if ($dms_long_sec == 60)
 			{
 				$dms_long_min ++;
 				$dms_long_sec = 0;
 			}
+
 			if ($dms_long_min == 60)
 			{
 				$dms_long_deg ++;
@@ -509,12 +548,12 @@ class PlgFabrik_ElementGooglemap extends PlgFabrik_Element
 			}
 
 			$dms->coords[1] = $dms_long_dir . $dms_long_deg . '&deg;' . $dms_long_min . '&rsquo;' . $dms_long_sec . '&quot;';
-
 		}
 		else
 		{
 			$dms->coords = array(0, 0);
 		}
+
 		return $dms;
 	}
 
@@ -536,18 +575,22 @@ class PlgFabrik_ElementGooglemap extends PlgFabrik_Element
 	{
 		$id = $this->getHTMLId($repeatCounter);
 		$params = $this->getParams();
+
 		if (is_null($w))
 		{
 			$w = $params->get('fb_gm_mapwidth');
 		}
+
 		if (is_null($h))
 		{
 			$h = $params->get('fb_gm_mapheight');
 		}
+
 		if (is_null($z))
 		{
 			$z = $params->get('fb_gm_zoomlevel');
 		}
+
 		$icon = urlencode($params->get('fb_gm_staticmap_icon'));
 		$o = $this->_strToCoords($v, $z);
 		$lat = trim($o->coords[0]);
@@ -572,10 +615,12 @@ class PlgFabrik_ElementGooglemap extends PlgFabrik_Element
 
 		// New api3 url:
 		$markers = '';
+
 		if ($icon !== '')
 		{
 			$markers .= 'icon:' . $icon . '|';
 		}
+
 		$markers .= $lat . ',' . $lon;
 		$uri = JURI::getInstance();
 		$src = $uri->getScheme() . '://maps.google.com/maps/api/staticmap?';
@@ -592,12 +637,14 @@ class PlgFabrik_ElementGooglemap extends PlgFabrik_Element
 		$apiKey = $config->get('google_api_key', '');
 		$client = $config->get('google_buisness_client_id', '');
 		$signature = $config->get('google_buisness_signature', '');
+
 		if ($client !== '')
 		{
 			if ($signature === '')
 			{
 				throw new Exception('You have entered a Google Maps Business Client id, but have not supplied a signature value');
 			}
+
 			$attribs[] = 'client=' . $client;
 			$attribs[] = 'signature=' . $signature;
 		}
@@ -617,10 +664,12 @@ class PlgFabrik_ElementGooglemap extends PlgFabrik_Element
 			require_once COM_FABRIK_FRONTEND . '/libs/googlemaps/polyline_encoder/class.polylineEncoder.php';
 			$polyEnc = new PolylineEncoder;
 			$radius = $this->_getFieldValue('fb_gm_radius_read_element', $data, $repeatCounter);
+
 			if ($radius === false || !isset($radius))
 			{
 				$radius = $params->get('fb_gm_radius_default', '50');
 			}
+
 			$enc_str = $polyEnc->GMapCircle($lat, $lon, $radius);
 			$attribs[] = 'path=weight:2%7Ccolor:black%7Cfillcolor:0x5599bb%7Cenc:' . $enc_str;
 		}
@@ -636,6 +685,7 @@ class PlgFabrik_ElementGooglemap extends PlgFabrik_Element
 		$str = '<div ' . $id . 'class="gmStaticMap">';
 		$str .= '<img src="' . $src . '" alt="static map" />';
 		$str .= '</div>';
+
 		return $str;
 	}
 
@@ -658,6 +708,7 @@ class PlgFabrik_ElementGooglemap extends PlgFabrik_Element
 		$params = $this->getParams();
 		$w = $params->get('fb_gm_mapwidth');
 		$h = $params->get('fb_gm_mapheight');
+
 		if ($this->_useStaticMap())
 		{
 			return $this->_staticMap($val, null, null, null, $repeatCounter, false, $data);
@@ -668,10 +719,12 @@ class PlgFabrik_ElementGooglemap extends PlgFabrik_Element
 			{
 				return $this->getHiddenField($name, $data[$name], $id);
 			}
+
 			$str = '<div class="fabrikSubElementContainer" id="' . $id . '">';
 
 			// If its not editable and theres no val don't show the map
 			$geoCodeEvent = $params->get('fb_gm_geocode_event', 'button');
+
 			if ((!$this->isEditable() && $val != '') || $this->isEditable())
 			{
 				if ($this->isEditable() && $params->get('fb_gm_geocode') != '0')
@@ -679,6 +732,7 @@ class PlgFabrik_ElementGooglemap extends PlgFabrik_Element
 					$append = $geoCodeEvent === 'button' ? '' : 'input-append';
 					$str .= '<div style="margin-bottom:5px" class="control-group ' . $append . '">';
 				}
+
 				if ($this->isEditable() && $params->get('fb_gm_geocode') == 1)
 				{
 					$str .= '<input type="text" class="geocode_input inputbox" />';
@@ -688,6 +742,7 @@ class PlgFabrik_ElementGooglemap extends PlgFabrik_Element
 				{
 					$str .= '<button class="button btn btn-info geocode" type="button">' . JText::_('PLG_ELEMENT_GOOGLE_MAP_GEOCODE') . '</button>';
 				}
+
 				if ($this->isEditable() && $params->get('fb_gm_geocode') != '0')
 				{
 					$str .= '</div>';
@@ -697,8 +752,10 @@ class PlgFabrik_ElementGooglemap extends PlgFabrik_Element
 				{
 					$w = 'width:' . $w . 'px;';
 				}
+
 				$str .= '<div class="map" style="' . $w . 'height:' . $h . 'px"></div>';
 				$str .= '<input type="hidden" class="fabrikinput" name="' . $name . '" value="' . htmlspecialchars($val, ENT_QUOTES) . '" />';
+
 				if (($this->isEditable() || $params->get('fb_gm_staticmap') == '2') && $params->get('fb_gm_latlng') == '1')
 				{
 					$arrloc = explode(',', $val);
@@ -709,6 +766,7 @@ class PlgFabrik_ElementGooglemap extends PlgFabrik_Element
 					<input ' . $edit . ' size="23" value="' . $arrloc[0] . ' ° N" style="margin-right:5px" class="inputbox lat"/>
 					<input ' . $edit . ' size="23" value="' . $arrloc[1] . ' ° E"  class="inputbox lng"/></div>';
 				}
+
 				if (($this->isEditable() || $params->get('fb_gm_staticmap') == '2') && $params->get('fb_gm_latlng_dms') == '1')
 				{
 					$dms = $this->_strToDMS($val);
@@ -717,13 +775,16 @@ class PlgFabrik_ElementGooglemap extends PlgFabrik_Element
 					<input ' . $edit . ' size=\"23\" value="' . $dms->coords[0] . '" style="margin-right:5px" class="latdms"/>
 					<input ' . $edit . ' size=\"23\" value="' . $dms->coords[1] . '"  class="lngdms"/></div>';
 				}
+
 				$str .= '</div>';
 			}
 			else
 			{
 				$str .= JText::_('PLG_ELEMENT_GOOGLEMAP_NO_LOCATION_SELECTED');
 			}
+
 			$str .= $this->_microformat($val);
+
 			return $str;
 		}
 	}
@@ -747,6 +808,7 @@ class PlgFabrik_ElementGooglemap extends PlgFabrik_Element
 		$fullElName = JArrayHelper::getValue($opts, 'alias', $dbtable . '___' . $this->element->name);
 		$dbtable = $db->quoteName($dbtable);
 		$str = $dbtable . '.' . $db->quoteName($this->element->name) . ' AS ' . $db->quoteName($fullElName);
+
 		if ($table->db_primary_key == $fullElName)
 		{
 			array_unshift($aFields, $fullElName);
@@ -779,7 +841,7 @@ class PlgFabrik_ElementGooglemap extends PlgFabrik_Element
 			// $$$ hugh - added parens around lat,long for consistancy!
 			$this->default = '(' . $params->get('fb_gm_lat') . ',' . $params->get('fb_gm_long') . ')' . ':' . $params->get('fb_gm_zoomlevel');
 		}
+
 		return $this->default;
 	}
-
 }

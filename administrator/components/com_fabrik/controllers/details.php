@@ -39,7 +39,6 @@ class FabrikAdminControllerDetails extends JControllerForm
 
 	public function view()
 	{
-
 		$document = JFactory::getDocument();
 		$model = JModelLegacy::getInstance('Form', 'FabrikFEModel');
 		$app = JFactory::getApplication();
@@ -61,5 +60,4 @@ class FabrikAdminControllerDetails extends JControllerForm
 		$view->display();
 		FabrikAdminHelper::addSubmenu($input->getWord('view', 'lists'));
 	}
-
 }

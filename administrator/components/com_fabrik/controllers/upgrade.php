@@ -22,22 +22,10 @@ require_once 'fabcontrollerform.php';
  * @package     Joomla.Administrator
  * @subpackage  Fabrik
  * @since       3.0
-*/
+ */
 
 class FabrikAdminControllerUpgrade extends JControllerAdmin
 {
-
-	/**
-	 * Constructor
-	 *
-	 * @param   array  $config  options
-	 */
-
-	public function __construct($config = array())
-	{
-		parent::__construct($config);
-	}
-
 	/**
 	 * Delete all data from fabrik
 	 *
@@ -48,5 +36,4 @@ class FabrikAdminControllerUpgrade extends JControllerAdmin
 	{
 		$model = $this->getModel('Upgrade');
 	}
-
 }

@@ -51,6 +51,7 @@ class FabrikAdminControllerCrons extends FabControllerAdmin
 	public function getModel($name = 'Cron', $prefix = 'FabrikAdminModel', $config = array())
 	{
 		$model = parent::getModel($name, $prefix, array('ignore_request' => true));
+
 		return $model;
 	}
 
@@ -79,6 +80,7 @@ class FabrikAdminControllerCrons extends FabControllerAdmin
 		$listModel = JModelLegacy::getInstance('list', 'FabrikFEModel');
 		$c = 0;
 		$log = FabTable::getInstance('Log', 'FabrikTable');
+
 		foreach ($rows as $row)
 		{
 			// Load in the plugin
@@ -95,10 +97,12 @@ class FabrikAdminControllerCrons extends FabControllerAdmin
 			$thisListModel = clone ($listModel);
 			$thisAdminListModel = clone ($adminListModel);
 			$tid = (int) $rowParams->table;
+
 			if ($tid !== 0)
 			{
 				$thisListModel->setId($tid);
 				$log->message .= "\n\n$row->plugin\n listid = " . $thisListModel->getId();
+
 				if ($plugin->requiresTableData())
 				{
 					$table = $listModel->getTable();
@@ -116,6 +120,7 @@ class FabrikAdminControllerCrons extends FabControllerAdmin
 			$c = $c + $plugin->process($data, $thisListModel, $thisAdminListModel);
 
 			$log->message = $plugin->getLog() . "\n\n" . $log->message;
+
 			if ($plugin->getParams()->get('log', 0) == 1)
 			{
 				$log->store();
@@ -123,6 +128,7 @@ class FabrikAdminControllerCrons extends FabControllerAdmin
 
 			// Email log message
 			$recipient = $plugin->getParams()->get('log_email', '');
+
 			if ($recipient != '')
 			{
 				$recipient = explode(',', $recipient);
@@ -130,7 +136,7 @@ class FabrikAdminControllerCrons extends FabControllerAdmin
 				$mailer->sendMail($config->get('mailfrom'), $config->get('fromname'), $recipient, $subject, $log->message, true);
 			}
 		}
+
 		$this->setRedirect('index.php?option=com_fabrik&view=crons', $c . ' records updated');
 	}
-
 }

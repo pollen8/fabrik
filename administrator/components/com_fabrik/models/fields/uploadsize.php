@@ -56,6 +56,7 @@ class JFormFieldUploadsize extends JFormField
 		{
 			$val = $val * 1024;
 		}
+
 		return $val;
 	}
 
@@ -70,10 +71,12 @@ class JFormFieldUploadsize extends JFormField
 		$size = $this->element['size'] ? 'size="' . $this->element['size'] . '"' : '';
 		$class = $this->element['class'] ? 'class="' . $this->element['class'] . '"' : 'class="text_area"';
 		$value = htmlspecialchars(html_entity_decode($this->value, ENT_QUOTES), ENT_QUOTES);
+
 		if ($value == '')
 		{
 			$value = $this->getMax();
 		}
+
 		return '<input type="text" name="' . $this->name . '" id="' . $this->id . '" value="' . $value . '" ' . $class . ' ' . $size . ' />';
 	}
 
@@ -91,6 +94,7 @@ class JFormFieldUploadsize extends JFormField
 		$max = $this->getMax();
 		$mb = $max / 1024;
 		$this->description = JText::_($this->description) . $max . 'Kb / ' . $mb . 'Mb';
+
 		return parent::getLabel();
 	}
 
@@ -106,6 +110,7 @@ class JFormFieldUploadsize extends JFormField
 		$upload_value = $this->_return_bytes(ini_get('upload_max_filesize'));
 		$value = min($post_value, $upload_value);
 		$value = $value / 1024;
+
 		return $value;
 	}
 }

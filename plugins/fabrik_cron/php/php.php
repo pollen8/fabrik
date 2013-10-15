@@ -24,7 +24,6 @@ require_once COM_FABRIK_FRONTEND . '/models/plugin-cron.php';
 
 class PlgFabrik_Cronphp extends PlgFabrik_Cron
 {
-
 	/**
 	 * Check if the user can use the active element
 	 *
@@ -56,15 +55,17 @@ class PlgFabrik_Cronphp extends PlgFabrik_Cron
 		$file = $filter->clean($params->get('cronphp_file'), 'CMD');
 		eval($params->get('cronphp_params'));
 		$file = JPATH_ROOT . '/plugins/fabrik_cron/php/scripts/' . $file;
+
 		if (JFile::exists($file))
 		{
 			require_once $file;
 		}
+
 		if (isset($processed))
 		{
 			return (int) $processed;
 		}
+
 		return 0;
 	}
-
 }

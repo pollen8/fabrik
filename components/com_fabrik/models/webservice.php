@@ -23,7 +23,6 @@ jimport('joomla.application.component.model');
 
 abstract class FabrikWebService
 {
-
 	/**
 	 * FabrikWebService instances container.
 	 *
@@ -142,9 +141,11 @@ abstract class FabrikWebService
 	{
 		$return = array();
 		$w = new FabrikWorker;
+
 		foreach ($datas as $data)
 		{
 			$row = array();
+
 			foreach ($this->map as $map)
 			{
 				$to = $map['to'];
@@ -155,6 +156,7 @@ abstract class FabrikWebService
 					if (JArrayHelper::getValue($map, 'eval') == 1)
 					{
 						$res = eval($map['match']);
+
 						if ($res !== false)
 						{
 							$row[$to] = $res;
@@ -173,8 +175,10 @@ abstract class FabrikWebService
 					$row[$to] = $map['from'];
 				}
 			}
+
 			$return[] = $row;
 		}
+
 		return $return;
 	}
 
@@ -217,6 +221,7 @@ abstract class FabrikWebService
 		$formModel->getGroupsHiarachy();
 		$this->updateCount = 0;
 		$this->addedCount = 0;
+
 		foreach ($data as $row)
 		{
 			foreach ($row as $k => $v)
@@ -224,15 +229,19 @@ abstract class FabrikWebService
 				$elementModel = $formModel->getElement($k, true);
 				$row[$k] = $elementModel->fromXMLFormat($v);
 			}
+
 			$pk = '';
+
 			if (array_key_exists($row[$fk], $ids) && $row[$fk] != '')
 			{
 				$pk = $ids[$row[$fk]]->id;
 			}
+
 			if (!$update && $pk !== '')
 			{
 				continue;
 			}
+
 			if ($pk == '')
 			{
 				$this->addedCount++;
@@ -241,6 +250,7 @@ abstract class FabrikWebService
 			{
 				$this->updateCount++;
 			}
+
 			$listModel->storeRow($row, $pk);
 		}
 	}
@@ -268,6 +278,7 @@ abstract class FabrikWebService
 			case 'text':
 				break;
 		}
+
 		return $val;
 	}
 }

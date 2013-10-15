@@ -23,7 +23,6 @@ jimport('joomla.application.component.view');
 
 class FabrikViewTimeline extends JViewLegacy
 {
-
 	/**
 	 * Execute and display a template script.
 	 *
@@ -83,6 +82,7 @@ class FabrikViewTimeline extends JViewLegacy
 
 		// Check and add a specific biz  template css file overrides template css generic table css and generic custom css
 		FabrikHelperHTML::stylesheetFromPath('plugins/fabrik_visualization/timeline/views/timeline/tmpl/' . $tpl . '/custom.css');
+
 		return parent::display();
 	}
 }

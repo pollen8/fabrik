@@ -55,10 +55,16 @@ else:
 	endif;
 	$c ++;
 	endforeach;
+	if ($this->filter_action != 'onchange') :
 	?>
-	<tr><td colspan="2">
-	<input type="button" class="pull-right  btn-info btn fabrik_filter_submit button" value="<?php echo JText::_('COM_FABRIK_GO');?>" name="filter" >
-	</td></tr>
+	<tr>
+		<td colspan="2">
+			<input type="button" class="pull-right  btn-info btn fabrik_filter_submit button" value="<?php echo JText::_('COM_FABRIK_GO');?>" name="filter" >
+		</td>
+	</tr>
+	<?php
+	endif;
+	?>
 </table>
 <?php
 endif;

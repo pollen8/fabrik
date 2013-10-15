@@ -19,17 +19,16 @@ jimport('joomla.application.component.model');
  * @package     Joomla
  * @subpackage  Fabrik
  * @since       3.0
-*/
+ */
 
 class FabrikPlugin extends JPlugin
 {
-
 	/**
 	 * path to xml file
 	 *
 	 * @var string
 	 */
-	public $_xmlPath = null;
+	public $xmlPath = null;
 
 	/**
 	 * Params (must be public)
@@ -71,7 +70,6 @@ class FabrikPlugin extends JPlugin
 	 *
 	 * @var JModel
 	 */
-
 	public $model = null;
 
 	/**
@@ -98,11 +96,23 @@ class FabrikPlugin extends JPlugin
 		return $this->id;
 	}
 
+	/**
+	 * Set model
+	 *
+	 * @param   JModel  &$model  Plugin model
+	 *
+	 * @return  void
+	 */
 	public function setModel(&$model)
 	{
 		$this->model = $model;
 	}
 
+	/**
+	 * Get Model
+	 *
+	 * @return JModel
+	 */
 	public function getModel()
 	{
 		return $this->model;
@@ -114,7 +124,7 @@ class FabrikPlugin extends JPlugin
 	 * @return string
 	 */
 
-	function getName()
+	public function getName()
 	{
 		return isset($this->name) ? $this->name : get_class($this);
 	}
@@ -138,7 +148,7 @@ class FabrikPlugin extends JPlugin
 	 * @return object jform
 	 */
 
-	function getJForm()
+	public function getJForm()
 	{
 		if (!isset($this->jform))
 		{
@@ -148,6 +158,7 @@ class FabrikPlugin extends JPlugin
 			$controlName = 'jform';
 			$this->jform = new JForm($formName, array('control' => $controlName));
 		}
+
 		return $this->jform;
 	}
 
@@ -167,6 +178,7 @@ class FabrikPlugin extends JPlugin
 	protected function renderFromNavTabHeadings($form, &$output, $repeatCounter = 0)
 	{
 		$fieldsets = $form->getFieldsets();
+
 		if (count($fieldsets) <= 1)
 		{
 			return;
@@ -182,6 +194,7 @@ class FabrikPlugin extends JPlugin
 			{
 				continue;
 			}
+
 			$class = $i === 0 ? ' class="active"' : '';
 			$id = 'tab-' . $fieldset->name;
 			$id .= '-' . $repeatCounter;
@@ -192,9 +205,11 @@ class FabrikPlugin extends JPlugin
 		    </li>';
 			$i ++;
 		}
+
 		$output[] = '</ul>';
 		$output[] = '</div>';
 	}
+
 	/**
 	 * Render the element admin settings
 	 *
@@ -213,10 +228,8 @@ class FabrikPlugin extends JPlugin
 		$document = JFactory::getDocument();
 		$type = str_replace('fabrik_', '', $this->_type);
 		JForm::addFormPath(JPATH_SITE . '/plugins/' . $this->_type . '/' . $this->_name);
-
 		$xmlFile = JPATH_SITE . '/plugins/' . $this->_type . '/' . $this->_name . '/forms/fields.xml';
 		$form = $this->getJForm();
-
 		$repeatScript = '';
 
 		// Used by fields when rendering the [x] part of their repeat name
@@ -229,10 +242,12 @@ class FabrikPlugin extends JPlugin
 		// Copy over the data into the params array - plugin fields can have data in either
 		// jform[params][name] or jform[name]
 		$dontMove = array('width', 'height');
+
 		if (!array_key_exists('params', $data))
 		{
 			$data['params'] = array();
 		}
+
 		foreach ($data as $key => $val)
 		{
 			if (is_object($val))
@@ -254,7 +269,6 @@ class FabrikPlugin extends JPlugin
 						$data['params'][$key] = $val;
 					}
 				}
-
 			}
 		}
 		// Bind the plugins data to the form
@@ -264,12 +278,12 @@ class FabrikPlugin extends JPlugin
 		// as bind() onlys saves the values from $data with a corresponding xml field we set the raw data as well
 		$form->rawData = $data;
 		$str = array();
-
 		$repeatGroupCounter = 0;
 
 		// Paul - If there is a string for plugin_DESCRIPTION then display this as a legend
 		$inistr = strtoupper('PLG_' . $type . '_' . $this->_name . '_DESCRIPTION');
 		$inival = JText::_($inistr);
+
 		if ($inistr != $inival)
 		{
 			$inival2 = '';
@@ -280,9 +294,12 @@ class FabrikPlugin extends JPlugin
 				// Split by paras, use first para for legend and put remaining paras back.
 				$xml = new SimpleXMLElement('<xml>' . $inival . '</xml>');
 				$lines = $xml->xpath('/xml/p[position()<2]');
-				while(list( , $node) = each($lines)) {
+
+				while (list( , $node) = each($lines))
+				{
 					$legend = $node;
 				}
+
 				$inival2 = str_replace($legend, '', $inival);
 				$inival = $legend;
 			}
@@ -294,7 +311,9 @@ class FabrikPlugin extends JPlugin
 				unset($lines[0]);
 				$inival2 = '<b><p>' . implode('</p>\n<p>', $lines) . '<br/><br/></p></b>';
 			}
+
 			$str[] = '<legend>' . $inival . '</legend>';
+
 			if ($inival2 != '')
 			{
 				$str[] = $inival2;
@@ -309,6 +328,7 @@ class FabrikPlugin extends JPlugin
 
 		$c = 0;
 		$fieldsets = $form->getFieldsets();
+
 		if (count($fieldsets) <= 1)
 		{
 			$mode = null;
@@ -322,18 +342,21 @@ class FabrikPlugin extends JPlugin
 				$tabClass = $c === 0 ? ' active' : '';
 				$str[] = '<div class="tab-pane' . $tabClass . '" id="tab-' . $fieldset->name . '-' . $repeatCounter . '">';
 			}
+
 			$class = $j3 ? 'form-horizontal ' : 'adminform ';
 			$class .= $type . 'Settings page-' . $this->_name;
 			$repeat = isset($fieldset->repeatcontrols) && $fieldset->repeatcontrols == 1;
 
 			// Bind data for repeat groups
 			$repeatDataMax = 1;
+
 			if ($repeat)
 			{
 				$opts = new stdClass;
 				$opts->repeatmin = (isset($fieldset->repeatmin)) ? $fieldset->repeatmin : 1;
 				$repeatScript[] = "new FbRepeatGroup('$fieldset->name', " . json_encode($opts) . ');';
 				$repeatData = array();
+
 				foreach ($form->getFieldset($fieldset->name) as $field)
 				{
 					if ($repeatDataMax < count($field->value))
@@ -341,11 +364,11 @@ class FabrikPlugin extends JPlugin
 						$repeatDataMax = count($field->value);
 					}
 				}
+
 				$form->bind($repeatData);
 			}
 
 			$id = isset($fieldset->name) ? ' id="' . $fieldset->name . '"' : '';
-
 			$style = isset($fieldset->modal) && $fieldset->modal ? 'style="display:none"' : '';
 			$str[] = '<fieldset class="' . $class . '"' . $id . ' ' . $style . '>';
 
@@ -353,8 +376,10 @@ class FabrikPlugin extends JPlugin
 			{
 				$str[] = '<legend>' . JText::_($fieldset->label) . '</legend>';
 			}
+
 			$form->repeat = $repeat;
 			$j3 = FabrikWorker::j3();
+
 			if ($repeat)
 			{
 				if ($j3)
@@ -367,6 +392,7 @@ class FabrikPlugin extends JPlugin
 					$str[] = '<a class="addButton" href="#" data-button="addButton"><i class="icon-plus"></i> ' . JText::_('COM_FABRIK_ADD') . '</a>';
 				}
 			}
+
 			for ($r = 0; $r < $repeatDataMax; $r++)
 			{
 				if ($repeat)
@@ -374,10 +400,12 @@ class FabrikPlugin extends JPlugin
 					$str[] = '<div class="repeatGroup">';
 					$form->repeatCounter = $r;
 				}
+
 				if (!$j3)
 				{
 					$str[] = '<ul class="adminformlist">';
 				}
+
 				foreach ($form->getFieldset($fieldset->name) as $field)
 				{
 					if ($repeat)
@@ -390,6 +418,7 @@ class FabrikPlugin extends JPlugin
 							}
 						}
 					}
+
 					if ($j3)
 					{
 						$str[] = '<div class="control-group">';
@@ -402,27 +431,34 @@ class FabrikPlugin extends JPlugin
 						$str[] = '<li>' . $field->label . $field->input . '</li>';
 					}
 				}
+
 				if ($repeat && !$j3)
 				{
 					$str[] = '<li><a class="removeButton delete btn" href="#"><i class="icon-minus-sign"></i> ' . JText::_('COM_FABRIK_REMOVE')
 					. '</a></li>';
 				}
+
 				if (!$j3)
 				{
 					$str[] = '</ul>';
 				}
+
 				if ($repeat)
 				{
 					$str[] = "</div>";
 				}
 			}
+
 			$str[] = '</fieldset>';
+
 			if ($mode === 'nav-tabs')
 			{
 				$str[] = '</div>';
 			}
+
 			$c ++;
 		}
+
 		if ($mode === 'nav-tabs')
 		{
 			$str[] = '</div>';
@@ -433,6 +469,7 @@ class FabrikPlugin extends JPlugin
 			$repeatScript = "window.addEvent('domready', function () {\n" . implode("\n", $repeatScript) . "\n})\n";
 			FabrikHelperHTML::script('administrator/components/com_fabrik/models/fields/repeatgroup.js', $repeatScript);
 		}
+
 		return implode("\n", $str);
 	}
 
@@ -450,6 +487,7 @@ class FabrikPlugin extends JPlugin
 	{
 		$opts = $params->toArray();
 		$data = array();
+
 		foreach ($opts as $key => $val)
 		{
 			if (is_array($val))
@@ -457,7 +495,9 @@ class FabrikPlugin extends JPlugin
 				$data[$key] = JArrayHelper::getValue($val, $repeatCounter);
 			}
 		}
+
 		$this->params = new JRegistry(json_encode($data));
+
 		return $this->params;
 	}
 
@@ -474,6 +514,7 @@ class FabrikPlugin extends JPlugin
 			$row = $this->getRow();
 			$this->params = new JRegistry($row->params);
 		}
+
 		return $this->params;
 	}
 
@@ -490,6 +531,7 @@ class FabrikPlugin extends JPlugin
 			$this->row = $this->getTable($this->_type);
 			$this->row->load($this->id);
 		}
+
 		return $this->row;
 	}
 
@@ -532,6 +574,7 @@ class FabrikPlugin extends JPlugin
 		$ok = false;
 		$app = JFactory::getApplication();
 		$model = $this->getModel();
+
 		switch ($location)
 		{
 			case 'front':
@@ -550,11 +593,13 @@ class FabrikPlugin extends JPlugin
 				$ok = true;
 				break;
 		}
+
 		if ($ok)
 		{
 			// $$$ hugh @FIXME - added copyingRow() stuff to form model, need to do it
 			// for list model as well.
 			$k = array_key_exists('origRowId', $model) ? 'origRowId' : 'rowId';
+
 			switch ($event)
 			{
 				case 'new':
@@ -562,6 +607,7 @@ class FabrikPlugin extends JPlugin
 					{
 						$ok = isset($model->copyingRow) ? $model->copyingRow() : false;
 					}
+
 					break;
 				case 'edit':
 					if ($model->$k == 0)
@@ -573,9 +619,11 @@ class FabrikPlugin extends JPlugin
 						 */
 						$ok = false;
 					}
+
 					break;
 			}
 		}
+
 		return $ok;
 	}
 
@@ -617,9 +665,11 @@ class FabrikPlugin extends JPlugin
 		$cid = $input->getInt('cid', -1);
 		$rows = array();
 		$showFabrikLists = $input->get('showf', false);
+
 		if ($showFabrikLists)
 		{
 			$db = FabrikWorker::getDbo(true);
+
 			if ($cid !== 0)
 			{
 				$query = $db->getQuery(true);
@@ -627,6 +677,7 @@ class FabrikPlugin extends JPlugin
 				$db->setQuery($query);
 				$rows = $db->loadObjectList();
 			}
+
 			$default = new stdClass;
 			$default->id = '';
 			$default->label = JText::_('COM_FABRIK_PLEASE_SELECT');
@@ -642,8 +693,10 @@ class FabrikPlugin extends JPlugin
 				$db->setQuery("SHOW TABLES");
 				$rows = (array) $db->loadColumn();
 			}
+
 			array_unshift($rows, '');
 		}
+
 		echo json_encode($rows);
 	}
 
@@ -680,6 +733,7 @@ class FabrikPlugin extends JPlugin
 		// Only used if showall = false, includes validations as separate entries
 		$incCalculations = $input->get('calcs', false);
 		$arr = array();
+
 		try
 		{
 			if ($showAll)
@@ -689,6 +743,7 @@ class FabrikPlugin extends JPlugin
 				$cnn = JModelLegacy::getInstance('Connection', 'FabrikFEModel');
 				$cnn->setId($cid);
 				$db = $cnn->getDb();
+
 				if ($tid != '')
 				{
 					if (is_numeric($tid))
@@ -700,8 +755,10 @@ class FabrikPlugin extends JPlugin
 						$jDb->setQuery($query);
 						$tid = $jDb->loadResult();
 					}
+
 					$db->setQuery('DESCRIBE ' . $db->quoteName($tid));
 					$rows = $db->loadObjectList();
+
 					if (is_array($rows))
 					{
 						foreach ($rows as $r)
@@ -709,6 +766,7 @@ class FabrikPlugin extends JPlugin
 							$c = new stdClass;
 							$c->value = $r->Field;
 							$c->label = $r->Field;
+
 							if ($highlightpk && $r->Key === 'PRI')
 							{
 								$c->label .= ' [' . JText::_('COM_FABRIK_RECOMMENDED') . ']';
@@ -719,6 +777,7 @@ class FabrikPlugin extends JPlugin
 								$arr[$r->Field] = $c;
 							}
 						}
+
 						ksort($arr);
 						$arr = array_values($arr);
 					}
@@ -738,6 +797,7 @@ class FabrikPlugin extends JPlugin
 				$groups = $model->getFormGroupElementData();
 				$published = $input->get('published', false);
 				$showintable = $input->get('showintable', false);
+
 				foreach ($groups as $g => $groupModel)
 				{
 					if ($groupModel->isJoin())
@@ -746,9 +806,11 @@ class FabrikPlugin extends JPlugin
 						{
 							continue;
 						}
+
 						$joinModel = $groupModel->getJoinModel();
 						$join = $joinModel->getJoin();
 					}
+
 					if ($published == true)
 					{
 						$elementModels = $groups[$g]->getPublishedElements();
@@ -757,13 +819,16 @@ class FabrikPlugin extends JPlugin
 					{
 						$elementModels = $groups[$g]->getMyElements();
 					}
+
 					foreach ($elementModels as $e => $eVal)
 					{
 						$element = $eVal->getElement();
+
 						if ($showintable == true && $element->show_in_list_summary == 0)
 						{
 							continue;
 						}
+
 						if ($keyType == 1)
 						{
 							$v = $element->id;
@@ -777,13 +842,16 @@ class FabrikPlugin extends JPlugin
 							*/
 							$v = $eVal->getFullName(false);
 						}
+
 						$c = new stdClass;
 						$c->value = $v;
 						$label = FabrikString::getShortDdLabel($element->label);
+
 						if ($groupModel->isJoin())
 						{
 							$label = $join->table_join . '.' . $label;
 						}
+
 						$c->label = $label;
 
 						// Show hightlight primary key and shift to top of options
@@ -800,6 +868,7 @@ class FabrikPlugin extends JPlugin
 						if ($incCalculations)
 						{
 							$params = $eVal->getParams();
+
 							if ($params->get('sum_on', 0))
 							{
 								$c = new stdClass;
@@ -807,6 +876,7 @@ class FabrikPlugin extends JPlugin
 								$c->label = JText::_('COM_FABRIK_SUM') . ': ' . $label;
 								$arr[] = $c;
 							}
+
 							if ($params->get('avg_on', 0))
 							{
 								$c = new stdClass;
@@ -814,6 +884,7 @@ class FabrikPlugin extends JPlugin
 								$c->label = JText::_('COM_FABRIK_AVERAGE') . ': ' . $label;
 								$arr[] = $c;
 							}
+
 							if ($params->get('median_on', 0))
 							{
 								$c = new stdClass;
@@ -821,6 +892,7 @@ class FabrikPlugin extends JPlugin
 								$c->label = JText::_('COM_FABRIK_MEDIAN') . ': ' . $label;
 								$arr[] = $c;
 							}
+
 							if ($params->get('count_on', 0))
 							{
 								$c = new stdClass;
@@ -828,6 +900,7 @@ class FabrikPlugin extends JPlugin
 								$c->label = JText::_('COM_FABRIK_COUNT') . ': ' . $label;
 								$arr[] = $c;
 							}
+
 							if ($params->get('custom_calc_on', 0))
 							{
 								$c = new stdClass;
@@ -844,6 +917,7 @@ class FabrikPlugin extends JPlugin
 		{
 			// Ignore errors as you could be swapping between connections, with old db table name selected.
 		}
+
 		array_unshift($arr, JHTML::_('select.option', '', JText::_('COM_FABRIK_PLEASE_SELECT'), 'value', 'label'));
 		echo json_encode($arr);
 	}
@@ -862,6 +936,7 @@ class FabrikPlugin extends JPlugin
 		$opts = $this->getAdminJsOpts($html);
 		$opts = json_encode($opts);
 		$script = "new fabrikAdminPlugin('$name', '$label', $opts)";
+
 		return $script;
 	}
 
@@ -878,6 +953,7 @@ class FabrikPlugin extends JPlugin
 		$opts = new stdClass;
 		$opts->livesite = COM_FABRIK_LIVESITE;
 		$opts->html = $html;
+
 		return $opts;
 	}
 
@@ -898,8 +974,8 @@ class FabrikPlugin extends JPlugin
 	/**
 	 * Process the plugin, called when form is submitted
 	 *
-	 * @param   string             $paramName  Param name which contains the PHP code to eval
-	 * @param   array              $data       Data
+	 * @param   string  $paramName  Param name which contains the PHP code to eval
+	 * @param   array   $data       Data
 	 *
 	 * @return  bool
 	 */
@@ -910,14 +986,17 @@ class FabrikPlugin extends JPlugin
 		{
 			$data = $this->data;
 		}
+
 		$formModel = $this->getModel();
 		$params = $this->getParams();
 		$condition = $params->get($paramName);
+		$w = new FabrikWorker;
+
 		if (trim($condition) == '')
 		{
 			return true;
 		}
-		$w = new FabrikWorker;
+
 		if (!is_null($formModel))
 		{
 			$origData = $formModel->getOrigData();
@@ -927,12 +1006,15 @@ class FabrikPlugin extends JPlugin
 		{
 			$origData = array();
 		}
+
 		$condition = trim($w->parseMessageForPlaceHolder($condition, $data));
 		$res = @eval($condition);
+
 		if (is_null($res))
 		{
 			return true;
 		}
+
 		return $res;
 	}
 
@@ -947,6 +1029,7 @@ class FabrikPlugin extends JPlugin
 	protected function replace_num_entity($ord)
 	{
 		$ord = $ord[1];
+
 		if (preg_match('/^x([0-9a-f]+)$/i', $ord, $match))
 		{
 			$ord = hexdec($match[1]);
@@ -955,8 +1038,10 @@ class FabrikPlugin extends JPlugin
 		{
 			$ord = intval($ord);
 		}
+
 		$no_bytes = 0;
 		$byte = array();
+
 		if ($ord < 128)
 		{
 			return chr($ord);
@@ -977,6 +1062,7 @@ class FabrikPlugin extends JPlugin
 		{
 			return;
 		}
+
 		switch ($no_bytes)
 		{
 			case 2:
@@ -989,16 +1075,20 @@ class FabrikPlugin extends JPlugin
 				$prefix = array(7, 240);
 				break;
 		}
+
 		for ($i = 0; $i < $no_bytes; $i++)
 		{
 			$byte[$no_bytes - $i - 1] = (($ord & (63 * pow(2, 6 * $i))) / pow(2, 6 * $i)) & 63 | 128;
 		}
+
 		$byte[0] = ($byte[0] & $prefix[0]) | $prefix[1];
 		$ret = '';
+
 		for ($i = 0; $i < $no_bytes; $i++)
 		{
 			$ret .= chr($byte[$i]);
 		}
+
 		return $ret;
 	}
 
@@ -1034,11 +1124,13 @@ class FabrikPlugin extends JPlugin
 		{
 			return array();
 		}
+
 		$db = FabrikWorker::getDbo();
 		$query = $db->getQuery(true);
 		$query->select('DISTINCT(' . $field . ')')->from('#__users AS u')->join('LEFT', '#__user_usergroup_map AS m ON u.id = m.user_id')
 		->where('m.group_id IN (' . implode(', ', $sendTo) . ')');
 		$db->setQuery($query);
+
 		return $db->loadColumn();
 	}
 
@@ -1056,10 +1148,12 @@ class FabrikPlugin extends JPlugin
 
 		// Attempt to create the db table?
 		$file = COM_FABRIK_BASE . '/plugins/' . $this->_type . '/' . $this->_name . '/sql/install.mysql.uft8.sql';
+
 		if (JFile::exists($file))
 		{
 			$sql = file_get_contents($file);
 			$sqls = explode(";", $sql);
+
 			if (!empty($sqls))
 			{
 				foreach ($sqls as $sql)

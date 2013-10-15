@@ -190,8 +190,6 @@ abstract class JFormField
 	 *
 	 * @param   object  $form  The form to attach to the form field object.
 	 *
-	 * @return  JFormField
-	 *
 	 * @since   11.1
 	 */
 	public function __construct($form = null)
@@ -281,13 +279,13 @@ abstract class JFormField
 	/**
 	 * Method to attach a JForm object to the field.
 	 *
-	 * @param   object  $element  The JXMLElement object representing the <field /> tag for the
-	 *                            form field object.
-	 * @param   mixed   $value    The form field default value for display.
-	 * @param   string  $group    The field name group control value. This acts as as an array
-	 *                            container for the field. For example if the field has name="foo"
-	 *                            and the group value is set to "bar" then the full field name
-	 *                            would end up being "bar[foo]".
+	 * @param   object  &$element  The JXMLElement object representing the <field /> tag for the
+	 *                             form field object.
+	 * @param   mixed   $value     The form field default value for display.
+	 * @param   string  $group     The field name group control value. This acts as as an array
+	 *                             container for the field. For example if the field has name="foo"
+	 *                             and the group value is set to "bar" then the full field name
+	 *                             would end up being "bar[foo]".
 	 *
 	 * @return  boolean  True on success.
 	 *
@@ -312,6 +310,7 @@ abstract class JFormField
 		$class = (string) $element['class'];
 		$id = (string) $element['id'];
 		$multiple = (string) $element['multiple'];
+
 		// $$$ rob
 		$repeat = (string) $element['repeat'];
 
@@ -424,6 +423,7 @@ abstract class JFormField
 		}
 
 		// If we already have an id segment add the field id/name as another level.
+
 		if ($id)
 		{
 			$id .= '_' . ($fieldId ? $fieldId : $fieldName);
@@ -441,27 +441,31 @@ abstract class JFormField
 		{
 			$repeatCounter = empty($this->form->repeatCounter) ? 0 : $this->form->repeatCounter;
 			$id .= '-' . $repeatCounter;
+
 			if (get_class($this) === 'JFormFieldRadio')
 			{
 				$id .= '-';
 			}
 		}
+
 		return $id;
 	}
 
 	/**
 	 * Method to get the field input markup.
 	 *
-	 * @return  string  The field input markup.
 	 * @since   11.1
+	 *
+	 * @return  string  The field input markup.
 	 */
 	abstract protected function getInput();
 
 	/**
 	 * Method to get the field title.
 	 *
-	 * @return  string  The field title.
 	 * @since   11.1
+	 *
+	 * @return  string  The field title.
 	 */
 	protected function getTitle()
 	{
@@ -470,7 +474,6 @@ abstract class JFormField
 
 		if ($this->hidden)
 		{
-
 			return $title;
 		}
 
@@ -484,8 +487,9 @@ abstract class JFormField
 	/**
 	 * Method to get the field label markup.
 	 *
-	 * @return  string  The field label markup.
 	 * @since   11.1
+	 *
+	 * @return  string  The field label markup.
 	 */
 	protected function getLabel()
 	{
@@ -511,9 +515,8 @@ abstract class JFormField
 		// If a description is specified, use it to build a tooltip.
 		if (!empty($this->description))
 		{
-			$label .= ' title="'
-				. htmlspecialchars(trim($text, ':') . '::' . ($this->translateDescription ? JText::_($this->description) : $this->description),
-					ENT_COMPAT, 'UTF-8') . '"';
+			$desc = $this->translateDescription ? JText::_($this->description) : $this->description;
+			$label .= ' title="' . htmlspecialchars(trim($text, ':') . '::' . $desc, ENT_COMPAT, 'UTF-8') . '"';
 		}
 
 		// Add the label text and closing tag.
@@ -540,9 +543,9 @@ abstract class JFormField
 	 */
 	protected function getName($fieldName)
 	{
-
 		// $$$ rob set in plugin->onRenderSettings
 		$repeatCounter = empty($this->form->repeatCounter) ? 0 : $this->form->repeatCounter;
+
 		// Initialize variables.
 		$name = '';
 
@@ -557,6 +560,7 @@ abstract class JFormField
 		{
 			// If we already have a name segment add the group control as another level.
 			$groups = explode('.', $this->group);
+
 			if ($name)
 			{
 				foreach ($groups as $group)
@@ -567,6 +571,7 @@ abstract class JFormField
 			else
 			{
 				$name .= array_shift($groups);
+
 				foreach ($groups as $group)
 				{
 					$name .= '[' . $group . ']';
@@ -598,10 +603,11 @@ abstract class JFormField
 
 		return $name;
 	}
+
 	/**
 	 * Method to get the field name used.
 	 *
-	 * @param   string  $name  The field element name.
+	 * @param   string  $fieldName  The field element name.
 	 *
 	 * @return  string  The field name
 	 *
@@ -616,6 +622,7 @@ abstract class JFormField
 		else
 		{
 			self::$count = self::$count + 1;
+
 			return self::$generated_fieldname . self::$count;
 		}
 	}

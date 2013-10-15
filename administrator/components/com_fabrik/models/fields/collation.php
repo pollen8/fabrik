@@ -39,13 +39,35 @@ class JFormFieldCollation extends JFormFieldList
 	public function setup(SimpleXMLElement $element, $value, $group = null)
 	{
 		$return = parent::setup($element, $value, $group);
+
 		if ($this->value == '' && $return)
 		{
 			$db = JFactory::getDbo();
-			$this->value = $db->getCollation();
+
+			/*
+			 * Attempt to get the real Db colaltion (tmp fix before this makes it into J itself
+			 * see - https://github.com/joomla/joomla-cms/pull/2092
+			 */
+			$db->setQuery('SHOW VARIABLES LIKE "collation_database"');
+
+			try
+			{
+				$res = $db->loadObject();
+
+				if (isset($res->Value))
+				{
+					$this->value = $res->Value;
+				}
+			}
+			catch (RuntimeException $e)
+			{
+				$this->value = $db->getCollation();
+			}
 		}
+
 		return $return;
 	}
+
 	/**
 	 * Get element options
 	 *
@@ -59,10 +81,12 @@ class JFormFieldCollation extends JFormFieldList
 		sort($rows);
 		require_once COM_FABRIK_FRONTEND . '/helpers/image.php';
 		$opts = array();
+
 		foreach ($rows as $row)
 		{
 			$opts[] = JHTML::_('select.option', $row->Collation);
 		}
+
 		return $opts;
 	}
 }

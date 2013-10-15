@@ -47,6 +47,7 @@ var FbForm = new Class({
 		this.subGroups = $H({});
 		this.currentPage = this.options.start_page;
 		this.formElements = $H({});
+		this.elements = this.formElements;
 		this.duplicatedGroups = $H({});
 
 		this.fx = {};
@@ -57,9 +58,11 @@ var FbForm = new Class({
 		(function () {
 			this.duplicateGroupsToMin();
 		}.bind(this)).delay(1000);
-		
+
 		// Delegated element events
 		this.events = {};
+
+		this.submitBroker = new FbFormSubmit();
 	},
 
 	_setMozBoxWidths: function () {
@@ -119,51 +122,6 @@ var FbForm = new Class({
 				}
 				this.repeatGroupMarkers.set(id, c);
 			}.bind(this));
-
-
-			// IE8 if rowid isnt set here its most likely because you are rendering as a J article plugin and have done:
-			// <p>{fabrik view=form id=1}</p>
-			// form block level elements should not be encased in <p>'s
-
-			// testing prev/next buttons
-			var v = this.options.editable === true ? 'form' : 'details';
-			var rowInput = this.form.getElement('input[name=rowid]');
-			var rowId = typeOf(rowInput) === 'null' ? '' : rowInput.value;
-			var editopts = {
-				option : 'com_fabrik',
-				'view' : v,
-				'controller' : 'form',
-				'fabrik' : this.id,
-				'rowid' : rowId,
-				'format' : 'raw',
-				'task' : 'paginate',
-				'dir' : 1
-			};
-			[ '.previous-record', '.next-record' ].each(function (b, dir) {
-				editopts.dir = dir;
-				if (this.form.getElement(b)) {
-
-					var myAjax = new Request({
-						url : 'index.php',
-						method : this.options.ajaxmethod,
-						data : editopts,
-						onComplete : function (r) {
-							Fabrik.loader.stop(this.getBlock());
-							r = JSON.decode(r);
-							this.update(r);
-							this.form.getElement('input[name=rowid]').value = r.post.rowid;
-						}.bind(this)
-					});
-
-					this.form.getElement(b).addEvent('click', function (e) {
-						myAjax.options.data.rowid = this.form.getElement('input[name=rowid]').value;
-						e.stop();
-						Fabrik.loader.start(this.getBlock(), Joomla.JText._('COM_FABRIK_LOADING'));
-						myAjax.send();
-					}.bind(this));
-				}
-			}.bind(this));
-
 			this.watchGoBackButton();
 		}
 	},
@@ -172,7 +130,7 @@ var FbForm = new Class({
 
 	watchGoBackButton: function () {
 		if (this.options.ajax) {
-			var goback = this.getForm().getElement('input[name=Goback]');
+			var goback = this._getButton('Goback');
 			if (typeOf(goback) === 'null') {
 				return;
 			}
@@ -207,9 +165,8 @@ var FbForm = new Class({
 	setUp: function () {
 		this.form = this.getForm();
 		this.watchGroupButtons();
-		//if (this.options.editable) { //submit can appear in confirmation plugin even when readonly
+		// Submit can appear in confirmation plugin even when readonly
 		this.watchSubmit();
-		//}
 		this.createPages();
 		this.watchClearSession();
 	},
@@ -426,7 +383,7 @@ var FbForm = new Class({
 					});
 				}
 			});
-			submit = this._getButton('submit');
+			submit = this._getButton('Submit');
 			if (submit && this.options.rowid === '') {
 				submit.disabled = "disabled";
 				submit.setStyle('opacity', 0.5);
@@ -462,9 +419,9 @@ var FbForm = new Class({
 			if (typeOf(document.getElement('.tool-tip')) !== 'null') {
 				document.getElement('.tool-tip').setStyle('top', 0);
 			}
-			// Don't prepend with Fabrik.liveSite, as it can create cross origin browser errors if you are on www and livesite is not on www. 
+			// Don't prepend with Fabrik.liveSite, as it can create cross origin browser errors if you are on www and livesite is not on www.
 			var url = 'index.php?option=com_fabrik&format=raw&task=form.ajax_validate&form_id=' + this.id;
-			
+
 			Fabrik.loader.start(this.getBlock(), Joomla.JText._('COM_FABRIK_VALIDATING'));
 
 			// Only validate the current groups elements, otherwise validations on
@@ -596,7 +553,7 @@ var FbForm = new Class({
 	},
 
 	setPageButtons : function () {
-		var submit = this._getButton('submit');
+		var submit = this._getButton('Submit');
 		var prev = this.form.getElement('.fabrikPagePrevious');
 		var next = this.form.getElement('.fabrikPageNext');
 		if (typeOf(next) !== 'null') {
@@ -686,6 +643,7 @@ var FbForm = new Class({
 			elId = elId.substr(0, elId.length - 3);
 			this.formElements.set(elId, oEl);
 		}
+		this.submitBroker.addElement(elId, oEl);
 		return oEl;
 	},
 
@@ -980,14 +938,16 @@ var FbForm = new Class({
 		return b;
 	},
 
-	watchSubmit : function () {
-		var submit = this._getButton('submit');
+	watchSubmit: function () {
+		var submit = this._getButton('Submit');
 		if (!submit) {
 			return;
 		}
-		var apply = this._getButton('apply');
-		if (this.form.getElement('input[name=delete]')) {
-			this.form.getElement('input[name=delete]').addEvent('click', function (e) {
+		var apply = this._getButton('apply'),
+		del = this._getButton('delete'),
+		copy = this._getButton('Copy');
+		if (del) {
+			del.addEvent('click', function (e) {
 				if (confirm(Joomla.JText._('COM_FABRIK_CONFIRM_DELETE_1'))) {
 					var res = Fabrik.fireEvent('fabrik.form.delete', [this, this.options.rowid]).eventResults;
 					if (typeOf(res) === 'null' || res.length === 0 || !res.contains(false)) {
@@ -1002,180 +962,174 @@ var FbForm = new Class({
 				}
 			}.bind(this));
 		}
-		if (this.options.ajax) {
-			var copy = this._getButton('Copy');
-			([apply, submit, copy]).each(function (btn) {
-				if (typeOf(btn) !== 'null') {
-					btn.addEvent('click', function (e) {
-						this.doSubmit(e, btn);
-					}.bind(this));
-				}
-			}.bind(this));
+		var submits = this.form.getElements('input[type=submit]').combine([apply, submit, copy]);
+		submits.each(function (btn) {
+			if (typeOf(btn) !== 'null') {
+				btn.addEvent('click', function (e) {
+					this.doSubmit(e, btn);
+				}.bind(this));
+			}
+		}.bind(this));
 
-		} else {
-			this.form.addEvent('submit', function (e) {
-				this.doSubmit(e);
-			}.bind(this));
-		}
+		this.form.addEvent('submit', function (e) {
+			this.doSubmit(e);
+		}.bind(this));
 	},
 
-	doSubmit : function (e, btn) {
-		Fabrik.fireEvent('fabrik.form.submit.start', [this, e, btn]);
-		this.elementsBeforeSubmit(e);
-		if (this.result === false) {
-			this.result = true;
+	doSubmit: function (e, btn) {
+		if (this.submitBroker.enabled()) {
 			e.stop();
-			// Update global status error
-			this.updateMainError();
-
-			// Return otherwise ajax upload may still occur.
-			return;
+			return false;
 		}
-		// Insert a hidden element so we can reload the last page if validation vails
-		if (this.options.pages.getKeys().length > 1) {
-			this.form.adopt(new Element('input', {'name': 'currentPage', 'value': this.currentPage.toInt(), 'type': 'hidden'}));
-		}
-		if (this.options.ajax) {
-			// Do ajax val only if onSubmit val ok
-			if (this.form) {
-				Fabrik.loader.start(this.getBlock(), Joomla.JText._('COM_FABRIK_LOADING'));
-				// $$$ hugh - we already did elementsBeforeSubmit() this at the start of this func?
-				// (and we're going to call it again in getFormData()!)
-				//this.elementsBeforeSubmit(e);
-				// get all values from the form
-				var data = $H(this.getFormData());
-				data = this._prepareRepeatsForAjax(data);
-				if (btn.name === 'Copy') {
-					data.Copy = 1;
-					e.stop();
-				}
-				data.fabrik_ajax = '1';
-				data.format = 'raw';
-				var myajax = new Request.JSON({
-					'url': this.form.action,
-					'data': data,
-					'method': this.options.ajaxmethod,
-					onError: function (text, error) {
-						fconsole(text + ": " + error);
-						this.showMainError(error);
-						Fabrik.loader.stop(this.getBlock(), 'Error in returned JSON');
-					}.bind(this),
+		this.submitBroker.submit(function () {
+			Fabrik.fireEvent('fabrik.form.submit.start', [this, e, btn]);
+			if (this.result === false) {
+				this.result = true;
+				e.stop();
+				// Update global status error
+				this.updateMainError();
 
-					onFailure: function (xhr) {
-						fconsole(xhr);
-						Fabrik.loader.stop(this.getBlock(), 'Ajax failure');
-					}.bind(this),
-					onComplete : function (json, txt) {
-						if (typeOf(json) === 'null') {
-							// Stop spinner
+				// Return otherwise ajax upload may still occur.
+				return;
+			}
+			// Insert a hidden element so we can reload the last page if validation vails
+			if (this.options.pages.getKeys().length > 1) {
+				this.form.adopt(new Element('input', {'name': 'currentPage', 'value': this.currentPage.toInt(), 'type': 'hidden'}));
+			}
+			if (this.options.ajax) {
+				// Do ajax val only if onSubmit val ok
+				if (this.form) {
+					Fabrik.loader.start(this.getBlock(), Joomla.JText._('COM_FABRIK_LOADING'));
+
+					// Get all values from the form
+					var data = $H(this.getFormData());
+					data = this._prepareRepeatsForAjax(data);
+					data[btn.name] = btn.value;
+					if (btn.name === 'Copy') {
+						data.Copy = 1;
+						e.stop();
+					}
+					data.fabrik_ajax = '1';
+					data.format = 'raw';
+					var myajax = new Request.JSON({
+						'url': this.form.action,
+						'data': data,
+						'method': this.options.ajaxmethod,
+						onError: function (text, error) {
+							fconsole(text + ": " + error);
+							this.showMainError(error);
 							Fabrik.loader.stop(this.getBlock(), 'Error in returned JSON');
-							fconsole('error in returned json', json, txt);
-							return;
-						}
-						// Process errors if there are some
-						var errfound = false;
-						if (json.errors !== undefined) {
+						}.bind(this),
 
-							// For every element of the form update error message
-							$H(json.errors).each(function (errors, key) {
-								// $$$ hugh - nasty hackery alert!
-								// validate() now returns errors for joins in join___id___label format,
-								// but if repeated, will be an array under _0 name.
-								// replace join[id][label] with join___id___label
-								// key = key.replace(/(\[)|(\]\[)/g, '___').replace(/\]/, '');
-								if (this.formElements.has(key) && errors.flatten().length > 0) {
-									errfound = true;
-									if (this.formElements[key].options.inRepeatGroup) {
-										for (e = 0; e < errors.length; e++) {
-											if (errors[e].flatten().length  > 0) {
-												var this_key = key.replace(/(_\d+)$/, '_' + e);
-												this._showElementError(errors[e], this_key);
+						onFailure: function (xhr) {
+							fconsole(xhr);
+							Fabrik.loader.stop(this.getBlock(), 'Ajax failure');
+						}.bind(this),
+						onComplete: function (json, txt) {
+							if (typeOf(json) === 'null') {
+								// Stop spinner
+								Fabrik.loader.stop(this.getBlock(), 'Error in returned JSON');
+								fconsole('error in returned json', json, txt);
+								return;
+							}
+							// Process errors if there are some
+							var errfound = false;
+							if (json.errors !== undefined) {
+
+								// For every element of the form update error message
+								$H(json.errors).each(function (errors, key) {
+									if (this.formElements.has(key) && errors.flatten().length > 0) {
+										errfound = true;
+										if (this.formElements[key].options.inRepeatGroup) {
+											for (e = 0; e < errors.length; e++) {
+												if (errors[e].flatten().length  > 0) {
+													var this_key = key.replace(/(_\d+)$/, '_' + e);
+													this._showElementError(errors[e], this_key);
+												}
 											}
 										}
+										else {
+											this._showElementError(errors, key);
+										}
 									}
-									else {
-										this._showElementError(errors, key);
-									}
-								}
-							}.bind(this));
-						}
-						// Update global status error
-						this.updateMainError();
-
-						if (errfound === false) {
-							var clear_form = false;
-							if (this.options.rowid === '' && btn.name !== 'apply') {
-								// We're submitting a new form - so always clear
-								clear_form = true;
+								}.bind(this));
 							}
-							Fabrik.loader.stop(this.getBlock());
-							var savedMsg = (typeOf(json.msg) !== 'null' && json.msg !== undefined && json.msg !== '') ? json.msg : Joomla.JText._('COM_FABRIK_FORM_SAVED');
-							if (json.baseRedirect !== true) {
-								clear_form = json.reset_form;
-								if (json.url !== undefined) {
-									if (json.redirect_how === 'popup') {
-										var width = json.width ? json.width : 400;
-										var height = json.height ? json.height : 400;
-										var x_offset = json.x_offset ? json.x_offset : 0;
-										var y_offset = json.y_offset ? json.y_offset : 0;
-										var title = json.title ? json.title : '';
-										Fabrik.getWindow({'id': 'redirect', 'type': 'redirect', contentURL: json.url, caller: this.getBlock(), 'height': height, 'width': width, 'offset_x': x_offset, 'offset_y': y_offset, 'title': title});
-									}
-									else {
-										if (json.redirect_how === 'samepage') {
-											window.open(json.url, '_self');
+							// Update global status error
+							this.updateMainError();
+
+							if (errfound === false) {
+								var clear_form = false;
+								if (this.options.rowid === '' && btn.name !== 'apply') {
+									// We're submitting a new form - so always clear
+									clear_form = true;
+								}
+								Fabrik.loader.stop(this.getBlock());
+								var savedMsg = (typeOf(json.msg) !== 'null' && json.msg !== undefined && json.msg !== '') ? json.msg : Joomla.JText._('COM_FABRIK_FORM_SAVED');
+								if (json.baseRedirect !== true) {
+									clear_form = json.reset_form;
+									if (json.url !== undefined) {
+										if (json.redirect_how === 'popup') {
+											var width = json.width ? json.width : 400;
+											var height = json.height ? json.height : 400;
+											var x_offset = json.x_offset ? json.x_offset : 0;
+											var y_offset = json.y_offset ? json.y_offset : 0;
+											var title = json.title ? json.title : '';
+											Fabrik.getWindow({'id': 'redirect', 'type': 'redirect', contentURL: json.url, caller: this.getBlock(), 'height': height, 'width': width, 'offset_x': x_offset, 'offset_y': y_offset, 'title': title});
 										}
-										else if (json.redirect_how === 'newpage') {
-											window.open(json.url, '_blank');
+										else {
+											if (json.redirect_how === 'samepage') {
+												window.open(json.url, '_self');
+											}
+											else if (json.redirect_how === 'newpage') {
+												window.open(json.url, '_blank');
+											}
 										}
+									} else {
+										alert(savedMsg);
 									}
 								} else {
+									clear_form = json.reset_form !== undefined ? json.reset_form : clear_form;
 									alert(savedMsg);
 								}
+								// Query the list to get the updated data
+								Fabrik.fireEvent('fabrik.form.submitted', [this, json]);
+								if (btn.name !== 'apply') {
+									if (clear_form) {
+										this.clearForm();
+									}
+									// If the form was loaded in a Fabrik.Window close the window.
+									if (Fabrik.Windows[this.options.fabrik_window_id]) {
+										Fabrik.Windows[this.options.fabrik_window_id].close();
+									}
+								}
 							} else {
-								clear_form = json.reset_form !== undefined ? json.reset_form : clear_form;
-								alert(savedMsg);
+								Fabrik.fireEvent('fabrik.form.submit.failed', [this, json]);
+								// Stop spinner
+								Fabrik.loader.stop(this.getBlock(), Joomla.JText._('COM_FABRIK_VALIDATION_ERROR'));
 							}
-							// Query the list to get the updated data
-							Fabrik.fireEvent('fabrik.form.submitted', [this, json]);
-							if (btn.name !== 'apply') {
-								if (clear_form) {
-									this.clearForm();
-								}
-								// If the form was loaded in a Fabrik.Window close the window.
-								if (Fabrik.Windows[this.options.fabrik_window_id]) {
-									Fabrik.Windows[this.options.fabrik_window_id].close();
-								}
-							}
-						} else {
-							Fabrik.fireEvent('fabrik.form.submit.failed', [this, json]);
-							// Stop spinner
-							Fabrik.loader.stop(this.getBlock(), Joomla.JText._('COM_FABRIK_VALIDATION_ERROR'));
-						}
-					}.bind(this)
-				}).send();
+						}.bind(this)
+					}).send();
+				}
 			}
-		}
-		Fabrik.fireEvent('fabrik.form.submit.end', [this]);
-		if (this.result === false) {
-			this.result = true;
-			e.stop();
-			// Update global status error
-			this.updateMainError();
-		} else {
-			// Enables the list to clean up the form and custom events
-			if (this.options.ajax) {
-				Fabrik.fireEvent('fabrik.form.ajax.submit.end', [this]);
-			}
-		}
-	},
-
-	elementsBeforeSubmit : function (e) {
-		this.formElements.each(function (el, key) {
-			if (!el.onsubmit()) {
+			Fabrik.fireEvent('fabrik.form.submit.end', [this]);
+			if (this.result === false) {
+				this.result = true;
 				e.stop();
+				// Update global status error
+				this.updateMainError();
+			} else {
+				// Enables the list to clean up the form and custom events
+				if (this.options.ajax) {
+					e.stop();
+					Fabrik.fireEvent('fabrik.form.ajax.submit.end', [this]);
+				} else {
+					// Inject submit button name/value.
+					new Element('input', {type: 'hidden', name: btn.name, value: btn.value}).inject(this.form);
+					this.form.submit();
+				}
 			}
-		});
+		}.bind(this));
+		e.stop();
 	},
 
 	/**
@@ -1187,7 +1141,7 @@ var FbForm = new Class({
 	 * @param  bool  submit  Should we run the element onsubmit() methods - set to false in calc element
 	 */
 
-	getFormData : function (submit) {
+	getFormData: function (submit) {
 		submit = typeOf(submit) !== 'null' ? submit : true;
 		if (submit) {
 			this.formElements.each(function (el, key) {
@@ -1296,38 +1250,57 @@ var FbForm = new Class({
 		if (!this.form) {
 			return;
 		}
-		// Check for new form
-		if (this.options.rowid === '') {
-			// $$$ hugh - added ability to override min count
-			// http://fabrikar.com/forums/index.php?threads/how-to-initially-show-repeat-group.32911/#post-170147
-			Fabrik.fireEvent('fabrik.form.group.duplicate.min', [this]);
-			Object.each(this.options.minRepeat, function (min, groupId) {
-				// $$$ hugh - trying out min of 0 for Troester
-				// http://fabrikar.com/forums/index.php?threads/how-to-start-a-new-record-with-empty-repeat-group.34666/#post-175408
-				if (min === 0) {
-					// Create mock event
-					var del_btn = this.form.getElement('#group' + groupId + ' .deleteGroup');
-					if (typeOf(del_btn) !== 'null') {
-						var del_e = new Event.Mock(del_btn, 'click');
+		Fabrik.fireEvent('fabrik.form.group.duplicate.min', [this]);
+		Object.each(this.options.group_repeats, function (canRepeat, groupId) {
+			if (canRepeat !== "1") {
+				return;
+			}
+			var repeat_counter = this.form.getElement('#fabrik_repeat_group_' + groupId + '_counter');
+			if (typeOf(repeat_counter) === 'null') {
+				return;
+			}
+			var repeat_rows, repeat_real;
+			repeat_rows = repeat_real = repeat_counter.value;
+			if (repeat_rows === "1") {
+				var repeat_id_0 = this.form.getElement('#' + this.options.group_pk_ids[groupId] + '_0');
+				if (typeOf(repeat_id_0) !== 'null' && repeat_id_0.value === '') {
+					repeat_real = 0;
+				}
+			}
+			var min = this.options.minRepeat[groupId];
 
-						// Remove group
-						this.deleteGroup(del_e);
+			/**
+			 * $$$ hugh - added ability to override min count
+			 * http://fabrikar.com/forums/index.php?threads/how-to-initially-show-repeat-group.32911/#post-170147
+			 * $$$ hugh - trying out min of 0 for Troester
+			 * http://fabrikar.com/forums/index.php?threads/how-to-start-a-new-record-with-empty-repeat-group.34666/#post-175408
+			 * $$$ paul - fixing min of 0 for Jaanus
+			 * http://fabrikar.com/forums/index.php?threads/couple-issues-with-protostar-template.35917/
+			 **/
+			if (min === 0 && repeat_real === 0) {
+
+				// Create mock event
+				var del_btn = this.form.getElement('#group' + groupId + ' .deleteGroup');
+				if (typeOf(del_btn) !== 'null') {
+
+					// Remove only group
+					var del_e = new Event.Mock(del_btn, 'click');
+					this.deleteGroup(del_e);
+				}
+			}
+			else if (repeat_rows < min) {
+				// Create mock event
+				var add_btn = this.form.getElement('#group' + groupId + ' .addGroup');
+				if (typeOf(add_btn) !== 'null') {
+					var add_e = new Event.Mock(add_btn, 'click');
+
+					// Duplicate group
+					for (var i = repeat_rows; i < min; i ++) {
+						this.duplicateGroup(add_e);
 					}
 				}
-				else {
-					// Create mock event
-					var add_btn = this.form.getElement('#group' + groupId + ' .addGroup');
-					if (typeOf(add_btn) !== 'null') {
-						var add_e = new Event.Mock(add_btn, 'click');
-
-						// Duplicate group
-						for (var i = 0; i < min - 1; i ++) {
-							this.duplicateGroup(add_e);
-						}
-					}
-				}
-			}.bind(this));
-		}
+			}
+		}.bind(this));
 	},
 
 	deleteGroup: function (e) {
@@ -1796,7 +1769,7 @@ var FbForm = new Class({
 					}
 					//last one?
 					if (i === inputs.length - 1) {
-						this._getButton('submit').focus();
+						this._getButton('Submit').focus();
 					}
 				}
 			}.bind(this));

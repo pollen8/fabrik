@@ -1,11 +1,11 @@
 <?php
 /**
- * Plugin element to render pdf files
+ * Fileupload plugin element to render pdf file types
  *
- * @package fabrikar
- * @author Hugh Messenger
- * @copyright (C) hugh Messenger
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.element.fileupload
+ * @copyright   Copyright (C) 2005-2013 fabrikar.com - All rights reserved.
+ * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
 // No direct access

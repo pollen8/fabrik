@@ -44,6 +44,7 @@ class FabrikAdminModelCron extends FabModelAdmin
 	public function getTable($type = 'Cron', $prefix = 'FabrikTable', $config = array())
 	{
 		$config['dbo'] = FabrikWorker::getDbo(true);
+
 		return FabTable::getInstance($type, $prefix, $config);
 	}
 
@@ -60,10 +61,12 @@ class FabrikAdminModelCron extends FabModelAdmin
 	{
 		// Get the form.
 		$form = $this->loadForm('com_fabrik.cron', 'cron', array('control' => 'jform', 'load_data' => $loadData));
+
 		if (empty($form))
 		{
 			return false;
 		}
+
 		return $form;
 	}
 
@@ -77,10 +80,12 @@ class FabrikAdminModelCron extends FabModelAdmin
 	{
 		// Check the session for previously entered form data.
 		$data = JFactory::getApplication()->getUserState('com_fabrik.edit.cron.data', array());
+
 		if (empty($data))
 		{
 			$data = $this->getItem();
 		}
+
 		return $data;
 	}
 
@@ -96,15 +101,18 @@ class FabrikAdminModelCron extends FabModelAdmin
 	public function getPluginHTML($plugin = null)
 	{
 		$item = $this->getItem();
+
 		if (is_null($plugin))
 		{
 			$plugin = $item->plugin;
 		}
+
 		JPluginHelper::importPlugin('fabrik_cron');
 		$pluginManager = JModelLegacy::getInstance('Pluginmanager', 'FabrikFEModel');
 
 		// Trim old f2 cron prefix.
 		$plugin = FabrikString::ltrimiword($plugin, 'cron');
+
 		if ($plugin == '')
 		{
 			$str = '<div class="alert">' . JText::_('COM_FABRIK_SELECT_A_PLUGIN') . '</div>';
@@ -115,6 +123,7 @@ class FabrikAdminModelCron extends FabModelAdmin
 			$mode = FabrikWorker::j3() ? 'nav-tabs' : '';
 			$str = $plugin->onRenderAdminSettings(JArrayHelper::fromObject($item), null, $mode);
 		}
+
 		return $str;
 	}
 
@@ -133,7 +142,9 @@ class FabrikAdminModelCron extends FabModelAdmin
 			$date = JFactory::getDate();
 			$data['lastrun'] = $date->toSql();
 		}
+
 		$data['params'] = json_encode($data['params']);
+
 		return parent::save($data);
 	}
 
@@ -156,13 +167,14 @@ class FabrikAdminModelCron extends FabModelAdmin
 		$ok = parent::validate($form, $data);
 
 		// Standard jform validation failed so we shouldn't test further as we can't be sure of the data
+
 		if (!$ok)
 		{
 			return false;
 		}
 		// Hack - must be able to add the plugin xml fields file to $form to include in validation but cant see how at the moment
 		$data['params'] = $params;
+
 		return $data;
 	}
-
 }

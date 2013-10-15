@@ -23,7 +23,6 @@ jimport('joomla.application.component.controller');
 
 class FabrikControllerVisualizationmedia extends FabrikControllerVisualization
 {
-
 	/**
 	 * Get Playlist
 	 *
@@ -40,5 +39,4 @@ class FabrikControllerVisualizationmedia extends FabrikControllerVisualization
 		$model->getVisualization();
 		echo $model->getPlaylist();
 	}
-
 }

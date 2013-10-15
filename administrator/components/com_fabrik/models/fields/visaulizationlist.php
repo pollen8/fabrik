@@ -48,6 +48,7 @@ class JFormFieldVisaulizationlist extends JFormFieldList
 		$db->setQuery($query);
 		$elementstypes = $db->loadObjectList();
 		$elementstypes = array_merge($a, $elementstypes);
+
 		return $elementstypes;
 	}
 }

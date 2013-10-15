@@ -23,7 +23,6 @@ require_once COM_FABRIK_FRONTEND . '/views/list/view.base.php';
 
 class FabrikViewList extends FabrikViewListBase
 {
-
 	/**
 	 * Display the template
 	 *
@@ -37,8 +36,10 @@ class FabrikViewList extends FabrikViewListBase
 		if (!JFolder::exists(COM_FABRIK_BASE . '/libraries/dompdf'))
 		{
 			throw new RuntimeException('Please install the dompdf library', 404);
+
 			return;
 		}
+
 		$document = JFactory::getDocument();
 		$model = $this->getModel();
 		$params = $model->getParams();
@@ -86,5 +87,4 @@ class FabrikViewList extends FabrikViewListBase
 		$document = JFactory::getDocument();
 		$document->setName($document->getTitle());
 	}
-
 }

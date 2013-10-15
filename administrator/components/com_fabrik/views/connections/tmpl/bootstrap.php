@@ -91,6 +91,7 @@ $listDirn	= $this->state->get('list.direction');
 		<?php foreach ($this->items as $i => $item) :
 			$ordering	= ($listOrder == 'ordering');
 			$link = JRoute::_('index.php?option=com_fabrik&task=connection.edit&id='.(int) $item->id);
+			$canCheckin = $user->authorise('core.manage', 'com_checkin') || $item->checked_out == $userId || $item->checked_out == 0;
 			$canChange	= true;
 			?>
 
@@ -102,6 +103,9 @@ $listDirn	= $this->state->get('list.direction');
 					<?php echo JHtml::_('grid.id', $i, $item->id); ?>
 				</td>
 				<td>
+					<?php if ($item->checked_out) : ?>
+						<?php echo JHtml::_('jgrid.checkedout', $i, $item->editor, $item->checked_out_time, 'connections.', $canCheckin); ?>
+					<?php endif; ?>
 					<?php
 					if ($item->checked_out && ( $item->checked_out != $user->get('id'))) {
 						echo $item->description;

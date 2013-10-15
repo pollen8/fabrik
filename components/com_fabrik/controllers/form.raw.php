@@ -26,7 +26,6 @@ jimport('joomla.application.component.controller');
 
 class FabrikControllerForm extends JControllerLegacy
 {
-
 	/**
 	 * Is the view rendered from the J content plugin
 	 *
@@ -85,9 +84,11 @@ class FabrikControllerForm extends JControllerLegacy
 
 		// Only allow cached pages for users not logged in.
 		return $view->display();
+
 		if ($viewType != 'feed' && !$this->isMambot && $user->get('id') == 0)
 		{
 			$cache = JFactory::getCache('com_' . $package, 'view');
+
 			return $cache->get($view, 'display');
 		}
 		else
@@ -112,10 +113,12 @@ class FabrikControllerForm extends JControllerLegacy
 		$viewName = $input->get('view', 'form');
 		$viewType = $document->getType();
 		$view = $this->getView($viewName, $viewType);
+
 		if ($model = $this->getModel('form', 'FabrikFEModel'))
 		{
 			$view->setModel($model, true);
 		}
+
 		$model->setId($input->getInt('formid', 0));
 		$this->isMambot = $input->get('isMambot', 0);
 		$model->getForm();
@@ -126,6 +129,7 @@ class FabrikControllerForm extends JControllerLegacy
 		{
 			JSession::checkToken() or die('Invalid Token');
 		}
+
 		if ($input->getBool('fabrik_ignorevalidation', false) != true)
 		{
 			// Put in when saving page of form
@@ -139,8 +143,10 @@ class FabrikControllerForm extends JControllerLegacy
 					// Validating entire group when navigating form pages
 					$data['errors'] = $model->errors;
 					echo json_encode($data);
+
 					return;
 				}
+
 				if ($this->isMambot)
 				{
 					// Store errors in session
@@ -159,6 +165,7 @@ class FabrikControllerForm extends JControllerLegacy
 				{
 					echo $view->display();
 				}
+
 				return;
 			}
 		}
@@ -173,6 +180,7 @@ class FabrikControllerForm extends JControllerLegacy
 			$pluginManager = FabrikWorker::getPluginManager();
 			$pluginManager->runPlugins('onError', $model);
 			echo $view->display();
+
 			return;
 		}
 
@@ -183,20 +191,24 @@ class FabrikControllerForm extends JControllerLegacy
 		}
 
 		$msg = $model->getSuccessMsg();
+
 		if ($input->getInt('elid') !== 0)
 		{
 			// Inline edit show the edited element
 			$inlineModel = $this->getModel('forminlineedit', 'FabrikFEModel');
 			$inlineModel->setFormModel($model);
 			echo $inlineModel->showResults();
+
 			return;
 		}
 
 		if ($input->getInt('packageId') !== 0)
 		{
 			echo json_encode(array('msg' => $msg));
+
 			return;
 		}
+
 		$input->set('view', 'list');
 		echo $this->display();
 	}
@@ -214,30 +226,34 @@ class FabrikControllerForm extends JControllerLegacy
 	{
 		$app = JFactory::getApplication();
 		$input = $app->input;
+		$formId = $input->getInt('formid');
+		$listId = $input->getInt('listid');
+		$rowId = $input->getString('rowid', '', 'string');
+
 		if (is_null($msg))
 		{
 			$msg = JText::_('COM_FABRIK_RECORD_ADDED_UPDATED');
 		}
+
 		if ($app->isAdmin())
 		{
 			// Admin option is always com_fabrik
 			if (array_key_exists('apply', $model->formData))
 			{
-				$url = "index.php?option=com_fabrik&c=form&task=form&formid=" . $input->getInt('formid') . "&listid=" . $input->getInt('listid')
-					. "&rowid=" . $input->getString('rowid', '', 'string');
+				$url = 'index.php?option=com_fabrik&c=form&task=form&formid=' . $formId . '&listid=' . $listId . '&rowid=' . $rowId;
 			}
 			else
 			{
-				$url = "index.php?option=com_fabrik&c=table&task=viewTable&cid[]=" . $model->getTable()->id;
+				$url = 'index.php?option=com_fabrik&c=table&task=viewTable&cid[]=' . $model->getTable()->id;
 			}
+
 			$this->setRedirect($url, $msg);
 		}
 		else
 		{
 			if (array_key_exists('apply', $model->formData))
 			{
-				$url = "index.php?option=com_' . $package . '&c=form&view=form&formid=" . $input->getInt('formid') . "&rowid=" . $input->getString('rowid', '', 'string')
-					. "&listid=" . $input->getInt('listid');
+				$url = 'index.php?option=com_' . $package . '&c=form&view=form&formid=' . $formId . '&rowid=' . $rowId . '&listid=' . $listId;
 			}
 			else
 			{
@@ -249,21 +265,25 @@ class FabrikControllerForm extends JControllerLegacy
 				else
 				{
 					// Return to the page that called the form
-					$url = $input->get('fabrik_referrer', "index.php", 'string');
+					$url = $input->get('fabrik_referrer', 'index.php', 'string');
 				}
+
 				$Itemid = FabrikWorker::itemId();
+
 				if ($url == '')
 				{
 					$url = 'index.php?option=com_' . $option . '&Itemid=' . $Itemid;
 				}
 			}
+
 			$config = JFactory::getConfig();
+
 			if ($config->get('sef'))
 			{
 				$url = JRoute::_($url);
 			}
+
 			$this->setRedirect($url, $msg);
 		}
 	}
-
 }

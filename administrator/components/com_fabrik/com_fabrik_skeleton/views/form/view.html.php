@@ -20,10 +20,9 @@ jimport('joomla.application.component.view');
  * @package     Fabrik
  * @subpackage  Fabrik_skeleton
  * @since       3.0
-*/
+ */
 class SkeletonViewForm extends JView
 {
-
 	/**
 	 * Display
 	 *
@@ -40,5 +39,4 @@ class SkeletonViewForm extends JView
 		 * admin menu options.
 		 */
 	}
-
 }

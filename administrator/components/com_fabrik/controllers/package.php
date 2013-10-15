@@ -84,6 +84,7 @@ class FabrikAdminControllerPackage extends FabControllerForm
 		{
 			$view->setModel($model, true);
 		}
+
 		$model->setDbo(FabrikWorker::getDbo());
 
 		// @TODO check for cached version
@@ -109,7 +110,7 @@ class FabrikAdminControllerPackage extends FabControllerForm
 			$db = FabrikWorker::getDbo();
 			$model->setDbo($db);
 		}
+
 		$view->listform();
 	}
-
 }
