@@ -450,6 +450,8 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 	{
 		$data = FabrikWorker::JSONtoData($data, true);
 		$params = $this->getParams();
+		$rendered = '';
+		static $id_num = 0;
 
 		// $$$ hugh - have to run thru rendering even if data is empty, in case default image is being used.
 		if (empty($data))
@@ -458,20 +460,27 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		}
 		else
 		{
-			for ($i = 0; $i < count($data); $i++)
+			/**
+			 * 2 == 'slideshow' ('carousel'), so don't run individually through _renderListData(), instead
+			 * build whatever carousel the data type uses, which will depend on data type.  Like simple image carousel,
+			 * or MP3 player with playlist, etc.
+			 */
+			if ($params->get('fu_show_image_in_table', '0') == '2')
 			{
-				$data[$i] = $this->_renderListData($data[$i], $thisRow, $i);
+				$id = $this->getHTMLId($id_num) . '_' . $id_num;
+				$id_num++;
+				$rendered = $this->buildCarousel($id, $data, $params, $thisRow);
+			}
+			else
+			{
+				for ($i = 0; $i < count($data); $i++)
+				{
+					$data[$i] = $this->_renderListData($data[$i], $thisRow, $i);
+				}
 			}
 		}
 
-		$rendered = '';
-
-		if ($params->get('fu_show_image_in_table', '0') == '2')
-		{
-			// JHtml::_('bootstrap.carousel', 'myCarousel');
-			$rendered = $this->buildCarousel('foo', $data);
-		}
-		else
+		if ($params->get('fu_show_image_in_table', '0') != '2')
 		{
 			$data = json_encode($data);
 			$rendered = parent::renderListData($data, $thisRow);
@@ -2898,70 +2907,27 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 	}
 
 	/**
-	 * Build Carousel HTML
+	 * Build 'slideshow' / carusel.  What gets built will depend on content type,
+	 * using the first file in the data array as the type.  So if the first file is
+	 * an image, a Bootstrap carousel will be built.
 	 *
 	 * @param   string  $id    Widget HTML id
-	 * @param   array   $imgs  Images to add to the carousel
+	 * @param   array   $data  Array of file paths
+	 * @param
 	 *
 	 * @return  string  HTML
 	 */
 
-	public function buildCarousel($id = 'carousel', $imgs = array())
+	public function buildCarousel($id = 'carousel', $data = array(), $params, $thisRow)
 	{
-		/*
-		$rendered = '<div class="cycle-slideshow">';
-		$rendered .= implode(' ', $data);
-		$rendered .= '</div>';
-		*/
-
-		/*
-		 * Don't seem to need this for now
-		 * JHtml::_('bootstrap.carousel', 'myCarousel');
-		 */
-
-		$numImages = count($imgs);
-
-		$rendered = '
-<div id="' . $id . '" class="carousel slide mootools-noconflict" data-interval="3000" data-pause="hover">
-';
-		/*
-		 * Current version of J! bootstrap doesn't seem to have the indicators
-		 */
-		/*
-		$rendered .= '
-    <ol class="carousel-indicators">
-	';
-
-		if ($numImages > 0)
+		$rendered = '';
+		if (!empty($data))
 		{
-			$rendered .= '<li data-target="#' . $id . '" data-slide-to="0" class="active">';
-			for ($x=1; $x < $numImages; $x++)
-			{
-				$rendered .= '</li> <li data-target="#' . $id . '" data-slide-to="' . $x . '">';
-	    	}
-	    	$rendered .= '</li>
-			';
+			$render = $this->loadElement($data[0]);
+			$rendered = $render->renderCarousel($id, $data, $this, $params, $thisRow);
+
 		}
-		$rendered .= '
-	</ol>
-		';
-		*/
-
-		$rendered .= '
-    <!-- Carousel items -->
-	<div class="carousel-inner">
-		<div class="active item">
-';
-		$rendered .= implode("\n		</div>\n" . '		<div class="item">', $imgs);
-		$rendered .= '
-		</div>
-    </div>
-    <!-- Carousel nav -->
-    <a class="carousel-control left" href="#' . $id . '" data-slide="prev">&lsaquo;</a>
-    <a class="carousel-control right" href="#' . $id . '" data-slide="next">&rsaquo;</a>
-</div>
-';
-
 		return $rendered;
 	}
+
 }

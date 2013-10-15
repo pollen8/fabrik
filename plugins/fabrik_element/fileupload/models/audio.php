@@ -59,4 +59,23 @@ class AudioRender
 		$file = str_replace("\\", "/", COM_FABRIK_LIVESITE . $file);
 		$this->output = "<embed src=\"$file\" autostart=\"false\" playcount=\"true\" loop=\"false\" height=\"50\" width=\"200\">";
 	}
+
+	/**
+	 * Build Carousel HTML
+	 *
+	 * @param   string  $id    Widget HTML id
+	 * @param   array   $data  files to add to the carousel
+	 *
+	 * @return  string  HTML
+	 */
+
+	public function renderCarousel($id = 'carousel', $data = array())
+	{
+		$rendered = '';
+		/**
+		 * @TODO - build it!
+		 */
+		return $rendered;
+	}
+
 }

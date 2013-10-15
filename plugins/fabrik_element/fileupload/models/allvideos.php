@@ -100,4 +100,23 @@ class AllVideosRender
 				break;
 		}
 	}
+
+	/**
+	 * Build Carousel HTML
+	 *
+	 * @param   string  $id    Widget HTML id
+	 * @param   array   $data  files to add to the carousel
+	 *
+	 * @return  string  HTML
+	 */
+
+	public function renderCarousel($id = 'carousel', $data = array())
+	{
+		$rendered = '';
+		/**
+		 * @TODO - build it!
+		 */
+		return $rendered;
+	}
+
 }
