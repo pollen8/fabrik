@@ -44,3 +44,16 @@ and administrator/components/com_fabrik/update/fabrik/plg_content_fabrik.xml sho
 
 and a download url entry pointing to the 4.0 version of the plugin.
 administrator/components/com_fabrik/update/fabrik/plg_content_fabrik.xml  should then be uplaoded to /update/fabrik/plg_content_fabrik.xml
+
+///////////////////////////////////////////////////////////////////////
+
+
+The build script auto-creates the individual extension update xml files in:
+C:\xampp\htdocs\fabrik30x\fabrik_build\output\admin\update\fabrik\
+
+test by uploading to:
+/public_html/update/fabrik_test
+
+and edit ur db and set:
+
+#__update_sites.location = http://fabrikar.com/update/fabrik_test/package_list.xml
