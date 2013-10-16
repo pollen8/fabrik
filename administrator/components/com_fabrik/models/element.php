@@ -474,6 +474,14 @@ class FabrikAdminModelElement extends FabModelAdmin
 
 	public function save($data)
 	{
+		$config = JComponentHelper::getParams('com_fabrik');
+
+		if ($config->get('fbConf_wysiwyg_label', 0) == 0)
+		{
+			// Ensure the data is in the same format as when saved by the wysiwyg element e.g. < becomes &lt;
+			$data['label'] = htmlspecialchars($data['label']);
+		}
+
 		jimport('joomla.utilities.date');
 		$user = JFactory::getUser();
 		$app = JFactory::getApplication();

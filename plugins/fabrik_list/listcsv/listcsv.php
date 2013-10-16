@@ -53,13 +53,12 @@ class PlgFabrik_ListListcsv extends PlgFabrik_List
 	/**
 	 * Called when we import a csv row
 	 *
-	 * @param   object  &$params  Plugin parameters
-	 *
 	 * @return boolean
 	 */
 
-	public function onImportCSVRow(&$params)
+	public function onImportCSVRow()
 	{
+		$params = $this->getParams();
 		$file = JFilterInput::clean($params->get('listcsv_import_php_file'), 'CMD');
 
 		if ($file == -1 || $file == '')

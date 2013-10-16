@@ -38,12 +38,43 @@ var ListForm = new Class({
 			}
 			if (document.getElement('table.linkedLists')) {
 				rows = document.getElement('table.linkedLists').getElement('tbody');
-				new Sortables(rows, {'handle': '.handle'});
+				new Sortables(rows, {'handle': '.handle',
+					'onSort': function (element, clone) {
+						var s = this.serialize(1, function (item) {
+							if (item.getElement('input')) {
+								return item.getElement('input').name.split('][').getLast().replace(']', '');
+							}
+							return '';
+						});
+						var actual = [];
+						s.each(function (i) {
+							if (i !== '') {
+								actual.push(i);
+							}
+						});
+						document.getElement('input[name*=faceted_list_order]').value = JSON.stringify(actual);
+					}
+				});
 			}
 
 			if (document.getElement('table.linkedForms')) {
 				rows = document.getElement('table.linkedForms').getElement('tbody');
-				new Sortables(rows, {'handle': '.handle'});
+				new Sortables(rows, {'handle': '.handle',
+					'onSort': function (element, clone) {
+						var s = this.serialize(1, function (item) {
+							if (item.getElement('input')) {
+								return item.getElement('input').name.split('][').getLast().replace(']', '');
+							}
+							return '';
+						});
+						var actual = [];
+						s.each(function (i) {
+							if (i !== '') {
+								actual.push(i);
+							}
+						});
+						document.getElement('input[name*=faceted_form_order]').value = JSON.stringify(actual);
+					}});
 			}
 
 			this.joinCounter = 0;
@@ -53,7 +84,7 @@ var ListForm = new Class({
 		}.bind(this));
 
 	},
-
+	
 	watchOrderButtons: function () {
 		document.getElements('.addOrder').removeEvents('click');
 		document.getElements('.deleteOrder').removeEvents('click');

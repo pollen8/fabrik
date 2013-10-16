@@ -237,4 +237,34 @@ class FabrikAdminControllerElements extends FabControllerAdmin
 		// Close the application
 		JFactory::getApplication()->close();
 	}
+
+	/**
+	 * Method to publish a list of items
+	 *
+	 * @return  null
+	 */
+
+	public function publish()
+	{
+		$app = JFactory::getApplication();
+		$input = $app->input;
+		$cid = $input->get('cid', array(), 'array');
+		$model = $this->getModel('Elements');
+		$task = $this->getTask();
+
+		if ($task === 'unpublish')
+		{
+			$cid = $model->canUnpublish($cid);
+			$input->set('cid', $cid);
+		}
+
+		if (empty($cid))
+		{
+			$this->setRedirect('index.php?option=com_fabrik&view=elements');
+		}
+		else
+		{
+			parent::publish();
+		}
+	}
 }

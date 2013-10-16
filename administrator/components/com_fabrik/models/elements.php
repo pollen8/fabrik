@@ -370,4 +370,37 @@ class FabrikAdminModelElements extends FabModelList
 			$item->batch($batch);
 		}
 	}
+
+	/**
+	 * Stops itnernal id from being unpublished
+	 *
+	 * @param   array  $ids  Ids wanting to be unpublished
+	 *
+	 * @retrun  array  allowed ids
+	 */
+	public function canUnpublish($ids)
+	{
+		JArrayHelper::toInteger($ids);
+		$blocked = array();
+		$allowed = array();
+
+		foreach ($ids as $id)
+		{
+			$item = $this->getTable('Element');
+			$item->load($id);
+
+			if ($item->plugin == 'internalid')
+			{
+				$blocked[] = $id;
+			}
+		}
+
+		if (!empty($blocked))
+		{
+			$app = JFactory::getApplication();
+			$app->enqueueMessage(JText::_('COM_FABRIK_CANT_UNPUBLISHED_PK_ELEMENT'), 'warning');
+		}
+
+		return array_diff($ids, $blocked);
+	}
 }

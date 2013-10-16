@@ -637,16 +637,20 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 			}
 			else
 			{
-				// Set start date to 1st Jan
+				$today = JFactory::getDate();
+				$thisMonth = $today->format('m');
+				$thisDay = $today->format('d');
+
+				// Set start date todays month/day of start year
 				$startYear = JFactory::getDate($value[0])->format('Y');
 				$startDate = JFactory::getDate();
-				$startDate->setDate($startYear, 1, 1)->setTime(0, 0, 0);
+				$startDate->setDate($startYear, $thisMonth, $thisDay)->setTime(0, 0, 0);
 				$value[0] = $startDate->toSql();
 
-				// Set end date to last day of year
+				// Set end date to today's month/day of year after end year (means search on age between 35 & 35 returns results)
 				$endYear = JFactory::getDate($value[1])->format('Y');
 				$endDate = JFactory::getDate();
-				$endDate->setDate($endYear, 12, 31)->setTime(23, 59, 59);
+				$endDate->setDate($endYear + 1, $thisMonth, $thisDay)->setTime(23, 59, 59);
 				$value[1] = $endDate->toSql();
 
 				$value = $db->quote($value[0]) . ' AND ' . $db->quote($value[1]);

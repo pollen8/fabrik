@@ -276,7 +276,7 @@ class FabrikAdminControllerList extends FabControllerForm
 		$limitstart = $input->getInt('limitstart' . $listid);
 		$length = $input->getInt('limit' . $listid);
 		$oldtotal = $model->getTotalRecords();
-		$model->deleteRows($ids);
+		$ok = $model->deleteRows($ids);
 		$total = $oldtotal - count($ids);
 		$ref = 'index.php?option=com_fabrik&task=list.view&cid=' . $listid;
 
@@ -301,8 +301,8 @@ class FabrikAdminControllerList extends FabControllerForm
 		}
 		else
 		{
-			// @TODO: test this
-			$app->redirect($ref, count($ids) . ' ' . JText::_('COM_FABRIK_RECORDS_DELETED'));
+			$msg = $ok ? count($ids) . ' ' . JText::_('COM_FABRIK_RECORDS_DELETED') : '';
+			$app->redirect($ref, $msg);
 		}
 	}
 

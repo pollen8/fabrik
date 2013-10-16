@@ -92,36 +92,16 @@ class FabrikAdminViewPackage extends JViewLegacy
 		$blocks->visualization = JArrayHelper::getValue($b, 'visualization', array());
 
 		$opts = JArrayHelper::getvalue($canvas, 'options', array());
-		$tabs = JArrayHelper::getValue($canvas, 'tabs', array('Page 1'));
-		$tabs = $tabs;
 		$d = new stdClass;
 		$layout = JArrayHelper::getValue($canvas, 'layout', $d);
 		$document = JFactory::getDocument();
 
 		$opts = new stdClass;
 
-		$opts->tabs = $tabs;
 		$opts->blocks = $blocks;
-		$opts->tabelement = 'packagemenu';
-		$opts->pagecontainer = 'packagepages';
 		$opts->layout = $layout;
 		$opts = json_encode($opts);
-		$this->js = "PackageCanvas = new AdminPackage($opts);
-		new inline('#packagemenu li span');";
-
-		$srcs = FabrikHelperHTML::framework();
-		FabrikHelperHTML::mocha();
-		$srcs[] = 'media/com_fabrik/js/fabrik.js';
-		$srcs[] = 'media/com_fabrik/js/window.js';
-		$srcs[] = 'media/com_fabrik/js/lib/art.js';
-		$srcs[] = 'media/com_fabrik/js/icons.js';
-		$srcs[] = 'media/com_fabrik/js/icongen.js';
-		$srcs[] = 'media/com_fabrik/js/history.js';
-		$srcs[] = 'media/com_fabrik/js/keynav.js';
-		$srcs[] = 'media/com_fabrik/js/tabs.js';
-		$srcs[] = 'media/com_fabrik/js/pages.js';
-		$srcs[] = 'media/com_fabrik/js/inline.js';
-		$srcs[] = 'media/com_fabrik/js/canvas.js';
+		$this->js = "PackageCanvas = new AdminPackage($opts);";
 		$srcs[] = 'administrator/components/com_fabrik/views/package/adminpackage.js';
 
 		FabrikHelperHTML::iniRequireJS();

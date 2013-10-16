@@ -228,6 +228,11 @@ class PlgFabrik_Element extends FabrikPlugin
 	protected $elementError = '';
 
 	/**
+	 * Multi-db join option - can we add duplicate options (set to false in tags element)
+	 * @var  bool
+	 */
+	protected $allowDuplicates = true;
+	/**
 	 * Constructor
 	 *
 	 * @param   object  &$subject  The object to observe
@@ -806,7 +811,6 @@ class PlgFabrik_Element extends FabrikPlugin
 	{
 		$table = $this->getListModel()->getTable();
 
-		//if ($this->getGroupModel()->isJoin() && !$this->isJoin())
 		if ($this->getGroupModel()->isJoin() && $this->isJoin())
 		{
 			$groupJoin = $this->getGroupModel()->getJoinModel()->getJoin();
@@ -1533,7 +1537,7 @@ class PlgFabrik_Element extends FabrikPlugin
 				$str .= '<span class="' . $labelClass . ' faux-label">';
 			}
 
-			$labelText = $config->get('fbConf_wysiwyg_label', false) ? $element->label : htmlspecialchars(JText::_($element->label));
+			$labelText = JText::_($element->label);
 			$l = $j3 ? '' : $labelText;
 			$iconOpts = array('icon-class' => 'small');
 
@@ -2068,7 +2072,7 @@ class PlgFabrik_Element extends FabrikPlugin
 
 		if ($tip !== '')
 		{
-			$tip = '<div class="fabrikInlineTip">' . FabrikHelperHTML::image('question-sign.png', 'form', $tmpl) . ' ' . $tip . '</div>';
+			$tip = FabrikHelperHTML::image('question-sign.png', 'form', $tmpl) . ' ' . $tip;
 		}
 
 		switch ($model->getParams()->get('tiplocation'))
@@ -7035,7 +7039,6 @@ class PlgFabrik_Element extends FabrikPlugin
 			$groupJoinModel = $groupModel->getJoinModel();
 			$idKey = $join->table_join . '___id';
 			$paramsKey = $join->table_join . '___params';
-			//$k = $groupJoinModel->getForeignKey();
 			$k = str_replace('`', '', str_replace('.', '___', $groupJoinModel->getJoin()->params->get('pk')));
 			$parentIds = (array) $formData[$k];
 		}
@@ -7087,12 +7090,12 @@ class PlgFabrik_Element extends FabrikPlugin
 			{
 				$record = new stdClass;
 				$record->parent_id = $parentId;
-				$fkVal = $joinValues[$jIndex];
+				$fkVal = JArrayHelper::getValue($joinValues, $jIndex);
 				$record->$shortName = $fkVal;
 				$record->params = JArrayHelper::getValue($allParams, $jIndex);
 
 				// Stop notice with fileupload where fkVal is an array
-				if (is_string($fkVal) && array_key_exists($fkVal, $ids))
+				if (array_key_exists($fkVal, $ids))
 				{
 					$record->id = $ids[$fkVal]->id;
 					$idsToKeep[$parentId][] = $record->id;
@@ -7106,6 +7109,15 @@ class PlgFabrik_Element extends FabrikPlugin
 				{
 					$ok = $listModel->insertObject($join->table_join, $record);
 					$lastInsertId = $listModel->getDb()->insertid();
+
+					if (!$this->allowDuplicates)
+					{
+						$newid = new stdClass;
+						$newid->id = $lastInsertId;
+						$newid->$shortName = $record->$shortName;
+						$ids[$record->$shortName] = $newid;
+					}
+
 					$idsToKeep[$parentId][] = $lastInsertId;
 				}
 				else

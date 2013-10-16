@@ -305,6 +305,7 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 				if (is_array($v))
 				{
 					$origdata = JArrayHelper::getValue($d, $elkey, array());
+
 					foreach (array_keys($v) as $x)
 					{
 						$origval = JArrayHelper::getValue($origdata, $x);
@@ -560,7 +561,7 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 
 				if ($this->getGroupModel()->canRepeat() && is_array($value))
 				{
-					$value = JArrayHelper::getValue($value, $repeatCounter, $value);
+					$value = JArrayHelper::getValue($value, $repeatCounter);
 				}
 
 				// For radio buttons and dropdowns otherwise nothing is stored for them??

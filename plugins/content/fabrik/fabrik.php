@@ -400,7 +400,24 @@ class PlgContentFabrik extends JPlugin
 
 				$defaultdata = (array) $defaultdata;
 				unset($activeEl->defaults);
-				$res = $activeEl->render($defaultdata, $repeatcounter);
+
+				if ($repeatcounter === 'all')
+				{
+					$repeat = $activeEl->getGroupModel()->repeatCount();
+					$res = array();
+
+					for ($j = 0; $j < $repeat; $j ++)
+					{
+					$res[] = $activeEl->render($defaultdata, $j);
+					}
+
+					$res = count($res) > 1 ? '<ul><li>' . implode('</li><li>', $res) . '</li></ul>' : $res[0];
+				}
+				else
+				{
+					$res = $activeEl->render($defaultdata, $repeatcounter);
+				}
+
 				$input->set('rowid', $origRowid);
 			}
 

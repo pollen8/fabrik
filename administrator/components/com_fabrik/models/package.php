@@ -230,7 +230,7 @@ class FabrikAdminModelPackage extends FabModelAdmin
 
 		foreach ($blocks as $type => $values)
 		{
-			$o->canvas->blocks->$type = $values;
+			$o->blocks->$type = $values;
 		}
 
 		foreach ($blocks as $type => $values)
@@ -456,7 +456,35 @@ class FabrikAdminModelPackage extends FabModelAdmin
 		$rows = array($row);
 		$return[] = "class com_" . $row->component_name . "InstallerScript{";
 		$return[] = "";
-		$return[] = "\tfunction uninstall(\$parent)";
+
+		$return[] = "protected function existingPacakge(\$m)
+			{
+				\$db = JFactory::getDbo();
+				\$query = \$db->getQuery(true);
+				\$query->select('*')->from('#__fabrik_packages')
+				->where('external_ref <> \"\" AND component_name = ' . \$db->quote(\$m->name));
+				\$db->setQuery(\$query);
+				echo \$db->getQuery();
+				\$existing = \$db->loadObject();
+				return \$existing;
+			}";
+
+		$return[] = "\t	public function preflight(\$type, \$parent)
+	{
+			\$m = \$parent->getParent()->manifest;
+			\$existing = \$this->existingPacakge(\$m);
+			if (\$existing)
+			{
+				\$currentVersion = \$existing->version;
+				if (version_compare(\$m->version , \$currentVersion) === -1)
+				{
+					throw new Exception('Can not install - a more recent version is already installed');
+				}
+			}
+
+	}";
+
+		$return[] = "\tpublic function uninstall(\$parent)";
 		$return[] = "\t\t{";
 		$return[] = "\t\t\$m = \$parent->getParent()->manifest;";
 		$return[] = "\t\t\$db = JFactory::getDbo();";
@@ -469,10 +497,25 @@ class FabrikAdminModelPackage extends FabModelAdmin
 		$return[] = "\t\t\$app->setUserState('com_fabrik.package', '');";
 		$return[] = "\t\t}";
 		$return[] = "";
-		$return[] = "\tfunction postflight(\$type, \$parent) {";
-		$return[] = "\t\t" . "\$db = JFactory::getDbo();";
+		$return[] = "\tpublic function postflight(\$type, \$parent) {";
+		$return[] = "\t\t\$m = \$parent->getParent()->manifest;
+			\$existing = \t\t\$this->existingPacakge(\$m);
+			\$db = JFactory::getDbo();
+			if (\$existing)
+			{
+				\$query = \$db->getQuery(true);
+				\$query->update('#__fabrik_packages')->set('version = ' . \$db->quote(\$m->version))
+				->set('modified = NOW()')
+				->where('id = ' . \$existing->id);
+			 	\$db->setQuery(\$query);
+			 	\$db->query();
+			}
+			else
+			{";
 		$return[] = "\t\t" . $this->rowsToInsert('#__fabrik_packages', $rows, $return);
 		$return[] = "\t\t" . "\$package_id = \$db->insertid();";
+		$return[] = "}";
+
 		$lookups = $this->getInstallItems($row);
 		$listModel = JModelLegacy::getInstance('list', 'FabrikFEModel');
 		$lists = $lookups->list;
@@ -638,6 +681,7 @@ class FabrikAdminModelPackage extends FabModelAdmin
 				}
 
 				$v = str_replace($db->getPrefix(), '#__', $v);
+				$v = str_replace('$', '\$', $v);
 				$val = $db->quote($v);
 				$fields[] = $db->quoteName($k);
 				$values[] = $val;
@@ -1013,6 +1057,7 @@ class FabrikAdminModelPackage extends FabModelAdmin
 		JFolder::create($this->outputPath . 'site/views');
 		JFolder::create($this->outputPath . 'admin');
 		JFolder::create($this->outputPath . 'admin/images');
+		JFolder::create($this->outputPath . 'admin/language');
 
 		$from = $skeltonFolder . 'fabrik_skeleton.php';
 		$to = $this->outputPath . 'site/' . $name . '.php';
@@ -1037,11 +1082,6 @@ class FabrikAdminModelPackage extends FabModelAdmin
 		JFile::copy($from, $to);
 		$filenames[] = $to;
 
-		/* $from = $skeltonFolder.'index.html';
-		$to = $this->outputPath . 'admin/installation/index.html';
-		JFile::copy($from, $to);
-		$filenames[] = $to; */
-
 		$from = $skeltonFolder . 'index.html';
 		$to = $this->outputPath . 'site/index.html';
 		JFile::copy($from, $to);
@@ -1057,16 +1097,25 @@ class FabrikAdminModelPackage extends FabModelAdmin
 		JFolder::copy($from, $to, '', true);
 		$filenames[] = $to;
 
+		$from = JPATH_ADMINISTRATOR . '/components/com_fabrik/language/';
+		$to = $this->outputPath . 'admin/language';
+		JFolder::copy($from, $to, '', true);
+
+		// Rename admin language files
+		$langFiles = JFolder::files($to, '.ini', true, true);
+
+		foreach ($langFiles as $langFile)
+		{
+			$newLangFile = str_replace('com_fabrik', $row->component_name, $langFile);
+			JFile::move($langFile, $newLangFile);
+		}
+
+		$filenames[] = $to;
+
 		$from = $skeltonFolder . 'views/';
 		$to = $this->outputPath . 'site/views';
 		JFolder::copy($from, $to, '', true);
 		$filenames[] = $to;
-
-		/*//testing this tmp file
-		$from = $skeltonFolder.'fabrik_skeleton.php';
-		$to = $this->outputPath . 'admin/' . $name.'.php';
-		JFile::copy($from, $to);
-		$filenames[] = $to;*/
 	}
 
 	/**
@@ -1088,7 +1137,7 @@ class FabrikAdminModelPackage extends FabModelAdmin
 		 * Dont want to install a j2.5 plugin in a j3.0 site for example)
 		 */
 		// $jversion = isset($row->params->jversion) ? $row->params->jversion : $version->RELEASE;
-		$jVersion = $version->RELEASE;
+		$jVersion = str_replace('.', '', $version->RELEASE);
 
 		return $jVersion;
 	}
@@ -1114,7 +1163,7 @@ class FabrikAdminModelPackage extends FabModelAdmin
 		$date = JFactory::getDate();
 		$xmlname = 'pkg_' . str_replace('com_', '', $row->component_name);
 		$str = '<?xml version="1.0" encoding="UTF-8" ?>
-<install type="package" version="' . $jVersion . '">
+<extension type="package" version="' . $jVersion . '">
 	<name>' . $row->label . '</name>
 	<packagename>' . str_replace('com_', '', $row->component_name) . '</packagename>
 	<version>' . $row->version . '</version>
@@ -1126,7 +1175,7 @@ class FabrikAdminModelPackage extends FabModelAdmin
 	<description>Created by Fabrik</description>
 
 	<files folder="packages">
-		<file type="component" id="' . $row->component_name . '">com_' . $this->getComponentName($row) . '.zip</file>
+		<file type="component" id="com_' . $row->component_name . '">com_' . $this->getComponentName($row) . '.zip</file>
 ';
 
 		foreach ($plugins as $plugin)
@@ -1137,7 +1186,7 @@ class FabrikAdminModelPackage extends FabModelAdmin
 
 		$str .= '
 	</files>
-</install>';
+</extension>';
 		JFile::write($this->outputPath . $xmlname . '.xml', $str);
 
 		return $this->outputPath . $xmlname . '.xml';
@@ -1254,6 +1303,7 @@ class FabrikAdminModelPackage extends FabModelAdmin
 
 		<files folder="admin">
 			<folder>images</folder>
+			<folder>language</folder>
 			<folder>sql</folder>
 			<file>index.html</file>
 			<file>' . $xmlname . '.php</file>
