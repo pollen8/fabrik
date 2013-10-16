@@ -4283,7 +4283,8 @@ class FabrikFEModelForm extends FabModelForm
 								AND `#__{package}_elements`.`group_id` = `#__{package}_groups`.`id`
 								AND `#__{package}_elements`.`id` = $eid");
 				$el_table = $db->loadResult() ? $db->loadResult() : $element->db_table_name;        
-				$linkKey = $el_table . '___' . $element->name;				$linkKeyRaw = $linkKey . '_raw';
+				$linkKey = $el_table . '___' . $element->name;
+				$linkKeyRaw = $linkKey . '_raw';
 				$popUpLink = JArrayHelper::getValue($linkedtable_linktype->$key, $f, false);
 
 				/* $$$ tom 2012-09-14 - If we don't have a key value, get all.  If we have a key value,
