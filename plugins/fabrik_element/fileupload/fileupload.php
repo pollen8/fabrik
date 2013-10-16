@@ -1923,7 +1923,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 				$values = array_keys($values['id']);
 			}
 			// End failed validations
-
+			/*
 			foreach ($values as $value)
 			{
 				if (is_object($value))
@@ -1943,8 +1943,9 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 					$allRenders[] = $render->output;
 				}
 			}
+			*/
 
-			$rendered = $this->buildCarousel('foo', $allRenders);
+			$rendered = $this->buildCarousel($id, $values, $params, $data);
 
 			return $rendered;
 		}
@@ -2921,7 +2922,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 	public function buildCarousel($id = 'carousel', $data = array(), $params, $thisRow)
 	{
 		$rendered = '';
-		if (!empty($data))
+		if (!FArrayHelper::emptyIsh($data))
 		{
 			$render = $this->loadElement($data[0]);
 			$rendered = $render->renderCarousel($id, $data, $this, $params, $thisRow);

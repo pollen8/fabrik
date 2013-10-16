@@ -214,6 +214,7 @@ class ImageRender
 	public function renderCarousel($id = 'carousel', $data = array(), $model, $params, $thisRow)
 	{
 		$rendered = '';
+		$id .= '_carousel';
 		if (!empty($data))
 		{
 			$imgs = array();
