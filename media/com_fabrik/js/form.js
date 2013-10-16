@@ -1260,14 +1260,14 @@ var FbForm = new Class({
 				return;
 			}
 			var repeat_rows, repeat_real;
-			repeat_rows = repeat_real = repeat_counter.value;
-			if (repeat_rows === "1") {
+			repeat_rows = repeat_real = repeat_counter.value.toInt();
+			if (repeat_rows === 1) {
 				var repeat_id_0 = this.form.getElement('#' + this.options.group_pk_ids[groupId] + '_0');
 				if (typeOf(repeat_id_0) !== 'null' && repeat_id_0.value === '') {
 					repeat_real = 0;
 				}
 			}
-			var min = this.options.minRepeat[groupId];
+			var min = this.options.minRepeat[groupId].toInt();
 
 			/**
 			 * $$$ hugh - added ability to override min count
