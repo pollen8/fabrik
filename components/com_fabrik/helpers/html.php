@@ -216,8 +216,8 @@ class FabrikHelperHTML
 	 * Load up window code - should be run in ajax loaded pages as well (10/07/2012 but not json views)
 	 * might be an issue in that we may be re-observing some links when loading in - need to check
 	 *
-	 * @param   string  $selector  element select to auto create windows for  - was default = a.modal
-	 * @param   array   $params    window parameters
+	 * @param   string  $selector  Element select to auto create windows for  - was default = a.modal
+	 * @param   array   $params    Window parameters
 	 *
 	 * @return  void
 	 */
@@ -237,7 +237,7 @@ class FabrikHelperHTML
 			return;
 		}
 
-		if (JRequest::getVar('format') == 'json')
+		if ($input->get('format') == 'json')
 		{
 			return;
 		}
@@ -322,6 +322,7 @@ EOD;
 		$document = JFactory::getDocument();
 		$app = JFactory::getApplication();
 		$input = $app->input;
+		$j3 = FabrikWorker::j3();
 		$form = $formModel->getForm();
 		$document->setTitle($form->label);
 		$document->addStyleSheet('templates/' . $template . '/css/template_css.css');
@@ -350,11 +351,15 @@ EOD;
 				id="subject" /></td>
 		</tr>
 		<tr>
-			<td colspan="2"><input type="submit" name="submit" class="button"
+			<td colspan="2">
+			<input type="submit" name="submit" class="button btn btn-primary"
 				value="<?php echo JText::_('COM_FABRIK_SEND_EMAIL'); ?>" />
-				&nbsp;&nbsp; <input type="button" name="cancel"
-				value="<?php echo JText::_('COM_FABRIK_CANCEL'); ?>" class="button"
+
+				<?php if (!$j3) { ?>
+			<input type="button" name="cancel"
+				value="<?php echo JText::_('COM_FABRIK_CANCEL'); ?>" class="button btn"
 				onclick="window.close();" /></td>
+				<?php } ?>
 		</tr>
 	</table>
 	<input name="referrer"
@@ -382,6 +387,7 @@ EOD;
 	{
 		$config = JFactory::getConfig();
 		$document = JFactory::getDocument();
+		$j3 = FabrikWorker::j3();
 		$document->setTitle($config->get('sitename'));
 
 		if ($ok)
@@ -391,6 +397,7 @@ EOD;
 </span>
 <?php
 		}
+		if (!$j3) {
 		?>
 <br />
 <br />
@@ -399,6 +406,7 @@ EOD;
 </span>
 </a>
 <?php
+		}
 	}
 
 	/**
