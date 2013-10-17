@@ -8096,7 +8096,8 @@ $groupBy .= '_raw';
 			{
 				$link .= 'index.php?option=com_' . $package . '&view=' . $view . '&formid=' . $table->form_id . $keyIdentifier;
 			}
-			if ($this->packageId !== 0)
+
+			if ($this->packageId !== 0 || $this->isAjaxLinks())
 			{
 				$link .= '&tmpl=component';
 			}
@@ -8196,6 +8197,12 @@ $groupBy .= '_raw';
 				$url = 'index.php?option=com_' . $package . '&view=form&Itemid=' . $Itemid . '&formid=' . $table->form_id . $keyIdentifier . '&listid='
 						. $this->getId();
 			}
+
+			if ($this->isAjaxLinks())
+			{
+				$url .= '&tmpl=component';
+			}
+
 			$link = JRoute::_($url);
 		}
 		else
