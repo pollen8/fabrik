@@ -952,6 +952,7 @@ class PlgFabrik_FormComment extends PlgFabrik_Form
 		$title = JText::_('PLG_FORM_COMMENT_NEW_COMMENT_ADDED_TITLE');
 		$message = JText::_('PLG_FORM_COMMENT_NEW_COMMENT_ADDED');
 		$message .= "<br /><a href=\"{$row->url}\">" . JText::_('PLG_FORM_COMMENT_VIEW_COMMENT') . "</a>";
+		$mail = JFactory::getMailer();
 
 		foreach ($comments as $comment)
 		{
@@ -963,7 +964,7 @@ class PlgFabrik_FormComment extends PlgFabrik_Form
 
 			if (!in_array($comment->email, $sentto))
 			{
-				JUtility::sendMail($app->getCfg('mailfrom'), $app->getCfg('fromname'), $comment->email, $title, $message, true);
+				$mail->sendMail($app->getCfg('mailfrom'), $app->getCfg('fromname'), $comment->email, $title, $message, true);
 				$sentto[] = $comment->email;
 			}
 		}
@@ -974,7 +975,7 @@ class PlgFabrik_FormComment extends PlgFabrik_Form
 
 		if (!in_array($rowdata->ide_idea___email_raw, $sentto))
 		{
-			JUtility::sendMail($app->getCfg('mailfrom'), $app->getCfg('fromname'), $rowdata->ide_idea___email_raw, $title, $message, true);
+			$mail->sendMail($app->getCfg('mailfrom'), $app->getCfg('fromname'), $rowdata->ide_idea___email_raw, $title, $message, true);
 			$sentto[] = $rowdata->ide_idea___email_raw;
 		}
 
@@ -986,11 +987,11 @@ class PlgFabrik_FormComment extends PlgFabrik_Form
 
 			foreach ($rows as $row)
 			{
-				JUtility::sendMail($mailfrom, $fromname, $row->email, $subject2, $message2);
+				$mail->sendMail($mailfrom, $fromname, $row->email, $subject2, $message2);
 
 				if (!in_array($row->email, $sentto))
 				{
-					JUtility::sendMail($app->getCfg('mailfrom'), $app->getCfg('fromname'), $row->email, $title, $message, true);
+					$mail->sendMail($app->getCfg('mailfrom'), $app->getCfg('fromname'), $row->email, $title, $message, true);
 					$sentto[] = $row->email;
 				}
 			}

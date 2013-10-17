@@ -1377,7 +1377,8 @@ class FabrikFEModelList extends JModelForm
 
 				$btnClass = ($j3 && $buttonAction != 'dropdown') ? 'btn ' : '';
 				$class = $j3 ? $btnClass . 'fabrik_edit fabrik__rowlink' : 'btn fabrik__rowlink';
-				$editLink = '<a class="' . $class . '" ' . $editLinkAttribs . 'data-list="list_' . $this->getRenderContext() . '" href="'
+				$loadMethod = $params->get('editurl', '') == '' ? 'xhr' : 'iframe';
+				$editLink = '<a data-loadmethod="' . $loadMethod . '" class="' . $class . '" ' . $editLinkAttribs . 'data-list="list_' . $this->getRenderContext() . '" href="'
 						. $edit_link . '" title="' . $editLabel . '">' . FabrikHelperHTML::image('edit.png', 'list', '', array('alt' => $editLabel))
 						. ' ' . $editText . '</a>';
 
@@ -1385,7 +1386,8 @@ class FabrikFEModelList extends JModelForm
 				$viewText = $buttonAction == 'dropdown' ? $viewLabel : '<span class="hidden">' . $viewLabel . '</span>';
 				$class = $j3 ? $btnClass . 'fabrik_view fabrik__rowlink' : 'btn fabrik__rowlink';
 
-				$viewLink = '<a class="' . $class . '" ' . $detailsLinkAttribs . 'data-list="list_' . $this->getRenderContext() . '" href="'
+				$loadMethod = $params->get('detailurl', '') == '' ? 'xhr' : 'iframe';
+				$viewLink = '<a data-loadmethod="' . $loadMethod . '" class="' . $class . '" ' . $detailsLinkAttribs . 'data-list="list_' . $this->getRenderContext() . '" href="'
 						. $link . '" title="' . $viewLabel . '">' . FabrikHelperHTML::image('search.png', 'list', '', array('alt' => $viewLabel))
 						. ' ' . $viewText . '</a>';
 
@@ -2157,7 +2159,8 @@ class FabrikFEModelList extends JModelForm
 			$class = 'fabrik_edit';
 		}
 
-		$data = '<a data-list="list_' . $this->getRenderContext() . '" class="fabrik___rowlink ' . $class . '" href="' . $link . '">' . $data
+		$loadMethod = $params->get('custom_link', '') == '' ? 'xhr' : 'iframe';
+		$data = '<a data-loadmethod="' . $loadMethod . '" data-list="list_' . $this->getRenderContext() . '" class="fabrik___rowlink ' . $class . '" href="' . $link . '">' . $data
 		. '</a>';
 
 		return $data;
@@ -8888,7 +8891,7 @@ class FabrikFEModelList extends JModelForm
 				$link .= 'index.php?option=com_' . $package . '&view=' . $view . '&formid=' . $table->form_id . $keyIdentifier;
 			}
 
-			if ($this->packageId !== 0)
+			if ($this->packageId !== 0 || $this->isAjaxLinks())
 			{
 				$link .= '&tmpl=component';
 			}
@@ -8998,7 +9001,7 @@ class FabrikFEModelList extends JModelForm
 						. $this->getId();
 			}
 
-			if ($this->packageId !== 0)
+			if ($this->packageId !== 0 || $this->isAjaxLinks())
 			{
 				$url .= '&tmpl=component';
 			}

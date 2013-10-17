@@ -211,8 +211,8 @@ var FbFileUpload = new Class({
 				'cropdim' : {
 					w: this.options.cropwidth,
 					h: this.options.cropheight,
-					x: this.options.cropwidth / 2,
-					y: this.options.cropheight / 2
+					x: this.options.winWidth / 2,
+					y: this.options.winHeight / 2
 				},
 				crop: this.options.crop
 			});
