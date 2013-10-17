@@ -1309,12 +1309,15 @@ $groupBy .= '_raw';
 				$row->fabrik_edit = '';
 
 				$editLabel = $params->get('editlabel', JText::_('COM_FABRIK_EDIT'));
-				$editLink = '<a class="fabrik__rowlink" ' . $editLinkAttribs . 'data-list="list_' . $this->getRenderContext() . '" href="'
+				$loadMethod = $params->get('editurl', '') == '' ? 'xhr' : 'iframe';
+				$editLink = '<a data-loadmethod="' . $loadMethod . '" class="fabrik__rowlink" ' . $editLinkAttribs . 'data-list="list_' . $this->getRenderContext() . '" href="'
 						. $edit_link . '" title="' . $editLabel . '">' . FabrikHelperHTML::image('edit.png', 'list', '', array('alt' => $editLabel))
 						. '<span>' . $editLabel . '</span></a>';
 
 				$viewLabel = $params->get('detaillabel', JText::_('COM_FABRIK_VIEW'));
-				$viewLink = '<a class="fabrik___rowlink" ' . $detailsLinkAttribs . 'data-list="list_' . $this->getRenderContext() . '" href="'
+				$loadMethod = $params->get('detailurl', '') == '' ? 'xhr' : 'iframe';
+
+				$viewLink = '<a data-loadmethod="' . $loadMethod . '" class="fabrik___rowlink" ' . $detailsLinkAttribs . 'data-list="list_' . $this->getRenderContext() . '" href="'
 						. $link . '" title="' . $viewLabel . '">' . FabrikHelperHTML::image('view.png', 'list', '', array('alt' => $viewLabel))
 						. '<span>' . $viewLabel . '</span></a>';
 
@@ -1947,7 +1950,9 @@ $groupBy .= '_raw';
 		{
 			$class = 'fabrik_edit';
 		}
-		$data = '<a data-list="list_' . $this->getRenderContext() . '" class="fabrik___rowlink ' . $class . '" href="' . $link . '">' . $data
+
+		$loadMethod = $params->get('custom_link', '') == '' ? 'xhr' : 'iframe';
+		$data = '<a data-loadmethod="' . $loadMethod . '" data-list="list_' . $this->getRenderContext() . '" class="fabrik___rowlink ' . $class . '" href="' . $link . '">' . $data
 		. '</a>';
 		return $data;
 	}
