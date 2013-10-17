@@ -452,9 +452,11 @@ var Loader = new Class({
 		 * @since 3.0.7
 		 */
 		Fabrik.watchEdit = function (e, target) {
-			var listRef = target.get('data-list');
-			var list = Fabrik.blocks[listRef];
-			var row = list.getActiveRow(e);
+			
+			var listRef = target.get('data-list'),
+			loadMethod = 'xhr',
+			list = Fabrik.blocks[listRef],
+			row = list.getActiveRow(e);
 			if (!list.options.ajax_links) {
 				return;
 			}
@@ -464,17 +466,16 @@ var Loader = new Class({
 			}
 			list.setActive(row);
 			var rowid = row.id.split('_').getLast();
-			if (list.options.links.edit === '') {
-				url = Fabrik.liveSite + "index.php?option=com_fabrik&view=form&formid=" + list.options.formid + '&rowid=' + rowid + '&tmpl=component&ajax=1';
-				loadMethod = 'xhr';
+	
+			if (e.target.get('tag') === 'a') {
+				a = e.target;
 			} else {
-				if (e.target.get('tag') === 'a') {
-					a = e.target;
-				} else {
-					a = typeOf(e.target.getElement('a')) !== 'null' ? e.target.getElement('a') : e.target.getParent('a');
-				}
-				url = a.get('href');
-				loadMethod = 'iframe';
+				a = typeOf(e.target.getElement('a')) !== 'null' ? e.target.getElement('a') : e.target.getParent('a');
+			}
+			url = a.get('href');
+			loadMethod = a.get('data-loadmethod');
+			if (typeOf(loadMethod) === 'null') {
+				loadMethod = 'xhr';
 			}
 			// Make id the same as the add button so we reuse the same form.
 			var winOpts = {
@@ -517,8 +518,9 @@ var Loader = new Class({
 		 */
 		
 		Fabrik.watchView = function (e, target) {
-			var listRef = target.get('data-list');
-			var list = Fabrik.blocks[listRef];
+			var listRef = target.get('data-list'),
+			loadMethod = 'xhr',
+			list = Fabrik.blocks[listRef];
 			if (!list.options.ajax_links) {
 				return;
 			}
@@ -529,17 +531,16 @@ var Loader = new Class({
 			}
 			list.setActive(row);
 			var rowid = row.id.split('_').getLast();
-			if (list.options.links.detail === '') {
-				url = Fabrik.liveSite + "index.php?option=com_fabrik&view=details&formid=" + list.options.formid + '&rowid=' + rowid + '&tmpl=component&ajax=1';
-				loadMethod = 'xhr';
+			
+			if (e.target.get('tag') === 'a') {
+				a = e.target;
 			} else {
-				if (e.target.get('tag') === 'a') {
-					a = e.target;
-				} else {
-					a = typeOf(e.target.getElement('a')) !== 'null' ? e.target.getElement('a') : e.target.getParent('a');
-				}
-				url = a.get('href');
-				loadMethod = 'iframe';
+				a = typeOf(e.target.getElement('a')) !== 'null' ? e.target.getElement('a') : e.target.getParent('a');
+			}
+			url = a.get('href');
+			loadMethod = a.get('data-loadmethod');
+			if (typeOf(loadMethod) === 'null') {
+				loadMethod = 'xhr';
 			}
 			var winOpts = {
 				'id': 'view.' + '.' + listRef + '.' + rowid,
