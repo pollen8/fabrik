@@ -6652,13 +6652,13 @@ class FabrikFEModelList extends JModelForm
 			if (is_null($listOrder))
 			{
 				// Not yet saved with order
-				$listOrder = is_object($factedlinks->linkedlist) ? array_keys(JArrayHelper::fromObject($factedlinks->linkedlist)) : array();
+				$listOrder = is_object($factedlinks) && is_object($factedlinks->linkedlist) ? array_keys(JArrayHelper::fromObject($factedlinks->linkedlist)) : array();
 			}
 
 			if (is_null($formOrder))
 			{
 				// Not yet saved with order
-				$formOrder = is_object($factedlinks->linkedform) ? array_keys(JArrayHelper::fromObject($factedlinks->linkedform)) : array();
+				$formOrder = is_object($factedlinks) && is_object($factedlinks->linkedform) ? array_keys(JArrayHelper::fromObject($factedlinks->linkedform)) : array();
 			}
 
 			foreach ($listOrder as $key)
