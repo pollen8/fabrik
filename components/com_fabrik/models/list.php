@@ -6792,7 +6792,7 @@ class FabrikFEModelList extends JModelForm
 				$headingButtons[] = $this->deleteButton('', true);
 			}
 
-			$return = $pluginManager->runPlugins('button', $this, 'list');
+			$return = $pluginManager->runPlugins('button', $this, 'list', array('heading' => true));
 			$res = $pluginManager->data;
 
 			foreach ($res as &$r)
