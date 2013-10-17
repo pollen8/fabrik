@@ -543,6 +543,22 @@ class FabrikFEModelListfilter extends FabModel
 		$condition = 'REGEXP';
 		$orig_search = $search;
 		$searchable = false;
+		/*
+		 * Have other filters been added: (e.g. search all in qs and other qs filter)
+		 * http://fabrikar.com/forums/index.php?threads/fabrik_list_filter_all-with-another-param-not-works.36275/
+		 * if yes, then the first added search all filter should set join = AND and grouped_to_previous = 0 so qs of:
+		 *
+		 * &element_test___textarea=test&fabrik_list_filter_all_4_com_fabrik_4=rob@pollen-8.co.uk
+		 *
+		 * will give (correct) sql of:
+		 *
+		 * WHERE ( `element_test`.`textarea` REGEXP LOWER('test') AND ( LOWER(`element_test`.`textarea`) REGEXP LOWER('rob@pollen\\\-8\\\.co\\\.uk') OR LOWER(`element_test`.`calc`) REGEXP LOWER('rob@pollen\\\-8\\\.co\\\.uk') ) )
+		 */
+
+		$searchTypes = array_unique(JArrayHelper::getValue($filters, 'search_type', array()));
+		unset($searchTypes['searchall']);
+		$existingFilters = count($searchTypes) > 0;
+
 		foreach ($keys as $elid)
 		{
 			// $$$ hugh - need to reset $search each time round, in case getFilterValue has esacped something,
@@ -600,15 +616,13 @@ class FabrikFEModelListfilter extends FabModel
 
 			// $$$ rob so search all on checkboxes/radio buttons etc will take the search value of 'one' and return '1'
 			$newsearch = $elementModel->getFilterValue($search, $condition, $eval);
-
-			// $search = $newsearch[0];
 			$newsearch = $newsearch[0];
 
 			if ($key !== false)
 			{
 				$filters['value'][$key] = $newsearch;
 				$filters['condition'][$key] = $condition;
-				$filters['join'][$key] = 'OR';
+				$filters['join'][$key] = $existingFilters && $i === 0 ? 'AND' : 'OR';
 				$filters['no-filter-setup'][$key] = ($element->filter_type == '') ? 1 : 0;
 				$filters['hidden'][$key] = ($element->filter_type == '') ? 1 : 0;
 				$filters['key'][$key] = $k;
@@ -626,7 +640,8 @@ class FabrikFEModelListfilter extends FabModel
 				 * And testing if the element name = 0 seems v wrong :)
 				 */
 				// $filters['grouped_to_previous'][$key] = $k == 0 ? 0 : 1;
-				$filters['grouped_to_previous'][$key] = 1;
+				// $filters['grouped_to_previous'][$key] = 1;
+				$filters['grouped_to_previous'][$key] = $existingFilters && $i === 0 ? 0 : 1;
 				$filters['label'][$key] = $elparams->get('alt_list_heading') == '' ? $element->label : $elparams->get('alt_list_heading');
 				$filters['raw'][$key] = false;
 			}
@@ -634,7 +649,7 @@ class FabrikFEModelListfilter extends FabModel
 			{
 				$filters['value'][] = $newsearch;
 				$filters['condition'][] = $condition;
-				$filters['join'][] = 'OR';
+				$filters['join'][] = $existingFilters && $i === 0 ? 'AND' : 'OR';
 				$filters['no-filter-setup'][] = ($element->filter_type == '') ? 1 : 0;
 				$filters['hidden'][] = ($element->filter_type == '') ? 1 : 0;
 				$filters['key'][] = $k;
@@ -657,7 +672,8 @@ class FabrikFEModelListfilter extends FabModel
 				 * all data, so setting grouped_to_previous to 1 gives you a query of:
 				 * where (el = 'searchall' OR el = 'searchall') AND el = 'post value'
 				 */
-				$filters['grouped_to_previous'][] = 1;
+				// $filters['grouped_to_previous'][] = 1;
+				$filters['grouped_to_previous'][] = $existingFilters && $i === 0 ? 0 : 1;
 				$filters['label'][] = $elparams->get('alt_list_heading') == '' ? $element->label : $elparams->get('alt_list_heading');
 				$filters['elementid'][] = $element->id;
 				$filters['raw'][] = false;
