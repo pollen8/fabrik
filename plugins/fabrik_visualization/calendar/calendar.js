@@ -1229,8 +1229,11 @@ var fabrikCalendar = new Class({
 			this.firstRun = false;
 			d.resetfilters = this.options.restFilterStart;
 		}
+		
+		// Use get to ensure that querystring filters are passed correctly to the viz lists filter model.
 		this.ajax.updateEvents = new Request({url: this.options.url.add,
 		'data': d,
+		'method': 'get',
 		'evalScripts': true,
 		'onSuccess': function (r) {
 			if (typeOf(r) !== 'null') {
