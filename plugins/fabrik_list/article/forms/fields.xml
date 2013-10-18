@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<form>
+	<fields addfieldpath="/administrator/components/com_fabrik/models/fields" name="params">
+		<fieldset name="plg-list-article">
+				
+			<field name="access"
+				type="accesslevel"
+				default="1"
+				label="PLG_FABRIK_LIST_ARTICLE_ACCESS_LABEL"
+				repeat="true" />
+		
+		</fieldset>
+	</fields>
+</form>
