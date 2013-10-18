@@ -6,10 +6,24 @@
 			<field type="helplink"
 				url="PLG_ELEMENT_BUTTON_HELP_SERVER" />
 
-			<field name="no_options"
-				type="spacer"
-				label="PLG_ELEMENT_BUTTON_NO_OPTIONS" />
+			<field name="bootstrap_class"
+				type="list"
+				label="PLG_ELEMENT_BUTTON_CLASS_LABEL">
+				<option value="">PLG_ELEMENT_BUTTON_DEFAULT</option>
+				<option value="btn-primary">PLG_ELEMENT_BUTTON_PRIMARY</option>
+				<option value="btn-info">PLG_ELEMENT_BUTTON_INFO</option>
+				<option value="btn-success">PLG_ELEMENT_BUTTON_SUCCESS</option>
+				<option value="btn-warning">PLG_ELEMENT_BUTTON_WARNING</option>
+				<option value="btn-danger">PLG_ELEMENT_BUTTON_DANGER</option>
+				<option value="btn-inverse">PLG_ELEMENT_BUTTON_INVERSE</option>
+				<option value="btn-link">PLG_ELEMENT_BUTTON_LINK</option>
+			</field>
 
+			<field name="bootstrap_icon"
+				type="field"
+				description="PLG_ELEMENT_BUTTON_BOOTSTRAP_ICON_DESC"
+				label="PLG_ELEMENT_BUTTON_BOOTSTRAP_ICON_LABEL" />
+				
 		</fieldset>
 	</fields>
 </form>
