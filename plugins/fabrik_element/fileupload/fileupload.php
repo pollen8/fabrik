@@ -210,7 +210,14 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 			}
 		}
 
-		$shim['element/fileupload/fileupload'] = $s;
+		if (array_key_exists('element/fileupload/fileupload', $shim) && isset($shim['element/fileupload/fileupload']->deps))
+		{
+			$shim['element/fileupload/fileupload']->deps = array_unique(array_merge($shim['element/fileupload/fileupload']->deps, $s->deps));
+		}
+		else
+		{
+			$shim['element/fileupload/fileupload'] = $s;
+		}
 
 		if ($this->requiresSlideshow())
 		{
