@@ -94,6 +94,12 @@ class PlgFabrik_ElementColourpicker extends PlgFabrik_Element
 		$id = $this->getHTMLId($repeatCounter);
 		$data = $this->getFormModel()->data;
 		$value = $this->getValue($data, $repeatCounter);
+
+		if ($value == 'none')
+		{
+			$value = '';
+		}
+
 		$vars = explode(",", $value);
 		$vars = array_pad($vars, 3, 0);
 		$opts = $this->getElementJSOptions($repeatCounter);
