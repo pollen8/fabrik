@@ -4269,23 +4269,6 @@ class FabrikFEModelForm extends FabModelForm
 					}
 				}
 
-				/* $$$ hugh - changed to use _raw as key, see:
-				 * http://fabrikar.com/forums/showthread.php?t=20020
-				 */
-				//$linkKey = $element->db_table_name . '___' . $element->name;
-				// Jaanus: added following lines as it's the only way ATM to get a real full name to the element in joined group
-				$eid = $element->element_id;
-				$db->setQuery("SELECT  `#__{package}_joins`.`table_join` ,  `#__{package}_joins`.`params` 
-								FROM  `#__{package}_joins`, `#__{package}_groups`, `#__{package}_elements`
-								WHERE  `#__{package}_joins`.`join_from_table` <>  '' 
-								AND `#__{package}_joins`.`element_id` = 0 
-								AND `#__{package}_groups`.`id` = `#__{package}_joins`.`group_id`
-								AND `#__{package}_elements`.`group_id` = `#__{package}_groups`.`id`
-								AND `#__{package}_elements`.`id` = $eid");
-				$el_table = $db->loadResult() ? $db->loadResult() : $element->db_table_name;        
-				$linkKey = $el_table . '___' . $element->name;				$linkKeyRaw = $linkKey . '_raw';
-				$popUpLink = JArrayHelper::getValue($linkedtable_linktype->$key, $f, false);
-
 				/* $$$ tom 2012-09-14 - If we don't have a key value, get all.  If we have a key value,
 				 * use it to restrict the count to just this entry.
 				 */
@@ -4295,8 +4278,16 @@ class FabrikFEModelForm extends FabModelForm
 				{
 					$pks[] = $val;
 				}
-
 				$recordCounts = $referringTable->getRecordCounts($element, $pks);
+				//Jaanus - 18.10.2013 - get correct element fullnames as link keys
+				$linkKey = $recordCounts['linkKey'];
+
+				/* $$$ hugh - changed to use _raw as key, see:
+				 * http://fabrikar.com/forums/showthread.php?t=20020
+				 */
+				$linkKeyRaw = $linkKey . '_raw';
+				$popUpLink = JArrayHelper::getValue($linkedtable_linktype->$key, $f, false);
+
 				$count = is_array($recordCounts) && array_key_exists($val, $recordCounts) ? $recordCounts[$val]->total : 0;
 				$label = $factedLinks->linkedlistheader->$key == '' ? $element->listlabel : $factedLinks->linkedlistheader->$key;
 				$links[$element->list_id][] = $label . ': ' . $referringTable->viewDataLink($popUpLink, $element, null, $linkKey, $val, $count, $f);
@@ -4323,17 +4314,10 @@ class FabrikFEModelForm extends FabModelForm
 						// $$$rob moved these two lines here as there were giving warnings since Hugh commented out the if ($element != '') {
 						// $$$ hugh - what?  Eh?  WhaddidIdo?  Anyway, we use $linkKey up ^^ there somewhere, so we need to define it earlier!
 						//$linkKey = @$element->db_table_name . '___' . @$element->name;
-						// Jaanus: added & modified following lines as it's the only way ATM to get a real full name to the element in joined group
-						$eid = @$element->element_id;
-						$db->setQuery("SELECT  `#__{package}_joins`.`table_join` 
-										FROM  `#__{package}_joins`, `#__{package}_groups`, `#__{package}_elements`
-										WHERE  `#__{package}_joins`.`join_from_table` <>  '' 
-										AND `#__{package}_joins`.`element_id` = 0 
-										AND `#__{package}_groups`.`id` = `#__{package}_joins`.`group_id`
-										AND `#__{package}_elements`.`group_id` = `#__{package}_groups`.`id`
-										AND `#__{package}_elements`.`id` = $eid");
-						$el_table = $db->loadResult() ? $db->loadResult() : @$element->db_table_name;        
-						$linkKey = $el_table . '___' . @$element->name;
+						// Jaanus: now the linkkey is correctly generated
+
+						$linkKeyData = $referringTable->getRecordCounts($element, $pks);
+						$linkKey = $linkKeyData['linkKey'];
 						$val = $input->get($linkKey, '', 'string');
 
 						if ($val == '')
