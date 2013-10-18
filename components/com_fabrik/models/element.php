@@ -2502,7 +2502,7 @@ class PlgFabrik_Element extends FabrikPlugin
 
 		if ($params->get('placeholder', '') !== '')
 		{
-			$bits['placeholder'] = $params->get('placeholder');
+			$bits['placeholder'] = JText::_($params->get('placeholder'));
 		}
 
 		if ($params->get('autocomplete', 1) == 0)

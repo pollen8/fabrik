@@ -1,7 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <checkstyle version="1.5.0RC3">
-<file name="C:\xampp\htdocs\fabrik31x\plugins\fabrik_element\digsig\digsig.php">
- <error line="117" column="3" severity="error" message="Please put a space between the // and the start of comment text; found &quot;//$data = FabrikWorker::JSONtoData($data, true);&quot;" source="Joomla.Commenting.SingleComment.NoSpace"/>
- <error line="135" column="155" severity="warning" message="Line exceeds 150 characters; contains 154 characters" source="Generic.Files.LineLength.TooLong"/>
+<file name="C:\xampp\htdocs\fabrik31x\administrator\components\com_fabrik\models\elements.php">
+ <error line="380" column="1" severity="error" message="Missing @return tag in function comment" source="Joomla.Commenting.FunctionComment.MissingReturn"/>
+</file>
+<file name="C:\xampp\htdocs\fabrik31x\administrator\components\com_fabrik\models\fields\factedlinks.php">
+ <error line="169" column="1" severity="error" message="Blank line found at end of control structure" source="Joomla.WhiteSpace.ControlStructureSpacing"/>
+ <error line="223" column="155" severity="warning" message="Line exceeds 150 characters; contains 154 characters" source="Generic.Files.LineLength.TooLong"/>
+ <error line="224" column="155" severity="warning" message="Line exceeds 150 characters; contains 154 characters" source="Generic.Files.LineLength.TooLong"/>
+</file>
+<file name="C:\xampp\htdocs\fabrik31x\administrator\components\com_fabrik\models\list.php">
+ <error line="1280" column="1" severity="error" message="Tabs must be used to indent lines; spaces are not allowed" source="Joomla.WhiteSpace.DisallowSpaceIndent.SpaceUsed"/>
+ <error line="1281" column="1" severity="error" message="Tabs must be used to indent lines; spaces are not allowed" source="Joomla.WhiteSpace.DisallowSpaceIndent.SpaceUsed"/>
+ <error line="1281" column="168" severity="error" message="Blank line found at end of control structure" source="Joomla.WhiteSpace.ControlStructureSpacing"/>
+ <error line="1281" column="168" severity="error" message="Closing brace must be on a line by itself" source="Squiz.WhiteSpace.ScopeClosingBrace.ContentBefore"/>
+ <error line="1281" column="169" severity="warning" message="Line exceeds 150 characters; contains 168 characters" source="Generic.Files.LineLength.TooLong"/>
+</file>
+<file name="C:\xampp\htdocs\fabrik31x\administrator\components\com_fabrik\views\emailform\view.html.php">
+ <error line="24" column="1" severity="error" message="Please put a space between the // and the start of comment text; found &quot;//class FabrikViewEmailform extends JViewLegacy&quot;" source="Joomla.Commenting.SingleComment.NoSpace"/>
+ <error line="25" column="1" severity="error" message="You must use &quot;/**&quot; style comments for a class comment" source="Joomla.Commenting.ClassComment.WrongStyle"/>
+</file>
+<file name="C:\xampp\htdocs\fabrik31x\components\com_fabrik\helpers\html.php">
+ <error line="358" column="11" severity="error" message="Expected &quot;if (...)\n...{...}\n...else\n&quot;; found &quot;if (...) ...{...} ?&gt;\n...else\n&quot;" source="Joomla.ControlStructures.ControlSignature"/>
+ <error line="358" column="21" severity="error" message="Blank line found at start of control structure" source="Joomla.WhiteSpace.ControlStructureSpacing"/>
+ <error line="362" column="11" severity="error" message="Blank line found at end of control structure" source="Joomla.WhiteSpace.ControlStructureSpacing"/>
+ <error line="362" column="11" severity="error" message="Closing brace must be on a line by itself" source="Squiz.WhiteSpace.ScopeClosingBrace.ContentBefore"/>
+ <error line="399" column="3" severity="error" message="No blank line found after control structure400 - 301" source="Joomla.WhiteSpace.ControlStructureSpacing"/>
+ <error line="400" column="3" severity="error" message="Expected &quot;if (...)\n...{...}\n...else\n&quot;; found &quot;if (...) ...{...}\n...else\n&quot;" source="Joomla.ControlStructures.ControlSignature"/>
+</file>
+<file name="C:\xampp\htdocs\fabrik31x\components\com_fabrik\models\list.php">
+ <error line="1381" column="164" severity="warning" message="Line exceeds 150 characters; contains 163 characters" source="Generic.Files.LineLength.TooLong"/>
+ <error line="1390" column="167" severity="warning" message="Line exceeds 150 characters; contains 166 characters" source="Generic.Files.LineLength.TooLong"/>
+ <error line="2163" column="174" severity="warning" message="Line exceeds 150 characters; contains 173 characters" source="Generic.Files.LineLength.TooLong"/>
+ <error line="6658" column="156" severity="warning" message="Line exceeds 150 characters; contains 155 characters" source="Generic.Files.LineLength.TooLong"/>
+ <error line="6664" column="156" severity="warning" message="Line exceeds 150 characters; contains 155 characters" source="Generic.Files.LineLength.TooLong"/>
 </file>
 </checkstyle>

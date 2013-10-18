@@ -553,7 +553,7 @@ if (typeof(Fabrik) === "undefined") {
 	 * @since 3.0.7
 	 */
 	Fabrik.watchEdit = function (e, target) {
-		var url, loadMethod, a;
+		var url, loadMethod = 'xhr', a;
 		var listRef = target.get('data-list');
 		var list = Fabrik.blocks[listRef];
 		var row = list.getActiveRow(e);
@@ -566,18 +566,17 @@ if (typeof(Fabrik) === "undefined") {
 		}
 		list.setActive(row);
 		var rowid = row.id.split('_').getLast();
-		if (list.options.links.edit === '') {
-			url = 'index.php?option=com_fabrik&task=form.view&formid=' + list.options.formid + '&rowid=' + rowid + '&tmpl=component&ajax=1';
-			loadMethod = 'xhr';
+		if (e.target.get('tag') === 'a') {
+			a = e.target;
 		} else {
-			if (e.target.get('tag') === 'a') {
-				a = e.target;
-			} else {
-				a = typeOf(e.target.getElement('a')) !== 'null' ? e.target.getElement('a') : e.target.getParent('a');
-			}
-			url = a.get('href');
-			loadMethod = 'iframe';
+			a = typeOf(e.target.getElement('a')) !== 'null' ? e.target.getElement('a') : e.target.getParent('a');
 		}
+		url = a.get('href');
+		loadMethod = a.get('data-loadmethod');
+		if (typeOf(loadMethod) === 'null') {
+			loadMethod = 'xhr';
+		}
+		
 		// Only one edit window open at the same time.
 		$H(Fabrik.Windows).each(function (win, key) {
 			win.close();
@@ -619,7 +618,7 @@ if (typeof(Fabrik) === "undefined") {
 	 */
 
 	Fabrik.watchView = function (e, target) {
-		var url, loadMethod, a;
+		var url, loadMethod = 'xhr', a;
 		var listRef = target.get('data-list');
 		var list = Fabrik.blocks[listRef];
 		if (!list.options.ajax_links) {
@@ -632,18 +631,18 @@ if (typeof(Fabrik) === "undefined") {
 		}
 		list.setActive(row);
 		var rowid = row.id.split('_').getLast();
-		if (list.options.links.detail === '') {
-			url = 'index.php?option=com_fabrik&task=details.view&formid=' + list.options.formid + '&rowid=' + rowid + '&tmpl=component&ajax=1';
-			loadMethod = 'xhr';
+		
+		if (e.target.get('tag') === 'a') {
+			a = e.target;
 		} else {
-			if (e.target.get('tag') === 'a') {
-				a = e.target;
-			} else {
-				a = typeOf(e.target.getElement('a')) !== 'null' ? e.target.getElement('a') : e.target.getParent('a');
-			}
-			url = a.get('href');
-			loadMethod = 'iframe';
+			a = typeOf(e.target.getElement('a')) !== 'null' ? e.target.getElement('a') : e.target.getParent('a');
 		}
+		url = a.get('href');
+		loadMethod = a.get('data-loadmethod');
+		if (typeOf(loadMethod) === 'null') {
+			loadMethod = 'xhr';
+		}
+		
 		// Only one edit window open at the same time.
 		$H(Fabrik.Windows).each(function (win, key) {
 			win.close();

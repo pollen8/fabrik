@@ -4272,7 +4272,11 @@ class FabrikFEModelForm extends FabModelForm
 				/* $$$ hugh - changed to use _raw as key, see:
 				 * http://fabrikar.com/forums/showthread.php?t=20020
 				 */
-				$linkKey = $element->db_table_name . '___' . $element->name;
+				// $linkKey = $element->db_table_name . '___' . $element->name;
+
+				$elementModel = $this->getElement($element->id, true);
+				$linkKey = $elementModel->getFullName(true, false);
+
 				$linkKeyRaw = $linkKey . '_raw';
 				$popUpLink = JArrayHelper::getValue($linkedtable_linktype->$key, $f, false);
 

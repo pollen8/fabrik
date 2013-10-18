@@ -458,7 +458,7 @@ class FabrikViewFormBase extends JViewLegacy
 		$listModel = $model->getlistModel();
 		$table = $listModel->getTable();
 		$form = $model->getForm();
-		FabrikHelperHTML::windows();
+		FabrikHelperHTML::windows('a.fabrikWin');
 		FabrikHelperHTML::tips('.hasTip', array(), "$('$bkey')");
 		$model->getFormCss();
 		$opts = $this->jsOpts();
