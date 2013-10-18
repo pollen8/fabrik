@@ -898,6 +898,12 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 			$file = $files;
 		}
 
+		// Perhaps an ajax upload? In anay event $file empty was giving errors with upload element in multipage form.
+		if (!array_key_exists('name', $file))
+		{
+			return;
+		}
+
 		$fileName = $file['name'];
 		$fileSize = $file['size'];
 
@@ -2640,13 +2646,30 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 
 		if ($params->get('fu_show_image_in_email', false))
 		{
-			$render = $this->loadElement($value);
+			$origShowImages = $params->get('fu_show_image');
+			$params->set('fu_show_image', true);
 
-			if ($params->get('fu_show_image') != '0')
+			// For ajax repeats
+			$value = (array) $value;
+			$formModel = $this->getFormModel();
+
+			if (!isset($formModel->data))
 			{
-				if ($value != '' && $storage->exists(COM_FABRIK_BASE . $value))
+				$formModel->data = $data;
+			}
+
+			if (empty($value))
+			{
+				return '';
+			}
+
+			foreach ($value as $v)
+			{
+				$render = $this->loadElement($v);
+
+				if ($v != '' && $storage->exists(COM_FABRIK_BASE . $v))
 				{
-					$render->render($this, $params, $value);
+					$render->render($this, $params, $v);
 				}
 			}
 
