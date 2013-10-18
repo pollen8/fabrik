@@ -131,4 +131,51 @@ class VideoRender
 				break;
 		}
 	}
+
+	/**
+	 * Build Carousel HTML
+	 *
+	 * @param   string  $id    Widget HTML id
+	 * @param   array   $data  files to add to the carousel
+	 *
+	 * @return  string  HTML
+	 */
+
+	public function renderCarousel($id = 'carousel', $data = array())
+	{
+		$rendered = '';
+		$id .= '_video_carousel';
+
+		if (!empty($data))
+		{
+			$rendered = '
+			<div id="' . $id . '"></div>
+			';
+			$js = '
+			jwplayer("' . $id . '").setup({
+				playlist: [
+			';
+			$files = array();
+			foreach ($data as $file)
+			{
+				$files[] .= '
+					{
+						"file": "' . COM_FABRIK_LIVESITE . ltrim($file, '/') . '"
+					}
+				';
+			}
+			$js .= implode(',', $files);
+			$js .= ']
+			});
+			';
+			FabrikHelperHTML::script('plugins/fabrik_element/fileupload/lib/jwplayer/jwplayer.js',$js);
+
+		}
+
+		return $rendered;
+	}
+
+	private function getThumb($video_file) {
+
+	}
 }

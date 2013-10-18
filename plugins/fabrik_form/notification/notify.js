@@ -25,7 +25,7 @@ var Notify = new Class({
 					format: 'raw',
 					fabrik_notification: 1,
 					listid: this.options.listid,
-					formid: this.options.fabrik,
+					formid: this.options.formid,
 					rowid: this.options.rowid,
 					notify: notify
 				},

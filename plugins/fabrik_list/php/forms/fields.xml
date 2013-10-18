@@ -55,6 +55,17 @@
 				repeat="true"
 				size="30" />
 			
+			<field type="radio"
+				name="button_in_row"
+				class="btn-group"
+				default="1"
+				repeat="true"
+				label="COM_FABRIK_LIST_PLUGIN_BUITON_IN_ROW_LABEL"
+				description="COM_FABRIK_LIST_PLUGIN_BUITON_IN_ROW_DESC">
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+			</field>
+			
 		</fieldset>
 	</fields>
 </form>
