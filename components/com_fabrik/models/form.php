@@ -4370,6 +4370,8 @@ class FabrikFEModelForm extends FabModelForm
 			$key = $element->list_id . '-' . $element->form_id . '-' . $element->element_id;
 			if (isset($linkedLists->$key) && $linkedLists->$key != 0)
 			{
+				// Jaanus: not sure what the $qsKey exactly does and whether there should be $recordCounts['linkKey'] instead (see below), 
+				// so I left it untouched
 				$qsKey = $referringTable->getTable()->db_table_name . '___' . $element->name;
 				$val = JRequest::getVar($qsKey);
 				if ($val == '')
@@ -4391,18 +4393,6 @@ class FabrikFEModelForm extends FabModelForm
 				 * http://fabrikar.com/forums/showthread.php?t=20020
 				 */
 				//$linkKey = $element->db_table_name . '___' . $element->name;
-				// Jaanus: added following lines as it's the only way ATM to get a real full name to the element in joined group
-				$eid = $element->element_id;
-				$db->setQuery("SELECT  `#__{package}_joins`.`table_join` ,  `#__{package}_joins`.`params` 
-								FROM  `#__{package}_joins`, `#__{package}_groups`, `#__{package}_elements`
-								WHERE  `#__{package}_joins`.`join_from_table` <>  '' 
-								AND `#__{package}_joins`.`element_id` = 0 
-								AND `#__{package}_groups`.`id` = `#__{package}_joins`.`group_id`
-								AND `#__{package}_elements`.`group_id` = `#__{package}_groups`.`id`
-								AND `#__{package}_elements`.`id` = $eid");
-				$el_table = $db->loadResult() ? $db->loadResult() : $element->db_table_name;        
-				$linkKey = $el_table . '___' . $element->name;				$linkKeyRaw = $linkKey . '_raw';
-				$popUpLink = JArrayHelper::getValue($linkedtable_linktype->$key, $f, false);
 
 				/* $$$ tom 2012-09-14 - If we don't have a key value, get all.  If we have a key value,
 				 * use it to restrict the count to just this entry.
@@ -4413,6 +4403,10 @@ class FabrikFEModelForm extends FabModelForm
 					$pks[] = $val;
 				}
 				$recordCounts = $referringTable->getRecordCounts($element, $pks);
+				// Jaanus: now let's get the linkkey with its correct full element name
+				$linkKey = $recordCounts['linkKey']; 
+				$linkKeyRaw = $linkKey . '_raw';
+				$popUpLink = JArrayHelper::getValue($linkedtable_linktype->$key, $f, false);
 
 				$count = is_array($recordCounts) && array_key_exists($val, $recordCounts) ? $recordCounts[$val]->total : 0;
 
@@ -4439,27 +4433,20 @@ class FabrikFEModelForm extends FabModelForm
 						// $$$ hugh - what?  Eh?  WhaddidIdo?  Anyway, we use $linkKey up ^^ there somewhere, so we need to define it earlier!
 						//$linkKey = @$element->db_table_name . '___' . @$element->name;
 						// Jaanus: added & modified following lines as it's the only way ATM to get a real full name to the element in joined group
-						$eid = @$element->element_id;
-						$db->setQuery("SELECT  `#__{package}_joins`.`table_join` 
-										FROM  `#__{package}_joins`, `#__{package}_groups`, `#__{package}_elements`
-										WHERE  `#__{package}_joins`.`join_from_table` <>  '' 
-										AND `#__{package}_joins`.`element_id` = 0 
-										AND `#__{package}_groups`.`id` = `#__{package}_joins`.`group_id`
-										AND `#__{package}_elements`.`group_id` = `#__{package}_groups`.`id`
-										AND `#__{package}_elements`.`id` = $eid");
-						$el_table = $db->loadResult() ? $db->loadResult() : @$element->db_table_name;        
-						$linkKey = $el_table . '___' . @$element->name;
+						$linkKeyData = $referringTable->getRecordCounts($element, $pks);
+						$linkKey = $linkKeyData['linkKey'];
 						$val = JRequest::getVar($linkKey);
+						// Jaanus: $qsKey or rather $linkKey? Seems to be
 						if ($val == '')
 						{
-							$val = JRequest::getVar($qsKey . '_raw', JRequest::getVar('rowid'));
+							$val = JRequest::getVar($linkKey . '_raw', JRequest::getVar('rowid'));
 						}
 						// $label = $factedLinks->linkedformheader->$key;
 						// $links[$element->list_id][] = $label . ': ' . $referringTable->viewFormLink($popUpLink, $element, null, $linkKey, $val, false, $f);
 						// Jaanus: when no link to list and no formheaders then people still know where they add data
 						$label = $factedLinks->linkedformheader->$key != '' ? ': ' . $factedLinks->linkedformheader->$key : (isset($linkedLists->$key) && $linkedLists->$key != 0 ? '' : ': ' . $element->listlabel);
 						// Jaanus: label after add link if no list link helps to make difference between data view links and only add links.
-						$links[$element->list_id][] =  $referringTable->viewFormLink($popUpLink, $element, null, $linkKey, $val, false, $f) . $label;
+						$links[$element->list_id][] =  $referringTable->viewFormLink($popUpLink, $element, null, $linkKey, $val, false, null) . $label;
 					}
 				}
 				$f++;
