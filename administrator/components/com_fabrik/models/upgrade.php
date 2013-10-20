@@ -151,9 +151,9 @@ class FabrikModelUpgrade extends JModel
 
 							$subOpts = new stdClass;
 
-							$subOts->sub_values = explode('|', $row->sub_values);
-							$subOts->sub_labels = explode('|', $row->sub_labels);
-							$subOts->sub_initial_selection = explode('|', $row->sub_intial_selection);
+							$subOpts->sub_values = explode('|', $row->sub_values);
+							$subOpts->sub_labels = explode('|', $row->sub_labels);
+							$subOpts->sub_initial_selection = explode('|', $row->sub_intial_selection);
 							$p->sub_options = $subOpts;
 							break;
 						case '#__fabrik_tables':
