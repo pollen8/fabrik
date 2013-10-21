@@ -126,11 +126,12 @@ class FabrikModelUpgrade extends JModel
 			}
 			foreach ($rows as $row)
 			{
-				$json = json_decode($row->attribs);
+				$attribs=str_replace('validation-plugin','validationplugin',$row->attribs);//validation-plugin can't be used as valid var name
+				$json = json_decode($attribs); 
 				if ($json == false)
 				{
 					// Only do this if the attribs are not already in json format
-					$p = $this->fromAttribsToObject($row->attribs);
+					$p = $this->fromAttribsToObject($attribs);
 					switch ($update)
 					{
 						case '#__fabrik_elements':
@@ -155,6 +156,15 @@ class FabrikModelUpgrade extends JModel
 							$subOpts->sub_labels = explode('|', $row->sub_labels);
 							$subOpts->sub_initial_selection = explode('|', $row->sub_intial_selection);
 							$p->sub_options = $subOpts;
+							
+							if (isset($p->validationplugin))
+							{
+							$validations = new stdClass;
+							$validations->plugin = $p->validationplugin;
+							$p->validations = $validations;
+							unset($p->validationplugin);
+							}
+							
 							break;
 						case '#__fabrik_tables':
 							$row->access = $this->mapACL($row->access);
@@ -162,8 +172,18 @@ class FabrikModelUpgrade extends JModel
 							$p->allow_edit_details = isset($p->allow_edit_details) ? $this->mapACL($p->allow_edit_details) : 1;
 							$p->allow_add = isset($p->allow_add) ? $this->mapACL($p->allow_add) : 1;
 							$p->allow_drop = isset($p->allow_drop) ? $this->mapACL($p->allow_drop) : 1;
+					
+							if (isset($p->plugin)) {
+								$p->plugins = str_replace('fabrik','',$p->plugin);
+								unset($p->plugin);
+							}
 							break;
-
+						case '#__fabrik_forms':
+							if (isset($p->plugin)) {
+								$p->plugins = str_replace('fabrik','',$p->plugin);
+								unset($p->plugin);
+							}
+							break;							
 						case '#__fabrik_visualizations':
 							$row->access = isset($row->access) ? $this->mapACL($row->access) : 1;
 							break;
