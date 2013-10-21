@@ -83,7 +83,7 @@ JToolBarHelper::title(JText::_('COM_FABRIK_WELCOME'), 'fabrik.png');
 			<ul class="adminlist">
 				<li><a href="http://fabrikar.com/"><?php echo JText::_('COM_FABRIK_HOME_FABRIK_WEB_SITE')?></a></li>
 				<li><a href="http://fabrikar.com/forums"><?php echo JText::_('COM_FABRIK_HOME_FORUM')?></a>
-				<li><a href="http://fabrikar.com/wiki/"><?php echo JText::_('COM_FABRIK_HOME_DOCUMENTATION_WIKI')?></a></li>
+				<li><a href="http://fabrikar.com/forums/index.php?wiki/index/"><?php echo JText::_('COM_FABRIK_HOME_DOCUMENTATION_WIKI')?></a></li>
 			</ul>
 
 			<?php
