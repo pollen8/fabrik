@@ -2918,6 +2918,19 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		$input = $app->input;
 		$this->loadMeForAjax();
 		$filename = $input->get('file', 'string', '');
+
+		// Filename may be a path - if so just get the name
+		if (strstr($filename, '/'))
+		{
+			$filename = explode('/', $filename);
+			$filename = array_pop($filename);
+		}
+		elseif (strstr($filename, '\\'))
+		{
+			$filename = explode('\\', $filename);
+			$filename = array_pop($filename);
+		}
+
 		$repeatCounter = (int) $input->getInt('repeatCounter');
 		$join = FabTable::getInstance('join', 'FabrikTable');
 		$join->load(array('element_id' => $input->getInt('element_id')));
@@ -2930,7 +2943,6 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		$storage = $this->getStorage();
 		$filename = $storage->cleanName($filename, $repeatCounter);
 		$filename = JPath::clean($filepath . '/' . $filename);
-
 		$this->deleteFile($filename);
 		$db = $this->getListModel()->getDb();
 		$query = $db->getQuery(true);
