@@ -173,7 +173,10 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 			}
 			else
 			{
-				$str = parent::render($data, $repeatCounter);
+				$str = '<div class="input-append">';
+				$str .= parent::render($data, $repeatCounter);
+				$str .= '<span class="add-on"><span class="icon-user"></span></span>';
+				$str .= '</div>';
 			}
 		}
 		else
