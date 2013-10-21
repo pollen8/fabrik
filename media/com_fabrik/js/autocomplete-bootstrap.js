@@ -220,6 +220,10 @@ var FbAutocomplete = new Class({
 	doWatchKeys: function (e) {
 		var max = this.getListMax();
 		if (!this.shown) {
+			// Stop enter from submitting when in in-line edit form.
+			if (e.code.toInt() === 13) {
+				e.stop();
+			}
 			if (e.code.toInt() === 40 && document.activeElement === this.getInputElement()) {
 				this.openMenu();
 			}
