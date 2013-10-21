@@ -103,6 +103,7 @@ class PlgFabrik_ElementNotes extends PlgFabrik_ElementDatabasejoin
 		if ($rowid > 0)
 		{
 			$class = 'fabrikinput inputbox text span12';
+
 			if ($params->get('fieldType', 'textarea') == 'field')
 			{
 				$str[] = '<input class="' . $class . '" name="' . $name . '"  />';

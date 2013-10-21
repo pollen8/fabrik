@@ -354,12 +354,17 @@ EOD;
 			<td colspan="2">
 			<input type="submit" name="submit" class="button btn btn-primary"
 				value="<?php echo JText::_('COM_FABRIK_SEND_EMAIL'); ?>" />
+<?php
 
-				<?php if (!$j3) { ?>
+if (!$j3)
+{
+?>
 			<input type="button" name="cancel"
 				value="<?php echo JText::_('COM_FABRIK_CANCEL'); ?>" class="button btn"
 				onclick="window.close();" /></td>
-				<?php } ?>
+				<?php
+}
+			?>
 		</tr>
 	</table>
 	<input name="referrer"
@@ -397,7 +402,9 @@ EOD;
 </span>
 <?php
 		}
-		if (!$j3) {
+
+		if (!$j3)
+		{
 		?>
 <br />
 <br />

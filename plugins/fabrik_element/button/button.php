@@ -43,6 +43,7 @@ class PlgFabrik_ElementButton extends PlgFabrik_Element
 		{
 			$icon = '<i class="' . $icon . '"></i> ';
 		}
+
 		$label = $icon . $element->label;
 		$str = '<button class="' . $class . '" id="' . $id . '" name="' . $name . '">' . $label . '</button>';
 

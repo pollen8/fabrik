@@ -63,13 +63,16 @@ class AudioRender
 	/**
 	 * Build Carousel HTML
 	 *
-	 * @param   string  $id    Widget HTML id
-	 * @param   array   $data  files to add to the carousel
+	 * @param   string  $id       Widget HTML id
+	 * @param   array   $data     Images to add to the carousel
+	 * @param   object  $model    Element model
+	 * @param   object  $params   Element params
+	 * @param   object  $thisRow  All rows data
 	 *
 	 * @return  string  HTML
 	 */
 
-	public function renderCarousel($id = 'carousel', $data = array())
+	public function renderCarousel($id = 'carousel', $data = array(), $model = null, $params = null, $thisRow = null)
 	{
 		$rendered = '';
 		$id .= '_audio_carousel';
@@ -86,6 +89,7 @@ class AudioRender
 				playlist: [
 			';
 			$files = array();
+
 			foreach ($data as $file)
 			{
 				$files[] .= '
@@ -94,14 +98,14 @@ class AudioRender
 					}
 				';
 			}
+
 			$js .= implode(',', $files);
 			$js .= ']
 			});
 			';
-			FabrikHelperHTML::script('plugins/fabrik_element/fileupload/lib/jwplayer/jwplayer.js',$js);
-
+			FabrikHelperHTML::script('plugins/fabrik_element/fileupload/lib/jwplayer/jwplayer.js', $js);
 		}
+
 		return $rendered;
 	}
-
 }

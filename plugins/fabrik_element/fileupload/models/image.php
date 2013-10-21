@@ -202,23 +202,25 @@ class ImageRender
 	/**
 	 * Build Carousel HTML
 	 *
-	 * @param   string  $id    Widget HTML id
-	 * @param   array   $data  Images to add to the carousel
-	 * @param   object  &$model   Element model
-	 * @param   object  &$params  Element params
+	 * @param   string  $id       Widget HTML id
+	 * @param   array   $data     Images to add to the carousel
+	 * @param   object  $model    Element model
+	 * @param   object  $params   Element params
 	 * @param   object  $thisRow  All rows data
 	 *
 	 * @return  string  HTML
 	 */
 
-	public function renderCarousel($id = 'carousel', $data = array(), $model, $params, $thisRow)
+	public function renderCarousel($id = 'carousel', $data = array(), $model = null, $params = null, $thisRow = null)
 	{
 		$rendered = '';
 		$id .= '_carousel';
+
 		if (!empty($data))
 		{
 			$imgs = array();
 			$i = 0;
+
 			foreach ($data as $img)
 			{
 				$model->_repeatGroupCounter = $i++;
@@ -280,6 +282,7 @@ class ImageRender
 </div>
 ';
 		}
+
 		return $rendered;
 	}
 }

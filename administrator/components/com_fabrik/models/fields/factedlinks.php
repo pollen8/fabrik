@@ -166,7 +166,6 @@ class JFormFieldFactedlinks extends JFormFieldList
 				. ' type="radio" />' . JText::_('JYES') . '</label>';
 			$listreturn[] = '</td>';
 			$listreturn[] = '</tr>';
-
 		}
 
 		foreach ($formOrder as $order)
@@ -220,8 +219,10 @@ class JFormFieldFactedlinks extends JFormFieldList
 		$listreturn[] = '</tbody></table>';
 		$formreturn[] = '</tbody></table>';
 		$return = array_merge($listreturn, $formreturn);
-		$return[] = '<input name="jform[params][faceted_form_order]" type="hidden" value="' . htmlspecialchars($listParams->get('faceted_form_order')) . '" />';
-		$return[] = '<input name="jform[params][faceted_list_order]" type="hidden" value="' . htmlspecialchars($listParams->get('faceted_list_order')) . '" />';
+		$facetedFormOrder = htmlspecialchars($listParams->get('faceted_form_order'));
+		$return[] = '<input name="jform[params][faceted_form_order]" type="hidden" value="' . $facetedFormOrder . '" />';
+		$factedListOrder = htmlspecialchars($listParams->get('faceted_list_order'));
+		$return[] = '<input name="jform[params][faceted_list_order]" type="hidden" value="' . $factedListOrder . '" />';
 
 		return implode("\n", $return);
 	}

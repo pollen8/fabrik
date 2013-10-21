@@ -52,6 +52,7 @@ class PlgFabrik_ListPhp extends plgFabrik_List
 		}
 
 		$params = $this->getParams();
+
 		return (bool) $params->get('button_in_row', true);
 	}
 

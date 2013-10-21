@@ -21,7 +21,6 @@ jimport('joomla.application.component.view');
  * @since       3.0
  */
 
-//class FabrikViewEmailform extends JViewLegacy
 class FabrikAdminViewemailform extends JViewLegacy
 {
 	/**

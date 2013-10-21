@@ -512,6 +512,7 @@ class FabrikFEModelList extends JModelForm
 
 	public function getPluginJsClasses(&$r = array(), &$shim = array())
 	{
+		$r = (array) $r;
 		$pluginManager = FabrikWorker::getPluginManager();
 		$pluginManager->getPlugInGroup('list');
 		$src = array();
@@ -1281,7 +1282,7 @@ class FabrikFEModelList extends JModelForm
 		$buttonAction = $this->actionMethod();
 		$nextview = $this->canEdit() ? 'form' : 'details';
 		$tmpKey = '__pk_val';
-		$factedlinks = $params->get('factedlinks');
+		$facted = $params->get('factedlinks');
 
 		// Get a list of fabrik lists and ids for view list and form links
 		$oldLinksToForms = $this->getLinksToThisKey();
@@ -1366,8 +1367,8 @@ class FabrikFEModelList extends JModelForm
 				$row->fabrik_view_url = $link;
 				$row->fabrik_edit_url = $edit_link;
 
-				$editLinkAttribs = $this->getCustomLink('attribs', 'edit');
-				$detailsLinkAttribs = $this->getCustomLink('attribs', 'details');
+				$editAttribs = $this->getCustomLink('attribs', 'edit');
+				$detailsAttribs = $this->getCustomLink('attribs', 'details');
 
 				$row->fabrik_view = '';
 				$row->fabrik_edit = '';
@@ -1377,9 +1378,11 @@ class FabrikFEModelList extends JModelForm
 
 				$btnClass = ($j3 && $buttonAction != 'dropdown') ? 'btn ' : '';
 				$class = $j3 ? $btnClass . 'fabrik_edit fabrik__rowlink' : 'btn fabrik__rowlink';
+				$dataList = 'list_' . $this->getRenderContext();
 				$loadMethod = $params->get('editurl', '') == '' ? 'xhr' : 'iframe';
-				$editLink = '<a data-loadmethod="' . $loadMethod . '" class="' . $class . '" ' . $editLinkAttribs . 'data-list="list_' . $this->getRenderContext() . '" href="'
-						. $edit_link . '" title="' . $editLabel . '">' . FabrikHelperHTML::image('edit.png', 'list', '', array('alt' => $editLabel))
+				$img = FabrikHelperHTML::image('edit.png', 'list', '', array('alt' => $editLabel));
+				$editLink = '<a data-loadmethod="' . $loadMethod . '" class="' . $class . '" ' . $editAttribs
+						. 'data-list="' . $dataList . '" href="' . $edit_link . '" title="' . $editLabel . '">' . $img
 						. ' ' . $editText . '</a>';
 
 				$viewLabel = $this->viewLabel();
@@ -1387,8 +1390,10 @@ class FabrikFEModelList extends JModelForm
 				$class = $j3 ? $btnClass . 'fabrik_view fabrik__rowlink' : 'btn fabrik__rowlink';
 
 				$loadMethod = $params->get('detailurl', '') == '' ? 'xhr' : 'iframe';
-				$viewLink = '<a data-loadmethod="' . $loadMethod . '" class="' . $class . '" ' . $detailsLinkAttribs . 'data-list="list_' . $this->getRenderContext() . '" href="'
-						. $link . '" title="' . $viewLabel . '">' . FabrikHelperHTML::image('search.png', 'list', '', array('alt' => $viewLabel))
+
+				$img = FabrikHelperHTML::image('search.png', 'list', '', array('alt' => $viewLabel));
+				$viewLink = '<a data-loadmethod="' . $loadMethod . '" class="' . $class . '" ' . $detailsAttribs
+						. 'data-list="' . $dataList . '" href="' . $link . '" title="' . $viewLabel . '">' . $img
 						. ' ' . $viewText . '</a>';
 
 				// 3.0 actions now in list in one cell
@@ -1461,12 +1466,12 @@ class FabrikFEModelList extends JModelForm
 				foreach ($joinsToThisKey as $f => $join)
 				{
 					// $$$ hugh - for reasons I don't understand, $joinsToThisKey now contains entries
-					// which aren't in $factedlinks->linkedlist, so added this sanity check.
-					if (isset($factedlinks->linkedlist->$f))
+					// which aren't in $facted->linkedlist, so added this sanity check.
+					if (isset($facted->linkedlist->$f))
 					{
-						$linkedTable = $factedlinks->linkedlist->$f;
-						$popupLink = $factedlinks->linkedlist_linktype->$f;
-						$linkedListText = $factedlinks->linkedlisttext->$f;
+						$linkedTable = $facted->linkedlist->$f;
+						$popupLink = $facted->linkedlist_linktype->$f;
+						$linkedListText = $facted->linkedlisttext->$f;
 
 						if ($linkedTable != '0')
 						{
@@ -1505,8 +1510,8 @@ class FabrikFEModelList extends JModelForm
 				// Create columns containing links which point to forms assosciated with this table
 				foreach ($linksToForms as $f => $join)
 				{
-					$linkedForm = $factedlinks->linkedform->$f;
-					$popupLink = $factedlinks->linkedform_linktype->$f;
+					$linkedForm = $facted->linkedform->$f;
+					$popupLink = $facted->linkedform_linktype->$f;
 					/* $$$ hugh @TODO - rob, can you check this, I added this line,
 					 * but the logic applied for $val in the linked table code above seems to be needed?
 					* http://fabrikar.com/forums/showthread.php?t=9535
@@ -1521,7 +1526,7 @@ class FabrikFEModelList extends JModelForm
 							$linkKey = @$join->db_table_name . '___' . @$join->name;
 							$gkey = $linkKey . '_form_heading';
 							$row2 = JArrayHelper::fromObject($row);
-							$linkLabel = $this->parseMessageForRowHolder($factedlinks->linkedformtext->$f, $row2);
+							$linkLabel = $this->parseMessageForRowHolder($facted->linkedformtext->$f, $row2);
 							$group[$i]->$gkey = $this->viewFormLink($popupLink, $join, $row, $linkKey, $val, false, $f);
 						}
 					}
@@ -1821,8 +1826,8 @@ class FabrikFEModelList extends JModelForm
 		$listid = $element->list_id;
 		$formid = $element->form_id;
 		$linkedFormText = $params->get('linkedformtext');
-		$factedlinks = $params->get('factedlinks');
-		$linkedFormText = JArrayHelper::fromObject($factedlinks->linkedformtext);
+		$facted = $params->get('factedlinks');
+		$linkedFormText = JArrayHelper::fromObject($facted->linkedformtext);
 		$msg = JArrayHelper::getValue($linkedFormText, $elKey);
 		$row2 = JArrayHelper::fromObject($row);
 		$label = $this->parseMessageForRowHolder($msg, $row2);
@@ -1960,13 +1965,13 @@ class FabrikFEModelList extends JModelForm
 		$app = JFactory::getApplication();
 		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$params = $this->getParams();
-		$factedLinks = $params->get('factedlinks');
+		$facted = $params->get('factedlinks');
 
 		/* $$$ hugh - we are getting element keys that aren't in the linkedlisttext.
 		 * not sure why, so added this defensive code.  Should probably find out
 		* why though!  I just needed to make this error go away NAO!
 		*/
-		$linkedListText = isset($factedLinks->linkedlisttext->$elKey) ? $factedLinks->linkedlisttext->$elKey : '';
+		$linkedListText = isset($facted->linkedlisttext->$elKey) ? $facted->linkedlisttext->$elKey : '';
 		$row2 = JArrayHelper::fromObject($row);
 		$label = $this->parseMessageForRowHolder($linkedListText, $row2);
 
@@ -2160,7 +2165,9 @@ class FabrikFEModelList extends JModelForm
 		}
 
 		$loadMethod = $params->get('custom_link', '') == '' ? 'xhr' : 'iframe';
-		$data = '<a data-loadmethod="' . $loadMethod . '" data-list="list_' . $this->getRenderContext() . '" class="fabrik___rowlink ' . $class . '" href="' . $link . '">' . $data
+		$class = 'fabrik___rowlink' . $class;
+		$dataList = 'list_' . $this->getRenderContext();
+		$data = '<a data-loadmethod="' . $loadMethod . '" data-list="' . $dataList . '" class="' . $class . '" href="' . $link . '">' . $data
 		. '</a>';
 
 		return $data;
@@ -6647,7 +6654,7 @@ class FabrikFEModelList extends JModelForm
 				$this->actionHeading($aTableHeadings, $headingClass, $cellClass);
 			}
 			// Create columns containing links which point to lists associated with this list
-			$factedlinks = $params->get('factedlinks');
+			$facted = $params->get('factedlinks');
 			$joinsToThisKey = $this->getJoinsToThisKey();
 			$listOrder = json_decode($params->get('faceted_list_order'));
 			$formOrder = json_decode($params->get('faceted_form_order'));
@@ -6655,13 +6662,13 @@ class FabrikFEModelList extends JModelForm
 			if (is_null($listOrder))
 			{
 				// Not yet saved with order
-				$listOrder = is_object($factedlinks) && is_object($factedlinks->linkedlist) ? array_keys(JArrayHelper::fromObject($factedlinks->linkedlist)) : array();
+				$listOrder = is_object($facted) && is_object($facted->linkedlist) ? array_keys(JArrayHelper::fromObject($facted->linkedlist)) : array();
 			}
 
 			if (is_null($formOrder))
 			{
 				// Not yet saved with order
-				$formOrder = is_object($factedlinks) && is_object($factedlinks->linkedform) ? array_keys(JArrayHelper::fromObject($factedlinks->linkedform)) : array();
+				$formOrder = is_object($facted) && is_object($facted->linkedform) ? array_keys(JArrayHelper::fromObject($facted->linkedform)) : array();
 			}
 
 			foreach ($listOrder as $key)
@@ -6673,10 +6680,10 @@ class FabrikFEModelList extends JModelForm
 					continue;
 				}
 
-				if (is_object($join) && isset($factedlinks->linkedlist->$key))
+				if (is_object($join) && isset($facted->linkedlist->$key))
 				{
-					$linkedTable = $factedlinks->linkedlist->$key;
-					$heading = $factedlinks->linkedlistheader->$key;
+					$linkedTable = $facted->linkedlist->$key;
+					$heading = $facted->linkedlistheader->$key;
 
 					if ($linkedTable != '0')
 					{
@@ -6698,11 +6705,11 @@ class FabrikFEModelList extends JModelForm
 					continue;
 				}
 
-				$linkedForm = $factedlinks->linkedform->$key;
+				$linkedForm = $facted->linkedform->$key;
 
 				if ($linkedForm != '0')
 				{
-					$heading = $factedlinks->linkedformheader->$key;
+					$heading = $facted->linkedformheader->$key;
 					$prefix = $join->db_table_name . '___' . $join->name . '_form_heading';
 					$aTableHeadings[$prefix] = empty($heading) ? $join->listlabel . ' ' . JText::_('COM_FABRIK_FORM') : $heading;
 					$headingClass[$prefix] = array('class' => 'fabrik_ordercell related ' . $prefix,
