@@ -126,9 +126,6 @@ JToolBarHelper::title(JText::_('COM_FABRIK_WELCOME'), 'fabrik.png');
 								<?php echo JText::_('COM_FABRIK_HOME_RESET_FABRIK') ?>
 							</a>
 						</li>
-						<li>
-							<a href="index.php?option=com_fabrik&task=upgrade.check">Upgrade from 2.1</a>
-						</li>
 					</ul>
 				</div>
 			</div>
