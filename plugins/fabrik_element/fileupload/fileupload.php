@@ -1967,28 +1967,6 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 			{
 				$values = array_keys($values['id']);
 			}
-			// End failed validations
-			/*
-			foreach ($values as $value)
-			{
-				if (is_object($value))
-				{
-					$value = $value->file;
-				}
-
-				$render = $this->loadElement($value);
-
-				if ($value != '' && ($storage->exists(COM_FABRIK_BASE . $value) || JString::substr($value, 0, 4) == 'http'))
-				{
-					$render->render($this, $params, $value);
-				}
-
-				if ($render->output != '')
-				{
-					$allRenders[] = $render->output;
-				}
-			}
-			*/
 
 			$rendered = $this->buildCarousel($id, $values, $params, $data);
 
@@ -2980,23 +2958,24 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 	 * using the first file in the data array as the type.  So if the first file is
 	 * an image, a Bootstrap carousel will be built.
 	 *
-	 * @param   string  $id    Widget HTML id
-	 * @param   array   $data  Array of file paths
-	 * @param
+	 * @param   string  $id       Widget HTML id
+	 * @param   array   $data     Array of file paths
+	 * @param   object  $thisRow  Row data
 	 *
 	 * @return  string  HTML
 	 */
 
-	public function buildCarousel($id = 'carousel', $data = array(), $params, $thisRow)
+	public function buildCarousel($id = 'carousel', $data = array(), $thisRow = null)
 	{
 		$rendered = '';
+
 		if (!FArrayHelper::emptyIsh($data))
 		{
 			$render = $this->loadElement($data[0]);
+			$params = $this->getParams();
 			$rendered = $render->renderCarousel($id, $data, $this, $params, $thisRow);
-
 		}
+
 		return $rendered;
 	}
-
 }
