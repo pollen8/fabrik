@@ -71,13 +71,13 @@ class PlgFabrik_ElementIp extends PlgFabrik_Element
 			}
 			else
 			{
-				$str = "<input class=\"fabrikinput inputbox\" readonly=\"readonly\" name=\"$name\" id=\"$id\" value=\"$ip\" />\n";
+				$str = '<input type="text" class="fabrikinput inputbox" readonly="readonly" name="' . $name . '" id="' . $id . '" value="' . $ip . '" />';
 			}
 		}
 		else
 		{
 			// Make a hidden field instead
-			$str = "<input type=\"hidden\" class=\"fabrikinput\" name=\"$name\" id=\"$id\" value=\"$ip\" />";
+			$str = '<input type="hidden" class="fabrikinput" name="' . $name . '" id="' . $id . '" value="' . $ip . '" />';
 		}
 
 		return $str;
