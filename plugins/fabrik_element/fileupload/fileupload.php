@@ -286,6 +286,14 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		$oFiles = new stdClass;
 		$iCounter = 0;
 
+		//Failed validation for ajax upload elements
+		if (array_key_exists('id', $value))
+		{
+			$imgParams = array_values($value['crop']);
+			$value = array_keys($value['id']);
+			$rawvalues = $value;
+		}
+
 		for ($x = 0; $x < count($value); $x++)
 		{
 			if (is_array($value))
@@ -901,7 +909,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		// Perhaps an ajax upload? In anay event $file empty was giving errors with upload element in multipage form.
 		if (!array_key_exists('name', $file))
 		{
-			return;
+			return true;
 		}
 
 		$fileName = $file['name'];
