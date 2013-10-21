@@ -212,7 +212,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 
 		if (array_key_exists('element/fileupload/fileupload', $shim) && isset($shim['element/fileupload/fileupload']->deps))
 		{
-			$shim['element/fileupload/fileupload']->deps = array_unique(array_merge($shim['element/fileupload/fileupload']->deps, $s->deps));
+			$shim['element/fileupload/fileupload']->deps = array_values(array_unique(array_merge($shim['element/fileupload/fileupload']->deps, $s->deps)));
 		}
 		else
 		{
