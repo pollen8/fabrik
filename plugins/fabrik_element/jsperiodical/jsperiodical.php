@@ -70,42 +70,12 @@ class PlgFabrik_ElementJSPeriodical extends PlgFabrik_Element
 
 	public function render($data, $repeatCounter = 0)
 	{
-		$name = $this->getHTMLName($repeatCounter);
-		$id = $this->getHTMLId($repeatCounter);
-		$params = $this->getParams();
 		$element = $this->getElement();
-		$size = $element->width;
-		$maxlength = $params->get('maxlength', 0);
-
-		if ((int) $maxlength === 0)
-		{
-			$maxlength = $size;
-		}
-
 		$value = $this->getValue($data, $repeatCounter);
-		$type = "text";
-
-		if ($this->elementError != '')
-		{
-			$type .= " elementErrorHighlight";
-		}
-
-		if ($element->hidden == '1')
-		{
-			$type = "hidden";
-		}
-
-		$sizeInfo = " size=\"$size\" maxlength=\"$maxlength\"";
+		$type = $element->hidden == '1' ? 'hidden' : 'text';
 
 		if (!$this->isEditable())
 		{
-			$format = $params->get('text_format_string');
-
-			if ($format != '')
-			{
-				$value = eval(sprintf($format, $value));
-			}
-
 			if ($element->hidden == '1')
 			{
 				return "<!--" . $value . "-->";
@@ -116,7 +86,9 @@ class PlgFabrik_ElementJSPeriodical extends PlgFabrik_Element
 			}
 		}
 
-		$str = "<input class=\"fabrikinput inputbox $type\" type=\"$type\" name=\"$name\" id=\"$id\" $sizeInfo value=\"$value\" />\n";
+		$bits = $this->inputProperties($repeatCounter);
+		$bits['value'] = $value;
+		$str = $this->buildInput('input', $bits);
 
 		return $str;
 	}

@@ -17,8 +17,19 @@
 			<field name="jsperiod_code"
 				type="fabrikeditor"
 				mode="javascript"
+				width="100"
 				description="PLG_ELEMENT_JSPERIODICAL_OBSERVER_CODE_DESC"
 				label="PLG_ELEMENT_JSPERIODICAL_OBSERVER_CODE_LABEL" />
+			
+			<field name="readonly"
+				type="radio"
+				default="0"
+				class="btn-group"
+				description="PLG_ELEMENT_JSPERIODICAL_READ_ONLY_DESC"
+				label="PLG_ELEMENT_JSPERIODICAL_READ_ONLY_LABEL">
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+			</field>
 					
 		</fieldset>
 
