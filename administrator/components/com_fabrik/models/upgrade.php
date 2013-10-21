@@ -126,7 +126,7 @@ class FabrikModelUpgrade extends JModel
 			}
 			foreach ($rows as $row)
 			{
-				$attribs=str_replace('validation-plugin','validationplugin',$row->attribs);//$p->validation-plugin can't be used
+				$attribs=str_replace('validation-plugin','validationplugin',$row->attribs);//validation-plugin can't be used as valid var name
 				$json = json_decode($attribs); 
 				if ($json == false)
 				{
