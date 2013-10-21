@@ -6771,6 +6771,9 @@ class FabrikFEModelList extends JModelForm
 	protected function actionHeading(&$aTableHeadings, &$headingClass, &$cellClass)
 	{
 		$params = $this->getParams();
+		$filterMethod = $params->get('show-table-filters');
+		$filters = $this->getFilters('listform_' . $this->getRenderContext(), 'list');
+		$filtersUnderHeadingsAndGo = ($this->getFilterAction() === 'submitform' && !empty($filters) && $filterMethod > 2) ? true : false;
 
 		// Check for conditions in https://github.com/Fabrik/fabrik/issues/621
 		$details = $this->canViewDetails();
@@ -6787,7 +6790,7 @@ class FabrikFEModelList extends JModelForm
 			$edit = false;
 		}
 
-		if ($this->canSelectRows() || $this->canEditARow() || $details || $edit)
+		if ($this->canSelectRows() || $this->canEditARow() || $details || $edit || $filtersUnderHeadingsAndGo)
 		{
 			// 3.0 actions now go in one column
 			$pluginManager = FabrikWorker::getPluginManager();
