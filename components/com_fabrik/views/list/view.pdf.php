@@ -40,21 +40,23 @@ class FabrikViewList extends FabrikViewListBase
 			return;
 		}
 
-		$document = JFactory::getDocument();
-		$model = $this->getModel();
-		$params = $model->getParams();
-		$size = $params->get('pdf_size', 'A4');
-		$orientation = $params->get('pdf_orientation', 'portrait');
-		$document->setPaper($size, $orientation);
-		parent::display($tpl);
-		$this->nav = '';
-		$this->showPDF = false;
-		$this->showRSS = false;
-		$this->emptyLink = false;
-		$this->filters = array();
-		$this->showFilters = false;
-		$this->hasButtons = false;
-		$this->output();
+		if (parent::display($tpl) !== false)
+		{
+			$document = JFactory::getDocument();
+			$model = $this->getModel();
+			$params = $model->getParams();
+			$size = $params->get('pdf_size', 'A4');
+			$orientation = $params->get('pdf_orientation', 'portrait');
+			$document->setPaper($size, $orientation);
+			$this->nav = '';
+			$this->showPDF = false;
+			$this->showRSS = false;
+			$this->emptyLink = false;
+			$this->filters = array();
+			$this->showFilters = false;
+			$this->hasButtons = false;
+			$this->output();
+		}
 	}
 
 	/**
