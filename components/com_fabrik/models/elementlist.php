@@ -378,7 +378,7 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 			case 'multiselect':
 			default:
 				$size = $element->filter_type === 'multiselect' ? 'multiple="multiple" size="7"' : 'size="1"';
-				$attribs = 'class="inputbox fabrik_filter" ' . $size;
+				$attribs = 'class="' . $class . '" ' . $size;
 				$v = $element->filter_type === 'multiselect' ? $v . '[]' : $v;
 				$return[] = JHTML::_('select.genericlist', $rows, $v, $attribs, 'value', 'text', $default, $htmlid);
 				break;
