@@ -612,6 +612,59 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 	}
 
 	/**
+	 * Element plugin specific method for setting unecrypted values baack into post data
+	 *
+	 * @param   array   &$post  Data passed by ref
+	 * @param   string  $key    Key
+	 * @param   string  $data   Elements unencrypted data
+	 *
+	 * @return  void
+	 */
+
+	public function setValuesFromEncryt(&$post, $key, $data)
+	{
+		if ($this->isJoin())
+		{
+			$data = FabrikWorker::JSONtoData($data, true);
+		}
+
+		parent::setValuesFromEncryt($post, $key, $data);
+	}
+
+	/**
+	 * Called by form model to build an array of values to encrypt
+	 *
+	 * @param   array  &$values  Previously encrypted values
+	 * @param   array  $data     Form data
+	 * @param   int    $c        Repeat group counter
+	 *
+	 * @return  void
+	 */
+
+	public function getValuesToEncrypt(&$values, $data, $c)
+	{
+		$name = $this->getFullName(true, false);
+
+		// Needs to be set to raw = false for fileupload
+		$opts = array('raw' => false);
+		$group = $this->getGroup();
+
+		if ($group->canRepeat())
+		{
+			if (!array_key_exists($name, $values))
+			{
+				$values[$name]['data'] = array();
+			}
+
+			$values[$name]['data'][$c] = $this->getValue($data, $c, $opts);
+		}
+		else
+		{
+			$values[$name]['data'] = $this->getValue($data, $c, $opts);
+		}
+	}
+
+	/**
 	 * Examine the file being displayed and load in the corresponding
 	 * class that deals with its display
 	 *
@@ -1146,6 +1199,12 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 			$filter = JFilterInput::getInstance();
 			$post = $filter->clean($_POST, 'array');
 			$raw = JArrayHelper::getValue($post, $name . '_raw', array());
+
+			if (!$this->canUse())
+			{
+				// Ensure readonly elements not overwritten
+				return true;
+			}
 
 			if ($this->getValue($post) != 'Array,Array')
 			{
