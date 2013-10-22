@@ -270,9 +270,13 @@ class PlgFabrik_Form extends FabrikPlugin
 
 						$elementModels = $groupModel->getPublishedElements();
 						reset($elementModels);
-						$tmpElement = current($elementModels);
-						$smallerElHTMLName = $tmpElement->getFullName(true, false);
-						$repeatGroup = count($model->formDataWithTableName[$smallerElHTMLName]);
+
+						if (!empty($elementModels))
+						{
+							$tmpElement = current($elementModels);
+							$smallerElHTMLName = $tmpElement->getFullName(true, false);
+							$repeatGroup = count($model->formDataWithTableName[$smallerElHTMLName]);
+						}
 					}
 				}
 			}
