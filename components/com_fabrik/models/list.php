@@ -4742,7 +4742,7 @@ $groupBy .= '_raw';
 				$afilterJoins = JArrayHelper::getValue($prefilters, 'filter-join', array());
 			}
 		}
-		return array($afilterFields, $afilterConditions, $afilterValues, $afilterAccess, $afilterEval, $afilterJoins);
+		return array($afilterFields, $afilterConditions, $afilterValues, $afilterAccess, $afilterEval, $afilterJoins, $afilterGrouped);
 	}
 
 	/**
@@ -4760,7 +4760,7 @@ $groupBy .= '_raw';
 		{
 			$elements = $this->getElements('filtername');
 			$params = $this->getParams();
-			list($afilterFields, $afilterConditions, $afilterValues, $afilterAccess, $afilterEval, $afilterJoins) = $this->prefilterSetting();
+			list($afilterFields, $afilterConditions, $afilterValues, $afilterAccess, $afilterEval, $afilterJoins, $afilterGrouped) = $this->prefilterSetting();
 			$join = 'WHERE';
 			$w = new FabrikWorker;
 			for ($i = 0; $i < count($afilterFields); $i++)
