@@ -41,6 +41,8 @@ class FabrikViewEmailform extends JViewLegacy
 	public function display($tpl = null)
 	{
 		FabrikHelperHTML::framework();
+		$app = JFactory::getApplication();
+		$input = $app->input;
 		$model = $this->getModel('form');
 		$filter = JFilterInput::getInstance();
 		$post = $filter->clean($_POST, 'array');
@@ -51,9 +53,14 @@ class FabrikViewEmailform extends JViewLegacy
 		}
 		else
 		{
-			$to = $template = '';
-			$ok = $this->sendMail($to);
-			FabrikHelperHTML::emailSent($to, $ok);
+			$to = $input->getString('email', '');
+
+			if ($this->sendMail($to))
+			{
+				$app->enqueueMessage(JText::_('COM_FABRIK_THIS_ITEM_HAS_BEEN_SENT_TO') . ' ' . $to, 'success');
+			}
+
+			FabrikHelperHTML::emailSent();
 		}
 	}
 
@@ -64,7 +71,7 @@ class FabrikViewEmailform extends JViewLegacy
 	 *
 	 * @throws RuntimeException
 	 *
-	 * @return  void
+	 * @return  bool
 	 */
 	public function sendMail($email)
 	{
@@ -131,6 +138,6 @@ class FabrikViewEmailform extends JViewLegacy
 
 		// Mail function
 		$mail = JFactory::getMailer();
-		$res = $mail->sendMail($youremail, $yourname, $email, $subject, $msg);
+		return $mail->sendMail($youremail, $yourname, $email, $subject, $msg);
 	}
 }

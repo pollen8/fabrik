@@ -382,33 +382,19 @@ if (!$j3)
 	/**
 	 * Once email has been sent to a frind show this message
 	 *
-	 * @param   string  $to  email address
-	 * @param   bool    $ok  sent ok?
-	 *
 	 * @return  void
 	 */
 
-	public static function emailSent($to, $ok)
+	public static function emailSent()
 	{
 		$config = JFactory::getConfig();
 		$document = JFactory::getDocument();
 		$j3 = FabrikWorker::j3();
 		$document->setTitle($config->get('sitename'));
 
-		if ($ok)
-		{
-			?>
-<span class="contentheading"><?php echo JText::_('COM_FABRIK_THIS_ITEM_HAS_BEEN_SENT_TO') . ' ' . $to; ?>
-</span>
-<?php
-		}
-
 		if (!$j3)
 		{
 		?>
-<br />
-<br />
-<br />
 <a href='javascript:window.close();'> <span class="small"><?php echo JText::_('COM_FABRIK_CLOSE_WINDOW'); ?>
 </span>
 </a>

@@ -13,7 +13,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 if ($this->showEmail): ?>
-	<a class="btn" href="<?php echo $this->emailURL?>">
+	<a class="btn fabrikWin" href="<?php echo $this->emailURL?>">
 		<i class="icon-envelope"></i>
 		<?php echo JText::_('JGLOBAL_EMAIL'); ?>
 	</a>
