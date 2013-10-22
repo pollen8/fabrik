@@ -263,9 +263,9 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 	/**
 	 * Run from list model when deleting rows
 	 *
-	 * @param   object  $params      plugin parameters
-	 * @param   object  &$formModel  form model
-	 * @param   array   &$groups     list data for deletion
+	 * @param   object  $params      Plugin parameters
+	 * @param   object  &$formModel  Form model
+	 * @param   array   &$groups     List data for deletion
 	 *
 	 * @return	bool
 	 */

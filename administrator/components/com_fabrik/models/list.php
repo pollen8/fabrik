@@ -572,6 +572,7 @@ class FabrikModelList extends FabModelAdmin
 
 	public function save($data)
 	{
+		//echo "<pre>";print_r($data);exit;
 		$this->populateState();
 		$app = JFactory::getApplication();
 		$input = $app->input;

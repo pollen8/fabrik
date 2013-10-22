@@ -1309,12 +1309,15 @@ $groupBy .= '_raw';
 				$row->fabrik_edit = '';
 
 				$editLabel = $params->get('editlabel', JText::_('COM_FABRIK_EDIT'));
-				$editLink = '<a class="fabrik__rowlink" ' . $editLinkAttribs . 'data-list="list_' . $this->getRenderContext() . '" href="'
+				$loadMethod = $params->get('editurl', '') == '' ? 'xhr' : 'iframe';
+				$editLink = '<a data-loadmethod="' . $loadMethod . '" class="fabrik__rowlink" ' . $editLinkAttribs . 'data-list="list_' . $this->getRenderContext() . '" href="'
 						. $edit_link . '" title="' . $editLabel . '">' . FabrikHelperHTML::image('edit.png', 'list', '', array('alt' => $editLabel))
 						. '<span>' . $editLabel . '</span></a>';
 
 				$viewLabel = $params->get('detaillabel', JText::_('COM_FABRIK_VIEW'));
-				$viewLink = '<a class="fabrik___rowlink" ' . $detailsLinkAttribs . 'data-list="list_' . $this->getRenderContext() . '" href="'
+				$loadMethod = $params->get('detailurl', '') == '' ? 'xhr' : 'iframe';
+
+				$viewLink = '<a data-loadmethod="' . $loadMethod . '" class="fabrik___rowlink" ' . $detailsLinkAttribs . 'data-list="list_' . $this->getRenderContext() . '" href="'
 						. $link . '" title="' . $viewLabel . '">' . FabrikHelperHTML::image('view.png', 'list', '', array('alt' => $viewLabel))
 						. '<span>' . $viewLabel . '</span></a>';
 
@@ -1947,7 +1950,9 @@ $groupBy .= '_raw';
 		{
 			$class = 'fabrik_edit';
 		}
-		$data = '<a data-list="list_' . $this->getRenderContext() . '" class="fabrik___rowlink ' . $class . '" href="' . $link . '">' . $data
+
+		$loadMethod = $params->get('custom_link', '') == '' ? 'xhr' : 'iframe';
+		$data = '<a data-loadmethod="' . $loadMethod . '" data-list="list_' . $this->getRenderContext() . '" class="fabrik___rowlink ' . $class . '" href="' . $link . '">' . $data
 		. '</a>';
 		return $data;
 	}
@@ -6024,50 +6029,69 @@ $groupBy .= '_raw';
 			// Create columns containing links which point to lists associated with this list
 			$factedlinks = $params->get('factedlinks');
 			$joinsToThisKey = $this->getJoinsToThisKey();
-			$f = 0;
-			foreach ($joinsToThisKey as $join)
+			$listOrder = json_decode($params->get('faceted_list_order'));
+			$formOrder = json_decode($params->get('faceted_form_order'));
+
+			if (is_null($listOrder))
 			{
+				// Not yet saved with order
+				$listOrder = is_object($factedlinks) && is_object($factedlinks->linkedlist) ? array_keys(JArrayHelper::fromObject($factedlinks->linkedlist)) : array();
+			}
+
+			if (is_null($formOrder))
+			{
+				// Not yet saved with order
+				$formOrder = is_object($factedlinks) && is_object($factedlinks->linkedform) ? array_keys(JArrayHelper::fromObject($factedlinks->linkedform)) : array();
+			}
+
+			foreach ($listOrder as $key)
+			{
+				$join = $this->facetedJoin($key);
+
 				if ($join === false)
 				{
 					continue;
 				}
-				$key = $join->list_id . '-' . $join->form_id . '-' . $join->element_id;
+
 				if (is_object($join) && isset($factedlinks->linkedlist->$key))
 				{
 					$linkedTable = $factedlinks->linkedlist->$key;
 					$heading = $factedlinks->linkedlistheader->$key;
+
 					if ($linkedTable != '0')
 					{
-						$prefix = $join->element_id . '___' . $linkedTable;
-						$aTableHeadings[$prefix . "_list_heading"] = empty($heading) ? $join->listlabel . ' ' . JText::_('COM_FABRIK_LIST') : $heading;
-						$headingClass[$prefix . "_list_heading"] = array('class' => 'fabrik_ordercell ' . $prefix . '_list_heading related',
+						$prefix = $join->element_id . '___' . $linkedTable . '_list_heading';
+						$aTableHeadings[$prefix] = empty($heading) ? $join->listlabel . ' ' . JText::_('COM_FABRIK_LIST') : $heading;
+						$headingClass[$prefix] = array('class' => 'fabrik_ordercell related ' . $prefix,
 								'style' => '');
-						$cellClass[$prefix . "_list_heading"] = array('class' => $prefix . '_list_heading fabrik_element related');
+						$cellClass[$prefix] = array('class' => $prefix . ' fabrik_element related');
 					}
 				}
-				$f++;
 			}
 
-			$f = 0;
-			foreach ($linksToForms as $key => $join)
+			foreach ($formOrder as $key)
 			{
+				$join = $this->facetedJoin($key);
+
 				if ($join === false)
 				{
 					continue;
 				}
+
 				$linkedForm = $factedlinks->linkedform->$key;
+
 				if ($linkedForm != '0')
 				{
 					$heading = $factedlinks->linkedformheader->$key;
-					$prefix = $join->db_table_name . '___' . $join->name;
-					$aTableHeadings[$prefix . '_form_heading'] = empty($heading) ? $join->listlabel . ' ' . JText::_('COM_FABRIK_FORM') : $heading;
-					$headingClass[$prefix . '_form_heading'] = array('class' => 'fabrik_ordercell ' . $prefix . '_form_heading related',
+					$prefix = $join->db_table_name . '___' . $join->name . '_form_heading';
+					$aTableHeadings[$prefix] = empty($heading) ? $join->listlabel . ' ' . JText::_('COM_FABRIK_FORM') : $heading;
+					$headingClass[$prefix] = array('class' => 'fabrik_ordercell related ' . $prefix,
 							'style' => '');
-					$cellClass[$prefix . '_form_heading'] = array('class' => $prefix . '_form_heading fabrik_element related');
+					$cellClass[$prefix] = array('class' => $prefix . ' fabrik_element related');
 				}
-				$f++;
 			}
 		}
+
 		if ($this->canSelectRows())
 		{
 			$groupHeadings[''] = '';
@@ -6078,7 +6102,33 @@ $groupBy .= '_raw';
 		$args['headingClass'] = $headingClass;
 		$args['cellClass'] = $cellClass;
 		FabrikWorker::getPluginManager()->runPlugins('onGetPluginRowHeadings', $this, 'list', $args);
+
 		return array($aTableHeadings, $groupHeadings, $headingClass, $cellClass);
+	}
+
+	/**
+	 * Find a faceted join based on composite key
+	 *
+	 * @param   string  $searchKey  Key
+	 *
+	 * @return  mixed   False if not found, join object if found
+	 */
+
+	protected function facetedJoin($searchKey)
+	{
+		$facetedJoins = $this->getJoinsToThisKey();
+
+		foreach ($facetedJoins as $join)
+		{
+			$key = $join->list_id . '-' . $join->form_id . '-' . $join->element_id;
+
+			if ($searchKey === $key)
+			{
+				return $join;
+			}
+		}
+
+		return false;
 	}
 
 	/**
@@ -8046,7 +8096,8 @@ $groupBy .= '_raw';
 			{
 				$link .= 'index.php?option=com_' . $package . '&view=' . $view . '&formid=' . $table->form_id . $keyIdentifier;
 			}
-			if ($this->packageId !== 0)
+
+			if ($this->packageId !== 0 || $this->isAjaxLinks())
 			{
 				$link .= '&tmpl=component';
 			}
@@ -8146,6 +8197,12 @@ $groupBy .= '_raw';
 				$url = 'index.php?option=com_' . $package . '&view=form&Itemid=' . $Itemid . '&formid=' . $table->form_id . $keyIdentifier . '&listid='
 						. $this->getId();
 			}
+
+			if ($this->isAjaxLinks())
+			{
+				$url .= '&tmpl=component';
+			}
+
 			$link = JRoute::_($url);
 		}
 		else
