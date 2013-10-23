@@ -126,9 +126,8 @@
 		</if>
 
 
-		<input message="Joomla target version:" addproperty="jversion" defaultvalue="2.5"/>
+		<input message="Joomla target version:" addproperty="jversion" defaultvalue="3.1"/>
 		<input message="Component version:" addproperty="version" defaultvalue="${git.log.range.end}"/>
-		<input message="Joomla target version:" addproperty="jversion" defaultvalue="3.0"/>
 		<input message="build zips?" addproperty="zip.do" validargs="y,n" defaultvalue="y" />
 
 		<if>
@@ -901,7 +900,8 @@
         	<arg line="log --pretty=format:'* %s (%an)' ${git.log.range.start}..${git.log.range.end}"/>
     	</exec>
     	<echo message="save change log to : ${cfg.destdir}/CHANGELOG-${git.log.range.end}.txt"></echo>
-       <echo file="${cfg.destdir}/CHANGELOG-${git.log.range.end}.txt">${git.changelog}
+		<echo message="${git.changelog}"></echo>
+       <echo force="true" file="${cfg.destdir}CHANGELOG-${git.log.range.end}.txt">${git.changelog}
      </echo>
 	</target>
 
