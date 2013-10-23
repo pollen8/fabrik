@@ -15,7 +15,9 @@ var FbTags = new Class({
 	Extends: FbElement,
 	initialize: function (element, options) {
 		this.parent(element, options);
-		this.setUp();
+		if (!this.options.editable) {
+			this.setUp();
+		}
 	},
 
 	setUp: function () {
