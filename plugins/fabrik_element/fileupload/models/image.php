@@ -85,7 +85,7 @@ class ImageRender
 			$title_name = str_replace('.', '___', $params->get('fu_title_element'));
 		}
 
-		if ($input->get('view') == 'list')
+		if ($this->inTableView)
 		{
 			$listModel = $model->getlistModel();
 
