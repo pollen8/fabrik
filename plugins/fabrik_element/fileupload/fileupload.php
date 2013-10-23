@@ -286,7 +286,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		$oFiles = new stdClass;
 		$iCounter = 0;
 
-		//Failed validation for ajax upload elements
+		// Failed validation for ajax upload elements
 		if (array_key_exists('id', $value))
 		{
 			$imgParams = array_values($value['crop']);

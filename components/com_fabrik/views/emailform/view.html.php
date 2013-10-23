@@ -138,6 +138,7 @@ class FabrikViewEmailform extends JViewLegacy
 
 		// Mail function
 		$mail = JFactory::getMailer();
+
 		return $mail->sendMail($youremail, $yourname, $email, $subject, $msg);
 	}
 }

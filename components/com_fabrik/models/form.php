@@ -4315,10 +4315,6 @@ class FabrikFEModelForm extends FabModelForm
 				{
 					if (is_object($element))
 					{
-						// $$$rob moved these two lines here as there were giving warnings since Hugh commented out the if ($element != '') {
-						// $$$ hugh - what?  Eh?  WhaddidIdo?  Anyway, we use $linkKey up ^^ there somewhere, so we need to define it earlier!
-						// Jaanus: now the linkkey is correctly generated
-
 						$linkKeyData = $referringTable->getRecordCounts($element, $pks);
 						$linkKey = $linkKeyData['linkKey'];
 						$val = $input->get($linkKey, '', 'string');
@@ -4329,10 +4325,11 @@ class FabrikFEModelForm extends FabModelForm
 						}
 
 						// Jaanus: when no link to list and no formheaders then people still know where they add data
-						$label = $factedLinks->linkedformheader->$key != '' ? ': ' . $factedLinks->linkedformheader->$key : (isset($linkedLists->$key) && $linkedLists->$key != 0 ? '' : ': ' . $element->listlabel);
+						$fkey = $factedLinks->linkedformheader->$key;
+						$label = $fkey != '' ? ': ' . $fkey : (isset($linkedLists->$key) && $linkedLists->$key != 0 ? '' : ': ' . $element->listlabel);
 
 						// Jaanus: label after add link if no list link helps to make difference between data view links and only add links.
-						$links[$element->list_id][] =  $referringTable->viewFormLink($popUpLink, $element, null, $linkKey, $val, false, $f) . $label;
+						$links[$element->list_id][] = $referringTable->viewFormLink($popUpLink, $element, null, $linkKey, $val, false, $f) . $label;
 					}
 				}
 
