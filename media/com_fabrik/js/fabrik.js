@@ -596,6 +596,7 @@ if (typeof(Fabrik) === "undefined") {
 					Fabrik.blocks[k].formElements = null;
 					Fabrik.blocks[k] = null;
 					delete(Fabrik.blocks[k]);
+					Fabrik.fireEvent('fabrik.list.row.edit.close', [listRef, rowid, k]);
 				} catch (e) {}
 			}
 		};
@@ -662,6 +663,7 @@ if (typeof(Fabrik) === "undefined") {
 					Fabrik.blocks[k].formElements = null;
 					Fabrik.blocks[k] = null;
 					delete(Fabrik.blocks[k]);
+					Fabrik.fireEvent('fabrik.list.row.view.close', [listRef, rowid, k]);
 				} catch (e) {
 					console.log(e);
 				}
