@@ -32,7 +32,8 @@ var FbForm = new Class({
 			'alert': '',
 			'action_check': '',
 			'ajax_loader': ''
-		}
+		},
+		'ajaxSaveAlert': true
 	},
 
 	initialize: function (id, options) {
@@ -1106,11 +1107,11 @@ var FbForm = new Class({
 										}
 									}
 								} else {
-									alert(savedMsg);
+									this.doMessage(savedMsg);
 								}
 							} else {
 								clear_form = json.reset_form !== undefined ? json.reset_form : clear_form;
-								alert(savedMsg);
+								this.doMessage(savedMsg);
 							}
 							// Query the list to get the updated data
 							Fabrik.fireEvent('fabrik.form.submitted', [this, json]);
@@ -1143,6 +1144,24 @@ var FbForm = new Class({
 			if (this.options.ajax) {
 				Fabrik.fireEvent('fabrik.form.ajax.submit.end', [this]);
 			}
+		}
+	},
+	
+	/**
+	 * Ajax save message, do alert or inject into form.
+	 * 
+	 * @param   string  savedMsg  Message to show
+	 */
+	doMessage: function (savedMsg) {
+		if (this.options.ajaxSaveAlert) {
+			alert(savedMsg);
+		} else {
+			var msg = this.getForm().getElement('div.ajaxMessage');
+			if (typeOf(msg) === 'null') {
+				msg = new Element('div.ajaxMessage.fabrikSuccess');
+				msg.inject(this.getForm(), 'top');
+			}
+			msg.set('html', savedMsg);
 		}
 	},
 

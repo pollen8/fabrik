@@ -443,6 +443,7 @@ class FabrikViewFormBase extends JView
 		$this->get('FormCss');
 
 		$start_page = isset($model->sessionModel->last_page) ? (int) $model->sessionModel->last_page : 0;
+
 		if ($start_page !== 0)
 		{
 			$app->enqueueMessage(JText::_('COM_FABRIK_RESTARTING_MUTLIPAGE_FORM'));
@@ -457,6 +458,7 @@ class FabrikViewFormBase extends JView
 
 		$opts->admin = $app->isAdmin();
 		$opts->ajax = $model->isAjax();
+		$opts->ajaxSaveAlert = (bool) $input->get('ajaxSaveAlert', 1);
 		$opts->ajaxValidation = (bool) $params->get('ajax_validations');
 		$opts->primaryKey = $key;
 		$opts->error = @$form->origerror;

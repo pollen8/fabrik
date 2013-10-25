@@ -47,6 +47,7 @@ if (!empty($usekey))
 $moduleclass_sfx = $params->get('moduleclass_sfx', '');
 
 $moduleAjax = $params->get('formmodule_useajax', true);
+$moduleAjaxSaveAlert = $params->get('ajaxSaveAlert', true);
 
 $origView = JRequest::getVar('view');
 
@@ -62,9 +63,11 @@ JRequest::setVar('layout', $layout);
 $controller->isMambot = true;
 $origFormid = JRequest::getInt('formid');
 $ajax = JRequest::getVar('ajax');
+$ajaxSaveAlert = JRequest::getVar('ajaxSaveAlert', $moduleAjaxSaveAlert);
 JRequest::setVar('formid', $params->get('formid'));
 
 JRequest::setVar('ajax', $moduleAjax);
+JRequest::setVar('ajaxSaveAlert', $ajaxSaveAlert);
 echo $controller->display();
 
 // Reset the layout and view etc for when the component needs them
@@ -72,3 +75,4 @@ JRequest::setVar('formid', $origFormid);
 JRequest::setVar('ajax', $ajax);
 JRequest::setVar('layout', $origLayout);
 JRequest::setVar('view', $origView);
+JRequest::setVar('ajaxSaveAlert', $ajaxSaveAlert);
