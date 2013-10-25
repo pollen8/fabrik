@@ -1390,6 +1390,27 @@ class FabrikFEModelForm extends FabModelForm
 						break;
 					}
 				}
+				else
+				{
+					// Joined element data (ajax fileupload etc)
+					$elementModel = $this->getElement($fullName);
+
+					if ($elementModel->isJoin())
+					{
+						$joinModel = $elementModel->getJoinModel();
+						$joinid = $joinModel->getJoin()->id;
+
+						if (array_key_exists($joinid, $data['join']))
+						{
+							$value = $data['join'][$joinid][$fullName];
+
+							if (!is_null($repeatCount))
+							{
+								$value = JArrayHelper::getValue($value, $repeatCount);
+							}
+						}
+					}
+				}
 			}
 		}
 
