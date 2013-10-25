@@ -4461,7 +4461,7 @@ class FabrikFEModelForm extends FabModelForm
 						
 						// Jaanus: label after add link if no list link helps to make difference between data view links and only add links.
 						
-						$links[$element->list_id][] =  $referringTable->viewFormLink($popUpLink, $element, null, $linkKey, $val, false, null) . $label;
+						$links[$element->list_id][] =  $referringTable->viewFormLink($popUpLink, $element, null, $linkKey, $val, false, $f) . $label;
 					}
 				}
 				$f++;
