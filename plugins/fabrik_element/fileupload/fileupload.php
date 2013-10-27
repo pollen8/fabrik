@@ -2426,20 +2426,43 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		$params = $this->getParams();
 		$storage = $this->getStorage();
 		$this->_repeatGroupCounter = $repeatCounter;
+
 		if ($params->get('fu_show_image_in_email', false))
 		{
-			$render = $this->loadElement($value);
-			if ($params->get('fu_show_image') != '0')
+			$origShowImages = $params->get('fu_show_image');
+			$params->set('fu_show_image', true);
+
+			// For ajax repeats
+			$value = (array) $value;
+			$formModel = $this->getFormModel();
+
+			if (!isset($formModel->data))
 			{
-				if ($value != '' && $storage->exists(COM_FABRIK_BASE . $value))
+				$formModel->data = $data;
+			}
+
+			if (empty($value))
+			{
+				return '';
+			}
+
+			foreach ($value as $v)
+			{
+				$render = $this->loadElement($v);
+
+				if ($v != '' && $storage->exists(COM_FABRIK_BASE . $v))
 				{
-					$render->render($this, $params, $value);
+					$render->render($this, $params, $v);
 				}
 			}
+
 			if ($render->output == '' && $params->get('default_image') != '')
 			{
 				$render->output = '<img src="' . $params->get('default_image') . '" alt="image" />';
 			}
+
+			$params->set('fu_show_image', $origShowImages);
+
 			return $render->output;
 		}
 		else

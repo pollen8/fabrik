@@ -34,9 +34,10 @@
 				<option value="1">JYES</option>
 			</field>
 			
-			<field default="0" description="PLG_FABRIK_FORM_JUSER_BYPASS_J_ACCOUNT_DETAILS_EMAIL_DESC" label="PLG_FABRIK_FORM_JUSER_BYPASS_J_ACCOUNT_DETAILS_EMAIL_LABEL" name="juser_bypass_accountdetails" repeat="true" type="radio">
+			<field default="0" description="PLG_FABRIK_FORM_JUSER_BYPASS_J_ACCOUNT_DETAILS_EMAIL_DESC" label="PLG_FABRIK_FORM_JUSER_BYPASS_J_ACCOUNT_DETAILS_EMAIL_LABEL" name="juser_bypass_accountdetails" repeat="true" type="list">
 					<option value="0">JNO</option>
-					<option value="1">JYES</option>
+					<option value="1">PLG_FABRIK_FORM_JUSER_BYPASS_J_ACCOUNT_DETAILS_EMAIL_ONLY</option>
+					<option value="2">PLG_FABRIK_FORM_JUSER_BYPASS_J_ACCOUNT_DETAILS_EMAIL_BOTH</option>					
 			</field>
 				
 			<field default="0" description="PLG_FABRIK_FORM_JUSER_AUTO_LOGIN_DESC" label="PLG_FABRIK_FORM_JUSER_AUTO_LOGIN_LABEL" name="juser_auto_login" repeat="true" type="radio">
