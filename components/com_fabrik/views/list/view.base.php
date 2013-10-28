@@ -349,7 +349,7 @@ class FabrikViewListBase extends JView
 		$this->requiredFiltersFound = $model->getRequiredFiltersFound();
 		$this->advancedSearch = $model->getAdvancedSearchLink();
 		$this->nodata = (empty($this->rows) || (count($this->rows) == 1 && empty($firstRow)) || !$this->requiredFiltersFound) ? true : false;
-		$this->tableStyle = $this->nodata ? 'display:none' : '';
+		$this->tableEmptyClass = $this->nodata ? 'emptyfabrikDataContainer' : '';
 		$this->emptyStyle = $this->nodata ? '' : 'display:none';
 		$params = $model->getParams();
 
