@@ -931,6 +931,7 @@ var FbForm = new Class({
 	},
 
 	showMainError: function (msg) {
+		this.closeMessage();
 		// If we are in j3 and ajax validations are on - dont show main error as it makes the form 'jumpy'
 		if (Fabrik.bootstrapped && this.options.ajaxValidation) {
 			return;
@@ -1161,7 +1162,20 @@ var FbForm = new Class({
 				msg = new Element('div.ajaxMessage.fabrikSuccess');
 				msg.inject(this.getForm(), 'top');
 			}
+			else {
+				msg.show();
+			}
 			msg.set('html', savedMsg);
+		}
+	},
+	
+	/**
+	 * Hide the message container
+	 */
+	closeMessage: function () {
+		var msg = this.getForm().getElement('div.ajaxMessage');
+		if (typeOf(msg) !== 'null') {
+			msg.hide();
 		}
 	},
 
