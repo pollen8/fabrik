@@ -297,7 +297,10 @@ class PlgContentFabrik extends JPlugin
 		 */
 		if (!$layoutFound)
 		{
-			if ($input->get('option') === 'com_content' && $input->get('layout') === 'blog')
+			$thisLayout = $input->get('layout');
+
+			// Also test for saving an article
+			if ($input->get('option') === 'com_content' && ($thisLayout === 'blog' || ($app->isAdmin() && $thisLayout === 'edit')))
 			{
 				$layout = 'default';
 				$input->set('layout', $layout);
