@@ -37,7 +37,7 @@ $this->headingstmpl = $this->loadTemplate('headings');
 $this->showGroup = true;
 ?>
 
-<div class="fabrikDataContainer">
+<div class="fabrikDataContainer <?php echo $this->tableEmptyClass?>">
 <?php foreach ($this->pluginBeforeList as $c) :
 	echo $c;
 endforeach;?>
