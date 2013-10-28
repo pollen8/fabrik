@@ -98,7 +98,7 @@
 	
 	<!-- START UPDATESERVERS -->
 	<updateservers>
-		<server type="collection">http://fabrikar.com/update/fabrik_sts/package_list.xml</server>
+		<server type="collection">http://fabrikar.com/update/fabrik/package_list.xml</server>
 	</updateservers>
 
 	
