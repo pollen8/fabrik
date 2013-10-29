@@ -21,46 +21,48 @@ var FbPicklist = new Class({
 	 * Ini the sortable object
 	 */
 	makeSortable: function () {
-		var c = this.getContainer();
-		var from = c.getElement('.fromList'),
-		to = c.getElement('.toList'),
-		dropcolour = from.getStyle('background-color'),
-		that = this;
-		
-		this.sortable = new Sortables([ from, to ], {
-			clone: true,
-			revert: true,
-			opacity: 0.7,
-			hovercolor: '#ffddff',
-			onComplete: function (element) {
-				this.setData();
-				this.showNotices(element);
-				that.fadeOut(from, dropcolour);
-				that.fadeOut(to, dropcolour);
-			}.bind(this),
-			onSort: function (element, clone) {
-				this.showNotices(element, clone);
-
-			}.bind(this),
-
-
-			onStart : function (element, clone) {
-				this.drag.addEvent('onEnter', function (element, droppable) {
-					if (this.lists.contains(droppable)) {
-						that.fadeOut(droppable, this.options.hovercolor);
-						if (this.lists.contains(this.drag.overed)) {
-							this.drag.overed.addEvent('mouseleave', function () {
-								that.fadeOut(from, dropcolour);
-								that.fadeOut(to, dropcolour);
-							}.bind(this));
+		if (this.options.editable) {
+			var c = this.getContainer();
+			var from = c.getElement('.fromList'),
+			to = c.getElement('.toList'),
+			dropcolour = from.getStyle('background-color'),
+			that = this;
+			
+			this.sortable = new Sortables([ from, to ], {
+				clone: true,
+				revert: true,
+				opacity: 0.7,
+				hovercolor: '#ffddff',
+				onComplete: function (element) {
+					this.setData();
+					this.showNotices(element);
+					that.fadeOut(from, dropcolour);
+					that.fadeOut(to, dropcolour);
+				}.bind(this),
+				onSort: function (element, clone) {
+					this.showNotices(element, clone);
+	
+				}.bind(this),
+	
+	
+				onStart : function (element, clone) {
+					this.drag.addEvent('onEnter', function (element, droppable) {
+						if (this.lists.contains(droppable)) {
+							that.fadeOut(droppable, this.options.hovercolor);
+							if (this.lists.contains(this.drag.overed)) {
+								this.drag.overed.addEvent('mouseleave', function () {
+									that.fadeOut(from, dropcolour);
+									that.fadeOut(to, dropcolour);
+								}.bind(this));
+							}
 						}
-					}
-				}.bind(this));
-			}
-		});
-		var notices = [from.getElement('li.emptyplicklist'), to.getElement('li.emptyplicklist')];
-		this.sortable.removeItems(notices);
-		this.showNotices();
+					}.bind(this));
+				}
+			});
+			var notices = [from.getElement('li.emptyplicklist'), to.getElement('li.emptyplicklist')];
+			this.sortable.removeItems(notices);
+			this.showNotices();
+		}
 	},
 
 	fadeOut: function (droppable, colour) {
