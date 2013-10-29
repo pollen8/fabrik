@@ -2,23 +2,22 @@
 <form>
 	<fields addfieldpath="/administrator/components/com_fabrik/models/fields" name="params">
 		<fieldset name="plg-form-alphauserpoints">
-			
+
 			<field name="aup_plugin"
 				type="sql"
 				query="SELECT plugin_function AS value, rule_name AS aup_plugin from #__alpha_userpoints_rules"
 				description="PLG_FABRIK_FORM_AUP_PLUGIN_DESC"
 				label="PLG_FABRIK_FORM_AUP_PLUGIN_LABEL"
 				repeat="true"/>
-				
+
 			<field name="user_id"
 				type="text"
 				label="PLG_FABRIK_FORM_AUP_USER_LABEL"
 				description="PLG_FABRIK_FORM_AUP_USER_DESC"
 				repeat="true"/>
-			
+
 			<field name="random_points"
 				type="fabrikeditor"
-				width="100"
 				label="PLG_FABRIK_FORM_AUP_RANDOM_POINTS_LABEL"
 				description="PLG_FABRIK_FORM_AUP_RANDOM_POINTS_DESC"
 				repeat="true"/>
@@ -33,17 +32,17 @@
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
-							
+
 			<!-- <field name="referral_user_points"
 				type="text"
-				label="PLG_FABRIK_FORM_AUP_REFERRAL_POINTS_LABEL"		
+				label="PLG_FABRIK_FORM_AUP_REFERRAL_POINTS_LABEL"
 				description="PLG_FABRIK_FORM_AUP_REFERRAL_POINTS_DESC" /> -->
-				
+
 			<field name="data_reference"
 				type="text"
 				label="PLG_FABRIK_FORM_AUP_REF_LABEL"
 				description="PLG_FABRIK_FORM_AUP_REF_DESC"
-				repeat="true"/>	
+				repeat="true"/>
 		</fieldset>
 	</fields>
 </form>
