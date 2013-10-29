@@ -2,22 +2,20 @@
 <form>
 	<fields addfieldpath="/administrator/components/com_fabrik/models/fields" name="params">
 		<fieldset name="plg-cron-php">
-			
+
 			<field name="cronphp_file"
 				type="filelist"
 				description="PLG_FABRIK_CRON_PHP_FILE_DESC"
 				directory="plugins/fabrik_cron/php/scripts/"
 				hide_default="1"
 				label="PLG_FABRIK_CRON_PHP_FILE_LABEL" />
-			
+
 			<field name="cronphp_params"
 				type="fabrikeditor"
-				width="100"
-				cols="100"
 				description="PLG_FABRIK_CRON_PHP_PARAMS_DESC"
 				label="PLG_FABRIK_CRON_PHP_PARAMS_LABEL"
-				rows="10" />
-			
+				/>
+
 		</fieldset>
 	</fields>
 </form>

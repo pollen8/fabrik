@@ -2,22 +2,21 @@
 <form>
 	<fields addfieldpath="/administrator/components/com_fabrik/models/fields" name="params">
 		<fieldset name="plg-validationrule-isuniquevalue">
-		
+
 			<field name="isuniquevalue-message"
 				type="text"
 				description="PLG_VALIDATIONRULE_ISUNIQUE_ERROR_DESC"
 				label="PLG_VALIDATIONRULE_ISUNIQUE_ERROR_LABEL"
 				repeat="true"
 				size="30" />
-				
+
 			<field name="isuniquevalue-validation_condition"
 				type="fabrikeditor"
 				mode="php"
-				width="400px"
 				description="PLG_VALIDATIONRULE_ISUNIQUE_CONDITION_DESC"
 				label="PLG_VALIDATIONRULE_ISUNIQUE_CONDITION_LABEL"
 				repeat="true" />
-				
+
 			<field name="isuniquevalue-caseinsensitive"
 				type="radio"
 				default="0"
@@ -27,7 +26,7 @@
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
-			
+
 		</fieldset>
 	</fields>
 </form>
