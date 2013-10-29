@@ -76,7 +76,7 @@ class JFormFieldFabrikeditor extends JFormFieldTextArea
 		$theme = $this->element['theme'] ? (string) $this->element['theme'] : 'github';
 		$height = $this->element['height'] ? (string) $this->element['height'] : '200px';
 		$maxHeight = $this->element['max-height'] ? (string) $this->element['max-height'] : str_ireplace('px', '', $height) * 2 . 'px';
-		$width = $this->element['width'] ? (string) $this->element['width'] : '300px';
+		$width = $this->element['width'] ? (string) $this->element['width'] : '100';
 		FabrikHelperHTML::framework();
 		FabrikHelperHTML::iniRequireJS();
 

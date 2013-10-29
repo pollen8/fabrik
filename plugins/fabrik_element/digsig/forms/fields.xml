@@ -9,12 +9,10 @@
 			<field name="default"
 				type="fabrikeditor"
 				mode="php"
-				width="100"
-				cols="45"
 				label="PLG_ELEMENT_DIGSIG_DEFAULT_LABEL"
 				description="PLG_ELEMENT_DIGSIG_DEFAULT_DESC"
-				rows="6"/>
-				
+				/>
+
 			<field name="eval"
 				type="radio"
 				class="radio btn-group"
@@ -40,7 +38,7 @@
 				descroption="PLG_ELEMENT_DIGSIG_FORM_WIDTH_DESC"
 				size="3"
 				type="text"/>
-				
+
 			<field name="digsig_form_height"
 				class="input-mini"
 				default="250"

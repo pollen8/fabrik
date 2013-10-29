@@ -2,26 +2,26 @@
 <form>
 	<fields addfieldpath="/administrator/components/com_fabrik/models/fields" name="params">
 		<fieldset name="plg-cron-email" label="COM_FABRIK_OPTIONS">
-			
+
 			<field name="to"
 				type="text"
 				description="PLG_CRON_EMAIL_TO_DESC"
 				label="PLG_CRON_EMAIL_TO_LABEL"
 				size="30" />
-				
+
 			<field name="subject"
 				type="text"
 				description="PLG_CRON_EMAIL_SUBJECT_DESC"
 				label="PLG_CRON_EMAIL_SUBJECT_LABEL"
 				size="30" />
-				
+
 			<field name="message"
 				type="textarea"
 				cols="60"
 				description="PLG_CRON_EMAIL_MESSAGE_DESC"
 				label="PLG_CRON_EMAIL_MESSAGE_LABEL"
 				rows="8" />
-				
+
 			<field name="cronemail-eval"
 				type="radio"
 				default="0"
@@ -31,19 +31,17 @@
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
-				
+
 			<field name="cronemail_condition"
 				type="fabrikeditor"
-				width="100"
-				cols="30"
 				description="PLG_CRON_EMAIL_CONDITION_DESC"
 				label="PLG_CRON_EMAIL_CONDITION_LABEL"
-				rows="5" />
+				/>
 
 		</fieldset>
-		
+
 		<fieldset label="PLG_CTON_EMAIL_UPDATE" name="plg-cron-email-update">
-		
+
 			<field name="cronemail-updatefield"
 				type="element"
 				connection="params_connection"
@@ -51,12 +49,9 @@
 				description="PLG_CRON_EMAIL_FIELD_DESC"
 				label="PLG_CRON_EMAIL_FIELD_LABEL"
 				table="params_table" />
-				
+
 			<field name="cronemail-updatefield-value"
 				type="fabrikeditor"
-				width="100"
-				cols="30"
-				rows="5"
 				description="PLG_CRON_EMAIL_VALUE_DESC"
 				label="PLG_CRON_EMAIL_VALUE_LABEL" />
 
@@ -68,7 +63,7 @@
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
-							
+
 		</fieldset>
 	</fields>
 </form>

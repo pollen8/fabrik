@@ -9,11 +9,9 @@
 			<field name="default"
 				type="fabrikeditor"
 				mode="php"
-				width="100"
-				cols="45"
 				label="PLG_ELEMENT_SLIDER_DEFAULT_LABEL"
-				rows="6"/>
-				
+				/>
+
 			<field name="eval"
 				type="radio"
 				class="radio btn-group"

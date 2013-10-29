@@ -29,7 +29,7 @@ class PlgFabrik_ElementYesno extends PlgFabrik_ElementRadiobutton
 	 *
 	 * @var string
 	 */
-	protected $fieldDesc = 'TINYINT(%s)';
+	protected $fieldDesc = 'INT(%s)';
 
 	/**
 	 * Db table field size

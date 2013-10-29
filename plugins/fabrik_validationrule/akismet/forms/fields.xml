@@ -2,29 +2,28 @@
 <form>
 	<fields addfieldpath="/administrator/components/com_fabrik/models/fields" name="params">
 		<fieldset name="plg-validationrule-akismet" repeat="1" repeatcontrols="0">
-		
+
 			<field name="akismet-message"
 				type="text"
 				description="PLG_VALIDATIONRULE_ASKIMET_ERROR_DESC"
 				label="PLG_VALIDATIONRULE_ASKIMET_ERROR_LABEL"
 				repeat="true"
 				size="30" />
-				
+
 			<field name="akismet-validation_condition"
 				type="fabrikeditor"
 				mode="php"
-				width="400px"
 				description="PLG_VALIDATIONRULE_ASKIMET_CONDITION_DESC"
 				label="PLG_VALIDATIONRULE_ASKIMET_CONDITION_LABEL"
 				repeat="true" />
-				
+
 			<field name="akismet-key"
 				type="text"
 				description="PLG_VALIDATIONRULE_ASKIMET_KEY_DESC"
 				label="PLG_VALIDATIONRULE_ASKIMET_KEY_LABEL"
 				repeat="true"
 				size="30" />
-				
+
 		</fieldset>
 	</fields>
 </form>

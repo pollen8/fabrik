@@ -2,22 +2,21 @@
 <form>
 	<fields addfieldpath="/administrator/components/com_fabrik/models/fields" name="params">
 		<fieldset name="plg-validationrule-userexists">
-		
+
 			<field name="userexists-message"
 				type="text"
 				description="PLG_VALIDATIONRULE_USEREXISTS_ERROR_DESC"
 				label="PLG_VALIDATIONRULE_USEREXISTS_ERROR_LABEL"
 				repeat="true"
 				size="30" />
-				
+
 			<field name="userexists-validation_condition"
 				type="fabrikeditor"
 				mode="php"
-				width="400px"
 				description="PLG_VALIDATIONRULE_USEREXISTS_CONDITION_DESC"
 				label="PLG_VALIDATIONRULE_USEREXISTS_CONDITION_LABEL"
 				repeat="true" />
-				
+
 			<field name="userexists_or_not"
 				type="list"
 				default="fail_if_exist"
@@ -33,7 +32,7 @@
 				description="PLG_VALIDATIONRULE_USEREXISTS_USER_FIELD_DESC"
 				label="PLG_VALIDATIONRULE_USEREXISTS_USER_FIELD_LABEL"
 				repeat="true" />
-		
+
 		</fieldset>
 	</fields>
 </form>

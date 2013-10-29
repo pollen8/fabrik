@@ -1540,6 +1540,7 @@ class PlgFabrik_Element extends FabrikPlugin
 			}
 
 			$labelText = JText::_($element->label);
+			$labelText = $labelText == '' ? '&nbsp;' : $labelText;
 			$l = $j3 ? '' : $labelText;
 			$iconOpts = array('icon-class' => 'small');
 

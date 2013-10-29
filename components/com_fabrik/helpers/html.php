@@ -593,7 +593,7 @@ if (!$j3)
 	{
 		$db = FabrikWorker::getDbo(true);
 		$query = $db->getQuery(true);
-		$query->select('id, label')->from('#__{package}_lists')->where('published = 1');
+		$query->select('id, label')->from('#__{package}_lists')->where('published = 1')->order('label');
 		$db->setQuery($query);
 		$rows = $db->loadObjectList();
 
