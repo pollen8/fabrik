@@ -944,6 +944,8 @@ if (!$j3)
 				$liveSiteSrc[] = "window.addEvent('fabrik.loaded', function () {";
 				$liveSiteSrc[] = "\tFabrik.liveSite = '" . COM_FABRIK_LIVESITE . "';";
 
+				$liveSiteSrc[] = "\tFabrik.debug = " . (self::isDebug() ? 'true;' : 'false;');
+
 				if ($bootstrapped)
 				{
 					$liveSiteSrc[] = "\tFabrik.bootstrapped = true;";
