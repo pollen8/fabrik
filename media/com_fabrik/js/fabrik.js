@@ -14,9 +14,11 @@
 
 function fconsole() {
 	if (typeof(window.console) !== "undefined") {
+		var str = '';
 		for (var i = 0; i < arguments.length; i ++) {
-			console.log(arguments[i]);
+			str += arguments[i] + ' ';
 		}
+		console.log(str);
 	}
 }
 
@@ -576,7 +578,7 @@ if (typeof(Fabrik) === "undefined") {
 		if (typeOf(loadMethod) === 'null') {
 			loadMethod = 'xhr';
 		}
-		
+
 		// Only one edit window open at the same time.
 		$H(Fabrik.Windows).each(function (win, key) {
 			win.close();
@@ -632,7 +634,7 @@ if (typeof(Fabrik) === "undefined") {
 		}
 		list.setActive(row);
 		var rowid = row.id.split('_').getLast();
-		
+
 		if (e.target.get('tag') === 'a') {
 			a = e.target;
 		} else {
@@ -643,7 +645,7 @@ if (typeof(Fabrik) === "undefined") {
 		if (typeOf(loadMethod) === 'null') {
 			loadMethod = 'xhr';
 		}
-		
+
 		// Only one edit window open at the same time.
 		$H(Fabrik.Windows).each(function (win, key) {
 			win.close();
