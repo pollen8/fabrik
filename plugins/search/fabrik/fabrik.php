@@ -31,6 +31,7 @@ class PlgSearchFabrik extends JPlugin
 		// Load plugin params info
 		$section = $this->params->get('search_section_heading');
 		$areas = array('fabrik' => $section);
+
 		return $areas;
 	}
 
@@ -58,7 +59,7 @@ class PlgSearchFabrik extends JPlugin
 				return array();
 			}
 		}
+
 		return plgSystemFabrik::onDoContentSearch($text, $this->params, $phrase, $ordering, $areas);
 	}
-
 }
