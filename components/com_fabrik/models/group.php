@@ -1349,7 +1349,14 @@ class FabrikFEModelGroup extends FabModel
 		if (!empty($elementModels))
 		{
 			$smallerElHTMLName = $tmpElement->getFullName(true, false);
-			$repeatGroup = count(JArrayHelper::getValue($data, $smallerElHTMLName, 1));
+			$d = JArrayHelper::getValue($data, $smallerElHTMLName, 1);
+
+			if (is_object($d))
+			{
+				$d = JArrayHelper::fromObject($d);
+			}
+
+			$repeatGroup = count($d);
 		}
 		else
 		{
