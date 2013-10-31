@@ -722,7 +722,7 @@ class FabrikPlugin extends JPlugin
 		$app = JFactory::getApplication();
 		$input = $app->input;
 		$tid = $input->get('t');
-		$keyType = $input->get('k', 1);
+		$keyType = $input->getInt('k', 1);
 
 		// If true show all fields if false show fabrik elements
 		$showAll = $input->getBool('showall', false);
@@ -840,7 +840,8 @@ class FabrikPlugin extends JPlugin
 							* what we want? In timeline viz options i've simply stripped out the [] off the end
 							* as a temp hack
 							*/
-							$v = $eVal->getFullName(false);
+							$useStep = $keyType === 2 ? true : false;
+							$v = $eVal->getFullName($useStep);
 						}
 
 						$c = new stdClass;
