@@ -603,7 +603,7 @@ class FabrikFEModelListfilter extends FabModel
 			$search = $orig_search;
 			$elementModel = $elements[$elid];
 
-			if (!$elementModel->includeInSearchAll())
+			if (!$elementModel->includeInSearchAll(false, $search))
 			{
 				continue;
 			}

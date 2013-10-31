@@ -1379,7 +1379,17 @@ class PlgFabrik_Element extends FabrikPlugin
 
 			if ($groupRepeat)
 			{
-				$values = (array) $values;
+				// Wierd bug where stdClass with key 0, when cast to (array) you couldnt access values[0]
+				if (is_object($values))
+				{
+					$values = JArrayHelper::fromObject($values);
+				}
+
+				if (!is_array($values))
+				{
+					$values = (array) $values;
+				}
+
 				$values = JArrayHelper::getValue($values, $repeatCounter, '');
 			}
 
@@ -6068,12 +6078,13 @@ class PlgFabrik_Element extends FabrikPlugin
 	 * Looks at the lists selected options, if its there looks at what search mode the list is using
 	 * and determines if the selected element can be used.
 	 *
-	 * @param   bool  $advancedMode  is the elements' list is extended search all mode?
+	 * @param   bool    $advancedMode  Is the elements' list is extended search all mode?
+	 * @param   string  $search        Search string
 	 *
 	 * @return  bool	true
 	 */
 
-	public function includeInSearchAll($advancedMode = false)
+	public function includeInSearchAll($advancedMode = false, $search = '')
 	{
 		if ($this->isJoin() && $advancedMode)
 		{
