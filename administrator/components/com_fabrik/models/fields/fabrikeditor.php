@@ -95,10 +95,12 @@ class JFormFieldFabrikeditor extends JFormFieldTextArea
 		// In code below, the +/- 2 is to account for the top/bottom border of 1px each.
 		$script = '
 window.addEvent(\'domready\', function () {
+	if (Fabrik.debug) fconsole("FabrikEditor initialising: ' . $this->id . '");
 	var FbEditor = ace.edit("' . $this->id . '-ace");
 	FbEditor.setTheme("ace/theme/' . $theme . '");
 	FbEditor.getSession().setMode(' . $aceMode . ');
 	FbEditor.setValue(document.id("' . $this->id . '").value);
+	FbEditor.navigateFileStart();
 	FbEditor.setAnimatedScroll(true);
 	FbEditor.setBehavioursEnabled(true);
 	FbEditor.setDisplayIndentGuides(true);
@@ -132,7 +134,7 @@ window.addEvent(\'domready\', function () {
 });
 		';
 
-		$src = array('media/com_fabrik/js/lib/ace/src-min-noconflict/ace.js');
+		$src = array('media/com_fabrik/js/lib/ace/src-min-noconflict/ace.js','media/com_fabrik/js/fabrik.js');
 		FabrikHelperHTML::script($src, $script);
 
 		echo '<style type="text/css" media="screen">
