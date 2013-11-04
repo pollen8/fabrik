@@ -4598,16 +4598,21 @@ $groupBy .= '_raw';
 			{
 				$value = $db->quote($value);
 			}
+
 			if ($fullWordsOnly == '1')
 			{
 				$condition = 'REGEXP';
 			}
+
 			$originalValue = $this->filters['value'][$i];
+
 			if ($value == '' && $eval == FABRIKFILTER_QUERY)
 			{
 				JError::raiseError(500, JText::_('COM_FABRIK_QUERY_PREFILTER_WITH_NO_VALUE'));
 			}
+
 			list($value, $condition) = $elementModel->getFilterValue($value, $condition, $eval);
+
 			if ($fullWordsOnly == '1')
 			{
 				if (is_array($value))

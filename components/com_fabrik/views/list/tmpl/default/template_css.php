@@ -40,7 +40,7 @@ echo "
 }
 
 #listform_$c .emptyfabrikDataContainer{
-	display: none;
+/*	display: none; */
 }
 
 #listform_$c a,
