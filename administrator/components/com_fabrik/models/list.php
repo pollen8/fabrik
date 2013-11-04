@@ -1073,9 +1073,37 @@ class FabrikAdminModelList extends FabModelAdmin
 		$join->table_key = str_replace('`', '', $tableKey);
 		$join->join_type = $joinType;
 		$join->group_id = $groupId;
+		/**
+		 * Create the 'pk' param.  Can't just call front end setJoinPk() for gory
+		 * reasons, so do this by steam.
+		 *
+		 * Prolly don't really need to create a registry object here, we could just
+		 * JSON-up the pk param, but might as well make the point here that it's a
+		 * params object, and it may come in useful for adding other params one day.
+		 */
+		$join->params = new JRegistry();
+		/**
+		 * This is kind of expensive, as getPrimaryKeyAndExtra() method does a table lookup,
+		 * but I don't think we know what the PK of the joined table is any other
+		 * way at this point.
+		 */
+		$pk = $this->getFEModel()->getPrimaryKeyAndExtra($join->table_join);
+
+		if ($pk !== false)
+		{
+			// if it didn't return false, getPrimaryKeyAndExtra will have created and array with at least one key
+			$pk_col = JArrayHelper::getValue($pk[0], 'colname', '');
+			if (!empty($pk_col))
+			{
+				$db = FabrikWorker::getDbo(true);
+				$pk_col = $join->table_join . '.' . $pk_col;
+				$join->params->set('pk', $db->quoteName($pk_col));
+				$join->params = (string) $join->params;
+			}
+		}
+
 		$join->store();
 
-		// $$$ hugh @TODO - create new 'pk' param
 		$this->createLinkedElements($groupId, $joinTable);
 	}
 
