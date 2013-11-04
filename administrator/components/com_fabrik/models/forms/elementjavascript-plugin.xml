@@ -10,9 +10,11 @@
 				class="btn-group"
 				repeat="true"
 				default="1"
-				label="COM_FABRIK_PUBLISHED">
-					<option value="0">JNO</option>
-					<option value="1">JYES</option>
+				label="JSTATUS"
+				description="JFIELD_PUBLISHED_DESC"
+				>
+					<option value="1">JPUBLISHED</option>
+					<option value="0">JUNPUBLISHED</option>
 			</field>
 
 			<field name="action"
@@ -60,7 +62,7 @@
 				label="COM_FABRIK_JS_PREDEFINED_DESC"
 				/>
 
-			<field name="js_e_event"
+				<field name="js_e_event"
 				type="list"
 				repeat="true"
 				label="COM_FABRIK_JS_ACTION"

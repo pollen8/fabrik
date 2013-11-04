@@ -1,27 +1,29 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
 <form addfieldpath="/administrator/components/com_fabrik/models/fields">
 	<name>Validation Plugin General Options</name>
-	
+
 	<fields name="validationrule">
 		<fieldset name="params">
-		
+
 			<field name="plugin"
 				type="pluginlist"
 				plugin="fabrik_validationrule"
 				repeat="true"
 				class="inputbox elementtype"
 				label="COM_FABRIK_ACTION" />
-				
+
 			<field name="plugin_published"
 				type="radio"
 				default="1"
 				repeat="true"
 				class="btn-group"
-				label="COM_FABRIK_PUBLISHED">
-					<option value="0">JNO</option>
-					<option value="1">JYES</option>
+				label="JSTATUS"
+				description="JFIELD_PUBLISHED_DESC"
+				>
+					<option value="1">JPUBLISHED</option>
+					<option value="0">JUNPUBLISHED</option>
 			</field>
-			
+
 			<field name="show_icon"
 				type="radio"
 				class="btn-group"
@@ -32,8 +34,8 @@
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
-			
+
 		</fieldset>
 	</fields>
-	
+
 </form>
