@@ -6023,8 +6023,9 @@ class FabrikFEModelList extends JModelForm
 			$requestKey = $this->getFilterModel()->getSearchAllRequestKey();
 			$v = $this->getFilterModel()->getSearchAllValue('html');
 			$o = new stdClass;
+			$searchLabel = $params->get('search-all-label', JText::_('COM_FABRIK_SEARCH'));
 			$class = FabrikWorker::j3() ? 'fabrik_filter search-query input-medium' : 'fabrik_filter';
-			$o->filter = '<input type="search" size="20" placeholder="' . JText::_('COM_FABRIK_SEARCH') . '" value="' . $v
+			$o->filter = '<input type="search" size="20" placeholder="' . $searchLabel . '" value="' . $v
 			. '" class="' . $class . '" name="' . $requestKey . '" />';
 
 			if ($params->get('search-mode-advanced') == 1)
@@ -6040,7 +6041,7 @@ class FabrikFEModelList extends JModelForm
 			}
 
 			$o->name = 'all';
-			$o->label = $params->get('search-all-label', JText::_('COM_FABRIK_ALL'));
+			$o->label = $searchLabel;
 			$aFilters[] = $o;
 		}
 
