@@ -504,6 +504,12 @@ class FabrikAdminModelList extends FabModelAdmin
 				continue;
 			}
 
+			if (empty($join->join_from_table) || empty($join->table_join))
+			{
+				unset($joins[$i]);
+				continue;
+			}
+
 			$fields = $fabrikDb->getTableColumns($join->join_from_table);
 			$join->joinFormFields = array_keys($fields);
 			$fields = $fabrikDb->getTableColumns($join->table_join);
