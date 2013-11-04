@@ -121,7 +121,11 @@ window.addEvent(\'domready\', function () {
 	FbEditor.getSession().setUseWrapMode(true);
 	FbEditor.getSession().setTabSize(2);
 	FbEditor.on("blur", function () {
-		field.value = FbEditor.getValue();
+		if (field.value !== FbEditor.getValue()) {
+			field.value = FbEditor.getValue();
+			field.fireEvent("change", field);
+		}
+		field.fireEvent("blur", field);
 	});
 	var maxlines = Math.floor((' . $maxHeight . ' - 2) / FbEditor.renderer.lineHeight);
 	var updateHeight = function () {
