@@ -13,6 +13,7 @@
 	<files>
 		<filename plugin="article">article.php</filename>
 		<filename>article-min.js</filename>
+		<filename>article.js</filename>
 		<filename>article.php</filename>
 		<filename>index.html</filename>
 		<folder>forms</folder>
