@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
 <form addfieldpath="/administrator/components/com_fabrik/models/fields">
 	<name>Element Javascript Options</name>
-	
+
 	<fields >
 		<fieldset name="params">
-		
+
 			<field name="js_published"
 				type="radio"
 				class="btn-group"
@@ -14,12 +14,13 @@
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
-			
+
 			<field name="action"
 				type="list"
-				class="input-small"
+				class="input-medium"
 				repeat="true"
 				label="COM_FABRIK_ACTION">
+					<option value="">COM_FABRIK_PLEASE_SELECT</option>
 					<option value="focus">focus</option>
 					<option value="blur">blur</option>
 					<option value="abort">abort</option>
@@ -36,7 +37,7 @@
 					<option value="load">load</option>
 					<option value="unload">unload</option>
 			</field>
-			
+
 			<field name="code"
 				type="fabrikeditor"
 				mode="javascript"
@@ -45,12 +46,12 @@
 				repeat="true"
 				label="COM_FABRIK_CODE"
 				description="COM_FABRIK_CODE_JS_INLINE_DESC" />
-				
-			
+
 			<field name="js_e_event"
 				type="list"
 				repeat="true"
 				label="COM_FABRIK_OR">
+					<option value="">COM_FABRIK_PLEASE_SELECT</option>
 					<option value="hide">hide</option>
 					<option value="show">show</option>
 					<option value="fadeout">fadeout</option>
@@ -60,17 +61,17 @@
 					<option value="slide toggle">slide toggle</option>
 					<option value="clear">clear</option>
 			</field>
-			
+
 			<field name="js_e_trigger"
 				type="groupelements"
 				repeat="true"
 				label="COM_FABRIK_ELEMENT" />
-			
-			
+
 			<field name="js_e_condition"
 				type="list"
 				repeat="true"
 				label="COM_FABRIK_WHERE_THIS">
+					<option value="">COM_FABRIK_PLEASE_SELECT</option>
 					<option value="&lt;">&lt;</option>
 					<option value="&lt;=">&lt;=</option>
 					<option value="==">==</option>
@@ -82,13 +83,13 @@
 					<option value="CONTAINS">contains</option>
 					<option value="!CONTAINS">does not contain</option>
 			</field>
-			
+
 			<field name="js_e_value"
 				type="text"
 				repeat="true"
 				label="COM_FABRIK_VALUE" />
-			
+
 		</fieldset>
 	</fields>
-	
+
 </form>
