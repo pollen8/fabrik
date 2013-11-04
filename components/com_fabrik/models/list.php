@@ -779,6 +779,27 @@ class FabrikFEModelList extends JModelForm
 	}
 
 	/**
+	 * Append to the list's data
+	 *
+	 * @param   string  $groupRef  Group by reference (0 for non-grouped)
+	 * @param   object  $row       Row to append to the list
+	 *
+	 * @return  array  $this->data
+	 */
+
+	public function appendData($groupRef, $row)
+	{
+		$data = $this->getData();
+
+		if (array_key_exists($groupRef, $data))
+		{
+			$data[$groupRef][] = $row;
+			$this->data = $data;
+		}
+
+		return $this->data;
+	}
+	/**
 	 * Get the table's data
 	 *
 	 * @return  array	of objects (rows)
@@ -825,7 +846,7 @@ class FabrikFEModelList extends JModelForm
 		$this->data = $results[1];
 		$this->groupTemplates = $results[2];
 		$nav = $this->getPagination($this->totalRecords, $this->limitStart, $this->limitLength);
-		$pluginManager->runPlugins('onLoadData', $this, 'list');
+		$pluginManager->runPlugins('onLoadData', $this, 'list', $this->data);
 
 		return $this->data;
 	}
@@ -2156,16 +2177,16 @@ class FabrikFEModelList extends JModelForm
 
 		if ($this->canViewDetails($row))
 		{
-			$class = 'fabrik_view';
+			$class = ' fabrik_view';
 		}
 
 		if ($this->canEdit($row))
 		{
-			$class = 'fabrik_edit';
+			$class = ' fabrik_edit';
 		}
 
 		$loadMethod = $params->get('custom_link', '') == '' ? 'xhr' : 'iframe';
-		$class = 'fabrik___rowlink' . $class;
+		$class = 'fabrik___rowlink ' . $class;
 		$dataList = 'list_' . $this->getRenderContext();
 		$data = '<a data-loadmethod="' . $loadMethod . '" data-list="' . $dataList . '" class="' . $class . '" href="' . $link . '">' . $data
 		. '</a>';
