@@ -19,7 +19,9 @@
 				type="list"
 				class="input-medium"
 				repeat="true"
-				label="COM_FABRIK_ACTION">
+				label="COM_FABRIK_JS_EVENT"
+				description="COM_FABRIK_JS_EVENT_DESC"
+				>
 					<option value="">COM_FABRIK_PLEASE_SELECT</option>
 					<option value="focus">focus</option>
 					<option value="blur">blur</option>
@@ -38,19 +40,32 @@
 					<option value="unload">unload</option>
 			</field>
 
+			<field name="bespoke"
+				type="spacer"
+				class="text"
+				label="COM_FABRIK_JS_BESPOKE_DESC"
+				/>
+
 			<field name="code"
 				type="fabrikeditor"
 				mode="javascript"
-				width="100"
 				encoded="true"
 				repeat="true"
-				label="COM_FABRIK_CODE"
-				description="COM_FABRIK_CODE_JS_INLINE_DESC" />
+				label="COM_FABRIK_JS_CODE"
+				description="COM_FABRIK_JS_CODE_DESC" />
+
+			<field name="predefined"
+				type="spacer"
+				class="text"
+				label="COM_FABRIK_JS_PREDEFINED_DESC"
+				/>
 
 			<field name="js_e_event"
 				type="list"
 				repeat="true"
-				label="COM_FABRIK_OR">
+				label="COM_FABRIK_JS_ACTION"
+				description="COM_FABRIK_JS_ACTION_DESC"
+				>
 					<option value="">COM_FABRIK_PLEASE_SELECT</option>
 					<option value="hide">hide</option>
 					<option value="show">show</option>
@@ -65,12 +80,16 @@
 			<field name="js_e_trigger"
 				type="groupelements"
 				repeat="true"
-				label="COM_FABRIK_ELEMENT" />
+				label="COM_FABRIK_JS_ELEMENT"
+				description="COM_FABRIK_JS_ELEMENT_DESC"
+				/>
 
 			<field name="js_e_condition"
 				type="list"
 				repeat="true"
-				label="COM_FABRIK_WHERE_THIS">
+				label="COM_FABRIK_JS_IS"
+				description="COM_FABRIK_JS_IS_DESC"
+				>
 					<option value="">COM_FABRIK_PLEASE_SELECT</option>
 					<option value="&lt;">&lt;</option>
 					<option value="&lt;=">&lt;=</option>
@@ -87,9 +106,10 @@
 			<field name="js_e_value"
 				type="text"
 				repeat="true"
-				label="COM_FABRIK_VALUE" />
+				label="COM_FABRIK_VALUE"
+				description="COM_FABRIK_JS_VALUE_DESC"
+				/>
 
 		</fieldset>
 	</fields>
-
 </form>
