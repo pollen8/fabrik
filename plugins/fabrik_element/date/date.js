@@ -113,10 +113,7 @@ var FbDateTime = new Class({
 			var d = this.setTimeFromField(calendar.date);
 			this.update(d.format('db'));
 			if (this.cal.dateClicked) {
-				this.getDateField().fireEvent('change');
-				if (this.timeButton) {
-					this.getTimeField().fireEvent('change');
-				}
+				// No longer firing onchange events - this.update fires them for us.
 				this.cal.callCloseHandler();
 			}
 			window.fireEvent('fabrik.date.select', this);
@@ -364,20 +361,29 @@ var FbDateTime = new Class({
 	},
 
 	addNewEventAux : function (action, js) {
-		if (action === 'change') {
-			Fabrik.addEvent('fabrik.date.select', function () {
-				var e = 'fabrik.date.select';
-				typeOf(js) === 'function' ? js.delay(0, this, this) : eval(js);
-			});
+		var inputs = this.element.getElements('input');
+		
+		// Only add fabrik.date.select if no input elements to assign the event to.
+		if (inputs.length === 0) {
+			if (action === 'change') {
+				Fabrik.addEvent('fabrik.date.select', function (trigger) {
+					console.log('trigger', trigger);
+					var e = 'fabrik.date.select';
+					if (trigger === this) {
+						typeOf(js) === 'function' ? js.delay(0, this, this) : eval(js);
+					}
+				}.bind(this));
+			}
+		} else {
+			this.element.getElements('input').each(function (i) {
+				i.addEvent(action, function (e) {
+					if (typeOf(e) === 'event') {
+						e.stop();
+					}
+					typeOf(js) === 'function' ? js.delay(0, this, this) : eval(js);
+				});
+			}.bind(this));	
 		}
-		this.element.getElements('input').each(function (i) {
-			i.addEvent(action, function (e) {
-				if (typeOf(e) === 'event') {
-					e.stop();
-				}
-				typeOf(js) === 'function' ? js.delay(0, this, this) : eval(js);
-			});
-		}.bind(this));	
 	},
 	
 	/**
