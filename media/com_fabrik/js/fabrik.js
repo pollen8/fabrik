@@ -16,7 +16,8 @@ function fconsole() {
 	if (typeof(window.console) !== "undefined") {
 		var str = '';
 		for (var i = 0; i < arguments.length; i ++) {
-			str += arguments[i] + ' ';
+			str += typeof arguments[i] === 'object' ? JSON.stringify(arguments[i]) : arguments[i].toString();
+			str += ' ';
 		}
 		console.log(str);
 	}
@@ -38,7 +39,7 @@ RequestQueue = new Class({
 	queue: {}, // object of xhr objects
 
 	initialize: function () {
-		this.periodical = this.processQueue.periodical(500, this);
+		this.periodical = this.processQueue.periodical(250, this);
 	},
 
 	add: function (xhr) {
