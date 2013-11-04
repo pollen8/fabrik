@@ -22,7 +22,7 @@ var PluginManager = new Class({
 		this.plugins = plugins;
 		this.type = type;
 		window.addEvent('domready', function () {
-			this.accordion = new Fx.Accordion([], [], {alwaysHide: true, display: -1});
+			this.accordion = new Fx.Accordion([], [], {alwaysHide: true, display: -1, duration: 'short'});
 			for (var i = 0; i < plugins.length; i ++) {
 				this.addTop(plugins[i]);
 			}
@@ -103,15 +103,19 @@ var PluginManager = new Class({
 			show_icon = plugin ? plugin.show_icon : 1;
 			plugin = plugin ? plugin.plugin : '';
 		}
-		var pluginName = plugin !== '' ? plugin : Joomla.JText._('COM_FABRIK_PLEASE_SELECT');
 		var div = new Element('div.actionContainer.panel.accordion-group');
-		var a = new Element('a.accordion-toggle', {'href': '#'}).adopt(new Element('span.pluginTitle').set('text', pluginName));
+		var a = new Element('a.accordion-toggle', {'href': '#'});
+		a.adopt(new Element('span.pluginTitle').set('text', plugin !== '' ?
+			plugin + ' ' + Joomla.JText._('COM_FABRIK_LOADING').toLowerCase() :
+			Joomla.JText._('COM_FABRIK_LOADING')
+		));
 		var toggler = new Element('div.title.pane-toggler.accordion-heading').adopt(new Element('strong').adopt(a));
 		var body = new Element('div.accordion-body');
 
 		div.adopt(toggler);
 		div.adopt(body);
 		div.inject(document.id('plugins'));
+		this.accordion.addSection(toggler, body);
 		var tt_temp = this.topTotal; //added temp variable
 
 		// Ajax request to load the first part of the plugin form (do[plugin] in, on)
@@ -139,8 +143,9 @@ var PluginManager = new Class({
 				if (plugin !== '') {
 					// Sent temp variable as c to addPlugin, so they are aligned properly
 					this.addPlugin(plugin, tt_temp + 1);
+				} else {
+					toggler.getElement('span.pluginTitle').set('text', Joomla.JText._('COM_FABRIK_PLEASE_SELECT'));
 				}
-				this.accordion.addSection(toggler, body);
 				this.updateBootStrap();
 				FabrikAdmin.reTip();
 			}.bind(this),
@@ -152,7 +157,6 @@ var PluginManager = new Class({
 			}
 		});
 		this.topTotal ++;
-		//this.accordion.display(this.topTotal);
 
 		Fabrik.requestQueue.add(request);
 	},
@@ -189,14 +193,16 @@ var PluginManager = new Class({
 
 	/**
 	 * Watch the plugin select list
-	 */
+	 **/
 
 	watchPluginSelect: function () {
 		document.id('adminForm').addEvent('change:relay(select.elementtype)', function (event, target) {
 			event.preventDefault();
 			var plugin = target.get('value');
 			var container = target.getParent('.pluginContainer');
-			var pluginName = plugin !== '' ? plugin : Joomla.JText._('COM_FABRIK_PLEASE_SELECT');
+			var pluginName = plugin !== '' ?
+				plugin + ' ' + Joomla.JText._('COM_FABRIK_LOADING').toLowerCase() :
+				Joomla.JText._('COM_FABRIK_PLEASE_SELECT');
 			target.getParent('.actionContainer').getElement('span.pluginTitle').set('text', pluginName);
 			var c = container.id.replace('formAction_', '').toInt();
 			this.addPlugin(plugin, c);
@@ -229,6 +235,7 @@ var PluginManager = new Class({
 				}
 			}.bind(this),
 			onSuccess: function () {
+				document.id('plugins').getElements('.actionContainer')[c].getElement('span.pluginTitle').set('text', plugin);
 				this.pluginTotal ++;
 				this.updateBootStrap();
 				FabrikAdmin.reTip();
