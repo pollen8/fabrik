@@ -1,12 +1,15 @@
 /**
  * Admin Plugin Manager
- *
+ * 
  * @copyright: Copyright (C) 2005-2013, fabrikar.com - All rights reserved.
- * @license:   GNU/GPL http://www.gnu.org/copyleft/gpl.html
+ * @license: GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
-/*jshint mootools: true */
-/*global Fabrik:true, Joomla:true, fconsole:true, FabrikAdmin:true, fabrikAdminPlugin:true */
+/* jshint mootools: true */
+/*
+ * global Fabrik:true, Joomla:true, fconsole:true, FabrikAdmin:true,
+ * fabrikAdminPlugin:true
+ */
 
 var PluginManager = new Class({
 
@@ -22,8 +25,13 @@ var PluginManager = new Class({
 		this.plugins = plugins;
 		this.type = type;
 		window.addEvent('domready', function () {
-			this.accordion = new Fx.Accordion([], [], {alwaysHide: true, display: -1, duration: 'short'});
-			for (var i = 0; i < plugins.length; i ++) {
+			var i;
+			this.accordion = new Fx.Accordion([], [], {
+				alwaysHide: true,
+				display: -1,
+				duration: 'short'
+			});
+			for (i = 0; i < plugins.length; i++) {
 				this.addTop(plugins[i]);
 			}
 			this.periodical = this.iniAccordion.periodical(250, this);
@@ -60,11 +68,10 @@ var PluginManager = new Class({
 
 	/**
 	 * Has the form finished loading and are there any outstanding ajax requests
-	 *
-	 * @return  bool
+	 * 
+	 * @return bool
 	 */
-	canSaveForm: function ()
-	{
+	canSaveForm: function () {
 		if (document.readyState !== 'complete') {
 			return false;
 		}
@@ -74,8 +81,8 @@ var PluginManager = new Class({
 	watchDelete: function () {
 		document.id('adminForm').addEvent('click:relay(a.removeButton, a[data-button=removeButton])', function (event, target) {
 			event.preventDefault();
-			this.pluginTotal --;
-			this.topTotal --;
+			this.pluginTotal--;
+			this.topTotal--;
 			this.deletePlugin(event);
 		}.bind(this));
 	},
@@ -104,11 +111,10 @@ var PluginManager = new Class({
 			plugin = plugin ? plugin.plugin : '';
 		}
 		var div = new Element('div.actionContainer.panel.accordion-group');
-		var a = new Element('a.accordion-toggle', {'href': '#'});
-		a.adopt(new Element('span.pluginTitle').set('text', plugin !== '' ?
-			plugin + ' ' + Joomla.JText._('COM_FABRIK_LOADING').toLowerCase() :
-			Joomla.JText._('COM_FABRIK_LOADING')
-		));
+		var a = new Element('a.accordion-toggle', {
+			'href': '#'
+		});
+		a.adopt(new Element('span.pluginTitle').set('text', plugin !== '' ? plugin + ' ' + Joomla.JText._('COM_FABRIK_LOADING').toLowerCase() : Joomla.JText._('COM_FABRIK_LOADING')));
 		var toggler = new Element('div.title.pane-toggler.accordion-heading').adopt(new Element('strong').adopt(a));
 		var body = new Element('div.accordion-body');
 
@@ -116,9 +122,10 @@ var PluginManager = new Class({
 		div.adopt(body);
 		div.inject(document.id('plugins'));
 		this.accordion.addSection(toggler, body);
-		var tt_temp = this.topTotal; //added temp variable
+		var tt_temp = this.topTotal; // added temp variable
 
-		// Ajax request to load the first part of the plugin form (do[plugin] in, on)
+		// Ajax request to load the first part of the plugin form (do[plugin]
+		// in, on)
 		var request = new Request.HTML({
 			url: 'index.php',
 			data: {
@@ -134,14 +141,15 @@ var PluginManager = new Class({
 				'id': this.id
 			},
 			update: body,
-			onRequest: function() {
+			onRequest: function () {
 				if (Fabrik.debug) {
 					fconsole('Fabrik pluginmanager: Adding', this.type, 'entry', this.topTotal.toString());
 				}
 			}.bind(this),
 			onSuccess: function (res) {
 				if (plugin !== '') {
-					// Sent temp variable as c to addPlugin, so they are aligned properly
+					// Sent temp variable as c to addPlugin, so they are aligned
+					// properly
 					this.addPlugin(plugin, tt_temp + 1);
 				} else {
 					toggler.getElement('span.pluginTitle').set('text', Joomla.JText._('COM_FABRIK_PLEASE_SELECT'));
@@ -156,7 +164,7 @@ var PluginManager = new Class({
 				fconsole('Fabrik pluginmanager addTop ajax exception:', headerName, value);
 			}
 		});
-		this.topTotal ++;
+		this.topTotal++;
 
 		Fabrik.requestQueue.add(request);
 	},
@@ -170,11 +178,11 @@ var PluginManager = new Class({
 			if (el.get('value') === '') {
 				document.getElement("label[for=" + el.get('id') + "]").addClass('active btn-primary');
 			} else if (el.get('value') === '0') {
-				document.getElement("label[for=" +  el.get('id') + "]").addClass('active btn-danger');
+				document.getElement("label[for=" + el.get('id') + "]").addClass('active btn-danger');
 			} else {
-				document.getElement("label[for=" +  el.get('id') + "]").addClass('active btn-success');
+				document.getElement("label[for=" + el.get('id') + "]").addClass('active btn-success');
 			}
-			if (typeof(jQuery) !== 'undefined') {
+			if (typeof (jQuery) !== 'undefined') {
 				jQuery('*[rel=tooltip]').tooltip();
 			}
 
@@ -188,21 +196,22 @@ var PluginManager = new Class({
 				el.store('tip:text', parts[1]);
 			}
 		});
-		var JTooltips = new Tips($$('.hasTip'), {maxTitleChars: 50, fixed: false});
+		var JTooltips = new Tips($$('.hasTip'), {
+			maxTitleChars: 50,
+			fixed: false
+		});
 	},
 
 	/**
 	 * Watch the plugin select list
-	 **/
+	 */
 
 	watchPluginSelect: function () {
 		document.id('adminForm').addEvent('change:relay(select.elementtype)', function (event, target) {
 			event.preventDefault();
 			var plugin = target.get('value');
 			var container = target.getParent('.pluginContainer');
-			var pluginName = plugin !== '' ?
-				plugin + ' ' + Joomla.JText._('COM_FABRIK_LOADING').toLowerCase() :
-				Joomla.JText._('COM_FABRIK_PLEASE_SELECT');
+			var pluginName = plugin !== '' ? plugin + ' ' + Joomla.JText._('COM_FABRIK_LOADING').toLowerCase() : Joomla.JText._('COM_FABRIK_PLEASE_SELECT');
 			target.getParent('.actionContainer').getElement('span.pluginTitle').set('text', pluginName);
 			var c = container.id.replace('formAction_', '').toInt();
 			this.addPlugin(plugin, c);
@@ -229,14 +238,14 @@ var PluginManager = new Class({
 				'id': this.id
 			},
 			update: document.id('plugins').getElements('.actionContainer')[c].getElement('.pluginOpts'),
-			onRequest: function() {
+			onRequest: function () {
 				if (Fabrik.debug) {
 					fconsole('Fabrik pluginmanager: Loading', this.type, 'type', plugin, 'for entry', c.toString());
 				}
 			}.bind(this),
 			onSuccess: function () {
 				document.id('plugins').getElements('.actionContainer')[c].getElement('span.pluginTitle').set('text', plugin);
-				this.pluginTotal ++;
+				this.pluginTotal++;
 				this.updateBootStrap();
 				FabrikAdmin.reTip();
 			}.bind(this),
@@ -259,19 +268,17 @@ var PluginManager = new Class({
 			fconsole('Fabrik pluginmanager: Deleting', this.type, 'entry', c.id, 'and renaming later entries');
 		}
 		/**
-		 * The following code reduces the index in ids, names and <label for=id> for all entries after
-		 * the entry that is being deleted.
-		 * Paul 20131102 Extended to handle more field types and ids in all tags not just fieldset
-		 * This code handles the following tags:
-		 *   fieldset.pluginContainer id='formAction_x'
-		 *   label id='id-x(stuff)-lbl' for='name-x(stuff)-lbl'
-		 *   select id='id-x' name='name[x]'
-		 *   fieldset id='id-x-' class='radio btn-group'
-		 *   input type='radio' id='id-x(stuff)'
-		 *   label for='name-x(stuff)-lbl' class='btn'
-		 *   input type='text' id='id-x' name='name[x]'
-		 *   textarea id='id-x' name='name[x]'
-		 **/
+		 * The following code reduces the index in ids, names and <label for=id>
+		 * for all entries after the entry that is being deleted. Paul 20131102
+		 * Extended to handle more field types and ids in all tags not just
+		 * fieldset This code handles the following tags:
+		 * fieldset.pluginContainer id='formAction_x' label id='id-x(stuff)-lbl'
+		 * for='name-x(stuff)-lbl' select id='id-x' name='name[x]' fieldset
+		 * id='id-x-' class='radio btn-group' input type='radio'
+		 * id='id-x(stuff)' label for='name-x(stuff)-lbl' class='btn' input
+		 * type='text' id='id-x' name='name[x]' textarea id='id-x'
+		 * name='name[x]'
+		 */
 		if (c.id.match(/_\d+$/)) {
 			var x = c.id.match(/_(\d+)$/)[1].toInt();
 			document.id('plugins').getElements('input, select, textarea, label, fieldset').each(function (i) {
@@ -289,15 +296,18 @@ var PluginManager = new Class({
 						// fconsole('tag:',i.get('tag'),'id:',i.id,'name:',i.name,'s:',s[1]);
 						c--;
 						if (i.name) {
-							// fconsole('  Replacing name',i.name, 'with', i.name.replace(/(\[)(\d+)(\])/, '[' + c + ']'));
+							// fconsole(' Replacing name',i.name, 'with',
+							// i.name.replace(/(\[)(\d+)(\])/, '[' + c + ']'));
 							i.name = i.name.replace(/(\[)(\d+)(\])/, '[' + c + ']');
 						}
 						if (i.id) {
-							// fconsole('  Replacing id',i.id, 'with', i.id.replace(/(-)(\d+)/, '-' + c));
+							// fconsole(' Replacing id',i.id, 'with',
+							// i.id.replace(/(-)(\d+)/, '-' + c));
 							i.id = i.id.replace(/(-)(\d+)/, '-' + c);
 						}
 						if (i.get('tag').toLowerCase() === 'label' && i.get('for')) {
-							// fconsole('  Replacing for', i.get('for'), 'with', i.get('for').replace(/(-)(\d+)/, '-' + c));
+							// fconsole(' Replacing for', i.get('for'), 'with',
+							// i.get('for').replace(/(-)(\d+)/, '-' + c));
 							i.set('for', i.get('for').replace(/(-)(\d+)/, '-' + c));
 						}
 					}
@@ -323,8 +333,7 @@ fabrikAdminPlugin = new Class({
 
 	Implements: [Options],
 	options: {},
-	initialize: function (name, label, options)
-	{
+	initialize: function (name, label, options) {
 		this.name = name;
 		this.label = label;
 		this.setOptions(options);

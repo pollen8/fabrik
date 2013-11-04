@@ -1,12 +1,12 @@
 /**
  * Admin Element Editor
- *
+ * 
  * @copyright: Copyright (C) 2005-2013, fabrikar.com - All rights reserved.
- * @license:   GNU/GPL http://www.gnu.org/copyleft/gpl.html
+ * @license: GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
-/*jshint mootools: true */
-/*global fconsole:true, FabrikAdmin:true, Fabrik:true, PluginManager:true */
+/* jshint mootools: true */
+/* global fconsole:true, FabrikAdmin:true, Fabrik:true, PluginManager:true */
 
 var fabrikAdminElement = new Class({
 
@@ -19,7 +19,7 @@ var fabrikAdminElement = new Class({
 		parentid: 0,
 		jsevents: [],
 		jsTotal: 0,
-		deleteButton : 'removeButton'
+		deleteButton: 'removeButton'
 	},
 
 	jsCounter: -1,
@@ -30,9 +30,13 @@ var fabrikAdminElement = new Class({
 		this.setOptions(options);
 		this.setParentViz();
 
-		this.jsAccordion = new Fx.Accordion([], [], {alwaysHide: true, display: -1, duration: 'short'});
+		this.jsAccordion = new Fx.Accordion([], [], {
+			alwaysHide: true,
+			display: -1,
+			duration: 'short'
+		});
 		window.addEvent('domready', function () {
-			if (typeOf(document.id('addJavascript')) === false) {
+			if (typeOf(document.id('addJavascript')) === 'null') {
 				fconsole('Fabrik adminelement.js: javascript tab Add button not found');
 			} else {
 				document.id('addJavascript').addEvent('click', function (e) {
@@ -57,15 +61,9 @@ var fabrikAdminElement = new Class({
 				this.deleteJS(target);
 			}.bind(this));
 
-			document.id('javascriptActions').addEvent('change:relay(' +
-				'select[id^="jform_action-"], ' +
-				'select[id^="jform_js_e_event-"], ' +
-				'select[id^="jform_js_e_trigger-"], ' +
-				'select[id^="jform_js_e_condition-"], ' +
-				'input[id^="jform_js_e_value-"]' +
-				')', function (e, target) {
-					this.setAccordionHeader(target.getParent('.actionContainer'));
-				}.bind(this));
+			document.id('javascriptActions').addEvent('change:relay(' + 'select[id^="jform_action-"], ' + 'select[id^="jform_js_e_event-"], ' + 'select[id^="jform_js_e_trigger-"], ' + 'select[id^="jform_js_e_condition-"], ' + 'input[id^="jform_js_e_value-"]' + ')', function (e, target) {
+				this.setAccordionHeader(target.getParent('.actionContainer'));
+			}.bind(this));
 
 			var pluginArea = document.id('plugins');
 			if (typeOf(pluginArea) !== 'null') {
@@ -95,15 +93,13 @@ var fabrikAdminElement = new Class({
 	},
 
 	changePlugin: function (e) {
-		document.id('plugin-container').empty().adopt(
-			new Element('span').set('text', Joomla.JText._('COM_FABRIK_LOADING'))
-		);
+		document.id('plugin-container').empty().adopt(new Element('span').set('text', Joomla.JText._('COM_FABRIK_LOADING')));
 		var myAjax = new Request({
 			url: 'index.php',
 			'evalResponse': false,
-			'evalScripts' : function (script, text) {
-					this.script = script;
-				}.bind(this),
+			'evalScripts': function (script, text) {
+				this.script = script;
+			}.bind(this),
 			'data': {
 				'option': 'com_fabrik',
 				'id': this.options.id,
@@ -124,16 +120,21 @@ var fabrikAdminElement = new Class({
 
 	deleteJS: function (target) {
 		var c = target.getParent('div.actionContainer');
-		if (Fabrik.debug) { fconsole('Fabrik adminelement.js: Deleting JS entry: ', c.id); }
+		if (Fabrik.debug) {
+			fconsole('Fabrik adminelement.js: Deleting JS entry: ', c.id);
+		}
 		c.dispose();
-		this.jsAjaxed --;
+		this.jsAjaxed--;
 	},
 
 	addJavascript: function (opt) {
 		var jsId = opt && opt.id ? opt.id : 0;
-		// Ajax request to load the first part of the plugin form (do[plugin] in, on)
+		// Ajax request to load the first part of the plugin form (do[plugin]
+		// in, on)
 		var div = new Element('div.actionContainer.panel.accordion-group');
-		var a = new Element('a.accordion-toggle', {'href': '#'});
+		var a = new Element('a.accordion-toggle', {
+			'href': '#'
+		});
 		a.adopt(new Element('span.pluginTitle').set('text', Joomla.JText._('COM_FABRIK_LOADING')));
 		var toggler = new Element('div.title.pane-toggler.accordion-heading').adopt(new Element('strong').adopt(a));
 		var body = new Element('div.accordion-body');
@@ -158,15 +159,17 @@ var fabrikAdminElement = new Class({
 				'elementid': this.id
 			},
 			update: body,
-			onRequest: function() {
-				if (Fabrik.debug) fconsole('Fabrik adminelement.js: Adding JS entry', (c + 1).toString());
+			onRequest: function () {
+				if (Fabrik.debug) {
+					fconsole('Fabrik adminelement.js: Adding JS entry', (c + 1).toString());
+				}
 			},
 			onComplete: function (res) {
-				body.getElement('textarea[id^="jform_code-"]').addEvent('change', function(r, target) {
-						this.setAccordionHeader(r.getParent('.actionContainer'));
-					}.bind(this));
+				body.getElement('textarea[id^="jform_code-"]').addEvent('change', function (r, target) {
+					this.setAccordionHeader(r.getParent('.actionContainer'));
+				}.bind(this));
 				this.setAccordionHeader(div);
-				this.jsAjaxed ++;
+				this.jsAjaxed++;
 				this.updateBootStrap();
 				FabrikAdmin.reTip();
 			}.bind(this),
@@ -177,7 +180,7 @@ var fabrikAdminElement = new Class({
 				fconsole('Fabrik adminelement.js addJavascript: ajax exception: ', headerName, value);
 			}
 		});
-		this.jsCounter ++;
+		this.jsCounter++;
 		Fabrik.requestQueue.add(request);
 		this.updateBootStrap();
 		FabrikAdmin.reTip();
@@ -185,18 +188,19 @@ var fabrikAdminElement = new Class({
 
 	setAccordionHeader: function (c) {
 		/**
-		 * Sets accordion header as follows:
-		 * 1. If action is '' use COM_FABRIK_PLEASE_SELECT, otherwise use "On" followed by action text
-		 * 2. If code is set, append either comment text from first line if it exists or "Javascript Inline Code"
-		 * 3. If code is NOT set, append the event, trigger, condition and value fields
-		 **/
+		 * Sets accordion header as follows: 1. If action is '' use
+		 * COM_FABRIK_PLEASE_SELECT, otherwise use "On" followed by action text
+		 * 2. If code is set, append either comment text from first line if it
+		 * exists or "Javascript Inline Code" 3. If code is NOT set, append the
+		 * event, trigger, condition and value fields
+		 */
 		if (typeOf(c) === 'null') {
 			return;
 		}
 		var header = c.getElement('span.pluginTitle');
 		var action = c.getElement('select[id^="jform_action-"]');
 		if (action.value === '') {
-			header.set('text',Joomla.JText._('COM_FABRIK_PLEASE_SELECT'));
+			header.set('text', Joomla.JText._('COM_FABRIK_PLEASE_SELECT'));
 			return;
 		}
 		var s = 'on ' + action.getSelected()[0].text + ' : ';
@@ -217,16 +221,9 @@ var fabrikAdminElement = new Class({
 			}
 		} else if (event.value && trigger.value && name.value) {
 			if (condition.getSelected()[0].text.test(/hidden|shown/)) {
-				t = event.getSelected()[0].text +
-					' element "' + trigger.getSelected()[0].text +
-					'" when element "' + name.value +
-					'" is ' + condition.getSelected()[0].text;
+				t = event.getSelected()[0].text + ' element "' + trigger.getSelected()[0].text + '" when element "' + name.value + '" is ' + condition.getSelected()[0].text;
 			} else {
-				t = event.getSelected()[0].text +
-					' element "' + trigger.getSelected()[0].text +
-					'" when element "' + name.value +
-					'" ' + condition.getSelected()[0].text +
-					' "' + value.value.trim() +'"';
+				t = event.getSelected()[0].text + ' element "' + trigger.getSelected()[0].text + '" when element "' + name.value + '" ' + condition.getSelected()[0].text + ' "' + value.value.trim() + '"';
 			}
 		} else {
 			s += '<span style="color:red;">No action set</span>';
@@ -234,17 +231,20 @@ var fabrikAdminElement = new Class({
 		if (t !== '') {
 			s += '<span style="font-weight:normal">' + t + '</span>';
 		}
-		header.set('html',s);
+		header.set('html', s);
 	},
 
 	setParentViz: function () {
 		if (this.options.parentid.toInt() !== 0) {
-			var myFX = new Fx.Tween('elementFormTable', {property: 'opacity', duration: 500, wait: false}).set(0);
+			var myFX = new Fx.Tween('elementFormTable', {
+				property: 'opacity',
+				duration: 500,
+				wait: false
+			}).set(0);
 			document.id('unlink').addEvent('click', function (e) {
 				if (this.checked) {
 					myFX.start(0, 1);
-				}
-				else {
+				} else {
 					myFX.start(1, 0);
 				}
 			});
