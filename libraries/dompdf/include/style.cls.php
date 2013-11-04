@@ -833,7 +833,7 @@ class Style {
     case "large":
     case "x-large":
     case "xx-large":
-    	$fs = array_key_exists($fs, self::$font_size_keywords) ? self::$font_size_keywords[$fs] : 1;
+    	$fs = array_key_exists($fs, self::$font_size_keywords) ? self::$default_font_size * self::$font_size_keywords[$fs] : 1;
       break;
 
     case "smaller":
