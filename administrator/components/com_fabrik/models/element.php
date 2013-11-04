@@ -211,7 +211,7 @@ class FabrikAdminModelElement extends FabModelAdmin
 		$db = FabrikWorker::getDbo(true);
 		$query = $db->getQuery(true);
 		$id = (int) $this->getItem()->id;
-		$query->select('*')->from('#__{package}_jsactions')->where('element_id = ' . $id);
+		$query->select('*')->from('#__{package}_jsactions')->where('element_id = ' . $id)->order('id');
 		$db->setQuery($query);
 		$items = $db->loadObjectList();
 
