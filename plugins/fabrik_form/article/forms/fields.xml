@@ -45,7 +45,7 @@
 				
 		</fieldset>
 		
-		<fieldset label="FIELDS" name="plg-form-article-fields">
+		<fieldset label="PLG_FABRIK_FORM_ARTICLE_FIELDS" name="plg-form-article-fields">
 		
 			<field name="title"
 				type="listfields"
@@ -94,13 +94,28 @@
 				repeat="true"
 				description="PLG_FABRIK_FORM_ARTICLE_METADESC_DESC"
 				label="PLG_FABRIK_FORM_ARTICLE_METADESC_LABEL" />
-				
+			
+		</fieldset>
+		
+		<fieldset label="PLG_FABRIK_FORM_ARTICLE_IMAGES" name="plg-form-article-images">
+		
 			<field name="image_intro"
 				type="listfields"
 				filter="fileupload"
 				repeat="true"
 				description="PLG_FABRIK_FORM_ARTICLE_IMAGE_INTRO_DESC"
 				label="PLG_FABRIK_FORM_ARTICLE_IMAGE_INTRO_LABEL" />
+				
+			<field name="image_intro_size"
+				type="list"
+				repeat="true"
+				default="cropped"
+				description="PLG_FABRIK_FORM_ARTICLE_IMAGE_INTRO_SIZE_DESC"
+				label="PLG_FABRIK_FORM_ARTICLE_IMAGE_INTRO_SIZE_LABEL">
+					<option value="full">Full</option>
+					<option value="thumb">Thumb</option>
+					<option value="cropped">Cropped</option>	
+			</field>
 				
 			<field name="image_full"
 				type="listfields"
@@ -109,6 +124,17 @@
 				description="PLG_FABRIK_FORM_ARTICLE_IMAGE_FULL_DESC"
 				label="PLG_FABRIK_FORM_ARTICLE_IMAGE_FULL_LABEL" />
 				
+			<field name="image_full_size"
+				type="list"
+				repeat="true"
+				default="thumb"
+				description="PLG_FABRIK_FORM_ARTICLE_IMAGE_FULL_SIZE_DESC"
+				label="PLG_FABRIK_FORM_ARTICLE_IMAGE_FULL_SIZE_LABEL">
+					<option value="full">Full</option>
+					<option value="thumb">Thumb</option>
+					<option value="cropped">Cropped</option>	
+			</field>
+			
 		</fieldset>
 	</fields>
 </form>
