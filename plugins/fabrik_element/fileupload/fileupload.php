@@ -18,6 +18,8 @@ define("FU_DOWNLOAD_SCRIPT_TABLE", '1');
 define("FU_DOWNLOAD_SCRIPT_DETAIL", '2');
 define("FU_DOWNLOAD_SCRIPT_BOTH", '3');
 
+JLog::addLogger(array('text_file' => 'fabrik.element.fileupload.log.php'), JLog::ERROR + JLog::EMERGENCY + JLog::WARNING, array('com_fabrik.element.fileupload'));
+
 /**
  * Plug-in to render fileupload element
  *
@@ -1259,6 +1261,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		}
 		else
 		{
+
 			return false;
 		}
 	}
@@ -1371,7 +1374,10 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 				}
 				else
 				{
-					$files[$i] = $imagesToKeep[$i];
+					if (array_key_exists($i, $imagesToKeep))
+					{
+						$files[$i] = $imagesToKeep[$i];
+					}
 				}
 			}
 
@@ -1489,10 +1495,12 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 	protected function deleteFile($filename)
 	{
 		$storage = $this->getStorage();
+		$user = JFactory::getUser();
 		$file = $storage->clean(JPATH_SITE . '/' . $filename);
 		$thumb = $storage->clean($storage->_getThumb($filename));
 		$cropped = $storage->clean($storage->_getCropped($filename));
 
+		JLog::add('Delete files: ' . $file . ' , ' . $thumb . ', ' . $cropped . '; user = ' . $user->get('id'), JLog::WARNING, 'com_fabrik.element.fileupload');
 		if ($storage->exists($file))
 		{
 			$storage->delete($file);
@@ -1644,6 +1652,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 	protected function _processIndUpload(&$file, $myFileDir = '', $repeatGroupCounter = 0)
 	{
 		$params = $this->getParams();
+		$user = JFactory::getUser();
 		$storage = $this->getStorage();
 
 		// $$$ hugh - check if we need to blow away the cached filepath, set in validation
@@ -1692,6 +1701,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 					$filepath = FabrikUploader::incrementFileName($filepath, $filepath, 1);
 					break;
 				case 2:
+					JLog::add('Ind upload Delete file: ' . $filepath . '; user = ' . $user->get('id'), JLog::WARNING, 'com_fabrik.element.fileupload');
 					$storage->delete($filepath);
 					break;
 			}
@@ -2367,6 +2377,8 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 				'size' => $isjoin ? $_FILES['join']['size'][$joinid] : $_FILES['file']['size']);
 
 			$filepath = $this->_processIndUpload($file, '', 0);
+
+
 			$uri = $this->getStorage()->pathToURL($filepath);
 			$o->filepath = $filepath;
 			$o->uri = $uri;
@@ -2508,6 +2520,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		}
 
 		$db = $this->getListModel()->getDb();
+		$user = JFactory::getUser();
 		$storage = $this->getStorage();
 		require_once COM_FABRIK_FRONTEND . '/helpers/uploader.php';
 		$params = $this->getParams();
@@ -2540,10 +2553,12 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 									$this->deleteFile($imageRow->$name);
 								}
 
+
 								$query->clear();
 								$query->delete($db->quoteName($join->table_join))
 									->where($db->quoteName('id') . ' IN (' . implode(', ', array_keys($imageRows)) . ')');
 								$db->setQuery($query);
+								JLog::add('onDeleteRows Delete records query: ' . $db->getQuery() . '; user = ' . $user->get('id'), JLog::WARNING, 'com_fabrik.element.fileupload');
 								$db->execute();
 							}
 						}
@@ -2916,7 +2931,9 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 
 	public function onAjax_deleteFile()
 	{
+
 		$app = JFactory::getApplication();
+		$user = JFactory::getUser();
 		$input = $app->input;
 		$filename = $input->get('file');
 		$join = FabTable::getInstance('join', 'FabrikTable');
@@ -2935,6 +2952,8 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		{
 			$query->delete($db->quoteName($join->table_join))->where($db->quoteName('id') . ' = ' . $input->getInt('recordid'));
 			$db->setQuery($query);
+
+			JLog::add('Delete join image entry: ' . $db->getQuery() . '; user = ' . $user->get('id'), JLog::WARNING, 'com_fabrik.element.fileupload');
 			$db->execute();
 		}
 	}
