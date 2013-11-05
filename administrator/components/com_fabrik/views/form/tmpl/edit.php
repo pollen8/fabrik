@@ -62,16 +62,20 @@ JHtml::_('behavior.keepalive');
 			<div class="clr"> </div>
 		</fieldset>
 
-		<fieldset class="adminform">
-			<legend><?php echo JText::_('COM_FABRIK_BUTTONS');?></legend>
+		<?php $buttons = array('copy', 'reset', 'apply', 'goback', 'save', 'delete');
+		foreach ($buttons as $button) :?>
+
+			<fieldset class="adminform">
+			<legend><?php echo JText::_('COM_FABRIK_BUTTONS') . ': ' . $button ;?></legend>
 			<ul class="adminformlist">
-				<?php foreach ($this->form->getFieldset('buttons') as $field) :?>
-				<li>
-					<?php echo $field->label . $field->input; ?>
-				</li>
-				<?php endforeach; ?>
+			<?php foreach ($this->form->getFieldset('buttons-' . $button) as $field) :?>
+			<li>
+				<?php echo $field->label . $field->input; ?>
+			</li>
+			<?php endforeach; ?>
 			</ul>
-		</fieldset>
+			</fieldset>
+		<?php endforeach; ?>
 
 		<fieldset class="adminform">
 			<legend><?php echo JText::_('COM_FABRIK_FORM_PROCESSING');?></legend>

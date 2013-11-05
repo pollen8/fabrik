@@ -248,30 +248,29 @@ class JFormFieldFabrikModalrepeat extends JFormField
 			}
 		}
 
-		$close = "function(c){" . $modalid . ".onClose(c);}";
-
-		if (FabrikWorker::j3())
-		{
-			$icon = $this->element['icon'] ? '<i class="icon-' . $this->element['icon'] . '"></i> ' : '';
-			$icon .= JText::_('JLIB_FORM_BUTTON_SELECT');
-			$str[] = '<button class="btn" id="' . $modalid . '_button" data-modal="' . $modalid . '">' . $icon . '</button>';
-		}
-		else
-		{
-			$str[] = '<div class="button2-left">';
-			$str[] = '	<div class="blank">';
-			$str[] = '<a id="' . $modalid . '_button" data-modal="' . $modalid . '">' . JText::_('JLIB_FORM_BUTTON_SELECT') . '</a>';
-			$str[] = '	</div>';
-			$str[] = '</div>';
-		}
-
 		if (is_array($this->value))
 		{
 			$this->value = array_shift($this->value);
 		}
 
 		$value = htmlspecialchars($this->value, ENT_COMPAT, 'UTF-8');
-		$str[] = '<input type="hidden" name="' . $this->name . '" id="' . $this->id . '" value="' . $value . '" />';
+
+		if (FabrikWorker::j3())
+		{
+			$icon = $this->element['icon'] ? '<i class="icon-' . $this->element['icon'] . '"></i> ' : '';
+			$icon .= JText::_('JLIB_FORM_BUTTON_SELECT');
+			$str[] = '<button class="btn" id="' . $modalid . '_button" data-modal="' . $modalid . '">' . $icon . '</button>';
+			$str[] = '<input type="hidden" name="' . $this->name . '" id="' . $this->id . '" value="' . $value . '" />';
+		}
+		else
+		{
+			$str[] = '<div class="button2-left">';
+			$str[] = '	<div class="blank">';
+			$str[] = '		<a id="' . $modalid . '_button" data-modal="' . $modalid . '">' . JText::_('JLIB_FORM_BUTTON_SELECT') . '</a>';
+			$str[] = '		<input type="hidden" name="' . $this->name . '" id="' . $this->id . '" value="' . $value . '" />';
+			$str[] = '	</div>';
+			$str[] = '</div>';
+		}
 
 		FabrikHelperHTML::framework();
 		FabrikHelperHTML::iniRequireJS();
