@@ -480,8 +480,6 @@ class FabrikModelCalendar extends FabrikFEModelVisualization
 				$query = $listModel->buildQueryWhere(true, $query);
 				$db->setQuery($query);
 				$formdata = $db->loadObjectList();
-				$defaultURL = 'index.php?option=com_' . $package . '&Itemid=' . $Itemid . '&view=form&formid='
-					. $table->form_id . '&rowid=' . $row->id . '&tmpl=component';
 
 				if (is_array($formdata))
 				{
@@ -489,6 +487,8 @@ class FabrikModelCalendar extends FabrikFEModelVisualization
 					{
 						if ($row->startdate != '')
 						{
+							$defaultURL = 'index.php?option=com_' . $package . '&Itemid=' . $Itemid . '&view=form&formid='
+								. $table->form_id . '&rowid=' . $row->id . '&tmpl=component';
 							$thisCustomUrl = $w->parseMessageForPlaceHolder($customUrl, $row);
 							$row->link = $thisCustomUrl !== '' ? $thisCustomUrl : $defaultURL;
 							$row->custom = $customUrl != '';

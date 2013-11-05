@@ -10,7 +10,13 @@ function googlemapload() {
 	if (typeOf(Fabrik.googleMapRadius) === 'null') {
 		var script2 = document.createElement("script"),
 		l = document.location,
-		path = l.pathname.split('/');
+		path = l.pathname.split('/'),
+		index = path.indexOf('index.php');
+
+		// For URLs such as /index.php/elements/form/4/97 - we only want the segment before index.php
+		if (index !== -1) {
+			path = path.slice(0, index);
+		}
 		path.pop();
 		path = path.join('/');
 		script2.type = "text/javascript";

@@ -49,6 +49,12 @@
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
+			
+			<field name="icon"
+				type="field"
+				default="icon-clock"
+				description="PLG_ELEMENT_TIMER_ICON_DESC"
+				label="PLG_ELEMENT_TIMER_ICON_LABEL" />
 							
 		</fieldset>
 	</fields>

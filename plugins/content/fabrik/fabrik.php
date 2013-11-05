@@ -295,7 +295,14 @@ class PlgContentFabrik extends JPlugin
 		// If no layout defined - set it
 		if (!$layoutFound)
 		{
-			$input->set('layout', $defaultLayout);
+			$thisLayout = $input->get('layout');
+
+			// Also test for saving an article
+			if ($input->get('option') === 'com_content' && ($thisLayout === 'blog' || ($app->isAdmin() && $thisLayout === 'edit')))
+			{
+				$layout = 'default';
+				$input->set('layout', $layout);
+			}
 		}
 
 		/* $$$ hugh - added this so the fabrik2article plugin can arrange to have form CSS
@@ -408,7 +415,7 @@ class PlgContentFabrik extends JPlugin
 
 					for ($j = 0; $j < $repeat; $j ++)
 					{
-					$res[] = $activeEl->render($defaultdata, $j);
+						$res[] = $activeEl->render($defaultdata, $j);
 					}
 
 					$res = count($res) > 1 ? '<ul><li>' . implode('</li><li>', $res) . '</li></ul>' : $res[0];

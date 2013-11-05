@@ -149,4 +149,25 @@ class PdfRender
 
 		$this->output .= $filename . '</a>';
 	}
+
+	/**
+	 * Build Carousel HTML
+	 *
+	 * @param   string  $id       Widget HTML id
+	 * @param   array   $data     Images to add to the carousel
+	 * @param   object  $model    Element model
+	 * @param   object  $params   Element params
+	 * @param   object  $thisRow  All rows data
+	 *
+	 * @return  string  HTML
+	 */
+
+	public function renderCarousel($id = 'carousel', $data = array(), $model = null, $params = null, $thisRow = null)
+	{
+		$rendered = '';
+		/**
+		 * @TODO - build it!
+		 */
+		return $rendered;
+	}
 }

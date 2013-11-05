@@ -111,7 +111,7 @@ $tasks = array('publish', 'unpublish', 'publish');
 						<?php echo $item->lastrun; ?>
 					</td>
 					<td>
-						<?php echo FabrikHelperAdminHTML::multistate(array(0, 1, 2), $i, $item->published, $tasks, $imgs, $alts, 'crons.', $canChange); ?>
+						<?php echo JHtml::_('jgrid.published', $item->published, $i, 'crons.', $canChange);?>
 					</td>
 				</tr>
 

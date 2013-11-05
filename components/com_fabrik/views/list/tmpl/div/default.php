@@ -28,12 +28,15 @@ endif;
 <?php echo $this->table->intro;?>
 <form class="fabrikForm" action="<?php echo $this->table->action;?>" method="post" id="<?php echo $this->formid;?>" name="fabrikList">
 
-<?php echo $this->loadTemplate('buttons');
-
+<?php
+if ($this->hasButtons):
+	echo $this->loadTemplate('buttons');
+endif;
 
 if ($this->showFilters) {
 	echo $this->loadTemplate('filter');
-}?>
+}
+?>
 
 <div class="fabrikDataContainer">
 

@@ -25,8 +25,8 @@
 				url="PLG_ELEMENT_USER_HELP_SERVER" />
 
 			<field name="my_table_data"
-			type="list"
-				default="id"
+				type="list"
+				default="name"
 				description="PLG_ELEMENT_USER_DISPLAY_DATA_DESC"
 				label="PLG_ELEMENT_USER_DISPLAY_DATA_LABEL">
 					<option value="id">ID</option>

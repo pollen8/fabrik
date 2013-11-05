@@ -244,7 +244,7 @@ class PlgFabrik_FormRedirect extends PlgFabrik_Form
 			foreach ($groups as $group)
 			{
 				$elements = $group->getPublishedElements();
-				$tmpData = $formModel->fullFormData;
+				$tmpData = !is_null($formModel->fullFormData) ? $formModel->fullFormData : $formModel->formDataWithTableName;
 
 				foreach ($elements as $elementModel)
 				{

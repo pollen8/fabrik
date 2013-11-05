@@ -1002,6 +1002,25 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 	}
 
 	/**
+	 * Should the element's data be returned in the search all?
+	 *
+	 * @param   bool    $advancedMode  Is the elements' list is extended search all mode?
+	 * @param   string  $search        Search string
+	 *
+	 * @return  bool	true
+	 */
+
+	public function includeInSearchAll($advancedMode = false, $search = '')
+	{
+		if (!FabrikWorker::isDate($search))
+		{
+			return false;
+		}
+
+		return parent::includeInSearchAll($advancedMode);
+	}
+
+	/**
 	 * Builds an array containing the filters value and condition
 	 *
 	 * @param   string  $value      Initial value

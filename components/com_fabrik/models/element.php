@@ -652,9 +652,14 @@ class PlgFabrik_Element extends FabrikPlugin
 		$dbtable = $this->actualTableName();
 		$db = JFactory::getDbo();
 		$table = $this->getListModel()->getTable();
+
+		// Jaanus: joined group pk? set in groupConcactJoinKey()
+
+		// $pkfeld = $table->db_primary_key;
+		$pkfield = $this->groupConcactJoinKey();
 		$fullElName = $db->quoteName($dbtable . '___' . $this->element->name);
 		$sql = '(SELECT GROUP_CONCAT(' . $jkey . ' SEPARATOR \'' . GROUPSPLITTER . '\') FROM ' . $jointable . ' WHERE parent_id = '
-				. $table->db_primary_key . ')';
+				. $pkfield . ')';
 
 		if ($addAs)
 		{
@@ -1374,7 +1379,17 @@ class PlgFabrik_Element extends FabrikPlugin
 
 			if ($groupRepeat)
 			{
-				$values = (array) $values;
+				// Wierd bug where stdClass with key 0, when cast to (array) you couldnt access values[0]
+				if (is_object($values))
+				{
+					$values = JArrayHelper::fromObject($values);
+				}
+
+				if (!is_array($values))
+				{
+					$values = (array) $values;
+				}
+
 				$values = JArrayHelper::getValue($values, $repeatCounter, '');
 			}
 
@@ -1535,6 +1550,7 @@ class PlgFabrik_Element extends FabrikPlugin
 			}
 
 			$labelText = JText::_($element->label);
+			$labelText = $labelText == '' ? '&nbsp;' : $labelText;
 			$l = $j3 ? '' : $labelText;
 			$iconOpts = array('icon-class' => 'small');
 
@@ -2499,7 +2515,7 @@ class PlgFabrik_Element extends FabrikPlugin
 
 		if ($params->get('placeholder', '') !== '')
 		{
-			$bits['placeholder'] = $params->get('placeholder');
+			$bits['placeholder'] = JText::_($params->get('placeholder'));
 		}
 
 		if ($params->get('autocomplete', 1) == 0)
@@ -4169,6 +4185,12 @@ class PlgFabrik_Element extends FabrikPlugin
 					// Query the joined table concatanating into one field
 					$jointable = $this->getJoinModel()->getJoin()->table_join;
 					$pk = $this->getListModel()->getTable()->db_primary_key;
+					/**
+					 *  Jaanus: joined group pk?
+					 *  set in groupConcactJoinKey()
+					 */
+					// $pk = $this->getListModel()->getTable()->db_primary_key;
+					$pk = $this->groupConcactJoinKey();
 					$key = "(SELECT GROUP_CONCAT(id SEPARATOR '" . GROUPSPLITTER . "') FROM $jointable WHERE parent_id = $pk)";
 					$value = str_replace("'", '', $value);
 					$query = "($key = '$value' OR $key LIKE '$value" . GROUPSPLITTER . "%' OR
@@ -6056,12 +6078,13 @@ class PlgFabrik_Element extends FabrikPlugin
 	 * Looks at the lists selected options, if its there looks at what search mode the list is using
 	 * and determines if the selected element can be used.
 	 *
-	 * @param   bool  $advancedMode  is the elements' list is extended search all mode?
+	 * @param   bool    $advancedMode  Is the elements' list is extended search all mode?
+	 * @param   string  $search        Search string
 	 *
 	 * @return  bool	true
 	 */
 
-	public function includeInSearchAll($advancedMode = false)
+	public function includeInSearchAll($advancedMode = false, $search = '')
 	{
 		if ($this->isJoin() && $advancedMode)
 		{

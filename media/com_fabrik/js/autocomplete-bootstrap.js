@@ -218,8 +218,12 @@ var FbAutocomplete = new Class({
 	},
 
 	doWatchKeys: function (e) {
-		var max = this.getListMax();
+		var max = this.getListMax(), selected, selectEvnt;
 		if (!this.shown) {
+			// Stop enter from submitting when in in-line edit form.
+			if (e.code.toInt() === 13) {
+				e.stop();
+			}
 			if (e.code.toInt() === 40 && document.activeElement === this.getInputElement()) {
 				this.openMenu();
 			}
@@ -248,9 +252,12 @@ var FbAutocomplete = new Class({
 			case 13://enter
 			case 9://tab
 				e.stop();
-				var selectEvnt = new Event.Mock(this.getSelected(), 'click');
-				this.makeSelection(selectEvnt, this.getSelected());
-				this.closeMenu();
+				selected = this.getSelected();
+				if (selected) {
+					selectEvnt = new Event.Mock(selected, 'click');
+					this.makeSelection(selectEvnt, selected);
+					this.closeMenu();
+				}
 				break;
 			case 27://escape
 				e.stop();
@@ -266,10 +273,19 @@ var FbAutocomplete = new Class({
 	 * @return  DOM Node <a>
 	 */
 	getSelected: function () {
-		var lis = this.menu.getElements('li').filter(function (li, i) {
+		var all = this.menu.getElements('li'),
+		lis = all.filter(function (li, i) {
 			return i === this.selected;
 		}.bind(this));
-		return lis[0].getElement('a');
+		
+		if (typeOf(lis[0]) === 'element') {
+			return lis[0].getElement('a');
+		} else if (all.length > 0) {
+			// Can occur if autocomplete generated but not clicked on / keyed into.
+			return all[0].getElement('a');
+		}
+		
+		return false;
 	},
 
 	highlight: function () {

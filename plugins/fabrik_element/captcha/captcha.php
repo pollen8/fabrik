@@ -223,6 +223,11 @@ class PlgFabrik_ElementCaptcha extends PlgFabrik_Element
 		}
 		else
 		{
+			if (!function_exists('imagettfbbox'))
+			{
+				throw new RuntimeException(JText::_('PLG_FABRIK_ELEMENT_CAPTCHA_STANDARD_TTF_ERROR'));
+			}
+
 			$str = array();
 			$size = $element->width;
 			$fontsize = $params->get('captcha-font-size', 22);

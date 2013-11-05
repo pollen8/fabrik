@@ -212,7 +212,8 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 
 				if ($userid > 0)
 				{
-					$user = JFactory::getUser($userid);
+					// See https://github.com/Fabrik/fabrik/issues/1026 - don't use JFactory as this loads in session stored user
+					$user = new JUser($userid);
 
 					if ($user->get('id') == $userid)
 					{

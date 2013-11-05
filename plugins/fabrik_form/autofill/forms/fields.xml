@@ -79,7 +79,6 @@
 			<field name="autofill_onload"
 				type="list"
 				default="0"
-				class="btn-group"
 				description="PLG_FORM_AUTOFILL_ONLOAD_DESC"
 				label="PLG_FORM_AUTOFILL_ONLOAD_LABEL"
 				repeat="true">

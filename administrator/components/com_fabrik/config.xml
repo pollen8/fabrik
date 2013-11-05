@@ -382,6 +382,7 @@
 		<field name="pdf_debug"
 			type="radio"
 			default="0"
+			class="btn-group"
 			description="COM_FABRIK_PDF_DEBUG_DESC"
 			label="COM_FABRIK_PDF_DEBUG_LABEL">
 				<option value="0">JNO</option>

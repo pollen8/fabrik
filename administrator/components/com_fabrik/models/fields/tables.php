@@ -71,18 +71,7 @@ class JFormFieldTables extends JFormFieldList
 		}
 		else
 		{
-			$query = $db->getQuery(true);
-			$key = JArrayHelper::getValue($this->element, 'key', 'id') == 'name' ? 'db_table_name' : 'id';
-			$query->select($db->quoteName($key) . ' AS value, ' . $db->quoteName('db_table_name') . ' AS ' . $db->quote('text'))
-				->from('#__{package}_lists')
-				->where('connection_id = ' . (int) $connId);
-			$db->setQuery($query);
-			$items = $db->loadObjectList();
-
-			foreach ($items as $item)
-			{
-				$options[] = JHTML::_('select.option', $item->value, $item->text);
-			}
+			// Delay for the connection to trigger an update via js.
 		}
 
 		return $options;
@@ -121,6 +110,8 @@ class JFormFieldTables extends JFormFieldList
 			$src[] = 'administrator/components/com_fabrik/views/namespace.js';
 			$src[] = 'administrator/components/com_fabrik/models/fields/tables.js';
 			FabrikHelperHTML::script($src, implode("\n", $script));
+
+			$this->value = '';
 		}
 
 		$html = parent::getInput();

@@ -83,7 +83,7 @@ JToolBarHelper::title(JText::_('COM_FABRIK_WELCOME'), 'fabrik.png');
 			<ul class="adminlist">
 				<li><a href="http://fabrikar.com/"><?php echo JText::_('COM_FABRIK_HOME_FABRIK_WEB_SITE')?></a></li>
 				<li><a href="http://fabrikar.com/forums"><?php echo JText::_('COM_FABRIK_HOME_FORUM')?></a>
-				<li><a href="http://fabrikar.com/wiki/"><?php echo JText::_('COM_FABRIK_HOME_DOCUMENTATION_WIKI')?></a></li>
+				<li><a href="http://fabrikar.com/forums/index.php?wiki/index/"><?php echo JText::_('COM_FABRIK_HOME_DOCUMENTATION_WIKI')?></a></li>
 			</ul>
 
 			<?php
@@ -98,9 +98,6 @@ JToolBarHelper::title(JText::_('COM_FABRIK_WELCOME'), 'fabrik.png');
 				<li><a onclick="return confirm('<?php echo JText::_('COM_FABRIK_HOME_CONFIRM_WIPE', true);?>')" href="index.php?option=com_fabrik&task=home.reset">
 					<?php echo JText::_('COM_FABRIK_HOME_RESET_FABRIK') ?>
 				</a></li>
-				<li>
-					<a href="index.php?option=com_fabrik&task=upgrade.check">Upgrade from 2.1</a>
-				</li>
 			</ul>
 
 			<?php

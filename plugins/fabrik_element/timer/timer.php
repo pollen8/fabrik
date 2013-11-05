@@ -105,13 +105,16 @@ class PlgFabrik_ElementTimer extends PlgFabrik_Element
 			return ($element->hidden == '1') ? "<!-- " . $value . " -->" : $value;
 		}
 
-		$class = 'class="fabrikinput inputbox ' . $type . '"';
-		$str[] = '<input ' . $class . ' name="' . $name . '" id="' . $id . '" ' . $sizeInfo . 'value="' . $value . '" />';
+		$class = 'class="fabrikinput input-small inputbox ' . $type . '"';
+		$str[] = '<input type="text" ' . $class . ' name="' . $name . '" id="' . $id . '" ' . $sizeInfo . 'value="' . $value . '" />';
 
 		if (!$params->get('timer_readonly'))
 		{
-			$img = '<i class="icon-time"></i> <span>' . JText::_('PLG_ELEMENT_TIMER_START') . '</span>';
-			$str[] .= '<button class="btn" id="' . $id . '_button">' . $img . '</button>';
+			array_unshift($str, '<div class="input-append">');
+			$icon = $params->get('icon', 'icon-clock');
+			$img = '<i class="' . $icon . '"></i> <span>' . JText::_('PLG_ELEMENT_TIMER_START') . '</span>';
+			$str[] = '<button class="btn" id="' . $id . '_button">' . $img . '</button>';
+			$str[] = '</div>';
 		}
 
 		return implode("\n", $str);

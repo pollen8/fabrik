@@ -85,7 +85,7 @@ class ImageRender
 			$title_name = str_replace('.', '___', $params->get('fu_title_element'));
 		}
 
-		if ($input->get('view') == 'list')
+		if ($this->inTableView)
 		{
 			$listModel = $model->getlistModel();
 
@@ -197,5 +197,92 @@ class ImageRender
 		}
 
 		return true;
+	}
+
+	/**
+	 * Build Carousel HTML
+	 *
+	 * @param   string  $id       Widget HTML id
+	 * @param   array   $data     Images to add to the carousel
+	 * @param   object  $model    Element model
+	 * @param   object  $params   Element params
+	 * @param   object  $thisRow  All rows data
+	 *
+	 * @return  string  HTML
+	 */
+
+	public function renderCarousel($id = 'carousel', $data = array(), $model = null, $params = null, $thisRow = null)
+	{
+		$rendered = '';
+		$id .= '_carousel';
+
+		if (!empty($data))
+		{
+			$imgs = array();
+			$i = 0;
+
+			foreach ($data as $img)
+			{
+				$model->_repeatGroupCounter = $i++;
+				$this->renderListData($model, $params, $img, $thisRow);
+				$imgs[] = $this->output;
+			}
+
+			/*
+			 $rendered = '<div class="cycle-slideshow">';
+			$rendered .= implode(' ', $data);
+			$rendered .= '</div>';
+			*/
+
+			/*
+			 * Don't seem to need this for now
+			* JHtml::_('bootstrap.carousel', 'myCarousel');
+			*/
+
+			$numImages = count($imgs);
+
+			$rendered = '
+<div id="' . $id . '" class="carousel slide mootools-noconflict" data-interval="false" data-pause="hover">
+';
+			/*
+			 * Current version of J! bootstrap doesn't seem to have the indicators
+			*/
+			/*
+			 $rendered .= '
+			<ol class="carousel-indicators">
+			';
+
+			if ($numImages > 0)
+			{
+			$rendered .= '<li data-target="#' . $id . '" data-slide-to="0" class="active">';
+			for ($x=1; $x < $numImages; $x++)
+			{
+			$rendered .= '</li> <li data-target="#' . $id . '" data-slide-to="' . $x . '">';
+			}
+			$rendered .= '</li>
+			';
+			}
+			$rendered .= '
+			</ol>
+			';
+			*/
+
+			$rendered .= '
+    <!-- Carousel items -->
+	<div class="carousel-inner">
+		<div class="active item">
+';
+			$rendered .= implode("\n		</div>\n" . '		<div class="item">', $imgs);
+			$rendered .= '
+		</div>
+    </div>
+    <!-- Carousel nav -->
+    <a class="carousel-control left" href="#' . $id . '" data-slide="prev">&lsaquo;</a>
+    <a class="carousel-control right" href="#' . $id . '" data-slide="next">&rsaquo;</a>
+</div>
+';
+		}
+
+		return $rendered;
 	}
 }

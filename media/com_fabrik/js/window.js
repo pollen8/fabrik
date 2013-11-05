@@ -87,15 +87,23 @@ Fabrik.Window = new Class({
 	},
 	
 	center: function () {
-		var pxWidth = this.windowWidthInPx();
-		var w = this.window.getStyle('width') === null ? pxWidth : this.window.getStyle('width');
-		var h = this.window.getStyle('height') === null ? this.options.height + 10 : this.window.getStyle('height');
-		var d = {'width': w + 'px', 'height': h + 'px', 'margin': 0};
+		var pxWidth = this.windowWidthInPx(),
+		w = this.window.getStyle('width'),
+		h = this.window.getStyle('height');
+		w = (w === null || w === 'auto') ? pxWidth : this.window.getStyle('width');
+		w = w.toInt();
+		h = (h === null || h === 'auto') ? this.options.height + 10 : this.window.getStyle('height');
+		h = h.toInt();
+		var d = {'width': w + 'px', 'height': h + 'px'};
 		if (!(Fabrik.bootstrapped && this.modal)) {
-			var yy = window.getSize().y / 2 + window.getScroll().y - (h.toInt() / 4);
+			var yy = window.getSize().y / 2 + window.getScroll().y - (h / 4);
 			d.top = typeOf(this.options.offset_y) !== 'null' ? window.getScroll().y + this.options.offset_y : yy;
-			var xx = window.getSize().x / 2  + window.getScroll().x - w.toInt() / 2; 
+			var xx = window.getSize().x / 2  + window.getScroll().x - w / 2; 
 			d.left = typeOf(this.options.offset_x) !== 'null' ? window.getScroll().x + this.options.offset_x : xx;
+		} else {
+			// Fileupload crop uses this
+			var offset = (window.getSize().y - h) / 2;
+			d.top = offset < 0 ? window.getScroll().y : window.getScroll().y + offset;
 		}
 		this.window.setStyles(d);
 	},
@@ -374,7 +382,7 @@ Fabrik.Window = new Class({
 	close: function (e)
 	{
 		if (this.modal) {
-			document.body.setStyle('overflow', 'auto');
+			//document.body.setStyle('overflow', 'auto');
 		}
 		if (e) {
 			e.stop();
@@ -396,7 +404,7 @@ Fabrik.Window = new Class({
 	open: function (e) {
 		// Crop fileupload interface doesnt like window scrolling when open, so stop it
 		if (this.modal) {
-			document.body.setStyle('overflow', 'hidden');
+			//document.body.setStyle('overflow', 'hidden');
 		}
 		if (e) {
 			e.stop();

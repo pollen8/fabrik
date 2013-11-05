@@ -110,8 +110,7 @@ class PlgFabrik_List extends FabrikPlugin
 	public function button(&$args)
 	{
 		$model = $this->getModel();
-		$listParams = $model->getParams();
-		$this->buttonAction = $listParams->get('actionMethod');
+		$this->buttonAction = $model->actionMethod();
 		$this->context = $model->getRenderContext();
 
 		return false;

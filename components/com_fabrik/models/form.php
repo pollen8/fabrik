@@ -4270,16 +4270,10 @@ class FabrikFEModelForm extends FabModelForm
 					}
 				}
 
-				/* $$$ hugh - changed to use _raw as key, see:
-				 * http://fabrikar.com/forums/showthread.php?t=20020
-				 */
-				$linkKey = $element->db_table_name . '___' . $element->name;
-				$linkKeyRaw = $linkKey . '_raw';
-				$popUpLink = JArrayHelper::getValue($linkedtable_linktype->$key, $f, false);
-
 				/* $$$ tom 2012-09-14 - If we don't have a key value, get all.  If we have a key value,
 				 * use it to restrict the count to just this entry.
 				 */
+
 				$pks = array();
 
 				if (!empty($val))
@@ -4288,6 +4282,16 @@ class FabrikFEModelForm extends FabModelForm
 				}
 
 				$recordCounts = $referringTable->getRecordCounts($element, $pks);
+
+				// Jaanus - 18.10.2013 - get correct element fullnames as link keys
+				$linkKey = $recordCounts['linkKey'];
+
+				/* $$$ hugh - changed to use _raw as key, see:
+				 * http://fabrikar.com/forums/showthread.php?t=20020
+				 */
+
+				$linkKeyRaw = $linkKey . '_raw';
+				$popUpLink = JArrayHelper::getValue($linkedtable_linktype->$key, $f, false);
 				$count = is_array($recordCounts) && array_key_exists($val, $recordCounts) ? $recordCounts[$val]->total : 0;
 				$label = $factedLinks->linkedlistheader->$key == '' ? $element->listlabel : $factedLinks->linkedlistheader->$key;
 				$links[$element->list_id][] = $label . ': ' . $referringTable->viewDataLink($popUpLink, $element, null, $linkKey, $val, $count, $f);
@@ -4299,6 +4303,7 @@ class FabrikFEModelForm extends FabModelForm
 		$f = 0;
 
 		// Create columns containing links which point to forms assosciated with this table
+
 		foreach ($linksToForms as $element)
 		{
 			if ($element !== false)
@@ -4311,9 +4316,8 @@ class FabrikFEModelForm extends FabModelForm
 				{
 					if (is_object($element))
 					{
-						// $$$rob moved these two lines here as there were giving warnings since Hugh commented out the if ($element != '') {
-						// $$$ hugh - what?  Eh?  WhaddidIdo?  Anyway, we use $linkKey up ^^ there somewhere, so we need to define it earlier!
-						$linkKey = @$element->db_table_name . '___' . @$element->name;
+						$linkKeyData = $referringTable->getRecordCounts($element, $pks);
+						$linkKey = $linkKeyData['linkKey'];
 						$val = $input->get($linkKey, '', 'string');
 
 						if ($val == '')
@@ -4321,8 +4325,12 @@ class FabrikFEModelForm extends FabModelForm
 							$val = $input->get($qsKey . '_raw', $input->get('rowid'));
 						}
 
-						$label = $factedLinks->linkedformheader->$key;
-						$links[$element->list_id][] = $label . ': ' . $referringTable->viewFormLink($popUpLink, $element, null, $linkKey, $val, false, $f);
+						// Jaanus: when no link to list and no formheaders then people still know where they add data
+						$fkey = $factedLinks->linkedformheader->$key;
+						$label = $fkey != '' ? ': ' . $fkey : (isset($linkedLists->$key) && $linkedLists->$key != 0 ? '' : ': ' . $element->listlabel);
+
+						// Jaanus: label after add link if no list link helps to make difference between data view links and only add links.
+						$links[$element->list_id][] = $referringTable->viewFormLink($popUpLink, $element, null, $linkKey, $val, false, $f) . $label;
 					}
 				}
 

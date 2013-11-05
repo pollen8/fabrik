@@ -210,7 +210,14 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 			}
 		}
 
-		$shim['element/fileupload/fileupload'] = $s;
+		if (array_key_exists('element/fileupload/fileupload', $shim) && isset($shim['element/fileupload/fileupload']->deps))
+		{
+			$shim['element/fileupload/fileupload']->deps = array_values(array_unique(array_merge($shim['element/fileupload/fileupload']->deps, $s->deps)));
+		}
+		else
+		{
+			$shim['element/fileupload/fileupload'] = $s;
+		}
 
 		if ($this->requiresSlideshow())
 		{
@@ -278,6 +285,14 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 
 		$oFiles = new stdClass;
 		$iCounter = 0;
+
+		// Failed validation for ajax upload elements
+		if (array_key_exists('id', $value))
+		{
+			$imgParams = array_values($value['crop']);
+			$value = array_keys($value['id']);
+			$rawvalues = $value;
+		}
 
 		for ($x = 0; $x < count($value); $x++)
 		{
@@ -473,6 +488,8 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 	{
 		$data = FabrikWorker::JSONtoData($data, true);
 		$params = $this->getParams();
+		$rendered = '';
+		static $id_num = 0;
 
 		// $$$ hugh - have to run thru rendering even if data is empty, in case default image is being used.
 		if (empty($data))
@@ -481,20 +498,27 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		}
 		else
 		{
-			for ($i = 0; $i < count($data); $i++)
+			/**
+			 * 2 == 'slideshow' ('carousel'), so don't run individually through _renderListData(), instead
+			 * build whatever carousel the data type uses, which will depend on data type.  Like simple image carousel,
+			 * or MP3 player with playlist, etc.
+			 */
+			if ($params->get('fu_show_image_in_table', '0') == '2')
 			{
-				$data[$i] = $this->_renderListData($data[$i], $thisRow, $i);
+				$id = $this->getHTMLId($id_num) . '_' . $id_num;
+				$id_num++;
+				$rendered = $this->buildCarousel($id, $data, $params, $thisRow);
+			}
+			else
+			{
+				for ($i = 0; $i < count($data); $i++)
+				{
+					$data[$i] = $this->_renderListData($data[$i], $thisRow, $i);
+				}
 			}
 		}
 
-		$rendered = '';
-
-		if ($params->get('fu_show_image_in_table', '0') == '2')
-		{
-			// JHtml::_('bootstrap.carousel', 'myCarousel');
-			$rendered = $this->buildCarousel('foo', $data);
-		}
-		else
+		if ($params->get('fu_show_image_in_table', '0') != '2')
 		{
 			$data = json_encode($data);
 			$rendered = parent::renderListData($data, $thisRow);
@@ -584,6 +608,59 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 			case 'relative':
 				return $file;
 				break;
+		}
+	}
+
+	/**
+	 * Element plugin specific method for setting unecrypted values baack into post data
+	 *
+	 * @param   array   &$post  Data passed by ref
+	 * @param   string  $key    Key
+	 * @param   string  $data   Elements unencrypted data
+	 *
+	 * @return  void
+	 */
+
+	public function setValuesFromEncryt(&$post, $key, $data)
+	{
+		if ($this->isJoin())
+		{
+			$data = FabrikWorker::JSONtoData($data, true);
+		}
+
+		parent::setValuesFromEncryt($post, $key, $data);
+	}
+
+	/**
+	 * Called by form model to build an array of values to encrypt
+	 *
+	 * @param   array  &$values  Previously encrypted values
+	 * @param   array  $data     Form data
+	 * @param   int    $c        Repeat group counter
+	 *
+	 * @return  void
+	 */
+
+	public function getValuesToEncrypt(&$values, $data, $c)
+	{
+		$name = $this->getFullName(true, false);
+
+		// Needs to be set to raw = false for fileupload
+		$opts = array('raw' => false);
+		$group = $this->getGroup();
+
+		if ($group->canRepeat())
+		{
+			if (!array_key_exists($name, $values))
+			{
+				$values[$name]['data'] = array();
+			}
+
+			$values[$name]['data'][$c] = $this->getValue($data, $c, $opts);
+		}
+		else
+		{
+			$values[$name]['data'] = $this->getValue($data, $c, $opts);
 		}
 	}
 
@@ -882,6 +959,12 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 			$file = $files;
 		}
 
+		// Perhaps an ajax upload? In anay event $file empty was giving errors with upload element in multipage form.
+		if (!array_key_exists('name', $file))
+		{
+			return true;
+		}
+
 		$fileName = $file['name'];
 		$fileSize = $file['size'];
 
@@ -1116,6 +1199,12 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 			$filter = JFilterInput::getInstance();
 			$post = $filter->clean($_POST, 'array');
 			$raw = JArrayHelper::getValue($post, $name . '_raw', array());
+
+			if (!$this->canUse())
+			{
+				// Ensure readonly elements not overwritten
+				return true;
+			}
 
 			if ($this->getValue($post) != 'Array,Array')
 			{
@@ -1945,29 +2034,8 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 			{
 				$values = array_keys($values['id']);
 			}
-			// End failed validations
 
-			foreach ($values as $value)
-			{
-				if (is_object($value))
-				{
-					$value = $value->file;
-				}
-
-				$render = $this->loadElement($value);
-
-				if ($value != '' && ($storage->exists(COM_FABRIK_BASE . $value) || JString::substr($value, 0, 4) == 'http'))
-				{
-					$render->render($this, $params, $value);
-				}
-
-				if ($render->output != '')
-				{
-					$allRenders[] = $render->output;
-				}
-			}
-
-			$rendered = $this->buildCarousel('foo', $allRenders);
+			$rendered = $this->buildCarousel($id, $values, $params, $data);
 
 			return $rendered;
 		}
@@ -2623,13 +2691,30 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 
 		if ($params->get('fu_show_image_in_email', false))
 		{
-			$render = $this->loadElement($value);
+			$origShowImages = $params->get('fu_show_image');
+			$params->set('fu_show_image', true);
 
-			if ($params->get('fu_show_image') != '0')
+			// For ajax repeats
+			$value = (array) $value;
+			$formModel = $this->getFormModel();
+
+			if (!isset($formModel->data))
 			{
-				if ($value != '' && $storage->exists(COM_FABRIK_BASE . $value))
+				$formModel->data = $data;
+			}
+
+			if (empty($value))
+			{
+				return '';
+			}
+
+			foreach ($value as $v)
+			{
+				$render = $this->loadElement($v);
+
+				if ($v != '' && $storage->exists(COM_FABRIK_BASE . $v))
 				{
-					$render->render($this, $params, $value);
+					$render->render($this, $params, $v);
 				}
 			}
 
@@ -2892,6 +2977,19 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		$input = $app->input;
 		$this->loadMeForAjax();
 		$filename = $input->get('file', 'string', '');
+
+		// Filename may be a path - if so just get the name
+		if (strstr($filename, '/'))
+		{
+			$filename = explode('/', $filename);
+			$filename = array_pop($filename);
+		}
+		elseif (strstr($filename, '\\'))
+		{
+			$filename = explode('\\', $filename);
+			$filename = array_pop($filename);
+		}
+
 		$repeatCounter = (int) $input->getInt('repeatCounter');
 		$join = FabTable::getInstance('join', 'FabrikTable');
 		$join->load(array('element_id' => $input->getInt('element_id')));
@@ -2904,7 +3002,6 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		$storage = $this->getStorage();
 		$filename = $storage->cleanName($filename, $repeatCounter);
 		$filename = JPath::clean($filepath . '/' . $filename);
-
 		$this->deleteFile($filename);
 		$db = $this->getListModel()->getDb();
 		$query = $db->getQuery(true);
@@ -2936,69 +3033,27 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 	}
 
 	/**
-	 * Build Carousel HTML
+	 * Build 'slideshow' / carusel.  What gets built will depend on content type,
+	 * using the first file in the data array as the type.  So if the first file is
+	 * an image, a Bootstrap carousel will be built.
 	 *
-	 * @param   string  $id    Widget HTML id
-	 * @param   array   $imgs  Images to add to the carousel
+	 * @param   string  $id       Widget HTML id
+	 * @param   array   $data     Array of file paths
+	 * @param   object  $thisRow  Row data
 	 *
 	 * @return  string  HTML
 	 */
 
-	public function buildCarousel($id = 'carousel', $imgs = array())
+	public function buildCarousel($id = 'carousel', $data = array(), $thisRow = null)
 	{
-		/*
-		$rendered = '<div class="cycle-slideshow">';
-		$rendered .= implode(' ', $data);
-		$rendered .= '</div>';
-		*/
+		$rendered = '';
 
-		/*
-		 * Don't seem to need this for now
-		 * JHtml::_('bootstrap.carousel', 'myCarousel');
-		 */
-
-		$numImages = count($imgs);
-
-		$rendered = '
-<div id="' . $id . '" class="carousel slide mootools-noconflict" data-interval="3000" data-pause="hover">
-';
-		/*
-		 * Current version of J! bootstrap doesn't seem to have the indicators
-		 */
-		/*
-		$rendered .= '
-    <ol class="carousel-indicators">
-	';
-
-		if ($numImages > 0)
+		if (!FArrayHelper::emptyIsh($data))
 		{
-			$rendered .= '<li data-target="#' . $id . '" data-slide-to="0" class="active">';
-			for ($x=1; $x < $numImages; $x++)
-			{
-				$rendered .= '</li> <li data-target="#' . $id . '" data-slide-to="' . $x . '">';
-	    	}
-	    	$rendered .= '</li>
-			';
+			$render = $this->loadElement($data[0]);
+			$params = $this->getParams();
+			$rendered = $render->renderCarousel($id, $data, $this, $params, $thisRow);
 		}
-		$rendered .= '
-	</ol>
-		';
-		*/
-
-		$rendered .= '
-    <!-- Carousel items -->
-	<div class="carousel-inner">
-		<div class="active item">
-';
-		$rendered .= implode("\n		</div>\n" . '		<div class="item">', $imgs);
-		$rendered .= '
-		</div>
-    </div>
-    <!-- Carousel nav -->
-    <a class="carousel-control left" href="#' . $id . '" data-slide="prev">&lsaquo;</a>
-    <a class="carousel-control right" href="#' . $id . '" data-slide="next">&rsaquo;</a>
-</div>
-';
 
 		return $rendered;
 	}

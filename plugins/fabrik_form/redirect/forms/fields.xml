@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <form>
 	<fields addfieldpath="/administrator/components/com_fabrik/models/fields" name="params">
-	
+
 		<fieldset name="plg-form-redirect" label="COM_FABRIK_OPTIONS">
-		
+
 			<field name="jump_page"
 				type="textarea"
 				cols="60"
@@ -11,7 +11,7 @@
 				label="PLG_FORM_REDIRECT_JUMPPAGE_LABEL"
 				repeat="true"
 				rows="2"/>
-				
+
 			<field name="append_jump_url"
 				type="radio"
 				default="0"
@@ -22,15 +22,14 @@
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
-			
+
 			<field name="thanks_message"
 				type="fabrikeditor"
 				mode="html"
-				width="100"
 				description="PLG_FORM_REDIRECT_THANKSMSG_DESC"
 				label="PLG_FORM_REDIRECT_THANKSMSG_LABEL"
 				repeat="true" />
-				
+
 			<field name="save_insession"
 				type="radio"
 				default="0"
@@ -41,19 +40,18 @@
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
-			
+
 			<field name="redirect_conditon"
 				type="fabrikeditor"
 				mode="php"
-				width="100"
 				repeat="true"
 				description="PLG_FORM_REDIRECT_CONDITION_DESC"
 				label="PLG_FORM_REDIRECT_CONDITION_LABEL" />
-				
+
 		</fieldset>
-		
+
 		<fieldset label="PLG_FORM_REDIRECT_MODULE_OPTIONS_TITLE" name="plg-form-redirect-module">
-			
+
 			<field name="redirect_content_reset_form"
 				type="radio"
 				default="1"
@@ -64,7 +62,7 @@
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
-				
+
 			<field name="redirect_content_how"
 			 	type="list"
 				default="popup"
@@ -75,7 +73,7 @@
 					<option value="samepage">PLG_FORM_REDIRECT_CONTENT_HOW_SAMEPAGE</option>
 					<option value="newpage">PLG_FORM_REDIRECT_CONTENT_HOW_NEWPAGE</option>
 			</field>
-			
+
 			<field name="redirect_content_popup_width"
 				type="text"
 				class="input-mini"
@@ -83,7 +81,7 @@
 				label="PLG_FORM_REDIRECT_CONTENT_POPUP_WIDTH_LABEL"
 				repeat="true"
 				size="5"/>
-				
+
 			<field name="redirect_content_popup_height"
 				class="input-mini"
 				description="PLG_FORM_REDIRECT_CONTENT_POPUP_HEIGHT_DESC"
@@ -91,7 +89,7 @@
 				repeat="true"
 				size="5"
 				type="text"/>
-				
+
 			<field name="redirect_content_popup_x_offset"
 				type="text"
 				class="input-mini"
@@ -99,7 +97,7 @@
 				label="PLG_FORM_REDIRECT_CONTENT_POPUP_X_OFFSET_LABEL"
 				repeat="true"
 				size="5"/>
-				
+
 			<field name="redirect_content_popup_y_offset"
 				class="input-mini"
 				description="PLG_FORM_REDIRECT_CONTENT_POPUP_Y_OFFSET_DESC"
@@ -115,7 +113,7 @@
 				label="PLG_FORM_REDIRECT_CONTENT_POPUP_TITLE_LABEL"
 				repeat="true"
 				size="50"/>
-				
+
 		</fieldset>
 	</fields>
 </form>

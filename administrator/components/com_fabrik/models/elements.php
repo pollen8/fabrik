@@ -376,7 +376,7 @@ class FabrikAdminModelElements extends FabModelList
 	 *
 	 * @param   array  $ids  Ids wanting to be unpublished
 	 *
-	 * @retrun  array  allowed ids
+	 * @return  array  allowed ids
 	 */
 	public function canUnpublish($ids)
 	{

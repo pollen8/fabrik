@@ -211,8 +211,8 @@ var FbFileUpload = new Class({
 				'cropdim' : {
 					w: this.options.cropwidth,
 					h: this.options.cropheight,
-					x: this.options.cropwidth / 2,
-					y: this.options.cropheight / 2
+					x: this.options.winWidth / 2,
+					y: this.options.winHeight / 2
 				},
 				crop: this.options.crop
 			});
@@ -421,6 +421,7 @@ var FbFileUpload = new Class({
 		if (!confirm(Joomla.JText._('PLG_ELEMENT_FILEUPLOAD_CONFIRM_HARD_DELETE'))) {
 			return;
 		}
+
 		var id = e.target.getParent().getParent().id.split('_').getLast();// alreadyuploaded_8_13
 		// $$$ hugh - removed ' span' from the getElement(), as this blows up on some templates
 		var f = e.target.getParent().getParent().getElement('.plupload_file_name').get('text');
@@ -437,7 +438,6 @@ var FbFileUpload = new Class({
 		this.uploader.files = newFiles;
 
 		// Send a request to delete the file from the server.
-		console.log(this);
 		new Request({
 			url: '',
 			data: {

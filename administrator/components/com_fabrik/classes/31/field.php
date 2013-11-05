@@ -358,7 +358,7 @@ abstract class JFormField
 		$this->multiple = ($multiple == 'true' || $multiple == 'multiple');
 
 		// $$$ rob
-		$this->repeat = ($repeat == 'true' || $repeat == 'multiple' || $this->form->repeat == 1);
+		$this->repeat = ($repeat == 'true' || $repeat == 'multiple' || (isset($this->form) && $this->form->repeat == 1));
 
 		// Allow for field classes to force the multiple values option.
 		if (isset($this->forceMultiple))

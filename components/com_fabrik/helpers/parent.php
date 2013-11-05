@@ -1769,6 +1769,12 @@ class FabrikWorker
 					// -1 for menu items that link to their own records
 					$usercol_val = is_array($row) ? $row[$usercol] : $row->$usercol;
 
+					// User element stores as object
+					if (is_object($usercol_val))
+					{
+						$usercol_val = array_shift(JArrayHelper::fromObject($usercol_val));
+					}
+
 					if (empty($usercol_val) && empty($myid))
 					{
 						return false;

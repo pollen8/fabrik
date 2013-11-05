@@ -21,11 +21,9 @@
 
 			<field name="message"
 				type="fabrikeditor"
-				cols="60"
-				width="100"
 				description="PLG_CRON_EMAIL_MESSAGE_DESC"
 				label="PLG_CRON_EMAIL_MESSAGE_LABEL"
-				rows="8" />
+				/>
 
 			<field name="cronemail-eval"
 				type="radio"
@@ -39,11 +37,9 @@
 
 			<field name="cronemail_condition"
 				type="fabrikeditor"
-				cols="30"
-				width="100"
 				description="PLG_CRON_EMAIL_CONDITION_DESC"
 				label="PLG_CRON_EMAIL_CONDITION_LABEL"
-				rows="5" />
+				/>
 
 		</fieldset>
 
@@ -59,7 +55,6 @@
 
 			<field name="cronemail-updatefield-value"
 				type="fabrikeditor"
-				width="100"
 				description="PLG_CRON_EMAIL_VALUE_DESC"
 				label="PLG_CRON_EMAIL_VALUE_LABEL" />
 

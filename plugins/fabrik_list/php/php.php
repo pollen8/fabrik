@@ -39,8 +39,21 @@ class PlgFabrik_ListPhp extends plgFabrik_List
 	public function button(&$args)
 	{
 		parent::button($args);
+		$heading = false;
 
-		return true;
+		if (!empty($args))
+		{
+			$heading = JArrayHelper::getValue($args[0], 'heading');
+		}
+
+		if ($heading)
+		{
+			return true;
+		}
+
+		$params = $this->getParams();
+
+		return (bool) $params->get('button_in_row', true);
 	}
 
 	/**

@@ -32,21 +32,6 @@ class FabrikAdminControllerHome extends JControllerAdmin
 	public function reset()
 	{
 		$model = $this->getModel('Home');
-		$model->dropData();
-		$model->reset();
-		$this->setRedirect('index.php?option=com_fabrik', JText::_('COM_FABRIK_HOME_FABRIK_RESET'));
-	}
-
-	/**
-	 * Reset fabrik !!!
-	 *
-	 * @return  null
-	 */
-
-	public function dropData()
-	{
-		$model = $this->getModel('Home');
-		$model->dropData();
 		$model->reset();
 		$this->setRedirect('index.php?option=com_fabrik', JText::_('COM_FABRIK_HOME_FABRIK_RESET'));
 	}

@@ -45,7 +45,10 @@ echo $this->table->intro;
 <form class="fabrikForm form-search" action="<?php echo $this->table->action;?>" method="post" id="<?php echo $this->formid;?>" name="fabrikList">
 
 <?php
-echo $this->loadTemplate('buttons');
+if ($this->hasButtons):
+	echo $this->loadTemplate('buttons');
+endif;
+
 if ($this->showFilters && $this->bootShowFilters) :
 	echo $this->loadTemplate('filter');
 endif;

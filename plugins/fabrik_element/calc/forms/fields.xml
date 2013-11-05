@@ -39,7 +39,6 @@
 			<field name="calc_calculation"
 				type="fabrikeditor"
 				mode="php"
-				width="100"
 				description="PLG_ELEMENT_CALC_CALCULATION_DESC"
 				label="PLG_ELEMENT_CALC_CALCULATION_LABEL" />
 
