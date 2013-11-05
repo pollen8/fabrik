@@ -32,8 +32,7 @@ class PlgFabrik_FormRest extends PlgFabrik_Form
 	 */
 	protected function requestMethod()
 	{
-		$formModel = $this->getModel();
-		$method = $formModel->getRowId() == '' ? 'POST' : 'PUT';
+		$method = $this->formModel->_formData['rowid'] == 0 ? 'POST' : 'PUT';
 		$fkData = $this->fkData();
 
 		// If existing record but no Fk value stored presume its a POST
@@ -101,24 +100,64 @@ class PlgFabrik_FormRest extends PlgFabrik_Form
 	/**
 	 * Run right before the form is processed
 	 * form needs to be set to record in database for this to hook to be called
+	 * If we need to update the records fk then we should run process(). However means we don't have access to the row's id.
+	 *
+	 * @param   object  $params      plugin params
+	 * @param   object  &$formModel  form model
 	 *
 	 * @return	bool
 	 */
 
-	public function onBeforeStore()
+	public function onBeforeStore($params, &$formModel)
 	{
-		$formModel = $this->getModel();
-		$params = $this->getParams();
-		$w = new FabrikWorker;
+		$this->formModel = $formModel;
+		$this->params = $params;
 
+		if ($this->shouldUpdateFk())
+		{
+			$this->process($params, $formModel);
+		}
+	}
+
+	/**
+	 * Run after the form is processed
+	 * form needs to be set to record in database for this to hook to be called
+	 * If we don't need to update the records fk then we should run process() as we now have access to the row's id.
+	 *
+	 * @param   object  $params      plugin params
+	 * @param   object  &$formModel  form model
+	 *
+	 * @return	bool
+	 */
+
+	public function onAfterProcess($params, &$formModel)
+	{
+		if (!$this->shouldUpdateFk())
+		{
+			$this->process($params, $formModel);
+		}
+	}
+
+	/**
+	 * Process rest call
+	 *
+	 * @param   object  $params      plugin params
+	 * @param   object  &$formModel  form model
+	 *
+	 * @return	bool
+	 */
+	protected function process($params, &$formModel)
+	{
+		$this->formModel = $formModel;
+		$this->params = $params;
+
+		$w = new FabrikWorker;
 		if (!function_exists('curl_init'))
 		{
 			throw new RuntimeException('CURL NOT INSTALLED', 500);
 
 			return;
 		}
-		// The username/password
-		$config_userpass = $params->get('username') . ':' . $params->get('password');
 
 		// POST new records, PUT exisiting records
 		$method = $this->requestMethod();
@@ -143,11 +182,10 @@ class PlgFabrik_FormRest extends PlgFabrik_Form
 
 		$dataMap = $params->get('put_include_list', '');
 
-		$include = $w->parseMessageForPlaceholder($dataMap, $formModel->formData, true);
+		$include = $w->parseMessageForPlaceholder($dataMap, $formModel->_formData, true);
 		$endpoint = $w->parseMessageForPlaceHolder($endpoint, $fkData);
-
-		$output = $this->buildOutput($include, $xmlParent, $headers);
-		$curlOpts = $this->buildCurlOpts($method, $headers, $endpoint, $output);
+		$output = $this->buildOutput($formModel, $include, $xmlParent, $headers);
+		$curlOpts = $this->buildCurlOpts($method, $headers, $endpoint, $params, $output);
 
 		foreach ($curlOpts as $key => $value)
 		{
@@ -157,17 +195,18 @@ class PlgFabrik_FormRest extends PlgFabrik_Form
 		$output = curl_exec($chandle);
 		$jsonOutPut = FabrikWorker::isJSON($output) ? true : false;
 
-		if (!$this->handleError($output, $chandle))
+		if (!$this->handleError($output, $formModel, $chandle))
 		{
 			curl_close($chandle);
 
-			return false;
+			// Return true otherwise form processing interupted
+			return true;
 		}
 
 		curl_close($chandle);
 
 		// Set FK value in Fabrik form data
-		if ($method === 'POST' && $fkElement)
+		if ($this->shouldUpdateFk())
 		{
 			if ($jsonOutPut)
 			{
@@ -184,18 +223,31 @@ class PlgFabrik_FormRest extends PlgFabrik_Form
 	}
 
 	/**
+	 * Should the REST call update the fabrik row's fk value after it has posted to the service.
+	 *
+	 * @return boolean
+	 */
+	protected function shouldUpdateFk()
+	{
+		$method = $this->requestMethod();
+		$fkElement = $this->fkElement();
+
+		return $method === 'POST' && $fkElement;
+	}
+
+	/**
 	 * Create the data structure containing the data to send
 	 *
-	 * @param   string  $include    List of fields to include
+	 * @param   object  $formModel  Form Model
+	 * @param   string  $include    list of fields to include
 	 * @param   xml     $xmlParent  Parent node if rendering as xml (ignored if include is json and prob something i want to deprecate)
 	 * @param   array   &$headers   Headeres
 	 *
 	 * @return mixed
 	 */
 
-	private function buildOutput($include, $xmlParent, &$headers)
+	private function buildOutput($formModel, $include, $xmlParent, &$headers)
 	{
-		$formModel = $this->getModel();
 		$postData = array();
 		$w = new FabrikWorker;
 		$fkElement = $this->fkElement();
@@ -208,7 +260,7 @@ class PlgFabrik_FormRest extends PlgFabrik_Form
 			$values = $include->put_value;
 			$format = $include->put_type;
 			$i = 0;
-			$fkName = $fkElement ? $fkElement->getFullName(false, true) : '';
+			$fkName = $fkElement ? $fkElement->getFullName(true, false, true) : '';
 
 			foreach ($values as &$v)
 			{
@@ -220,22 +272,15 @@ class PlgFabrik_FormRest extends PlgFabrik_Form
 				{
 					$v = FabrikString::safeColNameToArrayKey($v);
 
-					$v = $w->parseMessageForPlaceHolder('{' . $v . '}', $formModel->formData, true);
+					$v = $w->parseMessageForPlaceHolder('{' . $v . '}', $formModel->_formData, true);
 				}
-
 				if ($format[$i] == 'number')
-				{
-					$v = floatval(
-						preg_replace(
-							'#^([-]*[0-9\.,\' ]+?)((\.|,){1}([0-9-]{1,2}))*$#e',
-							"str_replace(array('.', ',', \"'\", ' '), '', '\\1') . '.\\4'", $v
-							)
-						);
-				}
 
+				{
+					$v = floatval(preg_replace('#^([-]*[0-9\.,\' ]+?)((\.|,){1}([0-9-]{1,2}))*$#e', "str_replace(array('.', ',', \"'\", ' '), '', '\\1') . '.\\4'", $v));
+				}
 				$i ++;
 			}
-
 			$i = 0;
 
 			foreach ($keys as $key)
@@ -268,19 +313,17 @@ class PlgFabrik_FormRest extends PlgFabrik_Form
 
 			foreach ($include as $i)
 			{
-				if (array_key_exists($i, $formModel->formData))
+				if (array_key_exists($i, $formModel->_formData))
 				{
-					$postData[$i] = $formModel->formData[$i];
+					$postData[$i] = $formModel->_formData[$i];
 				}
-				elseif (array_key_exists($i, $formModel->fullFormData, $i))
+				elseif (array_key_exists($i, $formModel->_fullFormData, $i))
 				{
-					$postData[$i] = $formModel->fullFormData[$i];
+					$postData[$i] = $formModel->_fullFormData[$i];
 				}
 			}
 		}
-
 		$postAsXML = false;
-
 		if ($postAsXML)
 		{
 			$xml = new SimpleXMLElement('<' . $xmlParent . '></' . $xmlParent . '>');
@@ -307,16 +350,25 @@ class PlgFabrik_FormRest extends PlgFabrik_Form
 	 * @param   string  $method    POST/PUT
 	 * @param   array   &$headers  Headers
 	 * @param   string  $endpoint  URL to post/put to
+	 * @param   object  $params    Plugin params
 	 * @param   string  $output    URL Encoded querystring
 	 *
 	 * @return  array
 	 */
 
-	private function buildCurlOpts($method, &$headers, $endpoint, $output)
+	private function buildCurlOpts($method, &$headers, $endpoint, $params, $output)
 	{
 		// The username/password
-		$params = $this->getParams();
-		$config_userpass = $params->get('username') . ':' . $params->get('password');
+		if ($params->get('username', '') === '' && $params->get('password') === '')
+		{
+			$config_userpass = '';
+		}
+		else
+		{
+			$config_userpass = $params->get('username') . ':' . $params->get('password');
+			$curlOpts[CURLOPT_USERPWD] = $config_userpass;
+		}
+
 		$curlOpts = array();
 
 		if ($method === 'POST')
@@ -334,7 +386,6 @@ class PlgFabrik_FormRest extends PlgFabrik_Form
 		$curlOpts[CURLOPT_HTTPHEADER] = $headers;
 		$curlOpts[CURLOPT_RETURNTRANSFER] = 1;
 		$curlOpts[CURLOPT_HTTPAUTH] = CURLAUTH_ANY;
-		$curlOpts[CURLOPT_USERPWD] = $config_userpass;
 		$curlOpts[CURLOPT_VERBOSE] = true;
 
 		return $curlOpts;
@@ -343,16 +394,15 @@ class PlgFabrik_FormRest extends PlgFabrik_Form
 	/**
 	 * Handle any error generated
 	 *
-	 * @param   mixed   &$output  CURL request result - may be a json string
-	 * @param   object  $chandle  CURL object
+	 * @param   mixed              &$output    CURL request result - may be a json string
+	 * @param   FabrikFEModelForm  $formModel  Form Model
+	 * @param   object             $chandle    CURL object
 	 *
 	 * @return boolean
 	 */
 
-	private function handleError(&$output, $chandle)
+	private function handleError(&$output, $formModel, $chandle)
 	{
-		$formModel = $this->getModel();
-
 		if (FabrikWorker::isJSON($output))
 		{
 			$output = json_decode($output);
@@ -397,7 +447,7 @@ class PlgFabrik_FormRest extends PlgFabrik_Form
 
 		if (curl_errno($chandle))
 		{
-			throw new RuntimeException(curl_error($chandle));
+			JFactory::getApplication()->enqueueMessage('Fabrik Rest form plugin: ' . curl_error($chandle), 'error');
 
 			return false;
 		}
@@ -436,13 +486,14 @@ class PlgFabrik_FormRest extends PlgFabrik_Form
 	/**
 	 * Run once the form's data has been loaded
 	 *
+	 * @param   object  $params      Plugin parameters
+	 * @param   object  &$formModel  Form model
+	 *
 	 * @return	bool
 	 */
-	public function onLoad()
+	public function onLoad($params, &$formModel)
 	{
-		$params = $this->getParams();
 		$app = JFactory::getApplication();
-		$formModel = $this->getModel();
 		$input = $app->input;
 
 		if ($params->get('oauth_consumer_key', '') === '')
@@ -524,7 +575,7 @@ class PlgFabrik_FormRest extends PlgFabrik_Form
 		if ($result !== false)
 		{
 			$data = json_decode($result['body']);
-			$this->updateFormModelData($responseBody, $data);
+			$this->updateFormModelData($params, $responseBody, $data);
 		}
 	}
 
@@ -629,17 +680,16 @@ class PlgFabrik_FormRest extends PlgFabrik_Form
 	/**
 	 * Update the form models data with data from CURL request
 	 *
-	 * @param   array  $responseBody  Response body
-	 * @param   array  $data          Data returned from CURL request
+	 * @param   JRegistry  $params        Parameters
+	 * @param   array      $responseBody  Response body
+	 * @param   array      $data          Data returned from CURL request
 	 *
 	 * @return  void
 	 */
 
-	protected function updateFormModelData($responseBody, $data)
+	protected function updateFormModelData($params, $responseBody, $data)
 	{
-		$params = $this->getParams();
 		$w = new FabrikWorker;
-		$formModel = $this->getModel();
 		$dataMap = $params->get('put_include_list', '');
 		$include = $w->parseMessageForPlaceholder($dataMap, $responseBody, true);
 
@@ -660,7 +710,7 @@ class PlgFabrik_FormRest extends PlgFabrik_Form
 
 				if (!is_null($remoteData))
 				{
-					$formModel->_data[$localKey] = $remoteData;
+					$this->formModel->_data[$localKey] = $remoteData;
 				}
 			}
 		}
