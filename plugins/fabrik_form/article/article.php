@@ -106,12 +106,13 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 	 */
 	protected function findElementData($elementId)
 	{
+		$formModel = $this->getModel();
 		$value = '';
 
-		if ($elementModel = $this->formModel->getElement($elementId, true))
+		if ($elementModel = $formModel->getElement($elementId, true))
 		{
 			$fullName = $elementModel->getFullName(false, true, false);
-			$value = $this->formModel->getElementData($fullName, false, '', 0);
+			$value = $formModel->getElementData($fullName, false, '', 0);
 
 			if (is_array($value))
 			{
@@ -170,7 +171,8 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 	protected function setImage($elementId, $size)
 	{
 		$file = $this->findElementData($elementId);
-		$elementModel = $this->formModel->getElement($elementId, true);
+		$formModel = $this->getModel();
+		$elementModel = $formModel->getElement($elementId, true);
 
 		if (get_class($elementModel) === 'PlgFabrik_ElementFileupload')
 		{
@@ -235,13 +237,14 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 	 */
 	protected function setMetaStore($store)
 	{
+		$formModel = $this->getModel();
 		$params = $this->getParams();
 
-		if ($elementModel = $this->formModel->getElement($params->get('meta_store'), true))
+		if ($elementModel = $formModel->getElement($params->get('meta_store'), true))
 		{
 			$key = $elementModel->getElement()->name;
 			$val = json_encode($store);
-			$listModel = $this->formModel->getListModel();
+			$listModel = $formModel->getListModel();
 
 			// Ensure we store to the main db table
 			$listModel->clearTable();
@@ -262,13 +265,14 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 	 */
 	protected function metaStore()
 	{
+		$formModel = $this->getModel();
 		$params = $this->getParams();
 		$metaStore = new stdClass;
 
-		if ($elementModel = $this->formModel->getElement($params->get('meta_store'), true))
+		if ($elementModel = $formModel->getElement($params->get('meta_store'), true))
 		{
 			$fullName = $elementModel->getFullName(false, true, false);
-			$metaStore = $this->formModel->getElementData($fullName);
+			$metaStore = $formModel->getElementData($fullName);
 			$metaStore = json_decode($metaStore);
 		}
 		else
