@@ -1,6 +1,6 @@
 [main]
 host = https://www.transifex.net
-lang_map = af_ZA: af-ZA, am_ET: am-ET, ar_AA: ar-AA, ar_AE: ar-AE, ar_BH: ar-BH, ar_DZ: ar-DZ, ar_EG: ar-EG, ar_IQ: ar-IQ, ar_JO: ar-JO, ar_KW: ar-KW, ar_LB: ar-LB, ar_LY: ar-LY, ar_MA: ar-MA, ar_OM: ar-OM, ar_QA: ar-QA, ar_SA: ar-SA, ar_SY: ar-SY, ar_TN: ar-TN, ar_YE: ar-YE, arn_CL: arn-CL, as_IN: as-IN, az_AZ: az-AZ, ba_RU: ba-RU, be_BY: be-BY, bg_BG: bg-BG, bn_BD: bn-BD, bn_IN: bn-IN, bo_CN: bo-CN, br_FR: br-FR, bs_BA: bs-BA, ca_ES: ca-ES, co_FR: co-FR, cs_CZ: cs-CZ, cy_GB: cy-GB, da_DK: da-DK, de_AT: de-AT, de_CH: de-CH, de_DE: de-DE, de_LI: de-LI, de_LU: de-LU, dsb_DE: dsb-DE, dv_MV: dv-MV, el_GR: el-GR, en_AU: en-AU, en_BZ: en-BZ, en_CA: en-CA, en_GB: en-GB, en_IE: en-IE, en_IN: en-IN, en_JM: en-JM, en_MY: en-MY, en_NZ: en-NZ, en_PH: en-PH, en_SG: en-SG, en_TT: en-TT, en_US: en-US, en_ZA: en-ZA, en_ZW: en-ZW, es_AR: es-AR, es_BO: es-BO, es_CL: es-CL, es_CO: es-CO, es_CR: es-CR, es_DO: es-DO, es_EC: es-EC, es_ES: es-ES, es_GT: es-GT, es_HN: es-HN, es_MX: es-MX, es_NI: es-NI, es_PA: es-PA, es_PE: es-PE, es_PR: es-PR, es_PY: es-PY, es_SV: es-SV, es_US: es-US, es_UY: es-UY, es_VE: es-VE, et_EE: et-EE, eu_ES: eu-ES, fa_IR: fa-IR, fi_FI: fi-FI, fil_PH: fil-PH, fo_FO: fo-FO, fr_BE: fr-BE, fr_CA: fr-CA, fr_CH: fr-CH, fr_FR: fr-FR, fr_LU: fr-LU, fr_MC: fr-MC, fy_NL: fy-NL, ga_IE: ga-IE, gd_GB: gd-GB, gl_ES: gl-ES, gsw_FR: gsw-FR, gu_IN: gu-IN, ha_NG: ha-NG, he_IL: he-IL, hi_IN: hi-IN, hr_BA: hr-BA, hr_HR: hr-HR, hsb_DE: hsb-DE, hu_HU: hu-HU, hy_AM: hy-AM, id_ID: id-ID, ig_NG: ig-NG, ii_CN: ii-CN, is_IS: is-IS, it_CH: it-CH, it_IT: it-IT, iu_CA: iu-CA, ja_JP: ja-JP, ka_GE: ka-GE, kk_KZ: kk-KZ, kl_GL: kl-GL, km_KH: km-KH, kn_IN: kn-IN, ko_KR: ko-KR, kok_IN: kok-IN, ky_KG: ky-KG, lb_LU: lb-LU, lo_LA: lo-LA, lt_LT: lt-LT, lv_LV: lv-LV, mi_NZ: mi-NZ, mk_MK: mk-MK, ml_IN: ml-IN, mn_CN: mn-CN, mn_MN: mn-MN, moh_CA: moh-CA, mr_IN: mr-IN, ms_BN: ms-BN, ms_MY: ms-MY, mt_MT: mt-MT, nb_NO: nb-NO, ne_NP: ne-NP, nl_BE: nl-BE, nl_NL: nl-NL, nn_NO: nn-NO, nso_ZA: nso-ZA, oc_FR: oc-FR, or_IN: or-IN, pa_IN: pa-IN, pl_PL: pl-PL, prs_AF: prs-AF, ps_AF: ps-AF, pt_BR: pt-BR, pt_PT: pt-PT, qut_GT: qut-GT, quz_BO: quz-BO, quz_EC: quz-EC, quz_PE: quz-PE, rm_CH: rm-CH, ro_RO: ro-RO, ru_RU: ru-RU, rw_RW: rw-RW, sa_IN: sa-IN, sah_RU: sah-RU, se_FI: se-FI, se_NO: se-NO, se_SE: se-SE, si_LK: si-LK, sk_SK: sk-SK, sl_SI: sl-SI, sma_NO: sma-NO, sma_SE: sma-SE, smj_NO: smj-NO, smj_SE: smj-SE, smn_FI: smn-FI, sms_FI: sms-FI, sq_AL: sq-AL, sr_BA: sr-BA, sr_CS: sr-CS, sr_ME: sr-ME, sr_RS: sr-RS, sv_FI: sv-FI, sv_SE: sv-SE, sw_KE: sw-KE, syr_SY: syr-SY, ta_IN: ta-IN, te_IN: te-IN, tg_TJ: tg-TJ, th_TH: th-TH, tk_TM: tk-TM, tn_ZA: tn-ZA, tr_TR: tr-TR, tt_RU: tt-RU, tzm_DZ: tzm-DZ, ug_CN: ug-CN, uk_UA: uk-UA, ur_PK: ur-PK, uz_UZ: uz-UZ, vi_VN: vi-VN, wo_SN: wo-SN, xh_ZA: xh-ZA, yo_NG: yo-NG, zh_CN: zh-CN, zh_HK: zh-HK, zh_MO: zh-MO, zh_SG: zh-SG, zh_TW: zh-TW, zu_ZA: zu-ZA
+lang_map = eo: eo-XX, my_MM: my-MM, tr: tr-TR, tr_TR: tr-TR, af_ZA: af-ZA, am_ET: am-ET, ar_AA: ar-AA, ar_AE: ar-AE, ar_BH: ar-BH, ar_DZ: ar-DZ, ar_EG: ar-EG, ar_IQ: ar-IQ, ar_JO: ar-JO, ar_KW: ar-KW, ar_LB: ar-LB, ar_LY: ar-LY, ar_MA: ar-MA, ar_OM: ar-OM, ar_QA: ar-QA, ar_SA: ar-SA, ar_SY: ar-SY, ar_TN: ar-TN, ar_YE: ar-YE, arn_CL: arn-CL, as_IN: as-IN, az_AZ: az-AZ, ba_RU: ba-RU, be_BY: be-BY, bg_BG: bg-BG, bn_BD: bn-BD, bn_IN: bn-IN, bo_CN: bo-CN, br_FR: br-FR, bs_BA: bs-BA, ca_ES: ca-ES, co_FR: co-FR, cs_CZ: cs-CZ, cy_GB: cy-GB, da_DK: da-DK, de_AT: de-AT, de_CH: de-CH, de_DE: de-DE, de_LI: de-LI, de_LU: de-LU, dsb_DE: dsb-DE, dv_MV: dv-MV, el_GR: el-GR, en_AU: en-AU, en_BZ: en-BZ, en_CA: en-CA, en_GB: en-GB, en_IE: en-IE, en_IN: en-IN, en_JM: en-JM, en_MY: en-MY, en_NZ: en-NZ, en_PH: en-PH, en_SG: en-SG, en_TT: en-TT, en_US: en-US, en_ZA: en-ZA, en_ZW: en-ZW, es_AR: es-AR, es_BO: es-BO, es_CL: es-CL, es_CO: es-CO, es_CR: es-CR, es_DO: es-DO, es_EC: es-EC, es_ES: es-ES, es_GT: es-GT, es_HN: es-HN, es_MX: es-MX, es_NI: es-NI, es_PA: es-PA, es_PE: es-PE, es_PR: es-PR, es_PY: es-PY, es_SV: es-SV, es_US: es-US, es_UY: es-UY, es_VE: es-VE, et_EE: et-EE, eu_ES: eu-ES, fa_IR: fa-IR, fi_FI: fi-FI, fil_PH: fil-PH, fo_FO: fo-FO, fr_BE: fr-BE, fr_CA: fr-CA, fr_CH: fr-CH, fr_FR: fr-FR, fr_LU: fr-LU, fr_MC: fr-MC, fy_NL: fy-NL, ga_IE: ga-IE, gd_GB: gd-GB, gl_ES: gl-ES, gsw_FR: gsw-FR, gu_IN: gu-IN, ha_NG: ha-NG, he_IL: he-IL, hi_IN: hi-IN, hr_BA: hr-BA, hr_HR: hr-HR, hsb_DE: hsb-DE, hu_HU: hu-HU, hy_AM: hy-AM, id_ID: id-ID, ig_NG: ig-NG, ii_CN: ii-CN, is_IS: is-IS, it_CH: it-CH, it_IT: it-IT, iu_CA: iu-CA, ja_JP: ja-JP, ka_GE: ka-GE, kk_KZ: kk-KZ, kl_GL: kl-GL, km_KH: km-KH, kn_IN: kn-IN, ko_KR: ko-KR, kok_IN: kok-IN, ky_KG: ky-KG, lb_LU: lb-LU, lo_LA: lo-LA, lt_LT: lt-LT, lv_LV: lv-LV, mi_NZ: mi-NZ, mk_MK: mk-MK, ml_IN: ml-IN, mn_CN: mn-CN, mn_MN: mn-MN, moh_CA: moh-CA, mr_IN: mr-IN, ms_BN: ms-BN, ms_MY: ms-MY, mt_MT: mt-MT, nb_NO: nb-NO, ne_NP: ne-NP, nl_BE: nl-BE, nl_NL: nl-NL, nn_NO: nn-NO, nso_ZA: nso-ZA, oc_FR: oc-FR, or_IN: or-IN, pa_IN: pa-IN, pl_PL: pl-PL, prs_AF: prs-AF, ps_AF: ps-AF, pt_BR: pt-BR, pt_PT: pt-PT, qut_GT: qut-GT, quz_BO: quz-BO, quz_EC: quz-EC, quz_PE: quz-PE, rm_CH: rm-CH, ro_RO: ro-RO, ru_RU: ru-RU, rw_RW: rw-RW, sa_IN: sa-IN, sah_RU: sah-RU, se_FI: se-FI, se_NO: se-NO, se_SE: se-SE, si_LK: si-LK, sk_SK: sk-SK, sl_SI: sl-SI, sma_NO: sma-NO, sma_SE: sma-SE, smj_NO: smj-NO, smj_SE: smj-SE, smn_FI: smn-FI, sms_FI: sms-FI, sq_AL: sq-AL, sr_BA: sr-BA, sr_CS: sr-CS, sr_ME: sr-ME, sr_RS: sr-RS, sv_FI: sv-FI, sv_SE: sv-SE, sw_KE: sw-KE, syr_SY: syr-SY, ta_IN: ta-IN, te_IN: te-IN, tg_TJ: tg-TJ, th_TH: th-TH, tk_TM: tk-TM, tn_ZA: tn-ZA, tr_TR: tr-TR, tt_RU: tt-RU, tzm_DZ: tzm-DZ, ug_CN: ug-CN, uk_UA: uk-UA, ur_PK: ur-PK, uz_UZ: uz-UZ, vi_VN: vi-VN, wo_SN: wo-SN, xh_ZA: xh-ZA, yo_NG: yo-NG, zh_CN: zh-CN, zh_HK: zh-HK, zh_MO: zh-MO, zh_SG: zh-SG, zh_TW: zh-TW, zu_ZA: zu-ZA
 minimum_perc = 1
 type = INI
 
@@ -8,27 +8,42 @@ type = INI
 file_filter = administrator/components/com_fabrik/language/<lang>/<lang>.com_fabrik.ini
 source_file = administrator/components/com_fabrik/language/en-GB/en-GB.com_fabrik.ini
 source_lang = en_GB
+trans.da-DK = administrator/components/com_fabrik/language/da-DK/da-DK.com_fabrik.ini
 trans.de-DE = administrator/components/com_fabrik/language/de-DE/de-DE.com_fabrik.ini
 trans.el-GR = administrator/components/com_fabrik/language/el-GR/el-GR.com_fabrik.ini
 trans.es-ES = administrator/components/com_fabrik/language/es-ES/es-ES.com_fabrik.ini
 trans.et-EE = administrator/components/com_fabrik/language/et-EE/et-EE.com_fabrik.ini
 trans.fr-FR = administrator/components/com_fabrik/language/fr-FR/fr-FR.com_fabrik.ini
 trans.it-IT = administrator/components/com_fabrik/language/it-IT/it-IT.com_fabrik.ini
+trans.my-MM = administrator/components/com_fabrik/language/my-MM/my-MM.com_fabrik.ini
 trans.nl-NL = administrator/components/com_fabrik/language/nl-NL/nl-NL.com_fabrik.ini
 trans.pt-BR = administrator/components/com_fabrik/language/pt-BR/pt-BR.com_fabrik.ini
+trans.ro-RO = administrator/components/com_fabrik/language/ro-RO/ro-RO.com_fabrik.ini
 trans.ru-RU = administrator/components/com_fabrik/language/ru-RU/ru-RU.com_fabrik.ini
+trans.tr-TR = administrator/components/com_fabrik/language/tr-TR/tr-TR.com_fabrik.ini
+trans.uk-UA = administrator/components/com_fabrik/language/uk-UA/uk-UA.com_fabrik.ini
+trans.zh-TW = administrator/components/com_fabrik/language/zh-TW/zh-TW.com_fabrik.ini
 
 [fabrik.com_fabrik_admin_sys]
 file_filter = administrator/components/com_fabrik/language/<lang>/<lang>.com_fabrik.sys.ini
 source_file = administrator/components/com_fabrik/language/en-GB/en-GB.com_fabrik.sys.ini
 source_lang = en_GB
 trans.de-DE = administrator/components/com_fabrik/language/de-DE/de-DE.com_fabrik.sys.ini
+trans.da-DK = administrator/components/com_fabrik/language/da-DK/da-DK.com_fabrik.sys.ini
+trans.de-DE = administrator/components/com_fabrik/language/de-DE/de-DE.com_fabrik.sys.ini
 trans.el-GR = administrator/components/com_fabrik/language/el-GR/el-GR.com_fabrik.sys.ini
 trans.es-ES = administrator/components/com_fabrik/language/es-ES/es-ES.com_fabrik.sys.ini
 trans.et-EE = administrator/components/com_fabrik/language/et-EE/et-EE.com_fabrik.sys.ini
 trans.fr-FR = administrator/components/com_fabrik/language/fr-FR/fr-FR.com_fabrik.sys.ini
 trans.it-IT = administrator/components/com_fabrik/language/it-IT/it-IT.com_fabrik.sys.ini
+trans.my-MM = administrator/components/com_fabrik/language/my-MM/my-MM.com_fabrik.sys.ini
+trans.nl-NL = administrator/components/com_fabrik/language/nl-NL/nl-NL.com_fabrik.sys.ini
 trans.pt-BR = administrator/components/com_fabrik/language/pt-BR/pt-BR.com_fabrik.sys.ini
+trans.ro-RO = administrator/components/com_fabrik/language/ro-RO/ro-RO.com_fabrik.sys.ini
+trans.ru-RU = administrator/components/com_fabrik/language/ru-RU/ru-RU.com_fabrik.sys.ini
+trans.tr-TR = administrator/components/com_fabrik/language/tr-TR/tr-TR.com_fabrik.sys.ini
+trans.uk-UA = administrator/components/com_fabrik/language/uk-UA/uk-UA.com_fabrik.sys.ini
+trans.zh-TW = administrator/components/com_fabrik/language/zh-TW/zh-TW.com_fabrik.sys.ini
 
 [fabrik.com_fabrik]
 file_filter = components/com_fabrik/language/<lang>/<lang>.com_fabrik.ini
@@ -38,94 +53,173 @@ trans.ar-AA = components/com_fabrik/language/ar-AA/ar-AA.com_fabrik.ini
 trans.da-DK = components/com_fabrik/language/da-DK/da-DK.com_fabrik.ini
 trans.de-DE = components/com_fabrik/language/de-DE/de-DE.com_fabrik.ini
 trans.el-GR = components/com_fabrik/language/el-GR/el-GR.com_fabrik.ini
+trans.eo-XX = components/com_fabrik/language/eo-XX/eo-XX.com_fabrik.ini
 trans.es-ES = components/com_fabrik/language/es-ES/es-ES.com_fabrik.ini
 trans.et-EE = components/com_fabrik/language/et-EE/et-EE.com_fabrik.ini
 trans.fr-FR = components/com_fabrik/language/fr-FR/fr-FR.com_fabrik.ini
 trans.it-IT = components/com_fabrik/language/it-IT/it-IT.com_fabrik.ini
 trans.ja-JP = components/com_fabrik/language/ja-JP/ja-JP.com_fabrik.ini
+trans.my-MM = components/com_fabrik/language/my-MM/my-MM.com_fabrik.ini
 trans.lt-LT = components/com_fabrik/language/lt-LT/lt-LT.com_fabrik.ini
 trans.nl-NL = components/com_fabrik/language/nl-NL/nl-NL.com_fabrik.ini
 trans.pt-BR = components/com_fabrik/language/pt-BR/pt-BR.com_fabrik.ini
+trans.ro-RO = components/com_fabrik/language/ro-RO/ro-RO.com_fabrik.ini
 trans.ru-RU = components/com_fabrik/language/ru-RU/ru-RU.com_fabrik.ini
+trans.tr-TR = components/com_fabrik/language/tr-TR/tr-TR.com_fabrik.ini
+trans.uk-UA = components/com_fabrik/language/uk-UA/uk-UA.com_fabrik.ini
+trans.zh-TW = components/com_fabrik/language/zh-TW/zh-TW.com_fabrik.ini
 
 [fabrik.plg_content]
 file_filter = plugins/content/fabrik/language/<lang>/<lang>.plg_content_fabrik.sys.ini
 source_file = plugins/content/fabrik/language/en-GB/en-GB.plg_content_fabrik.sys.ini
 source_lang = en_GB
+trans.da-DK = plugins/content/fabrik/language/da-DK/da-DK.plg_content_fabrik.sys.ini
 trans.de-DE = plugins/content/fabrik/language/de-DE/de-DE.plg_content_fabrik.sys.ini
+trans.es-ES = plugins/content/fabrik/language/es-ES/es-ES.plg_content_fabrik.sys.ini
 trans.et-EE = plugins/content/fabrik/language/et-EE/et-EE.plg_content_fabrik.sys.ini
-trans.pt-BR = plugins/content/fabrik/language/pt-BR/pt-BR.plg_content_fabrik.sys.ini
-trans.ru-RU = plugins/content/fabrik/language/ru-RU/ru-RU.plg_content_fabrik.sys.ini
+trans.fr-FR = plugins/content/fabrik/language/fr-FR/fr-FR.plg_content_fabrik.sys.ini
 trans.it-IT = plugins/content/fabrik/language/it-IT/it-IT.plg_content_fabrik.sys.ini
+trans.nl-NL = plugins/content/fabrik/language/nl-NL/nl-NL.plg_content_fabrik.sys.ini
+trans.pt-BR = plugins/content/fabrik/language/pt-BR/pt-BR.plg_content_fabrik.sys.ini
+trans.pt-PT = plugins/content/fabrik/language/pt-PT/pt-PT.plg_content_fabrik.sys.ini
+trans.ru-RU = plugins/content/fabrik/language/ru-RU/ru-RU.plg_content_fabrik.sys.ini
+trans.tr-TR = plugins/content/fabrik/language/tr-TR/tr-TR.plg_content_fabrik.sys.ini
+
 [fabrik.plg_cron_email]
 file_filter = plugins/fabrik_cron/email/language/<lang>/<lang>.plg_fabrik_cron_email.ini
 source_file = plugins/fabrik_cron/email/language/en-GB/en-GB.plg_fabrik_cron_email.ini
 source_lang = en_GB
+trans.da-DK = plugins/fabrik_cron/email/language/da-DK/da-DK.plg_fabrik_cron_email.ini
 trans.de-DE = plugins/fabrik_cron/email/language/de-DE/de-DE.plg_fabrik_cron_email.ini
+trans.el-GR = plugins/fabrik_cron/email/language/el-GR/el-GR.plg_fabrik_cron_email.ini
+trans.eo-XX = plugins/fabrik_cron/email/language/eo-XX/eo-XX.plg_fabrik_cron_email.ini
+trans.es-ES = plugins/fabrik_cron/email/language/es-ES/es-ES.plg_fabrik_cron_email.ini
 trans.et-EE = plugins/fabrik_cron/email/language/et-EE/et-EE.plg_fabrik_cron_email.ini
 trans.fr-FR = plugins/fabrik_cron/email/language/fr-FR/fr-FR.plg_fabrik_cron_email.ini
-trans.pt-BR = plugins/fabrik_cron/email/language/pt-BR/pt-BR.plg_fabrik_cron_email.ini
 trans.it-IT = plugins/fabrik_cron/email/language/it-IT/it-IT.plg_fabrik_cron_email.ini
+trans.nl-NL = plugins/fabrik_cron/email/language/nl-NL/nl-NL.plg_fabrik_cron_email.ini
+trans.pt-BR = plugins/fabrik_cron/email/language/pt-BR/pt-BR.plg_fabrik_cron_email.ini
+trans.ro-RO = plugins/fabrik_cron/email/language/ro-RO/ro-RO.plg_fabrik_cron_email.ini
+trans.ru-RU = plugins/fabrik_cron/email/language/ru-RU/ru-RU.plg_fabrik_cron_email.ini
+trans.tr-TR = plugins/fabrik_cron/email/language/tr-TR/tr-TR.plg_fabrik_cron_email.ini
+trans.zh-TW = plugins/fabrik_cron/email/language/zh-TW/zh-TW.plg_fabrik_cron_email.ini
 
 [fabrik.plg_cron_email_sys]
 file_filter = plugins/fabrik_cron/email/language/<lang>/<lang>.plg_fabrik_cron_email.sys.ini
 source_file = plugins/fabrik_cron/email/language/en-GB/en-GB.plg_fabrik_cron_email.sys.ini
 source_lang = en_GB
+trans.da-DK = plugins/fabrik_cron/email/language/da-DK/da-DK.plg_fabrik_cron_email.sys.ini
 trans.de-DE = plugins/fabrik_cron/email/language/de-DE/de-DE.plg_fabrik_cron_email.sys.ini
+trans.el-GR = plugins/fabrik_cron/email/language/el-GR/el-GR.plg_fabrik_cron_email.sys.ini
+trans.eo-XX = plugins/fabrik_cron/email/language/eo-XX/eo-XX.plg_fabrik_cron_email.sys.ini
+trans.es-ES = plugins/fabrik_cron/email/language/es-ES/es-ES.plg_fabrik_cron_email.sys.ini
 trans.et-EE = plugins/fabrik_cron/email/language/et-EE/et-EE.plg_fabrik_cron_email.sys.ini
+trans.fr-FR = plugins/fabrik_cron/email/language/fr-FR/fr-FR.plg_fabrik_cron_email.sys.ini
 trans.it-IT = plugins/fabrik_cron/email/language/it-IT/it-IT.plg_fabrik_cron_email.sys.ini
+trans.nl-NL = plugins/fabrik_cron/email/language/nl-NL/nl-NL.plg_fabrik_cron_email.sys.ini
+trans.pt-BR = plugins/fabrik_cron/email/language/pt-BR/pt-BR.plg_fabrik_cron_email.sys.ini
+trans.ro-RO = plugins/fabrik_cron/email/language/ro-RO/ro-RO.plg_fabrik_cron_email.sys.ini
+trans.ru-RU = plugins/fabrik_cron/email/language/ru-RU/ru-RU.plg_fabrik_cron_email.sys.ini
+trans.tr-TR = plugins/fabrik_cron/email/language/tr-TR/tr-TR.plg_fabrik_cron_email.sys.ini
+trans.zh-TW = plugins/fabrik_cron/email/language/zh-TW/zh-TW.plg_fabrik_cron_email.sys.ini
 
 [fabrik.plg_cron_gcalsync]
 file_filter = plugins/fabrik_cron/gcalsync/language/<lang>/<lang>.plg_fabrik_cron_gcalsync.ini
 source_file = plugins/fabrik_cron/gcalsync/language/en-GB/en-GB.plg_fabrik_cron_gcalsync.ini
 source_lang = en_GB
+trans.da-DK = plugins/fabrik_cron/gcalsync/language/da-DK/da-DK.plg_fabrik_cron_gcalsync.ini
 trans.de-DE = plugins/fabrik_cron/gcalsync/language/de-DE/de-DE.plg_fabrik_cron_gcalsync.ini
+trans.el-GR = plugins/fabrik_cron/gcalsync/language/el-GR/el-GR.plg_fabrik_cron_gcalsync.ini
+trans.es-ES = plugins/fabrik_cron/gcalsync/language/es-ES/es-ES.plg_fabrik_cron_gcalsync.ini
 trans.et-EE = plugins/fabrik_cron/gcalsync/language/et-EE/et-EE.plg_fabrik_cron_gcalsync.ini
 trans.fr-FR = plugins/fabrik_cron/gcalsync/language/fr-FR/fr-FR.plg_fabrik_cron_gcalsync.ini
 trans.it-IT = plugins/fabrik_cron/gcalsync/language/it-IT/it-IT.plg_fabrik_cron_gcalsync.ini
+trans.nl-NL = plugins/fabrik_cron/gcalsync/language/nl-NL/nl-NL.plg_fabrik_cron_gcalsync.ini
+trans.pt-BR = plugins/fabrik_cron/gcalsync/language/pt-BR/pt-BR.plg_fabrik_cron_gcalsync.ini
+trans.ro-RO = plugins/fabrik_cron/gcalsync/language/ro-RO/ro-RO.plg_fabrik_cron_gcalsync.ini
+trans.ru-RU = plugins/fabrik_cron/gcalsync/language/ru-RU/ru-RU.plg_fabrik_cron_gcalsync.ini
+trans.tr-TR = plugins/fabrik_cron/gcalsync/language/tr-TR/tr-TR.plg_fabrik_cron_gcalsync.ini
+trans.zh-TW = plugins/fabrik_cron/gcalsync/language/zh-TW/zh-TW.plg_fabrik_cron_gcalsync.ini
 
 [fabrik.plg_cron_gcalsync_sys]
 file_filter = plugins/fabrik_cron/gcalsync/language/<lang>/<lang>.plg_fabrik_cron_gcalsync.sys.ini
 source_file = plugins/fabrik_cron/gcalsync/language/en-GB/en-GB.plg_fabrik_cron_gcalsync.sys.ini
 source_lang = en_GB
+trans.da-DK = plugins/fabrik_cron/gcalsync/language/da-DK/da-DK.plg_fabrik_cron_gcalsync.sys.ini
 trans.de-DE = plugins/fabrik_cron/gcalsync/language/de-DE/de-DE.plg_fabrik_cron_gcalsync.sys.ini
+trans.el-GR = plugins/fabrik_cron/gcalsync/language/el-GR/el-GR.plg_fabrik_cron_gcalsync.sys.ini
+trans.es-ES = plugins/fabrik_cron/gcalsync/language/es-ES/es-ES.plg_fabrik_cron_gcalsync.sys.ini
 trans.et-EE = plugins/fabrik_cron/gcalsync/language/et-EE/et-EE.plg_fabrik_cron_gcalsync.sys.ini
+trans.fr-FR = plugins/fabrik_cron/gcalsync/language/fr-FR/fr-FR.plg_fabrik_cron_gcalsync.sys.ini
 trans.it-IT = plugins/fabrik_cron/gcalsync/language/it-IT/it-IT.plg_fabrik_cron_gcalsync.sys.ini
+trans.nl-NL = plugins/fabrik_cron/gcalsync/language/nl-NL/nl-NL.plg_fabrik_cron_gcalsync.sys.ini
+trans.pt-BR = plugins/fabrik_cron/gcalsync/language/pt-BR/pt-BR.plg_fabrik_cron_gcalsync.sys.ini
+trans.ro-RO = plugins/fabrik_cron/gcalsync/language/ro-RO/ro-RO.plg_fabrik_cron_gcalsync.sys.ini
+trans.ru-RU = plugins/fabrik_cron/gcalsync/language/ru-RU/ru-RU.plg_fabrik_cron_gcalsync.sys.ini
+trans.tr-TR = plugins/fabrik_cron/gcalsync/language/tr-TR/tr-TR.plg_fabrik_cron_gcalsync.sys.ini
+trans.zh-TW = plugins/fabrik_cron/gcalsync/language/zh-TW/zh-TW.plg_fabrik_cron_gcalsync.sys.ini
 
 [fabrik.plg_cron_geocode]
 file_filter = plugins/fabrik_cron/geocode/language/<lang>/<lang>.plg_fabrik_cron_geocode.ini
 source_file = plugins/fabrik_cron/geocode/language/en-GB/en-GB.plg_fabrik_cron_geocode.ini
 source_lang = en_GB
+trans.da-DK = plugins/fabrik_cron/geocode/language/da-DK/da-DK.plg_fabrik_cron_geocode.ini
 trans.de-DE = plugins/fabrik_cron/geocode/language/de-DE/de-DE.plg_fabrik_cron_geocode.ini
+trans.el-GR = plugins/fabrik_cron/geocode/language/el-GR/el-GR.plg_fabrik_cron_geocode.ini
+trans.es-ES = plugins/fabrik_cron/geocode/language/es-ES/es-ES.plg_fabrik_cron_geocode.ini
 trans.et-EE = plugins/fabrik_cron/geocode/language/et-EE/et-EE.plg_fabrik_cron_geocode.ini
 trans.fr-FR = plugins/fabrik_cron/geocode/language/fr-FR/fr-FR.plg_fabrik_cron_geocode.ini
 trans.it-IT = plugins/fabrik_cron/geocode/language/it-IT/it-IT.plg_fabrik_cron_geocode.ini
+trans.nl-NL = plugins/fabrik_cron/geocode/language/nl-NL/nl-NL.plg_fabrik_cron_geocode.ini
+trans.pt-BR = plugins/fabrik_cron/geocode/language/pt-BR/pt-BR.plg_fabrik_cron_geocode.ini
+trans.ru-RU = plugins/fabrik_cron/geocode/language/ru-RU/ru-RU.plg_fabrik_cron_geocode.ini
+trans.tr-TR = plugins/fabrik_cron/geocode/language/tr-TR/tr-TR.plg_fabrik_cron_geocode.ini
 
 [fabrik.plg_cron_geocode_sys]
 file_filter = plugins/fabrik_cron/geocode/language/<lang>/<lang>.plg_fabrik_cron_geocode.sys.ini
 source_file = plugins/fabrik_cron/geocode/language/en-GB/en-GB.plg_fabrik_cron_geocode.sys.ini
 source_lang = en_GB
+trans.da-DK = plugins/fabrik_cron/geocode/language/da-DK/da-DK.plg_fabrik_cron_geocode.sys.ini
 trans.de-DE = plugins/fabrik_cron/geocode/language/de-DE/de-DE.plg_fabrik_cron_geocode.sys.ini
+trans.el-GR = plugins/fabrik_cron/geocode/language/el-GR/el-GR.plg_fabrik_cron_geocode.sys.ini
+trans.es-ES = plugins/fabrik_cron/geocode/language/es-ES/es-ES.plg_fabrik_cron_geocode.sys.ini
 trans.et-EE = plugins/fabrik_cron/geocode/language/et-EE/et-EE.plg_fabrik_cron_geocode.sys.ini
+trans.fr-FR = plugins/fabrik_cron/geocode/language/fr-FR/fr-FR.plg_fabrik_cron_geocode.sys.ini
 trans.it-IT = plugins/fabrik_cron/geocode/language/it-IT/it-IT.plg_fabrik_cron_geocode.sys.ini
+trans.nl-NL = plugins/fabrik_cron/geocode/language/nl-NL/nl-NL.plg_fabrik_cron_geocode.sys.ini
+trans.pt-BR = plugins/fabrik_cron/geocode/language/pt-BR/pt-BR.plg_fabrik_cron_geocode.sys.ini
+trans.ru-RU = plugins/fabrik_cron/geocode/language/ru-RU/ru-RU.plg_fabrik_cron_geocode.sys.ini
+trans.tr-TR = plugins/fabrik_cron/geocode/language/tr-TR/tr-TR.plg_fabrik_cron_geocode.sys.ini
 
 [fabrik.plg_cron_gmail]
 file_filter = plugins/fabrik_cron/gmail/language/<lang>/<lang>.plg_fabrik_cron_gmail.ini
 source_file = plugins/fabrik_cron/gmail/language/en-GB/en-GB.plg_fabrik_cron_gmail.ini
 source_lang = en_GB
+trans.da-DK = plugins/fabrik_cron/gmail/language/da-DK/da-DK.plg_fabrik_cron_gmail.ini
 trans.de-DE = plugins/fabrik_cron/gmail/language/de-DE/de-DE.plg_fabrik_cron_gmail.ini
+trans.es-ES = plugins/fabrik_cron/gmail/language/es-ES/es-ES.plg_fabrik_cron_gmail.ini
 trans.et-EE = plugins/fabrik_cron/gmail/language/et-EE/et-EE.plg_fabrik_cron_gmail.ini
 trans.fr-FR = plugins/fabrik_cron/gmail/language/fr-FR/fr-FR.plg_fabrik_cron_gmail.ini
-trans.ru-RU = plugins/fabrik_cron/gmail/language/ru-RU/ru-RU.plg_fabrik_cron_gmail.ini
 trans.it-IT = plugins/fabrik_cron/gmail/language/it-IT/it-IT.plg_fabrik_cron_gmail.ini
+trans.nl-NL = plugins/fabrik_cron/gmail/language/nl-NL/nl-NL.plg_fabrik_cron_gmail.ini
+trans.pt-BR = plugins/fabrik_cron/gmail/language/pt-BR/pt-BR.plg_fabrik_cron_gmail.ini
+trans.ru-RU = plugins/fabrik_cron/gmail/language/ru-RU/ru-RU.plg_fabrik_cron_gmail.ini
+trans.tr-TR = plugins/fabrik_cron/gmail/language/tr-TR/tr-TR.plg_fabrik_cron_gmail.ini
 
 [fabrik.plg_cron_gmail_sys]
 file_filter = plugins/fabrik_cron/gmail/language/<lang>/<lang>.plg_fabrik_cron_gmail.sys.ini
 source_file = plugins/fabrik_cron/gmail/language/en-GB/en-GB.plg_fabrik_cron_gmail.sys.ini
 source_lang = en_GB
+trans.da-DK = plugins/fabrik_cron/gmail/language/da-DK/da-DK.plg_fabrik_cron_gmail.sys.ini
 trans.de-DE = plugins/fabrik_cron/gmail/language/de-DE/de-DE.plg_fabrik_cron_gmail.sys.ini
+trans.es-ES = plugins/fabrik_cron/gmail/language/es-ES/es-ES.plg_fabrik_cron_gmail.sys.ini
 trans.et-EE = plugins/fabrik_cron/gmail/language/et-EE/et-EE.plg_fabrik_cron_gmail.sys.ini
+trans.fr-FR = plugins/fabrik_cron/gmail/language/fr-FR/fr-FR.plg_fabrik_cron_gmail.sys.ini
 trans.it-IT = plugins/fabrik_cron/gmail/language/it-IT/it-IT.plg_fabrik_cron_gmail.sys.ini
+trans.nl-NL = plugins/fabrik_cron/gmail/language/nl-NL/nl-NL.plg_fabrik_cron_gmail.sys.ini
+trans.pt-BR = plugins/fabrik_cron/gmail/language/pt-BR/pt-BR.plg_fabrik_cron_gmail.sys.ini
+trans.ru-RU = plugins/fabrik_cron/gmail/language/ru-RU/ru-RU.plg_fabrik_cron_gmail.sys.ini
+trans.tr-TR = plugins/fabrik_cron/gmail/language/tr-TR/tr-TR.plg_fabrik_cron_gmail.sys.ini
 
 [fabrik.plg_cron_importcsv]
 file_filter = plugins/fabrik_cron/importcsv/language/<lang>/<lang>.plg_fabrik_cron_importcsv.ini
