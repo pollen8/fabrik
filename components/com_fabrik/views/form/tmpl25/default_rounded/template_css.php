@@ -12,10 +12,18 @@
 header('Content-type: text/css');
 $c = (int) $_REQUEST['c'];
 $view = isset($_REQUEST['view']) ? $_REQUEST['view'] : 'form';
+$rowid = isset($_REQUEST['rowid']) ? $_REQUEST['rowid'] : '';
+$form = $view . '_' . $c;
+$c_row = $c;
+if ($rowid !== '')
+{
+	$form .= '_' . $rowid;
+	$c_row .= '_' . $rowid;
+}
 echo "
 
 /*Here is the styling for your table legend - to learn what all the different elements are in a basic form see http://www.w3schools.com/tags/tag_legend.asp*/
-#{$view}_$c legend{
+#{$form} legend{
 	background-color: #c0c0c0;
 	-moz-user-select: none;
 	border-bottom: 1px solid #B7B7B7;
@@ -37,26 +45,26 @@ echo "
 }
 
 /*Here is the styling for your group intro*/
-#{$view}_$c .groupintro{
+#{$form} .groupintro{
 	margin-top:40px;
 	padding:0 20px;
 	color:#666;
 }
 
 /*Here is the styling for your group outro*/
-#{$view}_$c .groupoutro{
+#{$form} .groupoutro{
 	padding:10px 20px 10px 20px;
 	color:#666;
 }
 
 /*Here is the styling for your legend span, this is extra styling adding to your legend.  For more information on the <span> tag see: http://www.w3schools.com/tags/tag_span.asp*/
-#{$view}_$c legend span{
+#{$form} legend span{
 	padding:5px 5px 5px 20px; /*added right, bottom, left padding*/
 	display:block;
 }
 
 /*This controls the background color and the outer border of your form*/
-#{$view}_$c{
+#{$form}{
 	width:100%;
 	background-color:#FAFAFA;
 	border:1px solid #DDDDDD;
@@ -64,13 +72,13 @@ echo "
 }
 
 /*This controls the padding of the title of your form*/
-#main #{$view}_$c h1{
+#main #{$form} h1{
 	padding-left:10px;
 	margin:0;
 }
 
 /*This controls the margin and border of your form area ie the fieldset - note: if you leave the margin as is, this could be said to control the 'inner border'*/
-#{$view}_$c fieldset{
+#{$form} fieldset{
 	margin:10px 10px;/*changed top margin from 5px to 10px*/
 	position:relative;
 	padding:0;
@@ -79,19 +87,19 @@ echo "
 }
 
 /*This controls the display of your form elements - note: ul stands for 'unordered list', see: http://www.w3schools.com/tags/tag_ul.asp*/
-#{$view}_$c fieldset > ul{
+#{$form} fieldset > ul{
 	padding:0;
 	list-style:none;
 	margin:0;
 }
 
 /*Note that the order of pixel specifications here follows this rule - top, right, bottom, left*/
-#{$view}_$c fieldset > ul{
+#{$form} fieldset > ul{
 	padding:40px 10px 20px 10px;
 }
 
 /*This controls the styling of the form and group - this is a bit vague, needs clarification*/
-#{$view}_$c .fabrikForm .fabrikGroup ul{
+#{$form} .fabrikForm .fabrikGroup ul{
 	list-style:none;
 }
 
@@ -121,7 +129,7 @@ echo "
 /* END: align google map sub elements vertically */
 /* START : label spacing for chxbox, radios */
 
-#{$view}_$c label span{
+#{$form} label span{
 	padding:0 4px;
 }
 
@@ -133,19 +141,19 @@ echo "
 }
 
 /*This controls the styling of your linked tables - needs clarification*/
-#{$view}_$c .linkedTables{
+#{$form} .linkedTables{
 	margin:0.6em 0;
 }
 
 /*This controls the styling of your related data - needs clarification*/
-#{$view}_$c  .related_data_norecords{
+#{$form}  .related_data_norecords{
 	display:inline;
 }
 
 /*This controls ???? - needs clarification*/
-#{$view}_$c .fabrikForm .fabrikGroup ul .fabrikElementContainer,
+#{$form} .fabrikForm .fabrikGroup ul .fabrikElementContainer,
 #details_$c .fabrikElementContainer,
-#{$view}_$c .fabrikElementContainer{
+#{$form} .fabrikElementContainer{
 	padding:5px 10px;
 	margin-top:10px;
 	background:none !important;
@@ -157,7 +165,7 @@ echo "
 }
 
 /*This controls the styling of the buttons area at the bottom of your form*/
-#{$view}_$c .fabrikActions{
+#{$form} .fabrikActions{
 	padding:10px;
 	clear:left;
 	margin:5px 10px 10px; /*added bottom margin*/
@@ -166,18 +174,18 @@ echo "
 }
 
 /*This controls the spacing between the buttons at the bottom of your form, for more information on the input tag see http://www.w3schools.com/html/html_forms.asp*/
-#{$view}_$c .fabrikActions input{
+#{$form} .fabrikActions input{
 	margin-right:7px;
 }
 
 /*This controls the styling of the form field when being validated by ajax*/
-#{$view}_$c .fabrikValidating{
+#{$form} .fabrikValidating{
 	color: #476767;
 	background: #EFFFFF url(../images/ajax-loader.gif) no-repeat right 7px !important;
 }
 
 /*This controls the styling of the form field when ajax validation has been successful*/
-#{$view}_$c .fabrikSuccess{
+#{$form} .fabrikSuccess{
 	color: #598F5B;
 	background: #DFFFE0 no-repeat right 7px !important;
 }
@@ -185,96 +193,96 @@ echo "
 /*** slide out add option
 section for dropdowns radio buttons etc**/
 
-#{$view}_$c .addoption dl{
+#{$form} .addoption dl{
 	display:inline;
 	width:75%;
 }
-#{$view}_$c .addoption{
+#{$form} .addoption{
 	clear:left;
 	padding:8px;
 	margin:3px 0;
 	background-color:#efefef;
 }
 
-#{$view}_$c  a.toggle-addoption, a.toggle-selectoption{
+#{$form}  a.toggle-addoption, a.toggle-selectoption{
 	padding:0 0 0 10px;
 }
 
 
 /*** end slide out add option section **/
 
-#{$view}_$c input,
-#{$view}_$c select,
-#{$view}_$c textarea{
+#{$form} input,
+#{$form} select,
+#{$form} textarea{
 	border:1px solid #DDDDDD;
 	border-radius:3px;
 	padding:3px;
 }
 
-#{$view}_$c  .inputbox:focus{
+#{$form}  .inputbox:focus{
 	background-color:#ffffcc;
 	border:1px solid #aaaaaa;
 }
 
-#{$view}_$c .addoption dd, .addoption dt{
+#{$form} .addoption dd, .addoption dt{
 	padding:2px;
 	display:inline;
 }
 
-#{$view}_$c .fabrikSubGroup{
+#{$form} .fabrikSubGroup{
 	clear:both;
 	margin-top:40px;
 }
 
-#{$view}_$c .fabrikSubGroupElements{
+#{$form} .fabrikSubGroupElements{
 	width:80%;
 	float:left;
 }
 
-#{$view}_$c .geo{
+#{$form} .geo{
 	visibility:hidden;
 }
 
 
-#{$view}_$c .fabrikGroup .readonly,
-#{$view}_$c .fabrikGroup .disabled{
+#{$form} .fabrikGroup .readonly,
+#{$form} .fabrikGroup .disabled{
 	background-color:#DFDFDF !important;
 	color:#8F8F8F;
 }
 
 /*** fileupload folder select css **/
-#{$view}_$c ul.folderselect{
+#{$form} ul.folderselect{
 	border:1px dotted #eee;
 	background-color:#efefef;
 	color:#333;
 }
 
-#{$view}_$c .folderselect-container{
+#{$form} .folderselect-container{
 	border:1px dotted #666;width:350px;
 }
 
-#{$view}_$c .fabrikForm .breadcrumbs{
+#{$form} .fabrikForm .breadcrumbs{
 	background: transparent url(../images/folder_open.png) no-repeat center left;
 	padding:2px 2px 2px 26px ;
 }
 
-#{$view}_$c .fabrikForm .fabrikGroup li.fileupload_folder{
+#{$form} .fabrikForm .fabrikGroup li.fileupload_folder{
 	background: transparent url(../images/folder.png) no-repeat center left;
 	padding:2px 2px 2px 26px ;
 	margin:2px;
 }
 
-#{$view}_$c .fabrik_characters_left{
+#{$form} .fabrik_characters_left{
 	clear:left;
 }
 
 /** bump calendar above mocha window in mootools 1.2**/
-#{$view}_$c div.calendar{
+#{$form} div.calendar{
 	z-index:115 !important;
 }
 
 /** special case for 'display' element with 'show label: no' option **/
-#{$view}_$c .fabrikPluginElementDisplayLabel {
+#{$form} .fabrikPluginElementDisplayLabel {
 	width: 100% !important;
 }
 
@@ -304,90 +312,90 @@ section for dropdowns radio buttons etc**/
 	background-color:#DFFAFF !important;
 	cursor:pointer;
 }
-#{$view}_$c .leftCol,
+#{$form} .leftCol,
 #details_$c .leftCol,
-#{$view}_$c .fabrikSubLabel{
+#{$form} .fabrikSubLabel{
 	width: 130px;
 }
 #details_$c .leftCol{
 	color:#999;
 }
 
-#{$view}_$c .fabrikElement {
+#{$form} .fabrikElement {
 	margin-left: 10px;
 	-webkit-box-flex:1;
 	-moz-box-flex:1;
 	box-flex:1;
 }
 
-#{$view}_$c .addbutton {
+#{$form} .addbutton {
 	background: transparent url(images/plus-sign.png) no-repeat left;
 	padding: 2px 5px 0 20px;
 	margin-left:7px;
 }
 
-#{$view}_$c .fabrikError,
-#{$view}_$c .fabrikNotice,
-#{$view}_$c .fabrikValidating,
-#{$view}_$c .fabrikSuccess{
+#{$form} .fabrikError,
+#{$form} .fabrikNotice,
+#{$form} .fabrikValidating,
+#{$form} .fabrikSuccess{
 	font-weight: bold;
 }
 
-#{$view}_$c .fabrikMainError{
+#{$form} .fabrikMainError{
 	height:2em;
 	line-height:2em;
 }
 
-#{$view}_$c .fabrikMainError img{
+#{$form} .fabrikMainError img{
 	padding:0.35em 1em;
 	float:left;
 }
 
-#{$view}_$c .fabrikNotice{
+#{$form} .fabrikNotice{
 	color: #009FBF;
 	background: #DFFDFF url(images/alert.png) no-repeat center left !important;
 }
 
-#{$view}_$c .fabrikError,
-#{$view}_$c .fabrikGroup .fabrikError{
+#{$form} .fabrikError,
+#{$form} .fabrikGroup .fabrikError{
 	color: #c00;
 	background: #EFE7B8;
 }
 
-#{$view}_$c .fabrikErrorMessage{
+#{$form} .fabrikErrorMessage{
 	padding-right: 5px;
 }
 
-#{$view}_$c .fabrikLabel {
+#{$form} .fabrikLabel {
 	min-height:1px; /*for elements with no label txt*/
 }
 
-#{$view}_$c .fabrikActions {
+#{$form} .fabrikActions {
 	padding-top: 15px;
 	clear: left;
 	padding-bottom: 15px;
 }
 
-#{$view}_$c .fabrikGroupRepeater {
+#{$form} .fabrikGroupRepeater {
 	padding-top: 50px;
 	float: left;
 	width: 19%;
 }
 
 /** used by password element */
-#{$view}_$c .fabrikSubLabel {
+#{$form} .fabrikSubLabel {
 	margin-left: -10px;
 	clear: left;
 	margin-top: 10px;
 	float: left;
 }
 
-#{$view}_$c .fabrikSubElement {
+#{$form} .fabrikSubElement {
 	display: block;
 	margin-top: 10px;
 }
 
-#{$view}_$c .addGroup:link {
+#{$form} .addGroup:link {
 	text-decoration: none;
 }
 

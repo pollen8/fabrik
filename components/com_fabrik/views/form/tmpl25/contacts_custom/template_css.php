@@ -12,30 +12,39 @@
 header('Content-type: text/css');
 $c = (int) $_REQUEST['c'];
 $view = isset($_REQUEST['view']) ? $_REQUEST['view'] : 'form';
+$rowid = isset($_REQUEST['rowid']) ? $_REQUEST['rowid'] : '';
+$form = $view . '_' . $c;
+$c_row = $c;
+if ($rowid !== '')
+{
+	$form .= '_' . $rowid;
+	$c_row .= '_' . $rowid;
+}
+
 echo "
-#{$view}_$c .fabrikElement {
+#{$form} .fabrikElement {
 	margin-left: 10px;
 }
 
-#{$view}_$c .fabrikLabel {
+#{$form} .fabrikLabel {
 	width: 100px;
 	clear: left;
 	float: left;
 }
 
-#{$view}_$c .fabrikActions {
+#{$form} .fabrikActions {
 	padding-top: 15px;
 	clear: left;
 	padding-bottom: 15px;
 }
 
-#{$view}_$c .fabrikGroupRepeater {
+#{$form} .fabrikGroupRepeater {
 	float: left;
 	width: 19%;
 }
 
 /** used by password element */
-#{$view}_$c .fabrikSubLabel {
+#{$form} .fabrikSubLabel {
 	margin-left: -10px;
 	clear: left;
 	margin-top: 10px;
@@ -65,11 +74,11 @@ echo "
 	#clear: none;
 }
 
-#{$view}_$c .addGroup:link {
+#{$form} .addGroup:link {
 	text-decoration: none;
 }
 
-#{$view}_$c .addGroup:link {
+#{$form} .addGroup:link {
 	text-decoration: none;
 }
 ";?>
