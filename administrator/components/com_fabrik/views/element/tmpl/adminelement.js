@@ -1,6 +1,6 @@
 /**
  * Admin Element Editor
- * 
+ *
  * @copyright: Copyright (C) 2005-2013, fabrikar.com - All rights reserved.
  * @license: GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
@@ -26,6 +26,9 @@ var fabrikAdminElement = new Class({
 	jsAjaxed: 0,
 
 	initialize: function (plugins, options, id) {
+		if (Fabrik.debug) {
+			fconsole('Fabrik adminelement.js: Initialising', plugins, options, id);
+		}
 		this.parent(plugins, id, 'validationrule');
 		this.setOptions(options);
 		this.setParentViz();
@@ -61,7 +64,7 @@ var fabrikAdminElement = new Class({
 				this.deleteJS(target);
 			}.bind(this));
 
-			document.id('javascriptActions').addEvent('change:relay(' + 'select[id^="jform_action-"], ' + 'select[id^="jform_js_e_event-"], ' + 'select[id^="jform_js_e_trigger-"], ' + 'select[id^="jform_js_e_condition-"], ' + 'input[id^="jform_js_e_value-"]' + ')', function (e, target) {
+			document.id('javascriptActions').addEvent('change:relay(select[id^="jform_action-"],select[id^="jform_js_e_event-"],select[id^="jform_js_e_trigger-"],select[id^="jform_js_e_condition-"],input[id^="jform_js_e_value-"])', function (e, target) {
 				this.setAccordionHeader(target.getParent('.actionContainer'));
 			}.bind(this));
 
@@ -129,8 +132,8 @@ var fabrikAdminElement = new Class({
 
 	addJavascript: function (opt) {
 		var jsId = opt && opt.id ? opt.id : 0;
-		// Ajax request to load the first part of the plugin form (do[plugin]
-		// in, on)
+		// Ajax request to load the first part of the plugin form
+		// (do[plugin] in, on)
 		var div = new Element('div.actionContainer.panel.accordion-group');
 		var a = new Element('a.accordion-toggle', {
 			'href': '#'
@@ -188,12 +191,17 @@ var fabrikAdminElement = new Class({
 
 	setAccordionHeader: function (c) {
 		/**
-		 * Sets accordion header as follows: 1. If action is '' use
-		 * COM_FABRIK_PLEASE_SELECT, otherwise use "On" followed by action text
+		 * Sets accordion header as follows:
+		 *
+		 * 1. If action is '' use COM_FABRIK_PLEASE_SELECT, otherwise use "On"
+		 * followed by action text
+		 *
 		 * 2. If code is set, append either comment text from first line if it
-		 * exists or "Javascript Inline Code" 3. If code is NOT set, append the
-		 * event, trigger, condition and value fields
-		 */
+		 * exists or "Javascript Inline Code"
+		 *
+		 * 3. If code is NOT set, append the event, trigger, condition and value
+		 * fields
+		 **/
 		if (typeOf(c) === 'null') {
 			return;
 		}
@@ -218,6 +226,9 @@ var fabrikAdminElement = new Class({
 				t = comment[1];
 			} else {
 				t = 'Inline javascript code';
+			}
+			if (code.value.replace(/(['"]).*?[^\\]\1/g,'').test('//')) {
+				t += ' &nbsp; <span style="color:red;font-weight:bold;">Warning:&nbsp;Code&nbsp;may&nbsp;contain&nbsp;inline&nbsp;comments&nbsp;//</span>';
 			}
 		} else if (event.value && trigger.value && name.value) {
 			if (condition.getSelected()[0].text.test(/hidden|shown/)) {
