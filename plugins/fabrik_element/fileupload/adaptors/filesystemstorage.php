@@ -23,7 +23,6 @@ require_once JPATH_ROOT . '/plugins/fabrik_element/fileupload/adaptor.php';
 
 class Filesystemstorage extends FabrikStorageAdaptor
 {
-
 	/**
 	 * Does a file exist
 	 *
@@ -38,6 +37,7 @@ class Filesystemstorage extends FabrikStorageAdaptor
 		{
 			return false;
 		}
+
 		return JFile::exists($filepath);
 	}
 
@@ -65,11 +65,14 @@ class Filesystemstorage extends FabrikStorageAdaptor
 	public function createIndexFile($path)
 	{
 		$index_file = $path . '/index.html';
+
 		if (!$this->exists($index_file))
 		{
 			$content = JText::_('PLG_ELEMENT_FILEUPLOAD_INDEX_FILE_CONTENT');
+
 			return JFile::write($index_file, $content);
 		}
+
 		return true;
 	}
 
@@ -84,11 +87,11 @@ class Filesystemstorage extends FabrikStorageAdaptor
 
 	public function createFolder($path, $mode = 0755)
 	{
-
 		if (JFolder::create($path, $mode))
 		{
 			return $this->createIndexFile($path);
 		}
+
 		return false;
 	}
 
@@ -105,15 +108,19 @@ class Filesystemstorage extends FabrikStorageAdaptor
 	public function makeRecursiveFolders($folderPath, $mode = 0755)
 	{
 		static $nested = 0;
+
 		// Check if parent dir exists
 		$parent = dirname($folderPath);
+
 		if (!$this->folderExists($parent))
 		{
 			// Prevent infinite loops!
 			$nested++;
+
 			if (($nested > 20) || ($parent == $folderPath))
 			{
 				$nested--;
+
 				return false;
 			}
 
@@ -121,13 +128,13 @@ class Filesystemstorage extends FabrikStorageAdaptor
 			{
 				// JFolder::create throws an error
 				$nested--;
+
 				return false;
 			}
 
 			// OK, parent directory has been created
 			$nested--;
 		}
-
 
 		if (JFolder::exists($folderPath))
 		{
@@ -164,6 +171,7 @@ class Filesystemstorage extends FabrikStorageAdaptor
 		// Replace any non-alnum chars (except _ and - and .) with _
 		$filename = preg_replace('#[^a-zA-Z0-9_\-\.]#', '_', $filename);
 		$this->randomizeName($filename);
+
 		return $filename;
 	}
 
@@ -192,10 +200,12 @@ class Filesystemstorage extends FabrikStorageAdaptor
 	public function upload($tmpFile, $filepath)
 	{
 		$this->uploadedFilePath = $filepath;
+
 		if (JFile::upload($tmpFile, $filepath))
 		{
 			return $this->createIndexFile(dirname($filepath));
 		}
+
 		return false;
 	}
 
@@ -252,6 +262,7 @@ class Filesystemstorage extends FabrikStorageAdaptor
 		$livesite = COM_FABRIK_LIVESITE;
 		$livesite = rtrim($livesite, '/\\');
 		$file = JString::ltrim($file, '/\\');
+
 		return str_replace("\\", "/", $livesite . '/' . $file);
 	}
 
@@ -279,7 +290,6 @@ class Filesystemstorage extends FabrikStorageAdaptor
 
 	protected function _getSmallerFile($file, $type)
 	{
-
 		$params = $this->getParams();
 		$w = new FabrikWorker;
 
@@ -300,6 +310,7 @@ class Filesystemstorage extends FabrikStorageAdaptor
 
 		$match = array();
 		$replace = array();
+
 		for ($i = 0; $i < count($filebits); $i++)
 		{
 			if (array_key_exists($i, $ulDirbits) && $filebits[$i] != $ulDirbits[$i])
@@ -324,6 +335,7 @@ class Filesystemstorage extends FabrikStorageAdaptor
 
 		// Remove extension
 		$fclean = str_replace('.' . $ext, '', $f);
+
 		if ($type == 'thumb')
 		{
 			// $f replaced by $fclean, $ext
@@ -333,6 +345,7 @@ class Filesystemstorage extends FabrikStorageAdaptor
 		{
 			$file = $dir . '/' . $f;
 		}
+
 		return $file;
 	}
 
@@ -396,6 +409,7 @@ class Filesystemstorage extends FabrikStorageAdaptor
 		{
 			$filepath = $this->getFullPath($filepath);
 		}
+
 		if ($this->exists($filepath))
 		{
 			// $$$ hugh - turn of E_DEPRECATED to avoid warnings about eregi() in getid3
@@ -405,11 +419,13 @@ class Filesystemstorage extends FabrikStorageAdaptor
 				$current_level = error_reporting();
 				error_reporting($current_level & ~E_DEPRECATED);
 			}
+
 			require_once COM_FABRIK_FRONTEND . '/libs/phpmimetypeclass/class.mime.php';
 			$mime = new MIMETypes;
 			$thisFileInfo['filesize'] = filesize($filepath);
 			$thisFileInfo['filename'] = basename($filepath);
 			$thisFileInfo['mime_type'] = $mime->getMimeType($filepath);
+
 			return $thisFileInfo;
 		}
 		else
@@ -432,6 +448,7 @@ class Filesystemstorage extends FabrikStorageAdaptor
 		{
 			return COM_FABRIK_BASE . '/' . $filepath;
 		}
+
 		return $filepath;
 	}
 }

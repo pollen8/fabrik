@@ -28,7 +28,6 @@ define("FU_DOWNLOAD_SCRIPT_BOTH", '3');
 
 class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 {
-
 	/**
 	 * Storage method adaptor object (filesystem/amazon s3)
 	 * needs to be public as models have to see it
@@ -53,6 +52,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 	public function isJoin()
 	{
 		$params = $this->getParams();
+
 		if ($params->get('ajax_upload') && (int) $params->get('ajax_max', 4) > 1)
 		{
 			return true;
@@ -81,10 +81,12 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		{
 			return false;
 		}
+
 		$fullName = $this->getFullName(true, true, false);
 		$params = $this->getParams();
 		$groupModel = $this->getGroupModel();
 		$return = false;
+
 		if ($groupModel->canRepeat())
 		{
 			/*$$$rob could be the case that we aren't uploading an element by have removed
@@ -108,6 +110,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 			{
 				$fdata = @$_FILES[$fullName]['name'];
 			}
+
 			if ($fdata == '')
 			{
 				if ($this->canCrop() == false)
@@ -129,6 +132,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 				return false;
 			}
 		}
+
 		return $return;
 	}
 
@@ -171,6 +175,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 
 		// $js_dir = 'js.new';
 		$params = $this->getParams();
+
 		if ($params->get('ajax_upload'))
 		{
 			$prefix = FabrikHelperHTML::isDebug() ? '' : '.min';
@@ -182,10 +187,12 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 			{
 				parent::formJavascriptClass($srcs, $folder . $js_dir . '/plupload.html5' . $prefix . '.js');
 			}
+
 			if (strstr($runtimes, 'html4'))
 			{
 				parent::formJavascriptClass($srcs, $folder . $js_dir . '/plupload.html4' . $prefix . '.js');
 			}
+
 			if (strstr($runtimes, 'gears'))
 			{
 				parent::formJavascriptClass($srcs, $folder . $js_dir . '/gears_init.js');
@@ -196,10 +203,12 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 			{
 				parent::formJavascriptClass($srcs, $folder . $js_dir . '/plupload.flash' . $prefix . '.js');
 			}
+
 			if (strstr($runtimes, 'silverlight'))
 			{
 				parent::formJavascriptClass($srcs, $folder . $js_dir . '/plupload.silverlight' . $prefix . '.js');
 			}
+
 			if (strstr($runtimes, 'browserplus'))
 			{
 				parent::formJavascriptClass($srcs, $folder . $js_dir . '/plupload.browserplus' . $prefix . '.js');
@@ -217,11 +226,13 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		{
 			$script = 'plugins/fabrik_element/' . $this->getElement()->plugin . '/' . $this->getElement()->plugin . '.js';
 		}
+
 		if (empty($elementclasses[$script]))
 		{
 			$srcs[] = $script;
 			$elementclasses[$script] = 1;
 		}
+
 		// $$$ hugh - added this, and some logic in the view, so we will get called on a per-element basis
 		return false;
 	}
@@ -257,16 +268,20 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		$fdata = $this->getFormModel()->_data;
 		$rawkey = $this->getFullName(false, true, false) . '_raw';
 		$rawvalues = JArrayHelper::getValue($fdata, $rawkey, $rawvalues);
+
 		if (!is_array($rawvalues))
 		{
 			$rawvalues = explode(GROUPSPLITTER, $rawvalues);
 		}
+
 		if (!is_array($imgParams))
 		{
 			$imgParams = explode(GROUPSPLITTER, $imgParams);
 		}
+
 		$oFiles = new stdClass;
 		$iCounter = 0;
+
 		for ($x = 0; $x < count($value); $x++)
 		{
 			if (is_array($value))
@@ -282,6 +297,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 							$o->id = 'alreadyuploaded_' . $element->id . '_' . $iCounter;
 							$o->name = array_pop(explode(DS, $tkey));
 							$o->path = $tkey;
+
 							if ($fileinfo = $this->getStorage()->getFileInfo($o->path))
 							{
 								$o->size = $fileinfo['filesize'];
@@ -290,6 +306,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 							{
 								$o->size = 'unknown';
 							}
+
 							$o->type = strstr($fileinfo['mime_type'], 'image/') ? 'image' : 'file';
 							$o->url = $this->getStorage()->pathToURL($tkey);
 							$o->recordid = $rawvalues[$x];
@@ -308,6 +325,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 							$o->id = 'alreadyuploaded_' . $element->id . '_0';
 							$o->name = array_pop($parts);
 							$o->path = $value[$x]->file;
+
 							if ($fileinfo = $this->getStorage()->getFileInfo($o->path))
 							{
 								$o->size = $fileinfo['filesize'];
@@ -316,6 +334,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 							{
 								$o->size = 'unknown';
 							}
+
 							$o->type = strstr($fileinfo['mime_type'], 'image/') ? 'image' : 'file';
 							$o->url = $this->getStorage()->pathToURL($value[$x]->file);
 							$o->recordid = 0;
@@ -330,6 +349,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 							$o->id = 'alreadyuploaded_' . $element->id . '_' . $rawvalues[$x];
 							$o->name = array_pop($parts);
 							$o->path = $value[$x];
+
 							if ($fileinfo = $this->getStorage()->getFileInfo($o->path))
 							{
 								$o->size = $fileinfo['filesize'];
@@ -338,6 +358,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 							{
 								$o->size = 'unknown';
 							}
+
 							$o->type = strstr($fileinfo['mime_type'], 'image/') ? 'image' : 'file';
 							$o->url = $this->getStorage()->pathToURL($value[$x]);
 							$o->recordid = $rawvalues[$x];
@@ -348,16 +369,17 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 					}
 				}
 			}
-
 		}
 
 		$opts = $this->getElementJSOptions($repeatCounter);
 		$opts->id = $this->getId();
+
 		if ($this->isJoin())
 		{
 			$opts->isJoin = true;
 			$opts->joinId = $this->getJoinModel()->getJoin()->id;
 		}
+
 		$opts->elid = $element->id;
 		$opts->defaultImage = $params->get('default_image');
 		$opts->folderSelect = $params->get('upload_allow_folderselect', 0);
@@ -392,6 +414,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		JText::script('PLG_ELEMENT_FILEUPLOAD_CONFIRM_SOFT_DELETE');
 		JText::script('PLG_ELEMENT_FILEUPLOAD_CONFIRM_HARD_DELETE');
 		JText::script('PLG_ELEMENT_FILEUPLOAD_FILE_TOO_LARGE_SHORT');
+
 		return array('FbFileUpload', $id, $opts);
 	}
 
@@ -406,12 +429,13 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 	protected function canCrop()
 	{
 		$params = $this->getParams();
+
 		if (!FabrikHelperHTML::canvasSupport())
 		{
 			return false;
 		}
-		return (bool) $params->get('fileupload_crop', 0);
 
+		return (bool) $params->get('fileupload_crop', 0);
 	}
 
 	/**
@@ -440,7 +464,9 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 				$data[$i] = $this->_renderListData($data[$i], $thisRow, $i);
 			}
 		}
+
 		$data = json_encode($data);
+
 		return parent::renderListData($data, $thisRow);
 	}
 
@@ -458,10 +484,12 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		$data = explode(GROUPSPLITTER, $data);
 		$params = $this->getParams();
 		$format = $params->get('ul_export_encode_csv', 'base64');
+
 		foreach ($data as &$d)
 		{
 			$d = $this->encodeFile($d, $format);
 		}
+
 		return implode(GROUPSPLITTER, $data);
 	}
 
@@ -479,10 +507,12 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		$data = explode(GROUPSPLITTER, $data);
 		$params = $this->getParams();
 		$format = $params->get('ul_export_encode_json', 'base64');
+
 		foreach ($data as &$d)
 		{
 			$d = $this->encodeFile($d, $format);
 		}
+
 		return implode(GROUPSPLITTER, $data);
 	}
 
@@ -498,10 +528,12 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 	protected function encodeFile($file, $format = 'relative')
 	{
 		$path = JPATH_SITE . '/' . $file;
+
 		if (!JFile::exists($path))
 		{
 			return $file;
 		}
+
 		switch ($format)
 		{
 			case 'full':
@@ -534,6 +566,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 	protected function loadElement($file)
 	{
 		$ext = JString::strtolower(JFile::getExt($file));
+
 		if (JFile::exists(JPATH_ROOT . '/plugins/fabrik_element/fileupload/element/custom/' . $ext . '.php'))
 		{
 			require JPATH_ROOT . '/plugins/fabrik_element/fileupload/element/custom/' . $ext . '.php';
@@ -554,6 +587,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 				require JPATH_ROOT . '/plugins/fabrik_element/fileupload/element/default.php';
 			}
 		}
+
 		return $render;
 	}
 
@@ -578,6 +612,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		// $$$ hugh - added 'skip_check' param, as the exists() check in s3
 		// storage adaptor can add a second or two per file, per row to table render time.
 		$skip_exists_check = (int) $params->get('fileupload_skip_check', '0');
+
 		if ($params->get('ajax_upload') && $params->get('ajax_max', 4) == 1)
 		{
 			// Not sure but after update from 2.1 to 3 for podion data was an object
@@ -590,6 +625,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 				if ($data !== '')
 				{
 					$singleCropImg = json_decode($data);
+
 					if (empty($singleCropImg))
 					{
 						$data = '';
@@ -604,20 +640,25 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		}
 
 		$data = FabrikWorker::JSONtoData($data);
+
 		if (is_array($data) && !empty($data))
 		{
 			// Crop stuff needs to be removed from data to get correct file path
 			$data = $data[0];
 		}
+
 		$storage = $this->getStorage();
 		$use_download_script = $params->get('fu_use_download_script', '0');
+
 		if ($use_download_script == FU_DOWNLOAD_SCRIPT_TABLE || $use_download_script == FU_DOWNLOAD_SCRIPT_BOTH)
 		{
 			if (empty($data) || !$storage->exists(COM_FABRIK_BASE . $data))
 			{
 				return '';
 			}
+
 			$aclEl = $this->getFormModel()->getElement($params->get('fu_download_acl', ''), true);
+
 			if (!empty($aclEl))
 			{
 				$aclEl = $aclEl->getFullName();
@@ -625,6 +666,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 				$user = JFactory::getUser();
 				$groups = $user->getAuthorisedViewLevels();
 				$canDownload = in_array($thisRow->$aclElraw, $groups);
+
 				if (!$canDownload)
 				{
 					$img = $params->get('fu_download_noaccess_image');
@@ -643,14 +685,17 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 						$img = '<img src="' . COM_FABRIK_LIVESITE . 'media/com_fabrik/images/' . $img . '" alt="'
 							. JText::_('PLG_ELEMENT_FILEUPLOAD_DOWNLOAD_NO_PERMISSION') . '" />';
 					}
+
 					return $a . $img . $a2;
 				}
 			}
+
 			$formModel = $this->getForm();
 			$formid = $formModel->getId();
 			$rowid = $thisRow->__pk_val;
 			$elementid = $this->getId();
 			$title = '';
+
 			if ($params->get('fu_title_element') == '')
 			{
 				$title_name = $this->getFullName(true, true, false) . '__title';
@@ -659,6 +704,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 			{
 				$title_name = str_replace('.', '___', $params->get('fu_title_element'));
 			}
+
 			if (array_key_exists($title_name, $thisRow))
 			{
 				if (!empty($thisRow->$title_name))
@@ -668,7 +714,9 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 					$title = $title[$i];
 				}
 			}
+
 			$downloadImg = $params->get('fu_download_access_image');
+
 			if ($downloadImg !== '' && JFile::exists(JPATH_ROOT . '/media/com_fabrik/images/' . $downloadImg))
 			{
 				$aClass = '';
@@ -679,10 +727,12 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 				$aClass = 'class="btn btn-primary button"';
 				$title = '<i class="icon-download icon-white"></i> ' . JText::_('PLG_ELEMENT_FILEUPLOAD_DOWNLOAD');
 			}
+
 			$link = COM_FABRIK_LIVESITE
 				. 'index.php?option=com_' . $package . '&amp;task=plugin.pluginAjax&amp;plugin=fileupload&amp;method=ajax_download&amp;format=raw&amp;element_id='
 				. $elementid . '&amp;formid=' . $formid . '&amp;rowid=' . $rowid . '&amp;repeatcount=' . $i;
 			$url = '<a href="' . $link . '"' . $aClass . '>' . $title . '</a>';
+
 			return $url;
 		}
 
@@ -703,11 +753,13 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		{
 			$render->renderListData($this, $params, $data, $thisRow);
 		}
+
 		if ($render->output == '' && $params->get('default_image') != '')
 		{
 			$defaultURL = $storage->getFileUrl(str_replace(COM_FABRIK_BASE, '', $params->get('default_image')));
 			$render->output = '<img src="' . $defaultURL . '" alt="image" />';
 		}
+
 		return $render->output;
 	}
 
@@ -760,24 +812,30 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 
 		// Remove any repeat group labels
 		$elName = str_replace('[]', '', $elName);
+
 		if ($groupModel->isJoin())
 		{
 			$joinArray = array();
+
 			if (!preg_match('#join\[(\d+)\]\[(\S+)\]#', $elName, $joinArray))
 			{
 				return true;
 			}
+
 			if (!array_key_exists('join', $_FILES))
 			{
 				return true;
 			}
+
 			$aFile = $_FILES['join'];
 			$myFileName = $aFile['name'][$joinArray[1]][$joinArray[2]];
 			$myFileSize = $aFile['size'][$joinArray[1]][$joinArray[2]];
+
 			if (is_array($myFileSize))
 			{
 				$myFileSize = $myFileSize[$repeatCounter];
 			}
+
 			if (is_array($myFileName))
 			{
 				$myFileName = $myFileName[$repeatCounter];
@@ -796,6 +854,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 				{
 					return true;
 				}
+
 				$aFile = $_FILES[$elName];
 			}
 
@@ -810,6 +869,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 				$myFileSize = $aFile['size'];
 			}
 		}
+
 		$ok = true;
 
 		if (!$this->_fileUploadFileTypeOK($myFileName))
@@ -823,8 +883,10 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 			$mySize = $myFileSize / 1000;
 			$errors[] = JText::sprintf('PLG_ELEMENT_FILEUPLOAD_FILE_TOO_LARGE', $params->get('ul_max_file_size'), $mySize);
 		}
+
 		$filepath = $this->_getFilePath($repeatCounter, null);
 		jimport('joomla.filesystem.file');
+
 		if (JFile::exists($filepath))
 		{
 			if ($params->get('ul_file_increment', 0) == 0)
@@ -833,7 +895,9 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 				$ok = false;
 			}
 		}
+
 		$this->_validationErr = implode('<br />', $errors);
+
 		return $ok;
 	}
 
@@ -847,6 +911,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 	{
 		$params = $this->getParams();
 		$allowedFiles = $params->get('ul_file_types');
+
 		if ($allowedFiles != '')
 		{
 			// $$$ hugh - strip spaces, as folk often do ".foo, .bar"
@@ -858,6 +923,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 			$mediaparams = JComponentHelper::getParams('com_media');
 			$aFileTypes = explode(',', $mediaparams->get('upload_extensions'));
 		}
+
 		return $aFileTypes;
 	}
 
@@ -873,16 +939,20 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 	protected function _fileUploadFileTypeOK($myFileName)
 	{
 		$aFileTypes = $this->_getAllowedExtension();
+
 		if ($myFileName == '')
 		{
 			return true;
 		}
+
 		$curr_f_ext = JString::strtolower(JFile::getExt($myFileName));
 		array_walk($aFileTypes, create_function('&$v', '$v = JString::strtolower($v);'));
+
 		if (in_array($curr_f_ext, $aFileTypes) || in_array("." . $curr_f_ext, $aFileTypes))
 		{
 			return true;
 		}
+
 		return false;
 	}
 
@@ -899,10 +969,12 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 	{
 		$params = $this->getParams();
 		$max_size = $params->get('ul_max_file_size') * 1000;
+
 		if ($myFileSize <= $max_size)
 		{
 			return true;
 		}
+
 		return false;
 	}
 
@@ -919,15 +991,18 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		$app = JFactory::getApplication();
 		$input = $app->input;
 		$params = $this->getParams();
+
 		if ($this->canCrop() == false && $input->get('task') !== 'pluginAjax' && $params->get('ajax_upload') == true)
 		{
 			$filter = JFilterInput::getInstance();
 			$post = $filter->clean($_POST, 'array');
 			$raw = $this->getValue($post);
+
 			if ($raw == '')
 			{
 				return true;
 			}
+
 			if (empty($raw))
 			{
 				return true;
@@ -953,13 +1028,16 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 			$groupModel = $this->getGroup();
 			$formModel = $this->getFormModel();
 			$isjoin = ($groupModel->isJoin() || $this->isJoin());
+
 			if ($isjoin)
 			{
 				if (!$groupModel->canRepeat() && !$this->isJoin())
 				{
 					$files = $files[0];
 				}
+
 				$joinid = $groupModel->getGroup()->join_id;
+
 				if ($this->isJoin())
 				{
 					$joinid = $this->getJoinModel()->getJoin()->id;
@@ -982,9 +1060,9 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 			}
 			else
 			{
-
 				// Only one file
 				$store = array();
+
 				for ($i = 0; $i < count($files); $i++)
 				{
 					$o = new stdClass;
@@ -992,10 +1070,12 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 					$o->params = $crop[$files[$i]];
 					$store[] = $o;
 				}
+
 				$store = json_encode($store);
 				$formModel->updateFormData($name . '_raw', $store);
 				$formModel->updateFormData($name, $store);
 			}
+
 			return true;
 		}
 		else
@@ -1018,11 +1098,13 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		$app = JFactory::getApplication();
 		$input = $app->input;
 		$params = $this->getParams();
+
 		if ($this->canCrop() == true && $input->get('task') !== 'pluginAjax')
 		{
 			$filter = JFilterInput::getInstance();
 			$post = $filter->clean($_POST, 'array');
 			$raw = JArrayHelper::getValue($post, $name . '_raw', array());
+
 			if ($this->getValue($post) != 'Array,Array')
 			{
 				$raw = $this->getValue($post);
@@ -1058,6 +1140,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 			{
 				return true;
 			}
+
 			$ids = array_values($ids);
 			$saveParams = array();
 			$files = array_keys($crop);
@@ -1065,6 +1148,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 			$oImage = FabimageHelper::loadLib($params->get('image_library'));
 			$oImage->setStorage($storage);
 			$fileCounter = 0;
+
 			foreach ($crop as $filepath => $json)
 			{
 				$imgData = $cropData[$filepath];
@@ -1081,6 +1165,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 				$cropPath = $storage->clean(JPATH_SITE . '/' . $params->get('fileupload_crop_dir') . '/' . $myFileDir . '/', false);
 				$w = new FabrikWorker;
 				$cropPath = $w->parseMessageForPlaceHolder($cropPath);
+
 				if ($cropPath != '')
 				{
 					if (!$storage->folderExists($cropPath))
@@ -1092,17 +1177,20 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 						}
 					}
 				}
+
 				$filepath = $storage->clean(JPATH_SITE . '/' . $filepath);
 				$fileURL = $storage->getFileUrl(str_replace(COM_FABRIK_BASE, '', $filepath));
 				$destCropFile = $storage->_getCropped($fileURL);
 				$destCropFile = $storage->urlToPath($destCropFile);
 				$destCropFile = $storage->clean($destCropFile);
+
 				if (!JFile::exists($filepath))
 				{
 					unset($files[$fileCounter]);
 					$fileCounter++;
 					continue;
 				}
+
 				$fileCounter++;
 
 				if ($imgData != '')
@@ -1118,17 +1206,21 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 			$groupModel = $this->getGroup();
 			$isjoin = ($groupModel->isJoin() || $this->isJoin());
 			$formModel = $this->getFormModel();
+
 			if ($isjoin)
 			{
 				if (!$groupModel->canRepeat() && !$this->isJoin())
 				{
 					$files = $files[0];
 				}
+
 				$joinid = $groupModel->getGroup()->join_id;
+
 				if ($this->isJoin())
 				{
 					$joinid = $this->getJoinModel()->getJoin()->id;
 				}
+
 				$j = $this->getJoinModel()->getJoin()->table_join;
 				$joinsid = $j . '___id';
 				$joinsparam = $j . '___params';
@@ -1148,6 +1240,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 			{
 				// Only one file
 				$store = array();
+
 				for ($i = 0; $i < count($files); $i++)
 				{
 					$o = new stdClass;
@@ -1155,11 +1248,13 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 					$o->params = $saveParams[$i];
 					$store[] = $o;
 				}
+
 				$store = json_encode($store);
 				$formModel->updateFormData($name . '_raw', $store);
 				$formModel->updateFormData($name, $store);
 
 			}
+
 			return true;
 		}
 		else
@@ -1187,6 +1282,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		$isjoin = $groupModel->isJoin();
 		$formModel = $this->getFormModel();
 		$origData = $formModel->getOrigData();
+
 		if ($isjoin)
 		{
 			$name = $this->getFullName(false, true, false);
@@ -1196,11 +1292,13 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		{
 			$name = $this->getFullName(true, true, false);
 		}
+
 		if ($this->processAjaxUploads($name))
 		{
 			// Stops form data being updated with blank data.
 			return;
 		}
+
 		if ($input->getInt('fabrik_ajax') == 1)
 		{
 			// Inline edit for example no $_FILE data sent
@@ -1214,10 +1312,10 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 			// Stops form data being updated with blank data.
 			return;
 		}
+
 		$files = array();
 		$deletedImages = $input->get('fabrik_fileupload_deletedfile', array(), 'array');
 		$gid = $groupModel->getGroup()->id;
-
 		$deletedImages = JArrayHelper::getValue($deletedImages, $gid, array());
 		$imagesToKeep = array();
 
@@ -1249,6 +1347,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 			{
 				$fdata = $_FILES[$name]['name'];
 			}
+
 			foreach ($fdata as $i => $f)
 			{
 				if ($isjoin)
@@ -1275,6 +1374,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 					$files[$i] = $imagesToKeep[$i];
 				}
 			}
+
 			foreach ($imagesToKeep as $k => $v)
 			{
 				if (!array_key_exists($k, $files))
@@ -1286,9 +1386,11 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		else
 		{
 			$file = array('name' => '');
+
 			if ($isjoin)
 			{
 				$myFileDir = $request['join'][$joinid][$name];
+
 				if (array_key_exists('join', $_FILES) && array_key_exists('name', $_FILES['join'])
 					&& array_key_exists($joinid, $_FILES['join']['name']) && array_key_exists($name, $_FILES['join']['name'][$joinid]))
 				{
@@ -1302,6 +1404,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 			else
 			{
 				$myFileDir = JArrayHelper::getValue($request, $name);
+
 				if (array_key_exists($name, $_FILES))
 				{
 					$file['name'] = $_FILES[$name]['name'];
@@ -1338,6 +1441,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 				}
 			}
 		}
+
 		$files = array_flip(array_flip($files));
 		/* $$$ hugh - if we have multiple repeat joined groups, the data won't have been merged / reduced,
 		 * so the double array_flip will have made 'holes' in the array, by removign duplicates.
@@ -1345,6 +1449,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		 * structure will end up havign holes in it in processToDb, and we drop data.
 		 */
 		$files = array_values($files);
+
 		if ($params->get('upload_delete_image'))
 		{
 			foreach ($deletedImages as $filename)
@@ -1361,6 +1466,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 			{
 				$files = JArrayHelper::getValue($files, 0, '');
 			}
+
 			$formModel->updateFormData("join.{$joinid}.{$name}", $files);
 			$formModel->updateFormData("join.{$joinid}.{$name}_raw", $files);
 		}
@@ -1386,10 +1492,12 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		$file = $storage->clean(JPATH_SITE . '/' . $filename);
 		$thumb = $storage->clean($storage->_getThumb($filename));
 		$cropped = $storage->clean($storage->_getCropped($filename));
+
 		if ($storage->exists($file))
 		{
 			$storage->delete($file);
 		}
+
 		if ($storage->exists($thumb))
 		{
 			$storage->delete($thumb);
@@ -1401,6 +1509,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 				$storage->delete(JPATH_SITE . '/' . $thumb);
 			}
 		}
+
 		if ($storage->exists($cropped))
 		{
 			$storage->delete($cropped);
@@ -1428,13 +1537,16 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 	{
 		$app = JFactory::getApplication();
 		$input = $app->input;
+
 		if ((int) $input->get('rowid', 0) !== 0)
 		{
 			if ($input->get('task') == '')
 			{
 				return parent::dataConsideredEmpty($data, $repeatCounter);
 			}
+
 			$olddaata = JArrayHelper::getValue($this->getFormModel()->_origData, $repeatCounter);
+
 			if (!is_null($olddaata))
 			{
 				$name = $this->getFullName(false, true, false);
@@ -1451,6 +1563,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		}
 
 		$groupModel = $this->getGroup();
+
 		if ($groupModel->isJoin())
 		{
 			$name = $this->getFullName(false, true, false);
@@ -1461,6 +1574,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 			{
 				return true;
 			}
+
 			if ($groupModel->canRepeat())
 			{
 				$file = $joindata[$joinid][$name][$repeatCounter]['name'];
@@ -1469,6 +1583,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 			{
 				$file = $joindata[$joinid][$name]['name'];
 			}
+
 			return $file == '' ? true : false;
 		}
 		else
@@ -1482,19 +1597,21 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 				$name = $this->getFullName(false, true, false);
 				$joindata = JArrayHelper::getValue($joindata, $name, array());
 				$joinids = JArrayHelper::getValue($joindata, 'id', array());
+
 				return empty($joinids) ? true : false;
 			}
 			else
 			{
 				$name = $this->getFullName(true, true, false);
 				$file = $input->files->get($name, array(), 'array');
+
 				if ($groupModel->canRepeat())
 				{
 					return $file[$repeatCounter]['name'] == '' ? true : false;
 				}
 			}
-
 		}
+
 		if (empty($file))
 		{
 			$file = $input->get($name, array(), 'array');
@@ -1509,6 +1626,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 				return $file == '' ? true : false;
 			}
 		}
+
 		// No files selected?
 		return $file['name'] == '' ? true : false;
 	}
@@ -1530,22 +1648,27 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 
 		// $$$ hugh - check if we need to blow away the cached filepath, set in validation
 		$myFileName = $storage->cleanName($file['name'], $repeatGroupCounter);
+
 		if ($myFileName != $file['name'])
 		{
 			$file['name'] = $myFileName;
 			unset($this->_filePaths[$repeatGroupCounter]);
 		}
+
 		$tmpFile = $file['tmp_name'];
 		$uploader = $this->getFormModel()->getUploader();
+
 		if ($params->get('ul_file_types') == '')
 		{
 			$params->set('ul_file_types', implode(',', $this->_getAllowedExtension()));
 		}
+
 		$err = null;
 
 		// Set FTP credentials, if given
 		jimport('joomla.client.helper');
 		JClientHelper::setCredentialsFromRequest('ftp');
+
 		if ($myFileName == '')
 		{
 			return;
@@ -1553,6 +1676,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 
 		$formData = $this->getFormModel()->_formData;
 		$filepath = $this->_getFilePath($repeatGroupCounter, $formData);
+
 		if (!FabrikUploader::canUpload($file, $err, $params))
 		{
 			$this->setError(100, $file['name'] . ': ' . JText::_($err));
@@ -1572,12 +1696,15 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 					break;
 			}
 		}
+
 		if (!$storage->upload($tmpFile, $filepath))
 		{
 			$uploader->moveError = true;
 			$this->setError(100, JText::sprintf('PLG_ELEMENT_FILEUPLOAD_UPLOAD_ERR', $tmpFile, $filepath));
+
 			return;
 		}
+
 		$filepath = $storage->getUploadedFilePath();
 		jimport('joomla.filesystem.path');
 		$storage->setPermissions($filepath);
@@ -1601,10 +1728,12 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 			{
 				$mainHeight = (int) $mainWidth;
 			}
+
 			if ($mainWidth == '')
 			{
 				$mainWidth = (int) $mainHeight;
 			}
+
 			$oImage->resize($mainWidth, $mainHeight, $filepath, $filepath);
 		}
 		// $$$ hugh - if it's a PDF, make sure option is set to attempt PDF thumb
@@ -1613,6 +1742,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		{
 			$make_thumbnail = false;
 		}
+
 		if ($make_thumbnail)
 		{
 			$thumbPath = $storage->clean(JPATH_SITE . '/' . $params->get('thumb_dir') . '/' . $myFileDir . '/', false);
@@ -1631,14 +1761,17 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 					}
 				}
 			}
+
 			$fileURL = $storage->getFileUrl(str_replace(COM_FABRIK_BASE, '', $filepath));
 			$destThumbFile = $storage->_getThumb($fileURL);
 			$destThumbFile = $storage->urlToPath($destThumbFile);
 			$oImage->resize($maxWidth, $maxHeight, $filepath, $destThumbFile);
 			$storage->setPermissions($destThumbFile);
 		}
+
 		$storage->setPermissions($filepath);
 		$storage->finalFilePathParse($filepath);
+
 		return $filepath;
 	}
 
@@ -1658,6 +1791,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 			$storageClass = JString::ucfirst($storageType);
 			$this->storage = new $storageClass($params);
 		}
+
 		return $this->storage;
 	}
 
@@ -1673,10 +1807,12 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 	{
 		$params = $this->getParams();
 		$folder = $params->get('ul_directory');
+
 		if (!isset($this->_filePaths))
 		{
 			$this->_filePaths = array();
 		}
+
 		if (array_key_exists($repeatCounter, $this->_filePaths))
 		{
 			/*
@@ -1690,6 +1826,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 				return $this->_filePaths[$repeatCounter];
 			}
 		}
+
 		$filter = JFilterInput::getInstance();
 		$aData = isset($formData) ? $formData : $filter->clean($_POST, 'array');
 		$elName = $this->getFullName(true, true, false);
@@ -1697,10 +1834,12 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 
 		// @TODO test with fileuploads in join groups
 		$groupModel = $this->getGroup();
+
 		if ($groupModel->isJoin())
 		{
 			$joinid = $groupModel->getGroup()->join_id;
 			$elNameNoJoinstr = $this->getFullName(false, true, false);
+
 			if ($groupModel->canRepeat())
 			{
 				$myFileName = array_key_exists('join', $_FILES) ? @$_FILES['join']['name'][$joinid][$elNameNoJoinstr][$repeatCounter]
@@ -1736,10 +1875,12 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		$myFileName = $storage->cleanName($myFileName, $repeatCounter);
 
 		$folder = $folder . '/' . $myFileDir;
+
 		if ($storage->appendServerPath())
 		{
 			$folder = JPATH_SITE . '/' . $folder;
 		}
+
 		$folder = JPath::clean($folder);
 		$w = new FabrikWorker;
 		$folder = $w->parseMessageForPlaceHolder($folder, $aData, true);
@@ -1748,9 +1889,11 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		{
 			JPath::check($folder);
 		}
+
 		$storage->makeRecursiveFolders($folder);
 		$p = $folder . '/' . $myFileName;
 		$this->_filePaths[$repeatCounter] = JPath::clean($p);
+
 		return $this->_filePaths[$repeatCounter];
 	}
 
@@ -1771,14 +1914,17 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		$groupModel = $this->getGroup();
 		$element = $this->getElement();
 		$params = $this->getParams();
+
 		if ($element->hidden == '1')
 		{
 			return $this->getHiddenField($name, $data[$name], $id);
 		}
+
 		$str = array();
 		$value = $this->getValue($data, $repeatCounter);
 		$value = is_array($value) ? $value : FabrikWorker::JSONtoData($value, true);
 		$value = $this->checkForSingleCropValue($value);
+
 		if ($params->get('ajax_upload'))
 		{
 			if (isset($value->file))
@@ -1786,14 +1932,12 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 				$value = $value->file;
 			}
 		}
-		$imagedata = array();
 
+		$imagedata = array();
 		$ulDir = $params->get('ul_directory');
 		$storage = $this->getStorage();
-
 		$formModel = $this->getFormModel();
 		$formid = $formModel->getId();
-
 		$use_download_script = $params->get('fu_use_download_script', '0');
 
 		// $$$ rob - explode as it may be grouped data (if element is a repeating upload)
@@ -1802,20 +1946,24 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		if (!$this->isEditable() && ($use_download_script == FU_DOWNLOAD_SCRIPT_DETAIL || $use_download_script == FU_DOWNLOAD_SCRIPT_BOTH))
 		{
 			$links = array();
+
 			if (!is_array($value))
 			{
 				$value = (array) $value;
 			}
+
 			foreach ($value as $v)
 			{
 				$links[] = $this->downloadLink($v, $data, $repeatCounter);
 			}
+
 			return count($links) < 2 ? implode("\n", $links) : '<ul class="fabrikRepeatData"><li>' . implode('</li><li>', $links) . '</li></ul>';
 		}
 
 		$render = new stdClass;
 		$render->output = '';
 		$allRenders = array();
+
 		if (($params->get('fu_show_image') !== '0' && !$params->get('ajax_upload')) || !$this->isEditable())
 		{
 
@@ -1832,22 +1980,26 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 				{
 					$value = $value->file;
 				}
+
 				$render = $this->loadElement($value);
 
 				if ($value != '' && ($storage->exists(COM_FABRIK_BASE . $value) || JString::substr($value, 0, 4) == 'http'))
 				{
 					$render->render($this, $params, $value);
 				}
+
 				if ($render->output != '')
 				{
 					if ($this->isEditable())
 					{
 						$render->output = '<span class="fabrikUploadDelete" id="' . $id . '_delete_span">' . $this->deleteButton($value) . $render->output . '</span>';
 					}
+
 					$allRenders[] = $render->output;
 				}
 			}
 		}
+
 		if (!$this->isEditable())
 		{
 			if ($render->output == '' && $params->get('default_image') != '')
@@ -1855,11 +2007,14 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 				$render->output = '<img src="' . $params->get('default_image') . '" alt="image" />';
 				$allRenders[] = $render->output;
 			}
+
 			$str[] = '<div class="fabrikSubElementContainer">';
 			$str[] = count($allRenders) < 2 ? implode("\n", $allRenders) : '<ul class="fabrikRepeatData"><li>' . implode('</li><li>', $allRenders) . '</li></ul>';
 			$str[] = '</div>';
+
 			return implode("\n", $str);
 		}
+
 		$allRenders = implode('<br/>', $allRenders);
 		$allRenders .= ($allRenders == '') ? '' : '<br/>';
 		$str[] = $allRenders . '<input class="fabrikinput" name="' . $name . '" type="file" id="' . $id . '" />' . "\n";
@@ -1868,6 +2023,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 			$rDir = JPATH_SITE . '/' . $params->get('ul_directory');
 			$folders = JFolder::folders($rDir);
 			$str[] = FabrikHelperHTML::folderAjaxSelect($folders);
+
 			if ($groupModel->canRepeat())
 			{
 				$ulname = FabrikString::rtrimword($name, "[$repeatCounter]") . "[ul_end_dir][$repeatCounter]";
@@ -1876,6 +2032,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 			{
 				$ulname = $name . '[ul_end_dir]';
 			}
+
 			$str[] = '<input name="' . $ulname . '" type="hidden" class="folderpath"/>';
 		}
 
@@ -1888,6 +2045,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 
 		array_unshift($str, '<div class="fabrikSubElementContainer">');
 		$str[] = '</div>';
+
 		return implode("\n", $str);
 	}
 
@@ -1920,6 +2078,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		if ($params->get('ajax_upload') && $params->get('ajax_max', 4) == 1)
 		{
 			$singleCropImg = $value;
+
 			if (empty($singleCropImg))
 			{
 				$value = '';
@@ -1929,6 +2088,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 				$singleCropImg = $singleCropImg[0];
 			}
 		}
+
 		return $value;
 	}
 
@@ -1950,18 +2110,23 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		$params = $this->getParams();
 		$storage = $this->getStorage();
 		$formModel = $this->getFormModel();
+
 		if (empty($value) || !$storage->exists(COM_FABRIK_BASE . $value))
 		{
 			return '';
 		}
+
 		$aclEl = $this->getFormModel()->getElement($params->get('fu_download_acl', ''), true);
+
 		if (!empty($aclEl))
 		{
 			$aclEl = $aclEl->getFullName();
 			$canDownload = in_array($data[$aclEl], JFactory::getUser()->getAuthorisedViewLevels());
+
 			if (!$canDownload)
 			{
 				$img = $params->get('fu_download_noaccess_image');
+
 				return $img == '' ? ''
 					: '<img src="' . COM_FABRIK_LIVESITE . 'media/com_fabrik/images/' . $img . '" alt="'
 						. JText::_('PLG_ELEMENT_FILEUPLOAD_DOWNLOAD_NO_PERMISSION') . '" />';
@@ -1972,6 +2137,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		$rowid = $input->get('rowid', '0');
 		$elementid = $this->getId();
 		$title = basename($value);
+
 		if ($params->get('fu_title_element') == '')
 		{
 			$title_name = $this->getFullName(true, true, false) . '__title';
@@ -1980,6 +2146,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		{
 			$title_name = str_replace('.', '___', $params->get('fu_title_element'));
 		}
+
 		if (is_array($formModel->_data))
 		{
 			if (array_key_exists($title_name, $formModel->_data))
@@ -1992,14 +2159,17 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 				}
 			}
 		}
+
 		if ($params->get('fu_download_access_image') !== '')
 		{
 			$title = '<img src="' . COM_FABRIK_LIVESITE . 'media/com_fabrik/images/' . $params->get('fu_download_access_image') . '" alt="' . $title
 				. '" />';
 		}
+
 		$link = COM_FABRIK_LIVESITE . 'index.php?option=com_' . $package . '&task=plugin.pluginAjax&plugin=fileupload&method=ajax_download&format=raw&element_id='
 			. $elementid . '&formid=' . $formid . '&rowid=' . $rowid . '&repeatcount=' . $repeatCounter;
 		$url = '<a href="' . $link . '">' . $title . '</a>';
+
 		return $url;
 	}
 
@@ -2045,6 +2215,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		$pstr[] = '<div id="' . $id . '-widgetcontainer">';
 
 		$pstr[] = '<canvas id="' . $id . '-widget" width="' . $winWidth . '" height="' . $winHeight . '"></canvas>';
+
 		if ($this->canCrop())
 		{
 			$pstr[] = '<div class="zoom" style="float:left;margin-top:10px;padding-right:10x;width:200px">';
@@ -2061,6 +2232,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 			$pstr[] = '	<input name="rotate-val" value="" size="3"  class="input-mini"/>';
 			$pstr[] = '</div>';
 		}
+
 		if (FabrikHelperHTML::canvasSupport())
 		{
 			$pstr[] = '<div  style="text-align: right;float:right;margin-top:10px; width: 205px">';
@@ -2122,6 +2294,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		$pstr[] = '</div>';
 
 		FabrikHelperHTML::stylesheet(COM_FABRIK_LIVESITE . 'plugins/fabrik_element/fileupload/lib/plupload/css/plupload.queue.css');
+
 		return $pstr;
 	}
 
@@ -2156,9 +2329,12 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		{
 			$o->error = $this->_validationErr;
 			echo json_encode($o);
+
 			return;
 		}
+
 		$isjoin = $groupModel->isJoin();
+
 		if ($isjoin)
 		{
 			$name = $this->getFullName(false, true, false);
@@ -2178,6 +2354,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		{
 			return;
 		}
+
 		require_once COM_FABRIK_FRONTEND . '/helpers/uploader.php';
 
 		// @TODO test in join
@@ -2199,7 +2376,9 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 			$o->filepath = null;
 			$o->uri = null;
 		}
+
 		echo json_encode($o);
+
 		return;
 	}
 
@@ -2212,10 +2391,12 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 	public function getFieldDescription()
 	{
 		$p = $this->getParams();
+
 		if ($this->encryptMe())
 		{
 			return 'BLOB';
 		}
+
 		return "TEXT";
 	}
 
@@ -2233,15 +2414,19 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		{
 			$data = $data->file;
 		}
+
 		// @TODO: check what happens here with open base_dir in effect
 		$params = $this->getParams();
+
 		if ($params->get('ul_email_file'))
 		{
 			$config = JFactory::getConfig();
+
 			if (empty($data))
 			{
 				$data = $params->get('default_image');
 			}
+
 			if (strstr($data, JPATH_SITE))
 			{
 				$p = str_replace(COM_FABRIK_LIVESITE, JPATH_SITE, $data);
@@ -2250,8 +2435,10 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 			{
 				$p = JPATH_SITE . '/' . $data;
 			}
+
 			return $p;
 		}
+
 		return false;
 	}
 
@@ -2272,10 +2459,12 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 	protected function modifyJoinQuery($val, $view = 'form')
 	{
 		$params = $this->getParams();
+
 		if (!$params->get('fu_show_image', 0) && $view == 'form')
 		{
 			return $val;
 		}
+
 		if ($params->get('make_thumbnail'))
 		{
 			$ulDir = JPath::clean($params->get('ul_directory')) . '/';
@@ -2293,12 +2482,12 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 			// Replace the backslashes with forward slashes
 			$str = "CONCAT('<img src=\"" . COM_FABRIK_LIVESITE . "'," . "REPLACE(" . "REPLACE($val, '$ulDir', '" . $thumbDir . "')" . ", '\\\', '/')"
 				. ", '\" alt=\"database join image\" />')";
-
 		}
 		else
 		{
 			$str = " REPLACE(CONCAT('<img src=\"" . COM_FABRIK_LIVESITE . "' , $val, '\" alt=\"database join image\"/>'), '\\\', '/') ";
 		}
+
 		return $str;
 	}
 
@@ -2317,15 +2506,18 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		{
 			return;
 		}
+
 		$db = $this->getListModel()->getDb();
 		$storage = $this->getStorage();
 		require_once COM_FABRIK_FRONTEND . '/helpers/uploader.php';
 		$params = $this->getParams();
+
 		if ($params->get('upload_delete_image'))
 		{
 			jimport('joomla.filesystem.file');
 			$elName = $this->getFullName(false, true, false);
 			$name = $this->getElement()->name;
+
 			foreach ($groups as $rows)
 			{
 				foreach ($rows as $row)
@@ -2340,12 +2532,14 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 								->where($db->quoteName('parent_id') . ' = ' . $db->quote($row->__pk_val));
 							$db->setQuery($query);
 							$imageRows = $db->loadObjectList('id');
+
 							if (!empty($imageRows))
 							{
 								foreach ($imageRows as $imageRow)
 								{
 									$this->deleteFile($imageRow->$name);
 								}
+
 								$query->clear();
 								$query->delete($db->quoteName($join->table_join))
 									->where($db->quoteName('id') . ' IN (' . implode(', ', array_keys($imageRows)) . ')');
@@ -2356,6 +2550,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 						else
 						{
 							$files = explode(GROUPSPLITTER, $row->{$elName . '_raw'});
+
 							foreach ($files as $filename)
 							{
 								$this->deleteFile(trim($filename));
@@ -2379,18 +2574,22 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 	{
 		$val = trim($val);
 		$last = JString::strtolower(substr($val, -1));
+
 		if ($last == 'g')
 		{
 			$val = $val * 1024 * 1024 * 1024;
 		}
+
 		if ($last == 'm')
 		{
 			$val = $val * 1024 * 1024;
 		}
+
 		if ($last == 'k')
 		{
 			$val = $val * 1024;
 		}
+
 		return $val;
 	}
 
@@ -2408,6 +2607,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		$upload_value = $this->_return_bytes(ini_get('upload_max_filesize'));
 		$value = min($post_value, $upload_value);
 		$value = $value / 1024;
+
 		return $value;
 	}
 
@@ -2484,6 +2684,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 	{
 		$v = $this->getValue($data, $repeatCounter);
 		$storage = $this->getStorage();
+
 		return $storage->pathToURL($v);
 	}
 
@@ -2505,29 +2706,36 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		$url = $input->server->get('HTTP_REFERER', '', 'string');
 		$lang = JFactory::getLanguage();
 		$lang->load('com_fabrik.plg.element.fabrikfileupload', JPATH_ADMINISTRATOR);
+
 		if (!$this->canView())
 		{
 			$app->enqueueMessage(JText::_('PLG_ELEMENT_FILEUPLOAD_DOWNLOAD_NO_PERMISSION'));
 			$app->redirect($url);
 			exit;
 		}
+
 		$rowid = $input->get('rowid', '', 'string');
+
 		if (empty($rowid))
 		{
 			$app->enqueueMessage(JText::_('PLG_ELEMENT_FILEUPLOAD_DOWNLOAD_NO_SUCH_FILE'));
 			$app->redirect($url);
 			exit;
 		}
+
 		$repeatcount = $input->getInt('repeatcount', 0);
 		$listModel = $this->getListModel();
 		$row = $listModel->getRow($rowid, false);
+
 		if (empty($row))
 		{
 			$app->enqueueMessage(JText::_('PLG_ELEMENT_FILEUPLOAD_DOWNLOAD_NO_SUCH_FILE'));
 			$app->redirect($url);
 			exit;
 		}
+
 		$aclEl = $this->getFormModel()->getElement($params->get('fu_download_acl', ''), true);
+
 		if (!empty($aclEl))
 		{
 			$aclEl = $aclEl->getFullName();
@@ -2535,12 +2743,14 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 			$user = JFactory::getUser();
 			$groups = $user->getAuthorisedViewLevels();
 			$canDownload = in_array($row->$aclElraw, $groups);
+
 			if (!$canDownload)
 			{
 				$app->enqueueMessage(JText::_('PLG_ELEMENT_FILEUPLOAD_DOWNLOAD_NO_PERMISSION'));
 				$app->redirect($url);
 			}
 		}
+
 		$storage = $this->getStorage();
 		$elName = $this->getFullName(false, true, false);
 		$filepath = $row->$elName;
@@ -2548,15 +2758,18 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		$filepath = JArrayHelper::getValue($filepath, $repeatcount);
 		$filepath = $storage->getFullPath($filepath);
 		$filecontent = $storage->read($filepath);
+
 		if ($filecontent !== false)
 		{
 			$thisFileInfo = $storage->getFileInfo($filepath);
+
 			if ($thisFileInfo === false)
 			{
 				$app->enqueueMessage(JText::_('DOWNLOAD NO SUCH FILE'));
 				$app->redirect($url);
 				exit;
 			}
+
 			// Some time in the past
 			header("Expires: Sat, 26 Jul 1997 05:00:00 GMT");
 			header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
@@ -2599,6 +2812,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 	{
 		// $$$ hugh @TODO - make this work for repeats and/or joins!
 		$params = $this->getParams();
+
 		if ($hit_counter = $params->get('fu_download_hit_counter', ''))
 		{
 			JError::setErrorHandling(E_ALL, 'ignore');
@@ -2626,6 +2840,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 	protected function downloadLog($row, $filepath)
 	{
 		$params = $this->getParams();
+
 		if ((int) $params->get('fu_download_log', 0))
 		{
 			$app = JFactory::getApplication();
@@ -2662,6 +2877,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 			$isjoin = $groupModel->isJoin();
 			$origData = $formModel->getOrigData();
 			$groupModel = $this->getGroup();
+
 			if ($isjoin)
 			{
 				$name = $this->getFullName(false, true, false);
@@ -2671,8 +2887,10 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 			{
 				$name = $this->getFullName(true, true, false);
 			}
+
 			$val = $origData[$name];
 		}
+
 		return $val;
 	}
 
@@ -2685,6 +2903,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 	public function isRepeatElement()
 	{
 		$params = $this->getParams();
+
 		return $params->get('ajax_upload') && ($params->get('ajax_max', 4) > 1);
 	}
 
@@ -2737,6 +2956,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		{
 			$this->defaults = array();
 		}
+
 		if (!array_key_exists($repeatCounter, $this->defaults))
 		{
 			$groupModel = $this->getGroup();
@@ -2748,6 +2968,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 			$value = $this->getDefaultOnACL($data, $opts);
 			$name = $this->getFullName(false, true, false);
 			$rawname = $name . '_raw';
+
 			if ($groupModel->isJoin() || $this->isJoin())
 			{
 				/* $$$ rob 22/02/2011 this test barfed on fileuploads which weren't repeating
@@ -2800,10 +3021,12 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 				{
 					// Repeat group NO join
 					$thisname = $name;
+
 					if (!array_key_exists($name, $data))
 					{
 						$thisname = $rawname;
 					}
+
 					if (array_key_exists($thisname, $data))
 					{
 						if (is_array($data[$thisname]))
@@ -2816,16 +3039,18 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 							// Occurs when getting from the db
 							$a = json_decode($data[$thisname]);
 						}
+
 						$value = JArrayHelper::getValue($a, $repeatCounter, $value);
 					}
-
 				}
 				else
 				{
 					$value = !is_array($data) ? $data : JArrayHelper::getValue($data, $name, JArrayHelper::getValue($data, $rawname, $value));
 				}
 			}
+
 			$params = $this->getParams();
+
 			if (is_array($value) && !$params->get('ajax_upload'))
 			{
 				if (!$this->canCrop())
@@ -2842,6 +3067,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 				// Query string for joined data
 				$value = JArrayHelper::getValue($data, $name);
 			}
+
 			if (is_array($value) && !$params->get('ajax_upload'))
 			{
 				if (!$this->canCrop())
@@ -2856,8 +3082,10 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 			{
 				FabrikWorker::getPluginManager()->runPlugins('onGetElementDefault', $formModel, 'form', $this);
 			}
+
 			$this->defaults[$repeatCounter] = $value;
 		}
+
 		return $this->defaults[$repeatCounter];
 	}
 }

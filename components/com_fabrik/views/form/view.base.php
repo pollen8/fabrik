@@ -55,39 +55,47 @@ class FabrikViewFormBase extends JView
 		$config = JFactory::getConfig();
 		$model = $this->getModel('form');
 		$document = JFactory::getDocument();
-
 		$model->isMambot = $this->isMambot;
 		$form = $model->getForm();
+
 		if ($model->render() === false)
 		{
 			return false;
 		}
+
 		$this->isMultiPage = $model->isMultiPage();
 		list($this->plugintop, $this->pluginbottom, $this->pluginend) = $this->get('FormPluginHTML');
-
 		$listModel = $model->getlistModel();
 		$table = $listModel->noTable() ? null : $listModel->getTable();
+
 		if (!$model->canPublish())
 		{
 			if (!$app->isAdmin())
 			{
 				echo JText::_('COM_FABRIK_FORM_NOT_PUBLISHED');
+
 				return false;
 			}
 		}
+
 		$this->rowid = $model->getRowId();
 		$this->access = $model->checkAccessFromListSettings();
+
 		if ($this->access == 0)
 		{
 			JError::raiseWarning(500, JText::_('JERROR_ALERTNOAUTHOR'));
+
 			return false;
 		}
+
 		JDEBUG ? $profiler->mark('form view before join group ids got') : null;
+
 		if (!$listModel->noTable())
 		{
 			$joins = $listModel->getJoins();
 			$model->getJoinGroupIds($joins);
 		}
+
 		$params = $model->getParams();
 		$this->setTitle($w, $params, $model);
 		FabrikHelperHTML::debug($params->get('note'), 'note');
@@ -108,6 +116,7 @@ class FabrikViewFormBase extends JView
 		{
 			$form->error = JText::_('COM_FABRIK_FAILED_VALIDATION');
 		}
+
 		$form->origerror = $form->error;
 		$form->error = $model->hasErrors() ? $form->error : '';
 
@@ -154,6 +163,7 @@ class FabrikViewFormBase extends JView
 			$form->fieldsetTag = 'div';
 			$form->legendTag = 'h3';
 		}
+
 		$this->form = $form;
 		JDEBUG ? $profiler->mark('form view: form assigned as ref') : null;
 		$list = new stdClass;
@@ -170,7 +180,6 @@ class FabrikViewFormBase extends JView
 		$this->addTemplatePath($root . '/templates/' . $app->getTemplate() . '/html/com_fabrik/form/' . $tmpl);
 
 		JDEBUG ? $profiler->mark('form view before template load') : null;
-
 	}
 
 	/**
@@ -187,6 +196,7 @@ class FabrikViewFormBase extends JView
 		$text = $this->loadTemplate();
 		$model = $this->getModel();
 		$params = $model->getParams();
+
 		if ($params->get('process-jplugins') == 1 || ($params->get('process-jplugins') == 2 && $model->isEditable() === false))
 		{
 			FabrikHelperHTML::runConentPlugins($text);
@@ -206,12 +216,16 @@ class FabrikViewFormBase extends JView
 	private function setMessage()
 	{
 		$model = $this->getModel();
+
 		if (!$model->isMultiPage())
 		{
 			$this->message = '';
+
 			return;
 		}
+
 		$message = '';
+
 		if ($model->sessionModel)
 		{
 			$this->message = $model->sessionModel->status;
@@ -223,6 +237,7 @@ class FabrikViewFormBase extends JView
 				$message .= ' <a href="#" class="clearSession">' . JText::_('COM_FABRIK_CLEAR') . '</a>';
 			}
 		}
+
 		$this->message = $message;
 	}
 
@@ -242,6 +257,7 @@ class FabrikViewFormBase extends JView
 		$app = JFactory::getApplication();
 		$input = $app->input;
 		$title = '';
+
 		if ($app->getName() !== 'administrator')
 		{
 			$menus = $app->getMenu();
@@ -260,6 +276,7 @@ class FabrikViewFormBase extends JView
 				$params->set('page_title', $input->get('title', $title, 'string'));
 				$params->set('show-title', $input->getInt('show-title', $params->get('show-title')));
 			}
+
 			if (!$this->isMambot)
 			{
 				$titleData = array_merge($_REQUEST, $model->_data);
@@ -272,7 +289,9 @@ class FabrikViewFormBase extends JView
 			$params->set('page_title', $title);
 			$params->set('show_page_title', 0);
 		}
+
 		$model = $this->getModel();
+
 		if (!$this->isMambot)
 		{
 			$title = $model->getPageTitle($params->get('page_title'));
@@ -289,14 +308,17 @@ class FabrikViewFormBase extends JView
 	protected function _addButtons()
 	{
 		$app = JFactory::getApplication();
+
 		if ($app->input->get('format') === 'pdf')
 		{
 			// If we're rendering as PDF, no point showing any buttons
 			$this->showEmail = false;
 			$this->showPrint = false;
 			$this->showPDF = false;
+
 			return;
 		}
+
 		$fbConfig = JComponentHelper::getParams('com_fabrik');
 		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$input = $app->input;
@@ -310,11 +332,13 @@ class FabrikViewFormBase extends JView
 		$this->emailURL = '';
 		$this->printURL = '';
 		$this->showPrint = $params->get('print', $fbConfig->get('form_print', 0));
+
 		if ($this->showPrint)
 		{
 			$text = JHtml::_('image', 'system/printButton.png', JText::_('JGLOBAL_PRINT'), null, true);
 			$this->printLink = '<a href="#" class="printlink" onclick="window.print();return false;">' . $text . '</a>';
 		}
+
 		if ($input->get('tmpl') != 'component')
 		{
 			if ($this->showEmail)
@@ -322,14 +346,15 @@ class FabrikViewFormBase extends JView
 				$this->emailLink = FabrikHelperHTML::emailIcon($model, $params);
 				$this->emailURL = FabrikHelperHTML::emailURL($model);
 			}
+
 			if ($this->showPrint)
 			{
 				$this->printLink = FabrikHelperHTML::printIcon($model, $params, $model->getRowId());
 				$this->printURL = FabrikHelperHTML::printURL($model);
 			}
 		}
-		$this->showPDF = $params->get('pdf', $fbConfig->get('form_pdf', false));
 
+		$this->showPDF = $params->get('pdf', $fbConfig->get('form_pdf', false));
 		$buttonProperties = array('class' => 'fabrikTip', 'opts' => "{notice:true}",
 						'title' => '<span>' . JText::_('COM_FABRIK_PDF') . '</span>', 'alt' => JText::_('COM_FABRIK_PDF'));
 
@@ -373,8 +398,8 @@ class FabrikViewFormBase extends JView
 		$aLoadedElementPlugins = array();
 		$jsActions = array();
 		$jsControllerKey = $model->isEditable() ? 'form_' . $model->getId() : 'details_' . $model->getId();
-
 		$srcs = FabrikHelperHTML::framework();
+
 		if (!defined('_JOS_FABRIK_FORMJS_INCLUDED'))
 		{
 			define('_JOS_FABRIK_FORMJS_INCLUDED', 1);
@@ -389,16 +414,20 @@ class FabrikViewFormBase extends JView
 		// $$$ hugh - yeat another one where if we =, the $groups array pointer get buggered up and it
 		// skips a group
 		$groups = $model->getGroupsHiarachy();
+
 		foreach ($groups as $groupModel)
 		{
 			$elementModels = $groupModel->getPublishedElements();
+
 			foreach ($elementModels as $elementModel)
 			{
 				$res = $elementModel->useEditor();
+
 				if ($res !== false)
 				{
 					$aWYSIWYGNames[] = $res;
 				}
+
 				$eparams = $elementModel->getParams();
 				/* load in once the element js class files
 				 * $$$ hugh - only needed getParent when we weren't saving changes to parent params to child
@@ -407,6 +436,7 @@ class FabrikViewFormBase extends JView
 				 * $element = $elementModel->getParent();
 				 */
 				$element = $elementModel->getElement();
+
 				if (!in_array($element->plugin, $aLoadedElementPlugins))
 				{
 					/* $$$ hugh - certain elements, like fileupload, need to load different JS files
@@ -420,7 +450,9 @@ class FabrikViewFormBase extends JView
 					}
 
 				}
+
 				$eventMax = ($groupModel->repeatTotal == 0) ? 1 : $groupModel->repeatTotal;
+
 				for ($c = 0; $c < $eventMax; $c++)
 				{
 					$jsActions[] = $elementModel->getFormattedJSActions($jsControllerKey, $c);
@@ -494,6 +526,7 @@ class FabrikViewFormBase extends JView
 		$maxRepeat = array();
 		$minRepeat = array();
 		$showMaxRepeats = array();
+
 		foreach ($this->groups as $g)
 		{
 			$hidden[$g->id] = $g->startHidden;
@@ -501,6 +534,7 @@ class FabrikViewFormBase extends JView
 			$minRepeat[$g->id] = $g->minRepeat;
 			$showMaxRepeats[$g->id] = $g->showMaxRepeats;
 		}
+
 		$opts->hiddenGroup = $hidden;
 		$opts->maxRepeat = $maxRepeat;
 		$opts->minRepeat = $minRepeat;
@@ -553,24 +587,29 @@ class FabrikViewFormBase extends JView
 
 		$script[] = "{$bkey}.addElements({";
 		$gs = array();
+
 		foreach ($groups as $groupModel)
 		{
 			if (!$groupModel->canView())
 			{
 				continue;
 			}
+
 			$aObjs = array();
 			$elementModels = $groupModel->getPublishedElements();
 
 			// $$$ rob if repeatTotal is 0 we still want to add the js objects as the els are only hidden
 			$max = $groupModel->repeatTotal > 0 ? $groupModel->repeatTotal : 1;
+
 			foreach ($elementModels as $elementModel)
 			{
 				$element = $elementModel->getElement();
+
 				if ($element->published == 0)
 				{
 					continue;
 				}
+
 				$fullName = $elementModel->getFullName();
 				$id = $elementModel->getHTMLId();
 				$elementModel->setEditable($model->isEditable());
@@ -582,14 +621,18 @@ class FabrikViewFormBase extends JView
 					for ($c = 0; $c < $max; $c++)
 					{
 						$ref = $elementModel->elementJavascript($c);
+
 						if (!empty($ref))
 						{
 							$aObjs[] = json_encode($ref);
 						}
+
 						$validations = $elementModel->getValidations();
+
 						if (!empty($validations) && $elementModel->isEditable())
 						{
 							$watchElements = $elementModel->getValidationWatchElements($c);
+
 							foreach ($watchElements as $watchElement)
 							{
 								$vstr .= "$bkey.watchValidation('" . $watchElement['id'] . "', '" . $watchElement['triggerEvent'] . "');\n";
@@ -598,6 +641,7 @@ class FabrikViewFormBase extends JView
 					}
 				}
 			}
+
 			$gs[] = $groupModel->getGroup()->id . ':[' . implode(",\n", $aObjs) . ']';
 		}
 		$script[] = implode(", ", $gs);
@@ -616,10 +660,12 @@ class FabrikViewFormBase extends JView
 
 		$pluginManager = FabrikWorker::getPluginManager();
 		$res = $pluginManager->runPlugins('onJSReady', $model);
+
 		if (in_array(false, $res))
 		{
 			return false;
 		}
+
 		$str = implode("\n", $script);
 		$model->getCustomJsAction($srcs);
 		FabrikHelperHTML::script($srcs, $str);
@@ -671,6 +717,7 @@ class FabrikViewFormBase extends JView
 
 			$fields[] = '<input type="hidden" name="usekey" value="' . $usekey . '" />';
 			$pk_val = JArrayHelper::getValue($model->_data, FabrikString::safeColNameToArrayKey($listModel->getTable()->db_primary_key));
+
 			if (empty($pk_val))
 			{
 				$fields[] = '<input type="hidden" name="usekey_newrecord" value="1" />';
@@ -708,6 +755,7 @@ class FabrikViewFormBase extends JView
 		$form->gobackButton = $params->get('goback_button', 0) == "1"
 			? '<input type="button" class="btn button" name="Goback" ' . $goBack . ' value="' . $params->get('goback_button_label')
 				. '" />' : '';
+
 		if ($model->isEditable() && $params->get('submit_button', 1))
 		{
 			$button = $model->isAjax() ? "button" : "submit";
@@ -719,6 +767,7 @@ class FabrikViewFormBase extends JView
 		{
 			$form->submitButton = '';
 		}
+
 		if ($this->isMultiPage)
 		{
 			$form->prevButton = '<input type="button" class="btn fabrikPagePrevious button" name="fabrikPagePrevious" value="'
@@ -735,6 +784,7 @@ class FabrikViewFormBase extends JView
 		// $$$ hugh - hide actions section is we're printing, or if not actions selected
 		$noButtons = (empty($form->nextButton) && empty($form->prevButton) && empty($form->submitButton) && empty($form->gobackButton)
 				&& empty($form->deleteButton) && empty($form->applyButton) && empty($form->copyButton) && empty($form->resetButton));
+
 		if ($input->get('print', '0') == '1' || $noButtons)
 		{
 			$this->hasActions = false;
@@ -748,6 +798,7 @@ class FabrikViewFormBase extends JView
 		$fields[] = '<input type="hidden" name="format" value="' . $format . '" />';
 
 		$groups = $model->getGroupsHiarachy();
+
 		foreach ($groups as $groupModel)
 		{
 			$group = $groupModel->getGroup();
@@ -786,6 +837,7 @@ class FabrikViewFormBase extends JView
 		$crypt = FabrikWorker::getCrypt();
 		$formModel = $this->getModel();
 		$get = JRequest::get('get');
+
 		foreach ($get as $key => $input)
 		{
 			// 	$$$ rob test if passing in _raw value via qs -used in fabsubs
@@ -793,9 +845,11 @@ class FabrikViewFormBase extends JView
 			{
 				$key = FabrikString::rtrimword($key, '_raw');
 			}
+
 			if ($formModel->hasElement($key))
 			{
 				$elementModel = $formModel->getElement($key);
+
 				if (!$elementModel->canUse())
 				{
 					$input = (is_array($input) && array_key_exists('value', $input)) ? $input['value'] : $input;
@@ -817,6 +871,7 @@ class FabrikViewFormBase extends JView
 					{
 						$input = $crypt->encrypt($input);
 					}
+
 					$fields[] = '<input type="hidden" name="fabrik_vars[querystring][' . $key . ']" value="' . $input . '" />';
 				}
 			}
@@ -838,6 +893,7 @@ class FabrikViewFormBase extends JView
 		$formModel = $this->getModel();
 		$fields = array();
 		$ro = $model->getReadOnlyVals();
+
 		foreach ($ro as $key => $pair)
 		{
 			$repeatGroup = $pair['repeatgroup'];
@@ -847,10 +903,12 @@ class FabrikViewFormBase extends JView
 			// $$$ rob not sure this is correct now as I modified the readOnlyVals structure to contain info about if its in a group
 			// and it now contains the repeated group data
 			$input = (is_array($input) && array_key_exists('value', $input)) ? $input['value'] : $input;
+
 			if ($repeatGroup)
 			{
 				$ar = array();
 				$input = (array) $input;
+
 				foreach ($input as $i)
 				{
 					if (is_array($i))
@@ -903,6 +961,7 @@ class FabrikViewFormBase extends JView
 				$fields[$safeKey][] = $input;
 			}
 		}
+
 		foreach ($fields as $key => $input)
 		{
 			if (is_array($input))
@@ -919,6 +978,7 @@ class FabrikViewFormBase extends JView
 				$fields[$key] = '<input type="hidden" name="fabrik_vars[querystring][' . $key . ']" value="' . $input . '" />';
 			}
 		}
+
 		$aHiddenFields = array_merge($aHiddenFields, array_values($fields));
 	}
 
@@ -932,6 +992,7 @@ class FabrikViewFormBase extends JView
 	{
 		$app = JFactory::getApplication();
 		$input = $app->input;
+
 		if ($input->get('task') === 'cck')
 		{
 			$model = $this->getModel();
@@ -964,5 +1025,4 @@ class FabrikViewFormBase extends JView
 			$document->addScriptDeclaration($script);
 		}
 	}
-
 }
