@@ -69,8 +69,8 @@ echo "
 	margin:0;
 }
 
-/*This controls the margin and border of your form area ie the fieldset - note: if you leave the margin as is, this could be said to control the 'inner border'*/
-#{$view}_$c fieldset,
+/*This controls the margin and border of your form area ie the div - note: if you leave the margin as is, this could be said to control the 'inner border'*/
+#{$view}_$c div,
 #{$view}_$c .fabrikGroup{
 	margin:5px 10px;
 	position:relative;
@@ -84,14 +84,14 @@ echo "
 }
 
 /*This controls the display of your form elements - note: ul stands for 'unordered list', see: http://www.w3schools.com/tags/tag_ul.asp*/
-#{$view}_$c fieldset ul{
+#{$view}_$c div ul{
 	list-style:none;
 	margin:0;
 }
 
 /*Note that the order of pixel specifications here follows this rule - top, right, bottom, left*/
 /* Styling for main element list in form view */
-#form_$c fieldset > ul{
+#form_$c div > ul{
 	padding:40px 10px 20px 10px;
 }
 

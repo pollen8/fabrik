@@ -42,7 +42,6 @@ fabrikActions -
 Other form elements that can be styled here are:
 
 legend
-fieldset
 
 To learn about all the different elements in a basic form see http://www.w3schools.com/tags/tag_legend.asp.
 
@@ -66,9 +65,7 @@ endif;
 
 // Form intro and start
 echo $form->intro;
-?>
-<form method="post" <?php echo $form->attribs?>>
-<?php
+echo '<div class="fabrikForm fabrikDetails" id="' . $form->formid . '">';
 echo $this->plugintop;
 
 // Error message
@@ -95,7 +92,7 @@ echo $this->loadTemplate('relateddata');
 foreach ($this->groups as $group) :
 	$this->group = $group;
 
-	// Create the group fieldset ?>
+	// Create the group ?>
 	<div class="fabrikGroup" id="group<?php echo $group->id;?>" style="<?php echo $group->css;?>">
 
 	<?php
@@ -134,9 +131,6 @@ foreach ($this->groups as $group) :
 </div>
 <?php
 endforeach;
-
-// Add the form's hidden fields
-echo $this->hiddenFields;
 
 // Add any content assigned by form plug-ins
 echo $this->pluginbottom;
