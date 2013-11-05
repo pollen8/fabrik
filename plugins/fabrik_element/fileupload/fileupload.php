@@ -2950,7 +2950,9 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		// Could be a single ajax fileupload if so not joined
 		if ($join->table_join != '')
 		{
-			$query->delete($db->quoteName($join->table_join))->where($db->quoteName('id') . ' = ' . $input->getInt('recordid'));
+			// Use getString as if we have edited a record, added a file and deleted it the id is alphanumeric and not found in db.
+			$query->delete($db->quoteName($join->table_join))
+			->where($db->quoteName('id') . ' = ' . $db->quote($input->getString('recordid')));
 			$db->setQuery($query);
 
 			JLog::add('Delete join image entry: ' . $db->getQuery() . '; user = ' . $user->get('id'), JLog::WARNING, 'com_fabrik.element.fileupload');
