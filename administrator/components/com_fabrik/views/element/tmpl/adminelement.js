@@ -6,7 +6,7 @@
  */
 
 /* jshint mootools: true */
-/* global fconsole:true, FabrikAdmin:true, Fabrik:true, PluginManager:true */
+/* global fconsole:true, FabrikAdmin:true, Fabrik:true, PluginManager:true, Joomla:true */
 
 var fabrikAdminElement = new Class({
 
@@ -233,7 +233,7 @@ var fabrikAdminElement = new Class({
 				t += '</span>';
 			}
 		} else if (event.value && trigger.value && name.value) {
-			t  = Joomla.JText._('COM_FABRIK_JS_WHEN_ELEMENT') + ' "' + name.value + '" '
+			t  = Joomla.JText._('COM_FABRIK_JS_WHEN_ELEMENT') + ' "' + name.value + '" ';
 			if (condition.getSelected()[0].text.test(/hidden|shown/)) {
 				t += Joomla.JText._('COM_FABRIK_JS_IS') + ' ';
 				t += condition.getSelected()[0].text + ', ';
