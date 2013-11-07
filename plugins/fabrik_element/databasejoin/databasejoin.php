@@ -448,6 +448,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		// for auto-completes in repeating groups
 		$sql = $this->_buildQuery($data, $incWhere, $opts);
 		$sqlKey = (string) $sql;
+
 		if (isset($this->_optionVals[$sqlKey]))
 		{
 			return $this->_optionVals[$sqlKey];
@@ -456,16 +457,21 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		$db->setQuery($sql);
 		FabrikHelperHTML::debug((string) $db->getQuery(), $this->getElement()->name . 'databasejoin element: get options query');
 		$this->_optionVals[$sqlKey] = $db->loadObjectList();
+
 		if ($db->getErrorNum() != 0)
 		{
 			JError::raiseNotice(500, $db->getErrorMsg());
 		}
+
 		FabrikHelperHTML::debug($this->_optionVals, 'databasejoin elements');
+
 		if (!is_array($this->_optionVals[$sqlKey]))
 		{
 			$this->_optionVals[$sqlKey] = array();
 		}
+
 		$eval = $params->get('dabase_join_label_eval');
+
 		if (trim($eval) !== '')
 		{
 			foreach ($this->_optionVals[$sqlKey] as $key => &$opt)
@@ -486,6 +492,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 				$opt->text = strip_tags($opt->text);
 			}
 		}
+
 		return $this->_optionVals[$sqlKey];
 	}
 
@@ -626,10 +633,12 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		$sig .= '.' . serialize($opts);
 		$db = FabrikWorker::getDbo();
 		$query = $db->getQuery(true);
+
 		if (isset($this->_sql[$sig]))
 		{
 			return $this->_sql[$sig];
 		}
+
 		$params = $this->getParams();
 		$element = $this->getElement();
 		$formModel = $this->getForm();
@@ -640,12 +649,14 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		$key = $this->getJoinValueColumn();
 		$val = $this->getLabelOrConcatVal();
 		$join = $this->getJoin();
+
 		if ($table == '')
 		{
 			$table = $join->table_join;
 			$key = $join->table_join_key;
 			$val = $join->_params->get('join-label', $val);
 		}
+
 		if ($key == '' || $val == '')
 		{
 			return false;
@@ -658,16 +669,20 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 
 		$query->select('DISTINCT(' . $key . ') AS value, ' . $val . ' AS text');
 		$desc = $params->get('join_desc_column', '');
+
 		if ($desc !== '')
 		{
 			$desc = "REPLACE(" . $db->quoteName($desc) . ", '\n', '<br />')";
 			$query->select($desc . ' AS description');
 		}
+
 		$additionalFields = $this->getAdditionalQueryFields();
+
 		if ($additionalFields != '')
 		{
 			$query->select($additionalFields);
 		}
+
 		$query->from($db->quoteName($table) . ' AS ' . $db->quoteName($join->table_join_alias));
 		$query = $this->buildQueryJoin($query);
 
@@ -678,6 +693,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		*/
 		$query = $this->getOrderBy('', $query);
 		$this->_sql[$sig] = $query;
+
 		return $this->_sql[$sig];
 	}
 
@@ -2945,12 +2961,13 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 	/**
 	 * Should the element's data be returned in the search all?
 	 *
-	 * @param   bool  $advancedMode  is the elements' list is extended search all mode?
+	 * @param   bool    $advancedMode  Is the elements' list is extended search all mode?
+	 * @param   string  $search        Search string
 	 *
 	 * @return  bool	true
 	 */
 
-	public function includeInSearchAll($advancedMode = false)
+	public function includeInSearchAll($advancedMode = false, $search = '')
 	{
 		if ($advancedMode)
 		{
@@ -2959,6 +2976,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 			$field = JArrayHelper::fromObject(JArrayHelper::getValue($fields, $this->getLabelParamVal(), array()));
 			$type = JArrayHelper::getValue($field, 'Type', '');
 			$notAllowed = array('int', 'double', 'decimal', 'date', 'serial', 'bit', 'boolean', 'real');
+
 			foreach ($notAllowed as $test)
 			{
 				if (stristr($type, $test))
@@ -2967,6 +2985,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 				}
 			}
 		}
+
 		return parent::includeInSearchAll($advancedMode);
 	}
 

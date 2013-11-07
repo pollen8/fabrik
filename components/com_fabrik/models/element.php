@@ -5720,19 +5720,22 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label FROM " . Fab
 	/**
 	 * Should the element's data be returned in the search all?
 	 *
-	 * @param   bool  $advancedMode  is the elements' list is extended search all mode?
+	 * @param   bool    $advancedMode  Is the elements' list is extended search all mode?
+	 * @param   string  $search        Search string
 	 *
 	 * @return  bool	true
 	 */
 
-	public function includeInSearchAll($advancedMode = false)
+	public function includeInSearchAll($advancedMode = false, $search = '')
 	{
 		if ($this->isJoin() && $advancedMode)
 		{
 			return false;
 		}
+
 		$params = $this->getParams();
 		$inc = $params->get('inc_in_search_all', 1);
+
 		if ($inc == 2 && $advancedMode)
 		{
 			if ($this->ignoreSearchAllDefault)
@@ -5742,12 +5745,14 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label FROM " . Fab
 			else
 			{
 				$format = $params->get('text_format');
+
 				if ($format == 'integer' || $format == 'decimal')
 				{
 					$inc = false;
 				}
 			}
 		}
+
 		return ($inc == 1 || $inc == 2) ? true : false;
 	}
 

@@ -39,6 +39,10 @@ echo "
 	width: 100%;
 }
 
+#listform_$c .emptyfabrikDataContainer{
+/*	display: none; */
+}
+
 #listform_$c a,
 #listform_$c .fabrikDataContainer  a:hover{
 	border:0;

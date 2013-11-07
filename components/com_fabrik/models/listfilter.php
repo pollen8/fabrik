@@ -565,10 +565,12 @@ class FabrikFEModelListfilter extends FabModel
 			// like foo.exe to foo\\\.exe ... otherwise each time round we double the number of \s's
 			$search = $orig_search;
 			$elementModel = $elements[$elid];
-			if (!$elementModel->includeInSearchAll())
+
+			if (!$elementModel->includeInSearchAll(false, $search))
 			{
 				continue;
 			}
+
 			$searchable = true;
 			$k = $elementModel->getFullName(false, false, false);
 			$k = FabrikString::safeColName($k);

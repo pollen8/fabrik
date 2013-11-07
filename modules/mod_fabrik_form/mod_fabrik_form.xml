@@ -64,6 +64,15 @@
 						<option value="1">JYES</option>
 				</field>
 				
+				<field name="ajaxSaveAlert"
+					type="radio"
+					default="1"
+					description="MOD_FABRIK_FORM_AJAX_SAVE_ALERT_DESC"
+					label="MOD_FABRIK_FORM_AJAX_SAVE_ALERT_LABEL">
+						<option value="0">JNO</option>
+						<option value="1">JYES</option>	
+				</field>
+				
 			</fieldset>
 		</fields>
 	</config>

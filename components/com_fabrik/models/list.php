@@ -1782,7 +1782,6 @@ $groupBy .= '_raw';
 		$linkedListText = isset($factedLinks->linkedlisttext->$elKey) ? $factedLinks->linkedlisttext->$elKey : '';
 		$row2 = JArrayHelper::fromObject($row);
 		$label = $this->parseMessageForRowHolder($linkedListText, $row2);
-
 		$action = $app->isAdmin() ? 'task' : 'view';
 
 		if (is_null($listid))
@@ -1790,12 +1789,15 @@ $groupBy .= '_raw';
 			$list = $this->getTable();
 			$listid = $list->id;
 		}
+
 		$facetTable = $this->_facetedTable($listid);
+
 		if (!$facetTable->canView())
 		{
 			return '<div style="text-align:center"><a title="' . JText::_('COM_FABRIK_NO_ACCESS_PLEASE_LOGIN')
 			. '"><img src="media/com_fabrik/images/login.png" alt="' . JText::_('COM_FABRIK_NO_ACCESS_PLEASE_LOGIN') . '" /></a></div>';
 		}
+
 		$showRelated = (int) $params->get('show_related_info', 0);
 		$emptyLabel = $showRelated === 1 ? JText::_('COM_FABRIK_NO_RECORDS') : '';
 		$tlabel = ($count === 0) ? $emptyLabel : '(0) ' . $label;
@@ -1803,18 +1805,20 @@ $groupBy .= '_raw';
 		$aExisitngLinkedForms = (array) $params->get('linkedform');
 		$linkedForm = JArrayHelper::getValue($aExisitngLinkedForms, $f, false);
 		$addLink = $linkedForm == '0' ? $this->viewFormLink($popUp, $element, $row, $key, $val, false, $f) : '';
+
 		if ($count === 0)
 		{
 			$html[] = '<span style="text-align:center" class="related_data_norecords">' . $tlabel . '</span>';
 		}
 
 		$key .= '_raw';
+
 		if ($label === '')
 		{
 			$label = JText::_('COM_FABRIK_VIEW');
 		}
-		$label = '<span class="fabrik_related_data_count">(' . $count . ')</span> ' . $label;
 
+		$label = '<span class="fabrik_related_data_count">(' . $count . ')</span> ' . $label;
 		$url = $this->releatedDataURL($key, $val, $listid, $popUp);
 
 		if ($showRelated == 0 || ($showRelated == 2  && $count))
@@ -1831,13 +1835,16 @@ $groupBy .= '_raw';
 			}
 			else
 			{
-				$html[] = '<a class="related_data" href="' . $url . '">' . $label . "</a>";
+				// Add title in case link replaced with icon in CSS.
+				$html[] = '<a class="related_data" title="' . strip_tags($label) . '" href="' . $url . '">' . $label . "</a>";
 			}
 		}
+
 		if ($addLink != '' && ($showRelatedAdd === 1 || ($showRelatedAdd === 2 && $count === 0)))
 		{
 			$html[] = '<br />' . $addLink;
 		}
+
 		return implode("\n", $html);
 	}
 
@@ -2951,37 +2958,46 @@ $groupBy .= '_raw';
 		$vkeys = array_keys(JArrayHelper::getValue($filters, 'key', array()));
 		$last_i = false;
 		$nullElementConditions = array( 'IS NULL', 'IS NOT NULL');
+
 		while (list($vkey, $i) = each($vkeys))
 		{
 			// $$$rob - prefilter with element that is not published so ignore
 			$condition = JString::strtoupper(JArrayHelper::getValue($filters['condition'], $i, ''));
+
 			if (JArrayHelper::getValue($filters['sqlCond'], $i, '') == '' && !in_array($condition, $nullElementConditions))
 			{
 				$last_i = $i;
 				continue;
 			}
+
 			if ($filters['search_type'][$i] == 'prefilter' && $type == '*')
 			{
 				$last_i = $i;
 				continue;
 			}
+
 			if ($filters['search_type'][$i] != 'prefilter' && $type == 'prefilter')
 			{
 				$last_i = $i;
 				continue;
 			}
+
 			$n = current($vkeys);
+
 			if ($n === false)
 			{
 				// End of array
 				$n = -1;
 			}
+
 			$gstart = '';
 			$gend = '';
+
 			if (!in_array($condition, $nullElementConditions))
 			{
 				$filters['origvalue'][$i] = 'this is ignoerd i hope';
 			}
+
 			// $$$ rob added $filters['sqlCond'][$i] test so that you can test for an empty string
 			if ($filters['origvalue'][$i] != '' || $filters['sqlCond'][$i] != '')
 			{
@@ -2995,6 +3011,7 @@ $groupBy .= '_raw';
 							$gstart = '(';
 							$groupedCount++;
 						}
+
 						$ingroup = true;
 					}
 					else
@@ -3016,10 +3033,12 @@ $groupBy .= '_raw';
 						$ingroup = false;
 					}
 				}
+
 				$glue = JArrayHelper::getValue($filters['join'], $i, 'AND');
 				$sql[] = empty($sql) ? $gstart : $glue . ' ' . $gstart;
 				$sql[] = $filters['sqlCond'][$i] . $gend;
 			}
+
 			$last_i = $i;
 		}
 		// $$$rob ensure opening and closing parathethis for prefilters are equal
@@ -3029,12 +3048,14 @@ $groupBy .= '_raw';
 		{
 			$sql[] = str_pad('', (int) $groupedCount, ")");
 		}
+
 		// Wrap in brackets
 		if (!empty($sql))
 		{
 			array_unshift($sql, '(');
 			$sql[] = ')';
 		}
+
 		return $sql;
 	}
 
@@ -4577,16 +4598,21 @@ $groupBy .= '_raw';
 			{
 				$value = $db->quote($value);
 			}
+
 			if ($fullWordsOnly == '1')
 			{
 				$condition = 'REGEXP';
 			}
+
 			$originalValue = $this->filters['value'][$i];
+
 			if ($value == '' && $eval == FABRIKFILTER_QUERY)
 			{
 				JError::raiseError(500, JText::_('COM_FABRIK_QUERY_PREFILTER_WITH_NO_VALUE'));
 			}
+
 			list($value, $condition) = $elementModel->getFilterValue($value, $condition, $eval);
+
 			if ($fullWordsOnly == '1')
 			{
 				if (is_array($value))

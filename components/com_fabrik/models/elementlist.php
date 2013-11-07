@@ -200,15 +200,18 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 		$db = JFactory::getDbo();
 		$this->encryptFieldName($key);
 		$glue = $this->getElement()->filter_exact_match ? 'AND' : 'OR';
+
 		if ($element->filter_type == 'checkbox' || $element->filter_type == 'multiselect')
 		{
 			$originalValue = (array) $originalValue;
 			$str = array();
+
 			foreach ($originalValue as $v)
 			{
 				$v = str_replace("/", "\\\\/", $v);
 				$str[] = $key . ' LIKE ' . $db->quote('%"' . $v . '"%') . ' ';
 			}
+
 			$str = implode($glue, $str);
 		}
 		else
@@ -222,6 +225,11 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 			* before it to escape it for the query.
 			*/
 			$originalValue = str_replace("/", "\\\\/", $originalValue);
+			if ($condition === 'is null')
+			{
+				$value = '';
+			}
+
 			switch ($condition)
 			{
 				case '=':
@@ -237,6 +245,7 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 					break;
 			}
 		}
+
 		return $str;
 	}
 
