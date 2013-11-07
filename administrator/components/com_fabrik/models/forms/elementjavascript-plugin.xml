@@ -63,8 +63,8 @@
 			<field name="js_e_condition"
 				type="list"
 				repeat="true"
-				label="COM_FABRIK_JS_IS"
-				description="COM_FABRIK_JS_IS_DESC"
+				label="COM_FABRIK_JS_IF"
+				description="COM_FABRIK_JS_IF_DESC"
 				>
 					<option value="">COM_FABRIK_PLEASE_SELECT</option>
 					<option value="&lt;">&lt;</option>

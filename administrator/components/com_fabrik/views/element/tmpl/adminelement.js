@@ -6,7 +6,7 @@
  */
 
 /* jshint mootools: true */
-/* global fconsole:true, FabrikAdmin:true, Fabrik:true, PluginManager:true */
+/* global fconsole:true, FabrikAdmin:true, Fabrik:true, PluginManager:true, Joomla:true */
 
 var fabrikAdminElement = new Class({
 
@@ -225,19 +225,26 @@ var fabrikAdminElement = new Class({
 			if (comment) {
 				t = comment[1];
 			} else {
-				t = 'Inline javascript code';
+				t = Joomla.JText._('COM_FABRIK_JS_INLINE_JS_CODE');
 			}
 			if (code.value.replace(/(['"]).*?[^\\]\1/g,'').test('//')) {
-				t += ' &nbsp; <span style="color:red;font-weight:bold;">Warning:&nbsp;Code&nbsp;may&nbsp;contain&nbsp;inline&nbsp;comments&nbsp;//</span>';
+				t += ' &nbsp; <span style="color:red;font-weight:bold;">';
+				t += Joomla.JText._('COM_FABRIK_JS_INLINE_COMMENT_WARNING').replace(/ /g,'&nbsp;');
+				t += '</span>';
 			}
 		} else if (event.value && trigger.value && name.value) {
+			t  = Joomla.JText._('COM_FABRIK_JS_WHEN_ELEMENT') + ' "' + name.value + '" ';
 			if (condition.getSelected()[0].text.test(/hidden|shown/)) {
-				t = event.getSelected()[0].text + ' element "' + trigger.getSelected()[0].text + '" when element "' + name.value + '" is ' + condition.getSelected()[0].text;
+				t += Joomla.JText._('COM_FABRIK_JS_IS') + ' ';
+				t += condition.getSelected()[0].text + ', ';
 			} else {
-				t = event.getSelected()[0].text + ' element "' + trigger.getSelected()[0].text + '" when element "' + name.value + '" ' + condition.getSelected()[0].text + ' "' + value.value.trim() + '"';
+				t += condition.getSelected()[0].text + ' "' + value.value.trim() + '", ';
 			}
+			var trigtype = trigger.getSelected().getParent('optgroup').get('label')[0].toLowerCase();
+			t += event.getSelected()[0].text + ' ' + trigtype.substring(0,trigtype.length-1);
+			t += ' "' + trigger.getSelected()[0].text + '"';
 		} else {
-			s += '<span style="color:red;">No action set</span>';
+			s += '<span style="color:red;">' + Joomla.JText._('COM_FABRIK_JS_NO_ACTION') + '</span>';
 		}
 		if (t !== '') {
 			s += '<span style="font-weight:normal">' + t + '</span>';
