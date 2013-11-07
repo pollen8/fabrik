@@ -1,6 +1,6 @@
 /**
  * Admin Plugin Manager
- * 
+ *
  * @copyright: Copyright (C) 2005-2013, fabrikar.com - All rights reserved.
  * @license: GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
@@ -68,7 +68,7 @@ var PluginManager = new Class({
 
 	/**
 	 * Has the form finished loading and are there any outstanding ajax requests
-	 * 
+	 *
 	 * @return bool
 	 */
 	canSaveForm: function () {
@@ -122,7 +122,7 @@ var PluginManager = new Class({
 		div.adopt(body);
 		div.inject(document.id('plugins'));
 		this.accordion.addSection(toggler, body);
-		var tt_temp = this.topTotal; // added temp variable
+		var tt_temp = this.topTotal + 1; //added temp variable
 
 		// Ajax request to load the first part of the plugin form (do[plugin]
 		// in, on)
@@ -143,14 +143,13 @@ var PluginManager = new Class({
 			update: body,
 			onRequest: function () {
 				if (Fabrik.debug) {
-					fconsole('Fabrik pluginmanager: Adding', this.type, 'entry', this.topTotal.toString());
+					fconsole('Fabrik pluginmanager: Adding', this.type, 'entry', tt_temp.toString());
 				}
 			}.bind(this),
 			onSuccess: function (res) {
 				if (plugin !== '') {
-					// Sent temp variable as c to addPlugin, so they are aligned
-					// properly
-					this.addPlugin(plugin, tt_temp + 1);
+					// Sent temp variable as c to addPlugin, so they are aligned properly
+					this.addPlugin(plugin, tt_temp);
 				} else {
 					toggler.getElement('span.pluginTitle').set('text', Joomla.JText._('COM_FABRIK_PLEASE_SELECT'));
 				}

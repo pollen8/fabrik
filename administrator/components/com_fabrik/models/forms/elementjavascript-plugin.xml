@@ -10,11 +10,9 @@
 				class="btn-group"
 				repeat="true"
 				default="1"
-				label="JSTATUS"
-				description="JFIELD_PUBLISHED_DESC"
-				>
-					<option value="1">JPUBLISHED</option>
-					<option value="0">JUNPUBLISHED</option>
+				label="COM_FABRIK_PUBLISHED">
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
 			</field>
 
 			<field name="action"
@@ -62,30 +60,6 @@
 				label="COM_FABRIK_JS_PREDEFINED_DESC"
 				/>
 
-				<field name="js_e_event"
-				type="list"
-				repeat="true"
-				label="COM_FABRIK_JS_ACTION"
-				description="COM_FABRIK_JS_ACTION_DESC"
-				>
-					<option value="">COM_FABRIK_PLEASE_SELECT</option>
-					<option value="hide">hide</option>
-					<option value="show">show</option>
-					<option value="fadeout">fadeout</option>
-					<option value="fadein">fadein</option>
-					<option value="slide in">slide in</option>
-					<option value="slide out">slide out</option>
-					<option value="slide toggle">slide toggle</option>
-					<option value="clear">clear</option>
-			</field>
-
-			<field name="js_e_trigger"
-				type="groupelements"
-				repeat="true"
-				label="COM_FABRIK_JS_ELEMENT"
-				description="COM_FABRIK_JS_ELEMENT_DESC"
-				/>
-
 			<field name="js_e_condition"
 				type="list"
 				repeat="true"
@@ -110,6 +84,30 @@
 				repeat="true"
 				label="COM_FABRIK_VALUE"
 				description="COM_FABRIK_JS_VALUE_DESC"
+				/>
+
+			<field name="js_e_event"
+				type="list"
+				repeat="true"
+				label="COM_FABRIK_JS_ACTION"
+				description="COM_FABRIK_JS_ACTION_DESC"
+				>
+					<option value="">COM_FABRIK_PLEASE_SELECT</option>
+					<option value="hide">hide</option>
+					<option value="show">show</option>
+					<option value="fadeout">fadeout</option>
+					<option value="fadein">fadein</option>
+					<option value="slide in">slide in</option>
+					<option value="slide out">slide out</option>
+					<option value="slide toggle">slide toggle</option>
+					<option value="clear">clear</option>
+			</field>
+
+			<field name="js_e_trigger"
+				type="groupelements"
+				repeat="true"
+				label="COM_FABRIK_JS_ELEMENT"
+				description="COM_FABRIK_JS_ELEMENT_DESC"
 				/>
 
 		</fieldset>
