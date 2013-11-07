@@ -83,7 +83,7 @@ class PlgFabrik_ListArticle extends PlgFabrik_List
 		$input = JFactory::getApplication()->input;
 		$ids = $input->get('ids', array(), 'array');
 		$origRowId = $input->get('rowid');
-		$pluginManager = JModel::getInstance('Pluginmanager', 'FabrikFEModel');
+		$pluginManager = JModelLegacy::getInstance('Pluginmanager', 'FabrikFEModel');
 
 		// Abstract verson of the form article plugin
 		$articlePlugin = $pluginManager->getPlugin('article', 'form');
@@ -96,16 +96,15 @@ class PlgFabrik_ListArticle extends PlgFabrik_List
 		{
 			if ($type === 'article')
 			{
-				// Set the abstract article plugin to have the correct parameters
-				$pluginParams = $articlePlugin->setParams($formParams, $c);
-
 				// Iterate over the records - load row & update articles
 				foreach ($ids as $id)
 				{
 					$input->set('rowid', $id);
 					$formModel->setRowId($id);
-					$formModel->_formData = $formModel->getData();
-					$articlePlugin->onAfterProcess($pluginParams, $formModel);
+					$formModel->formData = $formModel->formDataWithTableName = $formModel->getData();
+					$articlePlugin->setModel($formModel);
+					$articlePlugin->setParams($formParams, $c);
+					$articlePlugin->onAfterProcess();
 				}
 			}
 		}

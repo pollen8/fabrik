@@ -6,7 +6,7 @@
 			
 			<field name="template"
 				type="filelist"
-				description="PLG_FABRIK_FORM_ARTCILE_TEMPLATE_DESC"
+				description="PLG_FABRIK_FORM_ARTICLE_TEMPLATE_DESC"
 				directory="/plugins/fabrik_form/article/tmpl/"
 				hide_default="1"
 				label="PLG_FABRIK_FORM_ARTICLE_TEMPLATE_LABEL"

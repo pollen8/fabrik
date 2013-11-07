@@ -78,12 +78,14 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 		else
 		{
 			$data['modified'] = JFactory::getDate()->toSql();
+			$data['modified_by'] = JFactory::getUser()->id;
 		}
 
 		foreach ($attribs as $attrib)
 		{
 			$elementId = $params->get($attrib);
-			$data[$attrib] = $this->findElementData($elementId, $data);
+			echo "$attrib => $elementId <br>";
+			$data[$attrib] = $this->findElementData($elementId);
 		}
 
 		$this->generateNewTitle($id, $catid, $data);
@@ -91,6 +93,7 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 		$item = JTable::getInstance('Content');
 		$item->load($id);
 		$item->bind($data);
+	//	echo "<pre>";print_r($data);exit;
 		$item->store();
 
 		return $item;
@@ -111,7 +114,7 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 
 		if ($elementModel = $formModel->getElement($elementId, true))
 		{
-			$fullName = $elementModel->getFullName(false, true, false);
+			$fullName = $elementModel->getFullName(true, false);
 			$value = $formModel->getElementData($fullName, false, '', 0);
 
 			if (is_array($value))
@@ -139,22 +142,30 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 		{
 			$size = $params->get('image_intro_size', 'cropped');
 			$file = $this->setImage($introImg, $size);
-			$img->image_intro = str_replace('\\', '/', $file);
-			$img->image_intro = FabrikString::ltrimword($img->image_intro, '/');
-			$img->float_intro = '';
-			$img->image_intro_alt = '';
-			$img->image_intro_caption = '';
+
+			if ($file !== '')
+			{
+				$img->image_intro = str_replace('\\', '/', $file);
+				$img->image_intro = FabrikString::ltrimword($img->image_intro, '/');
+				$img->float_intro = '';
+				$img->image_intro_alt = '';
+				$img->image_intro_caption = '';
+			}
 		}
 
 		if ($fullImg !== '')
 		{
 			$size = $params->get('image_full_size', 'thumb');
 			$file = $this->setImage($fullImg, $size);
-			$img->image_fulltext = str_replace('\\', '/', $file);
-			$img->image_fulltext = FabrikString::ltrimword($img->image_fulltext, '/');
-			$img->float_fulltext = '';
-			$img->image_fulltext_alt = '';
-			$img->image_fulltext_caption = '';
+
+			if ($file !== '')
+			{
+				$img->image_fulltext = str_replace('\\', '/', $file);
+				$img->image_fulltext = FabrikString::ltrimword($img->image_fulltext, '/');
+				$img->float_fulltext = '';
+				$img->image_fulltext_alt = '';
+				$img->image_fulltext_caption = '';
+			}
 		}
 
 		return $img;
@@ -171,6 +182,12 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 	protected function setImage($elementId, $size)
 	{
 		$file = $this->findElementData($elementId);
+
+		if ($file === '')
+		{
+			return '';
+		}
+
 		$formModel = $this->getModel();
 		$elementModel = $formModel->getElement($elementId, true);
 
@@ -191,7 +208,13 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 			}
 
 			$file = $storage->urlToPath($file);
-			$file = str_replace(JPATH_SITE . '/', '', $file);
+			$file = str_replace(JPATH_SITE, '', $file);
+			$first = substr($file, 0, 1);
+
+			if ($first === '\\' || $first == '/')
+			{
+				$file = FabrikString::ltrimiword($file, $first);
+			}
 		}
 
 		return $file;
@@ -271,7 +294,7 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 
 		if ($elementModel = $formModel->getElement($params->get('meta_store'), true))
 		{
-			$fullName = $elementModel->getFullName(false, true, false);
+			$fullName = $elementModel->getFullName(true, false);
 			$metaStore = $formModel->getElementData($fullName);
 			$metaStore = json_decode($metaStore);
 		}
@@ -299,7 +322,7 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 
 		if ($elementModel = $formModel->getElement($params->get('meta_store'), true))
 		{
-			$fullName = $elementModel->getFullName(false, true, false) . '_raw';
+			$fullName = $elementModel->getFullName(true, false) . '_raw';
 			foreach ($groups as $group)
 			{
 				foreach ($group as $rows)
@@ -349,7 +372,10 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 			$messageTemplate = JFile::getExt($template) == 'php' ? $this->_getPHPTemplateEmail($template) : $this
 			->_getTemplateEmail($template);
 
-			$messageTemplate = str_replace('{content}', $content, $messageTemplate);
+			if ($content !== '')
+			{
+				$messageTemplate = str_replace('{content}', $messageTemplate, $content);
+			}
 		}
 
 		$message = '';
@@ -360,10 +386,12 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 		}
 		elseif (!empty($content))
 		{
+			// Joomla article template:
 			$message = $content;
 		}
 
 		$message = stripslashes($message);
+		//echo $message;exit;
 
 		$editURL = COM_FABRIK_LIVESITE . 'index.php?option=com_' . $package . '&amp;view=form&amp;fabrik=' . $formModel->get('id') . '&amp;rowid='
 			. $input->get('rowid', '', 'string');
@@ -376,7 +404,8 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 		$message = str_replace('{fabrik_editurl}', $editURL, $message);
 		$message = str_replace('{fabrik_viewurl}', $viewURL, $message);
 		$w = new FabrikWorker;
-		$output = $w->parseMessageForPlaceholder($message, $this->data, false);
+		$output = $w->parseMessageForPlaceholder($message, $this->data, true);
+//echo $output;exit;
 
 		return $output;
 	}
@@ -445,6 +474,11 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 			JModelLegacy::addIncludePath(COM_FABRIK_BASE . 'components/com_content/models');
 			$articleModel = JModelLegacy::getInstance('Article', 'ContentModel');
 			$res = $articleModel->getItem($contentTemplate);
+		}
+
+		if ($res->fulltext !== '')
+		{
+			$res->fulltext = '<hr id="system-readmore" />' . $res->fulltext;
 		}
 
 		return $res->introtext . ' ' . $res->fulltext;
