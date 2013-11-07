@@ -247,7 +247,7 @@ class FabrikAdminViewElements extends JViewLegacy
 		JToolBarHelper::save('elements.dodelete', 'JTOOLBAR_APPLY');
 		JToolBarHelper::cancel('elements.cancel', 'JTOOLBAR_CANCEL');
 		JToolBarHelper::divider();
-		JToolBarHelper::help('JHELP_COMPONENTS_FABRIK_ELEMENTS_EDIT', true, 'http://fabrikar.com/wiki/index.php/Element_delete_confirmation');
+		JToolBarHelper::help('JHELP_COMPONENTS_FABRIK_ELEMENTS_EDIT', true, 'http://www.fabrikar.com/forums/index.php?wiki/element-delete-confirmation/');
 	}
 
 	/**
