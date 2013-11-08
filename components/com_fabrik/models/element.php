@@ -1284,7 +1284,10 @@ class PlgFabrik_Element extends FabrikPlugin
 		{
 			$this->defaults = array();
 		}
+
 		$key = $repeatCounter . '.' . serialize($opts);
+		$app = JFactory::getApplication();
+
 		if (!array_key_exists($key, $this->defaults))
 		{
 			$groupModel = $this->getGroup();
@@ -1296,6 +1299,7 @@ class PlgFabrik_Element extends FabrikPlugin
 			$value = $this->getDefaultOnACL($data, $opts);
 			$name = $this->getFullName(false, true, false);
 			$rawname = $name . '_raw';
+
 			if ($groupModel->isJoin() || $this->isJoin())
 			{
 				$nameKey = 'join.' . $joinid . '.' . $name;
@@ -1306,10 +1310,12 @@ class PlgFabrik_Element extends FabrikPlugin
 				if ($groupModel->canRepeat())
 				{
 					$v = FArrayHelper::getNestedValue($data, $nameKey . '.' . $repeatCounter, null);
+
 					if (is_null($v))
 					{
 						$v = FArrayHelper::getNestedValue($data, $rawNameKey . '.' . $repeatCounter, null);
 					}
+
 					if (!is_null($v))
 					{
 						$value = $v;
@@ -1317,11 +1323,18 @@ class PlgFabrik_Element extends FabrikPlugin
 				}
 				else
 				{
+					if ($repeatCounter > 0)
+					{
+						$app->enqueueMessage('You are trying to access a Fabrik repeat group value, when your group is not set to repeat', 'notice');
+					}
+
 					$v = FArrayHelper::getNestedValue($data, $nameKey, null);
+
 					if (is_null($v))
 					{
 						$v = FArrayHelper::getNestedValue($data, $rawNameKey, null);
 					}
+
 					if (!is_null($v))
 					{
 						$value = $v;
