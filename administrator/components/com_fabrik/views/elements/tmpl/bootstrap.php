@@ -132,11 +132,11 @@ $states	= array(
 			?>
 
 			<tr class="row<?php echo $i % 2; ?>">
-<td>
-						<?php echo $item->id; ?>
-					</td>
-			<td>
-			<?php if ($canChange) :
+				<td>
+					<?php echo $item->id; ?>
+				</td>
+				<td>
+				<?php if ($canChange) :
 						$disableClassName = '';
 						$disabledLabel	  = '';
 
@@ -152,8 +152,8 @@ $states	= array(
 						<span class="sortable-handler inactive" >
 							<i class="icon-menu"></i>
 						</span>
-					<?php endif; ?>
-					</td>
+				<?php endif; ?>
+				</td>
 				<td>
 				<?php if ($item->parent_id != 0) :
 					echo "<a href='index.php?option=com_fabrik&task=element.edit&id=" . $item->parent_id . "'>"
@@ -163,47 +163,48 @@ $states	= array(
 					echo JHTML::image('media/com_fabrik/images/parent_element.png', JText::_('COM_FABRIK_PARENT_ELEMENT'), 'title="' . JText::_('COM_FABRIK_PARENT_ELEMENT') . '"') . '&nbsp;';
 				endif;
 				?>
-					</td>
-					<td><?php $checkbox = JHtml::_('grid.id', $i, $item->id);
-					echo $checkbox; ?></td>
-					<td>
-						<?php if ($item->checked_out) : ?>
-							<?php echo JHtml::_('jgrid.checkedout', $i, $item->editor, $item->checked_out_time, 'elements.', $canCheckin); ?>
-						<?php endif; ?>
-						<?php
-						if ($item->checked_out && ($item->checked_out != $user->get('id'))) :
-							echo  $item->name;
-						else :
-						?>
-						<a href="<?php echo $link; ?>">
-							<?php echo $item->name; ?>
-						</a>
-					<?php endif;
+				</td>
+				<td>
+					<?php echo JHtml::_('grid.id', $i, $item->id); ?>
+				</td>
+				<td>
+					<?php if ($item->checked_out) : ?>
+						<?php echo JHtml::_('jgrid.checkedout', $i, $item->editor, $item->checked_out_time, 'elements.', $canCheckin); ?>
+					<?php endif; ?>
+					<?php
+					if ($item->checked_out && ($item->checked_out != $user->get('id'))) :
+						echo  $item->name;
+					else :
 					?>
-					</td>
-					<td>
-						<?php echo $item->label; ?>
-					</td>
-					<td>
-						<?php echo $item->full_element_name; ?>
-					</td>
-					<td>
-						<a href="index.php?option=com_fabrik&task=group.edit&id=<?php echo $item->group_id?>">
-							<?php echo $item->group_name; ?>
-						</a>
-					</td>
-					<td>
-						<?php echo $item->plugin; ?>
-					</td>
-					<td>
-						<?php
-						echo JHtml::_('jgrid.state', $states, $item->show_in_list_summary, $i, 'elements.', true, true);
-						?>
-					</td>
-					<td>
-						<?php echo JHtml::_('jgrid.published', $item->published, $i, 'elements.', $canChange);?>
-					</td>
-				</tr>
+					<a href="<?php echo $link; ?>">
+						<?php echo $item->name; ?>
+					</a>
+				<?php endif;
+				?>
+				</td>
+				<td>
+					<?php echo $item->label; ?>
+				</td>
+				<td>
+					<?php echo $item->full_element_name; ?>
+				</td>
+				<td>
+					<a href="index.php?option=com_fabrik&task=group.edit&id=<?php echo $item->group_id?>">
+						<?php echo $item->group_name; ?>
+					</a>
+				</td>
+				<td>
+					<?php echo $item->plugin; ?>
+				</td>
+				<td>
+					<?php
+					echo JHtml::_('jgrid.state', $states, $item->show_in_list_summary, $i, 'elements.', true, true);
+					?>
+				</td>
+				<td>
+					<?php echo JHtml::_('jgrid.published', $item->published, $i, 'elements.', $canChange);?>
+				</td>
+			</tr>
 
 			<?php endforeach; ?>
 		</tbody>
