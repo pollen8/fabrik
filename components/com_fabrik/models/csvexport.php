@@ -109,7 +109,8 @@ class FabrikFEModelCSVExport
 			if (empty($headings))
 			{
 				$url = $input->server->get('HTTP_REFERER', '');
-				$app->redirect($url, JText::_('No data to export'));
+				$app->enqueueMessage(JText::_('No data to export'));
+				$app->redirect($url);
 
 				return;
 			}

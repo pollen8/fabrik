@@ -228,7 +228,8 @@ class FabrikControllerList extends JControllerLegacy
 		else
 		{
 			// @TODO: test this
-			$app->redirect($ref, $msg, $msgType);
+			$app->enqueueMessage($msg, $msgType);
+			$app->redirect($ref);
 		}
 	}
 

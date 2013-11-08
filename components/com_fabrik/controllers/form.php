@@ -557,7 +557,8 @@ class FabrikControllerForm extends JControllerLegacy
 		else
 		{
 			$msg = $ok ? count($ids) . ' ' . JText::_('COM_FABRIK_RECORDS_DELETED') : '';
-			$app->redirect($ref, $msg);
+			$app->enqueueMessage($msg);
+			$app->redirect($ref);
 		}
 	}
 }
