@@ -2,12 +2,12 @@
 /**
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.form.email
- * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
- * @license     GNU General Public License version 2 or later; see LICENSE.txt
+ * @copyright   Copyright (C) 2005-2013 fabrikar.com - All rights reserved.
+ * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
-// Check to ensure this file is included in Joomla!
-defined('_JEXEC') or die();
+// No direct access
+defined('_JEXEC') or die('Restricted access');
 
 // Require the abstract plugin class
 require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
@@ -22,7 +22,6 @@ require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
 
 class PlgFabrik_FormEmail extends PlgFabrik_Form
 {
-
 	/**
 	 * Attachement files
 	 *
@@ -72,7 +71,6 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 		$this->formModel = $formModel;
 		$formParams = $formModel->getParams();
 		$emailTemplate = JPath::clean(JPATH_SITE . '/plugins/fabrik_form/email/tmpl/' . $params->get('email_template', ''));
-
 		$this->data = array_merge($formModel->_formData, $this->getEmailData());
 
 		/* $$$ hugh - moved this to here from above the previous line, 'cos it needs $this->data
@@ -82,6 +80,7 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 		{
 			return;
 		}
+
 		$contentTemplate = $params->get('email_template_content');
 		$content = $contentTemplate != '' ? $this->_getConentTemplate($contentTemplate) : '';
 
@@ -104,6 +103,7 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 		{
 			$message = $contentTemplate != '' ? $content : $this->_getTextEmail();
 		}
+
 		$this->addAttachments($params);
 
 		$cc = null;
@@ -126,18 +126,21 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 
 		// $$$ rob if email_to is not a valid email address check the raw value to see if that is
 		$email_to = explode(',', $params->get('email_to'));
+
 		foreach ($email_to as &$emailkey)
 		{
 			$emailkey = $w->parseMessageForPlaceholder($emailkey, $this->data, false);
 
 			// Can be in repeat group in which case returns "email1,email2"
 			$emailkey = explode(',', $emailkey);
+
 			foreach ($emailkey as &$key)
 			{
 				// $$$ rob added strstr test as no point trying to add raw suffix if not placeholder in $emailkey
 				if (!JMailHelper::isEmailAddress($key) && trim($key) !== '' && strstr($key, '}'))
 				{
 					$key = explode('}', $key);
+
 					if (substr($key[0], -4) !== '_raw')
 					{
 						$key = $key[0] . '_raw}';
@@ -146,6 +149,7 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 					{
 						$key = $key[0] . '}';
 					}
+
 					$key = $w->parseMessageForPlaceholder($key, $this->data, false);
 				}
 			}
@@ -158,9 +162,12 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 			{
 				$email_to[] = $v;
 			}
+
 			unset($email_to[$i]);
 		}
+
 		$email_to_eval = $params->get('email_to_eval', '');
+
 		if (!empty($email_to_eval))
 		{
 			$email_to_eval = $w->parseMessageForPlaceholder($email_to_eval, $this->data, false);
@@ -171,19 +178,24 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 		}
 
 		@list($email_from, $email_from_name) = explode(":", $w->parseMessageForPlaceholder($params->get('email_from'), $this->data, false), 2);
+
 		if (empty($email_from))
 		{
 			$email_from = $config->get('mailfrom');
 		}
+
 		if (empty($email_from_name))
 		{
 			$email_from_name = $config->get('fromname', $email_from);
 		}
+
 		$subject = $params->get('email_subject');
+
 		if ($subject == '')
 		{
 			$subject = $config->get('sitename') . " :: Email";
 		}
+
 		$subject = preg_replace_callback('/&#([0-9a-fx]+);/mi', array($this, 'replace_num_entity'), $subject);
 
 		$attach_type = $params->get('email_attach_type', '');
@@ -219,6 +231,7 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 		foreach ($email_to as $email)
 		{
 			$email = strip_tags($email);
+
 			if (FabrikWorker::isEmail($email))
 			{
 				$thisAttachments = $this->attachments;
@@ -229,6 +242,7 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 
 				$thisMessage = $w->parseMessageForPlaceholder($message, $this->data, true, false, $thisUser);
 				$thisSubject = strip_tags($w->parseMessageForPlaceholder($subject, $this->data, true, false, $thisUser));
+
 				if (!empty($attach_type))
 				{
 					if (JFile::write($attach_fname, $thisMessage))
@@ -250,8 +264,9 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 				 */
 				if ($res !== true)
 				{
-					JError::raiseNotice(500, JText::sprintf('PLG_FORM_EMAIL_DID_NOT_SEND_EMAIL_INVALID_ADDRESS', $email));
+					$app->enqueueMessage(JText::sprintf('PLG_FORM_EMAIL_DID_NOT_SEND_EMAIL_INVALID_ADDRESS', $email), 'notice');
 				}
+
 				if (JFile::exists($attach_fname))
 				{
 					JFile::delete($attach_fname);
@@ -259,7 +274,7 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 			}
 			else
 			{
-				JError::raiseNotice(500, JText::sprintf('PLG_FORM_EMAIL_DID_NOT_SEND_EMAIL_INVALID_ADDRESS', $email));
+				$app->enqueueMessage(JText::sprintf('PLG_FORM_EMAIL_DID_NOT_SEND_EMAIL_INVALID_ADDRESS', $email), 'notice');
 			}
 		}
 		return true;
@@ -283,10 +298,12 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 		$result = require $tmpl;
 		$message = ob_get_contents();
 		ob_end_clean();
+
 		if ($result === false)
 		{
 			return false;
 		}
+
 		return $message;
 	}
 
@@ -303,12 +320,15 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 		$pluginManager = FabrikWorker::getPluginManager();
 		$data = $this->getEmailData();
 		$groups = $this->formModel->getGroupsHiarachy();
+
 		foreach ($groups as $groupModel)
 		{
 			$elementModels = $groupModel->getPublishedElements();
+
 			foreach ($elementModels as $elementModel)
 			{
 				$elName = $elementModel->getFullName(false, true, false);
+
 				if (array_key_exists($elName, $this->data))
 				{
 					if (method_exists($elementModel, 'addEmailAttachement'))
@@ -321,6 +341,7 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 						{
 							$val = $data[$elName];
 						}
+
 						if (is_array($val))
 						{
 							if (is_array(current($val)))
@@ -333,10 +354,13 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 								$val = implode(',', $val);
 							}
 						}
+
 						$aVals = FabrikWorker::JSONtoData($val, true);
+
 						foreach ($aVals as $v)
 						{
 							$file = $elementModel->addEmailAttachement($v);
+
 							if ($file !== false)
 							{
 								$this->attachments[] = $file;
@@ -350,10 +374,12 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 		// Eval'ed code should just return an array of file paths which we merge with $this->attachments[]
 		$w = new FabrikWorker;
 		$email_attach_eval = $w->parseMessageForPlaceholder($params->get('email_attach_eval', ''), $this->data, false);
+
 		if (!empty($email_attach_eval))
 		{
 			$email_attach_array = @eval($email_attach_eval);
 			FabrikWorker::logEval($email_attach_array, 'Caught exception on eval in email email_attach_eval : %s');
+
 			if (!empty($email_attach_array))
 			{
 				$this->attachments = array_merge($this->attachments, $email_attach_array);
@@ -372,11 +398,13 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 		if (is_null($this->dontEmailKeys))
 		{
 			$this->dontEmailKeys = array();
+
 			foreach ($_FILES as $key => $file)
 			{
 				$this->dontEmailKeys[] = $key;
 			}
 		}
+
 		return $this->dontEmailKeys;
 	}
 
@@ -405,6 +433,7 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 	protected function _getConentTemplate($contentTemplate)
 	{
 		$app = JFactory::getApplication();
+
 		if ($app->isAdmin())
 		{
 			$db = JFactory::getDbo();
@@ -419,6 +448,7 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 			$articleModel = JModelLegacy::getInstance('Article', 'ContentModel');
 			$res = $articleModel->getItem($contentTemplate);
 		}
+
 		return $res->introtext . ' ' . $res->fulltext;
 	}
 
@@ -436,9 +466,11 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 		$message = "";
 		$pluginManager = FabrikWorker::getPluginManager();
 		$groupModels = $this->formModel->getGroupsHiarachy();
+
 		foreach ($groupModels as &$groupModel)
 		{
 			$elementModels = $groupModel->getPublishedElements();
+
 			foreach ($elementModels as &$elementModel)
 			{
 				$element = $elementModel->getElement();
@@ -448,6 +480,7 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 				if (!in_array($key, $ignore))
 				{
 					$val = '';
+
 					if (is_array(JArrayHelper::getValue($data, $key)))
 					{
 						// Repeat group data
@@ -457,6 +490,7 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 							{
 								$val = implode(", ", $v);
 							}
+
 							$val .= count($data[$key]) == 1 ? ": $v<br />" : ($k++) . ": $v<br />";
 						}
 					}
@@ -464,6 +498,7 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 					{
 						$val = JArrayHelper::getValue($data, $key);
 					}
+
 					$val = FabrikString::rtrimword($val, "<br />");
 					$val = stripslashes($val);
 
@@ -475,17 +510,19 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 					// Don't add a second ":"
 					$label = trim(strip_tags($element->label));
 					$message .= $label;
+
 					if (strlen($label) != 0 && JString::strpos($label, ':', JString::strlen($label) - 1) === false)
 					{
 						$message .= ':';
 					}
+
 					$message .= "<br />" . $val . "<br /><br />";
 				}
 			}
 		}
+
 		$message = JText::_('Email from') . ' ' . $config->get('sitename') . '<br />' . JText::_('Message') . ':'
 			. "<br />===================================<br />" . "<br />" . stripslashes($message);
 		return $message;
 	}
-
 }

@@ -234,6 +234,7 @@ class PlgFabrik_Form extends FabrikPlugin
 		$listModel = $model->getListModel();
 		$table = is_object($listModel) ? $listModel->getTable() : null;
 		$baseTable = is_object($listModel) ? $table->db_table_name : '';
+		$editable = $model->isEditable();
 		$model->setEditable(false);
 
 		if (is_object($listModel))
@@ -323,11 +324,15 @@ class PlgFabrik_Form extends FabrikPlugin
 								$this->emailData[$k . '_raw'] = array();
 							}
 
-							$this->emailData[$k . '_raw'][] = JArrayHelper::getValue($model->_formDataWithTableName['join'][$group->join_id][$k], $c);
+							$raw = JArrayHelper::getValue($model->_formDataWithTableName['join'][$group->join_id][$k], $c);
+							$this->emailData[$k . '_raw'][] = $raw;
+							$this->emailData[$k][$c] = $elementModel->getEmailValue($raw, $model->_formDataWithTableName, $c);
 						}
 						else
 						{
-							$this->emailData[$k . '_raw'] = $model->_formDataWithTableName['join'][$group->join_id][$k];
+							$raw = $model->_formDataWithTableName['join'][$group->join_id][$k];
+							$this->emailData[$k . '_raw'] = $raw;
+ 							$this->emailData[$k] = $elementModel->getEmailValue($raw, $model->_formDataWithTableName);
 						}
 					}
 					else
@@ -371,7 +376,9 @@ class PlgFabrik_Form extends FabrikPlugin
 
 					// $$$ hugh - for some reason, CDD keys themselves are missing form emailData, if no selection was made?
 					// (may only be on AJAX submit)
-					$email_value = '';
+
+					// $$$ rob - this barfed big time: any db join element in repeat group was gettings its labels re-replaced with values.
+					/* $email_value = '';
 
 					if (array_key_exists($k . '_raw', $this->emailData))
 					{
@@ -382,7 +389,9 @@ class PlgFabrik_Form extends FabrikPlugin
 						$email_value = $this->emailData[$k];
 					}
 
-					$this->emailData[$k] = $elementModel->getEmailValue($email_value, $model->_formDataWithTableName, $c);
+					$this->emailData[$k] = $elementModel->getEmailValue($email_value, $model->_formDataWithTableName, $c); */
+
+					// $$$ rob end of barfage
 
 					if ($elementModel->_inRepeatGroup && $elementModel->_inJoin)
 					{
@@ -406,6 +415,8 @@ class PlgFabrik_Form extends FabrikPlugin
 			$this->emailData[$pk] = $listModel->lastInsertId;
 			$this->emailData[$pk . '_raw'] = $listModel->lastInsertId;
 		}
+
+		$model->setEditable($editable);
 
 		return $this->emailData;
 	}
