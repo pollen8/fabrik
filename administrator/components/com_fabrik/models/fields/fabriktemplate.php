@@ -46,7 +46,7 @@ class JFormFieldFabrikTemplate extends JFormFieldFolderList
 
 		if (FabrikWorker::j3())
 		{
-			$this->element['directory'] = '/components/com_fabrik/views/' . $view . '/tmpl/';
+			$this->element['directory'] = $this->directory = '/components/com_fabrik/views/' . $view . '/tmpl/';
 		}
 		else
 		{
