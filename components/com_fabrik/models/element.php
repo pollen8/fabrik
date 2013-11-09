@@ -1444,31 +1444,51 @@ class PlgFabrik_Element extends FabrikPlugin
 	private function isTipped($mode = 'form')
 	{
 		$formModel = $this->getFormModel();
+
 		if ($formModel->getParams()->get('tiplocation', 'tip') !== 'tip' && $mode === 'form')
 		{
 			return false;
 		}
+
 		$params = $this->getParams();
+
 		if ($params->get('rollover', '') === '')
 		{
 			return false;
 		}
+
 		if ($mode == 'form' && (!$formModel->isEditable() && $params->get('labelindetails', true) == false))
 		{
 			return false;
 		}
+
 		if ($mode === 'list' && $params->get('labelinlist', false) == false)
 		{
 			return false;
 		}
+
 		return true;
+	}
+
+	/**
+	 * Get list heading label
+	 *
+	 * @return  string
+	 */
+	public function getListHeading()
+	{
+		$params = $this->getParams();
+		$element = $this->getElement();
+		$label = $params->get('alt_list_heading') == '' ? $element->label : $params->get('alt_list_heading');
+
+		return JText::_($label);
 	}
 
 	/**
 	 * Get the element's HTML label
 	 *
-	 * @param   int     $repeatCounter  group repeat counter
-	 * @param   string  $tmpl           form template
+	 * @param   int     $repeatCounter  Group repeat counter
+	 * @param   string  $tmpl           Form template
 	 *
 	 * @return  string  label
 	 */
