@@ -11,10 +11,12 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 jimport('joomla.filesystem.file');
+
 if (!defined('COM_FABRIK_FRONTEND'))
 {
 	JError::raiseError(400, JText::_('COM_FABRIK_SYSTEM_PLUGIN_NOT_ACTIVE'));
 }
+
 require_once COM_FABRIK_FRONTEND . '/helpers/string.php';
 
 // Leave in as for some reason content plugin isnt loading the fabrikworker class
@@ -30,7 +32,6 @@ require_once COM_FABRIK_FRONTEND . '/helpers/parent.php';
  */
 class FabrikHelperHTML
 {
-
 	/**
 	 * Is the Fabrik JavaScript framework loaded
 	 *
@@ -159,16 +160,20 @@ class FabrikHelperHTML
 		{
 			return self::$requestHeaders;
 		}
+
 		self::$requestHeaders = array();
+
 		foreach ($_SERVER as $key => $value)
 		{
 			if (substr($key, 0, 5) <> 'HTTP_')
 			{
 				continue;
 			}
+
 			$header = str_replace(' ', '-', ucwords(str_replace('_', ' ', strtolower(substr($key, 5)))));
 			self::$requestHeaders[$header] = $value;
 		}
+
 		return self::$requestHeaders;
 	}
 
@@ -188,23 +193,27 @@ class FabrikHelperHTML
 
 		// Don't include in an Request.JSON call - for autofill form plugin
 		$headers = self::parseRequestHeaders();
+
 		if (JArrayHelper::getValue($headers, 'X-Request') === 'JSON')
 		{
 			return;
 		}
+
 		if (JRequest::getVar('format') == 'json')
 		{
 			return;
 		}
-		$document = JFactory::getDocument();
 
+		$document = JFactory::getDocument();
 		$sig = md5(serialize(array($selector, $params)));
+
 		if (isset(self::$modals[$sig]) && (self::$modals[$sig]))
 		{
 			return;
 		}
 
 		$script .= "head.ready(function() {";
+
 		if ($selector == '')
 		{
 			return;
@@ -267,6 +276,7 @@ EOD;
 
 		self::addScriptDeclaration($script);
 		self::$modals[$sig] = true;
+
 		return;
 	}
 
@@ -387,6 +397,7 @@ EOD;
 		{
 			$image = '&nbsp;' . JText::_('JGLOBAL_PRINT');
 		}
+
 		if ($params->get('popup', 1))
 		{
 			$ahref = '<a class=\"printlink\" href="javascript:void(0)" onclick="javascript:window.print(); return false" title="'
@@ -397,7 +408,9 @@ EOD;
 			$ahref = "<a href=\"#\" class=\"printlink\" onclick=\"window.open('$link','win2','$status;');return false;\"  title=\""
 				. JText::_('COM_FABRIK_PRINT') . "\">";
 		}
+
 		$return = $ahref . $image . "</a>";
+
 		return $return;
 	}
 
@@ -417,6 +430,7 @@ EOD;
 		{
 			return self::$printURL;
 		}
+
 		$app = JFactory::getApplication();
 		$input = $app->input;
 		$form = $formModel->getForm();
@@ -433,11 +447,13 @@ EOD;
 		{
 			$url .= '&usekey=' . $input->get('usekey');
 		}
+
 		$url = JRoute::_($url);
 
 		// $$$ rob for some reason JRoute wasnt doing this ???
 		$url = str_replace('&', '&amp;', $url);
 		self::$printURL = $url;
+
 		return self::$printURL;
 	}
 
@@ -453,6 +469,7 @@ EOD;
 	public static function emailIcon($formModel, $params)
 	{
 		$popup = $params->get('popup', 1);
+
 		if (!$popup)
 		{
 			$status = "status=no,toolbar=no,scrollbars=yes,titlebar=no,menubar=no,resizable=yes,width=400,height=250,directories=no,location=no";
@@ -466,6 +483,7 @@ EOD;
 			{
 				$image = '&nbsp;' . JText::_('JGLOBAL_EMAIL');
 			}
+
 			return "<a href=\"#\" onclick=\"window.open('$link','win2','$status;');return false;\"  title=\"" . JText::_('JGLOBAL_EMAIL')
 				. "\">$image</a>\n";
 		}
@@ -487,9 +505,11 @@ EOD;
 		{
 			return self::$emailURL;
 		}
+
 		$app = JFactory::getApplication();
 		$input = $app->input;
 		$package = $app->getUserState('com_fabrik.package', 'fabrik');
+
 		if ($app->isAdmin())
 		{
 			$url = 'index.php?option=com_fabrik&task=emailform.display&tmpl=component&formid=' . $formModel->get('id') . '&rowid='
@@ -505,8 +525,10 @@ EOD;
 		{
 			$url .= '&usekey=' . $input->get('usekey');
 		}
+
 		$url .= '&referrer=' . urlencode(JFactory::getURI()->toString());
 		self::$emailURL = $url;
+
 		return self::$emailURL;
 	}
 
@@ -525,6 +547,7 @@ EOD;
 		$conditions[] = JHTML::_('select.option', 'AND', JText::_('COM_FABRIK_AND'));
 		$conditions[] = JHTML::_('select.option', 'OR', JText::_('COM_FABRIK_OR'));
 		$name = 'fabrik___filter[list_' . $listid . '][join][]';
+
 		return JHTML::_('select.genericlist', $conditions, $name, 'class="inputbox input-mini" size="1" ', 'value', 'text', $sel);
 	}
 
@@ -543,10 +566,12 @@ EOD;
 		$query->select('id, label')->from('#__{package}_lists')->where('published = 1');
 		$db->setQuery($query);
 		$rows = $db->loadObjectList();
+
 		if ($db->getErrorNum())
 		{
 			JError::raiseError(500, $db->getErrorMsg());
 		}
+
 		return JHTML::_('select.genericlist', $rows, 'fabrik__swaptable', 'class="inputbox" size="1" ', 'id', 'label', $sel);
 	}
 
@@ -582,9 +607,9 @@ EOD;
 			$ls = JString::substr(COM_FABRIK_LIVESITE, -1) == '/' ? COM_FABRIK_LIVESITE : COM_FABRIK_LIVESITE . '/';
 			$file = $ls . $file;
 		}
+
 		if (self::cssAsAsset())
 		{
-
 			$attribs = json_encode(JArrayHelper::toObject($attribs));
 
 			// Send an inline script back which will inject the css file into the doc head
@@ -627,6 +652,7 @@ EOD;
 		$iframe = $input->get('iframe');
 		$print = $input->get('print');
 		$format = $input->get('format');
+
 		return $input->get('format') == 'raw' || ($tpl == 'component' && $iframe != 1) && $print != 1 && $format !== 'pdf';
 	}
 
@@ -649,11 +675,14 @@ EOD;
 		{
 			$file = $path;
 		}
+
 		if (JFile::exists(JPATH_SITE . '/' . $file))
 		{
 			self::stylesheet($path);
+
 			return true;
 		}
+
 		return false;
 	}
 
@@ -696,6 +725,7 @@ EOD;
 		$editable = true)
 	{
 		reset($arr);
+
 		if ($options_per_row > 1)
 		{
 			$percentageWidth = floor(floatval(100) / $options_per_row) - 2;
@@ -705,7 +735,9 @@ EOD;
 		{
 			$div = '<div class="fabrik_subelement">';
 		}
+
 		$html = "";
+
 		if ($editable)
 		{
 			$selectText = $type == 'checkbox' ? ' checked="checked"' : ' selected="selected"';
@@ -714,6 +746,7 @@ EOD;
 		{
 			$selectText = '';
 		}
+
 		for ($i = 0, $n = count($arr); $i < $n; $i++)
 		{
 			$k = $arr[$i]->$key;
@@ -723,6 +756,7 @@ EOD;
 			$extra = '';
 			$extra .= $id ? ' id="' . $arr[$i]->id . '"' : '';
 			$found = false;
+
 			if (is_array($selected))
 			{
 				foreach ($selected as $obj)
@@ -730,6 +764,7 @@ EOD;
 					if (is_object($obj))
 					{
 						$k2 = $obj->$key;
+
 						if ($k === $k2)
 						{
 							$found = true;
@@ -753,6 +788,7 @@ EOD;
 			{
 				$extra .= $k === $selected ? ' checked="checked"' : '';
 			}
+
 			$html .= $div;
 
 			if ($editable)
@@ -761,17 +797,22 @@ EOD;
 				$html .= '<label>';
 				$html .= '<input type="' . $type . '" value="' . $k . '" name="' . $tmpName . '" class="fabrikinput" ' . $extra . '/>';
 			}
+
 			if ($editable || $found)
 			{
 				$html .= '<span>' . $t . '</span>';
 			}
+
 			if ($editable)
 			{
 				$html .= '</label>';
 			}
+
 			$html .= '</div>';
 		}
+
 		$html .= "\n";
+
 		return $html;
 	}
 
@@ -788,6 +829,7 @@ EOD;
 		{
 			return;
 		}
+
 		JHtml::_('behavior.keepalive');
 	}
 
@@ -820,6 +862,7 @@ EOD;
 		if (!self::$framework)
 		{
 			$src = array();
+
 			if (self::inAjaxLoadedPage())
 			{
 				// 17/10/2011 (firefox) retesting loading this in ajax page as without it Class is not available? so form class doesnt load
@@ -856,6 +899,7 @@ EOD;
 				{
 					$src[] = 'media/com_fabrik/js/lib/flexiejs/flexie.js';
 				}
+
 				$src[] = 'media/com_fabrik/js/mootools-ext.js';
 				//$src[] = 'media/com_fabrik/js/lib/art.js';
 				$src[] = 'media/com_fabrik/js/icons.js';
@@ -886,8 +930,10 @@ EOD;
 });
 				");
 			}
+
 			self::$framework = $src;
 		}
+
 		return self::$framework;
 	}
 
@@ -915,13 +961,16 @@ EOD;
 		$usersConfig = JComponentHelper::getParams('com_fabrik');
 		$opts = new stdClass;
 		$opts->tipfx = 'Fx.Transitions.' . $usersConfig->get('tipfx', 'Linear');
+
 		if ($usersConfig->get('tipfx', 'Linear') !== 'Linear')
 		{
 			$opts->tipfx .= '.' . $usersConfig->get('tipfx_ease', 'easeIn');
 		}
+
 		$opts->duration = $usersConfig->get('tipfx_duration', '500');
 		$opts->distance = (int) $usersConfig->get('tipfx_distance', '20');
 		$opts->fadein = (bool) $usersConfig->get('tipfx_fadein', false);
+
 		return $opts;
 	}
 
@@ -936,6 +985,7 @@ EOD;
 	public static function addScriptDeclaration($script)
 	{
 		$app = JFactory::getApplication();
+
 		if ($app->input->get('format') == 'raw')
 		{
 			echo '<script type="text/javascript">' . $script . '</script>';
@@ -957,6 +1007,7 @@ EOD;
 	public static function addStyleDeclaration($style)
 	{
 		$app = JFactory::getApplication();
+
 		if ($app->input->get('format') == 'raw')
 		{
 			echo '<style type="text/css">' . $style . '</script>';
@@ -983,20 +1034,24 @@ EOD;
 		$app = JFactory::getApplication();
 		$input = $app->input;
 		$option = $input->get('option');
+
 		if ($option !== 'com_' . $package && $option !== 'com_content')
 		{
 			return false;
 		}
+
 		if (class_exists('JSite'))
 		{
 			$app = JFactory::getApplication();
 			$menus = $app->getMenu();
 			$menu = $menus->getActive();
+
 			if (is_object($menu) && ($menu->browserNav == 2))
 			{
 				return false;
 			}
 		}
+
 		return $input->get('format') == 'raw'
 			|| ($input->get('tmpl') == 'component' && $input->get('iframe') != 1 && $input->get('format') !== 'pdf');
 	}
@@ -1015,16 +1070,20 @@ EOD;
 	{
 		$app = JFactory::getApplication();
 		$config = JComponentHelper::getParams('com_fabrik');
+
 		if ($enabled && $config->get('use_fabrikdebug') == 0)
 		{
 			return false;
 		}
+
 		if ($config->get('use_fabrikdebug') == 2)
 		{
 			return true;
 		}
+
 		$config = JFactory::getConfig();
 		$debug = (int) $config->get('debug');
+
 		return $debug === 1 || $app->input->get('fabrikdebug', 0) == 1;
 	}
 
@@ -1043,10 +1102,12 @@ EOD;
 		{
 			return;
 		}
+
 		if (is_array($onLoad))
 		{
 			$onLoad = implode("\n", $onLoad);
 		}
+
 		$document = JFactory::getDocument();
 		/*
 		$config = JFactory::getConfig();
@@ -1059,6 +1120,7 @@ EOD;
 		$src = array();
 		$counter = 0;
 		$last = count($file) - 1;
+
 		foreach ($file as $f)
 		{
 			if (!(JString::stristr($f, 'http://') || JString::stristr($f, 'https://')))
@@ -1068,6 +1130,7 @@ EOD;
 					continue;
 				}
 			}
+
 			if (JString::stristr($f, 'http://') || JString::stristr($f, 'https://'))
 			{
 				$f = $f;
@@ -1075,10 +1138,12 @@ EOD;
 			else
 			{
 				$compressedFile = str_replace('.js', $ext, $f);
+
 				if (JFile::exists($compressedFile))
 				{
 					$f = $compressedFile;
 				}
+
 				$f = COM_FABRIK_LIVESITE . $f;
 			}
 
@@ -1108,7 +1173,6 @@ EOD;
 					$opts = trim($onLoad) !== '' ? '\'onLoad\':function(){' . $onLoad . '}' : '';
 					echo '<script type="text/javascript">Asset.javascript(\'' . $f . '\', {' . $opts . '});</script>';
 				}
-
 			}
 			else
 			{
@@ -1116,6 +1180,7 @@ EOD;
 			}
 			$counter ++;
 		}
+
 		if ($onLoad !== '' && JRequest::getCmd('format') != 'raw' && !empty($src))
 		{
 			if (self::inAjaxLoadedPage())
@@ -1126,8 +1191,10 @@ EOD;
 			{
 				$onLoad = "(function() { head.ready(function() {\n" . $onLoad . "\n})\n})";
 			}
+
 			$src[] = $onLoad;
 		}
+
 		if (!empty($src))
 		{
 			$document->addScriptDeclaration('head.js(' . implode(",\n", array_unique($src)) . ');' . "\n");
@@ -1153,10 +1220,12 @@ EOD;
 		if (!self::$modal)
 		{
 			$fbConfig = JComponentHelper::getParams('com_fabrik');
+
 			if ($fbConfig->get('include_lightbox_js', 1) == 0)
 			{
 				return;
 			}
+
 			if ($fbConfig->get('use_mediabox', false))
 			{
 				$folder = 'components/com_fabrik/libs/mediabox/';
@@ -1168,6 +1237,7 @@ EOD;
 				JHTML::stylesheet('components/com_fabrik/libs/slimbox1.64/css/slimbox.css');
 				self::script('components/com_fabrik/libs/slimbox1.64/js/slimbox.js');
 			}
+
 			self::$modal = true;
 		}
 	}
@@ -1186,6 +1256,7 @@ EOD;
 	{
 
 		$sig = md5(serialize(array($selector, $params)));
+
 		if (isset(self::$tips[$sig]) && (self::$tips[$sig]))
 		{
 			return;
@@ -1227,20 +1298,25 @@ EOD;
 		$config = JComponentHelper::getParams('com_fabrik');
 		$app = JFactory::getApplication();
 		$input = $app->input;
+
 		if ($config->get('use_fabrikdebug') == 0)
 		{
 			return;
 		}
+
 		if ($input->getBool('fabrikdebug', 0, 'request') != 1)
 		{
 			return;
 		}
+
 		if ($input->get('format') == 'raw')
 		{
 			return;
 		}
+
 		echo '<div class="fabrikDebugOutputTitle">' . $title . '</div>';
 		echo '<div class="fabrikDebugOutput fabrikDebugHidden">';
+
 		if (is_object($content) || is_array($content))
 		{
 			echo '<pre>' . htmlspecialchars(print_r($content, true)) . '</pre>';
@@ -1249,6 +1325,7 @@ EOD;
 		{
 			echo htmlspecialchars($content);
 		}
+
 		echo '</div>';
 
 		if (!isset(self::$debug))
@@ -1291,14 +1368,17 @@ EOD;
 		$str[] = '<span class="breadcrumbs"><a href="#">' . JText::_('HOME') . '</a><span> / </span>';
 		$i = 1;
 		$path = explode("/", $path);
+
 		foreach ($path as $p)
 		{
 			$str[] = '<a href="#" class="crumb' . $i . '">' . $p . '</a><span> / </span>';
 			$i++;
 		}
+
 		$str[] = '</span>';
 		$str[] = '<ul class="folderselect">';
 		settype($folders, 'array');
+
 		foreach ($folders as $folder)
 		{
 			if (trim($folder) != '')
@@ -1306,12 +1386,15 @@ EOD;
 				$str[] = '<li class="fileupload_folder"><a href="#">' . $folder . '</a></li>';
 			}
 		}
+
 		// For html validation
 		if (empty($folder))
 		{
 			$str[] = '<li></li>';
 		}
+
 		$str[] = '</ul></div>';
+
 		return implode("\n", $str);
 	}
 
@@ -1356,17 +1439,21 @@ EOD;
 		$json->url = COM_FABRIK_LIVESITE . 'index.php?option=com_' . $package . '&format=raw&view=plugin&task=pluginAjax&g=element&element_id=' . $elementid
 			. '&formid=' . $formid . '&plugin=' . $plugin . '&method=autocomplete_options&package=' . $package;
 		$c = JArrayHelper::getValue($opts, 'onSelection');
+
 		if ($c != '')
 		{
 			$json->onSelections = $c;
 		}
+
 		foreach ($opts as $k => $v)
 		{
 			$json->$k = $v;
 		}
+
 		$json->formRef = 'form_' . $formid;
 		$json->container = JArrayHelper::getValue($opts, 'container', 'fabrikElementContainer');
 		$json->menuclass = JArrayHelper::getValue($opts, 'menuclass', 'auto-complete-container');
+
 		return $json;
 	}
 
@@ -1400,6 +1487,7 @@ EOD;
 		if (!isset(self::$facebookgraphapi))
 		{
 			self::$facebookgraphapi = true;
+
 			return "<div id=\"fb-root\"></div>
 <script>
   window.fbAsyncInit = function() {
@@ -1417,6 +1505,7 @@ EOD;
 		$document = JFactory::getDocument();
 		$data = array('custom' => array());
 		$typeFound = false;
+
 		foreach ($meta as $k => $v)
 		{
 			$v = strip_tags($v);
@@ -1425,18 +1514,21 @@ EOD;
 			if ($k == 'og:type')
 			{
 				$typeFound = true;
+
 				if ($v == '')
 				{
 					$v = 'article';
 				}
 			}
-			$data['custom'][] = '<meta property="' . $k . '" content="' . $v . '"/>';
 
+			$data['custom'][] = '<meta property="' . $k . '" content="' . $v . '"/>';
 		}
+
 		if (!$typeFound)
 		{
 			$data['custom'][] = '<meta property="og:type" content="article"/>';
 		}
+
 		$document->setHeadData($data);
 	}
 
@@ -1460,13 +1552,16 @@ EOD;
 			self::$helperpaths[$type] = array();
 			$app = JFactory::getApplication();
 			$template = $app->getTemplate();
+
 			switch ($type)
 			{
 				case 'image':
+
 					if ($app->isAdmin())
 					{
 						self::$helperpaths[$type][] = JPATH_SITE . DIRECTORY_SEPARATOR . 'administrator/templates/' . $template . '/images/';
 					}
+
 					self::$helperpaths[$type][] = COM_FABRIK_BASE . 'templates/' . $template . '/html/com_fabrik/' . $view . '/%s/images/';
 					self::$helperpaths[$type][] = COM_FABRIK_BASE . 'templates/' . $template . '/html/com_fabrik/' . $view . '/images/';
 					self::$helperpaths[$type][] = COM_FABRIK_BASE . 'templates/' . $template . '/html/com_fabrik/images/';
@@ -1478,10 +1573,12 @@ EOD;
 					break;
 			}
 		}
+
 		if (!array_key_exists($path, self::$helperpaths[$type]) && $path !== '')
 		{
 			$highPriority ? array_unshift(self::$helperpaths[$type], $path) : self::$helperpaths[$type][] = $path;
 		}
+
 		return self::$helperpaths[$type];
 	}
 
@@ -1500,15 +1597,18 @@ EOD;
 		$file = JString::ltrim($file, DIRECTORY_SEPARATOR);
 		$paths = self::addPath('', 'image', $type, true);
 		$src = '';
+
 		foreach ($paths as $path)
 		{
 			$path = sprintf($path, $tmpl);
 			$src = $path . $file;
+
 			if (JFile::exists($src))
 			{
 				return $src;
 			}
 		}
+
 		return '';
 	}
 
@@ -1541,6 +1641,7 @@ EOD;
 		{
 			return '<i class="icon-' . JFile::stripExt($file) . '"></i>';
 		}
+
 		$src = self::getImagePath($file, $type, $tmpl);
 		$src = str_replace(COM_FABRIK_BASE, COM_FABRIK_LIVESITE, $src);
 		$src = str_replace("\\", "/", $src);
@@ -1560,20 +1661,25 @@ EOD;
 		}
 
 		$bits = array();
+
 		foreach ($properties as $key => $val)
 		{
 			if ($key === 'title')
 			{
 				$val = htmlspecialchars($val, ENT_QUOTES);
 			}
+
 			$bits[$key] = $val;
 		}
+
 		$p = '';
+
 		foreach ($bits as $key => $val)
 		{
 			$val = str_replace('"', "'", $val);
 			$p .= $key . '="' . $val . '" ';
 		}
+
 		return $src == '' ? '' : '<img src="' . $src . '" ' . $p . '/>';
 	}
 
@@ -1601,6 +1707,7 @@ EOD;
 		{
 			$elementBeforeLabel = true;
 		}
+
 		for ($i = 0; $i < count($values); $i++)
 		{
 			$item = array();
@@ -1610,10 +1717,12 @@ EOD;
 			// For values like '1"'
 			$value = htmlspecialchars($values[$i], ENT_QUOTES);
 			$inputClass = FabrikWorker::j3() ? '' : $type;
+
 			if (array_key_exists('input', $classes))
 			{
 				$inputClass .= ' ' . implode(' ', $classes['input']);
 			}
+
 			$chx = '<input type="' . $type . '" class="fabrikinput ' . $inputClass . '" name="' . $thisname . '" value="' . $value . '" ';
 			$sel = in_array($values[$i], $selected);
 			$chx .= $sel ? ' checked="checked" />' : ' />';
@@ -1623,18 +1732,21 @@ EOD;
 			$item[] = '</label>';
 			$items[] = implode("\n", $item);
 		}
-		$grid = array();
 
+		$grid = array();
 		$optionsPerRow = empty($optionsPerRow) ? 4 : $optionsPerRow;
 		$w = floor(100 / $optionsPerRow);
 		$widthConstraint = '';
+
 		if ($buttonGroup && $type == 'radio')
 		{
 			$grid[] = '<fieldset class="' . $type . ' btn-group">';
+
 			foreach ($items as $i => $s)
 			{
 				$grid[] = $s;
 			}
+
 			$grid[] = '</fieldset>';
 		}
 		else
@@ -1642,15 +1754,18 @@ EOD;
 			if (FabrikWorker::j3())
 			{
 				$span = floor(12 / $optionsPerRow);
+
 				foreach ($items as $i => $s)
 				{
 					$endLine = ($i !== 0 && (($i ) % $optionsPerRow == 0));
+
 					if ($endLine && $optionsPerRow > 1)
 					{
 						$grid[] = '</div><!-- grid close row -->';
 					}
 
 					$newLine = ($i % $optionsPerRow == 0);
+
 					if ($newLine && $optionsPerRow > 1)
 					{
 						$grid[] = '<div class="row-fluid">';
@@ -1658,6 +1773,7 @@ EOD;
 
 					$grid[] = $optionsPerRow != 1 ? '<div class="span' . $span . '">' . $s . '</div>' : $s;
 				}
+
 				if ($i + 1 % $optionsPerRow !== 0 && $optionsPerRow > 1)
 				{
 					// Close opened and unfinished row.
@@ -1667,14 +1783,17 @@ EOD;
 			else
 			{
 				$grid[] = '<ul>';
+
 				foreach ($items as $i => $s)
 				{
 					$clear = ($i % $optionsPerRow == 0) ? 'clear:left;' : '';
 					$grid[] = '<li style="' . $clear . 'float:left;width:' . $w . '%;padding:0;margin:0;">' . $s . '</li>';
 				}
+
 				$grid[] = '</ul>';
 			}
 		}
+
 		return $grid;
 	}
 
@@ -1689,6 +1808,7 @@ EOD;
 	public static function canvasSupport()
 	{
 		$navigator = JBrowser::getInstance();
+
 		return !($navigator->getBrowser() == 'msie' && $navigator->getMajor() < 9);
 	}
 
@@ -1731,6 +1851,7 @@ EOD;
 	public function getContentTemplate($contentTemplate)
 	{
 		$app = JFactory::getApplication();
+
 		if ($app->isAdmin())
 		{
 			$db = JFactory::getDbo();
@@ -1745,6 +1866,7 @@ EOD;
 			$articleModel = JModel::getInstance('Article', 'ContentModel');
 			$res = $articleModel->getItem($contentTemplate);
 		}
+
 		return $res->introtext . ' ' . $res->fulltext;
 	}
 
@@ -1761,6 +1883,7 @@ EOD;
 	public function getContentTitle($contentTemplate)
 	{
 		$app = JFactory::getApplication();
+
 		if ($app->isAdmin())
 		{
 			$db = JFactory::getDbo();
@@ -1775,6 +1898,7 @@ EOD;
 			$articleModel = JModel::getInstance('Article', 'ContentModel');
 			$res = $articleModel->getItem($contentTemplate);
 		}
+
 		return $res->title;
 	}
 
@@ -1790,6 +1914,7 @@ EOD;
 	function getTemplateFile($templateFile)
 	{
 		jimport('joomla.filesystem.file');
+
 		return JFile::read($templateFile);
 	}
 
@@ -1810,6 +1935,7 @@ EOD;
 		$result = require $tmpl;
 		$message = ob_get_contents();
 		ob_end_clean();
+
 		if ($result === false)
 		{
 			return false;

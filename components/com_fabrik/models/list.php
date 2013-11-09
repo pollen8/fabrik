@@ -5407,6 +5407,7 @@ $groupBy .= '_raw';
 			JDEBUG ? $profiler->mark('fabrik makeFilters start') : null;
 			$modelFilters = $this->makeFilters($container, $type, $id, $ref);
 			JDEBUG ? $profiler->mark('fabrik makeFilters end') : null;
+
 			foreach ($modelFilters as $name => $filter)
 			{
 				$f = new stdClass;
@@ -5415,8 +5416,10 @@ $groupBy .= '_raw';
 				$f->required = array_key_exists('required', $filter) ? $filter->required : '';
 				$this->viewfilters[$filter->name] = $f;
 			}
+
 			FabrikWorker::getPluginManager()->runPlugins('onMakeFilters', $this, 'list');
 		}
+
 		return $this->viewfilters;
 	}
 
@@ -5668,6 +5671,8 @@ $groupBy .= '_raw';
 		$statements[] = JHTML::_('select.option', 'ENDS WITH', JText::_('COM_FABRIK_ENDS_WITH'));
 		$statements[] = JHTML::_('select.option', '>', JText::_('COM_FABRIK_GREATER_THAN'));
 		$statements[] = JHTML::_('select.option', '<', JText::_('COM_FABRIK_LESS_THAN'));
+		$statements[] = JHTML::_('select.option', 'EMPTY', JText::_('COM_FABRIK_IS_EMPTY'));
+
 		return $statements;
 	}
 
@@ -5715,6 +5720,7 @@ $groupBy .= '_raw';
 		{
 			return $this->advancedSearchRows;
 		}
+
 		$statements = $this->getStatementsOpts();
 		$rows = array();
 		$first = false;
@@ -5726,6 +5732,7 @@ $groupBy .= '_raw';
 
 		$filters = $this->getAdvancedFilterValues();
 		$counter = 0;
+
 		if (array_key_exists('key', $filters))
 		{
 			foreach ($filters['key'] as $key)
@@ -5733,19 +5740,24 @@ $groupBy .= '_raw';
 				foreach ($elementModels as $elementModel)
 				{
 					$testkey = FabrikString::safeColName($elementModel->getFullName(false, false, false));
+
 					if ($testkey == $key)
 					{
 						break;
 					}
 				}
-				$join = $filters['join'][$counter];
 
-				$condition = $filters['condition'][$counter];
+				$join = $filters['join'][$counter];
+				$condition = array_key_exists($counter, $filters['orig_condition']) ? $filters['orig_condition'][$counter] : $filters['condition'][$counter];
 				$value = $filters['origvalue'][$counter];
 				$v2 = $filters['value'][$counter];
 				$jsSel = '=';
+
 				switch ($condition)
 				{
+					case 'EMPTY':
+						$jsSel = 'EMPTY';
+						break;
 					case "<>":
 						$jsSel = '<>';
 						break;
@@ -5761,6 +5773,7 @@ $groupBy .= '_raw';
 					default:
 						$firstChar = JString::substr($v2, 1, 1);
 						$lastChar = JString::substr($v2, -2, 1);
+
 						switch ($firstChar)
 						{
 							case "%":
@@ -5775,10 +5788,12 @@ $groupBy .= '_raw';
 						}
 						break;
 				}
+
 				if (is_string($value))
 				{
 					$value = trim(trim($value, '"'), "%");
 				}
+
 				if ($counter == 0)
 				{
 					$join = JText::_('COM_FABRIK_WHERE') . '<input type="hidden" value="WHERE" name="' . $prefix . 'join][]" />';
@@ -5809,7 +5824,9 @@ $groupBy .= '_raw';
 			$rows[] = array('join' => $join, 'element' => $key, 'condition' => $jsSel, 'filter' => $firstFilter, 'type' => $type,
 					'grouped' => $grouped);
 		}
+
 		$this->advancedSearchRows = $rows;
+
 		return $rows;
 	}
 
