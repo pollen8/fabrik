@@ -443,6 +443,7 @@ class FabrikModelFusionchart extends FabrikFEModelVisualization
 
 		$dual_y_parents = $params->get('fusionchart_dual_y_parent');
 		$chartWheres = (array) $params->get('fusionchart_where');
+		$limits = (array) $params->get('fusionchart_limit');
 		$this->c = 0;
 		$gdata = array();
 		$glabels = array();
@@ -492,7 +493,8 @@ class FabrikModelFusionchart extends FabrikFEModelVisualization
 			 * object if we call getPagination after render().  So call it first, then render() will
 			 * get our cached pagination, rather than vice versa.
 			 */
-			$listModel->setLimits(0, 0);
+			$limit = (int) JArrayHelper::getValue($limits, $this->c, 0);
+			$listModel->setLimits(0, $limit);
 			$nav = $listModel->getPagination(0, 0, 0);
 			$listModel->render();
 			$alldata = $listModel->getData();
