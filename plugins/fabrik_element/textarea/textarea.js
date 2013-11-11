@@ -77,9 +77,30 @@ var FbTextarea = new Class({
 				this.warningFX = new Fx.Morph(element, {duration: 1000, transition: Fx.Transitions.Quart.easeOut});
 				this.origCol = element.getStyle('color');
 				if (this.options.wysiwyg && typeof(tinymce) !== 'undefined') {
-					tinymce.dom.Event.add(this.container, 'keyup', function (e) {
-						this.informKeyPress(e);
-					}.bind(this));
+					
+					// Joomla 3.2 + usess tinyMce 4
+					if (tinymce.majorVersion >= 4) {
+						tinyMCE.get(this.element.id).on('keyup', function (e) {
+							this.informKeyPress(e);
+						}.bind(this));
+						
+						tinyMCE.get(this.element.id).on('focus', function (e) {
+							var c = this.element.getParent('.fabrikElementContainer');
+							c.getElement('span.badge').addClass('badge-info');
+							c.getElement('.fabrik_characters_left').removeClass('muted');
+						}.bind(this));
+						
+						tinyMCE.get(this.element.id).on('blur', function (e) {
+							var c = this.element.getParent('.fabrikElementContainer');
+							c.getElement('span.badge').removeClass('badge-info');
+							c.getElement('.fabrik_characters_left').addClass('muted');
+						}.bind(this));
+						
+					} else {
+						tinymce.dom.Event.add(this.container, 'keyup', function (e) {
+							this.informKeyPress(e);
+						}.bind(this));
+					}
 				} else {
 					if (typeOf(this.container) !== 'null') {
 						this.container.addEvent('keydown', function (e) {

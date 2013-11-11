@@ -372,7 +372,7 @@ class PlgFabrik_ElementTextarea extends PlgFabrik_Element
 				$charsLeft = $params->get('textarea-maxlength') - count(explode(' ', $value));
 			}
 
-			$str .= '<div class="fabrik_characters_left"><span>' . $charsLeft . '</span> ' . $label . '</div>';
+			$str .= '<div class="fabrik_characters_left muted" style="clear:both"><span class="badge">' . $charsLeft . '</span> ' . $label . '</div>';
 		}
 
 		return $str;
