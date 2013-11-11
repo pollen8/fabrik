@@ -816,7 +816,8 @@ class PlgFabrik_Element extends FabrikPlugin
 		if ($this->getGroupModel()->isJoin() && $this->isJoin())
 		{
 			$groupJoin = $this->getGroupModel()->getJoinModel()->getJoin();
-			$pkField = $groupJoin->table_join . '.' . $groupJoin->table_key;
+			//$pkField = $groupJoin->table_join . '.' . $groupJoin->table_key;
+			$pkField = $groupJoin->params->get('pk');
 		}
 		else
 		{

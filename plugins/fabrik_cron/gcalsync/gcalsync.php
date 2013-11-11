@@ -94,17 +94,32 @@ class PlgFabrik_CronGcalsync extends PlgFabrik_Cron
 			$table = $listModel->getTable();
 			$table_name = $table->db_table_name;
 
+			/**
+			 * Reading the raw table ourselves leads to lots of issues, like with joined data,
+			 * so let's just use what we get from the main plugin handler, and leave it up to the admin
+			 * to make sure they aren't using filtered data, if necessary by copying the list and removing
+			 * pre-filters from the copy.  Maybe put a switch in as an option as to which way to do it.
+			 */
+
 			/* For now, we have to read the table ourselves.  We can't rely on the $data passed to us
 			 * because it can be filtered, and we need to see all records to know if the GCal events
 			 * already exist in the table
 			 */
 
+			/*
 			$mydata = array();
 			$db = FabrikWorker::getDbo();
 			$query = $db->getQuery(true);
 			$query->select('*')->from($table_name);
 			$db->setQuery($query);
 			$mydata[0] = $db->loadObjectList();
+			*/
+
+			/*
+			 * So as per above comment, now just use the $data we got given
+			 */
+			$db = FabrikWorker::getDbo();
+			$mydata = $data;
 
 			// Grab all the field names to use
 			$gcal_label_element_long = $params->get('gcal_sync_label_element');
@@ -188,15 +203,16 @@ class PlgFabrik_CronGcalsync extends PlgFabrik_Cron
 				}
 				catch (Zend_Gdata_App_CaptchaRequiredException $cre)
 				{
+					/*
 					echo 'URL of CAPTCHA image: ' . $cre->getCaptchaUrl() . "\n";
 					echo 'Token ID: ' . $cre->getCaptchaToken() . "\n";
-
+					*/
+					$this->log .= "\nSome funky Zend_Gdata exception!";
 					return;
 				}
 				catch (Zend_Gdata_App_AuthException $ae)
 				{
-					echo 'Problem authenticating: ' . $ae->exception() . "\n";
-
+					$this->log .= 'Problem authenticating: ' . $ae->exception() . "\n";
 					return;
 				}
 

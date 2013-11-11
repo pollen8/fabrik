@@ -734,15 +734,23 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 		$data = $listModel->getData();
 		$return = new stdClass;
 		$w = new FabrikWorker;
-		$store = (bool) $params->get('calc_on_save_only', 0);
+		/**
+		 * $$$ hugh ... no, we never need to store in this context.  The 'calc_on_save_only' param simply distates
+		 * whether we re-calc when displaying the element, or just use the stored value.  So if calc_on_save_only is
+		 * set, then when displaying in lists, we don't execute the calc, we just used the stored value fro the database.
+		 * And that logic is handled in _getV(), so we don't need to do the $store stuff.
+		 */
+		// $store = (bool) $params->get('calc_on_save_only', 0);
 		$listRef = 'list_' . $listModel->getRenderContext() . '_row_';
-		$storeKey = $this->getElement()->name;
+		// $storeKey = $this->getElement()->name;
 
 		foreach ($data as $group)
 		{
 			foreach ($group as $row)
 			{
 				$key = $listRef . $row->__pk_val;
+
+				/*
 				$default = $w->parseMessageForPlaceHolder($params->get('calc_calculation'), $row);
 
 				if (FabrikHelperHTML::isDebug())
@@ -758,6 +766,9 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 				{
 					$listModel->storeCell($row->__pk_val, $storeKey, $return->$key);
 				}
+				*/
+
+				$return->$key = $this->_getV(JArrayHelper::fromObject($row), 0);
 			}
 		}
 

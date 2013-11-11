@@ -164,6 +164,19 @@ class PlgFabrik_ElementPassword extends PlgFabrik_Element
 		$value = urldecode($this->getValue($_REQUEST, $repeatCounter));
 		$name = $this->getFullName(true, false);
 		$check_name = str_replace($element->name, $element->name . '_check', $name);
+
+		/**
+		 * $$$ hugh - there must be a better way of doing this, but ...
+		 * if ajax, and the _check element isn't there, then this is probably an inline edit, and
+		 * this isn't the element being edited, we're just being called as part of the generic form validation,
+		 * so just return true;
+		 */
+		$ajax = $input->getBool('fabrik_ajax', false);
+		if ($ajax && !array_key_exists($checkname, $_REQUEST))
+		{
+			return true;
+		}
+
 		$this->setFullName($check_name, true, false);
 		$this->reset();
 		$checkvalue = urldecode($this->getValue($_REQUEST, $repeatCounter));
