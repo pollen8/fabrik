@@ -113,7 +113,9 @@ class JFormFieldFabrikModalrepeat extends JFormField
 		@$subForm->setFields($children);
 
 		$str = array();
-		$modalid = $this->id . '_modal';
+		$version = new JVersion;
+		$j32 = version_compare($version->RELEASE, '3.2') >= 0 ? true : false;
+		$modalid = $j32 ? 'attrib-' . $this->id . '_modal' : $this->id . '_modal';
 
 		// As JForm will render child fieldsets we have to hide it via CSS
 		$fieldSetId = str_replace('jform_params_', '', $modalid);
@@ -214,6 +216,11 @@ class JFormFieldFabrikModalrepeat extends JFormField
 					}
 
 					$j3pane = $context . '_' . str_replace('jform_params_', '', $modalid) . '_FIELDSET_LABEL';
+
+					if ($j32)
+					{
+						$j3pane = strtoupper(str_replace('attrib-', '', $j3pane));
+					}
 
 					$script = "window.addEvent('domready', function() {
 				var a = jQuery(\"a:contains('$j3pane')\");
