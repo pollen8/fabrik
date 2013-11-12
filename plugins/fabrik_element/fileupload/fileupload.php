@@ -18,6 +18,8 @@ define("FU_DOWNLOAD_SCRIPT_TABLE", '1');
 define("FU_DOWNLOAD_SCRIPT_DETAIL", '2');
 define("FU_DOWNLOAD_SCRIPT_BOTH", '3');
 
+JLog::addLogger(array('text_file' => 'fabrik.element.fileupload.log.php'), JLog::ERROR + JLog::EMERGENCY + JLog::WARNING, array('com_fabrik.element.fileupload'));
+
 /**
  * Plug-in to render fileupload element
  *
@@ -91,8 +93,8 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		{
 			/*$$$rob could be the case that we aren't uploading an element by have removed
 			 *a repeat group (no join) with a file upload element, in this case processUpload has the correct
-			*file path settings.
-			*/
+			 *file path settings.
+			 */
 			return false;
 		}
 		else
@@ -122,8 +124,8 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 				{
 					/*if we can crop we need to store the cropped coordinated in the field data
 					 * @see onStoreRow();
-					* above depreciated - not sure what to return here for the moment
-					*/
+					 * above depreciated - not sure what to return here for the moment
+					 */
 					return false;
 				}
 			}
@@ -1403,7 +1405,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		}
 		/* If we've turnd on crop but not set ajax upload then the cropping wont work so we shouldnt return
 		 * otherwise no standard image processed
-		*/
+		 */
 		if ($this->crop($name) && $params->get('ajax_upload'))
 		{
 			// Stops form data being updated with blank data.
@@ -1463,7 +1465,10 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 				}
 				else
 				{
-					$files[$i] = $imagesToKeep[$i];
+					if (array_key_exists($i, $imagesToKeep))
+					{
+						$files[$i] = $imagesToKeep[$i];
+					}
 				}
 			}
 
@@ -1560,10 +1565,12 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 	protected function deleteFile($filename)
 	{
 		$storage = $this->getStorage();
+		$user = JFactory::getUser();
 		$file = $storage->clean(JPATH_SITE . '/' . $filename);
 		$thumb = $storage->clean($storage->_getThumb($filename));
 		$cropped = $storage->clean($storage->_getCropped($filename));
 
+		JLog::add('Delete files: ' . $file . ' , ' . $thumb . ', ' . $cropped . '; user = ' . $user->get('id'), JLog::WARNING, 'com_fabrik.element.fileupload');
 		if ($storage->exists($file))
 		{
 			$storage->delete($file);
@@ -1628,7 +1635,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 				{
 					/* If an original value is found then data not empty - if not found continue to check the $_FILES array to see if one
 					 * has been uploaded
-					*/
+					 */
 					return false;
 				}
 			}
@@ -1709,6 +1716,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 	protected function _processIndUpload(&$file, $myFileDir = '', $repeatGroupCounter = 0)
 	{
 		$params = $this->getParams();
+		$user = JFactory::getUser();
 		$storage = $this->getStorage();
 
 		// $$$ hugh - check if we need to blow away the cached filepath, set in validation
@@ -1756,6 +1764,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 					$filepath = FabrikUploader::incrementFileName($filepath, $filepath, 1);
 					break;
 				case 2:
+					JLog::add('Ind upload Delete file: ' . $filepath . '; user = ' . $user->get('id'), JLog::WARNING, 'com_fabrik.element.fileupload');
 					$storage->delete($filepath);
 					break;
 			}
@@ -1874,7 +1883,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 
 		if (array_key_exists($repeatCounter, $this->_filePaths))
 		{
-			/**
+			/*
 			 * $$$ hugh - if it uses element placeholders, there's a likelihood the element
 			 * data may have changed since we cached the path during validation, so we need
 			 * to rebuild it.  For instance, if the element data is changed by a onBeforeProcess
@@ -2376,10 +2385,10 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 
 		/*
 		 * Got this warning on fabrikar.com - not sure why set testing with errors off:
-		*
-		* <b>Warning</b>:  utf8_to_unicode: Illegal sequence identifier in UTF-8 at byte 0 in
-		* <b>/home/fabrikar/public_html/downloads/libraries/phputf8/utils/unicode.php</b> on line <b>110</b><br />
-		*/
+		 *
+		 * <b>Warning</b>:  utf8_to_unicode: Illegal sequence identifier in UTF-8 at byte 0 in
+		 * <b>/home/fabrikar/public_html/downloads/libraries/phputf8/utils/unicode.php</b> on line <b>110</b><br />
+		 */
 		/* error_reporting(0); */
 		// $$$ hugh - reinstated this workaround, as I started getting those utf8 warnings as well.
 		error_reporting(E_ERROR | E_PARSE);
@@ -2543,7 +2552,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 
 			// Replace the backslashes with forward slashes
 			$str = "CONCAT('<img src=\"" . COM_FABRIK_LIVESITE . "'," . "REPLACE(" . "REPLACE($val, '$ulDir', '" . $thumbDir . "')" . ", '\\\', '/')"
-					. ", '\" alt=\"database join image\" />')";
+				. ", '\" alt=\"database join image\" />')";
 		}
 		else
 		{
@@ -2570,6 +2579,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		}
 
 		$db = $this->getListModel()->getDb();
+		$user = JFactory::getUser();
 		$storage = $this->getStorage();
 		require_once COM_FABRIK_FRONTEND . '/helpers/uploader.php';
 		$params = $this->getParams();
@@ -2591,7 +2601,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 							$join = $this->getJoinModel()->getJoin();
 							$query = $db->getQuery(true);
 							$query->select('*')->from($db->quoteName($join->table_join))
-							->where($db->quoteName('parent_id') . ' = ' . $db->quote($row->__pk_val));
+								->where($db->quoteName('parent_id') . ' = ' . $db->quote($row->__pk_val));
 							$db->setQuery($query);
 							$imageRows = $db->loadObjectList('id');
 
@@ -2604,8 +2614,9 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 
 								$query->clear();
 								$query->delete($db->quoteName($join->table_join))
-								->where($db->quoteName('id') . ' IN (' . implode(', ', array_keys($imageRows)) . ')');
+									->where($db->quoteName('id') . ' IN (' . implode(', ', array_keys($imageRows)) . ')');
 								$db->setQuery($query);
+								JLog::add('onDeleteRows Delete records query: ' . $db->getQuery() . '; user = ' . $user->get('id'), JLog::WARNING, 'com_fabrik.element.fileupload');
 								$db->execute();
 							}
 						}
@@ -3009,8 +3020,12 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		// Could be a single ajax fileupload if so not joined
 		if ($join->table_join != '')
 		{
-			$query->delete($db->quoteName($join->table_join))->where($db->quoteName('id') . ' = ' . $input->getInt('recordid'));
+			// Use getString as if we have edited a record, added a file and deleted it the id is alphanumeric and not found in db.
+			$query->delete($db->quoteName($join->table_join))
+			->where($db->quoteName('id') . ' = ' . $db->quote($input->getString('recordid')));
 			$db->setQuery($query);
+
+			JLog::add('Delete join image entry: ' . $db->getQuery() . '; user = ' . $user->get('id'), JLog::WARNING, 'com_fabrik.element.fileupload');
 			$db->execute();
 		}
 	}
