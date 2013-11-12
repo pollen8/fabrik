@@ -137,15 +137,15 @@ class PlgSystemFabrik extends JPlugin
 	public static function buildJs()
 	{
 		$session = JFactory::getSession();
-		$shim = $session->get('fabrik.js.config', array());
-		$shim = implode("\n", $shim);
+		$config = $session->get('fabrik.js.config', array());
+		$config = implode("\n", $config);
 
 		$js = $session->get('fabrik.js.scripts', array());
 		$js = implode("\n", $js);
 
-		if ($shim . $js !== '')
+		if ($config . $js !== '')
 		{
-			$script = '<script type="text/javascript">' . "\n" . $shim . "\n" . $js . "\n" . '</script>';
+			$script = '<script type="text/javascript">' . "\n" . $config . "\n" . $js . "\n" . '</script>';
 		}
 		else
 		{
