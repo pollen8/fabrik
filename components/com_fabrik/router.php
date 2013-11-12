@@ -147,7 +147,8 @@ function fabrikBuildRoute(&$query)
 
 	if (isset($query['format']))
 	{
-		$segments[] = $query['format'];
+		// Was causing error when sef on, url rewrite on and suffix add to url on.
+		//$segments[] = $query['format'];
 
 		/**
 		 * Don't unset as with sef urls and extensions on - if we unset it
@@ -206,6 +207,7 @@ function fabrikParseRoute($segments)
 			$vars['view'] = $segments[0];
 			$vars['formid'] = JArrayHelper::getValue($segments, 1, 0);
 			$vars['rowid'] = JArrayHelper::getValue($segments, 2, '');
+			$vars['format'] = JArrayHelper::getValue($segments, 3, 'html');
 			break;
 		case 'table':
 		case 'list':
