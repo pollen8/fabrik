@@ -12,9 +12,9 @@
 defined('_JEXEC') or die('Restricted access');
 
 ?>
-<div id="<?php echo $this->_row->id;?>" class="fabrik_row span6">
+<div id="<?php echo $this->_row->id;?>" class="fabrik_row span6 <?php echo $this->_row->class;?>" >
 	<?php foreach ($this->headings as $heading => $label) : ?>
-		<div class="row-fluid">
+		<div class="row-fluid <?php echo $this->cellClass[$heading]['class']?>">
 			<?php echo @$this->_row->data->$heading;?>
 		</div>
 	<?php
