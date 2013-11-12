@@ -6268,6 +6268,7 @@ class FabrikFEModelList extends JModelForm
 		$statements[] = JHTML::_('select.option', 'ENDS WITH', JText::_('COM_FABRIK_ENDS_WITH'));
 		$statements[] = JHTML::_('select.option', '>', JText::_('COM_FABRIK_GREATER_THAN'));
 		$statements[] = JHTML::_('select.option', '<', JText::_('COM_FABRIK_LESS_THAN'));
+		$statements[] = JHTML::_('select.option', 'EMPTY', JText::_('COM_FABRIK_IS_EMPTY'));
 
 		return $statements;
 	}
@@ -6357,6 +6358,9 @@ class FabrikFEModelList extends JModelForm
 
 				switch ($condition)
 				{
+					case 'EMPTY':
+						$jsSel = 'EMPTY';
+						break;
 					case "<>":
 						$jsSel = '<>';
 						break;
