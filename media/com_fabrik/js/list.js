@@ -1189,6 +1189,9 @@ var FbGroupedToggler = new Class({
 	
 	initialize: function (container, options) {
 		var rows, h, img, state;
+		if (typeOf(container) === 'null') {
+			return;
+		}
 		this.setOptions(options);
 		this.container = container;
 		this.toggleState = 'shown';
