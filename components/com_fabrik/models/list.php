@@ -9037,11 +9037,6 @@ class FabrikFEModelList extends JModelForm
 						. $this->getId();
 			}
 
-			if ($this->packageId !== 0 || $this->isAjaxLinks())
-			{
-				$url .= '&tmpl=component';
-			}
-
 			$link = JRoute::_($url);
 		}
 		else
