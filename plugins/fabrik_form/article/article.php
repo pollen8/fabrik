@@ -84,7 +84,6 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 		foreach ($attribs as $attrib)
 		{
 			$elementId = $params->get($attrib);
-			echo "$attrib => $elementId <br>";
 			$data[$attrib] = $this->findElementData($elementId);
 		}
 
@@ -93,7 +92,6 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 		$item = JTable::getInstance('Content');
 		$item->load($id);
 		$item->bind($data);
-	//	echo "<pre>";print_r($data);exit;
 		$item->store();
 
 		return $item;
@@ -391,7 +389,6 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 		}
 
 		$message = stripslashes($message);
-		//echo $message;exit;
 
 		$editURL = COM_FABRIK_LIVESITE . 'index.php?option=com_' . $package . '&amp;view=form&amp;fabrik=' . $formModel->get('id') . '&amp;rowid='
 			. $input->get('rowid', '', 'string');
@@ -405,7 +402,6 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 		$message = str_replace('{fabrik_viewurl}', $viewURL, $message);
 		$w = new FabrikWorker;
 		$output = $w->parseMessageForPlaceholder($message, $this->data, true);
-//echo $output;exit;
 
 		return $output;
 	}
