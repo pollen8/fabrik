@@ -755,15 +755,22 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 		 * and I'm not sure if we enforce that.  Problem being that if we just cast directly to
 		 * an array, the array isn't "empty()", as it has a single, empty string entry.  So then
 		 * the array_diff() we're about to do sees that as a diff.
+		 *
+		 * $$$ rob - Need more logic that the previous test, as we weren't applying default value/label if set and data empty
 		*/
-		$selected = $this->getValue($data, $repeatCounter);
+		$selected = (array) $this->getValue($data, $repeatCounter);
 
-		if (!is_array($selected))
+		if (FArrayHelper::emptyIsh($selected))
 		{
-			// $$$ hugh - ooops, '0' will count as empty.
-			// $selected = empty($selected) ?  array() : array($selected);
-			$selected = $selected === '' ? array() : array($selected);
+			$selected = array();
+
+			// Nothing previously selected, and not editable, set selected to default value, which later on is replaced with default label
+			if (!$this->isEditable() && $params->get('sub_default_value', '') !== '')
+			{
+				$selected[] = $params->get('sub_default_value');
+			}
 		}
+
 		// $$$ rob 06/10/2011 if front end add option on, but added option not saved we should add in the selected value to the
 		// values and labels.
 		$diff = array_diff($selected, $values);
@@ -800,6 +807,11 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 			}
 
 			$splitter = ($params->get('icon_folder') != -1 && $params->get('icon_folder') != '') ? ' ' : ', ';
+
+			if (empty($aRoValues))
+			{
+				return'';
+			}
 
 			return ($this->isMultiple() && $this->renderWithHTML)
 			? '<ul class="fabrikRepeatData"><li>' . implode('</li><li>', $aRoValues) . '</li></ul>' : implode($splitter, $aRoValues);
