@@ -273,10 +273,11 @@ class Com_FabrikInstallerScript
 	public function postflight($type, $parent)
 	{
 		$db = JFactory::getDbo();
+		$query = $db->getQuery(true);
 
-		// Remove old update site
-		$db->setQuery("DELETE FROM #__update_sites WHERE location LIKE '%update/component/com_fabrik%'");
-		$db->execute();
+		// Remove old update site & Fabrik 3.0.x update site
+		$query->delete('#__update_sites')->where("location LIKE '%update/component/com_fabrik%' OR location = 'http://fabrikar.com/update/fabrik/package_list.xml'");
+		$db->setQuery($query);
 
 		if (!$db->execute())
 		{
