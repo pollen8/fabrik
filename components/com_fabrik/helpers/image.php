@@ -264,6 +264,9 @@ class Fabimage
 		 */
 		$folder = JPATH_SITE . '/' . ltrim($path, '/');
 
+		// For SSL a user agent may need to be set.
+		ini_set('user_agent','Mozilla/4.0 (compatible; MSIE 6.0)');
+
 		if (!JFolder::exists($folder))
 		{
 			JFolder::create($folder);
