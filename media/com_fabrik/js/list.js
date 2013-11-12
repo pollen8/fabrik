@@ -177,7 +177,7 @@ var FbList = new Class({
 		var thisc = this.makeCSVExportForm();
 		this.exportWindowOpts.content = thisc;
 		this.exportWindowOpts.onContentLoaded = function () {
-			this.fitToContent();
+			this.fitToContent(false);
 		};
 		this.csvWindow = Fabrik.getWindow(this.exportWindowOpts);
 	},
@@ -431,7 +431,7 @@ var FbList = new Class({
 						if (typeOf(document.id('csvmsg')) !== 'null') {
 							document.id('csvmsg').set('html', msg);
 						}
-						this.csvWindow.fitToContent();
+						this.csvWindow.fitToContent(false);
 						document.getElements('input.exportCSVButton').removeProperty('disabled');
 					}
 				}
