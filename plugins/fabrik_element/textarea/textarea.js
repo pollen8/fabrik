@@ -106,10 +106,30 @@ var FbTextarea = new Class({
 						this.container.addEvent('keydown', function (e) {
 							this.informKeyPress(e);
 						}.bind(this));
+						
+						this.container.addEvent('blur', function (e) {
+							this.blurCharsLeft(e);
+						}.bind(this));
+						
+						this.container.addEvent('focus', function (e) {
+							this.focusCharsLeft(e);
+						}.bind(this));
 					}
 				}
 			}
 		}
+	},
+	
+	focusCharsLeft: function () {
+		var c = this.element.getParent('.fabrikElementContainer');
+		c.getElement('span.badge').addClass('badge-info');
+		c.getElement('.fabrik_characters_left').removeClass('muted');
+	},
+	
+	blurCharsLeft: function () {
+		var c = this.element.getParent('.fabrikElementContainer');
+		c.getElement('span.badge').removeClass('badge-info');
+		c.getElement('.fabrik_characters_left').addClass('muted');
 	},
 
 	/**

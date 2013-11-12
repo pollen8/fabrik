@@ -2355,8 +2355,8 @@ class PlgFabrik_Element extends FabrikPlugin
 	/**
 	 * Draws the html form element
 	 *
-	 * @param   array  $data           to preopulate element with
-	 * @param   int    $repeatCounter  repeat group counter
+	 * @param   array  $data           To preopulate element with
+	 * @param   int    $repeatCounter  Repeat group counter
 	 *
 	 * @return  string	elements html
 	 */
@@ -2369,10 +2369,10 @@ class PlgFabrik_Element extends FabrikPlugin
 	/**
 	 * Get hidden field
 	 *
-	 * @param   string  $name   element name
-	 * @param   string  $value  elemenet value
-	 * @param   string  $id     element id
-	 * @param   string  $class  class name
+	 * @param   string  $name   Element name
+	 * @param   string  $value  Elemenet value
+	 * @param   string  $id     Element id
+	 * @param   string  $class  Class name
 	 *
 	 * @return string
 	 */
@@ -2388,22 +2388,38 @@ class PlgFabrik_Element extends FabrikPlugin
 	/**
 	 * Helper method to build an input field
 	 *
-	 * @param   string  $node  input type default 'input'
-	 * @param   array   $bits  input property => value
+	 * @param   string  $node      Input type default 'input'
+	 * @param   array   $bits      Input property => value
+	 * @param   bool    $shortTag  Is $node a <node/> or <node></node> tag
 	 *
 	 * @return  string  input
 	 */
 
-	protected function buildInput($node = 'input', $bits = array())
+	protected function buildInput($node = 'input', $bits = array(), $shortTag = true)
 	{
 		$str = '<' . $node . ' ';
 
+		$value = '';
+
 		foreach ($bits as $key => $val)
 		{
+			if ($node === 'textarea' && $key === 'value')
+			{
+				$value = $val;
+				continue;
+			}
+
 			$str .= $key . '="' . $val . '" ';
 		}
 
-		$str .= '/>';
+		$str .= $shortTag ? '' : '>';
+
+		if (!$shortTag && $value !== '')
+		{
+			$str .= $value;
+		}
+
+		$str .= $shortTag ? '/>' : '</' . $node . '>';
 
 		return $str;
 	}
@@ -2411,8 +2427,8 @@ class PlgFabrik_Element extends FabrikPlugin
 	/**
 	 * Helper function to build the property array used in buildInput()
 	 *
-	 * @param   int    $repeatCounter  repeat group counter
-	 * @param   mixed  $type           null/string $type property (if null then password/text applied as default)
+	 * @param   int    $repeatCounter  Repeat group counter
+	 * @param   mixed  $type           Null/string $type property (if null then password/text applied as default)
 	 *
 	 * @return  array  input properties key/value
 	 */

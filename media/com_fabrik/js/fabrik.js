@@ -393,7 +393,7 @@ if (typeof (Fabrik) === "undefined") {
 		}
 
 		url = a.get('href');
-		url += url.contains('?') ? '&tmpl=component' : '?tmpl=component'; 
+		url += url.contains('?') ? '&tmpl=component&ajax=1' : '?tmpl=component&ajax=1';
 
 		// Only one edit window open at the same time.
 		$H(Fabrik.Windows).each(function (win, key) {
@@ -621,6 +621,7 @@ if (typeof (Fabrik) === "undefined") {
 		}
 
 		url = a.get('href');
+		url += url.contains('?') ? '&tmpl=component&ajax=1' : '?tmpl=component&ajax=1';
 		loadMethod = a.get('data-loadmethod');
 		if (typeOf(loadMethod) === 'null') {
 			loadMethod = 'xhr';
