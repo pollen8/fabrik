@@ -227,9 +227,9 @@ var fabrikAdminElement = new Class({
 			} else {
 				t = Joomla.JText._('COM_FABRIK_JS_INLINE_JS_CODE');
 			}
-			if (code.value.replace(/(['"]).*?[^\\]\1/g,'').test('//')) {
+			if (code.value.replace(/(['"]).*?[^\\]\1/g, '').test('//')) {
 				t += ' &nbsp; <span style="color:red;font-weight:bold;">';
-				t += Joomla.JText._('COM_FABRIK_JS_INLINE_COMMENT_WARNING').replace(/ /g,'&nbsp;');
+				t += Joomla.JText._('COM_FABRIK_JS_INLINE_COMMENT_WARNING').replace(/ /g, '&nbsp;');
 				t += '</span>';
 			}
 		} else if (event.value && trigger.value && name.value) {
@@ -241,7 +241,7 @@ var fabrikAdminElement = new Class({
 				t += condition.getSelected()[0].text + ' "' + value.value.trim() + '", ';
 			}
 			var trigtype = trigger.getSelected().getParent('optgroup').get('label')[0].toLowerCase();
-			t += event.getSelected()[0].text + ' ' + trigtype.substring(0,trigtype.length-1);
+			t += event.getSelected()[0].text + ' ' + trigtype.substring(0, trigtype.length - 1);
 			t += ' "' + trigger.getSelected()[0].text + '"';
 		} else {
 			s += '<span style="color:red;">' + Joomla.JText._('COM_FABRIK_JS_NO_ACTION') + '</span>';
