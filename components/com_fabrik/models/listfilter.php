@@ -662,6 +662,7 @@ class FabrikFEModelListfilter extends FabModel
 
 			if ($key !== false)
 			{
+				$filters['orig_condition'][$key] = $condition;
 				$filters['value'][$key] = $newsearch;
 				$filters['condition'][$key] = $condition;
 				$filters['join'][$key] = 'OR';
@@ -688,6 +689,7 @@ class FabrikFEModelListfilter extends FabModel
 			}
 			else
 			{
+				$filters['orig_condition'][$key] = $condition;
 				$filters['value'][] = $newsearch;
 				$filters['condition'][] = $condition;
 				$filters['join'][] = 'OR';

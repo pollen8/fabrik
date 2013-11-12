@@ -2,9 +2,9 @@
 <extension type="package" version="30">
 	<name>Fabrik Package</name>
 	<packagename>fabrik</packagename>
-	<version>3.1rc1</version>
+	<version>3.1rc2</version>
 	<url>http://www.fabrikar.com</url>
-	<creationDate>October 2013</creationDate>
+	<creationDate>November 2013</creationDate>
 	<author>Fabrik</author>
 	<packager>Rob Clayburn</packager>
 	<packagerurl>http://www.fabrikar.com</packagerurl>

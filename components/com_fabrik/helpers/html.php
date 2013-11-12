@@ -1281,7 +1281,7 @@ if (!$j3)
 	 *
 	 * @param   mixed   $file    String or array of files to load, relative path to root for local files
 	 * 							 e.g. 'administrator/components/com_fabrik/models/fields/tables.js'
-	 * @param   string  $onLoad  Optional js to run if format=raw (as we first load the $file via Asset.Javascript()
+	 * @param   string  $onLoad  Optional js to run once the Js file has been loaded
 	 *
 	 * @return  void
 	 */
