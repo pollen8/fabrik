@@ -11,7 +11,7 @@
 	<description>Fabrik Package</description>
 	
 	<updateservers>
-		<server type="collection">http://fabrikar.com/update/fabrik/package_list.xml</server>
+		<server type="collection" name="Fabrik31">http://fabrikar.com/update/fabrik31/package_list.xml</server>
 	</updateservers>
 
 	<files folder="packages">

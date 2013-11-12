@@ -47,7 +47,7 @@ class JDocumentRendererrss extends JDocumentRenderer
 	{
 		$now	=& JFactory::getDate();
 		$data	=& $this->_doc;
-		$uri =& JFactory::getURI();
+		$uri = JURI::getInstance();
 		$url = $uri->toString(array('scheme', 'user', 'pass', 'host', 'port'));
 		$feed = "<rss version=\"2.0\" ";
 		//ADD in any special name spaces we have used in view.fabrikfeed.php
@@ -151,7 +151,7 @@ class JDocumentRendererrss extends JDocumentRenderer
 					$feed.= $data->items[$i]->enclosure->type;
 					$feed.= "\"/>\n";
 			}
-			//ADD in some funky new 
+			//ADD in some funky new
 			foreach ($data->_itemTags as $tagName) {
 				// $$$ hugh - trying to fix :'s in object names
 				if (isset($data->items[$i]->{$tagName})) {

@@ -4,7 +4,7 @@
  * @package		Joomla.Framework
  * @subpackage	Document
  * @copyright	Copyright (C) 2005 - 2008 Open Source Matters. All rights reserved.
- * @license		GNU/GPL http://www.gnu.org/copyleft/gpl.html
+ * @license		GNU/GPL, see LICENSE.php
  * Joomla! is free software. This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
  * is derivative of works licensed under the GNU General Public License or
@@ -12,8 +12,8 @@
  * See COPYRIGHT.php for copyright notices and details.
  */
 
-// No direct access
-defined('_JEXEC') or die('Restricted access');
+// Check to ensure this file is within the rest of the framework
+defined('JPATH_BASE') or die();
 
 /**
  * DocumentFeed class, provides an easy interface to parse and display any feed document
@@ -210,7 +210,7 @@ class JDocumentFabrikfeed extends JDocument
 		$cache_time = 3600;
 		$cache_path = JPATH_BASE . '/cache';
 
-		// set filename for rss feeds
+		// Set filename for rss feeds
 		$file = strtolower(str_replace('.', '', $type));
 		$file = $cache_path . '/' . $file . '_' . $option . '.xml';
 
@@ -219,7 +219,7 @@ class JDocumentFabrikfeed extends JDocument
 
 		if (!is_a($renderer, 'JDocumentRenderer'))
 		{
-			JError::raiseError(404, JText::_('Resource Not Found'));
+			throw new RuntimeException('Resource Not Found', 404);
 		}
 		$this->setMimeEncoding($renderer->getContentType());
 

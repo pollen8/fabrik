@@ -150,10 +150,8 @@ class JDocumentpdf extends JDocumentHTML
  		$this->_metaTags['http-equiv'] = array();
 		$this->_metaTags['http-equiv']['content-type'] = 'text/html';
 
-		// Testing using futural font see (http://stackoverflow.com/questions/5136067/dompdf-special-characters)
+		// Testing using futural font.
  		// $this->addStyleDeclaration('body: { font-family: futural !important; }');
-
-		// Unicode info: https://code.google.com/p/dompdf/wiki/CPDFUnicode
 		$pdf = $this->engine;
 		$data = parent::render();
 		$this->fullPaths($data);

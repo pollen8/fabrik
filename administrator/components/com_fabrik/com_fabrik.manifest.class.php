@@ -281,7 +281,7 @@ class Com_FabrikInstallerScript
 
 		if (!$db->execute())
 		{
-			echo "<P>didnt remove old update site</p>";
+			echo "<p>didnt remove old update site</p>";
 		}
 		else
 		{
