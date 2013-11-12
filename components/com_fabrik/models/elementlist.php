@@ -524,13 +524,17 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 
 		// Give priority to raw value icons (podion)
 		$raw = $this->getFullName(false, true, false) . '_raw';
+		$this->iconsSet = false;
+
 		if (isset($thisRow->$raw))
 		{
 			$rawData = FabrikWorker::JSONtoData($thisRow->$raw, true);
+
 			foreach ($rawData as &$val)
 			{
 				$val = $useIcon ? $this->replaceWithIcons($val, 'list', $listModel->getTmpl()) : $val;
 			}
+
 			if ($this->iconsSet)
 			{
 				// Use raw icons
@@ -560,6 +564,7 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 					{
 						$l = $tmpVal;
 					}
+
 					$l = $this->replaceWithIcons($l, 'list', $listModel->getTmpl());
 				}
 				if ($this->renderWithHTML)

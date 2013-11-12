@@ -1,13 +1,15 @@
 <?php
 /**
+ * Fabrik List Filter Model
+ *
  * @package     Joomla
  * @subpackage  Fabrik
- * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
- * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @copyright   Copyright (C) 2005-2013 fabrikar.com - All rights reserved.
+ * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
-// Check to ensure this file is included in Joomla!
-defined('_JEXEC') or die();
+// No direct access
+defined('_JEXEC') or die('Restricted access');
 
 /**
  * List filter model
@@ -18,6 +20,11 @@ defined('_JEXEC') or die();
 
 class FabrikFEModelListfilter extends FabModel
 {
+	/**
+	 * Request
+	 *
+	 * @var array
+	 */
 	protected $request = null;
 
 	/**
@@ -188,7 +195,14 @@ class FabrikFEModelListfilter extends FabModel
 
 		foreach ($properties as $property)
 		{
-			$filters[$property] = array_values($filters[$property]);
+			if (is_array($filters[$property]))
+			{
+				$filters[$property] = array_values($filters[$property]);
+			}
+			else
+			{
+				$filters[$property] = array();
+			}
 		}
 	}
 
@@ -381,6 +395,8 @@ class FabrikFEModelListfilter extends FabModel
 	 *
 	 * @since 3.0.6
 	 *
+	 * @throws UnexpectedValueException
+	 *
 	 * @return  bool	search string long enough?
 	 */
 
@@ -390,7 +406,12 @@ class FabrikFEModelListfilter extends FabModel
 		$db->setQuery('SHOW VARIABLES LIKE \'ft_min_word_len\'');
 		$res = $db->loadObject();
 
-		return JString::strlen($s) >= $res->Value;
+		if (!JString::strlen($s) >= $res->Value)
+		{
+			throw new UnexpectedValueException(JText::_('COM_FABRIK_NOTICE_SEARCH_STRING_TOO_SHORT'));
+		}
+
+		return true;
 	}
 
 	/**
@@ -413,13 +434,7 @@ class FabrikFEModelListfilter extends FabModel
 			return;
 		}
 
-		if (!$this->testBooleanSearchLength($search))
-		{
-			JError::raiseNotice(500, JText::_('COM_FABRIK_NOTICE_SEARCH_STRING_TOO_SHORT'));
-
-			return;
-		}
-
+		$this->testBooleanSearchLength($search);
 		$search = explode(' ', $search);
 
 		switch ($mode)
@@ -561,6 +576,7 @@ class FabrikFEModelListfilter extends FabModel
 
 		return JArrayHelper::getValue($accessLevels, 0, 1);
 	}
+
 	/**
 	 * Insert search all string into filters
 	 *
@@ -572,6 +588,7 @@ class FabrikFEModelListfilter extends FabModel
 
 	private function insertSearchAllIntoFilters(&$filters, $search)
 	{
+		$app = JFactory::getApplication();
 		$elements = $this->listModel->getElements('id', false);
 		$keys = array_keys($elements);
 		$i = 0;
@@ -652,7 +669,6 @@ class FabrikFEModelListfilter extends FabModel
 
 			$element = $elementModel->getElement();
 			$elparams = $elementModel->getParams();
-
 			$access = $this->defaultAccessLevel();
 
 			// $$$ rob so search all on checkboxes/radio buttons etc will take the search value of 'one' and return '1'
@@ -683,7 +699,7 @@ class FabrikFEModelListfilter extends FabModel
 				// $filters['grouped_to_previous'][$key] = $k == 0 ? 0 : 1;
 				// $filters['grouped_to_previous'][$key] = 1;
 				$filters['grouped_to_previous'][$key] = $existingFilters && $i === 0 ? 0 : 1;
-				$filters['label'][$key] = $elparams->get('alt_list_heading') == '' ? $element->label : $elparams->get('alt_list_heading');
+				$filters['label'][$key] = $elementModel->getListHeading();
 				$filters['raw'][$key] = false;
 			}
 			else
@@ -715,7 +731,7 @@ class FabrikFEModelListfilter extends FabModel
 				 */
 				// $filters['grouped_to_previous'][] = 1;
 				$filters['grouped_to_previous'][] = $existingFilters && $i === 0 ? 0 : 1;
-				$filters['label'][] = $elparams->get('alt_list_heading') == '' ? $element->label : $elparams->get('alt_list_heading');
+				$filters['label'][] = $elementModel->getListHeading();
 				$filters['elementid'][] = $element->id;
 				$filters['raw'][] = false;
 			}
@@ -725,7 +741,7 @@ class FabrikFEModelListfilter extends FabModel
 
 		if (!$searchable)
 		{
-			JError::raiseNotice(500, JText::_('COM_FABRIK_NOTICE_SEARCH_ALL_BUT_NO_ELEMENTS'));
+			$app->enqueueMessage(JText::_('COM_FABRIK_NOTICE_SEARCH_ALL_BUT_NO_ELEMENTS'));
 		}
 	}
 
@@ -812,7 +828,7 @@ class FabrikFEModelListfilter extends FabModel
 
 			if ($fromFormId != $formModel->get('id'))
 			{
-				$fromForm = JModel::getInstance('Form', 'FabrikFEModel');
+				$fromForm = JModelLegacy::getInstance('Form', 'FabrikFEModel');
 				$fromForm->setId($fromFormId);
 				$fromFormParams = $fromForm->getParams();
 				/**
@@ -1098,7 +1114,7 @@ class FabrikFEModelListfilter extends FabModel
 		$filters['required'][] = $elparams->get('filter_required');
 		$filters['access'][] = $elparams->get('filter_access');
 		$filters['grouped_to_previous'][] = $grouped;
-		$filters['label'][] = $elparams->get('alt_list_heading') == '' ? $element->label : $elparams->get('alt_list_heading');
+		$filters['label'][] = $elementModel->getListHeading();
 		$filters['elementid'][] = $element->id;
 		$filters['raw'][] = $raw;
 	}
@@ -1167,19 +1183,6 @@ class FabrikFEModelListfilter extends FabModel
 			foreach ($keyints as $i)
 			{
 				$value = JArrayHelper::getValue($values, $i, '');
-
-				// $$$ rob 28/10/2011 - running an ajax filter (autocomplete) from horz-search tmpl, looking for term 'test + test'
-				// the '+' is converted into a space so search fails
-
-				/* if ($ajaxPost == 'xmlhttprequest') {
-				    if (is_array($value)) {
-				foreach ($value as $k => $v) {
-				$value[$k] = urldecode($v);
-				}
-				} else {
-				$value = urldecode($value);
-				}
-				} */
 				$key = JArrayHelper::getValue($request['key'], $i);
 				$elid = JArrayHelper::getValue($request['elementid'], $i);
 				$condition = JArrayHelper::getValue($conditions, $i);
@@ -1304,6 +1307,7 @@ class FabrikFEModelListfilter extends FabModel
 						}
 					}
 				}
+
 				/**
 				 * $$$ rob - search all and dropdown filter: Search first on searchall = usa, then select dropdown to usa.
 				 * post filter query overwrites search all query, but uses add so = where id REGEX 'USA' AND country LIKE '%USA'
@@ -1358,7 +1362,7 @@ class FabrikFEModelListfilter extends FabModel
 				$filters['required'][] = $elparams->get('filter_required');
 				$filters['access'][] = $elparams->get('filter_access');
 				$filters['grouped_to_previous'][] = JArrayHelper::getValue($request['grouped_to_previous'], $i, '0');
-				$filters['label'][] = $elparams->get('alt_list_heading') == '' ? $element->label : $elparams->get('alt_list_heading');
+				$filters['label'][] = $elementModel->getListHeading();
 				$filters['elementid'][] = $elid;
 				$filters['raw'][] = false;
 			}
@@ -1417,7 +1421,7 @@ class FabrikFEModelListfilter extends FabModel
 
 		for ($i = 0; $i < count($sessionfilters['key']); $i++)
 		{
-			$elid = $sessionfilters['elementid'][$i];
+			$elid = JArrayHelper::getValue($sessionfilters['elementid'], $i);
 			$key = JArrayHelper::getValue($sessionfilters['key'], $i, null);
 			$index = JArrayHelper::getValue($filters['elementid'], $key, false);
 			$origCondition = JArrayHelper::getValue($filters['orig_condition'], $i, '');
@@ -1445,6 +1449,7 @@ class FabrikFEModelListfilter extends FabModel
 					}
 				}
 			}
+
 			$value = $sessionfilters['value'][$i];
 			$key2 = array_key_exists('key2', $sessionfilters) ? JArrayHelper::getValue($sessionfilters['key2'], $i, '') : '';
 
@@ -1522,6 +1527,7 @@ class FabrikFEModelListfilter extends FabModel
 							}
 						}
 					}
+
 					/**
 					 * add request filter to end of filter array
 					 * with advanced search and then page nav this wasn't right
@@ -1540,7 +1546,7 @@ class FabrikFEModelListfilter extends FabModel
 					$fullWordsOnly = $elparams->get('full_words_only');
 					$required = $elparams->get('filter_required');
 					$access = $elparams->get('filter_access');
-					$label = $elparams->get('alt_list_heading') == '' ? $element->label : $elparams->get('alt_list_heading');
+					$label = $elementModel->getListHeading();
 
 					/**
 					 * $$$ rob if the session filter is also in the request data then set it to use the same key as the post data
@@ -1549,6 +1555,7 @@ class FabrikFEModelListfilter extends FabModel
 					$counter = array_search($key, $postkeys) !== false ? array_search($key, $postkeys) : $this->counter;
 				}
 			}
+
 			/**
 			 * $$$ hugh - attempting to stop plugin filters getting overwritten
 			 * PLUGIN FILTER SAGA
