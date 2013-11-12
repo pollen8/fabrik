@@ -214,6 +214,7 @@ class FabrikViewListBase extends JViewLegacy
 		JText::script('COM_FABRIK_FILE_TYPE');
 		JText::script('COM_FABRIK_ADVANCED_SEARCH');
 		JText::script('COM_FABRIK_FORM_FIELDS');
+		JText::script('COM_FABRIK_VIEW');
 
 		// Keyboard short cuts
 		JText::script('COM_FABRIK_LIST_SHORTCUTS_ADD');

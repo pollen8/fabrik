@@ -1826,8 +1826,8 @@ class FabrikFEModelList extends JModelForm
 	}
 
 	/**
-	 * Creates the html <a> link allowing you to edit other forms from the table
-	 * E.g. Faceted browsing: those specified in the table's "Form's whose primary keys link to this table"
+	 * Creates the html <a> link allowing you to edit other forms from the list
+	 * E.g. Faceted browsing: those specified in the list's "Form's whose primary keys link to this table"
 	 *
 	 * @param   bool    $popUp    is popup link
 	 * @param   object  $element  27/06/2011 - changed to passing in element
@@ -1896,12 +1896,6 @@ class FabrikFEModelList extends JModelForm
 			$bits[] = $key . '_raw=' . $val;
 		}
 
-		if ($popUp)
-		{
-			$bits[] = "tmpl=component";
-			$bits[] = "ajax=1";
-		}
-
 		if ($usekey and $key != '' and !is_null($row))
 		{
 			$bits[] = 'usekey=' . FabrikString::shortColName($key);
@@ -1917,22 +1911,8 @@ class FabrikFEModelList extends JModelForm
 		}
 
 		$icon = '<i class="icon-plus"></i> ';
-
-		if ($popUp)
-		{
-			FabrikHelperHTML::mocha('a.popupwin');
-			$opts = new stdClass;
-			$opts->maximizable = 1;
-			$opts->title = JText::_('COM_FABRIK_ADD');
-			$opts->evalScripts = 1;
-			$opts = json_encode($opts);
-			$link = "<a rel='$opts' href=\"$url\" class=\"popupwin\" title=\"$label\">" . $icon . $label . "</a>";
-		}
-		else
-		{
-			$link = '<a href="' . $url . '" title="' . $label . '">' . $icon . $label . '</a>';
-		}
-
+		$trigger = $popUp ? 'data-fabrik-view="form"' : '';
+		$link = '<a ' . $trigger . ' href="' . $url . '" title="' . $label . '">' . $icon . $label . '</a>';
 		$url = '<span class="addbutton">' . $link . '</span></a>';
 
 		return $url;
@@ -2033,26 +2013,15 @@ class FabrikFEModelList extends JModelForm
 			$label = JText::_('COM_FABRIK_VIEW');
 		}
 
+		$title = $label;
 		$label = '<span class="fabrik_related_data_count">(' . $count . ')</span> ' . $label;
 		$icon = '<i class="icon-list-view"></i> ';
-		$url = $this->releatedDataURL($key, $val, $listid, $popUp);
+		$url = $this->releatedDataURL($key, $val, $listid);
 
 		if ($showRelated == 0 || ($showRelated == 2  && $count))
 		{
-			if ($popUp)
-			{
-				FabrikHelperHTML::windows('a.popupwin');
-				$opts = new stdClass;
-				$opts->maximizable = 1;
-				$opts->title = JText::_('COM_FABRIK_VIEW');
-				$opts->evalScripts = 1;
-				$opts = str_replace('"', "'", json_encode($opts));
-				$html[] = '<a rel="' . $opts . '" href="' . $url . '" class="popupwin">' . $icon . $label . '</a>';
-			}
-			else
-			{
-				$html[] = '<a class="related_data" href="' . $url . '">' . $icon . $label . '</a>';
-			}
+			$trigger = $popUp ? 'data-fabrik-view="list"' : '';
+			$html[] = '<a class="related_data" ' . $trigger . ' href="' . $url . '" title="' . $title . '">' . $icon . $label . '</a>';
 		}
 
 		if ($addLink != '' && ($showRelatedAdd === 1 || ($showRelatedAdd === 2 && $count === 0)))
@@ -2069,14 +2038,13 @@ class FabrikFEModelList extends JModelForm
 	 * @param   string  $key     Releated link key
 	 * @param   string  $val     Related link value
 	 * @param   int     $listid  List id
-	 * @param   bool    $popUp   Is pop up link
 	 *
 	 * @since   3.0.8
 	 *
 	 * @return  string  URL
 	 */
 
-	protected function releatedDataURL($key, $val, $listid, $popUp)
+	protected function releatedDataURL($key, $val, $listid)
 	{
 		$app = JFactory::getApplication();
 		$Itemid = FabrikWorker::itemId();
@@ -2114,13 +2082,6 @@ class FabrikFEModelList extends JModelForm
 		}
 
 		$bits[] = 'limitstart' . $listid . '=0';
-
-		if ($popUp)
-		{
-			$bits[] = 'tmpl=component';
-			$bits[] = 'ajax=1';
-		}
-
 		$bits[] = 'resetfilters=1';
 
 		// Nope stops url filter form workin on related data :(
@@ -8925,11 +8886,6 @@ class FabrikFEModelList extends JModelForm
 			else
 			{
 				$link .= 'index.php?option=com_' . $package . '&view=' . $view . '&formid=' . $table->form_id . $keyIdentifier;
-			}
-
-			if ($this->packageId !== 0 || $this->isAjaxLinks())
-			{
-				$link .= '&tmpl=component';
 			}
 
 			$link = JRoute::_($link);

@@ -378,6 +378,40 @@ if (typeof (Fabrik) === "undefined") {
 		}
 		Fabrik.watchView(e, target);
 	});
+	
+	// Related data links
+	document.addEvent('click:relay(*[data-fabrik-view])', function (e, target) {
+		if (e.rightClick) {
+			return;
+		}
+		var url, a, title;
+		e.preventDefault();
+		if (e.target.get('tag') === 'a') {
+			a = e.target;
+		} else {
+			a = typeOf(e.target.getElement('a')) !== 'null' ? e.target.getElement('a') : e.target.getParent('a');
+		}
+
+		url = a.get('href');
+		url += url.contains('?') ? '&tmpl=component' : '?tmpl=component'; 
+
+		// Only one edit window open at the same time.
+		$H(Fabrik.Windows).each(function (win, key) {
+			win.close();
+		});
+		title = a.get('title');
+		if (!title) {
+			title = Joomla.JText._('COM_FABRIK_VIEW');
+		}
+
+		var winOpts = {
+			'id': 'view.' + url,
+			'title': title,
+			'loadMethod': 'xhr',
+			'contentURL': url
+		};
+		Fabrik.getWindow(winOpts);
+	});
 
 	Fabrik.removeEvent = function (type, fn) {
 		if (Fabrik.events[type]) {
@@ -637,6 +671,7 @@ if (typeof (Fabrik) === "undefined") {
 	 */
 
 	Fabrik.watchView = function (e, target) {
+		console.log(e, target);
 		var url, loadMethod = 'xhr', a;
 		var listRef = target.get('data-list');
 		var list = Fabrik.blocks[listRef];
