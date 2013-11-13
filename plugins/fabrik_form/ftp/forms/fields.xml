@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <form>
 	<fields addfieldpath="/administrator/components/com_fabrik/models/fields" name="params">
-		<fieldset name="plg-form-ftp">
+		<fieldset name="plg-form-ftp" label="PLG_FORM_FTP_CONNECTION">
 			<field name="ftp_host"
 				type="text"
 				size="60"
@@ -42,6 +42,8 @@
 				label="PLG_FORM_FTP_PASSWORD_LABEL"
 				description="PLG_FORM_FTP_PASSWORD_DESC"
 			/>
+		</fieldset>
+		<fieldset name="plg-form-ftp-file-options" label="PLG_FORM_FTP_FILE_OPTIONS">
 			<field name="ftp_template"
 				type="filelist"
 				repeat="true"
@@ -59,16 +61,7 @@
 				label="PLG_FORM_FTP_TEMPLATE_CONTENT_LABEL"
 				description="PLG_FORM_FTP_TEMPLATE_CONTENT_DESC"
 			/>
-			<field name="ftp_eval_filename"
-				type="radio"
-				repeat="true"
-				default="0"
-				label="PLG_FORM_FTP_EVAL_FILENAME_LABEL"
-				description="PLG_FORM_FTP_EVAL_FILENAME_DESC"
-			>
-				<option value="0">No</option>
-				<option value="1">Yes</option>
-			</field>
+			
 			<field name="ftp_filename"
 				type="textarea"
 				repeat="true"
@@ -77,6 +70,20 @@
 				label="PLG_FORM_FTP_FILENAME_LABEL"
 				description="PLG_FORM_FTP_FILENAME_DESC"
 			/>
+
+			<field name="ftp_eval_filename"
+				type="radio"
+				class="btn-group"
+				repeat="true"
+				default="0"
+				label="PLG_FORM_FTP_EVAL_FILENAME_LABEL"
+				description="PLG_FORM_FTP_EVAL_FILENAME_DESC"
+			>
+				<option value="0">No</option>
+				<option value="1">Yes</option>
+			</field>
+		</fieldset>
+		<fieldset name="plg-form-ftp-options" label="COM_FABRIK_OPTIONS">
 			<field name="ftp_conditon"
 				type="textarea"
 				repeat="true"

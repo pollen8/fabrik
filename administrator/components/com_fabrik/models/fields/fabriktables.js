@@ -203,7 +203,7 @@ var fabriktablesElement = new Class({
 	},
 
 	updateElementOptions : function (r, element) {
-		var target;
+		var target, dotValue;
 		if (r === '') {
 			return;
 		}
@@ -225,14 +225,17 @@ var fabriktablesElement = new Class({
 			o.selected = 'selected';
 		}
 		new Element('option', o).appendText('-').inject(target);
+		dotValue = element.options.value.replace('.', '___');
 		opts.each(function (opt) {
 			var v = opt.value.replace('[]', '');
 			var o = {
 				'value': v
 			};
-			if (v === element.options.value) {
+			
+			if (v === element.options.value || v === dotValue) {
 				o.selected = 'selected';
 			}
+			
 			new Element('option', o).set('text', opt.label).inject(target);
 		}.bind(this));
 		if (this.loader) {
