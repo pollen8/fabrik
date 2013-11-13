@@ -3250,7 +3250,7 @@ class FabrikFEModelList extends JModelForm
 		// $$$ rob keys may no longer be in asc order as we may have filtered out some in buildQueryPrefilterWhere()
 		$vkeys = array_keys(JArrayHelper::getValue($filters, 'key', array()));
 		$last_i = false;
-		$nullElementConditions = array( 'IS NULL', 'IS NOT NULL');
+		$nullElementConditions = array('IS NULL', 'IS NOT NULL');
 
 		while (list($vkey, $i) = each($vkeys))
 		{

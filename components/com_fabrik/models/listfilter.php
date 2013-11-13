@@ -649,7 +649,13 @@ class FabrikFEModelListfilter extends FabModel
 					$k2 = $elementModel->getJoinLabelColumn();
 				}
 
-				$k = 'LOWER(' . $k2 . ')';
+				$k = $k2 = 'LOWER(' . $k2 . ')';
+			}
+
+			// Retest as $k has been modified and may now exist.
+			if (!$key)
+			{
+				$key = array_key_exists('key', $filters) ? array_search($k, $filters['key']) : false;
 			}
 
 			$element = $elementModel->getElement();
@@ -689,7 +695,7 @@ class FabrikFEModelListfilter extends FabModel
 			}
 			else
 			{
-				$filters['orig_condition'][$key] = $condition;
+				$filters['orig_condition'][] = $condition;
 				$filters['value'][] = $newsearch;
 				$filters['condition'][] = $condition;
 				$filters['join'][] = 'OR';

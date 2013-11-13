@@ -2265,6 +2265,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 				}
 			}
 
+			$key = 'LOWER(' . $key . ')';
 			$str = "$key $condition $value";
 		}
 		else
