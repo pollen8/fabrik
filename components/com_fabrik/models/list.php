@@ -4,12 +4,12 @@
  *
  * @package     Joomla
  * @subpackage  Fabrik
- * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
- * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @copyright   Copyright (C) 2005-2013 fabrikar.com - All rights reserved.
+ * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
-// Check to ensure this file is included in Joomla!
-defined('_JEXEC') or die();
+// No direct access
+defined('_JEXEC') or die('Restricted access');
 
 jimport('joomla.application.component.modelform');
 
@@ -27,7 +27,6 @@ require_once COM_FABRIK_FRONTEND . '/helpers/list.php';
 
 class FabrikFEModelList extends JModelForm
 {
-
 	/**
 	 * List id
 	 *
@@ -452,10 +451,12 @@ class FabrikFEModelList extends JModelForm
 	{
 		// Get the form.
 		$form = $this->loadForm('com_fabrik.list', 'view', array('control' => 'jform', 'load_data' => $loadData));
+
 		if (empty($form))
 		{
 			return false;
 		}
+
 		return $form;
 	}
 
@@ -606,6 +607,7 @@ class FabrikFEModelList extends JModelForm
 		$this->getCalculations();
 		JDEBUG ? $profiler->mark('got cacls') : null;
 		$item->hit();
+
 		return $data;
 	}
 
@@ -683,11 +685,13 @@ class FabrikFEModelList extends JModelForm
 					$limitLength = $maxLimit;
 				}
 			}
+
 			if ($limitStart < 0)
 			{
 				$limitStart = 0;
 			}
 		}
+
 		$this->limitLength = $limitLength;
 		$this->limitStart = $limitStart;
 	}
@@ -699,12 +703,13 @@ class FabrikFEModelList extends JModelForm
 	 * @return  array
 	 */
 
-	function getRequestData()
+	public function getRequestData()
 	{
 		$profiler = JProfiler::getInstance('Application');
 		JDEBUG ? $profiler->mark('start get Request data') : null;
 		$f = $this->getFilterModel()->getFilters();
 		JDEBUG ? $profiler->mark('end get Request data') : null;
+
 		return $f;
 	}
 
@@ -714,13 +719,14 @@ class FabrikFEModelList extends JModelForm
 	 * @return  model	filter model
 	 */
 
-	function &getFilterModel()
+	public function &getFilterModel()
 	{
 		if (!isset($this->filterModel))
 		{
-			$this->filterModel = JModel::getInstance('Listfilter', 'FabrikFEModel');
+			$this->filterModel = JModelLegacy::getInstance('Listfilter', 'FabrikFEModel');
 			$this->filterModel->setListModel($this);
 		}
+
 		return $this->filterModel;
 	}
 
@@ -742,7 +748,7 @@ class FabrikFEModelList extends JModelForm
 	 * @return  void
 	 */
 
-	function setBigSelects()
+	public function setBigSelects()
 	{
 		$fbConfig = JComponentHelper::getParams('com_fabrik');
 		$bigSelects = $fbConfig->get('enable_big_selects', 0);
@@ -831,6 +837,7 @@ class FabrikFEModelList extends JModelForm
 		{
 			$fabrikDb->setQuery($query, $start, $length);
 		}
+
 		FabrikHelperHTML::debug($fabrikDb->getQuery(), 'list GetData:' . $listModel->getTable()->label);
 		JDEBUG ? $profiler->mark('before query run') : null;
 
@@ -853,10 +860,12 @@ class FabrikFEModelList extends JModelForm
 			$fabrikDb->setQuery("SELECT FOUND_ROWS()");
 			$listModel->totalRecords = $fabrikDb->loadResult();
 		}
+
 		if ($listModel->randomRecords)
 		{
 			shuffle($listModel->_data);
 		}
+
 		ini_set('mysql.trace_mode', $traceModel);
 
 		JDEBUG ? $profiler->mark('query run and data loaded') : null;
@@ -897,9 +906,11 @@ class FabrikFEModelList extends JModelForm
 		$form = $this->getFormModel();
 		$groups = $form->getGroupsHiarachy();
 		$ec = count($data);
+
 		foreach ($groups as $groupModel)
 		{
 			$elementModels = $this->activeContextElements($groupModel);
+
 			foreach ($elementModels as $elementModel)
 			{
 				$elementModel->setContext($groupModel, $form, $this);
@@ -950,6 +961,7 @@ class FabrikFEModelList extends JModelForm
 			$elementModels = $groupModel->getPublishedListElements();
 			$elementModels = array_merge($elementModels, $alwaysRenderElements);
 		}
+
 		return $elementModels;
 	}
 
@@ -967,10 +979,12 @@ class FabrikFEModelList extends JModelForm
 	{
 		return;
 		$params = $this->getParams();
+
 		if (!JPluginHelper::isEnabled('system', 'jfdatabase'))
 		{
 			return;
 		}
+
 		if (defined('JOOMFISH_PATH') && $params->get('allow-data-translation'))
 		{
 			$table = $this->getTable();
@@ -979,6 +993,7 @@ class FabrikFEModelList extends JModelForm
 			$config = JFactory::getConfig();
 			$tableName = str_replace($config->get('dbprefix'), '', $table->db_table_name);
 			$contentElement = $jf->getContentElement($tableName);
+
 			if (!is_object($contentElement))
 			{
 				return;
@@ -989,9 +1004,11 @@ class FabrikFEModelList extends JModelForm
 			$registry = JFactory::getConfig();
 			$langid = $activelangs[$registry->get("jflang")]->id;
 			$db->setQuery($contentElement->createContentSQL($langid));
+
 			if ($title == '')
 			{
 				$contentTable = $contentElement->getTable();
+
 				foreach ($contentTable->Fields as $tableField)
 				{
 					if ($tableField->Type == 'titletext')
@@ -1000,6 +1017,7 @@ class FabrikFEModelList extends JModelForm
 					}
 				}
 			}
+
 			$longKey = FabrikString::safeColNameToArrayKey($table->db_primary_key);
 			$res = $db->loadObjectList(FabrikString::shortColName($table->db_primary_key));
 
@@ -1008,6 +1026,7 @@ class FabrikFEModelList extends JModelForm
 			{
 				return;
 			}
+
 			foreach ($data as &$row)
 			{
 				// $$$ rob if the id isnt published fall back to __pk_val
@@ -1049,6 +1068,8 @@ class FabrikFEModelList extends JModelForm
 	function formatData(&$data)
 	{
 		$profiler = JProfiler::getInstance('Application');
+		$app = JFactory::getApplication();
+		$input = $app->input;
 		jimport('joomla.filesystem.file');
 		$form = $this->getFormModel();
 		$tableParams = $this->getParams();
@@ -1060,9 +1081,11 @@ class FabrikFEModelList extends JModelForm
 		// $$$ hugh - temp foreach fix
 		$groups = $form->getGroupsHiarachy();
 		$ec = count($data);
+
 		foreach ($groups as $groupModel)
 		{
 			$elementModels = $this->activeContextElements($groupModel);
+
 			foreach ($elementModels as $elementModel)
 			{
 				$e = $elementModel->getElement();
@@ -1109,10 +1132,10 @@ class FabrikFEModelList extends JModelForm
 				}
 			}
 		}
+
 		JDEBUG ? $profiler->mark('elements rendered for table data') : null;
 		$this->_aGroupInfo = array();
 		$groupTitle = array();
-
 		$this->groupTemplates = array();
 
 		// Check if the data has a group by applied to it
@@ -1528,11 +1551,13 @@ $groupBy .= '_raw';
 	{
 		$app = JFactory::getApplication();
 		$package = $app->getUserState('com_fabrik.package', 'fabrik');
+
 		if (isset($this->tableLinks))
 		{
 			return $this->tableLinks;
 		}
-		$db = JFactory::getDBO();
+
+		$db = JFactory::getDbo();
 		$joinsToThisKey = $this->getJoinsToThisKey();
 		if (empty($joinsToThisKey))
 		{
@@ -1542,20 +1567,23 @@ $groupBy .= '_raw';
 		{
 			$query = $db->getQuery(true);
 			$query->select('*')->from('#__menu');
+
 			foreach ($joinsToThisKey as $element)
 			{
 				$linkWhere[] = 'link LIKE "index.php?option=com_' . $package . '&view=list&listid=' . (int) $element->list_id . '%"';
 			}
+
 			$where = 'type = "component" AND (' . implode(' OR ', $linkWhere) . ')';
 			$query->where($where);
 			$db->setQuery($query);
 			$this->tableLinks = $db->loadObjectList();
 		}
+
 		return $this->tableLinks;
 	}
 
 	/**
-	 * For releated table links get the record count for each of the table's rows
+	 * For related table links get the record count for each of the table's rows
 	 *
 	 * @param   object  &$element  element
 	 * @param   array   $pks       primary keys to count on
@@ -1569,12 +1597,16 @@ $groupBy .= '_raw';
 		{
 			$this->recordCounts = array();
 		}
+
+		$app = JFactory::getApplication();
+		$input = $app->input;
 		$k = $element->element_id;
 		if (array_key_exists($k, $this->recordCounts))
 		{
 			return $this->recordCounts[$k];
 		}
-		$listModel = JModel::getInstance('List', 'FabrikFEModel');
+
+		$listModel = JModelLegacy::getInstance('List', 'FabrikFEModel');
 		$listModel->setId($element->list_id);
 		$db = $listModel->getDb();
 		$elementModel = $listModel->getFormModel()->getElement($element->element_id, true);
@@ -1782,7 +1814,6 @@ $groupBy .= '_raw';
 		$linkedListText = isset($factedLinks->linkedlisttext->$elKey) ? $factedLinks->linkedlisttext->$elKey : '';
 		$row2 = JArrayHelper::fromObject($row);
 		$label = $this->parseMessageForRowHolder($linkedListText, $row2);
-
 		$action = $app->isAdmin() ? 'task' : 'view';
 
 		if (is_null($listid))
@@ -1790,12 +1821,15 @@ $groupBy .= '_raw';
 			$list = $this->getTable();
 			$listid = $list->id;
 		}
+
 		$facetTable = $this->_facetedTable($listid);
+
 		if (!$facetTable->canView())
 		{
 			return '<div style="text-align:center"><a title="' . JText::_('COM_FABRIK_NO_ACCESS_PLEASE_LOGIN')
 			. '"><img src="media/com_fabrik/images/login.png" alt="' . JText::_('COM_FABRIK_NO_ACCESS_PLEASE_LOGIN') . '" /></a></div>';
 		}
+
 		$showRelated = (int) $params->get('show_related_info', 0);
 		$emptyLabel = $showRelated === 1 ? JText::_('COM_FABRIK_NO_RECORDS') : '';
 		$tlabel = ($count === 0) ? $emptyLabel : '(0) ' . $label;
@@ -1803,18 +1837,20 @@ $groupBy .= '_raw';
 		$aExisitngLinkedForms = (array) $params->get('linkedform');
 		$linkedForm = JArrayHelper::getValue($aExisitngLinkedForms, $f, false);
 		$addLink = $linkedForm == '0' ? $this->viewFormLink($popUp, $element, $row, $key, $val, false, $f) : '';
+
 		if ($count === 0)
 		{
 			$html[] = '<span style="text-align:center" class="related_data_norecords">' . $tlabel . '</span>';
 		}
 
 		$key .= '_raw';
+
 		if ($label === '')
 		{
 			$label = JText::_('COM_FABRIK_VIEW');
 		}
-		$label = '<span class="fabrik_related_data_count">(' . $count . ')</span> ' . $label;
 
+		$label = '<span class="fabrik_related_data_count">(' . $count . ')</span> ' . $label;
 		$url = $this->releatedDataURL($key, $val, $listid, $popUp);
 
 		if ($showRelated == 0 || ($showRelated == 2  && $count))
@@ -1831,13 +1867,16 @@ $groupBy .= '_raw';
 			}
 			else
 			{
-				$html[] = '<a class="related_data" href="' . $url . '">' . $label . "</a>";
+				// Add title in case link replaced with icon in CSS.
+				$html[] = '<a class="related_data" title="' . strip_tags($label) . '" href="' . $url . '">' . $label . "</a>";
 			}
 		}
+
 		if ($addLink != '' && ($showRelatedAdd === 1 || ($showRelatedAdd === 2 && $count === 0)))
 		{
 			$html[] = '<br />' . $addLink;
 		}
+
 		return implode("\n", $html);
 	}
 
@@ -2951,37 +2990,46 @@ $groupBy .= '_raw';
 		$vkeys = array_keys(JArrayHelper::getValue($filters, 'key', array()));
 		$last_i = false;
 		$nullElementConditions = array( 'IS NULL', 'IS NOT NULL');
+
 		while (list($vkey, $i) = each($vkeys))
 		{
 			// $$$rob - prefilter with element that is not published so ignore
 			$condition = JString::strtoupper(JArrayHelper::getValue($filters['condition'], $i, ''));
+
 			if (JArrayHelper::getValue($filters['sqlCond'], $i, '') == '' && !in_array($condition, $nullElementConditions))
 			{
 				$last_i = $i;
 				continue;
 			}
+
 			if ($filters['search_type'][$i] == 'prefilter' && $type == '*')
 			{
 				$last_i = $i;
 				continue;
 			}
+
 			if ($filters['search_type'][$i] != 'prefilter' && $type == 'prefilter')
 			{
 				$last_i = $i;
 				continue;
 			}
+
 			$n = current($vkeys);
+
 			if ($n === false)
 			{
 				// End of array
 				$n = -1;
 			}
+
 			$gstart = '';
 			$gend = '';
+
 			if (!in_array($condition, $nullElementConditions))
 			{
 				$filters['origvalue'][$i] = 'this is ignoerd i hope';
 			}
+
 			// $$$ rob added $filters['sqlCond'][$i] test so that you can test for an empty string
 			if ($filters['origvalue'][$i] != '' || $filters['sqlCond'][$i] != '')
 			{
@@ -2995,6 +3043,7 @@ $groupBy .= '_raw';
 							$gstart = '(';
 							$groupedCount++;
 						}
+
 						$ingroup = true;
 					}
 					else
@@ -3016,10 +3065,12 @@ $groupBy .= '_raw';
 						$ingroup = false;
 					}
 				}
+
 				$glue = JArrayHelper::getValue($filters['join'], $i, 'AND');
 				$sql[] = empty($sql) ? $gstart : $glue . ' ' . $gstart;
 				$sql[] = $filters['sqlCond'][$i] . $gend;
 			}
+
 			$last_i = $i;
 		}
 		// $$$rob ensure opening and closing parathethis for prefilters are equal
@@ -3029,12 +3080,14 @@ $groupBy .= '_raw';
 		{
 			$sql[] = str_pad('', (int) $groupedCount, ")");
 		}
+
 		// Wrap in brackets
 		if (!empty($sql))
 		{
 			array_unshift($sql, '(');
 			$sql[] = ')';
 		}
+
 		return $sql;
 	}
 
@@ -4577,16 +4630,21 @@ $groupBy .= '_raw';
 			{
 				$value = $db->quote($value);
 			}
+
 			if ($fullWordsOnly == '1')
 			{
 				$condition = 'REGEXP';
 			}
+
 			$originalValue = $this->filters['value'][$i];
+
 			if ($value == '' && $eval == FABRIKFILTER_QUERY)
 			{
 				JError::raiseError(500, JText::_('COM_FABRIK_QUERY_PREFILTER_WITH_NO_VALUE'));
 			}
+
 			list($value, $condition) = $elementModel->getFilterValue($value, $condition, $eval);
+
 			if ($fullWordsOnly == '1')
 			{
 				if (is_array($value))
@@ -5381,6 +5439,7 @@ $groupBy .= '_raw';
 			JDEBUG ? $profiler->mark('fabrik makeFilters start') : null;
 			$modelFilters = $this->makeFilters($container, $type, $id, $ref);
 			JDEBUG ? $profiler->mark('fabrik makeFilters end') : null;
+
 			foreach ($modelFilters as $name => $filter)
 			{
 				$f = new stdClass;
@@ -5389,8 +5448,10 @@ $groupBy .= '_raw';
 				$f->required = array_key_exists('required', $filter) ? $filter->required : '';
 				$this->viewfilters[$filter->name] = $f;
 			}
+
 			FabrikWorker::getPluginManager()->runPlugins('onMakeFilters', $this, 'list');
 		}
+
 		return $this->viewfilters;
 	}
 
@@ -5642,6 +5703,8 @@ $groupBy .= '_raw';
 		$statements[] = JHTML::_('select.option', 'ENDS WITH', JText::_('COM_FABRIK_ENDS_WITH'));
 		$statements[] = JHTML::_('select.option', '>', JText::_('COM_FABRIK_GREATER_THAN'));
 		$statements[] = JHTML::_('select.option', '<', JText::_('COM_FABRIK_LESS_THAN'));
+		$statements[] = JHTML::_('select.option', 'EMPTY', JText::_('COM_FABRIK_IS_EMPTY'));
+
 		return $statements;
 	}
 
@@ -5689,6 +5752,7 @@ $groupBy .= '_raw';
 		{
 			return $this->advancedSearchRows;
 		}
+
 		$statements = $this->getStatementsOpts();
 		$rows = array();
 		$first = false;
@@ -5700,6 +5764,7 @@ $groupBy .= '_raw';
 
 		$filters = $this->getAdvancedFilterValues();
 		$counter = 0;
+
 		if (array_key_exists('key', $filters))
 		{
 			foreach ($filters['key'] as $key)
@@ -5707,19 +5772,24 @@ $groupBy .= '_raw';
 				foreach ($elementModels as $elementModel)
 				{
 					$testkey = FabrikString::safeColName($elementModel->getFullName(false, false, false));
+
 					if ($testkey == $key)
 					{
 						break;
 					}
 				}
-				$join = $filters['join'][$counter];
 
-				$condition = $filters['condition'][$counter];
+				$join = $filters['join'][$counter];
+				$condition = array_key_exists($counter, $filters['orig_condition']) ? $filters['orig_condition'][$counter] : $filters['condition'][$counter];
 				$value = $filters['origvalue'][$counter];
 				$v2 = $filters['value'][$counter];
 				$jsSel = '=';
+
 				switch ($condition)
 				{
+					case 'EMPTY':
+						$jsSel = 'EMPTY';
+						break;
 					case "<>":
 						$jsSel = '<>';
 						break;
@@ -5735,6 +5805,7 @@ $groupBy .= '_raw';
 					default:
 						$firstChar = JString::substr($v2, 1, 1);
 						$lastChar = JString::substr($v2, -2, 1);
+
 						switch ($firstChar)
 						{
 							case "%":
@@ -5749,10 +5820,12 @@ $groupBy .= '_raw';
 						}
 						break;
 				}
+
 				if (is_string($value))
 				{
 					$value = trim(trim($value, '"'), "%");
 				}
+
 				if ($counter == 0)
 				{
 					$join = JText::_('COM_FABRIK_WHERE') . '<input type="hidden" value="WHERE" name="' . $prefix . 'join][]" />';
@@ -5783,7 +5856,9 @@ $groupBy .= '_raw';
 			$rows[] = array('join' => $join, 'element' => $key, 'condition' => $jsSel, 'filter' => $firstFilter, 'type' => $type,
 					'grouped' => $grouped);
 		}
+
 		$this->advancedSearchRows = $rows;
+
 		return $rows;
 	}
 

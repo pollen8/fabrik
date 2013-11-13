@@ -512,12 +512,13 @@ class PlgFabrik_ElementThumbs extends PlgFabrik_Element
 	/**
 	 * Should the element's data be returned in the search all?
 	 *
-	 * @param   bool  $advancedMode  is the elements' list is extended search all mode?
+	 * @param   bool    $advancedMode  Is the elements' list is extended search all mode?
+	 * @param   string  $search        Search string
 	 *
 	 * @return  bool	true
 	 */
 
-	public function includeInSearchAll($advancedMode = false)
+	public function includeInSearchAll($advancedMode = false, $search = '')
 	{
 		return false;
 	}

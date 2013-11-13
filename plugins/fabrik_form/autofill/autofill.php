@@ -111,6 +111,7 @@ class PlgFabrik_FormAutofill extends PlgFabrik_Form
 		$value = $input->get('v', '', 'string');
 		$input->set('resetfilters', 1);
 		$input->set('usekey', '');
+
 		if ($cnn === 0 || $cnn == -1)
 		{
 			// No connection selected so query current forms' table data
@@ -125,6 +126,7 @@ class PlgFabrik_FormAutofill extends PlgFabrik_Form
 			$listModel = JModelLegacy::getInstance('list', 'FabrikFEModel');
 			$listModel->setId($input->getInt('table'));
 		}
+
 		if ($value !== '')
 		{
 			// Don't get the row if its empty
@@ -142,11 +144,13 @@ class PlgFabrik_FormAutofill extends PlgFabrik_Form
 				$value = $db->loadResult();
 			}
 			$data = $listModel->getRow($value, true, true);
+
 			if (!is_null($data))
 			{
 				$data = array_shift($data);
 			}
 		}
+
 		if (empty($data))
 		{
 			echo "{}";
@@ -158,41 +162,19 @@ class PlgFabrik_FormAutofill extends PlgFabrik_Form
 			if (!empty($map))
 			{
 				$newdata = new stdClass;
+
 				foreach ($map as $from => $to)
 				{
-					$toraw = $to . '_raw';
-					$fromraw = $from . '_raw';
 					if (is_array($to))
 					{
 						foreach ($to as $to2)
 						{
-							$to2_raw = $to2 . '_raw';
-							if (!array_key_exists($from, $data))
-							{
-								JError::raiseError(500, 'autofill map json not correctly set?');
-							}
-							$newdata->$to2 = isset($data->$from) ? $data->$from : '';
-							if (!array_key_exists($fromraw, $data))
-							{
-								JError::raiseError(500, 'autofill toraw map json not correctly set?');
-							}
-							$newdata->$to2_raw = isset($data->$fromraw) ? $data->$fromraw : '';
+							$this->fillField($data, $newdata, $from, $to2);
 						}
 					}
 					else
 					{
-						// $$$ hugh - key may exist, but be null
-						if (!array_key_exists($from, $data))
-						{
-							exit;
-							JError::raiseError(500, 'Couln\'t find from value in record data, is the element published?');
-						}
-						$newdata->$to = isset($data->$from) ? $data->$from : '';
-						if (!array_key_exists($fromraw, $data))
-						{
-							JError::raiseError(500, 'autofill toraw map json not correctly set?');
-						}
-						$newdata->$toraw = isset($data->$fromraw) ? $data->$fromraw : '';
+						$this->fillField($data, $newdata, $from, $to);
 					}
 				}
 			}
@@ -204,4 +186,42 @@ class PlgFabrik_FormAutofill extends PlgFabrik_Form
 		}
 	}
 
+	/**
+	 * Fill the response with the lookup data
+	 *
+	 * @param   object  $data     Lookup List - Row data
+	 * @param   object  $newdata  Data to fill the form with
+	 * @param   string  $from     Key to search for in $data - may be either element full name, or placeholders
+	 * @param   string  $to       Form's field to insert data into
+	 *
+	 * @return  null
+	 */
+	protected function fillField($data, &$newdata, $from, $to)
+	{
+		$matched = false;
+		$toraw = $to . '_raw';
+		$fromraw = $from . '_raw';
+
+		if (array_key_exists($from, $data))
+		{
+			$matched = true;
+		}
+
+		$newdata->$to = isset($data->$from) ? $data->$from : '';
+
+		if (array_key_exists($fromraw, $data))
+		{
+			$matched = true;
+		}
+
+		if (!$matched)
+		{
+			$w = new FabrikWorker;
+			$newdata->$toraw = $newdata->$to = $w->parseMessageForPlaceHolder($from, $data);
+		}
+		else
+		{
+			$newdata->$toraw = isset($data->$fromraw) ? $data->$fromraw : '';
+		}
+	}
 }

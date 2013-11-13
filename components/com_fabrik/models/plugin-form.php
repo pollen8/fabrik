@@ -1,13 +1,15 @@
 <?php
 /**
+ * Fabrik Plugin From Model
+ *
  * @package     Joomla
  * @subpackage  Fabrik
- * @copyright   Copyright (C) 2005 Rob Clayburn. All rights reserved.
- * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @copyright   Copyright (C) 2005-2013 fabrikar.com - All rights reserved.
+ * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
-// Check to ensure this file is included in Joomla!
-defined('_JEXEC') or die();
+// No direct access
+defined('_JEXEC') or die('Restricted access');
 
 jimport('joomla.application.component.model');
 
@@ -21,10 +23,18 @@ jimport('joomla.application.component.model');
 
 class PlgFabrik_Form extends FabrikPlugin
 {
-	/**@var array formatted email data */
+	/**
+	 * Formatted email data
+	 *
+	 * @var array
+	 */
 	protected $emailData = null;
 
-	/** @var string html to return from plugin rendering */
+	/**
+	 * HTML to return from plugin rendering
+	 *
+	 * @var string
+	 */
 	protected $html = '';
 
 	protected $formModel = null;
@@ -69,7 +79,6 @@ class PlgFabrik_Form extends FabrikPlugin
 
 	public function onError($params, &$formModel)
 	{
-
 	}
 
 	/**
@@ -205,11 +214,14 @@ class PlgFabrik_Form extends FabrikPlugin
 		{
 			return $this->emailData;
 		}
+
 		$model = $this->formModel;
+
 		if (is_null($model->_formDataWithTableName))
 		{
 			return array();
 		}
+
 		$model->isAjax();
 		/* $$$rob don't render the form - there's no need and it gives a warning about an unfound rowid
 		 * $$$ rob also it sets teh fromModels rowid to an + int even if we are submitting a new form
@@ -221,8 +233,10 @@ class PlgFabrik_Form extends FabrikPlugin
 
 		$listModel = $model->getListModel();
 		$table = is_object($listModel) ? $listModel->getTable() : null;
-
+		$baseTable = is_object($listModel) ? $table->db_table_name : '';
+		$editable = $model->isEditable();
 		$model->setEditable(false);
+
 		if (is_object($listModel))
 		{
 			$joins = $listModel->getJoins();
@@ -230,7 +244,6 @@ class PlgFabrik_Form extends FabrikPlugin
 		}
 
 		$params = $model->getParams();
-
 		$this->emailData = array();
 
 		// $$$ hugh - temp foreach fix
@@ -243,6 +256,7 @@ class PlgFabrik_Form extends FabrikPlugin
 			// Check if group is acutally a table join
 			$repeatGroup = 1;
 			$foreignKey = null;
+
 			if ($groupModel->canRepeat())
 			{
 				if ($groupModel->isJoin())
@@ -250,6 +264,7 @@ class PlgFabrik_Form extends FabrikPlugin
 					$joinModel = $groupModel->getJoinModel();
 					$joinTable = $joinModel->getJoin();
 					$foreignKey = '';
+
 					if (is_object($joinTable))
 					{
 						$foreignKey = $joinTable->table_join_key;
@@ -273,33 +288,17 @@ class PlgFabrik_Form extends FabrikPlugin
 						}
 					}
 				}
-				else
-				{
-					/* $$$ rob 19/03/2012 - deprecated?
-					 * repeat groups which arent joins
-					 * $elementModels = $groupModel->getPublishedElements();
-					foreach ($elementModels as $tmpElement) {
-					    $smallerElHTMLName = $tmpElement->getFullName(false, true, false);
-					    if (is_array($model->_formDataWithTableName)) {
-					        if (array_key_exists($smallerElHTMLName . '_raw', $model->_formDataWithTableName)) {
-					            $d = $model->_formDataWithTableName[$smallerElHTMLName . '_raw'];
-					        } else {
-					            $d = @$model->_formDataWithTableName[$smallerElHTMLName];
-					        }
-					        $d = FabrikWorker::JSONtoData($d, true);
-					        $c = count($d);
-					        if ($c > $repeatGroup) { $repeatGroup = $c;}
-					    }
-					} */
-				}
 			}
+
 			$groupModel->repeatTotal = $repeatGroup;
 			$group = $groupModel->getGroup();
 			$aSubGroups = array();
+
 			for ($c = 0; $c < $repeatGroup; $c++)
 			{
 				$aSubGroupElements = array();
 				$elementModels = $groupModel->getPublishedElements();
+
 				foreach ($elementModels as $elementModel)
 				{
 					// Force reload?
@@ -324,11 +323,16 @@ class PlgFabrik_Form extends FabrikPlugin
 							{
 								$this->emailData[$k . '_raw'] = array();
 							}
-							$this->emailData[$k . '_raw'][] = JArrayHelper::getValue($model->_formDataWithTableName['join'][$group->join_id][$k], $c);
+
+							$raw = JArrayHelper::getValue($model->_formDataWithTableName['join'][$group->join_id][$k], $c);
+							$this->emailData[$k . '_raw'][] = $raw;
+							$this->emailData[$k][$c] = $elementModel->getEmailValue($raw, $model->_formDataWithTableName, $c);
 						}
 						else
 						{
-							$this->emailData[$k . '_raw'] = $model->_formDataWithTableName['join'][$group->join_id][$k];
+							$raw = $model->_formDataWithTableName['join'][$group->join_id][$k];
+							$this->emailData[$k . '_raw'] = $raw;
+ 							$this->emailData[$k] = $elementModel->getEmailValue($raw, $model->_formDataWithTableName);
 						}
 					}
 					else
@@ -338,10 +342,16 @@ class PlgFabrik_Form extends FabrikPlugin
 						{
 							$join = $elementModel->getJoinModel()->getJoin();
 							$this->emailData[$k . '_raw'] = $model->_formDataWithTableName['join'][$join->id][$k];
+
+							// Hack for fileuploads so placeholders work
+							$baseTable = $this->formModel->origTableName;
+							$k2 = $baseTable . '___' . $element->name;
+							$this->emailData[$k2 . '_raw'] = $this->emailData[$k . '_raw'];
 						}
 						elseif (array_key_exists($key, $model->_formDataWithTableName))
 						{
 							$rawval = JArrayHelper::getValue($model->_formDataWithTableName, $k . '_raw', '');
+
 							if ($rawval == '')
 							{
 								$this->emailData[$k . '_raw'] = $model->_formDataWithTableName[$key];
@@ -366,7 +376,10 @@ class PlgFabrik_Form extends FabrikPlugin
 
 					// $$$ hugh - for some reason, CDD keys themselves are missing form emailData, if no selection was made?
 					// (may only be on AJAX submit)
-					$email_value = '';
+
+					// $$$ rob - this barfed big time: any db join element in repeat group was gettings its labels re-replaced with values.
+					/* $email_value = '';
+
 					if (array_key_exists($k . '_raw', $this->emailData))
 					{
 						$email_value = $this->emailData[$k . '_raw'];
@@ -375,26 +388,36 @@ class PlgFabrik_Form extends FabrikPlugin
 					{
 						$email_value = $this->emailData[$k];
 					}
-					$this->emailData[$k] = $elementModel->getEmailValue($email_value, $model->_formDataWithTableName, $c);
+
+					$this->emailData[$k] = $elementModel->getEmailValue($email_value, $model->_formDataWithTableName, $c); */
+
+					// $$$ rob end of barfage
+
 					if ($elementModel->_inRepeatGroup && $elementModel->_inJoin)
 					{
 						$this->emailData['join'][$groupModel->getGroup()->join_id][$k . '_raw'] = $this->emailData[$k . '_raw'];
 						$this->emailData['join'][$groupModel->getGroup()->join_id][$k] = $this->emailData[$k];
 					}
+
 					if ($elementModel->isJoin())
 					{
 						$this->emailData['join'][$elementModel->getJoinModel()->getJoin()->id][$k . '_raw'] = $this->emailData[$k . '_raw'];
 						$this->emailData['join'][$elementModel->getJoinModel()->getJoin()->id][$k] = $this->emailData[$k];
+						$this->emailData[$k2] =  $this->emailData[$k];
 					}
 				}
 			}
 		}
+
 		if (is_object($listModel))
 		{
 			$pk = FabrikString::safeColNameToArrayKey($listModel->getTable()->db_primary_key);
 			$this->emailData[$pk] = $listModel->lastInsertId;
 			$this->emailData[$pk . '_raw'] = $listModel->lastInsertId;
 		}
+
+		$model->setEditable($editable);
+
 		return $this->emailData;
 	}
 
@@ -411,6 +434,7 @@ class PlgFabrik_Form extends FabrikPlugin
 		$query->select(' id, name, email, sendEmail')->from('#__users')->where('WHERE sendEmail = "1"');
 		$db->setQuery($query);
 		$rows = $db->loadObjectList();
+
 		return $rows;
 	}
 
@@ -442,5 +466,4 @@ class PlgFabrik_Form extends FabrikPlugin
 	{
 		return $this->usesSession;
 	}
-
 }

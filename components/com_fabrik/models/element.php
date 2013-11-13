@@ -1284,7 +1284,10 @@ class PlgFabrik_Element extends FabrikPlugin
 		{
 			$this->defaults = array();
 		}
+
 		$key = $repeatCounter . '.' . serialize($opts);
+		$app = JFactory::getApplication();
+
 		if (!array_key_exists($key, $this->defaults))
 		{
 			$groupModel = $this->getGroup();
@@ -1296,6 +1299,7 @@ class PlgFabrik_Element extends FabrikPlugin
 			$value = $this->getDefaultOnACL($data, $opts);
 			$name = $this->getFullName(false, true, false);
 			$rawname = $name . '_raw';
+
 			if ($groupModel->isJoin() || $this->isJoin())
 			{
 				$nameKey = 'join.' . $joinid . '.' . $name;
@@ -1306,10 +1310,12 @@ class PlgFabrik_Element extends FabrikPlugin
 				if ($groupModel->canRepeat())
 				{
 					$v = FArrayHelper::getNestedValue($data, $nameKey . '.' . $repeatCounter, null);
+
 					if (is_null($v))
 					{
 						$v = FArrayHelper::getNestedValue($data, $rawNameKey . '.' . $repeatCounter, null);
 					}
+
 					if (!is_null($v))
 					{
 						$value = $v;
@@ -1317,11 +1323,18 @@ class PlgFabrik_Element extends FabrikPlugin
 				}
 				else
 				{
+					if ($repeatCounter > 0)
+					{
+						$app->enqueueMessage('You are trying to access a Fabrik repeat group value, when your group is not set to repeat', 'notice');
+					}
+
 					$v = FArrayHelper::getNestedValue($data, $nameKey, null);
+
 					if (is_null($v))
 					{
 						$v = FArrayHelper::getNestedValue($data, $rawNameKey, null);
 					}
+
 					if (!is_null($v))
 					{
 						$value = $v;
@@ -1431,31 +1444,51 @@ class PlgFabrik_Element extends FabrikPlugin
 	private function isTipped($mode = 'form')
 	{
 		$formModel = $this->getFormModel();
+
 		if ($formModel->getParams()->get('tiplocation', 'tip') !== 'tip' && $mode === 'form')
 		{
 			return false;
 		}
+
 		$params = $this->getParams();
+
 		if ($params->get('rollover', '') === '')
 		{
 			return false;
 		}
+
 		if ($mode == 'form' && (!$formModel->isEditable() && $params->get('labelindetails', true) == false))
 		{
 			return false;
 		}
+
 		if ($mode === 'list' && $params->get('labelinlist', false) == false)
 		{
 			return false;
 		}
+
 		return true;
+	}
+
+	/**
+	 * Get list heading label
+	 *
+	 * @return  string
+	 */
+	public function getListHeading()
+	{
+		$params = $this->getParams();
+		$element = $this->getElement();
+		$label = $params->get('alt_list_heading') == '' ? $element->label : $params->get('alt_list_heading');
+
+		return JText::_($label);
 	}
 
 	/**
 	 * Get the element's HTML label
 	 *
-	 * @param   int     $repeatCounter  group repeat counter
-	 * @param   string  $tmpl           form template
+	 * @param   int     $repeatCounter  Group repeat counter
+	 * @param   string  $tmpl           Form template
 	 *
 	 * @return  string  label
 	 */
@@ -5720,19 +5753,22 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label FROM " . Fab
 	/**
 	 * Should the element's data be returned in the search all?
 	 *
-	 * @param   bool  $advancedMode  is the elements' list is extended search all mode?
+	 * @param   bool    $advancedMode  Is the elements' list is extended search all mode?
+	 * @param   string  $search        Search string
 	 *
 	 * @return  bool	true
 	 */
 
-	public function includeInSearchAll($advancedMode = false)
+	public function includeInSearchAll($advancedMode = false, $search = '')
 	{
 		if ($this->isJoin() && $advancedMode)
 		{
 			return false;
 		}
+
 		$params = $this->getParams();
 		$inc = $params->get('inc_in_search_all', 1);
+
 		if ($inc == 2 && $advancedMode)
 		{
 			if ($this->ignoreSearchAllDefault)
@@ -5742,12 +5778,14 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label FROM " . Fab
 			else
 			{
 				$format = $params->get('text_format');
+
 				if ($format == 'integer' || $format == 'decimal')
 				{
 					$inc = false;
 				}
 			}
 		}
+
 		return ($inc == 1 || $inc == 2) ? true : false;
 	}
 

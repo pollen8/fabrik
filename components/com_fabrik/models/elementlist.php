@@ -200,15 +200,18 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 		$db = JFactory::getDbo();
 		$this->encryptFieldName($key);
 		$glue = $this->getElement()->filter_exact_match ? 'AND' : 'OR';
+
 		if ($element->filter_type == 'checkbox' || $element->filter_type == 'multiselect')
 		{
 			$originalValue = (array) $originalValue;
 			$str = array();
+
 			foreach ($originalValue as $v)
 			{
 				$v = str_replace("/", "\\\\/", $v);
 				$str[] = $key . ' LIKE ' . $db->quote('%"' . $v . '"%') . ' ';
 			}
+
 			$str = implode($glue, $str);
 		}
 		else
@@ -222,6 +225,11 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 			* before it to escape it for the query.
 			*/
 			$originalValue = str_replace("/", "\\\\/", $originalValue);
+			if ($condition === 'is null')
+			{
+				$value = '';
+			}
+
 			switch ($condition)
 			{
 				case '=':
@@ -237,6 +245,7 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 					break;
 			}
 		}
+
 		return $str;
 	}
 
@@ -515,13 +524,17 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 
 		// Give priority to raw value icons (podion)
 		$raw = $this->getFullName(false, true, false) . '_raw';
+		$this->iconsSet = false;
+
 		if (isset($thisRow->$raw))
 		{
 			$rawData = FabrikWorker::JSONtoData($thisRow->$raw, true);
+
 			foreach ($rawData as &$val)
 			{
 				$val = $useIcon ? $this->replaceWithIcons($val, 'list', $listModel->getTmpl()) : $val;
 			}
+
 			if ($this->iconsSet)
 			{
 				// Use raw icons
@@ -551,6 +564,7 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 					{
 						$l = $tmpVal;
 					}
+
 					$l = $this->replaceWithIcons($l, 'list', $listModel->getTmpl());
 				}
 				if ($this->renderWithHTML)

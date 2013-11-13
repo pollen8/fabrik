@@ -506,6 +506,10 @@ table.fabrikList .oddRow1 {
 	background-color: #Efefef;
 }
 
+table.fabrikList .button2-left a {
+	display: initial;
+	float: none;
+}
 /*********************************************************/
 /************  End basic table styling *******************/
 /*********************************************************/

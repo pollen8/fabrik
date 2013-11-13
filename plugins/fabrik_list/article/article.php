@@ -84,6 +84,7 @@ class PlgFabrik_ListArticle extends PlgFabrik_List
 	{
 		$input = JFactory::getApplication()->input;
 		$ids = $input->get('ids', array(), 'array');
+		$origRowId = $input->get('rowid');
 		$pluginManager = JModel::getInstance('Pluginmanager', 'FabrikFEModel');
 
 		// Abstract verson of the form article plugin
@@ -91,23 +92,28 @@ class PlgFabrik_ListArticle extends PlgFabrik_List
 
 		$formModel = $model->getFormModel();
 		$formParams = $formModel->getParams();
-		$c = array_search('article', (array) $formParams->get('plugins'));
+		$plugins = $formParams->get('plugins');
 
-		if ($c === false)
+		foreach ($plugins as $c => $type)
 		{
-			throw new RuntimeException('No article form plugin found', 500);
+			if ($type === 'article')
+			{
+				// Set the abstract article plugin to have the correct parameters
+				$pluginParams = $articlePlugin->setParams($formParams, $c);
+
+				// Iterate over the records - load row & update articles
+				foreach ($ids as $id)
+				{
+					$input->set('rowid', $id);
+					$formModel->setRowId($id);
+					$formModel->_formData = $formModel->getData();
+					$articlePlugin->onAfterProcess($pluginParams, $formModel);
+				}
+			}
 		}
 
-		// Set the abstract article plugin to have the correct parameters
-		$pluginParams = $articlePlugin->setParams($formParams, $c);
+		$input->set('rowid', $origRowId);
 
-		// Iterate over the records - load row & update articles
-		foreach ($ids as $id)
-		{
-			$formModel->setRowId($id);
-			$formModel->_formData = $formModel->getData();
-			$articlePlugin->onBeforeStore($pluginParams, $formModel);
-		}
 		return true;
 	}
 

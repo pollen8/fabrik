@@ -72,6 +72,7 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 		$attribs = array('title', 'publish_up', 'publish_down', 'featured', 'state', 'metadesc', 'metakey');
 
 		$data['images'] = json_encode($this->images());
+
 		if (is_null($id))
 		{
 			$data['created'] = JFactory::getDate()->toSql();
@@ -88,7 +89,7 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 			$data[$attrib] = $this->findElementData($elementId, $data);
 		}
 
-		$this->generateNewTitle($catid, $data);
+		$this->generateNewTitle($id, $catid, $data);
 
 		$item = JTable::getInstance('Content');
 		$item->load($id);
@@ -109,6 +110,7 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 	protected function findElementData($elementId)
 	{
 		$value = '';
+
 		if ($elementModel = $this->formModel->getElement($elementId, true))
 		{
 			$fullName = $elementModel->getFullName(false, true, false);
@@ -137,9 +139,9 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 
 		if ($introImg !== '')
 		{
-			$img->image_intro = $this->findElementData($introImg);
-			$img->image_intro = str_replace('\\', '/', $img->image_intro);
-
+			$size = $params->get('image_intro_size', 'cropped');
+			$file = $this->setImage($introImg, $size);
+			$img->image_intro = str_replace('\\', '/', $file);
 			$img->image_intro = FabrikString::ltrimword($img->image_intro, '/');
 			$img->float_intro = '';
 			$img->image_intro_alt = '';
@@ -148,8 +150,9 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 
 		if ($fullImg !== '')
 		{
-			$img->image_fulltext = $this->findElementData($introImg);
-			$img->image_fulltext = str_replace('\\', '/', $img->image_fulltext);
+			$size = $params->get('image_full_size', 'thumb');
+			$file = $this->setImage($fullImg, $size);
+			$img->image_fulltext = str_replace('\\', '/', $file);
 			$img->image_fulltext = FabrikString::ltrimword($img->image_fulltext, '/');
 			$img->float_fulltext = '';
 			$img->image_fulltext_alt = '';
@@ -160,16 +163,58 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 	}
 
 	/**
+	 * Get thumb/cropped/full image paths
+	 *
+	 * @param   int     $elementId  Element id
+	 * @param   string  $size       Type of file to find (cropped/thumb/full)
+	 *
+	 * @return  string
+	 */
+	protected function setImage($elementId, $size)
+	{
+		$file = $this->findElementData($elementId);
+		$elementModel = $this->formModel->getElement($elementId, true);
+
+		if (get_class($elementModel) === 'PlgFabrik_ElementFileupload')
+		{
+			$storage = $elementModel->getStorage();
+			$file = $storage->clean(JPATH_SITE . '/' . $file);
+			$file = $storage->pathToURL($file);
+
+			switch ($size)
+			{
+				case 'cropped':
+					$file = $storage->_getCropped($file);
+					break;
+				case 'thumb':
+					$file = $storage->_getThumb($file);
+					break;
+			}
+
+			$file = $storage->urlToPath($file);
+			$file = str_replace(JPATH_SITE . '/', '', $file);
+		}
+
+		return $file;
+	}
+
+	/**
 	 * Method to change the title & alias.
 	 *
+	 * @param   integer  $id     Article id
 	 * @param   integer  $catid  The id of the category.
 	 * @param   array    &$data  The row data.
 	 *
 	 * @return	null
 	 */
-	protected function generateNewTitle($catid, &$data)
+	protected function generateNewTitle($id, $catid, &$data)
 	{
-		// Alter the title & alias
+		// If its an existing article don't edit name
+		if ((int) $id !== 0)
+		{
+			return;
+		}
+
 		$table = JTable::getInstance('Content');
 		$alias = $data['title'];
 		$title = $data['title'];
@@ -203,8 +248,13 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 
 			// Ensure we store to the main db table
 			$listModel->clearTable();
+
 			$rowId = JFactory::getApplication()->input->getString('rowid');
 			$listModel->storeCell($rowId, $key, $val);
+		}
+		else
+		{
+			throw new RuntimeException('setMetaStore: No meta store element found for element id ' . $params->get('meta_store'));
 		}
 	}
 
@@ -223,6 +273,10 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 			$fullName = $elementModel->getFullName(false, true, false);
 			$metaStore = $this->formModel->getElementData($fullName);
 			$metaStore = json_decode($metaStore);
+		}
+		else
+		{
+			throw new RuntimeException('metaStore: No meta store element found for element id ' . $params->get('meta_store'));
 		}
 
 		return $metaStore;
@@ -245,7 +299,7 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 
 		if ($elementModel = $formModel->getElement($params->get('meta_store'), true))
 		{
-			$fullName = $elementModel->getFullName(false, true, false);
+			$fullName = $elementModel->getFullName(false, true, false) . '_raw';
 			foreach ($groups as $group)
 			{
 				foreach ($group as $rows)
@@ -266,6 +320,10 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 					}
 				}
 			}
+		}
+		else
+		{
+			throw new RuntimeException('Article plugin: onDeleteRows, did not find meta store element: ' . $params->get('meta_store'));
 		}
 	}
 
@@ -305,7 +363,6 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 			$message = $content;
 		}
 
-		// $$$ hugh - test stripslashes(), should be safe enough.
 		$message = stripslashes($message);
 
 		$editURL = COM_FABRIK_LIVESITE . 'index.php?option=com_' . $package . '&amp;view=form&amp;fabrik=' . $formModel->get('id') . '&amp;rowid='
@@ -319,8 +376,9 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 		$message = str_replace('{fabrik_editurl}', $editURL, $message);
 		$message = str_replace('{fabrik_viewurl}', $viewURL, $message);
 		$w = new FabrikWorker;
+		$output = $w->parseMessageForPlaceholder($message, $this->data, false);
 
-		return $w->parseMessageForPlaceholder($message, $this->data, false);
+		return $output;
 	}
 
 	/**
