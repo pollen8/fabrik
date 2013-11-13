@@ -388,10 +388,11 @@ class PlgFabrik_Form extends FabrikPlugin
 					{
 						$email_value = $this->emailData[$k];
 					}
-
-					$this->emailData[$k] = $elementModel->getEmailValue($email_value, $model->_formDataWithTableName, $c); */
-
 					// $$$ rob end of barfage
+					*/
+					$this->emailData[$k] = $elementModel->getEmailValue($email_value, $model->_formDataWithTableName, $c);
+
+
 
 					if ($elementModel->_inRepeatGroup && $elementModel->_inJoin)
 					{
