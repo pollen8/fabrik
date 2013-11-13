@@ -37,6 +37,10 @@ window.FbRadio = new Class({
 
 		c.getElements(".btn-group input[checked=checked]").each(function (input) {
 			var label = input.getParent('label');
+			if (typeOf(label) === 'null') {
+				// J3.2 button group markup - label is after input
+				label = input.getNext();
+			}
 			v = input.get('value');
 			if (v === '') {
 				label.addClass('active btn-primary');
@@ -150,15 +154,12 @@ window.FbRadio = new Class({
 			if (typeOf(val) === 'array') {
 				els.each(function (el) {
 					if (val.contains(el.value)) {
-						//el.setProperty('checked', 'checked');
 						this.setButtonGroupCSS(el);
-						//el.fireEvent('click');
 					}
 				}.bind(this));
 			} else {
 				els.each(function (el) {
 					if (el.value === val) {
-						//el.setProperty('checked', 'checked');
 						this.setButtonGroupCSS(el);
 					}
 				}.bind(this));
