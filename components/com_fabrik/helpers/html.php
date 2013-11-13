@@ -1945,6 +1945,70 @@ if (!$j3)
 	}
 
 	/**
+	 * Build array of items for use in grid()
+	 *
+	 * @param   array   $values              Option values
+	 * @param   array   $labels              Option labels
+	 * @param   array   $selected            Selected options
+	 * @param   string  $name                Input name
+	 * @param   string  $type                Checkbox/radio etc
+	 * @param   bool    $elementBeforeLabel  Element before or after the label - deprecated - not used in Joomla 3
+	 * @param   array   $classes             Label classes
+	 * @param   bool    $buttonGroup         Should it be rendered as a bootstrap button group (radio only)
+	 *
+	 * @return  array  Grid items
+	 */
+
+	public static function gridItems($values, $labels, $selected, $name, $type = 'checkbox',
+		$elementBeforeLabel = true, $classes = array(), $buttonGroup = false)
+	{
+		$j3 = FabrikWorker::j3();
+		$version = new JVersion;
+
+		// Button group rendering seems to have changed in J3.2
+		$j32ButtonGroup = version_compare($version->RELEASE, 3.2, '>=') && $buttonGroup;
+
+		for ($i = 0; $i < count($values); $i++)
+		{
+			$item = array();
+			$thisname = $type === 'checkbox' ? FabrikString::rtrimword($name, '[]') . '[' . $i . ']' : $name;
+			$label = $j32ButtonGroup? $labels[$i] : '<span>' . $labels[$i] . '</span>';
+
+			// For values like '1"'
+			$value = htmlspecialchars($values[$i], ENT_QUOTES);
+			$inputClass = FabrikWorker::j3() ? '' : $type;
+
+			if (array_key_exists('input', $classes))
+			{
+				$inputClass .= ' ' . implode(' ', $classes['input']);
+			}
+
+			preg_match('/[\w\s]+/', $name, $id);
+			$id = $id[0] . '_' . $i;
+			$chx = '<input type="' . $type . '" class="fabrikinput ' . $inputClass . '" name="' . $thisname . '" value="' . $value . '" ';
+			$sel = in_array($values[$i], $selected);
+			$chx .= $j32ButtonGroup ? ' id="' . $id . '"' : '';
+			$chx .= $sel ? ' checked="checked" />' : ' />';
+			$labelClass = FabrikWorker::j3() && !$buttonGroup ? $type : '';
+
+			if ($j32ButtonGroup)
+			{
+				$item[] = $chx;
+				$item[] = '<label for="' . $id . '" class="fabrikgrid_' . $value . ' ' . $labelClass . '">' . $label . '</label>';
+			}
+			else
+			{
+				$item[] = '<label class="fabrikgrid_' . $value . ' ' . $labelClass . '">';
+				$item[] = $elementBeforeLabel == '1' ? $chx . $label : $label . $chx;
+				$item[] = '</label>';
+			}
+			$items[] = implode("\n", $item);
+		}
+
+		return $items;
+	}
+
+	/**
 	 * Make a grid of items
 	 *
 	 * @param   array   $values              Option values
@@ -1960,7 +2024,7 @@ if (!$j3)
 	 * @return  string  grid
 	 */
 
-	public static function grid($values, $labels, $selected, $name, $type = "checkbox",
+	public static function grid($values, $labels, $selected, $name, $type = 'checkbox',
 		$elementBeforeLabel = true, $optionsPerRow = 4, $classes = array(), $buttonGroup = false)
 	{
 		$items = array();
@@ -1970,30 +2034,7 @@ if (!$j3)
 			$elementBeforeLabel = true;
 		}
 
-		for ($i = 0; $i < count($values); $i++)
-		{
-			$item = array();
-			$thisname = $type === 'checkbox' ? FabrikString::rtrimword($name, '[]') . '[' . $i . ']' : $name;
-			$label = '<span>' . $labels[$i] . '</span>';
-
-			// For values like '1"'
-			$value = htmlspecialchars($values[$i], ENT_QUOTES);
-			$inputClass = FabrikWorker::j3() ? '' : $type;
-
-			if (array_key_exists('input', $classes))
-			{
-				$inputClass .= ' ' . implode(' ', $classes['input']);
-			}
-
-			$chx = '<input type="' . $type . '" class="fabrikinput ' . $inputClass . '" name="' . $thisname . '" value="' . $value . '" ';
-			$sel = in_array($values[$i], $selected);
-			$chx .= $sel ? ' checked="checked" />' : ' />';
-			$labelClass = FabrikWorker::j3() && !$buttonGroup ? $type : '';
-			$item[] = '<label class="fabrikgrid_' . $value . ' ' . $labelClass . '">';
-			$item[] = $elementBeforeLabel == '1' ? $chx . $label : $label . $chx;
-			$item[] = '</label>';
-			$items[] = implode("\n", $item);
-		}
+		$items = self::gridItems($values, $labels, $selected, $name, $type, $elementBeforeLabel, $classes, $buttonGroup);
 
 		$grid = array();
 		$optionsPerRow = empty($optionsPerRow) ? 4 : $optionsPerRow;
