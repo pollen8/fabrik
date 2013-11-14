@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <extension group="fabrik_form" method="upgrade" type="plugin" version="3.2">
-	<name>FTP</name>
+	<name>plg_fabrik_form_ftp</name>
 	<author>Hugh Messenger</author>
 	<creationDate>November 2013</creationDate>
 	<copyright>Copyright (C) 2005-2013 fabrikar.com - All rights reserved.</copyright>
@@ -9,7 +9,7 @@
 	<authorUrl>www.fabrikar.com</authorUrl>
 	<version>3.1rc2</version>
 	<help url="PLG_FORM_FTP_HELP_SERVER"/>
-	<description>PLG_FORM_EMAIL_DESCRIPTION</description>
+	<description>PLG_FORM_FTP_DESCRIPTION</description>
 	<files>
 		<filename plugin="ftp">ftp.php</filename>
 		<filename>index.html</filename>
