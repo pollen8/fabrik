@@ -96,9 +96,16 @@ var FbTextarea = new Class({
 							c.getElement('.fabrik_characters_left').addClass('muted');
 						}.bind(this));
 						
+						tinyMCE.get(this.element.id).on('blur', function (e) {
+							this.forwardEvent('blur');
+						}.bind(this));
+						
 					} else {
 						tinymce.dom.Event.add(this.container, 'keyup', function (e) {
 							this.informKeyPress(e);
+						}.bind(this));
+						tinymce.dom.Event.add(this.container, 'blur', function (e) {
+							this.forwardEvent('blur');
 						}.bind(this));
 					}
 				} else {
@@ -118,6 +125,18 @@ var FbTextarea = new Class({
 				}
 			}
 		}
+	},
+	
+	/**
+	 * Forward an event from tinyMce to the text editor - useful for triggering ajax validations
+	 * 
+	 * @param   string  event  Event name
+	 */
+	forwardEvent: function (event) {
+		var textarea = tinyMCE.activeEditor.getElement(),
+		c = this.getContent();
+		textarea.set('value', c);
+		textarea.fireEvent('blur', new Event.Mock(textarea, event));
 	},
 	
 	focusCharsLeft: function () {
@@ -259,10 +278,10 @@ var FbTextarea = new Class({
 	 */
 
 	itemsLeft: function () {
-		var i = 0;
-		var content = this.getContent();
+		var i = 0,
+		content = this.getContent();
 		if (this.options.maxType === 'word') {
-			i = this.options.max - (content.split(' ').length) + 1;
+			i = this.options.max - content.split(' ').length;
 		} else {
 			i = this.options.max - (content.length + 1);
 		}
@@ -277,8 +296,8 @@ var FbTextarea = new Class({
 	 */
 
 	limitContent: function () {
-		var c;
-		var content = this.getContent();
+		var c,
+		content = this.getContent();
 		if (this.options.maxType === 'word') {
 			c = content.split(' ').splice(0, this.options.max);
 			c = c.join(' ');
