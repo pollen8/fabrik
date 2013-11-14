@@ -52,15 +52,18 @@ $panels = array(
 
 	array('heading'=>JText::_('COM_FABRIK_LAYOUT'),
 		'fieldset'=>array('main_template', 'layout')),
-		
+
 	array('heading'=>JText::_('COM_FABRIK_PDF'),
 		'fieldset'=>array('main_template', 'pdf')),
 
 	array('heading'=>JText::_('COM_FABRIK_LINKS'),
 		'fieldset' => array('links', 'links2', 'links-fabrik30x')),
 
-	array('heading'=>JText::_('COM_FABRIK_NOTES'),
+	array('heading'=>JText::_('COM_FABRIK_TABS'),
 		'fieldset'=>array('notes')),
+
+	array('heading'=>JText::_('COM_FABRIK_NOTES'),
+		'fieldset'=>array('control_group')),
 
 	array('heading'=>JText::_('COM_FABRIK_ADVANCED'),
 		'fieldset'=>array('advanced'))
