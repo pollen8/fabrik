@@ -1501,7 +1501,7 @@ class FabrikFEModelListfilter extends FabModel
 					$sqlCond = null;
 					$condition = array_key_exists($i, $sessionfilters['condition']) ? $sessionfilters['condition'][$i]
 						: $elementModel->getDefaultFilterCondition();
-					$origCondition = array_key_exists($i, $sessionfilters['orig_condition']) ? $sessionfilters['orig_condition'][$i]
+					$origCondition = array_key_exists('orig_condition', $sessionfilters) && array_key_exists($i, $sessionfilters['orig_condition']) ? $sessionfilters['orig_condition'][$i]
 						: $elementModel->getDefaultFilterCondition();
 					$raw = array_key_exists($i, $sessionfilters['raw']) ? $sessionfilters['raw'][$i] : 0;
 					$eval = array_key_exists($i, $sessionfilters['eval']) ? $sessionfilters['eval'][$i] : FABRIKFILTER_TEXT;
