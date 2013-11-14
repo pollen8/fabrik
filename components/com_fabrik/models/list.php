@@ -14,7 +14,6 @@ defined('_JEXEC') or die('Restricted access');
 jimport('joomla.application.component.modelform');
 
 require_once COM_FABRIK_FRONTEND . '/helpers/pagination.php';
-require_once COM_FABRIK_FRONTEND . '/helpers/string.php';
 require_once COM_FABRIK_FRONTEND . '/helpers/list.php';
 
 /**
@@ -77,7 +76,7 @@ class FabrikFEModelList extends JModelForm
 	 * List output format - set to rss to collect correct element data within function getData()
 	 *
 	 * @var string
-	*/
+	 */
 	protected $outPutFormat = 'html';
 
 	/**
@@ -304,7 +303,7 @@ class FabrikFEModelList extends JModelForm
 	 * Used in views for rendering
 	 *
 	 * @var array
-	*/
+	 */
 	public $groupTemplates = array();
 
 	/**
@@ -445,7 +444,7 @@ class FabrikFEModelList extends JModelForm
 	 * @since       1.5
 	 *
 	 * @return  mixed  false or form.
-	*/
+	 */
 
 	public function getForm($data = array(), $loadData = true)
 	{
@@ -468,8 +467,10 @@ class FabrikFEModelList extends JModelForm
 	{
 		parent::__construct();
 		$usersConfig = JComponentHelper::getParams('com_fabrik');
-		$id = JRequest::getInt('listid', $usersConfig->get('listid'));
-		$this->packageId = (int) JRequest::getInt('packageId', $usersConfig->get('packageId'));
+		$app = JFactory::getApplication();
+		$input = $app->input;
+		$id = $input->getInt('listid', $usersConfig->get('listid'));
+		$this->packageId = (int) $input->getInt('packageId', $usersConfig->get('packageId'));
 		$this->setId($id);
 		$this->_access = new stdClass;
 	}
@@ -484,6 +485,7 @@ class FabrikFEModelList extends JModelForm
 	{
 		$pluginManager = FabrikWorker::getPluginManager();
 		$pluginManager->runPlugins('process', $this, 'list');
+
 		return $pluginManager->_data;
 	}
 
@@ -498,6 +500,7 @@ class FabrikFEModelList extends JModelForm
 		$pluginManager = FabrikWorker::getPluginManager();
 		$pluginManager->runPlugins('topButton', $this, 'list');
 		$buttons = $pluginManager->_data;
+
 		return $buttons;
 	}
 
@@ -513,6 +516,7 @@ class FabrikFEModelList extends JModelForm
 		$pluginManager->getPlugInGroup('list');
 		$pluginManager->runPlugins('button', $this, 'list');
 		$buttons = $pluginManager->_data;
+
 		return $buttons;
 	}
 
@@ -530,6 +534,7 @@ class FabrikFEModelList extends JModelForm
 		$pluginManager->getPlugInGroup('list');
 		$src = array();
 		$pluginManager->runPlugins('loadJavascriptClass', $this, 'list', $src);
+
 		foreach ($pluginManager->_data as $f)
 		{
 			if (is_array($f))
@@ -541,6 +546,7 @@ class FabrikFEModelList extends JModelForm
 				$r[] = $f;
 			}
 		}
+
 		return $r;
 	}
 
@@ -558,9 +564,11 @@ class FabrikFEModelList extends JModelForm
 		{
 			$container = 'listform_' . $this->getId();
 		}
+
 		$pluginManager = FabrikWorker::getPluginManager();
 		$pluginManager->getPlugInGroup('list');
 		$pluginManager->runPlugins('onLoadJavascriptInstance', $this, 'list', $container);
+
 		return $pluginManager->_data;
 	}
 
@@ -570,25 +578,30 @@ class FabrikFEModelList extends JModelForm
 	 * @return  array  list data
 	 */
 
-	function render()
+	public function render()
 	{
 		FabrikHelperHTML::debug($_POST, 'render:post');
+		$app = JFactory::getApplication();
+		$input = $app->input;
 		$profiler = JProfiler::getInstance('Application');
 		$id = $this->getId();
+		$this->outPutFormat = $input->get('format', 'html');
+
 		if (is_null($id) || $id == '0')
 		{
-			return JError::raiseError(500, JText::_('COM_FABRIK_INCORRECT_LIST_ID'));
+			throw new RuntimeException(JText::_('COM_FABRIK_INCORRECT_LIST_ID'), 500);
 		}
-		$this->outPutFormat = JRequest::getVar('format', 'html');
+
 		if ($this->outPutFormat == 'fabrikfeed')
 		{
 			$this->outPutFormat = 'feed';
 		}
 
 		$item = $this->getTable();
+
 		if ($item->db_table_name == '')
 		{
-			return JError::raiseError(500, JText::_('COM_FABRIK_INCORRECT_LIST_ID'));
+			throw new RuntimeException(JText::_('COM_FABRIK_INCORRECT_LIST_ID'), 500);
 		}
 
 		// Cant set time limit in safe mode so suppress warning
@@ -680,6 +693,7 @@ class FabrikFEModelList extends JModelForm
 			{
 				$limitLength = $input->getInt('limit', $params->get('rsslimit', 150));
 				$maxLimit = $params->get('rsslimitmax', 2500);
+
 				if ($limitLength > $maxLimit)
 				{
 					$limitLength = $maxLimit;
@@ -764,7 +778,6 @@ class FabrikFEModelList extends JModelForm
 			// $$$ hugh - added bumping up GROUP_CONCAT_MAX_LEN here, rather than adding YAFO for it
 			$fabrikDb->setQuery("SET OPTION SQL_BIG_SELECTS=1, GROUP_CONCAT_MAX_LEN=10240");
 			$fabrikDb->query();
-
 		}
 	}
 
@@ -776,14 +789,16 @@ class FabrikFEModelList extends JModelForm
 
 	public function getData()
 	{
-		$profiler = JProfiler::getInstance('Application');
-		$pluginManager = FabrikWorker::getPluginManager();
-		$fbConfig = JComponentHelper::getParams('com_fabrik');
-		$pluginManager->runPlugins('onPreLoadData', $this, 'list');
 		if (isset($this->_data) && !is_null($this->_data))
 		{
 			return $this->_data;
 		}
+
+		$profiler = JProfiler::getInstance('Application');
+		$pluginManager = FabrikWorker::getPluginManager();
+		$fbConfig = JComponentHelper::getParams('com_fabrik');
+		$pluginManager->runPlugins('onPreLoadData', $this, 'list');
+
 		// Needs to be off for FOUND_ROWS() to work
 		ini_set('mysql.trace_mode', 'off');
 		$fabrikDb = $this->getDb();
@@ -821,7 +836,7 @@ class FabrikFEModelList extends JModelForm
 	{
 		$profiler = JProfiler::getInstance('Application');
 		$traceModel = ini_get('mysql.trace_mode');
-		$listModel = JModel::getInstance('List', 'FabrikFEModel');
+		$listModel = JModelLegacy::getInstance('List', 'FabrikFEModel');
 		$listModel->setId($listId);
 		$listModel->setOutPutFormat($outPutFormat);
 		$fabrikDb = $listModel->getDb();
@@ -867,7 +882,6 @@ class FabrikFEModelList extends JModelForm
 		}
 
 		ini_set('mysql.trace_mode', $traceModel);
-
 		JDEBUG ? $profiler->mark('query run and data loaded') : null;
 		$listModel->translateData($listModel->_data);
 		if ($fabrikDb->getErrorNum() != 0)
@@ -978,6 +992,7 @@ class FabrikFEModelList extends JModelForm
 	function translateData(&$data)
 	{
 		return;
+
 		$params = $this->getParams();
 
 		if (!JPluginHelper::isEnabled('system', 'jfdatabase'))
@@ -1031,9 +1046,11 @@ class FabrikFEModelList extends JModelForm
 			{
 				// $$$ rob if the id isnt published fall back to __pk_val
 				$translateRow = array_key_exists($longKey, $row) ? $res[$row->$longKey] : $res[$row->__pk_val];
+
 				foreach ($row as $key => $val)
 				{
 					$shortkey = array_pop(explode('___', $key));
+
 					if ($shortkey === $title)
 					{
 						$row->$key = $translateRow->titleTranslation;
@@ -1046,6 +1063,7 @@ class FabrikFEModelList extends JModelForm
 						{
 							$row->$key = $translateRow->$shortkey;
 							$key = $key . '_raw';
+
 							if (array_key_exists($key, $row))
 							{
 								$row->$key = $translateRow->$shortkey;
@@ -1109,11 +1127,11 @@ class FabrikFEModelList extends JModelForm
 					else
 					{
 						JDEBUG ? $profiler->mark('elements renderListData: ' . "($ec)" . " talbeid = $table->id " . $col) : null;
+
 						for ($i = 0; $i < $ec; $i++)
 						{
 							$thisRow = $data[$i];
 							$coldata = $thisRow->$col;
-
 							$data[$i]->$col = $elementModel->renderListData($coldata, $thisRow);
 							$rawCol = $col . '_raw';
 							/* Not sure if this works, as far as I can tell _raw will always exist, even if
@@ -1140,16 +1158,19 @@ class FabrikFEModelList extends JModelForm
 
 		// Check if the data has a group by applied to it
 		$groupBy = $this->getGroupBy();
+
 		if ($groupBy != '' && $this->outPutFormat != 'csv')
 		{
 			$w = new FabrikWorker;
 
 			// 3.0 if not group by template spec'd by group but assigned in qs then use that as the group by tmpl
-			$requestGroupBy = JRequest::getCmd('group_by', '');
+			$requestGroupBy = $input->get('group_by', '');
+
 			if ($requestGroupBy == '')
 			{
 
 				$groupTemplate = $tableParams->get('group_by_template');
+
 				if ($groupTemplate == '')
 				{
 					$groupTemplate = '{' . $groupBy . '}';
@@ -1159,14 +1180,16 @@ class FabrikFEModelList extends JModelForm
 			{
 				$groupTemplate = '{' . $requestGroupBy . '}';
 			}
+
 			$groupedData = array();
 			$thisGroupedData = array();
 			$groupBy = FabrikString::safeColNameToArrayKey($groupBy);
-$groupBy .= '_raw';
+			$groupBy .= '_raw';
 			$groupTitle = null;
 			$aGroupTitles = array();
 			$groupId = 0;
 			$gKey = 0;
+
 			for ($i = 0; $i < count($data); $i++)
 			{
 				if (isset($data[$i]->$groupBy))
@@ -1190,6 +1213,7 @@ $groupBy .= '_raw';
 						$this->groupTemplates[$sdata] = nl2br($grouptemplate);
 						$groupedData[$sdata] = array();
 					}
+
 					$data[$i]->_groupId = $sdata;
 					$gKey = $sdata;
 
@@ -1198,13 +1222,16 @@ $groupBy .= '_raw';
 					{
 						unset($data[$i]->$groupBy);
 					}
+
 					if ($this->_temp_db_key_addded)
 					{
 						$k = $table->db_primary_key;
 					}
 				}
+
 				$groupedData[$gKey][] = $data[$i];
 			}
+
 			$data = $groupedData;
 		}
 		else
@@ -1219,12 +1246,15 @@ $groupBy .= '_raw';
 			// Make sure that the none grouped data is in the same format
 			$data = array($data);
 		}
+
 		JDEBUG ? $profiler->mark('table groupd by applied') : null;
+
 		if ($this->outPutFormat != 'pdf' && $this->outPutFormat != 'csv' && $this->outPutFormat != 'feed')
 		{
 			$this->addSelectBoxAndLinks($data);
 			FabrikHelperHTML::debug($data, 'table:data');
 		}
+
 		JDEBUG ? $profiler->mark('end format data') : null;
 	}
 
@@ -1238,6 +1268,7 @@ $groupBy .= '_raw';
 
 	function addSelectBoxAndLinks(&$data)
 	{
+		$j3 = FabrikWorker::j3();
 		$item = $this->getTable();
 		$app = JFactory::getApplication();
 		$db = FabrikWorker::getDbo(true);
@@ -1249,6 +1280,7 @@ $groupBy .= '_raw';
 		// Get a list of fabrik lists and ids for view list and form links
 		$oldLinksToForms = $this->getLinksToThisKey();
 		$linksToForms = array();
+
 		foreach ($oldLinksToForms as $join)
 		{
 			if ($join !== false)
@@ -1257,23 +1289,22 @@ $groupBy .= '_raw';
 				$linksToForms[$k] = $join;
 			}
 		}
+
 		$action = $app->isAdmin() ? 'task' : 'view';
 		$query = $db->getQuery(true);
 		$query->select('id, label, db_table_name')->from('#__{package}_lists');
 		$db->setQuery($query);
 		$aTableNames = $db->loadObjectList('label');
-		if ($db->getErrorNum())
-		{
-			JError::raiseError(500, $db->getErrorMsg());
-		}
 		$cx = count($data);
 		$viewLinkAdded = false;
 
 		// Get pk values
 		$pks = array();
+
 		foreach ($data as $groupKey => $group)
 		{
 			$cg = count($group);
+
 			for ($i = 0; $i < $cg; $i++)
 			{
 				$pks[] = @$data[$groupKey][$i]->$tmpKey;
@@ -1281,10 +1312,12 @@ $groupBy .= '_raw';
 		}
 
 		$joins = $this->getJoins();
+
 		foreach ($data as $groupKey => $group)
 		{
 			// $group = $data[$key]; //Messed up in php 5.1 group positioning in data became ambiguous
 			$cg = count($group);
+
 			for ($i = 0; $i < $cg; $i++)
 			{
 				$row = $data[$groupKey][$i];
@@ -1294,17 +1327,18 @@ $groupBy .= '_raw';
 				$canEdit = $this->canEdit($row);
 				$canView = $this->canView($row);
 				$canDelete = $this->canDelete($row);
-
 				$nextview = $canEdit ? 'form' : 'details';
 				$pKeyVal = array_key_exists($tmpKey, $row) ? $row->$tmpKey : '';
 				$pkcheck = array();
 				$pkcheck[] = '<div style="display:none">';
+
 				foreach ($joins as $join)
 				{
 					if ($join->list_id !== '0')
 					{
 						// $$$ rob 22/02/2011 was not using _raw before which was intserting html into the value for image elements
 						$fkey = $join->table_join_alias . '___' . $join->table_key . '_raw';
+
 						if (isset($row->$fkey))
 						{
 							$fKeyVal = $row->$fkey;
@@ -1313,6 +1347,7 @@ $groupBy .= '_raw';
 						}
 					}
 				}
+
 				$pkcheck[] = '</div>';
 				$pkcheck = implode("\n", $pkcheck);
 				$row->fabrik_select = $this->canSelectRow($row)
@@ -1347,6 +1382,7 @@ $groupBy .= '_raw';
 				// 3.0 actions now in list in one cell
 				$row->fabrik_actions = array();
 				$actionMethod = $this->actionMethod();
+
 				if ($canView || $canEdit)
 				{
 					if ($canEdit == 1)
@@ -1356,7 +1392,9 @@ $groupBy .= '_raw';
 							$row->fabrik_edit = $editLink;
 							$row->fabrik_actions['fabrik_edit'] = '<li class="fabrik_edit">' . $row->fabrik_edit . '</li>';
 						}
+
 						$row->fabrik_edit_url = $edit_link;
+
 						if ($this->canViewDetails() && ($params->get('detaillink') == 1 || $actionMethod == 'floating'))
 						{
 							$row->fabrik_view = $viewLink;
@@ -1380,6 +1418,7 @@ $groupBy .= '_raw';
 						}
 					}
 				}
+
 				if ($this->canViewDetails() && !$viewLinkAdded && ($params->get('detaillink') == '1' || $actionMethod == 'floating'))
 				{
 					$link = $this->viewDetailsLink($row, 'details');
@@ -1387,18 +1426,22 @@ $groupBy .= '_raw';
 					$row->fabrik_view = $viewLink;
 					$row->fabrik_actions['fabrik_view'] = '<li class="fabrik_view">' . $row->fabrik_view . '</li>';
 				}
+
 				if ($this->canDelete($row))
 				{
 					$row->fabrik_actions['fabrik_delete'] = $this->deleteButton();
 				}
+
 				// Create columns containing links which point to tables associated with this table
 				$oldJoinsToThisKey = $this->getJoinsToThisKey();
 				$joinsToThisKey = array();
+
 				foreach ($oldJoinsToThisKey as $join)
 				{
 					$k = $join->list_id . '-' . $join->form_id . '-' . $join->element_id;
 					$joinsToThisKey[$k] = $join;
 				}
+
 				foreach ($joinsToThisKey as $f => $join)
 				{
 					// $$$ hugh - for reasons I don't understand, $joinsToThisKey now contains entries
@@ -1408,6 +1451,7 @@ $groupBy .= '_raw';
 						$linkedTable = $factedlinks->linkedlist->$f;
 						$popupLink = $factedlinks->linkedlist_linktype->$f;
 						$linkedListText = $factedlinks->linkedlisttext->$f;
+
 						if ($linkedTable != '0')
 						{
 							$recordKey = $join->element_id . '___' . $linkedTable;
@@ -1416,6 +1460,7 @@ $groupBy .= '_raw';
 							$recordCounts = $this->getRecordCounts($join, $pks);
 							$count = 0;
 							$linkKey = $recordCounts['linkKey'];
+
 							if (is_array($recordCounts))
 							{
 								if (array_key_exists($val, $recordCounts))
@@ -1432,11 +1477,10 @@ $groupBy .= '_raw';
 									}
 								}
 							}
+
 							$join->list_id = array_key_exists($join->listlabel, $aTableNames) ? $aTableNames[$join->listlabel]->id : '';
 							$group[$i]->$key = $this->viewDataLink($popupLink, $join, $row, $linkKey, $val, $count, $f);
 						}
-						// $$$ hugh - pretty sure we don't need to be doing this
-						// $f++;
 					}
 				}
 
@@ -1450,6 +1494,7 @@ $groupBy .= '_raw';
 					* http://fabrikar.com/forums/showthread.php?t=9535
 					*/
 					$val = $pKeyVal;
+
 					if ($linkedForm !== '0')
 					{
 						if (is_object($join))
@@ -1465,14 +1510,18 @@ $groupBy .= '_raw';
 				}
 			}
 		}
+
 		$args['data'] = &$data;
 		$pluginButtons = $this->getPluginButtons();
+
 		foreach ($data as $groupKey => $group)
 		{
 			$cg = count($group);
+
 			for ($i = 0; $i < $cg; $i++)
 			{
 				$row = $data[$groupKey][$i];
+
 				foreach ($pluginButtons as $b)
 				{
 					if (trim($b) !== '')
@@ -1480,12 +1529,14 @@ $groupBy .= '_raw';
 						$row->fabrik_actions[] = '<li>' . $b . '</li>';
 					}
 				}
+
 				if (!empty($row->fabrik_actions))
 				{
 					if (count($row->fabrik_actions) > $this->rowActionCount)
 					{
 						$this->rowActionCount = count($row->fabrik_actions);
 					}
+
 					$row->fabrik_actions = '<ul class="fabrik_action">' . implode("\n", $row->fabrik_actions) . '</ul>';
 				}
 				else
@@ -1508,10 +1559,12 @@ $groupBy .= '_raw';
 	public function actionMethod()
 	{
 		$params = $this->getParams();
+
 		if ($params->get('actionMethod', 'default') == 'default')
 		{
 			// Use global
 			$fbConfig = JComponentHelper::getParams('com_fabrik');
+
 			return $fbConfig->get('actionMethod', 'floating');
 		}
 		else
@@ -1533,6 +1586,7 @@ $groupBy .= '_raw';
 	protected function deleteButton($tpl = '')
 	{
 		$tpl = $this->getTmpl();
+
 		return '<li class="fabrik_delete"><a href="#" class="delete" title="' . JText::_('COM_FABRIK_DELETE') . '">'
 				. FabrikHelperHTML::image('delete.png', 'list', $tpl, array('alt' => JText::_('COM_FABRIK_DELETE'))) . '<span>'
 						. JText::_('COM_FABRIK_DELETE') . '</span></a></li>';
@@ -1559,6 +1613,7 @@ $groupBy .= '_raw';
 
 		$db = JFactory::getDbo();
 		$joinsToThisKey = $this->getJoinsToThisKey();
+
 		if (empty($joinsToThisKey))
 		{
 			$this->tableLinks = array();
@@ -1601,6 +1656,7 @@ $groupBy .= '_raw';
 		$app = JFactory::getApplication();
 		$input = $app->input;
 		$k = $element->element_id;
+
 		if (array_key_exists($k, $this->recordCounts))
 		{
 			return $this->recordCounts[$k];
@@ -1621,6 +1677,7 @@ $groupBy .= '_raw';
 		$origIncSesssionFilters = JRequest::getVar('fabrik_incsessionfilters', true);
 		JRequest::setVar('fabrik_incsessionfilters', false);
 		$where = $listModel->_buildQueryWhere(JRequest::getVar('incfilters', 0));
+
 		if (!empty($pks))
 		{
 			// Only load the current record sets record counts
@@ -1653,6 +1710,7 @@ $groupBy .= '_raw';
 		FabrikHelperHTML::debug($db->getQuery(), 'getRecordCounts query: ' . $linkKey);
 		FabrikHelperHTML::debug($this->recordCounts[$k], 'getRecordCounts data: ' . $linkKey);
 		JRequest::setVar('fabrik_incsessionfilters', $origIncSesssionFilters);
+
 		return $this->recordCounts[$k];
 	}
 
@@ -1686,22 +1744,27 @@ $groupBy .= '_raw';
 		$app = JFactory::getApplication();
 		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$Itemid = FabrikWorker::itemId();
+
 		if (is_null($listid))
 		{
 			$list = $this->getTable();
 			$listid = $list->id;
 		}
+
 		if (is_null($formid))
 		{
 			$form = $this->getFormModel()->getForm();
 			$formid = $form->id;
 		}
+
 		$facetTable = $this->_facetedTable($listid);
+
 		if (!$facetTable->canAdd())
 		{
 			return '<div style="text-align:center"><a title="' . JText::_('JERROR_ALERTNOAUTHOR')
 			. '"><img src="media/com_fabrik/images/login.png" alt="' . JText::_('JERROR_ALERTNOAUTHOR') . '" /></a></div>';
 		}
+
 		if ($app->isAdmin())
 		{
 			$bits[] = 'task=form.view';
@@ -1712,19 +1775,22 @@ $groupBy .= '_raw';
 			$bits[] = 'view=form';
 			$bits[] = 'Itemid=' . $Itemid;
 		}
+
 		$bits[] = 'formid=' . $formid;
 		$bits[] = 'referring_table=' . $this->getTable()->id;
 
-		// $$$ hugh - change in fabrikdatabasejoin getValue() means we have to append _raw to key name
+		// $$$ hugh - change in databasejoin getValue() means we have to append _raw to key name
 		if ($key != '')
 		{
 			$bits[] = $key . '_raw=' . $val;
 		}
+
 		if ($popUp)
 		{
 			$bits[] = "tmpl=component";
 			$bits[] = "ajax=1";
 		}
+
 		if ($usekey and $key != '' and !is_null($row))
 		{
 			$bits[] = 'usekey=' . FabrikString::shortColName($key);
@@ -1737,10 +1803,12 @@ $groupBy .= '_raw';
 
 		$url = 'index.php?option=com_' . $package . '&' . implode('&', $bits);
 		$url = JRoute::_($url);
+
 		if (is_null($label) || $label == '')
 		{
 			$label = JText::_('COM_FABRIK_LINKED_FORM_ADD');
 		}
+
 		if ($popUp)
 		{
 			FabrikHelperHTML::mocha('a.popupwin');
@@ -1755,7 +1823,9 @@ $groupBy .= '_raw';
 		{
 			$link = '<a href="' . $url . '" title="' . $label . '">' . $label . '</a>';
 		}
+
 		$url = '<span class="addbutton">' . $link . '</span></a>';
+
 		return $url;
 	}
 
@@ -1774,11 +1844,13 @@ $groupBy .= '_raw';
 		{
 			$this->facettables = array();
 		}
+
 		if (!array_key_exists($id, $this->facettables))
 		{
-			$this->facettables[$id] = JModel::getInstance('List', 'FabrikFEModel');
+			$this->facettables[$id] = JModelLegacy::getInstance('List', 'FabrikFEModel');
 			$this->facettables[$id]->setId($id);
 		}
+
 		return $this->facettables[$id];
 	}
 
@@ -1899,6 +1971,7 @@ $groupBy .= '_raw';
 		$Itemid = FabrikWorker::itemId();
 		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$url = 'index.php?option=com_' . $package . '&';
+
 		if ($app->isAdmin())
 		{
 			$bits[] = 'task=list.view';
@@ -1920,18 +1993,23 @@ $groupBy .= '_raw';
 					break;
 				}
 			}
+
 			$bits[] = 'Itemid=' . $Itemid;
 		}
+
 		if ($key != '')
 		{
 			$bits[] = $key . '=' . $val;
 		}
+
 		$bits[] = 'limitstart' . $listid . '=0';
+
 		if ($popUp)
 		{
 			$bits[] = 'tmpl=component';
 			$bits[] = 'ajax=1';
 		}
+
 		$bits[] = '&resetfilters=1';
 
 		// Nope stops url filter form workin on related data :(
@@ -1941,6 +2019,7 @@ $groupBy .= '_raw';
 		$bits[] = '&fabrik_incsessionfilters=0';
 		$url .= implode('&', $bits);
 		$url = JRoute::_($url);
+
 		return $url;
 	}
 
@@ -1960,6 +2039,7 @@ $groupBy .= '_raw';
 		$element = $elementModel->getElement();
 		$params = $elementModel->getParams();
 		$customLink = trim($params->get('custom_link', ''));
+
 		if ($this->outPutFormat == 'csv' || ($element->link_to_detail == 0 && $customLink == ''))
 		{
 			return $data;
@@ -1971,9 +2051,11 @@ $groupBy .= '_raw';
 		{
 			return $data;
 		}
+
 		$list = $this->getTable();
 		$primaryKeyVal = $this->getKeyIndetifier($row);
 		$link = $this->linkHref($elementModel, $row, $repeatCounter);
+
 		if ($link == '')
 		{
 			return $data;
@@ -1981,10 +2063,12 @@ $groupBy .= '_raw';
 		// Try to remove any previously entered links
 		$data = preg_replace('/<a(.*?)>|<\/a>/', '', $data);
 		$class = '';
+
 		if ($this->canViewDetails($row))
 		{
 			$class = 'fabrik_view';
 		}
+
 		if ($this->canEdit($row))
 		{
 			$class = 'fabrik_edit';
@@ -1993,15 +2077,16 @@ $groupBy .= '_raw';
 		$loadMethod = $params->get('custom_link', '') == '' ? 'xhr' : 'iframe';
 		$data = '<a data-loadmethod="' . $loadMethod . '" data-list="list_' . $this->getRenderContext() . '" class="fabrik___rowlink ' . $class . '" href="' . $link . '">' . $data
 		. '</a>';
+
 		return $data;
 	}
 
 	/**
 	 * Get the href for the edit/details link
 	 *
-	 * @param   object  $elementModel   element model
-	 * @param   array   $row            lists current row data
-	 * @param   int     $repeatCounter  repeat group counter
+	 * @param   object  $elementModel   Element model
+	 * @param   array   $row            Lists current row data
+	 * @param   int     $repeatCounter  Repeat group counter
 	 *
 	 * @since   2.0.4
 	 *
@@ -2015,6 +2100,7 @@ $groupBy .= '_raw';
 		$params = $elementModel->getParams();
 		$customLink = $params->get('custom_link');
 		$link = '';
+
 		if ($customLink == '')
 		{
 			// $$$ rob only test canEdit and canView on stardard edit links - if custom we should always use them,
@@ -2033,6 +2119,7 @@ $groupBy .= '_raw';
 		else
 		{
 			$array = JArrayHelper::fromObject($row);
+
 			foreach ($array as $k => &$v)
 			{
 				/* $$$ hugh - not everything is JSON, some stuff is just plain strings.
@@ -2046,6 +2133,7 @@ $groupBy .= '_raw';
 				else
 				{
 					$v2 = json_decode($v, true);
+
 					if ($v2 !== null)
 					{
 						if (is_array($v2))
@@ -2059,10 +2147,12 @@ $groupBy .= '_raw';
 					}
 				}
 			}
+
 			$array['rowid'] = $this->getSlug($row);
 			$array['listid'] = $table->id;
 			$link = JRoute::_($this->parseMessageForRowHolder($customLink, $array));
 		}
+
 		return $link;
 	}
 
@@ -2079,6 +2169,7 @@ $groupBy .= '_raw';
 		$query = array();
 		$this->mergeQuery = '';
 		$table = $this->getTable();
+
 		if ($this->mergeJoinedData())
 		{
 			/* $$$ rob - get a list of the main table's ids limited on the navigation
@@ -2140,6 +2231,7 @@ $groupBy .= '_raw';
 					 *
 					 */
 					$pk = $join->_params->get('pk');
+
 					if (!array_key_exists($pk, $tmpPks) || !is_array($tmpPks[$pk]))
 					{
 						$tmpPks[$pk] = array($pk);
@@ -2153,6 +2245,7 @@ $groupBy .= '_raw';
 							$v[0] = $v[0] . '_0';
 							$tmpPks[$pk][0] = $db->quoteName($v[0] . '.' . $v[1]);
 						}
+
 						$v = str_replace('`', '', $pk);
 						$v = explode('.', $v);
 						$v[0] = $v[0] . '_' . count($tmpPks[$pk]);
@@ -2178,6 +2271,7 @@ $groupBy .= '_raw';
 			// $$$ rob if no ordering applied i had results where main record (e.g. UK) was shown in 2 lines not next to each other
 			// causing them not to be merged and a 6 rows shown when limit set to 5. So below, if no order by set then order by main pk asc
 			$by = trim($table->order_by) === '' ? array() : (array) json_decode($table->order_by);
+
 			if (empty($by))
 			{
 				$dir = (array) json_decode($table->order_dir);
@@ -2216,10 +2310,12 @@ $groupBy .= '_raw';
 			{
 				JError::raiseError(500, $db->getErrorMsg());
 			}
+
 			$maxPossibleIds = count($idRows);
 
 			// An array of the lists pk values
 			$mainKeys = array();
+
 			foreach ($idRows as $r)
 			{
 				$mainKeys[] = $db->quote($r->__pk_val0);
@@ -2234,6 +2330,7 @@ $groupBy .= '_raw';
 			while (count($ids) < $maxPossibleIds && $lookupC >= 0)
 			{
 				$ids = JArrayHelper::getColumn($idRows, '__pk_val' . $lookupC);
+
 				for ($idx = count($ids) - 1; $idx >= 0; $idx--)
 				{
 					if ($ids[$idx] == '')
@@ -2245,6 +2342,7 @@ $groupBy .= '_raw';
 						$ids[$idx] = $db->quote($ids[$idx]);
 					}
 				}
+
 				if (count($ids) < $maxPossibleIds)
 				{
 					$lookupC--;
@@ -2287,11 +2385,13 @@ $groupBy .= '_raw';
 			// Incfilters set when exporting as CSV
 			$query['where'] = $this->_buildQueryWhere(JRequest::getVar('incfilters', 1));
 		}
+
 		$query['groupby'] = $this->_buildQueryGroupBy();
 		$query['order'] = $this->_buildQueryOrder();
 		$query = $this->pluginQuery($query);
 		$query = implode(' ', $query);
 		$this->mainQuery = $query;
+
 		return $query;
 	}
 
@@ -2310,6 +2410,7 @@ $groupBy .= '_raw';
 		$args->query = $query;
 		FabrikWorker::getPluginManager()->runPlugins('onQueryBuilt', $this, 'list', $args);
 		$query = $args->query;
+
 		return $query;
 	}
 
@@ -2329,13 +2430,14 @@ $groupBy .= '_raw';
 		$item = $this->getTable();
 		$pk = FabrikString::safeColName($item->db_primary_key);
 		$params = $this->getParams();
+
 		if (in_array($this->outPutFormat, array('raw', 'html', 'feed', 'pdf', 'phocapdf')))
 		{
 			$slug = $params->get('sef-slug');
 			$raw = JString::substr($slug, JString::strlen($slug) - 4, 4) == '_raw' ? true : false;
 			$slug = FabrikString::rtrimword($slug, '_raw');
-
 			$slugElement = $formModel->getElement($slug);
+
 			if ($slugElement)
 			{
 				$slug = $slugElement->getSlugName($raw);
@@ -2398,7 +2500,9 @@ $groupBy .= '_raw';
 		{
 			$query = 'SELECT ' . $calc_found_rows . ' DISTINCT ' . trim($sfields, ", \n") . "\n";
 		}
+
 		$query .= ' FROM ' . $db->quoteName($table->db_table_name) . " \n";
+
 		return $query;
 	}
 
@@ -2406,33 +2510,38 @@ $groupBy .= '_raw';
 	 * Get the part of the sql statement that orders the table data
 	 * Since 3.0.7 caches the results as calling orderBy twice when using single ordering in admin module anules the user selected order by
 	 *
-	 * @param   mixed  $query  false or a query object
+	 * @param   mixed  $query  False or a query object
 	 *
-	 * @return  string	ordering part of sql statement
+	 * @return  mixed  string or query object - Ordering part of sql statement
 	 */
 
 	public function _buildQueryOrder($query = false)
 	{
 		if (isset($this->orderBy))
 		{
-			return $this->orderBy;
+			return $query ? $query : $this->orderBy;
 		}
+
 		$app = JFactory::getApplication();
+		$input = $app->input;
 		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$params = $this->getParams();
 		$formModel = $this->getFormModel();
 		$table = $this->getTable();
 		$db = $this->getDb();
 		$this->selectedOrderFields = array();
+
 		if ($this->outPutFormat == 'fabrikfeed' || $this->outPutFormat == 'feed')
 		{
 			$dateColId = (int) $params->get('feed_date', 0);
 			$dateColElement = $formModel->getElement($dateColId, true);
 			$dateCol = $db->quoteName($dateColElement->getFullName(false, false, false));
+
 			if ($dateColId !== 0)
 			{
 				$this->order_dir = 'DESC';
 				$this->order_by = $dateCol;
+
 				if (!$query)
 				{
 					return "\n" . ' ORDER BY ' . $dateCol . ' DESC';
@@ -2440,10 +2549,12 @@ $groupBy .= '_raw';
 				else
 				{
 					$query->order($dateCol . ' DESC');
+
 					return $query;
 				}
 			}
 		}
+
 		$session = JFactory::getSession();
 
 		/**
@@ -2457,13 +2568,14 @@ $groupBy .= '_raw';
 
 		// Build the order by statement from the session
 		$strOrder = '';
-		$clearOrdering = (bool) JRequest::getInt('clearordering', false) && JRequest::getCmd('task') !== 'order';
+		$clearOrdering = (bool) $input->getInt('clearordering', false) && $input->get('task') !== 'order';
 		$singleOrdering = $this->singleOrdering();
-
 		$id = $this->getId();
+
 		foreach ($elements as $element)
 		{
 			$context = 'com_' . $package . '.list' . $this->getRenderContext() . '.order.' . $element->getElement()->id;
+
 			if ($clearOrdering)
 			{
 				$session->set($context, '');
@@ -2474,6 +2586,7 @@ $groupBy .= '_raw';
 				if (!$singleOrdering || ($singleOrdering && $element->getElement()->id == JRequest::getInt('orderby', '')))
 				{
 					$dir = $session->get($context);
+
 					if ($dir != '' && $dir != '-' && trim($dir) != 'Array')
 					{
 						$strOrder == '' ? $strOrder = "\n ORDER BY " : $strOrder .= ',';
@@ -2492,7 +2605,8 @@ $groupBy .= '_raw';
 		// If nothing found in session use default ordering (or that set by querystring)
 		if ($strOrder == '')
 		{
-			$orderbys = explode(',', JRequest::getVar('order_by', ''));
+			$orderbys = explode(',', $input->get('order_by', ''));
+
 			if ($orderbys[0] == '')
 			{
 				$orderbys = json_decode($table->order_by, true);
@@ -2511,19 +2625,25 @@ $groupBy .= '_raw';
 					$orderby = $elementModel ? $elementModel->getOrderByName() : $orderby;
 				}
 			}
-			$orderdirs = explode(',', JRequest::getVar('order_dir', ''));
+
+			$orderdirs = explode(',',  $input->get('order_dir', ''));
+
 			if ($orderdirs[0] == '')
 			{
 				$orderdirs = json_decode($table->order_dir, true);
 			}
+
 			$els = $this->getElements('filtername');
+
 			if (!empty($orderbys))
 			{
 				$bits = array();
 				$o = 0;
+
 				foreach ($orderbys as $orderbyRaw)
 				{
 					$dir = JArrayHelper::getValue($orderdirs, $o, 'desc');
+
 					if ($orderbyRaw !== '')
 					{
 						// $$$ hugh - getOrderByName can return a CONCAT, ie join element ...
@@ -2536,6 +2656,7 @@ $groupBy .= '_raw';
 						if (!JString::stristr($orderbyRaw, 'CONCAT(') && !JString::stristr($orderbyRaw, 'CONCAT_WS('))
 						{
 							$orderbyRaw = FabrikString::safeColName($orderbyRaw);
+
 							if (array_key_exists($orderbyRaw, $els))
 							{
 								$field = $els[$orderbyRaw]->getOrderByName();
@@ -2548,6 +2669,7 @@ $groupBy .= '_raw';
 								{
 									$field = FabrikString::safeColName($field);
 								}
+
 								$bits[] = " $field $dir";
 								$this->orderEls[] = $field;
 								$this->orderDirs[] = $dir;
@@ -2558,6 +2680,7 @@ $groupBy .= '_raw';
 								{
 									$orderbyRaw = FabrikString::safeColNameToArrayKey($orderbyRaw);
 								}
+
 								$bits[] = " $orderbyRaw $dir";
 								$this->orderEls[] = $orderbyRaw;
 								$this->orderDirs[] = $dir;
@@ -2571,8 +2694,10 @@ $groupBy .= '_raw';
 							$this->orderDirs[] = $dir;
 						}
 					}
+
 					$o ++;
 				}
+
 				if (!empty($bits))
 				{
 					if (!$query)
@@ -2591,11 +2716,13 @@ $groupBy .= '_raw';
 		* order by, isn't specific to the Group By feature in any way?  So why not just put this option in
 		*/
 		$groupOrderBy = $params->get('group_by_order');
+
 		if ($groupOrderBy != '')
 		{
 			$groupOrderDir = $params->get('group_by_order_dir');
 			$strOrder == '' ? $strOrder = "\n ORDER BY " : $strOrder .= ',';
 			$orderby = strstr($groupOrderBy, '_raw`') ? FabrikString::safeColNameToArrayKey($groupOrderBy) : FabrikString::safeColName($groupOrderBy);
+
 			if (!$query)
 			{
 				$strOrder .= $orderby . ' ' . $groupOrderDir;
@@ -2604,10 +2731,13 @@ $groupBy .= '_raw';
 			{
 				$query->order($orderby . ' ' . $groupOrderDir);
 			}
+
 			$this->orderEls[] = $orderby;
 			$this->orderDirs[] = $groupOrderDir;
 		}
+
 		$this->orderBy = $query === false ? $strOrder : $query;
+
 		return $this->orderBy;
 	}
 
@@ -2622,6 +2752,7 @@ $groupBy .= '_raw';
 	public function singleOrdering()
 	{
 		$params = $this->getParams();
+
 		if ($params->get('enable_single_sorting', 'default') == 'default')
 		{
 			// Use global
@@ -2632,6 +2763,7 @@ $groupBy .= '_raw';
 		{
 			$singleOrdering = $params->get('enable_single_sorting', false);
 		}
+
 		return $singleOrdering;
 	}
 
@@ -2647,10 +2779,13 @@ $groupBy .= '_raw';
 		$app = JFactory::getApplication();
 		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$session = JFactory::getSession();
-		$postOrderBy = JRequest::getInt('orderby', '');
-		$postOrderDir = JRequest::getVar('orderdir', '');
+		$app = JFactory::getApplication();
+		$input = $app->input;
+		$postOrderBy = $input->getInt('orderby', '');
+		$postOrderDir = $input->get('orderdir', '');
 		$arOrderVals = array('asc', 'desc', '-');
 		$id = $this->getRenderContext();
+
 		if (in_array($postOrderDir, $arOrderVals))
 		{
 			$context = 'com_' . $package . '.list' . $id . '.order.' . $postOrderBy;
@@ -2671,16 +2806,19 @@ $groupBy .= '_raw';
 	{
 		$db = FabrikWorker::getDbo();
 		$ref = $query ? '1' : '0';
+
 		if (isset($this->_joinsSQL[$ref]))
 		{
 			return $this->_joinsSQL[$ref];
 		}
+
 		$statements = array();
 		$table = $this->getTable();
 		$selectedTables[] = $table->db_table_name;
 		$return = array();
 		$joins = ($this->get('includeCddInJoin', true) === false) ? $this->getJoinsNoCdd() : $this->getJoins();
 		$tableGroups = array();
+
 		foreach ($joins as $join)
 		{
 			// Used to bypass user joins if the table connect isnt the Joomla connection
@@ -2688,12 +2826,15 @@ $groupBy .= '_raw';
 			{
 				continue;
 			}
+
 			if ($join->join_type == '')
 			{
 				$join->join_type = 'LEFT';
 			}
+
 			$sql = JString::strtoupper($join->join_type) . ' JOIN ' . $db->quoteName($join->table_join);
 			$k = FabrikString::safeColName($join->keytable . '.' . $join->table_key);
+
 			if ($join->table_join_alias == '')
 			{
 				$on = FabrikString::safeColName($join->table_join . '.' . $join->table_join_key);
@@ -2729,6 +2870,7 @@ $groupBy .= '_raw';
 			{
 				$t = $ar[0];
 				$s = $ar[1];
+
 				if (in_array($t, $selectedTables))
 				{
 					if (!in_array($s, $return))
@@ -2744,6 +2886,7 @@ $groupBy .= '_raw';
 		foreach ($statements as $joinid => $ar)
 		{
 			$s = $ar[1];
+
 			if (!in_array($s, $return))
 			{
 				$return[] = $s;
@@ -2759,6 +2902,7 @@ $groupBy .= '_raw';
 				$statement = str_replace('JOIN', '', implode(' ', $words));
 				$query->join($type, $statement);
 			}
+
 			return $query;
 		}
 		else
@@ -2766,6 +2910,7 @@ $groupBy .= '_raw';
 			$return = implode(' ', $return);
 			$this->_joinsSQL[$ref] = $return;
 		}
+
 		return $query == false ? $return : $query;
 	}
 
@@ -2783,6 +2928,7 @@ $groupBy .= '_raw';
 		$filters = $this->getFilterArray();
 		$keys = array_keys($filters);
 		$vkeys = array_keys(JArrayHelper::getValue($filters, 'value', array()));
+
 		foreach ($vkeys as $i)
 		{
 			if ($filters['search_type'][$i] != 'prefilter' || $filters['key'][$i] != $elementName)
@@ -2793,12 +2939,15 @@ $groupBy .= '_raw';
 				}
 			}
 		}
+
 		list($sqlNoFilter, $sql) = $this->_filtersToSQL($filters);
 		$where = str_replace('WHERE', '', $sql);
+
 		if ($where != '')
 		{
 			$where = ' AND ' . $where;
 		}
+
 		return $where;
 	}
 
@@ -2814,22 +2963,27 @@ $groupBy .= '_raw';
 	function _buildQueryGroupBy($query = false)
 	{
 		$groups = $this->getFormModel()->getGroupsHiarachy();
+
 		foreach ($groups as $groupModel)
 		{
 			$elementModels = $groupModel->getPublishedElements();
+
 			foreach ($elementModels as $elementModel)
 			{
 				$res = $elementModel->getGroupByQuery();
+
 				if ($res != '')
 				{
 					$this->_pluginQueryGroupBy[] = $res;
 				}
 			}
 		}
+
 		if (!empty($this->_pluginQueryGroupBy))
 		{
 			return ' GROUP BY ' . implode(', ', $this->_pluginQueryGroupBy);
 		}
+
 		return '';
 	}
 
@@ -2852,10 +3006,12 @@ $groupBy .= '_raw';
 		$sig = !$query ? 'string' : 'query';
 		$sig .= (int) $incFilters;
 		$db = FabrikWorker::getDbo();
+
 		if (isset($this->_whereSQL[$sig]))
 		{
 			return $this->_whereSQL[$sig][$incFilters];
 		}
+
 		$filters = $this->getFilterArray();
 		$params = $this->getParams();
 
@@ -2877,15 +3033,19 @@ $groupBy .= '_raw';
 				return $query;
 			}
 		}
+
 		$groups = $this->getFormModel()->getGroupsHiarachy();
+
 		foreach ($groups as $groupModel)
 		{
 			$elementModels = $groupModel->getPublishedElements();
+
 			foreach ($elementModels as $elementModel)
 			{
 				$elementModel->appendTableWhere($this->_pluginQueryWhere);
 			}
 		}
+
 		if (empty($filters))
 		{
 			// $$$ hugh - testing hack for plugins to add WHERE clauses
@@ -2906,9 +3066,11 @@ $groupBy .= '_raw';
 				return $query ? $query : '';
 			}
 		}
+
 		$addWhere = $query == false ? true : false;
 		list($sqlNoFilter, $sql) = $this->_filtersToSQL($filters, $addWhere);
 		$this->_whereSQL[$sig] = array('0' => $sqlNoFilter, '1' => $sql);
+
 		if (!$query)
 		{
 			return $this->_whereSQL[$sig][$incFilters];
@@ -2919,6 +3081,7 @@ $groupBy .= '_raw';
 			{
 				$query->where($this->_whereSQL[$sig][$incFilters]);
 			}
+
 			return $query;
 		}
 	}
@@ -2937,23 +3100,29 @@ $groupBy .= '_raw';
 	{
 		$prefilters = $this->_groupFilterSQL($filters, 'prefilter');
 		$postfilers = $this->_groupFilterSQL($filters);
+
 		if (!empty($prefilters) && !empty($postfilers))
 		{
 			array_unshift($postfilers, 'AND');
 		}
+
 		$sql = array_merge($prefilters, $postfilers);
 		$pluginQueryWhere = trim(implode(' AND ', $this->_pluginQueryWhere));
+
 		if ($pluginQueryWhere !== '')
 		{
 			$pluginQueryWhere = '(' . $pluginQueryWhere . ')';
+
 			if (!empty($sql))
 			{
 				$sql[] = ' AND ';
 			}
+
 			if (!empty($prefilters))
 			{
 				$prefilters[] = ' AND ';
 			}
+
 			$sql[] = $pluginQueryWhere;
 			$prefilters[] = $pluginQueryWhere;
 		}
@@ -2962,12 +3131,15 @@ $groupBy .= '_raw';
 		{
 			array_unshift($sql, 'WHERE');
 		}
+
 		if (!empty($prefilters) && $startWithWhere)
 		{
 			array_unshift($prefilters, 'WHERE');
 		}
+
 		$sql = implode($sql, ' ');
 		$prefilters = implode($prefilters, ' ');
+
 		return array($prefilters, $sql);
 	}
 
@@ -3105,16 +3277,20 @@ $groupBy .= '_raw';
 		{
 			$this->orderByFields = array();
 		}
+
 		$form = $this->getFormModel();
 		$groups = $form->getGroupsHiarachy();
+
 		foreach ($groups as $groupModel)
 		{
 			$elementModels = $groupModel->getPublishedElements();
+
 			foreach ($elementModels as $elementModel)
 			{
 				$this->orderByFields[] = $elementModel->getOrderByName();
 			}
 		}
+
 		return $this->orderByFields;
 	}
 
@@ -3127,10 +3303,12 @@ $groupBy .= '_raw';
 	public function getSearchAllFields()
 	{
 		$profiler = JProfiler::getInstance('Application');
+
 		if (isset($this->searchAllAsFields))
 		{
 			return $this->searchAllAsFields;
 		}
+
 		$searchAllFields = array();
 		$this->searchAllAsFields = array();
 
@@ -3141,13 +3319,16 @@ $groupBy .= '_raw';
 		$gkeys = array_keys($groups);
 		$opts = array('inc_raw' => false);
 		$mode = $this->getParams()->get('search-mode-advanced');
+
 		foreach ($gkeys as $x)
 		{
 			$groupModel = $groups[$x];
 			$elementModels = $groupModel->getPublishedElements();
+
 			for ($ek = 0; $ek < count($elementModels); $ek++)
 			{
 				$elementModel = $elementModels[$ek];
+
 				if ($elementModel->includeInSearchAll($mode))
 				{
 					// Boolean search doesnt seem possible on encrypted fields.
@@ -3174,12 +3355,15 @@ $groupBy .= '_raw';
 		for ($x = 0; $x < count($this->searchAllAsFields); $x++)
 		{
 			$match = ' AS ' . $searchAllFields[$x];
+
 			if (array_key_exists($x, $this->searchAllAsFields))
 			{
 				$this->searchAllAsFields[$x] = trim(str_replace($match, '', $this->searchAllAsFields[$x]));
 			}
 		}
+
 		$this->searchAllAsFields = array_unique($this->searchAllAsFields);
+
 		return $this->searchAllAsFields;
 	}
 
@@ -3194,10 +3378,12 @@ $groupBy .= '_raw';
 	function &getAsFields($mode = 'list')
 	{
 		$profiler = JProfiler::getInstance('Application');
+
 		if (isset($this->asfields))
 		{
 			return $this->asfields;
 		}
+
 		$this->fields = array();
 		$this->asfields = array();
 		$db = FabrikWorker::getDbo(true);
@@ -3207,19 +3393,24 @@ $groupBy .= '_raw';
 		$this->_temp_db_key_addded = false;
 		$groups = $form->getGroupsHiarachy();
 		$gkeys = array_keys($groups);
+
 		foreach ($gkeys as $x)
 		{
 			$groupModel = $groups[$x];
+
 			if ($groupModel->canView($mode) !== false)
 			{
 				$elementModels = $mode === 'list' ? $groupModel->getListQueryElements() : $groupModel->getPublishedElements();
+
 				foreach ($elementModels as $elementModel)
 				{
 					$method = 'getAsField_' . $this->outPutFormat;
+
 					if (!method_exists($elementModel, $method))
 					{
 						$method = 'getAsField_html';
 					}
+
 					$elementModel->$method($this->asfields, $this->fields);
 				}
 			}
@@ -3228,6 +3419,7 @@ $groupBy .= '_raw';
 		 of getData();
 		*/
 		JDEBUG ? $profiler->mark('getAsFields: starting to test if a view') : null;
+
 		if (!$this->isView())
 		{
 			if (!$this->_temp_db_key_addded && $table->db_primary_key != '')
@@ -3236,6 +3428,7 @@ $groupBy .= '_raw';
 				$this->fields[] = $db->quoteName(FabrikString::safeColNameToArrayKey($table->db_primary_key));
 			}
 		}
+
 		JDEBUG ? $profiler->mark('getAsFields: end of view test') : null;
 
 		// For raw data in packages
@@ -3249,12 +3442,14 @@ $groupBy .= '_raw';
 
 		// If the group by element isnt in the fields (IE its not published) add it (otherwise group by wont work)
 		$longGroupBy = $this->getGroupByName();
+
 		if (!in_array($longGroupBy, $this->fields) && trim($longGroupBy) != '')
 		{
 			$this->asfields[] = FabrikString::safeColName($longGroupBy) . ' AS ' . $longGroupBy;
 			$this->fields = $longGroupBy;
 			$this->_group_by_added = true;
 		}
+
 		return $this->asfields;
 	}
 
@@ -3271,6 +3466,7 @@ $groupBy .= '_raw';
 		$item = $this->getTable();
 		$formModel = $this->getFormModel();
 		$groupBy = $app->input->get('group_by', $item->group_by, 'string');
+
 		return $formModel->getElement($groupBy, true);
 	}
 
@@ -3286,11 +3482,14 @@ $groupBy .= '_raw';
 	{
 		$db = $this->getDb();
 		$elementModel = $this->getGroupByElement();
+
 		if (!$elementModel)
 		{
 			return false;
 		}
+
 		$groupBy = $elementModel->getFullName(false, true, false);
+
 		return $db->quoteName(FabrikString::safeColNameToArrayKey($groupBy));
 	}
 
@@ -3303,10 +3502,12 @@ $groupBy .= '_raw';
 	public function getParams()
 	{
 		$item = $this->getTable();
+
 		if (!isset($this->_params))
 		{
 			$this->_params = new JRegistry($item->params);
 		}
+
 		return $this->_params;
 	}
 
@@ -3355,20 +3556,24 @@ $groupBy .= '_raw';
 		{
 			$this->clearTable();
 		}
+
 		if (!isset($this->_table) || !is_object($this->_table))
 		{
 			JTable::addIncludePath(JPATH_ADMINISTRATOR . '/components/com_fabrik/tables');
 			$this->_table = FabTable::getInstance('List', 'FabrikTable');
 			$id = $this->getId();
+
 			if ($id !== 0)
 			{
 				$this->_table->load($id);
 			}
+
 			if (trim($this->_table->db_primary_key) !== '')
 			{
 				$this->_table->db_primary_key = FabrikString::safeColName($this->_table->db_primary_key);
 			}
 		}
+
 		return $this->_table;
 	}
 
@@ -3419,6 +3624,7 @@ $groupBy .= '_raw';
 	public function &getConnection()
 	{
 		$this->_oConn = FabrikWorker::getConnection($this->getTable());
+
 		return $this->_oConn;
 	}
 
@@ -3440,6 +3646,7 @@ $groupBy .= '_raw';
 		$publishdown = $publishdown->toUnix();
 		$jnow = JFactory::getDate();
 		$now = $jnow->toUnix();
+
 		if ($item->published == '1')
 		{
 			if ($now >= $publishup || $item->publish_up == '' || $item->publish_up == $nullDate)
@@ -3450,6 +3657,7 @@ $groupBy .= '_raw';
 				}
 			}
 		}
+
 		return false;
 	}
 
@@ -3463,11 +3671,13 @@ $groupBy .= '_raw';
 	public function canEmpty()
 	{
 		$params = $this->getParams();
+
 		if (!is_object($this->_access) || !array_key_exists('allow_drop', $this->_access))
 		{
 			$groups = JFactory::getUser()->getAuthorisedViewLevels();
 			$this->_access->allow_drop = in_array($this->getParams()->get('allow_drop'), $groups);
 		}
+
 		return $this->_access->allow_drop;
 	}
 
@@ -3480,11 +3690,13 @@ $groupBy .= '_raw';
 	public function canViewDetails()
 	{
 		$params = $this->getParams();
+
 		if (!is_object($this->_access) || !array_key_exists('viewdetails', $this->_access))
 		{
 			$groups = JFactory::getUser()->getAuthorisedViewLevels();
 			$this->_access->viewdetails = in_array($this->getParams()->get('allow_view_details'), $groups);
 		}
+
 		return $this->_access->viewdetails;
 	}
 
@@ -3520,11 +3732,13 @@ $groupBy .= '_raw';
 		}
 
 		$canUserDo = $this->canUserDo($row, 'allow_edit_details2');
+
 		if ($canUserDo !== -1)
 		{
 			// $canUserDo expressed a boolean preference, so use that
 			return $canUserDo;
 		}
+
 		if (!is_object($this->_access) || !array_key_exists('edit', $this->_access))
 		{
 			$user = JFactory::getUser();
@@ -3544,6 +3758,7 @@ $groupBy .= '_raw';
 	protected function canEditARow()
 	{
 		$data = $this->getData();
+
 		foreach ($data as $rows)
 		{
 			foreach ($rows as $row)
@@ -3554,6 +3769,7 @@ $groupBy .= '_raw';
 				}
 			}
 		}
+
 		return false;
 	}
 
@@ -3570,6 +3786,7 @@ $groupBy .= '_raw';
 	protected function canUserDo($row, $col)
 	{
 		$params = $this->getParams();
+
 		return FabrikWorker::canUserDo($params, $row, $col);
 	}
 
@@ -3591,16 +3808,19 @@ $groupBy .= '_raw';
 		$pluginCanDelete = FabrikWorker::getPluginManager()->runPlugins('onCanDelete', $this, 'list', $row);
 		$pluginCanDelete = !in_array(false, $pluginCanDelete);
 		$canUserDo = $this->canUserDo($row, 'allow_delete2');
+
 		if ($canUserDo !== -1)
 		{
 			// If userDo allows delete, let plugin override
 			return $canUserDo ? $pluginCanDelete : $canUserDo;
 		}
+
 		if (!is_object($this->_access) || !array_key_exists('delete', $this->_access))
 		{
 			$groups = JFactory::getUser()->getAuthorisedViewLevels();
 			$this->_access->delete = in_array($this->getParams()->get('allow_delete'), $groups);
 		}
+
 		// If group access allows delete, then let plugin override
 		return $this->_access->delete ? $pluginCanDelete : $this->_access->delete;
 	}
@@ -3615,6 +3835,7 @@ $groupBy .= '_raw';
 	public function deletePossible()
 	{
 		$data = $this->getData();
+
 		foreach ($data as $rows)
 		{
 			foreach ($rows as $row)
@@ -3625,6 +3846,7 @@ $groupBy .= '_raw';
 				}
 			}
 		}
+
 		return false;
 	}
 
@@ -3641,6 +3863,7 @@ $groupBy .= '_raw';
 			$groups = JFactory::getUser()->getAuthorisedViewLevels();
 			$this->_access->csvimport = in_array($this->getParams()->get('csv_import_frontend'), $groups);
 		}
+
 		return $this->_access->csvimport;
 	}
 
@@ -3657,6 +3880,7 @@ $groupBy .= '_raw';
 			$groups = JFactory::getUser()->getAuthorisedViewLevels();
 			$this->_access->csvexport = in_array($this->getParams()->get('csv_export_frontend'), $groups);
 		}
+
 		return $this->_access->csvexport;
 	}
 
@@ -3673,6 +3897,7 @@ $groupBy .= '_raw';
 			$groups = JFactory::getUser()->getAuthorisedViewLevels();
 			$this->_access->groupby = in_array($this->getParams()->get('group_by_access'), $groups);
 		}
+
 		return $this->_access->groupby;
 	}
 
@@ -3690,6 +3915,7 @@ $groupBy .= '_raw';
 			$groups = JFactory::getUser()->getAuthorisedViewLevels();
 			$this->_access->add = in_array($this->getParams()->get('allow_add'), $groups);
 		}
+
 		return $this->_access->add;
 	}
 
@@ -3706,6 +3932,7 @@ $groupBy .= '_raw';
 			$groups = JFactory::getUser()->getAuthorisedViewLevels();
 			$this->_access->view = in_array($this->getTable()->access, $groups);
 		}
+
 		return $this->_access->view;
 	}
 
@@ -3725,6 +3952,7 @@ $groupBy .= '_raw';
 		$this->_table = $row;
 		$this->setId($row->id);
 		$this->setState('list.id', $row->id);
+
 		return $row;
 	}
 
@@ -3751,6 +3979,7 @@ $groupBy .= '_raw';
 			$id = (int) $this->getId();
 			$query = $db->getQuery(true);
 			$query->select('*')->from('#__{package}_joins')->where('list_id = ' . $id, 'OR');
+
 			if (!empty($ids))
 			{
 				$query->where('element_id IN (' . implode(", ", $ids) . ')');
@@ -3761,12 +3990,15 @@ $groupBy .= '_raw';
 			$query->order('id');
 			$db->setQuery($query);
 			$this->_joinsNoCdd = $db->loadObjectList();
+
 			if ($db->getErrorNum())
 			{
 				JError::raiseError(500, $db->stderr());
 			}
+
 			$this->_makeJoinAliases($this->_joinsNoCdd);
 		}
+
 		return $this->_joinsNoCdd;
 	}
 
@@ -3789,6 +4021,7 @@ $groupBy .= '_raw';
 			$id = (int) $this->getId();
 			$query = $db->getQuery(true);
 			$query->select('*')->from('#__{package}_joins')->where('(element_id = 0 AND list_id = ' . $id . ')', 'OR');
+
 			if (!empty($ids))
 			{
 				$query->where('element_id IN ( ' . implode(', ', $ids) . ')');
@@ -3799,11 +4032,14 @@ $groupBy .= '_raw';
 			$query->order('id');
 			$db->setQuery($query);
 			$this->_aJoins = $db->loadObjectList();
+
 			if ($db->getErrorNum())
 			{
 				JError::raiseError(500, $db->stderr());
 			}
+
 			$this->_makeJoinAliases($this->_aJoins);
+
 			foreach ($this->_aJoins as &$join)
 			{
 				if (!isset($join->_params))
@@ -3813,6 +4049,7 @@ $groupBy .= '_raw';
 				}
 			}
 		}
+
 		return $this->_aJoins;
 	}
 
@@ -3829,6 +4066,7 @@ $groupBy .= '_raw';
 	protected function setJoinPk(&$join)
 	{
 		$pk = $join->_params->get('pk');
+
 		if (!isset($pk))
 		{
 			$fabrikDb = $this->getDb();
@@ -3867,9 +4105,11 @@ $groupBy .= '_raw';
 		foreach ($joins as &$join)
 		{
 			$join->canUse = true;
+
 			if ($join->table_join == '#__users' || $join->table_join == $prefix . 'users')
 			{
 				$conf = JFactory::getConfig();
+
 				if (!$this->inJDb())
 				{
 					/* $$$ hugh - changed this to pitch an error and bang out, otherwise if we just set canUse to false, our getData query
@@ -3884,32 +4124,40 @@ $groupBy .= '_raw';
 					$join->canUse = false;
 				}
 			}
+
 			// $$$ rob = check for repeat elements In table view we dont need to add the join
 			// as the element data is concatenated into one row. see elementModel::getAsField_html()
 			$opts = json_decode($join->params);
+
 			if (isset($opts->type) && $opts->type == 'repeatElement')
 			{
 				// If ($join->list_id != 0 && $join->element_id != 0) {
 				$join->canUse = false;
 			}
+
 			$tablejoin = str_replace('#__', $prefix, $join->table_join);
+
 			if (in_array($tablejoin, $aliases))
 			{
 				$base = $tablejoin;
 				$a = $base;
 				$c = 0;
+
 				while (in_array($a, $aliases))
 				{
 					$a = $base . '_' . $c;
 					$c++;
 				}
+
 				$join->table_join_alias = $a;
 			}
 			else
 			{
 				$join->table_join_alias = $tablejoin;
 			}
+
 			$aliases[] = str_replace('#__', $prefix, $join->table_join_alias);
+
 			if (!array_key_exists($join->group_id, $tableGroups))
 			{
 				if ($join->element_id == 0)
@@ -3938,6 +4186,7 @@ $groupBy .= '_raw';
 			*/
 
 			$join->keytable = $join->join_from_table;
+
 			if (!array_key_exists($join->group_id, $tableGroups))
 			{
 
@@ -3951,6 +4200,7 @@ $groupBy .= '_raw';
 				}
 			}
 		}
+
 		FabrikHelperHTML::debug($joins, 'joins');
 	}
 
@@ -3973,23 +4223,28 @@ $groupBy .= '_raw';
 			$table = $this->getTable();
 			$tbl = $table->db_table_name;
 		}
+
 		if ($tbl == '')
 		{
 			return array();
 		}
+
 		$sig = $tbl . $key;
 		$tbl = FabrikString::safeColName($tbl);
+
 		if (!isset($this->_dbFields[$sig]))
 		{
 			$db = $this->getDb();
 			$tbl = FabrikString::safeColName($tbl);
 			$db->setQuery("DESCRIBE " . $tbl);
 			$this->_dbFields[$sig] = $db->loadObjectList($key);
+
 			if ($db->getErrorNum())
 			{
 				JError::raiseWarning(500, $db->getErrorMsg());
 				$this->_dbFields[$sig] = array();
 			}
+
 			foreach ($this->_dbFields[$sig] as &$row)
 			{
 				/**
@@ -4002,6 +4257,7 @@ $groupBy .= '_raw';
 				$row->BaseType = preg_replace('#(\s+SIGNED|\s+UNSIGNED)#', '', $row->BaseType);
 			}
 		}
+
 		return $this->_dbFields[$sig];
 	}
 
@@ -4040,10 +4296,12 @@ $groupBy .= '_raw';
 		{
 			return $return;
 		}
+
 		if ($this->isView())
 		{
 			return $return;
 		}
+
 		if ($group->isJoin())
 		{
 			$tableName = $group->getJoinModel()->getJoin()->table_join;
@@ -4055,6 +4313,7 @@ $groupBy .= '_raw';
 			$tableName = $table->db_table_name;
 			$primaryKey = $table->db_primary_key;
 		}
+
 		$keydata = $this->getPrimaryKeyAndExtra($tableName);
 
 		// $$$ rob base plugin needs to know group info for date fields in non-join repeat groups
@@ -4069,6 +4328,7 @@ $groupBy .= '_raw';
 		{
 			$objtype = $dbdescriptions[$origColName]->Type;
 		}
+
 		if (is_null($objtype))
 		{
 			return $return;
@@ -4078,6 +4338,7 @@ $groupBy .= '_raw';
 		$tableName = FabrikString::safeColName($tableName);
 		$lastfield = FabrikString::safeColName($lastfield);
 		$altered = false;
+
 		if (!array_key_exists($element->name, $dbdescriptions))
 		{
 			if ($origColName == '')
@@ -4102,6 +4363,7 @@ $groupBy .= '_raw';
 			// Commented out as it stops the update when changing an element name
 			// return $return;
 		}
+
 		$thisFieldDesc = JArrayHelper::getValue($dbdescriptions, $origColName, new stdClass);
 
 		/* $$$ rob the Default property for timestamps when they are set to CURRENT_TIMESTAMP
@@ -4109,9 +4371,11 @@ $groupBy .= '_raw';
 		* to the current timestamp (update of the field's data controller in the Extra property (on update CURRENT_TIMESTAMP)
 				*/
 		$existingDef = '';
+
 		if (isset($thisFieldDesc->Type))
 		{
 			$existingDef = $thisFieldDesc->Type;
+
 			if ($thisFieldDesc->Type == 'timestamp')
 			{
 				$existingDef .= $thisFieldDesc->Null = 'YES' ? ' NULL' : ' NOT NULL';
@@ -4189,12 +4453,15 @@ $groupBy .= '_raw';
 			if ($this->canAlterFields())
 			{
 				$origColName = $origColName == null ? $fabrikDb->quoteName($element->name) : $fabrikDb->quoteName($origColName);
+
 				if (JString::strtolower($objtype) == 'blob')
 				{
 					$dropKey = true;
 				}
+
 				$q = 'ALTER TABLE ' . $tableName . ' CHANGE ' . $origColName . ' ' . FabrikString::safeColName($element->name) . ' ' . $objtype . ' ';
 				$testColName = $tableName . '.' . FabrikString::safeColName($element->name);
+
 				if (FabrikString::safeColName($primaryKey) == $tableName . '.' . FabrikString::safeColName($element->name) && $table->auto_inc)
 				{
 					if (!strstr($q, 'NOT NULL AUTO_INCREMENT'))
@@ -4202,15 +4469,18 @@ $groupBy .= '_raw';
 						$q .= ' NOT NULL AUTO_INCREMENT ';
 					}
 				}
+
 				$origColName = FabrikString::safeColName($origColName);
 				$return[0] = true;
 				$return[1] = $q;
 				$return[2] = $origColName;
 				$return[3] = $objtype;
 				$return[5] = $dropKey;
+
 				return $return;
 			}
 		}
+
 		return $return;
 	}
 
@@ -4238,6 +4508,7 @@ $groupBy .= '_raw';
 		$basePlugIn->setGroupModel($elementModel->getGroupModel());
 		$objtype = $elementModel->getFieldDescription();
 		$dbdescriptions = $this->getDBFields($tableName);
+
 		if (!$this->canAlterFields())
 		{
 			foreach ($dbdescriptions as $f)
@@ -4248,24 +4519,30 @@ $groupBy .= '_raw';
 				}
 			}
 		}
+
 		if (!is_null($objtype))
 		{
 			foreach ($dbdescriptions as $dbdescription)
 			{
 				$fieldname = JString::strtolower($dbdescription->Field);
+
 				if (JString::strtolower($element->name) == $fieldname && JString::strtolower($dbdescription->Type) == JString::strtolower($objtype))
 				{
 					return;
 				}
+
 				$existingfields[] = $fieldname;
 			}
+
 			$lastfield = $fieldname;
 			$element->name = FabrikString::safeColName($element->name);
 			$tableName = FabrikString::safeColName($tableName);
 			$lastfield = FabrikString::safeColName($lastfield);
+
 			if (empty($origColName) || !in_array(JString::strtolower($origColName), $existingfields))
 			{
 				$fabrikDb->setQuery("ALTER TABLE $tableName ADD COLUMN $element->name $objtype AFTER $lastfield");
+
 				try
 				{
 					$fabrikDb->execute();
@@ -4283,8 +4560,10 @@ $groupBy .= '_raw';
 					{
 						$origColName = $element->name;
 					}
+
 					$origColName = FabrikString::safeColName($origColName);
 					$fabrikDb->setQuery("ALTER TABLE $tableName CHANGE $origColName $element->name $objtype");
+
 					try
 					{
 						$fabrikDb->execute();
@@ -4296,6 +4575,7 @@ $groupBy .= '_raw';
 				}
 			}
 		}
+
 		return true;
 	}
 
@@ -4308,11 +4588,14 @@ $groupBy .= '_raw';
 	public function canAlterFields()
 	{
 		$listid = $this->getId();
+
 		if (empty($listid))
 		{
 			return false;
 		}
+
 		$state = $this->alterExisting();
+
 		return $state == 1;
 	}
 
@@ -4329,10 +4612,12 @@ $groupBy .= '_raw';
 		$params = $this->getParams();
 		$fbConfig = JComponentHelper::getParams('com_fabrik');
 		$alter = $params->get('alter_existing_db_cols', 'default');
+
 		if ($alter === 'default')
 		{
 			$alter = $fbConfig->get('fbConf_alter_existing_db_cols', true);
 		}
+
 		return $alter;
 	}
 
@@ -4347,6 +4632,7 @@ $groupBy .= '_raw';
 	public function canAddFields()
 	{
 		$state = $this->alterExisting();
+
 		return ($state == 1 || $state == 'addonly');
 	}
 
@@ -4367,6 +4653,7 @@ $groupBy .= '_raw';
 			$this->_oForm->getForm();
 			$this->_oForm->setListModel($this);
 		}
+
 		return $this->_oForm;
 	}
 
@@ -4412,15 +4699,18 @@ $groupBy .= '_raw';
 		{
 			return $this->isView;
 		}
+
 		$db = FabrikWorker::getDbo();
 		$table = $this->getTable();
 		$cn = $this->getConnection();
 		$c = $cn->getConnection();
 		$dbname = $c->database;
+
 		if ($table->db_table_name == '')
 		{
 			return;
 		}
+
 		$sql = " SELECT table_name, table_type, engine FROM INFORMATION_SCHEMA.tables " . "WHERE table_name = " . $db->quote($table->db_table_name)
 		. " AND table_type = 'view' AND table_schema = " . $db->quote($dbname);
 		$db->setQuery($sql);
@@ -4431,8 +4721,8 @@ $groupBy .= '_raw';
 		$params->set('isview', $this->isView);
 		$table->params = (string) $params;
 		$table->store();
-		return $this->isView;
 
+		return $this->isView;
 	}
 
 	/**
@@ -4457,6 +4747,7 @@ $groupBy .= '_raw';
 		{
 			// Don't do this when you are viewing a form or details page as it wipes out the table filters
 			$reg = $registry->get('_registry');
+
 			if (isset($reg[$option]) && !in_array(JRequest::getCmd('view'), array('form', 'details')))
 			{
 				unset($reg[$option]['data']->$tid->filter);
@@ -4488,6 +4779,7 @@ $groupBy .= '_raw';
 		{
 			return $this->filters;
 		}
+
 		$filterModel = $this->getFilterModel();
 		$db = FabrikWorker::getDbo();
 		$this->filters = array();
@@ -4511,6 +4803,7 @@ $groupBy .= '_raw';
 		$keys = array_keys($request);
 		$indexStep = count(JArrayHelper::getValue($this->filters, 'key', array()));
 		FabrikHelperHTML::debug($keys, 'filter:request keys');
+
 		foreach ($keys as $key)
 		{
 			if (is_array($request[$key]))
@@ -4521,6 +4814,7 @@ $groupBy .= '_raw';
 					{
 						$this->filters[$key] = array();
 					}
+
 					$this->filters[$key][$kk + $indexStep] = $v;
 				}
 			}
@@ -4530,6 +4824,7 @@ $groupBy .= '_raw';
 		$readOnlyValues = array();
 		$w = new FabrikWorker;
 		$noFiltersSetup = JArrayHelper::getValue($this->filters, 'no-filter-setup', array());
+
 		if (count($this->filters) == 0)
 		{
 			FabrikWorker::getPluginManager()->runPlugins('onFiltersGot', $this, 'list');
@@ -4541,6 +4836,7 @@ $groupBy .= '_raw';
 		$elementids = JArrayHelper::getValue($this->filters, 'elementid', array());
 		$sqlCond = JArrayHelper::getValue($this->filters, 'sqlCond', array());
 		$raws = JArrayHelper::getValue($this->filters, 'raw', array());
+
 		foreach ($this->filters['key'] as $i => $keyval)
 		{
 			$value = $this->filters['value'][$i];
@@ -4555,11 +4851,13 @@ $groupBy .= '_raw';
 			* - if it is make a note and remove the _raw from the name
 			*/
 			$raw = JArrayHelper::getValue($raws, $i, false);
+
 			if (substr($key, -5, 5) == '_raw`')
 			{
 				$key = JString::substr($key, 0, JString::strlen($key) - 5) . '`';
 				$raw = true;
 			}
+
 			if ($elid == -1)
 			{
 				// Bool match
@@ -4576,6 +4874,7 @@ $groupBy .= '_raw';
 				continue;
 
 			}
+
 			$elementModel = JArrayHelper::getValue($elements, $elid);
 
 			// $$$ rob key2 if set is in format  `countries_0`.`label` rather than  `countries`.`label`
@@ -4584,6 +4883,7 @@ $groupBy .= '_raw';
 			{
 				$key = $key2;
 			}
+
 			$eval = $this->filters['eval'][$i];
 			$fullWordsOnly = $this->filters['full_words_only'][$i];
 			$exactMatch = $this->filters['match'][$i];
@@ -4596,12 +4896,14 @@ $groupBy .= '_raw';
 				}
 				continue;
 			}
+
 			$elementModel->_rawFilter = $raw;
 
 			// $$ hugh - testing allowing {QS} replacements in pre-filter values
 			$w->replaceRequest($value);
 			$value = $this->_prefilterParse($value);
 			$value = $w->parseMessageForPlaceHolder($value);
+
 			if ($filterEval == '1')
 			{
 				// $$$ rob hehe if you set $i in the eval'd code all sorts of chaos ensues
@@ -4611,6 +4913,7 @@ $groupBy .= '_raw';
 				FabrikWorker::logEval($value, 'Caught exception on eval of tableModel::getFilterArray() ' . $key . ': %s');
 				$i = $origi;
 			}
+
 			if ($condition == 'regexp')
 			{
 				$condition = 'REGEXP';
@@ -4659,25 +4962,30 @@ $groupBy .= '_raw';
 					$value = "\"[[:<:]]" . $value . "[[:>:]]\"";
 				}
 			}
+
 			if ($condition === 'REGEXP')
 			{
 				// $$$ 15/11/2012 - moved from before getFilterValue() to after as otherwise date filters in querystrings created wonky query
 				$value = 'LOWER(' . $db->quote($value, false) . ')';
 			}
+
 			if (!array_key_exists($i, $sqlCond) || $sqlCond[$i] == '')
 			{
 				$query = $elementModel->getFilterQuery($key, $condition, $value, $originalValue, $this->filters['search_type'][$i]);
 				$this->filters['sqlCond'][$i] = $query;
 			}
+
 			$this->filters['condition'][$i] = $condition;
 
 			// Used when getting the selected dropdown filter value
 			$this->filters['origvalue'][$i] = $originalValue;
 			$this->filters['value'][$i] = $value;
+
 			if (!array_key_exists($i, $noFiltersSetup))
 			{
 				$this->filters['no-filter-setup'][$i] = 0;
 			}
+
 			if ($this->filters['no-filter-setup'][$i] == 1)
 			{
 				$tmpName = $elementModel->getFullName(false, true, false);
@@ -4685,6 +4993,7 @@ $groupBy .= '_raw';
 
 				// Set defaults to null to ensure we get correct value for 2nd dropdown search value (mutli dropdown from search form)
 				$elementModel->defaults = null;
+
 				if (array_key_exists($key, $readOnlyValues))
 				{
 					$readOnlyValues[$key][] = $elementModel->getFilterRO($tmpData);
@@ -4707,7 +5016,9 @@ $groupBy .= '_raw';
 				$this->filters['filter'][$i] = $value;
 			}
 		}
+
 		FabrikHelperHTML::debug($this->filters, 'end filters');
+
 		foreach ($readOnlyValues as $key => $val)
 		{
 			foreach ($this->filters['key'] as $i => $fkey)
@@ -4718,8 +5029,10 @@ $groupBy .= '_raw';
 				}
 			}
 		}
+
 		FabrikWorker::getPluginManager()->runPlugins('onFiltersGot', $this, 'list');
 		FabrikHelperHTML::debug($this->filters, 'after plugins:onFiltersGot');
+
 		return $this->filters;
 	}
 
@@ -4737,30 +5050,36 @@ $groupBy .= '_raw';
 		$params = $this->getParams();
 		$showInList = array();
 		$listels = json_decode(FabrikWorker::getMenuOrRequestVar('list_elements', '', $this->isMambot));
+
 		if (isset($listels->show_in_list))
 		{
 			$showInList = $listels->show_in_list;
 		}
+
 		$showInList = (array) $input->get('fabrik_show_in_list', $showInList, 'array');
 
 		// Are we coming from a post request via a module?
 		$moduleid = 0;
 		$requestRef = JRequest::getVar('listref', '');
+
 		if ($requestRef !== '' && !strstr($requestRef, 'com_' . $package))
 		{
 			// If so we need to load in the modules parameters
 			$ref = explode('_', $requestRef);
+
 			if (count($ref) > 1)
 			{
 				$moduleid = (int) array_pop($ref);
 				$db = JFactory::getDbo();
 				$query = $db->getQuery(true);
+
 				if ($moduleid !== 0)
 				{
 					$this->setRenderContext($moduleid);
 					$query->select('params')->from('#__modules')->where('id = ' . $moduleid);
 					$db->setQuery($query);
 					$obj = json_decode($db->loadResult());
+
 					if (is_object($obj) && isset($obj->prefilters))
 					{
 						$properties = $obj->prefilters;
@@ -4786,10 +5105,12 @@ $groupBy .= '_raw';
 		{
 			$properties = FabrikWorker::getMenuOrRequestVar('prefilters', '', $this->isMambot);
 		}
+
 		if (isset($properties))
 		{
 			$prefilters = JArrayHelper::fromObject(json_decode($properties));
 			$conditions = (array) $prefilters['filter-conditions'];
+
 			if (!empty($conditions))
 			{
 				$afilterFields = JArrayHelper::getValue($prefilters, 'filter-fields', array());
@@ -4800,6 +5121,7 @@ $groupBy .= '_raw';
 				$afilterJoins = JArrayHelper::getValue($prefilters, 'filter-join', array());
 			}
 		}
+
 		return array($afilterFields, $afilterConditions, $afilterValues, $afilterAccess, $afilterEval, $afilterJoins);
 	}
 
@@ -4821,18 +5143,21 @@ $groupBy .= '_raw';
 			list($afilterFields, $afilterConditions, $afilterValues, $afilterAccess, $afilterEval, $afilterJoins) = $this->prefilterSetting();
 			$join = 'WHERE';
 			$w = new FabrikWorker;
+
 			for ($i = 0; $i < count($afilterFields); $i++)
 			{
 				if (!array_key_exists(0, $afilterJoins) || $afilterJoins[0] == '')
 				{
 					$afilterJoins[0] = 'AND';
 				}
+
 				$join = JArrayHelper::getValue($afilterJoins, $i, 'AND');
 
 				if (trim(JString::strtolower($join)) == 'where')
 				{
 					$join = 'AND';
 				}
+
 				$filter = $afilterFields[$i];
 				$condition = $afilterConditions[$i];
 				$selValue = JArrayHelper::getValue($afilterValues, $i, '');
@@ -4840,14 +5165,17 @@ $groupBy .= '_raw';
 				$filterGrouped = JArrayHelper::getValue($afilterGrouped, $i, false);
 
 				$selAccess = $afilterAccess[$i];
+
 				if (!$this->mustApplyFilter($selAccess))
 				{
 					continue;
 				}
+
 				// $tmpfilter = strstr($filter, '_raw') ? FabrikString::rtrimword( $filter, '_raw') : $filter;
 				$raw = preg_match("/_raw$/", $filter) > 0;
 				$tmpfilter = $raw ? FabrikString::rtrimword($filter, '_raw') : $filter;
 				$elementModel = JArrayHelper::getValue($elements, FabrikString::safeColName($tmpfilter), false);
+
 				if ($elementModel === false && $condition !== 'exists')
 				{
 					// Include the JLog class.
@@ -4862,6 +5190,7 @@ $groupBy .= '_raw';
 					JLog::NOTICE, 'com_fabrik');
 					continue;
 				}
+
 				$filters['join'][] = $join;
 				$filters['search_type'][] = 'prefilter';
 				$filters['key'][] = $tmpfilter;
@@ -4884,6 +5213,7 @@ $groupBy .= '_raw';
 				$this->prefilters = true;
 			}
 		}
+
 		FabrikHelperHTML::debug($filters, 'prefilters');
 	}
 
@@ -4902,21 +5232,27 @@ $groupBy .= '_raw';
 		$this->setLimits();
 		$session = JFactory::getSession();
 		$context = 'com_' . $package . '.list' . $this->getRenderContext() . '.total';
+
 		if (isset($this->totalRecords))
 		{
 			$session->set($context, $this->totalRecords);
+
 			return $this->totalRecords;
 		}
+
 		// $$$ rob getData() should always be run first
 		if (is_null($this->_data))
 		{
 			$this->getData();
+
 			return $this->totalRecords;
 		}
+
 		if ($this->mergeJoinedData())
 		{
 			$this->totalRecords = $this->getJoinMergeTotalRecords();
 			$session->set($context, $this->totalRecords);
+
 			return $this->totalRecords;
 		}
 	}
@@ -4940,6 +5276,7 @@ $groupBy .= '_raw';
 		$db->setQuery($totalSql);
 		FabrikHelperHTML::debug($db->getQuery(), 'table getJoinMergeTotalRecords');
 		$total = $db->loadResult();
+
 		return $total;
 	}
 
@@ -4968,12 +5305,14 @@ $groupBy .= '_raw';
 	function &getPagination($total = 0, $limitstart = 0, $limit = 0)
 	{
 		$db = FabrikWorker::getDbo();
+
 		if (!isset($this->nav))
 		{
 			if ($this->randomRecords)
 			{
 				$limitstart = $this->getRandomLimitStart();
 			}
+
 			$params = $this->getParams();
 			$this->nav = new FPagination($total, $limitstart, $limit);
 
@@ -4986,6 +5325,7 @@ $groupBy .= '_raw';
 			$this->nav->startLimit = FabrikWorker::getMenuOrRequestVar('rows_per_page', $item->rows_per_page, $this->isMambot);
 			$this->nav->showDisplayNum = $params->get('show_displaynum', true);
 		}
+
 		return $this->nav;
 	}
 
@@ -5001,6 +5341,7 @@ $groupBy .= '_raw';
 		{
 			return $this->randomLimitStart;
 		}
+
 		$db = $this->getDb();
 		$table = $this->getTable();
 		/* $$$ rob @todo - do we need to add the join in here as well?
@@ -5025,11 +5366,14 @@ $groupBy .= '_raw';
 		going to favour records at the beginning of the table though
 		*/
 		$limitstart -= $table->rows_per_page;
+
 		if ($limitstart < 0)
 		{
 			$limitstart = 0;
 		}
+
 		$this->randomLimitStart = $limitstart;
+
 		return $limitstart;
 	}
 
@@ -5054,6 +5398,7 @@ $groupBy .= '_raw';
 
 			$pluginManager->runPlugins('requireFilterSubmit', $this, 'list');
 			$res = $pluginManager->_data;
+
 			if (!empty($res))
 			{
 				if (in_array(1, $res))
@@ -5066,12 +5411,15 @@ $groupBy .= '_raw';
 			// No list plugins expressed a preference, so check for range filters
 			$form = $this->getFormModel();
 			$groups = $form->getGroupsHiarachy();
+
 			foreach ($groups as $groupModel)
 			{
 				$elementModels = $groupModel->getPublishedElements();
+
 				foreach ($elementModels as $elementModel)
 				{
 					$element = $elementModel->getElement();
+
 					if (isset($element->filter_type) && $element->filter_type <> '')
 					{
 						if ($elementModel->canView() && $elementModel->canUseFilter() && $element->show_in_list_summary == '1')
@@ -5080,6 +5428,7 @@ $groupBy .= '_raw';
 							if ($element->filter_type == 'range' || $element->filter_type == 'auto-complete')
 							{
 								$this->_real_filter_action = 'submitform';
+
 								return $this->_real_filter_action;
 							}
 						}
@@ -5087,6 +5436,7 @@ $groupBy .= '_raw';
 				}
 			}
 		}
+
 		return $this->_real_filter_action;
 	}
 
@@ -5119,8 +5469,10 @@ $groupBy .= '_raw';
 		{
 			return '';
 		}
+
 		$row->slug = str_replace(':', '-', $row->slug);
 		$row->slug = JApplication::stringURLSafe($row->slug);
+
 		return $row->slug;
 	}
 
@@ -5138,6 +5490,7 @@ $groupBy .= '_raw';
 			$this->_joinsToThisKey = array();
 			$db = FabrikWorker::getDbo(true);
 			$table = $this->getTable();
+
 			if ($table->id == 0)
 			{
 				$this->_joinsToThisKey = array();
@@ -5178,11 +5531,13 @@ $groupBy .= '_raw';
 
 				$db->setQuery($query);
 				$this->_joinsToThisKey = $db->loadObjectList();
+
 				if ($db->getErrorNum())
 				{
 					$this->_joinsToThisKey = array();
 					JError::raiseWarning(500, 'getJoinsToThisKey: ' . $db->getErrorMsg());
 				}
+
 				foreach ($this->_joinsToThisKey as $join)
 				{
 					$element_params = json_decode($join->element_params);
@@ -5190,6 +5545,7 @@ $groupBy .= '_raw';
 				}
 			}
 		}
+
 		return $this->_joinsToThisKey;
 	}
 
@@ -5205,15 +5561,19 @@ $groupBy .= '_raw';
 		{
 			return $this->aJoinsToThisKey;
 		}
+
 		$params = $this->getParams();
 		$this->aJoinsToThisKey = array();
 		$facted = $params->get('factedlinks', new stdClass);
+
 		if (!isset($facted->linkedform))
 		{
 			return $this->aJoinsToThisKey;
 		}
+
 		$linkedForms = $facted->linkedform;
 		$aAllJoinsToThisKey = $this->getJoinsToThisKey();
+
 		foreach ($aAllJoinsToThisKey as $join)
 		{
 			$key = "{$join->list_id}-{$join->form_id}-{$join->element_id}";
@@ -5227,6 +5587,7 @@ $groupBy .= '_raw';
 				$this->aJoinsToThisKey[] = false;
 			}
 		}
+
 		return $this->aJoinsToThisKey;
 	}
 
@@ -5242,7 +5603,9 @@ $groupBy .= '_raw';
 		{
 			return $this->emptyMsg;
 		}
+
 		$params = $this->getParams();
+
 		return $params->get('empty_data_msg', JText::_('COM_FABRIK_LIST_NO_DATA_MSG'));
 	}
 
@@ -5258,6 +5621,7 @@ $groupBy .= '_raw';
 		{
 			return $this->emptyMsg;
 		}
+
 		return '';
 	}
 
@@ -5274,11 +5638,13 @@ $groupBy .= '_raw';
 			$this->emptyMsg = JText::_('COM_FABRIK_SELECT_AT_LEAST_ONE_FILTER');
 			return false;
 		}
+
 		if ($this->hasRequiredElementFilters() && !$this->getRequiredFiltersFound())
 		{
 			$this->emptyMsg = JText::_('COM_FABRIK_PLEASE_SELECT_ALL_REQUIRED_FILTERS');
 			return false;
 		}
+
 		return true;
 	}
 
@@ -5324,14 +5690,17 @@ $groupBy .= '_raw';
 		{
 			return $this->hasRequiredElementFilters;
 		}
+
 		$filters = $this->getFilterArray();
 		$elements = $this->getElements();
 		$this->hasRequiredElementFilters = false;
+
 		foreach ($elements as $kk => $val2)
 		{
 			// Don't do with = as this foobars up the last elementModel
 			$elementModel = $elements[$kk];
 			$element = $elementModel->getElement();
+
 			if ($element->filter_type <> '' && $element->filter_type != 'null')
 			{
 				if ($elementModel->canView() && $elementModel->canUseFilter())
@@ -5344,6 +5713,7 @@ $groupBy .= '_raw';
 				}
 			}
 		}
+
 		return $this->hasRequiredElementFilters;
 	}
 
@@ -5357,6 +5727,7 @@ $groupBy .= '_raw';
 	{
 		$filters = $this->getFilterArray();
 		$ftypes = JArrayHelper::getValue($filters, 'search_type', array());
+
 		foreach ($ftypes as $i => $ftype)
 		{
 			if ($ftype != 'prefilter')
@@ -5364,6 +5735,7 @@ $groupBy .= '_raw';
 				return true;
 			}
 		}
+
 		return false;
 	}
 
@@ -5379,20 +5751,25 @@ $groupBy .= '_raw';
 		{
 			return $this->requiredFilterFound;
 		}
+
 		$filters = $this->getFilterArray();
 		$elements = $this->getElements();
 		$required = array();
-		/* if no required filters, then by definition we have them all */
+
+		// If no required filters, then by definition we have them all
 		if (!$this->hasRequiredElementFilters())
 		{
 			return true;
 		}
-		/* if no filter keys, by definition we don't have required ones */
+
+		// If no filter keys, by definition we don't have required ones
 		if (!array_key_exists('key', $filters) || !is_array($filters['key']))
 		{
 			$this->emptyMsg = JText::_('COM_FABRIK_PLEASE_SELECT_ALL_REQUIRED_FILTERS');
+
 			return false;
 		}
+
 		foreach ($this->elementsWithRequiredFilters as $elementModel)
 		{
 			if ($elementModel->getParams()->get('filter_required') == 1)
@@ -5400,6 +5777,7 @@ $groupBy .= '_raw';
 				$name = FabrikString::safeColName($elementModel->getFullName(false, false, false));
 				reset($filters['key']);
 				$found = false;
+
 				while (list($key, $val) = each($filters['key']))
 				{
 					if ($val == $name)
@@ -5408,13 +5786,16 @@ $groupBy .= '_raw';
 						break;
 					}
 				}
+
 				if (!$found || $filters['origvalue'][$key] == '')
 				{
 					$this->emptyMsg = JText::_('COM_FABRIK_PLEASE_SELECT_ALL_REQUIRED_FILTERS');
+
 					return false;
 				}
 			}
 		}
+
 		return true;
 	}
 
@@ -5487,6 +5868,7 @@ $groupBy .= '_raw';
 		$filters = $this->getFilterArray();
 
 		$params = $this->getParams();
+
 		if ($params->get('search-mode', 'AND') == 'OR')
 		{
 			// One field to search them all (and in the darkness bind them)
@@ -5496,6 +5878,7 @@ $groupBy .= '_raw';
 			$class = FabrikWorker::j3() ? 'fabrik_filter search-query input-medium' : 'fabrik_filter';
 			$o->filter = '<input type="search" size="20" placeholder="' . JText::_('COM_FABRIK_SEARCH') . '" value="' . $v
 			. '" class="' . $class . '" name="' . $requestKey . '" />';
+
 			if ($params->get('search-mode-advanced') == 1)
 			{
 				$opts = array();
@@ -5511,17 +5894,20 @@ $groupBy .= '_raw';
 			$o->label = $params->get('search-all-label', JText::_('COM_FABRIK_ALL'));
 			$aFilters[] = $o;
 		}
+
 		$counter = 0;
 		/* $$$ hugh - another one of those weird ones where if we use = the foreach loop
 		 * will sometimes skip a group
 		* $groups = $this->getFormGroupElementData();
 		*/
 		$groups = $this->getFormGroupElementData();
+
 		foreach ($groups as $groupModel)
 		{
 			$g = $groupModel->getGroup();
 			$elementModels = null;
 			$elementModels = $groupModel->getPublishedElements();
+
 			foreach ($elementModels as $elementModel)
 			{
 				$element = $elementModel->getElement();
@@ -5541,6 +5927,7 @@ $groupBy .= '_raw';
 						{
 							continue;
 						}
+
 						// Force the correct group model into the element model to ensure no wierdness in getting the element name
 						$elementModel->setGroupModel($groupModel);
 						$o = new stdClass;
@@ -5556,6 +5943,7 @@ $groupBy .= '_raw';
 				}
 			}
 		}
+
 		$fscript .= 'Fabrik.filter_' . $container . ".update();\n";
 		$this->filterJs = $fscript;
 
@@ -5573,16 +5961,19 @@ $groupBy .= '_raw';
 				*/
 				$elementModel = $this->getFormModel()->getElement(str_replace('`', '', $key));
 				$o->filter = $filters['filter'][$i];
+
 				if ($elementModel)
 				{
 					$elementModel->getElement()->filter_type = 'hidden';
 					$o->filter .= $elementModel->getFilter(0, true);
 				}
+
 				$o->name = $filters['key'][$i];
 				$o->label = $filters['label'][$i];
 				$aFilters[] = $o;
 			}
 		}
+
 		return $aFilters;
 	}
 
@@ -5597,6 +5988,7 @@ $groupBy .= '_raw';
 		$params = $this->getParams();
 		$app = JFactory::getApplication();
 		$package = $app->getUserState('com_fabrik.package', 'fabrik');
+
 		if ($params->get('advanced-filter', '0'))
 		{
 			$table = $this->getTable();
@@ -5608,6 +6000,7 @@ $groupBy .= '_raw';
 			$title = '<span>' . JText::_('COM_FABRIK_ADVANCED_SEARCH') . '</span>';
 			$opts = array('alt' => JText::_('COM_FABRIK_ADVANCED_SEARCH'), 'class' => 'fabrikTip', 'opts' => "{notice:true}", 'title' => $title);
 			$img = FabrikHelperHTML::image('find.png', 'list', $tmpl, $opts);
+
 			return '<a href="' . $url . '" class="advanced-search-link">' . $img . '</a>';
 		}
 		else
@@ -5633,6 +6026,7 @@ $groupBy .= '_raw';
 		{
 			return $opts;
 		}
+
 		$list = $this->getTable();
 		$listRef = $this->getRenderContext();
 		$opts->conditionList = FabrikHelperHTML::conditonList($listRef, '');
@@ -5648,12 +6042,15 @@ $groupBy .= '_raw';
 		$opts->counter = count($this->getadvancedSearchRows()) - 1;
 		$elements = $this->getElements();
 		$arr = array();
+
 		foreach ($elements as $e)
 		{
 			$key = $e->getFilterFullName();
 			$arr[$key] = array('id' => $e->getId(), 'plugin' => $e->getElement()->plugin);
 		}
+
 		$opts->elementMap = $arr;
+
 		return $opts;
 	}
 
@@ -5669,21 +6066,26 @@ $groupBy .= '_raw';
 		$firstFilter = false;
 		$fieldNames[] = JHTML::_('select.option', '', JText::_('COM_FABRIK_PLEASE_SELECT'));
 		$elementModels = $this->getElements();
+
 		foreach ($elementModels as $elementModel)
 		{
 			$element = $elementModel->getElement();
 			$elParams = $elementModel->getParams();
+
 			if ($elParams->get('inc_in_adv_search', 1))
 			{
 				$elName = $elementModel->getFilterFullName();
+
 				if (!$first)
 				{
 					$first = true;
 					$firstFilter = $elementModel->getFilter(0, false);
 				}
+
 				$fieldNames[] = JHTML::_('select.option', $elName, strip_tags($element->label));
 			}
 		}
+
 		return array($fieldNames, $firstFilter);
 	}
 
@@ -5719,12 +6121,15 @@ $groupBy .= '_raw';
 		$filters = $this->getFilterArray();
 		$advanced = array();
 		$iKeys = array_keys(JArrayHelper::getValue($filters, 'key', array()));
+
 		foreach ($iKeys as $i)
 		{
 			$searchType = JArrayHelper::getValue($filters['search_type'], $i);
+
 			if (!is_null($searchType) && $searchType == 'advanced')
 			{
 				$tmp = array();
+
 				foreach (array_keys($filters) as $k)
 				{
 					if (array_key_exists($k, $advanced))
@@ -5738,6 +6143,7 @@ $groupBy .= '_raw';
 				}
 			}
 		}
+
 		return $advanced;
 	}
 	/**
@@ -5888,11 +6294,14 @@ $groupBy .= '_raw';
 				{
 					continue;
 				}
+
 				$elModel = $this->getFormModel()->getElement($name);
+
 				if (is_object($elModel))
 				{
 					$name = $elModel->getFullName(false, true, false);
 					$pName = $elModel->isJoin() ? $db->quoteName($elModel->getJoinModel()->getJoin()->table_join . '___params') : '';
+
 					foreach ($asfields as $f)
 					{
 						if ((strstr($f, $db->quoteName($name)) || strstr($f, $db->quoteName($name . '_raw'))
@@ -5904,6 +6313,7 @@ $groupBy .= '_raw';
 					$elModel->requiresOtherAsFields($newfields);
 				}
 			}
+
 			$this->asfields = $newfields;
 		}
 	}
@@ -5935,6 +6345,7 @@ $groupBy .= '_raw';
 		// $linksToForms = $this->getLinksToThisKey();
 		$oldLinksToForms = $this->getLinksToThisKey();
 		$linksToForms = array();
+
 		foreach ($oldLinksToForms as $join)
 		{
 			// $$$ hugh - anoher issue with getLinksTothisKey() now returning false for some joins.
@@ -5944,6 +6355,7 @@ $groupBy .= '_raw';
 				$linksToForms[$k] = $join;
 			}
 		}
+
 		$groups = $formModel->getGroupsHiarachy();
 		$groupHeadings = array();
 
@@ -5961,11 +6373,13 @@ $groupBy .= '_raw';
 		{
 			$listels = $input->get('list_elements');
 		}
+
 		// $$$ rob check if empty or if a single empty value was set in the menu/module params
 		if (isset($listels->show_in_list) && !(count($listels->show_in_list) === 1 && $listels->show_in_list[0] == ''))
 		{
 			$showInList = $listels->show_in_list;
 		}
+
 		$showInList = (array) $input->get('fabrik_show_in_list', $showInList, 'array');
 
 		// Set it for use by groupModel->getPublishedListElements()
@@ -5977,6 +6391,7 @@ $groupBy .= '_raw';
 			{
 				$this->addCheckBox($aTableHeadings, $headingClass, $cellClass);
 			}
+
 			if ($params->get('checkboxLocation', 'end') !== 'end')
 			{
 				$this->actionHeading($aTableHeadings, $headingClass, $cellClass);
@@ -5993,6 +6408,7 @@ $groupBy .= '_raw';
 			{
 				continue;
 			}
+
 			foreach ($elementModels as $key => $elementModel)
 			{
 				$element = $elementModel->getElement();
@@ -6002,6 +6418,7 @@ $groupBy .= '_raw';
 				{
 					continue;
 				}
+
 				$viewLinkAdded = false;
 				$groupHeadings[$groupHeadingKey]++;
 				$key = $elementModel->getFullName(false, true, false);
@@ -6009,11 +6426,14 @@ $groupBy .= '_raw';
 				$orderKey = $elementModel->getOrderbyFullName(false, false);
 				$elementParams = $elementModel->getParams();
 				$label = $elementParams->get('alt_list_heading');
+
 				if ($label == '')
 				{
 					$label = $element->label;
 				}
+
 				$label = $w->parseMessageForPlaceHolder($label, array());
+
 				if ($elementParams->get('can_order') == '1' && $this->outPutFormat != 'csv')
 				{
 					$context = 'com_' . $package . '.list' . $this->getRenderContext() . '.order.' . $element->id;
@@ -6021,6 +6441,7 @@ $groupBy .= '_raw';
 					$class = "";
 					$currentOrderDir = $orderDir;
 					$tmpl = $this->getTmpl();
+
 					switch ($orderDir)
 					{
 						case "desc":
@@ -6059,6 +6480,7 @@ $groupBy .= '_raw';
 				{
 					$heading = $label;
 				}
+
 				$aTableHeadings[$compsitKey] = $heading;
 
 				$headingClass[$compsitKey] = array('class' => $elementModel->getHeadingClass(), 'style' => $elementParams->get('tablecss_header'));
@@ -6069,24 +6491,27 @@ $groupBy .= '_raw';
 				{
 					$cellClass[$compsitKey]['class'] .= ' repeat';
 					$dis = $params->get('join-display');
+
 					if ($dis != 'default')
 					{
 						$cellClass[$compsitKey]['class'] .= '-' . $dis;
 					}
 				}
-
 			}
+
 			if ($groupHeadings[$groupHeadingKey] == 0)
 			{
 				unset($groupHeadings[$groupHeadingKey]);
 			}
 		}
+
 		if (!empty($showInList))
 		{
 			$aTableHeadings = $this->removeHeadingCompositKey($aTableHeadings);
 			$headingClass = $this->removeHeadingCompositKey($headingClass);
 			$cellClass = $this->removeHeadingCompositKey($cellClass);
 		}
+
 		if (!in_array($this->outPutFormat, array('pdf', 'csv')))
 		{
 			// @TODO check if any plugins need to use the selector as well!
@@ -6094,6 +6519,7 @@ $groupBy .= '_raw';
 			{
 				$this->addCheckBox($aTableHeadings, $headingClass, $cellClass);
 			}
+
 			$viewLinkAdded = false;
 
 			// If no elements linking to the edit form add in a edit column (only if we have the right to edit/view of course!)
@@ -6101,6 +6527,7 @@ $groupBy .= '_raw';
 			{
 				$this->actionHeading($aTableHeadings, $headingClass, $cellClass);
 			}
+
 			// Create columns containing links which point to lists associated with this list
 			$factedlinks = $params->get('factedlinks');
 			$joinsToThisKey = $this->getJoinsToThisKey();
@@ -6222,26 +6649,33 @@ $groupBy .= '_raw';
 
 		// Check for conditions in https://github.com/Fabrik/fabrik/issues/621
 		$details = $this->canViewDetails();
+
 		if ($params->get('detaillink') == 0)
 		{
 			$details = false;
 		}
+
 		$edit = $this->canEdit();
+
 		if ($params->get('editlink') == 0)
 		{
 			$edit = false;
 		}
+
 		if ($this->canSelectRows() || $this->canEditARow() || $details || $edit)
 		{
 			// 3.0 actions now go in one column
 			$pluginManager = FabrikWorker::getPluginManager();
 			$headingButtons = array();
+
 			if ($this->deletePossible())
 			{
 				$headingButtons[] = $this->deleteButton();
 			}
+
 			$return = $pluginManager->runPlugins('button', $this, 'list');
 			$res = $pluginManager->_data;
+
 			foreach ($res as &$r)
 			{
 				$r = '<li>' . $r . '</li>';
@@ -6302,7 +6736,9 @@ $groupBy .= '_raw';
 				unset($arr[$key]);
 			}
 		}
+
 		ksort($arr);
+
 		foreach ($arr as $key => $val)
 		{
 			if (strstr($key, ':'))
@@ -6313,6 +6749,7 @@ $groupBy .= '_raw';
 				unset($arr[$key]);
 			}
 		}
+
 		return $arr;
 	}
 
@@ -6329,33 +6766,42 @@ $groupBy .= '_raw';
 	public function canSelectRow($row)
 	{
 		$canSelect = FabrikWorker::getPluginManager()->runPlugins('onCanSelectRow', $this, 'list', $row);
+
 		if (in_array(false, $canSelect))
 		{
 			return false;
 		}
+
 		if ($this->canDelete($row))
 		{
 			$this->canSelectRows = true;
 			return true;
 		}
+
 		$params = $this->getParams();
 		$actionMethod = $this->actionMethod();
+
 		if ($actionMethod == 'floating' && ($this->canEdit($row) || $this->canViewDetails($row)))
 		{
 			return true;
 		}
+
 		$usedPlugins = (array) $params->get('plugins');
+
 		if (empty($usedPlugins))
 		{
 			return false;
 		}
+
 		$pluginManager = FabrikWorker::getPluginManager();
 		$listplugins = $pluginManager->getPlugInGroup('list');
 		$v = in_array(true, $pluginManager->runPlugins('canSelectRows', $this, 'list'));
+
 		if ($v)
 		{
 			$this->canSelectRows = true;
 		}
+
 		return $v;
 	}
 
@@ -6376,27 +6822,35 @@ $groupBy .= '_raw';
 		{
 			return $this->canSelectRows;
 		}
+
 		$actionMethod = $this->actionMethod();
+
 		if ($this->canDelete() || ($this->canEditARow() && $actionMethod === 'floating') || $this->deletePossible())
 		{
 			$this->canSelectRows = true;
 			return $this->canSelectRows;
 		}
+
 		$params = $this->getParams();
+
 		if ($actionMethod == 'floating' && ($this->canEdit() || $this->canViewDetails()))
 		{
 			$this->canSelectRows = true;
 			return true;
 		}
+
 		$usedPlugins = (array) $params->get('plugins');
+
 		if (empty($usedPlugins))
 		{
 			$this->canSelectRows = false;
 			return $this->canSelectRows;
 		}
+
 		$pluginManager = FabrikWorker::getPluginManager();
 		$pluginManager->getPlugInGroup('list');
 		$this->canSelectRows = in_array(true, $pluginManager->runPlugins('canSelectRows', $this, 'list'));
+
 		return $this->canSelectRows;
 	}
 
@@ -6422,6 +6876,7 @@ $groupBy .= '_raw';
 		{
 			return $this->_aRunCalculations;
 		}
+
 		$user = JFactory::getUser();
 		$aclGroups = $user->getAuthorisedViewLevels();
 		$aCalculations = array();
@@ -6432,9 +6887,11 @@ $groupBy .= '_raw';
 		$aCounts = array();
 		$aCustoms = array();
 		$groups = $formModel->getGroupsHiarachy();
+
 		foreach ($groups as $groupModel)
 		{
 			$elementModels = $groupModel->getPublishedElements();
+
 			foreach ($elementModels as $elementModel)
 			{
 				$params = $elementModel->getParams();
@@ -6449,6 +6906,7 @@ $groupBy .= '_raw';
 				$medianAccess = $params->get('median_access', 0);
 				$countAccess = $params->get('count_access', 0);
 				$customAccess = $params->get('custom_calc_access', 0);
+
 				if ($sumOn && in_array($sumAccess, $aclGroups) && $params->get('sum_value', '') != '')
 				{
 					$aSums[$elName] = $params->get('sum_value', '');
@@ -6459,6 +6917,7 @@ $groupBy .= '_raw';
 						$aSums[$elName . '_obj'] = unserialize($ser);
 					}
 				}
+
 				if ($avgOn && in_array($avgAccess, $aclGroups) && $params->get('avg_value', '') != '')
 				{
 					$aAvgs[$elName] = $params->get('avg_value', '');
@@ -6468,19 +6927,23 @@ $groupBy .= '_raw';
 						$aAvgs[$elName . '_obj'] = unserialize($ser);
 					}
 				}
+
 				if ($medianOn && in_array($medianAccess, $aclGroups) && $params->get('median_value', '') != '')
 				{
 					$aMedians[$elName] = $params->get('median_value', '');
 					$ser = $params->get('median_value_serialized', '');
+
 					if (is_string($ser))
 					{
 						$aMedians[$elName . '_obj'] = unserialize($ser);
 					}
 				}
+
 				if ($countOn && in_array($countAccess, $aclGroups) && $params->get('count_value', '') != '')
 				{
 					$aCounts[$elName] = $params->get('count_value', '');
 					$ser = $params->get('count_value_serialized');
+
 					if (is_string($ser))
 					{
 						$aCounts[$elName . '_obj'] = unserialize($ser);
@@ -6491,6 +6954,7 @@ $groupBy .= '_raw';
 				{
 					$aCustoms[$elName] = $params->get('custom_calc_value', '');
 					$ser = $params->get('custom_calc_value_serialized');
+
 					if (is_string($ser))
 					{
 						$aCounts[$elName . '_obj'] = unserialize($ser);
@@ -6498,12 +6962,14 @@ $groupBy .= '_raw';
 				}
 			}
 		}
+
 		$aCalculations['sums'] = $aSums;
 		$aCalculations['avgs'] = $aAvgs;
 		$aCalculations['medians'] = $aMedians;
 		$aCalculations['count'] = $aCounts;
 		$aCalculations['custom_calc'] = $aCustoms;
 		$this->_aRunCalculations = $aCalculations;
+
 		return $aCalculations;
 	}
 
@@ -6519,18 +6985,22 @@ $groupBy .= '_raw';
 		$table = $this->getTable();
 		$formModel = $this->getFormModel();
 		$groups = $formModel->getGroupsHiarachy();
+
 		foreach ($groups as $groupModel)
 		{
 			$elementModels = $groupModel->getPublishedElements();
+
 			foreach ($elementModels as $elementModel)
 			{
 				$element = $elementModel->getElement();
+
 				if ($element->show_in_list_summary)
 				{
 					$aHeadings[] = $table->db_table_name . '___' . $element->name;
 				}
 			}
 		}
+
 		return "['" . implode("','", $aHeadings) . "']";
 	}
 
@@ -6549,13 +7019,16 @@ $groupBy .= '_raw';
 			$this->_joinsToProcess = array();
 			$formModel = $this->getFormModel();
 			$groups = $formModel->getGroupsHiarachy();
+
 			foreach ($groups as $groupModel)
 			{
 				$group = $groupModel->getGroup();
+
 				if ($groupModel->isJoin())
 				{
 					$joinModel = $groupModel->getJoinModel();
 					$join = $joinModel->getJoin();
+
 					if (!array_key_exists($join->id, $this->_joinsToProcess))
 					{
 						$this->_joinsToProcess[$join->id] = array('join' => $join, 'groups' => array($groupModel));
@@ -6565,15 +7038,19 @@ $groupBy .= '_raw';
 						$this->_joinsToProcess[$join->id]['groups'][] = $groupModel;
 					}
 				}
+
 				$elements = $groupModel->getPublishedElements();
 				$c = count($elements);
+
 				for ($x = 0; $x < $c; $x++)
 				{
 					$elementModel = $elements[$x];
+
 					if ($elementModel->isJoin())
 					{
 						$joinModel = $elementModel->getJoinModel();
 						$join = $joinModel->getJoin();
+
 						if (!array_key_exists($join->id, $this->_joinsToProcess))
 						{
 							$this->_joinsToProcess[$join->element_id] = array('join' => $join, 'elements' => array($elementModel));
@@ -6586,6 +7063,7 @@ $groupBy .= '_raw';
 				}
 			}
 		}
+
 		return $this->_joinsToProcess;
 	}
 
@@ -6603,6 +7081,7 @@ $groupBy .= '_raw';
 		foreach ($data as $key => $val)
 		{
 			$akey = explode($split, $key);
+
 			if (count($akey) > 1)
 			{
 				$newKey = $akey[1];
@@ -6612,8 +7091,10 @@ $groupBy .= '_raw';
 			{
 				$newKey = $akey[0];
 			}
+
 			$data[$newKey] = $val;
 		}
+
 		return $data;
 	}
 
@@ -6640,18 +7121,22 @@ $groupBy .= '_raw';
 		{
 			return;
 		}
+
 		$fabrikDb = $this->getDb();
 		$table = $this->getTable();
 		$formModel = $this->getFormModel();
+
 		if ($isJoin)
 		{
 			$this->getFormGroupElementData();
 		}
+
 		$oRecord = new stdClass;
 		$aBindData = array();
 		$noRepeatFields = array();
 		$c = 0;
 		$groups = $formModel->getGroupsHiarachy();
+
 		foreach ($groups as $groupModel)
 		{
 			$group = $groupModel->getGroup();
@@ -6678,6 +7163,7 @@ $groupBy .= '_raw';
 					{
 						continue;
 					}
+
 					foreach ($elementModels as $elementModel)
 					{
 						$element = $elementModel->getElement();
@@ -6696,6 +7182,7 @@ $groupBy .= '_raw';
 								$lastKey = $key;
 								$val = $elementModel->storeDatabaseFormat($data[$postkey], $data, $key);
 								$elementModel->updateRowId($rowId);
+
 								if (array_key_exists('fabrik_copy_from_table', $data))
 								{
 									$val = $elementModel->onCopyRow($val);
@@ -6714,10 +7201,12 @@ $groupBy .= '_raw';
 										$val = stripslashes($val);
 									}
 								}
+
 								if ($elementModel->dataIsNull($data, $val))
 								{
 									$val = null;
 								}
+
 								$oRecord->$key = $val;
 								$aBindData[$key] = $val;
 
@@ -6765,6 +7254,7 @@ $groupBy .= '_raw';
 				}
 			}
 		}
+
 		if ($origRowId == '' || $origRowId == 0)
 		{
 			// $$$ rob added test for auto_inc as sugarid key is set from storeDatabaseFormat() and needs to be maintained
@@ -6773,16 +7263,20 @@ $groupBy .= '_raw';
 			{
 				unset($oRecord->$primaryKey);
 			}
+
 			$ok = $this->insertObject($table->db_table_name, $oRecord, $primaryKey, false);
 		}
 		else
 		{
 			$ok = $this->updateObject($table->db_table_name, $oRecord, $primaryKey, true);
 		}
+
 		$this->_tmpSQL = $fabrikDb->getQuery();
+
 		if (!$ok)
 		{
 			$q = JDEBUG ? $fabrikDb->getQuery() : '';
+
 			return JError::raiseWarning(500, 'Store row failed: ' . $q . "<br>" . $fabrikDb->getErrorMsg());
 		}
 		else
@@ -6792,6 +7286,7 @@ $groupBy .= '_raw';
 
 			// $$$ rob new as if you update a record the insertid() returns 0
 			$this->lastInsertId = ($rowId == '' || $rowId == 0) ? $fabrikDb->insertid() : $rowId;
+
 			return true;
 		}
 	}
@@ -6822,12 +7317,14 @@ $groupBy .= '_raw';
 				// Internal or NA field
 				continue;
 			}
+
 			if ($k == $keyName)
 			{
 				// PK not to be updated
 				$where = $keyName . '=' . $db->quote($v);
 				continue;
 			}
+
 			if ($v === null)
 			{
 				if ($updateNulls)
@@ -6843,22 +7340,30 @@ $groupBy .= '_raw';
 			{
 				$val = $db->isQuoted($k) ? $db->quote($v) : (int) $v;
 			}
+
 			if (in_array($k, $this->encrypt))
 			{
 				$val = "AES_ENCRYPT($val, '$secret')";
 			}
+
 			$tmp[] = $db->quoteName($k) . '=' . $val;
 		}
+
 		if (!$where) {
 			throw new Exception("updateObject: Cannot find key in data: $keyName");
+
 			return false;
 		}
+
 		$db->setQuery(sprintf($fmtsql, implode(",", $tmp), $where));
+
 		if (!$db->execute())
 		{
 			throw new Exception($db->getErrorMsg());
+
 			return false;
 		}
+
 		return true;
 	}
 
@@ -6880,36 +7385,47 @@ $groupBy .= '_raw';
 		$fmtsql = 'INSERT INTO ' . $db->quoteName($table) . ' ( %s ) VALUES ( %s ) ';
 		$fields = array();
 		$values = array();
+
 		foreach (get_object_vars($object) as $k => $v)
 		{
 			if (is_array($v) or is_object($v) or $v === null)
 			{
 				continue;
 			}
+
 			if ($k[0] == '_')
 			{
 				// Internal field
 				continue;
 			}
+
 			$fields[] = $db->quoteName($k);
 			$val = $db->isQuoted($k) ? $db->quote($v) : (int) $v;
+
 			if (in_array($k, $this->encrypt))
 			{
 				$val = "AES_ENCRYPT($val, '$secret')";
 			}
+
 			$values[] = $val;
 		}
+
 		$db->setQuery(sprintf($fmtsql, implode(",", $fields), implode(",", $values)));
+
 		if (!$db->execute())
 		{
 			throw new Exception($db->getErrorMsg());
+
 			return false;
 		}
+
 		$id = $db->insertid();
+
 		if ($keyName && $id)
 		{
 			$object->$keyName = $id;
 		}
+
 		return true;
 	}
 
@@ -6938,6 +7454,7 @@ $groupBy .= '_raw';
 		$table = $this->getTable();
 		$app = JFactory::getApplication();
 		$input = $app->input;
+
 		if (is_null($this->_origData))
 		{
 			/* $$$ hugh FIXME - doesn't work for rowid=-1 / usekey submissions,
@@ -6964,6 +7481,7 @@ $groupBy .= '_raw';
 		{
 			$origdata = $this->_origData;
 		}
+
 		$form = $formModel->getForm();
 		$groups = $formModel->getGroupsHiarachy();
 
@@ -6973,14 +7491,17 @@ $groupBy .= '_raw';
 		elements will get reset to 0 by this code.
 		*/
 		$repeatGroupCounts = $input->get('fabrik_repeat_group', array(), 'array');
+
 		if (!empty($origdata))
 		{
 			$gcounter = 0;
+
 			foreach ($groups as $groupModel)
 			{
 				if (($isJoin && $groupModel->isJoin()) || (!$isJoin && !$groupModel->isJoin()))
 				{
 					$elementModels = $groupModel->getPublishedElements();
+
 					foreach ($elementModels as $elementModel)
 					{
 						// $$$ rob 25/02/2011 unviewable elements are now also being encrypted
@@ -6996,6 +7517,7 @@ $groupBy .= '_raw';
 							{
 								continue;
 							}
+
 							$key = $element->name;
 
 							// $$$ hugh - allow submission plugins to override RO data
@@ -7004,13 +7526,16 @@ $groupBy .= '_raw';
 							{
 								continue;
 							}
+
 							// Force a reload of the default value with $origdata
 							unset($elementModel->defaults);
 							$default = array();
 							$repeatGroupCount = JArrayHelper::getValue($repeatGroupCounts, $groupModel->getGroup()->id);
+
 							for ($repeatCount = 0; $repeatCount < $repeatGroupCount; $repeatCount++)
 							{
 								$def = $elementModel->getValue($origdata, $repeatCount);
+
 								if (is_array($def))
 								{
 									// Radio buttons getValue() returns an array already so don't array the array.
@@ -7021,30 +7546,34 @@ $groupBy .= '_raw';
 									$default[] = $def;
 								}
 							}
+
 							$default = count($default) == 1 ? $default[0] : json_encode($default);
 							$data[$key] = $default;
 							$oRecord->$key = $default;
 						}
 					}
 				}
+
 				$gcounter++;
 			}
 		}
+
 		$copy = $input->getBool('Copy');
 
 		// Check crypted querystring vars (encrypted in form/view.html.php ) _cryptQueryString
 		if (array_key_exists('fabrik_vars', $_REQUEST) && array_key_exists('querystring', $_REQUEST['fabrik_vars']))
 		{
 			$crypt = FabrikWorker::getCrypt();
+
 			foreach ($_REQUEST['fabrik_vars']['querystring'] as $key => $encrypted)
 			{
-
 				// $$$ hugh - allow submission plugins to override RO data
 				// TODO - test this for joined data
 				if ($formModel->updatedByPlugin($key))
 				{
 					continue;
 				}
+
 				$key = FabrikString::shortColName($key);
 
 				/* $$$ hugh - trying to fix issue where encrypted elements from a main group end up being added to
@@ -7058,6 +7587,7 @@ $groupBy .= '_raw';
 				 {
 				continue;
 				} */
+
 				foreach ($groups as $groupModel)
 				{
 					// New test to replace if (!array_key_exists($key, $data))
@@ -7077,7 +7607,9 @@ $groupBy .= '_raw';
 							continue;
 						}
 					}
+
 					$elementModels = $groupModel->getPublishedElements();
+
 					foreach ($elementModels as $elementModel)
 					{
 						$element = $elementModel->getElement();
@@ -7094,6 +7626,7 @@ $groupBy .= '_raw';
 								// Repeat groups
 								$default = array();
 								$repeatGroupCount = JArrayHelper::getValue($repeatGroupCounts, $groupModel->getGroup()->id);
+
 								for ($repeatCount = 0; $repeatCount < $repeatGroupCount; $repeatCount++)
 								{
 									$enc = JArrayHelper::getValue($encrypted, $repeatCount);
@@ -7101,11 +7634,13 @@ $groupBy .= '_raw';
 									if (is_array($enc))
 									{
 										$v = array();
+
 										foreach ($enc as $e)
 										{
 											$e = urldecode($e);
 											$v[] = empty($e) ? '' : $crypt->decrypt($e);
 										}
+
 										$v = json_encode($v);
 									}
 									else
@@ -7126,6 +7661,7 @@ $groupBy .= '_raw';
 								{
 									$v = $elementModel->onSaveAsCopy($v);
 								}
+
 								$data[$key] = $v;
 								$oRecord->$key = $v;
 							}
@@ -7164,14 +7700,17 @@ $groupBy .= '_raw';
 		$db = FabrikWorker::getDbo();
 		$formModel = $listModel->getFormModel();
 		$groups = $formModel->getGroupsHiarachy();
+
 		foreach ($groups as $groupModel)
 		{
 			$elementModels = $groupModel->getPublishedElements();
+
 			foreach ($elementModels as $elementModel)
 			{
 				$element = $elementModel->getElement();
 				$params = $elementModel->getParams();
 				$update = false;
+
 				if ($params->get('sum_on', 0) == 1)
 				{
 					$aSumCals = $elementModel->sum($listModel);
@@ -7179,6 +7718,7 @@ $groupBy .= '_raw';
 					$params->set('sum_value', $aSumCals[0]);
 					$update = true;
 				}
+
 				if ($params->get('avg_on', 0) == 1)
 				{
 					$aAvgCals = $elementModel->avg($listModel);
@@ -7186,6 +7726,7 @@ $groupBy .= '_raw';
 					$params->set('avg_value', $aAvgCals[0]);
 					$update = true;
 				}
+
 				if ($params->get('median_on', 0) == 1)
 				{
 					$medians = $elementModel->median($listModel);
@@ -7193,6 +7734,7 @@ $groupBy .= '_raw';
 					$params->set('median_value', $medians[0]);
 					$update = true;
 				}
+
 				if ($params->get('count_on', 0) == 1)
 				{
 					$aCountCals = $elementModel->count($listModel);
@@ -7200,6 +7742,7 @@ $groupBy .= '_raw';
 					$params->set('count_value', $aCountCals[0]);
 					$update = true;
 				}
+
 				if ($params->get('custom_calc_on', 0) == 1)
 				{
 					$aCustomCalcCals = $elementModel->custom_calc($listModel);
@@ -7207,6 +7750,7 @@ $groupBy .= '_raw';
 					$params->set('custom_calc_value', $aCustomCalcCals[0]);
 					$update = true;
 				}
+
 				if ($update)
 				{
 					$elementModel->storeAttribs();
@@ -7250,10 +7794,12 @@ $groupBy .= '_raw';
 	public function getGroupBy()
 	{
 		$elementModel = $this->getGroupByElement();
+
 		if (!$elementModel)
 		{
 			return '';
 		}
+
 		return $elementModel->getFullName(false, true, false);
 	}
 
@@ -7270,11 +7816,13 @@ $groupBy .= '_raw';
 		$item = $this->getTable();
 		$orderBys = FabrikWorker::JSONtoData($item->order_by, true);
 		$formModel = $this->getFormModel();
+
 		foreach ($orderBys as &$orderBy)
 		{
 			$elementModel = $formModel->getElement($orderBy, true);
 			$orderBy = $elementModel ? $elementModel->getId() : '';
 		}
+
 		return $orderBys;
 	}
 
@@ -7306,11 +7854,14 @@ $groupBy .= '_raw';
 		$item = $element->getDefaultProperties();
 		$item->name = $item->label = 'id';
 		$item->group_id = $groupId;
+
 		if (!$item->store())
 		{
 			JError::raiseWarning(500, $item->getError());
+
 			return false;
 		}
+
 		return true;
 	}
 
@@ -7332,11 +7883,14 @@ $groupBy .= '_raw';
 		$item->name = $item->label = 'parent_id';
 		$item->hidden = 1;
 		$item->group_id = $groupId;
+
 		if (!$item->store())
 		{
 			JError::raiseWarning(500, $item->getError());
+
 			return false;
 		}
+
 		return true;
 	}
 
@@ -7354,6 +7908,7 @@ $groupBy .= '_raw';
 	{
 		$item = $this->getTable();
 		$item->form_id = $formId;
+
 		if (!$item->store())
 		{
 			return JError::raiseWarning(500, $item->getError());
@@ -7373,6 +7928,7 @@ $groupBy .= '_raw';
 		$origColNames = $this->getDBFields($table);
 		$keys = array();
 		$origColNamesByName = array();
+
 		if (is_array($origColNames))
 		{
 			foreach ($origColNames as $origColName)
@@ -7381,6 +7937,7 @@ $groupBy .= '_raw';
 				$key = $origColName->Key;
 				$extra = $origColName->Extra;
 				$type = $origColName->Type;
+
 				if ($key == "PRI")
 				{
 					$keys[] = array("key" => $key, "extra" => $extra, "type" => $type, "colname" => $colName);
@@ -7392,6 +7949,7 @@ $groupBy .= '_raw';
 				}
 			}
 		}
+
 		if (empty($keys))
 		{
 			// $$$ hugh - might be a view, so Hail Mary attempt to find it in our lists
@@ -7401,6 +7959,7 @@ $groupBy .= '_raw';
 			$query->select('db_primary_key')->from('#__{package}_lists')->where('db_table_name = ' . $db->quote($table));
 			$db->setQuery($query);
 			$join_pk = $db->loadResult();
+
 			if (!empty($join_pk))
 			{
 				$shortColName = FabrikString::shortColName($join_pk);
@@ -7410,6 +7969,7 @@ $groupBy .= '_raw';
 				$keys[] = array('colname' => $shortColName, 'type' => $type, 'extra' => $extra, 'key' => $key);
 			}
 		}
+
 		return empty($keys) ? false : $keys;
 	}
 
@@ -7424,12 +7984,15 @@ $groupBy .= '_raw';
 	protected function _prefilterParse($selValue)
 	{
 		$isstring = false;
+
 		if (is_string($selValue))
 		{
 			$isstring = true;
 			$selValue = array($selValue);
 		}
+
 		$preSQL = htmlspecialchars_decode($this->getParams()->get('prefilter_query'), ENT_QUOTES);
+
 		if (trim($preSQL) != '')
 		{
 			$db = FabrikWorker::getDbo();
@@ -7438,6 +8001,7 @@ $groupBy .= '_raw';
 			$preSQL = $w->parseMessageForPlaceHolder($preSQL);
 			$db->setQuery($preSQL);
 			$q = $db->loadObjectList();
+
 			if (!$q)
 			{
 				// Try the table's connection db for the query
@@ -7445,11 +8009,13 @@ $groupBy .= '_raw';
 				$thisDb->setQuery($preSQL);
 				$q = $thisDb->loadObjectList();
 			}
+
 			if (!empty($q))
 			{
 				$q = $q[0];
 			}
 		}
+
 		if (isset($q))
 		{
 			foreach ($q as $key => $val)
@@ -7457,6 +8023,7 @@ $groupBy .= '_raw';
 				if (substr($key, 0, 1) != '_')
 				{
 					$found = false;
+
 					for ($i = 0; $i < count($selValue); $i++)
 					{
 						if (strstr($selValue[$i], '{$q-&gt;' . $key))
@@ -7464,11 +8031,13 @@ $groupBy .= '_raw';
 							$found = true;
 							$pattern = '{$q-&gt;' . $key . "}";
 						}
+
 						if (strstr($selValue[$i], '{$q->' . $key))
 						{
 							$found = true;
 							$pattern = '{$q->' . $key . "}";
 						}
+
 						if ($found)
 						{
 							$selValue[$i] = str_replace($pattern, $val, $selValue[$i]);
@@ -7487,9 +8056,11 @@ $groupBy .= '_raw';
 			 *$pattern = "/({[^}]+}).*}?/s";
 			 */
 			$pattern = "/({[^}]+})/";
+
 			for ($i = 0; $i < count($selValue); $i++)
 			{
 				$ok = preg_match($pattern, $selValue[$i], $matches);
+
 				foreach ($matches as $match)
 				{
 					$matchx = JString::substr($match, 1, JString::strlen($match) - 2);
@@ -7503,6 +8074,7 @@ $groupBy .= '_raw';
 				}
 			}
 		}
+
 		return $isstring ? $selValue[0] : $selValue;
 	}
 
@@ -7520,6 +8092,7 @@ $groupBy .= '_raw';
 			$db->setQuery("SHOW INDEXES FROM " . $this->getTable()->db_table_name);
 			$this->_indexes = $db->loadObjectList();
 		}
+
 		return $this->_indexes;
 	}
 
@@ -7538,11 +8111,13 @@ $groupBy .= '_raw';
 	public function addIndex($field, $prefix = '', $type = 'INDEX', $size = '')
 	{
 		$indexes = $this->getIndexes();
+
 		if (is_numeric($field))
 		{
 			$el = $this->getFormModel()->getElement($field, true);
 			$field = $el->getFullName(false, true, false);
 		}
+
 		/* $$$ hugh - @TODO $field is in 'table.element' format but $indexes
 		 * has Column_name as just 'element' ... so we're always rebuilding indexes!
 		* I'm in the middle of fixing something else, must come back and fix this!!
@@ -7557,24 +8132,29 @@ $groupBy .= '_raw';
 		$table = !strstr($field, '___') ? $this->getTable()->db_table_name : array_shift(explode('___', $field));
 		$field = FabrikString::shortColName($field);
 		FArrayHelper::filter($indexes, 'Column_name', $field);
+
 		if (!empty($indexes))
 		{
 			// An index already exists on that column name no need to add
 			return;
 		}
 		$db = $this->getDb();
+
 		if ($field == '')
 		{
 			return;
 		}
+
 		if ($size != '')
 		{
 			$size = '( ' . $size . ' )';
 		}
+
 		$this->dropIndex($field, $prefix, $type, $table);
 		$query = ' ALTER TABLE ' . $db->quoteName($table) . ' ADD INDEX ' . $db->quoteName("fb_{$prefix}_{$field}_{$type}") . ' ('
 				. $db->quoteName($field) . ' ' . $size . ')';
 		$db->setQuery($query);
+
 		try
 		{
 			$db->execute();
@@ -7603,12 +8183,15 @@ $groupBy .= '_raw';
 		$db = $this->getDb();
 		$table = $table == '' ? $this->getTable()->db_table_name : $table;
 		$field = FabrikString::shortColName($field);
+
 		if ($field == '')
 		{
 			return;
 		}
+
 		$db->setQuery("SHOW INDEX FROM " . $db->quoteName($table));
 		$dbIndexes = $db->loadObjectList();
+
 		if (is_array($dbIndexes))
 		{
 			foreach ($dbIndexes as $index)
@@ -7616,6 +8199,7 @@ $groupBy .= '_raw';
 				if ($index->Key_name == "fb_{$prefix}_{$field}_{$type}")
 				{
 					$db->setQuery("ALTER TABLE " . $db->quoteName($table) . " DROP INDEX " . $db->quoteName("fb_{$prefix}_{$field}_{$type}"));
+
 					try
 					{
 						$db->execute();
@@ -7624,6 +8208,7 @@ $groupBy .= '_raw';
 					{
 						$this->setError($e->getMessage());
 					}
+
 					break;
 				}
 			}
@@ -7645,12 +8230,15 @@ $groupBy .= '_raw';
 		$db = $this->getDb();
 		$table = $table == '' ? $this->getTable()->db_table_name : $table;
 		$field = FabrikString::shortColName($field);
+
 		if ($field == '')
 		{
 			return;
 		}
+
 		$db->setQuery("SHOW INDEX FROM " . $db->quoteName($table) . ' WHERE Column_name = ' . $db->quote($field));
 		$dbIndexes = $db->loadObjectList();
+
 		foreach ($dbIndexes as $index)
 		{
 			$db->setQuery(" ALTER TABLE " . $db->quoteName($table) . " DROP INDEX " . $db->quoteName($index->Key_name));
@@ -7670,12 +8258,15 @@ $groupBy .= '_raw';
 	{
 		$db = $this->getDb();
 		$params = $this->getParams();
+
 		if ($params->get('delete-joined-rows', false))
 		{
 			$joins = $this->getJoins();
+
 			for ($i = 0; $i < count($joins); $i++)
 			{
 				$join = $joins[$i];
+
 				if ((int) $join->list_id !== 0)
 				{
 					$sql = "DELETE FROM " . $db->quoteName($join->table_join) . " WHERE " . $db->quoteName($join->table_join_key) . " IN (" . $val
@@ -7704,14 +8295,17 @@ $groupBy .= '_raw';
 		{
 			$ids = array($ids);
 		}
+
 		$val = $ids;
 		$app = JFactory::getApplication();
 		$table = $this->getTable();
 		$db = $this->getDb();
 		$params = $this->getParams();
+
 		if ($key == '')
 		{
 			$key = $table->db_primary_key;
+
 			if ($key == '')
 			{
 				throw new Exception(JText::_("COM_FABRIK_NO_KEY_FOUND_FOR_THIS_TABLE"));
@@ -7719,18 +8313,22 @@ $groupBy .= '_raw';
 		}
 
 		$c = count($val);
+
 		foreach ($val as &$v)
 		{
 			$v = $db->quote($v);
 		}
+
 		$val = implode(",", $val);
 
 		// $$$ rob - if we are not deleting joined rows then onloy load in the first row
 		// otherwise load in all rows so we can apply onDeleteRows() to all the data
+
 		if ($this->getParams()->get('delete-joined-rows', false) == false)
 		{
 			$nav = $this->getPagination($c, 0, $c);
 		}
+
 		$this->_whereSQL['string' . JRequest::getVar('incfilters', 1)][true] = ' WHERE ' . $key . ' IN (' . $val . ')';
 		/* $$$ hugh - need to clear cached data, 'cos we called getTotalRecords from the controller, which now
 		 * calls getData(), and will have cached all rows on this page, not just the ones being deleted, which means
@@ -7746,6 +8344,7 @@ $groupBy .= '_raw';
 		* delete access on that row.
 		*/
 		$removed_id = false;
+
 		foreach ($rows as &$group)
 		{
 			foreach ($group as $group_key => $row)
@@ -7761,6 +8360,7 @@ $groupBy .= '_raw';
 							continue;
 						}
 					}
+
 					unset($group[$group_key]);
 					$app->enqueueMessage('NO PERMISSION TO DELETE ROW');
 					$removed_id = true;
@@ -7778,18 +8378,22 @@ $groupBy .= '_raw';
 		{
 			$val = $ids;
 			$c = count($val);
+
 			foreach ($val as &$v)
 			{
 				$v = $db->quote($v);
 			}
+
 			$val = implode(",", $val);
 		}
 
 		$this->rowsToDelete = $rows;
 		$groupModels = $this->getFormGroupElementData();
+
 		foreach ($groupModels as $groupModel)
 		{
 			$elementModels = $groupModel->getPublishedElements();
+
 			foreach ($elementModels as $elementModel)
 			{
 				$elementModel->onDeleteRows($rows);
@@ -7811,6 +8415,7 @@ $groupBy .= '_raw';
 		}
 
 		$pluginManager->getPlugInGroup('list');
+
 		if (in_array(false, $pluginManager->runPlugins('onDeleteRows', $this, 'list')))
 		{
 			return false;
@@ -7847,10 +8452,12 @@ $groupBy .= '_raw';
 		$table = $this->getTable();
 		$query->delete($db->quoteName($table->db_table_name));
 		$db->setQuery($query);
+
 		if (!$db->execute())
 		{
 			return JError::raiseWarning(JText::_($db->getErrorMsg()));
 		}
+
 		return true;
 	}
 
@@ -7864,17 +8471,21 @@ $groupBy .= '_raw';
 	{
 		$db = $this->getDb();
 		$item = $this->getTable();
+
 		if ($item->db_table_name !== '')
 		{
 			$sql = "DROP TABLE IF EXISTS " . $db->quoteName($item->db_table_name);
 			$db->setQuery($sql);
+
 			if (!$db->execute())
 			{
 				return JError::raiseError(500, 'drop:' . JText::_($db->getErrorMsg()));
 			}
 		}
+
 		// Remove any groups that were set to be repeating and hence were storing in their own db table.
 		$joinModels = $this->getInternalRepeatJoins();
+
 		foreach ($joinModels as $joinModel)
 		{
 			if ($joinModel->getJoin()->table_join !== '')
@@ -7882,12 +8493,14 @@ $groupBy .= '_raw';
 				$sql = "DROP TABLE IF EXISTS " . $db->quoteName($joinModel->getJoin()->table_join);
 				$db->setQuery($sql);
 				$db->execute();
+
 				if ($db->getErrorNum())
 				{
 					JError::raiseError(500, 'drop internal group tables: ' . $db->getErrorMsg());
 				}
 			}
 		}
+
 		return true;
 	}
 
@@ -7911,12 +8524,14 @@ $groupBy .= '_raw';
 				$joinModel = $groupModel->getJoinModel();
 				$join = $joinModel->getJoin();
 				$joinParams = is_string($join->params) ? json_decode($join->params) : $join->params;
+
 				if (isset($joinParams->type) && $joinParams->type === 'group')
 				{
 					$return[] = $joinModel;
 				}
 			}
 		}
+
 		return $return;
 	}
 
@@ -7933,11 +8548,13 @@ $groupBy .= '_raw';
 
 		// Remove any groups that were set to be repeating and hence were storing in their own db table.
 		$joinModels = $this->getInternalRepeatJoins();
+
 		foreach ($joinModels as $joinModel)
 		{
 			$db->setQuery("TRUNCATE " . $db->quoteName($joinModel->getJoin()->table_join));
 			$db->execute();
 		}
+
 		$db->setQuery("TRUNCATE " . $db->quoteName($item->db_table_name));
 		$db->execute();
 
@@ -7958,16 +8575,19 @@ $groupBy .= '_raw';
 	{
 		$field = JString::strtolower($field);
 		$groupModels = $this->getFormGroupElementData();
+
 		foreach ($groupModels as $groupModel)
 		{
 			if (!$groupModel->isJoin())
 			{
 				// Don't check groups that aren't in this table
 				$elementModels = $groupModel->getMyElements();
+
 				foreach ($elementModels as $elementModel)
 				{
 					$element = $elementModel->getElement();
 					$n = JString::strtolower($element->name);
+
 					if (JString::strtolower($element->name) == $field && !in_array($element->id, $ignore))
 					{
 						return true;
@@ -7975,6 +8595,7 @@ $groupBy .= '_raw';
 				}
 			}
 		}
+
 		return false;
 	}
 
@@ -7998,10 +8619,12 @@ $groupBy .= '_raw';
 		$this->setConnectionId($cnnId);
 		$aFields = $this->getDBFields($tbl);
 		$fieldNames = array();
+
 		if ($incSelect != '')
 		{
 			$fieldNames[] = JHTML::_('select.option', '', $incSelect);
 		}
+
 		if (is_array($aFields))
 		{
 			foreach ($aFields as $oField)
@@ -8016,8 +8639,10 @@ $groupBy .= '_raw';
 				}
 			}
 		}
+
 		$opts = 'class="' . $className . '" size="1" ';
 		$fieldDropDown = JHTML::_('select.genericlist', $fieldNames, $selectListName, $opts, 'value', 'text', $selected);
+
 		return str_replace("\n", "", $fieldDropDown);
 	}
 
@@ -8038,11 +8663,13 @@ $groupBy .= '_raw';
 		{
 			// $$$ rob test fabriks own feed renderer
 			$link = 'index.php?option=com_' . $package . '&view=list&listid=' . $this->getId() . "&format=fabrikfeed";
+
 			if (!$app->isAdmin())
 			{
 				$link = JRoute::_($link);
 			}
 		}
+
 		return $link;
 	}
 
@@ -8062,10 +8689,12 @@ $groupBy .= '_raw';
 	public function parseMessageForRowHolder($msg, &$row, $addslashes = false)
 	{
 		$this->_aRow = $row;
+
 		if (!strstr($msg, '{'))
 		{
 			return $msg;
 		}
+
 		$this->_parseAddSlases = $addslashes;
 		$msg = FabrikWorker::replaceWithUserData($msg);
 		$msg = FabrikWorker::replaceWithGlobals($msg);
@@ -8077,6 +8706,7 @@ $groupBy .= '_raw';
 		* block level {}'s should remain unmolested.
 		*/
 		$msg = preg_replace_callback("/{[^}\s]+}/i", array($this, '_replaceWithRowData'), $msg);
+
 		return $msg;
 	}
 
@@ -8107,6 +8737,7 @@ $groupBy .= '_raw';
 		{
 			return '';
 		}
+
 		$match = str_replace('.', '___', $match);
 
 		// $$$ hugh - allow use of {$rowpk} or {rowpk} to mean the rowid of the row within a table
@@ -8115,16 +8746,21 @@ $groupBy .= '_raw';
 			$this->rowIdentifierAdded = true;
 			$match = '__pk_val';
 		}
+
 		$match = preg_replace("/ /", "_", $match);
+
 		if ($match == 'formid')
 		{
 			return $this->getFormModel()->getId();
 		}
+
 		$return = JArrayHelper::getValue($this->_aRow, $match);
+
 		if ($this->_parseAddSlases)
 		{
 			$return = htmlspecialchars($return, ENT_QUOTES, 'UTF-8');
 		}
+
 		return $return;
 	}
 
@@ -8163,6 +8799,7 @@ $groupBy .= '_raw';
 			{
 				$link .= COM_FABRIK_LIVESITE;
 			}
+
 			if ($app->isAdmin())
 			{
 				$link .= 'index.php?option=com_' . $package . '&task=' . $view . '.view&formid=' . $table->form_id . '&listid=' . $this->getId() . $keyIdentifier;
@@ -8176,6 +8813,7 @@ $groupBy .= '_raw';
 			{
 				$link .= '&tmpl=component';
 			}
+
 			$link = JRoute::_($link);
 		}
 		else
@@ -8183,6 +8821,7 @@ $groupBy .= '_raw';
 			// Custom link
 			$link = $this->makeCustomLink($customLink, $row);
 		}
+
 		return $link;
 	}
 
@@ -8201,6 +8840,7 @@ $groupBy .= '_raw';
 		$keyIdentifier = $this->getKeyIndetifier($row);
 		$row = JArrayHelper::fromObject($row);
 		$link = $this->parseMessageForRowHolder($link, $row);
+
 		if (preg_match('/([\?&]rowid=)/', htmlspecialchars_decode($link)))
 		{
 			$this->rowIdentifierAdded = true;
@@ -8217,7 +8857,9 @@ $groupBy .= '_raw';
 				$link .= '?' . str_replace('&', '', $keyIdentifier);
 			}
 		}
+
 		$link = JRoute::_($link);
+
 		return $link;
 	}
 
@@ -8233,6 +8875,7 @@ $groupBy .= '_raw';
 	protected function getCustomLink($type = 'url', $mode = 'edit')
 	{
 		$params = $this->getParams();
+
 		if ($type === 'url')
 		{
 			$str = ($mode == 'edit') ? $params->get('editurl') : $params->get('detailurl');
@@ -8241,7 +8884,9 @@ $groupBy .= '_raw';
 		{
 			$str = ($mode == 'edit') ? $params->get('editurl_attribs') : $params->get('detailurl_attribs');
 		}
+
 		$w = new FabrikWorker;
+
 		return $w->parseMessageForPlaceHolder($str);
 	}
 
@@ -8260,9 +8905,11 @@ $groupBy .= '_raw';
 		$keyIdentifier = $this->getKeyIndetifier($row);
 		$table = $this->getTable();
 		$customLink = $this->getCustomLink('url', 'edit');
+
 		if ($customLink == '')
 		{
 			$package = $app->getUserState('com_fabrik.package', 'fabrik');
+
 			if ($app->isAdmin())
 			{
 				$url = 'index.php?option=com_' . $package . '&task=form.view&formid=' . $table->form_id . $keyIdentifier;
@@ -8284,6 +8931,7 @@ $groupBy .= '_raw';
 		{
 			$link = $this->makeCustomLink($customLink, $row);
 		}
+
 		return $link;
 	}
 
@@ -8298,6 +8946,7 @@ $groupBy .= '_raw';
 		$db = FabrikWorker::getDbo();
 		$genTable = $this->getGenericTableName();
 		$sql = "DROP TABLE IF EXISTS " . $db->quoteName($genTable);
+
 		return $sql;
 	}
 
@@ -8311,6 +8960,7 @@ $groupBy .= '_raw';
 	{
 		$app = JFactory::getApplication();
 		$table = $this->getTable();
+
 		return str_replace($app->getCfg('dbprefix'), '#__', $table->db_table_name);
 	}
 
@@ -8326,30 +8976,38 @@ $groupBy .= '_raw';
 	public function getCreateTableSQL($addIfNotExists = false, $table = null)
 	{
 		$addIfNotExists = $addIfNotExists ? 'IF NOT EXISTS ' : '';
+
 		if (is_null($table))
 		{
 			$table = $this->getGenericTableName();
 		}
+
 		$fields = $this->getDBFields($table);
 		$primaryKey = "";
 		$sql = "";
 		$table = FabrikString::safeColName($table);
+
 		if (is_array($fields))
 		{
 			$sql .= "CREATE TABLE $addIfNotExists" . $table . " (\n";
+
 			foreach ($fields as $field)
 			{
 				$field->Field = FabrikString::safeColName($field->Field);
+
 				if ($field->Key == 'PRI' && $field->Extra == 'auto_increment')
 				{
 					$primaryKey = "PRIMARY KEY ($field->Field)";
 				}
+
 				$sql .= "$field->Field ";
 				$sql .= ' ' . $field->Type . ' ';
+
 				if ($field->Null == '')
 				{
 					$sql .= " NOT NULL ";
 				}
+
 				if ($field->Default != '' && $field->Key != 'PRI')
 				{
 					if ($field->Default == 'CURRENT_TIMESTAMP')
@@ -8361,14 +9019,18 @@ $groupBy .= '_raw';
 						$sql .= "DEFAULT '$field->Default'";
 					}
 				}
+
 				$sql .= $field->Extra . ",\n";
 			}
+
 			if ($primaryKey == '')
 			{
 				$sql = rtrim($sql, ",\n");
 			}
+
 			$sql .= $primaryKey . ");";
 		}
+
 		return $sql;
 	}
 
@@ -8401,6 +9063,7 @@ $groupBy .= '_raw';
 		$sql = "";
 		$query = $db->getQuery(true);
 		$dump_buffer_len = 0;
+
 		if (is_array($keys))
 		{
 			foreach ($keys as $id)
@@ -8412,25 +9075,30 @@ $groupBy .= '_raw';
 				$fmtsql = "\t<query>INSERT INTO " . $table->db_table_name . " ( %s ) VALUES ( %s )</query>";
 				$values = array();
 				$fields = array();
+
 				foreach ($row as $k => $v)
 				{
 					$fields[] = $db->quoteName($k);
 					$values[] = $db->quote($v);
 				}
+
 				$sql .= sprintf($fmtsql, implode(",", $fields), implode(",", $values));
 				$sql .= "\n";
 
 				$dump_buffer_len += JString::strlen($sql);
+
 				if ($dump_buffer_len > $memoryLimit)
 				{
 					$oExporter->writeExportBuffer($sql);
 					$sql = "";
 					$dump_buffer_len = 0;
 				}
+
 				unset($values);
 				unset($fmtsql);
 			}
 		}
+
 		$oExporter->writeExportBuffer($sql);
 	}
 
@@ -8450,17 +9118,21 @@ $groupBy .= '_raw';
 		{
 			$this->rows = array();
 		}
+
 		$sig = $id . '.' . $format . '.' . $loadJoin;
+
 		if (array_key_exists($sig, $this->rows))
 		{
 			return $this->rows[$sig];
 		}
+
 		$fabrikDb = $this->getDb();
 		$formModel = $this->getFormModel();
 		$formModel->_rowId = $id;
 		unset($formModel->query);
 		$sql = $formModel->_buildQuery();
 		$fabrikDb->setQuery($sql);
+
 		if (!$loadJoin)
 		{
 			if ($format == true)
@@ -8479,6 +9151,7 @@ $groupBy .= '_raw';
 			{
 				$this->rows[$sig] = $fabrikDb->loadObject();
 			}
+
 			if ($fabrikDb->getErrorNum())
 			{
 				JError::raiseError(500, $fabrikDb->getErrorMsg());
@@ -8487,11 +9160,14 @@ $groupBy .= '_raw';
 		else
 		{
 			$rows = $fabrikDb->loadObjectList();
+
 			if ($fabrikDb->getErrorNum())
 			{
 				JError::raiseError(500, $fabrikDb->getErrorMsg());
 			}
+
 			$formModel->setJoinData($rows);
+
 			if ($format == true)
 			{
 				$this->formatData($rows);
@@ -8505,6 +9181,7 @@ $groupBy .= '_raw';
 				$this->rows[$sig] = JArrayHelper::getValue($rows, 0, array());
 			}
 		}
+
 		return $this->rows[$sig];
 	}
 
@@ -8529,6 +9206,7 @@ $groupBy .= '_raw';
 		$row = $this->getRow($val, $format);
 		$input->set('usekey', $usekey);
 		$input->set('usekey_comparison', $usekey_comparison);
+
 		return $row;
 	}
 
@@ -8549,6 +9227,7 @@ $groupBy .= '_raw';
 		$this->getConnection();
 		$this->outPutFormat = 'json';
 		$nav = $this->getPagination(1, $cursor, 1);
+
 		if ($mode == 'table')
 		{
 			$query = $this->_buildQuery();
@@ -8571,6 +9250,7 @@ $groupBy .= '_raw';
 			$formid = JRequest::getInt('formid');
 			$app->redirect('index.php?option=' . $package . '&view=form&formid=' . $formid . '&rowid=' . $rowid . '&format=raw');
 		}
+
 		return json_encode($data);
 	}
 
@@ -8603,6 +9283,7 @@ $groupBy .= '_raw';
 		$this->outPutFormat = 'json';
 		$nav = $this->getPagination(1, $cursor - 2, 1);
 		$data = $this->getData();
+
 		return json_encode($data);
 	}
 
@@ -8619,6 +9300,7 @@ $groupBy .= '_raw';
 		$this->outPutFormat = 'json';
 		$nav = $this->getPagination(1, 0, 1);
 		$data = $this->getData();
+
 		return json_encode($data);
 	}
 
@@ -8635,6 +9317,7 @@ $groupBy .= '_raw';
 		$this->outPutFormat = 'json';
 		$nav = $this->getPagination(1, $total - 1, 1);
 		$data = $this->getData();
+
 		return json_encode($data);
 	}
 
@@ -8656,14 +9339,17 @@ $groupBy .= '_raw';
 			$fbConfig = JComponentHelper::getParams('com_fabrik');
 			$cache = FabrikWorker::getCache($this);
 			$res = $cache->call(array(get_class($this), 'columnData'), $this->getId(), $col, $distinct, $opts);
+
 			if (is_null($res))
 			{
 				JError::raiseNotice(500, 'list model getColumn Data for ' . $col . ' failed');
 			}
+
 			if ((int) $fbConfig->get('filter_list_max', 100) == count($res))
 			{
 				JError::raiseNotice(500, JText::sprintf('COM_FABRIK_FILTER_LIST_MAX_REACHED', $col));
 			}
+
 			if (is_null($res))
 			{
 				$res = array();
@@ -8671,6 +9357,7 @@ $groupBy .= '_raw';
 
 			$this->columnData[$col] = $res;
 		}
+
 		return $this->columnData[$col];
 	}
 
@@ -8708,10 +9395,12 @@ $groupBy .= '_raw';
 		$query = $listModel->pluginQuery($query);
 		$filterLimit = JArrayHelper::getValue($opts, 'filterLimit', true);
 		$where = JArrayHelper::getValue($opts, 'where', '');
+
 		if ($where != '')
 		{
 			$query->where($where);
 		}
+
 		if ($filterLimit)
 		{
 			$db->setQuery($query, 0, $fbConfig->get('filter_list_max', 100));
@@ -8722,6 +9411,7 @@ $groupBy .= '_raw';
 		}
 
 		$res = $db->loadColumn(0);
+
 		return $res;
 	}
 
@@ -8734,6 +9424,7 @@ $groupBy .= '_raw';
 	public function isAjax()
 	{
 		$params = $this->getParams();
+
 		if (is_null($this->ajax))
 		{
 			// $$$ rob 11/07/2011 if post method set to ajax in request use that over the list_nav option
@@ -8746,6 +9437,7 @@ $groupBy .= '_raw';
 				$this->ajax = $params->get('list_ajax', JRequest::getBool('ajax', false));
 			}
 		}
+
 		return (bool) $this->ajax;
 	}
 
@@ -8759,6 +9451,7 @@ $groupBy .= '_raw';
 	{
 		$params = $this->getParams();
 		$ajax = $this->isAjax();
+
 		return (bool) $params->get('list_ajax_links', $ajax);
 	}
 
@@ -8774,18 +9467,22 @@ $groupBy .= '_raw';
 	{
 		$found = array();
 		$groups = $this->getFormGroupElementData();
+
 		foreach ($groups as $groupModel)
 		{
 			$elementModels = $groupModel->getMyElements();
+
 			foreach ($elementModels as $elementModel)
 			{
 				$element = $elementModel->getElement();
+
 				if ($element->plugin == $plugin)
 				{
 					$found[] = $elementModel;
 				}
 			}
 		}
+
 		return $found;
 	}
 
@@ -8805,24 +9502,31 @@ $groupBy .= '_raw';
 		{
 			$this->elements = array();
 		}
+
 		$sig = $key . '.' . (int) $showInTable;
+
 		if (!array_key_exists($sig, $this->elements))
 		{
 			$this->elements[$sig] = array();
 			$found = array();
 			$groups = $this->getFormGroupElementData();
+
 			foreach (array_keys($groups) as $gid)
 			{
 				$groupModel = $groups[$gid];
 				$elementModels = $groupModel->getMyElements();
+
 				foreach ($elementModels as $elementModel)
 				{
 					$element = $elementModel->getElement();
+
 					if ($element->published == 0 && $onlyPublished)
 					{
 						continue;
 					}
+
 					$dbkey = $key == 'filtername' ? trim($elementModel->getFilterFullName()) : trim($elementModel->getFullName(false, true, false));
+
 					switch ($key)
 					{
 						case 'safecolname':
@@ -8852,6 +9556,7 @@ $groupBy .= '_raw';
 				}
 			}
 		}
+
 		return $this->elements[$sig];
 	}
 
@@ -8864,12 +9569,15 @@ $groupBy .= '_raw';
 	public function requiresSlimbox()
 	{
 		$fbConfig = JComponentHelper::getParams('com_fabrik');
+
 		if ($fbConfig->get('include_lightbox_js', 1) == 2)
 		{
 			return true;
 		}
+
 		$form = $this->getFormModel();
 		$groups = $form->getGroupsHiarachy();
+
 		foreach ($groups as $group)
 		{
 			$elements = $group->getPublishedElements();
@@ -8882,6 +9590,7 @@ $groupBy .= '_raw';
 				}
 			}
 		}
+
 		return false;
 	}
 
@@ -8915,6 +9624,7 @@ $groupBy .= '_raw';
 		$plugin = $pluginManager->getPlugIn($className, 'element');
 		$plugin->setId($elementid);
 		$el = $plugin->getElement();
+
 		if ($app->input->get('context') == 'visualization')
 		{
 			$container = $app->input->get('parentView');
@@ -8923,15 +9633,18 @@ $groupBy .= '_raw';
 		{
 			$container = 'listform_' . $this->getRenderContext();
 		}
+
 		$script = $plugin->filterJS(false, $container);
 		FabrikHelperHTML::addScriptDeclaration($script);
 
 		// For update col plug-in we override to use the field filter type.
 		$filterOverride = $input->get('filterOverride', '');
+
 		if ($filterOverride !== '')
 		{
 			$plugin->getElement()->filter_type = 'field';
 		}
+
 		echo $plugin->getFilter($input->getInt('counter', 0), false);
 	}
 
@@ -8958,6 +9671,7 @@ $groupBy .= '_raw';
 		$keys = JArrayHelper::getValue($filters, 'key', array());
 		$vals = JArrayHelper::getValue($filters, 'value', array());
 		$types = JArrayHelper::getValue($filters, 'search_type', array());
+
 		for ($i = 0; $i < count($keys); $i++)
 		{
 			if (JArrayHelper::getValue($types, $i, '') === 'querystring')
@@ -8965,13 +9679,17 @@ $groupBy .= '_raw';
 				$qs[FabrikString::safeColNameToArrayKey($keys[$i]) . '_raw'] = $vals[$i];
 			}
 		}
+
 		$addurl_qs = array();
+
 		if (!empty($addurl_url))
 		{
 			$addurl_parts = explode('?', $addurl_url);
+
 			if (count($addurl_parts) > 1)
 			{
 				$addurl_url = $addurl_parts[0];
+
 				foreach (explode('&', $addurl_parts[1]) as $urlvar)
 				{
 					$key_value = explode('=', $urlvar);
@@ -8979,6 +9697,7 @@ $groupBy .= '_raw';
 				}
 			}
 		}
+
 		// $$$ rob needs the item id for when sef urls are turned on
 		if (JRequest::getCmd('option') !== 'com_' . $package)
 		{
@@ -8987,6 +9706,7 @@ $groupBy .= '_raw';
 				$qs['Itemid'] = $Itemid;
 			}
 		}
+
 		if (empty($addurl_url))
 		{
 			/*  $$$ rob set this options in the js - so if we want to open a
@@ -9003,6 +9723,7 @@ $groupBy .= '_raw';
 			} */
 
 			$qs['option'] = 'com_' . $package;
+
 			if ($app->isAdmin())
 			{
 				$qs['task'] = 'form.view';
@@ -9011,6 +9732,7 @@ $groupBy .= '_raw';
 			{
 				$qs['view'] = 'form';
 			}
+
 			$qs['formid'] = $this->getTable()->form_id;
 			$qs['rowid'] = '0';
 
@@ -9023,14 +9745,18 @@ $groupBy .= '_raw';
 				$qs['fabrik_social_profile_hash'] = JRequest::getCmd('fabrik_social_profile_hash', '');
 			}
 		}
+
 		$qs = array_merge($qs, $addurl_qs);
 		$qs_args = array();
+
 		foreach ($qs as $key => $val)
 		{
 			$qs_args[] = $key . '=' . $val;
 		}
+
 		$qs = implode('&', $qs_args);
 		$qs = $w->parseMessageForPlaceHolder($qs, JRequest::get('request'));
+
 		return !empty($addurl_url) ? JRoute::_($addurl_url . '?' . $qs) : JRoute::_('index.php?' . $qs);
 	}
 
@@ -9046,20 +9772,25 @@ $groupBy .= '_raw';
 		$script = '';
 		$groups = $form->getGroupsHiarachy();
 		$run = array();
+
 		foreach ($groups as $groupModel)
 		{
 			$elementModels = $groupModel->getPublishedElements();
+
 			foreach ($elementModels as $elementModel)
 			{
 				$element = $elementModel->getElement();
+
 				if (!in_array($element->plugin, $run))
 				{
 					$run[] = $element->plugin;
 					$elementModel->tableJavascriptClass();
 				}
+
 				$script .= $elementModel->elementListJavascript();
 			}
 		}
+
 		if ($script !== '')
 		{
 			$script = "head.ready(function() {\n" . $script . "});\n";
@@ -9079,6 +9810,7 @@ $groupBy .= '_raw';
 		{
 			return $this->tableAction;
 		}
+
 		$option = JRequest::getCmd('option');
 
 		// Get the router
@@ -9092,23 +9824,28 @@ $groupBy .= '_raw';
 		* rest filters is set to 1 again
 		*/
 		$router->setVar('resetfilters', 0);
+
 		if ($option !== $package)
 		{
 			// $$$ rob these can't be set by the menu item, but can be set in {fabrik....}
 			$router->setVar('clearordering', 0);
 			$router->setVar('clearfilters', 0);
 		}
+
 		$queryvars = $router->getVars();
 		$form = $this->getFormModel();
 		$page = 'index.php?';
+
 		foreach ($queryvars as $k => $v)
 		{
 			$rawK = FabrikString::rtrimword($k, '_raw');
 			$el = $form->getElement($k);
+
 			if ($el === false)
 			{
 				$el = $form->getElement($rawK);
 			}
+
 			if (is_array($v))
 			{
 				/* $$$ rob if you were using URL filters such as
@@ -9165,12 +9902,14 @@ $groupBy .= '_raw';
 				}
 			}
 		}
+
 		$action = $page . implode('&amp;', $qs);
 		$action = preg_replace("/limitstart{$this->getId()}=(\d+)?(&amp;|)/", '', $action);
 
 		$action = FabrikString::removeQSVar($action, 'fabrik_incsessionfilters');
 		$action = FabrikString::rtrimword($action, '&');
 		$this->tableAction = JRoute::_($action);
+
 		return $this->tableAction;
 	}
 
@@ -9199,6 +9938,7 @@ $groupBy .= '_raw';
 			*/
 			$this->set('_data', null);
 		}
+
 		// Return true just for the heck of it
 		return true;
 	}
@@ -9217,6 +9957,7 @@ $groupBy .= '_raw';
 		{
 			unset($this->_pluginQueryWhere[$pluginName]);
 		}
+
 		return true;
 	}
 
@@ -9231,6 +9972,7 @@ $groupBy .= '_raw';
 	{
 		$filters = $this->getFilters('listform_' . $this->getRenderContext(), 'list');
 		$params = $this->getParams();
+
 		if (count($filters) > 0 || $params->get('advanced-filter'))
 		{
 			$table = $this->getTable();
@@ -9238,6 +9980,7 @@ $groupBy .= '_raw';
 			$title = '<span>' . JText::_('COM_FABRIK_CLEAR') . '</span>';
 			$opts = array('alt' => JText::_('COM_FABRIK_CLEAR'), 'class' => 'fabrikTip', 'opts' => "{notice:true}", 'title' => $title);
 			$img = FabrikHelperHTML::image('filter_delete.png', 'list', $tmpl, $opts);
+
 			return '<a href="#" class="clearFilters">' . $img . '</a>';
 		}
 		else
@@ -9256,6 +9999,7 @@ $groupBy .= '_raw';
 	{
 		$params = $this->getParams();
 		$display = $params->get('join-display', '');
+
 		switch ($display)
 		{
 			case 'merge':
@@ -9268,6 +10012,7 @@ $groupBy .= '_raw';
 				$merge = 0;
 				break;
 		}
+
 		return $merge;
 	}
 
@@ -9292,6 +10037,7 @@ $groupBy .= '_raw';
 		// $$$ hugh - temp foreach fix
 		$groups = $form->getGroupsHiarachy();
 		$ec = count($data);
+
 		foreach ($groups as $groupModel)
 		{
 			/* if (($tableParams->get('group_by_template', '') !== '' && $this->getGroupBy() != '') || $this->outPutFormat == 'csv'
@@ -9310,9 +10056,11 @@ $groupBy .= '_raw';
 			* this. Seems best to run all calcs regardless of whether they are set to show in list.
 			*/
 			$elementModels = $groupModel->getPublishedElements();
+
 			foreach ($elementModels as $elementModel)
 			{
 				$col = $elementModel->getFullName(false, true, false);
+
 				if (!empty($data) && array_key_exists($col, $data[0]))
 				{
 					for ($i = 0; $i < $ec; $i++)
@@ -9344,10 +10092,12 @@ $groupBy .= '_raw';
 	protected function formatForJoins(&$data)
 	{
 		$merge = $this->mergeJoinedData();
+
 		if (empty($merge))
 		{
 			return;
 		}
+
 		$listid = $this->getTable()->id;
 		$dbprimaryKey = FabrikString::safeColNameToArrayKey($this->getTable()->db_primary_key);
 		$formModel = $this->getFormModel();
@@ -9420,16 +10170,19 @@ $groupBy .= '_raw';
 								}
 							}
 						}
+
 						// Hopefully we now have the PK
 						if (isset($can_repeats_tables[$join_table_name]))
 						{
 							$can_repeats_keys[$tmpkey] = $join_table_name . '___' . $can_repeats_tables[$join_table_name]['colname'];
 						}
+
 						// Create the array if it doesn't exist
 						if (!isset($can_repeats_pk_vals[$can_repeats_keys[$tmpkey]]))
 						{
 							$can_repeats_pk_vals[$can_repeats_keys[$tmpkey]] = array();
 						}
+
 						// Now store the
 						if (!isset($can_repeats_pk_vals[$can_repeats_keys[$tmpkey]][0]))
 						{
@@ -9437,6 +10190,7 @@ $groupBy .= '_raw';
 						}
 					}
 				}
+
 				$can_repeats[$tmpkey] = $elementModel ? ($elementModel->getGroup()->canRepeat() || $elementModel->getGroup()->isJoin()) : 0;
 			}
 		}
@@ -9445,18 +10199,21 @@ $groupBy .= '_raw';
 		{
 			// $$$rob if rendering J article in PDF format __pk_val not in pdf table view
 			$next_pk = isset($data[$i]->__pk_val) ? $data[$i]->__pk_val : $data[$i]->$dbprimaryKey;
+
 			if (!empty($last_pk) && ($last_pk == $next_pk))
 			{
 				foreach ($data[$i] as $key => $val)
 				{
 					$origKey = $key;
 					$tmpkey = FabrikString::rtrimword($key, '_raw');
+
 					if ($can_repeats[$tmpkey])
 					{
 						if ($merge == 2 && !isset($can_repeats_pk_vals[$can_repeats_keys[$tmpkey]][$i]))
 						{
 							$can_repeats_pk_vals[$can_repeats_keys[$tmpkey]][$i] = $data[$i]->$can_repeats_keys[$tmpkey];
 						}
+
 						if ($origKey == $tmpkey)
 						{
 							/* $$$ rob - this was just appending data with a <br> but as we do thie before the data is formatted
@@ -9464,6 +10221,7 @@ $groupBy .= '_raw';
 							* an array and at the end of this method loop over the data to encode the array into a json object.
 							*/
 							$do_merge = true;
+
 							if ($merge == 2)
 							{
 								$pk_vals = array_count_values(array_filter($can_repeats_pk_vals[$can_repeats_keys[$tmpkey]]));
@@ -9475,6 +10233,7 @@ $groupBy .= '_raw';
 									}
 								}
 							}
+
 							if ($do_merge)
 							{
 								/* The raw data is not altererd at the moment - not sure that that seems correct but can't see any issues
@@ -9500,8 +10259,8 @@ $groupBy .= '_raw';
 							*/
 						}
 					}
-
 				}
+
 				$remove[] = $i;
 				continue;
 			}
@@ -9513,20 +10272,24 @@ $groupBy .= '_raw';
 					{
 						$origKey = $key;
 						$tmpkey = FabrikString::rtrimword($key, '_raw');
+
 						if ($can_repeats[$tmpkey] && !isset($can_repeats_pk_vals[$can_repeats_keys[$tmpkey]][$i]))
 						{
 							$can_repeats_pk_vals[$can_repeats_keys[$tmpkey]][$i] = $data[$i]->$can_repeats_keys[$tmpkey];
 						}
 					}
 				}
+
 				$last_i = $i;
 
 				// $$$rob if rendering J article in PDF format __pk_val not in pdf table view
 				$last_pk = $next_pk;
 			}
+
 			// $$$ rob ensure that we have a sequental set of keys otherwise ajax json will turn array into object
 			$data = array_values($data);
 		}
+
 		for ($c = count($remove) - 1; $c >= 0; $c--)
 		{
 			unset($data[$remove[$c]]);
@@ -9542,11 +10305,13 @@ $groupBy .= '_raw';
 					{
 						$v2 = FabrikWorker::JSONtoData($v2);
 					}
+
 					$v = json_encode($v);
 					$data[$gkey]->$k = $v;
 				}
 			}
 		}
+
 		$data = array_values($data);
 	}
 
@@ -9560,6 +10325,7 @@ $groupBy .= '_raw';
 	public function noTable()
 	{
 		$id = $this->getId();
+
 		return (bool) empty($id);
 	}
 
@@ -9580,10 +10346,12 @@ $groupBy .= '_raw';
 		// Ensure the primary key is set in $data
 		$primaryKey = FabrikString::shortColName($this->getTable()->db_primary_key);
 		$primaryKey = str_replace("`", "", $primaryKey);
+
 		if (!isset($data[$primaryKey]))
 		{
 			$data[$primaryKey] = $rowId;
 		}
+
 		$this->storeRow($data, $rowId);
 	}
 
@@ -9603,6 +10371,7 @@ $groupBy .= '_raw';
 		$table = $this->getTable();
 		$query = "UPDATE $table->db_table_name SET $key = COALESCE($key, 0)  + $dir WHERE $table->db_primary_key = " . $db->quote($rowId);
 		$db->setQuery($query);
+
 		return $db->execute();
 	}
 
@@ -9615,6 +10384,7 @@ $groupBy .= '_raw';
 	protected function populateState()
 	{
 		$app = JFactory::getApplication('site');
+
 		if (!$app->isAdmin())
 		{
 			// Load the menu item / component parameters.
@@ -9628,6 +10398,7 @@ $groupBy .= '_raw';
 		{
 			$pk = JRequest::getInt('listid');
 		}
+
 		$this->setState('list.id', $pk);
 		$offset = JRequest::getInt('limitstart');
 		$this->setState('list.offset', $offset);
@@ -9673,10 +10444,12 @@ $groupBy .= '_raw';
 		{
 			return;
 		}
+
 		if (empty($ids))
 		{
 			return;
 		}
+
 		$db = $this->getDb();
 		$nav = $this->getPagination(1, 0, 1);
 		$data = $this->getData();
@@ -9708,17 +10481,20 @@ $groupBy .= '_raw';
 				$dbk = $tbl . '.' . $fields['PRI']->Field;
 				$db_table_name = $tbl;
 				$ids = array();
+
 				foreach ($data as $groupdata)
 				{
 					foreach ($groupdata as $d)
 					{
 						$v = $d->{$k . '_raw'};
+
 						if ($v != '')
 						{
 							$ids[] = $v;
 						}
 					}
 				}
+
 				if (!empty($ids))
 				{
 					$query = $db->getQuery(true);
@@ -9729,6 +10505,7 @@ $groupBy .= '_raw';
 				}
 			}
 		}
+
 		if (!$joinFound)
 		{
 			$db_table_name = $table->db_table_name;
@@ -9784,6 +10561,7 @@ $groupBy .= '_raw';
 			$item = $this->getTable();
 			$params = $this->getParams();
 			$document = JFactory::getDocument();
+
 			if ($app->isAdmin())
 			{
 				$this->tmpl = $input->get('layout', $params->get('admin_template'));
@@ -9791,6 +10569,7 @@ $groupBy .= '_raw';
 			else
 			{
 				$this->tmpl = $input->get('layout', $item->template);
+
 				if ($app->scope !== 'mod_fabrik_list')
 				{
 					$this->tmpl = FabrikWorker::getMenuOrRequestVar('fabriklayout', $this->tmpl, $this->isMambot);
@@ -9800,6 +10579,7 @@ $groupBy .= '_raw';
 					$this->tmpl = FabrikWorker::getMenuOrRequestVar('listlayout', $this->tmpl, $this->isMambot);
 				}
 			}
+
 			if ($this->tmpl == '')
 			{
 				$this->tmpl = 'default';
@@ -9815,6 +10595,7 @@ $groupBy .= '_raw';
 				$this->tmpl = $params->get('pdf_template', $this->tmpl);
 			}
 		}
+
 		return $this->tmpl;
 	}
 
@@ -9829,6 +10610,7 @@ $groupBy .= '_raw';
 		$tmpl = $this->getTmpl();
 		$groups = $this->getFormModel()->getGroupsHiarachy();
 		$params = $this->getParams();
+
 		foreach ($groups as $groupModel)
 		{
 			if (($params->get('group_by_template', '') !== '' && $this->getGroupBy() != '') || $this->outPutFormat == 'csv'
@@ -9840,6 +10622,7 @@ $groupBy .= '_raw';
 			{
 				$elementModels = $groupModel->getPublishedListElements();
 			}
+
 			foreach ($elementModels as $elementModel)
 			{
 				$elementModel->tmpl = $tmpl;
@@ -9870,7 +10653,8 @@ $groupBy .= '_raw';
 	{
 		$tmpl = $this->getTmpl();
 		$app = JFactory::getApplication();
-		/* check for a form template file (code moved from view) */
+
+		// Check for a form template file (code moved from view)
 		if ($tmpl != '')
 		{
 			$qs = '?c=' . $this->getRenderContext();
@@ -9878,6 +10662,7 @@ $groupBy .= '_raw';
 			// $$$rob need &amp; for pdf output which is parsed through xml parser otherwise fails
 			$qs .= '&amp;buttoncount=' . $this->rowActionCount;
 			$overRide = 'templates/' . $app->getTemplate() . '/html/com_fabrik/list/' . $tmpl . '/template_css.php' . $qs;
+
 			if (!FabrikHelperHTML::stylesheetFromPath($overRide))
 			{
 				FabrikHelperHTML::stylesheetFromPath('components/com_fabrik/views/list/tmpl/' . $tmpl . '/template_css.php' . $qs);
@@ -9890,6 +10675,7 @@ $groupBy .= '_raw';
 			{
 				FabrikHelperHTML::stylesheetFromPath('components/com_fabrik/views/list/tmpl/' . $tmpl . '/custom.css');
 			}
+
 			if (!FabrikHelperHTML::stylesheetFromPath('templates/' . $app->getTemplate() . '/html/com_fabrik/list/' . $tmpl . '/custom_css.php' . $qs))
 			{
 				FabrikHelperHTML::stylesheetFromPath('components/com_fabrik/views/list/tmpl/' . $tmpl . '/custom_css.php' . $qs);
@@ -9909,6 +10695,7 @@ $groupBy .= '_raw';
 		{
 			$this->setRenderContext($this->getId());
 		}
+
 		return $this->getId() . $this->renderContext;
 	}
 
@@ -9926,6 +10713,7 @@ $groupBy .= '_raw';
 		$app = JFactory::getApplication();
 		$input = $app->input;
 		$task = $input->getCmd('task');
+
 		if (strstr($task, '.'))
 		{
 			$task = explode('.', $task);
@@ -9951,6 +10739,7 @@ $groupBy .= '_raw';
 				$this->renderContext = '_' . JFactory::getApplication()->scope . '_' . $id;
 			}
 		}
+
 		if ($this->renderContext == '')
 		{
 			$this->renderContext = '_' . JFactory::getApplication()->scope . '_' . $id;
@@ -9967,6 +10756,7 @@ $groupBy .= '_raw';
 	protected function setRenderContextFromRequest()
 	{
 		$listref = JRequest::getVar('listref', '');
+
 		if ($listref === '')
 		{
 			$this->renderContext = '';
@@ -9977,6 +10767,7 @@ $groupBy .= '_raw';
 			array_shift($listref);
 			$this->renderContext = '_' . implode('_', $listref);
 		}
+
 		return $this->renderContext;
 	}
 
@@ -9991,21 +10782,26 @@ $groupBy .= '_raw';
 		$base = JURI::getInstance();
 		$base = $base->toString(array('scheme', 'user', 'pass', 'host', 'port', 'path'));
 		$qs = JRequest::getVar('QUERY_STRING', '', 'server');
+
 		if (JString::stristr($qs, 'group_by'))
 		{
 			$qs = FabrikString::removeQSVar($qs, 'group_by');
 			$qs = FabrikString::ltrimword($qs, '?');
 		}
+
 		$url = $base;
+
 		if (!empty($qs))
 		{
 			$url .= JString::strpos($url, '?') !== false ? '&amp;' : '?';
 			$url .= $qs;
 		}
+
 		$url .= JString::strpos($url, '?') !== false ? '&amp;' : '?';
 		$a = array();
 		list($h, $x, $b, $c) = $this->getHeadings();
 		$a[$url . 'group_by=0'] = JText::_('COM_FABRIK_NONE');
+
 		foreach ($h as $key => $v)
 		{
 			if (!in_array($key, array('fabrik_select', 'fabrik_edit', 'fabrik_view', 'fabrik_delete', 'fabrik_actions')))
@@ -10014,6 +10810,7 @@ $groupBy .= '_raw';
 				$a[$thisurl] = strip_tags($v);
 			}
 		}
+
 		return $a;
 	}
 
@@ -10048,11 +10845,13 @@ $groupBy .= '_raw';
 		{
 			$csvIds = json_decode($params->get('csv_elements'))->show_in_csv;
 		}
+
 		foreach ($csvIds as $id)
 		{
 			if ($id !== '')
 			{
 				$elementModel = $formModel->getElement($id, true);
+
 				if ($elementModel !== false)
 				{
 					$csvFields[$elementModel->getFullName(false, true, false)] = 1;
@@ -10060,6 +10859,7 @@ $groupBy .= '_raw';
 
 			}
 		}
+
 		return $csvFields;
 	}
 
@@ -10074,6 +10874,7 @@ $groupBy .= '_raw';
 		$filters = $this->getFilters('listform_' . $this->getRenderContext());
 		$params = $this->getParams();
 		$filterMode = (int) $params->get('show-table-filters');
+
 		return (count($filters) > 0 && $filterMode !== 0) && JRequest::getVar('showfilters', 1) == 1 ? true : false;
 	}
 
@@ -10086,6 +10887,7 @@ $groupBy .= '_raw';
 	protected function getButtonCount()
 	{
 		$buttonCount = 0;
+
 		return $buttonCount;
 	}
 
@@ -10098,6 +10900,7 @@ $groupBy .= '_raw';
 	public function getHasButtons()
 	{
 		$params = $this->getParams();
+
 		if (($this->canAdd() && $params->get('show-table-add')) || $this->getShowFilters() || $this->getAdvancedSearchLink() || $this->canGroupBy() || $this->canCSVExport()
 			|| $this->canCSVImport() || $params->get('rss') || $params->get('pdf') || $this->canEmpty())
 		{
@@ -10135,19 +10938,24 @@ $groupBy .= '_raw';
 
 		$query = $db->getQuery(true);
 		$query->select(array($k, $col))->from($tbl);
+
 		if ($where !== '')
 		{
 			$query->where($where);
 		}
+
 		$query = $this->_buildQueryOrder($query);
 
 		$dir = JString::strtolower(JArrayHelper::getValue($this->orderDirs, 0, 'asc'));
 		$db->setQuery($query);
+
 		if (!($orders = $db->loadObjectList()))
 		{
 			$this->setError($db->getErrorMsg());
+
 			return false;
 		}
+
 		$kk = trim(FabrikString::safeColNameToArrayKey($field));
 
 		// Compact the ordering numbers
@@ -10161,6 +10969,7 @@ $groupBy .= '_raw';
 			$db->setQuery($query);
 			$db->execute();
 		}
+
 		return true;
 	}
 
@@ -10178,6 +10987,7 @@ $groupBy .= '_raw';
 		{
 			$srcs[] = 'components/com_fabrik/js/table_' . $this->getId() . '.js';
 		}
+
 		if (JFile::exists(COM_FABRIK_FRONTEND . '/js/list_' . $this->getId() . '.js'))
 		{
 			$srcs[] = 'components/com_fabrik/js/list_' . $this->getId() . '.js';
@@ -10201,6 +11011,7 @@ $groupBy .= '_raw';
 		$params = $this->getParams();
 		$p = json_decode($params->get('list_search_elements'));
 		$elementId = $elementModel->getId();
+
 		if (is_object($p) && is_array($p->search_elements))
 		{
 			if ($add)
@@ -10213,11 +11024,13 @@ $groupBy .= '_raw';
 			else
 			{
 				$k = array_search($elementId, $p->search_elements);
+
 				if ($k !== false)
 				{
 					unset($p->search_elements[$k]);
 				}
 			}
+
 			$params->set('list_search_elements', json_encode($p));
 		}
 		$item = $this->getTable();
@@ -10243,6 +11056,7 @@ $groupBy .= '_raw';
 		{
 			$this->_format_all = $format_all;
 		}
+
 		return $this->_format_all;
 	}
 
@@ -10262,6 +11076,7 @@ $groupBy .= '_raw';
 		$formModel = $this->getFormModel();
 		$formModel->copyingRow(true);
 		$state = true;
+
 		foreach ($ids as $id)
 		{
 			$formModel->_rowId = $id;
@@ -10270,11 +11085,13 @@ $groupBy .= '_raw';
 			$row['Copy'] = '1';
 			$row['fabrik_copy_from_table'] = '1';
 			$formModel->_formData = $row;
+
 			if (!$formModel->process())
 			{
 				$state = false;
 			}
 		}
+
 		return $state;
 	}
 
@@ -10289,6 +11106,7 @@ $groupBy .= '_raw';
 		$ids = array();
 		$form = $this->getFormModel();
 		$groups = $form->getGroupsHiarachy();
+
 		foreach ($groups as $groupModel)
 		{
 			/*
@@ -10298,11 +11116,13 @@ $groupBy .= '_raw';
 			}
 			*/
 			$elementModels = $groupModel->getPublishedListElements();
+
 			foreach ($elementModels as $key => $elementModel)
 			{
 				$ids[] = $elementModel->getId();
 			}
 		}
+
 		return $ids;
 	}
 
@@ -10319,9 +11139,11 @@ $groupBy .= '_raw';
 		$form = $this->getFormModel();
 		$alwaysRender = array();
 		$groups = $form->getGroupsHiarachy();
+
 		foreach ($groups as $groupModel)
 		{
 			$elementModels = $groupModel->getPublishedElements();
+
 			foreach ($elementModels as $elementModel)
 			{
 				if ($elementModel->isAlwaysRender($not_shown_only))
@@ -10330,6 +11152,7 @@ $groupBy .= '_raw';
 				}
 			}
 		}
+
 		return $alwaysRender;
 	}
 
@@ -10341,6 +11164,7 @@ $groupBy .= '_raw';
 	public function hasAlwaysRenderElements()
 	{
 		$alwaysRender = $this->getAlwaysRenderElements();
+
 		return !empty($alwaysRender);
 	}
 }
