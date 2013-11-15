@@ -4642,6 +4642,15 @@ class PlgFabrik_Element extends FabrikPlugin
 		foreach ($groupBys as &$gById)
 		{
 			$plugin = $pluginManager->getElementPlugin($gById);
+
+			/**
+			 * In the calculation rendering, in default.php, we are keying by values not labels for join elements,
+			 * so there's no point keying by label for joins.  So I think we need to change this chunk so it just tests to see if
+			 * there is a getJoinValueColumn method, and if so, use that.  I'm leaving the original code intact though,
+			 * while I wait to see if this causes Other Horrible Things To Happen.
+			 */
+
+			/*
 			$sName = method_exists($plugin, 'getJoinLabelColumn') ? $plugin->getJoinLabelColumn() : $plugin->getFullName(false, false, false);
 
 			if (!stristr($sName, 'CONCAT'))
@@ -4657,6 +4666,18 @@ class PlgFabrik_Element extends FabrikPlugin
 					$gById = FabrikString::safeColName($sName);
 				}
 			}
+			*/
+
+			if (method_exists($plugin, 'getJoinValueColumn'))
+			{
+				$sName = $plugin->getJoinValueColumn();
+			}
+			else
+			{
+				$sName = $plugin->getFullName(false, false, false);
+
+			}
+			$gById = FabrikString::safeColName($sName);
 		}
 
 		return $groupBys;
