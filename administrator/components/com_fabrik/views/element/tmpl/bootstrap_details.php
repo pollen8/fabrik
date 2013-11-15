@@ -19,15 +19,12 @@ defined('_JEXEC') or die('Restricted access');
 		<input type="hidden" id="name_orig" name="name_orig" value="<?php echo $this->item->name; ?>" />
 		<input type="hidden" id="plugin_orig" name="plugin_orig" value="<?php echo $this->item->plugin; ?>" />
 
-		<div class="span6">
+		<div class="span10">
 		<?php
 		foreach ($this->form->getFieldset('details') as $this->field) :
 			echo $this->loadTemplate('control_group');
 		endforeach;
-		?>
-		</div>
-		<div class="span6">
-		<?php
+
 		foreach ($this->form->getFieldset('details2') as $this->field) :
 			echo $this->loadTemplate('control_group');
 		endforeach;
