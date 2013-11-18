@@ -334,7 +334,7 @@ class Amazons3storage extends FabrikStorageAdaptor
 	 * @return  bool
 	 */
 
-	public function createFolder($path, $mode)
+	public function createFolder($path, $mode = 0755)
 	{
 		return true;
 	}
