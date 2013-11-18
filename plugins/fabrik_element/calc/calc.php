@@ -109,6 +109,8 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 					}
 				}
 			}
+
+			$this->setStoreDatabaseFormat($data, $repeatCounter);
 			$default = $w->parseMessageForPlaceHolder($params->get('calc_calculation'), $data_copy, true, true);
 			$default = @eval($default);
 			FabrikWorker::logEval($default, 'Caught exception on eval of ' . $this->getElement()->name . '::_getV(): %s');
@@ -312,6 +314,8 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 			}
 		}
 		$this->swapValuesForLabels($d);
+
+		$this->setStoreDatabaseFormat($d);
 
 		// $$$ hugh - add $data same-same as $d, for consistency so user scripts know where data is
 		$data = $d;
@@ -571,6 +575,7 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 		$this->getFormModel()->_data = $d;
 		$this->swapValuesForLabels($d);
 		$calc = $params->get('calc_calculation');
+		$this->setStoreDatabaseFormat($d);
 
 		// $$$ hugh - trying to standardize on $data so scripts know where data is
 		$data = $d;
@@ -578,6 +583,41 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 		$c = @eval($calc);
 		$c = preg_replace('#(\/\*.*?\*\/)#', '', $c);
 		echo $c;
+	}
+
+	/**
+	 * When running parseMesssageForPlaceholder on data we need to set the none-raw value of things like birthday/time
+	 * elements to that stored in the listModel::storeRow() method
+	 *
+	 * @param   array  &$data          Form data
+	 * @param   int    $repeatCounter  Repeat group counter
+	 *
+	 * @return  void
+	 */
+	protected function setStoreDatabaseFormat(&$data, $repeatCounter = 0)
+	{
+		$formModel = $this->getFormModel();
+		$groups = $formModel->getGroupsHiarachy();
+
+		foreach ($groups as $groupModel)
+		{
+			$elementModels = $groupModel->getPublishedElements();
+
+			foreach ($elementModels as $elementModel)
+			{
+				$element = $elementModel->getElement();
+				$fullkey = $elementModel->getFullName(false, true, false);
+				$value = $data[$fullkey];
+
+				if ($this->getGroupModel()->canRepeat() && is_array($value))
+				{
+					$value = JArrayHelper::getValue($value, $repeatCounter);
+				}
+
+				// For radio buttons and dropdowns otherwise nothing is stored for them??
+				$data[$fullkey] = $elementModel->storeDatabaseFormat($value, $data);
+			}
+		}
 	}
 
 	/**
