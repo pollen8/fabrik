@@ -294,6 +294,8 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 					}
 				}
 
+				$this->pdfAttachement($thisAttachments, $this->data, $thisUser);
+
 				// Get a JMail instance (have to get a new instance otherwise the receipients are appended to previously added recipients)
 				$mail = JFactory::getMailer();
 				$res = $mail->sendMail(
@@ -322,6 +324,94 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 		}
 
 		return true;
+	}
+
+	/**
+	 * Attach the details view as a PDF to the email
+	 *
+	 * @param   array  &$thisAttachments  Attachements
+	 *
+	 * @throws  RuntimeException
+	 *
+	 * @return  void
+	 */
+
+	protected function pdfAttachement(&$thisAttachments)
+	{
+		$params = $this->getParams();
+
+		if ($params->get('attach_pdf', 0) == 0)
+		{
+			return;
+		}
+
+		$model = $this->getModel();
+		$document = JFactory::getDocument();
+		$config = JFactory::getConfig();
+		$docType = $document->getType();
+		$document->setType('pdf');
+		$app = JFactory::getApplication();
+		$input = $app->input;
+
+		$orig['details'] = $input->get('view');
+		$orig['format'] = $input->get('format');
+
+		$input->set('view', 'details');
+		$input->set('format', 'pdf');
+
+		// Ensure the package is set to fabrik
+		$prevUserState = $app->getUserState('com_fabrik.package');
+		$app->setUserState('com_fabrik.package', 'fabrik');
+
+		try {
+			// Require files and set up DOM pdf
+			require_once JPATH_SITE . '/components/com_fabrik/helpers/pdf.php';
+			require JPATH_SITE . '/components/com_fabrik/controllers/details.php';
+			FabrikPDFHelper::iniDomPdf();
+			$dompdf = new DOMPDF();
+			$size = strtoupper($params->get('pdf_size', 'A4'));
+			$orientation = $params->get('pdf_orientation', 'portrait');
+			$dompdf->set_paper($size, $orientation);
+
+			// Store in output buffer
+			ob_start();
+			$controller = new FabrikControllerDetails;
+			$controller->display();
+			$html = ob_get_contents();
+			ob_end_clean();
+
+			// Load the HTML into DOMPdf and render it.
+			$dompdf->load_html($html);
+			$dompdf->render();
+
+			// Store the file in the tmp folder so it can be attached
+			$file = $config->get('tmp_path') . '/' . JStringNormalise::toDashSeparated($model->getForm()->label . '-' . $input->getString('rowid')) . '.pdf';
+
+			if (JFile::write($file, $dompdf->output()))
+			{
+				$thisAttachments[] = $file;
+			}
+			else
+			{
+				throw new RuntimeException('Could not write PDF file to tmp folder');
+			}
+		}
+		catch (Exception $e)
+		{
+			$app->enqueueMessage($e->getMessage(), 'error');
+		}
+
+		// Set the package back to what it was before rendering the module
+		$app->setUserState('com_fabrik.package', $prevUserState);
+
+		// Reset input
+		foreach ($orig as $key => $val)
+		{
+			$input->set($key, $val);
+		}
+
+		// Reset docuemnt type
+		$document->setType($docType);
 	}
 
 	/**

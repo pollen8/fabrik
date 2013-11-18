@@ -63,9 +63,9 @@ if ($this->params->get('show-title', 1)) :?>
 <?php
 endif;
 
-// Form intro and start
-echo $form->intro;
-echo '<div class="fabrikForm fabrikDetails" id="' . $form->formid . '">';
+echo $form->intro; ?>
+<div class="fabrikForm fabrikDetails" id="<?php echo $form->formid; ?>">
+<?php
 echo $this->plugintop;
 
 // Error message

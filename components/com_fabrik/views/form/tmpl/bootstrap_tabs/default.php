@@ -32,12 +32,9 @@ if ($this->params->get('show-title', 1)) :?>
 endif;
 
 echo $form->intro;
-
-if ($model->editable) :
-		echo '<form method="post" action="' . $form->action . '" ' . $form->attribs . '>';
-	else:
-		echo '<div class="fabrikForm fabrikDetails" id="' . $form->formid . '">';
-endif;
+?>
+<form method="post" <?php echo $form->attribs?>>
+<?php
 echo $this->plugintop;
 ?>
 
@@ -151,11 +148,7 @@ echo $this->loadTemplate('actions');
 ?>
 </form>
 <?php
-if ($model->editable) :
-		echo '</form>';
-	else:
-		echo '</div>';
-endif;
 echo $form->outro;
 echo $this->pluginend;
 echo FabrikHelperHTML::keepalive();
+?>
