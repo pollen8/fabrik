@@ -1965,14 +1965,11 @@ if (!$j3)
 		$j3 = FabrikWorker::j3();
 		$version = new JVersion;
 
-		// Button group rendering seems to have changed in J3.2
-		$j32ButtonGroup = version_compare($version->RELEASE, 3.2, '>=') && $buttonGroup;
-
 		for ($i = 0; $i < count($values); $i++)
 		{
 			$item = array();
 			$thisname = $type === 'checkbox' ? FabrikString::rtrimword($name, '[]') . '[' . $i . ']' : $name;
-			$label = $j32ButtonGroup? $labels[$i] : '<span>' . $labels[$i] . '</span>';
+			$label = '<span>' . $labels[$i] . '</span>';
 
 			// For values like '1"'
 			$value = htmlspecialchars($values[$i], ENT_QUOTES);
@@ -1983,25 +1980,14 @@ if (!$j3)
 				$inputClass .= ' ' . implode(' ', $classes['input']);
 			}
 
-			preg_match('/[\w\s]+/', $name, $id);
-			$id = $id[0] . '_' . $i;
 			$chx = '<input type="' . $type . '" class="fabrikinput ' . $inputClass . '" name="' . $thisname . '" value="' . $value . '" ';
 			$sel = in_array($values[$i], $selected);
-			$chx .= $j32ButtonGroup ? ' id="' . $id . '"' : '';
 			$chx .= $sel ? ' checked="checked" />' : ' />';
 			$labelClass = FabrikWorker::j3() && !$buttonGroup ? $type : '';
 
-			if ($j32ButtonGroup)
-			{
-				$item[] = $chx;
-				$item[] = '<label for="' . $id . '" class="fabrikgrid_' . $value . ' ' . $labelClass . '">' . $label . '</label>';
-			}
-			else
-			{
-				$item[] = '<label class="fabrikgrid_' . $value . ' ' . $labelClass . '">';
-				$item[] = $elementBeforeLabel == '1' ? $chx . $label : $label . $chx;
-				$item[] = '</label>';
-			}
+			$item[] = '<label class="fabrikgrid_' . $value . ' ' . $labelClass . '">';
+			$item[] = $elementBeforeLabel == '1' ? $chx . $label : $label . $chx;
+			$item[] = '</label>';
 			$items[] = implode("\n", $item);
 		}
 
