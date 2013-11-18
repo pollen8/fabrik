@@ -1252,6 +1252,9 @@ var FbForm = new Class({
 		}
 		Fabrik.fireEvent('fabrik.form.group.duplicate.min', [this]);
 		Object.each(this.options.group_repeats, function (canRepeat, groupId) {
+			if (typeOf(this.options.minRepeat[groupId]) === 'null') {
+				return;
+			}
 			if (canRepeat !== "1") {
 				return;
 			}
