@@ -163,7 +163,16 @@ class PlgFabrik_ElementImage extends PlgFabrik_Element
 			if ($showImage)
 			{
 				// $$$ rob 30/06/2011 - say if we import via csv a url to the image check that and use that rather than the relative path
-				$src = JString::substr($data[$i], 0, 4) == 'http' ? $data[$i] : COM_FABRIK_LIVESITE . $selectImage_root_folder . $data[$i];
+				if (JString::substr($data[$i], 0, 4) == 'http')
+				{
+					$src = $data[$i];
+				}
+				else
+				{
+					$data[$i] = JString::ltrim($data[$i], '/');
+					$src = COM_FABRIK_LIVESITE . $selectImage_root_folder . $data[$i];
+				}
+
 				$data[$i] = '<img src="' . $src . '" alt="' . $data[$i] . '" />';
 			}
 
