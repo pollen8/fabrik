@@ -330,11 +330,11 @@ class Amazons3storage extends FabrikStorageAdaptor
 	 * Create a folder - not applicable for S3 storage
 	 *
 	 * @param   string  $path  folder path
-	 *
+	 * @param   bitmask  $mode  Permissions
 	 * @return  bool
 	 */
 
-	public static function createFolder($path)
+	public function createFolder($path, $mode)
 	{
 		return true;
 	}
@@ -508,7 +508,7 @@ class Amazons3storage extends FabrikStorageAdaptor
 	 * @return  void
 	 */
 
-	public static function makeRecursiveFolders($folderPath, $mode = 0755)
+	public function makeRecursiveFolders($folderPath, $mode = 0755)
 	{
 		return;
 	}
