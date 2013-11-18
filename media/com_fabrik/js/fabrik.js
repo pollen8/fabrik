@@ -601,63 +601,7 @@ if (typeof (Fabrik) === "undefined") {
 	 * @since 3.0.7
 	 */
 	Fabrik.watchEdit = function (e, target) {
-		var url, loadMethod = 'xhr', a;
-		var listRef = target.get('data-list');
-		var list = Fabrik.blocks[listRef];
-		var row = list.getActiveRow(e);
-		if (!list.options.ajax_links) {
-			return;
-		}
-		e.preventDefault();
-		if (!row) {
-			return;
-		}
-		list.setActive(row);
-		var rowid = row.id.split('_').getLast();
-		if (e.target.get('tag') === 'a') {
-			a = e.target;
-		} else {
-			a = typeOf(e.target.getElement('a')) !== 'null' ? e.target.getElement('a') : e.target.getParent('a');
-		}
-
-		url = a.get('href');
-		url += url.contains('?') ? '&tmpl=component&ajax=1' : '?tmpl=component&ajax=1';
-		loadMethod = a.get('data-loadmethod');
-		if (typeOf(loadMethod) === 'null') {
-			loadMethod = 'xhr';
-		}
-
-		// Only one edit window open at the same time.
-		$H(Fabrik.Windows).each(function (win, key) {
-			win.close();
-		});
-
-		var winOpts = {
-			'id': 'add.' + listRef + '.' + rowid,
-			'title': list.options.popup_edit_label,
-			'loadMethod': loadMethod,
-			'contentURL': url,
-			'width': list.options.popup_width,
-			'height': list.options.popup_height,
-			'onClose': function (win) {
-				try {
-					var k = 'form_' + list.options.formid + '_' + rowid;
-					Fabrik.blocks[k].destroyElements();
-					Fabrik.blocks[k].formElements = null;
-					Fabrik.blocks[k] = null;
-					delete (Fabrik.blocks[k]);
-					Fabrik.fireEvent('fabrik.list.row.edit.close', [listRef, rowid, k]);
-				} catch (e) {
-				}
-			}
-		};
-		if (typeOf(list.options.popup_offset_x) !== 'null') {
-			winOpts.offset_x = list.options.popup_offset_x;
-		}
-		if (typeOf(list.options.popup_offset_y) !== 'null') {
-			winOpts.offset_y = list.options.popup_offset_y;
-		}
-		Fabrik.getWindow(winOpts);
+		Fabrik.openSingleView('form', e, target);
 	};
 
 	/**
@@ -672,7 +616,18 @@ if (typeof (Fabrik) === "undefined") {
 	 */
 
 	Fabrik.watchView = function (e, target) {
-		console.log(e, target);
+		Fabrik.openSingleView('details', e, target);
+	};
+	
+	/**
+	 * Open a single details/form view
+	 * @param view - details or form
+	 * @param event
+	 *            e relayed click event
+	 * @param domnode
+	 *            target <a> link
+	 */
+	Fabrik.openSingleView = function (view, e, target) {
 		var url, loadMethod = 'xhr', a;
 		var listRef = target.get('data-list');
 		var list = Fabrik.blocks[listRef];
@@ -693,6 +648,7 @@ if (typeof (Fabrik) === "undefined") {
 			a = typeOf(e.target.getElement('a')) !== 'null' ? e.target.getElement('a') : e.target.getParent('a');
 		}
 		url = a.get('href');
+		url += url.contains('?') ? '&tmpl=component&ajax=1' : '?tmpl=component&ajax=1';
 		loadMethod = a.get('data-loadmethod');
 		if (typeOf(loadMethod) === 'null') {
 			loadMethod = 'xhr';
@@ -704,26 +660,27 @@ if (typeof (Fabrik) === "undefined") {
 		});
 
 		var winOpts = {
-			'id': 'view.' + '.' + listRef + '.' + rowid,
+			'id': listRef + '.' + rowid,
 			'title': list.options.popup_view_label,
 			'loadMethod': loadMethod,
 			'contentURL': url,
 			'width': list.options.popup_width,
 			'height': list.options.popup_height,
 			'onClose': function (win) {
-				var k = 'details_' + list.options.formid + '_' + rowid;
+				var k = view +  '_' + list.options.formid + '_' + rowid;
 				try {
 					Fabrik.blocks[k].destroyElements();
 					Fabrik.blocks[k].formElements = null;
 					Fabrik.blocks[k] = null;
 					delete (Fabrik.blocks[k]);
-					Fabrik.fireEvent('fabrik.list.row.view.close', [listRef, rowid, k]);
+					var evnt = (view === 'details') ? 'fabrik.list.row.view.close' : 'fabrik.list.row.edit.close';
+					Fabrik.fireEvent(evnt, [listRef, rowid, k]);
 				} catch (e) {
 					console.log(e);
 				}
-
 			}
 		};
+		winOpts.id = view === 'details' ? 'view.' + winOpts.id : 'add.' + winOpts.id; 
 		if (typeOf(list.options.popup_offset_x) !== 'null') {
 			winOpts.offset_x = list.options.popup_offset_x;
 		}
