@@ -60,10 +60,10 @@ $panels = array(
 		'fieldset' => array('links', 'links2', 'links-fabrik30x')),
 
 	array('heading'=>JText::_('COM_FABRIK_TABS'),
-		'fieldset'=>array('notes')),
+		'fieldset'=>array('tabs')),
 
 	array('heading'=>JText::_('COM_FABRIK_NOTES'),
-		'fieldset'=>array('control_group')),
+		'fieldset'=>array('notes')),
 
 	array('heading'=>JText::_('COM_FABRIK_ADVANCED'),
 		'fieldset'=>array('advanced'))
