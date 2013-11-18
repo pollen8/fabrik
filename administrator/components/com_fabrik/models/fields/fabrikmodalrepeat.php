@@ -49,6 +49,7 @@ class JFormFieldFabrikModalrepeat extends JFormField
 		$subForm = new JForm($this->name, array('control' => 'jform'));
 		$xml = $this->element->children()->asXML();
 		$subForm->load($xml);
+		$j3 = FabrikWorker::j3();
 
 		// Needed for repeating modals in gmaps viz
 		$subForm->repeatCounter = (int) @$this->form->repeatCounter;
@@ -137,7 +138,7 @@ class JFormFieldFabrikModalrepeat extends JFormField
 			$str[] = '</th>';
 		}
 
-		if (FabrikWorker::j3())
+		if ($j3)
 		{
 			$str[] = '<th><a href="#" class="add btn button btn-success"><i class="icon-plus"></i> </a></th>';
 		}
@@ -157,7 +158,7 @@ class JFormFieldFabrikModalrepeat extends JFormField
 
 		$str[] = '<td>';
 
-		if (FabrikWorker::j3())
+		if ($j3)
 		{
 			$str[] = '<div class="btn-group"><a class="add btn button btn-success"><i class="icon-plus"></i> </a>';
 			$str[] = '<a class="remove btn button btn-danger"><i class="icon-minus"></i> </a></div>';
@@ -197,7 +198,10 @@ class JFormFieldFabrikModalrepeat extends JFormField
 			$pane = str_replace('jform_params_', '', $modalid) . '-options';
 
 			$modalrepeat[$modalid][$this->form->repeatCounter] = true;
-			$script = str_replace('-', '', $modalid) . " = new FabrikModalRepeat('$modalid', $names, '$this->id');";
+			$opts = new stdClass;
+			$opts->j3 = $j3;
+			$opts = json_encode($opts);
+			$script = str_replace('-', '', $modalid) . " = new FabrikModalRepeat('$modalid', $names, '$this->id', $opts);";
 			$option = $input->get('option');
 
 			if ($option === 'com_fabrik')
@@ -206,7 +210,7 @@ class JFormFieldFabrikModalrepeat extends JFormField
 			}
 			else
 			{
-				if (FabrikWorker::j3())
+				if ($j3)
 				{
 					$context = strtoupper($option);
 
@@ -262,7 +266,7 @@ class JFormFieldFabrikModalrepeat extends JFormField
 
 		$value = htmlspecialchars($this->value, ENT_COMPAT, 'UTF-8');
 
-		if (FabrikWorker::j3())
+		if ($j3)
 		{
 			$icon = $this->element['icon'] ? '<i class="icon-' . $this->element['icon'] . '"></i> ' : '';
 			$icon .= JText::_('JLIB_FORM_BUTTON_SELECT');
