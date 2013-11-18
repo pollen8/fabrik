@@ -70,6 +70,17 @@ Fabrik.Window = new Class({
 		this.makeWindow();
 	},
 	
+	/**
+	 * Tabs can resize content area
+	 */
+	watchTabs: function () {
+		console.log(this.window.getElements('.nav-tabs a'));
+		this.window.getElements('.nav-tabs a').addEvent('mouseup', function () {
+			this.fitToWidth();
+			this.drawWindow();
+		}.bind(this));
+	},
+	
 	deleteButton: function () {
 		var delClick = function (e) {
 			this.close(e);
@@ -285,6 +296,7 @@ Fabrik.Window = new Class({
 				this.contentEl.set('html', this.options.content);
 			}
 			this.fireEvent('onContentLoaded', [this]);
+			this.watchTabs();
 			break;
 		case 'xhr':
 			u = this.window.getElement('.itemContent');
@@ -297,6 +309,7 @@ Fabrik.Window = new Class({
 				onSuccess: function () {
 					Fabrik.loader.stop(u);
 					this.fireEvent('onContentLoaded', [this]);
+					this.watchTabs();
 					
 					// Ini any Fabrik JS code that was loaded with the ajax request
 					// window.fireEvent('fabrik.loaded');
@@ -331,6 +344,7 @@ Fabrik.Window = new Class({
 				Fabrik.loader.stop(this.window.getElement('.itemContent'));
 				this.iframeEl.show();
 				this.fireEvent('onContentLoaded', [this]);
+				this.watchTabs();
 			}.bind(this));
 			break;
 		}
@@ -350,33 +364,47 @@ Fabrik.Window = new Class({
 		}
 	},
 	
-	fitToContent: function (scroll) {
+	fitToContent: function (scroll, center) {
 		scroll = scroll === undefined ? true : scroll;
+		center = center === undefined ? true : center;
 		
 		if (this.options.loadMethod !== 'iframe') {
-			
 			// As iframe content may not be on the same domain we CAN'T guarentee access to its body element to work out its dimensions
-			var contentEl = this.window.getElement('.itemContent');
-			var padderEl  = this.window.getElement('.itemContentPadder');
-			
-			// Add the top and bottom barrs to the content size
-			var titleHeight = this.window.getElement('.' + this.handleClass());
-			titleHeight = titleHeight ? titleHeight.getSize().y : 25;
-			var footer = this.window.getElement('.bottomBar').getSize().y;
-			var testH = contentEl.getScrollSize().y + titleHeight + footer;
-			
-			var h = testH < window.getHeight() ? testH : window.getHeight();
-			var w = contentEl.getScrollSize().x + 25 < window.getWidth() ? contentEl.getScrollSize().x + 25 : window.getWidth();
-			this.window.setStyle('height', h);
-			this.window.setStyle('width', w);
+			this.fitToHeight();
+			this.fitToWidth();
 		}
 		this.drawWindow();
-		this.center();
+		if (center) {
+			this.center();
+		}
 		if (!this.options.offset_y && scroll) {
 			var myfx = new Fx.Scroll(window).toElement(this.window);
 		} else {
 			this.window.position();
 		}
+	},
+	
+	/**
+	 * Fit the window height to the min of either its content height or the window height
+	 */
+	fitToHeight: function () {
+		// Add the top and bottom barrs to the content size
+		var titleHeight = this.window.getElement('.' + this.handleClass());
+		titleHeight = titleHeight ? titleHeight.getSize().y : 25;
+		var footer = this.window.getElement('.bottomBar').getSize().y;
+		var contentEl = this.window.getElement('.itemContent');
+		var testH = contentEl.getScrollSize().y + titleHeight + footer;
+		var h = testH < window.getHeight() ? testH : window.getHeight();
+		this.window.setStyle('height', h);
+	},
+	
+	/**
+	 * Fit the window width to the min of either its content width or the window width
+	 */
+	fitToWidth: function () {
+		var contentEl = this.window.getElement('.itemContent');
+		var w = contentEl.getScrollSize().x + 25 < window.getWidth() ? contentEl.getScrollSize().x + 25 : window.getWidth();
+		this.window.setStyle('width', w);
 	},
 	
 	close: function (e)
