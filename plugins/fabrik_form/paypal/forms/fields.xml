@@ -156,6 +156,7 @@
 			<field name="paypal_subscription_switch"
 				type="fabrikeditor"
 				mode="php"
+				repeat="true"
 				description="PLG_FORM_PAYPAL_GATEWAY_SWITCH_DESC"
 				label="PLG_FORM_PAYPAL_GATEWAY_SWITCH_LABEL" />
 
