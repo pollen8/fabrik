@@ -213,6 +213,8 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		{
 			$fbConfig = JComponentHelper::getParams('com_fabrik');
 			$limit = $fbConfig->get('filter_list_max', 100);
+			//$where = $this->_buildQueryWhere(array(), true, null, array('mode' => 'filter'));
+			//$rows = array_values($this->checkboxRows(null, null, $where, null, 0, $limit));
 			$rows = array_values($this->checkboxRows(null, null, null, null, 0, $limit));
 		}
 		else
