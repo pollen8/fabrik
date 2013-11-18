@@ -219,9 +219,10 @@ var ListForm = new Class({
 			'value': joinId
 		});
 
+		var delClass = this.options.js ? 'btn-danger' : 'removeButton';
 		var delButton = new Element('a', {
 			'href': '#',
-			'class': 'btn btn-danger',
+			'class': 'btn ' + delClass,
 			'events': {
 				'click': function (e) {
 					this.deleteJoin(e);
@@ -279,7 +280,8 @@ var ListForm = new Class({
 						'click': function (e) {
 							e.stop();
 							var tbody = e.target.getParent('.adminform').getElement('tbody');
-							Browser.ie ? tbody.toggle() : tbody.slide('toggle');
+							var myFx = new Fx.Slide(tbody, {duration: 500});
+							Browser.ie ? tbody.toggle() : myFx.toggle();
 						}
 					},
 					'styles': {
@@ -359,7 +361,10 @@ var ListForm = new Class({
 			var d = new Element('div', {'id': 'join'}).adopt(sContent);
 			d.inject(document.id('joindtd'));
 			if (thisKey !== '') {
-				Browser.ie ? tbody.hide() : tbody.slide('hide');
+				
+				var myFx = new Fx.Slide(tbody, {duration: 500});
+				Browser.ie ? tbody.hide() : myFx.slideIn();
+				//tbody.hide();
 			}
 			this.updateJoinStatement(this.joinCounter);
 		}
