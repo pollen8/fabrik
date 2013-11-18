@@ -459,6 +459,10 @@ class FabrikViewListBase extends JViewLegacy
 		$this->filter_action = $model->getFilterAction();
 		JDEBUG ? $profiler->mark('fabrik getfilters start') : null;
 		$this->filters = $model->getFilters('listform_' . $this->renderContext);
+
+		$fKeys = array_keys($this->filters);
+		$this->bootShowFilters = count($fKeys) === 1 && $fKeys[0] === 'all' ? false : true;
+
 		$this->clearFliterLink = $model->getClearButton();
 		JDEBUG ? $profiler->mark('fabrik getfilters end') : null;
 		$this->filterMode = (int) $params->get('show-table-filters');

@@ -12,12 +12,7 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-$this->bootShowFilters = true;
 $pageClass = $this->params->get('pageclass_sfx', '');
-$fKeys = array_keys($this->filters);
-if (count($fKeys) === 1 && $fKeys[0] === 'all') :
-	$this->bootShowFilters = false;
-endif;
 
 if ($pageClass !== '') :
 	echo '<div class="' . $pageClass . '">';
