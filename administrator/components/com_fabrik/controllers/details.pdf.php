@@ -56,5 +56,4 @@ class FabrikControllerDetails extends JControllerForm
 		$view->display();
 		FabrikAdminHelper::addSubmenu(JRequest::getWord('view', 'lists'));
 	}
-
 }

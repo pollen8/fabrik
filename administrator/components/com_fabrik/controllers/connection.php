@@ -43,18 +43,21 @@ class FabrikControllerConnection extends JControllerForm
 		$cid = $input->get('cid', array(), 'array');
 		$cid = array((int) $cid[0]);
 		$link = 'index.php?option=com_fabrik&view=connections';
+
 		foreach ($cid as $id)
 		{
 			$model = JModel::getInstance('Connection', 'FabrikFEModel');
 			$model->setId($id);
+
 			if ($model->testConnection() == false)
 			{
 				JError::raiseWarning(500, JText::_('COM_FABRIK_UNABLE_TO_CONNECT'));
 				$this->setRedirect($link);
+
 				return;
 			}
 		}
+
 		$this->setRedirect($link, JText::_('COM_FABRIK_CONNECTION_SUCESSFUL'));
 	}
-
 }
