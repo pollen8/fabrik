@@ -808,11 +808,15 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 									$set_array[] = "$set_field = $set_value";
 								}
 
-								$query->clear();
-								$query->update($table->db_table_name)
-								->set(implode(',', $set_array))
-								->where($table->db_primary_key . ' = ' . $db->quote($rowid));
-								$db->setQuery($query);
+								// Only update IPN storage if txn field and status set
+								if (!empty($ipn_txn_field) && !empty($ipn_status_field))
+								{
+									$query->clear();
+									$query->update($table->db_table_name)
+									->set(implode(',', $set_array))
+									->where($table->db_primary_key . ' = ' . $db->quote($rowid));
+									$db->setQuery($query);
+								}
 
 								if (!$db->execute())
 								{
