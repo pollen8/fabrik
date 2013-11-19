@@ -495,7 +495,7 @@ class FabrikViewFormBase extends JViewLegacy
 			$groupId = $groupModel->getGroup()->id;
 			$groupedJs->$groupId = array();
 
-			if (!$groupModel->canView('form'))
+			if (!$groupModel->canView())
 			{
 				continue;
 			}

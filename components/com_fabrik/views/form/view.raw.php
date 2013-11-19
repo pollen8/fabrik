@@ -118,7 +118,7 @@ class FabrikViewForm extends JViewLegacy
 						$foreignKey = $joinTable->table_join_key;
 
 						// $$$ rob test!!!
-						if (!$groupModel->canView('form'))
+						if (!$groupModel->canView())
 						{
 							continue;
 						}

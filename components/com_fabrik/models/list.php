@@ -6513,7 +6513,7 @@ class FabrikFEModelList extends JModelForm
 			$groupHeadings[$groupHeadingKey] = 0;
 			$elementModels = $groupModel->getPublishedListElements();
 
-			if ($groupModel->canView('list') === false)
+			if ($groupModel->canView() === false)
 			{
 				continue;
 			}
@@ -7226,7 +7226,7 @@ class FabrikFEModelList extends JModelForm
 					 * If the group is un-editable - then the form won't contain the group data, thus we don't want to add blank data into $oRecord
 					 * @see http://fabrikar.com/forums/index.php?threads/changing-access-level-for-a-group-corrupts-data.34067/
 					 */
-					if (!$groupModel->canView('form'))
+					if (!$groupModel->canView())
 					{
 						continue;
 					}
