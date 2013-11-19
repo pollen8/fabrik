@@ -162,7 +162,7 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 		$opts['item_name'] = strip_tags($item);
 
 		// $$$ rob add in subscription variables
-		if ($opts['cmd'] === '_xclick-subscriptions')
+		if ($this->isSubscription($params))
 		{
 			$subTable = JModelLegacy::getInstance('List', 'FabrikFEModel');
 			$subTable->setId((int) $params->get('paypal_subs_table'));
@@ -210,36 +210,18 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 				throw new RuntimeException('Could not determine subscription period, please check your settings', 500);
 			}
 		}
-		/* $$$ rob 03/02/2011
-		 * check if we have a gateway subscription switch set up. This is for sites where
-		 * you can toggle between a subscription or a single payment. E.g. fabrikar com
-		 * if 'paypal_subscription_switch' is blank then use the $opts['cmd'] setting
-		 * if not empty it should be some eval'd PHP which needs to return true for the payment
-		 * to be treated as a subscription
-		 * We want to do this so that single payments can make use of Paypals option to pay via credit card
-		 * without a paypal account (subscriptions require a Paypal account)
-		 * We do this after the subscription code has been run as this code is still needed to look up the correct item_name
-		 */
 
-		$subSwitch = $params->get('paypal_subscription_switch');
-
-		if (trim($subSwitch) !== '')
+		if (!$this->isSubscription($params))
 		{
-			$subSwitch = $w->parseMessageForPlaceHolder($subSwitch);
-			$isSub = @eval($subSwitch);
+			// Reset the amount which was unset during subscription code
+			$opts['amount'] = $amount;
+			$opts['cmd'] = '_xclick';
 
-			if (!$isSub)
-			{
-				// Reset the amount which was unset during subscription code
-				$opts['amount'] = $amount;
-				$opts['cmd'] = '_xclick';
-
-				// Unset any subscription options we may have set
-				unset($opts['p3']);
-				unset($opts['t3']);
-				unset($opts['a3']);
-				unset($opts['no_note']);
-			}
+			// Unset any subscription options we may have set
+			unset($opts['p3']);
+			unset($opts['t3']);
+			unset($opts['a3']);
+			unset($opts['no_note']);
 		}
 
 		$shipping_table = $this->shippingTable();
@@ -493,6 +475,40 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 		$log->store();
 
 		return true;
+	}
+
+	/**
+	 * Check if we have a gateway subscription switch set up. This is for sites where
+	 * you can toggle between a subscription or a single payment. E.g. fabrikar com
+	 * if 'paypal_subscription_switch' is blank then use the $opts['cmd'] setting
+	 * if not empty it should be some eval'd PHP which needs to return true for the payment
+	 * to be treated as a subscription
+	 * We want to do this so that single payments can make use of Paypals option to pay via credit card
+	 * without a paypal account (subscriptions require a Paypal account)
+	 * We do this after the subscription code has been run as this code is still needed to look up the correct item_name
+	 *
+	 * @param   JParameters  $params  Params
+	 *
+	 * @since 3.0.10
+	 *
+	 * @return boolean
+	 */
+
+	protected function isSubscription($params)
+	{
+		$subSwitch = $params->get('paypal_subscription_switch');
+
+		if (trim($subSwitch) !== '')
+		{
+			$w = new FabrikWorker;
+			$subSwitch = $w->parseMessageForPlaceHolder($subSwitch);
+
+			return @eval($subSwitch);
+		}
+		else
+		{
+			return $params->get('paypal_cmd') === '_xclick-subscriptions';
+		}
 	}
 
 	/**
