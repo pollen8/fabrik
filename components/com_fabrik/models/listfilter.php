@@ -1020,7 +1020,7 @@ class FabrikFEModelListfilter extends FabModel
 				 * do a ranged querystring search with this syntax
 				 * ?element_test___time_date[value][]=2009-08-07&element_test___time_date[value][]=2009-08-10&element_test___time_date[condition]=BETWEEN
 				 */
-				if (is_array($value) && $condition != 'BETWEEN')
+				if (is_array($value) && $condition != 'BETWEEN' && strtoupper($condition) !== 'IN')
 				{
 					// If we aren't doing a ranged search
 					foreach ($value as $vk => $avalue)
