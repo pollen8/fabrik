@@ -55,7 +55,7 @@
 			<field description="PLG_FORM_PAYPAL_SUBS_DATA_RECURRING_DESC" label="PLG_FORM_PAYPAL_SUBS_DATA_RECURRING_LABEL" name="paypal_subs_recurring" repeat="true" type="text">
 			</field>
 			
-			<field cols="30" description="PLG_FORM_PAYPAL_GATEWAY_SWITCH_DESC" label="PLG_FORM_PAYPAL_GATEWAY_SWITCH_LABEL" name="paypal_subscription_switch" rows="5" type="textarea">
+			<field cols="30" description="PLG_FORM_PAYPAL_GATEWAY_SWITCH_DESC" label="PLG_FORM_PAYPAL_GATEWAY_SWITCH_LABEL" name="paypal_subscription_switch" rows="5" repeat="true" type="textarea">
 			</field>
 	
 			<field label="" name="@spacer" repeat="true" type="spacer"/>
