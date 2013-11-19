@@ -936,6 +936,7 @@ class FabrikFEModelListfilter extends FabModel
 					}
 				}
 			}
+
 			/**
 			 * unset the search form id so we wont reuse the search data
 			 * untill a new search is performed
@@ -1029,7 +1030,7 @@ class FabrikFEModelListfilter extends FabModel
 				 * do a ranged querystring search with this syntax
 				 * ?element_test___time_date[value][]=2009-08-07&element_test___time_date[value][]=2009-08-10&element_test___time_date[condition]=BETWEEN
 				 */
-				if (is_array($value) && $condition != 'BETWEEN')
+				if (is_array($value) && $condition != 'BETWEEN' && strtoupper($condition) !== 'IN')
 				{
 					// If we aren't doing a ranged search
 					foreach ($value as $vk => $avalue)
@@ -1510,7 +1511,7 @@ class FabrikFEModelListfilter extends FabModel
 					$sqlCond = null;
 					$condition = array_key_exists($i, $sessionfilters['condition']) ? $sessionfilters['condition'][$i]
 						: $elementModel->getDefaultFilterCondition();
-					$origCondition = array_key_exists($i, $sessionfilters['orig_condition']) ? $sessionfilters['orig_condition'][$i]
+					$origCondition = array_key_exists('orig_condition', $sessionfilters) && array_key_exists($i, $sessionfilters['orig_condition']) ? $sessionfilters['orig_condition'][$i]
 						: $elementModel->getDefaultFilterCondition();
 					$raw = array_key_exists($i, $sessionfilters['raw']) ? $sessionfilters['raw'][$i] : 0;
 					$eval = array_key_exists($i, $sessionfilters['eval']) ? $sessionfilters['eval'][$i] : FABRIKFILTER_TEXT;
