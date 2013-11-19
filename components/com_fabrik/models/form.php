@@ -595,36 +595,16 @@ class FabrikFEModelForm extends FabModelForm
 	}
 
 	/**
-	 * Set the page title for form
+	 * Set the browser title
 	 *
-	 * @param   string  $title  default title
+	 * @param   string  $title  Default browser title set by menu items' 'page_title' property
 	 *
-	 * @return	string	page title
+	 * @return	string	Browser title
 	 */
 
 	public function getPageTitle($title = '')
 	{
-		$params = $this->getParams();
-		$label = $this->getLabel();
-		$app = JFactory::getApplication();
-		$input = $app->input;
-
-		if ($input->get('view') == 'details')
-		{
-			if (!$params->get('show-title-in-detail-view', true))
-			{
-				$title = '';
-			}
-			else
-			{
-				$title = ($title == '') ? $label : $title . " ";
-			}
-		}
-		else
-		{
-			$title = ($title == '') ? $label : $title . " ";
-		}
-
+		$title = $title == '' ? $this->getLabel() : $title;
 		$groups = $this->getGroupsHiarachy();
 
 		foreach ($groups as $groupModel)
@@ -637,9 +617,7 @@ class FabrikFEModelForm extends FabModelForm
 
 				if ($element->use_in_page_title == '1')
 				{
-					$default = $elementModel->getTitlePart($this->data);
-					$s = is_array($default) ? implode(', ', $default) . ' ' : $default . ' ';
-					$title .= ' ' . $s;
+					$title .= ' ' . $elementModel->getTitlePart($this->data);
 				}
 			}
 		}

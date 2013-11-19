@@ -1542,15 +1542,22 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 	 * @param   int    $repeatCounter  When repeating joinded groups we need to know what part of the array to access
 	 * @param   array  $opts           Options
 	 *
-	 * @return  string	Default value
+	 * @return  string	Text to add to the browser's title
 	 */
 
 	public function getTitlePart($data, $repeatCounter = 0, $opts = array())
 	{
-		// $$$ rob set this to label otherwise we get the value/key and not label
-		$opts['valueFormat'] = 'label';
+		// Get raw value
+		$opts['raw'] = '1';
+		$titleParts = (array) $this->getValue($data, $repeatCounter, $opts);
 
-		return $this->getValue($data, $repeatCounter, $opts);
+		// Replace with labels
+		foreach ($titleParts as &$titlePart)
+		{
+			$titlePart = $this->getLabelForValue($titlePart, $titlePart, true);
+		}
+
+		return implode(', ', $titleParts);
 	}
 
 	/**

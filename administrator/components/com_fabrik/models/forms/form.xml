@@ -421,16 +421,6 @@
 					<option value="1">JYES</option>
 			</field>
 
-			<field name="show-title-in-detail-view"
-				type="radio"
-				class="btn-group"
-				default="1"
-				description="COM_FABRIK_FIELD_SHOW_TITLE_IN_DETAIL_VIEW_DESC"
-				label="COM_FABRIK_FIELD_SHOW_TITLE_IN_DETAIL_VIEW_LABEL">
-					<option value="0">JNO</option>
-					<option value="1">JYES</option>
-			</field>
-
 			<field name="print"
 				type="list"
 				description="COM_FABRIK_FIELD_PRINT_ICON_DESC"

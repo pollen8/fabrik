@@ -661,7 +661,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 	 * @param   int    $repeatCounter  When repeating joinded groups we need to know what part of the array to access
 	 * @param   array  $opts           Options
 	 *
-	 * @return  string	default value
+	 * @return  string	Text to add to the browser's title
 	 */
 
 	public function getTitlePart($data, $repeatCounter = 0, $opts = array())
