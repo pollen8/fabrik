@@ -1,13 +1,15 @@
 <?php
 /**
+ * Redirects the browser to paypal to perform payment
+ *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.form.paypal
- * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
- * @license     GNU General Public License version 2 or later; see LICENSE.txt
+ * @copyright   Copyright (C) 2005-2013 fabrikar.com - All rights reserved.
+ * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
-// Check to ensure this file is included in Joomla!
-defined('_JEXEC') or die();
+// No direct access
+defined('_JEXEC') or die('Restricted access');
 
 // Require the abstract plugin class
 require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
@@ -22,7 +24,6 @@ require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
 
 class PlgFabrik_FormPaypal extends PlgFabrik_Form
 {
-
 	/**
 	 * Run right at the end of the form processing
 	 * form needs to be set to record in database for this to hook to be called
@@ -47,14 +48,15 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 		{
 			return true;
 		}
+
 		$this->formModel = $formModel;
 		$emailData = $this->getEmailData();
 		$w = new FabrikWorker;
 
 		$user = JFactory::getUser();
 		$userid = $user->get('id');
-
 		$ipn = $this->getIPNHandler($params);
+
 		if ($ipn !== false)
 		{
 			if (method_exists($ipn, 'createInvoice'))
@@ -62,6 +64,7 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 				$ipn->createInvoice();
 			}
 		}
+
 		$paypal_testmode = $params->get('paypal_testmode', $input->get('paypal_testmode', false));
 		$url = $paypal_testmode == 1 ? 'https://www.sandbox.paypal.com/us/cgi-bin/webscr?' : 'https://www.paypal.com/cgi-bin/webscr?';
 
@@ -69,16 +72,18 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 		$opts['cmd'] = $params->get('paypal_cmd', "_xclick");
 
 		$email = $params->get('paypal_accountemail');
+
 		if (trim($email) == '')
 		{
 			$email = $emailData[FabrikString::safeColNameToArrayKey($params->get('paypal_accountemail_element'))];
+
 			if (is_array($email))
 			{
 				$email = array_shift($email);
 			}
 		}
-		$opts['business'] = $email;
 
+		$opts['business'] = $email;
 		$amount = $params->get('paypal_cost');
 		$amount = $w->parseMessageForPlaceHolder($amount, $data);
 
@@ -88,6 +93,7 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 		{
 			$amount = @eval($amount);
 		}
+
 		if (trim($amount) == '')
 		{
 			$amount = JArrayHelper::getValue($emailData, FabrikString::safeColNameToArrayKey($params->get('paypal_cost_element')));
@@ -96,35 +102,42 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 				$amount = array_shift($amount);
 			}
 		}
+
 		$opts['amount'] = $amount;
 
 		// $$$tom added Shipping Cost params
 		$shipping_amount = $params->get('paypal_shipping_cost');
+
 		if ($params->get('paypal_shipping_cost_eval', 0) == 1)
 		{
 			$shipping_amount = @eval($shipping_amount);
 		}
+
 		if (trim($shipping_amount) == '')
 		{
 			$shipping_amount = JArrayHelper::getValue($emailData, FabrikString::safeColNameToArrayKey($params->get('paypal_shipping_cost_element')));
+
 			if (is_array($shipping_amount))
 			{
 				$shipping_amount = array_shift($shipping_amount);
 			}
 		}
-		$opts['shipping'] = "$shipping_amount";
 
+		$opts['shipping'] = "$shipping_amount";
 		$item = $params->get('paypal_item');
 		$item = $w->parseMessageForPlaceHolder($item, $emailData);
+
 		if ($params->get('paypal_item_eval', 0) == 1)
 		{
 			$item = @eval($item);
 			$item_raw = $item;
 		}
+
 		if (trim($item) == '')
 		{
 			$item_raw = JArrayHelper::getValue($emailData, FabrikString::safeColNameToArrayKey($params->get('paypal_item_element') . '_raw'));
 			$item = $emailData[FabrikString::safeColNameToArrayKey($params->get('paypal_item_element'))];
+
 			if (is_array($item))
 			{
 				$item = array_shift($item);
@@ -152,6 +165,7 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 			->where($idEl . ' = ' . $subDb->quote($item_raw));
 			$subDb->setQuery($query);
 			$sub = $subDb->loadObject();
+
 			if (is_object($sub))
 			{
 				$opts['p3'] = $sub->p3;
@@ -165,10 +179,12 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 				// 'http://fabrikar.com/ '.$sub->item_name.' - User: subtest26012010 (subtest26012010)';
 				$opts['item_name'] = $w->parseMessageForPlaceHolder($name, $tmp);
 				$opts['invoice'] = $w->parseMessageForPlaceHolder($params->get('paypal_subs_invoice'), $tmp, false);
+
 				if ($opts['invoice'] == '')
 				{
 					$opts['invoice'] = uniqid('', true);
 				}
+
 				$opts['src'] = $w->parseMessageForPlaceHolder($params->get('paypal_subs_recurring'), $tmp);
 				$amount = $opts['amount'];
 				unset($opts['amount']);
@@ -190,10 +206,12 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 		 */
 
 		$subSwitch = $params->get('paypal_subscription_switch');
+
 		if (trim($subSwitch) !== '')
 		{
 			$subSwitch = $w->parseMessageForPlaceHolder($subSwitch);
 			$isSub = @eval($subSwitch);
+
 			if (!$isSub)
 			{
 				// Reset the amount which was unset during subscription code
@@ -221,10 +239,10 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 		{
 			$shipping_userid = $formModel->_formData['id'];
 		}
+
 		if ($shipping_userid > 0)
 		{
 			$shipping_select = array();
-
 			$db = FabrikWorker::getDbo();
 			$query = $db->getQuery(true);
 
@@ -233,41 +251,49 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 				$shipping_first_name = FabrikString::shortColName($params->get('paypal_shippingdata_firstname'));
 				$shipping_select['first_name'] = $shipping_first_name;
 			}
+
 			if ($params->get('paypal_shippingdata_lastname'))
 			{
 				$shipping_last_name = FabrikString::shortColName($params->get('paypal_shippingdata_lastname'));
 				$shipping_select['last_name'] = $shipping_last_name;
 			}
+
 			if ($params->get('paypal_shippingdata_address1'))
 			{
 				$shipping_address1 = FabrikString::shortColName($params->get('paypal_shippingdata_address1'));
 				$shipping_select['address1'] = $shipping_address1;
 			}
+
 			if ($params->get('paypal_shippingdata_address2'))
 			{
 				$shipping_address2 = FabrikString::shortColName($params->get('paypal_shippingdata_address2'));
 				$shipping_select['address2'] = $shipping_address2;
 			}
+
 			if ($params->get('paypal_shippingdata_zip'))
 			{
 				$shipping_zip = FabrikString::shortColName($params->get('paypal_shippingdata_zip'));
 				$shipping_select['zip'] = $shipping_zip;
 			}
+
 			if ($params->get('paypal_shippingdata_state'))
 			{
 				$shipping_state = FabrikString::shortColName($params->get('paypal_shippingdata_state'));
 				$shipping_select['state'] = $shipping_state;
 			}
+
 			if ($params->get('paypal_shippingdata_city'))
 			{
 				$shipping_city = FabrikString::shortColName($params->get('paypal_shippingdata_city'));
 				$shipping_select['city'] = $shipping_city;
 			}
+
 			if ($params->get('paypal_shippingdata_country'))
 			{
 				$shipping_country = FabrikString::shortColName($params->get('paypal_shippingdata_country'));
 				$shipping_select['country'] = $shipping_country;
 			}
+
 			$query->clear();
 			$query->select($shipping_select)->from($shipping_table)
 			->where(FabrikString::shortColName($params->get('paypal_shippingdata_id')) . ' = ' . $db->quote($shipping_userid));
@@ -285,6 +311,7 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 				}
 			}
 		}
+
 		if ($params->get('paypal_shipping_address_override', 0))
 		{
 			$opts['address_override'] = 1;
@@ -296,6 +323,7 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 
 		$paypal_test_site = $params->get('paypal_test_site', '');
 		$paypal_test_site = rtrim($paypal_test_site, '/');
+
 		if ($paypal_testmode == 1 && !empty($paypal_test_site))
 		{
 			$ppurl = $paypal_test_site . '/index.php?option=com_' . $package . '&c=plugin&task=plugin.pluginAjax&formid=' . $formModel->get('id')
@@ -306,7 +334,9 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 			$ppurl = COM_FABRIK_LIVESITE . '/index.php?option=com_' . $package . '&c=plugin&task=plugin.pluginAjax&formid=' . $formModel->get('id')
 				. '&g=form&plugin=paypal&method=ipn';
 		}
+
 		$paypal_test_site_qs = $params->get('paypal_test_site_qs', '');
+
 		if ($paypal_testmode == 1 && !empty($paypal_test_site_qs))
 		{
 			$ppurl .= $paypal_test_site_qs;
@@ -319,6 +349,7 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 
 		$paypal_return_url = $params->get('paypal_return_url', '');
 		$paypal_return_url = $w->parseMessageForPlaceHolder($paypal_return_url, $data);
+
 		if ($paypal_testmode == 1 && !empty($paypal_return_url))
 		{
 			if (preg_match('#^http:\/\/#', $paypal_return_url))
@@ -359,7 +390,6 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 			{
 				$opts['return'] = $paypal_test_site . '/index.php?option=com_' . $package . '&task=plugin.pluginAjax&formid=' . $formModel->get('id')
 					. '&g=form&plugin=paypal&method=thanks&rowid=' . $data['rowid'] . '&renderOrder=' . $this->renderOrder;
-
 			}
 			else
 			{
@@ -367,6 +397,7 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 					. '&g=form&plugin=paypal&method=thanks&rowid=' . $data['rowid'] . '&renderOrder=' . $this->renderOrder;
 			}
 		}
+
 		$opts['return'] = urlencode($opts['return']);
 
 		$ipn_value = $params->get('paypal_ipn_value', '');
@@ -392,6 +423,7 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 					$msg->msg = "Submission cancelled by checkOpts!";
 					$log->message = json_encode($msg);
 					$log->store();
+
 					return true;
 				}
 			}
@@ -399,10 +431,12 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 
 		$opts['custom'] = $data['formid'] . ':' . $data['rowid'] . ':' . $ipn_value;
 		$qs = array();
+
 		foreach ($opts as $k => $v)
 		{
 			$qs[] = "$k=$v";
 		}
+
 		$url .= implode('&', $qs);
 
 		/* $$$ rob 04/02/2011 no longer doing redirect from ANY plugin EXCEPT the redirect plugin
@@ -429,6 +463,7 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 		$msg->data = $data;
 		$log->message = json_encode($msg);
 		$log->store();
+
 		return true;
 	}
 
@@ -444,6 +479,7 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 		$query = $db->getQuery(true);
 		$query->select('db_table_name')->from('#__{package}_lists')->where('id = ' . (int) $params->get('paypal_shippingdata_table'));
 		$db->setQuery($query);
+
 		return $db->loadResult();
 	}
 	/**
@@ -466,24 +502,29 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 		$params = $formModel->getParams();
 		$ret_msg = (array) $params->get('paypal_return_msg', array());
 		$ret_msg = $ret_msg[JRequest::getInt('renderOrder')];
+
 		if ($ret_msg)
 		{
 			$w = new FabrikWorker;
 			$listModel = $formModel->getlistModel();
 			$row = $listModel->getRow($rowid);
 			$ret_msg = $w->parseMessageForPlaceHolder($ret_msg, $row);
+
 			if (JString::stristr($ret_msg, '[show_all]'))
 			{
 				$all_data = array();
+
 				foreach ($_REQUEST as $key => $val)
 				{
 					$all_data[] = "$key: $val";
 				}
+
 				JRequest::setVar('show_all', implode('<br />', $all_data));
 			}
 			$ret_msg = str_replace('[', '{', $ret_msg);
 			$ret_msg = str_replace(']', '}', $ret_msg);
 			$ret_msg = $w->parseMessageForPlaceHolder($ret_msg, $_REQUEST);
+
 			echo $ret_msg;
 		}
 		else
@@ -600,6 +641,7 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 		{
 			// @TODO implement a curl alternative as fsockopen is not always available
 			$fp = fsockopen($paypalurl, 443, $errno, $errstr, 30);
+
 			if (!$fp)
 			{
 				$status = 'form.paypal.ipnfailure.fsock_error';
@@ -608,6 +650,7 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 			else
 			{
 				fputs($fp, $header . $req);
+
 				while (!feof($fp))
 				{
 					$res = fgets($fp, 1024);
@@ -630,6 +673,7 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 							->where($db->quoteName($ipn_txn_field) . ' = ' . $db->quote($txn_id));
 							$db->setQuery($query);
 							$txn_result = $db->loadResult();
+
 							if (!empty($txn_result))
 							{
 								if ($txn_result == 'Completed')
@@ -650,9 +694,11 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 								}
 							}
 						}
+
 						if ($status == 'ok')
 						{
 							$set_list = array();
+
 							if (!empty($ipn_field))
 							{
 								if (empty($ipn_value))
@@ -661,40 +707,50 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 								}
 								$set_list[$ipn_field] = $ipn_value;
 							}
+
 							if (!empty($ipn_txn_field))
 							{
 								$set_list[$ipn_txn_field] = $txn_id;
 							}
+
 							if (!empty($ipn_payment_field))
 							{
 								$set_list[$ipn_payment_field] = $payment_amount;
 							}
+
 							if (!empty($ipn_status_field))
 							{
 								$set_list[$ipn_status_field] = $payment_status;
 							}
+
 							if (!empty($ipn_address_field))
 							{
 								$set_list[$ipn_address_field] = $buyer_address;
 							}
+
 							$ipn = $this->getIPNHandler($params, $renderOrder);
 
 							if ($ipn !== false)
 							{
 								$request = $_REQUEST;
 								$ipn_function = 'payment_status_' . $payment_status;
+
 								if (method_exists($ipn, $ipn_function))
 								{
 									$status = $ipn->$ipn_function($listModel, $request, $set_list, $err_msg);
+
 									if ($status != 'ok')
 									{
 										break;
 									}
 								}
+
 								$txn_type_function = "txn_type_" . $txn_type;
+
 								if (method_exists($ipn, $txn_type_function))
 								{
 									$status = $ipn->$txn_type_function($listModel, $request, $set_list, $err_msg);
+
 									if ($status != 'ok')
 									{
 										break;
@@ -705,17 +761,20 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 							if (!empty($set_list))
 							{
 								$set_array = array();
+
 								foreach ($set_list as $set_field => $set_value)
 								{
 									$set_value = $db->quote($set_value);
 									$set_field = $db->quoteName($set_field);
 									$set_array[] = "$set_field = $set_value";
 								}
+
 								$query->clear();
 								$query->update($table->db_table_name)
 								->set(implode(',', $set_array))
 								->where($table->db_primary_key . ' = ' . $db->quote($rowid));
 								$db->setQuery($query);
+
 								if (!$db->execute())
 								{
 									$status = 'form.paypal.ipnfailure.query_error';
@@ -744,6 +803,7 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 						$err_msg = 'paypal postback failed with INVALID';
 					}
 				}
+
 				fclose($fp);
 			}
 		}
@@ -752,6 +812,7 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 		$receive_debug_emails = $receive_debug_emails[$renderOrder];
 		$send_default_email = (array) $params->get('paypal_send_default_email');
 		$send_default_email = $send_default_email[$renderOrder];
+
 		if ($status != 'ok')
 		{
 			foreach ($_POST as $key => $value)
@@ -764,8 +825,10 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 				$subject = $config->get('sitename') . ": Error with PayPal IPN from Fabrik";
 				JUtility::sendMail($email_from, $email_from, $admin_email, $subject, $emailtext, false);
 			}
+
 			$log->message_type = $status;
 			$log->message = $emailtext . "\n//////////////\n" . $res . "\n//////////////\n" . $req . "\n//////////////\n" . $err_msg;
+
 			if ($send_default_email == '1')
 			{
 				$payer_emailtext = JText::_('PLG_FORM_PAYPAL_ERR_PROCESSING_PAYMENT');
@@ -784,6 +847,7 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 				$subject = $config->get('sitename') . ': IPN ' . $payment_status;
 				JUtility::sendMail($email_from, $email_from, $admin_email, $subject, $emailtext, false);
 			}
+
 			$log->message_type = 'form.paypal.ipn.' . $payment_status;
 			$query = $db->getQuery();
 			$log->message = $emailtext . "\n//////////////\n" . $res . "\n//////////////\n" . $req . "\n//////////////\n" . $query;
@@ -795,6 +859,7 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 				JUtility::sendMail($email_from, $email_from, $payer_email, $payer_subject, $payer_emailtext, false);
 			}
 		}
+
 		$log->message .= "\n IPN custom function = $ipn_function";
 		$log->message .= "\n IPN custom transaction function = $txn_type_function";
 		$log->store();
@@ -815,11 +880,13 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 		$php_file = (array) $params->get('paypal_run_php_file');
 		$php_file = JFilterInput::clean($php_file[$renderOrder], 'CMD');
 		$php_file = empty($php_file) ? '' : 'plugins/fabrik_form/paypal/scripts/' . $php_file;
+
 		if (!empty($php_file) && file_exists($php_file))
 		{
 			$request = $_REQUEST;
 			require_once $php_file;
 			$ipn = new fabrikPayPalIPN;
+
 			return $ipn;
 		}
 		else
