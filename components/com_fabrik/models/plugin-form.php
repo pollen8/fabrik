@@ -390,6 +390,11 @@ class PlgFabrik_Form extends FabrikPlugin
 					}
 					// $$$ rob end of barfage
 					*/
+					/*
+					 * OK, but we have to set the data somehow!  So how about, if the non raw is undefined, which seems
+					 * to occur for some element types during onLastProcess (at least) plugin processing, we use the raw.
+					 */
+					$email_value = !array_key_exists($k, $this->emailData) && array_key_exists($k . '_raw', $this->emailData) ? $this->emailData[$k . '_raw'] : $this->emailData[$k];
 					$this->emailData[$k] = $elementModel->getEmailValue($email_value, $model->_formDataWithTableName, $c);
 
 
