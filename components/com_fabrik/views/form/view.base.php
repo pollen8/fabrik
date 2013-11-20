@@ -279,7 +279,8 @@ class FabrikViewFormBase extends JViewLegacy
 
 		if (!$this->isMambot)
 		{
-			$browserTitle = $model->getPageTitle($menu_params->get('page_title'));
+			$browserTitle = $app->isAdmin() ? '' : $menu_params->get('page_title');
+			$browserTitle = $model->getPageTitle($browserTitle);
 			$document->setTitle($w->parseMessageForPlaceHolder($browserTitle, $_REQUEST));
 		}
 	}
