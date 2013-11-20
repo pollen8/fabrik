@@ -1745,7 +1745,11 @@ class FabrikFEModelForm extends FabModelForm
 
 		foreach ($groupModels as $groupModel)
 		{
-			$groupModel->process();
+			// Jaanus: if group is visible
+			if ($groupModel->canView() && $groupModel->canEdit()) 
+			{
+				$groupModel->process();
+			}
 		}
 	}
 
