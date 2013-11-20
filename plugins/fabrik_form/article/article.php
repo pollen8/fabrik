@@ -105,7 +105,7 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 	 *
 	 * @return mixed
 	 */
-	protected function findElementData($elementId, $default)
+	protected function findElementData($elementId, $default = '')
 	{
 		$formModel = $this->getModel();
 		$value = '';
@@ -252,7 +252,7 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 		}
 
 		$table = JTable::getInstance('Content');
-		$alias = $data['title'];
+		$alias = JStringNormalise::toDashSeparated($data['title']);
 		$title = $data['title'];
 
 		while ($table->load(array('alias' => $alias, 'catid' => $catid)))

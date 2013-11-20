@@ -101,6 +101,7 @@ class PlgFabrik_ListArticle extends PlgFabrik_List
 				{
 					$input->set('rowid', $id);
 					$formModel->setRowId($id);
+					$formModel->unsetData();
 					$formModel->formData = $formModel->formDataWithTableName = $formModel->getData();
 					$articlePlugin->setModel($formModel);
 					$articlePlugin->setParams($formParams, $c);
