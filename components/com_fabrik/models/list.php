@@ -5443,7 +5443,7 @@ class FabrikFEModelList extends JModelForm
 	/**
 	 * Get the random lmit start val
 	 *
-	 * @return  int	 limit start
+	 * @return  int	 Limit start
 	 */
 
 	protected function getRandomLimitStart()
@@ -5460,13 +5460,10 @@ class FabrikFEModelList extends JModelForm
 		*/
 		$query = $db->getQuery(true);
 		$query->select('FLOOR(RAND() * COUNT(*) + 1) AS ' . $db->quoteName('offset'))->from($db->quoteName($table->db_table_name));
-		$query = $this->buildQueryWhere($query);
+		$query = $this->buildQueryWhere(true, $query);
 		$db->setQuery($query);
-		/* $db
-		 ->setQuery(
-		 		'SELECT FLOOR(RAND() * COUNT(*) + 1) AS ' . $db->quoteName('offset') . ' FROM ' . $db->quoteName($table->db_table_name) . ' '
-		 		. $this->buildQueryWhere()); */
 		$limitstart = $db->loadResult();
+
 		/*$$$ rob 11/01/2011 cant do this as we dont know what the total is yet
 		 $$$ rob ensure that the limitstart + limit isn't greater than the total
 		if ($limitstart + $limit > $total) {
