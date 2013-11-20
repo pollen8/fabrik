@@ -66,7 +66,7 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 	{
 		$params = $this->getParams();
 		$data = array('articletext' => $this->buildContent(), 'catid' => $catid, 'state' => 1, 'language' => '*');
-		$attribs = array('title', 'publish_up', 'publish_down', 'featured', 'state', 'metadesc', 'metakey');
+		$attribs = array('title' => '', 'publish_up' => '', 'publish_down' => '', 'featured' => '0', 'state' => '1', 'metadesc' => '', 'metakey' => '');
 
 		$data['images'] = json_encode($this->images());
 
@@ -81,10 +81,10 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 			$data['modified_by'] = JFactory::getUser()->id;
 		}
 
-		foreach ($attribs as $attrib)
+		foreach ($attribs as $attrib => $default)
 		{
-			$elementId = $params->get($attrib);
-			$data[$attrib] = $this->findElementData($elementId);
+			$elementId = (int) $params->get($attrib);
+			$data[$attrib] = $this->findElementData($elementId, $default);
 		}
 
 		$this->generateNewTitle($id, $catid, $data);
@@ -100,20 +100,25 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 	/**
 	 * Get the element data from the Fabrik form
 	 *
-	 * @param   int    $elementId  Element id
-	 * @param   array  $data       Data
+	 * @param   int     $elementId  Element id
+	 * @param   string  $default    Default value
 	 *
 	 * @return mixed
 	 */
-	protected function findElementData($elementId)
+	protected function findElementData($elementId, $default)
 	{
 		$formModel = $this->getModel();
 		$value = '';
 
+		if ($elementId === 0)
+		{
+			return $default;
+		}
+
 		if ($elementModel = $formModel->getElement($elementId, true))
 		{
 			$fullName = $elementModel->getFullName(true, false);
-			$value = $formModel->getElementData($fullName, false, '', 0);
+			$value = $formModel->getElementData($fullName, false, $default, 0);
 
 			if (is_array($value))
 			{
@@ -186,6 +191,15 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 			return '';
 		}
 
+		// Initial upload $file is json data / ajax upload?
+		if ($f = json_decode($file))
+		{
+			if (array_key_exists(0, $f))
+			{
+				$file = $f[0]->file;
+			}
+		}
+
 		$formModel = $this->getModel();
 		$elementModel = $formModel->getElement($elementId, true);
 
@@ -232,6 +246,8 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 		// If its an existing article don't edit name
 		if ((int) $id !== 0)
 		{
+			$data['alias'] = JStringNormalise::toDashSeparated($data['title']);
+
 			return;
 		}
 
