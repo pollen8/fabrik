@@ -1293,6 +1293,7 @@ class FabrikFEModelList extends JModelForm
 		$action = $app->isAdmin() ? 'task' : 'view';
 		$query = $db->getQuery(true);
 		$query->select('id, label, db_table_name')->from('#__{package}_lists');
+		$query->where('published <> -2');
 		$db->setQuery($query);
 		$aTableNames = $db->loadObjectList('label');
 		$cx = count($data);
