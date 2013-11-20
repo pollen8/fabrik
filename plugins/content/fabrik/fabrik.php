@@ -197,6 +197,7 @@ class PlgContentFabrik extends JPlugin
 		$layoutFound = false;
 		$rowid = '';
 		$usekey = '';
+		$limit = false;
 		$defaultLayout = FabrikWorker::j3() ? 'bootstrap' : 'default';
 		$session = JFactory::getSession();
 		$usersConfig->set('rowid', 0);
