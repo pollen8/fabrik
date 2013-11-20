@@ -242,6 +242,7 @@ class FabrikViewFormBase extends JViewLegacy
 		$app = JFactory::getApplication();
 		$input = $app->input;
 		$title = '';
+		$browserTitle = '';
 
 		if ($app->getName() !== 'administrator')
 		{
@@ -254,6 +255,7 @@ class FabrikViewFormBase extends JViewLegacy
 				$menu_params = is_a($menu->params, 'JRegistry') ? $menu->params : new JRegistry($menu->params);
 				$params->set('page_heading', $menu_params->get('page_heading', ''));
 				$params->set('show_page_heading', $menu_params->get('show_page_heading', 0));
+				$browserTitle = $menu_params->get('page_title');
 			}
 			else
 			{
@@ -279,7 +281,6 @@ class FabrikViewFormBase extends JViewLegacy
 
 		if (!$this->isMambot)
 		{
-			$browserTitle = $app->isAdmin() ? '' : $menu_params->get('page_title');
 			$browserTitle = $model->getPageTitle($browserTitle);
 			$document->setTitle($w->parseMessageForPlaceHolder($browserTitle, $_REQUEST));
 		}
