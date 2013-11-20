@@ -220,7 +220,6 @@ class PlgContentFabrik extends JPlugin
 				case 'layout':
 					$layoutFound = true;
 					$layout = $m[1];
-					$origLayout = $input->get('layout');
 					$input->set('layout', $layout);
 					break;
 				case 'row':
@@ -386,6 +385,7 @@ class PlgContentFabrik extends JPlugin
 			}
 			else
 			{
+				$this->_setRequest($unused);
 				$row = $model->getRow($rowid, false, true);
 
 				if (substr($element, JString::strlen($element) - 4, JString::strlen($element)) !== '_raw')
@@ -426,6 +426,7 @@ class PlgContentFabrik extends JPlugin
 				}
 
 				$input->set('rowid', $origRowid);
+				$this->resetRequest();
 			}
 
 			return $res;
