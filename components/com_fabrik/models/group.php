@@ -193,7 +193,7 @@ class FabrikFEModelGroup extends FabModel
 		$this->canEdit = true;
 
 		// If group show is type 5, then always read only.
-		if ($params->get('repeat_group_show_first', '1') == '5')
+		if (in_array($params->get('repeat_group_show_first', '1'), array('2','5')))
 		{
 			$this->canEdit = false;
 
@@ -287,9 +287,9 @@ class FabrikFEModelGroup extends FabModel
 		}
 
 		// If editable but only show group in details view:
-		if ($formModel->isEditable() && $showGroup == 2)
+		if (!($formModel->isEditable() && $showGroup == 2))
 		{
-			$this->canView = false;
+			$this->canView = true;
 		}
 
 		// If form not editable and show group in form view:
