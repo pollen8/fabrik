@@ -250,6 +250,8 @@ class PlgContentFabrik extends JPlugin
 				case 'list':
 					$listid = $m[1];
 					break;
+				case 'limit':
+					$limit = $m[1];
 				case 'usekey':
 					$usekey = $m[1];
 					break;
@@ -508,7 +510,21 @@ class PlgContentFabrik extends JPlugin
 				}
 
 				$input->set('listid', $id);
+
+				// Allow for simple limit=2 in plugin declaration
+				if ($limit)
+				{
+					$limitKey = 'limit' . $id;
+					$this->origRequestVars[$limitKey] = $input->get($limitKey);
+					$input->set($limitKey, $limit);
+				}
+
 				$this->_setRequest($unused);
+
+				// Allow for random=1 (which has to map to fabrik_random for list views)
+				$origRandom = $input->get('fabrik_random');
+				$input->set('fabrik_random', $input->get('random', $origRandom));
+
 				$input->set('showfilters', $showfilters);
 				$input->set('clearfilters', $clearfilters);
 				$input->set('resetfilters', $resetfilters);
@@ -582,6 +598,11 @@ class PlgContentFabrik extends JPlugin
 		if ($origFFlayout != '')
 		{
 			$input->set('flayout', $origFFlayout);
+		}
+
+		if ($origRandom)
+		{
+			$input->set('fabrik_random', $origRandom);
 		}
 
 		$this->resetRequest();
