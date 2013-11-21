@@ -68,6 +68,7 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 		$user = JFactory::getUser();
 		$config = JFactory::getConfig();
 		$db = JFactory::getDbo();
+		$w = new FabrikWorker;
 		$this->formModel = $formModel;
 		$formParams = $formModel->getParams();
 		$emailTemplate = JPath::clean(JPATH_SITE . '/plugins/fabrik_form/email/tmpl/' . $params->get('email_template', ''));
@@ -87,28 +88,54 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 		// Always send as html as even text email can contain html from wysiwg editors
 		$htmlEmail = true;
 
+		$messageTemplate = '';
+
 		if (JFile::exists($emailTemplate))
 		{
-			$message = JFile::getExt($emailTemplate) == 'php' ? $this->_getPHPTemplateEmail($emailTemplate, $formModel) : $this
+			$messageTemplate = JFile::getExt($emailTemplate) == 'php' ? $this->_getPHPTemplateEmail($emailTemplate, $formModel) : $this
 				->_getTemplateEmail($emailTemplate);
 
 			// $$$ hugh - added ability for PHP template to return false to abort, same as if 'condition' was was false
-			if ($message === false)
+			if ($messageTemplate === false)
 			{
 				return;
 			}
-			$message = str_replace('{content}', $content, $message);
+
+			$messageTemplate = str_replace('{content}', $content, $messageTemplate);
+		}
+
+		$messageText = $params->get('email_message_text', '');
+
+		if (!empty($messageText))
+		{
+			$messageText = $w->parseMessageForPlaceholder($messageText, $this->data, false);
+			$messageText = str_replace('{content}', $content, $messageText);
+			$messageText = str_replace('{template}', $messageTemplate, $messageText);
+		}
+
+		$message = '';
+
+		if (!empty($messageText))
+		{
+			$message = $messageText;
+		}
+		elseif (!empty($messageTemplate))
+		{
+			$message = $messageTemplate;
+		}
+		elseif (!empty($content))
+		{
+			$message = $content;
 		}
 		else
 		{
-			$message = $contentTemplate != '' ? $content : $this->_getTextEmail();
+			$message = $this->_getTextEmail();
 		}
 
 		$this->addAttachments($params);
 
 		$cc = null;
 		$bcc = null;
-		$w = new FabrikWorker;
 
 		// $$$ hugh - test stripslashes(), should be safe enough.
 		$message = stripslashes($message);
@@ -189,6 +216,19 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 			$email_from_name = $config->get('fromname', $email_from);
 		}
 
+		// Changes by JFQ
+		@list($return_path, $return_path_name) = explode(":", $w->parseMessageForPlaceholder($params->get('return_path'), $this->data, false), 2);
+
+		if (empty($return_path))
+		{
+			$return_path = null;
+		}
+
+		if (empty($return_path_name))
+		{
+			$return_path_name = null;
+		}
+		// End changes
 		$subject = $params->get('email_subject');
 
 		if ($subject == '')
@@ -254,9 +294,15 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 						$attach_fname = '';
 					}
 				}
+
+				$this->pdfAttachement($params, $formModel, $thisAttachments);
+
 				// Get a JMail instance (have to get a new instance otherwise the receipients are appended to previously added recipients)
 				$mail = JFactory::getMailer();
-				$res = $mail->sendMail($email_from, $email_from_name, $email, $thisSubject, $thisMessage, $htmlEmail, $cc, $bcc, $thisAttachments);
+				$res = $mail->sendMail(
+					$email_from, $email_from_name, $email, $thisSubject, $thisMessage,
+					$htmlEmail, $cc, $bcc, $thisAttachments, $return_path, $return_path_name
+				);
 
 				/*
 				 * $$$ hugh - added some error reporting, but not sure if 'invalid address' is the appropriate message,
@@ -278,6 +324,95 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 			}
 		}
 		return true;
+	}
+
+	/**
+	 * Attach the details view as a PDF to the email
+	 *
+	 * @param   string  $tmpl              Path to template
+	 * @param   object  $model             Form model for this plugin
+	 * @param   array   &$thisAttachments  Attachements
+	 *
+	 * @throws  RuntimeException
+	 *
+	 * @return  void
+	 */
+
+	protected function pdfAttachement($params, $model, &$thisAttachments)
+	{
+
+		if ($params->get('attach_pdf', 0) == 0)
+		{
+			return;
+		}
+
+		$document = JFactory::getDocument();
+		$config = JFactory::getConfig();
+		$docType = $document->getType();
+		$document->setType('pdf');
+		$app = JFactory::getApplication();
+		$input = $app->input;
+
+		$orig['details'] = $input->get('view');
+		$orig['format'] = $input->get('format');
+
+		$input->set('view', 'details');
+		JRequest::setVar('view', 'details');
+		$input->set('format', 'pdf');
+
+		// Ensure the package is set to fabrik
+		$prevUserState = $app->getUserState('com_fabrik.package');
+		$app->setUserState('com_fabrik.package', 'fabrik');
+
+		try {
+			// Require files and set up DOM pdf
+			require_once JPATH_SITE . '/components/com_fabrik/helpers/pdf.php';
+			require JPATH_SITE . '/components/com_fabrik/controllers/details.php';
+			FabrikPDFHelper::iniDomPdf();
+			$dompdf = new DOMPDF();
+			$size = strtoupper($params->get('pdf_size', 'A4'));
+			$orientation = $params->get('pdf_orientation', 'portrait');
+			$dompdf->set_paper($size, $orientation);
+
+			// Store in output buffer
+			ob_start();
+			$controller = new FabrikControllerDetails;
+			$controller->display();
+			$html = ob_get_contents();
+			ob_end_clean();
+
+			// Load the HTML into DOMPdf and render it.
+			$dompdf->load_html($html);
+			$dompdf->render();
+
+			// Store the file in the tmp folder so it can be attached
+			$file = $config->get('tmp_path') . '/' . JStringNormalise::toDashSeparated($model->getForm()->label . '-' . $input->getString('rowid')) . '.pdf';
+
+			if (JFile::write($file, $dompdf->output()))
+			{
+				$thisAttachments[] = $file;
+			}
+			else
+			{
+				throw new RuntimeException('Could not write PDF file to tmp folder');
+			}
+		}
+		catch (Exception $e)
+		{
+			$app->enqueueMessage($e->getMessage(), 'error');
+		}
+
+		// Set the package back to what it was before rendering the module
+		$app->setUserState('com_fabrik.package', $prevUserState);
+
+		// Reset input
+		foreach ($orig as $key => $val)
+		{
+			$input->set($key, $val);
+		}
+
+		// Reset docuemnt type
+		$document->setType($docType);
 	}
 
 	/**
@@ -477,6 +612,7 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 
 				// @TODO - how about adding a 'renderEmail()' method to element model, so specific element types  can render themselves?
 				$key = (!array_key_exists($element->name, $data)) ? $elementModel->getFullName(false, true, false) : $element->name;
+
 				if (!in_array($key, $ignore))
 				{
 					$val = '';
@@ -523,6 +659,7 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 
 		$message = JText::_('Email from') . ' ' . $config->get('sitename') . '<br />' . JText::_('Message') . ':'
 			. "<br />===================================<br />" . "<br />" . stripslashes($message);
+
 		return $message;
 	}
 }
