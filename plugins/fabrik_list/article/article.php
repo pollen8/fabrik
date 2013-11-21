@@ -29,7 +29,7 @@ class PlgFabrik_ListArticle extends PlgFabrik_List
 	 *
 	 * @var string
 	 */
-	protected $buttonPrefix = 'article';
+	protected $buttonPrefix = 'file';
 
 	/**
 	 * Prep the button if needed
@@ -66,6 +66,19 @@ class PlgFabrik_ListArticle extends PlgFabrik_List
 	public function canSelectRows()
 	{
 		return true;
+	}
+
+	/**
+	 * Get the button label
+	 *
+	 * @return  string
+	 */
+
+	protected function buttonLabel()
+	{
+		$s = JString::strtoupper($this->buttonPrefix);
+
+		return JText::_('PLG_LIST_ARTICLE_UPDATE_ARTICLE');
 	}
 
 	/**

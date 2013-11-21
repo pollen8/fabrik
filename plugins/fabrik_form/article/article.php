@@ -136,7 +136,13 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 	 */
 	protected function images()
 	{
+		if (isset($this->images))
+		{
+			return $this->images;
+		}
+
 		$params = $this->getParams();
+		$formModel = $this->getModel();
 		$introImg = $params->get('image_intro', '');
 		$fullImg = $params->get('image_full', '');
 		$img = new stdClass;
@@ -144,7 +150,7 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 		if ($introImg !== '')
 		{
 			$size = $params->get('image_intro_size', 'cropped');
-			$file = $this->setImage($introImg, $size);
+			list($file, $placeholder) = $this->setImage($introImg, $size);
 
 			if ($file !== '')
 			{
@@ -153,13 +159,21 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 				$img->float_intro = '';
 				$img->image_intro_alt = '';
 				$img->image_intro_caption = '';
+
+				$elementModel = $formModel->getElement($introImg, true);
+
+				if (get_class($elementModel) === 'PlgFabrik_ElementFileupload')
+				{
+					$name = $elementModel->getFullName(true, false);
+					$img->$name = $placeholder;
+				}
 			}
 		}
 
 		if ($fullImg !== '')
 		{
 			$size = $params->get('image_full_size', 'thumb');
-			$file = $this->setImage($fullImg, $size);
+			list($file, $placeholder) = $this->setImage($fullImg, $size);
 
 			if ($file !== '')
 			{
@@ -168,10 +182,19 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 				$img->float_fulltext = '';
 				$img->image_fulltext_alt = '';
 				$img->image_fulltext_caption = '';
+
+				$elementModel = $formModel->getElement($fullImg, true);
+
+				if (get_class($elementModel) === 'PlgFabrik_ElementFileupload')
+				{
+					$name = $elementModel->getFullName(true, false);
+					$img->$name = $placeholder;
+				}
 			}
 		}
 
-		return $img;
+		$this->images = $img;
+		return $this->images;
 	}
 
 	/**
@@ -180,7 +203,7 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 	 * @param   int     $elementId  Element id
 	 * @param   string  $size       Type of file to find (cropped/thumb/full)
 	 *
-	 * @return  string
+	 * @return  array   ($image, $placeholder)
 	 */
 	protected function setImage($elementId, $size)
 	{
@@ -205,6 +228,11 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 
 		if (get_class($elementModel) === 'PlgFabrik_ElementFileupload')
 		{
+			$name = $elementModel->getHTMLName();
+			$data[$name] = $file;
+			$elementModel->setEditable(false);
+			$placeholder = $elementModel->render($data);
+
 			$storage = $elementModel->getStorage();
 			$file = $storage->clean(JPATH_SITE . '/' . $file);
 			$file = $storage->pathToURL($file);
@@ -227,9 +255,10 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 			{
 				$file = FabrikString::ltrimiword($file, $first);
 			}
+
 		}
 
-		return $file;
+		return array($file, $placeholder);
 	}
 
 	/**
@@ -332,7 +361,9 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 	{
 		$formModel = $this->getModel();
 		$params = $this->getParams();
+		$deleteMode = $params->get('delete_mode', 'DELETE');
 		$item = JTable::getInstance('Content');
+		$userId = JFactory::getUser()->get('id');
 
 		if ($elementModel = $formModel->getElement($params->get('meta_store'), true))
 		{
@@ -351,7 +382,19 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 
 							foreach ($store as $catid => $articleId)
 							{
-								$item->delete($articleId);
+								switch ($deleteMode)
+								{
+									case 'DELETE':
+										$item->delete($articleId);
+										break;
+									case 'UNPUBLISH':
+										$item->publish($articleId, 0, $userId);
+										break;
+									case 'TRASH':
+										$item->publish($articleId, -2, $userId);
+										break;
+								}
+
 							}
 						}
 					}
@@ -371,6 +414,7 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 	 */
 	protected function buildContent()
 	{
+		$images = $this->images();
 		$formModel = $this->getModel();
 		$app = JFactory::getApplication();
 		$input = $app->input;
@@ -416,6 +460,12 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 		$message = str_replace('{fabrik_viewlink}', $viewlink, $message);
 		$message = str_replace('{fabrik_editurl}', $editURL, $message);
 		$message = str_replace('{fabrik_viewurl}', $viewURL, $message);
+
+		foreach ($images as $key => $val)
+		{
+			$this->data[$key] = $val;
+		}
+
 		$w = new FabrikWorker;
 		$output = $w->parseMessageForPlaceholder($message, $this->data, true);
 
