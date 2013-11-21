@@ -1,7 +1,7 @@
 <?php
 /**
  * @package dompdf
- * @link    http://www.dompdf.com/
+ * @link    http://dompdf.github.com/
  * @author  Benj Carson <benjcarson@digitaljunkies.ca>
  * @author  Fabien Ménager <fabien.menager@gmail.com>
  * @license http://www.gnu.org/copyleft/lesser.html GNU Lesser General Public License
@@ -247,7 +247,7 @@ class DOMPDF {
     $this->_messages = array();
     $this->_css = new Stylesheet($this);
     $this->_pdf = null;
-    $this->_paper_size = "letter";
+    $this->_paper_size = DOMPDF_DEFAULT_PAPER_SIZE;
     $this->_paper_orientation = "portrait";
     $this->_base_protocol = "";
     $this->_base_host = "";
@@ -314,7 +314,8 @@ class DOMPDF {
       return;
     }
 
-    $this->_system_locale = setlocale(LC_NUMERIC, "C");
+    $this->_system_locale = setlocale(LC_NUMERIC, "0");
+    setlocale(LC_NUMERIC, "C");
   }
 
   /**
@@ -479,8 +480,9 @@ class DOMPDF {
 
     if ($this->_protocol == "" || $this->_protocol === "file://") {
 
+      // Get the full path to $file, returns false if the file doesn't exist
       $realfile = realpath($file);
-      if ( !$file ) {
+      if ( !$realfile ) {
         throw new DOMPDF_Exception("File '$file' not found.");
       }
 
@@ -673,8 +675,6 @@ class DOMPDF {
    * the {@link Frame_Tree}
    */
   protected function _process_html() {
-    $this->save_locale();
-
     $this->_tree->build_tree();
 
     $this->_css->load_css_file(Stylesheet::DEFAULT_STYLESHEET, Stylesheet::ORIG_UA);
@@ -757,8 +757,6 @@ class DOMPDF {
           break;
       }
     }
-
-    $this->restore_locale();
   }
 
   /**

@@ -1,7 +1,7 @@
 <?php
 /**
  * @package dompdf
- * @link    http://www.dompdf.com/
+ * @link    http://dompdf.github.com/
  * @author  Benj Carson <benjcarson@digitaljunkies.ca>
  * @author  Helmut Tischer <htischer@weihenstephan.org>
  * @license http://www.gnu.org/copyleft/lesser.html GNU Lesser General Public License
@@ -120,7 +120,14 @@ class List_Bullet_Renderer extends Abstract_Renderer {
     $line_height = $style->length_in_pt($style->line_height, $frame->get_containing_block("w"));
 
     $this->_set_opacity( $frame->get_opacity( $style->opacity ) );
-    
+
+    $li = $frame->get_parent();
+
+    // Don't render bullets twice if if was split
+    if ($li->_splitted) {
+      return;
+    }
+
     // Handle list-style-image
     // If list style image is requested but missing, fall back to predefined types
     if ( $style->list_style_image !== "none" &&
@@ -187,16 +194,20 @@ class List_Bullet_Renderer extends Abstract_Renderer {
       case "i":
       case "A":
       case "I":
-        $li = $frame->get_parent();
-        
         $pad = null;
         if ( $bullet_style === "decimal-leading-zero" ) {
           $pad = strlen($li->get_parent()->get_node()->getAttribute("dompdf-children-count"));
         }
-        
-        $index = $frame->get_node()->getAttribute("dompdf-counter");
+
+        $node = $frame->get_node();
+
+        if ( !$node->hasAttribute("dompdf-counter") ) {
+          return;
+        }
+
+        $index = $node->getAttribute("dompdf-counter");
         $text = $this->make_counter($index, $bullet_style, $pad);
-        
+
         if ( trim($text) == "" ) {
           return;
         }

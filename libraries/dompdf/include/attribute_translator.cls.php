@@ -1,7 +1,7 @@
 <?php
 /**
  * @package dompdf
- * @link    http://www.dompdf.com/
+ * @link    http://dompdf.github.com/
  * @author  Benj Carson <benjcarson@digitaljunkies.ca>
  * @author  Fabien Ménager <fabien.menager@gmail.com>
  * @license http://www.gnu.org/copyleft/lesser.html GNU Lesser General Public License
@@ -28,7 +28,7 @@ class Attribute_Translator {
         'left'   => 'float: left;',
         'right'  => 'float: right;'
       ),
-      'border' => 'border-width: %0.2F px;',
+      'border' => 'border: %0.2F px solid;',
       'height' => 'height: %s px;',
       'hspace' => 'padding-left: %1$0.2F px; padding-right: %1$0.2F px;',
       'vspace' => 'padding-top: %1$0.2F px; padding-bottom: %1$0.2F px;',

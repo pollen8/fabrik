@@ -1,7 +1,7 @@
 <?php
 /**
  * @package dompdf
- * @link    http://www.dompdf.com/
+ * @link    http://dompdf.github.com/
  * @author  Benj Carson <benjcarson@digitaljunkies.ca>
  * @author  Orion Richardson <orionr@yahoo.com>
  * @author  Helmut Tischer <htischer@weihenstephan.org>
@@ -214,6 +214,14 @@ class CPDF_Adapter implements Canvas {
    */
   function __destruct() {
     foreach ($this->_image_cache as $img) {
+      // The file might be already deleted by 3rd party tmp cleaner,
+      // the file might not have been created at all
+      // (if image outputting commands failed)
+      // or because the destructor was called twice accidentally.
+      if (!file_exists($img)) {
+        continue;
+      }
+
       if (DEBUGPNG) print '[__destruct unlink '.$img.']';
       if (!DEBUGKEEPTEMP) unlink($img);
     }
@@ -369,9 +377,9 @@ class CPDF_Adapter implements Canvas {
   function set_page_count($count) {  $this->_page_count = $count; }
     
   /**
-   * Sets the stroke colour
+   * Sets the stroke color
    *
-   * See {@link Style::set_colour()} for the format of the color array.
+   * See {@link Style::set_color()} for the format of the color array.
    * @param array $color
    */
   protected function _set_stroke_color($color) {
@@ -381,7 +389,7 @@ class CPDF_Adapter implements Canvas {
   /**
    * Sets the fill colour
    *
-   * See {@link Style::set_colour()} for the format of the colour array.
+   * See {@link Style::set_color()} for the format of the colour array.
    * @param array $color
    */
   protected function _set_fill_color($color) {
@@ -749,7 +757,7 @@ class CPDF_Adapter implements Canvas {
    * The strings '{PAGE_NUM}' and '{PAGE_COUNT}' are automatically replaced
    * with their current values.
    *
-   * See {@link Style::munge_colour()} for the format of the colour array.
+   * See {@link Style::munge_color()} for the format of the colour array.
    *
    * @param float $x
    * @param float $y
