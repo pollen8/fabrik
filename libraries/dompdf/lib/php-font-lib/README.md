@@ -1,10 +1,9 @@
-# PHP-font-lib
+This library can be used to:
+ * Read TrueType, OpenType (with TrueType glyphs), WOFF font files
+ * Extract basic info (name, style, etc)
+ * Extract advanced info (horizontal metrics, glyph names, glyph shapes, etc)
+ * Make an Adobe Font Metrics (AFM) file from a font
 
-To use DOMPDF you must copy PHP-font-lib to this directory.
+You can find a demo GUI [here](http://pxd.me/php-font-lib/www/font_explorer.html).
 
-PHP-font-lib is available here: https://github.com/PhenX/php-font-lib
-
-If you installed DOMPDF using composer, PHP-font-lib will already be
-installed as a dependency, and you can leave this directory empty.
-
-For more details on composer, please visit http://getcomposer.org/
+This project was initiated by the need to read font files in the [DOMPDF project](https://github.com/dompdf/dompdf).
