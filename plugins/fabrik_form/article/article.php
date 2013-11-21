@@ -388,10 +388,12 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 										$item->delete($articleId);
 										break;
 									case 'UNPUBLISH':
-										$item->publish($articleId, 0, $userId);
+
+										$ok = $item->publish(array($articleId), 0, $userId);
+										echo "unpub $articleId $ok";exit;
 										break;
 									case 'TRASH':
-										$item->publish($articleId, -2, $userId);
+										$item->publish(array($articleId), -2, $userId);
 										break;
 								}
 
