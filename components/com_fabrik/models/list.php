@@ -11537,6 +11537,7 @@ class FabrikFEModelList extends JModelForm
 		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$listid = $this->getId();
 		$tabsField = $this->getTabField();
+		$itemId = FabrikWorker::itemId();
 		$uri = JURI::getInstance();
 		$urlBase = $uri->toString(array('path'));
 		$urlBase .= '?option=com_' . $package . '&';
@@ -11574,6 +11575,11 @@ class FabrikFEModelList extends JModelForm
 			{
 				list($low, $high) = $range;
 				$row->url = sprintf($urlEquals, sprintf($urlRange, $low, $high));
+			}
+
+			if ($itemId)
+			{
+				$row->url .= '&Itemid=' . $itemId;
 			}
 
 			$row->class = ($thisUri == $row->url) ? 'class="active"' : '';
