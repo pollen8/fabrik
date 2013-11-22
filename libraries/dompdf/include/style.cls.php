@@ -1,7 +1,7 @@
 <?php
 /**
  * @package dompdf
- * @link    http://www.dompdf.com/
+ * @link    http://dompdf.github.com/
  * @author  Benj Carson <benjcarson@digitaljunkies.ca>
  * @author  Helmut Tischer <htischer@weihenstephan.org>
  * @author  Fabien Ménager <fabien.menager@gmail.com>
@@ -12,7 +12,7 @@
  * Represents CSS properties.
  *
  * The Style class is responsible for handling and storing CSS properties.
- * It includes methods to resolve colours and lengths, as well as getters &
+ * It includes methods to resolve colors and lengths, as well as getters &
  * setters for many CSS properites.
  *
  * Actual CSS parsing is performed in the {@link Stylesheet} class.
@@ -261,6 +261,7 @@ class Style {
       $d["height"] = "auto";
       $d["image_resolution"] = "normal";
       $d["_dompdf_image_resolution"] = $d["image_resolution"];
+      $d["_dompdf_keep"] = "";
       $d["left"] = "auto";
       $d["letter_spacing"] = "normal";
       $d["line_height"] = "normal";
@@ -336,53 +337,54 @@ class Style {
       $d["unicode_range"] = "";
 
       // Properties that inherit by default
-      self::$_inherited = array("azimuth",
-                                 "background_image_resolution",
-                                 "border_collapse",
-                                 "border_spacing",
-                                 "caption_side",
-                                 "color",
-                                 "cursor",
-                                 "direction",
-                                 "elevation",
-                                 "empty_cells",
-                                 "font_family",
-                                 "font_size",
-                                 "font_style",
-                                 "font_variant",
-                                 "font_weight",
-                                 "font",
-                                 "image_resolution",
-                                 "letter_spacing",
-                                 "line_height",
-                                 "list_style_image",
-                                 "list_style_position",
-                                 "list_style_type",
-                                 "list_style",
-                                 "orphans",
-                                 "page_break_inside",
-                                 "pitch_range",
-                                 "pitch",
-                                 "quotes",
-                                 "richness",
-                                 "speak_header",
-                                 "speak_numeral",
-                                 "speak_punctuation",
-                                 "speak",
-                                 "speech_rate",
-                                 "stress",
-                                 "text_align",
-                                 "text_indent",
-                                 "text_transform",
-                                 "visibility",
-                                 "voice_family",
-                                 "volume",
-                                 "white_space",
-                                 "word_wrap",
-                                 "widows",
-                                 "word_spacing");
+      self::$_inherited = array(
+        "azimuth",
+        "background_image_resolution",
+        "border_collapse",
+        "border_spacing",
+        "caption_side",
+        "color",
+        "cursor",
+        "direction",
+        "elevation",
+        "empty_cells",
+        "font_family",
+        "font_size",
+        "font_style",
+        "font_variant",
+        "font_weight",
+        "font",
+        "image_resolution",
+        "letter_spacing",
+        "line_height",
+        "list_style_image",
+        "list_style_position",
+        "list_style_type",
+        "list_style",
+        "orphans",
+        "page_break_inside",
+        "pitch_range",
+        "pitch",
+        "quotes",
+        "richness",
+        "speak_header",
+        "speak_numeral",
+        "speak_punctuation",
+        "speak",
+        "speech_rate",
+        "stress",
+        "text_align",
+        "text_indent",
+        "text_transform",
+        "visibility",
+        "voice_family",
+        "volume",
+        "white_space",
+        "word_wrap",
+        "widows",
+        "word_spacing",
+      );
     }
-
   }
 
   /**
@@ -623,23 +625,17 @@ class Style {
       $this->__font_size_calculated = false;
     }
   }
-  
+
   /**
    * Returns an array(r, g, b, "r"=> r, "g"=>g, "b"=>b, "hex"=>"#rrggbb")
-   * based on the provided CSS colour value.
-   *
-   * @param string $colour
-   * @return array
-   */
-  function munge_colour($colour) { return CSS_Color::parse($colour); }
-  
-  /**
-   * Alias for {@link Style::munge_colour()}
+   * based on the provided CSS color value.
    *
    * @param string $color
    * @return array
    */
-  function munge_color($color) { return CSS_Color::parse($color); }
+  function munge_color($color) {
+    return CSS_Color::parse($color);
+  }
 
   /* direct access to _important_props array from outside would work only when declared as
    * 'var $_important_props;' instead of 'protected $_important_props;'
@@ -957,7 +953,7 @@ class Style {
   }
 
   /**
-   * Returns the colour as an array
+   * Returns the color as an array
    *
    * The array has the following format:
    * <code>array(r,g,b, "r" => r, "g" => g, "b" => b, "hex" => "#rrggbb")</code>
@@ -970,7 +966,7 @@ class Style {
   }
 
   /**
-   * Returns the background colour as an array
+   * Returns the background color as an array
    *
    * The returned array has the same format as {@link Style::get_color()}
    *
@@ -1116,7 +1112,7 @@ class Style {
 
 
   /**#@+
-   * Returns the border colour as an array
+   * Returns the border color as an array
    *
    * See {@link Style::get_color()}
    *
@@ -1313,7 +1309,7 @@ class Style {
 
 
   /**
-   * Returns the outline colour as an array
+   * Returns the outline color as an array
    *
    * See {@link Style::get_color()}
    *
@@ -1367,7 +1363,11 @@ class Style {
    * @return array
    */
   function get_border_spacing() {
-    return explode(" ", $this->_props["border_spacing"]);
+    $arr = explode(" ", $this->_props["border_spacing"]);
+    if ( count($arr) == 1 ) {
+      $arr[1] = $arr[0];
+    }
+    return $arr;
   }
 
 /*==============================*/
@@ -1525,33 +1525,36 @@ class Style {
 /*======================*/
 
   /**
-   * Sets colour
+   * Sets color
    *
-   * The colour parameter can be any valid CSS colour value
+   * The color parameter can be any valid CSS color value
    *
    * @link http://www.w3.org/TR/CSS21/colors.html#propdef-color
-   * @param string $colour
+   * @param string $color
    */
-  function set_color($colour) {
-    $col = $this->munge_colour($colour);
+  function set_color($color) {
+    $col = $this->munge_color($color);
 
-    if ( is_null($col) ) {
-      $col = self::$_defaults["color"];
+    if ( is_null($col) || !isset($col["hex"]) ) {
+      $color = "inherit";
+    }
+    else {
+      $color = $col["hex"];
     }
 
     //see __set and __get, on all assignments clear cache, not needed on direct set through __set
     $this->_prop_cache["color"] = null;
-    $this->_props["color"] = $col["hex"];
+    $this->_props["color"] = $color;
   }
 
   /**
-   * Sets the background colour
+   * Sets the background color
    *
    * @link http://www.w3.org/TR/CSS21/colors.html#propdef-background-color
-   * @param string $colour
+   * @param string $color
    */
-  function set_background_color($colour) {
-    $col = $this->munge_colour($colour);
+  function set_background_color($color) {
+    $col = $this->munge_color($color);
     
     if ( is_null($col) ) {
       return;
@@ -1882,7 +1885,7 @@ class Style {
         $this->_set_style_side_type('border',$side,'_width',$value,$important);
       }
       else {
-        // must be colour
+        // must be color
         $this->_set_style_side_type('border',$side,'_color',$value,$important);
       }
     }
@@ -2026,7 +2029,7 @@ class Style {
         $this->set_outline_width($value);
       }
       else {
-        // must be colour
+        // must be color
         $this->set_outline_color($value);
       }
     }

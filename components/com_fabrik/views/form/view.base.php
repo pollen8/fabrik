@@ -4,12 +4,12 @@
  *
  * @package     Joomla
  * @subpackage  Fabrik
- * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
- * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @copyright   Copyright (C) 2005-2013 fabrikar.com - All rights reserved.
+ * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
-// Check to ensure this file is included in Joomla!
-defined('_JEXEC') or die();
+// No direct access
+defined('_JEXEC') or die('Restricted access');
 
 jimport('joomla.application.component.view');
 
@@ -21,9 +21,8 @@ jimport('joomla.application.component.view');
  * @since       3.0.6
  */
 
-class FabrikViewFormBase extends JView
+class FabrikViewFormBase extends JViewLegacy
 {
-
 	/**
 	 * Is the view rendering inside the Fabrik Joomla content plugin
 	 *
@@ -64,7 +63,7 @@ class FabrikViewFormBase extends JView
 		}
 
 		$this->isMultiPage = $model->isMultiPage();
-		list($this->plugintop, $this->pluginbottom, $this->pluginend) = $this->get('FormPluginHTML');
+		list($this->plugintop, $this->pluginbottom, $this->pluginend) = $model->getFormPluginHTML();
 		$listModel = $model->getlistModel();
 		$table = $listModel->noTable() ? null : $listModel->getTable();
 
@@ -104,25 +103,21 @@ class FabrikViewFormBase extends JView
 
 		$this->editable = $model->isEditable();
 
-		$form->label = $this->get('label');
+		$form->label = $model->getLabel();
 		$form->intro = $model->getIntro();
 		$form->outro = $model->getOutro();
-		$form->action = $this->get('Action');
+		$form->action = $model->getAction();
 		$form->class = $model->getFormClass();
 		$form->formid = $model->isEditable() ? 'form_' . $model->getId() : 'details_' . $model->getId();
 		$form->name = 'form_' . $model->getId();
 
-		if ($form->error === '')
-		{
-			$form->error = JText::_('COM_FABRIK_FAILED_VALIDATION');
-		}
-
+		$form->error = $form->error === '' ? JText::_('COM_FABRIK_FAILED_VALIDATION') : JText::_($form->error);
 		$form->origerror = $form->error;
 		$form->error = $model->hasErrors() ? $form->error : '';
 
 		JDEBUG ? $profiler->mark('form view before validation classes loaded') : null;
 
-		$tmpl = $this->get('tmpl');
+		$tmpl = $model->getTmpl();
 		$this->tmpl = $tmpl;
 
 		$this->_addButtons();
@@ -132,8 +127,9 @@ class FabrikViewFormBase extends JView
 		JDEBUG ? $profiler->mark('form view after group view got') : null;
 		$this->assignRef('data', $model->data);
 		$this->assignRef('modeldata', $model->_data);
-		$this->assignRef('params', $params);
-		$this->assign('tipLocation', $params->get('tiplocation'));
+		$this->params = $params;
+		$this->tipLocation = $params->get('tiplocation');
+
 		FabrikHelperHTML::debug($this->groups, 'form:view:groups');
 
 		// Cck in admin?
@@ -170,7 +166,7 @@ class FabrikViewFormBase extends JView
 		$list->id = $form->record_in_database ? $model->getListModel()->getTable()->id : 0;
 		$this->list = $list;
 		JDEBUG ? $profiler->mark('form view: before getRelatedTables()') : null;
-		$this->linkedTables = $this->get('RelatedTables');
+		$this->linkedTables = $model->getRelatedTables();
 		JDEBUG ? $profiler->mark('form view: after getRelatedTables()') : null;
 		$this->setMessage();
 
@@ -178,7 +174,6 @@ class FabrikViewFormBase extends JView
 
 		$root = $app->isAdmin() ? JPATH_ADMINISTRATOR : JPATH_SITE;
 		$this->addTemplatePath($root . '/templates/' . $app->getTemplate() . '/html/com_fabrik/form/' . $tmpl);
-
 		JDEBUG ? $profiler->mark('form view before template load') : null;
 	}
 
@@ -197,7 +192,7 @@ class FabrikViewFormBase extends JView
 		$model = $this->getModel();
 		$params = $model->getParams();
 
-		if ($params->get('process-jplugins') == 1 || ($params->get('process-jplugins') == 2 && $model->isEditable() === false))
+		if ($params->get('process-jplugins', 2) == 1 || ($params->get('process-jplugins', 2) == 2 && $model->isEditable() === false))
 		{
 			FabrikHelperHTML::runConentPlugins($text);
 		}
@@ -216,6 +211,7 @@ class FabrikViewFormBase extends JView
 	private function setMessage()
 	{
 		$model = $this->getModel();
+		$message = '';
 
 		if (!$model->isMultiPage())
 		{
@@ -223,8 +219,6 @@ class FabrikViewFormBase extends JView
 
 			return;
 		}
-
-		$message = '';
 
 		if ($model->sessionModel)
 		{
@@ -333,6 +327,11 @@ class FabrikViewFormBase extends JView
 		$this->printURL = '';
 		$this->showPrint = $params->get('print', $fbConfig->get('form_print', 0));
 
+		if ($app->input->getInt('print') === 1)
+		{
+			$this->showPrint = false;
+		}
+
 		if ($this->showPrint)
 		{
 			$text = JHtml::_('image', 'system/printButton.png', JText::_('JGLOBAL_PRINT'), null, true);
@@ -394,7 +393,6 @@ class FabrikViewFormBase extends JView
 		$input = $app->input;
 		$document = JFactory::getDocument();
 		$model = $this->getModel();
-
 		$aLoadedElementPlugins = array();
 		$jsActions = array();
 		$jsControllerKey = $model->isEditable() ? 'form_' . $model->getId() : 'details_' . $model->getId();
@@ -857,10 +855,12 @@ class FabrikViewFormBase extends JView
 					 * a new form element with &table___element=foo, getValue was chomping it down to just first character
 					 * see http://fabrikar.com/forums/showthread.php?p=82726#post82726
 					 */
+
 					if (is_array($input))
 					{
 						$input = JArrayHelper::getValue($input, 'raw', $input);
 					}
+
 					// $$$ hugh - the aptly named SimpleCrypt encrypt is going to barf and toss a warning if we try
 					// and encrypt a null or empty string
 					if (empty($input))
@@ -916,8 +916,10 @@ class FabrikViewFormBase extends JView
 						// Elements with sub options in repeat group
 						$i = json_encode($i);
 					}
+
 					$ar[] = $i;
 				}
+
 				$input = $isJoin ? $ar : json_encode($ar);
 			}
 			else
@@ -928,6 +930,7 @@ class FabrikViewFormBase extends JView
 					$input = json_encode($input);
 				}
 			}
+
 			if (is_array($input))
 			{
 				for ($x = 0; $x < count($input); $x++)
@@ -937,7 +940,6 @@ class FabrikViewFormBase extends JView
 						$input[$x] = $crypt->encrypt($input[$x]);
 					}
 				}
-
 			}
 			else
 			{
@@ -971,6 +973,7 @@ class FabrikViewFormBase extends JView
 					$i = $input[$c];
 					$fields[] = '<input type="hidden" name="fabrik_vars[querystring][' . $key . '][' . $c . ']" value="' . $i . '" />';
 				}
+
 				unset($fields[$key]);
 			}
 			else

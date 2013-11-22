@@ -1,7 +1,7 @@
 <?php
 /**
  * @package dompdf
- * @link    http://www.dompdf.com/
+ * @link    http://dompdf.github.com/
  * @author  Benj Carson <benjcarson@digitaljunkies.ca>
  * @author  Helmut Tischer <htischer@weihenstephan.org>
  * @author  Fabien Ménager <fabien.menager@gmail.com>
@@ -13,6 +13,12 @@ if ( !defined('PHP_VERSION_ID') ) {
   define('PHP_VERSION_ID', ($version[0] * 10000 + $version[1] * 100 + $version[2]));
 }
 
+/**
+ * Defined a constant if not already defined
+ *
+ * @param string $name  The constant name
+ * @param mixed  $value The value
+ */
 function def($name, $value = true) {
   if ( !defined($name) ) {
     define($name, $value);
@@ -555,6 +561,11 @@ if ( !function_exists("imagecreatefrombmp") ) {
  * Modified by Fabien Menager to support RGB555 BMP format
  */
 function imagecreatefrombmp($filename) {
+  if (!function_exists("imagecreatetruecolor")) {
+    trigger_error("The PHP GD extension is required, but is not installed.", E_ERROR);
+    return false;
+  }
+
   // version 1.00
   if (!($fh = fopen($filename, 'rb'))) {
     trigger_error('imagecreatefrombmp: Can not open ' . $filename, E_USER_WARNING);

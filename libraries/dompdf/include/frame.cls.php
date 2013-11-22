@@ -1,7 +1,7 @@
 <?php
 /**
  * @package dompdf
- * @link    http://www.dompdf.com/
+ * @link    http://dompdf.github.com/
  * @author  Benj Carson <benjcarson@digitaljunkies.ca>
  * @license http://www.gnu.org/copyleft/lesser.html GNU Lesser General Public License
  */
@@ -144,6 +144,13 @@ class Frame {
   public $_already_pushed = false;
 
   public $_float_next_line = false;
+
+  /**
+   * Tells wether the frame was split
+   *
+   * @var bool
+   */
+  public $_splitted;
 
   static $_ws_state = self::WS_SPACE;
 
@@ -621,7 +628,7 @@ class Frame {
 
   function set_position($x = null, $y = null) {
     if ( is_array($x) ) {
-      extract($x);
+      list($x, $y) = array($x["x"], $x["y"]);
     }
 
     if ( is_numeric($x) ) {

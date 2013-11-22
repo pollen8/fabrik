@@ -1,7 +1,7 @@
 <?php
 /**
  * @package dompdf
- * @link    http://www.dompdf.com/
+ * @link    http://dompdf.github.com/
  * @author  Benj Carson <benjcarson@digitaljunkies.ca>
  * @license http://www.gnu.org/copyleft/lesser.html GNU Lesser General Public License
  */
@@ -242,7 +242,7 @@ abstract class Frame_Reflower {
   /**
    * Parses a CSS "quotes" property
    * 
-   * @return array An array of pairs of quotes
+   * @return array|null An array of pairs of quotes
    */
   protected function _parse_quotes() {
     
@@ -253,7 +253,7 @@ abstract class Frame_Reflower {
       
     // split on spaces, except within quotes
     if ( !preg_match_all($re, "$quotes", $matches, PREG_SET_ORDER) ) {
-      return;
+      return null;
     }
       
     $quotes_array = array();
@@ -271,7 +271,7 @@ abstract class Frame_Reflower {
   /**
    * Parses the CSS "content" property
    * 
-   * @return string The resulting string
+   * @return string|null The resulting string
    */
   protected function _parse_content() {
 
@@ -291,7 +291,7 @@ abstract class Frame_Reflower {
     
     // split on spaces, except within quotes
     if ( !preg_match_all($re, $content, $matches, PREG_SET_ORDER) ) {
-      return;
+      return null;
     }
       
     $text = "";
@@ -323,47 +323,51 @@ abstract class Frame_Reflower {
           continue;
         }
 
-        $args = explode(",", mb_substr($match[1], 8, $i - 8));
-        $counter_id = $args[0];
-
-        if ( $match[1][7] === "(" ) {
+        preg_match( '/(counters?)(^\()*?\(\s*([^\s,]+)\s*(,\s*["\']?([^"\'\)]+)["\']?\s*(,\s*([^\s)]+)\s*)?)?\)/i' , $match[1] , $args );
+        $counter_id = $args[3];
+        if ( strtolower( $args[1] ) == 'counter' ) {
           // counter(name [,style])
-
-          if ( isset($args[1]) ) {
-            $type = trim($args[1]);
+          if ( isset( $args[5] ) ) {
+            $type = trim( $args[1] );
           }
           else {
             $type = null;
           }
 
-          $p = $this->_frame->lookup_counter_frame($counter_id);
+          $p = $this->_frame->lookup_counter_frame( $counter_id );
           
           $text .= $p->counter_value($counter_id, $type);
 
         }
-        else if ( $match[1][7] === "s" ) {
+        else if ( strtolower( $args[1] ) == 'counters' ) {
           // counters(name, string [,style])
-          if ( isset($args[1]) ) {
-            $string = $this->_parse_string(trim($args[1]));
+          if ( isset($args[5]) ) {
+            $string = $this->_parse_string( $args[5] );
           }
           else {
             $string = "";
           }
 
-          if ( isset($args[2]) ) {
-            $type = $args[2];
+          if ( isset( $args[7] ) ) {
+            $type = trim( $args[7] );
           }
           else {
             $type = null;
           }
 
           $p = $this->_frame->lookup_counter_frame($counter_id);
-          $tmp = "";
+          $tmp = array();
           while ($p) {
-            $tmp = $p->counter_value($counter_id, $type) . $string . $tmp;
+            // We only want to use the counter values when they actually increment the counter,
+            // elements that reset the counter, but do not increment it, are skipped.
+            // FIXME: Is this the best method of determining that an element's counter value should be displayed?
+            if ( array_key_exists( $counter_id , $p->_counters ) && $p->get_frame()->get_style()->counter_reset == 'none' ) {
+              array_unshift( $tmp , $p->counter_value($counter_id, $type) );
+            }
             $p = $p->lookup_counter_frame($counter_id);
+            
           }
-          $text .= $tmp;
+          $text .= implode( $string , $tmp );
 
         }
         else {
