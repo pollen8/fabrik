@@ -39,8 +39,8 @@ defined('_JEXEC') or die('Restricted access');
 				<span><?php echo JText::_('COM_FABRIK_GROUP_BY');?></span>
 			</a>
 			<ul>
-				<?php foreach ($this->groupByHeadings as $url => $label) {?>
-					<li><a href="<?php echo $url?>"><?php echo $label?></a></li>
+				<?php foreach ($this->groupByHeadings as $url => $obj) {?>
+					<li><a data-groupby="<?php echo $obj->group_by?>" href="<?php echo $url?>"><?php echo $obj->label?></a></li>
 				<?php
 				}?>
 			</ul>

@@ -11027,14 +11027,20 @@ class FabrikFEModelList extends JModelForm
 		$url .= JString::strpos($url, '?') !== false ? '&amp;' : '?';
 		$a = array();
 		list($h, $x, $b, $c) = $this->getHeadings();
-		$a[$url . 'group_by=0'] = JText::_('COM_FABRIK_NONE');
+		$o = new stdClass;
+		$o->label = JText::_('COM_FABRIK_NONE');
+		$o->group_by = '';
+		$a[$url . 'group_by=0'] = $o;
 
 		foreach ($h as $key => $v)
 		{
 			if (!in_array($key, array('fabrik_select', 'fabrik_edit', 'fabrik_view', 'fabrik_delete', 'fabrik_actions')))
 			{
 				$thisurl = $url . 'group_by=' . $key;
-				$a[$thisurl] = strip_tags($v);
+				$o = new stdClass;
+				$o->label = strip_tags($v);
+				$o->group_by = $key;
+				$a[$thisurl] = $o;
 			}
 		}
 
