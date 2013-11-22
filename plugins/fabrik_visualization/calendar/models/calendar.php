@@ -431,7 +431,7 @@ class FabrikModelCalendar extends FabrikFEModelVisualization
 			foreach ($record as $data)
 			{
 				$db = $listModel->getDb();
-				$startdate = trim($data['startdate']) !== '' ? $db->quoteName($data['startdate']) : '\'\'';
+				$startdate = trim($data['startdate']) !== '' ? FabrikString::safeColName($data['startdate']) : '\'\'';
 
 				if ($data['startdate'] == '')
 				{
@@ -440,8 +440,8 @@ class FabrikModelCalendar extends FabrikFEModelVisualization
 					return;
 				}
 
-				$enddate = trim($data['enddate']) !== '' ? $db->quoteName($data['enddate']) : "''";
-				$label = trim($data['label']) !== '' ? $db->quoteName($data['label']) : "''";
+				$enddate = trim($data['enddate']) !== '' ? FabrikString::safeColName($data['enddate']) : "''";
+				$label = trim($data['label']) !== '' ? FabrikString::safeColName($data['label']) : "''";
 				$customUrl = $data['customUrl'];
 				/**
 				 * $$$ hugh @FIXME - $label has already been quoted, so quoting it again meant the array_key_exists
@@ -453,7 +453,7 @@ class FabrikModelCalendar extends FabrikFEModelVisualization
 				if (array_key_exists($qlabel, $els))
 				{
 					// If db join selected for the label we need to get the label element and not the value
-					$label = $db->quoteName($els[$qlabel]->getOrderByName());
+					$label = FabrikString::safeColName($els[$qlabel]->getOrderByName());
 
 					// $$$ hugh @TODO doesn't seem to work for join elements, so adding hack till I can talk
 					// to rob about this one.
@@ -463,14 +463,14 @@ class FabrikModelCalendar extends FabrikFEModelVisualization
 					}
 					else
 					{
-						$label = $db->quoteName($els[$qlabel]->getOrderByName());
+						$label = FabrikString::safeColName($els[$qlabel]->getOrderByName());
 					}
 				}
 
 				$pk = $listModel->getTable()->db_primary_key;
 				$status = empty($data['status']) ? '""' : $data['status'];
 				$query = $db->getQuery(true);
-				$status = trim($data['status']) !== '' ? $db->quoteName($data['status']) : "''";
+				$status = trim($data['status']) !== '' ? FabrikString::safeColName($data['status']) : "''";
 				$query->select($pk . ' AS id, ' . $pk . ' AS rowid, ' . $startdate . ' AS startdate, ' . $enddate . ' AS enddate')
 					->select('"" AS link, ' . $label . ' AS label, ' . $db->quote($data['colour']) . ' AS colour, 0 AS formid')
 				->select($status . ' AS status')
