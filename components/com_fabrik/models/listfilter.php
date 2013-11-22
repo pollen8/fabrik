@@ -531,13 +531,14 @@ class FabrikFEModelListfilter extends FabModel
 		 * $$$ rob jpluginfilters search_types are those which have been set inside the
 		 * Joomla content plugin e.g. {fabrik view=list id=1 tablename___elementname=foo}
 		 * these should not be removed when the list filters are cleared
+		 * see: http://fabrikar.com/forums/index.php?threads/many-to-many-relationship-show-all-related-items-as-list-on-the-joined-list-details.36697/#post-184335
 		 */
 		$reg = JArrayHelper::fromObject($reg);
 		$serachTypes = JArrayHelper::getValue($reg, 'search_type', array());
 
 		for ($i = 0; $i < count($serachTypes); $i++)
 		{
-			if ($serachTypes[$i] !== 'jpluginfilters')
+			if ($this->canClear($serachTypes[$i]))
 			{
 				$this->clearAFilter($reg, $i);
 			}
@@ -562,6 +563,36 @@ class FabrikFEModelListfilter extends FabModel
 		{
 			$app->setUserState('com_' . $package . '.searchform.form' . $fromFormId . '.searchall', '');
 		}
+	}
+
+	/**
+	 * Can we clear a filter.
+	 * Filters set by the content plugin ($searchType == jpluginfilters) can only be unset if you are not viewing the content plugin but instead
+	 * a menu item, which points at the same list AND when that menu item has its resetfilters option set to yes.
+	 *
+	 * @param   string  $searchType  Search type string
+	 *
+	 * @return boolean
+	 */
+	protected function canClear($searchType)
+	{
+		$app = JFactory::getApplication();
+
+		if (!$app->isAdmin() && $this->activeTable())
+		{
+			$menus = $app->getMenu();
+			$menu = $menus->getActive();
+
+			if (is_object($menu))
+			{
+				if ($menu->params->get('resetfilters') == 1)
+				{
+					return true;
+				}
+			}
+		}
+
+		return $searchType === 'jpluginfilters' ? false : true;
 	}
 
 	/**
