@@ -44,7 +44,12 @@ var FbRating = new Class({
 						} else {
 							ii.src = this.options.insrc;
 						}
-
+					} else {
+						if (Fabrik.bootstrapped) {
+							ii.addClass('icon-star-empty').removeClass('icon-star');
+						} else {
+							ii.src = this.options.insrc;
+						}
 					}
 				}.bind(this));
 				this.ratingMessage.innerHTML = i.get('data-rating');
@@ -134,10 +139,12 @@ var FbRating = new Class({
 				'method': 'ajax_rate',
 				'g': 'element',
 				'element_id': this.options.elid,
+				'formid': this.options.formid,
 				'row_id': this.options.row_id,
 				'elementname': this.options.elid,
 				'userid': this.options.userid,
-				'rating': this.rating
+				'rating': this.rating,
+				'listid': this.options.listid
 			};
 
 			var closeFn = new Request({
