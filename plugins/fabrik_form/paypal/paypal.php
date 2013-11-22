@@ -704,7 +704,8 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 					{
 						// $$tom This block Paypal from updating the IPN field if the payment status evolves (e.g. from Pending to Completed)
 						// $$$ hugh - added check of status, so only barf if there is a status field, and it is Completed for this txn_id
-						if (!empty($ipn_txn_field) && !empty($ipn_status_field))
+
+						if (!empty($txn_id) != '' && !empty($payment_status))
 						{
 							$query->clear();
 							$query->select($ipn_status_field)->from($table->db_table_name)
