@@ -74,7 +74,7 @@ echo "
 }
 
 /*This controls the margin and border of your form area ie the fieldset - note: if you leave the margin as is, this could be said to control the 'inner border'*/
-<<<<<<< HEAD
+
 #{$form} fieldset,
 #{$form} .fabrikGroup{
 	margin:5px 10px;
