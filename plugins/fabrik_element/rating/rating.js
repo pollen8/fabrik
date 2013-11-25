@@ -1,23 +1,31 @@
+/**
+ * Rating Element
+ *
+ * @copyright: Copyright (C) 2005-2013, fabrikar.com - All rights reserved.
+ * @license:   GNU/GPL http://www.gnu.org/copyleft/gpl.html
+ */
+
 var FbRating = new Class({
 	Extends : FbElement,
-	initialize : function (element, options, rating) {
+	initialize : function (element, options) {
 		this.field = document.id(element);
 		this.parent(element, options);
 		if (this.options.canRate === false) {
 			return;
 		}
 		if (this.options.mode === 'creator-rating' && this.options.view === 'details') {
-			// deactivate if in detail view and only the record creator can rate
+
+			// Deactivate if in detail view and only the record creator can rate
 			return;
 		}
-		this.rating = rating;
+		this.rating = this.options.rating;
 		Fabrik.addEvent('fabrik.form.refresh', function (e) {
 			this.setup(e);
 		}.bind(this));
 		this.setup(this.options.row_id);
 		this.setStars();
 	},
-	
+
 	setup : function (rowid) {
 		this.options.row_id = rowid;
 		this.element = document.id(this.options.element + '_div');
@@ -31,17 +39,31 @@ var FbRating = new Class({
 			i.addEvent('mouseover', function (e) {
 				this.stars.each(function (ii) {
 					if (this._getRating(i) >= this._getRating(ii)) {
-						ii.src = this.options.insrc;
+						if (Fabrik.bootstrapped) {
+							ii.removeClass('icon-star-empty').addClass('icon-star');
+						} else {
+							ii.src = this.options.insrc;
+						}
+					} else {
+						if (Fabrik.bootstrapped) {
+							ii.addClass('icon-star-empty').removeClass('icon-star');
+						} else {
+							ii.src = this.options.insrc;
+						}
 					}
 				}.bind(this));
-				this.ratingMessage.innerHTML = i.alt;
+				this.ratingMessage.innerHTML = i.get('data-rating');
 			}.bind(this));
 		}.bind(this));
 
 		this.stars.each(function (i) {
 			i.addEvent('mouseout', function (e) {
 				this.stars.each(function (ii) {
-					ii.src = this.options.outsrc;
+					if (Fabrik.bootstrapped) {
+						ii.removeClass('icon-star').addClass('icon-star-empty');
+					} else {
+						ii.src = this.options.outsrc;
+					}
 				}.bind(this));
 			}.bind(this));
 		}.bind(this));
@@ -54,7 +76,7 @@ var FbRating = new Class({
 				this.setStars();
 			}.bind(this));
 		}.bind(this));
-		var clearButton = this.element.getElement('.rate_-1');
+		var clearButton = this.getClearButton();
 		this.element.addEvent('mouseout', function (e) {
 			this.setStars();
 		}.bind(this));
@@ -69,10 +91,14 @@ var FbRating = new Class({
 
 		if (typeOf(clearButton) !== 'null') {
 			clearButton.addEvent('mouseover', function (e) {
-				e.target.src = this.options.clearinsrc;
+				if (Fabrik.bootstrapped) {
+
+				} else {
+					e.target.src = this.options.clearinsrc;
+				}
 				this.ratingMessage.set('html', Joomla.JText._('PLG_ELEMENT_RATING_NO_RATING'));
 			}.bind(this));
-	
+
 			clearButton.addEvent('mouseout', function (e) {
 				if (this.rating !== -1) {
 					e.target.src = this.options.clearoutsrc;
@@ -83,9 +109,16 @@ var FbRating = new Class({
 				this.rating = -1;
 				this.field.value = '';
 				this.stars.each(function (ii) {
-					ii.src = this.options.outsrc;
+					if (Fabrik.bootstrapped) {
+						ii.removeClass('icon-star').addClass('icon-star-empty');
+					} else {
+						ii.src = this.options.outsrc;
+					}
 				}.bind(this));
-				this.element.getElement('.rate_-1').src = this.options.clearinsrc;
+				if (!Fabrik.bootstrapped) {
+					this.getClearButton().src = this.options.clearinsrc;
+				}
+
 				this.doAjax();
 			}.bind(this));
 		}
@@ -106,10 +139,12 @@ var FbRating = new Class({
 				'method': 'ajax_rate',
 				'g': 'element',
 				'element_id': this.options.elid,
+				'formid': this.options.formid,
 				'row_id': this.options.row_id,
 				'elementname': this.options.elid,
 				'userid': this.options.userid,
-				'rating': this.rating
+				'rating': this.rating,
+				'listid': this.options.listid
 			};
 
 			var closeFn = new Request({
@@ -123,7 +158,9 @@ var FbRating = new Class({
 	},
 
 	_getRating : function (i) {
-		r = i.className.replace("rate_", "").replace("starRating ", "");
+		
+		r = i.get('data-rating');
+		console.log(r, i);
 		return r.toInt();
 	},
 
@@ -133,12 +170,25 @@ var FbRating = new Class({
 		}
 		this.stars.each(function (ii) {
 			var starScore = this._getRating(ii);
-			ii.src = starScore <= this.rating ? this.options.insrc : this.options.outsrc;
+			if (Fabrik.bootstrapped) {
+				if (starScore <= this.rating) {
+					ii.removeClass('icon-star-empty').addClass('icon-star');
+				} else {
+					ii.removeClass('icon-star').addClass('icon-star-empty');
+				}
+
+			} else {
+				ii.src = starScore <= this.rating ? this.options.insrc : this.options.outsrc;
+			}
 		}.bind(this));
-		var clearButton = this.element.getElement('.rate_-1');
+		var clearButton = this.getClearButton();
 		if (typeOf(clearButton) !== 'null') {
 			clearButton.src = this.rating !== -1 ? this.options.clearoutsrc : this.options.clearinsrc;
 		}
+	},
+
+	getClearButton: function () {
+		return this.element.getElement('i[data-rating=-1]');
 	},
 
 	update : function (val) {
