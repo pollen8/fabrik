@@ -488,15 +488,19 @@ var adminFilters = new Class({
 			t = e.target.getParent('tr');
 			tbl = e.target.getParent('table');
 		} else {
-			t = document.id(element.parentNode.parentNode); //was 3 but that was the tbody
+			//t = document.id(element.parentNode.parentNode); //was 3 but that was the tbody
+			t = e.target.getParent('tr');
+			tbl = e.target.getParent('table');
 		}
+
+		if (this.counter === 0) {
+			tbl.hide();
+		}
+	
 		if (this.options.j3) {
 			// in 3.1 we have to hide the rows rather than destroy otherwise the form doesnt submit!!!
 			t.getElements('input, select, textarea').dispose();
 			t.hide();
-			if (this.counter === 0) {
-				tbl.hide();
-			}
 		} else {
 			t.dispose();
 		}
@@ -521,7 +525,7 @@ var adminFilters = new Class({
 	addFilterOption: function (selJoin, selFilter, selCondition, selValue, selAccess, evaluate, grouped) {
 		var and, or, joinDd, groupedNo, groupedYes, i, sels;
 		if (this.counter <= 0) {
-			if (this.options.j3 && this.el.getParent('table').getElement('thead')) {
+			if (this.el.getParent('table').getElement('thead')) {
 				// We've already added the thead - in 3.1 we have to hide the rows rather than destroy otherwise the form doesnt submit!!!
 			} else {
 				this.addHeadings();
