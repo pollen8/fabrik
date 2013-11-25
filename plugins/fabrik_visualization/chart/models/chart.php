@@ -32,7 +32,7 @@ class FabrikModelChart extends FabrikFEModelVisualization
 	 * @var string
 	 */
 
-	var $_url = '://chart.apis.google.com/chart';
+	var $_url = 'http://chart.apis.google.com/chart';
 
 	/**
 	 * Get min and max values form totals
@@ -228,8 +228,7 @@ class FabrikModelChart extends FabrikFEModelVisualization
 		}
 		list($colours, $fills) = $this->getColours();
 
-		$uri = JURI::getInstance();
-		$return = '<img src="' . $uri->getScheme() . $this->_url . '?';
+		$return = '<img src="' . $this->_url . '?';
 		$qs = 'chs=' . $w . 'x' . $h;
 		$qs .= '&amp;chd=t:' . $chd;
 		$qs .= '&amp;cht=' . $graph;
