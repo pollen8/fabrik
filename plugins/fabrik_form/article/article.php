@@ -211,7 +211,7 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 
 		if ($file === '')
 		{
-			return '';
+			return array('', '');
 		}
 
 		// Initial upload $file is json data / ajax upload?
