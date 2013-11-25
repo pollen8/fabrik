@@ -501,8 +501,10 @@ class FabrikModelCalendar extends FabrikFEModelVisualization
 							if ($row->startdate !== $db->getNullDate() && $data['startShowTime'] == true)
 							{
 								$date = JFactory::getDate($row->startdate);
+								$row->startdate = $date->format('Y-m-d H:i:s', true);
 								$date->setTimezone($tz);
-								$row->startdate = $date->format('Y-m-d H:i:s');
+								$row->startdate_locale = $date->format('Y-m-d H:i:s', true);
+
 							}
 
 							if ($row->enddate !== $db->getNullDate() && (string) $row->enddate !== '')
@@ -510,13 +512,15 @@ class FabrikModelCalendar extends FabrikFEModelVisualization
 								if ($data['endShowTime'] == true)
 								{
 									$date = JFactory::getDate($row->enddate);
-									$date->setTimezone($tz);
 									$row->enddate = $date->format('Y-m-d H:i:d');
+									$date->setTimezone($tz);
+									$row->enddate_locale = $date->format('Y-m-d H:i:d', true);
 								}
 							}
 							else
 							{
 								$row->enddate = $row->startdate;
+								$row->enddate_locale = $row->startdate_locale;
 							}
 
 							$jsevents[$table->id . '_' . $row->id . '_' . $row->startdate] = clone ($row);
