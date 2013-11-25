@@ -266,10 +266,19 @@ class PlgFabrik_ElementUsergroup extends PlgFabrik_ElementList
 	{
 		if (!isset($this->_default))
 		{
-			$user = JFactory::getUser();
-			$this->_default = $user->get('groups');
-			$this->_default = array_values($this->_default);
-			$this->_default = json_encode($this->_default);
+			$params = $this->getParams();
+
+			if ($params->get('default_to_current_user_group', 1))
+			{
+				$user = JFactory::getUser();
+				$this->_default = $user->get('groups');
+				$this->_default = array_values($this->_default);
+				$this->_default = json_encode($this->_default);
+			}
+			else
+			{
+				$this->_default =json_encode(array());
+			}
 		}
 
 		return $this->_default;
