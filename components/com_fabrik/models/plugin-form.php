@@ -187,6 +187,7 @@ class PlgFabrik_Form extends FabrikPlugin
 	public function getProcessData()
 	{
 		$model = $this->getModel();
+		unset($this->emailData);
 		$d = isset($model->formDataWithTableName) ? $model->formDataWithTableName : array();
 		$this->data = array_merge($d, $this->getEmailData());
 
