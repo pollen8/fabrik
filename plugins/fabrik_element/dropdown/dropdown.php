@@ -71,9 +71,14 @@ class PlgFabrik_ElementDropdown extends PlgFabrik_ElementList
 		$i = 0;
 		$aRoValues = array();
 		$opts = array();
+		$optgroup = false;
 
 		foreach ($values as $tmpval)
 		{
+			if ($tmpval === '<optgroup>')
+			{
+				$optgroup = true;
+			}
 			$tmpLabel = JArrayHelper::getValue($labels, $i);
 
 			// For values like '1"'
@@ -89,8 +94,8 @@ class PlgFabrik_ElementDropdown extends PlgFabrik_ElementList
 		}
 		/*
 		 * If we have added an option that hasnt been saved to the database. Note you cant have
-		* it not saved to the database and asking the user to select a value and label
-		*/
+		 * it not saved to the database and asking the user to select a value and label
+		 */
 		if ($params->get('allow_frontend_addtodropdown', false) && !empty($selected))
 		{
 			foreach ($selected as $sel)
@@ -103,11 +108,37 @@ class PlgFabrik_ElementDropdown extends PlgFabrik_ElementList
 			}
 		}
 
-		$str = JHTML::_('select.genericlist', $opts, $name, $attribs, 'value', 'text', $selected, $id);
-
 		if (!$this->isEditable())
 		{
 			return implode(', ', $aRoValues);
+		}
+
+		$settings = array();
+		$settings['list.select'] = $selected;
+		$settings['option.id'] = $id;
+		$settings['list.attr'] = $attribs;
+		$settings['group.items'] = null;
+
+		if ($optgroup)
+		{
+			$groupedOpts = array();
+			$groupOptLabel = '';
+
+			foreach ($opts as $opt)
+			{
+				if ($opt->value === '&lt;optgroup&gt;')
+				{
+					$groupOptLabel = $opt->text;
+				}
+
+				$groupedOpts[$groupOptLabel][] = $opt;
+			}
+
+			$str = JHTML::_('select.groupedlist', $groupedOpts, $name, $settings);
+		}
+		else
+		{
+			$str = JHTML::_('select.genericlist', $opts, $name, $settings);
 		}
 
 		$str .= $this->getAddOptionFields($repeatCounter);
