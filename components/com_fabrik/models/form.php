@@ -1492,7 +1492,7 @@ class FabrikFEModelForm extends FabModelForm
 					// Joined element data (ajax fileupload etc)
 					$elementModel = $this->getElement($fullName);
 
-					if ($elementModel->isJoin())
+					if ($elementModel && $elementModel->isJoin())
 					{
 						$joinModel = $elementModel->getJoinModel();
 						$joinid = $joinModel->getJoin()->id;

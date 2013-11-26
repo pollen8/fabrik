@@ -833,11 +833,25 @@ class PlgFabrik_Element extends FabrikPlugin
 
 			if (!empty($data) &&  $user->get('id') !== 0)
 			{
-				$lookUp = $params->get('view_access_user', '');
-				$lookUp = $formModel->getElement($lookUp, true);
-				$fullName = $lookUp->getFullName(false, true, false);
-				$value = $formModel->getElementData($fullName, true);
-				$this->access->$key = ($user->get('id') == $value) ? true : false;
+				$lookUpId = $params->get('view_access_user', '');
+				$lookUp = $formModel->getElement($lookUpId, true);
+
+				// Could be  a linked parent element in which case the form doesn't contain the element whose id is $lookUpId
+				if (!$lookUp)
+				{
+					$lookUp =  FabrikWorker::getPluginManager()->getElementPlugin($lookUpId);
+				}
+
+				if ($lookUp)
+				{
+					$fullName = $lookUp->getFullName(false, true, false);
+					$value = $formModel->getElementData($fullName, true);
+					$this->access->$key = ($user->get('id') == $value) ? true : false;
+				}
+				else
+				{
+					JError::raiseNotice(500, 'Didnt find can view acl element');
+				}
 			}
 
 		}
