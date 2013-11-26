@@ -443,6 +443,9 @@ class PlgContentFabrik extends JPlugin
 		$origid = $input->get('id', '', 'string');
 		$origView = $input->get('view');
 
+		// Allow for random=1 (which has to map to fabrik_random for list views)
+		$origRandom = $input->get('fabrik_random');
+
 		// For fabble
 		$input->set('origid', $origid);
 		$input->set('origview', $origView);
@@ -522,8 +525,6 @@ class PlgContentFabrik extends JPlugin
 
 				$this->_setRequest($unused);
 
-				// Allow for random=1 (which has to map to fabrik_random for list views)
-				$origRandom = $input->get('fabrik_random');
 				$input->set('fabrik_random', $input->get('random', $origRandom));
 
 				$input->set('showfilters', $showfilters);
