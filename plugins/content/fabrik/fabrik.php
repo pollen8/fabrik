@@ -885,7 +885,8 @@ class PlgContentFabrik extends JPlugin
 		}
 
 		// $$$rob looks like including the view does something to the layout variable
-		$layout = $input->get('layout', 'default');
+		$defaultLayout = FabrikWorker::j3() ? 'bootstrap' : 'default';
+		$layout = $input->get('layout', $defaultLayout);
 		require_once COM_FABRIK_FRONTEND . '/views/' . $view . '/view.html.php';
 
 		if (!is_null($layout))
