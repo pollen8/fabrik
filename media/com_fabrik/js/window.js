@@ -74,7 +74,6 @@ Fabrik.Window = new Class({
 	 * Tabs can resize content area
 	 */
 	watchTabs: function () {
-		console.log(this.window.getElements('.nav-tabs a'));
 		this.window.getElements('.nav-tabs a').addEvent('mouseup', function () {
 			this.fitToWidth();
 			this.drawWindow();
