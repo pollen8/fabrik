@@ -309,7 +309,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 						{
 							$o = new stdClass;
 							$o->id = 'alreadyuploaded_' . $element->id . '_' . $iCounter;
-							$o->name = array_pop(explode(DS, $tkey));
+							$o->name = array_pop(explode(DIRECTORY_SEPARATOR, $tkey));
 							$o->path = $tkey;
 
 							if ($fileinfo = $this->getStorage()->getFileInfo($o->path))
@@ -334,7 +334,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 						if (is_object($value[$x]))
 						{
 							// S Fngle crop image (not sure about the 0 settings in here)
-							$parts = explode(DS, $value[$x]->file);
+							$parts = explode(DIRECTORY_SEPARATOR, $value[$x]->file);
 							$o = new stdClass;
 							$o->id = 'alreadyuploaded_' . $element->id . '_0';
 							$o->name = array_pop($parts);

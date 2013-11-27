@@ -254,10 +254,6 @@ class FabrikViewFormBase extends JViewLegacy
 				$menu_params = is_a($menu->params, 'JRegistry') ? $menu->params : new JRegistry($menu->params);
 				$params->set('page_heading', $menu_params->get('page_heading', ''));
 				$params->set('show_page_heading', $menu_params->get('show_page_heading', 0));
-
-				// $$$ hugh moved these lines from below, see comment
-				$browserTitle = $model->getPageTitle($menu_params->get('page_title'));
-				$document->setTitle($w->parseMessageForPlaceHolder($browserTitle, $_REQUEST));
 			}
 			else
 			{
@@ -281,15 +277,11 @@ class FabrikViewFormBase extends JViewLegacy
 
 		$model = $this->getModel();
 
-		// $$$ $$$ hugh - this blows up on the backend, moved it to up there ^^ somewhere
-
-		/*
 		if (!$this->isMambot)
 		{
 			$browserTitle = $model->getPageTitle($menu_params->get('page_title'));
 			$document->setTitle($w->parseMessageForPlaceHolder($browserTitle, $_REQUEST));
 		}
-		*/
 	}
 
 	/**

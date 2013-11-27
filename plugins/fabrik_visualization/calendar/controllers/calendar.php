@@ -122,9 +122,9 @@ class FabrikControllerVisualizationcalendar extends FabrikControllerVisualizatio
 		$model->setId($id);
 		$model->setupEvents();
 
-		if (array_key_exists($listid, $model->_events))
+		if (array_key_exists($listid, $model->events))
 		{
-			$datefield = $model->_events[$listid][0]['startdate'];
+			$datefield = $model->events[$listid][0]['startdate'];
 		}
 		else
 		{
@@ -147,7 +147,7 @@ class FabrikControllerVisualizationcalendar extends FabrikControllerVisualizatio
 		$link .= '&jos_fabrik_calendar_events___visualization_id=' . $input->getInt('jos_fabrik_calendar_events___visualization_id');
 		$link .= '&fabrik_window_id=' . $input->get('fabrik_window_id');
 
-		$start_date = $input->get('start_date', '');
+		$start_date = $input->getString('start_date', '');
 
 		if (!empty($start_date))
 		{

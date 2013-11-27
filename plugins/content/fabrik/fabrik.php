@@ -197,6 +197,7 @@ class PlgContentFabrik extends JPlugin
 		$layoutFound = false;
 		$rowid = '';
 		$usekey = '';
+		$limit = false;
 		$defaultLayout = FabrikWorker::j3() ? 'bootstrap' : 'default';
 		$session = JFactory::getSession();
 		$usersConfig->set('rowid', 0);
@@ -220,7 +221,6 @@ class PlgContentFabrik extends JPlugin
 				case 'layout':
 					$layoutFound = true;
 					$layout = $m[1];
-					$origLayout = $input->get('layout');
 					$input->set('layout', $layout);
 					break;
 				case 'row':
@@ -251,6 +251,8 @@ class PlgContentFabrik extends JPlugin
 				case 'list':
 					$listid = $m[1];
 					break;
+				case 'limit':
+					$limit = $m[1];
 				case 'usekey':
 					$usekey = $m[1];
 					break;
@@ -386,6 +388,7 @@ class PlgContentFabrik extends JPlugin
 			}
 			else
 			{
+				$this->_setRequest($unused);
 				$row = $model->getRow($rowid, false, true);
 
 				if (substr($element, JString::strlen($element) - 4, JString::strlen($element)) !== '_raw')
@@ -426,6 +429,7 @@ class PlgContentFabrik extends JPlugin
 				}
 
 				$input->set('rowid', $origRowid);
+				$this->resetRequest();
 			}
 
 			return $res;
@@ -438,6 +442,9 @@ class PlgContentFabrik extends JPlugin
 
 		$origid = $input->get('id', '', 'string');
 		$origView = $input->get('view');
+
+		// Allow for random=1 (which has to map to fabrik_random for list views)
+		$origRandom = $input->get('fabrik_random');
 
 		// For fabble
 		$input->set('origid', $origid);
@@ -507,7 +514,19 @@ class PlgContentFabrik extends JPlugin
 				}
 
 				$input->set('listid', $id);
+
+				// Allow for simple limit=2 in plugin declaration
+				if ($limit)
+				{
+					$limitKey = 'limit' . $id;
+					$this->origRequestVars[$limitKey] = $input->get($limitKey);
+					$input->set($limitKey, $limit);
+				}
+
 				$this->_setRequest($unused);
+
+				$input->set('fabrik_random', $input->get('random', $origRandom));
+
 				$input->set('showfilters', $showfilters);
 				$input->set('clearfilters', $clearfilters);
 				$input->set('resetfilters', $resetfilters);
@@ -581,6 +600,11 @@ class PlgContentFabrik extends JPlugin
 		if ($origFFlayout != '')
 		{
 			$input->set('flayout', $origFFlayout);
+		}
+
+		if ($origRandom)
+		{
+			$input->set('fabrik_random', $origRandom);
 		}
 
 		$this->resetRequest();
@@ -861,7 +885,8 @@ class PlgContentFabrik extends JPlugin
 		}
 
 		// $$$rob looks like including the view does something to the layout variable
-		$layout = $input->get('layout', 'default');
+		$defaultLayout = FabrikWorker::j3() ? 'bootstrap' : 'default';
+		$layout = $input->get('layout', $defaultLayout);
 		require_once COM_FABRIK_FRONTEND . '/views/' . $view . '/view.html.php';
 
 		if (!is_null($layout))

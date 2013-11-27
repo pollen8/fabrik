@@ -3829,7 +3829,17 @@ class PlgFabrik_Element extends FabrikPlugin
 		 * $condition = JArrayHelper::getValue($filters, 'condition', array());
 		 * $condition = JArrayHelper::getValue($condition, $counter, $this->getFilterCondition());
 		*/
-		$condition = $this->getFilterCondition();
+
+		// Rob - reverting Hugh's comment. Its not right
+		// $condition = $this->getFilterCondition();
+
+		/**
+		 * If no post/querystring condition has been set use the getFilterCondition()
+		 * If we don't do that then a querystring url on foo>5 gets munged to foo=5 on a page navigation
+		 */
+
+		$condition = JArrayHelper::getValue($filters, 'condition', array());
+		$condition = JArrayHelper::getValue($condition, $counter, $this->getFilterCondition());
 
 		// Need to include class other wise csv export produces incorrect results when exporting
 		$prefix = '<input type="hidden" class="' . $class . '" name="fabrik___filter[list_' . $this->getListModel()->getRenderContext() . ']';

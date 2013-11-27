@@ -29,7 +29,17 @@
 				type="listfields"
 				description="PLG_ELEMENT_USERGROUP_USER_ELEMENT_DESC"
 				label="PLG_ELEMENT_USERGROUP_USER_ELEMENT_LABEL" />
-				
+			
+			<field name="default_to_current_user_group"
+				type="radio"
+				class="btn-group"
+				default="1"
+				description="PLG_ELEMENT_USERGROUP_DEFAULT_TO_CURRENT_USER_GROUPS_DESC"
+				label="PLG_ELEMENT_USERGROUP_DEFAULT_TO_CURRENT_USER_GROUPS_LABEL">
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>	
+			</field>
+			
 		</fieldset>
 	</fields>
 </form>

@@ -148,7 +148,7 @@ var fabrikCalendar = new Class({
 				buttons += this.options.buttons.view;
 			}
 			
-			replace = {start: new Date(entry.startdate).format(this.options.timeFormat), end: entry.enddate.format(this.options.timeFormat)};
+			replace = {start: new Date(entry.startdate_locale).format(this.options.timeFormat), end: new Date(entry.enddate_locale).format(this.options.timeFormat)};
 			dataContent = Joomla.JText._('PLG_VISUALIZATION_CALENDAR_EVENT_START_END').substitute(replace);
 			if (buttons !== '') {
 				dataContent += '<hr /><div class=\"btn-group\" style=\"text-align:center\">' + buttons + '</div>';
@@ -172,7 +172,11 @@ var fabrikCalendar = new Class({
 					jQuery(eventCont).popover();
 					eventCont.addEvent('click', function (e) {
 						this.popOver = eventCont;
-						
+					}.bind(this));
+					
+					// Ensure new form doesn't open when we double click on the event.
+					eventCont.addEvent('dblclick', function (e) {
+						e.stop();
 					}.bind(this));
 				}
 			}
@@ -838,8 +842,8 @@ var fabrikCalendar = new Class({
 							this.addClass('selectedDay');
 						},
 						'dblclick': function (e) {
-								this.openAddEvent(e);
-							}.bind(this)
+							this.openAddEvent(e, 'month');
+						}.bind(this)
 					}
 					}));
 					firstDate.setTime(firstDate.getTime() + this.DAY);
@@ -864,32 +868,50 @@ var fabrikCalendar = new Class({
 		return n.replace("today", "").replace("selectedDay", "").replace("day", "").replace("otherMonth", "").trim();
 	},
 
-	openAddEvent: function (e)
+	/**
+	 * Open the add event form.
+	 * 
+	 * @param e    Event
+	 * @param view The view which triggered the opening
+	 */
+	openAddEvent: function (e, view)
 	{
-		var rawd;
+		var rawd, day, hour, min, m, o, now, thisDay;
+		
 		if (this.options.canAdd === false) {
 			return;
 		}
+		
 		e.stop();
+		
 		if (e.target.className === 'addEventButton') {
-			var now = new Date();
+			now = new Date();
 			rawd = now.getTime();
 		} else {
 			rawd = this._getTimeFromClassName(e.target.className);
 		}
+		
 		this.date.setTime(rawd);
 		d = 0;
+		
 		if (!isNaN(rawd) && rawd !== '') {
-			var thisDay = new Date();
+			thisDay = new Date();
 			thisDay.setTime(rawd);
-			var m = thisDay.getMonth() + 1;
+			m = thisDay.getMonth() + 1;
 			m = (m < 10) ? "0" + m : m;
-			var day = thisDay.getDate();
+			day = thisDay.getDate();
 			day = (day <  10) ? "0" + day : day;
-			var hour = thisDay.getHours();
-			hour = (hour <  10) ? "0" + hour : hour;
-			var min = thisDay.getMinutes();
-			min = (min <  10) ? "0" + min : min;
+			
+			if (view !== 'month') {
+				hour = thisDay.getHours();
+				hour = (hour <  10) ? "0" + hour : hour;
+				min = thisDay.getMinutes();
+				min = (min <  10) ? "0" + min : min;
+			} else {
+				hour = '00';
+				min = '00';
+			}
+			
 			this.doubleclickdate = thisDay.getFullYear() + "-" + m + "-" + day + ' ' + hour + ':' + min + ':00';
 			d = '&jos_fabrik_calendar_events___start_date=' + this.doubleclickdate;
 		}
@@ -897,7 +919,7 @@ var fabrikCalendar = new Class({
 		if (this.options.eventLists.length > 1) {
 			this.openChooseEventTypeForm(this.doubleclickdate, rawd);
 		} else {
-			var o = {};
+			o = {};
 			o.rowid = '';
 			o.id = '';
 			d = '&' + this.options.eventLists[0].startdate_element + '=' + this.doubleclickdate;
@@ -945,7 +967,6 @@ var fabrikCalendar = new Class({
 	
 		this.windowopts.onContentLoaded = function (win)
 		{
-			//var myfx = new Fx.Scroll(window).toElement('addeventwin');
 			f.each(function (o) {
 				if (document.id(o.key)) {
 					switch (document.id(o.key).get('tag')) {
@@ -1038,7 +1059,7 @@ var fabrikCalendar = new Class({
 								});
 							},
 							'dblclick': function (e) {
-								this.openAddEvent(e);
+								this.openAddEvent(e, 'day');
 							}.bind(this)
 						}
 						}));
@@ -1179,7 +1200,7 @@ var fabrikCalendar = new Class({
 								}
 							},
 							'dblclick': function (e) {
-								this.openAddEvent(e);
+								this.openAddEvent(e, 'week');
 							}.bind(this)
 						}
 						}));

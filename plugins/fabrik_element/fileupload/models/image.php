@@ -111,24 +111,20 @@ class ImageRender
 		$element = $model->getElement();
 		$file = $model->getStorage()->getFileUrl($file);
 		$fullSize = $file;
-		$width = $params->get('fu_main_max_width');
-		$height = $params->get('fu_main_max_height');
 
 		if (!$this->fullImageInRecord($params))
 		{
 			if ($params->get('fileupload_crop'))
 			{
-				$width = $params->get('fileupload_crop_width');
-				$height = $params->get('fileupload_crop_height');
 				$file = $model->getStorage()->_getCropped($fullSize);
 			}
 			else
 			{
-				$width = $params->get('thumb_max_width');
-				$height = $params->get('thumb_max_height');
 				$file = $model->getStorage()->_getThumb($file);
 			}
 		}
+
+		list($width, $height) = $this->imageDimensions($params);
 
 		$file = $model->storage->preRenderPath($file);
 		$fullSize = $model->storage->preRenderPath($fullSize);
@@ -147,7 +143,7 @@ class ImageRender
 				/*
 				 * We're building a Bootstrap slideshow, just a simple img tag
 				 */
-				$this->output = '<img src="' . $fullSize . '" alt="' . $title . '" />';
+				$this->output = '<img src="' . $fullSize . '" alt="' . $title . '" style="margin:auto" />';
 			}
 			else
 			{
@@ -174,6 +170,37 @@ class ImageRender
 				}
 			}
 		}
+	}
+
+	/**
+	 * Get the image width / height
+	 *
+	 * @param   JParameter  $params Params
+	 *
+	 * @since   3.1rc2
+	 *
+	 * @return  array ($width, $height)
+	 */
+	private function imageDimensions($params)
+	{
+		$width = $params->get('fu_main_max_width');
+		$height = $params->get('fu_main_max_height');
+
+		if (!$this->fullImageInRecord($params))
+		{
+			if ($params->get('fileupload_crop'))
+			{
+				$width = $params->get('fileupload_crop_width');
+				$height = $params->get('fileupload_crop_height');
+			}
+			else
+			{
+				$width = $params->get('thumb_max_width');
+				$height = $params->get('thumb_max_height');
+			}
+		}
+
+		return array($width, $height);
 	}
 
 	/**
@@ -213,6 +240,7 @@ class ImageRender
 
 	public function renderCarousel($id = 'carousel', $data = array(), $model = null, $params = null, $thisRow = null)
 	{
+		list($width, $height) = $this->imageDimensions($params);
 		$rendered = '';
 		$id .= '_carousel';
 
@@ -228,44 +256,14 @@ class ImageRender
 				$imgs[] = $this->output;
 			}
 
-			/*
-			 $rendered = '<div class="cycle-slideshow">';
-			$rendered .= implode(' ', $data);
-			$rendered .= '</div>';
-			*/
-
-			/*
-			 * Don't seem to need this for now
-			* JHtml::_('bootstrap.carousel', 'myCarousel');
-			*/
-
-			$numImages = count($imgs);
+			if (count($imgs) == 1)
+			{
+				return $imgs[0];
+			}
 
 			$rendered = '
-<div id="' . $id . '" class="carousel slide mootools-noconflict" data-interval="false" data-pause="hover">
+<div id="' . $id . '" class="carousel slide mootools-noconflict" data-interval="false" data-pause="hover" style="width:' . $width . 'px">
 ';
-			/*
-			 * Current version of J! bootstrap doesn't seem to have the indicators
-			*/
-			/*
-			 $rendered .= '
-			<ol class="carousel-indicators">
-			';
-
-			if ($numImages > 0)
-			{
-			$rendered .= '<li data-target="#' . $id . '" data-slide-to="0" class="active">';
-			for ($x=1; $x < $numImages; $x++)
-			{
-			$rendered .= '</li> <li data-target="#' . $id . '" data-slide-to="' . $x . '">';
-			}
-			$rendered .= '</li>
-			';
-			}
-			$rendered .= '
-			</ol>
-			';
-			*/
 
 			$rendered .= '
     <!-- Carousel items -->

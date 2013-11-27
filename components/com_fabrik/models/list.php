@@ -5443,7 +5443,7 @@ class FabrikFEModelList extends JModelForm
 	/**
 	 * Get the random lmit start val
 	 *
-	 * @return  int	 limit start
+	 * @return  int	 Limit start
 	 */
 
 	protected function getRandomLimitStart()
@@ -5460,13 +5460,10 @@ class FabrikFEModelList extends JModelForm
 		*/
 		$query = $db->getQuery(true);
 		$query->select('FLOOR(RAND() * COUNT(*) + 1) AS ' . $db->quoteName('offset'))->from($db->quoteName($table->db_table_name));
-		$query = $this->buildQueryWhere($query);
+		$query = $this->buildQueryWhere(true, $query);
 		$db->setQuery($query);
-		/* $db
-		 ->setQuery(
-		 		'SELECT FLOOR(RAND() * COUNT(*) + 1) AS ' . $db->quoteName('offset') . ' FROM ' . $db->quoteName($table->db_table_name) . ' '
-		 		. $this->buildQueryWhere()); */
 		$limitstart = $db->loadResult();
+
 		/*$$$ rob 11/01/2011 cant do this as we dont know what the total is yet
 		 $$$ rob ensure that the limitstart + limit isn't greater than the total
 		if ($limitstart + $limit > $total) {
@@ -11030,14 +11027,20 @@ class FabrikFEModelList extends JModelForm
 		$url .= JString::strpos($url, '?') !== false ? '&amp;' : '?';
 		$a = array();
 		list($h, $x, $b, $c) = $this->getHeadings();
-		$a[$url . 'group_by=0'] = JText::_('COM_FABRIK_NONE');
+		$o = new stdClass;
+		$o->label = JText::_('COM_FABRIK_NONE');
+		$o->group_by = '';
+		$a[$url . 'group_by=0'] = $o;
 
 		foreach ($h as $key => $v)
 		{
 			if (!in_array($key, array('fabrik_select', 'fabrik_edit', 'fabrik_view', 'fabrik_delete', 'fabrik_actions')))
 			{
 				$thisurl = $url . 'group_by=' . $key;
-				$a[$thisurl] = strip_tags($v);
+				$o = new stdClass;
+				$o->label = strip_tags($v);
+				$o->group_by = $key;
+				$a[$thisurl] = $o;
 			}
 		}
 
@@ -11540,6 +11543,7 @@ class FabrikFEModelList extends JModelForm
 		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$listid = $this->getId();
 		$tabsField = $this->getTabField();
+		$itemId = FabrikWorker::itemId();
 		$uri = JURI::getInstance();
 		$urlBase = $uri->toString(array('path'));
 		$urlBase .= '?option=com_' . $package . '&';
@@ -11577,6 +11581,11 @@ class FabrikFEModelList extends JModelForm
 			{
 				list($low, $high) = $range;
 				$row->url = sprintf($urlEquals, sprintf($urlRange, $low, $high));
+			}
+
+			if ($itemId)
+			{
+				$row->url .= '&Itemid=' . $itemId;
 			}
 
 			$row->class = ($thisUri == $row->url) ? 'class="active"' : '';

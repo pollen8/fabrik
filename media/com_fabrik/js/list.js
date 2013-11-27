@@ -46,7 +46,8 @@ var FbList = new Class({
 		'listRef': '', // e.g. '1_com_fabrik_1'
 		'fabrik_show_in_list': [],
 		'singleOrdering' : false,
-		'tmpl': ''
+		'tmpl': '',
+		'groupedBy' : ''
 	},
 
 	initialize: function (id, options) {
@@ -140,7 +141,21 @@ var FbList = new Class({
 		this.watchOrder();
 		this.watchEmpty();
 		if (!ajaxUpdate) {
+			this.watchGroupByMenu();
 			this.watchButtons();
+		}
+	},
+	
+	watchGroupByMenu: function () {
+		if (this.options.ajax) {
+			this.form.addEvent('click:relay(*[data-groupBy])', function (e, target) {
+				this.options.groupedBy = target.get('data-groupBy');
+				if (e.rightClick) {
+					return;
+				}
+				e.preventDefault();
+				this.updateRows();
+			}.bind(this));
 		}
 	},
 
@@ -809,7 +824,8 @@ var FbList = new Class({
 				'view': 'list',
 				'task': 'list.view',
 				'format': 'raw',
-				'listid': this.id
+				'listid': this.id,
+				'group_by': this.options.groupedBy
 			};
 		var url = '';
 		data['limit' + this.id] = this.options.limitLength;
@@ -857,6 +873,7 @@ var FbList = new Class({
 			var rowcounter = 0;
 			trs = [];
 			this.options.data = this.options.isGrouped ? $H(data.data) : data.data;
+			console.log(this.options.data);
 			if (data.calculations) {
 				this.updateCals(data.calculations);
 			}
@@ -866,7 +883,7 @@ var FbList = new Class({
 			// $$$ rob was $H(data.data) but that wasnt working ????
 			// testing with $H back in again for grouped by data? Yeah works for
 			// grouped data!!
-			var gdata = this.options.isGrouped ? $H(data.data) : data.data;
+			var gdata = this.options.isGrouped || this.options.groupedBy !== '' ? $H(data.data) : data.data;
 			var gcounter = 0;
 			gdata.each(function (groupData, groupKey) {
 				var container, thisrowtemplate;

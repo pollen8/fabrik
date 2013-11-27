@@ -43,6 +43,18 @@
 				description="PLG_FABRIK_FORM_ARTICLE_META_STORE_DESC"
 				label="PLG_FABRIK_FORM_ARTICLE_META_STORE_LABEL" />
 				
+			<field name="delete_mode"
+				type="list"
+				repeat="true"
+				default="DELETE"
+				description="PLG_FABRIK_FORM_ARTICLE_DELETE_MODE_DESC"
+				label="PLG_FABRIK_FORM_ARTICLE_DELETE_MODE_LABEL">
+					<option value="NOTHING">PLG_FABRIK_FORM_ARTICLE_LEAVE_PUBLISHED</option>
+					<option value="DELETE">COM_FABRIK_DELETE</option>
+					<option value="UNPUBLISH">JUNPUBLISHED</option>
+					<option value="TRASH">JTRASHED</option>
+			</field>
+				
 		</fieldset>
 		
 		<fieldset label="PLG_FABRIK_FORM_ARTICLE_FIELDS" name="plg-form-article-fields">

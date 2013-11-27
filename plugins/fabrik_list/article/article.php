@@ -29,7 +29,7 @@ class PlgFabrik_ListArticle extends PlgFabrik_List
 	 *
 	 * @var string
 	 */
-	protected $buttonPrefix = 'article';
+	protected $buttonPrefix = 'file';
 
 	/**
 	 * Prep the button if needed
@@ -69,6 +69,19 @@ class PlgFabrik_ListArticle extends PlgFabrik_List
 	}
 
 	/**
+	 * Get the button label
+	 *
+	 * @return  string
+	 */
+
+	protected function buttonLabel()
+	{
+		$s = JString::strtoupper($this->buttonPrefix);
+
+		return JText::_('PLG_LIST_ARTICLE_UPDATE_ARTICLE');
+	}
+
+	/**
 	 * Do the plug-in action
 	 *
 	 * @param   array   $opts    custom options
@@ -101,6 +114,7 @@ class PlgFabrik_ListArticle extends PlgFabrik_List
 				{
 					$input->set('rowid', $id);
 					$formModel->setRowId($id);
+					$formModel->unsetData();
 					$formModel->formData = $formModel->formDataWithTableName = $formModel->getData();
 					$articlePlugin->setModel($formModel);
 					$articlePlugin->setParams($formParams, $c);
