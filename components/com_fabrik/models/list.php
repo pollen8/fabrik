@@ -259,7 +259,7 @@ class FabrikFEModelList extends JModelForm
 	 *
 	 * @var array
 	 */
-	protected $pluginQueryGroupBy = array();
+	public $pluginQueryGroupBy = array();
 
 	/**
 	 * Used in views for rendering
