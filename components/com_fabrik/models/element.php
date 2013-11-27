@@ -976,9 +976,21 @@ class PlgFabrik_Element extends FabrikPlugin
 			}
 			else
 			{
+				$viewLevel = $this->getElement()->access;
+
+				if (!$this->getFormModel()->isNewRecord())
+				{
+					$editViewLevel = $this->getParams()->get('edit_access');
+
+					if ($editViewLevel)
+					{
+						$viewLevel = $editViewLevel;
+					}
+				}
+
 				$user = JFactory::getUser();
 				$groups = $user->getAuthorisedViewLevels();
-				$this->access->use = in_array($this->getElement()->access, $groups);
+				$this->access->use = in_array($viewLevel, $groups);
 			}
 		}
 
