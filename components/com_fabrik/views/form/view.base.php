@@ -239,6 +239,7 @@ class FabrikViewFormBase extends JViewLegacy
 	protected function setTitle($w, &$params, $model)
 	{
 		$document = JFactory::getDocument();
+		$model = $this->getModel();
 		$app = JFactory::getApplication();
 		$input = $app->input;
 		$title = '';
@@ -254,6 +255,8 @@ class FabrikViewFormBase extends JViewLegacy
 				$menu_params = is_a($menu->params, 'JRegistry') ? $menu->params : new JRegistry($menu->params);
 				$params->set('page_heading', $menu_params->get('page_heading', ''));
 				$params->set('show_page_heading', $menu_params->get('show_page_heading', 0));
+				$browserTitle = $model->getPageTitle($menu_params->get('page_title'));
+				$document->setTitle($w->parseMessageForPlaceHolder($browserTitle, $_REQUEST));
 			}
 			else
 			{
@@ -273,14 +276,6 @@ class FabrikViewFormBase extends JViewLegacy
 		{
 			$params->set('page_heading', $title);
 			$params->set('show_page_heading', 0);
-		}
-
-		$model = $this->getModel();
-
-		if (!$this->isMambot)
-		{
-			$browserTitle = $model->getPageTitle($menu_params->get('page_title'));
-			$document->setTitle($w->parseMessageForPlaceHolder($browserTitle, $_REQUEST));
 		}
 	}
 
