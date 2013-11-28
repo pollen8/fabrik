@@ -373,6 +373,17 @@ class PlgSystemFabrik extends JPlugin
 			$elementModel = $listModel->getFormModel()->getElement($params->get('search_title', 0), true);
 			$title = is_object($elementModel) ? $elementModel->getFullName() : '';
 
+			/**
+			 * $$$ hugh - added date element ... always use raw, as anything that isn't in
+			 * standard MySQL format will cause a fatal error in J!'s search code when it does the JDate create
+			 */
+			$elementModel = $listModel->getFormModel()->getElement($params->get('search_date', 0), true);
+			$date_element = is_object($elementModel) ? $elementModel->getFullName() : '';
+			if (!empty($date_element))
+			{
+				$date_element .= '_raw';
+			}
+
 			$aAllowedList = array();
 			$pk = $table->db_primary_key;
 
@@ -408,9 +419,18 @@ class PlgSystemFabrik extends JPlugin
 
 						$o->_pkey = $table->db_primary_key;
 						$o->section = $section;
-
 						$o->href = $href;
-						$o->created = '';
+
+						// Need to make sure it's a valid date in MySQL format, otherwise J!'s code will pitch a fatal error
+						if (isset($oData->$date_element) && FabrikString::isMySQLDate($oData->$date_element))
+						{
+							$o->created = $oData->$date_element;
+						}
+						else
+						{
+							$o->created = '';
+						}
+
 						$o->browsernav = 2;
 
 						if (isset($oData->$descname))

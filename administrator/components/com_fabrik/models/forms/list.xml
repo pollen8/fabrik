@@ -723,7 +723,13 @@
 				label="COM_FABRIK_FIELD_SEARCH_DESCRIPTION_FIELD_LABEL"
 				description="COM_FABRIK_FIELD_SEARCH_DESCRIPTION_FIELD_DESC"
 			/>
-			
+
+			<field name="search_date"
+				type="listfields"
+				label="COM_FABRIK_FIELD_SEARCH_DATE_FIELD_LABEL"
+				description="COM_FABRIK_FIELD_SEARCH_DATE_FIELD_DESC"
+			/>
+						
 			<field name="search_link_type"
 				type="radio"
 				class="btn-group"
