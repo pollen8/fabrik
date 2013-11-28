@@ -612,7 +612,6 @@ class PlgFabrik_ElementRating extends PlgFabrik_Element
 		$opts->view = $input->get('view');
 		$opts->rating = $value;
 		$opts->listid = $listid;
-		echo "<pre>";print_r($opts);echo "</pre>";
 
 		JText::script('PLG_ELEMENT_RATING_NO_RATING');
 
