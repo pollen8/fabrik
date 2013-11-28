@@ -613,4 +613,24 @@ class FabrikString extends JString
 	{
 		return preg_match('/^\s*(CONCAT|CONCAT_WS)\b/i', preg_quote($text));
 	}
+
+	/**
+	 * Strip whitespace (or only spaces) from a string
+	 *
+	 * @param  string  $text  text to strip
+	 * @param  bool  $only_spaces  if true, only strip spaces (not tabs, etc), default is false
+	 *
+	 * @return string
+	 */
+	public static function stripSpace($text, $only_spaces = false)
+	{
+		if ($only_spaces)
+		{
+			return str_replace(' ', '', $text);
+		}
+		else
+		{
+			return preg_replace('#\s+#', '', $text);
+		}
+	}
 }
