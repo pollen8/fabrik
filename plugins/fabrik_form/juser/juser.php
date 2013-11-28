@@ -220,7 +220,7 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 				{
                                         // See https://github.com/Fabrik/fabrik/issues/1026 - don't use JFactory as this loads in session stored user
                                         $user = new JUser($userid);
-                                        
+
 					if ($user->get('id') == $userid)
 					{
 						$this->namefield = $this->getFieldName($params, 'juser_field_name');
@@ -588,7 +588,7 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 				// Send the registration email.
 				if ($emailSubject !== '')
 				{
-					$return = $mail->sendMail($data['mailfrom'], $data['fromname'], $data['email'], $emailSubject, $emailBody);
+					$return = $mail->sendMail($data['mailfrom'], $data['fromname'], $data['email'], $emailSubject, $emailBody, true);
 
 					$db = JFactory::getDBO();
 					/*
