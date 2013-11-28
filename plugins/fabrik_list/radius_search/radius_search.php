@@ -174,8 +174,13 @@ class PlgFabrik_ListRadius_Search extends PlgFabrik_List
 		$str .= "</div>";
 		$f->element = $str;
 		$f->required = '';
-		FabrikHelperHTML::addStyleDeclaration("table.radius_table{border-collapse:collapse;border:0;}
-		table.radius_table td{border:0;}");
+
+		if (JFactory::getApplication()->input->get('format') !== 'raw')
+		{
+			FabrikHelperHTML::addStyleDeclaration("table.radius_table{border-collapse:collapse;border:0;}
+			table.radius_table td{border:0;}");
+		}
+
 		JText::script('PLG_VIEW_RADIUS_NO_GEOLOCATION_AVAILABLE');
 		JText::script('COM_FABRIK_SEARCH');
 		JText::script('PLG_LIST_RADIUS_SEARCH');
