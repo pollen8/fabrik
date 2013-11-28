@@ -39,26 +39,24 @@
 		<fieldset name="data" label="PLG_FABRIK_VIZ_NV3D_DATA_MODE">
 			
 			<field name="data_mode"
-				type="toggleoptionsradio"
-				show="1" hide="0" toggle="data-labels-in-fieldnames"
-				alt="data-labels-in-data"
+				type="radio"
+				show="1" hide="0"
 				default="0"
 				label="PLG_FABRIK_VIZ_NV3D_DATA_MODE_LABEL"
 				description="PLG_FABRIK_VIZ_NV3D_DATA_MODE_DESC">
 					<option value="0">PLG_FABRIK_VIZ_NV3D_LABELS_IN_DATA</option>
 					<option value="1">PLG_FABRIK_VIZ_NV3D_LABELS_IN_FIELDNAMES</option>	
 			</field>
+			
+			<field name="split"
+				type="field"
+				description="PLG_FABRIK_VIZ_NV3D_SPLIT_DESC"
+				label="PLG_FABRIK_VIZ_NV3D_SPLIT_LABEL" />
+				
 		</fieldset>
 		
 		<fieldset name="data-labels-in-data" label="PLG_FABRIK_VIZ_NV3D_LABELS_IN_DATA">
 			
-			<field name="value_field"
-				type="listfields"
-				table="params_tbl"
-				connection="params_conn_id"
-				description="PLG_FABRIK_VIZ_NVD3_VALUE_DESC"
-				label="PLG_FABRIK_VIZ_NVD3_VALUE_LABEL"  />
-		
 			<field name="label_field"
 				type="listfields"
 				table="params_tbl"
@@ -66,6 +64,24 @@
 				description="PLG_FABRIK_VIZ_NVD3_LABEL_DESC"
 				label="PLG_FABRIK_VIZ_NVD3_LABEL_LABEL" />
 				
+			<field name="value_field"
+				type="listfields"
+				table="params_tbl"
+				connection="params_conn_id"
+				description="PLG_FABRIK_VIZ_NVD3_VALUE_DESC"
+				label="PLG_FABRIK_VIZ_NVD3_VALUE_LABEL"  />
+				
+			<field name="value_calc"
+				type="list"
+				default=""
+				description="PLG_FABRIK_VIZ_NV3D_VALUE_CALC_DESC"
+				label="PLG_FABRIK_VIZ_NV3D_VALUE_CALC_LABEL">
+					<option value="">COM_FABRIK_NONE</option>
+					<option value="sum">COM_FABRIK_SUM</option>	
+					<option value="avg">COM_FABRIK_AVERAGE</option>
+			</field>
+			
+			
 		</fieldset>
 	
 		<fieldset name="data-labels-in-fieldnames" label="PLG_FABRIK_VIZ_NV3D_LABELS_IN_FIELDNAMES">
@@ -77,11 +93,6 @@
 				description="PLG_FABRIK_VIZ_NV3D_LABEL_COLUMNS_DESC"
 				label="PLG_FABRIK_VIZ_NV3D_LABEL_COLUMNS_LABEL" />
 			
-			<field name="split"
-				type="field"
-				description="PLG_FABRIK_VIZ_NV3D_SPLIT_DESC"
-				label="PLG_FABRIK_VIZ_NV3D_SPLIT_LABEL" />
-				
 			<field name="label_axis_values"
 				type="radio"
 				default="label_columns"

@@ -386,8 +386,9 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 
 			// Store the file in the tmp folder so it can be attached
 			$file = $config->get('tmp_path') . '/' . JStringNormalise::toDashSeparated($model->getForm()->label . '-' . $input->getString('rowid')) . '.pdf';
+			$pdf = $dompdf->output();
 
-			if (JFile::write($file, $dompdf->output()))
+			if (JFile::write($file, $pdf))
 			{
 				$thisAttachments[] = $file;
 			}

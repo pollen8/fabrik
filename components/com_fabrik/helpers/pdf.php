@@ -51,6 +51,11 @@ class FabrikPDFHelper
 			define('DOMPDF_FONT_CACHE', $config->get('tmp_path'));
 		}
 
+		if (!defined('DOMPDF_TEMP_DIR'))
+		{
+			define('DOMPDF_TEMP_DIR', $config->get('tmp_path'));
+		}
+
 		require_once $file;
 
 		return true;

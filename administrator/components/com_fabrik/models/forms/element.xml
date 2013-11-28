@@ -607,7 +607,13 @@
 			</fieldset>
 
 				<fieldset name="access2">
-
+					
+					<field name="edit_access"
+						type="accesslevel"
+						default="1"
+						label="COM_FABRIK_ELEMENT_EDIT_ACCESS_LABEL"
+						description="COM_FABRIK_ELEMENT_EDIT_ACCESS_DESC" />
+						
 					<field name="view_access"
 						type="accesslevel"
 						default="1"

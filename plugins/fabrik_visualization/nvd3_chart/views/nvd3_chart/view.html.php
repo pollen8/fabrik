@@ -98,6 +98,11 @@ class FabrikViewNvd3_Chart extends JViewLegacy
 
 		FabrikHelperHTML::iniRequireJs($model->getShim());
 		FabrikHelperHTML::script($srcs, $js);
-		echo parent::display();
+
+		$text = $this->loadTemplate();
+		FabrikHelperHTML::runConentPlugins($text);
+		echo $text;
+
+		//echo parent::display();
 	}
 }

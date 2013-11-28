@@ -232,6 +232,13 @@ class PlgFabrik_Element extends FabrikPlugin
 	 * @var  bool
 	 */
 	protected $allowDuplicates = true;
+
+	/**
+	 * Wraps 'foo' AS 'bar' as statements with SUM('foo') = 'bar'
+	 * Used in nv3d viz to alter query statements
+	 * @var  string
+	 */
+	public $calcSelectModifier = null;
 	/**
 	 * Constructor
 	 *
@@ -750,6 +757,10 @@ class PlgFabrik_Element extends FabrikPlugin
 		}
 		else
 		{
+			if ($this->calcSelectModifier)
+			{
+				$k = $this->calcSelectModifier . '(' . $k . ')';
+			}
 			$str = $k . ' AS ' . $fullElName;
 		}
 
@@ -789,6 +800,12 @@ class PlgFabrik_Element extends FabrikPlugin
 			else
 			{
 				$fullElName = $db->quoteName($dbtable . '___' . $this->element->name . '_raw');
+
+				if ($this->calcSelectModifier)
+				{
+					$k = $this->calcSelectModifier . '(' . $k . ')';
+				}
+
 				$str = $k . ' AS ' . $fullElName;
 			}
 
@@ -903,9 +920,23 @@ class PlgFabrik_Element extends FabrikPlugin
 			{
 				$lookUp = $params->get('view_access_user', '');
 				$lookUp = $formModel->getElement($lookUp, true);
-				$fullName = $lookUp->getFullName(false, true, false);
-				$value = $formModel->getElementData($fullName, true);
-				$this->access->$key = ($user->get('id') == $value) ? true : false;
+
+				// Could be  a linked parent element in which case the form doesn't contain the element whose id is $lookUpId
+				if (!$lookUp)
+				{
+					$lookUp =  FabrikWorker::getPluginManager()->getElementPlugin($lookUpId);
+				}
+
+				if ($lookUp)
+				{
+					$fullName = $lookUp->getFullName(false, true, false);
+					$value = $formModel->getElementData($fullName, true);
+					$this->access->$key = ($user->get('id') == $value) ? true : false;
+				}
+				else
+				{
+					FabrikWorker::logError('Did not load element ' . $lookUpId . ' for element::canView()', 'error');
+				}
 			}
 		}
 
@@ -945,9 +976,21 @@ class PlgFabrik_Element extends FabrikPlugin
 			}
 			else
 			{
+				$viewLevel = $this->getElement()->access;
+
+				if (!$this->getFormModel()->isNewRecord())
+				{
+					$editViewLevel = $this->getParams()->get('edit_access');
+
+					if ($editViewLevel)
+					{
+						$viewLevel = $editViewLevel;
+					}
+				}
+
 				$user = JFactory::getUser();
 				$groups = $user->getAuthorisedViewLevels();
-				$this->access->use = in_array($this->getElement()->access, $groups);
+				$this->access->use = in_array($viewLevel, $groups);
 			}
 		}
 
