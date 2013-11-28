@@ -4654,13 +4654,14 @@ class PlgFabrik_Element extends FabrikPlugin
 	 *
 	 * @since   3.0.8
 	 *
-	 * @return  array  Group by element names
+	 * @return  array  (Group by element names, group by element labels)
 	 */
 	protected function calcGroupBys($splitParam, $listModel)
 	{
 		$app = JFactory::getApplication();
 		$pluginManager = FabrikWorker::getPluginManager();
 		$requestGroupBy = $app->input->get('group_by', '');
+		$groupByLabels = array();
 
 		if ($requestGroupBy == '0')
 		{
@@ -4723,19 +4724,21 @@ class PlgFabrik_Element extends FabrikPlugin
 			}
 			*/
 
-			if (method_exists($plugin, 'getJoinValueColumn'))
+			if (method_exists($plugin, 'getFullLabelOrConcat'))
 			{
 				$sName = $plugin->getJoinValueColumn();
+				$sLabel = $plugin->getFullLabelOrConcat();
 			}
 			else
 			{
-				$sName = $plugin->getFullName(false, false, false);
+				$sName = $sLabel = $plugin->getFullName(false, false, false);
 
 			}
 			$gById = FabrikString::safeColName($sName);
+			$groupByLabels[] = $sLabel;
 		}
 
-		return $groupBys;
+		return array($groupBys, $groupByLabels);
 	}
 
 	/**
@@ -4768,7 +4771,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		$params = $this->getParams();
 		$item = $listModel->getTable();
 		$splitSum = $params->get('sum_split', '');
-		$groupBys = $this->calcGroupBys('sum_split', $listModel);
+		list($groupBys, $groupByLabels) = $this->calcGroupBys('sum_split', $listModel);
 		$split = empty($groupBys) ? false : true;
 		$calcLabel = $params->get('sum_label', JText::_('COM_FABRIK_SUM'));
 
@@ -4776,8 +4779,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		{
 			$pluginManager = FabrikWorker::getPluginManager();
 			$plugin = $pluginManager->getElementPlugin($splitSum);
-			$sql = $this->getSumQuery($listModel, $groupBys) . ' GROUP BY label';
-
+			$sql = $this->getSumQuery($listModel, $groupByLabels) . ' GROUP BY label';
 			$sql = $listModel->pluginQuery($sql);
 			$db->setQuery($sql);
 			$results2 = $db->loadObjectList('label');
@@ -4828,7 +4830,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		$splitAvg = $params->get('avg_split', '');
 		$item = $listModel->getTable();
 		$calcLabel = $params->get('avg_label', JText::_('COM_FABRIK_AVERAGE'));
-		$groupBys = $this->calcGroupBys('avg_split', $listModel);
+		list($groupBys, $groupByLabels) = $this->calcGroupBys('avg_split', $listModel);
 
 		$split = empty($groupBys) ? false : true;
 
@@ -4905,7 +4907,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		$whereSQL = $listModel->buildQueryWhere();
 		$params = $this->getParams();
 		$splitMedian = $params->get('median_split', '');
-		$groupBys = $this->calcGroupBys('sum_split', $listModel);
+		list($groupBys, $groupByLabels) = $this->calcGroupBys('sum_split', $listModel);
 		$split = empty($groupBys) ? false : true;
 		$format = $this->getFormatString();
 		$res = '';
@@ -4967,7 +4969,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		$calcLabel = $params->get('count_label', JText::_('COM_FABRIK_COUNT'));
 		$splitCount = $params->get('count_split', '');
 
-		$groupBys = $this->calcGroupBys('count_split', $listModel);
+		list($groupBys, $groupByLabels) = $this->calcGroupBys('count_split', $listModel);
 		$split = empty($groupBys) ? false : true;
 
 		if ($split)

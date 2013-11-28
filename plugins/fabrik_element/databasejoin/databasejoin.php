@@ -987,6 +987,27 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 	}
 
 	/**
+	 * Get the FULL element name or concat statement used currently in sum calculations
+	 *
+	 * @return  string
+	 */
+
+	protected function getFullLabelOrConcat()
+	{
+		$params = $this->getParams();
+		$join = $this->getJoin();
+		$joinTable = $join->table_join_alias;
+		$label = $this->getLabelOrConcatVal();
+
+		if ($params->get($this->concatLabelParam) == '')
+		{
+			$label = $joinTable . '.' . $this->getLabelParamVal();
+		}
+
+		return $label;
+	}
+
+	/**
 	 * Get the element name or concat statement used to build the dropdown labels or
 	 * table data field
 	 *
