@@ -633,4 +633,31 @@ class FabrikString extends JString
 			return preg_replace('#\s+#', '', $text);
 		}
 	}
+
+	/*
+	 * See if date string is a valid date in MySQL format.
+	 *
+	 * NOTE - I could have sworn we had a function somewhere to do this, but I can't find it!
+	 * Needed it in the main system plugin, for handling J! search plugin dates, as J!
+	 * will pitch a fatal error if we pass it an invalid date string.  So if there is
+	 * already a way of doing this, feel free to dump this func and modify the system plugin
+	 * in onDoContentSearch().
+	 *
+	 * @param  bool  $time_optional   if set to true, the time part is optional
+	 *
+	 * @return  bool
+	 */
+	public static function isMySQLDate($date, $time_optional = false)
+	{
+		$date_re = '(((\d{4})(-)(0[13578]|10|12)(-)(0[1-9]|[12][0-9]|3[01]))|((\d{4})(-)(0[469]|1??1)(-)([0][1-9]|[12][0-9]|30))|((\d{4})(-)(02)(-)(0[1-9]|1[0-9]|2[0-8]))|(([02468]??[048]00)(-)(02)(-)(29))|(([13579][26]00)(-)(02)(-)(29))|(([0-9][0-9][0][48])(-)(0??2)(-)(29))|(([0-9][0-9][2468][048])(-)(02)(-)(29))|(([0-9][0-9][13579][26])(-)(02??)(-)(29)))';
+		$time_re = '(\s([0-1][0-9]|2[0-4]):([0-5][0-9]):([0-5][0-9]))';
+		if ($time_optional)
+		{
+			return preg_match("#^" . $date_re . "$#", $date) || preg_match("#^" . $date_re . $time_re . "$#", $date);
+		}
+		else
+		{
+			return preg_match("#^" . $date_re . $time_re . "$#", $date);
+		}
+	}
 }
