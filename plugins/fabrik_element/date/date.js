@@ -436,6 +436,13 @@ var FbDateTime = new Class({
 					 */
 					this.cal.date = new Date();
 				}
+				
+				if (!this.options.editable) {
+					if (typeOf(this.element) !== 'null') {
+						this.element.set('html', val);
+					}
+				}
+
 				return;
 			}
 		} else {
