@@ -5291,9 +5291,10 @@ class FabrikFEModelList extends JModelForm
 					JLog::addLogger(array('text_file' => 'fabrik.log.php'));
 
 					// Start logging...
-					JLog::add(
-					'A prefilter has been set up on an unpublished element, and will not be applied:' . FabrikString::safeColName($tmpfilter),
-					JLog::NOTICE, 'com_fabrik');
+					$msg = 'A prefilter has been set up on an unpublished element, and will not be applied:' . FabrikString::safeColName($tmpfilter);
+					JLog::add($msg,	JLog::NOTICE, 'com_fabrik');
+
+					JFactory::getApplication()->enqueueMessage($msg, 'notice');
 					continue;
 				}
 
