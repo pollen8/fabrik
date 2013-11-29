@@ -108,22 +108,25 @@ class PlgFabrik_ListCaneditrow extends PlgFabrik_List
 			$value = $params->get('caneditrow_value');
 			$operator = $params->get('operator', '=');
 
+			if (is_object($data->$field))
+			{
+				$data->$field = JArrayHelper::fromObject($data->$field);
+			}
+
 			switch ($operator)
 			{
 				case '=':
 				default:
-					$return = $data->$field == $value;
-					$this->acl[$data->__pk_val] = $return;
-
-					return $return;
+					$return = is_array($data->$field) ? in_array($value, $data->$field) : $data->$field == $value;
 					break;
 				case "!=":
-					$return = $data->$field != $value;
-					$this->acl[$data->__pk_val] = $return;
-
-					return $return;
+					$return = is_array($data->$field) ? !in_array($value, $data->$field) : $data->$field != $value;
 					break;
 			}
+
+			$this->acl[$data->__pk_val] = $return;
+
+			return $return;
 		}
 	}
 
