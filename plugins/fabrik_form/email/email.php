@@ -482,16 +482,11 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 							{
 								// Can't implode multi dimensional arrays
 								$val = json_encode($val);
-							}
-							else
-							{
-								$val = implode(',', $val);
+								$val = FabrikWorker::JSONtoData($val, true);
 							}
 						}
 
-						$aVals = FabrikWorker::JSONtoData($val, true);
-
-						foreach ($aVals as $v)
+						foreach ($val as $v)
 						{
 							$file = $elementModel->addEmailAttachement($v);
 

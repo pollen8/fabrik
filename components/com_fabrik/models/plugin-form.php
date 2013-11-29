@@ -310,9 +310,22 @@ class PlgFabrik_Form extends FabrikPlugin
 					if ($elementModel->isJoin())
 					{
 						$join = $elementModel->getJoinModel()->getJoin();
-						$raw = JArrayHelper::getValue($model->formDataWithTableName[$k], $c, '');
-						$this->emailData[$k . '_raw'][$c] = $raw;
-						$this->emailData[$k][$c] = $elementModel->getEmailValue($raw, $model->formDataWithTableName, $c);
+
+						if ($groupModel->canRepeat())
+						{
+							$raw = JArrayHelper::getValue($model->formDataWithTableName[$k], $c, '');
+							$this->emailData[$k . '_raw'][$c] = $raw;
+							$this->emailData[$k][$c] = $elementModel->getEmailValue($raw, $model->formDataWithTableName, $c);
+						}
+						else
+						{
+							// E.g. ajax file upload - repeat data in none-repeat group
+							foreach ($model->formDataWithTableName[$k] as $multiKey => $multiData)
+							{
+								$this->emailData[$k . '_raw'][$multiKey] = $multiData;
+								$this->emailData[$k][$multiKey] = $elementModel->getEmailValue($multiData, $model->formDataWithTableName, $multiData);
+							}
+						}
 					}
 					elseif (array_key_exists($key, $model->formDataWithTableName))
 					{

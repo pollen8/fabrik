@@ -1146,14 +1146,9 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 
 				$name = $this->getFullName(true, false);
 
-				$formModel->updateFormData($name, $files);
-				$formModel->updateFormData($name . '_raw', $files);
-
-				$formModel->updateFormData($joinsid, $ids);
-				$formModel->updateFormData($joinsid . '_raw', $ids);
-
-				$formModel->updateFormData($joinsparam, $saveParams);
-				$formModel->updateFormData($joinsparam . '_raw', $saveParams);
+				$formModel->updateFormData($name, $files, true);
+				$formModel->updateFormData($joinsid, $ids, true);
+				$formModel->updateFormData($joinsparam, $saveParams, true);
 			}
 			else
 			{
@@ -2476,7 +2471,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 	 *
 	 * @param   string  $data  Data
 	 *
-	 * @return  string  Formatted value
+	 * @return  string  Full path to image to attach to email
 	 */
 
 	public function addEmailAttachement($data)
