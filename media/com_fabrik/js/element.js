@@ -403,6 +403,7 @@ var FbElement =  new Class({
 			d.getElement('ul').adopt(li);
 			t.attr('data-content', unescape(d.get('html')));
 			t.data('popover').setContent();
+			t.data('popover').options.content = d.get('html');
 			t.data('popover').hide();
 		}
 	},
@@ -425,6 +426,7 @@ var FbElement =  new Class({
 			}
 			t.attr('data-content', d.get('html'));
 			t.data('popover').setContent();
+			t.data('popover').options.content = d.get('html');
 			t.data('popover').hide();
 			t.removeAttr(klass);
 		}
