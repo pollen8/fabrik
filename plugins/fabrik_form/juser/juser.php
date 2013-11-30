@@ -505,7 +505,7 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 			$user->set('username', $username);
 		}
 
-		// Check that password is not greater than 100 characters
+		// Check that password is not greater than 100 characters @FIXME - 55 for j3.2
 		if (strlen($data['password']) > 100)
 		{
 			$data['password'] = JString::substr($data['password'], 0, 100);
@@ -600,7 +600,7 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 				// Send the registration email.
 				if ($emailSubject !== '')
 				{
-					$return = $mail->sendMail($data['mailfrom'], $data['fromname'], $data['email'], $emailSubject, $emailBody, true);
+					$return = $mail->sendMail($data['mailfrom'], $data['fromname'], $data['email'], $emailSubject, $emailBody);
 					$db = JFactory::getDbo();
 					/*
 					 * Added email to admin code, but haven't had a chance to test it yet.
@@ -715,7 +715,7 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 			// Send mail to all superadministrators id
 			foreach ($rows as $row)
 			{
-				$return = JFactory::getMailer()->sendMail($data['mailfrom'], $data['fromname'], $row->email, $emailSubject, $emailBodyAdmin, true);
+				$return = JFactory::getMailer()->sendMail($data['mailfrom'], $data['fromname'], $row->email, $emailSubject, $emailBodyAdmin);
 
 				// Check for an error.
 				if ($return !== true)
