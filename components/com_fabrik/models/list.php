@@ -11595,4 +11595,24 @@ class FabrikFEModelList extends JModelForm
 
 		return $this->tabs;
 	}
+
+	public function isUserDoElement($name)
+	{
+		$acl_types = array('allow_edit_details2', 'allow_delete2');
+		$params = $this->getParams();
+		foreach ($acl_types as $acl_type)
+		{
+			$userDoCol = $params->get($acl_type, '');
+			if ($userDoCol != '')
+			{
+				$userDoCol = FabrikString::safeColNameToArrayKey($userDoCol);
+
+				if ($userDoCol == $name)
+				{
+					return true;
+				}
+			}
+		}
+		return false;
+	}
 }

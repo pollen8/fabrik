@@ -690,17 +690,20 @@ class FabrikFEModelGroup extends FabModel
 				 */
 				if ($element->published == 1)
 				{
+					$full_name = $elementModel->getFullName(true, false);
+
 					/**
 					 * As this function seems to be used to build both the list view and the form view, we should NOT
 					 * include elements in the list query if the user can not view them, as their data is sent to the json object
 					 * and thus visible in the page source
 					 */
-					if ($input->get('view') == 'list' && !$elementModel->canView('list'))
+
+					if ($input->get('view') == 'list' && !$this->getListModel()->isUserDoElement($full_name) && !$elementModel->canView('list'))
 					{
 						continue;
 					}
 
-					$full_name = $elementModel->getFullName(true, false);
+
 					$showThisInList = $element->primary_key || $params->get('include_in_list_query', 1) == 1
 					|| (empty($showInList) && $element->show_in_list_summary) || in_array($element->id, $showInList);
 
