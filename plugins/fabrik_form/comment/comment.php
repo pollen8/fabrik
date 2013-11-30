@@ -1089,6 +1089,13 @@ class PlgFabrik_FormComment extends PlgFabrik_Form
 		if (JFile::exists($jcomments))
 		{
 			require_once $jcomments;
+
+			if ($this->commentsLocked)
+			{
+				$jc_config = JCommentsFactory::getConfig();
+				$jc_config->set('comments_locked', 1);
+			}
+
 			$this->data = '<div id="jcomments" style="clear: both;">
 					' . JComments::show($input->get('rowid', '', 'string'), "com_fabrik_{$formModel->getId()}") . '
 							</div>';
