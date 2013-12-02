@@ -64,7 +64,7 @@ echo $this->plugintop;
 		if (!$model->isMultiPage() || $i == 0 || $group->splitPage) :
 			?>
 				<li <?php if ($i == 0) echo 'class="active"'?>>
-					<a href="#group-tab<?php echo $i;?>" data-toggle="tab">
+					<a href="#group-tab<?php echo $i;?>" data-toggle="tab" id="group<?php echo $group->id;?>_tab">
 						<?php
 							if (!empty($group->title))
 							{
