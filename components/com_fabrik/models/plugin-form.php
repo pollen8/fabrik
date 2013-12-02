@@ -202,6 +202,25 @@ class PlgFabrik_Form extends FabrikPlugin
 	}
 
 	/**
+	 * Helper method used in plugin onProcess() methods. Gets the form's data merged
+	 * with the email data. So raw values are those of the submitted form and labels are
+	 * those of the element model's getEmailValue() method (if found)
+	 *
+	 * @since   3.1rc1
+	 *
+	 * @return  array
+	 */
+	public function getProcessData()
+	{
+		$model = $this->getModel();
+		unset($this->emailData);
+		$d = isset($model->_formDataWithTableName) ? $model->_formDataWithTableName : array();
+		$this->data = array_merge($d, $this->getEmailData());
+
+		return $this->data;
+	}
+
+	/**
 	 * Convert the posted form data to the data to be shown in the email
 	 * e.g. radio buttons swap their values for the value's label
 	 *
@@ -315,7 +334,7 @@ class PlgFabrik_Form extends FabrikPlugin
 					$elementModel->_inJoin = $groupModel->isJoin();
 					$elementModel->setEditable(false);
 
-					if ($elementModel->_inJoin)
+					if ($elementModel->isJoin())
 					{
 						if ($elementModel->_inRepeatGroup)
 						{

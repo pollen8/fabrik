@@ -2,12 +2,12 @@
 /**
  * @package     Joomla
  * @subpackage  Fabrik
- * @copyright   Copyright (C) 2005 Rob Clayburn. All rights reserved.
- * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @copyright   Copyright (C) 2005-2013 fabrikar.com - All rights reserved.
+ * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
-// Check to ensure this file is included in Joomla!
-defined('_JEXEC') or die();
+// No direct access
+defined('_JEXEC') or die('Restricted access');
 
 jimport('joomla.application.component.model');
 
@@ -21,10 +21,18 @@ jimport('joomla.application.component.model');
 
 class PlgFabrik_List extends FabrikPlugin
 {
-	/** @var string button prefix*/
+	/**
+	 * Button prefix
+	 *
+	 * @var string
+	 */
 	protected $buttonPrefix = '';
 
-	/** @var string js code to ini js object */
+	/**
+	 * JavaScript code to ini js object
+	 *
+	 * @var string
+	 */
 	protected $jsInstance = null;
 
 	/**
@@ -52,12 +60,15 @@ class PlgFabrik_List extends FabrikPlugin
 	public function canUse(&$model = null, $location = null, $event = null)
 	{
 		$aclParam = $this->getAclParam();
+
 		if ($aclParam == '')
 		{
 			return true;
 		}
+
 		$params = $this->getParams();
 		$groups = JFactory::getUser()->getAuthorisedViewLevels();
+
 		return in_array($params->get($aclParam), $groups);
 	}
 
@@ -81,6 +92,7 @@ class PlgFabrik_List extends FabrikPlugin
 	protected function buttonLabel()
 	{
 		$s = JString::strtoupper($this->buttonPrefix);
+
 		return JText::_('PLG_LIST_' . $s . '_' . $s);
 	}
 
@@ -105,6 +117,7 @@ class PlgFabrik_List extends FabrikPlugin
 			$this->buttonAction = $model->actionMethod();
 		}
 		$this->context = $model->getRenderContext();
+
 		return false;
 	}
 
@@ -129,6 +142,7 @@ class PlgFabrik_List extends FabrikPlugin
 			$btnClass = ($j3 && $this->buttonAction != 'dropdown') ? 'btn ' : '';
 			return '<a href="#" data-list="' . $this->context . '" class="' . $btnClass . $name . ' listplugin" title="' . $label . '">' . $img . ' ' . $text . '</a>';
 		}
+
 		return '';
 	}
 
@@ -144,6 +158,7 @@ class PlgFabrik_List extends FabrikPlugin
 	{
 		return $this->getParams()->get('list_' . $this->buttonPrefix . '_image_name', $this->buttonPrefix . '.png');
 	}
+
 	/**
 	 * Build an array of properties to ini the plugins JS objects
 	 *
@@ -174,6 +189,7 @@ class PlgFabrik_List extends FabrikPlugin
 	public function onLoadJavascriptInstance($params, $model, $args)
 	{
 		JText::script('COM_FABRIK_PLEASE_SELECT_A_ROW');
+
 		return true;
 	}
 
@@ -218,6 +234,7 @@ class PlgFabrik_List extends FabrikPlugin
 	protected function _getLang()
 	{
 		$lang = new stdClass;
+
 		return $lang;
 	}
 
@@ -247,9 +264,11 @@ class PlgFabrik_List extends FabrikPlugin
 		{
 			return false;
 		}
+
 		$app = JFactory::getApplication();
 		$input = $app->input;
 		$postedRenderOrder = $input->getInt('fabrik_listplugin_renderOrder', -1);
+
 		return $input->get('fabrik_listplugin_name') == $this->buttonPrefix && $this->renderOrder == $postedRenderOrder;
 	}
 
@@ -264,6 +283,7 @@ class PlgFabrik_List extends FabrikPlugin
 	public function onGetFilterKey()
 	{
 		$this->filterKey = JString::strtolower(str_ireplace('PlgFabrik_List', '', get_class($this)));
+
 		return $this->filterKey;
 	}
 
@@ -279,6 +299,7 @@ class PlgFabrik_List extends FabrikPlugin
 		{
 			$this->onGetFilterKey();
 		}
+
 		return $this->filterKey;
 	}
 
@@ -293,6 +314,7 @@ class PlgFabrik_List extends FabrikPlugin
 	{
 		$app = JFactory::getApplication();
 		$package = $app->getUserState('com_fabrik.package', 'fabrik');
+
 		return 'com_' . $package . '.list' . $this->model->getRenderContext() . '.plugins.' . $this->onGetFilterKey() . '.';
 	}
 
@@ -322,7 +344,6 @@ class PlgFabrik_List extends FabrikPlugin
 
 	public function onQueryBuilt($params, &$model, &$args)
 	{
-
 	}
 
 	/**
@@ -363,7 +384,7 @@ class PlgFabrik_List extends FabrikPlugin
 	}
 
 	/**
-	  * Overridden by plugins if neceesary.
+	 * Overridden by plugins if neceesary.
 	 * If the plugin is a filter plugin, return true if it needs the 'form submit'
 	 * method, i.e. the Go button.  Implemented specifically for radius search plugin.
 	 *
@@ -373,5 +394,4 @@ class PlgFabrik_List extends FabrikPlugin
 	{
 		return false;
 	}
-
 }
