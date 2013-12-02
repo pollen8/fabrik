@@ -65,6 +65,9 @@ var FbListUpdateCol = new Class({
 			width: 400,
 			destroy: false,
 			height: 300,
+			onOpen: function () {
+				this.fitToContent(false);
+			},
 			onContentLoaded: function (win) {
 				var form = document.id('update_col' + this.options.ref);
 
@@ -123,11 +126,11 @@ var FbListUpdateCol = new Class({
 							'listref':  this.options.ref,
 							'context': 'visualization',
 							'parentView': 'update_col' + this.options.ref,
-							'fabrikIngoreDefaultFilterVal': 1,
-							'filterOverride': 'field'
+							'fabrikIngoreDefaultFilterVal': 1
 						},
 						'onComplete': function () {
 							Fabrik.loader.stop(row);
+							win.fitToContent(false);
 						}
 					}).send();
 				}.bind(this));

@@ -1370,6 +1370,17 @@ class FabrikFEModelList extends JModelForm
 						if (isset($row->$fkey))
 						{
 							$fKeyVal = $row->$fkey;
+
+							if (is_object($fKeyVal))
+							{
+								$fKeyVal = JArrayHelper::fromObject($fKeyVal);
+							}
+
+							if (is_array($fKeyVal))
+							{
+								$fKeyVal = array_shift($fKeyVal);
+							}
+
 							$pkcheck[] = '<input type="checkbox" class="fabrik_joinedkey" value="' . htmlspecialchars($fKeyVal, ENT_COMPAT, 'UTF-8')
 							. '" name="' . $join->table_join_alias . '[' . $row->__pk_val . ']" />';
 						}
@@ -9736,14 +9747,6 @@ class FabrikFEModelList extends JModelForm
 
 		$script = $plugin->filterJS(false, $container);
 		FabrikHelperHTML::addScriptDeclaration($script);
-
-		// For update col plug-in we override to use the field filter type.
-		$filterOverride = $input->get('filterOverride', '');
-
-		if ($filterOverride !== '')
-		{
-			$plugin->getElement()->filter_type = 'field';
-		}
 
 		echo $plugin->getFilter($input->getInt('counter', 0), false);
 	}
