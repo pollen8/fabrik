@@ -1370,6 +1370,17 @@ class FabrikFEModelList extends JModelForm
 						if (isset($row->$fkey))
 						{
 							$fKeyVal = $row->$fkey;
+
+							if (is_object($fKeyVal))
+							{
+								$fKeyVal = JArrayHelper::fromObject($fKeyVal);
+							}
+
+							if (is_array($fKeyVal))
+							{
+								$fKeyVal = array_shift($fKeyVal);
+							}
+
 							$pkcheck[] = '<input type="checkbox" class="fabrik_joinedkey" value="' . htmlspecialchars($fKeyVal, ENT_COMPAT, 'UTF-8')
 							. '" name="' . $join->table_join_alias . '[' . $row->__pk_val . ']" />';
 						}
