@@ -141,7 +141,7 @@ class PlgFabrik_Element extends FabrikPlugin
 	 *
 	 * @var array
 	 */
-	protected $imageExtensions = array('jpg', 'jpeg', 'gif', 'bmp', 'png');
+	protected $imageExtensions = array('png', 'jpg', 'jpeg', 'gif', 'bmp');
 
 	/**
 	 * Is the element in a detailed view?
