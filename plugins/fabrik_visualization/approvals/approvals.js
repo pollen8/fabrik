@@ -17,18 +17,25 @@ var fbVisApprovals = new Class({
 			if (el.get('tag') !== 'a') {
 				el = el.findUp('a');
 			}
-			var i = el.getParent('.floating-tip').retrieve('trigger');
-			new Request.HTML({'update': i, 'url': el.href}).send();
+			new Request.HTML({'url': el.href, 
+				'onSuccess': function () {
+					el.getParent('tr').dispose();
+				}
+			}).send();
 
 		});
 		document.addEvent('click:relay(a.disapprove)', function (e) {
 			var el = e.target;
+			e.stop();
 			if (el.get('tag') !== 'a') {
 				el = el.findUp('a');
 			}
-			var i = el.getParent('.floating-tip').retrieve('trigger');
-			new Request.HTML({'update': i, 'url': el.href}).send();
-			e.stop();
+			new Request.HTML({'url': el.href, 
+				'onSuccess': function () {
+					el.getParent('tr').dispose();
+				}
+			}).send();
+			
 		});
 
 		new FloatingTips('.approvalTip', {
