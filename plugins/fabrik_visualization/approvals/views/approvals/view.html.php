@@ -21,7 +21,7 @@ jimport('joomla.application.component.view');
  * @since       3.0.6
  */
 
-class FabrikViewApprovals extends JView
+class FabrikViewApprovals extends JViewLegacy
 {
 	/**
 	 * Execute and display a template script.
@@ -34,6 +34,7 @@ class FabrikViewApprovals extends JView
 	public function display($tpl = 'default')
 	{
 		$model = $this->getModel();
+		$j3 = FabrikWorker::j3();
 		$app = JFactory::getApplication();
 		$input = $app->input;
 		$usersConfig = JComponentHelper::getParams('com_fabrik');
@@ -45,7 +46,7 @@ class FabrikViewApprovals extends JView
 		$this->containerId = $this->get('ContainerId');
 		$this->calName = $this->get('VizName');
 		$this->params = $model->getParams();
-		$tpl = $this->params->get('approvals_layout', $tpl);
+		$tpl = $j3 ? 'bootstrap' : $tpl;
 		$this->_setPath('template', JPATH_SITE . '/plugins/fabrik_visualization/approvals/views/approvals/tmpl/' . $tpl);
 
 		FabrikHelperHTML::stylesheetFromPath('plugins/fabrik_visualization/approvals/views/approvals/tmpl/' . $tpl . '/template.css');

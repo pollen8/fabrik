@@ -56,20 +56,10 @@ class FabrikModelApprovals extends FabrikFEModelVisualization
 			$db = $listModel->getDb();
 			$query = $db->getQuery(true);
 
-			$approveEl = $formModel->getElement($approveEls[$x]);
-			$approveEl->getAsField_html($asfields, $fields, array('alias' => 'approve'));
-
-			$titleEl = $formModel->getElement($titles[$x]);
-			$titleEl->getAsField_html($asfields, $fields, array('alias' => 'title'));
-
-			$userEl = $formModel->getElement($users[$x]);
-			$userEl->getAsField_html($asfields, $fields, array('alias' => 'user'));
-
-			if (JArrayHelper::getValue($contents, $x, '') !== '')
-			{
-				$contentEl = $formModel->getElement($contents[$x]);
-				$contentEl->getAsField_html($asfields, $fields, array('alias' => 'content'));
-			}
+			$this->asField($formModel, $approveEls[$x], $asfields, array('alias' => 'approve'));
+			$this->asField($formModel, $titles[$x], $asfields, array('alias' => 'title'));
+			$this->asField($formModel, $users[$x], $asfields, array('alias' => 'user'));
+			$this->asField($formModel, $contents[$x], $asfields, array('alias' => 'content'));
 
 			$query->select($db->quote($item->label) . " AS type, " . $item->db_primary_key . ' AS pk, ' . implode(',', $asfields))
 				->from($db->quoteName($item->db_table_name));
@@ -92,6 +82,34 @@ class FabrikModelApprovals extends FabrikFEModelVisualization
 	}
 
 	/**
+	 * Load up a field 'select as' statement
+	 *
+	 * @param   JModel  $formModel  Form model
+	 * @param   string  $fieldName  Element full name
+	 * @param   array   &$asfields  As fields to append as statement to
+	 * @param   array   $opts       Options
+	 *
+	 * @throws RuntimeException
+	 *
+	 * @return  void
+	 */
+	private function asField($formModel, $fieldName, &$asfields, $opts)
+	{
+		$elementModel = $formModel->getElement($fieldName);
+		$fields = array();
+
+		if ($elementModel)
+		{
+
+			if ($elementModel->getElement()->published <> 1)
+			{
+				throw new RuntimeException('Approval ' . $fieldName . ' element must be published', 500);
+			}
+
+			$elementModel->getAsField_html($asfields, $fields, $opts);
+		}
+	}
+	/**
 	 * Disapprove a record
 	 *
 	 * @return  void
@@ -100,7 +118,7 @@ class FabrikModelApprovals extends FabrikFEModelVisualization
 	public function disapprove()
 	{
 		$this->decide(0);
-		echo FabrikHelperHTML::image('delete.png', 'list', '');
+		echo FabrikWorker::j3() ? '<i class="icon-remove"></i>' : FabrikHelperHTML::image('delete.png', 'list', '');
 	}
 
 	/**
@@ -112,7 +130,7 @@ class FabrikModelApprovals extends FabrikFEModelVisualization
 	public function approve()
 	{
 		$this->decide(1);
-		echo FabrikHelperHTML::image('ok.png', 'list', '');
+		echo FabrikWorker::j3() ? '<i class="icon-ok"></i>' : FabrikHelperHTML::image('ok.png', 'list', '');
 	}
 
 	/**

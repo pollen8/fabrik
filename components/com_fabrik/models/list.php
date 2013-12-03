@@ -1569,6 +1569,13 @@ class FabrikFEModelList extends JModelForm
 		$args['data'] = &$data;
 		$pluginButtons = $this->getPluginButtons();
 
+		// Build layout for row buttons
+		$tpl = $this->getTmpl();
+		$align = $params->get('checkboxLocation', 'end') == 'end' ? 'right' : 'left';
+		$displayData = array('align'=> $align);
+		$basePath = COM_FABRIK_FRONTEND . '/views/list/tmpl/' . $tpl . '/layouts/';
+		$layout = new JLayoutFile('listactions.' . $buttonAction, $basePath, array('debug' => false, 'component' => 'com_fabrik', 'client' => 'site'));
+
 		foreach ($data as $groupKey => $group)
 		{
 			$cg = count($group);
@@ -1602,16 +1609,8 @@ class FabrikFEModelList extends JModelForm
 
 					if ($j3)
 					{
-						$align = $params->get('checkboxLocation', 'end') == 'end' ? 'right' : 'left';
-
-						if ($buttonAction == 'dropdown')
-						{
-							$row->fabrik_actions = FabrikHelperHTML::bootStrapDropDown($row->fabrik_actions, $align);
-						}
-						else
-						{
-							$row->fabrik_actions = FabrikHelperHTML::bootStrapButtonGroup($row->fabrik_actions);
-						}
+						$displayData['items'] = $row->fabrik_actions;
+						$row->fabrik_actions = $layout->render($displayData);
 					}
 					else
 					{

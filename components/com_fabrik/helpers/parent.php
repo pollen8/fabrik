@@ -765,6 +765,7 @@ class FabrikWorker
 		$msg = str_replace('{$Itemid}', $Itemid, $msg);
 		$msg = str_replace('{$mosConfig_sitename}', $config->get('sitename'), $msg);
 		$msg = str_replace('{$mosConfig_mailfrom}', $config->get('mailfrom'), $msg);
+		$msg = str_replace('{$mosConfig_secret}', $config->get('secret'), $msg);
 		$msg = str_replace('{where_i_came_from}', $app->input->server->get('HTTP_REFERER', ''), $msg);
 
 		foreach ($_SERVER as $key => $val)
