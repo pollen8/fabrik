@@ -426,6 +426,7 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 	protected function _getPHPTemplateEmail($tmpl)
 	{
 		$emailData = $this->data;
+		$formModel = $this->getModel();
 
 		// Start capturing output into a buffer
 		ob_start();
