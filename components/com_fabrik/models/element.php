@@ -3646,6 +3646,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		$return[] = $prefix . '[grouped_to_previous][' . $counter . ']" value="0" />';
 		$return[] = $prefix . '[hidden][' . $counter . ']" value="' . $hidden . '" />';
 		$return[] = $prefix . '[elementid][' . $counter . ']" value="' . $element->id . '" />';
+
 		return implode("\n", $return);
 	}
 
@@ -3666,6 +3667,7 @@ class PlgFabrik_Element extends FabrikPlugin
 			$match = $this->isExactMatch(array('match' => $this->getElement()->filter_exact_match));
 			$cond = ($match == 1) ? '=' : 'contains';
 		}
+
 		return $cond;
 	}
 
@@ -3684,10 +3686,12 @@ class PlgFabrik_Element extends FabrikPlugin
 		$app = JFactory::getApplication();
 		$qsFilter = $app->input->get($name, array(), 'array');
 		$qsValues = JArrayHelper::getValue($qsFilter, 'value', array());
+
 		if (count($qsValues) > 1)
 		{
 			$type = $type === 'hidden' ? 'range-hidden' : 'range';
 		}
+
 		return $type;
 	}
 
@@ -3701,10 +3705,12 @@ class PlgFabrik_Element extends FabrikPlugin
 	{
 		$element = $this->getElement();
 		$elName = $this->getFilterFullName();
+
 		if ($element->plugin != 'fabrikdatabasejoin')
 		{
 			$elName = FabrikString::safeColName($elName);
 		}
+
 		$listModel = $this->getListModel();
 		$element = $this->getElement();
 		$return = array();
@@ -3732,6 +3738,7 @@ class PlgFabrik_Element extends FabrikPlugin
 	{
 		$db = FabrikWorker::getDbo();
 		$element = $this->getElement();
+
 		if ($element->filter_type === 'range')
 		{
 			if (is_numeric($value[0]) && is_numeric($value[1]))
@@ -3742,6 +3749,7 @@ class PlgFabrik_Element extends FabrikPlugin
 			{
 				$value = $db->quote($value[0]) . ' AND ' . $db->quote($value[1]);
 			}
+
 			$condition = 'BETWEEN';
 		}
 		else
@@ -3752,10 +3760,12 @@ class PlgFabrik_Element extends FabrikPlugin
 				{
 					$v = $db->quote($v);
 				}
+
 				$value = ' (' . implode(',', $value) . ')';
 			}
 			$condition = 'IN';
 		}
+
 		return array($value, $condition);
 	}
 
@@ -3808,7 +3818,9 @@ class PlgFabrik_Element extends FabrikPlugin
 		{
 			return;
 		}
+
 		$this->escapedQueryValue = true;
+
 		if (is_array($value))
 		{
 			foreach ($value as &$val)
@@ -3836,6 +3848,7 @@ class PlgFabrik_Element extends FabrikPlugin
 	{
 		$this->escapeQueryValue($condition, $value);
 		$db = FabrikWorker::getDbo();
+
 		if (is_array($value))
 		{
 			// Ranged search
@@ -3901,8 +3914,8 @@ class PlgFabrik_Element extends FabrikPlugin
 					$condition = 'NOT IN';
 					$value = ($eval == FABRIKFILTER_QUERY) ? '(' . $value . ')' : '(' . $value . ')';
 					break;
-
 			}
+
 			switch ($condition)
 			{
 				case '>':
@@ -3929,12 +3942,14 @@ class PlgFabrik_Element extends FabrikPlugin
 				$value = JString::ltrim($value, "'");
 				$value = JString::rtrim($value, "'");
 			}
+
 			if ($condition == '=' && $value == "'_null_'")
 			{
 				$condition = " IS NULL ";
 				$value = '';
 			}
 		}
+
 		return array($value, $condition);
 	}
 
@@ -3954,6 +3969,7 @@ class PlgFabrik_Element extends FabrikPlugin
 	public function getFilterQuery($key, $condition, $value, $originalValue, $type = 'normal')
 	{
 		$this->encryptFieldName($key);
+
 		switch ($condition)
 		{
 			case 'earlierthisyear':
@@ -3999,8 +4015,10 @@ class PlgFabrik_Element extends FabrikPlugin
 				{
 					$query = " $key $condition $value ";
 				}
+
 				break;
 		}
+
 		return $query;
 	}
 
@@ -4033,10 +4051,12 @@ class PlgFabrik_Element extends FabrikPlugin
 	{
 		$params = $this->getParams();
 		$fieldDesc = $this->getFieldDescription();
+
 		if (JString::stristr($fieldDesc, 'INT') || $this->getElement()->filter_exact_match == 1)
 		{
 			return '=';
 		}
+
 		return 'REGEXP';
 	}
 
@@ -4065,16 +4085,19 @@ class PlgFabrik_Element extends FabrikPlugin
 		{
 			return;
 		}
+
 		$groupModel = JModel::getInstance('Group', 'FabrikFEModel');
 		$groupModel->setId($this->_element->group_id);
 		$groupTable = $groupModel->getGroup();
 		$formTable = FabTable::getInstance('Form', 'FabrikTable');
 		$listModel = JModel::getInstance('List', 'FabrikFEModel');
 		$afFormIds = $groupModel->getFormsIamIn();
+
 		if ($groupModel->isJoin())
 		{
 			$joinModel = $groupModel->getJoinModel();
 			$joinTable = $joinModel->getJoin();
+
 			if ($joinTable->list_id != 0)
 			{
 				$listModel->setId($joinTable->list_id);
@@ -4090,6 +4113,7 @@ class PlgFabrik_Element extends FabrikPlugin
 				foreach ($afFormIds as $formId)
 				{
 					$formTable->load($formId);
+
 					if ($formTable->record_in_database)
 					{
 						$tableTable = $listModel->loadFromFormId($formId);
@@ -4111,9 +4135,11 @@ class PlgFabrik_Element extends FabrikPlugin
 	public function onSave($data)
 	{
 		$params = $this->getParams();
+
 		if (!$this->canEncrypt() && $params->get('encrypt'))
 		{
 			JError::raiseNotice(500, 'The encryption option is only available for field and text area plugins');
+
 			return false;
 		}
 		// Overridden in element plugin if needed
@@ -4136,11 +4162,14 @@ class PlgFabrik_Element extends FabrikPlugin
 		$id = (int) $this->getElement()->id;
 		$query->delete()->from('#__{package}_jsactions')->where('element_id =' . $id);
 		$db->setQuery($query);
+
 		if (!$db->execute())
 		{
 			JError::raiseNotice(500, 'didnt delete js actions for element ' . $id);
+
 			return false;
 		}
+
 		return true;
 	}
 
@@ -4189,6 +4218,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		{
 			$v = $params->get('sub_default_label');
 		}
+
 		return ($key === false) ? $v : JArrayHelper::getValue($labels, $key, $defaultLabel);
 	}
 
@@ -4203,20 +4233,14 @@ class PlgFabrik_Element extends FabrikPlugin
 
 	protected function getAvgQuery(&$listModel, $labels = array())
 	{
-		if (count($labels) == 0)
-		{
-			$label = "'calc' AS label";
-		}
-		else
-		{
-			$label = 'CONCAT(' . implode(', " & " , ', $labels) . ')  AS label';
-		}
+		$label = count($labels) == 0 ? "'calc' AS label" : 'CONCAT(' . implode(', " & " , ', $labels) . ')  AS label';
 		$item = $listModel->getTable();
 		$joinSQL = $listModel->_buildQueryJoin();
 		$whereSQL = $listModel->_buildQueryWhere();
 		$name = $this->getFullName(false, false, false);
 		$groupModel = $this->getGroup();
 		$roundTo = (int) $this->getParams()->get('avg_round');
+
 		if ($groupModel->isJoin())
 		{
 			// Element is in a joined column - lets presume the user wants to sum all cols, rather than reducing down to the main cols totals
@@ -4229,7 +4253,6 @@ class PlgFabrik_Element extends FabrikPlugin
 			return "SELECT ROUND(AVG(value), $roundTo) AS value, label
 FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label FROM " . FabrikString::safeColName($item->db_table_name)
 				. " $joinSQL $whereSQL) AS t";
-
 		}
 	}
 
@@ -4244,19 +4267,13 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label FROM " . Fab
 
 	protected function getSumQuery(&$listModel, $labels = array())
 	{
-		if (count($labels) == 0)
-		{
-			$label = "'calc' AS label";
-		}
-		else
-		{
-			$label = 'CONCAT(' . implode(', " & " , ', $labels) . ')  AS label';
-		}
+		$label = count($labels) == 0 ? "'calc' AS label" : 'CONCAT(' . implode(', " & " , ', $labels) . ')  AS label';
 		$item = $listModel->getTable();
 		$joinSQL = $listModel->_buildQueryJoin();
 		$whereSQL = $listModel->_buildQueryWhere();
 		$name = $this->getFullName(false, false, false);
 		$groupModel = $this->getGroup();
+
 		if ($groupModel->isJoin())
 		{
 			// Element is in a joined column - lets presume the user wants to sum all cols, rather than reducing down to the main cols totals
@@ -4290,11 +4307,13 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label FROM " . Fab
 		$whereSQL = $listModel->_buildQueryWhere();
 		$name = $this->getFullName(false, false, false);
 		$groupModel = $this->getGroup();
+
 		if ($groupModel->isJoin())
 		{
 			// Element is in a joined column - lets presume the user wants to sum all cols, rather than reducing down to the main cols totals
 			// $custom_query = sprintf($custom_query, $name);
 			$custom_query = str_replace('%s', $name, $custom_query);
+
 			return "SELECT $custom_query AS value, $label AS label FROM " . FabrikString::safeColName($item->db_table_name) . " $joinSQL $whereSQL";
 		}
 		else
@@ -4302,6 +4321,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label FROM " . Fab
 			// Need to do first query to get distinct records as if we are doing left joins the sum is too large
 			// $custom_query = sprintf($custom_query, 'value');
 			$custom_query = str_replace('%s', 'value', $custom_query);
+
 			return "SELECT $custom_query AS value, label FROM (SELECT DISTINCT " . FabrikString::safeColName($item->db_table_name)
 				. ".*, $name AS value, $label AS label FROM " . FabrikString::safeColName($item->db_table_name) . " $joinSQL $whereSQL) AS t";
 		}
@@ -4318,17 +4338,11 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label FROM " . Fab
 
 	protected function getMedianQuery(&$listModel, $labels = array())
 	{
-		if (count($labels) == 0)
-		{
-			$label = "'calc' AS label";
-		}
-		else
-		{
-			$label = 'CONCAT(' . implode(', " & " , ', $labels) . ')  AS label';
-		}
+		$label = count($labels) == 0 ? "'calc' AS label" : 'CONCAT(' . implode(', " & " , ', $labels) . ')  AS label';
 		$item = $listModel->getTable();
 		$joinSQL = $listModel->_buildQueryJoin();
 		$whereSQL = $listModel->_buildQueryWhere();
+
 		return "SELECT {$this->getFullName(false, false, false)} AS value, $label FROM " . FabrikString::safeColName($item->db_table_name)
 			. " $joinSQL $whereSQL ";
 	}
@@ -4344,14 +4358,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label FROM " . Fab
 
 	protected function getCountQuery(&$listModel, $labels = array())
 	{
-		if (count($labels) == 0)
-		{
-			$label = "'calc' AS label";
-		}
-		else
-		{
-			$label = 'CONCAT(' . implode(', " & " , ', $labels) . ')  AS label';
-		}
+		$label = count($labels) == 0 ? "'calc' AS label" : 'CONCAT(' . implode(', " & " , ', $labels) . ')  AS label';
 		$db = FabrikWorker::getDbo();
 		$item = $listModel->getTable();
 		$joinSQL = $listModel->_buildQueryJoin();
@@ -4361,6 +4368,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label FROM " . Fab
 		// $$$ hugh - need to account for 'count value' here!
 		$params = $this->getParams();
 		$count_condition = $params->get('count_condition', '');
+
 		if (!empty($count_condition))
 		{
 			if (!empty($whereSQL))
@@ -4372,7 +4380,9 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label FROM " . Fab
 				$whereSQL = "WHERE $name = " . $db->quote($count_condition);
 			}
 		}
+
 		$groupModel = $this->getGroup();
+
 		if ($groupModel->isJoin())
 		{
 			// Element is in a joined column - lets presume the user wants to sum all cols, rather than reducing down to the main cols totals
@@ -4385,6 +4395,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label FROM " . Fab
 	FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label FROM " . FabrikString::safeColName($item->db_table_name)
 				. " $joinSQL $whereSQL) AS t";
 		}
+
 		return $query;
 	}
 
@@ -4406,12 +4417,15 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label FROM " . Fab
 		$app = JFactory::getApplication();
 		$pluginManager = FabrikWorker::getPluginManager();
 		$requestGroupBy = $app->input->get('group_by', '');
+
 		if ($requestGroupBy == '0')
 		{
 			$requestGroupBy = '';
 		}
+
 		$groupBys = array();
 		$splitName = array();
+
 		if ($requestGroupBy !== '')
 		{
 			$formModel = $this->getFormModel();
@@ -4421,6 +4435,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label FROM " . Fab
 		else
 		{
 			$listGroupBy = $listModel->getTable()->group_by;
+
 			if ($listGroupBy !== '')
 			{
 				$groupBys[] = $listGroupBy;
@@ -4429,6 +4444,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label FROM " . Fab
 
 		$params = $this->getParams();
 		$splitSum = $params->get($splitParam, null);
+
 		if (!is_null($splitSum))
 		{
 			$groupBys[] = $splitSum;
@@ -4438,6 +4454,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label FROM " . Fab
 		{
 			$plugin = $pluginManager->getElementPlugin($gById);
 			$sName = method_exists($plugin, 'getJoinLabelColumn') ? $plugin->getJoinLabelColumn() : $plugin->getFullName(false, false, false);
+
 			if (!stristr($sName, 'CONCAT'))
 			{
 				$gById = FabrikString::safeColName($sName);
@@ -4452,6 +4469,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label FROM " . Fab
 				}
 			}
 		}
+
 		return $groupBys;
 	}
 
@@ -4544,7 +4562,6 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label FROM " . Fab
 		$item = $listModel->getTable();
 		$calcLabel = $params->get('avg_label', JText::_('COM_FABRIK_AVERAGE'));
 		$groupBys = $this->calcGroupBys('avg_split', $listModel);
-
 		$split = empty($groupBys) ? false : true;
 
 		if ($split)
@@ -4557,10 +4574,12 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label FROM " . Fab
 			$results2 = $db->loadObjectList('label');
 			$this->formatCalValues($results2);
 			$uberTotal = 0;
+
 			foreach ($results2 as $pair)
 			{
 				$uberTotal += $pair->value;
 			}
+
 			$uberObject = new stdClass;
 			$uberObject->value = $uberTotal / count($results2);
 			$uberObject->label = JText::_('COM_FABRIK_AVERAGE');
@@ -4579,7 +4598,9 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label FROM " . Fab
 			$results = $db->loadObjectList('label');
 			$this->formatCalValues($results);
 		}
+
 		$res = $this->formatCalcs($results, $calcLabel, $split);
+
 		return array($res, $results);
 	}
 
@@ -4594,6 +4615,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label FROM " . Fab
 	public function getFormatString()
 	{
 		$params = $this->getParams();
+
 		return $params->get('text_format_string');
 	}
 
@@ -4621,6 +4643,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label FROM " . Fab
 		$res = '';
 		$calcLabel = $params->get('median_label', JText::_('COM_FABRIK_MEDIAN'));
 		$results = array();
+
 		if ($split)
 		{
 			$pluginManager = FabrikWorker::getPluginManager();
@@ -4638,10 +4661,12 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label FROM " . Fab
 			$db->setQuery($sql);
 			$res = $this->_median($db->loadColumn());
 			$o = new stdClass;
+
 			if ($format != '')
 			{
 				$res = sprintf($format, $res);
 			}
+
 			$o->value = $res;
 			$label = $params->get('alt_list_heading') == '' ? $element->label : $params->get('alt_list_heading');
 			$o->elLabel = $label;
@@ -4649,7 +4674,9 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label FROM " . Fab
 			$o->label = 'calc';
 			$results = array('calc' => $o);
 		}
+
 		$res = $this->formatCalcs($results, $calcLabel, $split, true, false);
+
 		return array($res, $results);
 	}
 
@@ -4698,6 +4725,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label FROM " . Fab
 			{
 				$uberTotal += $pair->value;
 			}
+
 			$uberObject = new stdClass;
 			$uberObject->value = count($results2) == 0 ? 0 : $uberTotal;
 			$uberObject->label = JText::_('COM_FABRIK_TOTAL');
@@ -4714,7 +4742,9 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label FROM " . Fab
 			$db->setQuery($sql);
 			$results = $db->loadObjectList('label');
 		}
+
 		$res = $this->formatCalcs($results, $calcLabel, $split, false, false);
+
 		return array($res, $results);
 	}
 
@@ -4735,6 +4765,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label FROM " . Fab
 		$splitCustom = $params->get('custom_calc_split', '');
 		$split = $splitCustom == '' ? false : true;
 		$calcLabel = $params->get('custom_calc_label', JText::_('COM_FABRIK_CUSTOM'));
+
 		if ($split)
 		{
 			$pluginManager = FabrikWorker::getPluginManager();
@@ -4755,7 +4786,9 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label FROM " . Fab
 			$db->setQuery($sql);
 			$results = $db->loadObjectList('label');
 		}
+
 		$res = $this->formatCalcs($results, $calcLabel, $split);
+
 		return array($res, $results);
 	}
 
