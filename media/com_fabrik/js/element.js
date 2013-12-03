@@ -266,6 +266,17 @@ var FbElement =  new Class({
 		}
 	},
 	
+	/**
+	 * $$$ hugh - testing something for join elements, where in some corner cases,
+	 * like reverse Geocoding in the map element, we need to update elements that might be
+	 * joins, and all we have is the label (like "Austria" for country).  So am overriding this
+	 * new function in the join element, with code that finds the first occurence of the label,
+	 * and sets the value accordingly.  But all we need to do here is make it a wrapper for update().
+	 */
+	updateByLabel: function (label) {
+		this.update(label);
+	},
+	
 	// Alias to update()
 	set: function (val) {
 		this.update(val);

@@ -17,10 +17,10 @@ function googlemapload() {
 		if (index !== -1) {
 			path = path.slice(0, index);
 		}
-		path.pop();
+		path.shift();
 		path = path.join('/');
 		script2.type = "text/javascript";
-		script2.src = l.protocol + '//' + l.host + path + '/components/com_fabrik/libs/googlemaps/distancewidget.js';
+		script2.src = l.protocol + '//' + l.host + '/' + path + '/components/com_fabrik/libs/googlemaps/distancewidget.js';
 		document.body.appendChild(script2);
 		Fabrik.googleMapRadius = true;
 	}
@@ -65,6 +65,7 @@ var FbGoogleMap = new Class({
 		'sensor': false,
 		'center': 0,
 		'reverse_geocode': false,
+		'use_radius': false,
 		'styles': []
 	},
 
@@ -238,46 +239,60 @@ var FbGoogleMap = new Class({
 								//infowindow.setContent(results[1].formatted_address);
 								//infowindow.open(map, marker);
 								//alert(results[0].formatted_address);
+								/**
+								 * @TODO - simplify this, as we now index the reverse_geocode_fields with the same keys that
+								 * Google do.  So no need to go through each possibility and map to our key name.  In other words,
+								 * don't need to map "administrative_area_1" on to "state".  However, we do need to fix the handling
+								 * of street_number, route and street_address, as it seems that the Goog
+								 */
 								results[0].address_components.each(function (component) {
 									component.types.each(function (type) {
 										if (type === 'street_number') {
 											if (this.options.reverse_geocode_fields.route) {
-												document.id(this.options.reverse_geocode_fields.route).value = component.long_name + ' ';
+												//document.id(this.options.reverse_geocode_fields.route).value = component.long_name + ' ';
+												this.form.formElements.get(this.options.reverse_geocode_fields.route).update(component.long_name + ' ');
 											}
 										}
 										else if (type === 'route') {
 											if (this.options.reverse_geocode_fields.route) {
-												document.id(this.options.reverse_geocode_fields.route).value = component.long_name;
+												//document.id(this.options.reverse_geocode_fields.route).value = component.long_name;
+												this.form.formElements.get(this.options.reverse_geocode_fields.route).update(component.long_name);
 											}
 										}
 										else if (type === 'street_address') {
 											if (this.options.reverse_geocode_fields.route) {
-												document.id(this.options.reverse_geocode_fields.route).value = component.long_name;
+												//document.id(this.options.reverse_geocode_fields.route).value = component.long_name;
+												this.form.formElements.get(this.options.reverse_geocode_fields.route).update(component.long_name);
 											}
 										}
 										else if (type === 'neighborhood') {
 											if (this.options.reverse_geocode_fields.neighborhood) {
-												document.id(this.options.reverse_geocode_fields.neighborhood).value = component.long_name;
+												//document.id(this.options.reverse_geocode_fields.neighborhood).value = component.long_name;
+												this.form.formElements.get(this.options.reverse_geocode_fields.neighborhood).update(component.long_name);
 											}
 										}
 										else if (type === 'locality') {
-											if (this.options.reverse_geocode_fields.city) {
-												document.id(this.options.reverse_geocode_fields.locality).value = component.long_name;
+											if (this.options.reverse_geocode_fields.locality) {
+												//document.id(this.options.reverse_geocode_fields.locality).value = component.long_name;
+												this.form.formElements.get(this.options.reverse_geocode_fields.locality).updateByLabel(component.long_name);
 											}
 										}
 										else if (type === 'administrative_area_level_1') {
-											if (this.options.reverse_geocode_fields.state) {
-												document.id(this.options.reverse_geocode_fields.state).value = component.long_name;
+											if (this.options.reverse_geocode_fields.administrative_area_level_1) {
+												//document.id(this.options.reverse_geocode_fields.state).value = component.long_name;
+												this.form.formElements.get(this.options.reverse_geocode_fields.administrative_area_level_1).updateByLabel(component.long_name);
 											}
 										}
 										else if (type === 'postal_code') {
-											if (this.options.reverse_geocode_fields.zip) {
-												document.id(this.options.reverse_geocode_fields.zip).value = component.long_name;
+											if (this.options.reverse_geocode_fields.postal_code) {
+												//document.id(this.options.reverse_geocode_fields.zip).value = component.long_name;
+												this.form.formElements.get(this.options.reverse_geocode_fields.postal_code).updateByLabel(component.long_name);
 											}
 										}
 										else if (type === 'country') {
 											if (this.options.reverse_geocode_fields.country) {
-												document.id(this.options.reverse_geocode_fields.country).value = component.long_name;
+												//document.id(this.options.reverse_geocode_fields.country).value = component.long_name;
+												this.form.formElements.get(this.options.reverse_geocode_fields.country).updateByLabel(component.long_name);
 											}
 										}
 									}.bind(this));
