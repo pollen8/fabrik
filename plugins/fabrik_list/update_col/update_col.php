@@ -223,6 +223,8 @@ class PlgFabrik_ListUpdate_Col extends PlgFabrik_List
 			$this->_process($model, $col, $update->update_value[$i]);
 		}
 
+		$this->sendEmails($ids);
+
 		$this->msg = $params->get('update_message', '');
 
 		if (empty($this->msg))
@@ -233,8 +235,6 @@ class PlgFabrik_ListUpdate_Col extends PlgFabrik_List
 		{
 			$this->msg = JText::sprintf($this->msg, $this->row_count, $this->sent);
 		}
-
-		$this->sendEmails($ids);
 
 		// Clean the cache.
 		$cache = JFactory::getCache($input->get('option'));
@@ -299,7 +299,7 @@ class PlgFabrik_ListUpdate_Col extends PlgFabrik_List
 					}
 					else
 					{
-						$$this->notsent++;
+						$this->notsent++;
 					}
 				}
 				else
