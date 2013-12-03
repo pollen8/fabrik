@@ -1023,6 +1023,13 @@ var idcomments_post_url;");
 		if (JFile::exists($jcomments))
 		{
 			require_once $jcomments;
+
+			if ($this->commentsLocked)
+			{
+				$jc_config = JCommentsFactory::getConfig();
+				$jc_config->set('comments_locked', 1);
+			}
+
 			$this->_data = '<div id="jcomments" style="clear: both;">
                     ' . JComments::show($input->get('rowid', '', 'string'), "com_fabrik_{$formModel->getId()}") . '
                     </div>';
