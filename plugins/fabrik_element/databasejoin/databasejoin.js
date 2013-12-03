@@ -576,7 +576,7 @@ var FbDatabasejoin = new Class({
 			this.update(label);
 		}
 		// OK, it's an editable dropdown, so let's see if we can find a matching option text
-		options = this.element.getElements('option');
+		var options = this.element.getElements('option');
 		options.some(function (option) {
 			if (option.text === label) {
 				this.update(option.value);
