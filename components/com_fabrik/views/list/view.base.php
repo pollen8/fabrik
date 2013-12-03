@@ -39,11 +39,13 @@ class FabrikViewListBase extends JViewLegacy
 		$input = $app->input;
 		$Itemid = FabrikWorker::itemId();
 		$model = $this->getModel();
+		$params = $model->getParams();
 		$item = $model->getTable();
 		$listref = $model->getRenderContext();
 		$listid = $model->getId();
 		$formModel = $model->getFormModel();
 		$elementsNotInTable = $formModel->getElementsNotInTable();
+		$toggleCols = (bool) $params->get('toggle_cols', false);
 
 		if ($model->requiresSlimbox())
 		{
@@ -60,8 +62,13 @@ class FabrikViewListBase extends JViewLegacy
 
 		$dep = new stdClass;
 		$dep->deps = array('fab/fabrik', 'fab/listfilter', 'fab/advanced-search', 'fab/encoder');
-		$shim['fab/list'] = $dep;
 
+		if ($toggleCols)
+		{
+			$dep->deps[] = 'fab/list-toggle';
+		}
+
+		$shim['fab/list'] = $dep;
 		$src = $model->getPluginJsClasses($src, $shim);
 		FabrikHelperHTML::addToFrameWork($src, 'media/com_fabrik/js/list');
 		$model->getCustomJsAction($src);
@@ -113,6 +120,7 @@ class FabrikViewListBase extends JViewLegacy
 		$opts->canView = $model->canView() ? "1" : "0";
 		$opts->page = JRoute::_('index.php');
 		$opts->isGrouped = $this->isGrouped;
+		$opts->toggleCols = $toggleCols;
 		$opts->j3 = FabrikWorker::j3();
 		$opts->singleOrdering = (bool) $model->singleOrdering();
 
@@ -387,6 +395,8 @@ class FabrikViewListBase extends JViewLegacy
 		$this->table->action = $model->getTableAction();
 		$this->showCSV = $model->canCSVExport();
 		$this->showCSVImport = $model->canCSVImport();
+		$this->toggleCols = $model->toggleCols();
+		$this->showToggleCols = (bool) $params->get('toggle_cols', false);
 		$this->canGroupBy = $model->canGroupBy();
 		$this->navigation = $nav;
 		$this->nav = $input->getInt('fabrik_show_nav', $params->get('show-table-nav', 1))

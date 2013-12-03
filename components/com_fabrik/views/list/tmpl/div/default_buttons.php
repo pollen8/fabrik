@@ -24,6 +24,11 @@ defined('_JEXEC') or die('Restricted access');
 	</a></li>
 <?php
 endif;
+
+if ($this->showToggleCols) :
+	echo $this->loadTemplate('togglecols');
+endif;
+
 if ($this->canGroupBy) :?>
 
 	<li class="dropdown">

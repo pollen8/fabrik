@@ -11602,9 +11602,11 @@ class FabrikFEModelList extends JModelForm
 	{
 		$acl_types = array('allow_edit_details2', 'allow_delete2');
 		$params = $this->getParams();
+
 		foreach ($acl_types as $acl_type)
 		{
 			$userDoCol = $params->get($acl_type, '');
+
 			if ($userDoCol != '')
 			{
 				$userDoCol = FabrikString::safeColNameToArrayKey($userDoCol);
@@ -11615,6 +11617,55 @@ class FabrikFEModelList extends JModelForm
 				}
 			}
 		}
+
 		return false;
+	}
+
+	/**
+	 * Build array for list toggle column feature
+	 *
+	 * @since 3.1rc3
+	 *
+	 * @return multitype:
+	 */
+	public function toggleCols()
+	{
+		$w = new FabrikWorker;
+		$formModel = $this->getFormModel();
+		$groups = $formModel->getGroupsHiarachy();
+		$showInList = $this->showInList();
+		$cols = array();
+
+		foreach ($groups as $groupModel)
+		{
+			if ($groupModel->canView('list') === false)
+			{
+				continue;
+			}
+
+			$elementModels = $groupModel->getPublishedListElements();
+
+			if (count($elementModels) > 0)
+			{
+				$group = $groupModel->getGroup();
+				$groupLabel = $w->parseMessageForPlaceHolder($group->label, array(), false);
+				$cols[$group->id]['name'] = $groupLabel;
+				$cols[$group->id]['elements'] = array();
+
+				foreach ($elementModels as $key => $elementModel)
+				{
+					$element = $elementModel->getElement();
+
+					// If we define the elements to show in the list - e.g in admin list module then only show those elements
+					if (!empty($showInList) && !in_array($element->id, $showInList))
+					{
+						continue;
+					}
+					$cols[$group->id]['elements'][$elementModel->getFullName(true, false)] = $elementModel->getElement()->label;
+				}
+			}
+		}
+
+		return $cols;
 	}
 }

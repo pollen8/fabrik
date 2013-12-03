@@ -47,7 +47,8 @@ var FbList = new Class({
 		'fabrik_show_in_list': [],
 		'singleOrdering' : false,
 		'tmpl': '',
-		'groupedBy' : ''
+		'groupedBy' : '',
+		'toggleCols': false	
 	},
 
 	initialize: function (id, options) {
@@ -63,6 +64,11 @@ var FbList = new Class({
 				'floatPos': this.options.floatPos
 			});
 		}
+		
+		if (this.options.toggleCols) {
+			this.toggleCols = new FbListToggle(this.form);
+		}
+		
 		this.groupToggle = new FbGroupedToggler(this.form, this.options.groupByOpts);
 		new FbListKeys(this);
 		if (this.list) {

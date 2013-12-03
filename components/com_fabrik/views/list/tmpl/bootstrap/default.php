@@ -36,6 +36,7 @@ endif;
 
 // Intro outside of form to allow for other lists/forms to be injected.
 echo $this->table->intro;
+
 ?>
 <form class="fabrikForm form-search" action="<?php echo $this->table->action;?>" method="post" id="<?php echo $this->formid;?>" name="fabrikList">
 
