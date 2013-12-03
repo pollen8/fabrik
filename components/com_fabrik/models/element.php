@@ -141,7 +141,7 @@ class PlgFabrik_Element extends FabrikPlugin
 	 *
 	 * @var array
 	 */
-	protected $imageExtensions = array('jpg', 'jpeg', 'gif', 'bmp', 'png');
+	protected $imageExtensions = array('png', 'jpg', 'jpeg', 'gif', 'bmp');
 
 	/**
 	 * Is the element in a detailed view?
@@ -833,11 +833,25 @@ class PlgFabrik_Element extends FabrikPlugin
 
 			if (!empty($data) &&  $user->get('id') !== 0)
 			{
-				$lookUp = $params->get('view_access_user', '');
-				$lookUp = $formModel->getElement($lookUp, true);
-				$fullName = $lookUp->getFullName(false, true, false);
-				$value = $formModel->getElementData($fullName, true);
-				$this->access->$key = ($user->get('id') == $value) ? true : false;
+				$lookUpId = $params->get('view_access_user', '');
+				$lookUp = $formModel->getElement($lookUpId, true);
+
+				// Could be  a linked parent element in which case the form doesn't contain the element whose id is $lookUpId
+				if (!$lookUp)
+				{
+					$lookUp =  FabrikWorker::getPluginManager()->getElementPlugin($lookUpId);
+				}
+
+				if ($lookUp)
+				{
+					$fullName = $lookUp->getFullName(false, true, false);
+					$value = $formModel->getElementData($fullName, true);
+					$this->access->$key = ($user->get('id') == $value) ? true : false;
+				}
+				else
+				{
+					JError::raiseNotice(500, 'Didnt find can view acl element');
+				}
 			}
 
 		}
@@ -2864,10 +2878,12 @@ class PlgFabrik_Element extends FabrikPlugin
 		$listModel = $this->getListModel();
 		$formModel = $listModel->getFormModel();
 		$dbElName = $this->getFullName(false, false, false);
+
 		if (!$formModel->hasElement($dbElName))
 		{
 			return '';
 		}
+
 		$table = $listModel->getTable();
 		$element = $this->getElement();
 		$elName = $this->getFullName(false, true, false);
@@ -2882,13 +2898,16 @@ class PlgFabrik_Element extends FabrikPlugin
 		{
 			$rows = $this->filterValueList($normal);
 			$this->unmergeFilterSplits($rows);
+
 			if (!in_array($element->filter_type,  array('checkbox', 'multiselect')))
 			{
 				array_unshift($rows, JHTML::_('select.option', '', $this->filterSelectLabel()));
 			}
 		}
+
 		$size = (int) $this->getParams()->get('filter_length', 20);
 		$class = $this->filterClass();
+
 		switch ($element->filter_type)
 		{
 			case 'range':
@@ -2933,7 +2952,9 @@ class PlgFabrik_Element extends FabrikPlugin
 				$return = array_merge($return, $autoComplete);
 				break;
 		}
+
 		$return[] = $normal ? $this->getFilterHiddenFields($counter, $elName) : $this->getAdvancedFilterHiddenFields();
+
 		return implode("\n", $return);
 	}
 
@@ -3110,21 +3131,26 @@ class PlgFabrik_Element extends FabrikPlugin
 		)
 		 */
 		$allvalues = array();
+
 		foreach ($rows as $row)
 		{
 			$allvalues[] = $row->value;
 		}
+
 		$c = count($rows) - 1;
+
 		for ($j = $c; $j >= 0; $j--)
 		{
 			$vals = FabrikWorker::JSONtoData($rows[$j]->value, true);
 			$txt = FabrikWorker::JSONtoData($rows[$j]->text, true);
+
 			if (is_array($vals))
 			{
 				for ($i = 0; $i < count($vals); $i++)
 				{
 					$vals2 = FabrikWorker::JSONtoData($vals[$i], true);
 					$txt2 = FabrikWorker::JSONtoData(JArrayHelper::getValue($txt, $i), true);
+
 					for ($jj = 0; $jj < count($vals2); $jj++)
 					{
 						if (!in_array($vals2[$jj], $allvalues))
@@ -3134,12 +3160,14 @@ class PlgFabrik_Element extends FabrikPlugin
 						}
 					}
 				}
+
 				if (FabrikWorker::isJSON($rows[$j]->value))
 				{
 					// $$$ rob 01/10/2012 - if not unset then you could get json values in standard dd filter (checkbox)
 					unset($rows[$j]);
 				}
 			}
+
 			if (count($vals) > 1)
 			{
 				unset($rows[$j]);
@@ -3322,6 +3350,7 @@ class PlgFabrik_Element extends FabrikPlugin
 	public function filterValueList($normal, $tableName = '', $label = '', $id = '', $incjoin = true)
 	{
 		$filter_build = $this->getFilterBuildMethod();
+
 		if ($filter_build == 2 && $this->hasSubElements)
 		{
 			return $this->filterValueList_All($normal, $tableName, $label, $id, $incjoin);
@@ -3369,6 +3398,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		$elName = $this->getFullName(false, true, false);
 		$params = $this->getParams();
 		$elName2 = $this->getFullName(false, false, false);
+
 		if (!$this->isJoin())
 		{
 			$ids = $listModel->getColumnData($elName2);
@@ -3386,6 +3416,7 @@ class PlgFabrik_Element extends FabrikPlugin
 				}
 			}
 		}
+
 		$incjoin = $this->isJoin() ? false : $incjoin;
 		/**
 		 * filter the drop downs lists if the table_view_own_details option is on
@@ -3412,21 +3443,26 @@ class PlgFabrik_Element extends FabrikPlugin
 				}
 			}
 		}
+
 		$elName = FabrikString::safeColName($elName);
+
 		if ($label == '')
 		{
 			$label = $this->isJoin() ? $this->getElement()->name : $elName;
 		}
+
 		if ($id == '')
 		{
 			$id = $this->isJoin() ? 'id' : $elName;
 		}
+
 		if ($this->encryptMe())
 		{
 			$secret = JFactory::getConfig()->getValue('secret');
 			$label = 'AES_DECRYPT(' . $label . ', ' . $fabrikDb->quote($secret) . ')';
 			$id = 'AES_DECRYPT(' . $id . ', ' . $fabrikDb->quote($secret) . ')';
 		}
+
 		$origTable = $tableName == '' ? $origTable : $tableName;
 		/**
 		 * $$$ rob - 2nd sql was blowing up for me on my test table - why did we change to it?
@@ -3443,6 +3479,7 @@ class PlgFabrik_Element extends FabrikPlugin
 			$sql = 'SELECT DISTINCT(' . $label . ') AS ' . $fabrikDb->quoteName('text') . ', ' . $id . ' AS ' . $fabrikDb->quoteName('value')
 				. ' FROM ' . $fabrikDb->quoteName($fromTable) . ' ' . $joinStr . "\n";
 		}
+
 		if (!$this->isJoin())
 		{
 			$sql .= 'WHERE ' . $id . ' IN (\'' . implode("','", $ids) . '\')';
@@ -3450,23 +3487,32 @@ class PlgFabrik_Element extends FabrikPlugin
 
 		// Apply element where/order by statements to the filter (e.g. dbjoins 'Joins where and/or order by statement')
 		$elementWhere = $this->_buildQueryWhere(array(), true, null, array('mode' => 'filter'));
+
 		if (JString::stristr($sql, 'WHERE ') && JString::stristr($elementWhere, 'WHERE '))
 		{
 			// $$$ hugh - only replace the WHERE with AND if it's the first word, so we don't munge sub-queries
 			// $elementWhere = JString::str_ireplace('WHERE ', 'AND ', $elementWhere);
 			$elementWhere = preg_replace("#^(\s*)(WHERE)(.*)#i", "$1AND$3", $elementWhere);
-
 		}
+
 		$sql .= ' ' . $elementWhere;
 		$sql .= "\n" . $groupBy;
 		$sql = $listModel->pluginQuery($sql);
 		$fabrikDb->setQuery($sql, 0, $fbConfig->get('filter_list_max', 100));
 		FabrikHelperHTML::debug($fabrikDb->getQuery(), 'element filterValueList_Exact:');
 		$rows = $fabrikDb->loadObjectList();
+
 		if ($fabrikDb->getErrorNum() != 0)
 		{
 			JError::raiseNotice(500, 'filter query error: ' . $this->getElement()->name . ' ' . $fabrikDb->getErrorMsg());
 		}
+
+		// Convert "&#039;" to "'". see http://fabrikar.com/forums/index.php?threads/wrong-decode-in-dd-filter-on-a-joined-elt.36711/
+		foreach ($rows as &$row)
+		{
+			$row->text = html_entity_decode($row->text, ENT_QUOTES);
+		}
+
 		return $rows;
 
 	}
@@ -3537,10 +3583,12 @@ class PlgFabrik_Element extends FabrikPlugin
 		$vals = $this->getSubOptionValues();
 		$labels = $this->getSubOptionLabels();
 		$return = array();
+
 		for ($i = 0; $i < count($vals); $i++)
 		{
 			$return[] = JHTML::_('select.option', $vals[$i], $labels[$i]);
 		}
+
 		return $return;
 	}
 
