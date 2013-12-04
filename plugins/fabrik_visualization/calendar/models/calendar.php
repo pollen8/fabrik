@@ -443,12 +443,7 @@ class FabrikModelCalendar extends FabrikFEModelVisualization
 				$enddate = trim($data['enddate']) !== '' ? FabrikString::safeColName($data['enddate']) : "''";
 				$label = trim($data['label']) !== '' ? FabrikString::safeColName($data['label']) : "''";
 				$customUrl = $data['customUrl'];
-				/**
-				 * $$$ hugh @FIXME - $label has already been quoted, so quoting it again meant the array_key_exists
-				 * check was never matching, as the name got double quoted.
-				 * But ... the code that isn't running is broken, so for now ... If It Ain't Working, Don't Fix It :)
-				 */
-				$qlabel = $db->quoteName($label);
+				$qlabel = $label;
 
 				if (array_key_exists($qlabel, $els))
 				{
@@ -503,7 +498,7 @@ class FabrikModelCalendar extends FabrikFEModelVisualization
 								$date = JFactory::getDate($row->startdate);
 								$row->startdate = $date->format('Y-m-d H:i:s', true);
 								$date->setTimezone($tz);
-								$row->startdate_locale = $date->format('Y-m-d H:i:s', true);
+								$row->startdate_locale = $date->toISO8601(true);
 
 							}
 
@@ -514,7 +509,7 @@ class FabrikModelCalendar extends FabrikFEModelVisualization
 									$date = JFactory::getDate($row->enddate);
 									$row->enddate = $date->format('Y-m-d H:i:d');
 									$date->setTimezone($tz);
-									$row->enddate_locale = $date->format('Y-m-d H:i:d', true);
+									$row->enddate_locale = $date->toISO8601(true);
 								}
 							}
 							else
