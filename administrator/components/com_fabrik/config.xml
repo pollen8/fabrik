@@ -26,6 +26,16 @@
 			type="text"
 			label="COM_FABRIK_GOOGLE_BUSINESS_SIGNATURE_LABEL"
 			description="COM_FABRIK_GOOGLE_BUSINESS_SIGNATURE_DESC" />
+			
+		<field name="unpublish_clones"
+			type="radio"
+			default="0"
+			class="btn-group"
+			description="COM_FABRIK_UNPUBLISH_CLONES_DESC"
+			label="COM_FABRIK_UNPUBLISH_CLONES_LABEL">
+				<option value="0">JNO</option>
+				<option value="1">JYES</option>	
+		</field>
 
 	</fieldset>
 	<fieldset label="COM_FABRIK_LISTS" name="lists">

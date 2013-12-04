@@ -741,6 +741,7 @@ class FabrikAdminModelElement extends FabModelAdmin
 		$list = $elementModel->getListModel()->getTable();
 		$origElid = $row->id;
 		$tmpgroupModel = $elementModel->getGroup();
+		$config = JComponentHelper::getParams('com_fabrik');
 
 		if ($tmpgroupModel->isJoin())
 		{
@@ -790,6 +791,12 @@ class FabrikAdminModelElement extends FabModelAdmin
 				$rowcopy->parent_id = $origElid;
 				$rowcopy->group_id = $t->group_id;
 				$rowcopy->name = str_replace('`', '', $rowcopy->name);
+
+				if ($config->get('unpublish_clones', false))
+				{
+					$rowcopy->published = 0;
+				}
+
 				$rowcopy->store();
 
 				// Copy join records

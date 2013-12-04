@@ -1942,12 +1942,12 @@ class PlgFabrik_Element extends FabrikPlugin
 	/**
 	 * Copy an element table row
 	 *
-	 * @param   int     $id       element id to copy
-	 * @param   string  $copytxt  feedback msg
-	 * @param   int     $groupid  group model id
-	 * @param   string  $name     new element name
+	 * @param   int     $id       Element id to copy
+	 * @param   string  $copytxt  Feedback msg
+	 * @param   int     $groupid  Group model id
+	 * @param   string  $name     New element name
 	 *
-	 * @return  mixed	error or new row
+	 * @return  mixed	Error or new row
 	 */
 
 	public function copyRow($id, $copytxt = 'Copy of %s', $groupid = null, $name = null)
@@ -1991,6 +1991,12 @@ class PlgFabrik_Element extends FabrikPlugin
 			$params->parent_linked = 1;
 			$rule->params = json_encode($params);
 			$rule->parent_id = $id;
+			$config = JComponentHelper::getParams('com_fabrik');
+
+			if ($config->get('unpublish_clones', false))
+			{
+				$rule->published = 0;
+			}
 
 			if (!$rule->store())
 			{
