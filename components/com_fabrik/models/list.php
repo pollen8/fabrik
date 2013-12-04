@@ -2540,11 +2540,12 @@ class FabrikFEModelList extends JModelForm
 	 * Get the select part of the query
 	 *
 	 * @param   string  $mode  list/form - effects which elements are selected
+	 * @param   JQueryBuilder  $query  Querybuilder (false to return string)
 	 *
-	 * @return  string
+	 * @return  mixed  string if $query = false, otherwise $query
 	 */
 
-	public function buildQuerySelect($mode = 'list')
+	public function buildQuerySelect($mode = 'list', $query = false)
 	{
 		$profiler = JProfiler::getInstance('Application');
 		JDEBUG ? $profiler->mark('queryselect: start') : null;
@@ -2571,16 +2572,38 @@ class FabrikFEModelList extends JModelForm
 		{
 			$sfields .= ', ';
 			$strPKey = $pk . ' AS ' . $db->quoteName('__pk_val') . "\n";
-			$query = 'SELECT ' . $calc_found_rows . ' DISTINCT ' . $sfields . $strPKey;
+
+			if ($query)
+			{
+				$query->select($calc_found_rows . ' DISTINCT ' . $sfields . $strPKey);
+			}
+			else
+			{
+				$sql = 'SELECT ' . $calc_found_rows . ' DISTINCT ' . $sfields . $strPKey;
+			}
 		}
 		else
 		{
-			$query = 'SELECT ' . $calc_found_rows . ' DISTINCT ' . trim($sfields, ", \n") . "\n";
+			if ($query)
+			{
+				$query->select($calc_found_rows . ' DISTINCT ' . $sfields);
+			}
+			else
+			{
+				$sql = 'SELECT ' . $calc_found_rows . ' DISTINCT ' . trim($sfields, ", \n") . "\n";
+			}
 		}
 
-		$query .= ' FROM ' . $db->quoteName($table->db_table_name) . " \n";
+		if ($query)
+		{
+			$query->from($db->quoteName($table->db_table_name));
+		}
+		else
+		{
+			$sql .= ' FROM ' . $db->quoteName($table->db_table_name) . " \n";
+		}
 
-		return $query;
+		return $query ? $query : $sql;
 	}
 
 	/**
