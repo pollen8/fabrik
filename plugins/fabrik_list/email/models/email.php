@@ -420,12 +420,19 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 	protected function updateVal($name, $renderOrder = 0)
 	{
 		$params = $this->getParams();
+		$app = JFactory::getApplication();
+		$input = $app->input;
 		$updateVal = $params->get($name);
 		$updateVal = is_array($updateVal) ? JArrayHelper::getValue($updateVal, $renderOrder, '') : $updateVal;
 
 		if ($updateVal === 'now()')
 		{
 			$updateVal = JFactory::getDate()->toSql();
+		}
+
+		if ($updateVal === '{subject}')
+		{
+			$updateVal = $input->get('subject', '', 'string');
 		}
 
 		return $updateVal;
