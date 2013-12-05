@@ -58,8 +58,6 @@ class FabrikControllerListemail extends JControllerLegacy
 		$app = JFactory::getApplication();
 		$input = $app->input;
 		$document = JFactory::getDocument();
-		$app = JFactory::getApplication();
-		$input = $app->input;
 		$viewName = 'popupwin';
 		$viewType = $document->getType();
 

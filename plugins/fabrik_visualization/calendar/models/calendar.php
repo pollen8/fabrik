@@ -443,20 +443,13 @@ class FabrikModelCalendar extends FabrikFEModelVisualization
 				$enddate = trim($data['enddate']) !== '' ? FabrikString::safeColName($data['enddate']) : "''";
 				$label = trim($data['label']) !== '' ? FabrikString::safeColName($data['label']) : "''";
 				$customUrl = $data['customUrl'];
-				/**
-				 * $$$ hugh @FIXME - $label has already been quoted, so quoting it again meant the array_key_exists
-				 * check was never matching, as the name got double quoted.
-				 * But ... the code that isn't running is broken, so for now ... If It Ain't Working, Don't Fix It :)
-				 */
-				$qlabel = $db->quoteName($label);
+				$qlabel = $label;
 
 				if (array_key_exists($qlabel, $els))
 				{
 					// If db join selected for the label we need to get the label element and not the value
 					$label = FabrikString::safeColName($els[$qlabel]->getOrderByName());
 
-					// $$$ hugh @TODO doesn't seem to work for join elements, so adding hack till I can talk
-					// to rob about this one.
 					if (method_exists($els[$qlabel], 'getJoinLabelColumn'))
 					{
 						$label = $els[$qlabel]->getJoinLabelColumn();
@@ -470,11 +463,11 @@ class FabrikModelCalendar extends FabrikFEModelVisualization
 				$pk = $listModel->getTable()->db_primary_key;
 				$status = empty($data['status']) ? '""' : $data['status'];
 				$query = $db->getQuery(true);
+				$query = $listModel->buildQuerySelect('list', $query);
 				$status = trim($data['status']) !== '' ? FabrikString::safeColName($data['status']) : "''";
 				$query->select($pk . ' AS id, ' . $pk . ' AS rowid, ' . $startdate . ' AS startdate, ' . $enddate . ' AS enddate')
 					->select('"" AS link, ' . $label . ' AS label, ' . $db->quote($data['colour']) . ' AS colour, 0 AS formid')
 				->select($status . ' AS status')
-				->from($table->db_table_name)
 				->order($startdate . ' ASC');
 				$query = $listModel->buildQueryJoin($query);
 				$query = $listModel->buildQueryWhere(true, $query);
@@ -503,7 +496,7 @@ class FabrikModelCalendar extends FabrikFEModelVisualization
 								$date = JFactory::getDate($row->startdate);
 								$row->startdate = $date->format('Y-m-d H:i:s', true);
 								$date->setTimezone($tz);
-								$row->startdate_locale = $date->format('Y-m-d H:i:s', true);
+								$row->startdate_locale = $date->toISO8601(true);
 
 							}
 
@@ -514,7 +507,7 @@ class FabrikModelCalendar extends FabrikFEModelVisualization
 									$date = JFactory::getDate($row->enddate);
 									$row->enddate = $date->format('Y-m-d H:i:d');
 									$date->setTimezone($tz);
-									$row->enddate_locale = $date->format('Y-m-d H:i:d', true);
+									$row->enddate_locale = $date->toISO8601(true);
 								}
 							}
 							else

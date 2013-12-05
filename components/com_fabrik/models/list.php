@@ -1217,43 +1217,42 @@ class FabrikFEModelList extends JModelForm
 
 			for ($i = 0; $i < count($data); $i++)
 			{
-				if (isset($data[$i]->$groupBy))
+				$sdata = isset($data[$i]->$groupBy) ? isset($data[$i]->$groupBy) : '';
+
+				// Get rid of & as it blows up SimpleXMLElement, and dont want to use htmlspecialchars as don't want to mess with <, >, etc.
+				$sdata = str_replace('&', '&amp;', str_replace('&amp;', '&', $sdata));
+
+				// Test if its just an <a>*</a> tag - if so allow HTML (enables use of icons)
+				$xml = new SimpleXMLElement('<div>' . $sdata . '</div>');
+				$children = $xml->children();
+
+				// Not working in PHP5.2	if (!($xml->count() === 1 && $children[0]->getName() == 'a'))
+				if (!(count($xml->children()) === 1 && $children[0]->getName() == 'a'))
 				{
-					// Get rid of & as it blows up SimpleXMLElement, and dont want to use htmlspecialchars as don't want to mess with <, >, etc.
-					$sdata = str_replace('&', '&amp;', str_replace('&amp;', '&', $data[$i]->$groupBy));
+					$sdata = strip_tags($sdata);
+				}
 
-					// Test if its just an <a>*</a> tag - if so allow HTML (enables use of icons)
-					$xml = new SimpleXMLElement('<div>' . $sdata . '</div>');
-					$children = $xml->children();
+				if (!in_array($sdata, $aGroupTitles))
+				{
+					$aGroupTitles[] = $sdata;
+					$grouptemplate = ($w->parseMessageForPlaceHolder($groupTemplate, JArrayHelper::fromObject($data[$i])));
+					$this->groupTemplates[$sdata] = nl2br($grouptemplate);
+					$groupedData[$sdata] = array();
+				}
 
-					// Not working in PHP5.2	if (!($xml->count() === 1 && $children[0]->getName() == 'a'))
-					if (!(count($xml->children()) === 1 && $children[0]->getName() == 'a'))
-					{
-						$sdata = strip_tags($sdata);
-					}
+				$data[$i]->_groupId = $sdata;
+				$gKey = $sdata;
 
-					if (!in_array($sdata, $aGroupTitles))
-					{
-						$aGroupTitles[] = $sdata;
-						$grouptemplate = ($w->parseMessageForPlaceHolder($groupTemplate, JArrayHelper::fromObject($data[$i])));
-						$this->groupTemplates[$sdata] = nl2br($grouptemplate);
-						$groupedData[$sdata] = array();
-					}
+				// If the group_by was added in in getAsFields remove it from the returned data set (to avoid mess in package view)
 
-					$data[$i]->_groupId = $sdata;
-					$gKey = $sdata;
+				if ($this->group_by_added)
+				{
+					unset($data[$i]->$groupBy);
+				}
 
-					// If the group_by was added in in getAsFields remove it from the returned data set (to avoid mess in package view)
-
-					if ($this->group_by_added)
-					{
-						unset($data[$i]->$groupBy);
-					}
-
-					if ($this->temp_db_key_addded)
-					{
-						$k = $table->db_primary_key;
-					}
+				if ($this->temp_db_key_addded)
+				{
+					$k = $table->db_primary_key;
 				}
 
 				$groupedData[$gKey][] = $data[$i];
@@ -2541,11 +2540,12 @@ class FabrikFEModelList extends JModelForm
 	 * Get the select part of the query
 	 *
 	 * @param   string  $mode  list/form - effects which elements are selected
+	 * @param   JQueryBuilder  $query  Querybuilder (false to return string)
 	 *
-	 * @return  string
+	 * @return  mixed  string if $query = false, otherwise $query
 	 */
 
-	public function buildQuerySelect($mode = 'list')
+	public function buildQuerySelect($mode = 'list', $query = false)
 	{
 		$profiler = JProfiler::getInstance('Application');
 		JDEBUG ? $profiler->mark('queryselect: start') : null;
@@ -2572,16 +2572,38 @@ class FabrikFEModelList extends JModelForm
 		{
 			$sfields .= ', ';
 			$strPKey = $pk . ' AS ' . $db->quoteName('__pk_val') . "\n";
-			$query = 'SELECT ' . $calc_found_rows . ' DISTINCT ' . $sfields . $strPKey;
+
+			if ($query)
+			{
+				$query->select($calc_found_rows . ' DISTINCT ' . $sfields . $strPKey);
+			}
+			else
+			{
+				$sql = 'SELECT ' . $calc_found_rows . ' DISTINCT ' . $sfields . $strPKey;
+			}
 		}
 		else
 		{
-			$query = 'SELECT ' . $calc_found_rows . ' DISTINCT ' . trim($sfields, ", \n") . "\n";
+			if ($query)
+			{
+				$query->select($calc_found_rows . ' DISTINCT ' . $sfields);
+			}
+			else
+			{
+				$sql = 'SELECT ' . $calc_found_rows . ' DISTINCT ' . trim($sfields, ", \n") . "\n";
+			}
 		}
 
-		$query .= ' FROM ' . $db->quoteName($table->db_table_name) . " \n";
+		if ($query)
+		{
+			$query->from($db->quoteName($table->db_table_name));
+		}
+		else
+		{
+			$sql .= ' FROM ' . $db->quoteName($table->db_table_name) . " \n";
+		}
 
-		return $query;
+		return $query ? $query : $sql;
 	}
 
 	/**

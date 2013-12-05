@@ -147,11 +147,10 @@ var fabrikCalendar = new Class({
 			if (entry._canView) {
 				buttons += this.options.buttons.view;
 			}
-			
 			replace = {start: new Date(entry.startdate_locale).format(this.options.timeFormat), end: new Date(entry.enddate_locale).format(this.options.timeFormat)};
 			dataContent = Joomla.JText._('PLG_VISUALIZATION_CALENDAR_EVENT_START_END').substitute(replace);
 			if (buttons !== '') {
-				dataContent += '<hr /><div class=\"btn-group\" style=\"text-align:center\">' + buttons + '</div>';
+				dataContent += '<hr /><div class=\"btn-group\" style=\"text-align:center;display:block\">' + buttons + '</div>';
 			}
 			eventCont = new Element('a', {
 				'class': 'fabrikEvent label ' + entry.status,
@@ -535,7 +534,9 @@ var fabrikCalendar = new Class({
 			this.entries.each(function (entry) {
 
 				// Between (end date present) or same (no end date)
-				if ((entry.enddate !== '' && counterDate.isDateBetween(entry.startdate, entry.enddate)) || (entry.enddate === '' && entry.startdate.isSameDay(counterDate))) {
+				var startdate = new Date(entry.startdate_locale);
+				var enddate = new Date(entry.enddate_locale);
+				if ((entry.enddate !== '' && counterDate.isDateBetween(startdate, enddate)) || (enddate === '' && startdate.isSameDay(counterDate))) {
 					var opts = this._buildEventOpts({entry: entry, curdate: counterDate, divclass: '.weekView', 'tdOffset': i});
 					// Work out the left offset for the event - stops concurrent events overlapping each other
 					for (var h = opts.startHour; h <= opts.endHour; h ++) {
@@ -554,8 +555,11 @@ var fabrikCalendar = new Class({
 			// Add event divs
 			this.entries.each(function (entry) {
 
+				var startdate = new Date(entry.startdate_locale);
+				var enddate = new Date(entry.enddate_locale);
+				
 				// Between (end date present) or same (no end date)
-				if ((entry.enddate !== '' && counterDate.isDateBetween(entry.startdate, entry.enddate)) || (entry.enddate === '' && entry.startdate.isSameDay(counterDate))) {
+				if ((entry.enddate !== '' && counterDate.isDateBetween(startdate, enddate)) || (enddate === '' && startdate.isSameDay(counterDate))) {
 					var opts = this._buildEventOpts({entry: entry, curdate: counterDate, divclass: '.weekView', 'tdOffset': i});
 
 					// Work out the left offset for the event - stops concurrent events overlapping each other
@@ -568,7 +572,8 @@ var fabrikCalendar = new Class({
 							thisOffset = offsets[h];
 						}
 					}
-					td = hourTds[opts.startHour];
+					var startIndex = Math.max(0, opts.startHour - this.options.open);
+					td = hourTds[startIndex];
 
 					// Work out event div width - taking into account 1px margin between each event
 					eventWidth = Math.floor((td.getSize().x - gridSize) / (gridSize + 1));
@@ -594,7 +599,11 @@ var fabrikCalendar = new Class({
 		var counterDate = opts.curdate;
 		var entry = new CloneObject(opts.entry, true, ['enddate', 'startdate']);//for day view to avoid dups when scrolling through days //dont clone the date objs for ie
 		var trs = this.el.getElements(opts.divclass + ' tr');
-		var hour = (entry.startdate.isSameDay(counterDate)) ? entry.startdate.getHours() - this.options.open : 0;
+		
+		var startdate = new Date(entry.startdate_locale);
+		var enddate = new Date(entry.enddate_locale);
+		
+		var hour = (startdate.isSameDay(counterDate)) ? startdate.getHours() - this.options.open : 0;
 		hour = hour < 0 ?  0 : hour;
 		var i = opts.tdOffset;
 
@@ -610,19 +619,19 @@ var fabrikCalendar = new Class({
 
 		var left = (colwidth * i);
 		left += this.el.getElement(opts.divclass).getElement('td').getSize().x;
-		var duration = Math.ceil(entry.enddate.getHours() - entry.startdate.getHours());
+		var duration = Math.ceil(enddate.getHours() - startdate.getHours());
 		if (duration === 0) {
 			duration = 1;
 		}
 
-		if (entry.startdate.getDay() !== entry.enddate.getDay()) {
+		if (startdate.getDay() !== enddate.getDay()) {
 			duration = this.options.open !== 0 || this.options.close !== 24 ? this.options.close - this.options.open + 1 : 24;
-			if (entry.startdate.isSameDay(counterDate)) {
-				duration = this.options.open !== 0 || this.options.close !== 24 ? this.options.close - this.options.open + 1 : 24 - entry.startdate.getHours();
+			if (startdate.isSameDay(counterDate)) {
+				duration = this.options.open !== 0 || this.options.close !== 24 ? this.options.close - this.options.open + 1 : 24 - startdate.getHours();
 			} else {
-				entry.startdate.setHours(0);
-				if (entry.enddate.isSameDay(counterDate)) {
-					duration = this.options.open !== 0 || this.options.close !== 24 ? this.options.close - this.options.open : entry.enddate.getHours();
+				startdate.setHours(0);
+				if (enddate.isSameDay(counterDate)) {
+					duration = this.options.open !== 0 || this.options.close !== 24 ? this.options.close - this.options.open : enddate.getHours();
 				}
 			}
 		}
@@ -630,12 +639,12 @@ var fabrikCalendar = new Class({
 		top = top + (rowheight * hour);
 		var height = (rowheight * duration);
 
-		if (entry.enddate.isSameDay(counterDate)) {
-			height += (entry.enddate.getMinutes() / 60 * rowheight);
+		if (enddate.isSameDay(counterDate)) {
+			height += (enddate.getMinutes() / 60 * rowheight);
 		}
-		if (entry.startdate.isSameDay(counterDate)) {
-			top += (entry.startdate.getMinutes() / 60 * rowheight);
-			height -= (entry.startdate.getMinutes() / 60 * rowheight);
+		if (startdate.isSameDay(counterDate)) {
+			top += (startdate.getMinutes() / 60 * rowheight);
+			height -= (startdate.getMinutes() / 60 * rowheight);
 		}
 
 		var existing = td.getElements('.fabrikEvent');
@@ -648,11 +657,11 @@ var fabrikCalendar = new Class({
 		opts['max-width'] = width + 'px';
 		opts.left = left;
 		opts.top = top;
-		opts.color = this._getColor(this.options.colors.headingColor, entry.startdate);
-		opts.startHour = entry.startdate.getHours();
+		opts.color = this._getColor(this.options.colors.headingColor, startdate);
+		opts.startHour = startdate.getHours();
 		opts.endHour = opts.startHour + duration;
-		opts.startMin = entry.startdate.getMinutes();
-		opts.endMin = entry.enddate.getMinutes();
+		opts.startMin = startdate.getMinutes();
+		opts.endMin = enddate.getMinutes();
 		entry.startdate.setHours(orighours);
 		return opts;
 	},
@@ -730,7 +739,9 @@ var fabrikCalendar = new Class({
 			// Between (end date present) or same (no end date)
 			if ((entry.enddate !== '' && this.date.isDateBetween(entry.startdate, entry.enddate)) || (entry.enddate === '' && entry.startdate.isSameDay(firstDate))) {
 				var opts = this._buildEventOpts({entry: entry, curdate: this.date, divclass: '.dayView', 'tdOffset': 0});
-				td = hourTds[opts.startHour];
+				
+				var startIndex = Math.max(0, opts.startHour - this.options.open);
+				td = hourTds[startIndex];
 
 				// Work out event div width - taking into account 1px margin between each event
 				eventWidth = Math.floor((td.getSize().x - gridSize) / (gridSize + 1));
@@ -1028,7 +1039,7 @@ var fabrikCalendar = new Class({
 			tbody.appendChild(tr);
 
 			this.options.open = this.options.open < 0 ?  0 : this.options.open;
-			(this.options.close > 24 || this.options.close < this.options.open) ? this.options.close = 24 : this.options.close;
+			this.options.close = (this.options.close > 24 || this.options.close < this.options.open) ? 24 : this.options.close;
 
 			for (i = this.options.open; i < (this.options.close + 1); i++) {
 				tr = new Element('tr');
