@@ -736,6 +736,8 @@ class FabrikAdminModelList extends FabModelAdmin
 		}
 
 		$params = new JRegistry($row->params);
+		$params->set('isview', $feModel->isView());
+		$row->params = (string) $params;
 
 		FabrikAdminHelper::prepareSaveDate($row->publish_down);
 		FabrikAdminHelper::prepareSaveDate($row->created);
