@@ -4813,7 +4813,7 @@ class FabrikFEModelList extends JModelForm
 		. " AND table_type = 'view' AND table_schema = " . $db->quote($dbname);
 		$db->setQuery($sql);
 		$row = $db->loadObjectList();
-		$this->isView = empty($row) ? 0 : 1;
+		$this->isView = empty($row) ? "0" : "1";
 
 		// Store and save param for following tests
 		$params->set('isview', $this->isView);
