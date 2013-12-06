@@ -90,6 +90,9 @@ var FbDateTime = new Class({
 				} else {
 					this.cal.showAt(this.cal.params.position[0], params.position[1]);
 				}
+				
+				// Needed to re-run the dateStatusFunc() to enable/disable dates
+				this.cal._init(this.cal.firstDayOfWeek, this.cal.date);
 				this.cal.show();
 			}.bind(this));
 			Fabrik.addEvent('fabrik.form.submit.failed', function (form, json) {
