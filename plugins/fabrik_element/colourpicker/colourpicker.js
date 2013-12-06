@@ -37,7 +37,11 @@ var ColourPicker = new Class({
 		red: 0,
 		green: 0,
 		blue: 0,
-		value: [0, 0, 0, 1]
+		value: [0, 0, 0, 1],
+		showPicker: true,
+		swatchSizeWidth: '10px',
+		swatchSizeHeight: '10px',
+		swatchWidth: '160px'
 	},
 
 	initialize: function (element, options) {
@@ -55,7 +59,7 @@ var ColourPicker = new Class({
 	ini: function () {
 		this.options.callback = function (v, caller) {
 			v = this.update(v);
-			if (caller !== this.grad) {
+			if (caller !== this.grad && this.grad) {
 				this.grad.update(v);
 			}
 		}.bind(this);
@@ -63,14 +67,17 @@ var ColourPicker = new Class({
 		this.setOutputs();
 		var d = new Drag.Move(this.widget, {'handle': this.widget.getElement('.draggable')});
 
-		this.createSliders(this.strElement);
-
+		if (this.options.showPicker) {
+			this.createSliders(this.strElement);
+		}
 		this.swatch = new ColourPickerSwatch(this.options.element, this.options, this);
 		this.widget.getElement('#' + this.options.element + '-swatch').empty().adopt(this.swatch);
 		this.widget.hide();
 
-		this.grad = new ColourPickerGradient(this.options.element, this.options, this);
-		this.widget.getElement('#' + this.options.element + '-picker').empty().adopt(this.grad.square);
+		if (this.options.showPicker) {
+			this.grad = new ColourPickerGradient(this.options.element, this.options, this);
+			this.widget.getElement('#' + this.options.element + '-picker').empty().adopt(this.grad.square);
+		}
 		this.update(this.options.value);
 
 		var close = this.widget.getElement('.modal-header a');
@@ -195,11 +202,15 @@ var ColourPicker = new Class({
 		red = red ? red.toInt() : 0;
 		green = green ? green.toInt() : 0;
 		blue = blue ? blue.toInt() : 0;
-		this.redField.value = red;
+		
+		if (this.options.showPicker) {
+			this.redField.value = red;
+			this.greenField.value = green;
+			this.blueField.value = blue;
+		}
+		
 		this.options.colour.red = red;
-		this.greenField.value = green;
 		this.options.colour.green = green;
-		this.blueField.value = blue;
 		this.options.colour.blue = blue;
 		this.updateOutputs();
 	},
@@ -270,7 +281,7 @@ var ColourPickerSwatch = new Class({
 		this.outputs = this.options.outputs;
 		this.redField = null;
 		this.widget = new Element('div');
-		this.colourNameOutput = new Element('span').inject(this.widget);
+		this.colourNameOutput = new Element('span', {'stlye': 'padding:3px'}).inject(this.widget);
 		this.createColourSwatch(element);
 		return this.widget;
 	},
@@ -288,7 +299,7 @@ var ColourPickerSwatch = new Class({
 		for (var i = 0; i < this.options.swatch.length; i++) {
 			var swatchLine = new Element('div', {
 				'styles': {
-					'width': '160px'
+					'width': this.options.swatchWidth
 				}
 			});
 			var line = this.options.swatch[i];
@@ -299,9 +310,9 @@ var ColourPickerSwatch = new Class({
 					'id': swatchId,
 					'styles': {
 						'float': 'left',
-						'width': '10px',
+						'width': this.options.swatchSizeWidth,
 						'cursor': 'crosshair',
-						'height': '10px',
+						'height': this.options.swatchSizeHeight,
 						'background-color': 'rgb(' + colour + ')'
 					},
 					'class': colname,
