@@ -52,38 +52,50 @@ class PlgFabrik_ValidationruleIsgreaterorlessthan extends PlgFabrik_Validationru
 		$elementModel = $this->elementModel;
 		$formdata = $elementModel->getForm()->formData;
 		$cond = $params->get('isgreaterorlessthan-greaterthan');
+		$compareValue = $params->get('compare_value', '');
 
 		switch ($cond)
 		{
 			case '0':
 				$cond = '<';
+				$base = $data < $compareValue;
 				break;
 			case '1':
 				$cond = '>';
+				$base = $data > $compareValue;
 				break;
 			case '2':
 				$cond = '<=';
+				$base = $data <= $compareValue;
 				break;
 			case '3':
 				$cond = '>=';
+				$base = $data >= $compareValue;
 				break;
 			case '4':
 			default:
 				$cond = '==';
+				$base = $data == $compareValue;
 				break;
 		}
 
 		$otherElementModel = $this->getOtherElement();
 		$otherFullName = $otherElementModel->getFullName(true, false);
-		$compare = $otherElementModel->getValue($formdata, $repeatCounter);
+		$compare = $compareValue === '' ? $otherElementModel->getValue($formdata, $repeatCounter) : $compareValue;
 
 		if ($this->allowEmpty() && ($data === '' || $compare === ''))
 		{
 			return true;
 		}
 
-		$res = $elementModel->greaterOrLessThan($data, $cond, $compare);
-
+		if ($compareValue === '')
+		{
+			$res = $elementModel->greaterOrLessThan($data, $cond, $compare);
+		}
+		else
+		{
+			return $base;
+		}
 		return $res;
 	}
 

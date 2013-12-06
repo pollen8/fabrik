@@ -28,6 +28,12 @@
 				description="PLG_VALIDATIONRULE_ISGREATERORLESSTHAN_ELEMENT_DESC"
 				label="PLG_VALIDATIONRULE_ISGREATERORLESSTHAN_ELEMENT_LABEL"
 				repeat="true" />
+				
+			<field name="compare_value"
+				type="text"
+				repeat="true"
+				description="PLG_VALIDATIONRULE_ISGREATERORLESSTHAN_VALUE_DESC"
+				label="PLG_VALIDATIONRULE_ISGREATERORLESSTHAN_VALUE_LABEL" />
 
 			<field name="isgreaterorlessthan-allow_empty"
 				type="radio"
