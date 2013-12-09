@@ -1,13 +1,15 @@
 <?php
 /**
+ * Plugin element to render a user controllable stopwatch timer
+ *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.element.timer
- * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
- * @license     GNU General Public License version 2 or later; see LICENSE.txt
+ * @copyright   Copyright (C) 2005-2013 fabrikar.com - All rights reserved.
+ * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
-// Check to ensure this file is included in Joomla!
-defined('_JEXEC') or die();
+// No direct access
+defined('_JEXEC') or die('Restricted access');
 
 jimport('joomla.application.component.model');
 
@@ -24,7 +26,11 @@ require_once JPATH_SITE . '/plugins/fabrik_element/date/date.php';
 
 class PlgFabrik_ElementTimer extends PlgFabrik_Element
 {
-
+	/**
+	 * Does the element contain sub elements e.g checkboxes radiobuttons
+	 *
+	 * @var bool
+	 */
 	public $hasSubElements = false;
 
 	/**
@@ -41,7 +47,6 @@ class PlgFabrik_ElementTimer extends PlgFabrik_Element
 	 *
 	 * @return  bool
 	 */
-
 	public function isReceiptElement()
 	{
 		return true;
@@ -64,6 +69,7 @@ class PlgFabrik_ElementTimer extends PlgFabrik_Element
 		$element = $this->getElement();
 		$size = $params->get('timer_width', 9);
 		$value = $this->getValue($data, $repeatCounter);
+
 		if ($value == '')
 		{
 			$value = '00:00:00';
@@ -73,21 +79,26 @@ class PlgFabrik_ElementTimer extends PlgFabrik_Element
 			$value = explode(" ", $value);
 			$value = array_pop($value);
 		}
+
 		$type = "text";
 		if (isset($this->_elementError) && $this->_elementError != '')
 		{
 			$type .= " elementErrorHighlight";
 		}
+
 		if ($element->hidden == '1')
 		{
 			$type = "hidden";
 		}
+
 		$sizeInfo = " size=\"$size\" ";
+
 		if ($params->get('timer_readonly'))
 		{
 			$sizeInfo .= " readonly=\"readonly\" ";
 			$type .= " readonly";
 		}
+
 		if (!$this->isEditable())
 		{
 			return ($element->hidden == '1') ? "<!-- " . $value . " -->" : $value;
@@ -117,6 +128,7 @@ class PlgFabrik_ElementTimer extends PlgFabrik_Element
 		$opts->autostart = (bool) $params->get('timer_autostart', false);
 		JText::script('PLG_ELEMENT_TIMER_START');
 		JText::script('PLG_ELEMENT_TIMER_STOP');
+
 		return array('FbTimer', $id, $opts);
 	}
 
@@ -131,57 +143,57 @@ class PlgFabrik_ElementTimer extends PlgFabrik_Element
 
 	protected function getSumQuery(&$listModel, $labels = array())
 	{
-		if (count($labels) == 0)
-		{
-			$label = "'calc' AS label";
-		}
-		else
-		{
-			$label = 'CONCAT(' . implode(', " & " , ', $labels) . ')  AS label';
-		}
+		$label = count($labels) == 0 ? "'calc' AS label" : 'CONCAT(' . implode(', " & " , ', $labels) . ')  AS label';
 		$table = $listModel->getTable();
+		$db = $listModel->getDb();
 		$joinSQL = $listModel->_buildQueryJoin();
 		$whereSQL = $listModel->_buildQueryWhere();
 		$name = $this->getFullName(false, false, false);
 
 		// $$$rob not actaully likely to work due to the query easily exceeding mySQL's  TIMESTAMP_MAX_VALUE value but the query in itself is correct
-		return "SELECT DATE_FORMAT(FROM_UNIXTIME(SUM(UNIX_TIMESTAMP($name))), '%H:%i:%s') AS value, $label FROM `$table->db_table_name` $joinSQL $whereSQL";
+		return "SELECT DATE_FORMAT(FROM_UNIXTIME(SUM(UNIX_TIMESTAMP($name))), '%H:%i:%s') AS value, $label FROM " . $db->quoteName($table->db_table_name) . " $joinSQL $whereSQL";
 	}
 
 	/**
 	 * Build the query for the avg calculation
 	 *
-	 * @param   model   &$listModel  list model
-	 * @param   string  $label       the label to apply to each avg
+	 * @param   model  &$listModel  list model
+	 * @param   array  $labels      Labels
 	 *
 	 * @return  string	sql statement
 	 */
 
-	protected function getAvgQuery(&$listModel, $label = "'calc'")
+	protected function getAvgQuery(&$listModel, $labels = array())
 	{
-		$table = &$listModel->getTable();
+		$label = count($labels) == 0 ? "'calc' AS label" : 'CONCAT(' . implode(', " & " , ', $labels) . ')  AS label';
+		$table = $listModel->getTable();
+		$db = $listModel->getDb();
 		$joinSQL = $listModel->_buildQueryJoin();
 		$whereSQL = $listModel->_buildQueryWhere();
 		$name = $this->getFullName(false, false, false);
-		return "SELECT DATE_FORMAT(FROM_UNIXTIME(AVG(UNIX_TIMESTAMP($name))), '%H:%i:%s') AS value, $label AS label FROM `$table->db_table_name` $joinSQL $whereSQL";
+
+		return "SELECT DATE_FORMAT(FROM_UNIXTIME(AVG(UNIX_TIMESTAMP($name))), '%H:%i:%s') AS value, $label FROM " . $db->quoteName($table->db_table_name) . " $joinSQL $whereSQL";
 	}
 
 	/**
-	 * Get a query for our media query
+	 * Get a query for our median query
 	 *
-	 * @param   object  &$listModel  list
-	 * @param   string  $label       label
+	 * @param   object  &$listModel  List
+	 * @param   array   $labels      Label
 	 *
 	 * @return string
 	 */
 
-	protected function getMedianQuery(&$listModel, $label = "'calc'")
+	protected function getMedianQuery(&$listModel, $labels = array())
 	{
+		$label = count($labels) == 0 ? "'calc' AS label" : 'CONCAT(' . implode(', " & " , ', $labels) . ')  AS label';
 		$table = $listModel->getTable();
+		$db = $listModel->getDb();
 		$joinSQL = $listModel->_buildQueryJoin();
 		$whereSQL = $listModel->_buildQueryWhere();
 		$name = $this->getFullName(false, false, false);
-		return "SELECT DATE_FORMAT(FROM_UNIXTIME((UNIX_TIMESTAMP($name))), '%H:%i:%s') AS value, $label AS label FROM `$table->db_table_name` $joinSQL $whereSQL";
+
+		return "SELECT DATE_FORMAT(FROM_UNIXTIME((UNIX_TIMESTAMP($name))), '%H:%i:%s') AS value, $label FROM " . $db->quoteName($table->db_table_name) . " $joinSQL $whereSQL";
 	}
 
 	/**
@@ -195,6 +207,7 @@ class PlgFabrik_ElementTimer extends PlgFabrik_Element
 	public function simpleSum($data)
 	{
 		$sum = 0;
+
 		foreach ($data as $d)
 		{
 			if ($d != '')
@@ -203,6 +216,7 @@ class PlgFabrik_ElementTimer extends PlgFabrik_Element
 				$sum += $this->toSeconds($date);
 			}
 		}
+
 		return $sum;
 	}
 
@@ -221,7 +235,9 @@ class PlgFabrik_ElementTimer extends PlgFabrik_Element
 		{
 			return 0;
 		}
+
 		$date = JFactory::getDate($v);
+
 		return $this->toSeconds($date);
 	}
 }

@@ -304,14 +304,7 @@ class PlgFabrik_ElementTime extends PlgFabrik_Element
 
 	protected function getSumQuery(&$listModel, $labels = array())
 	{
-		if (count($labels) == 0)
-		{
-			$label = "'calc' AS label";
-		}
-		else
-		{
-			$label = 'CONCAT(' . implode(', " & " , ', $labels) . ')  AS label';
-		}
+		$label = count($labels) == 0 ? "'calc' AS label" : 'CONCAT(' . implode(', " & " , ', $labels) . ')  AS label';
 		$table = $listModel->getTable();
 		$db = $listModel->getDb();
 		$joinSQL = $listModel->_buildQueryJoin();
@@ -333,14 +326,7 @@ class PlgFabrik_ElementTime extends PlgFabrik_Element
 
 	protected function getAvgQuery(&$listModel, $labels = array())
 	{
-		if (count($labels) == 0)
-		{
-			$label = "'calc' AS label";
-		}
-		else
-		{
-			$label = 'CONCAT(' . implode(', " & " , ', $labels) . ')  AS label';
-		}
+		$label = count($labels) == 0 ? "'calc' AS label" : 'CONCAT(' . implode(', " & " , ', $labels) . ')  AS label';
 		$item = $listModel->getTable();
 		$joinSQL = $listModel->_buildQueryJoin();
 		$whereSQL = $listModel->_buildQueryWhere();

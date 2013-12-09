@@ -4,12 +4,12 @@
  *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.list.email
- * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
- * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @copyright   Copyright (C) 2005-2013 fabrikar.com - All rights reserved.
+ * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
-// Check to ensure this file is included in Joomla!
-defined('_JEXEC') or die();
+// No direct access
+defined('_JEXEC') or die('Restricted access');
 
 require_once COM_FABRIK_FRONTEND . '/models/plugin-list.php';
 
@@ -23,7 +23,6 @@ require_once COM_FABRIK_FRONTEND . '/models/plugin-list.php';
 
 class PlgFabrik_ListEmail extends PlgFabrik_List
 {
-
 	/**
 	 * Button prefix
 	 *
@@ -44,11 +43,6 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 	 *
 	 * @return  void
 	 */
-
-	public function onPopupwin()
-	{
-		echo ' hre lklfsd k popupwin';
-	}
 
 	/**
 	 * Can the plug-in select list rows
@@ -85,6 +79,7 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 	public function button($params, &$model, &$args)
 	{
 		parent::button($params, $model, $args);
+
 		return true;
 	}
 
@@ -117,49 +112,8 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 		$opts->renderOrder = $this->renderOrder;
 		$opts = json_encode($opts);
 		$this->jsInstance = "new FbListEmail($opts)";
+
 		return true;
-	}
-
-	/**
-	 * Get the html to create the <to> list
-	 *
-	 * @return string
-	 */
-
-	public function orig_getToField()
-	{
-		$app = JFactory::getApplication();
-		$input = $app->input;
-		$this->_id = $input->getInt('id');
-		$params = $this->getParams();
-		$renderOrder = $input->getInt('renderOrder');
-		$toType = $params->get('emailtable_to_type');
-		$toType = is_array($toType) ? $toType[$renderOrder] : $toType;
-		$email_to = '';
-		if ($toType == 'field')
-		{
-			$to = $params->get('emailtable_to');
-			$to = is_array($to) ? $to[$renderOrder] : $to;
-			switch ($params->get('emailtable_email_to_field_how', 'readonly'))
-			{
-				case 'editable':
-					$email_to = '<input name="list_email_to" id="list_email_to" value="' . $to . '" />';
-					break;
-				case 'hidden':
-					$email_to = '<input name="list_email_to" id="list_email_to" value="' . $to . '" type="hidden" />';
-					break;
-				case 'readonly':
-				default:
-					$email_to = '<input name="list_email_to" id="list_email_to" value="' . $to . '" readonly="readonly" />';
-					break;
-			}
-
-		}
-		else
-		{
-			$email_to = $this->formModel->getElementList('list_email_to');
-		}
-		return $email_to;
 	}
 
 	/**
@@ -178,11 +132,13 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 		$renderOrder = $input->getInt('renderOrder');
 		$toType = $params->get('emailtable_to_type');
 		$toType = is_array($toType) ? JArrayHelper::getValue($toType, $renderOrder, 'list') : $toType;
+
 		if ($toType == 'field')
 		{
 			$email_to = '';
 			$to = $params->get('emailtable_to');
 			$to = is_array($to) ? JArrayHelper::getValue($to, $renderOrder) : $to;
+
 			switch ($params->get('emailtable_email_to_field_how', 'readonly'))
 			{
 				case 'editable':
@@ -196,6 +152,7 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 					$email_to = '<input name="list_email_to" id="list_email_to" value="' . $to . '" readonly="readonly" />';
 					break;
 			}
+
 			return $email_to;
 		}
 		elseif ($toType == 'list')
@@ -205,43 +162,52 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 		elseif ($toType == 'table' || $toType == 'table_picklist')
 		{
 			$emailtable_to_table_table = $params->get('emailtable_to_table_table');
+
 			if (is_array($emailtable_to_table_table))
 			{
 				$emailtable_to_table_table = $emailtable_to_table_table[$renderOrder];
 			}
+
 			$emailtable_to_table_email = $params->get('emailtable_to_table_email');
+
 			if (is_array($emailtable_to_table_email))
 			{
 				$emailtable_to_table_email = $emailtable_to_table_email[$renderOrder];
 			}
+
 			$emailtable_to_table_name = $params->get('emailtable_to_table_name');
+
 			if (is_array($emailtable_to_table_name))
 			{
 				$emailtable_to_table_name = $emailtable_to_table_name[$renderOrder];
 			}
+
 			if (empty($emailtable_to_table_name))
 			{
 				$emailtable_to_table_name = $emailtable_to_table_email;
 			}
 
-			$toTableModel = JModel::getInstance('list', 'FabrikFEModel');
+			$toTableModel = JModelLegacy::getInstance('list', 'FabrikFEModel');
 			$toTableModel->setId($emailtable_to_table_table);
 			$toDb = $toTableModel->getDb();
 
 			$emailtable_to_table_name = FabrikString::safeColName($emailtable_to_table_name);
 			$emailtable_to_table_email = FabrikString::safeColName($emailtable_to_table_email);
-			$emailtable_to_table = $toDb->nameQuote($toTableModel->getTable()->db_table_name);
+			$emailtable_to_table = $toDb->quoteName($toTableModel->getTable()->db_table_name);
 
 			$query = $toDb->getQuery(true);
 			$query->select($emailtable_to_table_email . ' AS email, ' . $emailtable_to_table_name . ' AS name')
 			->from($emailtable_to_table)->order('name ASC');
 			$toDb->setQuery($query);
 			$results = $toDb->loadObjectList();
+
 			if (empty($results))
 			{
 				return JText::_('PLG_LIST_EMAIL_TO_TABLE_NO_DATA');
 			}
+
 			$empty = new stdClass;
+			$attribs = 'class="fabrikinput inputbox input-small" multiple="multiple" size="5"';
 
 			if ($toType == 'table_picklist')
 			{
@@ -268,23 +234,25 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 	</script>
 	';
 				$html .= '<div class="fabrik_email_holder">';
-				$html .= JHTML::_('select.genericlist', $results, 'email_to_selectfrom[]', 'class="fabrikinput inputbox" multiple="multiple" size="5"', 'email', 'name', '', 'email_to_selectfrom');
+				$html .= JHTML::_('select.genericlist', $results, 'email_to_selectfrom[]', $attribs, 'email', 'name', '', 'email_to_selectfrom');
 				$html .= '<a href="javascript:;" id="email_add">add &gt;&gt;</a>';
 				$html .= '</div>';
 				$html .= '<div class="fabrik_email_holder">';
-				$html .= JHTML::_('select.genericlist', $empty, 'list_email_to[]', 'class="fabrikinput inputbox" multiple="multiple" size="5"', 'email', 'name', '', 'list_email_to');
-				$html .= '<a href="javascript:;" id="email_remove">&lt;&lt; remove</a>';
+				$html .= JHTML::_('select.genericlist', $empty, 'list_email_to[]', $attribs, 'email', 'name', '', 'list_email_to');
+				$html .= '<br /><a href="#" id="email_remove">&lt;&lt; '
+					. JText::_('COM_FABRIK_DELETE') . ' <i class="icon-delete"></i></a>';
 				$html .= '</div>';
-				$html .= '<div style="clear:both;"></div>';
+				$html .= '<div style="clear:both"></div>';
 			}
 			else
 			{
-				$html = JHTML::_('select.genericlist', $results, 'list_email_to[]', 'class="fabrikinput inputbox" multiple="multiple" size="5"', 'email', 'name', '', 'list_email_to');
+				$html = JHTML::_('select.genericlist', $results, 'list_email_to[]', $attribs, 'email', 'name', '', 'list_email_to');
 			}
 
 			return $html;
 		}
 	}
+
 	/**
 	 * Are attachements allowed?
 	 *
@@ -298,14 +266,15 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 		$renderOrder = $input->getInt('renderOrder');
 		$params = $this->getParams();
 		$allow = $params->get('emailtable_allow_attachment');
+
 		return is_array($allow) ? JArrayHelper::getValue($allow, $renderOrder, false) : $allow;
 	}
 
 	/**
-	* Get the show to field
-	*
-	* @return  string
-	*/
+	 * Get the show to field
+	 *
+	 * @return  string
+	 */
 
 	public function getShowToField()
 	{
@@ -323,10 +292,10 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 	}
 
 	/**
-	* Get the show subject line
-	*
-	* @return  string
-	*/
+	 * Get the show subject line
+	 *
+	 * @return  string
+	 */
 
 	public function getShowSubject()
 	{
@@ -335,6 +304,7 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 		$renderOrder = $input->getInt('renderOrder');
 		$params = $this->getParams();
 		$var = $params->get('emailtable_hide_subject');
+
 		return (is_array($var) ? JArrayHelper::getValue($var, $renderOrder, '') : $var) == '0';
 	}
 
@@ -351,6 +321,7 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 		$renderOrder = $input->getInt('renderOrder');
 		$params = $this->getParams();
 		$var = $params->get('email_subject');
+
 		return is_array($var) ? JArrayHelper::getValue($var, $renderOrder, '') : $var;
 	}
 
@@ -367,6 +338,7 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 		$renderOrder = $input->getInt('renderOrder');
 		$params = $this->getParams();
 		$var = $params->get('email_message');
+
 		return is_array($var) ? JArrayHelper::getValue($var, $renderOrder, '') : $var;
 	}
 
@@ -383,6 +355,7 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 	{
 		$app = JFactory::getApplication();
 		$input = $app->input;
+
 		if ($key === 'recordids')
 		{
 			$ids = explode(',', $input->get($key, '', 'string'));
@@ -393,11 +366,12 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 		}
 
 		JArrayHelper::toInteger($ids);
+
 		if (empty($ids))
 		{
-			JError::raiseError(400, JText::_('PLG_LIST_EMAIL_ERR_NO_RECORDS_SELECTED'));
-			jexit();
+			throw new RuntimeException(JText::_('PLG_LIST_EMAIL_ERR_NO_RECORDS_SELECTED'), 400);
 		}
+
 		$renderOrder = $input->getInt('renderOrder');
 		$params = $this->getParams();
 		$model = $this->listModel;
@@ -405,17 +379,22 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 		$pk2 = FabrikString::safeColNameToArrayKey($pk) . '_raw';
 		$whereClause = "($pk IN (" . implode(",", $ids) . "))";
 		$cond = $params->get('emailtable_condition');
+
 		if (trim($cond) !== '')
 		{
 			$whereClause .= ' AND (' . $cond . ')';
 		}
+
 		$model->setPluginQueryWhere($this->buttonPrefix, $whereClause);
 		$data = $model->getData();
+
 		if ($allData)
 		{
 			return $data;
 		}
+
 		$return = array();
+
 		foreach ($data as $gdata)
 		{
 			foreach ($gdata as $row)
@@ -423,6 +402,7 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 				$return[] = $row->$pk2;
 			}
 		}
+
 		return $return;
 	}
 
@@ -442,17 +422,22 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 		$files = $input->files->get('attachement', array());
 		$folder = JPATH_ROOT . '/images/stories';
 		$this->filepath = array();
+
 		foreach ($files as $file)
 		{
 			$name = $file['name'];
+
 			if ($name == '')
 			{
 				continue;
 			}
+
 			$path = $folder . '/' . strtolower($name);
+
 			if (!JFile::upload($file['tmp_name'], $path))
 			{
 				JError::raiseWarning(100, JText::_('PLG_LIST_EMAIL_ERR_CANT_UPLOAD_FILE'));
+
 				return false;
 			}
 			else
@@ -460,134 +445,8 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 				$this->filepath[] = $path;
 			}
 		}
+
 		return true;
-	}
-
-	/**
-	 * Send the email
-	 *
-	 * @return boolean
-	 */
-
-	public function orig_doEmail()
-	{
-		$listModel = $this->listModel;
-		$app = JFactory::getApplication();
-		$input = $app->input;
-		jimport('joomla.mail.helper');
-		if (!$this->_upload())
-		{
-			return false;
-		}
-		$listId = $input->getInt('id', 0);
-		$this->setId($listId);
-		$listModel->setId($listId);
-		$w = new FabrikWorker;
-		$config = JFactory::getConfig();
-		$params = $this->getParams();
-		$to = $input->get('list_email_to');
-		$renderOrder = $input->getInt('renderOrder');
-		$toType = $params->get('emailtable_to_type', 'list');
-		$fromUser = $params->get('emailtable_from_user');
-		if ($toType == 'list')
-		{
-			$to = str_replace('.', '___', $to);
-		}
-
-		if ($toType == 'list' && $to == '')
-		{
-			JError::raiseError(500, JText::_('PLG_LIST_EMAIL_ERR_NO_TO_ELEMENT_SELECTED'));
-			exit;
-		}
-		$subject = $input->get('subject', '', 'string');
-		$message = $input->get('message', '', 'html');
-		$message = nl2br($message);
-		$data = $this->getRecords('recordids', true);
-		if ($fromUser)
-		{
-			$my = JFactory::getUser();
-			$from = $my->get('email');
-			$fromname = $my->get('name');
-		}
-		else
-		{
-			$from = $config->get('mailfrom');
-			$fromname = $config->get('fromname');
-		}
-
-		$email_from = $config->get('mailfrom');
-		$cc = null;
-		$bcc = null;
-		$sent = 0;
-		$notsent = 0;
-		$updated = array();
-		foreach ($data as $group)
-		{
-
-			foreach ($group as $row)
-			{
-				if ($toType == 'list')
-				{
-					$process = isset($row->$to);
-					$mailto = $row->$to;
-				}
-				else
-				{
-					$process = true;
-					$mailto = $to;
-				}
-				if ($process)
-				{
-					$mailtos = explode(',', $mailto);
-					foreach ($mailtos as $mailto)
-					{
-						$thisMailto = $w->parseMessageForPlaceholder($mailto, $row);
-						if (JMailHelper::isEmailAddress($thisMailto))
-						{
-							$thissubject = $w->parseMessageForPlaceholder($subject, $row);
-							$thismessage = $w->parseMessageForPlaceholder($message, $row);
-
-							// Get a JMail instance (have to get a new instnace otherwise the receipients are appended to previously added recipients)
-							$mail = JFactory::getMailer();
-							$res = $mail->sendMail($email_from, $email_from, $thisMailto, $thissubject, $thismessage, true, $cc, $bcc, $this->filepath);
-							if ($res)
-							{
-								$sent++;
-							}
-							else
-							{
-								$notsent++;
-							}
-						}
-						else
-						{
-							$notsent++;
-						}
-					}
-					if ($res)
-					{
-						$updated[] = $row->__pk_val;
-					}
-				}
-				else
-				{
-					$notsent++;
-				}
-			}
-		}
-		if (!empty($updated))
-		{
-			$updateField = $params->get('emailtable_update_field');
-			$updateVal = $this->updateVal('emailtable_update_value');
-			$listModel->updateRows($updated, $updateField, $updateVal);
-		}
-
-		$app->enqueueMessage(JText::sprintf('PLG_LIST_EMAIL_N_SENT', $sent));
-
-		if ($notsent != 0)
-		{
-			JError::raiseWarning(E_NOTICE, JText::sprintf('PLG_LIST_EMAIL_N_NOT_SENT', $notsent));
-		}
 	}
 
 	/**
@@ -601,12 +460,19 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 	protected function updateVal($name, $renderOrder = 0)
 	{
 		$params = $this->getParams();
+		$app = JFactory::getApplication();
+		$input = $app->input;
 		$updateVal = $params->get($name);
 		$updateVal = is_array($updateVal) ? JArrayHelper::getValue($updateVal, $renderOrder, '') : $updateVal;
 
 		if ($updateVal === 'now()')
 		{
 			$updateVal = JFactory::getDate()->toSql();
+		}
+
+		if ($updateVal === '{subject}')
+		{
+			$updateVal = $input->get('subject', '', 'string');
 		}
 
 		return $updateVal;
@@ -624,6 +490,7 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 		$app = JFactory::getApplication();
 		$input = $app->input;
 		jimport('joomla.mail.helper');
+
 		if (!$this->_upload())
 		{
 			return false;
@@ -635,24 +502,27 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 		$this->_type = 'table';
 		$params = $this->getParams();
 		$renderOrder = $input->getInt('renderOrder');
-
 		$merge_emails = $params->get('emailtable_mergemessages', 0);
+
 		if (is_array($merge_emails))
 		{
 			$merge_emails = (int) JArrayHelper::getValue($merge_emails, $renderOrder, 0);
 		}
 
 		$toHow = $params->get('emailtable_to_how', 'single');
+
 		if (is_array($toHow))
 		{
 			$toHow = JArrayHelper::getValue($toHow, $renderOrder, 'single');
 		}
 
 		$toType = $params->get('emailtable_to_type', 'list');
+
 		if (is_array($toType))
 		{
 			$toType = JArrayHelper::getValue($toType, $renderOrder, 'list');
 		}
+
 		if ($toType == 'table' || $toType == 'table_picklist')
 		{
 			$to = $input->get('list_email_to', '', 'array');
@@ -661,6 +531,7 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 		{
 			$to = $input->get('list_email_to', '', 'string');
 		}
+
 		if ($toType == 'list')
 		{
 			$to = str_replace('.', '___', $to);
@@ -674,10 +545,12 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 				if ($toType != 'field')
 				{
 					$emailtable_to = $params->get('emailtable_to', '');
+
 					if (is_array($emailtable_to))
 					{
 						$emailtable_to  = JArrayHelper::getValue($emailtable_to, $renderOrder, '');
 					}
+
 					if (!empty($emailtable_to))
 					{
 						if (!in_array($emailtable_to, $to))
@@ -686,34 +559,40 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 						}
 					}
 				}
+
 				$to = implode(',', $to);
 			}
 		}
 
 		$fromUser = $params->get('emailtable_from_user');
+
 		if (is_array($fromUser))
 		{
 			$fromUser = JArrayHelper::getValue($fromUser, $renderOrder, '');
 		}
 
 		$emailTemplate = $params->get('emailtable_template', '');
+
 		if (is_array($emailTemplate))
 		{
 			$emailTemplate = JArrayHelper::getValue($emailTemplate, $renderOrder, '');
 		}
+
 		if ($emailTemplate != "-1" && !empty($emailTemplate))
 		{
 			$emailTemplate = JPath::clean(JPATH_SITE . '/plugins/fabrik_list/email/tmpl/' . $emailTemplate);
 		}
 
 		$contentTemplate = $params->get('emailtable_template_content', '');
+
 		if (is_array($contentTemplate))
 		{
 			$contentTemplate = JArrayHelper::getValue($contentTemplate, $renderOrder, '');
 		}
-		$content = empty($contentTemplate) ? '' : FabrikHelperHTML::getContentTemplate($contentTemplate);
 
+		$content = empty($contentTemplate) ? '' : FabrikHelperHTML::getContentTemplate($contentTemplate);
 		$php_msg = false;
+
 		if (JFile::exists($emailTemplate))
 		{
 			if (JFile::getExt($emailTemplate) == 'php')
@@ -726,6 +605,7 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 			{
 				$message = FabrikHelperHTML::getTemplateFile($emailTemplate);
 			}
+
 			$message = str_replace('{content}', $content, $message);
 		}
 		else
@@ -738,13 +618,16 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 		// $$$ hugh - may need to allow html
 		$cover_message = nl2br($input->get('message', '', 'html'));
 		$old_style = false;
+
 		if (empty($message) && !$php_msg)
 		{
 			$old_style = true;
 
 			// $message = $cover_message;
 		}
+
 		$data = $this->getRecords('recordids', true);
+
 		if ($fromUser)
 		{
 			$my = JFactory::getUser();
@@ -754,8 +637,8 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 		else
 		{
 			$config = JFactory::getConfig();
-			$email_from = $config->getValue('mailfrom');
-			$fromname = $config->getValue('fromname');
+			$email_from = $config->get('mailfrom');
+			$fromname = $config->get('fromname');
 		}
 
 		$cc = null;
@@ -765,6 +648,7 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 		$updated = array();
 		$merged_msg = '';
 		$first_row = array();
+
 		foreach ($data as $group)
 		{
 			foreach ($group as $row)
@@ -776,7 +660,9 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 						// Used for placeholders in subject when merging mail
 						$first_row = $row;
 					}
+
 					$thismsg = '';
+
 					if ($old_style)
 					{
 						$thismsg = $w->parseMessageForPlaceHolder($cover_message, $row);
@@ -792,12 +678,12 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 							$thismsg = $w->parseMessageForPlaceHolder($message, $row);
 						}
 					}
+
 					$merged_msg .= $thismsg;
 					$updated[] = $row->__pk_val;
 				}
 				else
 				{
-
 					if ($toType == 'list')
 					{
 						$process = isset($row->$to);
@@ -808,16 +694,19 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 						$process = true;
 						$mailto = $w->parseMessageForPlaceHolder($to, $row);
 					}
+
 					if ($process)
 					{
 						$res = false;
 						$mailtos = explode(',', $mailto);
+
 						if ($toHow == 'single')
 						{
 							foreach ($mailtos as $tokey => $thisto)
 							{
 								$thisto = $w->parseMessageForPlaceholder($thisto, $row);
-								if (!JMailHelper::isEmailAddress($thisto))
+
+								if (!FabrikWorker::isEmail($thisto))
 								{
 									unset($mailtos[$tokey]);
 									$notsent++;
@@ -827,16 +716,20 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 									$mailtos[$tokey] = $thisto;
 								}
 							}
+
 							if ($notsent > 0)
 							{
 								$mailtos = array_values($mailtos);
 							}
+
 							$sent = count($mailtos);
+
 							if ($sent > 0)
 							{
 								$thissubject = $w->parseMessageForPlaceholder($subject, $row);
 								$thismsg = '';
 								$thismsg = $cover_message;
+
 								if (!$old_style)
 								{
 									if ($php_msg)
@@ -848,8 +741,10 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 										$thismsg .= $message;
 									}
 								}
+
 								$thismsg = $w->parseMessageForPlaceholder($thismsg, $row);
-								$res = JUtility::sendMail($email_from, $fromname, $mailtos, $thissubject, $thismsg, 1, $cc, $bcc, $this->filepath);
+								$mail = JFactory::getMailer();
+								$res = $mail->sendMail($email_from, $fromname, $mailtos, $thissubject, $thismsg, 1, $cc, $bcc, $this->filepath);
 							}
 						}
 						else
@@ -857,11 +752,13 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 							foreach ($mailtos as $mailto)
 							{
 								$mailto = $w->parseMessageForPlaceholder($mailto, $row);
-								if (JMailHelper::isEmailAddress($mailto))
+
+								if (FabrikWorker::isEmail($mailto))
 								{
 									$thissubject = $w->parseMessageForPlaceholder($subject, $row);
 									$thismsg = '';
 									$thismsg = $cover_message;
+
 									if (!$old_style)
 									{
 										if ($php_msg)
@@ -873,8 +770,11 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 											$thismsg .= $message;
 										}
 									}
+
 									$thismsg = $w->parseMessageForPlaceholder($thismsg, $row);
-									$res = JUtility::sendMail($email_from, $fromname, $mailto, $thissubject, $thismsg, 1, $cc, $bcc, $this->filepath);
+									$mail = JFactory::getMailer();
+									$res = $mail->sendMail($email_from, $fromname, $mailto, $thissubject, $thismsg, 1, $cc, $bcc, $this->filepath);
+
 									if ($res)
 									{
 										$sent ++;
@@ -890,6 +790,7 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 								}
 							}
 						}
+
 						if ($res)
 						{
 							$updated[] = $row->__pk_val;
@@ -902,6 +803,7 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 				}
 			}
 		}
+
 		if ($merge_emails)
 		{
 			// Arbitrarily use first row for placeholders
@@ -913,6 +815,7 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 			{
 				$mailto = $to;
 			}
+
 			$thistos = explode(',', $w->parseMessageForPlaceHolder($mailto, $first_row));
 			$thissubject = $w->parseMessageForPlaceHolder($subject, $first_row);
 			$preamble = $params->get('emailtable_message_preamble', '');
@@ -920,6 +823,7 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 			$postamble = $params->get('emailtable_message_postamble', '');
 			$postamble = is_array($postamble) ? JArrayHelper::getValue($postamble, $renderOrder, '') : $postamble;
 			$merged_msg = $preamble . $merged_msg . $postamble;
+
 			if (!$old_style)
 			{
 				$merged_msg = $cover_message . $merged_msg;
@@ -930,7 +834,8 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 				foreach ($thistos as $tokey => $thisto)
 				{
 					$thisto = $w->parseMessageForPlaceholder($thisto, $first_row);
-					if (!JMailHelper::isEmailAddress($thisto))
+
+					if (!FabrikWorker::isEmail($thisto))
 					{
 						unset($thistos[$tokey]);
 						$notsent++;
@@ -940,23 +845,29 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 						$mailtos[$tokey] = $thisto;
 					}
 				}
+
 				if ($notsent > 0)
 				{
 					$thistos = array_values($thistos);
 				}
+
 				$sent = count($thistos);
+
 				if ($sent > 0)
 				{
-					$res = JUTility::sendMail($email_from, $fromname, $thistos, $thissubject, $merged_msg, true, $cc, $bcc, $this->filepath);
+					$mail = JFactory::getMailer();
+					$res = $mail->sendMail($email_from, $fromname, $thistos, $thissubject, $merged_msg, true, $cc, $bcc, $this->filepath);
 				}
 			}
 			else
 			{
 				foreach ($thistos as $thisto)
 				{
-					if (JMailHelper::isEmailAddress($thisto))
+					if (FabrikWorker::isEmail($thisto))
 					{
-						$res = JUTility::sendMail($email_from, $fromname, $thisto, $thissubject, $merged_msg, true, $cc, $bcc, $this->filepath);
+						$mail = JFactory::getMailer();
+						$res = $mail->sendMail($email_from, $fromname, $thisto, $thissubject, $merged_msg, true, $cc, $bcc, $this->filepath);
+
 						if ($res)
 						{
 							$sent ++;
@@ -973,6 +884,7 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 				}
 			}
 		}
+
 		$updateField = $params->get('emailtable_update_field');
 		$updateField = is_array($updateField) ? JArrayHelper::getValue($updateField, $renderOrder, '') : $updateField;
 
@@ -992,6 +904,7 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 			$listModel->updateRows($updated, $updateField, $updateVal);
 		}
 
+		// T3 blank tmpl doesn't seem to render messages when tmpl=component
 		$app->enqueueMessage(JText::sprintf('%s emails sent', $sent));
 
 		if ($notsent != 0)
