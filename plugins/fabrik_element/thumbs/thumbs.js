@@ -10,9 +10,8 @@ var FbThumbs =  new Class({
 	initialize: function (element, options, thumb) {
 		this.field = document.id(element);
 		this.parent(element, options);
-		this.element = document.id(element + '_div');
 		this.thumb = thumb;
-		this.spinner = new Spinner(this.element.getParent('.fabrikElementContainer'));
+		this.spinner = new Spinner(this.getContainer());
 		
 		if (Fabrik.bootstrapped) {
 			this.setupj3();
@@ -135,7 +134,7 @@ var FbThumbs =  new Class({
 								count_thumbup.set('html', r[0]);
 								count_thumbdown.set('html', r[1]);
 								// Well since the element can't be rendered in form view I guess this isn't really needed
-								document.id(this.element.id).getElement('.' + this.field.id).value = r[0].toFloat() - r[1].toFloat();
+								this.getContainer().getElement('.' + this.field.id).value = r[0].toFloat() - r[1].toFloat();
 								if (r[0] === "1") {
 									thumbup.src = this.imagepath + "thumb_up_in.gif";
 									thumbdown.src = this.imagepath + "thumb_down_out.gif";

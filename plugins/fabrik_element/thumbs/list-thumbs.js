@@ -21,8 +21,12 @@ var FbThumbsList = new Class({
 		this.col = document.getElements('.' + id);
 		this.origThumbUp = {};
 		this.origThumbDown = {};
-		if (Fabrik.bootstrapped) {
-			this.setUpBootstrapped();
+		if (Fabrik.bootstrapped || this.options.j3) {
+			if (this.options.voteType === 'comment') {
+				this.setUpBootstrappedComments();
+			} else {
+				this.setUpBootstrapped();
+			}
 		} else {
 			this.col.each(function (tr) {
 				var row = tr.getParent('.fabrik_row');
@@ -71,9 +75,39 @@ var FbThumbsList = new Class({
 		}
 	},
 	
+	setUpBootstrappedComments: function () {
+		document.addEvent('click:relay(*[data-fabrik-thumb])', function (e, target) {
+			var add = target.hasClass('btn-success') ? false : true;
+			var dir = target.get('data-fabrik-thumb');
+			var formid = target.get('data-fabrik-thumb-formid');
+			var rowid = target.get('data-fabrik-thumb-rowid');
+			
+			this.doAjax(target, dir, add);
+			if (dir === 'up') {
+				if (!add) {
+					target.removeClass('btn-success');
+				} else {
+					target.addClass('btn-success');
+					var down = document.getElements('button[data-fabrik-thumb-formid=' + formid + '][data-fabrik-thumb-rowid=' + rowid + '][data-fabrik-thumb=down]');
+					down.removeClass('btn-danger');
+				}
+			} else {
+				var up = document.getElements('button[data-fabrik-thumb-formid=' + formid + '][data-fabrik-thumb-rowid=' + rowid + '][data-fabrik-thumb=up]');
+				if (!add) {
+					target.removeClass('btn-danger');
+				} else {
+					target.addClass('btn-danger');
+					up.removeClass('btn-success');
+				}
+			}
+		}.bind(this));
+		
+	},
+	
 	setUpBootstrapped: function () {
 		this.col.each(function (td) {
 			var row = td.getParent('.fabrik_row');
+			
 			if (row) {
 				var rowid = row.id.replace('list_' + this.options.renderContext + '_row_', '');
 				var up = td.getElement('button.thumb-up'),
@@ -82,11 +116,13 @@ var FbThumbsList = new Class({
 				up.addEvent('click', function (e) {
 					e.stop();
 					var add = up.hasClass('btn-success') ? false : true;
-					this.doAjax(td, 'up', add);
+					this.doAjax(up, 'up', add);
+					
 					if (!add) {
 						up.removeClass('btn-success');
 					} else {
 						up.addClass('btn-success');
+						
 						if (typeOf(down) !== 'null') {
 							down.removeClass('btn-danger');
 						}
@@ -95,18 +131,17 @@ var FbThumbsList = new Class({
 				}.bind(this));
 				
 				if (typeOf(down) !== 'null') {
-					
 					down.addEvent('click', function (e) {
 						e.stop();
 						var add = down.hasClass('btn-danger') ? false : true;
-						this.doAjax(td, 'down', add);
+						this.doAjax(down, 'down', add);
+						
 						if (!add) {
 							down.removeClass('btn-danger');
 						} else {
 							down.addClass('btn-danger');
 							up.removeClass('btn-success');
 						}
-						
 					}.bind(this));
 				}
 			}
@@ -115,8 +150,8 @@ var FbThumbsList = new Class({
 
 	doAjax: function (e, thumb, add) {
 		add = add ? true : false;
-		var row = e.getParent('.fabrik_row');
-		var rowid = row.id.replace('list_' + this.options.renderContext + '_row_', '');
+		var row = e.getParent();
+		var rowid = e.get('data-fabrik-thumb-rowid');
 		var count_thumb = document.id('count_thumb' + thumb + rowid);
 		Fabrik.loader.start(row);
 		this.thumb = thumb;
@@ -137,7 +172,12 @@ var FbThumbsList = new Class({
 			'formid': this.options.formid,
 			'add': add
 		};
-		new Request({url: '',
+		
+		if (this.options.voteType === 'comment') {
+			data.special = 'comments_' + this.options.formid;
+		}
+		
+		new Request({url: '', 
 			'data': data,
 			onComplete: function (r) {
 				var count_thumbup = document.id('count_thumbup' + rowid);
@@ -145,14 +185,14 @@ var FbThumbsList = new Class({
 				var thumbup = row.getElements('.thumbup');
 				var thumbdown = row.getElements('.thumbdown');
 				Fabrik.loader.stop(row);
-				//r = r.split(this.options.splitter2);
 				r = JSON.decode(r);
+				
 				if (r.error) {
 					console.log(r.error);
 				} else {
 					if (Fabrik.bootstrapped) {
-						
 						row.getElement('button.thumb-up .thumb-count').set('text', r[0]);
+						
 						if (typeOf(row.getElement('button.thumb-down')) !== 'null') {
 							row.getElement('button.thumb-down .thumb-count').set('text', r[1]);
 						}

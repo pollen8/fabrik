@@ -72,6 +72,8 @@ class PlgFabrik_FormComment extends PlgFabrik_Form
 	 */
 	protected $data = array();
 
+	protected $thumb = null;
+
 	/**
 	 * Get any html that needs to be written after the form close tag
 	 *
@@ -155,26 +157,24 @@ class PlgFabrik_FormComment extends PlgFabrik_Form
 	}
 
 	/**
-	 * Get the js options for the digg element
+	 * Get the js options for the thumb element
 	 *
 	 * @return  string  json option string
 	 */
 
-	protected function loadDiggJsOpts()
+	protected function loadThumbJsOpts()
 	{
 		$app = JFactory::getApplication();
 		$input = $app->input;
-		FabrikHelperHTML::script('plugins/fabrik_element/digg/table-fabrikdigg.js');
 		$opts = new stdClass;
-		$digg = $this->getDigg();
+		$thumb = $this->getThumb();
 		$opts->livesite = COM_FABRIK_LIVESITE;
 		$opts->row_id = $input->getString('rowid', '', 'string');
 		$opts->voteType = 'comment';
 
-		FabrikHelperHTML::addPath(COM_FABRIK_BASE . 'plugins/fabrik_element/digg/images/', 'image', 'form', false);
-		$opts->imageover = FabrikHelperHTML::image("heart-off.png", 'form', $this->tmpl, array(), true);
-		$opts->imageout = FabrikHelperHTML::image("heart.png", 'form', $this->tmpl, array(), true);
+		FabrikHelperHTML::addPath(COM_FABRIK_BASE . 'plugins/fabrik_element/thumbs/images/', 'image', 'form', false);
 		$opts->formid = $this->formModel->getId();
+		$opts->j3 = FabrikWorker::j3();
 		$opts->listid = $this->formModel->getListModel()->getTable()->id;
 		$opts = json_encode($opts);
 
@@ -197,19 +197,13 @@ class PlgFabrik_FormComment extends PlgFabrik_Form
 		$document = JFactory::getDocument();
 		$this->inJDb = $formModel->getTableModel()->inJDb();
 		$this->formModel = $formModel;
+		$jsfiles = array();
 		JHTML::stylesheet('/plugins/fabrik_form/comment/comments.css');
-		FabrikHelperHTML::script('/plugins/fabrik_form/comment/comments.js');
-		FabrikHelperHTML::script('/plugins/fabrik_form/comment/inlineedit.js');
+		$jsfiles[] = 'media/com_fabrik/js/fabrik.js';
+		$jsfiles[] = 'plugins/fabrik_form/comment/comments.js';
+		$jsfiles[] = 'plugins/fabrik_form/comment/inlineedit.js';
 
-		if ($this->doDigg())
-		{
-			$digopts = $this->loadDiggJsOpts();
-		}
-		else
-		{
-			$digopts = "{}";
-		}
-
+		$thumbopts = $this->doThumbs() ? $thumbopts = $this->loadThumbJsOpts() : "{}";
 		$db = FabrikWorker::getDbo();
 		$user = JFactory::getUser();
 		$data[] = '<div id="fabrik-comments">';
@@ -239,6 +233,13 @@ class PlgFabrik_FormComment extends PlgFabrik_Form
 		}
 
 		$data[] = '</a></h3>';
+
+		if ($this->doThumbs())
+		{
+			$thumb = $this->getThumb();
+			$this->thumbCounts = $thumb->getListThumbsCount();
+		}
+
 		$data[] = $this->writeComments($params, $comments);
 		$anonymous = $params->get('comment-internal-anonymous');
 
@@ -278,16 +279,15 @@ class PlgFabrik_FormComment extends PlgFabrik_Form
 		JText::script('PLG_FORM_COMMENT_PLEASE_ENTER_A_COMMENT_BEFORE_POSTING');
 		JText::script('PLG_FORM_COMMENT_PLEASE_ENTER_A_NAME_BEFORE_POSTING');
 		JText::script('PLG_FORM_COMMENT_ENTER_EMAIL_BEFORE_POSTNG');
-		$script = "window.addEvent('fabrik.loaded', function() {
-		var comments = new FabrikComment('fabrik-comments', $opts);";
+		$script = "var comments = new FabrikComment('fabrik-comments', $opts);";
 
-		if ($this->doDigg())
+		if ($this->doThumbs())
 		{
-			$script .= "\n comments.digg = new FbDiggTable(" . $this->formModel->getId() . ", $digopts);";
+			$jsfiles[] = 'plugins/fabrik_element/thumbs/list-thumbs.js';
+			$script .= "\n comments.thumbs = new FbThumbsList(" . $this->formModel->getId() . ", $thumbopts);";
 		}
 
-		$script .= "\n});";
-		FabrikHelperHTML::addScriptDeclaration($script);
+		FabrikHelperHTML::script($jsfiles, $script);
 		$this->data = implode("\n", $data);
 	}
 
@@ -589,29 +589,10 @@ class PlgFabrik_FormComment extends PlgFabrik_Form
 			$data[] = '</div>';
 		}
 
-		if ($this->doDigg())
-		{
-			$digg = $this->getDigg();
-			$digg->setEditable(true);
-			$digg->commentDigg = true;
-			$digg->commentId = $comment->id;
-
-			if ($input->get('listid') == '')
-			{
-				$input->set('listid', $this->getListId());
-			}
-
-			$input->set('commentId', $comment->id);
-			$id = 'digg_' . $comment->id;
-			$data[] = '<div id="' . $id . '" class="digg fabrik_row fabrik_row___' . $this->formModel->getId() . '">';
-			$data[] = $digg->render(array());
-			$data[] = '</div>';
-		}
-
 		$data[] = '</div>';
 		$data[] = '<div class="comment" id="comment-' . $comment->id . '">';
 		$data[] = '<div class="comment-content">' . $comment->comment . '</div>';
-		$this->commentActions($data);
+		$this->commentActions($data, $comment);
 		$data[] = '</div>';
 
 		if (!$this->commentsLocked)
@@ -630,8 +611,10 @@ class PlgFabrik_FormComment extends PlgFabrik_Form
 	 * @return  void
 	 */
 
-	protected function commentActions(&$data)
+	protected function commentActions(&$data, $comment)
 	{
+		$app = JFactory::getApplication();
+		$input = $app->input;
 		$user = JFactory::getUser();
 		$data[] = '<div class="reply">';
 
@@ -645,6 +628,13 @@ class PlgFabrik_FormComment extends PlgFabrik_Form
 			$data[] = '<a href="#" class="del-comment btn btn-danger btn-small">' . JText::_('PLG_FORM_COMMENT_DELETE') . '</a>';
 		}
 
+		if ($this->doThumbs())
+		{
+			$thumb = $this->getThumb();
+			$input->set('commentId', $comment->id);
+			$data[] = $thumb->render(array());
+		}
+
 		$data[] = '</div>';
 	}
 
@@ -656,23 +646,28 @@ class PlgFabrik_FormComment extends PlgFabrik_Form
 
 	protected function getListId()
 	{
-		return $this->formModel->getListModel()->getTable()->id;
+		return $this->getModel()->getListModel()->getId();
 	}
 
 	/**
-	 * Get digg element
+	 * Get thumb element
 	 *
-	 * @return  object	digg element
+	 * @return  object	Thumb element
 	 */
 
-	protected function getDigg()
+	protected function getThumb()
 	{
-		if (!isset($this->digg))
+		if (!isset($this->thumb))
 		{
-			$this->digg = FabrikWorker::getPluginManager()->getPlugIn('digg', 'element');
+			$this->thumb = FabrikWorker::getPluginManager()->getPlugIn('thumbs', 'element');
+			$this->thumb->setEditable(true);
+			$this->thumb->commentThumb = true;
+			$this->thumb->formid = $this->getModel()->getId();
+			$this->thumb->listid = $this->getListId();
+			$this->thumb->special = 'comments_' . $this->thumb->formid;
 		}
 
-		return $this->digg;
+		return $this->thumb;
 	}
 
 	/**
@@ -921,16 +916,16 @@ class PlgFabrik_FormComment extends PlgFabrik_Form
 	}
 
 	/**
-	 * Digg the comment
+	 * Thumb the comment
 	 *
 	 * @return boolean
 	 */
 
-	private function doDigg()
+	private function doThumbs()
 	{
 		$params = $this->getParams();
 
-		return $params->get('comment-digg') && FabrikWorker::getPluginManager()->pluginExists('element', 'digg');
+		return $params->get('comment-thumb') && FabrikWorker::getPluginManager()->pluginExists('element', 'thumbs');
 	}
 
 	/**

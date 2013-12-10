@@ -85,14 +85,14 @@ var FabrikComment = new Class({
 		// For update
 		this.spinner.hide();
 		this.watchInput();
-		this.updateDigg();
+		this.updateThumbs();
 	},
 
 	// ***************************//
 	// CAN THE LIST BE ADDED TO //
 	// ***************************//
 
-	watchInput : function () {
+	watchInput: function () {
 
 		this.ajax.addComment = new Request({
 			'url': 'index.php',
@@ -146,10 +146,10 @@ var FabrikComment = new Class({
 		}
 	},
 
-	updateDigg: function () {
-		if (typeOf(this.digg) !== 'null') {
-			this.digg.removeEvents();
-			this.digg.addEvents();
+	updateThumbs: function () {
+		if (typeOf(this.thumbs) !== 'null') {
+			this.thumbs.removeEvents();
+			this.thumbs.addEvents();
 		}
 	},
 
@@ -165,7 +165,7 @@ var FabrikComment = new Class({
 				this.currentLi = this.element.getElement('ul');
 			}
 		} else {
-			this.currentLi = replyform.findUp('li');
+			this.currentLi = replyform.getParent('li');
 		}
 
 		if (e.type === 'keydown') {
@@ -254,7 +254,7 @@ var FabrikComment = new Class({
 				commentform = a.getParent('.comment').getElement('.replyform');
 			}
 			if (typeOf(commentform) !== 'null') {
-				var li = a.getParent('.comment').findUp('li');
+				var li = a.getParent('.comment').getParent('li');
 				if (window.ie) {
 					fx = new Fx.Slide(commentform, 'opacity', {
 						duration : 5000
@@ -284,7 +284,7 @@ var FabrikComment = new Class({
 			a.addEvent('click', function (e) {
 				this.ajax.deleteComment.options.data.comment_id = e.target.getParent('.comment').id.replace('comment-', '');
 				this.ajax.deleteComment.send();
-				this.updateDigg();
+				this.updateThumbs();
 				e.stop();
 			}.bind(this));
 		}.bind(this));
