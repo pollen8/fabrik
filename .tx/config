@@ -1691,24 +1691,57 @@ trans.de-DE = plugins/fabrik_element/youtube/language/de-DE/de-DE.plg_fabrik_ele
 trans.es-ES = plugins/fabrik_element/youtube/language/es-ES/es-ES.plg_fabrik_element_youtube.sys.ini
 trans.et-EE = plugins/fabrik_element/youtube/language/et-EE/et-EE.plg_fabrik_element_youtube.sys.ini
 
+[fabrik.plg_form_alphauserpoints]
+file_filter = plugins/fabrik_form/alphauserpoints/language/<lang>/<lang>.plg_fabrik_form_alphauserpoints.ini
+source_file = plugins/fabrik_form/alphauserpoints/language/en-GB/en-GB.plg_fabrik_form_alphauserpoints.ini
+source_lang = en_GB
+
+[fabrik.plg_form_alphauserpoints_sys]
+file_filter = plugins/fabrik_form/alphauserpoints/language/<lang>/<lang>.plg_fabrik_form_alphauserpoints.sys.ini
+source_file = plugins/fabrik_form/alphauserpoints/language/en-GB/en-GB.plg_fabrik_form_alphauserpoints.sys.ini
+source_lang = en_GB
+
+[fabrik.plg_form_article]
+file_filter = plugins/fabrik_form/article/language/<lang>/<lang>.plg_fabrik_form_article.ini
+source_file = plugins/fabrik_form/article/language/en-GB/en-GB.plg_fabrik_form_article.ini
+source_lang = en_GB
+
+[fabrik.plg_form_article_sys]
+file_filter = plugins/fabrik_form/article/language/<lang>/<lang>.plg_fabrik_form_article.sys.ini
+source_file = plugins/fabrik_form/article/language/en-GB/en-GB.plg_fabrik_form_article.sys.ini
+source_lang = en_GB
+
 [fabrik.plg_form_autofill]
 file_filter = plugins/fabrik_form/autofill/language/<lang>/<lang>.plg_fabrik_form_autofill.ini
 source_file = plugins/fabrik_form/autofill/language/en-GB/en-GB.plg_fabrik_form_autofill.ini
 source_lang = en_GB
+trans.da-DK = plugins/fabrik_form/autofill/language/da-DK/da-DK.plg_fabrik_form_autofill.ini
 trans.de-DE = plugins/fabrik_form/autofill/language/de-DE/de-DE.plg_fabrik_form_autofill.ini
 trans.es-ES = plugins/fabrik_form/autofill/language/es-ES/es-ES.plg_fabrik_form_autofill.ini
 trans.et-EE = plugins/fabrik_form/autofill/language/et-EE/et-EE.plg_fabrik_form_autofill.ini
 trans.fr-FR = plugins/fabrik_form/autofill/language/fr-FR/fr-FR.plg_fabrik_form_autofill.ini
 trans.it-IT = plugins/fabrik_form/autofill/language/it-IT/it-IT.plg_fabrik_form_autofill.ini
+trans.my-MY = plugins/fabrik_form/autofill/language/my-MY/my-MY.plg_fabrik_form_autofill.ini
 trans.nl-NL = plugins/fabrik_form/autofill/language/nl-NL/nl-NL.plg_fabrik_form_autofill.ini
+trans.pl-PL = plugins/fabrik_form/autofill/language/pl-PL/pl-PL.plg_fabrik_form_autofill.ini
+trans.pt-BR = plugins/fabrik_form/autofill/language/pt-BR/pt-BR.plg_fabrik_form_autofill.ini
+trans.pt-PT = plugins/fabrik_form/autofill/language/pt-PT/pt-PT.plg_fabrik_form_autofill.ini
+trans.ro-RO = plugins/fabrik_form/autofill/language/ro-RO/ro-RO.plg_fabrik_form_autofill.ini
+trans.ru-RU = plugins/fabrik_form/autofill/language/ru-RU/ru-RU.plg_fabrik_form_autofill.ini
+trans.sk-SK = plugins/fabrik_form/autofill/language/sk-SK/sk-SK.plg_fabrik_form_autofill.ini
+trans.tr-TR = plugins/fabrik_form/autofill/language/tr-TR/tr-TR.plg_fabrik_form_autofill.ini
+trans.uk-UA = plugins/fabrik_form/autofill/language/uk-UA/uk-UA.plg_fabrik_form_autofill.ini
 
 [fabrik.plg_form_autofill_sys]
 file_filter = plugins/fabrik_form/autofill/language/<lang>/<lang>.plg_fabrik_form_autofill.sys.ini
 source_file = plugins/fabrik_form/autofill/language/en-GB/en-GB.plg_fabrik_form_autofill.sys.ini
 source_lang = en_GB
 trans.de-DE = plugins/fabrik_form/autofill/language/de-DE/de-DE.plg_fabrik_form_autofill.sys.ini
+trans.es-ES = plugins/fabrik_form/autofill/language/es-ES/es-ES.plg_fabrik_form_autofill.sys.ini
 trans.et-EE = plugins/fabrik_form/autofill/language/et-EE/et-EE.plg_fabrik_form_autofill.sys.ini
+trans.fr-FR = plugins/fabrik_form/autofill/language/fr-FR/fr-FR.plg_fabrik_form_autofill.sys.ini
 trans.it-IT = plugins/fabrik_form/autofill/language/it-IT/it-IT.plg_fabrik_form_autofill.sys.ini
+trans.nl-NL = plugins/fabrik_form/autofill/language/nl-NL/nl-NL.plg_fabrik_form_autofill.sys.ini
 
 [fabrik.plg_form_clone]
 file_filter = plugins/fabrik_form/clone/language/<lang>/<lang>.plg_fabrik_form_clone.ini
@@ -1724,6 +1757,7 @@ file_filter = plugins/fabrik_form/clone/language/<lang>/<lang>.plg_fabrik_form_c
 source_file = plugins/fabrik_form/clone/language/en-GB/en-GB.plg_fabrik_form_clone.sys.ini
 source_lang = en_GB
 trans.de-DE = plugins/fabrik_form/clone/language/de-DE/de-DE.plg_fabrik_form_clone.sys.ini
+trans.es-ES = plugins/fabrik_form/clone/language/es-ES/es-ES.plg_fabrik_form_clone.sys.ini
 trans.et-EE = plugins/fabrik_form/clone/language/et-EE/et-EE.plg_fabrik_form_clone.sys.ini
 trans.it-IT = plugins/fabrik_form/clone/language/it-IT/it-IT.plg_fabrik_form_clone.sys.ini
 
@@ -1731,17 +1765,30 @@ trans.it-IT = plugins/fabrik_form/clone/language/it-IT/it-IT.plg_fabrik_form_clo
 file_filter = plugins/fabrik_form/comment/language/<lang>/<lang>.plg_fabrik_form_comment.ini
 source_file = plugins/fabrik_form/comment/language/en-GB/en-GB.plg_fabrik_form_comment.ini
 source_lang = en_GB
+trans.da-DK = plugins/fabrik_form/comment/language/da-DK/da-DK.plg_fabrik_form_comment.ini
 trans.de-DE = plugins/fabrik_form/comment/language/de-DE/de-DE.plg_fabrik_form_comment.ini
+trans.el-GR = plugins/fabrik_form/comment/language/el-GR/el-GR.plg_fabrik_form_comment.ini
+trans.es-ES = plugins/fabrik_form/comment/language/es-ES/es-ES.plg_fabrik_form_comment.ini
 trans.et-EE = plugins/fabrik_form/comment/language/et-EE/et-EE.plg_fabrik_form_comment.ini
+trans.fr-FR = plugins/fabrik_form/comment/language/fr-FR/fr-FR.plg_fabrik_form_comment.ini
+trans.hi-IN = plugins/fabrik_form/comment/language/hi-IN/hi-IN.plg_fabrik_form_comment.ini
 trans.it-IT = plugins/fabrik_form/comment/language/it-IT/it-IT.plg_fabrik_form_comment.ini
+trans.lt-LT = plugins/fabrik_form/comment/language/lt-LT/lt-LT.plg_fabrik_form_comment.ini
+trans.nl-NL = plugins/fabrik_form/comment/language/nl-NL/nl-NL.plg_fabrik_form_comment.ini
+trans.pl-PL = plugins/fabrik_form/comment/language/pl-PL/pl-PL.plg_fabrik_form_comment.ini
+trans.pt-BR = plugins/fabrik_form/comment/language/pt-BR/pt-BR.plg_fabrik_form_comment.ini
+trans.pt-PT = plugins/fabrik_form/comment/language/pt-PT/pt-PT.plg_fabrik_form_comment.ini
+trans.ru-RU = plugins/fabrik_form/comment/language/ru-RU/ru-RU.plg_fabrik_form_comment.ini
+trans.sk-SK = plugins/fabrik_form/comment/language/sk-SK/sk-SK.plg_fabrik_form_comment.ini
+trans.tr-TR = plugins/fabrik_form/comment/language/tr-TR/tr-TR.plg_fabrik_form_comment.ini
 
 [fabrik.plg_form_comment_sys]
 file_filter = plugins/fabrik_form/comment/language/<lang>/<lang>.plg_fabrik_form_comment.sys.ini
 source_file = plugins/fabrik_form/comment/language/en-GB/en-GB.plg_fabrik_form_comment.sys.ini
 source_lang = en_GB
 trans.de-DE = plugins/fabrik_form/comment/language/de-DE/de-DE.plg_fabrik_form_comment.sys.ini
+trans.es-ES = plugins/fabrik_form/comment/language/es-ES/es-ES.plg_fabrik_form_comment.sys.ini
 trans.et-EE = plugins/fabrik_form/comment/language/et-EE/et-EE.plg_fabrik_form_comment.sys.ini
-trans.it-IT = plugins/fabrik_form/comment/language/it-IT/it-IT.plg_fabrik_form_comment.sys.ini
 
 [fabrik.plg_form_confirmation]
 file_filter = plugins/fabrik_form/confirmation/language/<lang>/<lang>.plg_fabrik_form_confirmation.ini
@@ -1749,6 +1796,7 @@ source_file = plugins/fabrik_form/confirmation/language/en-GB/en-GB.plg_fabrik_f
 source_lang = en_GB
 trans.da-DK = plugins/fabrik_form/confirmation/language/da-DK/da-DK.plg_fabrik_form_confirmation.ini
 trans.de-DE = plugins/fabrik_form/confirmation/language/de-DE/de-DE.plg_fabrik_form_confirmation.ini
+trans.el-GR = plugins/fabrik_form/confirmation/language/el-GR/el-GR.plg_fabrik_form_confirmation.ini
 trans.es-ES = plugins/fabrik_form/confirmation/language/es-ES/es-ES.plg_fabrik_form_confirmation.ini
 trans.et-EE = plugins/fabrik_form/confirmation/language/et-EE/et-EE.plg_fabrik_form_confirmation.ini
 trans.fr-FR = plugins/fabrik_form/confirmation/language/fr-FR/fr-FR.plg_fabrik_form_confirmation.ini
@@ -1760,28 +1808,37 @@ file_filter = plugins/fabrik_form/confirmation/language/<lang>/<lang>.plg_fabrik
 source_file = plugins/fabrik_form/confirmation/language/en-GB/en-GB.plg_fabrik_form_confirmation.sys.ini
 source_lang = en_GB
 trans.de-DE = plugins/fabrik_form/confirmation/language/de-DE/de-DE.plg_fabrik_form_confirmation.sys.ini
+trans.es-ES = plugins/fabrik_form/confirmation/language/es-ES/es-ES.plg_fabrik_form_confirmation.sys.ini
 trans.et-EE = plugins/fabrik_form/confirmation/language/et-EE/et-EE.plg_fabrik_form_confirmation.sys.ini
-trans.it-IT = plugins/fabrik_form/confirmation/language/it-IT/it-IT.plg_fabrik_form_confirmation.sys.ini
 
 [fabrik.plg_form_email]
 file_filter = plugins/fabrik_form/email/language/<lang>/<lang>.plg_fabrik_form_email.ini
 source_file = plugins/fabrik_form/email/language/en-GB/en-GB.plg_fabrik_form_email.ini
 source_lang = en_GB
+trans.da-DK = plugins/fabrik_form/email/language/da-DK/da-DK.plg_fabrik_form_email.ini
 trans.de-DE = plugins/fabrik_form/email/language/de-DE/de-DE.plg_fabrik_form_email.ini
 trans.el-GR = plugins/fabrik_form/email/language/el-GR/el-GR.plg_fabrik_form_email.ini
-trans.de-DE = plugins/fabrik_form/email/language/de-DE/de-DE.plg_fabrik_form_email.ini
+trans.eo-XX = plugins/fabrik_form/email/language/eo-XX/eo-XX.plg_fabrik_form_email.ini
 trans.es-ES = plugins/fabrik_form/email/language/es-ES/es-ES.plg_fabrik_form_email.ini
 trans.et-EE = plugins/fabrik_form/email/language/et-EE/et-EE.plg_fabrik_form_email.ini
 trans.fr-FR = plugins/fabrik_form/email/language/fr-FR/fr-FR.plg_fabrik_form_email.ini
 trans.it-IT = plugins/fabrik_form/email/language/it-IT/it-IT.plg_fabrik_form_email.ini
+trans.lt-LT = plugins/fabrik_form/email/language/lt-LT/lt-LT.plg_fabrik_form_email.ini
+trans.nl-NL = plugins/fabrik_form/email/language/nl-NL/nl-NL.plg_fabrik_form_email.ini
+trans.pl-PL = plugins/fabrik_form/email/language/pl-PL/pl-PL.plg_fabrik_form_email.ini
 trans.pt-BR = plugins/fabrik_form/email/language/pt-BR/pt-BR.plg_fabrik_form_email.ini
+trans.ro-RO = plugins/fabrik_form/email/language/ro-RO/ro-RO.plg_fabrik_form_email.ini
 trans.ru-RU = plugins/fabrik_form/email/language/ru-RU/ru-RU.plg_fabrik_form_email.ini
+trans.sk-SK = plugins/fabrik_form/email/language/sk-SK/sk-SK.plg_fabrik_form_email.ini
+trans.tr-TR = plugins/fabrik_form/email/language/tr-TR/tr-TR.plg_fabrik_form_email.ini
+trans.zh-TW = plugins/fabrik_form/email/language/zh-TW/zh-TW.plg_fabrik_form_email.ini
 
 [fabrik.plg_form_email_sys]
 file_filter = plugins/fabrik_form/email/language/<lang>/<lang>.plg_fabrik_form_email.sys.ini
 source_file = plugins/fabrik_form/email/language/en-GB/en-GB.plg_fabrik_form_email.sys.ini
 source_lang = en_GB
 trans.de-DE = plugins/fabrik_form/email/language/de-DE/de-DE.plg_fabrik_form_email.sys.ini
+trans.es-ES = plugins/fabrik_form/email/language/es-ES/es-ES.plg_fabrik_form_email.sys.ini
 trans.et-EE = plugins/fabrik_form/email/language/et-EE/et-EE.plg_fabrik_form_email.sys.ini
 trans.it-IT = plugins/fabrik_form/email/language/it-IT/it-IT.plg_fabrik_form_email.sys.ini
 
@@ -1790,25 +1847,34 @@ file_filter = plugins/fabrik_form/exif/language/<lang>/<lang>.plg_fabrik_form_ex
 source_file = plugins/fabrik_form/exif/language/en-GB/en-GB.plg_fabrik_form_exif.ini
 source_lang = en_GB
 trans.de-DE = plugins/fabrik_form/exif/language/de-DE/de-DE.plg_fabrik_form_exif.ini
+trans.es-ES = plugins/fabrik_form/exif/language/es-ES/es-ES.plg_fabrik_form_exif.ini
 trans.et-EE = plugins/fabrik_form/exif/language/et-EE/et-EE.plg_fabrik_form_exif.ini
-trans.it-IT = plugins/fabrik_form/exif/language/it-IT/it-IT.plg_fabrik_form_exif.ini
+trans.fr-FR = plugins/fabrik_form/exif/language/fr-FR/fr-FRplg_fabrik_form_exif.ini
 
 [fabrik.plg_form_exif_sys]
 file_filter = plugins/fabrik_form/exif/language/<lang>/<lang>.plg_fabrik_form_exif.sys.ini
 source_file = plugins/fabrik_form/exif/language/en-GB/en-GB.plg_fabrik_form_exif.sys.ini
 source_lang = en_GB
 trans.de-DE = plugins/fabrik_form/exif/language/de-DE/de-DE.plg_fabrik_form_exif.sys.ini
+trans.es-ES = plugins/fabrik_form/exif/language/es-ES/es-ES.plg_fabrik_form_exif.sys.ini
 trans.et-EE = plugins/fabrik_form/exif/language/et-EE/et-EE.plg_fabrik_form_exif.sys.ini
-trans.it-IT = plugins/fabrik_form/exif/language/it-IT/it-IT.plg_fabrik_form_exif.sys.ini
+
+fabrik.plg_form_dtp]
+file_filter = plugins/fabrik_form/ftp/language/<lang>/<lang>.plg_fabrik_form_ftp.sys.ini
+source_file = plugins/fabrik_form/ftp/language/en-GB/en-GB.plg_fabrik_form_ftp.sys.ini
+source_lang = en_GB
 
 [fabrik.plg_form_juser]
 file_filter = plugins/fabrik_form/juser/language/<lang>/<lang>.plg_fabrik_form_juser.ini
 source_file = plugins/fabrik_form/juser/language/en-GB/en-GB.plg_fabrik_form_juser.ini
 source_lang = en_GB
 trans.de-DE = plugins/fabrik_form/juser/language/de-DE/de-DE.plg_fabrik_form_juser.ini
+trans.el-GR = plugins/fabrik_form/juser/language/el-GR/el-GR.plg_fabrik_form_juser.ini
 trans.es-ES = plugins/fabrik_form/juser/language/es-ES/es-ES.plg_fabrik_form_juser.ini
 trans.et-EE = plugins/fabrik_form/juser/language/et-EE/et-EE.plg_fabrik_form_juser.ini
+trans.fr-FR = plugins/fabrik_form/juser/language/fr-FR/fr-FR.plg_fabrik_form_juser.ini
 trans.it-IT = plugins/fabrik_form/juser/language/it-IT/it-IT.plg_fabrik_form_juser.ini
+trans.pt-PT = plugins/fabrik_form/juser/language/pt-PT/pt-PT.plg_fabrik_form_juser.ini
 
 [fabrik.plg_form_juser_sys]
 file_filter = plugins/fabrik_form/juser/language/<lang>/<lang>.plg_fabrik_form_juser.sys.ini
@@ -1823,14 +1889,17 @@ file_filter = plugins/fabrik_form/kunena/language/<lang>/<lang>.plg_fabrik_form_
 source_file = plugins/fabrik_form/kunena/language/en-GB/en-GB.plg_fabrik_form_kunena.ini
 source_lang = en_GB
 trans.de-DE = plugins/fabrik_form/kunena/language/de-DE/de-DE.plg_fabrik_form_kunena.ini
+trans.es-ES = plugins/fabrik_form/kunena/language/es-ES/es-ES.plg_fabrik_form_kunena.ini
 trans.et-EE = plugins/fabrik_form/kunena/language/et-EE/et-EE.plg_fabrik_form_kunena.ini
-trans.it-IT = plugins/fabrik_form/kunena/language/it-IT/it-IT.plg_fabrik_form_kunena.ini
+trans.fr-FR = plugins/fabrik_form/kunena/language/fr-FR/fr-FR.plg_fabrik_form_kunena.ini
+trans.pt-PT = plugins/fabrik_form/kunena/language/pt-PT/pt-PT.plg_fabrik_form_kunena.ini
 
 [fabrik.plg_form_kunena_sys]
 file_filter = plugins/fabrik_form/kunena/language/<lang>/<lang>.plg_fabrik_form_kunena.sys.ini
 source_file = plugins/fabrik_form/kunena/language/en-GB/en-GB.plg_fabrik_form_kunena.sys.ini
 source_lang = en_GB
 trans.de-DE = plugins/fabrik_form/kunena/language/de-DE/de-DE.plg_fabrik_form_kunena.sys.ini
+trans.es-ES = plugins/fabrik_form/kunena/language/es-ES/es-ES.plg_fabrik_form_kunena.sys.ini
 trans.et-EE = plugins/fabrik_form/kunena/language/et-EE/et-EE.plg_fabrik_form_kunena.sys.ini
 trans.it-IT = plugins/fabrik_form/kunena/language/it-IT/it-IT.plg_fabrik_form_kunena.sys.ini
 
@@ -1838,35 +1907,64 @@ trans.it-IT = plugins/fabrik_form/kunena/language/it-IT/it-IT.plg_fabrik_form_ku
 file_filter = plugins/fabrik_form/limit/language/<lang>/<lang>.plg_fabrik_form_limit.ini
 source_file = plugins/fabrik_form/limit/language/en-GB/en-GB.plg_fabrik_form_limit.ini
 source_lang = en_GB
+trans.da-DK = plugins/fabrik_form/limit/language/da-DK/da-DK.plg_fabrik_form_limit.ini
 trans.de-DE = plugins/fabrik_form/limit/language/de-DE/de-DE.plg_fabrik_form_limit.ini
 trans.es-ES = plugins/fabrik_form/limit/language/es-ES/es-ES.plg_fabrik_form_limit.ini
 trans.et-EE = plugins/fabrik_form/limit/language/et-EE/et-EE.plg_fabrik_form_limit.ini
+trans.fr-FR = plugins/fabrik_form/limit/language/fr-FR/fr-FR.plg_fabrik_form_limit.ini
 trans.it-IT = plugins/fabrik_form/limit/language/it-IT/it-IT.plg_fabrik_form_limit.ini
+trans.ms-MY = plugins/fabrik_form/limit/language/ms-MY/ms-MY.plg_fabrik_form_limit.ini
+trans.nl-NL = plugins/fabrik_form/limit/language/nl-NL/nl-NL.plg_fabrik_form_limit.ini
+trans.pl-PL = plugins/fabrik_form/limit/language/pl-PL/pl-PL.plg_fabrik_form_limit.ini
+trans.pt-BR = plugins/fabrik_form/limit/language/pt-BR/pt-BR.plg_fabrik_form_limit.ini
+trans.pt-PT = plugins/fabrik_form/limit/language/pt-PT/pt-PT.plg_fabrik_form_limit.ini
+trans.ro-RO = plugins/fabrik_form/limit/language/ro-RO/ro-RO.plg_fabrik_form_limit.ini
+trans.ru-RU = plugins/fabrik_form/limit/language/ru-RU/ru-RU.plg_fabrik_form_limit.ini
+trans.sk-SK = plugins/fabrik_form/limit/language/sk-SK/sk-SK.plg_fabrik_form_limit.ini
+trans.tr-TR = plugins/fabrik_form/limit/language/tr-TR/tr-TR.plg_fabrik_form_limit.ini
 
 [fabrik.plg_form_limit_sys]
 file_filter = plugins/fabrik_form/limit/language/<lang>/<lang>.plg_fabrik_form_limit.sys.ini
 source_file = plugins/fabrik_form/limit/language/en-GB/en-GB.plg_fabrik_form_limit.sys.ini
 source_lang = en_GB
 trans.de-DE = plugins/fabrik_form/limit/language/de-DE/de-DE.plg_fabrik_form_limit.sys.ini
+trans.es-ES = plugins/fabrik_form/limit/language/es-ES/es-ES.plg_fabrik_form_limit.sys.ini
 trans.et-EE = plugins/fabrik_form/limit/language/et-EE/et-EE.plg_fabrik_form_limit.sys.ini
-trans.it-IT = plugins/fabrik_form/limit/language/it-IT/it-IT.plg_fabrik_form_limit.sys.ini
+
 
 [fabrik.plg_form_logs]
 file_filter = plugins/fabrik_form/logs/language/<lang>/<lang>.plg_fabrik_form_logs.ini
 source_file = plugins/fabrik_form/logs/language/en-GB/en-GB.plg_fabrik_form_logs.ini
 source_lang = en_GB
+trans.da-DK = plugins/fabrik_form/logs/language/da-DK/da-DK.plg_fabrik_form_logs.ini
 trans.de-DE = plugins/fabrik_form/logs/language/de-DE/de-DE.plg_fabrik_form_logs.ini
+trans.el-GR = plugins/fabrik_form/logs/language/el-GR/el-GR.plg_fabrik_form_logs.ini
+trans.eo-XX = plugins/fabrik_form/logs/language/eo-XX/eo-XX.plg_fabrik_form_logs.ini
 trans.es-ES = plugins/fabrik_form/logs/language/es-ES/es-ES.plg_fabrik_form_logs.ini
 trans.et-EE = plugins/fabrik_form/logs/language/et-EE/et-EE.plg_fabrik_form_logs.ini
-trans.fr-FR= plugins/fabrik_form/logs/language/fr-FR/fr-FR.plg_fabrik_form_logs.ini
+trans.fa-IR = plugins/fabrik_form/logs/language/fa-IR/fa-IR.plg_fabrik_form_logs.ini
+trans.fr-FR = plugins/fabrik_form/logs/language/fr-FR/fr-FR.plg_fabrik_form_logs.ini
+trans.hi-IN = plugins/fabrik_form/logs/language/hi-IN/hi-IN.plg_fabrik_form_logs.ini
 trans.it-IT = plugins/fabrik_form/logs/language/it-IT/it-IT.plg_fabrik_form_logs.ini
+trans.lt-LT = plugins/fabrik_form/logs/language/lt-LT/lt-LT.plg_fabrik_form_logs.ini
+trans.ms-MY = plugins/fabrik_form/logs/language/ms-MY/ms-MY.plg_fabrik_form_logs.ini
+trans.my-MM = plugins/fabrik_form/logs/language/my-MM/my-MM.plg_fabrik_form_logs.ini
+trans.nl-NL = plugins/fabrik_form/logs/language/nl-NL/nl-NL.plg_fabrik_form_logs.ini
+trans.pl-PL = plugins/fabrik_form/logs/language/pl-PL/pl-PL.plg_fabrik_form_logs.ini
 trans.pt-BR = plugins/fabrik_form/logs/language/pt-BR/pt-BR.plg_fabrik_form_logs.ini
+trans.pt-PT = plugins/fabrik_form/logs/language/pt-PT/pt-PT.plg_fabrik_form_logs.ini
+trans.ro-RO = plugins/fabrik_form/logs/language/ro-RO/ro-RO.plg_fabrik_form_logs.ini
+trans.ru-RU = plugins/fabrik_form/logs/language/ru-RU/ru-RU.plg_fabrik_form_logs.ini
+trans.sk-SK = plugins/fabrik_form/logs/language/sk-SK/sk-SK.plg_fabrik_form_logs.ini
+trans.tr-TR = plugins/fabrik_form/logs/language/tr-TR/tr-TR.plg_fabrik_form_logs.ini
+trans.zh-TW = plugins/fabrik_form/logs/language/zh-TW/zh-TW.plg_fabrik_form_logs.ini
 
 [fabrik.plg_form_logs_sys]
 file_filter = plugins/fabrik_form/logs/language/<lang>/<lang>.plg_fabrik_form_logs.sys.ini
 source_file = plugins/fabrik_form/logs/language/en-GB/en-GB.plg_fabrik_form_logs.sys.ini
 source_lang = en_GB
 trans.de-DE = plugins/fabrik_form/logs/language/de-DE/de-DE.plg_fabrik_form_logs.sys.ini
+trans.es-ES = plugins/fabrik_form/logs/language/es-ES/es-ES.plg_fabrik_form_logs.sys.ini
 trans.et-EE = plugins/fabrik_form/logs/language/et-EE/et-EE.plg_fabrik_form_logs.sys.ini
 trans.it-IT = plugins/fabrik_form/logs/language/it-IT/it-IT.plg_fabrik_form_logs.sys.ini
 
@@ -1875,66 +1973,99 @@ file_filter = plugins/fabrik_form/mailchimp/language/<lang>/<lang>.plg_fabrik_fo
 source_file = plugins/fabrik_form/mailchimp/language/en-GB/en-GB.plg_fabrik_form_mailchimp.ini
 source_lang = en_GB
 trans.de-DE = plugins/fabrik_form/mailchimp/language/de-DE/de-DE.plg_fabrik_form_mailchimp.ini
+trans.es-ES = plugins/fabrik_form/mailchimp/language/es-ES/es-ES.plg_fabrik_form_mailchimp.ini
 trans.et-EE = plugins/fabrik_form/mailchimp/language/et-EE/et-EE.plg_fabrik_form_mailchimp.ini
-trans.it-IT = plugins/fabrik_form/mailchimp/language/it-IT/it-IT.plg_fabrik_form_mailchimp.ini
+trans.fr-FR = plugins/fabrik_form/mailchimp/language/fr-FR/fr-FR.plg_fabrik_form_mailchimp.ini
+trans.pt-PT = plugins/fabrik_form/mailchimp/language/pt-PT/pt-PT.plg_fabrik_form_mailchimp.ini
 
 [fabrik.plg_form_mailchimp_sys]
 file_filter = plugins/fabrik_form/mailchimp/language/<lang>/<lang>.plg_fabrik_form_mailchimp.sys.ini
 source_file = plugins/fabrik_form/mailchimp/language/en-GB/en-GB.plg_fabrik_form_mailchimp.sys.ini
 source_lang = en_GB
 trans.de-DE = plugins/fabrik_form/mailchimp/language/de-DE/de-DE.plg_fabrik_form_mailchimp.sys.ini
+trans.es-ES = plugins/fabrik_form/mailchimp/language/es-ES/es-ES.plg_fabrik_form_mailchimp.sys.ini
 trans.et-EE = plugins/fabrik_form/mailchimp/language/et-EE/et-EE.plg_fabrik_form_mailchimp.sys.ini
-trans.it-IT = plugins/fabrik_form/mailchimp/language/it-IT/it-IT.plg_fabrik_form_mailchimp.sys.ini
 
 [fabrik.plg_form_notification]
 file_filter = plugins/fabrik_form/notification/language/<lang>/<lang>.plg_fabrik_form_notification.ini
 source_file = plugins/fabrik_form/notification/language/en-GB/en-GB.plg_fabrik_form_notification.ini
 source_lang = en_GB
 trans.de-DE = plugins/fabrik_form/notification/language/de-DE/de-DE.plg_fabrik_form_notification.ini
+trans.es-ES = plugins/fabrik_form/notification/language/es-ES/es-ES.plg_fabrik_form_notification.ini
 trans.et-EE = plugins/fabrik_form/notification/language/et-EE/et-EE.plg_fabrik_form_notification.ini
+trans.fr-FR = plugins/fabrik_form/notification/language/fr-FR/fr-FR.plg_fabrik_form_notification.ini
 trans.it-IT = plugins/fabrik_form/notification/language/it-IT/it-IT.plg_fabrik_form_notification.ini
+trans.nl-NL = plugins/fabrik_form/notification/language/nl-NL/nl-NL.plg_fabrik_form_notification.ini
+trans.pt-PT = plugins/fabrik_form/notification/language/pt-PT/pt-PT.plg_fabrik_form_notification.ini
 
 [fabrik.plg_form_notification_sys]
 file_filter = plugins/fabrik_form/notification/language/<lang>/<lang>.plg_fabrik_form_notification.sys.ini
 source_file = plugins/fabrik_form/notification/language/en-GB/en-GB.plg_fabrik_form_notification.sys.ini
 source_lang = en_GB
 trans.de-DE = plugins/fabrik_form/notification/language/de-DE/de-DE.plg_fabrik_form_notification.sys.ini
+trans.es-ES = plugins/fabrik_form/notification/language/es-ES/es-ES.plg_fabrik_form_notification.sys.ini
 trans.et-EE = plugins/fabrik_form/notification/language/et-EE/et-EE.plg_fabrik_form_notification.sys.ini
-trans.it-IT = plugins/fabrik_form/notification/language/it-IT/it-IT.plg_fabrik_form_notification.sys.ini
+
 
 [fabrik.plg_form_paginate]
 file_filter = plugins/fabrik_form/paginate/language/<lang>/<lang>.plg_fabrik_form_paginate.ini
 source_file = plugins/fabrik_form/paginate/language/en-GB/en-GB.plg_fabrik_form_paginate.ini
 source_lang = en_GB
+trans.da-DK = plugins/fabrik_form/paginate/language/da-DK/da-DK.plg_fabrik_form_paginate.ini
 trans.de-DE = plugins/fabrik_form/paginate/language/de-DE/de-DE.plg_fabrik_form_paginate.ini
+trans.el-GR = plugins/fabrik_form/paginate/language/el-GR/el-GR.plg_fabrik_form_paginate.ini
 trans.es-ES = plugins/fabrik_form/paginate/language/es-ES/es-ES.plg_fabrik_form_paginate.ini
 trans.et-EE = plugins/fabrik_form/paginate/language/et-EE/et-EE.plg_fabrik_form_paginate.ini
+trans.fr-FR = plugins/fabrik_form/paginate/language/fr-FR/fr-FR.plg_fabrik_form_paginate.ini
 trans.it-IT = plugins/fabrik_form/paginate/language/it-IT/it-IT.plg_fabrik_form_paginate.ini
+trans.lt-LT = plugins/fabrik_form/paginate/language/lt-LT/lt-LT.plg_fabrik_form_paginate.ini
+trans.ms-MY = plugins/fabrik_form/paginate/language/ms-MY/ms-MY.plg_fabrik_form_paginate.ini
+trans.nl-NL = plugins/fabrik_form/paginate/language/nl-NL/nl-NL.plg_fabrik_form_paginate.ini
+trans.pl-PL = plugins/fabrik_form/paginate/language/pl-PL/pl-PL.plg_fabrik_form_paginate.ini
+trans.pt-BR = plugins/fabrik_form/paginate/language/pt-BR/pt-BR.plg_fabrik_form_paginate.ini
+trans.pt-PT = plugins/fabrik_form/paginate/language/pt-PT/pt-PT.plg_fabrik_form_paginate.ini
+trans.ro-RO = plugins/fabrik_form/paginate/language/ro-RO/ro-RO.plg_fabrik_form_paginate.ini
+trans.ru-RU = plugins/fabrik_form/paginate/language/ru-RU/ru-RU.plg_fabrik_form_paginate.ini
+trans.sk-SK = plugins/fabrik_form/paginate/language/sk-SK/sk-SK.plg_fabrik_form_paginate.ini
+trans.tr-TR = plugins/fabrik_form/paginate/language/tr-TR/tr-TR.plg_fabrik_form_paginate.ini
 
 [fabrik.plg_form_paginate_sys]
 file_filter = plugins/fabrik_form/paginate/language/<lang>/<lang>.plg_fabrik_form_paginate.sys.ini
 source_file = plugins/fabrik_form/paginate/language/en-GB/en-GB.plg_fabrik_form_paginate.sys.ini
 source_lang = en_GB
 trans.de-DE = plugins/fabrik_form/paginate/language/de-DE/de-DE.plg_fabrik_form_paginate.sys.ini
+trans.es-ES = plugins/fabrik_form/paginate/language/es-ES/es-ES.plg_fabrik_form_paginate.sys.ini
 trans.et-EE = plugins/fabrik_form/paginate/language/et-EE/et-EE.plg_fabrik_form_paginate.sys.ini
-trans.it-IT = plugins/fabrik_form/paginate/language/it-IT/it-IT.plg_fabrik_form_paginate.sys.ini
 
 [fabrik.plg_form_paypal]
 file_filter = plugins/fabrik_form/paypal/language/<lang>/<lang>.plg_fabrik_form_paypal.ini
 source_file = plugins/fabrik_form/paypal/language/en-GB/en-GB.plg_fabrik_form_paypal.ini
 source_lang = en_GB
+trans.da-DK = plugins/fabrik_form/paypal/language/da-DK/da-DK.plg_fabrik_form_paypal.ini
 trans.de-DE = plugins/fabrik_form/paypal/language/de-DE/de-DE.plg_fabrik_form_paypal.ini
+trans.el-GR = plugins/fabrik_form/paypal/language/el-GR/el-GR.plg_fabrik_form_paypal.ini
+trans.eo-XX = plugins/fabrik_form/paypal/language/eo-XX/eo-XX.plg_fabrik_form_paypal.ini
 trans.es-ES = plugins/fabrik_form/paypal/language/es-ES/es-ES.plg_fabrik_form_paypal.ini
 trans.et-EE = plugins/fabrik_form/paypal/language/et-EE/et-EE.plg_fabrik_form_paypal.ini
 trans.it-IT = plugins/fabrik_form/paypal/language/it-IT/it-IT.plg_fabrik_form_paypal.ini
+trans.lt-LT = plugins/fabrik_form/paypal/language/lt-LT/lt-LT.plg_fabrik_form_paypal.ini
+trans.nl-NL = plugins/fabrik_form/paypal/language/nl-NL/nl-NL.plg_fabrik_form_paypal.ini
+trans.pl-PL = plugins/fabrik_form/paypal/language/pl-PL/pl-PL.plg_fabrik_form_paypal.ini
+trans.pt-BR = plugins/fabrik_form/paypal/language/pt-BR/pt-BR.plg_fabrik_form_paypal.ini
+trans.pt-PT = plugins/fabrik_form/paypal/language/pt-PT/pt-PT.plg_fabrik_form_paypal.ini
+trans.ro-RO = plugins/fabrik_form/paypal/language/ro-RO/ro-RO.plg_fabrik_form_paypal.ini
+trans.ru-RU = plugins/fabrik_form/paypal/language/ru-RU/ru-RU.plg_fabrik_form_paypal.ini
+trans.sk-SK = plugins/fabrik_form/paypal/language/sk-SK/sk-SK.plg_fabrik_form_paypal.ini
+trans.tr-TR = plugins/fabrik_form/paypal/language/tr-TR/tr-TR.plg_fabrik_form_paypal.ini
+trans.zh-TW = plugins/fabrik_form/paypal/language/zh-TW/zh-TW.plg_fabrik_form_paypal.ini
 
 [fabrik.plg_form_paypal_sys]
 file_filter = plugins/fabrik_form/paypal/language/<lang>/<lang>.plg_fabrik_form_paypal.sys.ini
 source_file = plugins/fabrik_form/paypal/language/en-GB/en-GB.plg_fabrik_form_paypal.sys.ini
 source_lang = en_GB
 trans.de-DE = plugins/fabrik_form/paypal/language/de-DE/de-DE.plg_fabrik_form_paypal.sys.ini
+trans.es-ES = plugins/fabrik_form/paypal/language/es-ES/es-ES.plg_fabrik_form_paypal.sys.ini
 trans.et-EE = plugins/fabrik_form/paypal/language/et-EE/et-EE.plg_fabrik_form_paypal.sys.ini
-trans.it-IT = plugins/fabrik_form/paypal/language/it-IT/it-IT.plg_fabrik_form_paypal.sys.ini
 
 [fabrik.plg_form_php]
 file_filter = plugins/fabrik_form/php/language/<lang>/<lang>.plg_fabrik_form_php.ini
@@ -1946,25 +2077,35 @@ trans.es-ES = plugins/fabrik_form/php/language/es-ES/es-ES.plg_fabrik_form_php.i
 trans.et-EE = plugins/fabrik_form/php/language/et-EE/et-EE.plg_fabrik_form_php.ini
 trans.fr-FR = plugins/fabrik_form/php/language/fr-FR/fr-FR.plg_fabrik_form_php.ini
 trans.it-IT = plugins/fabrik_form/php/language/it-IT/it-IT.plg_fabrik_form_php.ini
+trans.nl-NL = plugins/fabrik_form/php/language/nl-NL/nl-NL.plg_fabrik_form_php.ini
 trans.pt-BR = plugins/fabrik_form/php/language/pt-BR/pt-BR.plg_fabrik_form_php.ini
+trans.pt-PT = plugins/fabrik_form/php/language/pt-PT/pt-PT.plg_fabrik_form_php.ini
 
 [fabrik.plg_form_php_sys]
 file_filter = plugins/fabrik_form/php/language/<lang>/<lang>.plg_fabrik_form_php.sys.ini
 source_file = plugins/fabrik_form/php/language/en-GB/en-GB.plg_fabrik_form_php.sys.ini
 source_lang = en_GB
 trans.de-DE = plugins/fabrik_form/php/language/de-DE/de-DE.plg_fabrik_form_php.sys.ini
+trans.es-ES = plugins/fabrik_form/php/language/es-ES/es-ES.plg_fabrik_form_php.sys.ini
 trans.et-EE = plugins/fabrik_form/php/language/et-EE/et-EE.plg_fabrik_form_php.sys.ini
-trans.it-IT = plugins/fabrik_form/php/language/it-IT/it-IT.plg_fabrik_form_php.sys.ini
+trans.fr-FR = plugins/fabrik_form/php/language/fr-FR/fr-FR.plg_fabrik_form_php.sys.ini
 
 [fabrik.plg_form_receipt]
 file_filter = plugins/fabrik_form/receipt/language/<lang>/<lang>.plg_fabrik_form_receipt.ini
 source_file = plugins/fabrik_form/receipt/language/en-GB/en-GB.plg_fabrik_form_receipt.ini
 source_lang = en_GB
+trans.da-DK = plugins/fabrik_form/receipt/language/da-DK/da-DK.plg_fabrik_form_receipt.ini
 trans.de-DE = plugins/fabrik_form/receipt/language/de-DE/de-DE.plg_fabrik_form_receipt.ini
+trans.eo-XX = plugins/fabrik_form/receipt/language/eo-XX/eo-XX.plg_fabrik_form_receipt.ini
+trans.es-ES = plugins/fabrik_form/receipt/language/es-ES/es-ES.plg_fabrik_form_receipt.ini
 trans.et-EE = plugins/fabrik_form/receipt/language/et-EE/et-EE.plg_fabrik_form_receipt.ini
 trans.fr-FR = plugins/fabrik_form/receipt/language/fr-FR/fr-FR.plg_fabrik_form_receipt.ini
+trans.nl-NL = plugins/fabrik_form/receipt/language/nl-NL/nl-NL.plg_fabrik_form_receipt.ini
+trans.pl-PL = plugins/fabrik_form/receipt/language/pl-PL/pl-PL.plg_fabrik_form_receipt.ini
 trans.pt-BR = plugins/fabrik_form/receipt/language/pt-BR/pt-BR.plg_fabrik_form_receipt.ini
-trans.it-IT = plugins/fabrik_form/receipt/language/it-IT/it-IT.plg_fabrik_form_receipt.ini
+trans.pt-PT = plugins/fabrik_form/receipt/language/pt-PT/pt-PT.plg_fabrik_form_receipt.ini
+trans.sk-SK = plugins/fabrik_form/receipt/language/sk-SK/sk-SK.plg_fabrik_form_receipt.ini
+trans.zh-TW = plugins/fabrik_form/receipt/language/zh-TW/zh-TW.plg_fabrik_form_receipt.ini
 
 [fabrik.plg_form_receipt_sys]
 file_filter = plugins/fabrik_form/receipt/language/<lang>/<lang>.plg_fabrik_form_receipt.sys.ini
@@ -1978,120 +2119,209 @@ trans.it-IT = plugins/fabrik_form/receipt/language/it-IT/it-IT.plg_fabrik_form_r
 file_filter = plugins/fabrik_form/redirect/language/<lang>/<lang>.plg_fabrik_form_redirect.ini
 source_file = plugins/fabrik_form/redirect/language/en-GB/en-GB.plg_fabrik_form_redirect.ini
 source_lang = en_GB
+trans.da-DK = plugins/fabrik_form/redirect/language/da-DK/da-DK.plg_fabrik_form_redirect.ini
 trans.de-DE = plugins/fabrik_form/redirect/language/de-DE/de-DE.plg_fabrik_form_redirect.ini
+trans.el-GR = plugins/fabrik_form/redirect/language/el-GR/el-GR.plg_fabrik_form_redirect.ini
+trans.eo-XX = plugins/fabrik_form/redirect/language/eo-XX/eo-XX.plg_fabrik_form_redirect.ini
 trans.es-ES = plugins/fabrik_form/redirect/language/es-ES/es-ES.plg_fabrik_form_redirect.ini
 trans.et-EE = plugins/fabrik_form/redirect/language/et-EE/et-EE.plg_fabrik_form_redirect.ini
 trans.fr-FR = plugins/fabrik_form/redirect/language/fr-FR/fr-FR.plg_fabrik_form_redirect.ini
-trans.pt-BR = plugins/fabrik_form/redirect/language/pt-BR/pt-BR.plg_fabrik_form_redirect.ini
 trans.it-IT = plugins/fabrik_form/redirect/language/it-IT/it-IT.plg_fabrik_form_redirect.ini
+trans.lt-LT = plugins/fabrik_form/redirect/language/lt-LT/lt-LT.plg_fabrik_form_redirect.ini
+trans.nl-NL = plugins/fabrik_form/redirect/language/nl-NL/nl-NL.plg_fabrik_form_redirect.ini
+trans.pl-PL = plugins/fabrik_form/redirect/language/pl-PL/pl-PL.plg_fabrik_form_redirect.ini
+trans.pt-BR = plugins/fabrik_form/redirect/language/pt-BR/pt-BR.plg_fabrik_form_redirect.ini
+trans.pt-PT = plugins/fabrik_form/redirect/language/pt-PT/pt-PT.plg_fabrik_form_redirect.ini
+trans.ro-RO = plugins/fabrik_form/redirect/language/ro-RO/ro-RO.plg_fabrik_form_redirect.ini
+trans.ru-RU = plugins/fabrik_form/redirect/language/ru-RU/ru-RU.plg_fabrik_form_redirect.ini
+trans.sk-SK = plugins/fabrik_form/redirect/language/sk-SK/sk-SK.plg_fabrik_form_redirect.ini
+trans.tr-TR = plugins/fabrik_form/redirect/language/tr-TR/tr-TR.plg_fabrik_form_redirect.ini
+trans.zh-TW = plugins/fabrik_form/redirect/language/zh-TW/zh-TW.plg_fabrik_form_redirect.ini
 
 [fabrik.plg_form_redirect_sys]
 file_filter = plugins/fabrik_form/redirect/language/<lang>/<lang>.plg_fabrik_form_redirect.sys.ini
 source_file = plugins/fabrik_form/redirect/language/en-GB/en-GB.plg_fabrik_form_redirect.sys.ini
 source_lang = en_GB
 trans.de-DE = plugins/fabrik_form/redirect/language/de-DE/de-DE.plg_fabrik_form_redirect.sys.ini
+trans.es-ES = plugins/fabrik_form/redirect/language/es-ES/es-ES.plg_fabrik_form_redirect.sys.ini
 trans.et-EE = plugins/fabrik_form/redirect/language/et-EE/et-EE.plg_fabrik_form_redirect.sys.ini
-trans.it-IT = plugins/fabrik_form/redirect/language/it-IT/it-IT.plg_fabrik_form_redirect.sys.ini
 
 [fabrik.plg_form_rest]
 file_filter = plugins/fabrik_form/rest/language/<lang>/<lang>.plg_fabrik_form_rest.ini
 source_file = plugins/fabrik_form/rest/language/en-GB/en-GB.plg_fabrik_form_rest.ini
 source_lang = en_GB
+trans.da-DK = plugins/fabrik_form/rest/language/da-DK/da-DK.plg_fabrik_form_rest.ini
 trans.de-DE = plugins/fabrik_form/rest/language/de-DE/de-DE.plg_fabrik_form_rest.ini
+trans.el-GR = plugins/fabrik_form/rest/language/el-GR/el-GR.plg_fabrik_form_rest.ini
+trans.eo-XX = plugins/fabrik_form/rest/language/eo-XX/eo-XX.plg_fabrik_form_rest.ini
 trans.es-ES = plugins/fabrik_form/rest/language/es-ES/es-ES.plg_fabrik_form_rest.ini
 trans.et-EE = plugins/fabrik_form/rest/language/et-EE/et-EE.plg_fabrik_form_rest.ini
+trans.fr-FR = plugins/fabrik_form/rest/language/fr-FR/fr-FR.plg_fabrik_form_rest.ini
+trans.hi-IN = plugins/fabrik_form/rest/language/hi-IN/hi-IN.plg_fabrik_form_rest.ini
 trans.it-IT = plugins/fabrik_form/rest/language/it-IT/it-IT.plg_fabrik_form_rest.ini
+trans.ja-JP = plugins/fabrik_form/rest/language/ja-JP/ja-JP.plg_fabrik_form_rest.ini
+trans.ms-MY = plugins/fabrik_form/rest/language/ms-MY/ms-MY.plg_fabrik_form_rest.ini
+trans.nl-NL = plugins/fabrik_form/rest/language/nl-NL/nl-NL.plg_fabrik_form_rest.ini
+trans.pl-PL = plugins/fabrik_form/rest/language/pl-PL/pl-PL.plg_fabrik_form_rest.ini
+trans.pt-BR = plugins/fabrik_form/rest/language/pt-BR/pt-BR.plg_fabrik_form_rest.ini
+trans.pt-PT = plugins/fabrik_form/rest/language/pt-PT/pt-PT.plg_fabrik_form_rest.ini
+trans.ro-RO = plugins/fabrik_form/rest/language/ro-RO/ro-RO.plg_fabrik_form_rest.ini
+trans.ru-RU = plugins/fabrik_form/rest/language/ru-RU/ru-RU.plg_fabrik_form_rest.ini
+trans.sk-SK = plugins/fabrik_form/rest/language/sk-SK/sk-SK.plg_fabrik_form_rest.ini
+trans.uk-UA = plugins/fabrik_form/rest/language/uk-UA/uk-UA.plg_fabrik_form_rest.ini
+trans.zh-TW = plugins/fabrik_form/rest/language/zh-TW/zh-TW.plg_fabrik_form_rest.ini
+
 
 [fabrik.plg_form_rest_sys]
 file_filter = plugins/fabrik_form/rest/language/<lang>/<lang>.plg_fabrik_form_rest.sys.ini
 source_file = plugins/fabrik_form/rest/language/en-GB/en-GB.plg_fabrik_form_rest.sys.ini
 source_lang = en_GB
 trans.de-DE = plugins/fabrik_form/rest/language/de-DE/de-DE.plg_fabrik_form_rest.sys.ini
+trans.es-ES = plugins/fabrik_form/rest/language/es-ES/es-ES.plg_fabrik_form_rest.sys.ini
 trans.et-EE = plugins/fabrik_form/rest/language/et-EE/et-EE.plg_fabrik_form_rest.sys.ini
-trans.it-IT = plugins/fabrik_form/rest/language/it-IT/it-IT.plg_fabrik_form_rest.sys.ini
+trans.fr-FR = plugins/fabrik_form/rest/language/fr-FR/fr-FR.plg_fabrik_form_rest.sys.ini
+trans.ru-RU = plugins/fabrik_form/rest/language/ru-RU/ru-RU.plg_fabrik_form_rest.sys.ini
 
 [fabrik.plg_form_salesforce]
 file_filter = plugins/fabrik_form/salesforce/language/<lang>/<lang>.plg_fabrik_form_salesforce.ini
 source_file = plugins/fabrik_form/salesforce/language/en-GB/en-GB.plg_fabrik_form_salesforce.ini
 source_lang = en_GB
+trans.da-DK = plugins/fabrik_form/salesforce/language/da-DK/da-DK.plg_fabrik_form_salesforce.ini
 trans.de-DE = plugins/fabrik_form/salesforce/language/de-DE/de-DE.plg_fabrik_form_salesforce.ini
+trans.es-ES = plugins/fabrik_form/salesforce/language/es-ES/es-ES.plg_fabrik_form_salesforce.ini
 trans.et-EE = plugins/fabrik_form/salesforce/language/et-EE/et-EE.plg_fabrik_form_salesforce.ini
-trans.it-IT = plugins/fabrik_form/salesforce/language/it-IT/it-IT.plg_fabrik_form_salesforce.ini
+trans.fr-FR = plugins/fabrik_form/salesforce/language/fr-FR/fr-FR.plg_fabrik_form_salesforce.ini
+trans.hi-IN = plugins/fabrik_form/salesforce/language/hi-IN/hi-IN.plg_fabrik_form_salesforce.ini
+trans.nl-NL = plugins/fabrik_form/salesforce/language/nl-NL/nl-NL.plg_fabrik_form_salesforce.ini
+trans.pl-PL = plugins/fabrik_form/salesforce/language/pl-PL/pl-PL.plg_fabrik_form_salesforce.ini
+trans.pt-BR = plugins/fabrik_form/salesforce/language/pt-BR/pt-BR.plg_fabrik_form_salesforce.ini
+trans.pt-PT = plugins/fabrik_form/salesforce/language/pt-PT/pt-PT.plg_fabrik_form_salesforce.ini
+trans.ru-RU = plugins/fabrik_form/salesforce/language/ru-RU/ru-RU.plg_fabrik_form_salesforce.ini
+trans.sk-SK = plugins/fabrik_form/salesforce/language/sk-SK/sk-SK.plg_fabrik_form_salesforce.ini
+trans.tr-TR = plugins/fabrik_form/salesforce/language/tr-TR/tr-TR.plg_fabrik_form_salesforce.ini
 
 [fabrik.plg_form_salesforce_sys]
 file_filter = plugins/fabrik_form/salesforce/language/<lang>/<lang>.plg_fabrik_form_salesforce.sys.ini
 source_file = plugins/fabrik_form/salesforce/language/en-GB/en-GB.plg_fabrik_form_salesforce.sys.ini
 source_lang = en_GB
 trans.de-DE = plugins/fabrik_form/salesforce/language/de-DE/de-DE.plg_fabrik_form_salesforce.sys.ini
+trans.es-ES = plugins/fabrik_form/salesforce/language/es-ES/es-ES.plg_fabrik_form_salesforce.sys.ini
 trans.et-EE = plugins/fabrik_form/salesforce/language/et-EE/et-EE.plg_fabrik_form_salesforce.sys.ini
-trans.it-IT = plugins/fabrik_form/salesforce/language/it-IT/it-IT.plg_fabrik_form_salesforce.sys.ini
+trans.fr-FR = plugins/fabrik_form/salesforce/language/fr-FR/fr-FR.plg_fabrik_form_salesforce.sys.ini
+
 
 [fabrik.plg_form_sms]
 file_filter = plugins/fabrik_form/sms/language/<lang>/<lang>.plg_fabrik_form_sms.ini
 source_file = plugins/fabrik_form/sms/language/en-GB/en-GB.plg_fabrik_form_sms.ini
 source_lang = en_GB
+trans.da-DK = plugins/fabrik_form/sms/language/da-DK/da-DK.plg_fabrik_form_sms.ini
 trans.de-DE = plugins/fabrik_form/sms/language/de-DE/de-DE.plg_fabrik_form_sms.ini
 trans.es-ES = plugins/fabrik_form/sms/language/es-ES/es-ES.plg_fabrik_form_sms.ini
 trans.et-EE = plugins/fabrik_form/sms/language/et-EE/et-EE.plg_fabrik_form_sms.ini
+trans.fr-FR = plugins/fabrik_form/sms/language/fr-FR/fr-FR.plg_fabrik_form_sms.ini
+trans.hi-IN = plugins/fabrik_form/sms/language/hi-IN/hi-IN.plg_fabrik_form_sms.ini
 trans.it-IT = plugins/fabrik_form/sms/language/it-IT/it-IT.plg_fabrik_form_sms.ini
+trans.nl-NL = plugins/fabrik_form/sms/language/nl-NL/nl-NL.plg_fabrik_form_sms.ini
+trans.pl-PL = plugins/fabrik_form/sms/language/pl-PL/pl-PL.plg_fabrik_form_sms.ini
+trans.pt-BR = plugins/fabrik_form/sms/language/pt-BR/pt-BR.plg_fabrik_form_sms.ini
+trans.pt-PT = plugins/fabrik_form/sms/language/pt-PT/pt-PT.plg_fabrik_form_sms.ini
+trans.ro-RO = plugins/fabrik_form/sms/language/ro-RO/ro-RO.plg_fabrik_form_sms.ini
+trans.ru-RU = plugins/fabrik_form/sms/language/ru-RU/ru-RU.plg_fabrik_form_sms.ini
+trans.sk-SK = plugins/fabrik_form/sms/language/sk-SK/sk-SK.plg_fabrik_form_sms.ini
+trans.tr-TR = plugins/fabrik_form/sms/language/tr-TR/tr-TR.plg_fabrik_form_sms.ini
 
 [fabrik.plg_form_sms_sys]
 file_filter = plugins/fabrik_form/sms/language/<lang>/<lang>.plg_fabrik_form_sms.sys.ini
 source_file = plugins/fabrik_form/sms/language/en-GB/en-GB.plg_fabrik_form_sms.sys.ini
 source_lang = en_GB
 trans.de-DE = plugins/fabrik_form/sms/language/de-DE/de-DE.plg_fabrik_form_sms.sys.ini
+trans.es-ES = plugins/fabrik_form/sms/language/es-ES/es-ES.plg_fabrik_form_sms.sys.ini
 trans.et-EE = plugins/fabrik_form/sms/language/et-EE/et-EE.plg_fabrik_form_sms.sys.ini
-trans.it-IT = plugins/fabrik_form/sms/language/it-IT/it-IT.plg_fabrik_form_sms.sys.ini
+trans.fr-FR = plugins/fabrik_form/sms/language/fr-FR/fr-FR.plg_fabrik_form_sms.sys.ini
 
 [fabrik.plg_form_subscriptions]
 file_filter = plugins/fabrik_form/subscriptions/language/<lang>/<lang>.plg_fabrik_form_subscriptions.ini
 source_file = plugins/fabrik_form/subscriptions/language/en-GB/en-GB.plg_fabrik_form_subscriptions.ini
 source_lang = en_GB
+trans.da-DK = plugins/fabrik_form/subscriptions/language/da-DK/da-DK.plg_fabrik_form_subscriptions.ini
 trans.de-DE = plugins/fabrik_form/subscriptions/language/de-DE/de-DE.plg_fabrik_form_subscriptions.ini
+trans.el-GR = plugins/fabrik_form/subscriptions/language/el-GR/el-GR.plg_fabrik_form_subscriptions.ini
+trans.eo-XX = plugins/fabrik_form/subscriptions/language/eo-XX/eo-XX.plg_fabrik_form_subscriptions.ini
 trans.es-ES = plugins/fabrik_form/subscriptions/language/es-ES/es-ES.plg_fabrik_form_subscriptions.ini
 trans.et-EE = plugins/fabrik_form/subscriptions/language/et-EE/et-EE.plg_fabrik_form_subscriptions.ini
+trans.fr-FR = plugins/fabrik_form/subscriptions/language/fr-FR/fr-FR.plg_fabrik_form_subscriptions.ini
 trans.it-IT = plugins/fabrik_form/subscriptions/language/it-IT/it-IT.plg_fabrik_form_subscriptions.ini
+trans.lt-LT = plugins/fabrik_form/subscriptions/language/lt-LT/lt-LT.plg_fabrik_form_subscriptions.ini
+trans.nl-NL = plugins/fabrik_form/subscriptions/language/nl-NL/nl-NL.plg_fabrik_form_subscriptions.ini
+trans.pl-PL = plugins/fabrik_form/subscriptions/language/pl-PL/pl-PL.plg_fabrik_form_subscriptions.ini
+trans.pt-BR = plugins/fabrik_form/subscriptions/language/pt-BR/pt-BR.plg_fabrik_form_subscriptions.ini
+trans.pt-PT = plugins/fabrik_form/subscriptions/language/pt-PT/pt-PT.plg_fabrik_form_subscriptions.ini
+trans.ro-RO = plugins/fabrik_form/subscriptions/language/ro-RO/ro-RO.plg_fabrik_form_subscriptions.ini
+trans.ru-RU = plugins/fabrik_form/subscriptions/language/ru-RU/ru-RU.plg_fabrik_form_subscriptions.ini
+trans.sk-SK = plugins/fabrik_form/subscriptions/language/sk-SK/sk-SK.plg_fabrik_form_subscriptions.ini
+trans.tr-TR = plugins/fabrik_form/subscriptions/language/tr-TR/tr-TR.plg_fabrik_form_subscriptions.ini
+trans.zh-TW = plugins/fabrik_form/subscriptions/language/zh-TW/zh-TW.plg_fabrik_form_subscriptions.ini
 
 [fabrik.plg_form_subscriptions_sys]
 file_filter = plugins/fabrik_form/subscriptions/language/<lang>/<lang>.plg_fabrik_form_subscriptions.sys.ini
 source_file = plugins/fabrik_form/subscriptions/language/en-GB/en-GB.plg_fabrik_form_subscriptions.sys.ini
 source_lang = en_GB
 trans.de-DE = plugins/fabrik_form/subscriptions/language/de-DE/de-DE.plg_fabrik_form_subscriptions.sys.ini
+trans.es-ES = plugins/fabrik_form/subscriptions/language/es-ES/es-ES.plg_fabrik_form_subscriptions.sys.ini
 trans.et-EE = plugins/fabrik_form/subscriptions/language/et-EE/et-EE.plg_fabrik_form_subscriptions.sys.ini
-trans.it-IT = plugins/fabrik_form/subscriptions/language/it-IT/it-IT.plg_fabrik_form_subscriptions.sys.ini
+trans.fr-FR = plugins/fabrik_form/subscriptions/language/fr-FR/fr-FR.plg_fabrik_form_subscriptions.sys.ini
 
 [fabrik.plg_form_twitter]
 file_filter = plugins/fabrik_form/twitter/language/<lang>/<lang>.plg_fabrik_form_twitter.ini
 source_file = plugins/fabrik_form/twitter/language/en-GB/en-GB.plg_fabrik_form_twitter.ini
 source_lang = en_GB
-trans.de-DE= plugins/fabrik_form/twitter/language/de-DE/de-DE.plg_fabrik_form_twitter.ini
+trans.da-DK = plugins/fabrik_form/twitter/language/da-DK/da-DK.plg_fabrik_form_twitter.ini
+trans.de-DE = plugins/fabrik_form/twitter/language/de-DE/de-DE.plg_fabrik_form_twitter.ini
 trans.es-ES = plugins/fabrik_form/twitter/language/es-ES/es-ES.plg_fabrik_form_twitter.ini
 trans.et-EE = plugins/fabrik_form/twitter/language/et-EE/et-EE.plg_fabrik_form_twitter.ini
+trans.fr-FR = plugins/fabrik_form/twitter/language/fr-FR/fr-FR.plg_fabrik_form_twitter.ini
 trans.it-IT = plugins/fabrik_form/twitter/language/it-IT/it-IT.plg_fabrik_form_twitter.ini
+trans.nl-NL = plugins/fabrik_form/twitter/language/nl-NL/nl-NL.plg_fabrik_form_twitter.ini
+trans.pt-BR = plugins/fabrik_form/twitter/language/pt-BR/pt-BR.plg_fabrik_form_twitter.ini
+trans.pt-PT = plugins/fabrik_form/twitter/language/pt-PT/pt-PT.plg_fabrik_form_twitter.ini
+trans.ru-RU = plugins/fabrik_form/twitter/language/ru-RU/ru-RU.plg_fabrik_form_twitter.ini
+trans.sk-SK = plugins/fabrik_form/twitter/language/sk-SK/sk-SK.plg_fabrik_form_twitter.ini
+trans.tr-TR = plugins/fabrik_form/twitter/language/tr-TR/tr-TR.plg_fabrik_form_twitter.ini
 
 [fabrik.plg_form_twitter_sys]
 file_filter = plugins/fabrik_form/twitter/language/<lang>/<lang>.plg_fabrik_form_twitter.sys.ini
 source_file = plugins/fabrik_form/twitter/language/en-GB/en-GB.plg_fabrik_form_twitter.sys.ini
 source_lang = en_GB
 trans.de-DE = plugins/fabrik_form/twitter/language/de-DE/de-DE.plg_fabrik_form_twitter.sys.ini
+trans.es-ES = plugins/fabrik_form/twitter/language/es-ES/es-ES.plg_fabrik_form_twitter.sys.ini
 trans.et-EE = plugins/fabrik_form/twitter/language/et-EE/et-EE.plg_fabrik_form_twitter.sys.ini
-trans.it-IT = plugins/fabrik_form/twitter/language/it-IT/it-IT.plg_fabrik_form_twitter.sys.ini
+
+[fabrik.plg_form_upsert]
+file_filter = plugins/fabrik_form/upsert/language/<lang>/<lang>.plg_fabrik_form_upsert.ini
+source_file = plugins/fabrik_form/upsert/language/en-GB/en-GB.plg_fabrik_form_upsert.ini
+source_lang = en_GB
 
 [fabrik.plg_form_vbforum]
 file_filter = plugins/fabrik_form/vbforum/language/<lang>/<lang>.plg_fabrik_form_vbforum.ini
 source_file = plugins/fabrik_form/vbforum/language/en-GB/en-GB.plg_fabrik_form_vbforum.ini
 source_lang = en_GB
+trans.da-DK = plugins/fabrik_form/vbforum/language/da-DK/da-DK.plg_fabrik_form_vbforum.ini
 trans.de-DE = plugins/fabrik_form/vbforum/language/de-DE/de-DE.plg_fabrik_form_vbforum.ini
+trans.es-ES = plugins/fabrik_form/vbforum/language/es-ES/es-ES.plg_fabrik_form_vbforum.ini
 trans.et-EE = plugins/fabrik_form/vbforum/language/et-EE/et-EE.plg_fabrik_form_vbforum.ini
-trans.it-IT = plugins/fabrik_form/vbforum/language/it-IT/it-IT.plg_fabrik_form_vbforum.ini
+trans.fr-FR = plugins/fabrik_form/vbforum/language/fr-FR/fr-FR.plg_fabrik_form_vbforum.ini
+trans.pt-BR = plugins/fabrik_form/vbforum/language/pt-BR/pt-BR.plg_fabrik_form_vbforum.ini
+trans.ru-RU = plugins/fabrik_form/vbforum/language/ru-RU/ru-RU.plg_fabrik_form_vbforum.ini
+trans.tr-TR = plugins/fabrik_form/vbforum/language/tr-TR/tr-TR.plg_fabrik_form_vbforum.ini
 
 [fabrik.plg_form_vbforum_sys]
 file_filter = plugins/fabrik_form/vbforum/language/<lang>/<lang>.plg_fabrik_form_vbforum.sys.ini
 source_file = plugins/fabrik_form/vbforum/language/en-GB/en-GB.plg_fabrik_form_vbforum.sys.ini
 source_lang = en_GB
 trans.de-DE = plugins/fabrik_form/vbforum/language/de-DE/de-DE.plg_fabrik_form_vbforum.sys.ini
+trans.es-ES = plugins/fabrik_form/vbforum/language/es-ES/es-ES.plg_fabrik_form_vbforum.sys.ini
 trans.et-EE = plugins/fabrik_form/vbforum/language/et-EE/et-EE.plg_fabrik_form_vbforum.sys.ini
-trans.it-IT = plugins/fabrik_form/vbforum/language/it-IT/it-IT.plg_fabrik_form_vbforum.sys.ini
+trans.fr-FR = plugins/fabrik_form/vbforum/language/fr-FR/fr-FR.plg_fabrik_form_vbforum.sys.ini
 
 [fabrik.plg_list_article]
 file_filter = plugins/fabrik_list/article/language/<lang>/<lang>.plg_fabrik_list_caneditrow.ini
