@@ -61,13 +61,7 @@ class PlgFabrik_ElementUsergroup extends PlgFabrik_ElementList
 		$params = $this->getParams();
 
 		$formModel = $this->getFormModel();
-		$userEl = $formModel->getElement($params->get('user_element'), true);
-		if ($userEl)
-		{
-			$data = $formModel->getData();
-			$userid = JArrayHelper::getValue($data, $userEl->getFullName(false, true, false) . '_raw', 0);
-			$thisUser = JFactory::getUser($userid);
-		}
+
 		$selected = $this->getValue($data, $repeatCounter);
 		if ($this->isEditable())
 		{
@@ -75,9 +69,14 @@ class PlgFabrik_ElementUsergroup extends PlgFabrik_ElementList
 		}
 		else
 		{
+			$userEl = $formModel->getElement($params->get('user_element'), true);
 			if ($userEl)
 			{
-				$selected = $thisUser->groups;
+				$data = $formModel->getData();
+				$userid = JArrayHelper::getValue($data, $userEl->getFullName(false, true, false) . '_raw', 0);
+				//$thisUser = JFactory::getUser($userid);
+				//$selected = $thisUser->groups;
+				$selected = JAccess::getGroupsByUser($userid);
 			}
 
 			// Get the titles for the user groups.
@@ -238,6 +237,26 @@ class PlgFabrik_ElementUsergroup extends PlgFabrik_ElementList
 			// New record or failed validation
 			$value = trim($value);
 			$value = $value === '' ? array() : explode(',', $value);
+		}
+		/**
+		 * $$$ hugh - trying to sort out not overwriting usergroups when editing a juser form
+		 *
+		 * So, if we're not editable, and there is a user element specified, we should return the
+		 * current groups for that user.
+		 */
+		if (!$this->isEditable())
+		{
+			$params = $this->getParams();
+			$formModel = $this->getFormModel();
+			$userEl = $formModel->getElement($params->get('user_element'), true);
+			if ($userEl)
+			{
+				$userid = JArrayHelper::getValue($data, $userEl->getFullName(false, true, false) . '_raw', 0);
+				if (!empty($userid))
+				{
+					$value = JAccess::getGroupsByUser($userid);
+				}
+			}
 		}
 		return $value;
 	}

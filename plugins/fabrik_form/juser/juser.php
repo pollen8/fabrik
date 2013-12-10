@@ -101,11 +101,12 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 	 * @param   string  $pname    Params property name to get the value for
 	 * @param   array   $data     Posted form data
 	 * @param   mixed   $default  Default value
+	 * @param   bool    $use_raw  Use raw if available
 	 *
 	 * @return  mixed  value
 	 */
 
-	private function getFieldValue($params, $pname, $data, $default = '')
+	private function getFieldValue($params, $pname, $data, $default = '', $use_raw = false)
 	{
 		if ($params->get($pname) == '')
 		{
@@ -118,6 +119,10 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 			$data = $data['join'][$group->getGroup()->join_id];
 		}
 		$name = $elementModel->getFullName(false, true, false);
+		if ($use_raw && array_key_exists($name . '_raw', $data))
+		{
+			$name .= '_raw';
+		}
 		return JArrayHelper::getValue($data, $name, $default);
 	}
 
@@ -713,7 +718,7 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 		$params = $this->getParams();
 		$this->gidfield = $this->getFieldName($params, 'juser_field_usertype');
 		$defaultGroup = (int) $params->get('juser_field_default_group');
-		$groupIds = (array) $this->getFieldValue($params, 'juser_field_usertype', $formModel->_formData, $defaultGroup);
+		$groupIds = (array) $this->getFieldValue($params, 'juser_field_usertype', $formModel->_formData, $defaultGroup, true);
 
 		// If the group ids where encrypted (e.g. user can't edit the element) they appear as an object in groupIds[0]
 		if (!empty($groupIds) && is_object($groupIds[0]))
@@ -724,7 +729,8 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 		$data = array();
 		if (!$isNew)
 		{
-			$authLevels = $me->getAuthorisedGroups();
+			//$authLevels = $me->getAuthorisedGroups();
+			$authLevels = JAccess::getGroupsByUser($me->get('id'));
 			if ($params->get('juser_field_usertype') != '')
 			{
 				foreach ($groupIds as $groupId)

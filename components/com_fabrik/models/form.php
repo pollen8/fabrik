@@ -5857,6 +5857,10 @@ class FabrikFEModelForm extends FabModelForm
 		$showmsg = array_shift($showmsg);
 		$msg = $showmsg == 1 ? $msg : null;
 
+		// $$$ hugh - testing allowing placeholders in success msg
+		$w = new FabrikWorker;
+		$msg = $w->parseMessageForPlaceHolder($msg, $formdata);
+
 		return $msg;
 	}
 
