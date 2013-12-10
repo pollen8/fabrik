@@ -158,9 +158,7 @@ var FbRating = new Class({
 	},
 
 	_getRating : function (i) {
-		
 		r = i.get('data-rating');
-		console.log(r, i);
 		return r.toInt();
 	},
 
