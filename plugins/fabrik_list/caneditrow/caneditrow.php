@@ -50,7 +50,6 @@ class PlgFabrik_ListCaneditrow extends PlgFabrik_List
 
 	public function onCanEdit($params, $listModel, $row)
 	{
-
 		// If $row is null, we were called from the list's canEdit() in a per-table rather than per-row context,
 		// and we don't have an opinion on per-table edit permissions, so just return true.
 		if (is_null($row) || is_null($row[0]))
