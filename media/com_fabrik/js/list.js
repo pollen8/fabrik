@@ -140,10 +140,11 @@ var FbList = new Class({
 	watchAll: function (ajaxUpdate) {
 		ajaxUpdate = ajaxUpdate ? ajaxUpdate : false;
 		this.watchNav();
+		this.storeCurrentValue();
 		if (!ajaxUpdate) {
 			this.watchRows();
+			this.watchFilters();
 		}
-		this.watchFilters();
 		this.watchOrder();
 		this.watchEmpty();
 		if (!ajaxUpdate) {
@@ -559,6 +560,14 @@ var FbList = new Class({
 		return document.id(this.options.form).getElements('.fabrik_filter');
 	},
 
+	storeCurrentValue: function() {
+		this.getFilters().each(function (f) {
+			if (this.options.filterMethod !== 'submitform') {
+				f.store('initialvalue', f.get('value'));
+			}
+		}.bind(this));
+	},
+	
 	watchFilters: function () {
 		var e = '';
 		var submit = document.id(this.options.form).getElements('.fabrik_filter_submit');
@@ -566,7 +575,7 @@ var FbList = new Class({
 			e = f.get('tag') === 'select' ? 'change' : 'blur';
 			if (this.options.filterMethod !== 'submitform') {
 				f.removeEvent(e);
-				f.store('initialvalue', f.get('value'));
+//				f.store('initialvalue', f.get('value'));
 				f.addEvent(e, function (e) {
 					e.stop();
 					if (e.target.retrieve('initialvalue') !== e.target.get('value')) {
