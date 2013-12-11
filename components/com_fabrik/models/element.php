@@ -722,7 +722,7 @@ class PlgFabrik_Element extends FabrikPlugin
 	 *
 	 * @param   array  &$aFields    array of element names
 	 * @param   array  &$aAsFields  array of 'name AS alias' fields
-	 * @param   array  $opts        options
+	 * @param   array  $opts        options : alias - replace the fullelement name in asfields "name AS tablename___elementnamee"
 	 *
 	 * @return  void
 	 */
