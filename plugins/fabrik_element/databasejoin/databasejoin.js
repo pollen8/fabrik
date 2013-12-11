@@ -498,7 +498,6 @@ var FbDatabasejoin = new Class({
 	},
 
 	update: function (val) {
-		console.log('update', val);
 		this.getElement();
 		if (typeOf(this.element) === 'null') {
 			return;
