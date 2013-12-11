@@ -848,20 +848,34 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 		$updateField = $params->get('emailtable_update_field');
 		$updateField = is_array($updateField) ? JArrayHelper::getValue($updateField, $renderOrder, '') : $updateField;
 
-		if (!empty($updateField) && !empty($updated))
+		$updateVal = $this->updateVal('emailtable_update_value', $renderOrder);
+		if (!empty($updateVal) && !empty($updated))
 		{
-			$updateVal = $this->updateVal('emailtable_update_value', $renderOrder);
-			$listModel->updateRows($updated, $updateField, $updateVal);
+			if (!empty($updateField))
+			{
+				$listModel->updateRows($updated, $updateField, $updateVal);
+			}
+			else
+			{
+				$listModel->updateRows($updated, '', '', $updateVal);
+			}
 		}
 
 		// $$$ hugh - added second update field for Bea
 		$updateField = $params->get('emailtable_update_field2');
 		$updateField = is_array($updateField) ? JArrayHelper::getValue($updateField, $renderOrder, '') : $updateField;
 
-		if (!empty($updateField) && !empty($updated))
+		$updateVal = $this->updateVal('emailtable_update_value2', $renderOrder);
+		if (!empty($updateVal) && !empty($updated))
 		{
-			$updateVal = $this->updateVal('emailtable_update_value2', $renderOrder);
-			$listModel->updateRows($updated, $updateField, $updateVal);
+			if (!empty($updateField))
+			{
+				$listModel->updateRows($updated, $updateField, $updateVal);
+			}
+			else
+			{
+				$listModel->updateRows($updated, '', '', $updateVal);
+			}
 		}
 
 		// T3 blank tmpl doesn't seem to render messages when tmpl=component

@@ -42,7 +42,7 @@ defined('_JEXEC') or die('Restricted access');
 		<?php echo JText::_('PLG_LIST_EMAIL_MESSAGE') ?><br />
 	</label>
 	<?php $editor = JFactory::getEditor();
-	echo $editor->display('message', $this->message, '100%', '100%', 75, 10, 'message');?>
+	echo $editor->display('message', $this->message, '100%', '200px', 75, 10, true, 'message');?>
 <?php if ($this->allowAttachment)
 {?>
 	<div class="attachement">
