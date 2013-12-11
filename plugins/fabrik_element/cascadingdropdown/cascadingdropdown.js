@@ -115,6 +115,9 @@ var FbCascadingdropdown = new Class({
 		this.myAjax = new Request({url: '',
 		method: 'post',
 		'data': data,
+		onComplete: function () {
+			this.spinner.hide();
+		}.bind(this),
 		onSuccess: function (json) {
 			var origvalue = this.options.def,
 			updateField,
