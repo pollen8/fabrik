@@ -5257,7 +5257,7 @@ class FabrikFEModelList extends JModelForm
 			}
 		}
 
-		return array($afilterFields, $afilterConditions, $afilterValues, $afilterAccess, $afilterEval, $afilterJoins);
+		return array($afilterFields, $afilterConditions, $afilterValues, $afilterAccess, $afilterEval, $afilterJoins, $afilterGrouped);
 	}
 
 	/**
@@ -5275,7 +5275,7 @@ class FabrikFEModelList extends JModelForm
 		{
 			$elements = $this->getElements('filtername');
 			$params = $this->getParams();
-			list($afilterFields, $afilterConditions, $afilterValues, $afilterAccess, $afilterEval, $afilterJoins) = $this->prefilterSetting();
+			list($afilterFields, $afilterConditions, $afilterValues, $afilterAccess, $afilterEval, $afilterJoins, $afilterGrouped) = $this->prefilterSetting();
 			$join = 'WHERE';
 			$w = new FabrikWorker;
 
