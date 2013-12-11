@@ -31,6 +31,17 @@ var FbTextarea = new Class({
 		};
 		
 		var p = this.periodFn.periodical(200, this);
+		
+		Fabrik.addEvent('fabrik.form.page.change.end', function (form) {
+			this.refreshEditor();
+		}.bind(this));
+		
+		Fabrik.addEvent('fabrik.form.elements.added', function (form) {
+			if (form.isMultiPage()) {
+				this.refreshEditor();
+			}
+		}.bind(this));
+		
 	},
 
 	unclonableProperties: function ()
@@ -226,6 +237,20 @@ var FbTextarea = new Class({
 			return this.container.value;
 		}
 	},
+	
+	/**
+	 * On ajax loaded page need to re-load the editor
+	 * For Chrome
+	 */
+	refreshEditor: function () {
+		if (this.options.wysiwyg) {
+			if (typeof WFEditor !== 'undefined') {
+				WFEditor.init(WFEditor.settings);
+			} else if (typeof tinymce !== 'undefined') {
+				tinyMCE.init(tinymce.settings);
+			}
+		}
+	},	
 
 	setContent: function (c)
 	{

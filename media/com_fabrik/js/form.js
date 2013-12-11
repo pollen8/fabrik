@@ -361,7 +361,7 @@ var FbForm = new Class({
 
 	createPages: function () {
 		var submit, p, firstGroup, tabDiv;
-		if (this.options.pages.getKeys().length > 1) {
+		if (this.isMultiPage()) {
 
 			// Wrap each page in its own div
 			this.options.pages.each(function (page, i) {
@@ -402,6 +402,10 @@ var FbForm = new Class({
 			this.setPageButtons();
 			this.hideOtherPages();
 		}
+	},
+	
+	isMultiPage: function () {
+		return this.options.pages.getKeys().length > 1;
 	},
 
 	/**
