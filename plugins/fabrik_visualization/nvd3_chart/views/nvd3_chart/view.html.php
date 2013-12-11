@@ -102,7 +102,5 @@ class FabrikViewNvd3_Chart extends JViewLegacy
 		$text = $this->loadTemplate();
 		FabrikHelperHTML::runConentPlugins($text);
 		echo $text;
-
-		//echo parent::display();
 	}
 }
