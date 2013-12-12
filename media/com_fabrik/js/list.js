@@ -400,13 +400,8 @@ var FbList = new Class({
 			this.csvfields = fields;
 		}
 
-		this.getFilters().each(function (f) {
-			var v = f.get('value');
-			if (f.type === 'checkbox') {
-				v = (f.checked) ? f.get('value') : '';
-			}
-			opts[f.name] = v;
-		}.bind(this));
+		opts = this.csvExportFilterOpts(opts);
+		console.log(opts);
 		
 		opts.start = start;
 		opts.option = 'com_fabrik';
@@ -421,6 +416,7 @@ var FbList = new Class({
 			var key = qs.split('=');
 			opts[key[0]] = key[1];
 		});
+		console.log(opts);
 		
 		// Append the custom_qs to the URL to enable querystring filtering of the list data
 		var myAjax = new Request.JSON({
@@ -462,6 +458,52 @@ var FbList = new Class({
 		myAjax.send();
 	},
 
+	/**
+	 * Add filter options to CSV export info
+	 * 
+	 * @param   objet  opts
+	 * 
+	 * @return  opts
+	 */
+	csvExportFilterOpts: function (opts) {
+		var ii = 0,
+		aa, bits,
+		advancedPointer = 0,
+		testii,
+		usedAdvancedKeys = ['value', 'condition', 'join', 'key', 'search_type', 'match', 'full_words_only', 'eval', 'grouped_to_previous', 'hidden', 'elementid'];
+		
+		this.getFilters().each(function (f) {
+			bits = f.name.split('[');
+			if (bits.length > 3) {
+				testii = bits[3].replace(']', '').toInt();
+				ii = testii > ii ? testii : ii;
+				
+				if (f.get('type') === 'checkbox' || f.get('type') === 'radio') {
+					if (f.checked) {
+						opts[f.name] = f.get('value');
+					}
+				} else {
+					opts[f.name] = f.get('value');
+				}
+			}
+		}.bind(this));
+		
+		ii ++;
+		
+		Object.each(this.options.advancedFilters, function (values, key) {
+			if (usedAdvancedKeys.contains(key)) {
+				advancedPointer = 0;
+				for (aa = 0; aa < values.length; aa ++) {
+					advancedPointer = aa + ii;
+					aName = 'fabrik___filter[list_' + this.options.listRef + '][' + key + '][' + advancedPointer + ']';
+					opts[aName] = values[aa];
+				}
+			}
+		}.bind(this));
+		
+		return opts;
+	},
+	
 	addPlugins: function (a) {
 		a.each(function (p) {
 			p.list = this;
@@ -560,7 +602,7 @@ var FbList = new Class({
 		return document.id(this.options.form).getElements('.fabrik_filter');
 	},
 
-	storeCurrentValue: function() {
+	storeCurrentValue: function () {
 		this.getFilters().each(function (f) {
 			if (this.options.filterMethod !== 'submitform') {
 				f.store('initialvalue', f.get('value'));
@@ -575,7 +617,6 @@ var FbList = new Class({
 			e = f.get('tag') === 'select' ? 'change' : 'blur';
 			if (this.options.filterMethod !== 'submitform') {
 				f.removeEvent(e);
-//				f.store('initialvalue', f.get('value'));
 				f.addEvent(e, function (e) {
 					e.stop();
 					if (e.target.retrieve('initialvalue') !== e.target.get('value')) {
@@ -763,7 +804,8 @@ var FbList = new Class({
 	 */
 	getRowIds: function () {
 		var keys = [];
-		$H(this.options.data).each(function (group) {
+		var d = this.options.isGrouped ? $H(this.options.data) : this.options.data;
+		d.each(function (group) {
 			group.each(function (row) {
 				keys.push(row.data.__pk_val);
 			});
@@ -888,7 +930,7 @@ var FbList = new Class({
 			var rowcounter = 0;
 			trs = [];
 			this.options.data = this.options.isGrouped ? $H(data.data) : data.data;
-			console.log(this.options.data);
+
 			if (data.calculations) {
 				this.updateCals(data.calculations);
 			}
