@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
 <form>
 	<name>Visualization Edit Form</name>
-	
+
 	<fieldset addfieldpath="/administrator/components/com_fabrik/models/fields" name="details">
-				
+
 		<field name="id"
 			type="text"
 			class="readonly"
@@ -11,46 +11,49 @@
 			label="COM_FABRIK_ID_LABEL"
 			readonly="true"
 			size="10"/>
-			
+
 		<field filter="unset" label="" name="asset_id" type="hidden"/>
-		
+
 		<field name="label"
 			type="text"
 			description="COM_FABRIK_FIELD_VIZUALIZATION_LABEL_DESC"
 			label="COM_FABRIK_FIELD_VIZUALIZATION_LABEL_LABEL"
 			required="true" size="35" />
-			
+
 		<field name="intro_text"
 			type="editor"
 			description="COM_FABRIK_FIELD_INTRODUCTION_DESC"
 			label="COM_FABRIK_FIELD_INTRODUCTION_LABEL" rows="3" buttons="false" />
-			
+
 		<field name="plugin"
 			type="pluginlist"
 			plugin="fabrik_visualization"
 			description="COM_FABRIK_FIELD_VISUALIZATION_PLUGIN_DESC"
 			label="COM_FABRIK_FIELD_VISUALIZATION_PLUGIN_LABEL"
 			required="true" />
-			
+
 		</fieldset>
 	<fieldset name="publishing">
-		
-		<field name="published"	
+
+		<field name="published"
 			type="radio"
 			class="btn-group"
 			default="1"
-			label="JPUBLISHED">
-				<option value="0">JNO</option>
-				<option value="1">JYES</option>
+			label="JSTATUS"
+			description="JFIELD_PUBLISHED_DESC"
+			>
+				<option value="1">JPUBLISHED</option>
+				<option value="0">JUNPUBLISHED</option>
+				<option value="-2">JTRASHED</option>
 		</field>
-		
-		<field 
-			name="created_by" 
+
+		<field
+			name="created_by"
 			type="user"
-			label="JGLOBAL_FIELD_CREATED_BY_LABEL" 
-			description="JGLOBAL_FIELD_CREATED_BY_DESC" 
+			label="JGLOBAL_FIELD_CREATED_BY_LABEL"
+			description="JGLOBAL_FIELD_CREATED_BY_DESC"
 		/>
-			
+
 		<field name="access"
 			type="accesslevel"
 			description="JFIELD_ACCESS_DESC"
@@ -60,28 +63,28 @@
 			type="calendar"
 			class="input-medium"
 			label="JGLOBAL_FIELD_CREATED_LABEL"
-			description="JGLOBAL_FIELD_CREATED_DESC" 
+			description="JGLOBAL_FIELD_CREATED_DESC"
 		/>
-			
+
 		<field name="publish_up"
 			type="calendar"
 			class="input-medium"
 			label="JGLOBAL_FIELD_PUBLISH_UP_LABEL"
 			description="JGLOBAL_FIELD_PUBLISH_UP_DESC"
 			/>
-			
+
 		<field name="publish_down"
 			type="calendar"
 			class="input-medium"
 			label="JGLOBAL_FIELD_PUBLISH_DOWN_LABEL"
 			description="JGLOBAL_FIELD_PUBLISH_DOWN_DESC"
 			/>
-			
+
 	</fieldset>
-	
+
 	<fields name="params">
 		<fieldset name="more">
-			
+
 			<field name="show-title"
 				type="radio"
 				class="btn-group"
@@ -91,7 +94,7 @@
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
-			
+
 			<field name="show_filters"
 				type="radio"
 				class="btn-group"
@@ -101,7 +104,7 @@
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
-			
+
 		</fieldset>
 	</fields>
 </form>
