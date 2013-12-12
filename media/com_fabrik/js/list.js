@@ -1,5 +1,8 @@
 /**
- * @author Robert
+ * List
+ *
+ * @copyright: Copyright (C) 2005-2013, fabrikar.com - All rights reserved.
+ * @license:   GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
 /* jshint mootools: true */
@@ -43,7 +46,9 @@ var FbList = new Class({
 		'listRef': '', // e.g. '1_com_fabrik_1'
 		'fabrik_show_in_list': [],
 		'singleOrdering' : false,
-		'tmpl': ''
+		'tmpl': '',
+		'groupedBy' : '',
+		'toggleCols': false	
 	},
 
 	initialize: function (id, options) {
@@ -59,6 +64,11 @@ var FbList = new Class({
 				'floatPos': this.options.floatPos
 			});
 		}
+		
+		if (this.options.toggleCols) {
+			this.toggleCols = new FbListToggle(this.form);
+		}
+		
 		this.groupToggle = new FbGroupedToggler(this.form, this.options.groupByOpts);
 		new FbListKeys(this);
 		if (this.list) {
@@ -113,7 +123,6 @@ var FbList = new Class({
 	 * Used for db join select states.
 	 */
 	rowClicks: function () {
-		fconsole('rowClicks', this.list);
 		this.list.addEvent('click:relay(.fabrik_row)', function (e, r) {
 			var d = Array.from(r.id.split('_')),
 			data = {};
@@ -374,9 +383,7 @@ var FbList = new Class({
 			this.csvfields = fields;
 		}
 
-		this.getFilters().each(function (f) {
-			opts[f.name] = f.get('value');
-		}.bind(this));
+		opts = this.csvExportFilterOpts(opts);
 		
 		opts.start = start;
 		opts.option = 'com_fabrik';
@@ -433,6 +440,42 @@ var FbList = new Class({
 		myAjax.send();
 	},
 
+	/**
+	 * Add filter options to CSV export info
+	 * 
+	 * @param   objet  opts
+	 * 
+	 * @return  opts
+	 */
+	csvExportFilterOpts: function (opts) {
+		var ii = 0,
+		aa,
+		advancedPointer = 0,
+		testii,
+		usedAdvancedKeys = ['value', 'condition', 'join', 'key', 'search_type', 'match', 'full_words_only', 'eval', 'grouped_to_previous', 'hidden', 'elementid'];
+		
+		this.getFilters().each(function (f) {
+			testii = f.name.split('[').getLast().replace(']', '').toInt();
+			ii = testii > ii ? testii : ii;
+			opts[f.name] = f.get('value');
+		}.bind(this));
+		
+		ii ++;
+		
+		Object.each(this.options.advancedFilters, function (values, key) {
+			if (usedAdvancedKeys.contains(key)) {
+				advancedPointer = 0;
+				for (aa = 0; aa < values.length; aa ++) {
+					advancedPointer = aa + ii;
+					aName = 'fabrik___filter[list_' + this.options.listRef + '][' + key + '][' + advancedPointer + ']';
+					opts[aName] = values[aa];
+				}
+			}
+		}.bind(this));
+		
+		return opts;
+	},
+	
 	addPlugins: function (a) {
 		a.each(function (p) {
 			p.list = this;
@@ -531,6 +574,14 @@ var FbList = new Class({
 		return document.id(this.options.form).getElements('.fabrik_filter');
 	},
 
+	storeCurrentValue: function () {
+		this.getFilters().each(function (f) {
+			if (this.options.filterMethod !== 'submitform') {
+				f.store('initialvalue', f.get('value'));
+			}
+		}.bind(this));
+	},
+	
 	watchFilters: function () {
 		var e = '';
 		var submit = document.id(this.options.form).getElements('.fabrik_filter_submit');
@@ -802,9 +853,9 @@ var FbList = new Class({
 				'view': 'list',
 				'task': 'list.view',
 				'format': 'raw',
-				'listid': this.id
+				'listid': this.id,
+				'group_by': this.options.groupedBy
 			};
-		//var url = Fabrik.liveSite + 'index.php?option=com_fabrik&view=list&format=raw&listid=' + this.id;
 		var url = '';
 		data['limit' + this.id] = this.options.limitLength;
 		new Request.JSON({
@@ -851,6 +902,7 @@ var FbList = new Class({
 			var rowcounter = 0;
 			trs = [];
 			this.options.data = this.options.isGrouped ? $H(data.data) : data.data;
+
 			if (data.calculations) {
 				this.updateCals(data.calculations);
 			}
@@ -1183,6 +1235,9 @@ var FbGroupedToggler = new Class({
 	
 	initialize: function (container, options) {
 		var rows, h, img, state;
+		if (typeOf(container) === 'null') {
+			return;
+		}
 		this.setOptions(options);
 		this.container = container;
 		this.toggleState = 'shown';
@@ -1218,18 +1273,29 @@ var FbGroupedToggler = new Class({
 	},
 	
 	setIcon: function (img, state) {
-		if (state) {
-			img.src = img.src.replace('orderasc', 'orderneutral');
+		if (this.options.bootstrap) {
+			if (!state) {
+				img.removeClass('icon-arrow-right');
+				img.addClass('icon-arrow-down');
+			} else {
+				img.addClass('icon-arrow-right');
+				img.removeClass('icon-arrow-down');
+			}
 		} else {
-			img.src = img.src.replace('orderneutral', 'orderasc');
+			if (state) {
+				img.src = img.src.replace('orderasc', 'orderneutral');
+			} else {
+				img.src = img.src.replace('orderneutral', 'orderasc');
+			}
 		}
 	},
 	
 	collapse: function () {
 		this.container.getElements('.fabrik_groupdata').hide();
-		var i = this.container.getElements('.fabrik_groupheading a img');
+		var selector = this.options.bootstrap ? 'i' : 'img';
+		var i = this.container.getElements('.fabrik_groupheading a ' + selector);
 		if (i.length === 0) {
-			i = this.container.getElements('.fabrik_groupheading img');
+			i = this.container.getElements('.fabrik_groupheading ' + selector);
 		}
 		i.each(function (img) {
 			img.store('showgroup', false);
