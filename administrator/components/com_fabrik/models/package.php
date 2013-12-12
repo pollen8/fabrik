@@ -99,6 +99,8 @@ class FabrikAdminModelPackage extends FabModelAdmin
 			$query->where('id NOT IN (' . implode(', ', $ids) . ')');
 		}
 
+		$query->order('text');
+
 		$db->setQuery($query);
 
 		return $db->loadObjectList();
@@ -120,6 +122,8 @@ class FabrikAdminModelPackage extends FabModelAdmin
 		{
 			$query->where('id NOT IN (' . implode(', ', $ids) . ')');
 		}
+
+		$query->order('text');
 
 		$db->setQuery($query);
 
