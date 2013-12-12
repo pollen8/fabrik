@@ -89,7 +89,7 @@ class PlgFabrik_ListUpdate_Col extends PlgFabrik_List
 
 	protected function buttonLabel()
 	{
-		return $this->getParams()->get('button_label', parent::buttonLabel());
+		return JText::_($this->getParams()->get('button_label', parent::buttonLabel()));
 	}
 
 	/**
