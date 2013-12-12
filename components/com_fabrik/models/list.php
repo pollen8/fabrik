@@ -1178,7 +1178,6 @@ class FabrikFEModelList extends JModelForm
 		}
 
 		JDEBUG ? $profiler->mark('elements rendered for table data') : null;
-		$this->_aGroupInfo = array();
 		$groupTitle = array();
 		$this->groupTemplates = array();
 
@@ -1217,7 +1216,7 @@ class FabrikFEModelList extends JModelForm
 
 			for ($i = 0; $i < count($data); $i++)
 			{
-				$sdata = isset($data[$i]->$groupBy) ? isset($data[$i]->$groupBy) : '';
+				$sdata = isset($data[$i]->$groupBy) ? $data[$i]->$groupBy : '';
 
 				// Get rid of & as it blows up SimpleXMLElement, and dont want to use htmlspecialchars as don't want to mess with <, >, etc.
 				$sdata = str_replace('&', '&amp;', str_replace('&amp;', '&', $sdata));
@@ -6265,7 +6264,7 @@ class FabrikFEModelList extends JModelForm
 	 * @return array advanced filter values
 	 */
 
-	private function getAdvancedFilterValues()
+	public function getAdvancedFilterValues()
 	{
 		$filters = $this->getFilterArray();
 		$advanced = array();
