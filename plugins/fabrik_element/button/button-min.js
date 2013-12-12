@@ -1,1 +1,1 @@
-var FbButton=new Class({Extends:FbElement,initialize:function(b,a){this.plugin="fabrikButton";this.parent(b,a)}});
+var FbButton=new Class({Extends:FbElement,initialize:function(b,a){this.plugin="fabrikButton";this.parent(b,a)},addNewEventAux:function(action,js){this.element.addEvent(action,function(e){e.stop();typeOf(js)==="function"?js.delay(0,this,this):eval(js)}.bind(this))}});
