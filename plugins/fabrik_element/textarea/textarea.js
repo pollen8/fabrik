@@ -249,6 +249,8 @@ var FbTextarea = new Class({
 			} else if (typeof tinymce !== 'undefined') {
 				tinyMCE.init(tinymce.settings);
 			}
+			// Need to re-observe the editor
+			this.watchTextContainer();
 		}
 	},	
 
