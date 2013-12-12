@@ -48,6 +48,7 @@ class PlgSystemFabrik extends JPlugin
 		 */
 		$app = JFactory::getApplication();
 		$version = new JVersion;
+		$base = 'components.com_fabrik.classes.' . str_replace('.', '', $version->RELEASE);
 
 		// Test if Kunena is loaded - if so notify admins
 		if (class_exists('KunenaAccess'))
@@ -61,9 +62,16 @@ class PlgSystemFabrik extends JPlugin
 		}
 		else
 		{
-			$base = 'components.com_fabrik.classes.' . str_replace('.', '', $version->RELEASE);
 			JLoader::import($base . '.field', JPATH_SITE . '/administrator', 'administrator.');
 			JLoader::import($base . '.form', JPATH_SITE . '/administrator', 'administrator.');
+		}
+
+		if ($version->RELEASE === '2.5')
+		{
+			JLoader::import($base . '.layout.layout', JPATH_SITE . '/administrator', 'administrator.');
+			JLoader::import($base . '.layout.base', JPATH_SITE . '/administrator', 'administrator.');
+			JLoader::import($base . '.layout.file', JPATH_SITE . '/administrator', 'administrator.');
+			JLoader::import($base . '.layout.helper', JPATH_SITE . '/administrator', 'administrator.');
 		}
 
 		parent::__construct($subject, $config);
