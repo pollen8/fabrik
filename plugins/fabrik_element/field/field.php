@@ -194,53 +194,49 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 		if ($params->get('guess_linktype') == '1')
 		{
 			jimport('joomla.mail.helper');
-			$target = $this->guessLinkTarget();
+			$opts = $this->linkOpts();
 
-			if (FabrikWorker::isEmail($value))
+			if (FabrikWorker::isEmail($value) || JString::stristr($value, 'http'))
 			{
-				$value = JHTML::_('email.cloak', $value);
-				$guessed = true;
-			}
-			// Changes JF Questiaux
-			elseif (JString::stristr($value, 'http'))
-			{
-				$value = '<a href="' . $value . '"' . $target . '>' . $value . '</a>';
 				$guessed = true;
 			}
 			elseif (JString::stristr($value, 'www.'))
 			{
-				$value = '<a href="http://' . $value . '"' . $target . '>' . $value . '</a>';
+				$value = 'http://' . $value;
 				$guessed = true;
 			}
+
+			$value = FabrikHelperHTML::a($value, $value, $opts);
 		}
 	}
 
 	/**
-	 * Get the guess type link target property
+	 * Get the link options
 	 *
-	 * @return  string
+	 * @return  array
 	 */
 
-	protected function guessLinkTarget()
+	protected function linkOpts()
 	{
 		$params = $this->getParams();
 		$target = $params->get('link_target_options', 'default');
+		$opts = array();
+		$opts['rel'] = $params->get('rel', '');
 
 		switch ($target)
 		{
 			default:
-				$str = ' target="' . $target . '"';
+				$opts['target'] = $target;
 				break;
 			case 'default':
-				$str = '';
 				break;
 			case 'lightbox':
 				FabrikHelperHTML::slimbox();
-				$str = ' rel="lightbox[]"';
+				$opts['rel'] = 'lightbox[]';
 				break;
 		}
 
-		return $str;
+		return $opts;
 	}
 
 	/**

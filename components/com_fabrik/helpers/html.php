@@ -2306,7 +2306,7 @@ if (!$j3)
 					}
 
 					$thisurl .= '&' . $name . '[condition]=CONTAINS';
-								$thisurl .= '&resetfilters=1';
+					$thisurl .= '&resetfilters=1';
 				}
 				else
 				{
@@ -2319,5 +2319,171 @@ if (!$j3)
 		}
 
 		return $tags;
+	}
+
+	/**
+	 * Make an <a> tag
+	 *
+	 * @param   string  $href  URL
+	 * @param   string  $lbl   Link text
+	 * @param   array   $opts  Link properties key = value
+	 *
+	 * @since  3.1
+	 *
+	 * @return string  <a> tag or empty string if not $href
+	 */
+
+	public static function a($href, $lbl = '', $opts = array())
+	{
+		if (empty($href) || JString::strtolower($href) == 'http://' || JString::strtolower($href) == 'https://')
+		{
+			// Don't return empty links
+			return '';
+		}
+
+		if (FabrikWorker::isEmail($href))
+		{
+			return JHTML::_('email.cloak', $href);
+		}
+
+		if (empty($lbl))
+		{
+			// If label is empty, set as a copy of the link
+			$lbl = $href;
+		}
+
+		$smart_link = JArrayHelper::getValue($opts, 'smart_link', false);
+		$target = JArrayHelper::getValue($opts, 'target', false);
+
+		if ($smart_link || $target == 'mediabox')
+		{
+			$smarts = FabrikHelperHTML::getSmartLinkType($href);
+			$opts['rel'] = 'lightbox[' . $smarts['type'] . ' ' . $smarts['width'] . ' ' . $smarts['height'] . ']';
+		}
+
+		unset($opts['smart_link']);
+		$a[] = '<a href="' . $href . '"';
+
+		foreach ($opts as $key => $value)
+		{
+			$a[] = ' ' . $key . '="' . trim($value) . '"';
+		}
+
+		$a[] = '>' . $lbl . '</a>';
+
+		return implode('', $a);
+	}
+
+	/**
+	 * Get an array containing info about the media link
+	 *
+	 * @param   string  $link  to examine
+	 *
+	 * @return  array width, height, type of link
+	 */
+
+	public static function getSmartLinkType($link)
+	{
+		/* $$$ hugh - not really sure how much of this is necessary, like setting different widths
+		 * and heights for different social video sites. I copied the numbers from the examples page
+		* for mediabox: http://iaian7.com/webcode/mediaboxAdvanced
+		*/
+		$ret = array('width' => '800', 'height' => '600', 'type' => 'mediabox');
+
+		if (preg_match('#^http://([\w\.]+)/#', $link, $matches))
+		{
+			$site = $matches[1];
+			/*
+			 * @TODO should probably make this a little more intelligent, like optional www,
+			* and check for site specific spoor in the URL (like '/videoplay' for google,
+				* '/photos' for flicker, etc).
+			*/
+			switch ($site)
+			{
+				case 'www.flickr.com':
+					$ret['width'] = '400';
+					$ret['height'] = '300';
+					$ret['type'] = 'social';
+					break;
+				case 'video.google.com':
+					$ret['width'] = '640';
+					$ret['height'] = '400';
+					$ret['type'] = 'social';
+					break;
+				case 'www.metacafe.com':
+					$ret['width'] = '400';
+					$ret['height'] = '350';
+					$ret['type'] = 'social';
+					break;
+				case 'vids.myspace.com':
+					$ret['width'] = '430';
+					$ret['height'] = '346';
+					$ret['type'] = 'social';
+					break;
+				case 'myspacetv.com':
+					$ret['width'] = '430';
+					$ret['height'] = '346';
+					$ret['type'] = 'social';
+					break;
+				case 'www.revver.com':
+					$ret['width'] = '480';
+					$ret['height'] = '392';
+					$ret['type'] = 'social';
+					break;
+				case 'www.seesmic.com':
+					$ret['width'] = '425';
+					$ret['height'] = '353';
+					$ret['type'] = 'social';
+					break;
+				case 'www.youtube.com':
+					$ret['width'] = '480';
+					$ret['height'] = '380';
+					$ret['type'] = 'social';
+					break;
+				case 'www.veoh.com':
+					$ret['width'] = '540';
+					$ret['height'] = '438';
+					$ret['type'] = 'social';
+					break;
+				case 'www.viddler.com':
+					$ret['width'] = '437';
+					$ret['height'] = '370';
+					$ret['type'] = 'social';
+					break;
+				case 'vimeo.com':
+					$ret['width'] = '400';
+					$ret['height'] = '302';
+					$ret['type'] = 'social';
+					break;
+				case '12seconds.tv':
+					$ret['width'] = '431';
+					$ret['height'] = '359';
+					$ret['type'] = 'social';
+					break;
+			}
+
+			if ($ret['type'] == 'mediabox')
+			{
+				$ext = JString::strtolower(JFile::getExt($link));
+
+				switch ($ext)
+				{
+					case 'swf':
+					case 'flv':
+					case 'mp4':
+						$ret['width'] = '640';
+						$ret['height'] = '360';
+						$ret['type'] = 'flash';
+						break;
+					case 'mp3':
+						$ret['width'] = '400';
+						$ret['height'] = '20';
+						$ret['type'] = 'audio';
+						break;
+				}
+			}
+		}
+
+		return $ret;
 	}
 }

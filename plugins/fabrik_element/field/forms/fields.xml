@@ -202,6 +202,26 @@
 					<option value="_top">PLG_ELEMENT_FIELD_TARGET_TOP</option>
 					<option value="lightbox">PLG_ELEMENT_FIELD_LIGHTBOX</option>
 			</field>
+			
+			<field name="rel"
+				type="list"
+				default=""
+				description="PLG_ELEMENT_FIELD_REL_DESC"
+				label="PLG_ELEMENT_FIELD_REL_LABEL">
+					<option value="">COM_FABRIK_NONE</option>
+					<option value="alternate">alternate</option>
+					<option value="author">author</option>
+					<option value="bookmark">bookmark</option>
+					<option value="help">help</option>
+					<option value="license">license</option>
+					<option value="next">next</option>
+					<option value="nofollow">nofollow</option>
+					<option value="noreferrer">noreferrer</option>
+					<option value="prefetch">prefetch</option>
+					<option value="prev">prev</option>
+					<option value="search">search</option>
+					<option value="tag">tag</option>	
+			</field>
 
 		</fieldset>
 	</fields>

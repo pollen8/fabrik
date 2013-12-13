@@ -108,52 +108,33 @@ class PlgFabrik_ElementLink extends PlgFabrik_Element
 				$data['label'] = JArrayHelper::getValue($data, 'link');
 			}
 
-			$_lnk = trim($data['link']);
-			$_lbl = trim($data['label']);
-			$_lnk = $w->parseMessageForPlaceHolder(urldecode($_lnk), JArrayHelper::fromObject($thisRow));
-			$target = $params->get('link_target', '');
+			$href = trim($data['link']);
+			$lbl = trim($data['label']);
+			$href = $w->parseMessageForPlaceHolder(urldecode($href), JArrayHelper::fromObject($thisRow));
 
-			if (JString::strtolower($_lnk) == 'http://' || JString::strtolower($_lnk) == 'https://')
+			if (JString::strtolower($href) == 'http://' || JString::strtolower($href) == 'https://')
 			{
 				// Treat some default values as empty
-				$_lnk = '';
+				$href = '';
 			}
 
 			// If used as a icon - the dom parser needs to use &amp; and not & in url querystrings
-			if (!strstr($_lnk, '&amp;'))
+			if (!strstr($href, '&amp;'))
 			{
-				$_lnk = str_replace('&', '&amp;', $_lnk);
+				$href = str_replace('&', '&amp;', $href);
 			}
 
 			if ($listModel->getOutPutFormat() != 'rss')
 			{
-				$link = '';
+				$opts['smart_link'] = $params->get('link_smart_link', false);
+				$opts['rel'] = $params->get('rel', '');
+				$opts['target'] = $params->get('link_target', '');
 
-				if (empty($_lbl))
-				{
-					// If label is empty, set as a copy of the link
-					$_lbl = $_lnk;
-				}
-
-				if ((!empty($_lbl)) && (!empty($_lnk)))
-				{
-					$smart_link = $params->get('link_smart_link', false);
-
-					if ($smart_link || $target == 'mediabox')
-					{
-						$smarts = $this->getSmartLinkType($_lnk);
-						$link = '<a href="' . $_lnk . '" rel="lightbox[' . $smarts['type'] . ' ' . $smarts['width'] . ' ' . $smarts['height'] . ']">'
-							. $_lbl . '</a>';
-					}
-					else
-					{
-						$link = '<a href="' . $_lnk . '" target="' . $target . '">' . $_lbl . '</a>';
-					}
-				}
+				return FabrikHelperHTML::a($href, $lbl, $opts);
 			}
 			else
 			{
-				$link = $_lnk;
+				$link = $href;
 			}
 
 			$w = new FabrikWorker;
@@ -198,8 +179,9 @@ class PlgFabrik_ElementLink extends PlgFabrik_Element
 		$params = $this->getParams();
 		$bits = $this->inputProperties($repeatCounter);
 		$value = $this->getValue($data, $repeatCounter);
+		$opts = array();
 
-		if ($value == "")
+		if ($value == '')
 		{
 			$value = array('label' => '', 'link' => '');
 		}
@@ -237,39 +219,20 @@ class PlgFabrik_ElementLink extends PlgFabrik_Element
 
 		if (!$this->isEditable())
 		{
-			$_lbl = trim(JArrayHelper::getValue($value, 'label'));
-			$_lnk = trim(JArrayHelper::getValue($value, 'link'));
+			$lbl = trim(JArrayHelper::getValue($value, 'label'));
+			$href = trim(JArrayHelper::getValue($value, 'link'));
 			$w = new FabrikWorker;
-			$_lnk = is_array($data) ? $w->parseMessageForPlaceHolder($_lnk, $data) : $w->parseMessageForPlaceHolder($_lnk);
+			$href = is_array($data) ? $w->parseMessageForPlaceHolder($href, $data) : $w->parseMessageForPlaceHolder($href);
 
-			if (empty($_lnk) || JString::strtolower($_lnk) == 'http://' || JString::strtolower($_lnk) == 'https://')
-			{
-				// Don't return empty links
-				return '';
-			}
+			$opts['target'] = trim($params->get('link_target', ''));
+			$opts['smart_link'] = $params->get('link_smart_link', false);
+			$opts['rel'] = $params->get('rel', '');
 
-			$target = $params->get('link_target', '');
-			$smart_link = $params->get('link_smart_link', false);
-
-			if (empty($_lbl))
-			{
-				// If label is empty, set as a copy of the link
-				$_lbl = $_lnk;
-			}
-
-			if ($smart_link || $target == 'mediabox')
-			{
-				$smarts = $this->getSmartLinkType($_lnk);
-
-				return '<a href="' . $_lnk . '" rel="lightbox[' . $smarts['type'] . ' ' . $smarts['width'] . ' ' . $smarts['height'] . ']">' . $_lbl
-					. '</a>';
-			}
-
-			return '<a href="' . $_lnk . '" target="' . $target . '">' . $_lbl . '</a>';
+			return FabrikHelperHTML::a($href, $lbl, $opts);
 		}
 
-		$labelname = FabrikString::rtrimword($name, "[]") . '[label]';
-		$linkname = FabrikString::rtrimword($name, "[]") . '[link]';
+		$labelname = FabrikString::rtrimword($name, '[]') . '[label]';
+		$linkname = FabrikString::rtrimword($name, '[]') . '[link]';
 
 		$html = array();
 		$bits['name'] = $labelname;
@@ -494,119 +457,6 @@ class PlgFabrik_ElementLink extends PlgFabrik_Element
 		}
 
 		return $this->default;
-	}
-
-	/**
-	 * Get an array containing info about the media link
-	 *
-	 * @param   string  $link  to examine
-	 *
-	 * @return  array width, height, type of link
-	 */
-
-	protected function getSmartLinkType($link)
-	{
-		/* $$$ hugh - not really sure how much of this is necessary, like setting different widths
-		 * and heights for different social video sites. I copied the numbers from the examples page
-		 * for mediabox: http://iaian7.com/webcode/mediaboxAdvanced
-		 */
-		$ret = array('width' => '800', 'height' => '600', 'type' => 'mediabox');
-
-		if (preg_match('#^http://([\w\.]+)/#', $link, $matches))
-		{
-			$site = $matches[1];
-			/*
-			 * @TODO should probably make this a little more intelligent, like optional www,
-			 * and check for site specific spoor in the URL (like '/videoplay' for google,
-			 * '/photos' for flicker, etc).
-			 */
-			switch ($site)
-			{
-				case 'www.flickr.com':
-					$ret['width'] = '400';
-					$ret['height'] = '300';
-					$ret['type'] = 'social';
-					break;
-				case 'video.google.com':
-					$ret['width'] = '640';
-					$ret['height'] = '400';
-					$ret['type'] = 'social';
-					break;
-				case 'www.metacafe.com':
-					$ret['width'] = '400';
-					$ret['height'] = '350';
-					$ret['type'] = 'social';
-					break;
-				case 'vids.myspace.com':
-					$ret['width'] = '430';
-					$ret['height'] = '346';
-					$ret['type'] = 'social';
-					break;
-				case 'myspacetv.com':
-					$ret['width'] = '430';
-					$ret['height'] = '346';
-					$ret['type'] = 'social';
-					break;
-				case 'www.revver.com':
-					$ret['width'] = '480';
-					$ret['height'] = '392';
-					$ret['type'] = 'social';
-					break;
-				case 'www.seesmic.com':
-					$ret['width'] = '425';
-					$ret['height'] = '353';
-					$ret['type'] = 'social';
-					break;
-				case 'www.youtube.com':
-					$ret['width'] = '480';
-					$ret['height'] = '380';
-					$ret['type'] = 'social';
-					break;
-				case 'www.veoh.com':
-					$ret['width'] = '540';
-					$ret['height'] = '438';
-					$ret['type'] = 'social';
-					break;
-				case 'www.viddler.com':
-					$ret['width'] = '437';
-					$ret['height'] = '370';
-					$ret['type'] = 'social';
-					break;
-				case 'vimeo.com':
-					$ret['width'] = '400';
-					$ret['height'] = '302';
-					$ret['type'] = 'social';
-					break;
-				case '12seconds.tv':
-					$ret['width'] = '431';
-					$ret['height'] = '359';
-					$ret['type'] = 'social';
-					break;
-			}
-
-			if ($ret['type'] == 'mediabox')
-			{
-				$ext = JString::strtolower(JFile::getExt($link));
-
-				switch ($ext)
-				{
-					case 'swf':
-					case 'flv':
-					case 'mp4':
-						$ret['width'] = '640';
-						$ret['height'] = '360';
-						$ret['type'] = 'flash';
-						break;
-					case 'mp3':
-						$ret['width'] = '400';
-						$ret['height'] = '20';
-						$ret['type'] = 'audio';
-						break;
-				}
-			}
-		}
-
-		return $ret;
 	}
 
 	/**
