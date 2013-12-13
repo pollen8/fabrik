@@ -65,6 +65,12 @@
 					<option value="tag">tag</option>	
 			</field>
 
+			<field name="link_title"
+				type="text"
+				default=""
+				description="PLG_LINK_FIELD_LINK_TITLE_DESC"
+				label="PLG_LINK_FIELD_LINK_TITLE_LABEL" />
+
 			<field name="link_smart_link"
 				type="radio"
 				class="btn-group"

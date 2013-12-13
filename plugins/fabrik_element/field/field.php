@@ -193,8 +193,9 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 
 		if ($params->get('guess_linktype') == '1')
 		{
-			jimport('joomla.mail.helper');
+			$w = new FabrikWorker;
 			$opts = $this->linkOpts();
+			$title = $params->get('link_title', '');
 
 			if (FabrikWorker::isEmail($value) || JString::stristr($value, 'http'))
 			{
@@ -204,6 +205,11 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 			{
 				$value = 'http://' . $value;
 				$guessed = true;
+			}
+
+			if ($title !== '')
+			{
+				$opts['title'] = strip_tags($w->parseMessageForPlaceHolder($title, $data));
 			}
 
 			$value = FabrikHelperHTML::a($value, $value, $opts);

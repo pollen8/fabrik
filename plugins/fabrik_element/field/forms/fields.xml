@@ -222,6 +222,12 @@
 					<option value="search">search</option>
 					<option value="tag">tag</option>	
 			</field>
+			
+			<field name="link_title"
+				type="text"
+				default=""
+				description="PLG_ELEMENT_FIELD_LINK_TITLE_DESC"
+				label="PLG_ELEMENT_FIELD_LINK_TITLE_LABEL" />
 
 		</fieldset>
 	</fields>

@@ -129,6 +129,12 @@ class PlgFabrik_ElementLink extends PlgFabrik_Element
 				$opts['smart_link'] = $params->get('link_smart_link', false);
 				$opts['rel'] = $params->get('rel', '');
 				$opts['target'] = $params->get('link_target', '');
+				$title = $params->get('link_title', '');
+
+				if ($title !== '')
+				{
+					$opts['title'] = strip_tags($w->parseMessageForPlaceHolder($title, $data));
+				}
 
 				return FabrikHelperHTML::a($href, $lbl, $opts);
 			}
@@ -227,6 +233,12 @@ class PlgFabrik_ElementLink extends PlgFabrik_Element
 			$opts['target'] = trim($params->get('link_target', ''));
 			$opts['smart_link'] = $params->get('link_smart_link', false);
 			$opts['rel'] = $params->get('rel', '');
+			$title = $params->get('link_title', '');
+
+			if ($title !== '')
+			{
+				$opts['title'] = strip_tags($w->parseMessageForPlaceHolder($title, $data));
+			}
 
 			return FabrikHelperHTML::a($href, $lbl, $opts);
 		}

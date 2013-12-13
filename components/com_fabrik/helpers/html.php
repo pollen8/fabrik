@@ -2343,6 +2343,8 @@ if (!$j3)
 
 		if (FabrikWorker::isEmail($href))
 		{
+			jimport('joomla.mail.helper');
+
 			return JHTML::_('email.cloak', $href);
 		}
 
