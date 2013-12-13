@@ -251,9 +251,9 @@ class PlgFabrik_CronGcalsync extends PlgFabrik_Cron
 				{
 					foreach ($group as $rkey => $row)
 					{
-						if ($row->$gcal_id_element)
+						if ($row->$gcal_id_element_long)
 						{
-							$our_event_ids[$row->$gcal_id_element] = $mydata[$gkey][$rkey];
+							$our_event_ids[$row->$gcal_id_element_long] = $mydata[$gkey][$rkey];
 						}
 						else
 						{
@@ -301,6 +301,17 @@ class PlgFabrik_CronGcalsync extends PlgFabrik_Cron
 				// Loop thru the array we built earlier of events we have that aren't in gcal
 				foreach ($our_upload_ids as $id => $event)
 				{
+					if (!empty($gcal_id_element_long))
+					{
+						if (!empty($event->$gcal_id_element_long))
+						{
+							if (array_key_exists($event->$gcal_id_element_long, $gcal_event_ids))
+							{
+								continue;
+							}
+						}
+					}
+
 					// Skip if a userid element is specified, and doesn't match the owner of this gcal
 					if ($gcal_userid_element_long)
 					{
@@ -312,21 +323,21 @@ class PlgFabrik_CronGcalsync extends PlgFabrik_Cron
 
 					// Now start building the gcal event structure
 					$newEvent = $gdataCal->newEventEntry();
-					$newEvent->title = $gdataCal->newTitle($event->$gcal_label_element);
+					$newEvent->title = $gdataCal->newTitle($event->$gcal_label_element_long);
 
 					if ($gcal_desc_element_long)
 					{
-						$newEvent->content = $gdataCal->newContent($event->$gcal_desc_element);
+						$newEvent->content = $gdataCal->newContent($event->$gcal_desc_element_long);
 					}
 					else
 					{
-						$newEvent->content = $gdataCal->newContent($event->$gcal_label_element);
+						$newEvent->content = $gdataCal->newContent($event->$gcal_label_element_long);
 					}
 
 					$when = $gdataCal->newWhen();
 
 					// Grab the start date, apply the tx offset, and format it for gcal
-					$start_date = JFactory::getDate($event->$gcal_start_date_element, $tz);
+					$start_date = JFactory::getDate($event->$gcal_start_date_element_long, $tz);
 					$when->startTime = $this->formatDate($start_date);
 
 					/* We have to provide an end date for gcal, so if we don't have one,
@@ -334,13 +345,13 @@ class PlgFabrik_CronGcalsync extends PlgFabrik_Cron
 					 */
 					if ($event->$gcal_end_date_element == '0000-00-00 00:00:00')
 					{
-						$startstamp = strtotime($event->$gcal_start_date_element);
+						$startstamp = strtotime($event->$gcal_start_date_element_long);
 						$endstamp = $startstamp + (60 * 60);
-						$event->$gcal_end_date_element = strftime('%Y-%m-%d %H:%M:%S', $endstamp);
+						$event->$gcal_end_date_element_long = strftime('%Y-%m-%d %H:%M:%S', $endstamp);
 					}
 
 					// Grab the end date, apply the tx offset, and format it for gcal
-					$end_date = JFactory::getDate($event->$gcal_end_date_element, $tz);
+					$end_date = JFactory::getDate($event->$gcal_end_date_element_long, $tz);
 					$when->endTime = $this->formatDate($end_date);
 					$newEvent->when = array($when);
 
@@ -351,6 +362,7 @@ class PlgFabrik_CronGcalsync extends PlgFabrik_Cron
 					}
 					catch (Zend_Gdata_App_HttpException $he)
 					{
+						// @TODO log this, and / or enqueue msg it if on backend
 						$errStr = 'Problem adding event: ' . $he->getRawResponseBody() . "\n";
 						continue;
 					}
@@ -359,9 +371,9 @@ class PlgFabrik_CronGcalsync extends PlgFabrik_Cron
 					 * and update our event record with the short version of the ID
 					 */
 					$gcal_id = $this->_getGcalShortId($retEvent->id->text);
-					$our_id = $event->id;
+					$our_id = $event->__pk_val;
 					$query = $db->getQuery(true);
-					$query->update($table_name)->set($gcal_id_element . ' = ' . $db->quote($gcal_id))->where('id = ' . $db->quote($our_id));
+					$query->update($table_name)->set($gcal_id_element . ' = ' . $db->quote($gcal_id))->where($table->db_primary_key . ' = ' . $db->quote($our_id));
 					$db->setQuery($query);
 					$db->execute();
 				}
