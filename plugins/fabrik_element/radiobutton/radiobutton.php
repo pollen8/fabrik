@@ -127,11 +127,28 @@ class PlgFabrik_ElementRadiobutton extends PlgFabrik_ElementList
 
 		for ($i = 0; $i < count($labels); $i++)
 		{
-			if (JString::strtolower($labels[$i]) == JString::strtolower($value))
+			if (is_string($value))
 			{
-				$val = $values[$i];
+				if (JString::strtolower($labels[$i]) == JString::strtolower($value))
+				{
+					$val = $values[$i];
 
-				return $val;
+					return $val;
+				}
+			}
+			else
+			{
+				if (in_array(JString::strtolower($labels[$i]), $value))
+				{
+					foreach ($value as &$v)
+					{
+						if (JString::strtolower($labels[$i]) == JString::strtolower($v))
+						{
+							$v = $values[i];
+						}
+					}
+				}
+
 			}
 		}
 

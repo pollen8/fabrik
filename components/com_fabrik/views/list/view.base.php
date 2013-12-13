@@ -101,6 +101,7 @@ class FabrikViewListBase extends JViewLegacy
 
 		$opts->links = array('detail' => $params->get('detailurl', ''), 'edit' => $params->get('editurl', ''), 'add' => $params->get('addurl', ''));
 		$opts->filterMethod = $this->filter_action;
+		$opts->advancedFilters = $model->getAdvancedFilterValues();
 		$opts->form = 'listform_' . $listref;
 		$this->listref = $listref;
 		$opts->headings = $model->jsonHeadings();

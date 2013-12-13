@@ -119,7 +119,13 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 
 		if (($params->get('cascadingdropdown_label_concat') != '') && $app->input->get('overide_join_val_column_concat') != 1)
 		{
-			$val = str_replace("{thistable}", $join->table_join_alias, $params->get('cascadingdropdown_label_concat'));
+			$val = $params->get('cascadingdropdown_label_concat');
+
+			if ($join)
+			{
+				$val = str_replace("{thistable}", $join->table_join_alias, $val);
+			}
+
 			$w = new FabrikWorker;
 			$val = $w->parseMessageForPlaceHolder($val, array());
 
