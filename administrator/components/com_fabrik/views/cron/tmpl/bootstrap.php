@@ -64,7 +64,7 @@ JHtml::_('behavior.keepalive');
 
 		</div>
 
-		<div clas="span6">
+		<div class="span6">
 
 			<fieldset class="form-horizontal">
 		    	<legend>
