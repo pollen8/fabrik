@@ -1192,7 +1192,7 @@ class FabrikFEModelList extends JModelForm
 
 			for ($i = 0; $i < count($data); $i++)
 			{
-				$sdata = isset($data[$i]->$groupBy) ? isset($data[$i]->$groupBy) : '';
+				$sdata = isset($data[$i]->$groupBy) ? $data[$i]->$groupBy : '';
 				$sdata = str_replace('&', '&amp;', str_replace('&amp;', '&', $sdata));
 
 				// Test if its just an <a>*</a> tag - if so allow HTML (enables use of icons)
