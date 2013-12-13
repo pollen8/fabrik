@@ -288,7 +288,16 @@ class FabrikPlugin extends JPlugin
 		{
 			$inival2 = '';
 
+			/**
+			 * $$$ hugh - this was blowing up with the massively useful error "Cannot parse
+			 * XML 0" and refusing to load the plugin if the description ahs any non-XML-ish HTML
+			 * markup, or if there was some malformed HTML.  So redoing it with a regular expression,
+			 * which may not match on some formats, as I haven't done a huge amount of testing,
+			 * but at least it won't error out!
+			 */
+
 			// Handle strings with HTML
+			/*
 			if (substr($inival, 0, 3) == '<p>' || substr($inival, 0, 3) == '<p ')
 			{
 				// Split by paras, use first para for legend and put remaining paras back.
@@ -302,6 +311,14 @@ class FabrikPlugin extends JPlugin
 
 				$inival2 = str_replace($legend, '', $inival);
 				$inival = $legend;
+			}
+			*/
+			$p_re = '#^\s*(<p\s*\S*\s*>.*?</p>)#i';
+			$matches = array();
+			if (preg_match($p_re, $inival, $matches))
+			{
+				$inival2 = preg_replace($p_re, '', $inival);
+				$inival = $matches[1];
 			}
 			elseif (substr($inival, 0, 1) != '<' && strpos($inival, '<br') > 0)
 			{
