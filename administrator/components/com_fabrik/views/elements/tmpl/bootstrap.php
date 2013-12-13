@@ -97,10 +97,13 @@ $states	= array(
 				<th width="15%">
 					<?php echo JHTML::_('grid.sort', 'COM_FABRIK_LABEL', 'e.label', $listDirn, $listOrder); ?>
 				</th>
-				<th width="20%">
+				<th width="17%">
 					<?php echo JText::_('COM_FABRIK_FULL_ELEMENT_NAME');?>
 				</th>
-				<th width="12%">
+				<th width="5%">
+					<?php echo JText::_('COM_FABRIK_VALIDATIONS'); ?>
+				</th>
+				<th width="10%">
 				<?php echo JHTML::_('grid.sort', 'COM_FABRIK_GROUP', 'g.label', $listDirn, $listOrder); ?>
 				</th>
 				<th width="10%">
@@ -129,6 +132,7 @@ $states	= array(
 			$canEdit	= $user->authorise('core.edit',			'com_fabrik.element.'.$item->group_id);
 			$canCheckin	= $user->authorise('core.manage',		'com_checkin') || $item->checked_out==$user->get('id') || $item->checked_out==0;
 			$canChange	= $user->authorise('core.edit.state',	'com_fabrik.element.'.$item->group_id) && $canCheckin;
+			$extraTip = JText::_('COM_FABRIK_DETAILS') . ' :: ' . JText::_('COM_FABRIK_VALIDATIONS') . '<br />' . implode('<br /><br />', $item->validationTip) . '<br/> ' . $item->numJs . ' ' . JText::_('COM_FABRIK_JAVASCRIPT');
 			?>
 
 			<tr class="row<?php echo $i % 2; ?>">
@@ -187,6 +191,11 @@ $states	= array(
 				</td>
 				<td>
 					<?php echo $item->full_element_name; ?>
+				</td>
+				<td>
+					<span class="hasTooltip" title="<?php echo $extraTip ?>">
+						<?php echo $item->numValidations . '/' . $item->numJs; ?>
+					</span>
 				</td>
 				<td>
 					<a href="index.php?option=com_fabrik&task=group.edit&id=<?php echo $item->group_id?>">

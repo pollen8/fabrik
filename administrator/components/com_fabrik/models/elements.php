@@ -62,6 +62,8 @@ class FabrikAdminModelElements extends FabModelList
 		$query->select($this->getState('list.select', 'e.*, e.ordering AS ordering'));
 		$query->from('#__{package}_elements AS e');
 
+		$query->select('(SELECT COUNT(*) FROM #__fabrik_jsactions AS js WHERE js.element_id = e.id) AS numJs');
+
 		// Filter by published state
 		$published = $this->getState('filter.published');
 
