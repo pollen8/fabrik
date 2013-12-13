@@ -129,6 +129,7 @@ class PlgFabrik_ElementDropdown extends PlgFabrik_ElementList
 				if ($opt->value === '&lt;optgroup&gt;')
 				{
 					$groupOptLabel = $opt->text;
+					continue;
 				}
 
 				$groupedOpts[$groupOptLabel][] = $opt;
