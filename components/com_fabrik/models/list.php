@@ -6098,12 +6098,13 @@ class FabrikFEModelList extends JModelForm
 				if ($elementModel)
 				{
 					$elementModel->getElement()->filter_type = 'hidden';
-					$o->filter .= $elementModel->getFilter(0, true);
+					$o->filter .= $elementModel->getFilter($counter, true);
 				}
 
-				$o->name = $filters['key'][$i];
+				$o->name = FabrikString::safeColNameToArrayKey($filters['key'][$i]);
 				$o->label = $filters['label'][$i];
 				$aFilters[] = $o;
+				$counter++;
 			}
 		}
 
@@ -9434,6 +9435,7 @@ class FabrikFEModelList extends JModelForm
 		{
 			$fbConfig = JComponentHelper::getParams('com_fabrik');
 			$cache = FabrikWorker::getCache($this);
+			$opts['filters'] = $this->filters;
 			$res = $cache->call(array(get_class($this), 'columnData'), $this->getId(), $col, $distinct, $opts);
 
 			if (is_null($res))
@@ -9471,6 +9473,7 @@ class FabrikFEModelList extends JModelForm
 	{
 		$listModel = JModelLegacy::getInstance('List', 'FabrikFEModel');
 		$listModel->setId($listId);
+		$listModel->filters = JArrayHelper::getValue($opts, 'filters');
 		$table = $listModel->getTable();
 		$fbConfig = JComponentHelper::getParams('com_fabrik');
 		$db = $listModel->getDb();

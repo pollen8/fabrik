@@ -3841,12 +3841,12 @@ class PlgFabrik_Element extends FabrikPlugin
 	/**
 	 * Get the hidden fields for a normal filter
 	 *
-	 * @param   int     $counter  filter counter
-	 * @param   string  $elName   full element name will be converted to tablename.elementname format
-	 * @param   bool    $hidden   has the filter been added due to a search form value with no corresponding filter set up in the table
+	 * @param   int     $counter  Filter counter
+	 * @param   string  $elName   Full element name will be converted to tablename.elementname format
+	 * @param   bool    $hidden   Has the filter been added due to a search form value with no corresponding filter set up in the table
 	 * if it has we need to know so that when we do a search from a 'fabrik_list_filter_all' field that search term takes prescidence
 	 *
-	 * @return  string	html hidden fields
+	 * @return  string	html Hidden fields
 	 */
 
 	protected function getFilterHiddenFields($counter, $elName, $hidden = false)
@@ -3854,6 +3854,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		$params = $this->getParams();
 		$element = $this->getElement();
 		$class = $this->filterClass();
+		$filters = $this->getListModel()->getFilterArray();
 
 		// $$$ needs to apply to CDD's as well, so just making this an overideable method.
 		if ($this->quoteLabel())
@@ -3861,13 +3862,21 @@ class PlgFabrik_Element extends FabrikPlugin
 			$elName = FabrikString::safeColName($elName);
 		}
 
+		// If querying via the querystring - then the condition and eval should be looked up against that key
+		$elementids = JArrayHelper::getValue($filters, 'elementid', array());
+		$filterIndex = array_search($this->getId(), $elementids);
+
+		if ($filterIndex === false)
+		{
+			$filterIndex = $counter;
+		}
+
 		$hidden = $hidden ? 1 : 0;
 		$table = $this->getListModel()->getTable();
 		$match = $this->isExactMatch(array('match' => $element->filter_exact_match));
 		$return = array();
-		$filters = $this->getListModel()->getFilterArray();
 		$eval = JArrayHelper::getValue($filters, 'eval', array());
-		$eval = JArrayHelper::getValue($eval, $counter, FABRIKFILTER_TEXT);
+		$eval = JArrayHelper::getValue($eval, $filterIndex, FABRIKFILTER_TEXT);
 
 		/**
 		 * $$$ hugh - these two lines are preventing the "exact match" setting on an element filter working,
@@ -3888,7 +3897,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		 */
 
 		$condition = JArrayHelper::getValue($filters, 'condition', array());
-		$condition = JArrayHelper::getValue($condition, $counter, $this->getFilterCondition());
+		$condition = JArrayHelper::getValue($condition, $filterIndex, $this->getFilterCondition());
 
 		// Need to include class other wise csv export produces incorrect results when exporting
 		$prefix = '<input type="hidden" class="' . $class . '" name="fabrik___filter[list_' . $this->getListModel()->getRenderContext() . ']';
