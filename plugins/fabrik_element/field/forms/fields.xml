@@ -173,6 +173,12 @@
 				label="PLG_ELEMENT_FIELD_FORMAT_STRING_LABEL"
 				size="60" />
 
+			<field name="text_input_mask"
+				type="text"
+				description="PLG_ELEMENT_FIELD_INPUT_MASK_DESC"
+				label="PLG_ELEMENT_FIELD_INPUT_MASK_LABEL"
+				size="60" />
+				
 		</fieldset>
 
 		<fieldset label="PLG_ELEMENT_FIEILD_GUESS_LINK" name="plg-field-guesslink">

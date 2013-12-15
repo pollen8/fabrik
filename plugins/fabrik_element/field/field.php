@@ -255,8 +255,23 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 
 	public function elementJavascript($repeatCounter)
 	{
+		$params = $this->getParams();
+
 		$id = $this->getHTMLId($repeatCounter);
 		$opts = $this->getElementJSOptions($repeatCounter);
+
+		$input_mask = $params->get('text_input_mask', '');
+		if (!empty($input_mask))
+		{
+			FabrikHelperHTML::script('components/com_fabrik/libs/masked_input/jquery.maskedinput.js');
+			$opts->use_input_mask = true;
+			$opts->input_mask = $input_mask;
+		}
+		else
+		{
+			$opts->use_input_mask = false;
+			$opts->input_mask = '';
+		}
 
 		return array('FbField', $id, $opts);
 	}
