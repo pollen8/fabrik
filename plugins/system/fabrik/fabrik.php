@@ -66,7 +66,7 @@ class PlgSystemFabrik extends JPlugin
 			JLoader::import($base . '.form', JPATH_SITE . '/administrator', 'administrator.');
 		}
 
-		if ($version->RELEASE === '2.5')
+		if (version_compare($version->RELEASE, '3.1', '<='))
 		{
 			JLoader::import($base . '.layout.layout', JPATH_SITE . '/administrator', 'administrator.');
 			JLoader::import($base . '.layout.base', JPATH_SITE . '/administrator', 'administrator.');
