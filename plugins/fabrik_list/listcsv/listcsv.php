@@ -59,7 +59,9 @@ class PlgFabrik_ListListcsv extends PlgFabrik_List
 	public function onImportCSVRow()
 	{
 		$params = $this->getParams();
-		$file = JFilterInput::getInstance()->clean($params->get('listcsv_import_php_file'), 'CMD');
+		$filter = JFilterInput::getInstance();
+		$file = $params->get('listcsv_import_php_file');
+		$file = $filter->clean($file, 'CMD');
 
 		if ($file == -1 || $file == '')
 		{
