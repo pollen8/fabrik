@@ -1666,6 +1666,13 @@ class FabrikWorker
 
 		if (!$app->isAdmin())
 		{
+			$itemId = (int) $app->input->getInt('itemId');
+
+			if ($itemId !== 0)
+			{
+				return $itemId;
+			}
+
 			$menus = $app->getMenu();
 			$menu = $menus->getActive();
 
