@@ -8364,6 +8364,7 @@ class FabrikFEModelList extends JModelForm
 	protected function deleteJoinedRows($val)
 	{
 		$db = $this->getDb();
+		$query = $db->getQuery(true);
 		$params = $this->getParams();
 
 		if ($params->get('delete-joined-rows', false))
@@ -8376,9 +8377,9 @@ class FabrikFEModelList extends JModelForm
 
 				if ((int) $join->list_id !== 0)
 				{
-					$sql = "DELETE FROM " . $db->quoteName($join->table_join) . " WHERE " . $db->quoteName($join->table_join_key) . " IN (" . $val
-					. ")";
-					$db->setQuery($sql);
+					$query->clear();
+					$query->delete($db->quoteName($join->table_join))->where($db->quoteName($join->table_join_key) . ' IN (' . $val . ')');
+					$db->setQuery($query);
 					$db->execute();
 				}
 			}
