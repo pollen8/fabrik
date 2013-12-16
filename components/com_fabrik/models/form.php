@@ -4553,6 +4553,11 @@ class FabrikFEModelForm extends FabModelForm
 					$val = @$this->data[$k];
 				}
 
+				if (is_array($val))
+				{
+					$val = array_shift($val);
+				}
+
 				$element->value = $val;
 				$element->element = '<input type="hidden" id="join.' . $joinId . '.rowid" name="join[' . $joinId . '][rowid]" value="' . $val
 					. '" />';
