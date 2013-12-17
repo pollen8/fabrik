@@ -260,10 +260,9 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 		$id = $this->getHTMLId($repeatCounter);
 		$opts = $this->getElementJSOptions($repeatCounter);
 
-		$input_mask = $params->get('text_input_mask', '');
+		$input_mask = trim($params->get('text_input_mask', ''));
 		if (!empty($input_mask))
 		{
-			FabrikHelperHTML::script('components/com_fabrik/libs/masked_input/jquery.maskedinput.js');
 			$opts->use_input_mask = true;
 			$opts->input_mask = $input_mask;
 		}
@@ -274,6 +273,37 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 		}
 
 		return array('FbField', $id, $opts);
+	}
+
+	/**
+	 * Get the class to manage the form element
+	 * to ensure that the file is loaded only once
+	 *
+	 * @param   array   &$srcs   Scripts previously loaded
+	 * @param   string  $script  Script to load once class has loaded
+	 * @param   array   &$shim   Dependant class names to load before loading the class - put in requirejs.config shim
+	 *
+	 * @return void
+	 */
+
+	public function formJavascriptClass(&$srcs, $script = '', &$shim = array())
+	{
+		$params = $this->getParams();
+		$input_mask = trim($params->get('text_input_mask', ''));
+
+		if (!empty($input_mask))
+		{
+			$s = new stdClass;
+			$s->deps = array('fab/element');
+			$folder = 'components/com_fabrik/libs/masked_input/';
+			$s->deps[] = $folder . 'jquery.maskedinput';
+			$shim['element/field/field'] = $s;
+		}
+
+		parent::formJavascriptClass($srcs, $script, $shim);
+
+		// $$$ hugh - added this, and some logic in the view, so we will get called on a per-element basis
+		return false;
 	}
 
 	/**
