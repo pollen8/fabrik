@@ -6,7 +6,7 @@
  */
 
 /*jshint mootools: true */
-/*global Fabrik:true, fconsole:true, Joomla:true, CloneObject:true, $H:true,unescape:true */
+/*global Fabrik:true, fconsole:true, Joomla:true, CloneObject:true, $H:true, unescape:true, FbFormSubmit:true, Encoder:true */
 
 var FbForm = new Class({
 
@@ -25,7 +25,6 @@ var FbForm = new Class({
 		'ajaxValidation': false,
 		'customJsAction': '',
 		'plugins': [],
-		'ajaxmethod': 'post',
 		'inlineMessage': true,
 		'print': false,
 		'images': {
@@ -154,8 +153,7 @@ var FbForm = new Class({
 				e.stop();
 				if (Fabrik.Windows[this.options.fabrik_window_id]) {
 					Fabrik.Windows[this.options.fabrik_window_id].close();
-				}
-				else {
+				} else {
 					// $$$ hugh - http://fabrikar.com/forums/showthread.php?p=166140#post166140
 					window.history.back();
 				}
@@ -260,7 +258,8 @@ var FbForm = new Class({
 	 *
 	 * @param   string  id            Element id to run the effect on
 	 * @param   string  method        Method to run
-	 * @param   object  elementModel  The element JS object which is calling the fx, this is used to work ok which repeat group the fx is applied on
+	 * @param   object  elementModel  The element JS object which is calling the fx,
+	 *                                this is used to work ok which repeat group the fx is applied on
 	 */
 
 	doElementFX: function (id, method, elementModel) {
@@ -419,7 +418,7 @@ var FbForm = new Class({
 			this.hideOtherPages();
 		}
 	},
-	
+
 	isMultiPage: function () {
 		return this.options.pages.getKeys().length > 1;
 	},
@@ -432,6 +431,9 @@ var FbForm = new Class({
 	 */
 	_doPageNav : function (e, dir) {
 		if (this.options.editable) {
+			if (this.ajax) {
+				this.ajax.cancel();
+			}
 			this.form.getElement('.fabrikMainError').addClass('fabrikHide');
 
 			// If tip shown at bottom of long page and next page shorter we need to move the tip to
@@ -454,14 +456,49 @@ var FbForm = new Class({
 			d.set('fabrik_ajax', '1');
 			d.set('format', 'raw');
 
-			d = this._prepareRepeatsForAjax(d);
+			d = this.prepareRepeatsForAjax(d);
 
-			var myAjax = new Request({
+			var ajax = new Request({
 				'url': url,
-				method: this.options.ajaxmethod,
 				data: d,
-				onComplete: function (r) {
+
+				onRequest: function() {
+					Fabrik.loader.start(this.getBlock(), Joomla.JText._('COM_FABRIK_VALIDATING'));
+					if (Fabrik.debug) {
+						fconsole('Fabrik form::_doPageNav: Ajax request starting');
+					}
+				}.bind(this),
+
+				onCancel: function() {
 					Fabrik.loader.stop(this.getBlock());
+					this.ajax = null;
+				}.bind(this),
+
+				onComplete: function() {
+					Fabrik.loader.stop(this.getBlock());
+					this.ajax = null;
+				}.bind(this),
+
+				onFailure: function(xhr) {
+					fconsole('Fabrik form::_doPageNav: Ajax failure: Code ' + xhr.status + ': ' + xhr.statusText);
+					this.showMainError('Validation ajax call failed');
+					this.formElements.each(function (el, key) {
+						el.afterAjaxValidation();
+					});
+				}.bind(this),
+
+				onSuccess: function (r) {
+					this.formElements.each(function (el, key) {
+						el.afterAjaxValidation();
+					});
+					if (typeOf(r) === 'null') {
+						fconsole('Fabrik form::_doPageNav: Ajax response empty.');
+						this.showMainError('Validation ajax response empty');
+						return;
+					}
+					if (Fabrik.debug) {
+						fconsole('Fabrik form::_doPageNav: Ajax request successful');
+					}
 					r = JSON.decode(r);
 
 					// Don't show validation errors if we are going back a page
@@ -472,8 +509,7 @@ var FbForm = new Class({
 					new Fx.Scroll(window).toElement(this.form);
 				}.bind(this)
 			}).send();
-		}
-		else {
+		} else {
 			this.changePage(dir);
 		}
 		e.stop();
@@ -494,14 +530,42 @@ var FbForm = new Class({
 		this.form.getElement('input[name=task]').value = 'form.savepage';
 
 		var url = 'index.php?option=com_fabrik&format=raw&page=' + this.currentPage;
-		Fabrik.loader.start(this.getBlock(), 'saving page');
 		var data = this.getFormData();
 		data.fabrik_ajax = 1;
 		new Request({
 			url: url,
-			method: this.options.ajaxmethod,
 			data: data,
-			onComplete : function (r) {
+
+			onRequest: function() {
+				Fabrik.loader.start(this.getBlock(), Joomla.JText._('COM_FABRIK_SAVING'));
+				if (Fabrik.debug) {
+					fconsole('Fabrik form::saveGroupsToDb: Ajax request starting');
+				}
+			}.bind(this),
+
+			onCancel: function() {
+				Fabrik.loader.stop(this.getBlock());
+			}.bind(this),
+
+			onComplete: function() {
+				Fabrik.loader.stop(this.getBlock());
+			}.bind(this),
+
+			onFailure: function(xhr) {
+				fconsole('Fabrik form::saveGroupsToDb: Ajax failure: Code ' + xhr.status + ': ' + xhr.statusText);
+				this.showMainError('Partial save ajax call failed');
+				this.formElements.each(function (el, key) {
+					el.afterAjaxValidation();
+				});
+			}.bind(this),
+
+			onSuccess: function (r) {
+				if (Fabrik.debug) {
+					fconsole('Fabrik form::saveGroupsToDb: Ajax request successful');
+				}
+				this.formElements.each(function (el, key) {
+					el.afterAjaxValidation();
+				});
 				Fabrik.fireEvent('fabrik.form.groups.save.completed', [this]);
 				if (this.result === false) {
 					this.result = true;
@@ -512,7 +576,6 @@ var FbForm = new Class({
 				if (this.options.ajax) {
 					Fabrik.fireEvent('fabrik.form.groups.save.end', [this, r]);
 				}
-				Fabrik.loader.stop(this.getBlock());
 			}.bind(this)
 		}).send();
 	},
@@ -636,12 +699,12 @@ var FbForm = new Class({
 		// $$$ hugh - moved attachedToForm calls out of addElement to separate loop, to fix forward reference issue,
 		// i.e. calc element adding events to other elements which come after itself, which won't be in formElements
 		// yet if we do it in the previous loop ('cos the previous loop is where elements get added to formElements)
-		for (i = 0; i < added.length; i ++) {
+		for (i = 0; i < added.length; i++) {
 			if (typeOf(added[i]) !== 'null') {
 				try {
 					added[i].attachedToForm();
 				} catch (err) {
-					fconsole(added[i].options.element + ' attach to form:' + err);
+					fconsole('Fabrik form::addElements: Error attaching ' + added[i].options.element + ' to form:', err);
 				}
 			}
 		}
@@ -672,7 +735,7 @@ var FbForm = new Class({
 	 *
 	 * @param   string  elementType  Deprecated
 	 * @param   string  elementId    Element key to look up in this.formElements
-	 * @param   string  action       Event chage/click etc
+	 * @param   string  action       Event change/click etc
 	 * @param   mixed   js           String or function
 	 */
 
@@ -709,125 +772,116 @@ var FbForm = new Class({
 	 */
 
 	watchValidation: function (id, triggerEvent) {
-		if (this.options.ajaxValidation === false) {
-			return;
-		}
 		var el = document.id(id);
 		if (typeOf(el) === 'null') {
-			fconsole('watch validation failed, could not find element ' + id);
+			fconsole('Fabrik form::watchValidation: Could not find element ' + id);
 			return;
 		}
 		if (el.className === 'fabrikSubElementContainer') {
 			// check for things like radio buttons & checkboxes
 			el.getElements('.fabrikinput').each(function (i) {
-				i.addEvent(triggerEvent, function (e) {
-					this.doElementValidation(e, true);
-				}.bind(this));
+					i.addEvent(triggerEvent, function (e) {
+						this.doElementEvent.delay(250, this, [e, true]);
+					}.bind(this));
 			}.bind(this));
-			return;
+		} else {
+			el.addEvent(triggerEvent, function (e) {
+				this.doElementEvent.delay(250, this, [e, false]);
+			}.bind(this));
 		}
-		el.addEvent(triggerEvent, function (e) {
-			this.doElementValidation(e, false);
-		}.bind(this));
 	},
 
-	// as well as being called from watchValidation can be called from other
-	// element js actions, e.g. date picker closing
+	// If not ajax validation then clear server validation errors when we tab out
+	doElementEvent:  function (e, subEl) {
+		this.options.ajaxValidation === true ? this.doElementValidation(e, subEl) : this.doElementClearError(e, subEl);
+	},
+
+	doElementClearError: function (e, subEl) {
+		// If not doing ajax validation, then clear error messages for a field on same events
+		var id = this._getValidationElId(e, subEl);
+		this.showElementError('', id, true);
+		this.updateMainError();
+	},
+
+	/**
+	 * Do validation for a single element based on a change or blur event from that elementFromPoint
+	 * Can also be called from other element js actions, e.g. date picker closing.
+	 **/
 	doElementValidation: function (e, subEl, replacetxt) {
-		var id;
 		if (this.options.ajaxValidation === false) {
 			return;
 		}
-		replacetxt = typeOf(replacetxt) === 'null' ? '_time' : replacetxt;
-		if (typeOf(e) === 'event' || typeOf(e) === 'object' || typeOf(e) === 'domevent') { // type object in
-			id = e.target.id;
-			// for elements with subelements eg checkboxes radiobuttons
-			if (subEl === true) {
-				id = document.id(e.target).getParent('.fabrikSubElementContainer').id;
-			}
-		} else {
-			// hack for closing date picker where it seems the event object isnt
-			// available
-			id = e;
-		}
+
+		var spinId = id = this._getValidationElId(e, subEl);
 
 		if (typeOf(document.id(id)) === 'null') {
+			fconsole("Fabrik form::doElementValidation: Cannot find the field: " + id);
 			return;
 		}
+
+		// Check for dbjoin autocomplete label field and replace with value field
+		if (e.target.hasClass('autocomplete-trigger')) {
+			id = id.replace('-auto-complete','');
+		}
+
 		if (document.id(id).getProperty('readonly') === true || document.id(id).getProperty('readonly') === 'readonly') {
 			// stops date element being validated
 			// return;
 		}
+
 		var el = this.formElements.get(id);
+
 		if (!el) {
-			//silly catch for date elements you cant do the usual method of setting the id in the
-			//fabrikSubElementContainer as its required to be on the date element for the calendar to work
+			// silly catch for date elements you cant do the usual method of setting the id in the
+			// fabrikSubElementContainer as its required to be on the date element for the calendar to work
+
+			// Paul - To Do - Now that the actual validation is done in element.js (which is extended for each
+			// element plugin), tweaks to the data can be done as overrides within the specific plugin js.
+			replacetxt = typeOf(replacetxt) === 'null' ? '_time' : replacetxt;
 			id = id.replace(replacetxt, '');
 			el = this.formElements.get(id);
 			if (!el) {
 				return;
 			}
 		}
+
 		Fabrik.fireEvent('fabrik.form.element.validaton.start', [this, el, e]);
+		Fabrik.fireEvent('fabrik.form.element.validation.start', [this, el, e]);
+
 		if (this.result === false) {
 			this.result = true;
 			return;
 		}
+
 		el.setErrorMessage(Joomla.JText._('COM_FABRIK_VALIDATING'), 'fabrikValidating');
 
-		var d = $H(this.getFormData());
-		d.set('task', 'form.ajax_validate');
-		d.set('fabrik_ajax', '1');
-		d.set('format', 'raw');
-
-		d = this._prepareRepeatsForAjax(d);
-
-		// $$$ hugh - nasty hack, because validate() in form model will always use _0 for
-		// repeated id's
-		var origid = id;
-		if (el.origId) {
-			origid = el.origId + '_0';
-		}
-		//var origid = el.origId ? el.origId : id;
-		el.options.repeatCounter = el.options.repeatCounter ? el.options.repeatCounter : 0;
-		var url = 'index.php?option=com_fabrik&form_id=' + this.id;
-		var myAjax = new Request({
-			url: url,
-			method: this.options.ajaxmethod,
-			data: d,
-			onComplete: function (e) {
-				this._completeValidaton(e, id, origid);
-			}.bind(this)
-		}).send();
+		// Paul - Moved big chunk of code to element.js so that multiple validations can happen in parallel
+		this.formElements.get(id).doValidation(e, subEl, id, spinId);
 	},
 
-	_completeValidaton: function (r, id, origid) {
-		r = JSON.decode(r);
-		if (typeOf(r) === 'null') {
-			this._showElementError(['Oups'], id);
-			this.result = true;
-			return;
-		}
-		this.formElements.each(function (el, key) {
-			el.afterAjaxValidation();
-		});
-		Fabrik.fireEvent('fabrik.form.elemnet.validation.complete', [this, r, id, origid]);
-		if (this.result === false) {
-			this.result = true;
-			return;
-		}
-		var el = this.formElements.get(id);
-		if ((typeOf(r.modified[origid]) !== 'null')) {
-			el.update(r.modified[origid]);
-		}
-		if (typeOf(r.errors[origid]) !== 'null') {
-			this._showElementError(r.errors[origid][el.options.repeatCounter], id);
+	/**
+	 * Helper function to get the formElement id
+	 **/
+	_getValidationElId: function (e, subEl) {
+		var id;
+		if (typeOf(e) === 'event' || typeOf(e) === 'object' || typeOf(e) === 'domevent') { // type object in
+			// for elements with subelements e.g. checkboxes radiobuttons
+			if (subEl === true) {
+				id = document.id(e.target).getParent('.fabrikSubElementContainer').id;
+			} else {
+				// In case validation field is not displayed field (e.g. autocomplete),
+				// we want spinner to be shown against displayed field.
+				id = e.target.id;
+			}
 		} else {
-			this._showElementError([], id);
+			// hack for closing date picker where it seems the event object isn't available
+			// $$$ Paul - date.js should use mock events (see autocomplete*.js for example)
+			id = e;
 		}
+		return id;
 	},
 
-	_prepareRepeatsForAjax : function (d) {
+	prepareRepeatsForAjax : function (d) {
 		this.getForm();
 		//ensure we are dealing with a simple object
 		if (typeOf(d) === 'hash') {
@@ -902,7 +956,7 @@ var FbForm = new Class({
 	},
 
 	updateMainError: function () {
-		var myfx, activeValidations;
+		var activeValidations;
 		var mainEr = this.form.getElement('.fabrikMainError');
 		mainEr.set('html', this.options.error);
 		activeValidations = this.form.getElements('.fabrikError').filter(
@@ -919,7 +973,7 @@ var FbForm = new Class({
 
 	hideMainError: function () {
 		var mainEr = this.form.getElement('.fabrikMainError');
-		myfx = new Fx.Tween(mainEr, {property: 'opacity',
+		var myfx = new Fx.Tween(mainEr, {property: 'opacity',
 				duration: 500,
 				onComplete: function () {
 					mainEr.addClass('fabrikHide');
@@ -935,7 +989,7 @@ var FbForm = new Class({
 		var mainEr = this.form.getElement('.fabrikMainError');
 		mainEr.set('html', msg);
 		mainEr.removeClass('fabrikHide');
-		myfx = new Fx.Tween(mainEr, {property: 'opacity',
+		var myfx = new Fx.Tween(mainEr, {property: 'opacity',
 			duration: 500
 		}).start(0, 1);
 	},
@@ -1019,11 +1073,9 @@ var FbForm = new Class({
 			if (this.options.ajax) {
 				// Do ajax val only if onSubmit val ok
 				if (this.form) {
-					Fabrik.loader.start(this.getBlock(), Joomla.JText._('COM_FABRIK_LOADING'));
-
 					// Get all values from the form
 					var data = $H(this.getFormData());
-					data = this._prepareRepeatsForAjax(data);
+					data = this.prepareRepeatsForAjax(data);
 					data[btn.name] = btn.value;
 					if (btn.name === 'Copy') {
 						data.Copy = 1;
@@ -1031,25 +1083,37 @@ var FbForm = new Class({
 					}
 					data.fabrik_ajax = '1';
 					data.format = 'raw';
-					var myajax = new Request.JSON({
+					var ajax = new Request.JSON({
 						'url': this.form.action,
 						'data': data,
-						'method': this.options.ajaxmethod,
+
+						onRequest: function() {
+							Fabrik.loader.start(this.getBlock(), Joomla.JText._('COM_FABRIK_LOADING'));
+							if (Fabrik.debug) {
+								fconsole('Fabrik form::doSubmit: Ajax request starting');
+							}
+						}.bind(this),
+
+						onComplete: function() {
+							Fabrik.loader.stop(this.getBlock());
+						}.bind(this),
+
 						onError: function (text, error) {
-							fconsole(text + ": " + error);
+							fconsole('Fabrik form::doSubmit: Ajax error: ' + text + ': ' + error);
 							this.showMainError(error);
-							Fabrik.loader.stop(this.getBlock(), 'Error in returned JSON');
 						}.bind(this),
 
 						onFailure: function (xhr) {
-							fconsole(xhr);
-							Fabrik.loader.stop(this.getBlock(), 'Ajax failure');
+							fconsole('Fabrik form::doSubmit: Ajax failure: ', xhr);
 						}.bind(this),
-						onComplete: function (json, txt) {
+
+						onSuccess: function (json, txt) {
+							if (Fabrik.debug) {
+								fconsole('Fabrik form::doSubmit: Ajax request successful');
+							}
 							if (typeOf(json) === 'null') {
-								// Stop spinner
 								Fabrik.loader.stop(this.getBlock(), 'Error in returned JSON');
-								fconsole('error in returned json', json, txt);
+								fconsole('Fabrik form::doSubmit: Error in returned json:', json, txt);
 								return;
 							}
 							// Process errors if there are some
@@ -1067,8 +1131,7 @@ var FbForm = new Class({
 													this._showElementError(errors[e], this_key);
 												}
 											}
-										}
-										else {
+										} else {
 											this._showElementError(errors, key);
 										}
 									}
@@ -1095,8 +1158,7 @@ var FbForm = new Class({
 											var y_offset = json.y_offset ? json.y_offset : 0;
 											var title = json.title ? json.title : '';
 											Fabrik.getWindow({'id': 'redirect', 'type': 'redirect', contentURL: json.url, caller: this.getBlock(), 'height': height, 'width': width, 'offset_x': x_offset, 'offset_y': y_offset, 'title': title});
-										}
-										else {
+										} else {
 											if (json.redirect_how === 'samepage') {
 												window.open(json.url, '_self');
 											}
@@ -1194,7 +1256,7 @@ var FbForm = new Class({
 
 		// toQueryString() doesn't add in empty data - we need to know that for the
 		// validation on multipages
-		var elKeys = this.formElements.getKeys();
+		// var elKeys = this.formElements.getKeys();
 		this.formElements.each(function (el, key) {
 			//fileupload data not included in querystring
 			if (el.plugin === 'fabrikfileupload') {
@@ -1638,8 +1700,7 @@ var FbForm = new Class({
 			if (!this.options.group_copy_element_values[group_id] || (this.options.group_copy_element_values[group_id] && newEl.element.name && newEl.element.name.test(pk_re))) {
 				// Call reset method that resets both events and value back to default.
 				newEl.reset();
-			}
-			else {
+			} else {
 				// Call reset method that only resets the events, not the value
 				newEl.resetEvents();
 			}
@@ -1729,6 +1790,8 @@ var FbForm = new Class({
 		}.bind(this));
 	},
 
+	// Paul - There is no reference to this function anywhere in Fabrik 3.0 or 3.1
+	// so it looks like this code is obsolete and has been replaced by showGroupError, showMainError etc.
 	showErrors : function (data) {
 		var d = null;
 		if (data.id === this.id) {
@@ -1742,14 +1805,13 @@ var FbForm = new Class({
 				errors.each(function (a, key) {
 					if (typeOf(document.id(key + '_error')) !== 'null') {
 						var e = document.id(key + '_error');
-						var msg = new Element('span');
 						for (var x = 0; x < a.length; x++) {
 							for (var y = 0; y < a[x].length; y++) {
 								d = new Element('div').appendText(a[x][y]).inject(e);
 							}
 						}
 					} else {
-						fconsole(key + '_error' + ' not found (form show errors)');
+						fconsole('Fabrik form::showErrors: ' + key + '_error not found');
 					}
 				});
 			}
@@ -1801,6 +1863,5 @@ var FbForm = new Class({
 
 	getSubGroupCounter: function (group_id)
 	{
-
 	}
 });
