@@ -53,6 +53,7 @@ FabrikHelperHTML::framework();
 
 // $$$rob looks like including the view does something to the layout variable
 $origLayout = $input->get('layout');
+$origItemId = $input->get('itemId');
 
 $listId = (int) $params->get('list_id', 1);
 $useajax = (int) $params->get('useajax', 0);
@@ -154,10 +155,13 @@ if (!JError::isError($model))
 
 $view->isMambot = true;
 
+$input->set('itemId', $params->get('itemId', $origItemId));
+
 // Display the view
 $view->error = $controller->getError();
 echo $view->display();
 
+$input->set('itemId', $origItemId);
 $input->set('layout', $origLayout);
 $input->set('showfilters', $origShowFilters);
 

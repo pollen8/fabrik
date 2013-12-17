@@ -7209,6 +7209,11 @@ class FabrikFEModelList extends JModelForm
 
 	public function storeRow($data, $rowId, $isJoin = false, $joinGroupTable = null)
 	{
+		if (is_array($rowId))
+		{
+			$rowId = array_unshift($rowId);
+		}
+
 		$app = JFactory::getApplication();
 		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$origRowId = $rowId;
@@ -8370,6 +8375,7 @@ class FabrikFEModelList extends JModelForm
 	protected function deleteJoinedRows($val)
 	{
 		$db = $this->getDb();
+		$query = $db->getQuery(true);
 		$params = $this->getParams();
 
 		if ($params->get('delete-joined-rows', false))
@@ -8382,9 +8388,9 @@ class FabrikFEModelList extends JModelForm
 
 				if ((int) $join->list_id !== 0)
 				{
-					$sql = "DELETE FROM " . $db->quoteName($join->table_join) . " WHERE " . $db->quoteName($join->table_join_key) . " IN (" . $val
-					. ")";
-					$db->setQuery($sql);
+					$query->clear();
+					$query->delete($db->quoteName($join->table_join))->where($db->quoteName($join->table_join_key) . ' IN (' . $val . ')');
+					$db->setQuery($query);
 					$db->execute();
 				}
 			}
@@ -8916,7 +8922,7 @@ class FabrikFEModelList extends JModelForm
 			}
 			else
 			{
-				$link .= 'index.php?option=com_' . $package . '&view=' . $view . '&formid=' . $table->form_id . $keyIdentifier;
+				$link .= 'index.php?option=com_' . $package . '&view=' . $view . '&formid=' . $table->form_id . $keyIdentifier . '&Itemid=' . $Itemid;
 			}
 
 			$link = JRoute::_($link);

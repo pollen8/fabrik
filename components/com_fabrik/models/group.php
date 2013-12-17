@@ -1279,6 +1279,11 @@ class FabrikFEModelGroup extends FabModel
 		{
 			foreach ($masterInsertId as &$mid)
 			{
+				if (is_array($mid))
+				{
+					$mid = array_unshift($mid);
+				}
+
 				$mid = $db->quote($mid);
 			}
 

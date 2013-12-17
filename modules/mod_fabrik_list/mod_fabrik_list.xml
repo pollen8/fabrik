@@ -26,6 +26,11 @@
 					description="MOD_FABRIK_LIST_LIST_DESC"
 					label="MOD_FABRIK_LIST_LIST_LABEL" />
 				
+				<field name="itemId"
+					type="menuitem"
+					description="MOD_FABRIK_LIST_ITEMID_DESC"
+					label="MOD_FABRIK_LIST_ITEMID_LABEL" />
+					
 				<field name="useajax"
 					class="btn-group"
 					type="radio"
