@@ -1192,7 +1192,7 @@ class FabrikFEModelList extends JModelForm
 
 			for ($i = 0; $i < count($data); $i++)
 			{
-				$sdata = isset($data[$i]->$groupBy) ? isset($data[$i]->$groupBy) : '';
+				$sdata = isset($data[$i]->$groupBy) ? $data[$i]->$groupBy : '';
 				$sdata = str_replace('&', '&amp;', str_replace('&amp;', '&', $sdata));
 
 				// Test if its just an <a>*</a> tag - if so allow HTML (enables use of icons)
@@ -5121,7 +5121,7 @@ class FabrikFEModelList extends JModelForm
 			}
 		}
 
-		return array($afilterFields, $afilterConditions, $afilterValues, $afilterAccess, $afilterEval, $afilterJoins);
+		return array($afilterFields, $afilterConditions, $afilterValues, $afilterAccess, $afilterEval, $afilterJoins, $afilterGrouped);
 	}
 
 	/**
@@ -5139,7 +5139,7 @@ class FabrikFEModelList extends JModelForm
 		{
 			$elements = $this->getElements('filtername');
 			$params = $this->getParams();
-			list($afilterFields, $afilterConditions, $afilterValues, $afilterAccess, $afilterEval, $afilterJoins) = $this->prefilterSetting();
+			list($afilterFields, $afilterConditions, $afilterValues, $afilterAccess, $afilterEval, $afilterJoins, $afilterGrouped) = $this->prefilterSetting();
 			$join = 'WHERE';
 			$w = new FabrikWorker;
 
@@ -5985,17 +5985,12 @@ class FabrikFEModelList extends JModelForm
 	public function getAdvancedSearchLink()
 	{
 		$params = $this->getParams();
-		$app = JFactory::getApplication();
-		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 
 		if ($params->get('advanced-filter', '0'))
 		{
 			$table = $this->getTable();
 			$tmpl = $this->getTmpl();
-			$url = COM_FABRIK_LIVESITE . 'index.php?option=com_' . $package . '&amp;view=list&amp;layout=_advancedsearch&amp;tmpl=component&amp;listid='
-					. $table->id . '&amp;nextview=' . JRequest::getVar('view', 'list');
-
-			$url .= '&amp;tkn=' . JSession::getFormToken();
+			$url = $this->getAdvancedSearchURL();
 			$title = '<span>' . JText::_('COM_FABRIK_ADVANCED_SEARCH') . '</span>';
 			$opts = array('alt' => JText::_('COM_FABRIK_ADVANCED_SEARCH'), 'class' => 'fabrikTip', 'opts' => "{notice:true}", 'title' => $title);
 			$img = FabrikHelperHTML::image('find.png', 'list', $tmpl, $opts);
@@ -6006,6 +6001,27 @@ class FabrikFEModelList extends JModelForm
 		{
 			return '';
 		}
+	}
+
+	/**
+	 * Get the URL used to open the advanced search window
+	 *
+	 * @return  string
+	 */
+
+	public function getAdvancedSearchURL()
+	{
+		$app = JFactory::getApplication();
+		$table = $this->getTable();
+		$package = $app->getUserState('com_fabrik.package', 'fabrik');
+		$url = COM_FABRIK_LIVESITE . 'index.php?option=com_' . $package . '&amp;view=list&amp;layout=_advancedsearch&amp;tmpl=component&amp;listid='
+			. $table->id . '&amp;nextview=' . $app->input->get('view', 'list');
+
+		// Defines if we are in a module or in the component.
+		$url .= '&amp;scope=' . $app->scope;
+		$url .= '&amp;tkn=' . JSession::getFormToken();
+
+		return $url;
 	}
 
 	/**
@@ -6121,7 +6137,7 @@ class FabrikFEModelList extends JModelForm
 	 * @return array advanced filter values
 	 */
 
-	private function getAdvancedFilterValues()
+	public function getAdvancedFilterValues()
 	{
 		$filters = $this->getFilterArray();
 		$advanced = array();

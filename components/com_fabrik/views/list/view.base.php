@@ -1,13 +1,15 @@
 <?php
 /**
+ * Base List view class
+ *
  * @package     Joomla
  * @subpackage  Fabrik
- * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
- * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
-*/
+ * @copyright   Copyright (C) 2005-2013 fabrikar.com - All rights reserved.
+ * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
+ */
 
-// Check to ensure this file is included in Joomla!
-defined('_JEXEC') or die();
+// No direct access
+defined('_JEXEC') or die('Restricted access');
 
 jimport('joomla.application.component.view');
 
@@ -19,9 +21,8 @@ jimport('joomla.application.component.view');
  * @since       3.0.6
  */
 
-class FabrikViewListBase extends JView
+class FabrikViewListBase extends JViewLegacy
 {
-
 	public $isMambot = null;
 
 	/**
@@ -38,15 +39,19 @@ class FabrikViewListBase extends JView
 		$input = $app->input;
 		$Itemid = FabrikWorker::itemId();
 		$model = $this->getModel();
+		$params = $model->getParams();
 		$item = $model->getTable();
 		$listref = $model->getRenderContext();
 		$listid = $model->getId();
 		$formModel = $model->getFormModel();
 		$elementsNotInTable = $formModel->getElementsNotInTable();
+		$toggleCols = (bool) $params->get('toggle_cols', false);
+
 		if ($model->requiresSlimbox())
 		{
 			FabrikHelperHTML::slimbox();
 		}
+
 		$frameworkJsFiles = FabrikHelperHTML::framework();
 		$src = $model->getPluginJsClasses($frameworkJsFiles);
 		array_unshift($src, 'media/com_fabrik/js/listfilter.js');
@@ -63,6 +68,7 @@ class FabrikViewListBase extends JView
 
 		// Check for a custom js file and include it if it exists
 		$aJsPath = JPATH_SITE . '/components/com_fabrik/views/list/tmpl/' . $tmpl . '/javascript.js';
+
 		if (JFile::exists($aJsPath))
 		{
 			$src[] = 'components/com_fabrik/views/list/tmpl/' . $tmpl . '/javascript.js';
@@ -94,14 +100,17 @@ class FabrikViewListBase extends JView
 
 		$opts->links = array('detail' => $params->get('detailurl', ''), 'edit' => $params->get('editurl', ''), 'add' => $params->get('addurl', ''));
 		$opts->filterMethod = $this->filter_action;
+		$opts->advancedFilters = $model->getAdvancedFilterValues();
 		$opts->form = 'listform_' . $listref;
 		$this->listref = $listref;
 		$opts->headings = $model->_jsonHeadings();
 		$labels = $this->headings;
+
 		foreach ($labels as &$l)
 		{
 			$l = strip_tags($l);
 		}
+
 		$opts->labels = $labels;
 		$opts->primaryKey = $item->db_primary_key;
 		$opts->Itemid = $tmpItemid;
@@ -111,44 +120,53 @@ class FabrikViewListBase extends JView
 		$opts->canView = $model->canView() ? "1" : "0";
 		$opts->page = JRoute::_('index.php');
 		$opts->isGrouped = $this->isGrouped;
+		$opts->toggleCols = $toggleCols;
 		$opts->j3 = FabrikWorker::j3();
 		$opts->singleOrdering = (bool) $model->singleOrdering();
 
 		$formEls = array();
+
 		foreach ($elementsNotInTable as $tmpElement)
 		{
 			$oo = new stdClass;
 			$oo->name = $tmpElement->name;
 			$oo->label = $tmpElement->label;
 			$formEls[] = $oo;
-
 		}
+
 		$opts->formels = $formEls;
 		$opts->fabrik_show_in_list = $input->get('fabrik_show_in_list', array(), 'array');
 		$opts->actionMethod = $model->actionMethod();
 		$opts->floatPos = $params->get('floatPos');
 		$opts->csvChoose = (bool) $params->get('csv_frontend_selection');
 		$popUpWidth = $params->get('popup_width', '');
+
 		if ($popUpWidth !== '')
 		{
 			$opts->popup_width = (int) $popUpWidth;
 		}
+
 		$popUpHeight = $params->get('popup_height', '');
+
 		if ($popUpHeight !== '')
 		{
 			$opts->popup_height = (int) $popUpHeight;
 		}
+
 		$xOffset = $params->get('popup_offset_x', '');
+
 		if ($xOffset !== '')
 		{
 			$opts->popup_offset_x = (int) $xOffset;
 		}
 
 		$yOffset = $params->get('popup_offset_y', '');
+
 		if ($yOffset !== '')
 		{
 			$opts->popup_offset_y = (int) $yOffset;
 		}
+
 		$opts->popup_edit_label = $params->get('editlabel', JText::_('COM_FABRIK_EDIT'));
 		$opts->popup_view_label = $params->get('detaillabel', JText::_('COM_FABRIK_VIEW'));
 		$opts->popup_add_label = $params->get('addlabel', JText::_('COM_FABRIK_ADD'));
@@ -217,6 +235,7 @@ class FabrikViewListBase extends JView
 		JText::script('COM_FABRIK_FILE_TYPE');
 		JText::script('COM_FABRIK_ADVANCED_SEARCH');
 		JText::script('COM_FABRIK_FORM_FIELDS');
+		JText::script('COM_FABRIK_VIEW');
 
 		// Keyboard short cuts
 		JText::script('COM_FABRIK_LIST_SHORTCUTS_ADD');
@@ -243,6 +262,7 @@ class FabrikViewListBase extends JView
 			$script[] = "\t" . implode(",\n  ", $aObjs);
 			$script[] = "]);";
 		}
+
 		// @since 3.0 inserts content before the start of the list render (currently on f3 tmpl only)
 		$pluginManager->runPlugins('onGetContentBeforeList', $model, 'list');
 		$this->pluginBeforeList = $pluginManager->_data;
@@ -284,6 +304,7 @@ class FabrikViewListBase extends JView
 		if ($this->getLayout() == '_advancedsearch')
 		{
 			$this->advancedSearch($tpl);
+
 			return;
 		}
 		$fbConfig = JComponentHelper::getParams('com_fabrik');
@@ -311,11 +332,13 @@ class FabrikViewListBase extends JView
 		$c = 0;
 		$form = $model->getFormModel();
 		$nav = $model->getPagination();
+
 		foreach ($data as $groupk => $group)
 		{
 			$last_pk = '';
 			$last_i = 0;
 			$num_rows = 1;
+
 			foreach (array_keys($group) as $i)
 			{
 				$o = new stdClass;
@@ -331,16 +354,20 @@ class FabrikViewListBase extends JView
 				$num_rows++;
 			}
 		}
+
 		$groups = $form->getGroupsHiarachy();
+
 		foreach ($groups as $groupModel)
 		{
 			$elementModels = $groupModel->getPublishedElements();
+
 			foreach ($elementModels as $elementModel)
 			{
 				$elementModel->setContext($groupModel, $form, $model);
 				$rowclass = $elementModel->setRowClass($data);
 			}
 		}
+
 		$this->rows = $data;
 		reset($this->rows);
 
@@ -348,6 +375,7 @@ class FabrikViewListBase extends JView
 		$firstRow = current($this->rows);
 		$this->requiredFiltersFound = $model->getRequiredFiltersFound();
 		$this->advancedSearch = $model->getAdvancedSearchLink();
+		$this->advancedSearchURL = $model->getAdvancedSearchURL();
 		$this->nodata = (empty($this->rows) || (count($this->rows) == 1 && empty($firstRow)) || !$this->requiredFiltersFound) ? true : false;
 		$this->tableEmptyClass = $this->nodata ? 'emptyfabrikDataContainer' : '';
 		$this->emptyStyle = $this->nodata ? '' : 'display:none';
@@ -362,6 +390,7 @@ class FabrikViewListBase extends JView
 		{
 			require_once JPATH_ROOT . '/includes/application.php';
 		}
+
 		$app = JFactory::getApplication();
 		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$this->setTitle($w, $params, $model);
@@ -407,6 +436,7 @@ class FabrikViewListBase extends JView
 		$this->emptyLink = $model->canEmpty() ? '#' : '';
 		$this->csvImportLink = $this->showCSVImport ? JRoute::_('index.php?option=com_' . $package . '&view=import&filetype=csv&listid=' . $item->id) : '';
 		$this->showAdd = $model->canAdd();
+
 		if ($this->showAdd)
 		{
 			if ($params->get('show-table-add', 1))
@@ -418,17 +448,21 @@ class FabrikViewListBase extends JView
 				$this->showAdd = false;
 			}
 		}
+
 		$this->addLabel = $params->get('addlabel', JText::_('COM_FABRIK_ADD'));
 		$this->showRSS = $params->get('rss', 0) == 0 ? 0 : 1;
+
 		if ($this->showRSS)
 		{
 			$this->rssLink = $model->getRSSFeedLink();
+
 			if ($this->rssLink != '')
 			{
 				$attribs = array('type' => 'application/rss+xml', 'title' => 'RSS 2.0');
 				$document->addHeadLink($this->rssLink, 'alternate', 'rel', $attribs);
 			}
 		}
+
 		if ($app->isAdmin())
 		{
 			// Admin always uses com_fabrik option
@@ -437,11 +471,13 @@ class FabrikViewListBase extends JView
 		else
 		{
 			$pdfLink = 'index.php?option=com_' . $package . '&view=list&format=pdf&listid=' . $item->id;
+
 			if (!$this->nodata)
 			{
 				// If some data is shown then ensure that menu links reset filters (combined with require filters) doesnt produce an empty data set for the pdf
 				$pdfLink .= '&resetfilters=0';
 			}
+
 			$this->pdfLink = JRoute::_($pdfLink);
 		}
 
@@ -466,18 +502,14 @@ class FabrikViewListBase extends JView
 
 		$this->hasButtons = $model->getHasButtons();
 		$this->grouptemplates = $model->groupTemplates;
-
 		$this->params = $params;
-
 		$this->loadTemplateBottom();
-
 		$this->getManagementJS($this->rows);
 
 		// Get dropdown list of other tables for quick nav in admin
 		$this->tablePicker = $app->isAdmin() && $app->input->get('format') !== 'pdf' ? FabrikHelperHTML::tableList($this->table->id) : '';
 
 		$this->buttons();
-
 		$this->pluginTopButtons = $model->getPluginTopButtons();
 	}
 
@@ -493,13 +525,17 @@ class FabrikViewListBase extends JView
 		if (!$model->canPublish())
 		{
 			echo JText::_('COM_FABRIK_LIST_NOT_PUBLISHED');
+
 			return false;
 		}
+
 		if (!$model->canView())
 		{
 			echo JText::_('JERROR_ALERTNOAUTHOR');
+
 			return false;
 		}
+
 		return true;
 	}
 
@@ -537,13 +573,15 @@ class FabrikViewListBase extends JView
 			$params->set('show_page_title', $input->getInt('show_page_title', 0));
 			$params->set('page_title', $input->get('title', '', 'string'));
 		}
-		$params->set('show-title', $input->getInt('show-title', $params->get('show-title')));
 
+		$params->set('show-title', $input->getInt('show-title', $params->get('show-title')));
 		$title = $params->get('page_title');
+
 		if (empty($title))
 		{
 			$title = $app->getCfg('sitename');
 		}
+
 		if (!$this->isMambot)
 		{
 			$document->setTitle($w->parseMessageForPlaceHolder($title, $_REQUEST, false));
@@ -566,10 +604,12 @@ class FabrikViewListBase extends JView
 		JDEBUG ? $profiler->mark('template loaded') : null;
 		$model = $this->getModel();
 		$params = $model->getParams();
+
 		if ($params->get('process-jplugins'))
 		{
 			FabrikHelperHTML::runConentPlugins($text);
 		}
+
 		JDEBUG ? $profiler->mark('end fabrik display') : null;
 
 		// $$$ rob 09/06/2011 no need for isMambot test? should use ob_start() in module / plugin to capture the output
@@ -633,12 +673,14 @@ class FabrikViewListBase extends JView
 		$found = false;
 		$model = $this->getModel();
 		$modelCals = $model->getCalculations();
+
 		foreach ($aCols as $key => $val)
 		{
 			if ($key == 'fabrik_actions' && $method == 'floating')
 			{
 				continue;
 			}
+
 			$calc = '';
 			$res = '';
 			$oCalcs = new stdClass;
@@ -652,10 +694,12 @@ class FabrikViewListBase extends JView
 				$tmpKey = str_replace('.', '___', $key) . '_calc_sum';
 				$oCalcs->$tmpKey = $res;
 			}
+
 			if (array_key_exists($key . '_obj', $modelCals['sums']))
 			{
 				$found = true;
 				$res = $modelCals['sums'][$key . '_obj'];
+
 				foreach ($res as $k => $v)
 				{
 					if ($k != 'calc')
@@ -678,6 +722,7 @@ class FabrikViewListBase extends JView
 			{
 				$found = true;
 				$res = $modelCals['avgs'][$key . '_obj'];
+
 				foreach ($res as $k => $v)
 				{
 					if ($k != 'calc')
@@ -691,6 +736,7 @@ class FabrikViewListBase extends JView
 			{
 				$found = true;
 				$res = $modelCals['medians'][$key . '_obj'];
+
 				foreach ($res as $k => $v)
 				{
 					if ($k != 'calc')
@@ -713,6 +759,7 @@ class FabrikViewListBase extends JView
 			{
 				$found = true;
 				$res = $modelCals['count'][$key . '_obj'];
+
 				foreach ($res as $k => $v)
 				{
 					if ($k != 'calc')
@@ -735,6 +782,7 @@ class FabrikViewListBase extends JView
 			{
 				$found = true;
 				$res = $modelCals['custom_calc'][$key . '_obj'];
+
 				foreach ($res as $k => $v)
 				{
 					if ($k != 'calc')
@@ -757,7 +805,9 @@ class FabrikViewListBase extends JView
 			$oCalcs->calc = $calc;
 			$aData[$key] = $oCalcs;
 		}
+
 		$this->hasCalculations = $found;
+
 		return $aData;
 	}
 
@@ -791,7 +841,6 @@ class FabrikViewListBase extends JView
 		// revert to view var. Used when showing table in article/blog layouts
 		$view = $input->get('origview', $input->get('view', 'list'));
 		$this->hiddenFields[] = '<input type="hidden" name="view" value="' . $view . '" />';
-
 		$this->hiddenFields[] = '<input type="hidden" name="listid" value="' . $item->id . '"/>';
 		$this->hiddenFields[] = '<input type="hidden" name="listref" value="' . $this->renderContext . '"/>';
 		$this->hiddenFields[] = '<input type="hidden" name="Itemid" value="' . $Itemid . '"/>';
@@ -799,13 +848,13 @@ class FabrikViewListBase extends JView
 		// Removed in favour of using list_{id}_limit dorop down box
 		$this->hiddenFields[] = '<input type="hidden" name="fabrik_referrer" value="' . $reffer . '" />';
 		$this->hiddenFields[] = JHTML::_('form.token');
-
 		$this->hiddenFields[] = '<input type="hidden" name="format" value="html" />';
 
 		// $packageId = $input->getInt('packageId', 0);
 		// $$$ rob testing for ajax table in module
 		$packageId = $model->packageId;
 		$this->hiddenFields[] = '<input type="hidden" name="packageId" value="' . $packageId . '" />';
+
 		if ($app->isAdmin())
 		{
 			$this->hiddenFields[] = '<input type="hidden" name="task" value="list.view" />';
@@ -814,12 +863,12 @@ class FabrikViewListBase extends JView
 		{
 			$this->hiddenFields[] = '<input type="hidden" name="task" value="" />';
 		}
+
 		$this->hiddenFields[] = '<input type="hidden" name="fabrik_listplugin_name" value="" />';
 		$this->hiddenFields[] = '<input type="hidden" name="fabrik_listplugin_renderOrder" value="" />';
 
 		// $$$ hugh - added this so plugins have somewhere to stuff any random data they need during submit
 		$this->hiddenFields[] = '<input type="hidden" name="fabrik_listplugin_options" value="" />';
-
 		$this->hiddenFields[] = '<input type="hidden" name="incfilters" value="1" />';
 
 		// $$$ hugh - testing social profile hash stuff
@@ -828,6 +877,7 @@ class FabrikViewListBase extends JView
 			$this->hiddenFields[] = '<input type="hidden" name="fabrik_social_profile_hash" value="' . $input->get('fabrik_social_profile_hash', '', 'string')
 				. '" />';
 		}
+
 		$this->hiddenFields = implode("\n", $this->hiddenFields);
 	}
 
