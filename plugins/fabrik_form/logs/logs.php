@@ -223,8 +223,12 @@ class PlgFabrik_FormLogs extends PlgFabrik_Form
 					{
 						$c = 0;
 						$origData = $formModel->_origData;
+						$log_elements = $params->get('logs_element_list', '');
 
-						$log_elements = explode(',', str_replace(' ', '', $params->get('logs_element_list', '')));
+						if(!empty($log_elements)){
+							$log_elements = explode(',', str_replace(' ', '', $log_elements));
+						}
+
 						$groups = $formModel->getGroupsHiarachy();
 						foreach ($groups as $groupModel)
 						{
