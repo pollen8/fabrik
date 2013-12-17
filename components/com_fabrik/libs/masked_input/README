@@ -1,0 +1,11 @@
+Used by the field element.
+
+From:
+
+http://digitalbush.com/projects/masked-input-plugin/
+
+Github:
+
+https://github.com/digitalBush/jquery.maskedinput
+
+NOTE - renamed compressed from .min.js to -min.js, do our script helped can detect the compressed version.
