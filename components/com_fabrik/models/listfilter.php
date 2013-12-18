@@ -308,27 +308,34 @@ class FabrikFEModelListfilter extends FabModel
 		$requestKey = $this->getSearchAllRequestKey();
 		$search = $this->getSearchAllValue('query');
 
-		if ($search == '')
+		/*
+		 * Was testing on:
+		 *
+		 * if ($search == '')
+		 *
+		 * But for insertSearchAllIntoFilters() this meant that searching on 'foo', then 'bar' would search on 'foo'
+		 * and 'bar' not just 'bar'
+		 * see http://fabrikar.com/forums/index.php?threads/bug-search-all-doesnt-reset-after-second-search.37016/
+		 */
+		//
+		if (array_key_exists($requestKey, $_POST))
 		{
-			if (array_key_exists($requestKey, $_POST))
-			{
-				// Empty search string sent unset any searchall filters
-				$ks = array_keys($filters);
-				$filterkeys = array_keys(JArrayHelper::getValue($filters, 'search_type', array()));
+			// Empty search string sent unset any searchall filters
+			$ks = array_keys($filters);
+			$filterkeys = array_keys(JArrayHelper::getValue($filters, 'search_type', array()));
 
-				foreach ($filterkeys as $filterkey)
+			foreach ($filterkeys as $filterkey)
+			{
+				if (JArrayHelper::getValue($filters['search_type'], $filterkey, '') == 'searchall')
 				{
-					if (JArrayHelper::getValue($filters['search_type'], $filterkey, '') == 'searchall')
+					foreach ($ks as $k)
 					{
-						foreach ($ks as $k)
-						{
-							/**
-							 * $$$ rob 10/04/2012  simply unsetting the array leaves the array pointer, but somewhere we recreate
-							 * $filters['search_type'] so its index becomes out of sync. see http://fabrikar.com/forums/showthread.php?t=25698
-							 * unset($filters[$k][$filterkey]);
-							 */
-							$filters[$k] = array();
-						}
+						/**
+						 * $$$ rob 10/04/2012  simply unsetting the array leaves the array pointer, but somewhere we recreate
+						 * $filters['search_type'] so its index becomes out of sync. see http://fabrikar.com/forums/showthread.php?t=25698
+						 * unset($filters[$k][$filterkey]);
+						 */
+						$filters[$k] = array();
 					}
 				}
 			}
