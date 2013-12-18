@@ -315,7 +315,7 @@ class FabrikViewFormBase extends JViewLegacy
 
 		if ($app->input->getInt('print') === 1)
 		{
-			$this->showPrint = false;
+			//$this->showPrint = false;
 		}
 
 		if ($this->showPrint)
@@ -607,6 +607,7 @@ class FabrikViewFormBase extends JViewLegacy
 		$opts->plugins = array();
 		$opts->multipage_save = (int) $model->saveMultiPage();
 		$opts->editable = $model->isEditable();
+		$opts->print = (bool) $input->getInt('print');
 		$start_page = isset($model->sessionModel->last_page) ? (int) $model->sessionModel->last_page : 0;
 
 		if ($start_page !== 0)

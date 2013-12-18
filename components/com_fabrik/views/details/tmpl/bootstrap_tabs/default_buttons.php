@@ -16,7 +16,7 @@ if ($this->showEmail || $this->showPDF || $this->showPrint): ?>
 	<div class="pull-right">
 	<?php
 	if ($this->showPrint):?>
-		<a class="btn" href="<?php echo $this->printURL?>">
+		<a class="btn" data-fabrik-print href="<?php echo $this->printURL?>">
 			<i class="icon-print"></i>
 			<?php echo JText::_('JGLOBAL_PRINT')?>
 		</a>

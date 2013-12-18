@@ -27,6 +27,7 @@ var FbForm = new Class({
 		'plugins': [],
 		'ajaxmethod': 'post',
 		'inlineMessage': true,
+		'print': false,
 		'images': {
 			'alert': '',
 			'action_check': '',
@@ -124,8 +125,23 @@ var FbForm = new Class({
 			}.bind(this));
 			this.watchGoBackButton();
 		}
+		
+		this.watchPrintButton();
 	},
 
+	/**
+	 * Print button action - either open up the print preview window - or print if already opened
+	 */
+	watchPrintButton: function () {
+		document.getElements('a[data-fabrik-print]').addEvent('click', function (e) {
+			e.stop();
+			if (this.options.print) {
+				window.print();
+			} else {
+				window.open(e.target.get('href'),'win2','status=no,toolbar=no,scrollbars=yes,titlebar=no,menubar=no,resizable=yes,width=400,height=350,directories=no,location=no;');return false;
+			}
+		}.bind(this));
+	},
 	// Go back button in ajax pop up window should close the window
 
 	watchGoBackButton: function () {
