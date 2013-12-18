@@ -1104,7 +1104,7 @@ var FbForm = new Class({
 						}.bind(this),
 
 						onFailure: function (xhr) {
-							fconsole('Fabrik form::doSubmit: Ajax failure: ', xhr);
+							fconsole('Fabrik form::doSubmit: Ajax failure: Code ' + xhr.status + ': ' + xhr.statusText);
 						}.bind(this),
 
 						onSuccess: function (json, txt) {
