@@ -3072,7 +3072,7 @@ class FabrikFEModelList extends JModelForm
 		$addWhere = $query == false ? true : false;
 		list($sqlNoFilter, $sql) = $this->_filtersToSQL($filters, $addWhere);
 		$this->_whereSQL[$sig] = array('0' => $sqlNoFilter, '1' => $sql);
-echo $sql;
+
 		if (!$query)
 		{
 			return $this->_whereSQL[$sig][$incFilters];
