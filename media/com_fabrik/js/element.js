@@ -719,7 +719,7 @@ var FbElement =  new Class({
 		//var origid = el.origid ? el.origid : id;
 		el.options.repeatCounter = el.options.repeatCounter ? el.options.repeatCounter : 0;
 		var url = 'index.php?option=com_fabrik&form_id=' + this.form.id;
-		Fabrik.fireEvent('fabrik.form.element.validation.start', [this.form, el, event]);
+		Fabrik.fireEvent('fabrik.form.element.validation.start', [this.form, el, e]);
 		if (this.form.result === false) {
 			this.form.result = true;
 			return;
@@ -769,6 +769,7 @@ var FbElement =  new Class({
 				this.form.formElements.each(function (el, key) {
 					el.afterAjaxValidation();
 				});
+				Fabrik.fireEvent('fabrik.form.elemnet.validation.complete', [this.form, r, id, origid]);
 				Fabrik.fireEvent('fabrik.form.element.validation.complete', [this.form, r, id, origid]);
 				if (this.form.result === false) {
 					this.form.result = true;
