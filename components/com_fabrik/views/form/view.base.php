@@ -327,11 +327,6 @@ class FabrikViewFormBase extends JViewLegacy
 		$this->printURL = '';
 		$this->showPrint = $params->get('print', $fbConfig->get('form_print', 0));
 
-		if ($app->input->getInt('print') === 1)
-		{
-			$this->showPrint = false;
-		}
-
 		if ($this->showPrint)
 		{
 			$text = JHtml::_('image', 'system/printButton.png', JText::_('JGLOBAL_PRINT'), null, true);
