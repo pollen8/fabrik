@@ -556,9 +556,10 @@ class FabrikFEModelImportcsv extends JModelForm
 					// Joined element params
 					if ($elementModel->isJoin())
 					{
-						$hkey = ($elementModel->getJoinModel()->getJoin()->table_join . '___params');
+						$hkey = $elementModel->getJoinModel()->getJoin()->table_join . '___params';
+						$hkey2 = $elementModel->getFullName(true, false). '___params';
 
-						if ($hkey === $heading)
+						if ($hkey === $heading || $hkey2 === $heading)
 						{
 							if (!array_key_exists($hkey, $this->matchedHeadings))
 							{
