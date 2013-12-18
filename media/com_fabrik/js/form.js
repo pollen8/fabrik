@@ -943,7 +943,7 @@ var FbForm = new Class({
 		// r should be the errors for the specific element, down to its repeat group
 		// id.
 		var msg = '';
-		if (typeOf(r) !== 'null') {
+		if (typeOf(r) === 'array') {
 			msg = r.flatten().join('<br />');
 		}
 		var classname = (msg === '') ? 'fabrikSuccess' : 'fabrikError';
