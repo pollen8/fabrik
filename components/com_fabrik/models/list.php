@@ -9930,9 +9930,7 @@ class FabrikFEModelList extends JModelForm
 		}
 
 		$qs = implode('&', $qs_args);
-		$inputs = unserialize($input->serialize());
-		$request = $inputs[1];
-		$qs = $w->parseMessageForPlaceHolder($qs, $request);
+		$qs = $w->parseMessageForPlaceHolder($qs, $_REQUEST);
 
 		return !empty($addurl_url) ? JRoute::_($addurl_url . '?' . $qs) : JRoute::_('index.php?' . $qs);
 	}
