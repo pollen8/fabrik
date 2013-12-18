@@ -885,7 +885,7 @@ class FabrikFEModelList extends JModelForm
 		ini_set('mysql.trace_mode', $traceModel);
 		JDEBUG ? $profiler->mark('query run and data loaded') : null;
 		$listModel->translateData($listModel->_data);
-		
+
 		if ($fabrikDb->getErrorNum() != 0)
 		{
 			JError::raiseNotice(500, 'getData: ' . $fabrikDb->getErrorMsg());
@@ -960,7 +960,7 @@ class FabrikFEModelList extends JModelForm
 	private function activeContextElements($groupModel)
 	{
 		$tableParams = $this->getParams();
-		
+
 		if ($this->formatAll() || ($tableParams->get('group_by_template') !== '' && $this->getGroupBy() != '') || $this->outPutFormat == 'csv'
 			|| $this->outPutFormat == 'feed')
 		{
@@ -3072,7 +3072,7 @@ class FabrikFEModelList extends JModelForm
 		$addWhere = $query == false ? true : false;
 		list($sqlNoFilter, $sql) = $this->_filtersToSQL($filters, $addWhere);
 		$this->_whereSQL[$sig] = array('0' => $sqlNoFilter, '1' => $sql);
-
+echo $sql;
 		if (!$query)
 		{
 			return $this->_whereSQL[$sig][$incFilters];
