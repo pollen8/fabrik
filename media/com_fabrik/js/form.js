@@ -799,7 +799,7 @@ var FbForm = new Class({
 	doElementClearError: function (e, subEl) {
 		// If not doing ajax validation, then clear error messages for a field on same events
 		var id = this._getValidationElId(e, subEl);
-		this.showElementError('', id, true);
+		this._showElementError('', id, true);
 		this.updateMainError();
 	},
 
