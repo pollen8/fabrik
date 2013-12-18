@@ -816,6 +816,7 @@ class FabrikFEModelList extends JModelForm
 		$this->groupTemplates = $results[2];
 		$nav = $this->getPagination($this->totalRecords, $this->limitStart, $this->limitLength);
 		$pluginManager->runPlugins('onLoadData', $this, 'list');
+
 		return $this->_data;
 
 	}
@@ -884,6 +885,7 @@ class FabrikFEModelList extends JModelForm
 		ini_set('mysql.trace_mode', $traceModel);
 		JDEBUG ? $profiler->mark('query run and data loaded') : null;
 		$listModel->translateData($listModel->_data);
+		
 		if ($fabrikDb->getErrorNum() != 0)
 		{
 			JError::raiseNotice(500, 'getData: ' . $fabrikDb->getErrorMsg());
@@ -958,6 +960,7 @@ class FabrikFEModelList extends JModelForm
 	private function activeContextElements($groupModel)
 	{
 		$tableParams = $this->getParams();
+		
 		if ($this->formatAll() || ($tableParams->get('group_by_template') !== '' && $this->getGroupBy() != '') || $this->outPutFormat == 'csv'
 			|| $this->outPutFormat == 'feed')
 		{
