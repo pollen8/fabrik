@@ -6087,6 +6087,12 @@ class FabrikFEModelList extends JModelForm
 
 		foreach ($elementModels as $elementModel)
 		{
+
+			if (!$elementModel->canView('list'))
+			{
+				continue;
+			}
+
 			$element = $elementModel->getElement();
 			$elParams = $elementModel->getParams();
 
