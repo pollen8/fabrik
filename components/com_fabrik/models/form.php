@@ -2195,7 +2195,7 @@ class FabrikFEModelForm extends FabModelForm
 				if ($delPkVal !== '')
 				{
 					$query = $joinDb->getQuery(true);
-					$query->delete($oJoin->table_join)->where($oJoin->table_join_key . ' = ' . $listDb->quote($delPkVal));
+					$query->delete($oJoin->table_join)->where($oJoin->table_join_key . ' = ' . $joinDb->quote($delPkVal));
 					$joinDb->setQuery($query);
 					$joinDb->execute();
 				}
