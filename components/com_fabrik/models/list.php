@@ -6608,7 +6608,7 @@ class FabrikFEModelList extends JModelForm
 						}
 					}
 
-					$heading = '<a ' . $class . ' href="#">' . $img . ' ' . $label . '</a>';
+					$heading = '<a ' . $class . ' href="#">' . $img . $label . '</a>';
 				}
 				else
 				{
