@@ -138,7 +138,7 @@ var FbForm = new Class({
 			if (this.options.print) {
 				window.print();
 			} else {
-				window.open(e.target.get('href'),'win2','status=no,toolbar=no,scrollbars=yes,titlebar=no,menubar=no,resizable=yes,width=400,height=350,directories=no,location=no;');return false;
+				window.open(e.target.get('href'), 'win2', 'status=no,toolbar=no,scrollbars=yes,titlebar=no,menubar=no,resizable=yes,width=400,height=350,directories=no,location=no;');
 			}
 		}.bind(this));
 	},
