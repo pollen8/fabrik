@@ -1358,7 +1358,9 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		$db->setQuery($query);
 		$listid = $db->loadResult();
 
-		return 'index.php?option=com_' . $package . '&view=details&formid=' . $popupformid . '&listid=' . $listid . '&rowid=';
+		$itemId = FabrikWorker::itemId($listid);
+
+		return 'index.php?option=com_' . $package . '&view=details&formid=' . $popupformid . '&listid=' . $listid . '&Itemid=' .$itemId . '&rowid=';
 	}
 
 	/**

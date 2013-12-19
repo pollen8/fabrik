@@ -1655,17 +1655,39 @@ class FabrikWorker
 	}
 
 	/**
-	 * Attempt to find the active menu item id
+	 * Attempt to find the active menu item id - Only for front end
+	 *
+	 *  - First checked $listId for menu items
+	 *  - Then checks if itemId in $input
+	 *  - Finally checked active menu item
+	 *
+	 * @param   int  $listId  List id to attempt to get the menu item id for the list.
 	 *
 	 * @return mixed NULL if nothing found, int if menu item found
 	 */
 
-	public static function itemId()
+	public static function itemId($listId = null)
 	{
 		$app = JFactory::getApplication();
 
 		if (!$app->isAdmin())
 		{
+			// Attempt to get Itemid from possible list menu item.
+			if (!is_null($listId))
+			{
+				$db = JFactory::getDbo();
+				$query = $db->getQuery(true);
+				$query->select('m.id AS itemId')->from('#__extensions AS e')
+				->leftJoin('#__menu AS m ON m.component_id = e.extension_id')
+				->where('e.name = "fabrik" and e.type = "component" and m.link LIKE "%listid=' . $listId . '%"');
+				$db->setQuery($query);
+
+				if ($itemId = $db->loadResult())
+				{
+					return $itemId;
+				}
+			}
+
 			$itemId = (int) $app->input->getInt('itemId');
 
 			if ($itemId !== 0)
