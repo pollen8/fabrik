@@ -111,7 +111,7 @@ var FbAutocomplete = new Class({
 						}
 						this.completeAjax(e, v);
 					}.bind(this),
-					onFailure: function(xhr){
+					onFailure: function (xhr) {
 						Fabrik.loader.stop(this.getInputElement());
 						this.ajax = null;
 						fconsole('Fabrik autocomplete: Ajax failure: Code ' + xhr.status + ': ' + xhr.statusText);

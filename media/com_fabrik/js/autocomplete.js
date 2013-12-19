@@ -28,6 +28,7 @@ var FbAutocomplete = new Class({
 	initialize: function (element, options) {
 		this.matchedResult = false;
 		this.setOptions(options);
+		element = element.replace('-auto-complete', '');
 		this.options.labelelement = typeOf(document.id(element + '-auto-complete')) === "null" ? document.getElement(element + '-auto-complete') : document.id(element + '-auto-complete');
 		this.cache = {};
 		this.selected = -1;
@@ -38,7 +39,7 @@ var FbAutocomplete = new Class({
 		this.element = typeOf(document.id(element)) === "null" ? document.getElement(element) : document.id(element);
 		this.buildMenu();
 		if (!this.getInputElement()) {
-			fconsole('autocomplete didnt find input element');
+			fconsole('autocomplete didn\'t find input element');
 			return;
 		}
 		this.getInputElement().setProperty('autocomplete', 'off');
@@ -49,13 +50,12 @@ var FbAutocomplete = new Class({
 		this.getInputElement().addEvent('blur', function (e) {
 			if (this.options.storeMatchedResultsOnly) {
 				if (!this.matchedResult) {
-					if (!(this.data.length === 1 && this.options.autoLoadSingleResult)) {
+					if (typeof(this.data) === 'undefined' || !(this.data.length === 1 && this.options.autoLoadSingleResult)) {
 						this.element.value = '';
 					}
 				}
 			}
 		}.bind(this));
-
 	},
 
 	search: function (e) {
@@ -83,11 +83,19 @@ var FbAutocomplete = new Class({
 					this.closeMenu();
 					this.ajax.cancel();
 				}
-				this.ajax = new Request({url: this.options.url,
+				this.ajax = new Request({
+					url: this.options.url,
 					data: {
 						value: v
 					},
-					onComplete: function (e) {
+					onRequest: function () {
+						Fabrik.loader.start(this.getInputElement());
+					}.bind(this),
+					onCancel: function () {
+						Fabrik.loader.stop(this.getInputElement());
+						this.ajax = null;
+					}.bind(this),
+					onSuccess: function (e) {
 						Fabrik.loader.stop(this.getInputElement());
 						this.completeAjax(e, v);
 					}.bind(this)
