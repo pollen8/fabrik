@@ -270,12 +270,14 @@ var FloatingTips = new Class({
 	},
 	
 	hideAll: function () {
-		this.elements.each(function (element) {
-			var tips = element.retrieve('tip');
-			$H(tips).each(function (tip) {
-				tip.hide();
+		if (typeOf(this.elements) !== 'null') {
+			this.elements.each(function (element) {
+				var tips = element.retrieve('tip');
+				$H(tips).each(function (tip) {
+					tip.hide();
+				});
 			});
-		});
+		}
 	}
 
 });
