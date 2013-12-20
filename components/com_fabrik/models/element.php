@@ -5406,8 +5406,7 @@ class PlgFabrik_Element extends FabrikPlugin
 	{
 		$p = $this->getElement()->plugin;
 		$src = 'plugins/fabrik_element/' . $p . '/list-' . $p . '.js';
-
-		if (JFile::exists($src))
+		if (JFile::exists(JPATH_SITE . '/' . $src))
 		{
 			$srcs[] = $src;
 		}
