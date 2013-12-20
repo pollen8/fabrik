@@ -40,7 +40,7 @@ var FbForm = new Class({
 			options.rowid = '';
 		}
 		this.id = id;
-		this.result = true; //set this to false in window.fireEvents to stop current action (eg stop form submission)
+		this.result = true; //set this to false in window.fireEvents to stop current action (e.g. stop form submission)
 		this.setOptions(options);
 		this.plugins = this.options.plugins;
 		this.options.pages = $H(this.options.pages);
@@ -67,7 +67,7 @@ var FbForm = new Class({
 
 	_setMozBoxWidths: function () {
 		if (Browser.firefox && this.getForm()) {
-			//as firefox treats display:-moz-box as display:-moz-box-inline we have to programatically set their widths
+			// As Firefox treats display:-moz-box as display:-moz-box-inline we have to programmatically set their widths
 			this.getForm().getElements('.fabrikElementContainer > .displayBox').each(function (b) {
 				var computed = b.getParent().getComputedSize();
 				var x = b.getParent().getSize().x - (computed.computedLeft + computed.computedRight); //remove margins/paddings from width
@@ -107,8 +107,8 @@ var FbForm = new Class({
 		}.bind(this));
 
 		// get an int from which to start incrementing for each repeated group id
-		// dont ever decrease this value when deleteing a group as it will cause all sorts of
-		// reference chaos with cascading dropdowns etc
+		// don't ever decrease this value when deleting a group as it will cause all sorts of
+		// reference chaos with cascading dropdowns etc.
 		this.repeatGroupMarkers = $H({});
 		if (this.form) {
 			this.form.getElements('.fabrikGroup').each(function (group) {
@@ -226,7 +226,7 @@ var FbForm = new Class({
 			// DOM squiffy with
 			// multi column rows, so get the li's content and put it inside a div which
 			// is injected into c
-			// apply fx to div rather than li - damn im good
+			// apply fx to div rather than li - damn i'm good
 			var tag = (c).get('tag');
 			if (tag === 'li' || tag === 'td') {
 				fxdiv = new Element('div', {'style': 'width:100%'}).adopt(c.getChildren());
@@ -284,7 +284,7 @@ var FbForm = new Class({
 		id = id.replace('fabrik_trigger_', '');
 		if (id.slice(0, 6) === 'group_') {
 			id = id.slice(6, id.length);
-			// wierd fix?
+			// weird fix?
 			if (id.slice(0, 6) === 'group_') {
 				id = id.slice(6, id.length);
 			}
@@ -441,14 +441,12 @@ var FbForm = new Class({
 			if (typeOf(document.getElement('.tool-tip')) !== 'null') {
 				document.getElement('.tool-tip').setStyle('top', 0);
 			}
-			// Don't prepend with Fabrik.liveSite, as it can create cross origin browser errors if you are on www and livesite is not on www.
+			// Don't prepend with Fabrik.liveSite, as it can create cross origin browser errors
+			// if you are on www and livesite is not on www.
 			var url = 'index.php?option=com_fabrik&format=raw&task=form.ajax_validate&form_id=' + this.id;
-
-			Fabrik.loader.start(this.getBlock(), Joomla.JText._('COM_FABRIK_VALIDATING'));
 
 			// Only validate the current groups elements, otherwise validations on
 			// other pages cause the form to show an error.
-
 			var groupId = this.options.pages.get(this.currentPage.toInt());
 
 			var d = $H(this.getFormData());
@@ -853,8 +851,6 @@ var FbForm = new Class({
 			return;
 		}
 
-		el.setErrorMessage(Joomla.JText._('COM_FABRIK_VALIDATING'), 'fabrikValidating');
-
 		// Paul - Moved big chunk of code to element.js so that multiple validations can happen in parallel
 		this.formElements.get(id).doValidation(e, subEl, id, spinId);
 	},
@@ -887,7 +883,7 @@ var FbForm = new Class({
 		if (typeOf(d) === 'hash') {
 			d = d.getClean();
 		}
-		//data should be key'd on the data stored in the elements name between []'s which is the group id
+		//data should be keyed on the data stored in the elements name between []'s which is the group id
 		this.form.getElements('input[name^=fabrik_repeat_group]').each(
 				function (e) {
 					// $$$ hugh - had a client with a table called fabrik_repeat_group, which was hosing up here,
@@ -911,20 +907,19 @@ var FbForm = new Class({
 				var el = this.formElements.get(k);
 				if (gids.contains(el.groupid.toInt())) {
 					if (r.errors[k]) {
-					// prepare error so that it only triggers for real errors and not sucess
-					// msgs
-
-						var msg = '';
+						// prepare error so that it only triggers for real errors and not success msgs
 						if (typeOf(r.errors[k]) !== 'null') {
-							msg = r.errors[k].flatten().join('<br />');
-						}
-						if (msg !== '') {
-							tmperr = this._showElementError(r.errors[k], k);
-							if (err === false) {
-								err = tmperr;
+							var msg = r.errors[k].flatten().join('<br />');
+							if (msg !== '') {
+								tmperr = this._showElementError(r.errors[k], k);
+								if (err === false) {
+									err = tmperr;
+								}
+							} else {
+								this._showElementError('', k)
 							}
 						} else {
-							el.setErrorMessage('', '');
+							this._showElementError('', k)
 						}
 					}
 					if (r.modified[k]) {
@@ -939,18 +934,15 @@ var FbForm = new Class({
 		return err;
 	},
 
-	_showElementError : function (r, id) {
-		// r should be the errors for the specific element, down to its repeat group
-		// id.
-		var msg = '';
-		if (typeOf(r) === 'array') {
-			msg = r.flatten().join('<br />');
+	_showElementError: function (msg, id) {
+		// msg should be the errors for the specific element, down to its repeat group id.
+		if (typeOf(msg) === 'array') {
+			msg = msg.flatten().join('<br />');
 		}
 		var classname = (msg === '') ? 'fabrikSuccess' : 'fabrikError';
 		if (msg === '') {
 			msg = Joomla.JText._('COM_FABRIK_SUCCESS');
 		}
-		msg = '<span> ' + msg + '</span>';
 		this.formElements.get(id).setErrorMessage(msg, classname);
 		return (classname === 'fabrikSuccess') ? false : true;
 	},
@@ -982,7 +974,7 @@ var FbForm = new Class({
 	},
 
 	showMainError: function (msg) {
-		// If we are in j3 and ajax validations are on - dont show main error as it makes the form 'jumpy'
+		// If we are in j3 and ajax validations are on - don't show main error as it makes the form 'jumpy'
 		if (Fabrik.bootstrapped && this.options.ajaxValidation) {
 			return;
 		}
@@ -1066,7 +1058,7 @@ var FbForm = new Class({
 				// Return otherwise ajax upload may still occur.
 				return;
 			}
-			// Insert a hidden element so we can reload the last page if validation vails
+			// Insert a hidden element so we can reload the last page if validation fails
 			if (this.options.pages.getKeys().length > 1) {
 				this.form.adopt(new Element('input', {'name': 'currentPage', 'value': this.currentPage.toInt(), 'type': 'hidden'}));
 			}
@@ -1112,7 +1104,7 @@ var FbForm = new Class({
 								fconsole('Fabrik form::doSubmit: Ajax request successful');
 							}
 							if (typeOf(json) === 'null') {
-								Fabrik.loader.stop(this.getBlock(), 'Error in returned JSON');
+								Fabrik.loader.stop(this.getBlock());
 								fconsole('Fabrik form::doSubmit: Error in returned json:', json, txt);
 								return;
 							}
@@ -1286,7 +1278,7 @@ var FbForm = new Class({
 	// can use {placeholders}. Initially tried to use getFormData for this, but because
 	// it adds ALL the query string args from the page, the AJAX call from cascade ended
 	// up trying to submit the form. So, this func does what the commented out code in
-	// getFormData used to do, and only fecthes actual form element data.
+	// getFormData used to do, and only fetches actual form element data.
 
 	getFormElementData : function () {
 		var h = {};
@@ -1475,7 +1467,7 @@ var FbForm = new Class({
 		}
 		// Update the hidden field containing number of repeat groups
 		document.id('fabrik_repeat_group_' + i + '_counter').value = document.id('fabrik_repeat_group_' + i + '_counter').get('value').toInt() - 1;
-		// $$$ hugh - no, musn't decrement this!  See comment in setupAll
+		// $$$ hugh - no, mustn't decrement this!  See comment in setupAll
 		this.repeatGroupMarkers.set(i, this.repeatGroupMarkers.get(i) - 1);
 	},
 

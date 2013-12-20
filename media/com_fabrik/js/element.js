@@ -74,8 +74,7 @@ var FbElement =  new Class({
 		return elId;
 	},
 
-	attachedToForm: function ()
-	{
+	attachedToForm: function () {
 		this.setElement();
 		if (Fabrik.bootstrapped) {
 			this.alertImage = new Element('i.' + this.form.options.images.alert);
@@ -96,7 +95,10 @@ var FbElement =  new Class({
 		//is only set when the element is assigned to the form.
 	},
 
-	/** allows you to fire an array of events to element /  subelements, used in calendar to trigger js events when the calendar closes **/
+	/**
+	 * Allows you to fire an array of events to element /  subelements,
+	 * used in calendar to trigger js events when the calendar closes
+	 **/
 	fireEvents: function (evnts) {
 		if (this.hasSubElements()) {
 			this._getSubElements().each(function (el) {
@@ -115,7 +117,7 @@ var FbElement =  new Class({
 
 	getElement: function ()
 	{
-		//use this in mocha forms whose elements (such as database jons) arent loaded
+		//use this in mocha forms whose elements (such as database joins) aren't loaded
 		//when the class is ini'd
 		if (typeOf(this.element) === 'null') {
 			this.element = document.id(this.options.element);
@@ -147,7 +149,7 @@ var FbElement =  new Class({
 	},
 
 	/**
-	 * Set names/ids/elements ect when the elements group is cloned
+	 * Set names/ids/elements etc when the elements group is cloned
 	 *
 	 * @param   int  id  element id
 	 * @since   3.0.7
@@ -177,12 +179,12 @@ var FbElement =  new Class({
 	/**
 	 * called from list when ajax form closed
 	 * fileupload needs to remove its onSubmit event
-	 * othewise 2nd form submission will use first forms event
+	 * otherwise 2nd form submission will use first forms event
 	 */
 	removeCustomEvents: function () {},
 
 	/**
-	 * Was renewChangeEvents() but dont see why change events should be treated
+	 * Was renewChangeEvents() but don't see why change events should be treated
 	 * differently to other events?
 	 *
 	 * @since 3.0.7
@@ -226,7 +228,7 @@ var FbElement =  new Class({
 		}
 	},
 
-	// Alais to addNewEvent.
+	// Alias to addNewEvent.
 	addEvent: function (action, js) {
 		this.addNewEvent(action, js);
 	},
@@ -274,7 +276,7 @@ var FbElement =  new Class({
 	 * $$$ hugh - testing something for join elements, where in some corner cases,
 	 * like reverse Geocoding in the map element, we need to update elements that might be
 	 * joins, and all we have is the label (like "Austria" for country).  So am overriding this
-	 * new function in the join element, with code that finds the first occurence of the label,
+	 * new function in the join element, with code that finds the first occurrence of the label,
 	 * and sets the value accordingly.  But all we need to do here is make it a wrapper for update().
 	 */
 	updateByLabel: function (label) {
@@ -334,7 +336,7 @@ var FbElement =  new Class({
 	},
 
 	/**
-	 * As ajax validations call onsubmit to get the correct date, we need to
+	 * As ajax validations call onSubmit to get the correct date, we need to
 	 * reset the date back to the display date when the validation is complete
 	 */
 	afterAjaxValidation: function () {
@@ -349,7 +351,7 @@ var FbElement =  new Class({
 	},
 
 	/**
-	 * Run when the element is decloled from the form as part of a deleted repeat group
+	 * Run when the element is decloned from the form as part of a deleted repeat group
 	 */
 	decloned: function (groupid) {
 	},
@@ -447,83 +449,84 @@ var FbElement =  new Class({
 		}
 	},
 
-	setErrorMessage: function (msg, classname) {
-		var classes = ['fabrikValidating', 'fabrikError', 'fabrikSuccess'];
+	setErrorMessage: function (msg, classname, single) {
+		single = typeOf(single) !== 'null' ? single : false;
 		var container = this.getContainer();
 		if (container === false) {
-			fconsole('Fabrik element::setErrorMessage: could not set error msg for ' + msg + ' no container class found');
+			fconsole('Fabrik element::setErrorMessage: Could not display error msg (' + msg + ') - no container class found');
 			return;
 		}
-		classes.each(function (c) {
-			var r = classname === c ? container.addClass(c) : container.removeClass(c);
-		});
+		if (this.successTimer !== null) {
+			window.clearTimeout(this.successTimer);
+			this.successTimer = null;
+		}
 		var errorElements = this.getErrorElement();
 		errorElements.each(function (e) {
 			e.empty();
+			e.removeClass('fabrikHide').removeClass('text-error').removeClass('text-success');
 		});
+		container
+			.removeClass('error').removeClass('success')
+			.removeClass('fabrikError').removeClass('fabrikSuccess');
 		switch (classname) {
 			case 'fabrikError':
-				Fabrik.loader.stop(this.element);
-				if (Fabrik.bootstrapped) {
-					this.addTipMsg(msg);
+				container.addClass('error').addClass('fabrikError');
+				// Paul - TipsMsg not working - will fix in near future in separate PR - hence && false
+				if (Fabrik.bootstrapped && single && false) {
+					this.addTipMsg(msg, classname);
 				} else {
-					var a = new Element('a', {'href': '#', 'title': msg, 'events': {
-						'click': function (e) {
-							e.stop();
-						}
-					}}).adopt(this.alertImage);
-
-					Fabrik.tips.attach(a);
-					errorElements[0].adopt(a);
+					errorElements.each(function (e) {
+						e.addClass('text-error');
+						e.set('html', '&nbsp;' + msg);
+						e.grab(this.alertImage.clone(), 'top');
+					}.bind(this));
 				}
-
-				container.removeClass('success').removeClass('info').addClass('error');
-
-				// If tmpl has additional error message divs (e.g labels above) then set html msg there
-				if (errorElements.length > 1) {
-					for (var i = 1; i < errorElements.length; i ++) {
-						errorElements[i].set('html', msg);
-					}
-				}
-
 				break;
 
 			case 'fabrikSuccess':
-				container.addClass('success').removeClass('info').removeClass('error');
-				if (Fabrik.bootstrapped) {
-					Fabrik.loader.stop(this.element);
-					this.removeTipMsg();
-				} else {
-
-					errorElements[0].adopt(this.successImage);
-					var delFn = function () {
-						errorElements[0].addClass('fabrikHide');
-						container.removeClass('success');
-					};
-					delFn.delay(700);
+				container.addClass('success').addClass('fabrikSuccess');
+				// Paul - TipsMsg not working - will fix in near future in separate PR - hence && false
+				if (Fabrik.bootstrapped && single && false) {
+					if (msg !== '') {
+						this.addTipMsg(msg, classname);
+					} else {
+						this.removeTipMsg();
+					}
+				} else if (!single) {
+					errorElements.each(function (e) {
+						e.addClass('text-success');
+						e.set('html', '&nbsp;' + msg);
+						if (typeOf(this.successImage) !== 'null') {
+							e.grab(this.successImage.clone(), 'top');
+						}
+					}.bind(this));
 				}
-				break;
-			case 'fabrikValidating':
-				container.removeClass('success').addClass('info').removeClass('error');
-				//errorElements[0].adopt(this.loadingImage);
-				Fabrik.loader.start(this.element, msg);
+				var delfn = function () {
+					var container = this.getContainer();
+					if (container.hasClass('fabrikSuccess')) {
+						errorElements.each(function (e) {
+							e.empty();
+							e.removeClass('text-success').addClass('fabrikHide');
+						});
+						container.removeClass('success').removeClass('fabrikSuccess');
+						this.removeTipMsg();
+					}
+					this.successTimer = null;
+				}.bind(this);
+				this.successTimer = window.setTimeout(delfn, 5000);
 				break;
 		}
 
-		this.getErrorElement().removeClass('fabrikHide');
-		var parent = this.form;
-		if (classname === 'fabrikError' || classname === 'fabrikSuccess') {
-			parent.updateMainError();
-		}
-
+		/* The following code can be reintegrated into the above code if we want to fade in / out messages
 		var fx = this.getValidationFx();
 		switch (classname) {
-		case 'fabrikValidating':
 		case 'fabrikError':
+			var fx = this.getValidationFx();
 			fx.start({
 				'opacity': 1
 			});
 			break;
+
 		case 'fabrikSuccess':
 			fx.start({
 				'opacity': 1
@@ -535,7 +538,6 @@ var FbElement =  new Class({
 						'opacity': 0,
 						'onComplete': function () {
 							container.addClass('success').removeClass('error');
-							parent.updateMainError();
 							classes.each(function (c) {
 								container.removeClass(c);
 							});
@@ -544,7 +546,7 @@ var FbElement =  new Class({
 				}
 			});
 			break;
-		}
+		} */
 	},
 
 	setorigId: function ()
@@ -644,7 +646,7 @@ var FbElement =  new Class({
 
 	/**
 	 * determine which duplicated instance of the repeat group the
-	 * element belongs to, returns false if not in a repeat gorup
+	 * element belongs to, returns false if not in a repeat group
 	 * other wise an integer
 	 */
 	getRepeatNum: function () {
@@ -716,7 +718,6 @@ var FbElement =  new Class({
 		if (el.origid) {
 			origid = el.origid + '_0';
 		}
-		//var origid = el.origid ? el.origid : id;
 		el.options.repeatCounter = el.options.repeatCounter ? el.options.repeatCounter : 0;
 		var url = 'index.php?option=com_fabrik&form_id=' + this.form.id;
 		Fabrik.fireEvent('fabrik.form.element.validation.start', [this.form, el, e]);
@@ -737,11 +738,15 @@ var FbElement =  new Class({
 				if (Fabrik.debug) {
 					fconsole('Fabrik element::doValidation: Ajax request starting for:', this.spinId);
 				}
+
 			}.bind(this),
 
 			onCancel: function(){
 				Fabrik.loader.stop(this.spinId);
 				this.ajax = null;
+				if (Fabrik.debug) {
+					fconsole('Fabrik element::doValidation: Ajax request cancelled for:', this.spinId);
+				}
 			}.bind(this),
 
 			onComplete: function(){
@@ -750,6 +755,7 @@ var FbElement =  new Class({
 			}.bind(this),
 
 			onFailure: function(xhr){
+				this.setErrorMessage(Joomla.JText._('COM_FABRIK_VALIDATION_ERROR'), 'fabrikError');
 				fconsole('Fabrik element::doValidation: Ajax failure: Code ' + xhr.status + ': ' + xhr.statusText);
 				this.form.showMainError('Validation ajax call failed');
 				this.afterAjaxValidation();
@@ -757,6 +763,7 @@ var FbElement =  new Class({
 
 			onSuccess: function (r) {
 				if (typeOf(r) === 'null') {
+					this.setErrorMessage(Joomla.JText._('COM_FABRIK_VALIDATION_ERROR'), 'fabrikError');
 					fconsole('Fabrik element::doValidation: Ajax json invalid', r);
 					this.setErrorMessage('Validation ajax call failed', 'fabrikError');
 					this.form.result = true;
@@ -779,7 +786,7 @@ var FbElement =  new Class({
 				if ((typeOf(r.modified[origid]) !== 'null')) {
 					el.update(r.modified[origid]);
 				}
-				var msg = typeOf(r.errors[origid]) !== 'null' ? r.errors[origid].flatten().join('<br />') : '';
+				var msg = typeOf(r.errors[origid]) === 'array' ? r.errors[origid].flatten().join('<br />') : '';
 				if (msg !== '') {
 					this.setErrorMessage(msg, 'fabrikError', true);
 				} else {
