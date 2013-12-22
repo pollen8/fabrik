@@ -4576,9 +4576,13 @@ class FabrikFEModelList extends JModelForm
 
 				if (FabrikString::safeColName($primaryKey) == $tableName . '.' . FabrikString::safeColName($element->name) && $table->auto_inc)
 				{
-					if (!strpos($q, ' NOT NULL AUTO_INCREMENT'))
+					if (!stripos($q, ' NOT NULL'))
 					{
-						$q .= ' NOT NULL AUTO_INCREMENT ';
+						$q .= ' NOT NULL';
+					}
+					if (!stripos($q, ' AUTO_INCREMENT'))
+					{
+						$q .= ' AUTO_INCREMENT';
 					}
 				}
 
