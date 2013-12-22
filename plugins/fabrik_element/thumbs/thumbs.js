@@ -16,43 +16,55 @@ var FbThumbs =  new Class({
 		if (Fabrik.bootstrapped) {
 			this.setupj3();
 		} else {
-			this.imagepath = Fabrik.liveSite + 'plugins/fabrik_element/thumbs/images/';
 			this.thumbup = document.id('thumbup');
 			this.thumbdown = document.id('thumbdown');
-			
-			this.thumbup.addEvent('mouseover', function (e) {
-				this.thumbup.setStyle('cursor', 'pointer');
-				this.thumbup.src = this.imagepath + "thumb_up_in.gif";
-			}.bind(this));
-			
-			this.thumbdown.addEvent('mouseover', function (e) {
-				this.thumbdown.setStyle('cursor', 'pointer');
-				this.thumbdown.src = this.imagepath + "thumb_down_in.gif";
-			}.bind(this));
-	
-			this.thumbup.addEvent('mouseout', function (e) {
-				this.thumbup.setStyle('cursor', '');
-				if (this.options.myThumb === 'up') {
+			if (this.options.canUse) {
+				this.imagepath = Fabrik.liveSite + 'plugins/fabrik_element/thumbs/images/';
+				
+				this.thumbup.addEvent('mouseover', function (e) {
+					this.thumbup.setStyle('cursor', 'pointer');
 					this.thumbup.src = this.imagepath + "thumb_up_in.gif";
-				} else {
-					this.thumbup.src = this.imagepath + "thumb_up_out.gif";
-				}
-			}.bind(this));
-			this.thumbdown.addEvent('mouseout', function (e) {
-				this.thumbdown.setStyle('cursor', '');
-				if (this.options.myThumb === 'down') {
+				}.bind(this));
+				
+				this.thumbdown.addEvent('mouseover', function (e) {
+					this.thumbdown.setStyle('cursor', 'pointer');
 					this.thumbdown.src = this.imagepath + "thumb_down_in.gif";
-				} else {
-					this.thumbdown.src = this.imagepath + "thumb_down_out.gif";
-				}
-			}.bind(this));
-	
-			this.thumbup.addEvent('click', function (e) {
-				this.doAjax('up');
-			}.bind(this));
-			this.thumbdown.addEvent('click', function (e) {
-				this.doAjax('down');
-			}.bind(this));
+				}.bind(this));
+		
+				this.thumbup.addEvent('mouseout', function (e) {
+					this.thumbup.setStyle('cursor', '');
+					if (this.options.myThumb === 'up') {
+						this.thumbup.src = this.imagepath + "thumb_up_in.gif";
+					} else {
+						this.thumbup.src = this.imagepath + "thumb_up_out.gif";
+					}
+				}.bind(this));
+				this.thumbdown.addEvent('mouseout', function (e) {
+					this.thumbdown.setStyle('cursor', '');
+					if (this.options.myThumb === 'down') {
+						this.thumbdown.src = this.imagepath + "thumb_down_in.gif";
+					} else {
+						this.thumbdown.src = this.imagepath + "thumb_down_out.gif";
+					}
+				}.bind(this));
+		
+				this.thumbup.addEvent('click', function (e) {
+					this.doAjax('up');
+				}.bind(this));
+				this.thumbdown.addEvent('click', function (e) {
+					this.doAjax('down');
+				}.bind(this));
+			}
+			else {
+				this.thumbup.addEvent('click', function (e) {
+					e.stop();
+					this.doNoAccess();
+				}.bind(this));
+				this.thumbdown.addEvent('click', function (e) {
+					e.stop();
+					this.doNoAccess();
+				}.bind(this));				
+			}
 		}
 	},
 	
@@ -63,28 +75,38 @@ var FbThumbs =  new Class({
 		
 		up.addEvent('click', function (e) {
 			e.stop();
-			var add = up.hasClass('btn-success') ? false : true;
-			this.doAjax('up', add);
-			if (!add) {
-				up.removeClass('btn-success');
-			} else {
-				up.addClass('btn-success');
-				if (typeOf(down) !== 'null') {
-					down.removeClass('btn-danger');
+			if (this.options.canUse) {
+				var add = up.hasClass('btn-success') ? false : true;
+				this.doAjax('up', add);
+				if (!add) {
+					up.removeClass('btn-success');
+				} else {
+					up.addClass('btn-success');
+					if (typeOf(down) !== 'null') {
+						down.removeClass('btn-danger');
+					}
 				}
+			}
+			else {
+				this.doNoAccess();
 			}
 		}.bind(this));
 		
 		if (typeOf(down) !== 'null') {
 			down.addEvent('click', function (e) {
 				e.stop();
-				var add = down.hasClass('btn-danger') ? false : true;
-				this.doAjax('down', add);
-				if (!add) {
-					down.removeClass('btn-danger');
-				} else {
-					down.addClass('btn-danger');
-					up.removeClass('btn-success');
+				if (this.options.canUse) {
+					var add = down.hasClass('btn-danger') ? false : true;
+					this.doAjax('down', add);
+					if (!add) {
+						down.removeClass('btn-danger');
+					} else {
+						down.addClass('btn-danger');
+						up.removeClass('btn-success');
+					}
+				}
+				else {
+					this.doNoAccess();
 				}
 			}.bind(this));
 		}
@@ -148,5 +170,12 @@ var FbThumbs =  new Class({
 				}.bind(this)
 			}).send();
 		}
+	},
+	
+	doNoAccess: function () {
+		if (this.options.noAccessMsg !== '') {
+			alert(this.options.noAccessMsg);
+		}
 	}
+	
 });

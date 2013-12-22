@@ -26,6 +26,14 @@
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>	
 			</field>
+			
+			<field name="thumbs_no_access_msg"
+				type="text"
+				default="PLG_ELEMENT_THUMBS_NO_ACCESS_MSG_DEFAULT"
+				label="PLG_ELEMENT_THUMBS_NO_ACCESS_MSG_LABEL"
+				description="PLG_ELEMENT_THUMBS_NO_ACCESS_MSG_DESC"
+				size="30"
+			/>
 				
 		</fieldset>
 		
