@@ -245,7 +245,7 @@ class FabrikAdminModelElements extends FabModelList
 						$published = $validations->plugin_published[$i] ? JText::_('JPUBLISHED') : JText::_('JUNPUBLISHED');
 					}
 
-					$v[] = '&nbsp;&nbsp;<strong>' . $pname . '</strong>: <em>' . $published . '</em>'
+					$v[] = '&nbsp;&nbsp;<strong>' . $pname . ': <em>' . $published . '</em></strong>'
 						. '<br />&nbsp;&nbsp;&nbsp;&nbsp;' . JText::_('COM_FABRIK_FIELD_ERROR_MSG_LABEL') . ': <em>' . htmlspecialchars(JArrayHelper::getValue($msgs, $i, 'n/a')) . '</em>';
 				}
 			}
