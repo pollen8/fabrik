@@ -617,12 +617,12 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 	 * @return  array  (value condition)
 	 */
 
-	protected function getRangedFilterValue($value)
+	protected function getRangedFilterValue($value, $condition = "")
 	{
 		$db = FabrikWorker::getDbo();
 		$element = $this->getElement();
 
-		if ($element->filter_type === 'range')
+		if ($element->filter_type === 'range' || strtoupper($condition) === 'BETWEEN')
 		{
 			if (strtotime($value[0]) > strtotime($value[1]))
 			{
