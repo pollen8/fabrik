@@ -26,7 +26,6 @@ var FbForm = new Class({
 		'customJsAction': '',
 		'plugins': [],
 		'inlineMessage': true,
-		'print': false,
 		'images': {
 			'alert': '',
 			'action_check': '',
@@ -124,23 +123,8 @@ var FbForm = new Class({
 			}.bind(this));
 			this.watchGoBackButton();
 		}
-		
-		this.watchPrintButton();
 	},
 
-	/**
-	 * Print button action - either open up the print preview window - or print if already opened
-	 */
-	watchPrintButton: function () {
-		document.getElements('a[data-fabrik-print]').addEvent('click', function (e) {
-			e.stop();
-			if (this.options.print) {
-				window.print();
-			} else {
-				window.open(e.target.get('href'), 'win2', 'status=no,toolbar=no,scrollbars=yes,titlebar=no,menubar=no,resizable=yes,width=400,height=350,directories=no,location=no;');
-			}
-		}.bind(this));
-	},
 	// Go back button in ajax pop up window should close the window
 
 	watchGoBackButton: function () {
@@ -797,7 +781,7 @@ var FbForm = new Class({
 	doElementClearError: function (e, subEl) {
 		// If not doing ajax validation, then clear error messages for a field on same events
 		var id = this._getValidationElId(e, subEl);
-		this._showElementError('', id, true);
+		this.formElements.get(id).setErrorMessage('', '', true);
 		this.updateMainError();
 	},
 
@@ -934,8 +918,9 @@ var FbForm = new Class({
 		return err;
 	},
 
-	_showElementError: function (msg, id) {
+	_showElementError: function (msg, id, single) {
 		// msg should be the errors for the specific element, down to its repeat group id.
+		single = typeOf(single) !== 'null' ? single : false;
 		if (typeOf(msg) === 'array') {
 			msg = msg.flatten().join('<br />');
 		}
@@ -943,7 +928,7 @@ var FbForm = new Class({
 		if (msg === '') {
 			msg = Joomla.JText._('COM_FABRIK_SUCCESS');
 		}
-		this.formElements.get(id).setErrorMessage(msg, classname);
+		this.formElements.get(id).setErrorMessage(msg, classname, single);
 		return (classname === 'fabrikSuccess') ? false : true;
 	},
 

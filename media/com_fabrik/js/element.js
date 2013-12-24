@@ -500,20 +500,20 @@ var FbElement =  new Class({
 							e.grab(this.successImage.clone(), 'top');
 						}
 					}.bind(this));
+					var delfn = function () {
+						var container = this.getContainer();
+						if (container.hasClass('fabrikSuccess')) {
+							errorElements.each(function (e) {
+								e.empty();
+								e.removeClass('text-success').addClass('fabrikHide');
+							});
+							container.removeClass('success').removeClass('fabrikSuccess');
+							this.removeTipMsg();
+						}
+						this.successTimer = null;
+					}.bind(this);
+					this.successTimer = window.setTimeout(delfn, 5000);
 				}
-				var delfn = function () {
-					var container = this.getContainer();
-					if (container.hasClass('fabrikSuccess')) {
-						errorElements.each(function (e) {
-							e.empty();
-							e.removeClass('text-success').addClass('fabrikHide');
-						});
-						container.removeClass('success').removeClass('fabrikSuccess');
-						this.removeTipMsg();
-					}
-					this.successTimer = null;
-				}.bind(this);
-				this.successTimer = window.setTimeout(delfn, 5000);
 				break;
 		}
 
