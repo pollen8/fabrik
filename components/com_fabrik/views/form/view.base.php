@@ -824,7 +824,7 @@ class FabrikViewFormBase extends JViewLegacy
 		if ($resetIcon !== '')
 		{
 			$resetIcon = '<i class="' . $resetIcon . '"></i>';
-			$resetLabel = $params->get('reset_icon_location', 0) == 'before' ? $resetIcon . '&nbsp;' . $resetLabel : $resetLabel . '&nbsp;' . $resetIcon;
+			$resetLabel = $params->get('reset_icon_location', 'before') == 'before' ? $resetIcon . '&nbsp;' . $resetLabel : $resetLabel . '&nbsp;' . $resetIcon;
 		}
 
 		$form->resetButton = $params->get('reset_button', 0) && $this->editable == "1"
@@ -833,7 +833,7 @@ class FabrikViewFormBase extends JViewLegacy
 		if ($copyIcon !== '')
 		{
 			$copyIcon = '<i class="' . $copyIcon . '"></i>';
-			$copyLabel = $params->get('copy_icon_location', 0) == 'before' ? $copyIcon . '&nbsp;' . $copyLabel : $copyLabel . '&nbsp;' . $copyIcon;
+			$copyLabel = $params->get('copy_icon_location', 'before') == 'before' ? $copyIcon . '&nbsp;' . $copyLabel : $copyLabel . '&nbsp;' . $copyIcon;
 		}
 
 		$form->copyButton = $params->get('copy_button', 0) && $this->editable && $model->getRowId() != ''
@@ -842,7 +842,7 @@ class FabrikViewFormBase extends JViewLegacy
 		if ($applyIcon !== '')
 		{
 			$applyIcon = '<i class="' . $applyIcon . '"></i>';
-			$applyLabel = $params->get('apply_icon_location', 0) == 'before' ? $applyIcon . '&nbsp;' . $applyLabel : $applyLabel . '&nbsp;' . $applyIcon;
+			$applyLabel = $params->get('apply_icon_location', 'before') == 'before' ? $applyIcon . '&nbsp;' . $applyLabel : $applyLabel . '&nbsp;' . $applyIcon;
 		}
 
 		$applyButtonType = $model->isAjax() ? 'button' : 'submit';
@@ -852,7 +852,7 @@ class FabrikViewFormBase extends JViewLegacy
 		if ($deleteIcon !== '')
 		{
 			$deleteIcon = '<i class="' . $deleteIcon . '"></i>';
-			$deleteLabel = $params->get('delete_icon_location', 0) == 'before' ? $deleteIcon . '&nbsp;' . $deleteLabel : $deleteLabel . '&nbsp;' . $deleteIcon;
+			$deleteLabel = $params->get('delete_icon_location', 'before') == 'before' ? $deleteIcon . '&nbsp;' . $deleteLabel : $deleteLabel . '&nbsp;' . $deleteIcon;
 		}
 
 		$form->deleteButton = $params->get('delete_button', 0) && $canDelete && $this->editable && $this_rowid != ''
@@ -861,7 +861,7 @@ class FabrikViewFormBase extends JViewLegacy
 		if ($goBackIcon !== '')
 		{
 			$goBackIcon = '<i class="' . $goBackIcon . '"></i>';
-			$goBackLabel = $params->get('goback_icon_location', 0) == 'before' ? $goBackIcon . '&nbsp;' . $goBackLabel : $goBackLabel . '&nbsp;' . $goBackIcon;
+			$goBackLabel = $params->get('goback_icon_location', 'before') == 'before' ? $goBackIcon . '&nbsp;' . $goBackLabel : $goBackLabel . '&nbsp;' . $goBackIcon;
 		}
 
 		$goBack = $model->isAjax() ? '' : FabrikWorker::goBackAction();
@@ -878,7 +878,7 @@ class FabrikViewFormBase extends JViewLegacy
 			if ($submitIcon !== '')
 			{
 				$submitIcon = '<i class="' . $submitIcon . '"></i>';
-				$submitLabel = $params->get('save_icon_location') == 'before' ? $submitIcon . '&nbsp;' . $submitLabel : $submitLabel . '&nbsp;' . $submitIcon;
+				$submitLabel = $params->get('save_icon_location', 'before') == 'before' ? $submitIcon . '&nbsp;' . $submitLabel : $submitLabel . '&nbsp;' . $submitIcon;
 			}
 
 			$form->submitButton = '<button type="' . $button . '" class="btn btn-primary button ' . $submitClass . '" name="Submit">'
