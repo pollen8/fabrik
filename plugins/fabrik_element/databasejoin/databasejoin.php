@@ -1310,7 +1310,8 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 	}
 
 	/**
-	 * Add read only links
+	 * Add read only links, if option set and related 'add options in front end'
+	 * form found.
 	 *
 	 * @param   array  &$defaultLabels  Default labels
 	 * @param   array  $defaultValues   Default values
@@ -1359,8 +1360,17 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		$listid = $db->loadResult();
 
 		$itemId = FabrikWorker::itemId($listid);
+		$task = $app->isAdmin() ? 'task=details.view' : 'view=details';
+		$url = 'index.php?option=com_' . $package . '&' . $task . '&formid=' . $popupformid . '&listid=' . $listid;
 
-		return 'index.php?option=com_' . $package . '&view=details&formid=' . $popupformid . '&listid=' . $listid . '&Itemid=' .$itemId . '&rowid=';
+		if (!$app->isAdmin())
+		{
+			$url .= '&Itemid=' .$itemId;
+		}
+		
+		$url .= '&rowid=';
+		
+		return $url;
 	}
 
 	/**
@@ -1825,6 +1835,24 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 
 		// $$$ rob add links and icons done in parent::renderListData();
 		return parent::renderListData($data, $thisRow);
+	}
+	
+	/**
+	 * Optionally pre-format list data before rendering to <ul>
+	 *
+	 * @param   array  &$data    Element Data
+	 * @param   array  $thisRow  Row data
+	 *
+	 * @return  void
+	 */
+	protected function listPreformat(&$data, $thisRow)
+	{
+		$raw = $this->getFullName(true, false);
+		$displayType = $this->getDisplayType();
+		$raw .= ($displayType == 'checkbox' || $displayType == 'multilist') ? '_id' : '_raw';
+		$values = FabrikWorker::JSONtoData($thisRow->$raw, true);
+		
+		$this->addReadOnlyLinks($data, $values);
 	}
 
 	/**
