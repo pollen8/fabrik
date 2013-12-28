@@ -73,10 +73,10 @@
 					<option value="&gt;=">&gt;=</option>
 					<option value="&gt;">&gt;</option>
 					<option value="!=">!=</option>
-					<option value="hidden">hidden</option>
-					<option value="shown">shown</option>
-					<option value="CONTAINS">contains</option>
-					<option value="!CONTAINS">does not contain</option>
+					<option value="hidden">COM_FABRIK_JS_HIDDEN</option>
+					<option value="shown">COM_FABRIK_JS_SHOWN</option>
+					<option value="CONTAINS">COM_FABRIK_JS_CONTAINS</option>
+					<option value="!CONTAINS">COM_FABRIK_JS_NOT_CONTAIN</option>
 			</field>
 
 			<field name="js_e_value"
@@ -93,14 +93,14 @@
 				description="COM_FABRIK_JS_ACTION_DESC"
 				>
 					<option value="">COM_FABRIK_PLEASE_SELECT</option>
-					<option value="hide">hide</option>
-					<option value="show">show</option>
-					<option value="fadeout">fadeout</option>
-					<option value="fadein">fadein</option>
-					<option value="slide in">slide in</option>
-					<option value="slide out">slide out</option>
-					<option value="slide toggle">slide toggle</option>
-					<option value="clear">clear</option>
+					<option value="hide">COM_FABRIK_JS_HIDE</option>
+					<option value="show">COM_FABRIK_JS_SHOW</option>
+					<option value="fadeout">COM_FABRIK_JS_FADEOUT</option>
+					<option value="fadein">COM_FABRIK_JS_FADEIN</option>
+					<option value="slide out">COM_FABRIK_JS_SLIDEOUT</option>
+					<option value="slide in">COM_FABRIK_JS_SLIDEIN</option>
+					<option value="slide toggle">COM_FABRIK_JS_SLIDETOGGLE</option>
+					<option value="clear">COM_FABRIK_JS_CLEAR</option>
 			</field>
 
 			<field name="js_e_trigger"
