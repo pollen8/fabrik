@@ -274,6 +274,14 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 			$opts->input_mask = '';
 		}
 
+		if ($this->getParams()->get('autocomplete', '0') == '2')
+		{
+			$autoOpts = array();
+			$autoOpts['max'] = $this->getParams()->get('autocomplete_rows', '10');
+			$autoOpts['storeMatchedResultsOnly'] = false;
+			FabrikHelperHTML::autoComplete($id, $this->getElement()->id, $this->getFormModel()->getId(), 'field', $autoOpts);
+		}
+
 		return array('FbField', $id, $opts);
 	}
 
