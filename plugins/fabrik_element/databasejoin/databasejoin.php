@@ -1194,7 +1194,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 				}
 			}
 
-			$targetIds = $this->multiOptionTargetIds($data);
+			$targetIds = $this->multiOptionTargetIds($data, $repeatCounter);
 
 			if ($targetIds !== false)
 			{
@@ -1367,9 +1367,9 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		{
 			$url .= '&Itemid=' .$itemId;
 		}
-		
+
 		$url .= '&rowid=';
-		
+
 		return $url;
 	}
 
@@ -1473,7 +1473,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		//$idname = $this->getFullName(true, false) . '_id';
 		$optsPerRow = intval($params->get('dbjoin_options_per_row', 0));
 
-		$targetIds = $this->multiOptionTargetIds($data);
+		$targetIds = $this->multiOptionTargetIds($data, $repeatCounter);
 
 		if ($targetIds !== false)
 		{
@@ -1534,7 +1534,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		$name = FabrikString::rtrimword($name, '[]');
 		//$formModel = $this->getFormModel();
 
-		$targetIds = $this->multiOptionTargetIds($data);
+		$targetIds = $this->multiOptionTargetIds($data, $repeatCounter);
 
 		if ($targetIds !== false)
 		{
@@ -1836,7 +1836,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		// $$$ rob add links and icons done in parent::renderListData();
 		return parent::renderListData($data, $thisRow);
 	}
-	
+
 	/**
 	 * Optionally pre-format list data before rendering to <ul>
 	 *
@@ -1851,7 +1851,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		$displayType = $this->getDisplayType();
 		$raw .= ($displayType == 'checkbox' || $displayType == 'multilist') ? '_id' : '_raw';
 		$values = FabrikWorker::JSONtoData($thisRow->$raw, true);
-		
+
 		$this->addReadOnlyLinks($data, $values);
 	}
 
@@ -3489,10 +3489,11 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 	 * This method gets the ids for the records in the x-ref target table.
 	 *
 	 * @param   array  $data  Form data
+	 * @param   int    $repeatCounter  Repeat group counter
 	 *
 	 * @return  array|boolean  Array of ids if found, else return false.
 	 */
-	protected function multiOptionTargetIds($data)
+	protected function multiOptionTargetIds($data, $repeatCounter = 0)
 	{
 		$displayType = $this->getDisplayType();
 
