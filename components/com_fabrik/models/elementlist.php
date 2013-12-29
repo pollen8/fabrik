@@ -934,32 +934,6 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 	}
 
 	/**
-	 * format the read only output for the page
-	 *
-	 * @param   string  $value  Initial value
-	 * @param   string  $label  Label
-	 *
-	 * @return  string  read only value
-	 */
-
-	protected function getReadOnlyOutput($value, $label)
-	{
-		$params = $this->getParams();
-
-		if ($params->get('icon_folder') != -1 && $params->get('icon_folder') != '')
-		{
-			$icon = $this->replaceWithIcons($value);
-
-			if ($this->iconsSet)
-			{
-				$label = $icon;
-			}
-		}
-
-		return $label;
-	}
-
-	/**
 	 * Trigger called when a row is stored.
 	 * Check if new options have been added and if so store them in the element for future use.
 	 *

@@ -570,15 +570,15 @@ class PlgFabrik_Element extends FabrikPlugin
 			return $data;
 		}
 
-		$cleanData = empty($iconfile) ? FabrikString::clean(strip_tags($data)) : $iconfile;
+		$cleanData = empty($iconFile) ? FabrikString::clean(strip_tags($data)) : $iconFile;
 		$cleanDatas = array($this->getElement()->name . '_' . $cleanData, $cleanData);
+		$opts = array('forceImage' => true);
 
 		foreach ($cleanDatas as $cleanData)
 		{
 			foreach ($this->imageExtensions as $ex)
 			{
 				$f = JPath::clean($cleanData . '.' . $ex);
-				$opts = array('forceImage' => true);
 				$img = FabrikHelperHTML::image($cleanData . '.' . $ex, $view, $tmpl, array(), false, $opts);
 
 				if ($img !== '')
@@ -614,7 +614,7 @@ class PlgFabrik_Element extends FabrikPlugin
 						$data = htmlspecialchars($data, ENT_QUOTES);
 						$img = '<a class="fabrikTip" ' . $target . ' href="' . $ahref . '" opts=\'' . $opts . '\' title="' . $data . '">' . $img . '</a>';
 					}
-					elseif (!empty($iconfile))
+					elseif (!empty($iconFile))
 					{
 						/**
 						 * $$$ hugh - kind of a hack, but ... if this is an upload element, it may already be a link, and
@@ -2415,6 +2415,32 @@ class PlgFabrik_Element extends FabrikPlugin
 	public function render($data, $repeatCounter = 0)
 	{
 		return 'need to overwrite in element plugin class';
+	}
+	
+	/**
+	 * Format the read only output for the page
+	 *
+	 * @param   string  $value  Initial value
+	 * @param   string  $label  Label
+	 *
+	 * @return  string  Read only value
+	 */
+	
+	protected function getReadOnlyOutput($value, $label)
+	{
+		$params = $this->getParams();
+		
+		if ($params->get('icon_folder') != -1 && $params->get('icon_folder') != '')
+		{
+			$icon = $this->replaceWithIcons($value);
+	
+			if ($this->iconsSet)
+			{
+				$label = $icon;
+			}
+		}
+	
+		return $label;
 	}
 
 	/**

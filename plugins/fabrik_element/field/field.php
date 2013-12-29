@@ -148,6 +148,8 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 			{
 				$value = str_pad('', JString::strlen($value), '*');
 			}
+			
+			$value = $this->getReadOnlyOutput($value, $value);
 
 			return ($element->hidden == '1') ? "<!-- " . $value . " -->" : $value;
 		}
