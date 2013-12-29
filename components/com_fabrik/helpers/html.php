@@ -1665,6 +1665,13 @@ if (!$j3)
 	public static function autoCompleteOptions($htmlid, $elementid, $formid, $plugin = 'field', $opts = array())
 	{
 		$json = new stdClass;
+
+		if (!array_key_exists('minTriggerChars', $opts))
+		{
+			$usersConfig = JComponentHelper::getParams('com_fabrik');
+			$json->minTriggerChars = (int) $usersConfig->get('autocomplete_min_trigger_chars', '1');
+		}
+
 		$app = JFactory::getApplication();
 		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$json->url = COM_FABRIK_LIVESITE . 'index.php?option=com_' . $package . '&format=raw&view=plugin&task=pluginAjax&g=element&element_id=' . $elementid

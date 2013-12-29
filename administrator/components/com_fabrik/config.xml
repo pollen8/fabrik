@@ -375,6 +375,13 @@
 				<option value="0">JNO</option>
 				<option value="1">JYES</option>
 		</field>
+		
+		<field name="autocomplete_min_trigger_chars"
+			size="3"
+			default="1"
+			description="COM_FABRIK_AUTOCOMPLETE_MIN_TRIGGER_CHARS_DESC"
+			label="COM_FABRIK_AUTOCOMPLETE_MIN_TRIGGER_CHARS_LABEL" />
+		
 	</fieldset>
 
 	<fieldset label="COM_FABRIK_DEBUGGING" name="debug">
