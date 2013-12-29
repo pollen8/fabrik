@@ -143,7 +143,7 @@ class JFormFieldSwapList extends JFormFieldList
 	}
 
 	/**
-	 * Get a list of groups currenly used by the form
+	 * Get a list of groups currently used by the form
 	 *
 	 * @return  array  list of groups, html list of groups
 	 */

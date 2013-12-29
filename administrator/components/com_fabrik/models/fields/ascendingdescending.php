@@ -1,6 +1,6 @@
 <?php
 /**
- * Renders a list of ascending / decending options
+ * Renders a list of ascending / descending options
  *
  * @package     Joomla
  * @subpackage  Form
@@ -14,7 +14,7 @@ defined('_JEXEC') or die('Restricted access');
 require_once JPATH_ADMINISTRATOR . '/components/com_fabrik/helpers/element.php';
 
 /**
- * Renders a list of ascending / decending options
+ * Renders a list of ascending / descending options
  *
  * @package     Joomla
  * @subpackage  Form

@@ -60,7 +60,7 @@ class FabrikAdminViewList extends JViewLegacy
 
 	public function display($tpl = null)
 	{
-		// Initialiase variables.
+		// Initialise variables.
 		$model = $this->getModel();
 		$this->form = $this->get('Form');
 		$this->item = $this->get('Item');

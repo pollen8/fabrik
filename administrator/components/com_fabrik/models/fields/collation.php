@@ -45,7 +45,7 @@ class JFormFieldCollation extends JFormFieldList
 			$db = JFactory::getDbo();
 
 			/*
-			 * Attempt to get the real Db colaltion (tmp fix before this makes it into J itself
+			 * Attempt to get the real Db collation (tmp fix before this makes it into J itself
 			 * see - https://github.com/joomla/joomla-cms/pull/2092
 			 */
 			$db->setQuery('SHOW VARIABLES LIKE "collation_database"');

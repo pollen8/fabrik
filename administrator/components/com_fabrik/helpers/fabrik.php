@@ -209,7 +209,7 @@ class FabrikAdminHelper
 				}
 
 				// Collect the black or white list tags and attributes.
-				// Each list is cummulative.
+				// Each list is cumulative.
 				if ($filterType == 'BL')
 				{
 					$blackList = true;
@@ -234,7 +234,7 @@ class FabrikAdminHelper
 		// Unfiltered assumes first priority.
 		if ($unfiltered)
 		{
-			// Dont apply filtering.
+			// Don't apply filtering.
 		}
 		else
 		{
@@ -278,7 +278,7 @@ class FabrikAdminHelper
 
 		if ($v->RELEASE > 2.5)
 		{
-			// If rendering a list inside a form and viewing in admin - there were layout name conflicts (so renamed boostrap to admin_bootstrap)
+			// If rendering a list inside a form and viewing in admin - there were layout name conflicts (so renamed bootstrap to admin_bootstrap)
 			$layout = $view->getName() === 'list' ? 'admin_bootstrap' : 'bootstrap';
 			$view->setLayout($layout);
 		}

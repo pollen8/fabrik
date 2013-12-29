@@ -213,7 +213,7 @@ class FabrikAdminModelPackage extends FabModelAdmin
 	}
 
 	/**
-	 * Save the pacakge
+	 * Save the package
 	 *
 	 * @param   array  $data  jform data
 	 *
@@ -388,7 +388,7 @@ class FabrikAdminModelPackage extends FabModelAdmin
 	 * Start the zip download
 	 *
 	 * @param   string  $filename  saved zip name
-	 * @param   stirng  $filepath  server path for zip
+	 * @param   string  $filepath  server path for zip
 	 *
 	 * @return  void
 	 */
@@ -461,7 +461,7 @@ class FabrikAdminModelPackage extends FabModelAdmin
 		$return[] = "class com_" . $row->component_name . "InstallerScript{";
 		$return[] = "";
 
-		$return[] = "protected function existingPacakge(\$m)
+		$return[] = "protected function existingPackage(\$m)
 			{
 				\$db = JFactory::getDbo();
 				\$query = \$db->getQuery(true);
@@ -476,7 +476,7 @@ class FabrikAdminModelPackage extends FabModelAdmin
 		$return[] = "\t	public function preflight(\$type, \$parent)
 	{
 			\$m = \$parent->getParent()->manifest;
-			\$existing = \$this->existingPacakge(\$m);
+			\$existing = \$this->existingPackage(\$m);
 			if (\$existing)
 			{
 				\$currentVersion = \$existing->version;
@@ -503,7 +503,7 @@ class FabrikAdminModelPackage extends FabModelAdmin
 		$return[] = "";
 		$return[] = "\tpublic function postflight(\$type, \$parent) {";
 		$return[] = "\t\t\$m = \$parent->getParent()->manifest;
-			\$existing = \t\t\$this->existingPacakge(\$m);
+			\$existing = \t\t\$this->existingPackage(\$m);
 			\$db = JFactory::getDbo();
 			if (\$existing)
 			{
@@ -644,7 +644,7 @@ class FabrikAdminModelPackage extends FabModelAdmin
 
 		if (!JFile::write($path, $return))
 		{
-			throw new RuntimeException('didnt write to ' . $path, 500);
+			throw new RuntimeException('Error: Couldn\'t write to: ' . $path, 500);
 		}
 
 		return $path;
@@ -990,7 +990,7 @@ class FabrikAdminModelPackage extends FabModelAdmin
 	}
 
 	/**
-	 * Create the SQL unistall file
+	 * Create the SQL uninstall file
 	 *
 	 * @param   object  $row  package
 	 *
@@ -1003,8 +1003,8 @@ class FabrikAdminModelPackage extends FabModelAdmin
 		$db = JFactory::getDbo();
 
 		/**
-		 * dont do this as the db table may be used by the main fabrik component
-		 * perhaps later on we can add some php to the manifest class to inteligently remove orphaned db tables.
+		 * don't do this as the db table may be used by the main fabrik component
+		 * perhaps later on we can add some php to the manifest class to intelligently remove orphaned db tables.
 		 */
 
 		/*
@@ -1021,11 +1021,11 @@ class FabrikAdminModelPackage extends FabModelAdmin
 
 		/**
 		 * drop the meta tables as well (currently we don't have a method for
-		 * upgrading a package. So unistall should remove these meta tables
+		 * upgrading a package. So uninstall should remove these meta tables
 		 */
 		foreach ($this->tables as $table)
 		{
-			// As we share the connection table we don't want to remove it on package unistall
+			// As we share the connection table we don't want to remove it on package uninstall
 			if ($table == '#__fabrik_connections')
 			{
 				continue;
@@ -1138,7 +1138,7 @@ class FabrikAdminModelPackage extends FabModelAdmin
 		/*
 		 * Not sure this is going to be possible with out a lot more logic related to source/target j versions
 		 * and whether or not to install additional plugins etc.
-		 * Dont want to install a j2.5 plugin in a j3.0 site for example)
+		 * Don't want to install a j2.5 plugin in a j3.0 site for example)
 		 */
 		// $jversion = isset($row->params->jversion) ? $row->params->jversion : $version->RELEASE;
 		$jVersion = str_replace('.', '', $version->RELEASE);

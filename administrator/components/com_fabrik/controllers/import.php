@@ -84,7 +84,7 @@ class FabrikAdminControllerImport extends FabControllerForm
 			}
 			else
 			{
-				// Need to remove none selected element's (that dont already appear in the table structure
+				// Need to remove none selected element's (that don't already appear in the table structure
 				// data from the csv data
 				$session = JFactory::getSession();
 				$allHeadings = (array) $session->get('com_fabrik.csvheadings');
@@ -200,7 +200,7 @@ class FabrikAdminControllerImport extends FabControllerForm
 	/**
 	 * Display the import CSV file form
 	 *
-	 * @param   boolean  $cachable   If true, the view output will be cached
+	 * @param   boolean  $cacheable  If true, the view output will be cached
 	 * @param   array    $urlparams  An array of safe url parameters and their variable types, for valid values see {@link JFilterInput::clean()}.
 	 *
 	 * @return  JControllerLegacy  A JControllerLegacy object to support chaining.

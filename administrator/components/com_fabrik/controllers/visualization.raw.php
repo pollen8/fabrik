@@ -35,7 +35,7 @@ class FabrikAdminControllerVisualization extends JControllerForm
 	/**
 	 * Called via ajax to perform viz ajax task (defined by plugintask method)
 	 *
-	 * @param   boolean  $cachable   If true, the view output will be cached
+	 * @param   boolean  $cacheable  If true, the view output will be cached
 	 * @param   array    $urlparams  An array of safe url parameters and their variable types, for valid values see {@link JFilterInput::clean()}.
 	 *
 	 * @return  JController  A JController object to support chaining.
@@ -70,7 +70,7 @@ class FabrikAdminControllerVisualization extends JControllerForm
 			}
 			else
 			{
-				throw new RuntimeException('could not load viz:' . $viz->plugin);
+				throw new RuntimeException('Could not load visualization: ' . $viz->plugin);
 			}
 
 			$controllerName = 'FabrikControllerVisualization' . $viz->plugin;

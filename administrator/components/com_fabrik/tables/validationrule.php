@@ -1,6 +1,6 @@
 <?php
 /**
- * Validation Rulle Fabrik Table
+ * Validation Rule Fabrik Table
  *
  * @package     Joomla
  * @subpackage  Fabrik
@@ -14,7 +14,7 @@ defined('_JEXEC') or die('Restricted access');
 require_once JPATH_ADMINISTRATOR . '/components/com_fabrik/tables/fabtable.php';
 
 /**
- * Validation Rulle Fabrik Table
+ * Validation Rule Fabrik Table
  *
  * @package     Joomla
  * @subpackage  Fabrik

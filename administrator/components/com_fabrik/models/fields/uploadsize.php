@@ -34,7 +34,7 @@ class JFormFieldUploadsize extends JFormField
 	/**
 	 * Get the number of bytes for an ini setting
 	 *
-	 * @param   string  $val  ini seettings can be in K, M or G
+	 * @param   string  $val  ini settings can be in K, M or G
 	 *
 	 * @return  int  bytes
 	 */

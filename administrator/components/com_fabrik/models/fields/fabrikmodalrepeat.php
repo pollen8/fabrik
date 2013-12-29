@@ -1,6 +1,6 @@
 <?php
 /**
- * Display a json loaded window with a repeatble set of sub fields
+ * Display a json loaded window with a repeatable set of sub fields
  *
  * @package     Joomla
  * @subpackage  Form
@@ -14,7 +14,7 @@ defined('_JEXEC') or die('Restricted access');
 jimport('joomla.form.formfield');
 
 /**
- * Display a json loaded window with a repeatble set of sub fields
+ * Display a json loaded window with a repeatable set of sub fields
  *
  * @package     Joomla
  * @subpackage  Form

@@ -33,7 +33,7 @@ class JFormFieldSuboptions extends JFormField
 	 * @access	protected
 	 * @var		string
 	 */
-	protected $name = 'Subptions';
+	protected $name = 'Suboptions';
 
 	/**
 	 * Method to get the field input markup.

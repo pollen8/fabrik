@@ -125,7 +125,7 @@ class JFormFieldTextorwysiwyg extends JFormFieldText
 				// Get the database object.
 				$db = JFactory::getDBO();
 
-				// Iterate over teh types looking for an existing editor.
+				// Iterate over the types looking for an existing editor.
 				foreach ($types as $element)
 				{
 					// Build the query.
@@ -147,7 +147,7 @@ class JFormFieldTextorwysiwyg extends JFormFieldText
 					}
 				}
 			}
-			// Create the JEditor intance based on the given editor.
+			// Create the JEditor instance based on the given editor.
 			$this->editor = JFactory::getEditor($editor ? $editor : null);
 		}
 

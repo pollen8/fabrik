@@ -1,6 +1,6 @@
 <?php
 /**
- * Create a list from an SQL query
+ * Renders a Fabrik Help link
  *
  * @package     Joomla
  * @subpackage  Fabrik
