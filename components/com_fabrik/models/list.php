@@ -6480,7 +6480,7 @@ class FabrikFEModelList extends JModelForm
 
 	/**
 	 * returns the table headings, seperated from writetable function as
-	 * when group_by is selected mutliple tables are written
+	 * when group_by is selected multiple tables are written
 	 * 09/07/2011 moved headingClass into arry rather than string
 	 *
 	 * @return  array  (table headings, array columns, $aLinkElements)

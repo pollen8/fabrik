@@ -25,13 +25,13 @@ class FabrikControllerImport extends JControllerLegacy
 	/**
 	 * Display the view
 	 *
-	 * @param   boolean  $cachable   If true, the view output will be cached
+	 * @param   boolean  $cacheable  If true, the view output will be cached - NOTE not actually used to control caching!!!
 	 * @param   array    $urlparams  An array of safe url parameters and their variable types, for valid values see {@link JFilterInput::clean()}.
 	 *
 	 * @return  JController  A JController object to support chaining.
 	 */
 
-	public function display($cachable = false, $urlparams = array())
+	public function display($cacheable = false, $urlparams = array())
 	{
 		$app = JFactory::getApplication();
 		$input = $app->input;
@@ -91,7 +91,7 @@ class FabrikControllerImport extends JControllerLegacy
 		{
 			// As opposed to admin you can't alter table structure with a CSV import from the front end
 			$app->enqueueMessage($model->makeError(), 'notice');
-			$this->setRedirect('index.php?option=com_fabrik&view=import&fietype=csv&listid=' . $id . '&Itemid=' . $Itemid);
+			$this->setRedirect('index.php?option=com_fabrik&view=import&filetype=csv&listid=' . $id . '&Itemid=' . $Itemid);
 		}
 		else
 		{

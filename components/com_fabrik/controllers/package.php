@@ -32,13 +32,13 @@ class FabrikControllerPackage extends JControllerLegacy
 	/**
 	 * Display the package view
 	 *
-	 * @param   boolean  $cachable   If true, the view output will be cached
+	 * @param   boolean  $cacheable  If true, the view output will be cached - NOTE not actually used to control caching!!!
 	 * @param   array    $urlparams  An array of safe url parameters and their variable types, for valid values see {@link JFilterInput::clean()}.
 	 *
 	 * @return  JController  A JController object to support chaining.
 	 */
 
-	public function display($cachable = false, $urlparams = false)
+	public function display($cacheable = false, $urlparams = false)
 	{
 		$document = JFactory::getDocument();
 		$app = JFactory::getApplication();
