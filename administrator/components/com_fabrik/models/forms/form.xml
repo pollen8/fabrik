@@ -140,7 +140,7 @@
 			<field name="reset_icon_location"
 				type="radio"
 				class="btn-group"
-				default="after"
+				default="before"
 				description="COM_FABRIK_FIELD_RESET_ICON_LOC_DESC"
 				label="COM_FABRIK_FIELD_RESET_ICON_LOC_LABEL">
 					<option value="before">COM_FABRIK_BEFORE</option>
@@ -176,7 +176,7 @@
 			<field name="copy_icon_location"
 				type="radio"
 				class="btn-group"
-				default="after"
+				default="before"
 				description="COM_FABRIK_FIELD_COPY_ICON_LOC_DESC"
 				label="COM_FABRIK_FIELD_COPY_ICON_LOC_LABEL">
 					<option value="before">COM_FABRIK_BEFORE</option>
@@ -212,7 +212,7 @@
 			<field name="goback_icon_location"
 				type="radio"
 				class="btn-group"
-				default="after"
+				default="before"
 				description="COM_FABRIK_FIELD_GO_BACK_ICON_LOC_DESC"
 				label="COM_FABRIK_FIELD_GO_BACK_ICON_LOC_LABEL">
 					<option value="before">COM_FABRIK_BEFORE</option>
@@ -248,7 +248,7 @@
 			<field name="apply_icon_location"
 				type="radio"
 				class="btn-group"
-				default="after"
+				default="before"
 				description="COM_FABRIK_FIELD_APPLY_ICON_LOC_DESC"
 				label="COM_FABRIK_FIELD_APPLY_ICON_LOC_LABEL">
 					<option value="before">COM_FABRIK_BEFORE</option>
@@ -284,7 +284,7 @@
 			<field name="delete_icon_location"
 				type="radio"
 				class="btn-group"
-				default="after"
+				default="before"
 				description="COM_FABRIK_FIELD_DELETE_ICON_LOC_DESC"
 				label="COM_FABRIK_FIELD_DELETE_ICON_LOC_LABEL">
 					<option value="before">COM_FABRIK_BEFORE</option>
@@ -319,7 +319,8 @@
 
 			<field name="save_icon_location"
 				type="radio"
-				class="btn-group" default="after"
+				class="btn-group"
+				default="before"
 				description="COM_FABRIK_FIELD_SUBMIT_ICON_LOC_DESC"
 				label="COM_FABRIK_FIELD_SUBMIT_ICON_LOC_LABEL">
 					<option value="before">COM_FABRIK_BEFORE</option>
