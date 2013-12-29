@@ -1609,7 +1609,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 	 * @return  array  (value condition)
 	 */
 
-	protected function getRangedFilterValue($value)
+	protected function getRangedFilterValue($value, $condition="")
 	{
 		$db = FabrikWorker::getDbo();
 		$params = $this->getParams();

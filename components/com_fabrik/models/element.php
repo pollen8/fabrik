@@ -4025,12 +4025,11 @@ class PlgFabrik_Element extends FabrikPlugin
 	 * @return  array  (value condition)
 	 */
 
-	protected function getRangedFilterValue($value)
+	protected function getRangedFilterValue($value, $condition = "")
 	{
 		$db = FabrikWorker::getDbo();
 		$element = $this->getElement();
-
-		if ($element->filter_type === 'range')
+		if ($element->filter_type === 'range' || strtoupper($condition) === 'BETWEEN')
 		{
 			if (is_numeric($value[0]) && is_numeric($value[1]))
 			{
@@ -4145,7 +4144,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		if (is_array($value))
 		{
 			// Ranged search
-			list($value, $condition) = $this->getRangedFilterValue($value);
+			list($value, $condition) = $this->getRangedFilterValue($value, $condition);
 		}
 		else
 		{
