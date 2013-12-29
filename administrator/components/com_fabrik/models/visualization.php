@@ -115,7 +115,7 @@ class FabrikAdminModelVisualization extends FabModelAdmin
 		}
 
 		$input->set('view', 'visualization');
-		JPluginHelper::importPlugin('fabrik_visualizaton', $plugin);
+		JPluginHelper::importPlugin('fabrik_visualization', $plugin);
 		$pluginManager = JModelLegacy::getInstance('Pluginmanager', 'FabrikFEModel');
 
 		if ($plugin == '')
