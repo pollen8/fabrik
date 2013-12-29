@@ -22,6 +22,7 @@ var FbAutocomplete = new Class({
 		max: 10,
 		onSelection: Class.empty,
 		autoLoadSingleResult: true,
+		minTriggerChars: 1,
 		storeMatchedResultsOnly: false // Only store a value if selected from picklist
 	},
 
@@ -59,6 +60,9 @@ var FbAutocomplete = new Class({
 	},
 
 	search: function (e) {
+		if (!this.isMinTriggerlength()) {
+			return;
+		}
 		if (e.key === 'tab' || e.key === 'enter') {
 			e.stop();
 			this.closeMenu();
@@ -197,13 +201,15 @@ var FbAutocomplete = new Class({
 
 	openMenu: function () {
 		if (!this.shown) {
-			this.shown = true;
-			this.menu.setStyle('visibility', 'visible').fade('in');
-			document.addEvent('click', function (e) {
-				this.doTestMenuClose(e);
-			}.bind(this));
-			this.selected = 0;
-			this.highlight();
+			if (this.isMinTriggerlength()) {
+				this.shown = true;
+				this.menu.setStyle('visibility', 'visible').fade('in');
+				document.addEvent('click', function (e) {
+					this.doTestMenuClose(e);
+				}.bind(this));
+				this.selected = 0;
+				this.highlight();
+			}
 		}
 	},
 
@@ -213,6 +219,11 @@ var FbAutocomplete = new Class({
 		}
 	},
 
+	isMinTriggerlength: function () {
+		var v = this.getInputElement().get('value');
+		return v.length >= this.options.minTriggerChars;
+	},
+	
 	getListMax: function () {
 		if (typeOf(this.data) === 'null') {
 			return 0;
@@ -230,38 +241,44 @@ var FbAutocomplete = new Class({
 				this.openMenu();
 			}
 		} else {
-			if (e.key === 'enter' || e.key === 'tab') {
-				window.fireEvent('blur');
-			}
-			switch (e.code) {
-			case 40://down
-				if (!this.shown) {
-					this.openMenu();
-				}
-				if (this.selected + 1 < max) {
-					this.selected ++;
-					this.highlight();
-				}
+			if (!this.isMinTriggerlength()) {
 				e.stop();
-				break;
-			case 38: //up
-				if (this.selected - 1 >= -1) {
-					this.selected --;
-					this.highlight();
-				}
-				e.stop();
-				break;
-			case 13://enter
-			case 9://tab
-				e.stop();
-				var selectEvnt = new Event.Mock(this.getSelected(), 'click');
-				this.makeSelection(selectEvnt);
-				break;
-			case 27://escape
-				e.stop();
-				this.matchedResult = false;
 				this.closeMenu();
-				break;
+			}
+			else {
+				if (e.key === 'enter' || e.key === 'tab') {
+					window.fireEvent('blur');
+				}
+				switch (e.code) {
+				case 40://down
+					if (!this.shown) {
+						this.openMenu();
+					}
+					if (this.selected + 1 < max) {
+						this.selected ++;
+						this.highlight();
+					}
+					e.stop();
+					break;
+				case 38: //up
+					if (this.selected - 1 >= -1) {
+						this.selected --;
+						this.highlight();
+					}
+					e.stop();
+					break;
+				case 13://enter
+				case 9://tab
+					e.stop();
+					var selectEvnt = new Event.Mock(this.getSelected(), 'click');
+					this.makeSelection(selectEvnt);
+					break;
+				case 27://escape
+					e.stop();
+					this.matchedResult = false;
+					this.closeMenu();
+					break;
+				}
 			}
 		}
 	},
