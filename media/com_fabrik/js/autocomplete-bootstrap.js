@@ -22,7 +22,7 @@ var FbAutocomplete = new Class({
 		max: 10,
 		onSelection: Class.empty,
 		autoLoadSingleResult: true,
-		minTriggerChars: 3,
+		minTriggerChars: 1,
 		storeMatchedResultsOnly: false // Only store a value if selected from picklist
 	},
 
