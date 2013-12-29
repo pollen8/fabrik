@@ -21,7 +21,7 @@ var FbDateTime = new Class({
 			'ifFormat': "%Y/%m/%d",
 			'daFormat': "%Y/%m/%d",
 			'singleClick': true,
-			'align': "Br",
+			'align': "Tl",
 			'range': [1900, 2999],
 			'showsTime': false,
 			'timeFormat': '24',
@@ -90,7 +90,7 @@ var FbDateTime = new Class({
 				} else {
 					this.cal.showAt(this.cal.params.position[0], params.position[1]);
 				}
-				
+
 				// Needed to re-run the dateStatusFunc() to enable/disable dates
 				this.cal._init(this.cal.firstDayOfWeek, this.cal.date);
 				this.cal.show();
@@ -132,16 +132,14 @@ var FbDateTime = new Class({
 	calSelect: function (calendar, date) {
 
 		// Test the date is selectable...
-		if (!this.dateSelect(date)) {
+		if (calendar.dateClicked && !this.dateSelect(calendar.date)) {
 			var d = this.setTimeFromField(calendar.date);
 			this.update(d.format('db'));
-			if (this.cal.dateClicked) {
-				this.getDateField().fireEvent('change');
-				if (this.timeButton) {
-					this.getTimeField().fireEvent('change');
-				}
-				this.cal.callCloseHandler();
+			this.getDateField().fireEvent('change');
+			if (this.timeButton) {
+				this.getTimeField().fireEvent('change');
 			}
+			this.cal.callCloseHandler();
 			window.fireEvent('fabrik.date.select', this);
 			Fabrik.fireEvent('fabrik.date.select', this);
 		}
@@ -159,9 +157,9 @@ var FbDateTime = new Class({
 
 	/**
 	 * Called from FbFormSubmit
-	 *  
+	 *
 	 * @params   function  cb  Callback function to run when the element is in an acceptable state for the form processing to continue
-	 * 
+	 *
 	 * @return  void
 	 */
 	onsubmit: function (cb) {
@@ -410,7 +408,7 @@ var FbDateTime = new Class({
 
 	/**
 	 * takes a date object or string
-	 * 
+	 *
 	 * @param   mixed  val     Date, string or date object
 	 * @param   array  events  Events to fire defaults to ['change']
 	 */
@@ -439,7 +437,7 @@ var FbDateTime = new Class({
 					 */
 					this.cal.date = new Date();
 				}
-				
+
 				if (!this.options.editable) {
 					if (typeOf(this.element) !== 'null') {
 						this.element.set('html', val);
