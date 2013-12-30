@@ -1144,8 +1144,14 @@ var FbForm = new Class({
 					Fabrik.fireEvent('fabrik.form.ajax.submit.end', [this]);
 				} else {
 					// Inject submit button name/value.
-					new Element('input', {type: 'hidden', name: btn.name, value: btn.value}).inject(this.form);
-					this.form.submit();
+					if (typeOf(btn) !== 'null') {
+						new Element('input', {type: 'hidden', name: btn.name, value: btn.value}).inject(this.form);
+						this.form.submit();
+					} else {
+						// Regular button pressed which seems to be triggering form.submit() method.
+						e.stop();
+					}
+					
 				}
 			}
 		}.bind(this));
