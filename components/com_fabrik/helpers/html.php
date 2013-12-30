@@ -571,7 +571,7 @@ if (!$j3)
 	 * @return  string	html select list
 	 */
 
-	public static function conditonList($listid, $sel = '')
+	public static function conditionList($listid, $sel = '')
 	{
 		$conditions = array();
 		$conditions[] = JHTML::_('select.option', 'AND', JText::_('COM_FABRIK_AND'));
