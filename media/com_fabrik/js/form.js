@@ -751,7 +751,7 @@ var FbForm = new Class({
 		}
 		var el = document.id(id);
 		if (typeOf(el) === 'null') {
-			fconsole('watch validation failed, could not find element ' + id);
+			fconsole('Fabrik form::watchValidation: Could not add ' + triggerEvent + ' event because element "' + id + '" does not exist.');
 			return;
 		}
 		if (el.className === 'fabrikSubElementContainer') {
