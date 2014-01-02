@@ -1811,21 +1811,9 @@ class FabrikFEModelList extends JModelForm
 			$label = JText::_('COM_FABRIK_LINKED_FORM_ADD');
 		}
 
-		if ($popUp)
-		{
-			FabrikHelperHTML::mocha('a.popupwin');
-			$opts = new stdClass;
-			$opts->maximizable = 1;
-			$opts->title = JText::_('COM_FABRIK_ADD');
-			$opts->evalScripts = 1;
-			$opts = json_encode($opts);
-			$link = "<a rel='$opts' href=\"$url\" class=\"popupwin\" title=\"$label\">" . $label . "</a>";
-		}
-		else
-		{
-			$link = '<a href="' . $url . '" title="' . $label . '">' . $label . '</a>';
-		}
-
+		$icon = '<i class="icon-plus"></i> ';
+		$trigger = $popUp ? 'data-fabrik-view="form"' : '';
+		$link = '<a ' . $trigger . ' href="' . $url . '" title="' . $label . '">' . $icon . $label . '</a>';
 		$url = '<span class="addbutton">' . $link . '</span></a>';
 
 		return $url;
@@ -1924,26 +1912,14 @@ class FabrikFEModelList extends JModelForm
 			$label = JText::_('COM_FABRIK_VIEW');
 		}
 
+		$title = $label;
 		$label = '<span class="fabrik_related_data_count">(' . $count . ')</span> ' . $label;
 		$url = $this->releatedDataURL($key, $val, $listid, $popUp);
 
 		if ($showRelated == 0 || ($showRelated == 2  && $count))
 		{
-			if ($popUp)
-			{
-				FabrikHelperHTML::windows('a.popupwin');
-				$opts = new stdClass;
-				$opts->maximizable = 1;
-				$opts->title = JText::_('COM_FABRIK_VIEW');
-				$opts->evalScripts = 1;
-				$opts = str_replace('"', "'", json_encode($opts));
-				$html[] = '<a rel="' . $opts . '" href="' . $url . '" class="popupwin">' . $label . '</a>';
-			}
-			else
-			{
-				// Add title in case link replaced with icon in CSS.
-				$html[] = '<a class="related_data" title="' . strip_tags($label) . '" href="' . $url . '">' . $label . "</a>";
-			}
+			$trigger = $popUp ? 'data-fabrik-view="list"' : '';
+			$html[] = '<a class="related_data" ' . $trigger . ' href="' . $url . '" title="' . $title . '">' . $icon . $label . '</a>';
 		}
 
 		if ($addLink != '' && ($showRelatedAdd === 1 || ($showRelatedAdd === 2 && $count === 0)))
