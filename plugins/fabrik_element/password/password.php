@@ -118,19 +118,34 @@ class PlgFabrik_ElementPassword extends PlgFabrik_Element
 
 		$html = array();
 		$html[] = $pw1;
-
-		if (FabrikWorker::j3())
-		{
-			$html[] = '<div class="strength progress progress-striped" style="margin-top:20px;width:40%;"></div>';
-		}
-		else
-		{
-			$html[] = '<span class="strength"></span>';
-		}
-
+		$html[] = $this->strengthMeter();
 		$html[] = $pw2;
 
 		return implode("\n", $html);
+	}
+
+	/**
+	 * Build the password strength meter html output
+	 *
+	 * @return  string
+	 */
+	protected  function strengthMeter()
+	{
+		$params = $this->getParams();
+
+		if (!$params->get('strength_meter', 1))
+		{
+			return '';
+		}
+
+		if (FabrikWorker::j3())
+		{
+			return '<div class="strength progress progress-striped" style="margin-top:20px;width:40%;"></div>';
+		}
+		else
+		{
+			return '<span class="strength"></span>';
+		}
 	}
 
 	/**

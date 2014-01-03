@@ -13,7 +13,17 @@
 				description=""
 				label="PLG_ELEMENT_PASSWORD_MAXLENGTH_LABEL"
 				size="3" />
-				
+			
+			<field name="strength_meter"
+				type="radio"
+				class="btn-group"
+				default="1"
+				description="PLG_ELEMENT_PASSWORD_SHOW_STRENGTH_METER_DESC"
+				label="PLG_ELEMENT_PASSWORD_SHOW_STRENGTH_METER_LABEL">
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+			</field>
+			
 		</fieldset>
 	</fields>
 </form>
