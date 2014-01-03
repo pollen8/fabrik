@@ -42,13 +42,13 @@ class FabrikController extends JControllerLegacy
 	/**
 	 * Display the view
 	 *
-	 * @param   bool   $cacheable  If true, the view output will be cached - NOTE not actually used to control caching!!!
+	 * @param   bool   $cachable   If true, the view output will be cached - NOTE not actually used to control caching!!!
 	 * @param   array  $urlparams  An array of safe url parameters and their variable types, for valid values see {@link JFilterInput::clean()}.
 	 *
 	 * @return  null
 	 */
 
-	public function display($cacheable = false, $urlparams = false)
+	public function display($cachable = false, $urlparams = false)
 	{
 		$app = JFactory::getApplication();
 		$input = $app->input;
@@ -95,7 +95,7 @@ class FabrikController extends JControllerLegacy
 
 		if (($viewName = 'form' || $viewName = 'details'))
 		{
-			$cacheable = true;
+			$cachable = true;
 		}
 
 		$user = JFactory::getUser();
