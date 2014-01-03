@@ -28,6 +28,7 @@ var FbForm = new Class({
 		'plugins': [],
 		'ajaxmethod': 'post',
 		'inlineMessage': true,
+		'print': false,
 		'images': {
 			'alert': '',
 			'action_check': '',
@@ -210,9 +211,8 @@ var FbForm = new Class({
 	setUp: function () {
 		this.form = this.getForm();
 		this.watchGroupButtons();
-		//if (this.options.editable) { //submit can appear in confirmation plugin even when readonly
+		// Submit can appear in confirmation plugin even when readonly
 		this.watchSubmit();
-		//}
 		this.createPages();
 		this.watchClearSession();
 	},
@@ -238,17 +238,32 @@ var FbForm = new Class({
 	addElementFX: function (id, method) {
 		var c, k, fxdiv;
 		id = id.replace('fabrik_trigger_', '');
+		// Paul - add sanity checking and error reporting
 		if (id.slice(0, 6) === 'group_') {
 			id = id.slice(6, id.length);
 			k = id;
 			c = document.id(id);
-		} else {
-			id = id.slice(8, id.length);
-			k = 'element' + id;
-			if (!document.id(id)) {
+			if (!c) {
+				fconsole('Fabrik form::addElementFX: Group "' + id + '" does not exist.');
 				return false;
 			}
-			c = document.id(id).getParent('.fabrikElementContainer');
+			c = document.id(id);
+		} else if (id.slice(0, 8) === 'element_') {
+			id = id.slice(8, id.length);
+			k = 'element' + id;
+			c = document.id(id);
+			if (!c) {
+				fconsole('Fabrik form::addElementFX: Element "' + id + '" does not exist.');
+				return false;
+			}
+			c = c.getParent('.fabrikElementContainer');
+			if (!c) {
+				fconsole('Fabrik form::addElementFX: Element "' + id + '.fabrikElementContainer" does not exist.');
+				return false;
+			}
+		} else {
+			fconsole('Fabrik form::addElementFX: Not an element or group: ' + id);
+			return false;
 		}
 		if (c) {
 			// c will be the <li> element - you can't apply fx's to this as it makes the
@@ -403,8 +418,8 @@ var FbForm = new Class({
 	},
 
 	createPages: function () {
-		var submit, p, firstGroup;
-		if (this.options.pages.getKeys().length > 1) {
+		var submit, p, firstGroup, tabDiv;
+		if (this.isMultiPage()) {
 
 			// Wrap each page in its own div
 			this.options.pages.each(function (page, i) {
@@ -435,6 +450,10 @@ var FbForm = new Class({
 			this.setPageButtons();
 			this.hideOtherPages();
 		}
+	},
+
+	isMultiPage: function () {
+		return this.options.pages.getKeys().length > 1;
 	},
 
 	/**
@@ -619,24 +638,40 @@ var FbForm = new Class({
 
 	/**
 	 * Add elements into the form
-	 * 
+	 *
 	 * @param  Hash  a  Elements to add.
 	 */
 	addElements: function (a) {
 		/*
 		 * Store the newly added elements so we can call attachedToForm only on new elements. Avoids issue with cdd in repeat groups
-		 * resetting themselves when you add a new group 
-		 */ 
+		 * resetting themselves when you add a new group
+		 */
 		var added = [], i = 0;
 		a = $H(a);
 		a.each(function (elements, gid) {
 			elements.each(function (el) {
 				if (typeOf(el) === 'array') {
+					// Paul - check that element exists before adding it http://fabrikar.com/forums/index.php?threads/ajax-validation-never-ending-in-forms.36907
+					if (typeOf(document.id(el[1])) === 'null') {
+						fconsole('Fabrik form::addElements: Cannot add element "' + el[1] + '" because it does not exist in HTML.');
+						return;
+					}
 					var oEl = new window[el[0]](el[1], el[2]);
 					added.push(this.addElement(oEl, el[1], gid));
 				}
-				else if (typeOf(el) !== 'null') {
+				else if (typeOf(el) === 'object') {
+					// Paul - check that element exists before adding it http://fabrikar.com/forums/index.php?threads/ajax-validation-never-ending-in-forms.36907
+					if (typeOf(document.id(el.options.element)) === 'null') {
+						fconsole('Fabrik form::addElements: Cannot add element "' + el.options.element + '" because it does not exist in HTML.');
+						return;
+					}
 					added.push(this.addElement(el, el.options.element, gid));
+				}
+				else if (typeOf(el) !== 'null') {
+					fconsole('Fabrik form::addElements: Cannot add unknown element: ' + el);
+				}
+				else {
+					fconsole('Fabrik form::addElements: Cannot add null element.');
 				}
 			}.bind(this));
 		}.bind(this));
@@ -692,8 +727,14 @@ var FbForm = new Class({
 				}
 			});
 		}
-		if (el && js !== '') {
+		if (!el) {
+			fconsole('Fabrik form::dispatchEvent: Cannot find element to add ' + action + ' event to: ' + elementId);
+		}
+		else if (js !== '') {
 			el.addNewEvent(action, js);
+		}
+		else if (Fabrik.debug) {
+			fconsole('Fabrik form::dispatchEvent: Javascript empty for ' + action + ' event on: ' + elementId);
 		}
 	},
 
@@ -717,7 +758,7 @@ var FbForm = new Class({
 		}
 		var el = document.id(id);
 		if (typeOf(el) === 'null') {
-			fconsole('watch validation failed, could not find element ' + id);
+			fconsole('Fabrik form::watchValidation: Could not add ' + triggerEvent + ' event because element "' + id + '" does not exist.');
 			return;
 		}
 		if (el.className === 'fabrikSubElementContainer') {
@@ -962,7 +1003,7 @@ var FbForm = new Class({
 		return b;
 	},
 
-	watchSubmit : function () {
+	watchSubmit: function () {
 		var submit = this._getButton('submit');
 		if (!submit) {
 			return;
@@ -1001,7 +1042,7 @@ var FbForm = new Class({
 		}
 	},
 
-	doSubmit : function (e, btn) {
+	doSubmit: function (e, btn) {
 		Fabrik.fireEvent('fabrik.form.submit.start', [this, e, btn]);
 		this.elementsBeforeSubmit(e);
 		if (this.result === false) {
@@ -1196,7 +1237,7 @@ var FbForm = new Class({
 	 * @param  bool  submit  Should we run the element onsubmit() methods - set to false in calc element
 	 */
 
-	getFormData : function (submit) {
+	getFormData: function (submit) {
 		submit = typeOf(submit) !== 'null' ? submit : true;
 		if (submit) {
 			this.formElements.each(function (el, key) {
@@ -1304,7 +1345,7 @@ var FbForm = new Class({
 			}
 		}.bind(this));
 	},
-	
+
 	/**
 	 * When editing a new form and when min groups set we need to duplicate each group
 	 * by the min repeat value.
@@ -1569,13 +1610,12 @@ var FbForm = new Class({
 
 				hasSubElements = el.hasSubElements();
 
-				// for all instances of the call to findClassUp use el.element rather
-				// than input (HMM SEE LINE 912 - PERHAPS WE CAN REVERT TO USING INPUT
-				// NOW?)
 				container = input.getParent('.fabrikSubElementContainer');
 				var testid = (hasSubElements && container) ? container.id : input.id;
 				var cloneName = el.getCloneName();
-				if (cloneName === testid) {
+
+				// Looser test that previous === to catch db join rendered as checkbox
+				if (testid.contains(cloneName)) {
 					lastinput = input;
 					formElementFound = true;
 

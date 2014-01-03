@@ -1,13 +1,15 @@
 <?php
 /**
+ * Fabrik Dropdown Element
+ *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.element.dropdown
- * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
- * @license     GNU General Public License version 2 or later; see LICENSE.txt
+ * @copyright   Copyright (C) 2005-2013 fabrikar.com - All rights reserved.
+ * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
-// Check to ensure this file is included in Joomla!
-defined('_JEXEC') or die();
+// No direct access
+defined('_JEXEC') or die('Restricted access');
 
 /**
  * Plugin element to render dropdown
@@ -15,11 +17,10 @@ defined('_JEXEC') or die();
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.element.dropdown
  * @since       3.0
-*/
+ */
 
 class PlgFabrik_ElementDropdown extends PlgFabrik_ElementList
 {
-
 	/**
 	 * Method to set the element id
 	 *
@@ -67,11 +68,18 @@ class PlgFabrik_ElementDropdown extends PlgFabrik_ElementList
 		{
 			$attribs .= ' multiple="multiple" size="' . $multisize . '" ';
 		}
+
 		$i = 0;
 		$aRoValues = array();
 		$opts = array();
+		$optgroup = false;
+
 		foreach ($values as $tmpval)
 		{
+			if ($tmpval === '<optgroup>')
+			{
+				$optgroup = true;
+			}
 			$tmpLabel = JArrayHelper::getValue($labels, $i);
 			$disable = JArrayHelper::getValue($endis, $i);
 
@@ -80,16 +88,18 @@ class PlgFabrik_ElementDropdown extends PlgFabrik_ElementList
 			$opt = JHTML::_('select.option', $tmpval, $tmpLabel);
 			$opt->disable = $disable;
 			$opts[] = $opt;
+
 			if (in_array($tmpval, $selected))
 			{
 				$aRoValues[] = $this->getReadOnlyOutput($tmpval, $tmpLabel);
 			}
+
 			$i++;
 		}
 		/*
 		 * If we have added an option that hasnt been saved to the database. Note you cant have
-		* it not saved to the database and asking the user to select a value and label
-		*/
+		 * it not saved to the database and asking the user to select a value and label
+		 */
 		if ($params->get('allow_frontend_addtodropdown', false) && !empty($selected))
 		{
 			foreach ($selected as $sel)
@@ -101,12 +111,45 @@ class PlgFabrik_ElementDropdown extends PlgFabrik_ElementList
 				}
 			}
 		}
-		$str = JHTML::_('select.genericlist', $opts, $name, $attribs, 'value', 'text', $selected, $id);
+
 		if (!$this->isEditable())
 		{
 			return implode(', ', $aRoValues);
 		}
+
+
+		$settings = array();
+		$settings['list.select'] = $selected;
+		$settings['option.id'] = $id;
+		$settings['id'] = $id;
+		$settings['list.attr'] = $attribs;
+		$settings['group.items'] = null;
+
+		if ($optgroup)
+		{
+			$groupedOpts = array();
+			$groupOptLabel = '';
+
+			foreach ($opts as $opt)
+			{
+				if ($opt->value === '&lt;optgroup&gt;')
+				{
+					$groupOptLabel = $opt->text;
+					continue;
+				}
+
+				$groupedOpts[$groupOptLabel][] = $opt;
+			}
+
+			$str = JHTML::_('select.groupedlist', $groupedOpts, $name, $settings);
+		}
+		else
+		{
+			$str = JHTML::_('select.genericlist', $opts, $name, $settings);
+		}
+
 		$str .= $this->getAddOptionFields($repeatCounter);
+
 		return $str;
 	}
 
@@ -122,19 +165,18 @@ class PlgFabrik_ElementDropdown extends PlgFabrik_ElementList
 	{
 		$id = $this->getHTMLId($repeatCounter);
 		$element = $this->getElement();
-		$data = $this->_form->_data;
+		$data = $this->getFormModel()->data;
 		$arSelected = $this->getValue($data, $repeatCounter);
 		$values = $this->getSubOptionValues();
 		$labels = $this->getSubOptionLabels();
 		$params = $this->getParams();
-
 		$opts = $this->getElementJSOptions($repeatCounter);
 		$opts->allowadd = $params->get('allow_frontend_addtodropdown', false) ? true : false;
 		$opts->value = $arSelected;
 		$opts->defaultVal = $this->getDefaultValue($data);
-
 		$opts->data = (empty($values) && empty($labels)) ? array() : array_combine($values, $labels);
 		JText::script('PLG_ELEMENT_DROPDOWN_ENTER_VALUE_LABEL');
+
 		return array('FbDropdown', $id, $opts);
 	}
 
@@ -155,7 +197,6 @@ class PlgFabrik_ElementDropdown extends PlgFabrik_ElementList
 		{
 			if ($element->default != '')
 			{
-
 				$default = $element->default;
 				/*
 				 * Nasty hack to fix #504 (eval'd default value)
@@ -170,6 +211,7 @@ class PlgFabrik_ElementDropdown extends PlgFabrik_ElementList
 				{
 					$w = new FabrikWorker;
 					$default = $w->parseMessageForPlaceHolder($default, $data);
+
 					if ($element->eval == "1")
 					{
 						$v = @eval((string) stripslashes($default));
@@ -180,6 +222,7 @@ class PlgFabrik_ElementDropdown extends PlgFabrik_ElementList
 						$v = $default;
 					}
 				}
+
 				if (is_string($v))
 				{
 					$this->_default = explode('|', $v);
@@ -194,6 +237,7 @@ class PlgFabrik_ElementDropdown extends PlgFabrik_ElementList
 				$this->_default = $this->getSubInitialSelection();
 			}
 		}
+
 		return $this->_default;
 	}
 
@@ -224,6 +268,7 @@ class PlgFabrik_ElementDropdown extends PlgFabrik_ElementList
 				return true;
 			}
 		}
+
 		return false;
 	}
 
@@ -238,10 +283,12 @@ class PlgFabrik_ElementDropdown extends PlgFabrik_ElementList
 	protected function replaceLabelWithValue($selected)
 	{
 		$selected = (array) $selected;
+
 		foreach ($selected as &$s)
 		{
 			$s = str_replace("'", "", $s);
 		}
+
 		$element = $this->getElement();
 		$vals = $this->getSubOptionValues();
 		$labels = $this->getSubOptionLabels();
@@ -249,14 +296,17 @@ class PlgFabrik_ElementDropdown extends PlgFabrik_ElementList
 		$aRoValues = array();
 		$opts = array();
 		$i = 0;
+
 		foreach ($labels as $label)
 		{
 			if (in_array($label, $selected))
 			{
 				$return[] = $vals[$i];
 			}
+
 			$i++;
 		}
+
 		return $return;
 	}
 
@@ -274,6 +324,7 @@ class PlgFabrik_ElementDropdown extends PlgFabrik_ElementList
 	{
 		$values = $this->getSubOptionValues();
 		$labels = $this->getSubOptionLabels();
+
 		for ($i = 0; $i < count($labels); $i++)
 		{
 			if (JString::strtolower($labels[$i]) == JString::strtolower($value))
@@ -281,6 +332,7 @@ class PlgFabrik_ElementDropdown extends PlgFabrik_ElementList
 				return $values[$i];
 			}
 		}
+
 		return $value;
 	}
 
@@ -298,7 +350,7 @@ class PlgFabrik_ElementDropdown extends PlgFabrik_ElementList
 	{
 		$id = $this->getHTMLId($repeatCounter);
 		$ar = array('id' => $id, 'triggerEvent' => 'change');
+
 		return array($ar);
 	}
-
 }

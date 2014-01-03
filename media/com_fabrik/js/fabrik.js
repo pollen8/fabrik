@@ -1,47 +1,66 @@
+/**
+ * Various Fabrik JS classes
+ *
+ * @copyright: Copyright (C) 2005-2013, fabrikar.com - All rights reserved.
+ * @license:   GNU/GPL http://www.gnu.org/copyleft/gpl.html
+ */
+
 /*jshint mootools: true */
-/*global Fabrik:true, fconsole:true, Joomla:true, CloneObject:true $H:true,unescape:true,Asset:true,FloatingTips:true,head:true,IconGenerator:true */
+/*global Fabrik:true, fconsole:true, Joomla:true, $H:true, FbForm:true */
 
 /**
- *  This class is temporarily requied until this patch:
- *  https://github.com/joomla/joomla-platform/pull/1209/files
- *  makes it into the CMS code. Its purpose is to queue ajax requests so they are not
- *  all fired at the same time - which result in db session errors.
- *   
- *  Currently this is called from:
- *  fabriktables.js
- *  
+ * Console.log wrapper
+ */
+
+function fconsole() {
+	if (typeof (window.console) !== "undefined") {
+		var str = '', i;
+		for (i = 0; i < arguments.length; i++) {
+			str += arguments[i] + ' ';
+		}
+		console.log(str);
+	}
+}
+
+/**
+ * This class is temporarily required until this patch makes it into the CMS
+ * code: https://github.com/joomla/joomla-platform/pull/1209/files Its purpose
+ * is to queue ajax requests so they are not all fired at the same time - which
+ * result in db session errors.
+ * 
+ * Currently this is called from: fabriktables.js
+ * 
  */
 
 RequestQueue = new Class({
-	
+
 	queue: {}, // object of xhr objects
-	
+
 	initialize: function () {
 		this.periodical = this.processQueue.periodical(500, this);
 	},
-	
+
 	add: function (xhr) {
 		var k = xhr.options.url + Object.toQueryString(xhr.options.data) + Math.random();
 		if (!this.queue[k]) {
 			this.queue[k] = xhr;
 		}
 	},
-	
+
 	processQueue: function () {
 		if (Object.keys(this.queue).length === 0) {
 			return;
 		}
-		var xhr = {},
-		running = false;
+		var running = false;
 
 		// Remove successfuly completed xhr
 		$H(this.queue).each(function (xhr, k) {
 			if (xhr.isSuccess()) {
-				delete(this.queue[k]);
+				delete (this.queue[k]);
 				running = false;
 			}
 		}.bind(this));
-		
+
 		// Find first xhr not run and completed to run
 		$H(this.queue).each(function (xhr, k) {
 			if (!xhr.isRunning() && !xhr.isSuccess() && !running) {
@@ -50,7 +69,7 @@ RequestQueue = new Class({
 			}
 		});
 	},
-	
+
 	empty: function () {
 		return Object.keys(this.queue).length === 0;
 	}
@@ -59,7 +78,7 @@ RequestQueue = new Class({
 Request.HTML = new Class({
 
 	Extends: Request,
-	
+
 	options: {
 		update: false,
 		append: false,
@@ -69,7 +88,7 @@ Request.HTML = new Class({
 			Accept: 'text/html, application/xml, text/xml, */*'
 		}
 	},
-	
+
 	success: function (text) {
 		var options = this.options, response = this.response;
 		var srcs = text.match(/<script[^>]*>([\s\S]*?)<\/script>/gi);
@@ -89,7 +108,7 @@ Request.HTML = new Class({
 		response.html = text.stripScripts(function (script) {
 			response.javascript = script;
 		});
-		
+
 		var match = response.html.match(/<body[^>]*>([\s\S]*?)<\/body>/i);
 		if (match) {
 			response.html = match[1];
