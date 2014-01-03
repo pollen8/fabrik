@@ -161,7 +161,7 @@ class PlgFabrik_Validationrule extends FabrikPlugin
 
 	public function getIcon($c = 0, $tmpl = '')
 	{
-		$name = $this->elementModel->validator->getIcon();
+		$name = $this->elementModel->validator->getIcon($c);
 		$i = FabrikHelperHTML::image($name, 'form', $tmpl, array('class' => $this->pluginName));
 	}
 
@@ -184,14 +184,15 @@ class PlgFabrik_Validationrule extends FabrikPlugin
 	/**
 	 * Get hover text with icon
 	 *
+	 * @param   int     $c     Validation render order
 	 * @param   string  $tmpl  Template folder name
 	 *
 	 * @return  string
 	 */
 
-	public function getHoverText($tmpl = '')
+	public function getHoverText($c = null, $tmpl = '')
 	{
-		$name = $this->elementModel->validator->getIcon();
+		$name = $this->elementModel->validator->getIcon($c);
 		$i = FabrikHelperHTML::image($name, 'form', $tmpl, array('class' => $this->pluginName));
 
 		return $i . ' ' . $this->getLabel();

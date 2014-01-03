@@ -1747,9 +1747,9 @@ class PlgFabrik_Element extends FabrikPlugin
 			$lines[] = '<li>' . FabrikHelperHTML::image('question-sign.png', 'form', $tmpl) . ' ' . $this->getTipText($data) . '</li>';
 		}
 
-		foreach ($validations as $validation)
+		foreach ($validations as $c => $validation)
 		{
-			$lines[] = '<li>' . $validation->getHoverText($tmpl) . '</li>';
+			$lines[] = '<li>' . $validation->getHoverText($c, $tmpl) . '</li>';
 		}
 
 		if (count($lines) > 0)
@@ -2416,7 +2416,7 @@ class PlgFabrik_Element extends FabrikPlugin
 	{
 		return 'need to overwrite in element plugin class';
 	}
-	
+
 	/**
 	 * Format the read only output for the page
 	 *
@@ -2425,21 +2425,21 @@ class PlgFabrik_Element extends FabrikPlugin
 	 *
 	 * @return  string  Read only value
 	 */
-	
+
 	protected function getReadOnlyOutput($value, $label)
 	{
 		$params = $this->getParams();
-		
+
 		if ($params->get('icon_folder') != -1 && $params->get('icon_folder') != '')
 		{
 			$icon = $this->replaceWithIcons($value);
-	
+
 			if ($this->iconsSet)
 			{
 				$label = $icon;
 			}
 		}
-	
+
 		return $label;
 	}
 

@@ -129,10 +129,12 @@ class FabrikFEModelElementValidator extends JModelLegacy
 	 * - If one validation - use the icon specified in the J fabrik_validation settiings (default to star)
 	 * - If more than one return default j2.5/j3 img
 	 *
+	 * @param   int  $c  Validation plugin render order
+	 *
 	 * @return string
 	 */
 
-	public function getIcon()
+	public function getIcon($c = null)
 	{
 		$j3 = FabrikWorker::j3();
 		$validations = $this->findAll();
@@ -142,9 +144,19 @@ class FabrikFEModelElementValidator extends JModelLegacy
 			return 'question-sign.png';
 		}
 
-		if (count($validations) === 1 && $j3)
+		if (!empty($validations))
 		{
-			return $validations[0]->iconImage();
+			if ($j3)
+			{
+				if (is_null($c))
+				{
+					return $validations[0]->iconImage();
+				}
+				else
+				{
+					return $validations[$c]->iconImage();
+				}
+			}
 		}
 
 		return $j3 ? 'star.png' : 'notempty.png';
