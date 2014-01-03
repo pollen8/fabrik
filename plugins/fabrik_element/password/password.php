@@ -257,4 +257,26 @@ class PlgFabrik_ElementPassword extends PlgFabrik_Element
 
 		return array($ar);
 	}
+
+	/**
+	 * Return an internal validation icon
+	 *
+	 * @return  string
+	 */
+
+	public function internalValidationIcon()
+	{
+		return 'star';
+	}
+
+	/**
+	 * Return internal validation hover text
+	 *
+	 * @return  string
+	 */
+
+	public function internalValidataionText()
+	{
+		return JText::_('PLG_ELEMENT_PASSWORD_VALIDATION_TIP');
+	}
 }

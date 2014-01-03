@@ -32,6 +32,20 @@ class FabrikFEModelElementValidator extends JModelLegacy
 	protected $validations = null;
 
 	/**
+	 * Element model
+	 *
+	 * @var PlgFabrik_Element
+	 */
+	protected $elementModel = null;
+
+	/**
+	 * Icon image render options
+	 *
+	 * @var array
+	 */
+	protected $iconOpts = array('icon-class' => 'small');
+
+	/**
 	 * Set the element model - an instance of this class is linked to one element model
 	 *
 	 * @param   JModel  &$elementModel  Element model
@@ -119,6 +133,12 @@ class FabrikFEModelElementValidator extends JModelLegacy
 				return true;
 			}
 		}
+		$internal = $this->elementModel->internalValidationIcon();
+
+		if ($internal !== '')
+		{
+			return true;
+		}
 
 		return false;
 	}
@@ -141,7 +161,7 @@ class FabrikFEModelElementValidator extends JModelLegacy
 
 		if (!$this->showIcon())
 		{
-			return 'question-sign.png';
+			return '';
 		}
 
 		if (!empty($validations))
@@ -157,6 +177,13 @@ class FabrikFEModelElementValidator extends JModelLegacy
 					return $validations[$c]->iconImage();
 				}
 			}
+		}
+
+		$internal = $this->elementModel->internalValidationIcon();
+
+		if ($internal !== '')
+		{
+			return $internal;
 		}
 
 		return $j3 ? 'star.png' : 'notempty.png';
@@ -188,5 +215,70 @@ class FabrikFEModelElementValidator extends JModelLegacy
 		}
 
 		return $validationEls;
+	}
+
+	/**
+	 * Get the main validation icon to show next to the element's label
+	 *
+	 * @return string
+	 */
+
+	public function labelIcons()
+	{
+		$tmpl = $this->elementModel->getFormModel()->getTmpl();
+		$validations = array_unique($this->findAll());
+		$emptyIcon = $this->getIcon();
+		$icon = FabrikHelperHTML::image($emptyIcon, 'form', $tmpl, $this->iconOpts) . ' ';
+
+		return $icon;
+	}
+
+	/**
+	 * Does the element have validations - checks assigned and internal validations
+	 *
+	 * @return boolean
+	 */
+	public function hasValidations()
+	{
+		$validations = $this->findAll();
+
+		if (!empty($validations) || $this->elementModel->internalValidataionText() !== '')
+		{
+			return true;
+		}
+
+		return false;
+	}
+
+	/**
+	 * Create hover tip text for validations
+	 *
+	 * @return  array  Messages
+	 */
+	public function hoverTexts()
+	{
+		$texts = array();
+
+		if ($this->elementModel->isEditable())
+		{
+			$tmpl = $this->elementModel->getFormModel()->getTmpl();
+			$validations = array_unique($this->findAll());
+
+			foreach ($validations as $c => $validation)
+			{
+				$texts[] = $validation->getHoverText($c, $tmpl);
+			}
+
+			$internal = $this->elementModel->internalValidataionText();
+
+			if ($internal !== '')
+			{
+				$i = $this->elementModel->internalValidationIcon();
+				$icon = FabrikHelperHTML::image($i, 'form', $tmpl, $this->iconOpts);
+				$texts[] = $icon . ' ' . $internal;
+			}
+		}
+
+		return $texts;
 	}
 }

@@ -1607,13 +1607,7 @@ class PlgFabrik_Element extends FabrikPlugin
 
 			if ($this->isEditable())
 			{
-				$validations = array_unique($this->validator->findAll());
-
-				if (count($validations) > 0)
-				{
-					$emptyIcon = $this->validator->getIcon();
-					$l .= FabrikHelperHTML::image($emptyIcon, 'form', $tmpl, $iconOpts) . ' ';
-				}
+				$l .= $this->validator->labelIcons();
 			}
 
 			$l .= $j3 ? $labelText : '';
@@ -1704,9 +1698,7 @@ class PlgFabrik_Element extends FabrikPlugin
 
 		if ($this->editable)
 		{
-			$validations = array_unique($this->validator->findAll());
-
-			if (count($validations) > 0)
+			if ($this->validator->hasValidations())
 			{
 				$opts->heading = JText::_('COM_FABRIK_VALIDATION');
 			}
@@ -1727,15 +1719,9 @@ class PlgFabrik_Element extends FabrikPlugin
 	protected function tipTextAndValidations($mode, $data = array())
 	{
 		$lines = array();
-		$validations = array();
 		$tmpl = $this->getFormModel()->getTmpl();
 
-		if ($this->isEditable() && $mode === 'form')
-		{
-			$validations = array_unique($this->validator->findAll());
-		}
-
-		if (count($validations) == 0 && !$this->isTipped($mode))
+		if (!$this->validator->hasValidations() && !$this->isTipped($mode))
 		{
 			return '';
 		}
@@ -1747,9 +1733,14 @@ class PlgFabrik_Element extends FabrikPlugin
 			$lines[] = '<li>' . FabrikHelperHTML::image('question-sign.png', 'form', $tmpl) . ' ' . $this->getTipText($data) . '</li>';
 		}
 
-		foreach ($validations as $c => $validation)
+		if ($mode === 'form')
 		{
-			$lines[] = '<li>' . $validation->getHoverText($c, $tmpl) . '</li>';
+			$validationTexts = $this->validator->hoverTexts();
+
+			foreach ($validationTexts as $validationText)
+			{
+				$lines[] = '<li>' . $validationText . '</li>';
+			}
 		}
 
 		if (count($lines) > 0)
@@ -7292,5 +7283,27 @@ class PlgFabrik_Element extends FabrikPlugin
 			$db->setQuery($query);
 			$db->execute();
 		}
+	}
+
+	/**
+	 * Return an internal validation icon - e.g. for Password element
+	 *
+	 * @return  string
+	 */
+
+	public function internalValidationIcon()
+	{
+		return '';
+	}
+
+	/**
+	 * Return internal validation hover text - e.g. for Password element
+	 *
+	 * @return  string
+	 */
+
+	public function internalValidataionText()
+	{
+		return '';
 	}
 }
