@@ -443,7 +443,11 @@ class FabrikViewFormBase extends JViewLegacy
 
 				for ($c = 0; $c < $eventMax; $c++)
 				{
-					$jsActions[] = $elementModel->getFormattedJSActions($bkey, $c);
+					$jsAct = $elementModel->getFormattedJSActions($bkey, $c);
+					if (!empty($jsAct))
+					{
+						$jsActions[] = $jsAct;
+					}
 				}
 			}
 		}
@@ -482,7 +486,7 @@ class FabrikViewFormBase extends JViewLegacy
 		// Instantaite js objects for each element
 		$vstr = "\n";
 		$groups = $model->getGroupsHiarachy();
-		$script[] = "\t{$bkey}.addElements(";
+		$script[] = "\tFabrik.blocks['{$bkey}'].addElements(";
 		$groupedJs = new stdClass;
 
 		foreach ($groups as $groupModel)
@@ -534,7 +538,7 @@ class FabrikViewFormBase extends JViewLegacy
 
 							foreach ($watchElements as $watchElement)
 							{
-								$vstr .= "\t$bkey.watchValidation('" . $watchElement['id'] . "', '" . $watchElement['triggerEvent'] . "');\n";
+								$vstr .= "\tFabrik.blocks['$bkey'].watchValidation('" . $watchElement['id'] . "', '" . $watchElement['triggerEvent'] . "');\n";
 							}
 						}
 					}
