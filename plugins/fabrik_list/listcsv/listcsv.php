@@ -76,7 +76,7 @@ class PlgFabrik_ListListcsv extends PlgFabrik_List
 		}
 		else
 		{
-			@require JPATH_ROOT . '/plugins/fabrik_list/listcsv/scripts/' . $file;
+			require JPATH_ROOT . '/plugins/fabrik_list/listcsv/scripts/' . $file;
 		}
 
 		return true;
