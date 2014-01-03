@@ -46,7 +46,7 @@ class FabrikFEModelForm extends FabModelForm
 	protected $elements = null;
 
 	/**
-	 * List model assocated with form
+	 * List model associated with form
 	 *
 	 * @var FabrikFEModelList
 	 */
@@ -60,7 +60,7 @@ class FabrikFEModelForm extends FabModelForm
 	public $aJoinGroupIds = array();
 
 	/**
-	 * If editable if 0 then show view only verion of form
+	 * If editable if 0 then show view only version of form
 	 *
 	 * @var bol true
 	 */
@@ -131,7 +131,7 @@ class FabrikFEModelForm extends FabModelForm
 	protected $currentElement = null;
 
 	/**
-	 * If true encase table and element names with "`" when getting elemenet list
+	 * If true encase table and element names with "`" when getting element list
 	 *
 	 * @var bool
 	 */
@@ -308,7 +308,7 @@ class FabrikFEModelForm extends FabModelForm
 		$this->id = $id;
 		$this->setState('form.id', $id);
 
-		// $$$ rob not sure why but we need this getState() here when assinging id from admin view
+		// $$$ rob not sure why but we need this getState() here when assigning id from admin view
 		$this->getState();
 	}
 
@@ -535,7 +535,7 @@ class FabrikFEModelForm extends FabModelForm
 			$qs .= '&amp;rowid=' . $this->getRowId();
 
 			/* $$$ need &amp; for pdf output which is parsed through xml parser otherwise fails
-			 * If FabrikHelperHTML::styleSheetajax loaded then dont do &amp;
+			 * If FabrikHelperHTML::styleSheetajax loaded then don't do &amp;
 			 */
 			$view = $this->isEditable() ? 'form' : 'details';
 			$qs .= FabrikHelperHTML::cssAsAsset() ? '&view=' . $v : '&amp;view=' . $v;
@@ -549,7 +549,7 @@ class FabrikFEModelForm extends FabModelForm
 
 			/* $$$ hugh - as per Skype convos with Rob, decided to re-instate the custom.css convention.  So I'm adding two files:
 			 * custom.css - for backward compat with existing 2.x custom.css
-			 * custom_css.php - what we'll recommend people use for custom css moving foward.
+			 * custom_css.php - what we'll recommend people use for custom css moving forward.
 			 */
 
 			if (!FabrikHelperHTML::stylesheetFromPath('templates/' . $app->getTemplate() . '/html/com_fabrik/' . $view . '/' . $tmpl . '/custom.css' . $qs))
@@ -1050,7 +1050,7 @@ class FabrikFEModelForm extends FabModelForm
 	}
 
 	/**
-	 * When the form is submitted we want to get the orginal record it
+	 * When the form is submitted we want to get the original record it
 	 * is updating - this is used in things like the fileupload element
 	 * to check for changes in uploaded files and process the difference
 	 *
@@ -1115,7 +1115,7 @@ class FabrikFEModelForm extends FabModelForm
 
 	/**
 	 * test if orig data is empty.  Made this a function, as it's not a simple test
-	 * for empty(), and code outside thie model shouldn't need to know it'll be a one
+	 * for empty(), and code outside the model shouldn't need to know it'll be a one
 	 * entry array with an empty stdClass in it.
 	 *
 	 * @return  bool
@@ -1152,7 +1152,7 @@ class FabrikFEModelForm extends FabModelForm
 	/**
 	 * Processes the form data and decides what action to take
 	 *
-	 * @return  bool  false if one of the plugins reuturns an error otherwise true
+	 * @return  bool  false if one of the plugins returns an error otherwise true
 	 */
 
 	public function process()
@@ -1221,7 +1221,7 @@ class FabrikFEModelForm extends FabModelForm
 		if (in_array(false, $pluginManager->runPlugins('onAfterProcess', $this)))
 		{
 			// $$$ rob this no longer stops default redirect (not needed any more)
-			// returning false here stops the default redirect occuring
+			// returning false here stops the default redirect occurring
 			return false;
 		}
 		// Need to remove the form session before redirect plugins occur
@@ -1231,7 +1231,7 @@ class FabrikFEModelForm extends FabModelForm
 		if (in_array(false, $pluginManager->runPlugins('onLastProcess', $this)))
 		{
 			// $$$ rob this no longer stops default redirect (not needed any more)
-			// returning false here stops the default redirect occuring
+			// returning false here stops the default redirect occurring
 			return false;
 		}
 
@@ -1395,7 +1395,7 @@ class FabrikFEModelForm extends FabModelForm
 				$this->formData[$key] = $val;
 				$this->formDataWithTableName[$key] = $val;
 			}
-			// Check if set - for case where you have a fileupload element & confirmation plugin - when plugin is trying to update none existant data
+			// Check if set - for case where you have a fileupload element & confirmation plugin - when plugin is trying to update non-existent data
 			if (isset($this->_fullFormData))
 			{
 				$this->_fullFormData[$key] = $val;
@@ -1513,7 +1513,7 @@ class FabrikFEModelForm extends FabModelForm
 
 		$this->ajaxPost = $app->input->getBool('fabrik_ajax');
 
-		// Set up post data, and copy values to raw (for failed form submisstions)
+		// Set up post data, and copy values to raw (for failed form submissions)
 		$data = $_POST;
 		$this->copyToRaw($data);
 
@@ -1531,7 +1531,7 @@ class FabrikFEModelForm extends FabModelForm
 			$data['__pk_val'] = JArrayHelper::getValue($data, $primaryKey . '_raw', JArrayHelper::getValue($data, $primaryKey, ''));
 		}
 
-		// Apply querystring values if not already in post (so qs values dont overwrite the submitted values for dbjoin elements)
+		// Apply querystring values if not already in post (so qs values doesn't overwrite the submitted values for dbjoin elements)
 		$data = array_merge($data, $_REQUEST);
 		array_walk_recursive($data, array($this, '_clean'));
 
@@ -1598,7 +1598,7 @@ class FabrikFEModelForm extends FabModelForm
 		$repeatTotals = $input->get('fabrik_repeat_group', array(0), 'post', 'array');
 		$groups = $this->getGroupsHiarachy();
 
-		// Curerntly this is just used by calculation elements
+		// Currently this is just used by calculation elements
 		foreach ($groups as $groupModel)
 		{
 			$group = $groupModel->getGroup();
@@ -1728,7 +1728,7 @@ class FabrikFEModelForm extends FabModelForm
 		$input->set($tmpKey, $insertId);
 		$input->set('rowid', $insertId);
 
-		// $$$ hugh - pretty sure we need to unset 'usekey' now, as it is not relavent to joined data,
+		// $$$ hugh - pretty sure we need to unset 'usekey' now, as it is not relevant to joined data,
 		// and it messing with storeRow of joins
 		$input->set('usekey', '');
 	}
@@ -1754,7 +1754,7 @@ class FabrikFEModelForm extends FabModelForm
 	}
 
 	/**
-	 * Process individual elements when subitting the form
+	 * Process individual elements when submitting the form
 	 * Used for multi-select join elements which need to store data in
 	 * related tables
 	 *
@@ -1816,7 +1816,7 @@ class FabrikFEModelForm extends FabModelForm
 	 *
 	 * @param   int  $rowId  if '' then insert a new row - otherwise update this row id
 	 *
-	 * @return	mixed	insert id (or rowid if updating existing row) if ok , else string error message
+	 * @return	mixed	insert id (or rowid if updating existing row) if ok, else string error message
 	 */
 
 	protected function submitToDatabase($rowId = '')
@@ -1905,7 +1905,7 @@ class FabrikFEModelForm extends FabModelForm
 	 *
 	 * @deprecated (was only used in element label)
 	 *
-	 * @return	array	(validaionruleid => classname )
+	 * @return	array	(validationruleid => classname )
 	 */
 
 	public function loadValidationRuleClasses()
@@ -1956,7 +1956,7 @@ class FabrikFEModelForm extends FabModelForm
 					{
 						if ($elementModel->getFullName(true, false) == $key)
 						{
-							/* 	$$$ rob - dont test for !canUse() as confirmation plugin dynamically sets this
+							/* 	$$$ rob - don't test for !canUse() as confirmation plugin dynamically sets this
 							 * if ($elementModel->canView())
 							 * $$$ hugh - testing adding non-viewable, non-editable elements to encrypted vars
 							 */
@@ -2121,11 +2121,11 @@ class FabrikFEModelForm extends FabModelForm
 		$w = new FabrikWorker;
 		$ok = true;
 
-		// $$$ rob 01/07/2011 fileupload needs to examine records previous data for validations on edting records
+		// $$$ rob 01/07/2011 fileupload needs to examine records previous data for validations on editing records
 		$this->setOrigData();
 
 		// $$$ rob copy before addEncrytedVarsToArray as well as after
-		// so that any placedholders(.._raw) contained in the encrypted vars are correctly replaced
+		// so that any placeholders(.._raw) contained in the encrypted vars are correctly replaced
 		$this->copyToRaw($post);
 
 		/* $$$ rob for PHP 5.2.1 (and potential up to before 5.2.6) $post is not fully associated with formData -
@@ -2134,7 +2134,7 @@ class FabrikFEModelForm extends FabModelForm
 		 * $post wasn't modifying $this->formData.  Which is weird, as I thought all array assignments
 		 * were by reference?
 		 * $$$ hugh - FIXME - wait ... what ... hang on ... we assign $this->formData in $this->setFormData(),
-		 * which we assigned to $post a few ines up there ^^.  Why are we now assigning $post back to $this->formData??
+		 * which we assigned to $post a few lines up there ^^.  Why are we now assigning $post back to $this->formData??
 		 */
 		$this->formData = &$post;
 
@@ -2145,7 +2145,7 @@ class FabrikFEModelForm extends FabModelForm
 		$this->addEncrytedVarsToArray($post);
 
 		// $$$ hugh - moved this to after addEncryptedVarsToArray(), so read only data is
-		// available to things like calc's running in preProcess phase.
+		// available to things like calcs running in preProcess phase.
 		$this->callElementPreprocess();
 
 		// Add in raw fields - the data is already in raw format so just copy the values
@@ -2239,7 +2239,7 @@ class FabrikFEModelForm extends FabModelForm
 					 */
 					if ($groupModel->canRepeat())
 					{
-						// $$$ rob for repeat groups no join setting to array() menat that $_POST only contained the last repeat group data
+						// $$$ rob for repeat groups no join setting to array() means that $_POST only contained the last repeat group data
 						// $elDbVals = array();
 						$elDbVals[$c] = $form_data;
 					}
@@ -2247,7 +2247,7 @@ class FabrikFEModelForm extends FabModelForm
 					{
 						$elDbVals = $form_data;
 					}
-					// Validations plugins attached to elemenets
+					// Validations plugins attached to elements
 					if (!$elementModel->mustValidate())
 					{
 						continue;
@@ -2306,7 +2306,7 @@ class FabrikFEModelForm extends FabModelForm
 					$input->set($elName, $elDbVals);
 					$post[$elName] = $elDbVals;
 				}
-				// Unset the deafults or the orig submitted form data will be used (see date plugin mysql vs form format)
+				// Unset the defaults or the orig submitted form data will be used (see date plugin mysql vs form format)
 				$elementModel->defaults = null;
 			}
 		}
@@ -2331,8 +2331,8 @@ class FabrikFEModelForm extends FabModelForm
 	/**
 	 * Get form validation errors - if empty test session for errors
 	 * 31/01/13 - no longer restoring from session errors - see http://fabrikar.com/forums/showthread.php?t=31377
-	 * 19/02/13 - Changed from http refferer test to this->isMambot to restore session errors when redirecting from a non-ajax form
-	 * in module that has failed validaiton - see http://fabrikar.com/forums/showthread.php?t=31870
+	 * 19/02/13 - Changed from http_referer test to this->isMambot to restore session errors when redirecting from a non-ajax form
+	 * in module that has failed validation - see http://fabrikar.com/forums/showthread.php?t=31870
 	 *
 	 * @return  array  errors
 	 */
@@ -2380,7 +2380,7 @@ class FabrikFEModelForm extends FabModelForm
 		$context = 'com_' . $package . '.form.' . $this->getId() . '.' . $this->getRowId() . '.';
 		$session->clear($context . 'errors');
 		/* $$$ rob this was commented out, but putting back in to test issue that if we have ajax validations on
-		 * and a field is validated, then we dont submit the form, and go back to add the form, the previously validated
+		 * and a field is validated, then we don't submit the form, and go back to add the form, the previously validated
 		 * values are shown in the form.
 		 */
 		$session->set($context . 'session.on', false);
@@ -2561,7 +2561,7 @@ class FabrikFEModelForm extends FabModelForm
 	 * @param   bool    $useStep             Concat table name and el name with '___' (true) or "." (false)
 	 * @param   bool    $incRaw              Include raw labels default = true
 	 * @param   string  $key                 What value should be used for the option value 'name' (default) or 'id' @since 3.0.7
-	 * @param   string  $attribs             Select list attributs @since 3.1b
+	 * @param   string  $attribs             Select list attributes @since 3.1b
 	 *
 	 * @return	string	html list
 	 */
@@ -2649,7 +2649,7 @@ class FabrikFEModelForm extends FabModelForm
 
 	/**
 	 * Creates options array to be then used by getElementList to create a drop down of elements in the form
-	 * sperated as elements need to collate this options from muliple forms
+	 * separated as elements need to collate this options from multiple forms
 	 *
 	 * @param   bool    $useStep               concat table name and el name with '___' (true) or "." (false)
 	 * @param   string  $key                   name of key to use (default "name")
@@ -2714,7 +2714,7 @@ class FabrikFEModelForm extends FabModelForm
 					if ($incRaw && is_a($elementModel, 'PlgFabrik_ElementDatabasejoin'))
 					{
 						/* @FIXME - next line had been commented out, causing undefined warning for $rawval
-						 * on following line.  Not sure if getrawColumn is right thing to use here tho,
+						 * on following line.  Not sure if getrawColumn is right thing to use here though,
 						 * like, it adds filed quotes, not sure if we need them.
 						 */
 						if ($elementModel->getElement()->published != 0)
@@ -2743,7 +2743,7 @@ class FabrikFEModelForm extends FabModelForm
 	/**
 	 * Called via ajax nav
 	 *
-	 * @param   int  $dir  1 - move foward, 0 move back
+	 * @param   int  $dir  1 - move forward, 0 move back
 	 *
 	 * @return  bool  new row id loaded.
 	 */
@@ -2808,7 +2808,7 @@ class FabrikFEModelForm extends FabModelForm
 	/**
 	 * Get the current records row id
 	 * setting a rowid of -1 will load in the current users record (used in
-	 * conjunction wth usekey variable
+	 * conjunction with usekey variable
 	 *
 	 * setting a rowid of -2 will load in the last created record
 	 *
@@ -2851,7 +2851,7 @@ class FabrikFEModelForm extends FabModelForm
 			$this->rowId = array_shift($this->rowId);
 		}
 		// $$$ hugh - for some screwed up reason, when using SEF, rowid=-1 ends up as :1
-		// $$$ rob === compare as otherwise 0 == ":1" which menat that the users record was  loaded
+		// $$$ rob === compare as otherwise 0 == ":1" which meant that the users record was loaded
 		if ($this->isUserRowId())
 		{
 			$this->rowId = '-1';
@@ -3128,7 +3128,7 @@ class FabrikFEModelForm extends FabModelForm
 						$sessionLoaded = true;
 						/*
 						 * $$$ hugh - this chunk should probably go in setFormData, but don't want to risk any side effects just now
-						 * problem is that fater failed validation, non-repeat join element data is not formatted as arrays,
+						 * problem is that later failed validation, non-repeat join element data is not formatted as arrays,
 						 * but from this point on, code is expecting even non-repeat join data to be arrays.
 						 */
 						$tmp_data = unserialize($srow->data);
@@ -3180,7 +3180,7 @@ class FabrikFEModelForm extends FabModelForm
 
 						JDEBUG ? $profiler->mark('formmodel getData: rows data loaded') : null;
 
-						// $$$ rob Ack above didnt work for joined data where there would be n rows returned for "this rowid = $this->rowId  \n";
+						// $$$ rob Ack above didn't work for joined data where there would be n rows returned for "this rowid = $this->rowId  \n";
 						if (!empty($rows))
 						{
 							// Only do this if the query returned some rows (it wont if usekey on and userid = 0 for example)
@@ -3224,8 +3224,8 @@ class FabrikFEModelForm extends FabModelForm
 								}
 								else
 								{
-									// If we are using usekey then theres a good possiblity that the record
-									// won't yet exists- so in this case suppress this error message
+									// If we are using usekey then there's a good possibility that the record
+									// won't yet exist - so in this case suppress this error message
 									$this->rowId = '';
 								}
 							}
@@ -3335,8 +3335,8 @@ class FabrikFEModelForm extends FabModelForm
 		$join_pks_seen = array();
 		/**
 		 * Have to copy the data for the PK's seen stuff, as we're modifying the original $data
-		 * as we go, which screws up the PK logic once we've modifed the PK value itself in the
-		 * original $data.  Probably only needed for $data[0], as that's the only row we actualy
+		 * as we go, which screws up the PK logic once we've modified the PK value itself in the
+		 * original $data.  Probably only needed for $data[0], as that's the only row we actually
 		 * modify, but for now I'm just copying the whole thing, which then gets used for doing the ...
 		 * $join_pk_val = $data_copy[$row_index]->$join_pk;
 		 * ... inside the $data iteration below.
@@ -3462,7 +3462,7 @@ class FabrikFEModelForm extends FabModelForm
 
 		if (!$useCookie)
 		{
-			// Incase a plugin is using cookie session (e.g. confirmation plugin)
+			// In case a plugin is using cookie session (e.g. confirmation plugin)
 			$useCookie = $this->sessionModel->canUseCookie();
 		}
 
@@ -3474,7 +3474,7 @@ class FabrikFEModelForm extends FabModelForm
 	/**
 	 * Create the sql query to get the rows data for insertion into the form
 	 *
-	 * @param   array  $opts  key: ignoreOrder ingores order by part of query
+	 * @param   array  $opts  key: ignoreOrder ignores order by part of query
 	 *                        Needed for inline edit, as it only selects certain fields, order by on a db join element returns 0 results
 	 *
 	 * @deprecated	use buildQuery() instead
@@ -3490,7 +3490,7 @@ class FabrikFEModelForm extends FabModelForm
 	/**
 	 * Create the sql query to get the rows data for insertion into the form
 	 *
-	 * @param   array  $opts  key: ignoreOrder ingores order by part of query
+	 * @param   array  $opts  key: ignoreOrder ignores order by part of query
 	 *                        Needed for inline edit, as it only selects certain fields, order by on a db join element returns 0 results
 	 *
 	 * @return  string  query
@@ -3601,7 +3601,7 @@ class FabrikFEModelForm extends FabModelForm
 
 		if (strstr($sql, 'WHERE'))
 		{
-			// Do it this way as queries may contain subquerues which we want to keep the where
+			// Do it this way as queries may contain subqueries which we want to keep the where
 			$firstword = JString::substr($where, 0, 5);
 
 			if ($firstword == 'WHERE')
@@ -3750,7 +3750,7 @@ class FabrikFEModelForm extends FabModelForm
 	}
 
 	/**
-	 * Get an object of pages, key'd on page counter and containing an array of the page's group ids
+	 * Get an object of pages, keyed on page counter and containing an array of the page's group ids
 	 *
 	 * @return  object
 	 */
@@ -3953,7 +3953,7 @@ class FabrikFEModelForm extends FabModelForm
 						}
 					}
 				}
-				// Reduce the keys so that we dont have keys of 0, 2
+				// Reduce the keys so that we don't have keys of 0, 2
 				foreach ($jdata as $key => $array)
 				{
 					if ($groupModel->canRepeat())
@@ -3972,7 +3972,7 @@ class FabrikFEModelForm extends FabModelForm
 	}
 
 	/**
-	 * Query all active form plugins to see if they inject cutsom html into the top
+	 * Query all active form plugins to see if they inject custom html into the top
 	 * or bottom of the form
 	 *
 	 * @return  array  plugin top html, plugin bottom html (inside <form>) plugin end (after form)
@@ -4213,17 +4213,17 @@ class FabrikFEModelForm extends FabModelForm
 		$joinsToThisKey = $referringTable->getJoinsToThisKey();
 		$linksToForms = $referringTable->getLinksToThisKey();
 		$row = $this->getData();
-		$factedLinks = $tableParams->get('factedlinks', null);
+		$facetedLinks = $tableParams->get('factedlinks', null);
 
-		if (is_null($factedLinks))
+		if (is_null($facetedLinks))
 		{
 			return;
 		}
 
-		$linkedLists = $factedLinks->linkedlist;
-		$aExisitngLinkedForms = $factedLinks->linkedform;
-		$linkedform_linktype = $factedLinks->linkedform_linktype;
-		$linkedtable_linktype = $factedLinks->linkedlist_linktype;
+		$linkedLists = $facetedLinks->linkedlist;
+		$aExisitngLinkedForms = $facetedLinks->linkedform;
+		$linkedform_linktype = $facetedLinks->linkedform_linktype;
+		$linkedtable_linktype = $facetedLinks->linkedlist_linktype;
 		$f = 0;
 
 		foreach ($joinsToThisKey as $joinKey => $element)
@@ -4275,7 +4275,7 @@ class FabrikFEModelForm extends FabModelForm
 				$linkKeyRaw = $linkKey . '_raw';
 				$popUpLink = JArrayHelper::getValue($linkedtable_linktype->$key, $f, false);
 				$count = is_array($recordCounts) && array_key_exists($val, $recordCounts) ? $recordCounts[$val]->total : 0;
-				$label = $factedLinks->linkedlistheader->$key == '' ? $element->listlabel : $factedLinks->linkedlistheader->$key;
+				$label = $facetedLinks->linkedlistheader->$key == '' ? $element->listlabel : $facetedLinks->linkedlistheader->$key;
 				$links[$element->list_id][] = $label . ': ' . $referringTable->viewDataLink($popUpLink, $element, null, $linkKey, $val, $count, $f);
 			}
 
@@ -4284,7 +4284,7 @@ class FabrikFEModelForm extends FabModelForm
 
 		$f = 0;
 
-		// Create columns containing links which point to forms assosciated with this table
+		// Create columns containing links which point to forms associated with this table
 
 		foreach ($linksToForms as $element)
 		{
@@ -4307,8 +4307,8 @@ class FabrikFEModelForm extends FabModelForm
 							$val = $input->get($qsKey . '_raw', $input->get('rowid'));
 						}
 
-						// Jaanus: when no link to list and no formheaders then people still know where they add data
-						$fkey = $factedLinks->linkedformheader->$key;
+						// Jaanus: when no link to list and no form headers then people still know where they add data
+						$fkey = $facetedLinks->linkedformheader->$key;
 						$label = $fkey != '' ? ': ' . $fkey : (isset($linkedLists->$key) && $linkedLists->$key != 0 ? '' : ': ' . $element->listlabel);
 
 						// Jaanus: label after add link if no list link helps to make difference between data view links and only add links.
@@ -4325,7 +4325,7 @@ class FabrikFEModelForm extends FabModelForm
 
 	/**
 	 * Create the form's html class name.
-	 * Based on column counts etc as to whether form-horizontal applied
+	 * Based on column counts etc. as to whether form-horizontal applied
 	 *
 	 * @return  string
 	 */
@@ -4548,7 +4548,7 @@ class FabrikFEModelForm extends FabModelForm
 
 				if ($val == '')
 				{
-					// Somethings gone wrong - lets take the main table's key
+					// Something's gone wrong - lets take the main table's key
 					$k = $oJoin->join_from_table . $this->joinTableElementStep . $oJoin->table_key;
 					$val = @$this->data[$k];
 				}
@@ -4604,7 +4604,7 @@ class FabrikFEModelForm extends FabModelForm
 		// $$$rob - do regardless of whether form is editable as $data is required for hidden encrypted fields
 		// and not used anywhere else (avoids a warning message)
 		$data = array();
-		/* $$$ rob - 3.0 for some reason just using $this->data was not right as join data was empty when editing exisitng record
+		/* $$$ rob - 3.0 for some reason just using $this->data was not right as join data was empty when editing existing record
 		 * $$$ hugh - commented this out, as a) running getData() twice is expensive, and b) it blows away any changes onLoad plugins
 		 * make to _data, like the juser plugin
 		 * Ran this change for a couple of weeks before committing, seems to work without it.
@@ -4620,7 +4620,7 @@ class FabrikFEModelForm extends FabModelForm
 			}
 			else
 			{
-				// Not sure what the htmlspecialchars is for above but if we dont assign here we loose join data
+				// Not sure what the htmlspecialchars is for above but if we don't assign here we loose join data
 				$data[$key] = $val;
 			}
 		}
@@ -4639,7 +4639,7 @@ class FabrikFEModelForm extends FabModelForm
 			$groupParams = $groupModel->getParams();
 			$aElements = array();
 
-			// Check if group is acutally a table join
+			// Check if group is actually a table join
 			if (array_key_exists($groupTable->id, $this->aJoinGroupIds))
 			{
 				$aElements[] = $this->_makeJoinIdElement($groupTable);
@@ -4739,7 +4739,7 @@ class FabrikFEModelForm extends FabModelForm
 				// If its a repeatable group put in subgroup
 				if ($groupModel->canRepeat())
 				{
-					// Style attribute for group columns (need to occur after randomisation of the elements otherwise clear's are not ordered correctly)
+					// Style attribute for group columns (need to occur after randomisation of the elements otherwise clears are not ordered correctly)
 					$rowix = -1;
 
 					foreach ($aSubGroupElements as $elKey => $element)
@@ -4753,10 +4753,10 @@ class FabrikFEModelForm extends FabModelForm
 
 			$groupModel->randomiseElements($aElements);
 
-			// Style attribute for group columns (need to occur after randomisation of the elements otherwise clear's are not ordered correctly)
+			// Style attribute for group columns (need to occur after randomisation of the elements otherwise clears are not ordered correctly)
 			$rowix = -1;
 
-			// Don't double setColumnCss otherwise wierdness ensues
+			// Don't double setColumnCss otherwise weirdness ensues
 			if (!$groupModel->canRepeat())
 			{
 				foreach ($aElements as $elKey => $element)
@@ -4949,7 +4949,7 @@ class FabrikFEModelForm extends FabModelForm
 		{
 			/* $$$ hugh - unset group published elements list, and clear each
 			 * element's default data.  Needed from content plugin, otherwise if
-			 * we render the same form more than once with different rowid's, we end up
+			 * we render the same form more than once with different rowids, we end up
 			 * rendering the first copy's element data X times.
 			 * Not sure if we need to actually unset the group published elements list,
 			 * but for the moment I'm just using a Big Hammer to get the content plugin working!
@@ -5238,7 +5238,7 @@ class FabrikFEModelForm extends FabModelForm
 		/**
 		 * $$$ rob Was using array_shift to set $msg, not to really remove it from $smsg
 		 * without the array_shift the custom message is never attached to the redirect page.
-		 * use case 'redirct plugin with jump page pointing to a J page and thanks message selected.
+		 * Use-case: redirect plugin with jump page pointing to a J page and thanks message selected.
 		 */
 		$custommsg = array_keys($smsg);
 		$custommsg = array_shift($custommsg);

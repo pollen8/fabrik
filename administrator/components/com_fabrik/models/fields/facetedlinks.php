@@ -25,13 +25,13 @@ jimport('joomla.form.helper');
  * @since       1.6
  */
 
-class JFormFieldFactedlinks extends JFormFieldList
+class JFormFieldFacetedlinks extends JFormFieldList
 {
 	/**
 	 * Element name
 	 * @var		string
 	 */
-	protected $name = 'Factedlinks';
+	protected $name = 'Facetedlinks';
 
 	/**
 	 * Method to get the field input markup.
@@ -221,8 +221,8 @@ class JFormFieldFactedlinks extends JFormFieldList
 		$return = array_merge($listreturn, $formreturn);
 		$facetedFormOrder = htmlspecialchars($listParams->get('faceted_form_order'));
 		$return[] = '<input name="jform[params][faceted_form_order]" type="hidden" value="' . $facetedFormOrder . '" />';
-		$factedListOrder = htmlspecialchars($listParams->get('faceted_list_order'));
-		$return[] = '<input name="jform[params][faceted_list_order]" type="hidden" value="' . $factedListOrder . '" />';
+		$facetedListOrder = htmlspecialchars($listParams->get('faceted_list_order'));
+		$return[] = '<input name="jform[params][faceted_list_order]" type="hidden" value="' . $facetedListOrder . '" />';
 
 		return implode("\n", $return);
 	}

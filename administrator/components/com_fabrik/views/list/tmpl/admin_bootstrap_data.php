@@ -145,13 +145,13 @@ $rtlDirInv = $doc->direction === 'rtl' ? 'right' : 'left';
 			<fieldset>
 				<legend><?php echo JText::_('COM_FABRIK_RELATED_DATA')?></legend>
 
-				<?php foreach ($this->form->getFieldset('factedlinks2') as $this->field):
+				<?php foreach ($this->form->getFieldset('facetedlinks2') as $this->field):
 					echo $this->loadTemplate('control_group');
 				endforeach;
 				?>
 
 				<?php
-				foreach ($this->form->getFieldset('factedlinks') as $this->field) :
+				foreach ($this->form->getFieldset('facetedlinks') as $this->field) :
 					echo $this->loadTemplate('control_group');
 				endforeach;
 				?>
