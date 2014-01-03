@@ -10823,7 +10823,7 @@ class FabrikFEModelList extends JModelForm
 				}
 			}
 
-			if ($this->tmpl == '')
+			if ($this->tmpl == '' || (!FabrikWorker::j3() && $this->tmpl === 'bootstrap'))
 			{
 				$this->tmpl = FabrikWorker::j3() ? 'bootstrap' : 'default';
 			}
