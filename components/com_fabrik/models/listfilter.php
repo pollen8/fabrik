@@ -968,7 +968,7 @@ class FabrikFEModelListfilter extends FabModel
 	}
 
 	/**
-	 * get any querystring filters that can be applied to the list
+	 * Get any querystring filters that can be applied to the list
 	 * you can simple do tablename___elementname=value
 	 * or if you want more control you can do
 	 *

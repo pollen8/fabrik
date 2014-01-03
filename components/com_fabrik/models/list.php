@@ -4939,7 +4939,7 @@ class FabrikFEModelList extends JModelForm
 			}
 		}
 
-		FabrikHelperHTML::debug($this->filters, 'tablemodel::getFilterArray middle');
+		FabrikHelperHTML::debug($this->filters, 'listmodel::getFilterArray middle');
 		$readOnlyValues = array();
 		$w = new FabrikWorker;
 		$noFiltersSetup = JArrayHelper::getValue($this->filters, 'no-filter-setup', array());
