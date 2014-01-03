@@ -8,16 +8,16 @@
 	<authorEmail>rob@pollen-8.co.uk</authorEmail>
 	<authorUrl>www.fabrikar.com</authorUrl>
 	<version>3.1rc2</version>
-	<description>This module shows a Fabrik visualization in Joomlas adminstration pages.</description>
+	<description>This module shows a Fabrik visualization in Joomla's administration pages.</description>
 	<files>
-		<filename module="mod_fabrik_visualizaton">mod_fabrik_visualizaton.php</filename>
+		<filename module="mod_fabrik_visualization">mod_fabrik_visualization.php</filename>
 		<filename>index.html</filename>
-		<filename>mod_fabrik_visualizaton.xml</filename>
+		<filename>mod_fabrik_visualization.xml</filename>
 	</files>
 	<config>
 		<fields name="params">
 			<fieldset addfieldpath="/administrator/components/com_fabrik/models/fields" name="advanced">
-				<field default="0" description="" label="Select Instance" name="id" type="visaulizationlist"/>
+				<field default="0" description="" label="Select Instance" name="id" type="visualizationlist"/>
 			</fieldset>
 		</fields>
 	</config>

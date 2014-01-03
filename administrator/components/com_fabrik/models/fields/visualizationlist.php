@@ -26,7 +26,7 @@ JFormHelper::loadFieldClass('list');
  * @since       1.6
  */
 
-class JFormFieldVisaulizationlist extends JFormFieldList
+class JFormFieldVisualizationlist extends JFormFieldList
 {
 	/**
 	 * Element name
@@ -34,7 +34,7 @@ class JFormFieldVisaulizationlist extends JFormFieldList
 	 * @var		string
 	 */
 
-	protected $name = 'Visaulizationlist';
+	protected $name = 'Visualizationlist';
 
 	/**
 	 * Method to get the field options.

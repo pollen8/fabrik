@@ -2811,7 +2811,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		 * element on the form.
 		 * $element = $this->getParent();
 		*/
-		$jsControllerKey = "Fabrik.blocks['" . $jsControllerKey . "']";
+		$jsControllerKey = "\tFabrik.blocks['" . $jsControllerKey . "']";
 		$element = $this->getElement();
 		$form = $this->form->getForm();
 		$w = new FabrikWorker;

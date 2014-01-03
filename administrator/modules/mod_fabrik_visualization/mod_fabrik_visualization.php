@@ -68,7 +68,7 @@ if (file_exists($path))
 }
 else
 {
-	$app->enqueueMessage('could not load viz:' . $name, 'notice');
+	$app->enqueueMessage('Could not load visualization: ' . $name, 'notice');
 
 	return;
 }
