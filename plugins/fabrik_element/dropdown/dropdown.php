@@ -116,6 +116,7 @@ class PlgFabrik_ElementDropdown extends PlgFabrik_ElementList
 		$settings = array();
 		$settings['list.select'] = $selected;
 		$settings['option.id'] = $id;
+		$settings['id'] = $id;
 		$settings['list.attr'] = $attribs;
 		$settings['group.items'] = null;
 

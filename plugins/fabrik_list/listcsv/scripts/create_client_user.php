@@ -1,6 +1,14 @@
 <?php
 /**
+ * Fabrik List CSV plugin example script
  *
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.list.listcsv
+ * @copyright   Copyright (C) 2005-2013 fabrikar.com - All rights reserved.
+ * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
+ */
+
+/**
  * Some example code for creating J! users when importing CSV file.
  *
  * Instructions:
@@ -63,5 +71,6 @@ $csv_user->first_password_element = '';
 $csv_user->user_created_element = '';
 $csv_user->user_created_value = '1';
 
-$csv_user->createUser($tableModel);
+$listModel = $this->getModel();
+$csv_user->createUser($listModel);
 

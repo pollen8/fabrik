@@ -7,7 +7,7 @@
 	</layout>
 	<fields name="request">
 		<fieldset addfieldpath="/administrator/components/com_fabrik/models/fields" name="request">
-			<field default="0" description="" label="Select Instance" name="id" type="visaulizationlist"/>
+			<field default="0" description="" label="Select Instance" name="id" type="visualizationlist"/>
 		</fieldset>
 	</fields>
 	<fields addfieldpath="/administrator/components/com_fabrik/models/fields" name="params">

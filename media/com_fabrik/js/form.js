@@ -125,7 +125,7 @@ var FbForm = new Class({
 			}.bind(this));
 			this.watchGoBackButton();
 		}
-		
+
 		this.watchPrintButton();
 	},
 
@@ -211,17 +211,32 @@ var FbForm = new Class({
 	addElementFX: function (id, method) {
 		var c, k, fxdiv;
 		id = id.replace('fabrik_trigger_', '');
+		// Paul - add sanity checking and error reporting
 		if (id.slice(0, 6) === 'group_') {
 			id = id.slice(6, id.length);
 			k = id;
 			c = document.id(id);
-		} else {
-			id = id.slice(8, id.length);
-			k = 'element' + id;
-			if (!document.id(id)) {
+			if (!c) {
+				fconsole('Fabrik form::addElementFX: Group "' + id + '" does not exist.');
 				return false;
 			}
-			c = document.id(id).getParent('.fabrikElementContainer');
+			c = document.id(id);
+		} else if (id.slice(0, 8) === 'element_') {
+			id = id.slice(8, id.length);
+			k = 'element' + id;
+			c = document.id(id);
+			if (!c) {
+				fconsole('Fabrik form::addElementFX: Element "' + id + '" does not exist.');
+				return false;
+			}
+			c = c.getParent('.fabrikElementContainer');
+			if (!c) {
+				fconsole('Fabrik form::addElementFX: Element "' + id + '.fabrikElementContainer" does not exist.');
+				return false;
+			}
+		} else {
+			fconsole('Fabrik form::addElementFX: Not an element or group: ' + id);
+			return false;
 		}
 		if (c) {
 			// c will be the <li> element - you can't apply fx's to this as it makes the
@@ -419,7 +434,7 @@ var FbForm = new Class({
 			this.hideOtherPages();
 		}
 	},
-	
+
 	isMultiPage: function () {
 		return this.options.pages.getKeys().length > 1;
 	},
@@ -625,11 +640,27 @@ var FbForm = new Class({
 		a.each(function (elements, gid) {
 			elements.each(function (el) {
 				if (typeOf(el) === 'array') {
+					// Paul - check that element exists before adding it http://fabrikar.com/forums/index.php?threads/ajax-validation-never-ending-in-forms.36907
+					if (typeOf(document.id(el[1])) === 'null') {
+						fconsole('Fabrik form::addElements: Cannot add element "' + el[1] + '" because it does not exist in HTML.');
+						return;
+					}
 					var oEl = new window[el[0]](el[1], el[2]);
 					added.push(this.addElement(oEl, el[1], gid));
 				}
-				else if (typeOf(el) !== 'null') {
+				else if (typeOf(el) === 'object') {
+					// Paul - check that element exists before adding it http://fabrikar.com/forums/index.php?threads/ajax-validation-never-ending-in-forms.36907
+					if (typeOf(document.id(el.options.element)) === 'null') {
+						fconsole('Fabrik form::addElements: Cannot add element "' + el.options.element + '" because it does not exist in HTML.');
+						return;
+					}
 					added.push(this.addElement(el, el.options.element, gid));
+				}
+				else if (typeOf(el) !== 'null') {
+					fconsole('Fabrik form::addElements: Cannot add unknown element: ' + el);
+				}
+				else {
+					fconsole('Fabrik form::addElements: Cannot add null element.');
 				}
 			}.bind(this));
 		}.bind(this));
@@ -689,8 +720,14 @@ var FbForm = new Class({
 				}
 			});
 		}
-		if (el && js !== '') {
+		if (!el) {
+			fconsole('Fabrik form::dispatchEvent: Cannot find element to add ' + action + ' event to: ' + elementId);
+		}
+		else if (js !== '') {
 			el.addNewEvent(action, js);
+		}
+		else if (Fabrik.debug) {
+			fconsole('Fabrik form::dispatchEvent: Javascript empty for ' + action + ' event on: ' + elementId);
 		}
 	},
 
@@ -714,7 +751,7 @@ var FbForm = new Class({
 		}
 		var el = document.id(id);
 		if (typeOf(el) === 'null') {
-			fconsole('watch validation failed, could not find element ' + id);
+			fconsole('Fabrik form::watchValidation: Could not add ' + triggerEvent + ' event because element "' + id + '" does not exist.');
 			return;
 		}
 		if (el.className === 'fabrikSubElementContainer') {

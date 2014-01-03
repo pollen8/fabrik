@@ -164,7 +164,7 @@ $states	= array(
 					. JHTML::image('media/com_fabrik/images/child_element.png', JText::_('COM_FABRIK_LINKED_ELEMENT'), 'title="' . JText::_('COM_FABRIK_LINKED_ELEMENT') . '"')
 					. '</a>&nbsp';
 				else :
-					echo JHTML::image('media/com_fabrik/images/parent_element.png', JText::_('COM_FABRIK_PARENT_ELEMENT'), 'title="' . JText::_('COM_FABRIK_PARENT_ELEMENT') . '"') . '&nbsp;';
+					echo JHTML::image('media/com_fabrik/images/parent_element.png', JText::_('COM_FABRIK_PARENT_ELEMENT'), 'title="' . JText::_('COM_FABRIK_PARENT_ELEMENT') . '"');
 				endif;
 				?>
 				</td>

@@ -1607,13 +1607,7 @@ class PlgFabrik_Element extends FabrikPlugin
 
 			if ($this->isEditable())
 			{
-				$validations = array_unique($this->validator->findAll());
-
-				if (count($validations) > 0)
-				{
-					$emptyIcon = $this->validator->getIcon();
-					$l .= FabrikHelperHTML::image($emptyIcon, 'form', $tmpl, $iconOpts) . ' ';
-				}
+				$l .= $this->validator->labelIcons();
 			}
 
 			$l .= $j3 ? $labelText : '';
@@ -1704,9 +1698,7 @@ class PlgFabrik_Element extends FabrikPlugin
 
 		if ($this->editable)
 		{
-			$validations = array_unique($this->validator->findAll());
-
-			if (count($validations) > 0)
+			if ($this->validator->hasValidations())
 			{
 				$opts->heading = JText::_('COM_FABRIK_VALIDATION');
 			}
@@ -1727,15 +1719,9 @@ class PlgFabrik_Element extends FabrikPlugin
 	protected function tipTextAndValidations($mode, $data = array())
 	{
 		$lines = array();
-		$validations = array();
 		$tmpl = $this->getFormModel()->getTmpl();
 
-		if ($this->isEditable() && $mode === 'form')
-		{
-			$validations = array_unique($this->validator->findAll());
-		}
-
-		if (count($validations) == 0 && !$this->isTipped($mode))
+		if (!$this->validator->hasValidations() && !$this->isTipped($mode))
 		{
 			return '';
 		}
@@ -1747,9 +1733,14 @@ class PlgFabrik_Element extends FabrikPlugin
 			$lines[] = '<li>' . FabrikHelperHTML::image('question-sign.png', 'form', $tmpl) . ' ' . $this->getTipText($data) . '</li>';
 		}
 
-		foreach ($validations as $validation)
+		if ($mode === 'form')
 		{
-			$lines[] = '<li>' . $validation->getHoverText($tmpl) . '</li>';
+			$validationTexts = $this->validator->hoverTexts();
+
+			foreach ($validationTexts as $validationText)
+			{
+				$lines[] = '<li>' . $validationText . '</li>';
+			}
 		}
 
 		if (count($lines) > 0)
@@ -2416,7 +2407,7 @@ class PlgFabrik_Element extends FabrikPlugin
 	{
 		return 'need to overwrite in element plugin class';
 	}
-	
+
 	/**
 	 * Format the read only output for the page
 	 *
@@ -2425,21 +2416,21 @@ class PlgFabrik_Element extends FabrikPlugin
 	 *
 	 * @return  string  Read only value
 	 */
-	
+
 	protected function getReadOnlyOutput($value, $label)
 	{
 		$params = $this->getParams();
-		
+
 		if ($params->get('icon_folder') != -1 && $params->get('icon_folder') != '')
 		{
 			$icon = $this->replaceWithIcons($value);
-	
+
 			if ($this->iconsSet)
 			{
 				$label = $icon;
 			}
 		}
-	
+
 		return $label;
 	}
 
@@ -2820,7 +2811,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		 * element on the form.
 		 * $element = $this->getParent();
 		*/
-		$jsControllerKey = "Fabrik.blocks['" . $jsControllerKey . "']";
+		$jsControllerKey = "\tFabrik.blocks['" . $jsControllerKey . "']";
 		$element = $this->getElement();
 		$form = $this->form->getForm();
 		$w = new FabrikWorker;
@@ -7292,5 +7283,27 @@ class PlgFabrik_Element extends FabrikPlugin
 			$db->setQuery($query);
 			$db->execute();
 		}
+	}
+
+	/**
+	 * Return an internal validation icon - e.g. for Password element
+	 *
+	 * @return  string
+	 */
+
+	public function internalValidationIcon()
+	{
+		return '';
+	}
+
+	/**
+	 * Return internal validation hover text - e.g. for Password element
+	 *
+	 * @return  string
+	 */
+
+	public function internalValidataionText()
+	{
+		return '';
 	}
 }

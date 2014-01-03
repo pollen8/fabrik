@@ -355,7 +355,7 @@ class FabrikFEModelList extends JModelForm
 	protected $renderContext = '';
 
 	/**
-	 * Tthe max number of buttons that is shown in a row
+	 * The max number of buttons that is shown in a row
 	 *
 	 * @var int
 	 */
@@ -609,11 +609,11 @@ class FabrikFEModelList extends JModelForm
 		$data = $this->getData();
 		JDEBUG ? $profiler->mark('got data') : null;
 
-		// Think we really have to do these as the calc isnt updated when the list is filtered
+		// Think we really have to do these as the calc isn't updated when the list is filtered
 		$this->doCalculations();
 		JDEBUG ? $profiler->mark('done calcs') : null;
 		$this->getCalculations();
-		JDEBUG ? $profiler->mark('got cacls') : null;
+		JDEBUG ? $profiler->mark('got calcs') : null;
 		$item->hit();
 
 		return $data;
@@ -657,13 +657,13 @@ class FabrikFEModelList extends JModelForm
 			$id = $this->getId();
 			$this->randomRecords = $input->get('fabrik_random', $this->randomRecords);
 
-			// $$$ rob dont make the key list.X as the registry doesnt seem to like keys with just '1' a
+			// $$$ rob don't make the key list.X as the registry doesn't seem to like keys with just '1' a
 			$context = 'com_' . $package . '.list' . $this->getRenderContext() . '.';
 			$limitStart = $this->randomRecords ? $this->getRandomLimitStart() : 0;
 
-			// Deal with the fact that you can have more than one list on a page so limitstart has to be  specfic per table
+			// Deal with the fact that you can have more than one list on a page so limitstart has to be specific per table
 
-			// If list is rendered as a content plugin dont set the limits in the session
+			// If list is rendered as a content plugin don't set the limits in the session
 			if ($app->scope == 'com_content')
 			{
 				$limitLength = $input->getInt('limit' . $id, $item->rows_per_page);
@@ -675,7 +675,7 @@ class FabrikFEModelList extends JModelForm
 			}
 			else
 			{
-				// If a list (assoc with a menu item) loads a form, with db join & front end select - dont use the orig menu's rows_per_page value.
+				// If a list (assoc with a menu item) loads a form, with db join & front end select - don't use the orig menu's rows_per_page value.
 				$mambot = $this->isMambot || ($input->get('tmpl') === 'component' && $input->getInt('ajax') === 1);
 				$rowsPerPage = FabrikWorker::getMenuOrRequestVar('rows_per_page', $item->rows_per_page, $mambot);
 				$limitLength = $app->getUserStateFromRequest($context . 'limitlength', 'limit' . $id, $rowsPerPage);
@@ -743,8 +743,8 @@ class FabrikFEModelList extends JModelForm
 
 	/**
 	 * Once we have a few table joins, our select statements are
-	 * getting big enough to hit default select length max in MySQL.  Added per-list
-	 * setting to enable_big_selects.
+	 * getting big enough to hit default select length max in MySQL.
+	 * Added per-list setting to enable_big_selects.
 	 *
 	 * 03/10/2012 - Should preserve any old list settings, but this is now set in the global config
 	 * We set it on the main J db in the system plugin setBigSelects() but should do here as well as we
@@ -753,7 +753,7 @@ class FabrikFEModelList extends JModelForm
 	 * 2012-10-19 - $$$ hugh - trouble with preserving old list settings is there is no way to change them, without
 	 * directly poking around in the params in the database.  Commenting out the per-list checking.
 	 *
-	 * @deprecated   now handled in FabrikHelper::getDbo(), as it needs to apply to all queruies, including internal / default connection ones.
+	 * @deprecated   now handled in FabrikHelper::getDbo(), as it needs to apply to all queries, including internal / default connection ones.
 	 * @since   3/16/2010
 	 *
 	 * @return  void
@@ -858,7 +858,7 @@ class FabrikFEModelList extends JModelForm
 	 * @param   string  $query         sql query
 	 * @param   int     $start         start of limit
 	 * @param   int     $length        limit length
-	 * @param   string  $outputFormat  output format csv/html/rss etc
+	 * @param   string  $outputFormat  output format csv/html/rss etc.
 	 *
 	 * @return array (total records, data set)
 	 */
@@ -887,7 +887,7 @@ class FabrikFEModelList extends JModelForm
 		FabrikHelperHTML::debug($fabrikDb->getQuery(), 'list GetData:' . $listModel->getTable()->label);
 		JDEBUG ? $profiler->mark('before query run') : null;
 
-		/* set 2nd param to false in attempt to stop joomfish db adaptor from translating the orignal query
+		/* set 2nd param to false in attempt to stop joomfish db adaptor from translating the original query
 		 * fabrik3 - 2nd param in j16 is now used - guessing that joomfish now uses the third param for the false switch?
 		* $$$ rob 26/09/2011 note Joomfish not currently released for J1.7
 		*/
@@ -965,7 +965,7 @@ class FabrikFEModelList extends JModelForm
 	}
 
 	/**
-	 * $$$ rob pointless getting elemetsnnot shown in the table view?
+	 * $$$ rob pointless getting elements not shown in the table view?
 	 * $$$ hugh - oops, they might be using elements in group-by template not shown in table
 	 * http://fabrikar.com/forums/showthread.php?p=102600#post102600
 	 * $$$ rob in that case lets test that rather than loading blindly
@@ -1065,7 +1065,7 @@ class FabrikFEModelList extends JModelForm
 
 			foreach ($data as &$row)
 			{
-				// $$$ rob if the id isnt published fall back to __pk_val
+				// $$$ rob if the id isn't published fall back to __pk_val
 				$translateRow = array_key_exists($longKey, $row) ? $res[$row->$longKey] : $res[$row->__pk_val];
 
 				foreach ($row as $key => $val)
@@ -1147,7 +1147,7 @@ class FabrikFEModelList extends JModelForm
 					}
 					else
 					{
-						JDEBUG ? $profiler->mark('elements renderListData: ' . "($ec)" . " talbeid = $table->id " . $col) : null;
+						JDEBUG ? $profiler->mark("elements renderListData: ($ec) tableid = $table->id $col") : null;
 
 						for ($i = 0; $i < $ec; $i++)
 						{
@@ -1160,7 +1160,7 @@ class FabrikFEModelList extends JModelForm
 							$data[$i]->$col = htmlspecialchars_decode(htmlentities($data[$i]->$col, ENT_NOQUOTES, 'UTF-8'), ENT_NOQUOTES);
 
 							/* Not sure if this works, as far as I can tell _raw will always exist, even if
-							 * the element model hasn't explicitly done anything with it (except mayeb unsetting it?)
+							 * the element model hasn't explicitly done anything with it (except maybe unsetting it?)
 							* For instance, the calc element needs to set _raw.  For now, I changed $thisRow above to
 							* be a = reference to $data[$i], and in renderListData() the calc element modifies
 							* the _raw entry in $thisRow.  I guess it could simply unset the _raw in $thisRow and
@@ -1218,7 +1218,7 @@ class FabrikFEModelList extends JModelForm
 			{
 				$sdata = isset($data[$i]->$groupBy) ? $data[$i]->$groupBy : '';
 
-				// Get rid of & as it blows up SimpleXMLElement, and dont want to use htmlspecialchars as don't want to mess with <, >, etc.
+				// Get rid of & as it blows up SimpleXMLElement, and don't want to use htmlspecialchars as don't want to mess with <, >, etc.
 				$sdata = str_replace('&', '&amp;', str_replace('&amp;', '&', $sdata));
 
 				// Test if its just an <a>*</a> tag - if so allow HTML (enables use of icons)
@@ -1272,7 +1272,7 @@ class FabrikFEModelList extends JModelForm
 			$data = array($data);
 		}
 
-		JDEBUG ? $profiler->mark('table groupd by applied') : null;
+		JDEBUG ? $profiler->mark('table grouped-by applied') : null;
 
 		if ($this->outputFormat != 'pdf' && $this->outputFormat != 'csv' && $this->outputFormat != 'feed')
 		{
@@ -1301,7 +1301,7 @@ class FabrikFEModelList extends JModelForm
 		$buttonAction = $this->actionMethod();
 		$nextview = $this->canEdit() ? 'form' : 'details';
 		$tmpKey = '__pk_val';
-		$facted = $params->get('factedlinks');
+		$faceted = $params->get('factedlinks');
 
 		// Get a list of fabrik lists and ids for view list and form links
 		$oldLinksToForms = $this->getLinksToThisKey();
@@ -1362,7 +1362,7 @@ class FabrikFEModelList extends JModelForm
 				{
 					if ($join->list_id !== '0')
 					{
-						// $$$ rob 22/02/2011 was not using _raw before which was intserting html into the value for image elements
+						// $$$ rob 22/02/2011 was not using _raw before which was inserting html into the value for image elements
 						$fkey = $join->table_join_alias . '___' . $join->table_key . '_raw';
 
 						if (isset($row->$fkey))
@@ -1391,7 +1391,7 @@ class FabrikFEModelList extends JModelForm
 				? '<input type="checkbox" id="id_' . $row->__pk_val . '" name="ids[' . $row->__pk_val . ']" value="'
 						. htmlspecialchars($pKeyVal, ENT_COMPAT, 'UTF-8') . '" />' . $pkcheck : '';
 
-				// Add in some default links if no element choosen to be a link
+				// Add in some default links if no element chosen to be a link
 				$link = $this->viewDetailsLink($data[$groupKey][$i]);
 				$edit_link = $this->editLink($data[$groupKey][$i]);
 				$row->fabrik_view_url = $link;
@@ -1496,12 +1496,12 @@ class FabrikFEModelList extends JModelForm
 				foreach ($joinsToThisKey as $f => $join)
 				{
 					// $$$ hugh - for reasons I don't understand, $joinsToThisKey now contains entries
-					// which aren't in $facted->linkedlist, so added this sanity check.
-					if (isset($facted->linkedlist->$f))
+					// which aren't in $faceted->linkedlist, so added this sanity check.
+					if (isset($faceted->linkedlist->$f))
 					{
-						$linkedTable = $facted->linkedlist->$f;
-						$popupLink = $facted->linkedlist_linktype->$f;
-						$linkedListText = $facted->linkedlisttext->$f;
+						$linkedTable = $faceted->linkedlist->$f;
+						$popupLink = $faceted->linkedlist_linktype->$f;
+						$linkedListText = $faceted->linkedlisttext->$f;
 
 						if ($linkedTable != '0')
 						{
@@ -1537,11 +1537,11 @@ class FabrikFEModelList extends JModelForm
 					}
 				}
 
-				// Create columns containing links which point to forms assosciated with this table
+				// Create columns containing links which point to forms associated with this table
 				foreach ($linksToForms as $f => $join)
 				{
-					$linkedForm = $facted->linkedform->$f;
-					$popupLink = $facted->linkedform_linktype->$f;
+					$linkedForm = $faceted->linkedform->$f;
+					$popupLink = $faceted->linkedform_linktype->$f;
 					/* $$$ hugh @TODO - rob, can you check this, I added this line,
 					 * but the logic applied for $val in the linked table code above seems to be needed?
 					* http://fabrikar.com/forums/showthread.php?t=9535
@@ -1556,7 +1556,7 @@ class FabrikFEModelList extends JModelForm
 							$linkKey = @$join->db_table_name . '___' . @$join->name;
 							$gkey = $linkKey . '_form_heading';
 							$row2 = JArrayHelper::fromObject($row);
-							$linkLabel = $this->parseMessageForRowHolder($facted->linkedformtext->$f, $row2);
+							$linkLabel = $this->parseMessageForRowHolder($faceted->linkedformtext->$f, $row2);
 							$group[$i]->$gkey = $this->viewFormLink($popupLink, $join, $row, $linkKey, $val, false, $f);
 						}
 					}
@@ -1795,10 +1795,10 @@ class FabrikFEModelList extends JModelForm
 		$linkKey = FabrikString::safeColName($key);
 		$fparams = $listModel->getParams();
 
-		// Ensure that the facted list's "require filters" option is set to false
+		// Ensure that the faceted list's "require filters" option is set to false
 		$fparams->set('require-filter', false);
 
-		// Ignore facted lists session filters
+		// Ignore faceted lists session filters
 		$origIncSesssionFilters = $input->get('fabrik_incsessionfilters', true);
 		$input->set('fabrik_incsessionfilters', false);
 		$query = $db->getQuery(true);
@@ -1855,8 +1855,8 @@ class FabrikFEModelList extends JModelForm
 		$listid = $element->list_id;
 		$formid = $element->form_id;
 		$linkedFormText = $params->get('linkedformtext');
-		$facted = $params->get('factedlinks');
-		$linkedFormText = JArrayHelper::fromObject($facted->linkedformtext);
+		$faceted = $params->get('factedlinks');
+		$linkedFormText = JArrayHelper::fromObject($faceted->linkedformtext);
 		$msg = JArrayHelper::getValue($linkedFormText, $elKey);
 		$row2 = JArrayHelper::fromObject($row);
 		$label = $this->parseMessageForRowHolder($msg, $row2);
@@ -1974,13 +1974,13 @@ class FabrikFEModelList extends JModelForm
 		$app = JFactory::getApplication();
 		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$params = $this->getParams();
-		$facted = $params->get('factedlinks');
+		$faceted = $params->get('factedlinks');
 
 		/* $$$ hugh - we are getting element keys that aren't in the linkedlisttext.
 		 * not sure why, so added this defensive code.  Should probably find out
 		* why though!  I just needed to make this error go away NAO!
 		*/
-		$linkedListText = isset($facted->linkedlisttext->$elKey) ? $facted->linkedlisttext->$elKey : '';
+		$linkedListText = isset($faceted->linkedlisttext->$elKey) ? $faceted->linkedlisttext->$elKey : '';
 		$row2 = JArrayHelper::fromObject($row);
 		$label = $this->parseMessageForRowHolder($linkedListText, $row2);
 
@@ -4939,7 +4939,7 @@ class FabrikFEModelList extends JModelForm
 			}
 		}
 
-		FabrikHelperHTML::debug($this->filters, 'tablemodel::getFilterArray middle');
+		FabrikHelperHTML::debug($this->filters, 'listmodel::getFilterArray middle');
 		$readOnlyValues = array();
 		$w = new FabrikWorker;
 		$noFiltersSetup = JArrayHelper::getValue($this->filters, 'no-filter-setup', array());
@@ -5707,14 +5707,14 @@ class FabrikFEModelList extends JModelForm
 
 		$params = $this->getParams();
 		$this->linksToThisKey = array();
-		$facted = $params->get('factedlinks', new stdClass);
+		$faceted = $params->get('factedlinks', new stdClass);
 
-		if (!isset($facted->linkedform))
+		if (!isset($faceted->linkedform))
 		{
 			return $this->linksToThisKey;
 		}
 
-		$linkedForms = $facted->linkedform;
+		$linkedForms = $faceted->linkedform;
 		$aAllJoinsToThisKey = $this->getJoinsToThisKey();
 
 		foreach ($aAllJoinsToThisKey as $join)
@@ -6056,9 +6056,9 @@ class FabrikFEModelList extends JModelForm
 				*/
 				if (isset($element->filter_type) && $element->filter_type <> '' && $element->filter_type != 'null')
 				{
-					if ($elementModel->canView() && $elementModel->canUseFilter())
+					if ($elementModel->canView('list') && $elementModel->canUseFilter())
 					{
-						/* $$$ rob in facted browsing somehow (not sure how!) some elements from the facted table get inserted into elementModels
+						/* $$$ rob in faceted browsing somehow (not sure how!) some elements from the faceted table get inserted into elementModels
 						 * with their form id set - so test if its been set and if its not the same as the current form id
 						* if so then ignore
 						*/
@@ -6676,7 +6676,7 @@ class FabrikFEModelList extends JModelForm
 				$this->actionHeading($aTableHeadings, $headingClass, $cellClass);
 			}
 			// Create columns containing links which point to lists associated with this list
-			$facted = $params->get('factedlinks');
+			$faceted = $params->get('factedlinks');
 			$joinsToThisKey = $this->getJoinsToThisKey();
 			$listOrder = json_decode($params->get('faceted_list_order'));
 			$formOrder = json_decode($params->get('faceted_form_order'));
@@ -6684,13 +6684,13 @@ class FabrikFEModelList extends JModelForm
 			if (is_null($listOrder))
 			{
 				// Not yet saved with order
-				$listOrder = is_object($facted) && is_object($facted->linkedlist) ? array_keys(JArrayHelper::fromObject($facted->linkedlist)) : array();
+				$listOrder = is_object($faceted) && is_object($faceted->linkedlist) ? array_keys(JArrayHelper::fromObject($faceted->linkedlist)) : array();
 			}
 
 			if (is_null($formOrder))
 			{
 				// Not yet saved with order
-				$formOrder = is_object($facted) && is_object($facted->linkedform) ? array_keys(JArrayHelper::fromObject($facted->linkedform)) : array();
+				$formOrder = is_object($faceted) && is_object($faceted->linkedform) ? array_keys(JArrayHelper::fromObject($faceted->linkedform)) : array();
 			}
 
 			foreach ($listOrder as $key)
@@ -6702,10 +6702,10 @@ class FabrikFEModelList extends JModelForm
 					continue;
 				}
 
-				if (is_object($join) && isset($facted->linkedlist->$key))
+				if (is_object($join) && isset($faceted->linkedlist->$key))
 				{
-					$linkedTable = $facted->linkedlist->$key;
-					$heading = $facted->linkedlistheader->$key;
+					$linkedTable = $faceted->linkedlist->$key;
+					$heading = $faceted->linkedlistheader->$key;
 
 					if ($linkedTable != '0')
 					{
@@ -6727,11 +6727,11 @@ class FabrikFEModelList extends JModelForm
 					continue;
 				}
 
-				$linkedForm = $facted->linkedform->$key;
+				$linkedForm = $faceted->linkedform->$key;
 
 				if ($linkedForm != '0')
 				{
-					$heading = $facted->linkedformheader->$key;
+					$heading = $faceted->linkedformheader->$key;
 					$prefix = $join->db_table_name . '___' . $join->name . '_form_heading';
 					$aTableHeadings[$prefix] = empty($heading) ? $join->listlabel . ' ' . JText::_('COM_FABRIK_FORM') : $heading;
 					$headingClass[$prefix] = array('class' => 'fabrik_ordercell related ' . $prefix,
@@ -10823,7 +10823,7 @@ class FabrikFEModelList extends JModelForm
 				}
 			}
 
-			if ($this->tmpl == '')
+			if ($this->tmpl == '' || (!FabrikWorker::j3() && $this->tmpl === 'bootstrap'))
 			{
 				$this->tmpl = FabrikWorker::j3() ? 'bootstrap' : 'default';
 			}
