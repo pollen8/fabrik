@@ -6056,7 +6056,7 @@ class FabrikFEModelList extends JModelForm
 				*/
 				if (isset($element->filter_type) && $element->filter_type <> '' && $element->filter_type != 'null')
 				{
-					if ($elementModel->canView() && $elementModel->canUseFilter())
+					if ($elementModel->canView('list') && $elementModel->canUseFilter())
 					{
 						/* $$$ rob in faceted browsing somehow (not sure how!) some elements from the faceted table get inserted into elementModels
 						 * with their form id set - so test if its been set and if its not the same as the current form id
