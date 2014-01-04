@@ -4507,6 +4507,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label FROM " . Fab
 		$groupBys = $this->calcGroupBys('sum_split', $listModel);
 		$split = empty($groupBys) ? false : true;
 		$calcLabel = $params->get('sum_label', JText::_('COM_FABRIK_SUM'));
+
 		if ($split)
 		{
 			$pluginManager = FabrikWorker::getPluginManager();
@@ -4520,10 +4521,12 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label FROM " . Fab
 			$results2 = (array) $db->loadObjectList('label');
 			$this->formatCalValues($results2);
 			$uberTotal = 0;
+
 			foreach ($results2 as $pair)
 			{
 				$uberTotal += $pair->value;
 			}
+
 			$uberObject = new stdClass;
 			$uberObject->value = $uberTotal;
 			$uberObject->label = JText::_('COM_FABRIK_TOTAL');
@@ -4541,7 +4544,9 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label FROM " . Fab
 			$results = $db->loadObjectList('label');
 			$this->formatCalValues($results);
 		}
+
 		$res = $this->formatCalcs($results, $calcLabel, $split);
+
 		return array($res, $results);
 	}
 

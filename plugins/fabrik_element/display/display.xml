@@ -13,6 +13,8 @@
 	<files>
 		<filename plugin="display">display.php</filename>
 		<filename>index.html</filename>
+		<filename>display.js</filename>
+		<filename>display-min.js</filename>
 		<folder>forms</folder>
 		<folder>language</folder>
 	</files>

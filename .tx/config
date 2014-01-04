@@ -88,10 +88,6 @@ trans.sr-YU = components/com_fabrik/language/sr-YU/sr-YU.com_fabrik.ini
 trans.tr-TR = components/com_fabrik/language/tr-TR/tr-TR.com_fabrik.ini
 trans.uk-UA = components/com_fabrik/language/uk-UA/uk-UA.com_fabrik.ini
 trans.zh-TW = components/com_fabrik/language/zh-TW/zh-TW.com_fabrik.ini
-[fabrik.com_fabrik_sys]
-file_filter = components/com_fabrik/language/<lang>/<lang>.com_fabrik.sys.ini
-source_file = components/com_fabrik/language/en-GB/en-GB.com_fabrik.sys.ini
-source_lang = en_GB
 trans.ar-AA = components/com_fabrik/language/ar-AA/ar-AA.com_fabrik.sys.ini
 trans.da-DK = components/com_fabrik/language/da-DK/da-DK.com_fabrik.sys.ini
 trans.de-DE = components/com_fabrik/language/de-DE/de-DE.com_fabrik.sys.ini
@@ -118,10 +114,6 @@ trans.sr-YU = components/com_fabrik/language/sr-YU/sr-YU.com_fabrik.sys.ini
 trans.tr-TR = components/com_fabrik/language/tr-TR/tr-TR.com_fabrik.sys.ini
 trans.uk-UA = components/com_fabrik/language/uk-UA/uk-UA.com_fabrik.sys.ini
 trans.zh-TW = components/com_fabrik/language/zh-TW/zh-TW.com_fabrik.sys.ini
-[fabrik.plg_content]
-file_filter = plugins/content/fabrik/language/<lang>/<lang>.plg_content_fabrik.ini
-source_file = plugins/content/fabrik/language/en-GB/en-GB.plg_content_fabrik.ini
-source_lang = en_GB
 trans.da-DK = plugins/content/fabrik/language/da-DK/da-DK.plg_content_fabrik.ini
 trans.de-DE = plugins/content/fabrik/language/de-DE/de-DE.plg_content_fabrik.ini
 trans.es-ES = plugins/content/fabrik/language/es-ES/es-ES.plg_content_fabrik.ini
@@ -159,6 +151,7 @@ trans.el-GR = plugins/fabrik_cron/email/language/el-GR/el-GR.plg_fabrik_cron_ema
 trans.eo-XX = plugins/fabrik_cron/email/language/eo-XX/eo-XX.plg_fabrik_cron_email.ini
 trans.es-ES = plugins/fabrik_cron/email/language/es-ES/es-ES.plg_fabrik_cron_email.ini
 trans.et-EE = plugins/fabrik_cron/email/language/et-EE/et-EE.plg_fabrik_cron_email.ini
+trans.fa-IR = plugins/fabrik_cron/email/language/fa-IR/fa-IR.plg_fabrik_cron_email.ini
 trans.fr-FR = plugins/fabrik_cron/email/language/fr-FR/fr-FR.plg_fabrik_cron_email.ini
 trans.it-IT = plugins/fabrik_cron/email/language/it-IT/it-IT.plg_fabrik_cron_email.ini
 trans.ja-JP = plugins/fabrik_cron/email/language/ja-JP/ja-JP.plg_fabrik_cron_email.ini
@@ -185,6 +178,7 @@ trans.el-GR = plugins/fabrik_cron/email/language/el-GR/el-GR.plg_fabrik_cron_ema
 trans.eo-XX = plugins/fabrik_cron/email/language/eo-XX/eo-XX.plg_fabrik_cron_email.sys.ini
 trans.es-ES = plugins/fabrik_cron/email/language/es-ES/es-ES.plg_fabrik_cron_email.sys.ini
 trans.et-EE = plugins/fabrik_cron/email/language/et-EE/et-EE.plg_fabrik_cron_email.sys.ini
+trans.fa-IR = plugins/fabrik_cron/email/language/fa-IR/fa-IR.plg_fabrik_cron_email.sys.ini
 trans.fr-FR = plugins/fabrik_cron/email/language/fr-FR/fr-FR.plg_fabrik_cron_email.sys.ini
 trans.it-IT = plugins/fabrik_cron/email/language/it-IT/it-IT.plg_fabrik_cron_email.sys.ini
 trans.ja-JP = plugins/fabrik_cron/email/language/ja-JP/ja-JP.plg_fabrik_cron_email.sys.ini
@@ -211,6 +205,7 @@ trans.el-GR = plugins/fabrik_cron/gcalsync/language/el-GR/el-GR.plg_fabrik_cron_
 trans.es-ES = plugins/fabrik_cron/gcalsync/language/es-ES/es-ES.plg_fabrik_cron_gcalsync.ini
 trans.et-EE = plugins/fabrik_cron/gcalsync/language/et-EE/et-EE.plg_fabrik_cron_gcalsync.ini
 trans.eu-ES = plugins/fabrik_cron/gcalsync/language/eu-ES/eu-ES.plg_fabrik_cron_gcalsync.ini
+trans.fa-IR = plugins/fabrik_cron/gcalsync/language/fa-IR/fa-IR.plg_fabrik_cron_gcalsync.ini
 trans.fr-FR = plugins/fabrik_cron/gcalsync/language/fr-FR/fr-FR.plg_fabrik_cron_gcalsync.ini
 trans.it-IT = plugins/fabrik_cron/gcalsync/language/it-IT/it-IT.plg_fabrik_cron_gcalsync.ini
 trans.ja-JP = plugins/fabrik_cron/gcalsync/language/ja-JP/ja-JP.plg_fabrik_cron_gcalsync.ini
@@ -238,6 +233,7 @@ trans.el-GR = plugins/fabrik_cron/gcalsync/language/el-GR/el-GR.plg_fabrik_cron_
 trans.es-ES = plugins/fabrik_cron/gcalsync/language/es-ES/es-ES.plg_fabrik_cron_gcalsync.sys.ini
 trans.et-EE = plugins/fabrik_cron/gcalsync/language/et-EE/et-EE.plg_fabrik_cron_gcalsync.sys.ini
 trans.eu-ES = plugins/fabrik_cron/gcalsync/language/eu-ES/eu-ES.plg_fabrik_cron_gcalsync.sys.ini
+trans.fa-IR = plugins/fabrik_cron/gcalsync/language/fa-IR/fa-IR.plg_fabrik_cron_gcalsync.sys.ini
 trans.fr-FR = plugins/fabrik_cron/gcalsync/language/fr-FR/fr-FR.plg_fabrik_cron_gcalsync.sys.ini
 trans.it-IT = plugins/fabrik_cron/gcalsync/language/it-IT/it-IT.plg_fabrik_cron_gcalsync.sys.ini
 trans.ja-JP = plugins/fabrik_cron/gcalsync/language/ja-JP/ja-JP.plg_fabrik_cron_gcalsync.sys.ini
@@ -263,6 +259,7 @@ trans.de-DE = plugins/fabrik_cron/geocode/language/de-DE/de-DE.plg_fabrik_cron_g
 trans.el-GR = plugins/fabrik_cron/geocode/language/el-GR/el-GR.plg_fabrik_cron_geocode.ini
 trans.es-ES = plugins/fabrik_cron/geocode/language/es-ES/es-ES.plg_fabrik_cron_geocode.ini
 trans.et-EE = plugins/fabrik_cron/geocode/language/et-EE/et-EE.plg_fabrik_cron_geocode.ini
+trans.fa-IR = plugins/fabrik_cron/geocode/language/fa-IR/fa-IR.plg_fabrik_cron_geocode.ini
 trans.fr-FR = plugins/fabrik_cron/geocode/language/fr-FR/fr-FR.plg_fabrik_cron_geocode.ini
 trans.it-IT = plugins/fabrik_cron/geocode/language/it-IT/it-IT.plg_fabrik_cron_geocode.ini
 trans.lt-LT = plugins/fabrik_cron/geocode/language/lt-LT/lt-LT.plg_fabrik_cron_geocode.ini
@@ -283,6 +280,7 @@ trans.de-DE = plugins/fabrik_cron/geocode/language/de-DE/de-DE.plg_fabrik_cron_g
 trans.el-GR = plugins/fabrik_cron/geocode/language/el-GR/el-GR.plg_fabrik_cron_geocode.sys.ini
 trans.es-ES = plugins/fabrik_cron/geocode/language/es-ES/es-ES.plg_fabrik_cron_geocode.sys.ini
 trans.et-EE = plugins/fabrik_cron/geocode/language/et-EE/et-EE.plg_fabrik_cron_geocode.sys.ini
+trans.fa-IR = plugins/fabrik_cron/geocode/language/fa-IR/fa-IR.plg_fabrik_cron_geocode.sys.ini
 trans.fr-FR = plugins/fabrik_cron/geocode/language/fr-FR/fr-FR.plg_fabrik_cron_geocode.sys.ini
 trans.it-IT = plugins/fabrik_cron/geocode/language/it-IT/it-IT.plg_fabrik_cron_geocode.sys.ini
 trans.lt-LT = plugins/fabrik_cron/geocode/language/lt-LT/lt-LT.plg_fabrik_cron_geocode.sys.ini
@@ -450,15 +448,6 @@ trans.ru-RU = plugins/fabrik_cron/rest/language/ru-RU/ru-RU.plg_fabrik_cron_rest
 trans.sk-SK = plugins/fabrik_cron/rest/language/sk-SK/sk-SK.plg_fabrik_cron_rest.sys.ini
 trans.tr-TR = plugins/fabrik_cron/rest/language/tr-TR/tr-TR.plg_fabrik_cron_rest.sys.ini
 
-[fabrik.plg_element_access]
-file_filter = plugins/fabrik_element/access/language/<lang>/<lang>.plg_fabrik_element_access.ini
-source_file = plugins/fabrik_element/access/language/en-GB/en-GB.plg_fabrik_element_access.ini
-source_lang = en_GB
-trans.de-DE = plugins/fabrik_element/access/language/de-DE/de-DE.plg_fabrik_element_access.ini
-trans.es-ES = plugins/fabrik_element/access/language/es-ES/es-ES.plg_fabrik_element_access.ini
-trans.et-EE = plugins/fabrik_element/access/language/et-EE/et-EE.plg_fabrik_element_access.ini
-trans.it-IT = plugins/fabrik_element/access/language/it-IT/it-IT.plg_fabrik_element_access.ini
-trans.ru-RU = plugins/fabrik_element/access/language/ru-RU/ru-RU.plg_fabrik_element_access.ini
 
 [fabrik.plg_element_access_sys]
 file_filter = plugins/fabrik_element/access/language/<lang>/<lang>.plg_fabrik_element_access.sys.ini
@@ -514,18 +503,6 @@ trans.sk-SK = plugins/fabrik_element/birthday/language/sk-SK/sk-SK.plg_fabrik_el
 trans.tr-TR = plugins/fabrik_element/birthday/language/tr-TR/tr-TR.plg_fabrik_element_birthday.sys.ini
 trans.tr-TR.tr-TR.plg_fabrik_element_birthday.ini = plugins/fabrik_element/birthday/language/tr-TR.tr-TR.plg_fabrik_element_birthday.ini/tr-TR.tr-TR.plg_fabrik_element_birthday.ini.plg_fabrik_element_birthday.sys.ini
 
-[fabrik.plg_element_button]
-file_filter = plugins/fabrik_element/button/language/<lang>/<lang>.plg_fabrik_element_button.ini
-source_file = plugins/fabrik_element/button/language/en-GB/en-GB.plg_fabrik_element_button.ini
-source_lang = en_GB
-trans.de-DE = plugins/fabrik_element/button/language/de-DE/de-DE.plg_fabrik_element_button.ini
-trans.es-ES = plugins/fabrik_element/button/language/es-ES/es-ES.plg_fabrik_element_button.ini
-trans.et-EE = plugins/fabrik_element/button/language/et-EE/et-EE.plg_fabrik_element_button.ini
-trans.fr-FR = plugins/fabrik_element/button/language/fr-FR/fr-FR.plg_fabrik_element_button.ini
-trans.it-IT = plugins/fabrik_element/button/language/it-IT/it-IT.plg_fabrik_element_button.ini
-trans.pt-BR = plugins/fabrik_element/button/language/pt-BR/pt-BR.plg_fabrik_element_button.ini
-trans.ru-RU = plugins/fabrik_element/button/language/ru-RU/ru-RU.plg_fabrik_element_button.ini
-trans.tr-TR = plugins/fabrik_element/button/language/tr-TR/tr-TR.plg_fabrik_element_button.ini
 
 [fabrik.plg_element_button_sys]
 file_filter = plugins/fabrik_element/button/language/<lang>/<lang>.plg_fabrik_element_button.sys.ini
@@ -1400,10 +1377,6 @@ trans.pt-PT = plugins/fabrik_element/image/language/pt-PT/pt-PT.plg_fabrik_eleme
 trans.ru-RU = plugins/fabrik_element/image/language/ru-RU/ru-RU.plg_fabrik_element_image.sys.ini
 trans.tr-TR = plugins/fabrik_element/image/language/tr-TR/tr-TR.plg_fabrik_element_image.sys.ini
 
-[fabrik.plg_element_internalid]
-file_filter = plugins/fabrik_element/internalid/language/<lang>/<lang>.plg_fabrik_element_internalid.ini
-source_file = plugins/fabrik_element/internalid/language/en-GB/en-GB.plg_fabrik_element_internalid.ini
-source_lang = en_GB
 
 [fabrik.plg_element_internalid_sys]
 file_filter = plugins/fabrik_element/internalid/language/<lang>/<lang>.plg_fabrik_element_internalid.sys.ini
@@ -2057,10 +2030,6 @@ file_filter = plugins/fabrik_element/video/language/<lang>/<lang>.plg_fabrik_ele
 source_file = plugins/fabrik_element/video/language/en-GB/en-GB.plg_fabrik_element_video.ini
 source_lang = en_GB
 
-[fabrik.plg_element_video_sys]
-file_filter = plugins/fabrik_element/video/language/<lang>/<lang>.plg_fabrik_element_video.sys.ini
-source_file = plugins/fabrik_element/video/language/en-GB/en-GB.plg_fabrik_element_video.sys.ini
-source_lang = en_GB
 
 [fabrik.plg_element_viewlevel]
 file_filter = plugins/fabrik_element/viewlevel/language/<lang>/<lang>.plg_fabrik_element_viewlevel.ini
@@ -2308,31 +2277,8 @@ trans.pt-BR = plugins/fabrik_form/caneditgroup/language/pt-BR/pt-BR.plg_fabrik_f
 trans.ro-RO = plugins/fabrik_form/caneditgroup/language/ro-RO/ro-RO.plg_fabrik_form_caneditgroup.ini
 trans.ru-RU = plugins/fabrik_form/caneditgroup/language/ru-RU/ru-RU.plg_fabrik_form_caneditgroup.ini
 
-[fabrik.plg_form_caneditgroup_sys]
-file_filter = plugins/fabrik_form/caneditgroup/language/<lang>/<lang>.plg_fabrik_form_caneditgroup.sys.ini
-source_file = plugins/fabrik_form/caneditgroup/language/en-GB/en-GB.plg_fabrik_form_caneditgroup.sys.ini
-source_lang = en_GB
-trans.da-DK = plugins/fabrik_form/caneditgroup/language/da-DK/da-DK.plg_fabrik_form_caneditgroup.sys.ini
-trans.de-DE = plugins/fabrik_form/caneditgroup/language/de-DE/de-DE.plg_fabrik_form_caneditgroup.sys.ini
-trans.es-ES = plugins/fabrik_form/caneditgroup/language/es-ES/es-ES.plg_fabrik_form_caneditgroup.sys.ini
-trans.et-EE = plugins/fabrik_form/caneditgroup/language/et-EE/et-EE.plg_fabrik_form_caneditgroup.sys.ini
-trans.fr-FR = plugins/fabrik_form/caneditgroup/language/fr-FR/fr-FR.plg_fabrik_form_caneditgroup.sys.ini
-trans.it-IT = plugins/fabrik_form/caneditgroup/language/it-IT/it-IT.plg_fabrik_form_caneditgroup.sys.ini
-trans.pt-BR = plugins/fabrik_form/caneditgroup/language/pt-BR/pt-BR.plg_fabrik_form_caneditgroup.sys.ini
-trans.ro-RO = plugins/fabrik_form/caneditgroup/language/ro-RO/ro-RO.plg_fabrik_form_caneditgroup.sys.ini
-trans.ru-RU = plugins/fabrik_form/caneditgroup/language/ru-RU/ru-RU.plg_fabrik_form_caneditgroup.sys.ini
 
-[fabrik.plg_form_caneditrow]
-file_filter = plugins/fabrik_form/caneditrow/language/<lang>/<lang>.plg_fabrik_form_caneditrow.ini
-source_file = plugins/fabrik_form/caneditrow/language/en-GB/en-GB.plg_fabrik_form_caneditrow.ini
-source_lang = en_GB
-trans.et-EE = plugins/fabrik_form/caneditrow/language/et-EE/et-EE.plg_fabrik_form_caneditrow.ini
 
-[fabrik.plg_form_caneditrow_sys]
-file_filter = plugins/fabrik_form/caneditrow/language/<lang>/<lang>.plg_fabrik_form_caneditrow.sys.ini
-source_file = plugins/fabrik_form/caneditrow/language/en-GB/en-GB.plg_fabrik_form_caneditrow.sys.ini
-source_lang = en_GB
-trans.et-EE = plugins/fabrik_form/caneditrow/language/et-EE/et-EE.plg_fabrik_form_caneditrow.sys.ini
 
 [fabrik.plg_form_clone]
 file_filter = plugins/fabrik_form/clone/language/<lang>/<lang>.plg_fabrik_form_clone.ini
@@ -4004,11 +3950,6 @@ source_file = plugins/fabrik_validationrule/example/language/en-GB/en-GB.plg_fab
 source_lang = en_GB
 trans.es-ES = plugins/fabrik_validationrule/example/language/es-ES/es-ES.plg_fabrik_validationrule_example.ini
 
-[fabrik.plg_validationrule_example_sys]
-file_filter = plugins/fabrik_validationrule/example/language/<lang>/<lang>.plg_fabrik_validationrule_example.sys.ini
-source_file = plugins/fabrik_validationrule/example/language/en-GB/en-GB.plg_fabrik_validationrule_example.sys.ini
-source_lang = en_GB
-trans.es-ES = plugins/fabrik_validationrule/example/language/es-ES/es-ES.plg_fabrik_validationrule_example.sys.ini
 
 [fabrik.plg_validationrule_isalphanumeric]
 file_filter = plugins/fabrik_validationrule/isalphanumeric/language/<lang>/<lang>.plg_fabrik_validationrule_isalphanumeric.ini
