@@ -126,8 +126,17 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 		/* $$$ hugh - if the form just failed validation, number formatted fields will already
 		 * be formatted, so we need to un-format them before formatting them!
 		 * $$$ rob - well better actually check if we are coming from a failed validation then :)
+		 * $$$ hugh - yes, we'd better ... but for whatever reason, 'task' doesn't seem to exist,
+		 * so ain't doing it.  Fall back on Ye Old _arErrors check!
+		 *
+		 * Also ... I can't even remember why we are doing the unNumberFormat(), rather than just
+		 * not calling numberFormat() ... I have a feeling there used to be a chunk of code between
+		 * these two, which meant we had to unNumberFormat(), "do some stuff", then numberFormat(),
+		 * but the way it is now ... looks like we don't need to unNumberFormat() any more, just
+		 * skip the numberFormat()?
 		 */
-		if ($app->input->get('task') == 'form.process')
+		//if ($app->input->get('task') == 'form.process')
+		if (!empty($this->getFormModel()->_arErrors))
 		{
 			$value = $this->unNumberFormat($value);
 		}
