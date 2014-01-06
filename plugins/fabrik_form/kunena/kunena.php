@@ -38,18 +38,50 @@ class PlgFabrik_FormKunena extends PlgFabrik_Form
 		$formModel = $this->getModel();
 		$input = $app->input;
 		jimport('joomla.filesystem.file');
+		$define = COM_FABRIK_BASE . 'libraries/kunena/bootstrap.php';
+
+		if (JFile::exists($define))
+		{
+			// Kunenea 3.x
+			require_once $define;
+			$this->post3x();
+		}
+		else
+		{
+			$define = COM_FABRIK_BASE . 'components/com_kunena/lib/kunena.defines.php';
+
+			if (JFile::exists($define))
+			{
+				require_once $define;
+				$this->post2x();
+			}
+			else
+			{
+				throw new RuntimeException('could not find the Kunena component', 404);
+			}
+		}
+	}
+
+	/**
+	 * Post to Kunena 2.x
+	 *
+	 * @return  void
+	 */
+	protected function post2x()
+	{
+		$params = $this->getParams();
+		$app = JFactory::getApplication();
+		$formModel = $this->getModel();
+		$input = $app->input;
+		$w = new FabrikWorker;
+
+		$catid = $params->get('kunena_category', 0);
+		$parentid = 0;
+
 		$files[] = COM_FABRIK_BASE . 'components/com_kunena/class.kunena.php';
-		$define = COM_FABRIK_BASE . 'components/com_kunena/lib/kunena.defines.php';
 		$files[] = COM_FABRIK_BASE . 'components/com_kunena/lib/kunena.defines.php';
 		$files[] = COM_FABRIK_BASE . 'components/com_kunena/lib/kunena.link.class.php';
 		$files[] = COM_FABRIK_BASE . 'components/com_kunena/lib/kunena.smile.class.php';
-
-		if (!JFile::exists($define))
-		{
-			throw new RuntimeException('could not find the Kunena component', 404);
-		}
-
-		require_once $define;
 
 		foreach ($files as $file)
 		{
@@ -65,13 +97,6 @@ class PlgFabrik_FormKunena extends PlgFabrik_Form
 			$postfile = KUNENA_PATH_TEMPLATE_DEFAULT . '/post.php';
 		}
 
-		$w = new FabrikWorker;
-
-		// $fbSession = CKunenaSession::getInstance();
-		// Don't need this, session is loaded in CKunenaPost
-
-		$catid = $params->get('kunena_category', 0);
-		$parentid = 0;
 		$action = 'post';
 
 		// Added action in request
@@ -96,6 +121,41 @@ class PlgFabrik_FormKunena extends PlgFabrik_Form
 		// Public CKunenaPost::display() will call protected method CKunenaPost::post() if $app->input action is 'post'
 		$mypost->display();
 		ob_end_clean();
+		$input->set('id', $origId);
+	}
+
+	/**
+	 * Post to Kunena 3.x
+	 *
+	 * @return  void
+	 */
+
+	protected function post3x()
+	{
+		$params = $this->getParams();
+		$app = JFactory::getApplication();
+		$formModel = $this->getModel();
+		$input = $app->input;
+		$w = new FabrikWorker;
+
+		$catid = $params->get('kunena_category', 0);
+		$parentid = 0;
+
+		// Added action in request
+		$msg = $w->parseMessageForPlaceHolder($params->get('kunena_content'), $formModel->fullFormData);
+		$subject = $params->get('kunena_title');
+		$subject = $w->parseMessageForPlaceHolder($subject, $formModel->fullFormData);
+
+		// Added subject in request
+		$origId = $input->get('id');
+		$input->set('id', 0);
+
+		$mypost = new KunenaForumTopic;
+		$mypost->category_id = $catid;
+		$mypost->subject = $subject;
+		$mypost->first_post_message = $msg;
+
+		$mypost->save();
 		$input->set('id', $origId);
 	}
 }
