@@ -15,10 +15,12 @@ defined('_JEXEC') or die('Restricted access');
 ?>
 <div class="row-striped">
 	<?php
+	$rowStarted = false;
 	foreach ($this->elements as $element) :
 		$this->element = $element;
 		if ($element->startRow) : ?>
 			<div class="row-fluid">
+			$rowStarted = true;
 		<?php
 		endif;
 		$style = $element->hidden ? 'style="display:none"' : '';
@@ -35,17 +37,18 @@ defined('_JEXEC') or die('Restricted access');
 			{
 				echo $this->loadTemplate('group_labels_side');
 			}
-			else
-			{
-				// Multi columns - best to use simplified layout with labels above field
-				echo $this->loadTemplate('group_labels_above');
-			}
-			if ($element->endRow) :?>
+		else
+		{
+			// Multi columns - best to use simplified layout with labels above field
+			echo $this->loadTemplate('group_labels_above');
+		}
+		if ($element->endRow) :?>
 			</div><!-- end row-fluid -->
+			$rowStarted = false;
 		<?php endif;
 	endforeach;
-	// If the last element was not closing the row add an additional div (only if elements are in columns
-	if (!$element->endRow && (!($element->span == 'span12' || $element->span == '') || $element->hidden)) :?>
+	// If the last element was not closing the row add an additional div
+	if ($rowStarted === true) :?>
 	</div><!-- end row-fluid for open row -->
 	<?php endif;?>
 </div>
