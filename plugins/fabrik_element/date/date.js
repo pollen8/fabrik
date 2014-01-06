@@ -378,6 +378,7 @@ var FbDateTime = new Class({
 				if (!this.setUpDone) {
 					if (this.timeElement) {
 						this.dropdown = this.makeDropDown();
+						this.setActive();
 						this.dropdown.getElement('a.close-time').addEvent('click', function (e) {
 							e.stop();
 							this.hideTime();
@@ -589,17 +590,16 @@ var FbDateTime = new Class({
 		padder.appendChild(d2);
 		d.appendChild(padder);
 
-
-		document.addEvent('click', function (e) {
+		/*document.addEvent('click', function (e) {
 			if (this.timeActive) {
 				var t = e.target;
 				if (t !== this.timeButton && t !== this.timeElement) {
-					/*if (!t.within(this.dropdown)) {
+					if (!t.within(this.dropdown)) {
 						this.hideTime();
-					}*/
+					}
 				}
 			}
-		}.bind(this));
+		}.bind(this));*/
 		d.inject(document.body);
 		var mydrag = new Drag.Move(d);
 
@@ -610,10 +610,14 @@ var FbDateTime = new Class({
 				this.hideTime();
 			}.bind(this));
 		}
+
 		return d;
 	},
 
 	hourButtons: function (start, end) {
+		var date = new Date(this.getValue());
+		this.hour = date.get('hours');
+		this.minute = date.get('minutes');
 		var hrGroup = new Element('div.btn-group');
 		for (var i = start; i < end; i++) {
 			h = new Element('a.btn.btn-mini.fbdateTime-hour', {styles: {'width': '10px'}}).set('html', i);
