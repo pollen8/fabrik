@@ -57,6 +57,6 @@ foreach ($this->elements as $element) :
 endforeach;
 
 // If the last element was not closing the row add an additional div (only if elements are in columns
-if (!$element->endRow && !($element->span == 'span12' || $element->span == '')) :?>
+if (!$element->endRow && (!($element->span == 'span12' || $element->span == '') || $element->hidden)) :?>
 </div><!-- end row-fluid for open row -->
 <?php endif;?>
