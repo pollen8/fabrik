@@ -176,7 +176,28 @@ class PlgFabrik_Validationrule extends FabrikPlugin
 	public function iconImage()
 	{
 		$plugin = JPluginHelper::getPlugin('fabrik_validationrule', $this->pluginName);
+
+		/**
+		 * $$$ hugh - this code doesn't belong here, but am working on an issue whereby if a validation rule plugin
+		 * hasn't been saved yet on the backend, the 'icon' param won't be in the the extensions table yet, so we
+		 * will have to get it from the manifest XML.
+		 *
+		 * NOTE - commenting this out, so I don't lose this chunk of code, and can come back and work on this later
+		 */
+		/*
+		if ($plugin->params === '{}')
+		{
+			$plugin_form = $this->getJForm();
+			JForm::addFormPath(JPATH_SITE . '/plugins/fabrik_validationrule/' . $this->get('pluginName'));
+			$xmlFile = JPATH_SITE . '/plugins/fabrik_validationrule/' . $this->get('pluginName') . '/' . $this->get('pluginName') . '.xml';
+			$xml = $this->jform->loadFile($xmlFile, false);
+			$params_fieldset = $plugin_form->getFieldset('params');
+		}
+		*/
+
 		$params = new JRegistry($plugin->params);
+
+
 
 		return $params->get('icon', 'star');
 	}
