@@ -2332,46 +2332,6 @@ trans.sk-SK = plugins/fabrik_form/autofill/language/sk-SK/sk-SK.plg_fabrik_form_
 trans.tr-TR = plugins/fabrik_form/autofill/language/tr-TR/tr-TR.plg_fabrik_form_autofill.sys.ini
 trans.uk-UA = plugins/fabrik_form/autofill/language/uk-UA/uk-UA.plg_fabrik_form_autofill.sys.ini
 
-[fabrik31.plg_form_caneditgroup]
-file_filter = plugins/fabrik_form/caneditgroup/language/<lang>/<lang>.plg_fabrik_form_caneditgroup.ini
-source_file = plugins/fabrik_form/caneditgroup/language/en-GB/en-GB.plg_fabrik_form_caneditgroup.ini
-source_lang = en_GB
-trans.da-DK = plugins/fabrik_form/caneditgroup/language/da-DK/da-DK.plg_fabrik_form_caneditgroup.ini
-trans.de-DE = plugins/fabrik_form/caneditgroup/language/de-DE/de-DE.plg_fabrik_form_caneditgroup.ini
-trans.es-ES = plugins/fabrik_form/caneditgroup/language/es-ES/es-ES.plg_fabrik_form_caneditgroup.ini
-trans.et-EE = plugins/fabrik_form/caneditgroup/language/et-EE/et-EE.plg_fabrik_form_caneditgroup.ini
-trans.fr-FR = plugins/fabrik_form/caneditgroup/language/fr-FR/fr-FR.plg_fabrik_form_caneditgroup.ini
-trans.it-IT = plugins/fabrik_form/caneditgroup/language/it-IT/it-IT.plg_fabrik_form_caneditgroup.ini
-trans.pt-BR = plugins/fabrik_form/caneditgroup/language/pt-BR/pt-BR.plg_fabrik_form_caneditgroup.ini
-trans.ro-RO = plugins/fabrik_form/caneditgroup/language/ro-RO/ro-RO.plg_fabrik_form_caneditgroup.ini
-trans.ru-RU = plugins/fabrik_form/caneditgroup/language/ru-RU/ru-RU.plg_fabrik_form_caneditgroup.ini
-
-[fabrik31.plg_form_caneditgroup_sys]
-file_filter = plugins/fabrik_form/caneditgroup/language/<lang>/<lang>.plg_fabrik_form_caneditgroup.sys.ini
-source_file = plugins/fabrik_form/caneditgroup/language/en-GB/en-GB.plg_fabrik_form_caneditgroup.sys.ini
-source_lang = en_GB
-trans.da-DK = plugins/fabrik_form/caneditgroup/language/da-DK/da-DK.plg_fabrik_form_caneditgroup.sys.ini
-trans.de-DE = plugins/fabrik_form/caneditgroup/language/de-DE/de-DE.plg_fabrik_form_caneditgroup.sys.ini
-trans.es-ES = plugins/fabrik_form/caneditgroup/language/es-ES/es-ES.plg_fabrik_form_caneditgroup.sys.ini
-trans.et-EE = plugins/fabrik_form/caneditgroup/language/et-EE/et-EE.plg_fabrik_form_caneditgroup.sys.ini
-trans.fr-FR = plugins/fabrik_form/caneditgroup/language/fr-FR/fr-FR.plg_fabrik_form_caneditgroup.sys.ini
-trans.it-IT = plugins/fabrik_form/caneditgroup/language/it-IT/it-IT.plg_fabrik_form_caneditgroup.sys.ini
-trans.pt-BR = plugins/fabrik_form/caneditgroup/language/pt-BR/pt-BR.plg_fabrik_form_caneditgroup.sys.ini
-trans.ro-RO = plugins/fabrik_form/caneditgroup/language/ro-RO/ro-RO.plg_fabrik_form_caneditgroup.sys.ini
-trans.ru-RU = plugins/fabrik_form/caneditgroup/language/ru-RU/ru-RU.plg_fabrik_form_caneditgroup.sys.ini
-
-[fabrik31.plg_form_caneditrow]
-file_filter = plugins/fabrik_form/caneditrow/language/<lang>/<lang>.plg_fabrik_form_caneditrow.ini
-source_file = plugins/fabrik_form/caneditrow/language/en-GB/en-GB.plg_fabrik_form_caneditrow.ini
-source_lang = en_GB
-trans.et-EE = plugins/fabrik_form/caneditrow/language/et-EE/et-EE.plg_fabrik_form_caneditrow.ini
-
-[fabrik31.plg_form_caneditrow_sys]
-file_filter = plugins/fabrik_form/caneditrow/language/<lang>/<lang>.plg_fabrik_form_caneditrow.sys.ini
-source_file = plugins/fabrik_form/caneditrow/language/en-GB/en-GB.plg_fabrik_form_caneditrow.sys.ini
-source_lang = en_GB
-trans.et-EE = plugins/fabrik_form/caneditrow/language/et-EE/et-EE.plg_fabrik_form_caneditrow.sys.ini
-
 [fabrik31.plg_form_clone]
 file_filter = plugins/fabrik_form/clone/language/<lang>/<lang>.plg_fabrik_form_clone.ini
 source_file = plugins/fabrik_form/clone/language/en-GB/en-GB.plg_fabrik_form_clone.ini
