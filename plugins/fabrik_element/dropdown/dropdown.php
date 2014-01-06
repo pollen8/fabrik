@@ -79,6 +79,7 @@ class PlgFabrik_ElementDropdown extends PlgFabrik_ElementList
 			{
 				$optgroup = true;
 			}
+
 			$tmpLabel = JArrayHelper::getValue($labels, $i);
 
 			// For values like '1"'

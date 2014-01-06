@@ -8,8 +8,15 @@
  * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
-class DiscreteBarChart {
-
+/**
+ * Fabrik nvd3_chart Discretre bar chart
+ *
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.visualization.nvd3_chart
+ * @since       3.2rc2
+ */
+class DiscreteBarChart
+{
 	/**
 	 * Params
 	 *
@@ -29,21 +36,24 @@ class DiscreteBarChart {
 	}
 
 	/**
+	 * Return format:
 	 * [
-  {
-    key: "Cumulative Return",
-    values: [
-      {
-        "label" : "A" ,
-        "value" : -29.765957771107
-      } ,
-      {
-        "label" : "B" ,
-        "value" : 0
-      }
-    ]
-  }
-]
+	 *  {
+	 *    key: "Cumulative Return",
+	 *    values: [
+	 *      {
+	 *        "label" : "A" ,
+	 *        "value" : -29.765957771107
+	 *      } ,
+	 *     	{
+     * 		  "label" : "B" ,
+	 *        "value" : 0
+	 * 		}
+	 * 		]
+  	 * 	}
+	 * ]
+	 *
+	 * @return  array
 	 */
 	public function render()
 	{

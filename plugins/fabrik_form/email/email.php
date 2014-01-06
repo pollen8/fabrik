@@ -363,12 +363,13 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 		$prevUserState = $app->getUserState('com_fabrik.package');
 		$app->setUserState('com_fabrik.package', 'fabrik');
 
-		try {
+		try
+		{
 			// Require files and set up DOM pdf
 			require_once JPATH_SITE . '/components/com_fabrik/helpers/pdf.php';
 			require JPATH_SITE . '/components/com_fabrik/controllers/details.php';
 			FabrikPDFHelper::iniDomPdf();
-			$dompdf = new DOMPDF();
+			$dompdf = new DOMPDF;
 			$size = strtoupper($params->get('pdf_size', 'A4'));
 			$orientation = $params->get('pdf_orientation', 'portrait');
 			$dompdf->set_paper($size, $orientation);

@@ -208,11 +208,13 @@ class PlgFabrik_CronGcalsync extends PlgFabrik_Cron
 					echo 'Token ID: ' . $cre->getCaptchaToken() . "\n";
 					*/
 					$this->log .= "\nSome funky Zend_Gdata exception!";
+
 					return;
 				}
 				catch (Zend_Gdata_App_AuthException $ae)
 				{
 					$this->log .= 'Problem authenticating: ' . $ae->exception() . "\n";
+
 					return;
 				}
 

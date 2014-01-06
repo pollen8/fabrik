@@ -1,6 +1,89 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <checkstyle version="1.5.0RC3">
-<file name="C:\xampp\htdocs\fabrik31x\components\com_fabrik\views\emailform\view.html.php">
- <error line="141" column="3" severity="error" message="Please consider an empty line before the return statement;" source="Joomla.ControlStructures.WhiteSpaceBefore.SpaceBefore"/>
+<file name="C:\xampp\htdocs\fabrik31x\administrator\components\com_fabrik\classes\32\field.php">
+ <error line="277" column="1" severity="error" message="Expected 2 space(s) before asterisk; 1 found" source="Squiz.Commenting.DocCommentAlignment.SpaceBeforeAsterisk"/>
+ <error line="278" column="1" severity="error" message="Expected 2 space(s) before asterisk; 1 found" source="Squiz.Commenting.DocCommentAlignment.SpaceBeforeAsterisk"/>
+ <error line="279" column="1" severity="error" message="Expected 2 space(s) before asterisk; 1 found" source="Squiz.Commenting.DocCommentAlignment.SpaceBeforeAsterisk"/>
+ <error line="280" column="1" severity="error" message="Expected 2 space(s) before asterisk; 1 found" source="Squiz.Commenting.DocCommentAlignment.SpaceBeforeAsterisk"/>
+ <error line="281" column="1" severity="error" message="Expected 2 space(s) before asterisk; 1 found" source="Squiz.Commenting.DocCommentAlignment.SpaceBeforeAsterisk"/>
+ <error line="285" column="1" severity="error" message="Expected 2 space(s) before asterisk; 1 found" source="Squiz.Commenting.DocCommentAlignment.SpaceBeforeAsterisk"/>
+ <error line="286" column="1" severity="error" message="Expected 2 space(s) before asterisk; 1 found" source="Squiz.Commenting.DocCommentAlignment.SpaceBeforeAsterisk"/>
+ <error line="287" column="1" severity="error" message="Expected 2 space(s) before asterisk; 1 found" source="Squiz.Commenting.DocCommentAlignment.SpaceBeforeAsterisk"/>
+ <error line="288" column="1" severity="error" message="Expected 2 space(s) before asterisk; 1 found" source="Squiz.Commenting.DocCommentAlignment.SpaceBeforeAsterisk"/>
+ <error line="289" column="1" severity="error" message="Expected 2 space(s) before asterisk; 1 found" source="Squiz.Commenting.DocCommentAlignment.SpaceBeforeAsterisk"/>
+ <error line="541" column="1" severity="error" message="Functions and classes must not contain multiple empty lines in a row; found 2 empty lines" source="Joomla.WhiteSpace.SuperfluousWhitespace"/>
+ <error line="558" column="1" severity="error" message="Functions and classes must not contain multiple empty lines in a row; found 2 empty lines" source="Joomla.WhiteSpace.SuperfluousWhitespace"/>
+ <error line="591" column="2" severity="error" message="Blank line found at start of control structure" source="Joomla.WhiteSpace.ControlStructureSpacing"/>
+</file>
+<file name="C:\xampp\htdocs\fabrik31x\administrator\components\com_fabrik\views\connection\view.html.php">
+ <error line="98" column="156" severity="warning" message="Line exceeds 150 characters; contains 155 characters" source="Generic.Files.LineLength.TooLong"/>
+</file>
+<file name="C:\xampp\htdocs\fabrik31x\administrator\components\com_fabrik\views\package\view.html.php">
+ <error line="137" column="173" severity="warning" message="Line exceeds 150 characters; contains 172 characters" source="Generic.Files.LineLength.TooLong"/>
+</file>
+<file name="C:\xampp\htdocs\fabrik31x\components\com_fabrik\driver\mysqli_fab.php">
+ <error line="1" column="1" severity="error" message="End of line character is invalid; expected &quot;\n&quot; but found &quot;\r\n&quot;" source="Generic.Files.LineEndings.InvalidEOLChar"/>
+ <error line="17" column="1" severity="error" message="@package tag comment indented incorrectly; expected 5 spaces but found 0" source="Joomla.Commenting.ClassComment.TagIndent"/>
+ <error line="18" column="1" severity="error" message="@subpackage tag comment indented incorrectly; expected 2 spaces but found 0" source="Joomla.Commenting.ClassComment.TagIndent"/>
+ <error line="19" column="1" severity="error" message="@since tag comment indented incorrectly; expected 7 spaces but found 0" source="Joomla.Commenting.ClassComment.TagIndent"/>
+</file>
+<file name="C:\xampp\htdocs\fabrik31x\components\com_fabrik\driver\mysql_fab.php">
+ <error line="1" column="1" severity="warning" message="File has mixed line endings; this may cause incorrect results" source="Internal.LineEndings.Mixed"/>
+ <error line="1" column="1" severity="error" message="End of line character is invalid; expected &quot;\n&quot; but found &quot;\r\n&quot;" source="Generic.Files.LineEndings.InvalidEOLChar"/>
+ <error line="16" column="1" severity="error" message="@package tag comment indented incorrectly; expected 5 spaces but found 0" source="Joomla.Commenting.ClassComment.TagIndent"/>
+ <error line="17" column="1" severity="error" message="@subpackage tag comment indented incorrectly; expected 2 spaces but found 0" source="Joomla.Commenting.ClassComment.TagIndent"/>
+ <error line="18" column="1" severity="error" message="@since tag comment indented incorrectly; expected 7 spaces but found 0" source="Joomla.Commenting.ClassComment.TagIndent"/>
+ <error line="34" column="1" severity="error" message="Doc comment for var $prefx does not match actual variable name $prefix at position 2" source="Joomla.Commenting.FunctionComment.ParamNameNoMatch"/>
+ <error line="35" column="1" severity="error" message="Missing @return tag in function comment" source="Joomla.Commenting.FunctionComment.MissingReturn"/>
+ <error line="41" column="3" severity="error" message="Expected &quot;if (...)\n&quot;; found &quot;if (...)\n&#9;&#9;&quot;" source="Joomla.ControlStructures.ControlSignature"/>
+ <error line="41" column="25" severity="error" message="Blank line found at start of control structure" source="Joomla.WhiteSpace.ControlStructureSpacing"/>
+ <error line="41" column="53" severity="error" message="Blank line found at end of control structure" source="Joomla.WhiteSpace.ControlStructureSpacing"/>
+ <error line="41" column="53" severity="error" message="Closing brace must be on a line by itself" source="Squiz.WhiteSpace.ScopeClosingBrace.ContentBefore"/>
+</file>
+<file name="C:\xampp\htdocs\fabrik31x\components\com_fabrik\helpers\string.php">
+ <error line="651" column="16" severity="error" message="You must use &quot;/**&quot; style comments for a function comment" source="Joomla.Commenting.FunctionComment.WrongStyle"/>
+</file>
+<file name="C:\xampp\htdocs\fabrik31x\components\com_fabrik\models\list.php">
+ <error line="1574" column="32" severity="error" message="Expected 1 space before &quot;=&gt;&quot;; 0 found" source="Joomla.WhiteSpace.OperatorSpacing.NoSpaceBefore"/>
+</file>
+<file name="C:\xampp\htdocs\fabrik31x\components\com_fabrik\models\listfilter.php">
+ <error line="535" column="1" severity="warning" message="Line exceeds 150 characters; contains 152 characters" source="Generic.Files.LineLength.TooLong"/>
+</file>
+<file name="C:\xampp\htdocs\fabrik31x\components\com_fabrik\models\plugin.php">
+ <error line="299" column="4" severity="error" message="Please consider the /* */ style for comments that span over multiple lines." source="Joomla.Commenting.SingleComment.MultiLine"/>
+</file>
+<file name="C:\xampp\htdocs\fabrik31x\components\com_fabrik\sef_ext\com_fabrik.php">
+ <error line="274" column="4" severity="error" message="Expected &quot;switch (...)\n...{\n&quot;; found &quot;switch(...)\n...{\n&quot;" source="Joomla.ControlStructures.ControlSignature"/>
+ <error line="295" column="4" severity="error" message="No blank line found after control structure296 - 307" source="Joomla.WhiteSpace.ControlStructureSpacing"/>
+</file>
+<file name="C:\xampp\htdocs\fabrik31x\plugins\fabrik_element\birthday\birthday.php">
+ <error line="616" column="1" severity="error" message="Expected 2 spaces after the longest type" source="Joomla.Commenting.FunctionComment.SpacingAfterLongType"/>
+</file>
+<file name="C:\xampp\htdocs\fabrik31x\plugins\fabrik_element\thumbs\thumbs.php">
+ <error line="126" column="80" severity="error" message="Concat operator must be preceeded by one space" source="Joomla.WhiteSpace.ConcatenationSpacing.Missing"/>
+ <error line="143" column="155" severity="warning" message="Line exceeds 150 characters; contains 154 characters" source="Generic.Files.LineLength.TooLong"/>
+</file>
+<file name="C:\xampp\htdocs\fabrik31x\plugins\fabrik_form\rest\rest.php">
+ <error line="268" column="155" severity="warning" message="Line exceeds 150 characters; contains 154 characters" source="Generic.Files.LineLength.TooLong"/>
+ <error line="391" column="1" severity="error" message="Expected 2 spaces after the longest type" source="Joomla.Commenting.FunctionComment.SpacingAfterLongType"/>
+</file>
+<file name="C:\xampp\htdocs\fabrik31x\plugins\fabrik_visualization\nvd3_chart\charts\discretebarchart.php">
+ <error line="30" column="1" severity="error" message="Doc comment for var params does not match actual variable name $params at position 1" source="Joomla.Commenting.FunctionComment.ParamNameNoMatch"/>
+ <error line="30" column="1" severity="error" message="Missing comment for param &quot;params&quot; at position 1" source="Joomla.Commenting.FunctionComment.MissingParamComment"/>
+ <error line="40" column="1" severity="error" message="Expected 2 space(s) before asterisk; 0 found" source="Squiz.Commenting.DocCommentAlignment.SpaceBeforeAsterisk"/>
+ <error line="41" column="1" severity="error" message="Expected 2 space(s) before asterisk; 0 found" source="Squiz.Commenting.DocCommentAlignment.SpaceBeforeAsterisk"/>
+ <error line="42" column="1" severity="error" message="Expected 2 space(s) before asterisk; 0 found" source="Squiz.Commenting.DocCommentAlignment.SpaceBeforeAsterisk"/>
+ <error line="43" column="1" severity="error" message="Expected 2 space(s) before asterisk; 0 found" source="Squiz.Commenting.DocCommentAlignment.SpaceBeforeAsterisk"/>
+ <error line="44" column="1" severity="error" message="Expected 2 space(s) before asterisk; 0 found" source="Squiz.Commenting.DocCommentAlignment.SpaceBeforeAsterisk"/>
+ <error line="45" column="1" severity="error" message="Expected 2 space(s) before asterisk; 0 found" source="Squiz.Commenting.DocCommentAlignment.SpaceBeforeAsterisk"/>
+ <error line="46" column="1" severity="error" message="Expected 2 space(s) before asterisk; 0 found" source="Squiz.Commenting.DocCommentAlignment.SpaceBeforeAsterisk"/>
+ <error line="47" column="1" severity="error" message="Expected 2 space(s) before asterisk; 0 found" source="Squiz.Commenting.DocCommentAlignment.SpaceBeforeAsterisk"/>
+ <error line="48" column="1" severity="error" message="Expected 2 space(s) before asterisk; 0 found" source="Squiz.Commenting.DocCommentAlignment.SpaceBeforeAsterisk"/>
+ <error line="49" column="1" severity="error" message="Expected 2 space(s) before asterisk; 0 found" source="Squiz.Commenting.DocCommentAlignment.SpaceBeforeAsterisk"/>
+ <error line="50" column="1" severity="error" message="Expected 2 space(s) before asterisk; 0 found" source="Squiz.Commenting.DocCommentAlignment.SpaceBeforeAsterisk"/>
+ <error line="51" column="1" severity="error" message="Expected 2 space(s) before asterisk; 0 found" source="Squiz.Commenting.DocCommentAlignment.SpaceBeforeAsterisk"/>
+ <error line="52" column="1" severity="error" message="Expected 2 space(s) before asterisk; 0 found" source="Squiz.Commenting.DocCommentAlignment.SpaceBeforeAsterisk"/>
+ <error line="53" column="1" severity="error" message="Expected 2 space(s) before asterisk; 0 found" source="Squiz.Commenting.DocCommentAlignment.SpaceBeforeAsterisk"/>
+ <error line="54" column="1" severity="error" message="There must be exactly one blank line before the tags in function comment" source="Joomla.Commenting.FunctionComment.SpacingBeforeTags"/>
 </file>
 </checkstyle>

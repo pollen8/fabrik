@@ -847,8 +847,8 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 
 		$updateField = $params->get('emailtable_update_field');
 		$updateField = is_array($updateField) ? JArrayHelper::getValue($updateField, $renderOrder, '') : $updateField;
-
 		$updateVal = $this->updateVal('emailtable_update_value', $renderOrder);
+
 		if (!empty($updateVal) && !empty($updated))
 		{
 			if (!empty($updateField))
@@ -866,6 +866,7 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 		$updateField = is_array($updateField) ? JArrayHelper::getValue($updateField, $renderOrder, '') : $updateField;
 
 		$updateVal = $this->updateVal('emailtable_update_value2', $renderOrder);
+
 		if (!empty($updateVal) && !empty($updated))
 		{
 			if (!empty($updateField))

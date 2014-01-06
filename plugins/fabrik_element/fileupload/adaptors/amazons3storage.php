@@ -329,8 +329,9 @@ class Amazons3storage extends FabrikStorageAdaptor
 	/**
 	 * Create a folder - not applicable for S3 storage
 	 *
-	 * @param   string  $path  folder path
+	 * @param   string   $path  Folder path
 	 * @param   bitmask  $mode  Permissions
+	 *
 	 * @return  bool
 	 */
 

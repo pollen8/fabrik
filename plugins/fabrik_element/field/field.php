@@ -148,7 +148,7 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 			{
 				$value = str_pad('', JString::strlen($value), '*');
 			}
-			
+
 			$value = $this->getReadOnlyOutput($value, $value);
 
 			return ($element->hidden == '1') ? "<!-- " . $value . " -->" : $value;
@@ -263,6 +263,7 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 		$opts = $this->getElementJSOptions($repeatCounter);
 
 		$input_mask = trim($params->get('text_input_mask', ''));
+
 		if (!empty($input_mask))
 		{
 			$opts->use_input_mask = true;

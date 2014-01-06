@@ -799,6 +799,7 @@ class FabrikFEModelList extends JModelForm
 
 		return $this->data;
 	}
+
 	/**
 	 * Get the table's data
 	 *
@@ -1570,7 +1571,7 @@ class FabrikFEModelList extends JModelForm
 		// Build layout for row buttons
 		$tpl = $this->getTmpl();
 		$align = $params->get('checkboxLocation', 'end') == 'end' ? 'right' : 'left';
-		$displayData = array('align'=> $align);
+		$displayData = array('align' => $align);
 		$basePath = COM_FABRIK_FRONTEND . '/views/list/tmpl/' . $tpl . '/layouts/';
 		$layout = new JLayoutFile('listactions.' . $buttonAction, $basePath, array('debug' => false, 'component' => 'com_fabrik', 'client' => 'site'));
 
@@ -2533,7 +2534,7 @@ class FabrikFEModelList extends JModelForm
 	/**
 	 * Get the select part of the query
 	 *
-	 * @param   string  $mode  list/form - effects which elements are selected
+	 * @param   string         $mode   List/form - effects which elements are selected
 	 * @param   JQueryBuilder  $query  Querybuilder (false to return string)
 	 *
 	 * @return  mixed  string if $query = false, otherwise $query
@@ -4580,6 +4581,7 @@ class FabrikFEModelList extends JModelForm
 					{
 						$q .= ' NOT NULL';
 					}
+
 					if (!stripos($q, ' AUTO_INCREMENT'))
 					{
 						$q .= ' AUTO_INCREMENT';
@@ -6222,7 +6224,6 @@ class FabrikFEModelList extends JModelForm
 
 		foreach ($elementModels as $elementModel)
 		{
-
 			if (!$elementModel->canView('list'))
 			{
 				continue;
@@ -11631,6 +11632,13 @@ class FabrikFEModelList extends JModelForm
 		return $this->tabs;
 	}
 
+	/**
+	 * Is the element selected for edither 'OR user edit' or 'OR use delete' acl
+	 *
+	 * @param   string  $name  Element full name
+	 *
+	 * @return boolean
+	 */
 	public function isUserDoElement($name)
 	{
 		$acl_types = array('allow_edit_details2', 'allow_delete2');
@@ -11694,6 +11702,7 @@ class FabrikFEModelList extends JModelForm
 					{
 						continue;
 					}
+
 					$cols[$group->id]['elements'][$elementModel->getFullName(true, false)] = $elementModel->getElement()->label;
 				}
 			}

@@ -612,12 +612,13 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 	 * This builds an array containing the filters value and condition
 	 * when using a ranged search
 	 *
-	 * @param   array  $value  Initial values
+	 * @param   array   $value      Initial values
+	 * @param   string  $condition  Filter condition e.g. BETWEEN
 	 *
 	 * @return  array  (value condition)
 	 */
 
-	protected function getRangedFilterValue($value, $condition = "")
+	protected function getRangedFilterValue($value, $condition = '')
 	{
 		$db = FabrikWorker::getDbo();
 		$element = $this->getElement();

@@ -734,9 +734,7 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 		 * set, then when displaying in lists, we don't execute the calc, we just used the stored value fro the database.
 		 * And that logic is handled in _getV(), so we don't need to do the $store stuff.
 		 */
-		// $store = (bool) $params->get('calc_on_save_only', 0);
 		$listRef = 'list_' . $listModel->getRenderContext() . '_row_';
-		// $storeKey = $this->getElement()->name;
 
 		foreach ($data as $group)
 		{

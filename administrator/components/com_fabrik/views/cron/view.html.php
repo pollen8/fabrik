@@ -114,7 +114,8 @@ class FabrikAdminViewCron extends JViewLegacy
 		$isNew = ($this->item->id == 0);
 		$checkedOut	= !($this->item->checked_out == 0 || $this->item->checked_out == $user->get('id'));
 		$canDo = FabrikAdminHelper::getActions($this->state->get('filter.category_id'));
-		JToolBarHelper::title($isNew ? JText::_('COM_FABRIK_MANAGER_CRON_NEW') : JText::_('COM_FABRIK_MANAGER_CRON_EDIT') . ' "' . $this->item->label . '"', 'cron.png');
+		$title = $isNew ? JText::_('COM_FABRIK_MANAGER_CRON_NEW') : JText::_('COM_FABRIK_MANAGER_CRON_EDIT') . ' "' . $this->item->label . '"';
+		JToolBarHelper::title($title, 'cron.png');
 
 		if ($isNew)
 		{

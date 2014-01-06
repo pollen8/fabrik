@@ -761,6 +761,7 @@ class PlgFabrik_Element extends FabrikPlugin
 			{
 				$k = $this->calcSelectModifier . '(' . $k . ')';
 			}
+
 			$str = $k . ' AS ' . $fullElName;
 		}
 
@@ -833,7 +834,6 @@ class PlgFabrik_Element extends FabrikPlugin
 		if ($this->getGroupModel()->isJoin() && $this->isJoin())
 		{
 			$groupJoin = $this->getGroupModel()->getJoinModel()->getJoin();
-			//$pkField = $groupJoin->table_join . '.' . $groupJoin->table_key;
 			$pkField = $groupJoin->params->get('pk');
 		}
 		else
@@ -924,7 +924,7 @@ class PlgFabrik_Element extends FabrikPlugin
 				// Could be  a linked parent element in which case the form doesn't contain the element whose id is $lookUpId
 				if (!$lookUp)
 				{
-					$lookUp =  FabrikWorker::getPluginManager()->getElementPlugin($lookUpId);
+					$lookUp = FabrikWorker::getPluginManager()->getElementPlugin($lookUpId);
 				}
 
 				if ($lookUp)
@@ -4011,7 +4011,8 @@ class PlgFabrik_Element extends FabrikPlugin
 	 * This builds an array containing the filters value and condition
 	 * when using a ranged search
 	 *
-	 * @param   array  $value  Initial values
+	 * @param   array   $value      Initial values
+	 * @param   string  $condition  Filter condition e.g. BETWEEN
 	 *
 	 * @return  array  (value condition)
 	 */
@@ -4020,6 +4021,7 @@ class PlgFabrik_Element extends FabrikPlugin
 	{
 		$db = FabrikWorker::getDbo();
 		$element = $this->getElement();
+
 		if ($element->filter_type === 'range' || strtoupper($condition) === 'BETWEEN')
 		{
 			if (is_numeric($value[0]) && is_numeric($value[1]))
@@ -4714,7 +4716,6 @@ class PlgFabrik_Element extends FabrikPlugin
 			}
 			else
 			{
-				// If its a concat - can we use the key value as the group by name
 				if (method_exists($plugin, 'getJoinValueColumn'))
 				{
 					$sName = $plugin->getJoinValueColumn();
@@ -4731,8 +4732,8 @@ class PlgFabrik_Element extends FabrikPlugin
 			else
 			{
 				$sName = $sLabel = $plugin->getFullName(false, false, false);
-
 			}
+
 			$gById = FabrikString::safeColName($sName);
 			$groupByLabels[] = $sLabel;
 		}
@@ -5422,6 +5423,7 @@ class PlgFabrik_Element extends FabrikPlugin
 	{
 		$p = $this->getElement()->plugin;
 		$src = 'plugins/fabrik_element/' . $p . '/list-' . $p . '.js';
+
 		if (JFile::exists(JPATH_SITE . '/' . $src))
 		{
 			$srcs[] = $src;

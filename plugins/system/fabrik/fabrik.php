@@ -387,6 +387,7 @@ class PlgSystemFabrik extends JPlugin
 			 */
 			$elementModel = $listModel->getFormModel()->getElement($params->get('search_date', 0), true);
 			$date_element = is_object($elementModel) ? $elementModel->getFullName() : '';
+
 			if (!empty($date_element))
 			{
 				$date_element .= '_raw';

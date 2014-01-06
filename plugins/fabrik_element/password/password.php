@@ -187,6 +187,7 @@ class PlgFabrik_ElementPassword extends PlgFabrik_Element
 		 * so just return true;
 		 */
 		$ajax = $input->getBool('fabrik_ajax', false);
+
 		if ($ajax && !array_key_exists($check_name, $_REQUEST))
 		{
 			return true;

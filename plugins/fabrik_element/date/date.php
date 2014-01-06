@@ -1604,12 +1604,13 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 	 * This builds an array containing the filters value and condition
 	 * when using a ranged search
 	 *
-	 * @param   array  $value  Initial value
+	 * @param   array   $value      Initial value
+	 * @param   string  $condition  Filter condtion e.g BETWEEN
 	 *
 	 * @return  array  (value condition)
 	 */
 
-	protected function getRangedFilterValue($value, $condition="")
+	protected function getRangedFilterValue($value, $condition = '')
 	{
 		$db = FabrikWorker::getDbo();
 		$params = $this->getParams();

@@ -105,9 +105,6 @@ class FabrikAdminControllerCrons extends FabControllerAdmin
 
 				if ($plugin->requiresTableData())
 				{
-					//$table = $listModel->getTable();
-					//$total = $thisListModel->getTotalRecords();
-					//$nav = $thisListModel->getPagination($total, 0, $total);
 					$thisListModel->setLimits(0, 0);
 					$nav = $thisListModel->getPagination(0, 0, 0);
 					$data = $thisListModel->getData();

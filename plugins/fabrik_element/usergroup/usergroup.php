@@ -277,7 +277,7 @@ class PlgFabrik_ElementUsergroup extends PlgFabrik_ElementList
 			}
 			else
 			{
-				$this->_default =json_encode(array());
+				$this->_default = json_encode(array());
 			}
 		}
 

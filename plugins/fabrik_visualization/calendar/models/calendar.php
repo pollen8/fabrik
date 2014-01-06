@@ -497,7 +497,6 @@ class FabrikModelCalendar extends FabrikFEModelVisualization
 								$row->startdate = $date->format('Y-m-d H:i:s', true);
 								$date->setTimezone($tz);
 								$row->startdate_locale = $date->toISO8601(true);
-
 							}
 
 							if ($row->enddate !== $db->getNullDate() && (string) $row->enddate !== '')

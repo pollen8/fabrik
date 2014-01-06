@@ -36,11 +36,11 @@ if (!function_exists('shFetchFormName'))
 			return null;
 		}
 
-		$db    = JFactory::getDBO();
-		$query = $db->getQuery( true );
+		$db = JFactory::getDBO();
+		$query = $db->getQuery(true);
 		$query->select('label')
-		      ->from($query->quoteName('#__fabrik_forms'))
-		      ->where('id = ' . $db->quote($formid));
+			->from($query->quoteName('#__fabrik_forms'))
+			->where('id = ' . $db->quote($formid));
 		$db->setQuery($query);
 		$formName = $db->loadResult();
 
@@ -64,14 +64,14 @@ if (!function_exists('shFetchListName'))
 			return null;
 		}
 
-		$db    = JFactory::getDBO();
-		$query = $db->getQuery( true );
+		$db = JFactory::getDBO();
+		$query = $db->getQuery(true);
 		$query->select('label')
-		      ->from($query->quoteName('#__fabrik_lists'))
-		      ->where('form_id = ' . $query->quote($formid));
+			->from($query->quoteName('#__fabrik_lists'))
+			->where('form_id = ' . $query->quote($formid));
 		$db->setQuery($query);
 		$listName = $db->loadResult();
-		
+
 		return isset($listName) ? JText::_($listName) : '';
 	}
 }
@@ -117,11 +117,11 @@ if (!function_exists('shFetchTableName'))
 			return null;
 		}
 
-		$db    = JFactory::getDBO();
-		$query = $db->getQuery( true );
+		$db = JFactory::getDbo();
+		$query = $db->getQuery(true);
 		$query->select('label')
-		      ->from($query->quoteName('#__fabrik_lists'))
-		      ->where('id = ' . $query->quote($listid));
+			->from($query->quoteName('#__fabrik_lists'))
+			->where('id = ' . $query->quote($listid));
 		$db->setQuery($query);
 		$tableName = $db->loadResult();
 
@@ -146,25 +146,25 @@ if (!function_exists('shFetchRecordName'))
 			return null;
 		}
 
-		$db    = JFactory::getDBO();
-		$query = $db->getQuery( true );
+		$db = JFactory::getDbo();
+		$query = $db->getQuery(true);
 
 		// Get database table's name and slug first
 		$query->select('db_table_name, params')
-		      ->from($query->quoteName('#__fabrik_lists'))
-		      ->where('form_id = ' . $query->quote($formid));
+			->from($query->quoteName('#__fabrik_lists'))
+			->where('form_id = ' . $query->quote($formid));
 		$db->setQuery($query);
 		$result = $db->loadObject();
 
 		$listName = $result->db_table_name;
-		$json 	  = $result->params;
-		$slug 	  = json_decode($json)->{'sef-slug'};
+		$json = $result->params;
+		$slug = json_decode($json)->{'sef-slug'};
 
 		// Get record's name
-		$query = $db->getQuery( true );
+		$query = $db->getQuery(true);
 		$query->select($query->quoteName($slug))
-		      ->from($query->quoteName($listName))
-		      ->where('id = ' . $query->quote($rowid));
+			->from($query->quoteName($listName))
+			->where('id = ' . $query->quote($rowid));
 		$db->setQuery($query);
 		$recordName = $db->loadResult();
 
@@ -188,11 +188,11 @@ if (!function_exists('shFetchVizName'))
 			return null;
 		}
 
-		$db    = JFactory::getDBO();
-		$query = $db->getQuery( true );
+		$db = JFactory::getDbo();
+		$query = $db->getQuery(true);
 		$query->select('label')
-		      ->from($query->quoteName('#__fabrik_visualizations'))
-		      ->where('id = ' . $query->quote($id));
+			->from($query->quoteName('#__fabrik_visualizations'))
+			->where('id = ' . $query->quote($id));
 		$db->setQuery($query);
 		$vizName = $db->loadResult();
 
@@ -235,17 +235,18 @@ switch ($view)
 	case 'form':
 		if (isset($formid) && $rowid != '')
 		{
-			$config->get('fabrik_sef_customtxt_edit') == '' ? $edit = 'edit':$edit = $config->get('fabrik_sef_customtxt_edit');
+			$config->get('fabrik_sef_customtxt_edit') == '' ? $edit = 'edit' : $edit = $config->get('fabrik_sef_customtxt_edit');
 			$title[] = shFetchFormName($formid) . '-' . $rowid . '-' . JText::_($edit);
 		}
-		else {
-			$config->get('fabrik_sef_customtxt_new') == '' ? $new = 'new':$new = $config->get('fabrik_sef_customtxt_new');
+		else
+		{
+			$config->get('fabrik_sef_customtxt_new') == '' ? $new = 'new' : $new = $config->get('fabrik_sef_customtxt_new');
 			$title[] = shFetchFormName($formid) . '-' . JText::_($new);
 		}
 		break;
 
 	case 'details':
-		// Insert menu name if set so in Fabrik's options		
+		// Insert menu name if set so in Fabrik's options
 		if ($config->get('fabrik_sef_prepend_menu_title') == 1)
 		{
 			$app     = JFactory::getApplication();
@@ -253,7 +254,7 @@ switch ($view)
 			$menusId = $menus->getMenu();
 			$itemId  = $app->input->getInt('Itemid');
 
-			$title[] = $menusId[$itemId]->title;  
+			$title[] = $menusId[$itemId]->title;
 		}
 		// Insert table name if set so in Fabrik's options
 		if ($config->get('fabrik_sef_tablename_on_forms') == 1)
@@ -270,7 +271,7 @@ switch ($view)
 
 		if (isset($rowid))
 		{
-			switch($config->get('fabrik_sef_format_records'))
+			switch ($config->get('fabrik_sef_format_records'))
 			{
 				case 'param_id':
 					$title[] = '';
@@ -292,6 +293,7 @@ switch ($view)
 					shRemoveFromGETVarsList('rowid');
 					break;
 			}
+
 			shMustCreatePageId('set', true);
 		}
 		else
@@ -395,7 +397,7 @@ if ($dosef)
 		$string, $title, $shAppendString, $shItemidString, (isset($limit) ? @$limit : null),
 		(
 			isset($limitstart) ? @$limitstart : null), (isset($shLangName) ? @$shLangName : null)
-		);
+	);
 }
 
 // ------------------  standard plugin finalize function - don't change ---------------------------
