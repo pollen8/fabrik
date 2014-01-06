@@ -122,7 +122,7 @@ echo $this->plugintop;
 				/* Load the group template - this can be :
 				 *  * default_group.php - standard group non-repeating rendered as an unordered list
 				 *  * default_repeatgroup.php - repeat group rendered as an unordered list
-				 *  * default_repeatgroup.table.php - repeat group rendered in a table.
+				 *  * default_repeatgroup_table.php - repeat group rendered in a table.
 				 */
 				$this->elements = $group->elements;
 				echo $this->loadTemplate($group->tmpl);
