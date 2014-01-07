@@ -246,6 +246,7 @@ class JFormFieldListfields extends JFormFieldList
 
 	private function js($res = array())
 	{
+		$connection = $this->element['connection'];
 		$repeat = FabrikAdminElementHelper::getRepeat($this) || $this->element['repeat'];
 		$c = (int) FabrikAdminElementHelper::getRepeatCounter($this);
 		$mode = (string) JArrayHelper::getValue($this->element, 'mode', false);
