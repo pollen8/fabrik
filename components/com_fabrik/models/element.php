@@ -7146,21 +7146,18 @@ class PlgFabrik_Element extends FabrikPlugin
 		if ($groupModel->isJoin())
 		{
 			$groupJoinModel = $groupModel->getJoinModel();
-			$idKey = $join->table_join . '___id';
-			$paramsKey = $join->table_join . '___params';
 			$k = str_replace('`', '', str_replace('.', '___', $groupJoinModel->getJoin()->params->get('pk')));
 			$parentIds = (array) $formData[$k];
 		}
 		else
 		{
 			$k = 'rowid';
-			$idKey = $name . '___id';
-			$paramsKey = $name . '___params';
 			$parentIds = empty($allJoinValues) ? array() : array_fill(0, count($allJoinValues), $formData[$k]);
 		}
 
-		$allJoinIds = JArrayHelper::getValue($formData, $idKey, array());
-		$allParams = array_values(JArrayHelper::getValue($formData, $paramsKey, array()));
+		$paramsKey = $this->getJoinParamsKey();
+		$allParams = (array) JArrayHelper::getValue($formData, $paramsKey, array());
+		$allParams = array_values($allParams);
 		$i = 0;
 		$idsToKeep = array();
 
@@ -7245,6 +7242,64 @@ class PlgFabrik_Element extends FabrikPlugin
 
 		// Delete any records that were unselected.
 		$this->deleteDeselectedItems($idsToKeep, $k);
+	}
+
+	/**
+	 * For joins:
+	 * Get the key which contains the linking tables primary key values.
+	 *
+	 * @param   bool  $step  Use step '___' or '.' in full name
+	 *
+	 * @return boolean|string
+	 */
+
+	public function getJoinIdKey($step = true)
+	{
+		if (!$this->isJoin())
+		{
+			return false;
+		}
+
+		if ($this->getGroupModel()->isJoin())
+		{
+			$join = $this->getJoin();
+			$idKey = $join->table_join . '___id';
+		}
+		else
+		{
+			$idKey = $this->getFullName($step, false) . '___id';
+		}
+
+		return $idKey;
+	}
+
+	/**
+	 * For joins:
+	 * Get the key which contains the linking tables params values.
+	 *
+	 * @param   bool  $step  Use step '___' or '.' in full name
+	 *
+	 * @return boolean|string
+	 */
+
+	public function getJoinParamsKey($step = true)
+	{
+		if (!$this->isJoin())
+		{
+			return false;
+		}
+
+		if ($this->getGroupModel()->isJoin())
+		{
+			$join = $this->getJoin();
+			$paramsKey = $join->table_join . '___params';
+		}
+		else
+		{
+			$paramsKey = $this->getFullName($step, false) . '___params';
+		}
+
+		return $paramsKey;
 	}
 
 	/**

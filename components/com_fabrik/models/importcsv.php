@@ -556,8 +556,8 @@ class FabrikFEModelImportcsv extends JModelForm
 					// Joined element params
 					if ($elementModel->isJoin())
 					{
-						$hkey = $elementModel->getJoinModel()->getJoin()->table_join . '___params';
-						$hkey2 = $elementModel->getFullName(true, false) . '___params';
+						$hkey = $elementModel->getJoinParamsKey(false);
+						$hkey2 = $elementModel->getJoinIdKey(false);
 
 						if ($hkey === $heading || $hkey2 === $heading)
 						{
@@ -691,7 +691,8 @@ class FabrikFEModelImportcsv extends JModelForm
 					case 0:
 						break;
 					case 1:
-						$heading = array_pop(explode('.', $heading));
+						$heading = explode('.', $heading);
+						$heading = array_pop($heading);
 						break;
 					case 2:
 						break;
@@ -721,23 +722,7 @@ class FabrikFEModelImportcsv extends JModelForm
 				$i++;
 			}
 
-			// $$$ rob add in per row default values for missing elements
-			foreach ($defaultsToAdd as $k => $elementModel)
-			{
-				/* Added check as defaultsToAdd ALSO contained element keys for those elements which
-				 * are created from new csv columns, which previously didn't exist in the list
-				 */
-				if (!array_key_exists($k, $aRow))
-				{
-					$aRow[$k] = $elementModel->getDefaultValue($aRow);
-				}
-
-				if (!array_key_exists($k . '_raw', $aRow))
-				{
-					$aRow[$k . '_raw'] = $aRow[$k];
-				}
-			}
-
+			$this->addDefaults($aRow);
 			$model->getFormGroupElementData();
 			$this->setRawDataAsPriority($aRow);
 
@@ -766,7 +751,6 @@ class FabrikFEModelImportcsv extends JModelForm
 				{
 					$noneraw = JString::substr($k, 0, strlen($k) - 4);
 					$aRow[$noneraw] = $val;
-					unset($aRow[$k]);
 				}
 			}
 
@@ -793,6 +777,32 @@ class FabrikFEModelImportcsv extends JModelForm
 
 		$this->removeCSVFile();
 		$this->updatedCount = $updatedCount;
+	}
+
+	/**
+	 * Add in per row default values for missing elements
+	 *
+	 * @param   array  &$aRow  Import CSV data
+	 */
+	private function addDefaults(&$aRow)
+	{
+		$defaultsToAdd = $this->defaultsToAdd();
+
+		foreach ($defaultsToAdd as $k => $elementModel)
+		{
+			/* Added check as defaultsToAdd ALSO contained element keys for those elements which
+			 * are created from new csv columns, which previously didn't exist in the list
+			 */
+			if (!array_key_exists($k, $aRow))
+			{
+				$aRow[$k] = $elementModel->getDefaultValue($aRow);
+			}
+
+			if (!array_key_exists($k . '_raw', $aRow))
+			{
+				$aRow[$k . '_raw'] = $aRow[$k];
+			}
+		}
 	}
 
 	/**

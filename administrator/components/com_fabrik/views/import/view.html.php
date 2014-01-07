@@ -54,13 +54,14 @@ class FabrikAdminViewImport extends JViewLegacy
 		$session = JFactory::getSession();
 		$this->data = $session->get('com_fabrik.csvdata');
 		$this->matchedHeadings = $session->get('com_fabrik.matchedHeadings');
-		$this->newHeadings = $this->get('NewHeadings');
-		$this->headings = $this->get('Headings');
+		$model = $this->getModel();
+		$this->newHeadings = $model->getNewHeadings();
+		$this->headings = $model->getHeadings();
 		$pluginManager = $this->getModel('pluginmanager');
-		$this->table = $this->get('ListModel')->getTable();
+		$this->table = $model->getListModel()->getTable();
 		$this->elementTypes = $pluginManager->getElementTypeDd('field', 'plugin[]');
-		$this->sample = $this->get('Sample');
-		$this->selectPKField = $this->get('SelectKey');
+		$this->sample = $model->getSample();
+		$this->selectPKField = $model->getSelectKey();
 		$jform = $input->get('jform', array(), 'array');
 
 		foreach ($jform as $key => $val)

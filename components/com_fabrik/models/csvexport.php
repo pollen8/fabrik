@@ -569,7 +569,7 @@ class FabrikFEModelCSVExport
 			{
 				if (!(JString::substr($heading, JString::strlen($heading) - 4, JString::strlen($heading)) == '_raw' && !$incRaw))
 				{
-					// Stop id getting added to tables when exported wiht fullelname key
+					// Stop id getting added to tables when exported with full element name key
 					if ($hformat != 1 && $heading != $shortkey)
 					{
 						$h[] = $heading;
@@ -591,8 +591,8 @@ class FabrikFEModelCSVExport
 	/**
 	 * Get unqiue heading
 	 *
-	 * @param   string  $n  key
-	 * @param   array   $h  search
+	 * @param   string  $n  Key
+	 * @param   array   $h  Search
 	 *
 	 * @return  string
 	 */
