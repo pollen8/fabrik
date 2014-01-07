@@ -7367,7 +7367,8 @@ class FabrikFEModelList extends JModelForm
 		{
 			// $$$ rob added test for auto_inc as sugarid key is set from storeDatabaseFormat() and needs to be maintained
 			// $$$ rob don't do this when importing via CSV as we want to maintain existing keys (hence check on task var
-			if (($primaryKey !== '' && $this->getTable()->auto_inc == true) && $input->get('task') !== 'doImport')
+			$task = strtolower($input->get('task'));
+			if (($primaryKey !== '' && $this->getTable()->auto_inc == true) && $task !== 'doimport')
 			{
 				unset($oRecord->$primaryKey);
 			}

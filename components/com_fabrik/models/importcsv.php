@@ -670,19 +670,10 @@ class FabrikFEModelImportcsv extends JModelForm
 
 		$this->addedCount = 0;
 		$updatedCount = 0;
-		$joins = $this->getJoins();
 
 		// $$$ rob we are no longer removing the element joins from $joins
 		// so lets see if any of $joins are table joins.
-		$tableJoinsFound = false;
-
-		for ($x = 0; $x < count($joins); $x++)
-		{
-			if ((int) $joins[$x]->list_id !== 0)
-			{
-				$tableJoinsFound = true;
-			}
-		}
+		$tableJoinsFound = $this->tableJoinsFound();
 
 		$joindata = array();
 		$defaultsToAdd = $this->defaultsToAdd();
@@ -700,7 +691,7 @@ class FabrikFEModelImportcsv extends JModelForm
 					case 0:
 						break;
 					case 1:
-						$heading = array_pop(explode(".", $heading));
+						$heading = array_pop(explode('.', $heading));
 						break;
 					case 2:
 						break;
@@ -748,21 +739,7 @@ class FabrikFEModelImportcsv extends JModelForm
 			}
 
 			$model->getFormGroupElementData();
-
-			// Take any _raw values and replace their real elements with their data
-			foreach ($aRow as $k => $val)
-			{
-				if (JString::substr($k, JString::strlen($k) - 4, JString::strlen($k)) == '_raw')
-				{
-					$noneraw = JString::substr($k, 0, JString::strlen($k) - 4);
-
-					if (array_key_exists($noneraw, $aRow))
-					{
-						$aRow[$noneraw] = $val;
-						unset($aRow[$k]);
-					}
-				}
-			}
+			$this->setRawDataAsPriority($aRow);
 
 			if ($overWrite && in_array($pkVal, $aExistingKeys))
 			{
@@ -771,7 +748,13 @@ class FabrikFEModelImportcsv extends JModelForm
 			}
 			else
 			{
-				$formModel->rowId = 0;
+				// If not overwriting ensusre the any existing PK's are removed and the form rowId set to ''
+				$pk = FabrikString::safeColNameToArrayKey($item->db_primary_key);
+				$rawPk = $pk . '_raw';
+				unset($aRow[$pk]);
+				unset($aRow[$rawPk]);
+				$formModel->rowId = '';
+				$formModel->setInsertId('');
 				$this->addedCount++;
 			}
 
@@ -810,6 +793,49 @@ class FabrikFEModelImportcsv extends JModelForm
 
 		$this->removeCSVFile();
 		$this->updatedCount = $updatedCount;
+	}
+
+	/**
+	 * Take any _raw values and replace their real elements with their data
+	 *
+	 * @param   array  &$aRow  Importing CSV Data
+	 */
+	private function setRawDataAsPriority(&$aRow)
+	{
+		foreach ($aRow as $k => $val)
+		{
+			if (JString::substr($k, JString::strlen($k) - 4, JString::strlen($k)) == '_raw')
+			{
+				$noneraw = JString::substr($k, 0, JString::strlen($k) - 4);
+
+				if (array_key_exists($noneraw, $aRow))
+				{
+					$aRow[$noneraw] = $val;
+					unset($aRow[$k]);
+				}
+			}
+		}
+	}
+
+	/**
+	 * Does the list contain table joins
+	 *
+	 * @return boolean
+	 */
+	private function tableJoinsFound()
+	{
+		$found = false;
+		$joins = $this->getJoins();
+
+		for ($x = 0; $x < count($joins); $x++)
+		{
+			if ((int) $joins[$x]->list_id !== 0 && $joins[$x]->element_id === 0)
+			{
+				$found = true;
+			}
+		}
+
+		return $found;
 	}
 
 	/**
@@ -950,7 +976,7 @@ class FabrikFEModelImportcsv extends JModelForm
 	/**
 	 * As each csv row is in a single line we need to fake the join data before
 	 * sending it of to be processed by the form model
-	 * Look at the table model and get all table joins
+	 * Look at the list model and get all table joins
 	 * then insert data into the row
 	 * NOTE: will probably only work for a 1:1 join result
 	 *
