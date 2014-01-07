@@ -57,10 +57,10 @@ class ImportCSVCreateUser
 	 *
 	 * user_created_value - value to use when setting user_created_element above.
 	 */
-	protected $password_element = '';
-	protected $first_password_element = '';
-	protected $user_created_element = '';
-	protected $user_created_value = '1';
+	public $password_element = '';
+	public $first_password_element = '';
+	public $user_created_element = '';
+	public $user_created_value = '1';
 
 	/**
 	 *
