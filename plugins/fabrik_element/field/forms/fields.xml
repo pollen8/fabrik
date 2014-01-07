@@ -179,13 +179,23 @@
 				label="PLG_ELEMENT_FIELD_INPUT_MASK_LABEL"
 				size="60" />
 				
+			<field name="render_as_qrcode"
+				type="radio"
+				default="0"
+				class="btn-group"
+				description="PLG_ELEMENT_FIELD_RENDER_AS_QRCODE_DESC"
+				label="PLG_ELEMENT_FIELD_RENDER_AS_QRCODE_LABEL">
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+			</field>
+				
 		</fieldset>
 
 		<fieldset label="PLG_ELEMENT_FIEILD_GUESS_LINK" name="plg-field-guesslink">
 
 			<field type="helplink"
 				url="PLG_ELEMENT_FIELD_HELP_SERVER" />
-
+			
 			<field name="guess_linktype"
 				type="radio"
 				default="0"

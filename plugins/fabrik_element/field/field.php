@@ -53,6 +53,11 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 			}
 
 			$this->_guessLinkType($d, $thisRow, 0);
+
+			if ($params->get('render_as_qrcode', '0') === '1')
+			{
+				$d = $this->qrCodeLink($d, $thisRow);
+			}
 		}
 
 		return parent::renderListData($data, $thisRow);
@@ -148,7 +153,7 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 			{
 				$value = str_pad('', JString::strlen($value), '*');
 			}
-			
+
 			$value = $this->getReadOnlyOutput($value, $value);
 
 			return ($element->hidden == '1') ? "<!-- " . $value . " -->" : $value;
@@ -455,4 +460,110 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 
 		return $classes;
 	}
+
+	/**
+	 * Output a QR Code image
+	 *
+	 * @since 3.1
+	 */
+
+	public function onAjax_renderQRCode()
+	{
+		$app = JFactory::getApplication();
+		$input = $app->input;
+		$this->setId($input->getInt('element_id'));
+		$this->loadMeForAjax();
+		$this->getElement();
+		$params = $this->getParams();
+		$lang = JFactory::getLanguage();
+		$lang->load('com_fabrik.plg.element.field', JPATH_ADMINISTRATOR);
+
+		if (!$this->canView())
+		{
+			$app->enqueueMessage(JText::_('PLG_ELEMENT_FIELD_NO_PERMISSION'));
+			$app->redirect($url);
+			exit;
+		}
+
+		$rowid = $input->get('rowid', '', 'string');
+
+		if (empty($rowid))
+		{
+			$app->enqueueMessage(JText::_('PLG_ELEMENT_FIELD_NO_SUCH_FILE'));
+			$app->redirect($url);
+			exit;
+		}
+
+		$repeatcount = $input->getInt('repeatcount', 0);
+		$listModel = $this->getListModel();
+		$row = $listModel->getRow($rowid, false);
+
+		if (empty($row))
+		{
+			$app->enqueueMessage(JText::_('PLG_ELEMENT_FIELD_NO_SUCH_FILE'));
+			$app->redirect($url);
+			exit;
+		}
+
+		$elName = $this->getFullName(true, false);
+		$value = $row->$elName;
+
+		require JPATH_SITE . '/components/com_fabrik/libs/qrcode/qrcode.php';
+
+		//Usage: $a=new QR('234DSKJFH23YDFKJHaS');$a->image(4);
+		$qr = new QR($value);
+		$img = $qr->image(4);
+
+		if (!empty($img))
+		{
+			// Some time in the past
+			header("Expires: Sat, 26 Jul 1997 05:00:00 GMT");
+			header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
+			header("Cache-Control: no-store, no-cache, must-revalidate");
+			header("Cache-Control: post-check=0, pre-check=0", false);
+			header("Pragma: no-cache");
+			header('Accept-Ranges: bytes');
+			header('Content-Length: ' . strlen($img));
+			header('Content-Type: ' . 'image/gif');
+
+			// Serve up the file
+			echo $img;
+
+			// And we're done.
+			exit();
+		}
+		else
+		{
+			$app->enqueueMessage(JText::_('PLG_ELEMENT_FIELD_NO_SUCH_FILE'));
+			$app->redirect($url);
+			exit;
+		}
+	}
+
+	/**
+	 * Get a link to this element which will call onAjax_renderQRCode().
+	 *
+	 * @param   value  string  element's value
+	 * @param   thisRow  array  row data
+	 *
+	 * @since 3.1
+	 *
+	 * @return   string  QR code link
+	 */
+
+	protected function qrCodeLink($value, $thisRow)
+	{
+		$app = JFactory::getApplication();
+		$package = $app->getUserState('com_fabrik.package', 'fabrik');
+		$formModel = $this->getForm();
+		$formid = $formModel->getId();
+		$rowid = $thisRow->__pk_val;
+		$elementid = $this->getId();
+		$link = COM_FABRIK_LIVESITE
+		. 'index.php?option=com_' . $package . '&amp;task=plugin.pluginAjax&amp;plugin=field&amp;method=ajax_renderQRCode&amp;'
+				. 'format=raw&amp;element_id=' . $elementid . '&amp;formid=' . $formid . '&amp;rowid=' . $rowid . '&amp;repeatcount=0';
+		$value = '<img src="' . $link . '"/>';
+		return $value;
+	}
+
 }
