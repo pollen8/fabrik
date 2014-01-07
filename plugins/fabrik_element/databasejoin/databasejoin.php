@@ -510,10 +510,12 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 
 		/*
 		 *  $$$ rob 20/08/2012 - removed empty test - seems that this method is called more than one time, when in auto-complete filter
-		*  First time sends the label in data second time sends the value (which is the correct one)
-		*/
-		// if ($displayType === 'auto-complete' && empty($this->autocomplete_where))
-		if ($displayType === 'auto-complete')
+		 *  First time sends the label in data second time sends the value (which is the correct one)
+		 *
+		 * $$$ rob 07/01/2014 - replaced empty test - otherwise default value would override autocomplete search.
+		 * I re-tested the auto-complete filter with this change and it appears to be ok.
+		 */
+		if ($displayType === 'auto-complete' && empty($this->autocomplete_where))
 		{
 			if (!empty($value) && $value[0] !== '')
 			{
