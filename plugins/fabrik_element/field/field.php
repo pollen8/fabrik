@@ -141,21 +141,28 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 
 		if (!$this->isEditable())
 		{
-			$this->_guessLinkType($value, $data, $repeatCounter);
-			$format = $params->get('text_format_string');
-
-			if ($format != '')
+			if ($params->get('render_as_qrcode', '0') === '1')
 			{
-				$value = sprintf($format, $value);
+				// @TODO - skip this is new form
+				$value = $this->qrCodeLink($value, $data);
 			}
-
-			if ($params->get('password') == "1")
+			else
 			{
-				$value = str_pad('', JString::strlen($value), '*');
+				$this->_guessLinkType($value, $data, $repeatCounter);
+				$format = $params->get('text_format_string');
+
+				if ($format != '')
+				{
+					$value = sprintf($format, $value);
+				}
+
+				if ($params->get('password') == "1")
+				{
+					$value = str_pad('', JString::strlen($value), '*');
+				}
+
+				$value = $this->getReadOnlyOutput($value, $value);
 			}
-
-			$value = $this->getReadOnlyOutput($value, $value);
-
 			return ($element->hidden == '1') ? "<!-- " . $value . " -->" : $value;
 		}
 
@@ -554,11 +561,15 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 
 	protected function qrCodeLink($value, $thisRow)
 	{
+		if (is_object($thisRow))
+		{
+			$thisRow = JArrayHelper::fromObject($thisRow);
+		}
 		$app = JFactory::getApplication();
 		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$formModel = $this->getForm();
 		$formid = $formModel->getId();
-		$rowid = $thisRow->__pk_val;
+		$rowid = $thisRow['__pk_val'];
 		$elementid = $this->getId();
 		$link = COM_FABRIK_LIVESITE
 		. 'index.php?option=com_' . $package . '&amp;task=plugin.pluginAjax&amp;plugin=field&amp;method=ajax_renderQRCode&amp;'
