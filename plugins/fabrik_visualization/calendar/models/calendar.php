@@ -512,7 +512,7 @@ class FabrikModelCalendar extends FabrikFEModelVisualization
 							else
 							{
 								$row->enddate = $row->startdate;
-								$row->enddate_locale = $row->startdate_locale;
+								$row->enddate_locale = isset($row->startdate_locale) ? $row->startdate_locale : '';
 							}
 
 							$jsevents[$table->id . '_' . $row->id . '_' . $row->startdate] = clone ($row);
