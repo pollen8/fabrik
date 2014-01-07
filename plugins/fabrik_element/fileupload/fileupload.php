@@ -557,7 +557,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		if ($this->isJoin())
 		{
 			// Multiple file uploads - raw data should be the file paths.
-			$thisRow->$raw = implode(GROUPSPLITTER, $data);
+			$thisRow->$raw = json_encode($data);
 		}
 		else
 		{

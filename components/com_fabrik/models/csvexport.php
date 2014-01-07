@@ -157,6 +157,23 @@ class FabrikFEModelCSVExport
 					}
 				}
 
+				if ($incData && $incRaw)
+				{
+					foreach ($a as $key => $val)
+					{
+						// Remove Un-needed repeat join element values.
+						if (array_key_exists($key . '___params', $a))
+						{
+							unset($a[$key . '___params']);
+						}
+
+						if (array_key_exists($key . '_id', $a))
+						{
+							unset($a[$key . '_id']);
+						}
+					}
+				}
+
 				if ($input->get('inccalcs') == 1)
 				{
 					array_unshift($a, ' ');

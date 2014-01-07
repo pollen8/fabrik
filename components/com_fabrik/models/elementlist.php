@@ -732,7 +732,9 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 			$raw = $this->getFullName(true, false) . '_raw';
 			$id = $this->getFullName(true, false) . '_id';
 			$data = $thisRow->$id;
-			$thisRow->$raw = $this->renderListData($data, $thisRow);
+
+			$rawData = FabrikWorker::JSONtoData($data, true);
+			$thisRow->$raw = json_encode($rawData);
 		}
 
 		$this->renderWithHTML = true;

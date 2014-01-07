@@ -7135,13 +7135,15 @@ class PlgFabrik_Element extends FabrikPlugin
 		$tableName = $listModel->getTable()->db_table_name;
 
 		// I set this to raw for cdd.
-		$name = $this->getFullName(true, false) . '_raw';
+		$name = $this->getFullName(true, false);
+		$rawname = $name . '_raw';
 		$shortName = $this->getElement()->name;
 
 		$join = $this->getJoin();
 
 		// The submitted element's values
-		$allJoinValues = (array) $formData[$name];
+		$d = JArrayHelper::getValue($formData, $rawname, JArrayHelper::getValue($formData, $name));
+		$allJoinValues = FabrikWorker::JSONtoData($d, true);
 
 		if ($groupModel->isJoin())
 		{
