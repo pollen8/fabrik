@@ -48,56 +48,57 @@ abstract class ModFabrik_QuickIconHelper
 			if ($context == 'mod_fabrik_quickicon')
 			{
 				// Load mod_quickicon language file in case this method is called before rendering the module
-			JFactory::getLanguage()->load('mod_fabrik_quickicon');
+				// Paul - Commented out as we now use standard Fabrik strings which are already loaded.
+				// JFactory::getLanguage()->load('mod_fabrik_quickicon');
 
 				self::$buttons[$key] = array(
 
 					array(
 						'link' => JRoute::_('index.php?option=com_fabrik&view=lists'),
 						'image' => '/components/com_fabrik/images/header/fabrik-list.png',
-						'text' => JText::_('MOD_FABRIK_QUICKICON_LISTS'),
+						'text' => JText::_('COM_FABRIK_SUBMENU_LISTS'),
 						'access' => array('core.manage', 'com_fabrik')
 					),
 					array(
 						'link' => JRoute::_('index.php?option=com_fabrik&view=forms'),
 						'image' => '/components/com_fabrik/images/header/fabrik-form.png',
-						'text' => JText::_('MOD_FABRIK_QUICKICON_FORMS'),
+						'text' => JText::_('COM_FABRIK_SUBMENU_FORMS'),
 						'access' => array('core.manage', 'com_fabrik')
 					),
 					array(
 							'link' => JRoute::_('index.php?option=com_fabrik&view=groups'),
 							'image' => '/components/com_fabrik/images/header/fabrik-group.png',
-							'text' => JText::_('MOD_FABRIK_QUICKICON_GROUPS'),
+							'text' => JText::_('COM_FABRIK_SUBMENU_GROUPS'),
 							'access' => array('core.manage', 'com_fabrik')
 					),
 					array(
 							'link' => JRoute::_('index.php?option=com_fabrik&view=elements'),
 							'image' => '/components/com_fabrik/images/header/fabrik-element.png',
-							'text' => JText::_('MOD_FABRIK_QUICKICON_ELEMENTS'),
+							'text' => JText::_('COM_FABRIK_SUBMENU_ELEMENTS'),
 							'access' => array('core.manage', 'com_fabrik')
 					),
 					array(
 							'link' => JRoute::_('index.php?option=com_fabrik&view=visualizations'),
 							'image' => '/components/com_fabrik/images/header/fabrik-visualization.png',
-							'text' => JText::_('MOD_FABRIK_QUICKICON_VISUALIZATIONS'),
+							'text' => JText::_('COM_FABRIK_SUBMENU_VISUALIZATIONS'),
 							'access' => array('core.manage', 'com_fabrik')
 					),
 					array(
 							'link' => JRoute::_('index.php?option=com_fabrik&view=packages'),
 							'image' => '/components/com_fabrik/images/header/fabrik-package.png',
-							'text' => JText::_('MOD_FABRIK_QUICKICON_PACKAGES'),
+							'text' => JText::_('COM_FABRIK_SUBMENU_PACKAGES'),
 							'access' => array('core.manage', 'com_fabrik')
 					),
 					array(
 							'link' => JRoute::_('index.php?option=com_fabrik&view=connections'),
 							'image' => '/components/com_fabrik/images/header/fabrik-connection.png',
-							'text' => JText::_('MOD_FABRIK_QUICKICON_CONNECTIONS'),
+							'text' => JText::_('COM_FABRIK_SUBMENU_CONNECTIONS'),
 							'access' => array('core.manage', 'com_fabrik')
 					),
 					array(
 							'link' => JRoute::_('index.php?option=com_fabrik&view=crons'),
 							'image' => '/components/com_fabrik/images/header/fabrik-schedule.png',
-							'text' => JText::_('MOD_FABRIK_QUICKICON_SCHEDULED_TASKS'),
+							'text' => JText::_('COM_FABRIK_SUBMENU_CRONS'),
 							'access' => array('core.manage', 'com_fabrik')
 					)
 				);
