@@ -268,6 +268,7 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 		$opts = $this->getElementJSOptions($repeatCounter);
 
 		$input_mask = trim($params->get('text_input_mask', ''));
+
 		if (!empty($input_mask))
 		{
 			$opts->use_input_mask = true;

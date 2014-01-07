@@ -197,8 +197,6 @@ class PlgFabrik_Validationrule extends FabrikPlugin
 
 		$params = new JRegistry($plugin->params);
 
-
-
 		return $params->get('icon', 'star');
 	}
 

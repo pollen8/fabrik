@@ -149,7 +149,7 @@ function fabrikBuildRoute(&$query)
 	if (isset($query['format']))
 	{
 		// Was causing error when sef on, url rewrite on and suffix add to url on.
-		//$segments[] = $query['format'];
+		// $segments[] = $query['format'];
 
 		/**
 		 * Don't unset as with sef urls and extensions on - if we unset it

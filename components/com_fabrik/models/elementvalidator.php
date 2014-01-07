@@ -133,6 +133,7 @@ class FabrikFEModelElementValidator extends JModelLegacy
 				return true;
 			}
 		}
+
 		$internal = $this->elementModel->internalValidationIcon();
 
 		if ($internal !== '')

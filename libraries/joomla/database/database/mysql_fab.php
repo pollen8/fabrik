@@ -37,14 +37,8 @@ class JDatabaseMySQL_Fab extends JDatabaseMySQL
 	{
 		$app = JFactory::getApplication();
 		$package = $app->getUserStateFromRequest('com_fabrik.package', 'package', 'fabrik');
-
-		if ($package == '')
-		{
-			$package = 'fabrik';
-		}
-
 		$sql = str_replace('{package}', $package, $sql);
-
 		return parent::replacePrefix($sql, $prefix);
 	}
+
 }

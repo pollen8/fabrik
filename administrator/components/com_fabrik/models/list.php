@@ -1083,7 +1083,7 @@ class FabrikAdminModelList extends FabModelAdmin
 		 * JSON-up the pk param, but might as well make the point here that it's a
 		 * params object, and it may come in useful for adding other params one day.
 		 */
-		$join->params = new JRegistry();
+		$join->params = new JRegistry;
 		/**
 		 * This is kind of expensive, as getPrimaryKeyAndExtra() method does a table lookup,
 		 * but I don't think we know what the PK of the joined table is any other
@@ -1093,8 +1093,9 @@ class FabrikAdminModelList extends FabModelAdmin
 
 		if ($pk !== false)
 		{
-			// if it didn't return false, getPrimaryKeyAndExtra will have created and array with at least one key
+			// If it didn't return false, getPrimaryKeyAndExtra will have created and array with at least one key
 			$pk_col = JArrayHelper::getValue($pk[0], 'colname', '');
+
 			if (!empty($pk_col))
 			{
 				$db = FabrikWorker::getDbo(true);

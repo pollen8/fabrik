@@ -260,16 +260,18 @@ class PlgFabrik_FormRest extends PlgFabrik_Form
 				else
 				{
 					$v = FabrikString::safeColNameToArrayKey($v);
-
 					$v = $w->parseMessageForPlaceHolder('{' . $v . '}', $formModel->formData, true);
 				}
-				if ($format[$i] == 'number')
 
+				if ($format[$i] == 'number')
 				{
-					$v = floatval(preg_replace('#^([-]*[0-9\.,\' ]+?)((\.|,){1}([0-9-]{1,2}))*$#e', "str_replace(array('.', ',', \"'\", ' '), '', '\\1') . '.\\4'", $v));
+					$regex = '#^([-]*[0-9\.,\' ]+?)((\.|,){1}([0-9-]{1,2}))*$#e';
+					$v = floatval(preg_replace($regex, "str_replace(array('.', ',', \"'\", ' '), '', '\\1') . '.\\4'", $v));
 				}
+
 				$i ++;
 			}
+
 			$i = 0;
 
 			foreach ($keys as $key)
@@ -312,7 +314,9 @@ class PlgFabrik_FormRest extends PlgFabrik_Form
 				}
 			}
 		}
+
 		$postAsXML = false;
+
 		if ($postAsXML)
 		{
 			$xml = new SimpleXMLElement('<' . $xmlParent . '></' . $xmlParent . '>');
@@ -384,8 +388,8 @@ class PlgFabrik_FormRest extends PlgFabrik_Form
 	/**
 	 * Handle any error generated
 	 *
-	 * @param   mixed    &$output    CURL request result - may be a json string
-	 * @param   object   $chandle    CURL object
+	 * @param   mixed   &$output  CURL request result - may be a json string
+	 * @param   object  $chandle  CURL object
 	 *
 	 * @return boolean
 	 */

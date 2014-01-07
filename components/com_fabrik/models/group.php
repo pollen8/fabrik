@@ -703,7 +703,6 @@ class FabrikFEModelGroup extends FabModel
 						continue;
 					}
 
-
 					$showThisInList = $element->primary_key || $params->get('include_in_list_query', 1) == 1
 					|| (empty($showInList) && $element->show_in_list_summary) || in_array($element->id, $showInList);
 

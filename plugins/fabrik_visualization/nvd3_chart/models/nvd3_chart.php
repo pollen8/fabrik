@@ -812,6 +812,5 @@ class FabrikModelNvd3_Chart extends FabrikFEModelVisualization
 		$str[] = '});';
 
 		return implode("\n", $str);
-
 	}
 }

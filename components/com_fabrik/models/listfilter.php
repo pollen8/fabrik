@@ -531,7 +531,10 @@ class FabrikFEModelListfilter extends FabModel
 		 * $$$ rob jpluginfilters search_types are those which have been set inside the
 		 * Joomla content plugin e.g. {fabrik view=list id=1 tablename___elementname=foo}
 		 * these should not be removed when the list filters are cleared
-		 * see: http://fabrikar.com/forums/index.php?threads/many-to-many-relationship-show-all-related-items-as-list-on-the-joined-list-details.36697/#post-184335
+		 * see:
+		 * http://fabrikar.com
+		 * /forums/index.php?threads/many-to-many-relationship-show-all-related-items-as-list-on-the-joined-list-details.36697/
+		 * #post-184335
 		 */
 		$reg = JArrayHelper::fromObject($reg);
 		$serachTypes = JArrayHelper::getValue($reg, 'search_type', array());
@@ -1532,8 +1535,9 @@ class FabrikFEModelListfilter extends FabModel
 					$sqlCond = null;
 					$condition = array_key_exists($i, $sessionfilters['condition']) ? $sessionfilters['condition'][$i]
 						: $elementModel->getDefaultFilterCondition();
-					$origCondition = array_key_exists('orig_condition', $sessionfilters) && array_key_exists($i, $sessionfilters['orig_condition']) ? $sessionfilters['orig_condition'][$i]
-						: $elementModel->getDefaultFilterCondition();
+
+					$origFound = array_key_exists('orig_condition', $sessionfilters) && array_key_exists($i, $sessionfilters['orig_condition']);
+					$origCondition = $origFound ? $sessionfilters['orig_condition'][$i] : $elementModel->getDefaultFilterCondition();
 					$raw = array_key_exists($i, $sessionfilters['raw']) ? $sessionfilters['raw'][$i] : 0;
 					$eval = array_key_exists($i, $sessionfilters['eval']) ? $sessionfilters['eval'][$i] : FABRIKFILTER_TEXT;
 

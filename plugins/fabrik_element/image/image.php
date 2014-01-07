@@ -289,7 +289,11 @@ class PlgFabrik_ElementImage extends PlgFabrik_Element
 		$value = $this->getValue($data, $repeatCounter);
 		$id = $this->getHTMLId($repeatCounter);
 		$rootFolder = $this->rootFolder($value);
-		if ($rootFolder!='/') $value = str_replace($rootFolder, '', $value);
+
+		if ($rootFolder != '/')
+		{
+			$value = str_replace($rootFolder, '', $value);
+		}
 
 		// $$$ rob - 30/06/2011 can only select an image if its not a remote image
 		$canSelect = ($params->get('image_front_end_select', '0') && JString::substr($value, 0, 4) !== 'http');

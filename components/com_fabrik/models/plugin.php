@@ -286,6 +286,7 @@ class FabrikPlugin extends JPlugin
 
 		if ($inistr != $inival)
 		{
+			// Handle strings with HTML
 			$inival2 = '';
 
 			/**
@@ -296,11 +297,9 @@ class FabrikPlugin extends JPlugin
 			 * but at least it won't error out!
 			 */
 
-			// Handle strings with HTML
 			/*
 			if (substr($inival, 0, 3) == '<p>' || substr($inival, 0, 3) == '<p ')
 			{
-				// Split by paras, use first para for legend and put remaining paras back.
 				$xml = new SimpleXMLElement('<xml>' . $inival . '</xml>');
 				$lines = $xml->xpath('/xml/p[position()<2]');
 
@@ -315,6 +314,7 @@ class FabrikPlugin extends JPlugin
 			*/
 			$p_re = '#^\s*(<p\s*\S*\s*>.*?</p>)#i';
 			$matches = array();
+
 			if (preg_match($p_re, $inival, $matches))
 			{
 				$inival2 = preg_replace($p_re, '', $inival);

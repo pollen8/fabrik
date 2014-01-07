@@ -606,7 +606,8 @@ class PlgFabrik_FormComment extends PlgFabrik_Form
 	/**
 	 * Add reply/delete links to the comment form
 	 *
-	 * @param   array  &$data  HTML
+	 * @param   array   &$data    HTML
+	 * @param   object  $comment  Comment object
 	 *
 	 * @return  void
 	 */

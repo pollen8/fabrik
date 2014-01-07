@@ -13,17 +13,53 @@ var ListFieldsElement = new Class({
 		conn: null,
 		highlightpk: false,
 		showAll: 1,
-		mode: 'dropdown'
+		mode: 'dropdown',
+		defaultOpts: [],
+		addBrackets: false
 	},
 
 	initialize: function (el, options) {
 		this.strEl = el;
+		var label;
 		this.el = el;
 		this.setOptions(options);
-		if (typeOf(document.id(this.options.conn)) === 'null') {
-			this.cnnperiodical = this.getCnn.periodical(500, this);
+		
+		if (this.options.defaultOpts.length > 0) {
+			this.el = document.id(this.el);
+			if (this.options.mode === 'gui') {
+				this.select = this.el.getParent().getElement('select.elements');
+				els = [this.select];
+				this.watchAdd();
+			} else {
+				els = document.getElementsByName(this.el.name);
+				this.el.empty();
+				document.id(this.strEl).empty();
+			}
+			var opts = this.options.defaultOpts;
+			
+			Array.each(els, function (el) {
+				document.id(el).empty();
+			});
+			
+			opts.each(function (opt) {
+				var o = {'value': opt.value};
+				if (opt.value === this.options.value) {
+					o.selected = 'selected';
+				}
+				Array.each(els, function (el) {
+					label = opt.label ? opt.label : opt.text;
+					new Element('option', o).set('text', label).inject(el);
+				});
+			}.bind(this));
+			
 		} else {
-			this.setUp();
+			
+		
+			if (typeOf(document.id(this.options.conn)) === 'null') {
+				this.cnnperiodical = this.getCnn.periodical(500, this);
+			} else {
+				this.setUp();
+			}
 		}
 	},
 
@@ -75,6 +111,10 @@ var ListFieldsElement = new Class({
 		if (v !== '' && v !== -1) {
 			this.periodical = this.updateMe.periodical(500, this);
 		}
+		this.watchAdd();
+	},
+
+	watchAdd: function () {
 		var add = this.el.getParent().getElement('button');
 		if (typeOf(add) !== 'null') {
 			add.addEvent('mousedown', function (e) {
@@ -86,7 +126,7 @@ var ListFieldsElement = new Class({
 			});
 		}
 	},
-
+	
 	updateMe: function (e) {
 		if (typeOf(e) === 'event') {
 			e.stop();
@@ -151,7 +191,11 @@ var ListFieldsElement = new Class({
 	 */
 	addPlaceHolder: function () {
 		var list = this.el.getParent().getElement('select');
-		this.insertTextAtCaret(this.el, list.get('value'));
+		var v = list.get('value');
+		if (this.options.addBrackets) {
+			v = '{' + v + '}';
+		}
+		this.insertTextAtCaret(this.el, v);
 	},
 	
 	/**

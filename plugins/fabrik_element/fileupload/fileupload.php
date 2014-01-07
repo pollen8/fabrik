@@ -18,7 +18,8 @@ define("FU_DOWNLOAD_SCRIPT_TABLE", '1');
 define("FU_DOWNLOAD_SCRIPT_DETAIL", '2');
 define("FU_DOWNLOAD_SCRIPT_BOTH", '3');
 
-JLog::addLogger(array('text_file' => 'fabrik.element.fileupload.log.php'), JLog::ERROR + JLog::EMERGENCY + JLog::WARNING, array('com_fabrik.element.fileupload'));
+$logLvl = JLog::ERROR + JLog::EMERGENCY + JLog::WARNING;
+JLog::addLogger(array('text_file' => 'fabrik.element.fileupload.log.php'), $logLvl, array('com_fabrik.element.fileupload'));
 
 /**
  * Plug-in to render fileupload element
@@ -543,10 +544,24 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		$data = explode(GROUPSPLITTER, $data);
 		$params = $this->getParams();
 		$format = $params->get('ul_export_encode_csv', 'base64');
+		$raw = $this->getFullName(true, false) . '_raw';
 
 		foreach ($data as &$d)
 		{
 			$d = $this->encodeFile($d, $format);
+		}
+
+		// Fix \"" in json encoded string - csv clever enough to treat "" as a quote inside a "string value"
+		$data = str_replace('\"', '"', $data);
+
+		if ($this->isJoin())
+		{
+			// Multiple file uploads - raw data should be the file paths.
+			$thisRow->$raw = json_encode($data);
+		}
+		else
+		{
+			$thisRow->$raw = str_replace('\"', '"', $thisRow->$raw);
 		}
 
 		return implode(GROUPSPLITTER, $data);
@@ -1480,7 +1495,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 				$f = str_replace('\\', '/', $f);
 			}
 
-			if ($params->get('upload_delete_image'))
+			if ($params->get('upload_delete_image', false))
 			{
 				foreach ($deletedImages as $filename)
 				{
@@ -1522,7 +1537,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 				$f = str_replace('\\', '/', $f);
 			}
 
-			if ($params->get('upload_delete_image'))
+			if ($params->get('upload_delete_image', false))
 			{
 				foreach ($deletedImages as $filename)
 				{
@@ -1565,7 +1580,9 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		$thumb = $storage->clean($storage->_getThumb($filename));
 		$cropped = $storage->clean($storage->_getCropped($filename));
 
-		JLog::add('Delete files: ' . $file . ' , ' . $thumb . ', ' . $cropped . '; user = ' . $user->get('id'), JLog::WARNING, 'com_fabrik.element.fileupload');
+		$logMsg = 'Delete files: ' . $file . ' , ' . $thumb . ', ' . $cropped . '; user = ' . $user->get('id');
+		JLog::add($logMsg, JLog::WARNING, 'com_fabrik.element.fileupload');
+
 		if ($storage->exists($file))
 		{
 			$storage->delete($file);
@@ -2579,7 +2596,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		require_once COM_FABRIK_FRONTEND . '/helpers/uploader.php';
 		$params = $this->getParams();
 
-		if ($params->get('upload_delete_image'))
+		if ($params->get('upload_delete_image', false))
 		{
 			jimport('joomla.filesystem.file');
 			$elName = $this->getFullName(true, false);
@@ -2611,7 +2628,8 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 								$query->delete($db->quoteName($join->table_join))
 									->where($db->quoteName('id') . ' IN (' . implode(', ', array_keys($imageRows)) . ')');
 								$db->setQuery($query);
-								JLog::add('onDeleteRows Delete records query: ' . $db->getQuery() . '; user = ' . $user->get('id'), JLog::WARNING, 'com_fabrik.element.fileupload');
+								$logMsg = 'onDeleteRows Delete records query: ' . $db->getQuery() . '; user = ' . $user->get('id');
+								JLog::add($logMsg, JLog::WARNING, 'com_fabrik.element.fileupload');
 								$db->execute();
 							}
 						}

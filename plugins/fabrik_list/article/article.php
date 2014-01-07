@@ -34,7 +34,7 @@ class PlgFabrik_ListArticle extends PlgFabrik_List
 	/**
 	 * Prep the button if needed
 	 *
-	 * @param   array   &$args   arguements
+	 * @param   array  &$args  Arguements
 	 *
 	 * @return  bool;
 	 */
@@ -84,7 +84,7 @@ class PlgFabrik_ListArticle extends PlgFabrik_List
 	/**
 	 * Do the plug-in action
 	 *
-	 * @param   array   $opts    custom options
+	 * @param   array  $opts  Custom options
 	 *
 	 * @return  bool
 	 */
@@ -147,7 +147,7 @@ class PlgFabrik_ListArticle extends PlgFabrik_List
 	/**
 	 * Return the javascript to create an instance of the class defined in formJavascriptClass
 	 *
-	 * @param   array   $args    array [0] => string table's form id to contain plugin
+	 * @param   array  $args  array [0] => string table's form id to contain plugin
 	 *
 	 * @return bool
 	 */

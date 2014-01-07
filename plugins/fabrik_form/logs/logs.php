@@ -234,7 +234,8 @@ class PlgFabrik_FormLogs extends PlgFabrik_Form
 						$origData = $formModel->_origData;
 						$log_elements = $params->get('logs_element_list', '');
 
-						if(!empty($log_elements)){
+						if (!empty($log_elements))
+						{
 							$log_elements = explode(',', str_replace(' ', '', $log_elements));
 						}
 

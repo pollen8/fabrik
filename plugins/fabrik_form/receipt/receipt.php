@@ -139,7 +139,13 @@ class PlgFabrik_FormReceipt extends PlgFabrik_Form
 			$fromname = $rawconfig->fromname;
 		}
 
+		$from = $params->get('from_email', $from);
 		$mail = JFactory::getMailer();
 		$res = $mail->sendMail($from, $fromname, $to, $subject, $message, true);
+
+		if (!$res)
+		{
+			throw new RuntimeException('Couldn\'t send receipt', 500);
+		}
 	}
 }

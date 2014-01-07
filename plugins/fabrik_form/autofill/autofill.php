@@ -195,10 +195,10 @@ class PlgFabrik_FormAutofill extends PlgFabrik_Form
 	/**
 	 * Fill the response with the lookup data
 	 *
-	 * @param   object  $data     Lookup List - Row data
-	 * @param   object  $newdata  Data to fill the form with
-	 * @param   string  $from     Key to search for in $data - may be either element full name, or placeholders
-	 * @param   string  $to       Form's field to insert data into
+	 * @param   object  $data      Lookup List - Row data
+	 * @param   object  &$newdata  Data to fill the form with
+	 * @param   string  $from      Key to search for in $data - may be either element full name, or placeholders
+	 * @param   string  $to        Form's field to insert data into
 	 *
 	 * @return  null
 	 */

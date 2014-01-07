@@ -194,6 +194,7 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 		}
 
 		$this->images = $img;
+
 		return $this->images;
 	}
 
@@ -255,7 +256,6 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 			{
 				$file = FabrikString::ltrimiword($file, $first);
 			}
-
 		}
 
 		return array($file, $placeholder);
@@ -352,7 +352,7 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 	/**
 	 * Run from list model when deleting rows
 	 *
-	 * @param   array   &$groups     List data for deletion
+	 * @param   array  &$groups  List data for deletion
 	 *
 	 * @return	bool
 	 */
@@ -368,6 +368,7 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 		if ($elementModel = $formModel->getElement($params->get('meta_store'), true))
 		{
 			$fullName = $elementModel->getFullName(true, false) . '_raw';
+
 			foreach ($groups as $group)
 			{
 				foreach ($group as $rows)
@@ -388,15 +389,12 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 										$item->delete($articleId);
 										break;
 									case 'UNPUBLISH':
-
 										$ok = $item->publish(array($articleId), 0, $userId);
-										echo "unpub $articleId $ok";exit;
 										break;
 									case 'TRASH':
 										$item->publish(array($articleId), -2, $userId);
 										break;
 								}
-
 							}
 						}
 					}

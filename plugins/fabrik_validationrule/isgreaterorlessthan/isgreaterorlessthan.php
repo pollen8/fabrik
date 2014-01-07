@@ -96,6 +96,7 @@ class PlgFabrik_ValidationruleIsgreaterorlessthan extends PlgFabrik_Validationru
 		{
 			return $base;
 		}
+
 		return $res;
 	}
 

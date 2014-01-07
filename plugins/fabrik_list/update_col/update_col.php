@@ -62,7 +62,7 @@ class PlgFabrik_ListUpdate_Col extends PlgFabrik_List
 	/**
 	 * Element containing email notification addresses
 	 *
-	 *  @var  PlgFabrik_Element
+	 * @var  PlgFabrik_Element
 	 */
 	protected $emailElement = null;
 
@@ -330,6 +330,7 @@ class PlgFabrik_ListUpdate_Col extends PlgFabrik_List
 		{
 			$emailWhich = 'to';
 		}
+
 		return $emailWhich;
 	}
 
@@ -337,6 +338,8 @@ class PlgFabrik_ListUpdate_Col extends PlgFabrik_List
 	 * Get list of user emails.
 	 *
 	 * @param   string  $ids  CSV list of ids
+	 *
+	 * @return  array
 	 */
 	private function getEmailUserIds($ids)
 	{
@@ -409,7 +412,7 @@ class PlgFabrik_ListUpdate_Col extends PlgFabrik_List
 		}
 		else
 		{
-			$to = $params->get('update_email_to', '');;
+			$to = $params->get('update_email_to', '');
 		}
 
 		return $to;

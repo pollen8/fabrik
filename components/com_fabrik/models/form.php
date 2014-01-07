@@ -1664,7 +1664,7 @@ class FabrikFEModelForm extends FabModelForm
 		$item = $listModel->getTable();
 		$k = $item->db_primary_key;
 		$k = FabrikString::safeColNameToArrayKey($k);
-		$origid = $this->formData[$k];
+		$origid = JArrayHelper::getValue($this->formData, $k, '');
 
 		// COPY function should create new records
 		if (array_key_exists('Copy', $this->formData))
@@ -1705,7 +1705,7 @@ class FabrikFEModelForm extends FabModelForm
 	 * @return  void
 	 */
 
-	protected function setInsertId($insertId)
+	public function setInsertId($insertId)
 	{
 		$input = JFactory::getApplication()->input;
 		$listModel = $this->getListModel();
@@ -1814,7 +1814,7 @@ class FabrikFEModelForm extends FabModelForm
 	/**
 	 * Saves the form data to the database
 	 *
-	 * @param   int  $rowId  if '' then insert a new row - otherwise update this row id
+	 * @param   int  $rowId  If '' then insert a new row - otherwise update this row id
 	 *
 	 * @return	mixed	insert id (or rowid if updating existing row) if ok, else string error message
 	 */

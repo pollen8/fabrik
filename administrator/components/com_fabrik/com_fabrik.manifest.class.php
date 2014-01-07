@@ -276,7 +276,8 @@ class Com_FabrikInstallerScript
 		$query = $db->getQuery(true);
 
 		// Remove old update site & Fabrik 3.0.x update site
-		$query->delete('#__update_sites')->where("location LIKE '%update/component/com_fabrik%' OR location = 'http://fabrikar.com/update/fabrik/package_list.xml'");
+		$where = "location LIKE '%update/component/com_fabrik%' OR location = 'http://fabrikar.com/update/fabrik/package_list.xml'";
+		$query->delete('#__update_sites')->where($where);
 		$db->setQuery($query);
 
 		if (!$db->execute())

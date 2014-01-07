@@ -144,11 +144,10 @@ class PlgFabrik_ElementRadiobutton extends PlgFabrik_ElementList
 					{
 						if (JString::strtolower($labels[$i]) == JString::strtolower($v))
 						{
-							$v = $values[i];
+							$v = $values[$i];
 						}
 					}
 				}
-
 			}
 		}
 

@@ -216,11 +216,11 @@ var FbForm = new Class({
 			id = id.slice(6, id.length);
 			k = id;
 			c = document.id(id);
+
 			if (!c) {
 				fconsole('Fabrik form::addElementFX: Group "' + id + '" does not exist.');
 				return false;
 			}
-			c = document.id(id);
 		} else if (id.slice(0, 8) === 'element_') {
 			id = id.slice(8, id.length);
 			k = 'element' + id;
@@ -257,14 +257,16 @@ var FbForm = new Class({
 				duration : 800,
 				transition : Fx.Transitions.Sine.easeInOut
 			};
-			this.fx.elements[k] = {};
-			//'opacity',
+			if (typeOf(this.fx.elements[k]) === 'null') {
+				this.fx.elements[k] = {};
+			}
+
 			this.fx.elements[k].css = new Fx.Morph(fxdiv, opts);
+			
 			if (typeOf(fxdiv) !== 'null' && (method === 'slide in' || method === 'slide out' || method === 'slide toggle')) {
 				this.fx.elements[k].slide = new Fx.Slide(fxdiv, opts);
-			} else {
-				this.fx.elements[k].slide = null;
 			}
+
 			return this.fx.elements[k];
 		}
 		return false;
@@ -379,7 +381,7 @@ var FbForm = new Class({
 		Fabrik.fireEvent('fabrik.form.doelementfx', [this]);
 	},
 
-	watchClearSession : function () {
+	watchClearSession: function () {
 		if (this.form && this.form.getElement('.clearSession')) {
 			this.form.getElement('.clearSession').addEvent('click', function (e) {
 				e.stop();
@@ -445,7 +447,7 @@ var FbForm = new Class({
 	 * @param   event  e
 	 * @param   int    dir  1/-1
 	 */
-	_doPageNav : function (e, dir) {
+	_doPageNav: function (e, dir) {
 		if (this.options.editable) {
 			this.form.getElement('.fabrikMainError').addClass('fabrikHide');
 
@@ -575,7 +577,7 @@ var FbForm = new Class({
 	/**
 	 * Hide all groups except those in the active page
 	 */
-	hideOtherPages : function () {
+	hideOtherPages: function () {
 		var page;
 		this.options.pages.each(function (gids, i) {
 			if (i.toInt() !== this.currentPage.toInt()) {
@@ -587,7 +589,7 @@ var FbForm = new Class({
 		}.bind(this));
 	},
 
-	setPageButtons : function () {
+	setPageButtons: function () {
 		var submit = this._getButton('Submit');
 		var prev = this.form.getElement('.fabrikPagePrevious');
 		var next = this.form.getElement('.fabrikPageNext');

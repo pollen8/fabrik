@@ -496,12 +496,13 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 
 	protected function isSubscription($params)
 	{
+		$data = $this->data;
 		$subSwitch = $params->get('paypal_subscription_switch');
 
 		if (trim($subSwitch) !== '')
 		{
 			$w = new FabrikWorker;
-			$subSwitch = $w->parseMessageForPlaceHolder($subSwitch);
+			$subSwitch = $w->parseMessageForPlaceHolder($subSwitch, $data);
 
 			return @eval($subSwitch);
 		}

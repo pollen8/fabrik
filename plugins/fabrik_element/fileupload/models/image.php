@@ -175,7 +175,7 @@ class ImageRender
 	/**
 	 * Get the image width / height
 	 *
-	 * @param   JParameter  $params Params
+	 * @param   JParameter  $params  Params
 	 *
 	 * @since   3.1rc2
 	 *

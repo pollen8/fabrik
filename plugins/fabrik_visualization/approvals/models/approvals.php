@@ -100,7 +100,6 @@ class FabrikModelApprovals extends FabrikFEModelVisualization
 
 		if ($elementModel)
 		{
-
 			if ($elementModel->getElement()->published <> 1)
 			{
 				throw new RuntimeException('Approval ' . $fieldName . ' element must be published', 500);
@@ -109,6 +108,7 @@ class FabrikModelApprovals extends FabrikFEModelVisualization
 			$elementModel->getAsField_html($asfields, $fields, $opts);
 		}
 	}
+
 	/**
 	 * Disapprove a record
 	 *

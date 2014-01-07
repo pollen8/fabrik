@@ -497,7 +497,6 @@ class FabrikModelCalendar extends FabrikFEModelVisualization
 								$row->startdate = $date->format('Y-m-d H:i:s', true);
 								$date->setTimezone($tz);
 								$row->startdate_locale = $date->toISO8601(true);
-
 							}
 
 							if ($row->enddate !== $db->getNullDate() && (string) $row->enddate !== '')
@@ -513,7 +512,7 @@ class FabrikModelCalendar extends FabrikFEModelVisualization
 							else
 							{
 								$row->enddate = $row->startdate;
-								$row->enddate_locale = $row->startdate_locale;
+								$row->enddate_locale = isset($row->startdate_locale) ? $row->startdate_locale : '';
 							}
 
 							$jsevents[$table->id . '_' . $row->id . '_' . $row->startdate] = clone ($row);

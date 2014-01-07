@@ -117,21 +117,19 @@ class PlgFabrik_ElementThumbs extends PlgFabrik_Element
 
 			$upActiveClass = $myThumb === 'up' ? ' btn-success' : '';
 			$downActiveClass = $myThumb === 'down' ? ' btn-danger' : '';
-
-
 			$commentdata = 'data-fabrik-thumb-rowid="' . $row_id . '"';
+
 			if ($j3)
 			{
 				$str[] = '<div class="btn-group">';
-				$str[] = '<button ' . $commentdata . ' data-fabrik-thumb-formid="' . $formid . '" data-fabrik-thumb="up" class="btn btn-small thumb-up' . $upActiveClass. '">';
-
-				///$str[] = '<button class="btn thumb-up' . $upActiveClass. '" data-fabrik-thumb="">';
+				$str[] = '<button ' . $commentdata . ' data-fabrik-thumb-formid="' . $formid
+				. '" data-fabrik-thumb="up" class="btn btn-small thumb-up' . $upActiveClass . '">';
 				$str[] = '<span class="icon-thumbs-up"></span> <span class="thumb-count">' . $countUp . '</span></button>';
 
 				if ($params->get('show_down', 1))
 				{
-					//$str[] = '<button class="btn thumb-down' . $downActiveClass . '">';
-					$str[] = '<button ' . $commentdata . ' data-fabrik-thumb-formid="' . $formid . '" data-fabrik-thumb="down" class="btn btn-small thumb-down' . $downActiveClass . '">';
+					$str[] = '<button ' . $commentdata . ' data-fabrik-thumb-formid="' . $formid
+					. '" data-fabrik-thumb="down" class="btn btn-small thumb-down' . $downActiveClass . '">';
 					$str[] = '<span class="icon-thumbs-down"></span> <span class="thumb-count">' . $countDown . '</span></button>';
 				}
 
@@ -142,8 +140,10 @@ class PlgFabrik_ElementThumbs extends PlgFabrik_Element
 				$str[] = '<span style="color:#32d723;" id="count_thumbup' . $row_id . '">' . $countUp . '</span>';
 				$str[] = '<img src="' . $imagepath . $imagefileup . '" style="padding:0px 5px 0 1px;" alt="UP" class="thumbup" id="thumbup' . $row_id . '"/>';
 				$str[] = '<span style="color:#f82516;" id="count_thumbdown' . $row_id . '">' . $countDown . '</span>';
-				$str[] = '<img src="' . $imagepath . $imagefiledown . '" style="padding:0px 5px 0 1px;" alt="DOWN" class="thumbdown" id="thumbdown' . $row_id . '"/>';
+				$attribs = '" style="padding:0px 5px 0 1px;" alt="DOWN" class="thumbdown"';
+				$str[] = '<img src="' . $imagepath . $imagefiledown . $attribs . ' id="thumbdown' . $row_id . '"/>';
 			}
+
 			$data[$i] = implode("\n", $str);
 		}
 
@@ -320,17 +320,19 @@ class PlgFabrik_ElementThumbs extends PlgFabrik_Element
 		$countUp = $count[0];
 		$countDown = $count[1];
 		$countDiff = $countUp - $countDown;
-
 		$commentdata = 'data-fabrik-thumb-rowid="' . $row_id . '"';
+
 		if ($j3)
 		{
 			$str[] = '<div class="btn-group">';
-			$str[] = '<button ' . $commentdata . ' data-fabrik-thumb-formid="' . $formid . '" data-fabrik-thumb="up" class="btn btn-small thumb-up' . $upActiveClass. '">';
+			$str[] = '<button ' . $commentdata . ' data-fabrik-thumb-formid="' . $formid
+			. '" data-fabrik-thumb="up" class="btn btn-small thumb-up' . $upActiveClass . '">';
 			$str[] = '<span class="icon-thumbs-up"></span> <span class="thumb-count">' . $countUp . '</span></button>';
 
 			if ($params->get('show_down', 1))
 			{
-				$str[] = '<button ' . $commentdata . ' data-fabrik-thumb-formid="' . $formid . '" data-fabrik-thumb="down" class="btn btn-small thumb-down' . $downActiveClass . '">';
+				$str[] = '<button ' . $commentdata . ' data-fabrik-thumb-formid="' . $formid
+				. '" data-fabrik-thumb="down" class="btn btn-small thumb-down' . $downActiveClass . '">';
 				$str[] = '<span class="icon-thumbs-down"></span> <span class="thumb-count">' . $countDown . '</span></button>';
 			}
 
@@ -404,7 +406,8 @@ class PlgFabrik_ElementThumbs extends PlgFabrik_Element
 
 		$query->select('thumb')->from('#__{package}_thumbs')
 		->where('listid = ' . (int) $listid . ' AND formid = ' . (int) $formid . ' AND row_id = '
-		. $db->quote($row_id) . ' AND element_id = ' . (int) $elementid . ' AND user_id = ' . $db->quote($user_id));
+		. $db->quote($row_id) . ' AND element_id = ' . (int) $elementid . ' AND user_id = ' . $db->quote($user_id)
+			);
 		$db->setQuery($query);
 		$ret = $db->loadResult();
 
@@ -824,7 +827,7 @@ class PlgFabrik_ElementThumbs extends PlgFabrik_Element
 
 		if (!array_key_exists('special', $cols))
 		{
-			$db->setQuery('ALTER TABLE #__{package}_thumbs ADD COLUMN ' . $db->quoteName('special') .' VARCHAR(30)');
+			$db->setQuery('ALTER TABLE #__{package}_thumbs ADD COLUMN ' . $db->quoteName('special') . ' VARCHAR(30)');
 			$db->execute();
 
 			$db->setQuery('ALTER TABLE #__{package}_thumbs DROP PRIMARY KEY');

@@ -725,6 +725,18 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 	{
 		$this->renderWithHTML = false;
 		$d = $this->renderListData($data, $thisRow);
+
+		if ($this->isJoin())
+		{
+			// Set the linking table's pk as the raw value.
+			$raw = $this->getFullName(true, false) . '_raw';
+			$id = $this->getFullName(true, false) . '_id';
+			$data = $thisRow->$id;
+
+			$rawData = FabrikWorker::JSONtoData($data, true);
+			$thisRow->$raw = json_encode($rawData);
+		}
+
 		$this->renderWithHTML = true;
 
 		return $d;

@@ -941,9 +941,9 @@ if (!$j3)
 
 				self::styleSheet(COM_FABRIK_LIVESITE . 'media/com_fabrik/css/fabrik.css');
 
-
 				$liveSiteReq = array();
 				$liveSiteReq[] = 'media/com_fabrik/js/fabrik' . $ext;
+
 				if ($bootstrapped)
 				{
 					$liveSiteReq[] = 'media/com_fabrik/js/tipsBootStrapMock' . $ext;
@@ -2366,7 +2366,7 @@ if (!$j3)
 
 		if ($smart_link || $target == 'mediabox')
 		{
-			$smarts = FabrikHelperHTML::getSmartLinkType($href);
+			$smarts = self::getSmartLinkType($href);
 			$opts['rel'] = 'lightbox[' . $smarts['type'] . ' ' . $smarts['width'] . ' ' . $smarts['height'] . ']';
 		}
 

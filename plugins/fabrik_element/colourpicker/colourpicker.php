@@ -159,8 +159,9 @@ class PlgFabrik_ElementColourpicker extends PlgFabrik_Element
 		$showPicker = (bool) $params->get('show_picker', 1);
 		$str = array();
 		$str[] = '<div class="fabrikSubElementContainer">';
+		$style = 'border:1px solid #EEEEEE;float:left;width:25px;height:25px;background-color:rgb(' . $value . ')';
 		$str[] = '<input class="fabrikinput" type="hidden" name="' . $name . '" id="' . $id
-			. '" /><div class="colourpicker_bgoutput img-rounded " style="border:1px solid #EEEEEE;float:left;width:25px;height:25px;background-color:rgb(' . $value . ')"></div>';
+			. '" /><div class="colourpicker_bgoutput img-rounded " style="' . $style . '"></div>';
 
 		if ($this->isEditable())
 		{
