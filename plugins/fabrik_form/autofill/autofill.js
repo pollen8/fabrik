@@ -32,7 +32,7 @@ var Autofill = new Class({
 			}.bind(this));
 		}*/
 		this.setupDone = false;
-		this.setUp(Fabrik.blocks['form_' + this.options.formid]);
+		this.setUp(Fabrik.getBlock('form_' + this.options.formid));
 		Fabrik.addEvent('fabrik.form.elements.added', function (form) {
 			this.setUp(form);
 		}.bind(this));
