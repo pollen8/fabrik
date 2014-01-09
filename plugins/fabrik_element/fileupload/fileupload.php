@@ -1422,6 +1422,12 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 			return;
 		}
 
+		if (!$this->canUse())
+		{
+			// If the user can't use the plugin no point processing an non-existant upload
+			return;
+		}
+
 		$files = array();
 		$deletedImages = $input->get('fabrik_fileupload_deletedfile', array(), 'array');
 		$gid = $groupModel->getId();
