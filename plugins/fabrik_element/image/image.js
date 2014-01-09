@@ -109,5 +109,24 @@ var FbImage = new Class({
 
 	getValue : function () {
 		return this.folderlist.join('/') + '/' + this.selectedImage;// this.hiddenField.value;
+	},
+	
+	update : function (val) {
+		if (!this.hiddenField) {
+			var el = this.element.getParent('.fabrikElement');
+			this.hiddenField = el.getElement('.folderpath');
+		}
+		if (this.hiddenField) {
+			this.hiddenField.value = val;
+		}
+		if (val !== '') {
+			this.image.src = Fabrik.liveSite + '/' + val;
+			this.image.alt = val;
+		}
+		else {
+			this.image.src = '';
+			this.image.alt = '';
+		}
 	}
+	
 });

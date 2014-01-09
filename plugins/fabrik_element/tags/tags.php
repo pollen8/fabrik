@@ -363,7 +363,15 @@ class PlgFabrik_ElementTags extends PlgFabrik_ElementDatabasejoin
 		$name = $this->getFullName(true, false);
 		$idname = $name . '_id';
 		$rawname = $name . '_raw';
-		$ids = explode(GROUPSPLITTER, $thisRow->$idname);
+		$ids = array();
+		if (is_object($thisRow->$idname))
+		{
+			$ids = JArrayHelper::fromObject($thisRow->$idname);
+		}
+		else
+		{
+			$ids = explode(GROUPSPLITTER, $thisRow->$idname);
+		}
 		$merged = array_combine($ids, $data);
 		$baseUrl = $this->tagUrl();
 		$icon = $this->tagIcon();

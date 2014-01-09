@@ -32,6 +32,13 @@ var Autofill = new Class({
 			}.bind(this));
 		}*/
 		this.setupDone = false;
+
+		/*
+		 * elements.added may or may not have fired, so give it the old college try first, which
+		 * will work if the form is ready.  But also add an element.added event, in case the
+		 * form isn't ready yet.
+		 */
+
 		this.setUp(Fabrik.getBlock('form_' + this.options.formid));
 		Fabrik.addEvent('fabrik.form.elements.added', function (form) {
 			this.setUp(form);
