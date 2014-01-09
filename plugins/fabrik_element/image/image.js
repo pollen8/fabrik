@@ -121,9 +121,11 @@ var FbImage = new Class({
 		}
 		if (val !== '') {
 			this.image.src = Fabrik.liveSite + '/' + val;
+			this.image.alt = val;
 		}
 		else {
 			this.image.src = '';
+			this.image.alt = '';
 		}
 	}
 	
