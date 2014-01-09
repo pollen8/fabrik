@@ -518,7 +518,7 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 
 		require JPATH_SITE . '/components/com_fabrik/libs/qrcode/qrcode.php';
 
-		//Usage: $a=new QR('234DSKJFH23YDFKJHaS');$a->image(4);
+		// Usage: $a=new QR('234DSKJFH23YDFKJHaS');$a->image(4);
 		$qr = new QR($value);
 		$img = $qr->image(4);
 
@@ -565,11 +565,12 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 		{
 			$thisRow = JArrayHelper::fromObject($thisRow);
 		}
+
 		$app = JFactory::getApplication();
 		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$formModel = $this->getForm();
 		$formid = $formModel->getId();
-		$rowid = $thisRow['__pk_val'];
+		$rowid = $formModel->getRowId();
 		$elementid = $this->getId();
 		$link = COM_FABRIK_LIVESITE
 		. 'index.php?option=com_' . $package . '&amp;task=plugin.pluginAjax&amp;plugin=field&amp;method=ajax_renderQRCode&amp;'
@@ -577,5 +578,4 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 		$value = '<img src="' . $link . '"/>';
 		return $value;
 	}
-
 }
