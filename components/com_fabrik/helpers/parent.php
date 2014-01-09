@@ -1802,7 +1802,13 @@ class FabrikWorker
 					// User element stores as object
 					if (is_object($usercol_val))
 					{
-						$usercol_val = array_shift(JArrayHelper::fromObject($usercol_val));
+						$usercol_val = JArrayHelper::fromObject($usercol_val);
+					}
+
+					// Could be coming back from a failed validation in which case val might be an array
+					if (is_array($usercol_val))
+					{
+						$usercol_val = array_shift($usercol_val);
 					}
 
 					if (empty($usercol_val) && empty($myid))
