@@ -1721,7 +1721,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		$lines = array();
 		$tmpl = $this->getFormModel()->getTmpl();
 
-		if (!$this->validator->hasValidations() && !$this->isTipped($mode))
+		if (($mode === 'list' || !$this->validator->hasValidations()) && !$this->isTipped($mode))
 		{
 			return '';
 		}
