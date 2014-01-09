@@ -5745,7 +5745,7 @@ class FabrikFEModelList extends JModelForm
 
 		$params = $this->getParams();
 
-		return JText::_($params->get('emptydata_msg', 'COM_FABRIK_LIST_NO_DATA_MSG'));
+		return JText::_($params->get('empty_data_msg', 'COM_FABRIK_LIST_NO_DATA_MSG'));
 	}
 
 	/**
