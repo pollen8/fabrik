@@ -615,7 +615,7 @@ var FbDateTime = new Class({
 	},
 
 	hourButtons: function (start, end) {
-		var date = new Date(this.getValue());
+		var date = Date.parse(this.getValue());
 		this.hour = date.get('hours');
 		this.minute = date.get('minutes');
 		var hrGroup = new Element('div.btn-group');
@@ -703,7 +703,10 @@ var FbDateTime = new Class({
 		if (typeOf(mins[this.minute / 5]) !== 'null') {
 			mins[this.minute / 5].addClass('btn-success');
 		}
-		hours[this.hour.toInt()].addClass('btn-success');
+		var active = hours[this.hour.toInt()];
+		if (typeOf(active) !== 'null') {
+			active.addClass('btn-success');
+		}
 	},
 
 	addEventToCalOpts: function () {
@@ -718,7 +721,6 @@ var FbDateTime = new Class({
 		this.options.calendarSetup.onClose = function (calendar) {
 			this.calClose(calendar);
 		}.bind(this);
-
 
 	},
 
