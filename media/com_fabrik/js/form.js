@@ -1315,26 +1315,36 @@ var FbForm = new Class({
 		if (!this.form) {
 			return;
 		}
+
 		Fabrik.fireEvent('fabrik.form.group.duplicate.min', [this]);
+
 		Object.each(this.options.group_repeats, function (canRepeat, groupId) {
+
 			if (typeOf(this.options.minRepeat[groupId]) === 'null') {
 				return;
 			}
-			if (canRepeat !== "1") {
+
+			if (canRepeat.toInt() !== 1) {
 				return;
 			}
-			var repeat_counter = this.form.getElement('#fabrik_repeat_group_' + groupId + '_counter');
+
+			var repeat_counter = this.form.getElement('#fabrik_repeat_group_' + groupId + '_counter'),
+			repeat_rows, repeat_real, add_btn, del_btn, i, repeat_id_0, del_e;
+
 			if (typeOf(repeat_counter) === 'null') {
 				return;
 			}
-			var repeat_rows, repeat_real;
+
 			repeat_rows = repeat_real = repeat_counter.value.toInt();
+
 			if (repeat_rows === 1) {
-				var repeat_id_0 = this.form.getElement('#' + this.options.group_pk_ids[groupId] + '_0');
+				repeat_id_0 = this.form.getElement('#' + this.options.group_pk_ids[groupId] + '_0');
+
 				if (typeOf(repeat_id_0) !== 'null' && repeat_id_0.value === '') {
 					repeat_real = 0;
 				}
 			}
+
 			var min = this.options.minRepeat[groupId].toInt();
 
 			/**
@@ -1348,22 +1358,22 @@ var FbForm = new Class({
 			if (min === 0 && repeat_real === 0) {
 
 				// Create mock event
-				var del_btn = this.form.getElement('#group' + groupId + ' .deleteGroup');
+				del_btn = this.form.getElement('#group' + groupId + ' .deleteGroup');
 				if (typeOf(del_btn) !== 'null') {
 
 					// Remove only group
-					var del_e = new Event.Mock(del_btn, 'click');
+					del_e = new Event.Mock(del_btn, 'click');
 					this.deleteGroup(del_e);
 				}
 			}
 			else if (repeat_rows < min) {
 				// Create mock event
-				var add_btn = this.form.getElement('#group' + groupId + ' .addGroup');
+				add_btn = this.form.getElement('#group' + groupId + ' .addGroup');
 				if (typeOf(add_btn) !== 'null') {
 					var add_e = new Event.Mock(add_btn, 'click');
 
 					// Duplicate group
-					for (var i = repeat_rows; i < min; i ++) {
+					for (i = repeat_rows; i < min; i ++) {
 						this.duplicateGroup(add_e);
 					}
 				}
