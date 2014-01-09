@@ -334,7 +334,7 @@ class PlgFabrik_Form extends FabrikPlugin
 					$elementModel->_inJoin = $groupModel->isJoin();
 					$elementModel->setEditable(false);
 
-					if ($elementModel->isJoin())
+					if ($groupModel->isJoin())
 					{
 						if ($elementModel->_inRepeatGroup)
 						{
@@ -416,18 +416,18 @@ class PlgFabrik_Form extends FabrikPlugin
 					$email_value = !array_key_exists($k, $this->emailData) && array_key_exists($k . '_raw', $this->emailData) ? $this->emailData[$k . '_raw'] : $this->emailData[$k];
 					$this->emailData[$k] = $elementModel->getEmailValue($email_value, $model->_formDataWithTableName, $c);
 
-
-
 					if ($elementModel->_inRepeatGroup && $elementModel->_inJoin)
 					{
-						$this->emailData['join'][$groupModel->getGroup()->join_id][$k . '_raw'] = $this->emailData[$k . '_raw'];
-						$this->emailData['join'][$groupModel->getGroup()->join_id][$k] = $this->emailData[$k];
+						$groupJoinId = $groupModel->getGroup()->join_id;
+						$this->emailData['join'][$groupJoinId][$k . '_raw'] = $this->emailData[$k . '_raw'];
+						$this->emailData['join'][$groupJoinId][$k] = $this->emailData[$k];
 					}
 
 					if ($elementModel->isJoin())
 					{
-						$this->emailData['join'][$elementModel->getJoinModel()->getJoin()->id][$k . '_raw'] = $this->emailData[$k . '_raw'];
-						$this->emailData['join'][$elementModel->getJoinModel()->getJoin()->id][$k] = $this->emailData[$k];
+						$elJoinId = $elementModel->getJoinModel()->getJoin()->id;
+						$this->emailData['join'][$elJoinId][$k . '_raw'] = $this->emailData[$k . '_raw'];
+						$this->emailData['join'][$elJoinId][$k] = $this->emailData[$k];
 						$this->emailData[$k2] =  $this->emailData[$k];
 					}
 				}

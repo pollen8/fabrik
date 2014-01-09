@@ -72,7 +72,7 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 		$this->formModel = $formModel;
 		$formParams = $formModel->getParams();
 		$emailTemplate = JPath::clean(JPATH_SITE . '/plugins/fabrik_form/email/tmpl/' . $params->get('email_template', ''));
-		$this->data = array_merge($formModel->_formData, $this->getEmailData());
+		$this->data = $this->getProcessData();
 
 		/* $$$ hugh - moved this to here from above the previous line, 'cos it needs $this->data
 		 * check if condition exists and is met
@@ -323,6 +323,7 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 				$app->enqueueMessage(JText::sprintf('PLG_FORM_EMAIL_DID_NOT_SEND_EMAIL_INVALID_ADDRESS', $email), 'notice');
 			}
 		}
+
 		return true;
 	}
 
@@ -418,8 +419,8 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 	/**
 	 * Use a php template for advanced email templates, partularly for forms with repeat group data
 	 *
-	 * @param   string  $tmpl       path to template
-	 * @param   object  $formModel  form model for this plugin
+	 * @param   string  $tmpl       Path to template
+	 * @param   object  $formModel  Form model for this plugin
 	 *
 	 * @return string email message
 	 */

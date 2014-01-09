@@ -1630,7 +1630,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 						}
 					}
 
-					$v2 = $this->renderListData($v2, new stdClass);
+					$val = $this->renderListData($v2, new stdClass);
 				}
 
 				$val = $value;
