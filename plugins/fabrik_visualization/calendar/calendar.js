@@ -982,7 +982,6 @@ var fabrikCalendar = new Class({
 		
 		if (this.options.dateLimits.max !== '') {
 			var max = new Date(this.options.dateLimits.max);
-			console.log(max);
 			if (d > max) {
 				alert(Joomla.JText._('PLG_VISUALIZATION_CALENDAR_DATE_ADD_TOO_LATE'));
 				return false;
