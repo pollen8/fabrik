@@ -30,6 +30,7 @@ var fabrikCalendar = new Class({
 		restFilterStart: 'na',
 		j3: false,
 		showFullDetails: false,
+		readonly: false,
 		readonlyMonth: false,
 		dateLimits: {min: '', max: ''}
 	},
@@ -143,7 +144,7 @@ var fabrikCalendar = new Class({
 			if (entry._canDelete) {
 				buttons += this.options.buttons.del;
 			}
-			if (entry._canEdit) {
+			if (entry._canEdit && !this.options.readonly) {
 				buttons += this.options.buttons.edit;
 			}
 			if (entry._canView) {

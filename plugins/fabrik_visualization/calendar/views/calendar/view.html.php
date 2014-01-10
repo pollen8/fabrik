@@ -53,7 +53,7 @@ class FabrikViewCalendar extends JViewLegacy
 		$calendar = $this->row;
 
 		JHTML::stylesheet('media/com_fabrik/css/list.css');
-		$this->canAdd = (bool) $params->get('calendar-read-only', 0) == 1 ? 0 : $this->get('CanAdd');
+		$this->canAdd = (bool) $params->get('calendar-read-only', 0) == 1 ? false : $model->getCanAdd();
 		$this->requiredFiltersFound = $this->get('RequiredFiltersFound');
 
 		if ($params->get('calendar_show_messages', '1') == '1' && $this->canAdd && $this->requiredFiltersFound)
