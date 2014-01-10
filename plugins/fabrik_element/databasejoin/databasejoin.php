@@ -551,9 +551,15 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 
 		$eval = $params->get('dabase_join_label_eval');
 
-		if (trim($eval) !== '')
+		foreach ($this->optionVals[$sqlKey] as $key => &$opt)
 		{
-			foreach ($this->optionVals[$sqlKey] as $key => &$opt)
+			// Check if concat label empty
+			if ($this->emptyConcatString($opt->text))
+			{
+				$opt->text = '';
+			}
+
+			if (trim($eval) !== '')
 			{
 				// $$$ hugh - added allowing removing an option by returning false
 				if (eval($eval) === false)
@@ -573,6 +579,47 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		}
 
 		return $this->optionVals[$sqlKey];
+	}
+
+	/**
+	 * For fields that use the concat label, it may try to insert constants, but if no
+	 * replacement data found then the concatinated constants should be conidered as emtyp
+	 *
+	 * @param   string  $label  Concatinate label
+	 *
+	 * @return boolean
+	 */
+	protected function emptyConcatString($label)
+	{
+		$params = $this->getParams();
+		$concat = $params->get($this->concatLabelParam, '');
+
+		if ($concat === '' || !$params->get('clean_concat', false))
+		{
+			return false;
+		}
+
+		$bits = explode(',', $concat);
+
+		for ($i = 0; $i < count($bits); $i ++)
+		{
+			if (strstr(trim($bits[$i]), '{thistable}.'))
+			{
+				unset($bits[$i]);
+			}
+			else
+			{
+				$bits[$i] = FabrikString::ltrimword($bits[$i], "'");
+				$bits[$i] = FabrikString::rtrimword($bits[$i], "'");
+			}
+		}
+
+		if ($label == implode($bits))
+		{
+			return true;
+		}
+
+		return false;
 	}
 
 	/**
@@ -1825,6 +1872,14 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		$displayType = $this->getDisplayType();
 		$raw .= ($displayType == 'checkbox' || $displayType == 'multilist') ? '_id' : '_raw';
 		$values = FabrikWorker::JSONtoData($thisRow->$raw, true);
+
+		for ($i = 0; $i < count($data); $i++)
+		{
+			if ($this->emptyConcatString($data[$i]))
+			{
+				$data[$i] = '';
+			}
+		}
 
 		$this->addReadOnlyLinks($data, $values);
 	}

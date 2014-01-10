@@ -248,6 +248,16 @@
 				description="PLG_ELEMENT_DBJOIN_CLASS_DESC"
 				label="PLG_ELEMENT_DBJOIN_CLASS_LABEL" />
 
+			<field name="clean_concat"
+				type="radio"
+				class="btn-group"
+				default="0"
+				description="PLG_ELEMENT_DBJOIN_CLEAN_CONCAT_DESC"
+				label="PLG_ELEMENT_DBJOIN_CLEAN_CONCAT_LABEL">
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>	
+			</field>
+				
 		</fieldset>
 	</fields>
 </form>
