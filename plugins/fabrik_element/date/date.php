@@ -1570,18 +1570,27 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 		for ($j = 0; $j < count($data); $j++)
 		{
 			$orig_data = $data[$j][$key];
-			$date = JFactory::getDate($data[$j][$key]);
-			$data[$j][$key] = $date->format($format, true);
-			/* $$$ hugh - bit of a hack specific to a customer who needs to import dates with year as 1899,
-			 * which we then change to 1999 using a tablecsv import script (don't ask!). But of course FabDate doesn't
-			 * like dates outside of UNIX timestamp range, so the previous line was zapping them. So I'm just restoring
-			 * the date as found in the CSV file. This could have side effects if someone else tries to import invalid dates,
-			 * but ... ah well.
-			 * */
-			if (empty($data[$j][$key]) && !empty($orig_data))
+
+			try
 			{
-				$data[$j][$key] = $orig_data;
+				$date = JFactory::getDate($data[$j][$key]);
+				$data[$j][$key] = $date->format($format, true);
+				/* $$$ hugh - bit of a hack specific to a customer who needs to import dates with year as 1899,
+				 * which we then change to 1999 using a tablecsv import script (don't ask!). But of course FabDate doesn't
+				* like dates outside of UNIX timestamp range, so the previous line was zapping them. So I'm just restoring
+				* the date as found in the CSV file. This could have side effects if someone else tries to import invalid dates,
+				* but ... ah well.
+				* */
+				if (empty($data[$j][$key]) && !empty($orig_data))
+				{
+					$data[$j][$key] = $orig_data;
+				}
 			}
+			catch (Exception $e)
+			{
+				// Suppress date time format error
+			}
+
 		}
 	}
 
