@@ -416,21 +416,26 @@ var FbDateTime = new Class({
 	update: function (val, events) {
 		events = events ? events : [ 'change' ];
 		this.getElement();
+		
 		if (val === 'invalid date') {
 			fconsole(this.element.id + ': date not updated as not valid');
+		
 			return;
 		}
+		
 		var date;
+		
 		if (typeOf(val) === 'string') {
 			// $$$ hugh - if val is empty string, like from a clearForm(), the Date.parse() is
 			// going to return null, swhich will then blow up in a few lines.
 			date = Date.parse(val);
+			
 			if (date === null) {
-
 				// Yes, but we still need to clear the fields! (e.g. from reset())
 				this._getSubElements().each(function (subEl) {
 					subEl.value = '';
 				});
+				
 				if (this.cal) {
 					/*
 					 * Can't set this.cal.date to a blank string as it expects a date object
@@ -450,21 +455,27 @@ var FbDateTime = new Class({
 		} else {
 			date = val;
 		}
+		
 		var f = this.options.calendarSetup.ifFormat;
+		
 		if (this.options.dateTimeFormat !== '' && this.options.showtime) {
 			f += ' ' + this.options.dateTimeFormat;
 		}
+		
 		if (events.length > 0) {
 			this.fireEvents(events);
 		}
+		
 		if (typeOf(val) === 'null' || val === false) {
 			return;
 		}
+		
 		if (!this.options.editable) {
 			if (typeOf(this.element) !== 'null') {
 				//this.element.set('html', val);
 				this.element.set('html', date.format(f));
 			}
+			
 			return;
 		}
 
@@ -473,6 +484,7 @@ var FbDateTime = new Class({
 			// have a time field to put it into
 			date = date.format(f);
 			this.getDateField().value = date;
+			
 			return;
 		} else {
 			// have to reset the time element as update is called (via reset) in
@@ -514,19 +526,21 @@ var FbDateTime = new Class({
 	},
 
 	// Deprecated
-	showCalendar : function (format, e) {
+	showCalendar: function (format, e) {
 	},
 
-	getAbsolutePos : function (el) {
+	getAbsolutePos: function (el) {
 		var r = {
 			x : el.offsetLeft,
 			y : el.offsetTop
 		};
+		
 		if (el.offsetParent) {
 			var tmp = this.getAbsolutePos(el.offsetParent);
 			r.x += tmp.x;
 			r.y += tmp.y;
 		}
+		
 		return r;
 	},
 
@@ -569,17 +583,20 @@ var FbDateTime = new Class({
 			h = new Element('a.btn.fbdateTime-minute.btn-mini', {styles: {'width': '10px'}});
 			h.innerHTML = (i * 5);
 			d2.appendChild(h);
+			
 			document.id(h).addEvent('click', function (e) {
 				this.minute = this.formatMinute(e.target.innerHTML);
 				this.stateTime();
 				this.setActive();
 			}.bind(this));
+			
 			h.addEvent('mouseover', function (e) {
 				var h = e.target;
 				if (this.minute !== this.formatMinute(h.innerHTML)) {
 					e.target.addClass('btn-info');
 				}
 			}.bind(this));
+			
 			h.addEvent('mouseout', function (e) {
 				var h = e.target;
 				if (this.minute !== this.formatMinute(h.innerHTML)) {
@@ -587,6 +604,7 @@ var FbDateTime = new Class({
 				}
 			}.bind(this));
 		}
+		
 		padder.appendChild(d2);
 		d.appendChild(padder);
 
@@ -615,9 +633,16 @@ var FbDateTime = new Class({
 	},
 
 	hourButtons: function (start, end) {
-		var date = Date.parse(this.getValue());
-		this.hour = date.get('hours');
-		this.minute = date.get('minutes');
+		var v = this.getValue();
+		if (v === '') {
+			this.hour = 0;
+			this.minute = 0;
+		} else {
+			var date = Date.parse();
+			this.hour = date.get('hours');
+			this.minute = date.get('minutes');
+		}
+		
 		var hrGroup = new Element('div.btn-group');
 		for (var i = start; i < end; i++) {
 			h = new Element('a.btn.btn-mini.fbdateTime-hour', {styles: {'width': '10px'}}).set('html', i);
