@@ -29,7 +29,8 @@ var fabrikCalendar = new Class({
 		monthday: {'width': 90, 'height': 80},
 		restFilterStart: 'na',
 		j3: false,
-		showFullDetails: false
+		showFullDetails: false,
+		readonlyMonth: false
 	},
 
 	initialize: function (el) {
@@ -791,6 +792,9 @@ var fabrikCalendar = new Class({
 		}
 
 		this.options.viewType = 'monthView';
+
+		this.setAddButtonState();
+		
 		if (!this.mothView) {
 			tbody = new Element('tbody', {'class': 'viewContainerTBody'});
 			tr = new Element('tr');
@@ -853,7 +857,9 @@ var fabrikCalendar = new Class({
 							this.addClass('selectedDay');
 						},
 						'dblclick': function (e) {
-							this.openAddEvent(e, 'month');
+							if (this.options.readonlyMonth === false) {
+								this.openAddEvent(e, 'month');
+							}
 						}.bind(this)
 					}
 					}));
@@ -874,6 +880,20 @@ var fabrikCalendar = new Class({
 		}
 		this.showView('monthView');
 	},
+	
+	/**
+	 * Toggle the add event visibily button based on the view type and whether that view allows for additions
+	 */
+	setAddButtonState: function () {
+		var addButton = this.el.getElement('.addEventButton');
+		if (typeOf(addButton) !== 'null') {
+			if (this.options.viewType === 'monthView' && this.options.readonlyMonth === true) {
+				addButton.hide();
+			} else {
+				addButton.show();
+			}
+		}
+	},
 
 	_getTimeFromClassName: function (n) {
 		return n.replace("today", "").replace("selectedDay", "").replace("day", "").replace("otherMonth", "").trim();
@@ -890,6 +910,10 @@ var fabrikCalendar = new Class({
 		var rawd, day, hour, min, m, o, now, thisDay;
 		
 		if (this.options.canAdd === false) {
+			return;
+		}
+		
+		if (this.options.viewType === 'monthView' && this.options.readonlyMonth === true) {
 			return;
 		}
 		
@@ -1018,6 +1042,8 @@ var fabrikCalendar = new Class({
 		var tr, d;
 		this.fadePopWin(0);
 		this.options.viewType = 'dayView';
+		this.setAddButtonState();
+		
 		if (!this.dayView) {
 			tbody = new Element('tbody');
 			tr = new Element('tr');
@@ -1140,6 +1166,7 @@ var fabrikCalendar = new Class({
 		// As show weekends is a boolean I have specically cased it to such in the php code
 		we = this.options.showweekends === false ? 6 : 8;
 		this.options.viewType = 'weekView';
+		this.setAddButtonState();
 		if (!this.weekView) {
 			tbody = new Element('tbody');
 			tr = new Element('tr');

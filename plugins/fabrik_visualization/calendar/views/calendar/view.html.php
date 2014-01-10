@@ -142,6 +142,7 @@ class FabrikViewCalendar extends JViewLegacy
 		$options->showweekends = (bool) $params->get('calendar-show-weekends', true);
 		$options->readonly = (bool) $params->get('calendar-read-only', false);
 		$options->timeFormat = $params->get('time_format', '%X');
+		$options->readonlyMonth = (bool) $params->get('readonly_monthview', false);
 		$options->j3 = FabrikWorker::j3();
 
 		if (FabrikWorker::j3())
