@@ -523,6 +523,7 @@ class FabrikModelCalendar extends FabrikFEModelVisualization
 		}
 
 		$params = $this->getParams();
+
 		$addEvent = json_encode($jsevents);
 
 		return $addEvent;
@@ -625,5 +626,55 @@ class FabrikModelCalendar extends FabrikFEModelVisualization
 		$query->delete(FabrikString::safeColName($tablename))->where($list->db_primary_key . ' = ' . $id);
 		$tableDb->setQuery($query);
 		$tableDb->execute();
+	}
+
+	/**
+	 * Create the min/max dates between which events can be added.
+	 *
+	 * @return stdClass  min/max properties containing sql formatted dates
+	 */
+	public function getDateLimits()
+	{
+		$params = $this->getParams();
+		$limits = new stdClass;
+		$min = $params->get('limit_min', '');
+		$max = $params->get('limit_max', '');
+		$limits->min = ($min === '') ? '' : JFactory::getDate($min)->toSql();
+		$limits->max = ($max === '') ? '' : JFactory::getDate($max)->toSql();
+
+		return $limits;
+	}
+
+	/**
+	 * Build the notice which explains between which dates you can add events.
+	 *
+	 * @return string
+	 */
+	public function getDateLimitsMsg()
+	{
+		$params = $this->getParams();
+		$min = $params->get('limit_min', '');
+		$max = $params->get('limit_max', '');
+		$msg = '';
+		$f = JText::_('DATE_FORMAT_LC2');
+
+		if ($min !== '' && $max === '')
+		{
+			$msg = '<br />' . JText::sprintf('PLG_VISUALIZATION_CALENDAR_LIMIT_AFTER', JFactory::getDate($min)->format($f));
+		}
+
+		if ($min === '' && $max !== '')
+		{
+			$msg = '<br />' . JText::sprintf('PLG_VISUALIZATION_CALENDAR_LIMIT_BEFORE', JFactory::getDate($max)->format($f));
+		}
+
+		if ($min !== '' && $max !== '')
+		{
+			$min = JFactory::getDate($min)->format($f);
+			$max = JFactory::getDate($max)->format($f);
+			$msg = '<br />' . JText::sprintf('PLG_VISUALIZATION_CALENDAR_LIMIT_RANGE', $min, $max);
+		}
+
+		return $msg;
 	}
 }

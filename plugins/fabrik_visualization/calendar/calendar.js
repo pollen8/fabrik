@@ -30,7 +30,8 @@ var fabrikCalendar = new Class({
 		restFilterStart: 'na',
 		j3: false,
 		showFullDetails: false,
-		readonlyMonth: false
+		readonlyMonth: false,
+		dateLimits: {min: '', max: ''}
 	},
 
 	initialize: function (el) {
@@ -926,6 +927,10 @@ var fabrikCalendar = new Class({
 			rawd = this._getTimeFromClassName(e.target.className);
 		}
 		
+		if (!this.dateInLimits(rawd)) {
+			return;
+		}
+		
 		this.date.setTime(rawd);
 		d = 0;
 		
@@ -961,6 +966,30 @@ var fabrikCalendar = new Class({
 			o.listid = this.options.eventLists[0].value;
 			this.addEvForm(o);
 		}
+	},
+	
+	dateInLimits: function (time) {
+		var d = new Date();
+		d.setTime(time);
+		
+		if (this.options.dateLimits.min !== '') {
+			var min = new Date(this.options.dateLimits.min);
+			if (d < min) {
+				alert(Joomla.JText._('PLG_VISUALIZATION_CALENDAR_DATE_ADD_TOO_EARLY'));
+				return false;
+			}
+		}
+		
+		if (this.options.dateLimits.max !== '') {
+			var max = new Date(this.options.dateLimits.max);
+			console.log(max);
+			if (d > max) {
+				alert(Joomla.JText._('PLG_VISUALIZATION_CALENDAR_DATE_ADD_TOO_LATE'));
+				return false;
+			}
+		}
+		
+		return true;
 	},
 
 	openChooseEventTypeForm: function (d, rawd)

@@ -58,7 +58,9 @@ class FabrikViewCalendar extends JViewLegacy
 
 		if ($params->get('calendar_show_messages', '1') == '1' && $this->canAdd && $this->requiredFiltersFound)
 		{
-			$app->enqueueMessage(JText::_('PLG_VISUALIZATION_CALENDAR_DOUBLE_CLICK_TO_ADD'));
+			$msg = JText::_('PLG_VISUALIZATION_CALENDAR_DOUBLE_CLICK_TO_ADD');
+			$msg .= $model->getDateLimitsMsg();
+			$app->enqueueMessage($msg);
 		}
 
 		JHTML::stylesheet('media/com_fabrik/css/list.css');
@@ -91,8 +93,10 @@ class FabrikViewCalendar extends JViewLegacy
 		$tpl = $params->get('calendar_layout', $j3);
 		$options = new stdClass;
 		$options->url = $urls;
-		$options->deleteables = $this->get('DeleteAccess');
-		$options->eventLists = $this->get('eventLists');
+		$options->dateLimits = $model->getDateLimits();
+
+		$options->deleteables = $model->getDeleteAccess();
+		$options->eventLists = $model->getEventLists();
 		$options->calendarId = $calendar->id;
 		$options->popwiny = $params->get('yoffset', 0);
 		$options->urlfilters = $urlfilters;
@@ -175,6 +179,8 @@ class FabrikViewCalendar extends JViewLegacy
 		JText::script('PLG_VISUALIZATION_CALENDAR_ADD_EDIT_EVENT');
 		JText::script('COM_FABRIK_FORM_SAVED');
 		JText::script('PLG_VISUALIZATION_CALENDAR_EVENT_START_END');
+		JText::script('PLG_VISUALIZATION_CALENDAR_DATE_ADD_TOO_LATE');
+		JText::script('PLG_VISUALIZATION_CALENDAR_DATE_ADD_TOO_EARLY');
 
 		$ref = $model->getJSRenderContext();
 
