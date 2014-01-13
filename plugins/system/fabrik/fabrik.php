@@ -293,6 +293,9 @@ class PlgSystemFabrik extends JPlugin
 				break;
 		}
 
+		// Set heading prefix
+		$headingPrefix = $params->get('include_list_title', true);
+
 		// Get all tables with search on
 		$query = $db->getQuery(true);
 		$query->select('id')->from('#__{package}_lists')->where('published = 1');
@@ -419,7 +422,7 @@ class PlgSystemFabrik extends JPlugin
 
 						if (isset($oData->$title))
 						{
-							$o->title = $table->label . ' : ' . $oData->$title;
+							$o->title = $headingPrefix ? $table->label . ' : ' . $oData->$title : $oData->$title;
 						}
 						else
 						{
