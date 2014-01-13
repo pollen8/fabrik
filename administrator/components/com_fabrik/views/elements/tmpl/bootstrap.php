@@ -84,12 +84,11 @@ $states	= array(
 					<?php echo JHTML::_('grid.sort', 'JGRID_HEADING_ID', 'e.id', $listDirn, $listOrder); ?>
 				</th>
 
-				<th width="2%">
+				<th width="30px">
 					<?php echo JHtml::_('grid.sort', '<i class="icon-menu-2"></i>', 'e.ordering', $listDirn, $listOrder, null, 'asc', 'JGRID_HEADING_ORDERING'); ?>
 				</th>
-				<th width="2%">
-				</th>
-				<th width="1%"> <input type="checkbox" name="toggle" value="" onclick="Joomla.checkAll(this)" /> </th>
+				<th width="30px">&nbsp;&nbsp;&nbsp;</th>
+				<th width="30px"><input type="checkbox" name="toggle" value="" onclick="Joomla.checkAll(this)" /></th>
 
 				<th width="13%" >
 					<?php echo JHTML::_('grid.sort', 'COM_FABRIK_NAME', 'e.name', $listDirn, $listOrder); ?>
@@ -162,7 +161,7 @@ $states	= array(
 				<?php if ($item->parent_id != 0) :
 					echo "<a href='index.php?option=com_fabrik&task=element.edit&id=" . $item->parent_id . "'>"
 					. JHTML::image('media/com_fabrik/images/child_element.png', JText::_('COM_FABRIK_LINKED_ELEMENT'), 'title="' . JText::_('COM_FABRIK_LINKED_ELEMENT') . '"')
-					. '</a>&nbsp';
+					. '</a>';
 				else :
 					echo JHTML::image('media/com_fabrik/images/parent_element.png', JText::_('COM_FABRIK_PARENT_ELEMENT'), 'title="' . JText::_('COM_FABRIK_PARENT_ELEMENT') . '"');
 				endif;
@@ -187,12 +186,12 @@ $states	= array(
 				?>
 				</td>
 				<td>
-					<?php echo $item->label; ?>
+					<?php echo str_replace(' ', '&nbsp;', $item->label); ?>
 				</td>
 				<td>
 					<?php echo $item->full_element_name; ?>
 				</td>
-				<td>
+				<td class="center">
 					<span class="hasTooltip" title="<?php echo $extraTip ?>">
 						<?php echo $item->numValidations . '/' . $item->numJs; ?>
 					</span>
@@ -205,12 +204,12 @@ $states	= array(
 				<td>
 					<?php echo $item->plugin; ?>
 				</td>
-				<td>
+				<td class="center">
 					<?php
 					echo JHtml::_('jgrid.state', $states, $item->show_in_list_summary, $i, 'elements.', true, true);
 					?>
 				</td>
-				<td>
+				<td class="center">
 					<?php echo JHtml::_('jgrid.published', $item->published, $i, 'elements.', $canChange);?>
 				</td>
 			</tr>
