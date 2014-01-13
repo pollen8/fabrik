@@ -168,8 +168,8 @@ var fabrikAdminElement = new Class({
 				}
 			},
 			onComplete: function (res) {
-				body.getElement('textarea[id^="jform_code-"]').addEvent('change', function (r, target) {
-					this.setAccordionHeader(r.getParent('.actionContainer'));
+				body.getElement('textarea[id^="jform_code-"]').addEvent('change', function (e, target) {
+					this.setAccordionHeader(e.target.getParent('.actionContainer'));
 				}.bind(this));
 				this.setAccordionHeader(div);
 				this.jsAjaxed++;
