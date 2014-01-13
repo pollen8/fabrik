@@ -638,7 +638,7 @@ var FbDateTime = new Class({
 			this.hour = 0;
 			this.minute = 0;
 		} else {
-			var date = Date.parse();
+			var date = Date.parse(v);
 			this.hour = date.get('hours');
 			this.minute = date.get('minutes');
 		}
