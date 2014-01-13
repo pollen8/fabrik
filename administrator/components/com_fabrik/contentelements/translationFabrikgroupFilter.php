@@ -1,6 +1,6 @@
 <?php
 /**
- * Joom!Fish - Multi Lingual extention and translation manager for Joomla!
+ * Joom!Fish - Multi Lingual extension and translation manager for Joomla!
  *
  * @package     Joomfish
  * @subpackage  TranslationFilters
@@ -38,7 +38,7 @@ class TranslationFabrikGroupFilter extends translationFilter
 	/**
 	 * Creates section filter
 	 *
-	 * @return string|multitype:mixed Ambigous <string, string, mixed, multitype:>
+	 * @return string|multitype:mixed Ambiguous <string, string, mixed, multitype:>
 	 */
 	public function _createfilterHTML()
 	{

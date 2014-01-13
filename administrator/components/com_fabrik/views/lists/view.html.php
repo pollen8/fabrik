@@ -46,7 +46,7 @@ class FabrikAdminViewLists extends JViewLegacy
 	/**
 	 * Display the view
 	 *
-	 * @param   strin  $tpl  Template name
+	 * @param   string  $tpl  Template name
 	 *
 	 * @return void
 	 */
@@ -236,7 +236,7 @@ class FabrikAdminViewLists extends JViewLegacy
 	}
 
 	/**
-	 * Show a screen allowing the user to import a csv file to create a fabrikt table.
+	 * Show a screen allowing the user to import a csv file to create a fabrik table.
 	 *
 	 * @param   string  $tpl  Template
 	 *

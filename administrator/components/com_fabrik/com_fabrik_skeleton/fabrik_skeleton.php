@@ -18,7 +18,7 @@ $db = JFactory::getDbo();
 $lang = JFactory::getLanguage();
 $lang->load('com_fabrik', JPATH_SITE . '/components/com_fabrik');
 
-// Get the package id from #__fabrik_packages for this opton
+// Get the package id from #__fabrik_packages for this option
 $query = $db->getQuery(true);
 $app = JFactory::getApplication();
 $input = $app->input;
@@ -37,7 +37,7 @@ if ($id == '')
 // Not 100% sure we need to set packageId now - most urls are now converted to com_{packagename}
 $input->set('packageId', $id);
 
-// Include dependancies
+// Include dependencies
 jimport('joomla.application.component.controller');
 jimport('joomla.application.component.model');
 jimport('joomla.filesystem.file');
@@ -69,7 +69,7 @@ $config['base_path'] = JPATH_SITE . '/components/com_fabrik/';
 
 /**
  * Create the controller if the task is in the form view.task then get
- * the specific controller for that class - otherwse use $controller to load
+ * the specific controller for that class - otherwise use $controller to load
  * required controller class
  */
 

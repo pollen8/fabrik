@@ -765,7 +765,7 @@ class FabrikAdminModelElement extends FabModelAdmin
 		$othertables = $db->loadObjectList('id');
 
 		/**
-		 * $$$ rob 20/02/2012 if you have 2 lists, countres, regions and then you join regions to countries to get a new group "countries - [regions]"
+		 * $$$ rob 20/02/2012 if you have 2 lists, counters, regions and then you join regions to countries to get a new group "countries - [regions]"
 		 * Then add elements to the regions list, the above query wont find the group "countries - [regions]" to add the elements into
 		 */
 
@@ -902,7 +902,7 @@ class FabrikAdminModelElement extends FabModelAdmin
 		// Update table indexes
 		$ftype = $elementModel->getFieldDescription();
 
-		// Int elements cant have a index size attrib
+		// Int elements can't have a index size attrib
 		$size = JString::stristr($ftype, 'int') || $ftype == 'DATETIME' ? '' : '10';
 
 		if ($elementModel->getParams()->get('can_order'))
@@ -937,8 +937,8 @@ class FabrikAdminModelElement extends FabModelAdmin
 	{
 		/**
 		 * $$$ hugh - 2012/04/02
-		 * updated to apply js changes to descendents as well.  NOTE that this means
-		 * all descendents (i.e. children of children, etc), not just direct children.
+		 * updated to apply js changes to descendants as well.  NOTE that this means
+		 * all descendants (i.e. children of children, etc.), not just direct children.
 		 */
 		$app = JFactory::getApplication();
 		$input = $app->input;
@@ -1053,7 +1053,7 @@ class FabrikAdminModelElement extends FabModelAdmin
 			$listModel = $pluginModel->getListModel();
 			$item = $listModel->getTable();
 
-			// $$$ hugh - might be a tableless form!
+			// $$$ hugh - might be a table-less form!
 			if (!empty($item->id))
 			{
 				$db = $listModel->getDb();
@@ -1181,7 +1181,7 @@ class FabrikAdminModelElement extends FabModelAdmin
 	}
 
 	/**
-	 * Gets the elemetns parent element
+	 * Gets the element's parent element
 	 *
 	 * @return  mixed	0 if no parent, object if exists.
 	 */

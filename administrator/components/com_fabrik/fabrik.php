@@ -39,7 +39,7 @@ if ($input->get('format', 'html') === 'html')
 
 JHTML::stylesheet('administrator/components/com_fabrik/headings.css');
 
-// Include dependancies
+// Include dependencies
 jimport('joomla.application.component.controller');
 
 // System plugin check

@@ -1,6 +1,6 @@
 <?php
 /**
- * Renders a list releated forms that a db join element can be populated from
+ * Renders a list related forms that a db join element can be populated from
  *
  * @package     Joomla
  * @subpackage  Fabrik
@@ -20,7 +20,7 @@ jimport('joomla.form.helper');
 JFormHelper::loadFieldClass('list');
 
 /**
- * Renders a list releated forms that a db join element can be populated from
+ * Renders a list related forms that a db join element can be populated from
  *
  * @package     Joomla
  * @subpackage  Form

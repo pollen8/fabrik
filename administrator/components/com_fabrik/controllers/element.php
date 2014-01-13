@@ -193,7 +193,7 @@ class FabrikAdminControllerElement extends FabControllerForm
 	/**
 	 * When you go from a child to parent element, check in child before redirect
 	 *
-	 * @deprecated - dont think its used?
+	 * @deprecated - don't think its used?
 	 *
 	 * @return  void
 	 */

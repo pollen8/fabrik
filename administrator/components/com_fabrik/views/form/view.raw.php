@@ -92,7 +92,7 @@ class FabrikAdminViewForm extends JViewLegacy
 			$groupParams = $groupModel->getParams();
 			$aElements = array();
 
-			// Check if group is acutally a table join
+			// Check if group is actually a table join
 			$repeatGroup = 1;
 			$foreignKey = null;
 
@@ -137,7 +137,7 @@ class FabrikAdminViewForm extends JViewLegacy
 					if (!$model->isEditable())
 					{
 						/* $$$ rob 22/03/2011 changes element keys by appending "_id" to the end, means that
-						 * db join add append data doesn't work if for example the popup form is set to allow adding,
+						 * db join add append data doesn't work if for example the pop-up form is set to allow adding,
 						 * but not editing records
 						 * $elementModel->inDetailedView = true;
 						 */

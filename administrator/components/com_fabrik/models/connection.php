@@ -45,7 +45,7 @@ class FabrikAdminModelConnection extends FabModelAdmin
 	{
 		/**
 		 * not sure if we should be loading JTable or FabTable here
-		 * issue with using Fabtable is that it will always load the cached verion of the cnn
+		 * issue with using Fabtable is that it will always load the cached version of the cnn
 		 * which might cause issues when migrating from test to live sites???
 		 */
 		$config['dbo'] = FabrikWorker::getDbo(true);
@@ -165,7 +165,7 @@ class FabrikAdminModelConnection extends FabModelAdmin
 	}
 
 	/**
-	 * Save the connection- test first if its vald
+	 * Save the connection- test first if its valid
 	 * if it is remove the session instance of the connection then call parent save
 	 *
 	 * @param   array  $data  connection data

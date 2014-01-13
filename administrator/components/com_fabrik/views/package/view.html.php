@@ -69,7 +69,7 @@ class FabrikAdminViewPackage extends JViewLegacy
 
 	public function display($tpl = null)
 	{
-		// Initialiase variables.
+		// Initialise variables.
 		JHtml::_('behavior.modal', 'a.modal');
 		$model = $this->getModel();
 		$this->form = $this->get('Form');

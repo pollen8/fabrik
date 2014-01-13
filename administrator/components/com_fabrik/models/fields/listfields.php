@@ -36,7 +36,7 @@ class JFormFieldListfields extends JFormFieldList
 	protected $name = 'Listfields';
 
 	/**
-	 * Objects resulting from this elements queries - keyed on idetifying hash
+	 * Objects resulting from this elements queries - keyed on identifying hash
 	 *
 	 * @var  array
 	 */
@@ -64,7 +64,7 @@ class JFormFieldListfields extends JFormFieldList
 		$c = (int) FabrikAdminElementHelper::getRepeatCounter($this);
 		$connection = $this->element['connection'];
 		/*
-		 * 27/08/2011 - changed from default tableelement to id - for juser form plugin - might cause havock
+		 * 27/08/2011 - changed from default table-element to id - for juser form plugin - might cause havoc
 		 * else where but loading elements by id as default seems more robust (and is the default behaviour in f2.1
 		 */
 		$valueformat = (string) JArrayHelper::getValue($this->element, 'valueformat', 'id');
@@ -87,7 +87,7 @@ class JFormFieldListfields extends JFormFieldList
 			case 'element':
 				$repeat = FabrikAdminElementHelper::getRepeat($this) || $this->element['repeat'];
 
-				// @TODO this seems like we could refractor it to use the formModel class as per the table and form switches below?
+				// @TODO this seems like we could re-factor it to use the formModel class as per the table and form switches below?
 				// $connectionDd = ($c === false) ? $connection : $connection . '-' . $c;
 				$connectionDd = $repeat ? $connection . '-' . $c : $connection;
 
@@ -173,7 +173,7 @@ class JFormFieldListfields extends JFormFieldList
 				$res = $formModel->getElementOptions(false, $valfield, $onlylistfields, $showRaw, $pluginFilters, $labelMethod, $nojoins);
 				break;
 			default:
-				return JText::_('THE LISTFIELDS ELEMENT IS ONLY USABLE BY LISTS AND ELEMENTS');
+				return JText::_('The ListFields element is only usable by lists and elements');
 				break;
 		}
 
@@ -213,7 +213,7 @@ class JFormFieldListfields extends JFormFieldList
 			// Paul - Prepend rather than append "none" option.
 			array_unshift($aEls, JHTML::_('select.option', '', '-'));
 
-			// For pk fields - we are no longer storing the key with '`' as thats mySQL specific
+			// For pk fields - we are no longer storing the key with '`' as that's mySQL specific
 			$this->value = str_replace('`', '', $this->value);
 
 			// Some elements were stored as names but subsequently changed to ids (need to check for old values an substitute with correct ones)

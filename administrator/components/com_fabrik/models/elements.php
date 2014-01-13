@@ -150,7 +150,7 @@ class FabrikAdminModelElements extends FabModelList
 		 * WHERE (jj.list_id != 0 AND jj.element_id = 0)
 		 * ...instead of ...
 		 * WHERE jj.list_id != 0
-		 * ... otherwioe we pick up repeat elements, as they have both table and element set
+		 * ... otherwise we pick up repeat elements, as they have both table and element set
 		 * and he query fails with "returns multiple values" for the fullname select
 		 */
 
@@ -187,7 +187,7 @@ class FabrikAdminModelElements extends FabModelList
 		$db->setQuery($query);
 		$viewLevels = $db->loadObjectList('id');
 
-		// Get the join elemnent name of those elements not in a joined group
+		// Get the join element name of those elements not in a joined group
 		foreach ($items as &$item)
 		{
 			if ($item->full_element_name == '')
@@ -217,12 +217,11 @@ class FabrikAdminModelElements extends FabModelList
 					$pname = $validations->plugin[$i];
 					/*
 					 * $$$ hugh - it's possible to save an element with a validation that hasn't
-					 * actually had a plugin type selected yet.  Yeah, I should add a language
-					 * string for this.  So sue me.  :)
+					 * actually had a plugin type selected yet.
 					 */
 					if (empty($pname))
 					{
-						$v[] = "No plugin type selected!";
+						$v[] = '&nbsp;&nbsp;<strong>' . JText::_('COM_FABRIK_ELEMENTS_NO_VALIDATION_SELECTED'). '</strong>';
 						continue;
 					}
 
@@ -374,7 +373,7 @@ class FabrikAdminModelElements extends FabModelList
 	}
 
 	/**
-	 * Stops itnernal id from being unpublished
+	 * Stops internal id from being unpublished
 	 *
 	 * @param   array  $ids  Ids wanting to be unpublished
 	 *

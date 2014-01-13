@@ -1,6 +1,6 @@
 <?php
 /**
- * Renders a list of ascending / decending options
+ * Determine whether automatically to create a group when a form or list is created
  *
  * @package     Joomla
  * @subpackage  Form
@@ -14,7 +14,7 @@ defined('_JEXEC') or die('Restricted access');
 require_once JPATH_ADMINISTRATOR . '/components/com_fabrik/helpers/element.php';
 
 /**
- * Renders an eval element
+ * Determine whether automatically to create a group when a form or list is created
  *
  * @package     Joomla
  * @subpackage  Form
