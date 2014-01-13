@@ -113,6 +113,7 @@ class PlgSystemFabrik extends JPlugin
 		{
 			return;
 		}
+
 		define('COM_FABRIK_SEARCH_RUN', true);
 		JModel::addIncludePath(COM_FABRIK_FRONTEND . '/models', 'FabrikFEModel');
 
@@ -124,6 +125,7 @@ class PlgSystemFabrik extends JPlugin
 		// Load plugin params info
 		$limit = $this->params->def('search_limit', 50);
 		$text = trim($text);
+
 		if ($text == '')
 		{
 			return array();
@@ -153,6 +155,10 @@ class PlgSystemFabrik extends JPlugin
 				$order = 'a.created DESC';
 				break;
 		}
+
+		// Set heading prefix
+		$headingPrefix = $params->get('include_list_title', true);
+
 		// Get all tables with search on
 		$query = $db->getQuery(true);
 		$query->select('id')->from('#__{package}_lists')->where('published = 1');
@@ -161,10 +167,12 @@ class PlgSystemFabrik extends JPlugin
 
 		$list = array();
 		$ids = $db->loadColumn();
+
 		if ($db->getErrorNum() != 0)
 		{
 			jexit('search:' . $db->getErrorMsg());
 		}
+
 		$section = $this->params->get('search_section_heading');
 		$urls = array();
 
@@ -262,7 +270,7 @@ class PlgSystemFabrik extends JPlugin
 						$o = new stdClass;
 						if (isset($oData->$title))
 						{
-							$o->title = $table->label . ' : ' . $oData->$title;
+							$o->title = $headingPrefix ? $table->label . ' : ' . $oData->$title : $oData->$title;
 						}
 						else
 						{
