@@ -820,6 +820,14 @@ class FabrikFEModelImportcsv extends JModelForm
 
 				if (array_key_exists($noneraw, $aRow))
 				{
+					// Complete madness for encoding issue with fileupload ajax + single upload max
+					preg_match('/params":"(.*)"\}\]/', $val, $matches);
+
+					if (count($matches) == 2)
+					{
+						$replace = addSlashes($matches[1]);
+						$val = preg_replace('/params":"(.*)\}\]/', 'params":"' . $replace . '"}]', $val, -1, $c);
+					}
 					$aRow[$noneraw] = $val;
 					unset($aRow[$k]);
 				}

@@ -290,7 +290,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		$iCounter = 0;
 
 		// Failed validation for ajax upload elements
-		if (array_key_exists('id', $value))
+		if (is_array($value) && array_key_exists('id', $value))
 		{
 			$imgParams = array_values($value['crop']);
 			$value = array_keys($value['id']);
@@ -541,10 +541,35 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 
 	public function renderListData_csv($data, &$thisRow)
 	{
-		$data = explode(GROUPSPLITTER, $data);
+		$data = FabrikWorker::JSONtoData($data, true);
 		$params = $this->getParams();
 		$format = $params->get('ul_export_encode_csv', 'base64');
 		$raw = $this->getFullName(true, false) . '_raw';
+
+		if ($params->get('ajax_upload') && $params->get('ajax_max', 4) == 1)
+		{
+			// Single ajax upload
+			if (is_object($data))
+			{
+				$data = $data->file;
+			}
+			else
+			{
+				if ($data !== '')
+				{
+					$singleCropImg = JArrayHelper::getValue($data, 0);
+
+					if (empty($singleCropImg))
+					{
+						$data = array();
+					}
+					else
+					{
+						$data = (array) $singleCropImg->file;
+					}
+				}
+			}
+		}
 
 		foreach ($data as &$d)
 		{
