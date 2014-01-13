@@ -44,43 +44,43 @@ JHtml::_('behavior.keepalive');
 
 				<ul class="nav nav-list"style="margin-top:40px">
 					<li class="active">
-				    	<a data-toggle="tab" href="#detailsX">
-				    		<?php echo JText::_('COM_FABRIK_DETAILS')?>
-				    	</a>
-				    </li>
-				    <li>
-				    	<a data-toggle="tab" href="#data">
-				    		<?php echo JText::_('COM_FABRIK_DATA')?>
-				    	</a>
-				    </li>
-				    <li>
-				    	<a data-toggle="tab" href="#publishing">
-				    		<?php echo JText::_('COM_FABRIK_GROUP_LABEL_PUBLISHING_DETAILS')?>
-				    	</a>
-				    </li>
-				    <li>
-				    	<a data-toggle="tab" href="#tabplugins">
-				    		<?php echo JText::_('COM_FABRIK_GROUP_LABEL_PLUGINS_DETAILS')?>
-				    	</a>
-				    </li>
-				    <li>
-				    	<a data-toggle="tab" href="#access">
-				    		<?php echo JText::_('COM_FABRIK_GROUP_LABEL_RULES_DETAILS')?>
-				    	</a>
-				    </li>
+						<a data-toggle="tab" href="#detailsX">
+							<?php echo JText::_('COM_FABRIK_DETAILS')?>
+						</a>
+					</li>
+					<li>
+						<a data-toggle="tab" href="#data">
+							<?php echo JText::_('COM_FABRIK_DATA')?>
+						</a>
+					</li>
+					<li>
+						<a data-toggle="tab" href="#publishing">
+							<?php echo JText::_('COM_FABRIK_GROUP_LABEL_PUBLISHING_DETAILS')?>
+						</a>
+					</li>
+					<li>
+						<a data-toggle="tab" href="#access">
+							<?php echo JText::_('COM_FABRIK_GROUP_LABEL_RULES_DETAILS')?>
+						</a>
+					</li>
+					<li>
+						<a data-toggle="tab" href="#tabplugins">
+							<?php echo JText::_('COM_FABRIK_GROUP_LABEL_PLUGINS_DETAILS')?>
+						</a>
+					</li>
 				</ul>
 		</div>
 		<div class="span10">
 
-		    <div class="tab-content">
-		    	<?php
-		    	 echo $this->loadTemplate('details');
-		    	echo $this->loadTemplate('data');
-		    	echo $this->loadTemplate('publishing');
-		    	echo $this->loadTemplate('plugins');
-		    	echo $this->loadTemplate('access');
-		    	?>
-		    </div>
+			<div class="tab-content">
+				<?php
+				echo $this->loadTemplate('details');
+				echo $this->loadTemplate('data');
+				echo $this->loadTemplate('publishing');
+				echo $this->loadTemplate('plugins');
+				echo $this->loadTemplate('access');
+				?>
+			</div>
 
 			<input type="hidden" name="task" value="" />
 			<?php echo JHtml::_('form.token'); ?>
