@@ -427,6 +427,7 @@ class FabrikModelCalendar extends FabrikFEModelVisualization
 
 			$table = $listModel->getTable();
 			$els = $listModel->getElements();
+			$formModel = $listModel->getFormModel();
 
 			foreach ($record as $data)
 			{
@@ -440,7 +441,13 @@ class FabrikModelCalendar extends FabrikFEModelVisualization
 					return;
 				}
 
+				$startElement = $formModel->getElement($data['startdate']);
 				$enddate = trim($data['enddate']) !== '' ? FabrikString::safeColName($data['enddate']) : "''";
+				$endElement = trim($data['enddate']) !== '' ? $formModel->getElement($data['enddate']) : $startElement;
+
+				$startLocal = $store_as_local = (bool) $startElement->getParams()->get('date_store_as_local', false);
+				$endLocal = $store_as_local = (bool) $endElement->getParams()->get('date_store_as_local', false);
+
 				$label = trim($data['label']) !== '' ? FabrikString::safeColName($data['label']) : "''";
 				$customUrl = $data['customUrl'];
 				$qlabel = $label;
@@ -489,14 +496,24 @@ class FabrikModelCalendar extends FabrikFEModelVisualization
 							$row->_canDelete = (bool) $listModel->canDelete();
 							$row->_canEdit = (bool) $listModel->canEdit($row);
 							$row->_canView = (bool) $listModel->canViewDetails();
+							$row->startdate_locale = $row->startdate;
+							$row->enddate_locale = $row->enddate;
 
 							// Added timezone offset
 							if ($row->startdate !== $db->getNullDate() && $data['startShowTime'] == true)
 							{
 								$date = JFactory::getDate($row->startdate);
 								$row->startdate = $date->format('Y-m-d H:i:s', true);
-								$date->setTimezone($tz);
-								$row->startdate_locale = $date->toISO8601(true);
+
+								if ($startLocal)
+								{
+									$row->startdate_locale = $row->startdate;
+								}
+								else
+								{
+									$date->setTimezone($tz);
+									$row->startdate_locale = $date->toISO8601(true);
+								}
 							}
 
 							if ($row->enddate !== $db->getNullDate() && (string) $row->enddate !== '')
@@ -505,8 +522,16 @@ class FabrikModelCalendar extends FabrikFEModelVisualization
 								{
 									$date = JFactory::getDate($row->enddate);
 									$row->enddate = $date->format('Y-m-d H:i:d');
-									$date->setTimezone($tz);
-									$row->enddate_locale = $date->toISO8601(true);
+
+									if ($endLocal)
+									{
+										$row->enddate_locale = $row->enddate;
+									}
+									else
+									{
+										$date->setTimezone($tz);
+										$row->enddate_locale = $date->toISO8601(true);
+									}
 								}
 							}
 							else
@@ -515,13 +540,14 @@ class FabrikModelCalendar extends FabrikFEModelVisualization
 								$row->enddate_locale = isset($row->startdate_locale) ? $row->startdate_locale : '';
 							}
 
+
 							$jsevents[$table->id . '_' . $row->id . '_' . $row->startdate] = clone ($row);
 						}
 					}
 				}
 			}
 		}
-
+//echo "<pre>";print_r($jsevents);exit;
 		$params = $this->getParams();
 
 		$addEvent = json_encode($jsevents);

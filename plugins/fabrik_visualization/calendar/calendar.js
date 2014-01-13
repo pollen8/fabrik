@@ -93,7 +93,7 @@ var fabrikCalendar = new Class({
 
 	_makeEventRelDiv: function (entry, opts, aDate, target)
 	{
-		var x, eventCont, replace, dataContent;
+		var x, eventCont, replace, dataContent, buttons;
 		var label = entry.label;
 		opts.left === opts.left ? opts.left : 0;
 		opts['margin-left'] === opts['margin-left'] ? opts['margin-left'] : 0;
@@ -140,21 +140,27 @@ var fabrikCalendar = new Class({
 			style.width -= 1;
 		}
 		if (this.options.j3) {
-			var buttons = '';
+			buttons = '';
+			
 			if (entry._canDelete) {
 				buttons += this.options.buttons.del;
 			}
+			
 			if (entry._canEdit && !this.options.readonly) {
 				buttons += this.options.buttons.edit;
 			}
+			
 			if (entry._canView) {
 				buttons += this.options.buttons.view;
 			}
-			replace = {start: new Date(entry.startdate_locale).format(this.options.timeFormat), end: new Date(entry.enddate_locale).format(this.options.timeFormat)};
+			
+			replace = {start: Date.parse(entry.startdate_locale).format(this.options.timeFormat), end: Date.parse(entry.enddate_locale).format(this.options.timeFormat)};
 			dataContent = Joomla.JText._('PLG_VISUALIZATION_CALENDAR_EVENT_START_END').substitute(replace);
+			
 			if (buttons !== '') {
 				dataContent += '<hr /><div class=\"btn-group\" style=\"text-align:center;display:block\">' + buttons + '</div>';
 			}
+			
 			eventCont = new Element('a', {
 				'class': 'fabrikEvent label ' + entry.status,
 				'id': id,
