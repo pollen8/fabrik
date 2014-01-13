@@ -131,7 +131,9 @@ $states	= array(
 			$canEdit	= $user->authorise('core.edit',			'com_fabrik.element.'.$item->group_id);
 			$canCheckin	= $user->authorise('core.manage',		'com_checkin') || $item->checked_out==$user->get('id') || $item->checked_out==0;
 			$canChange	= $user->authorise('core.edit.state',	'com_fabrik.element.'.$item->group_id) && $canCheckin;
-			$extraTip = JText::_('COM_FABRIK_DETAILS') . ' :: ' . JText::_('COM_FABRIK_VALIDATIONS') . '<br />' . implode('<br /><br />', $item->validationTip) . '<br/> ' . $item->numJs . ' ' . JText::_('COM_FABRIK_JAVASCRIPT');
+			$extraTip = '<strong>' . $item->numValidations . ' ' . JText::_('COM_FABRIK_VALIDATIONS') . '</strong><br />'
+				. implode('<br />', $item->validationTip)
+				. '<br/><br/><strong>' . $item->numJs . ' ' . JText::_('COM_FABRIK_JAVASCRIPT') . '</strong>';
 			?>
 
 			<tr class="row<?php echo $i % 2; ?>">
@@ -189,7 +191,9 @@ $states	= array(
 					<?php echo str_replace(' ', '&nbsp;', $item->label); ?>
 				</td>
 				<td>
-					<?php echo $item->full_element_name; ?>
+					<span class="hasTooltip" title="<?php echo '<strong>' . $item->name . "</strong><br />" . $item->tip; ?>">
+						<?php echo $item->full_element_name; ?>
+					</span>
 				</td>
 				<td class="center">
 					<span class="hasTooltip" title="<?php echo $extraTip ?>">
