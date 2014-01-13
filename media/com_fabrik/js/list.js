@@ -1432,9 +1432,11 @@ var FbListActions = new Class({
 	},
 
 	setUpFloating: function () {
+		var chxFound = false;
 		this.list.form.getElements(this.options.selector).each(function (ul) {
 			if (ul.getParent('.fabrik_row')) {
 				if (i = ul.getParent('.fabrik_row').getElement('input[type=checkbox]')) {
+					chxFound = true;
 					var hideFn = function (e, elem, leaving) {
 						if (!e.target.checked) {
 							this.hide(e, elem);
@@ -1506,7 +1508,7 @@ var FbListActions = new Class({
 		var tip = new FloatingTips(chxall, tipChxAllOpts);
 
 		// hide markup that contained the actions
-		if (this.list.form.getElements('.fabrik_actions')) {
+		if (this.list.form.getElements('.fabrik_actions') && chxFound) {
 			this.list.form.getElements('.fabrik_actions').hide();
 		}
 		if (this.list.form.getElements('.fabrik_calculation')) {
