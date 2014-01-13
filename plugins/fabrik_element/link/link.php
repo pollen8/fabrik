@@ -218,7 +218,7 @@ class PlgFabrik_ElementLink extends PlgFabrik_Element
 			$value = array('label' => '', 'link' => '');
 		}
 
-		if (FabrikWorker::getMenuOrRequestVar('rowid') == 0 && $value['link'] === '')
+		if (FabrikWorker::getMenuOrRequestVar('rowid') == 0 && JArrayHelper::getValue($value, 'link', '') === '')
 		{
 			$value['link'] = $params->get('link_default_url');
 		}
