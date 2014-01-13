@@ -682,24 +682,32 @@ var fabrikCalendar = new Class({
 	 */
 	removeDayEvents: function () {
 		var firstDate = new Date();
+		
+		var tzOffset = new Date().get('gmtoffset').replace(/0+$/, '').toInt();
+		
 		var hourTds = [];
 		firstDate.setTime(this.date.valueOf());
 		firstDate.setHours(0, 0);
 		var trs = this.el.getElements('.dayView tr');
+		
 		for (var i = 1; i < trs.length; i++) {
-			firstDate.setHours(i - 1, 0);
+			firstDate.setHours(i - 1 + tzOffset, 0);
 			var td = trs[i].getElements('td')[1];
+			
 			if (typeOf(td) !== 'null') {
 				hourTds.push(td);
 				td.className = '';
 				td.addClass('day');
+				
 				if (typeOf(td.retrieve('calevents')) !== 'null') {
 					td.retrieve('calevents').each(function (evnt) {
 						evnt.destroy();
 					});
 				}
+				
 				td.eliminate('calevents');
 				td.addClass(firstDate.getTime() - this.HOUR);
+				td.set('data-date', firstDate);
 			}
 		}
 		return hourTds;
@@ -710,8 +718,8 @@ var fabrikCalendar = new Class({
 	 */
 	showDay: function () {
 		var trs = this.el.getElements('.dayView tr'), h;
-		// Put date in top row
 
+		// Put date in top row
 		thbg = trs[0].childNodes[1].getStyle('background-color');
 		ht = this.options.days[this.date.getDay()];
 		h = new Element('div', {'styles': {'background-color': this._getColor(thbg, this.date)}}).set('text', ht);
@@ -938,9 +946,12 @@ var fabrikCalendar = new Class({
 			return;
 		}
 		
+		if (e.target.get('data-date')) {
+			console.log('data-date = ', e.target.get('data-date'));
+			
+		}
 		this.date.setTime(rawd);
 		d = 0;
-		
 		if (!isNaN(rawd) && rawd !== '') {
 			thisDay = new Date();
 			thisDay.setTime(rawd);
@@ -950,7 +961,7 @@ var fabrikCalendar = new Class({
 			day = (day <  10) ? "0" + day : day;
 			
 			if (view !== 'month') {
-				hour = thisDay.getHours();
+				hour = thisDay.getHours();	
 				hour = (hour <  10) ? "0" + hour : hour;
 				min = thisDay.getMinutes();
 				min = (min <  10) ? "0" + min : min;
@@ -1153,7 +1164,6 @@ var fabrikCalendar = new Class({
 			);
 			this.el.getElement('.viewContainer').appendChild(this.dayView);
 		}
-		//this.showDay();
 		this.showView('dayView');
 	},
 
@@ -1246,7 +1256,7 @@ var fabrikCalendar = new Class({
 				for (d = 0; d < we; d++) {
 					if (d === 0) {
 						var hour = (i.length === 1) ? i + '0:00' : i + ':00';
-						tr.adopt(new Element('td', {'class': 'day'}).appendText(hour));
+						tr.adopt(new Element('td', {'class': 'day'}).set('text', hour));
 					} else {
 						tr.adopt(new Element('td', {'class': 'day',
 						'styles': {
