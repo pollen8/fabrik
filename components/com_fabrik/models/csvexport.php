@@ -328,7 +328,7 @@ class FabrikFEModelCSVExport
 		}
 		else
 		{
-			// If we cant find the file then dont try to auto download it
+			// If we cant find the file then don't try to auto download it
 			return false;
 		}
 
@@ -459,7 +459,7 @@ class FabrikFEModelCSVExport
 		{
 			if ($this->outPutFormat == 'excel')
 			{
-				// Possible fix for Excel import of acents in csv file?
+				// Possible fix for Excel import of accents in csv file?
 				return mb_convert_encoding($n, 'UTF-16LE', 'UTF-8');
 			}
 			else
@@ -544,7 +544,7 @@ class FabrikFEModelCSVExport
 
 						/**
 						 * $$$ hugh - added next line as special case for a client, do not remove!
-						 * (used in conjuntion with "Custom QS" option, to allow variable header labels
+						 * (used in conjunction with "Custom QS" option, to allow variable header labels
 						 */
 						$n = $w->parseMessageForPlaceHolder($n, array());
 
@@ -606,7 +606,7 @@ class FabrikFEModelCSVExport
 	}
 
 	/**
-	 * Get unqiue heading
+	 * Get unique heading
 	 *
 	 * @param   string  $n  Key
 	 * @param   array   $h  Search
