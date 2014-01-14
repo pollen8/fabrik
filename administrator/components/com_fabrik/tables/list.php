@@ -161,4 +161,36 @@ class FabrikTableList extends FabTable
 		// Bind the object with the row and return.
 		return $this->bind($row);
 	}
+
+	/**
+	 * Method to delete a row from the database table by primary key value.
+	 *
+	 * @param   mixed  $pk  An optional primary key value to delete.  If not set the instance property value is used.
+	 *
+	 * @return  boolean  True on success.
+	 */
+
+	public function delete($pk = null)
+	{
+		if (!parent::delete())
+		{
+			return false;
+		}
+
+		$pk = (array) $pk;
+		JArrayHelper::toInteger($pk);
+
+		if (empty($pk))
+		{
+			return;
+		}
+
+		// Initialise the query.
+		$query = $this->_db->getQuery(true);
+
+		$query->delete('#__fabrik_joins')->where('element_id = 0 AND list_id IN (' . implode(',', $pk) . ' )');
+		$this->_db->setQuery($query);
+
+		return $this->_db->execute();
+	}
 }

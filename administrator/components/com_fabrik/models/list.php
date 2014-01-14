@@ -2049,8 +2049,6 @@ class FabrikAdminModelList extends FabModelAdmin
 
 					// Trigger the onContentAfterDelete event.
 					$dispatcher->trigger($this->event_after_delete, array($context, $table));
-
-					// Get the tables form
 				}
 				else
 				{
