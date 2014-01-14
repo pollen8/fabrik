@@ -730,6 +730,7 @@ class FabrikFEModelImportcsv extends JModelForm
 			{
 				$formModel->rowId = $pkVal;
 				$updatedCount++;
+				$model->csvOverwriting = true;
 			}
 			else
 			{
@@ -741,6 +742,7 @@ class FabrikFEModelImportcsv extends JModelForm
 				$formModel->rowId = '';
 				$formModel->setInsertId('');
 				$this->addedCount++;
+				$model->csvOverwriting = false;
 			}
 
 			// $$$ rob - if raw and none raw or just raw found then insert the raw data
