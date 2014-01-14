@@ -304,6 +304,13 @@ class FabrikFEModelList extends JModelForm
 	public $importingCSV = false;
 
 	/**
+	 * CSV in overwite mode
+	 *
+	 * @var bool
+	 */
+	public $csvOverwriting = false;
+
+	/**
 	 * Element names to encrypt
 	 *
 	 * @var array
@@ -7365,10 +7372,35 @@ class FabrikFEModelList extends JModelForm
 
 		if ($origRowId == '')
 		{
-			// $$$ rob added test for auto_inc as sugarid key is set from storeDatabaseFormat() and needs to be maintained
-			// $$$ rob don't do this when importing via CSV as we want to maintain existing keys (hence check on task var
+			/**
+			 * $$$ rob added test for auto_inc as sugarid key is set from storeDatabaseFormat() and needs to be maintained
+			 * $$$ rob don't do this when importing via CSV as we want to maintain existing keys (hence check on task var
+			 * $$$ hugh - except ... if we are importing CSV and NOT overwriting, we need to remove the PK, as the CSV code
+			 * will have set the PK to empty.  So we have to remove it from the record, otherwise it'll get written out as 0.
+			 * The importingCSV and csvOverwriting vars are set in insertData() in the csv import model
+			 *
+			 * NOTE - for the new csvOverwriting test, I'm also using $this->importingCSV, rather than checking the task input,
+			 * as I'm not sure if the latter gets set on front and backend, whereas the importingCSV variable definitely gets
+			 * set in the CSV import model.
+			 */
 			$task = strtolower($input->get('task'));
-			if (($primaryKey !== '' && $this->getTable()->auto_inc == true) && $task !== 'doimport')
+			if (
+				(
+						$this->importingCSV
+						&&
+						!$this->csvOverwriting
+				)
+				||
+				(
+					(
+						$primaryKey !== ''
+						&&
+						$this->getTable()->auto_inc == true
+					)
+					&&
+					$task !== 'doimport'
+				)
+			)
 			{
 				unset($oRecord->$primaryKey);
 			}
