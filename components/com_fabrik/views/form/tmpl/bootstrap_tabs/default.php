@@ -17,6 +17,12 @@ $model = $this->getModel();
 $groupTmpl = $model->editable ? 'group' : 'group_details';
 $active = ($form->error != '') ? '' : ' fabrikHide';
 
+if ($model->isMultiPage())
+{
+	$app = JFactory::getApplication();
+	$app->enqueueMessage(JText::_('COM_FABRIK_ERR_TAB_FORM_TEMPLATE_INCOMPATIBLE_WITH_MULTIPAGE_FORMS'), 'error');
+}
+
 if ($this->params->get('show_page_heading', 1)) : ?>
 	<div class="componentheading<?php echo $this->params->get('pageclass_sfx')?>">
 	<?php echo $this->escape($this->params->get('page_heading')); ?>
