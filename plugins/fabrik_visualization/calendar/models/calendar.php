@@ -414,9 +414,12 @@ class FabrikModelCalendar extends FabrikFEModelVisualization
 		$calendar = $this->getRow();
 		$aLegend = "$this->calName.addLegend([";
 		$jsevents = array();
+		$input = $app->input;
+		$where = $input->get('where', array(), 'array');
 
 		foreach ($this->events as $listid => $record)
 		{
+			$where = JArrayHelper::getValue($where, $listid, '');
 			$listModel = JModelLegacy::getInstance('list', 'FabrikFEModel');
 			$listModel->setId($listid);
 
@@ -477,7 +480,8 @@ class FabrikModelCalendar extends FabrikFEModelVisualization
 				->select($status . ' AS status')
 				->order($startdate . ' ASC');
 				$query = $listModel->buildQueryJoin($query);
-				$query = $listModel->buildQueryWhere(true, $query);
+				$where = trim(str_replace('WHERE', '', $where));
+				$query = $where === '' ? $listModel->buildQueryWhere(true, $query) : $query->where($where);
 				$db->setQuery($query);
 				$formdata = $db->loadObjectList();
 
@@ -547,9 +551,8 @@ class FabrikModelCalendar extends FabrikFEModelVisualization
 				}
 			}
 		}
-//echo "<pre>";print_r($jsevents);exit;
-		$params = $this->getParams();
 
+		$params = $this->getParams();
 		$addEvent = json_encode($jsevents);
 
 		return $addEvent;
