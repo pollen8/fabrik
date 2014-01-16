@@ -653,7 +653,7 @@ class PlgContentFabrik extends JPlugin
 		}
 
 		/*
-		 * $$$ rob set this array here - we will use in the tablefilter::getQuerystringFilters()
+		 * $$$ rob set this array here - we will use in the listfilter::getQuerystringFilters()
 		 * code to determine if the filter is a querystring filter or one set from the plugin
 		 * if its set from here it becomes sticky and is not cleared from the session. So we basically
 		 * treat all filters set up inside {fabrik.....} as prefilters

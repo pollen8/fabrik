@@ -108,7 +108,7 @@ class FabrikFEModelVisualization extends JModelLegacy
 	}
 
 	/**
-	 * alais to getVisualization()
+	 * Alais to getVisualization()
 	 *
 	 * @since	3.0.6
 	 *
@@ -121,7 +121,7 @@ class FabrikFEModelVisualization extends JModelLegacy
 	}
 
 	/**
-	 * get the item
+	 * Get the item
 	 *
 	 * @return  FabrikTableVisualization
 	 */
@@ -207,7 +207,7 @@ class FabrikFEModelVisualization extends JModelLegacy
 	}
 
 	/**
-	 * get all list model's filters
+	 * Get all list model's filters
 	 *
 	 * @return array table filters
 	 */
@@ -230,6 +230,7 @@ class FabrikFEModelVisualization extends JModelLegacy
 			{
 				$ref = $this->getRenderContext();
 				$id = $this->getId();
+				$listModel->getFilterArray();
 				$filters[$listModel->getTable()->label] = $listModel->getFilters($this->getContainerId(), 'visualization', $id, $ref);
 				$js[] = $listModel->filterJs;
 			}
@@ -239,6 +240,24 @@ class FabrikFEModelVisualization extends JModelLegacy
 
 		$this->filterJs = implode("\n", $js);
 		$this->getRequireFilterMsg();
+
+		return $filters;
+	}
+
+	/**
+	 * Build an array of the lists' query where statements
+	 *
+	 * @return  array  keyed on list id.
+	 */
+	public function buildQueryWhere()
+	{
+		$filters = array();
+		$listModels = $this->getlistModels();
+
+		foreach ($listModels as $listModel)
+		{
+			$filters[$listModel->getId()] = $listModel->buildQueryWhere();
+		}
 
 		return $filters;
 	}

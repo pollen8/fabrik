@@ -65,21 +65,9 @@ class FabrikViewCalendar extends JViewLegacy
 
 		JHTML::stylesheet('media/com_fabrik/css/list.css');
 
-		// Get the active menu item
-		$filter = JFilterInput::getInstance();
-		$urlfilters = $filter->clean($_GET, 'array');
-		unset($urlfilters['option']);
-		unset($urlfilters['view']);
-		unset($urlfilters['controller']);
-		unset($urlfilters['Itemid']);
-		unset($urlfilters['visualizationid']);
-		unset($urlfilters['format']);
-		unset($urlfilters['id']);
-
-		if (empty($urlfilters))
-		{
-			$urlfilters = new stdClass;
-		}
+		// Get all list where statements - which are then included in the ajax call to ensure we get the correct data set loaded
+		$urlfilters = new stdClass;
+		$urlfilters->where = $model->buildQueryWhere();
 
 		$urls = new stdClass;
 
