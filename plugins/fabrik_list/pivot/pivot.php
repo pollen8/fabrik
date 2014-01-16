@@ -180,6 +180,10 @@ class PlgFabrik_ListPivot extends plgFabrik_List
 			}
 		}
 
+		$headings['pivot_total'] = JText::_('PLG_LIST_PIVOT_LIST_X_TOTAL');
+		$args['headingClass']['pivot_total'] = $headingClass;
+		$args['cellClass']['pivot_total'] = $cellClass;
+
 		$args['tableHeadings'] = $headings;
 	}
 
@@ -227,6 +231,7 @@ class PlgFabrik_ListPivot extends plgFabrik_List
 		{
 			$newRow = new stdClass();
 			$newRow->$yCol = $yColData;
+			$total = 0;
 
 			// Set default values
 			foreach ($xCols as $xColData)
@@ -243,13 +248,30 @@ class PlgFabrik_ListPivot extends plgFabrik_List
 						if ($row->$xCol === $xColData && $row->$yCol === $yColData)
 						{
 							$newRow->$xColData = $row->$sums;
+							$total += (float) $row->$sums;
 						}
 					}
 				}
 			}
 
+			$newRow->pivot_total = $total;
 			$new[] = $newRow;
 		}
+
+		// Add totals @ bottom
+		$yColTotals = new stdClass;
+		$yColTotals->$yCol = JText::_('PLG_LIST_PIVOT_LIST_Y_TOTAL');
+		$total = 0;
+
+		foreach ($xCols as $x)
+		{
+			$c = JArrayHelper::getColumn($new, $x);
+			$yColTotals->$x = array_sum($c);
+			$total += $yColTotals->$x;
+		}
+
+		$yColTotals->pivot_total = $total;
+		$new[] = $yColTotals;
 
 		$data[0] = $new;
 	}
