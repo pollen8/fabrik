@@ -532,6 +532,13 @@
 				label="COM_FABRIK_FIELD_FEED_DATE_LABEL"
 			/>
 
+			<field name="feed_image_src"
+				type="text"
+				class="input-xlarge"
+				description="COM_FABRIK_FIELD_FEED_IMAGE_DESC"
+				label="COM_FABRIK_FIELD_FEED_IMAGE_LABEL"
+			/>
+
 			<field name="rsslimit"
 				type="text"
 				default="150"

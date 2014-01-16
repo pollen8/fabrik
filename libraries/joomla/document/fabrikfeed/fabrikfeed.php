@@ -187,14 +187,16 @@ class JDocumentFabrikfeed extends JDocument
 	}
 
 	/**
-	 * Render the document
+	 * Outputs the document
 	 *
-	 * @access public
-	 * @param boolean 	$cache		If true, cache the output
-	 * @param array		$params		Associative array of attributes
-	 * @return 	The rendered data
+	 * @param   boolean  $cache   If true, cache the output
+	 * @param   array    $params  Associative array of attributes
+	 *
+	 * @return  The rendered data
+	 *
+	 * @since   11.1
 	 */
-	function render($cache = false, $params = array())
+	public function render($cache = false, $params = array())
 	{
 		$app = JFactory::getApplication();
 		$input = $app->input;
@@ -215,12 +217,13 @@ class JDocumentFabrikfeed extends JDocument
 		$file = $cache_path . '/' . $file . '_' . $option . '.xml';
 
 		// Instantiate feed renderer and set the mime encoding
-		$renderer = &$this->loadRenderer(($type) ? $type : 'rss');
+		$renderer = $this->loadRenderer(($type) ? $type : 'rss');
 
 		if (!is_a($renderer, 'JDocumentRenderer'))
 		{
 			throw new RuntimeException('Resource Not Found', 404);
 		}
+
 		$this->setMimeEncoding($renderer->getContentType());
 
 		// Generate prolog
@@ -234,7 +237,7 @@ class JDocumentFabrikfeed extends JDocument
 		}
 
 		// Render the feed
-		$data .= $renderer->render();
+		$data .= $renderer->render('fabrik');
 
 		parent::render();
 		return $data;
