@@ -4213,7 +4213,7 @@ class FabrikFEModelForm extends FabModelForm
 		$joinsToThisKey = $referringTable->getJoinsToThisKey();
 		$linksToForms = $referringTable->getLinksToThisKey();
 		$row = $this->getData();
-		$facetedLinks = $tableParams->get('factedlinks', null);
+		$facetedLinks = $tableParams->get('facetedlinks', null);
 
 		if (is_null($facetedLinks))
 		{
