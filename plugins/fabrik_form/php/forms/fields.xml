@@ -2,20 +2,28 @@
 <form>
 	<fields addfieldpath="/administrator/components/com_fabrik/models/fields" name="params">
 		<fieldset name="plg-form-php">
-			<field default="0" description="PLG_FORM_PHP_PROCESS_CURL_DESC" label="PLG_FORM_PHP_PROCESS_CURL_LABEL" name="only_process_curl" repeat="true" type="list">
-					<option value="">Never</option>
-					<option value="onBeforeLoad">Before the form data is loaded (onBeforeLoad)</option>
-					<option value="onLoad">Before the form is loaded (onLoad)</option>
-					<option value="onCanEditGroup">While groups are rendered on the form (onCanEditGroup)</option>
-					<option value="onBeforeProcess">Start of form submission (onBeforeProcess)</option>
-					<option value="onBeforeStore">After any images have been uploaded (onBeforeStore)</option>
-					<option value="onBeforeCalculations">After data stored, before calculations (onBeforeCalculations)</option>
-					<option value="onAfterProcess">End of form submission (onAfterProcess)</option>
-					<option value="onError">If an error occurs in form submission (onError)</option>
-					<option value="getTopContent">At top of form (getTopContent)</option>
-					<option value="getBottomContent">At bottom of form (getBottomContent)</option>
-					<option value="getEndContent">After the end of the form (getEndContent)</option>
-					<option value="onDeleteRowsForm">On record deletion (onDeleteRowsForm)</option>
+			<field
+				name="only_process_curl"
+				type="list"
+				class="input-xxlarge"
+				default=""
+				description="PLG_FORM_PHP_PROCESS_CURL_DESC"
+				label="PLG_FORM_PHP_PROCESS_CURL_LABEL"
+				repeat="true"
+				>
+					<option value="">PLG_FORM_PHP_PROCESS_NEVER</option>
+					<option value="onBeforeLoad">PLG_FORM_PHP_PROCESS_ONBEFORELOAD</option>
+					<option value="onLoad">PLG_FORM_PHP_PROCESS_ONLOAD</option>
+					<option value="onCanEditGroup">PLG_FORM_PHP_PROCESS_ONCANEDITGROUP</option>
+					<option value="onBeforeProcess">PLG_FORM_PHP_PROCESS_ONBEFOREPROCESS</option>
+					<option value="onBeforeStore">PLG_FORM_PHP_PROCESS_ONBEFORESTORE</option>
+					<option value="onBeforeCalculations">PLG_FORM_PHP_PROCESS_ONBEFORECALCULATIONS</option>
+					<option value="onAfterProcess">PLG_FORM_PHP_PROCESS_ONAFTERPROCESS</option>
+					<option value="onError">PLG_FORM_PHP_PROCESS_ONERROR</option>
+					<option value="getTopContent">PLG_FORM_PHP_PROCESS_GETTOPCONTENT</option>
+					<option value="getBottomContent">PLG_FORM_PHP_PROCESS_GETBOTTOMCONTENT</option>
+					<option value="getEndContent">PLG_FORM_PHP_PROCESS_GETENDCONTENT</option>
+					<option value="onDeleteRowsForm">PLG_FORM_PHP_PROCESS_ONDELETEROWSFORM</option>
 			</field>
 
 			<field description="PLG_FORM_PHP_FILE_DESC" directory="plugins/fabrik_form/php/scripts/" hide_default="1" label="PLG_FORM_PHP_FILE_LABEL" name="form_php_file" repeat="true" type="filelist"/>
