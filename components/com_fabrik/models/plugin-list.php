@@ -191,10 +191,12 @@ class PlgFabrik_List extends FabrikPlugin
 	/**
 	 * onGetData method
 	 *
+	 * @param   &$args  Array  Additional options passed into the method when the plugin is called
+	 *
 	 * @return bool currently ignored
 	 */
 
-	public function onLoadData()
+	public function onLoadData(&$args)
 	{
 		return true;
 	}
