@@ -73,6 +73,7 @@ class JFormFieldListfields extends JFormFieldList
 		$labelMethod = (string) JArrayHelper::getValue($this->element, 'label_method');
 		$nojoins = (bool) JArrayHelper::getValue($this->element, 'nojoins', false);
 		$mode = (string) JArrayHelper::getValue($this->element, 'mode', false);
+		$useStep = (bool) JArrayHelper::getValue($this->element, 'usestep', false);
 
 		switch ($controller)
 		{
@@ -139,7 +140,7 @@ class JFormFieldListfields extends JFormFieldList
 				{
 					$formModel = $listModel->getFormModel();
 					$valfield = $valueformat == 'tableelement' ? 'name' : 'id';
-					$res = $formModel->getElementOptions(false, $valfield, $onlylistfields, $showRaw, $pluginFilters, $labelMethod, $nojoins);
+					$res = $formModel->getElementOptions($useStep, $valfield, $onlylistfields, $showRaw, $pluginFilters, $labelMethod, $nojoins);
 				}
 				else
 				{
@@ -158,9 +159,9 @@ class JFormFieldListfields extends JFormFieldList
 
 				$formModel = $this->form->model;
 				$valfield = $valueformat == 'tableelement' ? 'name' : 'id';
-				$res = $formModel->getElementOptions(false, $valfield, $onlylistfields, $showRaw, $pluginFilters, $labelMethod, $nojoins);
+				$res = $formModel->getElementOptions($useStep, $valfield, $onlylistfields, $showRaw, $pluginFilters, $labelMethod, $nojoins);
 
-				$jsres = $formModel->getElementOptions(true, $valfield, $onlylistfields, $showRaw, $pluginFilters, $labelMethod, $nojoins);
+				$jsres = $formModel->getElementOptions($useStep, $valfield, $onlylistfields, $showRaw, $pluginFilters, $labelMethod, $nojoins);
 				array_unshift($jsres, JHTML::_('select.option', '', JText::_('COM_FABRIK_PLEASE_SELECT')));
 				$this->js($jsres);
 				break;
@@ -170,7 +171,7 @@ class JFormFieldListfields extends JFormFieldList
 				$groupModel = JModelLegacy::getInstance('Group', 'FabrikFEModel');
 				$groupModel->setId($id);
 				$formModel = $groupModel->getFormModel();
-				$res = $formModel->getElementOptions(false, $valfield, $onlylistfields, $showRaw, $pluginFilters, $labelMethod, $nojoins);
+				$res = $formModel->getElementOptions($useStep, $valfield, $onlylistfields, $showRaw, $pluginFilters, $labelMethod, $nojoins);
 				break;
 			default:
 				return JText::_('The ListFields element is only usable by lists and elements');
@@ -228,6 +229,7 @@ class JFormFieldListfields extends JFormFieldList
 
 			if ($mode === 'gui')
 			{
+				$this->js($aEls);
 				$return = $this->gui();
 			}
 			else
@@ -329,7 +331,8 @@ class JFormFieldListfields extends JFormFieldList
 		$groupModel = JModelLegacy::getInstance('Group', 'FabrikFEModel');
 		$groupModel->setId($groupId);
 		$optskey = $valueformat == 'tableelement' ? 'name' : 'id';
-		$res = $groupModel->getForm()->getElementOptions(false, $optskey, $onlylistfields, $showRaw, $pluginFilters, $labelMethod, $nojoins);
+		$useStep = (bool) JArrayHelper::getValue($this->element, 'usestep', false);
+		$res = $groupModel->getForm()->getElementOptions($useStep, $optskey, $onlylistfields, $showRaw, $pluginFilters, $labelMethod, $nojoins);
 		$hash = $controller . '.' . implode('.', $bits);
 
 		if (array_key_exists($hash, $this->results))
