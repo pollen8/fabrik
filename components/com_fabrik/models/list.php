@@ -854,7 +854,12 @@ class FabrikFEModelList extends JModelForm
 		$this->data = $results[1];
 		$this->groupTemplates = $results[2];
 		$nav = $this->getPagination($this->totalRecords, $this->limitStart, $this->limitLength);
-		$pluginManager->runPlugins('onLoadData', $this, 'list', $this->data);
+
+		// Pass the query as an object property so it can be updated via reference
+		$args = new stdClass;
+		$args->data =& $this->data;
+
+		$pluginManager->runPlugins('onLoadData', $this, 'list', $args);
 
 		return $this->data;
 	}
@@ -2258,7 +2263,8 @@ class FabrikFEModelList extends JModelForm
 		$app = JFactory::getApplication();
 		$input = $app->input;
 		JDEBUG ? $profiler->mark('buildQuery: start') : null;
-		$query = array();
+		$db = $this->getDb();
+		$query = $db->getQuery(true);
 		$table = $this->getTable();
 
 		if ($this->mergeJoinedData())
@@ -2375,24 +2381,19 @@ class FabrikFEModelList extends JModelForm
 			}
 
 			// $$$ rob build order first so that we know of any elemenets we need to include in the select statement
-			$order = $this->buildQueryOrder();
+			$query = $this->buildQueryOrder($query);
 			$this->selectedOrderFields = (array) $this->selectedOrderFields;
 			$this->selectedOrderFields = array_unique(array_merge($lookUps, $this->selectedOrderFields));
 
-			$query['select'] = 'SELECT  ' . implode(', ', $this->selectedOrderFields) . ' FROM ' . $db->quoteName($table->db_table_name);
-
-			$query['join'] = $this->buildQueryJoin();
-			$query['where'] = $this->buildQueryWhere($input->get('incfilters', 1));
-			$query['groupby'] = $this->buildQueryGroupBy();
-			$query['order'] = $order;
-
-			// Check that the order by fields are in the select statement
-			$squery = implode(' ', $query);
+			$query->select(implode(', ', $this->selectedOrderFields) . ' FROM ' . $db->quoteName($table->db_table_name));
+			$query = $this->buildQueryJoin($query);
+			$query = $this->buildQueryWhere($input->get('incfilters', 1), $query);
+			$query = $this->buildQueryGroupBy($query);
 
 			// Can't limit the query here as this gives incorrect _data array.
-			// $db->setQuery($squery, $this->limitStart, $this->limitLength);
-			$db->setQuery($squery);
-			FabrikHelperHTML::debug($squery, 'table:mergeJoinedData get ids');
+			// $db->setQuery($query, $this->limitStart, $this->limitLength);
+			$db->setQuery($query);
+			FabrikHelperHTML::debug((string) $query, 'table:mergeJoinedData get ids');
 			$ids = array();
 			$idRows = $db->loadObjectList();
 			$maxPossibleIds = count($idRows);
@@ -2435,10 +2436,10 @@ class FabrikFEModelList extends JModelForm
 		}
 
 		// Now lets actually construct the query that will get the required records:
-		$query = array();
-		$query['select'] = $this->buildQuerySelect();
+		$query->clear();
+		$query = $this->buildQuerySelect('list', $query);
 		JDEBUG ? $profiler->mark('queryselect: got') : null;
-		$query['join'] = $this->buildQueryJoin();
+		$query = $this->buildQueryJoin($query);
 		JDEBUG ? $profiler->mark('queryjoin: got') : null;
 
 		if ($this->mergeJoinedData())
@@ -2450,33 +2451,32 @@ class FabrikFEModelList extends JModelForm
 			*/
 			if (!empty($ids))
 			{
-				$query['where'] = ' WHERE ' . $lookUpNames[$lookupC] . ' IN (' . implode(array_unique($ids), ',') . ')';
+				$query->where($lookUpNames[$lookupC] . ' IN (' . implode(array_unique($ids), ',') . ')');
 
 				if (!empty($mainKeys))
 				{
 					// Limit to the current page
-					$query['where'] .= ' AND ' . $table->db_primary_key . ' IN (' . implode($mainKeys, ',') . ')';
+					$query->where($table->db_primary_key . ' IN (' . implode($mainKeys, ',') . ')');
 				}
 			}
 			else
 			{
-				$query['where'] = ' WHERE 1 = -1';
+				$query->where('1 = -1');
 			}
 		}
 		else
 		{
 			// $$$ rob we aren't merging joined records so lets just add the standard where query
 			// Incfilters set when exporting as CSV
-			$query['where'] = $this->buildQueryWhere($input->get('incfilters', 1));
+			$query = $this->buildQueryWhere($input->get('incfilters', 1), $query);
 		}
 
-		$query['groupby'] = $this->buildQueryGroupBy();
-		$query['order'] = $this->buildQueryOrder();
+		$query = $this->buildQueryGroupBy($query);
+		$query = $this->buildQueryOrder($query);
 		$query = $this->pluginQuery($query);
-		$query = implode(' ', $query);
 		$this->mainQuery = $query;
 
-		return $query;
+		return (string) $query;
 	}
 
 	/**
@@ -2605,6 +2605,9 @@ class FabrikFEModelList extends JModelForm
 			$sql .= ' FROM ' . $db->quoteName($table->db_table_name) . " \n";
 		}
 
+		$pluginManager = FabrikWorker::getPluginManager();
+		$pluginManager->runPlugins('onBuildQuerySelect', $this, 'list', $query);
+
 		return $query ? $query : $sql;
 	}
 
@@ -2694,9 +2697,15 @@ class FabrikFEModelList extends JModelForm
 					{
 						$strOrder == '' ? $strOrder = "\n ORDER BY " : $strOrder .= ',';
 						$strOrder .= $element->getOrderByName() . ' ' . $dir;
-						$this->orderEls[] = $element->getOrderByName();
+						$orderByName = $element->getOrderByName();
+						$this->orderEls[] = $orderByName;
 						$this->orderDirs[] = $dir;
 						$element->getAsField_html($this->selectedOrderFields, $aAsFields);
+
+						if ($query)
+						{
+							$query->order($orderByName . ' ' . $dir);
+						}
 					}
 				}
 				else
@@ -2705,6 +2714,7 @@ class FabrikFEModelList extends JModelForm
 				}
 			}
 		}
+
 		// If nothing found in session use default ordering (or that set by querystring)
 		if ($strOrder == '')
 		{
@@ -3070,6 +3080,7 @@ class FabrikFEModelList extends JModelForm
 	public function buildQueryGroupBy($query = false)
 	{
 		$groups = $this->getFormModel()->getGroupsHiarachy();
+		$pluginManager = FabrikWorker::getPluginManager();
 
 		foreach ($groups as $groupModel)
 		{
@@ -3094,11 +3105,14 @@ class FabrikFEModelList extends JModelForm
 			}
 			else
 			{
+				$pluginManager->runPlugins('onBuildQueryGroupBy', $this, 'list', $query);
 				$query->group($this->pluginQueryGroupBy);
 
 				return $query;
 			}
 		}
+
+		$pluginManager->runPlugins('onBuildQueryGroupBy', $this, 'list', $query);
 
 		return $query === false ? '' : $query;
 	}
@@ -6754,10 +6768,12 @@ class FabrikFEModelList extends JModelForm
 			$groupHeadings[''] = '';
 		}
 
-		$args['tableHeadings'] = $aTableHeadings;
-		$args['groupHeadings'] = $groupHeadings;
-		$args['headingClass'] = $headingClass;
-		$args['cellClass'] = $cellClass;
+		$args['tableHeadings'] =& $aTableHeadings;
+		$args['groupHeadings'] =& $groupHeadings;
+		$args['headingClass'] =& $headingClass;
+		$args['cellClass'] =& $cellClass;
+		$args['data'] = $this->data;
+
 		FabrikWorker::getPluginManager()->runPlugins('onGetPluginRowHeadings', $this, 'list', $args);
 
 		return array($aTableHeadings, $groupHeadings, $headingClass, $cellClass);
@@ -11269,7 +11285,6 @@ class FabrikFEModelList extends JModelForm
 				$query->set($field . ' = ' . ($i + 1));
 				$query->where($k . ' = ' . $db->quote($row->id));
 				$db->setQuery($query);
-				echo $db->getQuery() . "\n\n";
 				$db->execute();
 			}
 		}
