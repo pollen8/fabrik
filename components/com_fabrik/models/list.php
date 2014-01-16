@@ -1314,7 +1314,7 @@ class FabrikFEModelList extends JModelForm
 		$buttonAction = $this->actionMethod();
 		$nextview = $this->canEdit() ? 'form' : 'details';
 		$tmpKey = '__pk_val';
-		$faceted = $params->get('factedlinks');
+		$faceted = $params->get('facetedlinks');
 
 		// Get a list of fabrik lists and ids for view list and form links
 		$oldLinksToForms = $this->getLinksToThisKey();
@@ -1868,7 +1868,7 @@ class FabrikFEModelList extends JModelForm
 		$listid = $element->list_id;
 		$formid = $element->form_id;
 		$linkedFormText = $params->get('linkedformtext');
-		$faceted = $params->get('factedlinks');
+		$faceted = $params->get('facetedlinks');
 		$linkedFormText = JArrayHelper::fromObject($faceted->linkedformtext);
 		$msg = JArrayHelper::getValue($linkedFormText, $elKey);
 		$row2 = JArrayHelper::fromObject($row);
@@ -1987,7 +1987,7 @@ class FabrikFEModelList extends JModelForm
 		$app = JFactory::getApplication();
 		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$params = $this->getParams();
-		$faceted = $params->get('factedlinks');
+		$faceted = $params->get('facetedlinks');
 
 		/* $$$ hugh - we are getting element keys that aren't in the linkedlisttext.
 		 * not sure why, so added this defensive code.  Should probably find out
@@ -5730,7 +5730,7 @@ class FabrikFEModelList extends JModelForm
 
 		$params = $this->getParams();
 		$this->linksToThisKey = array();
-		$faceted = $params->get('factedlinks', new stdClass);
+		$faceted = $params->get('facetedlinks', new stdClass);
 
 		if (!isset($faceted->linkedform))
 		{
@@ -6698,7 +6698,7 @@ class FabrikFEModelList extends JModelForm
 				$this->actionHeading($aTableHeadings, $headingClass, $cellClass);
 			}
 			// Create columns containing links which point to lists associated with this list
-			$faceted = $params->get('factedlinks');
+			$faceted = $params->get('facetedlinks');
 			$joinsToThisKey = $this->getJoinsToThisKey();
 			$listOrder = json_decode($params->get('faceted_list_order'));
 			$formOrder = json_decode($params->get('faceted_form_order'));
