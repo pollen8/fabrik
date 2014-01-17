@@ -1405,6 +1405,13 @@ if (!$j3)
 
 	public static function slimbox()
 	{
+		$input = JFactory::getApplication()->input;
+		
+		if ($input->get('format') === 'raw')
+		{
+			return;
+		}
+
 		if (!self::$modal)
 		{
 			$fbConfig = JComponentHelper::getParams('com_fabrik');
