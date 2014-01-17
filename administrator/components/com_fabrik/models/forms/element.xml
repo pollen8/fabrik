@@ -157,7 +157,8 @@
 
 			<field name="full_words_only"
 				type="radio"
-				class="btn-group" default="0"
+				class="btn-group"
+				default="0"
 				description="COM_FABRIK_FIELD_FULLWORDS_DESC"
 				label="COM_FABRIK_FIELD_FULLWORDS_LABEL">
 					<option value="0">JNO</option>
@@ -390,6 +391,7 @@
 
 				<field name="sum_access"
 					type="accesslevel"
+					default="1"
 					description="COM_FABRIK_FIELD_SUM_ACCESS_DESC"
 					label="COM_FABRIK_FIELD_SUM_ACCESS_LABEL" />
 
@@ -418,6 +420,7 @@
 
 				<field name="avg_access"
 					type="accesslevel"
+					default="1"
 					description="COM_FABRIK_FIELD_AVERAGE_ACCESS_DESC"
 					label="COM_FABRIK_FIELD_AVERAGE_ACCESS_LABEL" />
 
@@ -455,7 +458,7 @@
 
 				<field name="median_access"
 					type="accesslevel"
-					default="0"
+					default="1"
 					description="COM_FABRIK_FIELD_MEDIAN_ACCESS_DESC"
 					label="COM_FABRIK_FIELD_MEDIAN_ACCESS_LABEL" />
 
@@ -491,6 +494,7 @@
 
 				<field name="count_access"
 					type="accesslevel"
+					default="1"
 					description="COM_FABRIK_FIELD_COUNT_ACCESS_DESC"
 					label="COM_FABRIK_FIELD_COUNT_ACCESS_LABEL"/>
 
@@ -526,6 +530,7 @@
 
 				<field name="custom_calc_access"
 					type="accesslevel"
+					default="1"
 					description="COM_FABRIK_FIELD_CUSTOM_CALC_ACCESS_DESC"
 					label="COM_FABRIK_FIELD_CUSTOM_CALC_ACCESS_LABEL" />
 
@@ -607,13 +612,13 @@
 			</fieldset>
 
 				<fieldset name="access2">
-					
+
 					<field name="edit_access"
 						type="accesslevel"
 						default="1"
 						label="COM_FABRIK_ELEMENT_EDIT_ACCESS_LABEL"
 						description="COM_FABRIK_ELEMENT_EDIT_ACCESS_DESC" />
-						
+
 					<field name="view_access"
 						type="accesslevel"
 						default="1"
