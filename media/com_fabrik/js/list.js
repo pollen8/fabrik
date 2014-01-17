@@ -783,6 +783,7 @@ var FbList = new Class({
 	},
 
 	fabrikNav: function (limitStart) {
+		debugger;
 		this.options.limitStart = limitStart;
 		this.form.getElement('#limitstart' + this.id).value = limitStart;
 		// cant do filter as that resets limitstart to 0
@@ -1174,7 +1175,8 @@ var FbList = new Class({
 			}.bind(this));
 		}
 		
-		if (this.options.admin) {
+		// Not working in J3.2 see http://fabrikar.com/forums/index.php?threads/bug-pagination-not-working-in-chrome.37277/
+	/*	if (this.options.admin) {
 			Fabrik.addEvent('fabrik.block.added', function (block) {
 				if (block.options.listRef === this.options.listRef) {
 					var nav = block.form.getElement('.fabrikNav');
@@ -1186,7 +1188,7 @@ var FbList = new Class({
 					}
 				}
 			}.bind(this));
-		}
+		}*/
 		this.watchCheckAll();
 	},
 	
