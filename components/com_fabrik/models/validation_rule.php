@@ -85,6 +85,16 @@ class PlgFabrik_Validationrule extends FabrikPlugin
 
 	public function shouldValidate($data)
 	{
+		if (!$this->shouldValidateIn())
+		{
+			return false;
+		}
+
+		if (!$this->shouldValidateOn())
+		{
+			return false;
+		}
+
 		$params = $this->getParams();
 		$condition = $params->get($this->pluginName . '-validation_condition');
 
@@ -104,6 +114,69 @@ class PlgFabrik_Validationrule extends FabrikPlugin
 		}
 
 		return $res;
+	}
+
+	/**
+	 * Should the validation be run - based on whether in admin/front end
+	 *
+	 * @return boolean
+	 */
+	protected function shouldValidateIn()
+	{
+		$params = $this->getParams();
+		$name = $this->elementModel->getFullName();
+
+		$app = JFactory::getApplication();
+		$in = $params->get('validate_in', 'both');
+
+		$admin = $app->isAdmin();
+
+		if ($in === 'both')
+		{
+			return true;
+		}
+
+		if ($admin && $in === 'back')
+		{
+			return true;
+		}
+
+		if (!$admin && $in === 'front')
+		{
+			return true;
+		}
+
+		return false;
+	}
+
+	/**
+	 * Should the validation be run - based on whether new record or editing existing
+	 *
+	 * @return boolean
+	 */
+	protected function shouldValidateOn()
+	{
+		$params = $this->getParams();
+		$app = JFactory::getApplication();
+		$on = $params->get('validation_on', 'both');
+		$rowid = $this->elementModel->getFormModel()->getRowId();
+
+		if ($on === 'both')
+		{
+			return true;
+		}
+
+		if ($rowid === '' && $on === 'new')
+		{
+			return true;
+		}
+
+		if ($rowid !== '' && $on === 'edit')
+		{
+			return true;
+		}
+
+		return false;
 	}
 
 	/**

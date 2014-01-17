@@ -23,7 +23,27 @@
 					<option value="1">JPUBLISHED</option>
 					<option value="0">JUNPUBLISHED</option>
 			</field>
-
+			
+			<field name="validate_in"
+				type="list"
+				default="both"
+				label="COM_FABRIK_IN"
+				repeat="true">
+					<option value="front">COM_FABRIK_FRONT_END</option>
+					<option value="back">COM_FABRIK_BACK_END</option>
+					<option value="both">COM_FABRIK_BOTH</option>	
+			</field>
+			
+			<field name="validation_on"
+				type="list"
+				default="both"
+				label="COM_FABRIK_ON"
+				repeat="true">
+					<option value="new">COM_FABRIK_NEW</option>
+					<option value="edit">COM_FABRIK_EDIT</option>
+					<option value="both">COM_FABRIK_BOTH</option>
+			</field>
+			
 			<field name="show_icon"
 				type="radio"
 				class="btn-group"

@@ -236,6 +236,9 @@ class FabrikAdminModelElement extends FabModelAdmin
 		$plugins = (array) FArrayHelper::getNestedValue($item->params, 'validations.plugin', array());
 		$published = (array) FArrayHelper::getNestedValue($item->params, 'validations.plugin_published', array());
 		$icons = (array) FArrayHelper::getNestedValue($item->params, 'validations.show_icon', array());
+		$in = (array) FArrayHelper::getNestedValue($item->params, 'validations.validate_in', array());
+		$on = (array) FArrayHelper::getNestedValue($item->params, 'validations.validation_on', array());
+
 		$return = array();
 
 		for ($i = 0; $i < count($plugins); $i ++)
@@ -244,6 +247,8 @@ class FabrikAdminModelElement extends FabModelAdmin
 			$o->plugin = $plugins[$i];
 			$o->published = JArrayHelper::getValue($published, $i, 1);
 			$o->show_icon = JArrayHelper::getValue($icons, $i, 1);
+			$o->validate_in = JArrayHelper::getValue($in, $i, 'both');
+			$o->validation_on = JArrayHelper::getValue($on, $i, 'both');
 			$return[] = $o;
 		}
 

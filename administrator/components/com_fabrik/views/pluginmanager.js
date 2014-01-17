@@ -99,17 +99,22 @@ var PluginManager = new Class({
 	},
 
 	addTop: function (plugin) {
-		var published, show_icon;
+		var published, show_icon, validate_in, validation_on;
 		if (typeOf(plugin) === 'string') {
 			published = 1;
 			show_icon = false;
 			plugin = plugin ? plugin : '';
+			validate_in = '';
+			validation_on = '';
 		} else {
 			// Validation plugins
 			published = plugin ? plugin.published : 1;
 			show_icon = plugin ? plugin.show_icon : 1;
+			validate_in = plugin ? plugin.validate_in : 'both';
+			validation_on = plugin ? plugin.validation_on : 'both';
 			plugin = plugin ? plugin.plugin : '';
 		}
+
 		var div = new Element('div.actionContainer.panel.accordion-group');
 		var a = new Element('a.accordion-toggle', {
 			'href': '#'
@@ -126,9 +131,8 @@ var PluginManager = new Class({
 
 		// Ajax request to load the first part of the plugin form (do[plugin]
 		// in, on)
-		var request = new Request.HTML({
-			url: 'index.php',
-			data: {
+		
+		var d = {
 				'option': 'com_fabrik',
 				'view': 'plugin',
 				'task': 'top',
@@ -137,9 +141,15 @@ var PluginManager = new Class({
 				'plugin': plugin,
 				'plugin_published': published,
 				'show_icon': show_icon,
+				'validate_in': validate_in,
+				'validation_on': validation_on,
 				'c': this.topTotal,
 				'id': this.id
-			},
+			};
+
+		var request = new Request.HTML({
+			url: 'index.php',
+			data: d,
 			update: body,
 			onRequest: function () {
 				if (Fabrik.debug) {

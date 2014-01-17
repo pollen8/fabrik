@@ -84,6 +84,8 @@ class FabrikAdminModelPlugin extends JModelLegacy
 		$data['validationrule']['plugin'] = $this->getState('plugin');
 		$data['validationrule']['plugin_published'] = $this->getState('plugin_published');
 		$data['validationrule']['show_icon'] = $this->getState('show_icon');
+		$data['validationrule']['validate_in'] = $this->getState('validate_in');
+		$data['validationrule']['validation_on'] = $this->getState('validation_on');
 
 		$c = $this->getState('c') + 1;
 

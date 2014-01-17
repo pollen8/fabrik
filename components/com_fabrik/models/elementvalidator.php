@@ -77,6 +77,9 @@ class FabrikFEModelElementValidator extends JModelLegacy
 		$usedPlugins = (array) JArrayHelper::getValue($validations, 'plugin', array());
 		$published = JArrayHelper::getValue($validations, 'plugin_published', array());
 		$showIcon = JArrayHelper::getValue($validations, 'show_icon', array());
+		$validateIn = JArrayHelper::getValue($validations, 'validate_in', array());
+		$validationOn = JArrayHelper::getValue($validations, 'validation_on', array());
+
 		$pluginManager = FabrikWorker::getPluginManager();
 		$pluginManager->getPlugInGroup('validationrule');
 		$c = 0;
@@ -106,6 +109,9 @@ class FabrikFEModelElementValidator extends JModelLegacy
 					$plugIn->setParams($params, $i);
 
 					$plugIn->getParams()->set('show_icon', JArrayHelper::getValue($showIcon, $i, true));
+					$plugIn->getParams()->set('validate_in', JArrayHelper::getValue($validateIn, $i, 'both'));
+					$plugIn->getParams()->set('validation_on', JArrayHelper::getValue($validationOn, $i, 'both'));
+
 					$c++;
 				}
 			}
