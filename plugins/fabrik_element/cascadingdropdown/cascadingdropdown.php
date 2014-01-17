@@ -213,7 +213,7 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 		{
 			if ($show_please)
 			{
-				$tmp[] = JHTML::_('select.option', '', $this->_getSelectLabel());
+				$tmp[] = $this->selectOption();
 			}
 		}
 
@@ -580,7 +580,7 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 		{
 			if ($this->showPleaseSelect())
 			{
-				array_unshift($this->optionVals[$sqlKey], JHTML::_('select.option', '', $this->_getSelectLabel()));
+				array_unshift($this->optionVals[$sqlKey], $this->selectOption());
 			}
 		}
 
@@ -594,6 +594,18 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 		}
 
 		return $this->optionVals[$sqlKey];
+	}
+
+	/**
+	 * Create the select option for dropdown
+	 *
+	 *  @return  object
+	 */
+
+	private function selectOption()
+	{
+		$params = $this->getParams();
+		return JHTML::_('select.option', $params->get('cascadingdropdown_noselectionvalue', ''), $this->_getSelectLabel());
 	}
 
 	/**

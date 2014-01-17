@@ -123,11 +123,21 @@
 				
 		</fieldset>
 		
-		<fieldset label="COM_FABRIK_DEFAULT" name="plg-databasejoin-xtra">
+		<fieldset label="COM_FABRIK_PLEASE_SELECT" name="plg-databasejoin-xtra">
 
 			<field type="helplink"
 				url="PLG_ELEMENT_DATABASEJOIN_HELP_SERVER" />
 
+			<field name="database_join_show_please_select"
+				type="radio"
+				default="1"
+				class="btn-group"
+				description="PLG_ELEMENT_DBJOIN_SHOW_PLEASE_SELECT_DESC"
+				label="PLG_ELEMENT_DBJOIN_SHOW_PLEASE_SELECT_LABEL">
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+			</field>
+			
 			<field name="database_join_noselectionvalue"
 				type="text"
 				description="PLG_ELEMENT_DBJOIN_NO_SELECTION_VALUE_DESC"
@@ -140,15 +150,7 @@
 				label="PLG_ELEMENT_DBJOIN_NO_SELECTION_LABEL_LABEL"
 				size="35" />
 
-			<field name="database_join_show_please_select"
-				type="radio"
-				default="1"
-				class="btn-group"
-				description="PLG_ELEMENT_DBJOIN_SHOW_PLEASE_SELECT_DESC"
-				label="PLG_ELEMENT_DBJOIN_SHOW_PLEASE_SELECT_LABEL">
-					<option value="0">JNO</option>
-					<option value="1">JYES</option>
-			</field>
+			
 
 		</fieldset>
 
