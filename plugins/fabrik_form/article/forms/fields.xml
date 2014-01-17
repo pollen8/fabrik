@@ -4,6 +4,9 @@
 		
 		<fieldset label="Options" name="plg-form-article-options">
 			
+			<field type="helplink"
+				url="PLG_FORM_ARTICLE_HELP_SERVER" />
+				
 			<field name="template"
 				type="filelist"
 				description="PLG_FABRIK_FORM_ARTICLE_TEMPLATE_DESC"
@@ -59,6 +62,9 @@
 		
 		<fieldset label="PLG_FABRIK_FORM_ARTICLE_FIELDS" name="plg-form-article-fields">
 		
+			<field type="helplink"
+				url="PLG_FORM_ARTICLE_HELP_SERVER" />
+				
 			<field name="title"
 				type="listfields"
 				repeat="true"
@@ -107,10 +113,19 @@
 				description="PLG_FABRIK_FORM_ARTICLE_METADESC_DESC"
 				label="PLG_FABRIK_FORM_ARTICLE_METADESC_LABEL" />
 				
+			<field name="tags"
+				type="listfields"
+				repeat="true"
+				description="PLG_FABRIK_FORM_ARTICLE_TAGS_DESC"
+				label="PLG_FABRIK_FORM_ARTICLE_TAGS_LABEL" />
+			
 		</fieldset>
 		
 		<fieldset label="PLG_FABRIK_FORM_ARTICLE_IMAGES" name="plg-form-article-images">
 		
+			<field type="helplink"
+				url="PLG_FORM_ARTICLE_HELP_SERVER" />
+				
 			<field name="image_intro"
 				type="listfields"
 				filter="fileupload"
