@@ -783,7 +783,6 @@ var FbList = new Class({
 	},
 
 	fabrikNav: function (limitStart) {
-		debugger;
 		this.options.limitStart = limitStart;
 		this.form.getElement('#limitstart' + this.id).value = limitStart;
 		// cant do filter as that resets limitstart to 0
