@@ -12,6 +12,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 ?>
+<a href="{readmore}">read more</a>
 <table border="1">
 <?php
 foreach ($this->data as $key => $val)
@@ -29,7 +30,7 @@ foreach ($this->data as $key => $val)
 	else:
 		echo $val;
 	endif;
-	echo "</td></tr>";
+	echo "&nbsp;</td></tr>";
 }
 ?>
 </table>

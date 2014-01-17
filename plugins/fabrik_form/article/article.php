@@ -66,7 +66,7 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 	{
 		$params = $this->getParams();
 		$data = array('articletext' => $this->buildContent(), 'catid' => $catid, 'state' => 1, 'language' => '*');
-		$attribs = array('title' => '', 'publish_up' => '', 'publish_down' => '', 'featured' => '0', 'state' => '1', 'metadesc' => '', 'metakey' => '');
+		$attribs = array('title' => '', 'publish_up' => '', 'publish_down' => '', 'featured' => '0', 'state' => '1', 'metadesc' => '', 'metakey' => '', 'tags' => '');
 
 		$data['images'] = json_encode($this->images());
 
@@ -87,12 +87,30 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 			$data[$attrib] = $this->findElementData($elementId, $default);
 		}
 
+		$data['tags'] = (array) $data['tags'];
+
+
 		$this->generateNewTitle($id, $catid, $data);
+
+		if (!is_null($id))
+		{
+			$readmore = 'index.php?option=com_content&view=article&id=' . $id;
+			$data['articletext'] = str_replace('{readmore}', $readmore, $data['articletext']);
+		}
 
 		$item = JTable::getInstance('Content');
 		$item->load($id);
 		$item->bind($data);
 		$item->store();
+
+		// New record - need to re-save with {readmore} replacement
+		if (is_null($id) && strstr($data['articletext'], '{readmore}'))
+		{
+			$readmore = 'index.php?option=com_content&view=article&id=' . $item->id;
+			$data['articletext'] = str_replace('{readmore}', $readmore, $data['articletext']);
+			$item->bind($data);
+			$item->store();
+		}
 
 		return $item;
 	}
@@ -120,7 +138,7 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 			$fullName = $elementModel->getFullName(true, false);
 			$value = $formModel->getElementData($fullName, false, $default, 0);
 
-			if (is_array($value))
+			if (is_array($value) && count($value) === 1)
 			{
 				$value = array_shift($value);
 			}

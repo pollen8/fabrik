@@ -106,7 +106,7 @@
 				repeat="true"
 				description="PLG_FABRIK_FORM_ARTICLE_METADESC_DESC"
 				label="PLG_FABRIK_FORM_ARTICLE_METADESC_LABEL" />
-			
+				
 		</fieldset>
 		
 		<fieldset label="PLG_FABRIK_FORM_ARTICLE_IMAGES" name="plg-form-article-images">
