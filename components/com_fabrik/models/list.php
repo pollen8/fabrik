@@ -5400,7 +5400,7 @@ class FabrikFEModelList extends JModelForm
 			return $this->totalRecords;
 		}
 		// $$$ rob getData() should always be run first
-		if (is_null($this->data))
+		if (!isset($this->data) || is_null($this->data))
 		{
 			$this->getData();
 
@@ -10153,7 +10153,12 @@ class FabrikFEModelList extends JModelForm
 	public function setPluginQueryWhere($pluginName, $whereClause)
 	{
 		// Strip any prepended conditions off
-		$whereClause = preg_replace('#(^where |^and |^or )#', '', $whereClause);
+		$whereClause = preg_replace('#(^where |^and |^or )#i', '', $whereClause);
+
+		if (trim($whereClause) === '')
+		{
+			return;
+		}
 		/* only do anything if it's a different clause ...
 		 * if it's the same, no need to clear the table data, can use cached
 		*/
