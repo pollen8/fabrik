@@ -195,8 +195,12 @@ class FabrikModelTimeline extends FabrikFEModelVisualization
 		$input->set('limitstart' . $listId, $start);
 		$listModel->setLimits($start, $this->step);
 
+		$where = $input->get('where', array(), 'array');
+
 		if ($listModel->canView() || $listModel->canEdit())
 		{
+			$where = JArrayHelper::getValue($where, $listId, '');
+			$listModel->setPluginQueryWhere('timeline', $where);
 			$data = $listModel->getData();
 			$elements = $listModel->getElements();
 			$enddate2 = $enddate;
@@ -288,7 +292,6 @@ class FabrikModelTimeline extends FabrikFEModelVisualization
 					}
 				}
 			}
-			// $eventdata['query'] = $listModel->mainQuery;
 		}
 		else
 		{
@@ -307,13 +310,17 @@ class FabrikModelTimeline extends FabrikFEModelVisualization
 	protected function getTotal()
 	{
 		$params = $this->getParams();
+		$app = JFactory::getApplication();
 		$lists = $params->get('timeline_table', array());
 		$totals = array();
+		$where = $app->input->get('where', array(), 'array');
 
 		foreach ($lists as $listid)
 		{
+			$where = JArrayHelper::getValue($where, $listid, '');
 			$listModel = JModelLegacy::getInstance('List', 'FabrikFEModel');
 			$listModel->setId($listid);
+			$listModel->setPluginQueryWhere('timeline', $where);
 			$totals[$listid] = $listModel->getTotalRecords();
 		}
 
@@ -380,14 +387,17 @@ class FabrikModelTimeline extends FabrikFEModelVisualization
 		$options->dateFormat = $params->get('timeline_date_format', '%c');
 		$options->orientation = $params->get('timeline_orientation', 'horizontal');
 		$options->currentList = $lists[0];
+
+		$urlfilters = new stdClass;
+		$urlfilters->where = $this->buildQueryWhere();
+		$options->urlfilters = $urlfilters;
+
 		$options = json_encode($options);
 		$ref = $this->getJSRenderContext();
 		$str = "var " . $ref . " = new FbVisTimeline($json, $options);";
 		$str .= "\n" . "Fabrik.addBlock('" . $ref . "', " . $ref . ");";
 
 		return $str;
-				$srcs[] = 'plugins/fabrik_visualization/timeline/timeline.js';
-		FabrikHelperHTML::script($srcs, $str);
 	}
 
 	/**
