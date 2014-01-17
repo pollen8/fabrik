@@ -3660,6 +3660,11 @@ trans.sk-SK = plugins/fabrik_list/order/language/sk-SK/sk-SK.plg_fabrik_list_ord
 trans.tr-TR = plugins/fabrik_list/order/language/tr-TR/tr-TR.plg_fabrik_list_order.sys.ini
 trans.uk-UA = plugins/fabrik_list/order/language/uk-UA/uk-UA.plg_fabrik_list_order.sys.ini
 
+[fabrik31.plg_list_pivot]
+file_filter = plugins/fabrik_list/pivot/language/<lang>/<lang>.plg_fabrik_list_pivot.ini
+source_file = plugins/fabrik_list/pivot/language/en-GB/en-GB.plg_fabrik_list_pivot.ini
+source_lang = en_GB
+
 [fabrik31.plg_list_php]
 file_filter = plugins/fabrik_list/php/language/<lang>/<lang>.plg_fabrik_list_php.ini
 source_file = plugins/fabrik_list/php/language/en-GB/en-GB.plg_fabrik_list_php.ini
