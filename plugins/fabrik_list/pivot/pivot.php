@@ -99,7 +99,6 @@ class PlgFabrik_ListPivot extends plgFabrik_List
 		$group = implode(', ', $groups);
 
 		return $group;
-
 	}
 
 	/**
@@ -187,12 +186,64 @@ class PlgFabrik_ListPivot extends plgFabrik_List
 		$args['tableHeadings'] = $headings;
 	}
 
+	/**
+	 * Set the list to use an unconstrained query in getData()
+	 *
+	 */
+	public function onPreLoadData()
+	{
+		$params = $this->params;
+
+		// Set the list query to be unconstrained
+		$this->model->setLimits(0, -1);
+		$app = JFactory::getApplication();
+
+		// Hide the list nav as we are running an unconstrained query
+		$app->input->set('fabrik_show_nav', 0);
+	}
+
+	/**
+	 * Try to cache the list data
+	 */
+	public function onBeforeListRender()
+	{
+		if (!$this->params->get('pivot_cache'))
+		{
+			return;
+		}
+		$cache = FabrikWorker::getCache();
+		$cache->setCaching(1);
+
+		$res = $cache->call(array(get_class($this), 'cacheResults'), $this->model->getId());
+
+		$this->model->set('data', $res);
+
+	}
+
+	public static function cacheResults($listId)
+	{
+		$listModel = JModelLegacy::getInstance('list', 'FabrikFEModel');
+		$listModel->setId($listId);
+		$data = $listModel->getData();
+
+		return $data;
+	}
+
+	/**
+	 * List model has loaded its data, lets pivot it!
+	 *
+	 * @param   &$args  Array  Additional options passed into the method when the plugin is called
+	 *
+	 * @return bool currently ignored
+	 */
+
 	public function onLoadData(&$args)
 	{
 		$data =& $args[0]->data;
 		$params = $this->getParams();
 		$sums = $params->get('pivot_sum');
 		list($xCol, $yCol) = $this->getCols();
+		$rawSums = $sums . '_raw';
 
 		// Get distinct areas?
 		$xCols = array();
@@ -248,7 +299,8 @@ class PlgFabrik_ListPivot extends plgFabrik_List
 						if ($row->$xCol === $xColData && $row->$yCol === $yColData)
 						{
 							$newRow->$xColData = $row->$sums;
-							$total += (float) $row->$sums;
+							// $total += (float) $row->$sums;
+							$total += (float) $row->$rawSums;
 						}
 					}
 				}
@@ -267,12 +319,14 @@ class PlgFabrik_ListPivot extends plgFabrik_List
 		{
 			$c = JArrayHelper::getColumn($new, $x);
 			$yColTotals->$x = array_sum($c);
-			$total += $yColTotals->$x;
+			$total += (float) $yColTotals->$x;
 		}
 
 		$yColTotals->pivot_total = $total;
 		$new[] = $yColTotals;
 
 		$data[0] = $new;
+
+		return true;
 	}
 }
