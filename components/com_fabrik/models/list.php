@@ -582,6 +582,8 @@ class FabrikFEModelList extends JModelForm
 
 	public function render()
 	{
+		$pluginManager = FabrikWorker::getPluginManager();
+		$pluginManager->runPlugins('onBeforeListRender', $this, 'list');
 		FabrikHelperHTML::debug($_POST, 'render:post');
 		$app = JFactory::getApplication();
 		$input = $app->input;
@@ -867,11 +869,11 @@ class FabrikFEModelList extends JModelForm
 	/**
 	 * Cached Method to run the getData select query and do our Fabrik magikin'
 	 *
-	 * @param   int     $listId        list id
-	 * @param   string  $query         sql query
-	 * @param   int     $start         start of limit
-	 * @param   int     $length        limit length
-	 * @param   string  $outputFormat  output format csv/html/rss etc.
+	 * @param   int     $listId        List id
+	 * @param   string  $query         Sql query
+	 * @param   int     $start         Start of limit
+	 * @param   int     $length        Limit length set to -1 to produced unconstrained data
+	 * @param   string  $outputFormat  Output format csv/html/rss etc.
 	 *
 	 * @return array (total records, data set)
 	 */
@@ -888,7 +890,7 @@ class FabrikFEModelList extends JModelForm
 
 		// $$$ rob - if merging joined data then we don't want to limit
 		// the query as we have already done so in buildQuery()
-		if ($listModel->mergeJoinedData())
+		if ($listModel->mergeJoinedData() || $length === -1)
 		{
 			$fabrikDb->setQuery($query);
 		}
