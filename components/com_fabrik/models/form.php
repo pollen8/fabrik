@@ -1805,10 +1805,11 @@ class FabrikFEModelForm extends FabModelForm
 
 		if (in_array(false, $pluginManager->runPlugins('onBeforeCalculations', $this)))
 		{
-			return;
+			return $insertId;
 		}
 
 		$this->listModel->doCalculations();
+		return $insertId;
 	}
 
 	/**

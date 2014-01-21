@@ -81,4 +81,36 @@ class PlgFabrik_ListListcsv extends PlgFabrik_List
 
 		return true;
 	}
+
+	/**
+	 * Called after we import a csv row
+	 *
+	 * @return boolean
+	 */
+
+	public function onAfterImportCSVRow()
+	{
+		$params = $this->getParams();
+		$filter = JFilterInput::getInstance();
+		$file = $params->get('listcsv_after_import_php_file');
+		$file = $filter->clean($file, 'CMD');
+
+		if ($file == -1 || $file == '')
+		{
+			$code = $params->get('listcsv_after_import_php_code', '');
+			$ret = @eval($code);
+			FabrikWorker::logEval($ret, 'Caught exception on eval in onAfterImportCSVRow : %s');
+
+			if ($ret === false)
+			{
+				return false;
+			}
+		}
+		else
+		{
+			require JPATH_ROOT . '/plugins/fabrik_list/listcsv/scripts/' . $file;
+		}
+
+		return true;
+	}
 }

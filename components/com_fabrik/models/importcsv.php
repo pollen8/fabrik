@@ -762,7 +762,8 @@ class FabrikFEModelImportcsv extends JModelForm
 
 				if (!in_array(false, FabrikWorker::getPluginManager()->runPlugins('onImportCSVRow', $model, 'list')))
 				{
-					$formModel->processToDB();
+					$rowid = $formModel->processToDB();
+					FabrikWorker::getPluginManager()->runPlugins('onAfterImportCSVRow', $model, 'list');
 				}
 			}
 			else
