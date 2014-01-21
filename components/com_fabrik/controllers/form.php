@@ -280,6 +280,24 @@ class FabrikControllerForm extends JControllerLegacy
 				$redirect_opts['title'] = $session->get($context . 'redirect_content_popup_title', '');
 				$redirect_opts['reset_form'] = $session->get($context . 'redirect_content_reset_form', '1') == '1';
 			}
+			elseif (!$this->baseRedirect && !$this->isMambot)
+			{
+				/**
+				 * $$$ hugh - I think this case only happens when we're a popup form from a list
+				 * in which case I don't think "popup" is realy a valid option.  Anyway, need to set something,
+				 * so for now just do the same as we do for isMambot, but default redirect_how to 'samepage'
+				 */
+				$session = JFactory::getSession();
+				$context = $model->getRedirectContext();
+				$redirect_opts['redirect_how'] = $session->get($context . 'redirect_content_how', 'samepage');
+				$redirect_opts['width'] = (int) $session->get($context . 'redirect_content_popup_width', '300');
+				$redirect_opts['height'] = (int) $session->get($context . 'redirect_content_popup_height', '300');
+				$redirect_opts['x_offset'] = (int) $session->get($context . 'redirect_content_popup_x_offset', '0');
+				$redirect_opts['y_offset'] = (int) $session->get($context . 'redirect_content_popup_y_offset', '0');
+				$redirect_opts['title'] = $session->get($context . 'redirect_content_popup_title', '');
+				$redirect_opts['reset_form'] = $session->get($context . 'redirect_content_reset_form', '1') == '1';
+
+			}
 			elseif ($this->isMambot)
 			{
 				// $$$ hugh - special case to allow custom code to specify that

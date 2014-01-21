@@ -320,10 +320,13 @@ class PlgFabrik_Form extends FabrikPlugin
 						else
 						{
 							// E.g. ajax file upload - repeat data in none-repeat group
-							foreach ($model->formDataWithTableName[$k] as $multiKey => $multiData)
+							if (is_array($model->formDataWithTableName[$k]))
 							{
-								$this->emailData[$k . '_raw'][$multiKey] = $multiData;
-								$this->emailData[$k][$multiKey] = $elementModel->getEmailValue($multiData, $model->formDataWithTableName, $multiData);
+								foreach ($model->formDataWithTableName[$k] as $multiKey => $multiData)
+								{
+									$this->emailData[$k . '_raw'][$multiKey] = $multiData;
+									$this->emailData[$k][$multiKey] = $elementModel->getEmailValue($multiData, $model->formDataWithTableName, $multiData);
+								}
 							}
 						}
 					}

@@ -1871,7 +1871,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		$raw = $this->getFullName(true, false);
 		$displayType = $this->getDisplayType();
 		$raw .= ($displayType == 'checkbox' || $displayType == 'multilist') ? '_id' : '_raw';
-		$values = FabrikWorker::JSONtoData($thisRow->$raw, true);
+		$values = isset($thisRow->$raw) ? FabrikWorker::JSONtoData($thisRow->$raw, true) : array();
 
 		for ($i = 0; $i < count($data); $i++)
 		{
