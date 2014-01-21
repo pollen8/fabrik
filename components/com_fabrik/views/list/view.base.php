@@ -479,6 +479,8 @@ class FabrikViewListBase extends JViewLegacy
 		$this->filterMode = (int) $params->get('show-table-filters');
 		$this->toggleFilters = $this->filterMode == 2 || $this->filterMode == 4;
 		$this->showFilters = $model->getShowFilters();
+		// $$$ hugh - haven't add the filter-cols param to XML yet, WiP
+		$this->filterCols = (int) $params->get('filter-cols', '1');
 		$this->showClearFilters = ($this->showFilters || $params->get('advanced-filter')) ? true : false;
 
 		$this->emptyDataMessage = $model->getEmptyDataMsg();

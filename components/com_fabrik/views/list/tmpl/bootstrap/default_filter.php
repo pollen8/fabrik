@@ -21,7 +21,13 @@ if ($this->filterMode === 3 || $this->filterMode === 4) :
 else:
 ?>
 <div class="row-fluid">
+<?php
+	if ($this->filterCols === 1) :
+?>
 	<div class="span6">
+<?php
+	endif;
+?>
 <table class="filtertable table table-striped">
 	<thead>
 		<tr class="fabrik___heading">
@@ -43,7 +49,22 @@ else:
 	</tfoot>
 	<?php
 	$c = 0;
+	// $$$ hugh - filterCols stuff isn't operation yet, WiP, just needed to get it committed
+	if ($this->filterCols > 1) :
+		?>
+ 	<tr>
+ 		<td colspan="2">
+ 			<table class="filtertable_horiz">
+ 		<?php
+	endif;
+	$colHeight = ceil(count($this->filters) / $this->filterCols);
 	foreach ($this->filters as $key => $filter) :
+			if ($this->filterCols > 1 && $c >= $colHeight && $c % $colHeight === 0) :
+				?>
+			</table>
+			<table class="filtertable_horiz">
+				<?php
+			endif;
 			if ($key !== 'all') :
 				$required = $filter->required == 1 ? ' notempty' : '';?>
 				<tr class="fabrik_row oddRow<?php echo ($c % 2) . $required;?>">
@@ -55,6 +76,13 @@ else:
 	endif;
 	$c ++;
 	endforeach;
+	if ($this->filterCols > 1) :
+		?>
+ 			</table>
+ 		</td>>
+ 	</tr>>
+ 		<?php
+	endif;
 	if ($this->filter_action != 'onchange') :
 	?>
 	<tr>
@@ -72,7 +100,13 @@ endif;
 <?php
 if (!($this->filterMode === 3 || $this->filterMode === 4)) :
 ?>
-</div>
+<?php
+	if ($this->filterCols === 1) :
+?>
+	</div>
+<?php
+	endif;
+?>
 </div>
 <?php endif; ?>
 </div>
