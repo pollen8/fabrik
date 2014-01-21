@@ -154,26 +154,31 @@ class VideoRender
 			$rendered = '
 			<div id="' . $id . '"></div>
 			';
-			$js = '
-			jwplayer("' . $id . '").setup({
-				playlist: [
-			';
-			$files = array();
-
-			foreach ($data as $file)
+			$app = JFactory::getApplication();
+			$input = $app->input;
+			if ($input->get('format') != 'raw')
 			{
-				$files[] .= '
-					{
-						"file": "' . COM_FABRIK_LIVESITE . ltrim($file, '/') . '"
-					}
+				$js = '
+				jwplayer("' . $id . '").setup({
+					playlist: [
 				';
-			}
+				$files = array();
 
-			$js .= implode(',', $files);
-			$js .= ']
-			});
-			';
-			FabrikHelperHTML::script('plugins/fabrik_element/fileupload/lib/jwplayer/jwplayer.js', $js);
+				foreach ($data as $file)
+				{
+					$files[] .= '
+						{
+							"file": "' . COM_FABRIK_LIVESITE . ltrim($file, '/') . '"
+						}
+					';
+				}
+
+				$js .= implode(',', $files);
+				$js .= ']
+				});
+				';
+				FabrikHelperHTML::script('plugins/fabrik_element/fileupload/lib/jwplayer/jwplayer.js', $js);
+			}
 		}
 
 		return $rendered;
