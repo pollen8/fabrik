@@ -343,7 +343,8 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 		// TODO - make this table/form specific, but not so easy to do in CB plugin
 		if ((int) $params->get('user_use_social_plugin_profile', 0))
 		{
-			if ($input->getString('rowid', '', 'string') == '' && $input->get('task') !== 'doimport')
+			//if ($input->getString('rowid', '', 'string') == '' && $input->get('task') !== 'doimport')
+			if ($input->getString('rowid', '', 'string') == '' && !$this->getListModel()->importingCSV)
 			{
 				$session = JFactory::getSession();
 
@@ -359,7 +360,8 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 		}
 
 		// $$$ rob also check we aren't importing from CSV - if we are ignore
-		if ($input->getString('rowid', '', 'string') == '' && $input->get('task') !== 'doimport')
+		//if ($input->getString('rowid', '', 'string') == '' && $input->get('task') !== 'doimport')
+		if ($input->getString('rowid', '', 'string') == '' && !$this->getListModel()->importingCSV)
 		{
 			// $$$ rob if we cant use the element or its hidden force the use of current logged in user
 			if (!$this->canUse() || $this->getElement()->hidden == 1)
@@ -378,6 +380,12 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 		// $$$ hugh - so how come we don't do the same thing on a new row?  Seems inconsistent to me?
 
 		// $$$ paul - seems bonkers to me to use source code comments like an instant messaging system!
+
+		/**
+		 * $$$ hugh - it's not IM'ing, it's long running "frank and honest differences of opinion" over how things work
+		 * and why we each make the assumptions / changes we do when working on "disputed" chunks of code
+		 */
+
 		else
 		{
 			if ($this->updateOnEdit())
@@ -392,6 +400,34 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 				{
 					$this_fullname = $this->getFullName(true, false);
 					$this->getFormModel()->updatedByPlugin($this_fullname, $user->get('id'));
+				}
+			}
+
+			/**
+			 * If importing from CSV and not set to update on edit, let's check to see if they
+			 * are trying to import a username rather than ID.
+			 */
+
+			else if ($this->getListModel()->importingCSV)
+			{
+				$formData = $this->getFormModel()->formData;
+				$userid = JArrayHelper::getValue($formData, $element->name, '');
+				if (!empty($userid) && !is_numeric($userid))
+				{
+					$user = JFactory::getUser($userid);
+					$new_userid = $user->get('id');
+					if (empty($new_userid) && FabrikWorker::isEmail($userid))
+					{
+						$db = JFactory::getDbo();
+						$query = $db->getQuery(true)
+						->select($db->quoteName('id'))
+						->from($db->quoteName('#__users'))
+						->where($db->quoteName('email') . ' = ' . $db->quote($userid));
+						$db->setQuery($query, 0, 1);
+
+						$new_userid = (int) $db->loadResult();
+					}
+					$data[$element->name] = $new_userid;
 				}
 			}
 		}
