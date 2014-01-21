@@ -1640,15 +1640,15 @@ class FabrikWorker
 	public static function goBackAction()
 	{
 		jimport('joomla.environment.browser');
+		$uri = JUri::getInstance();
 
-		if (JBrowser::getInstance()->isBrowser('msie'))
+		if ($uri->getScheme() === 'https')
 		{
 			$gobackaction = 'onclick="parent.location=\'' . JArrayHelper::getValue($_SERVER, 'HTTP_REFERER') . '\'"';
 		}
 		else
 		{
-			// $gobackaction = 'onclick=\'history.back();\'';
-			$gobackaction = 'onclick="parent.location=\'' . JArrayHelper::getValue($_SERVER, 'HTTP_REFERER') . '\'"';
+			$gobackaction = 'onclick=\'history.back();\'';
 		}
 
 		return $gobackaction;
