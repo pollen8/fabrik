@@ -4985,7 +4985,7 @@ class FabrikFEModelList extends JModelForm
 		foreach ($this->filters['key'] as $i => $keyval)
 		{
 			$value = $this->filters['value'][$i];
-			$condition = JString::strtolower($this->filters['condition'][$i]);
+			$condition = JString::strtoupper($this->filters['condition'][$i]);
 			$key = $this->filters['key'][$i];
 			$filterEval = $this->filters['eval'][$i];
 			$elid = JArrayHelper::getValue($elementids, $i);
@@ -5059,22 +5059,7 @@ class FabrikFEModelList extends JModelForm
 				$i = $origi;
 			}
 
-			if ($condition == 'regexp')
-			{
-				$condition = 'REGEXP';
-
-				// $$$ 30/06/2011 rob dont escape the search as it may contain \\\ from preg_escape (e.g. search all on 'c+b)
-
-				// $$$ 14/11/2012 - Lower case search value - as accented characters e.g. Ö are case sensetive in regex. Key already lower cased in filter model
-
-				// $value = 'LOWER(' . $db->quote($value, false) . ')';
-			}
-			elseif ($condition == 'like')
-			{
-				$condition = 'LIKE';
-				$value = $db->quote($value);
-			}
-			elseif ($condition == 'laterthisyear' || $condition == 'earlierthisyear')
+			if ($condition == 'LATERTHISYEAR' || $condition == 'EARLIERTHISYEAR')
 			{
 				$value = $db->quote($value);
 			}

@@ -205,6 +205,7 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 	{
 		$element = $this->getElement();
 		$db = JFactory::getDbo();
+		$condition = JString::strtoupper($condition);
 		$this->encryptFieldName($key);
 		$glue = 'OR';
 

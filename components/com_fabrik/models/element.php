@@ -3882,40 +3882,31 @@ class PlgFabrik_Element extends FabrikPlugin
 
 		// If querying via the querystring - then the condition and eval should be looked up against that key
 		$elementids = JArrayHelper::getValue($filters, 'elementid', array());
-		$filterIndex = array_search($this->getId(), $elementids);
 
-		if ($filterIndex === false)
-		{
-			$filterIndex = $counter;
-		}
+		// Check that there is an element filter for this element in the element ids.
+		$filterIndex = array_search($this->getId(), $elementids);
 
 		$hidden = $hidden ? 1 : 0;
 		$table = $this->getListModel()->getTable();
 		$match = $this->isExactMatch(array('match' => $element->filter_exact_match));
 		$return = array();
 		$eval = JArrayHelper::getValue($filters, 'eval', array());
-		$eval = JArrayHelper::getValue($eval, $filterIndex, FABRIKFILTER_TEXT);
-
-		/**
-		 * $$$ hugh - these two lines are preventing the "exact match" setting on an element filter working,
-		 * as we always end up with an = condition, so exact match No never works.  I've "fixed" it by just using
-		 * the element's getFilterCondition(), but I don't know what side effects this might have.
-		 * So BOLO for filtering oddities!
-		 *
-		 * $condition = JArrayHelper::getValue($filters, 'condition', array());
-		 * $condition = JArrayHelper::getValue($condition, $counter, $this->getFilterCondition());
-		*/
-
-		// Rob - reverting Hugh's comment. Its not right
-		// $condition = $this->getFilterCondition();
-
-		/**
-		 * If no post/querystring condition has been set use the getFilterCondition()
-		 * If we don't do that then a querystring url on foo>5 gets munged to foo=5 on a page navigation
-		 */
-
 		$condition = JArrayHelper::getValue($filters, 'condition', array());
-		$condition = JArrayHelper::getValue($condition, $filterIndex, $this->getFilterCondition());
+
+		/*
+		 * Element filter not found (could be a prefilter instead) so use element default options
+		 * see http://fabrikar.com/forums/index.php?threads/major-filter-issues.37360/
+		 */
+		if ($filterIndex === false)
+		{
+			$condition = $this->getFilterCondition();
+			$eval = FABRIKFILTER_TEXT;
+		}
+		else
+		{
+			$condition = JArrayHelper::getValue($condition, $filterIndex, $this->getFilterCondition());
+			$eval = JArrayHelper::getValue($eval, $filterIndex, FABRIKFILTER_TEXT);
+		}
 
 		// Need to include class other wise csv export produces incorrect results when exporting
 		$prefix = '<input type="hidden" class="' . $class . '" name="fabrik___filter[list_' . $this->getListModel()->getRenderContext() . ']';
@@ -4124,7 +4115,7 @@ class PlgFabrik_Element extends FabrikPlugin
 	 * Builds an array containing the filters value and condition
 	 *
 	 * @param   string  $value      Initial value
-	 * @param   string  $condition  Initial $condition
+	 * @param   string  $condition  Initial condition e.g. LIKE, =
 	 * @param   string  $eval       How the value should be handled
 	 *
 	 * @return  array	(value condition)
@@ -4132,6 +4123,7 @@ class PlgFabrik_Element extends FabrikPlugin
 
 	public function getFilterValue($value, $condition, $eval)
 	{
+		$condition = JString::strtolower($condition);
 		$this->escapeQueryValue($condition, $value);
 		$db = FabrikWorker::getDbo();
 
@@ -4168,6 +4160,7 @@ class PlgFabrik_Element extends FabrikPlugin
 					$value = $eval == FABRIKFILTER_QUERY ? '(' . $value . ')' : $db->quote('%' . $value);
 					break;
 				case 'contains':
+				case 'like':
 					// @TODO test this with subquery
 					$condition = "LIKE";
 					$value = $eval == FABRIKFILTER_QUERY ? '(' . $value . ')' : $db->quote('%' . $value . '%');
