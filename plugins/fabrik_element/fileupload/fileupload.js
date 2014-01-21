@@ -170,7 +170,7 @@ var FbFileUpload = new Class({
 		if (typeOf(dropTxt) !== 'null') {
 			dropTxt.show();
 		} else {
-			var tr = new Element('tr.plupload_droptext').set('html', '<td colspan="4"><i class="icon-move"></i> Drag files here </td>');
+			var tr = new Element('tr.plupload_droptext').set('html', '<td colspan="4"><i class="icon-move"></i> ' + Joomla.JText._('PLG_ELEMENT_FILEUPLOAD_DRAG_FILES_HERE') + ' </td>');
 			this.container.getElement('tbody').adopt(tr);
 		}
 		this.container.getElement('thead').hide();
