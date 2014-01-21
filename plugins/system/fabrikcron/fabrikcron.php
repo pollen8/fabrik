@@ -106,20 +106,11 @@ class PlgSystemFabrikcron extends JPlugin
 
 		$log->message = '';
 
-		/* $$$ hugh - set 'state' to 2 for selected rows, so we don't end up running
-		 * multiple copies, if this code is run again before selected plugins have
-		 * finished running, see:
-		 * http://fabrikar.com/forums/showthread.php?p=114008#post114008
-		 */
 		$ids = array();
 		foreach ($rows as $row)
 		{
 			$ids[] = (int) $row->id;
 		}
-		$query = $db->getQuery(true);
-		$query->update('#__{package}_cron')->set('published = 2')->where('id IN (' . implode(',', $ids) . ')');
-		$db->setQuery($query);
-		$db->execute();
 
 		JModelLegacy::addIncludePath(JPATH_SITE . '/components/com_fabrik/models');
 		$pluginManager = JModelLegacy::getInstance('Pluginmanager', 'FabrikFEModel');
@@ -198,10 +189,10 @@ class PlgSystemFabrikcron extends JPlugin
 			}
 
 			// Mark them as being run
-			// $$$ hugh - and make it runnable again by setting 'state' back to 1
 			$nextrun = JFactory::getDate($tmp);
 			$query->clear();
-			$query->update('#__{package}_cron')->set('published = 1, lastrun = ' . $db->quote($nextrun->toSql()))->where('id = ' . $row->id);
+			//$query->update('#__{package}_cron')->set('published = 1, lastrun = ' . $db->quote($nextrun->toSql()))->where('id = ' . $row->id);
+			$query->update('#__{package}_cron')->set('lastrun = ' . $db->quote($nextrun->toSql()))->where('id = ' . $row->id);
 			$db->setQuery($query);
 			$db->execute();
 
