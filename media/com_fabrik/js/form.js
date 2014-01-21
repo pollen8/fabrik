@@ -23,6 +23,7 @@ var FbForm = new Class({
 		'pages': [],
 		'start_page': 0,
 		'ajaxValidation': false,
+		'showLoader': false,
 		'customJsAction': '',
 		'plugins': [],
 		'ajaxmethod': 'post',
@@ -1040,10 +1041,14 @@ var FbForm = new Class({
 			return false;
 		}
 		this.submitBroker.submit(function () {
+			if (this.options.showLoader) {
+				Fabrik.loader.start(this.getBlock(), Joomla.JText._('COM_FABRIK_LOADING'));
+			}
 			Fabrik.fireEvent('fabrik.form.submit.start', [this, e, btn]);
 			if (this.result === false) {
 				this.result = true;
 				e.stop();
+				Fabrik.loader.stop(this.getBlock());
 				// Update global status error
 				this.updateMainError();
 
