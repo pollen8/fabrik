@@ -600,6 +600,7 @@ class FabrikViewFormBase extends JViewLegacy
 		$opts->admin = $app->isAdmin();
 		$opts->ajax = $model->isAjax();
 		$opts->ajaxValidation = (bool) $params->get('ajax_validations');
+		$opts->showLoader = (bool) $params->get('show_loader_on_submit', '0');
 		$key = FabrikString::safeColNameToArrayKey($table->db_primary_key);
 		$opts->primaryKey = $key;
 		$opts->error = @$form->origerror;

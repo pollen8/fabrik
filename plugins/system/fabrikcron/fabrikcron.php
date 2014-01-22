@@ -111,7 +111,7 @@ class PlgSystemFabrikcron extends JPlugin
 		{
 			$ids[] = (int) $row->id;
 		}
-
+		$query = $db->getQuery(true);
 		JModelLegacy::addIncludePath(JPATH_SITE . '/components/com_fabrik/models');
 		$pluginManager = JModelLegacy::getInstance('Pluginmanager', 'FabrikFEModel');
 		$listModel = JModelLegacy::getInstance('list', 'FabrikFEModel');

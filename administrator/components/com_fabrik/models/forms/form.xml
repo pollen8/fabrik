@@ -553,6 +553,16 @@
 					<option value="3">COM_FABRIK_SUPPRESS_ALL_MSGS</option>
 			</field>
 
+			<field name="show_loader_on_submit"
+				type="radio"
+				class="btn-group"
+				default="0"
+				description="COM_FABRIK_FIELD_SHOW_LOADER_ON_SUBMIT_DESC"
+				label="COM_FABRIK_FIELD_SHOW_LOADER_ON_SUBMIT_LABEL">
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+			</field>
+			
 			<field name="spoof_check"
 				type="radio"
 				class="btn-group" default="1"
