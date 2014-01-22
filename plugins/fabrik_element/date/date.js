@@ -365,7 +365,7 @@ var FbDateTime = new Class({
 		return d;
 	},
 
-	watchButtons : function () {
+	watchButtons: function () {
 		if (this.options.showtime & this.options.editable) {
 			this.getTimeField();
 			this.getTimeButton();
@@ -383,6 +383,9 @@ var FbDateTime = new Class({
 							e.stop();
 							this.hideTime();
 						}.bind(this));
+						/*document.body.addEvent('click', function () {
+							this.hideTime();
+						}.bind());*/
 						this.setUpDone = true;
 					}
 				}
@@ -608,7 +611,7 @@ var FbDateTime = new Class({
 		padder.appendChild(d2);
 		d.appendChild(padder);
 
-		/*document.addEvent('click', function (e) {
+		document.addEvent('click', function (e) {
 			if (this.timeActive) {
 				var t = e.target;
 				if (t !== this.timeButton && t !== this.timeElement) {
@@ -617,7 +620,8 @@ var FbDateTime = new Class({
 					}
 				}
 			}
-		}.bind(this));*/
+		}.bind(this));
+		
 		d.inject(document.body);
 		var mydrag = new Drag.Move(d);
 
