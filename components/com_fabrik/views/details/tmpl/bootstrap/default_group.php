@@ -17,10 +17,18 @@ defined('_JEXEC') or die('Restricted access');
 <?php
 foreach ($this->elements as $element) :
 	$this->element = $element;
+	$this->element->single = $single = $element->startRow && $element->endRow;
+
+	if ($single)
+	{
+		$this->element->containerClass = str_replace('fabrikElementContainer', '', $this->element->containerClass);
+	}
+
 	$element->fullWidth = $element->span == 'span12' || $element->span == '';
 	$style = $element->hidden ? 'style="display:none"' : '';
+
 	if ($element->startRow) : ?>
-			<div class="row-fluid" <?php echo $style?>><!-- start element row -->
+			<div class="row-fluid <?php echo $single ? 'fabrikElementContainer' : ''; ?>" <?php echo $style?>><!-- start element row -->
 		<?php
 		endif;
 		$labels_above = $this->params->get('labels_above_details', 0);
