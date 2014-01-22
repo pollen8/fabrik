@@ -5093,7 +5093,7 @@ class FabrikFEModelList extends JModelForm
 				}
 			}
 
-			if ($condition === 'REGEXP')
+			if (strtoupper($condition) === 'REGEXP')
 			{
 				// $$$ 15/11/2012 - moved from before getFilterValue() to after as otherwise date filters in querystrings created wonky query
 				$value = 'LOWER(' . $db->quote($value, false) . ')';
