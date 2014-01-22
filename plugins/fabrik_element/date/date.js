@@ -309,7 +309,7 @@ var FbDateTime = new Class({
 
 			v = this.cal.date;
 		} else {
-			if (this.options.value === '' || this.options.value === null) {
+			if (this.options.value === '' || this.options.value === null || this.options.value === '0000-00-00 00:00:00') {
 				return '';
 			}
 			v = new Date.parse(this.options.value);
@@ -333,7 +333,15 @@ var FbDateTime = new Class({
 		return false;
 	},
 
+	/**
+	 * Set time from field
+	 * @param  date
+	 */
 	setTimeFromField: function (d) {
+		if (typeOf(d) !== 'date') {
+			return;
+		}
+		
 		if (this.options.showtime === true && this.timeElement) {
 			var time = this.timeElement.get('value').toUpperCase();
 			var afternoon = time.contains('PM') ? true : false;
