@@ -21,7 +21,7 @@ defined('_JEXEC') or die;
 	$c = 0;
 	foreach ($this->filters as $filter) {
 		$required = $filter->required == 1 ? ' class="notempty"' : '';?>
-		<tr class="fabrik_row oddRow<?php echo ($c % 2);?>">
+		<tr data-filter-row="<?php echo $key;?>" class="fabrik_row oddRow<?php echo ($c % 2);?>">
 			<td<?php echo $required ?>><?php echo $filter->label;?></td>
 			<td style="text-align:right;"><?php echo $filter->element;?></td>
 		</tr>
