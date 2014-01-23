@@ -1657,9 +1657,10 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 	public function dataConsideredEmpty($data, $repeatCounter)
 	{
 		$app = JFactory::getApplication();
+		$params = $this->getParams();
 		$input = $app->input;
 
-		if ((int) $input->get('rowid', 0) !== 0)
+		if ($input->get('rowid', '') !== '')
 		{
 			if ($input->get('task') == '')
 			{
@@ -1710,13 +1711,14 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		}
 		else
 		{
+			$name = $this->getFullName(true, false);
+
 			if ($this->isJoin())
 			{
 				$join = $this->getJoinModel()->getJoin();
 				$joinid = $join->id;
 				$joindata = $input->post->get('join', array(), 'array');
 				$joindata = JArrayHelper::getValue($joindata, $joinid, array());
-				$name = $this->getFullName(true, false);
 				$joindata = JArrayHelper::getValue($joindata, $name, array());
 				$joinids = JArrayHelper::getValue($joindata, 'id', array());
 
@@ -1724,12 +1726,24 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 			}
 			else
 			{
-				$name = $this->getFullName(true, false);
-				$file = $input->files->get($name, array(), 'array');
-
-				if ($groupModel->canRepeat())
+				// Single ajax upload
+				if ($params->get('ajax_upload'))
 				{
-					return $file[$repeatCounter]['name'] == '' ? true : false;
+					$d = (array) $input->get($name, array(), 'array');
+
+					if (array_key_exists('id', $d))
+					{
+						return false;
+					}
+				}
+				else
+				{
+					$file = $input->files->get($name, array(), 'array');
+
+					if ($groupModel->canRepeat())
+					{
+						return $file[$repeatCounter]['name'] == '' ? true : false;
+					}
 				}
 			}
 		}
@@ -2339,6 +2353,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 	{
 		FabrikHelperHTML::stylesheet(COM_FABRIK_LIVESITE . 'media/com_fabrik/css/slider.css');
 		$id = $this->getHTMLId($repeatCounter);
+		$j3 = FabrikWorker::j3();
 		$params = $this->getParams();
 		$winWidth = $params->get('win_width', 400);
 		$winHeight = $params->get('win_height', 400);
@@ -2383,8 +2398,12 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		}
 
 		$pstr[] = '</div>';
+
+
 		$pstr[] = '<div class="plupload_container fabrikHide" id="' . $id . '_container" style="' . $dropBoxStyle . '">';
 		$pstr[] = '<div class="plupload" id="' . $id . '_dropList_container">';
+		if ($j3)
+		{
 		$pstr[] = '	<table class="table table-striped table-condensed">';
 		$pstr[] = '		<thead style="display:none"><tr>';
 		$pstr[] = '			<th class="span4">' . JText::_('PLG_ELEMENT_FILEUPLOAD_FILENAME') . '</th>';
@@ -2402,6 +2421,53 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		$pstr[] = '			<span class="plupload_upload_status"></span>';
 		$pstr[] = '</td></tr></tfoot>';
 		$pstr[] = '	</table>';
+		}
+		else
+		{
+			$pstr[] = '	<div class="plupload_header">';
+			$pstr[] = '		<div class="plupload_header_content">';
+			$pstr[] = '			<div class="plupload_header_title">' . JText::_('PLG_ELEMENT_FILEUPLOAD_PLUP_HEADING') . '</div>';
+			$pstr[] = '			<div class="plupload_header_text">' . JText::_('PLG_ELEMENT_FILEUPLOAD_PLUP_SUB_HEADING') . '</div>';
+			$pstr[] = '		</div>';
+			$pstr[] = '	</div>';
+			$pstr[] = '	<div class="plupload_content">';
+			$pstr[] = '		<div class="plupload_filelist_header">';
+			$pstr[] = '			<div class="plupload_file_name">' . JText::_('PLG_ELEMENT_FILEUPLOAD_FILENAME') . '</div>';
+			$pstr[] = '			<div class="plupload_file_action">&nbsp;</div>';
+			$pstr[] = '			<div class="plupload_file_status"><span>' . JText::_('PLG_ELEMENT_FILEUPLOAD_STATUS') . '</span></div>';
+			$pstr[] = '			<div class="plupload_file_size">' . JText::_('PLG_ELEMENT_FILEUPLOAD_SIZE') . '</div>';
+			$pstr[] = '			<div class="plupload_clearer">&nbsp;</div>';
+			$pstr[] = '		</div>';
+			$pstr[] = '		<ul class="plupload_filelist" id="' . $id . '_dropList">';
+			$pstr[] = '		</ul>';
+			$pstr[] = '		<div class="plupload_filelist_footer">';
+			$pstr[] = '		<div class="plupload_file_name">';
+			$pstr[] = '			<div class="plupload_buttons">';
+			$pstr[] = '				<a id="' . $id . '_browseButton" class="plupload_button plupload_add" href="#">'
+					. JText::_('PLG_ELEMENT_FILEUPLOAD_ADD_FILES') . '</a>';
+			$pstr[] = '				<a class="plupload_button plupload_start plupload_disabled" href="#">'
+					. JText::_('PLG_ELEMENT_FILEUPLOAD_START_UPLOAD') . '</a>';
+			$pstr[] = '			</div>';
+			$pstr[] = '			<span class="plupload_upload_status"></span>';
+			$pstr[] = '		</div>';
+			$pstr[] = '		<div class="plupload_file_action"></div>';
+			$pstr[] = '			<div class="plupload_file_status">';
+			$pstr[] = '				<span class="plupload_total_status"></span>';
+			$pstr[] = '			</div>';
+			$pstr[] = '		<div class="plupload_file_size">';
+			$pstr[] = '			<span class="plupload_total_file_size"></span>';
+			$pstr[] = '		</div>';
+			$pstr[] = '		<div class="plupload_progress">';
+			$pstr[] = '			<div class="plupload_progress_container">';
+			$pstr[] = '			<div class="plupload_progress_bar"></div>';
+			$pstr[] = '		</div>';
+			$pstr[] = '	</div>';
+			$pstr[] = '	<div class="plupload_clearer">&nbsp;</div>';
+			$pstr[] = '	</div>';
+
+			FabrikHelperHTML::stylesheet(COM_FABRIK_LIVESITE . 'plugins/fabrik_element/fileupload/lib/plupload/css/plupload.queue.css');
+		}
+
 		$pstr[] = '	</div>';
 		$pstr[] = '</div>';
 		$pstr[] = '<!-- FALLBACK; SHOULD LOADING OF PLUPLOAD FAIL -->';
