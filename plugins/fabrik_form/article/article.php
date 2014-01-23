@@ -178,9 +178,23 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 
 				if (get_class($elementModel) === 'PlgFabrik_ElementFileupload')
 				{
-					$name = $elementModel->getFullName(true, false);
+					$name = $elementModel->getFullName(false, true, false);
 					$img->$name = $placeholder;
 				}
+			}
+		}
+		// Parse any other fileupload image
+		$uploads = $formModel->getListModel()->getElementsOfType('fileupload');
+
+		foreach ($uploads as $upload)
+		{
+			$name = $upload->getFullName(false, true, false);
+			$size = $params->get('image_full_size', 'thumb');
+			list($file, $placeholder) = $this->setImage($upload->getElement()->id, $size);
+
+			if (!isset($img->$name))
+			{
+				$img->$name = $placeholder;
 			}
 		}
 
