@@ -29,7 +29,7 @@ defined('_JEXEC') or die('Restricted access');
 		<div class="<?php echo $class . ' filter_' . $key.'_label'?> ">
 			<?php echo $filter->label;?>
 		</div>
-		<div class="<?php echo $class . ' filter_' . $key?>">
+		<div data-filter-row="<?php echo $key;?>" class="<?php echo $class . ' filter_' . $key?>">
 			<?php echo $filter->element;?>
 		</div>
 	<?php }
