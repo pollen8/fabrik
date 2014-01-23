@@ -37,7 +37,7 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 		$params = $this->getParams();
 		$this->data = array_merge($formModel->_formData, $this->getEmailData());
 
-		if (!$this->shouldProcess('article_conditon', null))
+ 		if (!$this->shouldProcess('article_conditon', null))
 		{
 			return;
 		}
@@ -132,7 +132,13 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 	 */
 	protected function images()
 	{
+		if (isset($this->images))
+		{
+			return $this->images;
+		}
+
 		$params = $this->getParams();
+		$formModel = $this->formModel;
 		$introImg = $params->get('image_intro', '');
 		$fullImg = $params->get('image_full', '');
 		$img = new stdClass;
@@ -140,26 +146,47 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 		if ($introImg !== '')
 		{
 			$size = $params->get('image_intro_size', 'cropped');
-			$file = $this->setImage($introImg, $size);
-			$img->image_intro = str_replace('\\', '/', $file);
-			$img->image_intro = FabrikString::ltrimword($img->image_intro, '/');
-			$img->float_intro = '';
-			$img->image_intro_alt = '';
-			$img->image_intro_caption = '';
+			list($file, $placeholder) = $this->setImage($introImg, $size);
+
+			if ($file !== '')
+			{
+				$file = $this->setImage($introImg, $size);
+				$img->image_intro = str_replace('\\', '/', $file);
+				$img->image_intro = FabrikString::ltrimword($img->image_intro, '/');
+				$img->float_intro = '';
+				$img->image_intro_alt = '';
+				$img->image_intro_caption = '';
+
+				$elementModel = $formModel->getElement($introImg, true);
+			}
 		}
 
 		if ($fullImg !== '')
 		{
 			$size = $params->get('image_full_size', 'thumb');
-			$file = $this->setImage($fullImg, $size);
-			$img->image_fulltext = str_replace('\\', '/', $file);
-			$img->image_fulltext = FabrikString::ltrimword($img->image_fulltext, '/');
-			$img->float_fulltext = '';
-			$img->image_fulltext_alt = '';
-			$img->image_fulltext_caption = '';
+			list($file, $placeholder) = $this->setImage($fullImg, $size);
+
+			if ($file !== '')
+			{
+				$img->image_fulltext = str_replace('\\', '/', $file);
+				$img->image_fulltext = FabrikString::ltrimword($img->image_fulltext, '/');
+				$img->float_fulltext = '';
+				$img->image_fulltext_alt = '';
+				$img->image_fulltext_caption = '';
+
+				$elementModel = $formModel->getElement($fullImg, true);
+
+				if (get_class($elementModel) === 'PlgFabrik_ElementFileupload')
+				{
+					$name = $elementModel->getFullName(true, false);
+					$img->$name = $placeholder;
+				}
+			}
 		}
 
-		return $img;
+		$this->images = $img;
+
+		return $this->images;
 	}
 
 	/**
@@ -168,15 +195,35 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 	 * @param   int     $elementId  Element id
 	 * @param   string  $size       Type of file to find (cropped/thumb/full)
 	 *
-	 * @return  string
+	 * @return  array   ($image, $placeholder)
 	 */
 	protected function setImage($elementId, $size)
 	{
 		$file = $this->findElementData($elementId);
+
+		if ($file === '')
+		{
+			return array('', '');
+		}
+
+		// Initial upload $file is json data / ajax upload?
+		if ($f = json_decode($file))
+		{
+			if (array_key_exists(0, $f))
+			{
+				$file = $f[0]->file;
+			}
+		}
+
 		$elementModel = $this->formModel->getElement($elementId, true);
 
 		if (get_class($elementModel) === 'PlgFabrik_ElementFileupload')
 		{
+			$name = $elementModel->getHTMLName();
+			$data[$name] = $file;
+			$elementModel->setEditable(false);
+			$placeholder = $elementModel->render($data);
+
 			$storage = $elementModel->getStorage();
 			$file = $storage->clean(JPATH_SITE . '/' . $file);
 			$file = $storage->pathToURL($file);
@@ -193,9 +240,15 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 
 			$file = $storage->urlToPath($file);
 			$file = str_replace(JPATH_SITE . '/', '', $file);
+			$first = substr($file, 0, 1);
+
+			if ($first === '\\' || $first == '/')
+			{
+				$file = FabrikString::ltrimiword($file, $first);
+			}
 		}
 
-		return $file;
+		return array($file, $placeholder);
 	}
 
 	/**
@@ -216,7 +269,7 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 		}
 
 		$table = JTable::getInstance('Content');
-		$alias = $data['title'];
+		$alias = JStringNormalise::toDashSeparated($data['title']);
 		$title = $data['title'];
 
 		while ($table->load(array('alias' => $alias, 'catid' => $catid)))
@@ -238,9 +291,10 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 	 */
 	protected function setMetaStore($store)
 	{
+		$formModel = $this->formModel;
 		$params = $this->getParams();
 
-		if ($elementModel = $this->formModel->getElement($params->get('meta_store'), true))
+		if ($elementModel = $formModel->getElement($params->get('meta_store'), true))
 		{
 			$key = $elementModel->getElement()->name;
 			$val = json_encode($store);
@@ -265,10 +319,11 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 	 */
 	protected function metaStore()
 	{
+		$formModel = $this->formModel;
 		$params = $this->getParams();
 		$metaStore = new stdClass;
 
-		if ($elementModel = $this->formModel->getElement($params->get('meta_store'), true))
+		if ($elementModel = $formModel->getElement($params->get('meta_store'), true))
 		{
 			$fullName = $elementModel->getFullName(false, true, false);
 			$metaStore = $this->formModel->getElementData($fullName);
@@ -295,11 +350,14 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 	public function onDeleteRowsForm($params, &$formModel, &$groups)
 	{
 		$params = $this->getParams();
+		$deleteMode = $params->get('delete_mode', 'DELETE');
 		$item = JTable::getInstance('Content');
+		$userId = JFactory::getUser()->get('id');
 
 		if ($elementModel = $formModel->getElement($params->get('meta_store'), true))
 		{
 			$fullName = $elementModel->getFullName(false, true, false) . '_raw';
+
 			foreach ($groups as $group)
 			{
 				foreach ($group as $rows)
@@ -314,7 +372,18 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 
 							foreach ($store as $catid => $articleId)
 							{
-								$item->delete($articleId);
+								switch ($deleteMode)
+								{
+									case 'DELETE':
+										$item->delete($articleId);
+										break;
+									case 'UNPUBLISH':
+										$ok = $item->publish(array($articleId), 0, $userId);
+										break;
+									case 'TRASH':
+										$item->publish(array($articleId), -2, $userId);
+										break;
+								}
 							}
 						}
 					}
@@ -334,6 +403,7 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 	 */
 	protected function buildContent()
 	{
+		$images = $this->images();
 		$formModel = $this->formModel;
 		$app = JFactory::getApplication();
 		$input = $app->input;
@@ -375,6 +445,12 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 		$message = str_replace('{fabrik_viewlink}', $viewlink, $message);
 		$message = str_replace('{fabrik_editurl}', $editURL, $message);
 		$message = str_replace('{fabrik_viewurl}', $viewURL, $message);
+
+		foreach ($images as $key => $val)
+		{
+			$this->data[$key] = $val;
+		}
+
 		$w = new FabrikWorker;
 		$output = $w->parseMessageForPlaceholder($message, $this->data, false);
 
