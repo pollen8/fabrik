@@ -1427,6 +1427,12 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		$name = $this->getFullName(true, false);
 		$myFileDirs = $input->get($name, array(), 'array');
 
+		if (!$this->canUse())
+		{
+			// If the user can't use the plugin no point processing an non-existant upload
+			return;
+		}
+
 		if ($this->processAjaxUploads($name))
 		{
 			// Stops form data being updated with blank data.
@@ -1444,12 +1450,6 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		if ($this->crop($name) && $params->get('ajax_upload'))
 		{
 			// Stops form data being updated with blank data.
-			return;
-		}
-
-		if (!$this->canUse())
-		{
-			// If the user can't use the plugin no point processing an non-existant upload
 			return;
 		}
 
@@ -1548,7 +1548,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 
 			if ($file['name'] != '')
 			{
-				$files[0] = $this->_processIndUpload($file, $myFileDir, $i);
+				$files[0] = $this->_processIndUpload($file, $myFileDir);
 			}
 			else
 			{
