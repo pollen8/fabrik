@@ -512,15 +512,15 @@ var FbDateTime = new Class({
 			'id' : this.startElement + '_handle'
 		}).set('html', this.options.timelabel + '<a href="#" style="color:#eee" class="close">[x]</a>');
 		var d = new Element('div', {
-			'className' : 'fbDateTime',
-			'styles' : {
-				'z-index' : 999999,
-				display : 'none',
-				cursor : 'move',
-				width : '264px',
-				height : '125px',
-				border : '1px solid #999999',
-				backgroundColor : '#EEEEEE'
+			'class': 'fbDateTime',
+			'styles': {
+				'z-index': 999999,
+				display: 'none',
+				cursor: 'move',
+				width: '264px',
+				height: '125px',
+				border: '1px solid #999999',
+				backgroundColor: '#EEEEEE'
 			}
 		});
 
