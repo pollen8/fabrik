@@ -109,7 +109,10 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 
 		if (trim($amount) == '')
 		{
-			$amount = JArrayHelper::getValue($this->data, FabrikString::safeColNameToArrayKey($params->get('paypal_cost_element')));
+			// Priority to raw data.
+			$amountKey = FabrikString::safeColNameToArrayKey($params->get('paypal_cost_element'));
+			$amount = JArrayHelper::getValue($this->data, $amountKey);
+			$amount = JArrayHelper::getValue($this->data, $amountKey . '_raw', $amount);
 
 			if (is_array($amount))
 			{
