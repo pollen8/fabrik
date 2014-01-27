@@ -51,6 +51,9 @@ $listId = (int) $params->get('list_id', 1);
 $useajax = (int) $params->get('useajax', 0);
 $random	= (int) $params->get('radomizerecords', 0);
 $limit = (int) $params->get('limit', 0);
+$origResetfilters = $input->get('resetfilter');
+$resetFilters = (int) $params->get('resetfilters', 0);
+JRequest::setVar('resetfilters', $resetFilters);
 $showTitle = $params->get('show-title', '');
 $layout	= $params->get('fabriklayout', '');
 JRequest::setVar('layout', $layout);
@@ -58,12 +61,14 @@ JRequest::setVar('layout', $layout);
 $moduleclass_sfx = $params->get('moduleclass_sfx', '');
 
 $listId	= intval($params->get('list_id', 0));
+
 if ($listId === 0)
 {
 	JError::raiseError(500, 'no list specified');
 }
 
 $listels = json_decode($params->get('list_elements'));
+
 if (isset($listels->show_in_list))
 {
 	$input->set('fabrik_show_in_list', $listels->show_in_list);
@@ -137,6 +142,7 @@ if (!empty($conditions))
 }
 
 $model->randomRecords = $random;
+
 if (!JError::isError($model))
 {
 	$view->setModel($model, true);
@@ -148,7 +154,8 @@ $view->error = $controller->getError();
 echo $view->display();
 
 JRequest::setVar('layout', $origLayout);
-$app->input->set('showfilters', $origShowFilters);
+$input->set('showfilters', $origShowFilters);
+$input->set('resetfilters', $origResetfilters);
 
 // Set the package back to what it was before rendering the module
 $app->setUserState('com_fabrik.package', $prevUserState);
