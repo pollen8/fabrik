@@ -91,10 +91,30 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 
 		$this->generateNewTitle($id, $catid, $data);
 
+		/* $item = JTable::getInstance('Content');
+		$item->load($id);
+		$item->bind($data);
+		$item->store(); */
+
+		if (!is_null($id))
+		{
+			$readmore = 'index.php?option=com_content&view=article&id=' . $id;
+			$data['articletext'] = str_replace('{readmore}', $readmore, $data['articletext']);
+		}
+
 		$item = JTable::getInstance('Content');
 		$item->load($id);
 		$item->bind($data);
 		$item->store();
+
+		// New record - need to re-save with {readmore} replacement
+		if (is_null($id) && strstr($data['articletext'], '{readmore}'))
+		{
+			$readmore = 'index.php?option=com_content&view=article&id=' . $item->id;
+			$data['articletext'] = str_replace('{readmore}', $readmore, $data['articletext']);
+			$item->bind($data);
+			$item->store();
+		}
 
 		return $item;
 	}
