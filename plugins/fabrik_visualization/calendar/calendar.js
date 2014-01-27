@@ -91,6 +91,14 @@ var fabrikCalendar = new Class({
 		}*/
 	},
 
+	/**
+	 * Make the event div
+	 * 
+	 * @param  object    entry   Event entry
+	 * @param  object    opts    Position opts
+	 * @param  date      aDate   Current date
+	 * @param  DOM node  target  Parent dom node
+	 */
 	_makeEventRelDiv: function (entry, opts, aDate, target)
 	{
 		var x, eventCont, replace, dataContent, buttons;
@@ -585,12 +593,18 @@ var fabrikCalendar = new Class({
 					td = hourTds[startIndex];
 
 					// Work out event div width - taking into account 1px margin between each event
-					eventWidth = Math.floor((td.getSize().x - gridSize) / (gridSize + 1));
+					eventWidth = Math.floor((td.getSize().x - gridSize) / gridSize);
 					opts.width = eventWidth + 'px';
 					opts['margin-left'] = thisOffset * (eventWidth + 1);
 					var div = this._makeEventRelDiv(entry, opts, null, td);
+					console.log(div);
+					div.addClass('week-event');
 					div.inject(document.body);
-					div.store('opts', opts);
+					var padding = div.getStyle('padding-left').toInt() + div.getStyle('padding-right').toInt();
+					div.setStyle('width', div.getStyle('width').toInt() - padding + 'px');
+					div.store('opts', opts);					
+					div.store('relativeTo', td);
+					div.store('gridSize', gridSize);
 
 					var calEvents = td.retrieve('calevents', []);
 					calEvents.push(div);
@@ -600,7 +614,6 @@ var fabrikCalendar = new Class({
 			}.bind(this));
 			counterDate.setTime(counterDate.getTime() + this.DAY);
 		}
-
 	},
 
 	_buildEventOpts: function (opts)
@@ -761,7 +774,7 @@ var fabrikCalendar = new Class({
 				td = hourTds[startIndex];
 
 				// Work out event div width - taking into account 1px margin between each event
-				eventWidth = Math.floor((td.getSize().x - gridSize) / (gridSize + 1));
+				eventWidth = Math.floor((td.getSize().x - gridSize) / gridSize);
 				opts.width = eventWidth + 'px';
 
 				// Work out the left offset for the event - stops concurrent events overlapping each other
@@ -776,7 +789,13 @@ var fabrikCalendar = new Class({
 				}
 				opts['margin-left'] = maxOffset * (eventWidth + 1);
 				var div = this._makeEventRelDiv(entry, opts, null, td);
+				div.addClass('day-event');
+				div.store('relativeTo', td);
+				div.store('gridSize', gridSize);
 				div.inject(document.body);
+				
+				var padding = div.getStyle('padding-left').toInt() + div.getStyle('padding-right').toInt();
+				div.setStyle('width', div.getStyle('width').toInt() - padding + 'px');
 				div.store('opts', opts);
 
 				var calEvents = td.retrieve('calevents', []);
@@ -1206,9 +1225,6 @@ var fabrikCalendar = new Class({
 	renderWeekView: function () {
 		var i, d, tr, tbody, we;
 		this.fadePopWin(0);
-		// For some reason, using '===' does not work, so une '==' instead !
-		// $$$ rob : Javascript MUST be strongly typed to pass JSLint in our build scripts
-		// As show weekends is a boolean I have specically cased it to such in the php code
 		we = this.options.showweekends === false ? 6 : 8;
 		this.options.viewType = 'weekView';
 		this.setAddButtonState();
@@ -1311,6 +1327,19 @@ var fabrikCalendar = new Class({
 
 	render: function (options) {
 		this.setOptions(options);
+		
+		// Resize week & day events when the window re-sizes
+		window.addEvent('resize', function () {
+			document.getElements('a.week-event, a.day-event').each(function (a) {
+				var td = a.retrieve('relativeTo');
+				a.position({'relativeTo': td, 'position': 'upperLeft'});
+				var gridSize = a.retrieve('gridSize');
+				var eventWidth = Math.floor((td.getSize().x - gridSize) / gridSize);
+				var padding = a.getStyle('padding-left').toInt() + a.getStyle('padding-right').toInt();
+				eventWidth = eventWidth - padding;
+				a.setStyle('width', eventWidth + 'px');
+			});
+		});
 		document.addEvent('click:relay(button[data-task=deleteCalEvent], a[data-task=deleteCalEvent])', function (event, target) {
 			event.preventDefault();
 			this.deleteEntry();
