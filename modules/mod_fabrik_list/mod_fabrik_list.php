@@ -51,7 +51,7 @@ $listId = (int) $params->get('list_id', 1);
 $useajax = (int) $params->get('useajax', 0);
 $random	= (int) $params->get('radomizerecords', 0);
 $limit = (int) $params->get('limit', 0);
-$origResetfilters = $input->get('resetfilter');
+$origResetfilters = $input->get('resetfilters');
 $resetFilters = (int) $params->get('resetfilters', 0);
 JRequest::setVar('resetfilters', $resetFilters);
 $showTitle = $params->get('show-title', '');
