@@ -48,6 +48,8 @@ list-style: none;
 
 .filtertable_horiz {
 	display: inline-block;
+	padding: 25px;
+	vertical-align: top;
 }
 
 ";?>
