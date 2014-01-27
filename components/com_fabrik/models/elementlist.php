@@ -271,6 +271,11 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 			*/
 			$originalValue = str_replace("/", "\\\\/", $originalValue);
 
+			if ($condition === 'is null')
+			{
+				$value = '';
+			}
+
 			switch ($condition)
 			{
 				case '=':
