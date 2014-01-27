@@ -125,6 +125,17 @@
 						<option value="0">JNO</option>
 						<option value="1">JYES</option>
 				</field>
+
+				<field name="resetfilters"
+					type="radio"
+					default="0"
+					class="btn-group"
+					description="MOD_FABRIK_LIST_RESET_FILTERS_DESC"
+					label="MOD_FABRIK_LIST_RESET_FILTERS_LABEL" >
+						<option value="0">JNO</option>
+						<option value="1">JYES</option>
+				</field>
+
 				<field name="clearfilters"
 					type="radio"
 					default="0"

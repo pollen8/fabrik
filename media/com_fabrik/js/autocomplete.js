@@ -73,6 +73,7 @@ var FbAutocomplete = new Class({
 			this.closeMenu();
 			return false;
 		}
+		return true;
 	},
 	
 	/**
@@ -133,7 +134,7 @@ var FbAutocomplete = new Class({
 				//this.ajax = null;
 			}.bind(this),
 			onSuccess: function (e) {
-				this.completeAjax(e);
+				this.completeAjax(e, data.value);
 			}.bind(this),
 			onComplete: function () {
 				Fabrik.loader.stop(this.getInputElement());
@@ -147,7 +148,7 @@ var FbAutocomplete = new Class({
 		}).send();
 	},
 
-	completeAjax: function (r) {
+	completeAjax: function (r, v) {
 		Fabrik.loader.stop(this.getInputElement());
 		r = JSON.decode(r);
 		this.cache[v] = r;

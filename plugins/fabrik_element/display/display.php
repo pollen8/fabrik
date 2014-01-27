@@ -65,9 +65,25 @@ class PlgFabrik_ElementDisplay extends PlgFabrik_Element
 		if (!$params->get('display_showlabel', true))
 		{
 			$element->label = $this->getValue(array());
+			$element->label_raw = $element->label;
 		}
 
 		return parent::getLabel($repeatCounter, $tmpl);
+	}
+
+	/**
+	 * Get the element's raw label (used for details view, not wrapped in <label> tags
+	 *
+	 * @return  string  Label
+	 */
+	protected function getRawLabel()
+	{
+		if (!$this->getParams()->get('display_showlabel', true))
+		{
+			return $this->getValue(array());;
+		}
+
+		return parent::getRawLabel();
 	}
 
 	/**

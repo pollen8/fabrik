@@ -2033,6 +2033,17 @@ class PlgFabrik_Element extends FabrikPlugin
 	}
 
 	/**
+	 * Get the element's raw label (used for details view, not wrapped in <label> tags
+	 *
+	 * @return  string  Label
+	 */
+
+	protected function getRawLabel()
+	{
+		return $this->element->label;
+	}
+
+	/**
 	 * This was in the views display and _getElement code but seeing as its used
 	 * by multiple views its safer to have it here
 	 *
@@ -2095,7 +2106,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		// Ensure that view data property contains the same html as the group's element
 
 		$model->tmplData[$elHTMLName] = $element->element;
-		$element->label_raw = $this->element->label;
+		$element->label_raw = $this->getRawLabel();
 
 		// GetLabel needs to know if the element is editable
 		if ($elementTable->name != $this->_foreignKey)

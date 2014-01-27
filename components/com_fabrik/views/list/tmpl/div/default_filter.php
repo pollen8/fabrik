@@ -31,7 +31,7 @@ defined('_JEXEC') or die('Restricted access');
 	<?php $c ++;
 	} ?>
 	<?php if ($this->filter_action != 'onchange') {?>
-	<li class="fabrik_row oddRow<?php echo $c % 2;?>">
+	<li data-filter-row="<?php echo $key;?>" class="fabrik_row oddRow<?php echo $c % 2;?>">
 		<input type="button" class="fabrik_filter_submit button" value="<?php echo JText::_('COM_FABRIK_GO');?>"
 			name="filter" />
 	</li>

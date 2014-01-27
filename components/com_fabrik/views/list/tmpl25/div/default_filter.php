@@ -22,9 +22,9 @@ defined('_JEXEC') or die('Restricted access');
 
 	<?php
 	$c = 0;
-	foreach ($this->filters as $filter) {
+	foreach ($this->filters as $key => $filter) {
 		$required = $filter->required == 1 ? ' notempty' : '';?>
-		<li class="fabrik_row oddRow<?php echo ($c % 2) . $required;?>">
+		<li data-filter-row="<?php echo $key;?>" class="fabrik_row oddRow<?php echo ($c % 2) . $required;?>">
 			<span class="divfilterLabel"><?php echo $filter->label;?></span>
 			<span class="divfilterElement""><?php echo $filter->element;?></span>
 		</li>

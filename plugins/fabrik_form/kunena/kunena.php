@@ -116,10 +116,10 @@ class PlgFabrik_FormKunena extends PlgFabrik_Form
 
 		ob_start();
 		include $postfile;
-		$mypost = new CKunenaPost;
+		$topic = new CKunenaPost;
 
 		// Public CKunenaPost::display() will call protected method CKunenaPost::post() if $app->input action is 'post'
-		$mypost->display();
+		$topic->display();
 		ob_end_clean();
 		$input->set('id', $origId);
 	}
@@ -132,10 +132,17 @@ class PlgFabrik_FormKunena extends PlgFabrik_Form
 
 	protected function post3x()
 	{
+		// Load front end language file as well
+		$lang = JFactory::getLanguage();
+		$lang->load('com_kunena', JPATH_SITE . '/components/com_kunena');
+
 		$params = $this->getParams();
 		$app = JFactory::getApplication();
 		$formModel = $this->getModel();
 		$input = $app->input;
+
+		$user = JFactory::getUser();
+		$now = JFactory::getDate();
 		$w = new FabrikWorker;
 
 		$catid = $params->get('kunena_category', 0);
@@ -150,12 +157,35 @@ class PlgFabrik_FormKunena extends PlgFabrik_Form
 		$origId = $input->get('id');
 		$input->set('id', 0);
 
-		$mypost = new KunenaForumTopic;
-		$mypost->category_id = $catid;
-		$mypost->subject = $subject;
-		$mypost->first_post_message = $msg;
+		$topic = new KunenaForumTopic;
+		$topic->category_id = $catid;
+		$topic->subject = $subject;
+		$topic->first_post_time = $topic->last_post_time = $now->toUnix();
+		$topic->first_post_userid = $topic->last_post_userid = $user->get('id');
+		$topic->first_post_message = $topic->last_post_message = $msg;
+		$topic->posts = 1;
 
-		$mypost->save();
+		if ($topic->save())
+		{
+			$message = new KunenaForumMessage;
+			$message->setTopic($topic);
+
+			$message->subject = $subject;
+			$message->catid = $catid;
+			$message->name = $subject;
+			$message->time = $now->toUnix();
+			$message->message = $msg;
+
+			if (!$message->save())
+			{
+				$app->enqueueMessage('PLG_FORM_KUNENA_ERR_DIDNT_SAVE_MESSAGE', 'error');
+			}
+		}
+		else
+		{
+			$app->enqueueMessage('PLG_FORM_KUNENA_ERR_DIDNT_SAVE_TOPIC', 'error');
+		}
+
 		$input->set('id', $origId);
 	}
 }

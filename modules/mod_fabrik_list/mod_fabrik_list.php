@@ -59,6 +59,9 @@ $listId = (int) $params->get('list_id', 1);
 $useajax = (int) $params->get('useajax', 0);
 $random	= (int) $params->get('radomizerecords', 0);
 $limit = (int) $params->get('limit', 0);
+$origResetfilters = $input->get('resetfilters');
+$resetFilters = (int) $params->get('resetfilters', 0);
+$input->set('resetfilters', $resetFilters);
 $showTitle = $params->get('show-title', '');
 $layout	= $params->get('fabriklayout', '');
 $input->set('layout', $layout);
@@ -164,6 +167,7 @@ echo $view->display();
 $input->set('itemId', $origItemId);
 $input->set('layout', $origLayout);
 $input->set('showfilters', $origShowFilters);
+$input->set('resetfilters', $origResetfilters);
 
 // Set the package back to what it was before rendering the module
 $app->setUserState('com_fabrik.package', $prevUserState);

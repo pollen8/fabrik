@@ -166,11 +166,14 @@ var FbFileUpload = new Class({
 	},
 
 	addDropArea: function () {
-		var dropTxt = this.container.getElement('tr.plupload_droptext');
+		if (!Fabrik.bootstraped) {
+			return;
+		}
+		var dropTxt = this.container.getElement('tr.plupload_droptext'), tr;
 		if (typeOf(dropTxt) !== 'null') {
 			dropTxt.show();
 		} else {
-			var tr = new Element('tr.plupload_droptext').set('html', '<td colspan="4"><i class="icon-move"></i> Drag files here </td>');
+			tr = new Element('tr.plupload_droptext').set('html', '<td colspan="4"><i class="icon-move"></i> ' + Joomla.JText._('PLG_ELEMENT_FILEUPLOAD_DRAG_FILES_HERE') + ' </td>');
 			this.container.getElement('tbody').adopt(tr);
 		}
 		this.container.getElement('thead').hide();
@@ -220,7 +223,11 @@ var FbFileUpload = new Class({
 		this.pluploadContainer = c.getElement('.plupload_container');
 		this.pluploadFallback = c.getElement('.plupload_fallback');
 		this.droplist = c.getElement('.plupload_filelist');
-		this.startbutton = c.getElement('*[data-action=plupload_start]');
+		if (Fabrik.bootstrapped) {
+			this.startbutton = c.getElement('*[data-action=plupload_start]');
+		} else {
+			this.startbutton = c.getElement('.plupload_start');
+		}
 		var plupopts = {
 			runtimes: this.options.ajax_runtime,
 			browse_button: this.element.id + '_browseButton',
@@ -257,7 +264,9 @@ var FbFileUpload = new Class({
 		this.uploader.bind('FilesAdded', function (up, files) {
 			this.removeDropArea();
 			this.lastAddedFiles = files;
-			this.container.getElement('thead').show();
+			if (Fabrik.bootstrapped) {
+				this.container.getElement('thead').show();
+			}
 			var count = this.droplist.getElements('li').length;
 			this.startbutton.removeClass('disabled');
 			files.each(function (file, idx) {
@@ -268,28 +277,9 @@ var FbFileUpload = new Class({
 						alert(Joomla.JText._('PLG_ELEMENT_FILEUPLOAD_MAX_UPLOAD_REACHED'));
 					} else {
 						count++;
-						var del = new Element('td.span1.plupload_file_action', {
-						}).adopt(new Element('a', {
-							'href': '#',
-							'class': 'icon-delete',
-							events: {
-								'click': function (e) {
-									this.pluploadRemoveFile(e, file);
-								}.bind(this)
-							}
-						}));
-
+						var a, title, innerLi;
 						if (this.isImage(file)) {
-							a = new Element('a.editImage', {
-								'href' : '#',
-								styles: {'display': 'none'},
-								alt : Joomla.JText._('PLG_ELEMENT_FILEUPLOAD_RESIZE'),
-								events : {
-									'click': function (e) {
-										this.pluploadResize(e);
-									}.bind(this)
-								}
-							});
+							a = this.editImgButton();
 							if (this.options.crop) {
 								a.set('html', this.options.resizeButton);
 							} else {
@@ -300,13 +290,11 @@ var FbFileUpload = new Class({
 							a = new Element('span');
 							title = new Element('a', {'href': file.url}).set('text', file.name);
 						}
-						var icon = new Element('td.span1.plupload_resize').adopt(a);
-						var progress = '<div class="progress progress-striped"><div class="bar" style="width: 0%;"></div></div>';
-						var filename = new Element('td.span6.plupload_file_name', {
-						}).adopt(title);
-						var innerli = [filename, icon, new Element('td.span5.plupload_file_status', {
-						}).set('html', progress), del ];
-						this.droplist.adopt(new Element('tr', {
+						
+						innerli = this.imageCells(file, title, a);
+						
+						var rElement = Fabrik.bootstrapped ? 'tr' : 'li';
+						this.droplist.adopt(new Element(rElement, {
 							id : file.id,
 							'class' : 'plupload_delete'
 						}).adopt(innerli));
@@ -319,10 +307,14 @@ var FbFileUpload = new Class({
 		this.uploader.bind('UploadProgress', function (up, file) {
 			var f = document.id(file.id);
 			if (typeOf(f) !== 'null') {
-				var bar = document.id(file.id).getElement('.plupload_file_status .bar');
-				bar.setStyle('width', file.percent + '%');
-				if (file.percent === 100) {
-					bar.addClass('bar-success');
+				if (Fabrik.bootstrapped) {
+					var bar = document.id(file.id).getElement('.plupload_file_status .bar');
+					bar.setStyle('width', file.percent + '%');
+					if (file.percent === 100) {
+						bar.addClass('bar-success');
+					}
+				} else {
+					document.id(file.id).getElement('.plupload_file_status').set('text', file.percent + '%');
 				}
 			}
 		});
@@ -388,10 +380,10 @@ var FbFileUpload = new Class({
 			// Stores the image id if > 1 fileupload
 			var idvalue = [file.recordid, '0'].pick();
 			new Element('input', {
-				'type' : 'hidden',
-				name : this.options.elementName + '[id][' + response.filepath + ']',
-				'id' : 'id_' + file.id,
-				'value' : idvalue
+				'type': 'hidden',
+				name: this.options.elementName + '[id][' + response.filepath + ']',
+				'id': 'id_' + file.id,
+				'value': idvalue
 			}).inject(this.pluploadContainer, 'after');
 
 			document.id(file.id).removeClass('plupload_file_action').addClass('plupload_done');
@@ -406,6 +398,101 @@ var FbFileUpload = new Class({
 		}.bind(this));
 		// (5) KICK-START PLUPLOAD
 		this.uploader.init();
+	},
+	
+	/**
+	 * Create an array of the dom elements to inject into a row representing an uploaded file
+	 * 
+	 * @return array
+	 */
+	imageCells: function (file, title, a) {
+		var del = this.deleteImgButton(), filename, status;
+		if (Fabrik.bootstrapped) {
+			var icon = new Element('td.span1.plupload_resize').adopt(a);
+			var progress = '<div class="progress progress-striped"><div class="bar" style="width: 0%;"></div></div>';
+			
+			status = new Element('td.span5.plupload_file_status', {}).set('html', progress);
+			
+			filename = new Element('td.span6.plupload_file_name', {}).adopt(title);
+	
+			return [filename, icon, status, del];
+		} else {
+			filename = new Element('div', {
+				'class': 'plupload_file_name'
+			}).adopt([title, new Element('div', {
+				'class': 'plupload_resize',
+				style: 'display:none'
+			}).adopt(a)]);
+			status = new Element('div', {
+				'class': 'plupload_file_status'
+			}).set('text', '0%');
+			var size = new Element('div', {
+				'class': 'plupload_file_size'
+			}).set('text', file.size);
+			
+			return [filename, del, status, size, new Element('div', {
+				'class': 'plupload_clearer'
+			})];
+		}
+	},
+
+	/**
+	 * Create edit image button
+	 */
+	
+	editImgButton: function () {
+		if (Fabrik.bootstrapped) {
+			return new Element('a.editImage', {
+				'href' : '#',
+				styles: {'display': 'none'},
+				alt : Joomla.JText._('PLG_ELEMENT_FILEUPLOAD_RESIZE'),
+				events : {
+					'click': function (e) {
+						this.pluploadResize(e);
+					}.bind(this)
+				}
+			});
+		} else {
+			return new Element('a', {
+				'href': '#',
+				alt: Joomla.JText._('PLG_ELEMENT_FILEUPLOAD_RESIZE'),
+				events: {
+					'click': function (e) {
+						this.pluploadResize(e);
+					}.bind(this)
+				}
+			});
+		}
+	},
+	
+	/**
+	 * Create delete image button
+	 */
+	deleteImgButton: function () {
+		if (Fabrik.bootstrapped) {
+			return new Element('td.span1.plupload_file_action', {
+			}).adopt(new Element('a', {
+				'href': '#',
+				'class': 'icon-delete',
+				events: {
+					'click': function (e) {
+						this.pluploadRemoveFile(e, file);
+					}.bind(this)
+				}
+			}));
+		} else {
+			return new Element('div', {
+				'class': 'plupload_file_action'
+			}).adopt(new Element('a', {
+				'href': '#',
+				'style': 'display:block',
+				events: {
+					'click': function (e) {
+						this.pluploadRemoveFile(e, file);
+					}.bind(this)
+				}
+			}));
+		}
 	},
 
 	isImage: function (file) {
@@ -802,7 +889,7 @@ var ImageWidget = new Class({
 					ctx.translate(this.x, this.y);
 					ctx.rotate(this.rotation * Math.PI / 180);
 
-					this.hover ? ctx.strokeStyle = '#f00' : ctx.strokeStyle = '#000'; // red/black
+					this.hover ? ctx.strokeStyle = '#f00' : ctx.strokeStyle = '#000';
 					ctx.strokeRect(w * -0.5, h * -0.5, w, h);
 					if (typeOf(parent.img) !== 'null') {
 						try {
@@ -883,7 +970,7 @@ var ImageWidget = new Class({
 					ctx.save();
 					ctx.translate(this.x, this.y);
 
-					this.hover ? ctx.strokeStyle = '#f00' : ctx.strokeStyle = '#000'; // red/black
+					this.hover ? ctx.strokeStyle = '#f00' : ctx.strokeStyle = '#000';
 					ctx.strokeRect(w * -0.5, h * -0.5, w, h);
 					ctx.restore();
 

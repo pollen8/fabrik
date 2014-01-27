@@ -401,9 +401,9 @@ class FabrikFEModelList extends JModelForm
 	 *
 	 * @since 3.0.7
 	 *
-	 * @var mixed - string or JQueryBuilder section
+	 * @var array - string and/or JQueryBuilder section
 	 */
-	public $orderBy = null;
+	public $orderBy = array();
 
 	/**
 	 * Tabs field to use
@@ -2624,9 +2624,11 @@ class FabrikFEModelList extends JModelForm
 
 	public function buildQueryOrder($query = false)
 	{
-		if (isset($this->orderBy))
+		$sig = $query ? 1 : 0;
+
+		if (array_key_exists($sig, $this->orderBy))
 		{
-			return $query ? $query : $this->orderBy;
+			return $this->orderBy[$sig];
 		}
 
 		$app = JFactory::getApplication();
@@ -2851,9 +2853,9 @@ class FabrikFEModelList extends JModelForm
 			$this->orderDirs[] = $groupOrderDir;
 		}
 
-		$this->orderBy = $query === false ? $strOrder : $query;
+		$this->orderBy[$sig] = $query === false ? $strOrder : $query;
 
-		return $this->orderBy;
+		return $this->orderBy[$sig];
 	}
 
 	/**

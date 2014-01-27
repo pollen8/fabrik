@@ -1347,7 +1347,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 			{
 				$opt = $opts[$i];
 				$display = $opt->value == $default_val ? '' : 'none';
-				$c = $i + 1;
+				$c = $this->showPleaseSelect() ? $i + 1 : $i;
 				$html[] = '<div style="display:' . $display . '" class="notice description-' . $c . '">' . $opt->description . '</div>';
 			}
 
