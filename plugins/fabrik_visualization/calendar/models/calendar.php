@@ -503,7 +503,7 @@ class FabrikModelCalendar extends FabrikFEModelVisualization
 
 							//Format local dates toISO8601
 							$mydate = new DateTime($row->startdate);
-							$row-startdate_locale = $mydate->format(DateTime::RFC3339);
+							$row->startdate_locale = $mydate->format(DateTime::RFC3339);
 							$mydate = new DateTime($row->enddate);
 							$row->enddate_locale = $mydate->format(DateTime::RFC3339);
 
