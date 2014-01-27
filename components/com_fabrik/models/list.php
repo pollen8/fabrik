@@ -9273,8 +9273,10 @@ class FabrikFEModelList extends JModelForm
 
 		$fabrikDb = $this->getDb();
 		$formModel = $this->getFormModel();
+		$formModel->reset();
+		$this->reset();
 		$formModel->rowId = $id;
-		unset($formModel->query);
+
 		$sql = $formModel->buildQuery();
 		$fabrikDb->setQuery($sql);
 
