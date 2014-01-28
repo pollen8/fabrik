@@ -597,7 +597,6 @@ var fabrikCalendar = new Class({
 					opts.width = eventWidth + 'px';
 					opts['margin-left'] = thisOffset * (eventWidth + 1);
 					var div = this._makeEventRelDiv(entry, opts, null, td);
-					console.log(div);
 					div.addClass('week-event');
 					div.inject(document.body);
 					var padding = div.getStyle('padding-left').toInt() + div.getStyle('padding-right').toInt();
@@ -980,7 +979,7 @@ var fabrikCalendar = new Class({
 			day = (day <  10) ? "0" + day : day;
 			
 			if (view !== 'month') {
-				hour = thisDay.getHours();	
+				hour = thisDay.getHours();
 				hour = (hour <  10) ? "0" + hour : hour;
 				min = thisDay.getMinutes();
 				min = (min <  10) ? "0" + min : min;
@@ -1325,12 +1324,8 @@ var fabrikCalendar = new Class({
 		this.showView('weekView');
 	},
 
-	render: function (options) {
-		this.setOptions(options);
-		
-		// Resize week & day events when the window re-sizes
-		window.addEvent('resize', function () {
-			document.getElements('a.week-event, a.day-event').each(function (a) {
+	repositionEvents: function () {
+		document.getElements('a.week-event, a.day-event').each(function (a) {
 				var td = a.retrieve('relativeTo');
 				a.position({'relativeTo': td, 'position': 'upperLeft'});
 				var gridSize = a.retrieve('gridSize');
@@ -1339,7 +1334,29 @@ var fabrikCalendar = new Class({
 				eventWidth = eventWidth - padding;
 				a.setStyle('width', eventWidth + 'px');
 			});
-		});
+	},
+
+	render: function (options) {
+		this.setOptions(options);
+		
+		// Resize week & day events when the window re-sizes
+		window.addEvent('resize', function () {
+			this.repositionEvents();
+		}.bind(this));
+
+		// Get the container height
+		this.y = this.el.getPosition().y;
+		var refreshDocHeight = function () {
+			var y = this.el.getPosition().y;
+			if (y !== this.y) {
+				this.y = y;
+				this.repositionEvents();
+			}
+		}.bind(this);
+
+		// update the height every 200ms
+		window.setInterval(refreshDocHeight, 200);
+
 		document.addEvent('click:relay(button[data-task=deleteCalEvent], a[data-task=deleteCalEvent])', function (event, target) {
 			event.preventDefault();
 			this.deleteEntry();
