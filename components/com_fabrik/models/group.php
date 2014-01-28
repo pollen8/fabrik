@@ -986,6 +986,7 @@ class FabrikFEModelGroup extends FabModel
 	public function getGroupProperties(&$formModel)
 	{
 		$w = new FabrikWorker;
+		$input = JFactory::getApplication()->input;
 		$group = new stdClass;
 		$groupTable = $this->getGroup();
 		$params = $this->getParams();
@@ -1035,12 +1036,15 @@ class FabrikFEModelGroup extends FabModel
 		$group->css = trim(str_replace(array("<br />", "<br>"), "", $groupTable->css));
 		$group->id = $groupTable->id;
 
-		if (JString::stristr($groupTable->label, "{Add/Edit}"))
+		$label = $input->getString('group' . $group->id . '_label', $groupTable->label);
+
+		if (JString::stristr($label, "{Add/Edit}"))
 		{
 			$replace = $formModel->isNewRecord() ? JText::_('COM_FABRIK_ADD') : JText::_('COM_FABRIK_EDIT');
-			$groupTable->label = str_replace("{Add/Edit}", $replace, $groupTable->label);
+			$label = str_replace("{Add/Edit}", $replace, $label);
 		}
 
+		$groupTable->label = $label;
 		$group->title = $w->parseMessageForPlaceHolder($groupTable->label, $formModel->data, false);
 		$group->title = JText::_($group->title);
 		$group->name = $groupTable->name;
