@@ -1595,7 +1595,23 @@ class PlgFabrik_Element extends FabrikPlugin
 				$str .= '<span class="' . $labelClass . ' faux-label">';
 			}
 
-			$labelText = JText::_($element->label);
+			/**
+			 * $$$ hugh JText::_() does funky stuff to strings with commas in them, if what
+			 * follows the first comma is all "upper case".  But it tests for that using non
+			 * MB safe code, so any non ASCII strings (like Greek text) with a comma in them
+			 * get truncated at the comma.  Corner case or what!  But for now, just don't run
+			 * any label with a comma in it through JText!
+			 */
+
+			if ((strpos($element->label, ',') === false))
+			{
+				$labelText = JText::_($element->label);
+			}
+			else
+			{
+				$labelText = $element->label;
+			}
+
 			$labelText = $labelText == '' ? '&nbsp;' : $labelText;
 			$l = $j3 ? '' : $labelText;
 			$iconOpts = array('icon-class' => 'small');
