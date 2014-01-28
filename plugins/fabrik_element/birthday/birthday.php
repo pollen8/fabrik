@@ -4,8 +4,8 @@
  *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.element.birthday
- * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
- * @license     GNU General Public License version 2 or later; see LICENSE.txt
+ * @copyright   Copyright (C) 2005-2013 fabrikar.com - All rights reserved.
+ * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
 // Check to ensure this file is included in Joomla!
@@ -21,15 +21,59 @@ defined('_JEXEC') or die();
 
 class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 {
-
+	/**
+	 * Does the element contain sub elements e.g checkboxes radiobuttons
+	 *
+	 * @var bool
+	 */
 	public $hasSubElements = true;
+
+	/**
+	 * Simple days 
+	 * 
+	 * @var array
+	 */
+	protected $daysimple = array('1', '2', '3', '4', '5', '6', '7', '8', '9');
+	
+	/**
+	 * System days
+	 * 
+	 * @var array
+	 */
+	protected $daysys = array('01', '02', '03', '04', '05', '06', '07', '08', '09');
+	
+	/**
+	 * Months in numbers
+	 * 
+	 * @var array
+	 */
+	protected $monthnumbers = array('01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12');
+	
+	/**
+	 * Months in JText strings - set in __construct()
+	 * 
+	 * @var array
+	 */
+	protected $monthlabels = null;
+
+	/**
+	 * Constructor
+	 *
+	 * @param   object  &$subject  The object to observe
+	 * @param   array   $config    An array that holds the plugin configuration
+	 */
+	public function __construct(&$subject, $config = array())
+	{
+		parent::__construct($subject, $config);
+		$this->monthlabels = array(JText::_('January'), JText::_('February'), JText::_('March'), JText::_('April'), JText::_('May'), JText::_('June'),
+			JText::_('July'), JText::_('August'), JText::_('September'), JText::_('October'), JText::_('November'), JText::_('December'));
+	}
 
 	/**
 	 * Get db table field type
 	 *
 	 * @return  string
 	 */
-
 	public function getFieldDescription()
 	{
 		return 'DATE';
@@ -38,7 +82,7 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 	/**
 	 * Draws the html form element
 	 *
-	 * @param   array  $data           To preopulate element with
+	 * @param   array  $data           To pre-populate element with
 	 * @param   int    $repeatCounter  Repeat group counter
 	 *
 	 * @return  string	elements html
@@ -48,22 +92,15 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 	{
 		/**
 		 * Jaanus: needed also here to not to show 0000-00-00 in detail view;
-		 * see also 58, added && !in_array($value, $aNullDates) (same reason).
+		 * see also 58, added && !in_array($value, $nullDates) (same reason).
 		 */
 		$db = JFactory::getDbo();
-		$aNullDates = array('0000-00-000000-00-00', '0000-00-00 00:00:00', '0000-00-00', '', $db->getNullDate());
+		$nullDates = array('0000-00-000000-00-00', '0000-00-00 00:00:00', '0000-00-00', '', $db->getNullDate());
 		$name = $this->getHTMLName($repeatCounter);
 		$id = $this->getHTMLId($repeatCounter);
 		$params = $this->getParams();
 		$element = $this->getElement();
-		$monthlabels = array(JText::_('January'), JText::_('February'), JText::_('March'), JText::_('April'), JText::_('May'), JText::_('June'),
-			JText::_('July'), JText::_('August'), JText::_('September'), JText::_('October'), JText::_('November'), JText::_('December'));
-		$monthlabels = array(JText::_('January'), JText::_('February'), JText::_('March'), JText::_('April'), JText::_('May'), JText::_('June'),
-			JText::_('July'), JText::_('August'), JText::_('September'), JText::_('October'), JText::_('November'), JText::_('December'));
-		$monthnumbers = array('01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12');
-		$daysys = array('01', '02', '03', '04', '05', '06', '07', '08', '09');
-		$daysimple = array('1', '2', '3', '4', '5', '6', '7', '8', '9');
-
+		
 		$bits = array();
 		/**
 		 * $$$ rob - not sure why we are setting $data to the form's data
@@ -71,115 +108,20 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 		 * _form_data was not set to no readonly value was returned
 		 * added little test to see if the data was actually an array before using it
 		 */
-		if (is_array($this->_form->_data))
+		if (is_array($this->getFormModel()->_data))
 		{
-			$data = $this->_form->_data;
+			$data = $this->getFormModel()->_data;
 		}
+
 		$value = $this->getValue($data, $repeatCounter);
-		$fd = $params->get('details_date_format', 'd.m.Y');
-		$dateandage = (int) $params->get('details_dateandage', '0');
 
 		if (!$this->isEditable())
 		{
-			if (!in_array($value, $aNullDates))
+			if (!in_array($value, $nullDates))
 			{
-				// Avoid 0000-00-00
-				list($year, $month, $day) = strstr($value, '-') ? explode('-', $value) : explode(',', $value);
-				$daydisp = str_replace($daysys, $daysimple, $day);
-				$monthdisp = str_replace($monthnumbers, $monthlabels, $month);
-				$thisyear = date('Y');
-				$nextyear = date('Y') + 1;
-				$lastyear = date('Y') - 1;
-
-				// $$$ rob - all this below is nice but ... you still need to set a default
-				$detailvalue = '';
-				$year = JString::ltrim($year, '0');
-				if (FabrikWorker::isDate($value))
-				{
-					$date = JFactory::getDate($value);
-					$detailvalue = $date->toFormat($fd);
-				}
-				if (date('m-d') < $month . '-' . $day)
-				{
-					$ageyear = $lastyear;
-				}
-				else
-				{
-					$ageyear = $thisyear;
-				}
-				if ($fd == 'd.m.Y')
-				{
-					$detailvalue = $day . '.' . $month . '.' . $year;
-				}
-				else
-				{
-					if ($fd == 'm.d.Y')
-					{
-						$detailvalue = $month . '/' . $day . '/' . $year;
-					}
-					if ($fd == 'D. month YYYY')
-					{
-						$detailvalue = $daydisp . '. ' . $monthdisp . ' ' . $year;
-					}
-					if ($fd == 'Month d, YYYY')
-					{
-						$detailvalue = $monthdisp . ' ' . $daydisp . ', ' . $year;
-					}
-					if ($fd == '{age}')
-					{
-						$detailvalue = $ageyear - $year;
-					}
-					if ($fd == '{age} d.m')
-					{
-						$mdvalue = $daydisp . '. ' . $monthdisp;
-					}
-					if ($fd == '{age} m.d')
-					{
-						$mdvalue = $monthdisp . ' ' . $daydisp;
-					}
-					if ($fd == '{age} d.m' || $fd == '{age} m.d')
-					{
-						// Always actual age
-						$detailvalue = $ageyear - $year;
-						if (date('m-d') == $month . '-' . $day)
-						{
-							$detailvalue .= '<font color = "#CC0000"><b> ' . JText::_('TODAY') . '!</b></font>';
-							if (date('m') == '12')
-							{
-								$detailvalue .= ' / ' . $nextyear . ': ' . ($nextyear - $year);
-							}
-						}
-						else
-						{
-							$detailvalue .= ' (' . $mdvalue;
-							if (date('m-d') < $month . '-' . $day)
-							{
-								$detailvalue .= ': ' . ($thisyear - $year);
-							}
-							else
-							{
-								$detailvalue .= '';
-							}
-							if (date('m') == '12')
-							{
-								$detailvalue .= ' / ' . $nextyear . ': ' . ($nextyear - $year);
-							}
-							else
-							{
-								$detailvalue .= '';
-							}
-							$detailvalue .= ')';
-						}
-					}
-					else
-					{
-						if ($fd != '{age}' && $dateandage == 1)
-						{
-							$detailvalue .= ' (' . ($ageyear - $year) . ')';
-						}
-					}
-				}
+				$detailvalue = $this->detailsFormat($value);
 				$value = $this->replaceWithIcons($detailvalue);
+
 				return ($element->hidden == '1') ? "<!-- " . $detailvalue . " -->" : $detailvalue;
 			}
 			else
@@ -189,24 +131,27 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 		}
 		else
 		{
-			// Wierdness for failed validaion
+			// Weirdness for failed validation
 			$value = strstr($value, ',') ? array_reverse(explode(',', $value)) : explode('-', $value);
 			$yearvalue = JArrayHelper::getValue($value, 0);
 			$monthvalue = JArrayHelper::getValue($value, 1);
 			$dayvalue = JArrayHelper::getValue($value, 2);
 
 			$days = array(JHTML::_('select.option', '', $params->get('birthday_daylabel', JText::_('DAY'))));
+
 			for ($i = 1; $i < 32; $i++)
 			{
 				$days[] = JHTML::_('select.option', $i);
 			}
+
 			$months = array(JHTML::_('select.option', '', $params->get('birthday_monthlabel', JText::_('MONTH'))));
 
 			// Siin oli enne $monthlabels, viisin ülespoole
-			for ($i = 0; $i < count($monthlabels); $i++)
+			for ($i = 0; $i < count($this->monthlabels); $i++)
 			{
-				$months[] = JHTML::_('select.option', $i + 1, $monthlabels[$i]);
+				$months[] = JHTML::_('select.option', $i + 1, $this->monthlabels[$i]);
 			}
+
 			$years = array(JHTML::_('select.option', '', $params->get('birthday_yearlabel', JText::_('YEAR'))));
 
 			// Jaanus: now we can choose one exact year A.C to begin the dropdown AND would the latest year be current year or some years earlier/later.
@@ -214,10 +159,12 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 			$yearopt = $params->get('birthday_yearopt');
 			$yearstart = (int) $params->get('birthday_yearstart');
 			$yeardiff = $yearopt == 'number' ? $yearstart : $date - $yearstart;
+
 			for ($i = $date; $i >= $date - $yeardiff; $i--)
 			{
 				$years[] = JHTML::_('select.option', $i);
 			}
+
 			$errorCSS = (isset($this->_elementError) && $this->_elementError != '') ? " elementErrorHighlight" : '';
 			$attribs = 'class="fabrikinput inputbox' . $errorCSS . '"';
 			$str = array();
@@ -230,8 +177,148 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 			$str[] = $params->get('birthday_separatorlabel', JText::_('/')) . ' '
 				. JHTML::_('select.genericlist', $years, preg_replace('#(\[\])$#', '[2]', $name), $attribs, 'value', 'text', $yearvalue);
 			$str[] = '</div>';
+
 			return implode("\n", $str);
 		}
+	}
+
+	/**
+	 * Format the date value for the details view
+	 * 
+	 * @param   mixed  $value  Value to format - can be string or array
+	 * 
+	 * @return  string  Details formatted date
+	 */
+	private function detailsFormat($value)
+	{
+		if (is_array($value))
+		{
+			$value = implode('-', $value);
+		}
+
+		// Avoid 0000-00-00
+		$params = $this->getParams();
+		$fd = $params->get('details_date_format', 'd.m.Y');
+		$dateandage = (int) $params->get('details_dateandage', '0');
+
+		list($year, $month, $day) = strstr($value, '-') ? explode('-', $value) : explode(',', $value);
+
+		if (strlen($month) === 1)
+		{
+			$month = '0' . $month;
+		}
+
+		$daydisp = str_replace($this->daysys, $this->daysimple, $day);
+		$monthdisp = str_replace($this->monthnumbers, $this->monthlabels, $month);
+
+		$thisyear = date('Y');
+		$nextyear = date('Y') + 1;
+		$lastyear = date('Y') - 1;
+
+		// $$$ rob - all this below is nice but ... you still need to set a default
+		$detailvalue = '';
+		$year = JString::ltrim($year, '0');
+
+		if (FabrikWorker::isDate($value))
+		{
+			$date = JFactory::getDate($value);
+			$detailvalue = $date->toFormat($fd);
+		}
+
+		if (date('m-d') < $month . '-' . $day)
+		{
+			$ageyear = $lastyear;
+		}
+		else
+		{
+			$ageyear = $thisyear;
+		}
+
+		if ($fd == 'd.m.Y')
+		{
+			$detailvalue = $day . '.' . $month . '.' . $year;
+		}
+		else
+		{
+			if ($fd == 'm.d.Y')
+			{
+				$detailvalue = $month . '/' . $day . '/' . $year;
+			}
+
+			if ($fd == 'D. month YYYY')
+			{
+				$detailvalue = $daydisp . '. ' . $monthdisp . ' ' . $year;
+			}
+
+			if ($fd == 'Month d, YYYY')
+			{
+				$detailvalue = $monthdisp . ' ' . $daydisp . ', ' . $year;
+			}
+
+			if ($fd == '{age}')
+			{
+				$detailvalue = $ageyear - $year;
+			}
+
+			if ($fd == '{age} d.m')
+			{
+				$mdvalue = $daydisp . '. ' . $monthdisp;
+			}
+
+			if ($fd == '{age} m.d')
+			{
+				$mdvalue = $monthdisp . ' ' . $daydisp;
+			}
+
+			if ($fd == '{age} d.m' || $fd == '{age} m.d')
+			{
+				// Always actual age
+				$detailvalue = $ageyear - $year;
+
+				if (date('m-d') == $month . '-' . $day)
+				{
+					$detailvalue .= '<font color = "#CC0000"><b> ' . JText::_('TODAY') . '!</b></font>';
+
+					if (date('m') == '12')
+					{
+						$detailvalue .= ' / ' . $nextyear . ': ' . ($nextyear - $year);
+					}
+				}
+				else
+				{
+					$detailvalue .= ' (' . $mdvalue;
+
+					if (date('m-d') < $month . '-' . $day)
+					{
+						$detailvalue .= ': ' . ($thisyear - $year);
+					}
+					else
+					{
+						$detailvalue .= '';
+					}
+
+					if (date('m') == '12')
+					{
+						$detailvalue .= ' / ' . $nextyear . ': ' . ($nextyear - $year);
+					}
+					else
+					{
+						$detailvalue .= '';
+					}
+
+					$detailvalue .= ')';
+				}
+			}
+			else
+			{
+				if ($fd != '{age}' && $dateandage == 1)
+				{
+					$detailvalue .= ' (' . ($ageyear - $year) . ')';
+				}
+			}
+		}
+
+		return $detailvalue;
 	}
 
 	/**
@@ -403,7 +490,7 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 	}
 
 	/**
-	 * Does the element conside the data to be empty
+	 * Does the element consider the data to be empty
 	 * Used in isempty validation rule
 	 *
 	 * @param   array  $data           data to test against
@@ -418,7 +505,9 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 		{
 			$data = explode(',', $data);
 		}
+
 		$data = (array) $data;
+
 		foreach ($data as $d)
 		{
 			if (trim($d) == '')
@@ -426,6 +515,7 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 				return true;
 			}
 		}
+
 		return false;
 	}
 
@@ -443,14 +533,15 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 		$id = $this->getHTMLId($repeatCounter);
 		$opts = $this->getElementJSOptions($repeatCounter);
 		$opts->separator = $params->get('birthday_separatorlabel', JText::_('/'));
+
 		return array('FbBirthday', $id, $opts);
 	}
 
 	/**
 	 * Shows the data formatted for the list view
 	 *
-	 * @param   string  $data      elements data
-	 * @param   object  &$thisRow  all the data in the lists current row
+	 * @param   string    $data      elements data
+	 * @param   stdClass  &$thisRow  all the data in the lists current row
 	 *
 	 * @return  string	formatted value
 	 */
@@ -466,13 +557,15 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 		*/
 		$data = $groupModel->isJoin() ? FabrikWorker::JSONtoData($data, true) : array($data);
 		$data = (array) $data;
-
 		$format = array();
+
 		foreach ($data as $d)
 		{
 			$format[] = $this->listFormat($d);
 		}
+
 		$data = json_encode($format);
+
 		return parent::renderListData($data, $thisRow);
 	}
 
@@ -492,18 +585,10 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 		{
 			return '';
 		}
+
 		$params = $this->getParams();
-
-		$monthlabels = array(JText::_('January'), JText::_('February'), JText::_('March'), JText::_('April'), JText::_('May'), JText::_('June'),
-				JText::_('July'), JText::_('August'), JText::_('September'), JText::_('October'), JText::_('November'), JText::_('December'));
-
-		$monthnumbers = array('01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12');
-		$daysys = array('01', '02', '03', '04', '05', '06', '07', '08', '09');
-		$daysimple = array('1', '2', '3', '4', '5', '6', '7', '8', '9');
 		$jubileum = array('0', '25', '75');
-
 		$ft = $params->get('list_date_format', 'd.m.Y');
-
 		$fta = $params->get('list_age_format', 'no');
 
 		/**
@@ -514,8 +599,8 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 		*/
 
 		list($year, $month, $day) = explode('-', $d);
-		$daydisp = str_replace($daysys, $daysimple, $day);
-		$monthdisp = str_replace($monthnumbers, $monthlabels, $month);
+		$daydisp = str_replace($this->daysys, $this->daysimple, $day);
+		$monthdisp = str_replace($this->monthnumbers, $this->monthlabels, $month);
 		$nextyear = date('Y') + 1;
 		$lastyear = date('Y') - 1;
 		$thisyear = date('Y');
@@ -524,6 +609,7 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 		$mdy = $month . '/' . $day . '/' . $year;
 		$dmonthyear = $daydisp . '. ' . $monthdisp . ' ' . $year;
 		$monthdyear = $monthdisp . ' ' . $daydisp . ', ' . $year;
+
 		if ($ft == "d.m.Y")
 		{
 			$datedisp = $dmy;
@@ -534,10 +620,12 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 			{
 				$datedisp = $mdy;
 			}
+
 			if ($ft == "D. month YYYY")
 			{
 				$datedisp = $dmonthyear;
 			}
+
 			if ($ft == "Month d, YYYY")
 			{
 				$datedisp = $monthdyear;
@@ -562,10 +650,12 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 					{
 						return '<font color ="#DD0000"><b>' . $datedisp . ' (' . ($thisyear - $year) . ')</b></font>';
 					}
+
 					if ($fta == '{age} this')
 					{
 						return '<font color ="#DD0000"><b>' . ($thisyear - $year) . ' (' . $datedisp . ')</b></font>';
 					}
+
 					if ($fta == '{age} next')
 					{
 						return '<font color ="#DD0000"><b>' . ($nextyear - $year) . ' (' . $datedisp . ')</b></font>';
@@ -611,6 +701,7 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 								return ($thisyear - $year) . ' (' . $datedisp . ')';
 							}
 						}
+
 						if ($fta == '{age} next')
 						{
 							if (in_array(substr(($nextyear - $year), -1), $jubileum) || in_array(substr(($nextyear - $year), -2), $jubileum))
@@ -630,7 +721,7 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 
 	/**
 	 * Used by radio and dropdown elements to get a dropdown list of their unique
-	 * unique values OR all options - basedon filter_build_method
+	 * unique values OR all options - based on filter_build_method
 	 *
 	 * @param   bool    $normal     Do we render as a normal filter or as an advanced search filter
 	 * @param   string  $tableName  Table name to use - defaults to element's current table
@@ -645,9 +736,11 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 	{
 		$rows = parent::filterValueList($normal, $tableName, $label, $id, $incjoin);
 		$return = array();
+
 		foreach ($rows as &$row)
 		{
 			$txt = $this->listFormat($row->text);
+
 			if ($txt !== '')
 			{
 				$row->text = strip_tags($txt);
@@ -658,7 +751,9 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 				$return[$row->text] = $row;
 			}
 		}
+
 		$return = array_values($return);
+
 		return $return;
 	}
 
@@ -726,6 +821,29 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 
 			$condition = 'IN';
 		}
+
 		return array($value, $condition);
+	}
+
+	/**
+	 * Used to format the data when shown in the form's email
+	 *
+	 * @param   mixed  $value          Element's data
+	 * @param   array  $data           Form records data
+	 * @param   int    $repeatCounter  Repeat group counter
+	 *
+	 * @return  string	Formatted value
+	 */
+
+	public function getEmailValue($value, $data, $repeatCounter)
+	{
+		$value = parent::getEmailValue($value, $data, $repeatCounter);
+		
+		if (is_array($value))
+		{
+			$value = array_reverse($value);
+		}
+
+		return $this->detailsFormat($value);
 	}
 }
