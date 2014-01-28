@@ -22,7 +22,7 @@ require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
  * @since       3.0.7
  */
 
-class PlgFabrik_FormUpsert extends plgFabrik_Form
+class PlgFabrik_FormUpsert extends PlgFabrik_Form
 {
 	/**
 	 * Database driver
@@ -141,7 +141,7 @@ class PlgFabrik_FormUpsert extends plgFabrik_Form
 	{
 		$params = $this->getParams();
 		$listid = $params->get('table');
-		$listModel = JModel::getInstance('list', 'FabrikFEModel');
+		$listModel = JModelLegacy::getInstance('list', 'FabrikFEModel');
 		$listModel->setId($listid);
 
 		return $listModel->getTable()->db_table_name;
