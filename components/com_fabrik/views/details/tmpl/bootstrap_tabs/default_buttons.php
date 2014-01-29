@@ -23,7 +23,7 @@ if ($this->showEmail || $this->showPDF || $this->showPrint): ?>
 	<?php endif;
 
 	if ($this->showEmail): ?>
-		<a class="btn fabrikWin" href="<?php echo $this->emailURL?>">
+		<a class="btn fabrikWin" rel='{"title":"<?php echo JText::_('JGLOBAL_EMAIL'); ?>", "loadMethod":"iframe", "height":"300px"}' href="<?php echo $this->emailURL?>">
 			<i class="icon-envelope"></i>
 			<?php echo JText::_('JGLOBAL_EMAIL'); ?>
 		</a>
