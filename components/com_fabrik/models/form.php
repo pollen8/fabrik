@@ -1062,7 +1062,7 @@ class FabrikFEModelForm extends FabModelForm
 		$app = JFactory::getApplication();
 		$input = $app->input;
 
-		if ($this->isNewRecord())
+		if ($this->isNewRecord() || !$this->getForm()->record_in_database)
 		{
 			$this->_origData = array(new stdClass);
 		}
