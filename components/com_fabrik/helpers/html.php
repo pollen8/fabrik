@@ -332,22 +332,22 @@ EOD;
 		<tr>
 			<td><label for="email"><?php echo JText::_('COM_FABRIK_YOUR_FRIENDS_EMAIL') ?>:</label>
 			</td>
-			<td><input type="text" size="25" name="email" id="email" /></td>
+			<td><input class="input" type="text" size="25" name="email" id="email" /></td>
 		</tr>
 		<tr>
 			<td><label for="yourname"><?php echo JText::_('COM_FABRIK_YOUR_NAME'); ?>:</label>
 			</td>
-			<td><input type="text" size="25" name="yourname" id="yourname" /></td>
+			<td><input class="input" type="text" size="25" name="yourname" id="yourname" /></td>
 		</tr>
 		<tr>
 			<td><label for="youremail"><?php echo JText::_('COM_FABRIK_YOUR_EMAIL'); ?>:</label>
 			</td>
-			<td><input type="text" size="25" name="youremail" id="youremail" /></td>
+			<td><input class="input" type="text" size="25" name="youremail" id="youremail" /></td>
 		</tr>
 		<tr>
 			<td><label for="subject"><?php echo JText::_('COM_FABRIK_MESSAGE_SUBJECT'); ?>:</label>
 			</td>
-			<td><input type="text" size="40" maxlength="40" name="subject"
+			<td><input class="input" type="text" size="40" maxlength="40" name="subject"
 				id="subject" /></td>
 		</tr>
 		<tr>
@@ -490,10 +490,10 @@ if (!$j3)
 	/**
 	 * Writes Email icon
 	 *
-	 * @param   object  $formModel  form model
-	 * @param   object  $params     parameters
+	 * @param   object  $formModel  Form model
+	 * @param   object  $params     Parameters
 	 *
-	 * @return  string	email icon/link html
+	 * @return  string	Email icon/link html
 	 */
 
 	public static function emailIcon($formModel, $params)
@@ -557,7 +557,7 @@ if (!$j3)
 		}
 
 		$url .= '&referrer=' . urlencode(JURI::getInstance()->toString());
-		self::$emailURL = $url;
+		self::$emailURL = JRoute::_($url);
 
 		return self::$emailURL;
 	}
@@ -1406,7 +1406,7 @@ if (!$j3)
 	public static function slimbox()
 	{
 		$input = JFactory::getApplication()->input;
-		
+
 		if ($input->get('format') === 'raw')
 		{
 			return;
