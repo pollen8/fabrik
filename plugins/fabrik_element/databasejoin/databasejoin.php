@@ -1215,6 +1215,23 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 				// No point showing 'please select' for read only
 				unset($defaultLabels[0]);
 			}
+
+			// Encrypted failed validations - only the raw value is retrieved, swap it with the option text
+			if ($formModel->failedValidation())
+			{
+				$newLabels = array();
+
+				foreach ($tmp as $t)
+				{
+					if (in_array($t->value, $defaultLabels))
+					{
+						$newLabels[] = $t->text;
+					}
+				}
+
+				$defaultLabels = $newLabels;
+			}
+
 			/*
 			 * if it's a new form, labels won't be set for any defaults.
 			*/
