@@ -2626,6 +2626,11 @@ class FabrikFEModelList extends JModelForm
 	{
 		$sig = $query ? 1 : 0;
 
+		if (!isset($this->orderBy))
+		{
+			$this->orderBy = array();
+		}
+
 		if (array_key_exists($sig, $this->orderBy))
 		{
 			return $this->orderBy[$sig];
