@@ -2439,6 +2439,7 @@ class FabrikFEModelList extends JModelForm
 
 		// Now lets actually construct the query that will get the required records:
 		$query->clear();
+		unset($this->orderBy);
 		$query = $this->buildQuerySelect('list', $query);
 		JDEBUG ? $profiler->mark('queryselect: got') : null;
 		$query = $this->buildQueryJoin($query);
