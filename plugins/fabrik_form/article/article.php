@@ -91,11 +91,6 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 
 		$this->generateNewTitle($id, $catid, $data);
 
-		/* $item = JTable::getInstance('Content');
-		$item->load($id);
-		$item->bind($data);
-		$item->store(); */
-
 		if (!is_null($id))
 		{
 			$readmore = 'index.php?option=com_content&view=article&id=' . $id;
