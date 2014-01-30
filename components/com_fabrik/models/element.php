@@ -4249,9 +4249,14 @@ class PlgFabrik_Element extends FabrikPlugin
 		}
 		else
 		{
-			// Need to do first query to get distinct records as if we are doing left joins the sum is too large
+			/*
+			 * Need to do first query to get distinct records as if we are doing left joins the sum is too large
+			 * However, views may not have a primary key which is unique so set to '' if no join
+			 */
+			$distinct = $this->getListModel()->isView() && trim($joinSQL) == '' ? '': 'DISTINCT';
+
 			return "SELECT ROUND(AVG(value), $roundTo) AS value, label
-FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label FROM " . FabrikString::safeColName($item->db_table_name)
+FROM (SELECT " . $distinct . " $item->db_primary_key, $name AS value, $label FROM " . FabrikString::safeColName($item->db_table_name)
 				. " $joinSQL $whereSQL) AS t";
 		}
 	}
@@ -4277,16 +4282,22 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label FROM " . Fab
 		if ($groupModel->isJoin())
 		{
 			// Element is in a joined column - lets presume the user wants to sum all cols, rather than reducing down to the main cols totals
-			return "SELECT SUM($name) AS value, $label FROM " . FabrikString::safeColName($item->db_table_name) . " $joinSQL $whereSQL";
+			$sql = "SELECT SUM($name) AS value, $label FROM " . FabrikString::safeColName($item->db_table_name) . " $joinSQL $whereSQL";
 		}
 		else
 		{
-			// Need to do first query to get distinct records as if we are doing left joins the sum is too large
-			return "SELECT SUM(value) AS value, label
-			FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label FROM " . FabrikString::safeColName($item->db_table_name)
-			. " $joinSQL $whereSQL) AS t";
+			/*
+			 * Need to do first query to get distinct records as if we are doing left joins the sum is too large
+			 * However, views may not have a primary key which is unique so set to '' if no join
+			 */
+			$distinct = $this->getListModel()->isView() && trim($joinSQL) == '' ? '': 'DISTINCT';
 
+			$sql = "SELECT SUM(value) AS value, label
+			FROM (SELECT " . $distinct . " $item->db_primary_key, $name AS value, $label FROM " . FabrikString::safeColName($item->db_table_name)
+			. " $joinSQL $whereSQL) AS t";
 		}
+
+		return $sql;
 	}
 
 	/**
@@ -4390,9 +4401,13 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label FROM " . Fab
 		}
 		else
 		{
-			// Need to do first query to get distinct records as if we are doing left joins the sum is too large
+			/*
+			 * Need to do first query to get distinct records as if we are doing left joins the sum is too large
+			 * However, views may not have a primary key which is unique so set to '' if no join
+			 */
+			$distinct = $this->getListModel()->isView() && trim($joinSQL) == '' ? '': 'DISTINCT';
 			$query = "SELECT COUNT(value) AS value, label
-	FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label FROM " . FabrikString::safeColName($item->db_table_name)
+	FROM (SELECT " . $distinct. " $item->db_primary_key, $name AS value, $label FROM " . FabrikString::safeColName($item->db_table_name)
 				. " $joinSQL $whereSQL) AS t";
 		}
 
