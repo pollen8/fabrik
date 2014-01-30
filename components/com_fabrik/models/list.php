@@ -1277,6 +1277,7 @@ class FabrikFEModelList extends JModelForm
 		$nextview = $this->canEdit() ? 'form' : 'details';
 		$tmpKey = '__pk_val';
 		$factedlinks = $params->get('factedlinks');
+		$tmpl = $this->getTmpl();
 
 		// Get a list of fabrik lists and ids for view list and form links
 		$oldLinksToForms = $this->getLinksToThisKey();
@@ -1371,14 +1372,14 @@ class FabrikFEModelList extends JModelForm
 				$editLabel = $params->get('editlabel', JText::_('COM_FABRIK_EDIT'));
 				$loadMethod = $params->get('editurl', '') == '' ? 'xhr' : 'iframe';
 				$editLink = '<a data-loadmethod="' . $loadMethod . '" class="fabrik__rowlink" ' . $editLinkAttribs . 'data-list="list_' . $this->getRenderContext() . '" href="'
-						. $edit_link . '" title="' . $editLabel . '">' . FabrikHelperHTML::image('edit.png', 'list', '', array('alt' => $editLabel))
+						. $edit_link . '" title="' . $editLabel . '">' . FabrikHelperHTML::image('edit.png', 'list', $tmpl, array('alt' => $editLabel))
 						. '<span>' . $editLabel . '</span></a>';
 
 				$viewLabel = $params->get('detaillabel', JText::_('COM_FABRIK_VIEW'));
 				$loadMethod = $params->get('detailurl', '') == '' ? 'xhr' : 'iframe';
 
 				$viewLink = '<a data-loadmethod="' . $loadMethod . '" class="fabrik___rowlink" ' . $detailsLinkAttribs . 'data-list="list_' . $this->getRenderContext() . '" href="'
-						. $link . '" title="' . $viewLabel . '">' . FabrikHelperHTML::image('view.png', 'list', '', array('alt' => $viewLabel))
+						. $link . '" title="' . $viewLabel . '">' . FabrikHelperHTML::image('view.png', 'list', $tmpl, array('alt' => $viewLabel))
 						. '<span>' . $viewLabel . '</span></a>';
 
 				// 3.0 actions now in list in one cell
