@@ -321,6 +321,13 @@ class FabrikControllerForm extends JControllerLegacy
 		}
 		else
 		{
+
+			// If no msg, set to null, so J! doesn't create an empty "Message" area
+			if (empty($msg))
+			{
+				$msg = null;
+			}
+
 			$this->setRedirect($url, $msg);
 		}
 	}

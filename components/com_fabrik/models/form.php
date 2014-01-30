@@ -5222,6 +5222,12 @@ class FabrikFEModelForm extends FabModelForm
 	{
 		$app = JFactory::getApplication();
 		$session = JFactory::getSession();
+
+		if (!$this->showSuccessMsg())
+		{
+			return '';
+		}
+
 		$msg = $this->getSuccessMsg();
 		$context = $this->getRedirectContext();
 		$smsg = $session->get($context . 'msg', array($msg));
