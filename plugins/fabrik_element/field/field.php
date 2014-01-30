@@ -130,14 +130,20 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 
 		/* $$$ hugh - if the form just failed validation, number formatted fields will already
 		 * be formatted, so we need to un-format them before formatting them!
-		 * $$$ rob - well better actually check if we are coming from a failed validation then :)
 		 */
-		if ($app->input->get('task') == 'form.process')
+		/*
+		if ($this->getFormModel()->failedValidation())
 		{
 			$value = $this->unNumberFormat($value);
 		}
 
 		$value = $this->numberFormat($value);
+		*/
+
+		if (!$this->getFormModel()->failedValidation())
+		{
+			$value = $this->numberFormat($value);
+		}
 
 		if (!$this->isEditable())
 		{
