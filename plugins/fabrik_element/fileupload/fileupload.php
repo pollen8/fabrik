@@ -321,7 +321,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 					{
 						if (is_object($value[$x]))
 						{
-							// S Fngle crop image (not sure about the 0 settings in here)
+							// Single crop image (not sure about the 0 settings in here)
 							$parts = explode(DS, $value[$x]->file);
 							$o = new stdClass;
 							$o->id = 'alreadyuploaded_' . $element->id . '_0';
@@ -479,7 +479,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		$data = FabrikWorker::JSONtoData($data, true);
 		$params = $this->getParams();
 
-		// $$$ hugh - have to run thru rendering even if data is empty, in case default image is being used.
+		// $$$ hugh - have to run through rendering even if data is empty, in case default image is being used.
 		if (empty($data))
 		{
 			$data[0] = $this->_renderListData('', $thisRow, 0);
