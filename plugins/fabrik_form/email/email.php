@@ -367,7 +367,7 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 		{
 			// Require files and set up DOM pdf
 			require_once JPATH_SITE . '/components/com_fabrik/helpers/pdf.php';
-			require JPATH_SITE . '/components/com_fabrik/controllers/details.php';
+			require_once JPATH_SITE . '/components/com_fabrik/controllers/details.php';
 			FabrikPDFHelper::iniDomPdf();
 			$dompdf = new DOMPDF;
 			$size = strtoupper($params->get('pdf_size', 'A4'));
