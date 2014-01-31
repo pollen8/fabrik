@@ -2407,8 +2407,15 @@ class FabrikFEModelList extends JModelForm
 			{
 				$mainKeys[] = $db->quote($r->__pk_val0);
 			}
+
 			// Chop up main keys for list limitstart, length to cull the data down to the correct length as defined by the page nav/ list settings
-			$mainKeys = array_slice(array_unique($mainKeys), $this->limitStart, $this->limitLength);
+			$mainKeys = array_unique($mainKeys);
+
+			if ($this->limitLength != -1)
+			{
+				$mainKeys = array_slice($mainKeys, $this->limitStart, $this->limitLength);
+			}
+
 			/**
 			 * $$$ rob get an array containing the PRIMARY key values for each joined tables data.
 			 * Stop as soon as we have a set of ids totaling the sum of records contained in $idRows
@@ -2454,7 +2461,10 @@ class FabrikFEModelList extends JModelForm
 			*/
 			if (!empty($ids))
 			{
-				$query->where($lookUpNames[$lookupC] . ' IN (' . implode(array_unique($ids), ',') . ')');
+				if ($lookUpNames[$lookupC] !== $table->db_primary_key)
+				{
+					$query->where($lookUpNames[$lookupC] . ' IN (' . implode(array_unique($ids), ',') . ')');
+				}
 
 				if (!empty($mainKeys))
 				{
