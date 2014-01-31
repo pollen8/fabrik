@@ -1941,19 +1941,22 @@ class PlgFabrik_Element extends FabrikPlugin
 	{
 		$model = $this->getFormModel();
 		$groupModel = $this->getGroup();
+
 		if (!$this->canUse() && !$this->canView())
 		{
 			return false;
 		}
+
 		if (!$this->canUse())
 		{
 			$this->setEditable(false);
 		}
 		else
 		{
-			$editable = $model->isEditable() ? true : false;
+			$editable = $model->isEditable() && $this->_inDetailedView !== true ? true : false;
 			$this->setEditable($editable);
 		}
+
 		$params = $this->getParams();
 
 		// Force reload?
