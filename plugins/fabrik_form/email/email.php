@@ -23,7 +23,7 @@ require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
 class PlgFabrik_FormEmail extends PlgFabrik_Form
 {
 	/**
-	 * Attachement files
+	 * Attachment files
 	 *
 	 * @var array
 	 */
@@ -42,7 +42,7 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 	 * determines if a condition has been set and decides if condition is matched
 	 *
 	 * @param object $params
-	 * @return  bool true if you sould send the email, false stops sending of eaml
+	 * @return  bool true if you should send the email, false stops sending of email
 	 */
 
 	/*function shouldSend(&$params)
@@ -85,7 +85,7 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 		$contentTemplate = $params->get('email_template_content');
 		$content = $contentTemplate != '' ? $this->_getConentTemplate($contentTemplate) : '';
 
-		// Always send as html as even text email can contain html from wysiwg editors
+		// Always send as html as even text email can contain html from wysiwyg editors
 		$htmlEmail = true;
 
 		$messageTemplate = '';
@@ -368,7 +368,7 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 		try {
 			// Require files and set up DOM pdf
 			require_once JPATH_SITE . '/components/com_fabrik/helpers/pdf.php';
-			require JPATH_SITE . '/components/com_fabrik/controllers/details.php';
+			require_once JPATH_SITE . '/components/com_fabrik/controllers/details.php';
 			FabrikPDFHelper::iniDomPdf();
 			$dompdf = new DOMPDF();
 			$size = strtoupper($params->get('pdf_size', 'A4'));
@@ -388,8 +388,9 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 
 			// Store the file in the tmp folder so it can be attached
 			$file = $config->get('tmp_path') . '/' . JStringNormalise::toDashSeparated($model->getForm()->label . '-' . $input->getString('rowid')) . '.pdf';
+			$pdf = $dompdf->output();
 
-			if (JFile::write($file, $dompdf->output()))
+			if (JFile::write($file, $pdf))
 			{
 				$thisAttachments[] = $file;
 			}
@@ -507,7 +508,7 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 			}
 		}
 		// $$$ hugh - added an optional eval for adding attachments.
-		// Eval'ed code should just return an array of file paths which we merge with $this->attachments[]
+		// Eval'd code should just return an array of file paths which we merge with $this->attachments[]
 		$w = new FabrikWorker;
 		$email_attach_eval = $w->parseMessageForPlaceholder($params->get('email_attach_eval', ''), $this->data, false);
 
@@ -524,7 +525,7 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 	}
 
 	/**
-	 * Get an array of keys we dont want to email to the user
+	 * Get an array of keys we don't want to email to the user
 	 *
 	 * @return  array
 	 */
