@@ -99,7 +99,8 @@ class PlgFabrik_ElementTags extends PlgFabrik_ElementDatabasejoin
 			JHtml::_('stylesheet', 'jui/chosen.css', false, true);
 			JHtml::_('script', 'jui/ajax-chosen' . $ext, false, true, false, false);
 
-			$attr = 'multiple="multiple" class="inputbox span12 small"';
+			$boostrapClass = $params->get('bootstrap_class', 'span12');
+			$attr = 'multiple="multiple" class="inputbox ' . $boostrapClass. ' small"';
 			$selected = $tmp;
 			$str[] = JHtml::_('select.genericlist', $tmp, $name, trim($attr), 'value', 'text', $selected, $id);
 
