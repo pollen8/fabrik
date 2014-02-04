@@ -833,7 +833,7 @@ class PlgFabrik_FormComment extends PlgFabrik_Form
 		}
 		catch (RuntimeException $e)
 		{
-			JLog::add('Couldn't save fabrik comment notification event: ' + $db->stderr(true), JLog::WARNING, 'fabrik');
+			JLog::add('Couldn\'t save fabrik comment notification event: ' + $db->stderr(true), JLog::WARNING, 'fabrik');
 
 			return false;
 		}
