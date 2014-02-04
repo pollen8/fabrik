@@ -40,7 +40,16 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 		}
 
 		$store = $this->metaStore();
-		$categories = (array) $params->get('categories');
+
+		if ($catElement = $formModel->getElement($params->get('categories_element'), true))
+		{
+			$cat = $catElement->getFullName() . '_raw';
+			$categories = (array) JArrayHelper::getValue($this->data, $cat);
+		}
+		else
+		{
+			$categories = (array) $params->get('categories');
+		}
 
 		foreach ($categories as $category)
 		{
@@ -64,7 +73,12 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 	 */
 	protected function saveAritcle($id, $catid)
 	{
+		$dispatcher = JEventDispatcher::getInstance();
+		// Include the content plugins for the on save events.
+		JPluginHelper::importPlugin('content');
+
 		$params = $this->getParams();
+		$user = JFactory::getUser();
 		$data = array('articletext' => $this->buildContent(), 'catid' => $catid, 'state' => 1, 'language' => '*');
 		$attribs = array('title' => '', 'publish_up' => '', 'publish_down' => '', 'featured' => '0', 'state' => '1', 'metadesc' => '', 'metakey' => '', 'tags' => '');
 
@@ -73,12 +87,12 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 		if (is_null($id))
 		{
 			$data['created'] = JFactory::getDate()->toSql();
-			$attribs[] = 'created_by';
+			$attribs['created_by'] = $user->get('id');
 		}
 		else
 		{
 			$data['modified'] = JFactory::getDate()->toSql();
-			$data['modified_by'] = JFactory::getUser()->id;
+			$data['modified_by'] = $user->get('id');
 		}
 
 		foreach ($attribs as $attrib => $default)
@@ -91,20 +105,29 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 
 
 		$this->generateNewTitle($id, $catid, $data);
+		$isNew = is_null($id) ? true : false;
 
-		if (!is_null($id))
+		if (!$isNew)
 		{
 			$readmore = 'index.php?option=com_content&view=article&id=' . $id;
 			$data['articletext'] = str_replace('{readmore}', $readmore, $data['articletext']);
 		}
 
+
 		$item = JTable::getInstance('Content');
 		$item->load($id);
 		$item->bind($data);
+
+		// Trigger the onContentBeforeSave event.
+		$result = $dispatcher->trigger('onContentBeforeSave', array('com_content.article', $item, $isNew));
+
 		$item->store();
 
+		// Trigger the onContentAfterSave event.
+		$result = $dispatcher->trigger('onContentAfterSave', array('com_content.article', $item, $isNew));
+
 		// New record - need to re-save with {readmore} replacement
-		if (is_null($id) && strstr($data['articletext'], '{readmore}'))
+		if ($isNew && strstr($data['articletext'], '{readmore}'))
 		{
 			$readmore = 'index.php?option=com_content&view=article&id=' . $item->id;
 			$data['articletext'] = str_replace('{readmore}', $readmore, $data['articletext']);
