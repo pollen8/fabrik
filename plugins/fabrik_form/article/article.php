@@ -233,6 +233,20 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 				}
 			}
 		}
+		// Parse any other fileupload image
+		$uploads = $formModel->getListModel()->getElementsOfType('fileupload');
+
+		foreach ($uploads as $upload)
+		{
+			$name = $upload->getFullName(true, false);
+			$shortName = $upload->getElement()->name;
+			$size = $params->get('image_full_size', 'thumb');
+
+			list($file, $placeholder) = $this->setImage($upload->getElement()->id, $size);
+
+			$img->$name = $placeholder;
+			$img->$shortName = $placeholder;
+		}
 
 		$this->images = $img;
 
