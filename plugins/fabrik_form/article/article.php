@@ -23,6 +23,12 @@ require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
 class PlgFabrik_FormArticle extends PlgFabrik_Form
 {
 	/**
+	 * Images
+	 * @var object
+	 */
+	public $images = null;
+
+	/**
 	 * Create articles - needed to be before store as we are altering the metastore element's data
 	 *
 	 * @return	bool

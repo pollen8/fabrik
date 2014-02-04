@@ -118,6 +118,7 @@ class PlgFabrik_ListArticle extends PlgFabrik_List
 					$formModel->formData = $formModel->formDataWithTableName = $formModel->getData();
 					$articlePlugin->setModel($formModel);
 					$articlePlugin->setParams($formParams, $c);
+					unset($articlePlugin->images);
 					$articlePlugin->onAfterProcess();
 				}
 			}
