@@ -107,6 +107,7 @@ class PlgFabrik_ListArticle extends PlgFabrik_List
 					$input->set('rowid', $id);
 					$formModel->setRowId($id);
 					$formModel->_formData = $formModel->getData();
+					unset($articlePlugin->images);
 					$articlePlugin->onAfterProcess($pluginParams, $formModel);
 				}
 			}
