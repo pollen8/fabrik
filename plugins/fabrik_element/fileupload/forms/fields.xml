@@ -247,12 +247,14 @@
 				type="text"
 				default="400"
 				size="3"
+				class="input-mini"
 				label="PLG_ELEMENT_FILEUPLOAD_WIN_WIDTH_LABEL" />
 
 			<field name="win_height"
 				type="text"
 				default="400"
 				size="3"
+				class="input-mini"
 				label="PLG_ELEMENT_FILEUPLOAD_WIN_HEIGHT_LABEL" />
 
 		</fieldset>

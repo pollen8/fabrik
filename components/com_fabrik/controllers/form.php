@@ -306,10 +306,11 @@ class FabrikControllerForm extends JControllerLegacy
 				$context = 'com_fabrik.form.' . $model->get('id') . '.redirect.';
 				$redirect_opts['reset_form'] = $session->get($context . 'redirect_content_reset_form', '1') == '1';
 			}
-			// Let form.js handle the redirect logic (will also send out a
+			// Let form.js handle the redirect logic
 			echo json_encode($redirect_opts);
 
-			return;
+			// Stop require.js being added to output
+			exit;
 		}
 
 		if ($input->get('format') == 'raw')

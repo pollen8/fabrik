@@ -206,6 +206,9 @@ class PlgFabrik_ListUpdate_Col extends PlgFabrik_List
 		$model->reset();
 		$model->setPluginQueryWhere('update_col', $item->db_primary_key . ' IN ( ' . $ids . ')');
 		$data = $model->getData();
+		
+		// Needed to re-assign as getDate() messes the plugin params order
+		$this->params = $params;
 
 		if (!empty($dateCol))
 		{

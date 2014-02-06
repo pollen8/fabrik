@@ -69,7 +69,7 @@ echo $form->intro;
 <div class="fabrikForm fabrikDetails" id="<?php echo $form->formid; ?>">
 <?php
 	echo $this->plugintop;
-	active = ($form->error != '') ? '' : ' fabrikHide';
+	$active = ($form->error != '') ? '' : ' fabrikHide';
 	echo "<div class=\"fabrikMainError fabrikError$active\">";
 	echo FabrikHelperHTML::image('alert.png', 'form', $this->tmpl);
 	echo "$form->error</div>";

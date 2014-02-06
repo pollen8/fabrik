@@ -664,4 +664,25 @@ class FabrikString extends JString
 			return preg_match("#^" . $date_re . $time_re . "$#", $date);
 		}
 	}
+
+	/**
+	 * Replace last occurance of a string
+	 *
+	 * @param   string  $search   Text to search for
+	 * @param   string  $replace  Text to replace the search string
+	 * @param   string  $subject  The text to search in
+	 *
+	 * @return  string
+	 */
+	public static function replaceLast($search, $replace, $subject)
+	{
+		$pos = strrpos($subject, $search);
+
+		if($pos !== false)
+		{
+			$subject = substr_replace($subject, $replace, $pos, strlen($search));
+		}
+
+		return $subject;
+	}
 }

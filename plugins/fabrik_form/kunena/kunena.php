@@ -178,12 +178,12 @@ class PlgFabrik_FormKunena extends PlgFabrik_Form
 
 			if (!$message->save())
 			{
-				$app->enqueueMessage('PLG_FORM_KUNENA_ERR_DIDNT_SAVE_MESSAGE', 'error');
+				$app->enqueueMessage(JText::_('PLG_FORM_KUNENA_ERR_DIDNT_SAVE_MESSAGE') . ': ' . $message->getError(), 'error');
 			}
 		}
 		else
 		{
-			$app->enqueueMessage('PLG_FORM_KUNENA_ERR_DIDNT_SAVE_TOPIC', 'error');
+			$app->enqueueMessage(JText::_('PLG_FORM_KUNENA_ERR_DIDNT_SAVE_TOPIC') . ': ' . $topic->getError(), 'error');
 		}
 
 		$input->set('id', $origId);

@@ -186,7 +186,7 @@ var FbFileUpload = new Class({
 		}
 	},
 
-	watchAjax : function () {
+	watchAjax: function () {
 		if (this.options.editable === false) {
 			return;
 		}
@@ -652,6 +652,7 @@ var ImageWidget = new Class({
 			}
 		};
 
+		
 		Object.append(this.imageDefault, opts);
 
 		this.windowopts = {
@@ -1152,7 +1153,7 @@ var ImageWidget = new Class({
 		}.bind(this));
 	},
 
-	showWin : function () {
+	showWin: function () {
 		this.win = Fabrik.getWindow(this.windowopts);
 		if (typeOf(this.CANVAS) === 'null') {
 			return;

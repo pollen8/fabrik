@@ -180,7 +180,7 @@ class PlgSystemFabrik extends JPlugin
 		}
 		else
 		{
-			$content = str_ireplace('</body>', $script . '</body>', $content);
+			$content = FabrikString::replaceLast('</body>', $script . '</body>', $content);
 		}
 
 		JResponse::setBody($content);

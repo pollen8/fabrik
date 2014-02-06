@@ -113,7 +113,11 @@ Fabrik.Window = new Class({
 		} else {
 			// Fileupload crop uses this
 			var offset = (window.getSize().y - h) / 2;
+			var xoffset = (window.getSize().x - w) / 2;
 			d.top = offset < 0 ? window.getScroll().y : window.getScroll().y + offset;
+			d.left = xoffset < 0 ? window.getScroll().x : window.getScroll().x + xoffset;
+			// Prototype J template css puts margin left on .modals
+			d['margin-left'] = 0; 
 		}
 		this.window.setStyles(d);
 	},
@@ -153,6 +157,10 @@ Fabrik.Window = new Class({
 	{
 		var draggerC, dragger, expandButton, expandIcon, resizeIcon, label, cw, ch, handleParts = [];
 		this.window = new Element('div', {'id': this.options.id, 'class': 'fabrikWindow ' + this.classSuffix + ' modal'});
+		
+		// Set window dimensions before center - needed for fileupload crop
+		this.window.setStyle('width', this.options.width);
+		this.window.setStyle('height', this.options.height);
 		this.center();
 		this.contentWrapperEl = this.window;
 		var del = this.deleteButton();
