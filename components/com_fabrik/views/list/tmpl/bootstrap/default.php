@@ -75,7 +75,7 @@ endforeach;
 			?>
 			<tbody style="<?php echo $this->emptyStyle?>">
 				<tr>
-					<td class="groupdataMsg" colspan="<?php echo count($this->headings)?>">
+					<td class="groupdataMsg emptyDataMessage" style="<?php echo $this->emptyStyle?>" colspan="<?php echo count($this->headings)?>">
 						<div class="emptyDataMessage" style="<?php echo $this->emptyStyle?>">
 							<?php echo $this->emptyDataMessage; ?>
 						</div>
@@ -104,7 +104,7 @@ endforeach;
 			<?php endif ?>
 			<tbody class="fabrik_groupdata">
 				<tr>
-					<td class="groupdataMsg" colspan="<?php echo count($this->headings)?>">
+					<td class="groupdataMsg emptyDataMessage" style="<?php echo $this->emptyStyle?>" colspan="<?php echo count($this->headings)?>">
 						<div class="emptyDataMessage" style="<?php echo $this->emptyStyle?>">
 							<?php echo $this->emptyDataMessage; ?>
 						</div>
