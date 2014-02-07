@@ -4516,9 +4516,14 @@ class PlgFabrik_Element extends FabrikPlugin
 		}
 		else
 		{
-			// Need to do first query to get distinct records as if we are doing left joins the sum is too large
+			/*
+			 * Need to do first query to get distinct records as if we are doing left joins the sum is too large
+			 * However, views may not have a primary key which is unique so set to '' if no join
+			 */
+			$distinct = $this->getListModel()->isView() && trim($joinSQL) == '' ? '': 'DISTINCT';
+
 			return "SELECT ROUND(AVG(value), $roundTo) AS value, label
-			FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label FROM " . FabrikString::safeColName($item->db_table_name)
+			FROM (SELECT " . $distinct . " $item->db_primary_key, $name AS value, $label FROM " . FabrikString::safeColName($item->db_table_name)
 			. " $joinSQL $whereSQL) AS t";
 		}
 	}
@@ -4548,9 +4553,14 @@ class PlgFabrik_Element extends FabrikPlugin
 		}
 		else
 		{
-			// Need to do first query to get distinct records as if we are doing left joins the sum is too large
+			/*
+			 * Need to do first query to get distinct records as if we are doing left joins the sum is too large
+			 * However, views may not have a primary key which is unique so set to '' if no join
+			 */
+			$distinct = $this->getListModel()->isView() && trim($joinSQL) == '' ? '': 'DISTINCT';
+
 			return "SELECT SUM(value) AS value, label
-			FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label FROM " . FabrikString::safeColName($item->db_table_name)
+			FROM (SELECT " . $distinct. " $item->db_primary_key, $name AS value, $label FROM " . FabrikString::safeColName($item->db_table_name)
 			. " $joinSQL $whereSQL) AS t";
 		}
 	}
@@ -4588,8 +4598,9 @@ class PlgFabrik_Element extends FabrikPlugin
 			// $custom_query = sprintf($custom_query, 'value');
 			$custom_query = str_replace('%s', 'value', $custom_query);
 
-			return "SELECT $custom_query AS value, label FROM (SELECT DISTINCT " . FabrikString::safeColName($item->db_table_name)
-			. ".*, $name AS value, $label AS label FROM " . FabrikString::safeColName($item->db_table_name) . " $joinSQL $whereSQL) AS t";
+			return 'SELECT ' . $custom_query . ' AS value, label FROM (SELECT DISTINCT ' . FabrikString::safeColName($item->db_table_name)
+			. '.*, ' . $name . ' AS value, ' . $label . ' AS label FROM ' . FabrikString::safeColName($item->db_table_name)
+			. ' ' . $joinSQL . ' ' . $whereSQL . ') AS t';
 		}
 	}
 
@@ -4609,8 +4620,8 @@ class PlgFabrik_Element extends FabrikPlugin
 		$joinSQL = $listModel->buildQueryJoin();
 		$whereSQL = $listModel->buildQueryWhere();
 
-		return "SELECT {$this->getFullName(false, false, false)} AS value, $label FROM " . FabrikString::safeColName($item->db_table_name)
-		. " $joinSQL $whereSQL ";
+		return 'SELECT ' . $this->getFullName(false, false, false) . ' AS value, ' . $label . ' FROM ' . FabrikString::safeColName($item->db_table_name)
+		. ' ' . $joinSQL . ' ' . $whereSQL;
 	}
 
 	/**
