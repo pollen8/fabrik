@@ -296,7 +296,7 @@ class JFormFieldListfields extends JFormFieldList
 		}
 		else
 		{
-			$str[] = '<input id="' . $this->id . '" name="' . $this->name . '" value="' . $this->value . '" />';
+			$str[] = '<input class="input" id="' . $this->id . '" name="' . $this->name . '" value="' . $this->value . '" />';
 		}
 
 		$str[] = '<button class="button btn"><span class="icon-arrow-left"></span> ' . JText::_('COM_FABRIK_ADD') . '</button>';
