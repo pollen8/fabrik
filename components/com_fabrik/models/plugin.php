@@ -511,6 +511,10 @@ class FabrikPlugin extends JPlugin
 			{
 				$data[$key] = JArrayHelper::getValue($val, $repeatCounter);
 			}
+			else
+			{
+				$data[$key] = $val;
+			}
 		}
 
 		$this->params = new JRegistry(json_encode($data));
