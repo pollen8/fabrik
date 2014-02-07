@@ -1822,6 +1822,11 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 			}
 		}
 
+		if ($val === $this->_getSelectLabel())
+		{
+			$val = '';
+		}
+
 		return $val;
 	}
 
@@ -2510,6 +2515,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		$db->setQuery($query, $offset, $limit);
 		$groupBy = FabrikString::shortColName($groupBy);
 		$rows = $db->loadObjectList($groupBy);
+		ksort($rows);
 
 		return $rows;
 	}
