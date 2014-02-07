@@ -1895,11 +1895,11 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		$raw .= ($displayType == 'checkbox' || $displayType == 'multilist') ? '_id' : '_raw';
 		$values = isset($thisRow->$raw) ? FabrikWorker::JSONtoData($thisRow->$raw, true) : array();
 
-		for ($i = 0; $i < count($data); $i++)
+		foreach ($data as $key => $value)
 		{
-			if ($this->emptyConcatString($data[$i]))
+			if ($this->emptyConcatString($data[$key]))
 			{
-				$data[$i] = '';
+				$data[$key] = '';
 			}
 		}
 
