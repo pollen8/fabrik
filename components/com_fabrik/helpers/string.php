@@ -676,9 +676,9 @@ class FabrikString extends JString
 	 */
 	public static function replaceLast($search, $replace, $subject)
 	{
-		$pos = strrpos($subject, $search);
+		$pos = strripos($subject, $search);
 
-		if($pos !== false)
+		if ($pos !== false)
 		{
 			$subject = substr_replace($subject, $replace, $pos, strlen($search));
 		}
