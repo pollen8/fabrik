@@ -217,7 +217,6 @@ class PlgFabrik_ElementThumbs extends PlgFabrik_Element
 		$input = JFactory::getApplication()->input;
 		$listid = isset($this->listid) ? $this->listid : $this->getListModel()->getId();
 		$formid = isset($this->formid) ? $this->formid : $this->getFormModel()->getId();
-		$row_id = $input->get('row_id');
 		$db = FabrikWorker::getDbo();
 		$elementid = $this->getElement()->id;
 		$return = array();
