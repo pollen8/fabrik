@@ -16,7 +16,7 @@ JHtml::addIncludePath(JPATH_COMPONENT . '/helpers/html');
 JHTML::stylesheet('administrator/components/com_fabrik/views/fabrikadmin.css');
 JHtml::_('behavior.tooltip');
 JHtml::_('behavior.framework', true);
-JHtml::_('behavior.formvalidation');
+FabrikHelperHTML::formvalidation();
 JHtml::_('behavior.keepalive');
 
 JText::script('COM_FABRIK_SUBOPTS_VALUES_ERROR');

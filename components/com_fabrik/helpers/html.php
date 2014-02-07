@@ -120,6 +120,14 @@ class FabrikHelperHTML
 	protected static $requireJS = array();
 
 	/**
+	 * Array containing information for loaded files
+	 *
+	 * @var    array
+	 * @since  2.5
+	 */
+	protected static $loaded = array();
+
+	/**
 	 * Array of browser request headers.  Starts as null.
 	 * @var array
 	 */
@@ -1089,6 +1097,7 @@ if (!$j3)
 		$newShim = array_merge($framework, $newShim);
 		$shim = json_encode($newShim);
 
+
 		foreach ($requirePaths as $reqK => $repPath)
 		{
 			$pathBits[] = "\n\t\t$reqK : '$repPath'";
@@ -1130,6 +1139,7 @@ if (!$j3)
 		$r->viz = 'plugins/fabrik_visualization';
 		$r->admin = 'administrator/components/com_fabrik/views';
 		$r->adminfields = 'administrator/components/com_fabrik/models/fields';
+		$r->punycode =  'media/system/js/punycode';
 
 		return $r;
 	}
@@ -2501,5 +2511,39 @@ if (!$j3)
 		}
 
 		return $ret;
+	}
+
+	public static function formvalidation()
+	{
+		// Only load once
+		if (isset(static::$loaded[__METHOD__]))
+		{
+			return;
+		}
+
+		// Add validate.js language strings
+		JText::script('JLIB_FORM_FIELD_INVALID');
+
+		// Include MooTools More framework
+		static::framework('more');
+
+		$document = JFactory::getDocument();
+		$debug = JFactory::getConfig()->get('debug');
+		$file = $debug ? 'punycode-uncompressed' : 'punycode';
+		$path = JURI::root(). 'media/system/js/' . $file;
+
+		$js = array();
+		$js[] = "requirejs({";
+		$js[] = "   'paths': {";
+		$js[] = "     'punycode': '" . $path . "'";
+		$js[] = "   }";
+		$js[] = " },";
+		$js[] = "['punycode'], function (p) {";
+		$js[] = "  window.punycode = p;";
+		$js[] = "});";
+
+		$document->addScriptDeclaration(implode("\n", $js));
+		JHtml::_('script', 'system/validate.js', false, true);
+		static::$loaded[__METHOD__] = true;
 	}
 }
