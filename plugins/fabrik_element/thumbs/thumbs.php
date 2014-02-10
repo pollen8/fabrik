@@ -123,7 +123,7 @@ class PlgFabrik_ElementThumbs extends PlgFabrik_Element
 			{
 				$str[] = '<div class="btn-group">';
 				$str[] = '<button ' . $commentdata . ' data-fabrik-thumb-formid="' . $formid
-				. '" data-fabrik-thumb="up" class="btn btn-small thumb-up' . $upActiveClass . '">';
+				 . '" data-fabrik-thumb="up" class="btn btn-small thumb-up' . $upActiveClass . '">';
 				$str[] = '<span class="icon-thumbs-up"></span> <span class="thumb-count">' . $countUp . '</span></button>';
 
 				if ($params->get('show_down', 1))
