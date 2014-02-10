@@ -8497,7 +8497,7 @@ class FabrikFEModelList extends JModelForm
 			$v = $db->quote($v);
 		}
 
-		$val = implode(",", $val);
+		$val = implode(',', $val);
 
 		// $$$ rob - if we are not deleting joined rows then onloy load in the first row
 		// otherwise load in all rows so we can apply onDeleteRows() to all the data
@@ -8513,7 +8513,7 @@ class FabrikFEModelList extends JModelForm
 		* things like form and element onDelete plugins will get handed a whole page of rows, not just the ones
 		* selected for delete!  Ooops.
 		*/
-		unset($this->data);
+		$this->reset();
 		$rows = $this->getData();
 
 		/* $$$ hugh - we need to check delete perms, see:
