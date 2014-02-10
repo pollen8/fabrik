@@ -3029,7 +3029,7 @@ class FabrikFEModelList extends JModelForm
 				$return[] = $s;
 			}
 		}
-		// 3.0 not really tested
+
 		if ($query !== false)
 		{
 			foreach ($return as $r)
