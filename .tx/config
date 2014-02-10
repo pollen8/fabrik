@@ -359,6 +359,7 @@ trans.es-ES = plugins/fabrik_cron/notification/language/es-ES/es-ES.plg_fabrik_c
 trans.et-EE = plugins/fabrik_cron/notification/language/et-EE/et-EE.plg_fabrik_cron_notification.ini
 trans.fr-FR = plugins/fabrik_cron/notification/language/fr-FR/fr-FR.plg_fabrik_cron_notification.ini
 trans.it-IT = plugins/fabrik_cron/notification/language/it-IT/it-IT.plg_fabrik_cron_notification.ini
+trans.pt-PT = plugins/fabrik_cron/notification/language/pt-PT/pt-PT.plg_fabrik_cron_notification.ini
 trans.ru-RU = plugins/fabrik_cron/notification/language/ru-RU/ru-RU.plg_fabrik_cron_notification.ini
 
 [fabrik31.plg_cron_notification_sys]
@@ -370,6 +371,7 @@ trans.es-ES = plugins/fabrik_cron/notification/language/es-ES/es-ES.plg_fabrik_c
 trans.et-EE = plugins/fabrik_cron/notification/language/et-EE/et-EE.plg_fabrik_cron_notification.sys.ini
 trans.fr-FR = plugins/fabrik_cron/notification/language/fr-FR/fr-FR.plg_fabrik_cron_notification.sys.ini
 trans.it-IT = plugins/fabrik_cron/notification/language/it-IT/it-IT.plg_fabrik_cron_notification.sys.ini
+trans.pt-PT = plugins/fabrik_cron/notification/language/pt-PT/pt-PT.plg_fabrik_cron_notification.sys.ini
 trans.ru-RU = plugins/fabrik_cron/notification/language/ru-RU/ru-RU.plg_fabrik_cron_notification.sys.ini
 
 [fabrik31.plg_cron_php]
@@ -383,6 +385,7 @@ trans.fr-FR = plugins/fabrik_cron/php/language/fr-FR/fr-FR.plg_fabrik_cron_php.i
 trans.it-IT = plugins/fabrik_cron/php/language/it-IT/it-IT.plg_fabrik_cron_php.ini
 trans.nl-NL = plugins/fabrik_cron/php/language/nl-NL/nl-NL.plg_fabrik_cron_php.ini
 trans.pt-BR = plugins/fabrik_cron/php/language/pt-BR/pt-BR.plg_fabrik_cron_php.ini
+trans.pt-PT = plugins/fabrik_cron/php/language/pt-PT/pt-PT.plg_fabrik_cron_php.ini
 trans.ru-RU = plugins/fabrik_cron/php/language/ru-RU/ru-RU.plg_fabrik_cron_php.ini
 trans.tr-TR = plugins/fabrik_cron/php/language/tr-TR/tr-TR.plg_fabrik_cron_php.ini
 

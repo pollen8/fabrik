@@ -2758,7 +2758,6 @@ class FabrikFEModelForm extends FabModelForm
 		$limit = $dir == 1 ? 'LIMIT 2' : '';
 		$intLimit = $dir == 1 ? 2 : 0;
 		$listModel = $this->getListModel();
-		$order = $listModel->buildQueryOrder();
 		$item = $listModel->getTable();
 		$rowid = $input->getString('rowid', '', 'string');
 		$query = $db->getQuery(true);
