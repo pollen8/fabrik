@@ -171,6 +171,12 @@ class PlgSystemFabrik extends JPlugin
 
 	public function onAfterRender()
 	{
+		// Could be component was unistalled but not the plugin
+		if (!class_exists(FabrikString))
+		{
+			return;
+		}
+
 		$script = self::js();
 		$content = JResponse::getBody();
 
