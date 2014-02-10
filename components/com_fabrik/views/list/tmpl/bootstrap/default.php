@@ -103,7 +103,7 @@ endforeach;
 			</tbody>
 			<?php endif ?>
 			<tbody class="fabrik_groupdata">
-				<tr>
+				<tr style="<?php echo $this->emptyStyle?>">
 					<td class="groupdataMsg emptyDataMessage" style="<?php echo $this->emptyStyle?>" colspan="<?php echo count($this->headings)?>">
 						<div class="emptyDataMessage" style="<?php echo $this->emptyStyle?>">
 							<?php echo $this->emptyDataMessage; ?>
