@@ -157,7 +157,8 @@ class ImageRender
 
 				if ($params->get('make_link', true) && !$this->fullImageInRecord($params))
 				{
-					$this->output .= '<a href="' . $fullSize . '" rel="lightbox[]" title="' . $title . '">' . $img . '</a>';
+					$n = $this->inTableView ? '' : $model->getElement()->name;
+					$this->output .= '<a href="' . $fullSize . '" rel="lightbox[' . $n . ']" title="' . $title . '">' . $img . '</a>';
 				}
 				else
 				{
