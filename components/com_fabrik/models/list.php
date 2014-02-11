@@ -4873,6 +4873,7 @@ class FabrikFEModelList extends JModelForm
 				{
 					$this->filters['sqlCond'][$i] = 'EXISTS (' . $this->filters['value'][$i] . ')';
 				}
+
 				continue;
 			}
 
@@ -4967,6 +4968,10 @@ class FabrikFEModelList extends JModelForm
 
 			if ($this->filters['no-filter-setup'][$i] == 1)
 			{
+				if (is_a($elementModel, 'PlgFabrik_ElementDate'))
+				{
+					$originalValue = str_replace("'", '', $originalValue);
+				}
 				$tmpName = $elementModel->getFullName(false, true, false);
 				$tmpData = array($tmpName => $originalValue, $tmpName . '_raw' => $originalValue);
 
