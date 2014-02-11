@@ -371,6 +371,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		$this->_group = $groupModel;
 		$this->_form = $formModel;
 		$this->_list = $listModel;
+	}
 
 	/**
 	 * Get the element's fabrik list model
@@ -2159,7 +2160,7 @@ class PlgFabrik_Element extends FabrikPlugin
 	{
 		$item = $this->getElement();
 		$c = array('fabrikElementContainer', $item->plugin);
-		
+
 		if ($element->hidden)
 		{
 			$c[] = 'fabrikHide';
@@ -2507,7 +2508,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		{
 			$this->_HTMLids = array();
 		}
-		
+
 		if (!array_key_exists((int) $repeatCounter, $this->_HTMLids))
 		{
 			$groupModel = $this->getGroup();
@@ -2532,7 +2533,7 @@ class PlgFabrik_Element extends FabrikPlugin
 			{
 				$fullName .= '_ro';
 			}
-			
+
 			if ($groupModel->canRepeat())
 			{
 				$fullName .= '_' . $repeatCounter;
