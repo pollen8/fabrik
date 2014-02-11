@@ -9,6 +9,12 @@
 		<dirset id="dist.contents" dir="${basedir}/plugins/fabrik_${folder}/" includes="*"/>
 		<property name="prop.dist.contents" refid="dist.contents"/>
 		<foreach list="${prop.dist.contents}" delimiter=";" param="plugin" target="updater.makefile" inheritall="true" inheritrefs="true"/>
+		
+		<antcall target="updater.makefile">
+			 <param name="folder" value="system"/>
+			<param name="plugin" value="fabrik"/>
+		</antcall>
+		
 	</target>
 	
 	<target name="updater.makefile">
