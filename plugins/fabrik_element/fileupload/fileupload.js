@@ -476,7 +476,8 @@ var FbFileUpload = new Class({
 				'class': 'icon-delete',
 				events: {
 					'click': function (e) {
-						this.pluploadRemoveFile(e, file);
+						e.stop();
+						this.pluploadRemoveFile(e);
 					}.bind(this)
 				}
 			}));
@@ -488,7 +489,7 @@ var FbFileUpload = new Class({
 				'style': 'display:block',
 				events: {
 					'click': function (e) {
-						this.pluploadRemoveFile(e, file);
+						this.pluploadRemoveFile(e);
 					}.bind(this)
 				}
 			}));
@@ -503,7 +504,7 @@ var FbFileUpload = new Class({
 		return ['jpg', 'jpeg', 'png', 'gif'].contains(ext);
 	},
 
-	pluploadRemoveFile: function (e, file) {
+	pluploadRemoveFile: function (e) {
 		e.stop();
 		if (!confirm(Joomla.JText._('PLG_ELEMENT_FILEUPLOAD_CONFIRM_HARD_DELETE'))) {
 			return;

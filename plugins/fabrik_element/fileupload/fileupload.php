@@ -3095,6 +3095,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 	public function onAjax_deleteFile()
 	{
 		$app = JFactory::getApplication();
+		$user = JFactory::getUser();
 		$input = $app->input;
 		$this->loadMeForAjax();
 		$filename = $input->get('file', 'string', '');
