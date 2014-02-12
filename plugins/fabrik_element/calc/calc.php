@@ -499,6 +499,7 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 
 		$opts->ajax = $params->get('calc_ajax', 0) == 0 ? false : true;
 		$opts->observe = array_values($obs);
+		$opts->calcOnLoad = (bool) $params->get('calc_on_load', false);
 		$opts->id = $this->id;
 
 		return array('FbCalc', $id, $opts);
