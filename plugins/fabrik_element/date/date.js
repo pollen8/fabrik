@@ -29,7 +29,8 @@ var FbDateTime = new Class({
 			'step': 2,
 			'cache': false,
 			'showOthers': false,
-			'advanced': false
+			'advanced': false,
+			'allowedDates': []
 		}
 	},
 
@@ -44,6 +45,12 @@ var FbDateTime = new Class({
 		this.buttonBgSelected = '#88dd33';
 		this.startElement = element;
 		this.setUpDone = false;
+		
+		// Convert allowed date strings into Date objects
+		for (var i = 0; i < this.options.allowedDates.length; i ++) {
+			this.options.allowedDates[i] = new Date(this.options.allowedDates[i]);
+		}
+		
 		this.setUp();
 	},
 
@@ -100,6 +107,46 @@ var FbDateTime = new Class({
 				this.afterAjaxValidation();
 			}.bind(this));
 		}
+		
+	},
+	
+	/**
+	 * Once the element is attached to the form, observe the ajax trigger element
+	 */
+	attachedToForm: function () {
+		this.parent();
+		this.watchAjaxTrigger();
+	},
+	
+	/**
+	 * Observe the ajax trigger element, used for updatiing allowed dates
+	 */
+	watchAjaxTrigger: function () {
+		if (this.options.watchElement === '') {
+			return;
+		}
+		var el = this.form.elements[this.options.watchElement];
+		if (el) {
+			el.addEvent('change', function (event) {
+				var data = {
+					'option': 'com_fabrik',
+					'format': 'raw',
+					'task': 'plugin.pluginAjax',
+					'plugin': 'date',
+					'method': 'ajax_getAllowedDates',
+					'element_id': this.options.id,
+					'v': el.get('value'),
+					'formid': this.form.id
+				};
+				new Request.JSON({url: '',
+					method: 'post',
+					'data': data,
+					onSuccess: function (json) {
+						this.options.allowedDates = json;
+					}
+				}).send();
+			}.bind(this));
+		}
 	},
 
 	/**
@@ -119,6 +166,16 @@ var FbDateTime = new Class({
 	 */
 	dateSelect: function (date)
 	{
+		// Check PHP events.
+		var allowed = this.options.allowedDates;
+		if (allowed.length > 0) {
+			for (var i = 0; i < allowed.length; i ++) {
+				if (allowed[i].format('%Y%m%d') !== date.format('%Y%m%d')) {
+					return true;
+				}
+			}
+		}
+		
 		var fn = this.options.calendarSetup.dateAllowFunc;
 		if (typeOf(fn) !== 'null' && fn !== '') {
 			eval(fn);
