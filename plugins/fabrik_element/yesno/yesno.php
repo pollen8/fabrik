@@ -315,6 +315,8 @@ class PlgFabrik_ElementYesno extends PlgFabrik_ElementRadiobutton
 		$rows = $this->filterValueList($normal);
 		$return = array();
 		$element = $this->getElement();
+		$params = $this->getParams();
+		$boostrapClass = $params->get('filter_class', '');
 
 		if ($element->filter_type == 'hidden')
 		{
@@ -322,7 +324,7 @@ class PlgFabrik_ElementYesno extends PlgFabrik_ElementRadiobutton
 		}
 		else
 		{
-			$return[] = JHTML::_('select.genericlist', $rows, $v, 'class="inputbox fabrik_filter" size="1" ', 'value', 'text', $default, $htmlid);
+			$return[] = JHTML::_('select.genericlist', $rows, $v, 'class="inputbox fabrik_filter ' . $boostrapClass . '" size="1" ', 'value', 'text', $default, $htmlid);
 		}
 
 		if ($normal)
