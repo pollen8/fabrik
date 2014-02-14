@@ -5349,6 +5349,18 @@ class FabrikFEModelList extends JModelForm
 				$tmpfilter = $raw ? FabrikString::rtrimword($filter, '_raw') : $filter;
 				$elementModel = JArrayHelper::getValue($elements, FabrikString::safeColName($tmpfilter), false);
 
+				if ($elementModel === false)
+				{
+					/*
+					 * HACK!
+					 * http://fabrikar.com/forums/index.php?threads/a-prefilter-has-been-set-up-on-an-unpublished-element.37385/#post-189201
+					 * Complex set up of joined group which has a user element which is linked to a parent one. Raw AS field has _0 applied to its name
+					 * For this we'll just remove that to find the correct element.
+					 */
+					$tmpfilter = str_replace('_0.', '.', $tmpfilter);
+					$elementModel = JArrayHelper::getValue($elements, FabrikString::safeColName($tmpfilter), false);
+				}
+
 				if ($elementModel === false && $condition !== 'exists')
 				{
 					// Include the JLog class.
@@ -5358,7 +5370,7 @@ class FabrikFEModelList extends JModelForm
 					JLog::addLogger(array('text_file' => 'fabrik.log.php'));
 
 					// Start logging...
-					$msg = 'A prefilter has been set up on an unpublished element, and will not be applied:' . FabrikString::safeColName($tmpfilter);
+					$msg = JText::sprintf('COM_FABRIK_ERR_PREFILTER_NOT_APPLIED', FabrikString::safeColName($tmpfilter));
 					JLog::add($msg,	JLog::NOTICE, 'com_fabrik');
 
 					JFactory::getApplication()->enqueueMessage($msg, 'notice');
