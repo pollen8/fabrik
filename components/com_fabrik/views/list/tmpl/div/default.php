@@ -11,6 +11,16 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+// The number of columns to split the list rows into
+$columns = 3;
+
+// Show the labels next to the data:
+$this->showLabels = false;
+
+// Show empty data
+$this->showEmpty = true;
+
+
 $pageClass = $this->params->get('pageclass_sfx', '');
 
 if ($pageClass !== '') :
@@ -75,7 +85,7 @@ if ($this->showFilters) {
 	foreach ($group as $this->_row) :
 		$items[] = $this->loadTemplate('row');
 	endforeach;
-	echo FabrikHelperHTML::bootstrapGrid($items, 3, 'well', true);
+	echo FabrikHelperHTML::bootstrapGrid($items, $columns, 'well', true);
 	?>
 	</div>
 	<?php
