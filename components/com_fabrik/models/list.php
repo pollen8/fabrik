@@ -3244,7 +3244,7 @@ class FabrikFEModelList extends JModelForm
 	}
 
 	/**
-	 * Used by _buildWhereQuery and buildQueryPrefilterWhere
+	 * Used by buildQueryWhere and buildQueryPrefilterWhere
 	 * takes a filter array and returns the SQL
 	 *
 	 * @param   array  &$filters        filters
@@ -5119,7 +5119,16 @@ class FabrikFEModelList extends JModelForm
 
 			if (!array_key_exists($i, $sqlCond) || $sqlCond[$i] == '')
 			{
-				$query = $elementModel->getFilterQuery($key, $condition, $value, $originalValue, $this->filters['search_type'][$i]);
+				// Will produce an SQL error - but is equivalant to 'show no records' so set to where 1 = -1
+				if ($condition === 'IN' && $value === '()')
+				{
+					$query = '1 = -1';
+				}
+				else
+				{
+					$query = $elementModel->getFilterQuery($key, $condition, $value, $originalValue, $this->filters['search_type'][$i]);
+				}
+
 				$this->filters['sqlCond'][$i] = $query;
 			}
 
