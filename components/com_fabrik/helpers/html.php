@@ -1988,6 +1988,7 @@ if (!$j3)
 	{
 		$j3 = FabrikWorker::j3();
 		$version = new JVersion;
+		$items = array();
 
 		for ($i = 0; $i < count($values); $i++)
 		{
@@ -2099,6 +2100,7 @@ if (!$j3)
 	public static function bootstrapGrid($items, $columns, $spanClass = '', $explode = false)
 	{
 		$span = floor(12 / $columns);
+		$i = 0;
 
 		foreach ($items as $i => $s)
 		{
