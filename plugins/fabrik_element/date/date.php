@@ -838,12 +838,110 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 		$opts->typing = (bool) $params->get('date_allow_typing_in_field', true);
 		$opts->timedisplay = $params->get('date_timedisplay', 1);
 		$opts->dateTimeFormat = $params->get('date_time_format', '');
+		$opts->allowedDates = $this->getAllowedPHPDates();
+		$opts->watchElement = $this->getWatchId();
+		$opts->id = $this->getId();
 
 		// For reuse if element is duplicated in repeat group
 		$opts->calendarSetup = $this->_CalendarJSOpts($id);
 		$opts->advanced = $params->get('date_advanced', '0') == '1';
 
 		return array('FbDateTime', $id, $opts);
+	}
+
+	/**
+	 * Get the HTML id for the watch element
+	 *
+	 * @param   int  $repeatCounter  repeat group counter
+	 *
+	 * @return  string
+	 */
+
+	protected function getWatchId($repeatCounter = 0)
+	{
+		$listModel = $this->getlistModel();
+		$elementModel = $this->getWatchElement();
+
+		return $elementModel ? $elementModel->getHTMLId($repeatCounter) : '';
+	}
+
+
+	/**
+	 * Get the element to watch. Changes to this element will trigger the cdd's lookup
+	 *
+	 * @return  plgFabrik_Element
+	 */
+
+	protected function getWatchElement()
+	{
+		if (!isset($this->watchElement))
+		{
+			$watch = $this->getParams()->get('date_observe', '');
+
+			if ($watch === '')
+			{
+				return false;
+			}
+
+			$this->watchElement = $this->getFormModel()->getElement($watch, true);
+
+			if (!$this->watchElement)
+			{
+				// This element is a child element, so $watch is in the parent element (in another form)
+				$pluginManager = FabrikWorker::getPluginManager();
+				$parent = $pluginManager->getElementPlugin($watch);
+
+				// These are the possible watch elements
+				$children = $parent->getElementDescendents();
+
+				// Match the possible element ids with the current form's element ids
+				$elids = $this->getFormModel()->getElementIds();
+				$matched = array_values(array_intersect($elids, $children));
+
+				// Load the matched element
+				$this->watchElement = $pluginManager->getElementPlugin($matched[0]);
+			}
+		}
+
+		return $this->watchElement;
+	}
+
+	/**
+	 * Ajax - get the allowed dates - called when watched element changes
+	 *
+	 * @return  void
+	 */
+
+	public function onAjax_getAllowedDates()
+	{
+		$app = JFactory::getApplication();
+		$input = $app->input;
+		$this->loadMeForAjax();
+		$params = $this->getParams();
+		$dates = $this->getAllowedPHPDates();
+		echo json_encode($dates);
+	}
+
+	/**
+	 * Get the allowed dates based on evaluated PHP code
+	 *
+	 * @return multitype:|array
+	 */
+	protected function getAllowedPHPDates()
+	{
+		$params = $this->getParams();
+		$php = $params->get('date_allow_php_func', '');
+		$dates = array();
+
+		if ($php === '')
+		{
+			return $dates;
+		}
+
+		$dates = FabrikHelperHTML::isDebug() ? eval($php) : @eval($php);
+		FabrikWorker::logEval($dates, 'Eval exception : ' . $this->getElement()->name . '::getAllowedPHPDates() : %s');
+
+		return (array) $dates;
 	}
 
 	/**
