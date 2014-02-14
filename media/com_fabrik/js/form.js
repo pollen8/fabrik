@@ -1011,6 +1011,7 @@ var FbForm = new Class({
 					var res = Fabrik.fireEvent('fabrik.form.delete', [this, this.options.rowid]).eventResults;
 					if (typeOf(res) === 'null' || res.length === 0 || !res.contains(false)) {
 						this.form.getElement('input[name=task]').value = this.options.admin ? 'form.delete' : 'delete';
+						this.doSubmit(e, del);
 					} else {
 						e.stop();
 						return false;
