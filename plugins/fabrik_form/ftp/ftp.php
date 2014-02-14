@@ -268,7 +268,7 @@ class PlgFabrik_FormFtp extends PlgFabrik_Form
 		else
 		{
 			JModel::addIncludePath(COM_FABRIK_BASE . 'components/com_content/models');
-			$articleModel = JModel::getInstance('Article', 'ContentModel');
+			$articleModel = JModelLegacy::getInstance('Article', 'ContentModel');
 			$res = $articleModel->getItem($contentTemplate);
 		}
 

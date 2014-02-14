@@ -196,7 +196,7 @@ class FabrikAdminControllerList extends FabControllerForm
 		// Check for request forgeries
 		JSession::checkToken() or die('Invalid Token');
 		$app = JFactory::getApplication();
-		$model = JModel::getInstance('List', 'FabrikFEModel');
+		$model = JModelLegacy::getInstance('List', 'FabrikFEModel');
 		$id = $app->input->getInt('listid');
 		$model->setId($id);
 		JRequest::setVar('cid', $id);
