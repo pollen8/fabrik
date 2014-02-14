@@ -145,7 +145,7 @@ class FabrikFEModelListfilter extends FabModel
 		JDEBUG ? $profiler->mark('listfilter:request got') : null;
 		$this->counter = count(JArrayHelper::getValue($request, 'key', array()));
 
-		// Overwrite filters with session filters (fabrik_incsessionfilters set to false in listModel::getRecordCounts / for facted data counts
+		// Overwrite filters with session filters (fabrik_incsessionfilters set to false in listModel::getRecordCounts / for faceted data counts
 		if ($input->get('fabrik_incsessionfilters', true))
 		{
 			$this->getSessionFilters($filters);
@@ -209,8 +209,8 @@ class FabrikFEModelListfilter extends FabModel
 	/**
 	 * $$$ rob if the filter should not be applied due to its acl level then set its condition so that it
 	 * will always return true. Do this rather than unsetting the filter - as this removes the selected option
-	 * from the filter forms field. Can be used in conjunction with a list filter plugin to override a normal fiters option with the
-	 * plugins option, e.g. load all univertisties courses OR [plugin option] load remote courses run by selected university
+	 * from the filter forms field. Can be used in conjunction with a list filter plugin to override a normal filters option with the
+	 * plugins option, e.g. load all university's courses OR [plugin option] load remote courses run by selected university
 	 * e.g http://www.epics-ve.eu/index.php?option=com_fabrik&view=list&listid=5
 	 *
 	 * @param   array  &$filters  list filters
@@ -385,7 +385,7 @@ class FabrikFEModelListfilter extends FabModel
 		{
 			/**
 			 * $$$ hugh - couple of folk have reported getting PHP error "Cannot unset string offsets"
-			 * which means sometimes $filters->foo is a string.  Putting a bandaid on it for now,
+			 * which means sometimes $filters->foo is a string.  Putting a band-aid on it for now,
 			 * but really should try and find out why sometimes we have strings rather than arrays.
 			 */
 			if (is_array($filters[$key]))
@@ -475,7 +475,7 @@ class FabrikFEModelListfilter extends FabModel
 		{
 			/**
 			 * Have to do it like this as the -operator removes records matched from
-			 * previous +operators (so if you just have -operatos)
+			 * previous +operators (so if you just have -operator)
 			 * no records are returned
 			 */
 			$search = '+(a* b* c* d* e* f* g* h* i* j* k* l* m* n* o* p* q* r* s* t* u* v* w* x* y* z*) ' . $search;
@@ -538,13 +538,17 @@ class FabrikFEModelListfilter extends FabModel
 		 * $$$ rob jpluginfilters search_types are those which have been set inside the
 		 * Joomla content plugin e.g. {fabrik view=list id=1 tablename___elementname=foo}
 		 * these should not be removed when the list filters are cleared
+		 * see:
+		 * http://fabrikar.com
+		 * /forums/index.php?threads/many-to-many-relationship-show-all-related-items-as-list-on-the-joined-list-details.36697/
+		 * #post-184335
 		 */
 		$reg = JArrayHelper::fromObject($reg);
 		$serachTypes = JArrayHelper::getValue($reg, 'search_type', array());
 
 		for ($i = 0; $i < count($serachTypes); $i++)
 		{
-			if ($serachTypes[$i] !== 'jpluginfilters')
+			if ($this->canClear($serachTypes[$i]))
 			{
 				$this->clearAFilter($reg, $i);
 			}
@@ -569,6 +573,36 @@ class FabrikFEModelListfilter extends FabModel
 		{
 			$app->setUserState('com_' . $package . '.searchform.form' . $fromFormId . '.searchall', '');
 		}
+	}
+
+	/**
+	 * Can we clear a filter.
+	 * Filters set by the content plugin ($searchType == jpluginfilters) can only be unset if you are not viewing the content plugin but instead
+	 * a menu item, which points at the same list AND when that menu item has its resetfilters option set to yes.
+	 *
+	 * @param   string  $searchType  Search type string
+	 *
+	 * @return boolean
+	 */
+	protected function canClear($searchType)
+	{
+		$app = JFactory::getApplication();
+
+		if (!$app->isAdmin() && $this->activeTable())
+		{
+			$menus = $app->getMenu();
+			$menu = $menus->getActive();
+
+			if (is_object($menu))
+			{
+				if ($menu->params->get('resetfilters') == 1)
+				{
+					return true;
+				}
+			}
+		}
+
+		return $searchType === 'jpluginfilters' ? false : true;
 	}
 
 	/**
@@ -620,7 +654,7 @@ class FabrikFEModelListfilter extends FabModel
 
 		foreach ($keys as $elid)
 		{
-			// $$$ hugh - need to reset $search each time round, in case getFilterValue has esacped something,
+			// $$$ hugh - need to reset $search each time round, in case getFilterValue has escaped something,
 			// like foo.exe to foo\\\.exe ... otherwise each time round we double the number of \s's
 			$search = $orig_search;
 			$elementModel = $elements[$elid];
@@ -700,7 +734,7 @@ class FabrikFEModelListfilter extends FabModel
 				/**
 				 * $$$ rob 16/06/2011 - changed this. If search all and search on post then change post filter.
 				 * The grouped_to_previous was being set from 1 to 0 - giving
-				 * incorrect query. ASAICT grouped_to_previous should always be 1 for search_all.
+				 * incorrect query. AFAICT grouped_to_previous should always be 1 for search_all.
 				 * And testing if the element name = 0 seems v wrong :)
 				 */
 				// $filters['grouped_to_previous'][$key] = $k == 0 ? 0 : 1;
@@ -946,18 +980,18 @@ class FabrikFEModelListfilter extends FabModel
 
 			/**
 			 * unset the search form id so we wont reuse the search data
-			 * untill a new search is performed
+			 * until a new search is performed
 			 */
 			$this->setSearchFormId(null);
 		}
 	}
 
 	/**
-	 * get any querystring filters that can be applied to the list
+	 * Get any querystring filters that can be applied to the list
 	 * you can simple do tablename___elementname=value
 	 * or if you want more control you can do
 	 *
-	 * tablename___elementname[value]=value&tablename_elementname[condition]=OR etc
+	 * tablename___elementname[value]=value&tablename_elementname[condition]=OR etc.
 	 *
 	 * @param   array  &$filters  list filters
 	 *
@@ -998,7 +1032,7 @@ class FabrikFEModelListfilter extends FabModel
 			{
 				$raw = 1;
 
-				// Withouth this line releated data links 'listname___elementname_raw=X' where not having their filter applied
+				// Without this line related data links 'listname___elementname_raw=X' where not having their filter applied
 				$key = FabrikString::safeColName(FabrikString::rtrimword($oldkey, '_raw'));
 			}
 
@@ -1037,12 +1071,12 @@ class FabrikFEModelListfilter extends FabModel
 				 * do a ranged querystring search with this syntax
 				 * ?element_test___time_date[value][]=2009-08-07&element_test___time_date[value][]=2009-08-10&element_test___time_date[condition]=BETWEEN
 				 */
-				if (is_array($value) && $condition != 'BETWEEN' && strtoupper($condition) !== 'IN')
+				if (is_array($value) && strtoupper($condition) !== 'BETWEEN' && strtoupper($condition) !== 'IN')
 				{
 					// If we aren't doing a ranged search
 					foreach ($value as $vk => $avalue)
 					{
-						// If � entered in qs then that is coverted to %E9 which urldecode will convert back
+						// If � entered in qs then that is converted to %E9 which urldecode will convert back
 						$value = addslashes(urldecode($avalue));
 						$acondition = (is_array($condition) && array_key_exists($vk, $condition)) ? $condition[$vk] : $condition;
 						$ajoin = (is_array($join) && array_key_exists($vk, $join)) ? $join[$vk] : $join;
@@ -1062,7 +1096,7 @@ class FabrikFEModelListfilter extends FabModel
 			}
 			else
 			{
-				// If � entered in qs then that is coverted to %E9 which urldecode will convert back
+				// If � entered in qs then that is converted to %E9 which urldecode will convert back
 				$value = addslashes(urldecode($val));
 				$join = 'AND';
 				$grouped = 0;
@@ -1102,7 +1136,7 @@ class FabrikFEModelListfilter extends FabModel
 		$k2 = FabrikString::safeColNameToArrayKey($key);
 		/**
 		 * $$$ rob fabrik_sticky_filters set in J content plugin
-		 * Treat these as prefilters so we dont unset them
+		 * Treat these as prefilters so we don't unset them
 		 * when we clear the filters
 		 */
 		$stickyFilters = $input->get('fabrik_sticky_filters', array(), 'array');
@@ -1112,7 +1146,7 @@ class FabrikFEModelListfilter extends FabModel
 		$filters['condition'][] = urldecode($condition);
 		$filters['join'][] = $join;
 		$filters['no-filter-setup'][] = ($element->filter_type == '') ? 1 : 0;
-		$filter['hidden'][] = ($element->filter_type == '') ? 1 : 0;
+		$filters['hidden'][] = ($element->filter_type == '') ? 1 : 0;
 		$filters['key'][] = $key;
 		$filters['key2'][] = '';
 		$filters['search_type'][] = $filterType;
@@ -1160,7 +1194,7 @@ class FabrikFEModelListfilter extends FabModel
 	}
 
 	/**
-	 * Overwrite session and serach all filters with posted data
+	 * Overwrite session and search all filters with posted data
 	 *
 	 * @param   array  &$filters  filter array
 	 *
@@ -1244,7 +1278,7 @@ class FabrikFEModelListfilter extends FabModel
 				if ($emptyValue && $index !== false)
 				{
 					/*
-					 * Testing clearing only if normal filter, previous test on serachType != 'searchall'
+					 * Testing clearing only if normal filter, previous test on searchType != 'searchall'
 					 * meant advanced search filters were removed on page nav
 					 */
 					if (JArrayHelper::getValue($searchTypes, $index) == 'normal')
@@ -1277,7 +1311,7 @@ class FabrikFEModelListfilter extends FabModel
 					{
 						if (is_array($filters[$fkey]) && array_key_exists($index, $filters[$fkey]))
 						{
-							// Don't unset search all filters when the value is empty and continue so we dont add in a new filter
+							// Don't unset search all filters when the value is empty and continue so we don't add in a new filter
 							if (JArrayHelper::getValue($searchTypes, $index) == 'searchall' && $value == '')
 							{
 								continue 2;
