@@ -2107,7 +2107,7 @@ class FabrikFEModelList extends JModelForm
 				*/
 				if (is_array($v))
 				{
-					$v = JArrayHelper::getValue($v, $repeatCounter);
+					$v = (JArrayHelper::getValue($v, $repeatCounter));
 				}
 				else
 				{
@@ -2125,11 +2125,17 @@ class FabrikFEModelList extends JModelForm
 						}
 					}
 				}
+
+				$v = rawurlencode($v);
+				$array[$k] = $v;
 			}
 
 			$array['rowid'] = $this->getSlug($row);
 			$array['listid'] = $table->id;
 			$link = JRoute::_($this->parseMessageForRowHolder($customLink, $array));
+
+			// NO idea why but ' isnt encoded by the time we arreive here - even though rawurlencode above works.
+			$link = str_replace("'", "%27", $link);
 		}
 
 		return $link;
