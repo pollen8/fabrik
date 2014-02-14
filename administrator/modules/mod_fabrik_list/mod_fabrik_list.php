@@ -60,6 +60,7 @@ $random = intval($params->get('radomizerecords', 0));
 $limit = intval($params->get('limit', 0));
 $layout	= $params->get('fabriklayout', 'default');
 $input->set('layout', $layout);
+$showTitle = $params->get('show-title', '');
 
 /* this all works fine for a list
  * going to try to load a package so u can access the form and list
@@ -96,6 +97,11 @@ if ($params->get('ajax_links') !== '')
 	$listParams->set('list_ajax_links', $params->get('ajax_links'));
 }
 
+if ($showTitle !== '')
+{
+	$listParams->set('show-title', $showTitle);
+}
+
 // Set up prefilters - will overwrite ones defined in the list!
 
 $prefilters = JArrayHelper::fromObject(json_decode($params->get('prefilters')));
@@ -103,7 +109,8 @@ $conditions = (array) $prefilters['filter-conditions'];
 
 if (!empty($conditions))
 {
-	$listParams->set('filter-join', $prefilters['filter-join']);
+	$joins = JArrayHelper::getValue($prefilters, 'filter-join', array());
+	$listParams->set('filter-join', $joins);
 	$listParams->set('filter-fields', $prefilters['filter-fields']);
 	$listParams->set('filter-conditions', $prefilters['filter-conditions']);
 	$listParams->set('filter-value', $prefilters['filter-value']);
