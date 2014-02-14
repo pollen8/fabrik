@@ -1148,11 +1148,15 @@ var FbForm = new Class({
 											}
 										}
 									} else {
-										alert(savedMsg);
+										if (!json.suppressMsg) {
+											alert(savedMsg);
+										}
 									}
 								} else {
 									clear_form = json.reset_form !== undefined ? json.reset_form : clear_form;
-									alert(savedMsg);
+									if (!json.suppressMsg) {
+										alert(savedMsg);
+									}
 								}
 								// Query the list to get the updated data
 								Fabrik.fireEvent('fabrik.form.submitted', [this, json]);
