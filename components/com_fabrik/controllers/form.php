@@ -266,7 +266,13 @@ class FabrikControllerForm extends JControllerLegacy
 		{
 			// $$$ hugh - adding some options for what to do with redirect when in content plugin
 			// Should probably do this elsewhere, but for now ...
-			$redirect_opts = array('msg' => $msg, 'url' => $url, 'baseRedirect' => $this->baseRedirect, 'rowid' => $input->get('rowid', '', 'string'));
+			$redirect_opts = array(
+					'msg' => $msg,
+					'url' => $url,
+					'baseRedirect' => $this->baseRedirect,
+					'rowid' => $input->get('rowid', '', 'string'),
+					'suppressMsg' => !$model->showSuccessMsg()
+			);
 
 			if (!$this->baseRedirect && $this->isMambot)
 			{
