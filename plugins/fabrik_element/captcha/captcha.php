@@ -271,7 +271,7 @@ class PlgFabrik_ElementCaptcha extends PlgFabrik_Element
 			$str[] = '<img src="' . COM_FABRIK_LIVESITE . 'plugins/fabrik_element/captcha/image.php?foo=' . rand() . '" alt="'
 			. JText::_('security image') . '" />';
 
-			$str[] = '<br />';
+			$str[] = '<div class="captcha_input">';
 
 			$type = ($params->get('password') == "1") ? "password" : "text";
 
@@ -287,6 +287,7 @@ class PlgFabrik_ElementCaptcha extends PlgFabrik_Element
 
 			$sizeInfo = ' size="' . $size . '"';
 			$str[] = '<input class="inputbox ' . $type . '" type="' . $type . '" name="' . $name . '" id="' . $id . '" ' . $sizeInfo . ' value="" />';
+			$str[] = '</div>';
 
 			return implode("\n", $str);
 		}
