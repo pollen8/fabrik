@@ -306,6 +306,9 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 	 * Before the record is stored, this plugin will see if it should process
 	 * and if so store the form data in the session.
 	 *
+	 * NOTE: if your Fabrik list saves directly to #__users then you CAN NOT add additonal fields to the list,
+	 * instead add to a joined list to contain 'profile' information.
+	 *
 	 * @return  bool  should the form model continue to save
 	 */
 
@@ -673,6 +676,8 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 		{
 			$formModel->rowId = $user->get('id');
 		}
+
+		return true;
 	}
 
 	/**
