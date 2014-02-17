@@ -816,7 +816,6 @@ class PlgFabrik_Element extends FabrikPlugin
 				$aAsFields[] = $fullElName;
 			}
 		}
-		//echo "<pre>as fields = ";print_r($aAsFields);echo "</pre>";
 	}
 
 	/**
