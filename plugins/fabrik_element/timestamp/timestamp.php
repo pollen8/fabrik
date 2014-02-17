@@ -138,7 +138,7 @@ class PlgFabrik_ElementTimestamp extends PlgFabrik_Element
 	 * @return  bool
 	 */
 
-	protected function isHidden()
+	public function isHidden()
 	{
 		return true;
 	}

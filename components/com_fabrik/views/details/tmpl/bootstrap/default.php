@@ -41,12 +41,7 @@ foreach ($this->groups as $group) :
 		<div class="<?php echo $group->class; ?>" id="group<?php echo $group->id;?>" style="<?php echo $group->css;?>">
 
 		<?php
-		$allHidden = true;
-		foreach ($group->elements as $element)
-		{
-			$allHidden &= $element->hidden;
-		}
-		if ((!$allHidden || !empty($group->intro)) && trim($group->title) !== '') :?>
+		if ($group->showLegend) :?>
 			<h3 class="legend">
 				<span><?php echo $group->title;?></span>
 			</h3>

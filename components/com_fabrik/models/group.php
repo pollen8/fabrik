@@ -1058,6 +1058,7 @@ class FabrikFEModelGroup extends FabModel
 		$group->outro = JText::_($params->get('outro'));
 		$group->columns = $params->get('group_columns', 1);
 		$group->splitPage = $params->get('split_page', 0);
+		$group->showLegend = $this->showLegend($group);
 
 		if ($this->canRepeat())
 		{
@@ -1376,5 +1377,27 @@ class FabrikFEModelGroup extends FabModel
 		}
 
 		return $repeatGroup;
+	}
+
+	/**
+	 * Should the group legend be shown
+	 *
+	 * @param   object  $group  Group properties
+	 *
+	 * @return boolean
+	 */
+	private function showLegend($group)
+	{
+		$allHidden = true;
+
+		foreach ($this->elements as $elementModel)
+		{
+			$allHidden &= $elementModel->isHidden();
+		}
+		if ((!$allHidden || !empty($group->intro)) && trim($group->title) !== '') {
+			return true;
+		}
+
+		return false;
 	}
 }

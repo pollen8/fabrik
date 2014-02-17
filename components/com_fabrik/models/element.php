@@ -1457,7 +1457,7 @@ class PlgFabrik_Element extends FabrikPlugin
 	 * @return  bool
 	 */
 
-	protected function isHidden()
+	public function isHidden()
 	{
 		$element = $this->getElement();
 

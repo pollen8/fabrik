@@ -26,8 +26,8 @@ foreach ($this->elements as $element) :
 
 	if ($element->startRow) : ?>
 		<div class="row-fluid">
-		$rowStarted = true;
 	<?php
+		$rowStarted = true;
 	endif;
 	$style = $element->hidden ? 'style="display:none"' : '';
 	$span = $element->hidden ? '' : ' ' . $element->span;
@@ -55,8 +55,9 @@ foreach ($this->elements as $element) :
 	?></div><!-- end control-group --><?php
 	if ($element->endRow) :?>
 		</div><!-- end row-fluid -->
+	<?php
 		$rowStarted = false;
-	<?php endif;
+	endif;
 endforeach;
 
 // If the last element was not closing the row add an additional div

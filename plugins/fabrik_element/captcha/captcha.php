@@ -94,7 +94,7 @@ class PlgFabrik_ElementCaptcha extends PlgFabrik_Element
 	 * @return  bool
 	 */
 
-	protected function isHidden()
+	public function isHidden()
 	{
 		$user = JFactory::getUser();
 		$params = $this->getParams();

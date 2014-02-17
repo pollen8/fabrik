@@ -55,8 +55,9 @@ foreach ($this->elements as $element) :
 	}
 	if ($element->endRow) :?>
 		</div><!-- end row-fluid -->
+	<?php
 		$rowStarted = false;
-	<?php endif;
+	endif;
 endforeach;
 // If the last element was not closing the row add an additional div
 if ($rowStarted === true) :?>
