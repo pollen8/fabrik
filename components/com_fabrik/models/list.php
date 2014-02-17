@@ -1813,6 +1813,8 @@ class FabrikFEModelList extends JModelForm
 		// Ensure that the faceted list's "require filters" option is set to false
 		$fparams->set('require-filter', false);
 
+		$fparams->set('ignore_prefilter_msg', true);
+
 		// Ignore faceted lists session filters
 		$origIncSesssionFilters = $input->get('fabrik_incsessionfilters', true);
 		$input->set('fabrik_incsessionfilters', false);
@@ -5361,7 +5363,10 @@ class FabrikFEModelList extends JModelForm
 					$elementModel = JArrayHelper::getValue($elements, FabrikString::safeColName($tmpfilter), false);
 				}
 
-				if ($elementModel === false && $condition !== 'exists')
+				// List related data links - if prefilter set on main list menu item, we wont find the element in the related list, so don't raise error
+				$ignore = $params->get('ignore_prefilter_msg', false);
+
+				if ($elementModel === false && $condition !== 'exists' && $ignore === false)
 				{
 					// Include the JLog class.
 					jimport('joomla.log.log');
