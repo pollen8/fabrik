@@ -79,6 +79,8 @@ $view = clone ($controller->getView($viewName, $viewType));
 $model = $controller->getModel($viewName, 'FabrikFEModel');
 $model->setId($listId);
 $model->setRenderContext($module->id);
+$listParams = $model->getParams();
+$listParams->set('show-table-picker', false);
 
 if ($limit !== 0)
 {
@@ -93,7 +95,6 @@ if ($useajax !== '')
 
 if ($params->get('ajax_links') !== '')
 {
-	$listParams = $model->getParams();
 	$listParams->set('list_ajax_links', $params->get('ajax_links'));
 }
 
