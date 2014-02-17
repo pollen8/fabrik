@@ -930,6 +930,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 	protected function getAllowedPHPDates()
 	{
 		$params = $this->getParams();
+		$data = $this->getFormModel()->data;
 		$php = $params->get('date_allow_php_func', '');
 		$dates = array();
 
@@ -1356,6 +1357,20 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 		}
 
 		return false;
+	}
+
+	/**
+	 * Get a value to use as an empty filter value
+	 *
+	 * @return  string
+	 */
+
+	public function emptyFilterValue()
+	{
+		$listModel = $this->getListModel();
+		$db = $listModel->getDb();
+
+		return $db->quote($db->getNullDate());
 	}
 
 	/**

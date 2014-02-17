@@ -722,7 +722,7 @@ class PlgFabrik_Element extends FabrikPlugin
 	 *
 	 * @param   array  &$aFields    array of element names
 	 * @param   array  &$aAsFields  array of 'name AS alias' fields
-	 * @param   array  $opts        options : alias - replace the fullelement name in asfields "name AS tablename___elementnamee"
+	 * @param   array  $opts        options : alias - replace the fullelement name in asfields "name AS tablename___elementname"
 	 *
 	 * @return  void
 	 */
@@ -816,6 +816,7 @@ class PlgFabrik_Element extends FabrikPlugin
 				$aAsFields[] = $fullElName;
 			}
 		}
+		//echo "<pre>as fields = ";print_r($aAsFields);echo "</pre>";
 	}
 
 	/**
@@ -5697,6 +5698,17 @@ class PlgFabrik_Element extends FabrikPlugin
 
 	public function onDeleteRows($groups)
 	{
+	}
+
+	/**
+	 * Get a value to use as an empty filter value
+	 *
+	 * @return  string
+	 */
+
+	public function emptyFilterValue()
+	{
+		return '';
 	}
 
 	/**

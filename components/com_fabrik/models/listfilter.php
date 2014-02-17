@@ -1272,6 +1272,7 @@ class FabrikFEModelListfilter extends FabModel
 					continue;
 				}
 
+				$origCondition = $condition;
 				$filters['orig_condition'][] = $condition;
 
 				if ($condition === 'EMPTY')
@@ -1285,6 +1286,12 @@ class FabrikFEModelListfilter extends FabModel
 				if (!is_a($elementModel, 'PlgFabrik_Element'))
 				{
 					continue;
+				}
+
+				// Date element's have specific empty values
+				if ($origCondition === 'EMPTY')
+				{
+					$value = $elementModel->emptyFilterValue();
 				}
 
 				// If the request key is already in the filter array - unset it
