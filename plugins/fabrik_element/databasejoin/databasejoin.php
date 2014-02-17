@@ -156,7 +156,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 			* $$$ hugh - if keytable isn't set, the safeColName blows up!
 			* Trying to debug issue with linked join elements, which don't get detected by
 			* getJoins or getJoin 'cos element ID doesn't match element_id in fabrik_joins
-			*$k = isset($join->keytable ) ? $join->keytable : $join->join_from_table;
+			*$k = isset($join->keytable) ? $join->keytable : $join->join_from_table;
 			*$k = FabrikString::safeColName("`$join->keytable`.`$element->name`");
 			*/
 			$keytable = isset($join->keytable) ? $join->keytable : $join->join_from_table;

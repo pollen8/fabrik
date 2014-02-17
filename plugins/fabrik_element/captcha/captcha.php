@@ -273,7 +273,7 @@ class PlgFabrik_ElementCaptcha extends PlgFabrik_Element
 
 			$str[] = '<div class="captcha_input">';
 
-			$type = ($params->get('password') == "1") ? "password" : "text";
+			$type = $params->get('password') == '1' ? "password" : "text";
 
 			if ($this->elementError != '')
 			{
