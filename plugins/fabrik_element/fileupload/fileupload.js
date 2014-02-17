@@ -24,12 +24,12 @@ var FbFileUpload = new Class({
 				this.startbutton.addClass('plupload_disabled');
 				this.options.files.each(function (file) {
 					var response = {
-						'filepath' : file.path,
-						uri : file.url
+						'filepath': file.path,
+						uri: file.url
 					};
 					this.uploader.trigger('UploadProgress', file);
 					this.uploader.trigger('FileUploaded', file, {
-						response : JSON.encode(response)
+						response: JSON.encode(response)
 					});
 					document.id(file.id).getElement('.plupload_file_status  .bar').setStyle('width', '100%').addClass('bar-success');
 					//document.id(file.id).getElement('.plupload_file_size').set('text', file.size);
@@ -774,6 +774,7 @@ var ImageWidget = new Class({
 	 */
 
 	setImage: function (uri, filepath, params) {
+		console.log('set Image', uri, filepath, params);
 		this.activeFilePath = filepath;
 		if (!this.images.has(filepath)) {
 			
@@ -914,23 +915,23 @@ var ImageWidget = new Class({
 					this.setDims(x, y, w, h);
 				},
 
-				onMousedown : function (x, y) {
+				onMousedown: function (x, y) {
 					parent.CANVAS.setDrag(this);
 					this.offset = [ x - this.dims[0], y - this.dims[1] ];
 					this.dragging = true;
 				},
 
-				onMouseup : function () {
+				onMouseup: function () {
 					parent.CANVAS.clearDrag();
 					this.dragging = false;
 				},
 
-				onMouseover : function () {
+				onMouseover: function () {
 					parent.overImg = true;
 					document.body.style.cursor = "move";
 				},
 
-				onMouseout : function () {
+				onMouseout: function () {
 					parent.overImg = false;
 					if (!parent.overCrop) {
 						document.body.style.cursor = "default";
