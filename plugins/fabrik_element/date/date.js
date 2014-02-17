@@ -45,13 +45,17 @@ var FbDateTime = new Class({
 		this.buttonBgSelected = '#88dd33';
 		this.startElement = element;
 		this.setUpDone = false;
-		
-		// Convert allowed date strings into Date objects
+		this.convertAllowedDates();
+		this.setUp();
+	},
+	
+	/**
+	 * Convert allowed date strings into Date objects
+	 */
+	convertAllowedDates: function () {
 		for (var i = 0; i < this.options.allowedDates.length; i ++) {
 			this.options.allowedDates[i] = new Date(this.options.allowedDates[i]);
 		}
-		
-		this.setUp();
 	},
 
 	setUp: function () {
@@ -143,7 +147,8 @@ var FbDateTime = new Class({
 					'data': data,
 					onSuccess: function (json) {
 						this.options.allowedDates = json;
-					}
+						this.convertAllowedDates();
+					}.bind(this)
 				}).send();
 			}.bind(this));
 		}
@@ -169,10 +174,14 @@ var FbDateTime = new Class({
 		// Check PHP events.
 		var allowed = this.options.allowedDates;
 		if (allowed.length > 0) {
+			var matched = false;
 			for (var i = 0; i < allowed.length; i ++) {
-				if (allowed[i].format('%Y%m%d') !== date.format('%Y%m%d')) {
-					return true;
+				if (allowed[i].format('%Y%m%d') === date.format('%Y%m%d')) {
+					matched = true;
 				}
+			}
+			if (!matched) {
+				return true;
 			}
 		}
 		
