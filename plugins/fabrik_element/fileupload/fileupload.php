@@ -255,6 +255,13 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		$formData = $this->getFormModel()->data;
 		$imgParams = JArrayHelper::getValue($formData, $paramsKey);
 
+		// Above paramsKey stuff looks really wonky - lets test if null and use something which seems to build the correct key
+		if (is_null($imgParams))
+		{
+			$paramsKey = $this->getFullName(true, false) . '___params';
+			$imgParams = JArrayHelper::getValue($formData, $paramsKey);
+		}
+
 		$value = $this->getValue(array(), $repeatCounter);
 		$value = is_array($value) ? $value : FabrikWorker::JSONtoData($value, true);
 		$value = $this->checkForSingleCropValue($value);
