@@ -204,6 +204,7 @@ var ListFieldsElement = new Class({
 		var list = this.el.getParent().getElement('select');
 		var v = list.get('value');
 		if (this.options.addBrackets) {
+			v = v.replace(/\./, '___');
 			v = '{' + v + '}';
 		}
 		this.insertTextAtCaret(this.el, v);
