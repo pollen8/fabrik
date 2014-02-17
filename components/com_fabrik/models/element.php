@@ -2327,13 +2327,13 @@ class PlgFabrik_Element extends FabrikPlugin
 					{
 						foreach ($joindata as $k2 => $val2)
 						{
-							$repData[$k2] = JArrayHelper::getValue($val2, $repeatCounter);
+							$repData[$k2] = rawurlencode(JArrayHelper::getValue($val2, $repeatCounter));
 						}
 					}
 				}
 				else
 				{
-					$repData[$k] = $val;
+					$repData[$k] = rawurlencode($val);
 				}
 			}
 			$customLink = $w->parseMessageForPlaceHolder($customLink, $repData);
