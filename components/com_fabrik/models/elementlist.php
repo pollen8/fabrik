@@ -63,7 +63,7 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 	 * in the form/detail views
 	 *
 	 * @param   array  $data           Form data
-	 * @param   int    $repeatCounter  When repeating joinded groups we need to know what part of the array to access
+	 * @param   int    $repeatCounter  When repeating joined groups we need to know what part of the array to access
 	 * @param   array  $opts           Options
 	 *
 	 * @return  string	Text to add to the browser's title
@@ -109,7 +109,7 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 	}
 
 	/**
-	 * Does the element conside the data to be empty
+	 * Does the element consider the data to be empty
 	 * Used in isempty validation rule
 	 *
 	 * @param   array  $data           Data to test against
@@ -193,7 +193,7 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 	 * Can be overwritten in plugin - e.g. see checkbox element which checks for partial matches
 	 *
 	 * @param   string  $key            Element name in format `tablename`.`elementname`
-	 * @param   string  $condition      =/like etc
+	 * @param   string  $condition      =/like etc.
 	 * @param   string  $value          Search string - already quoted if specified in filter array options
 	 * @param   string  $originalValue  Original filter value without quotes or %'s applied
 	 * @param   string  $type           Filter type advanced/normal/prefilter/search/querystring/searchall
@@ -265,7 +265,7 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 			$originalValue = trim($value, "'");
 
 			/*
-			 * JSON stored values will back slash "/". So wwe need to add "\\\\"
+			 * JSON stored values will back slash "/". So we need to add "\\\\"
 			* before it to escape it for the query.
 			*/
 			$originalValue = str_replace("/", "\\\\/", $originalValue);
@@ -501,7 +501,7 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 
 	/**
 	 * Used by radio and dropdown elements to get a dropdown list of their unique
-	 * unique values OR all options - basedon filter_build_method
+	 * unique values OR all options - based on filter_build_method
 	 *
 	 * @param   bool    $normal     Do we render as a normal filter or as an advanced search filter
 	 * @param   string  $tableName  Table name to use - defaults to element's current table
@@ -738,7 +738,7 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 	/**
 	 * Draws the html form element
 	 *
-	 * @param   array  $data           To preopulate element with
+	 * @param   array  $data           To pre-populate element with
 	 * @param   int    $repeatCounter  Repeat group counter
 	 *
 	 * @return  string	Elements html
@@ -903,7 +903,7 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 	 * Determines the value for the element in the form view
 	 *
 	 * @param   array  $data           Form data
-	 * @param   int    $repeatCounter  When repeating joinded groups we need to know what part of the array to access
+	 * @param   int    $repeatCounter  When repeating joined groups we need to know what part of the array to access
 	 * @param   array  $opts           Options
 	 *
 	 * @return  string	value
@@ -912,6 +912,7 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 	public function getValue($data, $repeatCounter = 0, $opts = array())
 	{
 		$data = (array) $data;
+
 		if (!isset($this->defaults))
 		{
 			$this->defaults = array();
@@ -936,6 +937,7 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 
 			// $name could already be in _raw format - so get inverse name e.g. with or without raw
 			$rawname = JString::substr($name, -4) === '_raw' ? JString::substr($name, 0, -4) : $name . '_raw';
+
 			if ($groupModel->isJoin() || $this->isJoin())
 			{
 				$nameKey = 'join.' . $joinid . '.' . $name;
@@ -943,10 +945,12 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 				if ($groupModel->canRepeat())
 				{
 					$v = FArrayHelper::getNestedValue($data, $nameKey . '.' . $repeatCounter, null);
+
 					if (is_null($v))
 					{
 						$v = FArrayHelper::getNestedValue($data, $rawNameKey . '.' . $repeatCounter, null);
 					}
+
 					if (!is_null($v))
 					{
 						$value = $v;
@@ -955,14 +959,17 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 				else
 				{
 					$v = FArrayHelper::getNestedValue($data, $nameKey, null);
+
 					if (is_null($v))
 					{
 						$v = FArrayHelper::getNestedValue($data, $rawNameKey, null);
 					}
+
 					if (!is_null($v))
 					{
 						$value = $v;
 					}
+
 					if (is_array($value) && (array_key_exists(0, $value) && is_array($value[0])))
 					{
 						// Fix for http://fabrikar.com/forums/showthread.php?t=23568&page=2
@@ -1001,11 +1008,13 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 					}
 				}
 			}
+
 			if ($value === '')
 			{
 				// Query string for joined data
 				$value = JArrayHelper::getValue($data, $name);
 			}
+
 			/**
 			 * $$$ hugh -- added this so we are consistent in what we return, otherwise uninitialized values,
 			 * i.e. if you've added a checkbox element to a form with existing data, don't get set, and causes
@@ -1021,6 +1030,7 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 			{
 				$value = $value['value'];
 			}
+
 			$element->default = $value;
 			$formModel = $this->getForm();
 
@@ -1029,6 +1039,7 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 			{
 				FabrikWorker::getPluginManager()->runPlugins('onGetElementDefault', $formModel, 'form', $this);
 			}
+
 			if (is_string($element->default))
 			{
 				// $$$ rob changed to false below as when saving encrypted data a stored valued of 62
@@ -1037,6 +1048,7 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 			}
 			$this->defaults[$valueKey] = $element->default;
 		}
+
 		return $this->defaults[$valueKey];
 	}
 
@@ -1052,7 +1064,7 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 	}
 
 	/**
-	 * format the read only output for the page
+	 * Format the read only output for the page
 	 *
 	 * @param   string  $value  initial value
 	 * @param   string  $label  label
@@ -1118,7 +1130,7 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 				$opts->sub_values = $values;
 				$opts->sub_labels = $labels;
 
-				// $$$ rob dont json_encode this - the params object has its own toString() magic method
+				// $$$ rob don't json_encode this - the params object has its own toString() magic method
 				$element->params = (string) $params;
 				$element->store();
 			}
