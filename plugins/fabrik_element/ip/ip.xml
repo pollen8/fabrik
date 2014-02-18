@@ -13,6 +13,8 @@
 	<files>
 		<filename plugin="ip">ip.php</filename>
 		<filename>index.html</filename>
+		<filename>ip.js</filename>
+		<filename>ip-min.js</filename>
 		<folder>forms</folder>
 		<folder>language</folder>
 	</files>
