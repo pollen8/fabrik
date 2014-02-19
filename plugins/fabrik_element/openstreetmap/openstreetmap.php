@@ -275,7 +275,7 @@ class plgFabrik_ElementOpenstreetmap extends plgFabrik_Element
 		$ua = new MobileUserAgent();
 		$id = $this->getHTMLId($repeatCounter);
 		$name = $this->getHTMLName($repeatCounter);
-		$groupModel = $this->_group;
+		$groupModel = $this->group;
 		$element = $this->getElement();
 		$val = $element->default;
 
@@ -376,7 +376,7 @@ class plgFabrik_ElementOpenstreetmap extends plgFabrik_Element
 		if (!array_key_exists($repeatCounter, $this->defaults))
 		{
 			$name = $this->getHTMLName($repeatCounter);
-			$groupModel = $this->_group;
+			$groupModel = $this->group;
 			$formModel = $this->_form;
 			$element = $this->getElement();
 			$listModel = $this->getlistModel();

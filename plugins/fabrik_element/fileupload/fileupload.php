@@ -43,7 +43,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 	 *
 	 * @var bool
 	 */
-	protected $_is_upload = true;
+	protected $is_upload = true;
 
 	/**
 	 * Does the element store its data in a join table (1:n)
@@ -849,7 +849,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		$params = $this->getParams();
 		$groupModel = $this->getGroupModel();
 		$group = $groupModel->getGroup();
-		$this->_validationErr = '';
+		$this->validationErr = '';
 		$errors = array();
 		$elName = $this->getFullName();
 
@@ -939,7 +939,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 			}
 		}
 
-		$this->_validationErr = implode('<br />', $errors);
+		$this->validationErr = implode('<br />', $errors);
 
 		return $ok;
 	}
@@ -2367,7 +2367,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 
 		if (!$this->validate())
 		{
-			$o->error = $this->_validationErr;
+			$o->error = $this->validationErr;
 			echo json_encode($o);
 
 			return;

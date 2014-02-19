@@ -2333,7 +2333,14 @@ class PlgFabrik_Element extends FabrikPlugin
 				}
 				else
 				{
-					$repData[$k] = rawurlencode($val);
+					if (is_string($val))
+					{
+						$repData[$k] = rawurlencode($val);
+					}
+					else
+					{
+						$repData[$k] = $val;
+					}
 				}
 			}
 			$customLink = $w->parseMessageForPlaceHolder($customLink, $repData);
@@ -5705,7 +5712,7 @@ FROM (SELECT " . $distinct . " $item->db_primary_key, $name AS value, $label FRO
 		}
 		if ($table->db_primary_key == $elFullName)
 		{
-			$listModel->temp_db_key_addded = true;
+			$listModel->_temp_db_key_addded = true;
 		}
 		return $bAddElement;
 	}
