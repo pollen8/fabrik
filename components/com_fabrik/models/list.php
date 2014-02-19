@@ -830,7 +830,7 @@ class FabrikFEModelList extends JModelForm
 	 * @return array (total records, data set)
 	 */
 
-	public static function finesseData($listId, $query, $start, $length, $outPutFormat)
+	public static function finesseData($listId, $query, $start, $length, $outputFormat)
 	{
 		$profiler = JProfiler::getInstance('Application');
 		$traceModel = ini_get('mysql.trace_mode');

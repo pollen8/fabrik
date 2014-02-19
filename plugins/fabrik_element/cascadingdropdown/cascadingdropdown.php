@@ -862,7 +862,7 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 
 					foreach ($elementModels as $elementModel)
 					{
-						$element = $elementModel->_element;
+						$element = $elementModel->element;
 
 						if ($element->name == $val)
 						{

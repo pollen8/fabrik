@@ -328,7 +328,7 @@ class plgFabrik_ElementOpenstreetmap extends plgFabrik_Element
 		$dbtable = $this->actualTableName();
 		$listModel = $this->getlistModel();
 		$table = &$listModel->getTable();
-		$fullElName = JArrayHelper::getValue($opts, 'alias', "$dbtable" . "___" . $this->_element->name);
+		$fullElName = JArrayHelper::getValue($opts, 'alias', "$dbtable" . "___" . $this->element->name);
 		$str = FabrikString::safeColName($fullElName) . " AS " . $db->quoteName($fullElName);
 		if ($table->db_primary_key == $fullElName)
 		{
@@ -339,7 +339,7 @@ class plgFabrik_ElementOpenstreetmap extends plgFabrik_Element
 		{
 			$aFields[] = $str;
 			$aAsFields[] = $fullElName;
-			$aFields[] = $db->quoteName($dbtable) . '.' . $db->quoteName($this->_element->name) . ' AS ' . $db->quoteName($fullElName . '_raw');
+			$aFields[] = $db->quoteName($dbtable) . '.' . $db->quoteName($this->element->name) . ' AS ' . $db->quoteName($fullElName . '_raw');
 			$aAsFields[] = $db->quoteName($fullElName . '_raw');
 		}
 	}
