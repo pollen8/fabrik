@@ -4,12 +4,12 @@
  *
  * @package     Joomla
  * @subpackage  Fabrik
- * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
- * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @copyright   Copyright (C) 2005-2013 fabrikar.com - All rights reserved.
+ * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
-// Check to ensure this file is included in Joomla!
-defined('_JEXEC') or die();
+// No direct access
+defined('_JEXEC') or die('Restricted access');
 
 jimport('joomla.application.component.controller');
 
@@ -22,9 +22,8 @@ jimport('joomla.application.component.controller');
  * @since       1.5
  */
 
-class FabrikControllerList extends JController
+class FabrikControllerList extends JControllerLegacy
 {
-
 	/**
 	 * Id used from content plugin when caching turned on to ensure correct element rendered
 	 *
@@ -50,6 +49,7 @@ class FabrikControllerList extends JController
 		$modelName = $viewName;
 		$layout = $input->getWord('layout', 'default');
 		$viewType = $document->getType();
+
 		if ($viewType == 'pdf')
 		{
 			// In PDF view only shown the main component content.
@@ -64,10 +64,9 @@ class FabrikControllerList extends JController
 		{
 			$model = $this->getModel($modelName, 'FabrikFEModel');
 		}
-		if (!JError::isError($model) && is_object($model))
-		{
-			$view->setModel($model, true);
-		}
+
+		$view->setModel($model, true);
+
 		// Display the view
 		$view->error = $this->getError();
 
@@ -87,7 +86,7 @@ class FabrikControllerList extends JController
 		{
 			// Build unique cache id on url, post and user id
 			$user = JFactory::getUser();
-			$uri = JFactory::getURI();
+			$uri = JURI::getInstance();
 			$uri = $uri->toString(array('path', 'query'));
 			$cacheid = serialize(array($uri, $input->post, $user->get('id'), get_class($view), 'display', $this->cacheId));
 			$cache = JFactory::getCache('com_fabrik', 'view');
@@ -135,7 +134,7 @@ class FabrikControllerList extends JController
 
 		/**
 		 * $$$ rob 07/02/2012 if reset filters set in the menu options then filters not cleared
-		 * so instead use replacefilters which doesnt look at the menu item parameters.
+		 * so instead use replacefilters which doesn't look at the menu item parameters.
 		 */
 		$app->input->set('replacefilters', 1);
 		$this->filter();
@@ -183,6 +182,7 @@ class FabrikControllerList extends JController
 
 		$model->setId($listid);
 		$oldtotal = $model->getTotalRecords();
+
 		try
 		{
 			$ok = $model->deleteRows($ids);
@@ -205,17 +205,21 @@ class FabrikControllerList extends JController
 		{
 			$ref = $input->server->get('HTTP_REFERER', 'index.php?option=com_' . $package . '&view=list&listid=' . $listid, '', 'string');
 		}
+
 		if ($total >= $limitstart)
 		{
 			$newlimitstart = $limitstart - $length;
+
 			if ($newlimitstart < 0)
 			{
 				$newlimitstart = 0;
 			}
+
 			$ref = str_replace('limitstart' . $listid . '=  . $limitstart', 'limitstart' . $listid . '=' . $newlimitstart, $ref);
 			$context = 'com_' . $package . '.list.' . $model->getRenderContext() . '.';
 			$app->setUserState($context . 'limitstart', $newlimitstart);
 		}
+
 		if ($input->get('format') == 'raw')
 		{
 			$input->set('view', 'list');
@@ -224,7 +228,8 @@ class FabrikControllerList extends JController
 		else
 		{
 			// @TODO: test this
-			$app->redirect($ref, $msg, $msgType);
+			$app->enqueueMessage($msg, $msgType);
+			$app->redirect($ref);
 		}
 	}
 
@@ -267,6 +272,7 @@ class FabrikControllerList extends JController
 		if ($input->getInt('id') == $model->get('id') || $input->get('origid', '') == '')
 		{
 			$msgs = $model->processPlugin();
+
 			if ($input->get('format') == 'raw')
 			{
 				$input->set('view', 'list');
@@ -286,6 +292,7 @@ class FabrikControllerList extends JController
 		// 3.0 use redirect rather than calling view() as that gave an sql error (joins seemed not to be loaded for the list)
 		$format = $input->get('format', 'html');
 		$defaultRef = 'index.php?option=com_' . $package . '&view=list&listid=' . $model->getId() . '&format=' . $format;
+
 		if ($format !== 'raw')
 		{
 			$ref = $input->post->get('fabrik_referrer', $defaultRef, 'string');
@@ -300,6 +307,7 @@ class FabrikControllerList extends JController
 		{
 			$ref = $defaultRef;
 		}
+
 		$app->redirect($ref);
 	}
 
@@ -318,5 +326,4 @@ class FabrikControllerList extends JController
 		$model->setId($id);
 		echo $model->getAdvancedElementFilter();
 	}
-
 }

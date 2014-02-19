@@ -22,9 +22,8 @@ jimport('joomla.application.component.controller');
  * @since       1.5
  */
 
-class FabrikControllerForm extends JController
+class FabrikControllerForm extends JControllerLegacy
 {
-
 	/**
 	 * Is the view rendered from the J content plugin
 	 *
@@ -100,6 +99,7 @@ class FabrikControllerForm extends JController
 		$document = JFactory::getDocument();
 		$viewName = $input->get('view', 'form');
 		$modelName = $viewName;
+
 		if ($viewName == 'emailform')
 		{
 			$modelName = 'form';
@@ -115,12 +115,7 @@ class FabrikControllerForm extends JController
 		$model->isMambot = $this->isMambot;
 		$model->packageId = $app->input->getInt('packageId');
 
-		// Test for failed validation then page refresh
-		$model->getErrors();
-		if (!JError::isError($model) && is_object($model))
-		{
-			$view->setModel($model, true);
-		}
+		$view->setModel($model, true);
 		$view->isMambot = $this->isMambot;
 
 		// Get data as it will be needed for ACL when testing if current row is editable.
@@ -131,6 +126,7 @@ class FabrikControllerForm extends JController
 		{
 			$app = JFactory::getApplication();
 			$input = $app->input;
+
 			if ($app->isAdmin())
 			{
 				$url = 'index.php?option=com_fabrik&task=details.view&formid=' . $input->getInt('formid') . '&rowid=' . $input->get('rowid', '', 'string');
@@ -139,8 +135,10 @@ class FabrikControllerForm extends JController
 			{
 				$url = 'index.php?option=com_' . $package . '&view=details&formid=' . $input->getInt('formid') . '&rowid=' . $input->get('rowid', '', 'string');
 			}
+
 			$msg = $model->aclMessage();
 			$this->setRedirect(JRoute::_($url), $msg, 'notice');
+
 			return;
 		}
 		// Display the view
@@ -161,7 +159,7 @@ class FabrikControllerForm extends JController
 		}
 		else
 		{
-			$uri = JFactory::getURI();
+			$uri = JURI::getInstance();
 			$uri = $uri->toString(array('path', 'query'));
 			$cacheid = serialize(array($uri, $input->post, $user->get('id'), get_class($view), 'display', $this->cacheId));
 			$cache = JFactory::getCache('com_' . $package, 'view');
@@ -176,11 +174,13 @@ class FabrikControllerForm extends JController
 			$replacement = '<input type="hidden" name="' . $token . '" value="1" />';
 			echo preg_replace($search, $replacement, $contents);
 		}
+
 		return $this;
 	}
 
 	/**
 	 * Process the form
+	 * Inline edit save routed here (not in raw)
 	 *
 	 * @return  null
 	 */
@@ -190,18 +190,20 @@ class FabrikControllerForm extends JController
 		$app = JFactory::getApplication();
 		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$input = $app->input;
+
 		if ($input->get('format', '') == 'raw')
 		{
 			error_reporting(error_reporting() ^ (E_WARNING | E_NOTICE));
 		}
-		$model = $this->getModel('form', 'FabrikFEModel');
+
 		$viewName = $input->get('view', 'form');
 		$view = $this->getView($viewName, JFactory::getDocument()->getType());
 
-		if (!JError::isError($model))
+		if ($model = $this->getModel('form', 'FabrikFEModel'))
 		{
 			$view->setModel($model, true);
 		}
+
 		$model->setId($input->getInt('formid', 0));
 		$model->packageId = $input->getInt('packageId');
 		$this->isMambot = $input->get('isMambot', 0);
@@ -316,6 +318,7 @@ class FabrikControllerForm extends JController
 		{
 			FabrikWorker::getPluginManager()->runPlugins('onError', $model);
 			$view->display();
+
 			return;
 		}
 
@@ -331,6 +334,7 @@ class FabrikControllerForm extends JController
 			// $$$ hugh - adding some options for what to do with redirect when in content plugin
 			// Should probably do this elsewhere, but for now ...
 			$redirect_opts = array('msg' => $msg, 'url' => $url, 'baseRedirect' => $this->baseRedirect, 'rowid' => $input->get('rowid', '', 'string'));
+
 			if (!$this->baseRedirect && $this->isMambot)
 			{
 				$session = JFactory::getSession();
@@ -402,6 +406,7 @@ class FabrikControllerForm extends JController
 	{
 		$res = $model->getRedirectURL($incSession, $this->isMambot);
 		$this->baseRedirect = $res['baseRedirect'];
+
 		return $res['url'];
 	}
 
@@ -504,18 +509,22 @@ class FabrikControllerForm extends JController
 		$total = $oldtotal - count($ids);
 
 		$ref = $input->get('fabrik_referrer', 'index.php?option=com_' . $package . '&view=list&listid=' . $listid, 'string');
+
 		if ($total >= $limitstart)
 		{
 			$newlimitstart = $limitstart - $length;
+
 			if ($newlimitstart < 0)
 			{
 				$newlimitstart = 0;
 			}
+
 			$ref = str_replace("limitstart$listid=$limitstart", "limitstart$listid=$newlimitstart", $ref);
 			$app = JFactory::getApplication();
 			$context = 'com_' . $package . '.list.' . $model->getRenderContext() . '.';
 			$app->setUserState($context . 'limitstart', $newlimitstart);
 		}
+
 		if ($input->get('format') == 'raw')
 		{
 			JRequest::setVar('view', 'list');

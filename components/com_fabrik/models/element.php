@@ -5705,7 +5705,7 @@ FROM (SELECT " . $distinct . " $item->db_primary_key, $name AS value, $label FRO
 		}
 		if ($table->db_primary_key == $elFullName)
 		{
-			$listModel->_temp_db_key_addded = true;
+			$listModel->temp_db_key_addded = true;
 		}
 		return $bAddElement;
 	}

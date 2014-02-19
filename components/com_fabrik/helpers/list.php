@@ -4,12 +4,12 @@
  *
  * @package     Joomla
  * @subpackage  Fabrik.helpers
- * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
- * @license     GNU General Public License version 2 or later; see LICENSE.txt
+ * @copyright   Copyright (C) 2005-2013 fabrikar.com - All rights reserved.
+ * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
-// Check to ensure this file is included in Joomla!
-defined('_JEXEC') or die();
+// No direct access
+defined('_JEXEC') or die('Restricted access');
 
 /**
  * List Helper class
@@ -21,7 +21,6 @@ defined('_JEXEC') or die();
 
 class FabrikHelperList
 {
-
 	/**
 	 * Get a list of elements which match a set of criteria
 	 *
@@ -36,15 +35,17 @@ class FabrikHelperList
 	public static function getElements($listModel, $filter = array())
 	{
 		$found = array();
-
 		$groups = $listModel->getFormGroupElementData();
+
 		foreach ($groups as $groupModel)
 		{
 			$elementModels = $groupModel->getMyElements();
+
 			foreach ($elementModels as $elementModel)
 			{
 				$item = $elementModel->getElement();
 				$ok = true;
+
 				foreach ($filter as $key => $val)
 				{
 					if ($item->$key != $val)
@@ -52,11 +53,11 @@ class FabrikHelperList
 						$ok = false;
 					}
 				}
+
 				if ($ok)
 				{
 					$found[] = $elementModel;
 				}
-
 			}
 		}
 
@@ -65,6 +66,7 @@ class FabrikHelperList
 			$filterNames = implode(', ', $filter);
 			throw new Exception(JText::sprintf('COM_FABRIK_ERR_NO_ELEMENTS_MATCHED_FILTER', $filterNames));
 		}
+
 		return $found;
 	}
 }

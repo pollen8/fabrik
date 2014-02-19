@@ -4,13 +4,13 @@
  *
  * @package     Joomla.Administrator
  * @subpackage  Fabrik
- * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
- * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @copyright   Copyright (C) 2005-2013 fabrikar.com - All rights reserved.
+ * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  * @since       1.6
  */
 
 // No direct access
-defined('_JEXEC') or die;
+defined('_JEXEC') or die('Restricted access');
 
 require_once 'fabcontrollerform.php';
 
@@ -50,11 +50,12 @@ class FabrikControllerList extends FabControllerForm
 	public function edit($key = null, $urlVar = null)
 	{
 		$model = $this->getModel('connections');
+
 		if (count($model->activeConnections()) == 0)
 		{
-			JError::raiseError(500, JText::_('COM_FABRIK_ENUSRE_ONE_CONNECTION_PUBLISHED'));
-			return;
+			throw new RuntimeException(JText::_('COM_FABRIK_ENUSRE_ONE_CONNECTION_PUBLISHED'));
 		}
+
 		parent::edit($key, $urlVar);
 	}
 
@@ -70,6 +71,7 @@ class FabrikControllerList extends FabControllerForm
 		$input = $app->input;
 		$cid = $input->get('cid', array(0), 'array');
 		$model = JModelLegacy::getInstance('list', 'FabrikFEModel');
+
 		if (count($cid) > 0)
 		{
 			$viewType = JFactory::getDocument()->getType();
@@ -116,6 +118,7 @@ class FabrikControllerList extends FabControllerForm
 		$input = $app->input;
 		$cid = $input->get('cid', array(0), 'array');
 		$cid = $cid[0];
+
 		if (is_null($model))
 		{
 			$cid = $input->getInt('listid', $cid);
@@ -142,10 +145,11 @@ class FabrikControllerList extends FabControllerForm
 
 		// Build unique cache id on url, post and user id
 		$user = JFactory::getUser();
-		$uri = JFactory::getURI();
+		$uri = JURI::getInstance();
 		$uri = $uri->toString(array('path', 'query'));
 		$cacheid = serialize(array($uri, $input->post, $user->get('id'), get_class($view), 'display', $this->cacheId));
 		$cache = JFactory::getCache('com_fabrik', 'view');
+
 		if (in_array($input->get('format'), array('raw', 'csv', 'pdf', 'json', 'fabrikfeed')))
 		{
 			$view->display();
@@ -298,7 +302,8 @@ class FabrikControllerList extends FabControllerForm
 		else
 		{
 			$msg = $ok ? count($ids) . ' ' . JText::_('COM_FABRIK_RECORDS_DELETED') : '';
-			$app->redirect($ref, $msg);
+			$app->enqueueMessage($msg);
+			$app->redirect($ref);
 		}
 	}
 
@@ -343,6 +348,7 @@ class FabrikControllerList extends FabControllerForm
 		if ($input->getInt('id') == $model->get('id') || $input->get('origid', '', 'string') == '')
 		{
 			$msgs = $model->processPlugin();
+
 			if ($input->get('format') == 'raw')
 			{
 				$input->set('view', 'list');
@@ -355,6 +361,7 @@ class FabrikControllerList extends FabControllerForm
 				}
 			}
 		}
+
 		$format = $input->get('fromat', 'html');
 		$ref = 'index.php?option=com_fabrik&task=list.view&listid=' . $model->getId() . '&format=' . $format;
 		$app->redirect($ref);

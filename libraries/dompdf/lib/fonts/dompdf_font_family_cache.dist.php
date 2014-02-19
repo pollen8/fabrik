@@ -112,11 +112,15 @@
   array (
     'normal' => DOMPDF_FONT_DIR . '2cbd5b0c65d7fe89c3b22bc04b95092e',
   ),
-    'arial' => 
+  'arial' => 
   array (
     'normal' => DOMPDF_FONT_DIR . 'ARIAL',
     'bold' => DOMPDF_FONT_DIR . 'ARIALbd',
     'italic' => DOMPDF_FONT_DIR . 'ARIALi',
     'bold_italic' => DOMPDF_FONT_DIR . 'ARIALbi',
+  ),
+  'titillium maps' => 
+  array (
+    'normal' => DOMPDF_FONT_DIR . 'cf03a3b5951279adeebc43754a8deee6',
   ),
 ) ?>

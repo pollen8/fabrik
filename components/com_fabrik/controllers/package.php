@@ -4,12 +4,12 @@
  *
  * @package     Joomla
  * @subpackage  Fabrik
- * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
- * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @copyright   Copyright (C) 2005-2013 fabrikar.com - All rights reserved.
+ * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
-// Check to ensure this file is included in Joomla!
-defined('_JEXEC') or die();
+// No direct access
+defined('_JEXEC') or die('Restricted access');
 
 jimport('joomla.application.component.controller');
 
@@ -20,19 +20,19 @@ jimport('joomla.application.component.controller');
  * @since    3.0
  */
 
-class FabrikControllerPackage extends JController
+class FabrikControllerPackage extends JControllerLegacy
 {
 	/**
 	 * Id used from content plugin when caching turned on to ensure correct element rendered
 	 *
 	 * @var  int
 	 */
-	var $cacheId = 0;
+	public $cacheId = 0;
 
 	/**
-	 * Display the view
+	 * Display the package view
 	 *
-	 * @param   boolean  $cachable   If true, the view output will be cached
+	 * @param   boolean  $cachable   If true, the view output will be cached - NOTE not actually used to control caching!!!
 	 * @param   array    $urlparams  An array of safe url parameters and their variable types, for valid values see {@link JFilterInput::clean()}.
 	 *
 	 * @return  JController  A JController object to support chaining.
@@ -41,8 +41,9 @@ class FabrikControllerPackage extends JController
 	public function display($cachable = false, $urlparams = false)
 	{
 		$document = JFactory::getDocument();
-
-		$viewName = JRequest::getVar('view', 'package', 'default', 'cmd');
+		$app = JFactory::getApplication();
+		$input = $app->input;
+		$viewName = $input->get('view', 'package');
 
 		$viewType = $document->getType();
 
@@ -61,15 +62,15 @@ class FabrikControllerPackage extends JController
 		$view->_formView->setModel($formModel, true);
 
 		// Push a model into the view
-		$model = $this->getModel($viewName, 'FabrikFEModel');
-		$model->setDbo(FabrikWorker::getDbo());
-
-		if (!JError::isError($model))
+		if ($model = $this->getModel($viewName, 'FabrikFEModel'))
 		{
+			$model->setDbo(FabrikWorker::getDbo());
 			$view->setModel($model, true);
 		}
 		// Display the view
-		$view->assign('error', $this->getError());
+		$view->error = $this->getError();
 		$view->display();
+
+		return $this;
 	}
 }

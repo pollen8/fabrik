@@ -4,12 +4,12 @@
  *
  * @package     Joomla
  * @subpackage  Fabrik
- * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
- * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @copyright   Copyright (C) 2005-2013 fabrikar.com - All rights reserved.
+ * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
-// Check to ensure this file is included in Joomla!
-defined('_JEXEC') or die();
+// No direct access
+defined('_JEXEC') or die('Restricted access');
 
 jimport('joomla.application.component.controller');
 
@@ -22,20 +22,20 @@ jimport('joomla.application.component.controller');
  * @since       1.5
  */
 
-class FabrikControllerEmailform extends JController
+class FabrikControllerEmailform extends JControllerLegacy
 {
-
 	/**
 	 * Display the view
 	 *
-	 * @return  null
+	 * @return   JController  A JController object to support chaining.
 	 */
 
 	public function display()
 	{
 		$document = JFactory::getDocument();
-
-		$viewName = JRequest::getVar('view', 'emailform', 'default', 'cmd');
+		$app = JFactory::getApplication();
+		$input = $app->input;
+		$viewName = $input->get('view', 'emailform');
 		$modelName = 'form';
 
 		$viewType = $document->getType();
@@ -43,17 +43,15 @@ class FabrikControllerEmailform extends JController
 		// Set the default view name from the Request
 		$view = $this->getView($viewName, $viewType);
 
-		$model = $this->getModel($modelName, 'FabrikFEModel');
-
 		// Test for failed validation then page refresh
-		$model->getErrors();
-		if (!JError::isError($model) && is_object($model))
+		if ($model = $this->getModel($modelName, 'FabrikFEModel'))
 		{
 			$view->setModel($model, true);
 		}
 		// Display the view
-		$view->assign('error', $this->getError());
+		$view->error = $this->getError();
 		$view->display();
-	}
 
+		return $this;
+	}
 }

@@ -4,12 +4,12 @@
  *
  * @package     Joomla
  * @subpackage  Fabrik
- * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
- * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @copyright   Copyright (C) 2005-2013 fabrikar.com - All rights reserved.
+ * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
-// Check to ensure this file is included in Joomla!
-defined('_JEXEC') or die();
+// No direct access
+defined('_JEXEC') or die('Restricted access');
 
 jimport('joomla.application.component.controller');
 
@@ -23,9 +23,8 @@ jimport('joomla.application.component.controller');
  * @since       3.0.7
  */
 
-class FabrikControllerCron extends JController
+class FabrikControllerCron extends JControllerLegacy
 {
-
 	/**
 	 * Id used from content plugin when caching turned on to ensure correct element rendered
 	 *
@@ -56,26 +55,41 @@ class FabrikControllerCron extends JController
 		$view = $this->getView($viewName, $viewType);
 
 		// Push a model into the view
-		$model = $this->getModel($viewName);
-		if (!JError::isError($model))
+		if ($model = $this->getModel($viewName))
 		{
 			$view->setModel($model, true);
 		}
 		// Display the view
-		$view->assign('error', $this->getError());
+		$view->error = $this->getError();
 
-		// F3 cache with raw view gives error
-		if (in_array(JRequest::getCmd('format'), array('raw', 'csv')))
+		$jinput = JFactory::getApplication()->input;
+		$task = $jinput->getCmd('task');
+
+		if (!strstr($task, '.'))
 		{
-			$view->display();
+			$task = 'display';
 		}
 		else
 		{
-			$post = JRequest::get('post');
+			$task = explode('.', $task);
+			$task = array_pop($task);
+		}
+
+		// F3 cache with raw view gives error
+		if (in_array($jinput->getCmd('format'), array('raw', 'csv')))
+		{
+			$view->$task();
+		}
+		else
+		{
+			$post = $jinput->get('post');
 
 			// Build unique cache id on url, post and user id
 			$user = JFactory::getUser();
-			$cacheid = serialize(array(JRequest::getURI(), $post, $user->get('id'), get_class($view), 'display', $this->cacheId));
+
+			$uri = JURI::getInstance();
+			$uri = $uri->toString(array('path', 'query'));
+			$cacheid = serialize(array($uri, $post, $user->get('id'), get_class($view), 'display', $this->cacheId));
 			$cache = JFactory::getCache('com_fabrik', 'view');
 			$cache->get($view, 'display', $cacheid);
 		}
@@ -91,13 +105,16 @@ class FabrikControllerCron extends JController
 	{
 		if (!isset($this->viewName))
 		{
+			$app = JFactory::getApplication();
+			$input = $app->input;
 			$item = FabTable::getInstance('Cron', 'FabrikTable');
-			$item->load(JRequest::getInt('id'));
+			$item->load($input->getInt('id'));
 			$this->viewName = $item->plugin;
 			$this->addViewPath(JPATH_SITE . '/plugins/fabrik_cron/' . $this->viewName . '/views');
 			$this->addModelPath(JPATH_SITE . '/plugins/fabrik_cron/' . $this->viewName . '/models');
-			JModel::addIncludePath(JPATH_SITE . '/plugins/fabrik_cron/' . $this->viewName . '/models');
+			JModelLegacy::addIncludePath(JPATH_SITE . '/plugins/fabrik_cron/' . $this->viewName . '/models');
 		}
+
 		return $this->viewName;
 	}
 
@@ -118,7 +135,7 @@ class FabrikControllerCron extends JController
 	{
 		$viewName = str_replace('FabrikControllerCron', '', get_class($this));
 		$viewName = $viewName == '' ? $this->getViewName() : $name;
+
 		return parent::getView($viewName, $type, $prefix, $config);
 	}
-
 }

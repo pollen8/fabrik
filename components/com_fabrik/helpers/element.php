@@ -4,12 +4,12 @@
  *
  * @package     Joomla
  * @subpackage  Fabrik.helpers
- * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
- * @license     GNU General Public License version 2 or later; see LICENSE.txt
+ * @copyright   Copyright (C) 2005-2013 fabrikar.com - All rights reserved.
+ * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
-// Check to ensure this file is included in Joomla!
-defined('_JEXEC') or die();
+// No direct access
+defined('_JEXEC') or die('Restricted access');
 
 /**
  * Element Helper class
@@ -21,7 +21,6 @@ defined('_JEXEC') or die();
 
 class FabrikHelperElement
 {
-
 	/**
 	 * For processing repeat elements we need to make its
 	 * ID element during the form process
@@ -33,7 +32,6 @@ class FabrikHelperElement
 
 	public static function makeIdElement($baseElement)
 	{
-
 		$pluginManager = FabrikWorker::getPluginManager();
 		$groupModel = $baseElement->getGroupModel();
 		$elementModel = $pluginManager->getPlugIn('internalid', 'element');
@@ -42,6 +40,7 @@ class FabrikHelperElement
 		$elementModel->getElement()->group_id = $groupModel->getId();
 		$elementModel->setGroupModel($baseElement->getGroupModel());
 		$elementModel->_joinModel = $groupModel->getJoinModel();
+
 		return $elementModel;
 	}
 
@@ -90,6 +89,55 @@ class FabrikHelperElement
 		$elementIds = (array) JArrayHelper::getValue($filters, 'elementid', array());
 		$index = array_search($elementId, $elementIds);
 		$value = $filters['value'][$index];
+
 		return $value;
+	}
+
+	/**
+	 * Is the key part of an element join's data. Used in csv import/export
+	 *
+	 * @param   FabrikFEModelForm  $model  Form model
+	 * @param   string             $key  Key - full element name or full element name with _id / ___params appended
+	 *
+	 * @return boolean
+	 */
+	public static function keyIsElementJoinInfo($model, $key)
+	{
+		$elementModel = self::findElementFromJoinKeys($model, $key);
+
+		if ($elementModel && $elementModel->isJoin())
+		{
+			return true;
+		}
+
+		return false;
+	}
+
+	/**
+	 * Find the element associated with a key.
+	 * Loose lookup to find join element from any key related to the join (e.g. _id & __params).
+	 * Used in csv import/export
+	 *
+	 * @param   FabrikFEModelForm  $model  Form model
+	 * @param   string             $key    Key - full element name or full element name with _id / ___params appended
+	 *
+	 * @return  PlgFabrik_Element|boolean
+	 */
+	public static function findElementFromJoinKeys($model, $key)
+	{
+		// Search on fullname fullname_id and fullname___params
+		$lookups = array($key, substr($key, 0, JString::strlen($key) - 3), substr($key, 0, JString::strlen($key) - 9));
+
+		foreach ($lookups as $lookup)
+		{
+			$elementModel = $model->getElement($lookup);
+
+			if ($elementModel)
+			{
+				return $elementModel;
+			}
+		}
+
+		return false;
 	}
 }

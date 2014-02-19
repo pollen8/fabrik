@@ -103,7 +103,7 @@ class FabrikControllerDetails extends JControllerLegacy
 		else
 		{
 			$user = JFactory::getUser();
-			$uri = JFactory::getURI();
+			$uri = JURI::getInstance();
 			$uri = $uri->toString(array('path', 'query'));
 			$cacheid = serialize(array($uri, $input->post, $user->get('id'), get_class($view), 'display', $this->cacheId));
 			$cache = JFactory::getCache('com_' . $package, 'view');
