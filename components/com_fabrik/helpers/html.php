@@ -1649,6 +1649,13 @@ if (!$j3)
 
 	public static function autoComplete($htmlid, $elementid, $formid, $plugin = 'field', $opts = array())
 	{
+		$input = JFactory::getApplication()->input;
+
+		if ($input->get('format') === 'raw')
+		{
+			return;
+		}
+
 		$json = self::autoCompleteOptions($htmlid, $elementid, $formid, $plugin, $opts);
 		$str = json_encode($json);
 		JText::script('COM_FABRIK_NO_RECORDS');
