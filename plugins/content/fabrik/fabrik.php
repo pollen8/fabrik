@@ -542,7 +542,7 @@ class PlgContentFabrik extends JPlugin
 				$model->isMambot = true;
 
 				// Reset this otherwise embedding a list in a list menu page, the embedded list takes the show in list fields from the menu list
-				$input->set('fabrik_show_in_list', array());
+				$input->set('fabrik_show_in_list', explode('|', $input->getString('elements')));
 				$model->ajax = 1;
 				$task = $input->get('task');
 

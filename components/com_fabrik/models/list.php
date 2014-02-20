@@ -424,6 +424,13 @@ class FabrikFEModelList extends JModelForm
 	protected $tabs = null;
 
 	/**
+	 * Filter js code
+	 *
+	 * @var string
+	 */
+	public $filterJs = null;
+
+	/**
 	 * Load form
 	 *
 	 * @param   array  $data      form data
@@ -4066,8 +4073,15 @@ class FabrikFEModelList extends JModelForm
 
 		if (!array_key_exists('add', $this->access))
 		{
+			$input = JFactory::getApplication()->input;
 			$groups = JFactory::getUser()->getAuthorisedViewLevels();
 			$this->access->add = in_array($this->getParams()->get('allow_add'), $groups);
+			$hideAdd = $input->getBool('hide-add', false);
+
+			if ($hideAdd)
+			{
+				$this->access->add = false;
+			}
 		}
 
 		return $this->access->add;
@@ -5999,6 +6013,7 @@ class FabrikFEModelList extends JModelForm
 	{
 		if (!isset($this->viewfilters))
 		{
+			$app = JFactory::getApplication();
 			$profiler = JProfiler::getInstance('Application');
 			$params = $this->getParams();
 			$this->viewfilters = array();
@@ -6006,13 +6021,20 @@ class FabrikFEModelList extends JModelForm
 			$modelFilters = $this->makeFilters($container, $type, $id, $ref);
 			JDEBUG ? $profiler->mark('fabrik makeFilters end') : null;
 
-			foreach ($modelFilters as $name => $filter)
+			if (!$app->input->get('showfilters', 1))
 			{
-				$f = new stdClass;
-				$f->label = $filter->label;
-				$f->element = $filter->filter;
-				$f->required = array_key_exists('required', $filter) ? $filter->required : '';
-				$this->viewfilters[$filter->name] = $f;
+				$this->viewfilters = array();
+			}
+			else
+			{
+				foreach ($modelFilters as $name => $filter)
+				{
+					$f = new stdClass;
+					$f->label = $filter->label;
+					$f->element = $filter->filter;
+					$f->required = array_key_exists('required', $filter) ? $filter->required : '';
+					$this->viewfilters[$filter->name] = $f;
+				}
 			}
 
 			FabrikWorker::getPluginManager()->runPlugins('onMakeFilters', $this, 'list');
@@ -6768,7 +6790,7 @@ class FabrikFEModelList extends JModelForm
 			{
 				$join = $this->facetedJoin($key);
 
-				if ($join === false)
+				if ($join === false || !isset($faceted->linkedform->$key))
 				{
 					continue;
 				}
@@ -6972,9 +6994,9 @@ class FabrikFEModelList extends JModelForm
 				$part1 = sprintf('%03d', $part1);
 				$newkey = $part1 . ':' . $part2;
 				$arr[$newkey] = $arr[$key];
-
 			}
-			unset($arr[$key]);
+
+			//unset($arr[$key]);
 		}
 
 		ksort($arr);

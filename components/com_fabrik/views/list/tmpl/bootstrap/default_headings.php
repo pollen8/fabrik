@@ -23,7 +23,7 @@ defined('_JEXEC') or die('Restricted access');
 <?php endforeach; ?>
 </tr>
 
-<?php if ($this->filterMode === 3 || $this->filterMode === 4) :?>
+<?php if (($this->filterMode === 3 || $this->filterMode === 4) && count($this->filters) <> 0) :?>
 <tr class="fabrikFilterContainer">
 	<?php foreach ($this->headings as $key => $heading) :
 		$h = $this->headingClass[$key];
