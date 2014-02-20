@@ -316,15 +316,15 @@ class PlgFabrik_ElementYesno extends PlgFabrik_ElementRadiobutton
 		$return = array();
 		$element = $this->getElement();
 		$params = $this->getParams();
-		$boostrapClass = $params->get('filter_class', '');
+		$class = $this->filterClass();
 
 		if ($element->filter_type == 'hidden')
 		{
-			$return[] = '<input type="text" name="' . $v . '" class="inputbox fabrik_filter" value="' . $default . '" id="' . $htmlid . '" />';
+			$return[] = '<input type="text" name="' . $v . '" class="' . $class . '" value="' . $default . '" id="' . $htmlid . '" />';
 		}
 		else
 		{
-			$return[] = JHTML::_('select.genericlist', $rows, $v, 'class="inputbox fabrik_filter ' . $boostrapClass . '" size="1" ', 'value', 'text', $default, $htmlid);
+			$return[] = JHTML::_('select.genericlist', $rows, $v, 'class="' . $class . '" size="1" ', 'value', 'text', $default, $htmlid);
 		}
 
 		if ($normal)

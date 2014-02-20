@@ -3225,6 +3225,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		$classes = array('inputbox fabrik_filter');
 		$bootstrapClass = $params->get('filter_class', 'input-small');
 		$classes[] = $bootstrapClass;
+		$classes[] = $params->get('filter_responsive_class', '');
 
 		return implode(' ', $classes);
 	}
@@ -4036,7 +4037,7 @@ class PlgFabrik_Element extends FabrikPlugin
 	 * @return  array  (value condition)
 	 */
 
-	protected function getRangedFilterValue($value, $condition = "")
+	protected function getRangedFilterValue($value, $condition = '')
 	{
 		$db = FabrikWorker::getDbo();
 		$element = $this->getElement();
