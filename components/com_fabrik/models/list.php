@@ -834,17 +834,11 @@ class FabrikFEModelList extends JModelForm
 
 		// Ajax call needs to recall this - not sure why
 		$this->setLimits();
-		$query = $this->buildQuery();
 		JDEBUG ? $profiler->mark('query build end') : null;
-		$cache = FabrikWorker::getCache($this);
-		$item = $this->getTable();
 
 		try
 		{
-			$results = $cache->call(
-				array(get_class($this), 'finesseData'), $this->getId(), $query,
-				$this->limitStart, $this->limitLength, $this->outputFormat
-				);
+			$this->finesseData();
 		}
 		catch (Exception $e)
 		{
@@ -852,9 +846,6 @@ class FabrikFEModelList extends JModelForm
 			throw new RuntimeException($msg, 500);
 		}
 
-		$this->totalRecords = $results[0];
-		$this->data = $results[1];
-		$this->groupTemplates = $results[2];
 		$nav = $this->getPagination($this->totalRecords, $this->limitStart, $this->limitLength);
 
 		// Pass the query as an object property so it can be updated via reference
@@ -867,79 +858,69 @@ class FabrikFEModelList extends JModelForm
 	}
 
 	/**
-	 * Cached Method to run the getData select query and do our Fabrik magikin'
+	 * Method to run the getData select query and do our Fabrik magikin'
 	 *
-	 * @param   int     $listId        List id
-	 * @param   string  $query         Sql query
-	 * @param   int     $start         Start of limit
-	 * @param   int     $length        Limit length set to -1 to produced unconstrained data
-	 * @param   string  $outputFormat  Output format csv/html/rss etc.
-	 *
-	 * @return array (total records, data set)
+	 * @return void
 	 */
 
-	public static function finesseData($listId, $query, $start, $length, $outputFormat)
+	public function finesseData()
 	{
 		$profiler = JProfiler::getInstance('Application');
 		$traceModel = ini_get('mysql.trace_mode');
-		$listModel = JModelLegacy::getInstance('List', 'FabrikFEModel');
-		$listModel->setId($listId);
-		$listModel->setOutputFormat($outputFormat);
-		$fabrikDb = $listModel->getDb();
-		$listModel->setBigSelects();
+		$fabrikDb = $this->getDb();
+		$this->setBigSelects();
+		$query = $this->buildQuery();
 
 		// $$$ rob - if merging joined data then we don't want to limit
 		// the query as we have already done so in buildQuery()
-		if ($listModel->mergeJoinedData() || $length === -1)
+		if ($this->mergeJoinedData() || $this->limitLength === -1)
 		{
 			$fabrikDb->setQuery($query);
 		}
 		else
 		{
-			$fabrikDb->setQuery($query, $start, $length);
+			$fabrikDb->setQuery($query, $this->limitStart, $this->limitLength);
 		}
 
-		FabrikHelperHTML::debug($fabrikDb->getQuery(), 'list GetData:' . $listModel->getTable()->label);
+		FabrikHelperHTML::debug($fabrikDb->getQuery(), 'list GetData:' . $this->getTable()->label);
 		JDEBUG ? $profiler->mark('before query run') : null;
 
 		/* set 2nd param to false in attempt to stop joomfish db adaptor from translating the original query
 		 * fabrik3 - 2nd param in j16 is now used - guessing that joomfish now uses the third param for the false switch?
 		* $$$ rob 26/09/2011 note Joomfish not currently released for J1.7
 		*/
-		$listModel->data = $fabrikDb->loadObjectList('', 'stdClass', false);
+		$this->data = $fabrikDb->loadObjectList('', 'stdClass', false);
 
 		// $$$ rob better way of getting total records
-		if ($listModel->mergeJoinedData())
+		if ($this->mergeJoinedData())
 		{
-			$listModel->totalRecords = $listModel->getTotalRecords();
+			$this->totalRecords = $this->getTotalRecords();
 		}
 		else
 		{
 			$fabrikDb->setQuery("SELECT FOUND_ROWS()");
-			$listModel->totalRecords = $fabrikDb->loadResult();
+			$this->totalRecords = $fabrikDb->loadResult();
 		}
 
-		if ($listModel->randomRecords)
+		if ($this->randomRecords)
 		{
-			shuffle($listModel->data);
+			shuffle($this->data);
 		}
 
 		ini_set('mysql.trace_mode', $traceModel);
 		JDEBUG ? $profiler->mark('query run and data loaded') : null;
-		$listModel->translateData($listModel->data);
+		$this->translateData($this->data);
 
 		// Add labels before preformatting - otherwise calc elements on dropdown elements show raw data for {list___element}
-		$listModel->addLabels($listModel->data);
+		$this->addLabels($this->data);
 
 		// Run calculations
-		$listModel->preFormatFormJoins($listModel->data);
+		$this->preFormatFormJoins($this->data);
 		JDEBUG ? $profiler->mark('start format for joins') : null;
-		$listModel->formatForJoins($listModel->data);
+		$this->formatForJoins($this->data);
 		JDEBUG ? $profiler->mark('start format data') : null;
-		$listModel->formatData($listModel->data);
+		$this->formatData($this->data);
 		JDEBUG ? $profiler->mark('data formatted') : null;
-
-		return array($listModel->totalRecords, $listModel->data, $listModel->groupTemplates);
 	}
 
 	/**
@@ -1424,7 +1405,7 @@ class FabrikFEModelList extends JModelForm
 				$btnClass = ($j3 && $buttonAction != 'dropdown') ? 'btn ' : '';
 				$class = $j3 ? $btnClass . 'fabrik_edit fabrik__rowlink' : 'btn fabrik__rowlink';
 				$dataList = 'list_' . $this->getRenderContext();
-				$loadMethod = $params->get('editurl', '') == '' ? 'xhr' : 'iframe';
+				$loadMethod = $this->getLoadMethod('editurl');
 				$img = FabrikHelperHTML::image('edit.png', 'list', '', array('alt' => $editLabel));
 				$editLink = '<a data-loadmethod="' . $loadMethod . '" class="' . $class . '" ' . $editAttribs
 						. 'data-list="' . $dataList . '" href="' . $edit_link . '" title="' . $editLabel . '">' . $img
@@ -1434,8 +1415,7 @@ class FabrikFEModelList extends JModelForm
 				$viewText = $buttonAction == 'dropdown' ? $viewLabel : '<span class="hidden">' . $viewLabel . '</span>';
 				$class = $j3 ? $btnClass . 'fabrik_view fabrik__rowlink' : 'btn fabrik__rowlink';
 
-				$loadMethod = $params->get('detailurl', '') == '' ? 'xhr' : 'iframe';
-
+				$loadMethod = $this->getLoadMethod('detailurl');
 				$img = FabrikHelperHTML::image('search.png', 'list', '', array('alt' => $viewLabel));
 				$viewLink = '<a data-loadmethod="' . $loadMethod . '" class="' . $class . '" ' . $detailsAttribs
 						. 'data-list="' . $dataList . '" href="' . $link . '" title="' . $viewLabel . '">' . $img
@@ -1637,6 +1617,24 @@ class FabrikFEModelList extends JModelForm
 			}
 		}
 	}
+
+	/**
+	 * CHoudl the list link load in an iframe or a xhr
+	 *
+	 * @param   string  $prop  Parameter url to check
+	 *
+	 * @since  3.1.1
+	 *
+	 * @return  string  Load menthod xhr/iframe
+	 */
+	protected function getLoadMethod($prop)
+	{
+		$params = $this->getParams();
+		$url = $params->get($prop, '');
+
+		return $url == '' || strstr($url, 'com_fabrik') ? 'xhr' : 'iframe';
+	}
+
 
 	/**
 	 * Helper method to decide if a detail link should be added to the row.
@@ -2169,7 +2167,8 @@ class FabrikFEModelList extends JModelForm
 			$class = ' fabrik_edit';
 		}
 
-		$loadMethod = $params->get('custom_link', '') == '' ? 'xhr' : 'iframe';
+
+		$loadMethod = $this->getLoadMethod('custom_link');
 		$class = 'fabrik___rowlink ' . $class;
 		$dataList = 'list_' . $this->getRenderContext();
 		$data = '<a data-loadmethod="' . $loadMethod . '" data-list="' . $dataList . '" class="' . $class . '" href="' . $link . '">' . $data
@@ -9908,7 +9907,7 @@ class FabrikFEModelList extends JModelForm
 	}
 
 	/**
-	 * Build the table's add record link
+	 * Build the list's add record link
 	 * if a querystring filter has been passed in to the table then apply this to the link
 	 * this means that table->faceted table->add will auto select the data you browsed on
 	 *
