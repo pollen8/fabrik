@@ -12,6 +12,7 @@
 	<files>
 		<filename module="mod_fabrik_list">mod_fabrik_list.php</filename>
 		<filename>listmodule.js</filename>
+		<filename>helper.php</filename>
 		<filename>index.html</filename>
 		<filename>mod_fabrik_list.xml</filename>
 		<folder>language</folder>

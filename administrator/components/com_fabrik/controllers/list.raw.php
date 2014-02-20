@@ -124,6 +124,7 @@ class FabrikAdminControllerList extends FabControllerForm
 		$cid = $input->get('cid', array(0), 'array');
 		$cid = $cid[0];
 		$cid = $input->getInt('listid', $cid);
+		$listRef = $input->getString('listref');
 
 		if (is_null($model))
 		{
@@ -132,6 +133,13 @@ class FabrikAdminControllerList extends FabControllerForm
 			// Grab the model and set its id
 			$model = JModelLegacy::getInstance('List', 'FabrikFEModel');
 			$model->setState('list.id', $cid);
+		}
+
+		if (strstr($listRef, 'mod_'))
+		{
+			$bits = explode('_', $listRef);
+			$moduleId = array_pop($bits);
+			$this->bootFromModule($moduleId, $model);
 		}
 
 		$viewType = JFactory::getDocument()->getType();
@@ -145,6 +153,31 @@ class FabrikAdminControllerList extends FabControllerForm
 		// Set the layout
 		$view->setLayout($viewLayout);
 		$view->display();
+	}
+
+	/**
+	 * Load up module prefilters etc
+	 *
+	 * @param   int           $moduleId  Module id
+	 * @param   JModelLegacy  $model     List model
+	 *
+	 * @return  void
+	 */
+	private function bootFromModule($moduleId, &$model)
+	{
+		require_once JPATH_ADMINISTRATOR  . '/modules/mod_fabrik_list/helper.php';
+		$listParams = $model->getParams();
+
+		// Load module parameters
+		$db = JFactory::getDbo();
+		$query = $db->getQuery(true);
+		$query->select('params')->from('#__modules')->where('id = ' . (int) $moduleId);
+		$db->setQuery($query);
+		$params = $db->loadResult();
+		$params = new JRegistry($params);
+
+		ModFabrikListHelper::applyParams($params, $model);
+		$model->setRenderContext($moduleId);
 	}
 
 	/**

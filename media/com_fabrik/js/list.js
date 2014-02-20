@@ -882,7 +882,8 @@ var FbList = new Class({
 				'task': 'list.view',
 				'format': 'raw',
 				'listid': this.id,
-				'group_by': this.options.groupedBy
+				'group_by': this.options.groupedBy,
+				'listref': this.options.listRef
 			};
 		var url = '';
 		data['limit' + this.id] = this.options.limitLength;

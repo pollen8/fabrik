@@ -11041,7 +11041,7 @@ class FabrikFEModelList extends JModelForm
 	 * Lists can be rendered in articles, as components and in modules
 	 * we need to set a unique reference for them to avoid conflicts
 	 *
-	 * @param   int  $id  module/component list id
+	 * @param   int  $id  Module/component list id
 	 *
 	 * @return  void
 	 */
@@ -11065,9 +11065,8 @@ class FabrikFEModelList extends JModelForm
 		}
 		else
 		{
-			$task = $input->get('task');
-
-			if ((($task == 'list.view' || $task == 'list.delete') && $input->get('format') == 'raw')
+			$task = $input->getString('task');
+			if ((($task == 'list.view' || $task == 'list.delete' || $task === 'view') && $input->get('format') == 'raw')
 				|| $input->get('layout') == '_advancedsearch' || $task === 'list.elementFilter'
 				|| $input->get('setListRefFromRequest') == 1)
 			{

@@ -1199,7 +1199,6 @@ var FbForm = new Class({
 						// Regular button pressed which seems to be triggering form.submit() method.
 						e.stop();
 					}
-					
 				}
 			}
 		}.bind(this));
@@ -1481,7 +1480,7 @@ var FbForm = new Class({
 		this.repeatGroupMarkers.set(i, this.repeatGroupMarkers.get(i) - 1);
 	},
 
-	hideLastGroup : function (groupid, subGroup) {
+	hideLastGroup: function (groupid, subGroup) {
 		var sge = subGroup.getElement('.fabrikSubGroupElements');
 		var notice = new Element('div', {'class': 'fabrikNotice alert'}).appendText(Joomla.JText._('COM_FABRIK_NO_REPEAT_GROUP_DATA'));
 		if (typeOf(sge) === 'null') {
@@ -1496,12 +1495,12 @@ var FbForm = new Class({
 		notice.inject(sge, 'after');
 	},
 
-	isFirstRepeatSubGroup : function (group) {
+	isFirstRepeatSubGroup: function (group) {
 		var subgroups = group.getElements('.fabrikSubGroup');
 		return subgroups.length === 1 && group.getElement('.fabrikNotice');
 	},
 
-	getSubGroupToClone : function (groupid) {
+	getSubGroupToClone: function (groupid) {
 		var group = document.id('group' + groupid);
 		var subgroup = group.getElement('.fabrikSubGroup');
 		if (!subgroup) {
@@ -1526,7 +1525,7 @@ var FbForm = new Class({
 		return clone;
 	},
 
-	repeatGetChecked : function (group) {
+	repeatGetChecked: function (group) {
 		// /stupid fix for radio buttons loosing their checked value
 		var tocheck = [];
 		group.getElements('.fabrikinput').each(function (i) {
@@ -1735,7 +1734,7 @@ var FbForm = new Class({
 		this.repeatGroupMarkers.set(i, this.repeatGroupMarkers.get(i) + 1);
 	},
 
-	update : function (o) {
+	update: function (o) {
 		Fabrik.fireEvent('fabrik.form.update', [this, o.data]);
 		if (this.result === false) {
 			this.result = true;
