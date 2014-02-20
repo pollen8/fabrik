@@ -41,8 +41,9 @@ defined('_JEXEC') or die('Restricted access');
 	<label>
 		<?php echo JText::_('PLG_LIST_EMAIL_MESSAGE') ?><br />
 	</label>
-	<?php $editor = JFactory::getEditor();
-	echo $editor->display('message', $this->message, '100%', '200px', 75, 10, true, 'message');?>
+	<?php
+	echo $this->editor;
+	?>
 <?php if ($this->allowAttachment)
 {?>
 	<div class="attachment">
@@ -113,6 +114,7 @@ window.addEvent('load', function() {
 <?php }?>
 <script type="text/javascript">
 window.addEvent('load', function() {
+	console.log(list_email_to)
 	if (typeOf(document.id('email_add')) !== 'null') {
 		document.id('email_add').addEvent('click', function (e) {
 			e.stop();
@@ -122,7 +124,7 @@ window.addEvent('load', function() {
 		});
 		document.id('email_remove').addEvent('click', function (e) {
 			e.stop();
-			$('list_email_to').getSelected().each(function (el) {
+			document.id('list_email_to').getSelected().each(function (el) {
 				el.inject(document.id('email_to_selectfrom'));
 			});
 		});

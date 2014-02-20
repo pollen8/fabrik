@@ -337,7 +337,7 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 		$model = $this->listModel;
 		$pk = $model->getTable()->db_primary_key;
 		$pk2 = FabrikString::safeColNameToArrayKey($pk) . '_raw';
-		$whereClause = "($pk IN (" . implode(",", $ids) . "))";
+		$whereClause = '(' . $pk . ' IN (' . implode(',', $ids) . '))';
 		$cond = $params->get('emailtable_condition');
 
 		if (trim($cond) !== '')
@@ -345,6 +345,7 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 			$whereClause .= ' AND (' . $cond . ')';
 		}
 
+		$model->setLimits(0, -1);
 		$model->setPluginQueryWhere($this->buttonPrefix, $whereClause);
 		$data = $model->getData();
 
@@ -885,6 +886,23 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 		if ($notsent != 0)
 		{
 			JError::raiseWarning(E_NOTICE, JText::sprintf('%s emails not sent', $notsent));
+		}
+	}
+
+	public function getEditor()
+	{
+		$params = $this->getParams();
+		$msg = $this->getMessage();
+
+		if ($params->get('wysiwyg', true))
+		{
+			$editor = JFactory::getEditor();
+
+			return $editor->display('message', $msg, '100%', '200px', 75, 10, true, 'message');
+		}
+		else
+		{
+			return '<textarea name="message" style="width:100%" rows="10" cols="10">' . $msg . '</textarea>';
 		}
 	}
 }
