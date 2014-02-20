@@ -25,8 +25,10 @@ defined('_JEXEC') or die('Restricted access');
 
 <?php if ($this->filterMode === 3 || $this->filterMode === 4) :?>
 <tr class="fabrikFilterContainer">
-	<?php foreach ($this->headings as $key => $heading) :?>
-		<th>
+	<?php foreach ($this->headings as $key => $heading) :
+		$h = $this->headingClass[$key];
+		?>
+		<th class="<?php echo $h['class']?>">
 		<?php
 		if (array_key_exists($key, $this->filters)) :
 
