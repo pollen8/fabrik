@@ -98,6 +98,16 @@ if ($params->get('ajax_links') !== '')
 	$listParams->set('list_ajax_links', $params->get('ajax_links'));
 }
 
+$links = array('addurl', 'editurl', 'detailurl');
+
+foreach ($links as $link)
+{
+	if ($params->get($link, '') !== '')
+	{
+		$listParams->set($link, $params->get($link));
+	}
+}
+
 if ($showTitle !== '')
 {
 	$listParams->set('show-title', $showTitle);

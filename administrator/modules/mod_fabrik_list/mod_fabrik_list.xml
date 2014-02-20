@@ -18,6 +18,24 @@
 	</files>
 	<config>
 		<fields name="params">
+			<fieldset name="links">
+				
+				<field name="addurl"
+					type="text"
+					description="MOD_FABRIK_LIST_ADDURL_DESC"
+					label="MOD_FABRIK_LIST_ADDURL_LABEL" />
+				
+				<field name="editurl"
+					type="text"
+					description="MOD_FABRIK_LIST_EDITURL_DESC"
+					label="MOD_FABRIK_LIST_EDITURL_LABEL" />
+				
+				<field name="detailurl"
+					type="text"
+					description="MOD_FABRIK_LIST_DETAILURL_DESC"
+					label="MOD_FABRIK_LIST_DETAILURL_LABEL" />
+				
+			</fieldset>
 			<fieldset addfieldpath="/administrator/components/com_fabrik/models/fields" name="advanced">
 			
 				<field name="moduleclass_sfx"
