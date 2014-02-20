@@ -1141,7 +1141,13 @@ if (!$j3)
 		$r->viz = 'plugins/fabrik_visualization';
 		$r->admin = 'administrator/components/com_fabrik/views';
 		$r->adminfields = 'administrator/components/com_fabrik/models/fields';
-		$r->punycode =  'media/system/js/punycode';
+
+		$version = new JVersion;
+
+		if ($version->RELEASE >= 3.2 && $version->DEV_LEVEL > 1)
+		{
+			$r->punycode =  'media/system/js/punycode';
+		}
 
 		return $r;
 	}
@@ -2540,20 +2546,26 @@ if (!$j3)
 
 		$document = JFactory::getDocument();
 		$debug = JFactory::getConfig()->get('debug');
-		$file = $debug ? 'punycode-uncompressed' : 'punycode';
-		$path = JURI::root(). 'media/system/js/' . $file;
+		$version = new JVersion;
 
-		$js = array();
-		$js[] = "requirejs({";
-		$js[] = "   'paths': {";
-		$js[] = "     'punycode': '" . $path . "'";
-		$js[] = "   }";
-		$js[] = " },";
-		$js[] = "['punycode'], function (p) {";
-		$js[] = "  window.punycode = p;";
-		$js[] = "});";
+		if ($version->RELEASE >= 3.2 && $version->DEV_LEVEL > 1)
+		{
+			$file = $debug ? 'punycode-uncompressed' : 'punycode';
+			$path = JURI::root(). 'media/system/js/' . $file;
 
-		$document->addScriptDeclaration(implode("\n", $js));
+			$js = array();
+			$js[] = "requirejs({";
+			$js[] = "   'paths': {";
+			$js[] = "     'punycode': '" . $path . "'";
+			$js[] = "   }";
+			$js[] = " },";
+			$js[] = "['punycode'], function (p) {";
+			$js[] = "  window.punycode = p;";
+			$js[] = "});";
+
+			$document->addScriptDeclaration(implode("\n", $js));
+		}
+
 		JHtml::_('script', 'system/validate.js', false, true);
 		static::$loaded[__METHOD__] = true;
 	}
