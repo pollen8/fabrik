@@ -6947,6 +6947,23 @@ class FabrikFEModelList extends JModelForm
 		 * it'll start sort 0,1,10,11,2,3 etc.  There's no doubt a cleaner way to do this,
 		* but for now ... rekey with a 0 padded prefix before we ksort
 		*/
+		$others = array();
+
+		// These fields shouldn't be re-ordered
+		$locations['fabrik_select'] = array_search('fabrik_select', array_keys($arr));
+		$locations['fabrik_actions'] = array_search('fabrik_actions', array_keys($arr));
+
+		if (array_key_exists('fabrik_select', $arr))
+		{
+			$others['fabrik_select'] = $arr['fabrik_select'];
+		}
+		if (array_key_exists( 'fabrik_actions', $arr))
+		{
+			$others['fabrik_actions'] = $arr['fabrik_actions'];
+		}
+
+		asort($locations);
+
 		foreach ($arr as $key => $val)
 		{
 			if (strstr($key, ':'))
@@ -6955,11 +6972,15 @@ class FabrikFEModelList extends JModelForm
 				$part1 = sprintf('%03d', $part1);
 				$newkey = $part1 . ':' . $part2;
 				$arr[$newkey] = $arr[$key];
-				unset($arr[$key]);
+
 			}
+			unset($arr[$key]);
 		}
 
 		ksort($arr);
+
+		// Add the unsorted fields to the beginning or end
+		$arr = array_sum($locations) <= 1 ? $others + $arr : $arr + $others;
 
 		foreach ($arr as $key => $val)
 		{
