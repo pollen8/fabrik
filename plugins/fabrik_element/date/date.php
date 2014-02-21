@@ -270,10 +270,10 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 		}
 
 		$timeformat = $params->get('date_time_format', 'H:i');
-echo "data =  <br>";print_r($data);
+
 		// Value is in mySQL format GMT
 		$gmt = $this->getValue($data, $repeatCounter);
-echo "gmt = " . $gmt;
+
 		if (!FabrikWorker::isDate($gmt))
 		{
 			$date = '';
