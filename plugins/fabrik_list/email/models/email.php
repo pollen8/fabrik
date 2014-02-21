@@ -124,14 +124,14 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 			switch ($params->get('emailtable_email_to_field_how', 'readonly'))
 			{
 				case 'editable':
-					$email_to = '<input name="list_email_to" id="list_email_to" value="' . $to . '" />';
+					$email_to = '<input type="text" name="list_email_to" id="list_email_to" value="' . $to . '" />';
 					break;
 				case 'hidden':
 					$email_to = '<input name="list_email_to" id="list_email_to" value="' . $to . '" type="hidden" />';
 					break;
 				case 'readonly':
 				default:
-					$email_to = '<input name="list_email_to" id="list_email_to" value="' . $to . '" readonly="readonly" />';
+					$email_to = '<input type="text" name="list_email_to" id="list_email_to" value="' . $to . '" readonly="readonly" />';
 					break;
 			}
 
@@ -189,7 +189,7 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 			}
 
 			$empty = new stdClass;
-			$attribs = 'class="fabrikinput inputbox input-small" multiple="multiple" size="5"';
+			$attribs = 'class="fabrikinput inputbox input-medium" multiple="multiple" size="5"';
 
 			if ($toType == 'table_picklist')
 			{
@@ -206,6 +206,7 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 			}
 			else
 			{
+				$attribs = 'class="fabrikinput inputbox input-large" multiple="multiple" size="5"';
 				$html = JHTML::_('select.genericlist', $results, 'list_email_to[]', $attribs, 'email', 'name', '', 'list_email_to');
 			}
 
