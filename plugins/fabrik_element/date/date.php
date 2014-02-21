@@ -270,10 +270,10 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 		}
 
 		$timeformat = $params->get('date_time_format', 'H:i');
-
+echo "data =  <br>";print_r($data);
 		// Value is in mySQL format GMT
 		$gmt = $this->getValue($data, $repeatCounter);
-
+echo "gmt = " . $gmt;
 		if (!FabrikWorker::isDate($gmt))
 		{
 			$date = '';
@@ -1047,9 +1047,15 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 			return $value;
 		}
 
+		// Element could be a date element (in which case no time stored) - check for both datetime and date null dates.
+		$nulldate = $db->getNullDate();
+		$shortNullDate = explode(' ', $nulldate);
+		$shortNullDate = JArrayHelper::getValue($shortNullDate, 0);
+		$isNullDate = $nulldate == $value || $shortNullDate == $value;
+
 		if (!($formModel->isNewRecord() && $defaultToday) && $value == '')
 		{
-			if (($value == '' || $db->getNullDate() == $value) && !$alwaysToday)
+			if (($value == '' || $isNullDate) && !$alwaysToday)
 			{
 				return $value;
 			}
@@ -1060,7 +1066,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 			}
 		}
 		// Don't offset if null date.
-		if ($value === $db->getNullDate())
+		if ($isNullDate)
 		{
 			return $value;
 		}
