@@ -15,6 +15,7 @@ defined('_JEXEC') or die('Restricted access');
 ?>
 <div class="row-striped">
 <?php
+$group = $this->group;
 $rowStarted = false;
 foreach ($this->elements as $element) :
 	$this->element = $element;
@@ -34,7 +35,7 @@ foreach ($this->elements as $element) :
 		$rowStarted = true;
 	endif;
 	$style = $element->hidden ? 'style="display:none"' : '';
-	$labels_above = $this->params->get('labels_above_details', 0);
+		$labels_above = (!$group->dlabels || (int) $group->dlabels == -1) ? $this->params->get('labels_above_details', 0) : (int) $group->dlabels;
 
 	if ($labels_above == 1)
 	{

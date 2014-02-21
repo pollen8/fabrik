@@ -11,7 +11,7 @@
 
 // No direct access
 defined('_JEXEC') or die('Restricted access');
-
+$group = $this->group;
 $rowStarted = false;
 foreach ($this->elements as $element) :
 	$this->element = $element;
@@ -34,7 +34,7 @@ foreach ($this->elements as $element) :
 	?>
 			<div class="control-group <?php echo $element->containerClass . $span; ?>" <?php echo $style?>>
 	<?php
-	$labels_above = $this->params->get('labels_above', 0);
+	$labels_above = (!$group->labels || $group->labels == -1) ? $this->params->get('labels_above', 0) : $group->labels;
 	if ($labels_above == 1)
 	{
 		echo $this->loadTemplate('group_labels_above');
