@@ -697,7 +697,7 @@ class FabrikAdminModelList extends FabModelAdmin
 
 			if (!$this->canCreateDbTable())
 			{
-				throw new RuntimeException(Jtext::_('COM_FABRIK_INSUFFICIENT_RIGHTS_TO_CREATE_TABLE'));
+				throw new RuntimeException(JText::_('COM_FABRIK_INSUFFICIENT_RIGHTS_TO_CREATE_TABLE'));
 
 				return false;
 			}
@@ -735,10 +735,13 @@ class FabrikAdminModelList extends FabModelAdmin
 			}
 		}
 
-		$params = new JRegistry($row->params);
+		/*
+		 * // Not right - as it meant only isview parameter saved on new list. Something
+		 * to do with isView() also saviing list parameters.
+		 * $params = new JRegistry($row->params);
 		$params->set('isview', $feModel->isView());
 		$row->params = (string) $params;
-
+		*/
 		FabrikAdminHelper::prepareSaveDate($row->publish_down);
 		FabrikAdminHelper::prepareSaveDate($row->created);
 		FabrikAdminHelper::prepareSaveDate($row->publish_up);
