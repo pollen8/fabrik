@@ -409,4 +409,52 @@ class PlgFabrik_ElementYesno extends PlgFabrik_ElementRadiobutton
 	{
 		return '=';
 	}
+
+	/**
+	 * Trigger called when a row is stored.
+	 * If toggle_others on then set other records yesno value to 0
+	 *
+	 * @param   array  &$data          Data to store
+	 * @param   int    $repeatCounter  Repeat group index
+	 *
+	 * @return  void
+	 */
+
+	public function onStoreRow(&$data, $repeatCounter = 0)
+	{
+		if (!parent::onStoreRow($data, $repeatCounter))
+		{
+			return false;
+		}
+
+		$params = $this->getParams();
+		$toggle = (bool) $params->get('toggle_others', false);
+
+		if ($toggle === false)
+		{
+			return;
+		}
+
+		$listModel = $this->getListModel();
+
+		$name = $this->getElement()->name;
+		$db = $listModel->getDb();
+		$query = $db->getQuery(true);
+
+		if ($this->isJoin())
+		{
+			$joinModel = $this->getJoinModel();
+			$pk = $joinModel->getJoinedToTablePk('.');
+		}
+		else
+		{
+			$pk = $listModel->getTable()->db_primary_key;
+		}
+
+		$shortPk = FabrikString::shortColName($pk);
+		$rowid = JArrayHelper::getValue($data, $shortPk, null);
+		$query->update($this->actualTableName())->set($name . ' = 0')->where($pk . ' <> ' . $rowid);
+		$db->setQuery($query);
+		$db->execute();
+	}
 }
