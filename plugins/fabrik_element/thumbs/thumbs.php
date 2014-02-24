@@ -652,7 +652,7 @@ class PlgFabrik_ElementThumbs extends PlgFabrik_Element
 		$lang->load('plg_fabrik_element_thumbs', JPATH_BASE . '/plugns/fabrik_element/thumbs');
 		$opts = new stdClass;
 		$opts->canUse = $this->canUse();
-		$opts->noAccessMsg = trim(JText::_($params->get('thumbs_no_access_msg', JText::_('PLG_ELEMENT_THUMBS_NO_ACCESS_MSG_DEFAULT'))));
+		$opts->noAccessMsg = trim(FText::_($params->get('thumbs_no_access_msg', FText::_('PLG_ELEMENT_THUMBS_NO_ACCESS_MSG_DEFAULT'))));
 		$opts->row_id = $row_id;
 		$opts->myThumb = $this->getMyThumb($listid, $formid, $row_id);
 		$opts->elid = $this->getElement()->id;
@@ -711,7 +711,7 @@ class PlgFabrik_ElementThumbs extends PlgFabrik_Element
 
 		$opts = new stdClass;
 		$opts->canUse = $this->canUse();
-		$opts->noAccessMsg = JText::_($params->get('thumbs_no_access_msg', JText::_('PLG_ELEMENT_THUMBS_NO_ACCESS_MSG_DEFAULT')));
+		$opts->noAccessMsg = FText::_($params->get('thumbs_no_access_msg', FText::_('PLG_ELEMENT_THUMBS_NO_ACCESS_MSG_DEFAULT')));
 		$opts->listid = $list->id;
 		$opts->formid = $this->getFormModel()->getId();
 		$opts->imagepath = COM_FABRIK_LIVESITE . 'plugins/fabrik_element/thumbs/images/';

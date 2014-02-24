@@ -30,7 +30,7 @@ JHtml::_('behavior.keepalive');
 			window.fireEvent('form.save');
 			Joomla.submitform(task, document.getElementById('adminForm'));
 		} else {
-			alert('<?php echo $this->escape(JText::_('JGLOBAL_VALIDATION_FORM_FAILED'));?>');
+			alert('<?php echo $this->escape(FText::_('JGLOBAL_VALIDATION_FORM_FAILED'));?>');
 		}
 	}
 </script>
@@ -53,7 +53,7 @@ JHtml::_('behavior.keepalive');
 		</fieldset>
 <?php }?>
 <fieldset class="adminform">
-			<legend><?php echo JText::_('COM_FABRIK_OPTIONS');?></legend>
+			<legend><?php echo FText::_('COM_FABRIK_OPTIONS');?></legend>
 			<div id="plugin-container">
 				<?php echo $this->pluginFields;?>
 			</div>

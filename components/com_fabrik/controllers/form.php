@@ -380,7 +380,7 @@ class FabrikControllerForm extends JControllerLegacy
 				if (!empty($eMsgs))
 				{
 					$eMsgs = '<ul>' . implode('</li><li>', $eMsgs) . '</ul>';
-					header('HTTP/1.1 500 ' . JText::_('COM_FABRIK_FAILED_VALIDATION') . $eMsgs);
+					header('HTTP/1.1 500 ' . FText::_('COM_FABRIK_FAILED_VALIDATION') . $eMsgs);
 					jexit();
 				}
 				else
@@ -588,7 +588,7 @@ class FabrikControllerForm extends JControllerLegacy
 		}
 		else
 		{
-			$msg = $ok ? count($ids) . ' ' . JText::_('COM_FABRIK_RECORDS_DELETED') : '';
+			$msg = $ok ? count($ids) . ' ' . FText::_('COM_FABRIK_RECORDS_DELETED') : '';
 			$app->enqueueMessage($msg);
 			$app->redirect($ref);
 		}

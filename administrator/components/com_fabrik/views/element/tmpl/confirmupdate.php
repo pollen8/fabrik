@@ -28,7 +28,7 @@ $db = FabrikWorker::getDbo(true);
   		</li>
  	<?php endif;?>
 	</ul>
-	<?php echo JText::_('COM_FABRIK_UPDATE_FIELD_STRUCTURE_DESC')?>
+	<?php echo FText::_('COM_FABRIK_UPDATE_FIELD_STRUCTURE_DESC')?>
 	<input type="hidden" name="task" value="" />
 	<input type="hidden" name="id" value="<?php echo $this->item->id?>" />
 	<input type="hidden" name="origtask" value="<?php echo $this->origtask?>" />

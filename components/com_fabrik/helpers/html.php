@@ -15,7 +15,7 @@ jimport('joomla.filesystem.file');
 
 if (!defined('COM_FABRIK_FRONTEND'))
 {
-	throw new RuntimeException(JText::_('COM_FABRIK_SYSTEM_PLUGIN_NOT_ACTIVE'), 400);
+	throw new RuntimeException(FText::_('COM_FABRIK_SYSTEM_PLUGIN_NOT_ACTIVE'), 400);
 }
 
 /**
@@ -282,7 +282,7 @@ class FabrikHelperHTML
 
 		$opts = new stdClass;
 		$opts->id = 'fabwin';
-		$opts->title = JText::_('COM_FABRIK_ADVANCED_SEARCH');
+		$opts->title = FText::_('COM_FABRIK_ADVANCED_SEARCH');
 		$opts->loadMethod = 'xhr';
 		$opts->minimizable = false;
 		$opts->collapsible = true;
@@ -338,22 +338,22 @@ EOD;
 <form method="post" action="index.php" name="frontendForm">
 	<table>
 		<tr>
-			<td><label for="email"><?php echo JText::_('COM_FABRIK_YOUR_FRIENDS_EMAIL') ?>:</label>
+			<td><label for="email"><?php echo FText::_('COM_FABRIK_YOUR_FRIENDS_EMAIL') ?>:</label>
 			</td>
 			<td><input class="input" type="text" size="25" name="email" id="email" /></td>
 		</tr>
 		<tr>
-			<td><label for="yourname"><?php echo JText::_('COM_FABRIK_YOUR_NAME'); ?>:</label>
+			<td><label for="yourname"><?php echo FText::_('COM_FABRIK_YOUR_NAME'); ?>:</label>
 			</td>
 			<td><input class="input" type="text" size="25" name="yourname" id="yourname" /></td>
 		</tr>
 		<tr>
-			<td><label for="youremail"><?php echo JText::_('COM_FABRIK_YOUR_EMAIL'); ?>:</label>
+			<td><label for="youremail"><?php echo FText::_('COM_FABRIK_YOUR_EMAIL'); ?>:</label>
 			</td>
 			<td><input class="input" type="text" size="25" name="youremail" id="youremail" /></td>
 		</tr>
 		<tr>
-			<td><label for="subject"><?php echo JText::_('COM_FABRIK_MESSAGE_SUBJECT'); ?>:</label>
+			<td><label for="subject"><?php echo FText::_('COM_FABRIK_MESSAGE_SUBJECT'); ?>:</label>
 			</td>
 			<td><input class="input" type="text" size="40" maxlength="40" name="subject"
 				id="subject" /></td>
@@ -361,14 +361,14 @@ EOD;
 		<tr>
 			<td colspan="2">
 			<input type="submit" name="submit" class="button btn btn-primary"
-				value="<?php echo JText::_('COM_FABRIK_SEND_EMAIL'); ?>" />
+				value="<?php echo FText::_('COM_FABRIK_SEND_EMAIL'); ?>" />
 <?php
 
 if (!$j3)
 {
 ?>
 			<input type="button" name="cancel"
-				value="<?php echo JText::_('COM_FABRIK_CANCEL'); ?>" class="button btn"
+				value="<?php echo FText::_('COM_FABRIK_CANCEL'); ?>" class="button btn"
 				onclick="window.close();" /></td>
 				<?php
 }
@@ -403,7 +403,7 @@ if (!$j3)
 		if (!$j3)
 		{
 		?>
-<a href='javascript:window.close();'> <span class="small"><?php echo JText::_('COM_FABRIK_CLOSE_WINDOW'); ?>
+<a href='javascript:window.close();'> <span class="small"><?php echo FText::_('COM_FABRIK_CLOSE_WINDOW'); ?>
 </span>
 </a>
 <?php
@@ -435,18 +435,18 @@ if (!$j3)
 		}
 		else
 		{
-			$image = '&nbsp;' . JText::_('JGLOBAL_PRINT');
+			$image = '&nbsp;' . FText::_('JGLOBAL_PRINT');
 		}
 
 		if ($params->get('popup', 1))
 		{
 			$ahref = '<a class=\"printlink\" href="javascript:void(0)" onclick="javascript:window.print(); return false" title="'
-				. JText::_('COM_FABRIK_PRINT') . '">';
+				. FText::_('COM_FABRIK_PRINT') . '">';
 		}
 		else
 		{
 			$ahref = "<a href=\"#\" class=\"printlink\" onclick=\"window.open('$link','win2','$status;');return false;\"  title=\""
-			. JText::_('COM_FABRIK_PRINT') . "\">";
+			. FText::_('COM_FABRIK_PRINT') . "\">";
 		}
 
 		return $ahref . $image . "</a>";
@@ -517,15 +517,15 @@ if (!$j3)
 
 			if ($params->get('icons', true))
 			{
-				$j2img = JHtml::_('image', 'system/emailButton.png', JText::_('JGLOBAL_EMAIL'), null, true);
+				$j2img = JHtml::_('image', 'system/emailButton.png', FText::_('JGLOBAL_EMAIL'), null, true);
 				$image = FabrikWorker::j3() ? '<i class="icon-envelope"></i> ' : $j2img;
 			}
 			else
 			{
-				$image = '&nbsp;' . JText::_('JGLOBAL_EMAIL');
+				$image = '&nbsp;' . FText::_('JGLOBAL_EMAIL');
 			}
 
-			return "<a href=\"#\" onclick=\"window.open('$link','win2','$status;');return false;\"  title=\"" . JText::_('JGLOBAL_EMAIL')
+			return "<a href=\"#\" onclick=\"window.open('$link','win2','$status;');return false;\"  title=\"" . FText::_('JGLOBAL_EMAIL')
 			. "\">$image</a>\n";
 		}
 	}
@@ -584,8 +584,8 @@ if (!$j3)
 	public static function conditionList($listid, $sel = '')
 	{
 		$conditions = array();
-		$conditions[] = JHTML::_('select.option', 'AND', JText::_('COM_FABRIK_AND'));
-		$conditions[] = JHTML::_('select.option', 'OR', JText::_('COM_FABRIK_OR'));
+		$conditions[] = JHTML::_('select.option', 'AND', FText::_('COM_FABRIK_AND'));
+		$conditions[] = JHTML::_('select.option', 'OR', FText::_('COM_FABRIK_OR'));
 		$name = 'fabrik___filter[list_' . $listid . '][join][]';
 
 		return JHTML::_('select.genericlist', $conditions, $name, 'class="inputbox input-mini" size="1" ', 'value', 'text', $sel);
@@ -1603,11 +1603,11 @@ if (!$j3)
 	public static function folderAjaxSelect($folders, $path = '', $tpl = '')
 	{
 		$str = array();
-		$str[] = '<a href="#" class="toggle" title="' . JText::_('COM_FABRIK_BROWSE_FOLDERS') . '">';
-		$str[] = self::image('orderneutral.png', 'form', $tpl, array('alt' => JText::_('COM_FABRIK_BROWSE_FOLDERS')));
+		$str[] = '<a href="#" class="toggle" title="' . FText::_('COM_FABRIK_BROWSE_FOLDERS') . '">';
+		$str[] = self::image('orderneutral.png', 'form', $tpl, array('alt' => FText::_('COM_FABRIK_BROWSE_FOLDERS')));
 		$str[] = '</a>';
 		$str[] = '<div class="folderselect-container">';
-		$str[] = '<span class="breadcrumbs"><a href="#">' . JText::_('HOME') . '</a><span> / </span>';
+		$str[] = '<span class="breadcrumbs"><a href="#">' . FText::_('HOME') . '</a><span> / </span>';
 		$i = 1;
 		$path = explode("/", $path);
 

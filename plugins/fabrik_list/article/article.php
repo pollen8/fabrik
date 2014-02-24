@@ -78,7 +78,7 @@ class PlgFabrik_ListArticle extends PlgFabrik_List
 	{
 		$s = JString::strtoupper($this->buttonPrefix);
 
-		return JText::_('PLG_LIST_ARTICLE_UPDATE_ARTICLE');
+		return FText::_('PLG_LIST_ARTICLE_UPDATE_ARTICLE');
 	}
 
 	/**

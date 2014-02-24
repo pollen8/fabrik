@@ -225,7 +225,7 @@ class PlgFabrik_ElementCaptcha extends PlgFabrik_Element
 		{
 			if (!function_exists('imagettfbbox'))
 			{
-				throw new RuntimeException(JText::_('PLG_FABRIK_ELEMENT_CAPTCHA_STANDARD_TTF_ERROR'));
+				throw new RuntimeException(FText::_('PLG_FABRIK_ELEMENT_CAPTCHA_STANDARD_TTF_ERROR'));
 			}
 
 			$str = array();
@@ -269,7 +269,7 @@ class PlgFabrik_ElementCaptcha extends PlgFabrik_Element
 			 *	background color to OCR captcha values without problems
 			*/
 			$str[] = '<img src="' . COM_FABRIK_LIVESITE . 'plugins/fabrik_element/captcha/image.php?foo=' . rand() . '" alt="'
-			. JText::_('security image') . '" />';
+			. FText::_('security image') . '" />';
 
 			$str[] = '<div class="captcha_input">';
 
@@ -366,7 +366,7 @@ class PlgFabrik_ElementCaptcha extends PlgFabrik_Element
 
 	public function getValidationErr()
 	{
-		return JText::_('PLG_ELEMENT_CAPTCHA_FAILED');
+		return FText::_('PLG_ELEMENT_CAPTCHA_FAILED');
 	}
 
 	/**

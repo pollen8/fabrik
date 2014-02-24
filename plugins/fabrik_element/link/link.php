@@ -248,14 +248,14 @@ class PlgFabrik_ElementLink extends PlgFabrik_Element
 
 		$html = array();
 		$bits['name'] = $labelname;
-		$bits['placeholder'] = JText::_('PLG_ELEMENT_LINK_LABEL');
+		$bits['placeholder'] = FText::_('PLG_ELEMENT_LINK_LABEL');
 		$bits['value'] = $value['label'];
 		$bits['class'] .= ' fabrikSubElement';
 		unset($bits['id']);
 
 		$html[] = '<div class="fabrikSubElementContainer" id="' . $id . '">';
 		$html[] = $this->buildInput('input', $bits);
-		$bits['placeholder'] = JText::_('PLG_ELEMENT_LINK_URL');
+		$bits['placeholder'] = FText::_('PLG_ELEMENT_LINK_URL');
 		$bits['name'] = $linkname;
 		$bits['value'] = JArrayHelper::getValue($value, 'link');
 		$html[] = $this->buildInput('input', $bits);

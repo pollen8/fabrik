@@ -109,7 +109,7 @@ class FabrikFEModelCSVExport
 			if (empty($headings))
 			{
 				$url = $input->server->get('HTTP_REFERER', '');
-				$app->enqueueMessage(JText::_('No data to export'));
+				$app->enqueueMessage(FText::_('No data to export'));
 				$app->redirect($url);
 
 				return;
@@ -623,7 +623,7 @@ class FabrikFEModelCSVExport
 
 		if ($input->get('inccalcs') == 1)
 		{
-			array_unshift($h, JText::_('Calculation'));
+			array_unshift($h, FText::_('Calculation'));
 		}
 
 		$h = array_map(array($this, "quote"), $h);

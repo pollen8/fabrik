@@ -694,7 +694,7 @@ class FabrikModelCalendar extends FabrikFEModelVisualization
 		$min = $params->get('limit_min', '');
 		$max = $params->get('limit_max', '');
 		$msg = '';
-		$f = JText::_('DATE_FORMAT_LC2');
+		$f = FText::_('DATE_FORMAT_LC2');
 
 		if ($min !== '' && $max === '')
 		{

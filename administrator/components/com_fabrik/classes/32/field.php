@@ -667,7 +667,7 @@ abstract class JFormField
 
 		// Get the label text from the XML element, defaulting to the element name.
 		$title = $this->element['label'] ? (string) $this->element['label'] : (string) $this->element['name'];
-		$title = $this->translateLabel ? JText::_($title) : $title;
+		$title = $this->translateLabel ? FText::_($title) : $title;
 
 		return $title;
 	}
@@ -690,7 +690,7 @@ abstract class JFormField
 
 		// Get the label text from the XML element, defaulting to the element name.
 		$text = $this->element['label'] ? (string) $this->element['label'] : (string) $this->element['name'];
-		$text = $this->translateLabel ? JText::_($text) : $text;
+		$text = $this->translateLabel ? FText::_($text) : $text;
 
 		// Build the class for the label.
 		$class = !empty($this->description) ? 'hasTooltip' : '';
@@ -704,7 +704,7 @@ abstract class JFormField
 		if (!empty($this->description))
 		{
 			JHtml::_('bootstrap.tooltip');
-			$label .= ' title="' . JHtml::tooltipText(trim($text, ':'), JText::_($this->description), 0) . '"';
+			$label .= ' title="' . JHtml::tooltipText(trim($text, ':'), FText::_($this->description), 0) . '"';
 		}
 
 		// Add the label text and closing tag.

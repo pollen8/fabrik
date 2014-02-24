@@ -363,12 +363,12 @@ class PlgFabrik_ElementTextarea extends PlgFabrik_Element
 		{
 			if ($params->get('textarea_limit_type', 'char') === 'char')
 			{
-				$label = JText::_('PLG_ELEMENT_TEXTAREA_CHARACTERS_LEFT');
+				$label = FText::_('PLG_ELEMENT_TEXTAREA_CHARACTERS_LEFT');
 				$charsLeft = $params->get('textarea-maxlength') - JString::strlen($value);
 			}
 			else
 			{
-				$label = JText::_('PLG_ELEMENT_TEXTAREA_WORDS_LEFT');
+				$label = FText::_('PLG_ELEMENT_TEXTAREA_WORDS_LEFT');
 				$charsLeft = $params->get('textarea-maxlength') - count(explode(' ', $value));
 			}
 
@@ -541,7 +541,7 @@ class PlgFabrik_ElementTextarea extends PlgFabrik_Element
 
 	public function getValidationErr()
 	{
-		return JText::_('PLG_ELEMENT_TEXTAREA_CONTENT_TOO_LONG');
+		return FText::_('PLG_ELEMENT_TEXTAREA_CONTENT_TOO_LONG');
 	}
 
 	/**

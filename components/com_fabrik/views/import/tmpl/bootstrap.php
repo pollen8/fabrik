@@ -43,7 +43,7 @@ $listId = $app->input->getInt('listid');
 	<input type="hidden" name="task" value="import.doimport" />
   	<?php echo JHTML::_('form.token');
 	echo JHTML::_('behavior.keepalive'); ?>
-	<input type="submit" class="btn btn-primary" value="<?php echo JText::_('COM_FABRIK_IMPORT_CSV')?>" />
+	<input type="submit" class="btn btn-primary" value="<?php echo FText::_('COM_FABRIK_IMPORT_CSV')?>" />
 </form>
 
 <script type="text/javascript">

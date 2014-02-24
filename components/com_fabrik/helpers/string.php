@@ -591,7 +591,7 @@ class FabrikString extends JString
 	public static function translate($text)
 	{
 		$plain = strip_tags($text);
-		$translated = JText::_($plain);
+		$translated = FText::_($plain);
 
 		if ($translated !== $plain)
 		{
@@ -684,5 +684,42 @@ class FabrikString extends JString
 		}
 
 		return $subject;
+	}
+}
+/**
+ *
+ * $$$ hugh FText::_() does funky stuff to strings with commas in them, if what
+ * follows the first comma is all "upper case".  But it tests for that using non
+ * MB safe code, so any non ASCII strings (like Greek text) with a comma in them
+ * get truncated at the comma.  Corner case or what!  But for now, just don't run
+ * any label with a comma in it through JText!
+ */
+class FText extends JText
+{
+	/**
+	 * Translates a string into the current language.
+	 *
+	 * Examples:
+	 * <script>alert(Joomla.JText._('<?php echo FText::_("JDEFAULT", array("script"=>true));?>'));</script>
+	 * will generate an alert message containing 'Default'
+	 * <?php echo FText::_("JDEFAULT");?> it will generate a 'Default' string
+	 *
+	 * @param   string   $string                The string to translate.
+	 * @param   mixed    $jsSafe                Boolean: Make the result javascript safe.
+	 * @param   boolean  $interpretBackSlashes  To interpret backslashes (\\=\, \n=carriage return, \t=tabulation)
+	 * @param   boolean  $script                To indicate that the string will be push in the javascript language store
+	 *
+	 * @return  string  The translated string or the key is $script is true
+	 *
+	 * @since   11.1
+	 */
+	public static function _($string, $jsSafe = false, $interpretBackSlashes = true, $script = false)
+	{
+		if ((strpos($string, ',') === false))
+		{
+			$string = FText::_($string, $jsSafe, $interpretBackSlashes, $script);
+		}
+
+		return $string;
 	}
 }

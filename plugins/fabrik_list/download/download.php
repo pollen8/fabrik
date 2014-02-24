@@ -210,13 +210,13 @@ class PlgFabrik_ListDownload extends PlgFabrik_List
 					}
 					else
 					{
-						$zip_err .= JText::_('ZipArchive add error: ' . $zipadd);
+						$zip_err .= FText::_('ZipArchive add error: ' . $zipadd);
 					}
 				}
 
 				if (!$zip->close())
 				{
-					$zip_err = JText::_('ZipArchive close error') . ($zip->status);
+					$zip_err = FText::_('ZipArchive close error') . ($zip->status);
 				}
 
 				if ($download_resize)
@@ -243,13 +243,13 @@ class PlgFabrik_ListDownload extends PlgFabrik_List
 					}
 					else
 					{
-						$zip_err .= JText::_('ZIP is empty');
+						$zip_err .= FText::_('ZIP is empty');
 					}
 				}
 			}
 			else
 			{
-				$zip_err = JText::_('ZipArchive open error: ' . $zipres);
+				$zip_err = FText::_('ZipArchive open error: ' . $zipres);
 			}
 		}
 		else

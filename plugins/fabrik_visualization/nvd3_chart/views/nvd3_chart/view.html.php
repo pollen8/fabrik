@@ -63,7 +63,7 @@ class FabrikViewNvd3_Chart extends JViewLegacy
 
 		if ($this->row->published == 0)
 		{
-			JError::raiseWarning(500, JText::_('JERROR_ALERTNOAUTHOR'));
+			JError::raiseWarning(500, FText::_('JERROR_ALERTNOAUTHOR'));
 
 			return '';
 		}

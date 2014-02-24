@@ -426,6 +426,21 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 					return $this->join;
 				}
 			}
+
+			$config = array();
+			$config['dbo'] = FabrikWorker::getDbo(true);
+			$this->join = JTable::getInstance('Join', 'FabrikTable', $config);
+
+			if ($this->join->load(array('element_id' => $element->id)))
+			{
+
+				if (is_string($this->join->params))
+				{
+					$this->join->params = new JRegistry($this->join->params);
+				}
+
+				return $this->join;
+			}
 		}
 
 		if (!in_array($input->get('task'), array('inlineedit', 'form.inlineedit')) && $input->get('format') !== 'raw')
@@ -695,7 +710,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 
 	protected function _getSelectLabel()
 	{
-		return JText::_($this->getParams()->get('database_join_noselectionlabel', JText::_('COM_FABRIK_PLEASE_SELECT')));
+		return FText::_($this->getParams()->get('database_join_noselectionlabel', FText::_('COM_FABRIK_PLEASE_SELECT')));
 	}
 
 	/**
@@ -1210,7 +1225,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		if (!$formModel->isEditable() || !$this->isEditable())
 		{
 			// Read only element formatting...
-			if (JArrayHelper::getValue($defaultLabels, 0) === $params->get('database_join_noselectionlabel', JText::_('COM_FABRIK_PLEASE_SELECT')))
+			if (JArrayHelper::getValue($defaultLabels, 0) === $params->get('database_join_noselectionlabel', FText::_('COM_FABRIK_PLEASE_SELECT')))
 			{
 				// No point showing 'please select' for read only
 				unset($defaultLabels[0]);
@@ -1326,8 +1341,8 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 						$chooseUrl = 'index.php?option=com_' . $package . '&amp;view=list&amp;listid=' . $popuplistid . '&amp;tmpl=component&amp;ajax=1';
 					}
 
-					$html[] = '<a href="' . $chooseUrl . '" class="toggle-selectoption btn" title="' . JText::_('COM_FABRIK_SELECT') . '">'
-						. FabrikHelperHTML::image('search.png', 'form', @$this->tmpl, array('alt' => JText::_('COM_FABRIK_SELECT'))) . '</a>';
+					$html[] = '<a href="' . $chooseUrl . '" class="toggle-selectoption btn" title="' . FText::_('COM_FABRIK_SELECT') . '">'
+						. FabrikHelperHTML::image('search.png', 'form', @$this->tmpl, array('alt' => FText::_('COM_FABRIK_SELECT'))) . '</a>';
 				}
 
 				if ($frontEndAdd && $this->isEditable())
@@ -1337,8 +1352,8 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 					$addURL = 'index.php?option=com_fabrik';
 					$addURL .= $app->isAdmin() ? '&amp;task=form.view' : '&amp;view=form';
 					$addURL .= '&amp;tmpl=component&amp;ajax=1&amp;formid=' . $popupform;
-					$html[] = '<a href="' . $addURL . '" title="' . JText::_('COM_FABRIK_ADD') . '" class="toggle-addoption btn">';
-					$html[] = FabrikHelperHTML::image('plus.png', 'form', @$this->tmpl, array('alt' => JText::_('COM_FABRIK_SELECT'))) . '</a>';
+					$html[] = '<a href="' . $addURL . '" title="' . FText::_('COM_FABRIK_ADD') . '" class="toggle-addoption btn">';
+					$html[] = FabrikHelperHTML::image('plus.png', 'form', @$this->tmpl, array('alt' => FText::_('COM_FABRIK_SELECT'))) . '</a>';
 				}
 				// If add and select put them in a button group.
 				if ($frontEndSelect && $frontEndAdd && $this->isEditable())
@@ -2085,7 +2100,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 
 		if ($label == '')
 		{
-			$label = $params->get('filter_required') == 1 ? JText::_('COM_FABRIK_PLEASE_SELECT') : JText::_('COM_FABRIK_FILTER_PLEASE_SELECT');
+			$label = $params->get('filter_required') == 1 ? FText::_('COM_FABRIK_PLEASE_SELECT') : FText::_('COM_FABRIK_FILTER_PLEASE_SELECT');
 		}
 
 		return $label;

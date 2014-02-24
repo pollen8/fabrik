@@ -138,7 +138,7 @@ class PlgFabrik_ListPivot extends plgFabrik_List
 
 		if ($xCol === '' || $yCol === '')
 		{
-			throw new UnexpectedValueException(JText::_('PLG_LIST_PIVOT_ERROR_X_AND_Y_COL_MUST_BE_SELECTED'));
+			throw new UnexpectedValueException(FText::_('PLG_LIST_PIVOT_ERROR_X_AND_Y_COL_MUST_BE_SELECTED'));
 		}
 		//pivot___date
 
@@ -179,7 +179,7 @@ class PlgFabrik_ListPivot extends plgFabrik_List
 			}
 		}
 
-		$headings['pivot_total'] = JText::_('PLG_LIST_PIVOT_LIST_X_TOTAL');
+		$headings['pivot_total'] = FText::_('PLG_LIST_PIVOT_LIST_X_TOTAL');
 		$args['headingClass']['pivot_total'] = $headingClass;
 		$args['cellClass']['pivot_total'] = $cellClass;
 
@@ -312,7 +312,7 @@ class PlgFabrik_ListPivot extends plgFabrik_List
 
 		// Add totals @ bottom
 		$yColTotals = new stdClass;
-		$yColTotals->$yCol = JText::_('PLG_LIST_PIVOT_LIST_Y_TOTAL');
+		$yColTotals->$yCol = FText::_('PLG_LIST_PIVOT_LIST_Y_TOTAL');
 		$total = 0;
 
 		foreach ($xCols as $x)

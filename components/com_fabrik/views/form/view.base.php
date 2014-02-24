@@ -71,7 +71,7 @@ class FabrikViewFormBase extends JViewLegacy
 		{
 			if (!$app->isAdmin())
 			{
-				echo JText::_('COM_FABRIK_FORM_NOT_PUBLISHED');
+				echo FText::_('COM_FABRIK_FORM_NOT_PUBLISHED');
 
 				return false;
 			}
@@ -82,7 +82,7 @@ class FabrikViewFormBase extends JViewLegacy
 
 		if ($this->access == 0)
 		{
-			JError::raiseWarning(500, JText::_('JERROR_ALERTNOAUTHOR'));
+			JError::raiseWarning(500, FText::_('JERROR_ALERTNOAUTHOR'));
 
 			return false;
 		}
@@ -116,7 +116,7 @@ class FabrikViewFormBase extends JViewLegacy
 			$form->formid .= '_' . $this->rowid;
 		}
 
-		$form->error = $form->error === '' ? JText::_('COM_FABRIK_FAILED_VALIDATION') : JText::_($form->error);
+		$form->error = $form->error === '' ? FText::_('COM_FABRIK_FAILED_VALIDATION') : FText::_($form->error);
 		$form->origerror = $form->error;
 		$form->error = $model->hasErrors() ? $form->error : '';
 		JDEBUG ? $profiler->mark('form view before validation classes loaded') : null;
@@ -219,7 +219,7 @@ class FabrikViewFormBase extends JViewLegacy
 			// if ($model->sessionModel->statusid == _FABRIKFORMSESSION_LOADED_FROM_COOKIE) {
 			if ($model->sessionModel->last_page > 0)
 			{
-				$message .= ' <a href="#" class="clearSession">' . JText::_('COM_FABRIK_CLEAR') . '</a>';
+				$message .= ' <a href="#" class="clearSession">' . FText::_('COM_FABRIK_CLEAR') . '</a>';
 			}
 		}
 
@@ -336,8 +336,8 @@ class FabrikViewFormBase extends JViewLegacy
 
 		$this->showPDF = $params->get('pdf', $fbConfig->get('form_pdf', false));
 
-		$buttonProperties = array('class' => 'fabrikTip', 'opts' => "{notice:true}", 'title' => '<span>' . JText::_('COM_FABRIK_PDF') . '</span>',
-				'alt' => JText::_('COM_FABRIK_PDF'));
+		$buttonProperties = array('class' => 'fabrikTip', 'opts' => "{notice:true}", 'title' => '<span>' . FText::_('COM_FABRIK_PDF') . '</span>',
+				'alt' => FText::_('COM_FABRIK_PDF'));
 
 		if ($this->showPDF)
 		{
@@ -613,7 +613,7 @@ class FabrikViewFormBase extends JViewLegacy
 
 		if ($start_page !== 0)
 		{
-			$app->enqueueMessage(JText::_('COM_FABRIK_RESTARTING_MULTIPAGE_FORM'));
+			$app->enqueueMessage(FText::_('COM_FABRIK_RESTARTING_MULTIPAGE_FORM'));
 		}
 		else
 		{
@@ -812,15 +812,15 @@ class FabrikViewFormBase extends JViewLegacy
 		}
 
 		$fields[] = JHTML::_('form.token');
-		$resetLabel = JText::_($params->get('reset_button_label'));
+		$resetLabel = FText::_($params->get('reset_button_label'));
 		$resetIcon = $params->get('reset_icon', '');
-		$copyLabel = JText::_($params->get('copy_button_label'));
+		$copyLabel = FText::_($params->get('copy_button_label'));
 		$copyIcon = $params->get('copy_icon', '');
-		$applyLabel = JText::_($params->get('apply_button_label'));
+		$applyLabel = FText::_($params->get('apply_button_label'));
 		$applyIcon = $params->get('apply_icon', '');
-		$deleteLabel = JText::_($params->get('delete_button_label', 'Delete'));
+		$deleteLabel = FText::_($params->get('delete_button_label', 'Delete'));
 		$deleteIcon = $params->get('delete_icon', '');
-		$goBackLabel = JText::_($params->get('goback_button_label'));
+		$goBackLabel = FText::_($params->get('goback_button_label'));
 		$goBackIcon = $params->get('goback_icon', '');
 
 		if ($resetIcon !== '')
@@ -879,7 +879,7 @@ class FabrikViewFormBase extends JViewLegacy
 			$button = $model->isAjax() ? "button" : "submit";
 			$submitClass = FabrikString::clean($form->submit_button_label);
 			$submitIcon = $params->get('save_icon', '');
-			$submitLabel = JText::_($form->submit_button_label);
+			$submitLabel = FText::_($form->submit_button_label);
 
 			if ($submitIcon !== '')
 			{
@@ -899,9 +899,9 @@ class FabrikViewFormBase extends JViewLegacy
 		if ($this->isMultiPage)
 		{
 			$form->prevButton = '<button type="button" class="btn fabrikPagePrevious button" name="fabrikPagePrevious"><i class="icon-previous"></i>&nbsp;'
-				. JText::_('COM_FABRIK_PREV') . '</button>';
+				. FText::_('COM_FABRIK_PREV') . '</button>';
 			$form->nextButton = '<button type="button" class="btn fabrikPageNext button" name="fabrikPageNext">'
-				. JText::_('COM_FABRIK_NEXT') . '&nbsp;<i class="icon-next"></i></button>';
+				. FText::_('COM_FABRIK_NEXT') . '&nbsp;<i class="icon-next"></i></button>';
 		}
 		else
 		{

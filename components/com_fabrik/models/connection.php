@@ -457,7 +457,7 @@ class FabrikFEModelConnection extends JModelLegacy
 			$id = $name;
 		}
 
-		$cnns[] = JHTML::_('select.option', '-1', JText::_('COM_FABRIK_PLEASE_SELECT'));
+		$cnns[] = JHTML::_('select.option', '-1', FText::_('COM_FABRIK_PLEASE_SELECT'));
 		$cnns = array_merge($cnns, $connections);
 		$attribs .= $javascript;
 
@@ -479,7 +479,7 @@ class FabrikFEModelConnection extends JModelLegacy
 	{
 		$connectionTableFields = array();
 		$connectionTableFields[-1] = array();
-		$connectionTableFields[-1][] = JHTML::_('select.option', '-1', JText::_('COM_FABRIK_PLEASE_SELECT'));
+		$connectionTableFields[-1][] = JHTML::_('select.option', '-1', FText::_('COM_FABRIK_PLEASE_SELECT'));
 
 		foreach ($connections as $cn)
 		{
@@ -512,7 +512,7 @@ class FabrikFEModelConnection extends JModelLegacy
 		$connectionTables = array();
 		$connectionTables[-1] = array();
 		$db = FabrikWorker::getDbo();
-		$connectionTables[-1][] = JHTML::_('select.option', '-1', JText::_('COM_FABRIK_PLEASE_SELECT'));
+		$connectionTables[-1][] = JHTML::_('select.option', '-1', FText::_('COM_FABRIK_PLEASE_SELECT'));
 
 		foreach ($connections as $cn)
 		{

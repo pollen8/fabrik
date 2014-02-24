@@ -408,7 +408,7 @@ class FabrikFEModelListfilter extends FabModel
 
 		if (!JString::strlen($s) >= $res->Value)
 		{
-			throw new UnexpectedValueException(JText::_('COM_FABRIK_NOTICE_SEARCH_STRING_TOO_SHORT'));
+			throw new UnexpectedValueException(FText::_('COM_FABRIK_NOTICE_SEARCH_STRING_TOO_SHORT'));
 		}
 
 		return true;
@@ -766,7 +766,7 @@ class FabrikFEModelListfilter extends FabModel
 
 		if (!$searchable)
 		{
-			$app->enqueueMessage(JText::_('COM_FABRIK_NOTICE_SEARCH_ALL_BUT_NO_ELEMENTS'));
+			$app->enqueueMessage(FText::_('COM_FABRIK_NOTICE_SEARCH_ALL_BUT_NO_ELEMENTS'));
 		}
 	}
 

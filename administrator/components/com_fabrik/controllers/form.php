@@ -71,7 +71,7 @@ class FabrikAdminControllerForm extends FabControllerForm
 		$view->setLayout($viewLayout);
 
 		// @TODO check for cached version
-		JToolBarHelper::title(JText::_('COM_FABRIK_MANAGER_FORMS'), 'forms.png');
+		JToolBarHelper::title(FText::_('COM_FABRIK_MANAGER_FORMS'), 'forms.png');
 
 		$view->display();
 
@@ -163,7 +163,7 @@ class FabrikAdminControllerForm extends FabControllerForm
 					if (!empty($eMsgs))
 					{
 						$eMsgs = '<ul>' . implode('</li><li>', $eMsgs) . '</ul>';
-						header('HTTP/1.1 500 ' . JText::_('COM_FABRIK_FAILED_VALIDATION') . $eMsgs);
+						header('HTTP/1.1 500 ' . FText::_('COM_FABRIK_FAILED_VALIDATION') . $eMsgs);
 						jexit();
 					}
 					else
@@ -293,7 +293,7 @@ class FabrikAdminControllerForm extends FabControllerForm
 
 		if (is_null($msg))
 		{
-			$msg = JText::_('COM_FABRIK_RECORD_ADDED_UPDATED');
+			$msg = FText::_('COM_FABRIK_RECORD_ADDED_UPDATED');
 		}
 
 		if (array_key_exists('apply', $model->formData))
@@ -326,7 +326,7 @@ class FabrikAdminControllerForm extends FabControllerForm
 
 		if (!$id)
 		{
-			throw new RuntimeException(JText::_('SET_FORM_CCK_CATEGORY'));
+			throw new RuntimeException(FText::_('SET_FORM_CCK_CATEGORY'));
 		}
 
 		$input->set('formid', $id);
@@ -388,7 +388,7 @@ class FabrikAdminControllerForm extends FabControllerForm
 		}
 		else
 		{
-			$msg = $ok ? count($ids) . ' ' . JText::_('COM_FABRIK_RECORDS_DELETED') : '';
+			$msg = $ok ? count($ids) . ' ' . FText::_('COM_FABRIK_RECORDS_DELETED') : '';
 			$app->enqueueMessage($msg);
 			$app->redirect($ref);
 		}

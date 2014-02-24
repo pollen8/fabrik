@@ -512,14 +512,14 @@ class FabrikViewListBase extends JViewLegacy
 	{
 		if (!$model->canPublish())
 		{
-			echo JText::_('COM_FABRIK_LIST_NOT_PUBLISHED');
+			echo FText::_('COM_FABRIK_LIST_NOT_PUBLISHED');
 
 			return false;
 		}
 
 		if (!$model->canView())
 		{
-			echo JText::_('JERROR_ALERTNOAUTHOR');
+			echo FText::_('JERROR_ALERTNOAUTHOR');
 
 			return false;
 		}
@@ -617,25 +617,25 @@ class FabrikViewListBase extends JViewLegacy
 		$params = $model->getParams();
 		$this->buttons = new stdClass;
 		$buttonProperties = array('class' => 'fabrikTip', 'opts' => "{notice:true}",
-			'title' => '<span>' . JText::_('COM_FABRIK_EXPORT_TO_CSV') . '</span>');
-		$buttonProperties['alt'] = JText::_('COM_FABRIK_EXPORT_TO_CSV');
+			'title' => '<span>' . FText::_('COM_FABRIK_EXPORT_TO_CSV') . '</span>');
+		$buttonProperties['alt'] = FText::_('COM_FABRIK_EXPORT_TO_CSV');
 		$this->buttons->csvexport = FabrikHelperHTML::image('csv-export.png', 'list', $this->tmpl, $buttonProperties);
-		$buttonProperties['title'] = '<span>' . JText::_('COM_FABRIK_IMPORT_FROM_CSV') . '</span>';
-		$buttonProperties['alt'] = JText::_('COM_FABRIK_IMPORT_TO_CSV');
+		$buttonProperties['title'] = '<span>' . FText::_('COM_FABRIK_IMPORT_FROM_CSV') . '</span>';
+		$buttonProperties['alt'] = FText::_('COM_FABRIK_IMPORT_TO_CSV');
 		$this->buttons->csvimport = FabrikHelperHTML::image('csv-import.png', 'list', $this->tmpl, $buttonProperties);
-		$buttonProperties['title'] = '<span>' . JText::_('COM_FABRIK_SUBSCRIBE_RSS') . '</span>';
-		$buttonProperties['alt'] = JText::_('COM_FABRIK_SUBSCRIBE_RSS');
+		$buttonProperties['title'] = '<span>' . FText::_('COM_FABRIK_SUBSCRIBE_RSS') . '</span>';
+		$buttonProperties['alt'] = FText::_('COM_FABRIK_SUBSCRIBE_RSS');
 		$this->buttons->feed = FabrikHelperHTML::image('feed.png', 'list', $this->tmpl, $buttonProperties);
-		$buttonProperties['title'] = '<span>' . JText::_('COM_FABRIK_EMPTY') . '</span>';
-		$buttonProperties['alt'] = JText::_('COM_FABRIK_EMPTY');
+		$buttonProperties['title'] = '<span>' . FText::_('COM_FABRIK_EMPTY') . '</span>';
+		$buttonProperties['alt'] = FText::_('COM_FABRIK_EMPTY');
 		$this->buttons->empty = FabrikHelperHTML::image('trash.png', 'list', $this->tmpl, $buttonProperties);
 
-		$buttonProperties['title'] = '<span>' . JText::_('COM_FABRIK_GROUP_BY') . '</span>';
-		$buttonProperties['alt'] = JText::_('COM_FABRIK_GROUP_BY');
+		$buttonProperties['title'] = '<span>' . FText::_('COM_FABRIK_GROUP_BY') . '</span>';
+		$buttonProperties['alt'] = FText::_('COM_FABRIK_GROUP_BY');
 		$this->buttons->groupby = FabrikHelperHTML::image('group_by.png', 'list', $this->tmpl, $buttonProperties);
 
 		unset($buttonProperties['title']);
-		$buttonProperties['alt'] = JText::_('COM_FABRIK_FILTER');
+		$buttonProperties['alt'] = FText::_('COM_FABRIK_FILTER');
 		$this->buttons->filter = FabrikHelperHTML::image('filter.png', 'list', $this->tmpl, $buttonProperties);
 
 		$addLabel = $model->addLabel();
@@ -643,8 +643,8 @@ class FabrikViewListBase extends JViewLegacy
 		$buttonProperties['alt'] = $addLabel;
 		$this->buttons->add = FabrikHelperHTML::image('plus-sign.png', 'list', $this->tmpl, $buttonProperties);
 
-		$buttonProperties['title'] = '<span>' . JText::_('COM_FABRIK_PDF') . '</span>';
-		$buttonProperties['alt'] = JText::_('COM_FABRIK_PDF');
+		$buttonProperties['title'] = '<span>' . FText::_('COM_FABRIK_PDF') . '</span>';
+		$buttonProperties['alt'] = FText::_('COM_FABRIK_PDF');
 		$this->buttons->pdf = FabrikHelperHTML::image('pdf.png', 'list', $this->tmpl, $buttonProperties);
 	}
 

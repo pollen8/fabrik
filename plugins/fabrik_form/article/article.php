@@ -515,8 +515,8 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 			. $input->get('rowid', '', 'string');
 		$viewURL = COM_FABRIK_LIVESITE . 'index.php?option=com_' . $package . '&amp;view=details&amp;fabrik=' . $formModel->get('id') . '&amp;rowid='
 			. $input->get('rowid', '', 'string');
-		$editlink = '<a href="' . $editURL . '">' . JText::_('EDIT') . '</a>';
-		$viewlink = '<a href="' . $viewURL . '">' . JText::_('VIEW') . '</a>';
+		$editlink = '<a href="' . $editURL . '">' . FText::_('EDIT') . '</a>';
+		$viewlink = '<a href="' . $viewURL . '">' . FText::_('VIEW') . '</a>';
 		$message = str_replace('{fabrik_editlink}', $editlink, $message);
 		$message = str_replace('{fabrik_viewlink}', $viewlink, $message);
 		$message = str_replace('{fabrik_editurl}', $editURL, $message);

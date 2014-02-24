@@ -600,7 +600,7 @@ class FabrikFEModelList extends JModelForm
 
 		if (is_null($id) || $id == '0')
 		{
-			throw new RuntimeException(JText::_('COM_FABRIK_INCORRECT_LIST_ID'), 500);
+			throw new RuntimeException(FText::_('COM_FABRIK_INCORRECT_LIST_ID'), 500);
 		}
 
 		if ($this->outputFormat == 'fabrikfeed')
@@ -612,7 +612,7 @@ class FabrikFEModelList extends JModelForm
 
 		if ($item->db_table_name == '')
 		{
-			throw new RuntimeException(JText::_('COM_FABRIK_INCORRECT_LIST_ID'), 500);
+			throw new RuntimeException(FText::_('COM_FABRIK_INCORRECT_LIST_ID'), 500);
 		}
 
 		// Cant set time limit in safe mode so suppress warning
@@ -1722,16 +1722,16 @@ class FabrikFEModelList extends JModelForm
 	protected function deleteButton($tpl = '', $heading = false)
 	{
 		$params = $this->getParams();
-		$label = JText::_('COM_FABRIK_DELETE');
+		$label = FText::_('COM_FABRIK_DELETE');
 		$buttonAction = $this->actionMethod();
 		$tpl = $this->getTmpl();
 		$j3 = FabrikWorker::j3();
 		$text = $buttonAction == 'dropdown' ? $label : '<span class="hidden">' . $label . '</span>';
 		$btnClass = ($j3 && $buttonAction != 'dropdown') ? 'btn ' : '';
 		$iconClass = $j3 ? 'icon-remove' : 'icon-minus';
-		$label = $j3 ? ' ' . JText::_('COM_FABRIK_DELETE') : '<span>' . JText::_('COM_FABRIK_DELETE') . '</span>';
+		$label = $j3 ? ' ' . FText::_('COM_FABRIK_DELETE') : '<span>' . FText::_('COM_FABRIK_DELETE') . '</span>';
 		$btn = '<a href="#" class="' . $btnClass . 'delete" data-listRef="list_' . $this->getRenderContext()
-				. '" title="' . JText::_('COM_FABRIK_DELETE') . '">'
+				. '" title="' . FText::_('COM_FABRIK_DELETE') . '">'
 				. FabrikHelperHTML::image('delete.png', 'list', $tpl, array('alt' => $label, 'icon-class' => $iconClass)) . ' ' . $text . '</a>';
 
 		return $j3 ? $btn : '<li class="fabrik_delete">' . $btn . '</li>';
@@ -1900,8 +1900,8 @@ class FabrikFEModelList extends JModelForm
 
 		if (!$facetTable->canAdd())
 		{
-			return '<div style="text-align:center"><a title="' . JText::_('JERROR_ALERTNOAUTHOR')
-			. '"><img src="' . COM_FABRIK_LIVESITE . 'media/com_fabrik/images/login.png" alt="' . JText::_('JERROR_ALERTNOAUTHOR') . '" /></a></div>';
+			return '<div style="text-align:center"><a title="' . FText::_('JERROR_ALERTNOAUTHOR')
+			. '"><img src="' . COM_FABRIK_LIVESITE . 'media/com_fabrik/images/login.png" alt="' . FText::_('JERROR_ALERTNOAUTHOR') . '" /></a></div>';
 		}
 
 		if ($app->isAdmin())
@@ -1935,7 +1935,7 @@ class FabrikFEModelList extends JModelForm
 
 		if (is_null($label) || $label == '')
 		{
-			$label = JText::_('COM_FABRIK_LINKED_FORM_ADD');
+			$label = FText::_('COM_FABRIK_LINKED_FORM_ADD');
 		}
 
 		$icon = '<i class="icon-plus"></i> ';
@@ -2016,13 +2016,13 @@ class FabrikFEModelList extends JModelForm
 
 		if (!$facetTable->canView())
 		{
-			return '<div style="text-align:center"><a title="' . JText::_('COM_FABRIK_NO_ACCESS_PLEASE_LOGIN')
+			return '<div style="text-align:center"><a title="' . FText::_('COM_FABRIK_NO_ACCESS_PLEASE_LOGIN')
 			. '"><img src="' . COM_FABRIK_LIVESITE . 'media/com_fabrik/images/login.png"
-				alt="' . JText::_('COM_FABRIK_NO_ACCESS_PLEASE_LOGIN') . '" /></a></div>';
+				alt="' . FText::_('COM_FABRIK_NO_ACCESS_PLEASE_LOGIN') . '" /></a></div>';
 		}
 
 		$showRelated = (int) $params->get('show_related_info', 0);
-		$emptyLabel = $showRelated === 1 ? JText::_('COM_FABRIK_NO_RECORDS') : '';
+		$emptyLabel = $showRelated === 1 ? FText::_('COM_FABRIK_NO_RECORDS') : '';
 		$tlabel = ($count === 0) ? $emptyLabel : '(0) ' . $label;
 		$showRelatedAdd = (int) $params->get('show_related_add', 0);
 		$aExisitngLinkedForms = (array) $params->get('linkedform');
@@ -2038,7 +2038,7 @@ class FabrikFEModelList extends JModelForm
 
 		if ($label === '')
 		{
-			$label = JText::_('COM_FABRIK_VIEW');
+			$label = FText::_('COM_FABRIK_VIEW');
 		}
 
 		$title = $label;
@@ -4578,7 +4578,7 @@ class FabrikFEModelList extends JModelForm
 		elseif ($this->canAlterFields() === false)
 		{
 			// Give a notice if the user cant alter the field type but selections he has made would normally do so:
-			$app->enqueueMessage(JText::_('COM_FABRIK_NOTICE_ELEMENT_SAVED_BUT_STRUCTUAL_CHANGES_NOT_APPLIED'), 'notice');
+			$app->enqueueMessage(FText::_('COM_FABRIK_NOTICE_ELEMENT_SAVED_BUT_STRUCTUAL_CHANGES_NOT_APPLIED'), 'notice');
 
 			return $return;
 		}
@@ -5103,7 +5103,7 @@ class FabrikFEModelList extends JModelForm
 
 			if ($value == '' && $eval == FABRIKFILTER_QUERY)
 			{
-				throw new RuntimeException(JText::_('COM_FABRIK_QUERY_PREFILTER_WITH_NO_VALUE'), 500);
+				throw new RuntimeException(FText::_('COM_FABRIK_QUERY_PREFILTER_WITH_NO_VALUE'), 500);
 			}
 
 			list($value, $condition) = $elementModel->getFilterValue($value, $condition, $eval);
@@ -5804,7 +5804,7 @@ class FabrikFEModelList extends JModelForm
 
 		$params = $this->getParams();
 
-		return JText::_($params->get('empty_data_msg', 'COM_FABRIK_LIST_NO_DATA_MSG'));
+		return FText::_($params->get('empty_data_msg', 'COM_FABRIK_LIST_NO_DATA_MSG'));
 	}
 
 	/**
@@ -5833,14 +5833,14 @@ class FabrikFEModelList extends JModelForm
 	{
 		if ($this->listRequiresFiltering() && !$this->gotOptionalFilters())
 		{
-			$this->emptyMsg = JText::_('COM_FABRIK_SELECT_AT_LEAST_ONE_FILTER');
+			$this->emptyMsg = FText::_('COM_FABRIK_SELECT_AT_LEAST_ONE_FILTER');
 
 			return false;
 		}
 
 		if ($this->hasRequiredElementFilters() && !$this->getRequiredFiltersFound())
 		{
-			$this->emptyMsg = JText::_('COM_FABRIK_PLEASE_SELECT_ALL_REQUIRED_FILTERS');
+			$this->emptyMsg = FText::_('COM_FABRIK_PLEASE_SELECT_ALL_REQUIRED_FILTERS');
 
 			return false;
 		}
@@ -5964,7 +5964,7 @@ class FabrikFEModelList extends JModelForm
 		// If no filter keys, by definition we don't have required ones
 		if (!array_key_exists('key', $filters) || !is_array($filters['key']))
 		{
-			$this->emptyMsg = JText::_('COM_FABRIK_PLEASE_SELECT_ALL_REQUIRED_FILTERS');
+			$this->emptyMsg = FText::_('COM_FABRIK_PLEASE_SELECT_ALL_REQUIRED_FILTERS');
 
 			return false;
 		}
@@ -5988,7 +5988,7 @@ class FabrikFEModelList extends JModelForm
 
 				if (!$found || $filters['origvalue'][$key] == '')
 				{
-					$this->emptyMsg = JText::_('COM_FABRIK_PLEASE_SELECT_ALL_REQUIRED_FILTERS');
+					$this->emptyMsg = FText::_('COM_FABRIK_PLEASE_SELECT_ALL_REQUIRED_FILTERS');
 
 					return false;
 				}
@@ -6081,7 +6081,7 @@ class FabrikFEModelList extends JModelForm
 			$requestKey = $this->getFilterModel()->getSearchAllRequestKey();
 			$v = $this->getFilterModel()->getSearchAllValue('html');
 			$o = new stdClass;
-			$searchLabel = $params->get('search-all-label', JText::_('COM_FABRIK_SEARCH'));
+			$searchLabel = $params->get('search-all-label', FText::_('COM_FABRIK_SEARCH'));
 			$class = FabrikWorker::j3() ? 'fabrik_filter search-query input-medium' : 'fabrik_filter';
 			$o->filter = '<input type="search" size="20" placeholder="' . $searchLabel . '" value="' . $v
 			. '" class="' . $class . '" name="' . $requestKey . '" />';
@@ -6089,10 +6089,10 @@ class FabrikFEModelList extends JModelForm
 			if ($params->get('search-mode-advanced') == 1)
 			{
 				$opts = array();
-				$opts[] = JHTML::_('select.option', 'all', JText::_('COM_FABRIK_ALL_OF_THESE_TERMS'));
-				$opts[] = JHTML::_('select.option', 'any', JText::_('COM_FABRIK_ANY_OF_THESE_TERMS'));
-				$opts[] = JHTML::_('select.option', 'exact', JText::_('COM_FABRIK_EXACT_TERMS'));
-				$opts[] = JHTML::_('select.option', 'none', JText::_('COM_FABRIK_NONE_OF_THESE_TERMS'));
+				$opts[] = JHTML::_('select.option', 'all', FText::_('COM_FABRIK_ALL_OF_THESE_TERMS'));
+				$opts[] = JHTML::_('select.option', 'any', FText::_('COM_FABRIK_ANY_OF_THESE_TERMS'));
+				$opts[] = JHTML::_('select.option', 'exact', FText::_('COM_FABRIK_EXACT_TERMS'));
+				$opts[] = JHTML::_('select.option', 'none', FText::_('COM_FABRIK_NONE_OF_THESE_TERMS'));
 				$mode = $app->getUserStateFromRequest('com_' . $package . '.list' . $this->getRenderContext() . '.searchallmode', 'search-mode-advanced');
 				$o->filter .= '&nbsp;'
 						. JHTML::_('select.genericList', $opts, 'search-mode-advanced', "class='fabrik_filter'", 'value', 'text', $mode);
@@ -6198,8 +6198,8 @@ class FabrikFEModelList extends JModelForm
 		{
 			$tmpl = $this->getTmpl();
 			$url = $this->getAdvancedSearchURL();
-			$title = '<span>' . JText::_('COM_FABRIK_ADVANCED_SEARCH') . '</span>';
-			$opts = array('alt' => JText::_('COM_FABRIK_ADVANCED_SEARCH'), 'class' => 'fabrikTip', 'opts' => "{notice:true}", 'title' => $title);
+			$title = '<span>' . FText::_('COM_FABRIK_ADVANCED_SEARCH') . '</span>';
+			$opts = array('alt' => FText::_('COM_FABRIK_ADVANCED_SEARCH'), 'class' => 'fabrikTip', 'opts' => "{notice:true}", 'title' => $title);
 			$img = FabrikHelperHTML::image('find.png', 'list', $tmpl, $opts);
 
 			return '<a href="' . $url . '" class="advanced-search-link">' . $img . '</a>';
@@ -6286,7 +6286,7 @@ class FabrikFEModelList extends JModelForm
 	{
 		$first = false;
 		$firstFilter = false;
-		$fieldNames[] = JHTML::_('select.option', '', JText::_('COM_FABRIK_PLEASE_SELECT'));
+		$fieldNames[] = JHTML::_('select.option', '', FText::_('COM_FABRIK_PLEASE_SELECT'));
 		$elementModels = $this->getElements();
 
 		foreach ($elementModels as $elementModel)
@@ -6325,14 +6325,14 @@ class FabrikFEModelList extends JModelForm
 	private function getStatementsOpts()
 	{
 		$statements = array();
-		$statements[] = JHTML::_('select.option', '=', JText::_('COM_FABRIK_EQUALS'));
-		$statements[] = JHTML::_('select.option', '<>', JText::_('COM_FABRIK_NOT_EQUALS'));
-		$statements[] = JHTML::_('select.option', 'BEGINS WITH', JText::_('COM_FABRIK_BEGINS_WITH'));
-		$statements[] = JHTML::_('select.option', 'CONTAINS', JText::_('COM_FABRIK_CONTAINS'));
-		$statements[] = JHTML::_('select.option', 'ENDS WITH', JText::_('COM_FABRIK_ENDS_WITH'));
-		$statements[] = JHTML::_('select.option', '>', JText::_('COM_FABRIK_GREATER_THAN'));
-		$statements[] = JHTML::_('select.option', '<', JText::_('COM_FABRIK_LESS_THAN'));
-		$statements[] = JHTML::_('select.option', 'EMPTY', JText::_('COM_FABRIK_IS_EMPTY'));
+		$statements[] = JHTML::_('select.option', '=', FText::_('COM_FABRIK_EQUALS'));
+		$statements[] = JHTML::_('select.option', '<>', FText::_('COM_FABRIK_NOT_EQUALS'));
+		$statements[] = JHTML::_('select.option', 'BEGINS WITH', FText::_('COM_FABRIK_BEGINS_WITH'));
+		$statements[] = JHTML::_('select.option', 'CONTAINS', FText::_('COM_FABRIK_CONTAINS'));
+		$statements[] = JHTML::_('select.option', 'ENDS WITH', FText::_('COM_FABRIK_ENDS_WITH'));
+		$statements[] = JHTML::_('select.option', '>', FText::_('COM_FABRIK_GREATER_THAN'));
+		$statements[] = JHTML::_('select.option', '<', FText::_('COM_FABRIK_LESS_THAN'));
+		$statements[] = JHTML::_('select.option', 'EMPTY', FText::_('COM_FABRIK_IS_EMPTY'));
 
 		return $statements;
 	}
@@ -6463,7 +6463,7 @@ class FabrikFEModelList extends JModelForm
 
 				if ($counter == 0)
 				{
-					$join = JText::_('COM_FABRIK_WHERE') . '<input type="hidden" value="WHERE" name="' . $prefix . 'join][]" />';
+					$join = FText::_('COM_FABRIK_WHERE') . '<input type="hidden" value="WHERE" name="' . $prefix . 'join][]" />';
 				}
 				else
 				{
@@ -6485,7 +6485,7 @@ class FabrikFEModelList extends JModelForm
 
 		if ($counter == 0)
 		{
-			$join = JText::_('COM_FABRIK_WHERE') . '<input type="hidden" name="' . $prefix . 'join][]" value="WHERE" />';
+			$join = FText::_('COM_FABRIK_WHERE') . '<input type="hidden" name="' . $prefix . 'join][]" value="WHERE" />';
 			$key = JHTML::_('select.genericlist', $fieldNames, $prefix . 'key][]', 'class="inputbox key" size="1" ', 'value', 'text', '');
 			$jsSel = JHTML::_('select.genericlist', $statements, $prefix . 'condition][]', 'class="inputbox" size="1" ', 'value', 'text', '');
 			$rows[] = array('join' => $join, 'element' => $key, 'condition' => $jsSel, 'filter' => $firstFilter, 'type' => $type,
@@ -6653,18 +6653,18 @@ class FabrikFEModelList extends JModelForm
 						case "desc":
 							$orderDir = "-";
 							$class = 'class="fabrikorder-desc"';
-							$img = FabrikHelperHTML::image('arrow-up.png', 'list', $tmpl, array('alt' => JText::_('COM_FABRIK_ORDER')));
+							$img = FabrikHelperHTML::image('arrow-up.png', 'list', $tmpl, array('alt' => FText::_('COM_FABRIK_ORDER')));
 							break;
 						case "asc":
 							$orderDir = "desc";
 							$class = 'class="fabrikorder-asc"';
-							$img = FabrikHelperHTML::image('arrow-down.png', 'list', $tmpl, array('alt' => JText::_('COM_FABRIK_ORDER')));
+							$img = FabrikHelperHTML::image('arrow-down.png', 'list', $tmpl, array('alt' => FText::_('COM_FABRIK_ORDER')));
 							break;
 						case "":
 						case "-":
 							$orderDir = "asc";
 							$class = 'class="fabrikorder"';
-							$img = FabrikHelperHTML::image('menu-2.png', 'list', $tmpl, array('alt' => JText::_('COM_FABRIK_ORDER')));
+							$img = FabrikHelperHTML::image('menu-2.png', 'list', $tmpl, array('alt' => FText::_('COM_FABRIK_ORDER')));
 							break;
 					}
 
@@ -6675,7 +6675,7 @@ class FabrikFEModelList extends JModelForm
 							if ($item->order_dir === 'desc')
 							{
 								$class = 'class="fabrikorder-desc"';
-								$img = FabrikHelperHTML::image('orderdesc.png', 'list', $tmpl, array('alt' => JText::_('COM_FABRIK_ORDER')));
+								$img = FabrikHelperHTML::image('orderdesc.png', 'list', $tmpl, array('alt' => FText::_('COM_FABRIK_ORDER')));
 							}
 						}
 					}
@@ -6778,7 +6778,7 @@ class FabrikFEModelList extends JModelForm
 					if ($linkedTable != '0')
 					{
 						$prefix = $join->element_id . '___' . $linkedTable . '_list_heading';
-						$aTableHeadings[$prefix] = empty($heading) ? $join->listlabel . ' ' . JText::_('COM_FABRIK_LIST') : $heading;
+						$aTableHeadings[$prefix] = empty($heading) ? $join->listlabel . ' ' . FText::_('COM_FABRIK_LIST') : $heading;
 						$headingClass[$prefix] = array('class' => 'fabrik_ordercell related ' . $prefix,
 								'style' => '');
 						$cellClass[$prefix] = array('class' => $prefix . ' fabrik_element related');
@@ -6801,7 +6801,7 @@ class FabrikFEModelList extends JModelForm
 				{
 					$heading = $faceted->linkedformheader->$key;
 					$prefix = $join->db_table_name . '___' . $join->name . '_form_heading';
-					$aTableHeadings[$prefix] = empty($heading) ? $join->listlabel . ' ' . JText::_('COM_FABRIK_FORM') : $heading;
+					$aTableHeadings[$prefix] = empty($heading) ? $join->listlabel . ' ' . FText::_('COM_FABRIK_FORM') : $heading;
 					$headingClass[$prefix] = array('class' => 'fabrik_ordercell related ' . $prefix,
 							'style' => '');
 					$cellClass[$prefix] = array('class' => $prefix . ' fabrik_element related');
@@ -8548,7 +8548,7 @@ class FabrikFEModelList extends JModelForm
 
 			if ($key == '')
 			{
-				throw new Exception(JText::_("COM_FABRIK_NO_KEY_FOUND_FOR_THIS_TABLE"));
+				throw new Exception(FText::_("COM_FABRIK_NO_KEY_FOUND_FOR_THIS_TABLE"));
 			}
 		}
 
@@ -8696,7 +8696,7 @@ class FabrikFEModelList extends JModelForm
 
 		if (!$db->execute())
 		{
-			return JError::raiseWarning(JText::_($db->getErrorMsg()));
+			return JError::raiseWarning(FText::_($db->getErrorMsg()));
 		}
 		// Clean the cache.
 		$package = $app->getUserState('com_fabrik.package', 'fabrik');
@@ -9916,7 +9916,7 @@ class FabrikFEModelList extends JModelForm
 	{
 		$params = $this->getParams();
 
-		return JText::_($params->get('addlabel', JText::_('COM_FABRIK_ADD')));
+		return FText::_($params->get('addlabel', FText::_('COM_FABRIK_ADD')));
 	}
 
 	/**
@@ -9931,7 +9931,7 @@ class FabrikFEModelList extends JModelForm
 	{
 		$params = $this->getParams();
 
-		return JText::_($params->get('detaillabel', JText::_('COM_FABRIK_VIEW')));
+		return FText::_($params->get('detaillabel', FText::_('COM_FABRIK_VIEW')));
 	}
 
 	/**
@@ -9946,7 +9946,7 @@ class FabrikFEModelList extends JModelForm
 	{
 		$params = $this->getParams();
 
-		return JText::_($params->get('editlabel', JText::_('COM_FABRIK_EDIT')));
+		return FText::_($params->get('editlabel', FText::_('COM_FABRIK_EDIT')));
 	}
 
 	/**
@@ -10278,8 +10278,8 @@ class FabrikFEModelList extends JModelForm
 		{
 			$table = $this->getTable();
 			$tmpl = $this->getTmpl();
-			$title = '<span>' . JText::_('COM_FABRIK_CLEAR') . '</span>';
-			$opts = array('alt' => JText::_('COM_FABRIK_CLEAR'), 'class' => 'fabrikTip', 'opts' => "{notice:true}", 'title' => $title);
+			$title = '<span>' . FText::_('COM_FABRIK_CLEAR') . '</span>';
+			$opts = array('alt' => FText::_('COM_FABRIK_CLEAR'), 'class' => 'fabrikTip', 'opts' => "{notice:true}", 'title' => $title);
 			$img = FabrikHelperHTML::image('filter_delete.png', 'list', $tmpl, $opts);
 
 			return '<a href="#" class="clearFilters">' . $img . '</a>';
@@ -11187,7 +11187,7 @@ class FabrikFEModelList extends JModelForm
 		$a = array();
 		list($h, $x, $b, $c) = $this->getHeadings();
 		$o = new stdClass;
-		$o->label = JText::_('COM_FABRIK_NONE');
+		$o->label = FText::_('COM_FABRIK_NONE');
 		$o->group_by = '';
 		$a[$url . 'group_by=0'] = $o;
 
@@ -11574,7 +11574,7 @@ class FabrikFEModelList extends JModelForm
 
 		if ($tableName != $table->db_table_name)
 		{
-			$app->enqueueMessage(sprintf(JText::_('COM_FABRIK_LIST_TABS_TABLE_ERROR'), $tableName, $table->db_table_name), 'error');
+			$app->enqueueMessage(sprintf(FText::_('COM_FABRIK_LIST_TABS_TABLE_ERROR'), $tableName, $table->db_table_name), 'error');
 
 			return;
 		}
@@ -11611,7 +11611,7 @@ class FabrikFEModelList extends JModelForm
 		 **/
 		if (count($counts) - $tabsMax > 100)
 		{
-			$app->enqueueMessage(sprintf(JText::_('COM_FABRIK_LIST_TABS_MERGE_ERROR'), count($counts), $tabsMax), 'notice');
+			$app->enqueueMessage(sprintf(FText::_('COM_FABRIK_LIST_TABS_MERGE_ERROR'), count($counts), $tabsMax), 'notice');
 
 			return;
 		}
@@ -11621,7 +11621,7 @@ class FabrikFEModelList extends JModelForm
 		if ($tabsAll)
 		{
 			// Set value to null to differentiate between all and empty string values
-			$tabs[] = array(JText::_('COM_FABRIK_LIST_TABS_ALL'), null);
+			$tabs[] = array(FText::_('COM_FABRIK_LIST_TABS_ALL'), null);
 		}
 
 		while (count($counts) > $tabsMax)

@@ -213,7 +213,7 @@ class FabrikAdminControllerList extends FabControllerForm
 	public function clearfilter()
 	{
 		$app = JFactory::getApplication();
-		$app->enqueueMessage(JText::_('COM_FABRIK_FILTERS_CLEARED'));
+		$app->enqueueMessage(FText::_('COM_FABRIK_FILTERS_CLEARED'));
 		$app->input->set('clearfilters', 1);
 		$this->filter();
 	}

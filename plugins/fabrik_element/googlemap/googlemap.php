@@ -740,7 +740,7 @@ class PlgFabrik_ElementGooglemap extends PlgFabrik_Element
 
 				if ($params->get('fb_gm_geocode') != '0' && $geoCodeEvent == 'button' && $this->isEditable())
 				{
-					$str .= '<button class="button btn btn-info geocode" type="button">' . JText::_('PLG_ELEMENT_GOOGLE_MAP_GEOCODE') . '</button>';
+					$str .= '<button class="button btn btn-info geocode" type="button">' . FText::_('PLG_ELEMENT_GOOGLE_MAP_GEOCODE') . '</button>';
 				}
 
 				if ($this->isEditable() && $params->get('fb_gm_geocode') != '0')
@@ -780,7 +780,7 @@ class PlgFabrik_ElementGooglemap extends PlgFabrik_Element
 			}
 			else
 			{
-				$str .= JText::_('PLG_ELEMENT_GOOGLEMAP_NO_LOCATION_SELECTED');
+				$str .= FText::_('PLG_ELEMENT_GOOGLEMAP_NO_LOCATION_SELECTED');
 			}
 
 			$str .= $this->_microformat($val);

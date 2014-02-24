@@ -2324,6 +2324,7 @@ class FabrikFEModelForm extends FabModelForm
 		}
 
 		FabrikHelperHTML::debug($this->errors, 'form:errors');
+		///echo "<pre>";print_r($this->errors);exit;
 		$this->setErrors($this->errors);
 
 		return $ok;
@@ -2359,7 +2360,6 @@ class FabrikFEModelForm extends FabModelForm
 		{
 			$errors = $this->errors;
 		}
-
 		$this->clearErrors();
 		$this->errors = $errors;
 
@@ -3220,7 +3220,7 @@ class FabrikFEModelForm extends FabModelForm
 								if (empty($usekey) && !$this->isMambot)
 								{
 									$this->rowId = '';
-									throw new RuntimeException(JText::_('COM_FABRIK_COULD_NOT_FIND_RECORD_IN_DATABASE'));
+									throw new RuntimeException(FText::_('COM_FABRIK_COULD_NOT_FIND_RECORD_IN_DATABASE'));
 								}
 								else
 								{
@@ -4120,11 +4120,11 @@ class FabrikFEModelForm extends FabModelForm
 
 		if (JString::stristr($label, "{Add/Edit}"))
 		{
-			$replace = $this->isNewRecord() ? JText::_('COM_FABRIK_ADD') : JText::_('COM_FABRIK_EDIT');
+			$replace = $this->isNewRecord() ? FText::_('COM_FABRIK_ADD') : FText::_('COM_FABRIK_EDIT');
 			$label = str_replace("{Add/Edit}", $replace, $label);
 		}
 
-		return JText::_($label);
+		return FText::_($label);
 	}
 
 	/**
@@ -5133,7 +5133,7 @@ class FabrikFEModelForm extends FabModelForm
 
 			$params = $this->getParams();
 
-			return JText::_($params->get('submit-success-msg', 'COM_FABRIK_RECORD_ADDED_UPDATED'));
+			return FText::_($params->get('submit-success-msg', 'COM_FABRIK_RECORD_ADDED_UPDATED'));
 		}
 		else
 		{
@@ -5175,7 +5175,7 @@ class FabrikFEModelForm extends FabModelForm
 		$input = JFactory::getApplication()->input;
 		$msg = $input->get('rowid', '', 'string') == 0 ? 'COM_FABRIK_NOTICE_CANT_ADD_RECORDS' : 'COM_FABRIK_NOTICE_CANT_EDIT_RECORDS';
 
-		return JText::_($msg);
+		return FText::_($msg);
 	}
 
 	/**

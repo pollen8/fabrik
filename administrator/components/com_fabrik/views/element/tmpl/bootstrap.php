@@ -33,7 +33,7 @@ JText::script('COM_FABRIK_SUBOPTS_VALUES_ERROR');
 			window.fireEvent('form.save');
 			Joomla.submitform(task, document.getElementById('adminForm'));
 		} else {
-			alert('<?php echo $this->escape(JText::_('JGLOBAL_VALIDATION_FORM_FAILED'));?>');
+			alert('<?php echo $this->escape(FText::_('JGLOBAL_VALIDATION_FORM_FAILED'));?>');
 		}
 	}
 </script>
@@ -43,13 +43,13 @@ JText::script('COM_FABRIK_SUBOPTS_VALUES_ERROR');
 {
 	?>
 	<div id="system-message" class="alert alert-notice">
-		<strong><?php echo JText::_('COM_FABRIK_ELEMENT_PROPERTIES_LINKED_TO') ?>: <?php echo $this->parent->label ?></strong>
+		<strong><?php echo FText::_('COM_FABRIK_ELEMENT_PROPERTIES_LINKED_TO') ?>: <?php echo $this->parent->label ?></strong>
 
 		<p><a href="#" id="swapToParent" class="element_<?php echo $this->parent->id ?>"><span class="icon-pencil"></span>
-		<?php echo JText::_('COM_FABRIK_EDIT') . ' ' . $this->parent->label ?></a></p>
+		<?php echo FText::_('COM_FABRIK_EDIT') . ' ' . $this->parent->label ?></a></p>
 
-		<label><?php echo JText::_('COM_FABRIK_OR')?> <span class="icon-magnet"></span>
-		<input id="unlink" name="unlink" id="unlinkFromParent" type="checkbox"> <?php echo JText::_('COM_FABRIK_UNLINK') ?>
+		<label><?php echo FText::_('COM_FABRIK_OR')?> <span class="icon-magnet"></span>
+		<input id="unlink" name="unlink" id="unlinkFromParent" type="checkbox"> <?php echo FText::_('COM_FABRIK_UNLINK') ?>
 		</label>
 	</div>
 <?php
@@ -61,32 +61,32 @@ JText::script('COM_FABRIK_SUBOPTS_VALUES_ERROR');
 			<ul class="nav nav-list">
 				<li class="active">
 			    	<a data-toggle="tab" href="#tab-details">
-			    		<?php echo JText::_('COM_FABRIK_DETAILS')?>
+			    		<?php echo FText::_('COM_FABRIK_DETAILS')?>
 			    	</a>
 			    </li>
 			    <li>
 			    	<a data-toggle="tab" href="#tab-publishing">
-			    		<?php echo JText::_('COM_FABRIK_PUBLISHING')?>
+			    		<?php echo FText::_('COM_FABRIK_PUBLISHING')?>
 			    	</a>
 			    </li>
 			    <li>
 			    	<a data-toggle="tab" href="#tab-access">
-			    		<?php echo JText::_('COM_FABRIK_GROUP_LABEL_RULES_DETAILS')?>
+			    		<?php echo FText::_('COM_FABRIK_GROUP_LABEL_RULES_DETAILS')?>
 			    	</a>
 			    </li>
 			    <li>
 			    	<a data-toggle="tab" href="#tab-listview">
-			    		<?php echo JText::_('COM_FABRIK_LIST_VIEW_SETTINGS')?>
+			    		<?php echo FText::_('COM_FABRIK_LIST_VIEW_SETTINGS')?>
 			    	</a>
 			    </li>
 			    <li>
 			    	<a data-toggle="tab" href="#tab-validations">
-			    		<?php echo JText::_('COM_FABRIK_VALIDATIONS')?>
+			    		<?php echo FText::_('COM_FABRIK_VALIDATIONS')?>
 			    	</a>
 			    </li>
 			    <li>
 			    	<a data-toggle="tab" href="#tab-javascript">
-			    		<?php echo JText::_('COM_FABRIK_JAVASCRIPT')?>
+			    		<?php echo FText::_('COM_FABRIK_JAVASCRIPT')?>
 			    	</a>
 			    </li>
 			</ul>

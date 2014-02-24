@@ -19,7 +19,7 @@ if ($pageClass !== '') :
 endif;
 
 if ($this->tablePicker != '') : ?>
-	<div style="text-align:right"><?php echo JText::_('COM_FABRIK_LIST') ?>: <?php echo $this->tablePicker; ?></div>
+	<div style="text-align:right"><?php echo FText::_('COM_FABRIK_LIST') ?>: <?php echo $this->tablePicker; ?></div>
 <?php
 endif;
 
@@ -95,7 +95,7 @@ endforeach;
 					<?php else: ?>
 						<a href="#" class="toggle fabrikTip" title="<?php echo $this->emptyDataMessage?>" opts='{trigger: "hover"}'>
 					<?php endif;?>
-							<?php echo FabrikHelperHTML::image('arrow-down.png', 'list', $this->tmpl, JText::_('COM_FABRIK_TOGGLE'));?>
+							<?php echo FabrikHelperHTML::image('arrow-down.png', 'list', $this->tmpl, FText::_('COM_FABRIK_TOGGLE'));?>
 							<?php echo $this->grouptemplates[$groupedby]; ?> ( <?php echo count($group)?> )
 						</a>
 					</td>

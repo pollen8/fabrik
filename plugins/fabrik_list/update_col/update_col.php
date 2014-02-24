@@ -89,7 +89,7 @@ class PlgFabrik_ListUpdate_Col extends PlgFabrik_List
 
 	protected function buttonLabel()
 	{
-		return JText::_($this->getParams()->get('button_label', parent::buttonLabel()));
+		return FText::_($this->getParams()->get('button_label', parent::buttonLabel()));
 	}
 
 	/**
@@ -483,7 +483,7 @@ class PlgFabrik_ListUpdate_Col extends PlgFabrik_List
 		JText::script('PLG_LIST_UPDATE_COL_UPDATE');
 		$html = array();
 		$fieldNames = array();
-		$options[] = '<option value="">' . JText::_('COM_FABRIK_PLEASE_SELECT') . '</option>';
+		$options[] = '<option value="">' . FText::_('COM_FABRIK_PLEASE_SELECT') . '</option>';
 		$form = $model->getFormModel();
 		$groups = $form->getGroupsHiarachy();
 		$gkeys = array_keys($groups);
@@ -515,14 +515,14 @@ class PlgFabrik_ListUpdate_Col extends PlgFabrik_List
 		$class = $j3 ? 'table table-striped' : 'fabrikList';
 		$html[] = '<table class="' . $class . '" style="width:100%">';
 		$html[] = '<thead>';
-		$html[] = '<tr><th>' . JText::_('COM_FABRIK_ELEMENT') . '</th><th>' . JText::_('COM_FABRIK_VALUE') . '</th><th>' . $add . '</th><tr>';
+		$html[] = '<tr><th>' . FText::_('COM_FABRIK_ELEMENT') . '</th><th>' . FText::_('COM_FABRIK_VALUE') . '</th><th>' . $add . '</th><tr>';
 		$html[] = '</thead>';
 
 		$html[] = '<tbody>';
 		$html[] = '<tr><td>' . $elements . '</td><td class="update_col_value"></th><td><div class="btn-group">' . $add . $del . '</div></td></tr>';
 		$html[] = '</tbody>';
 		$html[] = '</table>';
-		$html[] = '<input class="button btn button-primary" value="' . JText::_('COM_FABRIK_APPLY') . '" type="button">';
+		$html[] = '<input class="button btn button-primary" value="' . FText::_('COM_FABRIK_APPLY') . '" type="button">';
 		$html[] = '</form>';
 
 		return implode("\n", $html);

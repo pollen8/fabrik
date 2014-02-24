@@ -1058,7 +1058,7 @@ class PlgFabrik_Element extends FabrikPlugin
 
 	public function getValidationErr()
 	{
-		return JText::_($this->validationError);
+		return FText::_($this->validationError);
 	}
 
 	/**
@@ -1244,14 +1244,14 @@ class PlgFabrik_Element extends FabrikPlugin
 			{
 				foreach ($default as &$d)
 				{
-					$d = JText::_($d);
+					$d = FText::_($d);
 				}
 
 				$this->default = $default;
 			}
 			else
 			{
-				$this->default = JText::_($default);
+				$this->default = FText::_($default);
 			}
 		}
 
@@ -1527,7 +1527,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		$element = $this->getElement();
 		$label = $params->get('alt_list_heading') == '' ? $element->label : $params->get('alt_list_heading');
 
-		return JText::_($label);
+		return FText::_($label);
 	}
 
 	/**
@@ -1595,22 +1595,7 @@ class PlgFabrik_Element extends FabrikPlugin
 				$str .= '<span class="' . $labelClass . ' faux-label">';
 			}
 
-			/**
-			 * $$$ hugh JText::_() does funky stuff to strings with commas in them, if what
-			 * follows the first comma is all "upper case".  But it tests for that using non
-			 * MB safe code, so any non ASCII strings (like Greek text) with a comma in them
-			 * get truncated at the comma.  Corner case or what!  But for now, just don't run
-			 * any label with a comma in it through JText!
-			 */
-
-			if ((strpos($element->label, ',') === false))
-			{
-				$labelText = JText::_($element->label);
-			}
-			else
-			{
-				$labelText = $element->label;
-			}
+			$labelText = FText::_($element->label);
 
 			$labelText = $labelText == '' ? '&nbsp;' : $labelText;
 			$l = $j3 ? '' : $labelText;
@@ -1716,7 +1701,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		{
 			if ($this->validator->hasValidations())
 			{
-				$opts->heading = JText::_('COM_FABRIK_VALIDATION');
+				$opts->heading = FText::_('COM_FABRIK_VALIDATION');
 			}
 		}
 
@@ -1814,7 +1799,7 @@ class PlgFabrik_Element extends FabrikPlugin
 			$tip = $res;
 		}
 
-		$tip = JText::_($tip);
+		$tip = FText::_($tip);
 
 		return $tip;
 	}
@@ -1986,7 +1971,7 @@ class PlgFabrik_Element extends FabrikPlugin
 			{
 				if ($groupListModel->fieldExists($rule->name))
 				{
-					return JError::raiseWarning(500, JText::_('COM_FABRIK_ELEMENT_NAME_IN_USE'));
+					return JError::raiseWarning(500, FText::_('COM_FABRIK_ELEMENT_NAME_IN_USE'));
 				}
 			}
 
@@ -2627,7 +2612,7 @@ class PlgFabrik_Element extends FabrikPlugin
 
 		if ($params->get('placeholder', '') !== '')
 		{
-			$bits['placeholder'] = JText::_($params->get('placeholder'));
+			$bits['placeholder'] = FText::_($params->get('placeholder'));
 		}
 
 		if ($params->get('autocomplete', 1) == 0)
@@ -3283,10 +3268,10 @@ class PlgFabrik_Element extends FabrikPlugin
 
 		if ($type === 'list')
 		{
-			$return[] = JText::_('COM_FABRIK_BETWEEN');
+			$return[] = FText::_('COM_FABRIK_BETWEEN');
 			$return[] = JHTML::_('select.genericlist', $rows, $v . '[0]', $attribs, 'value', 'text', $def0, $element->name . '_filter_range_0');
 
-			$return[] = '<br /> ' . JText::_('COM_FABRIK_AND') . ' ';
+			$return[] = '<br /> ' . FText::_('COM_FABRIK_AND') . ' ';
 			$return[] = JHTML::_('select.genericlist', $rows, $v . '[1]', $attribs, 'value', 'text', $def1, $element->name . '_filter_range_1');
 		}
 		else
@@ -3359,7 +3344,7 @@ class PlgFabrik_Element extends FabrikPlugin
 	{
 		$params = $this->getParams();
 
-		return $params->get('filter_required') == 1 ? JText::_('COM_FABRIK_PLEASE_SELECT') : JText::_('COM_FABRIK_FILTER_PLEASE_SELECT');
+		return $params->get('filter_required') == 1 ? FText::_('COM_FABRIK_PLEASE_SELECT') : FText::_('COM_FABRIK_FILTER_PLEASE_SELECT');
 	}
 
 	/**
@@ -3489,7 +3474,7 @@ class PlgFabrik_Element extends FabrikPlugin
 			 **/
 			if (!is_array($phpOpts) || !$phpOpts[0] || !is_object($phpOpts[0]) || !$phpOpts[0]->value || !$phpOpts[0]->text)
 			{
-				FabrikWorker::logError(sprintf(JText::_('COM_FABRIK_ELEMENT_SUBOPTION_ERROR'), $this->element->name, var_export($phpOpts, true)), 'error');
+				FabrikWorker::logError(sprintf(FText::_('COM_FABRIK_ELEMENT_SUBOPTION_ERROR'), $this->element->name, var_export($phpOpts, true)), 'error');
 
 				return array();
 			}
@@ -3530,7 +3515,7 @@ class PlgFabrik_Element extends FabrikPlugin
 			 **/
 			if (!is_array($phpOpts) || !$phpOpts[0] || !is_object($phpOpts[0]) || !$phpOpts[0]->value || !$phpOpts[0]->text)
 			{
-				FabrikWorker::logError(sprintf(JText::_('COM_FABRIK_ELEMENT_SUBOPTION_ERROR'), $this->element->name, var_export($phpOpts, true)), 'error');
+				FabrikWorker::logError(sprintf(FText::_('COM_FABRIK_ELEMENT_SUBOPTION_ERROR'), $this->element->name, var_export($phpOpts, true)), 'error');
 
 				return array();
 			}
@@ -3545,7 +3530,7 @@ class PlgFabrik_Element extends FabrikPlugin
 
 		foreach ($opts as &$opt)
 		{
-			$opt = JText::_($opt);
+			$opt = FText::_($opt);
 		}
 
 		return $opts;
@@ -3829,7 +3814,7 @@ class PlgFabrik_Element extends FabrikPlugin
 				$return[] = $this->getROElement($d);
 			}
 
-			return JText::_('COM_FABRIK_BETWEEN') . '<br />' . implode('<br />' . JText::_('COM_FABRIK_AND') . "<br />", $return);
+			return FText::_('COM_FABRIK_BETWEEN') . '<br />' . implode('<br />' . FText::_('COM_FABRIK_AND') . "<br />", $return);
 		}
 
 		return $this->getROElement($data);
@@ -4806,7 +4791,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		$splitSum = $params->get('sum_split', '');
 		list($groupBys, $groupByLabels) = $this->calcGroupBys('sum_split', $listModel);
 		$split = empty($groupBys) ? false : true;
-		$calcLabel = $params->get('sum_label', JText::_('COM_FABRIK_SUM'));
+		$calcLabel = $params->get('sum_label', FText::_('COM_FABRIK_SUM'));
 
 		if ($split)
 		{
@@ -4826,7 +4811,7 @@ class PlgFabrik_Element extends FabrikPlugin
 
 			$uberObject = new stdClass;
 			$uberObject->value = $uberTotal;
-			$uberObject->label = JText::_('COM_FABRIK_TOTAL');
+			$uberObject->label = FText::_('COM_FABRIK_TOTAL');
 			$uberObject->class = 'splittotal';
 			$uberObject->special = true;
 			$results2[] = $uberObject;
@@ -4862,7 +4847,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		$params = $this->getParams();
 		$splitAvg = $params->get('avg_split', '');
 		$item = $listModel->getTable();
-		$calcLabel = $params->get('avg_label', JText::_('COM_FABRIK_AVERAGE'));
+		$calcLabel = $params->get('avg_label', FText::_('COM_FABRIK_AVERAGE'));
 		list($groupBys, $groupByLabels) = $this->calcGroupBys('avg_split', $listModel);
 
 		$split = empty($groupBys) ? false : true;
@@ -4885,7 +4870,7 @@ class PlgFabrik_Element extends FabrikPlugin
 
 			$uberObject = new stdClass;
 			$uberObject->value = $uberTotal / count($results2);
-			$uberObject->label = JText::_('COM_FABRIK_AVERAGE');
+			$uberObject->label = FText::_('COM_FABRIK_AVERAGE');
 			$uberObject->special = true;
 			$uberObject->class = 'splittotal';
 			$results2[] = $uberObject;
@@ -4944,7 +4929,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		$split = empty($groupBys) ? false : true;
 		$format = $this->getFormatString();
 		$res = '';
-		$calcLabel = $params->get('median_label', JText::_('COM_FABRIK_MEDIAN'));
+		$calcLabel = $params->get('median_label', FText::_('COM_FABRIK_MEDIAN'));
 		$results = array();
 
 		if ($split)
@@ -4999,7 +4984,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		$item = $listModel->getTable();
 		$element = $this->getElement();
 		$params = $this->getParams();
-		$calcLabel = $params->get('count_label', JText::_('COM_FABRIK_COUNT'));
+		$calcLabel = $params->get('count_label', FText::_('COM_FABRIK_COUNT'));
 		$splitCount = $params->get('count_split', '');
 
 		list($groupBys, $groupByLabels) = $this->calcGroupBys('count_split', $listModel);
@@ -5032,11 +5017,11 @@ class PlgFabrik_Element extends FabrikPlugin
 
 			$uberObject = new stdClass;
 			$uberObject->value = count($results2) == 0 ? 0 : $uberTotal;
-			$uberObject->label = JText::_('COM_FABRIK_TOTAL');
+			$uberObject->label = FText::_('COM_FABRIK_TOTAL');
 			$uberObject->class = 'splittotal';
 			$uberObject->special = true;
 			$results = $this->formatCalcSplitLabels($results2, $plugin, 'count');
-			$results[JText::_('COM_FABRIK_TOTAL')] = $uberObject;
+			$results[FText::_('COM_FABRIK_TOTAL')] = $uberObject;
 		}
 		else
 		{
@@ -5068,7 +5053,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		$item = $listModel->getTable();
 		$splitCustom = $params->get('custom_calc_split', '');
 		$split = $splitCustom == '' ? false : true;
-		$calcLabel = $params->get('custom_calc_label', JText::_('COM_FABRIK_CUSTOM'));
+		$calcLabel = $params->get('custom_calc_label', FText::_('COM_FABRIK_CUSTOM'));
 
 		if ($split)
 		{
@@ -5903,21 +5888,21 @@ class PlgFabrik_Element extends FabrikPlugin
 		$labelid = $id . '_ddLabel';
 		$value = '<input class="inputbox text" id="' . $valueid . '" name="addPicklistValue" />';
 		$label = '<input class="inputbox text" id="' . $labelid . '" name="addPicklistLabel" />';
-		$str[] = '<a href="#" title="' . JText::_('COM_FABRIK_ADD') . '" class="btn btn-info toggle-addoption">';
-		$str[] = FabrikHelperHTML::image('plus.png', 'form', @$this->tmpl, array('alt' => JText::_('COM_FABRIK_ADD')));
+		$str[] = '<a href="#" title="' . FText::_('COM_FABRIK_ADD') . '" class="btn btn-info toggle-addoption">';
+		$str[] = FabrikHelperHTML::image('plus.png', 'form', @$this->tmpl, array('alt' => FText::_('COM_FABRIK_ADD')));
 		$str[] = '</a>';
 		$str[] = '<div style="clear:left">';
-		$str[] = '<div class="addoption"><div>' . JText::_('COM_FABRIK_ADD_A_NEW_OPTION_TO_THOSE_ABOVE') . '</div>';
+		$str[] = '<div class="addoption"><div>' . FText::_('COM_FABRIK_ADD_A_NEW_OPTION_TO_THOSE_ABOVE') . '</div>';
 
 		if (!$params->get('allowadd-onlylabel') && $params->get('savenewadditions'))
 		{
 			// $$$ rob don't wrap in <dl> as the html is munged when rendered inside form tab template
-			$str[] = '<label for="' . $valueid . '">' . JText::_('COM_FABRIK_VALUE') . '</label>';
+			$str[] = '<label for="' . $valueid . '">' . FText::_('COM_FABRIK_VALUE') . '</label>';
 			$str[] = $value;
 
 			if (!$onlylabel)
 			{
-				$str[] = '<label for="' . $labelid . '">' . JText::_('COM_FABRIK_LABEL') . '</label>';
+				$str[] = '<label for="' . $labelid . '">' . FText::_('COM_FABRIK_LABEL') . '</label>';
 				$str[] = $label;
 			}
 		}
@@ -5926,7 +5911,7 @@ class PlgFabrik_Element extends FabrikPlugin
 			$str[] = $label;
 		}
 
-		$str[] = '<input class="button btn btn-success" type="button" id="' . $id . '_dd_add_entry" value="' . JText::_('COM_FABRIK_ADD') . '" />';
+		$str[] = '<input class="button btn btn-success" type="button" id="' . $id . '_dd_add_entry" value="' . FText::_('COM_FABRIK_ADD') . '" />';
 		$str[] = $this->getHiddenField($id . "_additions", '', $id . "_additions");
 		$str[] = '</div>';
 		$str[] = '</div>';

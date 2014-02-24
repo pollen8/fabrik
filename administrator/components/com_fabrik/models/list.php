@@ -194,7 +194,7 @@ class FabrikAdminModelList extends FabModelAdmin
 				{
 					// Prune items that you can't change.
 					unset($pks[$i]);
-					JError::raiseWarning(403, JText::_('JLIB_APPLICATION_ERROR_EDIT_STATE_NOT_PERMITTED'));
+					JError::raiseWarning(403, FText::_('JLIB_APPLICATION_ERROR_EDIT_STATE_NOT_PERMITTED'));
 				}
 			}
 		}
@@ -288,15 +288,15 @@ class FabrikAdminModelList extends FabModelAdmin
 				$aConditions[] = JHTML::_('select.option', 'in', 'IN');
 				$aConditions[] = JHTML::_('select.option', 'not_in', 'NOT IN');
 				$aConditions[] = JHTML::_('select.option', 'exists', 'EXISTS');
-				$aConditions[] = JHTML::_('select.option', 'earlierthisyear', JText::_('COM_FABRIK_EARLIER_THIS_YEAR'));
-				$aConditions[] = JHTML::_('select.option', 'laterthisyear', JText::_('COM_FABRIK_LATER_THIS_YEAR'));
+				$aConditions[] = JHTML::_('select.option', 'earlierthisyear', FText::_('COM_FABRIK_EARLIER_THIS_YEAR'));
+				$aConditions[] = JHTML::_('select.option', 'laterthisyear', FText::_('COM_FABRIK_LATER_THIS_YEAR'));
 
-				$aConditions[] = JHTML::_('select.option', 'yesterday', JText::_('COM_FABRIK_YESTERDAY'));
-				$aConditions[] = JHTML::_('select.option', 'today', JText::_('COM_FABRIK_TODAY'));
-				$aConditions[] = JHTML::_('select.option', 'tomorrow', JText::_('COM_FABRIK_TOMORROW'));
-				$aConditions[] = JHTML::_('select.option', 'thismonth', JText::_('COM_FABRIK_THIS_MONTH'));
-				$aConditions[] = JHTML::_('select.option', 'lastmonth', JText::_('COM_FABRIK_LAST_MONTH'));
-				$aConditions[] = JHTML::_('select.option', 'nextmonth', JText::_('COM_FABRIK_NEXT_MONTH'));
+				$aConditions[] = JHTML::_('select.option', 'yesterday', FText::_('COM_FABRIK_YESTERDAY'));
+				$aConditions[] = JHTML::_('select.option', 'today', FText::_('COM_FABRIK_TODAY'));
+				$aConditions[] = JHTML::_('select.option', 'tomorrow', FText::_('COM_FABRIK_TOMORROW'));
+				$aConditions[] = JHTML::_('select.option', 'thismonth', FText::_('COM_FABRIK_THIS_MONTH'));
+				$aConditions[] = JHTML::_('select.option', 'lastmonth', FText::_('COM_FABRIK_LAST_MONTH'));
+				$aConditions[] = JHTML::_('select.option', 'nextmonth', FText::_('COM_FABRIK_NEXT_MONTH'));
 
 				break;
 		}
@@ -364,9 +364,9 @@ class FabrikAdminModelList extends FabModelAdmin
 		JText::script('COM_FABRIK_PUBLISHED');
 
 		$joinTypeOpts = array();
-		$joinTypeOpts[] = array('inner', JText::_('INNER JOIN'));
-		$joinTypeOpts[] = array('left', JText::_('LEFT JOIN'));
-		$joinTypeOpts[] = array('right', JText::_('RIGHT JOIN'));
+		$joinTypeOpts[] = array('inner', FText::_('INNER JOIN'));
+		$joinTypeOpts[] = array('left', FText::_('LEFT JOIN'));
+		$joinTypeOpts[] = array('right', FText::_('RIGHT JOIN'));
 		$activetableOpts[] = "";
 		$activetableOpts[] = $item->db_table_name;
 
@@ -602,7 +602,7 @@ class FabrikAdminModelList extends FabModelAdmin
 
 		if (empty($data['_database_name']) && JArrayHelper::getValue($data, 'db_table_name') == '')
 		{
-			$this->setError(JText::_('COM_FABRIK_SELECT_DB_OR_ENTER_NAME'));
+			$this->setError(FText::_('COM_FABRIK_SELECT_DB_OR_ENTER_NAME'));
 
 			return false;
 		}
@@ -690,14 +690,14 @@ class FabrikAdminModelList extends FabModelAdmin
 			// Check the entered database table doesnt already exist
 			if ($newtable != '' && $this->databaseTableExists($newtable))
 			{
-				throw new RuntimeException(JText::_('COM_FABRIK_DATABASE_TABLE_ALREADY_EXISTS'));
+				throw new RuntimeException(FText::_('COM_FABRIK_DATABASE_TABLE_ALREADY_EXISTS'));
 
 				return false;
 			}
 
 			if (!$this->canCreateDbTable())
 			{
-				throw new RuntimeException(JText::_('COM_FABRIK_INSUFFICIENT_RIGHTS_TO_CREATE_TABLE'));
+				throw new RuntimeException(FText::_('COM_FABRIK_INSUFFICIENT_RIGHTS_TO_CREATE_TABLE'));
 
 				return false;
 			}
@@ -1429,8 +1429,8 @@ class FabrikAdminModelList extends FabModelAdmin
 			$form->created = $createdate;
 			$form->created_by = $user->get('id');
 			$form->created_by_alias = $user->get('username');
-			$form->error = JText::_('COM_FABRIK_FORM_ERROR_MSG_TEXT');
-			$form->submit_button_label = JText::_('COM_FABRIK_SAVE');
+			$form->error = FText::_('COM_FABRIK_FORM_ERROR_MSG_TEXT');
+			$form->submit_button_label = FText::_('COM_FABRIK_SAVE');
 			$form->published = $item->published;
 
 			$version = new JVersion;
@@ -2058,7 +2058,7 @@ class FabrikAdminModelList extends FabModelAdmin
 					// Prune items that you can't change.
 					unset($pks[$i]);
 
-					return JError::raiseWarning(403, JText::_('JLIB_APPLICATION_ERROR_EDIT_STATE_NOT_PERMITTED'));
+					return JError::raiseWarning(403, FText::_('JLIB_APPLICATION_ERROR_EDIT_STATE_NOT_PERMITTED'));
 				}
 
 				switch ($deleteDepth)
