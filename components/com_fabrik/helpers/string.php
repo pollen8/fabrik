@@ -717,7 +717,7 @@ class FText extends JText
 	{
 		if ((strpos($string, ',') === false))
 		{
-			$string = FText::_($string, $jsSafe, $interpretBackSlashes, $script);
+			$string = parent::_($string, $jsSafe, $interpretBackSlashes, $script);
 		}
 
 		return $string;
