@@ -138,6 +138,13 @@ class FabrikAdminViewLists extends JViewLegacy
 		}
 
 		JToolBarHelper::divider();
+		
+		if (JFactory::getUser()->authorise('core.manage', 'com_checkin'))
+		{
+			JToolBarHelper::custom('lists.checkin', 'checkin.png', 'checkin_f2.png', 'JTOOLBAR_CHECKIN', true);
+		}
+		
+		JToolBarHelper::divider();
 
 		if ($this->state->get('filter.published') == -2 && $canDo->get('core.delete'))
 		{
