@@ -688,7 +688,7 @@ class FabrikString extends JString
 }
 /**
  *
- * $$$ hugh FText::_() does funky stuff to strings with commas in them, if what
+ * $$$ hugh JText::_() does funky stuff to strings with commas in them, if what
  * follows the first comma is all "upper case".  But it tests for that using non
  * MB safe code, so any non ASCII strings (like Greek text) with a comma in them
  * get truncated at the comma.  Corner case or what!  But for now, just don't run
