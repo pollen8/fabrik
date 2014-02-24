@@ -982,7 +982,7 @@ class FabrikFEModelGroup extends FabModel
 		}
 
 		$groupTable->label = $label;
-		$group->title = $w->parseMessageForPlaceHolder($groupTable->label, $formModel->data, false);
+		$group->title = $w->parseMessageForPlaceHolder($groupTable->label, $formModel->_data, false);
 		$group->title = JText::_($group->title);
 		$group->name = $groupTable->name;
 		$group->displaystate = ($group->canRepeat == 1 && $formModel->isEditable()) ? 1 : 0;
