@@ -88,7 +88,7 @@ class FabrikFEModelGroup extends FabModel
 	/**
 	 * How many times the group's data is repeated
 	 *
-	 *  @var int
+	 * @var int
 	 */
 	public $repeatTotal = null;
 
@@ -107,10 +107,10 @@ class FabrikFEModelGroup extends FabModel
 	protected $canView = null;
 
 	/**
-	* Can the group be edited (if false, will override element ACL's and make all elements read only)
-	*
-	* @var bool
-	*/
+	 * Can the group be edited (if false, will override element ACL's and make all elements read only)
+	 *
+	 * @var bool
+	 */
 	protected $canEdit = null;
 
 	/**
@@ -172,10 +172,10 @@ class FabrikFEModelGroup extends FabModel
 	}
 
 	/**
-	* Can the user edit the group
-	*
-	* @return   bool
-	*/
+	 * Can the user edit the group
+	 *
+	 * @return   bool
+	 */
 
 	public function canEdit()
 	{
@@ -188,6 +188,7 @@ class FabrikFEModelGroup extends FabModel
 		{
 			return $this->canEdit;
 		}
+
 		$params = $this->getParams();
 		$this->canEdit = true;
 
@@ -195,12 +196,13 @@ class FabrikFEModelGroup extends FabModel
 		if ($params->get('repeat_group_show_first', '1') == '5')
 		{
 			$this->canEdit = false;
+
 			return $this->canEdit;
 		}
 
 		$formModel = $this->getFormModel();
-
 		$pluginCanEdit = FabrikWorker::getPluginManager()->runPlugins('onCanEditGroup', $formModel, 'form', $this);
+
 		if (empty($pluginCanEdit))
 		{
 			$pluginCanEdit = true;
@@ -209,6 +211,7 @@ class FabrikFEModelGroup extends FabModel
 		{
 			$pluginCanEdit = !in_array(false, $pluginCanEdit);
 		}
+
 		$this->canEdit = $pluginCanEdit;
 
 		return $this->canEdit;
@@ -229,13 +232,16 @@ class FabrikFEModelGroup extends FabModel
 		{
 			return true;
 		}
+
 		if (!is_null($this->canView))
 		{
 			return $this->canView;
 		}
+
 		$params = $this->getParams();
 		$elementModels = $this->getPublishedElements();
 		$this->canView = false;
+
 		foreach ($elementModels as $elementModel)
 		{
 			// $$$ hugh - added canUse() check, corner case, see:
@@ -244,6 +250,7 @@ class FabrikFEModelGroup extends FabModel
 			{
 				continue;
 			}
+
 			$this->canView = true;
 			break;
 		}
@@ -252,11 +259,12 @@ class FabrikFEModelGroup extends FabModel
 		$user = JFactory::getUser();
 		$groups = $user->getAuthorisedViewLevels();
 		$groupAccess = $params->get('access', '');
+
 		if ($groupAccess !== '')
 		{
 			$this->canView = in_array($groupAccess, $groups);
 
-			// If the user can't access the group return that and ingore repeat_group_show_first option
+			// If the user can't access the group return that and ignore repeat_group_show_first option
 			if (!$this->canView)
 			{
 				return $this->canView;
@@ -272,6 +280,7 @@ class FabrikFEModelGroup extends FabModel
 		 */
 		$formModel = $this->getFormModel();
 		$showGroup = $params->get('repeat_group_show_first', '1');
+
 		if ($showGroup == 0)
 		{
 			$this->canView = false;
@@ -323,11 +332,9 @@ class FabrikFEModelGroup extends FabModel
 			$query->select('form_id')->from('#__{package}_formgroup')->where('group_id = ' . (int) $this->getId());
 			$db->setQuery($query);
 			$this->formsIamIn = $db->loadColumn();
-			if (!$db->execute())
-			{
-				return JError::raiseError(500, $db->getErrorMsg());
-			}
+			$db->execute();
 		}
+
 		return $this->formsIamIn;
 	}
 
@@ -350,6 +357,7 @@ class FabrikFEModelGroup extends FabModel
 			$pluginManager = FabrikWorker::getPluginManager();
 			$formModel = $this->getFormModel();
 			$allGroups = $pluginManager->getFormPlugins($formModel);
+
 			if (empty($this->elements))
 			{
 				// Horrible hack for when saving group
@@ -361,6 +369,7 @@ class FabrikFEModelGroup extends FabModel
 				$this->elements = @$allGroups[$this->getId()]->elements;
 			}
 		}
+
 		return $this->elements;
 	}
 
@@ -378,16 +387,18 @@ class FabrikFEModelGroup extends FabModel
 		{
 			$keys = array_keys($elements);
 			shuffle($keys);
+
 			foreach ($keys as $key)
 			{
 				$new[$key] = $elements[$key];
 			}
+
 			$elements = $new;
 		}
 	}
 
 	/**
-	 * Set the element column css allows for group colum settings to be applied
+	 * Set the element column css allows for group column settings to be applied
 	 *
 	 * @param   object  &$element  prerender element properties
 	 * @param   int     $elCount   current key when looping over elements.
@@ -405,6 +416,7 @@ class FabrikFEModelGroup extends FabModel
 
 		// Bootstrap grid formatting
 		$spans = $this->columnSpans();
+
 		if ($colcount === 0)
 		{
 			$colcount = 1;
@@ -418,16 +430,20 @@ class FabrikFEModelGroup extends FabModel
 
 		$element->startRow = false;
 		$element->endRow = false;
+
 		if ($colcount > 1)
 		{
 			$widths = $params->get('group_column_widths', '');
 			$w = floor((100 - ($colcount * 6)) / $colcount) . '%';
+
 			if ($widths !== '')
 			{
 				$widths = explode(',', $widths);
 				$w = JArrayHelper::getValue($widths, ($elCount - 1) % $colcount, $w);
 			}
+
 			$element->column = ' style="float:left;width:' . $w . ';';
+
 			if ($elCount !== 0 && (($elCount - 1) % $colcount == 0) || $element->hidden)
 			{
 				$element->startRow = 1;
@@ -445,6 +461,7 @@ class FabrikFEModelGroup extends FabModel
 					$element->endRow = 1;
 				}
 			}
+
 			$element->column .= '" ';
 		}
 		else
@@ -459,6 +476,7 @@ class FabrikFEModelGroup extends FabModel
 		{
 			$elCount++;
 		}
+
 		return $elCount;
 	}
 
@@ -476,11 +494,14 @@ class FabrikFEModelGroup extends FabModel
 	{
 		$params = $this->getParams();
 		$widths = $params->get('group_column_widths', '');
+
 		if (trim($widths) === '')
 		{
 			return;
 		}
+
 		$widths = explode(',', $widths);
+
 		if (FabrikWorker::j3())
 		{
 			foreach ($widths as &$w)
@@ -489,14 +510,17 @@ class FabrikFEModelGroup extends FabModel
 				{
 					$w = 6;
 				}
+
 				if (strstr($w, '%'))
 				{
 					$w = (int) str_replace('%', '', $w);
 					$w = floor(($w / 100) * 12);
 				}
+
 				$w = ' span' . $w;
 			}
 		}
+
 		return $widths;
 	}
 
@@ -530,6 +554,7 @@ class FabrikFEModelGroup extends FabModel
 			$this->_form->getForm();
 			$this->_form->getlistModel();
 		}
+
 		return $this->_form;
 	}
 
@@ -558,16 +583,20 @@ class FabrikFEModelGroup extends FabModel
 		{
 			$this->publishedElements = array();
 		}
+
 		$app = JFactory::getApplication();
 		$ids = (array) $app->input->get('elementid', array(), 'array');
 		$sig = implode('.', $ids);
+
 		if (!array_key_exists($sig, $this->publishedElements))
 		{
 			$this->publishedElements[$sig] = array();
 			$elements = $this->getMyElements();
+
 			foreach ($elements as $elementModel)
 			{
 				$element = $elementModel->getELement();
+
 				if ($element->published == 1)
 				{
 					if (empty($ids) || in_array($element->id, $ids))
@@ -577,6 +606,7 @@ class FabrikFEModelGroup extends FabModel
 				}
 			}
 		}
+
 		return $this->publishedElements[$sig];
 	}
 
@@ -595,6 +625,7 @@ class FabrikFEModelGroup extends FabModel
 		{
 			$this->listQueryElements = array();
 		}
+
 		$app = JFactory::getApplication();
 		$input = $app->input;
 
@@ -602,11 +633,13 @@ class FabrikFEModelGroup extends FabModel
 		// its an array of element ids that should be show. Overrides default element 'show_in_list' setting.
 		$showInList = $input->get('fabrik_show_in_list', array(), 'array');
 		$sig = empty($showInList) ? 0 : implode('.', $showInList);
+
 		if (!array_key_exists($sig, $this->listQueryElements))
 		{
 			$this->listQueryElements[$sig] = array();
 			$elements = $this->getMyElements();
 			$joins = $this->getListModel()->getJoins();
+
 			foreach ($elements as $elementModel)
 			{
 				$element = $elementModel->getElement();
@@ -670,6 +703,7 @@ class FabrikFEModelGroup extends FabModel
 				}
 			}
 		}
+
 		return $this->listQueryElements[$sig];
 	}
 
@@ -685,6 +719,7 @@ class FabrikFEModelGroup extends FabModel
 		{
 			$this->publishedListElements = array();
 		}
+
 		$app = JFactory::getApplication();
 		$input = $app->input;
 
@@ -692,13 +727,16 @@ class FabrikFEModelGroup extends FabModel
 		// its an array of element ids that should be show. Overrides default element 'show_in_list' setting.
 		$showInList = (array) $input->get('fabrik_show_in_list', array(), 'array');
 		$sig = empty($showInList) ? 0 : implode('.', $showInList);
+
 		if (!array_key_exists($sig, $this->publishedListElements))
 		{
 			$this->publishedListElements[$sig] = array();
 			$elements = $this->getMyElements();
+
 			foreach ($elements as $elementModel)
 			{
 				$element = $elementModel->getElement();
+
 				if ($element->published == 1 && $elementModel->canView('list'))
 				{
 					if (empty($showInList))
@@ -718,6 +756,7 @@ class FabrikFEModelGroup extends FabModel
 				}
 			}
 		}
+
 		return $this->publishedListElements[$sig];
 	}
 
@@ -730,6 +769,7 @@ class FabrikFEModelGroup extends FabModel
 	public function canRepeat()
 	{
 		$params = $this->getParams();
+
 		return $params->get('repeat_group_button');
 	}
 
@@ -745,14 +785,15 @@ class FabrikFEModelGroup extends FabModel
 	{
 		$params = $this->getParams();
 		$ok = $this->canRepeat();
+
 		if ($ok)
 		{
 			$user = JFactory::getUser();
 			$groups = $user->getAuthorisedViewLevels();
 			$ok = in_array($params->get('repeat_add_access', 1), $groups);
 		}
-		return $ok;
 
+		return $ok;
 	}
 
 	/**
@@ -766,11 +807,13 @@ class FabrikFEModelGroup extends FabModel
 	public function canDeleteRepeat()
 	{
 		$ok = false;
+
 		if ($this->canRepeat())
 		{
 			$params = $this->getParams();
 			$row = $this->getFormModel()->getData();
 			$ok = FabrikWorker::canUserDo($params, $row, 'repeat_delete_access_user');
+
 			if ($ok === -1)
 			{
 				$user = JFactory::getUser();
@@ -778,18 +821,20 @@ class FabrikFEModelGroup extends FabModel
 				$ok = in_array($params->get('repeat_delete_access', 1), $groups);
 			}
 		}
+
 		return $ok;
 	}
 
 	/**
-	* Is the group a repeat group
-	*
-	* @return  bool
-	*/
+	 * Is the group a repeat group
+	 *
+	 * @return  bool
+	 */
 
 	public function canCopyElementValues()
 	{
 		$params = $this->getParams();
+
 		return $params->get('repeat_copy_element_values', '0') === '1';
 	}
 
@@ -816,6 +861,7 @@ class FabrikFEModelGroup extends FabModel
 		{
 			return false;
 		}
+
 		return $this->getGroup()->join_id;
 	}
 
@@ -828,6 +874,7 @@ class FabrikFEModelGroup extends FabModel
 	public function getJoinModel()
 	{
 		$group = $this->getGroup();
+
 		if (is_null($this->_joinModel))
 		{
 			$this->_joinModel = JModel::getInstance('Join', 'FabrikFEModel');
@@ -846,6 +893,7 @@ class FabrikFEModelGroup extends FabModel
 
 			$this->_joinModel->getJoin();
 		}
+
 		return $this->_joinModel;
 	}
 
@@ -861,6 +909,7 @@ class FabrikFEModelGroup extends FabModel
 		{
 			$this->params = new JRegistry($this->getGroup()->params);
 		}
+
 		return $this->params;
 	}
 
@@ -876,9 +925,11 @@ class FabrikFEModelGroup extends FabModel
 	public function getGroupProperties(&$formModel)
 	{
 		$w = new FabrikWorker;
+		$input = JFactory::getApplication()->input;
 		$group = new stdClass;
 		$groupTable = $this->getGroup();
 		$params = $this->getParams();
+
 		if (!isset($this->_editable))
 		{
 			$this->_editable = $formModel->isEditable();
@@ -888,6 +939,7 @@ class FabrikFEModelGroup extends FabModel
 			// If all of the groups elements are not editable then set the group to uneditable
 			$elements = $this->getPublishedElements();
 			$editable = false;
+
 			foreach ($elements as $element)
 			{
 				if ($element->canUse())
@@ -900,32 +952,38 @@ class FabrikFEModelGroup extends FabModel
 				$this->_editable = false;
 			}
 		}
+
 		$group->editable = $this->_editable;
 		$group->canRepeat = $params->get('repeat_group_button', '0');
 		$showGroup = $params->def('repeat_group_show_first', '1');
-
 		$pages = $formModel->getPages();
-
 		$startpage = isset($formModel->sessionModel->last_page) ? $formModel->sessionModel->last_page : 0;
 		/**
 		 * $$$ hugh - added array_key_exists for (I think!) corner case where group properties have been
 		 * changed to remove (or change) paging, but user still has session state set.  So it was throwing
 		 * a PHP 'undefined index' notice.
 		 */
-		if (array_key_exists($startpage, $pages) && is_array($pages[$startpage]) && !in_array($groupTable->id, $pages[$startpage]) || $showGroup == -1 || $showGroup == 0)
+
+		if (array_key_exists($startpage, $pages) && is_array($pages[$startpage])
+			&& !in_array($groupTable->id, $pages[$startpage]) || $showGroup == -1 || $showGroup == 0)
 		{
 			$groupTable->css .= ";display:none;";
 		}
+
 		$group->css = trim(str_replace(array("<br />", "<br>"), "", $groupTable->css));
 		$group->id = $groupTable->id;
 
-		if (JString::stristr($groupTable->label, "{Add/Edit}"))
-		{
-			$replace = ((int) $formModel->_rowId === 0) ? JText::_('COM_FABRIK_ADD') : JText::_('COM_FABRIK_EDIT');
-			$groupTable->label = str_replace("{Add/Edit}", $replace, $groupTable->label);
-		}
-		$group->title = $w->parseMessageForPlaceHolder($groupTable->label, $formModel->_data, false);
+		$label = $input->getString('group' . $group->id . '_label', $groupTable->label);
 
+		if (JString::stristr($label, "{Add/Edit}"))
+		{
+			$replace = $formModel->isNewRecord() ? JText::_('COM_FABRIK_ADD') : JText::_('COM_FABRIK_EDIT');
+			$label = str_replace("{Add/Edit}", $replace, $label);
+		}
+
+		$groupTable->label = $label;
+		$group->title = $w->parseMessageForPlaceHolder($groupTable->label, $formModel->data, false);
+		$group->title = JText::_($group->title);
 		$group->name = $groupTable->name;
 		$group->displaystate = ($group->canRepeat == 1 && $formModel->isEditable()) ? 1 : 0;
 		$group->maxRepeat = (int) $params->get('repeat_max');
@@ -933,6 +991,7 @@ class FabrikFEModelGroup extends FabModel
 		$group->showMaxRepeats = $params->get('show_repeat_max', '0') == '1';
 		$group->canAddRepeat = $this->canAddRepeat();
 		$group->canDeleteRepeat = $this->canDeleteRepeat();
+
 		return $group;
 	}
 
@@ -952,20 +1011,23 @@ class FabrikFEModelGroup extends FabModel
 
 		// NewGroupNames set in table copy
 		$newNames = $input->get('newGroupNames', array(), 'array');
+
 		if (array_key_exists($group->id, $newNames))
 		{
 			$group->name = $newNames[$group->id];
 		}
+
 		$group->id = null;
 		$group->store();
-
 		$newElements = array();
+
 		foreach ($elements as $element)
 		{
 			$origElementId = $element->getElement()->id;
 			$copy = $element->copyRow($origElementId, $element->getElement()->label, $group->id);
 			$newElements[$origElementId] = $copy->id;
 		}
+
 		$this->elements = null;
 		$elements = $this->getMyElements();
 
@@ -975,11 +1037,9 @@ class FabrikFEModelGroup extends FabModel
 		$formGroup->form_id = $formid;
 		$formGroup->group_id = $group->id;
 		$formGroup->ordering = 999999;
-		if (!$formGroup->store())
-		{
-			JError::raiseError(500, $formGroup->getError());
-		}
+		$formGroup->store();
 		$formGroup->reorder(" form_id = '$formid'");
+
 		return $newElements;
 	}
 

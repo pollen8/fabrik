@@ -54,16 +54,16 @@ class PlgFabrik_Element extends FabrikPlugin
 	/**
 	 * Is an upload element
 	 *
-	 * @var bol
+	 * @var bool
 	 */
-	protected $_is_upload = 0;
+	protected $is_upload = false;
 
 	/**
 	 * Does the element's data get recorded in the db
 	 *
-	 * @var bol
+	 * @var bool
 	 */
-	protected $recordInDatabase = 1;
+	protected $recordInDatabase = true;
 
 	/**
 	 * Contain access rights
@@ -5453,7 +5453,7 @@ FROM (SELECT " . $distinct . " $item->db_primary_key, $name AS value, $label FRO
 
 	public function isUpload()
 	{
-		return $this->_is_upload;
+		return $this->is_upload;
 	}
 
 	/**

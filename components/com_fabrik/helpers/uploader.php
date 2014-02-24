@@ -4,12 +4,12 @@
  *
  * @package     Joomla
  * @subpackage  Fabrik
- * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
- * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @copyright   Copyright (C) 2005-2013 fabrikar.com - All rights reserved.
+ * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
-// Check to ensure this file is included in Joomla!
-defined('_JEXEC') or die();
+// No direct access
+defined('_JEXEC') or die('Restricted access');
 
 /**
  * Fabrik upload helper
@@ -21,13 +21,12 @@ defined('_JEXEC') or die();
 
 class FabrikUploader extends JObject
 {
-
 	/**
 	 * Form model
 	 *
 	 * @var  object
 	 */
-	protected $_form = null;
+	protected $form = null;
 
 	/**
 	 * Move uploaded file error
@@ -44,21 +43,23 @@ class FabrikUploader extends JObject
 
 	public function __construct($formModel)
 	{
-		$this->_form = $formModel;
+		$this->form = $formModel;
 	}
 
 	/**
 	 * Perform upload of files
 	 *
-	 * @return  bool true if error occured
+	 * @return  bool true if error occurred
 	 */
 
 	public function upload()
 	{
-		$groups = $this->_form->getGroupsHiarachy();
+		$groups = $this->form->getGroupsHiarachy();
+
 		foreach ($groups as $groupModel)
 		{
 			$elementModels = $groupModel->getPublishedElements();
+
 			foreach ($elementModels as $elementModel)
 			{
 				if ($elementModel->isUpload())
@@ -76,12 +77,12 @@ class FabrikUploader extends JObject
 	 * @param   string  $pathTo     Location to move file to
 	 * @param   bool    $overwrite  Should we overwrite existing files
 	 *
-	 * @deprecated (dont think its used)
+	 * @deprecated (don't think its used)
 	 *
 	 * @return  bool  do we overwrite any existing files found at pathTo?
 	 */
 
-	function move($pathFrom, $pathTo, $overwrite = true)
+	public function move($pathFrom, $pathTo, $overwrite = true)
 	{
 		if (file_exists($pathTo))
 		{
@@ -99,13 +100,14 @@ class FabrikUploader extends JObject
 		{
 			$ok = rename($pathFrom, $pathTo);
 		}
+
 		return $ok;
 	}
 
 	/**
 	 * Make a recursive folder structure
 	 *
-	 * @param   string  $folderPath  Path to folder - eg /images/stories
+	 * @param   string  $folderPath  Path to folder - e.g. /images/stories
 	 * @param   hex     $mode        Folder permissions
 	 *
 	 * @return  void
@@ -117,7 +119,7 @@ class FabrikUploader extends JObject
 		{
 			if (!JFolder::create($folderPath, $mode))
 			{
-				return JError::raiseError(21, "Could not make dir $folderPath ");
+				throw new RuntimeException("Could not make dir $folderPath ");
 			}
 		}
 	}
@@ -125,12 +127,12 @@ class FabrikUploader extends JObject
 	/**
 	 * Iterates through $_FILE data to see if any files have been uploaded
 	 *
-	 * @deprecated (dont see it being used)
+	 * @deprecated (don't see it being used)
 	 *
 	 * @return  bool  true if files uploaded
 	 */
 
-	function check()
+	public function check()
 	{
 		if (isset($_FILES) and !empty($_FILES))
 		{
@@ -142,6 +144,7 @@ class FabrikUploader extends JObject
 				}
 			}
 		}
+
 		return false;
 	}
 
@@ -160,47 +163,55 @@ class FabrikUploader extends JObject
 		if (empty($file['name']))
 		{
 			$err = 'Please input a file for upload';
+
 			return false;
 		}
 
 		if (!is_uploaded_file($file['tmp_name']))
 		{
-			// Handle potential malicous attack
+			// Handle potential malicious attack
 			$err = JText::_('File has not been uploaded');
+
 			return false;
 		}
 
 		jimport('joomla.filesystem.file');
 		$format = JString::strtolower(JFile::getExt($file['name']));
-
 		$allowable = explode(',', JString::strtolower($params->get('ul_file_types')));
-
 		$format = FabrikString::ltrimword($format, '.');
 		$format2 = ".$format";
+
 		if (!in_array($format, $allowable) && !in_array($format2, $allowable))
 		{
 			$err = 'WARNFILETYPE';
+
 			return false;
 		}
 
 		$maxSize = (int) $params->get('upload_maxsize', 0);
+
 		if ($maxSize > 0 && (int) $file['size'] > $maxSize)
 		{
 			$err = 'WARNFILETOOLARGE';
+
 			return false;
 		}
+
 		$ignored = array();
 		$user = JFactory::getUser();
 		$imginfo = null;
+
 		if ($params->get('restrict_uploads', 1))
 		{
 			$images = explode(',', $params->get('image_extensions'));
+
 			if (in_array($format, $images))
 			{
 				// If its an image run it through getimagesize
 				if (($imginfo = getimagesize($file['tmp_name'])) === false)
 				{
 					$err = 'WARNINVALIDIMG';
+
 					return false;
 				}
 			}
@@ -219,30 +230,33 @@ class FabrikUploader extends JObject
 			'nosmartquotes', 'object', 'ol', 'optgroup', 'option', 'param', 'plaintext', 'pre', 'rt', 'ruby', 's', 'samp', 'script', 'select',
 			'server', 'shadow', 'sidebar', 'small', 'spacer', 'span', 'strike', 'strong', 'style', 'sub', 'sup', 'table', 'tbody', 'td', 'textarea',
 			'tfoot', 'th', 'thead', 'title', 'tr', 'tt', 'ul', 'var', 'wbr', 'xml', 'xmp', '!DOCTYPE', '!--');
+
 		foreach ($html_tags as $tag)
 		{
 			// A tag is '<tagname ', so we need to add < and a space or '<tagname>'
 			if (JString::stristr($xss_check, '<' . $tag . ' ') || JString::stristr($xss_check, '<' . $tag . '>'))
 			{
 				$err = 'WARNIEXSS';
+
 				return false;
 			}
 		}
+
 		return true;
 	}
 
 	/**
-	 * Recursive file name incrementation untill no file with exsiting name
+	 * Recursive file name incrementation until no file with existing name
 	 * exists
 	 *
-	 * @param   string  $origFileName  Intial file name
+	 * @param   string  $origFileName  Initial file name
 	 * @param   string  $newFileName   This recursions file name
 	 * @param   int     $version       File version
 	 *
-	 * @return  string  new file name
+	 * @return  string  New file name
 	 */
 
-	public function incrementFileName($origFileName, $newFileName, $version)
+	public static function incrementFileName($origFileName, $newFileName, $version)
 	{
 		if (JFile::exists($newFileName))
 		{
@@ -254,7 +268,7 @@ class FabrikUploader extends JObject
 			$version++;
 			$newFileName = self::incrementFileName($origFileName, $newFileName, $version);
 		}
+
 		return $newFileName;
 	}
-
 }
