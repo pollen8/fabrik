@@ -686,14 +686,18 @@ class FabrikString extends JString
 		return $subject;
 	}
 }
+
 /**
  *
- * $$$ hugh JText::_() does funky stuff to strings with commas in them, if what
- * follows the first comma is all "upper case".  But it tests for that using non
- * MB safe code, so any non ASCII strings (like Greek text) with a comma in them
- * get truncated at the comma.  Corner case or what!  But for now, just don't run
- * any label with a comma in it through JText!
+ * $$$ hugh JText::_() does funky stuff to strings with commas in them, like
+ * truncating everything after the first comma, if what follows the first comma
+ * is all "upper case".  But it tests for that using non MB safe code, so any non
+ * ASCII strings (like Greek text) with a comma in them get truncated at the comma.
+ * Corner case or what!  But we need to work round this behavior.
+ *
+ * So ... here's a wrapper for JText::_().
  */
+
 class FText extends JText
 {
 	/**
@@ -715,11 +719,29 @@ class FText extends JText
 	 */
 	public static function _($string, $jsSafe = false, $interpretBackSlashes = true, $script = false)
 	{
-		if ((strpos($string, ',') === false))
+		/**
+		 * In JText::_(), it does the following tests to see if everything following a comma is all upp
+		 * case, and if it is, it does Funky Stuff to it.  We ned to avoid that behavior.  So us this
+		 * logic, and if it's true, return the string untouched.  We could just check for a comma and not
+		 * process anything with commas (unikely to be a translatable phrase), but unless this test adds
+		 * too much overhead, might as well do the whole J! test sequence.
+		 */
+
+		if (!(strpos($string, ',') === false))
 		{
-			$string = parent::_($string, $jsSafe, $interpretBackSlashes, $script);
+			$test = substr($string, strpos($string, ','));
+
+			if (strtoupper($test) === $test)
+			{
+				/**
+				 * This is where JText::_() would do Funky Stuff, chopping off everything after
+				 * the first comma.  So we'll just return the input string untouched.
+				 */
+				return $string;
+			}
 		}
 
-		return $string;
+		// if we got this far, hand it to JText::_() as normal
+		return parent::_($string, $jsSafe, $interpretBackSlashes, $script);
 	}
 }
