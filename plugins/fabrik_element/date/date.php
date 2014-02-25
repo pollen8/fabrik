@@ -471,11 +471,14 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 		$timeZone = new DateTimeZone(JFactory::getConfig()->get('offset'));
 		$store_as_local = (bool) $params->get('date_store_as_local', false);
 		$alwaysToday = $params->get('date_alwaystoday', false);
+
 		if ($alwaysToday)
 		{
 			$val = JFactory::getDate('now', $timeZone)->toSql($store_as_local);
+
 			return $val;
 		}
+
 		// $$$ hugh - sometimes still getting $val as an array with date and time,
 		// like on AJAX submissions?  Or maybe from getEmailData()?  Or both?
 		if (is_array($val))
@@ -1266,6 +1269,20 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 	}
 
 	/**
+	 * Get a value to use as an empty filter value
+	 *
+	 * @return  string
+	 */
+
+	public function emptyFilterValue()
+	{
+		$listModel = $this->getListModel();
+		$db = $listModel->getDb();
+
+		return $db->quote($db->getNullDate());
+	}
+
+	/**
 	 * Get the list filter for the element
 	 * Note: uses FabDate as if date element first to be found in advanced search, and advanced search run on another element
 	 * the list model in getAdvancedSearchElementList() builds the first filter (this element) with the data from the first search
@@ -1291,6 +1308,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 		$elName = $this->getFullName(false, true, false);
 		$elName2 = $this->getFullName(false, false, false);
 		$v = $this->filterName($counter, $normal);
+		$class = $this->filterClass();
 
 		// Correct default got
 		$default = $this->getDefaultFilterVal($normal, $counter);
@@ -1364,8 +1382,8 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 
 				if ($fType === 'range-hidden')
 				{
-					$return[] = '<input type="hidden" name="' . $v . '[0]' . '" class="inputbox fabrik_filter" value="' . $default[0] . '" id="' . $htmlid . '-0" />';
-					$return[] = '<input type="hidden" name="' . $v . '[1]' . '" class="inputbox fabrik_filter" value="' . $default[1] . '" id="' . $htmlid . '-1" />';
+					$return[] = '<input type="hidden" name="' . $v . '[0]' . '" class="' . $class . '" value="' . $default[0] . '" id="' . $htmlid . '-0" />';
+					$return[] = '<input type="hidden" name="' . $v . '[1]' . '" class="' . $class . '" value="' . $default[1] . '" id="' . $htmlid . '-1" />';
 					$return[] = '</div>';
 				}
 				else
@@ -1415,7 +1433,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 				}
 
 				array_unshift($ddData, JHTML::_('select.option', '', $this->filterSelectLabel()));
-				$return[] = JHTML::_('select.genericlist', $ddData, $v, 'class="inputbox fabrik_filter" ' . $size . ' maxlength="19"', 'value', 'text',
+				$return[] = JHTML::_('select.genericlist', $ddData, $v, 'class="' . $class . '" ' . $size . ' maxlength="19"', 'value', 'text',
 					$default, $htmlid . '0');
 				break;
 			default:
@@ -1451,7 +1469,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 				}
 
 				$default = htmlspecialchars($default);
-				$return[] = '<input type="hidden" name="' . $v . '" class="inputbox fabrik_filter" value="' . $default . '" id="' . $htmlid . '" />';
+				$return[] = '<input type="hidden" name="' . $v . '" class="' . $class . '" value="' . $default . '" id="' . $htmlid . '" />';
 				break;
 
 			case 'auto-complete':
@@ -1459,11 +1477,11 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 				{
 					$default = stripslashes($default);
 				}
-				$default = htmlspecialchars($default);
-				$return[] = '<input type="hidden" name="' . $v . '" class="inputbox fabrik_filter" value="' . $default . '" id="' . $htmlid . '" />';
-				$return[] = '<input type="text" name="' . $v . '-auto-complete" class="inputbox fabrik_filter autocomplete-trigger" value="'
-					. $default . '" id="' . $htmlid . '-auto-complete" />';
 
+				$default = htmlspecialchars($default);
+				$return[] = '<input type="hidden" name="' . $v . '" class="' . $class . '" value="' . $default . '" id="' . $htmlid . '" />';
+				$return[] = '<input type="text" name="' . $v . '-auto-complete" class="' . $class . ' autocomplete-trigger" value="'
+					. $default . '" id="' . $htmlid . '-auto-complete" />';
 				$autoId = '#' . $htmlid . '-auto-complete';
 
 				if (!$normal)
@@ -1575,7 +1593,6 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 
 			try
 			{
-				echo $data[$j][$key];exit;
 				$date = JFactory::getDate($data[$j][$key]);
 				$data[$j][$key] = $date->toFormat($format, true);
 				/* $$$ hugh - bit of a hack specific to a customer who needs to import dates with year as 1899,
@@ -2228,7 +2245,8 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 	protected function filterCalendarOpts()
 	{
 		$params = $this->getParams();
-		$calOpts = array('class' => 'inputbox fabrik_filter', 'maxlength' => '19', 'size' => 16);
+		$class = $this->filterClass();
+		$calOpts = array('class' => $class, 'maxlength' => '19', 'size' => 16);
 
 		if ($params->get('date_allow_typing_in_field', true) == false)
 		{

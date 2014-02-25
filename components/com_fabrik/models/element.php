@@ -5549,6 +5549,11 @@ FROM (SELECT " . $distinct . " $item->db_primary_key, $name AS value, $label FRO
 
 	}
 
+	public function emptyFilterValue()
+	{
+		return '';
+	}
+
 	/**
 	 * Trigger called when a row is stored.
 	 * Check if new options have been added and if so store them in the element for future use.
