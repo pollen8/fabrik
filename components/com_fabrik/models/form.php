@@ -4965,8 +4965,28 @@ class FabrikFEModelForm extends FabModelForm
 				$qs[] = $k . '=' . $v;
 			}
 
-			$action = $page . implode("&amp;", $qs);
-			$action = JRoute::_($action);
+			$action = $page . (implode("&amp;", $qs));
+			$action = JRoute::_($action, false);
+
+			/*
+			 * JRoute messes up our urlencoding - re-parse the querystring part of the routed url to urlencode the values.
+			 * Example bug was in IE with url index.php?foo=hotesse de l'air - the ' caused ie to fail on form submisssion.
+			 */
+			if (strpos($action, '?'))
+			{
+				$bits = explode('?', $action);
+				$pairs = explode('&', $bits[1]);
+
+				foreach ($pairs as &$val)
+				{
+					$pairParts = explode('=', $val);
+					$pairParts[1] = urlencode($pairParts[1]);
+					$val = $pairParts[0] . '=' . $pairParts[1];
+				}
+
+				$bits[1] = implode('&', $pairs);
+				$action = $bits[0] . '?' . $bits[1];
+			}
 		}
 		else
 		{
