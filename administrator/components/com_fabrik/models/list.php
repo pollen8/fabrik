@@ -864,8 +864,8 @@ class FabrikAdminModelList extends FabModelAdmin
 	 */
 	protected function collation($feModel, $origCollation, $row)
 	{
-		// Don't attempt to alter new table, or a view
-		if ($row->id == 0 || $feModel->isView())
+		// Don't attempt to alter new table, or a view, or if we shouldn't alter the table
+		if ($row->id == 0 || $feModel->isView() || !$feModel->canAlterFields())
 		{
 			return;
 		}
