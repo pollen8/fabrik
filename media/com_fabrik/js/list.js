@@ -603,13 +603,13 @@ var FbList = new Class({
 			}
 		}.bind(this));
 			
-		if (this.options.filterMethod === 'submitform') {
-			if (submit) {
-				submit.removeEvents();
-				submit.addEvent('click', function (e) {
-					this.doFilter();
-				}.bind(this));
-			}
+		// Watch submit if present regardless of this.options.filterMethod
+		if (submit) {
+			submit.removeEvents();
+			submit.addEvent('click', function (e) {
+				e.stop();
+				this.doFilter();
+			}.bind(this));
 		}
 		this.getFilters().addEvent('keydown', function (e) {
 			if (e.code === 13) {
@@ -854,7 +854,8 @@ var FbList = new Class({
 				'task': 'list.view',
 				'format': 'raw',
 				'listid': this.id,
-				'group_by': this.options.groupedBy
+				'group_by': this.options.groupedBy,
+				'listref': this.options.listRef
 			};
 		var url = '';
 		data['limit' + this.id] = this.options.limitLength;
