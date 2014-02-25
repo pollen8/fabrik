@@ -898,7 +898,8 @@ class FabrikFEModelListfilter extends FabModel
 						else
 						{
 							// If sent from a search form - the table name will be blank
-							$key = $tablename . '.' . array_pop(explode('.', $key));
+							$key = explode('.', $key);
+							$key = $tablename . '.' . array_pop($key);
 
 							if (array_key_exists($key, $filter_elements))
 							{
@@ -913,6 +914,7 @@ class FabrikFEModelListfilter extends FabModel
 								foreach ($joins as $join)
 								{
 									$key = $db->quoteName($join->table_join) . '.' . array_pop(explode('.', $key));
+
 									if (array_key_exists($key, $filter_elements))
 									{
 										$found = true;
@@ -1289,6 +1291,7 @@ class FabrikFEModelListfilter extends FabModel
 					continue;
 				}
 
+				$origCondition = $condition;
 				$filters['orig_condition'][] = $condition;
 
 				if ($condition === 'EMPTY')
@@ -1299,9 +1302,15 @@ class FabrikFEModelListfilter extends FabModel
 
 				$elementModel = $elements[$elid];
 
-				if (!is_a($elementModel, 'plgFabrik_Element'))
+				if (!is_a($elementModel, 'PlgFabrik_Element'))
 				{
 					continue;
+				}
+
+				// Date element's have specific empty values
+				if ($origCondition === 'EMPTY')
+				{
+					$value = $elementModel->emptyFilterValue();
 				}
 
 				// If the request key is already in the filter array - unset it
@@ -1337,7 +1346,7 @@ class FabrikFEModelListfilter extends FabModel
 
 				$eval = is_array($value) ? JArrayHelper::getValue($value, 'eval', FABRIKFILTER_TEXT) : FABRIKFILTER_TEXT;
 
-				if (!is_a($elementModel, 'plgFabrik_ElementDatabasejoin'))
+				if (!is_a($elementModel, 'PlgFabrik_ElementDatabasejoin'))
 				{
 					$fieldDesc = $elementModel->getFieldDescription();
 
@@ -1552,12 +1561,13 @@ class FabrikFEModelListfilter extends FabModel
 					$sqlCond = null;
 					$condition = array_key_exists($i, $sessionfilters['condition']) ? $sessionfilters['condition'][$i]
 						: $elementModel->getDefaultFilterCondition();
+
 					$origCondition = array_key_exists('orig_condition', $sessionfilters) && array_key_exists($i, $sessionfilters['orig_condition']) ? $sessionfilters['orig_condition'][$i]
 						: $elementModel->getDefaultFilterCondition();
 					$raw = array_key_exists($i, $sessionfilters['raw']) ? $sessionfilters['raw'][$i] : 0;
 					$eval = array_key_exists($i, $sessionfilters['eval']) ? $sessionfilters['eval'][$i] : FABRIKFILTER_TEXT;
 
-					if (!is_a($elementModel, 'plgFabrik_ElementDatabasejoin'))
+					if (!is_a($elementModel, 'PlgFabrik_ElementDatabasejoin'))
 					{
 						$fieldDesc = $elementModel->getFieldDescription();
 

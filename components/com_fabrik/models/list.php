@@ -9714,7 +9714,7 @@ class FabrikFEModelList extends JModelForm
 		}
 
 		// $$$ rob needs the item id for when sef urls are turned on
-		if (JRequest::getCmd('option') !== 'com_' . $package)
+		if ($input->get('option') !== 'com_' . $package)
 		{
 			if (!array_key_exists('Itemid', $addurl_qs))
 			{
@@ -9724,19 +9724,8 @@ class FabrikFEModelList extends JModelForm
 
 		if (empty($addurl_url))
 		{
-			/*  $$$ rob set this options in the js - so if we want to open a
-			 * link normaly we can right click and open the page as a standard J view
-			* if ($this->isAjaxLinks())
-			{
-			$qs['ajax'] = '1';
-			} */
 			$formModel = $this->getFormModel();
 			$formid = $formModel->getForm()->id;
-			/* if ($this->packageId !== 0 || $this->isAjaxLinks())
-			 {
-			$qs['tmpl'] = 'component';
-			} */
-
 			$qs['option'] = 'com_' . $package;
 
 			if ($app->isAdmin())
