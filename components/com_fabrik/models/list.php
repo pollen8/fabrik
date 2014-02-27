@@ -5841,6 +5841,7 @@ class FabrikFEModelList extends JModelForm
 	{
 		$aFilters = array();
 		$table = $this->getTable();
+		$formModel = $this->getFormModel();
 		$opts = new stdClass;
 		$opts->container = $container;
 		$opts->type = $type;
@@ -5879,6 +5880,7 @@ class FabrikFEModelList extends JModelForm
 				$o->filter .= '&nbsp;'
 						. JHTML::_('select.genericList', $opts, 'search-mode-advanced', "class='fabrik_filter'", 'value', 'text', $mode);
 			}
+
 			$o->name = 'all';
 			$o->label = $params->get('search-all-label', JText::_('COM_FABRIK_ALL'));
 			$aFilters[] = $o;
@@ -6173,6 +6175,7 @@ class FabrikFEModelList extends JModelForm
 		$rows = array();
 		$first = false;
 		$elementModels = $this->getElements();
+		$input = JFactory::getApplication()->input;
 		list($fieldNames, $firstFilter) = $this->getAdvancedSearchElementList();
 		$prefix = 'fabrik___filter[list_' . $this->getRenderContext() . '][';
 		$type = '<input type="hidden" name="' . $prefix . 'search_type][]" value="advanced" />';
@@ -6260,6 +6263,15 @@ class FabrikFEModelList extends JModelForm
 				$jsSel = JHTML::_('select.genericlist', $statements, $prefix . 'condition][]', 'class="inputbox" size="1" ', 'value', 'text', $jsSel);
 				$rows[] = array('join' => $join, 'element' => $key, 'condition' => $jsSel, 'filter' => $filter, 'type' => $type,
 						'grouped' => $grouped);
+
+				// 27/02/2014 - load up js filter code for existing elements - needed for date element
+				if ($input->get('layout') == '_advancedsearch')
+				{
+					$container = 'listform_' . $this->getRenderContext();
+					$input->set('counter', $counter);
+					$elementModel->filterJS(false, $container);
+				}
+
 				$counter++;
 			}
 		}

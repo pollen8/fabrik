@@ -802,7 +802,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 	/**
 	 * get the options used for the date elements calendar
 	 *
-	 * @param   int  $id  Repeat counter
+	 * @param   string  $id  HTML field id
 	 *
 	 * @return object ready for js encoding
 	 */
@@ -1300,6 +1300,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 	public function getFilter($counter = 0, $normal = true)
 	{
 		$params = $this->getParams();
+		$input = JFactory::getApplication()->input;
 		$listModel = $this->getListModel();
 		$table = $listModel->getTable();
 		$element = $this->getElement();
@@ -1453,7 +1454,14 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 
 				// Add wrapper div for list filter toggling
 				$return[] = '<div class="fabrik_filter_container">';
-				$return[] = $this->calendar($default, $v, $this->getFilterHtmlId(0), $format, $calOpts);
+				
+				// Set counter in input to create the correct field id when in advanced search.
+				if (!$normal)
+				{
+					$input->set('counter', $counter);
+				}
+
+				$return[] = $this->calendar($default, $v, $this->getFilterHtmlId(0, $normal), $format, $calOpts);
 				$return[] = '</div>';
 				break;
 
@@ -1508,18 +1516,20 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 	/**
 	 * Get 	filter HTML id
 	 *
-	 * @param   int  $range  Which ranged filter we are getting
+	 * @param   int   $range   Which ranged filter we are getting
+	 * @param   bool  $normal  Is the filter a normal (true) or advanced filter
 	 *
-	 * @return  string  html filter id
+	 * @return  string  HTML filter id
 	 */
 
-	protected function getFilterHtmlId($range)
+	protected function getFilterHtmlId($range, $normal = true)
 	{
 		$app = JFactory::getApplication();
 		$input = $app->input;
 		$counter = $input->get('counter', 0);
+		$suffix = $normal ? 'normal' : 'advanced';
 
-		return $this->getHTMLId() . '_filter_range_' . $range . '_' . $input->get('task') . '.' . $counter;
+		return $this->getHTMLId() . '_filter_range_' . $range . '_' . $input->get('task') . '.' . $counter . '.' . $suffix;
 	}
 
 	/**
@@ -2213,8 +2223,8 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 
 		$htmlid = $this->getHTMLId();
 		$params = $this->getParams();
-		$id = $this->getFilterHtmlId(0);
-		$id2 = $this->getFilterHtmlId(1);
+		$id = $this->getFilterHtmlId(0, $normal);
+		$id2 = $this->getFilterHtmlId(1, $normal);
 		$opts = new stdClass;
 		$opts->calendarSetup = $this->_CalendarJSOpts($id);
 		$opts->calendarSetup->ifFormat = $params->get('date_table_format', '%Y-%m-%d');
