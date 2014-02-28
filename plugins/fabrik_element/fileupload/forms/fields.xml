@@ -158,6 +158,16 @@
 				description="PLG_ELEMENT_FILEUPLOAD_TITLE_ELEMENT_DESC"
 				label="PLG_ELEMENT_FILEUPLOAD_TITLE_ELEMENT_LABEL"
 				valueformat="tableelement"/>
+				
+			<field name="restrict_lightbox"
+				type="radio"
+				class="btn-group"
+				default="1"
+				description="PLG_ELEMENT_FILEUPLOAD_RESTRICT_LIGHTBOX_DESC"
+				label="PLG_ELEMENT_FILEUPLOAD_RESTRICT_LIGHTBOX_LABEL">
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+			</field>
 
 		</fieldset>
 

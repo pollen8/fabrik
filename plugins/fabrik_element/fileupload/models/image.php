@@ -158,6 +158,12 @@ class ImageRender
 				if ($params->get('make_link', true) && !$this->fullImageInRecord($params))
 				{
 					$n = $this->inTableView ? '' : $model->getElement()->name;
+
+					if ($params->get('restrict_lightbox', 1) == 0)
+					{
+						$n = '';
+					}
+
 					$this->output .= '<a href="' . $fullSize . '" rel="lightbox[' . $n . ']" title="' . $title . '">' . $img . '</a>';
 				}
 				else
