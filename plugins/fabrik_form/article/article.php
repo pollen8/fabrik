@@ -336,13 +336,13 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 		// If its an existing article don't edit name
 		if ((int) $id !== 0)
 		{
-			$data['alias'] = JStringNormalise::toDashSeparated($data['title']);
-
+			$data['alias'] = JApplication::stringURLSafe(JStringNormalise::toDashSeparated($data['title']));
 			return;
 		}
 
 		$table = JTable::getInstance('Content');
-		$alias = JStringNormalise::toDashSeparated($data['title']);
+		$alias = JApplication::stringURLSafe(JStringNormalise::toDashSeparated($data['title']));
+
 		$title = $data['title'];
 
 		while ($table->load(array('alias' => $alias, 'catid' => $catid)))
