@@ -250,7 +250,7 @@ class FabrikControllerForm extends JControllerLegacy
 		if ($model->hasErrors())
 		{
 			FabrikWorker::getPluginManager()->runPlugins('onError', $model);
-			$view->display();
+			$this->handleError($view, $model);
 
 			return;
 		}
