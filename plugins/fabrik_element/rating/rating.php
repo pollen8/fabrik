@@ -203,7 +203,6 @@ class PlgFabrik_ElementRating extends PlgFabrik_Element
 			$query->select('row_id, AVG(rating) AS r, COUNT(rating) AS total')->from(' #__{package}_ratings')
 				->where(array('rating <> -1', 'listid = ' . (int) $listid, 'formid = ' . (int) $formid, 'element_id = ' . (int) $elementid))
 				->where('row_id IN (' . implode(',', $ids) . ')')->group('row_id');
-			$squery = (string) $query;
 
 			// Do this  query so that list view only needs one query to load up all ratings
 			$db->setQuery($query);
