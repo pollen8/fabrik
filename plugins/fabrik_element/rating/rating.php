@@ -85,7 +85,9 @@ class PlgFabrik_ElementRating extends PlgFabrik_Element
 
 		if ($params->get('rating-mode') !== 'creator-rating')
 		{
-			list($data, $total) = $this->getRatingAverage($data, $listid, $formid, $row_id);
+			$d = $this->getListModel()->getData();
+			$ids = JArrayHelper::getColumn($d, '__pk_val');
+			list($data, $total) = $this->getRatingAverage($data, $listid, $formid, $row_id, $ids);
 		}
 
 		$app = JFactory::getApplication();
