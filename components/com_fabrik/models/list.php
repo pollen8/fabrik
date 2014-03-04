@@ -2494,6 +2494,12 @@ class FabrikFEModelList extends JModelForm
 		$query = $this->buildQueryOrder($query);
 		$query = $this->pluginQuery($query);
 		$this->mainQuery = $query;
+		$params = $this->getParams();
+
+		if ($params->get('force_collate', '') !== '')
+		{
+			$query .= ' COLLATE ' . $params->get('force_collate', '') . ' ';
+		}
 
 		return (string) $query;
 	}
