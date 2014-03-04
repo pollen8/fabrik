@@ -2401,6 +2401,8 @@ if (!$j3)
 		if ($smart_link || $target == 'mediabox')
 		{
 			$smarts = self::getSmartLinkType($href);
+
+			// Not sure that the type option is now needed.
 			$opts['rel'] = 'lightbox[' . $smarts['type'] . ' ' . $smarts['width'] . ' ' . $smarts['height'] . ']';
 		}
 

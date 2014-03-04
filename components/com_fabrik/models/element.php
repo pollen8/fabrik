@@ -625,7 +625,8 @@ class PlgFabrik_Element extends FabrikPlugin
 						if (class_exists('DOMDocument') && $as->length)
 						{
 							$img = $html->createElement('img');
-							$img->setAttribute('src', FabrikHelperHTML::image($cleanData . '.' . $ex, $view, $tmpl, array(), true));
+							$src = FabrikHelperHTML::image($cleanData . '.' . $ex, $view, $tmpl, array(), true, array('forceImage' => true));
+							$img->setAttribute('src', $src);
 							$as->item(0)->nodeValue = '';
 							$as->item(0)->appendChild($img);
 
