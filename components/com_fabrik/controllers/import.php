@@ -4,12 +4,12 @@
  *
  * @package     Joomla
  * @subpackage  Fabrik
- * @copyright   Copyright (C) 2005 Pollen 8 Design Ltd. All rights reserved.
- * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @copyright   Copyright (C) 2005-2013 fabrikar.com - All rights reserved.
+ * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
-// Check to ensure this file is included in Joomla!
-defined('_JEXEC') or die();
+// No direct access
+defined('_JEXEC') or die('Restricted access');
 
 jimport('joomla.application.component.controller');
 
@@ -20,7 +20,7 @@ jimport('joomla.application.component.controller');
  * @since    3.0
  */
 
-class FabrikControllerImport extends JController
+class FabrikControllerImport extends JControllerLegacy
 {
 	/**
 	 * Display the view
@@ -64,15 +64,16 @@ class FabrikControllerImport extends JController
 
 		if (!$listModel->canCSVImport())
 		{
-			JError::raiseError(400, 'Naughty naughty!');
-			jexit();
+			throw new RuntimeException('Naughty naughty!', 400);
 		}
 
 		if (!$model->checkUpload())
 		{
 			$this->display();
+
 			return;
 		}
+
 		$id = $listModel->getId();
 		$document = JFactory::getDocument();
 		$viewName = $input->get('view', 'form');
@@ -82,11 +83,12 @@ class FabrikControllerImport extends JController
 		$view = $this->getView($viewName, $viewType);
 		$model->import();
 		$Itemid = $input->getInt('Itemid');
+
 		if (!empty($model->newHeadings))
 		{
 			// As opposed to admin you can't alter table structure with a CSV import from the front end
-			JError::raiseNotice(500, $model->makeError());
-			$this->setRedirect('index.php?option=com_fabrik&view=import&fietype=csv&listid=' . $id . '&Itemid=' . $Itemid);
+			$app->enqueueMessage($model->makeError(), 'notice');
+			$this->setRedirect('index.php?option=com_fabrik&view=import&filetype=csv&listid=' . $id . '&Itemid=' . $Itemid);
 		}
 		else
 		{
@@ -96,5 +98,4 @@ class FabrikControllerImport extends JController
 			$this->setRedirect('index.php?option=com_fabrik&view=list&listid=' . $id . "&resetfilters=1&Itemid=" . $Itemid, $msg);
 		}
 	}
-
 }

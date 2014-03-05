@@ -43,7 +43,7 @@ var FbForm = new Class({
 			options.rowid = '';
 		}
 		this.id = id;
-		this.result = true; //set this to false in window.fireEvents to stop current action (eg stop form submission)
+		this.result = true; //set this to false in window.fireEvents to stop current action (e.g. stop form submission)
 		this.setOptions(options);
 		this.plugins = this.options.plugins;
 		this.options.pages = $H(this.options.pages);
@@ -108,8 +108,8 @@ var FbForm = new Class({
 		}.bind(this));
 
 		// get an int from which to start incrementing for each repeated group id
-		// dont ever decrease this value when deleteing a group as it will cause all sorts of
-		// reference chaos with cascading dropdowns etc
+		// don't ever decrease this value when deleting a group as it will cause all sorts of
+		// reference chaos with cascading dropdowns etc.
 		this.repeatGroupMarkers = $H({});
 		if (this.form) {
 			this.form.getElements('.fabrikGroup').each(function (group) {
@@ -267,10 +267,9 @@ var FbForm = new Class({
 		}
 		if (c) {
 			// c will be the <li> element - you can't apply fx's to this as it makes the
-			// DOM squiffy with
-			// multi column rows, so get the li's content and put it inside a div which
-			// is injected into c
-			// apply fx to div rather than li - damn im good
+			// DOM squiffy with multi column rows, so get the li's content and put it
+			// inside a div which is injected into c
+			// apply fx to div rather than li - damn I'm good
 			var tag = (c).get('tag');
 			if (tag === 'li' || tag === 'td') {
 				fxdiv = new Element('div', {'style': 'width:100%'}).adopt(c.getChildren());
@@ -327,7 +326,7 @@ var FbForm = new Class({
 		id = id.replace('fabrik_trigger_', '');
 		if (id.slice(0, 6) === 'group_') {
 			id = id.slice(6, id.length);
-			// wierd fix?
+			// weird fix?
 			if (id.slice(0, 6) === 'group_') {
 				id = id.slice(6, id.length);
 			}
@@ -406,7 +405,7 @@ var FbForm = new Class({
 		Fabrik.fireEvent('fabrik.form.doelementfx', [this]);
 	},
 
-	watchClearSession : function () {
+	watchClearSession: function () {
 		if (this.form && this.form.getElement('.clearSession')) {
 			this.form.getElement('.clearSession').addEvent('click', function (e) {
 				e.stop();
@@ -462,7 +461,7 @@ var FbForm = new Class({
 	 * @param   event  e
 	 * @param   int    dir  1/-1
 	 */
-	_doPageNav : function (e, dir) {
+	_doPageNav: function (e, dir) {
 		if (this.options.editable) {
 			this.form.getElement('.fabrikMainError').addClass('fabrikHide');
 
@@ -590,7 +589,7 @@ var FbForm = new Class({
 	/**
 	 * Hide all groups except those in the active page
 	 */
-	hideOtherPages : function () {
+	hideOtherPages: function () {
 		var page;
 		this.options.pages.each(function (gids, i) {
 			if (i.toInt() !== this.currentPage.toInt()) {
@@ -602,7 +601,7 @@ var FbForm = new Class({
 		}.bind(this));
 	},
 
-	setPageButtons : function () {
+	setPageButtons: function () {
 		var submit = this._getButton('submit');
 		var prev = this.form.getElement('.fabrikPagePrevious');
 		var next = this.form.getElement('.fabrikPageNext');
@@ -713,7 +712,7 @@ var FbForm = new Class({
 	 *
 	 * @param   string  elementType  Deprecated
 	 * @param   string  elementId    Element key to look up in this.formElements
-	 * @param   string  action       Event chage/click etc
+	 * @param   string  action       Event change/click etc.
 	 * @param   mixed   js           String or function
 	 */
 
@@ -785,12 +784,12 @@ var FbForm = new Class({
 		replacetxt = typeOf(replacetxt) === 'null' ? '_time' : replacetxt;
 		if (typeOf(e) === 'event' || typeOf(e) === 'object' || typeOf(e) === 'domevent') { // type object in
 			id = e.target.id;
-			// for elements with subelements eg checkboxes radiobuttons
+			// for elements with subelements e.g. checkboxes radiobuttons
 			if (subEl === true) {
 				id = document.id(e.target).getParent('.fabrikSubElementContainer').id;
 			}
 		} else {
-			// hack for closing date picker where it seems the event object isnt
+			// hack for closing date picker where it seems the event object isn't
 			// available
 			id = e;
 		}
@@ -834,7 +833,7 @@ var FbForm = new Class({
 		}
 		//var origid = el.origId ? el.origId : id;
 		el.options.repeatCounter = el.options.repeatCounter ? el.options.repeatCounter : 0;
-		var url = Fabrik.liveSite + 'index.php?option=com_fabrik&form_id=' + this.id;
+		var url = 'index.php?option=com_fabrik&form_id=' + this.id;
 		var myAjax = new Request({
 			url: url,
 			method: this.options.ajaxmethod,
@@ -877,7 +876,7 @@ var FbForm = new Class({
 		if (typeOf(d) === 'hash') {
 			d = d.getClean();
 		}
-		//data should be key'd on the data stored in the elements name between []'s which is the group id
+		//data should be keyed on the data stored in the elements name between []'s which is the group id
 		this.form.getElements('input[name^=fabrik_repeat_group]').each(
 				function (e) {
 					// $$$ hugh - had a client with a table called fabrik_repeat_group, which was hosing up here,
@@ -891,7 +890,7 @@ var FbForm = new Class({
 		return d;
 	},
 
-	_showGroupError : function (r, d) {
+	_showGroupError: function (r, d) {
 		var tmperr;
 		var gids = Array.from(this.options.pages.get(this.currentPage.toInt()));
 		var err = false;
@@ -901,7 +900,7 @@ var FbForm = new Class({
 				var el = this.formElements.get(k);
 				if (gids.contains(el.groupid.toInt())) {
 					if (r.errors[k]) {
-					// prepare error so that it only triggers for real errors and not sucess
+					// prepare error so that it only triggers for real errors and not success
 					// msgs
 
 						var msg = '';
@@ -929,7 +928,7 @@ var FbForm = new Class({
 		return err;
 	},
 
-	_showElementError : function (r, id) {
+	_showElementError: function (r, id) {
 		// r should be the errors for the specific element, down to its repeat group
 		// id.
 		var msg = '';

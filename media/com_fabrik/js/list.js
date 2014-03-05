@@ -452,7 +452,7 @@ var FbList = new Class({
 		aa,
 		advancedPointer = 0,
 		testii,
-		usedAdvancedKeys = ['value', 'condition', 'join', 'key', 'search_type', 'match', 'full_words_only', 'eval', 'grouped_to_previous', 'hidden', 'elementid'];
+		usedAdvancedKeys = ['origvalue', 'value', 'condition', 'join', 'key', 'search_type', 'match', 'full_words_only', 'eval', 'grouped_to_previous', 'hidden', 'elementid'];
 		
 		this.getFilters().each(function (f) {
 			testii = f.name.split('[').getLast().replace(']', '').toInt();
@@ -472,7 +472,7 @@ var FbList = new Class({
 				}
 			}
 		}.bind(this));
-		
+
 		return opts;
 	},
 	
@@ -603,13 +603,13 @@ var FbList = new Class({
 			}
 		}.bind(this));
 			
-		if (this.options.filterMethod === 'submitform') {
-			if (submit) {
-				submit.removeEvents();
-				submit.addEvent('click', function (e) {
-					this.doFilter();
-				}.bind(this));
-			}
+		// Watch submit if present regardless of this.options.filterMethod
+		if (submit) {
+			submit.removeEvents();
+			submit.addEvent('click', function (e) {
+				e.stop();
+				this.doFilter();
+			}.bind(this));
 		}
 		this.getFilters().addEvent('keydown', function (e) {
 			if (e.code === 13) {
@@ -854,7 +854,8 @@ var FbList = new Class({
 				'task': 'list.view',
 				'format': 'raw',
 				'listid': this.id,
-				'group_by': this.options.groupedBy
+				'group_by': this.options.groupedBy,
+				'listref': this.options.listRef
 			};
 		var url = '';
 		data['limit' + this.id] = this.options.limitLength;
@@ -1146,7 +1147,8 @@ var FbList = new Class({
 			}.bind(this));
 		}
 		
-		if (this.options.admin) {
+		// Not working in J3.2 see http://fabrikar.com/forums/index.php?threads/bug-pagination-not-working-in-chrome.37277/
+	/*	if (this.options.admin) {
 			Fabrik.addEvent('fabrik.block.added', function (block) {
 				if (block.options.listRef === this.options.listRef) {
 					var nav = block.form.getElement('.fabrikNav');
@@ -1158,7 +1160,7 @@ var FbList = new Class({
 					}
 				}
 			}.bind(this));
-		}
+		}*/
 		this.watchCheckAll();
 	},
 	
@@ -1404,9 +1406,11 @@ var FbListActions = new Class({
 	},
 
 	setUpFloating: function () {
+		var chxFound = false;
 		this.list.form.getElements(this.options.selector).each(function (ul) {
 			if (ul.getParent('.fabrik_row')) {
 				if (i = ul.getParent('.fabrik_row').getElement('input[type=checkbox]')) {
+					chxFound = true;
 					var hideFn = function (e, elem, leaving) {
 						if (!e.target.checked) {
 							this.hide(e, elem);

@@ -29,29 +29,29 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 	public $hasSubElements = true;
 
 	/**
-	 * Simple days 
-	 * 
+	 * Simple days
+	 *
 	 * @var array
 	 */
 	protected $daysimple = array('1', '2', '3', '4', '5', '6', '7', '8', '9');
-	
+
 	/**
 	 * System days
-	 * 
+	 *
 	 * @var array
 	 */
 	protected $daysys = array('01', '02', '03', '04', '05', '06', '07', '08', '09');
-	
+
 	/**
 	 * Months in numbers
-	 * 
+	 *
 	 * @var array
 	 */
 	protected $monthnumbers = array('01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12');
-	
+
 	/**
 	 * Months in JText strings - set in __construct()
-	 * 
+	 *
 	 * @var array
 	 */
 	protected $monthlabels = null;
@@ -100,7 +100,7 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 		$id = $this->getHTMLId($repeatCounter);
 		$params = $this->getParams();
 		$element = $this->getElement();
-		
+
 		$bits = array();
 		/**
 		 * $$$ rob - not sure why we are setting $data to the form's data
@@ -184,9 +184,9 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 
 	/**
 	 * Format the date value for the details view
-	 * 
+	 *
 	 * @param   mixed  $value  Value to format - can be string or array
-	 * 
+	 *
 	 * @return  string  Details formatted date
 	 */
 	private function detailsFormat($value)
@@ -838,7 +838,7 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 	public function getEmailValue($value, $data, $repeatCounter)
 	{
 		$value = parent::getEmailValue($value, $data, $repeatCounter);
-		
+
 		if (is_array($value))
 		{
 			$value = array_reverse($value);

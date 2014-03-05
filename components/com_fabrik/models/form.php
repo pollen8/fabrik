@@ -25,7 +25,6 @@ require_once COM_FABRIK_FRONTEND . '/helpers/element.php';
 
 class FabrikFEModelForm extends FabModelForm
 {
-
 	/**
 	 * id
 	 * @var int
@@ -47,7 +46,7 @@ class FabrikFEModelForm extends FabModelForm
 	protected $elements = null;
 
 	/**
-	 * List model assocated with form
+	 * List model associated with form
 	 *
 	 * @var FabrikFEModelList
 	 */
@@ -61,7 +60,7 @@ class FabrikFEModelForm extends FabModelForm
 	public $aJoinGroupIds = array();
 
 	/**
-	 * If editable if 0 then show view only verion of form
+	 * If editable if 0 then show view only version of form
 	 *
 	 * @var bol true
 	 */
@@ -82,9 +81,9 @@ class FabrikFEModelForm extends FabModelForm
 	public $isMambot = false;
 
 	/**
-	 *  Join objects for the form
+	 * Join objects for the form
 	 *
-	 *  @var array
+	 * @var array
 	 */
 	protected $aJoinObjs = array();
 
@@ -96,9 +95,9 @@ class FabrikFEModelForm extends FabModelForm
 	public $joinTableElementStep = '___';
 
 	/**
-	 *  Parameters
+	 * Parameters
 	 *
-	 *  @var JRegistry
+	 * @var JRegistry
 	 */
 	protected $params = null;
 
@@ -132,7 +131,7 @@ class FabrikFEModelForm extends FabModelForm
 	protected $currentElement = null;
 
 	/**
-	 * If true encase table and element names with "`" when getting elemenet list
+	 * If true encase table and element names with "`" when getting element list
 	 *
 	 * @var bool
 	 */
@@ -191,7 +190,7 @@ class FabrikFEModelForm extends FabModelForm
 	 * Store the form's previous data when processing
 	 *
 	 * @var array
-	 * /
+	 */
 	var $_origData = null;
 
 	/**
@@ -246,7 +245,7 @@ class FabrikFEModelForm extends FabModelForm
 	/**
 	 * Are we copying a row?  i.e. using form's Copy button.  Plugin manager needs to know.
 	 *
-	 *  @var bool
+	 * @var bool
 	 */
 	public $copyingRow = false;
 
@@ -301,7 +300,7 @@ class FabrikFEModelForm extends FabModelForm
 		$this->id = $id;
 		$this->setState('form.id', $id);
 
-		// $$$ rob not sure why but we need this getState() here when assinging id from admin view
+		// $$$ rob not sure why but we need this getState() here when assigning id from admin view
 		$this->getState();
 	}
 
@@ -370,6 +369,7 @@ class FabrikFEModelForm extends FabModelForm
 	public function checkAccessFromListSettings()
 	{
 		$form = $this->getForm();
+		$app = JFactory::getApplication();
 
 		if ($form->record_in_database == 0)
 		{
@@ -419,7 +419,7 @@ class FabrikFEModelForm extends FabModelForm
 		$editable = ($ret <= 1) ? false : true;
 		$this->setEditable($editable);
 
-		if (JRequest::getVar('view', 'form') == 'details')
+		if ($app->input->get('view', 'form') == 'details')
 		{
 			$this->setEditable(false);
 		}
@@ -563,11 +563,11 @@ class FabrikFEModelForm extends FabModelForm
 	}
 
 	/**
-	 * Set the page title for form
+	 * Set the browser title
 	 *
-	 * @param   string  $title  default title
+	 * @param   string  $title  Default browser title set by menu items' 'page_title' property
 	 *
-	 * @return	string	page title
+	 * @return	string	Browser title
 	 */
 
 	public function getPageTitle($title = '')
@@ -621,8 +621,15 @@ class FabrikFEModelForm extends FabModelForm
 	 * @return	array	array(group_id =>join_id)
 	 */
 
-	public function getJoinGroupIds($joins)
+	public function getJoinGroupIds($joins = null)
 	{
+		$listModel = $this->getlistModel();
+
+		if (is_null($joins))
+		{
+			$joins = $listModel->getJoins();
+		}
+
 		$arJoinGroupIds = array();
 		$groups = $this->getGroupsHiarachy();
 
@@ -683,11 +690,6 @@ class FabrikFEModelForm extends FabModelForm
 			$query->select('*')->from('#__{package}_jsactions')->where('element_id IN (' . implode(',', $aElIds) . ')');
 			$db->setQuery($query);
 			$res = $db->loadObjectList();
-
-			if ($db->getErrorNum())
-			{
-				JError::raiseError(500, $db->getErrorMsg());
-			}
 		}
 		else
 		{
@@ -752,12 +754,6 @@ class FabrikFEModelForm extends FabModelForm
 
 			$db->setQuery($query);
 			$groups = $db->loadObjectList('group_id');
-
-			if ($db->getErrorNum())
-			{
-				JError::raiseError(500, $db->getErrorMsg());
-			}
-
 			$this->_publishedformGroups = $this->mergeGroupsWithJoins($groups);
 		}
 
@@ -836,7 +832,7 @@ class FabrikFEModelForm extends FabModelForm
 	/**
 	 * Get the forms published group objects
 	 *
-	 * @return  array  group model objects with table row loaded
+	 * @return  array  Group model objects with table row loaded
 	 */
 
 	public function getGroups()
@@ -845,7 +841,7 @@ class FabrikFEModelForm extends FabModelForm
 		{
 			$this->groups = array();
 			$listModel = $this->getListModel();
-			$groupModel = JModel::getInstance('Group', 'FabrikFEModel');
+			$groupModel = JModelLegacy::getInstance('Group', 'FabrikFEModel');
 			$groupdata = $this->getPublishedGroups();
 
 			foreach ($groupdata as $id => $groupd)
@@ -858,7 +854,7 @@ class FabrikFEModelForm extends FabModelForm
 				// $row = $thisGroup->getGroup();
 				$row = FabTable::getInstance('Group', 'FabrikTable');
 				$row->bind($groupd);
-				$thisGroup->_group = $row;
+				$thisGroup->setGroup($row);
 
 				if ($row->published == 1)
 				{
@@ -907,12 +903,6 @@ class FabrikFEModelForm extends FabModelForm
 
 		$db->setQuery($query);
 		$groups = $db->loadObjectList();
-
-		if ($db->getErrorNum())
-		{
-			JError::raiseError(500, $db->getErrorMsg());
-		}
-
 		$this->elements = $groups;
 
 		return $groups;
@@ -1048,7 +1038,7 @@ class FabrikFEModelForm extends FabModelForm
 	}
 
 	/**
-	 * When the form is submitted we want to get the orginal record it
+	 * When the form is submitted we want to get the original record it
 	 * is updating - this is used in things like the fileupload element
 	 * to check for changes in uploaded files and process the difference
 	 *
@@ -1057,7 +1047,10 @@ class FabrikFEModelForm extends FabModelForm
 
 	protected function setOrigData()
 	{
-		if (JRequest::getInt('rowid') == 0)
+		$app = JFactory::getApplication();
+		$input = $app->input;
+
+		if ($this->isNewRecord() || !$this->getForm()->record_in_database)
 		{
 			$this->_origData = array(new stdClass);
 		}
@@ -1185,6 +1178,7 @@ class FabrikFEModelForm extends FabModelForm
 		{
 			return false;
 		}
+
 		/** $$$ rob 27/10/2011 - moved above _doUpload as code in there is trying to update formData which is not yet set
 		 * this->setFormData();
 		 */
@@ -1212,7 +1206,7 @@ class FabrikFEModelForm extends FabModelForm
 		if (in_array(false, $pluginManager->runPlugins('onAfterProcess', $this)))
 		{
 			// $$$ rob this no longer stops default redirect (not needed any more)
-			// returning false here stops the default redirect occuring
+			// returning false here stops the default redirect occurring
 			return false;
 		}
 		// Need to remove the form session before redirect plugins occur
@@ -1222,7 +1216,7 @@ class FabrikFEModelForm extends FabModelForm
 		if (in_array(false, $pluginManager->runPlugins('onLastProcess', $this)))
 		{
 			// $$$ rob this no longer stops default redirect (not needed any more)
-			// returning false here stops the default redirect occuring
+			// returning false here stops the default redirect occurring
 			return false;
 		}
 
@@ -1436,13 +1430,14 @@ class FabrikFEModelForm extends FabModelForm
 		}
 
 		// Simplest case, element name exists in main group
-		if (array_key_exists($fullName, $data))
+		if (is_array($data) && array_key_exists($fullName, $data))
 		{
 			$value = $data[$fullName];
-		} /* Maybe we are being called from onAfterProcess hook, or somewhere else
-		   * running after store, when non-joined data names have been reduced to short
-		   * names in _formData, so peek in _fullFormData
-		   */
+		}
+		/* Maybe we are being called from onAfterProcess hook, or somewhere else
+		 * running after store, when non-joined data names have been reduced to short
+		 * names in formData, so peek in _fullFormData
+		 */
 		elseif (isset($this->_fullFormData) && array_key_exists($fullName, $this->_fullFormData))
 		{
 			$value = $this->_fullFormData[$fullName];
@@ -1579,6 +1574,7 @@ class FabrikFEModelForm extends FabModelForm
 				{
 					$item = rawurldecode($item);
 				}
+
 				if ($this->dofilter)
 				{
 					@$item = $this->filter->clean($item);
@@ -1607,7 +1603,7 @@ class FabrikFEModelForm extends FabModelForm
 		$repeatTotals = $input->get('fabrik_repeat_group', array(0), 'post', 'array');
 		$groups = $this->getGroupsHiarachy();
 
-		// Curerntly this is just used by calculation elements
+		// Currently this is just used by calculation elements
 		foreach ($groups as $groupModel)
 		{
 			$group = $groupModel->getGroup();
@@ -4969,8 +4965,28 @@ class FabrikFEModelForm extends FabModelForm
 				$qs[] = $k . '=' . $v;
 			}
 
-			$action = $page . implode("&amp;", $qs);
-			$action = JRoute::_($action);
+			$action = $page . (implode("&amp;", $qs));
+			$action = JRoute::_($action, false);
+
+			/*
+			 * JRoute messes up our urlencoding - re-parse the querystring part of the routed url to urlencode the values.
+			 * Example bug was in IE with url index.php?foo=hotesse de l'air - the ' caused ie to fail on form submisssion.
+			 */
+			if (strpos($action, '?'))
+			{
+				$bits = explode('?', $action);
+				$pairs = explode('&', $bits[1]);
+
+				foreach ($pairs as &$val)
+				{
+					$pairParts = explode('=', $val);
+					$pairParts[1] = urlencode($pairParts[1]);
+					$val = $pairParts[0] . '=' . $pairParts[1];
+				}
+
+				$bits[1] = implode('&', $pairs);
+				$action = $bits[0] . '?' . $bits[1];
+			}
 		}
 		else
 		{

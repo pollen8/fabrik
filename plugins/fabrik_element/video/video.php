@@ -29,7 +29,7 @@ class PlgFabrik_ElementVideo extends PlgFabrik_Element
 	/** @var array allowed file extensions*/
 	var $_aDefaultFileTypes = array('.mov', '.qtif', '.mp4');
 
-	protected $_is_upload = true;
+	protected $is_upload = true;
 
 	/**
 	 * Shows the data formatted for the list view

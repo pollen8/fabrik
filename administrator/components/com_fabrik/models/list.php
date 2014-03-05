@@ -1302,7 +1302,7 @@ class FabrikModelList extends FabModelAdmin
 
 			$elementModel = $pluginManager->getPlugIn($element->plugin, 'element');
 			$elementModel->setId($element->id);
-			$elementModel->_element = $element;
+			$elementModel->element = $element;
 
 			// Hack for user element
 			$details = array('group_id' => $element->group_id);

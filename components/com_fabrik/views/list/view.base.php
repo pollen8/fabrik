@@ -103,7 +103,7 @@ class FabrikViewListBase extends JViewLegacy
 		$opts->advancedFilters = $model->getAdvancedFilterValues();
 		$opts->form = 'listform_' . $listref;
 		$this->listref = $listref;
-		$opts->headings = $model->_jsonHeadings();
+		$opts->headings = $model->jsonHeadings();
 		$labels = $this->headings;
 
 		foreach ($labels as &$l)
@@ -307,6 +307,7 @@ class FabrikViewListBase extends JViewLegacy
 
 			return;
 		}
+
 		$fbConfig = JComponentHelper::getParams('com_fabrik');
 		$profiler = JProfiler::getInstance('Application');
 		$app = JFactory::getApplication();
@@ -320,8 +321,6 @@ class FabrikViewListBase extends JViewLegacy
 
 		$root = $app->isAdmin() ? JPATH_ADMINISTRATOR : JPATH_SITE;
 		$this->addTemplatePath($root . '/templates/' . $app->getTemplate() . '/html/com_fabrik/list/' . $tmpl);
-
-		require_once COM_FABRIK_FRONTEND . '/views/modifiers.php';
 		$user = JFactory::getUser();
 		$document = JFactory::getDocument();
 		$item = $model->getTable();
@@ -395,7 +394,7 @@ class FabrikViewListBase extends JViewLegacy
 		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$this->setTitle($w, $params, $model);
 
-		// Depreciated (keep in case ppl use them in old tmpls)
+		// Deprecated (keep in case people use them in old templates)
 		$this->table = new stdClass;
 		$this->table->label = $w->parseMessageForPlaceHolder($item->label, $_REQUEST);
 		$this->table->intro = $params->get('show_into', 1) == 0 ? '' : $w->parseMessageForPlaceHolder($item->introduction);
@@ -433,6 +432,7 @@ class FabrikViewListBase extends JViewLegacy
 		{
 			JError::raiseNotice(500, JText::_('COM_FABRIK_NOTICE_DOMPDF_NOT_FOUND'));
 		}
+
 		$this->emptyLink = $model->canEmpty() ? '#' : '';
 		$this->csvImportLink = $this->showCSVImport ? JRoute::_('index.php?option=com_' . $package . '&view=import&filetype=csv&listid=' . $item->id) : '';
 		$this->showAdd = $model->canAdd();
@@ -474,7 +474,7 @@ class FabrikViewListBase extends JViewLegacy
 
 			if (!$this->nodata)
 			{
-				// If some data is shown then ensure that menu links reset filters (combined with require filters) doesnt produce an empty data set for the pdf
+				// If some data is shown then ensure that menu links reset filters (combined with require filters) doesn't produce an empty data set for the pdf
 				$pdfLink .= '&resetfilters=0';
 			}
 
@@ -845,7 +845,7 @@ class FabrikViewListBase extends JViewLegacy
 		$this->hiddenFields[] = '<input type="hidden" name="listref" value="' . $this->renderContext . '"/>';
 		$this->hiddenFields[] = '<input type="hidden" name="Itemid" value="' . $Itemid . '"/>';
 
-		// Removed in favour of using list_{id}_limit dorop down box
+		// Removed in favour of using list_{id}_limit dropdown box
 		$this->hiddenFields[] = '<input type="hidden" name="fabrik_referrer" value="' . $reffer . '" />';
 		$this->hiddenFields[] = JHTML::_('form.token');
 		$this->hiddenFields[] = '<input type="hidden" name="format" value="html" />';
@@ -899,7 +899,7 @@ class FabrikViewListBase extends JViewLegacy
 		$model->setRenderContext($id);
 		$this->listref = $model->getRenderContext();
 
-		// Advanced search script loaded in list view - avoids timing issues with ie loading the ajax content and script
+		// Advanced search script loaded in list view - avoids timing issues with i.e. loading the ajax content and script
 		$this->rows = $model->getAdvancedSearchRows();
 		$action = $input->server->get('HTTP_REFERER', 'index.php?option=com_' . $package, 'string');
 		$this->action = $action;

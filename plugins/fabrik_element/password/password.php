@@ -156,7 +156,7 @@ class PlgFabrik_ElementPassword extends PlgFabrik_Element
 		$element->name = $origname;
 		if ($checkvalue != $value)
 		{
-			$this->_validationErr = JText::_('PLG_ELEMENT_PASSWORD_PASSWORD_CONFIRMATION_DOES_NOT_MATCH');
+			$this->validationErr = JText::_('PLG_ELEMENT_PASSWORD_PASSWORD_CONFIRMATION_DOES_NOT_MATCH');
 			return false;
 		}
 		else
@@ -173,7 +173,7 @@ class PlgFabrik_ElementPassword extends PlgFabrik_Element
 			// $$$ rob add rowid test as well as if using row=-1 and usekey=field $k may have a value
 			if (($rowId === '' || empty($rowId)) && $keyVal === 0 && $value === '')
 			{
-				$this->_validationErr .= JText::_('PLG_ELEMENT_PASSWORD_PASSWORD_CONFIRMATION_EMPTY_NOT_ALLOWED');
+				$this->validationErr .= JText::_('PLG_ELEMENT_PASSWORD_PASSWORD_CONFIRMATION_EMPTY_NOT_ALLOWED');
 				return false;
 			}
 			return true;

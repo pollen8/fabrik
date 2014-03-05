@@ -2291,6 +2291,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		$db->setQuery($query, $offset, $limit);
 		$groupBy = FabrikString::shortColName($groupBy);
 		$rows = $db->loadObjectList($groupBy);
+		ksort($rows);
 
 		return $rows;
 	}
@@ -3066,7 +3067,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		$db = JFactory::getDbo();
 		$table = $this->getListModel()->getTable();
 		$fullElName = $this->getFullName(false, true, false) . "_id";
-		$str .= ", (SELECT GROUP_CONCAT(" . $this->_element->name . " SEPARATOR '" . GROUPSPLITTER . "') FROM $jointable WHERE " . $jointable
+		$str .= ", (SELECT GROUP_CONCAT(" . $this->element->name . " SEPARATOR '" . GROUPSPLITTER . "') FROM $jointable WHERE " . $jointable
 		. ".parent_id = " . $table->db_primary_key . ") AS $fullElName";
 		return $str;
 	}

@@ -23,6 +23,11 @@ require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
 class PlgFabrik_FormArticle extends PlgFabrik_Form
 {
 	/**
+	 * Images
+	 * @var object
+	 */
+	public $images = null;
+	/**
 	 * Create articles - needed to be before store as we are altering the metastore element's data
 	 *
 	 * @param   object  $params      Plugin params
@@ -68,33 +73,30 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 	protected function saveAritcle($id, $catid)
 	{
 		$params = $this->getParams();
+		$user = JFactory::getUser();
 		$data = array('articletext' => $this->buildContent(), 'catid' => $catid, 'state' => 1, 'language' => '*');
-		$attribs = array('title', 'publish_up', 'publish_down', 'featured', 'state', 'metadesc', 'metakey');
+		$attribs = array('title' => '', 'publish_up' => '', 'publish_down' => '', 'featured' => '0', 'state' => '1', 'metadesc' => '', 'metakey' => '', 'tags' => '');
 
 		$data['images'] = json_encode($this->images());
 
 		if (is_null($id))
 		{
 			$data['created'] = JFactory::getDate()->toSql();
-			$attribs[] = 'created_by';
+			$attribs['created_by'] = $user->get('id');
 		}
 		else
 		{
 			$data['modified'] = JFactory::getDate()->toSql();
+			$data['modified_by'] = $user->get('id');
 		}
 
-		foreach ($attribs as $attrib)
+		foreach ($attribs as $attrib => $default)
 		{
-			$elementId = $params->get($attrib);
-			$data[$attrib] = $this->findElementData($elementId, $data);
+			$elementId = (int) $params->get($attrib);
+			$data[$attrib] = $this->findElementData($elementId, $default);
 		}
 
 		$this->generateNewTitle($id, $catid, $data);
-
-		/* $item = JTable::getInstance('Content');
-		$item->load($id);
-		$item->bind($data);
-		$item->store(); */
 
 		if (!is_null($id))
 		{
@@ -122,21 +124,27 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 	/**
 	 * Get the element data from the Fabrik form
 	 *
-	 * @param   int    $elementId  Element id
-	 * @param   array  $data       Data
+	 * @param   int     $elementId  Element id
+	 * @param   string  $default    Default value
 	 *
 	 * @return mixed
 	 */
-	protected function findElementData($elementId)
+	protected function findElementData($elementId, $default = '')
 	{
+		$formModel = $this->formModel;
 		$value = '';
 
-		if ($elementModel = $this->formModel->getElement($elementId, true))
+		if ($elementId === 0)
+		{
+			return $default;
+		}
+
+		if ($elementModel = $formModel->getElement($elementId, true))
 		{
 			$fullName = $elementModel->getFullName(false, true, false);
-			$value = $this->formModel->getElementData($fullName, false, '', 0);
+			$value = $formModel->getElementData($fullName, false, $default, 0);
 
-			if (is_array($value))
+			if (is_array($value) && count($value) === 1)
 			{
 				$value = array_shift($value);
 			}
@@ -178,6 +186,12 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 				$img->image_intro_caption = '';
 
 				$elementModel = $formModel->getElement($introImg, true);
+
+				if (get_class($elementModel) === 'PlgFabrik_ElementFileupload')
+				{
+					$name = $elementModel->getFullName(true, false);
+					$img->$name = $placeholder;
+				}
 			}
 		}
 
@@ -210,6 +224,7 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 		{
 			$name = $upload->getFullName(false, true, false);
 			$size = $params->get('image_full_size', 'thumb');
+
 			list($file, $placeholder) = $this->setImage($upload->getElement()->id, $size);
 
 			if (!isset($img->$name))
@@ -249,7 +264,8 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 			}
 		}
 
-		$elementModel = $this->formModel->getElement($elementId, true);
+		$formModel = $this->formModel;
+		$elementModel = $formModel->getElement($elementId, true);
 
 		if (get_class($elementModel) === 'PlgFabrik_ElementFileupload')
 		{
@@ -297,7 +313,6 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 	protected function generateNewTitle($id, $catid, &$data)
 	{
 		// If its an existing article don't edit name
-		// $$$ hugh - in 3.1 we rewrite the alias here.  Back porting url safe fix, so added it here
 		if ((int) $id !== 0)
 		{
 			$data['alias'] = JApplication::stringURLSafe(JStringNormalise::toDashSeparated($data['title']));
@@ -334,7 +349,7 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 		{
 			$key = $elementModel->getElement()->name;
 			$val = json_encode($store);
-			$listModel = $this->formModel->getListModel();
+			$listModel = $formModel->getListModel();
 
 			// Ensure we store to the main db table
 			$listModel->clearTable();
@@ -362,7 +377,7 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 		if ($elementModel = $formModel->getElement($params->get('meta_store'), true))
 		{
 			$fullName = $elementModel->getFullName(false, true, false);
-			$metaStore = $this->formModel->getElementData($fullName);
+			$metaStore = $formModel->getElementData($fullName);
 			$metaStore = json_decode($metaStore);
 		}
 		else
@@ -455,7 +470,10 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 			$messageTemplate = JFile::getExt($template) == 'php' ? $this->_getPHPTemplateEmail($template) : $this
 			->_getTemplateEmail($template);
 
-			$messageTemplate = str_replace('{content}', $content, $messageTemplate);
+			if ($content !== '')
+			{
+				$messageTemplate = str_replace('{content}', $messageTemplate, $content);
+			}
 		}
 
 		$message = '';
@@ -466,6 +484,7 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 		}
 		elseif (!empty($content))
 		{
+			// Joomla article template:
 			$message = $content;
 		}
 
@@ -488,13 +507,13 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 		}
 
 		$w = new FabrikWorker;
-		$output = $w->parseMessageForPlaceholder($message, $this->data, false);
+		$output = $w->parseMessageForPlaceholder($message, $this->data, true);
 
 		return $output;
 	}
 
 	/**
-	 * Use a php template for advanced email templates, partularly for forms with repeat group data
+	 * Use a php template for advanced email templates, particularly for forms with repeat group data
 	 *
 	 * @param   string  $tmpl  Path to template
 	 *
@@ -557,6 +576,11 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 			JModelLegacy::addIncludePath(COM_FABRIK_BASE . 'components/com_content/models');
 			$articleModel = JModelLegacy::getInstance('Article', 'ContentModel');
 			$res = $articleModel->getItem($contentTemplate);
+		}
+
+		if ($res->fulltext !== '')
+		{
+			$res->fulltext = '<hr id="system-readmore" />' . $res->fulltext;
 		}
 
 		return $res->introtext . ' ' . $res->fulltext;

@@ -11,6 +11,11 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+if (!defined('DS'))
+{
+	define('DS', DIRECTORY_SEPARATOR);
+}
+
 /**
  * Plugin element to render an image already located on the server
  *
@@ -21,8 +26,12 @@ defined('_JEXEC') or die('Restricted access');
 
 class PlgFabrik_ElementImage extends PlgFabrik_Element
 {
-
-	var $ignoreFolders = array('cache', 'lib', 'install', 'modules', 'themes', 'upgrade', 'locks', 'smarty', 'tmp');
+	/**
+	 * Ignored folders
+	 *
+	 * @var array
+	 */
+	protected $ignoreFolders = array('cache', 'lib', 'install', 'modules', 'themes', 'upgrade', 'locks', 'smarty', 'tmp');
 
 	/**
 	 * Db table field type
@@ -52,14 +61,17 @@ class PlgFabrik_ElementImage extends PlgFabrik_Element
 			// But ... if the root folder option is set, we need to strip it.
 			$rootFolder = $params->get('selectImage_root_folder', '/');
 			$rootFolder = JString::ltrim($rootFolder, '/');
+			$rootFolder = JString::rtrim($rootFolder, '/') . '/';
 			$this->default = preg_replace("#^$rootFolder#", '', $this->default);
 			$this->default = $w->parseMessageForPlaceHolder($this->default, $data);
+
 			if ($element->eval == "1")
 			{
 				$this->default = @eval((string) stripslashes($this->default));
 				FabrikWorker::logEval($this->default, 'Caught exception on eval in ' . $element->name . '::getDefaultValue() : %s');
 			}
 		}
+
 		return $this->default;
 	}
 
@@ -91,114 +103,21 @@ class PlgFabrik_ElementImage extends PlgFabrik_Element
 	}
 
 	/**
-	 * Determines the value for the element in the form view
-	 *
-	 * @param   array  $data           form data
-	 * @param   int    $repeatCounter  when repeating joinded groups we need to know what part of the array to access
-	 * @param   array  $opts           options
-	 *
-	 * @return  string	value
-	 */
-
-	public function getValue($data, $repeatCounter = 0, $opts = array())
-	{
-		if (!isset($this->defaults))
-		{
-			$this->defaults = array();
-		}
-		$this->defaults = (array) $this->defaults;
-		if (!array_key_exists($repeatCounter, $this->defaults))
-		{
-			$groupModel = $this->getGroupModel();
-			$group = $groupModel->getGroup();
-			$joinid = $group->join_id;
-			$formModel = $this->getForm();
-			$element = $this->getElement();
-			$params = $this->getParams();
-			$default = $this->getDefaultOnACL($data, $opts);
-			$name = $this->getFullName(false, true, false);
-			if ($groupModel->isJoin())
-			{
-				if ($groupModel->canRepeat())
-				{
-					if (array_key_exists('join', $data) && array_key_exists($joinid, $data['join']) && is_array($data['join'][$joinid])
-						&& array_key_exists($name, $data['join'][$joinid]) && array_key_exists($repeatCounter, $data['join'][$joinid][$name]))
-					{
-						$default = $data['join'][$joinid][$name][$repeatCounter];
-					}
-				}
-				else
-				{
-					if (array_key_exists('join', $data) && array_key_exists($joinid, $data['join']) && is_array($data['join'][$joinid])
-						&& array_key_exists($name, $data['join'][$joinid]))
-					{
-						$default = $data['join'][$joinid][$name];
-					}
-				}
-			}
-			else
-			{
-				if ($groupModel->canRepeat())
-				{
-					// Repeat group NO join
-					if (array_key_exists($name, $data))
-					{
-						if (is_array($data[$name]))
-						{
-							// Occurs on form submission for fields at least
-							$a = $data[$name];
-						}
-						else
-						{
-							// Occurs when getting from the db
-							$a = json_decode($data[$name], true);
-						}
-						$default = JArrayHelper::getValue($a, $repeatCounter, $default);
-					}
-
-				}
-				else
-				{
-					$default = JArrayHelper::getValue($data, $name, $default);
-				}
-			}
-			if ($default === '')
-			{
-				// Query string for joined data
-				$default = JArrayHelper::getValue($data, $name);
-			}
-			$element->default = $default;
-
-			// Stops this getting called from form validation code as it messes up repeated/join group validations
-			if (array_key_exists('runplugins', $opts) && $opts['runplugins'] == 1)
-			{
-				FabrikWorker::getPluginManager()->runPlugins('onGetElementDefault', $formModel, 'form', $this);
-			}
-			if (is_array($element->default))
-			{
-				$element->default = implode(',', $element->default);
-			}
-			$this->defaults[$repeatCounter] = $element->default;
-
-		}
-		return $this->defaults[$repeatCounter];
-	}
-
-	/**
 	 * Shows the data formatted for the list view
 	 *
-	 * @param   string  $data      elements data
-	 * @param   object  &$thisRow  all the data in the lists current row
+	 * @param   string    $data      elements data
+	 * @param   stdClass  &$thisRow  all the data in the lists current row
 	 *
 	 * @return  string	formatted value
 	 */
 
-	public function renderListData($data, &$thisRow)
+	public function renderListData($data, stdClass &$thisRow)
 	{
 		$w = new FabrikWorker;
 		$data = FabrikWorker::JSONtoData($data, true);
 		$params = $this->getParams();
 		$pathset = false;
+
 		foreach ($data as $d)
 		{
 			if (strstr($d, '/'))
@@ -207,10 +126,12 @@ class PlgFabrik_ElementImage extends PlgFabrik_Element
 				break;
 			}
 		}
+
 		if ($data === '' || empty($data) || !$pathset)
 		{
 			// No data so default to image (or simple image name stored).
 			$iPath = $params->get('imagepath');
+
 			if (!strstr($iPath, '/'))
 			{
 				// Single file specified so find it in tmpl folder
@@ -218,40 +139,59 @@ class PlgFabrik_ElementImage extends PlgFabrik_Element
 			}
 			else
 			{
-				$data = (array) $iPath;
+				// 25/02/2014 Single image - we append any path later on - we certainly shouldn't set $data to $iPath.
+				//$data = (array) $iPath;
 			}
 		}
+
 		$selectImage_root_folder = $this->rootFolder();
 
 		// $$$ hugh - tidy up a bit so we don't have so many ///'s in the URL's
 		$selectImage_root_folder = JString::ltrim($selectImage_root_folder, '/');
 		$selectImage_root_folder = JString::rtrim($selectImage_root_folder, '/');
+		$selectImage_root_folder = $selectImage_root_folder === '' ? '' : $selectImage_root_folder . '/';
+
 		$showImage = $params->get('show_image_in_table', 0);
 		$linkURL = $params->get('link_url', '');
+
 		if (empty($data) || $data[0] == '')
 		{
 			$data[] = $params->get('imagepath');
 		}
+
 		for ($i = 0; $i < count($data); $i++)
 		{
 			if ($showImage)
 			{
 				// $$$ rob 30/06/2011 - say if we import via csv a url to the image check that and use that rather than the relative path
-				$src = JString::substr($data[$i], 0, 4) == 'http' ? $data[$i] : COM_FABRIK_LIVESITE . $selectImage_root_folder . '/' . $data[$i];
+				if (JString::substr($data[$i], 0, 4) == 'http')
+				{
+					$src = $data[$i];
+				}
+				else
+				{
+					$data[$i] = JString::ltrim($data[$i], '/');
+					$src = COM_FABRIK_LIVESITE . $selectImage_root_folder . $data[$i];
+				}
+
 				$data[$i] = '<img src="' . $src . '" alt="' . $data[$i] . '" />';
 			}
+
 			if ($linkURL)
 			{
 				$data[$i] = '<a href="' . $linkURL . '" target="_blank">' . $data[$i] . '</a>';
 			}
+
 			$data[$i] = $w->parseMessageForPlaceHolder($data[$i], $thisRow);
 		}
+
 		$data = json_encode($data);
+
 		return parent::renderListData($data, $thisRow);
 	}
 
 	/**
-	 * Manupulates posted form data for insertion into database
+	 * Manipulates posted form data for insertion into database
 	 *
 	 * @param   mixed  $val   this elements posted form data
 	 * @param   array  $data  posted form data
@@ -264,8 +204,8 @@ class PlgFabrik_ElementImage extends PlgFabrik_Element
 		$groupModel = $this->getGroup();
 		$params = $this->getParams();
 		$selectImage_root_folder = $params->get('selectImage_root_folder', '');
-
 		$key = $this->getFullName(false, true, false);
+
 		if (!array_key_exists($key, $data))
 		{
 			$element = $this->getElement();
@@ -278,6 +218,7 @@ class PlgFabrik_ElementImage extends PlgFabrik_Element
 			{
 				// @TODO - not tested with join group data
 			}
+
 			if (!array_key_exists($key . '_folder', $data))
 			{
 				$retval = json_encode($data[$key]);
@@ -285,16 +226,17 @@ class PlgFabrik_ElementImage extends PlgFabrik_Element
 			else
 			{
 				$retvals = array();
+
 				foreach ($data[$key] as $k => $v)
 				{
 					$retvals[] = preg_replace("#^$selectImage_root_folder#", '', $data[$key . '_folder'][$k]) . $data[$key . '_image'][$k];
 				}
+
 				$retval = json_encode($retvals);
 			}
 		}
 		else
 		{
-
 			/* $$$ hugh - if we're using default image, no user selection,
 			 * the _folder and _image won't exist,
 			 * we'll just have the relative path in the element $key
@@ -308,6 +250,7 @@ class PlgFabrik_ElementImage extends PlgFabrik_Element
 				$retval = preg_replace("#^$selectImage_root_folder#", '', $data[$key]);
 			}
 		}
+
 		return $retval;
 	}
 
@@ -324,13 +267,17 @@ class PlgFabrik_ElementImage extends PlgFabrik_Element
 	{
 		$params = $this->getParams();
 		$selectImage_root_folder = $params->get('selectImage_root_folder', '');
-		return '<img src="' . COM_FABRIK_LIVESITE . $selectImage_root_folder . '/' . $data . '" />';
+		$selectImage_root_folder = JString::ltrim($selectImage_root_folder, '/');
+		$selectImage_root_folder = JString::rtrim($selectImage_root_folder, '/');
+		$selectImage_root_folder = $selectImage_root_folder === '' ? '' : $selectImage_root_folder . '/';
+
+		return '<img src="' . COM_FABRIK_LIVESITE . $selectImage_root_folder . $data . '" />';
 	}
 
 	/**
 	 * Draws the html form element
 	 *
-	 * @param   array  $data           to preopulate element with
+	 * @param   array  $data           to pre-populate element with
 	 * @param   int    $repeatCounter  repeat group counter
 	 *
 	 * @return  string	elements html
@@ -343,7 +290,11 @@ class PlgFabrik_ElementImage extends PlgFabrik_Element
 		$value = $this->getValue($data, $repeatCounter);
 		$id = $this->getHTMLId($repeatCounter);
 		$rootFolder = $this->rootFolder($value);
-		$value = str_replace($rootFolder, '', $value);
+
+		if ($rootFolder != '/')
+		{
+			$value = str_replace($rootFolder, '', $value);
+		}
 
 		// $$$ rob - 30/06/2011 can only select an image if its not a remote image
 		$canSelect = ($params->get('image_front_end_select', '0') && JString::substr($value, 0, 4) !== 'http');
@@ -351,9 +302,10 @@ class PlgFabrik_ElementImage extends PlgFabrik_Element
 		// $$$ hugh - tidy up a bit so we don't have so many ///'s in the URL's
 		$rootFolder = JString::ltrim($rootFolder, '/');
 		$rootFolder = JString::rtrim($rootFolder, '/');
+		$rootFolder = $rootFolder === '' ? '' : $rootFolder . '/';
 
 		// $$$ rob - 30/062011 allow for full urls in the image. (e.g from csv import)
-		$defaultImage = JString::substr($value, 0, 4) == 'http' ? $value : COM_FABRIK_LIVESITE . $rootFolder . '/' . $value;
+		$defaultImage = JString::substr($value, 0, 4) == 'http' ? $value : COM_FABRIK_LIVESITE . $rootFolder . $value;
 
 		$float = $params->get('image_float');
 		$float = $float != '' ? "style='float:$float;'" : '';
@@ -361,9 +313,11 @@ class PlgFabrik_ElementImage extends PlgFabrik_Element
 		$str[] = '<div class="fabrikSubElementContainer" id="' . $id . '">';
 
 		$rootFolder = str_replace('/', DS, $rootFolder);
+
 		if ($canSelect && $this->isEditable())
 		{
 			$str[] = '<img src="' . $defaultImage . '" alt="' . $value . '" ' . $float . ' class="imagedisplayor"/>';
+
 			if (array_key_exists($name, $data))
 			{
 				if (trim($value) == '' && $rootFolder === '')
@@ -373,6 +327,7 @@ class PlgFabrik_ElementImage extends PlgFabrik_Element
 				else
 				{
 					$bits = explode("/", $value);
+
 					if (count($bits) > 1)
 					{
 						$path = '/' . array_shift($bits) . '/';
@@ -389,12 +344,15 @@ class PlgFabrik_ElementImage extends PlgFabrik_Element
 			{
 				$path = $rootFolder;
 			}
+
 			$images = array();
 			$imagenames = (array) JFolder::files(JPATH_SITE . '/' . $path);
+
 			foreach ($imagenames as $n)
 			{
 				$images[] = JHTML::_('select.option', $n, $n);
 			}
+
 			// $$$rob not sure about his name since we are adding $repeatCounter to getHTMLName();
 			$imageName = $this->getGroupModel()->canRepeat() ? FabrikString::rtrimWord($name, "][$repeatCounter]") . "_image][$repeatCounter]"
 				: $id . '_image';
@@ -417,14 +375,18 @@ class PlgFabrik_ElementImage extends PlgFabrik_Element
 			$value = $w->parseMessageForPlaceHolder($value, $data);
 			$linkURL = $params->get('link_url', '');
 			$imgstr = '<img src="' . $defaultImage . '" alt="' . $value . '" ' . $float . ' class="imagedisplayor"/>' . "\n";
+
 			if ($linkURL)
 			{
 				$imgstr = '<a href="' . $linkURL . '" target="_blank">' . $imgstr . '</a>';
 			}
+
 			$str[] = $imgstr;
 			$str[] = '<input type="hidden" name="' . $name . '" value="' . $value . '" class="fabrikinput hiddenimagepath folderpath" />';
 		}
+
 		$str[] = '</div>';
+
 		return implode("\n", $str);
 	}
 
@@ -439,19 +401,23 @@ class PlgFabrik_ElementImage extends PlgFabrik_Element
 		$this->loadMeForAjax();
 		$app = JFactory::getApplication();
 		$folder = $app->input->get('folder', '', 'string');
+
 		if (!strstr($folder, JPATH_SITE))
 		{
 			$folder = JPATH_SITE . '/' . $folder;
 		}
+
 		$pathA = JPath::clean($folder);
 		$folder = array();
 		$files = array();
 		$images = array();
 		FabrikWorker::readImages($pathA, "/", $folders, $images, $this->ignoreFolders);
+
 		if (!array_key_exists('/', $images))
 		{
 			$images['/'] = array();
 		}
+
 		echo json_encode($images['/']);
 	}
 
@@ -475,6 +441,7 @@ class PlgFabrik_ElementImage extends PlgFabrik_Element
 		$opts->id = $element->id;
 		$opts->ds = DS;
 		$opts->dir = JPATH_SITE . '/' . str_replace('/', DS, $opts->rootPath);
+
 		return array('FbImage', $id, $opts);
 	}
 
@@ -491,11 +458,14 @@ class PlgFabrik_ElementImage extends PlgFabrik_Element
 		$rootFolder = '';
 		$params = $this->getParams();
 		$canSelect = ($params->get('image_front_end_select', '0') && JString::substr($value, 0, 4) !== 'http');
-		$defaultImg = $params->get('imagepath', '');
-		if ($canSelect && (JFolder::exists($defaultImg) || JFolder::exists(COM_FABRIK_BASE . $defaultImg)))
+		$defaultImg = $params->get('imagepath');
+
+		// Changed first || from a && - http://fabrikar.com/forums/index.php?threads/3-1rc1-image-list-options-bug.36585/#post-184266
+		if ($canSelect || (JFolder::exists($defaultImg) || JFolder::exists(COM_FABRIK_BASE . $defaultImg)))
 		{
 			$rootFolder = $defaultImg;
 		}
+
 		return $rootFolder;
 	}
 
@@ -515,17 +485,17 @@ class PlgFabrik_ElementImage extends PlgFabrik_Element
 	}
 
 	/**
-	* Does the element conside the data to be empty
-	* Used in isempty validation rule
-	*
-	* $$$ hugh - right now this is the default code, here as a reminder we
-	* need to fix this so it makes sensible decisions about 'empty' image
-	*
-	* @param   array  $data           data to test against
-	* @param   int    $repeatCounter  repeat group #
-	*
-	* @return  bool
-	*/
+	 * Does the element consider the data to be empty
+	 * Used in isempty validation rule
+	 *
+	 * $$$ hugh - right now this is the default code, here as a reminder we
+	 * need to fix this so it makes sensible decisions about 'empty' image
+	 *
+	 * @param   array  $data           data to test against
+	 * @param   int    $repeatCounter  repeat group #
+	 *
+	 * @return  bool
+	 */
 
 	public function dataConsideredEmpty($data, $repeatCounter)
 	{

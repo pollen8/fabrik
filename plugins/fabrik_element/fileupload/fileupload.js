@@ -1,3 +1,10 @@
+/**
+ * File Upload Element
+ *
+ * @copyright: Copyright (C) 2005-2013, fabrikar.com - All rights reserved.
+ * @license:   GNU/GPL http://www.gnu.org/copyleft/gpl.html
+ */
+
 var FbFileUpload = new Class({
 	Extends: FbFileElement,
 	initialize: function (element, options) {
@@ -78,8 +85,9 @@ var FbFileUpload = new Class({
 						this.makeDeletedImageField(this.groupid, b.get('data-file')).inject(this.getContainer(), 'inside');
 					}
 					/*
-					 * b.getNext().destroy(); b.destroy();
-					 */
+					b.getNext().destroy();
+					b.destroy();
+					*/
 					var delete_span = document.id(this.element.id + '_delete_span');
 					if (delete_span) {
 						delete_span.destroy();
@@ -92,10 +100,10 @@ var FbFileUpload = new Class({
 	/**
 	 * Sets the element key used in Fabrik.blocks.form_X.formElements
 	 * overwritten by dbjoin rendered as checkbox
-	 * 
-	 * @since 3.0.7
-	 * 
-	 * @return string
+	 *
+	 * @since   3.0.7
+	 *
+	 * @return  string
 	 */
 
 	getFormElementsKey: function (elId) {
@@ -140,15 +148,12 @@ var FbFileUpload = new Class({
 	},
 
 	/**
-	 * Create a hidden input which will tell fabrik, upon form submission, to
-	 * delete the file
-	 * 
-	 * @param int
-	 *            groupid group id
-	 * @param string
-	 *            value file to delete
-	 * 
-	 * @return DOM Node - hidden input
+	 * Create a hidden input which will tell fabrik, upon form submission, to delete the file
+	 *
+	 *  @param  int     groupid  group id
+	 *  @param  string  value    file to delete
+	 *
+	 *  @return  DOM Node - hidden input
 	 */
 	makeDeletedImageField: function (groupid, value) {
 		return new Element('input', {
@@ -331,9 +336,9 @@ var FbFileUpload = new Class({
 				fconsole('Filuploaded didnt find: ' + file.id);
 				return;
 			}
-			document.id(file.id).getElement('.plupload_resize').show();
 			var resizebutton = document.id(file.id).getElement('.plupload_resize').getElement('a');
 			if (resizebutton) {
+				resizebutton.show();
 				resizebutton.href = response.uri;
 				resizebutton.id = 'resizebutton_' + file.id;
 				resizebutton.store('filepath', response.filepath);
@@ -342,8 +347,7 @@ var FbFileUpload = new Class({
 				this.widget.setImage(response.uri, response.filepath, file.params);
 			}
 
-			// Stores the cropparams which we need to reload the crop widget in
-			// the correct state (rotation, zoom, loc etc)
+			// Stores the cropparams which we need to reload the crop widget in the correct state (rotation, zoom, loc etc)
 			new Element('input', {
 				'type': 'hidden',
 				name: this.options.elementName + '[crop][' + response.filepath + ']',
@@ -624,20 +628,17 @@ var ImageWidget = new Class({
 
 	/**
 	 * Add or make active an image in the editor
-	 * 
-	 * @param string
-	 *            uri Image URI
-	 * @param string
-	 *            filepath Path to file
-	 * @param object
-	 *            params Initial parameters
+	 *
+	 * @param  string  uri  Image URI
+	 * @param  string  filepath  Path to file
+	 * @param  object  params    Initial parameters
 	 */
 
 	setImage: function (uri, filepath, params) {
 		this.activeFilePath = filepath;
 		if (!this.images.has(filepath)) {
 
-			// Have to assign to tmp param otherwise its not applied in onLoad
+			// Needed to ensure they are available in onLoad
 			var tmpParams = params;
 
 			// New image
@@ -664,9 +665,8 @@ var ImageWidget = new Class({
 
 	/**
 	 * Set rotate, scale, image and crop values for a given image
-	 * 
-	 * @param object
-	 *            params Image parameters
+	 *
+	 * @param   object  params  Image parameters
 	 */
 	setInterfaceDimensions: function (params) {
 		if (this.scaleSlide) {
@@ -690,15 +690,12 @@ var ImageWidget = new Class({
 
 	/**
 	 * One time call to store initial image crop info in this.images
-	 * 
-	 * @param string
-	 *            filepath Path to image
-	 * @param DOMnode
-	 *            img Image - just created
-	 * @param params
-	 *            object Image parameters
-	 * 
-	 * @return object Update image parameters
+	 *
+	 * @param   string   filepath  Path to image
+	 * @param   DOMnode  img       Image - just created
+	 * @param   params   object    Image parameters
+	 *
+	 * @return  object   Update image parameters
 	 */
 
 	storeImageDimensions: function (filepath, img, params) {
@@ -823,9 +820,9 @@ var ImageWidget = new Class({
 						return;
 					}
 					/*
-					 * calculate dimensions locally because they are have to be
-					 * translated in order to use translate and rotate with the
-					 * desired effect: rotate the item around its visual center
+					 * calculate dimensions locally because they are have to be translated
+					 * in order to use translate and rotate with the desired effect:
+					 * rotate the item around its visual center
 					 */
 
 					var w = this.w;
@@ -838,13 +835,12 @@ var ImageWidget = new Class({
 					ctx.save();
 					ctx.translate(this.x, this.y);
 
-					this.hover ? ctx.strokeStyle = '#f00' : ctx.strokeStyle = '#000'; // red/black
+					this.hover ? ctx.strokeStyle = '#f00' : ctx.strokeStyle = '#000';
 					ctx.strokeRect(w * -0.5, h * -0.5, w, h);
 					ctx.restore();
 
 					/*
-					 * used to determine the whether the mouse is over an item
-					 * or not.
+					 * used to determine the whether the mouse is over an item or not.
 					 */
 
 					if (typeOf(parent.img) !== 'null' && parent.images.get(parent.activeFilePath)) {
@@ -924,12 +920,9 @@ var ImageWidget = new Class({
 	},
 
 	/**
-	 * Takes the current active image and creates cropped image data via a
-	 * canvas element
-	 * 
-	 * @param string
-	 *            filepath File path to image to crop. If blank use
-	 *            this.activeFilePath
+	 * Takes the current active image and creates cropped image data via a canvas element
+	 *
+	 * @param   string  filepath  File path to image to crop. If blank use this.activeFilePath
 	 */
 	storeActiveImageData: function (filepath) {
 		filepath = filepath ? filepath : this.activeFilePath;
@@ -945,15 +938,12 @@ var ImageWidget = new Class({
 
 		var win = document.id(this.windowopts.id);
 		if (typeOf(win) === 'null') {
-			console.log('storeActiveImageData no window found for ' + this.windowopts.id);
+			fconsole('storeActiveImageData no window found for ' + this.windowopts.id);
 			return;
 		}
 		var canvas = win.getElement('canvas');
 
-		var target = new Element('canvas', {
-			'width': w + 'px',
-			'height': h + 'px'
-		}).inject(document.body);
+		var target = new Element('canvas', {'width': w + 'px', 'height': h + 'px' }).inject(document.body);
 		var ctx = target.getContext('2d');
 
 		var file = filepath.split('\\').getLast();
@@ -1038,8 +1028,7 @@ var ImageWidget = new Class({
 		if (typeOf(this.CANVAS.threads) !== 'null') {
 			if (typeOf(this.CANVAS.threads.get('myThread')) !== 'null') {
 
-				// Fixes issue where sometime canvas thread is not
-				// started/running so nothing is drawn
+				// Fixes issue where sometime canvas thread is not started/running so nothing is drawn
 				this.CANVAS.threads.get('myThread').start();
 			}
 		}

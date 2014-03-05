@@ -1,3 +1,10 @@
+/**
+ * List Filter
+ *
+ * @copyright: Copyright (C) 2005-2013, fabrikar.com - All rights reserved.
+ * @license:   GNU/GPL http://www.gnu.org/copyleft/gpl.html
+ */
+
 var FbListFilter = new Class({
 
 	Implements: [Options, Events],
@@ -16,7 +23,7 @@ var FbListFilter = new Class({
 		this.setOptions(options);
 		this.advancedSearch = false;
 		this.container = document.id(this.options.container);
-		this.filterContainer = this.container.getElement('.fabrikFilterContainer');
+		this.filterContainer = this.container.getElements('.fabrikFilterContainer');
 		this.filtersInHeadings = this.container.getElements('.listfilter');
 		var b = this.container.getElement('.toggleFilters');
 		if (typeOf(b) !== 'null') {
@@ -30,7 +37,7 @@ var FbListFilter = new Class({
 			}.bind(this));
 
 			if (typeOf(this.filterContainer) !== 'null') {
-				this.filterContainer.toggle();
+				this.filterContainer.hide();
 				this.filtersInHeadings.toggle();
 			}
 		}
@@ -48,7 +55,7 @@ var FbListFilter = new Class({
 
 				// Reset the filter fields that contain previously selected values
 				this.container.getElements('.fabrik_filter').each(function (f) {
-					if (f.name.contains('[value]') || f.name.contains('fabrik_list_filter_all')) { 
+					if (f.name.contains('[value]') || f.name.contains('fabrik_list_filter_all') || f.hasClass('autocomplete-trigger')) { 
 						if (f.get('tag') === 'select') {
 							f.selectedIndex = f.get('multiple') ? -1 : 0;
 						} else {
@@ -85,7 +92,6 @@ var FbListFilter = new Class({
 			advancedSearchButton.addEvent('click', function (e) {
 				e.stop();
 				var a = e.target;
-				//var url = Fabrik.liveSite + "index.php?option=com_fabrik&view=list&tmpl=component&layout=_advancedsearch&listid=" + this.options.id;
 				if (a.get('tag') !== 'a') {
 					a = a.getParent('a');
 				}
@@ -154,7 +160,7 @@ var FbListFilter = new Class({
 		this.container.getElements('.fabrik_filter').each(function (f) {
 			if (f.id.test(/value$/)) {
 				var key = f.id.match(/(\S+)value$/)[1];
-				// $$$ rob added check that something is select - possbly causes js
+				// $$$ rob added check that something is select - possibly causes js
 				// error in ie
 				if (f.get('tag') === 'select' && f.selectedIndex !== -1) {
 					h[key] = document.id(f.options[f.selectedIndex]).get('text');

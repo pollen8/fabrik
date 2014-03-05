@@ -1,13 +1,15 @@
 <?php
 /**
+ * CSV Fabrik List view class
+ *
  * @package     Joomla
  * @subpackage  Fabrik
- * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
- * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @copyright   Copyright (C) 2005-2013 fabrikar.com - All rights reserved.
+ * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
-// Check to ensure this file is included in Joomla!
-defined('_JEXEC') or die();
+// No direct access
+defined('_JEXEC') or die('Restricted access');
 
 require_once JPATH_SITE . '/components/com_fabrik/views/list/view.base.php';
 
@@ -21,7 +23,6 @@ require_once JPATH_SITE . '/components/com_fabrik/views/list/view.base.php';
 
 class FabrikViewList extends FabrikViewListBase
 {
-
 	/**
 	 * Execute and display a template script.
 	 *
@@ -35,9 +36,10 @@ class FabrikViewList extends FabrikViewListBase
 		$app = JFactory::getApplication();
 		$input = $app->input;
 		$session = JFactory::getSession();
-		$exporter = JModel::getInstance('Csvexport', 'FabrikFEModel');
-		$model = JModel::getInstance('list', 'FabrikFEModel');
+		$exporter = JModelLegacy::getInstance('Csvexport', 'FabrikFEModel');
+		$model = JModelLegacy::getInstance('list', 'FabrikFEModel');
 		$model->setId($input->getInt('listid'));
+
 		if (!parent::access($model))
 		{
 			exit;
@@ -52,6 +54,11 @@ class FabrikViewList extends FabrikViewListBase
 		$selectedFields = $input->get('fields', array(), 'array');
 		$model->setHeadingsForCSV($selectedFields);
 
+		if (empty($model->asfields))
+		{
+			throw new LengthException('CSV Export - no fields found', 500);
+		}
+
 		$request = $model->getRequestData();
 		$model->storeRequestData($request);
 
@@ -63,6 +70,7 @@ class FabrikViewList extends FabrikViewListBase
 		{
 			$session->clear($key);
 		}
+
 		if (!$session->has($key))
 		{
 			// Only get the total if not set - otherwise causes memory issues when we downloading
@@ -81,8 +89,10 @@ class FabrikViewList extends FabrikViewListBase
 				$notice = new stdClass;
 				$notice->err = JText::_('COM_FABRIK_CSV_EXPORT_NO_RECORDS');
 				echo json_encode($notice);
+
 				return;
 			}
+
 			$exporter->writeFile($total);
 		}
 		else
@@ -93,7 +103,7 @@ class FabrikViewList extends FabrikViewListBase
 			$session->clear($key);
 			$exporter->downloadFile();
 		}
+
 		return;
 	}
-
 }

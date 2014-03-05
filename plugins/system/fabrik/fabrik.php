@@ -157,7 +157,7 @@ class PlgSystemFabrik extends JPlugin
 		}
 
 		// Set heading prefix
-		$headingPrefix = $params->get('include_list_title', true);
+		$headingPrefix = $this->params->get('include_list_title', true);
 
 		// Get all tables with search on
 		$query = $db->getQuery(true);

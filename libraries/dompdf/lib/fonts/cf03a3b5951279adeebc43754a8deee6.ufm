@@ -1,6 +1,6 @@
 StartFontMetrics 4.1
 Notice Converted by PHP-font-lib
-Comment http://php-font-lib.googlecode.com/
+Comment https://github.com/PhenX/php-font-lib
 EncodingScheme FontSpecific
 Copyright Copyright (c) 2009 by Accademia di Belle Arti di Urbino and students of MA course of Visual design. All rights reserved.
 FontName TitilliumMaps29L
@@ -20,9 +20,9 @@ ItalicAngle 0
 IsFixedPitch false
 UnderlineThickness 30
 UnderlinePosition -85
-FontHeightOffset 53
-Ascender 750
-Descender -250
+FontHeightOffset 27
+Ascender 945
+Descender -239
 FontBBox -52 -302 1000 1121
 StartCharMetrics 515
 U 32 ; WX 235 ; N uni0020 ; G 3

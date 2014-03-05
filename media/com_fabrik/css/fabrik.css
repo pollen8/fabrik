@@ -506,7 +506,8 @@ table.fabrikList .oddRow1 {
 	background-color: #Efefef;
 }
 
-table.fabrikList .button2-left a {
+table.fabrikList .button2-left a,
+table.fabrikList .button2-left span {
 	display: initial;
 	float: none;
 }
