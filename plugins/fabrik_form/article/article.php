@@ -297,13 +297,15 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 	protected function generateNewTitle($id, $catid, &$data)
 	{
 		// If its an existing article don't edit name
+		// $$$ hugh - in 3.1 we rewrite the alias here.  Back porting url safe fix, so added it here
 		if ((int) $id !== 0)
 		{
+			$data['alias'] = JApplication::stringURLSafe(JStringNormalise::toDashSeparated($data['title']));
 			return;
 		}
 
 		$table = JTable::getInstance('Content');
-		$alias = JStringNormalise::toDashSeparated($data['title']);
+		$alias = JApplication::stringURLSafe(JStringNormalise::toDashSeparated($data['title']));
 		$title = $data['title'];
 
 		while ($table->load(array('alias' => $alias, 'catid' => $catid)))
