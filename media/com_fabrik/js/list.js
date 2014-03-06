@@ -1037,9 +1037,22 @@ var FbList = new Class({
 			Fabrik.fireEvent('fabrik.list.update', [this, data]);
 		}
 		this.stripe();
+		this.mediaScan();
 		Fabrik.loader.stop('listform_' + this.options.listRef);
 	},
 
+	mediaScan: function () {
+		if (typeof(Slimbox) !== 'undefined') {
+			Slimbox.scanPage();
+		}
+		if (typeof(Lightbox) !== 'undefined') {
+			Lightbox.init();
+		}
+		if (typeof(Mediabox) !== 'undefined') {
+			Mediabox.scanPage();
+		}
+	},
+	
 	addRow: function (obj) {
 		var r = new Element('tr', {
 			'class': 'oddRow1'
