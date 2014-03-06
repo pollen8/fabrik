@@ -168,7 +168,7 @@ var FbElement =  new Class({
 				eval(js);
 			} else {
 				(function () {
-					consolde.log('delayed.....');
+					console.log('delayed calling runLoadEvent for ' + delay);
 					eval(js);
 				}.bind(this)).delay(delay);
 			}

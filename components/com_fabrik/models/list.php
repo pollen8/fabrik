@@ -2494,6 +2494,12 @@ class FabrikFEModelList extends JModelForm
 		$query = $this->buildQueryOrder($query);
 		$query = $this->pluginQuery($query);
 		$this->mainQuery = $query;
+		$params = $this->getParams();
+
+		if ($params->get('force_collate', '') !== '')
+		{
+			$query .= ' COLLATE ' . $params->get('force_collate', '') . ' ';
+		}
 
 		return (string) $query;
 	}
@@ -4285,13 +4291,12 @@ class FabrikFEModelList extends JModelForm
 					$join->canUse = false;
 				}
 			}
-			// $$$ rob = check for repeat elements In table view we dont need to add the join
+			// $$$ rob Check for repeat elements In list view we don't need to add the join
 			// as the element data is concatenated into one row. see elementModel::getAsField_html()
 			$opts = json_decode($join->params);
 
 			if (isset($opts->type) && $opts->type == 'repeatElement')
 			{
-				// If ($join->list_id != 0 && $join->element_id != 0) {
 				$join->canUse = false;
 			}
 
@@ -4329,7 +4334,7 @@ class FabrikFEModelList extends JModelForm
 
 		foreach ($joins as &$join)
 		{
-			// If they are element joins add in this tables name as the calling joining table.
+			// If they are element joins add in this table's name as the calling joining table.
 			if ($join->join_from_table == '')
 			{
 				$join->join_from_table = $table->db_table_name;
@@ -4348,10 +4353,7 @@ class FabrikFEModelList extends JModelForm
 
 			$join->keytable = $join->join_from_table;
 
-			if (!array_key_exists($join->group_id, $tableGroups))
-			{
-			}
-			else
+			if (array_key_exists($join->group_id, $tableGroups))
 			{
 				if ($join->element_id != 0)
 				{
