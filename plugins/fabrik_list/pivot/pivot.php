@@ -22,7 +22,7 @@ require_once COM_FABRIK_FRONTEND . '/models/plugin-list.php';
  * @since       3.1
  */
 
-class PlgFabrik_ListPivot extends plgFabrik_List
+class PlgFabrik_ListPivot extends PlgFabrik_List
 {
 	/**
 	 * Inject the select sum() fields into the list query JDatabaseQuery object
@@ -211,9 +211,9 @@ class PlgFabrik_ListPivot extends plgFabrik_List
 		{
 			return;
 		}
+
 		$cache = FabrikWorker::getCache();
 		$cache->setCaching(1);
-
 		$res = $cache->call(array(get_class($this), 'cacheResults'), $this->model->getId());
 
 		$this->model->set('data', $res);
