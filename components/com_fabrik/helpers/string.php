@@ -506,4 +506,36 @@ class FabrikString extends JString
 		return $o;
 	}
 
+	/**
+	 * DB value quote a single string or an array of strings, first checking to see if they are
+	 * already quoted.  Which the J! $db->quote() doesn't do, unfortunately.
+	 * Does NOT modify the input.
+	 *
+	 * @param unknown $values
+	 *
+	 * @return   mixed   quoted values
+	 */
+	public static function safeQuote($values) {
+		$db = JFactory::getDbo();
+		$values2 = $values;
+		if (is_array($values2))
+		{
+			foreach ($values2 as &$v)
+			{
+				if (is_string($v) && !strstr($v, "'"))
+				{
+					$v = $db->quote($v);
+				}
+			}
+		}
+		else if (is_string($values2))
+		{
+			if (!strstr($values2, "'"))
+			{
+				$values2 = $db->quote($values2);
+			}
+		}
+		return $values2;
+	}
+
 }

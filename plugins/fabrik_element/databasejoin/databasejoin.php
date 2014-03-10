@@ -2210,7 +2210,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 
 					$groupBy = $db->quoteName($dbName . '.parent_id');
 					$rows = $this->checkboxRows($groupBy, $condition, $value, $where);
-					$joinIds = array_keys($rows);
+					$joinIds = FabrikString::safeQuote(array_keys($rows));
 
 					if (!empty($rows))
 					{
