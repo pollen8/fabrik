@@ -14,15 +14,16 @@ var FbTextarea = new Class({
 			this.getTextContainer();
 			if (typeof tinyMCE !== 'undefined') {
 				if (this.container !== false) {
+					clearInterval(p);
 					this.watchTextContainer();
-					clearInterval(this.periodFn);
 				}
 			} else {
+				clearInterval(p);
 				this.watchTextContainer();
-				clearInterval(this.periodFn);
 			}
 		};
-		this.periodFn.periodical(200, this);
+		
+		var p = this.periodFn.periodical(200, this);
 	},
 	
 	unclonableProperties: function ()
