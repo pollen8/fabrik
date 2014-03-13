@@ -85,25 +85,6 @@ class PlgFabrik_ElementTags extends PlgFabrik_ElementDatabasejoin
 		if ($this->isEditable())
 		{
 			$tmp = $this->_getOptions($data, $repeatCounter, true);
-			/**
-			 * $$$ hugh - need soe logic here to handle failed validations, so we use submitted data,
-			 * not the _getOptions().
-			 */
-			/*
-			if ($formModel->failedValidation())
-			{
-				$default = (array) $this->getValue($data, $repeatCounter, array('raw' => true));
-				$defaultLabels = (array) $this->getValue($data, $repeatCounter, array('raw' => false));
-				foreach ($defaultLabels as $key => $val)
-				{
-					$defaultLabels[$key] = $this->getLabelForValue($default[$key], $default[$key], true);
-				}
-			}
-			else
-			{
-				$tmp = $this->_getOptions($data, $repeatCounter, true);
-			}
-			*/
 
 			// Include jQuery
 			JHtml::_('jquery.framework');
@@ -166,10 +147,25 @@ class PlgFabrik_ElementTags extends PlgFabrik_ElementDatabasejoin
 		$join = $this->getJoin();
 		$fk = $db->quoteName($join->table_join_alias . '.' . $join->table_join_key);
 		$params = $this->getParams();
+		$formModel = $this->getFormModel();
 
 		// Always filter on the current records tags (return no records if new row)
 		$params->set('database_join_where_access', 1);
-		$params->set('database_join_where_sql',  $fk . ' = ' . $db->quote($rowid));
+
+		if ($formModel->failedValidation())
+		{
+			$pk = $db->quoteName($join->table_join_alias . '.' . $join->table_key);
+			$name = $this->getFullName(true, false) . '_raw';
+			$tagIds = JArrayHelper::getValue($data, $name, array());
+			JArrayHelper::toInteger($tagIds);
+			$where = empty($tagIds) ? '1 = -1' : $pk . ' IN (' . implode(', ', $tagIds) . ')';
+		}
+		else
+		{
+			$where = $fk . ' = ' . $db->quote($rowid);
+		}
+
+		$params->set('database_join_where_sql',  $where);
 
 		$where = parent::buildQueryWhere($data, $incWhere, $thisTableAlias, $opts, $query);
 
