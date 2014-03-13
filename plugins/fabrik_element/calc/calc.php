@@ -131,8 +131,8 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 
 		if ($groupModel->isJoin())
 		{
-		$data = !data ? array() : $data;
-		$data[$name] = !$data[$name] ? array() : $data[$name];
+			$data = (array) $data;
+			$data[$name] = (array) $data[$name];
 
 			if ($groupModel->canRepeat())
 			{
