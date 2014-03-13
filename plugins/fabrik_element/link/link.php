@@ -117,7 +117,7 @@ class PlgFabrik_ElementLink extends PlgFabrik_Element
 				// Treat some default values as empty
 				$href = '';
 			}
-			elseif (strlen($href) > 0 && substr($href,0,1) != "/"
+			else if (strlen($href) > 0 && substr($href, 0, 1) != "/"
 				&& substr(JString::strtolower($href), 0, 7) != 'http://'
 				&& substr(JString::strtolower($href), 0, 8) != 'https://'
 				&& substr(JString::strtolower($href), 0, 6) != 'ftp://'
