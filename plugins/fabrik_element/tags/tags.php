@@ -80,10 +80,31 @@ class PlgFabrik_ElementTags extends PlgFabrik_ElementDatabasejoin
 		$params = $this->getParams();
 		$id = $this->getHTMLId($repeatCounter);
 		$name = $this->getHTMLName($repeatCounter);
-		$tmp = $this->_getOptions($data, $repeatCounter, true);
+		$formModel = $this->getFormModel();
 
 		if ($this->isEditable())
 		{
+			$tmp = $this->_getOptions($data, $repeatCounter, true);
+			/**
+			 * $$$ hugh - need soe logic here to handle failed validations, so we use submitted data,
+			 * not the _getOptions().
+			 */
+			/*
+			if ($formModel->failedValidation())
+			{
+				$default = (array) $this->getValue($data, $repeatCounter, array('raw' => true));
+				$defaultLabels = (array) $this->getValue($data, $repeatCounter, array('raw' => false));
+				foreach ($defaultLabels as $key => $val)
+				{
+					$defaultLabels[$key] = $this->getLabelForValue($default[$key], $default[$key], true);
+				}
+			}
+			else
+			{
+				$tmp = $this->_getOptions($data, $repeatCounter, true);
+			}
+			*/
+
 			// Include jQuery
 			JHtml::_('jquery.framework');
 
@@ -108,6 +129,8 @@ class PlgFabrik_ElementTags extends PlgFabrik_ElementDatabasejoin
 		}
 		else
 		{
+			$tmp = $this->_getOptions($data, $repeatCounter, true);
+
 			$d = array();
 
 			foreach ($tmp as $o)
