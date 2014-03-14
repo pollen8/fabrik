@@ -264,6 +264,9 @@ var Autofill = new Class({
 					el.activePopUp = true;
 				}
 				el.update(val);
+				
+				// Trigger change events to automatcially fire any other chained auto-fill form plugins
+				el.element.fireEvent(el.getBlurEvent(), new Event.Mock(el.element, el.getBlurEvent()));
 				return true;
 			}
 		} else {
@@ -274,6 +277,9 @@ var Autofill = new Class({
 				m.each(function (key) {
 					var el = this.form.formElements.get(key);
 					el.update(val);
+					
+					// Trigger change events to automatcially fire any other chained auto-fill form plugins
+					el.element.fireEvent(el.getBlurEvent(), new Event.Mock(el.element, el.getBlurEvent()));
 				}.bind(this));
 				return true;
 			}

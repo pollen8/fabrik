@@ -209,7 +209,8 @@ var FbGoogleMapViz = new Class({
 			var mymaplng = Cookie.read("mymaplng_" + this.options.id);
 
 			if (mymaplat && mymaplat !== '0' && mymapzoom !== '0') {
-				this.map.setCenter(new google.maps.LatLng(mymaplat.toFloat(), mymaplng.toFloat()), mymapzoom.toInt());
+				this.map.setCenter(new google.maps.LatLng(mymaplat.toFloat(), mymaplng.toFloat()));
+				this.map.setZoom(mymapzoom.toInt());
 			} else {
 				this.center();
 			}
