@@ -1913,6 +1913,7 @@ class FabrikFEModelList extends JModelForm
 		$label = '<span class="fabrik_related_data_count">(' . $count . ')</span> ' . $label;
 		$url = $this->releatedDataURL($key, $val, $listid, $popUp);
 
+		$icon = '<i class="icon-list-view"></i> ';
 		if ($showRelated == 0 || ($showRelated == 2  && $count))
 		{
 			$trigger = $popUp ? 'data-fabrik-view="list"' : '';
