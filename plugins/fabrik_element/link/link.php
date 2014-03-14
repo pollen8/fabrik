@@ -102,6 +102,13 @@ class PlgFabrik_ElementLink extends PlgFabrik_Element
 				// Treat some default values as empty
 				$_lnk = '';
 			}
+			elseif (strlen($_lnk) > 0 && substr($_lnk,0,1) != "/"
+				&& substr(JString::strtolower($_lnk), 0, 7) != 'http://'
+				&& substr(JString::strtolower($_lnk), 0, 8) != 'https://'
+				&& substr(JString::strtolower($_lnk), 0, 6) != 'ftp://'
+			) {
+					$_lnk = 'http://' . $_lnk;
+			}
 			// If used as a icon - the dom parser needs to use &amp; and not & in url querystrings
 			if (!strstr($_lnk, '&amp;'))
 			{
