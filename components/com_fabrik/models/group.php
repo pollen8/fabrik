@@ -1059,6 +1059,8 @@ class FabrikFEModelGroup extends FabModel
 		$group->columns = $params->get('group_columns', 1);
 		$group->splitPage = $params->get('split_page', 0);
 		$group->showLegend = $this->showLegend($group);
+		$group->labels = $params->get('labels_above', -1);
+		$group->dlabels = $params->get('labels_above_details', -1);
 
 		if ($this->canRepeat())
 		{
