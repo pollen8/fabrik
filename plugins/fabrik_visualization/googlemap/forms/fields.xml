@@ -416,7 +416,7 @@
 				type="text"
 				size="3"
 				class="input-mini"
-				default="600"
+				default="0.0"
 				label="PLG_VISUALIZATION_GOOGLEMAP_DEFAULT_LAT_LABEL"
 				description="PLG_VISUALIZATION_GOOGLEMAP_DEFAULT_LAT_DESC" />
 
@@ -425,7 +425,7 @@
 				size="3"
 				type="text"
 				class="input-mini"
-				default="300"
+				default="0.0"
 				label="PLG_VISUALIZATION_GOOGLEMAP_DEFAULT_LON_LABEL"
 				description="PLG_VISUALIZATION_GOOGLEMAP_DEFAULT_LON_DESC" />
 

@@ -414,15 +414,16 @@ class FabrikModelGooglemap extends FabrikFEModelVisualization
 							if (array_key_exists(1, $matches))
 							{
 								$iconImg = $matches[1];
-
-								// Check file exists
-								$path = str_replace(COM_FABRIK_LIVESITE, '', $iconImg);
-
-								if (JFile::exists(JPATH_BASE . $path))
-								{
-									$customimagefound = true;
-								}
 							}
+
+							// Check file exists
+							$path = str_replace(COM_FABRIK_LIVESITE, '', $iconImg);
+
+							if (JFile::exists(JPATH_BASE . $path))
+							{
+								$customimagefound = true;
+							}
+
 						}
 
 						if ($iconImg != '')
