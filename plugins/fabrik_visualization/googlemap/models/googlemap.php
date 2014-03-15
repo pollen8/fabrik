@@ -426,21 +426,22 @@ class FabrikModelGooglemap extends FabrikFEModelVisualization
 						{
 							$iconImg = JArrayHelper::getValue($rowdata, $iconImg, '');
 
-							// Get the src
+							// If it's in a src tag, preg it out
 							preg_match('/src=["|\'](.*?)["|\']/', $iconImg, $matches);
 
 							if (array_key_exists(1, $matches))
 							{
 								$iconImg = $matches[1];
-
-								// Check file exists
-								$path = str_replace(COM_FABRIK_LIVESITE, '', $iconImg);
-
-								if (JFile::exists(JPATH_BASE . $path))
-								{
-									$customimagefound = true;
-								}
 							}
+
+							// Check file exists
+							$path = str_replace(COM_FABRIK_LIVESITE, '', $iconImg);
+
+							if (JFile::exists(JPATH_BASE . $path))
+							{
+								$customimagefound = true;
+							}
+
 						}
 
 						if ($iconImg != '')
@@ -453,6 +454,10 @@ class FabrikModelGooglemap extends FabrikFEModelVisualization
 							$width = 20;
 							$height = 34;
 						}
+
+						// $$$ hugh - if they use the media images folder for custom images, we need to strip path off
+						$iconImg = str_replace('/media/com_fabrik/images/', '', $iconImg);
+
 					}
 					else
 					{
