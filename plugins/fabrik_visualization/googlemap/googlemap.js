@@ -298,13 +298,22 @@ var FbGoogleMapViz = new Class({
 		this.cluster.fitMapToMarkers();
 		this.map.savePosition();	//	enables the large map control centre button to return the map to initial view*/
 	}, 
+
+	noData: function () {
+		return this.options.icons.length === 0;
+	},
 	
 	center: function () {
 		//set the map to center on the center of all the points
 		var c;
 		switch (this.options.center) {
 		case 'middle':
-			c = this.bounds.getCenter();
+			if (this.noData) {
+				c = new google.maps.LatLng(this.options.lat, this.options.lon);
+			}
+			else {
+				c = this.bounds.getCenter();
+			}
 			break;
 		case 'userslocation':
 			if (geo_position_js.init()) {
@@ -318,11 +327,16 @@ var FbGoogleMapViz = new Class({
 			c = new google.maps.LatLng(this.options.lat, this.options.lon);
 			break;
 		default:
-			var lasticon = this.options.icons.getLast();
-			if (lasticon) {
-				c = new google.maps.LatLng(lasticon[0], lasticon[1]);
-			} else {
-				c = this.bounds.getCenter();
+			if (this.noData) {
+				c = new google.maps.LatLng(this.options.lat, this.options.lon);
+			}
+			else {
+				var lasticon = this.options.icons.getLast();
+				if (lasticon) {
+					c = new google.maps.LatLng(lasticon[0], lasticon[1]);
+				} else {
+					c = this.bounds.getCenter();
+				}
 			}
 			break;
 		}

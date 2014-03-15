@@ -81,8 +81,8 @@ class FabrikModelGooglemap extends FabrikFEModelVisualization
 		$viz = $this->getVisualization();
 
 		$opts = new stdClass;
-		$opts->lat = 0;
-		$opts->lon = 0;
+		$opts->lat = (float) $params->get('fb_gm_default_lat', 0);
+		$opts->lon = (float) $params->get('fb_gm_default_lon', 0);
 		$opts->icons = $this->getJSIcons();
 		$opts->polyline = $this->getPolyline();
 		$opts->id = $viz->id;
