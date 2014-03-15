@@ -308,7 +308,7 @@ var FbGoogleMapViz = new Class({
 		var c;
 		switch (this.options.center) {
 		case 'middle':
-			if (this.noData) {
+			if (this.noData()) {
 				c = new google.maps.LatLng(this.options.lat, this.options.lon);
 			}
 			else {
@@ -327,7 +327,7 @@ var FbGoogleMapViz = new Class({
 			c = new google.maps.LatLng(this.options.lat, this.options.lon);
 			break;
 		default:
-			if (this.noData) {
+			if (this.noData()) {
 				c = new google.maps.LatLng(this.options.lat, this.options.lon);
 			}
 			else {
