@@ -34,7 +34,7 @@ foreach ($this->elements as $element) :
 	?>
 			<div class="control-group <?php echo $element->containerClass . $span; ?>" <?php echo $style?>>
 	<?php
-	$labels_above = $this->params->get('labels_above', 0);
+	$labels_above = $element->labels;
 	if ($labels_above == 1)
 	{
 		echo $this->loadTemplate('group_labels_above');

@@ -34,7 +34,7 @@ foreach ($this->elements as $element) :
 		$rowStarted = true;
 	endif;
 	$style = $element->hidden ? 'style="display:none"' : '';
-	$labels_above = $this->params->get('labels_above_details', 0);
+	$labels_above = $element->dlabels;
 
 	if ($labels_above == 1)
 	{
