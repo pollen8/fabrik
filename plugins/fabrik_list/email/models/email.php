@@ -633,7 +633,8 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 					{
 						if ($php_msg)
 						{
-							$thismsg = $this->_getPHPTemplateEmail($emailTemplate, $row, $listModel);
+							$thismsg = FabrikHelperHTML::getPHPTemplate($emailTemplate, $row, $listModel);
+							//$thismsg = $this->_getPHPTemplateEmail($emailTemplate, $row, $listModel);
 						}
 						else
 						{
@@ -696,7 +697,8 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 								{
 									if ($php_msg)
 									{
-										$thismsg .= $this->_getPHPTemplateEmail($emailTemplate, $row, $listModel);
+										$thismsg .= FabrikHelperHTML::getPHPTemplate($emailTemplate, $row, $listModel);
+										//$thismsg .= $this->_getPHPTemplateEmail($emailTemplate, $row, $listModel);
 									}
 									else
 									{

@@ -2060,6 +2060,7 @@ class PlgFabrik_Element extends FabrikPlugin
 	{
 		$model = $this->getFormModel();
 		$groupModel = $this->getGroup();
+		$group = $groupModel->getGroupProperties($model);
 
 		if (!$this->canUse() && !$this->canView())
 		{
@@ -2143,6 +2144,11 @@ class PlgFabrik_Element extends FabrikPlugin
 		{
 			$tip = FabrikHelperHTML::image('question-sign.png', 'form', $tmpl) . ' ' . $tip;
 		}
+
+		$global_labels = $model->getParams()->get('labels_above');
+		$global_dlabels = $model->getParams()->get('labels_above_details');
+		$element->labels = $group->labels == -1 ? $global_labels : $group->labels;
+		$element->dlabels = $group->dlabels == -1 ? $global_dlabels : $group->dlabels;
 
 		switch ($model->getParams()->get('tiplocation'))
 		{
