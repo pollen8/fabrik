@@ -163,7 +163,10 @@ class PlgFabrik_ElementTextarea extends PlgFabrik_Element
 			}
 		}
 
-		if (!$params->get('textarea-tagify') && $data !== '' && (int) $params->get('textarea-truncate', 0) !== 0)
+		if (!$params->get('textarea-tagify') && $data !== ''
+			&&
+			((int) $params->get('textarea-truncate-where', 0) === 1 || (int) $params->get('textarea-truncate-where', 0) === 3)
+		)
 		{
 			$opts = array();
 			$opts['wordcount'] = (int) $params->get('textarea-truncate', 0);
@@ -301,7 +304,16 @@ class PlgFabrik_ElementTextarea extends PlgFabrik_Element
 			{
 				$value = $this->tagify($value);
 			}
-
+			if (!$params->get('textarea-tagify') && $value !== ''
+				&&
+				((int) $params->get('textarea-truncate-where', 0) === 2 || (int) $params->get('textarea-truncate-where', 0) === 3))
+			{
+				$opts = array();
+				$opts['wordcount'] = (int) $params->get('textarea-truncate', 0);
+				$opts['tip'] = $params->get('textarea-hover');
+				$opts['position'] = $params->get('textarea_hover_location', 'top');
+				$value = fabrikString::truncate($value, $opts);
+			}
 			return $value;
 		}
 
