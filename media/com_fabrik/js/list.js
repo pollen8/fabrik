@@ -1020,6 +1020,18 @@ var FbList = new Class({
 				 */
 				if (typeOf(emptyDataMessage) !== 'null') {
 					emptyDataMessage.setStyle('display', '');
+					/*
+					 * $$$ hugh - when doing JSON updates, the emptyDataMessage can be in a td
+					 * which itself is hidden, and also have a child div with the .emptyDataMessage
+					 * class which is also hidden.  Should probably move all this logic into a function
+					 * but for now just doing it here.
+					 */
+					if (emptyDataMessage.getParent().getStyle('display') === 'none') {
+						emptyDataMessage.getParent().setStyle('display', '');
+					}
+					if (emptyDataMessage.getElement('.emptyDataMessage')) {
+						emptyDataMessage.getElement('.emptyDataMessage').setStyle('display', '');
+					}
 				}
 			} else {
 				if (typeOf(fabrikDataContainer) !== 'null') {
