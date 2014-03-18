@@ -85,8 +85,9 @@ var FbAutocomplete = new Class({
 			}
 			this.positionMenu();
 			if (this.cache[v]) {
-				this.populateMenu(this.cache[v]);
-				this.openMenu();
+				if (this.populateMenu(this.cache[v])) {
+					this.openMenu();
+				}
 			} else {
 				if (this.ajax) {
 					this.closeMenu();
@@ -131,8 +132,9 @@ var FbAutocomplete = new Class({
 	completeAjax: function (r, v) {
 		r = JSON.decode(r);
 		this.cache[v] = r;
-		this.populateMenu(r);
-		this.openMenu();
+		if (this.populateMenu(r)) {
+			this.openMenu();
+		}
 	},
 
 	buildMenu: function ()
@@ -173,8 +175,16 @@ var FbAutocomplete = new Class({
 		ul.empty();
 		if (data.length === 1 && this.options.autoLoadSingleResult) {
 			this.element.value = data[0].value;
+			this.getInputElement().value = data[0].text;
 			// $$$ Paul - The selection event is for text being selected in an input field not for a link being selected
+			this.closeMenu();
 			this.fireEvent('selection', [this, this.element.value]);
+			// $$$ hugh - need to fire change event, in case it's something like a join element
+			// with a CDD that watches it.
+			this.element.fireEvent(this.element.getBlurEvent(), new Event.Mock(this.element, this.element.getBlurEvent()), 700);
+			// $$$ hugh - fire a Fabrik event, just for good luck.  :)
+			Fabrik.fireEvent('fabrik.autocomplete.selected', [this, this.element.value]);
+			return false;
 		}
 		if (data.length === 0) {
 			li = new Element('li').adopt(new Element('div.alert.alert-info').adopt(new Element('i').set('text', Joomla.JText._('COM_FABRIK_NO_RECORDS'))));
@@ -189,6 +199,7 @@ var FbAutocomplete = new Class({
 		if (data.length > this.options.max) {
 			new Element('li').set('text', '....').inject(ul);
 		}
+		return true;
 	},
 
 	makeSelection: function (e, li) {
@@ -202,6 +213,7 @@ var FbAutocomplete = new Class({
 			// $$$ hugh - need to fire change event, in case it's something like a join element
 			// with a CDD that watches it.
 			this.element.fireEvent('change', new Event.Mock(this.element, 'change'), 700);
+			this.element.fireEvent('blur', new Event.Mock(this.element, 'blur'), 700);
 			// $$$ hugh - fire a Fabrik event, just for good luck.  :)
 			Fabrik.fireEvent('fabrik.autocomplete.selected', [this, this.element.value]);
 		} else {
@@ -370,8 +382,9 @@ var FabCddAutocomplete = new Class({
 			}
 			this.positionMenu();
 			if (this.cache[key]) {
-				this.populateMenu(this.cache[key]);
-				this.openMenu();
+				if (this.populateMenu(this.cache[key])) {
+					this.openMenu();
+				}
 			} else {
 				if (this.ajax) {
 					this.closeMenu();
