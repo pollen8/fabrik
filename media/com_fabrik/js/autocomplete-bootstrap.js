@@ -110,7 +110,7 @@ var FbAutocomplete = new Class({
 						this.ajax = null;
 						if (typeOf(e) === 'null') {
 							fconsole('Fabrik autocomplete: Ajax response empty');
-							var elModel = Fabrik.blocks[this.options.formRef].formElements.get(this.element.id);
+							var elModel = Fabrik.getBlock(this.options.formRef).formElements.get(this.element.id);
 							elModel.setErrorMessage(Joomla.JText._('COM_FABRIK_AUTOCOMPLETE_AJAX_ERROR'), 'fabrikError', true);
 							return;
 						}
@@ -120,7 +120,7 @@ var FbAutocomplete = new Class({
 						Fabrik.loader.stop(this.getInputElement());
 						this.ajax = null;
 						fconsole('Fabrik autocomplete: Ajax failure: Code ' + xhr.status + ': ' + xhr.statusText);
-						var elModel = Fabrik.blocks[this.options.formRef].formElements.get(this.element.id);
+						var elModel = Fabrik.getBlock(this.options.formRef).formElements.get(this.element.id);
 						elModel.setErrorMessage(Joomla.JText._('COM_FABRIK_AUTOCOMPLETE_AJAX_ERROR'), 'fabrikError', true);
 					}.bind(this)
 				}).send();
@@ -373,7 +373,7 @@ var FabCddAutocomplete = new Class({
 			var observer = document.id(this.options.observerid);
 			if (typeOf(observer) !== 'null') {
 				if (this.options.formRef) {
-					observer = Fabrik.blocks[this.options.formRef].formElements[this.options.observerid];
+					observer = Fabrik.getBlock(this.options.formRef).formElements[this.options.observerid];
 				}
 				key = observer.get('value') + '.' + v;
 			} else {
@@ -412,7 +412,7 @@ var FabCddAutocomplete = new Class({
 						Fabrik.loader.stop(this.getInputElement());
 						this.ajax = null;
 						fconsole('Fabrik autocomplete: Ajax failure: Code ' + xhr.status + ': ' + xhr.statusText);
-						var elModel = Fabrik.blocks[this.options.formRef].formElements.get(this.element.id);
+						var elModel = Fabrik.getBlock(this.options.formRef).formElements.get(this.element.id);
 						elModel.setErrorMessage(Joomla.JText._('COM_FABRIK_AUTOCOMPLETE_AJAX_ERROR'), 'fabrikError', true);
 					}.bind(this)
 				}).send();

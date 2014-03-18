@@ -6,8 +6,8 @@
  */
 
 var FbFileUpload = new Class({
-	Extends : FbFileElement,
-	initialize : function (element, options) {
+	Extends: FbFileElement,
+	initialize: function (element, options) {
 		this.plugin = 'fileupload';
 		this.parent(element, options);
 		this.toppath = this.options.dir;
@@ -15,7 +15,6 @@ var FbFileUpload = new Class({
 			this.ajaxFolder();
 		}
 
-		//Fabrik.addEvent('fabrik.form.submit.start', this.submitEvent);
 		if (this.options.ajax_upload && this.options.editable !== false) {
 			this.watchAjax();
 			this.options.files = $H(this.options.files);
@@ -32,21 +31,31 @@ var FbFileUpload = new Class({
 						response: JSON.encode(response)
 					});
 					document.id(file.id).getElement('.plupload_file_status  .bar').setStyle('width', '100%').addClass('bar-success');
-					//document.id(file.id).getElement('.plupload_file_size').set('text', file.size);
 				}.bind(this));
-				//this.uploader.trigger('Init'); //no as this creates a second div interface
-				// hack to reposition the hidden input field over the 'ad' button
-				var c = document.id(this.options.element + '_container');
-				var diff = document.id(this.options.element + '_browseButton').getPosition().y - c.getPosition().y;
-				// $$$ hugh - working on some IE issues
-				var file_element = c.getParent('.fabrikElement').getElement('input[type=file]');
-				if (file_element) {
-					c.getParent('.fabrikElement').getElement('input[type=file]').getParent().setStyle('top', diff);
-				}
 			}
+			this.redraw();
 		}
 
 		this.watchDeleteButton();
+		this.watchTab();
+	},
+	
+	/**
+	 * Repoistion the hidden input field over teh 'add' button. Called on initiate
+	 * and if in a tab and the tab is activated. Triggered from element.watchTab()
+	 */
+	redraw: function () {
+		var browseButton = document.id(this.element.id + '_browseButton');
+		var c = document.id(this.options.element + '_container');
+		var diff = browseButton.getPosition().y - c.getPosition().y;
+		// $$$ hugh - working on some IE issues
+		var file_element = c.getParent('.fabrikElement').getElement('input[type=file]');
+		if (file_element) {
+			var fileContainer = file_element.getParent();
+			var size = browseButton.getSize();
+			fileContainer.setStyles({'width': size.x, 'height': size.y});
+			fileContainer.setStyle('top', diff);
+		}
 	},
 
 	/**
@@ -75,13 +84,11 @@ var FbFileUpload = new Class({
 							'rowid': this.form.options.rowid
 						}
 					}).send();
+					
 					if (confirm(Joomla.JText._('PLG_ELEMENT_FILEUPLOAD_CONFIRM_HARD_DELETE'))) {
 						this.makeDeletedImageField(this.groupid, b.get('data-file')).inject(this.getContainer(), 'inside');
 					}
-					/*
-					b.getNext().destroy();
-					b.destroy();
-					*/
+	
 					var delete_span = document.id(this.element.id + '_delete_span');
 					if (delete_span) {
 						delete_span.destroy();
@@ -150,13 +157,13 @@ var FbFileUpload = new Class({
 	 */
 	makeDeletedImageField: function (groupid, value) {
 		return new Element('input', {
-			'type' : 'hidden',
-			'name' : 'fabrik_fileupload_deletedfile[' + groupid + '][]',
-			'value' : value
+			'type': 'hidden',
+			'name': 'fabrik_fileupload_deletedfile[' + groupid + '][]',
+			'value': value
 		});
 	},
 
-	update : function (val) {
+	update: function (val) {
 		if (this.element) {
 			var i = this.element.getElement('img');
 			if (typeOf(i) !== 'null') {
@@ -211,7 +218,7 @@ var FbFileUpload = new Class({
 					h: this.options.winHeight
 				},
 
-				'cropdim' : {
+				'cropdim': {
 					w: this.options.cropwidth,
 					h: this.options.cropheight,
 					x: this.options.winWidth / 2,
@@ -250,13 +257,18 @@ var FbFileUpload = new Class({
 			// FORCEFULLY NUKE GRACEFUL DEGRADING FALLBACK ON INIT
 			this.pluploadFallback.destroy();
 			this.pluploadContainer.removeClass("fabrikHide");
-
+			
 			if (up.features.dragdrop && up.settings.dragdrop) {
 				this.addDropArea();
 			}
 
 		}.bind(this));
-
+		
+	/*	this.uploader.bind('PostInit', function (up, params) {
+			debugger;
+			this.pluploadContainer.getElement('input').setStyle('width', '1px');
+		}.bind(this));
+*/
 		this.uploader.bind('FilesRemoved', function (up, files) {
 		});
 
@@ -295,8 +307,8 @@ var FbFileUpload = new Class({
 						
 						var rElement = Fabrik.bootstrapped ? 'tr' : 'li';
 						this.droplist.adopt(new Element(rElement, {
-							id : file.id,
-							'class' : 'plupload_delete'
+							id: file.id,
+							'class': 'plupload_delete'
 						}).adopt(innerli));
 					}
 				}
@@ -364,17 +376,17 @@ var FbFileUpload = new Class({
 
 			// Stores the cropparams which we need to reload the crop widget in the correct state (rotation, zoom, loc etc)
 			new Element('input', {
-				'type' : 'hidden',
-				name : this.options.elementName + '[crop][' + response.filepath + ']',
-				'id' : 'coords_' + file.id,
-				'value' : JSON.encode(file.params)
+				'type': 'hidden',
+				name: this.options.elementName + '[crop][' + response.filepath + ']',
+				'id': 'coords_' + file.id,
+				'value': JSON.encode(file.params)
 			}).inject(this.pluploadContainer, 'after');
 
 			// Stores the actual crop image data retrieved from the canvas
 			new Element('input', {
 				type: 'hidden',
-				name : this.options.elementName + '[cropdata][' + response.filepath + ']',
-				'id' : 'data_' + file.id
+				name: this.options.elementName + '[cropdata][' + response.filepath + ']',
+				'id': 'data_' + file.id
 			}).inject(this.pluploadContainer, 'after');
 
 			// Stores the image id if > 1 fileupload
@@ -875,7 +887,7 @@ var ImageWidget = new Class({
 						this.y = y - this.offset[1] + h * 0.5;
 					}
 				},
-				onDraw : function (ctx) {
+				onDraw: function (ctx) {
 					ctx = parent.CANVAS.ctx;
 					if (typeOf(parent.img) === 'null') {
 						//console.log('no parent img', parent);
@@ -905,10 +917,10 @@ var ImageWidget = new Class({
 					ctx.restore();
 					if (typeOf(parent.img) !== 'null' && parent.images.get(parent.activeFilePath)) {
 						parent.images.get(parent.activeFilePath).imagedim = {
-							x : this.x,
-							y : this.y,
-							w : w,
-							h : h
+							x: this.x,
+							y: this.y,
+							w: w,
+							h: h
 						};
 
 					}
@@ -917,7 +929,7 @@ var ImageWidget = new Class({
 
 				onMousedown: function (x, y) {
 					parent.CANVAS.setDrag(this);
-					this.offset = [ x - this.dims[0], y - this.dims[1] ];
+					this.offset = [x - this.dims[0], y - this.dims[1]];
 					this.dragging = true;
 				},
 
@@ -950,7 +962,7 @@ var ImageWidget = new Class({
 			w: 150,
 			h: 50,
 			interactive: true,
-			offset: [ 0, 0 ],
+			offset: [0, 0],
 			events: {
 				onDraw: function (ctx) {
 					ctx = parent.CANVAS.ctx;

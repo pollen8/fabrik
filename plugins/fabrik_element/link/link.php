@@ -121,7 +121,8 @@ class PlgFabrik_ElementLink extends PlgFabrik_Element
 				&& substr(JString::strtolower($href), 0, 7) != 'http://'
 				&& substr(JString::strtolower($href), 0, 8) != 'https://'
 				&& substr(JString::strtolower($href), 0, 6) != 'ftp://'
-				) {
+				)
+			{
 					$href = 'http://' . $href;
 			}
 			// If used as a icon - the dom parser needs to use &amp; and not & in url querystrings
