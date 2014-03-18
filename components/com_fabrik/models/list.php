@@ -4608,7 +4608,7 @@ class FabrikFEModelList extends JModelForm
 						// Don't throw error for attempting to re-add an existing db column
 						if (!array_key_exists($element->name, $dbdescriptions))
 						{
-							throw new ErrorException('alter structure: ' . $e->getErrorMsg(), 500);
+							throw new ErrorException('alter structure: ' . $fabrikDb->getErrorMsg(), 500);
 						}
 					}
 				}
