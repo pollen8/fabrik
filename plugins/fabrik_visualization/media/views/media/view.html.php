@@ -54,11 +54,11 @@ class FabrikViewMedia extends JViewLegacy
 		FabrikHelperHTML::iniRequireJs($model->getShim());
 		FabrikHelperHTML::script($srcs, $js);
 
-		if ($this->row->published == 0)
+		if (!$model->canView())
 		{
-			JError::raiseWarning(500, FText::_('JERROR_ALERTNOAUTHOR'));
+			echo FText::_('JERROR_ALERTNOAUTHOR');
 
-			return '';
+			return false;
 		}
 
 		$media = $model->getRow();

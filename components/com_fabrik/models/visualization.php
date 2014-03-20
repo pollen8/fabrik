@@ -618,4 +618,23 @@ class FabrikFEModelVisualization extends JModelLegacy
 	{
 		return $this->getState('id');
 	}
+
+	/**
+	 * Can the use view the visualization (checks published and access level)
+	 *
+	 * @return boolean
+	 */
+	public function canView()
+	{
+		$user = JFactory::getUser();
+		$groups = JFactory::getUser()->getAuthorisedViewLevels();
+		$row = $this->getRow();
+
+		if ($row->published == 0)
+		{
+			return false;
+		}
+
+		return in_array($row->access, $groups);
+	}
 }
