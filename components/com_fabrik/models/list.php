@@ -6899,15 +6899,9 @@ class FabrikFEModelList extends JModelForm
 			$return = $pluginManager->runPlugins('button', $this, 'list', array('heading' => true));
 			$res = $pluginManager->data;
 
-			foreach ($res as &$r)
-			{
-				$r = $this->actionMethod() == 'dropdown' ? '<li>' . $r . '</li>' : $r;
-			}
-
-			$headingButtons = array_merge($headingButtons, $res);
-
 			if (FabrikWorker::j3())
 			{
+				$headingButtons = array_merge($headingButtons, $res);
 				if (empty($headingButtons))
 				{
 					$aTableHeadings['fabrik_actions'] = '';
@@ -6926,6 +6920,12 @@ class FabrikFEModelList extends JModelForm
 			}
 			else
 			{
+				foreach ($res as &$r)
+				{
+					$r = $this->actionMethod() == 'dropdown' ? '<li>' . $r . '</li>' : $r;
+				}
+
+				$headingButtons = array_merge($headingButtons, $res);
 				$aTableHeadings['fabrik_actions'] = empty($headingButtons) ? '' : '<ul class="fabrik_action">' . implode("\n", $headingButtons) . '</ul>';
 			}
 
