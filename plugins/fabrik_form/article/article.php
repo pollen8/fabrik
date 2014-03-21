@@ -51,6 +51,7 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 		{
 			$cat = $catElement->getFullName() . '_raw';
 			$categories = (array) JArrayHelper::getValue($this->data, $cat);
+			$this->mapCategoryChanges($categories, $store);
 		}
 		else
 		{
@@ -67,6 +68,42 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 		$this->setMetaStore($store);
 
 		return true;
+	}
+
+	/**
+	 * If changing selected category on editing a record, the new category id needs to be assigned as a
+	 * property to $store with the existing article id. Not tested if say for example the category element
+	 * is a multi-select
+	 *
+	 * @param   array   $categories  Categories selected by the user
+	 * @param   object  &$store      Previously stored categoryid->articleid map
+	 *
+	 * @return  object  $store
+	 */
+	protected function mapCategoryChanges($categories, &$store)
+	{
+		$defaultAricleId = null;
+
+		if (!empty($categories))
+		{
+			foreach ($store as $catid => $articleId)
+			{
+				if (!in_array($catid, $categories))
+				{
+					// We've swapped categories for an existing article
+					$defaultAricleId = $articleId;
+				}
+			}
+			foreach ($categories as $category)
+			{
+				if (!isset($store->$category))
+				{
+					$store->$category = $defaultAricleId;
+				}
+			}
+		}
+
+		return $store;
 	}
 
 	/**
