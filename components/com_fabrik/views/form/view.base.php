@@ -465,9 +465,10 @@ class FabrikViewFormBase extends JViewLegacy
 			JText::script('COM_FABRIK_SUCCESS');
 			JText::script('COM_FABRIK_NO_REPEAT_GROUP_DATA');
 			JText::script('COM_FABRIK_VALIDATION_ERROR');
-			JText::script('COM_FABRIK_FORM_SAVED');
 			JText::script('COM_FABRIK_CONFIRM_DELETE_1');
 		}
+
+		JText::script('COM_FABRIK_FORM_SAVED');
 
 		// $$$ rob don't declare as var $bkey, but rather assign to window, as if loaded via ajax window the function is wrapped
 		// inside an anonymous function, and therefore $bkey wont be available as a global var in window
