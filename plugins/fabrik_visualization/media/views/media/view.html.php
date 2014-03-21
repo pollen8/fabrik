@@ -65,8 +65,9 @@ class FabrikViewMedia extends JViewLegacy
 		$this->media = $model->getMedia();
 		$this->params = $params;
 		$viewName = $this->getName();
-		$this->containerId = $this->get('ContainerId');
+		$this->containerId = $model->getContainerId();
 		$this->showFilters = $model->showFilters();
+		$this->filterFormURL = $model->getFilterFormURL();
 		$this->filters = $this->get('Filters');
 		$this->params = $model->getParams();
 		$tpl = $j3 ? 'bootstrap' : 'default';
