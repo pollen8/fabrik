@@ -1406,7 +1406,7 @@ class FabrikFEModelList extends JModelForm
 				$row->fabrik_view = '';
 				$row->fabrik_edit = '';
 
-				$editLabel = $this->editLabel();
+				$editLabel = $this->editLabel($data[$groupKey][$i]);
 				$editText = $buttonAction == 'dropdown' ? $editLabel : '<span class="hidden">' . $editLabel . '</span>';
 
 				$btnClass = ($j3 && $buttonAction != 'dropdown') ? 'btn ' : '';
@@ -1418,7 +1418,7 @@ class FabrikFEModelList extends JModelForm
 						. 'data-list="' . $dataList . '" href="' . $edit_link . '" title="' . $editLabel . '">' . $img
 						. ' ' . $editText . '</a>';
 
-				$viewLabel = $this->viewLabel();
+				$viewLabel = $this->viewLabel($data[$groupKey][$i]);
 				$viewText = $buttonAction == 'dropdown' ? $viewLabel : '<span class="hidden">' . $viewLabel . '</span>';
 				$class = $j3 ? $btnClass . 'fabrik_view fabrik__rowlink' : 'btn fabrik__rowlink';
 
@@ -8912,6 +8912,14 @@ class FabrikFEModelList extends JModelForm
 	 * (added by hugh, does the same thing as parseMessageForPlaceHolder in parent
 	 * class, but for rows instead of forms)
 	 *
+	 * NOTE - I can't remember why I addded this way back when in 2.x, instead of using the helper function,
+	 * I just know there was a good reason, to do with the helper func making assumptions about something
+	 * (I think to do with how form data is formatted) which weren't true when rendering list data.  I have
+	 * a suspicion that in the intervening years, the helper func and the way we format data may now be
+	 * copacetic, and we could do away with this separation, and just use the normal helper func.  Might be
+	 * worth testing, as this code looks like it has suffered bitrot, and doesn't do a number of things the main
+	 * helper func now does.
+	 *
 	 * @param   string  $msg         text to parse
 	 * @param   array   &$row        of row data
 	 * @param   bool    $addslashes  add slashes to the replaced data (default = false) set to true in fabrikcalc element
@@ -9926,29 +9934,32 @@ class FabrikFEModelList extends JModelForm
 	 *
 	 * @since   3.1rc1
 	 *
+	 * @param   object  &$row  active table row
+	 *
 	 * @return  string
 	 */
 
-	public function viewLabel()
+	public function viewLabel($row)
 	{
 		$params = $this->getParams();
 
-		return FText::_($params->get('detaillabel', FText::_('COM_FABRIK_VIEW')));
+		return FText::_($this->parseMessageForRowHolder($params->get('detaillabel', FText::_('COM_FABRIK_VIEW')), $row));
 	}
 
 	/**
 	 * Get edit row button label
+	 *
+	 * @param   object  $row  active table row
 	 *
 	 * @since   3.1rc1
 	 *
 	 * @return  string
 	 */
 
-	public function editLabel()
+	public function editLabel($row)
 	{
 		$params = $this->getParams();
-
-		return FText::_($params->get('editlabel', FText::_('COM_FABRIK_EDIT')));
+		return FText::_($this->parseMessageForRowHolder($params->get('editlabel', FText::_('COM_FABRIK_EDIT')), $row));
 	}
 
 	/**
