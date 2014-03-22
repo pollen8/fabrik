@@ -9946,7 +9946,7 @@ class FabrikFEModelList extends JModelForm
 	public function viewLabel($row)
 	{
 		$params = $this->getParams();
-
+		$row = JArrayHelper::fromObject($row);
 		return FText::_($this->parseMessageForRowHolder($params->get('detaillabel', FText::_('COM_FABRIK_VIEW')), $row));
 	}
 
@@ -9963,6 +9963,7 @@ class FabrikFEModelList extends JModelForm
 	public function editLabel($row)
 	{
 		$params = $this->getParams();
+		$row = JArrayHelper::fromObject($row);
 		return FText::_($this->parseMessageForRowHolder($params->get('editlabel', FText::_('COM_FABRIK_EDIT')), $row));
 	}
 

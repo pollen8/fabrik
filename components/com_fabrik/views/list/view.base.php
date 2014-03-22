@@ -155,8 +155,10 @@ class FabrikViewListBase extends JViewLegacy
 			$opts->popup_offset_y = (int) $yOffset;
 		}
 
-		$opts->popup_edit_label = $model->editLabel();
-		$opts->popup_view_label = $model->viewLabel();
+		// need something to pass in just to keep editLabel and viewLabel happy
+		$nodata = new stdClass();
+		$opts->popup_edit_label = $model->editLabel($nodata);
+		$opts->popup_view_label = $model->viewLabel($nodata);
 		$opts->popup_add_label = $model->addLabel();
 		$opts->limitLength = $model->limitLength;
 		$opts->limitStart = $model->limitStart;
