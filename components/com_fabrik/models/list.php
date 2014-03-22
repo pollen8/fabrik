@@ -8948,6 +8948,10 @@ class FabrikFEModelList extends JModelForm
 		*/
 		$msg = preg_replace_callback("/{[^}\s]+}/i", array($this, 'replaceWithRowData'), $msg);
 
+		$lang = JFactory::getLanguage()->getTag();
+		$lang = str_replace('-', '_', $lang);
+		$msg = str_replace('{lang}', $lang, $msg);
+
 		return $msg;
 	}
 
