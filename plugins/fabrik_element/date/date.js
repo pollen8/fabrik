@@ -469,19 +469,23 @@ var FbDateTime = new Class({
 
 	addNewEventAux : function (action, js) {
 		if (action === 'change') {
-			Fabrik.addEvent('fabrik.date.select', function () {
-				var e = 'fabrik.date.select';
-				typeOf(js) === 'function' ? js.delay(0, this, this) : eval(js);
-			});
-		}
-		this.element.getElements('input').each(function (i) {
-			i.addEvent(action, function (e) {
-				if (typeOf(e) === 'event') {
-					e.stop();
+			Fabrik.addEvent('fabrik.date.select', function (w) {
+				if (w.baseElementId === this.baseElementId) {
+					var e = 'fabrik.date.select';
+					typeOf(js) === 'function' ? js.delay(0, this, this) : eval(js);
 				}
-				typeOf(js) === 'function' ? js.delay(0, this, this) : eval(js);
-			});
-		}.bind(this));
+			}.bind(this));
+		}
+		else {
+			this.element.getElements('input').each(function (i) {
+				i.addEvent(action, function (e) {
+					if (typeOf(e) === 'event') {
+						e.stop();
+					}
+					typeOf(js) === 'function' ? js.delay(0, this, this) : eval(js);
+				});
+			}.bind(this));
+		}
 	},
 
 	/**
