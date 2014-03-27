@@ -161,10 +161,17 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 		$item->load($id);
 		$item->bind($data);
 
+
 		// Trigger the onContentBeforeSave event.
 		$result = $dispatcher->trigger('onContentBeforeSave', array('com_content.article', $item, $isNew));
 
 		$item->store();
+
+		// Featured is handled by the admin content model.
+		JTable::addIncludePath(COM_FABRIK_BASE . 'administrator/components/com_content/tables');
+		JModelLegacy::addIncludePath(COM_FABRIK_BASE . 'administrator/components/com_content/models');
+		$articleModel = JModelLegacy::getInstance('Article', 'ContentModel');
+		$articleModel->featured($item->id, $item->featured);
 
 		// Trigger the onContentAfterSave event.
 		$result = $dispatcher->trigger('onContentAfterSave', array('com_content.article', $item, $isNew));
