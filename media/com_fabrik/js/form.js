@@ -1022,7 +1022,7 @@ var FbForm = new Class({
 				}
 			}.bind(this));
 		}
-		var submits = this.form.getElements('input[type=submit]').combine([apply, submit, copy]);
+		var submits = this.form.getElements('button[type=submit]').combine([apply, submit, copy]);
 		submits.each(function (btn) {
 			if (typeOf(btn) !== 'null') {
 				btn.addEvent('click', function (e) {
