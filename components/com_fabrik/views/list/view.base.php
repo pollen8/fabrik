@@ -155,8 +155,22 @@ class FabrikViewListBase extends JViewLegacy
 			$opts->popup_offset_y = (int) $yOffset;
 		}
 
-		$opts->popup_edit_label = $model->editLabel();
-		$opts->popup_view_label = $model->viewLabel();
+		/**
+		 * Added the $nodata object as we now weed something to pass in just to keep editLabel
+		 * and viewLabel happy, after adding placeholder replacement to the labels for a Pro user,
+		 * because the tooltips said we did that, which we never actually did.
+		 *
+		 * http://fabrikar.com/forums/index.php?threads/placeholders-in-list-links-and-labels.37726/#post-191081
+		 *
+		 * However, this means that using placeholders will yield funky labels for the popups, as
+		 * this isn't per row.  So we may need to not use editLabel / viewLabel here any more,
+		 * and just use the default COM_FABRIK_VIEW/EDIT.  Or add YAFO's, ::sigh::.
+		 *
+		 * But for now, it's too corner case to worry about!
+		 */
+		$nodata = new stdClass();
+		$opts->popup_edit_label = $model->editLabel($nodata);
+		$opts->popup_view_label = $model->viewLabel($nodata);
 		$opts->popup_add_label = $model->addLabel();
 		$opts->limitLength = $model->limitLength;
 		$opts->limitStart = $model->limitStart;

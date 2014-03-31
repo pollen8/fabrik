@@ -61,7 +61,7 @@ class PlgFabrik_ValidationruleIsUniqueValue extends PlgFabrik_Validationrule
 		$data = $db->quote($data);
 		$query = $db->getQuery(true);
 		$cond = $params->get('isuniquevalue-caseinsensitive') == 1 ? 'LIKE' : '=';
-		$query->select('COUNT(*)')->from($lookuptable)->where($element->name . ' ' . $cond . ' ' . $data);
+		$query->select('COUNT(*)')->from($lookuptable)->where($db->quoteName($element->name) . ' ' . $cond . ' ' . $data);
 
 		/* $$$ hugh - need to check to see if we're editing a record, otherwise
 		 * will fail 'cos it finds the original record (assuming this element hasn't changed)
