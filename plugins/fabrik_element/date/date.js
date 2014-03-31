@@ -349,7 +349,9 @@ var FbDateTime = new Class({
 			this.options.calendarSetup.button = this.element.id + "_img";
 			//this.addEventToCalOpts();
 			this.cal.showAtElement(f, this.cal.params.align);
-			this.cal.wrapper.getParent().position({'relativeTo': this.cal.params.inputField, 'position': 'topLeft'});
+			if (typeof(this.cal.wrapper) !== 'undefined') {
+				this.cal.wrapper.getParent().position({'relativeTo': this.cal.params.inputField, 'position': 'topLeft'});
+			}
 		}
 	},
 
