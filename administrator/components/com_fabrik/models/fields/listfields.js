@@ -200,7 +200,6 @@ var ListFieldsElement = new Class({
 	 * text area
 	 */
 	addPlaceHolder: function () {
-		console.log('addPlaceHolder');
 		var list = this.el.getParent().getElement('select');
 		var v = list.get('value');
 		if (this.options.addBrackets) {
