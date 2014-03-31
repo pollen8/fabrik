@@ -45,16 +45,18 @@ var FbFileUpload = new Class({
 	 * and if in a tab and the tab is activated. Triggered from element.watchTab()
 	 */
 	redraw: function () {
-		var browseButton = document.id(this.element.id + '_browseButton');
-		var c = document.id(this.options.element + '_container');
-		var diff = browseButton.getPosition().y - c.getPosition().y;
-		// $$$ hugh - working on some IE issues
-		var file_element = c.getParent('.fabrikElement').getElement('input[type=file]');
-		if (file_element) {
-			var fileContainer = file_element.getParent();
-			var size = browseButton.getSize();
-			fileContainer.setStyles({'width': size.x, 'height': size.y});
-			fileContainer.setStyle('top', diff);
+		if (this.options.ajax_upload) {
+			var browseButton = document.id(this.element.id + '_browseButton');
+			var c = document.id(this.options.element + '_container');
+			var diff = browseButton.getPosition().y - c.getPosition().y;
+			// $$$ hugh - working on some IE issues
+			var file_element = c.getParent('.fabrikElement').getElement('input[type=file]');
+			if (file_element) {
+				var fileContainer = file_element.getParent();
+				var size = browseButton.getSize();
+				fileContainer.setStyles({'width': size.x, 'height': size.y});
+				fileContainer.setStyle('top', diff);
+			}
 		}
 	},
 
