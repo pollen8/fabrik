@@ -144,7 +144,7 @@ endif;
 echo $this->pluginbottom;
 echo $this->loadTemplate('actions');
 ?>
-</form>
+
 <?php
 if ($model->editable) :
 		echo '</form>';
