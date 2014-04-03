@@ -365,6 +365,7 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 
 		try
 		{
+			$model->getFormCss();
 			// Require files and set up DOM pdf
 			require_once JPATH_SITE . '/components/com_fabrik/helpers/pdf.php';
 			require_once JPATH_SITE . '/components/com_fabrik/controllers/details.php';
@@ -374,9 +375,18 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 			$orientation = $params->get('pdf_orientation', 'portrait');
 			$dompdf->set_paper($size, $orientation);
 
+
+			$controller = new FabrikControllerDetails;
+			/**
+			 * $$$ hugh - stuff our model in there, with already formatted data, so it doesn't get rendered
+			 * all over again by the view, with unformatted data.  Should probably use a setModel() method
+			 * here instead of poking in to the _model, but I don't think there is a setModel for controllers?
+			 */
+			$controller->_model = $model;
+			$controller->_model->data = $this->getProcessData();
+
 			// Store in output buffer
 			ob_start();
-			$controller = new FabrikControllerDetails;
 			$controller->display();
 			$html = ob_get_contents();
 			ob_end_clean();
