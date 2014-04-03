@@ -3220,7 +3220,13 @@ class FabrikFEModelForm extends FabModelForm
 								if (empty($usekey) && !$this->isMambot)
 								{
 									$this->rowId = '';
-									throw new RuntimeException(FText::_('COM_FABRIK_COULD_NOT_FIND_RECORD_IN_DATABASE'));
+									/**
+									 * runtime exception is a little obtuse for people getting here from legitimate links,
+									 * like from an email, but aren't logged in so run afoul of a pre-filter, etc
+									 * So do the 3.0 thing, and raise a warning
+									 */
+									//throw new RuntimeException(FText::_('COM_FABRIK_COULD_NOT_FIND_RECORD_IN_DATABASE'));
+									JError::raiseWarning(500, FText::_('COM_FABRIK_COULD_NOT_FIND_RECORD_IN_DATABASE'));
 								}
 								else
 								{
