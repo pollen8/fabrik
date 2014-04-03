@@ -246,11 +246,16 @@ class PlgFabrik_FormConfirmation extends PlgFabrik_Form
 				. "\" />";
 
 			// Unset the task otherwise we will submit the form to be processed.
-			FabrikHelperHTML::addScriptDeclaration(
-				"window.addEvent('fabrik.loaded', function() {"
-				. "$('fabrik_redoconfirmation').addEvent('click', function(e) {;\n"
-					. "  this.form.task.value = '';\n"
-					. "  this.form.submit.click();\n" . "	});\n" . "});");
+			FabrikHelperHTML::addScriptDeclaration("
+				window.addEvent('fabrik.loaded', function() {
+					$('fabrik_redoconfirmation').addEvent('click', function(e) {;
+						this.form.task.value = '';
+						// this.form.submit();
+						var thisform = Fabrik.getBlock(this.form.id);
+						thisform.doSubmit(new Event.Mock(thisform._getButton('Submit')), thisform._getButton('Submit'));
+					});
+				});
+			");
 			$this->html = implode("\n", $fields);
 		}
 	}
