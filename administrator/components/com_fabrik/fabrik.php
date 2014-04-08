@@ -14,7 +14,7 @@ defined('_JEXEC') or die('Restricted access');
 // Access check.
 if (!JFactory::getUser()->authorise('core.manage', 'com_fabrik'))
 {
-	return JError::raiseWarning(404, FText::_('JERROR_ALERTNOAUTHOR'));
+	return JError::raiseWarning(404, JText::_('JERROR_ALERTNOAUTHOR'));
 }
 
 // Load front end language file as well
@@ -24,12 +24,14 @@ $lang->load('com_fabrik', JPATH_SITE . '/components/com_fabrik');
 // Test if the system plugin is installed and published
 if (!defined('COM_FABRIK_FRONTEND'))
 {
-	throw new RuntimeException(FText::_('COM_FABRIK_SYSTEM_PLUGIN_NOT_ACTIVE'), 400);
+	throw new RuntimeException(JText::_('COM_FABRIK_SYSTEM_PLUGIN_NOT_ACTIVE'), 400);
 }
 
 $app = JFactory::getApplication();
 $input = $app->input;
 
+// Include dependencies
+jimport('joomla.application.component.controller');
 jimport('joomla.filesystem.file');
 
 if ($input->get('format', 'html') === 'html')
@@ -38,15 +40,6 @@ if ($input->get('format', 'html') === 'html')
 }
 
 JHTML::stylesheet('administrator/components/com_fabrik/headings.css');
-
-// Include dependencies
-jimport('joomla.application.component.controller');
-
-// System plugin check
-if (!defined('COM_FABRIK_FRONTEND'))
-{
-	throw new RuntimeException(FText::_('COM_FABRIK_SYSTEM_PLUGIN_NOT_ACTIVE'), 400);
-}
 
 // Check for plugin views (e.g. list email plugin's "email form"
 $cName = $input->getCmd('controller');
@@ -90,7 +83,7 @@ $db->setQuery($query);
 
 if (count($db->loadResult()) === 0)
 {
-	$app->enqueueMessage(FText::_('COM_FABRIK_PUBLISH_AT_LEAST_ONE_ELEMENT_PLUGIN'), 'notice');
+	$app->enqueueMessage(JText::_('COM_FABRIK_PUBLISH_AT_LEAST_ONE_ELEMENT_PLUGIN'), 'notice');
 }
 
 // Execute the task.
