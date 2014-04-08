@@ -277,11 +277,12 @@ var FbFileUpload = new Class({
 		// (2) ON FILES ADDED ACTION
 		this.uploader.bind('FilesAdded', function (up, files) {
 			this.removeDropArea();
+			var rElement = Fabrik.bootstrapped ? 'tr' : 'li';
 			this.lastAddedFiles = files;
 			if (Fabrik.bootstrapped) {
 				this.container.getElement('thead').show();
 			}
-			var count = this.droplist.getElements('li').length;
+			var count = this.droplist.getElements(rElement).length;
 			this.startbutton.removeClass('disabled');
 			files.each(function (file, idx) {
 				if (file.size > this.options.max_file_size * 1000) {
@@ -307,7 +308,6 @@ var FbFileUpload = new Class({
 						
 						innerli = this.imageCells(file, title, a);
 						
-						var rElement = Fabrik.bootstrapped ? 'tr' : 'li';
 						this.droplist.adopt(new Element(rElement, {
 							id: file.id,
 							'class': 'plupload_delete'
