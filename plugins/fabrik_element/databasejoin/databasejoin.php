@@ -504,6 +504,26 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 	}
 
 	/**
+	 * Run any eval'ed option code from element settings
+	 *
+	 * @param   array  $opts  array of option objects
+	 */
+	protected function evalOptions(&$opts) {
+		$params = $this->getParams();
+		$eval = $params->get('dabase_join_label_eval');
+		if (trim($eval) !== '')
+		{
+			foreach ($opts as $key => &$opt)
+			{
+				if (eval($eval) === false)
+				{
+					unset($opts[$key]);
+				}
+			}
+		}
+	}
+
+	/**
 	 * Get array of option values
 	 *
 	 * @param   array  $data           Data
@@ -3151,12 +3171,13 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 
 		if ($filterMethod == 1)
 		{
-			$join = $elementModel->getJoin()->table_join;
+			$join = $elementModel->getJoin();
+			$joinTable = $join->table_join_alias;
 			$opts = array();
 
 			if (!strstr($c, 'CONCAT'))
 			{
-				$opts['label'] = strstr($c, '.') ? $c : $join . '.' . $c;
+				$opts['label'] = strstr($c, '.') ? $c : $joinTable . '.' . $c;
 			}
 			else
 			{
