@@ -522,7 +522,7 @@ class FabrikString extends JString
 		{
 			foreach ($values2 as &$v)
 			{
-				if (is_string($v) && !strstr($v, "'"))
+				if (is_string($v) && !preg_match("#^'.*'$#", $v))
 				{
 					$v = $db->quote($v);
 				}
@@ -530,7 +530,7 @@ class FabrikString extends JString
 		}
 		else if (is_string($values2))
 		{
-			if (!strstr($values2, "'"))
+			if (!preg_match("#^'.*'$#", $v))
 			{
 				$values2 = $db->quote($values2);
 			}
