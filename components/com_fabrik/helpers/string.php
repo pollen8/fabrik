@@ -512,12 +512,16 @@ class FabrikString extends JString
 	 * Does NOT modify the input.
 	 *
 	 * @param unknown $values
+	 * @param bool    $commaSeparated  individually quote a comma separated string of values
 	 *
 	 * @return   mixed   quoted values
 	 */
-	public static function safeQuote($values) {
+	public static function safeQuote($values, $commaSeparated = true) {
 		$db = JFactory::getDbo();
 		$values2 = $values;
+		if ($commaSeparated) {
+			$values2 = explode(',', $values2);
+		}
 		if (is_array($values2))
 		{
 			foreach ($values2 as &$v)
@@ -534,6 +538,9 @@ class FabrikString extends JString
 			{
 				$values2 = $db->quote($values2);
 			}
+		}
+		if ($commaSeparated) {
+			$values2 = implode(',', $values2);
 		}
 		return $values2;
 	}
