@@ -588,6 +588,7 @@ class PlgFabrik_Element extends FabrikPlugin
 					$opts->position = 'top';
 					$opts = json_encode($opts);
 					$data = '<span>' . $data . '</span>';
+					$data = htmlspecialchars($data, ENT_QUOTES);
 
 					// See if data has an <a> tag
 					if (class_exists('DOMDocument'))
@@ -611,7 +612,6 @@ class PlgFabrik_Element extends FabrikPlugin
 							$target = 'target="' . $target . '"';
 						}
 
-						$data = htmlspecialchars($data, ENT_QUOTES);
 						$img = '<a class="fabrikTip" ' . $target . ' href="' . $ahref . '" opts=\'' . $opts . '\' title="' . $data . '">' . $img . '</a>';
 					}
 					elseif (!empty($iconFile))
