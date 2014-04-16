@@ -321,7 +321,7 @@ class PlgFabrik_ListUpdate_Col extends PlgFabrik_List
 		$params = $this->getParams();
 		$emailColID = $params->get('update_email_element', '');
 
-		if (!empty($emailColId))
+		if (!empty($emailColID))
 		{
 			$elementModel = $this->getEmailElement();
 			$emailElement = $elementModel->getElement(true);
@@ -392,7 +392,7 @@ class PlgFabrik_ListUpdate_Col extends PlgFabrik_List
 		$input = JFactory::getApplication()->input;
 		$params = $this->getParams();
 		$elementModel = $this->getEmailElement();
-		$emailField = $elementModel->getFullName(true, false, false);
+		$emailField = $elementModel->getFullName(true, true, false);
 
 		if ($emailWhich == 'user')
 		{
