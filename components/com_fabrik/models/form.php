@@ -152,6 +152,13 @@ class FabrikFEModelForm extends FabModelForm
 	public $errors = array();
 
 	/**
+	 * Form has validation errors?
+	 *
+	 * @var bool
+	 */
+	public $errorsFound = null;
+
+	/**
 	 * Uploader helper
 	 *
 	 * @var FabrikUploader
@@ -1983,10 +1990,18 @@ class FabrikFEModelForm extends FabModelForm
 								$v = empty($encrypted) ? '' : $crypt->decrypt($encrypted);
 								/* $$$ hugh - things like elementlist elements (radios, etc) seem to use
 								 * their JSON data for encrypted read only vals, need to decode.
+								 * @FIXME - doesn't work for things like user element, where parent is
+								 * PlgFabrik_Databasejoin ... we need to get the "root" class, not just the parent.
 								 */
+								/*
 								$class_name = get_parent_class($elementModel);
 
 								if ($class_name === 'PlgFabrik_ElementList')
+								{
+									$v = FabrikWorker::JSONtoData($v, true);
+								}
+								*/
+								if (is_subclass_of($elementModel, 'PlgFabrik_ElementList'))
 								{
 									$v = FabrikWorker::JSONtoData($v, true);
 								}
@@ -2972,16 +2987,31 @@ class FabrikFEModelForm extends FabModelForm
 
 	public function hasErrors()
 	{
-		$errorsFound = !empty($this->errors);
+		/**
+		 * $$$hugh - this gets called a LOT, and is quite expensived, so added caching for it.
+		 * Hmmm, nope, won't work, as some elements call this DURING validation, so if we cache,
+		 * it can get set 'false' before some other element fails validation.  Punt for now.
+		 */
+
+		/*
+		if (isset($this->errorsFound))
+		{
+			return $this->errorsFound;
+		}
+		*/
+
 		$errorsFound = false;
 
 		foreach ($this->errors as $field => $errors)
 		{
-			if (!empty($errors))
+			if (!empty($errors) && is_array($errors))
 			{
-				if (!empty($errors[0]))
+				foreach ($errors as $error)
 				{
-					$errorsFound = true;
+					if (!empty($error))
+					{
+						$errorsFound = true;
+					}
 				}
 			}
 		}
@@ -2997,11 +3027,17 @@ class FabrikFEModelForm extends FabModelForm
 
 			if ($srow->data != '')
 			{
-				foreach ($this->errors as $err)
+				foreach ($this->errors as $errors)
 				{
-					if (!empty($err[0]))
+					if (is_array($errors) && !empty($errors))
 					{
-						$multiPageErrors = true;
+						foreach ($errors as $error)
+						{
+							if (!empty($error))
+							{
+								$multiPageErrors = true;
+							}
+						}
 					}
 				}
 
@@ -3012,6 +3048,7 @@ class FabrikFEModelForm extends FabModelForm
 			}
 		}
 
+		$this->errorsFound = $errorsFound;
 		return $errorsFound;
 	}
 
@@ -4728,8 +4765,18 @@ class FabrikFEModelForm extends FabModelForm
 
 						// $$$ rob HTMLName seems not to work for joined data in confirmation plugin
 						$elementModel->getValuesToEncrypt($this->readOnlyVals, $data, $c);
-						$this->readOnlyVals[$elementModel->getFullName(true, false)]['repeatgroup'] = $groupModel->canRepeat();
-						$this->readOnlyVals[$elementModel->getFullName(true, false)]['join'] = $groupModel->isJoin();
+						/**
+						 * $$$ hugh - need to decode it if it's a string, 'cos we encoded $data up there ^^ somewhere, which
+						 * then causes read only data to get changed to htmlencoded after submission.  See this thread for gory details:
+						 * http://fabrikar.com/forums/index.php?threads/how-to-avoid-changes-to-an-element-with-a-read-only-link.37656/#post-192437
+						 */
+						$elName = $elementModel->getFullName(true, false);
+						if (!is_array($this->readOnlyVals[$elName]['data']))
+						{
+							$this->readOnlyVals[$elName]['data'] = htmlspecialchars_decode($this->readOnlyVals[$elName]['data']);
+						}
+						$this->readOnlyVals[$elName]['repeatgroup'] = $groupModel->canRepeat();
+						$this->readOnlyVals[$elName]['join'] = $groupModel->isJoin();
 					}
 
 					if ($element)
