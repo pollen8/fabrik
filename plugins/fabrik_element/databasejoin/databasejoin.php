@@ -2892,12 +2892,12 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 
 		if ($filterMethod == 1)
 		{
-			$join = $elementModel->getJoin()->table_join;
-			$opts = array();
+			$join = $elementModel->getJoin();
+			$joinTable = $join->table_join_alias;			$opts = array();
 
 			if (!strstr($c, 'CONCAT'))
 			{
-				$opts['label'] = strstr($c, '.') ? $c : $join . '.' . $c;
+				$opts['label'] = strstr($c, '.') ? $c : $joinTable . '.' . $c;
 			}
 			else
 			{
