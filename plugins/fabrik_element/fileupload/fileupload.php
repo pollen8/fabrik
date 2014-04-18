@@ -2423,7 +2423,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		$pstr[] = ' <tfoot><tr><td colspan="4">';
 		$pstr[] = '				<a id="' . $id . '_browseButton" class="btn btn-mini" href="#"><i class="icon-plus-sign icon-plus"></i>'
 				. FText::_('PLG_ELEMENT_FILEUPLOAD_ADD_FILES') . '</a>';
-		$pstr[] = '				<a class="btn btn-mini disabled" data-action="plupload_start" href="#"><i class="icon-upload"></i>'
+		$pstr[] = '				<a id="' . $id . '_startButton" class="btn btn-mini disabled plupload_start" data-action="plupload_start" href="#"><i class="icon-upload"></i>'
 				. FText::_('PLG_ELEMENT_FILEUPLOAD_START_UPLOAD') . '</a>';
 		$pstr[] = '			<span class="plupload_upload_status"></span>';
 		$pstr[] = '</td></tr></tfoot>';
@@ -2452,7 +2452,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 			$pstr[] = '			<div class="plupload_buttons">';
 			$pstr[] = '				<a id="' . $id . '_browseButton" class="plupload_button plupload_add" href="#">'
 					. FText::_('PLG_ELEMENT_FILEUPLOAD_ADD_FILES') . '</a>';
-			$pstr[] = '				<a class="plupload_button plupload_start plupload_disabled" href="#">'
+			$pstr[] = '				<a id="' . $id . '_startButton" class="plupload_button plupload_start plupload_disabled" href="#">'
 					. FText::_('PLG_ELEMENT_FILEUPLOAD_START_UPLOAD') . '</a>';
 			$pstr[] = '			</div>';
 			$pstr[] = '			<span class="plupload_upload_status"></span>';
