@@ -36,6 +36,10 @@ class getFabrikTab extends cbTabHandler {
 		}
 		$dispatcher = new JDispatcher();
 		JPluginHelper::importPlugin('content', 'fabrik', true, $dispatcher);
+		if (JPluginHelper::importPlugin('content', 'fabrik', true, $dispatcher) !== true)
+		{
+			throw new RuntimeException(JText::_('Fabrik content plugin not loaded in CB tab!  Check that it is installed and enabled.'), 400);
+		}
 		$dispatcher->register('content', 'plgContentFabrik');
 		$args = array();
 		$article = new stdClass();
