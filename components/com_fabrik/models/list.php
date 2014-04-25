@@ -1824,7 +1824,7 @@ class FabrikFEModelList extends JModelForm
 		$query = $db->getQuery(true);
 		$query = $listModel->buildQueryWhere($input->getInt('incfilters', 0), $query);
 
-		if (!empty($pks))
+		if (!FArrayHelper::emptyIsh($pks))
 		{
 			// Only load the current record sets record counts
 			$query->where($linkKey . ' IN (' . implode(',', $pks) . ')');
@@ -2728,8 +2728,8 @@ class FabrikFEModelList extends JModelForm
 					if ($dir != '' && $dir != '-' && trim($dir) != 'Array')
 					{
 						$strOrder == '' ? $strOrder = "\n ORDER BY " : $strOrder .= ',';
-						$strOrder .= $element->getOrderByName() . ' ' . $dir;
-						$orderByName = $element->getOrderByName();
+						$strOrder .= FabrikString::safeNameQuote($element->getOrderByName()) . ' ' . $dir;
+						$orderByName = FabrikString::safeNameQuote($element->getOrderByName());
 						$this->orderEls[] = $orderByName;
 						$this->orderDirs[] = $dir;
 						$element->getAsField_html($this->selectedOrderFields, $aAsFields);
@@ -2845,7 +2845,7 @@ class FabrikFEModelList extends JModelForm
 
 				if (!empty($bits))
 				{
-					if (!$query)
+					if (!$query || !is_object($query))
 					{
 						$strOrder = "\n ORDER BY" . implode(',', $bits);
 					}
@@ -8330,7 +8330,7 @@ class FabrikFEModelList extends JModelForm
 		if (!isset($this->indexes))
 		{
 			$db = $this->getDb();
-			$db->setQuery('SHOW INDEXES FROM ' . $this->getTable()->db_table_name);
+			$db->setQuery('SHOW INDEXES FROM ' . $db->quoteName($this->getTable()->db_table_name));
 			$this->indexes = $db->loadObjectList();
 		}
 
