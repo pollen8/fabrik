@@ -1420,7 +1420,7 @@ class FabrikWorker
 			if ($fbConfig->get('enable_big_selects', 0) == '1')
 			{
 				$fabrikDb = self::$database[$sig];
-				$fabrikDb->setQuery("SET OPTION SQL_BIG_SELECTS=1");
+				$fabrikDb->setQuery("SET OPTION SQL_BIG_SELECTS=1, GROUP_CONCAT_MAX_LEN=10240");
 				$fabrikDb->execute();
 			}
 		}
