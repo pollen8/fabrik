@@ -2116,6 +2116,7 @@ if (!$j3)
 	{
 		$span = floor(12 / $columns);
 		$i = 0;
+		$grid = array();
 
 		foreach ($items as $i => $s)
 		{
