@@ -48,7 +48,7 @@ class getFabrikTab extends cbTabHandler {
 		// $$$ hugh - set profile user in session so Fabrik user element can get at it
 		// TODO - should really make this table/form specific!
 
-		$session =& JFactory::getSession();
+		$session = JFactory::getSession();
 		// $$$ hugh - testing using a unique session hash, which we will stuff in the
 		// plugin args, and will get added where necessary in Fabrik lists and forms so
 		// we can actually track the right form submissions with their coresponding CB
