@@ -552,6 +552,11 @@ abstract class JFormField
 		// Set the group of the field.
 		$this->group = $group;
 
+		// Allow for repeatable elements
+		$repeat = (string) $element['repeat'];
+		$this->repeat = ($repeat == 'true' || $repeat == 'multiple' || (!empty($this->form->repeat) && $this->form->repeat == 1));
+
+
 		$attributes = array(
 			'multiple', 'name', 'id', 'hint', 'class', 'description', 'labelclass', 'onchange',
 			'onclick', 'validate', 'pattern', 'default', 'required',
@@ -682,7 +687,7 @@ abstract class JFormField
 
 		// Get the label text from the XML element, defaulting to the element name.
 		$title = $this->element['label'] ? (string) $this->element['label'] : (string) $this->element['name'];
-		$title = $this->translateLabel ? JText::_($title) : $title;
+		$title = $this->translateLabel ? FText::_($title) : $title;
 
 		return $title;
 	}
@@ -705,7 +710,7 @@ abstract class JFormField
 
 		// Get the label text from the XML element, defaulting to the element name.
 		$text = $this->element['label'] ? (string) $this->element['label'] : (string) $this->element['name'];
-		$text = $this->translateLabel ? JText::_($text) : $text;
+		$text = $this->translateLabel ? FText::_($text) : $text;
 
 		// Build the class for the label.
 		$class = !empty($this->description) ? 'hasTooltip' : '';
@@ -719,7 +724,7 @@ abstract class JFormField
 		if (!empty($this->description))
 		{
 			// Don't translate discription if specified in the field xml.
-			$description = $this->translateDescription ? JText::_($this->description) : $this->description;
+			$description = $this->translateDescription ? FText::_($this->description) : $this->description;
 			JHtml::_('bootstrap.tooltip');
 			$label .= ' title="' . JHtml::tooltipText(trim($text, ':'), $description, 0) . '"';
 		}
