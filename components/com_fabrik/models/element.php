@@ -3567,6 +3567,9 @@ class PlgFabrik_Element extends FabrikPlugin
 
 		if ($pop !== '')
 		{
+			$w = new FabrikWorker;
+			$pop = $w->parseMessageForPlaceHolder($pop, $this->getFormModel()->getData());
+
 			if (FabrikHelperHTML::isDebug())
 			{
 				$res = eval($pop);
