@@ -117,8 +117,9 @@ class JFormFieldFabrikModalrepeat extends JFormField
 		$version = new JVersion;
 		$j32 = version_compare($version->RELEASE, '3.2') >= 0 ? true : false;
 		$j322 = ($j32 && $version->DEV_LEVEL >=3);
+		$j33 = version_compare($version->RELEASE, '3.3') >= 0 ? true : false;
 
-		$modalid = $j32 ? 'attrib-' . $this->id . '_modal' : $this->id . '_modal';
+		$modalid = $j32 || $j33 ? 'attrib-' . $this->id . '_modal' : $this->id . '_modal';
 
 		// As JForm will render child fieldsets we have to hide it via CSS
 		$fieldSetId = str_replace('jform_params_', '', $modalid);
@@ -230,7 +231,7 @@ class JFormFieldFabrikModalrepeat extends JFormField
 						$j3pane = strtoupper(str_replace('attrib-', '', $j3pane));
 					}
 
-					if ($j322)
+					if ($j322 || $j33)
 					{
 						$script = "window.addEvent('domready', function() {
 					" . $script . "
