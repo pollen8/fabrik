@@ -185,7 +185,7 @@ class FabrikViewFormBase extends JViewLegacy
 
 		if ($params->get('process-jplugins', 2) == 1 || ($params->get('process-jplugins', 2) == 2 && $model->isEditable() === false))
 		{
-			FabrikHelperHTML::runConentPlugins($text);
+			FabrikHelperHTML::runContentPlugins($text);
 		}
 
 		// Allows you to use {placeholders} in form template.

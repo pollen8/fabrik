@@ -2170,7 +2170,7 @@ if (!$j3)
 	 * @since   3.0.7
 	 */
 
-	public static function runConentPlugins(&$text)
+	public static function runContentPlugins(&$text)
 	{
 		$app = JFactory::getApplication();
 		$input = $app->input;
