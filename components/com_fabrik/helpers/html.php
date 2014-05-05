@@ -2179,9 +2179,26 @@ if (!$j3)
 		$input->set('option', 'com_content');
 		$input->set('view', 'article');
 		jimport('joomla.html.html.content');
-		$text .= '{emailcloak=off}';
+
+		/**
+		 * J!'s email cloaking will cloak email addresses in form inputs, which is a Bad Thing<tm>.
+		 * What we really need to do is work out a way to prevent ONLY cloaking of emails in form inputs,
+		 * but that's not going to be trivial.  So bandaid is to turn it off in form and list views, so
+		 * addresses only get cloaked in details view.
+		 */
+
+		if ($view !== 'details')
+		{
+			$text .= '{emailcloak=off}';
+		}
+
 		$text = JHTML::_('content.prepare', $text);
-		$text = preg_replace('/\{emailcloak\=off\}/', '', $text);
+
+		if ($view !== 'details')
+		{
+			$text = FabrikString::rtrimword($text, '{emailcloak=off}');
+		}
+
 		$input->set('option', $opt);
 		$input->set('view', $view);
 	}
