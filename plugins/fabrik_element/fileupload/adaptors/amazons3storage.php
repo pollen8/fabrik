@@ -357,7 +357,8 @@ class Amazons3storage extends FabrikStorageAdaptor
 
 	public function cleanName($filename, $repeatCounter)
 	{
-		return $this->randomizeName($filename);
+		$this->randomizeName($filename);
+		return $filename;
 	}
 
 	/**
