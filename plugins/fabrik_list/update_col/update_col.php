@@ -186,8 +186,9 @@ class PlgFabrik_ListUpdate_Col extends PlgFabrik_List
 		$input = $app->input;
 		$user = JFactory::getUser();
 		$update = $this->getUpdateCols($params);
-
-		if (!$update)
+		$postEval = $params->get('update_post_eval', '');
+		
+		if (!$update && empty($postEval))
 		{
 			return false;
 		}
@@ -213,17 +214,20 @@ class PlgFabrik_ListUpdate_Col extends PlgFabrik_List
 		if (!empty($dateCol))
 		{
 			$date = JFactory::getDate();
-			$this->_process($model, $dateCol, $date->toSql());
+			$this->_process($model, $dateCol, $date->toSql(), false);
 		}
 
 		if (!empty($userCol))
 		{
-			$this->_process($model, $userCol, (int) $user->get('id'));
+			$this->_process($model, $userCol, (int) $user->get('id'), false);
 		}
 
-		foreach ($update->coltoupdate as $i => $col)
+		if (!empty($update))
 		{
-			$this->_process($model, $col, $update->update_value[$i]);
+			foreach ($update->coltoupdate as $i => $col)
+			{
+				$this->_process($model, $col, $update->update_value[$i], $update->update_eval[$i]);
+			}
 		}
 
 		$this->sendEmails($ids);
@@ -239,6 +243,12 @@ class PlgFabrik_ListUpdate_Col extends PlgFabrik_List
 			$this->msg = JText::sprintf($this->msg, $this->row_count, $this->sent);
 		}
 
+		if (!empty($postEval))
+		{
+			$err = @eval($postEval);
+			FabrikWorker::logEval($err, 'Caught exception on eval in updatecol::process() : %s');
+		}
+		
 		// Clean the cache.
 		$cache = JFactory::getCache($input->get('option'));
 		$cache->clean();
@@ -444,10 +454,17 @@ class PlgFabrik_ListUpdate_Col extends PlgFabrik_List
 	 * @return  void
 	 */
 
-	private function _process(&$model, $col, $val)
+	private function _process(&$model, $col, $val, $eval = false)
 	{
 		$app = JFactory::getApplication();
 		$ids = $app->input->get('ids', array(), 'array');
+		
+		if ($eval)
+		{
+			$val = @eval($val);
+			FabrikWorker::logEval($val, 'Caught exception on eval in updatecol::_process() : %s');
+		}
+		
 		$model->updateRows($ids, $col, $val);
 	}
 
