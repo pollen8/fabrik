@@ -172,7 +172,7 @@ class PlgFabrik_FormKunena extends PlgFabrik_Form
 
 			$message->subject = $subject;
 			$message->catid = $catid;
-			$message->name = $subject;
+			$message->name = $user->get('name');
 			$message->time = $now->toUnix();
 			$message->message = $msg;
 

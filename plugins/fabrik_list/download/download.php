@@ -117,7 +117,7 @@ class PlgFabrik_ListDownload extends PlgFabrik_List
 
 		if ($downloadElement)
 		{
-			$download_file = $downloadElement->getFullName(false, true, false);
+			$download_file = $downloadElement->getFullName(true, true);
 		}
 
 		if (empty($download_fk) && empty($download_file) && empty($download_table))

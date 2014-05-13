@@ -685,6 +685,129 @@ class FabrikString extends JString
 
 		return $subject;
 	}
+
+	/**
+	 * DB value quote a single string or an array of strings, first checking to see if they are
+	 * already quoted.  Which the J! $db->quote() doesn't do, unfortunately.
+	 * Does NOT modify the input.  Does not quote if value starts with SELECT.
+	 *
+	 * @param unknown $values
+	 * @param bool    $commaSeparated  individually quote a comma separated string of values
+	 *
+	 * @return   mixed   quoted values
+	 */
+	public static function safeQuote($values, $commaSeparated = true) {
+		$values2 = $values;
+
+		if ($commaSeparated) {
+			$values2 = explode(',', $values2);
+		}
+
+		if (is_array($values2))
+		{
+			foreach ($values2 as &$v)
+			{
+					$v = self::safeQuoteOne($v);
+			}
+		}
+		else
+		{
+			$values2 = self::safeQuoteOne($values2);
+		}
+
+		if ($commaSeparated) {
+			$values2 = implode(',', $values2);
+		}
+
+		return $values2;
+	}
+
+	/**
+	 * Return DB value quoted single string.  Does not quote if value starts with SELECT,
+	 * or if value is already single quoted.
+	 *
+	 * @param string  $value
+	 *
+	 * @return   mixed   quoted values
+	 */
+	public static function safeQuoteOne($value)
+	{
+		$value = trim($value);
+		if (is_string($value) && !preg_match('/^\s*SELECT\s+/i', $value))
+		{
+
+			if (!preg_match("#^'.*'$#", $value))
+			{
+				$db = JFactory::getDbo();
+				$value = $db->quote($value);
+			}
+
+		}
+
+		return $value;
+	}
+
+	/**
+	 * DB name quote a single string or an array of strings, first checking to see if they are
+	 * already quoted.  Which the J! $db->quote() doesn't do, unfortunately.
+	 * Does NOT modify the input.  Does not quote if value starts with CONCAT.
+	 *
+	 * @param unknown $values
+	 * @param bool    $commaSeparated  individually quote a comma separated string of values
+	 *
+	 * @return   mixed   quoted values
+	 */
+	public static function safeNameQuote($values, $commaSeparated = true) {
+		$values2 = $values;
+
+		if ($commaSeparated) {
+			$values2 = explode(',', $values2);
+		}
+
+		if (is_array($values2))
+		{
+			foreach ($values2 as &$v)
+			{
+				$v = self::safeNameQuoteOne($v);
+			}
+		}
+		else
+		{
+			$values2 = self::safeNameQuoteOne($values2);
+		}
+
+		if ($commaSeparated) {
+			$values2 = implode(',', $values2);
+		}
+
+		return $values2;
+	}
+
+	/**
+	 * Return DB value quoted single string.  Does not quote if value starts with SELECT,
+	 * or if value is already single quoted.
+	 *
+	 * @param string  $value
+	 *
+	 * @return   mixed   quoted values
+	 */
+	public static function safeNameQuoteOne($value)
+	{
+		$value = trim($value);
+		if (is_string($value) && !preg_match('/^\s*(CONCAT|CONCAT_WS)\s*\(/i', $value))
+		{
+
+			if (!preg_match("#^`.*`$#", $value))
+			{
+				$db = JFactory::getDbo();
+				$value = $db->quoteName($value);
+			}
+
+		}
+
+		return $value;
+	}
+
 }
 
 /**

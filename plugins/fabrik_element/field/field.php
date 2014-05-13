@@ -606,6 +606,11 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 		$formModel = $this->getForm();
 		$formid = $formModel->getId();
 		$rowid = $formModel->getRowId();
+
+		if (empty($rowid)) {
+			$rowid = FArrayHelper::getValue($thisRow, '__pk_val', '');
+		}
+
 		$elementid = $this->getId();
 		$link = COM_FABRIK_LIVESITE
 		. 'index.php?option=com_' . $package . '&amp;task=plugin.pluginAjax&amp;plugin=field&amp;method=ajax_renderQRCode&amp;'

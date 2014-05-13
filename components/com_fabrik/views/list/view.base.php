@@ -610,7 +610,7 @@ class FabrikViewListBase extends JViewLegacy
 
 		if ($params->get('process-jplugins'))
 		{
-			FabrikHelperHTML::runConentPlugins($text);
+			FabrikHelperHTML::runContentPlugins($text);
 		}
 
 		JDEBUG ? $profiler->mark('end fabrik display') : null;

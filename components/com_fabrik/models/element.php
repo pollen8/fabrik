@@ -593,7 +593,16 @@ class PlgFabrik_Element extends FabrikPlugin
 					if (class_exists('DOMDocument'))
 					{
 						$html = new DOMDocument;
+						/**
+						 * The loadXML() chokes if data has & in it.  But we can't htmlspecialchar() it, as that removes
+						 * the HTML markup we're looking for.  So we need to ONLY change &'s which aren't already part of
+						 * any HTML entities which may be in the data.  So use a negative lookahead regex, which finds & followed
+						 * by anything except non-space the ;.  Then after doing the loadXML, we have to turn the &amp;s back in
+						 * to &, to avoid double encoding 'cos we're going to do an htmpsepecialchars() on $data in a few lines.
+						 */
+						$data = preg_replace('/&(?!\S+;)/', '&amp;', $data);
 						$html->loadXML($data);
+						$data = str_replace('&amp;', '&', $data);
 						$as = $html->getElementsBytagName('a');
 					}
 
@@ -3558,6 +3567,9 @@ class PlgFabrik_Element extends FabrikPlugin
 
 		if ($pop !== '')
 		{
+			$w = new FabrikWorker;
+			$pop = $w->parseMessageForPlaceHolder($pop, $this->getFormModel()->getData());
+
 			if (FabrikHelperHTML::isDebug())
 			{
 				$res = eval($pop);
@@ -4207,10 +4219,12 @@ class PlgFabrik_Element extends FabrikPlugin
 					break;
 				case 'in':
 					$condition = 'IN';
+					$value = FabrikString::safeQuote($value, true);
 					$value = ($eval == FABRIKFILTER_QUERY) ? '(' . $value . ')' : '(' . $value . ')';
 					break;
 				case 'not_in':
 					$condition = 'NOT IN';
+					$value = FabrikString::safeQuote($value, true);
 					$value = ($eval == FABRIKFILTER_QUERY) ? '(' . $value . ')' : '(' . $value . ')';
 					break;
 			}

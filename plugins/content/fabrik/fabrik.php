@@ -65,7 +65,7 @@ class PlgContentFabrik extends JPlugin
 
 		if (!defined('COM_FABRIK_FRONTEND'))
 		{
-			throw new RuntimeException(FText::_('COM_FABRIK_SYSTEM_PLUGIN_NOT_ACTIVE'), 400);
+			throw new RuntimeException(JText::_('COM_FABRIK_SYSTEM_PLUGIN_NOT_ACTIVE'), 400);
 		}
 
 		// Get plugin info

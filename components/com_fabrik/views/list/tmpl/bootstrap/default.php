@@ -96,7 +96,9 @@ endforeach;
 						<a href="#" class="toggle fabrikTip" title="<?php echo $this->emptyDataMessage?>" opts='{trigger: "hover"}'>
 					<?php endif;?>
 							<?php echo FabrikHelperHTML::image('arrow-down.png', 'list', $this->tmpl, FText::_('COM_FABRIK_TOGGLE'));?>
-							<?php echo $this->grouptemplates[$groupedby]; ?> ( <?php echo count($group)?> )
+							<span class="groupTitle">
+								<?php echo $this->grouptemplates[$groupedby]; ?> ( <?php echo count($group)?> )
+							</span>
 						</a>
 					</td>
 				</tr>

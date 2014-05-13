@@ -4728,8 +4728,20 @@ class FabrikFEModelForm extends FabModelForm
 
 						// $$$ rob HTMLName seems not to work for joined data in confirmation plugin
 						$elementModel->getValuesToEncrypt($this->readOnlyVals, $data, $c);
-						$this->readOnlyVals[$elementModel->getFullName(true, false)]['repeatgroup'] = $groupModel->canRepeat();
-						$this->readOnlyVals[$elementModel->getFullName(true, false)]['join'] = $groupModel->isJoin();
+						/**
+						 * $$$ hugh - need to decode it if it's a string, 'cos we encoded $data up there ^^ somewhere, which
+						 * then causes read only data to get changed to htmlencoded after submission.  See this thread for gory details:
+						 * http://fabrikar.com/forums/index.php?threads/how-to-avoid-changes-to-an-element-with-a-read-only-link.37656/#post-192437
+						 */
+						$elName = $elementModel->getFullName(true, false);
+
+						if (!is_array($this->readOnlyVals[$elName]['data']))
+						{
+							$this->readOnlyVals[$elName]['data'] = htmlspecialchars_decode($this->readOnlyVals[$elName]['data']);
+						}
+
+						$this->readOnlyVals[$elName]['repeatgroup'] = $groupModel->canRepeat();
+						$this->readOnlyVals[$elName]['join'] = $groupModel->isJoin();
 					}
 
 					if ($element)
