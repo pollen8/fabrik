@@ -101,7 +101,15 @@ class PlgFabrik_FormLimit extends PlgFabrik_Form
 
 		if (!empty($fk))
 		{
-			$fkVal = FArrayHelper::getValue($formModel->data, FabrikString::safeColNameToArrayKey($fk), '');
+			$fkVal = FArrayHelper::getValue(
+					$formModel->data,
+					FabrikString::safeColNameToArrayKey($fk),
+					FArrayHelper::getValue(
+							$formModel->data,
+							FabrikString::safeColNameToArrayKey($fk) . '_raw',
+							''
+					)
+			);
 		}
 
 		$listModel = $formModel->getlistModel();
