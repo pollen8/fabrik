@@ -1850,6 +1850,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 					if ($v->value == $value)
 					{
 						$value = $v->text;
+						break;
 					}
 				}
 
@@ -2117,6 +2118,12 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 	{
 		$params = $this->getParams();
 		$label = $params->get('database_join_noselectionlabel');
+
+		if (strstr($label, '::'))
+		{
+			$labels = explode('::', $label);
+			$label = FText::_(array_pop($labels));
+		}
 
 		if ($label == '')
 		{
