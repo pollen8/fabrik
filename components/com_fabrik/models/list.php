@@ -295,6 +295,13 @@ class FabrikFEModelList extends JModelForm
 	var $_pluginQueryGroupBy = array();
 
 	/**
+	 * List of group by statements added by list plugins
+	 *
+	 * @var array
+	 */
+	var $_pluginQuerySelect = array();
+
+	/**
 	 * Used in views for rendering
 	 *
 	 * @var array
@@ -575,6 +582,8 @@ class FabrikFEModelList extends JModelForm
 
 	public function render()
 	{
+		$pluginManager = FabrikWorker::getPluginManager();
+		$pluginManager->runPlugins('onBeforeListRender', $this, 'list');
 		FabrikHelperHTML::debug($_POST, 'render:post');
 		$app = JFactory::getApplication();
 		$input = $app->input;
@@ -812,7 +821,12 @@ class FabrikFEModelList extends JModelForm
 		$this->_data = $results[1];
 		$this->groupTemplates = $results[2];
 		$nav = $this->getPagination($this->totalRecords, $this->limitStart, $this->limitLength);
-		$pluginManager->runPlugins('onLoadData', $this, 'list');
+
+		// Pass the query as an object property so it can be updated via reference
+		$args = new stdClass;
+		$args->data =& $this->_data;
+
+		$pluginManager->runPlugins('onLoadData', $this, 'list', $args);
 
 		return $this->_data;
 
@@ -2483,6 +2497,23 @@ class FabrikFEModelList extends JModelForm
 			$query = 'SELECT ' . $calc_found_rows . ' DISTINCT ' . trim($sfields, ", \n") . "\n";
 		}
 
+		/*
+		 * $$$ hugh - added onBuildQuerySelect hook to support back porting the pivot list plugin.
+		 * Plugins for this hook should return a simple string to append to the field list.
+		 */
+		$pluginManager = FabrikWorker::getPluginManager();
+		$pluginManager->runPlugins('onBuildQuerySelect', $this, 'list', $query);
+		if (!empty($this->_pluginQuerySelect))
+		{
+			foreach ($this->_pluginQuerySelect as $select)
+			{
+				if (is_string($select) && !empty($select))
+				{
+					$query .= ", " . $select;
+				}
+			}
+		}
+
 		$query .= ' FROM ' . $db->quoteName($table->db_table_name) . " \n";
 
 		return $query;
@@ -2947,6 +2978,7 @@ class FabrikFEModelList extends JModelForm
 	function _buildQueryGroupBy($query = false)
 	{
 		$groups = $this->getFormModel()->getGroupsHiarachy();
+		$pluginManager = FabrikWorker::getPluginManager();
 
 		foreach ($groups as $groupModel)
 		{
@@ -2963,12 +2995,33 @@ class FabrikFEModelList extends JModelForm
 			}
 		}
 
+		$pluginManager->runPlugins('onBuildQueryGroupBy', $this, 'list', $query);
+
+		if (!empty($this->_pluginQueryGroupBy))
+		{
+			if ($query === false)
+			{
+				return ' GROUP BY ' . implode(', ', $this->_pluginQueryGroupBy);
+			}
+			else
+			{
+				//$pluginManager->runPlugins('onBuildQueryGroupBy', $this, 'list', $query);
+				$query->group($this->_pluginQueryGroupBy);
+				return $query;
+			}
+		}
+
+
+		return $query === false ? '' : $query;
+
+		/*
 		if (!empty($this->_pluginQueryGroupBy))
 		{
 			return ' GROUP BY ' . implode(', ', $this->_pluginQueryGroupBy);
 		}
 
 		return '';
+		*/
 	}
 
 	/**
@@ -6621,10 +6674,12 @@ class FabrikFEModelList extends JModelForm
 			$groupHeadings[''] = '';
 		}
 
-		$args['tableHeadings'] = $aTableHeadings;
-		$args['groupHeadings'] = $groupHeadings;
-		$args['headingClass'] = $headingClass;
-		$args['cellClass'] = $cellClass;
+		$args['tableHeadings'] =& $aTableHeadings;
+		$args['groupHeadings'] =& $groupHeadings;
+		$args['headingClass'] =& $headingClass;
+		$args['cellClass'] =& $cellClass;
+		$args['data'] = $this->_data;
+
 		FabrikWorker::getPluginManager()->runPlugins('onGetPluginRowHeadings', $this, 'list', $args);
 
 		return array($aTableHeadings, $groupHeadings, $headingClass, $cellClass);
