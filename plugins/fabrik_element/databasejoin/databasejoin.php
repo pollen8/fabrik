@@ -2482,6 +2482,11 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 						$lookupTable = $group->isJoin() ? $groupFk : $this->getListModel()->getTable()->db_primary_key;
 						$str = $lookupTable . ' IN (' . implode(', ', $joinIds) . ')';
 					}
+					else
+					{
+						// No checkbox rows found, means we should return where statement which will hide all results (e.g. prefilter on dbjoin as chx IN foo)
+						$str = '1 = -1';
+					}
 				}
 				else
 				{
