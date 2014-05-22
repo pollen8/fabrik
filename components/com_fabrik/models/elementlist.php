@@ -612,7 +612,7 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 		$useIcon = $params->get('icon_folder', 0);
 
 		// Give priority to raw value icons (podion)
-		$raw = $this->getFullName(true, false) . '_raw';
+		$raw = $this->isJoin() ? $this->getFullName(true, false) . '_raw' : $this->getFullName(true, false) . '_id';
 
 		if (isset($thisRow->$raw))
 		{
