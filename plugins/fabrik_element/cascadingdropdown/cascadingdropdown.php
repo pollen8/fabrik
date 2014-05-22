@@ -1266,7 +1266,7 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 	 * @return  string  required join text to ensure exact filter list code produces a valid query.
 	 */
 
-	protected function _buildFilterJoin()
+	protected function buildFilterJoin()
 	{
 		$params = $this->getParams();
 		$joinTable = FabrikString::safeColName($this->getDbName());

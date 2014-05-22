@@ -2144,7 +2144,8 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 	protected function buildFilterJoin()
 	{
 		$params = $this->getParams();
-		$joinTable = FabrikString::safeColName($params->get('join_db_name'));
+		//$joinTable = FabrikString::safeColName($params->get('join_db_name'))
+		$joinTable = FabrikString::safeColName($this->getDbName());
 		$join = $this->getJoin();
 		$joinTableName = FabrikString::safeColName($join->table_join_alias);
 		$joinKey = $this->getJoinValueColumn();
