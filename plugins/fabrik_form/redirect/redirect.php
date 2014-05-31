@@ -292,23 +292,27 @@ class PlgFabrik_FormRedirect extends PlgFabrik_Form
 	 * @param   array   &$queryvars  Previously added querystring variables
 	 * @param   string  $key         Key
 	 * @param   mixed   $val         Value string or array
+	 * @param	bool	$appendEmpty	Append even if value is empty, default true
 	 *
 	 * @return  void
 	 */
 
-	protected function _appendQS(&$queryvars, $key, $val)
+	protected function _appendQS(&$queryvars, $key, $val, $appendEmpty = true)
 	{
 		if (is_array($val))
 		{
 			foreach ($val as $v)
 			{
-				$this->_appendQS($queryvars, "{$key}[value]", $v);
+				$this->_appendQS($queryvars, "{$key}[value]", $v, $appendEmpty);
 			}
 		}
 		else
 		{
-			$val = urlencode(stripslashes($val));
-			$queryvars[] = $key . '=' . $val;
+			if ($appendEmpty || (!appendEmpty && !empty($val)))
+			{
+				$val = urlencode(stripslashes($val));
+				$queryvars[] = $key . '=' . $val;
+			}
 		}
 	}
 
