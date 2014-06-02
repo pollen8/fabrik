@@ -182,15 +182,21 @@ class PlgFabrik_ListPivot extends PlgFabrik_List
 		{
 			if ($k !== $yCol)
 			{
+				$clean_k = FabrikString::clean($k);
 				$headings[$k] = $k;
 				$args['headingClass'][$k] = $headingClass;
+				$args['headingClass'][$k]['class'] .= " " . $xCol . "__" . $clean_k;
 				$args['cellClass'][$k] = $cellClass;
+				$args['cellClass'][$k]['class'] .= " " . $xCol . "__" . $clean_k;
 			}
 		}
 
 		$headings['pivot_total'] = JText::_('PLG_LIST_PIVOT_LIST_X_TOTAL');
 		$args['headingClass']['pivot_total'] = $headingClass;
+		$args['headingClass']['pivot_total']['class'] .= " " . $xCol . "__pivot_total";
+
 		$args['cellClass']['pivot_total'] = $cellClass;
+		$args['cellClass']['pivot_total']['class'] .= " " . $xCol . "__pivot_total";
 
 		$args['tableHeadings'] = $headings;
 	}
