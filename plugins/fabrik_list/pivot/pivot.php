@@ -329,6 +329,47 @@ class PlgFabrik_ListPivot extends PlgFabrik_List
 			$new[] = $newRow;
 		}
 
+		/**
+		 * Optionally order by the sum column. I'm sure there's some more elegant way of doing this,
+		 * but for now, two usort functions will do it.
+		 */
+
+		$order = $params->get('pivot_sort', '0');
+		if ($order == '1')
+		{
+			usort($new, function($a, $b) {
+				if ($a->pivot_total == $b->pivot_total)
+				{
+					return 0;
+				}
+				else if ($a->pivot_total > $b->pivot_total)
+				{
+					return -1;
+				}
+				else
+				{
+					return 1;
+				}
+			});
+		}
+		else if ($order == '2')
+		{
+			usort($new, function($a, $b) {
+				if ($a->pivot_total == $b->pivot_total)
+				{
+					return 0;
+				}
+				else if ($a->pivot_total < $b->pivot_total)
+				{
+					return -1;
+				}
+				else
+				{
+					return 1;
+				}
+			});
+		}
+
 		// Add totals @ bottom
 		$yColTotals = new stdClass;
 		$yColTotals->$yCol = JText::_('PLG_LIST_PIVOT_LIST_Y_TOTAL');

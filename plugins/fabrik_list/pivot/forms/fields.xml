@@ -38,6 +38,17 @@
 				description="PLG_LIST_PIVOT_Y_COL_DESC"
 				label="PLG_LIST_PIVOT_Y_COL_LABEL"  />
 				
+			<field name="pivot_sort"
+				type="list"
+				default="dblclick"
+				description="PLG_LIST_PIVOT_SORT_BY_TOTAL_DESC"
+				label="PLG_LIST_PIVOT_SORT_BY_TOTAL_LABEL"
+				repeat="true">
+					<option value="0">JNO</option>
+					<option value="1">PLG_LIST_PIVOT_SORT_DESC</option>
+					<option value="2">PLG_LIST_PIVOT_SORT_ASC</option>
+			</field> 
+				
 			<field name="pivot_cache"
 				type="radio"
 				default="1"
