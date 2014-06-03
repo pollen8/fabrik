@@ -86,7 +86,7 @@ $this->group = $group;
 	if ($group->outro !== '') :?>		<div class="groupoutro"><?php echo $group->outro ?></div>
 	<?php
 	endif;
-	?>					?>
+	?>
 				</div>
 				<?php if ($group->editable) : ?>
 					<div class="fabrikGroupRepeater">
