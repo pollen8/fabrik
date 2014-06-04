@@ -940,7 +940,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 			}
 		}
 
-		$this->validationErr = implode('<br />', $errors);
+		$this->_validationErr = implode('<br />', $errors);
 
 		return $ok;
 	}
