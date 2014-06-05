@@ -1636,7 +1636,12 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		}
 
 		$html[] = FabrikHelperHTML::aList('checkbox', $tmp, $name, $attribs, $default, 'value', 'text', $optsPerRow, $editable);
-
+// $$$ hugh - should convert this to use the grid() helper, so here's the code from the standard elementlist render that does it
+/*
+		$grid = FabrikHelperHTML::grid($values, $labels, $selected, $name, $this->inputType, $elBeforeLabel, $optionsPerRow, $classes, $buttonGroup);
+		array_unshift($grid, '<div class="fabrikSubElementContainer" id="' . $id . '">');
+		$grid[] = '</div><!-- close subElementContainer -->';
+ */
 		if (empty($tmp))
 		{
 			$tmpids = array();
@@ -1969,6 +1974,18 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		{
 			$id = $id . '-auto-complete';
 		}
+	}
+
+	/**
+	 * TESTING for JFQ, issue with autocomplete filters using 'contains' instead of '='
+	 * Need to override this for joins, make sure exact match is applied
+	 * return  string
+	 */
+
+	protected function getFilterCondition()
+	{
+		$match = $this->isExactMatch(array('match' => $this->getElement()->filter_exact_match));
+		return($match == 1) ? '=' : 'contains';
 	}
 
 	/**
