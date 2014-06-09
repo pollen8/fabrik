@@ -415,7 +415,7 @@ class PlgFabrik_ElementLink extends PlgFabrik_Element
 
 	public function getValuesToEncrypt(&$values, $data, $c)
 	{
-		$data = (array) json_decode($this->getValue($data, $c, true));
+		$data = (array) json_decode($this->getValue($data, $c));
 		$name = $this->getFullName(true, false);
 		$group = $this->getGroup();
 
