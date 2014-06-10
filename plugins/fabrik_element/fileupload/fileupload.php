@@ -904,7 +904,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 			$render = $this->loadElement($data);
 		}
 
-		if (empty($data) || (!$skip_exists_check && !$storage->exists(COM_FABRIK_BASE . '/' . $data)))
+		if (empty($data) || (!$skip_exists_check && !$storage->exists($data)))
 		{
 			$render->output = '';
 		}
@@ -1940,6 +1940,8 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 
 	protected function _getFilePath($repeatCounter = 0)
 	{
+		$params = $this->getParams();
+
 		if (!isset($this->_filePaths))
 		{
 			$this->_filePaths = array();
@@ -1953,7 +1955,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 			 * to rebuild it.  For instance, if the element data is changed by a onBeforeProcess
 			 * submission plugin, or by a 'replace' validation.
 			 */
-			if (!FabrikString::usesElementPlaceholders($this->_filePaths[$repeatCounter]))
+			if (!FabrikString::usesElementPlaceholders($params->get('ul_directory')))
 			{
 				return $this->_filePaths[$repeatCounter];
 			}
@@ -1963,7 +1965,6 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		$aData = $filter->clean($_POST, 'array');
 		$elName = $this->getFullName(true, false);
 		$elNameRaw = $elName . '_raw';
-		$params = $this->getParams();
 
 		// @TODO test with fileuploads in join groups
 		$groupModel = $this->getGroup();
