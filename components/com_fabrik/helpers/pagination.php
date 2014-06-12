@@ -77,7 +77,7 @@ class FPagination extends JPagination
 	 *
 	 * @var bool
 	 */
-	public $viewAll = false;
+	// public $viewAll = false;
 
 	/**
 	 * Set the pagination ID
@@ -170,7 +170,7 @@ class FPagination extends JPagination
 			$limits[] = JHTML::_('select.option', '-1', JText::_('COM_FABRIK_ALL'));
 		}
 
-		$selected = $this->viewAll ? '-1' : $this->limit;
+		$selected = $this->_viewall ? '-1' : $this->limit;
 		$js = '';
 		$attribs = 'class="inputbox input-mini" size="1" onchange="' . $js . '"';
 		$html = JHTML::_('select.genericlist', $limits, 'limit' . $this->id, $attribs, 'value', 'text', $selected);
@@ -379,7 +379,7 @@ class FPagination extends JPagination
 		$sepchar = strstr($this->url, '?') ? '&amp;' : '?';
 		$data->all = new JPaginationObject(JText::_('COM_FABRIK_VIEW_ALL'));
 
-		if (!$this->viewAll)
+		if (!$this->_viewall)
 		{
 			$data->all->base = '0';
 			$data->all->link = JRoute::_("{$sepchar}limitstart=");
@@ -428,7 +428,7 @@ class FPagination extends JPagination
 			$offset = ($i - 1) * $this->limit;
 			$data->pages[$i] = new JPaginationObject($i);
 
-			if ($i != $this->get('pages.current') || $this->viewAll)
+			if ($i != $this->get('pages.current') || $this->_viewall)
 			{
 				$data->pages[$i]->base = $offset;
 				$data->pages[$i]->link = JRoute::_($this->url . "{$sepchar}limitstart{$this->id}=" . $offset);
