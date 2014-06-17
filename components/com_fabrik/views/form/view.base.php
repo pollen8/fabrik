@@ -188,8 +188,9 @@ class FabrikViewFormBase extends JViewLegacy
 			FabrikHelperHTML::runContentPlugins($text);
 		}
 
-		// Allows you to use {placeholders} in form template.
-		$text = $w->parseMessageForPlaceHolder($text, $model->data);
+		// Allows you to use {placeholders} in form template Only replacing data accessible to the users acl.
+		$view = $model->isEditable() === false ? 'details' : 'form';
+		$text = $w->parseMessageForPlaceHolder($text, $model->accessibleData($view));
 		echo $text;
 	}
 

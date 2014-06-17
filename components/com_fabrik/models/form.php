@@ -5328,4 +5328,48 @@ class FabrikFEModelForm extends FabModelForm
 
 		return $key;
 	}
+	
+	/**
+	 * Get a subset of the model's data with non accessible values removed
+	 * 
+	 * @param   string  $view  View
+	 * 
+	 * @return  array data
+	 */
+	public function accessibleData($view = 'form')
+	{
+		$accessibleData = $this->data;
+		
+		$groups = $this->getGroupsHiarachy();
+		
+		foreach ($groups as $groupModel)
+		{
+			$elementModels = $groupModel->getPublishedElements();
+		
+			foreach ($elementModels as $elementModel)
+			{
+				switch ($view)
+				{
+					case 'form':
+						$accessible = $elementModel->canUse($view);
+						break;
+					case 'details':
+						$accessible = $elementModel->canView('form');
+						break;
+					case 'list':
+						$accessible = $elementModel->canView('list');
+						break;
+				}
+				
+				if (!$accessible)
+				{
+					$name = $elementModel->getFullName(true, false);
+					unset($accessibleData[$name]);
+					unset($accessibleData[$name . '_raw']);
+				}
+			}
+		}
+
+		return $accessibleData;
+	}
 }
