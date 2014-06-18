@@ -385,11 +385,55 @@ class PlgFabrik_ListPivot extends PlgFabrik_List
 			}
 		}
 
+		foreach ($yColTotals as $yKey => &$y)
+		{
+			if ($yKey == $yCol)
+			{
+				continue;
+			}
+			$y = $this->numberFormat($y, $params);
+		}
+
 		$yColTotals->pivot_total = $total;
 		$new[] = $yColTotals;
+
+		foreach ($new as $newRow) {
+			if (isset($newRow->pivot_total)) {
+				$newRow->pivot_total = $this->numberFormat($newRow->pivot_total, $params);
+			}
+		}
 
 		$data[0] = $new;
 
 		return true;
 	}
+
+	/**
+	 * Format a number value
+	 *
+	 * @param   mixed  $data  (double/int)
+	 * @param
+	 *
+	 * @return  string	formatted number
+	 */
+
+	protected function numberFormat($data, $params)
+	{
+		if ($params->get('pivot_format_totals', '0') == '0')
+		{
+			return $data;
+		}
+
+		$decimal_length = (int) $params->get('pivot_round_to', 2);
+		$decimal_sep = $params->get('pivot_decimal_sepchar', '.');
+		$thousand_sep = $params->get('pivot_thousand_sepchar', ',');
+
+		// Workaround for params not letting us save just a space!
+		if ($thousand_sep == '#32')
+		{
+			$thousand_sep = ' ';
+		}
+		return number_format((float) $data, $decimal_length, $decimal_sep, $thousand_sep);
+	}
+
 }
