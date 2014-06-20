@@ -171,7 +171,10 @@ class PlgFabrik_ElementImage extends PlgFabrik_Element
 				else
 				{
 					$data[$i] = JString::ltrim($data[$i], '/');
-					$data[$i] = FabrikString::ltrimword($data[$i], $selectImage_root_folder);
+					if (!empty($selectImage_root_folder))
+					{
+						$data[$i] = FabrikString::ltrimword($data[$i], $selectImage_root_folder);
+					}
 					$src = COM_FABRIK_LIVESITE . $selectImage_root_folder . $data[$i];
 				}
 
