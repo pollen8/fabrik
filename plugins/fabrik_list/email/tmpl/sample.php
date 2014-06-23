@@ -12,7 +12,7 @@ defined('_JEXEC') or die();
 
 $this->filepath = "foo";
 $formModel = $model->getFormModel();
-foreach ($row as $name => $value) {
+foreach ($data as $name => $value) {
 	if (preg_match('#_raw$#', $name)) {
 		continue;
 	}
@@ -23,7 +23,7 @@ foreach ($row as $name => $value) {
 	}
 	$element = $elementModel->getElement();
 	$label = $element->label;
-	$fval = $elementModel->renderTableData($val, $row);
+	$fval = $elementModel->renderListData($val, $row);
 	echo "$name : $label : $value : $fval<br />\n";
 }
 
