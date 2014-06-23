@@ -6652,7 +6652,7 @@ class FabrikFEModelList extends JModelForm
 				 * $$$ hugh - added $orderbys test, to see if element has been specified as an orderby in list module settings
 				 */
 
-				if (($elementParams->get('can_order') == '1' || in_array($orderKey, $orderbys)) && $this->outputFormat != 'csv')
+				if (($elementParams->get('can_order') == '1' || in_array($elementModel->getId(), $orderbys)) && $this->outputFormat != 'csv')
 				{
 					$context = 'com_' . $package . '.list' . $this->getRenderContext() . '.order.' . $element->id;
 					$orderDir = $session->get($context);
