@@ -176,7 +176,7 @@
 							<field name="order_by"
 								type="listfields"
 								label="MOD_FABRIK_LIST_ELEMENTS_HEADING"
-								valueformat="tableelement"/>
+								valueformat="id"/>
 						
 							<field name="order_dir"
 								type="list"
