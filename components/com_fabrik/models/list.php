@@ -2743,14 +2743,14 @@ class FabrikFEModelList extends JModelForm
 				else
 				{
 					$session->set($context, '');
-				}
+				};
 			}
 		}
 
 		// If nothing found in session use default ordering (or that set by querystring)
 		if ($strOrder == '')
 		{
-			$orderbys = explode(',', $input->get('order_by', ''));
+			$orderbys = explode(',', $input->get('order_by', $input->get('orderby', '')));
 
 			if ($orderbys[0] == '')
 			{
@@ -2771,7 +2771,7 @@ class FabrikFEModelList extends JModelForm
 				}
 			}
 
-			$orderdirs = explode(',',  $input->get('order_dir', ''));
+			$orderdirs = explode(',', $input->get('order_dir', $input->get('orderdir', '')));
 
 			if ($orderdirs[0] == '')
 			{
@@ -2788,6 +2788,12 @@ class FabrikFEModelList extends JModelForm
 				foreach ($orderbys as $orderbyRaw)
 				{
 					$dir = JArrayHelper::getValue($orderdirs, $o, 'desc');
+
+					// Ensure that order by is valid
+					if (strtoupper($dir) !== 'DESC' && strtoupper($dir) !== 'ASC')
+					{
+						continue;
+					}
 
 					if ($orderbyRaw !== '')
 					{
@@ -6642,7 +6648,11 @@ class FabrikFEModelList extends JModelForm
 				$label = $elementModel->getListHeading();
 				$label = $w->parseMessageForPlaceHolder($label, array());
 
-				if ($elementParams->get('can_order') == '1' && $this->outputFormat != 'csv')
+				/**
+				 * $$$ hugh - added $orderbys test, to see if element has been specified as an orderby in list module settings
+				 */
+
+				if (($elementParams->get('can_order') == '1' || in_array($orderKey, $orderbys)) && $this->outputFormat != 'csv')
 				{
 					$context = 'com_' . $package . '.list' . $this->getRenderContext() . '.order.' . $element->id;
 					$orderDir = $session->get($context);

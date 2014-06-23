@@ -43,7 +43,7 @@ class Filesystemstorage extends FabrikStorageAdaptor
 		    return true;
 		}
 
-		$filepath = COM_FABRIK_BASE . '/' . FabrikString::ltrimword(COM_FABRIK_BASE . '/', $filepath);
+		$filepath = COM_FABRIK_BASE . '/' . FabrikString::ltrimword($filepath, COM_FABRIK_BASE . '/');
 
 		return JFile::exists($filepath);
 	}
