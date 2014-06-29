@@ -1734,6 +1734,8 @@ class FabrikFEModelForm extends FabModelForm
 		$this->_fullFormData['rowid'] = $insertId;
 		$this->_formData['rowid'] = $insertId;
 		$this->_formDataWithTableName['rowid'] = $insertId;
+		$this->_formDataWithTableName[$tmpKey] = $insertId;
+		$this->_formDataWithTableName[$tmpKey . '_raw'] = $insertId;
 		$_REQUEST[$tmpKey] = $insertId;
 		$_POST[$tmpKey] = $insertId;
 		$_POST['rowid'] = $insertId;
