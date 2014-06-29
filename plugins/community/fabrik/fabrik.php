@@ -21,12 +21,13 @@ class plgCommunityFabrik extends CApplications
 
 	function onProfileDisplay()
 	{
-		$config	=& CFactory::getConfig();
+		$config	= CFactory::getConfig();
 		$this->loadUserParams();
 
 		$uri		= JURI::base();
-		$user		= CFactory::getActiveProfile();
-		$document	=& JFactory::getDocument();
+		//$user		= CFactory::getActiveProfile();
+		$user		= CFactory::getRequestUser();
+		$document	= JFactory::getDocument();
 		$css		= $uri	.'plugins/community/groups/style.css';
 		$document->addStyleSheet($css);
 
@@ -39,9 +40,10 @@ class plgCommunityFabrik extends CApplications
 		$element = $this->params->get('fabrik_element');
 
 		if( !empty($view) && !empty($id) ) {
-			$cache =& JFactory::getCache('plgCommunityFabrik');
+			$cache = JFactory::getCache('plgCommunityFabrik');
 			$cache->setCaching($this->params->get('cache', 1));
-			$callback = array('plgCommunityFabrik', '_getFabrikHTML');
+			$className = 'plgCommunityFabrik';
+			$callback = array($className, '_getFabrikHTML');
 
 			$content = $cache->call($callback, $view, $id, $rowid, $usekey, $layout, $element, $additional, $this->userparams, $user->id);
 		}else{
@@ -52,8 +54,8 @@ class plgCommunityFabrik extends CApplications
 		return $content;
 	}
 
-	function _getFabrikHTML($view, $id, $rowid, $usekey, $layout, $element, $additional, &$params, $userId) {
-		require_once( JPATH_BASE.DS.'plugins'.DS.'community'.DS.'fabrik'.DS.'api_class.php');
+	static function _getFabrikHTML($view, $id, $rowid, $usekey, $layout, $element, $additional, $params, $userId) {
+		require_once( JPATH_BASE.'/plugins/community/fabrik/fabrik/api_class.php');
 		$jsFabrik = new jsFabrik();
 		$plugin_cmd = '';
 		switch ($view) {
@@ -66,6 +68,7 @@ class plgCommunityFabrik extends CApplications
 				$plugin_cmd = "fabrik view=$view id=$id rowid=$rowid$usekey";
 				break;
 			case 'table':
+			case 'list':
 				$plugin_cmd = "fabrik view=$view id=$id profileid=$userId";
 				break;
 			case 'visualization':
