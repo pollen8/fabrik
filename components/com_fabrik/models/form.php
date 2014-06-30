@@ -538,8 +538,18 @@ class FabrikFEModelForm extends FabModelForm
 			 * If FabrikHelperHTML::styleSheetajax loaded then don't do &amp;
 			 */
 			$view = $this->isEditable() ? 'form' : 'details';
-			$qs .= FabrikHelperHTML::cssAsAsset() ? '&view=' . $v : '&amp;view=' . $v;
-			$qs .= '&amp;rowid=' . $this->getRowId();
+
+			if (FabrikHelperHTML::cssAsAsset())
+			{
+				$qs .= '&view=' . $v;
+				$qs .= '&rowid=' . $this->getRowId();
+			}
+			else
+			{
+				$qs .= '&amp;view=' . $v;
+				$qs .= '&amp;rowid=' . $this->getRowId();
+			}
+			
 			$tmplPath = 'templates/' . $app->getTemplate() . '/html/com_fabrik/' . $view . '/' . $tmpl . '/template_css.php' . $qs;
 
 			if (!FabrikHelperHTML::stylesheetFromPath($tmplPath))
