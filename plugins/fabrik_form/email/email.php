@@ -497,6 +497,10 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 								$val = FabrikWorker::JSONtoData($val, true);
 							}
 						}
+						else
+						{
+							$val = array($val);
+						}
 
 						foreach ($val as $v)
 						{
