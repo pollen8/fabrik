@@ -2567,6 +2567,8 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		$query->select($jointable . '.parent_id, ' . $v . ' AS value, ' . $label . ' AS text')->from($jointable)
 		->join('LEFT', $to . ' ON ' . $key . ' = ' . $jointable . '.' . $shortName);
 
+		$this->_buildQueryWhere(array(), true, null, array('mode' => 'filter'), $query);
+
 		if (!is_null($condition) && !is_null($value))
 		{
 			if (is_null($where))
