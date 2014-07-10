@@ -316,8 +316,7 @@ var FbAutocomplete = new Class({
 				case 13://enter
 				case 9://tab
 					e.stop();
-					var selectEvnt = new Event.Mock(this.getSelected(), 'click');
-					this.makeSelection(selectEvnt);
+					this.makeSelection(this.getSelected());
 					break;
 				case 27://escape
 					e.stop();
