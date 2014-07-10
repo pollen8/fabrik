@@ -454,6 +454,9 @@ var FbList = new Class({
 		testii,
 		usedAdvancedKeys = ['origvalue', 'value', 'condition', 'join', 'key', 'search_type', 'match', 'full_words_only', 'eval', 'grouped_to_previous', 'hidden', 'elementid'];
 		
+		// Ensure that date filters are set to mySQL format
+		Fabrik['filter_listform_' + this.options.listRef].onSubmit();
+		
 		this.getFilters().each(function (f) {
 			testii = f.name.split('[').getLast().replace(']', '').toInt();
 			ii = testii > ii ? testii : ii;
@@ -510,9 +513,10 @@ var FbList = new Class({
 		hs.removeEvents('click');
 		hs.each(function (h) {
 			h.addEvent('click', function (e) {
-				var img = 'ordernone.png';
-				var orderdir = '';
-				var newOrderClass = '';
+				var img = 'ordernone.png',
+				orderdir = '',
+				newOrderClass = '',
+				bsClass;
 				// $$$ rob in pageadaycalendar.com h was null so reset to e.target
 				h = document.id(e.target);
 				var td = h.getParent('.fabrik_ordercell');
@@ -522,16 +526,19 @@ var FbList = new Class({
 				switch (h.className) {
 				case 'fabrikorder-asc':
 					newOrderClass = 'fabrikorder-desc';
+					bsClass = 'icon-arrow-up';
 					orderdir = 'desc';
 					img = 'orderdesc.png';
 					break;
 				case 'fabrikorder-desc':
 					newOrderClass = 'fabrikorder';
-					orderdir = "-";
+					bsClass = 'icon-menu-2';
+					orderdir = '-';
 					img = 'ordernone.png';
 					break;
 				case 'fabrikorder':
 					newOrderClass = 'fabrikorder-asc';
+					bsClass = 'icon-arrow-down';
 					orderdir = 'asc';
 					img = 'orderasc.png';
 					break;
@@ -547,6 +554,7 @@ var FbList = new Class({
 				}
 				h.className = newOrderClass;
 				var i = h.getElement('img');
+				var icon = h.getElement('*[class^="icon"]');
 				
 				// Swap images - if list doing ajax nav then we need to do this
 				if (this.options.singleOrdering) {
