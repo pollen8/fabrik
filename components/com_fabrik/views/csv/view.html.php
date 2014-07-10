@@ -44,12 +44,15 @@ class FabrikViewCsv extends JView
 		$this->getManagementJS($data);
 		$this->assign('id', $this->get('id'));
 		$this->form = $this->get('Form');
+
 		if (!$listModel->canCSVExport())
 		{
 			JError::raiseError(400, 'Naughty naughty!');
 			jexit();
 		}
+
 		$this->addTemplatePath(JPATH_SITE . '/components/com_fabrik/views/csv/tmpl');
+
 		return parent::display($tpl);
 	}
 
@@ -73,10 +76,12 @@ class FabrikViewCsv extends JView
 		$opts->headings = $model->jsonHeadings();
 		list($this->headings, $groupHeadings, $this->headingClass, $this->cellClass) = $this->get('Headings');
 		$labels = $this->headings;
+
 		foreach ($labels as &$l)
 		{
 			$l = strip_tags($l);
 		}
+
 		$listParams = $model->getParams();
 		$opts->labels = $labels;
 		$opts->csvChoose = (bool) $listParams->get('csv_frontend_selection');
