@@ -471,7 +471,14 @@ var FbList = new Class({
 				for (aa = 0; aa < values.length; aa ++) {
 					advancedPointer = aa + ii;
 					aName = 'fabrik___filter[list_' + this.options.listRef + '][' + key + '][' + advancedPointer + ']';
-					opts[aName] = values[aa];
+					
+					// Use rawfilter values to avoid double quoting in lain php query
+					if (key === 'value') {
+						var othervals = this.options.advancedFilters.origvalue;
+						opts[aName] = othervals[aa];
+					} else {
+						opts[aName] = values[aa];
+					}
 				}
 			}
 		}.bind(this));
