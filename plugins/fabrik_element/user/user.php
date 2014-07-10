@@ -145,7 +145,7 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 				{
 					$id = FabrikWorker::JSONtoData($id, true);
 				}
-				
+
 				$id = is_array($id) ? $id[0] : $id;
 				/* $$$ hugh - hmmm, might not necessarily be a new row.  So corner case check for
 				 * editing a row, where user element is not set yet, and 'update on edit' is No.
@@ -320,7 +320,7 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 		{
 			return false;
 		}
-		
+
 		$app = JFactory::getApplication();
 		$input = $app->input;
 
@@ -341,22 +341,22 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 
 		$element = $this->getElement();
 		$params = $this->getParams();
-		
+
 		/*
 		 * After a failed validation, if readonly for ACL's, it may be JSON, and urlencoded, like [&quot;94&quot;]
 		*/
-		
+
 		$data[$element->name] = is_array($data[$element->name]) ? $data[$element->name][0] : $data[$element->name];
-		
+
 		$data[$element->name] = html_entity_decode($data[$element->name]);
-		
+
 		if (FabrikWorker::isJSON($data[$element->name]))
 		{
 			$data[$element->name] = FabrikWorker::JSONtoData($data[$element->name], true);
 		}
-		
+
 		$data[$element->name] = is_array($data[$element->name]) ? $data[$element->name][0] : $data[$element->name];
-		
+
 
 		/**
 		 *  $$$ hugh - special case for social plugins (like CB plugin).  If plugin sets
@@ -827,7 +827,7 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 
 		if ($normal)
 		{
-			$return[] = $this->getFilterHiddenFields($counter, $elName);
+			$return[] = $this->getFilterHiddenFields($counter, $elName, false, $normal);
 		}
 		else
 		{

@@ -329,7 +329,7 @@ class PlgFabrik_ElementYesno extends PlgFabrik_ElementRadiobutton
 
 		if ($normal)
 		{
-			$return[] = $this->getFilterHiddenFields($counter, $elName);
+			$return[] = $this->getFilterHiddenFields($counter, $elName, false, $normal);
 		}
 		else
 		{
