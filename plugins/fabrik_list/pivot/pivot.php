@@ -151,6 +151,7 @@ class PlgFabrik_ListPivot extends PlgFabrik_List
 		//pivot___date
 		$xCol = FabrikString::safeColNameToArrayKey($xCol);
 		$yCol = FabrikString::safeColNameToArrayKey($yCol);
+
 		return array($xCol, $yCol);
 	}
 
@@ -319,6 +320,7 @@ class PlgFabrik_ListPivot extends PlgFabrik_List
 							{
 								$newRow->$xColData = $row->$sums;
 							}
+
 							$total += (float) $row->$rawSums;
 						}
 					}
@@ -333,8 +335,8 @@ class PlgFabrik_ListPivot extends PlgFabrik_List
 		 * Optionally order by the sum column. I'm sure there's some more elegant way of doing this,
 		 * but for now, two usort functions will do it.
 		 */
-
 		$order = $params->get('pivot_sort', '0');
+
 		if ($order == '1')
 		{
 			usort($new, function($a, $b) {
@@ -380,6 +382,12 @@ class PlgFabrik_ListPivot extends PlgFabrik_List
 			if (!empty($x))
 			{
 				$c = JArrayHelper::getColumn($new, $x);
+
+				foreach ($c as &$cc)
+				{
+					$cc = strip_tags($cc);
+				}
+
 				$yColTotals->$x = array_sum($c);
 				$total += (float) $yColTotals->$x;
 			}
@@ -391,14 +399,17 @@ class PlgFabrik_ListPivot extends PlgFabrik_List
 			{
 				continue;
 			}
+
 			$y = $this->numberFormat($y, $params);
 		}
 
 		$yColTotals->pivot_total = $total;
 		$new[] = $yColTotals;
 
-		foreach ($new as $newRow) {
-			if (isset($newRow->pivot_total)) {
+		foreach ($new as $newRow)
+		{
+			if (isset($newRow->pivot_total))
+			{
 				$newRow->pivot_total = $this->numberFormat($newRow->pivot_total, $params);
 			}
 		}
