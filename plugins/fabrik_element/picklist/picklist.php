@@ -82,7 +82,7 @@ class PlgFabrik_ElementPicklist extends PlgFabrik_ElementList
 		$lookup = array_flip($arVals);
 		foreach ($arSelected as $v)
 		{
-			if ($v == '' || $v == '-' || $v = '[""]')
+			if ($v == '' || $v == '-' || $v == '[""]')
 			{
 				continue;
 			}
