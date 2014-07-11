@@ -1991,12 +1991,13 @@ class FabrikFEModelForm extends FabModelForm
 								// $$$ rob urldecode when posting from ajax form
 								$encrypted = urldecode($encrypted);
 								$v = empty($encrypted) ? '' : $crypt->decrypt($encrypted);
-								/* $$$ hugh - things like elementlist elements (radios, etc) seem to use
+								
+								/* 
+								 * $$$ hugh - things like elementlist elements (radios, etc) seem to use
 								 * their JSON data for encrypted read only vals, need to decode.
 								 */
-								$class_name = get_parent_class($elementModel);
 
-								if ($class_name === 'PlgFabrik_ElementList')
+								if (is_subclass_of($elementModel, 'PlgFabrik_ElementList'))
 								{
 									$v = FabrikWorker::JSONtoData($v, true);
 								}
