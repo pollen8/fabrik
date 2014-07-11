@@ -139,7 +139,12 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 
 				/*
 				 * After a failed validation, it may be JSON, and urlencoded, like [&quot;94&quot;]
+				 * Or it may be an array with JSON and or urlencode and or ... yada yada ... who the f*ck knows
+				 * So let's just cover all the bases, shall we?
 				 */
+				
+				$id = is_array($id) ? $id[0] : $id;
+				
 				$id = html_entity_decode($id);
 				if (FabrikWorker::isJSON($id))
 				{
