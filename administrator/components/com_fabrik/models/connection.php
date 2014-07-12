@@ -185,7 +185,8 @@ class FabrikAdminModelConnection extends FabModelAdmin
 		$data['params'] = json_encode($params);
 		$data['password'] = $crypt->encrypt($data['password']);
 		// $$$ hugh TESTING REMOVE!!!!
-		unset($data['password']);
+		// $$$ Felikat - Not sure what you were testing but it broke stuff!
+		// unset($data['password']);
 
 		$options = $model->getConnectionOptions(JArrayHelper::toObject($data));
 		$db = $model->getDriverInstance($options);
