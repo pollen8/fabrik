@@ -167,11 +167,20 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 
 		$item->store();
 
-		// Featured is handled by the admin content model.
-		JTable::addIncludePath(COM_FABRIK_BASE . 'administrator/components/com_content/tables');
-		JModelLegacy::addIncludePath(COM_FABRIK_BASE . 'administrator/components/com_content/models');
-		$articleModel = JModelLegacy::getInstance('Article', 'ContentModel');
-		$articleModel->featured($item->id, $item->featured);
+		/**
+		 * Featured is handled by the admin content model.
+		 * $$$ hugh - in 3.1, it seems to now just be in the regular content model $data
+		 */
+		
+		$version = new JVersion;
+		
+		if (version_compare($version->RELEASE, '3.1', '<'))
+		{
+			JTable::addIncludePath(COM_FABRIK_BASE . 'administrator/components/com_content/tables');
+			JModelLegacy::addIncludePath(COM_FABRIK_BASE . 'administrator/components/com_content/models');
+			$articleModel = JModelLegacy::getInstance('Article', 'ContentModel');
+			$articleModel->featured($item->id, $item->featured);
+		}
 
 		// Trigger the onContentAfterSave event.
 		$result = $dispatcher->trigger('onContentAfterSave', array('com_content.article', $item, $isNew));
