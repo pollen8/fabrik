@@ -42,6 +42,14 @@ var FbTextarea = new Class({
 			}
 		}.bind(this));
 		
+		Fabrik.addEvent('fabrik.form.submit.start', function (form) {
+			if (this.options.wysiwyg && form.options.ajax) {
+				if (typeof tinyMCE !== 'undefined') {
+					tinyMCE.triggerSave();
+				}
+			}
+		}.bind(this));
+		
 	},
 
 	unclonableProperties: function ()
