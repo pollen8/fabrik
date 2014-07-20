@@ -1037,6 +1037,13 @@ if (!$j3)
 		$deps->deps = array();
 		$j3 = FabrikWorker::j3();
 		$ext = self::isDebug() ? '' : '-min';
+		$usersConfig = JComponentHelper::getParams('com_fabrik');
+		$requirejsBaseURI = $usersConfig->get('requirejs_base_uri', COM_FABRIK_LIVESITE);
+		
+		if (empty($requirejsBaseURI))
+		{
+			$requirejsBaseURI = COM_FABRIK_LIVESITE;
+		}
 
 		// Load any previously created shim (e.g form which then renders list in outro text)
 		$newShim = $session->get('fabrik.js.shim', array());
@@ -1108,7 +1115,7 @@ if (!$j3)
 		$pathString = '{' . implode(',', $pathBits) . '}';
 		$config = array();
 		$config[] = "requirejs.config({";
-		$config[] = "\tbaseUrl: '" . COM_FABRIK_LIVESITE . "',";
+		$config[] = "\tbaseUrl: '" . $requirejsBaseURI . "',";
 		$config[] = "\tpaths: " . $pathString . ",";
 		$config[] = "\tshim: " . $shim . ',';
 		$config[] = "\twaitSeconds: 30,";
