@@ -6611,6 +6611,11 @@ class FabrikFEModelList extends JModelForm
 		$groupHeadings = array();
 
 		$orderbys = json_decode($item->order_by, true);
+		
+		if (!isset($orderbys))
+		{
+			$orderbys = array();
+		}
 
 		// Responsive element classes
 		$listClasses = json_decode($params->get('list_responsive_elements'));
@@ -7334,6 +7339,13 @@ class FabrikFEModelList extends JModelForm
 
 	public function storeRow($data, $rowId, $isJoin = false, $joinGroupTable = null)
 	{
+		/**
+		 * REMEMBER - if we've arrived here from the group model process(), saving joined rows,
+		 * $this list model will be for the parent list, and only $this-table->db_primary_key and
+		 * table_name will have been set to that of the joined table being saved to.  Bit of a hack,
+		 * and we need to find a better way to do this, but right now ... it is what it is.  Just be careful!
+		 */
+		
 		if (is_array($rowId))
 		{
 			$rowId = array_unshift($rowId);

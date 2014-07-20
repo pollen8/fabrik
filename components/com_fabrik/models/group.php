@@ -1236,10 +1236,12 @@ class FabrikFEModelGroup extends FabModel
 		$elementModels = $this->getMyElements();
 		$list = $listModel->getTable();
 		$tblName = $list->db_table_name;
+		$tblPk = $list->db_primary_key;
 
 		// Set the list's table name to the join table, needed for storeRow()
 		$join = $joinModel->getJoin();
 		$list->db_table_name = $join->table_join;
+		$list->db_primary_key = $joinModel->getForeignID('.');
 		$usedKeys = array();
 
 		// For each repeat group
@@ -1311,6 +1313,7 @@ class FabrikFEModelGroup extends FabModel
 
 		// Reset the list's table name
 		$list->db_table_name = $tblName;
+		$list->db_primary_key = $tblPk;
 	}
 
 	/**
