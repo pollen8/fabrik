@@ -733,6 +733,7 @@
 					<option value="UTF-8">UTF-8</option>
 					<option value="UTF-16">UTF-16</option>
 					<option value="UTF-16LE">UTF-16LE</option>
+					<option value="ISO-8859-15">ISO-8859-15</option>
 			</field>
 
 		</fieldset>
