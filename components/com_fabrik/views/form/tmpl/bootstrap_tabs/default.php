@@ -17,7 +17,7 @@ $model = $this->getModel();
 $groupTmpl = $model->editable ? 'group' : 'group_details';
 $active = ($form->error != '') ? '' : ' fabrikHide';
 
-if ($model->isMultiPage())
+if ($model->isMultiPage() && FabrikHelperHTML::isDebug())
 {
 	$app = JFactory::getApplication();
 	$app->enqueueMessage(FText::_('COM_FABRIK_ERR_TAB_FORM_TEMPLATE_INCOMPATIBLE_WITH_MULTIPAGE_FORMS'), 'error');
