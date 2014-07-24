@@ -5068,7 +5068,7 @@ class FabrikFEModelList extends JModelForm
 			}
 
 			// List plug-in filter found - it should have set its own sql in onGetPostFilter();
-			if (in_array($elid, $pluginKeys))
+			if (!empty($elid) && in_array($elid, $pluginKeys))
 			{
 				$this->filters['origvalue'][$i] = $value;
 				$this->filters['sqlCond'][$i] = $this->filters['sqlCond'][$i];
@@ -5088,22 +5088,22 @@ class FabrikFEModelList extends JModelForm
 			$fullWordsOnly = $this->filters['full_words_only'][$i];
 			$exactMatch = $this->filters['match'][$i];
 
+			// $$ hugh - testing allowing {QS} replacements in pre-filter values
+			$w->replaceRequest($value);
+			$value = $this->prefilterParse($value);
+			$value = $w->parseMessageForPlaceHolder($value);
+			
 			if (!is_a($elementModel, 'PlgFabrik_Element'))
 			{
 				if ($this->filters['condition'][$i] == 'exists')
 				{
-					$this->filters['sqlCond'][$i] = 'EXISTS (' . $this->filters['value'][$i] . ')';
+					$this->filters['sqlCond'][$i] = 'EXISTS (' . $value . ')';
 				}
 
 				continue;
 			}
 
 			$elementModel->_rawFilter = $raw;
-
-			// $$ hugh - testing allowing {QS} replacements in pre-filter values
-			$w->replaceRequest($value);
-			$value = $this->prefilterParse($value);
-			$value = $w->parseMessageForPlaceHolder($value);
 
 			if ($filterEval == '1')
 			{
