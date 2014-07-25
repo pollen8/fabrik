@@ -81,6 +81,7 @@ function fabrik_pagination_list_footer($list)
 }
  */
 
+/* Commented out because /components/com_fabrik/helpers/pagination.php does not call this routine
 function fabrik_pagination_list_footer($list, $paginator)
 {
 	// Initialize variables
@@ -94,12 +95,12 @@ function fabrik_pagination_list_footer($list, $paginator)
 	$html[] = '</div>';
 	return implode("\n", $html);
 }
-
+*/
 
 
 function fabrik_pagination_item_active(&$item, $listid)
 {
-	return '<a title="' . $item->text . '" href="' . $item->link . '" class="pagenav">' . $item->text . '</a>';
+	return '<a title="' . $item->text . '" href="' . $item->link . '">' . $item->text . '</a>';
 }
 
 function fabrik_pagination_item_inactive(&$item)
