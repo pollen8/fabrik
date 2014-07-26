@@ -228,7 +228,6 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 						$this->emailfield = $this->getFieldName('juser_field_email');
 						$formModel->data[$this->emailfield] = $user->get('email');
 						$formModel->data[$this->emailfield . '_raw'] = $user->get('email');
-
 						// @FIXME this is out of date for J1.7 - no gid field
 						if ($params->get('juser_field_usertype') != '')
 						{
@@ -236,7 +235,7 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 							$groupElementClass = get_class($groupElement);
 							$gid = $user->groups;
 
-							if ($groupElementClass !== 'plgFabrik_ElementUsergroup')
+							if ($groupElementClass !== 'PlgFabrik_ElementUsergroup')
 							{
 								$gid = array_shift($gid);
 							}
@@ -767,7 +766,7 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 			{
 				foreach ($groupIds as $groupId)
 				{
-					if (in_array($groupId, $authLevels) || $me->authorise('core.admin'))
+					if (in_array($groupId, $authLevels) || $me->authorise('core.admin','com_users'))
 					{
 						$data[] = $groupId;
 					}
@@ -793,7 +792,18 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 				}
 				else
 				{
-					$data = $groupIds;
+					//$data = $groupIds;
+					foreach ($groupIds as $groupId)
+					{
+						if (in_array($groupId, $authLevels) || $me->authorise('core.admin','com_users'))
+						{
+							$data[] = $groupId;
+						}
+						else
+						{
+							throw new RuntimeException("could not alter user group to $groupId as you are not assigned to that group");
+						}
+					}				
 				}
 			}
 			else
