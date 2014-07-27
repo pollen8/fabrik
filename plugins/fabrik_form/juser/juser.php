@@ -757,10 +757,10 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 
 		JArrayHelper::toInteger($groupIds);
 		$data = array();
-
+		$authLevels = $me->getAuthorisedGroups();
+		
 		if (!$isNew)
 		{
-			$authLevels = $me->getAuthorisedGroups();
 
 			if ($params->get('juser_field_usertype') != '')
 			{
