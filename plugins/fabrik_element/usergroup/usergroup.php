@@ -84,7 +84,7 @@ class PlgFabrik_ElementUsergroup extends PlgFabrik_ElementList
 
 		if ($this->isEditable())
 		{
-			return JHtml::_('access.usergroups', $name, $selected);
+			return JHtml::_('access.usergroups', $name, $selected,true);
 		}
 		else
 		{
