@@ -79,7 +79,6 @@ class PlgFabrik_ElementYesno extends PlgFabrik_ElementRadiobutton
 		{
 			$icon = $j3 ? 'checkmark.png' : '1.png';
 			$opts = array('alt' => FText::_('JYES'));
-			$opts['icon-class'] = 'icon-ok-sign';
 
 			return FabrikHelperHTML::image($icon, 'list', @$this->tmpl, $opts);
 		}
