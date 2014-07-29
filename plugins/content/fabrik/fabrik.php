@@ -461,10 +461,17 @@ class PlgContentFabrik extends JPlugin
 
 		$document = JFactory::getDocument();
 		$viewType = $document->getType();
-		$controller = $this->getController($viewName, $id);
-		$view = $this->getView($controller, $viewName, $id);
+		$cacheKey = $id;
+		
+		if ($rowid !== '')
+		{
+			$cacheKey .= '.' . $rowid;
+		}
 
-		if ($model = $this->getModel($controller, $viewName, $id))
+		$controller = $this->getController($viewName, $cacheKey);
+		$view = $this->getView($controller, $viewName, $cacheKey);
+
+		if ($model = $this->getModel($controller, $viewName, $cacheKey))
 		{
 			$view->setModel($model, true);
 		}
