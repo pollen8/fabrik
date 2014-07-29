@@ -8,6 +8,9 @@
  * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
+// No direct access
+defined('_JEXEC') or die('Restricted access');
+
 header('Content-type: text/css');
 $c = $_REQUEST['c'];
 echo "
