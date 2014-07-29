@@ -549,7 +549,7 @@ class FabrikFEModelForm extends FabModelForm
 				$qs .= '&amp;view=' . $v;
 				$qs .= '&amp;rowid=' . $this->getRowId();
 			}
-			
+
 			$tmplPath = 'templates/' . $app->getTemplate() . '/html/com_fabrik/' . $view . '/' . $tmpl . '/template_css.php' . $qs;
 
 			if (!FabrikHelperHTML::stylesheetFromPath($tmplPath))
@@ -1991,8 +1991,8 @@ class FabrikFEModelForm extends FabModelForm
 								// $$$ rob urldecode when posting from ajax form
 								$encrypted = urldecode($encrypted);
 								$v = empty($encrypted) ? '' : $crypt->decrypt($encrypted);
-								
-								/* 
+
+								/*
 								 * $$$ hugh - things like elementlist elements (radios, etc) seem to use
 								 * their JSON data for encrypted read only vals, need to decode.
 								 */
@@ -5339,24 +5339,24 @@ class FabrikFEModelForm extends FabModelForm
 
 		return $key;
 	}
-	
+
 	/**
 	 * Get a subset of the model's data with non accessible values removed
-	 * 
+	 *
 	 * @param   string  $view  View
-	 * 
+	 *
 	 * @return  array data
 	 */
 	public function accessibleData($view = 'form')
 	{
 		$accessibleData = $this->data;
-		
+
 		$groups = $this->getGroupsHiarachy();
-		
+
 		foreach ($groups as $groupModel)
 		{
 			$elementModels = $groupModel->getPublishedElements();
-		
+
 			foreach ($elementModels as $elementModel)
 			{
 				switch ($view)
@@ -5371,7 +5371,7 @@ class FabrikFEModelForm extends FabModelForm
 						$accessible = $elementModel->canView('list');
 						break;
 				}
-				
+
 				if (!$accessible)
 				{
 					$name = $elementModel->getFullName(true, false);

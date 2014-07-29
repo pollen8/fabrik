@@ -1278,10 +1278,62 @@ class FabrikFEModelGroup extends FabModel
 		}
 
 		// Delete any removed groups
+		$this->deleteRepeatGroups($usedKeys);
+
+		// Reset the list's table name
+		$list->db_table_name = $tblName;
+		$list->db_primary_key = $tblPk;
+	}
+
+	/**
+	 * When storing a joined group. Delete any deselected repeating joined records
+	 *
+	 * @param   array  $usedKeys  Keys saved in store()
+	 *
+	 * @return  bool
+	 */
+	private function deleteRepeatGroups($usedKeys = array())
+	{
+		if (!$this->canRepeat())
+		{
+			/*
+			 * If the group can not be repeated then the user could not have deleted a
+			 * repeat group.
+			 */
+			return true;
+		}
+
+		$input = JFactory::getApplication()->input;
+		$listModel = $this->getListModel();
+		$list = $listModel->getTable();
+		$joinModel = $this->getJoinModel();
+		$join = $joinModel->getJoin();
 		$db = $listModel->getDb();
 		$query = $db->getQuery(true);
 		$masterInsertId = $this->masterInsertId();
-		$query->delete($list->db_table_name);
+		$query->delete($db->qn($list->db_table_name));
+		$pk = $join->params->get('pk');
+
+		/*
+		 * Get the original row ids. We can ONLY delete from within this set. This
+		 * allows us to respect and prefilter that was applied to the list's data.
+		 */
+		$groupid = $this->getId();
+		$origGroupRowsIds = $input->get('fabrik_group_rowids', array(), 'array');
+		$origGroupRowsIds = JArrayHelper::getValue($origGroupRowsIds, $groupid, array());
+		$origGroupRowsIds = json_decode($origGroupRowsIds);
+
+		/*
+		 * Find out which keys were origionally in the form, but were not submitted
+		 * i.e. those keys whose records were removed
+		 */
+		$keysToDelete = array_diff($origGroupRowsIds, $usedKeys);
+
+		// Nothing to delete - return
+		if (empty($keysToDelete))
+		{
+			return true;
+		}
 
 		if (is_array($masterInsertId))
 		{
@@ -1295,25 +1347,17 @@ class FabrikFEModelGroup extends FabModel
 				$mid = $db->quote($mid);
 			}
 
-			$query->where($join->table_join_key . ' IN (' . implode(', ', $masterInsertId) . ')');
+			$query->where($db->qn($join->table_join_key) . ' IN (' . implode(', ', $masterInsertId) . ')');
 		}
 		else
 		{
-			$query->where($join->table_join_key . ' = ' . $db->quote($masterInsertId));
+			$query->where($db->qn($join->table_join_key) . ' = ' . $db->quote($masterInsertId));
 		}
 
-		if (!empty($usedKeys))
-		{
-			$pk = $join->params->get('pk');
-			$query->where('!(' . $pk . 'IN (' . implode(',', $usedKeys) . ')) ');
-		}
-
+		$query->where($pk . 'IN (' . implode(',', $db->q($keysToDelete)) . ') ');
 		$db->setQuery($query);
-		$db->execute();
 
-		// Reset the list's table name
-		$list->db_table_name = $tblName;
-		$list->db_primary_key = $tblPk;
+		return $db->execute();
 	}
 
 	/**

@@ -930,6 +930,16 @@ class FabrikViewFormBase extends JViewLegacy
 
 		foreach ($groups as $groupModel)
 		{
+			if ($groupModel->isJoin())
+			{
+				$groupPk = $groupModel->getJoinModel()->getForeignId();
+				$groupRowIds = (array) JArrayHelper::getValue($this->data, $groupPk, array());
+				$groupRowIds = htmlentities(json_encode($groupRowIds));
+
+				// Used to check against in group process(), when deleting removed repeat groups
+				$fields[] = '<input type="hidden" name="fabrik_group_rowids[' . $groupModel->getId() . ']" value="' . $groupRowIds . '" />';
+			}
+
 			$group = $groupModel->getGroup();
 			$c = $groupModel->repeatTotal;
 
