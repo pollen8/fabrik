@@ -832,7 +832,9 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 		$id = $this->getHTMLId($repeatCounter);
 		$opts = $this->getElementJSOptions($repeatCounter);
 		$opts->hidden = (bool) $this->getElement()->hidden;
-		$opts->defaultVal = $this->offsetDate;
+
+		// Used uniquely in reset();
+		$opts->defaultVal = $this->getFrontDefaultValue();
 		$opts->showtime = (!$element->hidden && $params->get('date_showtime', 0)) ? true : false;
 		$opts->timelabel = FText::_('time');
 		$opts->typing = (bool) $params->get('date_allow_typing_in_field', true);
@@ -2395,6 +2397,35 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 		// Return false, as we need to be called on per-element (not per-plugin) basis
 		return false;
 	}
+
+
+	/**
+	 * Get the Front end JS default date
+	 *
+	 * @param   array  $data  Form data
+	 *
+	 * @return string
+	 */
+
+	public function getFrontDefaultValue($data = array())
+	{
+		$params = $this->getParams();
+		$db = JFactory::getDbo();
+		$alwaysToday = $params->get('date_alwaystoday', false);
+		$defaultToday = $params->get('date_defaulttotoday', false);
+		$formModel = $this->getFormModel();
+
+		if ($alwaysToday || $defaultToday)
+		{
+			$this->default = JHtml::_('date', 'now', $db->getDateFormat());
+		}
+		else
+		{
+			$this->default = parent::getDefaultValue($data);
+		}
+
+		return $this->default;
+	}
 }
 
 /**
@@ -2583,4 +2614,5 @@ class FabDate extends JDate
 
 		return $str;
 	}
+
 }
