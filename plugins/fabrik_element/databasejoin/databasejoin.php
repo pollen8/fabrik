@@ -1086,11 +1086,14 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		$aGroupRepeats[$element->group_id] = $groupModel->canRepeat();
 		$displayType = $this->getDisplayType();
 		$db = $this->getDb();
+
 		if (!$db)
 		{
 			JError::raiseWarning(JText::sprintf('PLG_ELEMENT_DBJOIN_DB_CONN_ERR', $element->name));
+
 			return '';
 		}
+
 		if (isset($formModel->aJoinGroupIds[$groupModel->getId()]))
 		{
 			$joinId = $formModel->aJoinGroupIds[$groupModel->getId()];
@@ -1101,19 +1104,22 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 			$joinId = '';
 			$joinGroupId = '';
 		}
+
 		$default = (array) $this->getValue($data, $repeatCounter);
 		$tmp = $this->_getOptions($data, $repeatCounter);
-
 		$w = new FabrikWorker;
+
 		foreach ($default as &$d)
 		{
 			$d = $w->parseMessageForPlaceHolder($d);
 		}
+
 		$thisElName = $this->getHTMLName($repeatCounter);
 
 		// Get the default label for the drop down (use in read only templates)
 		$defaultLabel = '';
 		$defaultValue = '';
+
 		foreach ($tmp as $obj)
 		{
 			if ($obj->value == JArrayHelper::getValue($default, 0, ''))
@@ -1123,6 +1129,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 				break;
 			}
 		}
+
 		$id = $this->getHTMLId($repeatCounter);
 
 		// $$$ rob 24/05/2011 - add options per row
@@ -1381,7 +1388,17 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		$thisElName = $this->getHTMLName($repeatCounter);
 		$params = $this->getParams();
 		$optsPerRow = intval($params->get('dbjoin_options_per_row', 0));
-		$defaults = $formModel->failedValidation() ? $default : explode(GROUPSPLITTER, JArrayHelper::getValue($data, $idname));
+		$isNew = $this->getFormModel()->isNewRecord();
+
+		if (!$isNew)
+		{
+			$defaults = $formModel->failedValidation() ? $default : explode(GROUPSPLITTER, JArrayHelper::getValue($data, $idname));
+		}
+		else
+		{
+			$defaults = $default;
+		}
+
 		$html[] = '<div class="fabrikSubElementContainer" id="' . $id . '">';
 		$rawname = $this->getFullName(false, true, false) . '_raw';
 		$editable = $this->isEditable();
@@ -1390,26 +1407,29 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		$thisElName = FabrikString::rtrimword($thisElName, '[]');
 
 		$html[] = FabrikHelperHTML::aList('checkbox', $tmp, $thisElName, $attribs, $defaults, 'value', 'text', $optsPerRow, $editable);
+
 		if ($this->isJoin() && $editable)
 		{
 			$join = $this->getJoin();
 			$joinidsName = 'join[' . $join->id . '][' . $join->table_join . '___id]';
+
 			if ($groupModel->canRepeat())
 			{
-				// $joinidsName .= '[' . $repeatCounter . '][]';
 				$joinidsName .= '[' . $repeatCounter . ']';
 				$joinids = FArrayHelper::getNestedValue($data, 'join.' . $join->id . '.' . $rawname . '.' . $repeatCounter, 'not found');
 			}
 			else
 			{
-				// $joinidsName .= '[]';
 				$joinids = explode(GROUPSPLITTER, JArrayHelper::getValue($data, $rawname));
 			}
+
 			$tmpids = array();
+
 			foreach ($tmp as $obj)
 			{
 				$o = new stdClass;
 				$o->text = $obj->text;
+
 				if (in_array($obj->value, $defaults))
 				{
 					$index = array_search($obj->value, $defaults);
@@ -1419,6 +1439,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 				{
 					$o->value = 0;
 				}
+
 				$tmpids[] = $o;
 			}
 

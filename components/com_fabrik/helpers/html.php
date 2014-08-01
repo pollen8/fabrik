@@ -774,7 +774,8 @@ EOD;
 					}
 					else
 					{
-						if ($k === $obj)
+						// Loose comaprision for number == string
+						if ($k == $obj)
 						{
 							// Checkbox from db join
 							$extra .= $selectText;
