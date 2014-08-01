@@ -480,7 +480,8 @@ class PlgFabrik_FormLogs extends PlgFabrik_Form
 
 					if ($ext != 'csv')
 					{
-						JFile::write($logs_file, $buffer . $custom_msg . "\n" . $sep . "\n");
+						$thisMsg = $buffer . $custom_msg . "\n" . $sep . "\n";
+						JFile::write($logs_file, $thisMsg);
 					}
 					else
 					{
