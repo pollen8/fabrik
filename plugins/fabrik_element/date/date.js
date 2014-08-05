@@ -277,6 +277,12 @@ var FbDateTime = new Class({
 		if (dateEl) {
 			if (this.options.advanced) {
 				params.date = Date.parseExact(dateEl.value || dateEl.innerHTML, Date.normalizeFormat(dateFmt));
+				
+				// If using format %b-%Y in Spanish (may be other langs as well)
+				// See http://fabrikar.com/forums/index.php?threads/problem-with-dates-on-a-form.39088/#post-196600
+				if (params.date === null) {
+					params.date = this.options.value;
+				}
 			} else {
 				params.date = Date.parseDate(dateEl.value || dateEl.innerHTML, dateFmt);
 			}
