@@ -813,6 +813,7 @@ class FabrikFEModelList extends JModelForm
 		// Ajax call needs to recall this - not sure why
 		$this->setLimits();
 		$query = $this->_buildQuery();
+		//echo $query;exit;
 		JDEBUG ? $profiler->mark('query build end') : null;
 
 		$cache = FabrikWorker::getCache($this);
@@ -2485,16 +2486,23 @@ class FabrikFEModelList extends JModelForm
 		 */
 		$calc_found_rows = $this->mergeJoinedData() ? '' : 'SQL_CALC_FOUND_ROWS';
 
+		/**
+		 * Distinct creates a temporary table which may slow down queries.
+		 * Added advanced option to toggle it on/off
+		 * http://fabrikar.com/forums/index.php?threads/bug-distinct.39160/#post-196739
+		 */
+		$distinct = $params->get('distinct', true) ? 'DISTINCT' : '';
+
 		// $$$rob added raw as an option to fix issue in saving calendar data
 		if (trim($table->db_primary_key) != '' && (in_array($this->outputFormat, array('raw', 'html', 'feed', 'pdf', 'phocapdf', 'csv', 'word', 'yql'))))
 		{
 			$sfields .= ', ';
 			$strPKey = $pk . ' AS ' . $db->quoteName('__pk_val') . "\n";
-			$query = 'SELECT ' . $calc_found_rows . ' DISTINCT ' . $sfields . $strPKey;
+			$query = 'SELECT ' . $calc_found_rows . ' ' . $distinct . ' ' . $sfields . $strPKey;
 		}
 		else
 		{
-			$query = 'SELECT ' . $calc_found_rows . ' DISTINCT ' . trim($sfields, ", \n") . "\n";
+			$query = 'SELECT ' . $calc_found_rows . ' ' . $distinct . ' ' . trim($sfields, ", \n") . "\n";
 		}
 
 		/*

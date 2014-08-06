@@ -934,6 +934,16 @@
 					<option value="1">JYES</option>
 			</field>
 			
+			<field name="distinct"
+				type="radio"
+				default="1"
+				label="COM_FABRIK_LIST_DISTINCT_LABEL"
+				description="COM_FABRIK_LIST_DISTINCT_DESC"
+				class="btn-group">
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>	
+			</field>
+			
 		</fieldset>
 		
 		<fieldset name="joins">
