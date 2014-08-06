@@ -2597,6 +2597,13 @@ class FabrikFEModelList extends JModelForm
 		 */
 		$calc_found_rows = $this->mergeJoinedData() ? '' : 'SQL_CALC_FOUND_ROWS';
 
+		/**
+		 * Distinct creates a temporary table which may slow down queries.
+		 * Added advanced option to toggle it on/off
+		 * http://fabrikar.com/forums/index.php?threads/bug-distinct.39160/#post-196739
+		 */
+		$distinct = $params->get('distinct', true) ? 'DISTINCT' : '';
+
 		// $$$rob added raw as an option to fix issue in saving calendar data
 		if (trim($table->db_primary_key) != '' && (in_array($this->outputFormat, array('raw', 'html', 'feed', 'pdf', 'phocapdf', 'csv', 'word', 'yql'))))
 		{
@@ -2605,22 +2612,22 @@ class FabrikFEModelList extends JModelForm
 
 			if ($query)
 			{
-				$query->select($calc_found_rows . ' DISTINCT ' . $sfields . $strPKey);
+				$query->select($calc_found_rows . ' ' . $distinct . ' ' . $sfields . $strPKey);
 			}
 			else
 			{
-				$sql = 'SELECT ' . $calc_found_rows . ' DISTINCT ' . $sfields . $strPKey;
+				$sql = 'SELECT ' . $calc_found_rows . ' ' . $distinct . ' ' . $sfields . $strPKey;
 			}
 		}
 		else
 		{
 			if ($query)
 			{
-				$query->select($calc_found_rows . ' DISTINCT ' . $sfields);
+				$query->select($calc_found_rows . ' ' . $distinct . ' ' . $sfields);
 			}
 			else
 			{
-				$sql = 'SELECT ' . $calc_found_rows . ' DISTINCT ' . trim($sfields, ", \n") . "\n";
+				$sql = 'SELECT ' . $calc_found_rows . ' ' . $distinct . ' ' . trim($sfields, ", \n") . "\n";
 			}
 		}
 
@@ -5092,7 +5099,7 @@ class FabrikFEModelList extends JModelForm
 			$w->replaceRequest($value);
 			$value = $this->prefilterParse($value);
 			$value = $w->parseMessageForPlaceHolder($value);
-			
+
 			if (!is_a($elementModel, 'PlgFabrik_Element'))
 			{
 				if ($this->filters['condition'][$i] == 'exists')
@@ -6611,7 +6618,7 @@ class FabrikFEModelList extends JModelForm
 		$groupHeadings = array();
 
 		$orderbys = json_decode($item->order_by, true);
-		
+
 		if (!isset($orderbys))
 		{
 			$orderbys = array();
@@ -7345,7 +7352,7 @@ class FabrikFEModelList extends JModelForm
 		 * table_name will have been set to that of the joined table being saved to.  Bit of a hack,
 		 * and we need to find a better way to do this, but right now ... it is what it is.  Just be careful!
 		 */
-		
+
 		if (is_array($rowId))
 		{
 			$rowId = array_unshift($rowId);
@@ -8177,9 +8184,9 @@ class FabrikFEModelList extends JModelForm
 	/**
 	 * Get the tables primary key and if the primary key is auto increment
 	 *
-	 * @param   string  $table  optional table name (used when getting pk to joined tables
+	 * @param   string  $table  Optional table name (used when getting pk to joined tables)
 	 *
-	 * @return  mixed	if ok returns array(key, extra, type, name) otherwise
+	 * @return  mixed	If ok returns array(key, extra, type, name) otherwise
 	 */
 
 	public function getPrimaryKeyAndExtra($table = null)
