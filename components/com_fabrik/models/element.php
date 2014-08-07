@@ -4283,6 +4283,7 @@ class PlgFabrik_Element extends FabrikPlugin
 
 	public function getFilterQuery($key, $condition, $value, $originalValue, $type = 'normal')
 	{
+		echo "$key";exit;
 		$this->encryptFieldName($key);
 
 		switch ($condition)
@@ -4313,6 +4314,9 @@ class PlgFabrik_Element extends FabrikPlugin
 			case 'nextmonth':
 				$query = ' (' . $key . ' >= DATE_ADD(LAST_DAY(now()), INTERVAL 1 DAY)  AND ' . $key
 				. ' <= DATE_ADD(LAST_DAY(NOW()), INTERVAL 1 MONTH) ) ';
+				break;
+			case 'birthday':
+				$query = '(MONTH(' . $key . ') = MONTH(CURDATE()) AND  DAY(' . $key . ') = DAY(CURDATE())) ';
 				break;
 			default:
 				if ($this->isJoin())

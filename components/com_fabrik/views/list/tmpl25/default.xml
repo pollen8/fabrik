@@ -96,6 +96,7 @@
 									<opton value="thismonth">COM_FABRIK_THIS_MONTH</opton>
 									<option value="lastmonth">COM_FABRIK_LAST_MONTH</option>
 									<option value="nextmonth">COM_FABRIK_NEXT_MONTH</option>
+									<option value="birthday">COM_FABRIK_BIRTHDAY_TODAY</option>
 							</field>
 							
 							<field label="COM_FABRIK_LIST_FILTER_VALUE_HEADING" name="filter-value" type="field"/>
