@@ -34,6 +34,7 @@ class PlgFabrik_ListPivot extends PlgFabrik_List
 	public function onBuildQuerySelect($params, &$model, $args)
 	{
 		$sum = $this->sums($model);
+
 		if ($query = $this->hasQuery($args))
 		{
 			$query->select($sum);
@@ -42,6 +43,7 @@ class PlgFabrik_ListPivot extends PlgFabrik_List
 		{
 			$model->_pluginQuerySelect[] = $sum;
 		}
+
 		return;
 	}
 
@@ -318,7 +320,7 @@ class PlgFabrik_ListPivot extends PlgFabrik_List
 						{
 							if (!empty($xColData))
 							{
-								$newRow->$xColData = $row->$sums;
+								$newRow->$xColData = $row->$rawSums;
 							}
 
 							$total += (float) $row->$rawSums;
@@ -339,7 +341,8 @@ class PlgFabrik_ListPivot extends PlgFabrik_List
 
 		if ($order == '1')
 		{
-			usort($new, function($a, $b) {
+			usort($new, function($a, $b)
+			{
 				if ($a->pivot_total == $b->pivot_total)
 				{
 					return 0;
@@ -356,7 +359,8 @@ class PlgFabrik_ListPivot extends PlgFabrik_List
 		}
 		else if ($order == '2')
 		{
-			usort($new, function($a, $b) {
+			usort($new, function($a, $b)
+			{
 				if ($a->pivot_total == $b->pivot_total)
 				{
 					return 0;
@@ -444,6 +448,7 @@ class PlgFabrik_ListPivot extends PlgFabrik_List
 		{
 			$thousand_sep = ' ';
 		}
+
 		return number_format((float) $data, $decimal_length, $decimal_sep, $thousand_sep);
 	}
 
