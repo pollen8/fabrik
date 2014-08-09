@@ -1251,7 +1251,11 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 			$label = $filter ? $labels[1] : $labels[0];
 		}
 
-		return FText::_($label, FText::_('COM_FABRIK_PLEASE_SELECT'));
+		if (!$filter && $label == '')
+		{
+			$label = 'COM_FABRIK_PLEASE_SELECT';
+		}
+		return FText::_($label);
 	}
 
 	/**
