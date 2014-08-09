@@ -4283,7 +4283,6 @@ class PlgFabrik_Element extends FabrikPlugin
 
 	public function getFilterQuery($key, $condition, $value, $originalValue, $type = 'normal')
 	{
-		echo "$key";exit;
 		$this->encryptFieldName($key);
 
 		switch ($condition)
