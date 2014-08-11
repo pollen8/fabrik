@@ -79,6 +79,7 @@ class PlgFabrik_ListCandeleterow extends PlgFabrik_List
 			$w = new FabrikWorker;
 			$data = JArrayHelper::fromObject($data);
 			$candeleterow_eval = $w->parseMessageForPlaceHolder($candeleterow_eval, $data);
+			FabrikWorker::clearEval();
 			$candeleterow_eval = @eval($candeleterow_eval);
 			FabrikWorker::logEval($candeleterow_eval, 'Caught exception on eval in can delete row : %s');
 

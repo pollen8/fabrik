@@ -275,9 +275,10 @@ class PlgContentFabrik extends JPlugin
 					{
 						/**
 						 * These are later set as app->input vars if present in list view
+						 * html_entity_decode to allow for content plugin values to contain &nbsp;
 						 * Urlencode the value for plugin statements such as: asylum_events___start_date[condition]=>
 						 */
-						$unused[] = trim($m[0]) . '=' . urlencode($m[1]);
+						$unused[] = trim($m[0]) . '=' .  urlencode(html_entity_decode($m[1], ENT_NOQUOTES));
 					}
 			}
 		}
@@ -461,10 +462,17 @@ class PlgContentFabrik extends JPlugin
 
 		$document = JFactory::getDocument();
 		$viewType = $document->getType();
-		$controller = $this->getController($viewName, $id);
-		$view = $this->getView($controller, $viewName, $id);
+		$cacheKey = $id;
 
-		if ($model = $this->getModel($controller, $viewName, $id))
+		if ($rowid !== '')
+		{
+			$cacheKey .= '.' . $rowid;
+		}
+
+		$controller = $this->getController($viewName, $cacheKey);
+		$view = $this->getView($controller, $viewName, $cacheKey);
+
+		if ($model = $this->getModel($controller, $viewName, $cacheKey))
 		{
 			$view->setModel($model, true);
 		}

@@ -8,6 +8,9 @@
  * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  * @since       3.1
  */
+
+// No direct access
+defined('_JEXEC') or die('Restricted access');
 ?>
 <li class="dropdown togglecols">
 	<a href="#" class="dropdown-toggle" data-toggle="dropdown">

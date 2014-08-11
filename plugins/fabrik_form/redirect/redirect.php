@@ -292,23 +292,27 @@ class PlgFabrik_FormRedirect extends PlgFabrik_Form
 	 * @param   array   &$queryvars  Previously added querystring variables
 	 * @param   string  $key         Key
 	 * @param   mixed   $val         Value string or array
+	 * @param	bool	$appendEmpty	Append even if value is empty, default true
 	 *
 	 * @return  void
 	 */
 
-	protected function _appendQS(&$queryvars, $key, $val)
+	protected function _appendQS(&$queryvars, $key, $val, $appendEmpty = true)
 	{
 		if (is_array($val))
 		{
 			foreach ($val as $v)
 			{
-				$this->_appendQS($queryvars, "{$key}[value]", $v);
+				$this->_appendQS($queryvars, "{$key}[value]", $v, $appendEmpty);
 			}
 		}
 		else
 		{
-			$val = urlencode(stripslashes($val));
-			$queryvars[] = $key . '=' . $val;
+			if ($appendEmpty || (!appendEmpty && !empty($val)))
+			{
+				$val = urlencode(stripslashes($val));
+				$queryvars[] = $key . '=' . $val;
+			}
 		}
 	}
 
@@ -326,14 +330,21 @@ class PlgFabrik_FormRedirect extends PlgFabrik_Form
 	protected function _storeInSession()
 	{
 		$formModel = $this->getModel();
+		$listModel = $formModel->getlistModel();
 		$app = JFactory::getApplication();
 		$input = $app->input;
 		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$store = array();
 
+		$pk = FabrikString::safeColNameToArrayKey($listModel->getTable()->db_primary_key);
+
 		if ($this->data['save_in_session'] == '1')
 		{
-			$tmpData = $formModel->formData;
+			/*
+			 * Was using simply formData but, for a form set to record in db its keys were
+			 * in the short format whilst we compare the full name in the code below
+			 */
+			$tmpData = $formModel->formDataWithTableName;
 			$groups = $formModel->getGroupsHiarachy();
 
 			foreach ($groups as $group)
@@ -348,6 +359,11 @@ class PlgFabrik_FormRedirect extends PlgFabrik_Form
 					}
 
 					$name = $element->getFullName();
+
+					if ($name == $pk)
+					{
+						continue;
+					}
 
 					if (array_key_exists($name, $tmpData))
 					{
@@ -397,19 +413,17 @@ class PlgFabrik_FormRedirect extends PlgFabrik_Form
 				}
 			}
 
-			// Clear registry search form entries
+			// Set registry search form entries
 			$key = 'com_' . $package . '.searchform';
-
-			$listModel = $formModel->getlistModel();
+			$id = $formModel->get('id');
 
 			// Check for special fabrik_list_filter_all element!
 			$searchAll = $input->get($listModel->getTable()->db_table_name . '___fabrik_list_filter_all');
 
-			$app->setUserState('com_' . $package . '.searchform.form' . $formModel->get('id') . '.searchall', $searchAll);
-			$app->setUserState($key, $id);
+			$app->setUserState($key . '.form' . $id . '.searchall', $searchAll);
+			$app->setUserState($key . '.form' . $id . '.filters', $store);
 
-			$app->setUserState('com_' . $package . '.searchform.form' . $formModel->get('id') . '.filters', $store);
-			$app->setUserState('com_' . $package . '.searchform.fromForm', $formModel->get('id'));
+			$app->setUserState($key. '.fromForm', $id);
 		}
 	}
 

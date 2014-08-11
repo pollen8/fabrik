@@ -570,6 +570,7 @@ class FabrikViewListBase extends JViewLegacy
 			$params->set('page_heading', $menu_params->get('page_heading'));
 			$params->set('show_page_heading', $menu_params->get('show_page_heading'));
 			$params->set('pageclass_sfx', $menu_params->get('pageclass_sfx'));
+			$params->set('page_title', $menu_params->get('page_title', $menu->title));
 		}
 		else
 		{

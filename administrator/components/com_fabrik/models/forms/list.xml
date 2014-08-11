@@ -733,6 +733,7 @@
 					<option value="UTF-8">UTF-8</option>
 					<option value="UTF-16">UTF-16</option>
 					<option value="UTF-16LE">UTF-16LE</option>
+					<option value="ISO-8859-15">ISO-8859-15</option>
 			</field>
 
 		</fieldset>
@@ -1250,6 +1251,16 @@
 			>
 				<option value="0">JNO</option>
 				<option value="1">JYES</option>
+			</field>
+			
+			<field name="distinct"
+				type="radio"
+				default="0"
+				label="COM_FABRIK_LIST_DISTINCT_LABEL"
+				description="COM_FABRIK_LIST_DISTINCT_DESC"
+				class="btn-group">
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>	
 			</field>
 
 		</fieldset>

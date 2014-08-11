@@ -188,8 +188,9 @@ class FabrikViewFormBase extends JViewLegacy
 			FabrikHelperHTML::runContentPlugins($text);
 		}
 
-		// Allows you to use {placeholders} in form template.
-		$text = $w->parseMessageForPlaceHolder($text, $model->data);
+		// Allows you to use {placeholders} in form template Only replacing data accessible to the users acl.
+		$view = $model->isEditable() === false ? 'details' : 'form';
+		$text = $w->parseMessageForPlaceHolder($text, $model->accessibleData($view));
 		echo $text;
 	}
 
@@ -929,6 +930,16 @@ class FabrikViewFormBase extends JViewLegacy
 
 		foreach ($groups as $groupModel)
 		{
+			if ($groupModel->isJoin())
+			{
+				$groupPk = $groupModel->getJoinModel()->getForeignId();
+				$groupRowIds = (array) JArrayHelper::getValue($this->data, $groupPk, array());
+				$groupRowIds = htmlentities(json_encode($groupRowIds));
+
+				// Used to check against in group process(), when deleting removed repeat groups
+				$fields[] = '<input type="hidden" name="fabrik_group_rowids[' . $groupModel->getId() . ']" value="' . $groupRowIds . '" />';
+			}
+
 			$group = $groupModel->getGroup();
 			$c = $groupModel->repeatTotal;
 

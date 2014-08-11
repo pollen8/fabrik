@@ -565,7 +565,7 @@ class PlgFabrik_FormComment extends PlgFabrik_Form
 		$input = $app->input;
 		$user = JFactory::getUser();
 		$j3 = FabrikWorker::j3();
-		$name = (int) $comment->anonymous == 0 ? $comment->name : FText::_('PLG_FORM_COMMENT_ANONYMOUS_SHORT');
+		$name = (int) $comment->annonymous == 0 ? $comment->name : FText::_('PLG_FORM_COMMENT_ANONYMOUS_SHORT');
 		$data = array();
 		$data[] = '<div class="metadata muted">';
 		$data[] = '<small><i class="icon-user"></i> ';

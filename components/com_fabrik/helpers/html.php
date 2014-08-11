@@ -132,6 +132,13 @@ class FabrikHelperHTML
 	 * @var array
 	 */
 	protected static $requestHeaders = null;
+	
+	/**
+	 * Usually gets set to COM_FABRIK_LIVESITE, but can be overridden by a global option
+	 * 
+	 * @var string
+	 */
+	protected static $baseJSAssetURI = null;
 
 	/**
 	 * Load up window code - should be run in ajax loaded pages as well (10/07/2012 but not json views)
@@ -918,6 +925,7 @@ if (!$j3)
 			$app = JFactory::getApplication();
 			$document = JFactory::getDocument();
 			$version = new JVersion;
+			$jsAssetBaseURI = self::getJSAssetBaseURI();
 
 			// Only use template test for testing in 2.5 with my temp J bootstrap template.
 			$bootstrapped = in_array($app->getTemplate(), array('bootstrap', 'fabrik4')) || $version->RELEASE > 2.5;
@@ -944,7 +952,7 @@ if (!$j3)
 
 			if (!self::inAjaxLoadedPage())
 			{
-				$document->addScript(COM_FABRIK_LIVESITE . 'media/com_fabrik/js/lib/require/require.js');
+				$document->addScript($jsAssetBaseURI . 'media/com_fabrik/js/lib/require/require.js');
 				JText::script('COM_FABRIK_LOADING');
 				$src[] = 'media/com_fabrik/js/fabrik' . $ext;
 				$src[] = 'media/com_fabrik/js/window' . $ext;
@@ -1015,6 +1023,31 @@ if (!$j3)
 	}
 
 	/**
+	 * Checks the js_base_url global config, to see if admin has set a base URI they want to use to
+	 * fetch JS assets from.  Allows for putting JS files in a fast CDN like Amazon.  If not set,
+	 * return COM_FABRIK_LIVESITE.
+	 * 
+	 * @return string
+	 */
+	public static function getJSAssetBaseURI()
+	{
+		if (!isset(static::$baseJSAssetURI))
+		{
+			$usersConfig = JComponentHelper::getParams('com_fabrik');
+			$requirejsBaseURI = $usersConfig->get('requirejs_base_uri', COM_FABRIK_LIVESITE);
+			
+			if (empty($requirejsBaseURI))
+			{
+				$requirejsBaseURI = COM_FABRIK_LIVESITE;
+			}
+			
+			$requirejsBaseURI = rtrim($requirejsBaseURI, '/') . '/';
+			static::$baseJSAssetURI = $requirejsBaseURI;
+		}
+		return static::$baseJSAssetURI;
+	}
+	
+	/**
 	 * Ini the require JS configuration
 	 * Stores the shim and config to the session, which Fabrik system plugin
 	 * then uses to inject scripts into document.
@@ -1037,6 +1070,8 @@ if (!$j3)
 		$deps->deps = array();
 		$j3 = FabrikWorker::j3();
 		$ext = self::isDebug() ? '' : '-min';
+
+		$requirejsBaseURI = self::getJSAssetBaseURI();
 
 		// Load any previously created shim (e.g form which then renders list in outro text)
 		$newShim = $session->get('fabrik.js.shim', array());
@@ -1108,7 +1143,7 @@ if (!$j3)
 		$pathString = '{' . implode(',', $pathBits) . '}';
 		$config = array();
 		$config[] = "requirejs.config({";
-		$config[] = "\tbaseUrl: '" . COM_FABRIK_LIVESITE . "',";
+		$config[] = "\tbaseUrl: '" . $requirejsBaseURI . "',";
 		$config[] = "\tpaths: " . $pathString . ",";
 		$config[] = "\tshim: " . $shim . ',';
 		$config[] = "\twaitSeconds: 30,";
@@ -2207,13 +2242,14 @@ if (!$j3)
 	 * Get content item template
 	 *
 	 * @param   int  $contentTemplate  Joomla article id
+	 * @param	string	$part	which part, intro, full, or both
 	 *
 	 * @since   3.0.7
 	 *
 	 * @return  string  content item html
 	 */
 
-	public static function getContentTemplate($contentTemplate)
+	public function getContentTemplate($contentTemplate, $part = 'both')
 	{
 		$app = JFactory::getApplication();
 
@@ -2227,12 +2263,25 @@ if (!$j3)
 		}
 		else
 		{
-			JModelLegacy::addIncludePath(COM_FABRIK_BASE . 'components/com_content/models');
-			$articleModel = JModelLegacy::getInstance('Article', 'ContentModel');
+			JModel::addIncludePath(COM_FABRIK_BASE . 'components/com_content/models');
+			$articleModel = JModel::getInstance('Article', 'ContentModel');
 			$res = $articleModel->getItem($contentTemplate);
 		}
 
-		return $res->introtext . ' ' . $res->fulltext;
+		if ($part == 'intro')
+		{
+			$res = $res->introtext;
+		}
+		else if ($part == 'full')
+		{
+			$res = $res->fulltext;
+		}
+		else
+		{
+			$res = $res->introtext . ' ' . $res->fulltext;
+		}
+
+		return $res;
 	}
 
 	/**

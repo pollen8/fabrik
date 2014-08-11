@@ -538,8 +538,18 @@ class FabrikFEModelForm extends FabModelForm
 			 * If FabrikHelperHTML::styleSheetajax loaded then don't do &amp;
 			 */
 			$view = $this->isEditable() ? 'form' : 'details';
-			$qs .= FabrikHelperHTML::cssAsAsset() ? '&view=' . $v : '&amp;view=' . $v;
-			$qs .= '&amp;rowid=' . $this->getRowId();
+
+			if (FabrikHelperHTML::cssAsAsset())
+			{
+				$qs .= '&view=' . $v;
+				$qs .= '&rowid=' . $this->getRowId();
+			}
+			else
+			{
+				$qs .= '&amp;view=' . $v;
+				$qs .= '&amp;rowid=' . $this->getRowId();
+			}
+
 			$tmplPath = 'templates/' . $app->getTemplate() . '/html/com_fabrik/' . $view . '/' . $tmpl . '/template_css.php' . $qs;
 
 			if (!FabrikHelperHTML::stylesheetFromPath($tmplPath))
@@ -1981,12 +1991,13 @@ class FabrikFEModelForm extends FabModelForm
 								// $$$ rob urldecode when posting from ajax form
 								$encrypted = urldecode($encrypted);
 								$v = empty($encrypted) ? '' : $crypt->decrypt($encrypted);
-								/* $$$ hugh - things like elementlist elements (radios, etc) seem to use
+
+								/*
+								 * $$$ hugh - things like elementlist elements (radios, etc) seem to use
 								 * their JSON data for encrypted read only vals, need to decode.
 								 */
-								$class_name = get_parent_class($elementModel);
 
-								if ($class_name === 'PlgFabrik_ElementList')
+								if (is_subclass_of($elementModel, 'PlgFabrik_ElementList'))
 								{
 									$v = FabrikWorker::JSONtoData($v, true);
 								}
@@ -3217,7 +3228,7 @@ class FabrikFEModelForm extends FabModelForm
 							else
 							{
 								// If no key found set rowid to 0 so we can insert a new record.
-								if (empty($usekey) && !$this->isMambot)
+								if (empty($usekey) && !$this->isMambot && in_array($input->get('view'), array('form', 'details')))
 								{
 									$this->rowId = '';
 									/**
@@ -5327,5 +5338,49 @@ class FabrikFEModelForm extends FabModelForm
 		}
 
 		return $key;
+	}
+
+	/**
+	 * Get a subset of the model's data with non accessible values removed
+	 *
+	 * @param   string  $view  View
+	 *
+	 * @return  array data
+	 */
+	public function accessibleData($view = 'form')
+	{
+		$accessibleData = $this->data;
+
+		$groups = $this->getGroupsHiarachy();
+
+		foreach ($groups as $groupModel)
+		{
+			$elementModels = $groupModel->getPublishedElements();
+
+			foreach ($elementModels as $elementModel)
+			{
+				switch ($view)
+				{
+					case 'form':
+						$accessible = $elementModel->canUse($view);
+						break;
+					case 'details':
+						$accessible = $elementModel->canView('form');
+						break;
+					case 'list':
+						$accessible = $elementModel->canView('list');
+						break;
+				}
+
+				if (!$accessible)
+				{
+					$name = $elementModel->getFullName(true, false);
+					unset($accessibleData[$name]);
+					unset($accessibleData[$name . '_raw']);
+				}
+			}
+		}
+
+		return $accessibleData;
 	}
 }

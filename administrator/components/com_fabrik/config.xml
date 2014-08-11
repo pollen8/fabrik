@@ -381,6 +381,12 @@
 			default="1"
 			description="COM_FABRIK_AUTOCOMPLETE_MIN_TRIGGER_CHARS_DESC"
 			label="COM_FABRIK_AUTOCOMPLETE_MIN_TRIGGER_CHARS_LABEL" />
+
+		<field name="requirejs_base_uri"
+			size="50"
+			default=""
+			description="COM_FABRIK_REQUIREJS_BASE_URI_DESC"
+			label="COM_FABRIK_REQUIREJS_BASE_URI_LABEL" />
 		
 	</fieldset>
 

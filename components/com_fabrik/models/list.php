@@ -2494,12 +2494,15 @@ class FabrikFEModelList extends JModelForm
 		$query = $this->buildQueryOrder($query);
 		$query = $this->pluginQuery($query);
 		$this->mainQuery = $query;
+
+		/*
 		$params = $this->getParams();
 
 		if ($params->get('force_collate', '') !== '')
 		{
 			$query .= ' COLLATE ' . $params->get('force_collate', '') . ' ';
 		}
+		*/
 
 		return (string) $query;
 	}
@@ -2594,6 +2597,13 @@ class FabrikFEModelList extends JModelForm
 		 */
 		$calc_found_rows = $this->mergeJoinedData() ? '' : 'SQL_CALC_FOUND_ROWS';
 
+		/**
+		 * Distinct creates a temporary table which may slow down queries.
+		 * Added advanced option to toggle it on/off
+		 * http://fabrikar.com/forums/index.php?threads/bug-distinct.39160/#post-196739
+		 */
+		$distinct = $params->get('distinct', true) ? 'DISTINCT' : '';
+
 		// $$$rob added raw as an option to fix issue in saving calendar data
 		if (trim($table->db_primary_key) != '' && (in_array($this->outputFormat, array('raw', 'html', 'feed', 'pdf', 'phocapdf', 'csv', 'word', 'yql'))))
 		{
@@ -2602,22 +2612,22 @@ class FabrikFEModelList extends JModelForm
 
 			if ($query)
 			{
-				$query->select($calc_found_rows . ' DISTINCT ' . $sfields . $strPKey);
+				$query->select($calc_found_rows . ' ' . $distinct . ' ' . $sfields . $strPKey);
 			}
 			else
 			{
-				$sql = 'SELECT ' . $calc_found_rows . ' DISTINCT ' . $sfields . $strPKey;
+				$sql = 'SELECT ' . $calc_found_rows . ' ' . $distinct . ' ' . $sfields . $strPKey;
 			}
 		}
 		else
 		{
 			if ($query)
 			{
-				$query->select($calc_found_rows . ' DISTINCT ' . $sfields);
+				$query->select($calc_found_rows . ' ' . $distinct . ' ' . $sfields);
 			}
 			else
 			{
-				$sql = 'SELECT ' . $calc_found_rows . ' DISTINCT ' . trim($sfields, ", \n") . "\n";
+				$sql = 'SELECT ' . $calc_found_rows . ' ' . $distinct . ' ' . trim($sfields, ", \n") . "\n";
 			}
 		}
 
@@ -2743,14 +2753,14 @@ class FabrikFEModelList extends JModelForm
 				else
 				{
 					$session->set($context, '');
-				}
+				};
 			}
 		}
 
 		// If nothing found in session use default ordering (or that set by querystring)
 		if ($strOrder == '')
 		{
-			$orderbys = explode(',', $input->get('order_by', ''));
+			$orderbys = explode(',', $input->getString('order_by', $input->getString('orderby', '')));
 
 			if ($orderbys[0] == '')
 			{
@@ -2771,7 +2781,7 @@ class FabrikFEModelList extends JModelForm
 				}
 			}
 
-			$orderdirs = explode(',',  $input->get('order_dir', ''));
+			$orderdirs = explode(',', $input->getString('order_dir', $input->getString('orderdir', '')));
 
 			if ($orderdirs[0] == '')
 			{
@@ -2788,6 +2798,12 @@ class FabrikFEModelList extends JModelForm
 				foreach ($orderbys as $orderbyRaw)
 				{
 					$dir = JArrayHelper::getValue($orderdirs, $o, 'desc');
+
+					// as we use getString() for query string, need to sanitize
+					if (!in_array(strtolower($dir), array('asc', 'desc')))
+					{
+						throw new ErrorException('invalid order direction: ' . $dir, 500);
+					}
 
 					if ($orderbyRaw !== '')
 					{
@@ -2994,6 +3010,21 @@ class FabrikFEModelList extends JModelForm
 				$on = FabrikString::safeColName($join->table_join_alias . '.' . $join->table_join_key);
 				$sql .= ' AS ' . FabrikString::safeColName($join->table_join_alias) . ' ON ' . $on . ' = ' . $k . "\n";
 			}
+
+			/*
+			 * @FIXME - need to work out where the COLLATE needs to go. Was at the end of builQuery, but that creates
+			 * an invalid query if we had any grouping.  As it only applies to joined tables, tried putting it here,
+			 * but still get a query error.  Needs to be fixed, but I have to commit to get some other changes done.
+			 */
+			/*
+			$params = $this->getParams();
+
+			if ($params->get('force_collate', '') !== '')
+			{
+				$sql .= ' COLLATE ' . $params->get('force_collate', '') . ' ';
+			}
+			*/
+
 			/* Try to order join statements to ensure that you are selecting from tables that have
 			 * already been included (either via a previous join statement or the table select statement)
 			*/
@@ -5044,7 +5075,7 @@ class FabrikFEModelList extends JModelForm
 			}
 
 			// List plug-in filter found - it should have set its own sql in onGetPostFilter();
-			if (in_array($elid, $pluginKeys))
+			if (!empty($elid) && in_array($elid, $pluginKeys))
 			{
 				$this->filters['origvalue'][$i] = $value;
 				$this->filters['sqlCond'][$i] = $this->filters['sqlCond'][$i];
@@ -5064,22 +5095,22 @@ class FabrikFEModelList extends JModelForm
 			$fullWordsOnly = $this->filters['full_words_only'][$i];
 			$exactMatch = $this->filters['match'][$i];
 
+			// $$ hugh - testing allowing {QS} replacements in pre-filter values
+			$w->replaceRequest($value);
+			$value = $this->prefilterParse($value);
+			$value = $w->parseMessageForPlaceHolder($value);
+
 			if (!is_a($elementModel, 'PlgFabrik_Element'))
 			{
 				if ($this->filters['condition'][$i] == 'exists')
 				{
-					$this->filters['sqlCond'][$i] = 'EXISTS (' . $this->filters['value'][$i] . ')';
+					$this->filters['sqlCond'][$i] = 'EXISTS (' . $value . ')';
 				}
 
 				continue;
 			}
 
 			$elementModel->_rawFilter = $raw;
-
-			// $$ hugh - testing allowing {QS} replacements in pre-filter values
-			$w->replaceRequest($value);
-			$value = $this->prefilterParse($value);
-			$value = $w->parseMessageForPlaceHolder($value);
 
 			if ($filterEval == '1')
 			{
@@ -6588,6 +6619,11 @@ class FabrikFEModelList extends JModelForm
 
 		$orderbys = json_decode($item->order_by, true);
 
+		if (!isset($orderbys))
+		{
+			$orderbys = array();
+		}
+
 		// Responsive element classes
 		$listClasses = json_decode($params->get('list_responsive_elements'));
 
@@ -6642,7 +6678,11 @@ class FabrikFEModelList extends JModelForm
 				$label = $elementModel->getListHeading();
 				$label = $w->parseMessageForPlaceHolder($label, array());
 
-				if ($elementParams->get('can_order') == '1' && $this->outputFormat != 'csv')
+				/**
+				 * $$$ hugh - added $orderbys test, to see if element has been specified as an orderby in list module settings
+				 */
+
+				if (($elementParams->get('can_order') == '1' || in_array($elementModel->getId(), $orderbys)) && $this->outputFormat != 'csv')
 				{
 					$context = 'com_' . $package . '.list' . $this->getRenderContext() . '.order.' . $element->id;
 					$orderDir = $session->get($context);
@@ -7306,6 +7346,13 @@ class FabrikFEModelList extends JModelForm
 
 	public function storeRow($data, $rowId, $isJoin = false, $joinGroupTable = null)
 	{
+		/**
+		 * REMEMBER - if we've arrived here from the group model process(), saving joined rows,
+		 * $this list model will be for the parent list, and only $this-table->db_primary_key and
+		 * table_name will have been set to that of the joined table being saved to.  Bit of a hack,
+		 * and we need to find a better way to do this, but right now ... it is what it is.  Just be careful!
+		 */
+
 		if (is_array($rowId))
 		{
 			$rowId = array_unshift($rowId);
@@ -8137,9 +8184,9 @@ class FabrikFEModelList extends JModelForm
 	/**
 	 * Get the tables primary key and if the primary key is auto increment
 	 *
-	 * @param   string  $table  optional table name (used when getting pk to joined tables
+	 * @param   string  $table  Optional table name (used when getting pk to joined tables)
 	 *
-	 * @return  mixed	if ok returns array(key, extra, type, name) otherwise
+	 * @return  mixed	If ok returns array(key, extra, type, name) otherwise
 	 */
 
 	public function getPrimaryKeyAndExtra($table = null)

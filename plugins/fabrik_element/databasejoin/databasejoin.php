@@ -725,12 +725,27 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 	/**
 	 * Get select option label
 	 *
+	 * @param  bool  $filter  get alt label for filter, if present using :: splitter
+	 *
 	 * @return  string
 	 */
 
-	protected function _getSelectLabel()
+	protected function _getSelectLabel($filter = false)
 	{
-		return FText::_($this->getParams()->get('database_join_noselectionlabel', FText::_('COM_FABRIK_PLEASE_SELECT')));
+		$params = $this->getParams();
+		$label = $params->get('database_join_noselectionlabel');
+
+		if (strstr($label, '::'))
+		{
+			$labels = explode('::', $label);
+			$label = $filter ? $labels[1] : $labels[0];
+		}
+		
+		if (!$filter && $label == '')
+		{
+			$label = 'COM_FABRIK_PLEASE_SELECT';
+		}
+		return FText::_($label);
 	}
 
 	/**
@@ -1626,7 +1641,12 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		}
 
 		$html[] = FabrikHelperHTML::aList('checkbox', $tmp, $name, $attribs, $default, 'value', 'text', $optsPerRow, $editable);
-
+// $$$ hugh - should convert this to use the grid() helper, so here's the code from the standard elementlist render that does it
+/*
+		$grid = FabrikHelperHTML::grid($values, $labels, $selected, $name, $this->inputType, $elBeforeLabel, $optionsPerRow, $classes, $buttonGroup);
+		array_unshift($grid, '<div class="fabrikSubElementContainer" id="' . $id . '">');
+		$grid[] = '</div><!-- close subElementContainer -->';
+ */
 		if (empty($tmp))
 		{
 			$tmpids = array();
@@ -1962,6 +1982,18 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 	}
 
 	/**
+	 * TESTING for JFQ, issue with autocomplete filters using 'contains' instead of '='
+	 * Need to override this for joins, make sure exact match is applied
+	 * return  string
+	 */
+
+	protected function getFilterCondition()
+	{
+		$match = $this->isExactMatch(array('match' => $this->getElement()->filter_exact_match));
+		return($match == 1) ? '=' : 'contains';
+	}
+
+	/**
 	 * Get the default value for the list filter
 	 *
 	 * @param   bool  $normal   is the filter a normal or advanced filter
@@ -2080,7 +2112,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 
 		if ($normal)
 		{
-			$return[] = $this->getFilterHiddenFields($counter, $elName);
+			$return[] = $this->getFilterHiddenFields($counter, $elName, false, $normal);
 		}
 		else
 		{
@@ -2117,13 +2149,8 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 	protected function filterSelectLabel()
 	{
 		$params = $this->getParams();
-		$label = $params->get('database_join_noselectionlabel');
 
-		if (strstr($label, '::'))
-		{
-			$labels = explode('::', $label);
-			$label = FText::_(array_pop($labels));
-		}
+		$label = $this->_getSelectLabel(true);
 
 		if ($label == '')
 		{
@@ -2549,6 +2576,8 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 
 		$query->select($jointable . '.parent_id, ' . $v . ' AS value, ' . $label . ' AS text')->from($jointable)
 		->join('LEFT', $to . ' ON ' . $key . ' = ' . $jointable . '.' . $shortName);
+
+		$this->buildQueryWhere(array(), true, null, array('mode' => 'filter'), $query);
 
 		if (!is_null($condition) && !is_null($value))
 		{

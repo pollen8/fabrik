@@ -79,7 +79,6 @@ class PlgFabrik_ElementYesno extends PlgFabrik_ElementRadiobutton
 		{
 			$icon = $j3 ? 'checkmark.png' : '1.png';
 			$opts = array('alt' => FText::_('JYES'));
-			$opts['icon-class'] = 'icon-ok-sign';
 
 			return FabrikHelperHTML::image($icon, 'list', @$this->tmpl, $opts);
 		}
@@ -133,11 +132,11 @@ class PlgFabrik_ElementYesno extends PlgFabrik_ElementRadiobutton
 
 	public function renderListData_csv($data, &$thisRow)
 	{
-		$raw = $this->getFullName(true, false) . '_raw';
-		$rawdata = $thisRow->$raw;
-		$data = $rawdata ? $data : FText::_('JNO');
-
-		return $data;
+	    $raw = $this->getFullName(true, false) . '_raw';
+	    $rawdata = $thisRow->$raw;
+	    $data = (bool)$rawdata ? FText::_('JYES') : FText::_('JNO');
+     
+	    return $data;
 	}
 
 	/**
@@ -329,7 +328,7 @@ class PlgFabrik_ElementYesno extends PlgFabrik_ElementRadiobutton
 
 		if ($normal)
 		{
-			$return[] = $this->getFilterHiddenFields($counter, $elName);
+			$return[] = $this->getFilterHiddenFields($counter, $elName, false, $normal);
 		}
 		else
 		{

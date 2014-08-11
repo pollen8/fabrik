@@ -3207,7 +3207,7 @@ class PlgFabrik_Element extends FabrikPlugin
 				break;
 		}
 
-		$return[] = $normal ? $this->getFilterHiddenFields($counter, $elName) : $this->getAdvancedFilterHiddenFields();
+		$return[] = $normal ? $this->getFilterHiddenFields($counter, $elName, false, $normal) : $this->getAdvancedFilterHiddenFields();
 
 		return implode("\n", $return);
 	}
@@ -3895,11 +3895,13 @@ class PlgFabrik_Element extends FabrikPlugin
 	 * @param   string  $elName   Full element name will be converted to tablename.elementname format
 	 * @param   bool    $hidden   Has the filter been added due to a search form value with no corresponding filter set up in the table
 	 * if it has we need to know so that when we do a search from a 'fabrik_list_filter_all' field that search term takes precedence
+	 * @param   bool  $normal   do we render as a normal filter or as an advanced search filter
+	 *
 	 *
 	 * @return  string	html Hidden fields
 	 */
 
-	protected function getFilterHiddenFields($counter, $elName, $hidden = false)
+	protected function getFilterHiddenFields($counter, $elName, $hidden = false, $normal = true)
 	{
 		$params = $this->getParams();
 		$element = $this->getElement();
@@ -3929,7 +3931,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		 * Element filter not found (could be a prefilter instead) so use element default options
 		 * see http://fabrikar.com/forums/index.php?threads/major-filter-issues.37360/
 		 */
-		if ($filterIndex === false)
+		if ($filterIndex === false || $normal)
 		{
 			$condition = $this->getFilterCondition();
 			$eval = FABRIKFILTER_TEXT;
@@ -4311,6 +4313,9 @@ class PlgFabrik_Element extends FabrikPlugin
 			case 'nextmonth':
 				$query = ' (' . $key . ' >= DATE_ADD(LAST_DAY(now()), INTERVAL 1 DAY)  AND ' . $key
 				. ' <= DATE_ADD(LAST_DAY(NOW()), INTERVAL 1 MONTH) ) ';
+				break;
+			case 'birthday':
+				$query = '(MONTH(' . $key . ') = MONTH(CURDATE()) AND  DAY(' . $key . ') = DAY(CURDATE())) ';
 				break;
 			default:
 				if ($this->isJoin())

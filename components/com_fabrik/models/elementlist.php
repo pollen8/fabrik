@@ -417,7 +417,7 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 				break;
 		}
 
-		$return[] = $normal ? $this->getFilterHiddenFields($counter, $elName) : $this->getAdvancedFilterHiddenFields();
+		$return[] = $normal ? $this->getFilterHiddenFields($counter, $elName, false, $normal) : $this->getAdvancedFilterHiddenFields();
 
 		return implode("\n", $return);
 	}
