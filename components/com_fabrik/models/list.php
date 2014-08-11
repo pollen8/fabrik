@@ -2800,12 +2800,12 @@ class FabrikFEModelList extends JModelForm
 					$dir = JArrayHelper::getValue($orderdirs, $o, 'desc');
 
 					// as we use getString() for query string, need to sanitize
-					if (!in_array(strtolower($dir), array('asc', 'desc')))
+					if (!in_array(strtolower($dir), array('asc', 'desc','-')))
 					{
 						throw new ErrorException('invalid order direction: ' . $dir, 500);
 					}
 
-					if ($orderbyRaw !== '')
+					if ($orderbyRaw !== '' && $dir != '-')
 					{
 						// $$$ hugh - getOrderByName can return a CONCAT, ie join element ...
 
