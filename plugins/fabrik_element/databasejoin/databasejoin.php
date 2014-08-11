@@ -1295,15 +1295,15 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 			}
 
 			$targetIds = $this->multiOptionTargetIds($data, $repeatCounter);
+			$targetIds = $targetIds === false ? $default : $targetIds;
 
-			if ($targetIds !== false)
+			// Add icons
+			for ($i = 0; $i < count($targetIds); $i++)
 			{
-				$this->addReadOnlyLinks($defaultLabels, $targetIds);
+				$defaultLabels[$i] = $this->getReadOnlyOutput($targetIds[$i], $defaultLabels[$i]);
 			}
-			else
-			{
-				$this->addReadOnlyLinks($defaultLabels, $default);
-			}
+
+			$this->addReadOnlyLinks($defaultLabels, $targetIds);
 
 			$html[] = count($defaultLabels) < 2 ? implode(' ', $defaultLabels) : '<ul><li>' . implode('<li>', $defaultLabels) . '</li></ul>';
 		}
