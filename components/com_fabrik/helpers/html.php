@@ -132,10 +132,10 @@ class FabrikHelperHTML
 	 * @var array
 	 */
 	protected static $requestHeaders = null;
-	
+
 	/**
 	 * Usually gets set to COM_FABRIK_LIVESITE, but can be overridden by a global option
-	 * 
+	 *
 	 * @var string
 	 */
 	protected static $baseJSAssetURI = null;
@@ -1026,7 +1026,7 @@ if (!$j3)
 	 * Checks the js_base_url global config, to see if admin has set a base URI they want to use to
 	 * fetch JS assets from.  Allows for putting JS files in a fast CDN like Amazon.  If not set,
 	 * return COM_FABRIK_LIVESITE.
-	 * 
+	 *
 	 * @return string
 	 */
 	public static function getJSAssetBaseURI()
@@ -1035,18 +1035,18 @@ if (!$j3)
 		{
 			$usersConfig = JComponentHelper::getParams('com_fabrik');
 			$requirejsBaseURI = $usersConfig->get('requirejs_base_uri', COM_FABRIK_LIVESITE);
-			
+
 			if (empty($requirejsBaseURI))
 			{
 				$requirejsBaseURI = COM_FABRIK_LIVESITE;
 			}
-			
+
 			$requirejsBaseURI = rtrim($requirejsBaseURI, '/') . '/';
 			static::$baseJSAssetURI = $requirejsBaseURI;
 		}
 		return static::$baseJSAssetURI;
 	}
-	
+
 	/**
 	 * Ini the require JS configuration
 	 * Stores the shim and config to the session, which Fabrik system plugin
@@ -2263,7 +2263,7 @@ if (!$j3)
 		}
 		else
 		{
-			JModel::addIncludePath(COM_FABRIK_BASE . 'components/com_content/models');
+			JModelLegacy::addIncludePath(COM_FABRIK_BASE . 'components/com_content/models');
 			$articleModel = JModel::getInstance('Article', 'ContentModel');
 			$res = $articleModel->getItem($contentTemplate);
 		}
