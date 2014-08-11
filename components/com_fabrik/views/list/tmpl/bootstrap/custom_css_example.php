@@ -33,9 +33,6 @@
 *
 */
 
-// No direct access
-defined('_JEXEC') or die('Restricted access');
-
 header('Content-type: text/css');
 $c = $_REQUEST['c'];
 $buttonCount = (int) $_REQUEST['buttoncount'];
