@@ -2726,7 +2726,7 @@ class FabrikFEModelList extends JModelForm
 
 			if ($clearOrdering)
 			{
-				$session->set($context, '');
+				$session->set($context, null);
 			}
 			else
 			{
@@ -2752,7 +2752,7 @@ class FabrikFEModelList extends JModelForm
 				}
 				else
 				{
-					$session->set($context, '');
+					$session->set($context, null);
 				};
 			}
 		}
@@ -2799,7 +2799,7 @@ class FabrikFEModelList extends JModelForm
 				{
 					$dir = JArrayHelper::getValue($orderdirs, $o, 'desc');
 
-					// as we use getString() for query string, need to sanitize
+					// As we use getString() for query string, need to sanitize
 					if (!in_array(strtolower($dir), array('asc', 'desc','-')))
 					{
 						throw new ErrorException('invalid order direction: ' . $dir, 500);
@@ -6677,15 +6677,29 @@ class FabrikFEModelList extends JModelForm
 				$elementParams = $elementModel->getParams();
 				$label = $elementModel->getListHeading();
 				$label = $w->parseMessageForPlaceHolder($label, array());
+				$elementId = $elementModel->getId();
 
 				/**
 				 * $$$ hugh - added $orderbys test, to see if element has been specified as an orderby in list module settings
 				 */
-
-				if (($elementParams->get('can_order') == '1' || in_array($elementModel->getId(), $orderbys)) && $this->outputFormat != 'csv')
+				if (($elementParams->get('can_order') == '1' || in_array($elementId, $orderbys)) && $this->outputFormat != 'csv')
 				{
-					$context = 'com_' . $package . '.list' . $this->getRenderContext() . '.order.' . $element->id;
+					$context = 'com_' . $package . '.list' . $this->getRenderContext() . '.order.' . $elementId;
 					$orderDir = $session->get($context);
+
+					//  No user set order so get it from the list properties
+					if (is_null($orderDir) )
+					{
+						$orderDirs = (array) json_decode($item->order_dir);
+						$orderEls = (array) json_decode($item->order_by);
+						$ix = array_search($elementId, $orderEls);
+
+						if ($ix !== false)
+						{
+							$orderDir = JArrayHelper::getValue($orderDirs, $ix, '');
+						}
+					}
+
 					$class = "";
 					$currentOrderDir = $orderDir;
 					$tmpl = $this->getTmpl();
@@ -6722,7 +6736,15 @@ class FabrikFEModelList extends JModelForm
 						}
 					}
 
-					$heading = '<a ' . $class . ' href="#">' . $img . $label . '</a>';
+					if ($elementParams->get('can_order', false))
+					{
+						$heading = '<a ' . $class . ' href="#">' . $img . $label . '</a>';
+					}
+					else
+					{
+						$img = $orderDir === 'asc' ? '' : $img;
+						$heading = $img . $label;
+					}
 				}
 				else
 				{
