@@ -11,6 +11,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+jimport('joomla.filesystem.file');
+
 /**
  * PDF Set up helper
  *
