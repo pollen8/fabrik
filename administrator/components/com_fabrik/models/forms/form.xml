@@ -514,16 +514,6 @@
 
 		</fieldset>
 
-		<fieldset name="cck">
-
-			<field name="cck_category"
-				type="category"
-				description="COM_FABRIK_FIELD_CCK_CATEGORY_DESC"
-				extension="com_content"
-				label="COM_FABRIK_FIELD_CCK_CATEGORY_LABEL"/>
-
-		</fieldset>
-
 		<fieldset name="processing">
 
 			<field name="ajax_validations"

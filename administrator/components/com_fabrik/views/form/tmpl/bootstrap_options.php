@@ -22,11 +22,4 @@ defined('_JEXEC') or die('Restricted access');
 		?>
 	</fieldset>
 
-    <fieldset class="form-horizontal">
-
-		<?php foreach ($this->form->getFieldset('cck') as $this->field) :
-			echo $this->loadTemplate('control_group');
-		endforeach;
-		?>
-	</fieldset>
 </div>

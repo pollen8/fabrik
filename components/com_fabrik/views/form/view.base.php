@@ -135,10 +135,6 @@ class FabrikViewFormBase extends JViewLegacy
 
 		FabrikHelperHTML::debug($this->groups, 'form:view:groups');
 
-		// Cck in admin?
-		$this->cck();
-		JDEBUG ? $profiler->mark('form view: after cck') : null;
-
 		// Force front end templates
 		$this->_basePath = COM_FABRIK_FRONTEND . '/views';
 
@@ -1127,47 +1123,4 @@ class FabrikViewFormBase extends JViewLegacy
 		$aHiddenFields = array_merge($aHiddenFields, array_values($fields));
 	}
 
-	/**
-	 * Load up the cck view
-	 *
-	 * @return void
-	 */
-
-	protected function cck()
-	{
-		$app = JFactory::getApplication();
-		$input = $app->input;
-
-		if ($input->get('task') === 'cck')
-		{
-			$model = $this->getModel();
-			$params = $model->getParams();
-			$row = $model->getForm();
-			JHTML::script('admincck.js', 'administrator/components/com_fabrik/views/', true);
-			$document = JFactory::getDocument();
-			$opts = new stdClass;
-			$opts->livesite = JURI::base();
-			$opts->ename = $input->get('e_name');
-			$opts->catid = $input->getInt('catid');
-			$opts->section = $input->getInt('section');
-			$opts->formid = $row->id;
-
-			$tmpl = ($row->form_template == '') ? "default" : $row->form_template;
-			$tmpl = $input->get('cck_layout', $tmpl);
-
-			$opts->tmplList = FabrikHelperAdminHTML::templateList('form', 'fabrik_cck_template', $tmpl);
-
-			$views = array();
-			$views[] = JHTML::_('select.option', 'form');
-			$views[] = JHTML::_('select.option', 'details');
-			$selView = $input->get('cck_view');
-			$opts->viewList = JHTML::_('select.radiolist', $views, 'fabrik_cck_view', 'class="inputbox"', 'value', 'text', $selView);
-
-			$opts = json_encode($opts);
-			$script = "window.addEvent('fabrik.loaded', function() {
-			new adminCCK($opts);
-		});";
-			FabrikHelperHTML::addScriptDeclaration($script);
-		}
-	}
 }

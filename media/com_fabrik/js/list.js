@@ -401,7 +401,6 @@ var FbList = new Class({
 		}
 
 		opts = this.csvExportFilterOpts(opts);
-		console.log(opts);
 		
 		opts.start = start;
 		opts.option = 'com_fabrik';
@@ -416,7 +415,6 @@ var FbList = new Class({
 			var key = qs.split('=');
 			opts[key[0]] = key[1];
 		});
-		console.log(opts);
 		
 		// Append the custom_qs to the URL to enable querystring filtering of the list data
 		var myAjax = new Request.JSON({

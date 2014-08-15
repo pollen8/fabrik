@@ -289,6 +289,10 @@ class Com_FabrikInstallerScript
 			echo "<p style=\"color:green\">removed old update site</p>";
 		}
 
+		// Fix main menu name ordering issue where fabrik was near bottom of menu
+		$query->clear()->update('#__extensions')->set('title = "com_fabrik')->where('alias = "fabrik"');
+		$db->setQuery($query)->exectue();
+
 		$db
 			->setQuery(
 				"UPDATE #__extensions SET enabled = 1 WHERE type = 'plugin' AND (folder LIKE 'fabrik_%' OR (folder='system' AND element = 'fabrik')  OR (folder='content' AND element = 'fabrik'))");

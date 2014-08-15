@@ -332,33 +332,6 @@ class FabrikAdminControllerForm extends FabControllerForm
 	}
 
 	/**
-	 * CCK - not used atm
-	 *
-	 * @return void
-	 */
-
-	public function cck()
-	{
-		$app = JFactory::getApplication();
-		$input = $app->input;
-		$catid = $input->getInt('catid');
-		$db = JFactory::getDBO();
-		$db->setQuery('SELECT id FROM #__fabrik_forms WHERE params LIKE \'%"cck_category":"' . $catid . '"%\'');
-		$id = $db->loadResult();
-
-		if (!$id)
-		{
-			throw new RuntimeException(FText::_('SET_FORM_CCK_CATEGORY'));
-		}
-
-		$input->set('formid', $id);
-
-		// Tell fabrik to load js scripts normally
-		$input->set('iframe', 1);
-		$this->view();
-	}
-
-	/**
 	 * Delete a record from a form
 	 *
 	 * @since 3.0.6.2

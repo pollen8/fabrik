@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
 <extension xmlns="http://www.joomla.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" client="site" method="upgrade" type="component" version="2.5" xsi:schemaLocation="http://www.joomla.org extension.xsd ">
 	<name>com_fabrik</name>
-	<creationDate>March 2014</creationDate>
+	<creationDate>August 2014</creationDate>
 	<author>Rob Clayburn</author>
 	<copyright>Copyright (C) 2005-2014 fabrikar.com - All rights reserved.</copyright>
 	<license>GNU/GPL http://www.gnu.org/copyleft/gpl.html</license>
 	<authorEmail>rob@pollen-8.co.uk</authorEmail>
 	<authorUrl>www.pollen-8.co.uk</authorUrl>
-	<version>3.1.1</version>
+	<version>3.2</version>
 	<description>COM_FABRIK_XML_DESCRIPTION</description>
 
 	<scriptfile>com_fabrik.manifest.class.php</scriptfile>
@@ -63,7 +63,7 @@
 	</media>
 		
 	<administration>
-		<menu img="../administrator/components/com_fabrik/images/fabrik.png" view="home">Fabrik</menu>
+		<menu img="../administrator/components/com_fabrik/images/fabrik.png" view="home">com_fabrik</menu>
 		<submenu>
 			<menu alt="Lists" img="../administrator/components/com_fabrik/images/lists.png" link="option=com_fabrik&amp;view=lists" view="lists">com_fabrik_lists</menu>
 			<menu alt="Forms" img="../administrator/components/com_fabrik/images/forms.png" link="option=com_fabrik&amp;view=forms" view="forms">com_fabrik_forms</menu>
