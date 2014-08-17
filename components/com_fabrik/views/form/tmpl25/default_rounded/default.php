@@ -70,7 +70,7 @@ echo $form->intro;
 <form method="post" <?php echo $form->attribs?>>
 <?php
 	echo $this->plugintop;
-	active = ($form->error != '') ? '' : ' fabrikHide';
+	$active = ($form->error != '') ? '' : ' fabrikHide';
 	echo "<div class=\"fabrikMainError fabrikError$active\">";
 	echo FabrikHelperHTML::image('alert.png', 'form', $this->tmpl);
 	echo "$form->error</div>";
