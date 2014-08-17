@@ -319,6 +319,13 @@
 				default=""
 				description="COM_FABRIK_FIELD_ICON_FILE_DESC"
 				label="COM_FABRIK_FIELD_ICON_FILE_LABEL" />
+			
+			<field name="icon_subdir"
+				type="text"
+				size="20"
+				default=""
+				description="COM_FABRIK_FIELD_ICON_SUBDIR_DESC"
+				label="COM_FABRIK_FIELD_ICON_SUBDIR_LABEL" />
 
 		</fieldset>
 
