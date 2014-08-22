@@ -1329,6 +1329,29 @@ if (!$j3)
 	}
 
 	/**
+	 * Returns true if either J! system debug is true, and &fabrikdebug=2,
+	 * will then bypass ALL redirects, so we can see J! profile info.
+	 *
+	 * @return  bool
+	 */
+	
+	public static function isDebugSubmit($enabled = false)
+	{
+		$app = JFactory::getApplication();
+		$config = JComponentHelper::getParams('com_fabrik');
+	
+		if ($config->get('use_fabrikdebug') == 0)
+		{
+			return false;
+		}
+	
+		$jconfig = JFactory::getConfig();
+		$debug = (int) $jconfig->get('debug');
+	
+		return $debug === 1 && $app->input->get('fabrikdebug', 0) == 2;
+	}
+	
+	/**
 	 * Wrapper for JHTML::Script() loading with require.js
 	 * If not debugging will replace file names .js => -min.js
 	 *

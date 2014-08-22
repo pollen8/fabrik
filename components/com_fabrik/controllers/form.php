@@ -254,6 +254,16 @@ class FabrikControllerForm extends JControllerLegacy
 
 			return;
 		}
+		
+		/**
+		 * If debug submit is requested (&fabrikdebug=2, and J! debug on, and Fabrik degbu allowed),
+		 * bypass any and all redirects, so we can see the profile for the submit
+		 */
+		
+		if (FabrikHelperHTML::isDebugSubmit())
+		{
+			return;
+		}
 
 		$listModel = $model->getListModel();
 		$listModel->set('_table', null);
