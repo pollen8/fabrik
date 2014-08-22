@@ -1167,6 +1167,9 @@ class FabrikFEModelForm extends FabModelForm
 
 	public function process()
 	{
+		$profiler = JProfiler::getInstance('Application');
+		JDEBUG ? $profiler->mark('process: start') : null;
+		
 		$app = JFactory::getApplication();
 		$input = $app->input;
 
@@ -1251,6 +1254,8 @@ class FabrikFEModelForm extends FabModelForm
 		parent::cleanCache('com_' . $package, 1);
 		parent::cleanCache('com_' . $package, 0);
 
+		JDEBUG ? $profiler->mark('process: end') : null;
+		
 		return true;
 	}
 
