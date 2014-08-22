@@ -6678,11 +6678,7 @@ class FabrikFEModelList extends JModelForm
 				$label = $elementModel->getListHeading();
 				$label = $w->parseMessageForPlaceHolder($label, array());
 
-				/**
-				 * $$$ hugh - added $orderbys test, to see if element has been specified as an orderby in list module settings
-				 */
-
-				if (($elementParams->get('can_order') == '1' || in_array($elementModel->getId(), $orderbys)) && $this->outputFormat != 'csv')
+				if ($elementParams->get('can_order') == '1' && $this->outputFormat != 'csv')
 				{
 					$context = 'com_' . $package . '.list' . $this->getRenderContext() . '.order.' . $element->id;
 					$orderDir = $session->get($context);
