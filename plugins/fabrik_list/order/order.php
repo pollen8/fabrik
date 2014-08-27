@@ -80,8 +80,7 @@ class PlgFabrik_ListOrder extends PlgFabrik_List
 		$orderEl = $model->getFormModel()->getElement($params->get('order_element'), true);
 		$form_id = $model->getFormModel()->getId();
 		$opts = $this->getElementJSOptions();
-		$opts->enabled = (count($model->orderEls) === 1
-			&& FabrikString::safeColNameToArrayKey($model->orderEls[0]) == FabrikString::safeColNameToArrayKey($orderEl->getOrderByName())) ? true
+		$opts->enabled = (FabrikString::safeColNameToArrayKey($model->orderEls[0]) == FabrikString::safeColNameToArrayKey($orderEl->getOrderByName())) ? true
 			: false;
 		$opts->listid = $model->getId();
 		$opts->orderElementId = $params->get('order_element');
