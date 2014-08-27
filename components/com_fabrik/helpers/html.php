@@ -2266,13 +2266,14 @@ if (!$j3)
 	 *
 	 * @param   int  $contentTemplate  Joomla article id
 	 * @param	string	$part	which part, intro, full, or both
+	 * @param   bool  $runPlugins  run content plugins on the text
 	 *
 	 * @since   3.0.7
 	 *
 	 * @return  string  content item html
 	 */
 
-	public function getContentTemplate($contentTemplate, $part = 'both')
+	public function getContentTemplate($contentTemplate, $part = 'both', $runPlugins = false)
 	{
 		$app = JFactory::getApplication();
 
@@ -2304,6 +2305,11 @@ if (!$j3)
 			$res = $res->introtext . ' ' . $res->fulltext;
 		}
 
+		if ($runPlugins === true)
+		{
+			self::runContentPlugins($res);
+		}
+		
 		return $res;
 	}
 
