@@ -122,9 +122,9 @@ endforeach;
 				
 				<?php 
 				foreach ($this->headings as $key => $heading) :
-					$h = $this->cellClass[$key];
+					$h = $this->headingClass[$key];
 					$style = empty($h['style']) ? '' : 'style="' . $h['style'] . '"';?>
-					<td class="heading <?php echo $h['class']?>" <?php echo $style?>>
+					<td class="<?php echo $h['class']?>" <?php echo $style?>>
 						<?php 
 						$cal = $this->calculations[$key];
 						echo array_key_exists($groupedby, $cal->grouped) ? $cal->grouped[$groupedby] : $cal->calc;
