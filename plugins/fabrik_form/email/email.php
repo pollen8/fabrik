@@ -81,9 +81,18 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 			return;
 		}
 
-		$contentTemplate = $params->get('email_template_content');
-		$content = $contentTemplate != '' ? $this->_getConentTemplate($contentTemplate) : '';
-
+		/**
+		 * Added option to run content plugins on message text.  Note that rather than run it one time at the
+		 * end of the following code, after we have assembled all the various options in to a single $message,
+		 * it needs to be run separately on each type of content.  This is because we do placeholder replacement
+		 * in various places, which will strip all {text} which doesn't match element names.
+		 */
+		
+		$runContentPlugins = $params->get('email_run_content_plugins', '0') === '1';
+		
+		$contentTemplate = $params->get('email_template_content');		
+		$content = $contentTemplate != '' ? FabrikHelperHTML::getContentTemplate($contentTemplate, both, $runContentPlugins) : '';
+		
 		// Always send as html as even text email can contain html from wysiwyg editors
 		$htmlEmail = true;
 
@@ -100,6 +109,11 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 				return;
 			}
 
+			if ($runContentPlugins === true)
+			{
+				FabrikHelperHTML::runContentPlugins($messageTemplate);	
+			}
+			
 			$messageTemplate = str_replace('{content}', $content, $messageTemplate);
 		}
 
@@ -107,6 +121,12 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 
 		if (!empty($messageText))
 		{
+			
+			if ($runContentPlugins === true)
+			{
+				FabrikHelperHTML::runContentPlugins($messageText);
+			}
+			
 			$messageText = $w->parseMessageForPlaceholder($messageText, $this->data, false);
 			$messageText = str_replace('{content}', $content, $messageText);
 			$messageText = str_replace('{template}', $messageTemplate, $messageText);
@@ -150,6 +170,7 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 		$message = str_replace('{fabrik_editurl}', $editURL, $message);
 		$message = str_replace('{fabrik_viewurl}', $viewURL, $message);
 
+		
 		// $$$ rob if email_to is not a valid email address check the raw value to see if that is
 		$email_to = explode(',', $params->get('email_to'));
 
@@ -568,6 +589,7 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 
 	/**
 	 * Get content item template
+	 * DEPRECATED use FabrikHelperHTML::getContentTemplate() instead
 	 *
 	 * @param   int  $contentTemplate  Joomla article ID to load
 	 *
