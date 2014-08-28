@@ -65,6 +65,17 @@
 				query="SELECT id AS value, title AS text FROM #__content WHERE state != -2 "
 				repeat="true" />
 
+			<field name="email_run_content_plugins"
+				type="radio"
+				class="btn-group"
+				default="0"
+				repeat="true"
+				description="PLG_FABRIK_FORM_EMAIL_RUN_CONTENT_PLUGINS_DESC"
+				label="PLG_FABRIK_FORM_EMAIL_RUN_CONTENT_PLUGINS_LABEL">
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+			</field>
+			
 			<field name="email_message_text" 
 				type="fabrikeditor"
 				description="PLG_FABRIK_FORM_EMAIL_MESSAGE_TEXT_DESC"

@@ -41,7 +41,7 @@ var FbFileUpload = new Class({
 	},
 	
 	/**
-	 * Repoistion the hidden input field over teh 'add' button. Called on initiate
+	 * Repoistion the hidden input field over the 'add' button. Called on initiate
 	 * and if in a tab and the tab is activated. Triggered from element.watchTab()
 	 */
 	redraw: function () {

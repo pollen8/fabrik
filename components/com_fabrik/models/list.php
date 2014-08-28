@@ -6679,10 +6679,7 @@ class FabrikFEModelList extends JModelForm
 				$label = $w->parseMessageForPlaceHolder($label, array());
 				$elementId = $elementModel->getId();
 
-				/**
-				 * $$$ hugh - added $orderbys test, to see if element has been specified as an orderby in list module settings
-				 */
-				if (($elementParams->get('can_order') == '1' || in_array($elementId, $orderbys)) && $this->outputFormat != 'csv')
+				if ($elementParams->get('can_order') == '1' && $this->outputFormat != 'csv')
 				{
 					$context = 'com_' . $package . '.list' . $this->getRenderContext() . '.order.' . $elementId;
 					$orderDir = $session->get($context);
@@ -11054,8 +11051,16 @@ class FabrikFEModelList extends JModelForm
 			}
 
 			// Migration test
-			$modFolder = JPATH_SITE . '/templates/' . $app->getTemplate() . '/html/com_fabrik/list/' . $this->tmpl;
-			$componentFolder = JPATH_SITE . '/components/com_fabrik/views/list/tmpl/' . $this->tmpl;
+			if (FabrikWorker::j3())
+			{
+				$modFolder = JPATH_SITE . '/templates/' . $app->getTemplate() . '/html/com_fabrik/list/' . $this->tmpl;
+				$componentFolder = JPATH_SITE . '/components/com_fabrik/views/list/tmpl/' . $this->tmpl;
+			}
+			else
+			{
+				$modFolder = JPATH_SITE . '/templates/' . $app->getTemplate() . '/themes/' . $this->tmpl;
+				$componentFolder = JPATH_SITE . '/components/com_fabrik/views/list/tmpl25/' . $this->tmpl;
+			}
 
 			if (!JFolder::exists($componentFolder) && !JFolder::exists($modFolder))
 			{

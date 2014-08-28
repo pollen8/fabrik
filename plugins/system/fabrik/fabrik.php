@@ -159,14 +159,17 @@ class PlgSystemFabrik extends JPlugin
 
 		$js = $session->get('fabrik.js.scripts', array());
 		$js = implode("\n", $js);
+		$jsAssetBaseURI = FabrikHelperHTML::getJSAssetBaseURI();
+		$script = '';
+
+		if (!FabrikHelperHTML::inAjaxLoadedPage())
+		{
+			$script .= '<script type="text/javascript" src="' . $jsAssetBaseURI . 'media/com_fabrik/js/lib/require/require.js' . '">';
+		}
 
 		if ($config . $js !== '')
 		{
-			$script = '<script type="text/javascript">' . "\n" . $config . "\n" . $js . "\n" . '</script>';
-		}
-		else
-		{
-			$script = '';
+			$script .= '<script type="text/javascript">' . "\n" . $config . "\n" . $js . "\n" . '</script>';
 		}
 
 		return $script;
