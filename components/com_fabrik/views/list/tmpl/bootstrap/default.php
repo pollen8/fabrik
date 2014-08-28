@@ -119,13 +119,21 @@ endforeach;
 		 	?>
 			<?php if ($this->hasCalculations) : ?>
 				<tr class="fabrik_calculations">
-				<?php
-				foreach ($this->calculations as $cal) :
-					echo "<td>";
-					echo array_key_exists($groupedby, $cal->grouped) ? $cal->grouped[$groupedby] : $cal->calc;
-					echo  "</td>";
+				
+				<?php 
+				foreach ($this->headings as $key => $heading) :
+					$h = $this->headingClass[$key];
+					$style = empty($h['style']) ? '' : 'style="' . $h['style'] . '"';?>
+					<td class="<?php echo $h['class']?>" <?php echo $style?>>
+						<?php 
+						$cal = $this->calculations[$key];
+						echo array_key_exists($groupedby, $cal->grouped) ? $cal->grouped[$groupedby] : $cal->calc;
+						?>
+					</td>
+				<?php 
 				endforeach;
 				?>
+
 				</tr>
 
 			<?php endif ?>

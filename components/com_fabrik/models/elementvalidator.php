@@ -235,8 +235,8 @@ class FabrikFEModelElementValidator extends JModelLegacy
 		$tmpl = $this->elementModel->getFormModel()->getTmpl();
 		$validations = array_unique($this->findAll());
 		$emptyIcon = $this->getIcon();
-		$icon = FabrikHelperHTML::image($emptyIcon, 'form', $tmpl, $this->iconOpts) . ' ';
-
+		$icon = empty($emptyIcon) && empty($validations) ? "" : FabrikHelperHTML::image($emptyIcon, 'form', $tmpl, $this->iconOpts) . ' ';
+		
 		return $icon;
 	}
 

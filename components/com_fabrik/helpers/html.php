@@ -1329,6 +1329,29 @@ if (!$j3)
 	}
 
 	/**
+	 * Returns true if either J! system debug is true, and &fabrikdebug=2,
+	 * will then bypass ALL redirects, so we can see J! profile info.
+	 *
+	 * @return  bool
+	 */
+	
+	public static function isDebugSubmit($enabled = false)
+	{
+		$app = JFactory::getApplication();
+		$config = JComponentHelper::getParams('com_fabrik');
+	
+		if ($config->get('use_fabrikdebug') == 0)
+		{
+			return false;
+		}
+	
+		$jconfig = JFactory::getConfig();
+		$debug = (int) $jconfig->get('debug');
+	
+		return $debug === 1 && $app->input->get('fabrikdebug', 0) == 2;
+	}
+	
+	/**
 	 * Wrapper for JHTML::Script() loading with require.js
 	 * If not debugging will replace file names .js => -min.js
 	 *
@@ -1741,7 +1764,9 @@ if (!$j3)
 
 		$app = JFactory::getApplication();
 		$package = $app->getUserState('com_fabrik.package', 'fabrik');
-		$json->url = 'index.php?option=com_' . $package . '&format=raw&view=plugin&task=pluginAjax&g=element&element_id=' . $elementid
+		$json->url = 'index.php?option=com_' . $package . '&format=raw';
+		$json->url .= $app->isAdmin() ? '&task=plugin.pluginAjax' : '&view=plugin&task=pluginAjax';
+		$json->url .= '&g=element&element_id=' . $elementid
 			. '&formid=' . $formid . '&plugin=' . $plugin . '&method=autocomplete_options&package=' . $package;
 		$c = JArrayHelper::getValue($opts, 'onSelection');
 
@@ -2243,13 +2268,14 @@ if (!$j3)
 	 *
 	 * @param   int  $contentTemplate  Joomla article id
 	 * @param	string	$part	which part, intro, full, or both
+	 * @param   bool  $runPlugins  run content plugins on the text
 	 *
 	 * @since   3.0.7
 	 *
 	 * @return  string  content item html
 	 */
 
-	public function getContentTemplate($contentTemplate, $part = 'both')
+	public function getContentTemplate($contentTemplate, $part = 'both', $runPlugins = false)
 	{
 		$app = JFactory::getApplication();
 
@@ -2281,6 +2307,11 @@ if (!$j3)
 			$res = $res->introtext . ' ' . $res->fulltext;
 		}
 
+		if ($runPlugins === true)
+		{
+			self::runContentPlugins($res);
+		}
+		
 		return $res;
 	}
 
