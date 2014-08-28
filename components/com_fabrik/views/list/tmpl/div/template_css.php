@@ -28,4 +28,11 @@ echo "
 	top: 10px;
 	right: 10px;
 }
+
+.filtertable_horiz {
+	display: inline-block;
+	padding: 25px;
+	vertical-align: top;
+}
+
 ";?>
