@@ -574,6 +574,15 @@ class PlgFabrik_Element extends FabrikPlugin
 		$cleanDatas = array($this->getElement()->name . '_' . $cleanData, $cleanData);
 		$opts = array('forceImage' => true);
 
+		//If subdir is set prepend file name with subdirectory (so first search through [template folders]/subdir for icons, e.g. images/subdir)
+		$iconsubdir = $params->get('icon_subdir', '');
+		if ($iconsubdir != '')
+		{
+			$iconsubdir = rtrim($iconsubdir,'/') . '/';
+			$iconsubdir = ltrim($iconsubdir,'/');
+			array_unshift($cleanDatas, $iconsubdir.$cleanData); //search subdir first
+		}
+
 		foreach ($cleanDatas as $cleanData)
 		{
 			foreach ($this->imageExtensions as $ex)
