@@ -261,7 +261,23 @@ class Fabimage
 		 * ... we should probably clean $file, replace non alphanumeric chars with
 		 * underscores, as filenames with things like commas, = signs etc. could be problematic, both in
 		 * the file system, and on the IMG URL.
+		 * 
+		 * EDIT - hopefully just md5()'ing the file should fix the above, needed to do it as we finally had
+		 * someone report a problem with invalid file name, see ...
+		 * 
+		 * https://github.com/Fabrik/fabrik/pull/1307
+		 * 
+		 * So ... just preserve original extension (if any) and append it to md5() of file name.
 		 */
+		
+		$ext = pathinfo($file, PATHINFO_EXTENSION);
+		$file = md5($file);
+		
+		if (!empty($ext))
+		{
+			$file .= '.' . $ext;
+		}
+		
 		$folder = JPATH_SITE . '/' . ltrim($path, '/');
 
 		// For SSL a user agent may need to be set.
@@ -272,6 +288,8 @@ class Fabimage
 			JFolder::create($folder);
 		}
 
+		// make sure we have one, and only one, / on the end of folder.  Really should add a helper for this which looks for legacy \ as well!
+		$folder = rtrim($folder, '/') . '/';
 		$cacheFile = $folder . $file;
 
 		// Check for cached version
