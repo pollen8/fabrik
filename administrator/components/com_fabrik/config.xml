@@ -297,12 +297,13 @@
 	<fieldset label="COM_FABRIK_JAVASCRIPT" name="javascript">
 
 		<field name="use_mediabox"
-			type="radio"
+			type="list"
 			default="0" description="COM_FABRIK_MEDIA_BOX_DESC"
 			label="COM_FABRIK_MEDIA_BOX_LABEL"
 			class="radio btn-group">
-				<option value="0">JNO</option>
-				<option value="1">JYES</option>
+				<option value="0">COM_FABRIK_LIGHTBOX_SLIMBOX</option>
+				<option value="1">COM_FABRIK_LIGHTBOX_MEDIABOX</option>
+				<option value="2">COM_FABRIK_LIGHTBOX_ROKBOX</option>
 		</field>
 
 		<field name="mediabox_style"
