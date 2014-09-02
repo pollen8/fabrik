@@ -57,7 +57,7 @@ class PlgFabrik_FormClone extends PlgFabrik_Form
 			if ($clone_batchid_field_id != '')
 			{
 				$elementModel = FabrikWorker::getPluginManager()->getElementPlugin($clone_batchid_field_id);
-				$id_element = elementModel->getElement(true);
+				$id_element = $elementModel->getElement(true);
 				$formModel->formData[$id_element->name] = $formModel->fullFormData['rowid'];
 				$formModel->formData[$id_element->name . '_raw'] = $formModel->fullFormData['rowid'];
 				$listModel = $formModel->getlistModel();
