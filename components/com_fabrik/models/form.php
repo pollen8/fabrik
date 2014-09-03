@@ -1187,21 +1187,27 @@ class FabrikFEModelForm extends FabModelForm
 		 * now looks at origRowId
 		 */
 		$this->origRowId = $this->rowId;
+		
+		JDEBUG ? $profiler->mark('process, getGroupsHiarachy: start') : null;
 		$this->getGroupsHiarachy();
 
 		if ($form->record_in_database == '1')
 		{
+			JDEBUG ? $profiler->mark('process, setOrigData: start') : null;
 			$this->setOrigData();
 		}
 
+		JDEBUG ? $profiler->mark('process, onBeforeProcess plugins: start') : null;
 		if (in_array(false, $pluginManager->runPlugins('onBeforeProcess', $this)))
 		{
 			return false;
 		}
 
 		$this->removeEmptyNoneJoinedGroupData($this->formData);
+		JDEBUG ? $profiler->mark('process, setFormData: start') : null;
 		$this->setFormData();
 
+		JDEBUG ? $profiler->mark('process, _doUpload: start') : null;
 		if (!$this->_doUpload())
 		{
 			return false;
@@ -1211,6 +1217,7 @@ class FabrikFEModelForm extends FabModelForm
 		 * this->setFormData();
 		 */
 
+		JDEBUG ? $profiler->mark('process, onBeforeStore plugins: start') : null;
 		if (in_array(false, $pluginManager->runPlugins('onBeforeStore', $this)))
 		{
 			return false;
@@ -1229,8 +1236,10 @@ class FabrikFEModelForm extends FabModelForm
 
 		// $$$rob run this before as well as after onAfterProcess (ONLY for redirect plugin)
 		// so that any redirect urls are available for the plugin (e.g twitter)
+		JDEBUG ? $profiler->mark('process, onLastProcess plugins: start') : null;
 		$pluginManager->runPlugins('onLastProcess', $this);
 
+		JDEBUG ? $profiler->mark('processToDb, onAfterProcess plugins: start') : null;
 		if (in_array(false, $pluginManager->runPlugins('onAfterProcess', $this)))
 		{
 			// $$$ rob this no longer stops default redirect (not needed any more)
@@ -1241,6 +1250,7 @@ class FabrikFEModelForm extends FabModelForm
 		$sessionModel->remove();
 
 		// $$$rob used ONLY for redirect plugins
+		JDEBUG ? $profiler->mark('process, onLastProcess plugins: start') : null;
 		if (in_array(false, $pluginManager->runPlugins('onLastProcess', $this)))
 		{
 			// $$$ rob this no longer stops default redirect (not needed any more)
@@ -1801,6 +1811,9 @@ class FabrikFEModelForm extends FabModelForm
 
 	public function processToDB()
 	{
+		$profiler = JProfiler::getInstance('Application');
+		JDEBUG ? $profiler->mark('processToDb: start') : null;
+		
 		$pluginManager = FabrikWorker::getPluginManager();
 		$app = JFactory::getApplication();
 		$input = $app->input;
@@ -1808,22 +1821,31 @@ class FabrikFEModelForm extends FabModelForm
 		$item = $listModel->getTable();
 		$origid = $this->prepareForCopy();
 		$this->formData = $listModel->removeTableNameFromSaveData($this->formData, '___');
+		
+		JDEBUG ? $profiler->mark('processToDb, submitToDatabase: start') : null;
 		$insertId = $this->storeMainRow ? $this->submitToDatabase($this->rowId) : $this->rowId;
+		
 		$this->updateRefferrer($origid, $insertId);
 		$this->setInsertId($insertId);
 
 		// Store join data
+		JDEBUG ? $profiler->mark('processToDb, processGroups: start') : null;
 		$this->processGroups();
 
 		// Enable db join checkboxes in repeat groups to save data
+		JDEBUG ? $profiler->mark('processToDb, processElements: start') : null;
 		$this->processElements();
 
+		JDEBUG ? $profiler->mark('processToDb, onBeforeCalculations plugins: start') : null;
 		if (in_array(false, $pluginManager->runPlugins('onBeforeCalculations', $this)))
 		{
 			return $insertId;
 		}
-
+		
+		JDEBUG ? $profiler->mark('processToDb, doCalculations: start') : null;
 		$this->listModel->doCalculations();
+		
+		JDEBUG ? $profiler->mark('processToDb: end') : null;
 		return $insertId;
 	}
 
