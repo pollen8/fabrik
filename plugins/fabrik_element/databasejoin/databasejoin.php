@@ -3134,7 +3134,8 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 			 * IN (), if it worked, would produce no rows, just replace with 1=-1
 			 * Can't just count($v), as sometimes it's an array with a single null entry.
 			 */
-			array_map(array($db, 'quote'), $v);
+			
+			$v = array_map(array($db, 'quote'), $v);
 			$ins = implode(',', $v);
 
 			if (trim($ins) === '')
