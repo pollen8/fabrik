@@ -1255,7 +1255,7 @@
 			
 			<field name="distinct"
 				type="radio"
-				default="0"
+				default="1"
 				label="COM_FABRIK_LIST_DISTINCT_LABEL"
 				description="COM_FABRIK_LIST_DISTINCT_DESC"
 				class="btn-group">
