@@ -10,6 +10,10 @@ var FbSlider = new Class({
 	initialize: function (element, options) {
 		this.parent(element, options);
 		this.plugin = 'slider';
+		this.makeSlider();
+	},
+	
+	makeSlider: function () {
 		var isNull = false;
 		if (typeOf(this.options.value) === 'null' || this.options.value === '') {
 			this.options.value = '';
@@ -24,10 +28,10 @@ var FbSlider = new Class({
 			}
 			this.output = this.element.getElement('.fabrikinput');
 			this.output2 = this.element.getElement('.slider_output');
-
+	
 			this.output.value = this.options.value;
 			this.output2.set('text', this.options.value);
-
+	
 			this.mySlide = new Slider(
 				this.element.getElement('.fabrikslider-line'),
 				this.element.getElement('.knob'),
@@ -47,7 +51,7 @@ var FbSlider = new Class({
 					steps : this.options.steps
 				}
 			).set(v);
-
+	
 			if (isNull) {
 				this.output.value = '';
 				this.output2.set('text', '');
@@ -56,7 +60,7 @@ var FbSlider = new Class({
 			this.watchClear();
 		}
 	},
-
+	
 	watchClear: function () {
 		this.element.addEvent('click:relay(.clearslider)', function (e, target) {
 			e.preventDefault();
@@ -84,5 +88,12 @@ var FbSlider = new Class({
 		if (action === 'change') {
 			this.changejs = js;
 		}
+	},
+	
+	cloned: function (c) {
+		delete this.mySlide;
+		this.makeSlider();
+		this.parent(c);
 	}
+
 });

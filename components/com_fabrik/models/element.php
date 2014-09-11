@@ -574,6 +574,15 @@ class PlgFabrik_Element extends FabrikPlugin
 		$cleanDatas = array($this->getElement()->name . '_' . $cleanData, $cleanData);
 		$opts = array('forceImage' => true);
 
+		//If subdir is set prepend file name with subdirectory (so first search through [template folders]/subdir for icons, e.g. images/subdir)
+		$iconsubdir = $params->get('icon_subdir', '');
+		if ($iconsubdir != '')
+		{
+			$iconsubdir = rtrim($iconsubdir,'/') . '/';
+			$iconsubdir = ltrim($iconsubdir,'/');
+			array_unshift($cleanDatas, $iconsubdir.$cleanData); //search subdir first
+		}
+
 		foreach ($cleanDatas as $cleanData)
 		{
 			foreach ($this->imageExtensions as $ex)
@@ -3487,8 +3496,10 @@ class PlgFabrik_Element extends FabrikPlugin
 			 * Paul - According to tooltip, $phpOpts should be of form "array(JHTML: :_('select.option', '1', 'one'))"
 			 * This is an array of objects with properties text and value.
 			 * If user has mis-specified this we should tell them.
+			 * 
+			 * @FIXME - $$$ hugh - seems like an empty array should be valid as well?
 			 **/
-			if (!is_array($phpOpts) || !$phpOpts[0] || !is_object($phpOpts[0]) || !$phpOpts[0]->value || !$phpOpts[0]->text)
+			if (!is_array($phpOpts) || !$phpOpts[0] || !is_object($phpOpts[0]) || !isset($phpOpts[0]->value) || !isset($phpOpts[0]->text))
 			{
 				FabrikWorker::logError(sprintf(FText::_('COM_FABRIK_ELEMENT_SUBOPTION_ERROR'), $this->element->name, var_export($phpOpts, true)), 'error');
 
@@ -3528,8 +3539,10 @@ class PlgFabrik_Element extends FabrikPlugin
 			 * Paul - According to tooltip, $phpOpts should be of form "array(JHTML::_('select.option', '1', 'one'))"
 			 * This is an array of objects with properties text and value.
 			 * If user has mis-specified this we should tell them.
+			 * 
+			 * @FIXME - $$$ hugh - seems like an empty array should be valid as well?
 			 **/
-			if (!is_array($phpOpts) || !$phpOpts[0] || !is_object($phpOpts[0]) || !$phpOpts[0]->value || !$phpOpts[0]->text)
+			if (!is_array($phpOpts) || !$phpOpts[0] || !is_object($phpOpts[0]) || !isset($phpOpts[0]->value) || !isset($phpOpts[0]->text))
 			{
 				FabrikWorker::logError(sprintf(FText::_('COM_FABRIK_ELEMENT_SUBOPTION_ERROR'), $this->element->name, var_export($phpOpts, true)), 'error');
 

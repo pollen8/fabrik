@@ -1416,11 +1416,27 @@ class FabrikWorker
 			 *  default connection as well, essentially enabling it for ALL queries we do.
 			 */
 			$fbConfig = JComponentHelper::getParams('com_fabrik');
-
+			
 			if ($fbConfig->get('enable_big_selects', 0) == '1')
 			{
 				$fabrikDb = self::$database[$sig];
-				$fabrikDb->setQuery("SET OPTION SQL_BIG_SELECTS=1, GROUP_CONCAT_MAX_LEN=10240");
+				
+				/**
+				 * Use of OPTION in SET deprecated from MySQL 5.1. onward
+				 * http://www.fabrikar.com/forums/index.php?threads/enable-big-selects-error.39463/#post-198293
+				 * NOTE - technically, using verison_compare on MySQL version could fail, if it's a "gamma"
+				 * release, which PHP desn't grok!
+				 */
+				
+				if (version_compare($fabrikDb->getVersion(), '5.1.0', '>='))
+				{
+					$fabrikDb->setQuery("SET SQL_BIG_SELECTS=1, GROUP_CONCAT_MAX_LEN=10240");
+				}
+				else
+				{
+					$fabrikDb->setQuery("SET OPTION SQL_BIG_SELECTS=1, GROUP_CONCAT_MAX_LEN=10240");
+				}
+				
 				$fabrikDb->execute();
 			}
 		}

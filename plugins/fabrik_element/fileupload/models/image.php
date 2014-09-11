@@ -164,7 +164,8 @@ class ImageRender
 						$n = '';
 					}
 
-					$this->output .= '<a href="' . $fullSize . '" rel="lightbox[' . $n . ']" title="' . $title . '">' . $img . '</a>';
+					$lightboxAttrs = FabrikHelperHTML::getLightboxAttributes($title, $n);
+					$this->output .= '<a href="' . $fullSize . '" ' . $lightboxAttrs . ' title="' . $title . '">' . $img . '</a>';
 				}
 				else
 				{

@@ -28,4 +28,9 @@ echo "
 	top: 10px;
 	right: 10px;
 }
+
+.filtertable_horiz {
+	display: inline-block;
+	vertical-align: top;
+}
 ";?>

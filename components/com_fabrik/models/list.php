@@ -7980,10 +7980,15 @@ class FabrikFEModelList extends JModelForm
 
 	public static function cacheDoCalculations($listId)
 	{
+		$profiler = JProfiler::getInstance('Application');
+		JDEBUG ? $profiler->mark('cacheDoCalculations: start') : null;
+		
 		$listModel = JModelLegacy::getInstance('List', 'FabrikFEModel');
 		$listModel->setId($listId);
 		$db = FabrikWorker::getDbo();
 		$formModel = $listModel->getFormModel();
+		
+		JDEBUG ? $profiler->mark('cacheDoCalculations, getGroupsHiarachy: start') : null;
 		$groups = $formModel->getGroupsHiarachy();
 
 		foreach ($groups as $groupModel)
@@ -7998,6 +8003,7 @@ class FabrikFEModelList extends JModelForm
 
 				if ($params->get('sum_on', 0) == 1)
 				{
+					JDEBUG ? $profiler->mark('cacheDoCalculations, sum_on: start') : null;
 					$aSumCals = $elementModel->sum($listModel);
 					$params->set('sum_value_serialized', serialize($aSumCals[1]));
 					$params->set('sum_value', $aSumCals[0]);
@@ -8006,6 +8012,7 @@ class FabrikFEModelList extends JModelForm
 
 				if ($params->get('avg_on', 0) == 1)
 				{
+					JDEBUG ? $profiler->mark('cacheDoCalculations, avg_on: start') : null;
 					$aAvgCals = $elementModel->avg($listModel);
 					$params->set('avg_value_serialized', serialize($aAvgCals[1]));
 					$params->set('avg_value', $aAvgCals[0]);
@@ -8014,6 +8021,7 @@ class FabrikFEModelList extends JModelForm
 
 				if ($params->get('median_on', 0) == 1)
 				{
+					JDEBUG ? $profiler->mark('cacheDoCalculations, median_on: start') : null;
 					$medians = $elementModel->median($listModel);
 					$params->set('median_value_serialized', serialize($medians[1]));
 					$params->set('median_value', $medians[0]);
@@ -8022,6 +8030,7 @@ class FabrikFEModelList extends JModelForm
 
 				if ($params->get('count_on', 0) == 1)
 				{
+					JDEBUG ? $profiler->mark('cacheDoCalculations, count_on: start') : null;
 					$aCountCals = $elementModel->count($listModel);
 					$params->set('count_value_serialized', serialize($aCountCals[1]));
 					$params->set('count_value', $aCountCals[0]);
@@ -8030,6 +8039,7 @@ class FabrikFEModelList extends JModelForm
 
 				if ($params->get('custom_calc_on', 0) == 1)
 				{
+					JDEBUG ? $profiler->mark('cacheDoCalculations, custom_calc_on: start') : null;
 					$aCustomCalcCals = $elementModel->custom_calc($listModel);
 					$params->set('custom_calc_value_serialized', serialize($aCustomCalcCals[1]));
 					$params->set('custom_calc_value', $aCustomCalcCals[0]);
@@ -8038,6 +8048,7 @@ class FabrikFEModelList extends JModelForm
 
 				if ($update)
 				{
+					JDEBUG ? $profiler->mark('cacheDoCalculations, storeAttribs: start') : null;
 					$elementModel->storeAttribs();
 				}
 			}

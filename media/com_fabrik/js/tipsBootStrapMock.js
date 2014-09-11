@@ -13,9 +13,8 @@ var FloatingTips = new Class({
 	
 	options: {
 		fxProperties: {transition: Fx.Transitions.linear, duration: 500},
-		position: 'top',
-		'showOn': 'mouseenter',
-		'hideOn': 'mouseleave',
+		'position': 'top',
+		'trigger': 'hover',
 		'content': 'title',
 		'distance': 50,
 		'tipfx': 'Fx.Transitions.linear',

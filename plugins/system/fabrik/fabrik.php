@@ -234,7 +234,14 @@ class PlgSystemFabrik extends JPlugin
 
 		if ($bigSelects)
 		{
-			$db->setQuery("SET OPTION SQL_BIG_SELECTS=1");
+			if (version_compare($db->getVersion(), '5.1.0', '>='))
+			{
+				$db->setQuery("SET SQL_BIG_SELECTS=1, GROUP_CONCAT_MAX_LEN=10240");
+			}
+			else
+			{
+				$db->setQuery("SET OPTION SQL_BIG_SELECTS=1, GROUP_CONCAT_MAX_LEN=10240");
+			}
 			$db->execute();
 		}
 	}

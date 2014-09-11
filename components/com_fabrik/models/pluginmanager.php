@@ -539,6 +539,9 @@ class FabrikFEModelPluginmanager extends JModelLegacy
 
 	public function runPlugins($method, &$parentModel, $type = 'form')
 	{
+		$profiler = JProfiler::getInstance('Application');
+		JDEBUG ? $profiler->mark("runPlugins: start: $method") : null;
+		
 		if ($type == 'form')
 		{
 			/**
@@ -572,6 +575,7 @@ class FabrikFEModelPluginmanager extends JModelLegacy
 					{
 						if (method_exists($elementModel, $method))
 						{
+							JDEBUG ? $profiler->mark("runPlugins: start element method: $method") : null;
 							$elementModel->$method($parentModel);
 						}
 					}
@@ -610,6 +614,8 @@ class FabrikFEModelPluginmanager extends JModelLegacy
 				// Testing this if statement as onLoad was being called on form email plugin when no method available
 				if (method_exists($plugin, $method))
 				{
+					JDEBUG ? $profiler->mark("runPlugins: method_exists: $plugin, $method") : null;
+					
 					$plugin->renderOrder = $c;
 					$modelTable = $parentModel->getTable();
 					$pluginParams = $plugin->setParams($params, $c);
@@ -633,6 +639,7 @@ class FabrikFEModelPluginmanager extends JModelLegacy
 
 						if ($preflightCheck)
 						{
+							JDEBUG ? $profiler->mark("runPlugins: preflight OK, starting: $plugin, $method") : null;
 							$ok = $plugin->$method($pluginArgs);
 
 							if ($ok === false)
@@ -676,6 +683,8 @@ class FabrikFEModelPluginmanager extends JModelLegacy
 
 		$this->runPlugins = $runPlugins;
 
+		JDEBUG ? $profiler->mark("runPlugins: end: $method") : null;
+		
 		return array_unique($return);
 	}
 

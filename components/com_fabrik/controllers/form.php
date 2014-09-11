@@ -178,6 +178,9 @@ class FabrikControllerForm extends JControllerLegacy
 
 	public function process()
 	{
+		$profiler = JProfiler::getInstance('Application');
+		JDEBUG ? $profiler->mark('controller process: start') : null;
+		
 		$app = JFactory::getApplication();
 		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$input = $app->input;
@@ -217,12 +220,15 @@ class FabrikControllerForm extends JControllerLegacy
 			JSession::checkToken() or die('Invalid Token');
 		}
 
+		JDEBUG ? $profiler->mark('controller process validate: start') : null;
 		if (!$model->validate())
 		{
 			$this->handleError($view, $model);
 
 			return;
 		}
+		JDEBUG ? $profiler->mark('controller process validate: end') : null;
+		
 		// Reset errors as validate() now returns ok validations as empty arrays
 		$model->clearErrors();
 
@@ -256,7 +262,7 @@ class FabrikControllerForm extends JControllerLegacy
 		}
 		
 		/**
-		 * If debug submit is requested (&fabrikdebug=2, and J! debug on, and Fabrik degbu allowed),
+		 * If debug submit is requested (&fabrikdebug=2, and J! debug on, and Fabrik debug allowed),
 		 * bypass any and all redirects, so we can see the profile for the submit
 		 */
 		

@@ -320,6 +320,7 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 		$config = JFactory::getConfig();
 		$lang = JFactory::getLanguage();
 		$mail = JFactory::getMailer();
+		$mail->isHtml(true);
 
 		// Load up com_users lang - used in email text
 		$lang->load('com_users', JPATH_SITE);
