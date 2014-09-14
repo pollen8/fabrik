@@ -9,20 +9,27 @@
 	<fields name="request">
 		<fieldset name="request" addfieldpath="/administrator/components/com_fabrik/models/fields">
 	
-			<field name="listid" type="fabriktables"
+			<field name="listid"
+				type="fabriktables"
 				package="{component_name}"
-				label="List" 
-				description="The ernestos_registration list to show" />
+				label="COM_FABRIK_MENU_LIST_LABEL" 
+				description="COM_FABRIK_MENU_LIST_DESC" />
 				
 			</fieldset>
 	</fields>
 	
 	<fields name="params" addfieldpath="/administrator/components/com_fabrik/models/fields">
-		<fieldset name="params" label="COM_FABRIK_OPTIONS">
+		<fieldset name="params"
+			label="COM_FABRIK_MENU_LIST_OPTIONS"
+		>
 
-			<field name="calculations" type="radio" default="0" 
-				label="Reload Calculations" 
-				description="If table view selected then setting this to yes will recaculate the table calculations each time the table is viewed (can slow down your tables performance)">
+			<field name="calculations"
+				type="radio"
+				class="btn-group"
+				default="0"
+				label="COM_FABRIK_MENU_LIST_RELOAD_CALCS_LABEL"
+				description="COM_FABRIK_MENU_LIST_RELOAD_CALCS_DESC"
+			>
 				<option value="0">JNO</option>
 				<option value="1">JYES</option>
 			</field>
@@ -100,6 +107,7 @@
 									<opton value="thismonth">COM_FABRIK_THIS_MONTH</opton>
 									<option value="lastmonth">COM_FABRIK_LAST_MONTH</option>
 									<option value="nextmonth">COM_FABRIK_NEXT_MONTH</option>
+									<option value="birthday">COM_FABRIK_BIRTHDAY_TODAY</option>
 							</field>
 							
 							<field name="filter-value" 

@@ -69,7 +69,7 @@ class VideoRender
 		$password = $config->get('password');
 		$getID3 = new getID3_cached_mysql($host, $database, $username, $password);
 
-		// Analyze file and store returned data in $ThisFileInfo
+		// Analyse file and store returned data in $ThisFileInfo
 		$relPath = JPATH_SITE . $file;
 		$thisFileInfo = $getID3->analyze($relPath);
 
@@ -104,7 +104,7 @@ class VideoRender
 		{
 			case 'asf':
 				$this->output = '<object id="MediaPlayer" width=' . $w . ' height=' . $h
-				. ' classid="CLSID:22D6f312-B0F6-11D0-94AB-0080C74C7E95" standby="Loading Windows Media Player components�"
+				. ' classid="CLSID:22D6f312-B0F6-11D0-94AB-0080C74C7E95" standby="Loading Windows Media Player components"
 					type="application/x-oleobject" codebase="http://activex.microsoft.com/activex/controls/mplayer/en/nsmp2inf.cab#Version=6,4,7,1112">
 
 <param name="filename" value="http://yourdomain/yourmovie.wmv">
@@ -130,5 +130,68 @@ class VideoRender
 			</object>";
 				break;
 		}
+	}
+
+	/**
+	 * Build Carousel HTML
+	 *
+	 * @param   string  $id       Widget HTML id
+	 * @param   array   $data     Images to add to the carousel
+	 * @param   object  $model    Element model
+	 * @param   object  $params   Element params
+	 * @param   object  $thisRow  All rows data
+	 *
+	 * @return  string  HTML
+	 */
+
+	public function renderCarousel($id = 'carousel', $data = array(), $model = null, $params = null, $thisRow = null)
+	{
+		$rendered = '';
+		$id .= '_video_carousel';
+
+		if (!empty($data))
+		{
+			$rendered = '
+			<div id="' . $id . '"></div>
+			';
+			$app = JFactory::getApplication();
+			$input = $app->input;
+			if ($input->get('format') != 'raw')
+			{
+				$js = '
+				jwplayer("' . $id . '").setup({
+					playlist: [
+				';
+				$files = array();
+
+				foreach ($data as $file)
+				{
+					$files[] .= '
+						{
+							"file": "' . COM_FABRIK_LIVESITE . ltrim($file, '/') . '"
+						}
+					';
+				}
+
+				$js .= implode(',', $files);
+				$js .= ']
+				});
+				';
+				FabrikHelperHTML::script('plugins/fabrik_element/fileupload/lib/jwplayer/jwplayer.js', $js);
+			}
+		}
+
+		return $rendered;
+	}
+
+	/**
+	 * Get thumb
+	 *
+	 * @param   string  $video_file  Video SRC
+	 *
+	 * @return  void
+	 */
+	private function getThumb($video_file)
+	{
 	}
 }

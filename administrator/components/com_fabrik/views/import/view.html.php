@@ -54,13 +54,14 @@ class FabrikAdminViewImport extends JViewLegacy
 		$session = JFactory::getSession();
 		$this->data = $session->get('com_fabrik.csvdata');
 		$this->matchedHeadings = $session->get('com_fabrik.matchedHeadings');
-		$this->newHeadings = $this->get('NewHeadings');
-		$this->headings = $this->get('Headings');
+		$model = $this->getModel();
+		$this->newHeadings = $model->getNewHeadings();
+		$this->headings = $model->getHeadings();
 		$pluginManager = $this->getModel('pluginmanager');
-		$this->table = $this->get('ListModel')->getTable();
+		$this->table = $model->getListModel()->getTable();
 		$this->elementTypes = $pluginManager->getElementTypeDd('field', 'plugin[]');
-		$this->sample = $this->get('Sample');
-		$this->selectPKField = $this->get('SelectKey');
+		$this->sample = $model->getSample();
+		$this->selectPKField = $model->getSelectKey();
 		$jform = $input->get('jform', array(), 'array');
 
 		foreach ($jform as $key => $val)
@@ -82,7 +83,7 @@ class FabrikAdminViewImport extends JViewLegacy
 		$app = JFactory::getApplication();
 		$input = $app->input;
 		$input->set('hidemainmenu', true);
-		JToolBarHelper::title(JText::_('COM_FABRIK_MANAGER_LIST_IMPORT'), 'list.png');
+		JToolBarHelper::title(FText::_('COM_FABRIK_MANAGER_LIST_IMPORT'), 'list.png');
 		$version = new JVersion;
 		$icon = version_compare($version->RELEASE, '3.0') >= 0 ? 'arrow-right-2' : 'forward.png';
 		JToolBarHelper::custom('import.makeTableFromCSV', $icon, $icon, 'COM_FABRIK_CONTINUE', false);
@@ -102,7 +103,7 @@ class FabrikAdminViewImport extends JViewLegacy
 		$app = JFactory::getApplication();
 		$input = $app->input;
 		$input->set('hidemainmenu', true);
-		JToolBarHelper::title(JText::_('COM_FABRIK_MANAGER_LIST_IMPORT'), 'list.png');
+		JToolBarHelper::title(FText::_('COM_FABRIK_MANAGER_LIST_IMPORT'), 'list.png');
 		$version = new JVersion;
 		$icon = version_compare($version->RELEASE, '3.0') >= 0 ? 'arrow-right-2' : 'forward.png';
 		JToolBarHelper::custom('import.doimport', $icon, $icon, 'COM_FABRIK_CONTINUE', false);

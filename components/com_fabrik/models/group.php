@@ -193,7 +193,7 @@ class FabrikFEModelGroup extends FabModel
 		$this->canEdit = true;
 
 		// If group show is type 5, then always read only.
-		if ($params->get('repeat_group_show_first', '1') == '5')
+		if (in_array($params->get('repeat_group_show_first', '1'), array('2','5')))
 		{
 			$this->canEdit = false;
 
@@ -264,7 +264,7 @@ class FabrikFEModelGroup extends FabModel
 		{
 			$this->canView = in_array($groupAccess, $groups);
 
-			// If the user can't access the group return that and ingore repeat_group_show_first option
+			// If the user can't access the group return that and ignore repeat_group_show_first option
 			if (!$this->canView)
 			{
 				return $this->canView;
@@ -287,9 +287,9 @@ class FabrikFEModelGroup extends FabModel
 		}
 
 		// If editable but only show group in details view:
-		if ($formModel->isEditable() && $showGroup == 2)
+		if (!($formModel->isEditable() && $showGroup == 2))
 		{
-			$this->canView = false;
+			$this->canView = true;
 		}
 
 		// If form not editable and show group in form view:
@@ -400,7 +400,7 @@ class FabrikFEModelGroup extends FabModel
 	/**
 	 * Set the element column css allows for group column settings to be applied
 	 *
-	 * @param   object  &$element  Prerender element properties
+	 * @param   object  &$element  Pre-render element properties
 	 * @param   int     $rowIx     Current key when looping over elements.
 	 *
 	 * @since 	Fabrik 3.0.5.2
@@ -653,7 +653,7 @@ class FabrikFEModelGroup extends FabModel
 			* $$$ Paul - it is possible that the user has set Include in List Query
 			* to No for table primary key or join foreign key. If List is then set
 			* to Merge and Reduce, this causes a problem because the pk/fk
-			* placeholder is not set. We therefor include the table PK and join FK
+			* placeholder is not set. We therefore include the table PK and join FK
 			* regardless of Include in List Query settings if any elements in the
 			* group have Include in List Query = Yes.
 			* In order to avoid iterating over the elements twice, we save the
@@ -690,17 +690,19 @@ class FabrikFEModelGroup extends FabModel
 				 */
 				if ($element->published == 1)
 				{
+					$full_name = $elementModel->getFullName(true, false);
+
 					/**
 					 * As this function seems to be used to build both the list view and the form view, we should NOT
 					 * include elements in the list query if the user can not view them, as their data is sent to the json object
 					 * and thus visible in the page source
 					 */
-					if ($input->get('view') == 'list' && !$elementModel->canView('list'))
+
+					if ($input->get('view') == 'list' && !$this->getListModel()->isUserDoElement($full_name) && !$elementModel->canView('list'))
 					{
 						continue;
 					}
 
-					$full_name = $elementModel->getFullName(true, false);
 					$showThisInList = $element->primary_key || $params->get('include_in_list_query', 1) == 1
 					|| (empty($showInList) && $element->show_in_list_summary) || in_array($element->id, $showInList);
 
@@ -984,6 +986,7 @@ class FabrikFEModelGroup extends FabModel
 	public function getGroupProperties(&$formModel)
 	{
 		$w = new FabrikWorker;
+		$input = JFactory::getApplication()->input;
 		$group = new stdClass;
 		$groupTable = $this->getGroup();
 		$params = $this->getParams();
@@ -1033,14 +1036,17 @@ class FabrikFEModelGroup extends FabModel
 		$group->css = trim(str_replace(array("<br />", "<br>"), "", $groupTable->css));
 		$group->id = $groupTable->id;
 
-		if (JString::stristr($groupTable->label, "{Add/Edit}"))
+		$label = $input->getString('group' . $group->id . '_label', $groupTable->label);
+
+		if (JString::stristr($label, "{Add/Edit}"))
 		{
-			$replace = $formModel->isNewRecord() ? JText::_('COM_FABRIK_ADD') : JText::_('COM_FABRIK_EDIT');
-			$groupTable->label = str_replace("{Add/Edit}", $replace, $groupTable->label);
+			$replace = $formModel->isNewRecord() ? FText::_('COM_FABRIK_ADD') : FText::_('COM_FABRIK_EDIT');
+			$label = str_replace("{Add/Edit}", $replace, $label);
 		}
 
+		$groupTable->label = $label;
 		$group->title = $w->parseMessageForPlaceHolder($groupTable->label, $formModel->data, false);
-		$group->title = JText::_($group->title);
+		$group->title = FText::_($group->title);
 		$group->name = $groupTable->name;
 		$group->displaystate = ($group->canRepeat == 1 && $formModel->isEditable()) ? 1 : 0;
 		$group->maxRepeat = (int) $params->get('repeat_max');
@@ -1049,9 +1055,12 @@ class FabrikFEModelGroup extends FabModel
 		$group->canAddRepeat = $this->canAddRepeat();
 		$group->canDeleteRepeat = $this->canDeleteRepeat();
 		$group->intro = $text = FabrikString::translate($params->get('intro'));
-		$group->outro = JText::_($params->get('outro'));
+		$group->outro = FText::_($params->get('outro'));
 		$group->columns = $params->get('group_columns', 1);
 		$group->splitPage = $params->get('split_page', 0);
+		$group->showLegend = $this->showLegend($group);
+		$group->labels = $params->get('labels_above', -1);
+		$group->dlabels = $params->get('labels_above_details', -1);
 
 		if ($this->canRepeat())
 		{
@@ -1227,10 +1236,12 @@ class FabrikFEModelGroup extends FabModel
 		$elementModels = $this->getMyElements();
 		$list = $listModel->getTable();
 		$tblName = $list->db_table_name;
+		$tblPk = $list->db_primary_key;
 
 		// Set the list's table name to the join table, needed for storeRow()
 		$join = $joinModel->getJoin();
 		$list->db_table_name = $join->table_join;
+		$list->db_primary_key = $joinModel->getForeignID('.');
 		$usedKeys = array();
 
 		// For each repeat group
@@ -1267,36 +1278,86 @@ class FabrikFEModelGroup extends FabModel
 		}
 
 		// Delete any removed groups
+		$this->deleteRepeatGroups($usedKeys);
+
+		// Reset the list's table name
+		$list->db_table_name = $tblName;
+		$list->db_primary_key = $tblPk;
+	}
+
+	/**
+	 * When storing a joined group. Delete any deselected repeating joined records
+	 *
+	 * @param   array  $usedKeys  Keys saved in store()
+	 *
+	 * @return  bool
+	 */
+	private function deleteRepeatGroups($usedKeys = array())
+	{
+		if (!$this->canRepeat())
+		{
+			/*
+			 * If the group can not be repeated then the user could not have deleted a
+			 * repeat group.
+			 */
+			return true;
+		}
+
+		$input = JFactory::getApplication()->input;
+		$listModel = $this->getListModel();
+		$list = $listModel->getTable();
+		$joinModel = $this->getJoinModel();
+		$join = $joinModel->getJoin();
 		$db = $listModel->getDb();
 		$query = $db->getQuery(true);
 		$masterInsertId = $this->masterInsertId();
-		$query->delete($list->db_table_name);
+		$query->delete($db->qn($list->db_table_name));
+		$pk = $join->params->get('pk');
+
+		/*
+		 * Get the original row ids. We can ONLY delete from within this set. This
+		 * allows us to respect and prefilter that was applied to the list's data.
+		 */
+		$groupid = $this->getId();
+		$origGroupRowsIds = $input->get('fabrik_group_rowids', array(), 'array');
+		$origGroupRowsIds = JArrayHelper::getValue($origGroupRowsIds, $groupid, array());
+		$origGroupRowsIds = json_decode($origGroupRowsIds);
+
+		/*
+		 * Find out which keys were origionally in the form, but were not submitted
+		 * i.e. those keys whose records were removed
+		 */
+		$keysToDelete = array_diff($origGroupRowsIds, $usedKeys);
+
+		// Nothing to delete - return
+		if (empty($keysToDelete))
+		{
+			return true;
+		}
 
 		if (is_array($masterInsertId))
 		{
 			foreach ($masterInsertId as &$mid)
 			{
+				if (is_array($mid))
+				{
+					$mid = array_unshift($mid);
+				}
+
 				$mid = $db->quote($mid);
 			}
 
-			$query->where($join->table_join_key . ' IN (' . implode(', ', $masterInsertId) . ')');
+			$query->where($db->qn($join->table_join_key) . ' IN (' . implode(', ', $masterInsertId) . ')');
 		}
 		else
 		{
-			$query->where($join->table_join_key . ' = ' . $db->quote($masterInsertId));
+			$query->where($db->qn($join->table_join_key) . ' = ' . $db->quote($masterInsertId));
 		}
 
-		if (!empty($usedKeys))
-		{
-			$pk = $join->params->get('pk');
-			$query->where('!(' . $pk . 'IN (' . implode(',', $usedKeys) . ')) ');
-		}
-
+		$query->where($pk . 'IN (' . implode(',', $db->q($keysToDelete)) . ') ');
 		$db->setQuery($query);
-		$db->execute();
 
-		// Reset the list's table name
-		$list->db_table_name = $tblName;
+		return $db->execute();
 	}
 
 	/**
@@ -1349,7 +1410,14 @@ class FabrikFEModelGroup extends FabModel
 		if (!empty($elementModels))
 		{
 			$smallerElHTMLName = $tmpElement->getFullName(true, false);
-			$repeatGroup = count(JArrayHelper::getValue($data, $smallerElHTMLName, 1));
+			$d = JArrayHelper::getValue($data, $smallerElHTMLName, 1);
+
+			if (is_object($d))
+			{
+				$d = JArrayHelper::fromObject($d);
+			}
+
+			$repeatGroup = count($d);
 		}
 		else
 		{
@@ -1358,5 +1426,27 @@ class FabrikFEModelGroup extends FabModel
 		}
 
 		return $repeatGroup;
+	}
+
+	/**
+	 * Should the group legend be shown
+	 *
+	 * @param   object  $group  Group properties
+	 *
+	 * @return boolean
+	 */
+	private function showLegend($group)
+	{
+		$allHidden = true;
+
+		foreach ($this->elements as $elementModel)
+		{
+			$allHidden &= $elementModel->isHidden();
+		}
+		if ((!$allHidden || !empty($group->intro)) && trim($group->title) !== '') {
+			return true;
+		}
+
+		return false;
 	}
 }

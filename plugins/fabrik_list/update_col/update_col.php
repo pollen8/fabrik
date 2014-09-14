@@ -60,9 +60,16 @@ class PlgFabrik_ListUpdate_Col extends PlgFabrik_List
 	protected $msg = null;
 
 	/**
+	 * Element containing email notification addresses
+	 *
+	 * @var  PlgFabrik_Element
+	 */
+	protected $emailElement = null;
+
+	/**
 	 * Prep the button if needed
 	 *
-	 * @param   array  &$args  Arguements
+	 * @param   array  &$args  Arguments
 	 *
 	 * @return  bool;
 	 */
@@ -82,7 +89,7 @@ class PlgFabrik_ListUpdate_Col extends PlgFabrik_List
 
 	protected function buttonLabel()
 	{
-		return $this->getParams()->get('button_label', parent::buttonLabel());
+		return FText::_($this->getParams()->get('button_label', parent::buttonLabel()));
 	}
 
 	/**
@@ -179,8 +186,9 @@ class PlgFabrik_ListUpdate_Col extends PlgFabrik_List
 		$input = $app->input;
 		$user = JFactory::getUser();
 		$update = $this->getUpdateCols($params);
-
-		if (!$update)
+		$postEval = $params->get('update_post_eval', '');
+		
+		if (!$update && empty($postEval))
 		{
 			return false;
 		}
@@ -199,8 +207,69 @@ class PlgFabrik_ListUpdate_Col extends PlgFabrik_List
 		$model->reset();
 		$model->setPluginQueryWhere('update_col', $item->db_primary_key . ' IN ( ' . $ids . ')');
 		$data = $model->getData();
+		
+		// Needed to re-assign as getDate() messes the plugin params order
+		$this->params = $params;
 
-		// $$$servantek reordered the update process in case the email routine wants to kill the updates
+		if (!empty($dateCol))
+		{
+			$date = JFactory::getDate();
+			$this->_process($model, $dateCol, $date->toSql(), false);
+		}
+
+		if (!empty($userCol))
+		{
+			$this->_process($model, $userCol, (int) $user->get('id'), false);
+		}
+
+		if (!empty($update))
+		{
+			foreach ($update->coltoupdate as $i => $col)
+			{
+				$this->_process($model, $col, $update->update_value[$i], $update->update_eval[$i]);
+			}
+		}
+
+		$this->sendEmails($ids);
+
+		$this->msg = $params->get('update_message', '');
+
+		if (empty($this->msg))
+		{
+			$this->msg = JText::sprintf('PLG_LIST_UPDATE_COL_UPDATE_MESSAGE', $this->row_count, $this->sent);
+		}
+		else
+		{
+			$this->msg = JText::sprintf($this->msg, $this->row_count, $this->sent);
+		}
+
+		if (!empty($postEval))
+		{
+			$err = @eval($postEval);
+			FabrikWorker::logEval($err, 'Caught exception on eval in updatecol::process() : %s');
+		}
+		
+		// Clean the cache.
+		$cache = JFactory::getCache($input->get('option'));
+		$cache->clean();
+
+		return true;
+	}
+
+	/**
+	 * Send notification emails
+	 *
+	 * @param   string  $ids  csv list of row ids.
+	 *
+	 * @return  void
+	 */
+	protected function sendEmails($ids)
+	{
+		$params = $this->getParams();
+		$model = $this->getModel();
+
+		// Ensure that yesno exports text and not bootstrap icon.
+		$model->setOutputFormat('csv');
 		$emailColID = $params->get('update_email_element', '');
 		$emailTo = $params->get('update_email_to', '');
 
@@ -216,62 +285,15 @@ class PlgFabrik_ListUpdate_Col extends PlgFabrik_List
 			$from = $config->get('mailfrom');
 			$fromname = $config->get('fromname');
 
-			if (!empty($emailColId))
-			{
-				$elementModel = FabrikWorker::getPluginManager()->getElementPlugin($emailColID);
-				$emailElement = $elementModel->getElement(true);
-				$emailField = $elementModel->getFullName(true, false);
-				$emailColumn = $elementModel->getFullName(false, false);
-				$emailFieldRaw = $emailField . '_raw';
-				$emailWhich = $emailElement->plugin == 'user' ? 'user' : 'field';
-				$tbl = array_shift(explode('.', $emailColumn));
-				$db = JFactory::getDBO();
-
-				// If using a user element, build a lookup list of emails from #__users,
-				// so we're only doing one query to grab all involved emails.
-				if ($emailWhich == 'user')
-				{
-					$userids_emails = array();
-					$query = $db->getQuery();
-					$query->select('#__users.id AS id, #__users.email AS email')
-					->from('#__users')->join('LEFT', $tbl . ' ON #__users.id = ' . $emailColumn)
-					->where($item->db_primary_key . ' IN (' . $ids . ')');
-					$db->setQuery($query);
-					$results = $db->loadObjectList();
-
-					foreach ($results as $result)
-					{
-						$userids_emails[(int) $result->id] = $result->email;
-					}
-				}
-			}
-			else
-			{
-				$emailWhich = 'to';
-			}
+			$emailWhich = $this->emailWhich();
 
 			foreach ($aids as $id)
 			{
-				$row = $model->getRow($id);
-
-				if ($emailWhich == 'user')
-				{
-					$userid = (int) $row->$emailFieldRaw;
-					$to = JArrayHelper::getValue($userids_emails, $userid);
-				}
-				elseif ($emailWhich == 'field')
-				{
-					$to = $row->$emailField;
-				}
-				else
-				{
-					$to = $emailTo;
-				}
+				$row = $model->getRow($id, true);
+				$to = $this->emailTo($row, $emailWhich);
 
 				if (JMailHelper::cleanAddress($to) && FabrikWorker::isEmail($to))
 				{
-					// $tofull = '"' . JMailHelper::cleanLine($toname) . '" <' . $to . '>';
-					// $$$servantek added an eval option and rearranged placeholder call
 					$thissubject = $w->parseMessageForPlaceholder($subject, $row);
 					$thismessage = $w->parseMessageForPlaceholder($message, $row);
 
@@ -290,7 +312,7 @@ class PlgFabrik_ListUpdate_Col extends PlgFabrik_List
 					}
 					else
 					{
-						$$this->notsent++;
+						$this->notsent++;
 					}
 				}
 				else
@@ -299,40 +321,114 @@ class PlgFabrik_ListUpdate_Col extends PlgFabrik_List
 				}
 			}
 		}
+	}
 
-		// $$$servantek reordered the update process in case the email routine wants to kill the updates
-		if (!empty($dateCol))
+	/**
+	 * Get the email selection mode
+	 *
+	 * @return string
+	 */
+	private function emailWhich()
+	{
+		$params = $this->getParams();
+		$emailColID = $params->get('update_email_element', '');
+
+		if (!empty($emailColID))
 		{
-			$date = JFactory::getDate();
-			$this->_process($model, $dateCol, $date->toSql());
-		}
-
-		if (!empty($userCol))
-		{
-			$this->_process($model, $userCol, (int) $user->get('id'));
-		}
-
-		foreach ($update->coltoupdate as $i => $col)
-		{
-			$this->_process($model, $col, $update->update_value[$i]);
-		}
-
-		$this->msg = $params->get('update_message', '');
-
-		if (empty($this->msg))
-		{
-			$this->msg = JText::sprintf('PLG_LIST_UPDATE_COL_UPDATE_MESSAGE', $this->row_count, $this->sent);
+			$elementModel = $this->getEmailElement();
+			$emailElement = $elementModel->getElement(true);
+			$emailWhich = $emailElement->plugin == 'user' ? 'user' : 'field';
 		}
 		else
 		{
-			$this->msg = JText::sprintf($this->msg, $this->row_count, $this->sent);
+			$emailWhich = 'to';
 		}
 
-		// Clean the cache.
-		$cache = JFactory::getCache($input->get('option'));
-		$cache->clean();
+		return $emailWhich;
+	}
 
-		return true;
+	/**
+	 * Get list of user emails.
+	 *
+	 * @param   string  $ids  CSV list of ids
+	 *
+	 * @return  array
+	 */
+	private function getEmailUserIds($ids)
+	{
+		$elementModel = $this->getEmailElement();
+		$emailColumn = $elementModel->getFullName(false, false);
+		$tbl = array_shift(explode('.', $emailColumn));
+		$db = JFactory::getDbo();
+		$userids_emails = array();
+		$query = $db->getQuery();
+		$query->select('#__users.id AS id, #__users.email AS email')
+		->from('#__users')->join('LEFT', $tbl . ' ON #__users.id = ' . $emailColumn)
+		->where($item->db_primary_key . ' IN (' . $ids . ')');
+		$db->setQuery($query);
+		$results = $db->loadObjectList();
+
+		foreach ($results as $result)
+		{
+			$userids_emails[(int) $result->id] = $result->email;
+		}
+
+		return $userids_emails;
+	}
+
+	/**
+	 * Get Email Element
+	 *
+	 * @return PlgFabrik_Element
+	 */
+	private function getEmailElement()
+	{
+		if (isset($this->emailElement))
+		{
+			return $this->emailElement;
+		}
+
+		$params = $this->getParams();
+		$emailColID = $params->get('update_email_element', '');
+
+		return FabrikWorker::getPluginManager()->getElementPlugin($emailColID);
+	}
+
+	/**
+	 * Get email address to send update notification to
+	 *
+	 * @param   object  $row         Current record row
+	 * @param   string  $emailWhich  Mode for getting the user's email
+	 *
+	 * @return  string  Email address
+	 */
+	private function emailTo($row, $emailWhich)
+	{
+		$input = JFactory::getApplication()->input;
+		$params = $this->getParams();
+		$elementModel = $this->getEmailElement();
+		$emailField = $elementModel->getFullName(true, false);
+
+		if ($emailWhich == 'user')
+		{
+			$emailFieldRaw = $emailField . '_raw';
+			$userid = (int) $row->$emailFieldRaw;
+			$ids = array_unique($input->get('ids', array(), 'array'));
+			JArrayHelper::toInteger($ids);
+			$ids = implode(',', $ids);
+			$userids_emails = $this->getEmailUserIds($ids);
+			$to = JArrayHelper::getValue($userids_emails, $userid);
+		}
+		elseif ($emailWhich == 'field')
+		{
+			$to = $row->$emailField;
+		}
+		else
+		{
+			$to = $params->get('update_email_to', '');
+		}
+
+		return $to;
 	}
 
 	/**
@@ -358,10 +454,17 @@ class PlgFabrik_ListUpdate_Col extends PlgFabrik_List
 	 * @return  void
 	 */
 
-	private function _process(&$model, $col, $val)
+	private function _process(&$model, $col, $val, $eval = false)
 	{
 		$app = JFactory::getApplication();
 		$ids = $app->input->get('ids', array(), 'array');
+		
+		if ($eval)
+		{
+			$val = @eval($val);
+			FabrikWorker::logEval($val, 'Caught exception on eval in updatecol::_process() : %s');
+		}
+		
 		$model->updateRows($ids, $col, $val);
 	}
 
@@ -397,7 +500,7 @@ class PlgFabrik_ListUpdate_Col extends PlgFabrik_List
 		JText::script('PLG_LIST_UPDATE_COL_UPDATE');
 		$html = array();
 		$fieldNames = array();
-		$options[] = '<option value="">' . JText::_('COM_FABRIK_PLEASE_SELECT') . '</option>';
+		$options[] = '<option value="">' . FText::_('COM_FABRIK_PLEASE_SELECT') . '</option>';
 		$form = $model->getFormModel();
 		$groups = $form->getGroupsHiarachy();
 		$gkeys = array_keys($groups);
@@ -422,28 +525,28 @@ class PlgFabrik_ListUpdate_Col extends PlgFabrik_List
 		$addImg = $j3 ? 'plus.png' : 'add.png';
 		$removeImg = $j3 ? 'remove.png' : 'del.png';
 		$add = '<a class="btn add button btn-primary" href="#">
-		' . FabrikHelperHTML::image($addImg, 'list', $model->getTmpl()) . '</a>';
+			' . FabrikHelperHTML::image($addImg, 'list', $model->getTmpl()) . '</a>';
 		$del = '<a class="btn button delete" href="#">' . FabrikHelperHTML::image($removeImg, 'list', $model->getTmpl()) . '</a>';
 		$html[] = '<form id="update_col' . $listRef . '">';
 
 		$class = $j3 ? 'table table-striped' : 'fabrikList';
 		$html[] = '<table class="' . $class . '" style="width:100%">';
 		$html[] = '<thead>';
-		$html[] = '<tr><th>' . JText::_('COM_FABRIK_ELEMENT') . '</th><th>' . JText::_('COM_FABRIK_VALUE') . '</th><th>' . $add . '</th><tr>';
+		$html[] = '<tr><th>' . FText::_('COM_FABRIK_ELEMENT') . '</th><th>' . FText::_('COM_FABRIK_VALUE') . '</th><th>' . $add . '</th><tr>';
 		$html[] = '</thead>';
 
 		$html[] = '<tbody>';
 		$html[] = '<tr><td>' . $elements . '</td><td class="update_col_value"></th><td><div class="btn-group">' . $add . $del . '</div></td></tr>';
 		$html[] = '</tbody>';
 		$html[] = '</table>';
-		$html[] = '<input class="button btn button-primary" value="' . JText::_('COM_FABRIK_APPLY') . '" type="button">';
+		$html[] = '<input class="button btn button-primary" value="' . FText::_('COM_FABRIK_APPLY') . '" type="button">';
 		$html[] = '</form>';
 
 		return implode("\n", $html);
 	}
 
 	/**
-	 * Get the name of the colum to update
+	 * Get the name of the column to update
 	 *
 	 * @return string
 	 */

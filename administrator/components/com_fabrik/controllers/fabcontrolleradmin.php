@@ -33,7 +33,7 @@ class FabControllerAdmin extends JControllerAdmin
 	public $option = 'com_fabrik';
 
 	/**
-	 * Actally delete the requested items forms etc
+	 * Actually delete the requested items forms etc.
 	 *
 	 * @return null
 	 */

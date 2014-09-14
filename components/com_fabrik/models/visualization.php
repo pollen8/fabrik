@@ -67,7 +67,7 @@ class FabrikFEModelVisualization extends JModelLegacy
 	}
 
 	/**
-	 * Set an array of list id's whose data is used inside the visualaziation
+	 * Set an array of list id's whose data is used inside the visualization
 	 *
 	 * @return  void
 	 */
@@ -95,7 +95,7 @@ class FabrikFEModelVisualization extends JModelLegacy
 	}
 
 	/**
-	 * Deprecated use getParams() insteead
+	 * Deprecated use getParams() instead
 	 *
 	 * @deprecated  since 3.1b
 	 *
@@ -108,7 +108,7 @@ class FabrikFEModelVisualization extends JModelLegacy
 	}
 
 	/**
-	 * alais to getVisualization()
+	 * Alais to getVisualization()
 	 *
 	 * @since	3.0.6
 	 *
@@ -121,7 +121,7 @@ class FabrikFEModelVisualization extends JModelLegacy
 	}
 
 	/**
-	 * get the item
+	 * Get the item
 	 *
 	 * @return  FabrikTableVisualization
 	 */
@@ -207,7 +207,7 @@ class FabrikFEModelVisualization extends JModelLegacy
 	}
 
 	/**
-	 * get all list model's filters
+	 * Get all list model's filters
 	 *
 	 * @return array table filters
 	 */
@@ -230,6 +230,7 @@ class FabrikFEModelVisualization extends JModelLegacy
 			{
 				$ref = $this->getRenderContext();
 				$id = $this->getId();
+				$listModel->getFilterArray();
 				$filters[$listModel->getTable()->label] = $listModel->getFilters($this->getContainerId(), 'visualization', $id, $ref);
 				$js[] = $listModel->filterJs;
 			}
@@ -239,6 +240,24 @@ class FabrikFEModelVisualization extends JModelLegacy
 
 		$this->filterJs = implode("\n", $js);
 		$this->getRequireFilterMsg();
+
+		return $filters;
+	}
+
+	/**
+	 * Build an array of the lists' query where statements
+	 *
+	 * @return  array  keyed on list id.
+	 */
+	public function buildQueryWhere()
+	{
+		$filters = array();
+		$listModels = $this->getlistModels();
+
+		foreach ($listModels as $listModel)
+		{
+			$filters[$listModel->getId()] = $listModel->buildQueryWhere();
+		}
 
 		return $filters;
 	}
@@ -295,8 +314,8 @@ class FabrikFEModelVisualization extends JModelLegacy
 			}
 		}
 
-		$title = '<span>' . JText::_('COM_FABRIK_ADVANCED_SEARCH') . '</span>';
-		$opts = array('alt' => JText::_('COM_FABRIK_ADVANCED_SEARCH'), 'class' => 'fabrikTip', 'opts' => "{notice:true}", 'title' => $title);
+		$title = '<span>' . FText::_('COM_FABRIK_ADVANCED_SEARCH') . '</span>';
+		$opts = array('alt' => FText::_('COM_FABRIK_ADVANCED_SEARCH'), 'class' => 'fabrikTip', 'opts' => "{notice:true}", 'title' => $title);
 		$img = FabrikHelperHTML::image('find.png', 'list', '', $opts);
 
 		if (count($links) === 1)
@@ -317,7 +336,7 @@ class FabrikFEModelVisualization extends JModelLegacy
 	}
 
 	/**
-	 * Get Viz render contenxt
+	 * Get Viz render context
 	 *
 	 * @since   3.0.6
 	 *
@@ -392,7 +411,7 @@ class FabrikFEModelVisualization extends JModelLegacy
 
 		$action = $page . implode("&amp;", $qs);
 
-		// Limitstart gets added in the pageination model
+		// Limitstart gets added in the pagination model
 		$action = preg_replace("/limitstart" . $this->getState('id') . "}=(.*)?(&|)/", '', $action);
 		$action = FabrikString::rtrimword($action, "&");
 		$this->getFilterFormURL = JRoute::_($action);
@@ -421,7 +440,7 @@ class FabrikFEModelVisualization extends JModelLegacy
 	}
 
 	/**
-	 * Set visualiazation prefilters
+	 * Set visualization prefilters
 	 *
 	 * @return  void
 	 */
@@ -598,5 +617,24 @@ class FabrikFEModelVisualization extends JModelLegacy
 	public function getId()
 	{
 		return $this->getState('id');
+	}
+
+	/**
+	 * Can the use view the visualization (checks published and access level)
+	 *
+	 * @return boolean
+	 */
+	public function canView()
+	{
+		$user = JFactory::getUser();
+		$groups = JFactory::getUser()->getAuthorisedViewLevels();
+		$row = $this->getRow();
+
+		if ($row->published == 0)
+		{
+			return false;
+		}
+
+		return in_array($row->access, $groups);
 	}
 }

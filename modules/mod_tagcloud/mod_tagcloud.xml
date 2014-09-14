@@ -1,41 +1,109 @@
 <?xml version="1.0" encoding="utf-8"?>
-<extension type="module" version="1.7" client="site" method="upgrade">
-	<name>Fabrik Module - Tag Cloud</name>
+<extension type="module" version="30" client="site" method="upgrade">
+	<name>MOD_TAGCLOUD</name>
 	<author>Rob Clayburn</author>
-	<creationDate>May 2006</creationDate>
+	<creationDate>January 2012</creationDate>
 	<copyright>Copyright (C) 2005-2013 fabrikar.com - All rights reserved.</copyright>
 	<license>GNU/GPL http://www.gnu.org/copyleft/gpl.html</license>
 	<authorEmail>rob@pollen-8.co.uk</authorEmail>
 	<authorUrl>www.fabrikar.com</authorUrl>
-	<version>3.0.0</version>
-	<description>This module shows a tag cloud from a given data set.</description>
+	<version>3.1</version>
+	<description>MOD_TAGCLOUD_XML_DESCRIPTION</description>
 	<files>
 		<filename module="mod_tagcloud">mod_tagcloud.php</filename>
 		<filename>index.html</filename>
 		<filename>helper.php</filename>
 		<filename>tmpl/default.php</filename>
 		<filename>tmpl/index.html</filename>
+		<folder>language</folder>
 	</files>
 	<config>
 		<fields name="params">
 			<fieldset name="params">
-				<field name="moduleclass_sfx" type="text" default="" label="Module Class Suffix" description="A suffix to be applied to the css class of the module (table.moduletable), this allows individual module styling" />
+				<field name="moduleclass_sfx"
+					type="text"
+					default=""
+					label="MOD_TAGCLOUD_CLASS_SUFFIX_LABEL"
+					description="MOD_TAGCLOUD_CLASS_SUFFIX_DESC"
+				/>
 				<field name="@spacer" type="spacer" default="" label="" description="" />
-				<field name="table" type="text" size="20" default="" label="table:" description="Name of the database table to get data from" />
-				<field name="column" type="text" size="20" default="" label="column:" description="Name of the table column containing data to create gloud from (can be in csv format)" />
-				<field name="filter" type="text" size="20" default="" label="filter:" description="Filter the returned data e.g: name='rob'" />
-				<field name="url" type="text" size="20" default="" label="tag url:" description="Url used for each link in the tag cloud - will have the tag name appended to it. E.g. to filter a table view - http://site.com/index.php?option=com_fabrik&amp;view=table&amp;tableid=1&amp;tablename___elementname= " />
-				<field name="css" type="textarea" cols="20" rows="5"  default="" label="css:" description="CSS to format cloud with" />		
-				<field name="splitter" type="text" size="1"  default="," label="seperator:" description="The character to use to seperate tags" />
-				<field name="alphabetically" type="list" default="1" label="Order cloud by" description="In which order do you want the tags to be shown within the cloud">
-					<option value="0">Size - ascending</option>
-					<option value="1">Size - decending</option>
-					<option value="2">Alphabetically - ascending</option>
-					<option value="3">Alphabetically - descending</option>
-				</field>		
-				<field name="min" type="text" size="1"  default="1" label="minimum tag count:" description="Any tags occuring fewer times that this number will not be shown in the tag cloud" />
-				<field name="max" type="text" size="1"  default="20" label="maximum number of tags:" description="The number of tags to shown in the cloud ( occurs after minimum tags have been removed and the cloud ordered)" />
-				<field name="seperator" type="text" size="5"  default=" :: " label="Serperator text:" description="the text shown between each tag in the cloud" />
+				<field name="table"
+					type="text"
+					size="20"
+					default=""
+					label="MOD_TAGCLOUD_TABLE_LABEL"
+					description="MOD_TAGCLOUD_TABLE_DESC"
+				/>
+				<field name="column"
+					type="text"
+					size="20"
+					default=""
+					label="MOD_TAGCLOUD_COLUMN_LABEL"
+					description="MOD_TAGCLOUD_COLUMN_DESC"
+				/>
+				<field
+					name="filter"
+					type="text"
+					size="20"
+					default=""
+					label="MOD_TAGCLOUD_FILTER_LABEL"
+					description="MOD_TAGCLOUD_FILTER_DESC"
+				/>
+				<field name="url"
+					type="text"
+					size="20"
+					default=""
+					label="MOD_TAGCLOUD_URL_LABEL"
+					description="MOD_TAGCLOUD_URL_DESC"
+				/>
+				<field name="css"
+					type="textarea"
+					cols="20"
+					rows="5"
+					default=""
+					label="MOD_TAGCLOUD_CSS_LABEL"
+					description="MOD_TAGCLOUD_CSS_DESC"
+				/>
+				<field name="splitter"
+					type="text"
+					size="1"
+					default=","
+					label="MOD_TAGCLOUD_SPLITTER_LABEL"
+					description="MOD_TAGCLOUD_SPLITTER_DESC"
+				/>
+				<field name="alphabetically"
+					type="list"
+					default="1"
+					label="MOD_TAGCLOUD_ORDER_LABEL"
+					description="MOD_TAGCLOUD_ORDER_DESC"
+					>
+						<option value="0">MOD_TAGCLOUD_ORDER_SIZE_ASC</option>
+						<option value="1">MOD_TAGCLOUD_ORDER_SIZE_DESC</option>
+						<option value="2">MOD_TAGCLOUD_ORDER_ALPH_ASC</option>
+						<option value="3">MOD_TAGCLOUD_ORDER_ALPH_DESC</option>
+				</field>
+				<field name="min"
+					type="text"
+					size="1"
+					default="1"
+					label="MOD_TAGCLOUD_MINIMUM_LABEL"
+					description="MOD_TAGCLOUD_MINIMUM_DESC"
+				/>
+				<field
+					name="max"
+					type="text"
+					size="1"
+					default="20"
+					label="MOD_TAGCLOUD_MAXIMUM_LABEL"
+					description="MOD_TAGCLOUD_MAXIMUM_DESC"
+				/>
+				<field name="seperator"
+					type="text"
+					size="5"
+					default=" :: "
+					label="MOD_TAGCLOUD_SEPARATOR_LABEL"
+					description="MOD_TAGCLOUD_SEPARATOR_DESC"
+				/>
 			</fieldset>
 		</fields>
 	</config>

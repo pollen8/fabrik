@@ -53,13 +53,21 @@
 						<field name="coltoupdate"
 							type="listfields"
 							label="PLG_LIST_UPDATE_COL_COLUMN_TO_UPDATE_LABEL"
-							valueformat="tableelement"/>
+							valueformat="tableelement" />
 						
 						<field name="update_value"
 							type="text"
 							label="PLG_LIST_UPDATE_COL_UPDATE_TO_LABEL"
 							size="30" />
-							
+
+						<field name="update_eval"
+							default="0"
+							label="COM_FABRIK_EVAL"
+							type="list">
+							<option value="0">JNO</option>
+							<option value="1">JYES</option>
+						</field>
+											
 					</fieldset>
 				</fields>
 				
@@ -87,6 +95,13 @@
 				label="PLG_LIST_UPDATE_COL_UPDATE_USER_LABEL"
 				repeat="true"
 				valueformat="tableelement"/>
+				
+			<field name="update_post_eval"
+				type="fabrikeditor"
+				mode="php"
+				description="PLG_LIST_UPDATE_COL_POST_EVAL_DESC"
+				label="PLG_LIST_UPDATE_COL_POST_EVAL_LABEL"
+				repeat="true" />
 		
 		</fieldset>
 		

@@ -85,13 +85,13 @@
 			</field>
 
 			<field name="autocomplete"
-				type="radio"
+				type="list"
 				default="1"
-				class="btn-group"
 				description="PLG_ELEMENT_FIELD_AUTOCOMPLETE_DESC"
 				label="PLG_ELEMENT_FIELD_AUTOCOMPLETE_LABEL">
 					<option value="0">JNO</option>
-					<option value="1">JYES</option>
+					<option value="1">PLG_ELEMENT_FIELD_AUTOCOMPLETE_BROWSER</option>
+					<option value="2">PLG_ELEMENT_FIELD_AUTOCOMPLETE_VALUES</option>
 			</field>
 
 			<field name="speech"
@@ -173,13 +173,29 @@
 				label="PLG_ELEMENT_FIELD_FORMAT_STRING_LABEL"
 				size="60" />
 
+			<field name="text_input_mask"
+				type="text"
+				description="PLG_ELEMENT_FIELD_INPUT_MASK_DESC"
+				label="PLG_ELEMENT_FIELD_INPUT_MASK_LABEL"
+				size="60" />
+				
+			<field name="render_as_qrcode"
+				type="radio"
+				default="0"
+				class="btn-group"
+				description="PLG_ELEMENT_FIELD_RENDER_AS_QRCODE_DESC"
+				label="PLG_ELEMENT_FIELD_RENDER_AS_QRCODE_LABEL">
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+			</field>
+				
 		</fieldset>
 
 		<fieldset label="PLG_ELEMENT_FIEILD_GUESS_LINK" name="plg-field-guesslink">
 
 			<field type="helplink"
 				url="PLG_ELEMENT_FIELD_HELP_SERVER" />
-
+			
 			<field name="guess_linktype"
 				type="radio"
 				default="0"
@@ -202,6 +218,32 @@
 					<option value="_top">PLG_ELEMENT_FIELD_TARGET_TOP</option>
 					<option value="lightbox">PLG_ELEMENT_FIELD_LIGHTBOX</option>
 			</field>
+			
+			<field name="rel"
+				type="list"
+				default=""
+				description="PLG_ELEMENT_FIELD_REL_DESC"
+				label="PLG_ELEMENT_FIELD_REL_LABEL">
+					<option value="">COM_FABRIK_NONE</option>
+					<option value="alternate">alternate</option>
+					<option value="author">author</option>
+					<option value="bookmark">bookmark</option>
+					<option value="help">help</option>
+					<option value="license">license</option>
+					<option value="next">next</option>
+					<option value="nofollow">nofollow</option>
+					<option value="noreferrer">noreferrer</option>
+					<option value="prefetch">prefetch</option>
+					<option value="prev">prev</option>
+					<option value="search">search</option>
+					<option value="tag">tag</option>	
+			</field>
+			
+			<field name="link_title"
+				type="text"
+				default=""
+				description="PLG_ELEMENT_FIELD_LINK_TITLE_DESC"
+				label="PLG_ELEMENT_FIELD_LINK_TITLE_LABEL" />
 
 		</fieldset>
 	</fields>

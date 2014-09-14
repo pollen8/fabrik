@@ -2,29 +2,29 @@
 <form>
 	<fields addfieldpath="/administrator/components/com_fabrik/models/fields" name="params">
 		<fieldset name="plg-list-php">
-		
+
 			<field type="helplink"
 				url="PLG_LIST_PHP_HELP_SERVER" />
-				
+
 			<field name="table_php_access"
 				type="accesslevel"
 				default="1"
 				label="PLG_FABRIK_LIST_PHP_ACCESS_LABEL"
 				repeat="true" />
-				
+
 			<field name="table_php_button_label"
 				type="text"
 				label="PLG_FABRIK_LIST_PHP_BUTTON_LABEL_LABEL"
 				repeat="true"
 				size="30" />
-				
+
 			<field name="list_php_image_name"
 				type="text"
 				default="php.png"
 				description="PLG_FABRIK_LIST_PHP_IMAGE_DESC"
 				label="PLG_FABRIK_LIST_PHP_IMAGE_LABEL"
 				repeat="true" size="20" />
-				
+
 			<field name="table_php_file"
 				type="filelist"
 				description="PLG_FABRIK_LIST_PHP_FILE_DESC"
@@ -32,11 +32,10 @@
 				hide_default="1"
 				label="PLG_FABRIK_LIST_PHP_FILE_LABEL"
 				repeat="true" />
-				
+
 			<field name="table_php_code"
 				type="fabrikeditor"
 				mode="php"
-				width="100"
 				description="PLG_FABRIK_LIST_PHP_CODE_DESC"
 				label="PLG_FABRIK_LIST_PHP_CODE_LABEL"
 				repeat="true" />
@@ -44,17 +43,27 @@
 			<field name="table_php_js_code"
 				type="fabrikeditor"
 				mode="javascript"
-				width="100"
 				description="PLG_FABRIK_LIST_PHP_JS_CODE_DESC"
-				label="PLG_FABRIK_LIST_PHP_JS_CODE_LABEL" 
+				label="PLG_FABRIK_LIST_PHP_JS_CODE_LABEL"
 				repeat="true" />
-				
+
 			<field type="text"
 				name="table_php_msg"
 				label="PLG_FABRIK_LIST_PHP_SUCCESS_MSG_LABEL"
 				repeat="true"
 				size="30" />
-			
+
+			<field type="radio"
+				name="button_in_row"
+				class="btn-group"
+				default="1"
+				repeat="true"
+				label="COM_FABRIK_LIST_PLUGIN_BUITON_IN_ROW_LABEL"
+				description="COM_FABRIK_LIST_PLUGIN_BUITON_IN_ROW_DESC">
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+			</field>
+
 		</fieldset>
 	</fields>
 </form>

@@ -76,7 +76,7 @@ class JFormFieldFabrikeditor extends JFormFieldTextArea
 		$theme = $this->element['theme'] ? (string) $this->element['theme'] : 'github';
 		$height = $this->element['height'] ? (string) $this->element['height'] : '200px';
 		$maxHeight = $this->element['max-height'] ? (string) $this->element['max-height'] : str_ireplace('px', '', $height) * 2 . 'px';
-		$width = $this->element['width'] ? (string) $this->element['width'] : '300px';
+		$width = $this->element['width'] ? (string) $this->element['width'] : '100';
 		FabrikHelperHTML::framework();
 		FabrikHelperHTML::iniRequireJS();
 
@@ -92,13 +92,27 @@ class JFormFieldFabrikeditor extends JFormFieldTextArea
 		$minHeight = str_ireplace('px', '', $height);
 		$maxHeight = str_ireplace('px', '', $maxHeight);
 
-		// In code below, the +/- 2 is to account for the top/bottom border of 1px each.
+		/**
+		 * In code below...
+		 *   the +/- 2 is to account for the top/bottom border of 1px each
+		 *
+		 *   pluginmanager.js renames names/ids when you delete a preceding plugin which breaks ace
+		 *   so we need to keep ace-ids intact and avoid issues with duplicate ids by:
+		 *       adding a random string to the id where ace needs id to be kept the same; and
+		 *       save dom object for textarea so that change of id doesn't break it.
+		 **/
+		$aceid = $this->id . '_' . sprintf("%06x", mt_rand(0, 0xffffff));
 		$script = '
 window.addEvent(\'domready\', function () {
-	var FbEditor = ace.edit("' . $this->id . '-ace");
+	if (Fabrik.debug) {
+		fconsole("Fabrik editor initialising: ' . $this->id . '");
+	}
+	var field = document.id("' . $this->id . '");
+	var FbEditor = ace.edit("' . $aceid . '-ace");
 	FbEditor.setTheme("ace/theme/' . $theme . '");
 	FbEditor.getSession().setMode(' . $aceMode . ');
-	FbEditor.setValue(document.id("' . $this->id . '").value);
+	FbEditor.setValue(field.value);
+	FbEditor.navigateFileStart();
 	FbEditor.setAnimatedScroll(true);
 	FbEditor.setBehavioursEnabled(true);
 	FbEditor.setDisplayIndentGuides(true);
@@ -109,7 +123,11 @@ window.addEvent(\'domready\', function () {
 	FbEditor.getSession().setUseWrapMode(true);
 	FbEditor.getSession().setTabSize(2);
 	FbEditor.on("blur", function () {
-		document.id("' . $this->id . '").value = FbEditor.getValue();
+		if (field.value !== FbEditor.getValue()) {
+			field.value = FbEditor.getValue();
+			field.fireEvent("change", field);
+		}
+		field.fireEvent("blur", field);
 	});
 	var maxlines = Math.floor((' . $maxHeight . ' - 2) / FbEditor.renderer.lineHeight);
 	var updateHeight = function () {
@@ -121,9 +139,9 @@ window.addEvent(\'domready\', function () {
 		      + (r.$horizScroll ? r.scrollBar.getWidth() : 0)
 		      + 2;
 		h = h < ' . $minHeight . ' ? ' . $minHeight . ' : h;
-		c = document.id("' . $this->id . '-container").getStyle("height").toInt();
+		c = document.id("' . $aceid . '-aceContainer").getStyle("height").toInt();
 		if (c !== h) {
-			document.id("' . $this->id . '-container").setStyle("height", h.toString() + "px");
+			document.id("' . $aceid . '-aceContainer").setStyle("height", h.toString() + "px");
 			FbEditor.resize();
 		}
 	}
@@ -132,11 +150,11 @@ window.addEvent(\'domready\', function () {
 });
 		';
 
-		$src = array('media/com_fabrik/js/lib/ace/src-min-noconflict/ace.js');
+		$src = array('media/com_fabrik/js/lib/ace/src-min-noconflict/ace.js','media/com_fabrik/js/fabrik.js');
 		FabrikHelperHTML::script($src, $script);
 
 		echo '<style type="text/css" media="screen">
-	#' . $this->id . '-ace {
+	#' . $aceid . '-ace {
 		position: absolute;
 		top: 0;
 		right: 0;
@@ -146,7 +164,7 @@ window.addEvent(\'domready\', function () {
 		border-radius: 3px;
 	}
 
-	#' . $this->id . '-container {
+	#' . $aceid . '-aceContainer {
 		position: relative;
 		width: ' . $width . ';
 		height: ' . $height . ';
@@ -156,6 +174,6 @@ window.addEvent(\'domready\', function () {
 		$this->element['rows'] = 1;
 
 		// For element js event code.
-		return '<div id="' . $this->id . '-container"><div id="' . $this->id . '-ace"></div>' . $editor . '</div>';
+		return '<div id="' . $aceid . '-aceContainer"><div id="' . $aceid . '-ace"></div>' . $editor . '</div>';
 	}
 }

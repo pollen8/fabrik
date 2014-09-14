@@ -23,7 +23,7 @@ class PlgFabrik_ElementPassword extends PlgFabrik_Element
 {
 	/**
 	 * States if the element contains data which is recorded in the database
-	 * some elements (eg buttons) dont
+	 * some elements (e.g. buttons) don't
 	 *
 	 * @param   array  $data  Posted data
 	 *
@@ -51,7 +51,7 @@ class PlgFabrik_ElementPassword extends PlgFabrik_Element
 	}
 
 	/**
-	 * Manupulates posted form data for insertion into database
+	 * Manipulates posted form data for insertion into database
 	 *
 	 * @param   mixed  $val   This elements posted form data
 	 * @param   array  $data  Posted form data
@@ -86,7 +86,7 @@ class PlgFabrik_ElementPassword extends PlgFabrik_Element
 	/**
 	 * Draws the html form element
 	 *
-	 * @param   array  $data           To preopulate element with
+	 * @param   array  $data           To pre-populate element with
 	 * @param   int    $repeatCounter  Repeat group counter
 	 *
 	 * @return  string	elements html
@@ -104,12 +104,12 @@ class PlgFabrik_ElementPassword extends PlgFabrik_Element
 
 		$bits = $this->inputProperties($repeatCounter, 'password');
 		$bits['value'] = $value;
-		$bits['placeholder'] = JText::_('PLG_ELEMENT_PASSWORD_TYPE_PASSWORD');
+		$bits['placeholder'] = FText::_('PLG_ELEMENT_PASSWORD_TYPE_PASSWORD');
 		$pw1 = $this->buildInput('input', $bits);
 		$origname = $element->name;
 		$element->name = $element->name . '_check';
 		$name = $this->getHTMLName($repeatCounter);
-		$bits['placeholder'] = JText::_('PLG_ELEMENT_PASSWORD_CONFIRM_PASSWORD');
+		$bits['placeholder'] = FText::_('PLG_ELEMENT_PASSWORD_CONFIRM_PASSWORD');
 		$bits['class'] .= ' fabrikSubElement';
 		$bits['name'] = $name;
 		$bits['id'] = $name;
@@ -118,26 +118,41 @@ class PlgFabrik_ElementPassword extends PlgFabrik_Element
 
 		$html = array();
 		$html[] = $pw1;
-
-		if (FabrikWorker::j3())
-		{
-			$html[] = '<div class="strength progress progress-striped" style="margin-top:20px;width:40%;"></div>';
-		}
-		else
-		{
-			$html[] = '<span class="strength"></span>';
-		}
-
+		$html[] = $this->strengthMeter();
 		$html[] = $pw2;
 
 		return implode("\n", $html);
 	}
 
 	/**
+	 * Build the password strength meter html output
+	 *
+	 * @return  string
+	 */
+	protected  function strengthMeter()
+	{
+		$params = $this->getParams();
+
+		if (!$params->get('strength_meter', 1))
+		{
+			return '';
+		}
+
+		if (FabrikWorker::j3())
+		{
+			return '<div class="strength progress progress-striped" style="margin-top:20px;width:40%;"></div>';
+		}
+		else
+		{
+			return '<span class="strength"></span>';
+		}
+	}
+
+	/**
 	 * Internal element validation
 	 *
 	 * @param   array  $data           Form data
-	 * @param   int    $repeatCounter  Repeeat group counter
+	 * @param   int    $repeatCounter  Repeat group counter
 	 *
 	 * @return bool
 	 */
@@ -157,13 +172,27 @@ class PlgFabrik_ElementPassword extends PlgFabrik_Element
 		$origname = $element->name;
 
 		/**
-		 * $$$ hugh - need to fetch the value for the main data, as well as the confirmatoin,
+		 * $$$ hugh - need to fetch the value for the main data, as well as the confirmation,
 		 * rather than using $data, to avoid issues with things like "foo%20bar" getting incorrectly
 		 * decoded as "foo bar" in $data.
 		 */
 		$value = urldecode($this->getValue($_REQUEST, $repeatCounter));
 		$name = $this->getFullName(true, false);
 		$check_name = str_replace($element->name, $element->name . '_check', $name);
+
+		/**
+		 * $$$ hugh - there must be a better way of doing this, but ...
+		 * if ajax, and the _check element isn't there, then this is probably an inline edit, and
+		 * this isn't the element being edited, we're just being called as part of the generic form validation,
+		 * so just return true;
+		 */
+		$ajax = $input->getBool('fabrik_ajax', false);
+
+		if ($ajax && !array_key_exists($check_name, $_REQUEST))
+		{
+			return true;
+		}
+
 		$this->setFullName($check_name, true, false);
 		$this->reset();
 		$checkvalue = urldecode($this->getValue($_REQUEST, $repeatCounter));
@@ -171,7 +200,7 @@ class PlgFabrik_ElementPassword extends PlgFabrik_Element
 
 		if ($checkvalue != $value)
 		{
-			$this->validationError = JText::_('PLG_ELEMENT_PASSWORD_PASSWORD_CONFIRMATION_DOES_NOT_MATCH');
+			$this->validationError = FText::_('PLG_ELEMENT_PASSWORD_PASSWORD_CONFIRMATION_DOES_NOT_MATCH');
 
 			return false;
 		}
@@ -193,7 +222,7 @@ class PlgFabrik_ElementPassword extends PlgFabrik_Element
 				/**
 				 * Why are we using .= here, but nowhere else?
 				 */
-				$this->validationError .= JText::_('PLG_ELEMENT_PASSWORD_PASSWORD_CONFIRMATION_EMPTY_NOT_ALLOWED');
+				$this->validationError .= FText::_('PLG_ELEMENT_PASSWORD_PASSWORD_CONFIRMATION_EMPTY_NOT_ALLOWED');
 
 				return false;
 			}
@@ -243,5 +272,27 @@ class PlgFabrik_ElementPassword extends PlgFabrik_Element
 		$ar = array('id' => $id, 'triggerEvent' => 'blur');
 
 		return array($ar);
+	}
+
+	/**
+	 * Return an internal validation icon
+	 *
+	 * @return  string
+	 */
+
+	public function internalValidationIcon()
+	{
+		return 'star';
+	}
+
+	/**
+	 * Return internal validation hover text
+	 *
+	 * @return  string
+	 */
+
+	public function internalValidataionText()
+	{
+		return FText::_('PLG_ELEMENT_PASSWORD_VALIDATION_TIP');
 	}
 }

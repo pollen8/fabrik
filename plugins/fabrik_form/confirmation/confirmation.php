@@ -81,7 +81,7 @@ class PlgFabrik_FormConfirmation extends PlgFabrik_Form
 
 		if ($input->getInt('fabrik_ignorevalidation') === 1 || $input->getInt('fabrik_ajax') === 1)
 		{
-			// Saving via inline edit - dont want to confirm
+			// Saving via inline edit - don't want to confirm
 			return true;
 		}
 
@@ -114,7 +114,7 @@ class PlgFabrik_FormConfirmation extends PlgFabrik_Form
 		// Initialize some variables
 		$form = $formModel->getForm();
 
-		// Save the posted form data to the form session, for retrival later
+		// Save the posted form data to the form session, for retrieval later
 		$sessionModel = JModelLegacy::getInstance('Formsession', 'FabrikFEModel');
 		$sessionModel->setFormId($formModel->getId());
 		$rowid = $input->get('rowid', 0);
@@ -127,8 +127,8 @@ class PlgFabrik_FormConfirmation extends PlgFabrik_Form
 		$session->set('com_' . $package . '.form.' . $formModel->getId() . '.session.hash', $sessionModel->getHash());
 
 		// Set an error so we can reshow the same form for confirmation purposes
-		$formModel->errors['confirmation_required'] = array(JText::_('PLG_FORM_CONFIRMATION_PLEASE_CONFIRM_YOUR_DETAILS'));
-		$form->error = JText::_('PLG_FORM_CONFIRMATION_PLEASE_CONFIRM_YOUR_DETAILS');
+		$formModel->errors['confirmation_required'] = array(FText::_('PLG_FORM_CONFIRMATION_PLEASE_CONFIRM_YOUR_DETAILS'));
+		$form->error = FText::_('PLG_FORM_CONFIRMATION_PLEASE_CONFIRM_YOUR_DETAILS');
 		$formModel->setEditable(false);
 
 		// Clear out unwanted buttons
@@ -189,7 +189,7 @@ class PlgFabrik_FormConfirmation extends PlgFabrik_Form
 			 * load in the posted values as hidden fields so that if we
 			 * return to the form to edit it it will populate with our data
 			 */
-			// $$$ 24/10/2011 testing removing this as data is retrieved via the session not thorugh posted data
+			// $$$ 24/10/2011 testing removing this as data is retrieved via the session not through posted data
 			foreach ($post as $key => $val)
 			{
 				$noneraw = JString::substr($key, 0, JString::strlen($key) - 4);
@@ -208,7 +208,7 @@ class PlgFabrik_FormConfirmation extends PlgFabrik_Form
 				{
 					$key = $formModel->getElement($noneraw)->getHTMLName(0);
 
-					// $$$ rob include both raw and non-raw keys (non raw for radios etc, _raw for db joins)
+					// $$$ rob include both raw and non-raw keys (non raw for radios etc., _raw for db joins)
 					if (is_array($val))
 					{
 						foreach ($val as $val2)
@@ -242,15 +242,20 @@ class PlgFabrik_FormConfirmation extends PlgFabrik_Form
 			$fields[] = '<input type="hidden" name="fabrik_confirmation" value="2" />';
 
 			// Add in a button to allow you to go back to the form and edit your data
-			$fields[] = "<input type=\"button\" id=\"fabrik_redoconfirmation\" class=\"button btn\" value=\"" . JText::_('PLG_FORM_CONFIRMATION_RE_EDIT')
+			$fields[] = "<input type=\"button\" id=\"fabrik_redoconfirmation\" class=\"button btn\" value=\"" . FText::_('PLG_FORM_CONFIRMATION_RE_EDIT')
 				. "\" />";
 
 			// Unset the task otherwise we will submit the form to be processed.
-			FabrikHelperHTML::addScriptDeclaration(
-				"window.addEvent('fabrik.loaded', function() {"
-				. "$('fabrik_redoconfirmation').addEvent('click', function(e) {;\n"
-					. "  this.form.task.value = '';\n"
-					. "  this.form.submit.click();\n" . "	});\n" . "});");
+			FabrikHelperHTML::addScriptDeclaration("
+				window.addEvent('fabrik.loaded', function() {
+					$('fabrik_redoconfirmation').addEvent('click', function(e) {;
+						this.form.task.value = '';
+						// this.form.submit();
+						var thisform = Fabrik.getBlock(this.form.id);
+						thisform.doSubmit(new Event.Mock(thisform._getButton('Submit')), thisform._getButton('Submit'));
+					});
+				});
+			");
 			$this->html = implode("\n", $fields);
 		}
 	}

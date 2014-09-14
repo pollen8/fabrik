@@ -1,6 +1,6 @@
 <?php
 /**
- * Display a json loaded window with a repeatble set of sub fields
+ * Display a json loaded window with a repeatable set of sub fields
  *
  * @package     Joomla
  * @subpackage  Form
@@ -14,7 +14,7 @@ defined('_JEXEC') or die('Restricted access');
 jimport('joomla.form.formfield');
 
 /**
- * Display a json loaded window with a repeatble set of sub fields
+ * Display a json loaded window with a repeatable set of sub fields
  *
  * @package     Joomla
  * @subpackage  Form
@@ -49,6 +49,7 @@ class JFormFieldFabrikModalrepeat extends JFormField
 		$subForm = new JForm($this->name, array('control' => 'jform'));
 		$xml = $this->element->children()->asXML();
 		$subForm->load($xml);
+		$j3 = FabrikWorker::j3();
 
 		// Needed for repeating modals in gmaps viz
 		$subForm->repeatCounter = (int) @$this->form->repeatCounter;
@@ -113,7 +114,12 @@ class JFormFieldFabrikModalrepeat extends JFormField
 		@$subForm->setFields($children);
 
 		$str = array();
-		$modalid = $this->id . '_modal';
+		$version = new JVersion;
+		$j32 = version_compare($version->RELEASE, '3.2') >= 0 ? true : false;
+		$j322 = ($j32 && $version->DEV_LEVEL >=3);
+		$j33 = version_compare($version->RELEASE, '3.3') >= 0 ? true : false;
+
+		$modalid = $j32 || $j33 ? 'attrib-' . $this->id . '_modal' : $this->id . '_modal';
 
 		// As JForm will render child fieldsets we have to hide it via CSS
 		$fieldSetId = str_replace('jform_params_', '', $modalid);
@@ -121,6 +127,7 @@ class JFormFieldFabrikModalrepeat extends JFormField
 		$document->addStyleDeclaration($css);
 
 		$path = 'templates/' . $app->getTemplate() . '/images/menu/';
+
 		$str[] = '<div id="' . $modalid . '" style="display:none">';
 		$str[] = '<table class="adminlist ' . $this->element['class'] . ' table table-striped">';
 		$str[] = '<thead><tr class="row0">';
@@ -131,17 +138,17 @@ class JFormFieldFabrikModalrepeat extends JFormField
 		{
 			$names[] = (string) $field->element->attributes()->name;
 			$str[] = '<th>' . strip_tags($field->getLabel($field->name));
-			$str[] = '<br /><small style="font-weight:normal">' . JText::_($field->description) . '</small>';
+			$str[] = '<br /><small style="font-weight:normal">' . FText::_($field->description) . '</small>';
 			$str[] = '</th>';
 		}
 
-		if (FabrikWorker::j3())
+		if ($j3)
 		{
 			$str[] = '<th><a href="#" class="add btn button btn-success"><i class="icon-plus"></i> </a></th>';
 		}
 		else
 		{
-			$str[] = '<th><a href="#" class="add"><img src="' . $path . '/icon-16-new.png" alt="' . JText::_('ADD') . '" /></a></th>';
+			$str[] = '<th><a href="#" class="add"><img src="' . $path . '/icon-16-new.png" alt="' . FText::_('ADD') . '" /></a></th>';
 		}
 
 		$str[] = '</tr></thead>';
@@ -155,15 +162,15 @@ class JFormFieldFabrikModalrepeat extends JFormField
 
 		$str[] = '<td>';
 
-		if (FabrikWorker::j3())
+		if ($j3)
 		{
 			$str[] = '<div class="btn-group"><a class="add btn button btn-success"><i class="icon-plus"></i> </a>';
 			$str[] = '<a class="remove btn button btn-danger"><i class="icon-minus"></i> </a></div>';
 		}
 		else
 		{
-			$str[] = '<a href="#" class="add"><img src="' . $path . '/icon-16-new.png" alt="' . JText::_('ADD') . '" /></a>';
-			$str[] = '<a href="#" class="remove"><img src="' . $path . '/icon-16-delete.png" alt="' . JText::_('REMOVE') . '" /></a>';
+			$str[] = '<a href="#" class="add"><img src="' . $path . '/icon-16-new.png" alt="' . FText::_('ADD') . '" /></a>';
+			$str[] = '<a href="#" class="remove"><img src="' . $path . '/icon-16-delete.png" alt="' . FText::_('REMOVE') . '" /></a>';
 		}
 
 		$str[] = '</td>';
@@ -195,7 +202,10 @@ class JFormFieldFabrikModalrepeat extends JFormField
 			$pane = str_replace('jform_params_', '', $modalid) . '-options';
 
 			$modalrepeat[$modalid][$this->form->repeatCounter] = true;
-			$script = str_replace('-', '', $modalid) . " = new FabrikModalRepeat('$modalid', $names, '$this->id');";
+			$opts = new stdClass;
+			$opts->j3 = $j3;
+			$opts = json_encode($opts);
+			$script = str_replace('-', '', $modalid) . " = new FabrikModalRepeat('$modalid', $names, '$this->id', $opts);";
 			$option = $input->get('option');
 
 			if ($option === 'com_fabrik')
@@ -204,8 +214,9 @@ class JFormFieldFabrikModalrepeat extends JFormField
 			}
 			else
 			{
-				if (FabrikWorker::j3())
+				if ($j3)
 				{
+
 					$context = strtoupper($option);
 
 					if ($context === 'COM_ADVANCEDMODULES')
@@ -215,8 +226,21 @@ class JFormFieldFabrikModalrepeat extends JFormField
 
 					$j3pane = $context . '_' . str_replace('jform_params_', '', $modalid) . '_FIELDSET_LABEL';
 
-					$script = "window.addEvent('domready', function() {
-				var a = jQuery(\"a:contains('$j3pane')\");
+					if ($j32)
+					{
+						$j3pane = strtoupper(str_replace('attrib-', '', $j3pane));
+					}
+
+					if ($j322 || $j33)
+					{
+						$script = "window.addEvent('domready', function() {
+					" . $script . "
+					});";
+					}
+					else
+					{
+						$script = "window.addEvent('domready', function() {
+					var a = jQuery(\"a:contains('$j3pane')\");
 						if (a.length > 0) {
 							a = a[0];
 							var href= a.get('href');
@@ -231,13 +255,14 @@ class JFormFieldFabrikModalrepeat extends JFormField
 							" . $script . "
 						}
 					});";
+					}
 				}
 				else
 				{
 					$script = "window.addEvent('domready', function() {
 			" . $script . "
 			if (typeOf($('$pane')) !== 'null') {
-			  $('$pane').getParent().hide();
+			  //$('$pane').getParent().hide();
 			}
 			});";
 				}
@@ -248,30 +273,29 @@ class JFormFieldFabrikModalrepeat extends JFormField
 			}
 		}
 
-		$close = "function(c){" . $modalid . ".onClose(c);}";
-
-		if (FabrikWorker::j3())
-		{
-			$icon = $this->element['icon'] ? '<i class="icon-' . $this->element['icon'] . '"></i> ' : '';
-			$icon .= JText::_('JLIB_FORM_BUTTON_SELECT');
-			$str[] = '<button class="btn" id="' . $modalid . '_button" data-modal="' . $modalid . '">' . $icon . '</button>';
-		}
-		else
-		{
-			$str[] = '<div class="button2-left">';
-			$str[] = '	<div class="blank">';
-			$str[] = '<a id="' . $modalid . '_button" data-modal="' . $modalid . '">' . JText::_('JLIB_FORM_BUTTON_SELECT') . '</a>';
-			$str[] = '	</div>';
-			$str[] = '</div>';
-		}
-
 		if (is_array($this->value))
 		{
 			$this->value = array_shift($this->value);
 		}
 
 		$value = htmlspecialchars($this->value, ENT_COMPAT, 'UTF-8');
-		$str[] = '<input type="hidden" name="' . $this->name . '" id="' . $this->id . '" value="' . $value . '" />';
+
+		if ($j3)
+		{
+			$icon = $this->element['icon'] ? '<i class="icon-' . $this->element['icon'] . '"></i> ' : '';
+			$icon .= FText::_('JLIB_FORM_BUTTON_SELECT');
+			$str[] = '<button class="btn" id="' . $modalid . '_button" data-modal="' . $modalid . '">' . $icon . '</button>';
+			$str[] = '<input type="hidden" name="' . $this->name . '" id="' . $this->id . '" value="' . $value . '" />';
+		}
+		else
+		{
+			$str[] = '<div class="button2-left">';
+			$str[] = '	<div class="blank">';
+			$str[] = '		<a id="' . $modalid . '_button" data-modal="' . $modalid . '">' . FText::_('JLIB_FORM_BUTTON_SELECT') . '</a>';
+			$str[] = '		<input type="hidden" name="' . $this->name . '" id="' . $this->id . '" value="' . $value . '" />';
+			$str[] = '	</div>';
+			$str[] = '</div>';
+		}
 
 		FabrikHelperHTML::framework();
 		FabrikHelperHTML::iniRequireJS();

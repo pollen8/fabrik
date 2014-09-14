@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<form>
+	<fields addfieldpath="/administrator/components/com_fabrik/models/fields" name="params">
+		<fieldset name="plg-list-php">
+
+			<field type="helplink"
+				url="PLG_LIST_PIVOT_HELP_SERVER" />
+			
+			<field name="pivot_sum"
+				type="listfields"
+				valueformat="tableelement"
+				usestep="true"
+				mode="gui"
+				repeat="true"
+				description="PLG_LIST_PIVOT_SUM_FIELDS_DESC"
+				label="PLG_LIST_PIVOT_SUM_FIELDS_LABEL"  />
+				
+			<field name="pivot_group"
+				type="listfields"
+				valueformat="tableelement"
+				usestep="true"
+				mode="gui"
+				repeat="true"
+				description="PLG_LIST_PIVOT_GROUP_FIELDS_DESC"
+				label="PLG_LIST_PIVOT_GROUP_FIELDS_LABEL"  />
+			
+			<field name="pivot_xcol"
+				type="listfields"
+				valueformat="tableelement"
+				usestep="true"
+				repeat="true"
+				description="PLG_LIST_PIVOT_X_COL_DESC"
+				label="PLG_LIST_PIVOT_X_COL_LABEL"  />
+				
+			<field name="pivot_ycol"
+				type="listfields"
+				valueformat="tableelement"
+				usestep="true"
+				repeat="true"
+				description="PLG_LIST_PIVOT_Y_COL_DESC"
+				label="PLG_LIST_PIVOT_Y_COL_LABEL"  />
+				
+			<field name="pivot_cache"
+				type="radio"
+				default="1"
+				repeat="true"
+				class="btn-group"
+				label="PLG_LIST_PIVOT_CACHE_LABEL"
+				description="PLG_LIST_PIVOT_CACHE_DESC">
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>	
+			</field>
+			
+		</fieldset>
+	</fields>
+</form>

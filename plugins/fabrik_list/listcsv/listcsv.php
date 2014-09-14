@@ -27,7 +27,7 @@ class PlgFabrik_ListListcsv extends PlgFabrik_List
 	/**
 	 * determine if the table plugin is a button and can be activated only when rows are selected
 	 *
-	 * @return bol
+	 * @return bool
 	 */
 
 	public function canSelectRows()
@@ -38,7 +38,7 @@ class PlgFabrik_ListListcsv extends PlgFabrik_List
 	/**
 	 * Prep the button if needed
 	 *
-	 * @param   array  &$args  Arguements
+	 * @param   array  &$args  Arguments
 	 *
 	 * @return  bool;
 	 */
@@ -53,14 +53,15 @@ class PlgFabrik_ListListcsv extends PlgFabrik_List
 	/**
 	 * Called when we import a csv row
 	 *
-	 * @param   object  &$params  Plugin parameters
-	 *
 	 * @return boolean
 	 */
 
-	public function onImportCSVRow(&$params)
+	public function onImportCSVRow()
 	{
-		$file = JFilterInput::clean($params->get('listcsv_import_php_file'), 'CMD');
+		$params = $this->getParams();
+		$filter = JFilterInput::getInstance();
+		$file = $params->get('listcsv_import_php_file');
+		$file = $filter->clean($file, 'CMD');
 
 		if ($file == -1 || $file == '')
 		{
@@ -75,7 +76,39 @@ class PlgFabrik_ListListcsv extends PlgFabrik_List
 		}
 		else
 		{
-			@require JPATH_ROOT . '/plugins/fabrik_list/listcsv/scripts/' . $file;
+			require JPATH_ROOT . '/plugins/fabrik_list/listcsv/scripts/' . $file;
+		}
+
+		return true;
+	}
+
+	/**
+	 * Called after we import a csv row
+	 *
+	 * @return boolean
+	 */
+
+	public function onAfterImportCSVRow()
+	{
+		$params = $this->getParams();
+		$filter = JFilterInput::getInstance();
+		$file = $params->get('listcsv_after_import_php_file');
+		$file = $filter->clean($file, 'CMD');
+
+		if ($file == -1 || $file == '')
+		{
+			$code = $params->get('listcsv_after_import_php_code', '');
+			$ret = @eval($code);
+			FabrikWorker::logEval($ret, 'Caught exception on eval in onAfterImportCSVRow : %s');
+
+			if ($ret === false)
+			{
+				return false;
+			}
+		}
+		else
+		{
+			require JPATH_ROOT . '/plugins/fabrik_list/listcsv/scripts/' . $file;
 		}
 
 		return true;

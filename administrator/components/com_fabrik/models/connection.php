@@ -45,7 +45,7 @@ class FabrikAdminModelConnection extends FabModelAdmin
 	{
 		/**
 		 * not sure if we should be loading JTable or FabTable here
-		 * issue with using Fabtable is that it will always load the cached verion of the cnn
+		 * issue with using Fabtable is that it will always load the cached version of the cnn
 		 * which might cause issues when migrating from test to live sites???
 		 */
 		$config['dbo'] = FabrikWorker::getDbo(true);
@@ -132,7 +132,7 @@ class FabrikAdminModelConnection extends FabModelAdmin
 
 		if ($item->id == 1)
 		{
-			$app->enqueueMessage(JText::_('COM_FABRIK_ORIGINAL_CONNECTION'));
+			$app->enqueueMessage(FText::_('COM_FABRIK_ORIGINAL_CONNECTION'));
 
 			if (!$this->matchesDefault($item))
 			{
@@ -141,7 +141,7 @@ class FabrikAdminModelConnection extends FabModelAdmin
 				$item->user = $config->get('user');
 				$item->password = $config->get('password');
 				$item->database = $config->get('db');
-				JError::raiseWarning(E_WARNING, JText::_('COM_FABRIK_YOU_MUST_SAVE_THIS_CNN'));
+				JError::raiseWarning(E_WARNING, FText::_('COM_FABRIK_YOU_MUST_SAVE_THIS_CNN'));
 			}
 		}
 	}
@@ -157,13 +157,15 @@ class FabrikAdminModelConnection extends FabModelAdmin
 	protected function matchesDefault($item)
 	{
 		$config = JFactory::getConfig();
+		$crypt = FabrikWorker::getCrypt();
+		$pwMatch = $config->get('password') == $item->password || $crypt->encrypt($config->get('password')) == $item->password;
 
-		return $config->get('host') == $item->host && $config->get('user') == $item->user && $config->get('password') == $item->password
+		return $config->get('host') == $item->host && $config->get('user') == $item->user && $pwMatch
 			&& $config->get('db') == $item->database;
 	}
 
 	/**
-	 * Save the connection- test first if its vald
+	 * Save the connection- test first if its valid
 	 * if it is remove the session instance of the connection then call parent save
 	 *
 	 * @param   array  $data  connection data
@@ -182,6 +184,9 @@ class FabrikAdminModelConnection extends FabModelAdmin
 		$params->encryptedPw = true;
 		$data['params'] = json_encode($params);
 		$data['password'] = $crypt->encrypt($data['password']);
+		// $$$ hugh TESTING REMOVE!!!!
+		// $$$ Felikat - Not sure what you were testing but it broke stuff!
+		// unset($data['password']);
 
 		$options = $model->getConnectionOptions(JArrayHelper::toObject($data));
 		$db = $model->getDriverInstance($options);
@@ -212,7 +217,7 @@ class FabrikAdminModelConnection extends FabModelAdmin
 	{
 		if ($data['password'] !== $data['passwordConf'])
 		{
-			$this->setError(JText::_('COM_FABRIK_PASSWORD_MISMATCH'));
+			$this->setError(FText::_('COM_FABRIK_PASSWORD_MISMATCH'));
 
 			return false;
 		}

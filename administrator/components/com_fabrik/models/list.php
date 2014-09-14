@@ -194,7 +194,7 @@ class FabrikAdminModelList extends FabModelAdmin
 				{
 					// Prune items that you can't change.
 					unset($pks[$i]);
-					JError::raiseWarning(403, JText::_('JLIB_APPLICATION_ERROR_EDIT_STATE_NOT_PERMITTED'));
+					JError::raiseWarning(403, FText::_('JLIB_APPLICATION_ERROR_EDIT_STATE_NOT_PERMITTED'));
 				}
 			}
 		}
@@ -288,15 +288,16 @@ class FabrikAdminModelList extends FabModelAdmin
 				$aConditions[] = JHTML::_('select.option', 'in', 'IN');
 				$aConditions[] = JHTML::_('select.option', 'not_in', 'NOT IN');
 				$aConditions[] = JHTML::_('select.option', 'exists', 'EXISTS');
-				$aConditions[] = JHTML::_('select.option', 'earlierthisyear', JText::_('COM_FABRIK_EARLIER_THIS_YEAR'));
-				$aConditions[] = JHTML::_('select.option', 'laterthisyear', JText::_('COM_FABRIK_LATER_THIS_YEAR'));
+				$aConditions[] = JHTML::_('select.option', 'earlierthisyear', FText::_('COM_FABRIK_EARLIER_THIS_YEAR'));
+				$aConditions[] = JHTML::_('select.option', 'laterthisyear', FText::_('COM_FABRIK_LATER_THIS_YEAR'));
 
-				$aConditions[] = JHTML::_('select.option', 'yesterday', JText::_('COM_FABRIK_YESTERDAY'));
-				$aConditions[] = JHTML::_('select.option', 'today', JText::_('COM_FABRIK_TODAY'));
-				$aConditions[] = JHTML::_('select.option', 'tomorrow', JText::_('COM_FABRIK_TOMORROW'));
-				$aConditions[] = JHTML::_('select.option', 'thismonth', JText::_('COM_FABRIK_THIS_MONTH'));
-				$aConditions[] = JHTML::_('select.option', 'lastmonth', JText::_('COM_FABRIK_LAST_MONTH'));
-				$aConditions[] = JHTML::_('select.option', 'nextmonth', JText::_('COM_FABRIK_NEXT_MONTH'));
+				$aConditions[] = JHTML::_('select.option', 'yesterday', FText::_('COM_FABRIK_YESTERDAY'));
+				$aConditions[] = JHTML::_('select.option', 'today', FText::_('COM_FABRIK_TODAY'));
+				$aConditions[] = JHTML::_('select.option', 'tomorrow', FText::_('COM_FABRIK_TOMORROW'));
+				$aConditions[] = JHTML::_('select.option', 'thismonth', FText::_('COM_FABRIK_THIS_MONTH'));
+				$aConditions[] = JHTML::_('select.option', 'lastmonth', FText::_('COM_FABRIK_LAST_MONTH'));
+				$aConditions[] = JHTML::_('select.option', 'nextmonth', FText::_('COM_FABRIK_NEXT_MONTH'));
+				$aConditions[] = JHTML::_('select.option', 'birthday', FText::_('COM_FABRIK_BIRTHDAY_TODAY'));
 
 				break;
 		}
@@ -364,9 +365,9 @@ class FabrikAdminModelList extends FabModelAdmin
 		JText::script('COM_FABRIK_PUBLISHED');
 
 		$joinTypeOpts = array();
-		$joinTypeOpts[] = array('inner', JText::_('INNER JOIN'));
-		$joinTypeOpts[] = array('left', JText::_('LEFT JOIN'));
-		$joinTypeOpts[] = array('right', JText::_('RIGHT JOIN'));
+		$joinTypeOpts[] = array('inner', FText::_('INNER JOIN'));
+		$joinTypeOpts[] = array('left', FText::_('LEFT JOIN'));
+		$joinTypeOpts[] = array('right', FText::_('RIGHT JOIN'));
 		$activetableOpts[] = "";
 		$activetableOpts[] = $item->db_table_name;
 
@@ -504,6 +505,12 @@ class FabrikAdminModelList extends FabModelAdmin
 				continue;
 			}
 
+			if (empty($join->join_from_table) || empty($join->table_join))
+			{
+				unset($joins[$i]);
+				continue;
+			}
+
 			$fields = $fabrikDb->getTableColumns($join->join_from_table);
 			$join->joinFormFields = array_keys($fields);
 			$fields = $fabrikDb->getTableColumns($join->table_join);
@@ -596,7 +603,7 @@ class FabrikAdminModelList extends FabModelAdmin
 
 		if (empty($data['_database_name']) && JArrayHelper::getValue($data, 'db_table_name') == '')
 		{
-			$this->setError(JText::_('COM_FABRIK_SELECT_DB_OR_ENTER_NAME'));
+			$this->setError(FText::_('COM_FABRIK_SELECT_DB_OR_ENTER_NAME'));
 
 			return false;
 		}
@@ -637,9 +644,17 @@ class FabrikAdminModelList extends FabModelAdmin
 
 		// Get original collation
 		$db = $feModel->getDb();
-		$db->setQuery('SHOW TABLE STATUS LIKE ' . $db->quote($data['db_table_name']));
-		$info = $db->loadObject();
-		$origCollation = is_object($info) ? $info->Collation : $params->get('collation', 'none');
+
+		if (!empty($data['db_table_name']))
+		{
+			$db->setQuery('SHOW TABLE STATUS LIKE ' . $db->quote($data['db_table_name']));
+			$info = $db->loadObject();
+			$origCollation = is_object($info) ? $info->Collation : $params->get('collation', 'none');
+		}
+		else
+		{
+			$origCollation = $params->get('collation', 'none');
+		}
 
 		$row->bind($data);
 
@@ -650,6 +665,13 @@ class FabrikAdminModelList extends FabModelAdmin
 
 		$this->collation($feModel, $origCollation, $row);
 		$isNew = true;
+
+		if ($row->id != 0)
+		{
+			$datenow = JFactory::getDate();
+			$row->modified = $datenow->toSql();
+			$row->modified_by = $user->get('id');
+		}
 
 		if ($id == 0)
 		{
@@ -669,14 +691,14 @@ class FabrikAdminModelList extends FabModelAdmin
 			// Check the entered database table doesnt already exist
 			if ($newtable != '' && $this->databaseTableExists($newtable))
 			{
-				throw new RuntimeException(JText::_('COM_FABRIK_DATABASE_TABLE_ALREADY_EXISTS'));
+				throw new RuntimeException(FText::_('COM_FABRIK_DATABASE_TABLE_ALREADY_EXISTS'));
 
 				return false;
 			}
 
 			if (!$this->canCreateDbTable())
 			{
-				throw new RuntimeException(Jtext::_('COM_FABRIK_INSUFFICIENT_RIGHTS_TO_CREATE_TABLE'));
+				throw new RuntimeException(FText::_('COM_FABRIK_INSUFFICIENT_RIGHTS_TO_CREATE_TABLE'));
 
 				return false;
 			}
@@ -714,15 +736,13 @@ class FabrikAdminModelList extends FabModelAdmin
 			}
 		}
 
-		$params = new JRegistry($row->params);
-
-		if ($row->id != 0)
-		{
-			$datenow = JFactory::getDate();
-			$row->modified = $datenow->toSql();
-			$row->modified_by = $user->get('id');
-		}
-
+		/*
+		 * // Not right - as it meant only isview parameter saved on new list. Something
+		 * to do with isView() also saviing list parameters.
+		 * $params = new JRegistry($row->params);
+		$params->set('isview', $feModel->isView());
+		$row->params = (string) $params;
+		*/
 		FabrikAdminHelper::prepareSaveDate($row->publish_down);
 		FabrikAdminHelper::prepareSaveDate($row->created);
 		FabrikAdminHelper::prepareSaveDate($row->publish_up);
@@ -730,7 +750,7 @@ class FabrikAdminModelList extends FabModelAdmin
 
 		if ($pk == '')
 		{
-			$pk = $feModel->getPrimaryKeyAndExtra($data['db_table_name']);
+			$pk = $feModel->getPrimaryKeyAndExtra($row->db_table_name);
 			$key = $pk[0]['colname'];
 			$extra = $pk[0]['extra'];
 
@@ -820,6 +840,12 @@ class FabrikAdminModelList extends FabModelAdmin
 			$this->setState($this->getName() . '.id', $row->$pkName);
 		}
 
+		/**
+		 * $$$ hugh - I don't know what this state gets used for, but $iNew is
+		 * currently ending up the wrong way round.  New tables it's false,
+		 * existing tables it's true.
+		 */
+
 		$this->setState($this->getName() . '.new', $isNew);
 		parent::cleanCache('com_fabrik');
 
@@ -839,8 +865,8 @@ class FabrikAdminModelList extends FabModelAdmin
 	 */
 	protected function collation($feModel, $origCollation, $row)
 	{
-		// Don't attempt to alter new table, or a view
-		if ($row->id == 0 || $feModel->isView())
+		// Don't attempt to alter new table, or a view, or if we shouldn't alter the table
+		if ($row->id == 0 || $feModel->isView() || !$feModel->canAlterFields())
 		{
 			return;
 		}
@@ -1053,9 +1079,38 @@ class FabrikAdminModelList extends FabModelAdmin
 		$join->table_key = str_replace('`', '', $tableKey);
 		$join->join_type = $joinType;
 		$join->group_id = $groupId;
+		/**
+		 * Create the 'pk' param.  Can't just call front end setJoinPk() for gory
+		 * reasons, so do this by steam.
+		 *
+		 * Prolly don't really need to create a registry object here, we could just
+		 * JSON-up the pk param, but might as well make the point here that it's a
+		 * params object, and it may come in useful for adding other params one day.
+		 */
+		$join->params = new JRegistry;
+		/**
+		 * This is kind of expensive, as getPrimaryKeyAndExtra() method does a table lookup,
+		 * but I don't think we know what the PK of the joined table is any other
+		 * way at this point.
+		 */
+		$pk = $this->getFEModel()->getPrimaryKeyAndExtra($join->table_join);
+
+		if ($pk !== false)
+		{
+			// If it didn't return false, getPrimaryKeyAndExtra will have created and array with at least one key
+			$pk_col = JArrayHelper::getValue($pk[0], 'colname', '');
+
+			if (!empty($pk_col))
+			{
+				$db = FabrikWorker::getDbo(true);
+				$pk_col = $join->table_join . '.' . $pk_col;
+				$join->params->set('pk', $db->quoteName($pk_col));
+				$join->params = (string) $join->params;
+			}
+		}
+
 		$join->store();
 
-		// $$$ hugh @TODO - create new 'pk' param
 		$this->createLinkedElements($groupId, $joinTable);
 	}
 
@@ -1263,7 +1318,9 @@ class FabrikAdminModelList extends FabModelAdmin
 					}
 				}
 				// Then alter if defined in Fabrik global config
-				$plugin = $fbConfig->get($type, $plugin);
+				// Jaanus: but first check if there are any pk field and if yes then create as internalid
+				$defType = JString::strtolower(substr($key[0]['type'], 0, 3));
+				$plugin = ($key[0]['colname'] == $label && $defType === 'int') ? 'internalid' : $fbConfig->get($type, $plugin);
 			}
 
 			$element->plugin = $plugin;
@@ -1373,8 +1430,8 @@ class FabrikAdminModelList extends FabModelAdmin
 			$form->created = $createdate;
 			$form->created_by = $user->get('id');
 			$form->created_by_alias = $user->get('username');
-			$form->error = JText::_('COM_FABRIK_FORM_ERROR_MSG_TEXT');
-			$form->submit_button_label = JText::_('COM_FABRIK_SAVE');
+			$form->error = FText::_('COM_FABRIK_FORM_ERROR_MSG_TEXT');
+			$form->submit_button_label = FText::_('COM_FABRIK_SAVE');
 			$form->published = $item->published;
 
 			$version = new JVersion;
@@ -1996,15 +2053,13 @@ class FabrikAdminModelList extends FabModelAdmin
 
 					// Trigger the onContentAfterDelete event.
 					$dispatcher->trigger($this->event_after_delete, array($context, $table));
-
-					// Get the tables form
 				}
 				else
 				{
 					// Prune items that you can't change.
 					unset($pks[$i]);
 
-					return JError::raiseWarning(403, JText::_('JLIB_APPLICATION_ERROR_EDIT_STATE_NOT_PERMITTED'));
+					return JError::raiseWarning(403, FText::_('JLIB_APPLICATION_ERROR_EDIT_STATE_NOT_PERMITTED'));
 				}
 
 				switch ($deleteDepth)

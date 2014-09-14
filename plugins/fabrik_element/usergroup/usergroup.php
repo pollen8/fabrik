@@ -45,7 +45,7 @@ class PlgFabrik_ElementUsergroup extends PlgFabrik_ElementList
 	/**
 	 * Draws the html form element
 	 *
-	 * @param   array  $data           To preopulate element with
+	 * @param   array  $data           To pre-populate element with
 	 * @param   int    $repeatCounter  Repeat group counter
 	 *
 	 * @return  string	elements html
@@ -84,7 +84,7 @@ class PlgFabrik_ElementUsergroup extends PlgFabrik_ElementList
 
 		if ($this->isEditable())
 		{
-			return JHtml::_('access.usergroups', $name, $selected);
+			return JHtml::_('access.usergroups', $name, $selected,true);
 		}
 		else
 		{
@@ -233,7 +233,7 @@ class PlgFabrik_ElementUsergroup extends PlgFabrik_ElementList
 	 * Determines the value for the element in the form view
 	 *
 	 * @param   array  $data           Form data
-	 * @param   int    $repeatCounter  When repeating joinded groups we need to know what part of the array to access
+	 * @param   int    $repeatCounter  When repeating joined groups we need to know what part of the array to access
 	 * @param   array  $opts           Options
 	 *
 	 * @return  string	value
@@ -266,10 +266,19 @@ class PlgFabrik_ElementUsergroup extends PlgFabrik_ElementList
 	{
 		if (!isset($this->_default))
 		{
-			$user = JFactory::getUser();
-			$this->_default = $user->get('groups');
-			$this->_default = array_values($this->_default);
-			$this->_default = json_encode($this->_default);
+			$params = $this->getParams();
+
+			if ($params->get('default_to_current_user_group', 1))
+			{
+				$user = JFactory::getUser();
+				$this->_default = $user->get('groups');
+				$this->_default = array_values($this->_default);
+				$this->_default = json_encode($this->_default);
+			}
+			else
+			{
+				$this->_default = json_encode(array());
+			}
 		}
 
 		return $this->_default;

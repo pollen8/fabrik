@@ -46,4 +46,9 @@ padding: 5px !important;
 list-style: none;
 }
 
+.filtertable_horiz {
+	display: inline-block;
+	vertical-align: top;
+}
+
 ";?>

@@ -56,9 +56,9 @@ class FabrikAdminModelPackages extends FabModelList
 		$db = $this->getDbo();
 		$query = $db->getQuery(true);
 
-		// Select the required fields from the table.
+		// Select the required fields from the table. Always load fabrik packages - so no {package} placeholder
 		$query->select($this->getState('list.select', 'p.*'));
-		$query->from('#__{package}_packages AS p');
+		$query->from('#__fabrik_packages AS p');
 
 		// Join over the users for the checked out user.
 		$query->select(' u.name AS editor');
@@ -174,7 +174,7 @@ class FabrikAdminModelPackages extends FabModelList
 			}
 			else
 			{
-				$i->file = JText::_('COM_FABRIK_EXPORT_PACKAGE_TO_CREATE_ZIP');
+				$i->file = FText::_('COM_FABRIK_EXPORT_PACKAGE_TO_CREATE_ZIP');
 			}
 		}
 

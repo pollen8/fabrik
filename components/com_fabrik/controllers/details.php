@@ -41,7 +41,7 @@ class FabrikControllerDetails extends JControllerLegacy
 	/**
 	 * Display the view
 	 *
-	 * @param   boolean  $cachable   If true, the view output will be cached
+	 * @param   boolean  $cachable   If true, the view output will be cached - NOTE not actually used to control caching!!!
 	 * @param   array    $urlparams  An array of safe url parameters and their variable types, for valid values see {@link JFilterInput::clean()}.
 	 *
 	 * @return  JController  A JController object to support chaining.
@@ -334,7 +334,7 @@ class FabrikControllerDetails extends JControllerLegacy
 
 		if (is_null($msg))
 		{
-			$msg = JText::_('COM_FABRIK_RECORD_ADDED_UPDATED');
+			$msg = FText::_('COM_FABRIK_RECORD_ADDED_UPDATED');
 		}
 
 		if ($app->isAdmin())
@@ -438,7 +438,7 @@ class FabrikControllerDetails extends JControllerLegacy
 	{
 		$app = JFactory::getApplication();
 		$input = $app->input;
-		$sessionModel = $this->getModel('formsession', 'FabrikFEModel');
+		$sessionModel = $this->getModel('Formsession', 'FabrikFEModel');
 		$sessionModel->setFormId($input->getInt('formid', 0));
 		$sessionModel->setRowId($input->get('rowid', '', 'string'));
 		$sessionModel->remove();
@@ -512,7 +512,8 @@ class FabrikControllerDetails extends JControllerLegacy
 		else
 		{
 			// @TODO: test this
-			$app->redirect($ref, count($ids) . " " . JText::_('COM_FABRIK_RECORDS_DELETED'));
+			$app->enqueueMessage(count($ids) . " " . FText::_('COM_FABRIK_RECORDS_DELETED'));
+			$app->redirect($ref);
 		}
 	}
 }

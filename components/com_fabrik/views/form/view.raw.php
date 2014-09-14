@@ -58,7 +58,7 @@ class FabrikViewForm extends JViewLegacy
 		{
 			if (!$app->isAdmin())
 			{
-				echo JText::_('COM_FABRIK_FORM_NOT_PUBLISHED');
+				echo FText::_('COM_FABRIK_FORM_NOT_PUBLISHED');
 
 				return false;
 			}
@@ -68,7 +68,7 @@ class FabrikViewForm extends JViewLegacy
 
 		if ($this->access == 0)
 		{
-			return JError::raiseWarning(500, JText::_('JERROR_ALERTNOAUTHOR'));
+			return JError::raiseWarning(500, FText::_('JERROR_ALERTNOAUTHOR'));
 		}
 
 		if (is_object($listModel))
@@ -101,7 +101,7 @@ class FabrikViewForm extends JViewLegacy
 			$groupParams = $groupModel->getParams();
 			$aElements = array();
 
-			// Check if group is acutally a table join
+			// Check if group is actually a table join
 			$repeatGroup = 1;
 			$foreignKey = null;
 
@@ -118,7 +118,7 @@ class FabrikViewForm extends JViewLegacy
 						$foreignKey = $joinTable->table_join_key;
 
 						// $$$ rob test!!!
-						if (!$groupModel->canView())
+						if (!$groupModel->canView('form'))
 						{
 							continue;
 						}

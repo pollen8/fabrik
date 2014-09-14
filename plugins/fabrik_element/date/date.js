@@ -21,7 +21,7 @@ var FbDateTime = new Class({
 			'ifFormat': "%Y/%m/%d",
 			'daFormat': "%Y/%m/%d",
 			'singleClick': true,
-			'align': "Br",
+			'align': "Tl",
 			'range': [1900, 2999],
 			'showsTime': false,
 			'timeFormat': '24',
@@ -29,7 +29,8 @@ var FbDateTime = new Class({
 			'step': 2,
 			'cache': false,
 			'showOthers': false,
-			'advanced': false
+			'advanced': false,
+			'allowedDates': []
 		}
 	},
 
@@ -44,7 +45,17 @@ var FbDateTime = new Class({
 		this.buttonBgSelected = '#88dd33';
 		this.startElement = element;
 		this.setUpDone = false;
+		this.convertAllowedDates();
 		this.setUp();
+	},
+	
+	/**
+	 * Convert allowed date strings into Date objects
+	 */
+	convertAllowedDates: function () {
+		for (var i = 0; i < this.options.allowedDates.length; i ++) {
+			this.options.allowedDates[i] = new Date(this.options.allowedDates[i]);
+		}
 	},
 
 	setUp: function () {
@@ -90,11 +101,55 @@ var FbDateTime = new Class({
 				} else {
 					this.cal.showAt(this.cal.params.position[0], params.position[1]);
 				}
+
+				// Needed to re-run the dateStatusFunc() to enable/disable dates
+				this.cal._init(this.cal.firstDayOfWeek, this.cal.date);
 				this.cal.show();
 			}.bind(this));
 			Fabrik.addEvent('fabrik.form.submit.failed', function (form, json) {
 				// Fired when form failed after AJAX submit
 				this.afterAjaxValidation();
+			}.bind(this));
+		}
+		
+	},
+	
+	/**
+	 * Once the element is attached to the form, observe the ajax trigger element
+	 */
+	attachedToForm: function () {
+		this.parent();
+		this.watchAjaxTrigger();
+	},
+	
+	/**
+	 * Observe the ajax trigger element, used for updatiing allowed dates
+	 */
+	watchAjaxTrigger: function () {
+		if (this.options.watchElement === '') {
+			return;
+		}
+		var el = this.form.elements[this.options.watchElement];
+		if (el) {
+			el.addEvent('change', function (event) {
+				var data = {
+					'option': 'com_fabrik',
+					'format': 'raw',
+					'task': 'plugin.pluginAjax',
+					'plugin': 'date',
+					'method': 'ajax_getAllowedDates',
+					'element_id': this.options.id,
+					'v': el.get('value'),
+					'formid': this.form.id
+				};
+				new Request.JSON({url: '',
+					method: 'post',
+					'data': data,
+					onSuccess: function (json) {
+						this.options.allowedDates = json;
+						this.convertAllowedDates();
+					}.bind(this)
+				}).send();
 			}.bind(this));
 		}
 	},
@@ -116,6 +171,20 @@ var FbDateTime = new Class({
 	 */
 	dateSelect: function (date)
 	{
+		// Check PHP events.
+		var allowed = this.options.allowedDates;
+		if (allowed.length > 0) {
+			var matched = false;
+			for (var i = 0; i < allowed.length; i ++) {
+				if (allowed[i].format('%Y%m%d') === date.format('%Y%m%d')) {
+					matched = true;
+				}
+			}
+			if (!matched) {
+				return true;
+			}
+		}
+		
 		var fn = this.options.calendarSetup.dateAllowFunc;
 		if (typeOf(fn) !== 'null' && fn !== '') {
 			eval(fn);
@@ -129,16 +198,14 @@ var FbDateTime = new Class({
 	calSelect: function (calendar, date) {
 
 		// Test the date is selectable...
-		if (!this.dateSelect(date)) {
+		if (calendar.dateClicked && !this.dateSelect(calendar.date)) {
 			var d = this.setTimeFromField(calendar.date);
 			this.update(d.format('db'));
-			if (this.cal.dateClicked) {
-				this.getDateField().fireEvent('change');
-				if (this.timeButton) {
-					this.getTimeField().fireEvent('change');
-				}
-				this.cal.callCloseHandler();
+			this.getDateField().fireEvent('change');
+			if (this.timeButton) {
+				this.getTimeField().fireEvent('change');
 			}
+			this.cal.callCloseHandler();
 			window.fireEvent('fabrik.date.select', this);
 			Fabrik.fireEvent('fabrik.date.select', this);
 		}
@@ -156,9 +223,9 @@ var FbDateTime = new Class({
 
 	/**
 	 * Called from FbFormSubmit
-	 *  
+	 *
 	 * @params   function  cb  Callback function to run when the element is in an acceptable state for the form processing to continue
-	 * 
+	 *
 	 * @return  void
 	 */
 	onsubmit: function (cb) {
@@ -209,7 +276,19 @@ var FbDateTime = new Class({
 		this.cal = null;
 		if (dateEl) {
 			if (this.options.advanced) {
-				params.date = Date.parseExact(dateEl.value || dateEl.innerHTML, Date.normalizeFormat(dateFmt));
+				
+				// If its blank dont try to format
+				if (dateEl.value === '') {
+					params.date = '';
+				} else {
+					params.date = Date.parseExact(dateEl.value || dateEl.innerHTML, Date.normalizeFormat(dateFmt));
+					
+					// If using format %b-%Y in Spanish (may be other langs as well)
+					// See http://fabrikar.com/forums/index.php?threads/problem-with-dates-on-a-form.39088/#post-196600
+					if (params.date === null) {
+						params.date = this.options.value;
+					}
+				}
 			} else {
 				params.date = Date.parseDate(dateEl.value || dateEl.innerHTML, dateFmt);
 			}
@@ -282,7 +361,9 @@ var FbDateTime = new Class({
 			this.options.calendarSetup.button = this.element.id + "_img";
 			//this.addEventToCalOpts();
 			this.cal.showAtElement(f, this.cal.params.align);
-			this.cal.wrapper.getParent().position({'relativeTo': this.cal.params.inputField, 'position': 'topLeft'});
+			if (typeof(this.cal.wrapper) !== 'undefined') {
+				this.cal.wrapper.getParent().position({'relativeTo': this.cal.params.inputField, 'position': 'topLeft'});
+			}
 		}
 	},
 
@@ -308,7 +389,7 @@ var FbDateTime = new Class({
 
 			v = this.cal.date;
 		} else {
-			if (this.options.value === '' || this.options.value === null) {
+			if (this.options.value === '' || this.options.value === null || this.options.value === '0000-00-00 00:00:00') {
 				return '';
 			}
 			v = new Date.parse(this.options.value);
@@ -332,7 +413,15 @@ var FbDateTime = new Class({
 		return false;
 	},
 
+	/**
+	 * Set time from field
+	 * @param  date
+	 */
 	setTimeFromField: function (d) {
+		if (typeOf(d) !== 'date') {
+			return;
+		}
+		
 		if (this.options.showtime === true && this.timeElement) {
 			var time = this.timeElement.get('value').toUpperCase();
 			var afternoon = time.contains('PM') ? true : false;
@@ -364,7 +453,7 @@ var FbDateTime = new Class({
 		return d;
 	},
 
-	watchButtons : function () {
+	watchButtons: function () {
 		if (this.options.showtime & this.options.editable) {
 			this.getTimeField();
 			this.getTimeButton();
@@ -377,10 +466,14 @@ var FbDateTime = new Class({
 				if (!this.setUpDone) {
 					if (this.timeElement) {
 						this.dropdown = this.makeDropDown();
+						this.setActive();
 						this.dropdown.getElement('a.close-time').addEvent('click', function (e) {
 							e.stop();
 							this.hideTime();
 						}.bind(this));
+						/*document.body.addEvent('click', function () {
+							this.hideTime();
+						}.bind());*/
 						this.setUpDone = true;
 					}
 				}
@@ -390,45 +483,54 @@ var FbDateTime = new Class({
 
 	addNewEventAux : function (action, js) {
 		if (action === 'change') {
-			Fabrik.addEvent('fabrik.date.select', function () {
-				var e = 'fabrik.date.select';
-				typeOf(js) === 'function' ? js.delay(0, this, this) : eval(js);
-			});
-		}
-		this.element.getElements('input').each(function (i) {
-			i.addEvent(action, function (e) {
-				if (typeOf(e) === 'event') {
-					e.stop();
+			Fabrik.addEvent('fabrik.date.select', function (w) {
+				if (w.baseElementId === this.baseElementId) {
+					var e = 'fabrik.date.select';
+					typeOf(js) === 'function' ? js.delay(0, this, this) : eval(js);
 				}
-				typeOf(js) === 'function' ? js.delay(0, this, this) : eval(js);
-			});
-		}.bind(this));
+			}.bind(this));
+		}
+		else {
+			this.element.getElements('input').each(function (i) {
+				i.addEvent(action, function (e) {
+					if (typeOf(e) === 'event') {
+						e.stop();
+					}
+					typeOf(js) === 'function' ? js.delay(0, this, this) : eval(js);
+				});
+			}.bind(this));
+		}
 	},
 
 	/**
 	 * takes a date object or string
-	 * 
+	 *
 	 * @param   mixed  val     Date, string or date object
 	 * @param   array  events  Events to fire defaults to ['change']
 	 */
 	update: function (val, events) {
 		events = events ? events : [ 'change' ];
 		this.getElement();
+		
 		if (val === 'invalid date') {
 			fconsole(this.element.id + ': date not updated as not valid');
+		
 			return;
 		}
+		
 		var date;
+		
 		if (typeOf(val) === 'string') {
 			// $$$ hugh - if val is empty string, like from a clearForm(), the Date.parse() is
 			// going to return null, swhich will then blow up in a few lines.
 			date = Date.parse(val);
+			
 			if (date === null) {
-
 				// Yes, but we still need to clear the fields! (e.g. from reset())
 				this._getSubElements().each(function (subEl) {
 					subEl.value = '';
 				});
+				
 				if (this.cal) {
 					/*
 					 * Can't set this.cal.date to a blank string as it expects a date object
@@ -436,26 +538,39 @@ var FbDateTime = new Class({
 					 */
 					this.cal.date = new Date();
 				}
+
+				if (!this.options.editable) {
+					if (typeOf(this.element) !== 'null') {
+						this.element.set('html', val);
+					}
+				}
+
 				return;
 			}
 		} else {
 			date = val;
 		}
+		
 		var f = this.options.calendarSetup.ifFormat;
+		
 		if (this.options.dateTimeFormat !== '' && this.options.showtime) {
 			f += ' ' + this.options.dateTimeFormat;
 		}
+		
 		if (events.length > 0) {
 			this.fireEvents(events);
 		}
+		
 		if (typeOf(val) === 'null' || val === false) {
 			return;
 		}
+		
 		if (!this.options.editable) {
 			if (typeOf(this.element) !== 'null') {
 				//this.element.set('html', val);
 				this.element.set('html', date.format(f));
 			}
+			
 			return;
 		}
 
@@ -464,6 +579,7 @@ var FbDateTime = new Class({
 			// have a time field to put it into
 			date = date.format(f);
 			this.getDateField().value = date;
+			
 			return;
 		} else {
 			// have to reset the time element as update is called (via reset) in
@@ -505,19 +621,21 @@ var FbDateTime = new Class({
 	},
 
 	// Deprecated
-	showCalendar : function (format, e) {
+	showCalendar: function (format, e) {
 	},
 
-	getAbsolutePos : function (el) {
+	getAbsolutePos: function (el) {
 		var r = {
 			x : el.offsetLeft,
 			y : el.offsetTop
 		};
+		
 		if (el.offsetParent) {
 			var tmp = this.getAbsolutePos(el.offsetParent);
 			r.x += tmp.x;
 			r.y += tmp.y;
 		}
+		
 		return r;
 	},
 
@@ -560,17 +678,20 @@ var FbDateTime = new Class({
 			h = new Element('a.btn.fbdateTime-minute.btn-mini', {styles: {'width': '10px'}});
 			h.innerHTML = (i * 5);
 			d2.appendChild(h);
+			
 			document.id(h).addEvent('click', function (e) {
 				this.minute = this.formatMinute(e.target.innerHTML);
 				this.stateTime();
 				this.setActive();
 			}.bind(this));
+			
 			h.addEvent('mouseover', function (e) {
 				var h = e.target;
 				if (this.minute !== this.formatMinute(h.innerHTML)) {
 					e.target.addClass('btn-info');
 				}
 			}.bind(this));
+			
 			h.addEvent('mouseout', function (e) {
 				var h = e.target;
 				if (this.minute !== this.formatMinute(h.innerHTML)) {
@@ -578,20 +699,21 @@ var FbDateTime = new Class({
 				}
 			}.bind(this));
 		}
+		
 		padder.appendChild(d2);
 		d.appendChild(padder);
-
 
 		document.addEvent('click', function (e) {
 			if (this.timeActive) {
 				var t = e.target;
 				if (t !== this.timeButton && t !== this.timeElement) {
-					/*if (!t.within(this.dropdown)) {
+					if (!t.within(this.dropdown)) {
 						this.hideTime();
-					}*/
+					}
 				}
 			}
 		}.bind(this));
+		
 		d.inject(document.body);
 		var mydrag = new Drag.Move(d);
 
@@ -602,10 +724,21 @@ var FbDateTime = new Class({
 				this.hideTime();
 			}.bind(this));
 		}
+
 		return d;
 	},
 
 	hourButtons: function (start, end) {
+		var v = this.getValue();
+		if (v === '') {
+			this.hour = 0;
+			this.minute = 0;
+		} else {
+			var date = Date.parse(v);
+			this.hour = date.get('hours');
+			this.minute = date.get('minutes');
+		}
+		
 		var hrGroup = new Element('div.btn-group');
 		for (var i = start; i < end; i++) {
 			h = new Element('a.btn.btn-mini.fbdateTime-hour', {styles: {'width': '10px'}}).set('html', i);
@@ -691,7 +824,10 @@ var FbDateTime = new Class({
 		if (typeOf(mins[this.minute / 5]) !== 'null') {
 			mins[this.minute / 5].addClass('btn-success');
 		}
-		hours[this.hour.toInt()].addClass('btn-success');
+		var active = hours[this.hour.toInt()];
+		if (typeOf(active) !== 'null') {
+			active.addClass('btn-success');
+		}
 	},
 
 	addEventToCalOpts: function () {
@@ -706,7 +842,6 @@ var FbDateTime = new Class({
 		this.options.calendarSetup.onClose = function (calendar) {
 			this.calClose(calendar);
 		}.bind(this);
-
 
 	},
 

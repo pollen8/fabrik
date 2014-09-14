@@ -1,12 +1,40 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <form>
-	<fields>
+	<fields name="params">
 	
 		<fieldset addfieldpath="/administrator/components/com_fabrik/models/fields" name="plg-element-thumbs">
 	
-		<field type="helplink"
+			<field type="helplink"
 				url="PLG_ELEMENT_THUMBS_HELP_SERVER" />
-					
+			
+			<field name="show_down"
+				type="radio"
+				class="btn-group"
+				default="1"
+				description="PLG_ELEMENT_THUMBS_SHOW_DOWN_DESC"
+				label="PLG_ELEMENT_THUMBS_SHOW_DOWN_LABEL">
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>	
+			</field>
+			
+			<field name="rate_in_from"
+				type="radio"
+				class="btn-group"
+				default="1"
+				description="PLG_ELEMENT_THUMBS_RATE_IN_FORM_DESC"
+				label="PLG_ELEMENT_THUMBS_RATE_IN_FORM_LABEL">
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>	
+			</field>
+			
+			<field name="thumbs_no_access_msg"
+				type="text"
+				default="PLG_ELEMENT_THUMBS_NO_ACCESS_MSG_DEFAULT"
+				label="PLG_ELEMENT_THUMBS_NO_ACCESS_MSG_LABEL"
+				description="PLG_ELEMENT_THUMBS_NO_ACCESS_MSG_DESC"
+				size="30"
+			/>
+				
 		</fieldset>
 		
 	</fields>

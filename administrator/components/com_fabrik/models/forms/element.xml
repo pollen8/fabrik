@@ -157,7 +157,8 @@
 
 			<field name="full_words_only"
 				type="radio"
-				class="btn-group" default="0"
+				class="btn-group"
+				default="0"
 				description="COM_FABRIK_FIELD_FULLWORDS_DESC"
 				label="COM_FABRIK_FIELD_FULLWORDS_LABEL">
 					<option value="0">JNO</option>
@@ -208,6 +209,19 @@
 				default="input-medium"
 				description="COM_FABRIK_FIELD_FILTER_CLASS_DESC"
 				label="COM_FABRIK_FIELD_FILTER_CLASS_LABEL" />
+				
+			<field name="filter_responsive_class"
+				type="list"
+				default=""
+				label="COM_FABRIK_RESPONSIVE_CLASS_LABEL">
+					<option value="">COM_FABRIK_RESPONSIVE_CLASS_VISIBLE</option>
+					<option value="hidden-tablet hidden-phone">COM_FABRIK_RESPONSIVE_CLASS_VISIBLE_PHONE</option>
+					<option value="hidden-phone hidden-desktop">COM_FABRIK_RESPONSIVE_CLASS_VISIBLE_TABLET</option>
+					<option value="hidden-phone hidden-tablet">COM_FABRIK_RESPONSIVE_CLASS_VISIBLE_DESKTOP</option>
+					<option value="hidden-phone">COM_FABRIK_RESPONSIVE_CLASS_HIDDEN_PHONE</option>
+					<option value="hidden-tablet">COM_FABRIK_RESPONSIVE_CLASS_HIDDEN_TABLET</option>
+					<option value="hidden-desktop">COM_FABRIK_RESPONSIVE_CLASS_HIDDEN_DESKTOP</option>
+			</field>
 
 		</fieldset>
 
@@ -306,6 +320,13 @@
 				description="COM_FABRIK_FIELD_ICON_FILE_DESC"
 				label="COM_FABRIK_FIELD_ICON_FILE_LABEL" />
 
+			<field name="icon_subdir"
+				type="text"
+				size="20"
+				default=""
+				description="COM_FABRIK_FIELD_ICON_SUBDIR_DESC"
+				label="COM_FABRIK_FIELD_ICON_SUBDIR_LABEL" />
+
 		</fieldset>
 
 		<fieldset name="rss">
@@ -390,6 +411,7 @@
 
 				<field name="sum_access"
 					type="accesslevel"
+					default="1"
 					description="COM_FABRIK_FIELD_SUM_ACCESS_DESC"
 					label="COM_FABRIK_FIELD_SUM_ACCESS_LABEL" />
 
@@ -418,6 +440,7 @@
 
 				<field name="avg_access"
 					type="accesslevel"
+					default="1"
 					description="COM_FABRIK_FIELD_AVERAGE_ACCESS_DESC"
 					label="COM_FABRIK_FIELD_AVERAGE_ACCESS_LABEL" />
 
@@ -455,7 +478,7 @@
 
 				<field name="median_access"
 					type="accesslevel"
-					default="0"
+					default="1"
 					description="COM_FABRIK_FIELD_MEDIAN_ACCESS_DESC"
 					label="COM_FABRIK_FIELD_MEDIAN_ACCESS_LABEL" />
 
@@ -491,6 +514,7 @@
 
 				<field name="count_access"
 					type="accesslevel"
+					default="1"
 					description="COM_FABRIK_FIELD_COUNT_ACCESS_DESC"
 					label="COM_FABRIK_FIELD_COUNT_ACCESS_LABEL"/>
 
@@ -526,6 +550,7 @@
 
 				<field name="custom_calc_access"
 					type="accesslevel"
+					default="1"
 					description="COM_FABRIK_FIELD_CUSTOM_CALC_ACCESS_DESC"
 					label="COM_FABRIK_FIELD_CUSTOM_CALC_ACCESS_LABEL" />
 
@@ -607,6 +632,12 @@
 			</fieldset>
 
 				<fieldset name="access2">
+
+					<field name="edit_access"
+						type="accesslevel"
+						default="1"
+						label="COM_FABRIK_ELEMENT_EDIT_ACCESS_LABEL"
+						description="COM_FABRIK_ELEMENT_EDIT_ACCESS_DESC" />
 
 					<field name="view_access"
 						type="accesslevel"

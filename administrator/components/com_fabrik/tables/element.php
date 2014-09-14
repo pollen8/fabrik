@@ -95,7 +95,7 @@ class FabrikTableElement extends FabTable
 	 *
 	 * @param   mixed    $pks     An optional array of primary key values to update.
 	 * If not set the instance property value is used.
-	 * @param   integer  $state   The publishing state. eg. [0 = unpublished, 1 = published]
+	 * @param   integer  $state   The publishing state. e.g. [0 = unpublished, 1 = published]
 	 * @param   integer  $userId  The user id of the user performing the operation.
 	 *
 	 * @return  boolean	True on success.
@@ -121,7 +121,7 @@ class FabrikTableElement extends FabTable
 			// Nothing to set publishing state on, return false.
 			else
 			{
-				$e = new JException(JText::_('JLIB_DATABASE_ERROR_NO_ROWS_SELECTED'));
+				$e = new JException(FText::_('JLIB_DATABASE_ERROR_NO_ROWS_SELECTED'));
 				$this->setError($e);
 
 				return false;

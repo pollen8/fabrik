@@ -49,7 +49,7 @@ class PlgFabrik_ElementSlider extends PlgFabrik_Element
 	/**
 	 * Draws the html form element
 	 *
-	 * @param   array  $data           To preopulate element with
+	 * @param   array  $data           To pre-populate element with
 	 * @param   int    $repeatCounter  Repeat group counter
 	 *
 	 * @return  string	elements html
@@ -85,7 +85,7 @@ class PlgFabrik_ElementSlider extends PlgFabrik_Element
 			{
 				$outsrc = FabrikHelperHTML::image('clear_rating_out.png', 'form', $this->tmpl, array(), true);
 				$str[] = '<div class="clearslider_cont"><img src="' . $outsrc . '" style="cursor:pointer;padding:3px;" alt="'
-					. JText::_('PLG_ELEMENT_SLIDER_CLEAR') . '" class="clearslider" /></div>';
+					. FText::_('PLG_ELEMENT_SLIDER_CLEAR') . '" class="clearslider" /></div>';
 			}
 		}
 
@@ -135,7 +135,7 @@ class PlgFabrik_ElementSlider extends PlgFabrik_Element
 	}
 
 	/**
-	 * Manupulates posted form data for insertion into database
+	 * Manipulates posted form data for insertion into database
 	 *
 	 * @param   mixed  $val   This elements posted form data
 	 * @param   array  $data  Posted form data

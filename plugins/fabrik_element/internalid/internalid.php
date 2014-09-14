@@ -31,7 +31,7 @@ class PlgFabrik_ElementInternalid extends PlgFabrik_Element
 	/**
 	 * Draws the html form element
 	 *
-	 * @param   array  $data           to preopulate element with
+	 * @param   array  $data           to pre-populate element with
 	 * @param   int    $repeatCounter  repeat group counter
 	 *
 	 * @return  string	elements html
@@ -87,13 +87,13 @@ class PlgFabrik_ElementInternalid extends PlgFabrik_Element
 	 * @return  bool
 	 */
 
-	protected function isHidden()
+	public function isHidden()
 	{
 		return true;
 	}
 
 	/**
-	 * Load a new set of default properites and params for the element
+	 * Load a new set of default properties and params for the element
 	 *
 	 * @return  object	element (id = 0)
 	 */

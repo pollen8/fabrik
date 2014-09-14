@@ -1,6 +1,5 @@
-
 nv.models.indentedTree = function() {
-
+  "use strict";
   //============================================================
   // Public Variables with Default Settings
   //------------------------------------------------------------
@@ -11,6 +10,7 @@ nv.models.indentedTree = function() {
     , color = nv.utils.defaultColor()
     , id = Math.floor(Math.random() * 10000)
     , header = true
+    , filterZero = false
     , noData = "No Data Available."
     , childIndent = 20
     , columns = [{key:'key', label: 'Name', type:'text'}] //TODO: consider functions like chart.addColumn, chart.removeColumn, instead of a block like this
@@ -18,22 +18,23 @@ nv.models.indentedTree = function() {
     , iconOpen = 'images/grey-plus.png' //TODO: consider removing this and replacing with a '+' or '-' unless user defines images
     , iconClose = 'images/grey-minus.png'
     , dispatch = d3.dispatch('elementClick', 'elementDblclick', 'elementMouseover', 'elementMouseout')
+    , getUrl = function(d) { return d.url }
     ;
 
   //============================================================
 
+  var idx = 0;
 
   function chart(selection) {
     selection.each(function(data) {
-      var i = 0,
-          depth = 1;
+      var depth = 1,
+          container = d3.select(this);
 
       var tree = d3.layout.tree()
           .children(function(d) { return d.values })
           .size([height, childIndent]); //Not sure if this is needed now that the result is HTML
 
-      chart.update = function() { selection.transition().call(chart) };
-      chart.container = this;
+      chart.update = function() { container.transition().duration(600).call(chart) };
 
 
       //------------------------------------------------------------
@@ -45,6 +46,9 @@ nv.models.indentedTree = function() {
 
       var nodes = tree.nodes(data[0]);
 
+      // nodes.map(function(d) {
+      //   d.id = i++;
+      // })
 
       //------------------------------------------------------------
       // Setup containers and skeleton of chart
@@ -74,7 +78,7 @@ nv.models.indentedTree = function() {
 
 
       var tbody = table.selectAll('tbody')
-                    .data(function(d) {return d });
+                    .data(function(d) { return d });
       tbody.enter().append('tbody');
 
 
@@ -86,11 +90,11 @@ nv.models.indentedTree = function() {
 
       // Update the nodes…
       var node = tbody.selectAll('tr')
-          .data(function(d) { return d }, function(d) { return d.id || (d.id == ++i)});
+          // .data(function(d) { return d; }, function(d) { return d.id || (d.id == ++i)});
+          .data(function(d) { return d.filter(function(d) { return (filterZero && !d.children) ? filterZero(d) :  true; } )}, function(d,i) { return d.id || (d.id || ++idx)});
           //.style('display', 'table-row'); //TODO: see if this does anything
 
       node.exit().remove();
-
 
       node.select('img.nv-treeicon')
           .attr('src', icon)
@@ -119,26 +123,40 @@ nv.models.indentedTree = function() {
         }
 
 
-        nodeName.append('span')
-            .attr('class', d3.functor(column.classes) )
-            .text(function(d) { return column.format ? column.format(d) :
+        nodeName.each(function(d) {
+          if (!index && getUrl(d))
+            d3.select(this)
+              .append('a')
+              .attr('href',getUrl)
+              .attr('class', d3.functor(column.classes))
+              .append('span')
+          else
+            d3.select(this)
+              .append('span')
+
+            d3.select(this).select('span')
+              .attr('class', d3.functor(column.classes) )
+              .text(function(d) { return column.format ? column.format(d) :
                                         (d[column.key] || '-') });
+          });
 
-        if  (column.showCount)
+        if  (column.showCount) {
           nodeName.append('span')
-              .attr('class', 'nv-childrenCount')
-              .text(function(d) {
-                return ((d.values && d.values.length) || (d._values && d._values.length)) ?
-                    '(' + ((d.values && d.values.length) || (d._values && d._values.length)) + ')'
-                  : ''
-              });
+              .attr('class', 'nv-childrenCount');
 
+          node.selectAll('span.nv-childrenCount').text(function(d) {
+                return ((d.values && d.values.length) || (d._values && d._values.length)) ?                                   //If this is a parent
+                    '(' + ((d.values && (d.values.filter(function(d) { return filterZero ? filterZero(d) :  true; }).length)) //If children are in values check its children and filter
+                    || (d._values && d._values.filter(function(d) { return filterZero ? filterZero(d) :  true; }).length)     //Otherwise, do the same, but with the other name, _values...
+                    || 0) + ')'                                                                                               //This is the catch-all in case there are no children after a filter
+                    : ''                                                                                                     //If this is not a parent, just give an empty string
+            });
+        }
 
-        if (column.click)
-          nodeName.select('span').on('click', column.click);
+        // if (column.click)
+        //   nodeName.select('span').on('click', column.click);
 
       });
-
 
       node
         .order()
@@ -228,7 +246,8 @@ nv.models.indentedTree = function() {
   //============================================================
   // Expose Public Variables
   //------------------------------------------------------------
-
+  chart.options = nv.utils.optionsFunc.bind(chart);
+  
   chart.margin = function(_) {
     if (!arguments.length) return margin;
     margin.top    = typeof _.top    != 'undefined' ? _.top    : margin.top;
@@ -275,6 +294,12 @@ nv.models.indentedTree = function() {
     return chart;
   };
 
+  chart.filterZero = function(_) {
+    if (!arguments.length) return filterZero;
+    filterZero = _;
+    return chart;
+  };
+
   chart.columns = function(_) {
     if (!arguments.length) return columns;
     columns = _;
@@ -299,8 +324,14 @@ nv.models.indentedTree = function() {
     return chart;
   }
 
+  chart.getUrl = function(_){
+     if (!arguments.length) return getUrl;
+    getUrl = _;
+    return chart;
+  }
+
   //============================================================
 
 
   return chart;
-}
+};

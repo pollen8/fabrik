@@ -85,7 +85,7 @@ class ImageRender
 			$title_name = str_replace('.', '___', $params->get('fu_title_element'));
 		}
 
-		if ($input->get('view') == 'list')
+		if ($this->inTableView)
 		{
 			$listModel = $model->getlistModel();
 
@@ -111,24 +111,20 @@ class ImageRender
 		$element = $model->getElement();
 		$file = $model->getStorage()->getFileUrl($file);
 		$fullSize = $file;
-		$width = $params->get('fu_main_max_width');
-		$height = $params->get('fu_main_max_height');
 
 		if (!$this->fullImageInRecord($params))
 		{
 			if ($params->get('fileupload_crop'))
 			{
-				$width = $params->get('fileupload_crop_width');
-				$height = $params->get('fileupload_crop_height');
 				$file = $model->getStorage()->_getCropped($fullSize);
 			}
 			else
 			{
-				$width = $params->get('thumb_max_width');
-				$height = $params->get('thumb_max_height');
 				$file = $model->getStorage()->_getThumb($file);
 			}
 		}
+
+		list($width, $height) = $this->imageDimensions($params);
 
 		$file = $model->storage->preRenderPath($file);
 		$fullSize = $model->storage->preRenderPath($fullSize);
@@ -147,7 +143,7 @@ class ImageRender
 				/*
 				 * We're building a Bootstrap slideshow, just a simple img tag
 				 */
-				$this->output = '<img src="' . $fullSize . '" alt="' . $title . '" />';
+				$this->output = '<img src="' . $fullSize . '" alt="' . $title . '" style="margin:auto" />';
 			}
 			else
 			{
@@ -161,7 +157,15 @@ class ImageRender
 
 				if ($params->get('make_link', true) && !$this->fullImageInRecord($params))
 				{
-					$this->output .= '<a href="' . $fullSize . '" rel="lightbox[]" title="' . $title . '">' . $img . '</a>';
+					$n = $this->inTableView ? '' : $model->getElement()->name;
+
+					if ($params->get('restrict_lightbox', 1) == 0)
+					{
+						$n = '';
+					}
+
+					$lightboxAttrs = FabrikHelperHTML::getLightboxAttributes($title, $n);
+					$this->output .= '<a href="' . $fullSize . '" ' . $lightboxAttrs . ' title="' . $title . '">' . $img . '</a>';
 				}
 				else
 				{
@@ -174,6 +178,37 @@ class ImageRender
 				}
 			}
 		}
+	}
+
+	/**
+	 * Get the image width / height
+	 *
+	 * @param   JParameter  $params  Params
+	 *
+	 * @since   3.1rc2
+	 *
+	 * @return  array ($width, $height)
+	 */
+	private function imageDimensions($params)
+	{
+		$width = $params->get('fu_main_max_width');
+		$height = $params->get('fu_main_max_height');
+
+		if (!$this->fullImageInRecord($params))
+		{
+			if ($params->get('fileupload_crop'))
+			{
+				$width = $params->get('fileupload_crop_width');
+				$height = $params->get('fileupload_crop_height');
+			}
+			else
+			{
+				$width = $params->get('thumb_max_width');
+				$height = $params->get('thumb_max_height');
+			}
+		}
+
+		return array($width, $height);
 	}
 
 	/**
@@ -197,5 +232,63 @@ class ImageRender
 		}
 
 		return true;
+	}
+
+	/**
+	 * Build Carousel HTML
+	 *
+	 * @param   string  $id       Widget HTML id
+	 * @param   array   $data     Images to add to the carousel
+	 * @param   object  $model    Element model
+	 * @param   object  $params   Element params
+	 * @param   object  $thisRow  All rows data
+	 *
+	 * @return  string  HTML
+	 */
+
+	public function renderCarousel($id = 'carousel', $data = array(), $model = null, $params = null, $thisRow = null)
+	{
+		list($width, $height) = $this->imageDimensions($params);
+		$rendered = '';
+		$id .= '_carousel';
+
+		if (!empty($data))
+		{
+			$imgs = array();
+			$i = 0;
+
+			foreach ($data as $img)
+			{
+				$model->_repeatGroupCounter = $i++;
+				$this->renderListData($model, $params, $img, $thisRow);
+				$imgs[] = $this->output;
+			}
+
+			if (count($imgs) == 1)
+			{
+				return $imgs[0];
+			}
+
+			$rendered = '
+<div id="' . $id . '" class="carousel slide mootools-noconflict" data-interval="false" data-pause="hover" style="width:' . $width . 'px">
+';
+
+			$rendered .= '
+    <!-- Carousel items -->
+	<div class="carousel-inner">
+		<div class="active item">
+';
+			$rendered .= implode("\n		</div>\n" . '		<div class="item">', $imgs);
+			$rendered .= '
+		</div>
+    </div>
+    <!-- Carousel nav -->
+    <a class="carousel-control left" href="#' . $id . '" data-slide="prev">&lsaquo;</a>
+    <a class="carousel-control right" href="#' . $id . '" data-slide="next">&rsaquo;</a>
+</div>
+';
+		}
+
+		return $rendered;
 	}
 }

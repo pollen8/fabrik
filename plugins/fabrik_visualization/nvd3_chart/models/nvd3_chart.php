@@ -20,7 +20,7 @@ require_once JPATH_SITE . '/components/com_fabrik/models/visualization.php';
  *
  * 0/LABELS_IN_VALUES
  *
- * If the table has 2 columns, one for labels and one for data
+ * If the table has 2 columns, one for labels and one for data (labels in data)
  * +--------+--------+-----------+
  * | state  | Number | Age range |
  * +========+========+===========+
@@ -101,6 +101,18 @@ class FabrikModelNvd3_Chart extends FabrikFEModelVisualization
 				$this->data = $this->scatterChartData();
 
 				return $this->data;
+			}
+
+			// @TODO - make distinct render classes for each chart type. MUCH easier to manage.
+			$chartFile = JPATH_SITE . '/plugins/fabrik_visualization/nvd3_chart/charts/' . strtolower($chartType) . '.php';
+
+			if (JFile::exists($chartFile))
+			{
+				require_once $chartFile;
+				$cls = JStringNormalise::toCamelCase($chartType);
+				$render = new $cls($params);
+
+				return $render->render($params);
 			}
 
 			if ($chartType === 'multiBarHorizontalChart' || $chartType === 'multiBarChart')
@@ -267,13 +279,13 @@ class FabrikModelNvd3_Chart extends FabrikFEModelVisualization
 
 		if ($split !== '')
 		{
-			$query->select($split . ' AS ' . $db->nameQuote('key'));
+			$query->select($split . ' AS ' . $db->quoteName('key'));
 		}
 		else
 		{
 			if ($params->get('data_mode') == 0)
 			{
-				$query->select('date AS ' . $db->nameQuote('key'));
+				$query->select('date AS ' . $db->quoteName('key'));
 			}
 		}
 
@@ -369,7 +381,6 @@ class FabrikModelNvd3_Chart extends FabrikFEModelVisualization
 
 		$table = $params->get('tbl');
 		$split = $params->get('split', '');
-		$groupBy = $params->get('group_by');
 
 		$db = FabrikWorker::getDbo(false, $params->get('conn_id'));
 		$query = $db->getQuery(true);
@@ -398,7 +409,7 @@ class FabrikModelNvd3_Chart extends FabrikFEModelVisualization
 	}
 
 	/**
-	 * Build data for the mutli Chart types
+	 * Build data for the multi Chart types
 	 * Current only works
 	 *
 	 * @return stdClass
@@ -630,9 +641,9 @@ class FabrikModelNvd3_Chart extends FabrikFEModelVisualization
 	}
 
 	/**
-	 * Add chart marings
+	 * Add chart margins
 	 *
-	 * @return  string  chart.margn option
+	 * @return  string  chart.margin option
 	 */
 
 	protected function margins()
@@ -738,7 +749,7 @@ class FabrikModelNvd3_Chart extends FabrikFEModelVisualization
 				$str[] = '.y(function(d) { return d.value })';
 				break;
 
-				// Test: was the same as stackedAreaChart (was the same as stackedAreaChart)
+			// Test: was the same as stackedAreaChart
 			case 'multiBarChart':
 				$str[] = '.x(function(d) { return d.label })';
 				$str[] = '.y(function(d) { return d.value })';
@@ -757,6 +768,8 @@ class FabrikModelNvd3_Chart extends FabrikFEModelVisualization
 				break;
 		}
 
+		$str[] = $this->margins();
+
 		switch ($chart)
 		{
 			// @TODO add line chart axis label options.
@@ -764,9 +777,12 @@ class FabrikModelNvd3_Chart extends FabrikFEModelVisualization
 				// $str[] = 'chart.xAxis.axisLabel(\'Time (ms)\');';
 				// $str[] = 'chart.yAxis.axisLabel(\'Voltage (v)\');';
 				break;
+			case 'discreteBarChart':
+				$str[] = 'chart.yAxis.tickFormat(d3.format("d"));';
+				$str[] = 'chart.tooltips(true).showValues(true)';
+				break;
 		}
 
-		$str[] = $this->margins();
 		$this->showControls($str);
 		$id = $this->getContainerId();
 		$str[] = 'd3.select("#' . $id . ' svg")';
@@ -775,12 +791,6 @@ class FabrikModelNvd3_Chart extends FabrikFEModelVisualization
 
 		$str[] = '.transition().duration(1200)';
 		$str[] = '.call(chart);';
-
-		$str[] = 'console.log(d3.selectAll("circle"));';
-
-		$str[] = 'd3.selectAll("circle").on("mousedown", function(d, i) {
-			console.log(arguments);
-	});';
 
 		$str[] = 'd3.selectAll("circle.nv-point").on("mouseover", function(d, i) {
 			console.log(d.data);
@@ -802,46 +812,5 @@ class FabrikModelNvd3_Chart extends FabrikFEModelVisualization
 		$str[] = '});';
 
 		return implode("\n", $str);
-		/**
-
-		*/
-		$ref = $this->getJSRenderContext();
-
-		$chart = json_encode($chart);
-
-		$script = "
-		console.log('this');
-		nv.addGraph(function() {
-		var chart = nv.models.multiBarChart()
-		.x(function(d) { return d[0] })
-		.y(function(d) {
-		return d[1] })
-		.color(d3.scale.category10().range());
-
-		chart.xAxis.tickFormat(function(d) {
-		return d3.time.format('%x')(new Date(d))
-	});
-
-	chart.yAxis
-	.axisLabel('Sales (€)')
-	.tickFormat(function(d) {
-	return d;
-	});
-
-
-	d3.select('$ref svg')
-	.datum(" . ($chart) . ")
-		.transition().duration(500)
-		.call(chart);
-
-
-		//TODO: Figure out a good way to do this automatically
-		nv.utils.windowResize(chart.update);
-
-		return chart;
-	});
-		";
-
-		return $script;
 	}
 }

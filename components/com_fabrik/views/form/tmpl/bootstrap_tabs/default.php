@@ -17,6 +17,12 @@ $model = $this->getModel();
 $groupTmpl = $model->editable ? 'group' : 'group_details';
 $active = ($form->error != '') ? '' : ' fabrikHide';
 
+if ($model->isMultiPage() && FabrikHelperHTML::isDebug())
+{
+	$app = JFactory::getApplication();
+	$app->enqueueMessage(FText::_('COM_FABRIK_ERR_TAB_FORM_TEMPLATE_INCOMPATIBLE_WITH_MULTIPAGE_FORMS'), 'error');
+}
+
 if ($this->params->get('show_page_heading', 1)) : ?>
 	<div class="componentheading<?php echo $this->params->get('pageclass_sfx')?>">
 	<?php echo $this->escape($this->params->get('page_heading')); ?>
@@ -32,12 +38,9 @@ if ($this->params->get('show-title', 1)) :?>
 endif;
 
 echo $form->intro;
-
-if ($model->editable) :
-		echo '<form method="post" action="' . $form->action . '" ' . $form->attribs . '>';
-	else:
-		echo '<div class="fabrikForm fabrikDetails" id="' . $form->formid . '">';
-endif;
+?>
+<form method="post" <?php echo $form->attribs?>>
+<?php
 echo $this->plugintop;
 ?>
 
@@ -66,8 +69,8 @@ echo $this->plugintop;
 		// So we should only show a tab if: it is first tab, or if it is a page break
 		if (!$model->isMultiPage() || $i == 0 || $group->splitPage) :
 			?>
-				<li <?php if ($i == 0) echo 'class="active"'?>>
-					<a href="#group-tab<?php echo $i;?>" data-toggle="tab">
+				<li <?php if ($i == 0) echo 'class="active"'?> style="<?php echo $group->css;?>">
+					<a href="#group-tab<?php echo $i;?>" data-toggle="tab" id="group<?php echo $group->id;?>_tab">
 						<?php
 							if (!empty($group->title))
 							{
@@ -102,14 +105,9 @@ echo $this->plugintop;
 			<?php
 			$i++;
 		endif; ?>
-			<fieldset class="fabrikGroup" id="group<?php echo $group->id;?>" style="<?php echo $group->css;?>">
+			<fieldset class="<?php echo $group->class; ?>" id="group<?php echo $group->id;?>" style="<?php echo $group->css;?>">
 				<?php
-				$allHidden = true;
-				foreach ($group->elements as $element)
-				{
-					$allHidden &= $element->hidden;
-				}
-				if ((!$allHidden || !empty($group->intro)) && trim($group->title) !== '') :?>
+				if ($group->showLegend) : ?>
 					<legend class="legend"><?php echo $group->title;?></legend>
 				<?php
 				endif;
@@ -122,7 +120,7 @@ echo $this->plugintop;
 				/* Load the group template - this can be :
 				 *  * default_group.php - standard group non-repeating rendered as an unordered list
 				 *  * default_repeatgroup.php - repeat group rendered as an unordered list
-				 *  * default_repeatgroup.table.php - repeat group rendered in a table.
+				 *  * default_repeatgroup_table.php - repeat group rendered in a table.
 				 */
 				$this->elements = $group->elements;
 				echo $this->loadTemplate($group->tmpl);
@@ -151,11 +149,7 @@ echo $this->loadTemplate('actions');
 ?>
 </form>
 <?php
-if ($model->editable) :
-		echo '</form>';
-	else:
-		echo '</div>';
-endif;
 echo $form->outro;
 echo $this->pluginend;
 echo FabrikHelperHTML::keepalive();
+?>

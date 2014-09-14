@@ -21,7 +21,7 @@ jimport('joomla.application.component.view');
  * @since       3.0.6
  */
 
-class FabrikViewApprovals extends JView
+class FabrikViewApprovals extends JViewLegacy
 {
 	/**
 	 * Display view
@@ -38,7 +38,16 @@ class FabrikViewApprovals extends JView
 		$usersConfig = JComponentHelper::getParams('com_fabrik');
 		$id = $input->get('id', $usersConfig->get('visualizationid', $input->getInt('visualizationid', 0)));
 		$model->setId($id);
+
+		if (!$model->canView())
+		{
+			echo FText::_('JERROR_ALERTNOAUTHOR');
+
+			return false;
+		}
+
 		$this->plugin = $this->get('Plugin');
-		$model->runPluginTask();
+		$task = $input->get('plugintask');
+		$model->$task();
 	}
 }

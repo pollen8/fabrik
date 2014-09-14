@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<form>
+	<fields addfieldpath="/administrator/components/com_fabrik/models/fields">
+		<fieldset name="plg-element-digsig" label="COM_FABRIK_DEFAULT">
+
+			<field type="helplink"
+				url="PLG_ELEMENT_DIGSIG_HELP_SERVER" />
+
+			<field name="default"
+				type="fabrikeditor"
+				mode="php"
+				label="PLG_ELEMENT_DIGSIG_DEFAULT_LABEL"
+				description="PLG_ELEMENT_DIGSIG_DEFAULT_DESC"
+				/>
+
+			<field name="eval"
+				type="radio"
+				class="radio btn-group"
+				default="0"
+				label="PLG_ELEMENT_DIGSIG_EVAL_LABEL">
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+			</field>
+
+		</fieldset>
+	</fields>
+	<fields addfieldpath="/administrator/components/com_fabrik/models/fields" name="params">
+
+		<fieldset label="COM_FABRIK_OPTIONS" name="plg-element-digsig-params">
+
+			<field type="helplink"
+				url="PLG_ELEMENT_SLIDER_HELP_SERVER" />
+
+			<field name="digsig_form_width"
+				class="input-mini"
+				default="400"
+				label="PLG_ELEMENT_DIGSIG_FORM_WIDTH_LABEL"
+				descroption="PLG_ELEMENT_DIGSIG_FORM_WIDTH_DESC"
+				size="3"
+				type="text"/>
+
+			<field name="digsig_form_height"
+				class="input-mini"
+				default="250"
+				label="PLG_ELEMENT_DIGSIG_FORM_HEIGHT_LABEL"
+				description="PLG_ELEMENT_DIGSIG_FORM_HEIGHT_DESC"
+				size="3"
+				type="text"/>
+
+			<field name="digsig_list_width"
+				class="input-mini"
+				default="200"
+				label="PLG_ELEMENT_DIGSIG_LIST_WIDTH_LABEL"
+				description="PLG_ELEMENT_DIGSIG_LIST_WIDTH_DESC"
+				size="3"
+				type="text"/>
+
+			<field name="digsig_list_height"
+				class="input-mini"
+				default="175"
+				label="PLG_ELEMENT_DIGSIG_LIST_HEIGHT_LABEL"
+				description="PLG_ELEMENT_DIGSIG_LIST_HEIGHT_DESC"
+				size="3"
+				type="text"/>
+
+		</fieldset>
+
+	</fields>
+</form>

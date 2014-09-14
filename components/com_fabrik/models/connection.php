@@ -66,9 +66,9 @@ class FabrikFEModelConnection extends JModelLegacy
 	}
 
 	/**
-	 * Is the conenction table the default connection
+	 * Is the connection table the default connection
 	 *
-	 * @deprecated - dont think its used
+	 * @deprecated - don't think its used
 	 *
 	 * @return  bool
 	 */
@@ -164,7 +164,7 @@ class FabrikFEModelConnection extends JModelLegacy
 			}
 			else
 			{
-				$tableOptions[] = JHTML::_('select.option', 'couldnt connect');
+				$tableOptions[] = JHTML::_('select.option', 'couldn\'t connect');
 			}
 		}
 		else
@@ -297,7 +297,7 @@ class FabrikFEModelConnection extends JModelLegacy
 					self::$dbs[$cn->id] = FabrikWorker::getDbo();
 
 					// $$$rob remove the error from the error stack
-					// if we dont do this the form is not rendered
+					// if we don't do this the form is not rendered
 					JError::getError(true);
 				}
 				else
@@ -385,27 +385,10 @@ class FabrikFEModelConnection extends JModelLegacy
 		$user = $cn->user;
 		$password = $cn->password;
 		$database = $cn->database;
-		/**
-		 * $$$ hugh - new version of Koowa no longer uses the empty dbprefix
-		 * As used by new DOCman / EXTman
-		 * http://fabrikar.com/forums/showthread.php?t=26898
-		 * I've contacted the docman folk to see if they have any J! 2.5 product
-		 * out there that still requires this workaround, but for now I'm just commenting
-		 * it out, as we've had several folk htuting this while testing the new DOCman
-		/*
-		if (defined('KOOWA'))
-		{
-			$prefix = '';
-		}
-		else
-		{
-			$prefix = $conf->get('dbprefix');
-		}
-		*/
 		$prefix = $conf->get('dbprefix');
 		$driver = $conf->get('dbtype');
 
-		// Test for sawpping db table names
+		// Test for swapping db table names
 		$driver .= '_fab';
 		$debug = $conf->get('debug');
 		$options = array('driver' => $driver, 'host' => $host, 'user' => $user, 'password' => $password, 'database' => $database, 'prefix' => $prefix);
@@ -457,7 +440,7 @@ class FabrikFEModelConnection extends JModelLegacy
 			$id = $name;
 		}
 
-		$cnns[] = JHTML::_('select.option', '-1', JText::_('COM_FABRIK_PLEASE_SELECT'));
+		$cnns[] = JHTML::_('select.option', '-1', FText::_('COM_FABRIK_PLEASE_SELECT'));
 		$cnns = array_merge($cnns, $connections);
 		$attribs .= $javascript;
 
@@ -479,7 +462,7 @@ class FabrikFEModelConnection extends JModelLegacy
 	{
 		$connectionTableFields = array();
 		$connectionTableFields[-1] = array();
-		$connectionTableFields[-1][] = JHTML::_('select.option', '-1', JText::_('COM_FABRIK_PLEASE_SELECT'));
+		$connectionTableFields[-1][] = JHTML::_('select.option', '-1', FText::_('COM_FABRIK_PLEASE_SELECT'));
 
 		foreach ($connections as $cn)
 		{
@@ -512,7 +495,7 @@ class FabrikFEModelConnection extends JModelLegacy
 		$connectionTables = array();
 		$connectionTables[-1] = array();
 		$db = FabrikWorker::getDbo();
-		$connectionTables[-1][] = JHTML::_('select.option', '-1', JText::_('COM_FABRIK_PLEASE_SELECT'));
+		$connectionTables[-1][] = JHTML::_('select.option', '-1', FText::_('COM_FABRIK_PLEASE_SELECT'));
 
 		foreach ($connections as $cn)
 		{

@@ -12,19 +12,14 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-$this->bootShowFilters = true;
 $pageClass = $this->params->get('pageclass_sfx', '');
-$fKeys = array_keys($this->filters);
-if (count($fKeys) === 1 && $fKeys[0] === 'all') :
-	$this->bootShowFilters = false;
-endif;
 
 if ($pageClass !== '') :
 	echo '<div class="' . $pageClass . '">';
 endif;
 
 if ($this->tablePicker != '') : ?>
-	<div style="text-align:right"><?php echo JText::_('COM_FABRIK_LIST') ?>: <?php echo $this->tablePicker; ?></div>
+	<div style="text-align:right"><?php echo FText::_('COM_FABRIK_LIST') ?>: <?php echo $this->tablePicker; ?></div>
 <?php
 endif;
 
@@ -41,11 +36,15 @@ endif;
 
 // Intro outside of form to allow for other lists/forms to be injected.
 echo $this->table->intro;
+
 ?>
 <form class="fabrikForm form-search" action="<?php echo $this->table->action;?>" method="post" id="<?php echo $this->formid;?>" name="fabrikList">
 
 <?php
-echo $this->loadTemplate('buttons');
+if ($this->hasButtons):
+	echo $this->loadTemplate('buttons');
+endif;
+
 if ($this->showFilters && $this->bootShowFilters) :
 	echo $this->loadTemplate('filter');
 endif;
@@ -76,7 +75,7 @@ endforeach;
 			?>
 			<tbody style="<?php echo $this->emptyStyle?>">
 				<tr>
-					<td class="groupdataMsg" colspan="<?php echo count($this->headings)?>">
+					<td class="groupdataMsg emptyDataMessage" style="<?php echo $this->emptyStyle?>" colspan="<?php echo count($this->headings)?>">
 						<div class="emptyDataMessage" style="<?php echo $this->emptyStyle?>">
 							<?php echo $this->emptyDataMessage; ?>
 						</div>
@@ -96,16 +95,18 @@ endforeach;
 					<?php else: ?>
 						<a href="#" class="toggle fabrikTip" title="<?php echo $this->emptyDataMessage?>" opts='{trigger: "hover"}'>
 					<?php endif;?>
-							<?php echo FabrikHelperHTML::image('arrow-down.png', 'list', $this->tmpl, JText::_('COM_FABRIK_TOGGLE'));?>
-							<?php echo $this->grouptemplates[$groupedby]; ?> ( <?php echo count($group)?> )
+							<?php echo FabrikHelperHTML::image('arrow-down.png', 'list', $this->tmpl, FText::_('COM_FABRIK_TOGGLE'));?>
+							<span class="groupTitle">
+								<?php echo $this->grouptemplates[$groupedby]; ?> ( <?php echo count($group)?> )
+							</span>
 						</a>
 					</td>
 				</tr>
 			</tbody>
 			<?php endif ?>
 			<tbody class="fabrik_groupdata">
-				<tr>
-					<td class="groupdataMsg" colspan="<?php echo count($this->headings)?>">
+				<tr style="<?php echo $this->emptyStyle?>">
+					<td class="groupdataMsg emptyDataMessage" style="<?php echo $this->emptyStyle?>" colspan="<?php echo count($this->headings)?>">
 						<div class="emptyDataMessage" style="<?php echo $this->emptyStyle?>">
 							<?php echo $this->emptyDataMessage; ?>
 						</div>
@@ -118,13 +119,21 @@ endforeach;
 		 	?>
 			<?php if ($this->hasCalculations) : ?>
 				<tr class="fabrik_calculations">
-				<?php
-				foreach ($this->calculations as $cal) :
-					echo "<td>";
-					echo array_key_exists($groupedby, $cal->grouped) ? $cal->grouped[$groupedby] : $cal->calc;
-					echo  "</td>";
+				
+				<?php 
+				foreach ($this->headings as $key => $heading) :
+					$h = $this->headingClass[$key];
+					$style = empty($h['style']) ? '' : 'style="' . $h['style'] . '"';?>
+					<td class="<?php echo $h['class']?>" <?php echo $style?>>
+						<?php 
+						$cal = $this->calculations[$key];
+						echo array_key_exists($groupedby, $cal->grouped) ? $cal->grouped[$groupedby] : $cal->calc;
+						?>
+					</td>
+				<?php 
 				endforeach;
 				?>
+
 				</tr>
 
 			<?php endif ?>

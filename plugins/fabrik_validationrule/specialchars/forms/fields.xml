@@ -2,28 +2,27 @@
 <form>
 	<fields addfieldpath="/administrator/components/com_fabrik/models/fields" name="params">
 		<fieldset name="plg-validationrule-specialchars">
-		
+
 			<field name="specialchars-message"
 				type="text"
 				description="PLG_VALIDATIONRULE_SPECIALCHARS_ERROR_DESC"
 				label="PLG_VALIDATIONRULE_SPECIALCHARS_ERROR_LABEL"
 				repeat="true"
 				size="30" />
-				
+
 			<field name="specialchars-validation_condition"
 				type="fabrikeditor"
 				mode="php"
-				width="400px"
 				description="PLG_VALIDATIONRULE_SPECIALCHARS_CONDITION_DESC"
 				label="PLG_VALIDATIONRULE_SPECIALCHARS_CONDITION_LABEL"
 				repeat="true" />
-				
+
 			<field name="specalchars"
 				type="text"
 				description="PLG_VALIDATIONRULE_SPECIALCHARS_FORBIDDEN_CHARS_DESC"
 				label="PLG_VALIDATIONRULE_SPECIALCHARS_FORBIDDEN_CHARS_LABEL"
 				repeat="true" />
-				
+
 			<field name="specialchars-match"
 				type="list"
 				default="1"
@@ -33,13 +32,13 @@
 					<option value="0">PLG_VALIDATIONRULE_SPECIALCHARS_REPLACE</option>
 					<option value="1">PLG_VALIDATIONRULE_SPECIALCHARS_MATCH</option>
 			</field>
-			
+
 			<field name="specialchars-replacestring"
 				type="text"
 				description="PLG_VALIDATIONRULE_SPECIALCHARS_REPLACE_STRING_LABEL"
 				label="PLG_VALIDATIONRULE_SPECIALCHARS_REPLACE_STRING_LABEL"
 				repeat="true" />
-				
+
 		</fieldset>
 	</fields>
 </form>

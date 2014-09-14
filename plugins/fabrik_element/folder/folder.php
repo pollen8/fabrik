@@ -26,7 +26,7 @@ class PlgFabrik_ElementFolder extends PlgFabrik_Element
 	/**
 	 * Draws the html form element
 	 *
-	 * @param   array  $data           to preopulate element with
+	 * @param   array  $data           to pre-populate element with
 	 * @param   int    $repeatCounter  repeat group counter
 	 *
 	 * @return  string	elements html
@@ -48,7 +48,7 @@ class PlgFabrik_ElementFolder extends PlgFabrik_Element
 
 		if ($params->get('folder_allownone', true))
 		{
-			$opts[] = JHTML::_('select.option', '', JText::_('NONE'));
+			$opts[] = JHTML::_('select.option', '', FText::_('NONE'));
 		}
 
 		if ($params->get('folder_listfolders', true))

@@ -38,6 +38,13 @@ class Filesystemstorage extends FabrikStorageAdaptor
 			return false;
 		}
 
+		if (JFile::exists($filepath))
+		{
+		    return true;
+		}
+
+		$filepath = COM_FABRIK_BASE . '/' . FabrikString::ltrimword($filepath, COM_FABRIK_BASE . '/');
+
 		return JFile::exists($filepath);
 	}
 
@@ -57,7 +64,7 @@ class Filesystemstorage extends FabrikStorageAdaptor
 	/**
 	 * Create empty index.html for security
 	 *
-	 * @param   strng  $path  path to folder
+	 * @param   string  $path  path to folder
 	 *
 	 * @return bool success
 	 */
@@ -68,7 +75,7 @@ class Filesystemstorage extends FabrikStorageAdaptor
 
 		if (!$this->exists($index_file))
 		{
-			$content = JText::_('PLG_ELEMENT_FILEUPLOAD_INDEX_FILE_CONTENT');
+			$content = FText::_('PLG_ELEMENT_FILEUPLOAD_INDEX_FILE_CONTENT');
 
 			return JFile::write($index_file, $content);
 		}
@@ -98,7 +105,7 @@ class Filesystemstorage extends FabrikStorageAdaptor
 	/**
 	 * Make recursive folders
 	 *
-	 * @param   string   $folderPath  Path to folder - eg /images/stories
+	 * @param   string   $folderPath  Path to folder - e.g. /images/stories
 	 * @param   bitmask  $mode        Permissions
 	 *
 	 * @return  mixed JError|void
@@ -157,7 +164,7 @@ class Filesystemstorage extends FabrikStorageAdaptor
 	}
 
 	/**
-	 * Clean a fle name
+	 * Clean a file name
 	 *
 	 * @param   string  $filename       file name to clean
 	 * @param   int     $repeatCounter  repeat group counter
@@ -167,7 +174,7 @@ class Filesystemstorage extends FabrikStorageAdaptor
 
 	public function cleanName($filename, $repeatCounter)
 	{
-		// Replace any non-alnum chars (except _ and - and .) with _
+		// Replace any non-alphanumeric chars (except _ and - and .) with _
 		$filename = preg_replace('#[^a-zA-Z0-9_\-\.]#', '_', $filename);
 		$this->randomizeName($filename);
 
@@ -292,7 +299,7 @@ class Filesystemstorage extends FabrikStorageAdaptor
 		$params = $this->getParams();
 		$w = new FabrikWorker;
 
-		// $$$ rob wasnt working when getting thumb path on upload
+		// $$$ rob wasn't working when getting thumb path on upload
 		$ulDir = JPath::clean($params->get('ul_directory'));
 		$ulDir = str_replace("\\", "/", $ulDir);
 
@@ -321,7 +328,7 @@ class Filesystemstorage extends FabrikStorageAdaptor
 
 		$ulDir = str_replace($match, $replace, $ulDir);
 
-		// $$$ rob wasnt working when getting thumb path on upload
+		// $$$ rob wasn't working when getting thumb path on upload
 		$typeDir = $type == 'thumb' ? $params->get('thumb_dir') : $params->get('fileupload_crop_dir');
 		$thumbdir = str_replace($match, $replace, $typeDir);
 		$ulDir = $w->parseMessageForPlaceHolder($ulDir);
@@ -386,9 +393,9 @@ class Filesystemstorage extends FabrikStorageAdaptor
 
 	public function finalFilePathParse(&$filepath)
 	{
-		/* $$$ hugh - ooop!  Double Plus Ungood if JPATH_SITE is just /,
+		/* $$$ hugh - oops!  Double Plus Ungood if JPATH_SITE is just /,
 		 * which happens on some shared hosts which are chrooted (jailed)
-		 * 'cos then we just strip out all the /'s in gthe path!
+		 * 'cos then we just strip out all the /'s in the path!
 		 *$filepath = str_replace(JPATH_SITE, '', $filepath);
 		 */
 		$filepath = preg_replace('#^' . preg_quote(JPATH_SITE, '#') . '#', '', $filepath);
@@ -404,13 +411,7 @@ class Filesystemstorage extends FabrikStorageAdaptor
 
 	public function getFileInfo($filepath)
 	{
-		// Suppress notice if open base_dir in effect
-		if (!@$this->exists($filepath))
-		{
-			$filepath = $this->getFullPath($filepath);
-		}
-
-		$filepath = JPath::clean($filepath);
+	    $filepath = $this->getFullPath($filepath);
 
 		if ($this->exists($filepath))
 		{
@@ -439,17 +440,19 @@ class Filesystemstorage extends FabrikStorageAdaptor
 	/**
 	 * Get the complete folder path, including the server root
 	 *
-	 * @param   string  $filepath  the file path
+	 * @param   string  $filepath  The file path
 	 *
-	 * @return  string
+	 * @return  string   The cleaned full file path
 	 */
 
 	public function getFullPath($filepath)
 	{
 		if (!(preg_match('#^' . preg_quote(COM_FABRIK_BASE, '#') . '#', $filepath)))
 		{
-			return COM_FABRIK_BASE . '/' . $filepath;
+			$filepath = COM_FABRIK_BASE . '/' . $filepath;
 		}
+
+		$filepath = JPath::clean($filepath);
 
 		return $filepath;
 	}

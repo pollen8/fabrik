@@ -1,5 +1,14 @@
 <?php
 /**
+ * Fabrik List CSV plugin import user class
+ *
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.list.listcsv
+ * @copyright   Copyright (C) 2005-2013 fabrikar.com - All rights reserved.
+ * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
+ */
+
+/**
  *
  * Here is an example class file for creating users when importing a CSV file in Fabrik.
  * It was written for a Fabrik subscriber, and is in daily use on several busy sites.
@@ -25,10 +34,10 @@ class ImportCSVCreateUser
 	 * The plugin will write the newly created J! userid to the userid element.
 	 * These four are REQUIRED and the code will fail if they are missing or wrong.
 	 */
-	var $username_element = 'changethis___username';
-	var $email_element = 'changethis___email';
-	var $name_element = 'changethis___name';
-	var $userid_element = 'changethis_userid';
+	public $username_element = 'changethis___username';
+	public $email_element = 'changethis___email';
+	public $name_element = 'changethis___name';
+	public $userid_element = 'changethis_userid';
 
 	/*
 	 * OPTIONAL
@@ -48,10 +57,10 @@ class ImportCSVCreateUser
 	 *
 	 * user_created_value - value to use when setting user_created_element above.
 	 */
-	protected $password_element = '';
-	protected $first_password_element = '';
-	protected $user_created_element = '';
-	protected $user_created_value = '1';
+	public $password_element = '';
+	public $first_password_element = '';
+	public $user_created_element = '';
+	public $user_created_value = '1';
 
 	/**
 	 *
@@ -66,14 +75,17 @@ class ImportCSVCreateUser
 	{
 		$chars_length = strlen($chars) - 1;
 		$string = $chars{rand(0, $chars_length)};
+
 		for ($i = 1; $i < $length; $i = strlen($string))
 		{
 			$r = $chars{rand(0, $chars_length)};
+
 			if ($r != $string{$i - 1})
 			{
 				$string .= $r;
 			}
 		}
+
 		return $string;
 	}
 
@@ -109,6 +121,7 @@ class ImportCSVCreateUser
 				$app->enqueueMessage("No email for {$userdata['username']}");
 			}
 			JLog::add('No email for ' . $userdata['username'], JLog::NOTICE, $logMessageType);
+
 			return false;
 		}
 
@@ -128,18 +141,23 @@ class ImportCSVCreateUser
 			->where('username != ' . $db->quote($userdata['username']) . ' AND email = ' . $db->quote($userdata['email']));
 			$db->setQuery($query);
 			$existing_email = $db->loadObject();
+
 			if (!empty($existing_email))
 			{
 				$msg = 'Email ' . $userdata['email'] . ' for ' . $userdata['username'] . ' already in use by ' . $existing_email->username;
+
 				if ($app->isAdmin())
 				{
 					$app->enqueueMessage($msg);
 				}
+
 				JLog::add($msg, JLog::NOTICE, $logMessageType);
+
 				return false;
 			}
 			$user_id = 0;
 			$isNew = true;
+
 			if (!empty($this->password_element))
 			{
 				$clear_passwd = $userdata['password'] = $userdata['password2'] = $data[$this->password_element];
@@ -167,10 +185,12 @@ class ImportCSVCreateUser
 		{
 			if ($app->isAdmin())
 			{
-				$app->enqueueMessage(JText::_('CANNOT SAVE THE USER INFORMATION'), 'message');
+				$app->enqueueMessage(FText::_('CANNOT SAVE THE USER INFORMATION'), 'message');
 				$app->enqueueMessage($user->getError(), 'error');
 			}
+
 			JLog::add('Error binding user info for: ' . $userdata['username'], JLog::NOTICE, $logMessageType);
+
 			return false;
 		}
 
@@ -178,10 +198,12 @@ class ImportCSVCreateUser
 		{
 			if ($app->isAdmin())
 			{
-				$app->enqueueMessage(JText::_('CANNOT SAVE THE USER INFORMATION'), 'message');
+				$app->enqueueMessage(FText::_('CANNOT SAVE THE USER INFORMATION'), 'message');
 				$app->enqueueMessage($user->getError(), 'error');
 			}
+
 			JLog::add('Error storing user info for: ' . $userdata['username'], JLog::NOTICE, $logMessageType);
+
 			return false;
 		}
 
@@ -208,6 +230,7 @@ class ImportCSVCreateUser
 		{
 			JLog::add('Modified user: ' . $userdata['username'], JLog::NOTICE, $logMessageType);
 		}
+
 		return true;
 	}
 }

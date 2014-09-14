@@ -16,15 +16,24 @@
 	
 	<fields addfieldpath="/administrator/components/com_fabrik/models/fields" name="params">
 		<fieldset label="COM_FABRIK_OPTIONS" name="params">
-
-			<field default="0"
+			
+			<field name="calculations"
+				type="radio"
 				class="btn-group"
-				description="If table view selected then setting this to yes will recaculate the table calculations each time the table is viewed (can slow down your tables performance)" label="Reload Calculations" name="calculations" type="radio">
+				default="0"
+				label="COM_FABRIK_MENU_LIST_RELOAD_CALCS_LABEL"
+				description="COM_FABRIK_MENU_LIST_RELOAD_CALCS_DESC"
+			>
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
 			
-			<field descrption="The table template to use" directory="/components/com_fabrik/views/list/tmpl25/" label="Template" name="listlayout" type="folderlist"/>
+			<field name="listlayout"
+				type="fabriktemplate"
+				view="list"
+				label="COM_FABRIK_MENU_LIST_TMPL_LABEL"
+				description="COM_FABRIK_MENU_LIST_TMPL_DESC"
+			/>
 				
 			<field default="0"
 				class="btn-group"
@@ -87,6 +96,7 @@
 									<opton value="thismonth">COM_FABRIK_THIS_MONTH</opton>
 									<option value="lastmonth">COM_FABRIK_LAST_MONTH</option>
 									<option value="nextmonth">COM_FABRIK_NEXT_MONTH</option>
+									<option value="birthday">COM_FABRIK_BIRTHDAY_TODAY</option>
 							</field>
 							
 							<field label="COM_FABRIK_LIST_FILTER_VALUE_HEADING" name="filter-value" type="field"/>

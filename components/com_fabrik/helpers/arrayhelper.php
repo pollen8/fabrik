@@ -277,4 +277,32 @@ class FArrayHelper extends JArrayHelper
 
 		return key($array);
 	}
+
+	/**
+	 * Array is empty, or only has one entry which itself is an empty string
+	 *
+	 * @param   array  $array            The array to test
+	 * @param   bool   $even_emptierish  If true, use empty() to test single key, if false only count empty string or null as empty
+	 *
+	 * @since 3.0.8
+	 *
+	 * @return  bool  is array empty(ish)
+	 */
+
+	public static function emptyIsh($array, $even_emptierish = false)
+	{
+		if (empty($array))
+		{
+			return true;
+		}
+
+		if (count($array) > 1)
+		{
+			return false;
+		}
+
+		$val = JArrayHelper::getValue($array, self::firstKey($array), '');
+
+		return  $even_emptierish ? empty($val) : $val === '' || !isset($val);
+	}
 }

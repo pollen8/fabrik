@@ -115,6 +115,9 @@ var FbCascadingdropdown = new Class({
 		this.myAjax = new Request({url: '',
 		method: 'post',
 		'data': data,
+		onComplete: function () {
+			this.spinner.hide();
+		}.bind(this),
 		onSuccess: function (json) {
 			var origvalue = this.options.def,
 			updateField,
@@ -134,6 +137,7 @@ var FbCascadingdropdown = new Class({
 				c.empty();
 			}
 			this.myAjax = null;
+			var singleResult = json.length === 1;
 			if (!this.ignoreAjax) {
 				json.each(function (item) {
 					if (this.options.editable === false) {
@@ -142,7 +146,7 @@ var FbCascadingdropdown = new Class({
 						item.text = item.text.replace(/\n/g, '<br />');
 						new Element('div').set('html', item.text).inject(this.element);
 					} else {
-						updateField = (item.value !== '' && item.value === this.getValue());
+						updateField = (item.value !== '' && item.value === this.getValue()) || singleResult;
 						this.addOption(item.value, item.text, updateField);
 					}
 
@@ -157,7 +161,7 @@ var FbCascadingdropdown = new Class({
 					if (this.options.editable === false) {
 						new Element('div').set('text', item.text).inject(this.element);
 					} else {
-						updateField = (item.value !== '' && item.value === this.getValue());
+						updateField = (item.value !== '' && item.value === this.getValue()) || singleResult;
 						this.addOption(item.value, item.text, updateField);
 						new Element('option', {'value': item.value, 'selected': 'selected'}).set('text', item.text).inject(this.element);
 					}

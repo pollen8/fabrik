@@ -60,7 +60,7 @@ class FabrikAdminViewVisualization extends JViewLegacy
 
 	public function display($tpl = null)
 	{
-		// Initialiase variables.
+		// Initialise variables.
 		$this->form = $this->get('Form');
 		$this->item = $this->get('Item');
 		$this->state = $this->get('State');
@@ -117,7 +117,8 @@ class FabrikAdminViewVisualization extends JViewLegacy
 		$userId = $user->get('id');
 		$checkedOut	= !($this->item->checked_out == 0 || $this->item->checked_out == $user->get('id'));
 		$canDo = FabrikAdminHelper::getActions($this->state->get('filter.category_id'));
-		$title = $isNew ? JText::_('COM_FABRIK_MANAGER_VISUALIZATION_NEW') : JText::_('COM_FABRIK_MANAGER_VISUALIZATION_EDIT');
+		$title = $isNew ? FText::_('COM_FABRIK_MANAGER_VISUALIZATION_NEW') : FText::_('COM_FABRIK_MANAGER_VISUALIZATION_EDIT');
+		$title .= $isNew ? '' : ' "' . $this->item->label . '"';
 		JToolBarHelper::title($title, 'visualization.png');
 
 		if ($isNew)
@@ -160,6 +161,6 @@ class FabrikAdminViewVisualization extends JViewLegacy
 		}
 
 		JToolBarHelper::divider();
-		JToolBarHelper::help('JHELP_COMPONENTS_FABRIK_VISUALIZATIONS_EDIT', false, JText::_('JHELP_COMPONENTS_FABRIK_VISUALIZATIONS_EDIT'));
+		JToolBarHelper::help('JHELP_COMPONENTS_FABRIK_VISUALIZATIONS_EDIT', false, FText::_('JHELP_COMPONENTS_FABRIK_VISUALIZATIONS_EDIT'));
 	}
 }

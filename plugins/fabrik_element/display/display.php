@@ -31,12 +31,12 @@ class PlgFabrik_ElementDisplay extends PlgFabrik_Element
 	/**
 	 * Does the element's data get recorded in the db
 	 *
-	 * @var bol
+	 * @var bool
 	 */
 	protected $recordInDatabase = false;
 
 	/**
-	 * Set/get if element should record its data in the dabase
+	 * Set/get if element should record its data in the database
 	 *
 	 * @deprecated - not used
 	 *
@@ -65,9 +65,25 @@ class PlgFabrik_ElementDisplay extends PlgFabrik_Element
 		if (!$params->get('display_showlabel', true))
 		{
 			$element->label = $this->getValue(array());
+			$element->label_raw = $element->label;
 		}
 
 		return parent::getLabel($repeatCounter, $tmpl);
+	}
+
+	/**
+	 * Get the element's raw label (used for details view, not wrapped in <label> tags
+	 *
+	 * @return  string  Label
+	 */
+	protected function getRawLabel()
+	{
+		if (!$this->getParams()->get('display_showlabel', true))
+		{
+			return $this->getValue(array());;
+		}
+
+		return parent::getRawLabel();
 	}
 
 	/**
@@ -90,7 +106,7 @@ class PlgFabrik_ElementDisplay extends PlgFabrik_Element
 	/**
 	 * Draws the html form element
 	 *
-	 * @param   array  $data           To preopulate element with
+	 * @param   array  $data           To pre-populate element with
 	 * @param   int    $repeatCounter  Repeat group counter
 	 *
 	 * @return  string	elements html
@@ -127,7 +143,7 @@ class PlgFabrik_ElementDisplay extends PlgFabrik_Element
 	 * Determines the value for the element in the form view
 	 *
 	 * @param   array  $data           Form data
-	 * @param   int    $repeatCounter  When repeating joinded groups we need to know what part of the array to access
+	 * @param   int    $repeatCounter  When repeating joined groups we need to know what part of the array to access
 	 * @param   array  $opts           Options
 	 *
 	 * @return  string	value

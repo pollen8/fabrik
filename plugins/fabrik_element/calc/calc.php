@@ -115,7 +115,7 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 				}
 			}
 
-			$this->setStoreDatabaseFormat($data);
+			$this->setStoreDatabaseFormat($data, $repeatCounter);
 			$default = $w->parseMessageForPlaceHolder($params->get('calc_calculation'), $data, true, true);
 
 			//  $$$ hugh - standardizing on $data but need need $d here for backward compat
@@ -131,6 +131,9 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 
 		if ($groupModel->isJoin())
 		{
+			$data = (array) $data;
+			$data[$name] = (array) $data[$name];
+
 			if ($groupModel->canRepeat())
 			{
 				if (array_key_exists($name, $data) && array_key_exists($repeatCounter, $data[$name]))
@@ -187,7 +190,7 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 	 * Determines the value for the element in the form view
 	 *
 	 * @param   array  $data           Form data
-	 * @param   int    $repeatCounter  When repeating joinded groups we need to know what part of the array to access
+	 * @param   int    $repeatCounter  When repeating joined groups we need to know what part of the array to access
 	 * @param   array  $opts           Options
 	 *
 	 * @return  string	value
@@ -309,7 +312,7 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 					foreach (array_keys($v) as $x)
 					{
 						$origval = JArrayHelper::getValue($origdata, $x);
-						$d[$elkey][$x] = $elementModel->getLabelForValue($v[$x], $origval, true);
+						$d[$elkey][$x] = $elementModel->getLabelForValue($v[$x], $origval, true, $x);
 					}
 				}
 				else
@@ -321,8 +324,8 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 	}
 
 	/**
-	 * Allows the element to pre-process a rows data before and join mergeing of rows
-	 * occurs. Used in calc element to do cals on actual row rather than merged row
+	 * Allows the element to pre-process a rows data before and join merging of rows
+	 * occurs. Used in calc element to do calcs on actual row rather than merged row
 	 *
 	 * @param   string  $data  Elements data for the current row
 	 * @param   object  $row   Current row's data
@@ -409,7 +412,7 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 	/**
 	 * Draws the html form element
 	 *
-	 * @param   array  $data           to preopulate element with
+	 * @param   array  $data           to pre-populate element with
 	 * @param   int    $repeatCounter  repeat group counter
 	 *
 	 * @return  string	elements html
@@ -458,7 +461,7 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 			$str[] = '<input type="hidden" class="fabrikinput" name="' . $name . '" id="' . $id . '" value="' . $value . '" />';
 		}
 
-		$opts = array('alt' => JText::_('PLG_ELEMENT_CALC_LOADING'), 'style' => 'display:none;padding-left:10px;', 'class' => 'loader');
+		$opts = array('alt' => FText::_('PLG_ELEMENT_CALC_LOADING'), 'style' => 'display:none;padding-left:10px;', 'class' => 'loader');
 		$str[] = FabrikHelperHTML::image("ajax-loader.gif", 'form', @$this->tmpl, $opts);
 
 		return implode("\n", $str);
@@ -499,6 +502,7 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 
 		$opts->ajax = $params->get('calc_ajax', 0) == 0 ? false : true;
 		$opts->observe = array_values($obs);
+		$opts->calcOnLoad = (bool) $params->get('calc_on_load', false);
 		$opts->id = $this->id;
 
 		return array('FbCalc', $id, $opts);
@@ -539,11 +543,12 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 	 * When running parseMesssageForPlaceholder on data we need to set the none-raw value of things like birthday/time
 	 * elements to that stored in the listModel::storeRow() method
 	 *
-	 * @param   array  &$data  Form data
+	 * @param   array  &$data          Form data
+	 * @param   int    $repeatCounter  Repeat group counter
 	 *
 	 * @return  void
 	 */
-	protected function setStoreDatabaseFormat(&$data)
+	protected function setStoreDatabaseFormat(&$data, $repeatCounter = 0)
 	{
 		$formModel = $this->getFormModel();
 		$groups = $formModel->getGroupsHiarachy();
@@ -556,9 +561,15 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 			{
 				$element = $elementModel->getElement();
 				$fullkey = $elementModel->getFullName(true, false);
+				$value = $data[$fullkey];
+
+				if ($this->getGroupModel()->canRepeat() && is_array($value))
+				{
+					$value = JArrayHelper::getValue($value, $repeatCounter);
+				}
 
 				// For radio buttons and dropdowns otherwise nothing is stored for them??
-				$data[$fullkey] = $elementModel->storeDatabaseFormat($data[$fullkey], $data);
+				$data[$fullkey] = $elementModel->storeDatabaseFormat($value, $data);
 			}
 		}
 	}
@@ -574,22 +585,14 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 
 	protected function getSumQuery(&$listModel, $labels = array())
 	{
-		if (count($labels) == 0)
-		{
-			$label = "'calc' AS label";
-		}
-		else
-		{
-			$label = 'CONCAT(' . implode(', " & " , ', $labels) . ')  AS label';
-		}
-
-		$db = $listModel->getDb();
 		$fields = $listModel->getDBFields($this->getTableName(), 'Field');
 		$name = $this->getElement()->name;
 		$field = JArrayHelper::getValue($fields, $name, false);
 
 		if ($field !== false && $field->Type == 'time')
 		{
+			$db = $listModel->getDb();
+			$label = count($labels) == 0 ? "'calc' AS label" : 'CONCAT(' . implode(', " & " , ', $labels) . ')  AS label';
 			$name = $this->getFullName(false, false);
 			$table = $listModel->getTable();
 			$joinSQL = $listModel->buildQueryJoin();
@@ -607,64 +610,66 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 	/**
 	 * Build the query for the avg calculation
 	 *
-	 * @param   model   &$listModel  list model
-	 * @param   string  $label       the label to apply to each avg
+	 * @param   model  &$listModel  list model
+	 * @param   array  $labels      Labels
 	 *
 	 * @return  string	sql statement
 	 */
 
-	protected function getAvgQuery(&$listModel, $label = "'calc'")
+	protected function getAvgQuery(&$listModel, $labels = array())
 	{
-		$db = $listModel->getDb();
 		$fields = $listModel->getDBFields($this->getTableName(), 'Field');
 		$name = $this->getElement()->name;
 		$field = JArrayHelper::getValue($fields, $name, false);
 
 		if ($field !== false && $field->Type == 'time')
 		{
+			$db = $listModel->getDb();
+			$label = count($labels) == 0 ? "'calc' AS label" : 'CONCAT(' . implode(', " & " , ', $labels) . ')  AS label';
 			$name = $this->getFullName(false, false);
 			$table = $listModel->getTable();
 			$joinSQL = $listModel->buildQueryJoin();
 			$whereSQL = $listModel->buildQueryWhere();
 
-			return "SELECT SEC_TO_TIME(AVG(TIME_TO_SEC($name))) AS value, $label AS label FROM " . $db->quoteName($table->db_table_name)
+			return "SELECT SEC_TO_TIME(AVG(TIME_TO_SEC($name))) AS value, $label FROM " . $db->quoteName($table->db_table_name)
 				. " $joinSQL $whereSQL";
 		}
 		else
 		{
-			return parent::getAvgQuery($listModel, $label);
+			return parent::getAvgQuery($listModel, $labels);
 		}
 	}
 
 	/**
-	 * Get a query for our media query
+	 * Get a query for our median query
 	 *
-	 * @param   object  &$listModel  list
-	 * @param   string  $label       label
+	 * @param   object  &$listModel  List
+	 * @param   array   $labels      Label
 	 *
 	 * @return string
 	 */
 
-	protected function getMedianQuery(&$listModel, $label = "'calc'")
+	protected function getMedianQuery(&$listModel, $labels = array())
 	{
-		$db = $listModel->getDb();
 		$fields = $listModel->getDBFields($this->getTableName(), 'Field');
 		$name = $this->getElement()->name;
 		$field = JArrayHelper::getValue($fields, $name, false);
 
 		if ($field !== false && $field->Type == 'time')
 		{
+			$db = $listModel->getDb();
+			$label = count($labels) == 0 ? "'calc' AS label" : 'CONCAT(' . implode(', " & " , ', $labels) . ')  AS label';
 			$name = $this->getFullName(false, false);
 			$table = $listModel->getTable();
 			$joinSQL = $listModel->buildQueryJoin();
 			$whereSQL = $listModel->buildQueryWhere();
 
-			return "SELECT SEC_TO_TIME(TIME_TO_SEC($name)) AS value, $label AS label FROM " . $db->quoteName($table->db_table_name)
+			return "SELECT SEC_TO_TIME(TIME_TO_SEC($name)) AS value, $label FROM " . $db->quoteName($table->db_table_name)
 				. " $joinSQL $whereSQL";
 		}
 		else
 		{
-			return parent::getMedianQuery($listModel, $label);
+			return parent::getMedianQuery($listModel, $labels);
 		}
 	}
 
@@ -727,15 +732,21 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 		$data = $listModel->getData();
 		$return = new stdClass;
 		$w = new FabrikWorker;
-		$store = (bool) $params->get('calc_on_save_only', 0);
+		/**
+		 * $$$ hugh ... no, we never need to store in this context.  The 'calc_on_save_only' param simply dictates
+		 * whether we re-calc when displaying the element, or just use the stored value.  So if calc_on_save_only is
+		 * set, then when displaying in lists, we don't execute the calc, we just used the stored value fro the database.
+		 * And that logic is handled in _getV(), so we don't need to do the $store stuff.
+		 */
 		$listRef = 'list_' . $listModel->getRenderContext() . '_row_';
-		$storeKey = $this->getElement()->name;
 
 		foreach ($data as $group)
 		{
 			foreach ($group as $row)
 			{
 				$key = $listRef . $row->__pk_val;
+
+				/*
 				$default = $w->parseMessageForPlaceHolder($params->get('calc_calculation'), $row);
 
 				if (FabrikHelperHTML::isDebug())
@@ -751,6 +762,9 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 				{
 					$listModel->storeCell($row->__pk_val, $storeKey, $return->$key);
 				}
+				*/
+
+				$return->$key = $this->_getV(JArrayHelper::fromObject($row), 0);
 			}
 		}
 
@@ -760,7 +774,7 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 	/**
 	 * Turn form value into email formatted value
 	 * $$$ hugh - I added this as for reasons I don't understand, something to do with
-	 * how the value gets calc'ed durind preProcess, sometimes the calc is "right" when
+	 * how the value gets calc'ed during preProcess, sometimes the calc is "right" when
 	 * it's submitted to the database, but wrong during form email plugin processing.  So
 	 * I gave up trying to work out why, and now just re-calc it during getEmailData()
 	 *

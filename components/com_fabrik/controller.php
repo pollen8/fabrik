@@ -33,9 +33,16 @@ class FabrikController extends JControllerLegacy
 	public $isMambot = false;
 
 	/**
+	 * Id used from content plugin when caching turned on to ensure correct element rendered)
+	 *
+	 * @var  int
+	 */
+	public $cacheId = 0;
+
+	/**
 	 * Display the view
 	 *
-	 * @param   bool   $cachable   If true, the view output will be cached
+	 * @param   bool   $cachable   If true, the view output will be cached - NOTE not actually used to control caching!!!
 	 * @param   array  $urlparams  An array of safe url parameters and their variable types, for valid values see {@link JFilterInput::clean()}.
 	 *
 	 * @return  null
@@ -45,6 +52,7 @@ class FabrikController extends JControllerLegacy
 	{
 		$app = JFactory::getApplication();
 		$input = $app->input;
+		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 
 		// Menu links use fabriklayout parameters rather than layout
 		$flayout = $input->get('fabriklayout');
@@ -94,8 +102,12 @@ class FabrikController extends JControllerLegacy
 
 		if ($viewType != 'feed' && !$this->isMambot && $user->get('id') == 0)
 		{
-			$cache = JFactory::getCache('com_fabrik', 'view');
-			$cache->get($view, 'display');
+			$user = JFactory::getUser();
+			$uri = JURI::getInstance();
+			$uri = $uri->toString(array('path', 'query'));
+			$cacheid = serialize(array($uri, $input->post, $user->get('id'), get_class($view), 'display', $this->cacheId));
+			$cache = JFactory::getCache('com_' . $package, 'view');
+			echo $cache->get($view, 'display', $cacheid);
 		}
 		else
 		{

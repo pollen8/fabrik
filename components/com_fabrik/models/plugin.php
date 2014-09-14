@@ -200,7 +200,7 @@ class FabrikPlugin extends JPlugin
 			$id .= '-' . $repeatCounter;
 			$output[] = '<li' . $class . '>
 				<a data-toggle="tab" href="#' . $id . '">
-					' . JText::_($fieldset->label) . '
+					' . FText::_($fieldset->label) . '
 						</a>
 		    </li>';
 			$i ++;
@@ -263,7 +263,7 @@ class FabrikPlugin extends JPlugin
 				}
 				else
 				{
-					// Textarea now stores width/height in params, dont want to copy over old w/h values into the params array
+					// Textarea now stores width/height in params, don't want to copy over old w/h values into the params array
 					if (!in_array($key, $dontMove))
 					{
 						$data['params'][$key] = $val;
@@ -275,23 +275,31 @@ class FabrikPlugin extends JPlugin
 		$form->bind($data);
 
 		// $$$ rob 27/04/2011 - listfields element needs to know things like the group_id, and
-		// as bind() onlys saves the values from $data with a corresponding xml field we set the raw data as well
+		// as bind() only saves the values from $data with a corresponding xml field we set the raw data as well
 		$form->rawData = $data;
 		$str = array();
 		$repeatGroupCounter = 0;
 
 		// Paul - If there is a string for plugin_DESCRIPTION then display this as a legend
 		$inistr = strtoupper('PLG_' . $type . '_' . $this->_name . '_DESCRIPTION');
-		$inival = JText::_($inistr);
+		$inival = FText::_($inistr);
 
 		if ($inistr != $inival)
 		{
+			// Handle strings with HTML
 			$inival2 = '';
 
-			// Handle strings with HTML
+			/**
+			 * $$$ hugh - this was blowing up with the massively useful error "Cannot parse
+			 * XML 0" and refusing to load the plugin if the description has any non-XML-ish HTML
+			 * markup, or if there was some malformed HTML.  So redoing it with a regular expression,
+			 * which may not match on some formats, as I haven't done a huge amount of testing,
+			 * but at least it won't error out!
+			 */
+
+			/*
 			if (substr($inival, 0, 3) == '<p>' || substr($inival, 0, 3) == '<p ')
 			{
-				// Split by paras, use first para for legend and put remaining paras back.
 				$xml = new SimpleXMLElement('<xml>' . $inival . '</xml>');
 				$lines = $xml->xpath('/xml/p[position()<2]');
 
@@ -302,6 +310,15 @@ class FabrikPlugin extends JPlugin
 
 				$inival2 = str_replace($legend, '', $inival);
 				$inival = $legend;
+			}
+			*/
+			$p_re = '#^\s*(<p\s*\S*\s*>.*?</p>)#i';
+			$matches = array();
+
+			if (preg_match($p_re, $inival, $matches))
+			{
+				$inival2 = preg_replace($p_re, '', $inival);
+				$inival = $matches[1];
 			}
 			elseif (substr($inival, 0, 1) != '<' && strpos($inival, '<br') > 0)
 			{
@@ -374,7 +391,7 @@ class FabrikPlugin extends JPlugin
 
 			if ($mode == '' && $fieldset->label != '')
 			{
-				$str[] = '<legend>' . JText::_($fieldset->label) . '</legend>';
+				$str[] = '<legend>' . FText::_($fieldset->label) . '</legend>';
 			}
 
 			$form->repeat = $repeat;
@@ -384,12 +401,12 @@ class FabrikPlugin extends JPlugin
 			{
 				if ($j3)
 				{
-					$str[] = '<a class="btn" href="#" data-button="addButton"><i class="icon-plus"></i> ' . JText::_('COM_FABRIK_ADD') . '</a>';
-					$str[] = '<a class="btn" href="#" data-button="deleteButton"><i class="icon-minus"></i> ' . JText::_('COM_FABRIK_REMOVE') . '</a>';
+					$str[] = '<a class="btn" href="#" data-button="addButton"><i class="icon-plus"></i> ' . FText::_('COM_FABRIK_ADD') . '</a>';
+					$str[] = '<a class="btn" href="#" data-button="deleteButton"><i class="icon-minus"></i> ' . FText::_('COM_FABRIK_REMOVE') . '</a>';
 				}
 				else
 				{
-					$str[] = '<a class="addButton" href="#" data-button="addButton"><i class="icon-plus"></i> ' . JText::_('COM_FABRIK_ADD') . '</a>';
+					$str[] = '<a class="addButton" href="#" data-button="addButton"><i class="icon-plus"></i> ' . FText::_('COM_FABRIK_ADD') . '</a>';
 				}
 			}
 
@@ -434,7 +451,7 @@ class FabrikPlugin extends JPlugin
 
 				if ($repeat && !$j3)
 				{
-					$str[] = '<li><a class="removeButton delete btn" href="#"><i class="icon-minus-sign"></i> ' . JText::_('COM_FABRIK_REMOVE')
+					$str[] = '<li><a class="removeButton delete btn" href="#"><i class="icon-minus-sign"></i> ' . FText::_('COM_FABRIK_REMOVE')
 					. '</a></li>';
 				}
 
@@ -493,6 +510,10 @@ class FabrikPlugin extends JPlugin
 			if (is_array($val))
 			{
 				$data[$key] = JArrayHelper::getValue($val, $repeatCounter);
+			}
+			else
+			{
+				$data[$key] = $val;
 			}
 		}
 
@@ -680,7 +701,7 @@ class FabrikPlugin extends JPlugin
 
 			$default = new stdClass;
 			$default->id = '';
-			$default->label = JText::_('COM_FABRIK_PLEASE_SELECT');
+			$default->label = FText::_('COM_FABRIK_PLEASE_SELECT');
 			array_unshift($rows, $default);
 		}
 		else
@@ -722,7 +743,7 @@ class FabrikPlugin extends JPlugin
 		$app = JFactory::getApplication();
 		$input = $app->input;
 		$tid = $input->get('t');
-		$keyType = $input->get('k', 1);
+		$keyType = $input->getInt('k', 1);
 
 		// If true show all fields if false show fabrik elements
 		$showAll = $input->getBool('showall', false);
@@ -769,7 +790,7 @@ class FabrikPlugin extends JPlugin
 
 							if ($highlightpk && $r->Key === 'PRI')
 							{
-								$c->label .= ' [' . JText::_('COM_FABRIK_RECOMMENDED') . ']';
+								$c->label .= ' [' . FText::_('COM_FABRIK_RECOMMENDED') . ']';
 								array_unshift($arr, $c);
 							}
 							else
@@ -837,10 +858,11 @@ class FabrikPlugin extends JPlugin
 						{
 							/*
 							 * @TODO if in repeat group this is going to add [] to name - is this really
-							* what we want? In timeline viz options i've simply stripped out the [] off the end
+							* what we want? In timeline viz options I've simply stripped out the [] off the end
 							* as a temp hack
 							*/
-							$v = $eVal->getFullName(false);
+							$useStep = $keyType === 2 ? true : false;
+							$v = $eVal->getFullName($useStep);
 						}
 
 						$c = new stdClass;
@@ -857,7 +879,7 @@ class FabrikPlugin extends JPlugin
 						// Show hightlight primary key and shift to top of options
 						if ($highlightpk && $table->db_primary_key === $db->quoteName($eVal->getFullName(false, false)))
 						{
-							$c->label .= ' [' . JText::_('COM_FABRIK_RECOMMENDED') . ']';
+							$c->label .= ' [' . FText::_('COM_FABRIK_RECOMMENDED') . ']';
 							array_unshift($arr, $c);
 						}
 						else
@@ -873,7 +895,7 @@ class FabrikPlugin extends JPlugin
 							{
 								$c = new stdClass;
 								$c->value = 'sum___' . $v;
-								$c->label = JText::_('COM_FABRIK_SUM') . ': ' . $label;
+								$c->label = FText::_('COM_FABRIK_SUM') . ': ' . $label;
 								$arr[] = $c;
 							}
 
@@ -881,7 +903,7 @@ class FabrikPlugin extends JPlugin
 							{
 								$c = new stdClass;
 								$c->value = 'avg___' . $v;
-								$c->label = JText::_('COM_FABRIK_AVERAGE') . ': ' . $label;
+								$c->label = FText::_('COM_FABRIK_AVERAGE') . ': ' . $label;
 								$arr[] = $c;
 							}
 
@@ -889,7 +911,7 @@ class FabrikPlugin extends JPlugin
 							{
 								$c = new stdClass;
 								$c->value = 'med___' . $v;
-								$c->label = JText::_('COM_FABRIK_MEDIAN') . ': ' . $label;
+								$c->label = FText::_('COM_FABRIK_MEDIAN') . ': ' . $label;
 								$arr[] = $c;
 							}
 
@@ -897,7 +919,7 @@ class FabrikPlugin extends JPlugin
 							{
 								$c = new stdClass;
 								$c->value = 'cnt___' . $v;
-								$c->label = JText::_('COM_FABRIK_COUNT') . ': ' . $label;
+								$c->label = FText::_('COM_FABRIK_COUNT') . ': ' . $label;
 								$arr[] = $c;
 							}
 
@@ -905,7 +927,7 @@ class FabrikPlugin extends JPlugin
 							{
 								$c = new stdClass;
 								$c->value = 'cnt___' . $v;
-								$c->label = JText::_('COM_FABRIK_CUSTOM') . ': ' . $label;
+								$c->label = FText::_('COM_FABRIK_CUSTOM') . ': ' . $label;
 								$arr[] = $c;
 							}
 						}
@@ -918,7 +940,7 @@ class FabrikPlugin extends JPlugin
 			// Ignore errors as you could be swapping between connections, with old db table name selected.
 		}
 
-		array_unshift($arr, JHTML::_('select.option', '', JText::_('COM_FABRIK_PLEASE_SELECT'), 'value', 'label'));
+		array_unshift($arr, JHTML::_('select.option', '', FText::_('COM_FABRIK_PLEASE_SELECT'), 'value', 'label'));
 		echo json_encode($arr);
 	}
 

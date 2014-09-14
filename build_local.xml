@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="fabrik3-package" default="travis-phpcs">
+<project name="fabrik3-package" default="fabrik.all">
 
 <!--  fabrik.all -->
 	<property file="build_config.ini" />
@@ -20,10 +20,6 @@
 	<property name="plugins.visualization" value="calendar,chart,coverflow,fusion_gantt_chart,fusionchart,googlemap,media,slideshow,timeline" />
 
 	<!-- Travis-ci properties -->
-	<property name="source" value="" />
-	<condition property="script-suffix" value=".bat" else="">
-		<os family="windows" />
-	</condition>
 	
 	<taskdef resource="net/sf/antcontrib/antcontrib.properties"/>
 	<taskdef name="xmltask" classname="com.oopsconsultancy.xmltask.ant.XmlTask"/>
@@ -54,35 +50,6 @@
 			    </exec>
 		    </else>
 	    </if>
-	</target>
-	
-	<property name="phpcs.standard.path" value="${basedir}/fabrik_build/phpcs/Joomla/ruleset.xml" />
-		
-	<condition property="script-suffix" value=".bat" else="">
-		<os family="windows" />
-	</condition>
-	<condition property="phpcs-path" value="phpcs" else="phpcs">
-		<os family="windows" />
-	</condition>
-	<echo>searching form ${phpcs.standard.path}</echo>
-	<available file="${phpcs.standard.path}"  property="phpcs.ruleset.found"/>
-	
-	<target name="travis-phpcs" description="Generate codestyle report using PHP_CodeSniffer for output on Travis-CI" if="phpcs.ruleset.found">
-		<echo>call ${phpcs-path}${script-suffix}, path: ${phpcs.standard.path}</echo>
-		
-		<exec executable="${phpcs-path}${script-suffix}">
-			<arg value="-i" />	
-		</exec>
-		
-		
-		<exec dir="${basedir}" executable="${phpcs-path}${script-suffix}">
-            <arg line="--report=checkstyle" />
-			<arg line="--report-file=${basedir}/fabrik_build/logs/checkstyle.xml" />
-            <arg line="--standard=${phpcs.standard.path}" />
-            <arg line="--extensions=php" />
-			<arg line="-p" />
-            <arg path="${source}" />
-        </exec>
 	</target>
 	
 	<target name="uploadPhpDoc" description="Upload PHP docs created in target:phpdoc">
@@ -159,9 +126,8 @@
 		</if>
 
 
-		<input message="Joomla target version:" addproperty="jversion" defaultvalue="2.5"/>
+		<input message="Joomla target version:" addproperty="jversion" defaultvalue="3.2"/>
 		<input message="Component version:" addproperty="version" defaultvalue="${git.log.range.end}"/>
-		<input message="Joomla target version:" addproperty="jversion" defaultvalue="3.0"/>
 		<input message="build zips?" addproperty="zip.do" validargs="y,n" defaultvalue="y" />
 
 		<if>
@@ -226,12 +192,15 @@
 		<zip destfile="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_${version}.zip">
 			<zipfileset dir="${cfg.destdir}/plugins/content" />
 		</zip>
-
+ 
 		<delete file="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_search_${version}.zip" />
 		<zip destfile="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_search_${version}.zip" basedir="${cfg.destdir}/plugins/search" />
 
 		<delete file="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_schedule_${version}.zip" />
 		<zip destfile="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_schedule_${version}.zip" basedir="${cfg.destdir}/plugins/system/fabrikcron" />
+
+		<delete file="${cfg.destdir}/pkg_fabrik_sink/packages/plug_cb_fabrik_${version}.zip" />
+		<zip destfile="${cfg.destdir}/pkg_fabrik_sink/packages/plug_cb_fabrik_${version}.zip" basedir="${cfg.destdir}/components/com_comprofiler/plugin/user/plug_fabrik" />
 
 		<delete file="${cfg.destdir}/pkg_fabrik_sink/packages/plg_system_fabrik_${version}.zip" />
 		<zip destfile="${cfg.destdir}/pkg_fabrik_sink/packages/plg_system_fabrik_${version}.zip" basedir="${cfg.destdir}/plugins/system/fabrik" />
@@ -529,7 +498,7 @@
 				<exclude name="**/*.zip" />
 				<exclude name="**/views/form/tmpl/**" />
 				<exclude name="**/views/list/tmpl/**" />
-				<exclude name="**/js/*.js" />
+				<exclude name="/js/*.js" />
 			</fileset>
 		</copy>
 
@@ -709,6 +678,11 @@
 		<mkdir dir="${cfg.destdir}/plugins/system/fabrikcron" />
 		<copy file="${basedir}/plugins/system/fabrikcron/fabrikcron.xml" todir="${cfg.destdir}/plugins/system/fabrikcron" />
 		<copy file="${basedir}/plugins/system/fabrikcron/fabrikcron.php" todir="${cfg.destdir}/plugins/system/fabrikcron" />
+		
+		<mkdir dir="${cfg.destdir}/components/com_comprofiler/plugin/user/plug_fabrik" />
+		<copy todir="${cfg.destdir}/components/com_comprofiler/plugin/user/plug_fabrik">
+			<fileset dir="${basedir}/components/com_comprofiler/plugin/user/plug_fabrik"></fileset>
+		</copy>
 
 		<mkdir dir="${cfg.destdir}/plugins/system/fabrik" />
 		<copy todir="${cfg.destdir}/plugins/system/fabrik">
@@ -934,7 +908,8 @@
         	<arg line="log --pretty=format:'* %s (%an)' ${git.log.range.start}..${git.log.range.end}"/>
     	</exec>
     	<echo message="save change log to : ${cfg.destdir}/CHANGELOG-${git.log.range.end}.txt"></echo>
-       <echo file="${cfg.destdir}/CHANGELOG-${git.log.range.end}.txt">${git.changelog}
+		<!-- <echo message="${git.changelog}"></echo> -->
+       <echo force="true" file="${cfg.destdir}CHANGELOG-${git.log.range.end}.txt">${git.changelog}
      </echo>
 	</target>
 

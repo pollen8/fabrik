@@ -172,18 +172,41 @@
 				description="COM_FABRIK_FIELD_COLUMN_WIDTHS_DESC" />
 
 			<field default="1" description="COM_FABRIK_SHOW_GROUP_DESC" label="COM_FABRIK_SHOW_GROUP_LABEL" name="repeat_group_show_first" type="list">
-					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 					<option value="-1">COM_FABRIK_YES_BUT_HIDDEN</option>
 					<option value="2">COM_FABRIK_DETAILS_VIEW_ONLY</option>
 					<option value="3">COM_FABRIK_FORM_VIEW_ONLY</option>
 					<option value="4">COM_FABRIK_SHOW_GROUP_USABLE_ELEMENTS_ONLY</option>
 					<option value="5">COM_FABRIK_SHOW_GROUP_ALWAYS_READ_ONLY</option>
+					<option value="0">JNO</option>
 			</field>
 
 			<field class="btn-group" default="0" description="COM_FABRIK_RANDOMISE_ELEMENTS_DESC" label="COM_FABRIK_RANDOMISE_ELEMENTS_LABEL" name="random" type="radio">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
+			</field>
+			<field name="labels_above"
+				type="radio"
+				class="btn-group"
+				default="-1"
+				label="COM_FABRIK_FIELD_LABELS_ABOVE_LABEL"
+				description="COM_FABRIK_FIELD_LABELS_ABOVE_DESC" >
+					<option value="-1">COM_FABRIK_FIELD_LABELS_ABOVE_GLOBAL</option>
+					<option value="0">COM_FABRIK_FIELD_LABELS_ABOVE_LEFT</option>
+					<option value="1">COM_FABRIK_FIELD_LABELS_ABOVE_ABOVE</option>
+					<option value="2">COM_FABRIK_FIELD_LABELS_ABOVE_NONE</option>
+			</field>
+
+			<field name="labels_above_details"
+				type="radio"
+				class="btn-group"
+				default="-1"
+				label="COM_FABRIK_FIELD_LABELS_ABOVE_DETAILS_LABEL"
+				description="COM_FABRIK_FIELD_LABELS_ABOVE_DETAILS_DESC" >
+					<option value="-1">COM_FABRIK_FIELD_LABELS_ABOVE_GLOBAL</option>
+					<option value="0">COM_FABRIK_FIELD_LABELS_ABOVE_LEFT</option>
+					<option value="1">COM_FABRIK_FIELD_LABELS_ABOVE_ABOVE</option>
+					<option value="2">COM_FABRIK_FIELD_LABELS_ABOVE_NONE</option>
 			</field>
 	</fieldset>
 	</fields>

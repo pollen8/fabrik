@@ -99,6 +99,8 @@ class FabrikAdminModelPackage extends FabModelAdmin
 			$query->where('id NOT IN (' . implode(', ', $ids) . ')');
 		}
 
+		$query->order('text');
+
 		$db->setQuery($query);
 
 		return $db->loadObjectList();
@@ -120,6 +122,8 @@ class FabrikAdminModelPackage extends FabModelAdmin
 		{
 			$query->where('id NOT IN (' . implode(', ', $ids) . ')');
 		}
+
+		$query->order('text');
 
 		$db->setQuery($query);
 
@@ -209,7 +213,7 @@ class FabrikAdminModelPackage extends FabModelAdmin
 	}
 
 	/**
-	 * Save the pacakge
+	 * Save the package
 	 *
 	 * @param   array  $data  jform data
 	 *
@@ -230,7 +234,7 @@ class FabrikAdminModelPackage extends FabModelAdmin
 
 		foreach ($blocks as $type => $values)
 		{
-			$o->canvas->blocks->$type = $values;
+			$o->blocks->$type = $values;
 		}
 
 		foreach ($blocks as $type => $values)
@@ -384,7 +388,7 @@ class FabrikAdminModelPackage extends FabModelAdmin
 	 * Start the zip download
 	 *
 	 * @param   string  $filename  saved zip name
-	 * @param   stirng  $filepath  server path for zip
+	 * @param   string  $filepath  server path for zip
 	 *
 	 * @return  void
 	 */
@@ -456,7 +460,35 @@ class FabrikAdminModelPackage extends FabModelAdmin
 		$rows = array($row);
 		$return[] = "class com_" . $row->component_name . "InstallerScript{";
 		$return[] = "";
-		$return[] = "\tfunction uninstall(\$parent)";
+
+		$return[] = "protected function existingPackage(\$m)
+			{
+				\$db = JFactory::getDbo();
+				\$query = \$db->getQuery(true);
+				\$query->select('*')->from('#__fabrik_packages')
+				->where('external_ref <> \"\" AND component_name = ' . \$db->quote(\$m->name));
+				\$db->setQuery(\$query);
+				echo \$db->getQuery();
+				\$existing = \$db->loadObject();
+				return \$existing;
+			}";
+
+		$return[] = "\t	public function preflight(\$type, \$parent)
+	{
+			\$m = \$parent->getParent()->manifest;
+			\$existing = \$this->existingPackage(\$m);
+			if (\$existing)
+			{
+				\$currentVersion = \$existing->version;
+				if (version_compare(\$m->version , \$currentVersion) === -1)
+				{
+					throw new Exception('Can not install - a more recent version is already installed');
+				}
+			}
+
+	}";
+
+		$return[] = "\tpublic function uninstall(\$parent)";
 		$return[] = "\t\t{";
 		$return[] = "\t\t\$m = \$parent->getParent()->manifest;";
 		$return[] = "\t\t\$db = JFactory::getDbo();";
@@ -469,10 +501,25 @@ class FabrikAdminModelPackage extends FabModelAdmin
 		$return[] = "\t\t\$app->setUserState('com_fabrik.package', '');";
 		$return[] = "\t\t}";
 		$return[] = "";
-		$return[] = "\tfunction postflight(\$type, \$parent) {";
-		$return[] = "\t\t" . "\$db = JFactory::getDbo();";
+		$return[] = "\tpublic function postflight(\$type, \$parent) {";
+		$return[] = "\t\t\$m = \$parent->getParent()->manifest;
+			\$existing = \t\t\$this->existingPackage(\$m);
+			\$db = JFactory::getDbo();
+			if (\$existing)
+			{
+				\$query = \$db->getQuery(true);
+				\$query->update('#__fabrik_packages')->set('version = ' . \$db->quote(\$m->version))
+				->set('modified = NOW()')
+				->where('id = ' . \$existing->id);
+			 	\$db->setQuery(\$query);
+			 	\$db->query();
+			}
+			else
+			{";
 		$return[] = "\t\t" . $this->rowsToInsert('#__fabrik_packages', $rows, $return);
 		$return[] = "\t\t" . "\$package_id = \$db->insertid();";
+		$return[] = "}";
+
 		$lookups = $this->getInstallItems($row);
 		$listModel = JModelLegacy::getInstance('list', 'FabrikFEModel');
 		$lists = $lookups->list;
@@ -597,7 +644,7 @@ class FabrikAdminModelPackage extends FabModelAdmin
 
 		if (!JFile::write($path, $return))
 		{
-			throw new RuntimeException('didnt write to ' . $path, 500);
+			throw new RuntimeException('Error: Couldn\'t write to: ' . $path, 500);
 		}
 
 		return $path;
@@ -638,6 +685,7 @@ class FabrikAdminModelPackage extends FabModelAdmin
 				}
 
 				$v = str_replace($db->getPrefix(), '#__', $v);
+				$v = str_replace('$', '\$', $v);
 				$val = $db->quote($v);
 				$fields[] = $db->quoteName($k);
 				$values[] = $val;
@@ -844,7 +892,7 @@ class FabrikAdminModelPackage extends FabModelAdmin
 			{
 				$vrow = FabTable::getInstance('Visualization', 'FabrikTable');
 				$vrow->load($vid);
-				$visModel = JModel::getInstance($vrow->plugin, 'fabrikModel');
+				$visModel = JModelLegacy::getInstance($vrow->plugin, 'fabrikModel');
 				$visModel->setId($vid);
 				$listModels = $visModel->getlistModels();
 
@@ -942,7 +990,7 @@ class FabrikAdminModelPackage extends FabModelAdmin
 	}
 
 	/**
-	 * Create the SQL unistall file
+	 * Create the SQL uninstall file
 	 *
 	 * @param   object  $row  package
 	 *
@@ -955,8 +1003,8 @@ class FabrikAdminModelPackage extends FabModelAdmin
 		$db = JFactory::getDbo();
 
 		/**
-		 * dont do this as the db table may be used by the main fabrik component
-		 * perhaps later on we can add some php to the manifest class to inteligently remove orphaned db tables.
+		 * don't do this as the db table may be used by the main fabrik component
+		 * perhaps later on we can add some php to the manifest class to intelligently remove orphaned db tables.
 		 */
 
 		/*
@@ -973,11 +1021,11 @@ class FabrikAdminModelPackage extends FabModelAdmin
 
 		/**
 		 * drop the meta tables as well (currently we don't have a method for
-		 * upgrading a package. So unistall should remove these meta tables
+		 * upgrading a package. So uninstall should remove these meta tables
 		 */
 		foreach ($this->tables as $table)
 		{
-			// As we share the connection table we don't want to remove it on package unistall
+			// As we share the connection table we don't want to remove it on package uninstall
 			if ($table == '#__fabrik_connections')
 			{
 				continue;
@@ -1013,6 +1061,7 @@ class FabrikAdminModelPackage extends FabModelAdmin
 		JFolder::create($this->outputPath . 'site/views');
 		JFolder::create($this->outputPath . 'admin');
 		JFolder::create($this->outputPath . 'admin/images');
+		JFolder::create($this->outputPath . 'admin/language');
 
 		$from = $skeltonFolder . 'fabrik_skeleton.php';
 		$to = $this->outputPath . 'site/' . $name . '.php';
@@ -1037,11 +1086,6 @@ class FabrikAdminModelPackage extends FabModelAdmin
 		JFile::copy($from, $to);
 		$filenames[] = $to;
 
-		/* $from = $skeltonFolder.'index.html';
-		$to = $this->outputPath . 'admin/installation/index.html';
-		JFile::copy($from, $to);
-		$filenames[] = $to; */
-
 		$from = $skeltonFolder . 'index.html';
 		$to = $this->outputPath . 'site/index.html';
 		JFile::copy($from, $to);
@@ -1057,16 +1101,25 @@ class FabrikAdminModelPackage extends FabModelAdmin
 		JFolder::copy($from, $to, '', true);
 		$filenames[] = $to;
 
+		$from = JPATH_ADMINISTRATOR . '/components/com_fabrik/language/';
+		$to = $this->outputPath . 'admin/language';
+		JFolder::copy($from, $to, '', true);
+
+		// Rename admin language files
+		$langFiles = JFolder::files($to, '.ini', true, true);
+
+		foreach ($langFiles as $langFile)
+		{
+			$newLangFile = str_replace('com_fabrik', $row->component_name, $langFile);
+			JFile::move($langFile, $newLangFile);
+		}
+
+		$filenames[] = $to;
+
 		$from = $skeltonFolder . 'views/';
 		$to = $this->outputPath . 'site/views';
 		JFolder::copy($from, $to, '', true);
 		$filenames[] = $to;
-
-		/*//testing this tmp file
-		$from = $skeltonFolder.'fabrik_skeleton.php';
-		$to = $this->outputPath . 'admin/' . $name.'.php';
-		JFile::copy($from, $to);
-		$filenames[] = $to;*/
 	}
 
 	/**
@@ -1085,10 +1138,10 @@ class FabrikAdminModelPackage extends FabModelAdmin
 		/*
 		 * Not sure this is going to be possible with out a lot more logic related to source/target j versions
 		 * and whether or not to install additional plugins etc.
-		 * Dont want to install a j2.5 plugin in a j3.0 site for example)
+		 * Don't want to install a j2.5 plugin in a j3.0 site for example)
 		 */
 		// $jversion = isset($row->params->jversion) ? $row->params->jversion : $version->RELEASE;
-		$jVersion = $version->RELEASE;
+		$jVersion = str_replace('.', '', $version->RELEASE);
 
 		return $jVersion;
 	}
@@ -1114,7 +1167,7 @@ class FabrikAdminModelPackage extends FabModelAdmin
 		$date = JFactory::getDate();
 		$xmlname = 'pkg_' . str_replace('com_', '', $row->component_name);
 		$str = '<?xml version="1.0" encoding="UTF-8" ?>
-<install type="package" version="' . $jVersion . '">
+<extension type="package" version="' . $jVersion . '">
 	<name>' . $row->label . '</name>
 	<packagename>' . str_replace('com_', '', $row->component_name) . '</packagename>
 	<version>' . $row->version . '</version>
@@ -1126,7 +1179,7 @@ class FabrikAdminModelPackage extends FabModelAdmin
 	<description>Created by Fabrik</description>
 
 	<files folder="packages">
-		<file type="component" id="' . $row->component_name . '">com_' . $this->getComponentName($row) . '.zip</file>
+		<file type="component" id="com_' . $row->component_name . '">com_' . $this->getComponentName($row) . '.zip</file>
 ';
 
 		foreach ($plugins as $plugin)
@@ -1137,7 +1190,7 @@ class FabrikAdminModelPackage extends FabModelAdmin
 
 		$str .= '
 	</files>
-</install>';
+</extension>';
 		JFile::write($this->outputPath . $xmlname . '.xml', $str);
 
 		return $this->outputPath . $xmlname . '.xml';
@@ -1254,6 +1307,7 @@ class FabrikAdminModelPackage extends FabModelAdmin
 
 		<files folder="admin">
 			<folder>images</folder>
+			<folder>language</folder>
 			<folder>sql</folder>
 			<file>index.html</file>
 			<file>' . $xmlname . '.php</file>

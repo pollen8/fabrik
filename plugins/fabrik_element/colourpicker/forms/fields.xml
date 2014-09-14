@@ -30,7 +30,27 @@
 				hide_none="1"
 				label="PLG_ELEMENT_COLOURPICKER_SWATCH_LABEL"/>
 			
-			
+			<field name="swatch_size_width"
+				type="field"
+				default="10px"
+				description="PLG_ELEMENT_COLOURPICKER_SWATCH_WIDTH_DESC"
+				label="PLG_ELEMENT_COLOURPICKER_SWATCH_WIDTH_LABEL" />
+				
+			<field name="swatch_size_height"
+				type="field"
+				default="10px"
+				description="PLG_ELEMENT_COLOURPICKER_SWATCH_HEIGHT_DESC"
+				label="PLG_ELEMENT_COLOURPICKER_SWATCH_HEIGHT_LABEL" />
+
+			<field name="show_picker"
+				type="radio"
+				class="btn-group"
+				default="1"
+				description="PLG_ELEMENT_COLOURPICKER_SHOW_PICKER_DESC"
+				label="PLG_ELEMENT_COLOURPICKER_SHOW_PICKER_LABEL">
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>				
+			</field>
 				
 		</fieldset>
 	</fields>

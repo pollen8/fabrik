@@ -9,18 +9,17 @@ var elementElement = new Class({
 
 	Implements: [Options, Events],
 	
-	options : {
+	options: {
 		'plugin': 'chart',
 		'excludejoined': 0,
 		'value': '',
 		'highlightpk': 0
 	},
 	
-	initialize : function (el, options) {
+	initialize: function (el, options) {
 		this.el = el;
 		this.setOptions(options);
-		// if loading in a form plugin then the connect is not yet avaiable in the
-		// dom
+		// if loading in a form plugin then the connect is not yet available in the dom
 		if (!this.ready()) {
 			this.cnnperiodical = this.getCnn.periodical(500, this);
 		} else {
@@ -28,7 +27,7 @@ var elementElement = new Class({
 		}
 	},
 
-	ready : function () {
+	ready: function () {
 		if (typeOf(document.id(this.options.conn)) === 'null') {
 			return false;
 		}
@@ -44,7 +43,7 @@ var elementElement = new Class({
 		return true;
 	},
 
-	getCnn : function () {
+	getCnn: function () {
 		if (!this.ready()) {
 			return;
 		}
@@ -52,7 +51,7 @@ var elementElement = new Class({
 		clearInterval(this.cnnperiodical);
 	},
 
-	setUp : function () {
+	setUp: function () {
 		var s = this.el;
 		this.el = document.id(this.el);
 		if (typeOf(this.el) === 'null') {
@@ -80,7 +79,7 @@ var elementElement = new Class({
 		this.insertTextAtCaret(this.el, '{' + list.get('value') + '}');
 	},
 	
-	getOpts : function () {
+	getOpts: function () {
 		return $H({
 			'calcs': this.options.include_calculations,
 			'showintable': this.options.showintable,
@@ -91,7 +90,7 @@ var elementElement = new Class({
 	},
 
 	// only called from repeat viz admin interface i think
-	cloned : function (newid, counter) {
+	cloned: function (newid, counter) {
 		this.el = newid;
 		var t = this.options.table.split('-');
 		t.pop();

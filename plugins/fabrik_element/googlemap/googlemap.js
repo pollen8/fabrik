@@ -10,11 +10,18 @@ function googlemapload() {
 	if (typeOf(Fabrik.googleMapRadius) === 'null') {
 		var script2 = document.createElement("script"),
 		l = document.location,
-		path = l.pathname.split('/');
-		path.pop();
+		path = l.pathname.split('/'),
+		index = path.indexOf('index.php');
+
+		// For URLs such as /index.php/elements/form/4/97 - we only want the segment before index.php
+		if (index !== -1) {
+			path = path.slice(0, index);
+		}
+		path.shift();
 		path = path.join('/');
 		script2.type = "text/javascript";
-		script2.src = l.protocol + '//' + l.host + path + '/components/com_fabrik/libs/googlemaps/distancewidget.js';
+		//script2.src = l.protocol + '//' + l.host + '/' + path + '/components/com_fabrik/libs/googlemaps/distancewidget.js';
+		script2.src = Fabrik.liveSite + '/components/com_fabrik/libs/googlemaps/distancewidget.js';
 		document.body.appendChild(script2);
 		Fabrik.googleMapRadius = true;
 	}
@@ -59,6 +66,7 @@ var FbGoogleMap = new Class({
 		'sensor': false,
 		'center': 0,
 		'reverse_geocode': false,
+		'use_radius': false,
 		'styles': []
 	},
 
@@ -91,7 +99,7 @@ var FbGoogleMap = new Class({
 			this.makeMap();
 
 			// @TODO test google object when offline typeOf(google) isnt working
-			if (this.options.center === 1 && this.options.rowid === '') {
+			if (this.options.center === 1 && (this.options.rowid === '' || this.options.rowid === 0)) {
 				if (geo_position_js.init()) {
 					geo_position_js.getCurrentPosition(this.geoCenter.bind(this), this.geoCenterErr.bind(this), {
 						enableHighAccuracy: true
@@ -232,46 +240,60 @@ var FbGoogleMap = new Class({
 								//infowindow.setContent(results[1].formatted_address);
 								//infowindow.open(map, marker);
 								//alert(results[0].formatted_address);
+								/**
+								 * @TODO - simplify this, as we now index the reverse_geocode_fields with the same keys that
+								 * Google do.  So no need to go through each possibility and map to our key name.  In other words,
+								 * don't need to map "administrative_area_1" on to "state".  However, we do need to fix the handling
+								 * of street_number, route and street_address, as it seems that the Goog
+								 */
 								results[0].address_components.each(function (component) {
 									component.types.each(function (type) {
 										if (type === 'street_number') {
 											if (this.options.reverse_geocode_fields.route) {
-												document.id(this.options.reverse_geocode_fields.route).value = component.long_name + ' ';
+												//document.id(this.options.reverse_geocode_fields.route).value = component.long_name + ' ';
+												this.form.formElements.get(this.options.reverse_geocode_fields.route).update(component.long_name + ' ');
 											}
 										}
 										else if (type === 'route') {
 											if (this.options.reverse_geocode_fields.route) {
-												document.id(this.options.reverse_geocode_fields.route).value = component.long_name;
+												//document.id(this.options.reverse_geocode_fields.route).value = component.long_name;
+												this.form.formElements.get(this.options.reverse_geocode_fields.route).update(component.long_name);
 											}
 										}
 										else if (type === 'street_address') {
 											if (this.options.reverse_geocode_fields.route) {
-												document.id(this.options.reverse_geocode_fields.route).value = component.long_name;
+												//document.id(this.options.reverse_geocode_fields.route).value = component.long_name;
+												this.form.formElements.get(this.options.reverse_geocode_fields.route).update(component.long_name);
 											}
 										}
 										else if (type === 'neighborhood') {
 											if (this.options.reverse_geocode_fields.neighborhood) {
-												document.id(this.options.reverse_geocode_fields.neighborhood).value = component.long_name;
+												//document.id(this.options.reverse_geocode_fields.neighborhood).value = component.long_name;
+												this.form.formElements.get(this.options.reverse_geocode_fields.neighborhood).update(component.long_name);
 											}
 										}
 										else if (type === 'locality') {
-											if (this.options.reverse_geocode_fields.city) {
-												document.id(this.options.reverse_geocode_fields.locality).value = component.long_name;
+											if (this.options.reverse_geocode_fields.locality) {
+												//document.id(this.options.reverse_geocode_fields.locality).value = component.long_name;
+												this.form.formElements.get(this.options.reverse_geocode_fields.locality).updateByLabel(component.long_name);
 											}
 										}
 										else if (type === 'administrative_area_level_1') {
-											if (this.options.reverse_geocode_fields.state) {
-												document.id(this.options.reverse_geocode_fields.state).value = component.long_name;
+											if (this.options.reverse_geocode_fields.administrative_area_level_1) {
+												//document.id(this.options.reverse_geocode_fields.state).value = component.long_name;
+												this.form.formElements.get(this.options.reverse_geocode_fields.administrative_area_level_1).updateByLabel(component.long_name);
 											}
 										}
 										else if (type === 'postal_code') {
-											if (this.options.reverse_geocode_fields.zip) {
-												document.id(this.options.reverse_geocode_fields.zip).value = component.long_name;
+											if (this.options.reverse_geocode_fields.postal_code) {
+												//document.id(this.options.reverse_geocode_fields.zip).value = component.long_name;
+												this.form.formElements.get(this.options.reverse_geocode_fields.postal_code).updateByLabel(component.long_name);
 											}
 										}
 										else if (type === 'country') {
 											if (this.options.reverse_geocode_fields.country) {
-												document.id(this.options.reverse_geocode_fields.country).value = component.long_name;
+												//document.id(this.options.reverse_geocode_fields.country).value = component.long_name;
+												this.form.formElements.get(this.options.reverse_geocode_fields.country).updateByLabel(component.long_name);
 											}
 										}
 									}.bind(this));
@@ -654,57 +676,14 @@ var FbGoogleMap = new Class({
 		fconsole('geo location error=' + p.message);
 	},
 
+	/**
+	 * Redraw the map when inside a tab, and the tab is activated. Triggered from element.watchTab()
+	 */
 	redraw: function () {
 		google.maps.event.trigger(this.map, 'resize');
 		var center = new google.maps.LatLng(this.options.lat, this.options.lon);
 		this.map.setCenter(center);
 		this.map.setZoom(this.map.getZoom());
-	},
-
-	/*
-	 * Testing some stuff to try and get maps to display properly when they are in the
-	 * tab template.  If a map is in a tab which isn't selected on page load, the map
-	 * will not render properly, and needs to be refreshed when the tab it is in is selected.
-	 * NOTE that this stuff is very specific to the Fabrik tabs template, using J!'s tabs.
-	 */
-
-	doTab: function (event) {
-		(function () {
-			this.redraw();
-			if (!Fabrik.bootstrapped) {
-				this.options.tab_dt.removeEvent('click', function (e) {
-					this.doTab(e);
-				}.bind(this));
-			}
-		}.bind(this)).delay(500);
-	},
-
-	watchTab: function () {
-		var c = Fabrik.bootstrapped ? '.tab-pane' : '.current',
-		a, tab_dl;
-		var tab_div = this.element.getParent(c);
-		if (tab_div) {
-			if (Fabrik.bootstrapped) {
-				a = document.getElement('a[href=#' + tab_div.id + ']');
-				tab_dl = a.getParent('ul.nav');
-				tab_dl.addEvent('click:relay(a)', function (event, target) {
-					this.doTab(event);
-				}.bind(this));
-			} else {
-				tab_dl = tab_div.getPrevious('.tabs');
-				if (tab_dl) {
-					this.options.tab_dd = this.element.getParent('.fabrikGroup');
-					if (this.options.tab_dd.style.getPropertyValue('display') === 'none') {
-						this.options.tab_dt = tab_dl.getElementById('group' + this.groupid + '_tab');
-						if (this.options.tab_dt) {
-							this.options.tab_dt.addEvent('click', function (e) {
-								this.doTab(e);
-							}.bind(this));
-						}
-					}
-				}
-			}
-		}
 	}
 
 });

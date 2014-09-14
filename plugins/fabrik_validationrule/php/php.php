@@ -113,4 +113,22 @@ class PlgFabrik_ValidationrulePhp extends PlgFabrik_Validationrule
 
 		return $retval;
 	}
+
+	/**
+	 * Get the base icon image as defined by the J Plugin options
+	 *
+	 * @since   3.1b2
+	 *
+	 * @return  string
+	 */
+
+	public function iconImage()
+	{
+		$plugin = JPluginHelper::getPlugin('fabrik_validationrule', $this->pluginName);
+		$globalParams = new JRegistry($plugin->params);
+		$default = $globalParams->get('icon', 'star');
+		$params = $this->getParams();
+
+		return $params->get('icon', $default);
+	}
 }

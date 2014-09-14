@@ -71,7 +71,7 @@ class FabrikViewFormBase extends JViewLegacy
 		{
 			if (!$app->isAdmin())
 			{
-				echo JText::_('COM_FABRIK_FORM_NOT_PUBLISHED');
+				echo FText::_('COM_FABRIK_FORM_NOT_PUBLISHED');
 
 				return false;
 			}
@@ -82,7 +82,7 @@ class FabrikViewFormBase extends JViewLegacy
 
 		if ($this->access == 0)
 		{
-			JError::raiseWarning(500, JText::_('JERROR_ALERTNOAUTHOR'));
+			JError::raiseWarning(500, FText::_('JERROR_ALERTNOAUTHOR'));
 
 			return false;
 		}
@@ -116,7 +116,7 @@ class FabrikViewFormBase extends JViewLegacy
 			$form->formid .= '_' . $this->rowid;
 		}
 
-		$form->error = $form->error === '' ? JText::_('COM_FABRIK_FAILED_VALIDATION') : JText::_($form->error);
+		$form->error = $form->error === '' ? FText::_('COM_FABRIK_FAILED_VALIDATION') : FText::_($form->error);
 		$form->origerror = $form->error;
 		$form->error = $model->hasErrors() ? $form->error : '';
 		JDEBUG ? $profiler->mark('form view before validation classes loaded') : null;
@@ -134,10 +134,6 @@ class FabrikViewFormBase extends JViewLegacy
 		$this->tipLocation = $params->get('tiplocation');
 
 		FabrikHelperHTML::debug($this->groups, 'form:view:groups');
-
-		// Cck in admin?
-		$this->cck();
-		JDEBUG ? $profiler->mark('form view: after cck') : null;
 
 		// Force front end templates
 		$this->_basePath = COM_FABRIK_FRONTEND . '/views';
@@ -185,11 +181,12 @@ class FabrikViewFormBase extends JViewLegacy
 
 		if ($params->get('process-jplugins', 2) == 1 || ($params->get('process-jplugins', 2) == 2 && $model->isEditable() === false))
 		{
-			FabrikHelperHTML::runConentPlugins($text);
+			FabrikHelperHTML::runContentPlugins($text);
 		}
 
-		// Allows you to use {placeholders} in form template.
-		$text = $w->parseMessageForPlaceHolder($text, $model->data);
+		// Allows you to use {placeholders} in form template Only replacing data accessible to the users acl.
+		$view = $model->isEditable() === false ? 'details' : 'form';
+		$text = $w->parseMessageForPlaceHolder($text, $model->accessibleData($view));
 		echo $text;
 	}
 
@@ -219,7 +216,7 @@ class FabrikViewFormBase extends JViewLegacy
 			// if ($model->sessionModel->statusid == _FABRIKFORMSESSION_LOADED_FROM_COOKIE) {
 			if ($model->sessionModel->last_page > 0)
 			{
-				$message .= ' <a href="#" class="clearSession">' . JText::_('COM_FABRIK_CLEAR') . '</a>';
+				$message .= ' <a href="#" class="clearSession">' . FText::_('COM_FABRIK_CLEAR') . '</a>';
 			}
 		}
 
@@ -239,6 +236,7 @@ class FabrikViewFormBase extends JViewLegacy
 	protected function setTitle($w, &$params, $model)
 	{
 		$document = JFactory::getDocument();
+		$model = $this->getModel();
 		$app = JFactory::getApplication();
 		$input = $app->input;
 		$title = '';
@@ -254,6 +252,8 @@ class FabrikViewFormBase extends JViewLegacy
 				$menu_params = is_a($menu->params, 'JRegistry') ? $menu->params : new JRegistry($menu->params);
 				$params->set('page_heading', $menu_params->get('page_heading', ''));
 				$params->set('show_page_heading', $menu_params->get('show_page_heading', 0));
+				$browserTitle = $model->getPageTitle($menu_params->get('page_title'));
+				$document->setTitle($w->parseMessageForPlaceHolder($browserTitle, $_REQUEST));
 			}
 			else
 			{
@@ -273,14 +273,6 @@ class FabrikViewFormBase extends JViewLegacy
 		{
 			$params->set('page_heading', $title);
 			$params->set('show_page_heading', 0);
-		}
-
-		$model = $this->getModel();
-
-		if (!$this->isMambot)
-		{
-			$title = $model->getPageTitle($params->get('page_heading'));
-			$document->setTitle($w->parseMessageForPlaceHolder($title, $_REQUEST));
 		}
 	}
 
@@ -318,11 +310,6 @@ class FabrikViewFormBase extends JViewLegacy
 		$this->printURL = '';
 		$this->showPrint = $params->get('print', $fbConfig->get('form_print', 0));
 
-		if ($app->input->getInt('print') === 1)
-		{
-			$this->showPrint = false;
-		}
-
 		if ($this->showPrint)
 		{
 			$text = FabrikHelperHTML::image('print.png');
@@ -346,8 +333,8 @@ class FabrikViewFormBase extends JViewLegacy
 
 		$this->showPDF = $params->get('pdf', $fbConfig->get('form_pdf', false));
 
-		$buttonProperties = array('class' => 'fabrikTip', 'opts' => "{notice:true}", 'title' => '<span>' . JText::_('COM_FABRIK_PDF') . '</span>',
-				'alt' => JText::_('COM_FABRIK_PDF'));
+		$buttonProperties = array('class' => 'fabrikTip', 'opts' => "{notice:true}", 'title' => '<span>' . FText::_('COM_FABRIK_PDF') . '</span>',
+				'alt' => FText::_('COM_FABRIK_PDF'));
 
 		if ($this->showPDF)
 		{
@@ -409,7 +396,7 @@ class FabrikViewFormBase extends JViewLegacy
 
 		$aWYSIWYGNames = array();
 
-		// $$$ hugh - yeat another one where if we =, the $groups array pointer get buggered up and it
+		// $$$ hugh - yet another one where if we =, the $groups array pointer get buggered up and it
 		// skips a group
 		$groups = $model->getGroupsHiarachy();
 
@@ -448,7 +435,12 @@ class FabrikViewFormBase extends JViewLegacy
 
 				for ($c = 0; $c < $eventMax; $c++)
 				{
-					$jsActions[] = $elementModel->getFormattedJSActions($bkey, $c);
+					$jsAct = $elementModel->getFormattedJSActions($bkey, $c);
+
+					if (!empty($jsAct))
+					{
+						$jsActions[] = $jsAct;
+					}
 				}
 			}
 		}
@@ -458,7 +450,7 @@ class FabrikViewFormBase extends JViewLegacy
 		$listModel = $model->getlistModel();
 		$table = $listModel->getTable();
 		$form = $model->getForm();
-		FabrikHelperHTML::windows();
+		FabrikHelperHTML::windows('a.fabrikWin');
 		FabrikHelperHTML::tips('.hasTip', array(), "$('$bkey')");
 		$model->getFormCss();
 		$opts = $this->jsOpts();
@@ -470,12 +462,13 @@ class FabrikViewFormBase extends JViewLegacy
 			JText::script('COM_FABRIK_SUCCESS');
 			JText::script('COM_FABRIK_NO_REPEAT_GROUP_DATA');
 			JText::script('COM_FABRIK_VALIDATION_ERROR');
-			JText::script('COM_FABRIK_FORM_SAVED');
 			JText::script('COM_FABRIK_CONFIRM_DELETE_1');
 		}
 
-		// $$$ rob dont declare as var $bkey, but rather assign to window, as if loaded via ajax window the function is wrapped
-		// inside an anoymous function, and therefore $bkey wont be available as a global var in window
+		JText::script('COM_FABRIK_FORM_SAVED');
+
+		// $$$ rob don't declare as var $bkey, but rather assign to window, as if loaded via ajax window the function is wrapped
+		// inside an anonymous function, and therefore $bkey wont be available as a global var in window
 		$script = array();
 		/* $script[] = "\twindow.$bkey = new FbForm(" . $model->getId() . ", $opts);";
 		$script[] = "\tif(typeOf(Fabrik) !== 'null') {";
@@ -484,10 +477,10 @@ class FabrikViewFormBase extends JViewLegacy
 
 		$script[] = "\t\tvar $bkey = Fabrik.form('$bkey', " . $model->getId() . ", $opts);";
 
-		// Instantaite js objects for each element
+		// Instantiate js objects for each element
 		$vstr = "\n";
 		$groups = $model->getGroupsHiarachy();
-		$script[] = "\t{$bkey}.addElements(";
+		$script[] = "\tFabrik.blocks['{$bkey}'].addElements(";
 		$groupedJs = new stdClass;
 
 		foreach ($groups as $groupModel)
@@ -495,7 +488,7 @@ class FabrikViewFormBase extends JViewLegacy
 			$groupId = $groupModel->getGroup()->id;
 			$groupedJs->$groupId = array();
 
-			if (!$groupModel->canView())
+			if (!$groupModel->canView('form'))
 			{
 				continue;
 			}
@@ -539,7 +532,7 @@ class FabrikViewFormBase extends JViewLegacy
 
 							foreach ($watchElements as $watchElement)
 							{
-								$vstr .= "\t$bkey.watchValidation('" . $watchElement['id'] . "', '" . $watchElement['triggerEvent'] . "');\n";
+								$vstr .= "\tFabrik.blocks['$bkey'].watchValidation('" . $watchElement['id'] . "', '" . $watchElement['triggerEvent'] . "');\n";
 							}
 						}
 					}
@@ -554,7 +547,7 @@ class FabrikViewFormBase extends JViewLegacy
 		$script[] = $actions;
 		$script[] = $vstr;
 
-		// Placholder
+		// Placeholder
 		$script[] = "\tnew Form.Placeholder('.fabrikForm input');";
 		$this->_addJavascriptSumbit($script, $listId, $aWYSIWYGNames);
 
@@ -605,6 +598,7 @@ class FabrikViewFormBase extends JViewLegacy
 		$opts->admin = $app->isAdmin();
 		$opts->ajax = $model->isAjax();
 		$opts->ajaxValidation = (bool) $params->get('ajax_validations');
+		$opts->showLoader = (bool) $params->get('show_loader_on_submit', '0');
 		$key = FabrikString::safeColNameToArrayKey($table->db_primary_key);
 		$opts->primaryKey = $key;
 		$opts->error = @$form->origerror;
@@ -612,11 +606,12 @@ class FabrikViewFormBase extends JViewLegacy
 		$opts->plugins = array();
 		$opts->multipage_save = (int) $model->saveMultiPage();
 		$opts->editable = $model->isEditable();
+		$opts->print = (bool) $input->getInt('print');
 		$start_page = isset($model->sessionModel->last_page) ? (int) $model->sessionModel->last_page : 0;
 
 		if ($start_page !== 0)
 		{
-			$app->enqueueMessage(JText::_('COM_FABRIK_RESTARTING_MUTLIPAGE_FORM'));
+			$app->enqueueMessage(FText::_('COM_FABRIK_RESTARTING_MULTIPAGE_FORM'));
 		}
 		else
 		{
@@ -627,7 +622,7 @@ class FabrikViewFormBase extends JViewLegacy
 		$opts->start_page = $start_page;
 		$opts->inlineMessage = (bool) $this->isMambot;
 
-		// $$$rob dont int this as keys may be string
+		// $$$rob don't int this as keys may be string
 		$opts->rowid = (string) $model->getRowId();
 
 		// 3.0 needed for ajax requests
@@ -651,7 +646,7 @@ class FabrikViewFormBase extends JViewLegacy
 		$opts->fabrik_window_id = $input->get('fabrik_window_id', '');
 		$opts->submitOnEnter = (bool) $params->get('submit_on_enter', false);
 
-		// For editing groups with joined data and an empty joined record (ie no joined records)
+		// For editing groups with joined data and an empty joined record (i.e. no joined records)
 		$hidden = array();
 		$maxRepeat = array();
 		$minRepeat = array();
@@ -743,7 +738,7 @@ class FabrikViewFormBase extends JViewLegacy
 	/**
 	 * Create the form bottom hidden fields
 	 *
-	 * @param   object  &$form  Object containg form view properties
+	 * @param   object  &$form  Object containing form view properties
 	 *
 	 * @return  void
 	 */
@@ -783,7 +778,7 @@ class FabrikViewFormBase extends JViewLegacy
 
 		if ($usekey = FabrikWorker::getMenuOrRequestVar('usekey', ''))
 		{
-			// $$$rob v's been set from -1 to the actual row id - so ignore usekyey not sure if we should comment this out
+			// $$$rob v's been set from -1 to the actual row id - so ignore usekey not sure if we should comment this out
 			// see http://fabrikar.com/forums/showthread.php?t=10297&page=5
 
 			$fields[] = '<input type="hidden" name="usekey" value="' . $usekey . '" />';
@@ -815,21 +810,22 @@ class FabrikViewFormBase extends JViewLegacy
 		}
 
 		$fields[] = JHTML::_('form.token');
-		$resetLabel = JText::_($params->get('reset_button_label'));
+		$resetLabel = FText::_($params->get('reset_button_label'));
 		$resetIcon = $params->get('reset_icon', '');
-		$copyLabel = JText::_($params->get('copy_button_label'));
+		$copyLabel = FText::_($params->get('copy_button_label'));
 		$copyIcon = $params->get('copy_icon', '');
-		$applyLabel = JText::_($params->get('apply_button_label'));
+		$applyLabel = FText::_($params->get('apply_button_label'));
 		$applyIcon = $params->get('apply_icon', '');
-		$deleteLabel = JText::_($params->get('delete_button_label', 'Delete'));
+		$deleteLabel = FText::_($params->get('delete_button_label', 'Delete'));
 		$deleteIcon = $params->get('delete_icon', '');
-		$goBackLabel = JText::_($params->get('goback_button_label'));
+		$goBackLabel = FText::_($params->get('goback_button_label'));
 		$goBackIcon = $params->get('goback_icon', '');
 
 		if ($resetIcon !== '')
 		{
 			$resetIcon = '<i class="' . $resetIcon . '"></i>';
-			$resetLabel = $params->get('reset_icon_location', 0) == 'before' ? $resetIcon . '&nbsp;' . $resetLabel : $resetLabel . '&nbsp;' . $resetIcon;
+			$before = $params->get('reset_icon_location', 'before') == 'before';
+			$resetLabel = $before ? $resetIcon . '&nbsp;' . $resetLabel : $resetLabel . '&nbsp;' . $resetIcon;
 		}
 
 		$form->resetButton = $params->get('reset_button', 0) && $this->editable == "1"
@@ -838,7 +834,7 @@ class FabrikViewFormBase extends JViewLegacy
 		if ($copyIcon !== '')
 		{
 			$copyIcon = '<i class="' . $copyIcon . '"></i>';
-			$copyLabel = $params->get('copy_icon_location', 0) == 'before' ? $copyIcon . '&nbsp;' . $copyLabel : $copyLabel . '&nbsp;' . $copyIcon;
+			$copyLabel = $params->get('copy_icon_location', 'before') == 'before' ? $copyIcon . '&nbsp;' . $copyLabel : $copyLabel . '&nbsp;' . $copyIcon;
 		}
 
 		$form->copyButton = $params->get('copy_button', 0) && $this->editable && $model->getRowId() != ''
@@ -847,7 +843,8 @@ class FabrikViewFormBase extends JViewLegacy
 		if ($applyIcon !== '')
 		{
 			$applyIcon = '<i class="' . $applyIcon . '"></i>';
-			$applyLabel = $params->get('apply_icon_location', 0) == 'before' ? $applyIcon . '&nbsp;' . $applyLabel : $applyLabel . '&nbsp;' . $applyIcon;
+			$before = $params->get('apply_icon_location', 'before') == 'before';
+			$applyLabel = $before ? $applyIcon . '&nbsp;' . $applyLabel : $applyLabel . '&nbsp;' . $applyIcon;
 		}
 
 		$applyButtonType = $model->isAjax() ? 'button' : 'submit';
@@ -857,7 +854,8 @@ class FabrikViewFormBase extends JViewLegacy
 		if ($deleteIcon !== '')
 		{
 			$deleteIcon = '<i class="' . $deleteIcon . '"></i>';
-			$deleteLabel = $params->get('delete_icon_location', 0) == 'before' ? $deleteIcon . '&nbsp;' . $deleteLabel : $deleteLabel . '&nbsp;' . $deleteIcon;
+			$before = $params->get('delete_icon_location', 'before') == 'before';
+			$deleteLabel = $before ? $deleteIcon . '&nbsp;' . $deleteLabel : $deleteLabel . '&nbsp;' . $deleteIcon;
 		}
 
 		$form->deleteButton = $params->get('delete_button', 0) && $canDelete && $this->editable && $this_rowid != ''
@@ -866,7 +864,8 @@ class FabrikViewFormBase extends JViewLegacy
 		if ($goBackIcon !== '')
 		{
 			$goBackIcon = '<i class="' . $goBackIcon . '"></i>';
-			$goBackLabel = $params->get('goback_icon_location', 0) == 'before' ? $goBackIcon . '&nbsp;' . $goBackLabel : $goBackLabel . '&nbsp;' . $goBackIcon;
+			$before = $params->get('goback_icon_location', 'before') == 'before';
+			$goBackLabel = $before ? $goBackIcon . '&nbsp;' . $goBackLabel : $goBackLabel . '&nbsp;' . $goBackIcon;
 		}
 
 		$goBack = $model->isAjax() ? '' : FabrikWorker::goBackAction();
@@ -878,12 +877,13 @@ class FabrikViewFormBase extends JViewLegacy
 			$button = $model->isAjax() ? "button" : "submit";
 			$submitClass = FabrikString::clean($form->submit_button_label);
 			$submitIcon = $params->get('save_icon', '');
-			$submitLabel = JText::_($form->submit_button_label);
+			$submitLabel = FText::_($form->submit_button_label);
 
 			if ($submitIcon !== '')
 			{
 				$submitIcon = '<i class="' . $submitIcon . '"></i>';
-				$submitLabel = $params->get('save_icon_location') == 'before' ? $submitIcon . '&nbsp;' . $submitLabel : $submitLabel . '&nbsp;' . $submitIcon;
+				$before = $params->get('save_icon_location', 'before') == 'before';
+				$submitLabel = $before ? $submitIcon . '&nbsp;' . $submitLabel : $submitLabel . '&nbsp;' . $submitIcon;
 			}
 
 			$form->submitButton = '<button type="' . $button . '" class="btn btn-primary button ' . $submitClass . '" name="Submit">'
@@ -897,9 +897,9 @@ class FabrikViewFormBase extends JViewLegacy
 		if ($this->isMultiPage)
 		{
 			$form->prevButton = '<button type="button" class="btn fabrikPagePrevious button" name="fabrikPagePrevious"><i class="icon-previous"></i>&nbsp;'
-				. JText::_('COM_FABRIK_PREV') . '</button>';
+				. FText::_('COM_FABRIK_PREV') . '</button>';
 			$form->nextButton = '<button type="button" class="btn fabrikPageNext button" name="fabrikPageNext">'
-				. JText::_('COM_FABRIK_NEXT') . '&nbsp;<i class="icon-next"></i></button>';
+				. FText::_('COM_FABRIK_NEXT') . '&nbsp;<i class="icon-next"></i></button>';
 		}
 		else
 		{
@@ -926,6 +926,16 @@ class FabrikViewFormBase extends JViewLegacy
 
 		foreach ($groups as $groupModel)
 		{
+			if ($groupModel->isJoin())
+			{
+				$groupPk = $groupModel->getJoinModel()->getForeignId();
+				$groupRowIds = (array) JArrayHelper::getValue($this->data, $groupPk, array());
+				$groupRowIds = htmlentities(json_encode($groupRowIds));
+
+				// Used to check against in group process(), when deleting removed repeat groups
+				$fields[] = '<input type="hidden" name="fabrik_group_rowids[' . $groupModel->getId() . ']" value="' . $groupRowIds . '" />';
+			}
+
 			$group = $groupModel->getGroup();
 			$c = $groupModel->repeatTotal;
 
@@ -1079,7 +1089,7 @@ class FabrikViewFormBase extends JViewLegacy
 
 			$safeKey = FabrikString::rtrimword($key, "[]");
 
-			// $$$ rob - no dont do below as it will strip out join names join[x][fullname] => join
+			// $$$ rob - no don't do below as it will strip out join names join[x][fullname] => join
 			// $key = preg_replace("/\[(.*)\]/", '', $key);
 			if (!array_key_exists($safeKey, $fields))
 			{
@@ -1113,47 +1123,4 @@ class FabrikViewFormBase extends JViewLegacy
 		$aHiddenFields = array_merge($aHiddenFields, array_values($fields));
 	}
 
-	/**
-	 * Load up the cck view
-	 *
-	 * @return void
-	 */
-
-	protected function cck()
-	{
-		$app = JFactory::getApplication();
-		$input = $app->input;
-
-		if ($input->get('task') === 'cck')
-		{
-			$model = $this->getModel();
-			$params = $model->getParams();
-			$row = $model->getForm();
-			JHTML::script('admincck.js', 'administrator/components/com_fabrik/views/', true);
-			$document = JFactory::getDocument();
-			$opts = new stdClass;
-			$opts->livesite = JURI::base();
-			$opts->ename = $input->get('e_name');
-			$opts->catid = $input->getInt('catid');
-			$opts->section = $input->getInt('section');
-			$opts->formid = $row->id;
-
-			$tmpl = ($row->form_template == '') ? "default" : $row->form_template;
-			$tmpl = $input->get('cck_layout', $tmpl);
-
-			$opts->tmplList = FabrikHelperAdminHTML::templateList('form', 'fabrik_cck_template', $tmpl);
-
-			$views = array();
-			$views[] = JHTML::_('select.option', 'form');
-			$views[] = JHTML::_('select.option', 'details');
-			$selView = $input->get('cck_view');
-			$opts->viewList = JHTML::_('select.radiolist', $views, 'fabrik_cck_view', 'class="inputbox"', 'value', 'text', $selView);
-
-			$opts = json_encode($opts);
-			$script = "window.addEvent('fabrik.loaded', function() {
-			new adminCCK($opts);
-		});";
-			FabrikHelperHTML::addScriptDeclaration($script);
-		}
-	}
 }

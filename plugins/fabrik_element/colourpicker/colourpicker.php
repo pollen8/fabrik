@@ -58,7 +58,7 @@ class PlgFabrik_ElementColourpicker extends PlgFabrik_Element
 	}
 
 	/**
-	 * Manupulates posted form data for insertion into database
+	 * Manipulates posted form data for insertion into database
 	 *
 	 * @param   mixed  $val   This elements posted form data
 	 * @param   array  $data  Posted form data
@@ -94,6 +94,12 @@ class PlgFabrik_ElementColourpicker extends PlgFabrik_Element
 		$id = $this->getHTMLId($repeatCounter);
 		$data = $this->getFormModel()->data;
 		$value = $this->getValue($data, $repeatCounter);
+
+		if ($value == 'none')
+		{
+			$value = '';
+		}
+
 		$vars = explode(",", $value);
 		$vars = array_pad($vars, 3, 0);
 		$opts = $this->getElementJSOptions($repeatCounter);
@@ -105,6 +111,11 @@ class PlgFabrik_ElementColourpicker extends PlgFabrik_Element
 		$c->blue = (int) $vars[2];
 		$opts->colour = $c;
 		$opts->value = $vars;
+		$opts->showPicker = (bool) $params->get('show_picker', 1);
+		$opts->swatchSizeWidth = $params->get('swatch_size_width', '10px');
+		$opts->swatchSizeHeight = $params->get('swatch_size_height', '10px');
+		$opts->swatchWidth = $params->get('swatch_width', '160px');
+
 		$swatch = $params->get('colourpicker-swatch', 'default.js');
 		$swatchFile = JPATH_SITE . '/plugins/fabrik_element/colourpicker/swatches/' . $swatch;
 		$opts->swatch = json_decode(file_get_contents($swatchFile));
@@ -133,7 +144,7 @@ class PlgFabrik_ElementColourpicker extends PlgFabrik_Element
 	/**
 	 * Draws the html form element
 	 *
-	 * @param   array  $data           To preopulate element with
+	 * @param   array  $data           To pre-populate element with
 	 * @param   int    $repeatCounter  Repeat group counter
 	 *
 	 * @return  string	elements html
@@ -144,45 +155,55 @@ class PlgFabrik_ElementColourpicker extends PlgFabrik_Element
 		$name = $this->getHTMLName($repeatCounter);
 		$id = $this->getHTMLId($repeatCounter);
 		$value = $this->getValue($data, $repeatCounter);
+		$params = $this->getParams();
+		$showPicker = (bool) $params->get('show_picker', 1);
 		$str = array();
 		$str[] = '<div class="fabrikSubElementContainer">';
+		$style = 'border:1px solid #EEEEEE;float:left;width:25px;height:25px;background-color:rgb(' . $value . ')';
 		$str[] = '<input class="fabrikinput" type="hidden" name="' . $name . '" id="' . $id
-			. '" /><div class="colourpicker_bgoutput img-rounded " style="float:left;width:25px;height:25px;background-color:rgb(' . $value . ')"></div>';
+			. '" /><div class="colourpicker_bgoutput img-rounded " style="' . $style . '"></div>';
 
 		if ($this->isEditable())
 		{
 			$str[] = '<div class="colourPickerBackground colourpicker-widget fabrikWindow" style="display:none;min-width:350px;min-height:250px;">';
 			$str[] = '<div class="draggable modal-header">';
 			$str[] = '<div class="colourpicker_output img-rounded" style="width:15px;height:15px;float:left;margin-right:10px;"></div> ';
-			$str[] = JText::_('PLG_FABRIK_COLOURPICKER_COLOUR');
+			$str[] = FText::_('PLG_FABRIK_COLOURPICKER_COLOUR');
 
 			if (FabrikWorker::j3())
 			{
-				$str[] = '<a class="pull-right" href="#"><i class="icon-cancel "></i></a>';
+				$str[] = '<a class="pull-right" href="#"><i class="icon-cancel  icon-remove-sign"></i></a>';
 			}
 			else
 			{
 				$str[] = FabrikHelperHTML::image("close.gif", 'form', @$this->tmpl, array());
 			}
 
-			$str[] = '</div>';
-			$str[] = '<div class="itemContentPadder">';
-			$str[] = '<div class="row-fluid">';
-			$str[] = '  <div class="span7">';
-			$str[] = '    <ul class="nav nav-tabs">';
-			$str[] = '      <li class="active"><a href="#' . $id . '-picker" data-toggle="tab">' . JText::_('PLG_FABRIK_COLOURPICKER_PICKER') . '</a></li>';
-			$str[] = '      <li><a href="#' . $id . '-swatch" data-toggle="tab">' . JText::_('PLG_FABRIK_COLOURPICKER_SWATCH') . '</a></li>';
-			$str[] = '    </ul>';
-			$str[] = '    <div class="tab-content">';
-			$str[] = '      <div class="tab-pane active" id="' . $id . '-picker"></div>';
-			$str[] = '      <div class="tab-pane" id="' . $id . '-swatch"></div>';
-			$str[] = '    </div>';
-			$str[] = '  </div>';
-			$str[] = '  <div class="span5 sliders" style="margin-top:50px">';
-			$str[] = '  </div>';
+			if ($showPicker)
+			{
+				$str[] = '</div>';
+				$str[] = '<div class="itemContentPadder">';
+				$str[] = '<div class="row-fluid">';
+				$str[] = '  <div class="span7">';
+				$str[] = '    <ul class="nav nav-tabs">';
+				$str[] = '      <li class="active"><a href="#' . $id . '-picker" data-toggle="tab">' . FText::_('PLG_FABRIK_COLOURPICKER_PICKER') . '</a></li>';
+				$str[] = '      <li><a href="#' . $id . '-swatch" data-toggle="tab">' . FText::_('PLG_FABRIK_COLOURPICKER_SWATCH') . '</a></li>';
+				$str[] = '    </ul>';
+				$str[] = '    <div class="tab-content">';
+				$str[] = '      <div class="tab-pane active" id="' . $id . '-picker"></div>';
+				$str[] = '      <div class="tab-pane" id="' . $id . '-swatch"></div>';
+				$str[] = '    </div>';
+				$str[] = '  </div>';
+				$str[] = '  <div class="span5 sliders" style="margin-top:50px">';
+				$str[] = '  </div>';
+				$str[] = '</div>';
+				$str[] = '</div>';
+			}
+			else
+			{
+				$str[] = '</div><div class="tab-pane" id="' . $id . '-swatch"></div>';
+			}
 
-			$str[] = '</div>';
-			$str[] = '</div>';
 			$str[] = '</div>';
 		}
 

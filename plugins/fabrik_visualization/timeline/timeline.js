@@ -11,7 +11,8 @@ var FbVisTimeline = new Class({
 
 	options: {
 		dateFormat: '%c',
-		orientation: '0'
+		orientation: '0',
+		urlfilters: []
 	},
 
 	initialize : function (json, options) {
@@ -88,7 +89,9 @@ var FbVisTimeline = new Class({
 			setListRefFromRequest: 1,
 			listref: this.options.listRef
 		};
-
+		// Add the filters the the data array.
+		data = Object.merge(data, this.options.urlfilters);
+		
 		if (this.options.admin) {
 			data.task = 'visualization.ajax_getEvents';
 		} else {

@@ -2,31 +2,30 @@
 <form>
 	<fields addfieldpath="/administrator/components/com_fabrik/models/fields" name="params">
 		<fieldset name="plg-validationrule-regex">
-		
+
 			<field name="regex-message"
 				type="text"
 				description="PLG_VALIDATIONRULE_REGEX_ERROR_DESC"
 				label="PLG_VALIDATIONRULE_REGEX_ERROR_LABEL"
 				repeat="true"
 				size="30" />
-				
+
 			<field name="regex-validation_condition"
 				type="fabrikeditor"
 				mode="php"
-				width="400px"
 				description="PLG_VALIDATIONRULE_REGEX_CONDITION_DESC"
 				label="PLG_VALIDATIONRULE_REGEX_CONDITION_LABEL"
 				repeat="true" />
-				
+
 			<field name="regex-expression"
 				type="text"
 				description="PLG_VALIDATIONRULE_REGEX_EXPRESSION_DESC"
 				label="PLG_VALIDATIONRULE_REGEX_EXPRESSION_LABEL"
 				repeat="true"
 				size="50"/>
-				
+
 			<field name="regex-match"
-				type="list" 
+				type="list"
 				default="1"
 				description="PLG_VALIDATIONRULE_REGEX_MATCH_OR_REPLACE_DESC"
 				label="PLG_VALIDATIONRULE_REGEX_MATCH_OR_REPLACE_LABEL"
@@ -34,20 +33,25 @@
 					<option value="0">PLG_VALIDATIONRULE_REGEX_REPLACE</option>
 					<option value="1">PLG_VALIDATIONRULE_REGEX_MATCH</option>
 			</field>
-			
+
 			<field name="regex-replacestring"
 				type="text"
 				description="PLG_VALIDATIONRULE_REGEX_REPLACE_STRING_DESC"
 				label="PLG_VALIDATIONRULE_REGEX_REPLACE_STRING_LABEL"
 				repeat="true" />
-			
+
 			<field name="tip_text"
 				type="textarea"
 				repeat="true"
 				cols="30" rows="3"
 				description="COM_FABRIK_VALIDATION_TIP_TEXT_DESC"
 				label="COM_FABRIK_VALIDATION_TIP_TEXT_LABEL"/>
-				
+
+			<field name="icon"
+				type="field"
+				repeat="true"
+				description="PLG_FABRIK_VALIDATION_ICON_DESC"
+				label="PLG_FABRIK_VALIDATION_ICON_LABEL" />
 		</fieldset>
 	</fields>
 </form>

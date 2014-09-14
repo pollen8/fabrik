@@ -63,7 +63,7 @@ class FileRender
 
 		if (!strstr($file, 'http://') && !strstr($file, 'https://'))
 		{
-			// $$$rob only add in livesite if we dont already have a full url (eg from amazons3)
+			// $$$rob only add in livesite if we don't already have a full url (e.g. from amazons3)
 
 			// Trim / or \ off the start of $file
 			$file = JString::ltrim($file, '/\\');
@@ -86,5 +86,26 @@ class FileRender
 		{
 			$this->output .= "<a class=\"download-archive fabrik-filetype-$ext\" title=\"$file\" href=\"$file\">" . $filename . "</a>";
 		}
+	}
+
+	/**
+	 * Build Carousel HTML
+	 *
+	 * @param   string  $id       Widget HTML id
+	 * @param   array   $data     Images to add to the carousel
+	 * @param   object  $model    Element model
+	 * @param   object  $params   Element params
+	 * @param   object  $thisRow  All rows data
+	 *
+	 * @return  string  HTML
+	 */
+
+	public function renderCarousel($id = 'carousel', $data = array(), $model = null, $params = null, $thisRow = null)
+	{
+		$rendered = '';
+		/**
+		 * @TODO - build it!
+		 */
+		return $rendered;
 	}
 }

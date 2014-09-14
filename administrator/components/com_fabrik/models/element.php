@@ -172,7 +172,7 @@ class FabrikAdminModelElement extends FabModelAdmin
 				{
 					// Prune items that you can't change.
 					unset($pks[$i]);
-					JError::raiseWarning(403, JText::_('JLIB_APPLICATION_ERROR_EDIT_STATE_NOT_PERMITTED'));
+					JError::raiseWarning(403, FText::_('JLIB_APPLICATION_ERROR_EDIT_STATE_NOT_PERMITTED'));
 				}
 			}
 		}
@@ -211,7 +211,7 @@ class FabrikAdminModelElement extends FabModelAdmin
 		$db = FabrikWorker::getDbo(true);
 		$query = $db->getQuery(true);
 		$id = (int) $this->getItem()->id;
-		$query->select('*')->from('#__{package}_jsactions')->where('element_id = ' . $id);
+		$query->select('*')->from('#__{package}_jsactions')->where('element_id = ' . $id)->order('id');
 		$db->setQuery($query);
 		$items = $db->loadObjectList();
 
@@ -236,6 +236,9 @@ class FabrikAdminModelElement extends FabModelAdmin
 		$plugins = (array) FArrayHelper::getNestedValue($item->params, 'validations.plugin', array());
 		$published = (array) FArrayHelper::getNestedValue($item->params, 'validations.plugin_published', array());
 		$icons = (array) FArrayHelper::getNestedValue($item->params, 'validations.show_icon', array());
+		$in = (array) FArrayHelper::getNestedValue($item->params, 'validations.validate_in', array());
+		$on = (array) FArrayHelper::getNestedValue($item->params, 'validations.validation_on', array());
+
 		$return = array();
 
 		for ($i = 0; $i < count($plugins); $i ++)
@@ -244,6 +247,8 @@ class FabrikAdminModelElement extends FabModelAdmin
 			$o->plugin = $plugins[$i];
 			$o->published = JArrayHelper::getValue($published, $i, 1);
 			$o->show_icon = JArrayHelper::getValue($icons, $i, 1);
+			$o->validate_in = JArrayHelper::getValue($in, $i, 'both');
+			$o->validation_on = JArrayHelper::getValue($on, $i, 'both');
 			$return[] = $o;
 		}
 
@@ -268,9 +273,15 @@ class FabrikAdminModelElement extends FabModelAdmin
 		$opts->jsevents = $this->getJsEvents();
 		$opts->id = (int) $item->id;
 		$opts->deleteButton = FabrikWorker::j3() ? '<a class="btn btn-danger"><i class="icon-delete"></i> ' : '<a class="removeButton">';
-		$opts->deleteButton .= JText::_('COM_FABRIK_DELETE') . '</a>';
+		$opts->deleteButton .= FText::_('COM_FABRIK_DELETE') . '</a>';
 		$opts = json_encode($opts);
 		JText::script('COM_FABRIK_PLEASE_SELECT');
+		JText::script('COM_FABRIK_JS_SELECT_EVENT');
+		JText::script('COM_FABRIK_JS_INLINE_JS_CODE');
+		JText::script('COM_FABRIK_JS_INLINE_COMMENT_WARNING');
+		JText::script('COM_FABRIK_JS_WHEN_ELEMENT');
+		JText::script('COM_FABRIK_JS_IS');
+		JText::script('COM_FABRIK_JS_NO_ACTION');
 		$js[] = "window.addEvent('domready', function () {";
 		$js[] = "\tvar opts = $opts;";
 
@@ -308,7 +319,7 @@ class FabrikAdminModelElement extends FabModelAdmin
 
 		if ($plugin == '')
 		{
-			$str = '<div class="alert">' . JText::_('COM_FABRIK_SELECT_A_PLUGIN') . '</div>';
+			$str = '<div class="alert">' . FText::_('COM_FABRIK_SELECT_A_PLUGIN') . '</div>';
 		}
 		else
 		{
@@ -371,24 +382,24 @@ class FabrikAdminModelElement extends FabModelAdmin
 
 			if ($listModel->canAddFields() === false && $listModel->noTable() === false)
 			{
-				$this->setError(JText::_('COM_FABRIK_ERR_CANT_ADD_FIELDS'));
+				$this->setError(FText::_('COM_FABRIK_ERR_CANT_ADD_FIELDS'));
 			}
 
 			if (FabrikWorker::isReserved($data['name']))
 			{
-				$this->setError(JText::_('COM_FABRIK_RESEVED_NAME_USED'));
+				$this->setError(FText::_('COM_FABRIK_RESEVED_NAME_USED'));
 			}
 		}
 		else
 		{
 			if ($listModel->canAlterFields() === false && $nameChanged && $listModel->noTable() === false)
 			{
-				$this->setError(JText::_('COM_FABRIK_ERR_CANT_ALTER_EXISTING_FIELDS'));
+				$this->setError(FText::_('COM_FABRIK_ERR_CANT_ALTER_EXISTING_FIELDS'));
 			}
 
 			if ($nameChanged && FabrikWorker::isReserved($data['name'], false))
 			{
-				$this->setError(JText::_('COM_FABRIK_RESEVED_NAME_USED'));
+				$this->setError(FText::_('COM_FABRIK_RESEVED_NAME_USED'));
 			}
 		}
 
@@ -411,7 +422,7 @@ class FabrikAdminModelElement extends FabModelAdmin
 			{
 				if ($listModel->fieldExists($data['name'], $ignore))
 				{
-					$this->setError(JText::_('COM_FABRIK_ELEMENT_NAME_IN_USE'));
+					$this->setError(FText::_('COM_FABRIK_ELEMENT_NAME_IN_USE'));
 				}
 			}
 			else
@@ -430,7 +441,7 @@ class FabrikAdminModelElement extends FabModelAdmin
 
 				if ($joinListModel->fieldExists($data['name'], $ignore))
 				{
-					$this->setError(JText::_('COM_FABRIK_ELEMENT_NAME_IN_USE'));
+					$this->setError(FText::_('COM_FABRIK_ELEMENT_NAME_IN_USE'));
 				}
 			}
 		}
@@ -474,6 +485,14 @@ class FabrikAdminModelElement extends FabModelAdmin
 
 	public function save($data)
 	{
+		$config = JComponentHelper::getParams('com_fabrik');
+
+		if ($config->get('fbConf_wysiwyg_label', 0) == 0)
+		{
+			// Ensure the data is in the same format as when saved by the wysiwyg element e.g. < becomes &lt;
+			$data['label'] = htmlspecialchars($data['label']);
+		}
+
 		jimport('joomla.utilities.date');
 		$user = JFactory::getUser();
 		$app = JFactory::getApplication();
@@ -642,13 +661,13 @@ class FabrikAdminModelElement extends FabModelAdmin
 
 			if (in_array($tablename, $this->core))
 			{
-				$app->enqueueMessage(JText::_('COM_FABRIK_WARNING_UPDATE_CORE_TABLE'), 'notice');
+				$app->enqueueMessage(FText::_('COM_FABRIK_WARNING_UPDATE_CORE_TABLE'), 'notice');
 			}
 			else
 			{
 				if ($hasprefix)
 				{
-					$app->enqueueMessage(JText::_('COM_FABRIK_WARNING_UPDATE_TABLE_WITH_PREFIX'), 'notice');
+					$app->enqueueMessage(FText::_('COM_FABRIK_WARNING_UPDATE_TABLE_WITH_PREFIX'), 'notice');
 				}
 			}
 
@@ -697,7 +716,7 @@ class FabrikAdminModelElement extends FabModelAdmin
 
 			if (!$elementModel->onSave($data))
 			{
-				$this->setError(JText::_('COM_FABRIK_ERROR_SAVING_ELEMENT_PLUGIN_OPTIONS'));
+				$this->setError(FText::_('COM_FABRIK_ERROR_SAVING_ELEMENT_PLUGIN_OPTIONS'));
 
 				return false;
 			}
@@ -728,6 +747,7 @@ class FabrikAdminModelElement extends FabModelAdmin
 		$list = $elementModel->getListModel()->getTable();
 		$origElid = $row->id;
 		$tmpgroupModel = $elementModel->getGroup();
+		$config = JComponentHelper::getParams('com_fabrik');
 
 		if ($tmpgroupModel->isJoin())
 		{
@@ -750,7 +770,7 @@ class FabrikAdminModelElement extends FabModelAdmin
 		$othertables = $db->loadObjectList('id');
 
 		/**
-		 * $$$ rob 20/02/2012 if you have 2 lists, countres, regions and then you join regions to countries to get a new group "countries - [regions]"
+		 * $$$ rob 20/02/2012 if you have 2 lists, counters, regions and then you join regions to countries to get a new group "countries - [regions]"
 		 * Then add elements to the regions list, the above query wont find the group "countries - [regions]" to add the elements into
 		 */
 
@@ -777,6 +797,12 @@ class FabrikAdminModelElement extends FabModelAdmin
 				$rowcopy->parent_id = $origElid;
 				$rowcopy->group_id = $t->group_id;
 				$rowcopy->name = str_replace('`', '', $rowcopy->name);
+
+				if ($config->get('unpublish_clones', false))
+				{
+					$rowcopy->published = 0;
+				}
+
 				$rowcopy->store();
 
 				// Copy join records
@@ -881,7 +907,7 @@ class FabrikAdminModelElement extends FabModelAdmin
 		// Update table indexes
 		$ftype = $elementModel->getFieldDescription();
 
-		// Int elements cant have a index size attrib
+		// Int elements can't have a index size attrib
 		$size = JString::stristr($ftype, 'int') || $ftype == 'DATETIME' ? '' : '10';
 
 		if ($elementModel->getParams()->get('can_order'))
@@ -916,8 +942,8 @@ class FabrikAdminModelElement extends FabModelAdmin
 	{
 		/**
 		 * $$$ hugh - 2012/04/02
-		 * updated to apply js changes to descendents as well.  NOTE that this means
-		 * all descendents (i.e. children of children, etc), not just direct children.
+		 * updated to apply js changes to descendants as well.  NOTE that this means
+		 * all descendants (i.e. children of children, etc.), not just direct children.
 		 */
 		$app = JFactory::getApplication();
 		$input = $app->input;
@@ -1032,7 +1058,7 @@ class FabrikAdminModelElement extends FabModelAdmin
 			$listModel = $pluginModel->getListModel();
 			$item = $listModel->getTable();
 
-			// $$$ hugh - might be a tableless form!
+			// $$$ hugh - might be a table-less form!
 			if (!empty($item->id))
 			{
 				$db = $listModel->getDb();
@@ -1179,7 +1205,7 @@ class FabrikAdminModelElement extends FabModelAdmin
 	}
 
 	/**
-	 * Gets the elemetns parent element
+	 * Gets the element's parent element
 	 *
 	 * @return  mixed	0 if no parent, object if exists.
 	 */

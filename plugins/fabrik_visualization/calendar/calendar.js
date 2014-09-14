@@ -29,7 +29,10 @@ var fabrikCalendar = new Class({
 		monthday: {'width': 90, 'height': 80},
 		restFilterStart: 'na',
 		j3: false,
-		showFullDetails: false
+		showFullDetails: false,
+		readonly: false,
+		readonlyMonth: false,
+		dateLimits: {min: '', max: ''}
 	},
 
 	initialize: function (el) {
@@ -88,9 +91,17 @@ var fabrikCalendar = new Class({
 		}*/
 	},
 
+	/**
+	 * Make the event div
+	 * 
+	 * @param  object    entry   Event entry
+	 * @param  object    opts    Position opts
+	 * @param  date      aDate   Current date
+	 * @param  DOM node  target  Parent dom node
+	 */
 	_makeEventRelDiv: function (entry, opts, aDate, target)
 	{
-		var x, eventCont, replace, dataContent;
+		var x, eventCont, replace, dataContent, buttons;
 		var label = entry.label;
 		opts.left === opts.left ? opts.left : 0;
 		opts['margin-left'] === opts['margin-left'] ? opts['margin-left'] : 0;
@@ -137,22 +148,27 @@ var fabrikCalendar = new Class({
 			style.width -= 1;
 		}
 		if (this.options.j3) {
-			var buttons = '';
+			buttons = '';
+			
 			if (entry._canDelete) {
 				buttons += this.options.buttons.del;
 			}
-			if (entry._canEdit) {
+			
+			if (entry._canEdit && !this.options.readonly) {
 				buttons += this.options.buttons.edit;
 			}
+			
 			if (entry._canView) {
 				buttons += this.options.buttons.view;
 			}
 			
-			replace = {start: new Date(entry.startdate).format(this.options.timeFormat), end: entry.enddate.format(this.options.timeFormat)};
+			replace = {start: Date.parse(entry.startdate_locale).format(this.options.timeFormat), end: Date.parse(entry.enddate_locale).format(this.options.timeFormat)};
 			dataContent = Joomla.JText._('PLG_VISUALIZATION_CALENDAR_EVENT_START_END').substitute(replace);
+			
 			if (buttons !== '') {
-				dataContent += '<hr /><div class=\"btn-group\" style=\"text-align:center\">' + buttons + '</div>';
+				dataContent += '<hr /><div class=\"btn-group\" style=\"text-align:center;display:block\">' + buttons + '</div>';
 			}
+			
 			eventCont = new Element('a', {
 				'class': 'fabrikEvent label ' + entry.status,
 				'id': id,
@@ -172,7 +188,11 @@ var fabrikCalendar = new Class({
 					jQuery(eventCont).popover();
 					eventCont.addEvent('click', function (e) {
 						this.popOver = eventCont;
-						
+					}.bind(this));
+					
+					// Ensure new form doesn't open when we double click on the event.
+					eventCont.addEvent('dblclick', function (e) {
+						e.stop();
 					}.bind(this));
 				}
 			}
@@ -531,7 +551,9 @@ var fabrikCalendar = new Class({
 			this.entries.each(function (entry) {
 
 				// Between (end date present) or same (no end date)
-				if ((entry.enddate !== '' && counterDate.isDateBetween(entry.startdate, entry.enddate)) || (entry.enddate === '' && entry.startdate.isSameDay(counterDate))) {
+				var startdate = new Date(entry.startdate_locale);
+				var enddate = new Date(entry.enddate_locale);
+				if ((entry.enddate !== '' && counterDate.isDateBetween(startdate, enddate)) || (enddate === '' && startdate.isSameDay(counterDate))) {
 					var opts = this._buildEventOpts({entry: entry, curdate: counterDate, divclass: '.weekView', 'tdOffset': i});
 					// Work out the left offset for the event - stops concurrent events overlapping each other
 					for (var h = opts.startHour; h <= opts.endHour; h ++) {
@@ -550,8 +572,11 @@ var fabrikCalendar = new Class({
 			// Add event divs
 			this.entries.each(function (entry) {
 
+				var startdate = new Date(entry.startdate_locale);
+				var enddate = new Date(entry.enddate_locale);
+				
 				// Between (end date present) or same (no end date)
-				if ((entry.enddate !== '' && counterDate.isDateBetween(entry.startdate, entry.enddate)) || (entry.enddate === '' && entry.startdate.isSameDay(counterDate))) {
+				if ((entry.enddate !== '' && counterDate.isDateBetween(startdate, enddate)) || (enddate === '' && startdate.isSameDay(counterDate))) {
 					var opts = this._buildEventOpts({entry: entry, curdate: counterDate, divclass: '.weekView', 'tdOffset': i});
 
 					// Work out the left offset for the event - stops concurrent events overlapping each other
@@ -564,15 +589,21 @@ var fabrikCalendar = new Class({
 							thisOffset = offsets[h];
 						}
 					}
-					td = hourTds[opts.startHour];
+					var startIndex = Math.max(0, opts.startHour - this.options.open);
+					td = hourTds[startIndex];
 
 					// Work out event div width - taking into account 1px margin between each event
-					eventWidth = Math.floor((td.getSize().x - gridSize) / (gridSize + 1));
+					eventWidth = Math.floor((td.getSize().x - gridSize) / gridSize);
 					opts.width = eventWidth + 'px';
 					opts['margin-left'] = thisOffset * (eventWidth + 1);
 					var div = this._makeEventRelDiv(entry, opts, null, td);
+					div.addClass('week-event');
 					div.inject(document.body);
-					div.store('opts', opts);
+					var padding = div.getStyle('padding-left').toInt() + div.getStyle('padding-right').toInt();
+					div.setStyle('width', div.getStyle('width').toInt() - padding + 'px');
+					div.store('opts', opts);					
+					div.store('relativeTo', td);
+					div.store('gridSize', gridSize);
 
 					var calEvents = td.retrieve('calevents', []);
 					calEvents.push(div);
@@ -582,7 +613,6 @@ var fabrikCalendar = new Class({
 			}.bind(this));
 			counterDate.setTime(counterDate.getTime() + this.DAY);
 		}
-
 	},
 
 	_buildEventOpts: function (opts)
@@ -590,7 +620,11 @@ var fabrikCalendar = new Class({
 		var counterDate = opts.curdate;
 		var entry = new CloneObject(opts.entry, true, ['enddate', 'startdate']);//for day view to avoid dups when scrolling through days //dont clone the date objs for ie
 		var trs = this.el.getElements(opts.divclass + ' tr');
-		var hour = (entry.startdate.isSameDay(counterDate)) ? entry.startdate.getHours() - this.options.open : 0;
+		
+		var startdate = new Date(entry.startdate_locale);
+		var enddate = new Date(entry.enddate_locale);
+		
+		var hour = (startdate.isSameDay(counterDate)) ? startdate.getHours() - this.options.open : 0;
 		hour = hour < 0 ?  0 : hour;
 		var i = opts.tdOffset;
 
@@ -606,19 +640,19 @@ var fabrikCalendar = new Class({
 
 		var left = (colwidth * i);
 		left += this.el.getElement(opts.divclass).getElement('td').getSize().x;
-		var duration = Math.ceil(entry.enddate.getHours() - entry.startdate.getHours());
+		var duration = Math.ceil(enddate.getHours() - startdate.getHours());
 		if (duration === 0) {
 			duration = 1;
 		}
 
-		if (entry.startdate.getDay() !== entry.enddate.getDay()) {
+		if (startdate.getDay() !== enddate.getDay()) {
 			duration = this.options.open !== 0 || this.options.close !== 24 ? this.options.close - this.options.open + 1 : 24;
-			if (entry.startdate.isSameDay(counterDate)) {
-				duration = this.options.open !== 0 || this.options.close !== 24 ? this.options.close - this.options.open + 1 : 24 - entry.startdate.getHours();
+			if (startdate.isSameDay(counterDate)) {
+				duration = this.options.open !== 0 || this.options.close !== 24 ? this.options.close - this.options.open + 1 : 24 - startdate.getHours();
 			} else {
-				entry.startdate.setHours(0);
-				if (entry.enddate.isSameDay(counterDate)) {
-					duration = this.options.open !== 0 || this.options.close !== 24 ? this.options.close - this.options.open : entry.enddate.getHours();
+				startdate.setHours(0);
+				if (enddate.isSameDay(counterDate)) {
+					duration = this.options.open !== 0 || this.options.close !== 24 ? this.options.close - this.options.open : enddate.getHours();
 				}
 			}
 		}
@@ -626,12 +660,12 @@ var fabrikCalendar = new Class({
 		top = top + (rowheight * hour);
 		var height = (rowheight * duration);
 
-		if (entry.enddate.isSameDay(counterDate)) {
-			height += (entry.enddate.getMinutes() / 60 * rowheight);
+		if (enddate.isSameDay(counterDate)) {
+			height += (enddate.getMinutes() / 60 * rowheight);
 		}
-		if (entry.startdate.isSameDay(counterDate)) {
-			top += (entry.startdate.getMinutes() / 60 * rowheight);
-			height -= (entry.startdate.getMinutes() / 60 * rowheight);
+		if (startdate.isSameDay(counterDate)) {
+			top += (startdate.getMinutes() / 60 * rowheight);
+			height -= (startdate.getMinutes() / 60 * rowheight);
 		}
 
 		var existing = td.getElements('.fabrikEvent');
@@ -644,11 +678,11 @@ var fabrikCalendar = new Class({
 		opts['max-width'] = width + 'px';
 		opts.left = left;
 		opts.top = top;
-		opts.color = this._getColor(this.options.colors.headingColor, entry.startdate);
-		opts.startHour = entry.startdate.getHours();
+		opts.color = this._getColor(this.options.colors.headingColor, startdate);
+		opts.startHour = startdate.getHours();
 		opts.endHour = opts.startHour + duration;
-		opts.startMin = entry.startdate.getMinutes();
-		opts.endMin = entry.enddate.getMinutes();
+		opts.startMin = startdate.getMinutes();
+		opts.endMin = enddate.getMinutes();
 		entry.startdate.setHours(orighours);
 		return opts;
 	},
@@ -660,24 +694,32 @@ var fabrikCalendar = new Class({
 	 */
 	removeDayEvents: function () {
 		var firstDate = new Date();
+		
+		var tzOffset = new Date().get('gmtoffset').replace(/0+$/, '').toInt();
+		
 		var hourTds = [];
 		firstDate.setTime(this.date.valueOf());
 		firstDate.setHours(0, 0);
 		var trs = this.el.getElements('.dayView tr');
+		
 		for (var i = 1; i < trs.length; i++) {
-			firstDate.setHours(i - 1, 0);
+			firstDate.setHours(i - 1 + tzOffset, 0);
 			var td = trs[i].getElements('td')[1];
+			
 			if (typeOf(td) !== 'null') {
 				hourTds.push(td);
 				td.className = '';
 				td.addClass('day');
+				
 				if (typeOf(td.retrieve('calevents')) !== 'null') {
 					td.retrieve('calevents').each(function (evnt) {
 						evnt.destroy();
 					});
 				}
+				
 				td.eliminate('calevents');
 				td.addClass(firstDate.getTime() - this.HOUR);
+				td.set('data-date', firstDate);
 			}
 		}
 		return hourTds;
@@ -688,8 +730,8 @@ var fabrikCalendar = new Class({
 	 */
 	showDay: function () {
 		var trs = this.el.getElements('.dayView tr'), h;
-		// Put date in top row
 
+		// Put date in top row
 		thbg = trs[0].childNodes[1].getStyle('background-color');
 		ht = this.options.days[this.date.getDay()];
 		h = new Element('div', {'styles': {'background-color': this._getColor(thbg, this.date)}}).set('text', ht);
@@ -726,10 +768,12 @@ var fabrikCalendar = new Class({
 			// Between (end date present) or same (no end date)
 			if ((entry.enddate !== '' && this.date.isDateBetween(entry.startdate, entry.enddate)) || (entry.enddate === '' && entry.startdate.isSameDay(firstDate))) {
 				var opts = this._buildEventOpts({entry: entry, curdate: this.date, divclass: '.dayView', 'tdOffset': 0});
-				td = hourTds[opts.startHour];
+				
+				var startIndex = Math.max(0, opts.startHour - this.options.open);
+				td = hourTds[startIndex];
 
 				// Work out event div width - taking into account 1px margin between each event
-				eventWidth = Math.floor((td.getSize().x - gridSize) / (gridSize + 1));
+				eventWidth = Math.floor((td.getSize().x - gridSize) / gridSize);
 				opts.width = eventWidth + 'px';
 
 				// Work out the left offset for the event - stops concurrent events overlapping each other
@@ -744,7 +788,13 @@ var fabrikCalendar = new Class({
 				}
 				opts['margin-left'] = maxOffset * (eventWidth + 1);
 				var div = this._makeEventRelDiv(entry, opts, null, td);
+				div.addClass('day-event');
+				div.store('relativeTo', td);
+				div.store('gridSize', gridSize);
 				div.inject(document.body);
+				
+				var padding = div.getStyle('padding-left').toInt() + div.getStyle('padding-right').toInt();
+				div.setStyle('width', div.getStyle('width').toInt() - padding + 'px');
 				div.store('opts', opts);
 
 				var calEvents = td.retrieve('calevents', []);
@@ -776,6 +826,9 @@ var fabrikCalendar = new Class({
 		}
 
 		this.options.viewType = 'monthView';
+
+		this.setAddButtonState();
+		
 		if (!this.mothView) {
 			tbody = new Element('tbody', {'class': 'viewContainerTBody'});
 			tr = new Element('tr');
@@ -838,8 +891,10 @@ var fabrikCalendar = new Class({
 							this.addClass('selectedDay');
 						},
 						'dblclick': function (e) {
-								this.openAddEvent(e);
-							}.bind(this)
+							if (this.options.readonlyMonth === false) {
+								this.openAddEvent(e, 'month');
+							}
+						}.bind(this)
 					}
 					}));
 					firstDate.setTime(firstDate.getTime() + this.DAY);
@@ -859,37 +914,80 @@ var fabrikCalendar = new Class({
 		}
 		this.showView('monthView');
 	},
+	
+	/**
+	 * Toggle the add event visibily button based on the view type and whether that view allows for additions
+	 */
+	setAddButtonState: function () {
+		var addButton = this.el.getElement('.addEventButton');
+		if (typeOf(addButton) !== 'null') {
+			if (this.options.viewType === 'monthView' && this.options.readonlyMonth === true) {
+				addButton.hide();
+			} else {
+				addButton.show();
+			}
+		}
+	},
 
 	_getTimeFromClassName: function (n) {
 		return n.replace("today", "").replace("selectedDay", "").replace("day", "").replace("otherMonth", "").trim();
 	},
 
-	openAddEvent: function (e)
+	/**
+	 * Open the add event form.
+	 * 
+	 * @param e    Event
+	 * @param view The view which triggered the opening
+	 */
+	openAddEvent: function (e, view)
 	{
-		var rawd;
+		var rawd, day, hour, min, m, o, now, thisDay;
+		
 		if (this.options.canAdd === false) {
 			return;
 		}
+		
+		if (this.options.viewType === 'monthView' && this.options.readonlyMonth === true) {
+			return;
+		}
+		
 		e.stop();
+		
 		if (e.target.className === 'addEventButton') {
-			var now = new Date();
+			now = new Date();
 			rawd = now.getTime();
 		} else {
 			rawd = this._getTimeFromClassName(e.target.className);
 		}
+		
+		if (!this.dateInLimits(rawd)) {
+			return;
+		}
+		
+		if (e.target.get('data-date')) {
+			console.log('data-date = ', e.target.get('data-date'));
+			
+		}
 		this.date.setTime(rawd);
 		d = 0;
 		if (!isNaN(rawd) && rawd !== '') {
-			var thisDay = new Date();
+			thisDay = new Date();
 			thisDay.setTime(rawd);
-			var m = thisDay.getMonth() + 1;
+			m = thisDay.getMonth() + 1;
 			m = (m < 10) ? "0" + m : m;
-			var day = thisDay.getDate();
+			day = thisDay.getDate();
 			day = (day <  10) ? "0" + day : day;
-			var hour = thisDay.getHours();
-			hour = (hour <  10) ? "0" + hour : hour;
-			var min = thisDay.getMinutes();
-			min = (min <  10) ? "0" + min : min;
+			
+			if (view !== 'month') {
+				hour = thisDay.getHours();
+				hour = (hour <  10) ? "0" + hour : hour;
+				min = thisDay.getMinutes();
+				min = (min <  10) ? "0" + min : min;
+			} else {
+				hour = '00';
+				min = '00';
+			}
+			
 			this.doubleclickdate = thisDay.getFullYear() + "-" + m + "-" + day + ' ' + hour + ':' + min + ':00';
 			d = '&jos_fabrik_calendar_events___start_date=' + this.doubleclickdate;
 		}
@@ -897,13 +995,36 @@ var fabrikCalendar = new Class({
 		if (this.options.eventLists.length > 1) {
 			this.openChooseEventTypeForm(this.doubleclickdate, rawd);
 		} else {
-			var o = {};
+			o = {};
 			o.rowid = '';
 			o.id = '';
 			d = '&' + this.options.eventLists[0].startdate_element + '=' + this.doubleclickdate;
 			o.listid = this.options.eventLists[0].value;
 			this.addEvForm(o);
 		}
+	},
+	
+	dateInLimits: function (time) {
+		var d = new Date();
+		d.setTime(time);
+		
+		if (this.options.dateLimits.min !== '') {
+			var min = new Date(this.options.dateLimits.min);
+			if (d < min) {
+				alert(Joomla.JText._('PLG_VISUALIZATION_CALENDAR_DATE_ADD_TOO_EARLY'));
+				return false;
+			}
+		}
+		
+		if (this.options.dateLimits.max !== '') {
+			var max = new Date(this.options.dateLimits.max);
+			if (d > max) {
+				alert(Joomla.JText._('PLG_VISUALIZATION_CALENDAR_DATE_ADD_TOO_LATE'));
+				return false;
+			}
+		}
+		
+		return true;
 	},
 
 	openChooseEventTypeForm: function (d, rawd)
@@ -922,30 +1043,38 @@ var fabrikCalendar = new Class({
 		Fabrik.getWindow(this.windowopts);
 	},
 
+	/**
+	 * Create window for add event form
+	 * 
+	 * @param  object  o
+	 */
 	addEvForm: function (o)
 	{
 		if (typeof(jQuery) !== 'undefined') {
 			jQuery(this.popOver).popover('hide');
 		}
+		
 		this.windowopts.id = 'addeventwin';
 		var url = 'index.php?option=com_fabrik&controller=visualization.calendar&view=visualization&task=addEvForm&format=raw&listid=' + o.listid + '&rowid=' + o.rowid;
 		url += '&jos_fabrik_calendar_events___visualization_id=' + this.options.calendarId;
 		url += '&visualizationid=' + this.options.calendarId;
+		
 		if (o.nextView) {
 			url += '&nextview=' + o.nextView;
 		}
+		
 		url += '&fabrik_window_id=' + this.windowopts.id;
 
 		if (typeof(this.doubleclickdate) !== 'undefined') {
 			url += '&start_date=' + this.doubleclickdate;
 		}
+		
 		this.windowopts.type = 'window';
 		this.windowopts.contentURL = url;
 		var f = this.options.filters;
 	
 		this.windowopts.onContentLoaded = function (win)
 		{
-			//var myfx = new Fx.Scroll(window).toElement('addeventwin');
 			f.each(function (o) {
 				if (document.id(o.key)) {
 					switch (document.id(o.key).get('tag')) {
@@ -960,6 +1089,7 @@ var fabrikCalendar = new Class({
 			});
 			win.fitToContent(false);
 		}.bind(this);
+		
 		Fabrik.getWindow(this.windowopts);
 	},
 
@@ -986,6 +1116,8 @@ var fabrikCalendar = new Class({
 		var tr, d;
 		this.fadePopWin(0);
 		this.options.viewType = 'dayView';
+		this.setAddButtonState();
+		
 		if (!this.dayView) {
 			tbody = new Element('tbody');
 			tr = new Element('tr');
@@ -1007,7 +1139,7 @@ var fabrikCalendar = new Class({
 			tbody.appendChild(tr);
 
 			this.options.open = this.options.open < 0 ?  0 : this.options.open;
-			(this.options.close > 24 || this.options.close < this.options.open) ? this.options.close = 24 : this.options.close;
+			this.options.close = (this.options.close > 24 || this.options.close < this.options.open) ? 24 : this.options.close;
 
 			for (i = this.options.open; i < (this.options.close + 1); i++) {
 				tr = new Element('tr');
@@ -1038,7 +1170,7 @@ var fabrikCalendar = new Class({
 								});
 							},
 							'dblclick': function (e) {
-								this.openAddEvent(e);
+								this.openAddEvent(e, 'day');
 							}.bind(this)
 						}
 						}));
@@ -1060,7 +1192,6 @@ var fabrikCalendar = new Class({
 			);
 			this.el.getElement('.viewContainer').appendChild(this.dayView);
 		}
-		//this.showDay();
 		this.showView('dayView');
 	},
 
@@ -1103,11 +1234,9 @@ var fabrikCalendar = new Class({
 	renderWeekView: function () {
 		var i, d, tr, tbody, we;
 		this.fadePopWin(0);
-		// For some reason, using '===' does not work, so une '==' instead !
-		// $$$ rob : Javascript MUST be strongly typed to pass JSLint in our build scripts
-		// As show weekends is a boolean I have specically cased it to such in the php code
 		we = this.options.showweekends === false ? 6 : 8;
 		this.options.viewType = 'weekView';
+		this.setAddButtonState();
 		if (!this.weekView) {
 			tbody = new Element('tbody');
 			tr = new Element('tr');
@@ -1152,7 +1281,7 @@ var fabrikCalendar = new Class({
 				for (d = 0; d < we; d++) {
 					if (d === 0) {
 						var hour = (i.length === 1) ? i + '0:00' : i + ':00';
-						tr.adopt(new Element('td', {'class': 'day'}).appendText(hour));
+						tr.adopt(new Element('td', {'class': 'day'}).set('text', hour));
 					} else {
 						tr.adopt(new Element('td', {'class': 'day',
 						'styles': {
@@ -1179,7 +1308,7 @@ var fabrikCalendar = new Class({
 								}
 							},
 							'dblclick': function (e) {
-								this.openAddEvent(e);
+								this.openAddEvent(e, 'week');
 							}.bind(this)
 						}
 						}));
@@ -1205,8 +1334,39 @@ var fabrikCalendar = new Class({
 		this.showView('weekView');
 	},
 
+	repositionEvents: function () {
+		document.getElements('a.week-event, a.day-event').each(function (a) {
+				var td = a.retrieve('relativeTo');
+				a.position({'relativeTo': td, 'position': 'upperLeft'});
+				var gridSize = a.retrieve('gridSize');
+				var eventWidth = Math.floor((td.getSize().x - gridSize) / gridSize);
+				var padding = a.getStyle('padding-left').toInt() + a.getStyle('padding-right').toInt();
+				eventWidth = eventWidth - padding;
+				a.setStyle('width', eventWidth + 'px');
+			});
+	},
+
 	render: function (options) {
 		this.setOptions(options);
+		
+		// Resize week & day events when the window re-sizes
+		window.addEvent('resize', function () {
+			this.repositionEvents();
+		}.bind(this));
+
+		// Get the container height
+		this.y = this.el.getPosition().y;
+		var refreshDocHeight = function () {
+			var y = this.el.getPosition().y;
+			if (y !== this.y) {
+				this.y = y;
+				this.repositionEvents();
+			}
+		}.bind(this);
+
+		// update the height every 200ms
+		window.setInterval(refreshDocHeight, 200);
+
 		document.addEvent('click:relay(button[data-task=deleteCalEvent], a[data-task=deleteCalEvent])', function (event, target) {
 			event.preventDefault();
 			this.deleteEntry();

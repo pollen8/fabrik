@@ -21,15 +21,35 @@ var FbTextarea = new Class({
 			this.getTextContainer();
 			if (typeof tinyMCE !== 'undefined') {
 				if (this.container !== false) {
+					clearInterval(p);
 					this.watchTextContainer();
-					clearInterval(this.periodFn);
 				}
 			} else {
+				clearInterval(p);
 				this.watchTextContainer();
-				clearInterval(this.periodFn);
 			}
 		};
-		this.periodFn.periodical(200, this);
+		
+		var p = this.periodFn.periodical(200, this);
+		
+		Fabrik.addEvent('fabrik.form.page.change.end', function (form) {
+			this.refreshEditor();
+		}.bind(this));
+		
+		Fabrik.addEvent('fabrik.form.elements.added', function (form) {
+			if (form.isMultiPage()) {
+				this.refreshEditor();
+			}
+		}.bind(this));
+		
+		Fabrik.addEvent('fabrik.form.submit.start', function (form) {
+			if (this.options.wysiwyg && form.options.ajax) {
+				if (typeof tinyMCE !== 'undefined') {
+					tinyMCE.triggerSave();
+				}
+			}
+		}.bind(this));
+		
 	},
 
 	unclonableProperties: function ()
@@ -76,18 +96,78 @@ var FbTextarea = new Class({
 				this.warningFX = new Fx.Morph(element, {duration: 1000, transition: Fx.Transitions.Quart.easeOut});
 				this.origCol = element.getStyle('color');
 				if (this.options.wysiwyg && typeof(tinymce) !== 'undefined') {
-					tinymce.dom.Event.add(this.container, 'keyup', function (e) {
-						this.informKeyPress(e);
-					}.bind(this));
+					
+					// Joomla 3.2 + usess tinyMce 4
+					if (tinymce.majorVersion >= 4) {
+						tinyMCE.get(this.element.id).on('keyup', function (e) {
+							this.informKeyPress(e);
+						}.bind(this));
+						
+						tinyMCE.get(this.element.id).on('focus', function (e) {
+							var c = this.element.getParent('.fabrikElementContainer');
+							c.getElement('span.badge').addClass('badge-info');
+							c.getElement('.fabrik_characters_left').removeClass('muted');
+						}.bind(this));
+						
+						tinyMCE.get(this.element.id).on('blur', function (e) {
+							var c = this.element.getParent('.fabrikElementContainer');
+							c.getElement('span.badge').removeClass('badge-info');
+							c.getElement('.fabrik_characters_left').addClass('muted');
+						}.bind(this));
+						
+						tinyMCE.get(this.element.id).on('blur', function (e) {
+							this.forwardEvent('blur');
+						}.bind(this));
+						
+					} else {
+						tinymce.dom.Event.add(this.container, 'keyup', function (e) {
+							this.informKeyPress(e);
+						}.bind(this));
+						tinymce.dom.Event.add(this.container, 'blur', function (e) {
+							this.forwardEvent('blur');
+						}.bind(this));
+					}
 				} else {
 					if (typeOf(this.container) !== 'null') {
 						this.container.addEvent('keydown', function (e) {
 							this.informKeyPress(e);
 						}.bind(this));
+						
+						this.container.addEvent('blur', function (e) {
+							this.blurCharsLeft(e);
+						}.bind(this));
+						
+						this.container.addEvent('focus', function (e) {
+							this.focusCharsLeft(e);
+						}.bind(this));
 					}
 				}
 			}
 		}
+	},
+	
+	/**
+	 * Forward an event from tinyMce to the text editor - useful for triggering ajax validations
+	 * 
+	 * @param   string  event  Event name
+	 */
+	forwardEvent: function (event) {
+		var textarea = tinyMCE.activeEditor.getElement(),
+		c = this.getContent();
+		textarea.set('value', c);
+		textarea.fireEvent('blur', new Event.Mock(textarea, event));
+	},
+	
+	focusCharsLeft: function () {
+		var c = this.element.getParent('.fabrikElementContainer');
+		c.getElement('span.badge').addClass('badge-info');
+		c.getElement('.fabrik_characters_left').removeClass('muted');
+	},
+	
+	blurCharsLeft: function () {
+		var c = this.element.getParent('.fabrikElementContainer');
+		c.getElement('span.badge').removeClass('badge-info');
+		c.getElement('.fabrik_characters_left').addClass('muted');
 	},
 
 	/**
@@ -165,11 +245,28 @@ var FbTextarea = new Class({
 			return this.container.value;
 		}
 	},
+	
+	/**
+	 * On ajax loaded page need to re-load the editor
+	 * For Chrome
+	 */
+	refreshEditor: function () {
+		if (this.options.wysiwyg) {
+			if (typeof WFEditor !== 'undefined') {
+				WFEditor.init(WFEditor.settings);
+			} else if (typeof tinymce !== 'undefined') {
+				tinyMCE.init(tinymce.settings);
+			}
+			// Need to re-observe the editor
+			this.watchTextContainer();
+		}
+	},	
 
 	setContent: function (c)
 	{
 		if (this.options.wysiwyg) {
-			var r = tinyMCE.getInstanceById(this.element.id).setContent(c);
+			var ti = tinyMCE.majorVersion.toInt() >= 4 ? tinyMCE.get(this.element.id) : tinyMCE.getInstanceById(this.element.id);
+			var r = ti.setContent(c);
 			this.moveCursorToEnd();
 			return r;
 		} else {
@@ -217,10 +314,10 @@ var FbTextarea = new Class({
 	 */
 
 	itemsLeft: function () {
-		var i = 0;
-		var content = this.getContent();
+		var i = 0,
+		content = this.getContent();
 		if (this.options.maxType === 'word') {
-			i = this.options.max - (content.split(' ').length) + 1;
+			i = this.options.max - content.split(' ').length;
 		} else {
 			i = this.options.max - (content.length + 1);
 		}
@@ -235,8 +332,8 @@ var FbTextarea = new Class({
 	 */
 
 	limitContent: function () {
-		var c;
-		var content = this.getContent();
+		var c,
+		content = this.getContent();
 		if (this.options.maxType === 'word') {
 			c = content.split(' ').splice(0, this.options.max);
 			c = c.join(' ');

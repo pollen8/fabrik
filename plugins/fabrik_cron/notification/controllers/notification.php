@@ -28,7 +28,7 @@ class FabrikControllerCroncronnotification extends JController
 	/**
 	 * Display the view
 	 *
-	 * @param   boolean  $cachable   If true, the view output will be cached
+	 * @param   boolean  $cachable   If true, the view output will be cached - NOTE not actually used to control caching!!!
 	 * @param   array    $urlparams  An array of safe url parameters and their variable types, for valid values see {@link JFilterInput::clean()}.
 	 *
 	 * @return  JController  A JController object to support chaining.
@@ -66,6 +66,6 @@ class FabrikControllerCroncronnotification extends JController
 	{
 		$model = $this->getModel('cronnotification');
 		$model->delete();
-		$this->setRedirect('index.php?option=com_fabrikn&task=cron.cronnotification', JText::_('NOTIFICATIONS_REMOVED'));
+		$this->setRedirect('index.php?option=com_fabrikn&task=cron.cronnotification', FText::_('NOTIFICATIONS_REMOVED'));
 	}
 }

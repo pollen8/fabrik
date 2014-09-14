@@ -1,7 +1,7 @@
 <?php
 /**
  * Required System plugin if using Fabrik
- * Enbles Fabrik to override some J classes
+ * Enables Fabrik to override some J classes
  *
  * @package     Joomla.Plugin
  * @subpackage  System
@@ -28,7 +28,7 @@ class PlgSystemFabrik extends JPlugin
 	/**
 	 * Constructor
 	 *
-	 * For php4 compatability we must not use the __constructor as a constructor for plugins
+	 * For php4 compatibility we must not use the __constructor as a constructor for plugins
 	 * because func_get_args ( void ) returns a copy of all passed arguments NOT references.
 	 * This causes problems with cross-referencing necessary for the observer design pattern.
 	 *
@@ -42,12 +42,13 @@ class PlgSystemFabrik extends JPlugin
 	{
 		/**
 		 * Moved these from defines.php to here, to fix an issue with Kunena.  Kunena imports the J!
-		 * JForm class in their system plugin, in the class constructure.  So if we wait till onAfterInitialize
+		 * JForm class in their system plugin, in the class constructor  So if we wait till onAfterInitialize
 		 * to do this, we blow up.  So, import them here, and make sure the Fabrik plugin has a lower ordering
 		 * than Kunena's.  We might want to set our default to -1.
 		 */
 		$app = JFactory::getApplication();
 		$version = new JVersion;
+		$base = 'components.com_fabrik.classes.' . str_replace('.', '', $version->RELEASE);
 
 		// Test if Kunena is loaded - if so notify admins
 		if (class_exists('KunenaAccess'))
@@ -61,9 +62,16 @@ class PlgSystemFabrik extends JPlugin
 		}
 		else
 		{
-			$base = 'components.com_fabrik.classes.' . str_replace('.', '', $version->RELEASE);
 			JLoader::import($base . '.field', JPATH_SITE . '/administrator', 'administrator.');
 			JLoader::import($base . '.form', JPATH_SITE . '/administrator', 'administrator.');
+		}
+
+		if (version_compare($version->RELEASE, '3.1', '<='))
+		{
+			JLoader::import($base . '.layout.layout', JPATH_SITE . '/administrator', 'administrator.');
+			JLoader::import($base . '.layout.base', JPATH_SITE . '/administrator', 'administrator.');
+			JLoader::import($base . '.layout.file', JPATH_SITE . '/administrator', 'administrator.');
+			JLoader::import($base . '.layout.helper', JPATH_SITE . '/administrator', 'administrator.');
 		}
 
 		parent::__construct($subject, $config);
@@ -78,8 +86,9 @@ class PlgSystemFabrik extends JPlugin
 	public static function js()
 	{
 		$config = JFactory::getConfig();
+		$app = JFactory::getApplication();
 
-		if ($config->get('caching') == 0)
+		if ($config->get('caching') == 0 || $app->isAdmin())
 		{
 			$script = self::buildJs();
 		}
@@ -88,6 +97,14 @@ class PlgSystemFabrik extends JPlugin
 			$uri = JURI::getInstance();
 			$session = JFactory::getSession();
 			$uri = $uri->toString(array('path', 'query'));
+
+			/*
+			if ($_SERVER['REQUEST_METHOD'] === 'POST')
+			{
+				$uri .= serialize($_POST);
+			}
+			*/
+
 			$file = md5($uri) . '.js';
 			$folder = JPATH_SITE . '/cache/com_fabrik/js/';
 
@@ -137,15 +154,15 @@ class PlgSystemFabrik extends JPlugin
 	public static function buildJs()
 	{
 		$session = JFactory::getSession();
-		$shim = $session->get('fabrik.js.config', array());
-		$shim = implode("\n", $shim);
+		$config = $session->get('fabrik.js.config', array());
+		$config = implode("\n", $config);
 
 		$js = $session->get('fabrik.js.scripts', array());
 		$js = implode("\n", $js);
 
-		if ($shim . $js !== '')
+		if ($config . $js !== '')
 		{
-			$script = '<script type="text/javascript">' . "\n" . $shim . "\n" . $js . "\n" . '</script>';
+			$script = '<script type="text/javascript">' . "\n" . $config . "\n" . $js . "\n" . '</script>';
 		}
 		else
 		{
@@ -163,6 +180,12 @@ class PlgSystemFabrik extends JPlugin
 
 	public function onAfterRender()
 	{
+		// Could be component was unistalled but not the plugin
+		if (!class_exists('FabrikString'))
+		{
+			return;
+		}
+
 		$script = self::js();
 		$content = JResponse::getBody();
 
@@ -172,7 +195,7 @@ class PlgSystemFabrik extends JPlugin
 		}
 		else
 		{
-			$content = str_ireplace('</body>', $script . '</body>', $content);
+			$content = FabrikString::replaceLast('</body>', $script . '</body>', $content);
 		}
 
 		JResponse::setBody($content);
@@ -211,7 +234,14 @@ class PlgSystemFabrik extends JPlugin
 
 		if ($bigSelects)
 		{
-			$db->setQuery("SET OPTION SQL_BIG_SELECTS=1");
+			if (version_compare($db->getVersion(), '5.1.0', '>='))
+			{
+				$db->setQuery("SET SQL_BIG_SELECTS=1, GROUP_CONCAT_MAX_LEN=10240");
+			}
+			else
+			{
+				$db->setQuery("SET OPTION SQL_BIG_SELECTS=1, GROUP_CONCAT_MAX_LEN=10240");
+			}
 			$db->execute();
 		}
 	}
@@ -225,7 +255,7 @@ class PlgSystemFabrik extends JPlugin
 	 *
 	 * @param   string     $text      Target search string
 	 * @param   JRegistry  $params    Search plugin params
-	 * @param   string     $phrase    Mathcing option, exact|any|all
+	 * @param   string     $phrase    Matching option, exact|any|all
 	 * @param   string     $ordering  Option, newest|oldest|popular|alpha|category
 	 *
 	 * @return  array
@@ -285,6 +315,9 @@ class PlgSystemFabrik extends JPlugin
 				break;
 		}
 
+		// Set heading prefix
+		$headingPrefix = $params->get('include_list_title', true);
+
 		// Get all tables with search on
 		$query = $db->getQuery(true);
 		$query->select('id')->from('#__{package}_lists')->where('published = 1');
@@ -298,7 +331,7 @@ class PlgSystemFabrik extends JPlugin
 		// $$$ rob remove previous search results?
 		$input->set('resetfilters', 1);
 
-		// Ensure search doesnt go over memory limits
+		// Ensure search doesn't go over memory limits
 		$memory = ini_get('memory_limit');
 		$memory = (int) FabrikString::rtrimword($memory, 'M') * 1000000;
 		$usage = array();
@@ -373,6 +406,18 @@ class PlgSystemFabrik extends JPlugin
 			$elementModel = $listModel->getFormModel()->getElement($params->get('search_title', 0), true);
 			$title = is_object($elementModel) ? $elementModel->getFullName() : '';
 
+			/**
+			 * $$$ hugh - added date element ... always use raw, as anything that isn't in
+			 * standard MySQL format will cause a fatal error in J!'s search code when it does the JDate create
+			 */
+			$elementModel = $listModel->getFormModel()->getElement($params->get('search_date', 0), true);
+			$date_element = is_object($elementModel) ? $elementModel->getFullName() : '';
+
+			if (!empty($date_element))
+			{
+				$date_element .= '_raw';
+			}
+
 			$aAllowedList = array();
 			$pk = $table->db_primary_key;
 
@@ -399,7 +444,7 @@ class PlgSystemFabrik extends JPlugin
 
 						if (isset($oData->$title))
 						{
-							$o->title = $table->label . ' : ' . $oData->$title;
+							$o->title = $headingPrefix ? $table->label . ' : ' . $oData->$title : $oData->$title;
 						}
 						else
 						{
@@ -408,9 +453,18 @@ class PlgSystemFabrik extends JPlugin
 
 						$o->_pkey = $table->db_primary_key;
 						$o->section = $section;
-
 						$o->href = $href;
-						$o->created = '';
+
+						// Need to make sure it's a valid date in MySQL format, otherwise J!'s code will pitch a fatal error
+						if (isset($oData->$date_element) && FabrikString::isMySQLDate($oData->$date_element))
+						{
+							$o->created = $oData->$date_element;
+						}
+						else
+						{
+							$o->created = '';
+						}
+
 						$o->browsernav = 2;
 
 						if (isset($oData->$descname))

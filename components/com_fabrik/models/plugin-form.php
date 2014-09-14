@@ -187,6 +187,7 @@ class PlgFabrik_Form extends FabrikPlugin
 	public function getProcessData()
 	{
 		$model = $this->getModel();
+		unset($this->emailData);
 		$d = isset($model->formDataWithTableName) ? $model->formDataWithTableName : array();
 		$this->data = array_merge($d, $this->getEmailData());
 
@@ -216,7 +217,7 @@ class PlgFabrik_Form extends FabrikPlugin
 
 		$model->isAjax();
 		/* $$$rob don't render the form - there's no need and it gives a warning about an unfound rowid
-		 * $$$ rob also it sets teh fromModels rowid to an + int even if we are submitting a new form
+		 * $$$ rob also it sets the fromModels rowid to an + int even if we are submitting a new form
 		 * which means that form plug-ins set to run on new only don't get triggered if they appear after
 		 * fabrikemail/fabrikreceipt
 		 * Now instead the pk value is taken from the tableModel->lastInsertId and inserted at the end of this method
@@ -244,7 +245,7 @@ class PlgFabrik_Form extends FabrikPlugin
 		{
 			$groupParams = $groupModel->getParams();
 
-			// Check if group is acutally a table join
+			// Check if group is actually a table join
 			$repeatGroup = 1;
 			$foreignKey = null;
 
@@ -270,9 +271,13 @@ class PlgFabrik_Form extends FabrikPlugin
 
 						$elementModels = $groupModel->getPublishedElements();
 						reset($elementModels);
-						$tmpElement = current($elementModels);
-						$smallerElHTMLName = $tmpElement->getFullName(true, false);
-						$repeatGroup = count($model->formDataWithTableName[$smallerElHTMLName]);
+
+						if (!empty($elementModels))
+						{
+							$tmpElement = current($elementModels);
+							$smallerElHTMLName = $tmpElement->getFullName(true, false);
+							$repeatGroup = count($model->formDataWithTableName[$smallerElHTMLName]);
+						}
 					}
 				}
 			}
@@ -305,9 +310,25 @@ class PlgFabrik_Form extends FabrikPlugin
 					if ($elementModel->isJoin())
 					{
 						$join = $elementModel->getJoinModel()->getJoin();
-						$raw = JArrayHelper::getValue($model->formDataWithTableName[$k], $c, '');
-						$this->emailData[$k . '_raw'][$c] = $raw;
-						$this->emailData[$k][$c] = $elementModel->getEmailValue($raw, $model->formDataWithTableName, $c);
+
+						if ($groupModel->canRepeat())
+						{
+							$raw = JArrayHelper::getValue($model->formDataWithTableName[$k], $c, '');
+							$this->emailData[$k . '_raw'][$c] = $raw;
+							$this->emailData[$k][$c] = $elementModel->getEmailValue($raw, $model->formDataWithTableName, $c);
+						}
+						else
+						{
+							// E.g. ajax file upload - repeat data in none-repeat group
+							if (array_key_exists($k, $model->formDataWithTableName) && is_array($model->formDataWithTableName[$k]))
+							{
+								foreach ($model->formDataWithTableName[$k] as $multiKey => $multiData)
+								{
+									$this->emailData[$k . '_raw'][$multiKey] = $multiData;
+									$this->emailData[$k][$multiKey] = $elementModel->getEmailValue($multiData, $model->formDataWithTableName, $multiData);
+								}
+							}
+						}
 					}
 					elseif (array_key_exists($key, $model->formDataWithTableName))
 					{

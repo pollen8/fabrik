@@ -1,6 +1,6 @@
 <?php
 /**
- * Renders a list releated forms that a db join element can be populated from
+ * Renders a list related forms that a db join element can be populated from
  *
  * @package     Joomla
  * @subpackage  Fabrik
@@ -20,7 +20,7 @@ jimport('joomla.form.helper');
 JFormHelper::loadFieldClass('list');
 
 /**
- * Renders a list releated forms that a db join element can be populated from
+ * Renders a list related forms that a db join element can be populated from
  *
  * @package     Joomla
  * @subpackage  Form
@@ -60,7 +60,7 @@ class JFormFieldPopupforms extends JFormFieldList
 
 		if (empty($options))
 		{
-			$options[] = JHTML::_('select.option', '', JText::_('COM_FABRIK_NO_POPUP_FORMS_AVAILABLE'));
+			$options[] = JHTML::_('select.option', '', FText::_('COM_FABRIK_NO_POPUP_FORMS_AVAILABLE'));
 		}
 
 		return $options;

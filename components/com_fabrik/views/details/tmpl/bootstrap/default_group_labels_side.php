@@ -20,7 +20,7 @@ $element = $this->element;
 	</div>
 	<div class="span8">
 		<?php if ($this->tipLocation == 'above') : ?>
-			<p class="help-block"><?php echo $element->tipAbove ?></p>
+			<p class=""><?php echo $element->tipAbove ?></p>
 		<?php endif ?>
 
 		<div class="fabrikElement">
@@ -28,12 +28,12 @@ $element = $this->element;
 		</div>
 
 		<?php if ($this->tipLocation == 'side') : ?>
-			<p class="help-block"><?php echo $element->tipSide ?></p>
+			<p class=""><?php echo $element->tipSide ?></p>
 		<?php endif ?>
 
 
 	<?php if ($this->tipLocation == 'below') :?>
-		<p class="help-block"><?php echo $element->tipBelow ?></p>
+		<p class=""><?php echo $element->tipBelow ?></p>
 	<?php endif ?>
 	</div>
 </div><!--  end span -->

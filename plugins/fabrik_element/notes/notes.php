@@ -52,7 +52,7 @@ class PlgFabrik_ElementNotes extends PlgFabrik_ElementDatabasejoin
 	/**
 	 * Draws the html form element
 	 *
-	 * @param   array  $data           To preopulate element with
+	 * @param   array  $data           To pre-populate element with
 	 * @param   int    $repeatCounter  Repeat group counter
 	 *
 	 * @return  string	elements html
@@ -62,41 +62,62 @@ class PlgFabrik_ElementNotes extends PlgFabrik_ElementDatabasejoin
 	{
 		$str = array();
 		$params = $this->getParams();
+		$j3 = FabrikWorker::j3();
 		$id = $this->getHTMLId($repeatCounter);
 		$name = $this->getHTMLName($repeatCounter);
 		$tmp = $this->_getOptions($data, $repeatCounter, true);
 		$rowid = $this->getFormModel()->getRowId();
 		$str[] = '<div id="' . $id . '">';
-		$str[] = '<div style="overflow:auto;height:150px;" class=""><ul>';
+		$str[] = '<div style="overflow:auto;height:150px;" class="well well-small row-striped">';
+
+		if ($j3)
+		{
+			$startRow = '<div class="row-fluid"><div class="span12">';
+			$endRow = '</div></div>';
+		}
+		else
+		{
+			$str[] = '<ul>';
+			$startRow = '<li class="oddRow%s">';
+			$endRow = '</li>';
+		}
+
 		$i = 0;
 
 		foreach ($tmp as $row)
 		{
 			$txt = $this->getDisplayLabel($row);
-			$str[] = '<li class="oddRow' . $i . '">' . $txt . '</li>';
+			$str[] = sprintf($startRow, $i) . $txt . $endRow;
 			$i = 1 - $i;
 		}
 
-		$str[] = '</ul></div>';
+		if (!$j3)
+		{
+			$str[] = '</ul>';
+		}
+
+		$str[] = '</div>';
 		$str[] = '<div class="noteHandle" style="height:3px;"></div>';
 
 		// Jaanus - Submitting notes before saving form data results with the notes belonging to nowhere but new, not submitted forms.
 		if ($rowid > 0)
 		{
+			$class = 'fabrikinput inputbox text span12';
+
 			if ($params->get('fieldType', 'textarea') == 'field')
 			{
-				$str[] = '<input class="fabrikinput inputbox text" name="' . $name . '"  />';
+				$str[] = '<input class="' . $class . '" name="' . $name . '"  />';
 			}
 			else
 			{
-				$str[] = '<textarea class="fabrikinput inputbox text" name="' . $name . '" cols="50" rows="3" /></textarea>';
+				$str[] = '<textarea class="' . $class . '" name="' . $name . '" cols="50" rows="3" /></textarea>';
 			}
 
-			$str[] = '<input type="button" class="button" value="' . JText::_('PLG_ELEMENT_NOTES_ADD') . '"></input>';
+			$str[] = '<input type="button" class="button btn" value="' . FText::_('PLG_ELEMENT_NOTES_ADD') . '"></input>';
 		}
 		else
 		{
-			$str[] = JText::_('PLG_ELEMENT_NOTES_SAVEFIRST');
+			$str[] = FText::_('PLG_ELEMENT_NOTES_SAVEFIRST');
 		}
 
 		$str[] = '</div>';
@@ -179,7 +200,7 @@ class PlgFabrik_ElementNotes extends PlgFabrik_ElementDatabasejoin
 	 *
 	 * @param   array           $data            Current row data to use in placeholder replacements
 	 * @param   bool            $incWhere        Should the additional user defined WHERE statement be included
-	 * @param   string          $thisTableAlias  Db table alais
+	 * @param   string          $thisTableAlias  Db table alias
 	 * @param   array           $opts            Options
 	 * @param   JDatabaseQuery  $query           Append where to JDatabaseQuery object or return string (false)
 	 *
@@ -196,7 +217,7 @@ class PlgFabrik_ElementNotes extends PlgFabrik_ElementDatabasejoin
 		$rowid = $this->getFormModel()->getRowId();
 		$where = array();
 
-		// Jaanus: here we can choose whether WHERE has to have single or (if field is the same as FK then only) custom (single or multiple) criterias,
+		// Jaanus: here we can choose whether WHERE has to have single or (if field is the same as FK then only) custom (single or multiple) criteria,
 		if ($value != '')
 		{
 			if ($field != '' && $field !== $fk)
@@ -222,20 +243,23 @@ class PlgFabrik_ElementNotes extends PlgFabrik_ElementDatabasejoin
 
 		if ($query)
 		{
-			$query->where(implode(' OR ', $where));
+			if (!empty($where))
+			{
+				$query->where(implode(' OR ', $where));
+			}
 
 			return $query;
 		}
 		else
 		{
-			return 'WHERE ' . implode(' OR ', $where);
+			return empty($where) ? '' : 'WHERE ' . implode(' OR ', $where);
 		}
 	}
 
 	/**
 	 * Get options order by
 	 *
-	 * @param   string         $view   Ciew mode '' or 'filter'
+	 * @param   string         $view   View mode '' or 'filter'
 	 * @param   JDatabasQuery  $query  Set to false to return a string
 	 *
 	 * @return  string  order by statement

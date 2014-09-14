@@ -1,6 +1,6 @@
 <?php
 /**
- * Fabrik Fuson Chart HTML View
+ * Fabrik Fusion Chart HTML View
  *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.visualization.fusionchart
@@ -14,7 +14,7 @@ defined('_JEXEC') or die('Restricted access');
 jimport('joomla.application.component.view');
 
 /**
- * Fabrik Fuson Chart HTML View
+ * Fabrik Fusion Chart HTML View
  *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.visualization.fusionchart
@@ -44,11 +44,11 @@ class FabrikViewFusionchart extends JViewLegacy
 		$model->setId($input->getInt('id', $usersConfig->get('visualizationid', $input->getInt('visualizationid', 0))));
 		$this->row = $model->getVisualization();
 
-		if ($this->row->published == 0)
+		if (!$model->canView())
 		{
-			JError::raiseWarning(500, JText::_('JERROR_ALERTNOAUTHOR'));
+			echo FText::_('JERROR_ALERTNOAUTHOR');
 
-			return '';
+			return false;
 		}
 
 		$this->requiredFiltersFound = $this->get('RequiredFiltersFound');
@@ -84,6 +84,8 @@ class FabrikViewFusionchart extends JViewLegacy
 		$js .= $model->getFilterJs();
 		FabrikHelperHTML::iniRequireJs($model->getShim());
 		FabrikHelperHTML::script($srcs, $js);
-		echo parent::display();
+		$text = $this->loadTemplate();
+		FabrikHelperHTML::runContentPlugins($text);
+		echo $text;
 	}
 }

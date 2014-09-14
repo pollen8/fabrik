@@ -38,12 +38,43 @@ var ListForm = new Class({
 			}
 			if (document.getElement('table.linkedLists')) {
 				rows = document.getElement('table.linkedLists').getElement('tbody');
-				new Sortables(rows, {'handle': '.handle'});
+				new Sortables(rows, {'handle': '.handle',
+					'onSort': function (element, clone) {
+						var s = this.serialize(1, function (item) {
+							if (item.getElement('input')) {
+								return item.getElement('input').name.split('][').getLast().replace(']', '');
+							}
+							return '';
+						});
+						var actual = [];
+						s.each(function (i) {
+							if (i !== '') {
+								actual.push(i);
+							}
+						});
+						document.getElement('input[name*=faceted_list_order]').value = JSON.stringify(actual);
+					}
+				});
 			}
 
 			if (document.getElement('table.linkedForms')) {
 				rows = document.getElement('table.linkedForms').getElement('tbody');
-				new Sortables(rows, {'handle': '.handle'});
+				new Sortables(rows, {'handle': '.handle',
+					'onSort': function (element, clone) {
+						var s = this.serialize(1, function (item) {
+							if (item.getElement('input')) {
+								return item.getElement('input').name.split('][').getLast().replace(']', '');
+							}
+							return '';
+						});
+						var actual = [];
+						s.each(function (i) {
+							if (i !== '') {
+								actual.push(i);
+							}
+						});
+						document.getElement('input[name*=faceted_form_order]').value = JSON.stringify(actual);
+					}});
 			}
 
 			this.joinCounter = 0;
@@ -188,9 +219,10 @@ var ListForm = new Class({
 			'value': joinId
 		});
 
+		var delClass = this.options.js ? 'btn-danger' : 'removeButton';
 		var delButton = new Element('a', {
 			'href': '#',
-			'class': 'btn btn-danger',
+			'class': 'btn ' + delClass,
 			'events': {
 				'click': function (e) {
 					this.deleteJoin(e);
@@ -248,7 +280,8 @@ var ListForm = new Class({
 						'click': function (e) {
 							e.stop();
 							var tbody = e.target.getParent('.adminform').getElement('tbody');
-							Browser.ie ? tbody.toggle() : tbody.slide('toggle');
+							var myFx = new Fx.Slide(tbody, {duration: 500});
+							Browser.ie ? tbody.toggle() : myFx.toggle();
 						}
 					},
 					'styles': {
@@ -328,7 +361,10 @@ var ListForm = new Class({
 			var d = new Element('div', {'id': 'join'}).adopt(sContent);
 			d.inject(document.id('joindtd'));
 			if (thisKey !== '') {
-				Browser.ie ? tbody.hide() : tbody.slide('hide');
+
+				var myFx = new Fx.Slide(tbody, {duration: 500});
+				Browser.ie ? tbody.hide() : myFx.slideIn();
+				//tbody.hide();
 			}
 			this.updateJoinStatement(this.joinCounter);
 		}
@@ -452,15 +488,19 @@ var adminFilters = new Class({
 			t = e.target.getParent('tr');
 			tbl = e.target.getParent('table');
 		} else {
-			t = document.id(element.parentNode.parentNode); //was 3 but that was the tbody
+			//t = document.id(element.parentNode.parentNode); //was 3 but that was the tbody
+			t = e.target.getParent('tr');
+			tbl = e.target.getParent('table');
 		}
+
+		if (this.counter === 0) {
+			tbl.hide();
+		}
+
 		if (this.options.j3) {
-			// in 3.1 we have to hide the rows rather than destroy otherwise the form doesnt submit!!!
+			// in 3.1 we have to hide the rows rather than destroy otherwise the form doesn't submit!!!
 			t.getElements('input, select, textarea').dispose();
 			t.hide();
-			if (this.counter === 0) {
-				tbl.hide();
-			}
 		} else {
 			t.dispose();
 		}
@@ -485,8 +525,8 @@ var adminFilters = new Class({
 	addFilterOption: function (selJoin, selFilter, selCondition, selValue, selAccess, evaluate, grouped) {
 		var and, or, joinDd, groupedNo, groupedYes, i, sels;
 		if (this.counter <= 0) {
-			if (this.options.j3 && this.el.getParent('table').getElement('thead')) {
-				// We've already added the thead - in 3.1 we have to hide the rows rather than destroy otherwise the form doesnt submit!!!
+			if (this.el.getParent('table').getElement('thead')) {
+				// We've already added the thead - in 3.1 we have to hide the rows rather than destroy otherwise the form doesn't submit!!!
 			} else {
 				this.addHeadings();
 			}

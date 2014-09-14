@@ -498,7 +498,6 @@ var FbDatabasejoin = new Class({
 	},
 
 	update: function (val) {
-		console.log('update', val);
 		this.getElement();
 		if (typeOf(this.element) === 'null') {
 			return;
@@ -558,6 +557,34 @@ var FbDatabasejoin = new Class({
 			}
 		}
 		this.options.value = val;
+	},
+	
+	/**
+	 * $$$ hugh - testing being able to set a dropdown join by label rather than value,
+	 * needed in corner cases like reverse geocoding in the map element, where (say) the
+	 * 'country' element might be a join / CDD, but obviously we only get a label ("Austria")
+	 * back from Google.  For now, VERY limited support, only for simple dropdown type.
+	 */
+	updateByLabel: function (label) {
+		this.getElement();
+		if (typeOf(this.element) === 'null') {
+			return;
+		}
+		// If it's not editable or not a dropdown, just punt to a normal update()
+		if (!this.options.editable || this.options.displayType !== 'dropdown') {
+			this.update(label);
+		}
+		// OK, it's an editable dropdown, so let's see if we can find a matching option text
+		var options = this.element.getElements('option');
+		options.some(function (option) {
+			if (option.text === label) {
+				this.update(option.value);
+				return true;
+			}
+			else {
+				return false;
+			}
+		}.bind(this));
 	},
 
 	/**
@@ -794,6 +821,12 @@ var FbDatabasejoin = new Class({
 				f.addEvent(action, function (e) {
 					e.stop();
 					(typeOf(js) === 'function') ? js.delay(700, this, this) : eval(js);
+				}.bind(this));
+			}
+			if (this.element) {
+				this.element.addEvent(action, function (e) {
+					e.stop();
+					(typeOf(js) === 'function') ? js.delay(0, this, this) : eval(js);
 				}.bind(this));
 			}
 			break;

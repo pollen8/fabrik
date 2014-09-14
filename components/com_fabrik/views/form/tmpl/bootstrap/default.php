@@ -61,14 +61,9 @@ foreach ($this->groups as $group) :
 	$this->group = $group;
 	?>
 
-	<fieldset class="fabrikGroup" id="group<?php echo $group->id;?>" style="<?php echo $group->css;?>">
-	<?php
-		$allHidden = true;
-		foreach ($group->elements as $element)
-		{
-			$allHidden &= $element->hidden;
-		}
-		if ((!$allHidden || !empty($group->intro)) && trim($group->title) !== '') :?>
+	<fieldset class="<?php echo $group->class; ?>" id="group<?php echo $group->id;?>" style="<?php echo $group->css;?>">
+		<?php
+		if ($group->showLegend) :?>
 			<legend class="legend"><?php echo $group->title;?></legend>
 		<?php
 		endif;
@@ -81,7 +76,7 @@ foreach ($this->groups as $group) :
 		/* Load the group template - this can be :
 		 *  * default_group.php - standard group non-repeating rendered as an unordered list
 		 *  * default_repeatgroup.php - repeat group rendered as an unordered list
-		 *  * default_repeatgroup.table.php - repeat group rendered in a table.
+		 *  * default_repeatgroup_table.php - repeat group rendered in a table.
 		 */
 		$this->elements = $group->elements;
 		echo $this->loadTemplate($group->tmpl);

@@ -25,6 +25,11 @@
 			}
 		});
 		var JTooltips = new Tips($$('.hasTip'), { maxTitleChars: 50, fixed: false});
+		
+		// Joomla3.2
+		if (typeof(jQuery) !== 'undefined') {
+			jQuery('.hasTooltip').tooltip({'html': true, 'container': 'body'});
+		}
 	};
 
 	window.fireEvent('fabrik.admin.namespace');

@@ -29,7 +29,7 @@ defined('_JEXEC') or die('Restricted access');
 		<div class="<?php echo $class . ' filter_' . $key.'_label'?> ">
 			<?php echo $filter->label;?>
 		</div>
-		<div class="<?php echo $class . ' filter_' . $key?>">
+		<div data-filter-row="<?php echo $key;?>" class="<?php echo $class . ' filter_' . $key?>">
 			<?php echo $filter->element;?>
 		</div>
 	<?php }
@@ -39,7 +39,7 @@ defined('_JEXEC') or die('Restricted access');
 	<?php if ($this->filter_action != 'onchange') {?>
 	<button class="pull-right fabrik_filter_submit button btn btn-info" name="filter">
 	<i class="icon-filter icon-white"></i>
-	<?php echo JText::_('GO');?></button>
+	<?php echo FText::_('GO');?></button>
 	<?php }?>
 	</div>
 </div>

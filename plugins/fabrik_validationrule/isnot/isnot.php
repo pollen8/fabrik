@@ -71,6 +71,13 @@ class PlgFabrik_ValidationruleIsNot extends PlgFabrik_Validationrule
 	protected function getLabel()
 	{
 		$params = $this->getParams();
+		$tipText = $params->get('tip_text', '');
+
+		if ($tipText !== '')
+		{
+			return FText::_($tipText);
+		}
+
 		$isnot = $params->get('isnot-isnot');
 
 		return JText::sprintf('PLG_VALIDATIONRULE_ISNOT_LABEL', $isnot);

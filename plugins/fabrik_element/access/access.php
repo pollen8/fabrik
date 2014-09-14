@@ -29,7 +29,7 @@ class PlgFabrik_ElementAccess extends PlgFabrik_Element
 	protected $ignoreSearchAllDefault = true;
 
 	/**
-	 * Manupulates posted form data for insertion into database
+	 * Manipulates posted form data for insertion into database
 	 *
 	 * @param   mixed  $val   this elements posted form data
 	 * @param   array  $data  posted form data
@@ -47,7 +47,7 @@ class PlgFabrik_ElementAccess extends PlgFabrik_Element
 	/**
 	 * Draws the html form element
 	 *
-	 * @param   array  $data           to preopulate element with
+	 * @param   array  $data           to pre-populate element with
 	 * @param   int    $repeatCounter  repeat group counter
 	 *
 	 * @return  string	elements html
@@ -109,7 +109,7 @@ class PlgFabrik_ElementAccess extends PlgFabrik_Element
 		// If all usergroups is allowed, push it into the array.
 		if ($allowAll)
 		{
-			array_unshift($options, JHtml::_('select.option', '', JText::_('JOPTION_ACCESS_SHOW_ALL_GROUPS')));
+			array_unshift($options, JHtml::_('select.option', '', FText::_('JOPTION_ACCESS_SHOW_ALL_GROUPS')));
 		}
 
 		return $options;

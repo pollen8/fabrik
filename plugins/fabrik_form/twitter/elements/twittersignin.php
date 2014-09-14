@@ -3,7 +3,7 @@
  * Post content to twitter: JForm Element
  *
  * @package     Joomla.Plugin
- * @subpackage  Fabrik.form.twiter
+ * @subpackage  Fabrik.form.twitter
  * @copyright   Copyright (C) 2005-2013 fabrikar.com - All rights reserved.
  * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  *
@@ -22,7 +22,7 @@ require_once JPATH_ADMINISTRATOR . '/components/com_fabrik/helpers/element.php';
  * Renders a twitter sign in button
  *
  * @package     Joomla.Plugin
- * @subpackage  Fabrik.form.twiter
+ * @subpackage  Fabrik.form.twitter
  * @since       3.0
  */
 
@@ -68,7 +68,7 @@ class JFormFieldTwittersignin extends JFormField
 		$str = '<a href="#" onclick="' . $js . '">';
 		$str .= '<img src="' . $src . '" alt="Sign in with Twitter"/></a>';
 		$str .= " | <button class=\"button btn\" href=\"#\" onclick=\"$clearjs\">";
-		$str .= JText::_('PLG_FORM_TWITTER_CLEAR_CREDENTIALS') . "</button><br/>";
+		$str .= FText::_('PLG_FORM_TWITTER_CLEAR_CREDENTIALS') . "</button><br/>";
 		$str .= "<br /><input type=\"hidden\" readonly=\"readonly\" name=\""
 			. $this->name . "\" id=\"" . $this->id . "\" value=\"" . $this->value . "\" />";
 

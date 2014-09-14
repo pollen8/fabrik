@@ -9,52 +9,113 @@ var FbThumbs =  new Class({
 	Extends : FbElement,
 	initialize: function (element, options, thumb) {
 		this.field = document.id(element);
-		this.imagepath = Fabrik.liveSite + 'plugins/fabrik_element/thumbs/images/';
 		this.parent(element, options);
-
-		this.element = document.id(element + '_div');
 		this.thumb = thumb;
-		this.spinner = new Asset.image(Fabrik.liveSite + 'media/com_fabrik/images/ajax-loader.gif', {'alt': 'loading', 'class': 'ajax-loader'});
-		this.thumbup = document.id('thumbup');
-		this.thumbdown = document.id('thumbdown');
-		this.thumbup.addEvent('mouseover', function (e) {
-			this.thumbup.setStyle('cursor', 'pointer');
-			this.thumbup.src = this.imagepath + "thumb_up_in.gif";
-		}.bind(this));
-		this.thumbdown.addEvent('mouseover', function (e) {
-			this.thumbdown.setStyle('cursor', 'pointer');
-			this.thumbdown.src = this.imagepath + "thumb_down_in.gif";
-		}.bind(this));
-
-		this.thumbup.addEvent('mouseout', function (e) {
-			this.thumbup.setStyle('cursor', '');
-			if (this.options.myThumb === 'up') {
-				this.thumbup.src = this.imagepath + "thumb_up_in.gif";
-			} else {
-				this.thumbup.src = this.imagepath + "thumb_up_out.gif";
+		this.spinner = new Spinner(this.getContainer());
+		
+		if (Fabrik.bootstrapped) {
+			this.setupj3();
+		} else {
+			this.thumbup = document.id('thumbup');
+			this.thumbdown = document.id('thumbdown');
+			if (this.options.canUse) {
+				this.imagepath = Fabrik.liveSite + 'plugins/fabrik_element/thumbs/images/';
+				
+				this.thumbup.addEvent('mouseover', function (e) {
+					this.thumbup.setStyle('cursor', 'pointer');
+					this.thumbup.src = this.imagepath + "thumb_up_in.gif";
+				}.bind(this));
+				
+				this.thumbdown.addEvent('mouseover', function (e) {
+					this.thumbdown.setStyle('cursor', 'pointer');
+					this.thumbdown.src = this.imagepath + "thumb_down_in.gif";
+				}.bind(this));
+		
+				this.thumbup.addEvent('mouseout', function (e) {
+					this.thumbup.setStyle('cursor', '');
+					if (this.options.myThumb === 'up') {
+						this.thumbup.src = this.imagepath + "thumb_up_in.gif";
+					} else {
+						this.thumbup.src = this.imagepath + "thumb_up_out.gif";
+					}
+				}.bind(this));
+				this.thumbdown.addEvent('mouseout', function (e) {
+					this.thumbdown.setStyle('cursor', '');
+					if (this.options.myThumb === 'down') {
+						this.thumbdown.src = this.imagepath + "thumb_down_in.gif";
+					} else {
+						this.thumbdown.src = this.imagepath + "thumb_down_out.gif";
+					}
+				}.bind(this));
+		
+				this.thumbup.addEvent('click', function (e) {
+					this.doAjax('up');
+				}.bind(this));
+				this.thumbdown.addEvent('click', function (e) {
+					this.doAjax('down');
+				}.bind(this));
+			}
+			else {
+				this.thumbup.addEvent('click', function (e) {
+					e.stop();
+					this.doNoAccess();
+				}.bind(this));
+				this.thumbdown.addEvent('click', function (e) {
+					e.stop();
+					this.doNoAccess();
+				}.bind(this));				
+			}
+		}
+	},
+	
+	setupj3: function () {
+		var c = this.getContainer();
+		var up = c.getElement('button.thumb-up');
+		var down = c.getElement('button.thumb-down');
+		
+		up.addEvent('click', function (e) {
+			e.stop();
+			if (this.options.canUse) {
+				var add = up.hasClass('btn-success') ? false : true;
+				this.doAjax('up', add);
+				if (!add) {
+					up.removeClass('btn-success');
+				} else {
+					up.addClass('btn-success');
+					if (typeOf(down) !== 'null') {
+						down.removeClass('btn-danger');
+					}
+				}
+			}
+			else {
+				this.doNoAccess();
 			}
 		}.bind(this));
-		this.thumbdown.addEvent('mouseout', function (e) {
-			this.thumbdown.setStyle('cursor', '');
-			if (this.options.myThumb === 'down') {
-				this.thumbdown.src = this.imagepath + "thumb_down_in.gif";
-			} else {
-				this.thumbdown.src = this.imagepath + "thumb_down_out.gif";
-			}
-		}.bind(this));
-
-		this.thumbup.addEvent('click', function (e) {
-			this.doAjax('up');
-		}.bind(this));
-		this.thumbdown.addEvent('click', function (e) {
-			this.doAjax('down');
-		}.bind(this));
+		
+		if (typeOf(down) !== 'null') {
+			down.addEvent('click', function (e) {
+				e.stop();
+				if (this.options.canUse) {
+					var add = down.hasClass('btn-danger') ? false : true;
+					this.doAjax('down', add);
+					if (!add) {
+						down.removeClass('btn-danger');
+					} else {
+						down.addClass('btn-danger');
+						up.removeClass('btn-success');
+					}
+				}
+				else {
+					this.doNoAccess();
+				}
+			}.bind(this));
+		}
 	},
 
-	doAjax: function (th) {
+	doAjax: function (th, add) {
+		add = add ? true : false;
 		if (this.options.editable === false) {
-			var forspin = document.id('count_thumb' + th);
-			this.spinner.inject(forspin);
+			this.spinner.show();
 			var data = {
 				'option': 'com_fabrik',
 				'format': 'raw',
@@ -67,37 +128,54 @@ var FbThumbs =  new Class({
 				'elementname': this.options.elid,
 				'userid': this.options.userid,
 				'thumb': th,
-				'listid': this.options.listid
+				'listid': this.options.listid,
+				'formid': this.options.formid,
+				'add': add
 			};
 
 			new Request({url: '',
 				'data': data,
 				onComplete: function (r) {
 					r = JSON.decode(r);
-					this.spinner.dispose();
+					this.spinner.hide();
 					if (r.error) {
 						console.log(r.error);
 					} else {
 						if (r !== '') {
-							var count_thumbup = document.id('count_thumbup');
-							var count_thumbdown = document.id('count_thumbdown');
-							var thumbup = document.id('thumbup');
-							var thumbdown = document.id('thumbdown');
-							count_thumbup.set('html', r[0]);
-							count_thumbdown.set('html', r[1]);
-							// Well since the element can't be rendered in form view I guess this isn't really needed
-							document.id(this.element.id).getElement('.' + this.field.id).value = r[0].toFloat() - r[1].toFloat();
-							if (r[0] === 1) {
-								thumbup.src = this.imagepath + "thumb_up_in.gif";
-								thumbdown.src = this.imagepath + "thumb_down_out.gif";
+							if (Fabrik.bootstrapped) {
+								var c = this.getContainer();
+								c.getElement('button.thumb-up .thumb-count').set('text', r[0]);
+								if (typeOf(c.getElement('button.thumb-down')) !== 'null') {
+									c.getElement('button.thumb-down .thumb-count').set('text', r[1]);
+								}
 							} else {
-								thumbup.src = this.imagepath + "thumb_up_out.gif";
-								thumbdown.src = this.imagepath + "thumb_down_in.gif";
+								var count_thumbup = document.id('count_thumbup');
+								var count_thumbdown = document.id('count_thumbdown');
+								var thumbup = document.id('thumbup');
+								var thumbdown = document.id('thumbdown');
+								count_thumbup.set('html', r[0]);
+								count_thumbdown.set('html', r[1]);
+								// Well since the element can't be rendered in form view I guess this isn't really needed
+								this.getContainer().getElement('.' + this.field.id).value = r[0].toFloat() - r[1].toFloat();
+								if (r[0] === "1") {
+									thumbup.src = this.imagepath + "thumb_up_in.gif";
+									thumbdown.src = this.imagepath + "thumb_down_out.gif";
+								} else {
+									thumbup.src = this.imagepath + "thumb_up_out.gif";
+									thumbdown.src = this.imagepath + "thumb_down_in.gif";
+								}
 							}
 						}
 					}
 				}.bind(this)
 			}).send();
 		}
+	},
+	
+	doNoAccess: function () {
+		if (this.options.noAccessMsg !== '') {
+			alert(this.options.noAccessMsg);
+		}
 	}
+	
 });

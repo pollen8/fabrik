@@ -35,7 +35,7 @@ class FabrikControllerListemail extends JControllerLegacy
 	/**
 	 * default display mode
 	 *
-	 * @param   bool   $cachable   Cachable
+	 * @param   bool   $cachable   Cacheable
 	 * @param   array  $urlparams  Params
 	 *
 	 * @return null
@@ -58,8 +58,6 @@ class FabrikControllerListemail extends JControllerLegacy
 		$app = JFactory::getApplication();
 		$input = $app->input;
 		$document = JFactory::getDocument();
-		$app = JFactory::getApplication();
-		$input = $app->input;
 		$viewName = 'popupwin';
 		$viewType = $document->getType();
 

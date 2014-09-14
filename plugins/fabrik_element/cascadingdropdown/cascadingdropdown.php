@@ -24,14 +24,14 @@ require_once JPATH_SITE . '/plugins/fabrik_element/databasejoin/databasejoin.php
 class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 {
 	/**
-	 * J Paramter name for the field containing the label value
+	 * J Parameter name for the field containing the label value
 	 *
 	 * @var string
 	 */
 	protected $labelParam = 'cascadingdropdown_label';
 
 	/**
-	 * J Parameter name for the field containiing the concat label
+	 * J Parameter name for the field containing the concat label
 	 *
 	 * @var string
 	 */
@@ -117,9 +117,15 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 		$join = $this->getJoin();
 		$db = $this->getDb();
 
-		if (($params->get('cascadingdropdown_label_concat') != '') && $app->input->get('overide_join_val_column_concat') != 1)
+		if (($params->get('cascadingdropdown_label_concat') != '') && $app->input->get('override_join_val_column_concat') != 1)
 		{
-			$val = str_replace("{thistable}", $join->table_join_alias, $params->get('cascadingdropdown_label_concat'));
+			$val = $params->get('cascadingdropdown_label_concat');
+
+			if ($join)
+			{
+				$val = str_replace("{thistable}", $join->table_join_alias, $val);
+			}
+
 			$w = new FabrikWorker;
 			$val = $w->parseMessageForPlaceHolder($val, array());
 
@@ -130,7 +136,7 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 
 		if ($label == '')
 		{
-			// This is being raised with checkbox rendering and using dropdown filter, everything seems to be working with using hte element name though!
+			// This is being raised with checkbox rendering and using dropdown filter, everything seems to be working with using the element name though!
 			// JError::raiseWarning(500, 'Could not find the join label for ' . $this->getElement()->name . ' try unlinking and saving it');
 			$label = $this->getElement()->name;
 		}
@@ -166,7 +172,7 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 	/**
 	 * Draws the html form element
 	 *
-	 * @param   array  $data           to preopulate element with
+	 * @param   array  $data           to pre-populate element with
 	 * @param   int    $repeatCounter  repeat group counter
 	 *
 	 * @return  string	elements html
@@ -207,11 +213,11 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 		{
 			if ($show_please)
 			{
-				$tmp[] = JHTML::_('select.option', '', $this->_getSelectLabel());
+				$tmp[] = $this->selectOption();
 			}
 		}
 
-		$imageOpts = array('alt' => JText::_('PLG_ELEMENT_CALC_LOADING'), 'style' => 'display:none;padding-left:10px;', 'class' => 'loader');
+		$imageOpts = array('alt' => FText::_('PLG_ELEMENT_CALC_LOADING'), 'style' => 'display:none;padding-left:10px;', 'class' => 'loader');
 		$this->loadingImg = FabrikHelperHTML::image("ajax-loader.gif", 'form', @$this->tmpl, $imageOpts);
 
 		// Get the default label for the drop down (use in read only templates)
@@ -353,7 +359,7 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 	}
 
 	/**
-	 * Get the display type (list,checkbox,mulitselect etc)
+	 * Get the display type (list,checkbox,multiselect etc.)
 	 *
 	 * @since  3.0.7
 	 *
@@ -400,7 +406,7 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 
 		/**
 		 * $$$ hugh -added test for $filterview, and only do filtery stuff if we are being
-		 * calledin a filter context, not in a regular form display context.
+		 * called in a filter context, not in a regular form display context.
 		 */
 
 		if (!empty($filterview) && $this->getFilterBuildMethod() == 1)
@@ -516,7 +522,7 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 	 * @param   array  $data           Data
 	 * @param   int    $repeatCounter  Repeat group counter
 	 * @param   bool   $incWhere       Do we add custom where statement into sql
-	 * @param   array  $opts           Addtional options passed into buildQuery()
+	 * @param   array  $opts           Additional options passed into buildQuery()
 	 *
 	 * @return  array	option values
 	 */
@@ -574,7 +580,7 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 		{
 			if ($this->showPleaseSelect())
 			{
-				array_unshift($this->optionVals[$sqlKey], JHTML::_('select.option', '', $this->_getSelectLabel()));
+				array_unshift($this->optionVals[$sqlKey], $this->selectOption());
 			}
 		}
 
@@ -588,6 +594,18 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 		}
 
 		return $this->optionVals[$sqlKey];
+	}
+
+	/**
+	 * Create the select option for dropdown
+	 *
+	 *  @return  object
+	 */
+
+	private function selectOption()
+	{
+		$params = $this->getParams();
+		return JHTML::_('select.option', $params->get('cascadingdropdown_noselectionvalue', ''), $this->_getSelectLabel());
 	}
 
 	/**
@@ -762,7 +780,7 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 			}
 			else
 			{
-				// $$$ hugh - prolly rendering table view ...
+				// $$$ hugh - probably rendering table view ...
 				$watch_raw = $watch . '_raw';
 
 				if (isset($data[$watch_raw]))
@@ -1044,7 +1062,7 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 		$formModel = $this->getFormModel();
 		$formId = $formModel->get('id');
 
-		// 3.1 Cdd filter set up eleswhere
+		// 3.1 Cdd filter set up elsewhere
 		if ($element->filter_type == 'dropdown')
 		{
 			$default = $this->getDefaultFilterVal($normal);
@@ -1201,7 +1219,7 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 
 	/**
 	 * Return an array of parameter names which should not get updated if a linked element's parent is saved
-	 * notably any paramter which references another element id should be returned in this array
+	 * notably any parameter which references another element id should be returned in this array
 	 * called from admin element model updateChildIds()
 	 * see cascadingdropdown element for example
 	 *
@@ -1216,17 +1234,33 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 	/**
 	 * Get select option label
 	 *
+	 * @param  bool  $filter  get alt label for filter, if present using :: splitter
+	 *
 	 * @return  string
 	 */
 
-	protected function _getSelectLabel()
+	protected function _getSelectLabel($filter = false)
 	{
-		return $this->getParams()->get('cascadingdropdown_noselectionlabel', JText::_('COM_FABRIK_PLEASE_SELECT'));
+		//return FText::_($this->getParams()->get('cascadingdropdown_noselectionlabel', FText::_('COM_FABRIK_PLEASE_SELECT')));
+		$params = $this->getParams();
+		$label = $params->get('cascadingdropdown_noselectionlabel');
+
+		if (strstr($label, '::'))
+		{
+			$labels = explode('::', $label);
+			$label = $filter ? $labels[1] : $labels[0];
+		}
+
+		if (!$filter && $label == '')
+		{
+			$label = 'COM_FABRIK_PLEASE_SELECT';
+		}
+		return FText::_($label);
 	}
 
 	/**
 	 * Should the 'label' field be quoted.  Overridden by databasejoin and extended classes,
-	 * which may use a CONCAT'ed label which musn't be quoted.
+	 * which may use a CONCAT'ed label which mustn't be quoted.
 	 *
 	 * @since	3.0.6
 	 *
@@ -1248,7 +1282,7 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 	 * @return  string  required join text to ensure exact filter list code produces a valid query.
 	 */
 
-	protected function _buildFilterJoin()
+	protected function buildFilterJoin()
 	{
 		$params = $this->getParams();
 		$joinTable = FabrikString::safeColName($this->getDbName());
@@ -1290,11 +1324,11 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 	protected function filterSelectLabel()
 	{
 		$params = $this->getParams();
-		$label = $params->get('cascadingdropdown_noselectionlabel', '');
+		$label = $this->_getSelectLabel(true);
 
 		if (empty($label))
 		{
-			$label = $params->get('filter_required') == 1 ? JText::_('COM_FABRIK_PLEASE_SELECT') : JText::_('COM_FABRIK_FILTER_PLEASE_SELECT');
+			$label = $params->get('filter_required') == 1 ? FText::_('COM_FABRIK_PLEASE_SELECT') : FText::_('COM_FABRIK_FILTER_PLEASE_SELECT');
 		}
 
 		return $label;

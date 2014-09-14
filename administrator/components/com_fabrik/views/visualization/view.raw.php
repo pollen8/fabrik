@@ -54,6 +54,6 @@ class FabrikAdminViewVisualization extends JViewLegacy
 
 	public function display($tpl = null)
 	{
-		echo "viz admin raw display";
+		echo "Fabrik Visualization admin raw display";
 	}
 }

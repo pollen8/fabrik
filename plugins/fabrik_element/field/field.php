@@ -53,6 +53,11 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 			}
 
 			$this->_guessLinkType($d, $thisRow, 0);
+
+			if ($params->get('render_as_qrcode', '0') === '1')
+			{
+				$d = $this->qrCodeLink($d, $thisRow);
+			}
 		}
 
 		return parent::renderListData($data, $thisRow);
@@ -98,7 +103,7 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 	/**
 	 * Draws the html form element
 	 *
-	 * @param   array  $data           To preopulate element with
+	 * @param   array  $data           To pre-populate element with
 	 * @param   int    $repeatCounter  Repeat group counter
 	 *
 	 * @return  string	elements html
@@ -125,28 +130,44 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 
 		/* $$$ hugh - if the form just failed validation, number formatted fields will already
 		 * be formatted, so we need to un-format them before formatting them!
-		 * $$$ rob - well better actually check if we are coming from a failed validation then :)
 		 */
-		if ($app->input->get('task') == 'form.process')
+		/*
+		if ($this->getFormModel()->failedValidation())
 		{
 			$value = $this->unNumberFormat($value);
 		}
 
 		$value = $this->numberFormat($value);
+		*/
+
+		if (!$this->getFormModel()->failedValidation())
+		{
+			$value = $this->numberFormat($value);
+		}
 
 		if (!$this->isEditable())
 		{
-			$this->_guessLinkType($value, $data, $repeatCounter);
-			$format = $params->get('text_format_string');
-
-			if ($format != '')
+			if ($params->get('render_as_qrcode', '0') === '1')
 			{
-				$value = sprintf($format, $value);
+				// @TODO - skip this is new form
+				$value = $this->qrCodeLink($value, $data);
 			}
-
-			if ($params->get('password') == "1")
+			else
 			{
-				$value = str_pad('', JString::strlen($value), '*');
+				$this->_guessLinkType($value, $data, $repeatCounter);
+				$format = $params->get('text_format_string');
+
+				if ($format != '')
+				{
+					$value = sprintf($format, $value);
+				}
+
+				if ($params->get('password') == "1")
+				{
+					$value = str_pad('', JString::strlen($value), '*');
+				}
+
+				$value = $this->getReadOnlyOutput($value, $value);
 			}
 
 			return ($element->hidden == '1') ? "<!-- " . $value . " -->" : $value;
@@ -177,6 +198,28 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 	}
 
 	/**
+	 * Determines the value for the element in the form view
+	 *
+	 * @param   array  $data           Form data
+	 * @param   int    $repeatCounter  When repeating joined groups we need to know what part of the array to access
+	 * @param   array  $opts           Options, 'raw' = 1/0 use raw value
+	 *
+	 * @return  string	value
+	 */
+
+	public function getValue($data, $repeatCounter = 0, $opts = array())
+	{
+		$value = parent::getValue($data, $repeatCounter, $opts);
+
+		if (is_array($value))
+		{
+			return array_pop($value);
+		}
+
+		return $value;
+	}
+
+	/**
 	 * Format guess link type
 	 *
 	 * @param   string  &$value         Original field value
@@ -193,54 +236,63 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 
 		if ($params->get('guess_linktype') == '1')
 		{
-			jimport('joomla.mail.helper');
-			$target = $this->guessLinkTarget();
+			$w = new FabrikWorker;
+			$opts = $this->linkOpts();
+			$title = $params->get('link_title', '');
 
-			if (FabrikWorker::isEmail($value))
+			if (FabrikWorker::isEmail($value) || JString::stristr($value, 'http'))
 			{
-				$value = JHTML::_('email.cloak', $value);
-				$guessed = true;
-			}
-			// Changes JF Questiaux
-			elseif (JString::stristr($value, 'http'))
-			{
-				$value = '<a href="' . $value . '"' . $target . '>' . $value . '</a>';
 				$guessed = true;
 			}
 			elseif (JString::stristr($value, 'www.'))
 			{
-				$value = '<a href="http://' . $value . '"' . $target . '>' . $value . '</a>';
+				$value = 'http://' . $value;
 				$guessed = true;
 			}
+
+			if ($title !== '')
+			{
+				$opts['title'] = strip_tags($w->parseMessageForPlaceHolder($title, $data));
+			}
+
+			$value = FabrikHelperHTML::a($value, $value, $opts);
 		}
 	}
 
 	/**
-	 * Get the guess type link target property
+	 * Get the link options
 	 *
-	 * @return  string
+	 * @return  array
 	 */
 
-	protected function guessLinkTarget()
+	protected function linkOpts()
 	{
+		$fbConfig = JComponentHelper::getParams('com_fabrik');
 		$params = $this->getParams();
 		$target = $params->get('link_target_options', 'default');
+		$opts = array();
+		$opts['rel'] = $params->get('rel', '');
 
 		switch ($target)
 		{
 			default:
-				$str = ' target="' . $target . '"';
+				$opts['target'] = $target;
 				break;
 			case 'default':
-				$str = '';
 				break;
 			case 'lightbox':
 				FabrikHelperHTML::slimbox();
-				$str = ' rel="lightbox[]"';
+				$opts['rel'] = 'lightbox[]';
+
+				if ($fbConfig->get('use_mediabox', false))
+				{
+					$opts['target'] = 'mediabox';
+				}
+
 				break;
 		}
 
-		return $str;
+		return $opts;
 	}
 
 	/**
@@ -253,10 +305,64 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 
 	public function elementJavascript($repeatCounter)
 	{
+		$params = $this->getParams();
+
 		$id = $this->getHTMLId($repeatCounter);
 		$opts = $this->getElementJSOptions($repeatCounter);
 
+		$input_mask = trim($params->get('text_input_mask', ''));
+
+		if (!empty($input_mask))
+		{
+			$opts->use_input_mask = true;
+			$opts->input_mask = $input_mask;
+		}
+		else
+		{
+			$opts->use_input_mask = false;
+			$opts->input_mask = '';
+		}
+
+		if ($this->getParams()->get('autocomplete', '0') == '2')
+		{
+			$autoOpts = array();
+			$autoOpts['max'] = $this->getParams()->get('autocomplete_rows', '10');
+			$autoOpts['storeMatchedResultsOnly'] = false;
+			FabrikHelperHTML::autoComplete($id, $this->getElement()->id, $this->getFormModel()->getId(), 'field', $autoOpts);
+		}
+
 		return array('FbField', $id, $opts);
+	}
+
+	/**
+	 * Get the class to manage the form element
+	 * to ensure that the file is loaded only once
+	 *
+	 * @param   array   &$srcs   Scripts previously loaded
+	 * @param   string  $script  Script to load once class has loaded
+	 * @param   array   &$shim   Dependant class names to load before loading the class - put in requirejs.config shim
+	 *
+	 * @return void
+	 */
+
+	public function formJavascriptClass(&$srcs, $script = '', &$shim = array())
+	{
+		$params = $this->getParams();
+		$input_mask = trim($params->get('text_input_mask', ''));
+
+		if (!empty($input_mask))
+		{
+			$s = new stdClass;
+			$s->deps = array('fab/element');
+			$folder = 'components/com_fabrik/libs/masked_input/';
+			$s->deps[] = $folder . 'jquery.maskedinput';
+			$shim['element/field/field'] = $s;
+		}
+
+		parent::formJavascriptClass($srcs, $script, $shim);
+
+		// $$$ hugh - added this, and some logic in the view, so we will get called on a per-element basis
+		return false;
 	}
 
 	/**
@@ -337,7 +443,7 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 	}
 
 	/**
-	 * Manupulates posted form data for insertion into database
+	 * Manipulates posted form data for insertion into database
 	 *
 	 * @param   mixed  $val   This elements posted form data
 	 * @param   array  $data  Posted form data
@@ -365,7 +471,7 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 	}
 
 	/**
-	 * Manupulates individual values posted form data for insertion into database
+	 * Manipulates individual values posted form data for insertion into database
 	 *
 	 * @param   string  $val  This elements posted form data
 	 *
@@ -397,5 +503,120 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 		}
 
 		return $classes;
+	}
+
+	/**
+	 * Output a QR Code image
+	 *
+	 * @since 3.1
+	 */
+
+	public function onAjax_renderQRCode()
+	{
+		$app = JFactory::getApplication();
+		$input = $app->input;
+		$this->setId($input->getInt('element_id'));
+		$this->loadMeForAjax();
+		$this->getElement();
+		$params = $this->getParams();
+		$lang = JFactory::getLanguage();
+		$lang->load('com_fabrik.plg.element.field', JPATH_ADMINISTRATOR);
+
+		if (!$this->canView())
+		{
+			$app->enqueueMessage(FText::_('PLG_ELEMENT_FIELD_NO_PERMISSION'));
+			$app->redirect($url);
+			exit;
+		}
+
+		$rowid = $input->get('rowid', '', 'string');
+
+		if (empty($rowid))
+		{
+			// $app->enqueueMessage(FText::_('PLG_ELEMENT_FIELD_NO_SUCH_FILE'));
+			$app->redirect($url);
+			exit;
+		}
+
+		$repeatcount = $input->getInt('repeatcount', 0);
+		$listModel = $this->getListModel();
+		$row = $listModel->getRow($rowid, false);
+
+		if (empty($row))
+		{
+			// $app->enqueueMessage(FText::_('PLG_ELEMENT_FIELD_NO_SUCH_FILE'));
+			$app->redirect($url);
+			exit;
+		}
+
+		$elName = $this->getFullName(true, false);
+		$value = $row->$elName;
+
+		require JPATH_SITE . '/components/com_fabrik/libs/qrcode/qrcode.php';
+
+		// Usage: $a=new QR('234DSKJFH23YDFKJHaS');$a->image(4);
+		$qr = new QR($value);
+		$img = $qr->image(4);
+
+		if (!empty($img))
+		{
+			// Some time in the past
+			header("Expires: Sat, 26 Jul 1997 05:00:00 GMT");
+			header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
+			header("Cache-Control: no-store, no-cache, must-revalidate");
+			header("Cache-Control: post-check=0, pre-check=0", false);
+			header("Pragma: no-cache");
+			header('Accept-Ranges: bytes');
+			header('Content-Length: ' . strlen($img));
+			header('Content-Type: ' . 'image/gif');
+
+			// Serve up the file
+			echo $img;
+
+			// And we're done.
+			exit();
+		}
+		else
+		{
+			$app->enqueueMessage(FText::_('PLG_ELEMENT_FIELD_NO_SUCH_FILE'));
+			$app->redirect($url);
+			exit;
+		}
+	}
+
+	/**
+	 * Get a link to this element which will call onAjax_renderQRCode().
+	 *
+	 * @param   value  string  element's value
+	 * @param   thisRow  array  row data
+	 *
+	 * @since 3.1
+	 *
+	 * @return   string  QR code link
+	 */
+
+	protected function qrCodeLink($value, $thisRow)
+	{
+		if (is_object($thisRow))
+		{
+			$thisRow = JArrayHelper::fromObject($thisRow);
+		}
+
+		$app = JFactory::getApplication();
+		$package = $app->getUserState('com_fabrik.package', 'fabrik');
+		$formModel = $this->getForm();
+		$formid = $formModel->getId();
+		$rowid = $formModel->getRowId();
+
+		if (empty($rowid)) {
+			$rowid = FArrayHelper::getValue($thisRow, '__pk_val', '');
+		}
+
+		$elementid = $this->getId();
+		$link = COM_FABRIK_LIVESITE
+		. 'index.php?option=com_' . $package . '&amp;task=plugin.pluginAjax&amp;plugin=field&amp;method=ajax_renderQRCode&amp;'
+				. 'format=raw&amp;element_id=' . $elementid . '&amp;formid=' . $formid . '&amp;rowid=' . $rowid . '&amp;repeatcount=0';
+		$value = '<img src="' . $link . '"/>';
+		return $value;
 	}
 }

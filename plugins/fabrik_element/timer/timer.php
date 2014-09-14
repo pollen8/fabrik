@@ -55,7 +55,7 @@ class PlgFabrik_ElementTimer extends PlgFabrik_Element
 	/**
 	 * Draws the html form element
 	 *
-	 * @param   array  $data           to preopulate element with
+	 * @param   array  $data           to pre-populate element with
 	 * @param   int    $repeatCounter  repeat group counter
 	 *
 	 * @return  string	elements html
@@ -105,13 +105,16 @@ class PlgFabrik_ElementTimer extends PlgFabrik_Element
 			return ($element->hidden == '1') ? "<!-- " . $value . " -->" : $value;
 		}
 
-		$class = 'class="fabrikinput inputbox ' . $type . '"';
-		$str[] = '<input ' . $class . ' name="' . $name . '" id="' . $id . '" ' . $sizeInfo . 'value="' . $value . '" />';
+		$class = 'class="fabrikinput input-small inputbox ' . $type . '"';
+		$str[] = '<input type="text" ' . $class . ' name="' . $name . '" id="' . $id . '" ' . $sizeInfo . 'value="' . $value . '" />';
 
 		if (!$params->get('timer_readonly'))
 		{
-			$img = '<i class="icon-time"></i> <span>' . JText::_('PLG_ELEMENT_TIMER_START') . '</span>';
-			$str[] .= '<button class="btn" id="' . $id . '_button">' . $img . '</button>';
+			array_unshift($str, '<div class="input-append">');
+			$icon = $params->get('icon', 'icon-clock');
+			$img = '<i class="' . $icon . '"></i> <span>' . FText::_('PLG_ELEMENT_TIMER_START') . '</span>';
+			$str[] = '<button class="btn" id="' . $id . '_button">' . $img . '</button>';
+			$str[] = '</div>';
 		}
 
 		return implode("\n", $str);
@@ -148,21 +151,13 @@ class PlgFabrik_ElementTimer extends PlgFabrik_Element
 
 	protected function getSumQuery(&$listModel, $labels = array())
 	{
-		if (count($labels) == 0)
-		{
-			$label = "'calc' AS label";
-		}
-		else
-		{
-			$label = 'CONCAT(' . implode(', " & " , ', $labels) . ')  AS label';
-		}
-
+		$label = count($labels) == 0 ? "'calc' AS label" : 'CONCAT(' . implode(', " & " , ', $labels) . ')  AS label';
 		$table = $listModel->getTable();
 		$joinSQL = $listModel->buildQueryJoin();
 		$whereSQL = $listModel->buildQueryWhere();
 		$name = $this->getFullName(false, false);
 
-		// $$$rob not actaully likely to work due to the query easily exceeding mySQL's  TIMESTAMP_MAX_VALUE value but the query in itself is correct
+		// $$$rob not actually likely to work due to the query easily exceeding MySQL's TIMESTAMP_MAX_VALUE value but the query in itself is correct
 		return "SELECT DATE_FORMAT(FROM_UNIXTIME(SUM(UNIX_TIMESTAMP($name))), '%H:%i:%s') AS value, $label FROM
 		`$table->db_table_name` $joinSQL $whereSQL";
 	}
@@ -170,41 +165,45 @@ class PlgFabrik_ElementTimer extends PlgFabrik_Element
 	/**
 	 * Build the query for the avg calculation
 	 *
-	 * @param   model   &$listModel  list model
-	 * @param   string  $label       the label to apply to each avg
+	 * @param   model  &$listModel  list model
+	 * @param   array  $labels      Labels
 	 *
 	 * @return  string	sql statement
 	 */
 
-	protected function getAvgQuery(&$listModel, $label = "'calc'")
+	protected function getAvgQuery(&$listModel, $labels = array())
 	{
+		$label = count($labels) == 0 ? "'calc' AS label" : 'CONCAT(' . implode(', " & " , ', $labels) . ')  AS label';
 		$table = $listModel->getTable();
+		$db = $listModel->getDb();
 		$joinSQL = $listModel->buildQueryJoin();
 		$whereSQL = $listModel->buildQueryWhere();
 		$name = $this->getFullName(false, false);
 
-		return "SELECT DATE_FORMAT(FROM_UNIXTIME(AVG(UNIX_TIMESTAMP($name))), '%H:%i:%s') AS value, $label AS label FROM
-		`$table->db_table_name` $joinSQL $whereSQL";
+		return "SELECT DATE_FORMAT(FROM_UNIXTIME(AVG(UNIX_TIMESTAMP($name))), '%H:%i:%s') AS value, $label FROM " .
+		$db->quoteName($table->db_table_name) . " $joinSQL $whereSQL";
 	}
 
 	/**
-	 * Get a query for our media query
+	 * Get a query for our median query
 	 *
-	 * @param   object  &$listModel  list
-	 * @param   string  $label       label
+	 * @param   object  &$listModel  List
+	 * @param   array   $labels      Label
 	 *
 	 * @return string
 	 */
 
-	protected function getMedianQuery(&$listModel, $label = "'calc'")
+	protected function getMedianQuery(&$listModel, $labels = array())
 	{
+		$label = count($labels) == 0 ? "'calc' AS label" : 'CONCAT(' . implode(', " & " , ', $labels) . ')  AS label';
 		$table = $listModel->getTable();
+		$db = $listModel->getDbo();
 		$joinSQL = $listModel->buildQueryJoin();
 		$whereSQL = $listModel->buildQueryWhere();
 		$name = $this->getFullName(false, false);
 
-		return "SELECT DATE_FORMAT(FROM_UNIXTIME((UNIX_TIMESTAMP($name))), '%H:%i:%s') AS value, $label AS label FROM
-		`$table->db_table_name` $joinSQL $whereSQL";
+		return "SELECT DATE_FORMAT(FROM_UNIXTIME((UNIX_TIMESTAMP($name))), '%H:%i:%s') AS value, $label FROM
+		" . $db->quoteName($table->db_table_name) . " $joinSQL $whereSQL";
 	}
 
 	/**

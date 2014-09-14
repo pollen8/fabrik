@@ -1,6 +1,5 @@
-
 nv.models.pie = function() {
-
+  "use strict";
   //============================================================
   // Public Variables with Default Settings
   //------------------------------------------------------------
@@ -8,17 +7,22 @@ nv.models.pie = function() {
   var margin = {top: 0, right: 0, bottom: 0, left: 0}
     , width = 500
     , height = 500
-    , getValues = function(d) { return d.values }
     , getX = function(d) { return d.x }
     , getY = function(d) { return d.y }
+    , getDescription = function(d) { return d.description }
     , id = Math.floor(Math.random() * 10000) //Create semi-unique ID in case user doesn't select one
     , color = nv.utils.defaultColor()
     , valueFormat = d3.format(',.2f')
     , showLabels = true
+    , pieLabelsOutside = true
     , donutLabelsOutside = false
+    , labelType = "key"
     , labelThreshold = .02 //if slice percentage is under this, don't show label
     , donut = false
     , labelSunbeamLayout = false
+    , startAngle = false
+    , endAngle = false
+    , donutRatio = 0.5
     , dispatch = d3.dispatch('chartClick', 'elementClick', 'elementDblClick', 'elementMouseover', 'elementMouseout')
     ;
 
@@ -38,7 +42,7 @@ nv.models.pie = function() {
       // Setup containers and skeleton of chart
 
       //var wrap = container.selectAll('.nv-wrap.nv-pie').data([data]);
-      var wrap = container.selectAll('.nv-wrap.nv-pie').data([getValues(data[0])]);
+      var wrap = container.selectAll('.nv-wrap.nv-pie').data(data);
       var wrapEnter = wrap.enter().append('g').attr('class','nvd3 nv-wrap nv-pie nv-chart-' + id);
       var gEnter = wrapEnter.append('g');
       var g = wrap.select('g');
@@ -65,8 +69,9 @@ nv.models.pie = function() {
       var arc = d3.svg.arc()
                   .outerRadius(arcRadius);
 
-      if (donut) arc.innerRadius(radius / 2);
-
+      if (startAngle) arc.startAngle(startAngle)
+      if (endAngle) arc.endAngle(endAngle);
+      if (donut) arc.innerRadius(radius * donutRatio);
 
       // Setup the Pie chart and choose the data element
       var pie = d3.layout.pie()
@@ -138,10 +143,11 @@ nv.models.pie = function() {
 
         if (showLabels) {
           // This does the normal label
-          var labelsArc = arc;
-          if (donutLabelsOutside) {
-            labelsArc = d3.svg.arc().outerRadius(arc.outerRadius())
-          }
+          var labelsArc = d3.svg.arc().innerRadius(0);
+          
+          if (pieLabelsOutside){ labelsArc = arc; }
+
+          if (donutLabelsOutside) { labelsArc = d3.svg.arc().outerRadius(arc.outerRadius()); }
 
           ae.append("g").classed("nv-label", true)
             .each(function(d, i) {
@@ -206,7 +212,12 @@ nv.models.pie = function() {
                 .style('text-anchor', labelSunbeamLayout ? ((d.startAngle + d.endAngle) / 2 < Math.PI ? 'start' : 'end') : 'middle') //center the text on it's origin or begin/end if orthogonal aligned
                 .text(function(d, i) {
                   var percent = (d.endAngle - d.startAngle) / (2 * Math.PI);
-                  return (d.value && percent > labelThreshold) ? getX(d.data) : '';
+                  var labelTypes = {
+                    "key" : getX(d.data),
+                    "value": getY(d.data),
+                    "percent": d3.format('%')(percent)
+                  };
+                  return (d.value && percent > labelThreshold) ? labelTypes[labelType] : '';
                 });
 
             var textBox = slice.select('text').node().getBBox();
@@ -227,6 +238,8 @@ nv.models.pie = function() {
         }
 
         function arcTween(a) {
+          a.endAngle = isNaN(a.endAngle) ? 0 : a.endAngle;
+          a.startAngle = isNaN(a.startAngle) ? 0 : a.startAngle;
           if (!donut) a.innerRadius = 0;
           var i = d3.interpolate(this._current, a);
           this._current = i(0);
@@ -254,6 +267,7 @@ nv.models.pie = function() {
   //------------------------------------------------------------
 
   chart.dispatch = dispatch;
+  chart.options = nv.utils.optionsFunc.bind(chart);
 
   chart.margin = function(_) {
     if (!arguments.length) return margin;
@@ -277,8 +291,7 @@ nv.models.pie = function() {
   };
 
   chart.values = function(_) {
-    if (!arguments.length) return getValues;
-    getValues = _;
+    nv.log("pie.values() is no longer supported.");
     return chart;
   };
 
@@ -291,6 +304,12 @@ nv.models.pie = function() {
   chart.y = function(_) {
     if (!arguments.length) return getY;
     getY = d3.functor(_);
+    return chart;
+  };
+  
+  chart.description = function(_) {
+    if (!arguments.length) return getDescription;
+    getDescription = _;
     return chart;
   };
 
@@ -311,10 +330,41 @@ nv.models.pie = function() {
     donutLabelsOutside = _;
     return chart;
   };
+  
+  chart.pieLabelsOutside = function(_) {
+    if (!arguments.length) return pieLabelsOutside;
+    pieLabelsOutside = _;
+    return chart;
+  };
+
+  chart.labelType = function(_) {
+    if (!arguments.length) return labelType;
+    labelType = _;
+    labelType = labelType || "key";
+    return chart;
+  };
 
   chart.donut = function(_) {
     if (!arguments.length) return donut;
     donut = _;
+    return chart;
+  };
+  
+  chart.donutRatio = function(_) {
+    if (!arguments.length) return donutRatio;
+    donutRatio = _;
+    return chart;
+  };
+
+  chart.startAngle = function(_) {
+    if (!arguments.length) return startAngle;
+    startAngle = _;
+    return chart;
+  };
+
+  chart.endAngle = function(_) {
+    if (!arguments.length) return endAngle;
+    endAngle = _;
     return chart;
   };
 
@@ -341,7 +391,6 @@ nv.models.pie = function() {
     labelThreshold = _;
     return chart;
   };
-
   //============================================================
 
 

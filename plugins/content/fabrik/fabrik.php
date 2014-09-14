@@ -26,7 +26,7 @@ class PlgContentFabrik extends JPlugin
 	/**
 	 * Constructor
 	 *
-	 * For php4 compatability we must not use the __constructor as a constructor for plugins
+	 * For php4 compatibility we must not use the __constructor as a constructor for plugins
 	 * because func_get_args ( void ) returns a copy of all passed arguments NOT references.
 	 * This causes problems with cross-referencing necessary for the observer design pattern.
 	 *
@@ -197,6 +197,7 @@ class PlgContentFabrik extends JPlugin
 		$layoutFound = false;
 		$rowid = '';
 		$usekey = '';
+		$limit = false;
 		$defaultLayout = FabrikWorker::j3() ? 'bootstrap' : 'default';
 		$session = JFactory::getSession();
 		$usersConfig->set('rowid', 0);
@@ -214,13 +215,12 @@ class PlgContentFabrik extends JPlugin
 					$viewName = JString::strtolower($m[1]);
 					break;
 				case 'id':
-					// Cast to int incase there are two spaces after value.
+					// Cast to int in case there are two spaces after value.
 					$id = (int) $m[1];
 					break;
 				case 'layout':
 					$layoutFound = true;
 					$layout = $m[1];
-					$origLayout = $input->get('layout');
 					$input->set('layout', $layout);
 					break;
 				case 'row':
@@ -251,6 +251,8 @@ class PlgContentFabrik extends JPlugin
 				case 'list':
 					$listid = $m[1];
 					break;
+				case 'limit':
+					$limit = $m[1];
 				case 'usekey':
 					$usekey = $m[1];
 					break;
@@ -273,9 +275,10 @@ class PlgContentFabrik extends JPlugin
 					{
 						/**
 						 * These are later set as app->input vars if present in list view
+						 * html_entity_decode to allow for content plugin values to contain &nbsp;
 						 * Urlencode the value for plugin statements such as: asylum_events___start_date[condition]=>
 						 */
-						$unused[] = trim($m[0]) . '=' . urlencode($m[1]);
+						$unused[] = trim($m[0]) . '=' .  urlencode(html_entity_decode($m[1], ENT_NOQUOTES));
 					}
 			}
 		}
@@ -295,7 +298,14 @@ class PlgContentFabrik extends JPlugin
 		// If no layout defined - set it
 		if (!$layoutFound)
 		{
-			$input->set('layout', $defaultLayout);
+			$thisLayout = $input->get('layout');
+
+			// Also test for saving an article
+			if ($input->get('option') === 'com_content' && ($thisLayout === 'blog' || ($app->isAdmin() && $thisLayout === 'edit')))
+			{
+				$layout = 'default';
+				$input->set('layout', $layout);
+			}
 		}
 
 		/* $$$ hugh - added this so the fabrik2article plugin can arrange to have form CSS
@@ -355,7 +365,7 @@ class PlgContentFabrik extends JPlugin
 				foreach ($elements as &$elementModel)
 				{
 					// $$$ rob 26/05/2011 changed it so that you can pick up joined elements without specifying plugin
-					// param 'element' as joinx[x][fullname] but simpy 'fullname'
+					// param 'element' as joinx[x][fullname] but simply 'fullname'
 					if ($element == $elementModel->getFullName(true, false))
 					{
 						$activeEl = $elementModel;
@@ -379,6 +389,7 @@ class PlgContentFabrik extends JPlugin
 			}
 			else
 			{
+				$this->_setRequest($unused);
 				$row = $model->getRow($rowid, false, true);
 
 				if (substr($element, JString::strlen($element) - 4, JString::strlen($element)) !== '_raw')
@@ -400,8 +411,26 @@ class PlgContentFabrik extends JPlugin
 
 				$defaultdata = (array) $defaultdata;
 				unset($activeEl->defaults);
-				$res = $activeEl->render($defaultdata, $repeatcounter);
+
+				if ($repeatcounter === 'all')
+				{
+					$repeat = $activeEl->getGroupModel()->repeatCount();
+					$res = array();
+
+					for ($j = 0; $j < $repeat; $j ++)
+					{
+						$res[] = $activeEl->render($defaultdata, $j);
+					}
+
+					$res = count($res) > 1 ? '<ul><li>' . implode('</li><li>', $res) . '</li></ul>' : $res[0];
+				}
+				else
+				{
+					$res = $activeEl->render($defaultdata, $repeatcounter);
+				}
+
 				$input->set('rowid', $origRowid);
+				$this->resetRequest();
 			}
 
 			return $res;
@@ -414,6 +443,9 @@ class PlgContentFabrik extends JPlugin
 
 		$origid = $input->get('id', '', 'string');
 		$origView = $input->get('view');
+
+		// Allow for random=1 (which has to map to fabrik_random for list views)
+		$origRandom = $input->get('fabrik_random');
 
 		// For fabble
 		$input->set('origid', $origid);
@@ -430,10 +462,17 @@ class PlgContentFabrik extends JPlugin
 
 		$document = JFactory::getDocument();
 		$viewType = $document->getType();
-		$controller = $this->getController($viewName, $id);
-		$view = $this->getView($controller, $viewName, $id);
+		$cacheKey = $id;
 
-		if ($model = $this->getModel($controller, $viewName, $id))
+		if ($rowid !== '')
+		{
+			$cacheKey .= '.' . $rowid;
+		}
+
+		$controller = $this->getController($viewName, $cacheKey);
+		$view = $this->getView($controller, $viewName, $cacheKey);
+
+		if ($model = $this->getModel($controller, $viewName, $cacheKey))
 		{
 			$view->setModel($model, true);
 		}
@@ -473,7 +512,7 @@ class PlgContentFabrik extends JPlugin
 				break;
 			case 'csv':
 			case 'table':
-			case 'list': /* $$$ rob 15/02/2011 addded this as otherwise when you filtered on a table
+			case 'list': /* $$$ rob 15/02/2011 added this as otherwise when you filtered on a table
 						  * with multiple filter set up subsequent tables were showing
 						  * the first tables data
 						  */
@@ -483,7 +522,19 @@ class PlgContentFabrik extends JPlugin
 				}
 
 				$input->set('listid', $id);
+
+				// Allow for simple limit=2 in plugin declaration
+				if ($limit)
+				{
+					$limitKey = 'limit' . $id;
+					$this->origRequestVars[$limitKey] = $input->get($limitKey);
+					$input->set($limitKey, $limit);
+				}
+
 				$this->_setRequest($unused);
+
+				$input->set('fabrik_random', $input->get('random', $origRandom));
+
 				$input->set('showfilters', $showfilters);
 				$input->set('clearfilters', $clearfilters);
 				$input->set('resetfilters', $resetfilters);
@@ -498,8 +549,23 @@ class PlgContentFabrik extends JPlugin
 				$model->setId($id);
 				$model->isMambot = true;
 
-				// Reset this otherwise embedding a list in a list menu page, the embedded list takes the show in list fields from the menu list
-				$input->set('fabrik_show_in_list', array());
+				/**
+				 *
+				 * Reset this otherwise embedding a list in a list menu page, the embedded list takes the show in list fields from the menu list
+				 *
+				 * $$$ hugh - nasty little hack to reduce 'emptyish' array, 'cos if no 'elements' in the request, the following ends up setting
+				 * returning an array with a single empty string.  This ends up meaning that we render a list with no
+				 * elements in it.  We've run across this before, so we have a FArrayHelper:;emptyish() to detect it.
+				 */
+
+				$show_in_list = explode('|', $input->getString('elements', ''));
+
+				if (FArrayHelper::emptyIsh($show_in_list, true))
+				{
+					$show_in_list = array();
+				}
+
+				$input->set('fabrik_show_in_list', $show_in_list);
 				$model->ajax = 1;
 				$task = $input->get('task');
 
@@ -559,6 +625,11 @@ class PlgContentFabrik extends JPlugin
 			$input->set('flayout', $origFFlayout);
 		}
 
+		if ($origRandom)
+		{
+			$input->set('fabrik_random', $origRandom);
+		}
+
 		$this->resetRequest();
 
 		return $result;
@@ -605,7 +676,7 @@ class PlgContentFabrik extends JPlugin
 		}
 
 		/*
-		 * $$$ rob set this array here - we will use in the tablefilter::getQuerystringFilters()
+		 * $$$ rob set this array here - we will use in the listfilter::getQuerystringFilters()
 		 * code to determine if the filter is a querystring filter or one set from the plugin
 		 * if its set from here it becomes sticky and is not cleared from the session. So we basically
 		 * treat all filters set up inside {fabrik.....} as prefilters
@@ -768,7 +839,7 @@ class PlgContentFabrik extends JPlugin
 				$controller = new FabrikControllerDetails;
 				break;
 			case 'list':
-				// $$$ hugh - had to add [$id] for cases where we have multiple plugins with different tableid's
+				// $$$ hugh - had to add [$id] for cases where we have multiple plugins with different tableids
 				if (array_key_exists('list', $this->controllers))
 				{
 					if (!array_key_exists($id, $this->controllers['list']))
@@ -837,7 +908,8 @@ class PlgContentFabrik extends JPlugin
 		}
 
 		// $$$rob looks like including the view does something to the layout variable
-		$layout = $input->get('layout', 'default');
+		$defaultLayout = FabrikWorker::j3() ? 'bootstrap' : 'default';
+		$layout = $input->get('layout', $defaultLayout);
 		require_once COM_FABRIK_FRONTEND . '/views/' . $view . '/view.html.php';
 
 		if (!is_null($layout))

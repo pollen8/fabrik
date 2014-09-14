@@ -41,7 +41,7 @@ class JFormFieldSQL2 extends JFormFieldList
 
 	protected function getOptions()
 	{
-		$db = FabrikWorker::getDbo();
+		$db = FabrikWorker::getDbo(true);
 		$check = $this->element['checkexists'] ? (bool) $this->element['checkexists'] : false;
 
 		if ($check)

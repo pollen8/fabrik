@@ -74,6 +74,13 @@ class FabrikViewList extends FabrikViewListBase
 		$titleEl = $params->get('feed_title');
 		$dateEl = (int) $params->get('feed_date');
 
+		$imageEl = $formModel->getElement($imageEl, true);
+		$titleEl = $formModel->getElement($titleEl, true);
+		$dateEl = $formModel->getElement($dateEl, true);
+		$title = $titleEl === false ? '' : $titleEl->getFullName(true, false);
+		$date = $dateEl === false ? '' : $dateEl->getFullName(true, false);
+		$dateRaw = $date . '_raw';
+
 		foreach ($groupModels as $groupModel)
 		{
 			$elementModels = $groupModel->getPublishedElements();
@@ -82,17 +89,6 @@ class FabrikViewList extends FabrikViewListBase
 			{
 				$element = $elementModel->getElement();
 				$elParams = $elementModel->getParams();
-
-				if ($element->id == $titleEl)
-				{
-					$titleEl = $elementModel->getFullName(true, false);
-				}
-
-				if ($element->id == $dateEl)
-				{
-					$dateEl = $elementModel->getFullName(true, false);
-					$rawdateEl = $dateEl . '_raw';
-				}
 
 				if ($elParams->get('show_in_rss_feed') == '1')
 				{
@@ -163,6 +159,8 @@ class FabrikViewList extends FabrikViewListBase
 		$document->description = htmlspecialchars(trim(strip_tags($w->parseMessageForPlaceHolder($table->introduction, $_REQUEST))));
 		$document->link = JRoute::_('index.php?option=com_' . $package . '&view=list&listid=' . $table->id . '&Itemid=' . $Itemid);
 
+		$this->addImage($document, $params);
+
 		// Check for a custom css file and include it if it exists
 		$tmpl = $input->get('layout', $table->template);
 		$csspath = COM_FABRIK_FRONTEND . 'views/list/tmpl/' . $tmpl . '/feed.css';
@@ -175,7 +173,7 @@ class FabrikViewList extends FabrikViewListBase
 		$view = $model->canEdit() ? 'form' : 'details';
 
 		// List of tags to look for in the row data
-		// If they are there don't put them in the desc but put them in as a seperate item param
+		// If they are there don't put them in the desc but put them in as a separate item param
 		$rsstags = array(
 				'<georss:point>' => 'xmlns:georss="http://www.georss.org/georss"'
 		);
@@ -196,7 +194,7 @@ class FabrikViewList extends FabrikViewListBase
 				{
 					if ($dbcolname['enclosure'])
 					{
-						// $$$ hugh - diddling aorund trying to add enclosures
+						// $$$ hugh - diddling around trying to add enclosures
 						$colName = $dbcolname['colName'] . '_raw';
 						$enclosure_url = $row->$colName;
 
@@ -253,7 +251,7 @@ class FabrikViewList extends FabrikViewListBase
 						$title = $row->$dbcolname['colName'];
 					}
 
-					// Rob - was stripping tags - but arent they valid in the content?
+					// Rob - was stripping tags - but aren't they valid in the content?
 					$rsscontent = $row->$dbcolname['colName'];
 					$found = false;
 
@@ -291,12 +289,13 @@ class FabrikViewList extends FabrikViewListBase
 					}
 				}
 
-				if (isset($row->$titleEl))
+				if (isset($row->$title))
 				{
-					$title = $row->$titleEl;
+					$title = $row->$title;
 				}
 
-				if ($dbcolname['label'] != '')
+
+				if (JArrayHelper::getValue($dbcolname, 'label') != '')
 				{
 					$str = $tstart . $str . "</table>";
 				}
@@ -315,21 +314,17 @@ class FabrikViewList extends FabrikViewListBase
 				// Strip html from feed item description text
 				$author = @$row->created_by_alias ? @$row->created_by_alias : @$row->author;
 
-				if ($dateEl != '')
+				if ($date != '')
 				{
-					$date = $row->$dateEl ? date('r', strtotime(@$row->$rawdateEl)) : '';
+					$item->date = $row->$date ? date('r', strtotime(@$row->$dateRaw)) : '';
 				}
-				else
-				{
-					$date = '';
-				}
+
 				// Load individual item creator class
 
 				$item->title = $title;
 				$item->link = $link;
 				$item->guid = $guid;
 				$item->description = $str;
-				$item->date = $date;
 
 				// $$$ hugh - not quite sure where we were expecting $row->category to come from.  Comment out for now.
 				// $item->category = $row->category;
@@ -343,6 +338,33 @@ class FabrikViewList extends FabrikViewListBase
 				$res = $document->addItem($item);
 			}
 		}
+	}
+
+	/**
+	 * Add <image> to document
+	 *
+	 * @param   object  $document  JDocument
+	 * @param   object  $params    JRegistry list parameters
+	 *
+	 * @return  document
+	 */
+	private function addImage(&$document, $params)
+	{
+		$imageSrc = $params->get('feed_image_src', '');
+
+		if ($imageSrc !== '')
+		{
+			$image = new stdClass;
+			$image->url = $imageSrc;
+			$image->title = $document->title;
+			$image->link = $document->link;
+			$image->width = '';
+			$image->height = '';
+			$image->description = '';
+			$document->image = $image;
+		}
+
+		return $document;
 	}
 
 	/**

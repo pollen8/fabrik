@@ -124,7 +124,7 @@ class FabrikControllerList extends JControllerLegacy
 	public function clearfilter()
 	{
 		$app = JFactory::getApplication();
-		$app->enqueueMessage(JText::_('COM_FABRIK_FILTERS_CLEARED'));
+		$app->enqueueMessage(FText::_('COM_FABRIK_FILTERS_CLEARED'));
 		/**
 		 * $$$ rob 28/12/20111 changed from clearfilters as clearfilters removes jpluginfilters (filters
 		 * set by content plugin which we want to remain sticky. Otherwise list clear button removes the
@@ -134,7 +134,7 @@ class FabrikControllerList extends JControllerLegacy
 
 		/**
 		 * $$$ rob 07/02/2012 if reset filters set in the menu options then filters not cleared
-		 * so instead use replacefilters which doesnt look at the menu item parameters.
+		 * so instead use replacefilters which doesn't look at the menu item parameters.
 		 */
 		$app->input->set('replacefilters', 1);
 		$this->filter();
@@ -185,8 +185,8 @@ class FabrikControllerList extends JControllerLegacy
 
 		try
 		{
-			$model->deleteRows($ids);
-			$msg = count($ids) . ' ' . JText::_('COM_FABRIK_RECORDS_DELETED');
+			$ok = $model->deleteRows($ids);
+			$msg = $ok ? count($ids) . ' ' . FText::_('COM_FABRIK_RECORDS_DELETED') : '';
 			$msgType = 'message';
 		}
 		catch (Exception $e)
@@ -228,7 +228,8 @@ class FabrikControllerList extends JControllerLegacy
 		else
 		{
 			// @TODO: test this
-			$app->redirect($ref, $msg, $msgType);
+			$app->enqueueMessage($msg, $msgType);
+			$app->redirect($ref);
 		}
 	}
 

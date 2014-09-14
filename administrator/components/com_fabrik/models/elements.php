@@ -62,6 +62,8 @@ class FabrikAdminModelElements extends FabModelList
 		$query->select($this->getState('list.select', 'e.*, e.ordering AS ordering'));
 		$query->from('#__{package}_elements AS e');
 
+		$query->select('(SELECT COUNT(*) FROM #__fabrik_jsactions AS js WHERE js.element_id = e.id) AS numJs');
+
 		// Filter by published state
 		$published = $this->getState('filter.published');
 
@@ -148,7 +150,7 @@ class FabrikAdminModelElements extends FabModelList
 		 * WHERE (jj.list_id != 0 AND jj.element_id = 0)
 		 * ...instead of ...
 		 * WHERE jj.list_id != 0
-		 * ... otherwioe we pick up repeat elements, as they have both table and element set
+		 * ... otherwise we pick up repeat elements, as they have both table and element set
 		 * and he query fails with "returns multiple values" for the fullname select
 		 */
 
@@ -185,24 +187,29 @@ class FabrikAdminModelElements extends FabModelList
 		$db->setQuery($query);
 		$viewLevels = $db->loadObjectList('id');
 
-		// Get the join elemnent name of those elements not in a joined group
+		// Get the join element name of those elements not in a joined group
 		foreach ($items as &$item)
 		{
 			if ($item->full_element_name == '')
 			{
 				$item->full_element_name = $item->db_table_name . '___' . $item->name;
 			}
+
 			// Add a tip containing the access level information
 			$params = new JRegistry($item->params);
 
-			$accessTitle = JArrayHelper::getValue($viewLevels, $item->access);
-			$accessTitle = is_object($accessTitle) ? $accessTitle->title : 'n/a';
+			$addAccessTitle = JArrayHelper::getValue($viewLevels, $item->access);
+			$addAccessTitle = is_object($addAccessTitle) ? $addAccessTitle->title : 'n/a';
+
+			$editAccessTitle = JArrayHelper::getValue($viewLevels, $params->get('edit_access', 1));
+			$editAccessTitle = is_object($editAccessTitle) ? $editAccessTitle->title : 'n/a';
 
 			$viewAccessTitle = JArrayHelper::getValue($viewLevels, $params->get('view_access', 1));
 			$viewAccessTitle = is_object($viewAccessTitle) ? $viewAccessTitle->title : 'n/a';
 
-			$item->tip = JText::_('COM_FABRIK_ACCESS_EDITABLE_ELEMENT') . ': ' . $accessTitle .
-			'<br />' . JText::_('COM_FABRIK_ACCESS_VIEWABLE_ELEMENT') . ': ' . $viewAccessTitle;
+			$item->tip = FText::_('COM_FABRIK_ACCESS_EDITABLE_ELEMENT') . ': ' . $addAccessTitle
+				. '<br />' . FText::_('COM_FABRIK_ELEMENT_EDIT_ACCESS_LABEL') . ': ' . $editAccessTitle
+				. '<br />' . FText::_('COM_FABRIK_ACCESS_VIEWABLE_ELEMENT') . ': ' . $viewAccessTitle;
 
 			$validations = $params->get('validations');
 			$v = array();
@@ -215,12 +222,11 @@ class FabrikAdminModelElements extends FabModelList
 					$pname = $validations->plugin[$i];
 					/*
 					 * $$$ hugh - it's possible to save an element with a validation that hasn't
-					 * actually had a plugin type selected yet.  Yeah, I should add a language
-					 * string for this.  So sue me.  :)
+					 * actually had a plugin type selected yet.
 					 */
 					if (empty($pname))
 					{
-						$v[] = "No plugin type selected!";
+						$v[] = '&nbsp;&nbsp;<strong>' . FText::_('COM_FABRIK_ELEMENTS_NO_VALIDATION_SELECTED'). '</strong>';
 						continue;
 					}
 
@@ -231,15 +237,15 @@ class FabrikAdminModelElements extends FabModelList
 					 */
 					if (!isset($validations->plugin_published))
 					{
-						$published = JText::_('JPUBLISHED');
+						$published = FText::_('JPUBLISHED');
 					}
 					else
 					{
-						$published = $validations->plugin_published[$i] ? JText::_('JPUBLISHED') : JText::_('JUNPUBLISHED');
+						$published = $validations->plugin_published[$i] ? FText::_('JPUBLISHED') : FText::_('JUNPUBLISHED');
 					}
 
-					$v[] = '<b>' . $pname . '</b><i> ' . $published . '</i>'
-					. '<br />' . JText::_('COM_FABRIK_FIELD_ERROR_MSG_LABEL') . ': <i>' . JArrayHelper::getValue($msgs, $i, 'n/a') . '</i>';
+					$v[] = '&nbsp;&nbsp;<strong>' . $pname . ': <em>' . $published . '</em></strong>'
+						. '<br />&nbsp;&nbsp;&nbsp;&nbsp;' . FText::_('COM_FABRIK_FIELD_ERROR_MSG_LABEL') . ': <em>' . htmlspecialchars(JArrayHelper::getValue($msgs, $i, 'n/a')) . '</em>';
 				}
 			}
 
@@ -325,7 +331,7 @@ class FabrikAdminModelElements extends FabModelList
 
 	public function getShowInListOptions()
 	{
-		return array(JHtml::_('select.option', 0, JText::_('JNO')), JHtml::_('select.option', 1, JText::_('JYES')));
+		return array(JHtml::_('select.option', 0, FText::_('JNO')), JHtml::_('select.option', 1, FText::_('JYES')));
 	}
 
 	/**
@@ -369,5 +375,38 @@ class FabrikAdminModelElements extends FabModelList
 			$item->load($id);
 			$item->batch($batch);
 		}
+	}
+
+	/**
+	 * Stops internal id from being unpublished
+	 *
+	 * @param   array  $ids  Ids wanting to be unpublished
+	 *
+	 * @return  array  allowed ids
+	 */
+	public function canUnpublish($ids)
+	{
+		JArrayHelper::toInteger($ids);
+		$blocked = array();
+		$allowed = array();
+
+		foreach ($ids as $id)
+		{
+			$item = $this->getTable('Element');
+			$item->load($id);
+
+			if ($item->plugin == 'internalid')
+			{
+				$blocked[] = $id;
+			}
+		}
+
+		if (!empty($blocked))
+		{
+			$app = JFactory::getApplication();
+			$app->enqueueMessage(FText::_('COM_FABRIK_CANT_UNPUBLISHED_PK_ELEMENT'), 'warning');
+		}
+
+		return array_diff($ids, $blocked);
 	}
 }

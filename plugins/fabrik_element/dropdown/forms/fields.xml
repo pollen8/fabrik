@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <form>
 	<fields name="params">
-		<fieldset name="plg-dropdown-mutli" label="COM_FABRIK_DATA">
+		<fieldset name="plg-dropdown-multi" label="COM_FABRIK_DATA">
 
 			<field type="helplink"
 				url="PLG_ELEMENT_DROPDOWN_HELP_SERVER" />
@@ -82,6 +82,19 @@
 				mode="php"
 				description="PLG_ELEMENT_DROPDOWN_POPULATE_DESC"
 				label="PLG_ELEMENT_DROPDOWN_POPULATE_LABEL" />
+
+		</fieldset>
+		
+		<fieldset label="PLG_ELEMENT_DROPDOWN_FORMATTING" name="plg-dropdown-formatting">
+
+			<field type="helplink"
+				url="PLG_ELEMENT_DROPDOWN_HELP_SERVER" />
+
+			<field name="bootstrap_class"
+				type="bootstrapfieldclass"
+				default="input-medium"
+				label="PLG_ELEMENT_BOOTSTRAP_CLASS_LABEL"
+				description="PLG_ELEMENT_BOOTSTRAP_CLASS_DESC" />
 
 		</fieldset>
 

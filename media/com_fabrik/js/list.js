@@ -46,7 +46,9 @@ var FbList = new Class({
 		'listRef': '', // e.g. '1_com_fabrik_1'
 		'fabrik_show_in_list': [],
 		'singleOrdering' : false,
-		'tmpl': ''
+		'tmpl': '',
+		'groupedBy' : '',
+		'toggleCols': false	
 	},
 
 	initialize: function (id, options) {
@@ -62,6 +64,11 @@ var FbList = new Class({
 				'floatPos': this.options.floatPos
 			});
 		}
+		
+		if (this.options.toggleCols) {
+			this.toggleCols = new FbListToggle(this.form);
+		}
+		
 		this.groupToggle = new FbGroupedToggler(this.form, this.options.groupByOpts);
 		new FbListKeys(this);
 		if (this.list) {
@@ -133,14 +140,29 @@ var FbList = new Class({
 	watchAll: function (ajaxUpdate) {
 		ajaxUpdate = ajaxUpdate ? ajaxUpdate : false;
 		this.watchNav();
+		this.storeCurrentValue();
 		if (!ajaxUpdate) {
 			this.watchRows();
+			this.watchFilters();
 		}
-		this.watchFilters();
 		this.watchOrder();
 		this.watchEmpty();
 		if (!ajaxUpdate) {
+			this.watchGroupByMenu();
 			this.watchButtons();
+		}
+	},
+	
+	watchGroupByMenu: function () {
+		if (this.options.ajax) {
+			this.form.addEvent('click:relay(*[data-groupBy])', function (e, target) {
+				this.options.groupedBy = target.get('data-groupBy');
+				if (e.rightClick) {
+					return;
+				}
+				e.preventDefault();
+				this.updateRows();
+			}.bind(this));
 		}
 	},
 
@@ -177,7 +199,7 @@ var FbList = new Class({
 		var thisc = this.makeCSVExportForm();
 		this.exportWindowOpts.content = thisc;
 		this.exportWindowOpts.onContentLoaded = function () {
-			this.fitToContent();
+			this.fitToContent(false);
 		};
 		this.csvWindow = Fabrik.getWindow(this.exportWindowOpts);
 	},
@@ -236,7 +258,7 @@ var FbList = new Class({
 			'type': 'radio',
 			'name': 'incraw',
 			'value': '0'
-		}), new Element('span').set('text', Joomla.JText._('JNO'))]), new Element('br'), new Element('div', divopts).appendText(Joomla.JText._('COM_FABRIK_INLCUDE_CALCULATIONS')), new Element('label').set('html', rad3), new Element('label').adopt([new Element('input', {
+		}), new Element('span').set('text', Joomla.JText._('JNO'))]), new Element('br'), new Element('div', divopts).appendText(Joomla.JText._('COM_FABRIK_INCLUDE_CALCULATIONS')), new Element('label').set('html', rad3), new Element('label').adopt([new Element('input', {
 			'type': 'radio',
 			'name': 'inccalcs',
 			'value': '0'
@@ -378,13 +400,7 @@ var FbList = new Class({
 			this.csvfields = fields;
 		}
 
-		this.getFilters().each(function (f) {
-			var v = f.get('value');
-			if (f.type === 'checkbox') {
-				v = (f.checked) ? f.get('value') : '';
-			}
-			opts[f.name] = v;
-		}.bind(this));
+		opts = this.csvExportFilterOpts(opts);
 		
 		opts.start = start;
 		opts.option = 'com_fabrik';
@@ -431,7 +447,7 @@ var FbList = new Class({
 						if (typeOf(document.id('csvmsg')) !== 'null') {
 							document.id('csvmsg').set('html', msg);
 						}
-						this.csvWindow.fitToContent();
+						this.csvWindow.fitToContent(false);
 						document.getElements('input.exportCSVButton').removeProperty('disabled');
 					}
 				}
@@ -440,6 +456,52 @@ var FbList = new Class({
 		myAjax.send();
 	},
 
+	/**
+	 * Add filter options to CSV export info
+	 * 
+	 * @param   objet  opts
+	 * 
+	 * @return  opts
+	 */
+	csvExportFilterOpts: function (opts) {
+		var ii = 0,
+		aa, bits,
+		advancedPointer = 0,
+		testii,
+		usedAdvancedKeys = ['value', 'condition', 'join', 'key', 'search_type', 'match', 'full_words_only', 'eval', 'grouped_to_previous', 'hidden', 'elementid'];
+		
+		this.getFilters().each(function (f) {
+			bits = f.name.split('[');
+			if (bits.length > 3) {
+				testii = bits[3].replace(']', '').toInt();
+				ii = testii > ii ? testii : ii;
+				
+				if (f.get('type') === 'checkbox' || f.get('type') === 'radio') {
+					if (f.checked) {
+						opts[f.name] = f.get('value');
+					}
+				} else {
+					opts[f.name] = f.get('value');
+				}
+			}
+		}.bind(this));
+		
+		ii ++;
+		
+		Object.each(this.options.advancedFilters, function (values, key) {
+			if (usedAdvancedKeys.contains(key)) {
+				advancedPointer = 0;
+				for (aa = 0; aa < values.length; aa ++) {
+					advancedPointer = aa + ii;
+					aName = 'fabrik___filter[list_' + this.options.listRef + '][' + key + '][' + advancedPointer + ']';
+					opts[aName] = values[aa];
+				}
+			}
+		}.bind(this));
+		
+		return opts;
+	},
+	
 	addPlugins: function (a) {
 		a.each(function (p) {
 			p.list = this;
@@ -474,9 +536,10 @@ var FbList = new Class({
 		hs.removeEvents('click');
 		hs.each(function (h) {
 			h.addEvent('click', function (e) {
-				var img = 'ordernone.png';
-				var orderdir = '';
-				var newOrderClass = '';
+				var img = 'ordernone.png',
+				orderdir = '',
+				newOrderClass = '',
+				bsClass;
 				// $$$ rob in pageadaycalendar.com h was null so reset to e.target
 				h = document.id(e.target);
 				var td = h.getParent('.fabrik_ordercell');
@@ -486,16 +549,19 @@ var FbList = new Class({
 				switch (h.className) {
 				case 'fabrikorder-asc':
 					newOrderClass = 'fabrikorder-desc';
+					bsClass = 'icon-arrow-up';
 					orderdir = 'desc';
 					img = 'orderdesc.png';
 					break;
 				case 'fabrikorder-desc':
 					newOrderClass = 'fabrikorder';
-					orderdir = "-";
+					bsClass = 'icon-menu-2';
+					orderdir = '-';
 					img = 'ordernone.png';
 					break;
 				case 'fabrikorder':
 					newOrderClass = 'fabrikorder-asc';
+					bsClass = 'icon-arrow-down';
 					orderdir = 'asc';
 					img = 'orderasc.png';
 					break;
@@ -511,20 +577,31 @@ var FbList = new Class({
 				}
 				h.className = newOrderClass;
 				var i = h.getElement('img');
+				var icon = h.getElement('*[class^="icon"]');
 				
 				// Swap images - if list doing ajax nav then we need to do this
 				if (this.options.singleOrdering) {
 					document.id(this.options.form).getElements('.fabrikorder, .fabrikorder-asc, .fabrikorder-desc').each(function (otherH) {
-						var i = otherH.getElement('img');
-						if (i) {
-							i.src = i.src.replace('ordernone.png', '').replace('orderasc.png', '').replace('orderdesc.png', '');
-							i.src += 'ordernone.png';
+						if (Fabrik.bootstrapped) {
+							var otherIcon = otherH.getElement('*[class^="icon"]');
+							otherIcon.className = 'icon-menu-2';
+						} else {
+							var i = otherH.getElement('img');
+							if (i) {
+								i.src = i.src.replace('ordernone.png', '').replace('orderasc.png', '').replace('orderdesc.png', '');
+								i.src += 'ordernone.png';
+							}
 						}
 					});
 				}
-				if (i) {
-					i.src = i.src.replace('ordernone.png', '').replace('orderasc.png', '').replace('orderdesc.png', '');
-					i.src += img;
+				
+				if (Fabrik.bootstrapped) {
+					icon.className = bsClass;
+				} else {
+					if (i) {
+						i.src = i.src.replace('ordernone.png', '').replace('orderasc.png', '').replace('orderdesc.png', '');
+						i.src += img;
+					}
 				}
 				
 				this.fabrikNavOrder(elementId, orderdir);
@@ -538,6 +615,14 @@ var FbList = new Class({
 		return document.id(this.options.form).getElements('.fabrik_filter');
 	},
 
+	storeCurrentValue: function () {
+		this.getFilters().each(function (f) {
+			if (this.options.filterMethod !== 'submitform') {
+				f.store('initialvalue', f.get('value'));
+			}
+		}.bind(this));
+	},
+	
 	watchFilters: function () {
 		var e = '';
 		var submit = document.id(this.options.form).getElements('.fabrik_filter_submit');
@@ -545,7 +630,6 @@ var FbList = new Class({
 			e = f.get('tag') === 'select' ? 'change' : 'blur';
 			if (this.options.filterMethod !== 'submitform') {
 				f.removeEvent(e);
-				f.store('initialvalue', f.get('value'));
 				f.addEvent(e, function (e) {
 					e.stop();
 					if (e.target.retrieve('initialvalue') !== e.target.get('value')) {
@@ -733,7 +817,8 @@ var FbList = new Class({
 	 */
 	getRowIds: function () {
 		var keys = [];
-		$H(this.options.data).each(function (group) {
+		var d = this.options.isGrouped ? $H(this.options.data) : this.options.data;
+		d.each(function (group) {
 			group.each(function (row) {
 				keys.push(row.data.__pk_val);
 			});
@@ -809,7 +894,9 @@ var FbList = new Class({
 				'view': 'list',
 				'task': 'list.view',
 				'format': 'raw',
-				'listid': this.id
+				'listid': this.id,
+				'group_by': this.options.groupedBy,
+				'listref': this.options.listRef
 			};
 		var url = '';
 		data['limit' + this.id] = this.options.limitLength;
@@ -857,6 +944,7 @@ var FbList = new Class({
 			var rowcounter = 0;
 			trs = [];
 			this.options.data = this.options.isGrouped ? $H(data.data) : data.data;
+
 			if (data.calculations) {
 				this.updateCals(data.calculations);
 			}
@@ -866,7 +954,7 @@ var FbList = new Class({
 			// $$$ rob was $H(data.data) but that wasnt working ????
 			// testing with $H back in again for grouped by data? Yeah works for
 			// grouped data!!
-			var gdata = this.options.isGrouped ? $H(data.data) : data.data;
+			var gdata = this.options.isGrouped || this.options.groupedBy !== '' ? $H(data.data) : data.data;
 			var gcounter = 0;
 			gdata.each(function (groupData, groupKey) {
 				var container, thisrowtemplate;
@@ -945,6 +1033,18 @@ var FbList = new Class({
 				 */
 				if (typeOf(emptyDataMessage) !== 'null') {
 					emptyDataMessage.setStyle('display', '');
+					/*
+					 * $$$ hugh - when doing JSON updates, the emptyDataMessage can be in a td (with no class or id)
+					 * which itself is hidden, and also have a child div with the .emptyDataMessage
+					 * class which is also hidden.  Should probably move all this logic into a function
+					 * but for now just doing it here.
+					 */
+					if (emptyDataMessage.getParent().getStyle('display') === 'none') {
+						emptyDataMessage.getParent().setStyle('display', '');
+					}
+					if (emptyDataMessage.getElement('.emptyDataMessage')) {
+						emptyDataMessage.getElement('.emptyDataMessage').setStyle('display', '');
+					}
 				}
 			} else {
 				if (typeOf(fabrikDataContainer) !== 'null') {
@@ -962,9 +1062,22 @@ var FbList = new Class({
 			Fabrik.fireEvent('fabrik.list.update', [this, data]);
 		}
 		this.stripe();
+		this.mediaScan();
 		Fabrik.loader.stop('listform_' + this.options.listRef);
 	},
 
+	mediaScan: function () {
+		if (typeof(Slimbox) !== 'undefined') {
+			Slimbox.scanPage();
+		}
+		if (typeof(Lightbox) !== 'undefined') {
+			Lightbox.init();
+		}
+		if (typeof(Mediabox) !== 'undefined') {
+			Mediabox.scanPage();
+		}
+	},
+	
 	addRow: function (obj) {
 		var r = new Element('tr', {
 			'class': 'oddRow1'
@@ -1100,7 +1213,8 @@ var FbList = new Class({
 			}.bind(this));
 		}
 		
-		if (this.options.admin) {
+		// Not working in J3.2 see http://fabrikar.com/forums/index.php?threads/bug-pagination-not-working-in-chrome.37277/
+	/*	if (this.options.admin) {
 			Fabrik.addEvent('fabrik.block.added', function (block) {
 				if (block.options.listRef === this.options.listRef) {
 					var nav = block.form.getElement('.fabrikNav');
@@ -1112,7 +1226,7 @@ var FbList = new Class({
 					}
 				}
 			}.bind(this));
-		}
+		}*/
 		this.watchCheckAll();
 	},
 	
@@ -1189,6 +1303,9 @@ var FbGroupedToggler = new Class({
 	
 	initialize: function (container, options) {
 		var rows, h, img, state;
+		if (typeOf(container) === 'null') {
+			return;
+		}
 		this.setOptions(options);
 		this.container = container;
 		this.toggleState = 'shown';
@@ -1355,9 +1472,11 @@ var FbListActions = new Class({
 	},
 
 	setUpFloating: function () {
+		var chxFound = false;
 		this.list.form.getElements(this.options.selector).each(function (ul) {
 			if (ul.getParent('.fabrik_row')) {
 				if (i = ul.getParent('.fabrik_row').getElement('input[type=checkbox]')) {
+					chxFound = true;
 					var hideFn = function (e, elem, leaving) {
 						if (!e.target.checked) {
 							this.hide(e, elem);
@@ -1429,7 +1548,7 @@ var FbListActions = new Class({
 		var tip = new FloatingTips(chxall, tipChxAllOpts);
 
 		// hide markup that contained the actions
-		if (this.list.form.getElements('.fabrik_actions')) {
+		if (this.list.form.getElements('.fabrik_actions') && chxFound) {
 			this.list.form.getElements('.fabrik_actions').hide();
 		}
 		if (this.list.form.getElements('.fabrik_calculation')) {

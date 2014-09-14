@@ -25,7 +25,7 @@ require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
 class PlgFabrik_FormRedirect extends PlgFabrik_Form
 {
 	/**
-	 * Process the plugin, called afer form is submitted
+	 * Process the plugin, called after form is submitted
 	 *
 	 * @return  bool
 	 */
@@ -111,7 +111,7 @@ class PlgFabrik_FormRedirect extends PlgFabrik_Form
 
 	/**
 	 * Called via ajax
-	 * displays thanks mesasge
+	 * displays thanks message
 	 *
 	 * @return  void
 	 */
@@ -122,11 +122,11 @@ class PlgFabrik_FormRedirect extends PlgFabrik_Form
 	}
 
 	/**
-	 * Once the form has been sucessfully completed, and if no jump page is
+	 * Once the form has been successfully completed, and if no jump page is
 	 * specified then show the thanks message
 	 *
-	 * @param   string  $title    Thanks message title @depreicated - set in session in onLastProcess
-	 * @param   string  $message  Thanks message string @depreicated - set in session in onLastProcess
+	 * @param   string  $title    Thanks message title @deprecated - set in session in onLastProcess
+	 * @param   string  $message  Thanks message string @deprecated - set in session in onLastProcess
 	 *
 	 * @return  void
 	 */
@@ -170,7 +170,7 @@ class PlgFabrik_FormRedirect extends PlgFabrik_Form
 	 *
 	 * @param   string  $method  Plugin method
 	 *
-	 * @return bol
+	 * @return bool
 	 */
 
 	public function customProcessResult($method)
@@ -244,7 +244,7 @@ class PlgFabrik_FormRedirect extends PlgFabrik_Form
 			foreach ($groups as $group)
 			{
 				$elements = $group->getPublishedElements();
-				$tmpData = $formModel->fullFormData;
+				$tmpData = !is_null($formModel->fullFormData) ? $formModel->fullFormData : $formModel->formDataWithTableName;
 
 				foreach ($elements as $elementModel)
 				{
@@ -287,28 +287,32 @@ class PlgFabrik_FormRedirect extends PlgFabrik_Form
 	}
 
 	/**
-	 * Apped data to query string array
+	 * Append data to query string array
 	 *
 	 * @param   array   &$queryvars  Previously added querystring variables
 	 * @param   string  $key         Key
 	 * @param   mixed   $val         Value string or array
+	 * @param	bool	$appendEmpty	Append even if value is empty, default true
 	 *
 	 * @return  void
 	 */
 
-	protected function _appendQS(&$queryvars, $key, $val)
+	protected function _appendQS(&$queryvars, $key, $val, $appendEmpty = true)
 	{
 		if (is_array($val))
 		{
 			foreach ($val as $v)
 			{
-				$this->_appendQS($queryvars, "{$key}[value]", $v);
+				$this->_appendQS($queryvars, "{$key}[value]", $v, $appendEmpty);
 			}
 		}
 		else
 		{
-			$val = urlencode(stripslashes($val));
-			$queryvars[] = $key . '=' . $val;
+			if ($appendEmpty || (!appendEmpty && !empty($val)))
+			{
+				$val = urlencode(stripslashes($val));
+				$queryvars[] = $key . '=' . $val;
+			}
 		}
 	}
 
@@ -326,14 +330,21 @@ class PlgFabrik_FormRedirect extends PlgFabrik_Form
 	protected function _storeInSession()
 	{
 		$formModel = $this->getModel();
+		$listModel = $formModel->getlistModel();
 		$app = JFactory::getApplication();
 		$input = $app->input;
 		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$store = array();
 
+		$pk = FabrikString::safeColNameToArrayKey($listModel->getTable()->db_primary_key);
+
 		if ($this->data['save_in_session'] == '1')
 		{
-			$tmpData = $formModel->formData;
+			/*
+			 * Was using simply formData but, for a form set to record in db its keys were
+			 * in the short format whilst we compare the full name in the code below
+			 */
+			$tmpData = $formModel->formDataWithTableName;
 			$groups = $formModel->getGroupsHiarachy();
 
 			foreach ($groups as $group)
@@ -348,6 +359,11 @@ class PlgFabrik_FormRedirect extends PlgFabrik_Form
 					}
 
 					$name = $element->getFullName();
+
+					if ($name == $pk)
+					{
+						continue;
+					}
 
 					if (array_key_exists($name, $tmpData))
 					{
@@ -397,19 +413,17 @@ class PlgFabrik_FormRedirect extends PlgFabrik_Form
 				}
 			}
 
-			// Clear registry search form entries
+			// Set registry search form entries
 			$key = 'com_' . $package . '.searchform';
-
-			$listModel = $formModel->getlistModel();
+			$id = $formModel->get('id');
 
 			// Check for special fabrik_list_filter_all element!
 			$searchAll = $input->get($listModel->getTable()->db_table_name . '___fabrik_list_filter_all');
 
-			$app->setUserState('com_' . $package . '.searchform.form' . $formModel->get('id') . '.searchall', $searchAll);
-			$app->setUserState($key, $id);
+			$app->setUserState($key . '.form' . $id . '.searchall', $searchAll);
+			$app->setUserState($key . '.form' . $id . '.filters', $store);
 
-			$app->setUserState('com_' . $package . '.searchform.form' . $formModel->get('id') . '.filters', $store);
-			$app->setUserState('com_' . $package . '.searchform.fromForm', $formModel->get('id'));
+			$app->setUserState($key. '.fromForm', $id);
 		}
 	}
 
@@ -418,12 +432,12 @@ class PlgFabrik_FormRedirect extends PlgFabrik_Form
 	 *
 	 * @param   object  $params  Plugin params
 	 *
-	 * @return bol true if you should redirect, false ignores redirect
+	 * @return bool true if you should redirect, false ignores redirect
 	 */
 
 	protected function shouldRedirect($params)
 	{
-		// If we are applying the form dont run redirect
+		// If we are applying the form don't run redirect
 		if (array_key_exists('apply', $this->formModel->formData))
 		{
 			return false;

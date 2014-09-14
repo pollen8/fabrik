@@ -36,7 +36,7 @@ class JFormFieldListfields extends JFormFieldList
 	protected $name = 'Listfields';
 
 	/**
-	 * Objects resulting from this elements queries - keyed on idetifying hash
+	 * Objects resulting from this elements queries - keyed on identifying hash
 	 *
 	 * @var  array
 	 */
@@ -64,16 +64,16 @@ class JFormFieldListfields extends JFormFieldList
 		$c = (int) FabrikAdminElementHelper::getRepeatCounter($this);
 		$connection = $this->element['connection'];
 		/*
-		 * 27/08/2011 - changed from default tableelement to id - for juser form plugin - might cause havock
+		 * 27/08/2011 - changed from default table-element to id - for juser form plugin - might cause havoc
 		 * else where but loading elements by id as default seems more robust (and is the default behaviour in f2.1
 		 */
 		$valueformat = (string) JArrayHelper::getValue($this->element, 'valueformat', 'id');
 		$onlylistfields = (int) JArrayHelper::getValue($this->element, 'onlylistfields', 0);
 		$showRaw = (bool) JArrayHelper::getValue($this->element, 'raw', false);
 		$labelMethod = (string) JArrayHelper::getValue($this->element, 'label_method');
-		$highlightpk = (bool) JArrayHelper::getValue($this->element, 'highlightpk', false);
 		$nojoins = (bool) JArrayHelper::getValue($this->element, 'nojoins', false);
 		$mode = (string) JArrayHelper::getValue($this->element, 'mode', false);
+		$useStep = (bool) JArrayHelper::getValue($this->element, 'usestep', false);
 
 		switch ($controller)
 		{
@@ -88,7 +88,7 @@ class JFormFieldListfields extends JFormFieldList
 			case 'element':
 				$repeat = FabrikAdminElementHelper::getRepeat($this) || $this->element['repeat'];
 
-				// @TODO this seems like we could refractor it to use the formModel class as per the table and form switches below?
+				// @TODO this seems like we could re-factor it to use the formModel class as per the table and form switches below?
 				// $connectionDd = ($c === false) ? $connection : $connection . '-' . $c;
 				$connectionDd = $repeat ? $connection . '-' . $c : $connection;
 
@@ -100,33 +100,12 @@ class JFormFieldListfields extends JFormFieldList
 				}
 				else
 				{
-					$tableDd = $this->element['table'];
-					$opts = new stdClass;
-					$opts->table = ($repeat) ? 'jform_' . $tableDd . '-' . $c : 'jform_' . $tableDd;
-					$opts->conn = 'jform_' . $connectionDd;
-					$opts->value = $this->value;
-					$opts->repeat = $repeat;
-					$opts->showAll = (int) JArrayHelper::getValue($this->element, 'showall', '1');
-					$opts->highlightpk = (int) $highlightpk;
-					$opts->mode = $mode;
-					$opts = json_encode($opts);
-					$script = array();
-					$script[] = "if (typeOf(FabrikAdmin.model.fields.listfields) === 'null') {";
-					$script[] = "FabrikAdmin.model.fields.listfields = {};";
-					$script[] = "}";
-					$script[] = "FabrikAdmin.model.fields.listfields['$this->id'] = new ListFieldsElement('$this->id', $opts);";
-					$script = implode("\n", $script);
-
-					$srcs = array();
-					$srcs[] = 'media/com_fabrik/js/fabrik.js';
-					$srcs[] = 'administrator/components/com_fabrik/models/fields/listfields.js';
-					FabrikHelperHTML::script($srcs, $script);
-					$rows = array(JHTML::_('select.option', '', JText::_('SELECT A CONNECTION FIRST')), 'value', 'text');
+					$this->js();
 					$o = new stdClass;
 					$o->table_name = '';
 					$o->name = '';
 					$o->value = '';
-					$o->text = JText::_('COM_FABRIK_SELECT_A_TABLE_FIRST');
+					$o->text = FText::_('COM_FABRIK_SELECT_A_TABLE_FIRST');
 					$res[] = $o;
 				}
 				break;
@@ -161,7 +140,7 @@ class JFormFieldListfields extends JFormFieldList
 				{
 					$formModel = $listModel->getFormModel();
 					$valfield = $valueformat == 'tableelement' ? 'name' : 'id';
-					$res = $formModel->getElementOptions(false, $valfield, $onlylistfields, $showRaw, $pluginFilters, $labelMethod, $nojoins);
+					$res = $formModel->getElementOptions($useStep, $valfield, $onlylistfields, $showRaw, $pluginFilters, $labelMethod, $nojoins);
 				}
 				else
 				{
@@ -180,7 +159,11 @@ class JFormFieldListfields extends JFormFieldList
 
 				$formModel = $this->form->model;
 				$valfield = $valueformat == 'tableelement' ? 'name' : 'id';
-				$res = $formModel->getElementOptions(false, $valfield, $onlylistfields, $showRaw, $pluginFilters, $labelMethod, $nojoins);
+				$res = $formModel->getElementOptions($useStep, $valfield, $onlylistfields, $showRaw, $pluginFilters, $labelMethod, $nojoins);
+
+				$jsres = $formModel->getElementOptions($useStep, $valfield, $onlylistfields, $showRaw, $pluginFilters, $labelMethod, $nojoins);
+				array_unshift($jsres, JHTML::_('select.option', '', FText::_('COM_FABRIK_PLEASE_SELECT')));
+				$this->js($jsres);
 				break;
 			case 'group':
 				$valfield = $valueformat == 'tableelement' ? 'name' : 'id';
@@ -188,10 +171,10 @@ class JFormFieldListfields extends JFormFieldList
 				$groupModel = JModelLegacy::getInstance('Group', 'FabrikFEModel');
 				$groupModel->setId($id);
 				$formModel = $groupModel->getFormModel();
-				$res = $formModel->getElementOptions(false, $valfield, $onlylistfields, $showRaw, $pluginFilters, $labelMethod, $nojoins);
+				$res = $formModel->getElementOptions($useStep, $valfield, $onlylistfields, $showRaw, $pluginFilters, $labelMethod, $nojoins);
 				break;
 			default:
-				return JText::_('THE LISTFIELDS ELEMENT IS ONLY USABLE BY LISTS AND ELEMENTS');
+				return FText::_('The ListFields element is only usable by lists and elements');
 				break;
 		}
 
@@ -231,7 +214,7 @@ class JFormFieldListfields extends JFormFieldList
 			// Paul - Prepend rather than append "none" option.
 			array_unshift($aEls, JHTML::_('select.option', '', '-'));
 
-			// For pk fields - we are no longer storing the key with '`' as thats mySQL specific
+			// For pk fields - we are no longer storing the key with '`' as that's mySQL specific
 			$this->value = str_replace('`', '', $this->value);
 
 			// Some elements were stored as names but subsequently changed to ids (need to check for old values an substitute with correct ones)
@@ -246,13 +229,14 @@ class JFormFieldListfields extends JFormFieldList
 
 			if ($mode === 'gui')
 			{
+				$this->js($aEls);
 				$return = $this->gui();
 			}
 			else
 			{
 				$return = JHTML::_('select.genericlist', $aEls, $this->name, 'class="inputbox" size="1" ', 'value', 'text', $this->value, $this->id);
 				$return .= '<img style="margin-left:10px;display:none" id="' . $this->id
-				. '_loader" src="components/com_fabrik/images/ajax-loader.gif" alt="' . JText::_('LOADING') . '" />';
+				. '_loader" src="components/com_fabrik/images/ajax-loader.gif" alt="' . FText::_('LOADING') . '" />';
 			}
 		}
 
@@ -260,6 +244,39 @@ class JFormFieldListfields extends JFormFieldList
 		FabrikHelperHTML::iniRequireJS();
 
 		return $return;
+	}
+
+	private function js($res = array())
+	{
+		$connection = $this->element['connection'];
+		$repeat = FabrikAdminElementHelper::getRepeat($this) || $this->element['repeat'];
+		$c = (int) FabrikAdminElementHelper::getRepeatCounter($this);
+		$mode = (string) JArrayHelper::getValue($this->element, 'mode', false);
+		$connectionDd = $repeat ? $connection . '-' . $c : $connection;
+		$highlightpk = (bool) JArrayHelper::getValue($this->element, 'highlightpk', false);
+		$tableDd = $this->element['table'];
+		$opts = new stdClass;
+		$opts->table = ($repeat) ? 'jform_' . $tableDd . '-' . $c : 'jform_' . $tableDd;
+		$opts->conn = 'jform_' . $connectionDd;
+		$opts->value = $this->value;
+		$opts->repeat = $repeat;
+		$opts->showAll = (int) JArrayHelper::getValue($this->element, 'showall', '1');
+		$opts->highlightpk = (int) $highlightpk;
+		$opts->mode = $mode;
+		$opts->defaultOpts = $res;
+		$opts->addBrackets = (bool) JArrayHelper::getValue($this->element, 'addbrackets', false);
+		$opts = json_encode($opts);
+		$script = array();
+		$script[] = "if (typeOf(FabrikAdmin.model.fields.listfields) === 'null') {";
+		$script[] = "FabrikAdmin.model.fields.listfields = {};";
+		$script[] = "}";
+		$script[] = "FabrikAdmin.model.fields.listfields['$this->id'] = new ListFieldsElement('$this->id', $opts);";
+		$script = implode("\n", $script);
+
+		$srcs = array();
+		$srcs[] = 'media/com_fabrik/js/fabrik.js';
+		$srcs[] = 'administrator/components/com_fabrik/models/fields/listfields.js';
+		FabrikHelperHTML::script($srcs, $script);
 	}
 
 	/**
@@ -271,8 +288,18 @@ class JFormFieldListfields extends JFormFieldList
 	private function gui()
 	{
 		$str = array();
-		$str[] = '<textarea cols="20" row="3" id="' . $this->id . '" name="' . $this->name . '">' . $this->value . '</textarea>';
-		$str[] = '<button class="button btn"><span class="icon-arrow-left"></span> ' . JText::_('COM_FABRIK_ADD') . '</button>';
+		$modeField = (string) JArrayHelper::getValue($this->element, 'modefield', 'textarea');
+
+		if ($modeField === 'textarea')
+		{
+			$str[] = '<textarea cols="20" row="3" id="' . $this->id . '" name="' . $this->name . '">' . $this->value . '</textarea>';
+		}
+		else
+		{
+			$str[] = '<input class="input" id="' . $this->id . '" name="' . $this->name . '" value="' . $this->value . '" />';
+		}
+
+		$str[] = '<button class="button btn"><span class="icon-arrow-left"></span> ' . FText::_('COM_FABRIK_ADD') . '</button>';
 		$str[] = '<select class="elements"></select>';
 
 		return implode("\n", $str);
@@ -304,7 +331,8 @@ class JFormFieldListfields extends JFormFieldList
 		$groupModel = JModelLegacy::getInstance('Group', 'FabrikFEModel');
 		$groupModel->setId($groupId);
 		$optskey = $valueformat == 'tableelement' ? 'name' : 'id';
-		$res = $groupModel->getForm()->getElementOptions(false, $optskey, $onlylistfields, $showRaw, $pluginFilters, $labelMethod, $nojoins);
+		$useStep = (bool) JArrayHelper::getValue($this->element, 'usestep', false);
+		$res = $groupModel->getForm()->getElementOptions($useStep, $optskey, $onlylistfields, $showRaw, $pluginFilters, $labelMethod, $nojoins);
 		$hash = $controller . '.' . implode('.', $bits);
 
 		if (array_key_exists($hash, $this->results))

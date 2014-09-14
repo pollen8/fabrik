@@ -214,7 +214,7 @@ class PlgFabrik_FormLogs extends PlgFabrik_Form
 
 			if ($loading)
 			{
-				$result_compare = JText::_('COMPARE_DATA_LOADING') . $sep_2compare;
+				$result_compare = FText::_('COMPARE_DATA_LOADING') . $sep_2compare;
 			}
 			else
 			{
@@ -232,7 +232,13 @@ class PlgFabrik_FormLogs extends PlgFabrik_Form
 					{
 						$c = 0;
 						$origData = $formModel->_origData;
-						$log_elements = explode(',', str_replace(' ', '', $params->get('logs_element_list', '')));
+						$log_elements = $params->get('logs_element_list', '');
+
+						if (!empty($log_elements))
+						{
+							$log_elements = explode(',', str_replace(' ', '', $log_elements));
+						}
+
 						$groups = $formModel->getGroupsHiarachy();
 
 						foreach ($groups as $groupModel)
@@ -249,9 +255,9 @@ class PlgFabrik_FormLogs extends PlgFabrik_Form
 								{
 									if ($newData[$c]->$fullName != $origData[$c]->$fullName)
 									{
-										$result_compare .= JText::_('COMPARE_DATA_CHANGE_ON') . ' ' . $element->label . ' ' . $sep_compare
-										. JText::_('COMPARE_DATA_FROM') . ' ' . $origData[0]->$fullName . ' ' . $sep_compare
-										. JText::_('COMPARE_DATA_TO') . ' ' . $newData[$c]->$fullName . ' ' . $sep_2compare;
+										$result_compare .= FText::_('COMPARE_DATA_CHANGE_ON') . ' ' . $element->label . ' ' . $sep_compare
+										. FText::_('COMPARE_DATA_FROM') . ' ' . $origData[0]->$fullName . ' ' . $sep_compare
+										. FText::_('COMPARE_DATA_TO') . ' ' . $newData[$c]->$fullName . ' ' . $sep_2compare;
 									}
 								}
 							}
@@ -259,7 +265,7 @@ class PlgFabrik_FormLogs extends PlgFabrik_Form
 
 						if (empty($result_compare))
 						{
-							$result_compare = JText::_('COMPARE_DATA_NO_DIFFERENCES');
+							$result_compare = FText::_('COMPARE_DATA_NO_DIFFERENCES');
 						}
 					}
 					else
@@ -282,7 +288,7 @@ class PlgFabrik_FormLogs extends PlgFabrik_Form
 			}
 		}
 
-		// Defining the date to use - Not used anymore as logs should really only record the current time_date
+		// Defining the date to use - Not used any more as logs should really only record the current time_date
 		if ($date_now != '')
 		{
 			$date = date("$date_now");
@@ -295,8 +301,8 @@ class PlgFabrik_FormLogs extends PlgFabrik_Form
 		// Custom Message
 		if ($params->get('custom_msg') != '')
 		{
-			$rep_add_edit = $messageType == 'form.add' ? JText::_('REP_ADD')
-			: ($messageType == 'form.edit' ? JText::_('REP_EDIT') : JText::_('DETAILS'));
+			$rep_add_edit = $messageType == 'form.add' ? FText::_('REP_ADD')
+			: ($messageType == 'form.edit' ? FText::_('REP_EDIT') : FText::_('DETAILS'));
 			$custom_msg = $params->get('custom_msg');
 			$custom_msg = preg_replace('/{Add\/Edit}/', $rep_add_edit, $custom_msg);
 			$custom_msg = preg_replace('/{DATE}/', $date, $custom_msg);
@@ -320,7 +326,7 @@ class PlgFabrik_FormLogs extends PlgFabrik_Form
 
 			if ($params->get('compare_data') == 1)
 			{
-				$clabels_csv .= ', "' . JText::_('PLG_FORM_LOG_COMPARE_DATA_LABEL_CSV') . '"';
+				$clabels_csv .= ', "' . FText::_('PLG_FORM_LOG_COMPARE_DATA_LABEL_CSV') . '"';
 			}
 
 			$clabels_createdb_imp = '';
@@ -347,17 +353,17 @@ class PlgFabrik_FormLogs extends PlgFabrik_Form
 
 			if ($params->get('compare_data') == 1)
 			{
-				$clabels_createdb .= ', ' . $db->quoteName(JText::_('COMPARE_DATA_LABEL_DB')) . ' text NOT NULL';
+				$clabels_createdb .= ', ' . $db->quoteName(FText::_('COMPARE_DATA_LABEL_DB')) . ' text NOT NULL';
 			}
 
-			// @todo - what if we use differnt db driver which doesnt name quote with `??
+			// @todo - what if we use different db driver which doesn't name quote with `??
 			$clabels_db_imp = implode("`,`", $clabels);
 			$clabels_db_p1 = preg_replace('/^(`,)/', '', $clabels_db_imp);
 			$clabels_db = preg_replace('/(,`)$/', '', $clabels_db_p1);
 
 			if ($params->get('compare_data') == 1)
 			{
-				$clabels_db .= ', ' . $db->quoteName(JText::_('PLG_FORM_LOG_COMPARE_DATA_LABEL_DB'));
+				$clabels_db .= ', ' . $db->quoteName(FText::_('PLG_FORM_LOG_COMPARE_DATA_LABEL_DB'));
 			}
 
 			// Data for CSV & for DB
@@ -474,7 +480,8 @@ class PlgFabrik_FormLogs extends PlgFabrik_Form
 
 					if ($ext != 'csv')
 					{
-						JFile::write($logs_file, $buffer . $custom_msg . "\n" . $sep . "\n");
+						$thisMsg = $buffer . $custom_msg . "\n" . $sep . "\n";
+						JFile::write($logs_file, $thisMsg);
 					}
 					else
 					{
@@ -595,7 +602,7 @@ class PlgFabrik_FormLogs extends PlgFabrik_Form
 
 						if ($params->get('compare_data') == 1)
 						{
-							$csvMsg[] = "\"" . JText::_('COMPARE_DATA_LABEL_CSV') . "\"";
+							$csvMsg[] = "\"" . FText::_('COMPARE_DATA_LABEL_CSV') . "\"";
 						}
 					}
 					// Inserting data in CSV with actual line break as row separator
@@ -731,7 +738,8 @@ class PlgFabrik_FormLogs extends PlgFabrik_Form
 
 				if (FabrikWorker::isEmail($email))
 				{
-					$res = JUtility::sendMail($email_from, $email_from, $email, $subject, $email_msg, true);
+					$mail = JFactory::getMailer();
+					$res = $mail->sendMail($email_from, $email_from, $email, $subject, $email_msg, true);
 				}
 				else
 				{

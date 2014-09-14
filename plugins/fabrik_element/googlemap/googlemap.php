@@ -72,7 +72,7 @@ class PlgFabrik_ElementGooglemap extends PlgFabrik_Element
 
 			if ($params->get('icon_folder') == '1')
 			{
-				// $$$ rob was returning here but that stoped us being able to use links and icons together
+				// $$$ rob was returning here but that stopped us being able to use links and icons together
 				$d = $this->replaceWithIcons($d, 'list', $listModel->getTmpl());
 			}
 			else
@@ -189,7 +189,7 @@ class PlgFabrik_ElementGooglemap extends PlgFabrik_Element
 	}
 
 	/**
-	 * As different map instances may or may not load geo.js we shouldnt put it in
+	 * As different map instances may or may not load geo.js we shouldn't put it in
 	 * formJavascriptClass() but call this code from elementJavascript() instead.
 	 * The files are still only loaded when needed and only once
 	 *
@@ -213,7 +213,7 @@ class PlgFabrik_ElementGooglemap extends PlgFabrik_Element
 	}
 
 	/**
-	 * As different map instances may or may not load radius widget JS we shouldnt put it in
+	 * As different map instances may or may not load radius widget JS we shouldn't put it in
 	 * formJavascriptClass() but call this code from elementJavascript() instead.
 	 * The files are still only loaded when needed and only once
 	 *
@@ -576,14 +576,23 @@ class PlgFabrik_ElementGooglemap extends PlgFabrik_Element
 		$id = $this->getHTMLId($repeatCounter);
 		$params = $this->getParams();
 
+		/**
+		 * Width and height MUST be specified or static map call will fail.  But as we allow for
+		 * leaving these params blank to get a 100% size full map, we have to set a default when
+		 * building a static map.  Only real solution is to add YAFOs for "Static map width" and height.
+		 * But for now, just default to 200x150.
+		 */
+
 		if (is_null($w))
 		{
-			$w = $params->get('fb_gm_mapwidth');
+			$w = $params->get('fb_gm_mapwidth', '200');
+			$w = empty($w) ? '200' : $w;
 		}
 
 		if (is_null($h))
 		{
-			$h = $params->get('fb_gm_mapheight');
+			$h = $params->get('fb_gm_mapheight', '150');
+			$h = empty($h) ? '150' : $h;
 		}
 
 		if (is_null($z))
@@ -692,7 +701,7 @@ class PlgFabrik_ElementGooglemap extends PlgFabrik_Element
 	/**
 	 * Draws the html form element
 	 *
-	 * @param   array  $data           To preopulate element with
+	 * @param   array  $data           To pre-populate element with
 	 * @param   int    $repeatCounter  Repeat group counter
 	 *
 	 * @return  string  elements html
@@ -722,7 +731,7 @@ class PlgFabrik_ElementGooglemap extends PlgFabrik_Element
 
 			$str = '<div class="fabrikSubElementContainer" id="' . $id . '">';
 
-			// If its not editable and theres no val don't show the map
+			// If its not editable and there's no val don't show the map
 			$geoCodeEvent = $params->get('fb_gm_geocode_event', 'button');
 
 			if ((!$this->isEditable() && $val != '') || $this->isEditable())
@@ -740,7 +749,7 @@ class PlgFabrik_ElementGooglemap extends PlgFabrik_Element
 
 				if ($params->get('fb_gm_geocode') != '0' && $geoCodeEvent == 'button' && $this->isEditable())
 				{
-					$str .= '<button class="button btn btn-info geocode" type="button">' . JText::_('PLG_ELEMENT_GOOGLE_MAP_GEOCODE') . '</button>';
+					$str .= '<button class="button btn btn-info geocode" type="button">' . FText::_('PLG_ELEMENT_GOOGLE_MAP_GEOCODE') . '</button>';
 				}
 
 				if ($this->isEditable() && $params->get('fb_gm_geocode') != '0')
@@ -780,7 +789,7 @@ class PlgFabrik_ElementGooglemap extends PlgFabrik_Element
 			}
 			else
 			{
-				$str .= JText::_('PLG_ELEMENT_GOOGLEMAP_NO_LOCATION_SELECTED');
+				$str .= FText::_('PLG_ELEMENT_GOOGLEMAP_NO_LOCATION_SELECTED');
 			}
 
 			$str .= $this->_microformat($val);
@@ -838,7 +847,7 @@ class PlgFabrik_ElementGooglemap extends PlgFabrik_Element
 		{
 			$params = $this->getParams();
 
-			// $$$ hugh - added parens around lat,long for consistancy!
+			// $$$ hugh - added parens around lat,long for consistency!
 			$this->default = '(' . $params->get('fb_gm_lat') . ',' . $params->get('fb_gm_long') . ')' . ':' . $params->get('fb_gm_zoomlevel');
 		}
 

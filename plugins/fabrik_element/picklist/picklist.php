@@ -43,7 +43,7 @@ class PlgFabrik_ElementPicklist extends PlgFabrik_ElementList
 	/**
 	 * Draws the html form element
 	 *
-	 * @param   array  $data           To preopulate element with
+	 * @param   array  $data           To pre-populate element with
 	 * @param   int    $repeatCounter  Repeat group counter
 	 *
 	 * @return  string	elements html
@@ -58,18 +58,17 @@ class PlgFabrik_ElementPicklist extends PlgFabrik_ElementList
 		$arVals = $this->getSubOptionValues();
 		$arTxt = $this->getSubOptionLabels();
 		$arSelected = (array) $this->getValue($data, $repeatCounter);
+
 		$errorCSS = $this->elementError != '' ? " elementErrorHighlight" : '';
 		$attribs = 'class="span6 ' . $errorCSS . "\"";
-		$style = ".picklist{\n" . "list-style:none;}\n" . "\n"
-			. ".picklist li, li.picklist{\n" . "background-color:#FFFFFF;\n" . "margin:3px;\n" . "padding:5px !important;\n"
-			. "cursor:move;\n" . "}\n" . "\n" . "li.emptyplicklist{\n" . "background-color:transparent;\n" . "cursor:pointer;\n" . "}";
-		FabrikHelperHTML::addStyleDeclaration($style);
+
+		FabrikHelperHTML::stylesheet(COM_FABRIK_LIVESITE . 'plugins/fabrik_element/picklist/picklist.css');
 		$i = 0;
 		$aRoValues = array();
 		$fromlist = array();
 		$tolist = array();
-		$fromlist[] = JText::_('PLG_FABRIK_PICKLIST_FROM') . ':<ul id="' . $id . '_fromlist" class="picklist well well-small">';
-		$tolist[] = JText::_('PLG_FABRIK_PICKLIST_TO') . ':<ul id="' . $id . '_tolist" class="picklist well well-small">';
+		$fromlist[] = FText::_('PLG_FABRIK_PICKLIST_FROM') . ':<ul id="' . $id . '_fromlist" class="picklist well well-small fromList">';
+		$tolist[] = FText::_('PLG_FABRIK_PICKLIST_TO') . ':<ul id="' . $id . '_tolist" class="picklist well well-small toList">';
 
 		foreach ($arVals as $v)
 		{
@@ -98,7 +97,7 @@ class PlgFabrik_ElementPicklist extends PlgFabrik_ElementList
 			$i++;
 		}
 
-		$dragLbl = JText::_('PLG_ELEMENT_PICKLIST_DRAG_OPTIONS_HERE');
+		$dragLbl = FText::_('PLG_ELEMENT_PICKLIST_DRAG_OPTIONS_HERE');
 		$fromlist[] = '<li class="emptyplicklist" style="display:none"><i class="icon-move"></i> ' . $dragLbl . '</li>';
 		$tolist[] = '<li class="emptyplicklist" style="display:none"><i class="icon-move"></i> ' . $dragLbl . '</li>';
 		$fromlist[] = '</ul>';
@@ -145,7 +144,7 @@ class PlgFabrik_ElementPicklist extends PlgFabrik_ElementList
 	}
 
 	/**
-	 * if the search value isnt what is stored in the database, but rather what the user
+	 * if the search value isn't what is stored in the database, but rather what the user
 	 * sees then switch from the search string to the db value here
 	 * overwritten in things like checkbox and radio plugins
 	 *
@@ -191,7 +190,7 @@ class PlgFabrik_ElementPicklist extends PlgFabrik_ElementList
 	}
 
 	/**
-	 * Does the element conside the data to be empty
+	 * Does the element consider the data to be empty
 	 * Used in isempty validation rule
 	 *
 	 * @param   array  $data           data to test against

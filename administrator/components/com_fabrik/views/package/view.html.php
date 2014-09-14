@@ -69,7 +69,7 @@ class FabrikAdminViewPackage extends JViewLegacy
 
 	public function display($tpl = null)
 	{
-		// Initialiase variables.
+		// Initialise variables.
 		JHtml::_('behavior.modal', 'a.modal');
 		$model = $this->getModel();
 		$this->form = $this->get('Form');
@@ -92,36 +92,16 @@ class FabrikAdminViewPackage extends JViewLegacy
 		$blocks->visualization = JArrayHelper::getValue($b, 'visualization', array());
 
 		$opts = JArrayHelper::getvalue($canvas, 'options', array());
-		$tabs = JArrayHelper::getValue($canvas, 'tabs', array('Page 1'));
-		$tabs = $tabs;
 		$d = new stdClass;
 		$layout = JArrayHelper::getValue($canvas, 'layout', $d);
 		$document = JFactory::getDocument();
 
 		$opts = new stdClass;
 
-		$opts->tabs = $tabs;
 		$opts->blocks = $blocks;
-		$opts->tabelement = 'packagemenu';
-		$opts->pagecontainer = 'packagepages';
 		$opts->layout = $layout;
 		$opts = json_encode($opts);
-		$this->js = "PackageCanvas = new AdminPackage($opts);
-		new inline('#packagemenu li span');";
-
-		$srcs = FabrikHelperHTML::framework();
-		FabrikHelperHTML::mocha();
-		$srcs[] = 'media/com_fabrik/js/fabrik.js';
-		$srcs[] = 'media/com_fabrik/js/window.js';
-		$srcs[] = 'media/com_fabrik/js/lib/art.js';
-		$srcs[] = 'media/com_fabrik/js/icons.js';
-		$srcs[] = 'media/com_fabrik/js/icongen.js';
-		$srcs[] = 'media/com_fabrik/js/history.js';
-		$srcs[] = 'media/com_fabrik/js/keynav.js';
-		$srcs[] = 'media/com_fabrik/js/tabs.js';
-		$srcs[] = 'media/com_fabrik/js/pages.js';
-		$srcs[] = 'media/com_fabrik/js/inline.js';
-		$srcs[] = 'media/com_fabrik/js/canvas.js';
+		$this->js = "PackageCanvas = new AdminPackage($opts);";
 		$srcs[] = 'administrator/components/com_fabrik/views/package/adminpackage.js';
 
 		FabrikHelperHTML::iniRequireJS();
@@ -154,7 +134,7 @@ class FabrikAdminViewPackage extends JViewLegacy
 		$isNew = ($this->item->id == 0);
 		$checkedOut	= !($this->item->checked_out == 0 || $this->item->checked_out == $user->get('id'));
 		$canDo = FabrikAdminHelper::getActions($this->state->get('filter.category_id'));
-		JToolBarHelper::title($isNew ? JText::_('COM_FABRIK_MANAGER_PACKAGE_NEW') : JText::_('COM_FABRIK_MANAGER_PACKAGE_EDIT'), 'package.png');
+		JToolBarHelper::title($isNew ? FText::_('COM_FABRIK_MANAGER_PACKAGE_NEW') : FText::_('COM_FABRIK_MANAGER_PACKAGE_EDIT') . ' "' . $this->item->label . '"', 'package.png');
 
 		if ($isNew)
 		{
@@ -196,6 +176,6 @@ class FabrikAdminViewPackage extends JViewLegacy
 		}
 
 		JToolBarHelper::divider();
-		JToolBarHelper::help('JHELP_COMPONENTS_FABRIK_PACKAGE_EDIT', false, JText::_('JHELP_COMPONENTS_FABRIK_PACKAGE_EDIT'));
+		JToolBarHelper::help('JHELP_COMPONENTS_FABRIK_PACKAGE_EDIT', false, FText::_('JHELP_COMPONENTS_FABRIK_PACKAGE_EDIT'));
 	}
 }

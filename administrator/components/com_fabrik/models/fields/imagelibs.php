@@ -43,7 +43,7 @@ class JFormFieldImagelibs extends JFormFieldList
 
 		if (empty($imageLibs))
 		{
-			return JHTML::_('select.option', JText::_('NO MAGE LIBRARY FOUND'));
+			return JHTML::_('select.option', FText::_('COM_FABRIK_IMAGELIBS_NOT_FOUND'));
 		}
 
 		return $imageLibs;

@@ -3,7 +3,7 @@
  * Is Greater or Less than Validation Rule
  *
  * @package     Joomla.Plugin
- * @subpackage  Fabrik.validationrule.isgreatorlessthan
+ * @subpackage  Fabrik.validationrule.isgreaterorlessthan
  * @copyright   Copyright (C) 2005-2013 fabrikar.com - All rights reserved.
  * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
@@ -18,7 +18,7 @@ require_once COM_FABRIK_FRONTEND . '/models/validation_rule.php';
  * Is Greater or Less than Validation Rule
  *
  * @package     Joomla.Plugin
- * @subpackage  Fabrik.validationrule.isgreatorlessthan
+ * @subpackage  Fabrik.validationrule.isgreaterorlessthan
  * @since       3.0
  */
 
@@ -52,44 +52,57 @@ class PlgFabrik_ValidationruleIsgreaterorlessthan extends PlgFabrik_Validationru
 		$elementModel = $this->elementModel;
 		$formdata = $elementModel->getForm()->formData;
 		$cond = $params->get('isgreaterorlessthan-greaterthan');
+		$compareValue = $params->get('compare_value', '');
 
 		switch ($cond)
 		{
 			case '0':
 				$cond = '<';
+				$base = $data < $compareValue;
 				break;
 			case '1':
 				$cond = '>';
+				$base = $data > $compareValue;
 				break;
 			case '2':
 				$cond = '<=';
+				$base = $data <= $compareValue;
 				break;
 			case '3':
 				$cond = '>=';
+				$base = $data >= $compareValue;
 				break;
 			case '4':
 			default:
 				$cond = '==';
+				$base = $data == $compareValue;
 				break;
 		}
 
 		$otherElementModel = $this->getOtherElement();
 		$otherFullName = $otherElementModel->getFullName(true, false);
-		$compare = $otherElementModel->getValue($formdata, $repeatCounter);
+		$compare = $compareValue === '' ? $otherElementModel->getValue($formdata, $repeatCounter) : $compareValue;
 
 		if ($this->allowEmpty() && ($data === '' || $compare === ''))
 		{
 			return true;
 		}
 
-		$res = $elementModel->greaterOrLessThan($data, $cond, $compare);
+		if ($compareValue === '')
+		{
+			$res = $elementModel->greaterOrLessThan($data, $cond, $compare);
+		}
+		else
+		{
+			return $base;
+		}
 
 		return $res;
 	}
 
 	/**
 	 * Does the validation allow empty value?
-	 * Default is false, can be overrideen on per-validation basis (such as isnumeric)
+	 * Default is false, can be overridden on per-validation basis (such as isnumeric)
 	 *
 	 * @return	bool
 	 */

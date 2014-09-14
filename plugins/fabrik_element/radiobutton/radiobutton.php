@@ -111,7 +111,7 @@ class PlgFabrik_ElementRadiobutton extends PlgFabrik_ElementList
 	}
 
 	/**
-	 * if the search value isnt what is stored in the database, but rather what the user
+	 * if the search value isn't what is stored in the database, but rather what the user
 	 * sees then switch from the search string to the db value here
 	 * overwritten in things like checkbox and radio plugins
 	 *
@@ -127,11 +127,27 @@ class PlgFabrik_ElementRadiobutton extends PlgFabrik_ElementList
 
 		for ($i = 0; $i < count($labels); $i++)
 		{
-			if (JString::strtolower($labels[$i]) == JString::strtolower($value))
+			if (is_string($value))
 			{
-				$val = $values[$i];
+				if (JString::strtolower($labels[$i]) == JString::strtolower($value))
+				{
+					$val = $values[$i];
 
-				return $val;
+					return $val;
+				}
+			}
+			else
+			{
+				if (in_array(JString::strtolower($labels[$i]), $value))
+				{
+					foreach ($value as &$v)
+					{
+						if (JString::strtolower($labels[$i]) == JString::strtolower($v))
+						{
+							$v = $values[$i];
+						}
+					}
+				}
 			}
 		}
 
@@ -165,7 +181,7 @@ class PlgFabrik_ElementRadiobutton extends PlgFabrik_ElementList
 	 * Builds an array containing the filters value and condition
 	 *
 	 * @param   string  $value      initial value
-	 * @param   string  $condition  intial $condition
+	 * @param   string  $condition  initial $condition
 	 * @param   string  $eval       how the value should be handled
 	 *
 	 * @return  array	(value condition)
@@ -199,7 +215,7 @@ class PlgFabrik_ElementRadiobutton extends PlgFabrik_ElementList
 	 * Determines the value for the element in the form view
 	 *
 	 * @param   array  $data           Form data
-	 * @param   int    $repeatCounter  When repeating joinded groups we need to know what part of the array to access
+	 * @param   int    $repeatCounter  When repeating joined groups we need to know what part of the array to access
 	 * @param   array  $opts           Options
 	 *
 	 * @return  string	value

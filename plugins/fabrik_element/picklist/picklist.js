@@ -11,47 +11,58 @@ var FbPicklist = new Class({
 		this.plugin = 'fabrikpicklist';
 		this.parent(element, options);
 		if (this.options.allowadd === true) {
+			this.watchAddToggle();
 			this.watchAdd();
 		}
-		var from = document.id(this.options.element + '_fromlist');
-		var to =  document.id(this.options.element + '_tolist');
-
-		var dropcolour = from.getStyle('background-color');
-		var that = this;
-		this.sortable = new Sortables([ from, to ], {
-			clone : true,
-			revert : true,
-			opacity : 0.7,
-			hovercolor : '#ffddff',
-			onComplete : function () {
-				this.setData();
-				that.fadeOut(from, dropcolour);
-				that.fadeOut(to, dropcolour);
-			}.bind(this),
-			onSort: function (element, clone) {
-				this.showNotices(element, clone);
-
-			}.bind(this),
-
-
-			onStart : function (element, clone) {
-				this.drag.addEvent('onEnter', function (element, droppable) {
-					if (this.lists.contains(droppable)) {
-						that.fadeOut(droppable, this.options.hovercolor);
-						if (this.lists.contains(this.drag.overed)) {
-							this.drag.overed.addEvent('mouseleave', function () {
-								that.fadeOut(from, dropcolour);
-								that.fadeOut(to, dropcolour);
-							}.bind(this));
+		this.makeSortable();
+	},
+	
+	/**
+	 * Ini the sortable object
+	 */
+	makeSortable: function () {
+		if (this.options.editable) {
+			var c = this.getContainer();
+			var from = c.getElement('.fromList'),
+			to = c.getElement('.toList'),
+			dropcolour = from.getStyle('background-color'),
+			that = this;
+			
+			this.sortable = new Sortables([ from, to ], {
+				clone: true,
+				revert: true,
+				opacity: 0.7,
+				hovercolor: '#ffddff',
+				onComplete: function (element) {
+					this.setData();
+					this.showNotices(element);
+					that.fadeOut(from, dropcolour);
+					that.fadeOut(to, dropcolour);
+				}.bind(this),
+				onSort: function (element, clone) {
+					this.showNotices(element, clone);
+	
+				}.bind(this),
+	
+	
+				onStart : function (element, clone) {
+					this.drag.addEvent('onEnter', function (element, droppable) {
+						if (this.lists.contains(droppable)) {
+							that.fadeOut(droppable, this.options.hovercolor);
+							if (this.lists.contains(this.drag.overed)) {
+								this.drag.overed.addEvent('mouseleave', function () {
+									that.fadeOut(from, dropcolour);
+									that.fadeOut(to, dropcolour);
+								}.bind(this));
+							}
 						}
-					}
-				}.bind(this));
-			}
-		});
-
-		var notices = [from.getElement('li.emptyplicklist'), to.getElement('li.emptyplicklist')];
-		this.sortable.removeItems(notices);
-		this.showNotices();
+					}.bind(this));
+				}
+			});
+			var notices = [from.getElement('li.emptyplicklist'), to.getElement('li.emptyplicklist')];
+			this.sortable.removeItems(notices);
+			this.showNotices();
+		}
 	},
 
 	fadeOut: function (droppable, colour) {
@@ -62,14 +73,22 @@ var FbPicklist = new Class({
 		hoverFx.start('background-color', colour);
 	},
 
+	/**
+	 * Show empty notices
+	 * 
+	 * @param  DOMNode  element  Li being dragged
+	 * 
+	 */
 	showNotices: function (element, clone) {
 		if (element) {
+			// Get list
 			element = element.getParent('ul');
 		}
-		var limit, to, i;
-		var lists = [this.options.element + '_tolist', this.options.element + '_fromlist'];
+		var c = this.getContainer(),
+		limit, to, i;
+		var lists = [c.getElement('.fromList'), c.getElement('.toList')];
 		for (i = 0; i < lists.length; i++) {
-			to = document.id(lists[i]);
+			to = lists[i];
 			limit = (to === element || typeOf(element) === 'null') ? 1 : 2;
 			var notice = to.getElement('li.emptyplicklist');
 			var lis = to.getElements('li');
@@ -78,11 +97,10 @@ var FbPicklist = new Class({
 	},
 
 	setData: function () {
-
-		var to = document.id(this.options.element + '_tolist');
-		var lis = to.getElements('li');
-
-		var v = lis.map(
+		var c = this.getContainer(),
+		to = c.getElement('.toList'),
+		lis = to.getElements('li'),
+		v = lis.map(
 				function (item, index) {
 					return item.id
 							.replace(this.options.element + '_value_', '');
@@ -90,18 +108,24 @@ var FbPicklist = new Class({
 		this.element.value = JSON.encode(v);
 	},
 
-	watchAdd : function () {
-		var id = this.element.id;
-		if (!document.id(this.element.id + '_dd_add_entry')) {
+	watchAdd: function () {
+		var id = this.element.id,
+		c = this.getContainer(),
+		to = c.getElement('.toList'),
+		btn = c.getElement('input[type=button]');
+		
+		if (typeOf(btn) === 'null') {
 			return;
 		}
-		document.id(this.element.id + '_dd_add_entry').addEvent(
+		btn.addEvent(
 				'click',
 				function (e) {
 					var val;
-					var label = document.id(id + '_ddLabel').value;
-					if (document.id(id + '_ddVal')) {
-						val = document.id(id + '_ddVal').value;
+					value = c.getElement('input[name=addPicklistValue]'),
+					labelEl = c.getElement('input[name=addPicklistLabel]'),
+					label = labelEl.get('value');
+					if (typeOf(value) !== 'null') {
+						val = value.value;
 					} else {
 						val = label;
 					}
@@ -114,17 +138,56 @@ var FbPicklist = new Class({
 							'id' : this.element.id + '_value_' + val
 						}).set('text', label);
 
-						document.id(this.element.id + '_tolist').adopt(li);
+						to.adopt(li);
 						this.sortable.addItems(li);
 
 						e.stop();
-						if (document.id(id + '_ddVal')) {
-							document.id(id + '_ddVal').value = '';
+						if (typeOf(value) === 'element') {
+							value.value = '';
 						}
-						document.id(id + '_ddLabel').value = '';
+						labelEl.value = '';
 						this.setData();
 						this.addNewOption(val, label);
+						this.showNotices();
 					}
 				}.bind(this));
+	},
+	
+	unclonableProperties: function ()
+	{
+		return ['form', 'sortable'];
+	},
+	
+	watchAddToggle: function () {
+		var c = this.getContainer();
+		var d = c.getElement('div.addoption');
+		var a = c.getElement('.toggle-addoption');
+		if (this.mySlider) {
+			// Copied in repeating group so need to remove old slider html first
+			var clone = d.clone();
+			var fe = c.getElement('.fabrikElement');
+			d.getParent().destroy();
+			fe.adopt(clone);
+			d = c.getElement('div.addoption');
+			d.setStyle('margin', 0);
+		}
+		this.mySlider = new Fx.Slide(d, {
+			duration : 500
+		});
+		this.mySlider.hide();
+		a.addEvent('click', function (e) {
+			e.stop();
+			this.mySlider.toggle();
+		}.bind(this));
+	},
+	
+	cloned: function (c) {
+		delete this.sortable;
+		if (this.options.allowadd === true) {
+			this.watchAddToggle();
+			this.watchAdd();
+		}
+		this.makeSortable();
+		this.parent(c);
 	}
 });

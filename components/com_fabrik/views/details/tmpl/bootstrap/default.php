@@ -38,18 +38,16 @@ foreach ($this->groups as $group) :
 	$this->group = $group;
 	?>
 
-		<div class="fabrikGroup" id="group<?php echo $group->id;?>" style="<?php echo $group->css;?>">
+		<div class="<?php echo $group->class; ?>" id="group<?php echo $group->id;?>" style="<?php echo $group->css;?>">
 
-		<?php if (trim($group->title) !== '') :
-		?>
-
-		<h3 class="legend">
-			<span><?php echo $group->title;?></span>
-		</h3>
-
+		<?php
+		if ($group->showLegend) :?>
+			<h3 class="legend">
+				<span><?php echo $group->title;?></span>
+			</h3>
 		<?php endif;
 
-		if ($group->intro !== '') : ?>
+		if (!empty($group->intro)) : ?>
 			<div class="groupintro"><?php echo $group->intro ?></div>
 		<?php
 		endif;
@@ -57,11 +55,16 @@ foreach ($this->groups as $group) :
 		// Load the group template - this can be :
 		//  * default_group.php - standard group non-repeating rendered as an unordered list
 		//  * default_repeatgroup.php - repeat group rendered as an unordered list
-		//  * default_repeatgroup.table.php - repeat group rendered in a table.
+		//  * default_repeatgroup_table.php - repeat group rendered in a table.
 
 		$this->elements = $group->elements;
 		echo $this->loadTemplate($group->tmpl);
-		 ?>
+
+		if (!empty($group->outro)) : ?>
+			<div class="groupoutro"><?php echo $group->outro ?></div>
+		<?php
+		endif;
+		?>
 	</div>
 <?php
 endforeach;

@@ -1,9 +1,9 @@
 <?php
 /**
- * Fabrik Gannt Chart Plug-in Model
+ * Fabrik Gantt Chart Plug-in Model
  *
  * @package     Joomla.Plugin
- * @subpackage  Fabrik.visualization.fusionganntchart
+ * @subpackage  Fabrik.visualization.fusionganttchart
  * @copyright   Copyright (C) 2005-2013 fabrikar.com - All rights reserved.
  * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
@@ -16,17 +16,17 @@ jimport('joomla.application.component.model');
 require_once JPATH_SITE . '/components/com_fabrik/models/visualization.php';
 
 /**
- * Fabrik Gannt Chart Plug-in Model
+ * Fabrik Gantt Chart Plug-in Model
  *
  * @package     Joomla.Plugin
- * @subpackage  Fabrik.visualization.fusionganntchart
+ * @subpackage  Fabrik.visualization.fusionganttchart
  * @since       3.0
  */
 
 class FabrikModelFusion_Gantt_Chart extends FabrikFEModelVisualization
 {
 	/**
-	 * Create the gannt chart
+	 * Create the Gantt chart
 	 *
 	 * @return string
 	 */
@@ -169,7 +169,7 @@ class FabrikModelFusion_Gantt_Chart extends FabrikFEModelVisualization
 					$this->fc->addGanttProcess($processLabel, "id={$processid};");
 				}
 
-				// Increaes max/min date range
+				// Increases max/min date range
 				if (is_null($mindate))
 				{
 					$mindate = $startdate;
@@ -224,7 +224,7 @@ class FabrikModelFusion_Gantt_Chart extends FabrikFEModelVisualization
 
 				// Use day = 0 to load last day of next month
 				$end = date('Y/m/d', mktime(0, 0, 0, $m + 1, 0, $y));
-				$m2 = $monthdisplay == 'str' ? JText::_(date('M', $starttime)) : $m;
+				$m2 = $monthdisplay == 'str' ? FText::_(date('M', $starttime)) : $m;
 				$this->fc->addGanttCategory($m2, "start=" . $start . ";end=" . $end . ";");
 			}
 		}

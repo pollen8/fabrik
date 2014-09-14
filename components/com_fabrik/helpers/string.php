@@ -82,7 +82,7 @@ class FabrikString extends JString
 
 	/**
 	 * UTF-8 aware - remove the first word
-	 * CASE INSENSETIVE
+	 * CASE INSENSITIVE
 	 *
 	 * @param   string  $str   The string to be trimmed
 	 * @param   string  $word  The word to trim
@@ -103,8 +103,8 @@ class FabrikString extends JString
 	}
 
 	/**
-	 * Formats a string to return a safe db col name - eg
-	 * table.field is returned as `table`.field`
+	 * Formats a string to return a safe db col name e.g.
+	 * table.field is returned as `table`.`field`
 	 * table is return as `table`
 	 *
 	 * @param   string  $col  Col name to format
@@ -217,7 +217,7 @@ class FabrikString extends JString
 	}
 
 	/**
-	 * Santize db fields names, can't just do regex on A-Z as languages like Chinese should be allowed
+	 * Sanitize db fields names, can't just do regex on A-Z as languages like Chinese should be allowed
 	 *
 	 * @param   string  $str  Field name
 	 *
@@ -300,7 +300,7 @@ class FabrikString extends JString
 
 		if (function_exists('iconv'))
 		{
-			/* $$$ rob added @ incase its farsi which creates a notice:
+			/* $$$ rob added @ in case its farsi which creates a notice:
 			 * https://github.com/Fabrik/fabrik/issues/72
 			 */
 
@@ -581,7 +581,7 @@ class FabrikString extends JString
 
 	/**
 	 * Translator JText wrapper - removes tags and compares raw text
-	 * so "<p>STRING_TO_TRANLATE</p>" is tranlated even if wrapped in a <p> tag.
+	 * so "<p>STRING_TO_TRANSLATE</p>" is translated even if wrapped in a <p> tag.
 	 *
 	 * @param   string  $text  Text to translate
 	 *
@@ -591,7 +591,7 @@ class FabrikString extends JString
 	public static function translate($text)
 	{
 		$plain = strip_tags($text);
-		$translated = JText::_($plain);
+		$translated = FText::_($plain);
 
 		if ($translated !== $plain)
 		{
@@ -612,5 +612,259 @@ class FabrikString extends JString
 	public static function isConcat($text)
 	{
 		return preg_match('/^\s*(CONCAT|CONCAT_WS)\b/i', preg_quote($text));
+	}
+
+	/**
+	 * Strip whitespace (or only spaces) from a string
+	 *
+	 * @param   string  $text         Text to strip
+	 * @param   bool    $only_spaces  If true, only strip spaces (not tabs, etc), default is false
+	 *
+	 * @return string
+	 */
+
+	public static function stripSpace($text, $only_spaces = false)
+	{
+		if ($only_spaces)
+		{
+			return str_replace(' ', '', $text);
+		}
+		else
+		{
+			return preg_replace('#\s+#', '', $text);
+		}
+	}
+
+	/**
+	 * See if date string is a valid date in MySQL format.
+	 *
+	 * NOTE - I could have sworn we had a function somewhere to do this, but I can't find it!
+	 * Needed it in the main system plugin, for handling J! search plugin dates, as J!
+	 * will pitch a fatal error if we pass it an invalid date string.  So if there is
+	 * already a way of doing this, feel free to dump this func and modify the system plugin
+	 * in onDoContentSearch().
+	 *
+	 * @param  bool  $time_optional   if set to true, the time part is optional
+	 *
+	 * @return  bool
+	 */
+	public static function isMySQLDate($date, $time_optional = false)
+	{
+		$date_re = '(((\d{4})(-)(0[13578]|10|12)(-)(0[1-9]|[12][0-9]|3[01]))|((\d{4})(-)(0[469]|1??1)(-)([0][1-9]|[12][0-9]|30))|';
+		$date_re .= '((\d{4})(-)(02)(-)(0[1-9]|1[0-9]|2[0-8]))|(([02468]??[048]00)(-)(02)(-)(29))|(([13579][26]00)(-)(02)(-)(29))|';
+		$date_re .= '(([0-9][0-9][0][48])(-)(0??2)(-)(29))|(([0-9][0-9][2468][048])(-)(02)(-)(29))|(([0-9][0-9][13579][26])(-)(02??)(-)(29)))';
+		$time_re = '(\s([0-1][0-9]|2[0-4]):([0-5][0-9]):([0-5][0-9]))';
+
+		if ($time_optional)
+		{
+			return preg_match("#^" . $date_re . "$#", $date) || preg_match("#^" . $date_re . $time_re . "$#", $date);
+		}
+		else
+		{
+			return preg_match("#^" . $date_re . $time_re . "$#", $date);
+		}
+	}
+
+	/**
+	 * Replace last occurance of a string
+	 *
+	 * @param   string  $search   Text to search for
+	 * @param   string  $replace  Text to replace the search string
+	 * @param   string  $subject  The text to search in
+	 *
+	 * @return  string
+	 */
+	public static function replaceLast($search, $replace, $subject)
+	{
+		$pos = strripos($subject, $search);
+
+		if ($pos !== false)
+		{
+			$subject = substr_replace($subject, $replace, $pos, strlen($search));
+		}
+
+		return $subject;
+	}
+
+	/**
+	 * DB value quote a single string or an array of strings, first checking to see if they are
+	 * already quoted.  Which the J! $db->quote() doesn't do, unfortunately.
+	 * Does NOT modify the input.  Does not quote if value starts with SELECT.
+	 *
+	 * @param unknown $values
+	 * @param bool    $commaSeparated  individually quote a comma separated string of values
+	 *
+	 * @return   mixed   quoted values
+	 */
+	public static function safeQuote($values, $commaSeparated = true) {
+		$values2 = $values;
+
+		if ($commaSeparated) {
+			$values2 = explode(',', $values2);
+		}
+
+		if (is_array($values2))
+		{
+			foreach ($values2 as &$v)
+			{
+					$v = self::safeQuoteOne($v);
+			}
+		}
+		else
+		{
+			$values2 = self::safeQuoteOne($values2);
+		}
+
+		if ($commaSeparated) {
+			$values2 = implode(',', $values2);
+		}
+
+		return $values2;
+	}
+
+	/**
+	 * Return DB value quoted single string.  Does not quote if value starts with SELECT,
+	 * or if value is already single quoted.
+	 *
+	 * @param string  $value
+	 *
+	 * @return   mixed   quoted values
+	 */
+	public static function safeQuoteOne($value)
+	{
+		$value = trim($value);
+		if (is_string($value) && !preg_match('/^\s*SELECT\s+/i', $value))
+		{
+
+			if (!preg_match("#^'.*'$#", $value))
+			{
+				$db = JFactory::getDbo();
+				$value = $db->quote($value);
+			}
+
+		}
+
+		return $value;
+	}
+
+	/**
+	 * DB name quote a single string or an array of strings, first checking to see if they are
+	 * already quoted.  Which the J! $db->quote() doesn't do, unfortunately.
+	 * Does NOT modify the input.  Does not quote if value starts with CONCAT.
+	 *
+	 * @param unknown $values
+	 * @param bool    $commaSeparated  individually quote a comma separated string of values
+	 *
+	 * @return   mixed   quoted values
+	 */
+	public static function safeNameQuote($values, $commaSeparated = true) {
+		$values2 = $values;
+
+		if ($commaSeparated) {
+			$values2 = explode(',', $values2);
+		}
+
+		if (is_array($values2))
+		{
+			foreach ($values2 as &$v)
+			{
+				$v = self::safeNameQuoteOne($v);
+			}
+		}
+		else
+		{
+			$values2 = self::safeNameQuoteOne($values2);
+		}
+
+		if ($commaSeparated) {
+			$values2 = implode(',', $values2);
+		}
+
+		return $values2;
+	}
+
+	/**
+	 * Return DB value quoted single string.  Does not quote if value starts with SELECT,
+	 * or if value is already single quoted.
+	 *
+	 * @param string  $value
+	 *
+	 * @return   mixed   quoted values
+	 */
+	public static function safeNameQuoteOne($value)
+	{
+		$value = trim($value);
+		if (is_string($value) && !preg_match('/^\s*(CONCAT|CONCAT_WS)\s*\(/i', $value))
+		{
+
+			if (!preg_match("#^`.*`$#", $value))
+			{
+				$db = JFactory::getDbo();
+				$value = $db->quoteName($value);
+			}
+
+		}
+
+		return $value;
+	}
+
+}
+
+/**
+ *
+ * $$$ hugh JText::_() does funky stuff to strings with commas in them, like
+ * truncating everything after the first comma, if what follows the first comma
+ * is all "upper case".  But it tests for that using non MB safe code, so any non
+ * ASCII strings (like Greek text) with a comma in them get truncated at the comma.
+ * Corner case or what!  But we need to work round this behavior.
+ *
+ * So ... here's a wrapper for JText::_().
+ */
+
+class FText extends JText
+{
+	/**
+	 * Translates a string into the current language.
+	 *
+	 * Examples:
+	 * <script>alert(Joomla.JText._('<?php echo FText::_("JDEFAULT", array("script"=>true));?>'));</script>
+	 * will generate an alert message containing 'Default'
+	 * <?php echo FText::_("JDEFAULT");?> it will generate a 'Default' string
+	 *
+	 * @param   string   $string                The string to translate.
+	 * @param   mixed    $jsSafe                Boolean: Make the result javascript safe.
+	 * @param   boolean  $interpretBackSlashes  To interpret backslashes (\\=\, \n=carriage return, \t=tabulation)
+	 * @param   boolean  $script                To indicate that the string will be push in the javascript language store
+	 *
+	 * @return  string  The translated string or the key is $script is true
+	 *
+	 * @since   11.1
+	 */
+	public static function _($string, $jsSafe = false, $interpretBackSlashes = true, $script = false)
+	{
+		/**
+		 * In JText::_(), it does the following tests to see if everything following a comma is all upp
+		 * case, and if it is, it does Funky Stuff to it.  We ned to avoid that behavior.  So us this
+		 * logic, and if it's true, return the string untouched.  We could just check for a comma and not
+		 * process anything with commas (unikely to be a translatable phrase), but unless this test adds
+		 * too much overhead, might as well do the whole J! test sequence.
+		 */
+
+		if (!(strpos($string, ',') === false))
+		{
+			$test = substr($string, strpos($string, ','));
+
+			if (strtoupper($test) === $test)
+			{
+				/**
+				 * This is where JText::_() would do Funky Stuff, chopping off everything after
+				 * the first comma.  So we'll just return the input string untouched.
+				 */
+				return $string;
+			}
+		}
+
+		// if we got this far, hand it to JText::_() as normal
+		return parent::_($string, $jsSafe, $interpretBackSlashes, $script);
 	}
 }

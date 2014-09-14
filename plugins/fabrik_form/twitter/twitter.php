@@ -3,7 +3,7 @@
  * Post content to twitter
  *
  * @package     Joomla.Plugin
- * @subpackage  Fabrik.form.twiter
+ * @subpackage  Fabrik.form.twitter
  * @copyright   Copyright (C) 2005-2013 fabrikar.com - All rights reserved.
  * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
@@ -54,14 +54,14 @@ class PlgFabrik_FormTwitter extends PlgFabrik_Form
 	{
 		$this->_process();
 
-		// Stop default redirect from occuring
+		// Stop default redirect from occurring
 		return false;
 	}
 
 	/**
 	 * Create the form model
 	 *
-	 * @param   int  $id  fomr id
+	 * @param   int  $id  form id
 	 *
 	 * @return  FabrikFEModelForm
 	 */
@@ -147,7 +147,7 @@ class PlgFabrik_FormTwitter extends PlgFabrik_Form
 
 		if ($content->remaining_hits <= 0)
 		{
-			$app->enqueueMessage(JText::_('TWITTER_ACCOUNT_LIMIT_REACHED'));
+			$app->enqueueMessage(FText::_('TWITTER_ACCOUNT_LIMIT_REACHED'));
 		} */
 
 		// Get logged in user to help with tests
@@ -165,11 +165,11 @@ class PlgFabrik_FormTwitter extends PlgFabrik_Form
 			case '304':
 				if ($show_success == 1)
 				{
-					$app->enqueueMessage(JText::_('PLG_FORM_TWITTER_SUCCESS_MSG'));
+					$app->enqueueMessage(FText::_('PLG_FORM_TWITTER_SUCCESS_MSG'));
 				}
 				break;
 			default:
-				$app->enqueueMessage(JText::_('PLG_FORM_TWITTER_ERR'), "$connection->http_code : $status->error");
+				$app->enqueueMessage(FText::_('PLG_FORM_TWITTER_ERR'), "$connection->http_code : $status->error");
 		}
 
 		$url = $input->get('fabrik_referrer', '');
@@ -203,12 +203,12 @@ class PlgFabrik_FormTwitter extends PlgFabrik_Form
 
 		if ($params->get('twitter_oauth_token') == '')
 		{
-			throw new RuntimeException(JText::_('PLG_FORM_TWITTER_ERR_NO_OAUTH_TOKEN'), 500);
+			throw new RuntimeException(FText::_('PLG_FORM_TWITTER_ERR_NO_OAUTH_TOKEN'), 500);
 		}
 
 		if ($params->get('twitter_oauth_token_secret') == '')
 		{
-			throw new RuntimeException(JText::_('PLG_FORM_TWITTER_ERR_NO_OAUTH_SECRET_TOKEN'), 500);
+			throw new RuntimeException(FText::_('PLG_FORM_TWITTER_ERR_NO_OAUTH_SECRET_TOKEN'), 500);
 		}
 
 		if ($params->get('twitter_oauth_token_secret') !== '')
@@ -222,7 +222,7 @@ class PlgFabrik_FormTwitter extends PlgFabrik_Form
 			return;
 		}
 
-		// Otherwise get authorization url from user to use ther own account
+		// Otherwise get authorization url from user to use their own account
 
 		// $this->row not set ?! so this callback url was giving notices
 		$callback = COM_FABRIK_LIVESITE . 'index.php?option=com_' . $package . '&task=plugin.pluginAjax&plugin=twitter&g=form&method=tweet&formid='
@@ -283,14 +283,14 @@ class PlgFabrik_FormTwitter extends PlgFabrik_Form
 		$data['fabrik_viewurl'] = COM_FABRIK_LIVESITE
 			. JRoute::_("index.php?option=com_" . $package . "&amp;view=details&amp;formid=" . $formId . "&amp;rowid=" . $id);
 
-		// $$$ rob fabrik_viewurl/fabrik_editurl desribed in help text as fabrik_edit_url/fabrik_view_url.
+		// $$$ rob fabrik_viewurl/fabrik_editurl described in help text as fabrik_edit_url/fabrik_view_url.
 		// $$$ hugh - so let's add edit_link and view_link as well, just for consistency
 		$data['fabrik_edit_url'] = $data['fabrik_editurl'];
 		$data['fabrik_view_url'] = $data['fabrik_viewurl'];
-		$data['fabrik_editlink'] = "<a href=\"{$data['fabrik_editurl']}\">" . JText::_('EDIT') . "</a>";
-		$data['fabrik_viewlink'] = "<a href=\"{$data['fabrik_viewurl']}\">" . JText::_('VIEW') . "</a>";
-		$data['fabrik_edit_link'] = "<a href=\"{$data['fabrik_editurl']}\">" . JText::_('EDIT') . "</a>";
-		$data['fabrik_view_link'] = "<a href=\"{$data['fabrik_viewurl']}\">" . JText::_('VIEW') . "</a>";
+		$data['fabrik_editlink'] = "<a href=\"{$data['fabrik_editurl']}\">" . FText::_('EDIT') . "</a>";
+		$data['fabrik_viewlink'] = "<a href=\"{$data['fabrik_viewurl']}\">" . FText::_('VIEW') . "</a>";
+		$data['fabrik_edit_link'] = "<a href=\"{$data['fabrik_editurl']}\">" . FText::_('EDIT') . "</a>";
+		$data['fabrik_view_link'] = "<a href=\"{$data['fabrik_viewurl']}\">" . FText::_('VIEW') . "</a>";
 
 		return $data;
 	}
@@ -326,7 +326,7 @@ class PlgFabrik_FormTwitter extends PlgFabrik_Form
 	}
 
 	/**
-	 * URL Shorten any links in the maessage
+	 * URL Shorten any links in the message
 	 *
 	 * @param   string  $msg  message
 	 *
@@ -390,7 +390,7 @@ class PlgFabrik_FormTwitter extends PlgFabrik_Form
 
 		$msg = $this->bitlifyMessage($msg);
 
-		// $$$ hugh - I thought the twitter class chopped the msg to 140, but apprently it doesn't ..
+		// $$$ hugh - I thought the twitter class chopped the msg to 140, but apparently it doesn't ..
 		$msg = JString::substr($msg, 0, $this->max_msg_length);
 
 		return $msg;
@@ -425,7 +425,7 @@ class PlgFabrik_FormTwitter extends PlgFabrik_Form
 
 		if (!function_exists('curl_init'))
 		{
-			throw new RuntimeException(JText::_('PLG_FORM_TWITTER_ERR_CURL'), 500);
+			throw new RuntimeException(FText::_('PLG_FORM_TWITTER_ERR_CURL'), 500);
 		}
 
 		// Build TwitterOAuth object with client credentials.
@@ -519,7 +519,7 @@ class PlgFabrik_FormTwitter extends PlgFabrik_Form
 		$lang->load($langfile, JPATH_ADMINISTRATOR, null, true);
 
 		// If we had already authorized the app then we will still be in the admin page - so update the fields:
-		echo JText::_('PLG_FORM_TWITTER_CREDITIALS_SAVED');
+		echo FText::_('PLG_FORM_TWITTER_CREDENTIALS_SAVED');
 		$document = JFactory::getDocument();
 		$script = implode("\n", $js) . "
 		(function() {window.close()}).delay(4000);

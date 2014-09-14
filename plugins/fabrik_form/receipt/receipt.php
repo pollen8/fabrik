@@ -42,7 +42,7 @@ class PlgFabrik_FormReceipt extends PlgFabrik_Form
 
 			if ($label === '')
 			{
-				$label = JText::_('PLG_FORM_RECEIPT_EMAIL_ME_A_COPY');
+				$label = FText::_('PLG_FORM_RECEIPT_EMAIL_ME_A_COPY');
 			}
 
 			$this->html = "
@@ -101,8 +101,8 @@ class PlgFabrik_FormReceipt extends PlgFabrik_Form
 			. $rowid;
 		$viewURL = COM_FABRIK_LIVESITE . "index.php?option=com_" . $package . "&amp;view=details&amp;fabrik=" . $formModel->get('id') . "&amp;rowid="
 			. $rowid;
-		$editlink = "<a href=\"$editURL\">" . JText::_('EDIT') . "</a>";
-		$viewlink = "<a href=\"$viewURL\">" . JText::_('VIEW') . "</a>";
+		$editlink = "<a href=\"$editURL\">" . FText::_('EDIT') . "</a>";
+		$viewlink = "<a href=\"$viewURL\">" . FText::_('VIEW') . "</a>";
 		$message = str_replace('{fabrik_editlink}', $editlink, $message);
 		$message = str_replace('{fabrik_viewlink}', $viewlink, $message);
 		$message = str_replace('{fabrik_editurl}', $editURL, $message);
@@ -122,11 +122,11 @@ class PlgFabrik_FormReceipt extends PlgFabrik_Form
 		}
 
 		$subject = html_entity_decode($params->get('receipt_subject', ''));
-		$subject = $w->parseMessageForPlaceHolder($subject, $data, false);
+		$subject = JText::_($w->parseMessageForPlaceHolder($subject, $data, false));
 		$from = $config->get('mailfrom', '');
 		$fromname = $config->get('fromname', '');
 
-		// Darn silly hack for poor joomfish settings where lang parameters are set to overide joomla global config but not mail translations entered
+		// Darn silly hack for poor joomfish settings where lang parameters are set to override joomla global config but not mail translations entered
 		$rawconfig = new JConfig;
 
 		if ($from === '')
@@ -139,7 +139,13 @@ class PlgFabrik_FormReceipt extends PlgFabrik_Form
 			$fromname = $rawconfig->fromname;
 		}
 
+		$from = $params->get('from_email', $from);
 		$mail = JFactory::getMailer();
 		$res = $mail->sendMail($from, $fromname, $to, $subject, $message, true);
+
+		if (!$res)
+		{
+			throw new RuntimeException('Couldn\'t send receipt', 500);
+		}
 	}
 }

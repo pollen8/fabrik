@@ -11,36 +11,45 @@
 header('Content-type: text/css');
 $c = (int) $_REQUEST['c'];
 $view = isset($_REQUEST['view']) ? $_REQUEST['view'] : 'form';
+$rowid = isset($_REQUEST['rowid']) ? $_REQUEST['rowid'] : '';
+$form = $view . '_' . $c;
+$c_row = $c;
+if ($rowid !== '')
+{
+	$form .= '_' . $rowid;
+	$c_row .= '_' . $rowid;
+}
+
 echo "
 
-#{$view}_$c fieldset ul{
+#{$form} fieldset ul{
 	list-style:none;
 }
 
-#{$view}_$c .fabrikElement{
+#{$form} .fabrikElement{
 	margin-left:112px;
 }
 
-#{$view}_$c .fabrikLabel{
+#{$form} .fabrikLabel{
 	width:100px;
 	clear:left;
 	float:left;
 }
 
 /** used by password element */
-#{$view}_$c .fabrikSubLabel {
+#{$form} .fabrikSubLabel {
 	margin-left: -10px;
 	clear: left;
 	margin-top: 10px;
 	float: left;
 }
 
-#{$view}_$c .fabrikSubElement {
+#{$form} .fabrikSubElement {
 	display: block;
 	margin-top: 10px;
 }
 
-#{$view}_$c .addGroup:link {
+#{$form} .addGroup:link {
 	text-decoration: none;
 }
 ";

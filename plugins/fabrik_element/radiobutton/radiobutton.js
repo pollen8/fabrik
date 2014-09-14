@@ -37,6 +37,10 @@ window.FbRadio = new Class({
 
 		c.getElements(".btn-group input[checked=checked]").each(function (input) {
 			var label = input.getParent('label');
+			if (typeOf(label) === 'null') {
+				// J3.2 button group markup - label is after input (no longer the case)
+				label = input.getNext();
+			}
 			v = input.get('value');
 			if (v === '') {
 				label.addClass('active btn-primary');
@@ -54,7 +58,7 @@ window.FbRadio = new Class({
 			return;
 		}
 		c.getElements('.radio.btn-group label').addClass('btn');
-		c.addEvent('mouseup:relay(.btn-group label)', function (e, label) {
+		c.addEvent('click:relay(.btn-group label)', function (e, label) {
 			var id = label.get('for'), input;
 			if (id !== '') {
 				input = document.id(id);
@@ -75,16 +79,25 @@ window.FbRadio = new Class({
 			label = input.getParent('label.btn');
 		}
 		var v = input.get('value');
-		if (!input.get('checked')) {
-			label.getParent('.btn-group').getElements('label').removeClass('active').removeClass('btn-success').removeClass('btn-danger').removeClass('btn-primary');
-			if (v === '') {
-				label.addClass('active btn-primary');
-			} else if (v.toInt() === 0) {
-				label.addClass('active btn-danger');
-			} else {
-				label.addClass('active btn-success');
+		var fabchecked = parseInt(input.get('fabchecked'), 10);
+		
+		// Protostar in J3.2 adds its own btn-group js code - need to thus apply this section even after input has been unchecked
+		if (!input.get('checked') || fabchecked === 1) {
+			if (label) {
+				label.getParent('.btn-group').getElements('label').removeClass('active').removeClass('btn-success').removeClass('btn-danger').removeClass('btn-primary');
+				if (v === '') {
+					label.addClass('active btn-primary');
+				} else if (v.toInt() === 0) {
+					label.addClass('active btn-danger');
+				} else {
+					label.addClass('active btn-success');
+				}
 			}
 			input.set('checked', true);
+			
+			if (typeOf(fabchecked) === 'null') {
+				input.set('fabchecked', 1);
+			}
 		}
 	},
 
@@ -150,15 +163,12 @@ window.FbRadio = new Class({
 			if (typeOf(val) === 'array') {
 				els.each(function (el) {
 					if (val.contains(el.value)) {
-						//el.setProperty('checked', 'checked');
 						this.setButtonGroupCSS(el);
-						//el.fireEvent('click');
 					}
 				}.bind(this));
 			} else {
 				els.each(function (el) {
 					if (el.value === val) {
-						//el.setProperty('checked', 'checked');
 						this.setButtonGroupCSS(el);
 					}
 				}.bind(this));
@@ -172,5 +182,6 @@ window.FbRadio = new Class({
 			this.watchAdd();
 		}
 		this.parent(c);
+		this.btnGroup();
 	}
 });

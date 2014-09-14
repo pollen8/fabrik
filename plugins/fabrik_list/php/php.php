@@ -31,7 +31,7 @@ class PlgFabrik_ListPhp extends plgFabrik_List
 	/**
 	 * Prep the button if needed
 	 *
-	 * @param   array  &$args  Arguements
+	 * @param   array  &$args  Arguments
 	 *
 	 * @return  bool;
 	 */
@@ -39,8 +39,21 @@ class PlgFabrik_ListPhp extends plgFabrik_List
 	public function button(&$args)
 	{
 		parent::button($args);
+		$heading = false;
 
-		return true;
+		if (!empty($args))
+		{
+			$heading = JArrayHelper::getValue($args[0], 'heading');
+		}
+
+		if ($heading)
+		{
+			return true;
+		}
+
+		$params = $this->getParams();
+
+		return (bool) $params->get('button_in_row', true);
 	}
 
 	/**
@@ -147,7 +160,7 @@ class PlgFabrik_ListPhp extends plgFabrik_List
 		else
 		{
 			$params = $this->getParams();
-			$msg = $params->get('table_php_msg', JText::_('PLG_LIST_PHP_CODE_RUN'));
+			$msg = $params->get('table_php_msg', FText::_('PLG_LIST_PHP_CODE_RUN'));
 
 			return $msg;
 		}

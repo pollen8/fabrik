@@ -29,6 +29,6 @@ class FabrikTablePackage extends JTable
 
 	public function __construct(&$db)
 	{
-		parent::__construct('#__{package}_packages', 'id', $db);
+		parent::__construct('#__fabrik_packages', 'id', $db);
 	}
 }

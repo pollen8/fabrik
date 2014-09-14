@@ -58,7 +58,7 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 	/**
 	 * Draws the html form element
 	 *
-	 * @param   array  $data           to preopulate element with
+	 * @param   array  $data           to pre-populate element with
 	 * @param   int    $repeatCounter  repeat group counter
 	 *
 	 * @return  string	elements html
@@ -92,7 +92,7 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 			{
 				$userid = (int) $this->getValue($data, $repeatCounter);
 
-				// On failed validtion value is 1 - user ids are always more than that so dont load userid=1 otherwise an error is generated
+				// On failed validation value is 1 - user ids are always more than that so don't load userid=1 otherwise an error is generated
 				$user = $userid <= 1 ? JFactory::getUser() : JFactory::getUser($userid);
 			}
 		}
@@ -121,7 +121,7 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 					 *  $$$ rob 31/07/2011 not sure this is right - causes js error when field is hidden in form
 					 *  $$$ hugh 10/31/2011 - but if we don't do it, $id is the label not the value (like 'username')
 					 *  so wrong uid is written to form, and wipes out real ID when form is submitted.
-					 *  OK, problem was we were using $id firther on as the html ID, so if we added _raw, element
+					 *  OK, problem was we were using $id further on as the html ID, so if we added _raw, element
 					 *  on form had wrong ID.  Added $html_id above, to use as (duh) html ID instead of $id.
 					 */
 					if (!strstr($id, '_raw') && array_key_exists($id . '_raw', $data))
@@ -135,6 +135,20 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 				if ($id === '')
 				{
 					$id = $this->getValue($data, $repeatCounter);
+				}
+
+				/*
+				 * After a failed validation, it may be JSON, and urlencoded, like [&quot;94&quot;]
+				 * Or it may be an array with JSON and or urlencode and or ... yada yada ... who the f*ck knows
+				 * So let's just cover all the bases, shall we?
+				 */
+				
+				$id = is_array($id) ? $id[0] : $id;
+				
+				$id = html_entity_decode($id);
+				if (FabrikWorker::isJSON($id))
+				{
+					$id = FabrikWorker::JSONtoData($id, true);
 				}
 
 				$id = is_array($id) ? $id[0] : $id;
@@ -173,7 +187,10 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 			}
 			else
 			{
-				$str = parent::render($data, $repeatCounter);
+				$str = '<div class="input-append">';
+				$str .= parent::render($data, $repeatCounter);
+				$str .= '<span class="add-on"><span class="icon-user"></span></span>';
+				$str .= '</div>';
 			}
 		}
 		else
@@ -186,7 +203,7 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 			}
 			else
 			{
-				JError::raiseWarning(E_NOTICE, "didnt load for $element->default");
+				JError::raiseWarning(E_NOTICE, "Didn't load for $element->default");
 			}
 		}
 
@@ -195,12 +212,12 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 
 	/**
 	 * Is the element hidden or not - if not set then return false
-	 * If the table db isnt the same as the joomla db the element
+	 * If the table db isn't the same as the joomla db the element
 	 *
 	 * @return  bool
 	 */
 
-	protected function isHidden()
+	public function isHidden()
 	{
 		if ($this->inJDb())
 		{
@@ -330,6 +347,22 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 		$element = $this->getElement();
 		$params = $this->getParams();
 
+		/*
+		 * After a failed validation, if readonly for ACL's, it may be JSON, and urlencoded, like [&quot;94&quot;]
+		*/
+
+		$data[$element->name] = is_array($data[$element->name]) ? $data[$element->name][0] : $data[$element->name];
+
+		$data[$element->name] = html_entity_decode($data[$element->name]);
+
+		if (FabrikWorker::isJSON($data[$element->name]))
+		{
+			$data[$element->name] = FabrikWorker::JSONtoData($data[$element->name], true);
+		}
+
+		$data[$element->name] = is_array($data[$element->name]) ? $data[$element->name][0] : $data[$element->name];
+
+
 		/**
 		 *  $$$ hugh - special case for social plugins (like CB plugin).  If plugin sets
 		 *  fabrik.plugin.profile_id, and 'user_use_social_plugin_profile' param is set,
@@ -340,7 +373,8 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 		// TODO - make this table/form specific, but not so easy to do in CB plugin
 		if ((int) $params->get('user_use_social_plugin_profile', 0))
 		{
-			if ($input->getString('rowid', '', 'string') == '' && $input->get('task') !== 'doimport')
+			//if ($input->getString('rowid', '', 'string') == '' && $input->get('task') !== 'doimport')
+			if ($input->getString('rowid', '', 'string') == '' && !$this->getListModel()->importingCSV)
 			{
 				$session = JFactory::getSession();
 
@@ -355,8 +389,9 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 			}
 		}
 
-		// $$$ rob also check we aren't importing from CSV - if we are ingore
-		if ($input->getString('rowid', '', 'string') == '' && $input->get('task') !== 'doimport')
+		// $$$ rob also check we aren't importing from CSV - if we are ignore
+		//if ($input->getString('rowid', '', 'string') == '' && $input->get('task') !== 'doimport')
+		if ($input->getString('rowid', '', 'string') == '' && !$this->getListModel()->importingCSV)
 		{
 			// $$$ rob if we cant use the element or its hidden force the use of current logged in user
 			if (!$this->canUse() || $this->getElement()->hidden == 1)
@@ -372,7 +407,15 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 		// $$$ rob NOOOOOO!!!!! - if its HIDDEN OR set to READ ONLY then yes
 		// otherwise selected dropdown option is not taken into account
 
-		// $$$ hugh - so how come we don't do the same thing on a new row?  Seems inconsistant to me?
+		// $$$ hugh - so how come we don't do the same thing on a new row?  Seems inconsistent to me?
+
+		// $$$ paul - seems bonkers to me to use source code comments like an instant messaging system!
+
+		/**
+		 * $$$ hugh - it's not IM'ing, it's long running "frank and honest differences of opinion" over how things work
+		 * and why we each make the assumptions / changes we do when working on "disputed" chunks of code
+		 */
+
 		else
 		{
 			if ($this->updateOnEdit())
@@ -387,6 +430,34 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 				{
 					$this_fullname = $this->getFullName(true, false);
 					$this->getFormModel()->updatedByPlugin($this_fullname, $user->get('id'));
+				}
+			}
+
+			/**
+			 * If importing from CSV and not set to update on edit, let's check to see if they
+			 * are trying to import a username rather than ID.
+			 */
+
+			else if ($this->getListModel()->importingCSV)
+			{
+				$formData = $this->getFormModel()->formData;
+				$userid = JArrayHelper::getValue($formData, $element->name, '');
+				if (!empty($userid) && !is_numeric($userid))
+				{
+					$user = JFactory::getUser($userid);
+					$new_userid = $user->get('id');
+					if (empty($new_userid) && FabrikWorker::isEmail($userid))
+					{
+						$db = JFactory::getDbo();
+						$query = $db->getQuery(true)
+						->select($db->quoteName('id'))
+						->from($db->quoteName('#__users'))
+						->where($db->quoteName('email') . ' = ' . $db->quote($userid));
+						$db->setQuery($query, 0, 1);
+
+						$new_userid = (int) $db->loadResult();
+					}
+					$data[$element->name] = $new_userid;
 				}
 			}
 		}
@@ -490,12 +561,14 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 	/**
 	 * Get select option label
 	 *
+	 * @param  bool  $filter  get alt label for filter, if present using :: splitter
+	 *
 	 * @return  string
 	 */
 
-	protected function _getSelectLabel()
+	protected function _getSelectLabel($filter = false)
 	{
-		return $this->getParams()->get('user_noselectionlabel', JText::_('COM_FABRIK_PLEASE_SELECT'));
+		return $this->getParams()->get('user_noselectionlabel', FText::_('COM_FABRIK_PLEASE_SELECT'));
 	}
 
 	/**
@@ -616,7 +689,7 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 	 * Determines the value for the element in the form view
 	 *
 	 * @param   array  $data           form data
-	 * @param   int    $repeatCounter  when repeating joinded groups we need to know what part of the array to access
+	 * @param   int    $repeatCounter  when repeating joined groups we need to know what part of the array to access
 	 * @param   array  $opts           options
 	 *
 	 * @return  string	value
@@ -627,7 +700,7 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 		$app = JFactory::getApplication();
 		$input = $app->input;
 
-		// Cludge for 2 scenarios
+		// Kludge for 2 scenarios
 		if (array_key_exists('rowid', $data))
 		{
 			// When validating the data on form submission
@@ -646,7 +719,7 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 		if (empty($data) || !array_key_exists($key, $data))
 		{
 			// $$$ rob - added check on task to ensure that we are searching and not submitting a form
-			// as otherwise not empty valdiation failed on user element
+			// as otherwise not empty validation failed on user element
 			if (!in_array($input->get('task'), array('processForm', 'view', '', 'form.process')))
 			{
 				return '';
@@ -687,7 +760,7 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 		$htmlid = $this->getHTMLId() . 'value';
 		$v = $this->filterName($counter, $normal);
 
-		// Corect default got
+		// Correct default got
 		$default = $this->getDefaultFilterVal($normal, $counter);
 		$return = array();
 		$tabletype = $this->getLabelOrConcatVal();
@@ -759,7 +832,7 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 
 		if ($normal)
 		{
-			$return[] = $this->getFilterHiddenFields($counter, $elName);
+			$return[] = $this->getFilterHiddenFields($counter, $elName, false, $normal);
 		}
 		else
 		{
@@ -794,7 +867,7 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 	 * Can be overwritten in plugin - e.g. see checkbox element which checks for partial matches
 	 *
 	 * @param   string  $key            element name in format `tablename`.`elementname`
-	 * @param   string  $condition      =/like etc
+	 * @param   string  $condition      =/like etc.
 	 * @param   string  $value          search string - already quoted if specified in filter array options
 	 * @param   string  $originalValue  original filter value without quotes or %'s applied
 	 * @param   string  $type           filter type advanced/normal/prefilter/search/querystring/searchall

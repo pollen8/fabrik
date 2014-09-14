@@ -2,22 +2,21 @@
 <form>
 	<fields addfieldpath="/administrator/components/com_fabrik/models/fields" name="params">
 		<fieldset name="plg-validationrule-emailexists">
-		
+
 			<field name="emailexists-message"
 				type="text"
 				description="PLG_VALIDATIONRULE_EMAILEXISTS_ERROR_DESC"
 				label="PLG_VALIDATIONRULE_EMAILEXISTS_ERROR_LABEL"
 				repeat="true"
 				size="30" />
-				
+
 			<field name="emailexists-validation_condition"
 				type="fabrikeditor"
 				mode="php"
-				width="400px"
 				description="PLG_VALIDATIONRULE_EMAILEXISTS_CONDTION_DESC"
 				label="PLG_VALIDATIONRULE_EMAILEXISTS_CONDTION_LABEL"
 				repeat="true" />
-				
+
 			<field name="emailexists_or_not"
 				type="list"
 				default="fail_if_exist"
@@ -33,8 +32,8 @@
 				description="PLG_VALIDATIONRULE_EMAILEXISTS_USER_FIELD_DESC"
 				label="PLG_VALIDATIONRULE_EMAILEXISTS_USER_FIELD_LABEL"
 				repeat="true" />
-			
+
 		</fieldset>
-		
+
 	</fields>
 </form>

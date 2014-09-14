@@ -109,7 +109,8 @@ class FabrikFEModelCSVExport
 			if (empty($headings))
 			{
 				$url = $input->server->get('HTTP_REFERER', '');
-				$app->redirect($url, JText::_('No data to export'));
+				$app->enqueueMessage(FText::_('No data to export'));
+				$app->redirect($url);
 
 				return;
 			}
@@ -152,6 +153,23 @@ class FabrikFEModelCSVExport
 						if (substr($key, JString::strlen($key) - 4, JString::strlen($key)) != '_raw')
 						{
 							unset($a[$key]);
+						}
+					}
+				}
+
+				if ($incData && $incRaw)
+				{
+					foreach ($a as $key => $val)
+					{
+						// Remove Un-needed repeat join element values.
+						if (array_key_exists($key . '___params', $a))
+						{
+							unset($a[$key . '___params']);
+						}
+
+						if (array_key_exists($key . '_id', $a))
+						{
+							unset($a[$key . '_id']);
 						}
 					}
 				}
@@ -310,19 +328,24 @@ class FabrikFEModelCSVExport
 		}
 		else
 		{
-			// If we cant find the file then dont try to auto download it
+			// If we cant find the file then don't try to auto download it
 			return false;
 		}
 
 		JResponse::clearHeaders();
+		$encoding = $this->getEncoding();
 
 		// Set the response to indicate a file download
 		JResponse::setHeader('Content-Type', 'application/zip');
 		JResponse::setHeader('Content-Disposition', "attachment;filename=\"" . $filename . "\"");
 
 		// Xls formatting for accents
-		JResponse::setHeader('Content-Type', 'application/vnd.ms-excel');
-		JResponse::setHeader('charset', 'UTF-16LE');
+		if ($this->outPutFormat == 'excel')
+		{
+			JResponse::setHeader('Content-Type', 'application/vnd.ms-excel');
+		}
+
+		JResponse::setHeader('charset', $encoding);
 		JResponse::setBody($str);
 		echo JResponse::toString(false);
 		JFile::delete($filepath);
@@ -436,23 +459,44 @@ class FabrikFEModelCSVExport
 	{
 		$n = '"' . str_replace('"', '""', $n) . '"';
 
+		$csvEncoding = $this->getEncoding();
+
 		// $$$ hugh - func won't exist if PHP wasn't built with MB string
-		if (function_exists('mb_convert_encoding'))
+		if (!function_exists('mb_convert_encoding') || $csvEncoding === 'UTF-8')
 		{
-			if ($this->outPutFormat == 'excel')
-			{
-				// Possible fix for Excel import of acents in csv file?
-				return mb_convert_encoding($n, 'UTF-16LE', 'UTF-8');
-			}
-			else
-			{
-				return $n;
-			}
+			return $n;
+		}
+
+		if ($this->outPutFormat == 'excel')
+		{
+			// Possible fix for Excel import of accents in csv file?
+			return mb_convert_encoding($n, $csvEncoding, 'UTF-8');
 		}
 		else
 		{
 			return $n;
 		}
+	}
+
+	/**
+	 * Get the encoding e.g. UFT-8 for which to encode the text and set the document charset
+	 * header on download
+	 *
+	 * @return string
+	 */
+
+	protected function getEncoding()
+	{
+		$params = $this->model->getParams();
+		$defaultEncoding = $this->outPutFormat == 'excel' ? 'UTF-16LE' : 'UTF-8';
+		$csvEncoding = $params->get('csv_encoding', '');
+
+		if ($csvEncoding === '')
+		{
+			$csvEncoding = $defaultEncoding;
+		}
+
+		return $csvEncoding;
 	}
 
 	/**
@@ -526,7 +570,7 @@ class FabrikFEModelCSVExport
 
 						/**
 						 * $$$ hugh - added next line as special case for a client, do not remove!
-						 * (used in conjuntion with "Custom QS" option, to allow variable header labels
+						 * (used in conjunction with "Custom QS" option, to allow variable header labels
 						 */
 						$n = $w->parseMessageForPlaceHolder($n, array());
 
@@ -568,7 +612,7 @@ class FabrikFEModelCSVExport
 			{
 				if (!(JString::substr($heading, JString::strlen($heading) - 4, JString::strlen($heading)) == '_raw' && !$incRaw))
 				{
-					// Stop id getting added to tables when exported wiht fullelname key
+					// Stop id getting added to tables when exported with full element name key
 					if ($hformat != 1 && $heading != $shortkey)
 					{
 						$h[] = $heading;
@@ -579,7 +623,7 @@ class FabrikFEModelCSVExport
 
 		if ($input->get('inccalcs') == 1)
 		{
-			array_unshift($h, JText::_('Calculation'));
+			array_unshift($h, FText::_('Calculation'));
 		}
 
 		$h = array_map(array($this, "quote"), $h);
@@ -588,10 +632,10 @@ class FabrikFEModelCSVExport
 	}
 
 	/**
-	 * Get unqiue heading
+	 * Get unique heading
 	 *
-	 * @param   string  $n  key
-	 * @param   array   $h  search
+	 * @param   string  $n  Key
+	 * @param   array   $h  Search
 	 *
 	 * @return  string
 	 */

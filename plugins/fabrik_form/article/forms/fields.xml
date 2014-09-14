@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<form>
+	<fields addfieldpath="/administrator/components/com_fabrik/models/fields" name="params">
+		
+		<fieldset label="Options" name="plg-form-article-options">
+			
+			<field type="helplink"
+				url="PLG_FORM_ARTICLE_HELP_SERVER" />
+				
+			<field name="template"
+				type="filelist"
+				description="PLG_FABRIK_FORM_ARTICLE_TEMPLATE_DESC"
+				directory="/plugins/fabrik_form/article/tmpl/"
+				hide_default="1"
+				label="PLG_FABRIK_FORM_ARTICLE_TEMPLATE_LABEL"
+				repeat="true" />
+						
+			<field name="template_content"
+				type="sql2"
+				add_select="true"
+				description="PLG_FABRIK_FORM_ARTICLE_OR_CONTENT_TEMTEMPLATE_DESC"
+				label="PLG_FABRIK_FORM_ARTICLE_OR_CONTENT_TEMTEMPLATE_LABEL"
+				query="SELECT id AS value, title AS text FROM #__content WHERE state != -2 "
+				repeat="true" />
+
+			<field name="article_conditon"
+				type="fabrikeditor"
+				mode="php"
+				description="PLG_FABRIK_FORM_ARTICLE_CONDITION_DESC"
+				label="PLG_FABRIK_FORM_ARTICLE_CONDITION_LABEL"
+				repeat="true" />
+			
+			<field name="categories"
+				type="sql2"
+				add_select="false"
+				multiple="true"
+				description="PLG_FABRIK_FORM_ARTICLE_CATEGORY_DESC"
+				label="PLG_FABRIK_FORM_ARTICLE_CATEGORY_LABEL"
+				query="SELECT id AS value, title AS text FROM #__categories WHERE published != -2 AND extension = 'com_content'"
+				repeat="true" />
+				
+			<field name="categories_element"
+				type="listfields"
+				repeat="true"
+				description="PLG_FABRIK_FORM_ARTICLE_CATEGORIES_ELEMENT_DESC"
+				label="PLG_FABRIK_FORM_ARTICLE_CATEGORIES_ELEMENT_LABEL" />
+			
+			<field name="meta_store"
+				type="listfields"
+				repeat="true"
+				required="true"
+				description="PLG_FABRIK_FORM_ARTICLE_META_STORE_DESC"
+				label="PLG_FABRIK_FORM_ARTICLE_META_STORE_LABEL" />
+				
+			<field name="delete_mode"
+				type="list"
+				repeat="true"
+				default="DELETE"
+				description="PLG_FABRIK_FORM_ARTICLE_DELETE_MODE_DESC"
+				label="PLG_FABRIK_FORM_ARTICLE_DELETE_MODE_LABEL">
+					<option value="NOTHING">PLG_FABRIK_FORM_ARTICLE_LEAVE_PUBLISHED</option>
+					<option value="DELETE">COM_FABRIK_DELETE</option>
+					<option value="UNPUBLISH">JUNPUBLISHED</option>
+					<option value="TRASH">JTRASHED</option>
+			</field>
+				
+		</fieldset>
+		
+		<fieldset label="PLG_FABRIK_FORM_ARTICLE_FIELDS" name="plg-form-article-fields">
+		
+			<field type="helplink"
+				url="PLG_FORM_ARTICLE_HELP_SERVER" />
+				
+			<field name="title"
+				type="listfields"
+				repeat="true"
+				description="PLG_FABRIK_FORM_ARTICLE_TITLE_DESC"
+				label="PLG_FABRIK_FORM_ARTICLE_TITLE_LABEL" />
+				
+			<field name="created_by"
+				type="listfields"
+				repeat="true"
+				description="PLG_FABRIK_FORM_ARTICLE_AUTHOR_DESC"
+				label="PLG_FABRIK_FORM_ARTICLE_AUTHOR_LABEL" />
+				
+			<field name="publish_up"
+				type="listfields"
+				repeat="true"
+				description="PLG_FABRIK_FORM_ARTICLE_PUBLISHUP_DESC"
+				label="PLG_FABRIK_FORM_ARTICLE_PUBLISHUP_LABEL" />
+			
+			<field name="publish_down"
+				type="listfields"
+				repeat="true"
+				description="PLG_FABRIK_FORM_ARTICLE_PUBLISHDOWN_DESC"
+				label="PLG_FABRIK_FORM_ARTICLE_PUBLISHDOWN_LABEL" />
+			
+			<field name="state"
+				type="listfields"
+				repeat="true"
+				description="PLG_FABRIK_FORM_ARTICLE_STATE_DESC"
+				label="PLG_FABRIK_FORM_ARTICLE_STATE_LABEL" />
+				
+			<field name="featured"
+				type="listfields"
+				repeat="true"
+				description="PLG_FABRIK_FORM_ARTICLE_FEATURED_DESC"
+				label="PLG_FABRIK_FORM_ARTICLE_FEATURED_LABEL" />
+				
+			<field name="metakey"
+				type="listfields"
+				repeat="true"
+				description="PLG_FABRIK_FORM_ARTICLE_METAKEY_DESC"
+				label="PLG_FABRIK_FORM_ARTICLE_METAKEY_LABEL" />
+			
+			<field name="metadesc"
+				type="listfields"
+				repeat="true"
+				description="PLG_FABRIK_FORM_ARTICLE_METADESC_DESC"
+				label="PLG_FABRIK_FORM_ARTICLE_METADESC_LABEL" />
+				
+			<field name="tags"
+				type="listfields"
+				repeat="true"
+				description="PLG_FABRIK_FORM_ARTICLE_TAGS_DESC"
+				label="PLG_FABRIK_FORM_ARTICLE_TAGS_LABEL" />
+			
+		</fieldset>
+		
+		<fieldset label="PLG_FABRIK_FORM_ARTICLE_IMAGES" name="plg-form-article-images">
+		
+			<field type="helplink"
+				url="PLG_FORM_ARTICLE_HELP_SERVER" />
+				
+			<field name="image_intro"
+				type="listfields"
+				filter="fileupload"
+				repeat="true"
+				description="PLG_FABRIK_FORM_ARTICLE_IMAGE_INTRO_DESC"
+				label="PLG_FABRIK_FORM_ARTICLE_IMAGE_INTRO_LABEL" />
+				
+			<field name="image_intro_size"
+				type="list"
+				repeat="true"
+				default="cropped"
+				description="PLG_FABRIK_FORM_ARTICLE_IMAGE_INTRO_SIZE_DESC"
+				label="PLG_FABRIK_FORM_ARTICLE_IMAGE_INTRO_SIZE_LABEL">
+					<option value="full">Full</option>
+					<option value="thumb">Thumb</option>
+					<option value="cropped">Cropped</option>	
+			</field>
+				
+			<field name="image_full"
+				type="listfields"
+				filter="fileupload"
+				repeat="true"
+				description="PLG_FABRIK_FORM_ARTICLE_IMAGE_FULL_DESC"
+				label="PLG_FABRIK_FORM_ARTICLE_IMAGE_FULL_LABEL" />
+				
+			<field name="image_full_size"
+				type="list"
+				repeat="true"
+				default="thumb"
+				description="PLG_FABRIK_FORM_ARTICLE_IMAGE_FULL_SIZE_DESC"
+				label="PLG_FABRIK_FORM_ARTICLE_IMAGE_FULL_SIZE_LABEL">
+					<option value="full">Full</option>
+					<option value="thumb">Thumb</option>
+					<option value="cropped">Cropped</option>	
+			</field>
+			
+		</fieldset>
+	</fields>
+</form>

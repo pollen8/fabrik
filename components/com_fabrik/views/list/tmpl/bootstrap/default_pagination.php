@@ -70,7 +70,7 @@ function fabrik_pagination_list_footer($list)
 	$lang = JFactory::getLanguage();
 	$html = "<div class=\"container\"><div class=\"pagination\">\n";
 
-	$html .= "\n<div class=\"limit\">" . JText::_('JGLOBAL_DISPLAY_NUM') . $list['limitfield'] . "</div>";
+	$html .= "\n<div class=\"limit\">" . FText::_('JGLOBAL_DISPLAY_NUM') . $list['limitfield'] . "</div>";
 	$html .= $list['pageslinks'];
 	$html .= "\n<div class=\"limit\">" . $list['pagescounter'] . "</div>";
 
@@ -81,12 +81,13 @@ function fabrik_pagination_list_footer($list)
 }
  */
 
+/* Commented out because /components/com_fabrik/helpers/pagination.php does not call this routine
 function fabrik_pagination_list_footer($list, $paginator)
 {
 	// Initialize variables
 	$html = array();
 	$html[] = '<div class="list-footer">';
-	$limitLabel = $paginator->showDisplayNum ? JText::_('COM_FABRIK_DISPLAY_NUM') : '';
+	$limitLabel = $paginator->showDisplayNum ? FText::_('COM_FABRIK_DISPLAY_NUM') : '';
 	$html[] = '<div class="limit input-prepend"><button class="add-on">' . $limitLabel  . '</button>' . $list['limitfield'] . '</div>';
 	$html[] = $list['pageslinks'];
 	$html[] = '<div class="counter">' . $list['pagescounter'] . '</div>';
@@ -94,12 +95,12 @@ function fabrik_pagination_list_footer($list, $paginator)
 	$html[] = '</div>';
 	return implode("\n", $html);
 }
-
+*/
 
 
 function fabrik_pagination_item_active(&$item, $listid)
 {
-	return '<a title="' . $item->text . '" href="' . $item->link . '" class="pagenav">' . $item->text . '</a>';
+	return '<a title="' . $item->text . '" href="' . $item->link . '">' . $item->text . '</a>';
 }
 
 function fabrik_pagination_item_inactive(&$item)

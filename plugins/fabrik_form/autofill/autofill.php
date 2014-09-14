@@ -170,46 +170,16 @@ class PlgFabrik_FormAutofill extends PlgFabrik_Form
 
 				foreach ($map as $from => $to)
 				{
-					$toraw = $to . '_raw';
-					$fromraw = $from . '_raw';
-
 					if (is_array($to))
 					{
 						foreach ($to as $to2)
 						{
-							$to2_raw = $to2 . '_raw';
-
-							if (!array_key_exists($from, $data))
-							{
-								throw new RuntimeException('autofill map json not correctly set', 500);
-							}
-
-							$newdata->$to2 = isset($data->$from) ? $data->$from : '';
-
-							if (!array_key_exists($fromraw, $data))
-							{
-								throw new RuntimeException('autofill toraw map json not correctly set?', 500);
-							}
-
-							$newdata->$to2_raw = isset($data->$fromraw) ? $data->$fromraw : '';
+							$this->fillField($data, $newdata, $from, $to2);
 						}
 					}
 					else
 					{
-						// $$$ hugh - key may exist, but be null
-						if (!array_key_exists($from, $data))
-						{
-							throw new RuntimeException('Couln\'t find from value in record data, is the element published?', 500);
-						}
-
-						$newdata->$to = isset($data->$from) ? $data->$from : '';
-
-						if (!array_key_exists($fromraw, $data))
-						{
-							throw new RuntimeException('autofill toraw map json not correctly set?', 500);
-						}
-
-						$newdata->$toraw = isset($data->$fromraw) ? $data->$fromraw : '';
+						$this->fillField($data, $newdata, $from, $to);
 					}
 				}
 			}
@@ -219,6 +189,45 @@ class PlgFabrik_FormAutofill extends PlgFabrik_Form
 			}
 
 			echo json_encode($newdata);
+		}
+	}
+
+	/**
+	 * Fill the response with the lookup data
+	 *
+	 * @param   object  $data      Lookup List - Row data
+	 * @param   object  &$newdata  Data to fill the form with
+	 * @param   string  $from      Key to search for in $data - may be either element full name, or placeholders
+	 * @param   string  $to        Form's field to insert data into
+	 *
+	 * @return  null
+	 */
+	protected function fillField($data, &$newdata, $from, $to)
+	{
+		$matched = false;
+		$toraw = $to . '_raw';
+		$fromraw = $from . '_raw';
+
+		if (array_key_exists($from, $data))
+		{
+			$matched = true;
+		}
+
+		$newdata->$to = isset($data->$from) ? $data->$from : '';
+
+		if (array_key_exists($fromraw, $data))
+		{
+			$matched = true;
+		}
+
+		if (!$matched)
+		{
+			$w = new FabrikWorker;
+			$newdata->$toraw = $newdata->$to = $w->parseMessageForPlaceHolder($from, $data);
+		}
+		else
+		{
+			$newdata->$toraw = isset($data->$fromraw) ? $data->$fromraw : '';
 		}
 	}
 }

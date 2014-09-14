@@ -63,10 +63,10 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 	 * in the form/detail views
 	 *
 	 * @param   array  $data           Form data
-	 * @param   int    $repeatCounter  When repeating joinded groups we need to know what part of the array to access
+	 * @param   int    $repeatCounter  When repeating joined groups we need to know what part of the array to access
 	 * @param   array  $opts           Options
 	 *
-	 * @return  string	default value
+	 * @return  string	Text to add to the browser's title
 	 */
 
 	public function getTitlePart($data, $repeatCounter = 0, $opts = array())
@@ -109,7 +109,7 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 	}
 
 	/**
-	 * Does the element conside the data to be empty
+	 * Does the element consider the data to be empty
 	 * Used in isempty validation rule
 	 *
 	 * @param   array  $data           Data to test against
@@ -193,7 +193,7 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 	 * Can be overwritten in plugin - e.g. see checkbox element which checks for partial matches
 	 *
 	 * @param   string  $key            Element name in format `tablename`.`elementname`
-	 * @param   string  $condition      =/like etc
+	 * @param   string  $condition      =/like etc.
 	 * @param   string  $value          Search string - already quoted if specified in filter array options
 	 * @param   string  $originalValue  Original filter value without quotes or %'s applied
 	 * @param   string  $type           Filter type advanced/normal/prefilter/search/querystring/searchall
@@ -205,6 +205,7 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 	{
 		$element = $this->getElement();
 		$db = JFactory::getDbo();
+		$condition = JString::strtoupper($condition);
 		$this->encryptFieldName($key);
 		$glue = 'OR';
 
@@ -265,10 +266,15 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 			$originalValue = trim($value, "'");
 
 			/*
-			 * JSON stored values will back slash "/". So wwe need to add "\\\\"
+			 * JSON stored values will back slash "/". So we need to add "\\\\"
 			* before it to escape it for the query.
 			*/
 			$originalValue = str_replace("/", "\\\\/", $originalValue);
+
+			if (strtoupper($condition) === 'IS NULL')
+			{
+				$value = '';
+			}
 
 			switch ($condition)
 			{
@@ -378,7 +384,7 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 			case 'multiselect':
 			default:
 				$size = $element->filter_type === 'multiselect' ? 'multiple="multiple" size="7"' : 'size="1"';
-				$attribs = 'class="inputbox fabrik_filter" ' . $size;
+				$attribs = 'class="' . $class . '" ' . $size;
 				$v = $element->filter_type === 'multiselect' ? $v . '[]' : $v;
 				$return[] = JHTML::_('select.genericlist', $rows, $v, $attribs, 'value', 'text', $default, $htmlid);
 				break;
@@ -411,7 +417,7 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 				break;
 		}
 
-		$return[] = $normal ? $this->getFilterHiddenFields($counter, $elName) : $this->getAdvancedFilterHiddenFields();
+		$return[] = $normal ? $this->getFilterHiddenFields($counter, $elName, false, $normal) : $this->getAdvancedFilterHiddenFields();
 
 		return implode("\n", $return);
 	}
@@ -497,7 +503,7 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 
 	/**
 	 * Used by radio and dropdown elements to get a dropdown list of their unique
-	 * unique values OR all options - basedon filter_build_method
+	 * unique values OR all options - based on filter_build_method
 	 *
 	 * @param   bool    $normal     Do we render as a normal filter or as an advanced search filter
 	 * @param   string  $tableName  Table name to use - defaults to element's current table
@@ -575,6 +581,18 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 	}
 
 	/**
+	 * Optionally pre-format list data before rendering to <ul>
+	 *
+	 * @param   array  &$data    Element Data
+	 * @param   array  $thisRow  Row data
+	 *
+	 * @return  void
+	 */
+	protected function listPreformat(&$data, $thisRow)
+	{
+	}
+
+	/**
 	 * Shows the data formatted for the list view
 	 *
 	 * @param   string    $data      Elements data
@@ -594,7 +612,7 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 		$useIcon = $params->get('icon_folder', 0);
 
 		// Give priority to raw value icons (podion)
-		$raw = $this->getFullName(true, false) . '_raw';
+		$raw = $this->isJoin() ? $this->getFullName(true, false) . '_raw' : $this->getFullName(true, false) . '_id';
 
 		if (isset($thisRow->$raw))
 		{
@@ -615,6 +633,7 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 
 		// Repeat group data
 		$gdata = FabrikWorker::JSONtoData($data, true);
+		$this->listPreformat($gdata, $thisRow);
 		$addHtml = (count($gdata) !== 1 || $multiple || $mergeGroupRepeat) && $this->renderWithHTML;
 		$uls = array();
 
@@ -712,6 +731,18 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 	{
 		$this->renderWithHTML = false;
 		$d = $this->renderListData($data, $thisRow);
+
+		if ($this->isJoin())
+		{
+			// Set the linking table's pk as the raw value.
+			$raw = $this->getFullName(true, false) . '_raw';
+			$id = $this->getFullName(true, false) . '_id';
+			$data = $thisRow->$id;
+
+			$rawData = FabrikWorker::JSONtoData($data, true);
+			$thisRow->$raw = json_encode($rawData);
+		}
+
 		$this->renderWithHTML = true;
 
 		return $d;
@@ -720,7 +751,7 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 	/**
 	 * Draws the html form element
 	 *
-	 * @param   array  $data           To preopulate element with
+	 * @param   array  $data           To pre-populate element with
 	 * @param   int    $repeatCounter  Repeat group counter
 	 *
 	 * @return  string	Elements html
@@ -742,15 +773,22 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 		 * and I'm not sure if we enforce that.  Problem being that if we just cast directly to
 		 * an array, the array isn't "empty()", as it has a single, empty string entry.  So then
 		 * the array_diff() we're about to do sees that as a diff.
+		 *
+		 * $$$ rob - Need more logic that the previous test, as we weren't applying default value/label if set and data empty
 		*/
-		$selected = $this->getValue($data, $repeatCounter);
+		$selected = (array) $this->getValue($data, $repeatCounter);
 
-		if (!is_array($selected))
+		if (FArrayHelper::emptyIsh($selected))
 		{
-			// $$$ hugh - ooops, '0' will count as empty.
-			// $selected = empty($selected) ?  array() : array($selected);
-			$selected = $selected === '' ? array() : array($selected);
+			$selected = array();
+
+			// Nothing previously selected, and not editable, set selected to default value, which later on is replaced with default label
+			if (!$this->isEditable() && $params->get('sub_default_value', '') !== '')
+			{
+				$selected[] = $params->get('sub_default_value');
+			}
 		}
+
 		// $$$ rob 06/10/2011 if front end add option on, but added option not saved we should add in the selected value to the
 		// values and labels.
 		$diff = array_diff($selected, $values);
@@ -787,6 +825,11 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 			}
 
 			$splitter = ($params->get('icon_folder') != -1 && $params->get('icon_folder') != '') ? ' ' : ', ';
+
+			if (empty($aRoValues))
+			{
+				return'';
+			}
 
 			return ($this->isMultiple() && $this->renderWithHTML)
 			? '<ul class="fabrikRepeatData"><li>' . implode('</li><li>', $aRoValues) . '</li></ul>' : implode($splitter, $aRoValues);
@@ -879,7 +922,7 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 	 * Determines the value for the element in the form view
 	 *
 	 * @param   array  $data           Form data
-	 * @param   int    $repeatCounter  When repeating joinded groups we need to know what part of the array to access
+	 * @param   int    $repeatCounter  When repeating joined groups we need to know what part of the array to access
 	 * @param   array  $opts           Options
 	 *
 	 * @return  string	value
@@ -906,32 +949,6 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 	protected function inJDb()
 	{
 		return $this->getlistModel()->inJDb();
-	}
-
-	/**
-	 * format the read only output for the page
-	 *
-	 * @param   string  $value  Initial value
-	 * @param   string  $label  Label
-	 *
-	 * @return  string  read only value
-	 */
-
-	protected function getReadOnlyOutput($value, $label)
-	{
-		$params = $this->getParams();
-
-		if ($params->get('icon_folder') != -1 && $params->get('icon_folder') != '')
-		{
-			$icon = $this->replaceWithIcons($value);
-
-			if ($this->iconsSet)
-			{
-				$label = $icon;
-			}
-		}
-
-		return $label;
 	}
 
 	/**
@@ -986,7 +1003,7 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 				$opts->sub_values = $values;
 				$opts->sub_labels = $labels;
 
-				// $$$ rob dont json_encode this - the params object has its own toString() magic method
+				// $$$ rob don't json_encode this - the params object has its own toString() magic method
 				$element->params = (string) $params;
 				$element->store();
 			}

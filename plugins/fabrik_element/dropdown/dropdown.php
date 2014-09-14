@@ -43,7 +43,7 @@ class PlgFabrik_ElementDropdown extends PlgFabrik_ElementList
 	/**
 	 * Draws the html form element
 	 *
-	 * @param   array  $data           to preopulate element with
+	 * @param   array  $data           to pre-populate element with
 	 * @param   int    $repeatCounter  repeat group counter
 	 *
 	 * @return  string	elements html
@@ -61,7 +61,8 @@ class PlgFabrik_ElementDropdown extends PlgFabrik_ElementList
 		$multisize = $params->get('dropdown_multisize', 3);
 		$selected = (array) $this->getValue($data, $repeatCounter);
 		$errorCSS = $this->elementError != '' ? " elementErrorHighlight" : '';
-		$attribs = 'class="fabrikinput inputbox' . $errorCSS . '"';
+		$boostrapClass = $params->get('bootstrap_class', '');
+		$attribs = 'class="fabrikinput inputbox input ' . $errorCSS . ' ' . $boostrapClass . '"';
 
 		if ($multiple == "1")
 		{
@@ -71,9 +72,15 @@ class PlgFabrik_ElementDropdown extends PlgFabrik_ElementList
 		$i = 0;
 		$aRoValues = array();
 		$opts = array();
+		$optgroup = false;
 
 		foreach ($values as $tmpval)
 		{
+			if ($tmpval === '<optgroup>')
+			{
+				$optgroup = true;
+			}
+
 			$tmpLabel = JArrayHelper::getValue($labels, $i);
 
 			// For values like '1"'
@@ -88,9 +95,9 @@ class PlgFabrik_ElementDropdown extends PlgFabrik_ElementList
 			$i++;
 		}
 		/*
-		 * If we have added an option that hasnt been saved to the database. Note you cant have
-		* it not saved to the database and asking the user to select a value and label
-		*/
+		 * If we have added an option that hasn't been saved to the database. Note you cant have
+		 * it not saved to the database and asking the user to select a value and label
+		 */
 		if ($params->get('allow_frontend_addtodropdown', false) && !empty($selected))
 		{
 			foreach ($selected as $sel)
@@ -103,11 +110,40 @@ class PlgFabrik_ElementDropdown extends PlgFabrik_ElementList
 			}
 		}
 
-		$str = JHTML::_('select.genericlist', $opts, $name, $attribs, 'value', 'text', $selected, $id);
-
 		if (!$this->isEditable())
 		{
 			return implode(', ', $aRoValues);
+		}
+
+		$settings = array();
+		$settings['list.select'] = $selected;
+		$settings['option.id'] = $id;
+		$settings['id'] = $id;
+		$settings['list.attr'] = $attribs;
+		$settings['group.items'] = null;
+
+
+		if ($optgroup)
+		{
+			$groupedOpts = array();
+			$groupOptLabel = '';
+
+			foreach ($opts as $opt)
+			{
+				if ($opt->value === '&lt;optgroup&gt;')
+				{
+					$groupOptLabel = $opt->text;
+					continue;
+				}
+
+				$groupedOpts[$groupOptLabel][] = $opt;
+			}
+
+			$str = JHTML::_('select.groupedlist', $groupedOpts, $name, $settings);
+		}
+		else
+		{
+			$str = JHTML::_('select.genericlist', $opts, $name, $settings);
 		}
 
 		$str .= $this->getAddOptionFields($repeatCounter);
@@ -204,7 +240,7 @@ class PlgFabrik_ElementDropdown extends PlgFabrik_ElementList
 	}
 
 	/**
-	 * Does the element conside the data to be empty
+	 * Does the element consider the data to be empty
 	 * Used in isempty validation rule
 	 *
 	 * @param   array  $data           data to test against
@@ -235,7 +271,7 @@ class PlgFabrik_ElementDropdown extends PlgFabrik_ElementList
 	}
 
 	/**
-	 * Repalce a value with its label
+	 * Replace a value with its label
 	 *
 	 * @param   string  $selected  value
 	 *
@@ -273,7 +309,7 @@ class PlgFabrik_ElementDropdown extends PlgFabrik_ElementList
 	}
 
 	/**
-	 * If the search value isnt what is stored in the database, but rather what the user
+	 * If the search value isn't what is stored in the database, but rather what the user
 	 * sees then switch from the search string to the db value here
 	 * overwritten in things like checkbox and radio plugins
 	 *

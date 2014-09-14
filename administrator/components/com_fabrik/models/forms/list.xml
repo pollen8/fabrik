@@ -418,7 +418,26 @@
 				<option value="1">COM_FABRIK_FIELD_SHOW_DATA_RECORDED_IN_LIST</option>
 				<option value="2">COM_FABRIK_FIELD_SHOW_ALL_OPTIONS</option>
 			</field>
+			
+			<field name="toggle_cols"
+				type="radio"
+				class="btn-group"
+				default="0"
+				description="COM_FABRIK_FIELD_TOGGLE_COLS_DESC"
+				label="COM_FABRIK_FIELD_TOGGLE_COLS_LABEL">
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+			</field>
 
+	 		<field name="list_filter_cols"
+	 			type="text"
+	 			default="1"
+				class="input-medium"
+	 			size="3"
+	 			label="COM_FABRIK_FIELD_LIST_FILTER_COLS_LABEL"
+	 			description="COM_FABRIK_FIELD_LIST_FILTER_COLS_DESC"
+			/>
+			
 		</fieldset>
 
 		<fieldset name="navigation">
@@ -520,6 +539,13 @@
 			<field name="feed_date"
 				type="listfields"
 				label="COM_FABRIK_FIELD_FEED_DATE_LABEL"
+			/>
+
+			<field name="feed_image_src"
+				type="text"
+				class="input-xlarge"
+				description="COM_FABRIK_FIELD_FEED_IMAGE_DESC"
+				label="COM_FABRIK_FIELD_FEED_IMAGE_LABEL"
 			/>
 
 			<field name="rsslimit"
@@ -698,6 +724,18 @@
 				<option value="1">JYES</option>
 			</field>
 
+			<field name="csv_encoding"
+				default=""
+				type="list"
+				description="COM_FABRIK_FIELD_CSV_ENCODING_DESC"
+				label="COM_FABRIK_FIELD_CSV_ENCODING_LABEL">
+					<option value="">COM_FABRIK_DEFAULT</option>
+					<option value="UTF-8">UTF-8</option>
+					<option value="UTF-16">UTF-16</option>
+					<option value="UTF-16LE">UTF-16LE</option>
+					<option value="ISO-8859-15">ISO-8859-15</option>
+			</field>
+
 		</fieldset>
 
 		<fieldset name="search">
@@ -723,7 +761,13 @@
 				label="COM_FABRIK_FIELD_SEARCH_DESCRIPTION_FIELD_LABEL"
 				description="COM_FABRIK_FIELD_SEARCH_DESCRIPTION_FIELD_DESC"
 			/>
-			
+
+			<field name="search_date"
+				type="listfields"
+				label="COM_FABRIK_FIELD_SEARCH_DATE_FIELD_LABEL"
+				description="COM_FABRIK_FIELD_SEARCH_DATE_FIELD_DESC"
+			/>
+						
 			<field name="search_link_type"
 				type="radio"
 				class="btn-group"
@@ -1189,6 +1233,14 @@
 				description="COM_FABRIK_FIELD_COLLATION_DESC"
 				label="COM_FABRIK_FIELD_COLLATION_LABEL"
 			/>
+			
+			<field name="force_collate"
+				type="collation"
+				show_none="true"
+				default_to_table="false"
+				description="COM_FABRIK_FIELD_FORCE_COLLATION_DESC"
+				label="COM_FABRIK_FIELD_FORCE_COLLATION_LABEL">
+			</field>
 
 			<field name="list_disable_caching"
 				type="radio"
@@ -1199,6 +1251,16 @@
 			>
 				<option value="0">JNO</option>
 				<option value="1">JYES</option>
+			</field>
+			
+			<field name="distinct"
+				type="radio"
+				default="1"
+				label="COM_FABRIK_LIST_DISTINCT_LABEL"
+				description="COM_FABRIK_LIST_DISTINCT_DESC"
+				class="btn-group">
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>	
 			</field>
 
 		</fieldset>
@@ -1248,7 +1310,7 @@
 			<field name="table_join_key" type="text"/>
 		</fieldset>
 
-		<fieldset name="factedlinks2">
+		<fieldset name="facetedlinks2">
 
 			<field name="show_related_add"
 				type="list"
@@ -1274,10 +1336,10 @@
 
 		</fieldset>
 
-		<fieldset name="factedlinks">
+		<fieldset name="facetedlinks">
 
-			<field name="factedlinks"
-				type="factedlinks"
+			<field name="facetedlinks"
+				type="facetedlinks"
 				label="COM_FABRIK_MY_RELATED_DATA_LABEL"
 				description="COM_FABRIK_MY_RELATED_DATA_DESC"
 			/>

@@ -15,6 +15,7 @@
 defined('JPATH_BASE') or die();
 
 require_once JPATH_LIBRARIES . '/joomla/document/html/html.php';
+require_once JPATH_SITE . '/components/com_fabrik/helpers/pdf.php';
 
 /**
  * DocumentPDF class, provides an easy interface to parse and display a pdf document
@@ -55,7 +56,7 @@ class JDocumentpdf extends JDocumentHTML
 		}
 		if (!$this->iniDomPdf())
 		{
-			throw new RuntimeException(JText::_('COM_FABRIK_ERR_NO_PDF_LIB_FOUND'), 500);
+			throw new RuntimeException(FText::_('COM_FABRIK_ERR_NO_PDF_LIB_FOUND'), 500);
 		}
 	}
 
@@ -67,28 +68,15 @@ class JDocumentpdf extends JDocumentHTML
 
 	protected function iniDomPdf()
 	{
-		$app = JFactory::getApplication();
-		$input = $app->input;
+		if (FabrikPDFHelper::iniDomPdf())
+		{
+			// Default settings are a portrait layout with an A4 configuration using millimeters as units
+			$this->engine = new DOMPDF;
 
-		$file = JPATH_LIBRARIES . '/dompdf/dompdf_config.inc.php';
-		if (!JFile::exists($file))
-		{
-			return false;
+			return true;
 		}
-		if (!defined('DOMPDF_ENABLE_REMOTE'))
-		{
-			define('DOMPDF_ENABLE_REMOTE', true);
-		}
-		$config = JFactory::getConfig();
-		if (!defined('DOMPDF_FONT_CACHE'))
-		{
-			define('DOMPDF_FONT_CACHE', $config->get('tmp_path'));
-		}
-		require_once $file;
 
-		// Default settings are a portrait layout with an A4 configuration using millimeters as units
-		$this->engine = new DOMPDF;
-		return true;
+		return false;
 	}
 
 	/**
@@ -150,15 +138,14 @@ class JDocumentpdf extends JDocumentHTML
  		$this->_metaTags['http-equiv'] = array();
 		$this->_metaTags['http-equiv']['content-type'] = 'text/html';
 
-		// Testing using futural font see (http://stackoverflow.com/questions/5136067/dompdf-special-characters)
+		// Testing using futural font.
  		// $this->addStyleDeclaration('body: { font-family: futural !important; }');
-
-		// Unicode info: https://code.google.com/p/dompdf/wiki/CPDFUnicode
 		$pdf = $this->engine;
 		$data = parent::render();
-		$this->fullPaths($data);
+		FabrikPDFHelper::fullPaths($data);
 		$pdf->load_html($data);
 		$config = JComponentHelper::getParams('com_fabrik');
+
 		if ($config->get('pdf_debug', true))
 		{
 			return $pdf->output_html();
@@ -168,6 +155,7 @@ class JDocumentpdf extends JDocumentHTML
 			$pdf->render();
 			$pdf->stream($this->getName() . '.pdf');
 		}
+
 		return '';
 	}
 
@@ -192,73 +180,4 @@ class JDocumentpdf extends JDocumentHTML
 			return '';
 		}
 	}
-
-	/**
-	 * Parse relative images a hrefs and style sheets to full paths
-	 *
-	 * @param   string  &$data  data
-	 *
-	 * @return  void
-	 */
-
-	private function fullPaths(&$data)
-	{
-		$data = str_replace('xmlns=', 'ns=', $data);
-		libxml_use_internal_errors(true);
-		try
-		{
-			$ok = new SimpleXMLElement($data);
-			if ($ok)
-			{
-				$uri = JUri::getInstance();
-				$base = $uri->getScheme() . '://' . $uri->getHost();
-				$imgs = $ok->xpath('//img');
-				foreach ($imgs as &$img)
-				{
-					if (!strstr($img['src'], $base))
-					{
-						$img['src'] = $base . $img['src'];
-					}
-				}
-				// Links
-				$as = $ok->xpath('//a');
-				foreach ($as as &$a)
-				{
-					if (!strstr($a['href'], $base))
-					{
-						$a['href'] = $base . $a['href'];
-					}
-				}
-
-				// CSS files.
-				$links = $ok->xpath('//link');
-				foreach ($links as &$link)
-				{
-					if ($link['rel'] == 'stylesheet' && !strstr($link['href'], $base))
-					{
-						$link['href'] = $base . $link['href'];
-					}
-				}
-				$data = $ok->asXML();
-			}
-		}
-		catch (Exception $err)
-		{
-			// Oho malformed html - if we are debugging the site then show the errors
-			// otherwise continue, but it may mean that images/css/links are incorrect
-			$errors = libxml_get_errors();
-			$config = JComponentHelper::getParams('com_fabrik');
-
-			// Don't show the errors if we want to debug the actual pdf html
-			if (JDEBUG && $config->get('pdf_debug', true) === true)
-			{
-				echo "<pre>";
-				print_r($errors);
-				echo "</pre>";
-				exit;
-			}
-		}
-
-	}
-
 }

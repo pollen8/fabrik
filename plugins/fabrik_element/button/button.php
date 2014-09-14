@@ -24,7 +24,7 @@ class PlgFabrik_ElementButton extends PlgFabrik_Element
 	/**
 	 * Draws the html form element
 	 *
-	 * @param   array  $data           to preopulate element with
+	 * @param   array  $data           to pre-populate element with
 	 * @param   int    $repeatCounter  repeat group counter
 	 *
 	 * @return  string	elements html
@@ -35,7 +35,17 @@ class PlgFabrik_ElementButton extends PlgFabrik_Element
 		$name = $this->getHTMLName($repeatCounter);
 		$id = $this->getHTMLId($repeatCounter);
 		$element = $this->getElement();
-		$str = '<input type="button" class="fabrikinput button btn" id="' . $id . '" name="' . $name . '" value="' . $element->label . '" />';
+		$params = $this->getParams();
+		$class = $params->get('bootstrap_class', '') . ' fabrikinput button btn';
+		$icon = $params->get('bootstrap_icon', '');
+
+		if ($icon !== '')
+		{
+			$icon = '<i class="' . $icon . '"></i> ';
+		}
+
+		$label = $icon . $element->label;
+		$str = '<button class="' . $class . '" id="' . $id . '" name="' . $name . '">' . $label . '</button>';
 
 		return $str;
 	}

@@ -1,9 +1,9 @@
 <?php
 /**
- * Fabrik Fusion Gannt Chart HTML View
+ * Fabrik Fusion Gantt Chart HTML View
  *
  * @package     Joomla.Plugin
- * @subpackage  Fabrik.visualization.fusionganntchart
+ * @subpackage  Fabrik.visualization.fusionganttchart
  * @copyright   Copyright (C) 2005-2013 fabrikar.com - All rights reserved.
  * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
@@ -14,10 +14,10 @@ defined('_JEXEC') or die('Restricted access');
 jimport('joomla.application.component.view');
 
 /**
- * Fabrik Fusion Gannt Chart HTML View
+ * Fabrik Fusion Gantt Chart HTML View
  *
  * @package     Joomla.Plugin
- * @subpackage  Fabrik.visualization.fusionganntchart
+ * @subpackage  Fabrik.visualization.fusionganttchart
  * @since       3.0
  */
 
@@ -43,9 +43,16 @@ class FabrikViewFusion_Gantt_Chart extends JViewLegacy
 		$model->setId($input->getInt('id', $usersConfig->get('visualizationid', $input->getInt('visualizationid', 0))));
 		$this->row = $model->getVisualization();
 
+		if (!$model->canView())
+		{
+			echo FText::_('JERROR_ALERTNOAUTHOR');
+
+			return false;
+		}
+
 		if ($this->row->published == 0)
 		{
-			JError::raiseWarning(500, JText::_('JERROR_ALERTNOAUTHOR'));
+			JError::raiseWarning(500, FText::_('JERROR_ALERTNOAUTHOR'));
 
 			return '';
 		}

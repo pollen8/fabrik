@@ -42,7 +42,7 @@ class PlgFabrik_ElementYoutube extends PlgFabrik_Element
 	}
 
 	/**
-	 * Do we need to include the lighbox js code
+	 * Do we need to include the lightbox js code
 	 *
 	 * @return  bool
 	 */
@@ -67,7 +67,7 @@ class PlgFabrik_ElementYoutube extends PlgFabrik_Element
 	/**
 	 * Draws the html form element
 	 *
-	 * @param   array  $data           to preopulate element with
+	 * @param   array  $data           to pre-populate element with
 	 * @param   int    $repeatCounter  repeat group counter
 	 *
 	 * @return  string	elements html
@@ -141,7 +141,7 @@ class PlgFabrik_ElementYoutube extends PlgFabrik_Element
 		$params = $this->getParams();
 
 		// Player size
-		if (($params->get('display_in_table') == 0) && $model = 'list')
+		if (($params->get('display_in_table') == 0) && $mode == 'list')
 		{
 			$width = '170';
 			$height = '142';

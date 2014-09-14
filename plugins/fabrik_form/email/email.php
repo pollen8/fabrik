@@ -23,7 +23,7 @@ require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
 class PlgFabrik_FormEmail extends PlgFabrik_Form
 {
 	/**
-	 * Attachement files
+	 * Attachment files
 	 *
 	 * @var array
 	 */
@@ -42,7 +42,7 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 	 * determines if a condition has been set and decides if condition is matched
 	 *
 	 * @param object $params
-	 * @return  bool true if you sould send the email, false stops sending of eaml
+	 * @return  bool true if you should send the email, false stops sending of email
 	 */
 
 	/*function shouldSend(&$params)
@@ -81,10 +81,19 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 			return;
 		}
 
-		$contentTemplate = $params->get('email_template_content');
-		$content = $contentTemplate != '' ? $this->_getConentTemplate($contentTemplate) : '';
-
-		// Always send as html as even text email can contain html from wysiwg editors
+		/**
+		 * Added option to run content plugins on message text.  Note that rather than run it one time at the
+		 * end of the following code, after we have assembled all the various options in to a single $message,
+		 * it needs to be run separately on each type of content.  This is because we do placeholder replacement
+		 * in various places, which will strip all {text} which doesn't match element names.
+		 */
+		
+		$runContentPlugins = $params->get('email_run_content_plugins', '0') === '1';
+		
+		$contentTemplate = $params->get('email_template_content');		
+		$content = $contentTemplate != '' ? FabrikHelperHTML::getContentTemplate($contentTemplate, both, $runContentPlugins) : '';
+		
+		// Always send as html as even text email can contain html from wysiwyg editors
 		$htmlEmail = true;
 
 		$messageTemplate = '';
@@ -100,6 +109,11 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 				return;
 			}
 
+			if ($runContentPlugins === true)
+			{
+				FabrikHelperHTML::runContentPlugins($messageTemplate);	
+			}
+			
 			$messageTemplate = str_replace('{content}', $content, $messageTemplate);
 		}
 
@@ -107,6 +121,12 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 
 		if (!empty($messageText))
 		{
+			
+			if ($runContentPlugins === true)
+			{
+				FabrikHelperHTML::runContentPlugins($messageText);
+			}
+			
 			$messageText = $w->parseMessageForPlaceholder($messageText, $this->data, false);
 			$messageText = str_replace('{content}', $content, $messageText);
 			$messageText = str_replace('{template}', $messageTemplate, $messageText);
@@ -143,13 +163,14 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 			. $input->get('rowid', '', 'string');
 		$viewURL = COM_FABRIK_LIVESITE . 'index.php?option=com_' . $package . '&amp;view=details&amp;fabrik=' . $formModel->get('id') . '&amp;rowid='
 			. $input->get('rowid', '', 'string');
-		$editlink = '<a href="' . $editURL . '">' . JText::_('EDIT') . '</a>';
-		$viewlink = '<a href="' . $viewURL . '">' . JText::_('VIEW') . '</a>';
+		$editlink = '<a href="' . $editURL . '">' . FText::_('EDIT') . '</a>';
+		$viewlink = '<a href="' . $viewURL . '">' . FText::_('VIEW') . '</a>';
 		$message = str_replace('{fabrik_editlink}', $editlink, $message);
 		$message = str_replace('{fabrik_viewlink}', $viewlink, $message);
 		$message = str_replace('{fabrik_editurl}', $editURL, $message);
 		$message = str_replace('{fabrik_viewurl}', $viewURL, $message);
 
+		
 		// $$$ rob if email_to is not a valid email address check the raw value to see if that is
 		$email_to = explode(',', $params->get('email_to'));
 
@@ -294,7 +315,9 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 					}
 				}
 
-				// Get a JMail instance (have to get a new instance otherwise the receipients are appended to previously added recipients)
+				$this->pdfAttachement($thisAttachments, $this->data, $thisUser);
+
+				// Get a JMail instance (have to get a new instance otherwise the recipients are appended to previously added recipients)
 				$mail = JFactory::getMailer();
 				$res = $mail->sendMail(
 					$email_from, $email_from_name, $email, $thisSubject, $thisMessage,
@@ -325,7 +348,107 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 	}
 
 	/**
-	 * Use a php template for advanced email templates, partularly for forms with repeat group data
+	 * Attach the details view as a PDF to the email
+	 *
+	 * @param   array  &$thisAttachments  Attachments
+	 *
+	 * @throws  RuntimeException
+	 *
+	 * @return  void
+	 */
+
+	protected function pdfAttachement(&$thisAttachments)
+	{
+		$params = $this->getParams();
+
+		if ($params->get('attach_pdf', 0) == 0)
+		{
+			return;
+		}
+
+		$model = $this->getModel();
+		$document = JFactory::getDocument();
+		$config = JFactory::getConfig();
+		$docType = $document->getType();
+		$document->setType('pdf');
+		$app = JFactory::getApplication();
+		$input = $app->input;
+
+		$orig['details'] = $input->get('view');
+		$orig['format'] = $input->get('format');
+
+		$input->set('view', 'details');
+		$input->set('format', 'pdf');
+
+		// Ensure the package is set to fabrik
+		$prevUserState = $app->getUserState('com_fabrik.package');
+		$app->setUserState('com_fabrik.package', 'fabrik');
+
+		try
+		{
+			$model->getFormCss();
+			// Require files and set up DOM pdf
+			require_once JPATH_SITE . '/components/com_fabrik/helpers/pdf.php';
+			require_once JPATH_SITE . '/components/com_fabrik/controllers/details.php';
+			FabrikPDFHelper::iniDomPdf();
+			$dompdf = new DOMPDF;
+			$size = strtoupper($params->get('pdf_size', 'A4'));
+			$orientation = $params->get('pdf_orientation', 'portrait');
+			$dompdf->set_paper($size, $orientation);
+
+
+			$controller = new FabrikControllerDetails;
+			/**
+			 * $$$ hugh - stuff our model in there, with already formatted data, so it doesn't get rendered
+			 * all over again by the view, with unformatted data.  Should probably use a setModel() method
+			 * here instead of poking in to the _model, but I don't think there is a setModel for controllers?
+			 */
+			$controller->_model = $model;
+			$controller->_model->data = $this->getProcessData();
+
+			// Store in output buffer
+			ob_start();
+			$controller->display();
+			$html = ob_get_contents();
+			ob_end_clean();
+
+			// Load the HTML into DOMPdf and render it.
+			$dompdf->load_html($html);
+			$dompdf->render();
+
+			// Store the file in the tmp folder so it can be attached
+			$file = $config->get('tmp_path') . '/' . JStringNormalise::toDashSeparated($model->getForm()->label . '-' . $input->getString('rowid')) . '.pdf';
+			$pdf = $dompdf->output();
+
+			if (JFile::write($file, $pdf))
+			{
+				$thisAttachments[] = $file;
+			}
+			else
+			{
+				throw new RuntimeException('Could not write PDF file to tmp folder');
+			}
+		}
+		catch (Exception $e)
+		{
+			$app->enqueueMessage($e->getMessage(), 'error');
+		}
+
+		// Set the package back to what it was before rendering the module
+		$app->setUserState('com_fabrik.package', $prevUserState);
+
+		// Reset input
+		foreach ($orig as $key => $val)
+		{
+			$input->set($key, $val);
+		}
+
+		// Reset document type
+		$document->setType($docType);
+	}
+
+	/**
+	 * Use a php template for advanced email templates, particularly for forms with repeat group data
 	 *
 	 * @param   string  $tmpl  Path to template
 	 *
@@ -335,6 +458,7 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 	protected function _getPHPTemplateEmail($tmpl)
 	{
 		$emailData = $this->data;
+		$formModel = $this->getModel();
 
 		// Start capturing output into a buffer
 		ob_start();
@@ -391,16 +515,15 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 							{
 								// Can't implode multi dimensional arrays
 								$val = json_encode($val);
-							}
-							else
-							{
-								$val = implode(',', $val);
+								$val = FabrikWorker::JSONtoData($val, true);
 							}
 						}
+						else
+						{
+							$val = array($val);
+						}
 
-						$aVals = FabrikWorker::JSONtoData($val, true);
-
-						foreach ($aVals as $v)
+						foreach ($val as $v)
 						{
 							$file = $elementModel->addEmailAttachement($v);
 
@@ -414,7 +537,7 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 			}
 		}
 		// $$$ hugh - added an optional eval for adding attachments.
-		// Eval'ed code should just return an array of file paths which we merge with $this->attachments[]
+		// Eval'd code should just return an array of file paths which we merge with $this->attachments[]
 		$w = new FabrikWorker;
 		$email_attach_eval = $w->parseMessageForPlaceholder($params->get('email_attach_eval', ''), $this->data, false);
 
@@ -431,7 +554,7 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 	}
 
 	/**
-	 * Get an array of keys we dont want to email to the user
+	 * Get an array of keys we don't want to email to the user
 	 *
 	 * @return  array
 	 */
@@ -466,6 +589,7 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 
 	/**
 	 * Get content item template
+	 * DEPRECATED use FabrikHelperHTML::getContentTemplate() instead
 	 *
 	 * @param   int  $contentTemplate  Joomla article ID to load
 	 *
@@ -565,7 +689,7 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 			}
 		}
 
-		$message = JText::_('Email from') . ' ' . $config->get('sitename') . '<br />' . JText::_('Message') . ':'
+		$message = FText::_('Email from') . ' ' . $config->get('sitename') . '<br />' . FText::_('Message') . ':'
 			. "<br />===================================<br />" . "<br />" . stripslashes($message);
 
 		return $message;

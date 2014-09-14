@@ -92,4 +92,52 @@ class FabrikHelperElement
 
 		return $value;
 	}
+
+	/**
+	 * Is the key part of an element join's data. Used in csv import/export
+	 *
+	 * @param   FabrikFEModelForm  $model  Form model
+	 * @param   string             $key  Key - full element name or full element name with _id / ___params appended
+	 *
+	 * @return boolean
+	 */
+	public static function keyIsElementJoinInfo($model, $key)
+	{
+		$elementModel = self::findElementFromJoinKeys($model, $key);
+
+		if ($elementModel && $elementModel->isJoin())
+		{
+			return true;
+		}
+
+		return false;
+	}
+
+	/**
+	 * Find the element associated with a key.
+	 * Loose lookup to find join element from any key related to the join (e.g. _id & __params).
+	 * Used in csv import/export
+	 *
+	 * @param   FabrikFEModelForm  $model  Form model
+	 * @param   string             $key    Key - full element name or full element name with _id / ___params appended
+	 *
+	 * @return  PlgFabrik_Element|boolean
+	 */
+	public static function findElementFromJoinKeys($model, $key)
+	{
+		// Search on fullname fullname_id and fullname___params
+		$lookups = array($key, substr($key, 0, JString::strlen($key) - 3), substr($key, 0, JString::strlen($key) - 9));
+
+		foreach ($lookups as $lookup)
+		{
+			$elementModel = $model->getElement($lookup);
+
+			if ($elementModel)
+			{
+				return $elementModel;
+			}
+		}
+
+		return false;
+	}
 }

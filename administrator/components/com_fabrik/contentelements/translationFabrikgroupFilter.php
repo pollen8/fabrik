@@ -1,6 +1,6 @@
 <?php
 /**
- * Joom!Fish - Multi Lingual extention and translation manager for Joomla!
+ * Joom!Fish - Multi Lingual extension and translation manager for Joomla!
  *
  * @package     Joomfish
  * @subpackage  TranslationFilters
@@ -38,7 +38,7 @@ class TranslationFabrikGroupFilter extends translationFilter
 	/**
 	 * Creates section filter
 	 *
-	 * @return string|multitype:mixed Ambigous <string, string, mixed, multitype:>
+	 * @return string|multitype:mixed Ambiguous <string, string, mixed, multitype:>
 	 */
 	public function _createfilterHTML()
 	{
@@ -50,8 +50,8 @@ class TranslationFabrikGroupFilter extends translationFilter
 		}
 
 		$groupOptions = array();
-		$groupOptions[] = JHTML::_('select.option', '-1', JText::_('All Groups'));
-		$groupOptions[] = JHTML::_('select.option', '0', JText::_('Uncategorized'));
+		$groupOptions[] = JHTML::_('select.option', '-1', FText::_('All Groups'));
+		$groupOptions[] = JHTML::_('select.option', '0', FText::_('Uncategorized'));
 
 		$query = $db->getQuery(true);
 		$query->select("DISTINCT e.group_id, g.name, g.id")->from("#__{package}_groups as g, #__" . $this->tableName . " as e")
@@ -68,7 +68,7 @@ class TranslationFabrikGroupFilter extends translationFilter
 		}
 
 		$groupList = array();
-		$groupList["title"] = JText::_('Group filter');
+		$groupList["title"] = FText::_('Group filter');
 		$attribs = 'class="inputbox" size="1" onchange="document.adminForm.submit();"';
 		$groupList["html"] = JHTML::_('select.genericlist', $groupOptions, 'fabrikgroup_filter_value', $attribs, 'value', 'text', $this->filter_value);
 

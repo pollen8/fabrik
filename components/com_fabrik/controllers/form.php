@@ -72,7 +72,7 @@ class FabrikControllerForm extends JControllerLegacy
 	/**
 	 * Display the view
 	 *
-	 * @param   boolean  $cachable   If true, the view output will be cached
+	 * @param   boolean  $cachable   If true, the view output will be cached - NOTE not actually used to control caching!!!
 	 * @param   array    $urlparams  An array of safe url parameters and their variable types, for valid values see {@link JFilterInput::clean()}.
 	 *
 	 * @return  JController  A JController object to support chaining.
@@ -178,6 +178,9 @@ class FabrikControllerForm extends JControllerLegacy
 
 	public function process()
 	{
+		$profiler = JProfiler::getInstance('Application');
+		JDEBUG ? $profiler->mark('controller process: start') : null;
+		
 		$app = JFactory::getApplication();
 		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$input = $app->input;
@@ -217,12 +220,15 @@ class FabrikControllerForm extends JControllerLegacy
 			JSession::checkToken() or die('Invalid Token');
 		}
 
+		JDEBUG ? $profiler->mark('controller process validate: start') : null;
 		if (!$model->validate())
 		{
 			$this->handleError($view, $model);
 
 			return;
 		}
+		JDEBUG ? $profiler->mark('controller process validate: end') : null;
+		
 		// Reset errors as validate() now returns ok validations as empty arrays
 		$model->clearErrors();
 
@@ -250,8 +256,18 @@ class FabrikControllerForm extends JControllerLegacy
 		if ($model->hasErrors())
 		{
 			FabrikWorker::getPluginManager()->runPlugins('onError', $model);
-			$view->display();
+			$this->handleError($view, $model);
 
+			return;
+		}
+		
+		/**
+		 * If debug submit is requested (&fabrikdebug=2, and J! debug on, and Fabrik debug allowed),
+		 * bypass any and all redirects, so we can see the profile for the submit
+		 */
+		
+		if (FabrikHelperHTML::isDebugSubmit())
+		{
 			return;
 		}
 
@@ -266,7 +282,13 @@ class FabrikControllerForm extends JControllerLegacy
 		{
 			// $$$ hugh - adding some options for what to do with redirect when in content plugin
 			// Should probably do this elsewhere, but for now ...
-			$redirect_opts = array('msg' => $msg, 'url' => $url, 'baseRedirect' => $this->baseRedirect, 'rowid' => $input->get('rowid', '', 'string'));
+			$redirect_opts = array(
+					'msg' => $msg,
+					'url' => $url,
+					'baseRedirect' => $this->baseRedirect,
+					'rowid' => $input->get('rowid', '', 'string'),
+					'suppressMsg' => !$model->showSuccessMsg()
+			);
 
 			if (!$this->baseRedirect && $this->isMambot)
 			{
@@ -280,6 +302,24 @@ class FabrikControllerForm extends JControllerLegacy
 				$redirect_opts['title'] = $session->get($context . 'redirect_content_popup_title', '');
 				$redirect_opts['reset_form'] = $session->get($context . 'redirect_content_reset_form', '1') == '1';
 			}
+			elseif (!$this->baseRedirect && !$this->isMambot)
+			{
+				/**
+				 * $$$ hugh - I think this case only happens when we're a popup form from a list
+				 * in which case I don't think "popup" is realy a valid option.  Anyway, need to set something,
+				 * so for now just do the same as we do for isMambot, but default redirect_how to 'samepage'
+				 */
+				$session = JFactory::getSession();
+				$context = $model->getRedirectContext();
+				$redirect_opts['redirect_how'] = $session->get($context . 'redirect_content_how', 'samepage');
+				$redirect_opts['width'] = (int) $session->get($context . 'redirect_content_popup_width', '300');
+				$redirect_opts['height'] = (int) $session->get($context . 'redirect_content_popup_height', '300');
+				$redirect_opts['x_offset'] = (int) $session->get($context . 'redirect_content_popup_x_offset', '0');
+				$redirect_opts['y_offset'] = (int) $session->get($context . 'redirect_content_popup_y_offset', '0');
+				$redirect_opts['title'] = $session->get($context . 'redirect_content_popup_title', '');
+				$redirect_opts['reset_form'] = $session->get($context . 'redirect_content_reset_form', '1') == '1';
+
+			}
 			elseif ($this->isMambot)
 			{
 				// $$$ hugh - special case to allow custom code to specify that
@@ -288,10 +328,11 @@ class FabrikControllerForm extends JControllerLegacy
 				$context = 'com_fabrik.form.' . $model->get('id') . '.redirect.';
 				$redirect_opts['reset_form'] = $session->get($context . 'redirect_content_reset_form', '1') == '1';
 			}
-			// Let form.js handle the redirect logic (will also send out a
+			// Let form.js handle the redirect logic
 			echo json_encode($redirect_opts);
 
-			return;
+			// Stop require.js being added to output
+			exit;
 		}
 
 		if ($input->get('format') == 'raw')
@@ -303,6 +344,13 @@ class FabrikControllerForm extends JControllerLegacy
 		}
 		else
 		{
+
+			// If no msg, set to null, so J! doesn't create an empty "Message" area
+			if (empty($msg))
+			{
+				$msg = null;
+			}
+
 			$this->setRedirect($url, $msg);
 		}
 	}
@@ -348,7 +396,7 @@ class FabrikControllerForm extends JControllerLegacy
 				if (!empty($eMsgs))
 				{
 					$eMsgs = '<ul>' . implode('</li><li>', $eMsgs) . '</ul>';
-					header('HTTP/1.1 500 ' . JText::_('COM_FABRIK_FAILED_VALIDATION') . $eMsgs);
+					header('HTTP/1.1 500 ' . FText::_('COM_FABRIK_FAILED_VALIDATION') . $eMsgs);
 					jexit();
 				}
 				else
@@ -528,7 +576,7 @@ class FabrikControllerForm extends JControllerLegacy
 
 		$oldtotal = $model->getTotalRecords();
 		$model->setId($listid);
-		$model->deleteRows($ids);
+		$ok = $model->deleteRows($ids);
 
 		$total = $oldtotal - count($ids);
 
@@ -556,8 +604,9 @@ class FabrikControllerForm extends JControllerLegacy
 		}
 		else
 		{
-			// @TODO: test this
-			$app->redirect($ref, count($ids) . " " . JText::_('COM_FABRIK_RECORDS_DELETED'));
+			$msg = $ok ? count($ids) . ' ' . FText::_('COM_FABRIK_RECORDS_DELETED') : '';
+			$app->enqueueMessage($msg);
+			$app->redirect($ref);
 		}
 	}
 }

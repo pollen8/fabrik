@@ -313,7 +313,7 @@ class FabrikAdminModelGroup extends FabModelAdmin
 		{
 			$fname = $element->getElement()->name;
 			/**
-			 * if we are making a repeat group from the primary group then we dont want to
+			 * if we are making a repeat group from the primary group then we don't want to
 			 * overwrite the repeat group tables id definition with that of the main tables
 			 */
 			if (!array_key_exists($fname, $names))
@@ -359,7 +359,7 @@ class FabrikAdminModelGroup extends FabModelAdmin
 			if (trim($list->db_table_name) == '')
 			{
 				// New group not attached to a form
-				$this->setError(JText::_('COM_FABRIK_GROUP_CANT_MAKE_JOIN_NO_DB_TABLE'));
+				$this->setError(FText::_('COM_FABRIK_GROUP_CANT_MAKE_JOIN_NO_DB_TABLE'));
 
 				return false;
 			}

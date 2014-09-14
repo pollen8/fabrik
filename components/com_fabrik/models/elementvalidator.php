@@ -32,6 +32,20 @@ class FabrikFEModelElementValidator extends JModelLegacy
 	protected $validations = null;
 
 	/**
+	 * Element model
+	 *
+	 * @var PlgFabrik_Element
+	 */
+	protected $elementModel = null;
+
+	/**
+	 * Icon image render options
+	 *
+	 * @var array
+	 */
+	protected $iconOpts = array('icon-class' => 'small');
+
+	/**
 	 * Set the element model - an instance of this class is linked to one element model
 	 *
 	 * @param   JModel  &$elementModel  Element model
@@ -63,6 +77,9 @@ class FabrikFEModelElementValidator extends JModelLegacy
 		$usedPlugins = (array) JArrayHelper::getValue($validations, 'plugin', array());
 		$published = JArrayHelper::getValue($validations, 'plugin_published', array());
 		$showIcon = JArrayHelper::getValue($validations, 'show_icon', array());
+		$validateIn = JArrayHelper::getValue($validations, 'validate_in', array());
+		$validationOn = JArrayHelper::getValue($validations, 'validation_on', array());
+
 		$pluginManager = FabrikWorker::getPluginManager();
 		$pluginManager->getPlugInGroup('validationrule');
 		$c = 0;
@@ -92,6 +109,9 @@ class FabrikFEModelElementValidator extends JModelLegacy
 					$plugIn->setParams($params, $i);
 
 					$plugIn->getParams()->set('show_icon', JArrayHelper::getValue($showIcon, $i, true));
+					$plugIn->getParams()->set('validate_in', JArrayHelper::getValue($validateIn, $i, 'both'));
+					$plugIn->getParams()->set('validation_on', JArrayHelper::getValue($validationOn, $i, 'both'));
+
 					$c++;
 				}
 			}
@@ -120,31 +140,57 @@ class FabrikFEModelElementValidator extends JModelLegacy
 			}
 		}
 
+		$internal = $this->elementModel->internalValidationIcon();
+
+		if ($internal !== '')
+		{
+			return true;
+		}
+
 		return false;
 	}
 
 	/**
 	 * Get the icon
 	 * - If showIcon() false - show question-sign for hover tip txt indicator
-	 * - If one validation - use the icon specified in the J fabrik_validation settiings (default to star)
+	 * - If one validation - use the icon specified in the J fabrik_validation settings (default to star)
 	 * - If more than one return default j2.5/j3 img
+	 *
+	 * @param   int  $c  Validation plugin render order
 	 *
 	 * @return string
 	 */
 
-	public function getIcon()
+	public function getIcon($c = null)
 	{
 		$j3 = FabrikWorker::j3();
 		$validations = $this->findAll();
 
 		if (!$this->showIcon())
 		{
-			return 'question-sign.png';
+			return '';
 		}
 
-		if (count($validations) === 1 && $j3)
+		if (!empty($validations))
 		{
-			return $validations[0]->iconImage();
+			if ($j3)
+			{
+				if (is_null($c))
+				{
+					return $validations[0]->iconImage();
+				}
+				else
+				{
+					return $validations[$c]->iconImage();
+				}
+			}
+		}
+
+		$internal = $this->elementModel->internalValidationIcon();
+
+		if ($internal !== '')
+		{
+			return $internal;
 		}
 
 		return $j3 ? 'star.png' : 'notempty.png';
@@ -176,5 +222,70 @@ class FabrikFEModelElementValidator extends JModelLegacy
 		}
 
 		return $validationEls;
+	}
+
+	/**
+	 * Get the main validation icon to show next to the element's label
+	 *
+	 * @return string
+	 */
+
+	public function labelIcons()
+	{
+		$tmpl = $this->elementModel->getFormModel()->getTmpl();
+		$validations = array_unique($this->findAll());
+		$emptyIcon = $this->getIcon();
+		$icon = empty($emptyIcon) && empty($validations) ? "" : FabrikHelperHTML::image($emptyIcon, 'form', $tmpl, $this->iconOpts) . ' ';
+		
+		return $icon;
+	}
+
+	/**
+	 * Does the element have validations - checks assigned and internal validations
+	 *
+	 * @return boolean
+	 */
+	public function hasValidations()
+	{
+		$validations = $this->findAll();
+
+		if (!empty($validations) || $this->elementModel->internalValidataionText() !== '')
+		{
+			return true;
+		}
+
+		return false;
+	}
+
+	/**
+	 * Create hover tip text for validations
+	 *
+	 * @return  array  Messages
+	 */
+	public function hoverTexts()
+	{
+		$texts = array();
+
+		if ($this->elementModel->isEditable())
+		{
+			$tmpl = $this->elementModel->getFormModel()->getTmpl();
+			$validations = array_unique($this->findAll());
+
+			foreach ($validations as $c => $validation)
+			{
+				$texts[] = $validation->getHoverText($c, $tmpl);
+			}
+
+			$internal = $this->elementModel->internalValidataionText();
+
+			if ($internal !== '')
+			{
+				$i = $this->elementModel->internalValidationIcon();
+				$icon = FabrikHelperHTML::image($i, 'form', $tmpl, $this->iconOpts);
+				$texts[] = $icon . ' ' . $internal;
+			}
+		}
+
+		return $texts;
 	}
 }

@@ -66,7 +66,7 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 	/**
 	 * Draws the html form element
 	 *
-	 * @param   array  $data           To preopulate element with
+	 * @param   array  $data           To pre-populate element with
 	 * @param   int    $repeatCounter  Repeat group counter
 	 *
 	 * @return  string	elements html
@@ -84,8 +84,8 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 		$id = $this->getHTMLId($repeatCounter);
 		$params = $this->getParams();
 		$element = $this->getElement();
-		$monthlabels = array(JText::_('January'), JText::_('February'), JText::_('March'), JText::_('April'), JText::_('May'), JText::_('June'),
-			JText::_('July'), JText::_('August'), JText::_('September'), JText::_('October'), JText::_('November'), JText::_('December'));
+		$monthlabels = array(FText::_('January'), FText::_('February'), FText::_('March'), FText::_('April'), FText::_('May'), FText::_('June'),
+			FText::_('July'), FText::_('August'), FText::_('September'), FText::_('October'), FText::_('November'), FText::_('December'));
 		$monthnumbers = array('01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12');
 		$daysys = array('01', '02', '03', '04', '05', '06', '07', '08', '09');
 		$daysimple = array('1', '2', '3', '4', '5', '6', '7', '8', '9');
@@ -180,7 +180,7 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 
 						if (date('m-d') == $month . '-' . $day)
 						{
-							$detailvalue .= '<font color = "#CC0000"><b> ' . JText::_('TODAY') . '!</b></font>';
+							$detailvalue .= '<font color = "#CC0000"><b> ' . FText::_('TODAY') . '!</b></font>';
 
 							if (date('m') == '12')
 							{
@@ -238,22 +238,23 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 			$monthvalue = JArrayHelper::getValue($value, 1);
 			$dayvalue = JArrayHelper::getValue($value, 2);
 
-			$days = array(JHTML::_('select.option', '', $params->get('birthday_daylabel', JText::_('DAY'))));
+			$days = array(JHTML::_('select.option', '', $params->get('birthday_daylabel', FText::_('DAY'))));
 
 			for ($i = 1; $i < 32; $i++)
 			{
 				$days[] = JHTML::_('select.option', $i);
 			}
 
-			$months = array(JHTML::_('select.option', '', $params->get('birthday_monthlabel', JText::_('MONTH'))));
+			$months = array(JHTML::_('select.option', '', $params->get('birthday_monthlabel', FText::_('MONTH'))));
 
 			// Siin oli enne $monthlabels, viisin ülespoole
+			// google translation: this was before the $monthlabels, took up the
 			for ($i = 0; $i < count($monthlabels); $i++)
 			{
 				$months[] = JHTML::_('select.option', $i + 1, $monthlabels[$i]);
 			}
 
-			$years = array(JHTML::_('select.option', '', $params->get('birthday_yearlabel', JText::_('YEAR'))));
+			$years = array(JHTML::_('select.option', '', $params->get('birthday_yearlabel', FText::_('YEAR'))));
 
 			// Jaanus: now we can choose one exact year A.C to begin the dropdown AND would the latest year be current year or some years earlier/later.
 			$date = date('Y') + (int) $params->get('birthday_forward', 0);
@@ -273,9 +274,9 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 
 			// $name already suffixed with [] as element hasSubElements = true
 			$str[] = JHTML::_('select.genericlist', $days, preg_replace('#(\[\])$#', '[0]', $name), $attribs, 'value', 'text', $dayvalue, $id . '_0');
-			$str[] = $params->get('birthday_separatorlabel', JText::_('/')) . ' '
+			$str[] = $params->get('birthday_separatorlabel', FText::_('/')) . ' '
 				. JHTML::_('select.genericlist', $months, preg_replace('#(\[\])$#', '[1]', $name), $attribs, 'value', 'text', $monthvalue, $id . '_1');
-			$str[] = $params->get('birthday_separatorlabel', JText::_('/')) . ' '
+			$str[] = $params->get('birthday_separatorlabel', FText::_('/')) . ' '
 				. JHTML::_('select.genericlist', $years, preg_replace('#(\[\])$#', '[2]', $name), $attribs, 'value', 'text', $yearvalue, $id . '_2');
 			$str[] = '</div>';
 
@@ -332,7 +333,7 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 	}
 
 	/**
-	 * Does the element conside the data to be empty
+	 * Does the element consider the data to be empty
 	 * Used in isempty validation rule
 	 *
 	 * @param   array  $data           data to test against
@@ -374,7 +375,7 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 		$params = $this->getParams();
 		$id = $this->getHTMLId($repeatCounter);
 		$opts = $this->getElementJSOptions($repeatCounter);
-		$opts->separator = $params->get('birthday_separatorlabel', JText::_('/'));
+		$opts->separator = $params->get('birthday_separatorlabel', FText::_('/'));
 
 		return array('FbBirthday', $id, $opts);
 	}
@@ -430,8 +431,8 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 
 		$params = $this->getParams();
 
-		$monthlabels = array(JText::_('January'), JText::_('February'), JText::_('March'), JText::_('April'), JText::_('May'), JText::_('June'),
-				JText::_('July'), JText::_('August'), JText::_('September'), JText::_('October'), JText::_('November'), JText::_('December'));
+		$monthlabels = array(FText::_('January'), FText::_('February'), FText::_('March'), FText::_('April'), FText::_('May'), FText::_('June'),
+				FText::_('July'), FText::_('August'), FText::_('September'), FText::_('October'), FText::_('November'), FText::_('December'));
 
 		$monthnumbers = array('01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12');
 		$daysys = array('01', '02', '03', '04', '05', '06', '07', '08', '09');
@@ -572,7 +573,7 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 
 	/**
 	 * Used by radio and dropdown elements to get a dropdown list of their unique
-	 * unique values OR all options - basedon filter_build_method
+	 * unique values OR all options - based on filter_build_method
 	 *
 	 * @param   bool    $normal     Do we render as a normal filter or as an advanced search filter
 	 * @param   string  $tableName  Table name to use - defaults to element's current table
@@ -612,17 +613,18 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 	 * This builds an array containing the filters value and condition
 	 * when using a ranged search
 	 *
-	 * @param   array  $value  Initial values
+	 * @param   array   $value      Initial values
+	 * @param   string  $condition  Filter condition e.g. BETWEEN
 	 *
 	 * @return  array  (value condition)
 	 */
 
-	protected function getRangedFilterValue($value)
+	protected function getRangedFilterValue($value, $condition = '')
 	{
 		$db = FabrikWorker::getDbo();
 		$element = $this->getElement();
 
-		if ($element->filter_type === 'range')
+		if ($element->filter_type === 'range' || strtoupper($condition) === 'BETWEEN')
 		{
 			if (strtotime($value[0]) > strtotime($value[1]))
 			{
@@ -637,6 +639,22 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 			}
 			else
 			{
+				$today = JFactory::getDate();
+				$thisMonth = $today->format('m');
+				$thisDay = $today->format('d');
+
+				// Set start date today's month/day of start year
+				$startYear = JFactory::getDate($value[0])->format('Y');
+				$startDate = JFactory::getDate();
+				$startDate->setDate($startYear, $thisMonth, $thisDay)->setTime(0, 0, 0);
+				$value[0] = $startDate->toSql();
+
+				// Set end date to today's month/day of year after end year (means search on age between 35 & 35 returns results)
+				$endYear = JFactory::getDate($value[1])->format('Y');
+				$endDate = JFactory::getDate();
+				$endDate->setDate($endYear + 1, $thisMonth, $thisDay)->setTime(23, 59, 59);
+				$value[1] = $endDate->toSql();
+
 				$value = $db->quote($value[0]) . ' AND ' . $db->quote($value[1]);
 			}
 

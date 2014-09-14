@@ -92,7 +92,7 @@ class FabrikFEModelPackage extends FabModel
 
 	/**
 	 * Method to get package data.
-	 * Packages are all stored in jos_fabrik_packages - so dont use {package} in the query to load them
+	 * Packages are all stored in jos_fabrik_packages - so don't use {package} in the query to load them
 	 *
 	 * @param   int  $pk  The id of the package.
 	 *
@@ -139,13 +139,13 @@ class FabrikFEModelPackage extends FabModel
 
 				if (empty($data))
 				{
-					throw new JException(JText::_('COM_FABRIK_ERROR_PACKAGE_NOT_FOUND'), 404);
+					throw new JException(FText::_('COM_FABRIK_ERROR_PACKAGE_NOT_FOUND'), 404);
 				}
 
 				// Check for published state if filter set.
 				if (((is_numeric($published)) || (is_numeric($archived))) && (($data->published != $published) && ($data->published != $archived)))
 				{
-					throw new JException(JText::_('COM_FABRIK_ERROR_PACKAGE_NOT_FOUND'), 404);
+					throw new JException(FText::_('COM_FABRIK_ERROR_PACKAGE_NOT_FOUND'), 404);
 				}
 
 				// Convert parameter fields to objects.

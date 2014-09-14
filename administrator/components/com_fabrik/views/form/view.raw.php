@@ -65,7 +65,7 @@ class FabrikAdminViewForm extends JViewLegacy
 		{
 			if (!$app->isAdmin())
 			{
-				echo JText::_('COM_FABRIK_FORM_NOT_PUBLISHED');
+				echo FText::_('COM_FABRIK_FORM_NOT_PUBLISHED');
 
 				return false;
 			}
@@ -75,7 +75,7 @@ class FabrikAdminViewForm extends JViewLegacy
 
 		if ($this->access == 0)
 		{
-			return JError::raiseWarning(500, JText::_('JERROR_ALERTNOAUTHOR'));
+			return JError::raiseWarning(500, FText::_('JERROR_ALERTNOAUTHOR'));
 		}
 
 		$model->getJoinGroupIds();
@@ -92,7 +92,7 @@ class FabrikAdminViewForm extends JViewLegacy
 			$groupParams = $groupModel->getParams();
 			$aElements = array();
 
-			// Check if group is acutally a table join
+			// Check if group is actually a table join
 			$repeatGroup = 1;
 			$foreignKey = null;
 
@@ -137,7 +137,7 @@ class FabrikAdminViewForm extends JViewLegacy
 					if (!$model->isEditable())
 					{
 						/* $$$ rob 22/03/2011 changes element keys by appending "_id" to the end, means that
-						 * db join add append data doesn't work if for example the popup form is set to allow adding,
+						 * db join add append data doesn't work if for example the pop-up form is set to allow adding,
 						 * but not editing records
 						 * $elementModel->inDetailedView = true;
 						 */
@@ -201,7 +201,8 @@ class FabrikAdminViewForm extends JViewLegacy
 		$isNew = ($this->item->id == 0);
 		$checkedOut = !($this->item->checked_out == 0 || $this->item->checked_out == $user->get('id'));
 		$canDo = FabrikAdminHelper::getActions($this->state->get('filter.category_id'));
-		JToolBarHelper::title($isNew ? JText::_('COM_FABRIK_MANAGER_FORM_NEW') : JText::_('COM_FABRIK_MANAGER_FORM_EDIT'), 'form.png');
+		$title = $isNew ? FText::_('COM_FABRIK_MANAGER_FORM_NEW') : FText::_('COM_FABRIK_MANAGER_FORM_EDIT') . ' "' . $this->item->label . '"';
+		JToolBarHelper::title($title, 'form.png');
 
 		if ($isNew)
 		{

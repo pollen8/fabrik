@@ -80,8 +80,7 @@ class PlgFabrik_ListOrder extends PlgFabrik_List
 		$orderEl = $model->getFormModel()->getElement($params->get('order_element'), true);
 		$form_id = $model->getFormModel()->getId();
 		$opts = $this->getElementJSOptions();
-		$opts->enabled = (count($model->orderEls) === 1
-			&& FabrikString::safeColNameToArrayKey($model->orderEls[0]) == FabrikString::safeColNameToArrayKey($orderEl->getOrderByName())) ? true
+		$opts->enabled = (FabrikString::safeColNameToArrayKey($model->orderEls[0]) == FabrikString::safeColNameToArrayKey($orderEl->getOrderByName())) ? true
 			: false;
 		$opts->listid = $model->getId();
 		$opts->orderElementId = $params->get('order_element');
@@ -144,7 +143,9 @@ class PlgFabrik_ListOrder extends PlgFabrik_List
 
 		// Get the order for the last record in $result
 		$splitId = $dragDirection == 'up' ? array_shift($result) : array_pop($result);
-		$db->setQuery("SELECT " . $orderBy . " FROM " . $table->db_table_name . " WHERE " . $table->db_primary_key . " = " . $splitId);
+		$query = $db->getQuery(true);
+		$query->select($orderBy)->from($table->db_table_name)->where($table->db_primary_key . ' = ' . $splitId);
+		$db->setQuery($query);
 		$o = (int) $db->loadResult();
 
 		if ($direction == 'desc')
@@ -159,6 +160,8 @@ class PlgFabrik_ListOrder extends PlgFabrik_List
 		// Shift down the ordered records which have an order less than or equal the newly moved record
 		$query = "UPDATE " . $table->db_table_name . " SET " . $orderBy . ' = COALESCE(' . $orderBy . ', 1) - 1 ';
 		$query .= " WHERE " . $orderBy . ' ' . $compare . ' ' . $o . ' AND ' . $table->db_primary_key . ' <> ' . $dragged;
+		$query .= " AND " . $table->db_primary_key . ' IN  (' . implode(',', $db->q($order)) . ')';
+
 		$db->setQuery($query);
 
 		if (!$db->execute())
@@ -179,6 +182,8 @@ class PlgFabrik_ListOrder extends PlgFabrik_List
 
 			$query = "UPDATE " . $table->db_table_name . " SET " . $orderBy . ' = COALESCE(' . $orderBy . ', 0) + 1';
 			$query .= " WHERE " . $orderBy . ' ' . $compare . ' ' . $o;
+
+			$query .= " AND " . $table->db_primary_key . ' IN  (' . implode(',', $db->q($order)) . ')';
 
 			$db->setQuery($query);
 

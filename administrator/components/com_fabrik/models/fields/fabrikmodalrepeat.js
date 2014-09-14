@@ -7,7 +7,11 @@
 
 var FabrikModalRepeat = new Class({
 
-	initialize: function (el, names, field) {
+	options: {
+		j3: true
+	},
+	
+	initialize: function (el, names, field, opts) {
 		this.names = names;
 		this.field = field;
 		this.content = false;
@@ -16,8 +20,9 @@ var FabrikModalRepeat = new Class({
 		this.win = {};
 		this.el = {};
 		this.field = {};
+		this.options = Object.append(this.options, opts);
 
-		// If the parent field is inserted via js then we delay the loading untill the html is present
+		// If the parent field is inserted via js then we delay the loading until the html is present
 		if (!this.ready()) {
 			this.timer = this.testReady.periodical(500, this);
 		} else {
@@ -194,6 +199,9 @@ var FabrikModalRepeat = new Class({
 	},
 
 	resetChosen: function (clone) {
+		if (!this.options.j3) {
+			return;
+		}
 		if (jQuery && typeOf(jQuery('select').chosen) !== 'null') {
 
 			// Chosen reset

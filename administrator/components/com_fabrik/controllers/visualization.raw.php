@@ -70,7 +70,7 @@ class FabrikAdminControllerVisualization extends JControllerForm
 			}
 			else
 			{
-				throw new RuntimeException('could not load viz:' . $viz->plugin);
+				throw new RuntimeException('Could not load visualization: ' . $viz->plugin);
 			}
 
 			$controllerName = 'FabrikControllerVisualization' . $viz->plugin;

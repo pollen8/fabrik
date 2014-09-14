@@ -22,7 +22,7 @@ jimport('joomla.application.component.controllerform');
  * @since       3.0
  */
 
-class FabrikControllerDetails extends JControllerForm
+class FabrikAdminControllerDetails extends JControllerForm
 {
 	/**
 	 * The prefix to use with controller messages.
@@ -40,20 +40,25 @@ class FabrikControllerDetails extends JControllerForm
 	public function view()
 	{
 		$document = JFactory::getDocument();
-		$model = JModel::getInstance('Form', 'FabrikFEModel');
-		JRequest::setVar('view', 'details');
+		$model = JModelLegacy::getInstance('Form', 'FabrikFEModel');
+		$app = JFactory::getApplication();
+		$input = $app->input;
+		$input->set('tmpl', 'component');
+		$input->set('view', 'details');
 		$viewType = $document->getType();
 		$this->setPath('view', COM_FABRIK_FRONTEND . '/views');
-		$viewLayout	= JRequest::getCmd('layout', 'default');
-		$view = $this->getView('form', $viewType, '');
+		$viewLayout	= $input->get('layout', 'default');
+		$this->name = 'Fabrik';
+		$view = $this->getView('Form', $viewType, '');
 		$view->setModel($model, true);
 
 		// Set the layout
 		$view->setLayout($viewLayout);
 
-		// @Todo check for cached version
-		JToolBarHelper::title(JText::_('COM_FABRIK_MANAGER_FORMS'), 'forms.png');
+		// @TODO check for cached version
+		JToolBarHelper::title(FText::_('COM_FABRIK_MANAGER_FORMS'), 'forms.png');
+
 		$view->display();
-		FabrikAdminHelper::addSubmenu(JRequest::getWord('view', 'lists'));
+		FabrikAdminHelper::addSubmenu($input->getWord('view', 'lists'));
 	}
 }

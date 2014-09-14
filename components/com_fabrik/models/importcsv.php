@@ -170,7 +170,7 @@ class FabrikFEModelImportcsv extends JModelForm
 	{
 		if (!(bool) ini_get('file_uploads'))
 		{
-			JError::raiseWarning(500, JText::_('COM_FABRIK_ERR_UPLOADS_DISABLED'));
+			JError::raiseWarning(500, FText::_('COM_FABRIK_ERR_UPLOADS_DISABLED'));
 
 			return false;
 		}
@@ -181,7 +181,7 @@ class FabrikFEModelImportcsv extends JModelForm
 
 		if (!$userfile)
 		{
-			JError::raiseWarning(500, JText::_('COM_FABRIK_IMPORT_CSV_NO_FILE_SELECTED'));
+			JError::raiseWarning(500, FText::_('COM_FABRIK_IMPORT_CSV_NO_FILE_SELECTED'));
 
 			return false;
 		}
@@ -201,7 +201,7 @@ class FabrikFEModelImportcsv extends JModelForm
 
 		if ($resultdir == false && !JFile::exists($to))
 		{
-			JError::raiseWarning(500, JText::_('Upload Error'));
+			JError::raiseWarning(500, FText::_('Upload Error'));
 
 			return false;
 		}
@@ -323,7 +323,7 @@ class FabrikFEModelImportcsv extends JModelForm
 					foreach ($arr_data as &$d)
 					{
 						/**
-						 * strip any none uft-8 characters from the import data
+						 * strip any none utf-8 characters from the import data
 						 * if we don't do this then the site's session is destroyed and you are logged out
 						 */
 						$d = iconv("utf-8", "utf-8//IGNORE", $d);
@@ -471,7 +471,7 @@ class FabrikFEModelImportcsv extends JModelForm
 	}
 
 	/**
-	 * Determine if the imported data has exisiting correlating elements
+	 * Determine if the imported data has existing correlating elements
 	 *
 	 * @return  null
 	 */
@@ -556,9 +556,10 @@ class FabrikFEModelImportcsv extends JModelForm
 					// Joined element params
 					if ($elementModel->isJoin())
 					{
-						$hkey = ($elementModel->getJoinModel()->getJoin()->table_join . '___params');
+						$hkey = $elementModel->getJoinParamsKey(false);
+						$hkey2 = $elementModel->getJoinIdKey(false);
 
-						if ($hkey === $heading)
+						if ($hkey === $heading || $hkey2 === $heading)
 						{
 							if (!array_key_exists($hkey, $this->matchedHeadings))
 							{
@@ -669,19 +670,10 @@ class FabrikFEModelImportcsv extends JModelForm
 
 		$this->addedCount = 0;
 		$updatedCount = 0;
-		$joins = $this->getJoins();
 
 		// $$$ rob we are no longer removing the element joins from $joins
 		// so lets see if any of $joins are table joins.
-		$tableJoinsFound = false;
-
-		for ($x = 0; $x < count($joins); $x++)
-		{
-			if ((int) $joins[$x]->list_id !== 0)
-			{
-				$tableJoinsFound = true;
-			}
-		}
+		$tableJoinsFound = $this->tableJoinsFound();
 
 		$joindata = array();
 		$defaultsToAdd = $this->defaultsToAdd();
@@ -699,7 +691,8 @@ class FabrikFEModelImportcsv extends JModelForm
 					case 0:
 						break;
 					case 1:
-						$heading = array_pop(explode(".", $heading));
+						$heading = explode('.', $heading);
+						$heading = array_pop($heading);
 						break;
 					case 2:
 						break;
@@ -729,49 +722,27 @@ class FabrikFEModelImportcsv extends JModelForm
 				$i++;
 			}
 
-			// $$$ rob add in per row default values for missing elements
-			foreach ($defaultsToAdd as $k => $elementModel)
-			{
-				/* Added check as defaultsToAdd ALSO contained element keys for those elements which
-				 * are created from new csv columns, which previously didn't exist in the list
-				 */
-				if (!array_key_exists($k, $aRow))
-				{
-					$aRow[$k] = $elementModel->getDefaultValue($aRow);
-				}
-
-				if (!array_key_exists($k . '_raw', $aRow))
-				{
-					$aRow[$k . '_raw'] = $aRow[$k];
-				}
-			}
-
+			$this->addDefaults($aRow);
 			$model->getFormGroupElementData();
-
-			// Take any _raw values and replace their real elements with their data
-			foreach ($aRow as $k => $val)
-			{
-				if (JString::substr($k, JString::strlen($k) - 4, JString::strlen($k)) == '_raw')
-				{
-					$noneraw = JString::substr($k, 0, JString::strlen($k) - 4);
-
-					if (array_key_exists($noneraw, $aRow))
-					{
-						$aRow[$noneraw] = $val;
-						unset($aRow[$k]);
-					}
-				}
-			}
+			$this->setRawDataAsPriority($aRow);
 
 			if ($overWrite && in_array($pkVal, $aExistingKeys))
 			{
 				$formModel->rowId = $pkVal;
 				$updatedCount++;
+				$model->csvOverwriting = true;
 			}
 			else
 			{
-				$formModel->rowId = 0;
+				// If not overwriting ensusre the any existing PK's are removed and the form rowId set to ''
+				$pk = FabrikString::safeColNameToArrayKey($item->db_primary_key);
+				$rawPk = $pk . '_raw';
+				unset($aRow[$pk]);
+				unset($aRow[$rawPk]);
+				$formModel->rowId = '';
+				$formModel->setInsertId('');
 				$this->addedCount++;
+				$model->csvOverwriting = false;
 			}
 
 			// $$$ rob - if raw and none raw or just raw found then insert the raw data
@@ -782,7 +753,6 @@ class FabrikFEModelImportcsv extends JModelForm
 				{
 					$noneraw = JString::substr($k, 0, strlen($k) - 4);
 					$aRow[$noneraw] = $val;
-					unset($aRow[$k]);
 				}
 			}
 
@@ -792,7 +762,8 @@ class FabrikFEModelImportcsv extends JModelForm
 
 				if (!in_array(false, FabrikWorker::getPluginManager()->runPlugins('onImportCSVRow', $model, 'list')))
 				{
-					$formModel->processToDB();
+					$rowid = $formModel->processToDB();
+					FabrikWorker::getPluginManager()->runPlugins('onAfterImportCSVRow', $model, 'list');
 				}
 			}
 			else
@@ -809,6 +780,83 @@ class FabrikFEModelImportcsv extends JModelForm
 
 		$this->removeCSVFile();
 		$this->updatedCount = $updatedCount;
+	}
+
+	/**
+	 * Add in per row default values for missing elements
+	 *
+	 * @param   array  &$aRow  Import CSV data
+	 */
+	private function addDefaults(&$aRow)
+	{
+		$defaultsToAdd = $this->defaultsToAdd();
+
+		foreach ($defaultsToAdd as $k => $elementModel)
+		{
+			/* Added check as defaultsToAdd ALSO contained element keys for those elements which
+			 * are created from new csv columns, which previously didn't exist in the list
+			 */
+			if (!array_key_exists($k, $aRow))
+			{
+				$aRow[$k] = $elementModel->getDefaultValue($aRow);
+			}
+
+			if (!array_key_exists($k . '_raw', $aRow))
+			{
+				$aRow[$k . '_raw'] = $aRow[$k];
+			}
+		}
+	}
+
+	/**
+	 * Take any _raw values and replace their real elements with their data
+	 *
+	 * @param   array  &$aRow  Importing CSV Data
+	 */
+	private function setRawDataAsPriority(&$aRow)
+	{
+		foreach ($aRow as $k => $val)
+		{
+			if (JString::substr($k, JString::strlen($k) - 4, JString::strlen($k)) == '_raw')
+			{
+				$noneraw = JString::substr($k, 0, JString::strlen($k) - 4);
+
+				if (array_key_exists($noneraw, $aRow))
+				{
+					// Complete madness for encoding issue with fileupload ajax + single upload max
+					preg_match('/params":"(.*)"\}\]/', $val, $matches);
+
+					if (count($matches) == 2)
+					{
+						$replace = addSlashes($matches[1]);
+						$val = preg_replace('/params":"(.*)\}\]/', 'params":"' . $replace . '"}]', $val, -1, $c);
+					}
+					$aRow[$noneraw] = $val;
+					unset($aRow[$k]);
+				}
+			}
+		}
+	}
+
+	/**
+	 * Does the list contain table joins
+	 *
+	 * @return boolean
+	 */
+	private function tableJoinsFound()
+	{
+		$found = false;
+		$joins = $this->getJoins();
+
+		for ($x = 0; $x < count($joins); $x++)
+		{
+			if ((int) $joins[$x]->list_id !== 0 && $joins[$x]->element_id === 0)
+			{
+				$found = true;
+			}
+		}
+
+		return $found;
 	}
 
 	/**
@@ -870,8 +918,8 @@ class FabrikFEModelImportcsv extends JModelForm
 	}
 
 	/**
-	 * Once we have itterated over all of the csv file and recreated
-	 * the join data, we can finally allow the lists form to proces it
+	 * Once we have iterated over all of the csv file and recreated
+	 * the join data, we can finally allow the lists form to process it
 	 *
 	 * @param   array  $joindata  data
 	 *
@@ -949,7 +997,7 @@ class FabrikFEModelImportcsv extends JModelForm
 	/**
 	 * As each csv row is in a single line we need to fake the join data before
 	 * sending it of to be processed by the form model
-	 * Look at the table model and get all table joins
+	 * Look at the list model and get all table joins
 	 * then insert data into the row
 	 * NOTE: will probably only work for a 1:1 join result
 	 *
@@ -1094,7 +1142,7 @@ class FabrikFEModelImportcsv extends JModelForm
 
 	public function makeError()
 	{
-		$str = JText::_('COM_FABRIK_CSV_FIELDS_NOT_IN_TABLE');
+		$str = FText::_('COM_FABRIK_CSV_FIELDS_NOT_IN_TABLE');
 
 		foreach ($this->newHeadings as $heading)
 		{
@@ -1116,7 +1164,7 @@ class FabrikFEModelImportcsv extends JModelForm
 	}
 
 	/**
-	 * Determine if the chooselementtypes view should contain a column where
+	 * Determine if the choose-element-types view should contain a column where
 	 * the user selects the field to be the pk
 	 *
 	 * @return  bool	true if column shown
@@ -1128,13 +1176,13 @@ class FabrikFEModelImportcsv extends JModelForm
 		$input = $app->input;
 
 		// $$$ rob 30/01/2012 - if in csvimport cron plugin then we have to return true here
-		// otherwise a blank column is added to the import data meaniing overwrite date dunna workie
+		// otherwise a blank column is added to the import data meaning overwrite date dunna workie
 		if ($input->getBool('cron_csvimport'))
 		{
 			return true;
 		}
 
-		// $$$ rob 13/03/2012 - reimporting into exisiting list - should return true
+		// $$$ rob 13/03/2012 - reimporting into existing list - should return true
 		if ($input->getInt('listid') !== 0)
 		{
 			return true;
@@ -1175,7 +1223,7 @@ class FabrikFEModelImportcsv extends JModelForm
  *
  * It can deal with:
  * - Line breaks within quoted fields
- * - Character seperator (usually a comma or semicolon) in quoted fields
+ * - Character separator (usually a comma or semicolon) in quoted fields
  * - Can leave or remove leading and trailing \s or \t
  * - Can leave or skip empty rows.
  * - Windows and Unix line breaks dealt with automatically. Care must be taken with Macintosh format.
@@ -1218,7 +1266,7 @@ class FabrikFEModelImportcsv extends JModelForm
  *
  * The coding standards used in this file can be found here: http://www.dagbladet.no/development/phpcodingstandard/
  *
- *    All commets and suggestions are welcomed.
+ *    All comments and suggestions are welcomed.
  *
  * SUPPORT: Visit http://vhd.com.au/forum/
  *
@@ -1386,7 +1434,7 @@ class Csv_Bv
 				$this->mSkippedRowCount++;
 				$arr_row = $this->NextLine();
 
-				// This is to avoid a warning when empty lines are found at the bvery end of a file.
+				// This is to avoid a warning when empty lines are found at the very end of a file.
 				if (!is_array($arr_row))
 				{
 					// This will only happen if we are at the end of a file.

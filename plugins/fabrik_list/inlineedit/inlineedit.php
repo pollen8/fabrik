@@ -121,7 +121,8 @@ class PlgFabrik_ListInlineedit extends PlgFabrik_List
 		$listModel = JModelLegacy::getInstance('list', 'FabrikFEModel');
 		$listModel->setId($input->getInt('listid'));
 		$elements = $listModel->getElements('safecolname');
-		$pels = $params->get('inline_editable_elements');
+		$pels = FabrikString::stripSpace($params->get('inline_editable_elements', ''));
+
 		$use = json_decode($pels);
 
 		if (!is_object($use))

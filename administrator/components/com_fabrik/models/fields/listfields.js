@@ -9,21 +9,61 @@ var ListFieldsElement = new Class({
 
 	Implements: [Options, Events],
 
+	addWatched: false,
+	
 	options: {
 		conn: null,
 		highlightpk: false,
 		showAll: 1,
-		mode: 'dropdown'
+		mode: 'dropdown',
+		defaultOpts: [],
+		addBrackets: false
 	},
 
 	initialize: function (el, options) {
 		this.strEl = el;
+		var label;
 		this.el = el;
 		this.setOptions(options);
-		if (typeOf(document.id(this.options.conn)) === 'null') {
-			this.cnnperiodical = this.getCnn.periodical(500, this);
+		
+		if (this.options.defaultOpts.length > 0) {
+			this.el = document.id(this.el);
+			if (this.options.mode === 'gui') {
+				this.select = this.el.getParent().getElement('select.elements');
+				els = [this.select];
+				if (typeOf(document.id(this.options.conn)) === 'null') {
+					this.watchAdd();
+				}
+			} else {
+				els = document.getElementsByName(this.el.name);
+				this.el.empty();
+				document.id(this.strEl).empty();
+			}
+			var opts = this.options.defaultOpts;
+			
+			Array.each(els, function (el) {
+				document.id(el).empty();
+			});
+			
+			opts.each(function (opt) {
+				var o = {'value': opt.value};
+				if (opt.value === this.options.value) {
+					o.selected = 'selected';
+				}
+				Array.each(els, function (el) {
+					label = opt.label ? opt.label : opt.text;
+					new Element('option', o).set('text', label).inject(el);
+				});
+			}.bind(this));
+			
 		} else {
-			this.setUp();
+			
+		
+			if (typeOf(document.id(this.options.conn)) === 'null') {
+				this.cnnperiodical = this.getCnn.periodical(500, this);
+			} else {
+				this.setUp();
+			}
 		}
 	},
 
@@ -75,7 +115,17 @@ var ListFieldsElement = new Class({
 		if (v !== '' && v !== -1) {
 			this.periodical = this.updateMe.periodical(500, this);
 		}
+		this.watchAdd();
+	},
+
+	watchAdd: function () {
+		if (this.addWatched === true) {
+			return;
+		}
+		
+		this.addWatched = true;
 		var add = this.el.getParent().getElement('button');
+
 		if (typeOf(add) !== 'null') {
 			add.addEvent('mousedown', function (e) {
 				e.stop();
@@ -86,7 +136,7 @@ var ListFieldsElement = new Class({
 			});
 		}
 	},
-
+	
 	updateMe: function (e) {
 		if (typeOf(e) === 'event') {
 			e.stop();
@@ -151,82 +201,101 @@ var ListFieldsElement = new Class({
 	 */
 	addPlaceHolder: function () {
 		var list = this.el.getParent().getElement('select');
-		this.insertTextAtCaret(this.el, list.get('value'));
+		var v = list.get('value');
+		if (this.options.addBrackets) {
+			v = v.replace(/\./, '___');
+			v = '{' + v + '}';
+		}
+		this.insertTextAtCaret(this.el, v);
 	},
 	
 	/**
 	 * Start of text insertion code - taken from 
 	 * http://stackoverflow.com/questions/3510351/how-do-i-add-text-to-a-textarea-at-the-cursor-location-using-javascript
 	 */
-	getSelectionBoundary: function (el, start) {
-		var property = start ? "selectionStart" : "selectionEnd";
-		var originalValue, textInputRange, precedingRange, pos, bookmark;
+	getInputSelection: function (el) {
+		var start = 0, end = 0, normalizedValue, range,
+		textInputRange, len, endRange;
 
-		if (typeof el[property] === "number") {
-			return el[property];
-		} else if (document.selection && document.selection.createRange) {
-			el.focus();
+		if (typeof el.selectionStart === "number" && typeof el.selectionEnd === "number") {
+			start = el.selectionStart;
+			end = el.selectionEnd;
+		} else {
+			range = document.selection.createRange();
 
-			var range = document.selection.createRange();
-			if (range) {
-				// Collapse the selected range if the selection is not a caret
-				if (document.selection.type === "Text") {
-					range.collapse(!!start);
-				}
+			if (range && range.parentElement() === el) {
+				len = el.value.length;
+				normalizedValue = el.value.replace(/\r\n/g, "\n");
 
-				originalValue = el.value;
+				// Create a working TextRange that lives only in the input
 				textInputRange = el.createTextRange();
-				precedingRange = el.createTextRange();
-				pos = 0;
+				textInputRange.moveToBookmark(range.getBookmark());
 
-				bookmark = range.getBookmark();
-				textInputRange.moveToBookmark(bookmark);
+				// Check if the start and end of the selection are at the very end
+				// of the input, since moveStart/moveEnd doesn't return what we want
+				// in those cases
+				endRange = el.createTextRange();
+				endRange.collapse(false);
 
-				if (originalValue.indexOf("\r\n") > -1) {
-					// Trickier case where input value contains line breaks
-
-					// Insert a character in the text input range and use that
-					//as a marker
-					textInputRange.text = " ";
-					precedingRange.setEndPoint("EndToStart", textInputRange);
-					pos = precedingRange.text.length - 1;
-
-					// Executing an undo command deletes the character inserted
-					// and prevents adding to the undo stack.
-					document.execCommand("undo");
+				if (textInputRange.compareEndPoints("StartToEnd", endRange) > -1) {
+					start = end = len;
 				} else {
-					// Easier case where input value contains no line breaks
-					precedingRange.setEndPoint("EndToStart", textInputRange);
-					pos = precedingRange.text.length;
+					start = -textInputRange.moveStart("character", -len);
+					start += normalizedValue.slice(0, start).split("\n").length - 1;
+
+					if (textInputRange.compareEndPoints("EndToEnd", endRange) > -1) {
+						end = len;
+					} else {
+						end = -textInputRange.moveEnd("character", -len);
+						end += normalizedValue.slice(0, end).split("\n").length - 1;
+					}
 				}
-				return pos;
 			}
 		}
-		return 0;
-	},
 
+		return {
+			start: start,
+			end: end
+		};
+	},
+	
 	offsetToRangeCharacterMove: function (el, offset) {
 		return offset - (el.value.slice(0, offset).split("\r\n").length - 1);
 	},
 
-	setSelection: function (el, startOffset, endOffset) {
-		var range = el.createTextRange();
-		var startCharMove = this.offsetToRangeCharacterMove(el, startOffset);
-		range.collapse(true);
-		if (startOffset === endOffset) {
-			range.move("character", startCharMove);
-		} else {
-			range.moveEnd("character", this.offsetToRangeCharacterMove(el, endOffset));
-			range.moveStart("character", startCharMove);
+	setSelection: function (el, start, end) {
+		if (typeof el.selectionStart === "number" && typeof el.selectionEnd === "number") {
+			el.selectionStart = start;
+			el.selectionEnd = end;
+		} else if (typeof el.createTextRange !== "undefined") {
+			var range = el.createTextRange();
+			var startCharMove = this.offsetToRangeCharacterMove(el, start);
+			range.collapse(true);
+			if (start === end) {
+				range.move("character", startCharMove);
+			} else {
+				range.moveEnd("character", this.offsetToRangeCharacterMove(el, end));
+				range.moveStart("character", startCharMove);
+			}
+			range.select();
 		}
-		range.select();
 	},
 
 	insertTextAtCaret: function (el, text) {
-		var pos = this.getSelectionBoundary(el, false);
+		var pos = this.getInputSelection(el).end;
 		var newPos = pos + text.length;
 		var val = el.value;
 		el.value = val.slice(0, pos) + text + val.slice(pos);
 		this.setSelection(el, newPos, newPos);
 	}
 });
+
+
+
+/*
+function insertTextAtCaret(el, text) {
+
+}
+
+var textarea = document.getElementById("your_textarea");
+insertTextAtCaret(textarea, "[INSERTED]");*/

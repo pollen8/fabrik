@@ -31,9 +31,9 @@ class PlgFabrik_ElementTextarea extends PlgFabrik_Element
 	/**
 	 * Tagify a string
 	 *
-	 * @param   string  $data  tagify
+	 * @param   string  $data  Tagify
 	 *
-	 * @return  string	tagified string
+	 * @return  string	Tagified string
 	 */
 
 	protected function tagify($data)
@@ -126,10 +126,10 @@ class PlgFabrik_ElementTextarea extends PlgFabrik_Element
 	/**
 	 * Shows the data formatted for the list view
 	 *
-	 * @param   string    $data      elements data
-	 * @param   stdClass  &$thisRow  all the data in the lists current row
+	 * @param   string    $data      Elements data
+	 * @param   stdClass  &$thisRow  All the data in the lists current row
 	 *
-	 * @return  string	formatted value
+	 * @return  string	Formatted value
 	 */
 
 	public function renderListData($data, stdClass &$thisRow)
@@ -142,7 +142,7 @@ class PlgFabrik_ElementTextarea extends PlgFabrik_Element
 			$data = $this->tagify($data);
 		}
 
-		// $$$rob dont strip slashes here - this is done when saving to db now
+		// $$$rob don't strip slashes here - this is done when saving to db now
 		if (!$this->useWysiwyg())
 		{
 			if (is_array($data))
@@ -163,7 +163,10 @@ class PlgFabrik_ElementTextarea extends PlgFabrik_Element
 			}
 		}
 
-		if (!$params->get('textarea-tagify') && $data !== '' && (int) $params->get('textarea-truncate', 0) !== 0)
+		if (!$params->get('textarea-tagify') && $data !== ''
+			&&
+			((int) $params->get('textarea-truncate-where', 0) === 1 || (int) $params->get('textarea-truncate-where', 0) === 3)
+		)
 		{
 			$opts = array();
 			$opts['wordcount'] = (int) $params->get('textarea-truncate', 0);
@@ -200,9 +203,9 @@ class PlgFabrik_ElementTextarea extends PlgFabrik_Element
 	}
 
 	/**
-	 * Does the element use the WYSWYG editor
+	 * Does the element use the WYSIWYG editor
 	 *
-	 * @return  bool	use wysiwyg editor
+	 * @return  mixed	False if not using the wysiwyg editor. String (element name) if it is
 	 */
 
 	public function useEditor()
@@ -211,7 +214,7 @@ class PlgFabrik_ElementTextarea extends PlgFabrik_Element
 		$element = $this->getElement();
 		$app = JFactory::getApplication();
 
-		if ($params->get('use_wysiwyg', 0) && $app->input->getInt('ajax') !== 1)
+		if ($this->useWysiwyg())
 		{
 			return preg_replace("/[^A-Za-z0-9]/", "_", $element->name);
 		}
@@ -263,10 +266,10 @@ class PlgFabrik_ElementTextarea extends PlgFabrik_Element
 	/**
 	 * Draws the html form element
 	 *
-	 * @param   array  $data           to preopulate element with
-	 * @param   int    $repeatCounter  repeat group counter
+	 * @param   array  $data           To pre-populate element with
+	 * @param   int    $repeatCounter  Repeat group counter
 	 *
-	 * @return  string	elements html
+	 * @return  string	Elements html
 	 */
 
 	public function render($data, $repeatCounter = 0)
@@ -287,6 +290,7 @@ class PlgFabrik_ElementTextarea extends PlgFabrik_Element
 		$rows = $params->get('height', $element->height);
 		$value = $this->getValue($data, $repeatCounter);
 		$bits = array();
+		$bits['class'] = "fabrikinput inputbox " . $params->get('bootstrap_class');
 		$wysiwyg = $this->useWysiwyg();
 
 		if (!$this->isEditable())
@@ -300,7 +304,16 @@ class PlgFabrik_ElementTextarea extends PlgFabrik_Element
 			{
 				$value = $this->tagify($value);
 			}
-
+			if (!$params->get('textarea-tagify') && $value !== ''
+				&&
+				((int) $params->get('textarea-truncate-where', 0) === 2 || (int) $params->get('textarea-truncate-where', 0) === 3))
+			{
+				$opts = array();
+				$opts['wordcount'] = (int) $params->get('textarea-truncate', 0);
+				$opts['tip'] = $params->get('textarea-hover');
+				$opts['position'] = $params->get('textarea_hover_location', 'top');
+				$value = fabrikString::truncate($value, $opts);
+			}
 			return $value;
 		}
 
@@ -309,8 +322,6 @@ class PlgFabrik_ElementTextarea extends PlgFabrik_Element
 			$bits['placeholder'] = $params->get('textarea_placeholder');
 		}
 
-		$bits['class'] = "fabrikinput inputbox " . $params->get('bootstrap_class');
-
 		if ($this->elementError != '')
 		{
 			$bits['class'] .= ' elementErrorHighlight';
@@ -318,23 +329,9 @@ class PlgFabrik_ElementTextarea extends PlgFabrik_Element
 
 		if ($wysiwyg)
 		{
-			if ($input->get('ajax') == 1)
-			{
-				$str = "<textarea ";
-
-				foreach ($bits as $key => $val)
-				{
-					$str .= $key . '="' . $val . '" ';
-				}
-
-				$str .= 'name="' . $name . '" id="' . $id . '" cols="' . $cols . '" rows="' . $rows . '">' . $value . '</textarea>';
-			}
-			else
-			{
-				$editor = JFactory::getEditor();
-				$buttons = (bool) $params->get('wysiwyg_extra_buttons', true);
-				$str = $editor->display($name, $value, $cols * 10, $rows * 15, $cols, $rows, $buttons, $id);
-			}
+			$editor = JFactory::getEditor();
+			$buttons = (bool) $params->get('wysiwyg_extra_buttons', true);
+			$str = $editor->display($name, $value, $cols * 10, $rows * 15, $cols, $rows, $buttons, $id);
 		}
 		else
 		{
@@ -349,30 +346,45 @@ class PlgFabrik_ElementTextarea extends PlgFabrik_Element
 				$bits['maxlength'] = $params->get('textarea-maxlength');
 			}
 
-			$str = "<textarea ";
-
-			foreach ($bits as $key => $val)
-			{
-				$str .= $key . '="' . $val . '" ';
-			}
-
-			$str .= 'name="' . $name . '" id="' . $id . '" cols="' . $cols . '" rows="' . $rows . '">' . $value . '</textarea>';
+			$bits['name'] = $name;
+			$bits['id'] = $id;
+			$bits['cols'] = $cols;
+			$bits['rows'] = $rows;
+			$bits['value'] = $value;
+			$str = $this->buildInput('textarea', $bits, false);
 		}
+
+		$str .= $this->charsLeft($value);
+
+		return $str;
+	}
+
+	/**
+	 * Create the 'characters left' interface when the element is rendered in the form view
+	 *
+	 * @param   string  $value  Value
+	 *
+	 * @return  string  HTML
+	 */
+	protected function charsLeft($value)
+	{
+		$params = $this->getParams();
+		$str = '';
 
 		if ($params->get('textarea-showmax'))
 		{
 			if ($params->get('textarea_limit_type', 'char') === 'char')
 			{
-				$label = JText::_('PLG_ELEMENT_TEXTAREA_CHARACTERS_LEFT');
+				$label = FText::_('PLG_ELEMENT_TEXTAREA_CHARACTERS_LEFT');
 				$charsLeft = $params->get('textarea-maxlength') - JString::strlen($value);
 			}
 			else
 			{
-				$label = JText::_('PLG_ELEMENT_TEXTAREA_WORDS_LEFT');
+				$label = FText::_('PLG_ELEMENT_TEXTAREA_WORDS_LEFT');
 				$charsLeft = $params->get('textarea-maxlength') - count(explode(' ', $value));
 			}
 
-			$str .= '<div class="fabrik_characters_left"><span>' . $charsLeft . '</span> ' . $label . '</div>';
+			$str .= '<div class="fabrik_characters_left muted" style="clear:both"><span class="badge">' . $charsLeft . '</span> ' . $label . '</div>';
 		}
 
 		return $str;
@@ -381,9 +393,9 @@ class PlgFabrik_ElementTextarea extends PlgFabrik_Element
 	/**
 	 * Used to format the data when shown in the form's email
 	 *
-	 * @param   mixed  $value          element's data
-	 * @param   array  $data           form records data
-	 * @param   int    $repeatCounter  repeat group counter
+	 * @param   mixed  $value          Element's data
+	 * @param   array  $data           Form records data
+	 * @param   int    $repeatCounter  Repeat group counter
 	 *
 	 * @return  string	formatted value
 	 */
@@ -402,13 +414,13 @@ class PlgFabrik_ElementTextarea extends PlgFabrik_Element
 
 	/**
 	 * Used by radio and dropdown elements to get a dropdown list of their unique
-	 * unique values OR all options - basedon filter_build_method
+	 * unique values OR all options - based on filter_build_method
 	 *
-	 * @param   bool    $normal     do we render as a normal filter or as an advanced search filter
-	 * @param   string  $tableName  table name to use - defaults to element's current table
-	 * @param   string  $label      field to use, defaults to element name
-	 * @param   string  $id         field to use, defaults to element name
-	 * @param   bool    $incjoin    include join
+	 * @param   bool    $normal     Do we render as a normal filter or as an advanced search filter
+	 * @param   string  $tableName  Table name to use - defaults to element's current table
+	 * @param   string  $label      Field to use, defaults to element name
+	 * @param   string  $id         Field to use, defaults to element name
+	 * @param   bool    $incjoin    Include join
 	 *
 	 * @return  array  text/value objects
 	 */
@@ -505,8 +517,8 @@ class PlgFabrik_ElementTextarea extends PlgFabrik_Element
 	/**
 	 * Internal element validation
 	 *
-	 * @param   array  $data           form data
-	 * @param   int    $repeatCounter  repeeat group counter
+	 * @param   array  $data           Form data
+	 * @param   int    $repeatCounter  Repeat group counter
 	 *
 	 * @return bool
 	 */
@@ -541,7 +553,7 @@ class PlgFabrik_ElementTextarea extends PlgFabrik_Element
 
 	public function getValidationErr()
 	{
-		return JText::_('PLG_ELEMENT_TEXTAREA_CONTENT_TOO_LONG');
+		return FText::_('PLG_ELEMENT_TEXTAREA_CONTENT_TOO_LONG');
 	}
 
 	/**
@@ -562,7 +574,7 @@ class PlgFabrik_ElementTextarea extends PlgFabrik_Element
 	 *
 	 * @deprecated
 	 *
-	 * @return  array	key=>value options
+	 * @return  array	Key=>value options
 	 */
 
 	public function getJoomfishOptions()

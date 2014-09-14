@@ -412,6 +412,24 @@
 			</field>
 
 			<field
+				name="fb_gm_default_lat"
+				type="text"
+				size="3"
+				class="input-mini"
+				default="0.0"
+				label="PLG_VISUALIZATION_GOOGLEMAP_DEFAULT_LAT_LABEL"
+				description="PLG_VISUALIZATION_GOOGLEMAP_DEFAULT_LAT_DESC" />
+
+			<field
+				name="fb_gm_default_lon"
+				size="3"
+				type="text"
+				class="input-mini"
+				default="0.0"
+				label="PLG_VISUALIZATION_GOOGLEMAP_DEFAULT_LON_LABEL"
+				description="PLG_VISUALIZATION_GOOGLEMAP_DEFAULT_LON_DESC" />
+
+			<field
 				name="fb_gm_mapwidth"
 				type="text"
 				size="3"
@@ -461,7 +479,14 @@
 					<option value="1">Small</option>
 					<option value="2">Large</option>
 			</field>
-
+			
+			<field default="0"
+				class="btn-group"
+				description="PLG_VISUALIZATION_GOOGLEMAP_SCROLLWHEEL_CONTROL_DESC" label="PLG_VISUALIZATION_GOOGLEMAP_SCROLLWHEEL_CONTROL_LABEL" name="fb_gm_scrollwheelcontrol" type="radio">
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+			</field>
+			
 			<field
 				default="0"
 				class="btn-group"

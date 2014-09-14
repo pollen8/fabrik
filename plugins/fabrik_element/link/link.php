@@ -80,7 +80,7 @@ class PlgFabrik_ElementLink extends PlgFabrik_Element
 	}
 
 	/**
-	 * Redinder Individual parts of the cell data.
+	 * Render Individual parts of the cell data.
 	 * Called from renderListData();
 	 *
 	 * @param   string  $data     cell data
@@ -108,52 +108,46 @@ class PlgFabrik_ElementLink extends PlgFabrik_Element
 				$data['label'] = JArrayHelper::getValue($data, 'link');
 			}
 
-			$_lnk = trim($data['link']);
-			$_lbl = trim($data['label']);
-			$_lnk = $w->parseMessageForPlaceHolder(urldecode($_lnk), JArrayHelper::fromObject($thisRow));
-			$target = $params->get('link_target', '');
+			$href = trim($data['link']);
+			$lbl = trim($data['label']);
+			$href = $w->parseMessageForPlaceHolder(urldecode($href), JArrayHelper::fromObject($thisRow));
 
-			if (JString::strtolower($_lnk) == 'http://' || JString::strtolower($_lnk) == 'https://')
+			if (JString::strtolower($href) == 'http://' || JString::strtolower($href) == 'https://')
 			{
 				// Treat some default values as empty
-				$_lnk = '';
+				$href = '';
 			}
-
-			// If used as a icon - the dom parser needs to use &amp; and not & in url querystrings
-			if (!strstr($_lnk, '&amp;'))
+			else if (strlen($href) > 0 && substr($href, 0, 1) != "/"
+				&& substr(JString::strtolower($href), 0, 7) != 'http://'
+				&& substr(JString::strtolower($href), 0, 8) != 'https://'
+				&& substr(JString::strtolower($href), 0, 6) != 'ftp://'
+				)
 			{
-				$_lnk = str_replace('&', '&amp;', $_lnk);
+					$href = 'http://' . $href;
+			}
+			// If used as a icon - the dom parser needs to use &amp; and not & in url querystrings
+			if (!strstr($href, '&amp;'))
+			{
+				$href = str_replace('&', '&amp;', $href);
 			}
 
 			if ($listModel->getOutPutFormat() != 'rss')
 			{
-				$link = '';
+				$opts['smart_link'] = $params->get('link_smart_link', false);
+				$opts['rel'] = $params->get('rel', '');
+				$opts['target'] = $params->get('link_target', '');
+				$title = $params->get('link_title', '');
 
-				if (empty($_lbl))
+				if ($title !== '')
 				{
-					// If label is empty, set as a copy of the link
-					$_lbl = $_lnk;
+					$opts['title'] = strip_tags($w->parseMessageForPlaceHolder($title, $data));
 				}
 
-				if ((!empty($_lbl)) && (!empty($_lnk)))
-				{
-					$smart_link = $params->get('link_smart_link', false);
-
-					if ($smart_link || $target == 'mediabox')
-					{
-						$smarts = $this->getSmartLinkType($_lnk);
-						$link = '<a href="' . $_lnk . '" rel="lightbox[' . $smarts['type'] . ' ' . $smarts['width'] . ' ' . $smarts['height'] . ']">'
-							. $_lbl . '</a>';
-					}
-					else
-					{
-						$link = '<a href="' . $_lnk . '" target="' . $target . '">' . $_lbl . '</a>';
-					}
-				}
+				return FabrikHelperHTML::a($href, $lbl, $opts);
 			}
 			else
 			{
-				$link = $_lnk;
+				$link = $href;
 			}
 
 			$w = new FabrikWorker;
@@ -185,7 +179,7 @@ class PlgFabrik_ElementLink extends PlgFabrik_Element
 	/**
 	 * Draws the html form element
 	 *
-	 * @param   array  $data           to preopulate element with
+	 * @param   array  $data           to pre-populate element with
 	 * @param   int    $repeatCounter  repeat group counter
 	 *
 	 * @return  string	elements html
@@ -198,8 +192,9 @@ class PlgFabrik_ElementLink extends PlgFabrik_Element
 		$params = $this->getParams();
 		$bits = $this->inputProperties($repeatCounter);
 		$value = $this->getValue($data, $repeatCounter);
+		$opts = array();
 
-		if ($value == "")
+		if ($value == '')
 		{
 			$value = array('label' => '', 'link' => '');
 		}
@@ -230,57 +225,44 @@ class PlgFabrik_ElementLink extends PlgFabrik_Element
 			$value = array('label' => '', 'link' => '');
 		}
 
-		if (FabrikWorker::getMenuOrRequestVar('rowid') == 0 && $value['link'] === '')
+		if (FabrikWorker::getMenuOrRequestVar('rowid') == 0 && JArrayHelper::getValue($value, 'link', '') === '')
 		{
 			$value['link'] = $params->get('link_default_url');
 		}
 
 		if (!$this->isEditable())
 		{
-			$_lbl = trim(JArrayHelper::getValue($value, 'label'));
-			$_lnk = trim(JArrayHelper::getValue($value, 'link'));
+			$lbl = trim(JArrayHelper::getValue($value, 'label'));
+			$href = trim(JArrayHelper::getValue($value, 'link'));
 			$w = new FabrikWorker;
-			$_lnk = is_array($data) ? $w->parseMessageForPlaceHolder($_lnk, $data) : $w->parseMessageForPlaceHolder($_lnk);
+			$href = is_array($data) ? $w->parseMessageForPlaceHolder($href, $data) : $w->parseMessageForPlaceHolder($href);
 
-			if (empty($_lnk) || JString::strtolower($_lnk) == 'http://' || JString::strtolower($_lnk) == 'https://')
+			$opts['target'] = trim($params->get('link_target', ''));
+			$opts['smart_link'] = $params->get('link_smart_link', false);
+			$opts['rel'] = $params->get('rel', '');
+			$title = $params->get('link_title', '');
+
+			if ($title !== '')
 			{
-				// Don't return empty links
-				return '';
+				$opts['title'] = strip_tags($w->parseMessageForPlaceHolder($title, $data));
 			}
 
-			$target = $params->get('link_target', '');
-			$smart_link = $params->get('link_smart_link', false);
-
-			if (empty($_lbl))
-			{
-				// If label is empty, set as a copy of the link
-				$_lbl = $_lnk;
-			}
-
-			if ($smart_link || $target == 'mediabox')
-			{
-				$smarts = $this->getSmartLinkType($_lnk);
-
-				return '<a href="' . $_lnk . '" rel="lightbox[' . $smarts['type'] . ' ' . $smarts['width'] . ' ' . $smarts['height'] . ']">' . $_lbl
-					. '</a>';
-			}
-
-			return '<a href="' . $_lnk . '" target="' . $target . '">' . $_lbl . '</a>';
+			return FabrikHelperHTML::a($href, $lbl, $opts);
 		}
 
-		$labelname = FabrikString::rtrimword($name, "[]") . '[label]';
-		$linkname = FabrikString::rtrimword($name, "[]") . '[link]';
+		$labelname = FabrikString::rtrimword($name, '[]') . '[label]';
+		$linkname = FabrikString::rtrimword($name, '[]') . '[link]';
 
 		$html = array();
 		$bits['name'] = $labelname;
-		$bits['placeholder'] = JText::_('PLG_ELEMENT_LINK_LABEL');
+		$bits['placeholder'] = FText::_('PLG_ELEMENT_LINK_LABEL');
 		$bits['value'] = $value['label'];
 		$bits['class'] .= ' fabrikSubElement';
 		unset($bits['id']);
 
 		$html[] = '<div class="fabrikSubElementContainer" id="' . $id . '">';
 		$html[] = $this->buildInput('input', $bits);
-		$bits['placeholder'] = JText::_('PLG_ELEMENT_LINK_URL');
+		$bits['placeholder'] = FText::_('PLG_ELEMENT_LINK_URL');
 		$bits['name'] = $linkname;
 		$bits['value'] = JArrayHelper::getValue($value, 'link');
 		$html[] = $this->buildInput('input', $bits);
@@ -319,7 +301,7 @@ class PlgFabrik_ElementLink extends PlgFabrik_Element
 	}
 
 	/**
-	 * Manupulates posted form data for insertion into database
+	 * Manipulates posted form data for insertion into database
 	 *
 	 * @param   mixed  $val   this elements posted form data
 	 * @param   array  $data  posted form data
@@ -353,8 +335,8 @@ class PlgFabrik_ElementLink extends PlgFabrik_Element
 					if ($params->get('use_bitly'))
 					{
 						/* bitly will return an error if you try and shorten a shortened link,
-						* and the class file we are using doesn't check for this
-						*/
+						 * and the class file we are using doesn't check for this
+						 */
 						if (!strstr($v['link'], 'bit.ly/') && $v['link'] !== '')
 						{
 							$v['link'] = $bitly->shorten($v['link']);
@@ -433,7 +415,7 @@ class PlgFabrik_ElementLink extends PlgFabrik_Element
 
 	public function getValuesToEncrypt(&$values, $data, $c)
 	{
-		$data = (array) json_decode($this->getValue($data, $c, true));
+		$data = (array) json_decode($this->getValue($data, $c));
 		$name = $this->getFullName(true, false);
 		$group = $this->getGroup();
 
@@ -475,7 +457,7 @@ class PlgFabrik_ElementLink extends PlgFabrik_Element
 			*$formdata = $this->getForm()->getData();
 			* $$$ rob only parse for place holder if we can use the element
 			* otherwise for encrypted values store raw, and they are parsed when the
-			* form in processsed in form::addEncrytedVarsToArray();
+			* form is processed in form::addEncrytedVarsToArray();
 			*/
 			if ($this->canUse())
 			{
@@ -497,120 +479,7 @@ class PlgFabrik_ElementLink extends PlgFabrik_Element
 	}
 
 	/**
-	 * Get an array containing info about the media link
-	 *
-	 * @param   string  $link  to examine
-	 *
-	 * @return  array width, height, type of link
-	 */
-
-	protected function getSmartLinkType($link)
-	{
-		/* $$$ hugh - not really sure how much of this is necessary, like setting different widths
-		 * and heights for different social video sites. I copied the numbers from the examples page
-		 * for mediabox: http://iaian7.com/webcode/mediaboxAdvanced
-		 */
-		$ret = array('width' => '800', 'height' => '600', 'type' => 'mediabox');
-
-		if (preg_match('#^http://([\w\.]+)/#', $link, $matches))
-		{
-			$site = $matches[1];
-			/*
-			 * @TODO should probably make this a little more intelligent, like optional www,
-			 * and check for site specific spoor in the URL (like '/videoplay' for google,
-			 * '/photos' for flicker, etc).
-			 */
-			switch ($site)
-			{
-				case 'www.flickr.com':
-					$ret['width'] = '400';
-					$ret['height'] = '300';
-					$ret['type'] = 'social';
-					break;
-				case 'video.google.com':
-					$ret['width'] = '640';
-					$ret['height'] = '400';
-					$ret['type'] = 'social';
-					break;
-				case 'www.metacafe.com':
-					$ret['width'] = '400';
-					$ret['height'] = '350';
-					$ret['type'] = 'social';
-					break;
-				case 'vids.myspace.com':
-					$ret['width'] = '430';
-					$ret['height'] = '346';
-					$ret['type'] = 'social';
-					break;
-				case 'myspacetv.com':
-					$ret['width'] = '430';
-					$ret['height'] = '346';
-					$ret['type'] = 'social';
-					break;
-				case 'www.revver.com':
-					$ret['width'] = '480';
-					$ret['height'] = '392';
-					$ret['type'] = 'social';
-					break;
-				case 'www.seesmic.com':
-					$ret['width'] = '425';
-					$ret['height'] = '353';
-					$ret['type'] = 'social';
-					break;
-				case 'www.youtube.com':
-					$ret['width'] = '480';
-					$ret['height'] = '380';
-					$ret['type'] = 'social';
-					break;
-				case 'www.veoh.com':
-					$ret['width'] = '540';
-					$ret['height'] = '438';
-					$ret['type'] = 'social';
-					break;
-				case 'www.viddler.com':
-					$ret['width'] = '437';
-					$ret['height'] = '370';
-					$ret['type'] = 'social';
-					break;
-				case 'vimeo.com':
-					$ret['width'] = '400';
-					$ret['height'] = '302';
-					$ret['type'] = 'social';
-					break;
-				case '12seconds.tv':
-					$ret['width'] = '431';
-					$ret['height'] = '359';
-					$ret['type'] = 'social';
-					break;
-			}
-
-			if ($ret['type'] == 'mediabox')
-			{
-				$ext = JString::strtolower(JFile::getExt($link));
-
-				switch ($ext)
-				{
-					case 'swf':
-					case 'flv':
-					case 'mp4':
-						$ret['width'] = '640';
-						$ret['height'] = '360';
-						$ret['type'] = 'flash';
-						break;
-					case 'mp3':
-						$ret['width'] = '400';
-						$ret['height'] = '20';
-						$ret['type'] = 'audio';
-						break;
-				}
-			}
-		}
-
-		return $ret;
-	}
-
-	/**
-	 * Does the element conside the data to be empty
+	 * Does the element consider the data to be empty
 	 * Used in isempty validation rule
 	 *
 	 * @param   array  $data           data to test against
@@ -656,7 +525,7 @@ class PlgFabrik_ElementLink extends PlgFabrik_Element
 
 	public function formJavascriptClass(&$srcs, $script = '', &$shim = array())
 	{
-		// Whilst link isnt really an element list we can use its js AddNewEvent method
+		// Whilst link isn't really an element list we can use its js AddNewEvent method
 		$s = new stdClass;
 		$s->deps = array('fab/elementlist');
 		$shim['element/link/link'] = $s;

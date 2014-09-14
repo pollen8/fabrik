@@ -115,7 +115,7 @@ var FbElement =  new Class({
 	
 	getElement: function ()
 	{
-		//use this in mocha forms whose elements (such as database jons) arent loaded
+		//use this in mocha forms whose elements (such as database joins) aren't loaded
 		//when the class is ini'd
 		if (typeOf(this.element) === 'null') {
 			this.element = document.id(this.options.element); 
@@ -147,7 +147,7 @@ var FbElement =  new Class({
 	},
 	
 	/**
-	 * Set names/ids/elements ect when the elements group is cloned
+	 * Set names/ids/elements etc. when the elements group is cloned
 	 * 
 	 * @param   int  id  element id
 	 * @since   3.0.7
@@ -168,7 +168,7 @@ var FbElement =  new Class({
 				eval(js);
 			} else {
 				(function () {
-					consolde.log('delayed.....');
+					console.log('delayed calling runLoadEvent for ' + delay);
 					eval(js);
 				}.bind(this)).delay(delay);
 			}
@@ -178,12 +178,12 @@ var FbElement =  new Class({
 	/** 
 	 * called from list when ajax form closed
 	 * fileupload needs to remove its onSubmit event
-	 * othewise 2nd form submission will use first forms event
+	 * otherwise 2nd form submission will use first forms event
 	 */
 	removeCustomEvents: function () {},
 	
 	/**
-	 * Was renewChangeEvents() but dont see why change events should be treated
+	 * Was renewChangeEvents() but don't see why change events should be treated
 	 * differently to other events?
 	 * 
 	 * @since 3.0.7
@@ -199,7 +199,7 @@ var FbElement =  new Class({
 	
 	addNewEventAux: function (action, js) {
 		this.element.addEvent(action, function (e) {
-			// Don't stop event - means fx's onchange events wouldnt fire.
+			// Don't stop event - means fx's onchange events wouldn't fire.
 			typeOf(js) === 'function' ? js.delay(0, this, this) : eval(js);
 		}.bind(this));
 	},
@@ -222,7 +222,7 @@ var FbElement =  new Class({
 		}
 	},
 	
-	// Alais to addNewEvent.
+	// Alias to addNewEvent.
 	addEvent: function (action, js) {
 		this.addNewEvent(action, js);
 	},
@@ -264,6 +264,17 @@ var FbElement =  new Class({
 				this.element.innerHTML = val;
 			}
 		}
+	},
+	
+	/**
+	 * $$$ hugh - testing something for join elements, where in some corner cases,
+	 * like reverse Geocoding in the map element, we need to update elements that might be
+	 * joins, and all we have is the label (like "Austria" for country).  So am overriding this
+	 * new function in the join element, with code that finds the first occurrence of the label,
+	 * and sets the value accordingly.  But all we need to do here is make it a wrapper for update().
+	 */
+	updateByLabel: function (label) {
+		this.update(label);
 	},
 	
 	// Alias to update()
@@ -403,6 +414,7 @@ var FbElement =  new Class({
 			d.getElement('ul').adopt(li);
 			t.attr('data-content', unescape(d.get('html')));
 			t.data('popover').setContent();
+			t.data('popover').options.content = d.get('html');
 			t.data('popover').hide();
 		}
 	},
@@ -425,6 +437,7 @@ var FbElement =  new Class({
 			}
 			t.attr('data-content', d.get('html'));
 			t.data('popover').setContent();
+			t.data('popover').options.content = d.get('html');
 			t.data('popover').hide();
 			t.removeAttr(klass);
 		}
@@ -627,7 +640,7 @@ var FbElement =  new Class({
 	
 	/**
 	 * determine which duplicated instance of the repeat group the
-	 * element belongs to, returns false if not in a repeat gorup
+	 * element belongs to, returns false if not in a repeat group
 	 * other wise an integer
 	 */
 	getRepeatNum: function () {
@@ -672,6 +685,56 @@ var FbElement =  new Class({
 	 */
 	getCloneName: function () {
 		return this.options.element;
+	},
+	
+	/**
+	 * Testing some stuff to try and get maps to display properly when they are in the
+	 * tab template.  If a map is in a tab which isn't selected on page load, the map
+	 * will not render properly, and needs to be refreshed when the tab it is in is selected.
+	 * NOTE that this stuff is very specific to the Fabrik tabs template, using J!'s tabs.
+	 */
+
+	doTab: function (event) {
+		(function () {
+			this.redraw();
+			if (!Fabrik.bootstrapped) {
+				this.options.tab_dt.removeEvent('click', function (e) {
+					this.doTab(e);
+				}.bind(this));
+			}
+		}.bind(this)).delay(500);
+	},
+	
+	/**
+	 * Tabs mess with element positioning - some element (googlemaps, file upload) need to redraw themselves
+	 * when the tab is clicked
+	 */
+	watchTab: function () {
+		var c = Fabrik.bootstrapped ? '.tab-pane' : '.current',
+		a, tab_dl;
+		var tab_div = this.element.getParent(c);
+		if (tab_div) {
+			if (Fabrik.bootstrapped) {
+				a = document.getElement('a[href=#' + tab_div.id + ']');
+				tab_dl = a.getParent('ul.nav');
+				tab_dl.addEvent('click:relay(a)', function (event, target) {
+					this.doTab(event);
+				}.bind(this));
+			} else {
+				tab_dl = tab_div.getPrevious('.tabs');
+				if (tab_dl) {
+					this.options.tab_dd = this.element.getParent('.fabrikGroup');
+					if (this.options.tab_dd.style.getPropertyValue('display') === 'none') {
+						this.options.tab_dt = tab_dl.getElementById('group' + this.groupid + '_tab');
+						if (this.options.tab_dt) {
+							this.options.tab_dt.addEvent('click', function (e) {
+								this.doTab(e);
+							}.bind(this));
+						}
+					}
+				}
+			}
+		}
 	}
 });
 

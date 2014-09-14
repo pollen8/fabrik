@@ -29,9 +29,11 @@ libraries/*
 libraries/dompdf/lib/fonts/log.htm
 modules/*
 !modules/mod_fabrik_form
-!modules/mod_fabrik_list
 !modules/mod_fabrik_form/*
+!modules/mod_fabrik_list
 !modules/mod_fabrik_list/*
+!modules/mod_tagcloud
+!modules/mod_tagcloud/*
 media/*
 !media/com_fabrik/*
 media/com_fabrik/uploads/
@@ -52,6 +54,8 @@ plugins/fabrik_list/php/scripts/
 !plugins/fabrik_cron/
 !plugins/fabrik_validationrule/
 !plugins/fabrik_visualization/
+plugins/community/*
+!plugins/community/fabrik/
 !tttplugins/system/fabrikcron/
 robots.txt
 sql/*

@@ -1,15 +1,13 @@
 <?php
 /**
- * Fabril PDF Renderer
- *
  * @package     Joomla.Platform
  * @subpackage  Document
+ *
  * @copyright   Copyright (C) 2005 - 2012 Open Source Matters, Inc. All rights reserved.
  * @license     GNU General Public License version 2 or later; see LICENSE
  */
 
-// No direct access
-defined('_JEXEC') or die('Restricted access');
+defined('JPATH_PLATFORM') or die;
 
 /**
  * JDocument head renderer

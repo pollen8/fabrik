@@ -1,7 +1,5 @@
 <?php
 /**
- * Component Renderer
- *
  * @package     Joomla.Platform
  * @subpackage  Document
  *
@@ -9,8 +7,7 @@
  * @license     GNU General Public License version 2 or later; see LICENSE
  */
 
-// No direct access
-defined('_JEXEC') or die('Restricted access');
+defined('JPATH_PLATFORM') or die;
 
 /**
  * Component renderer

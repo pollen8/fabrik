@@ -41,8 +41,9 @@ class FabrikViewCsv extends JViewLegacy
 		$this->table = $listModel->getTable();
 		$data = array();
 		$this->getManagementJS($data);
-		$this->id = $this->get('id');
-		$this->form = $this->get('Form');
+		$this->id = $listModel->getId();
+		$this->form = $listModel->getForm();
+		$this->shim();
 
 		if (!$listModel->canCSVExport())
 		{
@@ -52,6 +53,20 @@ class FabrikViewCsv extends JViewLegacy
 		$this->addTemplatePath(JPATH_SITE . '/components/com_fabrik/views/csv/tmpl');
 
 		return parent::display($tpl);
+	}
+
+	/**
+	 * Ini the Fabrik requirejs framework files
+	 *
+	 * @return  void
+	 */
+	protected function shim()
+	{
+		$shim = array();
+		$dep = new stdClass;
+		$dep->deps = array('fab/fabrik', 'fab/listfilter', 'fab/advanced-search', 'fab/encoder');
+		$shim['fab/list'] = $dep;
+		FabrikHelperHTML::iniRequireJS($shim);
 	}
 
 	/**
@@ -72,7 +87,7 @@ class FabrikViewCsv extends JViewLegacy
 		$opts->admin = $app->isAdmin();
 		$opts->form = 'listform_' . $listid;
 		$opts->headings = $model->jsonHeadings();
-		list($this->headings, $groupHeadings, $this->headingClass, $this->cellClass) = $this->get('Headings');
+		list($this->headings, $groupHeadings, $this->headingClass, $this->cellClass) = $model->getHeadings();
 		$labels = $this->headings;
 
 		foreach ($labels as &$l)
@@ -107,7 +122,7 @@ class FabrikViewCsv extends JViewLegacy
 		JText::script('COM_FABRIK_INCLUDE_FILTERS');
 		JText::script('COM_FABRIK_INCLUDE_RAW_DATA');
 		JText::script('COM_FABRIK_INCLUDE_DATA');
-		JText::script('COM_FABRIK_INLCUDE_CALCULATIONS');
+		JText::script('COM_FABRIK_INCLUDE_CALCULATIONS');
 		JText::script('COM_FABRIK_EXPORT');
 		JText::script('COM_FABRIK_LOADING');
 		JText::script('COM_FABRIK_RECORDS');
@@ -118,12 +133,9 @@ class FabrikViewCsv extends JViewLegacy
 		$srcs = FabrikHelperHTML::framework();
 		$srcs[] = 'media/com_fabrik/js/list-plugin.js';
 		$srcs[] = 'media/com_fabrik/js/list.js';
-		FabrikHelperHTML::script($srcs);
 
-		$script[] = 'window.addEvent("fabrik.load", function() {';
 		$script[] = 'var list = new FbList(' . $listid . ',' . $opts . ');';
 		$script[] = 'Fabrik.addBlock(\'list_' . $listid . '\', list);';
-		$script[] = '})';
-		FabrikHelperHTML::addScriptDeclaration(implode("\n", $script));
+		FabrikHelperHTML::script($srcs, implode("\n", $script));
 	}
 }

@@ -6,7 +6,7 @@
  */
 
 /*jshint mootools: true */
-/*global Fabrik:true, fconsole:true, Joomla:true, CloneObject:true, $H:true,unescape:true */
+/*global Fabrik:true, fconsole:true, Joomla:true, Encoder:true */
 
 var FbAutocomplete = new Class({
 
@@ -22,6 +22,7 @@ var FbAutocomplete = new Class({
 		max: 10,
 		onSelection: Class.empty,
 		autoLoadSingleResult: true,
+		minTriggerChars: 1,
 		storeMatchedResultsOnly: false // Only store a value if selected from picklist
 	},
 
@@ -40,7 +41,7 @@ var FbAutocomplete = new Class({
 			this.element = typeOf(document.id(element)) === "null" ? document.getElement(element) : document.id(element);
 			this.buildMenu();
 			if (!this.getInputElement()) {
-				fconsole('autocomplete didnt find input element');
+				fconsole('autocomplete didn\'t find input element');
 				return;
 			}
 			this.getInputElement().setProperty('autocomplete', 'off');
@@ -61,9 +62,16 @@ var FbAutocomplete = new Class({
 	},
 
 	search: function (e) {
+		if (!this.isMinTriggerlength()) {
+			return;
+		}
 		if (e.key === 'tab' || e.key === 'enter') {
 			e.stop();
 			this.closeMenu();
+			if (this.ajax) {
+				this.ajax.cancel();
+			}
+			this.element.fireEvent('change', new Event.Mock(this.element, 'change'), 500);
 			return;
 		}
 		this.matchedResult = false;
@@ -77,21 +85,43 @@ var FbAutocomplete = new Class({
 			}
 			this.positionMenu();
 			if (this.cache[v]) {
-				this.populateMenu(this.cache[v]);
-				this.openMenu();
+				if (this.populateMenu(this.cache[v])) {
+					this.openMenu();
+				}
 			} else {
-				Fabrik.loader.start(this.getInputElement());
 				if (this.ajax) {
 					this.closeMenu();
 					this.ajax.cancel();
 				}
-				this.ajax = new Request({url: this.options.url,
+				this.ajax = new Request({
+					url: this.options.url,
 					data: {
 						value: v
 					},
-					onComplete: function (e) {
+					onRequest: function () {
+						Fabrik.loader.start(this.getInputElement());
+					}.bind(this),
+					onCancel: function () {
 						Fabrik.loader.stop(this.getInputElement());
+						this.ajax = null;
+					}.bind(this),
+					onSuccess: function (e) {
+						Fabrik.loader.stop(this.getInputElement());
+						this.ajax = null;
+						if (typeOf(e) === 'null') {
+							fconsole('Fabrik autocomplete: Ajax response empty');
+							var elModel = Fabrik.getBlock(this.options.formRef).formElements.get(this.element.id);
+							elModel.setErrorMessage(Joomla.JText._('COM_FABRIK_AUTOCOMPLETE_AJAX_ERROR'), 'fabrikError', true);
+							return;
+						}
 						this.completeAjax(e, v);
+					}.bind(this),
+					onFailure: function (xhr) {
+						Fabrik.loader.stop(this.getInputElement());
+						this.ajax = null;
+						fconsole('Fabrik autocomplete: Ajax failure: Code ' + xhr.status + ': ' + xhr.statusText);
+						var elModel = Fabrik.getBlock(this.options.formRef).formElements.get(this.element.id);
+						elModel.setErrorMessage(Joomla.JText._('COM_FABRIK_AUTOCOMPLETE_AJAX_ERROR'), 'fabrikError', true);
 					}.bind(this)
 				}).send();
 			}
@@ -102,9 +132,9 @@ var FbAutocomplete = new Class({
 	completeAjax: function (r, v) {
 		r = JSON.decode(r);
 		this.cache[v] = r;
-		Fabrik.loader.stop(this.getInputElement());
-		this.populateMenu(r);
-		this.openMenu();
+		if (this.populateMenu(r)) {
+			this.openMenu();
+		}
 	},
 
 	buildMenu: function ()
@@ -128,7 +158,7 @@ var FbAutocomplete = new Class({
 
 	positionMenu: function () {
 		var coords = this.getInputElement().getCoordinates();
-		var pos = this.getInputElement().getPosition();
+		// var pos = this.getInputElement().getPosition();
 		this.menu.setStyles({ 'left': coords.left, 'top': (coords.top + coords.height) - 1, 'width': coords.width});
 	},
 
@@ -145,7 +175,18 @@ var FbAutocomplete = new Class({
 		ul.empty();
 		if (data.length === 1 && this.options.autoLoadSingleResult) {
 			this.element.value = data[0].value;
+			this.getInputElement().value = data[0].text;
+			// $$$ Paul - The selection event is for text being selected in an input field not for a link being selected
+			this.closeMenu();
 			this.fireEvent('selection', [this, this.element.value]);
+			// $$$ hugh - need to fire change event, in case it's something like a join element
+			// with a CDD that watches it.
+			var elModel = Fabrik.getBlock(this.options.formRef).formElements.get(this.element.id);
+			var blurEvent = elModel.getBlurEvent();
+			this.element.fireEvent(blurEvent, new Event.Mock(this.element, blurEvent), 700);
+			// $$$ hugh - fire a Fabrik event, just for good luck.  :)
+			Fabrik.fireEvent('fabrik.autocomplete.selected', [this, this.element.value]);
+			return false;
 		}
 		if (data.length === 0) {
 			li = new Element('li').adopt(new Element('div.alert.alert-info').adopt(new Element('i').set('text', Joomla.JText._('COM_FABRIK_NO_RECORDS'))));
@@ -160,6 +201,7 @@ var FbAutocomplete = new Class({
 		if (data.length > this.options.max) {
 			new Element('li').set('text', '....').inject(ul);
 		}
+		return true;
 	},
 
 	makeSelection: function (e, li) {
@@ -173,11 +215,16 @@ var FbAutocomplete = new Class({
 			// $$$ hugh - need to fire change event, in case it's something like a join element
 			// with a CDD that watches it.
 			this.element.fireEvent('change', new Event.Mock(this.element, 'change'), 700);
+			this.element.fireEvent('blur', new Event.Mock(this.element, 'blur'), 700);
 			// $$$ hugh - fire a Fabrik event, just for good luck.  :)
 			Fabrik.fireEvent('fabrik.autocomplete.selected', [this, this.element.value]);
 		} else {
+			/**
+			 * $$$ Paul - The Fabrik event below makes NO sense.
+			 * This is a code error condition not an event because typeOf(li) should never be null
+			 **/
 			//  $$$ tom - fire a notselected event to let developer take appropriate actions.
-            Fabrik.fireEvent('fabrik.autocomplete.notselected', [this, this.element.value]);
+			Fabrik.fireEvent('fabrik.autocomplete.notselected', [this, this.element.value]);
 		}
 	},
 
@@ -194,16 +241,23 @@ var FbAutocomplete = new Class({
 
 	openMenu: function () {
 		if (!this.shown) {
-			this.menu.show();
-			this.shown = true;
-			document.addEvent('click', function (e) {
-				this.doTestMenuClose(e);
-			}.bind(this));
-			this.selected = 0;
-			this.highlight();
+			if (this.isMinTriggerlength()) {
+				this.menu.show();
+				this.shown = true;
+				document.addEvent('click', function (e) {
+					this.doTestMenuClose(e);
+				}.bind(this));
+				this.selected = 0;
+				this.highlight();
+			}
 		}
 	},
 
+	isMinTriggerlength: function () {
+		var v = this.getInputElement().get('value');
+		return v.length >= this.options.minTriggerChars;
+	},
+	
 	doTestMenuClose: function () {
 		if (!this.mouseinsde) {
 			this.closeMenu();
@@ -218,58 +272,83 @@ var FbAutocomplete = new Class({
 	},
 
 	doWatchKeys: function (e) {
-		var max = this.getListMax();
+		if (document.activeElement !== this.getInputElement()) {
+			return;
+		}
+		var max = this.getListMax(), selected, selectEvnt;
 		if (!this.shown) {
-			if (e.code.toInt() === 40 && document.activeElement === this.getInputElement()) {
+			// Stop enter from submitting when in in-line edit form.
+			if (e.code.toInt() === 13) {
+				e.stop();
+			}
+			if (e.code.toInt() === 40) {
 				this.openMenu();
 			}
 		} else {
-			if (e.key === 'enter' || e.key === 'tab') {
-				window.fireEvent('blur');
+			if (!this.isMinTriggerlength()) {
+				e.stop();
+				this.closeMenu();
 			}
-			switch (e.code) {
-			case 40://down
-				if (!this.shown) {
-					this.openMenu();
+			else {
+				if (e.key === 'enter' || e.key === 'tab') {
+					window.fireEvent('blur');
 				}
-				if (this.selected + 1 <= max) {
-					this.selected ++;
-				}
-				this.highlight();
-				e.stop();
-				break;
-			case 38: //up
-				if (this.selected - 1 >= -1) {
-					this.selected --;
+				switch (e.code) {
+				case 40://down
+					if (!this.shown) {
+						this.openMenu();
+					}
+					if (this.selected + 1 <= max) {
+						this.selected ++;
+					}
 					this.highlight();
+					e.stop();
+					break;
+				case 38: //up
+					if (this.selected - 1 >= -1) {
+						this.selected --;
+						this.highlight();
+					}
+					e.stop();
+					break;
+				case 13://enter
+				case 9://tab
+					e.stop();
+					selected = this.getSelected();
+					if (selected) {
+						selectEvnt = new Event.Mock(selected, 'click');
+						this.makeSelection(selectEvnt, selected);
+						this.closeMenu();
+					}
+					break;
+				case 27://escape
+					e.stop();
+					this.closeMenu();
+					break;
 				}
-				e.stop();
-				break;
-			case 13://enter
-			case 9://tab
-				e.stop();
-				var selectEvnt = new Event.Mock(this.getSelected(), 'click');
-				this.makeSelection(selectEvnt, this.getSelected());
-				this.closeMenu();
-				break;
-			case 27://escape
-				e.stop();
-				this.closeMenu();
-				break;
 			}
 		}
 	},
 
 	/**
 	 * Get the selected <a> tag
-	 * 
+	 *
 	 * @return  DOM Node <a>
 	 */
 	getSelected: function () {
-		var lis = this.menu.getElements('li').filter(function (li, i) {
+		var all = this.menu.getElements('li'),
+		lis = all.filter(function (li, i) {
 			return i === this.selected;
 		}.bind(this));
-		return lis[0].getElement('a');
+
+		if (typeOf(lis[0]) === 'element') {
+			return lis[0].getElement('a');
+		} else if (all.length > 0) {
+			// Can occur if autocomplete generated but not clicked on / keyed into.
+			return all[0].getElement('a');
+		}
+
+		return false;
 	},
 
 	highlight: function () {
@@ -299,7 +378,7 @@ var FabCddAutocomplete = new Class({
 			var observer = document.id(this.options.observerid);
 			if (typeOf(observer) !== 'null') {
 				if (this.options.formRef) {
-					observer = Fabrik.blocks[this.options.formRef].formElements[this.options.observerid];
+					observer = Fabrik.getBlock(this.options.formRef).formElements[this.options.observerid];
 				}
 				key = observer.get('value') + '.' + v;
 			} else {
@@ -308,10 +387,10 @@ var FabCddAutocomplete = new Class({
 			}
 			this.positionMenu();
 			if (this.cache[key]) {
-				this.populateMenu(this.cache[key]);
-				this.openMenu();
+				if (this.populateMenu(this.cache[key])) {
+					this.openMenu();
+				}
 			} else {
-				Fabrik.loader.start(this.getInputElement());
 				if (this.ajax) {
 					this.closeMenu();
 					this.ajax.cancel();
@@ -323,17 +402,24 @@ var FabCddAutocomplete = new Class({
 						fabrik_cascade_ajax_update: 1,
 						v: observer.get('value')
 					},
-
+					onRequest: function () {
+						Fabrik.loader.start(this.getInputElement());
+					}.bind(this),
+					onCancel: function () {
+						Fabrik.loader.stop(this.getInputElement());
+					}.bind(this),
 					onSuccess: function (e) {
+						Fabrik.loader.stop(this.getInputElement());
+						this.ajax = null;
 						this.completeAjax(e);
 					}.bind(this),
-
-					onError: function (text, error) {
-						fconsole(text, error);
-					},
 					onFailure: function (xhr) {
-						fconsole(xhr);
-					}
+						Fabrik.loader.stop(this.getInputElement());
+						this.ajax = null;
+						fconsole('Fabrik autocomplete: Ajax failure: Code ' + xhr.status + ': ' + xhr.statusText);
+						var elModel = Fabrik.getBlock(this.options.formRef).formElements.get(this.element.id);
+						elModel.setErrorMessage(Joomla.JText._('COM_FABRIK_AUTOCOMPLETE_AJAX_ERROR'), 'fabrikError', true);
+					}.bind(this)
 				}).send();
 			}
 		}

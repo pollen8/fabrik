@@ -10,6 +10,13 @@ var FbField = new Class({
 	initialize: function (element, options) {
 		this.plugin = 'fabrikfield';
 		this.parent(element, options);
+		/*
+		 * $$$ hugh - testing new masking feature, uses this jQuery widget:
+		 * http://digitalbush.com/projects/masked-input-plugin/
+		 */
+		if (this.options.use_input_mask) {
+			jQuery('#' + element).mask(this.options.input_mask);
+		}
 	},
 
 	select: function () {

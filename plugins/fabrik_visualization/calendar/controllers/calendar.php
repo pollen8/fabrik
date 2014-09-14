@@ -28,7 +28,7 @@ class FabrikControllerVisualizationcalendar extends FabrikControllerVisualizatio
 	/**
 	 * Display the view
 	 *
-	 * @param   boolean  $cachable   If true, the view output will be cached
+	 * @param   boolean  $cachable   If true, the view output will be cached - NOTE does not actually control caching !!!
 	 * @param   array    $urlparams  An array of safe url parameters and their variable types, for valid values see {@link JFilterInput::clean()}.
 	 *
 	 * @return  JController  A JController object to support chaining.
@@ -121,15 +121,15 @@ class FabrikControllerVisualizationcalendar extends FabrikControllerVisualizatio
 		$id = $input->getInt('visualizationid', $usersConfig->get('visualizationid', 0));
 		$model->setId($id);
 		$model->setupEvents();
+		$config = JFactory::getConfig();
+		$prefix = $config->get('dbprefix');
 
-		if (array_key_exists($listid, $model->_events))
+		if (array_key_exists($listid, $model->events))
 		{
-			$datefield = $model->_events[$listid][0]['startdate'];
+			$datefield = $model->events[$listid][0]['startdate'];
 		}
 		else
 		{
-			$config = JFactory::getConfig();
-			$prefix = $config->get('dbprefix');
 			$datefield = $prefix . 'fabrik_calendar_events___start_date';
 		}
 
@@ -144,10 +144,10 @@ class FabrikControllerVisualizationcalendar extends FabrikControllerVisualizatio
 		$input->set('ajax', '1');
 		$nextView = $input->get('nextview', 'form');
 		$link = 'index.php?option=com_' . $package . '&view=' . $nextView . '&formid=' . $table->form_id . '&rowid=' . $rowid . '&tmpl=component&ajax=1';
-		$link .= '&jos_fabrik_calendar_events___visualization_id=' . $input->getInt('jos_fabrik_calendar_events___visualization_id');
+		$link .= '&' . $prefix . 'fabrik_calendar_events___visualization_id=' . $input->getInt($prefix . 'fabrik_calendar_events___visualization_id');
 		$link .= '&fabrik_window_id=' . $input->get('fabrik_window_id');
 
-		$start_date = $input->get('start_date', '');
+		$start_date = $input->getString('start_date', '');
 
 		if (!empty($start_date))
 		{

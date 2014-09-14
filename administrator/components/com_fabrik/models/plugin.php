@@ -84,6 +84,8 @@ class FabrikAdminModelPlugin extends JModelLegacy
 		$data['validationrule']['plugin'] = $this->getState('plugin');
 		$data['validationrule']['plugin_published'] = $this->getState('plugin_published');
 		$data['validationrule']['show_icon'] = $this->getState('show_icon');
+		$data['validationrule']['validate_in'] = $this->getState('validate_in');
+		$data['validationrule']['validation_on'] = $this->getState('validation_on');
 
 		$c = $this->getState('c') + 1;
 
@@ -178,11 +180,11 @@ class FabrikAdminModelPlugin extends JModelLegacy
 		if ($j3)
 		{
 			$str[] = '<div class="form-actions"><a href="#" class="btn btn-danger" data-button="removeButton">';
-			$str[] = '<i class="icon-delete"></i> ' . JText::_('COM_FABRIK_DELETE') . '</a></div>';
+			$str[] = '<i class="icon-delete"></i> ' . FText::_('COM_FABRIK_DELETE') . '</a></div>';
 		}
 		else
 		{
-			$str[] = '<a href="#" class="delete removeButton">' . JText::_('COM_FABRIK_DELETE') . '</a>';
+			$str[] = '<a href="#" class="delete removeButton">' . FText::_('COM_FABRIK_DELETE') . '</a>';
 		}
 
 		$str[] = '</fieldset>';

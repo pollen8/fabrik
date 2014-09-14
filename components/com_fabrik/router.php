@@ -47,7 +47,8 @@ function fabrikBuildRoute(&$query)
 	}
 
 	// Are we dealing with a view that is attached to a menu item https://github.com/Fabrik/fabrik/issues/498?
-	$hasMenu = ($menuItem instanceof stdClass) && isset($query['view']) && $menuItem->query['view'] == $query['view']
+	$hasMenu = ($menuItem instanceof stdClass) && isset($query['view'])
+	&& array_key_exists('view', $menuItem->query) && $menuItem->query['view'] == $query['view']
 		&& isset($query['id'])  && isset($menuItem->query['id']) && $menuItem->query['id'] == intval($query['id']);
 
 	if ($hasMenu)
@@ -147,7 +148,8 @@ function fabrikBuildRoute(&$query)
 
 	if (isset($query['format']))
 	{
-		$segments[] = $query['format'];
+		// Was causing error when sef on, url rewrite on and suffix add to url on.
+		// $segments[] = $query['format'];
 
 		/**
 		 * Don't unset as with sef urls and extensions on - if we unset it
@@ -203,9 +205,11 @@ function fabrikParseRoute($segments)
 	{
 		case 'form':
 		case 'details':
+		case 'emailform':
 			$vars['view'] = $segments[0];
 			$vars['formid'] = JArrayHelper::getValue($segments, 1, 0);
 			$vars['rowid'] = JArrayHelper::getValue($segments, 2, '');
+			$vars['format'] = JArrayHelper::getValue($segments, 3, 'html');
 			break;
 		case 'table':
 		case 'list':

@@ -50,7 +50,7 @@ class FabrikModelGooglemap extends FabrikFEModelVisualization
 	/**
 	 * Get HTML text
 	 *
-	 * @return  strng
+	 * @return  string
 	 */
 
 	public function getText()
@@ -80,17 +80,19 @@ class FabrikModelGooglemap extends FabrikFEModelVisualization
 		$viz = $this->getVisualization();
 
 		$opts = new stdClass;
-		$opts->lat = 0;
-		$opts->lon = 0;
+		$opts->lat = (float) $params->get('fb_gm_default_lat', 0);
+		$opts->lon = (float) $params->get('fb_gm_default_lon', 0);
 		$opts->icons = $this->getJSIcons();
 		$opts->polyline = $this->getPolyline();
 		$opts->id = $viz->id;
 		$opts->zoomlevel = (int) $params->get('fb_gm_zoomlevel');
 		$opts->scalecontrol = (bool) $params->get('fb_gm_scalecontrol');
+		$opts->scrollwheel = (bool) $params->get('fb_gm_scrollwheelcontrol');
 		$opts->maptypecontrol = (bool) $params->get('fb_gm_maptypecontrol');
 		$opts->overviewcontrol = (bool) $params->get('fb_gm_overviewcontrol');
 		$opts->streetView = (bool) $params->get('street_view');
 		$opts->center = $params->get('fb_gm_center');
+
 
 		if ($opts->center == 'querystring')
 		{
@@ -137,7 +139,7 @@ class FabrikModelGooglemap extends FabrikFEModelVisualization
 	}
 
 	/**
-	 * Set an array of list id's whose data is used inside the visualaziation
+	 * Set an array of list id's whose data is used inside the visualization
 	 *
 	 * @return  void
 	 */
@@ -268,7 +270,7 @@ class FabrikModelGooglemap extends FabrikFEModelVisualization
 		// Image from marker data
 		$markerImages = (array) $params->get('fb_gm_iconimage2');
 
-		// Specifed letter
+		// Specified letter
 		$letters = (array) $params->get('fb_gm_icon_letter');
 		$aFirstIcons = (array) $params->get('fb_gm_first_iconimage');
 		$aLastIcons = (array) $params->get('fb_gm_last_iconimage');
@@ -358,7 +360,7 @@ class FabrikModelGooglemap extends FabrikFEModelVisualization
 
 					if (empty($html) && (array_key_exists('fabrik_view', $rowdata) || array_key_exists('fabrik_edit', $rowdata)))
 					{
-						// Don't insert linebreak in empty bubble without links $html .= "<br />";
+						// Don't insert line break in empty bubble without links $html .= "<br />";
 
 						// Use edit link by preference
 						if (array_key_exists('fabrik_edit', $rowdata))
@@ -412,15 +414,16 @@ class FabrikModelGooglemap extends FabrikFEModelVisualization
 							if (array_key_exists(1, $matches))
 							{
 								$iconImg = $matches[1];
-
-								// Check file exists
-								$path = str_replace(COM_FABRIK_LIVESITE, '', $iconImg);
-
-								if (JFile::exists(JPATH_BASE . $path))
-								{
-									$customimagefound = true;
-								}
 							}
+
+							// Check file exists
+							$path = str_replace(COM_FABRIK_LIVESITE, '', $iconImg);
+
+							if (JFile::exists(JPATH_BASE . $path))
+							{
+								$customimagefound = true;
+							}
+
 						}
 
 						if ($iconImg != '')
@@ -479,7 +482,7 @@ class FabrikModelGooglemap extends FabrikFEModelVisualization
 					}
 					else
 					{
-						// Default icon - lets see if we need to use a letterd icon instead
+						// Default icon - lets see if we need to use a letter icon instead
 						if (JArrayHelper::getValue($letters, $c, '') != '')
 						{
 							$iconImg = $uri->getScheme() . '://www.google.com/mapfiles/marker' . JString::strtoupper($letters[$c]) . '.png';
@@ -517,7 +520,7 @@ class FabrikModelGooglemap extends FabrikFEModelVisualization
 			// Replace last icon?
 			$iconImg = JArrayHelper::getValue($aLastIcons, $c, '');
 
-			if ($iconImg != '')
+			if ($iconImg != '' && !empty($icons))
 			{
 				list($width, $height) = $this->markerSize(JPATH_SITE . '/media/com_fabrik/images/' . $iconImg);
 				$icons[$v[0] . $v[1]][3] = $iconImg;
@@ -564,7 +567,7 @@ class FabrikModelGooglemap extends FabrikFEModelVisualization
 			$width = is_array($size) ? $size[0] : 25;
 			$height = is_array($size) ? $size[1] : 25;
 
-			// Ensure icons arent too big (25 is max)
+			// Ensure icons aren't too big (25 is max)
 			$scale = min(25 / $width, 25 / $height);
 
 			// If the image is larger than the max shrink it
@@ -694,7 +697,7 @@ class FabrikModelGooglemap extends FabrikFEModelVisualization
 	}
 
 	/**
-	 * Get wheter the map side bar should be shown
+	 * Get whether the map side bar should be shown
 	 *
 	 * @return  bool
 	 */

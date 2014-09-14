@@ -42,7 +42,6 @@ fabrikActions -
 Other form elements that can be styled here are:
 
 legend
-fieldset
 
 To learn about all the different elements in a basic form see http://www.w3schools.com/tags/tag_legend.asp.
 
@@ -64,10 +63,8 @@ if ($this->params->get('show-title', 1)) :?>
 <?php
 endif;
 
-// Form intro and start
-echo $form->intro;
-?>
-<form method="post" <?php echo $form->attribs?>>
+echo $form->intro; ?>
+<div class="fabrikForm fabrikDetails" id="<?php echo $form->formid; ?>">
 <?php
 echo $this->plugintop;
 
@@ -95,7 +92,7 @@ echo $this->loadTemplate('relateddata');
 foreach ($this->groups as $group) :
 	$this->group = $group;
 
-	// Create the group fieldset ?>
+	// Create the group ?>
 	<div class="fabrikGroup" id="group<?php echo $group->id;?>" style="<?php echo $group->css;?>">
 
 	<?php
@@ -121,7 +118,7 @@ foreach ($this->groups as $group) :
 	// Load the group template - this can be :
 	//  * default_group.php - standard group non-repeating rendered as an unordered list
 	//  * default_repeatgroup.php - repeat group rendered as an unordered list
-	//  * default_repeatgroup.table.php - repeat group rendered in a table.
+	//  * default_repeatgroup_table.php - repeat group rendered in a table.
 
 	$this->elements = $group->elements;
 	echo $this->loadTemplate($group->tmpl);
@@ -134,9 +131,6 @@ foreach ($this->groups as $group) :
 </div>
 <?php
 endforeach;
-
-// Add the form's hidden fields
-echo $this->hiddenFields;
 
 // Add any content assigned by form plug-ins
 echo $this->pluginbottom;

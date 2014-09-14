@@ -1,7 +1,5 @@
 <?php
 /**
- * JDocument system message renderer
- *
  * @package     Joomla.Platform
  * @subpackage  Document
  *
@@ -9,8 +7,7 @@
  * @license     GNU General Public License version 2 or later; see LICENSE
  */
 
-// No direct access
-defined('_JEXEC') or die('Restricted access');
+defined('JPATH_PLATFORM') or die;
 
 /**
  * JDocument system message renderer
@@ -64,7 +61,7 @@ class JDocumentRendererMessage extends JDocumentRenderer
 			{
 				if (count($msgs))
 				{
-					$buffer .= "\n<dt class=\"" . strtolower($type) . "\">" . JText::_($type) . "</dt>";
+					$buffer .= "\n<dt class=\"" . strtolower($type) . "\">" . FText::_($type) . "</dt>";
 					$buffer .= "\n<dd class=\"" . strtolower($type) . " message\">";
 					$buffer .= "\n\t<ul>";
 					foreach ($msgs as $msg)

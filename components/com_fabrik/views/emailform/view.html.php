@@ -34,11 +34,15 @@ class FabrikViewEmailform extends JViewLegacy
 	/**
 	 * Display
 	 *
+	 * @param   string  $tpl  Template
+	 *
 	 * @return  void
 	 */
-	public function display()
+	public function display($tpl = null)
 	{
 		FabrikHelperHTML::framework();
+		$app = JFactory::getApplication();
+		$input = $app->input;
 		$model = $this->getModel('form');
 		$filter = JFilterInput::getInstance();
 		$post = $filter->clean($_POST, 'array');
@@ -49,9 +53,14 @@ class FabrikViewEmailform extends JViewLegacy
 		}
 		else
 		{
-			$to = $template = '';
-			$this->sendMail($to);
-			FabrikHelperHTML::emailSent($to);
+			$to = $input->getString('email', '');
+
+			if ($this->sendMail($to))
+			{
+				$app->enqueueMessage(FText::_('COM_FABRIK_THIS_ITEM_HAS_BEEN_SENT_TO') . ' ' . $to, 'success');
+			}
+
+			FabrikHelperHTML::emailSent();
 		}
 	}
 
@@ -62,7 +71,7 @@ class FabrikViewEmailform extends JViewLegacy
 	 *
 	 * @throws RuntimeException
 	 *
-	 * @return  void
+	 * @return  bool
 	 */
 	public function sendMail($email)
 	{
@@ -77,14 +86,14 @@ class FabrikViewEmailform extends JViewLegacy
 		 */
 		if (!isset($_SERVER['HTTP_USER_AGENT']))
 		{
-			throw new RuntimeException(JText::_('JERROR_ALERTNOAUTHOR'), 500);
+			throw new RuntimeException(FText::_('JERROR_ALERTNOAUTHOR'), 500);
 		}
 
 		// Make sure the form was indeed POST'ed:
 		//  (requires your html form to use: action="post")
 		if (!$_SERVER['REQUEST_METHOD'] == 'POST')
 		{
-			throw new RuntimeException(JText::_('JERROR_ALERTNOAUTHOR'), 500);
+			throw new RuntimeException(FText::_('JERROR_ALERTNOAUTHOR'), 500);
 		}
 
 		// Attempt to defend against header injections:
@@ -98,7 +107,7 @@ class FabrikViewEmailform extends JViewLegacy
 			{
 				if (JString::strpos($v, $v2) !== false)
 				{
-					throw new RuntimeException(JText::_('JERROR_ALERTNOAUTHOR'), 500);
+					throw new RuntimeException(FText::_('JERROR_ALERTNOAUTHOR'), 500);
 				}
 			}
 		}
@@ -106,16 +115,16 @@ class FabrikViewEmailform extends JViewLegacy
 		// Made it past spammer test, free up some memory
 		// and continue rest of script:
 		unset($k, $v, $v2, $badStrings);
-		$email = $input->get('email', '');
-		$yourname = $input->get('yourname', '');
-		$youremail = $input->get('youremail', '');
+		$email = $input->getString('email', '');
+		$yourname = $input->getString('yourname', '');
+		$youremail = $input->getString('youremail', '');
 		$subject_default = JText::sprintf('Email from', $yourname);
-		$subject = $input->get('subject', $subject_default);
+		$subject = $input->getString('subject', $subject_default);
 		jimport('joomla.mail.helper');
 
 		if (!$email || !$youremail || (FabrikWorker::isEmail($email) == false) || (FabrikWorker::isEmail($youremail) == false))
 		{
-			throw new RuntimeException(JText::_('EMAIL_ERR_NOINFO'), 500);
+			$app->enqueueMessage(FText::_('PHPMAILER_INVALID_ADDRESS'));
 		}
 
 		$config = JFactory::getConfig();
@@ -129,6 +138,7 @@ class FabrikViewEmailform extends JViewLegacy
 
 		// Mail function
 		$mail = JFactory::getMailer();
-		$res = $mail->sendMail($youremail, $yourname, $email, $subject, $msg);
+
+		return $mail->sendMail($youremail, $yourname, $email, $subject, $msg);
 	}
 }

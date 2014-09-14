@@ -67,6 +67,13 @@ class JFormFieldGroupList extends JFormFieldGroupedList
 		$options = $db->loadObjectList();
 		$groups = array();
 
+		// Add please select
+		$sel = new stdClass;
+		$sel->value = '';
+		$sel->form = '';
+		$sel->text = FText::_('COM_FABRIK_PLEASE_SELECT');
+		array_unshift($options, $sel);
+
 		foreach ($options as $option)
 		{
 			if (!array_key_exists($option->form, $groups))
@@ -82,8 +89,6 @@ class JFormFieldGroupList extends JFormFieldGroupedList
 		{
 			JError::raiseWarning(500, $db->getErrorMsg());
 		}
-
-		array_unshift($groups, JHtml::_('select.option', '', JText::_('COM_FABRIK_PLEASE_SELECT')));
 
 		return $groups;
 	}

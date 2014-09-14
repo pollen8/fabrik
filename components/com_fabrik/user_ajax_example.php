@@ -23,10 +23,10 @@ defined('_JEXEC') or die('Restricted access');
  * You are responsible for grabbing any other parameters, using:
  *
  *  $app = JFactory::getApplication();
- *   $input = $app->input;
- *   $input->get('variablename'),
+ *  $input = $app->input;
+ *  $input->getString('variablename');
  *
- * as per the $myUsername exmaple in userExists() below.
+ * as per the $myUsername example in userExists() below.
  *
  * The userExists() example is designed to test if a username given in a text element
  * exists.  If it does, an alert will pop up, then the field will be cleared and the cursor re-focused to it.
@@ -49,7 +49,7 @@ defined('_JEXEC') or die('Restricted access');
  * In this case, the above code is called from the 'onchange' trigger
  * of a text element like this:
  *
- * var thisElement = $('jos_fabrik_formdata_13___username');
+ * var thisElement = Fabrik.getBlock('form_1').elements.get('jos_fabrik_formdata_13___username');
  * var myUsername = thisElement.get('value');
  * userExists(myUsername,thisElement);
  *

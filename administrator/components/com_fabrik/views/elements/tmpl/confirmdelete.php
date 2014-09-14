@@ -17,8 +17,27 @@ defined('_JEXEC') or die('Restricted access');
 	<table class="adminlist">
 		<thead>
 			<tr>
-				<th style="width:2%"><input type="checkbox" name="toggle" value="" onclick="Joomla.checkAll(this);" /></th>
-				<th><?php echo JText::_('COM_FABRIK_ELEMENTS'); ?></th>
+				<th width="2%">
+					<?php echo FText::_('JGRID_HEADING_ID', 'e.id', $listDirn, $listOrder); ?>
+				</th>
+				<th width="2%">
+					<input type="checkbox" name="toggle" value="" onclick="Joomla.checkAll(this);" />
+				</th>
+				<th width="13%" >
+					<?php echo FText::_('COM_FABRIK_NAME'); ?>
+				</th>
+				<th width="18%">
+					<?php echo FText::_('COM_FABRIK_LABEL'); ?>
+				</th>
+				<th width="17%">
+					<?php echo FText::_('COM_FABRIK_FULL_ELEMENT_NAME'); ?>
+				</th>
+				<th width="12%">
+				<?php echo FText::_('COM_FABRIK_GROUP'); ?>
+				</th>
+				<th width="10%">
+					<?php echo FText::_('COM_FABRIK_PLUGIN'); ?>
+				</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -26,10 +45,27 @@ defined('_JEXEC') or die('Restricted access');
 				$element = $this->items[$i];?>
 			<tr>
 				<td>
-					<?php echo JHtml::_('grid.id', $i, $element->id, false, 'elementIds'); ?>
+					<?php echo $element->id; ?>
 					<input type="hidden" name="cid[]" value="<?php echo $element->id?>" />
 				</td>
-				<td><?php echo $element->label; ?></td>
+				<td>
+					<?php echo JHtml::_('grid.id', $i, $element->id, false, 'elementIds'); ?>
+				</td>
+				<td>
+					<?php echo $element->name; ?>
+				</td>
+				<td>
+					<?php echo $element->label; ?>
+				</td>
+				<td>
+					<?php echo $element->full_element_name; ?>
+				</td>
+				<td>
+					<?php echo $element->group_name; ?>
+				</td>
+				<td>
+					<?php echo $element->plugin; ?>
+				</td>
 			</tr>
 			<?php endfor?>
 		</tbody>

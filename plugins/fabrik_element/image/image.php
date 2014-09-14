@@ -163,7 +163,16 @@ class PlgFabrik_ElementImage extends PlgFabrik_Element
 			if ($showImage)
 			{
 				// $$$ rob 30/06/2011 - say if we import via csv a url to the image check that and use that rather than the relative path
-				$src = JString::substr($data[$i], 0, 4) == 'http' ? $data[$i] : COM_FABRIK_LIVESITE . $selectImage_root_folder . $data[$i];
+				if (JString::substr($data[$i], 0, 4) == 'http')
+				{
+					$src = $data[$i];
+				}
+				else
+				{
+					$data[$i] = JString::ltrim($data[$i], '/');
+					$src = COM_FABRIK_LIVESITE . $selectImage_root_folder . $data[$i];
+				}
+
 				$data[$i] = '<img src="' . $src . '" alt="' . $data[$i] . '" />';
 			}
 
@@ -181,7 +190,7 @@ class PlgFabrik_ElementImage extends PlgFabrik_Element
 	}
 
 	/**
-	 * Manupulates posted form data for insertion into database
+	 * Manipulates posted form data for insertion into database
 	 *
 	 * @param   mixed  $val   this elements posted form data
 	 * @param   array  $data  posted form data
@@ -267,7 +276,7 @@ class PlgFabrik_ElementImage extends PlgFabrik_Element
 	/**
 	 * Draws the html form element
 	 *
-	 * @param   array  $data           to preopulate element with
+	 * @param   array  $data           to pre-populate element with
 	 * @param   int    $repeatCounter  repeat group counter
 	 *
 	 * @return  string	elements html
@@ -280,7 +289,11 @@ class PlgFabrik_ElementImage extends PlgFabrik_Element
 		$value = $this->getValue($data, $repeatCounter);
 		$id = $this->getHTMLId($repeatCounter);
 		$rootFolder = $this->rootFolder($value);
-		$value = str_replace($rootFolder, '', $value);
+
+		if ($rootFolder != '/')
+		{
+			$value = str_replace($rootFolder, '', $value);
+		}
 
 		// $$$ rob - 30/06/2011 can only select an image if its not a remote image
 		$canSelect = ($params->get('image_front_end_select', '0') && JString::substr($value, 0, 4) !== 'http');
@@ -446,7 +459,8 @@ class PlgFabrik_ElementImage extends PlgFabrik_Element
 		$canSelect = ($params->get('image_front_end_select', '0') && JString::substr($value, 0, 4) !== 'http');
 		$defaultImg = $params->get('imagepath');
 
-		if ($canSelect && (JFolder::exists($defaultImg) || JFolder::exists(COM_FABRIK_BASE . $defaultImg)))
+		// Changed first || from a && - http://fabrikar.com/forums/index.php?threads/3-1rc1-image-list-options-bug.36585/#post-184266
+		if ($canSelect || (JFolder::exists($defaultImg) || JFolder::exists(COM_FABRIK_BASE . $defaultImg)))
 		{
 			$rootFolder = $defaultImg;
 		}
@@ -470,7 +484,7 @@ class PlgFabrik_ElementImage extends PlgFabrik_Element
 	}
 
 	/**
-	 * Does the element conside the data to be empty
+	 * Does the element consider the data to be empty
 	 * Used in isempty validation rule
 	 *
 	 * $$$ hugh - right now this is the default code, here as a reminder we

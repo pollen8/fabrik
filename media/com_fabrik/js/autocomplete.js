@@ -22,12 +22,14 @@ var FbAutocomplete = new Class({
 		max: 10,
 		onSelection: Class.empty,
 		autoLoadSingleResult: true,
+		minTriggerChars: 1,
 		storeMatchedResultsOnly: false // Only store a value if selected from picklist
 	},
 
 	initialize: function (element, options) {
 		this.matchedResult = false;
 		this.setOptions(options);
+		element = element.replace('-auto-complete', '');
 		this.options.labelelement = typeOf(document.id(element + '-auto-complete')) === "null" ? document.getElement(element + '-auto-complete') : document.id(element + '-auto-complete');
 		this.cache = {};
 		this.selected = -1;
@@ -38,7 +40,7 @@ var FbAutocomplete = new Class({
 		this.element = typeOf(document.id(element)) === "null" ? document.getElement(element) : document.id(element);
 		this.buildMenu();
 		if (!this.getInputElement()) {
-			fconsole('autocomplete didnt find input element');
+			fconsole('autocomplete didn\'t find input element');
 			return;
 		}
 		this.getInputElement().setProperty('autocomplete', 'off');
@@ -49,19 +51,46 @@ var FbAutocomplete = new Class({
 		this.getInputElement().addEvent('blur', function (e) {
 			if (this.options.storeMatchedResultsOnly) {
 				if (!this.matchedResult) {
-					if (!(this.data.length === 1 && this.options.autoLoadSingleResult)) {
+					if (typeof(this.data) === 'undefined' || !(this.data.length === 1 && this.options.autoLoadSingleResult)) {
 						this.element.value = '';
 					}
 				}
 			}
 		}.bind(this));
-
 	},
-
-	search: function (e) {
+	
+	/**
+	 * Should the auto-complete start its ajax search
+	 * @param   e  Event
+	 * @return  bool
+	 */
+	canSearch: function (e) {
+		if (!this.isMinTriggerlength()) {
+			return false;
+		}
 		if (e.key === 'tab' || e.key === 'enter') {
 			e.stop();
 			this.closeMenu();
+			return false;
+		}
+		return true;
+	},
+	
+	/**
+	 * Get the input text element's value and if empty set this.element.value to empty
+	 * 
+	 * @return  string  input element text
+	 */
+	defineSearchValue: function () {
+		var v = this.getInputElement().get('value');
+		if (v === '') {
+			this.element.value = '';
+		}
+		return v;
+	},
+
+	search: function (e) {
+		if (!this.canSearch(e)) {
 			return;
 		}
 		this.matchedResult = false;
@@ -78,29 +107,51 @@ var FbAutocomplete = new Class({
 				this.populateMenu(this.cache[v]);
 				this.openMenu();
 			} else {
-				Fabrik.loader.start(this.getInputElement());
 				if (this.ajax) {
 					this.closeMenu();
 					this.ajax.cancel();
 				}
-				this.ajax = new Request({url: this.options.url,
-					data: {
-						value: v
-					},
-					onComplete: function (e) {
-						Fabrik.loader.stop(this.getInputElement());
-						this.completeAjax(e, v);
-					}.bind(this)
-				}).send();
+				
+				var data = {value: v};
+				this.ajax = this.makeAjax(this.options.url, data);
 			}
 		}
 		this.searchText = v;
 	},
+	
+	/**
+	 * Build the ajax Request object and send it.
+	 */
+	makeAjax: function (url, data) {
+		return new Request({
+			url: url,
+			data: data,
+			onRequest: function () {
+				Fabrik.loader.start(this.getInputElement());
+			}.bind(this),
+			onCancel: function () {
+				Fabrik.loader.stop(this.getInputElement());
+				//this.ajax = null;
+			}.bind(this),
+			onSuccess: function (e) {
+				this.completeAjax(e, data.value);
+			}.bind(this),
+			onComplete: function () {
+				Fabrik.loader.stop(this.getInputElement());
+			}.bind(this),
+			onFailure: function () {
+				Fabrik.loader.stop(this.getInputElement());
+			}.bind(this),
+			onException: function () {
+				Fabrik.loader.stop(this.getInputElement());
+			}.bind(this)
+		}).send();
+	},
 
 	completeAjax: function (r, v) {
+		Fabrik.loader.stop(this.getInputElement());
 		r = JSON.decode(r);
 		this.cache[v] = r;
-		Fabrik.loader.stop(this.getInputElement());
 		this.populateMenu(r);
 		this.openMenu();
 	},
@@ -189,13 +240,15 @@ var FbAutocomplete = new Class({
 
 	openMenu: function () {
 		if (!this.shown) {
-			this.shown = true;
-			this.menu.setStyle('visibility', 'visible').fade('in');
-			document.addEvent('click', function (e) {
-				this.doTestMenuClose(e);
-			}.bind(this));
-			this.selected = 0;
-			this.highlight();
+			if (this.isMinTriggerlength()) {
+				this.shown = true;
+				this.menu.setStyle('visibility', 'visible').fade('in');
+				document.addEvent('click', function (e) {
+					this.doTestMenuClose(e);
+				}.bind(this));
+				this.selected = 0;
+				this.highlight();
+			}
 		}
 	},
 
@@ -205,6 +258,11 @@ var FbAutocomplete = new Class({
 		}
 	},
 
+	isMinTriggerlength: function () {
+		var v = this.getInputElement().get('value');
+		return v.length >= this.options.minTriggerChars;
+	},
+	
 	getListMax: function () {
 		if (typeOf(this.data) === 'null') {
 			return 0;
@@ -212,45 +270,61 @@ var FbAutocomplete = new Class({
 		return this.data.length > this.options.max ? this.options.max : this.data.length;
 	},
 
+	/**
+	 * Observe the keydown event on the input field. Should stop the loader as we have a new search query
+	 */
 	doWatchKeys: function (e) {
+		if (document.activeElement !== this.getInputElement()) {
+			return;
+		}
+		Fabrik.loader.stop(this.getInputElement());
 		var max = this.getListMax();
 		if (!this.shown) {
-			if (e.code.toInt() === 40 && document.activeElement === this.getInputElement()) {
+			if (e.code.toInt() === 13) {
+				e.stop();
+			}
+			if (e.code.toInt() === 40) {
 				this.openMenu();
 			}
 		} else {
-			if (e.key === 'enter' || e.key === 'tab') {
-				window.fireEvent('blur');
-			}
-			switch (e.code) {
-			case 40://down
-				if (!this.shown) {
-					this.openMenu();
-				}
-				if (this.selected + 1 < max) {
-					this.selected ++;
-					this.highlight();
-				}
+			if (!this.isMinTriggerlength()) {
 				e.stop();
-				break;
-			case 38: //up
-				if (this.selected - 1 >= -1) {
-					this.selected --;
-					this.highlight();
-				}
-				e.stop();
-				break;
-			case 13://enter
-			case 9://tab
-				e.stop();
-				var selectEvnt = new Event.Mock(this.getSelected(), 'click');
-				this.makeSelection(selectEvnt);
-				break;
-			case 27://escape
-				e.stop();
-				this.matchedResult = false;
 				this.closeMenu();
-				break;
+			}
+			else {
+				if (e.key === 'enter' || e.key === 'tab') {
+					window.fireEvent('blur');
+				}
+				switch (e.code) {
+				case 40://down
+					if (!this.shown) {
+						this.openMenu();
+					}
+					if (this.selected + 1 < max) {
+						this.selected ++;
+						this.highlight();
+					}
+					e.stop();
+					break;
+				case 38: //up
+					if (this.selected - 1 >= -1) {
+						this.selected --;
+						this.highlight();
+					}
+					e.stop();
+					break;
+				case 13://enter
+				case 9://tab
+					e.stop();
+					var selectEvnt = new Event.Mock(this.getSelected(), 'click');
+					this.makeSelection(selectEvnt);
+					break;
+				case 27://escape
+					e.stop();
+					this.matchedResult = false;
+					this.closeMenu();
+					break;
+				}
 			}
 		}
 	},
@@ -280,11 +354,11 @@ var FabCddAutocomplete = new Class({
 	Extends: FbAutocomplete,
 
 	search: function (e) {
-		var key;
-		var v = this.getInputElement().get('value');
-		if (v === '') {
-			this.element.value = '';
+		if (!this.canSearch(e)) {
+			return;
 		}
+		var key,
+		v = this.defineSearchValue();
 		if (v !== this.searchText && v !== '') {
 			var observer = document.id(this.options.observerid);
 			if (typeOf(observer) !== 'null') {
@@ -298,38 +372,18 @@ var FabCddAutocomplete = new Class({
 				this.populateMenu(this.cache[key]);
 				this.openMenu();
 			} else {
-				Fabrik.loader.start(this.getInputElement());
 				if (this.ajax) {
 					this.closeMenu();
 					this.ajax.cancel();
 				}
 
-				// If you are observing a radio list then u need to get the Element js plugin value
+				// If you are observing a radio list then you need to get the Element js plugin value
 				var obsValue = document.id(this.options.observerid).get('value');
 				if (typeOf(obsValue) === 'null') {
-					obsValue = Fabrik.blocks[this.options.formRef].formElements.get(this.options.observerid).get('value');
+					obsValue = Fabrik.getBlock(this.options.formRef).elements.get(this.options.observerid).get('value');
 				}
-
-				this.ajax = new Request({
-					method: 'post',
-					url : this.options.url,
-					data: {
-						value: v,
-						fabrik_cascade_ajax_update: 1,
-						v: obsValue
-					},
-
-					onSuccess: function (e) {
-						this.completeAjax(e);
-					}.bind(this),
-
-					onError: function (text, error) {
-						console.log(text, error);
-					},
-					onFailure: function (xhr) {
-						console.log(xhr);
-					}
-				}).send();
+				var data = {value: v, fabrik_cascade_ajax_update: 1, v: obsValue};
+				this.ajax = this.makeAjax(this.options.url, data);
 			}
 		}
 		this.searchText = v;

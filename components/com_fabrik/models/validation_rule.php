@@ -75,8 +75,8 @@ class PlgFabrik_Validationrule extends FabrikPlugin
 	}
 
 	/**
-	 * Looks at the validation condition & evaulates it
-	 * if evaulation is true then the validation rule is applied
+	 * Looks at the validation condition & evaluates it
+	 * if evaluation is true then the validation rule is applied
 	 *
 	 * @param   string  $data  Elements data
 	 *
@@ -85,6 +85,16 @@ class PlgFabrik_Validationrule extends FabrikPlugin
 
 	public function shouldValidate($data)
 	{
+		if (!$this->shouldValidateIn())
+		{
+			return false;
+		}
+
+		if (!$this->shouldValidateOn())
+		{
+			return false;
+		}
+
 		$params = $this->getParams();
 		$condition = $params->get($this->pluginName . '-validation_condition');
 
@@ -104,6 +114,69 @@ class PlgFabrik_Validationrule extends FabrikPlugin
 		}
 
 		return $res;
+	}
+
+	/**
+	 * Should the validation be run - based on whether in admin/front end
+	 *
+	 * @return boolean
+	 */
+	protected function shouldValidateIn()
+	{
+		$params = $this->getParams();
+		$name = $this->elementModel->getFullName();
+
+		$app = JFactory::getApplication();
+		$in = $params->get('validate_in', 'both');
+
+		$admin = $app->isAdmin();
+
+		if ($in === 'both')
+		{
+			return true;
+		}
+
+		if ($admin && $in === 'back')
+		{
+			return true;
+		}
+
+		if (!$admin && $in === 'front')
+		{
+			return true;
+		}
+
+		return false;
+	}
+
+	/**
+	 * Should the validation be run - based on whether new record or editing existing
+	 *
+	 * @return boolean
+	 */
+	protected function shouldValidateOn()
+	{
+		$params = $this->getParams();
+		$app = JFactory::getApplication();
+		$on = $params->get('validation_on', 'both');
+		$rowid = $this->elementModel->getFormModel()->getRowId();
+
+		if ($on === 'both')
+		{
+			return true;
+		}
+
+		if ($rowid === '' && $on === 'new')
+		{
+			return true;
+		}
+
+		if ($rowid !== '' && $on === 'edit')
+		{
+			return true;
+		}
+
+		return false;
 	}
 
 	/**
@@ -127,7 +200,7 @@ class PlgFabrik_Validationrule extends FabrikPlugin
 			$v = 'COM_FABRIK_FAILED_VALIDATION';
 		}
 
-		$this->errorMsg = JText::_($v);
+		$this->errorMsg = FText::_($v);
 
 		return $this->errorMsg;
 	}
@@ -161,7 +234,7 @@ class PlgFabrik_Validationrule extends FabrikPlugin
 
 	public function getIcon($c = 0, $tmpl = '')
 	{
-		$name = $this->elementModel->validator->getIcon();
+		$name = $this->elementModel->validator->getIcon($c);
 		$i = FabrikHelperHTML::image($name, 'form', $tmpl, array('class' => $this->pluginName));
 	}
 
@@ -176,6 +249,25 @@ class PlgFabrik_Validationrule extends FabrikPlugin
 	public function iconImage()
 	{
 		$plugin = JPluginHelper::getPlugin('fabrik_validationrule', $this->pluginName);
+
+		/**
+		 * $$$ hugh - this code doesn't belong here, but am working on an issue whereby if a validation rule plugin
+		 * hasn't been saved yet on the backend, the 'icon' param won't be in the the extensions table yet, so we
+		 * will have to get it from the manifest XML.
+		 *
+		 * NOTE - commenting this out, so I don't lose this chunk of code, and can come back and work on this later
+		 */
+		/*
+		if ($plugin->params === '{}')
+		{
+			$plugin_form = $this->getJForm();
+			JForm::addFormPath(JPATH_SITE . '/plugins/fabrik_validationrule/' . $this->get('pluginName'));
+			$xmlFile = JPATH_SITE . '/plugins/fabrik_validationrule/' . $this->get('pluginName') . '/' . $this->get('pluginName') . '.xml';
+			$xml = $this->jform->loadFile($xmlFile, false);
+			$params_fieldset = $plugin_form->getFieldset('params');
+		}
+		*/
+
 		$params = new JRegistry($plugin->params);
 
 		return $params->get('icon', 'star');
@@ -184,14 +276,15 @@ class PlgFabrik_Validationrule extends FabrikPlugin
 	/**
 	 * Get hover text with icon
 	 *
+	 * @param   int     $c     Validation render order
 	 * @param   string  $tmpl  Template folder name
 	 *
 	 * @return  string
 	 */
 
-	public function getHoverText($tmpl = '')
+	public function getHoverText($c = null, $tmpl = '')
 	{
-		$name = $this->elementModel->validator->getIcon();
+		$name = $this->elementModel->validator->getIcon($c);
 		$i = FabrikHelperHTML::image($name, 'form', $tmpl, array('class' => $this->pluginName));
 
 		return $i . ' ' . $this->getLabel();
@@ -210,22 +303,22 @@ class PlgFabrik_Validationrule extends FabrikPlugin
 
 		if ($tipText !== '')
 		{
-			return JText::_($tipText);
+			return FText::_($tipText);
 		}
 
 		if ($this->allowEmpty())
 		{
-			return JText::_('PLG_VALIDATIONRULE_' . JString::strtoupper($this->pluginName) . '_ALLOWEMPTY_LABEL');
+			return FText::_('PLG_VALIDATIONRULE_' . JString::strtoupper($this->pluginName) . '_ALLOWEMPTY_LABEL');
 		}
 		else
 		{
-			return JText::_('PLG_VALIDATIONRULE_' . JString::strtoupper($this->pluginName) . '_LABEL');
+			return FText::_('PLG_VALIDATIONRULE_' . JString::strtoupper($this->pluginName) . '_LABEL');
 		}
 	}
 
 	/**
 	 * Does the validation allow empty value?
-	 * Default is false, can be overrideen on per-validation basis (such as isnumeric)
+	 * Default is false, can be overridden on per-validation basis (such as isnumeric)
 	 *
 	 * @return  bool
 	 */

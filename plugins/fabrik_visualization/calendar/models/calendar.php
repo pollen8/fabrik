@@ -61,7 +61,7 @@ class FabrikModelCalendar extends FabrikFEModelVisualization
 	public $canAdd = null;
 
 	/**
-	 * Set an array of list id's whose data is used inside the visualaziation
+	 * Set an array of list id's whose data is used inside the visualization
 	 *
 	 * @return  void
 	 */
@@ -370,7 +370,7 @@ class FabrikModelCalendar extends FabrikFEModelVisualization
 	}
 
 	/**
-	 * Get an arry of list ids for which the current user has delete records rights
+	 * Get an array of list ids for which the current user has delete records rights
 	 *
 	 * @return  array	List ids.
 	 */
@@ -398,7 +398,7 @@ class FabrikModelCalendar extends FabrikFEModelVisualization
 	/**
 	 * Query all tables linked to the calendar and return them
 	 *
-	 * @return  string	javascript array containg json objects
+	 * @return  string	javascript array containing json objects
 	 */
 
 	public function getEvents()
@@ -414,9 +414,12 @@ class FabrikModelCalendar extends FabrikFEModelVisualization
 		$calendar = $this->getRow();
 		$aLegend = "$this->calName.addLegend([";
 		$jsevents = array();
+		$input = $app->input;
+		$where = $input->get('where', array(), 'array');
 
 		foreach ($this->events as $listid => $record)
 		{
+			$where = JArrayHelper::getValue($where, $listid, '');
 			$listModel = JModelLegacy::getInstance('list', 'FabrikFEModel');
 			$listModel->setId($listid);
 
@@ -427,11 +430,12 @@ class FabrikModelCalendar extends FabrikFEModelVisualization
 
 			$table = $listModel->getTable();
 			$els = $listModel->getElements();
+			$formModel = $listModel->getFormModel();
 
 			foreach ($record as $data)
 			{
 				$db = $listModel->getDb();
-				$startdate = trim($data['startdate']) !== '' ? $db->quoteName($data['startdate']) : '\'\'';
+				$startdate = trim($data['startdate']) !== '' ? FabrikString::safeColName($data['startdate']) : '\'\'';
 
 				if ($data['startdate'] == '')
 				{
@@ -440,48 +444,46 @@ class FabrikModelCalendar extends FabrikFEModelVisualization
 					return;
 				}
 
-				$enddate = trim($data['enddate']) !== '' ? $db->quoteName($data['enddate']) : "''";
-				$label = trim($data['label']) !== '' ? $db->quoteName($data['label']) : "''";
+				$startElement = $formModel->getElement($data['startdate']);
+				$enddate = trim($data['enddate']) !== '' ? FabrikString::safeColName($data['enddate']) : "''";
+				$endElement = trim($data['enddate']) !== '' ? $formModel->getElement($data['enddate']) : $startElement;
+
+				$startLocal = $store_as_local = (bool) $startElement->getParams()->get('date_store_as_local', false);
+				$endLocal = $store_as_local = (bool) $endElement->getParams()->get('date_store_as_local', false);
+
+				$label = trim($data['label']) !== '' ? FabrikString::safeColName($data['label']) : "''";
 				$customUrl = $data['customUrl'];
-				/**
-				 * $$$ hugh @FIXME - $label has already been quoted, so quoting it again meant the array_key_exists
-				 * check was never matching, as the name got double quoted.
-				 * But ... the code that isn't running is broken, so for now ... If It Ain't Working, Don't Fix It :)
-				 */
-				$qlabel = $db->quoteName($label);
+				$qlabel = $label;
 
 				if (array_key_exists($qlabel, $els))
 				{
 					// If db join selected for the label we need to get the label element and not the value
-					$label = $db->quoteName($els[$qlabel]->getOrderByName());
+					$label = FabrikString::safeColName($els[$qlabel]->getOrderByName());
 
-					// $$$ hugh @TODO doesn't seem to work for join elements, so adding hack till I can talk
-					// to rob about this one.
 					if (method_exists($els[$qlabel], 'getJoinLabelColumn'))
 					{
 						$label = $els[$qlabel]->getJoinLabelColumn();
 					}
 					else
 					{
-						$label = $db->quoteName($els[$qlabel]->getOrderByName());
+						$label = FabrikString::safeColName($els[$qlabel]->getOrderByName());
 					}
 				}
 
 				$pk = $listModel->getTable()->db_primary_key;
 				$status = empty($data['status']) ? '""' : $data['status'];
 				$query = $db->getQuery(true);
-				$status = trim($data['status']) !== '' ? $db->quoteName($data['status']) : "''";
+				$query = $listModel->buildQuerySelect('list', $query);
+				$status = trim($data['status']) !== '' ? FabrikString::safeColName($data['status']) : "''";
 				$query->select($pk . ' AS id, ' . $pk . ' AS rowid, ' . $startdate . ' AS startdate, ' . $enddate . ' AS enddate')
 					->select('"" AS link, ' . $label . ' AS label, ' . $db->quote($data['colour']) . ' AS colour, 0 AS formid')
 				->select($status . ' AS status')
-				->from($table->db_table_name)
 				->order($startdate . ' ASC');
 				$query = $listModel->buildQueryJoin($query);
-				$query = $listModel->buildQueryWhere(true, $query);
+				$where = trim(str_replace('WHERE', '', $where));
+				$query = $where === '' ? $listModel->buildQueryWhere(true, $query) : $query->where($where);
 				$db->setQuery($query);
 				$formdata = $db->loadObjectList();
-				$defaultURL = 'index.php?option=com_' . $package . '&Itemid=' . $Itemid . '&view=form&formid='
-					. $table->form_id . '&rowid=' . $row->id . '&tmpl=component';
 
 				if (is_array($formdata))
 				{
@@ -489,6 +491,8 @@ class FabrikModelCalendar extends FabrikFEModelVisualization
 					{
 						if ($row->startdate != '')
 						{
+							$defaultURL = 'index.php?option=com_' . $package . '&Itemid=' . $Itemid . '&view=form&formid='
+								. $table->form_id . '&rowid=' . $row->id . '&tmpl=component';
 							$thisCustomUrl = $w->parseMessageForPlaceHolder($customUrl, $row);
 							$row->link = $thisCustomUrl !== '' ? $thisCustomUrl : $defaultURL;
 							$row->custom = $customUrl != '';
@@ -497,28 +501,57 @@ class FabrikModelCalendar extends FabrikFEModelVisualization
 							$row->_canEdit = (bool) $listModel->canEdit($row);
 							$row->_canView = (bool) $listModel->canViewDetails();
 
-							// $$$ rob added timezone offset how on earth was this not picked up before :o
-							// $$$ hugh because we suck?
+							//Format local dates toISO8601
+							$mydate = new DateTime($row->startdate);
+							$row->startdate_locale = $mydate->format(DateTime::RFC3339);
+							$mydate = new DateTime($row->enddate);
+							$row->enddate_locale = $mydate->format(DateTime::RFC3339);
+
+							// Added timezone offset
 							if ($row->startdate !== $db->getNullDate() && $data['startShowTime'] == true)
 							{
 								$date = JFactory::getDate($row->startdate);
-								$date->setTimezone($tz);
-								$row->startdate = $date->format('Y-m-d H:i:s');
+								$row->startdate = $date->format('Y-m-d H:i:s', true);
+
+								if ($startLocal)
+								{
+									//Format local dates toISO8601
+									$mydate = new DateTime($row->startdate);
+									$row->startdate_locale = $mydate->format(DateTime::RFC3339);
+								}
+								else
+								{
+									$date->setTimezone($tz);
+									$row->startdate_locale = $date->toISO8601(true);
+								}
 							}
 
-							if ($row->enddate !== $db->getNullDate() && $row->enddate !== '')
+							if ($row->enddate !== $db->getNullDate() && (string) $row->enddate !== '')
 							{
 								if ($data['endShowTime'] == true)
 								{
 									$date = JFactory::getDate($row->enddate);
-									$date->setTimezone($tz);
 									$row->enddate = $date->format('Y-m-d H:i:d');
+
+									if ($endLocal)
+									{
+										//Format local dates toISO8601
+										$mydate = new DateTime($row->enddate);
+										$row->enddate_locale = $mydate->format(DateTime::RFC3339);
+									}
+									else
+									{
+										$date->setTimezone($tz);
+										$row->enddate_locale = $date->toISO8601(true);
+									}
 								}
 							}
 							else
 							{
 								$row->enddate = $row->startdate;
+								$row->enddate_locale = isset($row->startdate_locale) ? $row->startdate_locale : '';
 							}
+
 
 							$jsevents[$table->id . '_' . $row->id . '_' . $row->startdate] = clone ($row);
 						}
@@ -630,5 +663,56 @@ class FabrikModelCalendar extends FabrikFEModelVisualization
 		$query->delete(FabrikString::safeColName($tablename))->where($list->db_primary_key . ' = ' . $id);
 		$tableDb->setQuery($query);
 		$tableDb->execute();
+	}
+
+	/**
+	 * Create the min/max dates between which events can be added.
+	 *
+	 * @return stdClass  min/max properties containing sql formatted dates
+	 */
+	public function getDateLimits()
+	{
+		$params = $this->getParams();
+		$limits = new stdClass;
+		$min = $params->get('limit_min', '');
+		$max = $params->get('limit_max', '');
+		/**@@@trob: seems Firefox needs this date format in calendar.js (limits not working with toSQL*/
+		$limits->min = ($min === '') ? '' : JFactory::getDate($min)->toISO8601();
+		$limits->max = ($max === '') ? '' : JFactory::getDate($max)->toISO8601();
+
+		return $limits;
+	}
+
+	/**
+	 * Build the notice which explains between which dates you can add events.
+	 *
+	 * @return string
+	 */
+	public function getDateLimitsMsg()
+	{
+		$params = $this->getParams();
+		$min = $params->get('limit_min', '');
+		$max = $params->get('limit_max', '');
+		$msg = '';
+		$f = FText::_('DATE_FORMAT_LC2');
+
+		if ($min !== '' && $max === '')
+		{
+			$msg = '<br />' . JText::sprintf('PLG_VISUALIZATION_CALENDAR_LIMIT_AFTER', JFactory::getDate($min)->format($f));
+		}
+
+		if ($min === '' && $max !== '')
+		{
+			$msg = '<br />' . JText::sprintf('PLG_VISUALIZATION_CALENDAR_LIMIT_BEFORE', JFactory::getDate($max)->format($f));
+		}
+
+		if ($min !== '' && $max !== '')
+		{
+			$min = JFactory::getDate($min)->format($f);
+			$max = JFactory::getDate($max)->format($f);
+			$msg = '<br />' . JText::sprintf('PLG_VISUALIZATION_CALENDAR_LIMIT_RANGE', $min, $max);
+		}
+
+		return $msg;
 	}
 }

@@ -61,7 +61,7 @@ class PlgFabrik_ElementRating extends PlgFabrik_Element
 	protected $creatorIds = null;
 
 	/**
-	 * States the element should be ignored from advanced search all queryes.
+	 * States the element should be ignored from advanced search all queries.
 	 *
 	 * @var bool  True, ignore in advanced search all.
 	 */
@@ -85,7 +85,9 @@ class PlgFabrik_ElementRating extends PlgFabrik_Element
 
 		if ($params->get('rating-mode') !== 'creator-rating')
 		{
-			list($data, $total) = $this->getRatingAverage($data, $listid, $formid, $row_id);
+			$d = $this->getListModel()->getData();
+			$ids = JArrayHelper::getColumn($d, '__pk_val');
+			list($data, $total) = $this->getRatingAverage($data, $listid, $formid, $row_id, $ids);
 		}
 
 		$app = JFactory::getApplication();
@@ -111,6 +113,7 @@ class PlgFabrik_ElementRating extends PlgFabrik_Element
 				$r = $s + 1;
 				$a = str_replace('{r}', $r, $atpl);
 				$imgOpts = array('icon-class' => 'starRating rate_' . $r);
+				$imgOpts['data-fabrik-rating'] = $r;
 				$img = FabrikHelperHTML::image("star.png", 'list', @$this->tmpl, $imgOpts);
 				$str[] = $a . $img . $a2;
 			}
@@ -120,6 +123,7 @@ class PlgFabrik_ElementRating extends PlgFabrik_Element
 				$r = $s + 1;
 				$a = str_replace('{r}', $r, $atpl);
 				$imgOpts = array('icon-class' => 'starRating rate_' . $r);
+				$imgOpts['data-fabrik-rating'] = $r;
 				$img = FabrikHelperHTML::image("star-empty.png", 'list', @$this->tmpl, $imgOpts);
 
 				$str[] = $a . $img . $a2;
@@ -161,7 +165,8 @@ class PlgFabrik_ElementRating extends PlgFabrik_Element
 			$list = $this->getlistModel()->getTable();
 			$listid = $list->id;
 			$formid = $list->form_id;
-			$ids = JArrayHelper::getColumn($this->getListModel()->getData(), '__pk_val');
+			$d = $this->getListModel()->getData();
+			$ids = JArrayHelper::getColumn($d, '__pk_val');
 			$row_id = isset($thisRow->__pk_val) ? $thisRow->__pk_val : $thisRow->id;
 			list($avg, $total) = $this->getRatingAverage($data, $listid, $formid, $row_id, $ids);
 
@@ -302,7 +307,7 @@ class PlgFabrik_ElementRating extends PlgFabrik_Element
 	/**
 	 * Draws the html form element
 	 *
-	 * @param   array  $data           to preopulate element with
+	 * @param   array  $data           to pre-populate element with
 	 * @param   int    $repeatCounter  repeat group counter
 	 *
 	 * @return  string	elements html
@@ -318,7 +323,7 @@ class PlgFabrik_ElementRating extends PlgFabrik_Element
 
 		if ($input->get('view') == 'form' && $params->get('rating-rate-in-form', true) == 0)
 		{
-			return JText::_('PLG_ELEMENT_RATING_ONLY_ACCESSIBLE_IN_DETALS_VIEW');
+			return FText::_('PLG_ELEMENT_RATING_ONLY_ACCESSIBLE_IN_DETAILS_VIEW');
 		}
 
 		$element = $this->getElement();
@@ -379,7 +384,7 @@ class PlgFabrik_ElementRating extends PlgFabrik_Element
 	}
 
 	/**
-	 * Manupulates posted form data for insertion into database
+	 * Manipulates posted form data for insertion into database
 	 *
 	 * @param   mixed  $val   this elements posted form data
 	 * @param   array  $data  posted form data
@@ -518,6 +523,7 @@ class PlgFabrik_ElementRating extends PlgFabrik_Element
 		values ($userid, $listid, $formid, $row_id, $rating, $strDate, $elementid)
 			ON DUPLICATE KEY UPDATE date_created = $strDate, rating = $rating"
 		);
+
 		$db->execute();
 	}
 
@@ -571,8 +577,9 @@ class PlgFabrik_ElementRating extends PlgFabrik_Element
 		$id = $this->getHTMLId($repeatCounter);
 		$element = $this->getElement();
 		$data = $this->getFormModel()->data;
-		$listid = $this->getlistModel()->getTable()->id;
-		$formid = $input->getInt('formid');
+		$listModel = $this->getlistModel();
+		$listid = $listModel->getTable()->id;
+		$formid = $listModel->getFormModel()->getId();
 		$row_id = $input->get('rowid', '', 'string');
 		$value = $this->getValue($data, $repeatCounter);
 
@@ -582,18 +589,26 @@ class PlgFabrik_ElementRating extends PlgFabrik_Element
 		}
 
 		$opts = new stdClass;
-		$ext = $params->get('rating-pngorgif', '.png');
-		$opts->insrc = FabrikHelperHTML::image("star.png", 'form', @$this->tmpl, array(), true);
-		$opts->outsrc = FabrikHelperHTML::image("star-empty.png", 'form', @$this->tmpl, array(), true);
-		$opts->clearoutsrc = $clearsrc = FabrikHelperHTML::image("remove-sign-out.png", 'form', @$this->tmpl, array(), true);
-		$opts->clearinsrc = $clearsrc = FabrikHelperHTML::image("remove-sign.png", 'form', @$this->tmpl, array(), true);
+
+		if (!FabrikWorker::j3())
+		{
+			$ext = $params->get('rating-pngorgif', '.png');
+			$opts->insrc = FabrikHelperHTML::image("star.png", 'form', @$this->tmpl, array(), true);
+			$opts->outsrc = FabrikHelperHTML::image("star-empty.png", 'form', @$this->tmpl, array(), true);
+			$opts->clearoutsrc = $clearsrc = FabrikHelperHTML::image("remove-sign-out.png", 'form', @$this->tmpl, array(), true);
+			$opts->clearinsrc = $clearsrc = FabrikHelperHTML::image("remove-sign.png", 'form', @$this->tmpl, array(), true);
+		}
+
 		$opts->row_id = $row_id;
 		$opts->elid = $this->getElement()->id;
 		$opts->userid = (int) $user->get('id');
+		$opts->formid = $formid;
 		$opts->canRate = (bool) $this->canRate();
 		$opts->mode = $params->get('rating-mode');
 		$opts->view = $input->get('view');
 		$opts->rating = $value;
+		$opts->listid = $listid;
+
 		JText::script('PLG_ELEMENT_RATING_NO_RATING');
 
 		return array('FbRating', $id, $opts);
@@ -618,10 +633,16 @@ class PlgFabrik_ElementRating extends PlgFabrik_Element
 		$imagepath = JUri::root() . '/plugins/fabrik_element/rating/images/';
 		$opts->imagepath = $imagepath;
 		$opts->elid = $this->getElement()->id;
-		$opts->insrc = FabrikHelperHTML::image("star.png", 'list', @$this->tmpl, array(), true);
-		$opts->outsrc = FabrikHelperHTML::image("star-empty.png", 'list', @$this->tmpl, array(), true);
+
+		if (!FabrikWorker::j3())
+		{
+			$opts->insrc = FabrikHelperHTML::image("star.png", 'list', @$this->tmpl, array(), true);
+			$opts->outsrc = FabrikHelperHTML::image("star-empty.png", 'list', @$this->tmpl, array(), true);
+		}
+
 		$opts->ajaxloader = FabrikHelperHTML::image("ajax-loader.gif", 'list', @$this->tmpl, array(), true);
 		$opts->listRef = $listModel->getRenderContext();
+		$opts->formid = $listModel->getFormModel()->getId();
 		$opts->userid = (int) $user->get('id');
 		$opts->mode = $params->get('rating-mode');
 		$opts = json_encode($opts);
@@ -631,13 +652,13 @@ class PlgFabrik_ElementRating extends PlgFabrik_Element
 
 	/**
 	 * Used by radio and dropdown elements to get a dropdown list of their unique
-	 * unique values OR all options - basedon filter_build_method
+	 * unique values OR all options - based on filter_build_method
 	 *
-	 * @param   bool    $normal     do we render as a normal filter or as an advanced search filter
-	 * @param   string  $tableName  table name to use - defaults to element's current table
-	 * @param   string  $label      field to use, defaults to element name
-	 * @param   string  $id         field to use, defaults to element name
-	 * @param   bool    $incjoin    include join
+	 * @param   bool    $normal     Do we render as a normal filter or as an advanced search filter
+	 * @param   string  $tableName  Table name to use - defaults to element's current table
+	 * @param   string  $label      Field to use, defaults to element name
+	 * @param   string  $id         Field to use, defaults to element name
+	 * @param   bool    $incjoin    Include join
 	 *
 	 * @return  array  text/value objects
 	 */
@@ -667,11 +688,11 @@ class PlgFabrik_ElementRating extends PlgFabrik_Element
 	 * Create an array of label/values which will be used to populate the elements filter dropdown
 	 * returns all possible options
 	 *
-	 * @param   bool    $normal     do we render as a normal filter or as an advanced search filter
-	 * @param   string  $tableName  table name to use - defaults to element's current table
-	 * @param   string  $label      field to use, defaults to element name
-	 * @param   string  $id         field to use, defaults to element name
-	 * @param   bool    $incjoin    include join
+	 * @param   bool    $normal     Do we render as a normal filter or as an advanced search filter
+	 * @param   string  $tableName  Table name to use - defaults to element's current table
+	 * @param   string  $label      Field to use, defaults to element name
+	 * @param   string  $id         Field to use, defaults to element name
+	 * @param   bool    $incjoin    Include join
 	 *
 	 * @return  array	filter value and labels
 	 */

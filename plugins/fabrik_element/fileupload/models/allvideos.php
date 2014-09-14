@@ -65,9 +65,7 @@ class AllVideosRender
 
 		if (!JPluginHelper::isEnabled('content', 'jw_allvideos'))
 		{
-			$this->output = JText::_(
-				'to display this media files types you need to install the all videos plugin - http://www.joomlaworks.gr/content/view/35/41/');
-
+			$this->output = FText::_('PLG_ELEMENT_FILEUPLOAD_INSTALL_ALL_VIDEOS');
 			return;
 		}
 
@@ -99,5 +97,26 @@ class AllVideosRender
 				$this->output = "{divxremote}$src{/divxremote}";
 				break;
 		}
+	}
+
+	/**
+	 * Build Carousel HTML
+	 *
+	 * @param   string  $id       Widget HTML id
+	 * @param   array   $data     Images to add to the carousel
+	 * @param   object  $model    Element model
+	 * @param   object  $params   Element params
+	 * @param   object  $thisRow  All rows data
+	 *
+	 * @return  string  HTML
+	 */
+
+	public function renderCarousel($id = 'carousel', $data = array(), $model = null, $params = null, $thisRow = null)
+	{
+		$rendered = '';
+		/**
+		 * @TODO - build it!
+		 */
+		return $rendered;
 	}
 }

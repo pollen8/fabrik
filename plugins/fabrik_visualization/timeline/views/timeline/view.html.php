@@ -44,13 +44,20 @@ class FabrikViewTimeline extends JViewLegacy
 		$model->setId($id);
 		$row = $model->getVisualization();
 
+		if (!$model->canView())
+		{
+			echo FText::_('JERROR_ALERTNOAUTHOR');
+
+			return false;
+		}
+
 		$js = $model->render();
 		$this->containerId = $this->get('ContainerId');
 		$this->row = $row;
 		$this->showFilters = $input->getInt('showfilters', 1) === 1 ? 1 : 0;
-		$this->filters = $this->get('Filters');
-		$this->advancedSearch = $this->get('AdvancedSearchLink');
-		$this->filterFormURL = $this->get('FilterFormURL');
+		$this->filters = $model->getFilters();
+		$this->advancedSearch = $model->getAdvancedSearchLink();
+		$this->filterFormURL = $model->getFilterFormURL();
 		$params = $model->getParams();
 		$this->params = $params;
 		$this->width = $params->get('timeline_width', '700');

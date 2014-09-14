@@ -66,7 +66,7 @@ class FabrikFEModelPluginmanager extends JModelLegacy
 	protected $formPlugins = array();
 
 	/**
-	 * Get a html drop down list of the elment types with this objs element type selected as default
+	 * Get a html drop down list of the element types with this objs element type selected as default
 	 *
 	 * @param   string  $default       Selected option
 	 * @param   string  $name          Html name for drop down
@@ -84,7 +84,7 @@ class FabrikFEModelPluginmanager extends JModelLegacy
 		{
 			if ($defaultlabel == '')
 			{
-				$defaultlabel = JText::_('COM_FABRIK_PLEASE_SELECT');
+				$defaultlabel = FText::_('COM_FABRIK_PLEASE_SELECT');
 			}
 
 			$a = array(JHTML::_('select.option', '', $defaultlabel));
@@ -134,7 +134,7 @@ class FabrikFEModelPluginmanager extends JModelLegacy
 	}
 
 	/**
-	 * Get a list of plugin ids/names for usin in a drop down list
+	 * Get a list of plugin ids/names for us in in a drop down list
 	 * if no group set defaults to element list
 	 *
 	 * @param   object  $query       Query
@@ -235,7 +235,7 @@ class FabrikFEModelPluginmanager extends JModelLegacy
 	}
 
 	/**
-	 * Load an indivdual plugin
+	 * Load an individual plugin
 	 *
 	 * @param   string  $className  Plugin name e.g. fabrikfield
 	 * @param   string  $group      Plugin type element/ form or list
@@ -539,6 +539,9 @@ class FabrikFEModelPluginmanager extends JModelLegacy
 
 	public function runPlugins($method, &$parentModel, $type = 'form')
 	{
+		$profiler = JProfiler::getInstance('Application');
+		JDEBUG ? $profiler->mark("runPlugins: start: $method") : null;
+		
 		if ($type == 'form')
 		{
 			/**
@@ -572,6 +575,7 @@ class FabrikFEModelPluginmanager extends JModelLegacy
 					{
 						if (method_exists($elementModel, $method))
 						{
+							JDEBUG ? $profiler->mark("runPlugins: start element method: $method") : null;
 							$elementModel->$method($parentModel);
 						}
 					}
@@ -607,9 +611,11 @@ class FabrikFEModelPluginmanager extends JModelLegacy
 			{
 				$plugin = $this->getPlugIn($usedPlugin, $type);
 
-				// Testing this if statement as onLoad was being called on form email plugin when no method availbale
+				// Testing this if statement as onLoad was being called on form email plugin when no method available
 				if (method_exists($plugin, $method))
 				{
+					JDEBUG ? $profiler->mark("runPlugins: method_exists: $plugin, $method") : null;
+					
 					$plugin->renderOrder = $c;
 					$modelTable = $parentModel->getTable();
 					$pluginParams = $plugin->setParams($params, $c);
@@ -633,6 +639,7 @@ class FabrikFEModelPluginmanager extends JModelLegacy
 
 						if ($preflightCheck)
 						{
+							JDEBUG ? $profiler->mark("runPlugins: preflight OK, starting: $plugin, $method") : null;
 							$ok = $plugin->$method($pluginArgs);
 
 							if ($ok === false)
@@ -676,6 +683,8 @@ class FabrikFEModelPluginmanager extends JModelLegacy
 
 		$this->runPlugins = $runPlugins;
 
+		JDEBUG ? $profiler->mark("runPlugins: end: $method") : null;
+		
 		return array_unique($return);
 	}
 
@@ -683,7 +692,7 @@ class FabrikFEModelPluginmanager extends JModelLegacy
 	 * Test if a plugin is installed
 	 *
 	 * @param   string  $group   Plugin group
-	 * @param   string  $plugin  Plguin name
+	 * @param   string  $plugin  Plugin name
 	 *
 	 * @return  bool
 	 */

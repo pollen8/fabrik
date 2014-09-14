@@ -67,6 +67,20 @@
 				description="PLG_VISUALIZATION_CALENDAR_CUSTOM_URL_DESC" />
 		</fieldset>
 		
+		<fieldset name="plg-visualization-calendar-limits" label="PLG_VISUALIZATION_CALENDAR_LIMITS">
+		
+			<field name="limit_min"
+				type="text"
+				description="PLG_VISUALIZATION_CALENDAR_LIMIT_MIN_DESC"
+				label="PLG_VISUALIZATION_CALENDAR_LIMIT_MIN_LABEL" />
+			
+			<field name="limit_max"
+				type="text"
+				description="PLG_VISUALIZATION_CALENDAR_LIMIT_MAX_DESC"
+				label="PLG_VISUALIZATION_CALENDAR_LIMIT_MAX_LABEL" />
+				
+		</fieldset>
+		
 		<fieldset addfieldpath="/administrator/components/com_fabrik/models/fields" name="plg-visualization-calendar" label="COM_FABRIK_OPTIONS">
 			
 			<field name="calendar_layout"
@@ -193,6 +207,16 @@
 				class="btn-group"
 				description="PLG_VISUALIZATION_CALENDAR_GREYSCALE_WEEKEND_DESC"
 				label="PLG_VISUALIZATION_CALENDAR_GREYSCALE_WEEKEND_LABEL" >
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+			</field>
+			
+			<field name="readonly_monthview"
+				type="radio"
+				class="btn-group"
+				default="0"
+				description="PLG_VISUALIZATION_CALENDAR_READ_ONLY_MONTH_VIEW_DESC"
+				label="PLG_VISUALIZATION_CALENDAR_READ_ONLY_LABEL">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
