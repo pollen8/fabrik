@@ -824,10 +824,25 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 			{
 				foreach ($whereval as &$v)
 				{
-					$v = $db->quote($v);
+					if (is_array($v)) 
+					{
+            foreach ($v as &$vchild)
+            {
+              $vchild = $db->quote($vchild);
+            }
+            $v = implode(',', $v);
+          }
+          else
+          {
+            $v = $db->quote($v);
+          }
 				}
-
-				$where .= count($whereval) == 0 ? '1 = -1' : $wherekey . ' IN (' . implode(',', $whereval) . ')';
+      
+      // Jaanus: Solving bug: imploded arrays when chbx in repeated group
+      
+         $whereval = array_merge($whereval);
+     
+				$where .= count($whereval) == 0 ? '1 = -1' : $wherekey . ' IN ' . str_replace('()', '(\'\')' , '(' . str_replace(',,', ',\'\',', implode(',', $whereval)) . ')');
 			}
 			else
 			{

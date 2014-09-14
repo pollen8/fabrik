@@ -7220,21 +7220,15 @@ class PlgFabrik_Element extends FabrikPlugin
 		if ($groupModel->isJoin())
 		{
 			$groupJoinModel = $groupModel->getJoinModel();
-			$idKey = $join->table_join . '___id';
-			$paramsKey = $join->table_join . '___params';
 			$k = str_replace('`', '', str_replace('.', '___', $groupJoinModel->getJoin()->params->get('pk')));
 			$parentIds = (array) $formData[$k];
 		}
 		else
 		{
 			$k = 'rowid';
-			$idKey = $name . '___id';
-			$paramsKey = $name . '___params';
 			$parentIds = empty($allJoinValues) ? array() : array_fill(0, count($allJoinValues), $formData[$k]);
 		}
 
-		$allJoinIds = JArrayHelper::getValue($formData, $idKey, array());
-		$allParams = array_values(JArrayHelper::getValue($formData, $paramsKey, array()));
 		$paramsKey = $this->getJoinParamsKey();
 		$allParams = (array) JArrayHelper::getValue($formData, $paramsKey, array());
 		$allParams = array_values($allParams);
