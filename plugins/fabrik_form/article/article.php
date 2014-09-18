@@ -197,7 +197,7 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 
 		if (!$isNew)
 		{
-			$cache = &JFactory::getCache ('com_content');
+			$cache = JFactory::getCache('com_content');
 			$cache->clean($id);
 		}
 		
