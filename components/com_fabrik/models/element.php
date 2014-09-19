@@ -4836,7 +4836,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		{
 			$pluginManager = FabrikWorker::getPluginManager();
 			$plugin = $pluginManager->getElementPlugin($splitSum);
-			$sql = $this->getSumQuery($listModel, $groupByLabels) . ' GROUP BY label';
+			$sql = $this->getSumQuery($listModel, $groupBys) . ' GROUP BY label';
 			$sql = $listModel->pluginQuery($sql);
 			$db->setQuery($sql);
 			$results2 = $db->loadObjectList('label');
