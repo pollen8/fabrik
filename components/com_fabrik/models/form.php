@@ -1239,7 +1239,7 @@ class FabrikFEModelForm extends FabModelForm
 		JDEBUG ? $profiler->mark('process, onLastProcess plugins: start') : null;
 		$pluginManager->runPlugins('onLastProcess', $this);
 
-		JDEBUG ? $profiler->mark('processToDb, onAfterProcess plugins: start') : null;
+		JDEBUG ? $profiler->mark('process, onAfterProcess plugins: start') : null;
 		if (in_array(false, $pluginManager->runPlugins('onAfterProcess', $this)))
 		{
 			// $$$ rob this no longer stops default redirect (not needed any more)
