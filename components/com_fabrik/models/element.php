@@ -5776,7 +5776,8 @@ class PlgFabrik_Element extends FabrikPlugin
 		 * @TODO - fix this to use formData instead of formDataWithTableName,
 		 * which we need to deprecate.
 		 */
-		if (!array_key_exists($name, $formModel->formDataWithTableName))
+		//if (!array_key_exists($name, $formModel->formDataWithTableName))
+		if ($this->dataConsideredEmpty(JArrayHelper::getValue($formModel->formDataWithTableName, $name, '')))
 		{
 			$this->getEmptyDataValue($data);
 		}
