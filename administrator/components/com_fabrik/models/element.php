@@ -1167,7 +1167,7 @@ class FabrikAdminModelElement extends FabModelAdmin
 		$join->load(array('element_id' => $data['element_id']));
 		$opts = new stdClass;
 		$opts->type = 'repeatElement';
-		$opts->pk = $db->quoteName($tableName) . '.' . $db->quoteName('id');
+		$opts->pk = FabrikString::safeQuoteName($tableName  . '.id');
 		$data['params'] = json_encode($opts);
 		$join->bind($data);
 		$join->store();
