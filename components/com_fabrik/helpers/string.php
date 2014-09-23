@@ -748,6 +748,20 @@ class FabrikString extends JString
 	}
 
 	/**
+	 * Wrapper for safeQuoteName because I'm a dumbass and got my mords wuddled when I created
+	 * the safeNameQuote() function.
+	 *
+	 * @param unknown $values
+	 * @param bool    $commaSeparated  individually quote a comma separated string of values
+	 *
+	 * @return   mixed   quoted values
+	 */
+	public static function safeQuoteName($values, $commaSeparated = true)
+	{
+		return self::safeNameQuote($values, $commaSeperated);	
+	}
+		
+	/**
 	 * DB name quote a single string or an array of strings, first checking to see if they are
 	 * already quoted.  Which the J! $db->quote() doesn't do, unfortunately.
 	 * Does NOT modify the input.  Does not quote if value starts with CONCAT.
