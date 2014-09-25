@@ -187,7 +187,8 @@ class PlgFabrik_ElementYoutube extends PlgFabrik_Element
 		// Colors
 		$color1 = JString::substr($params->get('color1'), -6);
 		$color2 = JString::substr($params->get('color2'), -6);
-		$vid = array_pop(explode("/", $value));
+		$vid_array = explode("/", $value);
+		$vid = array_pop($vid_array);
 
 		// If one copies an URL from youtube, the URL has the "watch?v=" which barfs the player
 		if (strstr($vid, 'watch'))
