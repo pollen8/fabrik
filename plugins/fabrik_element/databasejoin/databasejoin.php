@@ -1410,12 +1410,15 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 			$opts = $this->_getOptionVals($data, $repeatCounter);
 			$default_val = JArrayHelper::getValue($default, 0);
 
+			// @FIXME - if read only, surely no need to insert every possible value, we just need the selected one?
 			for ($i = 0; $i < count($opts); $i++)
 			{
 				$opt = $opts[$i];
-				$display = $opt->value == $default_val ? '' : 'none';
+				$display = $opt->value == $default_val ? '' : 'style="display: none"';
 				$c = $this->showPleaseSelect() ? $i + 1 : $i;
-				$html[] = '<div style="display:' . $display . '" class="notice description-' . $c . '">' . $opt->description . '</div>';
+				$html[] = '<div ' . $display . ' class="notice description-' . $c . '">' . $opt->description . '</div>';
+				//$html[] = '<div $display . '"' . $opt->description . '</div>';
+				
 			}
 
 			$html[] = '</div>';
