@@ -7571,7 +7571,7 @@ class FabrikFEModelList extends JModelForm
 			throw new ErrorException('Store row failed: ' . $q . "<br>" . $fabrikDb->getErrorMsg(), 500);
 		}
 		else
-		{
+		{				
 			// Clean the cache.
 			JFactory::getCache('com_' . $package)->clean();
 
@@ -7648,6 +7648,8 @@ class FabrikFEModelList extends JModelForm
 			return false;
 		}
 
+		FabrikHelperHTML::debug($db->getQuery(), 'list model updateObject:');
+		
 		return true;
 	}
 
@@ -7710,6 +7712,8 @@ class FabrikFEModelList extends JModelForm
 			$object->$keyName = $id;
 		}
 
+		FabrikHelperHTML::debug($db->getQuery(), 'list model insertObject:');
+		
 		return true;
 	}
 
