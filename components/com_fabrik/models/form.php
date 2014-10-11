@@ -276,6 +276,16 @@ class FabrikFEModelForm extends FabModelForm
 	public $formPluginShim = array();
 
 	/**
+	 * JS options on load, only used when calling onJSOpts plugin
+	 * so plugin code can access and modify them
+	 *
+	 * @since 3.2
+	 *
+	 * @var array
+	 */
+	public $jsOpts = null;
+	
+	/**
 	 * Constructor
 	 *
 	 * @param   array  $config  An array of configuration options (name, state, dbo, table_path, ignore_request).

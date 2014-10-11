@@ -14,6 +14,8 @@
 					<option value="">PLG_FORM_PHP_PROCESS_NEVER</option>
 					<option value="onBeforeLoad">PLG_FORM_PHP_PROCESS_ONBEFORELOAD</option>
 					<option value="onLoad">PLG_FORM_PHP_PROCESS_ONLOAD</option>
+					<option value="onJSReady">PLG_FORM_PHP_PROCESS_ONJSREADY</option>
+					<option value="onJSOpts">PLG_FORM_PHP_PROCESS_ONJSOPTS</option>
 					<option value="onCanEditGroup">PLG_FORM_PHP_PROCESS_ONCANEDITGROUP</option>
 					<option value="onBeforeProcess">PLG_FORM_PHP_PROCESS_ONBEFOREPROCESS</option>
 					<option value="onBeforeStore">PLG_FORM_PHP_PROCESS_ONBEFORESTORE</option>

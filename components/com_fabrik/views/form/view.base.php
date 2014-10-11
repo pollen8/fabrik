@@ -366,6 +366,7 @@ class FabrikViewFormBase extends JViewLegacy
 	{
 		$app = JFactory::getApplication();
 		$package = $app->getUserState('com_fabrik.package', 'fabrik');
+		$pluginManager = FabrikWorker::getPluginManager();
 		$input = $app->input;
 		$document = JFactory::getDocument();
 		$model = $this->getModel();
@@ -454,7 +455,11 @@ class FabrikViewFormBase extends JViewLegacy
 		FabrikHelperHTML::tips('.hasTip', array(), "$('$bkey')");
 		$model->getFormCss();
 		$opts = $this->jsOpts();
-		$opts = json_encode($opts);
+		
+		$model->jsOpts = $opts;
+		$res = $pluginManager->runPlugins('onJSOpts', $model);
+		
+		$opts = json_encode($model->jsOpts);
 
 		if (!FabrikHelperHTML::inAjaxLoadedPage())
 		{
@@ -557,7 +562,6 @@ class FabrikViewFormBase extends JViewLegacy
 			$script[] = "new FloatingTips('#" . $bkey . " .fabrikTip', " . json_encode($tipOpts) . ");";
 		}
 
-		$pluginManager = FabrikWorker::getPluginManager();
 		$res = $pluginManager->runPlugins('onJSReady', $model);
 
 		if (in_array(false, $res))
