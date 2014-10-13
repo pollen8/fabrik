@@ -720,7 +720,7 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 		{
 			// $$$ rob - added check on task to ensure that we are searching and not submitting a form
 			// as otherwise not empty validation failed on user element
-			if (!in_array($input->get('task'), array('processForm', 'view', '', 'form.process')))
+			if (!in_array($input->get('task'), array('processForm', 'view', '', 'form.process', 'process')))
 			{
 				return '';
 			}
