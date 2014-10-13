@@ -1409,6 +1409,13 @@ var FbForm = new Class({
 
 		var repeats = document.id('fabrik_repeat_group_' + i + '_counter').get('value').toInt();
 		if (repeats <= this.options.minRepeat[i] && this.options.minRepeat[i] !== 0) {
+			if (this.options.minMaxErrMsg[i] !== '')
+			{
+				var errmsg = this.options.minMaxErrMsg[i];
+				errmsg = errmsg.replace(/\{min\}/, this.options.minRepeat[i]);
+				errmsg = errmsg.replace(/\{max\}/, this.options.maxRepeat[i]);				
+				alert(errmsg);
+			}
 			return;
 		}
 
@@ -1558,6 +1565,13 @@ var FbForm = new Class({
 		var c = this.repeatGroupMarkers.get(i);
 		var repeats = document.id('fabrik_repeat_group_' + i + '_counter').get('value').toInt();
 		if (repeats >= this.options.maxRepeat[i] && this.options.maxRepeat[i] !== 0) {
+			if (this.options.minMaxErrMsg[i] !== '')
+			{
+				var errmsg = this.options.minMaxErrMsg[i];
+				errmsg = errmsg.replace(/\{min\}/, this.options.minRepeat[i]);
+				errmsg = errmsg.replace(/\{max\}/, this.options.maxRepeat[i]);				
+				alert(errmsg);
+			}
 			return;
 		}
 		document.id('fabrik_repeat_group_' + i + '_counter').value = repeats + 1;
