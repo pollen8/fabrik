@@ -148,6 +148,7 @@ ul.slider-labels {
 }
 
 div.modal {
+	display: block !important;
 	z-index: 1050 !important;
 }
 div.popover {
