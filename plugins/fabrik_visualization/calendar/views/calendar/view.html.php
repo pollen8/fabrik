@@ -248,7 +248,7 @@ class FabrikViewCalendar extends JViewLegacy
 		 */
 		$ref = $model->getJSRenderContext();
 		$script = array();
-		$script[] = "window.addEvent('fabrik.loaded', function() {";
+		//$script[] = "window.addEvent('fabrik.loaded', function() {";
 		$script[] = "document.id('fabrik_event_type').addEvent('change', function(e) {";
 		$script[] = "var fid = e.target.get('value');";
 		$script[] = "var o = ({'d':'','listid':fid,'rowid':0});";
@@ -256,7 +256,7 @@ class FabrikViewCalendar extends JViewLegacy
 		$script[] = "o.datefield2 = '{$prefix}fabrik_calendar_events___end_date';";
 		$script[] = "o.labelfield = '{$prefix}fabrik_calendar_events___label';";
 
-		foreach ($model->_events as $tid => $arr)
+		foreach ($model->events as $tid => $arr)
 		{
 			foreach ($arr as $ar)
 			{
@@ -271,7 +271,7 @@ class FabrikViewCalendar extends JViewLegacy
 		$script[] = "Fabrik.blocks['" . $ref . "'].addEvForm(o);";
 		$script[] = "Fabrik.Windows.chooseeventwin.close();";
 		$script[] = "});";
-		$script[] = "});";
+		//$script[] = "});";
 
 		echo '<h2>' . FText::_('PLG_VISUALIZATION_CALENDAR_PLEASE_CHOOSE_AN_EVENT_TYPE') . ':</h2>';
 		echo $this->_eventTypeDd;
