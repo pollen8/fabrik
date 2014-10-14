@@ -2928,6 +2928,15 @@ class FabrikFEModelForm extends FabModelForm
 		{
 			$this->rowId = '';
 		}
+		
+		/**
+		 * $$$ hugh - there's a couple of places, like calendar viz, that add &rowid=0 to
+		 * query string for new form, so check for that and set to empty string.
+		 */
+		if ($this->rowId === '0')
+		{
+			$this->rowId = '';			
+		}
 
 		FabrikWorker::getPluginManager()->runPlugins('onSetRowId', $this);
 
