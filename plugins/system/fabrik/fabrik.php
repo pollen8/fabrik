@@ -88,7 +88,15 @@ class PlgSystemFabrik extends JPlugin
 		$config = JFactory::getConfig();
 		$app = JFactory::getApplication();
 
-		if ($config->get('caching') == 0 || $app->isAdmin())
+		/**
+		 *  $$$ hugh - as per Skype session with Rob, looks like we'll get rid of this JS caching, as it
+		 *  really doesn't buy us anything, and introduces problems with things like per-user options on plugin
+		 *  JS initialization (ran in to this when adding canRate ACL to the ratings plugin).
+		 *  For now leave the code in, just short circuit it.  Rip it out after making sure this doesn't have
+		 *  any unforeseen side effects.
+		 */
+		//if ($config->get('caching') == 0 || $app->isAdmin())
+		if (true)
 		{
 			$script = self::buildJs();
 		}
@@ -96,51 +104,59 @@ class PlgSystemFabrik extends JPlugin
 		{
 			$uri = JURI::getInstance();
 			$session = JFactory::getSession();
-			$uri = $uri->toString(array('path', 'query'));
-
-			/*
-			if ($_SERVER['REQUEST_METHOD'] === 'POST')
+			if ($session->has('fabrik.js.scripts'))
 			{
-				$uri .= serialize($_POST);
-			}
-			*/
-
-			$file = md5($uri) . '.js';
-			$folder = JPATH_SITE . '/cache/com_fabrik/js/';
-			
-			/**
-			 * $$$ hugh - Added some belt and braces checking when creating the cache folder,
-			 * as some folk are reporting issues with file_put_contents() failing with "no such file or folder"
-			 * even when the permissions seem to be correct on the cache folder
-			 */
-			
-			$folder_exists = JFolder::exists($folder);
-			
-			if (!$folder_exists)
-			{
-				$folder_exists = JFolder::create($folder);
-			}
-
-			if ($folder_exists === true)
-			{
-				// folder definitely now exists, go ahead and use caching
-				$cacheFile = $folder . $file;
+				$uri = $uri->toString(array('path', 'query'));
 	
-				// Check for cached version
-				if (!JFile::exists($cacheFile))
+				/*
+				if ($_SERVER['REQUEST_METHOD'] === 'POST')
 				{
-					$script = self::buildJs();
-					file_put_contents($cacheFile, $script);
+					$uri .= serialize($_POST);
+				}
+				*/
+	
+				$file = md5($uri) . '.js';
+				$folder = JPATH_SITE . '/cache/com_fabrik/js/';
+				
+				/**
+				 * $$$ hugh - Added some belt and braces checking when creating the cache folder,
+				 * as some folk are reporting issues with file_put_contents() failing with "no such file or folder"
+				 * even when the permissions seem to be correct on the cache folder
+				 */
+				
+				$folder_exists = JFolder::exists($folder);
+				
+				if (!$folder_exists)
+				{
+					$folder_exists = JFolder::create($folder);
+				}
+	
+				if ($folder_exists === true)
+				{
+					// folder definitely now exists, go ahead and use caching
+					$cacheFile = $folder . $file;
+		
+					// Check for cached version
+					if (!JFile::exists($cacheFile))
+					{
+						$script = self::buildJs();
+						file_put_contents($cacheFile, $script);
+					}
+					else
+					{
+						$script = JFile::read($cacheFile);
+					}
 				}
 				else
 				{
-					$script = JFile::read($cacheFile);
+					// If the folder still doesn't exist, fall back to non-cached script build
+					$script = self::buildJs();
 				}
 			}
 			else
 			{
-				// If the folder still doesn't exist, fall back to non-cached script build
-				$script = self::buildJs();
+				// No session fabrik.js.scripts key, so build
+				$script = self::buildJs();				
 			}
 		}
 
