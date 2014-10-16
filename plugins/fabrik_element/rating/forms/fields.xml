@@ -10,6 +10,12 @@
 					<option value="user-rating">User rating</option>
 					<option value="creator-rating">Creator rating</option>
 			</field>
+
+			<field name="rating_access"
+				type="accesslevel"
+				default="1"
+				label="PLG_ELEMENT_RATING_ACCESS_LABEL"
+				description="PLG_ELEMENT_RATING_ACCESS_DESC" />
 			
 			<field default="1"
 				class="btn-group"
