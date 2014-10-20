@@ -136,6 +136,7 @@ class PlgFabrik_FormExif extends PlgFabrik_Form
 	{
 		// Initialize some variables
 		$db = FabrikWorker::getDbo();
+		$formModel = $this->getModel();
 		$data = $formModel->formData;
 		$params = $this->getParams();
 		$plugin = FabrikWorker::getPluginManager()->getElementPlugin($params->get('exif_map_field'));
@@ -152,8 +153,8 @@ class PlgFabrik_FormExif extends PlgFabrik_Form
 
 			if (!empty($coords))
 			{
-				$data[$this->map_field] = $coords[0] . ',' . $coords[1] . ':4';
-				$data[$this->map_field . '_raw'] = $data[$this->map_field];
+				$c = $coords[0] . ',' . $coords[1] . ':4';
+				$formModel->updateFormData($this->map_field, $c, true);
 			}
 		}
 
