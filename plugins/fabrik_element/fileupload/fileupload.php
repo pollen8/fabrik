@@ -2363,7 +2363,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		$params = $this->getParams();
 		$w = (int) $params->get('ajax_dropbox_width', 0);
 		$h = (int) $params->get('ajax_dropbox_hight', 200);
-		$dropBoxStyle = 'height:' . $h . 'px';
+		$dropBoxStyle = 'height:' . $h . 'px;';
 
 		if ($w !== 0)
 		{
