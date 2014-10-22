@@ -215,6 +215,8 @@ class PlgContentFabrik extends JPlugin
 					$viewName = JString::strtolower($m[1]);
 					break;
 				case 'id':
+				case 'formid':
+				case 'listid':
 					// Cast to int in case there are two spaces after value.
 					$id = (int) $m[1];
 					break;
