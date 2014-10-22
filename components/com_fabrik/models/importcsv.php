@@ -1455,7 +1455,7 @@ class Csv_Bv
 
 					if ($arr_row[$k] !== '')
 					{
-						$arr_row[$k] = iconv($encFrom, 'UTF-8', $arr_row[$k] . "\0");
+						$arr_row[$k] = iconv($encFrom, 'UTF-8', $arr_row[$k]);
 						$arr_row[$k] = str_replace('""', '"', $arr_row[$k]);
 						$arr_row[$k] = preg_replace("/^\"(.*)\"$/sim", "$1", $arr_row[$k]);
 					}
