@@ -29,7 +29,7 @@ class PlgFabrik_FormUpsert extends PlgFabrik_Form
 	 *
 	 * @var JDatabaseDriver
 	 */
-	protected $db = null;
+	protected $upsert_db = null;
 
 	/**
 	 * process the plugin, called after form is submitted
@@ -42,8 +42,8 @@ class PlgFabrik_FormUpsert extends PlgFabrik_Form
 		$params = $this->getParams();
 		$w = new FabrikWorker;
 		$formModel = $this->getModel();
-		$db = $this->getDb();
-		$query = $db->getQuery(true);
+		$upsert_db = $this->getDb();
+		$query = $upsert_db->getQuery(true);
 		$this->data = $this->getProcessData();
 
 		$table = $this->getTableName();
@@ -73,8 +73,8 @@ class PlgFabrik_FormUpsert extends PlgFabrik_Form
 			$query->update($table)->where($pk . ' = ' . $rowid);
 		}
 
-		$db->setQuery($query);
-		$db->execute();
+		$upsert_db->setQuery($query);
+		$upsert_db->execute();
 
 		return true;
 	}
@@ -87,16 +87,16 @@ class PlgFabrik_FormUpsert extends PlgFabrik_Form
 
 	protected function getDb()
 	{
-		if (!isset($this->db))
+		if (!isset($this->upsert_db))
 		{
 			$params = $this->getParams();
 			$cid = $params->get('connection_id');
 			$connectionModel = JModelLegacy::getInstance('connection', 'FabrikFEModel');
 			$connectionModel->setId($cid);
-			$this->db = $connectionModel->getDb();
+			$this->upsert_db = $connectionModel->getDb();
 		}
 
-		return $this->db;
+		return $this->upsert_db;
 	}
 
 	/**
@@ -109,14 +109,14 @@ class PlgFabrik_FormUpsert extends PlgFabrik_Form
 	{
 		$params = $this->getParams();
 		$w = new FabrikWorker;
-		$db = $this->getDb();
+		$upsert_db = $this->getDb();
 		$upsert = json_decode($params->get('upsert_fields'));
 		$fields = array();
 
 		for ($i = 0; $i < count($upsert->upsert_key); $i++)
 		{
 			$k = FabrikString::shortColName($upsert->upsert_key[$i]);
-			$k = $db->quoteName($k);
+			$k = $upsert_db->quoteName($k);
 			$v = $upsert->upsert_value[$i];
 			$v = $w->parseMessageForPlaceholder($v, $this->data);
 
@@ -125,7 +125,7 @@ class PlgFabrik_FormUpsert extends PlgFabrik_Form
 				$v = $w->parseMessageForPlaceholder($upsert->upsert_default[$i], $this->data);
 			}
 
-			$fields[] = $k . ' = ' . $db->quote($v);
+			$fields[] = $k . ' = ' . $upsert_db->quote($v);
 		}
 
 		return $fields;
