@@ -1198,6 +1198,8 @@ class FabrikFEModelListfilter extends FabModel
 
 		$usedMerges = array();
 
+		FabrikHelperHTML::debug($filters, 'filter array: start getPostFilters');
+		
 		if (!empty($request) && array_key_exists('key', $request))
 		{
 			$keyints = array_keys($request['key']);
