@@ -143,7 +143,7 @@ class PlgFabrik_FormAutofill extends PlgFabrik_Form
 				$value = $db->loadResult();
 			}
 
-			$data = $listModel->getRow($value, true, true);
+			$data = $listModel->getRow($value, true, false);
 
 			if (is_array($data))
 			{
