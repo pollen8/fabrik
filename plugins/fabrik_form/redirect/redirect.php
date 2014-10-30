@@ -301,9 +301,16 @@ class PlgFabrik_FormRedirect extends PlgFabrik_Form
 	{
 		if (is_array($val))
 		{
-			foreach ($val as $v)
+			if (count($val) === 1)
 			{
-				$this->_appendQS($queryvars, "{$key}[value]", $v, $appendEmpty);
+				$this->_appendQS($queryvars, $key, $val[0], $appendEmpty);
+			}
+			else
+			{
+				foreach ($val as $v)
+				{
+					$this->_appendQS($queryvars, "{$key}[value]", $v, $appendEmpty);
+				}
 			}
 		}
 		else
