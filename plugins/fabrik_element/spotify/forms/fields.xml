@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<form>
+	<fields name="params">
+		<fieldset name="plg-element-spotify">
+		
+			<field type="helplink"
+				url="PLG_ELEMENT_SPOTIFY_HELP_SERVER" />
+		
+			<field name="width"
+				type="text"
+				default="300"
+				class="input-mini"
+				description="PLG_ELEMENT_SPOTIFY_WIDTH_DESC"
+				label="PLG_ELEMENT_SPOTIFY_WIDTH_LABEL" />
+			
+			<field name="height"
+				type="text"
+				default="380"
+				class="input-mini"
+				description="PLG_ELEMENT_SPOTIFY_HEIGHT_DESC"
+				label="PLG_ELEMENT_SPOTIFY_HEIGHT_LABEL" />
+			
+			<field name="theme"
+				type="list"
+				default="black"
+				label="PLG_ELEMENT_SPOTIFY_THEME_LABEL">
+					<option value="black">PLG_ELEMENT_SPOTIFY_BLACK</option>
+					<option value="white">PLG_ELEMENT_SPOTIFY_WHITE</option>
+			</field>
+			
+			<field name="view"
+				type="list"
+				default="list"
+				label="PLG_ELEMENT_SPOTIFY_VIEW_LABEL">
+					<option value="list">PLG_ELEMENT_SPOTIFY_LIST</option>
+					<option value="coverart">PLG_ELEMENT_SPOTIFY_COVERART</option>
+			</field>
+		
+		</fieldset>
+	</fields>		
+</form>
