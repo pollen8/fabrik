@@ -1279,7 +1279,10 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 					}
 				}
 
-				$defaultLabels = $newLabels;
+				if (!empty($newLabels))
+				{
+					$defaultLabels = $newLabels;
+				}
 			}
 
 			/*
