@@ -1956,7 +1956,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 
 		foreach ($data as $key => $value)
 		{
-			if ($this->emptyConcatString($data[$key]))
+			if (array_key_exists($key, $data) && $this->emptyConcatString($data[$key]))
 			{
 				$data[$key] = '';
 			}
