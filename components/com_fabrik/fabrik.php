@@ -25,11 +25,6 @@ if (JDEBUG)
 {
 	// Add the logger.
 	JLog::addLogger(array('text_file' => 'fabrik.log.php'));
-
-	// Start logging...
-	JLog::add(
-	'your message here',
-	JLog::NOTICE, 'com_fabrik');
 }
 
 require_once JPATH_COMPONENT . '/controller.php';

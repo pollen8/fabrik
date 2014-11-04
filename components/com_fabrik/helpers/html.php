@@ -2462,19 +2462,19 @@ if (!$j3)
 
 	/**
 	 * Return a set of attributes for an <a> tag
-	 * 
+	 *
 	 * @param string $title  title to use for popup image
 	 * @param string $group  grouping tag for next/prev, if applicable
-	 * 
+	 *
 	 */
-	
+
 	public static function getLightboxAttributes($title = "", $group = "")
 	{
 		$fbConfig = JComponentHelper::getParams('com_fabrik');
 		$lightboxScript = $fbConfig->get('use_mediabox', '0');
-		
+
 		$attrs = array();
-		
+
 		switch ($lightboxScript)
 		{
 			case 0:
@@ -2496,7 +2496,7 @@ if (!$j3)
 		}
 		return implode(' ', $attrs);
 	}
-	
+
 	/**
 	 * Make an <a> tag
 	 *
