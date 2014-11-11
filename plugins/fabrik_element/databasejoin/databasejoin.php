@@ -740,7 +740,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 			$labels = explode('::', $label);
 			$label = $filter ? $labels[1] : $labels[0];
 		}
-		
+
 		if (!$filter && $label == '')
 		{
 			$label = 'COM_FABRIK_PLEASE_SELECT';
@@ -1318,7 +1318,8 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 			// Add icons
 			for ($i = 0; $i < count($targetIds); $i++)
 			{
-				$defaultLabels[$i] = $this->getReadOnlyOutput($targetIds[$i], $defaultLabels[$i]);
+				$tmpLabel = JArrayHelper::getValue($defaultLabels, $i, '');
+				$defaultLabels[$i] = $this->getReadOnlyOutput($targetIds[$i], $tmpLabel);
 			}
 
 			$this->addReadOnlyLinks($defaultLabels, $targetIds);
@@ -1421,7 +1422,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 				$c = $this->showPleaseSelect() ? $i + 1 : $i;
 				$html[] = '<div ' . $display . ' class="notice description-' . $c . '">' . $opt->description . '</div>';
 				//$html[] = '<div $display . '"' . $opt->description . '</div>';
-				
+
 			}
 
 			$html[] = '</div>';
@@ -3140,7 +3141,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 			 * IN (), if it worked, would produce no rows, just replace with 1=-1
 			 * Can't just count($v), as sometimes it's an array with a single null entry.
 			 */
-			
+
 			$v = array_map(array($db, 'quote'), $v);
 			$ins = implode(',', $v);
 
