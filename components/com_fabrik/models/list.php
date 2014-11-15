@@ -2477,6 +2477,10 @@ class FabrikFEModelList extends JModelForm
 					// Limit to the current page
 					$query->where($table->db_primary_key . ' IN (' . implode($mainKeys, ',') . ')');
 				}
+				else
+				{
+					$query->where('1 = -1');
+				}
 			}
 			else
 			{
