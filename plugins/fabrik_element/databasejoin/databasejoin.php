@@ -1318,7 +1318,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 			// Add icons
 			for ($i = 0; $i < count($targetIds); $i++)
 			{
-				$defaultLabels[$i] = $this->getReadOnlyOutput($targetIds[$i], $defaultLabels[$i]);
+				$defaultLabels[$i] = $this->getReadOnlyOutput($targetIds[$i], JArrayHelper::getValue($defaultLabels, $i, ''));
 			}
 
 			$this->addReadOnlyLinks($defaultLabels, $targetIds);
