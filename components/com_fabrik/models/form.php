@@ -284,7 +284,7 @@ class FabrikFEModelForm extends FabModelForm
 	 * @var array
 	 */
 	public $jsOpts = null;
-	
+
 	/**
 	 * Constructor
 	 *
@@ -1179,7 +1179,7 @@ class FabrikFEModelForm extends FabModelForm
 	{
 		$profiler = JProfiler::getInstance('Application');
 		JDEBUG ? $profiler->mark('process: start') : null;
-		
+
 		$app = JFactory::getApplication();
 		$input = $app->input;
 
@@ -1197,7 +1197,7 @@ class FabrikFEModelForm extends FabModelForm
 		 * now looks at origRowId
 		 */
 		$this->origRowId = $this->rowId;
-		
+
 		JDEBUG ? $profiler->mark('process, getGroupsHiarachy: start') : null;
 		$this->getGroupsHiarachy();
 
@@ -1275,7 +1275,7 @@ class FabrikFEModelForm extends FabModelForm
 		parent::cleanCache('com_' . $package, 0);
 
 		JDEBUG ? $profiler->mark('process: end') : null;
-		
+
 		return true;
 	}
 
@@ -1823,7 +1823,7 @@ class FabrikFEModelForm extends FabModelForm
 	{
 		$profiler = JProfiler::getInstance('Application');
 		JDEBUG ? $profiler->mark('processToDb: start') : null;
-		
+
 		$pluginManager = FabrikWorker::getPluginManager();
 		$app = JFactory::getApplication();
 		$input = $app->input;
@@ -1831,10 +1831,10 @@ class FabrikFEModelForm extends FabModelForm
 		$item = $listModel->getTable();
 		$origid = $this->prepareForCopy();
 		$this->formData = $listModel->removeTableNameFromSaveData($this->formData, '___');
-		
+
 		JDEBUG ? $profiler->mark('processToDb, submitToDatabase: start') : null;
 		$insertId = $this->storeMainRow ? $this->submitToDatabase($this->rowId) : $this->rowId;
-		
+
 		$this->updateRefferrer($origid, $insertId);
 		$this->setInsertId($insertId);
 
@@ -1851,10 +1851,10 @@ class FabrikFEModelForm extends FabModelForm
 		{
 			return $insertId;
 		}
-		
+
 		JDEBUG ? $profiler->mark('processToDb, doCalculations: start') : null;
 		$this->listModel->doCalculations();
-		
+
 		JDEBUG ? $profiler->mark('processToDb: end') : null;
 		return $insertId;
 	}
@@ -2372,7 +2372,7 @@ class FabrikFEModelForm extends FabModelForm
 		}
 
 		FabrikHelperHTML::debug($this->errors, 'form:errors');
-		///echo "<pre>";print_r($this->errors);exit;
+		//echo "<pre>";print_r($this->errors);exit;
 		$this->setErrors($this->errors);
 
 		return $ok;
@@ -2393,7 +2393,7 @@ class FabrikFEModelForm extends FabModelForm
 		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$context = 'com_' . $package . '.form.' . $this->getId() . '.' . $this->getRowId() . '.';
 		$session = JFactory::getSession();
-
+echo "form get errors";
 		// Store errors in local array as clearErrors() removes $this->errors
 		$errors = array();
 
@@ -2401,6 +2401,7 @@ class FabrikFEModelForm extends FabModelForm
 		{
 			if ($this->isMambot)
 			{
+				echo "is mambot<br>";
 				$errors = $session->get($context . 'errors', array());
 			}
 		}
@@ -2928,14 +2929,14 @@ class FabrikFEModelForm extends FabModelForm
 		{
 			$this->rowId = '';
 		}
-		
+
 		/**
 		 * $$$ hugh - there's a couple of places, like calendar viz, that add &rowid=0 to
 		 * query string for new form, so check for that and set to empty string.
 		 */
 		if ($this->rowId === '0')
 		{
-			$this->rowId = '';			
+			$this->rowId = '';
 		}
 
 		FabrikWorker::getPluginManager()->runPlugins('onSetRowId', $this);
@@ -3029,7 +3030,6 @@ class FabrikFEModelForm extends FabModelForm
 
 	public function hasErrors()
 	{
-		$errorsFound = !empty($this->errors);
 		$errorsFound = false;
 
 		foreach ($this->errors as $field => $errors)

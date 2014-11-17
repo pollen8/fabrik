@@ -1083,8 +1083,8 @@ var ImageWidget = new Class({
 		}
 		var x = this.cropperCanvas.x;
 		var y = this.cropperCanvas.y;
-		var w = this.cropperCanvas.w;
-		var h = this.cropperCanvas.h;
+		var w = this.cropperCanvas.w - 2;
+		var h = this.cropperCanvas.h - 2;
 		x = x - (w / 2);
 		y = y - (h / 2);
 
@@ -1102,7 +1102,6 @@ var ImageWidget = new Class({
 		var f = document.getElements('input[name*=' + file + ']').filter(function (fld) {
 			return fld.name.contains('cropdata');
 		});
-
 
 		ctx.drawImage(canvas, x, y, w, h, 0, 0, w, h);
 		f.set('value', target.toDataURL());

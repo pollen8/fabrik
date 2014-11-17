@@ -3496,7 +3496,7 @@ class PlgFabrik_Element extends FabrikPlugin
 			 * Paul - According to tooltip, $phpOpts should be of form "array(JHTML: :_('select.option', '1', 'one'))"
 			 * This is an array of objects with properties text and value.
 			 * If user has mis-specified this we should tell them.
-			 * 
+			 *
 			 * @FIXME - $$$ hugh - seems like an empty array should be valid as well?
 			 **/
 			if (!is_array($phpOpts) || !$phpOpts[0] || !is_object($phpOpts[0]) || !isset($phpOpts[0]->value) || !isset($phpOpts[0]->text))
@@ -3539,7 +3539,7 @@ class PlgFabrik_Element extends FabrikPlugin
 			 * Paul - According to tooltip, $phpOpts should be of form "array(JHTML::_('select.option', '1', 'one'))"
 			 * This is an array of objects with properties text and value.
 			 * If user has mis-specified this we should tell them.
-			 * 
+			 *
 			 * @FIXME - $$$ hugh - seems like an empty array should be valid as well?
 			 **/
 			if (!is_array($phpOpts) || !$phpOpts[0] || !is_object($phpOpts[0]) || !isset($phpOpts[0]->value) || !isset($phpOpts[0]->text))
