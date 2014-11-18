@@ -32,7 +32,7 @@
 				type="text"
 				class="input-mini"
 				size="3"
-				default="200"
+				default="250"
 				label="PLG_ELEMENT_GOOGLE_MAP_WIDTH_LABEL"
 				description="PLG_ELEMENT_GOOGLE_MAP_WIDTH_DESC"
 			/>
@@ -41,7 +41,7 @@
 				type="text"
 				class="input-mini"
 				size="3"
-				default="150"
+				default="250"
 				label="PLG_ELEMENT_GOOGLE_MAP_HEIGHT_LABEL"
 				description="PLG_ELEMENT_GOOGLE_MAP_HEIGHT_DESC"
 			/>
