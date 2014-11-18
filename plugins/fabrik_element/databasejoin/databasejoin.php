@@ -382,15 +382,13 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 
 	protected function getJoin()
 	{
-		$app = JFactory::getApplication();
-		$input = $app->input;
-
 		if (isset($this->join))
 		{
 			return $this->join;
 		}
 
-		$params = $this->getParams();
+		$app = JFactory::getApplication();
+		$input = $app->input;
 		$element = $this->getElement();
 
 		if ($element->published == 0)
@@ -511,6 +509,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 	protected function evalOptions(&$opts) {
 		$params = $this->getParams();
 		$eval = $params->get('dabase_join_label_eval');
+
 		if (trim($eval) !== '')
 		{
 			foreach ($opts as $key => &$opt)
@@ -1421,8 +1420,6 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 				$display = $opt->value == $default_val ? '' : 'style="display: none"';
 				$c = $this->showPleaseSelect() ? $i + 1 : $i;
 				$html[] = '<div ' . $display . ' class="notice description-' . $c . '">' . $opt->description . '</div>';
-				//$html[] = '<div $display . '"' . $opt->description . '</div>';
-
 			}
 
 			$html[] = '</div>';
@@ -1681,7 +1678,6 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 	protected function getValueFullName($opts)
 	{
 		$name = $this->getFullName(true, false);
-		$params = $this->getParams();
 
 		if (!$this->isJoin() && JArrayHelper::getValue($opts, 'valueFormat', 'raw') == 'raw')
 		{
@@ -1904,7 +1900,6 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 
 	public function renderListData($data, stdClass &$thisRow)
 	{
-		$params = $this->getParams();
 		$groupModel = $this->getGroupModel();
 		$labeldata = array();
 
@@ -2177,8 +2172,6 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 
 	protected function buildFilterJoin()
 	{
-		$params = $this->getParams();
-		//$joinTable = FabrikString::safeColName($params->get('join_db_name'))
 		$joinTable = FabrikString::safeColName($this->getDbName());
 		$join = $this->getJoin();
 		$joinTableName = FabrikString::safeColName($join->table_join_alias);
@@ -2215,7 +2208,6 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		*/
 		$listModel = $this->getlistModel();
 		$table = $listModel->getTable();
-		$origTable = $table->db_table_name;
 		$fabrikDb = $listModel->getDb();
 		$params = $this->getParams();
 		$joinTable = $params->get('join_db_name');
@@ -2357,7 +2349,6 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 
 	protected function getJoinValueColumn()
 	{
-		$params = $this->getParams();
 		$join = $this->getJoin();
 		$db = FabrikWorker::getDbo();
 
@@ -2555,7 +2546,6 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 
 	protected function checkboxRows($groupBy = null, $condition = null, $value = null, $where = null, $offset = 0, $limit = 0)
 	{
-		$params = $this->getParams();
 		$db = $this->getDb();
 		$query = $db->getQuery(true);
 		$join = $this->getJoinModel()->getJoin();
@@ -2683,7 +2673,6 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 	{
 		$db = $this->getDb();
 		$params = $this->getParams();
-		$orig = $params->get('database_join_where_sql');
 		$k = $params->get('join_key_column');
 		$l = $this->getLabelParamVal();
 		$t = $params->get('join_db_name');
@@ -2774,7 +2763,6 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 	protected function containerClass($element)
 	{
 		$c = explode(' ', parent::containerClass($element));
-		$params = $this->getParams();
 		$c[] = 'mode-' . $this->getDisplayType();
 
 		return implode(' ', $c);
@@ -2791,12 +2779,9 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 	protected function elementJavascriptOpts($repeatCounter)
 	{
 		$params = $this->getParams();
-		$element = $this->getElement();
 		$opts = $this->_getOptionVals();
 		$data = $this->getFormModel()->data;
 		$arSelected = $this->getValue($data, $repeatCounter);
-		$arVals = $this->getSubOptionValues();
-		$arTxt = $this->getSubOptionLabels();
 		$table = $params->get('join_db_name');
 		$opts = $this->getElementJSOptions($repeatCounter);
 		$forms = $this->getLinkedForms();
@@ -2978,7 +2963,6 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 
 	protected function updateFabrikJoin($data, $elementId, $tableJoin, $keyCol, $label)
 	{
-		$params = json_decode($data['params']);
 		$element = $this->getElement();
 		$join = FabTable::getInstance('Join', 'FabrikTable');
 
@@ -3294,7 +3278,6 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 
 	public function getOrderByName()
 	{
-		$params = $this->getParams();
 		$join = $this->getJoin();
 		$joinTable = $join->table_join_alias;
 		$joinVal = $this->getLabelOrConcatVal();
@@ -3389,7 +3372,6 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		$jointable = $join->table_join;
 		$params = $this->getParams();
 		$dbtable = $this->actualTableName();
-		$db = JFactory::getDbo();
 		$item = $this->getListModel()->getTable();
 		$jkey = $this->getLabelOrConcatVal();
 		$where = $this->buildQueryWhere(array(), true, $params->get('join_db_name'));
@@ -3469,9 +3451,6 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 	{
 		$str = parent::buildQueryElementConcatId();
 		$jointable = $this->getJoinModel()->getJoin()->table_join;
-		$dbtable = $this->actualTableName();
-		$db = JFactory::getDbo();
-		$table = $this->getListModel()->getTable();
 		$parentKey = $this->buildQueryParentKey();
 		$fullElName = $this->getFullName(true, false) . '_id';
 		$str .= ", (SELECT GROUP_CONCAT(" . $this->element->name . " SEPARATOR '" . GROUPSPLITTER . "') FROM $jointable WHERE " . $jointable
