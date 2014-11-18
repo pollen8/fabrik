@@ -88,7 +88,7 @@
 			<field name="place"
 				type="radio"
 				class="btn-group"
-				default="1"
+				default="0"
 				repeat="true"
 				description="PLG_LIST_RADIUS_SEARCH_PLACE_DESC"
 				label="PLG_LIST_RADIUS_SEARCH_PLACE_LABEL" >
