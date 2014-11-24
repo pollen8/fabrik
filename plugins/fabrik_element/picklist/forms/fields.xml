@@ -3,7 +3,7 @@
 	<fields
 		addfieldpath="/administrator/components/com_fabrik/models/fields"
 		name="params">
-		<fieldset name="plg-element-picklist">
+		<fieldset label="PLG_FABRIK_ELEMENT_PICKLIST" name="plg-element-picklist">
 
 			<field
 				type="helplink"
@@ -56,6 +56,18 @@
 				description="PLG_ELEMENT_PICKLIST_BG_HOVER_COLOUR_DESCRIPTION"
 				label="PLG_ELEMENT_PICKLIST_BG_HOVER_COLOUR_LABEL"
 				size="6" />
+
+		</fieldset>
+		<fieldset label="Advanced" name="plg-picklist-advanced">
+
+			<field type="helplink"
+				url="PLG_ELEMENT_PICKLIST_HELP_SERVER" />
+
+			<field name="dropdown_populate"
+				type="fabrikeditor"
+				mode="php"
+				description="PLG_ELEMENT_PICKLIST_POPULATE_DESC"
+				label="PLG_ELEMENT_PICKLIST_POPULATE_LABEL" />
 
 		</fieldset>
 	</fields>
