@@ -67,6 +67,7 @@ var FbGoogleMapViz = new Class({
 					if (this.options.ajax_refresh_center) {
 						this.center();
 					}
+					Fabrik.fireEvent('fabrik.viz.googlemap.ajax.refresh', [this]);
 				}.bind(this)
 			});
 			this.timer = this.update.periodical(this.options.refresh_rate, this);
