@@ -153,7 +153,8 @@ class ImageRender
 						. 'px; vertical-align: middle;text-align: center;">';
 				}
 
-				$img = '<img class="fabrikLightBoxImage" src="' . $file . '" alt="' . $title . '" />';
+				$height_str = empty($height) ? "" : ' height="' . $height . 'px" ';
+				$img = '<img class="fabrikLightBoxImage" ' . $height_str . 'src="' . $file . '" alt="' . $title . '" />';
 
 				if ($params->get('make_link', true) && !$this->fullImageInRecord($params))
 				{

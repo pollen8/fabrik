@@ -430,6 +430,8 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		$opts->winHeight = (int) $params->get('win_height', 400);
 		$opts->elementShortName = $element->name;
 		$opts->listName = $this->getListModel()->getTable()->db_table_name;
+		$opts->useWIP = (bool) $params->get('upload_use_wip', '0') == '1';
+		
 		JText::script('PLG_ELEMENT_FILEUPLOAD_MAX_UPLOAD_REACHED');
 		JText::script('PLG_ELEMENT_FILEUPLOAD_DRAG_FILES_HERE');
 		JText::script('PLG_ELEMENT_FILEUPLOAD_UPLOAD_ALL_FILES');
@@ -2450,12 +2452,20 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		// @TODO test in join
 		if (array_key_exists('file', $_FILES) || array_key_exists('join', $_FILES))
 		{
+			/*
 			$file = array('name' => $isjoin ? $_FILES['join']['name'][$joinid] : $_FILES['file']['name'],
 					'type' => $isjoin ? $_FILES['join']['type'][$joinid] : $_FILES['file']['type'],
 					'tmp_name' => $isjoin ? $_FILES['join']['tmp_name'][$joinid] : $_FILES['file']['tmp_name'],
 					'error' => $isjoin ? $_FILES['join']['error'][$joinid] : $_FILES['file']['error'],
 					'size' => $isjoin ? $_FILES['join']['size'][$joinid] : $_FILES['file']['size']);
-
+			*/
+			$file = array(
+				'name' => $_FILES['file']['name'],
+				'type' => $_FILES['file']['type'],
+				'tmp_name' => $_FILES['file']['tmp_name'],
+				'error' => $_FILES['file']['error'],
+				'size' => $_FILES['file']['size']
+			);
 			$filepath = $this->_processIndUpload($file, '', 0);
 			$uri = $this->getStorage()->pathToURL($filepath);
 			$o->filepath = $filepath;

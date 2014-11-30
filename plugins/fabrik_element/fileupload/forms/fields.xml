@@ -78,6 +78,16 @@
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
+			
+			<field name="upload_use_wip"
+				type="radio"
+				default="0"
+				class="btn-group"
+				description="PLG_ELEMENT_FILEUPLOAD_USE_WIP_DESC" label="PLG_ELEMENT_FILEUPLOAD_USE_WIP_LABEL">
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+			</field>
+			
 		</fieldset>
 
 		<fieldset name="plg-fileupload-display" label="PLG_ELEMENT_FILEUPLOAD_DISPLAY">
