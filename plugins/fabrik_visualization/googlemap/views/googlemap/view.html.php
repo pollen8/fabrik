@@ -109,7 +109,16 @@ class FabrikViewGooglemap extends JViewLegacy
 			$template = null;
 		}
 
-		$js .= $model->getPluginJsObjects();
+		// Assign plugin js to viz so we can then run clearFilters() 
+		$aObjs = $model->getPluginJsObjects();
+
+		if (!empty($aObjs))
+		{
+			$js .= $model->getJSRenderContext(). ".addPlugins([\n";
+			$js .= "\t" . implode(",\n  ", $aObjs);
+			$js .= "]);";
+		}
+
 		$js .= $model->getFilterJs();
 
 		FabrikHelperHTML::iniRequireJs($model->getShim());

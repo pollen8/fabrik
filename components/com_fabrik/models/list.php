@@ -7575,7 +7575,7 @@ class FabrikFEModelList extends JModelForm
 			throw new ErrorException('Store row failed: ' . $q . "<br>" . $fabrikDb->getErrorMsg(), 500);
 		}
 		else
-		{				
+		{
 			// Clean the cache.
 			JFactory::getCache('com_' . $package)->clean();
 
@@ -7653,7 +7653,7 @@ class FabrikFEModelList extends JModelForm
 		}
 
 		FabrikHelperHTML::debug($db->getQuery(), 'list model updateObject:');
-		
+
 		return true;
 	}
 
@@ -7717,7 +7717,7 @@ class FabrikFEModelList extends JModelForm
 		}
 
 		FabrikHelperHTML::debug($db->getQuery(), 'list model insertObject:');
-		
+
 		return true;
 	}
 
@@ -7990,12 +7990,12 @@ class FabrikFEModelList extends JModelForm
 	{
 		$profiler = JProfiler::getInstance('Application');
 		JDEBUG ? $profiler->mark('cacheDoCalculations: start') : null;
-		
+
 		$listModel = JModelLegacy::getInstance('List', 'FabrikFEModel');
 		$listModel->setId($listId);
 		$db = FabrikWorker::getDbo();
 		$formModel = $listModel->getFormModel();
-		
+
 		JDEBUG ? $profiler->mark('cacheDoCalculations, getGroupsHiarachy: start') : null;
 		$groups = $formModel->getGroupsHiarachy();
 

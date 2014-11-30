@@ -585,6 +585,13 @@ var FbGoogleMapViz = new Class({
 			};
 			fn.delay(1500);
 		}.bind(this));
+	},
+	
+	/**
+	 * Required for use with plugin's clear filters plugin code.
+	 */
+	addPlugins: function (plugins) {
+		this.plugins = plugins;
 	}
 
 });

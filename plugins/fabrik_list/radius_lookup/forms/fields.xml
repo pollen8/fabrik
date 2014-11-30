@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<form>
+	<fields addfieldpath="/administrator/components/com_fabrik/models/fields" name="params">
+		<fieldset label="COM_FABRIK_OPTIONS" name="plg-list-radius_lookup">
+
+			<field type="helplink"
+				url="PLG_LIST_RADIUS_SEARCH_HELP_SERVER" />
+
+			<field name="radius_lookup_mapelement"
+				type="listfields"
+				description="PLG_LIST_RADIUS_LOOKUP_MAP_ELEMENT_DESC"
+				filter="googlemap"
+				label="PLG_LIST_RADIUS_LOOKUP_MAP_ELEMENT_LABEL"
+				repeat="true" />
+				
+			<field name="radius_lookup_conn_id"
+				label="PLG_LIST_RADIUS_LOOKUP_CONNECTION"
+				type="connections"/>
+
+			<field name="radius_lookup_list"
+				type="fabriktables"
+				connection_in_repeat="false"
+				excludejoined="1"
+				showintable="true"
+				label="PLG_LIST_RADIUS_LOOKUP_TABLE_LABEL"
+				observe="params_radius_lookup_conn_id"
+				key="name"
+				/>
+				
+			<field name="radius_lookup_unit"
+				type="list"
+				class="input-small"				
+				default="km"
+				label="PLG_LIST_RADIUS_LOOKUP_RADIUS_UNIT_LABEL"
+				repeat="true">
+					<option value="km">Kms</option>
+					<option value="miles">Miles</option>
+			</field>
+			
+			<field name="distance_field"
+				type="element"
+				connection="params_radius_lookup_conn_id"
+				connection_in_repeat="false"
+				showintable="true"
+				description="PLG_LIST_RADIUS_LOOKUP_DISTANCE_FIELD_DESC"
+				label="PLG_LIST_RADIUS_LOOKUP_DISTANCE_FIELD_LABEL"
+				table="params_radius_lookup_list"/>
+				
+			<field name="name_field"
+				type="element"
+				connection="params_radius_lookup_conn_id"
+				connection_in_repeat="false"
+				showintable="true"
+				description="PLG_LIST_RADIUS_LOOKUP_NAME_FIELD_DESC"
+				label="PLG_LIST_RADIUS_LOOKUP_NAME_FIELD_LABEL"
+				table="params_radius_lookup_list"/>
+			
+		</fieldset>
+		
+	</fields>
+</form>
