@@ -15,6 +15,11 @@ var FbFileUpload = new Class({
 			this.ajaxFolder();
 		}
 
+		// New "work in progress" feature using HTML5 to show new (image file) selection in browser
+		if (this.options.useWIP && !this.options.ajax_upload && this.options.editable !== false) {
+			this.watchBrowseButton();
+		}
+		
 		if (this.options.ajax_upload && this.options.editable !== false) {
 			this.watchAjax();
 			this.options.files = $H(this.options.files);
@@ -60,6 +65,34 @@ var FbFileUpload = new Class({
 		}
 	},
 
+	watchBrowseButton: function () {
+		if (window.File && window.FileReader && window.FileList && window.Blob) {
+			document.id(this.element.id).addEvent('change', function (evt) {
+				var files = evt.target.files;
+				for (var i = 0, f; f = files[i]; i++) {
+					// Only process image files.
+					if (!files[0].type.match('image.*')) {
+						continue;
+					}
+					var reader = new FileReader();
+					// Closure to capture the file information.
+					reader.onload = (function (theFile) {
+						return function (e) {
+							var c = this.getContainer();
+							if (!c) {
+								return;
+							}
+							var b = c.getElement('img');
+							b.src = e.target.result;
+						}.bind(this);
+					}.bind(this))(f);
+					// Read in the image file as a data URL.
+					reader.readAsDataURL(f);
+				}
+			}.bind(this));
+		}
+	},
+	
 	/**
 	 * Single file uploads can allow the user to delee the reference and/or file
 	 */
