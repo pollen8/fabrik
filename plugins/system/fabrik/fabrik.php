@@ -74,6 +74,8 @@ class PlgSystemFabrik extends JPlugin
 			JLoader::import($base . '.layout.helper', JPATH_SITE . '/administrator', 'administrator.');
 		}
 
+		require_once JPATH_SITE . '/components/com_fabrik/helpers/file.php';
+
 		parent::__construct($subject, $config);
 	}
 
@@ -107,35 +109,35 @@ class PlgSystemFabrik extends JPlugin
 			if ($session->has('fabrik.js.scripts'))
 			{
 				$uri = $uri->toString(array('path', 'query'));
-	
+
 				/*
 				if ($_SERVER['REQUEST_METHOD'] === 'POST')
 				{
 					$uri .= serialize($_POST);
 				}
 				*/
-	
+
 				$file = md5($uri) . '.js';
 				$folder = JPATH_SITE . '/cache/com_fabrik/js/';
-				
+
 				/**
 				 * $$$ hugh - Added some belt and braces checking when creating the cache folder,
 				 * as some folk are reporting issues with file_put_contents() failing with "no such file or folder"
 				 * even when the permissions seem to be correct on the cache folder
 				 */
-				
+
 				$folder_exists = JFolder::exists($folder);
-				
+
 				if (!$folder_exists)
 				{
 					$folder_exists = JFolder::create($folder);
 				}
-	
+
 				if ($folder_exists === true)
 				{
 					// folder definitely now exists, go ahead and use caching
 					$cacheFile = $folder . $file;
-		
+
 					// Check for cached version
 					if (!JFile::exists($cacheFile))
 					{
@@ -156,7 +158,7 @@ class PlgSystemFabrik extends JPlugin
 			else
 			{
 				// No session fabrik.js.scripts key, so build
-				$script = self::buildJs();				
+				$script = self::buildJs();
 			}
 		}
 

@@ -72,22 +72,12 @@ class PlgFabrik_ElementYesno extends PlgFabrik_ElementRadiobutton
 
 		// Check if the data is in csv format, if so then the element is a multi drop down
 		$raw = $this->getFullName(true, false) . '_raw';
-		$data = $thisRow->$raw;
-		$j3 = FabrikWorker::j3();
+		$displayData = array('value' => $thisRow->$raw, 'tmpl' => @$this->tmpl);
+		$basePath = JPATH_ROOT . '/plugins/fabrik_element/yesno/layouts';
+		$layout = new FabrikLayoutFile('fabrik_element_yesno_list', $basePath);
+		$layout->addIncludePaths(JPATH_THEMES . '/' . JFactory::getApplication()->getTemplate() . '/html/layouts');
 
-		if ($data == '1')
-		{
-			$icon = $j3 ? 'checkmark.png' : '1.png';
-			$opts = array('alt' => FText::_('JYES'));
-
-			return FabrikHelperHTML::image($icon, 'list', @$this->tmpl, $opts);
-		}
-		else
-		{
-			$icon = $j3 ? 'remove.png' : '0.png';
-
-			return FabrikHelperHTML::image($icon, 'list', @$this->tmpl, array('alt' => FText::_('JNO')));
-		}
+		return $layout->render($displayData);
 	}
 
 	/**
@@ -135,7 +125,7 @@ class PlgFabrik_ElementYesno extends PlgFabrik_ElementRadiobutton
 	    $raw = $this->getFullName(true, false) . '_raw';
 	    $rawdata = $thisRow->$raw;
 	    $data = (bool)$rawdata ? FText::_('JYES') : FText::_('JNO');
-     
+
 	    return $data;
 	}
 
@@ -226,20 +216,12 @@ class PlgFabrik_ElementYesno extends PlgFabrik_ElementRadiobutton
 
 	protected function getReadOnlyOutput($value, $label)
 	{
-		$j3 = FabrikWorker::j3();
+		$displayData = array('value' => $value, 'tmpl' => @$this->tmpl);
+		$basePath = JPATH_ROOT . '/plugins/fabrik_element/yesno/layouts';
+		$layout = new FabrikLayoutFile('fabrik_element_yesno_details', $basePath);
+		$layout->addIncludePaths(JPATH_THEMES . '/' . JFactory::getApplication()->getTemplate() . '/html/layouts');
 
-		if ($value == '1')
-		{
-			$img = $j3 ? 'checkmark.png' : '1.png';
-		}
-		else
-		{
-			$img = $j3 ? 'remove.png' : '0.png';
-		}
-
-		FabrikHelperHTML::addPath(COM_FABRIK_BASE . 'plugins/fabrik_element/yesno/images/', 'image', 'form', false);
-
-		return FabrikHelperHTML::image($img, 'form', @$this->tmpl, array('alt' => $label));
+		return $layout->render($displayData);
 	}
 
 	/**
@@ -314,7 +296,6 @@ class PlgFabrik_ElementYesno extends PlgFabrik_ElementRadiobutton
 		$rows = $this->filterValueList($normal);
 		$return = array();
 		$element = $this->getElement();
-		$params = $this->getParams();
 		$class = $this->filterClass();
 
 		if ($element->filter_type == 'hidden')
