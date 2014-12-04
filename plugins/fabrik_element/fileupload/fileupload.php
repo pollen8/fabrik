@@ -3101,4 +3101,45 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 
 		return $rendered;
 	}
+	
+	/**
+	 * run on formModel::setFormData()
+	 * TESTING - stick the filename (if it's there) in to the formData, so things like validations
+	 * can see it.  Not sure yet if this will mess with the rest of the code.  And I'm sure it'll get
+	 * horribly funky, judging by the code in processUpload!  But hey, let's have a hack at it
+	 *
+	 * @param   int  $c  Repeat group counter
+	 *
+	 * @return void
+	 */
+	
+	public function preProcess_off($c)
+	{
+		$params = $this->getParams();
+		$w = new FabrikWorker;
+		$form = $this->getForm();
+		$data = unserialize(serialize($form->formData));
+		$group = $this->getGroup();
+	
+		/**
+		 * get the key name in dot format for updateFormData method
+		 * $$$ hugh - added $rawkey stuff, otherwise when we did "$key . '_raw'" in the updateFormData
+		 * below on repeat data, it ended up in the wrong format, like join.XX.table___element.0_raw
+		*/
+		$key = $this->getFullName(true, false);
+		$shortkey = $this->getFullName(true, false);
+		$rawkey = $key . '_raw';
+	
+		if (!$group->canRepeat())
+		{
+			if (!$this->isRepeatElement())
+			{
+				$farray = JArrayHelper::getValue($_FILES, $key, array(), 'array');
+				$fname = JArrayHelper::getValue($farray, 'name');
+				$form->updateFormData($key, $fname);
+				$form->updateFormData($rawkey, $fname);
+			}
+		}
+	}
+	
 }
