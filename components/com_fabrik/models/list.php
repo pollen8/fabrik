@@ -10893,7 +10893,7 @@ class FabrikFEModelList extends JModelForm
 		// If the update element is in a join replace the key and table name with the join table's name and key
 		foreach ($joins as $join)
 		{
-			if ($join->table_join == $tbl)
+			if ((int)$join->list_id != 0 && $join->table_join == $tbl)
 			{
 				$joinFound = true;
 				$db->setQuery('DESCRIBE ' . $tbl);
