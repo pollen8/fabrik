@@ -315,6 +315,17 @@
 					<option value="button">PLG_ELEMENT_GOOGLE_MAP_BUTTON</option>
 					<option value="change">PLG_ELEMENT_GOOGLE_MAP_AS_YOU_TYPE</option>
 			</field>
+			
+			<field name="fb_gm_geocode_on_load"
+				type="list"
+				default="0"
+				description="PLG_ELEMENT_GOOGLE_MAP_GEOCODE_ON_LOAD_DESC"
+				label="PLG_ELEMENT_GOOGLE_MAP_GEOCODE_ON_LOAD_LABEL">
+					<option value="0">JNO</option>
+					<option value="1">PLG_ELEMENT_GOOGLE_MAP_GEOCODE_ON_LOAD_NEW_ONLY</option>
+					<option value="2">PLG_ELEMENT_GOOGLE_MAP_GEOCODE_ON_LOAD_EDIT_ONLY</option>
+					<option value="3">PLG_ELEMENT_GOOGLE_MAP_GEOCODE_ON_LOAD_ALWAYS</option>
+			</field>
 
 		</fieldset>
 

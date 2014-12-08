@@ -67,6 +67,7 @@ var FbGoogleMap = new Class({
 		'center': 0,
 		'reverse_geocode': false,
 		'use_radius': false,
+		'geocode_on_load': false,
 		'styles': []
 	},
 
@@ -105,7 +106,7 @@ var FbGoogleMap = new Class({
 						enableHighAccuracy: true
 					});
 				} else {
-					fconsole('Geo locaiton functionality not available');
+					fconsole('Geo location functionality not available');
 				}
 			}
 
@@ -327,9 +328,12 @@ var FbGoogleMap = new Class({
 			}
 		}
 		this.watchTab();
-		Fabrik.addEvent('fabrik.form.page.chage.end', function (form) {
+		Fabrik.addEvent('fabrik.form.page.change.end', function (form) {
 			this.redraw();
 		}.bind(this));
+		if (this.options.geocode && this.options.geocode_on_load) {
+			this.geoCode();
+		}
 	},
 
 	radiusUpdatePosition: function () {

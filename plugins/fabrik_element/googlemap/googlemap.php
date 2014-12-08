@@ -280,6 +280,14 @@ class PlgFabrik_ElementGooglemap extends PlgFabrik_Element
 		$opts->geocode = $params->get('fb_gm_geocode', '0');
 		$opts->geocode_event = $params->get('fb_gm_geocode_event', 'button');
 		$opts->geocode_fields = array();
+		// geocode_on_load, 0 = no, 1 = new, 2 = edit, 3 = always
+		$geocode_on_load = $params->get('fb_gm_geocode_on_load', '0');
+		$opts->geocode_on_load = $this->isEditable() && 
+				(
+					($geocode_on_load == 1 && $formModel->isNewRecord())
+					|| ($geocode_on_load == 2 && !$formModel->isNewRecord())
+					|| $geocode_on_load == 3
+				);
 		$opts->auto_center = (bool) $params->get('fb_gm_auto_center', false);
 		$opts->styles = FabGoogleMapHelper::styleJs($params);
 
