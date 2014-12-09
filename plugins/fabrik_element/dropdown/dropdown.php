@@ -177,6 +177,7 @@ class PlgFabrik_ElementDropdown extends PlgFabrik_ElementList
 		$opts->value = $arSelected;
 		$opts->defaultVal = $this->getDefaultValue($data);
 		$opts->data = (empty($values) && empty($labels)) ? array() : array_combine($values, $labels);
+		$opts->multiple = (bool) $params->get('multiple', '0') == '1';
 		JText::script('PLG_ELEMENT_DROPDOWN_ENTER_VALUE_LABEL');
 
 		return array('FbDropdown', $id, $opts);
