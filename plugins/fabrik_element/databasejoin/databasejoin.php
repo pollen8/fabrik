@@ -634,8 +634,9 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		}
 
 		$bits = explode(',', $concat);
-
-		for ($i = 0; $i < count($bits); $i ++)
+		$countb = count($bits); //unset is modifying count($bits)
+		
+		for ($i = 0; $i < $countb; $i ++)
 		{
 			if (strstr(trim($bits[$i]), '{thistable}.'))
 			{
