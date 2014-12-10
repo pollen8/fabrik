@@ -2050,6 +2050,8 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		$groupModel = $this->getGroup();
 		$element = $this->getElement();
 		$params = $this->getParams();
+		
+		$use_wip = $params->get('upload_use_wip', '0') == '1';
 
 		if ($element->hidden == '1')
 		{
@@ -2134,7 +2136,15 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 
 				$render = $this->loadElement($value);
 
-				if ($value != '' && ($storage->exists(COM_FABRIK_BASE . $value) || JString::substr($value, 0, 4) == 'http'))
+				if (
+					$use_wip
+					|| (
+						$value != '' 
+						&& (
+							$storage->exists(COM_FABRIK_BASE . $value)
+							|| JString::substr($value, 0, 4) == 'http')
+						)
+					)
 				{
 					$render->render($this, $params, $value);
 				}
@@ -2143,7 +2153,15 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 				{
 					if ($this->isEditable())
 					{
-						$render->output = '<span class="fabrikUploadDelete" id="' . $id . '_delete_span">' . $this->deleteButton($value) . $render->output . '</span>';
+						// $$$ hugh - TESTING - using HTML5 to show a selected image, so if no file, still need the span, hidden, but not the actual delete button
+						if ($use_wip && empty($value))
+						{
+							$render->output = '<span class="fabrikUploadDelete fabrikHide" id="' . $id . '_delete_span">' . $render->output . '</span>';
+						}
+						else
+						{
+							$render->output = '<span class="fabrikUploadDelete ' . $extraClass . '" id="' . $id . '_delete_span">' . $this->deleteButton($value) . $render->output . '</span>';
+						}
 					}
 
 					$allRenders[] = $render->output;

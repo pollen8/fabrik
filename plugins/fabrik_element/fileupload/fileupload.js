@@ -84,6 +84,10 @@ var FbFileUpload = new Class({
 							}
 							var b = c.getElement('img');
 							b.src = e.target.result;
+							var d = b.findClassUp('fabrikHide');
+							if (d) {
+								d.removeClass('fabrikHide');
+							}
 						}.bind(this);
 					}.bind(this))(f);
 					// Read in the image file as a data URL.
