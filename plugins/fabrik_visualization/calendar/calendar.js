@@ -557,8 +557,7 @@ var fabrikCalendar = new Class({
 					var opts = this._buildEventOpts({entry: entry, curdate: counterDate, divclass: '.weekView', 'tdOffset': i});
 					// Work out the left offset for the event - stops concurrent events overlapping each other
 					for (var h = opts.startHour; h <= opts.endHour; h ++) {
-						//maxoffsets[h] = typeOf(maxoffsets[h]) === 'null' ? 0 : maxoffsets[h] + 1;
-						maxOffsets[h] = 0;
+						maxoffsets[h] = typeOf(maxoffsets[h]) === 'null' ? 0 : maxoffsets[h] + 1;
 					}
 				}
 			}.bind(this));
@@ -566,7 +565,7 @@ var fabrikCalendar = new Class({
 			var gridSize = 1;
 			Object.each(maxoffsets, function (o) {
 				if (o > gridSize) {
-					//gridSize = o;
+					gridSize = o;
 				}
 			});
 
@@ -582,11 +581,10 @@ var fabrikCalendar = new Class({
 
 					// Work out the left offset for the event - stops concurrent events overlapping each other
 					for (var h = opts.startHour; h <= opts.endHour; h ++) {
-						//offsets[h] = typeOf(offsets[h]) === 'null' ? 0 : offsets[h] + 1;
+						offsets[h] = typeOf(offsets[h]) === 'null' ? 0 : offsets[h] + 1;
 					}
 					var thisOffset = 0;
-					//for (h = opts.startHour; h <= opts.endHour; h ++) {
-					for (h = opts.startHour; h < opts.endHour; h ++) {
+					for (h = opts.startHour; h <= opts.endHour; h ++) {
 						if (offsets[h] > thisOffset) {
 							thisOffset = offsets[h];
 						}
@@ -648,18 +646,14 @@ var fabrikCalendar = new Class({
 			duration = 1;
 		}
 
-		//if (startdate.getDay() !== enddate.getDay()) {
 		if (!startdate.isSameDay(enddate)) {
-			//duration = this.options.open !== 0 || this.options.close !== 24 ? this.options.close - this.options.open + 1 : 24;
-			duration = 24;
+			duration = this.options.open !== 0 || this.options.close !== 24 ? this.options.close - this.options.open + 1 : 24;
 			if (startdate.isSameDay(counterDate)) {
-				//duration = this.options.open !== 0 || this.options.close !== 24 ? this.options.close - this.options.open + 1 : 24 - startdate.getHours();
-				duration = 24 - startdate.getHours();
+				duration = this.options.open !== 0 || this.options.close !== 24 ? this.options.close - this.options.open + 1 : 24 - startdate.getHours();
 			} else {
 				startdate.setHours(0);
 				if (enddate.isSameDay(counterDate)) {
-					//duration = this.options.open !== 0 || this.options.close !== 24 ? this.options.close - this.options.open : enddate.getHours();
-					duration =  enddate.getHours();
+					duration = this.options.open !== 0 || this.options.close !== 24 ? this.options.close - this.options.open : enddate.getHours();
 				}
 			}
 		}
