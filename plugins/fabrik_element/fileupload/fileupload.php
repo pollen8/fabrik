@@ -2160,7 +2160,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 						}
 						else
 						{
-							$render->output = '<span class="fabrikUploadDelete ' . $extraClass . '" id="' . $id . '_delete_span">' . $this->deleteButton($value) . $render->output . '</span>';
+							$render->output = '<span class="fabrikUploadDelete" id="' . $id . '_delete_span">' . $this->deleteButton($value) . $render->output . '</span>';
 						}
 					}
 
