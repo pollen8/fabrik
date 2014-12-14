@@ -12,7 +12,7 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-$data = $displayData['data'];
+$data = $displayData['value'];
 $tmpl = $displayData['tmpl'];
 $j3 = FabrikWorker::j3();
 
