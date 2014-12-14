@@ -471,10 +471,19 @@ if (!$j3)
 
 	public static function printURL($formModel)
 	{
+		
+		/**
+		 * Comment this out for now, as it causes issues with multiple forms per page.
+		 * We could always create a $sig for it, but that would need the info from the form and
+		 * table models, which are probably the most 'expensive' aprt of this function anyway. 
+		 */
+		
+		/*
 		if (isset(self::$printURL))
 		{
 			return self::$printURL;
 		}
+		*/
 
 		$app = JFactory::getApplication();
 		$input = $app->input;
@@ -549,11 +558,19 @@ if (!$j3)
 
 	public static function emailURL($formModel)
 	{
+		/**
+		 * Comment this out for now, as it causes issues with multiple forms per page.
+		 * We could always create a $sig for it, but that would need the info from the form and
+		 * table models, which are probably the most 'expensive' aprt of this function anyway.
+		 */
+		
+		/*
 		if (isset(self::$emailURL))
 		{
 			return self::$emailURL;
 		}
-
+		*/
+		
 		$app = JFactory::getApplication();
 		$input = $app->input;
 		$package = $app->getUserState('com_fabrik.package', 'fabrik');
