@@ -1598,8 +1598,8 @@ class FabrikFEModelForm extends FabModelForm
 		{
 			if ($this->dofilter)
 			{
-				$item = preg_replace('/%([0-9A-F]{2})/mei', "chr(hexdec('\\1'))", $item);
-
+				//$item = preg_replace('/%([0-9A-F]{2})/mei', "chr(hexdec('\\1'))", $item);
+				$item = preg_replace_callback('/%([0-9A-F]{2})/mi',  function($m){return utf8_encode(chr(hexdec('\\1')));}, $item);
 				if ($this->ajaxPost)
 				{
 					$item = rawurldecode($item);
