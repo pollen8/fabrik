@@ -1699,6 +1699,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		if ($groupModel->isJoin())
 		{
 			$name = $this->getFullName(true, false);
+			/*
 			$joinid = $groupModel->getGroup()->join_id;
 			$joindata = $input->files->get('join', array(), 'array');
 
@@ -1706,14 +1707,19 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 			{
 				return true;
 			}
+			*/
+
+			$files = $input->files->get($name, array(), 'array');
 
 			if ($groupModel->canRepeat())
 			{
-				$file = $joindata[$joinid][$name][$repeatCounter]['name'];
+				//$file = $joindata[$joinid][$name][$repeatCounter]['name'];
+				$file = $files[$repeatCounter]['name'];
 			}
 			else
 			{
-				$file = $joindata[$joinid][$name]['name'];
+				//$file = $joindata[$joinid][$name]['name'];
+				$file = $files['name'];
 			}
 
 			return $file == '' ? true : false;
@@ -1747,12 +1753,10 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 				}
 				else
 				{
-					$file = $input->files->get($name, array(), 'array');
-
-					if ($groupModel->canRepeat())
-					{
-						return $file[$repeatCounter]['name'] == '' ? true : false;
-					}
+					$files = $input->files->get($name, array(), 'array');
+					$file = $files['name'];
+					
+					return $file == '' ? true : false;
 				}
 			}
 		}
@@ -2137,7 +2141,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 				$render = $this->loadElement($value);
 
 				if (
-					$use_wip
+					($use_wip && $this->isEditable())
 					|| (
 						$value != '' 
 						&& (
