@@ -21,11 +21,11 @@ if ($data == '1')
 	$icon = $j3 ? 'checkmark.png' : '1.png';
 	$opts = array('alt' => FText::_('JYES'));
 
-	return FabrikHelperHTML::image($icon, 'list', $tmpl, $opts);
+	echo FabrikHelperHTML::image($icon, 'list', $tmpl, $opts);
 }
 else
 {
 	$icon = $j3 ? 'remove.png' : '0.png';
 
-	return FabrikHelperHTML::image($icon, 'list', $tmpl, array('alt' => FText::_('JNO')));
+	echo FabrikHelperHTML::image($icon, 'list', $tmpl, array('alt' => FText::_('JNO')));
 }
