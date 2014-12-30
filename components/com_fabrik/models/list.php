@@ -5145,6 +5145,12 @@ class FabrikFEModelList extends JModelForm
 
 			list($value, $condition) = $elementModel->getFilterValue($value, $condition, $eval);
 
+			/*
+			 *  $$$ hugh - this chunk got fugly, as we wound up with too many quotes with whole words on
+			 *  and exact match off, like ...
+			 *  LOWER('"[[:<:]]Brose[[:>:]]"')
+			 *  ... so I fixed it the long handed way ... could prolly be done more elegantly, but this should work!
+			 */
 			if ($fullWordsOnly == '1')
 			{
 				if (is_array($value))
@@ -5153,17 +5159,31 @@ class FabrikFEModelList extends JModelForm
 					{
 						$v = "\"[[:<:]]" . $v . "[[:>:]]\"";
 					}
+					if (strtoupper($condition) === 'REGEXP')
+					{
+						// $$$ 15/11/2012 - moved from before getFilterValue() to after as otherwise date filters in querystrings created wonky query
+						$v = 'LOWER(' . $v . ')';
+					}
 				}
 				else
 				{
 					$value = "\"[[:<:]]" . $value . "[[:>:]]\"";
+					if (strtoupper($condition) === 'REGEXP')
+					{
+						// $$$ 15/11/2012 - moved from before getFilterValue() to after as otherwise date filters in querystrings created wonky query
+						$value = 'LOWER(' . $value . ')';
+					}
 				}
 			}
-
-			if (strtoupper($condition) === 'REGEXP')
+			else
 			{
-				// $$$ 15/11/2012 - moved from before getFilterValue() to after as otherwise date filters in querystrings created wonky query
-				$value = 'LOWER(' . $db->quote($value, false) . ')';
+
+				if (strtoupper($condition) === 'REGEXP')
+				{
+					// $$$ 15/11/2012 - moved from before getFilterValue() to after as otherwise date filters in querystrings created wonky query
+					$value = 'LOWER(' . $db->quote($value, false) . ')';
+				}
+			
 			}
 
 			if (!array_key_exists($i, $sqlCond) || $sqlCond[$i] == '')
