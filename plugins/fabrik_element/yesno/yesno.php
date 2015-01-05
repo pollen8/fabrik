@@ -437,10 +437,20 @@ class PlgFabrik_ElementYesno extends PlgFabrik_ElementRadiobutton
 	
 			$shortPk = FabrikString::shortColName($pk);
 			$rowid = JArrayHelper::getValue($data, $shortPk, null);
+			$where = $pk . ' <> ' . $rowid;
+			$where2 = $params->get('toggle_where', '');
+			
+			if ($where2 != '') 
+			{
+				$w = new FabrikWorker;
+				$where2 = $w->parseMessageForPlaceHolder($where2);
+				$where .= ' AND ' . $where2;
+			}
+			
 			$query->update($this->actualTableName())->set($name . ' = 0');
 			if (!empty($rowid))
 			{
-				$query->where($pk . ' <> ' . $rowid);
+				$query->where($where);
 			}
 			$db->setQuery($query);
 			$db->execute();
