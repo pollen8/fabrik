@@ -1693,6 +1693,13 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 				}
 			}
 		}
+		else
+		{
+			if ($input->get('task') == '')
+			{
+				return parent::dataConsideredEmpty($data, $repeatCounter);
+			}
+		}
 
 		$groupModel = $this->getGroup();
 
