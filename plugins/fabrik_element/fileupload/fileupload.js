@@ -287,7 +287,8 @@ var FbFileUpload = new Class({
 			chunk_size: this.options.ajax_chunk_size + 'kb',
 			dragdrop : true,
 			multipart: true,
-			filters: this.options.filters
+			filters: this.options.filters,
+			page_url: this.options.page_url
 		};
 		this.uploader = new plupload.Uploader(plupopts);
 
