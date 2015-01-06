@@ -1430,7 +1430,7 @@ class PlgFabrik_Element extends FabrikPlugin
 			$values = JArrayHelper::getValue($data, $name, $default);
 
 			// Querystring override (seems on http://fabrikar.com/subscribe/form/22 querystring var was not being set into $data)
-			if (JArrayHelper::getValue($opts, 'use_querystring', true))
+			if (JArrayHelper::getValue($opts, 'use_querystring', false))
 			{
 				if ((is_array($values) && empty($values)) || $values === '')
 				{
@@ -4840,7 +4840,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		{
 			$pluginManager = FabrikWorker::getPluginManager();
 			$plugin = $pluginManager->getElementPlugin($splitSum);
-			$sql = $this->getSumQuery($listModel, $groupByLabels) . ' GROUP BY label';
+			$sql = $this->getSumQuery($listModel, $groupBys) . ' GROUP BY label';
 			$sql = $listModel->pluginQuery($sql);
 			$db->setQuery($sql);
 			$results2 = $db->loadObjectList('label');
@@ -5780,7 +5780,8 @@ class PlgFabrik_Element extends FabrikPlugin
 		 * @TODO - fix this to use formData instead of formDataWithTableName,
 		 * which we need to deprecate.
 		 */
-		if (!array_key_exists($name, $formModel->formDataWithTableName))
+		//if (!array_key_exists($name, $formModel->formDataWithTableName))
+		if ($this->dataConsideredEmpty(JArrayHelper::getValue($formModel->formDataWithTableName, $name, '')))
 		{
 			$this->getEmptyDataValue($data);
 		}

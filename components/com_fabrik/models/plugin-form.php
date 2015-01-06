@@ -186,11 +186,16 @@ class PlgFabrik_Form extends FabrikPlugin
 	 */
 	public function getProcessData()
 	{
+		$profiler = JProfiler::getInstance('Application');
+		JDEBUG ? $profiler->mark("getProcessData: start") : null;
+		
 		$model = $this->getModel();
 		unset($this->emailData);
 		$d = isset($model->formDataWithTableName) ? $model->formDataWithTableName : array();
 		$this->data = array_merge($d, $this->getEmailData());
 
+		JDEBUG ? $profiler->mark("getProcessData: end") : null;
+		
 		return $this->data;
 	}
 
@@ -203,9 +208,31 @@ class PlgFabrik_Form extends FabrikPlugin
 
 	public function getEmailData()
 	{
-		if (isset($this->emailData))
+		$profiler = JProfiler::getInstance('Application');
+		JDEBUG ? $profiler->mark("getEmailData: start") : null;
+
+		/**
+		 * NOTE - $$$ hugh - 9/17/2014  - we were originally caching in $this->emailData, but that provides no caching help at all,
+		 * as "this" is a plugin model, and the cache needs to be on the form model.  So changed it to use
+		 * the $model->emailData.  But for backward compat, we will continue to store a copy in $this.  This change has
+		 * yielded huge speed gains on form submission for larger forms (in my testing, more than cutting it in half),
+		 * as untill this change we were rebuiding the $emailData from scratch for every element on the form, which didn't
+		 * become apparent till we added the fabrikdebug=2 to allows profiling of submissions, and added the extra profiling
+		 * marks for the submission processing
+		 * 
+		 * ... which is great, but ... 
+		 *  
+		 * I have a sneaky suspicion it may have some unforeseen side effects for things like calcs, in certain corner
+		 * cases where this function gets called early in submission processing.  So watch out for that.  If calcs start
+		 * showing up with incorrect values in emails, this is probably why.
+		 */
+		
+		$model = $this->getModel();
+		
+		if (isset($model->emailData))
 		{
-			return $this->emailData;
+			JDEBUG ? $profiler->mark("getEmailData: cached") : null;
+			return $model->emailData;
 		}
 
 		$model = $this->getModel();
@@ -237,6 +264,7 @@ class PlgFabrik_Form extends FabrikPlugin
 
 		$params = $model->getParams();
 		$this->emailData = array();
+		$model->emailData = array();
 
 		// $$$ hugh - temp foreach fix
 		$groups = $model->getGroupsHiarachy();
@@ -375,7 +403,10 @@ class PlgFabrik_Form extends FabrikPlugin
 		}
 
 		$model->setEditable($editable);
-
+		$model->emailData = $this->emailData;
+		
+		JDEBUG ? $profiler->mark("getEmailData: end") : null;
+		
 		return $this->emailData;
 	}
 

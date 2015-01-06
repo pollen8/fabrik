@@ -127,7 +127,9 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 
 		$data['images'] = json_encode($this->images());
 
-		if (is_null($id))
+		$isNew = is_null($id) ? true : false;
+		
+		if ($isNew)
 		{
 			$data['created'] = JFactory::getDate()->toSql();
 			$attribs['created_by'] = $user->get('id');
@@ -148,7 +150,6 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 
 
 		$this->generateNewTitle($id, $catid, $data);
-		$isNew = is_null($id) ? true : false;
 
 		if (!$isNew)
 		{
@@ -194,6 +195,12 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 			$item->store();
 		}
 
+		if (!$isNew)
+		{
+			$cache = JFactory::getCache('com_content');
+			$cache->clean($id);
+		}
+		
 		return $item;
 	}
 

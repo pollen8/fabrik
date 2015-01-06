@@ -58,6 +58,9 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 
 	public function onAfterProcess()
 	{
+		$profiler = JProfiler::getInstance('Application');
+		JDEBUG ? $profiler->mark("email: start: onAfterProcess") : null;
+		
 		$params = $this->getParams();
 		$app = JFactory::getApplication();
 		$input = $app->input;

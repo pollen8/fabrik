@@ -23,6 +23,8 @@ JHtml::_('behavior.keepalive');
 
 	Joomla.submitbutton = function(task) {
 		var currentGroups = document.id('jform_current_groups');
+		var createNew = document.id('jform__createGroup1').checked;
+		
 		if (typeOf(currentGroups) !== 'null') {
 			Object.each(currentGroups.options, function (opt) {
 				opt.selected = true;
@@ -35,7 +37,7 @@ JHtml::_('behavior.keepalive');
 				return false;
 			}
 
-			if (typeOf(currentGroups) !== 'null' && currentGroups.options.length === 0) {
+			if (typeOf(currentGroups) !== 'null' && currentGroups.options.length === 0 && createNew === false) {
 				alert('Please select at least one group');
 				return false;
 			}
