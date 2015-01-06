@@ -437,21 +437,24 @@ class PlgFabrik_ElementYesno extends PlgFabrik_ElementRadiobutton
 	
 			$shortPk = FabrikString::shortColName($pk);
 			$rowid = JArrayHelper::getValue($data, $shortPk, null);
-			$where = $pk . ' <> ' . $rowid;
-			$where2 = $params->get('toggle_where', '');
-			
-			if ($where2 != '') 
-			{
-				$w = new FabrikWorker;
-				$where2 = $w->parseMessageForPlaceHolder($where2);
-				$where .= ' AND ' . $where2;
-			}
 			
 			$query->update($this->actualTableName())->set($name . ' = 0');
+			
 			if (!empty($rowid))
 			{
-				$query->where($where);
+				$query->where($pk . ' <> ' . $rowid);
 			}
+			
+			$toggle_where = $params->get('toggle_where', '');
+			FabrikString::ltrimiword($toggle_where, 'where');
+			
+			if (!empty($toggle_where))
+			{
+				$w = new FabrikWorker;
+				$toggle_where = $w->parseMessageForPlaceHolder($toggle_where);
+				$query->where($toggle_where);
+			}
+			
 			$db->setQuery($query);
 			$db->execute();
 		}
