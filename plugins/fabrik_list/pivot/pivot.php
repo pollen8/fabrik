@@ -111,15 +111,16 @@ class PlgFabrik_ListPivot extends PlgFabrik_List
 		$params = $this->getParams();
 		$sums = explode(',', $params->get('pivot_sum'));
 		$db = $this->model->getDb();
+		$fn = (int) $params->get('pivot_count', '0') == 1 ? 'COUNT' : 'SUM';
 
 		foreach ($sums as &$sum)
 		{
 			$sum = trim($sum);
 			$as = FabrikString::safeColNameToArrayKey($sum);
 
-			$statement = 'SUM(' . FabrikString::safeColName($sum) . ')';
+			$statement = $fn .'(' . FabrikString::safeColName($sum) . ')';
 			$statement .= ' AS ' . $db->quoteName($as);
-			$statement .= ', SUM(' . FabrikString::safeColName($sum) . ')';
+			$statement .= ', ' . $fn .'(' . FabrikString::safeColName($sum) . ')';
 			$statement .= ' AS ' . $db->quoteName($as . '_raw');
 
 			$sum = $statement;
