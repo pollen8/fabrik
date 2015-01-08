@@ -8,6 +8,7 @@
 *.jpg
 .htaccess
 php.ini
+build/
 cache/*
 administrator/*
 !administrator/components/com_fabrik/
