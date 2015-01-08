@@ -88,6 +88,11 @@
 				label="PLG_ELEMENT_CHECKBOX_SEPARATOR_LABEL"
 				size="10"/>
 
+			<field name="dropdown_populate"
+				type="fabrikeditor"
+				mode="php"
+				description="PLG_ELEMENT_CHECKBOX_POPULATE_DESC"
+				label="PLG_ELEMENT_CHECKBOX_POPULATE_LABEL" />
 		</fieldset>
 	</fields>
 </form>
