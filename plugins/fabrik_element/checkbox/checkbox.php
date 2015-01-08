@@ -130,7 +130,9 @@ class PlgFabrik_ElementCheckbox extends PlgFabrik_ElementList
 		$params = $this->getParams();
 		$element = $this->getElement();
 
-		if (!array_key_exists($element->name, $data))
+		$value = JArrayHelper::getValue($data, $element->name, '');
+		
+		if ($value === '')
 		{
 			$data[$element->name] = $params->get('sub_default_value');
 			$data[$element->name . '_raw'] = array($params->get('sub_default_value'));
