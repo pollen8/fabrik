@@ -646,7 +646,7 @@ class PlgFabrik_ElementRating extends PlgFabrik_Element
 			$opts->outsrc = FabrikHelperHTML::image("star-empty.png", 'list', @$this->tmpl, array(), true);
 		}
 
-		$opts->canRate = $this->canRate();
+		$opts->canRate = $params->get('rating-mode') == 'creator-rating' ? true : $this->canRate();
 		$opts->ajaxloader = FabrikHelperHTML::image("ajax-loader.gif", 'list', @$this->tmpl, array(), true);
 		$opts->listRef = $listModel->getRenderContext();
 		$opts->formid = $listModel->getFormModel()->getId();
