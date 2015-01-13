@@ -117,7 +117,9 @@ endforeach;
 				echo $this->loadTemplate('row');
 		 	endforeach
 		 	?>
+		 	</tbody>
 			<?php if ($this->hasCalculations) : ?>
+			<tfoot>
 				<tr class="fabrik_calculations">
 				
 				<?php 
@@ -135,9 +137,8 @@ endforeach;
 				?>
 
 				</tr>
-
+			</tfoot>
 			<?php endif ?>
-			</tbody>
 		<?php
 		$gCounter++;
 		endforeach?>
