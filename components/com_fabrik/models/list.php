@@ -8792,6 +8792,8 @@ class FabrikFEModelList extends JModelForm
 		$cache = JFactory::getCache($app->input->get('option'));
 		$cache->clean();
 
+		$this->unsetPluginQueryWhere('list.deleteRows');
+		
 		return true;
 	}
 
