@@ -190,6 +190,7 @@ class FabrikAdminViewList extends JViewLegacy
 
 		$this->lists = $lists;
 		$this->addConfirmCopyToolbar();
+		FabrikHelperHTML::iniRequireJS();
 		parent::display($tpl);
 	}
 
