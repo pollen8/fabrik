@@ -593,7 +593,8 @@ var fabrikCalendar = new Class({
 					td = hourTds[startIndex];
 
 					// Work out event div width - taking into account 1px margin between each event
-					eventWidth = Math.floor((td.getSize().x - gridSize) / gridSize);
+					//eventWidth = Math.floor((td.getSize().x - gridSize) / gridSize);
+					eventWidth = Math.floor((td.getSize().x - gridSize) / (gridSize + 1));
 					opts.width = eventWidth + 'px';
 					opts['margin-left'] = thisOffset * (eventWidth + 1);
 					var div = this._makeEventRelDiv(entry, opts, null, td);
@@ -645,7 +646,7 @@ var fabrikCalendar = new Class({
 			duration = 1;
 		}
 
-		if (startdate.getDay() !== enddate.getDay()) {
+		if (!startdate.isSameDay(enddate)) {
 			duration = this.options.open !== 0 || this.options.close !== 24 ? this.options.close - this.options.open + 1 : 24;
 			if (startdate.isSameDay(counterDate)) {
 				duration = this.options.open !== 0 || this.options.close !== 24 ? this.options.close - this.options.open + 1 : 24 - startdate.getHours();
@@ -773,7 +774,9 @@ var fabrikCalendar = new Class({
 				td = hourTds[startIndex];
 
 				// Work out event div width - taking into account 1px margin between each event
-				eventWidth = Math.floor((td.getSize().x - gridSize) / gridSize);
+				//eventWidth = Math.floor((td.getSize().x - gridSize) / gridSize);
+				eventWidth = Math.floor((td.getSize().x - gridSize) / (gridSize + 1));
+
 				opts.width = eventWidth + 'px';
 
 				// Work out the left offset for the event - stops concurrent events overlapping each other

@@ -3498,7 +3498,7 @@ class PlgFabrik_Element extends FabrikPlugin
 			 * Paul - According to tooltip, $phpOpts should be of form "array(JHTML: :_('select.option', '1', 'one'))"
 			 * This is an array of objects with properties text and value.
 			 * If user has mis-specified this we should tell them.
-			 * 
+			 *
 			 * @FIXME - $$$ hugh - seems like an empty array should be valid as well?
 			 **/
 			if (!is_array($phpOpts) || !$phpOpts[0] || !is_object($phpOpts[0]) || !isset($phpOpts[0]->value) || !isset($phpOpts[0]->text))
@@ -3541,7 +3541,7 @@ class PlgFabrik_Element extends FabrikPlugin
 			 * Paul - According to tooltip, $phpOpts should be of form "array(JHTML::_('select.option', '1', 'one'))"
 			 * This is an array of objects with properties text and value.
 			 * If user has mis-specified this we should tell them.
-			 * 
+			 *
 			 * @FIXME - $$$ hugh - seems like an empty array should be valid as well?
 			 **/
 			if (!is_array($phpOpts) || !$phpOpts[0] || !is_object($phpOpts[0]) || !isset($phpOpts[0]->value) || !isset($phpOpts[0]->text))
@@ -3564,6 +3564,26 @@ class PlgFabrik_Element extends FabrikPlugin
 			$opt = FText::_($opt);
 		}
 
+		return $opts;
+	}
+	
+	/**
+	 * Get sub option enabled/disabled state
+	 *
+	 * @return  array
+	 */
+	
+	protected function getSubOptionEnDis()
+	{
+		$opts = array();
+		$phpOpts = $this->getPhpOptions();
+		if ($phpOpts)
+		{
+			foreach ($phpOpts as $phpOpt)
+			{
+				$opts[] = $phpOpt->disable;
+			}
+		}
 		return $opts;
 	}
 
@@ -5780,8 +5800,8 @@ class PlgFabrik_Element extends FabrikPlugin
 		 * @TODO - fix this to use formData instead of formDataWithTableName,
 		 * which we need to deprecate.
 		 */
-		//if (!array_key_exists($name, $formModel->formDataWithTableName))
-		if ($this->dataConsideredEmpty(JArrayHelper::getValue($formModel->formDataWithTableName, $name, '')))
+		if (!array_key_exists($name, $formModel->formDataWithTableName))
+		//if ($this->dataConsideredEmpty(JArrayHelper::getValue($formModel->formDataWithTableName, $name, '')))
 		{
 			$this->getEmptyDataValue($data);
 		}

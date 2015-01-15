@@ -79,7 +79,10 @@ class PlgFabrik_FormLimit extends PlgFabrik_Form
 		}
 		else
 		{
-			$app->enqueueMessage(JText::sprintf('PLG_FORM_LIMIT_ENTRIES_LEFT_MESSAGE', $limit - $c, $limit));
+			if ($params->get('show_limit_message', true))
+			{
+				$app->enqueueMessage(JText::sprintf('PLG_FORM_LIMIT_ENTRIES_LEFT_MESSAGE', $limit - $c, $limit));
+			}
 		}
 
 		return true;

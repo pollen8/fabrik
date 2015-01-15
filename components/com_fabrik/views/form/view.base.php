@@ -51,9 +51,7 @@ class FabrikViewFormBase extends JViewLegacy
 		$app = JFactory::getApplication();
 		$input = $app->input;
 		$w = new FabrikWorker;
-		$config = JFactory::getConfig();
 		$model = $this->getModel('form');
-		$document = JFactory::getDocument();
 		$model->isMambot = $this->isMambot;
 		$form = $model->getForm();
 
@@ -118,6 +116,18 @@ class FabrikViewFormBase extends JViewLegacy
 
 		$form->error = $form->error === '' ? FText::_('COM_FABRIK_FAILED_VALIDATION') : FText::_($form->error);
 		$form->origerror = $form->error;
+		$clearErrors = false;
+
+		// Module rendered without ajax, we need to assign the session errors back into the model
+		if ($model->isMambot)
+		{
+			$package = $app->getUserState('com_fabrik.package', 'fabrik');
+			$context = 'com_' . $package . '.form.' . $form->id . '.' . $this->rowid . '.';
+			$session = JFactory::getSession();
+			$model->errors = $session->get($context . 'errors', array());
+			$clearErrors = true;
+		}
+
 		$form->error = $model->hasErrors() ? $form->error : '';
 		JDEBUG ? $profiler->mark('form view before validation classes loaded') : null;
 
@@ -161,6 +171,13 @@ class FabrikViewFormBase extends JViewLegacy
 
 		$root = $app->isAdmin() ? JPATH_ADMINISTRATOR : JPATH_SITE;
 		$this->addTemplatePath($root . '/templates/' . $app->getTemplate() . '/html/com_fabrik/'. $folder. '/'.  $tmpl);
+
+		// If rendered as a module (non ajax) and we have inserted the session errors, clear them from the session.
+		if ($clearErrors)
+		{
+			$model->clearErrors();
+		}
+
 		JDEBUG ? $profiler->mark('form view before template load') : null;
 	}
 
@@ -366,6 +383,7 @@ class FabrikViewFormBase extends JViewLegacy
 	{
 		$app = JFactory::getApplication();
 		$package = $app->getUserState('com_fabrik.package', 'fabrik');
+		$pluginManager = FabrikWorker::getPluginManager();
 		$input = $app->input;
 		$document = JFactory::getDocument();
 		$model = $this->getModel();
@@ -454,7 +472,11 @@ class FabrikViewFormBase extends JViewLegacy
 		FabrikHelperHTML::tips('.hasTip', array(), "$('$bkey')");
 		$model->getFormCss();
 		$opts = $this->jsOpts();
-		$opts = json_encode($opts);
+
+		$model->jsOpts = $opts;
+		$res = $pluginManager->runPlugins('onJSOpts', $model);
+
+		$opts = json_encode($model->jsOpts);
 
 		if (!FabrikHelperHTML::inAjaxLoadedPage())
 		{
@@ -557,7 +579,6 @@ class FabrikViewFormBase extends JViewLegacy
 			$script[] = "new FloatingTips('#" . $bkey . " .fabrikTip', " . json_encode($tipOpts) . ");";
 		}
 
-		$pluginManager = FabrikWorker::getPluginManager();
 		$res = $pluginManager->runPlugins('onJSReady', $model);
 
 		if (in_array(false, $res))
@@ -651,6 +672,7 @@ class FabrikViewFormBase extends JViewLegacy
 		$maxRepeat = array();
 		$minRepeat = array();
 		$showMaxRepeats = array();
+		$minMaxErrMsg = array();
 
 		foreach ($this->groups as $g)
 		{
@@ -658,12 +680,14 @@ class FabrikViewFormBase extends JViewLegacy
 			$maxRepeat[$g->id] = $g->maxRepeat;
 			$minRepeat[$g->id] = $g->minRepeat;
 			$showMaxRepeats[$g->id] = $g->showMaxRepeats;
+			$minMaxErrMsg[$g->id] = $g->minMaxErrMsg;
 		}
 
 		$opts->hiddenGroup = $hidden;
 		$opts->maxRepeat = $maxRepeat;
 		$opts->minRepeat = $minRepeat;
 		$opts->showMaxRepeats = $showMaxRepeats;
+		$opts->minMaxErrMsg = $minMaxErrMsg;
 
 		// $$$ hugh adding these so calc element can easily find joined and repeated join groups
 		// when it needs to add observe events ... don't ask ... LOL!

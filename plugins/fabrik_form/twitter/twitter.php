@@ -314,7 +314,7 @@ class PlgFabrik_FormTwitter extends PlgFabrik_Form
 
 		if (!strstr($url[1], 'bit.ly/') && $url[1] !== '')
 		{
-			$return_url = $this->bitly->shorten($url[1]);
+			$return_url = (string) $this->bitly->shorten($url[1]);
 
 			if ($this->bitly->getError() > 0)
 			{

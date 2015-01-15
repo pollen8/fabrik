@@ -75,6 +75,7 @@ class PlgFabrik_FormSalesforce extends PlgFabrik_Form
 		@ini_set("soap.wsdl_cache_enabled", "0");
 		$formModel = $this->getModel();
 		$client = $this->client();
+		$params = $this->getParams();
 		$userName = $params->get('salesforce_username');
 		$password = $params->get('salesforce_password');
 		$token = $params->get('salesforce_token');

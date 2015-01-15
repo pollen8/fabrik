@@ -265,6 +265,10 @@ class PlgFabrik_ElementLink extends PlgFabrik_Element
 		$bits['placeholder'] = FText::_('PLG_ELEMENT_LINK_URL');
 		$bits['name'] = $linkname;
 		$bits['value'] = JArrayHelper::getValue($value, 'link');
+		if (is_a($bits['value'], 'stdClass'))
+		{
+			$bits['value'] = $bits['value']->{0};
+		}
 		$html[] = $this->buildInput('input', $bits);
 		$html[] = '</div>';
 
@@ -339,7 +343,7 @@ class PlgFabrik_ElementLink extends PlgFabrik_Element
 						 */
 						if (!strstr($v['link'], 'bit.ly/') && $v['link'] !== '')
 						{
-							$v['link'] = $bitly->shorten($v['link']);
+							$v['link'] = (string) $bitly->shorten($v['link']);
 						}
 					}
 					/*$return .= implode(GROUPSPLITTER2, $v);
@@ -356,7 +360,7 @@ class PlgFabrik_ElementLink extends PlgFabrik_Element
 					{
 						if (!strstr($v, 'bit.ly/') && $v !== '')
 						{
-							$v = $bitly->shorten($v);
+							$v = (string) $bitly->shorten($v);
 						}
 					}
 				}
@@ -415,7 +419,8 @@ class PlgFabrik_ElementLink extends PlgFabrik_Element
 
 	public function getValuesToEncrypt(&$values, $data, $c)
 	{
-		$data = (array) json_decode($this->getValue($data, $c));
+		//$data = (array) json_decode($this->getValue($data, $c));
+		
 		$name = $this->getFullName(true, false);
 		$group = $this->getGroup();
 

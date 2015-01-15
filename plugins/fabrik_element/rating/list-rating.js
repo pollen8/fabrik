@@ -18,6 +18,9 @@ var FbRatingList = new Class({
 	initialize: function (id, options) {
 		options.element = id;
 		this.setOptions(options);
+		if (this.options.canRate === false) {
+			return;
+		}
 		if (this.options.mode === 'creator-rating') {
 			return;
 		}

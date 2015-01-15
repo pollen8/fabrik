@@ -616,6 +616,13 @@
 				<exclude name="**/custom_css.php" />
 			</fileset>
 		</copy>
+		
+		<mkdir dir="${cfg.destdir}/site/views/form/tmpl/bootstrap_tabs" />
+		<copy todir="${cfg.destdir}/site/views/form/tmpl/bootstrap_tabs">
+			<fileset dir="${basedir}/components/com_fabrik/views/form/tmpl/bootstrap_tabs">
+				<exclude name="**/custom_css.php" />
+			</fileset>
+		</copy>
 
 		<mkdir dir="${cfg.destdir}/media/com_fabrik" />
 		<copy todir="${cfg.destdir}/media/com_fabrik">

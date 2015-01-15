@@ -419,7 +419,7 @@ class FabrikModelCalendar extends FabrikFEModelVisualization
 
 		foreach ($this->events as $listid => $record)
 		{
-			$where = JArrayHelper::getValue($where, $listid, '');
+			$this_where = JArrayHelper::getValue($where, $listid, '');
 			$listModel = JModelLegacy::getInstance('list', 'FabrikFEModel');
 			$listModel->setId($listid);
 
@@ -480,8 +480,8 @@ class FabrikModelCalendar extends FabrikFEModelVisualization
 				->select($status . ' AS status')
 				->order($startdate . ' ASC');
 				$query = $listModel->buildQueryJoin($query);
-				$where = trim(str_replace('WHERE', '', $where));
-				$query = $where === '' ? $listModel->buildQueryWhere(true, $query) : $query->where($where);
+				$this_where = trim(str_replace('WHERE', '', $this_where));
+				$query = $this_where === '' ? $listModel->buildQueryWhere(true, $query) : $query->where($this_where);
 				$db->setQuery($query);
 				$formdata = $db->loadObjectList();
 

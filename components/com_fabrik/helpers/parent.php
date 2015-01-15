@@ -1947,4 +1947,18 @@ class FabrikWorker
 
 		return ($tpl === 'bootstrap' || $tpl === 'fabrik4' || $version->RELEASE > 2.5);
 	}
+	
+	/**
+	 * Are we in a form process task
+	 * 
+	 * @since 3.2
+	 * 
+	 * @return bool
+	 */
+	
+	public static function inFormProcess()
+	{
+		$app = JFactory::getApplication();
+		return $app->input->get('task') == 'form.process' || ($app->isAdmin() && $app->input->get('task') == 'process');
+	}
 }

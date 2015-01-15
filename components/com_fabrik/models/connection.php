@@ -234,6 +234,11 @@ class FabrikFEModelConnection extends JModelLegacy
 			$this->decryptPw($this->connection);
 		}
 
+		if ($this->connection->get('published') !== '1')
+		{
+			throw new RuntimeException('Connection ID #' . $this->connection->get('id') . ' is unpublished or trashed', E_ERROR);
+		}
+		
 		return $this->connection;
 	}
 

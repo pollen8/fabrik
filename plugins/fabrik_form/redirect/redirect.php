@@ -104,7 +104,11 @@ class PlgFabrik_FormRedirect extends PlgFabrik_Form
 		}
 
 		$smsg[$this->renderOrder] = $this->data['thanks_message'];
-		$session->set($context . 'msg', $smsg);
+		// Don't display system message if thanks is empty
+		if (JArrayHelper::getValue($this->data, 'thanks_message', '') !== '')
+		{
+			$session->set($context . 'msg', $smsg);
+		}
 
 		return true;
 	}
@@ -301,9 +305,16 @@ class PlgFabrik_FormRedirect extends PlgFabrik_Form
 	{
 		if (is_array($val))
 		{
-			foreach ($val as $v)
+			if (count($val) === 1)
 			{
-				$this->_appendQS($queryvars, "{$key}[value]", $v, $appendEmpty);
+				$this->_appendQS($queryvars, $key, $val[0], $appendEmpty);
+			}
+			else
+			{
+				foreach ($val as $v)
+				{
+					$this->_appendQS($queryvars, "{$key}[value]", $v, $appendEmpty);
+				}
 			}
 		}
 		else

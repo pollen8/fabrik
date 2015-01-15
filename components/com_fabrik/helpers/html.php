@@ -471,10 +471,19 @@ if (!$j3)
 
 	public static function printURL($formModel)
 	{
+		
+		/**
+		 * Comment this out for now, as it causes issues with multiple forms per page.
+		 * We could always create a $sig for it, but that would need the info from the form and
+		 * table models, which are probably the most 'expensive' aprt of this function anyway. 
+		 */
+		
+		/*
 		if (isset(self::$printURL))
 		{
 			return self::$printURL;
 		}
+		*/
 
 		$app = JFactory::getApplication();
 		$input = $app->input;
@@ -549,11 +558,19 @@ if (!$j3)
 
 	public static function emailURL($formModel)
 	{
+		/**
+		 * Comment this out for now, as it causes issues with multiple forms per page.
+		 * We could always create a $sig for it, but that would need the info from the form and
+		 * table models, which are probably the most 'expensive' aprt of this function anyway.
+		 */
+		
+		/*
 		if (isset(self::$emailURL))
 		{
 			return self::$emailURL;
 		}
-
+		*/
+		
 		$app = JFactory::getApplication();
 		$input = $app->input;
 		$package = $app->getUserState('com_fabrik.package', 'fabrik');
@@ -2462,19 +2479,19 @@ if (!$j3)
 
 	/**
 	 * Return a set of attributes for an <a> tag
-	 * 
+	 *
 	 * @param string $title  title to use for popup image
 	 * @param string $group  grouping tag for next/prev, if applicable
-	 * 
+	 *
 	 */
-	
+
 	public static function getLightboxAttributes($title = "", $group = "")
 	{
 		$fbConfig = JComponentHelper::getParams('com_fabrik');
 		$lightboxScript = $fbConfig->get('use_mediabox', '0');
-		
+
 		$attrs = array();
-		
+
 		switch ($lightboxScript)
 		{
 			case 0:
@@ -2496,7 +2513,7 @@ if (!$j3)
 		}
 		return implode(' ', $attrs);
 	}
-	
+
 	/**
 	 * Make an <a> tag
 	 *

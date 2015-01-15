@@ -19,6 +19,16 @@
 				repeat="true"
 				size="40" />
 				
+			<field name="show_limit_message"
+				type="radio"
+				class="btn-group"
+				description="PLG_FORM_LIMIT_SHOW_LIMIT_MESSAGE_DESC"
+				label="PLG_FORM_LIMIT_SHOW_LIMIT_MESSAGE_LABEL"
+				default="1">
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>	
+			</field>
+				
 			<field name="limit_allow_anonymous"
 				type="radio"
 				class="btn-group"

@@ -1240,7 +1240,7 @@ var FbList = new Class({
 		this.form.getElements('.fabrik_calculations').each(function (c) {
 			types.each(function (type) {
 				$H(json[type]).each(function (val, key) {
-					var target = c.getElement('.fabrik_row___' + key);
+					var target = c.getElement('.' + key);
 					if (typeOf(target) !== 'null') {
 						target.set('html', val);
 					}

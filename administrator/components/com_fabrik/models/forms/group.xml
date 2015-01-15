@@ -119,6 +119,11 @@
 				description="COM_FABRIK_REPEAT_GROUP_MIN_DESC"
 				size="2" />
 
+			<field name="repeat_error_message"
+				type="text"
+				label="COM_FABRIK_REPEAT_GROUP_MINMAX_ERR_LABEL"
+				description="COM_FABRIK_REPEAT_GROUP_MINMAX_DESC" />
+				
 			<field name="repeat_add_access"
 				type="accesslevel"
 				default="1"

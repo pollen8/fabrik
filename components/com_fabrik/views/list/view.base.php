@@ -329,8 +329,6 @@ class FabrikViewListBase extends JViewLegacy
 
 		foreach ($data as $groupk => $group)
 		{
-			$last_pk = '';
-			$last_i = 0;
 			$num_rows = 1;
 
 			foreach (array_keys($group) as $i)
@@ -629,7 +627,6 @@ class FabrikViewListBase extends JViewLegacy
 	protected function buttons()
 	{
 		$model = $this->getModel();
-		$params = $model->getParams();
 		$this->buttons = new stdClass;
 		$buttonProperties = array('class' => 'fabrikTip', 'opts' => "{notice:true}",
 			'title' => '<span>' . FText::_('COM_FABRIK_EXPORT_TO_CSV') . '</span>');

@@ -430,6 +430,9 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		$opts->winHeight = (int) $params->get('win_height', 400);
 		$opts->elementShortName = $element->name;
 		$opts->listName = $this->getListModel()->getTable()->db_table_name;
+		$opts->useWIP = (bool) $params->get('upload_use_wip', '0') == '1';
+		$opts->page_url = COM_FABRIK_LIVESITE;
+		
 		JText::script('PLG_ELEMENT_FILEUPLOAD_MAX_UPLOAD_REACHED');
 		JText::script('PLG_ELEMENT_FILEUPLOAD_DRAG_FILES_HERE');
 		JText::script('PLG_ELEMENT_FILEUPLOAD_UPLOAD_ALL_FILES');
@@ -1691,12 +1694,20 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 				}
 			}
 		}
+		else
+		{
+			if ($input->get('task') == '')
+			{
+				return parent::dataConsideredEmpty($data, $repeatCounter);
+			}
+		}
 
 		$groupModel = $this->getGroup();
 
 		if ($groupModel->isJoin())
 		{
 			$name = $this->getFullName(true, false);
+			/*
 			$joinid = $groupModel->getGroup()->join_id;
 			$joindata = $input->files->get('join', array(), 'array');
 
@@ -1704,14 +1715,19 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 			{
 				return true;
 			}
+			*/
+
+			$files = $input->files->get($name, array(), 'array');
 
 			if ($groupModel->canRepeat())
 			{
-				$file = $joindata[$joinid][$name][$repeatCounter]['name'];
+				//$file = $joindata[$joinid][$name][$repeatCounter]['name'];
+				$file = $files[$repeatCounter]['name'];
 			}
 			else
 			{
-				$file = $joindata[$joinid][$name]['name'];
+				//$file = $joindata[$joinid][$name]['name'];
+				$file = $files['name'];
 			}
 
 			return $file == '' ? true : false;
@@ -1745,12 +1761,10 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 				}
 				else
 				{
-					$file = $input->files->get($name, array(), 'array');
-
-					if ($groupModel->canRepeat())
-					{
-						return $file[$repeatCounter]['name'] == '' ? true : false;
-					}
+					$files = $input->files->get($name, array(), 'array');
+					$file = $files['name'];
+					
+					return $file == '' ? true : false;
 				}
 			}
 		}
@@ -2048,6 +2062,8 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		$groupModel = $this->getGroup();
 		$element = $this->getElement();
 		$params = $this->getParams();
+		
+		$use_wip = $params->get('upload_use_wip', '0') == '1';
 
 		if ($element->hidden == '1')
 		{
@@ -2132,7 +2148,15 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 
 				$render = $this->loadElement($value);
 
-				if ($value != '' && ($storage->exists(COM_FABRIK_BASE . $value) || JString::substr($value, 0, 4) == 'http'))
+				if (
+					($use_wip && $this->isEditable())
+					|| (
+						$value != '' 
+						&& (
+							$storage->exists(COM_FABRIK_BASE . $value)
+							|| JString::substr($value, 0, 4) == 'http')
+						)
+					)
 				{
 					$render->render($this, $params, $value);
 				}
@@ -2141,7 +2165,15 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 				{
 					if ($this->isEditable())
 					{
-						$render->output = '<span class="fabrikUploadDelete" id="' . $id . '_delete_span">' . $this->deleteButton($value) . $render->output . '</span>';
+						// $$$ hugh - TESTING - using HTML5 to show a selected image, so if no file, still need the span, hidden, but not the actual delete button
+						if ($use_wip && empty($value))
+						{
+							$render->output = '<span class="fabrikUploadDelete fabrikHide" id="' . $id . '_delete_span">' . $render->output . '</span>';
+						}
+						else
+						{
+							$render->output = '<span class="fabrikUploadDelete" id="' . $id . '_delete_span">' . $this->deleteButton($value) . $render->output . '</span>';
+						}
 					}
 
 					$allRenders[] = $render->output;
@@ -2363,7 +2395,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		$params = $this->getParams();
 		$w = (int) $params->get('ajax_dropbox_width', 0);
 		$h = (int) $params->get('ajax_dropbox_hight', 200);
-		$dropBoxStyle = 'height:' . $h . 'px';
+		$dropBoxStyle = 'height:' . $h . 'px;';
 
 		if ($w !== 0)
 		{
@@ -2450,12 +2482,20 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		// @TODO test in join
 		if (array_key_exists('file', $_FILES) || array_key_exists('join', $_FILES))
 		{
+			/*
 			$file = array('name' => $isjoin ? $_FILES['join']['name'][$joinid] : $_FILES['file']['name'],
 					'type' => $isjoin ? $_FILES['join']['type'][$joinid] : $_FILES['file']['type'],
 					'tmp_name' => $isjoin ? $_FILES['join']['tmp_name'][$joinid] : $_FILES['file']['tmp_name'],
 					'error' => $isjoin ? $_FILES['join']['error'][$joinid] : $_FILES['file']['error'],
 					'size' => $isjoin ? $_FILES['join']['size'][$joinid] : $_FILES['file']['size']);
-
+			*/
+			$file = array(
+				'name' => $_FILES['file']['name'],
+				'type' => $_FILES['file']['type'],
+				'tmp_name' => $_FILES['file']['tmp_name'],
+				'error' => $_FILES['file']['error'],
+				'size' => $_FILES['file']['size']
+			);
 			$filepath = $this->_processIndUpload($file, '', 0);
 			$uri = $this->getStorage()->pathToURL($filepath);
 			$o->filepath = $filepath;
@@ -3091,4 +3131,45 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 
 		return $rendered;
 	}
+	
+	/**
+	 * run on formModel::setFormData()
+	 * TESTING - stick the filename (if it's there) in to the formData, so things like validations
+	 * can see it.  Not sure yet if this will mess with the rest of the code.  And I'm sure it'll get
+	 * horribly funky, judging by the code in processUpload!  But hey, let's have a hack at it
+	 *
+	 * @param   int  $c  Repeat group counter
+	 *
+	 * @return void
+	 */
+	
+	public function preProcess_off($c)
+	{
+		$params = $this->getParams();
+		$w = new FabrikWorker;
+		$form = $this->getForm();
+		$data = unserialize(serialize($form->formData));
+		$group = $this->getGroup();
+	
+		/**
+		 * get the key name in dot format for updateFormData method
+		 * $$$ hugh - added $rawkey stuff, otherwise when we did "$key . '_raw'" in the updateFormData
+		 * below on repeat data, it ended up in the wrong format, like join.XX.table___element.0_raw
+		*/
+		$key = $this->getFullName(true, false);
+		$shortkey = $this->getFullName(true, false);
+		$rawkey = $key . '_raw';
+	
+		if (!$group->canRepeat())
+		{
+			if (!$this->isRepeatElement())
+			{
+				$farray = JArrayHelper::getValue($_FILES, $key, array(), 'array');
+				$fname = JArrayHelper::getValue($farray, 'name');
+				$form->updateFormData($key, $fname);
+				$form->updateFormData($rawkey, $fname);
+			}
+		}
+	}
+	
 }

@@ -296,6 +296,44 @@ class PlgFabrik_FormPHP extends PlgFabrik_Form
 	}
 
 	/**
+	 * Run during form rendering, when all the form's JS is assembled and ready
+	 * data found in $formModel->data
+	 *
+	 * @return	bool
+	 */
+	
+	public function onJSReady()
+	{
+		$params = $this->getParams();
+	
+		if ($params->get('only_process_curl') == 'onJSReady')
+		{
+			return $this->_runPHP();
+		}
+	
+		return true;
+	}
+
+	/**
+	 * Run during form rendering, when all the form's JS is assembled and ready
+	 * data found in $formModel->data
+	 *
+	 * @return	bool
+	 */
+	
+	public function onJSOpts(&$opts)
+	{
+		$params = $this->getParams();
+	
+		if ($params->get('only_process_curl') == 'onJSOpts')
+		{
+			return $this->_runPHP();
+		}
+	
+		return true;
+	}
+	
+	/**
 	 * Process the plugin, called when form is submitted
 	 *
 	 * @return  bool

@@ -13,8 +13,11 @@
 	<files>
 		<filename plugin="radius_search">radius_search.php</filename>
 		<filename>index.html</filename>
+		<filename>radius_search.css</filename>
 		<filename>radius_search.js</filename>
 		<filename>radius_search-min.js</filename>
 		<folder>language</folder>
+		<folder>images</folder>
+		<folder>forms</folder>
 	</files>
 </extension>

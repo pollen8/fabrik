@@ -67,6 +67,7 @@ var FbGoogleMapViz = new Class({
 					if (this.options.ajax_refresh_center) {
 						this.center();
 					}
+					Fabrik.fireEvent('fabrik.viz.googlemap.ajax.refresh', [this]);
 				}.bind(this)
 			});
 			this.timer = this.update.periodical(this.options.refresh_rate, this);
@@ -584,6 +585,13 @@ var FbGoogleMapViz = new Class({
 			};
 			fn.delay(1500);
 		}.bind(this));
+	},
+	
+	/**
+	 * Required for use with plugin's clear filters plugin code.
+	 */
+	addPlugins: function (plugins) {
+		this.plugins = plugins;
 	}
 
 });

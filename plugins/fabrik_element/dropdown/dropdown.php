@@ -57,6 +57,7 @@ class PlgFabrik_ElementDropdown extends PlgFabrik_ElementList
 		$params = $this->getParams();
 		$values = $this->getSubOptionValues();
 		$labels = $this->getSubOptionLabels();
+		$endis = $this->getSubOptionEnDis();
 		$multiple = $params->get('multiple', 0);
 		$multisize = $params->get('dropdown_multisize', 3);
 		$selected = (array) $this->getValue($data, $repeatCounter);
@@ -82,10 +83,13 @@ class PlgFabrik_ElementDropdown extends PlgFabrik_ElementList
 			}
 
 			$tmpLabel = JArrayHelper::getValue($labels, $i);
-
+			$disable = JArrayHelper::getValue($endis, $i);
+				
 			// For values like '1"'
 			$tmpval = htmlspecialchars($tmpval, ENT_QUOTES);
-			$opts[] = JHTML::_('select.option', $tmpval, $tmpLabel);
+			$opt = JHTML::_('select.option', $tmpval, $tmpLabel);
+			$opt->disable = $disable;
+			$opts[] = $opt;
 
 			if (in_array($tmpval, $selected))
 			{
@@ -173,6 +177,7 @@ class PlgFabrik_ElementDropdown extends PlgFabrik_ElementList
 		$opts->value = $arSelected;
 		$opts->defaultVal = $this->getDefaultValue($data);
 		$opts->data = (empty($values) && empty($labels)) ? array() : array_combine($values, $labels);
+		$opts->multiple = (bool) $params->get('multiple', '0') == '1';
 		JText::script('PLG_ELEMENT_DROPDOWN_ENTER_VALUE_LABEL');
 
 		return array('FbDropdown', $id, $opts);

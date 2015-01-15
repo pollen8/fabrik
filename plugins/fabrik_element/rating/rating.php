@@ -281,12 +281,12 @@ class PlgFabrik_ElementRating extends PlgFabrik_Element
 	{
 		$app = JFactory::getApplication();
 		$params = $this->getParams();
-
+		
 		if ($params->get('rating-mode') == 'user-rating')
 		{
-			$this->canRate = true;
-
-			return true;
+			$gid = (int) $params->get('rating_access', '1');
+			$this->canRate = in_array($gid, JFactory::getUser()->getAuthorisedViewLevels());
+			return $this->canRate;
 		}
 
 		if (is_null($row_id))
@@ -401,6 +401,12 @@ class PlgFabrik_ElementRating extends PlgFabrik_Element
 		$formid = $input->getInt('formid');
 		$row_id = $input->get('rowid', '', 'string');
 
+		if (empty($listid))
+		{
+			$formModel = $this->getFormModel();
+			$listid = $formModel->getListModel()->getId();
+		}
+		
 		if ($params->get('rating-mode') == 'user-rating')
 		{
 			list($val, $total) = $this->getRatingAverage($val, $listid, $formid, $row_id);
@@ -640,6 +646,7 @@ class PlgFabrik_ElementRating extends PlgFabrik_Element
 			$opts->outsrc = FabrikHelperHTML::image("star-empty.png", 'list', @$this->tmpl, array(), true);
 		}
 
+		$opts->canRate = $params->get('rating-mode') == 'creator-rating' ? true : $this->canRate();
 		$opts->ajaxloader = FabrikHelperHTML::image("ajax-loader.gif", 'list', @$this->tmpl, array(), true);
 		$opts->listRef = $listModel->getRenderContext();
 		$opts->formid = $listModel->getFormModel()->getId();

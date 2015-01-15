@@ -527,7 +527,7 @@ class FabrikFEModelVisualization extends JModelLegacy
 	 * Get the js code to create instances of js list plugin classes
 	 * needed for radius search filter
 	 *
-	 * @return  string
+	 * @return  array
 	 */
 
 	public function getPluginJsObjects()
@@ -539,14 +539,10 @@ class FabrikFEModelVisualization extends JModelLegacy
 		{
 			$src = $model->getPluginJsClasses($src);
 			$tmp = $model->getPluginJsObjects($this->getContainerId());
-
-			foreach ($tmp as $t)
-			{
-				$str[] = $t . ';';
-			}
+			$str = array_merge($str, $tmp);
 		}
 
-		return implode("\n", $str);
+		return $str;
 	}
 
 	/**

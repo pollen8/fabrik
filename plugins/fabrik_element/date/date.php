@@ -1035,7 +1035,8 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 		$formModel = $this->getFormModel();
 		$value = parent::getValue($data, $repeatCounter, $opts);
 		$db = FabrikWorker::getDbo();
-		$input = JFactory::getApplication()->input;
+		$app = JFactory::getApplication();
+		$input = $app->input;
 
 		if (is_array($value))
 		{
@@ -1046,7 +1047,8 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 		// in some corner cases, date will be db name quoted, like in CSV export after an advanced search!
 		$value = trim($value, "'");
 
-		if ($input->get('task') == 'form.process')
+		//if ($input->get('task') == 'form.process' || ($app->isAdmin() && $input->get('task') == 'process'))
+		if (FabrikWorker::inFormProcess())
 		{
 			// Don't mess with posted value - can cause double offsets - instead do in _indStoareDBFormat();
 			return $value;

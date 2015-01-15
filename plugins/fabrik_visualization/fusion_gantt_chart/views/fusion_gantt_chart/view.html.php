@@ -72,6 +72,7 @@ class FabrikViewFusion_Gantt_Chart extends JViewLegacy
 		$this->containerId = $this->get('ContainerId');
 		$this->filters = $this->get('Filters');
 		$this->showFilters = $model->showFilters();
+		$this->filterFormURL = $this->get('FilterFormURL');
 		$tpl = FabrikWorker::j3() ? 'bootstrap' : 'default';
 		$tpl = $params->get('fusion_gantt_chart_layout', $tpl);
 		$tmplpath = JPATH_ROOT . '/plugins/fabrik_visualization/fusion_gantt_chart/views/fusion_gantt_chart/tmpl/' . $tpl;
@@ -84,7 +85,8 @@ class FabrikViewFusion_Gantt_Chart extends JViewLegacy
 		$js .= "\n" . "Fabrik.addBlock('$ref', $ref);";
 		$js .= $model->getFilterJs();
 		FabrikHelperHTML::iniRequireJs($model->getShim());
-		FabrikHelperHTML::addScriptDeclaration($srcs, $js);
+		//FabrikHelperHTML::addScriptDeclaration($srcs, $js);
+		FabrikHelperHTML::script($srcs, $js);
 
 		echo parent::display();
 	}

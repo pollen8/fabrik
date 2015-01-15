@@ -37,8 +37,9 @@ $input->set('layout', $origLayout);
 JTable::addIncludePath(JPATH_ADMINISTRATOR . '/components/com_fabrik/tables');
 JModelLegacy::addIncludePath(COM_FABRIK_FRONTEND . '/models', 'FabrikFEModel');
 
-$formId = (int) $params->get('form_id', 1);
+$formId = (int) $params->get('formid');
 $rowid = (string) $params->get('row_id', '');
+
 $layout = $params->get('template', 'default');
 $usersConfig = JComponentHelper::getParams('com_fabrik');
 $usersConfig->set('rowid', $rowid);
@@ -66,7 +67,7 @@ $input->set('layout', $layout);
 $controller->isMambot = true;
 $origFormid = $input->getInt('formid');
 $ajax = $input->get('ajax');
-$input->set('formid', $params->get('formid'));
+$input->set('formid', $formId);
 
 $input->set('ajax', $moduleAjax);
 echo $controller->display();
