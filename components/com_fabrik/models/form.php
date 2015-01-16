@@ -4217,7 +4217,7 @@ echo "form get errors";
 		// $$$ rob newFormLabel set in table copy
 		if ($input->get('newFormLabel', '') !== '')
 		{
-			$form->label = $input->get('newFormLabel');
+			$form->label = $input->get('newFormLabel', '', '', 'string');
 		}
 
 		$res = $form->store();
