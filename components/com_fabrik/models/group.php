@@ -631,6 +631,7 @@ class FabrikFEModelGroup extends FabModel
 
 	public function getListQueryElements()
 	{
+    
 		if (!isset($this->listQueryElements))
 		{
 			$this->listQueryElements = array();
@@ -638,6 +639,7 @@ class FabrikFEModelGroup extends FabModel
 
 		$app = JFactory::getApplication();
 		$input = $app->input;
+		$params = $this->getParams();
 
 		// $$$ rob fabrik_show_in_list set in admin module params (will also be set in menu items and content plugins later on)
 		// its an array of element ids that should be show. Overrides default element 'show_in_list' setting.
@@ -688,7 +690,7 @@ class FabrikFEModelGroup extends FabModel
 				 * also we need them in addDefaultDataFromRO()
 				 * if ($element->published == 1 && $elementModel->canView())
 				 */
-				if ($element->published == 1)
+				if ($element->published == 1 && $params->get('list_view_and_query', 1) == 1)
 				{
 					$full_name = $elementModel->getFullName(true, false);
 
@@ -781,8 +783,10 @@ class FabrikFEModelGroup extends FabModel
 			$this->publishedListElements = array();
 		}
 
+
 		$app = JFactory::getApplication();
 		$input = $app->input;
+		$params = $this->getParams();
 
 		// $$$ rob fabrik_show_in_list set in admin module params (will also be set in menu items and content plugins later on)
 		// its an array of element ids that should be show. Overrides default element 'show_in_list' setting.
@@ -797,8 +801,8 @@ class FabrikFEModelGroup extends FabModel
 			foreach ($elements as $elementModel)
 			{
 				$element = $elementModel->getElement();
-
-				if ($element->published == 1 && $elementModel->canView('list'))
+      
+				if ($params->get('list_view_and_query', 1) == 1 && $element->published == 1 && $elementModel->canView('list'))
 				{
 					if (empty($showInList))
 					{
