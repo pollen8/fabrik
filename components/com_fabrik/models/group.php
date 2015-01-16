@@ -639,7 +639,7 @@ class FabrikFEModelGroup extends FabModel
 
 		$app = JFactory::getApplication();
 		$input = $app->input;
-		$params = $this->getParams();
+		$groupparams = $this->getParams();
 
 		// $$$ rob fabrik_show_in_list set in admin module params (will also be set in menu items and content plugins later on)
 		// its an array of element ids that should be show. Overrides default element 'show_in_list' setting.
@@ -690,17 +690,18 @@ class FabrikFEModelGroup extends FabModel
 				 * also we need them in addDefaultDataFromRO()
 				 * if ($element->published == 1 && $elementModel->canView())
 				 */
-				if ($element->published == 1 && $params->get('list_view_and_query', 1) == 1)
+				if ($element->published == 1)
 				{
 					$full_name = $elementModel->getFullName(true, false);
 
 					/**
 					 * As this function seems to be used to build both the list view and the form view, we should NOT
 					 * include elements in the list query if the user can not view them, as their data is sent to the json object
-					 * and thus visible in the page source
+					 * and thus visible in the page source. 
+					 * Jaanus: also when we exclude elements globally with group settings ($groupparams->get('list_view_and_query', 1) == 0)
 					 */
 
-					if ($input->get('view') == 'list' && !$this->getListModel()->isUserDoElement($full_name) && !$elementModel->canView('list'))
+					if ($input->get('view') == 'list' && ((!$this->getListModel()->isUserDoElement($full_name) && !$elementModel->canView('list')) || $groupparams->get('list_view_and_query', 1) == 0))
 					{
 						continue;
 					}
