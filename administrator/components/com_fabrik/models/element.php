@@ -838,7 +838,7 @@ class FabrikAdminModelElement extends FabModelAdmin
 		}
 
 		$ids = $this->getElementDescendents($row->id);
-		$ignore = array('_tbl', '_tbl_key', '_db', 'id', 'group_id', 'created', 'created_by', 'parent_id', 'ordering');
+		$ignore = array('_tbl', '_tbl_key', '_db', 'id', 'group_id', 'created', 'created_by', 'parent_id', 'ordering', 'published', 'checked_out_time');
 		$pluginManager = JModelLegacy::getInstance('Pluginmanager', 'FabrikFEModel');
 
 		foreach ($ids as $id)
