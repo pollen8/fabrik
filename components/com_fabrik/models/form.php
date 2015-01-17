@@ -1518,6 +1518,11 @@ class FabrikFEModelForm extends FabModelForm
 			$value = $this->_fullFormData[$fullName];
 		}
 
+		if (isset($value) && isset($repeatCount) && is_array($value))
+		{
+			$value = JArrayHelper::getValue($value, $repeatCount, $default);
+		}
+		
 		// If we didn't find it, set to default
 		if (!isset($value))
 		{
@@ -1598,8 +1603,8 @@ class FabrikFEModelForm extends FabModelForm
 		{
 			if ($this->dofilter)
 			{
-				$item = preg_replace('/%([0-9A-F]{2})/mei', "chr(hexdec('\\1'))", $item);
-
+				//$item = preg_replace('/%([0-9A-F]{2})/mei', "chr(hexdec('\\1'))", $item);
+				$item = preg_replace_callback('/%([0-9A-F]{2})/mi',  function ($matches) { return chr(hexdec($matches[1])); }, $item);
 				if ($this->ajaxPost)
 				{
 					$item = rawurldecode($item);
@@ -4212,7 +4217,7 @@ echo "form get errors";
 		// $$$ rob newFormLabel set in table copy
 		if ($input->get('newFormLabel', '') !== '')
 		{
-			$form->label = $input->get('newFormLabel');
+			$form->label = $input->get('newFormLabel', '', '', 'string');
 		}
 
 		$res = $form->store();

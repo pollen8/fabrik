@@ -143,6 +143,7 @@ class FabrikAdminViewList extends JViewLegacy
 		$this->addLinkedElementsToolbar();
 		$this->formGroupEls = $model->getFormGroups(false);
 		$this->formTable = $model->getForm();
+		FabrikHelperHTML::iniRequireJS();
 		parent::display($tpl);
 	}
 
@@ -189,6 +190,7 @@ class FabrikAdminViewList extends JViewLegacy
 
 		$this->lists = $lists;
 		$this->addConfirmCopyToolbar();
+		FabrikHelperHTML::iniRequireJS();
 		parent::display($tpl);
 	}
 

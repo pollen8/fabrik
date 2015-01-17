@@ -789,7 +789,15 @@ class FabrikFEModelList extends JModelForm
 			$fabrikDb = $this->getDb();
 
 			// $$$ hugh - added bumping up GROUP_CONCAT_MAX_LEN here, rather than adding YAFO for it
-			$fabrikDb->setQuery("SET OPTION SQL_BIG_SELECTS=1, GROUP_CONCAT_MAX_LEN=10240");
+			//$fabrikDb->setQuery("SET OPTION SQL_BIG_SELECTS=1, GROUP_CONCAT_MAX_LEN=10240");
+			if (version_compare($fabrikDb->getVersion(), '5.1.0', '>='))
+			{
+			      $fabrikDb->setQuery("SET SQL_BIG_SELECTS=1, GROUP_CONCAT_MAX_LEN=10240");
+			}
+			else
+			{
+			      $fabrikDb->setQuery("SET OPTION SQL_BIG_SELECTS=1, GROUP_CONCAT_MAX_LEN=10240");
+			}
 			$fabrikDb->execute();
 		}
 	}
@@ -5145,6 +5153,12 @@ class FabrikFEModelList extends JModelForm
 
 			list($value, $condition) = $elementModel->getFilterValue($value, $condition, $eval);
 
+			/*
+			 *  $$$ hugh - this chunk got fugly, as we wound up with too many quotes with whole words on
+			 *  and exact match off, like ...
+			 *  LOWER('"[[:<:]]Brose[[:>:]]"')
+			 *  ... so I fixed it the long handed way ... could prolly be done more elegantly, but this should work!
+			 */
 			if ($fullWordsOnly == '1')
 			{
 				if (is_array($value))
@@ -5153,17 +5167,31 @@ class FabrikFEModelList extends JModelForm
 					{
 						$v = "\"[[:<:]]" . $v . "[[:>:]]\"";
 					}
+					if (strtoupper($condition) === 'REGEXP')
+					{
+						// $$$ 15/11/2012 - moved from before getFilterValue() to after as otherwise date filters in querystrings created wonky query
+						$v = 'LOWER(' . $v . ')';
+					}
 				}
 				else
 				{
 					$value = "\"[[:<:]]" . $value . "[[:>:]]\"";
+					if (strtoupper($condition) === 'REGEXP')
+					{
+						// $$$ 15/11/2012 - moved from before getFilterValue() to after as otherwise date filters in querystrings created wonky query
+						$value = 'LOWER(' . $value . ')';
+					}
 				}
 			}
-
-			if (strtoupper($condition) === 'REGEXP')
+			else
 			{
-				// $$$ 15/11/2012 - moved from before getFilterValue() to after as otherwise date filters in querystrings created wonky query
-				$value = 'LOWER(' . $db->quote($value, false) . ')';
+
+				if (strtoupper($condition) === 'REGEXP')
+				{
+					// $$$ 15/11/2012 - moved from before getFilterValue() to after as otherwise date filters in querystrings created wonky query
+					$value = 'LOWER(' . $db->quote($value, false) . ')';
+				}
+			
 			}
 
 			if (!array_key_exists($i, $sqlCond) || $sqlCond[$i] == '')
@@ -8764,6 +8792,8 @@ class FabrikFEModelList extends JModelForm
 		$cache = JFactory::getCache($app->input->get('option'));
 		$cache->clean();
 
+		$this->unsetPluginQueryWhere('list.deleteRows');
+		
 		return true;
 	}
 

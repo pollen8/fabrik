@@ -1314,6 +1314,10 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 
 			$targetIds = $this->multiOptionTargetIds($data, $repeatCounter);
 			$targetIds = $targetIds === false ? $default : $targetIds;
+			
+			// $$$ hugh - trying to fix issue with read only multiselects submitting wrong values
+			$formModel->tmplData[$id . '_raw'] = $targetIds;
+			$formModel->data[$id . '_raw'] = $targetIds;
 
 			// Add icons
 			for ($i = 0; $i < count($targetIds); $i++)
@@ -3640,4 +3644,45 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 
 		return false;
 	}
+	
+	/**
+	 * Called by form model to build an array of values to encrypt
+	 *
+	 * @param   array  &$values  Previously encrypted values
+	 * @param   array  $data     Form data
+	 * @param   int    $c        Repeat group counter
+	 *
+	 * @return  void
+	 */
+	
+	public function getValuesToEncrypt(&$values, $data, $c)
+	{
+		$displayType = $this->getDisplayType();
+		
+		if ($displayType == 'checkbox' || $displayType == 'multilist')
+		{
+			$name = $this->getFullName(true, false);
+			$group = $this->getGroup();
+			
+			if ($group->canRepeat())
+			{
+				if (!array_key_exists($name, $values))
+				{
+					$values[$name]['data'] = array();
+				}
+			
+				$values[$name]['data'][$c] = $this->multiOptionTargetIds($data, $c);
+			}
+			else
+			{
+				$values[$name]['data'] = $this->multiOptionTargetIds($data, $c);
+			}
+		}
+		else
+		{
+			parent::getValuesToEncrypt($values, $data, $c);
+		}
+	}
+	
+	
 }

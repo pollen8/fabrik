@@ -82,7 +82,8 @@ class PdfRender
 
 					if (JFile::exists($thumb_file))
 					{
-						return $thumb_file;
+						//return thumb_url
+						return COM_FABRIK_LIVESITE . 'media/com_fabrik/images/pdf.png';
 					}
 					else
 					{

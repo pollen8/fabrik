@@ -2919,6 +2919,14 @@ class PlgFabrik_Element extends FabrikPlugin
 						elseif (in_array($jsAct->js_e_condition, array('<', '<=', '>', '>='))) {
 							$js .= "if(this.get('value').toFloat() $jsAct->js_e_condition '$jsAct->js_e_value'.toFloat()) {";
 						}
+						elseif ($jsAct->js_e_condition == 'regex')
+						{
+							$js .= "if (this.get('value').test(/" . $jsAct->js_e_value . "/)) {";
+						}
+						elseif ($jsAct->js_e_condition == '!regex')
+						{
+							$js .= "if (!this.get('value').test(/" . $jsAct->js_e_value . "/)) {";
+						}
 						else
 						{
 							$js = "if (this.get('value') $jsAct->js_e_condition '$jsAct->js_e_value') {";

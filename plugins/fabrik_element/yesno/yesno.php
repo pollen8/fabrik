@@ -407,34 +407,56 @@ class PlgFabrik_ElementYesno extends PlgFabrik_ElementRadiobutton
 			return false;
 		}
 
-		$params = $this->getParams();
-		$toggle = (bool) $params->get('toggle_others', false);
-
-		if ($toggle === false)
+		$value = $this->getValue($data, $repeatCounter);
+		
+		if ($value == '1')
 		{
-			return;
+			$params = $this->getParams();
+			$toggle = (bool) $params->get('toggle_others', false);
+	
+			if ($toggle === false)
+			{
+				return;
+			}
+	
+			$listModel = $this->getListModel();
+	
+			$name = $this->getElement()->name;
+			$db = $listModel->getDb();
+			$query = $db->getQuery(true);
+	
+			if ($this->isJoin())
+			{
+				$joinModel = $this->getJoinModel();
+				$pk = $joinModel->getJoinedToTablePk('.');
+			}
+			else
+			{
+				$pk = $listModel->getTable()->db_primary_key;
+			}
+	
+			$shortPk = FabrikString::shortColName($pk);
+			$rowid = JArrayHelper::getValue($data, $shortPk, null);
+			
+			$query->update($this->actualTableName())->set($name . ' = 0');
+			
+			if (!empty($rowid))
+			{
+				$query->where($pk . ' <> ' . $rowid);
+			}
+			
+			$toggle_where = $params->get('toggle_where', '');
+			FabrikString::ltrimiword($toggle_where, 'where');
+			
+			if (!empty($toggle_where))
+			{
+				$w = new FabrikWorker;
+				$toggle_where = $w->parseMessageForPlaceHolder($toggle_where);
+				$query->where($toggle_where);
+			}
+			
+			$db->setQuery($query);
+			$db->execute();
 		}
-
-		$listModel = $this->getListModel();
-
-		$name = $this->getElement()->name;
-		$db = $listModel->getDb();
-		$query = $db->getQuery(true);
-
-		if ($this->isJoin())
-		{
-			$joinModel = $this->getJoinModel();
-			$pk = $joinModel->getJoinedToTablePk('.');
-		}
-		else
-		{
-			$pk = $listModel->getTable()->db_primary_key;
-		}
-
-		$shortPk = FabrikString::shortColName($pk);
-		$rowid = JArrayHelper::getValue($data, $shortPk, null);
-		$query->update($this->actualTableName())->set($name . ' = 0')->where($pk . ' <> ' . $rowid);
-		$db->setQuery($query);
-		$db->execute();
 	}
 }

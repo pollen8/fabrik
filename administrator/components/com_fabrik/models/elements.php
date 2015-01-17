@@ -167,8 +167,10 @@ class FabrikAdminModelElements extends FabModelList
 			AND ee.id = e.id AND ee.group_id <> 0 AND ee.id IN (" . implode(',', $elementIds) . ") LIMIT 1)  AS full_element_name";
 
 			$query->select('u.name AS editor, ' . $fullname . ', g.name AS group_name, l.db_table_name');
+			$query->select("(SELECT GROUP_CONCAT(ec.id SEPARATOR ',') FROM #__{package}_elements AS ec WHERE ec.parent_id = e.id) AS child_ids");
 		}
 
+		$sql = (string)$query;
 		return $query;
 	}
 

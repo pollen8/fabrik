@@ -8,6 +8,7 @@
 *.jpg
 .htaccess
 php.ini
+build/
 cache/*
 administrator/*
 !administrator/components/com_fabrik/
@@ -72,6 +73,7 @@ transfer/*
 /cache
 fabrik_build/output/
 fabrik_build/docs/
+fabrik_build/cli/
 /build_config_private.ini
 /images
 /includes
