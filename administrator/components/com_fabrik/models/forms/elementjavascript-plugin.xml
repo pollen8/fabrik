@@ -78,6 +78,7 @@
 					<option value="CONTAINS">COM_FABRIK_JS_CONTAINS</option>
 					<option value="!CONTAINS">COM_FABRIK_JS_NOT_CONTAIN</option>
 					<option value="regex">COM_FABRIK_JS_REGEX</option>
+					<option value="!regex">COM_FABRIK_JS_NOT_REGEX</option>
 			</field>
 
 			<field name="js_e_value"

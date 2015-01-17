@@ -2923,6 +2923,10 @@ class PlgFabrik_Element extends FabrikPlugin
 						{
 							$js .= "if (this.get('value').test(/" . $jsAct->js_e_value . "/)) {";
 						}
+						elseif ($jsAct->js_e_condition == '!regex')
+						{
+							$js .= "if (!this.get('value').test(/" . $jsAct->js_e_value . "/)) {";
+						}
 						else
 						{
 							$js = "if (this.get('value') $jsAct->js_e_condition '$jsAct->js_e_value') {";
