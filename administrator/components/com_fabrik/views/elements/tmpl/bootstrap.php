@@ -165,7 +165,11 @@ $states	= array(
 					. JHTML::image('media/com_fabrik/images/child_element.png', JText::sprintf('COM_FABRIK_LINKED_ELEMENT', $item->parent_id), 'title="' . JText::sprintf('COM_FABRIK_LINKED_ELEMENT', $item->parent_id) . '"')
 					. '</a>&nbsp;';
 				else :
-					echo JHTML::image('media/com_fabrik/images/parent_element.png', FText::_('COM_FABRIK_PARENT_ELEMENT'), 'title="' . FText::_('COM_FABRIK_PARENT_ELEMENT') . '"');
+					if (!empty($item->child_ids)) :
+						echo JHTML::image('media/com_fabrik/images/parent_element.png', JText::sprintf('COM_FABRIK_PARENT_ELEMENT', $item->child_ids), 'title="' . JText::sprintf('COM_FABRIK_PARENT_ELEMENT', $item->child_ids) . '"');
+					else :
+						echo JHTML::image('media/com_fabrik/images/element.png', FText::_('COM_FABRIK_NONLINKED_ELEMENT'), 'title="' . FText::_('COM_FABRIK_NONLINKED_ELEMENT') . '"');
+					endif;
 				endif;
 				?>
 				</td>
