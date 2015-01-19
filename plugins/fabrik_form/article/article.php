@@ -169,18 +169,22 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 		$item->store();
 
 		/**
-		 * Featured is handled by the admin content model.
-		 * $$$ hugh - in 3.1, it seems to now just be in the regular content model $data
+		 * Featured is handled by the admin content model, when you are saving in ADMIN
+		 * Otherwise we've had to hack over the admin featured() method into this plugin for the front end
 		 */
 		
 		$version = new JVersion;
-		
-		if (version_compare($version->RELEASE, '3.1', '<'))
+		JTable::addIncludePath(COM_FABRIK_BASE . 'administrator/components/com_content/tables');
+
+		if (JFactory::getApplication()->isAdmin())
 		{
-			JTable::addIncludePath(COM_FABRIK_BASE . 'administrator/components/com_content/tables');
 			JModelLegacy::addIncludePath(COM_FABRIK_BASE . 'administrator/components/com_content/models');
 			$articleModel = JModelLegacy::getInstance('Article', 'ContentModel');
 			$articleModel->featured($item->id, $item->featured);
+		}
+		else
+		{
+			$this->featured($item->id, $item->featured);
 		}
 
 		// Trigger the onContentAfterSave event.
@@ -202,6 +206,95 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 		}
 		
 		return $item;
+	}
+
+	/**
+	 * Copied from admin content model
+	 * Method to toggle the featured setting of articles.
+	 *
+	 * @param   array    The ids of the items to toggle.
+	 * @param   integer  The value to toggle to.
+	 *
+	 * @return  boolean  True on success.
+	 */
+	public function featured($pks, $value = 0)
+	{
+		// Sanitize the ids.
+		$pks = (array) $pks;
+		JArrayHelper::toInteger($pks);
+		$db = JFactory::getDbo();
+
+		if (empty($pks))
+		{
+			$this->setError(JText::_('COM_CONTENT_NO_ITEM_SELECTED'));
+			return false;
+		}
+
+		$table = JTable::getInstance('Featured', 'ContentTable');
+
+		try
+		{
+			$query = $db->getQuery(true)
+				->update($db->quoteName('#__content'))
+				->set('featured = ' . (int) $value)
+				->where('id IN (' . implode(',', $pks) . ')');
+			$db->setQuery($query);
+			$db->execute();
+
+			if ((int) $value == 0)
+			{
+				// Adjust the mapping table.
+				// Clear the existing features settings.
+				$query = $db->getQuery(true)
+					->delete($db->quoteName('#__content_frontpage'))
+					->where('content_id IN (' . implode(',', $pks) . ')');
+				$db->setQuery($query);
+				$db->execute();
+			}
+			else
+			{
+				// first, we find out which of our new featured articles are already featured.
+				$query = $db->getQuery(true)
+					->select('f.content_id')
+					->from('#__content_frontpage AS f')
+					->where('content_id IN (' . implode(',', $pks) . ')');
+				//echo $query;
+				$db->setQuery($query);
+
+				$old_featured = $db->loadColumn();
+
+				// we diff the arrays to get a list of the articles that are newly featured
+				$new_featured = array_diff($pks, $old_featured);
+
+				// Featuring.
+				$tuples = array();
+				foreach ($new_featured as $pk)
+				{
+					$tuples[] = $pk . ', 0';
+				}
+				if (count($tuples))
+				{
+					$columns = array('content_id', 'ordering');
+					$query = $db->getQuery(true)
+						->insert($db->quoteName('#__content_frontpage'))
+						->columns($db->quoteName($columns))
+						->values($tuples);
+					$db->setQuery($query);
+					$db->execute();
+				}
+			}
+		}
+		catch (Exception $e)
+		{
+			$this->setError($e->getMessage());
+			return false;
+		}
+
+		$table->reorder();
+
+		//$this->cleanCache();
+
+		return true;
 	}
 
 	/**
