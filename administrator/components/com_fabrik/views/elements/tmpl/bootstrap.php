@@ -168,7 +168,8 @@ $states	= array(
 					if (!empty($item->child_ids)) :
 						echo JHTML::image('media/com_fabrik/images/parent_element.png', JText::sprintf('COM_FABRIK_PARENT_ELEMENT', $item->child_ids), 'title="' . JText::sprintf('COM_FABRIK_PARENT_ELEMENT', $item->child_ids) . '"');
 					else :
-						echo JHTML::image('media/com_fabrik/images/element.png', FText::_('COM_FABRIK_NONLINKED_ELEMENT'), 'title="' . FText::_('COM_FABRIK_NONLINKED_ELEMENT') . '"');
+						// Trying out removing the icon all together if it isn't linked
+						// echo JHTML::image('media/com_fabrik/images/element.png', FText::_('COM_FABRIK_NONLINKED_ELEMENT'), 'title="' . FText::_('COM_FABRIK_NONLINKED_ELEMENT') . '"');
 					endif;
 				endif;
 				?>
