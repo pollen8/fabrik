@@ -787,18 +787,19 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 		{
 			if ($params->get('juser_field_usertype') != '')
 			{
-//If array but empty (e.g. from an empty user_groups element)
+				//If array but empty (e.g. from an empty user_groups element)
 				if (empty($groupIds))
 				{
 					$groupIds = (array) $defaultGroup;
 				}
+				
 				if (count($groupIds) === 1 && $groupIds[0] == 0)
 				{
 					$data = (array) $defaultGroup;
 				}
 				else
 				{
-					//$data = $groupIds;
+					//$data = $groupIds; defaultGroup is always valid
 					foreach ($groupIds as $groupId)
 					{
 						if (in_array($groupId, $authLevels) || $me->authorise('core.admin','com_users') || $groupId == $defaultGroup)
