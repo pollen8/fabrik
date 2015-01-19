@@ -304,7 +304,8 @@ class PlgFabrik_Form extends FabrikPlugin
 						{
 							$tmpElement = current($elementModels);
 							$smallerElHTMLName = $tmpElement->getFullName(true, false);
-							$repeatGroup = count($model->formDataWithTableName[$smallerElHTMLName]);
+							$tmpEl = JArrayHelper::getValue($model->formDataWithTableName, $smallerElHTMLName, array(), 'array');
+							$repeatGroup = count($tmpEl);
 						}
 					}
 				}
