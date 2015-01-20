@@ -1,17 +1,53 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <form>
-	<fields addfieldpath="/administrator/components/com_fabrik/models/fields" name="params">
+	<fields addfieldpath="/administrator/components/com_fabrik/models/fields"
+	        name="params">
 		<fieldset name="plg-form-sms">
-			<field description="PLG_FORM_SMS_GATEWAY_DESC" directory="plugins/fabrik_form/sms/gateway" hide_default="true" hide_none="true" label="PLG_FORM_SMS_GATEWAY_LABEL" name="sms-gateway" repeat="true" type="filelist"/>
-				
-			<field default="" label="PLG_FORM_SMS_USERNAME_LABEL" name="sms-username" repeat="true" size="30" type="text"/>
-				
-			<field default="" label="PLG_FORM_SMS_PASSWORD_LABEL" name="sms-password" repeat="true" size="30" type="text"/>
-				
-			<field default="" description="PLG_FORM_SMS_MOBILE_DESC" label="PLG_FORM_SMS_MOBILE_LABEL" name="sms-to" repeat="true" size="30" type="text"/>
-				
-			<field default="" description="PLG_FORM_SMS_SENDERS_MOBILE_NUM_DESC" label="PLG_FORM_SMS_SENDERS_MOBILE_NUM_LABEL" name="sms-from" repeat="true" size="30" type="text"/>
-				
+			<field description="PLG_FORM_SMS_GATEWAY_DESC"
+			       directory="plugins/fabrik_form/sms/gateway"
+			       hide_default="true"
+			       hide_none="true"
+			       label="PLG_FORM_SMS_GATEWAY_LABEL"
+			       name="sms-gateway"
+			       repeat="true"
+			       type="filelist"/>
+
+			<field default=""
+			       label="PLG_FORM_SMS_USERNAME_LABEL"
+			       name="sms-username"
+			       description="PLG_FORM_SMS_USERNAME_DESC"
+			       repeat="true"
+			       size="30"
+			       type="text"/>
+
+			<field default=""
+			       label="PLG_FORM_SMS_PASSWORD_LABEL"
+			       description="PLG_FORM_SMS_PASSWORD_DESC"
+			       name="sms-password"
+			       repeat="true"
+			       size="30"
+			       type="text"/>
+
+			<field default=""
+			       description="PLG_FORM_SMS_MOBILE_DESC"
+			       label="PLG_FORM_SMS_MOBILE_LABEL"
+			       name="sms-to"
+			       repeat="true"
+			       size="30"
+			       type="text"/>
+
+			<field default=""
+			       description="PLG_FORM_SMS_SENDERS_MOBILE_NUM_DESC"
+			       label="PLG_FORM_SMS_SENDERS_MOBILE_NUM_LABEL"
+			       name="sms-from"
+			       repeat="true"
+			       size="30"
+			       type="text"/>
+
+			<field name="sms_message"
+			       type="textarea"
+			       label="PLG_FORM_SMS_MESSAGE_LABEL"
+					description="PLG_FORM_SMS_MESSAGE_DESC"/>
 		</fieldset>
 	</fields>
 </form>

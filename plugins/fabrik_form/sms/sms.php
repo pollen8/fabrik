@@ -46,13 +46,23 @@ class PlgFabrik_FormSMS extends PlgFabrik_Form
 
 	protected function process()
 	{
-		$params = $this->getParams();
 		$formModel = $this->getModel();
+		$params = $this->getParams();
+		$data = $formModel->formData;
+		$w = new FabrikWorker;
+		$opts = array();
+		$userName = $params->get('sms-username');
+		$password = $params->get('sms-password');
+		$from = $params->get('sms-from');
+		$to = $params->get('sms-to');
+		$opts['sms-username'] = $w->parseMessageForPlaceHolder($userName, $data);
+		$opts['sms-password'] = $w->parseMessageForPlaceHolder($password, $data);
+		$opts['sms-from'] = $w->parseMessageForPlaceHolder($from, $data);
+		$opts['sms-to'] = $w->parseMessageForPlaceHolder($to, $data);
 		$message = $this->getMessage();
-		$aData = $oForm->formData;
 		$gateway = $this->getInstance();
 
-		return $gateway->process($message);
+		return $gateway->process($message, $opts);
 	}
 
 	/**
@@ -66,7 +76,9 @@ class PlgFabrik_FormSMS extends PlgFabrik_Form
 		if (!isset($this->gateway))
 		{
 			$params = $this->getParams();
-			$gateway = JFilterInput::clean($params->get('sms-gateway', 'kapow.php'), 'CMD');
+			$gateway = $params->get('sms-gateway', 'kapow.php');
+			$input = new JFilterInput;
+			$gateway = $input->clean($gateway, 'CMD');
 			require_once JPATH_ROOT . '/plugins/fabrik_form/sms/gateway/' . JString::strtolower($gateway);
 			$gateway = JFile::stripExt($gateway);
 			$this->gateway = new $gateway;
@@ -84,6 +96,24 @@ class PlgFabrik_FormSMS extends PlgFabrik_Form
 
 	protected function getMessage()
 	{
+		$params = $this->getParams();
+		$msg    = $params->get('sms_message', '');
+		$formModel = $this->getModel();
+		$data = $formModel->formData;
+
+		if ($msg !== '')
+		{
+			$w = new FabrikWorker;
+			return $w->parseMessageForPlaceHolder($msg, $data);
+		}
+		else
+		{
+			return $this->defaultMessage();
+		}
+	}
+
+	protected function defaultMessage()
+	{
 		$config = JFactory::getConfig();
 		$formModel = $this->getModel();
 		$data = $formModel->formData;
@@ -96,7 +126,6 @@ class PlgFabrik_FormSMS extends PlgFabrik_Form
 		}
 
 		$message = "";
-		$pluginManager = FabrikWorker::getPluginManager();
 		$groups = $formModel->getGroupsHiarachy();
 
 		foreach ($groups as $groupModel)
