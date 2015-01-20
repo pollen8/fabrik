@@ -147,15 +147,13 @@ ul.slider-labels {
 	background-color: #fff !important;
 }
 
-div.modal {
-	display: block !important;
-	z-index: 1050 !important;
-}
 div.popover {
 	z-index: 1051 !important;
 }
 
 .fabrikWindow.modal {
+	display: block !important;
+	z-index: 1050 !important;
 	overflow: hidden !important;
 }
 
