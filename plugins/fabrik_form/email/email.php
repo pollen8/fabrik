@@ -60,13 +60,11 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 	{
 		$profiler = JProfiler::getInstance('Application');
 		JDEBUG ? $profiler->mark("email: start: onAfterProcess") : null;
-		
 		$params = $this->getParams();
 		$app = JFactory::getApplication();
 		$input = $app->input;
 		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		jimport('joomla.mail.helper');
-		$user = JFactory::getUser();
 		$config = JFactory::getConfig();
 		$db = JFactory::getDbo();
 		$w = new FabrikWorker;
@@ -79,7 +77,7 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 		/* $$$ hugh - moved this to here from above the previous line, 'cos it needs $this->data
 		 * check if condition exists and is met
 		 */
-		if (!$this->shouldProcess('email_conditon', null))
+		if (!$this->shouldProcess('email_conditon', null, $params))
 		{
 			return;
 		}
