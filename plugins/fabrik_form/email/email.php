@@ -331,7 +331,7 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 				 */
 				if ($res !== true)
 				{
-					$app->enqueueMessage(JText::sprintf('PLG_FORM_EMAIL_DID_NOT_SEND_EMAIL_INVALID_ADDRESS', $email), 'notice');
+					$app->enqueueMessage(JText::sprintf('PLG_FORM_EMAIL_DID_NOT_SEND_EMAIL', $email), 'notice');
 				}
 
 				if (JFile::exists($attach_fname))
