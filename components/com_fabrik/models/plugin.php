@@ -532,7 +532,7 @@ class FabrikPlugin extends JPlugin
 	{
 		if (!isset($this->params))
 		{
-			echo "plugin params not set - recreating <br>";
+			//echo "plugin params not set - recreating <br>";
 			$row = $this->getRow();
 			$this->params = new JRegistry($row->params);
 		}
