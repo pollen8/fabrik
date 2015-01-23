@@ -60,7 +60,8 @@ class PlgFabrik_ElementUsergroup extends PlgFabrik_ElementList
 		$params = $this->getParams();
 		$formModel = $this->getFormModel();
 		$userEl = $formModel->getElement($params->get('user_element'), true);
-
+		$thisUser = false;
+		
 		if ($userEl)
 		{
 			$data = $formModel->getData();
@@ -72,7 +73,7 @@ class PlgFabrik_ElementUsergroup extends PlgFabrik_ElementList
 				$userid = JArrayHelper::getValue($userid, 0);
 			}
 
-			$thisUser = JFactory::getUser($userid);
+			$thisUser = !empty($userid) ? JFactory::getUser($userid) : false;
 		}
 
 		$selected = $this->getValue($data, $repeatCounter);
@@ -88,7 +89,7 @@ class PlgFabrik_ElementUsergroup extends PlgFabrik_ElementList
 		}
 		else
 		{
-			if ($userEl)
+			if (!empty($thisUser))
 			{
 				$selected = $thisUser->groups;
 			}
@@ -106,7 +107,7 @@ class PlgFabrik_ElementUsergroup extends PlgFabrik_ElementList
 			}
 		}
 
-		return implode(', ', $selected);
+		return is_array($selected) ? implode(', ', $selected) : "";
 	}
 
 	/**
