@@ -25,7 +25,39 @@
  * Don't edit anything outside of the BEGIN and END comments.
  *
  * For more on custom CSS, see the Wiki at:
- *
+ *requirejs(['fab/fabrik'], function () {
+var form = Fabrik.getBlock('form_1', false, function (block) {
+
+var fieldNames = ['element_test___list', 'element_test___test'];
+var fields = [];
+for (var i = 0; i < fieldNames.length; i ++) {
+fields.push(block.elements.get(fieldNames[i]));
+}
+
+var rad = block.elements.get('element_test___rad');
+
+console.log(rad.get('value'));
+
+if (rad.get('value') == 0) {
+toggle(fields, false);
+}
+rad.addEvent('click', function () {
+state = rad.get('value') == 0 ? false : true;
+toggle(fields, state);
+});
+
+});
+});
+
+var toggle = function (fields, show) {
+for (var i = 0; i < fields.length; i ++) {
+if (show) {
+fields[i].show();
+} else {
+fields[i].hide();
+}
+}
+}
  * http://www.fabrikar.com/forums/index.php?wiki/form-and-details-templates/#the-custom-css-file
  *
  * NOTE - for backward compatibility with Fabrik 2.1, and in case you
