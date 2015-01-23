@@ -5181,7 +5181,8 @@ class PlgFabrik_Element extends FabrikPlugin
 
 			if ($plugin->hasSubElements)
 			{
-				$val->label = ($type == 'median') ? $plugin->getLabelForValue($val->label) : $plugin->getLabelForValue($key, $key);
+				// http://fabrikar.com/forums/index.php?threads/calculation-split-on-problem.40122/
+				$val->label = ($type != 'median') ? $plugin->getLabelForValue($val->label) : $plugin->getLabelForValue($key, $key);
 			}
 			else
 			{
