@@ -52,7 +52,7 @@ FbListPHP = new Class({
 		if (this.options.js_code !== '') {
 			var result = eval('(function() {' + this.options.js_code + '}())');
 
-			if (result=== false) {
+			if (result === false) {
 				return;
 			}
 		}

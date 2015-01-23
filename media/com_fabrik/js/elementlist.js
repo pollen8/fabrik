@@ -56,8 +56,14 @@ FbElementList = new Class({
 			if (typeOf(this.form.events[action]) === 'null') {
 				this.form.events[action] = {};
 			}
-			r = new RegExp('[^a-z|0-9]', 'gi');
-			uid = delegate + js.replace(r, '');
+
+			// Could be added via a custom js file.
+			if (typeof(js) === 'function') {
+				uid = Math.random(100) * 1000;
+			} else {
+				r = new RegExp('[^a-z|0-9]', 'gi');
+				uid = delegate + js.replace(r, '');
+			}
 			if (typeOf(this.form.events[action][uid]) === 'null') {
 				this.form.events[action][uid] = true;
 				
@@ -70,8 +76,12 @@ FbElementList = new Class({
 					if (subEls.contains(target)) {
 						
 						// Replace this with that so that the js code runs on the correct element
-						js = js.replace(/this/g, 'that');
-						typeOf(js) === 'function' ? js.delay(0) : eval(js);
+						if (typeof(js) !== 'function') {
+							js = js.replace(/this/g, 'that');
+							eval(js);
+						} else {
+							js.delay(0);
+						}
 					}
 				}.bind(this));
 			}
