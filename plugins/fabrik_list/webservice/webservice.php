@@ -29,7 +29,7 @@ class PlgFabrik_ListWebservice extends PlgFabrik_List
 	 *
 	 * @var string
 	 */
-	protected $buttonPrefix = 'webservice';
+	protected $buttonPrefix = 'cogs';
 
 	/**
 	 * Does the plugin render a button at the top of the list?
@@ -63,7 +63,7 @@ class PlgFabrik_ListWebservice extends PlgFabrik_List
 	}
 
 	/**
-	 * Prep the button if needed
+	 * Prep the button. Show it if in heading (top of list) but not in rows
 	 *
 	 * @param   array  &$args  Arguments
 	 *
@@ -72,20 +72,13 @@ class PlgFabrik_ListWebservice extends PlgFabrik_List
 
 	public function button(&$args)
 	{
-		parent::button($args);
+		$opts = JArrayHelper::getValue($args, 0, array());
+		$model = $this->getModel();
+		$this->buttonAction = $model->actionMethod();
+		$this->context = $model->getRenderContext();
+		$heading = (bool) JArrayHelper::getValue($opts, 'heading', false);
 
-		return true;
-	}
-
-	/**
-	 * Build the HTML for the plug-in button
-	 *
-	 * @return  string
-	 */
-
-	public function button_result()
-	{
-		return '';
+		return $heading;
 	}
 
 	/**
@@ -136,7 +129,14 @@ class PlgFabrik_ListWebservice extends PlgFabrik_List
 		$fk = $params->get('webservice_foreign_key');
 		$model = $this->getModel();
 		$formModel = $model->getFormModel();
-		$fk = $formModel->getElement($fk, true)->getElement()->name;
+		$foriegnKeyElement = $formModel->getElement($fk, true);
+
+		if (!$foriegnKeyElement)
+		{
+			throw new UnexpectedValueException('Webservice list plugin requires a foriegn key element to be selected');
+		}
+
+		$fk = $foriegnKeyElement->getElement()->name;
 		$credentials = $this->getCredentials();
 
 		$driver = $params->get('webservice_driver');
