@@ -1124,7 +1124,6 @@ class FabrikFEModelList extends JModelForm
 		$form = $this->getFormModel();
 		$tableParams = $this->getParams();
 		$table = $this->getTable();
-		$pluginManager = FabrikWorker::getPluginManager();
 		$method = 'renderListData_' . $this->outputFormat;
 		$this->_aLinkElements = array();
 
@@ -1138,9 +1137,7 @@ class FabrikFEModelList extends JModelForm
 
 			foreach ($elementModels as $elementModel)
 			{
-				$e = $elementModel->getElement();
 				$elementModel->setContext($groupModel, $form, $this);
-				$params = $elementModel->getParams();
 				$col = $elementModel->getFullName(true, false);
 
 				// Check if there is  a custom out put handler for the tables format
@@ -1189,7 +1186,6 @@ class FabrikFEModelList extends JModelForm
 		}
 
 		JDEBUG ? $profiler->mark('elements rendered for table data') : null;
-		$groupTitle = array();
 		$this->groupTemplates = array();
 
 		// Check if the data has a group by applied to it
@@ -1217,13 +1213,10 @@ class FabrikFEModelList extends JModelForm
 			}
 
 			$groupedData = array();
-			$thisGroupedData = array();
 			$groupBy = FabrikString::safeColNameToArrayKey($groupBy);
 			$groupBy .= '_raw';
 			$groupTitle = null;
 			$aGroupTitles = array();
-			$groupId = 0;
-			$gKey = 0;
 
 			for ($i = 0; $i < count($data); $i++)
 			{
@@ -1305,12 +1298,9 @@ class FabrikFEModelList extends JModelForm
 	protected function addSelectBoxAndLinks(&$data)
 	{
 		$j3 = FabrikWorker::j3();
-		$item = $this->getTable();
-		$app = JFactory::getApplication();
 		$db = FabrikWorker::getDbo(true);
 		$params = $this->getParams();
 		$buttonAction = $this->actionMethod();
-		$nextview = $this->canEdit() ? 'form' : 'details';
 		$tmpKey = '__pk_val';
 		$faceted = $params->get('facetedlinks');
 
@@ -1327,13 +1317,10 @@ class FabrikFEModelList extends JModelForm
 			}
 		}
 
-		$action = $app->isAdmin() ? 'task' : 'view';
 		$query = $db->getQuery(true);
 		$query->select('id, label, db_table_name')->from('#__{package}_lists');
 		$db->setQuery($query);
 		$aTableNames = $db->loadObjectList('label');
-		$cx = count($data);
-		$viewLinkAdded = false;
 
 		// Get pk values
 		$pks = array();
@@ -1511,7 +1498,6 @@ class FabrikFEModelList extends JModelForm
 					{
 						$linkedTable = $faceted->linkedlist->$f;
 						$popupLink = $faceted->linkedlist_linktype->$f;
-						$linkedListText = $faceted->linkedlisttext->$f;
 
 						if ($linkedTable != '0')
 						{
@@ -1634,13 +1620,13 @@ class FabrikFEModelList extends JModelForm
 	}
 
 	/**
-	 * CHoudl the list link load in an iframe or a xhr
+	 * Should the list link load in an i-frame or a xhr
 	 *
 	 * @param   string  $prop  Parameter url to check
 	 *
 	 * @since  3.1.1
 	 *
-	 * @return  string  Load menthod xhr/iframe
+	 * @return  string  Load method xhr/iframe
 	 */
 	protected function getLoadMethod($prop)
 	{
@@ -6627,7 +6613,6 @@ class FabrikFEModelList extends JModelForm
 	public function getHeadings()
 	{
 		$app = JFactory::getApplication();
-		$input = $app->input;
 		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$item = $this->getTable();
 		$item->order_dir = JString::strtolower($item->order_dir);
@@ -6706,7 +6691,6 @@ class FabrikFEModelList extends JModelForm
 					continue;
 				}
 
-				$viewLinkAdded = false;
 				$groupHeadings[$groupHeadingKey]++;
 				$key = $elementModel->getFullName(true, false);
 				$compsitKey = !empty($showInList) ? array_search($element->id, $showInList) . ':' . $key : $key;
@@ -6734,25 +6718,24 @@ class FabrikFEModelList extends JModelForm
 						}
 					}
 
-					$class = "";
-					$currentOrderDir = $orderDir;
+					$class = '';
 					$tmpl = $this->getTmpl();
 
 					switch ($orderDir)
 					{
-						case "desc":
-							$orderDir = "-";
+						case 'desc':
+							$orderDir = '-';
 							$class = 'class="fabrikorder-desc"';
 							$img = FabrikHelperHTML::image('arrow-up.png', 'list', $tmpl, array('alt' => FText::_('COM_FABRIK_ORDER')));
 							break;
-						case "asc":
-							$orderDir = "desc";
+						case 'asc':
+							$orderDir = 'desc';
 							$class = 'class="fabrikorder-asc"';
 							$img = FabrikHelperHTML::image('arrow-down.png', 'list', $tmpl, array('alt' => FText::_('COM_FABRIK_ORDER')));
 							break;
-						case "":
-						case "-":
-							$orderDir = "asc";
+						case '':
+						case '-':
+							$orderDir = 'asc';
 							$class = 'class="fabrikorder"';
 							$img = FabrikHelperHTML::image('menu-2.png', 'list', $tmpl, array('alt' => FText::_('COM_FABRIK_ORDER')));
 							break;
@@ -6833,8 +6816,6 @@ class FabrikFEModelList extends JModelForm
 			{
 				$this->addCheckBox($aTableHeadings, $headingClass, $cellClass);
 			}
-
-			$viewLinkAdded = false;
 
 			// If no elements linking to the edit form add in a edit column (only if we have the right to edit/view of course!)
 			if ($params->get('checkboxLocation', 'end') === 'end')
