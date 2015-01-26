@@ -4056,6 +4056,11 @@ class FabrikFEModelList extends JModelForm
 			}
 		}
 
+		if ($this->listRequiresFiltering() && $this->isAjax() && $this->canDelete())
+		{
+			return true;
+		}
+
 		return false;
 	}
 
@@ -5914,7 +5919,7 @@ class FabrikFEModelList extends JModelForm
 	}
 
 	/**
-	 * Does a filter have to be appled before we show any list data
+	 * Does a filter have to be applied before we show any list data
 	 *
 	 * @return bool
 	 */
@@ -6612,9 +6617,9 @@ class FabrikFEModelList extends JModelForm
 	}
 
 	/**
-	 * returns the table headings, seperated from writetable function as
+	 * returns the table headings, separated from writetable function as
 	 * when group_by is selected multiple tables are written
-	 * 09/07/2011 moved headingClass into arry rather than string
+	 * 09/07/2011 moved headingClass into array rather than string
 	 *
 	 * @return  array  (table headings, array columns, $aLinkElements)
 	 */
@@ -6638,7 +6643,7 @@ class FabrikFEModelList extends JModelForm
 
 		foreach ($oldLinksToForms as $join)
 		{
-			// $$$ hugh - anoher issue with getLinksTothisKey() now returning false for some joins.
+			// $$$ hugh - another issue with getLinksToThisKey() now returning false for some joins.
 			if ($join)
 			{
 				$k = $join->list_id . '-' . $join->form_id . '-' . $join->element_id;
@@ -6979,7 +6984,6 @@ class FabrikFEModelList extends JModelForm
 		{
 			// 3.0 actions now go in one column
 			$pluginManager = FabrikWorker::getPluginManager();
-			$params = $this->getParams();
 			$headingButtons = array();
 
 			if ($this->deletePossible())
@@ -6993,6 +6997,7 @@ class FabrikFEModelList extends JModelForm
 			if (FabrikWorker::j3())
 			{
 				$headingButtons = array_merge($headingButtons, $res);
+
 				if (empty($headingButtons))
 				{
 					$aTableHeadings['fabrik_actions'] = '';

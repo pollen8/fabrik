@@ -540,7 +540,7 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 	}
 
 	/**
-	 * When running parseMesssageForPlaceholder on data we need to set the none-raw value of things like birthday/time
+	 * When running parseMessageForPlaceholder on data we need to set the none-raw value of things like birthday/time
 	 * elements to that stored in the listModel::storeRow() method
 	 *
 	 * @param   array  &$data          Form data
