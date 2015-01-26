@@ -2331,7 +2331,7 @@ class FabrikFEModelList extends JModelForm
 					 *
 					 * [now search on town = 'la rochelle']
 					 *
-					 * If we dont use this new code then the search results show all three towns.
+					 * If we don't use this new code then the search results show all three towns.
 					 * By getting the lowest set of complete primary keys (in this example the town ids) we set our query to be:
 					 *
 					 * where town_id IN (1)
