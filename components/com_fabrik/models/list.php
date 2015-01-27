@@ -2736,8 +2736,8 @@ class FabrikFEModelList extends JModelForm
 					if ($dir != '' && $dir != '-' && trim($dir) != 'Array')
 					{
 						$strOrder == '' ? $strOrder = "\n ORDER BY " : $strOrder .= ',';
-						$strOrder .= FabrikString::safeNameQuote($element->getOrderByName()) . ' ' . $dir;
-						$orderByName = FabrikString::safeNameQuote($element->getOrderByName());
+						$strOrder .= FabrikString::safeNameQuote($element->getOrderByName(), false) . ' ' . $dir;
+						$orderByName = FabrikString::safeNameQuote($element->getOrderByName(), false);
 						$this->orderEls[] = $orderByName;
 						$this->orderDirs[] = $dir;
 						$element->getAsField_html($this->selectedOrderFields, $aAsFields);
