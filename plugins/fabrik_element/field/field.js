@@ -31,5 +31,15 @@ var FbField = new Class({
 		if (element) {
 			this.getElement().focus();
 		}
+	},
+	
+	cloned: function (c) {
+		if (this.options.use_input_mask) {
+			var element = this.getElement();
+			if (element) {
+				jQuery('#' + element.id).mask(this.options.input_mask);
+			}
+		}	
 	}
+	
 });
