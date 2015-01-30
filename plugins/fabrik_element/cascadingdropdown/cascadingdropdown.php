@@ -838,7 +838,7 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 					$v = $db->quote($v);
 				}
 
-				$where .= count($whereval) == 0 ? '1 = -1' : $wherekey . ' IN (' . implode(',', $whereval) . ')';
+				$where .= count($whereval) == 0 ? '4 = -4' : $wherekey . ' IN (' . implode(',', $whereval) . ')';
 			}
 			else
 			{

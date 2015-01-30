@@ -2457,7 +2457,8 @@ class FabrikFEModelList extends JModelForm
 			/* $$$ rob We've already used buildQueryWhere to get our list of main pk ids.
 			 * so lets use that list of ids to create the where statement. This will return 5/10/20 etc
 			* records from our main table, as per our page nav, even if a main record has 3 rows of joined
-			* data. If no ids found then do where 1 = -1 to return no records
+			* data. If no ids found then do where "2 = -2" to return no records (was "1 = -1", changed to make
+			* it easier to know where this is coming form when debugging)
 			*/
 			if (!empty($ids))
 			{
@@ -2473,12 +2474,12 @@ class FabrikFEModelList extends JModelForm
 				}
 				else
 				{
-					$query->where('1 = -1');
+					$query->where('2 = -2');
 				}
 			}
 			else
 			{
-				$query->where('1 = -1');
+				$query->where('2 = -2');
 			}
 		}
 		else
@@ -5187,10 +5188,10 @@ class FabrikFEModelList extends JModelForm
 
 			if (!array_key_exists($i, $sqlCond) || $sqlCond[$i] == '')
 			{
-				// Will produce an SQL error - but is equivalant to 'show no records' so set to where 1 = -1
+				// Will produce an SQL error - but is equivalant to 'show no records' so set to where 3 = -3
 				if ($condition === 'IN' && $value === '()')
 				{
-					$query = '1 = -1';
+					$query = '3 = -3';
 				}
 				else
 				{
