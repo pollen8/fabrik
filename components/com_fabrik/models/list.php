@@ -2411,7 +2411,7 @@ class FabrikFEModelList extends JModelForm
 			// Chop up main keys for list limitstart, length to cull the data down to the correct length as defined by the page nav/ list settings
 			$mainKeys = array_unique($mainKeys);
 
-			if ($this->limitLength != -1)
+			if ($this->limitLength > 0)
 			{
 				$mainKeys = array_slice($mainKeys, $this->limitStart, $this->limitLength);
 			}
