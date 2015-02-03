@@ -1866,10 +1866,11 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 						}
 					}
 
-					$v2 = $this->renderListData($v2, new stdClass);
+					//$v2 = $this->renderListData($v2, new stdClass);
 				}
 
-				$val = $value;
+				//$val = $value;
+				$val = $this->renderListData($value, new stdClass);
 			}
 			else
 			{

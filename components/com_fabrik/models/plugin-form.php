@@ -336,7 +336,7 @@ class PlgFabrik_Form extends FabrikPlugin
 					$elementModel->_inJoin = $groupModel->isJoin();
 					$elementModel->setEditable(false);
 
-					if ($elementModel->isJoin())
+					if ($groupModel->isJoin())
 					{
 						$join = $elementModel->getJoinModel()->getJoin();
 
@@ -345,6 +345,7 @@ class PlgFabrik_Form extends FabrikPlugin
 							$raw = JArrayHelper::getValue($model->formDataWithTableName[$k], $c, '');
 							$this->emailData[$k . '_raw'][$c] = $raw;
 							$this->emailData[$k][$c] = $elementModel->getEmailValue($raw, $model->formDataWithTableName, $c);
+							continue;
 						}
 						else
 						{
@@ -356,6 +357,7 @@ class PlgFabrik_Form extends FabrikPlugin
 									$this->emailData[$k . '_raw'][$multiKey] = $multiData;
 									$this->emailData[$k][$multiKey] = $elementModel->getEmailValue($multiData, $model->formDataWithTableName, $multiData);
 								}
+								continue;
 							}
 						}
 					}
