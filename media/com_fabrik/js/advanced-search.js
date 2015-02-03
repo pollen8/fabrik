@@ -43,6 +43,7 @@ AdvancedSearch = new Class({
 		this.watchDelete();
 		this.watchApply();
 		this.watchElementList();
+		Fabrik.fireEvent('fabrik.advancedSearch.ready', this);
 	},
 
 	watchApply: function () {
@@ -145,6 +146,7 @@ AdvancedSearch = new Class({
 		tds[3].empty();
 		this.watchDelete();
 		this.watchElementList();
+		Fabrik.fireEvent('fabrik.advancedSearch.row.added', this);
 	},
 
 	removeRow: function (e) {
@@ -164,6 +166,7 @@ AdvancedSearch = new Class({
 				'opacity': 0
 			});
 		}
+		Fabrik.fireEvent('fabrik.advancedSearch.row.removed', this);
 	},
 
 	/**
@@ -189,6 +192,7 @@ AdvancedSearch = new Class({
 		});
 		this.watchDelete();
 		this.watchElementList();
+		Fabrik.fireEvent('fabrik.advancedSearch.reset', this);
 	},
 
 	deleteFilterOption: function (e) {
