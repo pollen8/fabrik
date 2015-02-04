@@ -998,6 +998,11 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 			$userid = $data[$key];
 		}
 
+		if ($this->getGroup()->canRepeat())
+		{
+			$userid = JArrayHelper::getValue($userid, $repeatCounter, 0);
+		}
+		
 		if (is_array($userid))
 		{
 			$userid = (int) array_shift($userid);
