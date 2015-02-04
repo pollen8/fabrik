@@ -1776,10 +1776,12 @@ class FabrikFEModelForm extends FabModelForm
 	/**
 	 * Process groups when the form is submitted
 	 *
+	 *@param   int  $parentId  insert ID of parent table
+	 *
 	 * @return  void
 	 */
 
-	protected function processGroups()
+	protected function processGroups($parentId = null)
 	{
 		$groupModels = $this->getGroups();
 
@@ -1788,7 +1790,7 @@ class FabrikFEModelForm extends FabModelForm
 			// Jaanus: if group is visible
 			if ($groupModel->canView() && $groupModel->canEdit())
 			{
-				$groupModel->process();
+				$groupModel->process($parentId);
 			}
 		}
 	}
@@ -1845,7 +1847,7 @@ class FabrikFEModelForm extends FabModelForm
 
 		// Store join data
 		JDEBUG ? $profiler->mark('processToDb, processGroups: start') : null;
-		$this->processGroups();
+		$this->processGroups($insertId);
 
 		// Enable db join checkboxes in repeat groups to save data
 		JDEBUG ? $profiler->mark('processToDb, processElements: start') : null;
