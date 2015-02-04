@@ -464,6 +464,7 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 		$mdy = $month . '/' . $day . '/' . $year;
 		$dmonthyear = $daydisp . '. ' . $monthdisp . ' ' . $year;
 		$monthdyear = $monthdisp . ' ' . $daydisp . ', ' . $year;
+		$dmonth = $daydisp . '  ' . $monthdisp;
 
 		if ($ft == "d.m.Y")
 		{
@@ -471,19 +472,20 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 		}
 		else
 		{
-			if ($ft == "m.d.Y")
+			switch ($ft)
 			{
-				$datedisp = $mdy;
-			}
-
-			if ($ft == "D. month YYYY")
-			{
-				$datedisp = $dmonthyear;
-			}
-
-			if ($ft == "Month d, YYYY")
-			{
-				$datedisp = $monthdyear;
+				case 'm.d.Y':
+					$datedisp = $mdy;
+					break;
+				case 'D. month YYYY':
+					$datedisp = $dmonthyear;
+					break;
+				case 'Month d, YYYY':
+					$datedisp = $monthdyear;
+					break;
+				default:
+					$datedisp = $dmonth;
+					break;
 			}
 		}
 
@@ -679,5 +681,36 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 		}
 
 		return array($value, $condition);
+	}
+
+	/**
+	 * Build the filter query for the given element.
+	 * Can be overwritten in plugin - e.g. see checkbox element which checks for partial matches
+	 *
+	 * @param   string  $key            element name in format `tablename`.`elementname`
+	 * @param   string  $condition      =/like etc.
+	 * @param   string  $value          search string - already quoted if specified in filter array options
+	 * @param   string  $originalValue  original filter value without quotes or %'s applied
+	 * @param   string  $type           filter type advanced/normal/prefilter/search/querystring/searchall
+	 *
+	 * @return  string	sql query part e,g, "key = value"
+	 */
+
+	public function getFilterQuery($key, $condition, $value, $originalValue, $type = 'normal')
+	{
+		$ft = $this->getParams()->get('list_date_format', 'd.m.Y');
+		$db = JFactory::getDbo();
+
+		if ($ft === 'd m')
+		{
+			$value = explode('-', $originalValue);
+			array_shift($value);
+			$value = implode('-', $value);
+			$query = 'DATE_FORMAT(' . $key . ', \'%m-%d\') = ' . $db->q($value);
+
+			return $query;
+		}
+
+		return parent::getFilterQuery($key, $condition, $value, $originalValue, $type);
 	}
 }

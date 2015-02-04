@@ -143,7 +143,7 @@ var FbGoogleMap = new Class({
 		}
 		this.mapMade = true;
 
-		if (typeof(this.map) !== 'undefined') {
+		if (typeof(this.map) !== 'undefined' && this.map !== null) {
 			return;
 		}
 		if (typeOf(this.element) === 'null') {
@@ -630,14 +630,15 @@ var FbGoogleMap = new Class({
 		this.options.geocode_fields.each(function (field) {
 			var bits = field.split('_');
 			var i = bits.getLast();
-			if (i !== i.toInt()) {
+			if (typeOf(i.toInt()) === 'null') {
 				return bits.join('_');
 			}
-			i++;
-			bits.splice(bits.length - 1, 1, i);
+			bits.splice(bits.length - 1, 1, c);
 			f.push(bits.join('_'));
 		});
 		this.options.geocode_fields = f;
+		this.mapMade = false;
+		this.map = null;
 		this.makeMap();
 		this.parent(c);
 	},

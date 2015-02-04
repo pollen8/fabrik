@@ -116,6 +116,7 @@ class VideoRender
 </object>';
 				break;
 			default:
+				/*
 				$this->output = "<object width=\"$w\" height=\"$h\"
 			classid=\"clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B\"
 			codebase=\"http://www.apple.com/qtactivex/qtplugin.cab\">
@@ -128,6 +129,28 @@ class VideoRender
 			</embed>
 
 			</object>";
+				*/
+				$this->output = "
+					<video
+						width=\"$w\" height=\"$h\"
+						controls
+						src=\"$src\"
+					>
+						<object width=\"$w\" height=\"$h\"
+							classid=\"clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B\"
+							codebase=\"http://www.apple.com/qtactivex/qtplugin.cab\"
+						>
+							<param name=\"src\" value=\"$src\">
+							<param name=\"autoplay\" value=\"false\">
+							<param name=\"controller\" value=\"true\">
+							<embed src=\"$src\" width=\"$w\" height=\"$h\"
+								autoplay=\"false\" controller=\"true\"
+								pluginspage=\"http://www.apple.com/quicktime/download/\"
+							>
+							</embed>
+						</object
+					</video>
+				";
 				break;
 		}
 	}

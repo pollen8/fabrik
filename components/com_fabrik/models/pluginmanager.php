@@ -615,7 +615,7 @@ class FabrikFEModelPluginmanager extends JModelLegacy
 				if (method_exists($plugin, $method))
 				{
 					JDEBUG ? $profiler->mark("runPlugins: method_exists: $plugin, $method") : null;
-					
+
 					$plugin->renderOrder = $c;
 					$modelTable = $parentModel->getTable();
 					$pluginParams = $plugin->setParams($params, $c);

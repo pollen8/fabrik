@@ -854,7 +854,7 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
       
 				// Jaanus: if count of where values is 0 or if there are no letters or numbers, only commas in imploded array
 				
-				$where .= count($whereval) == 0 || !preg_match('/\w/', implode(',', $whereval)) ? '1 = -1' : $wherekey . ' IN ' . '(' . str_replace(',,', ',\'\',', implode(',', $whereval)) . ')';
+				$where .= count($whereval) == 0 || !preg_match('/\w/', implode(',', $whereval)) ? '4 = -4' : $wherekey . ' IN ' . '(' . str_replace(',,', ',\'\',', implode(',', $whereval)) . ')';
 			}
 			else
 			{

@@ -170,7 +170,8 @@ class FabrikAdminModelElements extends FabModelList
 			$query->select("(SELECT GROUP_CONCAT(ec.id SEPARATOR ',') FROM #__{package}_elements AS ec WHERE ec.parent_id = e.id) AS child_ids");
 		}
 
-		$sql = (string)$query;
+		//$sql = (string)$query;
+		
 		return $query;
 	}
 

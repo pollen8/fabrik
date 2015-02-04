@@ -259,7 +259,13 @@ class PlgFabrik_ElementDigsig extends PlgFabrik_Element
 		$sig_id = $id . '_sig';
 		$opts = $this->getElementJSOptions($repeatCounter);
 		$data = $this->getFormModel()->data;
-		$opts->value = $this->getValue($data, $repeatCounter);
+		$opts->value = htmlspecialchars_decode($this->getValue($data, $repeatCounter));
+		
+		if (empty($opts->value))
+		{
+			$opts->value = "[]";
+		}
+		
 		$opts->sig_id = $sig_id;
 
 		return array('FbDigsig', $id, $opts);

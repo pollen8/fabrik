@@ -2514,6 +2514,7 @@ class FabrikAdminModelList extends FabModelAdmin
 		$fabrikDb = $this->getDb();
 		$columns = $fabrikDb->getTableColumns($tableName);
 		$existingfields = array_keys($columns);
+		$existingfields = array_map('strtolower', $existingfields);
 		$lastfield = empty($existingfields) ? '' : $existingfields[count($existingfields) - 1];
 		$sql = 'ALTER TABLE ' . $db->quoteName($tableName) . ' ';
 		$sqlAdd = array();
@@ -2554,7 +2555,19 @@ class FabrikAdminModelList extends FabModelAdmin
 				{
 					$objname = $obj->name;
 
-					if (!in_array($objname, $existingfields))
+					/*
+					 * Do the check in lowercase (we already strtowlower()'ed $existingfields up there ^^,
+					 * because MySQL field names are case insensitive, so if the element is called 'foo' and there
+					 * is a column called 'Foo', and we try and create 'foo' on the table ... it'll blow up.
+					 * 
+					 * However, leave the $objname unchanged, so if we do create a column for it, it uses the case
+					 * they specific in the element name - it's not up to us to force their column naming to all lower,
+					 * we just need to avoid clashes.
+					 * 
+					 * @TODO We might consider detecting and raising a warning about case inconsistencies?
+					 */
+					
+					if (!in_array(strtolower($objname), $existingfields))
 					{
 						// Make sure that the object is not already in the table
 						if (!in_array($objname, $arAddedObj))

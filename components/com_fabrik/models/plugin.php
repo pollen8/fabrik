@@ -532,6 +532,7 @@ class FabrikPlugin extends JPlugin
 	{
 		if (!isset($this->params))
 		{
+			//echo "plugin params not set - recreating <br>";
 			$row = $this->getRow();
 			$this->params = new JRegistry($row->params);
 		}
@@ -996,22 +997,28 @@ class FabrikPlugin extends JPlugin
 	/**
 	 * Process the plugin, called when form is submitted
 	 *
-	 * @param   string  $paramName  Param name which contains the PHP code to eval
-	 * @param   array   $data       Data
+	 * @param   string     $paramName  Param name which contains the PHP code to eval
+	 * @param   array      $data       Data
+	 * @param   JRegistry $params      Plugin parameters - hacky fix ini email plugin where in
+	 *                                 php 5.3.29 email params were getting confused between multiple plugin instances
 	 *
 	 * @return  bool
 	 */
 
-	protected function shouldProcess($paramName, $data = null)
+	protected function shouldProcess($paramName, $data = null, $params = null)
 	{
 		if (is_null($data))
 		{
 			$data = $this->data;
 		}
 
-		$formModel = $this->getModel();
-		$params = $this->getParams();
+		if (is_null($params))
+		{
+			$params = $this->getParams();
+		}
+
 		$condition = $params->get($paramName);
+		$formModel = $this->getModel();
 		$w = new FabrikWorker;
 
 		if (trim($condition) == '')

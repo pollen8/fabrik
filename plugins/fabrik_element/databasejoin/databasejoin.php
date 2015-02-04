@@ -1866,10 +1866,11 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 						}
 					}
 
-					$v2 = $this->renderListData($v2, new stdClass);
+					//$v2 = $this->renderListData($v2, new stdClass);
 				}
 
-				$val = $value;
+				//$val = $value;
+				$val = $this->renderListData($value, new stdClass);
 			}
 			else
 			{
@@ -2516,7 +2517,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 					else
 					{
 						// No checkbox rows found, means we should return where statement which will hide all results (e.g. prefilter on dbjoin as chx IN foo)
-						$str = '1 = -1';
+						$str = '5 = -5';
 					}
 				}
 				else

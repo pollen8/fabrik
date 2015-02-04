@@ -1124,7 +1124,6 @@ class FabrikFEModelList extends JModelForm
 		$form = $this->getFormModel();
 		$tableParams = $this->getParams();
 		$table = $this->getTable();
-		$pluginManager = FabrikWorker::getPluginManager();
 		$method = 'renderListData_' . $this->outputFormat;
 		$this->_aLinkElements = array();
 
@@ -1138,9 +1137,7 @@ class FabrikFEModelList extends JModelForm
 
 			foreach ($elementModels as $elementModel)
 			{
-				$e = $elementModel->getElement();
 				$elementModel->setContext($groupModel, $form, $this);
-				$params = $elementModel->getParams();
 				$col = $elementModel->getFullName(true, false);
 
 				// Check if there is  a custom out put handler for the tables format
@@ -1189,7 +1186,6 @@ class FabrikFEModelList extends JModelForm
 		}
 
 		JDEBUG ? $profiler->mark('elements rendered for table data') : null;
-		$groupTitle = array();
 		$this->groupTemplates = array();
 
 		// Check if the data has a group by applied to it
@@ -1217,13 +1213,10 @@ class FabrikFEModelList extends JModelForm
 			}
 
 			$groupedData = array();
-			$thisGroupedData = array();
 			$groupBy = FabrikString::safeColNameToArrayKey($groupBy);
 			$groupBy .= '_raw';
 			$groupTitle = null;
 			$aGroupTitles = array();
-			$groupId = 0;
-			$gKey = 0;
 
 			for ($i = 0; $i < count($data); $i++)
 			{
@@ -1305,12 +1298,9 @@ class FabrikFEModelList extends JModelForm
 	protected function addSelectBoxAndLinks(&$data)
 	{
 		$j3 = FabrikWorker::j3();
-		$item = $this->getTable();
-		$app = JFactory::getApplication();
 		$db = FabrikWorker::getDbo(true);
 		$params = $this->getParams();
 		$buttonAction = $this->actionMethod();
-		$nextview = $this->canEdit() ? 'form' : 'details';
 		$tmpKey = '__pk_val';
 		$faceted = $params->get('facetedlinks');
 
@@ -1327,13 +1317,10 @@ class FabrikFEModelList extends JModelForm
 			}
 		}
 
-		$action = $app->isAdmin() ? 'task' : 'view';
 		$query = $db->getQuery(true);
 		$query->select('id, label, db_table_name')->from('#__{package}_lists');
 		$db->setQuery($query);
 		$aTableNames = $db->loadObjectList('label');
-		$cx = count($data);
-		$viewLinkAdded = false;
 
 		// Get pk values
 		$pks = array();
@@ -1511,7 +1498,6 @@ class FabrikFEModelList extends JModelForm
 					{
 						$linkedTable = $faceted->linkedlist->$f;
 						$popupLink = $faceted->linkedlist_linktype->$f;
-						$linkedListText = $faceted->linkedlisttext->$f;
 
 						if ($linkedTable != '0')
 						{
@@ -1634,13 +1620,13 @@ class FabrikFEModelList extends JModelForm
 	}
 
 	/**
-	 * CHoudl the list link load in an iframe or a xhr
+	 * Should the list link load in an i-frame or a xhr
 	 *
 	 * @param   string  $prop  Parameter url to check
 	 *
 	 * @since  3.1.1
 	 *
-	 * @return  string  Load menthod xhr/iframe
+	 * @return  string  Load method xhr/iframe
 	 */
 	protected function getLoadMethod($prop)
 	{
@@ -2331,7 +2317,7 @@ class FabrikFEModelList extends JModelForm
 					 *
 					 * [now search on town = 'la rochelle']
 					 *
-					 * If we dont use this new code then the search results show all three towns.
+					 * If we don't use this new code then the search results show all three towns.
 					 * By getting the lowest set of complete primary keys (in this example the town ids) we set our query to be:
 					 *
 					 * where town_id IN (1)
@@ -2425,7 +2411,7 @@ class FabrikFEModelList extends JModelForm
 			// Chop up main keys for list limitstart, length to cull the data down to the correct length as defined by the page nav/ list settings
 			$mainKeys = array_unique($mainKeys);
 
-			if ($this->limitLength != -1)
+			if ($this->limitLength > 0)
 			{
 				$mainKeys = array_slice($mainKeys, $this->limitStart, $this->limitLength);
 			}
@@ -2471,7 +2457,8 @@ class FabrikFEModelList extends JModelForm
 			/* $$$ rob We've already used buildQueryWhere to get our list of main pk ids.
 			 * so lets use that list of ids to create the where statement. This will return 5/10/20 etc
 			* records from our main table, as per our page nav, even if a main record has 3 rows of joined
-			* data. If no ids found then do where 1 = -1 to return no records
+			* data. If no ids found then do where "2 = -2" to return no records (was "1 = -1", changed to make
+			* it easier to know where this is coming form when debugging)
 			*/
 			if (!empty($ids))
 			{
@@ -2487,12 +2474,12 @@ class FabrikFEModelList extends JModelForm
 				}
 				else
 				{
-					$query->where('1 = -1');
+					$query->where('2 = -2');
 				}
 			}
 			else
 			{
-				$query->where('1 = -1');
+				$query->where('2 = -2');
 			}
 		}
 		else
@@ -2750,8 +2737,8 @@ class FabrikFEModelList extends JModelForm
 					if ($dir != '' && $dir != '-' && trim($dir) != 'Array')
 					{
 						$strOrder == '' ? $strOrder = "\n ORDER BY " : $strOrder .= ',';
-						$strOrder .= FabrikString::safeNameQuote($element->getOrderByName()) . ' ' . $dir;
-						$orderByName = FabrikString::safeNameQuote($element->getOrderByName());
+						$strOrder .= FabrikString::safeNameQuote($element->getOrderByName(), false) . ' ' . $dir;
+						$orderByName = FabrikString::safeNameQuote($element->getOrderByName(), false);
 						$this->orderEls[] = $orderByName;
 						$this->orderDirs[] = $dir;
 						$element->getAsField_html($this->selectedOrderFields, $aAsFields);
@@ -4056,6 +4043,11 @@ class FabrikFEModelList extends JModelForm
 			}
 		}
 
+		if ($this->listRequiresFiltering() && $this->isAjax() && $this->canDelete())
+		{
+			return true;
+		}
+
 		return false;
 	}
 
@@ -5196,10 +5188,10 @@ class FabrikFEModelList extends JModelForm
 
 			if (!array_key_exists($i, $sqlCond) || $sqlCond[$i] == '')
 			{
-				// Will produce an SQL error - but is equivalant to 'show no records' so set to where 1 = -1
+				// Will produce an SQL error - but is equivalant to 'show no records' so set to where 3 = -3
 				if ($condition === 'IN' && $value === '()')
 				{
-					$query = '1 = -1';
+					$query = '3 = -3';
 				}
 				else
 				{
@@ -5914,7 +5906,7 @@ class FabrikFEModelList extends JModelForm
 	}
 
 	/**
-	 * Does a filter have to be appled before we show any list data
+	 * Does a filter have to be applied before we show any list data
 	 *
 	 * @return bool
 	 */
@@ -6612,9 +6604,9 @@ class FabrikFEModelList extends JModelForm
 	}
 
 	/**
-	 * returns the table headings, seperated from writetable function as
+	 * returns the table headings, separated from writetable function as
 	 * when group_by is selected multiple tables are written
-	 * 09/07/2011 moved headingClass into arry rather than string
+	 * 09/07/2011 moved headingClass into array rather than string
 	 *
 	 * @return  array  (table headings, array columns, $aLinkElements)
 	 */
@@ -6622,7 +6614,6 @@ class FabrikFEModelList extends JModelForm
 	public function getHeadings()
 	{
 		$app = JFactory::getApplication();
-		$input = $app->input;
 		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$item = $this->getTable();
 		$item->order_dir = JString::strtolower($item->order_dir);
@@ -6638,7 +6629,7 @@ class FabrikFEModelList extends JModelForm
 
 		foreach ($oldLinksToForms as $join)
 		{
-			// $$$ hugh - anoher issue with getLinksTothisKey() now returning false for some joins.
+			// $$$ hugh - another issue with getLinksToThisKey() now returning false for some joins.
 			if ($join)
 			{
 				$k = $join->list_id . '-' . $join->form_id . '-' . $join->element_id;
@@ -6701,7 +6692,6 @@ class FabrikFEModelList extends JModelForm
 					continue;
 				}
 
-				$viewLinkAdded = false;
 				$groupHeadings[$groupHeadingKey]++;
 				$key = $elementModel->getFullName(true, false);
 				$compsitKey = !empty($showInList) ? array_search($element->id, $showInList) . ':' . $key : $key;
@@ -6729,25 +6719,24 @@ class FabrikFEModelList extends JModelForm
 						}
 					}
 
-					$class = "";
-					$currentOrderDir = $orderDir;
+					$class = '';
 					$tmpl = $this->getTmpl();
 
 					switch ($orderDir)
 					{
-						case "desc":
-							$orderDir = "-";
+						case 'desc':
+							$orderDir = '-';
 							$class = 'class="fabrikorder-desc"';
 							$img = FabrikHelperHTML::image('arrow-up.png', 'list', $tmpl, array('alt' => FText::_('COM_FABRIK_ORDER')));
 							break;
-						case "asc":
-							$orderDir = "desc";
+						case 'asc':
+							$orderDir = 'desc';
 							$class = 'class="fabrikorder-asc"';
 							$img = FabrikHelperHTML::image('arrow-down.png', 'list', $tmpl, array('alt' => FText::_('COM_FABRIK_ORDER')));
 							break;
-						case "":
-						case "-":
-							$orderDir = "asc";
+						case '':
+						case '-':
+							$orderDir = 'asc';
 							$class = 'class="fabrikorder"';
 							$img = FabrikHelperHTML::image('menu-2.png', 'list', $tmpl, array('alt' => FText::_('COM_FABRIK_ORDER')));
 							break;
@@ -6828,8 +6817,6 @@ class FabrikFEModelList extends JModelForm
 			{
 				$this->addCheckBox($aTableHeadings, $headingClass, $cellClass);
 			}
-
-			$viewLinkAdded = false;
 
 			// If no elements linking to the edit form add in a edit column (only if we have the right to edit/view of course!)
 			if ($params->get('checkboxLocation', 'end') === 'end')
@@ -6979,7 +6966,6 @@ class FabrikFEModelList extends JModelForm
 		{
 			// 3.0 actions now go in one column
 			$pluginManager = FabrikWorker::getPluginManager();
-			$params = $this->getParams();
 			$headingButtons = array();
 
 			if ($this->deletePossible())
@@ -6993,6 +6979,7 @@ class FabrikFEModelList extends JModelForm
 			if (FabrikWorker::j3())
 			{
 				$headingButtons = array_merge($headingButtons, $res);
+
 				if (empty($headingButtons))
 				{
 					$aTableHeadings['fabrik_actions'] = '';
