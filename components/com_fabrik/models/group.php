@@ -1214,11 +1214,13 @@ class FabrikFEModelGroup extends FabModel
 
 	/**
 	 * Group specific form submission code - deals with saving joined data.
+	 * 
+	 * @param   int  $parentId  insert ID of parent table
 	 *
 	 * @return  void
 	 */
 
-	public function process()
+	public function process($parentId = null)
 	{
 		if (!$this->isJoin())
 		{
@@ -1229,12 +1231,33 @@ class FabrikFEModelGroup extends FabModel
 		$repeats = $this->repeatTotals();
 		$joinModel = $this->getJoinModel();
 		$pkField = $joinModel->getForeignID();
+		$fk = $joinModel->getForeignKey();
+		
+		/*
+		 * $$$ hugh - if $pkField is same-same as FK, then this is a one-to-one join in which the FK is
+		 * on the "parent", so it's ...
+		 * 
+		 * parent.child_id (FK) => child.id (PK)
+		 * 
+		 * ... rather than ...
+		 * 
+		 * parent.id (PK) <= child.parent_id (FK)
+		 * 
+		 * ... which means it needs different handling, like we don't set the FK value in the child, rather
+		 * we have to go back and update the FK value in the parent after writing the child row.
+		 */
+		$fkOnParent = $pkField === $fk;
+		
 		$listModel = $this->getListModel();
 		$item = $this->getGroup();
 		$formModel = $this->getFormModel();
 		$formData =& $formModel->formDataWithTableName;
 
-		$this->setForeignKey();
+		if (!$fkOnParent)
+		{
+			$this->setForeignKey();
+		}
+		
 		$elementModels = $this->getMyElements();
 		$list = $listModel->getTable();
 		$tblName = $list->db_table_name;
@@ -1246,45 +1269,107 @@ class FabrikFEModelGroup extends FabModel
 		$list->db_primary_key = $joinModel->getForeignID('.');
 		$usedKeys = array();
 
-		// For each repeat group
-		for ($i = 0; $i < $repeats; $i ++)
+		$insertId = false;
+		
+		if (!$fkOnParent)
 		{
+			/*
+			 * It's a "normal" join, with the FK on the child, which may or may not repeat
+			 */
+			for ($i = 0; $i < $repeats; $i ++)
+			{
+				$data = array();
+	
+				foreach ($elementModels as $elementModel)
+				{
+					$elementModel->onStoreRow($data, $i);
+				}
+	
+				$pk = $canRepeat ? JArrayHelper::getValue($formData[$pkField], $i, '') : $formData[$pkField];
+	
+				// Say for some reason the pk was set as a dbjoin!
+				if (is_array($pk))
+				{
+					$pk = array_shift($pk);
+				}
+	
+				$insertId = $listModel->storeRow($data, $pk, true, $item);
+	
+				// Update key
+				if ($canRepeat)
+				{
+					$formData[$pkField][$i] = $insertId;
+				}
+				else
+				{
+					$formData[$pkField] = $insertId;
+				}
+	
+				$usedKeys[] = $insertId;
+			}
+			
+			// Delete any removed groups
+			$this->deleteRepeatGroups($usedKeys);
+		}
+		else
+		{
+			/*
+			 * It's an abnormal join!  FK is on the parent.  Can't repeat, and the $pk needs to be derived differently
+			 */
+			
 			$data = array();
-
+			
 			foreach ($elementModels as $elementModel)
 			{
-				$elementModel->onStoreRow($data, $i);
+				$elementModel->onStoreRow($data, 0);
 			}
 
-			$pk = $canRepeat ? JArrayHelper::getValue($formData[$pkField], $i, '') : $formData[$pkField];
-
-			// Say for some reason the pk was set as a dbjoin!
+			/*
+			 * Although we use getPrimaryKey(), it's not really the primary key, 'cos the relationship is flipped
+			 * when we're in $fkOnParent mode!  So it's actually the FK field on the parent table.
+			 */
+			$fkField = $joinModel->getPrimaryKey('___');
+			$pk = JArrayHelper::getValue($formData, $fkField . '_raw', JArrayHelper::getValue($formData, $fkField, ''));
+			
 			if (is_array($pk))
 			{
 				$pk = array_shift($pk);
 			}
-
+			
+			// storeRow treats 0 or '0' differently to empty string!  So if empty(), specifically set to empty string
+			if (empty($pk))
+			{
+				$pk = '';
+			}
+			
 			$insertId = $listModel->storeRow($data, $pk, true, $item);
-
-			// Update key
-			if ($canRepeat)
-			{
-				$formData[$pkField][$i] = $insertId;
-			}
-			else
-			{
-				$formData[$pkField] = $insertId;
-			}
-
-			$usedKeys[] = $insertId;
 		}
-
-		// Delete any removed groups
-		$this->deleteRepeatGroups($usedKeys);
 
 		// Reset the list's table name
 		$list->db_table_name = $tblName;
 		$list->db_primary_key = $tblPk;
+		
+		/*
+		 * If the FK is on the parent, we (may) need to update the parent row with the FK value
+		 * for the joined row we just upserted.
+		 */
+		if ($fkOnParent && !empty($insertId))
+		{
+			/*
+			 * Only bother doing this is the FK isn't there or has been changed.  Again, don't be
+			 * confused by using getPrimaryKey, it's really the FK 'cos the relationship is flipped
+			 * from a "normal" join, with the FK on the parent.
+			 */ 
+			$fkField = $joinModel->getPrimaryKey('___');
+			if (!array_key_exists($fkField, $formData) || $formData[$fkField] != $insertId)
+			{
+				$formData[$fkField] = $insertId;
+				$formData[$fkField . '_raw'] = $insertId;
+				$fkField = $joinModel->getPrimaryKey('.');
+				$listModel->updateRow($parentId, $fkField, $insertId);
+			}
+		}
+		
 	}
 
 	/**

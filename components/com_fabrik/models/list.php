@@ -10879,7 +10879,7 @@ class FabrikFEModelList extends JModelForm
 
 	public function updateRows($ids, $col, $val, $update = '')
 	{
-		if ($col == '')
+		if (empty($col) && empty($update))
 		{
 			return;
 		}
@@ -10952,6 +10952,36 @@ class FabrikFEModelList extends JModelForm
 			$db->setQuery($query);
 			$db->execute();
 		}
+	}
+	
+	/**
+	 * Update a single row with a key = val, does NOT work across joins, main table only
+	 *
+	 * @param   array   $id      Pk value to update
+	 * @param   string  $col     Key to update should be in format 'table.element'
+	 * @param   string  $val     Val to set to
+	 *
+	 * @return  void
+	 */
+	
+	public function updateRow($id, $col, $val)
+	{
+		$field = FabrikString::shortColname($col);
+		
+		if (empty($field) || empty($id))
+		{
+			return;
+		}
+
+		$db = $this->getDb();
+		$table = $this->getTable();
+		$query = $db->getQuery(true);
+		$query
+			->update($db->quoteName($table->db_table_name))
+			->set($db->quoteName($field) . ' = ' . $db->quote($val))
+			->where($table->db_primary_key . ' = ' . $db->quote($id));
+		$db->setQuery($query);
+		$db->execute();
 	}
 
 	/**
