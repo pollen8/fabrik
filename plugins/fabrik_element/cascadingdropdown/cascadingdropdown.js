@@ -181,6 +181,7 @@ var FbCascadingdropdown = new Class({
 					this.element.removeClass('readonly');
 				}
 			}
+			this.renewEvents();
 			// $$$ hugh - need to fire this CDD's 'change' event in case we have another CDD
 			// daisy chained on us.  We just don't need to do it if 'ignoreAjax' is true, because
 			// that means we're being added to the form, and everyone will get their change() method
