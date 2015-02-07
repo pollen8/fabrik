@@ -1320,10 +1320,14 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 			$formModel->data[$id . '_raw'] = $targetIds;
 
 			// Add icons
-			for ($i = 0; $i < count($targetIds); $i++)
+			// $$$ hugh - $targetId's isn't sequential for multiselect joins, but $defaultLabels is!
+			//for ($i = 0; $i < count($targetIds); $i++)
+			$i = 0;
+			foreach ($targetIds as $tkey => $targetId)
 			{
-				$tmpLabel = JArrayHelper::getValue($defaultLabels, $i, '');
-				$defaultLabels[$i] = $this->getReadOnlyOutput($targetIds[$i], $tmpLabel);
+				$tmpLabel = JArrayHelper::getValue($defaultLabels, $i, 'unknown label');
+				$defaultLabels[$i] = $this->getReadOnlyOutput($targetId, $tmpLabel);
+				$i++;
 			}
 
 			$this->addReadOnlyLinks($defaultLabels, $targetIds);

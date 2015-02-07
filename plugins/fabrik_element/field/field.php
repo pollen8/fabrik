@@ -619,4 +619,29 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 		$value = '<img src="' . $link . '"/>';
 		return $value;
 	}
+	
+	/**
+	 * Turn form value into email formatted value
+	 *
+	 * @param   mixed  $value          Element value
+	 * @param   array  $data           Form data
+	 * @param   int    $repeatCounter  Group repeat counter
+	 *
+	 * @return  string  email formatted value
+	 */
+	
+	protected function getIndEmailValue($value, $data = array(), $repeatCounter = 0)
+	{
+		$params = $this->getParams();
+		
+		if ($params->get('render_as_qrcode', '0') === '1')
+		{
+			return $this->qrCodeLink($value, $data);
+		}
+		else
+		{
+			return parent::getIndEmailValue($value, $data, $repeatCounter);
+		}
+	}
+	
 }

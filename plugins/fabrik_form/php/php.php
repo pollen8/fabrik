@@ -362,6 +362,8 @@ class PlgFabrik_FormPHP extends PlgFabrik_Form
 
 	private function _runPHP($groupModel = null, $data = null)
 	{
+		$params = $this->getParams();
+		
 		if (is_null($data))
 		{
 			$data = $this->getProcessData();
@@ -371,7 +373,7 @@ class PlgFabrik_FormPHP extends PlgFabrik_Form
 		 * if you want to modify the submitted form data
 		 * $formModel->updateFormData('tablename___elementname', $newvalue);
 		 */
-		$params = $this->getParams();
+
 		$formModel = $this->getModel();
 		$method = $params->get('only_process_curl');
 		/*
