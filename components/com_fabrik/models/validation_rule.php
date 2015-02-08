@@ -79,11 +79,12 @@ class PlgFabrik_Validationrule extends FabrikPlugin
 	 * if evaluation is true then the validation rule is applied
 	 *
 	 * @param   string  $data  Elements data
+	 * @param   int     $repeatCounter  Repeat group counter
 	 *
 	 * @return  bool	apply validation
 	 */
 
-	public function shouldValidate($data)
+	public function shouldValidate($data, $repeatCounter = 0)
 	{
 		if (!$this->shouldValidateIn())
 		{

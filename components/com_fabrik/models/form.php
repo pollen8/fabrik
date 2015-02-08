@@ -2313,7 +2313,7 @@ class FabrikFEModelForm extends FabModelForm
 					{
 						$plugin->formModel = $this;
 
-						if ($plugin->shouldValidate($form_data))
+						if ($plugin->shouldValidate($form_data, $c))
 						{
 							if (!$plugin->validate($form_data, $c))
 							{
