@@ -2313,7 +2313,7 @@ class FabrikFEModelForm extends FabModelForm
 					{
 						$plugin->formModel = $this;
 
-						if ($plugin->shouldValidate($form_data))
+						if ($plugin->shouldValidate($form_data, $c))
 						{
 							if (!$plugin->validate($form_data, $c))
 							{
@@ -3043,9 +3043,12 @@ echo "form get errors";
 		{
 			if (!empty($errors))
 			{
-				if (!empty($errors[0]))
+				foreach ($errors as $error)
 				{
-					$errorsFound = true;
+					if (!empty($error[0]))
+					{
+						$errorsFound = true;
+					}
 				}
 			}
 		}
