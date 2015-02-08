@@ -3043,9 +3043,12 @@ echo "form get errors";
 		{
 			if (!empty($errors))
 			{
-				if (!empty($errors[0]))
+				foreach ($errors as $error)
 				{
-					$errorsFound = true;
+					if (!empty($error[0]))
+					{
+						$errorsFound = true;
+					}
 				}
 			}
 		}
