@@ -60,9 +60,6 @@ class FabrikViewSlideshow extends JViewLegacy
 		$this->filterFormURL = $this->get('FilterFormURL');
 		$this->params = $model->getParams();
 		$this->containerId = $this->get('ContainerId');
-		$tpl = $params->get('slideshow_viz_layout', $tpl);
-		$tmplpath = $model->pathBase . 'slideshow/views/slideshow/tmpl/' . $tpl;
-		$this->_setPath('template', $tmplpath);
 		$srcs[] = 'media/com_fabrik/js/listfilter.js';
 
 		if ($this->get('RequiredFiltersFound'))
@@ -95,7 +92,8 @@ class FabrikViewSlideshow extends JViewLegacy
 		FabrikHelperHTML::script($srcs, $this->js);
 
 		$tpl = $j3 ? 'bootstrap' : 'default';
-		$tmplpath = JPATH_ROOT . '/plugins/fabrik_visualization/slideshow/views/slideshow/tmpl/' . $tpl;
+		$tpl = $params->get('slideshow_viz_layout', $tpl);
+		$tmplpath = $model->pathBase . 'slideshow/views/slideshow/tmpl/' . $tpl;
 		$this->_setPath('template', $tmplpath);
 		FabrikHelperHTML::stylesheetFromPath('plugins/fabrik_visualization/slideshow/views/slideshow/tmpl/' . $tpl . '/template.css');
 		echo parent::display();

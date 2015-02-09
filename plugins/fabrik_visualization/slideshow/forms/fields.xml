@@ -2,6 +2,12 @@
 <form>
 	<fields name="params">
 		<fieldset name="thisoptions">
+		
+			<field name="slideshow_viz_layout"
+				type="fabriktemplate"
+				directory="/plugins/fabrik_visualization/slideshow/views/slideshow/"
+				label="PLG_VISUALIZATION_SLIDESHOW_TEMPLATE_LABEL"
+			/>
 			
 			<field default="1" description="PLG_VISUALIZATION_SLIDESHOW_TYPE_DESC" label="PLG_VISUALIZATION_SLIDESHOW_TYPE_LABEL" name="slideshow_viz_type" type="list">
 					<option value="1">PLG_VISUALIZATION_SLIDESHOW_NORMAL</option>
