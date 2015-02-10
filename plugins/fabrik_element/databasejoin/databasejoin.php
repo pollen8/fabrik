@@ -3093,13 +3093,29 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 	public function getLabelForValue($v, $defaultLabel = null, $forceCheck = false)
 	{
 		// Band aid - as this is called in listModel::addLabels() lets not bother - re-querying the db (label already loaded)
-		if ($v === $defaultLabel && !$forceCheck)
+		if (!is_array($v) && $v === $defaultLabel && !$forceCheck)
 		{
 			return $v;
 		}
 
 		if ($this->isJoin())
 		{
+			/*
+			 * temp fix while I work out the details ... the code after this references $repeatCounter, apparently assuming
+			 * that if $vv is an array, we're in a repeat group.  But that's a hangover from 3.0.  As far as I can tell, the
+			 * only time I can see where $v may be an array is displaying a mutiselect join, in a repeat group (?), in a
+			 * read only context.  In which case, we'll already have the labels, so all we need to check is if the value and
+			 * label arrays are the same - i.e. we have the label in the value.  So the following test should be all we need to
+			 * do.  I'll run this for a while, if no unexpected side effects, I'll re-do the code after this accordingly. 
+			 */ 
+			if (is_array($v) && is_array($defaultLabel))
+			{
+				if ($v == $defaultLabel)
+				{
+					return $v;
+				}
+			}
+				
 			$rows = $this->checkboxRows('id');
 
 			if (count($v) === 0)
