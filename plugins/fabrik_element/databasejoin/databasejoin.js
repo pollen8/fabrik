@@ -548,11 +548,19 @@ var FbDatabasejoin = new Class({
 						this.element.options[0].selected = true;
 					}
 				} else {
-					this.element.getElements('input').each(function (i) {
-						if (i.get('value') === val) {
-							i.checked = true;
-						}
-					});
+					if (typeOf(val) === 'string') {
+						val = val === '' ? [] : JSON.decode(val);
+					}
+					this._getSubElements();
+					this.subElements.each(function (el) {
+						var chx = false;
+						val.each(function (v) {
+							if (v === el.value) {
+								chx = true;
+							}
+						}.bind(this));
+						el.checked = chx;
+					}.bind(this));
 				}
 			}
 		}
