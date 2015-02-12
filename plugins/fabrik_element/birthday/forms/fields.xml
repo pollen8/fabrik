@@ -127,6 +127,16 @@
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
+			
+			<field name="bd_tutorial" 
+				type="spacer" 
+				label="PLG_ELEMENT_BIRTHDAY_EXAMPLE" 
+				/>
+
+			<field name="bd_tutorial_desc" 
+				type="spacer"
+				label="PLG_ELEMENT_BIRTHDAY_EXAMPLEDESC" 
+				/>
 
 		</fieldset>
 		

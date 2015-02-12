@@ -424,6 +424,7 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 		$params = $this->getParams();
 		$app = JFactory::getApplication();
 		$input = $app->input;
+		$user = JFactory::getUser();
 		$updateVal = $params->get($name);
 		$updateVal = is_array($updateVal) ? JArrayHelper::getValue($updateVal, $renderOrder, '') : $updateVal;
 
@@ -435,6 +436,11 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 		if ($updateVal === '{subject}')
 		{
 			$updateVal = $input->get('subject', '', 'string');
+		}
+		
+		if ($updateVal === '{$my->id}')
+		{
+			$updateVal = $user->get('id', 0, 'int');
 		}
 
 		return $updateVal;
