@@ -43,7 +43,7 @@ class PlgFabrik_ElementNotes extends PlgFabrik_ElementDatabasejoin
 		$id = $this->getHTMLId($repeatCounter);
 		$params = $this->getParams();
 		$opts = $this->getElementJSOptions($repeatCounter);
-		$opts->rowid = $this->getFormModel()->getRowId();
+		$opts->rowid = (int) $this->getFormModel()->getRowId();
 		$opts->id = $this->id;
 
 		return array('FbNotes', $id, $opts);
