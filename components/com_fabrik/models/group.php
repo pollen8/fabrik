@@ -1196,6 +1196,36 @@ class FabrikFEModelGroup extends FabModel
 	}
 
 	/**
+	 * 
+	 * 
+	 */
+	
+	public function fkOnParent()
+	{
+		/*
+		 * $$$ hugh - if $pkField is same-same as FK, then this is a one-to-one join in which the FK is
+		* on the "parent", so it's ...
+		*
+		* parent.child_id (FK) => child.id (PK)
+		*
+		* ... rather than ...
+		*
+		* parent.id (PK) <= child.parent_id (FK)
+		*
+		* ... which means it needs different handling, like we don't set the FK value in the child, rather
+		* we have to go back and update the FK value in the parent after writing the child row.
+		*/
+		
+		// @TODO - handle joins which don't involve the parent!
+		
+		$joinModel = $this->getJoinModel();
+		$pkField = $joinModel->getForeignID();
+		$fk = $joinModel->getForeignKey();
+		
+		return $pkField === $fk;		
+	}
+	
+	/**
 	 * Get the number of times the group was repeated when the user fills
 	 * in the form
 	 *
@@ -1233,20 +1263,7 @@ class FabrikFEModelGroup extends FabModel
 		$pkField = $joinModel->getForeignID();
 		$fk = $joinModel->getForeignKey();
 		
-		/*
-		 * $$$ hugh - if $pkField is same-same as FK, then this is a one-to-one join in which the FK is
-		 * on the "parent", so it's ...
-		 * 
-		 * parent.child_id (FK) => child.id (PK)
-		 * 
-		 * ... rather than ...
-		 * 
-		 * parent.id (PK) <= child.parent_id (FK)
-		 * 
-		 * ... which means it needs different handling, like we don't set the FK value in the child, rather
-		 * we have to go back and update the FK value in the parent after writing the child row.
-		 */
-		$fkOnParent = $pkField === $fk;
+		$fkOnParent = $this->fkOnParent();
 		
 		$listModel = $this->getListModel();
 		$item = $this->getGroup();
@@ -1285,12 +1302,29 @@ class FabrikFEModelGroup extends FabModel
 					$elementModel->onStoreRow($data, $i);
 				}
 	
-				$pk = $canRepeat ? JArrayHelper::getValue($formData[$pkField], $i, '') : $formData[$pkField];
-	
-				// Say for some reason the pk was set as a dbjoin!
-				if (is_array($pk))
+				if ($formModel->copyingRow())
 				{
-					$pk = array_shift($pk);
+					$pk = '';
+					
+					if ($canRepeat)
+					{
+						$formData[$pkField][$i] = '';
+					}
+					else
+					{
+						$formData[$pkField] = '';
+					}
+					
+				}
+				else
+				{
+					$pk = $canRepeat ? JArrayHelper::getValue($formData[$pkField], $i, '') : $formData[$pkField];
+		
+					// Say for some reason the pk was set as a dbjoin!
+					if (is_array($pk))
+					{
+						$pk = array_shift($pk);
+					}
 				}
 	
 				$insertId = $listModel->storeRow($data, $pk, true, $item);
@@ -1390,6 +1424,17 @@ class FabrikFEModelGroup extends FabModel
 			return true;
 		}
 
+		/*
+		 * If we are copying a row, everything is new, leave old groups alone
+		 */
+		
+		$formModel = $this->getFormModel();
+		
+		if ($formModel->copyingRow())
+		{
+			return true;
+		}
+		
 		$input = JFactory::getApplication()->input;
 		$listModel = $this->getListModel();
 		$list = $listModel->getTable();
