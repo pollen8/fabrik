@@ -209,7 +209,7 @@ class FabrikControllerForm extends JControllerLegacy
 		 * as 'new' for purposes of running plugins.  Rob's comment in model process() seems to
 		 * indicate that origRowId was for this purposes, but it doesn't work, 'cos always has a value.
 		 */
-		if ($input->get('Copy', '') != '')
+		if ($input->get('Copy', 'no') !== 'no')
 		{
 			$model->copyingRow(true);
 		}

@@ -590,7 +590,8 @@ class FabrikFEModelPluginmanager extends JModelLegacy
 		 * which means that any other plugin in the same group should not be run.
 		 */
 		$runningAway = false;
-
+		$mainData = array();
+		
 		foreach ($usedPlugins as $usedPlugin)
 		{
 			if ($runningAway)

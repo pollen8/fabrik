@@ -102,7 +102,7 @@ class PlgFabrik_ListRadius_Search extends PlgFabrik_List
 
 		$strPlace = array();
 		$strPlace[] = '<div class="radius_search_place_container" style="' . $style . ';position:relative;">';
-		$strPlace[] = '<input type="text" name="' . $name . '" id="' . $name . '" ' . $class . 'value="' . $place . '"/>';
+		$strPlace[] = '<input type="text" name="' . $name . '" id="' . $name . '" ' . $class . ' value="' . $place . '"/>';
 
 		$context = $baseContext . 'radius_search_place';
 		$name = 'radius_search_place' . $this->renderOrder;
@@ -119,7 +119,7 @@ class PlgFabrik_ListRadius_Search extends PlgFabrik_List
 		<table style=\"width:100%\"><tr><td><label for=\"radius_search_lat_" . $this->renderOrder . "\">" . FText::_('PLG_VIEW_RADIUS_LATITUDE')
 			. "</label></td><td><input type=\"text\" name=\"radius_search_lat\" value=\"$lat\" id=\"radius_search_lat_"
 				. $this->renderOrder . "\" $class size=\"6\"/></td></tr>
-		<label><tr><td><label for=\"radius_search_lon_" . $this->renderOrder . "\">" . FText::_('PLG_VIEW_RADIUS_LONGITUDE')
+		<tr><td><label for=\"radius_search_lon_" . $this->renderOrder . "\">" . FText::_('PLG_VIEW_RADIUS_LONGITUDE')
 			. "</label></td><td><input type=\"text\" name=\"radius_search_lon\" value=\"$lon\" id=\"radius_search_lon_"
 				. $this->renderOrder . "\" $class size=\"6\"/></td></tr></table></div>";
 

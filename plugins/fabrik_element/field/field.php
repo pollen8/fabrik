@@ -636,7 +636,7 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 		
 		if ($params->get('render_as_qrcode', '0') === '1')
 		{
-			return $this->qrCodeLink($value, $data);
+			return html_entity_decode($this->qrCodeLink($value, $data));
 		}
 		else
 		{

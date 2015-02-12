@@ -26,7 +26,7 @@ var fabrikCalendar = new Class({
 			'add': 'index.php?option=com_fabrik&controller=visualization.calendar&view=visualization&task=getEvents&format=raw',
 			'del': 'index.php?option=com_fabrik&controller=visualization.calendar&view=visualization&task=deleteEvent&format=raw'
 		},
-		monthday: {'width': 90, 'height': 80},
+		monthday: {'width': 90, 'height': 120},
 		restFilterStart: 'na',
 		j3: false,
 		showFullDetails: false,

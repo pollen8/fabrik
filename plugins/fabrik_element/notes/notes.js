@@ -25,16 +25,18 @@ var FbNotes = new Class({
 	},
 
 	setUp: function () {
-		this.element.getElement('.button').addEvent('click', function (e) {
-			this.submit(e);
-		}.bind(this));
-		this.field = this.element.getElement('.fabrikinput');
-		var msg = this.element.getElement('div');
-		msg.makeResizable({
-			'modifiers': {x: false, y: 'height'},
-			'handle': this.element.getElement('.noteHandle')
-		});
-		this.element.getElement('.noteHandle').setStyle('cursor', 'all-scroll');
+		if (this.options.rowid !== 0) {
+			this.element.getElement('.button').addEvent('click', function (e) {
+				this.submit(e);
+			}.bind(this));
+			this.field = this.element.getElement('.fabrikinput');
+			var msg = this.element.getElement('div');
+			msg.makeResizable({
+				'modifiers': {x: false, y: 'height'},
+				'handle': this.element.getElement('.noteHandle')
+			});
+			this.element.getElement('.noteHandle').setStyle('cursor', 'all-scroll');
+		}
 	},
 
 	submit: function (e) {

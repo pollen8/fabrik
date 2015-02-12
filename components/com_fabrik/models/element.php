@@ -6299,7 +6299,7 @@ class PlgFabrik_Element extends FabrikPlugin
 
 		$searchElements = json_decode($searchElements);
 
-		if (!isset($searchElements->search_elements))
+		if (!isset($searchElements->search_elements) || !is_array($searchElements->search_elements))
 		{
 			return false;
 		}

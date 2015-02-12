@@ -4601,6 +4601,7 @@ class FabrikFEModelList extends JModelForm
 		$objtypeUpper = ' ' . JString::strtoupper(trim($objtype)) . ' ';
 		$objtypeUpper = str_replace(' NOT NULL ', ' ', $objtypeUpper);
 		$objtypeUpper = str_replace(' UNSIGNED ', ' ', $objtypeUpper);
+		$objtypeUpper = str_replace(array(' INTEGER', ' TINYINT', ' SMALLINT', ' MEDIUMINT', ' BIGINT'), ' INT', $objtypeUpper);
 		$objtypeUpper = trim($objtypeUpper);
 		$existingDef = ' ' . JString::strtoupper(trim($existingDef)) . ' ';
 		$existingDef = str_replace(' UNSIGNED ', ' ', $existingDef);
@@ -5273,7 +5274,7 @@ class FabrikFEModelList extends JModelForm
 		$app = JFactory::getApplication();
 		$input = $app->input;
 		$showInList = array();
-		$listels = json_decode(FabrikWorker::getMenuOrRequestVar('list_elements', '', $this->isMambot));
+		$listels = json_decode(FabrikWorker::getMenuOrRequestVar('list_elements', '', $this->isMambot, 'menu'));
 
 		if (isset($listels->show_in_list))
 		{
@@ -5347,7 +5348,11 @@ class FabrikFEModelList extends JModelForm
 		*/
 		if (!strstr($this->getRenderContext(), 'mod_fabrik_list') && $moduleid === 0)
 		{
-			$properties = FabrikWorker::getMenuOrRequestVar('prefilters', '', $this->isMambot);
+			$spoof_check = array(
+				'view' => 'list',
+				'listid' => $this->getId()
+			);
+			$properties = FabrikWorker::getMenuOrRequestVar('prefilters', '', $this->isMambot, 'menu', $spoof_check);
 		}
 
 		if (isset($properties))
