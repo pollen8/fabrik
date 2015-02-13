@@ -45,6 +45,7 @@ class PlgFabrik_ElementNotes extends PlgFabrik_ElementDatabasejoin
 		$opts = $this->getElementJSOptions($repeatCounter);
 		$opts->rowid = (int) $this->getFormModel()->getRowId();
 		$opts->id = $this->id;
+		$opts->j3 = FabrikWorker::j3();
 
 		return array('FbNotes', $id, $opts);
 	}
@@ -67,7 +68,7 @@ class PlgFabrik_ElementNotes extends PlgFabrik_ElementDatabasejoin
 		$name = $this->getHTMLName($repeatCounter);
 		$tmp = $this->_getOptions($data, $repeatCounter, true);
 		$rowid = $this->getFormModel()->getRowId();
-		$str[] = '<div id="' . $id . '">';
+		//$str[] = '<div id="' . $id . '">';
 		$str[] = '<div style="overflow:auto;height:150px;" class="well well-small row-striped">';
 
 		if ($j3)
@@ -120,7 +121,7 @@ class PlgFabrik_ElementNotes extends PlgFabrik_ElementDatabasejoin
 			$str[] = FText::_('PLG_ELEMENT_NOTES_SAVEFIRST');
 		}
 
-		$str[] = '</div>';
+		//$str[] = '</div>';
 
 		return implode("\n", $str);
 	}
@@ -387,13 +388,13 @@ class PlgFabrik_ElementNotes extends PlgFabrik_ElementDatabasejoin
 		$table = $db->quoteName($params->get('join_db_name'));
 		$col = $params->get('join_val_column');
 		$key = $db->quoteName($params->get('join_key_column'));
-		$v = $db->quote($input->get('v', '', '', 'string'));
+		$v = $input->get('v', '', '', 'string');
 		$rowid = $this->getFormModel()->getRowId();
 
 		// Jaanus - avoid inserting data when the form is 'new' not submitted ($rowid == '')
 		if ($rowid !== '')
 		{
-			$query->insert($table)->set($col . ' = ' . $v);
+			$query->insert($table)->set($col . ' = ' . $db->quote($v));
 			$user = $params->get('userid', '');
 
 			if ($user !== '')
@@ -410,12 +411,7 @@ class PlgFabrik_ElementNotes extends PlgFabrik_ElementDatabasejoin
 
 			$db->setQuery($query);
 			$db->execute();
-			$this->loadRow = $db->quote($db->insertid());
-			$opts = $this->_getOptions();
-			$row = $opts[0];
-			$return->msg = 'note added';
-			$return->data = $row;
-			$return->label = $this->getDisplayLabel($row);
+			$return->label = $v;
 			echo json_encode($return);
 		}
 	}
