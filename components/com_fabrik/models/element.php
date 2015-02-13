@@ -716,7 +716,8 @@ class PlgFabrik_Element extends FabrikPlugin
 		$pkField = $this->groupConcactJoinKey();
 
 		return '(SELECT GROUP_CONCAT(id SEPARATOR \'' . GROUPSPLITTER . '\') FROM ' . $jointable . ' WHERE parent_id = ' . $pkField
-		. ') AS ' . $fullElName;
+		. ') AS ' . $fullElName; 
+		// Jaanus: joined group pk set in groupConcactJoinKey()
 	}
 
 	/**
@@ -813,7 +814,8 @@ class PlgFabrik_Element extends FabrikPlugin
 
 				$as = $db->quoteName($dbtable . '___' . $this->element->name . '___params');
 				$str = '(SELECT GROUP_CONCAT(params SEPARATOR \'' . GROUPSPLITTER . '\') FROM ' . $jointable . ' WHERE parent_id = '
-						. $pkField . ') AS ' . $as;
+						. $pkField . ') AS ' . $as; 
+						// Jaanus: joined group pk set in groupConcactJoinKey()
 				$aFields[] = $str;
 				$aAsFields[] = $as;
 			}
@@ -4363,7 +4365,9 @@ class PlgFabrik_Element extends FabrikPlugin
 				{
 					// Query the joined table concatenating into one field
 					$jointable = $this->getJoinModel()->getJoin()->table_join;
-					$pk = $this->getListModel()->getTable()->db_primary_key;
+					//$pk = $this->getListModel()->getTable()->db_primary_key; 
+					// Jaanus: joined group pk set in groupConcactJoinKey()
+					$pk = $this->groupConcactJoinKey(); 
 					/**
 					 *  Jaanus: joined group pk?
 					 *  set in groupConcactJoinKey()

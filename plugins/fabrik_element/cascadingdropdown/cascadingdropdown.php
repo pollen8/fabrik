@@ -835,10 +835,26 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 			{
 				foreach ($whereval as &$v)
 				{
-					$v = $db->quote($v);
-				}
 
-				$where .= count($whereval) == 0 ? '4 = -4' : $wherekey . ' IN (' . implode(',', $whereval) . ')';
+					// Jaanus: Solving bug: imploded arrays when chbx in repeated group         
+					
+					if (is_array($v)) 
+					{
+						foreach ($v as &$vchild)
+						{
+							$vchild = FabrikString::safeQuote($vchild);
+						}
+						$v = implode(',', $v);
+					}
+					else
+					{
+						$v = FabrikString::safeQuote($v);
+					}
+				}
+      
+				// Jaanus: if count of where values is 0 or if there are no letters or numbers, only commas in imploded array
+				
+				$where .= count($whereval) == 0 || !preg_match('/\w/', implode(',', $whereval)) ? '4 = -4' : $wherekey . ' IN ' . '(' . str_replace(',,', ',\'\',', implode(',', $whereval)) . ')';
 			}
 			else
 			{
