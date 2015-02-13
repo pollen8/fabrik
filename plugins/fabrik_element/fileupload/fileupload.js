@@ -204,9 +204,18 @@ var FbFileUpload = new Class({
 
 	update: function (val) {
 		if (this.element) {
-			var i = this.element.getElement('img');
-			if (typeOf(i) !== 'null') {
-				i.src = val;
+                        if (val === '') {
+                                if (this.options.ajax_upload) {
+                                        this.uploader.files = [];
+                                        this.element.getParent().getElements('[id$=_dropList] tr').destroy();                        
+                                } else {
+                                        this.element.set('value', '');
+                                }                        
+                        } else {
+                                var i = this.element.getElement('img');
+                                if (typeOf(i) !== 'null') {
+                                        i.src = val;
+                                }
 			}
 		}
 	},
