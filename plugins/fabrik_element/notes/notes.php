@@ -68,8 +68,8 @@ class PlgFabrik_ElementNotes extends PlgFabrik_ElementDatabasejoin
 		$name = $this->getHTMLName($repeatCounter);
 		$tmp = $this->_getOptions($data, $repeatCounter, true);
 		$rowid = $this->getFormModel()->getRowId();
-		//$str[] = '<div id="' . $id . '">';
-		$str[] = '<div style="overflow:auto;height:150px;" class="well well-small row-striped">';
+		
+		$str[] = '<div ' . $id_str . ' style="overflow:auto;height:150px;" class="well well-small row-striped">';
 
 		if ($j3)
 		{
@@ -120,9 +120,19 @@ class PlgFabrik_ElementNotes extends PlgFabrik_ElementDatabasejoin
 		{
 			$str[] = FText::_('PLG_ELEMENT_NOTES_SAVEFIRST');
 		}
-
-		//$str[] = '</div>';
-
+		
+		/*
+		 * If detail view, we'll get a div with the ID wrapped around us automagically, so don't want to dupe the ID.
+		* In form view, the ID element would usually be an input, but we don't actually submit anything with the form
+		* in the notes plugin, we just need something with the ID on it to keep the addElements() form init happy
+		*/
+		
+		if ($this->isEditable())
+		{
+			array_unshift($str, '<div id="' . $id . '">');
+			$str[] = '</div>';
+		}
+		
 		return implode("\n", $str);
 	}
 
