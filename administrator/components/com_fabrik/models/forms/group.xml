@@ -61,6 +61,17 @@
 
 		<fieldset name="details2">
 
+		<field name="list_view_and_query"
+			type="radio"
+			class="btn-group"
+			default="1"
+			label="COM_FABRIK_FIELD_IN_LIST_LABEL"
+			description="COM_FABRIK_FIELD_IN_LIST_DESC"
+			>
+				<option value="0">JNO</option>
+				<option value="1">JYES</option>
+		</field>
+
 			<field name="access"
 				type="accesslevel"
 				default="1"
