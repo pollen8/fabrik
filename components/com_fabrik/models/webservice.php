@@ -172,7 +172,7 @@ abstract class FabrikWebService
 				}
 				else
 				{
-					$row[$to] = $map['from'];
+					$row[$to] = $data->$map['from'];
 				}
 			}
 

@@ -48,6 +48,7 @@ class FabrikWebServiceRest extends FabrikWebService
 	public function get($method, $options = array(), $startPoint = null, $result = null)
 	{
 		$url = $this->options['endpoint'];
+		$url = trim($url);
 
 		if (!strstr($url, '?'))
 		{
@@ -61,26 +62,39 @@ class FabrikWebServiceRest extends FabrikWebService
 
 		$session = curl_init($url);
 		curl_setopt($session, CURLOPT_RETURNTRANSFER, true);
+		curl_setopt($session, CURLOPT_HTTPGET, true);
+		curl_setopt($session, CURLOPT_POST, false);
 		$json = curl_exec($session);
-		$phpObj = json_decode($json);
-
-		if (!is_null($phpObj))
+		
+		if ($json === false)
 		{
-			$startPoints = explode('.', $startPoint);
-
-			foreach ($startPoints as $p)
-			{
-				$phpObj = &$phpObj->$p;
-			}
-
-			return $phpObj;
+			$error = 'Fabrik webservice rest: CURL err: ' . curl_error($session);
+			throw new Exception($error, 500);
+			
+			return array();		
 		}
 		else
 		{
-			$error = (string) $json === '' ? 'Fabrik webservice rest: Returned data not parseable as JSON' : (string) $json;
-			throw new Exception($error, 500);
-
-			return array();
+			$phpObj = json_decode($json);
+	
+			if (!is_null($phpObj))
+			{
+				$startPoints = explode('.', $startPoint);
+	
+				foreach ($startPoints as $p)
+				{
+					$phpObj = &$phpObj->$p;
+				}
+	
+				return $phpObj;
+			}
+			else
+			{
+				$error = (string) $json === '' ? 'Fabrik webservice rest: Returned data not parseable as JSON' : (string) $json;
+				throw new Exception($error, 500);
+	
+				return array();
+			}
 		}
 	}
 }
