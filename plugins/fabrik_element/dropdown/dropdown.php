@@ -165,13 +165,19 @@ class PlgFabrik_ElementDropdown extends PlgFabrik_ElementList
 
 	public function elementJavascript($repeatCounter)
 	{
+		$params = $this->getParams();
+		
+		if ($params->get('advanced_behavior', '0') == '1')
+		{
+			JHtml::_('formbehavior.chosen', 'select');
+		}
+		
 		$id = $this->getHTMLId($repeatCounter);
 		$element = $this->getElement();
 		$data = $this->getFormModel()->data;
 		$arSelected = $this->getValue($data, $repeatCounter);
 		$values = $this->getSubOptionValues();
 		$labels = $this->getSubOptionLabels();
-		$params = $this->getParams();
 		$opts = $this->getElementJSOptions($repeatCounter);
 		$opts->allowadd = $params->get('allow_frontend_addtodropdown', false) ? true : false;
 		$opts->value = $arSelected;
