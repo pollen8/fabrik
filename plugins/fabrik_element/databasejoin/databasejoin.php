@@ -603,8 +603,10 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 			}
 		}
 
+		$displayType = $this->getDisplayType();
+		
 		// Remove tags from labels
-		if ($this->canUse())
+		if ($this->canUse() && $displayType != 'radio')
 		{
 			foreach ($this->optionVals[$sqlKey] as $key => &$opt)
 			{
