@@ -69,7 +69,7 @@ class PlgFabrik_ElementNotes extends PlgFabrik_ElementDatabasejoin
 		$tmp = $this->_getOptions($data, $repeatCounter, true);
 		$rowid = $this->getFormModel()->getRowId();
 		
-		$str[] = '<div ' . $id_str . ' style="overflow:auto;height:150px;" class="well well-small row-striped">';
+		$str[] = '<div style="overflow:auto;height:150px;" class="well well-small row-striped">';
 
 		if ($j3)
 		{
