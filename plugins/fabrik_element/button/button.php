@@ -39,15 +39,16 @@ class PlgFabrik_ElementButton extends PlgFabrik_Element
 		$class = $params->get('bootstrap_class', '') . ' fabrikinput button btn';
 		$icon = $params->get('bootstrap_icon', '');
 
-		if ($icon !== '')
-		{
-			$icon = '<i class="' . $icon . '"></i> ';
-		}
+		$basePath = COM_FABRIK_BASE . '/plugins/fabrik_element/button/layouts/';
+		$layout = new JLayoutFile('fabrik-element-button-form', $basePath, array('debug' => false, 'component' => 'com_fabrik', 'client' => 'site'));
+		$data = array();
+		$data['class'] = $class;
+		$data['id'] = $id;
+		$data['name'] = $name;
+		$data['label'] = $element->label;
+		$data['icon'] = $icon;
 
-		$label = $icon . $element->label;
-		$str = '<button class="' . $class . '" id="' . $id . '" name="' . $name . '">' . $label . '</button>';
-
-		return $str;
+		return $layout->render($data);
 	}
 
 	/**

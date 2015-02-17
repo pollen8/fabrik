@@ -15,6 +15,7 @@
 		<filename>index.html</filename>
 		<filename>button.js</filename>
 		<filename>button-min.js</filename>
+		<folder>layouts</folder>
 		<folder>language</folder>
 	</files>
 </extension>
