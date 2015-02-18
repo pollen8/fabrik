@@ -704,7 +704,10 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		{
 			// For values like '1"'
 			// $$$ hugh - added second two params so we set double_encode false
-			$o->text = htmlspecialchars($o->text, ENT_NOQUOTES, 'UTF-8', false);
+			if ($this->getDisplayType() != 'radio') 
+			{
+				$o->text = htmlspecialchars($o->text, ENT_NOQUOTES, 'UTF-8', false);
+      			}
 		}
 
 		$table = $this->getlistModel()->getTable()->db_table_name;
