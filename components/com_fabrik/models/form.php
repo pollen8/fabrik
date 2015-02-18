@@ -2959,6 +2959,11 @@ echo "form get errors";
 
 	public function render()
 	{
+		$fbConfig = JComponentHelper::getParams('com_fabrik');
+		if ($fbConfig->get('advanced_select', '0') == '1')
+		{
+      JHtml::_('formbehavior.chosen', 'select');
+    }
 		$app = JFactory::getApplication();
 		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$profiler = JProfiler::getInstance('Application');
