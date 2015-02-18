@@ -14,7 +14,10 @@ defined('_JEXEC') or die('Restricted access');
 $row = $this->row;
 $params = $this->params;
 $width = $params->get('fb_gm_mapwidth', '0');
-$width =  $width == '0' ? '' : 'width:' . $width . 'px;';
+if (!empty($width) && !strstr($width, '%')) :
+	$width .= 'px';
+endif;
+$width =  $width == '0' ? '' : 'width:' . $width . ';';
 ?>
 <div id="<?php echo $this->containerId;?>" class="fabrikGoogleMap fabrik_visualization">
 	<?php if ($this->params->get('show-title', 1)) : ?>
@@ -28,7 +31,7 @@ $width =  $width == '0' ? '' : 'width:' . $width . 'px;';
 			echo $this->loadTemplate('sidebar');
 		endif; ?>
 		<td>
-			<div id="table_map" style="<?php echo $width;?>height:<?php echo $params->get('fb_gm_mapheight');?>px"></div>
+			<div id="table_map" style="<?php echo $width;?> height:<?php echo $params->get('fb_gm_mapheight');?>px"></div>
 		</td>
 		<?php if ($this->sidebarPosition == '2') :
 			echo $this->loadTemplate('sidebar');
