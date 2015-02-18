@@ -745,24 +745,7 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 			foreach ($group as $row)
 			{
 				$key = $listRef . $row->__pk_val;
-
-				/*
-				$default = $w->parseMessageForPlaceHolder($params->get('calc_calculation'), $row);
-
-				if (FabrikHelperHTML::isDebug())
-				{
-					$return->$key = eval($default);
-				}
-				else
-				{
-					$return->$key = @eval($default);
-				}
-
-				if ($store)
-				{
-					$listModel->storeCell($row->__pk_val, $storeKey, $return->$key);
-				}
-				*/
+				$row->rowid = $row->__pk_val;
 
 				$return->$key = $this->_getV(JArrayHelper::fromObject($row), 0);
 			}
