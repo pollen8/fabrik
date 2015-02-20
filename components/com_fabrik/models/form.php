@@ -2974,15 +2974,15 @@ echo "form get errors";
 
 		if ($app->input->get('view') == 'form')
 		{
-      if ($fbConfig->get('advanced_behavior', '0') == '1')
-      {
-        JHtml::_('formbehavior.chosen', 'select');
-      }
-      else
-      {
-        JHtml::_('formbehavior.chosen', 'select.advancedSelect');
-      }
-    }
+      			if ($fbConfig->get('advanced_behavior', '0') == '1')
+      			{
+        			JHtml::_('formbehavior.chosen', 'select');
+      			}
+      			else
+      			{
+        			JHtml::_('formbehavior.chosen', 'select.advancedSelect');
+      			}
+    		}
 
 		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$profiler = JProfiler::getInstance('Application');
