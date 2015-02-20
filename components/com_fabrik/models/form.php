@@ -1207,6 +1207,16 @@ class FabrikFEModelForm extends FabModelForm
 			$this->setOrigData();
 		}
 
+		/*
+		 * $$$ hugh - we do this prior to processToDb(), but turns out we need formDataWithTableName in
+		 * some plugins, like 'php', which run $formModel->getProcessData().  But it's kind of a chicken
+		 * and egg, because those same plugins my change $formData.  Anyway, only solution for now is
+		 * set up $this->formDataWithTaleName here, so they at least have the posted data to work with,
+		 * then do it again after all the plugins have run.  So, rule of thumb ... plugins running onBeforeProcess
+		 * or onBeforeStore need to modify formData, not formDataWithTableName.
+		 */
+		$this->formDataWithTableName = $this->formData;
+		
 		JDEBUG ? $profiler->mark('process, onBeforeProcess plugins: start') : null;
 		if (in_array(false, $pluginManager->runPlugins('onBeforeProcess', $this)))
 		{

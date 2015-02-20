@@ -23,9 +23,8 @@ var FbCascadingdropdown = new Class({
 			 * the element, we have to bind the call to a variable, can't use inline functions
 			 */
 			this.doChangeEvent = this.doChange.bind(this);
-			document.id(this.options.watch).addEvent('change', this.doChangeEvent);
-
-
+			document.id(this.options.watch).addEvent(this.options.watchChangeEvent, this.doChangeEvent);
+			//document.id(this.options.watch).addEvent('change', this.doChangeEvent);
 		}
 		if (this.options.showDesc === true) {
 			this.element.addEvent('change', function (e) {
@@ -38,7 +37,7 @@ var FbCascadingdropdown = new Class({
 	},
 
 	attachedToForm: function ()
-	{
+	{		
 		// $$$ rob have to call update here otherwise all options can be shown
 		//use this method as getValue on el wont work if el readonly
 		// $$$ hugh - only do this if not editing an existing row, see ticket #725
@@ -252,11 +251,12 @@ var FbCascadingdropdown = new Class({
 				 * CDD only watches the one in it's own group.
 				 */
 				if (this.options.watchInSameGroup) {
-					document.id(this.options.watch).removeEvent('change', this.doChangeEvent);
+					document.id(this.options.watch).removeEvent(this.options.watchChangeEvent, this.doChangeEvent);
+					//document.id(this.options.watch).removeEvent('change', this.doChangeEvent);
 				}
 				this.doChangeEvent = this.doChange.bind(this);
-				document.id(this.options.watch).addEvent('change', this.doChangeEvent);
-
+				document.id(this.options.watch).addEvent(this.options.watchChangeEvent, this.doChangeEvent);
+				//document.id(this.options.watch).addEvent('change', this.doChangeEvent);
 			}
 
 		}

@@ -22,8 +22,11 @@ var FbCalc = new Class({
 			// or on group clone.
 			var form = this.form;
 			this.options.observe.each(function (o) {
+				if (o === '') {
+					return;
+				}
 				if (this.form.formElements[o]) {
-					this.form.formElements[o].addNewEventAux('change', function (e) {
+					this.form.formElements[o].addNewEventAux(this.form.formElements[o].getChangeEvent(), function (e) {
 						this.calc(e);
 					}.bind(this));
 				}
@@ -36,7 +39,7 @@ var FbCalc = new Class({
 					if (this.options.canRepeat) {
 						o2 = o + '_' + this.options.repeatCounter;
 						if (this.form.formElements[o2]) {
-							this.form.formElements[o2].addNewEventAux('change', function (e) {
+							this.form.formElements[o2].addNewEventAux(this.form.formElements[o2].getChangeEvent(), function (e) {
 								this.calc(e);
 							}.bind(this));
 						}
@@ -48,7 +51,7 @@ var FbCalc = new Class({
 								o2 = 'join___' + this.form.options.group_join_ids[k] + '___' + o + '_' + v2;
 								if (this.form.formElements[o2]) {
 									// $$$ hugh - think we can add this one as sticky ...
-									this.form.formElements[o2].addNewEvent('change', function (e) {
+									this.form.formElements[o2].addNewEvent(this.form.formElements[o2].getChangeEvent(), function (e) {
 										this.calc(e);
 									}.bind(this));
 								}

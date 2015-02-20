@@ -92,7 +92,7 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 		$runContentPlugins = $params->get('email_run_content_plugins', '0') === '1';
 		
 		$contentTemplate = $params->get('email_template_content');		
-		$content = $contentTemplate != '' ? FabrikHelperHTML::getContentTemplate($contentTemplate, both, $runContentPlugins) : '';
+		$content = $contentTemplate != '' ? FabrikHelperHTML::getContentTemplate($contentTemplate, 'both', $runContentPlugins) : '';
 		
 		// Always send as html as even text email can contain html from wysiwyg editors
 		$htmlEmail = true;
