@@ -1562,7 +1562,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 			}
 			else
 			{
-				$files[0] = $imagesToKeep[0];
+				$files[0] = JArrayHelper::getValue($imagesToKeep, 0, '');
 			}
 
 			foreach ($imagesToKeep as $k => $v)
@@ -2201,7 +2201,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		$allRenders .= ($allRenders == '') ? '' : '<br/>';
 		$str[] = $allRenders . '<input class="fabrikinput" name="' . $name . '" type="file" id="' . $id . '" />' . "\n";
 
-		if ($params->get('upload_allow_folderselect') == '1')
+		if ($params->get('fileupload_storage_type', 'filesystemstorage') == 'filesystemstorage' && $params->get('upload_allow_folderselect') == '1')
 		{
 			$rDir = JPATH_SITE . '/' . $params->get('ul_directory');
 			$folders = JFolder::folders($rDir);
