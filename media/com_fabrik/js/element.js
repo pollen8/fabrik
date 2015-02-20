@@ -654,6 +654,10 @@ var FbElement =  new Class({
 		return this.element.get('tag') === 'select' ? 'change' : 'blur';
 	},
 	
+	getChangeEvent: function () {
+		return 'change';
+	},
+	
 	select: function () {},
 	focus: function () {},
 	

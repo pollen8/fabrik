@@ -10,5 +10,10 @@ FbYesno = new Class({
 	initialize: function (element, options) {
 		this.plugin = 'fabrikyesno';
 		this.parent(element, options);
+	},
+	
+	getChangeEvent: function () {
+		return this.options.changeEvent;
 	}
+	
 });

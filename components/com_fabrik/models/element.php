@@ -7467,4 +7467,18 @@ class PlgFabrik_Element extends FabrikPlugin
 	{
 		return '';
 	}
+	
+	/**
+	 * Return JS event required to trigger a 'change', usually 'change',
+	 * but some elements need a 'click' or a 'blur'.  Used initially by CDD element.
+	 * NOTE - there is also a getChangeEvent() in element.js, which should return the same thing, Don't Ask.
+	 *
+	 * @return  string
+	 */
+	
+	public function getChangeEvent()
+	{
+		return 'change';
+	}
+	
 }
