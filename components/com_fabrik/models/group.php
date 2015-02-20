@@ -1464,7 +1464,11 @@ class FabrikFEModelGroup extends FabModel
 		 * Find out which keys were origionally in the form, but were not submitted
 		 * i.e. those keys whose records were removed
 		 */
-		$keysToDelete = array_diff($origGroupRowsIds, $usedKeys);
+		
+		if (!$formModel->isNewRecord())
+		{
+      			$keysToDelete = array_diff($origGroupRowsIds, $usedKeys);
+		}
 
 		// Nothing to delete - return
 		if (empty($keysToDelete))
