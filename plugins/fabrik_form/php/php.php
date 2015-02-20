@@ -375,6 +375,7 @@ class PlgFabrik_FormPHP extends PlgFabrik_Form
 		 */
 
 		$formModel = $this->getModel();
+		$listModel = $formModel->getListModel();
 		$method = $params->get('only_process_curl');
 		/*
 		 *  $$$ rob this is poor when submitting the form the data is stored in formData, when editing its stored in _data -
