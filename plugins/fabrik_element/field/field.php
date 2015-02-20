@@ -608,10 +608,45 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 		$formid = $formModel->getId();
 		$rowid = $formModel->getRowId();
 
-		if (empty($rowid)) {
+		if (empty($rowid))
+		{
+			
+			/**
+			 * Meh.  See commentary at the start of $formModel->getEmailData() about rowid.  For now, if this is a new row,
+			 * the only place we're going to find it is in the list model's lastInsertId.  Bah humbug.
+			 * But check __pk_val first anyway, what the heck.
+			 */
+			
 			$rowid = FArrayHelper::getValue($thisRow, '__pk_val', '');
+			
+			if (empty($rowid))
+			{
+				
+				/**
+				 * Nope.  Try lastInsertId. Or maybe on top of the fridge?  Or in the microwave?  Down the back
+				 * of the couch cushions? 
+				 */
+				
+				$rowid = $formModel->getListModel()->lastInsertId;
+				
+				/**
+				 * OK, give up.  If *still* no rowid, we're probably being called from something like getEmailData() on onBeforeProcess or
+				 * onBeforeStore, and it's a new form, so no rowid yet.  So no point returning anything yet.
+				 */
+					
+				if (empty($rowid))
+				{
+					return '';
+				}
+				
+			}
+			
 		}
 
+		/*
+		 * YAY!!!  w00t!!  We have a rowid.  Whoop de freakin' doo!!
+		 */
+		
 		$elementid = $this->getId();
 		$link = COM_FABRIK_LIVESITE
 		. 'index.php?option=com_' . $package . '&amp;task=plugin.pluginAjax&amp;plugin=field&amp;method=ajax_renderQRCode&amp;'
