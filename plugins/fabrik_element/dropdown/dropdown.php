@@ -63,8 +63,12 @@ class PlgFabrik_ElementDropdown extends PlgFabrik_ElementList
 		$selected = (array) $this->getValue($data, $repeatCounter);
 		$errorCSS = $this->elementError != '' ? " elementErrorHighlight" : '';
 		$boostrapClass = $params->get('bootstrap_class', '');
-		$advanced = $params->get('advanced_behavior', '0') == '1' ? 'advancedSelect ' : '';
-		
+
+        if (!$this->getGroup()->canRepeat())
+        {
+          $advanced = $params->get('advanced_behavior', '0') == '1' ? 'advancedSelect ' : '';
+        }
+
 		$attribs = 'class="fabrikinput inputbox input ' . $advanced . $errorCSS . ' ' . $boostrapClass . '"';
 
 		if ($multiple == "1")
