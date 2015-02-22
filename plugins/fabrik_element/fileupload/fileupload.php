@@ -2204,13 +2204,13 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		switch ($device_capture)
 		{
 			case 1:
-				$capture = ' accept="image/*" capture';
+				$capture = ' accept="image/*" capture="camera"';
 				break;
 			case 2:
-				$capture = ' accept="audio/*" capture';
+				$capture = ' accept="audio/*" capture="microphone"';
 				break;
 			case 3:
-				$capture = ' accept="video/*" capture';
+				$capture = ' accept="video/*" capture="camcorder"';
 				break;
 			default:
 				$capture = '';
