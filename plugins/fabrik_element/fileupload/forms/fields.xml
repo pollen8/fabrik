@@ -13,6 +13,18 @@
 				description="PLG_ELEMENT_FILEUPLOAD_MAX_FILESIZE_DESC"
 				label="PLG_ELEMENT_FILEUPLOAD_MAX_FILESIZE_LABEL" />
 
+			<field name="ul_device_capture"
+				type="radio"
+				default="0"
+				class="btn-group"
+				label="PLG_ELEMENT_FILEUPLOAD_DEVICE_CAPTURE_LABEL"
+				description="PLG_ELEMENT_FILEUPLOAD_DEVICE_CAPTURE_DESC">
+					<option value="0">PLG_ELEMENT_FILEUPLOAD_DEVICE_CAPTURE_FILE</option>
+					<option value="1">PLG_ELEMENT_FILEUPLOAD_DEVICE_CAPTURE_PICTURE</option>
+					<option value="2">PLG_ELEMENT_FILEUPLOAD_DEVICE_CAPTURE_AUDIO</option>
+					<option value="3">PLG_ELEMENT_FILEUPLOAD_DEVICE_CAPTURE_VIDEO</option>
+			</field>
+
 			<field name="ul_file_types"
 				description="PLG_ELEMENT_FILEUPLOAD_FILE_TYPES_DESC"
 				label="PLG_ELEMENT_FILEUPLOAD_FILE_TYPES_LABEL"
@@ -78,7 +90,7 @@
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
-			
+
 			<field name="upload_use_wip"
 				type="radio"
 				default="0"
@@ -87,7 +99,7 @@
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
-			
+
 		</fieldset>
 
 		<fieldset name="plg-fileupload-display" label="PLG_ELEMENT_FILEUPLOAD_DISPLAY">
@@ -168,7 +180,7 @@
 				description="PLG_ELEMENT_FILEUPLOAD_TITLE_ELEMENT_DESC"
 				label="PLG_ELEMENT_FILEUPLOAD_TITLE_ELEMENT_LABEL"
 				valueformat="tableelement"/>
-				
+
 			<field name="restrict_lightbox"
 				type="radio"
 				class="btn-group"
