@@ -1063,7 +1063,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		if ($allowedFiles != '')
 		{
 			// $$$ hugh - strip spaces and leading ., as folk often do ".bmp, .jpg"
-			preg_replace('#\s+\.?#', '', trim($allowedFiles));
+			preg_replace('#(\s+|^)\.?#', '', trim($allowedFiles));
 			$aFileTypes = explode(",", $allowedFiles);
 		}
 		else
@@ -2212,6 +2212,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 			default:
 				$capture = implode(",.",$this->_getAllowedExtension());
 				$capture = $capture ? ' accept=".' . $capture . '"' : '';
+				break;
 		}
 
 		$str[] = $allRenders . '<input class="fabrikinput" name="' . $name . '" type="file" id="' . $id . '"' . $capture . ' />' . "\n";
