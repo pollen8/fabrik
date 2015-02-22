@@ -442,7 +442,7 @@ if (!$j3)
 		}
 		else
 		{
-			$image = '&nbsp;' . FText::_('JGLOBAL_PRINT');
+			$image = '&nbsp;' . FText::_('COM_FABRIK_PRINT');
 		}
 
 		if ($params->get('popup', 1))
@@ -471,13 +471,13 @@ if (!$j3)
 
 	public static function printURL($formModel)
 	{
-		
+
 		/**
 		 * Comment this out for now, as it causes issues with multiple forms per page.
 		 * We could always create a $sig for it, but that would need the info from the form and
-		 * table models, which are probably the most 'expensive' aprt of this function anyway. 
+		 * table models, which are probably the most 'expensive' aprt of this function anyway.
 		 */
-		
+
 		/*
 		if (isset(self::$printURL))
 		{
@@ -563,14 +563,14 @@ if (!$j3)
 		 * We could always create a $sig for it, but that would need the info from the form and
 		 * table models, which are probably the most 'expensive' aprt of this function anyway.
 		 */
-		
+
 		/*
 		if (isset(self::$emailURL))
 		{
 			return self::$emailURL;
 		}
 		*/
-		
+
 		$app = JFactory::getApplication();
 		$input = $app->input;
 		$package = $app->getUserState('com_fabrik.package', 'fabrik');
