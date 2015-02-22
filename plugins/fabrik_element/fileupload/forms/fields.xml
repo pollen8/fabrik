@@ -14,15 +14,17 @@
 				label="PLG_ELEMENT_FILEUPLOAD_MAX_FILESIZE_LABEL" />
 
 			<field name="ul_device_capture"
-				type="radio"
+				type="list"
 				default="0"
-				class="btn-group"
 				label="PLG_ELEMENT_FILEUPLOAD_DEVICE_CAPTURE_LABEL"
 				description="PLG_ELEMENT_FILEUPLOAD_DEVICE_CAPTURE_DESC">
 					<option value="0">PLG_ELEMENT_FILEUPLOAD_DEVICE_CAPTURE_FILE</option>
-					<option value="1">PLG_ELEMENT_FILEUPLOAD_DEVICE_CAPTURE_PICTURE</option>
-					<option value="2">PLG_ELEMENT_FILEUPLOAD_DEVICE_CAPTURE_AUDIO</option>
-					<option value="3">PLG_ELEMENT_FILEUPLOAD_DEVICE_CAPTURE_VIDEO</option>
+					<option value="1">PLG_ELEMENT_FILEUPLOAD_DEVICE_CAPTURE_IMAGE</option>
+					<option value="2">PLG_ELEMENT_FILEUPLOAD_DEVICE_CAPTURE_FILE_IMAGE</option>
+					<option value="3">PLG_ELEMENT_FILEUPLOAD_DEVICE_CAPTURE_AUDIO</option>
+					<option value="4">PLG_ELEMENT_FILEUPLOAD_DEVICE_CAPTURE_FILE_AUDIO</option>
+					<option value="4">PLG_ELEMENT_FILEUPLOAD_DEVICE_CAPTURE_VIDEO</option>
+					<option value="7">PLG_ELEMENT_FILEUPLOAD_DEVICE_CAPTURE_FILE_VIDEO</option>
 			</field>
 
 			<field name="ul_file_types"

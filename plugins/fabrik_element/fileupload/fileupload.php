@@ -2191,19 +2191,27 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 
 		$allRenders = implode('<br/>', $allRenders);
 		$allRenders .= ($allRenders == '') ? '' : '<br/>';
+		$capture = "";
 		switch ($device_capture)
 		{
 			case 1:
-				$capture = ' accept="image/*" capture="camera"';
-				break;
+				$capture = ' capture="camera"';
 			case 2:
-				$capture = ' accept="audio/*" capture="microphone"';
+				$capture = ' accept="image/*"' . $capture;
 				break;
 			case 3:
-				$capture = ' accept="video/*" capture="camcorder"';
+				$capture = ' capture="microphone"';
+			case 4:
+				$capture = ' accept="audio/*"' . $capture;
+				break;
+			case 5:
+				$capture = ' capture="camcorder"';
+			case 6:
+				$capture = ' accept="video/*"' . $capture;
 				break;
 			default:
-				$capture = '';
+				$capture = implode(",.",$this->_getAllowedExtension());
+				$capture = $capture ? ' accept=".' . $capture . '"' : '';
 		}
 
 		$str[] = $allRenders . '<input class="fabrikinput" name="' . $name . '" type="file" id="' . $id . '"' . $capture . ' />' . "\n";
