@@ -458,11 +458,6 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		$return = new stdClass;
 		$exts = $this->_getAllowedExtension();
 
-		foreach ($exts as &$ext)
-		{
-			$ext = trim(str_replace('.', '', $ext));
-		}
-
 		$return->title = 'Allowed files';
 		$return->extensions = implode(',', $exts);
 
@@ -1067,8 +1062,8 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 
 		if ($allowedFiles != '')
 		{
-			// $$$ hugh - strip spaces, as folk often do ".foo, .bar"
-			preg_replace('#\s+#', '', $allowedFiles);
+			// $$$ hugh - strip spaces and leading ., as folk often do ".bmp, .jpg"
+			preg_replace('#\s+\.?#', '', trim($allowedFiles));
 			$aFileTypes = explode(",", $allowedFiles);
 		}
 		else
@@ -1101,12 +1096,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		$curr_f_ext = JString::strtolower(JFile::getExt($myFileName));
 		array_walk($aFileTypes, create_function('&$v', '$v = JString::strtolower($v);'));
 
-		if (in_array($curr_f_ext, $aFileTypes) || in_array("." . $curr_f_ext, $aFileTypes))
-		{
-			return true;
-		}
-
-		return false;
+		return in_array($curr_f_ext, $aFileTypes);
 	}
 
 	/**
