@@ -100,13 +100,13 @@ class ImageRender
 			{
 				if (is_array($formModel->data))
 				{
-					$title = JArrayHelper::getValue($formModel->data, $title_name, '');
+					$title = FArrayHelper::getValue($formModel->data, $title_name, '');
 				}
 			}
 		}
 
 		$bits = FabrikWorker::JSONtoData($title, true);
-		$title = JArrayHelper::getValue($bits, $model->_repeatGroupCounter, $title);
+		$title = FArrayHelper::getValue($bits, $model->_repeatGroupCounter, $title);
 		$title = htmlspecialchars(strip_tags($title, ENT_NOQUOTES));
 		$element = $model->getElement();
 		$file = $model->getStorage()->getFileUrl($file);

@@ -190,7 +190,10 @@ class PlgFabrik_Form extends FabrikPlugin
 		JDEBUG ? $profiler->mark("getProcessData: start") : null;
 		
 		$model = $this->getModel();
+		
+		// see comments in getEmailData() about caching in $this vs $model
 		unset($this->emailData);
+		unset($model->emailData);
 		$d = isset($model->formDataWithTableName) ? $model->formDataWithTableName : array();
 		$this->data = array_merge($d, $this->getEmailData());
 
@@ -249,6 +252,11 @@ class PlgFabrik_Form extends FabrikPlugin
 		 * fabrikemail/fabrikreceipt
 		 * Now instead the pk value is taken from the tableModel->lastInsertId and inserted at the end of this method
 		 *$model->render();
+		 *
+		 * $$$ hugh - hmmmm problem with that is, there's quite a few things that need the rowid, if we're running
+		 * 'onAfterProcess' ... I think we need to have a seperate $model->isNewRow, or some such, which gets set at
+		 * the start of processing, and anything which needs to know if we're new vs edit uses that, rather than looking
+		 * for rowid / __pk_val, or whatever.
 		 */
 
 		$listModel = $model->getListModel();
@@ -304,7 +312,7 @@ class PlgFabrik_Form extends FabrikPlugin
 						{
 							$tmpElement = current($elementModels);
 							$smallerElHTMLName = $tmpElement->getFullName(true, false);
-							$tmpEl = JArrayHelper::getValue($model->formDataWithTableName, $smallerElHTMLName, array(), 'array');
+							$tmpEl = FArrayHelper::getValue($model->formDataWithTableName, $smallerElHTMLName, array(), 'array');
 							$repeatGroup = count($tmpEl);
 						}
 					}
@@ -342,7 +350,7 @@ class PlgFabrik_Form extends FabrikPlugin
 
 						if ($groupModel->canRepeat())
 						{
-							$raw = JArrayHelper::getValue($model->formDataWithTableName[$k], $c, '');
+							$raw = FArrayHelper::getValue($model->formDataWithTableName[$k], $c, '');
 							$this->emailData[$k . '_raw'][$c] = $raw;
 							$this->emailData[$k][$c] = $elementModel->getEmailValue($raw, $model->formDataWithTableName, $c);
 							continue;
@@ -363,7 +371,7 @@ class PlgFabrik_Form extends FabrikPlugin
 					}
 					elseif (array_key_exists($key, $model->formDataWithTableName))
 					{
-						$rawval = JArrayHelper::getValue($model->formDataWithTableName, $k . '_raw', '');
+						$rawval = FArrayHelper::getValue($model->formDataWithTableName, $k . '_raw', '');
 
 						if ($rawval == '')
 						{

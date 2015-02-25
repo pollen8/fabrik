@@ -82,8 +82,8 @@ class PlgFabrik_ElementDropdown extends PlgFabrik_ElementList
 				$optgroup = true;
 			}
 
-			$tmpLabel = JArrayHelper::getValue($labels, $i);
-			$disable = JArrayHelper::getValue($endis, $i);
+			$tmpLabel = FArrayHelper::getValue($labels, $i);
+			$disable = FArrayHelper::getValue($endis, $i);
 				
 			// For values like '1"'
 			$tmpval = htmlspecialchars($tmpval, ENT_QUOTES);
@@ -166,8 +166,9 @@ class PlgFabrik_ElementDropdown extends PlgFabrik_ElementList
 	public function elementJavascript($repeatCounter)
 	{
 		$params = $this->getParams();
+		$advanced = $params->get('advanced_behavior', '0') == '1';
 		
-		if ($params->get('advanced_behavior', '0') == '1')
+		if ($advanced)
 		{
 			JHtml::_('formbehavior.chosen', 'select');
 		}
@@ -184,6 +185,7 @@ class PlgFabrik_ElementDropdown extends PlgFabrik_ElementList
 		$opts->defaultVal = $this->getDefaultValue($data);
 		$opts->data = (empty($values) && empty($labels)) ? array() : array_combine($values, $labels);
 		$opts->multiple = (bool) $params->get('multiple', '0') == '1';
+		$opts->advanced = $advanced;
 		JText::script('PLG_ELEMENT_DROPDOWN_ENTER_VALUE_LABEL');
 
 		return array('FbDropdown', $id, $opts);

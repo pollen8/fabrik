@@ -113,7 +113,7 @@ class PlgFabrik_FormRedirect extends PlgFabrik_Form
 		$smsg[$this->renderOrder] = $this->data['thanks_message'];
 
 		// Don't display system message if thanks is empty
-		if (JArrayHelper::getValue($this->data, 'thanks_message', '') !== '')
+		if (FArrayHelper::getValue($this->data, 'thanks_message', '') !== '')
 		{
 			$session->set($context . 'msg', $smsg);
 		}

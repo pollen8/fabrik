@@ -314,7 +314,7 @@ class PlgFabrik_ElementThumbs extends PlgFabrik_Element
 		$downActiveClass = $myThumb === 'down' ? ' btn-danger' : '';
 
 		$id2 = FabrikString::rtrimword($id, '_ro');
-		$count = $this->_renderListData(JArrayHelper::getValue($data, $id2), $thisRow);
+		$count = $this->_renderListData(FArrayHelper::getValue($data, $id2), $thisRow);
 		$count = FabrikWorker::JSONtoData($count, true);
 		$countUp = $count[0];
 		$countDown = $count[1];

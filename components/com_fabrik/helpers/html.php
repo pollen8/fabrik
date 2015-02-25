@@ -247,7 +247,7 @@ class FabrikHelperHTML
 		// Don't include in an Request.JSON call - for autofill form plugin
 		$headers = self::parseRequestHeaders();
 
-		if (JArrayHelper::getValue($headers, 'X-Request') === 'JSON')
+		if (FArrayHelper::getValue($headers, 'X-Request') === 'JSON')
 		{
 			return;
 		}
@@ -442,7 +442,7 @@ if (!$j3)
 		}
 		else
 		{
-			$image = '&nbsp;' . FText::_('JGLOBAL_PRINT');
+			$image = '&nbsp;' . FText::_('COM_FABRIK_PRINT');
 		}
 
 		if ($params->get('popup', 1))
@@ -471,13 +471,13 @@ if (!$j3)
 
 	public static function printURL($formModel)
 	{
-		
+
 		/**
 		 * Comment this out for now, as it causes issues with multiple forms per page.
 		 * We could always create a $sig for it, but that would need the info from the form and
-		 * table models, which are probably the most 'expensive' aprt of this function anyway. 
+		 * table models, which are probably the most 'expensive' aprt of this function anyway.
 		 */
-		
+
 		/*
 		if (isset(self::$printURL))
 		{
@@ -563,14 +563,14 @@ if (!$j3)
 		 * We could always create a $sig for it, but that would need the info from the form and
 		 * table models, which are probably the most 'expensive' aprt of this function anyway.
 		 */
-		
+
 		/*
 		if (isset(self::$emailURL))
 		{
 			return self::$emailURL;
 		}
 		*/
-		
+
 		$app = JFactory::getApplication();
 		$input = $app->input;
 		$package = $app->getUserState('com_fabrik.package', 'fabrik');
@@ -1785,7 +1785,7 @@ if (!$j3)
 		$json->url .= $app->isAdmin() ? '&task=plugin.pluginAjax' : '&view=plugin&task=pluginAjax';
 		$json->url .= '&g=element&element_id=' . $elementid
 			. '&formid=' . $formid . '&plugin=' . $plugin . '&method=autocomplete_options&package=' . $package;
-		$c = JArrayHelper::getValue($opts, 'onSelection');
+		$c = FArrayHelper::getValue($opts, 'onSelection');
 
 		if ($c != '')
 		{
@@ -1797,9 +1797,9 @@ if (!$j3)
 			$json->$k = $v;
 		}
 
-		$json->formRef = JArrayHelper::getValue($opts, 'formRef', 'form_' . $formid);
-		$json->container = JArrayHelper::getValue($opts, 'container', 'fabrikElementContainer');
-		$json->menuclass = JArrayHelper::getValue($opts, 'menuclass', 'auto-complete-container');
+		$json->formRef = FArrayHelper::getValue($opts, 'formRef', 'form_' . $formid);
+		$json->container = FArrayHelper::getValue($opts, 'container', 'fabrikElementContainer');
+		$json->menuclass = FArrayHelper::getValue($opts, 'menuclass', 'auto-complete-container');
 
 		return $json;
 	}
@@ -1984,15 +1984,15 @@ if (!$j3)
 			$properties = array('alt' => $properties);
 		}
 
-		$forceImage = JArrayHelper::getValue($opts, 'forceImage', false);
+		$forceImage = FArrayHelper::getValue($opts, 'forceImage', false);
 
 		if (FabrikWorker::j3() && $forceImage !== true)
 		{
 			unset($properties['alt']);
-			$class = JArrayHelper::getValue($properties, 'icon-class', '');
+			$class = FArrayHelper::getValue($properties, 'icon-class', '');
 			$class = 'icon-' . JFile::stripExt($file) . ($class ? ' ' . $class : '');
 			unset($properties['icon-class']);
-			$class .= ' ' . JArrayHelper::getValue($properties, 'class', '');
+			$class .= ' ' . FArrayHelper::getValue($properties, 'class', '');
 			unset($properties['class']);
 			$p = self::propertiesFromArray($properties);
 
@@ -2384,8 +2384,8 @@ if (!$j3)
 	{
 		$url = $_SERVER['REQUEST_URI'];
 		$bits = explode('?', $url);
-		$root = JArrayHelper::getValue($bits, 0, '', 'string');
-		$bits = JArrayHelper::getValue($bits, 1, '', 'string');
+		$root = FArrayHelper::getValue($bits, 0, '', 'string');
+		$bits = FArrayHelper::getValue($bits, 1, '', 'string');
 		$bits = explode("&", $bits);
 
 		for ($b = count($bits) - 1; $b >= 0; $b --)
@@ -2547,8 +2547,8 @@ if (!$j3)
 			$lbl = $href;
 		}
 
-		$smart_link = JArrayHelper::getValue($opts, 'smart_link', false);
-		$target = JArrayHelper::getValue($opts, 'target', false);
+		$smart_link = FArrayHelper::getValue($opts, 'smart_link', false);
+		$target = FArrayHelper::getValue($opts, 'target', false);
 
 		if ($smart_link || $target == 'mediabox')
 		{

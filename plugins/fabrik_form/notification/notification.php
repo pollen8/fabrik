@@ -218,7 +218,7 @@ class PlgFabrik_FormNotification extends PlgFabrik_Form
 			$trigger = $triggerEl->getFullName();
 			$data = $formModel->getData();
 
-			return JArrayHelper::getValue($data, $trigger) == $params->get('trigger_value') ? true : false;
+			return FArrayHelper::getValue($data, $trigger) == $params->get('trigger_value') ? true : false;
 		}
 	}
 

@@ -135,9 +135,9 @@ class FabrikAdminModelForm extends FabModelAdmin
 		$app = JFactory::getApplication();
 		$input = $app->input;
 		$jform = $input->get('jform', array(), 'array');
-		$data['params']['plugins'] = (array) JArrayHelper::getValue($jform, 'plugin');
-		$data['params']['plugin_locations'] = (array) JArrayHelper::getValue($jform, 'plugin_locations');
-		$data['params']['plugin_events'] = (array) JArrayHelper::getValue($jform, 'plugin_events');
+		$data['params']['plugins'] = (array) FArrayHelper::getValue($jform, 'plugin');
+		$data['params']['plugin_locations'] = (array) FArrayHelper::getValue($jform, 'plugin_locations');
+		$data['params']['plugin_events'] = (array) FArrayHelper::getValue($jform, 'plugin_events');
 
 		/**
 		 * Move back into the main data array some values we are rendering as
@@ -150,7 +150,7 @@ class FabrikAdminModelForm extends FabModelAdmin
 			$data[$opt] = $data['params'][$opt];
 		}
 
-		$tmpName = JArrayHelper::getValue($data, 'db_table_name');
+		$tmpName = FArrayHelper::getValue($data, 'db_table_name');
 		unset($data['db_table_name']);
 		$return = parent::save($data);
 
@@ -184,7 +184,7 @@ class FabrikAdminModelForm extends FabModelAdmin
 		$formid = $this->getState($this->getName() . '.id');
 		$isnew = $this->getState($this->getName() . '.new');
 		$db = FabrikWorker::getDbo(true);
-		$currentGroups = (array) JArrayHelper::getValue($data, 'current_groups');
+		$currentGroups = (array) FArrayHelper::getValue($data, 'current_groups');
 
 		if (empty($currentGroups) && !$isnew)
 		{
@@ -199,7 +199,7 @@ class FabrikAdminModelForm extends FabModelAdmin
 		// If new and record in db and group selected then we want to get those groups elements to create fields for in the db table
 		if ($isnew && $record_in_database)
 		{
-			$groups = JArrayHelper::getValue($data, 'current_groups');
+			$groups = FArrayHelper::getValue($data, 'current_groups');
 
 			if (!empty($groups))
 			{

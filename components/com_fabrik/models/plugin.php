@@ -259,7 +259,7 @@ class FabrikPlugin extends JPlugin
 			{
 				if (is_array($val))
 				{
-					$data['params'][$key] = JArrayHelper::getValue($val, $repeatCounter, '');
+					$data['params'][$key] = FArrayHelper::getValue($val, $repeatCounter, '');
 				}
 				else
 				{
@@ -509,7 +509,7 @@ class FabrikPlugin extends JPlugin
 		{
 			if (is_array($val))
 			{
-				$data[$key] = JArrayHelper::getValue($val, $repeatCounter);
+				$data[$key] = FArrayHelper::getValue($val, $repeatCounter);
 			}
 			else
 			{

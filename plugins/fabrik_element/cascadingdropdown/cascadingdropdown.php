@@ -66,6 +66,8 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 		$opts = $this->getElementJSOptions($repeatCounter);
 		$opts->showPleaseSelect = $this->showPleaseSelect();
 		$opts->watch = $this->getWatchId($repeatCounter);
+		$watchElementModel = $this->getWatchElement();
+		$opts->watchChangeEvent = $watchElementModel->getChangeEvent();
 		$opts->displayType = $params->get('cdd_display_type', 'dropdown');
 		$opts->id = $this->getId();
 		$opts->listName = $this->getListModel()->getTable()->db_table_name;
@@ -77,9 +79,9 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 
 		// If returning from failed posted validation data can be in an array
 		$qsValue = $input->get($fullName, array(), 'array');
-		$qsValue = JArrayHelper::getValue($qsValue, 0, null);
+		$qsValue = FArrayHelper::getValue($qsValue, 0, null);
 		$qsWatchValue = $input->get($watchName, array(), 'array');
-		$qsWatchValue = JArrayHelper::getValue($qsWatchValue, 0, null);
+		$qsWatchValue = FArrayHelper::getValue($qsWatchValue, 0, null);
 		$useQsValue = $this->getFormModel()->hasErrors() && $this->isEditable() && $rowid === '' && !empty($qsValue) && !empty($qsWatchValue);
 		$opts->def = $useQsValue ? $qsValue : $this->getValue(array(), $repeatCounter);
 
@@ -727,7 +729,7 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 		$input = $app->input;
 		$sig = isset($this->autocomplete_where) ? $this->autocomplete_where . '.' . $incWhere : $incWhere;
 		$sig .= '.' . serialize($opts);
-		$repeatCounter = JArrayHelper::getValue($opts, 'repeatCounter', 0);
+		$repeatCounter = FArrayHelper::getValue($opts, 'repeatCounter', 0);
 		$db = FabrikWorker::getDbo();
 
 		if (isset($this->sql[$sig]))
@@ -760,7 +762,7 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 					if ($watchElement->isJoin())
 					{
 						$id = $watchElement->getFullName(true, false) . '_id';
-						$whereval = JArrayHelper::getValue($formModel->data, $id);
+						$whereval = FArrayHelper::getValue($formModel->data, $id);
 					}
 					else
 					{

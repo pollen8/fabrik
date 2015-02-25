@@ -207,7 +207,7 @@ class PlgContentFabrik extends JPlugin
 			$m = explode("=", $m);
 
 			// $$$ hugh - deal with %20 as space in arguments
-			$m[1] = urldecode(JArrayHelper::getValue($m, 1));
+			$m[1] = urldecode(FArrayHelper::getValue($m, 1));
 
 			switch ($m[0])
 			{

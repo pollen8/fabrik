@@ -72,6 +72,10 @@ var FbDropdown = new Class({
 					if (this.mySlider) {
 						this.mySlider.toggle();
 					}
+					if (this.options.advanced)
+					{
+						jQuery("#" + this.element.id).trigger("liszt:updated");
+					}
 				}
 			}.bind(this));
 		}

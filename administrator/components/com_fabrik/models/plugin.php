@@ -78,7 +78,7 @@ class FabrikAdminModelPlugin extends JModelLegacy
 
 		$data = $data + (array) json_decode($item->params);
 		$data['plugin'] = $this->getState('plugin');
-		$data['params'] = (array) JArrayHelper::getValue($data, 'params', array());
+		$data['params'] = (array) FArrayHelper::getValue($data, 'params', array());
 		$data['params']['plugins'] = $this->getState('plugin');
 
 		$data['validationrule']['plugin'] = $this->getState('plugin');
@@ -90,12 +90,12 @@ class FabrikAdminModelPlugin extends JModelLegacy
 		$c = $this->getState('c') + 1;
 
 		// Add plugin published state, locations and events
-		$state = (array) JArrayHelper::getValue($data, 'plugin_state');
-		$locations = (array) JArrayHelper::getValue($data, 'plugin_locations');
-		$events = (array) JArrayHelper::getValue($data, 'plugin_events');
-		$data['params']['plugin_state'] = JArrayHelper::getValue($state, $c, 1);
-		$data['plugin_locations'] = JArrayHelper::getValue($locations, $c);
-		$data['plugin_events'] = JArrayHelper::getValue($events, $c);
+		$state = (array) FArrayHelper::getValue($data, 'plugin_state');
+		$locations = (array) FArrayHelper::getValue($data, 'plugin_locations');
+		$events = (array) FArrayHelper::getValue($data, 'plugin_events');
+		$data['params']['plugin_state'] = FArrayHelper::getValue($state, $c, 1);
+		$data['plugin_locations'] = FArrayHelper::getValue($locations, $c);
+		$data['plugin_events'] = FArrayHelper::getValue($events, $c);
 
 		return $data;
 	}

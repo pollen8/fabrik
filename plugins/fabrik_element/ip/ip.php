@@ -105,7 +105,7 @@ class PlgFabrik_ElementIp extends PlgFabrik_Element
 		$formModel = $this->getFormModel();
 		$formData = $formModel->formData;
 
-		if (JArrayHelper::getValue($formData, 'rowid', 0) == 0 && !in_array($element->name, $data))
+		if (FArrayHelper::getValue($formData, 'rowid', 0) == 0 && !in_array($element->name, $data))
 		{
 			$data[$element->name] = $_SERVER['REMOTE_ADDR'];
 		}

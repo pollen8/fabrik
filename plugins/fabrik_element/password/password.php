@@ -209,11 +209,11 @@ class PlgFabrik_ElementPassword extends PlgFabrik_Element
 			$rowId = $input->get('rowid', '', 'string');
 
 			// If its coming from an ajax form submit then the key is possibly an array.
-			$keyVal = JArrayHelper::getValue($_REQUEST, $k);
+			$keyVal = FArrayHelper::getValue($_REQUEST, $k);
 
 			if (is_array($keyVal))
 			{
-				$keyVal = JArrayHelper::getValue($keyVal, 0);
+				$keyVal = FArrayHelper::getValue($keyVal, 0);
 			}
 
 			// $$$ rob add rowid test as well as if using row=-1 and usekey=field $k may have a value

@@ -752,7 +752,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		$dbtable = $this->actualTableName();
 		$db = FabrikWorker::getDbo();
 		$table = $this->getListModel()->getTable();
-		$fullElName = JArrayHelper::getValue($opts, 'alias', $db->quoteName($dbtable . '___' . $this->element->name));
+		$fullElName = FArrayHelper::getValue($opts, 'alias', $db->quoteName($dbtable . '___' . $this->element->name));
 		$fName = $dbtable . '.' . $this->element->name;
 		$k = $db->quoteName($fName);
 		$secret = JFactory::getConfig()->get('secret');
@@ -772,7 +772,7 @@ class PlgFabrik_Element extends FabrikPlugin
 			}
 
 			$jointable = $this->getJoinModel()->getJoin()->table_join;
-			$fullElName = JArrayHelper::getValue($opts, 'alias', $k);
+			$fullElName = FArrayHelper::getValue($opts, 'alias', $k);
 			$str = $this->buildQueryElementConcat($jkey);
 		}
 		else
@@ -1363,7 +1363,7 @@ class PlgFabrik_Element extends FabrikPlugin
 	protected function getDefaultOnACL($data, $opts)
 	{
 		// Rob - 31/10/2012 - if readonly and editing an existing record we don't want to show the default label
-		if (!$this->isEditable() && JArrayHelper::getValue($data, 'rowid') != 0)
+		if (!$this->isEditable() && FArrayHelper::getValue($data, 'rowid') != 0)
 		{
 			$opts['use_default'] = false;
 		}
@@ -1373,7 +1373,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		 * selection was being applied instead
 		 * otherwise get the default value so if we don't find the element's value in $data we fall back on this value
 		 */
-		return JArrayHelper::getValue($opts, 'use_default', true) == false ? '' : $this->getDefaultValue($data);
+		return FArrayHelper::getValue($opts, 'use_default', true) == false ? '' : $this->getDefaultValue($data);
 	}
 
 	/**
@@ -1422,15 +1422,15 @@ class PlgFabrik_Element extends FabrikPlugin
 			$default = $this->getDefaultOnACL($data, $opts);
 			$name = $this->getFullName(true, false);
 
-			if (JArrayHelper::getValue($opts, 'raw', 0) == 1)
+			if (FArrayHelper::getValue($opts, 'raw', 0) == 1)
 			{
 				$name .= '_raw';
 			}
 
-			$values = JArrayHelper::getValue($data, $name, $default);
+			$values = FArrayHelper::getValue($data, $name, $default);
 
 			// Querystring override (seems on http://fabrikar.com/subscribe/form/22 querystring var was not being set into $data)
-			if (JArrayHelper::getValue($opts, 'use_querystring', false))
+			if (FArrayHelper::getValue($opts, 'use_querystring', false))
 			{
 				if ((is_array($values) && empty($values)) || $values === '')
 				{
@@ -1457,10 +1457,10 @@ class PlgFabrik_Element extends FabrikPlugin
 					$values = (array) $values;
 				}
 
-				$values = JArrayHelper::getValue($values, $repeatCounter, '');
+				$values = FArrayHelper::getValue($values, $repeatCounter, '');
 			}
 
-			if (JArrayHelper::getValue($opts, 'runplugins', false))
+			if (FArrayHelper::getValue($opts, 'runplugins', false))
 			{
 				$formModel = $this->getFormModel();
 				FabrikWorker::getPluginManager()->runPlugins('onGetElementDefault', $formModel, 'form', $this);
@@ -3042,7 +3042,7 @@ class PlgFabrik_Element extends FabrikPlugin
 				// Is there a filter with this elements name
 				if ($k !== false)
 				{
-					$searchType = JArrayHelper::getValue($filters['search_type'], $k);
+					$searchType = FArrayHelper::getValue($filters['search_type'], $k);
 
 					// Check element name is the same as the filter (could occur in advanced search when swapping element type)
 					if ($searchType <> 'advanced' || $filters['key'][$k] === $app->input->getString('element'))
@@ -3056,7 +3056,7 @@ class PlgFabrik_Element extends FabrikPlugin
 						{
 							if ($searchType != 'prefilter')
 							{
-								$default = JArrayHelper::getValue($filters['origvalue'], $k);
+								$default = FArrayHelper::getValue($filters['origvalue'], $k);
 							}
 						}
 					}
@@ -3431,7 +3431,7 @@ class PlgFabrik_Element extends FabrikPlugin
 				for ($i = 0; $i < count($vals); $i++)
 				{
 					$vals2 = FabrikWorker::JSONtoData($vals[$i], true);
-					$txt2 = FabrikWorker::JSONtoData(JArrayHelper::getValue($txt, $i), true);
+					$txt2 = FabrikWorker::JSONtoData(FArrayHelper::getValue($txt, $i), true);
 
 					for ($jj = 0; $jj < count($vals2); $jj++)
 					{
@@ -3958,7 +3958,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		}
 
 		// If querying via the querystring - then the condition and eval should be looked up against that key
-		$elementids = JArrayHelper::getValue($filters, 'elementid', array());
+		$elementids = FArrayHelper::getValue($filters, 'elementid', array());
 
 		// Check that there is an element filter for this element in the element ids.
 		$filterIndex = array_search($this->getId(), $elementids);
@@ -3967,8 +3967,8 @@ class PlgFabrik_Element extends FabrikPlugin
 		$table = $this->getListModel()->getTable();
 		$match = $this->isExactMatch(array('match' => $element->filter_exact_match));
 		$return = array();
-		$eval = JArrayHelper::getValue($filters, 'eval', array());
-		$condition = JArrayHelper::getValue($filters, 'condition', array());
+		$eval = FArrayHelper::getValue($filters, 'eval', array());
+		$condition = FArrayHelper::getValue($filters, 'condition', array());
 
 		/*
 		 * Element filter not found (could be a prefilter instead) so use element default options
@@ -3981,8 +3981,8 @@ class PlgFabrik_Element extends FabrikPlugin
 		}
 		else
 		{
-			$condition = JArrayHelper::getValue($condition, $filterIndex, $this->getFilterCondition());
-			$eval = JArrayHelper::getValue($eval, $filterIndex, FABRIKFILTER_TEXT);
+			$condition = FArrayHelper::getValue($condition, $filterIndex, $this->getFilterCondition());
+			$eval = FArrayHelper::getValue($eval, $filterIndex, FABRIKFILTER_TEXT);
 		}
 
 		// Need to include class other wise csv export produces incorrect results when exporting
@@ -4036,7 +4036,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		$name = $this->getFullName(true, false);
 		$app = JFactory::getApplication();
 		$qsFilter = $app->input->get($name, array(), 'array');
-		$qsValues = JArrayHelper::getValue($qsFilter, 'value', array());
+		$qsValues = FArrayHelper::getValue($qsFilter, 'value', array());
 
 		if (count($qsValues) > 1)
 		{
@@ -4543,7 +4543,7 @@ class PlgFabrik_Element extends FabrikPlugin
 			$v = $params->get('sub_default_label');
 		}
 
-		return ($key === false) ? $v : JArrayHelper::getValue($labels, $key, $defaultLabel);
+		return ($key === false) ? $v : FArrayHelper::getValue($labels, $key, $defaultLabel);
 	}
 
 	/**
@@ -5369,7 +5369,7 @@ class PlgFabrik_Element extends FabrikPlugin
 			$midKey = floor(count($results) / 2) - 1;
 			$midKey2 = floor(count($results) / 2);
 
-			return $this->simpleAvg(array(JArrayHelper::getValue($results, $midKey), JArrayHelper::getValue($results, $midKey2)));
+			return $this->simpleAvg(array(FArrayHelper::getValue($results, $midKey), FArrayHelper::getValue($results, $midKey2)));
 		}
 	}
 
@@ -5810,7 +5810,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		 * which we need to deprecate.
 		 */
 		if (!array_key_exists($name, $formModel->formDataWithTableName))
-		//if ($this->dataConsideredEmpty(JArrayHelper::getValue($formModel->formDataWithTableName, $name, '')))
+		//if ($this->dataConsideredEmpty(FArrayHelper::getValue($formModel->formDataWithTableName, $name, '')))
 		{
 			$this->getEmptyDataValue($data);
 		}
@@ -6972,7 +6972,7 @@ class PlgFabrik_Element extends FabrikPlugin
 
 	public function getJoinRepeatCount($data, $oJoin)
 	{
-		return count(JArrayHelper::getValue($data, $oJoin->table_join . '___id', array()));
+		return count(FArrayHelper::getValue($data, $oJoin->table_join . '___id', array()));
 	}
 
 	/**
@@ -7244,7 +7244,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		$join = $this->getJoin();
 
 		// The submitted element's values
-		$d = JArrayHelper::getValue($formData, $rawname, JArrayHelper::getValue($formData, $name));
+		$d = FArrayHelper::getValue($formData, $rawname, FArrayHelper::getValue($formData, $name));
 		$allJoinValues = FabrikWorker::JSONtoData($d, true);
 
 		if ($groupModel->isJoin())
@@ -7260,7 +7260,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		}
 
 		$paramsKey = $this->getJoinParamsKey();
-		$allParams = (array) JArrayHelper::getValue($formData, $paramsKey, array());
+		$allParams = (array) FArrayHelper::getValue($formData, $paramsKey, array());
 		$allParams = array_values($allParams);
 		$i = 0;
 		$idsToKeep = array();
@@ -7274,7 +7274,7 @@ class PlgFabrik_Element extends FabrikPlugin
 
 			if ($groupModel->canRepeat())
 			{
-				$joinValues = JArrayHelper::getValue($allJoinValues, $i, array());
+				$joinValues = FArrayHelper::getValue($allJoinValues, $i, array());
 			}
 			else
 			{
@@ -7300,9 +7300,9 @@ class PlgFabrik_Element extends FabrikPlugin
 			{
 				$record = new stdClass;
 				$record->parent_id = $parentId;
-				$fkVal = JArrayHelper::getValue($joinValues, $jIndex);
+				$fkVal = FArrayHelper::getValue($joinValues, $jIndex);
 				$record->$shortName = $fkVal;
-				$record->params = JArrayHelper::getValue($allParams, $jIndex);
+				$record->params = FArrayHelper::getValue($allParams, $jIndex);
 
 				// Stop notice with fileupload where fkVal is an array
 				if (array_key_exists($fkVal, $ids))
@@ -7467,4 +7467,18 @@ class PlgFabrik_Element extends FabrikPlugin
 	{
 		return '';
 	}
+	
+	/**
+	 * Return JS event required to trigger a 'change', usually 'change',
+	 * but some elements need a 'click' or a 'blur'.  Used initially by CDD element.
+	 * NOTE - there is also a getChangeEvent() in element.js, which should return the same thing, Don't Ask.
+	 *
+	 * @return  string
+	 */
+	
+	public function getChangeEvent()
+	{
+		return 'change';
+	}
+	
 }

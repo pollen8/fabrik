@@ -224,7 +224,7 @@ class FabrikFEModelVisualization extends JModelLegacy
 
 		foreach ($listModels as $listModel)
 		{
-			$show = (bool) JArrayHelper::getValue($showFilters, $i, true);
+			$show = (bool) FArrayHelper::getValue($showFilters, $i, true);
 
 			if ($show)
 			{
@@ -456,7 +456,7 @@ class FabrikFEModelVisualization extends JModelLegacy
 		{
 			// Set prefilter params
 			$listParams = $listModel->getParams();
-			$prefilter = JArrayHelper::getValue($prefilters, $c);
+			$prefilter = FArrayHelper::getValue($prefilters, $c);
 			$prefilter = JArrayHelper::fromObject(json_decode($prefilter));
 			$conditions = (array) $prefilter['filter-conditions'];
 

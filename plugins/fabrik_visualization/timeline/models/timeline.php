@@ -80,7 +80,7 @@ class FabrikModelTimeline extends FabrikFEModelVisualization
 			if ($start + $this->step > $totals[$currentList])
 			{
 				// Move onto next list?
-				$nextListId = JArrayHelper::getValue($lists, $c + 1, null);
+				$nextListId = FArrayHelper::getValue($lists, $c + 1, null);
 				$fabrik->nextListId = $nextListId;
 
 				if (is_null($nextListId))
@@ -98,7 +98,7 @@ class FabrikModelTimeline extends FabrikFEModelVisualization
 		else
 		{
 			// Move onto next list?
-			$nextListId = JArrayHelper::getValue($lists, $c + 1, null);
+			$nextListId = FArrayHelper::getValue($lists, $c + 1, null);
 			$fabrik->nextListId = $nextListId;
 
 			if (is_null($nextListId))
@@ -178,14 +178,14 @@ class FabrikModelTimeline extends FabrikFEModelVisualization
 		$classNames = (array) $params->get('timeline_class', array());
 		$evals = (array) $params->get('eval_template', array());
 
-		$template = JArrayHelper::getValue($templates, $c);
-		$colour = JArrayHelper::getValue($colours, $c);
-		$startdate = JArrayHelper::getValue($startdates, $c);
-		$enddate = JArrayHelper::getValue($enddates, $c);
-		$title = JArrayHelper::getValue($labels, $c);
-		$textColour = JArrayHelper::getValue($textColours, $c);
-		$className = JArrayHelper::getValue($classNames, $c);
-		$eval = JArrayHelper::getValue($evals, $c);
+		$template = FArrayHelper::getValue($templates, $c);
+		$colour = FArrayHelper::getValue($colours, $c);
+		$startdate = FArrayHelper::getValue($startdates, $c);
+		$enddate = FArrayHelper::getValue($enddates, $c);
+		$title = FArrayHelper::getValue($labels, $c);
+		$textColour = FArrayHelper::getValue($textColours, $c);
+		$className = FArrayHelper::getValue($classNames, $c);
+		$eval = FArrayHelper::getValue($evals, $c);
 
 		$listModel = JModelLegacy::getInstance('List', 'FabrikFEModel');
 		$listModel->setId($listId);
@@ -199,7 +199,7 @@ class FabrikModelTimeline extends FabrikFEModelVisualization
 
 		if ($listModel->canView() || $listModel->canEdit())
 		{
-			$where = JArrayHelper::getValue($where, $listId, '');
+			$where = FArrayHelper::getValue($where, $listId, '');
 			$listModel->setPluginQueryWhere('timeline', $where);
 			$data = $listModel->getData();
 			$elements = $listModel->getElements();
@@ -317,7 +317,7 @@ class FabrikModelTimeline extends FabrikFEModelVisualization
 
 		foreach ($lists as $listid)
 		{
-			$where = JArrayHelper::getValue($where, $listid, '');
+			$where = FArrayHelper::getValue($where, $listid, '');
 			$listModel = JModelLegacy::getInstance('List', 'FabrikFEModel');
 			$listModel->setId($listid);
 			$listModel->setPluginQueryWhere('timeline', $where);
@@ -449,7 +449,7 @@ class FabrikModelTimeline extends FabrikFEModelVisualization
 		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$params = $this->getParams();
 		$customLink = (array) $params->get('timeline_customlink');
-		$customLink = JArrayHelper::getValue($customLink, $c, '');
+		$customLink = FArrayHelper::getValue($customLink, $c, '');
 
 		if ($customLink !== '')
 		{
@@ -486,10 +486,10 @@ class FabrikModelTimeline extends FabrikFEModelVisualization
 		$params = $this->getParams();
 		$bands = $params->get('timeline_bands');
 		$bands = FabrikWorker::JSONtoData($bands, true);
-		$intervals = JArrayHelper::getValue($bands, 'timelne_band_interval_unit', array());
-		$widths = JArrayHelper::getValue($bands, 'timeline_band_width', array());
-		$overviews = JArrayHelper::getValue($bands, 'timeline_band_as_overview', array());
-		$bgs = JArrayHelper::getValue($bands, 'timeline_band_background_colour', array());
+		$intervals = FArrayHelper::getValue($bands, 'timelne_band_interval_unit', array());
+		$widths = FArrayHelper::getValue($bands, 'timeline_band_width', array());
+		$overviews = FArrayHelper::getValue($bands, 'timeline_band_as_overview', array());
+		$bgs = FArrayHelper::getValue($bands, 'timeline_band_background_colour', array());
 		$data = array();
 		$length = count($intervals);
 		$css = array();
@@ -501,8 +501,8 @@ class FabrikModelTimeline extends FabrikFEModelVisualization
 			$o->width = strstr($widths[$i], '%') ? $widths[$i] : $widths[$i] . '%';
 			$o->intervalUnit = (int) $intervals[$i];
 			$defaultOverview = $i === $length - 1 ? true : false;
-			$o->overview = (bool) JArrayHelper::getValue($overviews, $i, $defaultOverview);
-			$bg = JArrayHelper::getValue($bgs, $i, '');
+			$o->overview = (bool) FArrayHelper::getValue($overviews, $i, $defaultOverview);
+			$bg = FArrayHelper::getValue($bgs, $i, '');
 
 			if ($bg !== '')
 			{

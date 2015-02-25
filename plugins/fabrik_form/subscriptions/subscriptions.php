@@ -548,7 +548,7 @@ class PlgFabrik_FormSubscriptions extends PlgFabrik_Form
 		$params = $formModel->getParams();
 		$ret_msg = (array) $params->get('subscriptions_return_msg');
 		$ret_msg = array_values($ret_msg);
-		$ret_msg = JArrayHelper::getValue($ret_msg, 0);
+		$ret_msg = FArrayHelper::getValue($ret_msg, 0);
 
 		if ($ret_msg)
 		{

@@ -140,9 +140,9 @@ class FabrikAdminModelPackage extends FabModelAdmin
 	protected function selectedBlocks($type = 'form')
 	{
 		$item = $this->getItem();
-		$canvas = JArrayHelper::getValue($item->params, 'canvas', array());
-		$b = JArrayHelper::getValue($canvas, 'blocks', array());
-		$ids = JArrayHelper::getValue($b, $type, array());
+		$canvas = FArrayHelper::getValue($item->params, 'canvas', array());
+		$b = FArrayHelper::getValue($canvas, 'blocks', array());
+		$ids = FArrayHelper::getValue($b, $type, array());
 
 		return $ids;
 	}

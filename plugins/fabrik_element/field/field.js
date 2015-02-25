@@ -39,7 +39,8 @@ var FbField = new Class({
 			if (element) {
 				jQuery('#' + element.id).mask(this.options.input_mask);
 			}
-		}	
+		}
+		this.parent(c);
 	}
 	
 });

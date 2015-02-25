@@ -64,8 +64,7 @@
 						<field cols="30" label="PLG_FABRIK_LIST_WEBSERVICE_MAP_MATCH_LABEL" name="map_match" repeat="true" rows="3" type="textarea"/>
 						<field label="PLG_FABRIK_LIST_WEBSERVICE_MAP_VALUE_LABEL" name="map_value" type="text"/>
 						<field default="0"
-							class="btn-group"
-							label="PLG_FABRIK_LIST_WEBSERVICE_EVAL_LABEL" name="map_eval" repeat="true" type="radio">
+							label="PLG_FABRIK_LIST_WEBSERVICE_EVAL_LABEL" name="map_eval" repeat="true" type="list">
 								<option value="0">JNO</option>
 								<option value="1">JYES</option>	
 						</field>

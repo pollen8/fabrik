@@ -60,7 +60,7 @@ class PlgFabrik_ElementCount extends PlgFabrik_Element
 		if ($app->input->get('c') != 'form')
 		{
 			$params = $this->getParams();
-			$fullElName = JArrayHelper::getValue($opts, 'alias', $db->quoteName($dbtable . '___' . $this->getElement()->name));
+			$fullElName = FArrayHelper::getValue($opts, 'alias', $db->quoteName($dbtable . '___' . $this->getElement()->name));
 			$r = 'COUNT(' . $params->get('count_field', '*') . ')';
 			$aFields[] = $r . ' AS ' . $fullElName;
 			$aAsFields[] = $fullElName;

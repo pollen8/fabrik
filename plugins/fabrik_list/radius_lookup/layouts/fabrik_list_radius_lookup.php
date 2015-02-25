@@ -36,7 +36,7 @@ $listData = $data['data'];
 		{
 			foreach ($group as $row)
 			{
-				$val = JArrayHelper::getValue($vals, $row->__pk_val);
+				$val = FArrayHelper::getValue($vals, $row->__pk_val);
 				$noneSel = (string) $val === '' ? 'selected' : '';
 				$noSel = (string) $val === '0' ? 'selected' : '';
 				$yesSel = (string) $val === '1' ? 'selected' : '';

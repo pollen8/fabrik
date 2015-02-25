@@ -67,13 +67,13 @@ class JFormFieldListfields extends JFormFieldList
 		 * 27/08/2011 - changed from default table-element to id - for juser form plugin - might cause havoc
 		 * else where but loading elements by id as default seems more robust (and is the default behaviour in f2.1
 		 */
-		$valueformat = (string) JArrayHelper::getValue($this->element, 'valueformat', 'id');
-		$onlylistfields = (int) JArrayHelper::getValue($this->element, 'onlylistfields', 0);
-		$showRaw = (bool) JArrayHelper::getValue($this->element, 'raw', false);
-		$labelMethod = (string) JArrayHelper::getValue($this->element, 'label_method');
-		$nojoins = (bool) JArrayHelper::getValue($this->element, 'nojoins', false);
-		$mode = (string) JArrayHelper::getValue($this->element, 'mode', false);
-		$useStep = (bool) JArrayHelper::getValue($this->element, 'usestep', false);
+		$valueformat = (string) FArrayHelper::getValue($this->element, 'valueformat', 'id');
+		$onlylistfields = (int) FArrayHelper::getValue($this->element, 'onlylistfields', 0);
+		$showRaw = (bool) FArrayHelper::getValue($this->element, 'raw', false);
+		$labelMethod = (string) FArrayHelper::getValue($this->element, 'label_method');
+		$nojoins = (bool) FArrayHelper::getValue($this->element, 'nojoins', false);
+		$mode = (string) FArrayHelper::getValue($this->element, 'mode', false);
+		$useStep = (bool) FArrayHelper::getValue($this->element, 'usestep', false);
 
 		switch ($controller)
 		{
@@ -94,7 +94,7 @@ class JFormFieldListfields extends JFormFieldList
 
 				if ($connection == '')
 				{
-					$groupId = isset($this->form->rawData) ? JArrayHelper::getValue($this->form->rawData, 'group_id', 0)
+					$groupId = isset($this->form->rawData) ? FArrayHelper::getValue($this->form->rawData, 'group_id', 0)
 						: $this->form->getValue('group_id');
 					$res = $this->loadFromGroupId($groupId);
 				}
@@ -251,20 +251,20 @@ class JFormFieldListfields extends JFormFieldList
 		$connection = $this->element['connection'];
 		$repeat = FabrikAdminElementHelper::getRepeat($this) || $this->element['repeat'];
 		$c = (int) FabrikAdminElementHelper::getRepeatCounter($this);
-		$mode = (string) JArrayHelper::getValue($this->element, 'mode', false);
+		$mode = (string) FArrayHelper::getValue($this->element, 'mode', false);
 		$connectionDd = $repeat ? $connection . '-' . $c : $connection;
-		$highlightpk = (bool) JArrayHelper::getValue($this->element, 'highlightpk', false);
+		$highlightpk = (bool) FArrayHelper::getValue($this->element, 'highlightpk', false);
 		$tableDd = $this->element['table'];
 		$opts = new stdClass;
 		$opts->table = ($repeat) ? 'jform_' . $tableDd . '-' . $c : 'jform_' . $tableDd;
 		$opts->conn = 'jform_' . $connectionDd;
 		$opts->value = $this->value;
 		$opts->repeat = $repeat;
-		$opts->showAll = (int) JArrayHelper::getValue($this->element, 'showall', '1');
+		$opts->showAll = (int) FArrayHelper::getValue($this->element, 'showall', '1');
 		$opts->highlightpk = (int) $highlightpk;
 		$opts->mode = $mode;
 		$opts->defaultOpts = $res;
-		$opts->addBrackets = (bool) JArrayHelper::getValue($this->element, 'addbrackets', false);
+		$opts->addBrackets = (bool) FArrayHelper::getValue($this->element, 'addbrackets', false);
 		$opts = json_encode($opts);
 		$script = array();
 		$script[] = "if (typeOf(FabrikAdmin.model.fields.listfields) === 'null') {";
@@ -288,7 +288,7 @@ class JFormFieldListfields extends JFormFieldList
 	private function gui()
 	{
 		$str = array();
-		$modeField = (string) JArrayHelper::getValue($this->element, 'modefield', 'textarea');
+		$modeField = (string) FArrayHelper::getValue($this->element, 'modefield', 'textarea');
 
 		if ($modeField === 'textarea')
 		{
@@ -320,18 +320,18 @@ class JFormFieldListfields extends JFormFieldList
 		$app = JFactory::getApplication();
 		$input = $app->input;
 		$controller = $input->get('view', $input->get('task'));
-		$valueformat = (string) JArrayHelper::getValue($this->element, 'valueformat', 'id');
-		$onlylistfields = (int) JArrayHelper::getValue($this->element, 'onlylistfields', 0);
+		$valueformat = (string) FArrayHelper::getValue($this->element, 'valueformat', 'id');
+		$onlylistfields = (int) FArrayHelper::getValue($this->element, 'onlylistfields', 0);
 		$pluginFilters = trim($this->element['filter']) == '' ? array() : explode('|', $this->element['filter']);
-		$labelMethod = (string) JArrayHelper::getValue($this->element, 'label_method');
-		$nojoins = (bool) JArrayHelper::getValue($this->element, 'nojoins', false);
+		$labelMethod = (string) FArrayHelper::getValue($this->element, 'label_method');
+		$nojoins = (bool) FArrayHelper::getValue($this->element, 'nojoins', false);
 
 		$bits = array();
-		$showRaw = (bool) JArrayHelper::getValue($this->element, 'raw', false);
+		$showRaw = (bool) FArrayHelper::getValue($this->element, 'raw', false);
 		$groupModel = JModelLegacy::getInstance('Group', 'FabrikFEModel');
 		$groupModel->setId($groupId);
 		$optskey = $valueformat == 'tableelement' ? 'name' : 'id';
-		$useStep = (bool) JArrayHelper::getValue($this->element, 'usestep', false);
+		$useStep = (bool) FArrayHelper::getValue($this->element, 'usestep', false);
 		$res = $groupModel->getForm()->getElementOptions($useStep, $optskey, $onlylistfields, $showRaw, $pluginFilters, $labelMethod, $nojoins);
 		$hash = $controller . '.' . implode('.', $bits);
 

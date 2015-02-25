@@ -203,7 +203,7 @@ class FabrikAdminControllerElement extends FabControllerForm
 		$app = JFactory::getApplication();
 		$input = $app->input;
 		$jform = $input->get('jform', array(), 'array');
-		$id = (int) JArrayHelper::getValue($jform, 'id', 0);
+		$id = (int) FArrayHelper::getValue($jform, 'id', 0);
 		$pluginManager = JModelLegacy::getInstance('Pluginmanager', 'FabrikFEModel');
 		$className = $input->post->get('plugin', 'field');
 		$elementModel = $pluginManager->getPlugIn($className, 'element');

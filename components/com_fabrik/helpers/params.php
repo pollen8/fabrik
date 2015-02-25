@@ -194,7 +194,7 @@ class FabrikParams extends JForm
 
 		if ($outputFormat == 'array' && !is_null($counter))
 		{
-			$value = JArrayHelper::getValue($value, $counter, '');
+			$value = FArrayHelper::getValue($value, $counter, '');
 		}
 
 		// Value must be a string

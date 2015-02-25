@@ -111,8 +111,8 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 		{
 			// Priority to raw data.
 			$amountKey = FabrikString::safeColNameToArrayKey($params->get('paypal_cost_element'));
-			$amount = JArrayHelper::getValue($this->data, $amountKey);
-			$amount = JArrayHelper::getValue($this->data, $amountKey . '_raw', $amount);
+			$amount = FArrayHelper::getValue($this->data, $amountKey);
+			$amount = FArrayHelper::getValue($this->data, $amountKey . '_raw', $amount);
 
 			if (is_array($amount))
 			{
@@ -132,7 +132,7 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 
 		if (trim($shipping_amount) == '')
 		{
-			$shipping_amount = JArrayHelper::getValue($this->data, FabrikString::safeColNameToArrayKey($params->get('paypal_shipping_cost_element')));
+			$shipping_amount = FArrayHelper::getValue($this->data, FabrikString::safeColNameToArrayKey($params->get('paypal_shipping_cost_element')));
 
 			if (is_array($shipping_amount))
 			{
@@ -152,7 +152,7 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 
 		if (trim($item) == '')
 		{
-			$item_raw = JArrayHelper::getValue($this->data, FabrikString::safeColNameToArrayKey($params->get('paypal_item_element') . '_raw'));
+			$item_raw = FArrayHelper::getValue($this->data, FabrikString::safeColNameToArrayKey($params->get('paypal_item_element') . '_raw'));
 			$item = $this->data[FabrikString::safeColNameToArrayKey($params->get('paypal_item_element'))];
 
 			if (is_array($item))

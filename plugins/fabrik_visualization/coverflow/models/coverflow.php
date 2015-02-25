@@ -64,7 +64,7 @@ class FabrikModelCoverflow extends FabrikFEModelVisualization
 			if ($listModel->canView() || $listModel->canEdit())
 			{
 				$elements = $listModel->getElements();
-				$imageElement = JArrayHelper::getValue($elements, FabrikString::safeColName($image));
+				$imageElement = FArrayHelper::getValue($elements, FabrikString::safeColName($image));
 				$action = $app->isAdmin() ? "task" : "view";
 				$nextview = $listModel->canEdit() ? "form" : "details";
 

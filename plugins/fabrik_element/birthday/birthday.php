@@ -54,9 +54,9 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 
 		if (is_array($value))
 		{
-			$day = JArrayHelper::getValue($value, 0);
-			$month = JArrayHelper::getValue($value, 1);
-			$year = JArrayHelper::getValue($value, 2);
+			$day = FArrayHelper::getValue($value, 0);
+			$month = FArrayHelper::getValue($value, 1);
+			$year = FArrayHelper::getValue($value, 2);
 			$value = $year . '-' . $month . '-' . $day;
 		}
 
@@ -234,9 +234,9 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 		{
 			// Weirdness for failed validation
 			$value = strstr($value, ',') ? array_reverse(explode(',', $value)) : explode('-', $value);
-			$yearvalue = JArrayHelper::getValue($value, 0);
-			$monthvalue = JArrayHelper::getValue($value, 1);
-			$dayvalue = JArrayHelper::getValue($value, 2);
+			$yearvalue = FArrayHelper::getValue($value, 0);
+			$monthvalue = FArrayHelper::getValue($value, 1);
+			$dayvalue = FArrayHelper::getValue($value, 2);
 
 			$days = array(JHTML::_('select.option', '', $params->get('birthday_daylabel', FText::_('DAY'))));
 

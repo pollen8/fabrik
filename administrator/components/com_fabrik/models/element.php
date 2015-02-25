@@ -245,10 +245,10 @@ class FabrikAdminModelElement extends FabModelAdmin
 		{
 			$o = new stdClass;
 			$o->plugin = $plugins[$i];
-			$o->published = JArrayHelper::getValue($published, $i, 1);
-			$o->show_icon = JArrayHelper::getValue($icons, $i, 1);
-			$o->validate_in = JArrayHelper::getValue($in, $i, 'both');
-			$o->validation_on = JArrayHelper::getValue($on, $i, 'both');
+			$o->published = FArrayHelper::getValue($published, $i, 1);
+			$o->show_icon = FArrayHelper::getValue($icons, $i, 1);
+			$o->validate_in = FArrayHelper::getValue($in, $i, 'both');
+			$o->validation_on = FArrayHelper::getValue($on, $i, 'both');
 			$return[] = $o;
 		}
 
@@ -501,7 +501,7 @@ class FabrikAdminModelElement extends FabModelAdmin
 		$params = $data['params'];
 		$data['name'] = FabrikString::iclean($data['name']);
 		$name = $data['name'];
-		$params['validations'] = JArrayHelper::getValue($data, 'validationrule', array());
+		$params['validations'] = FArrayHelper::getValue($data, 'validationrule', array());
 		$elementModel = $this->getElementPluginModel($data);
 		$elementModel->getElement()->bind($data);
 		$origId = $input->getInt('id');
@@ -597,7 +597,7 @@ class FabrikAdminModelElement extends FabModelAdmin
 		 * the fieldsets!  Well, that's the only way I could come up with doing it.  Hopefully Rob can come up with
 		 * a quicker and simpler way of doing this!
 		 */
-		$validations = JArrayHelper::getValue($params['validations'], 'plugin', array());
+		$validations = FArrayHelper::getValue($params['validations'], 'plugin', array());
 		$num_validations = count($validations);
 		$validation_plugins = $this->getValidations($elementModel, $validations);
 
@@ -969,12 +969,12 @@ class FabrikAdminModelElement extends FabModelAdmin
 		$db->setQuery($query);
 		$db->execute();
 		$jform = $input->get('jform', array(), 'array');
-		$eEvent = JArrayHelper::getValue($jform, 'js_e_event', array());
-		$eTrigger = JArrayHelper::getValue($jform, 'js_e_trigger', array());
-		$eCond = JArrayHelper::getValue($jform, 'js_e_condition', array());
-		$eVal = JArrayHelper::getValue($jform, 'js_e_value', array());
-		$ePublished = JArrayHelper::getValue($jform, 'js_published', array());
-		$action = (array) JArrayHelper::getValue($jform, 'action', array());
+		$eEvent = FArrayHelper::getValue($jform, 'js_e_event', array());
+		$eTrigger = FArrayHelper::getValue($jform, 'js_e_trigger', array());
+		$eCond = FArrayHelper::getValue($jform, 'js_e_condition', array());
+		$eVal = FArrayHelper::getValue($jform, 'js_e_value', array());
+		$ePublished = FArrayHelper::getValue($jform, 'js_published', array());
+		$action = (array) FArrayHelper::getValue($jform, 'action', array());
 
 		foreach ($action as $c => $jsAction)
 		{
@@ -1102,7 +1102,7 @@ class FabrikAdminModelElement extends FabModelAdmin
 		{
 			if ($rule->load((int) $id))
 			{
-				$name = JArrayHelper::getValue($names, $id, $rule->name);
+				$name = FArrayHelper::getValue($names, $id, $rule->name);
 				$data = JArrayHelper::fromObject($rule);
 				$elementModel = $this->getElementPluginModel($data);
 				$elementModel->getElement()->bind($data);

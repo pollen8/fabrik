@@ -42,7 +42,7 @@ abstract class FabModelAdmin extends JModelAdmin
 		$item = $this->getItem();
 
 		// Load up the active plug-ins
-		$plugins = JArrayHelper::getValue($item->params, 'plugins', array());
+		$plugins = FArrayHelper::getValue($item->params, 'plugins', array());
 
 		return $plugins;
 	}

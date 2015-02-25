@@ -539,7 +539,7 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 	{
 		$app = JFactory::getApplication();
 		$listModel = $elementModel->getListModel();
-		$label = JArrayHelper::getValue($opts, 'label', '');
+		$label = FArrayHelper::getValue($opts, 'label', '');
 		$rows = $elementModel->filterValueList(true, '', $label);
 		$v = $app->input->get('value', '', 'string');
 
@@ -1069,7 +1069,7 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 
 		foreach ($vals as $val)
 		{
-			$l = JArrayHelper::getValue($labels, $val, $defaultLabel);
+			$l = FArrayHelper::getValue($labels, $val, $defaultLabel);
 
 			if (trim($l) !== '')
 			{
@@ -1100,7 +1100,7 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 		{
 		$v = $params->get('sub_default_label');
 		}
-		return ($key === false) ? $v : JArrayHelper::getValue($labels, $key, $defaultLabel);
+		return ($key === false) ? $v : FArrayHelper::getValue($labels, $key, $defaultLabel);
 		*/
 		return $return;
 	}

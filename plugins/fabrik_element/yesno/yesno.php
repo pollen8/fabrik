@@ -269,6 +269,7 @@ class PlgFabrik_ElementYesno extends PlgFabrik_ElementRadiobutton
 	{
 		$id = $this->getHTMLId($repeatCounter);
 		$opts = $this->getElementJSOptions($repeatCounter);
+		$opts->changeEvent = $this->getChangeEvent();
 
 		return array('FbYesno', $id, $opts);
 	}
@@ -436,7 +437,7 @@ class PlgFabrik_ElementYesno extends PlgFabrik_ElementRadiobutton
 			}
 	
 			$shortPk = FabrikString::shortColName($pk);
-			$rowid = JArrayHelper::getValue($data, $shortPk, null);
+			$rowid = FArrayHelper::getValue($data, $shortPk, null);
 			
 			$query->update($this->actualTableName())->set($name . ' = 0');
 			
@@ -459,4 +460,17 @@ class PlgFabrik_ElementYesno extends PlgFabrik_ElementRadiobutton
 			$db->execute();
 		}
 	}
+	
+	/**
+	 * Return JS event required to trigger a 'change', this is overriding default element model.
+	 * When in BS mode with button-grp, needs to be 'click'.
+	 *
+	 * @return  string
+	 */
+	
+	public function getChangeEvent()
+	{
+		return $this->buttonGroup() ? 'click' : 'change';
+	}
+	
 }

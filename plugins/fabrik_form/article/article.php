@@ -50,7 +50,7 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 		if ($catElement = $formModel->getElement($params->get('categories_element'), true))
 		{
 			$cat = $catElement->getFullName() . '_raw';
-			$categories = (array) JArrayHelper::getValue($this->data, $cat);
+			$categories = (array) FArrayHelper::getValue($this->data, $cat);
 			$this->mapCategoryChanges($categories, $store);
 		}
 		else

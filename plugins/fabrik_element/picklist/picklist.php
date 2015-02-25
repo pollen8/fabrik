@@ -24,6 +24,13 @@ require_once JPATH_SITE . '/components/com_fabrik/models/element.php';
 class PlgFabrik_ElementPicklist extends PlgFabrik_ElementList
 {
 	/**
+	 * Does the element have sub elements
+	 *
+	 * @var bool
+	 */
+	public $hasSubElements = false;
+	
+	/**
 	 * Method to set the element id
 	 *
 	 * @param   int  $id  element ID number
@@ -90,8 +97,8 @@ class PlgFabrik_ElementPicklist extends PlgFabrik_ElementList
 				continue;
 			}
 
-			$k = JArrayHelper::getValue($lookup, $v);
-			$tmptxt = addslashes(htmlspecialchars(JArrayHelper::getValue($arTxt, $k)));
+			$k = FArrayHelper::getValue($lookup, $v);
+			$tmptxt = addslashes(htmlspecialchars(FArrayHelper::getValue($arTxt, $k)));
 			$tolist[] = '<li id="' . $id . '_value_' . $v . '" class="' . $v . '">' . $tmptxt . '</li>';
 			$aRoValues[] = $tmptxt;
 			$i++;

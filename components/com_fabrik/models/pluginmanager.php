@@ -600,7 +600,7 @@ class FabrikFEModelPluginmanager extends JModelLegacy
 				break;
 			}
 
-			$state = JArrayHelper::getValue($states, $c, 1);
+			$state = FArrayHelper::getValue($states, $c, 1);
 
 			if ($state == false)
 			{
@@ -620,8 +620,8 @@ class FabrikFEModelPluginmanager extends JModelLegacy
 					$plugin->renderOrder = $c;
 					$modelTable = $parentModel->getTable();
 					$pluginParams = $plugin->setParams($params, $c);
-					$location = JArrayHelper::getValue($usedLocations, $c);
-					$event = JArrayHelper::getValue($usedEvents, $c);
+					$location = FArrayHelper::getValue($usedLocations, $c);
+					$event = FArrayHelper::getValue($usedEvents, $c);
 					$plugin->setModel($parentModel);
 
 					if ($plugin->canUse($location, $event))

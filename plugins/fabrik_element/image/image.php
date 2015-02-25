@@ -99,7 +99,7 @@ class PlgFabrik_ElementImage extends PlgFabrik_Element
 		 * selection was being applied instead
 		 * otherwise get the default value so if we don't find the element's value in $data we fall back on this value
 		 */
-		return JArrayHelper::getValue($opts, 'use_default', true) == false ? '' : $this->getDefaultValue($data);
+		return FArrayHelper::getValue($opts, 'use_default', true) == false ? '' : $this->getDefaultValue($data);
 	}
 
 	/**

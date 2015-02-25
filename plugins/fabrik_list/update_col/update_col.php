@@ -140,8 +140,8 @@ class PlgFabrik_ListUpdate_Col extends PlgFabrik_List
 			parse_str($qs, $output);
 			$key = 'list_' . $model->getRenderContext();
 
-			$values = JArrayHelper::getValue($output, 'fabrik___filter', array());
-			$values = JArrayHelper::getValue($values, $key, array());
+			$values = FArrayHelper::getValue($output, 'fabrik___filter', array());
+			$values = FArrayHelper::getValue($values, $key, array());
 
 			$update = new stdClass;
 			$update->coltoupdate = array();
@@ -417,7 +417,7 @@ class PlgFabrik_ListUpdate_Col extends PlgFabrik_List
 			JArrayHelper::toInteger($ids);
 			$ids = implode(',', $ids);
 			$userids_emails = $this->getEmailUserIds($ids);
-			$to = JArrayHelper::getValue($userids_emails, $userid);
+			$to = FArrayHelper::getValue($userids_emails, $userid);
 		}
 		elseif ($emailWhich == 'field')
 		{

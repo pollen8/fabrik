@@ -439,7 +439,7 @@ class FabrikFEModelGroup extends FabModel
 		if ($widths !== '')
 		{
 			$widths = explode(',', $widths);
-			$w = JArrayHelper::getValue($widths, ($rowIx) % $colcount, $w);
+			$w = FArrayHelper::getValue($widths, ($rowIx) % $colcount, $w);
 		}
 
 		$element->column = ' style="float:left;width:' . $w . ';';
@@ -469,7 +469,7 @@ class FabrikFEModelGroup extends FabModel
 		$element->column .= '" ';
 		$spans = $this->columnSpans();
 		$spanKey = $rowIx % $colcount;
-		$element->span = $element->hidden ? '' : JArrayHelper::getValue($spans, $spanKey, 'span' . floor(12 / $colcount));
+		$element->span = $element->hidden ? '' : FArrayHelper::getValue($spans, $spanKey, 'span' . floor(12 / $colcount));
 
 		if (!$element->hidden)
 		{
@@ -1244,7 +1244,7 @@ class FabrikFEModelGroup extends FabModel
 		$input = JFactory::getApplication()->input;
 		$repeatTotals = $input->get('fabrik_repeat_group', array(0), 'post', 'array');
 
-		return (int) JArrayHelper::getValue($repeatTotals, $this->getGroup()->id, 0);
+		return (int) FArrayHelper::getValue($repeatTotals, $this->getGroup()->id, 0);
 	}
 
 	/**
@@ -1323,7 +1323,7 @@ class FabrikFEModelGroup extends FabModel
 				}
 				else
 				{
-					$pk = $canRepeat ? JArrayHelper::getValue($formData[$pkField], $i, '') : $formData[$pkField];
+					$pk = $canRepeat ? FArrayHelper::getValue($formData[$pkField], $i, '') : $formData[$pkField];
 		
 					// Say for some reason the pk was set as a dbjoin!
 					if (is_array($pk))
@@ -1368,7 +1368,7 @@ class FabrikFEModelGroup extends FabModel
 			 * when we're in $fkOnParent mode!  So it's actually the FK field on the parent table.
 			 */
 			$fkField = $joinModel->getPrimaryKey('___');
-			$pk = JArrayHelper::getValue($formData, $fkField . '_raw', JArrayHelper::getValue($formData, $fkField, ''));
+			$pk = FArrayHelper::getValue($formData, $fkField . '_raw', FArrayHelper::getValue($formData, $fkField, ''));
 			
 			if (is_array($pk))
 			{
@@ -1457,14 +1457,18 @@ class FabrikFEModelGroup extends FabModel
 		 */
 		$groupid = $this->getId();
 		$origGroupRowsIds = $input->get('fabrik_group_rowids', array(), 'array');
-		$origGroupRowsIds = JArrayHelper::getValue($origGroupRowsIds, $groupid, array());
+		$origGroupRowsIds = FArrayHelper::getValue($origGroupRowsIds, $groupid, array());
 		$origGroupRowsIds = json_decode($origGroupRowsIds);
 
 		/*
 		 * Find out which keys were origionally in the form, but were not submitted
 		 * i.e. those keys whose records were removed
 		 */
-		$keysToDelete = array_diff($origGroupRowsIds, $usedKeys);
+		
+		if (!$formModel->isNewRecord())
+		{
+      			$keysToDelete = array_diff($origGroupRowsIds, $usedKeys);
+		}
 
 		// Nothing to delete - return
 		if (empty($keysToDelete))
@@ -1547,7 +1551,7 @@ class FabrikFEModelGroup extends FabModel
 		if (!empty($elementModels))
 		{
 			$smallerElHTMLName = $tmpElement->getFullName(true, false);
-			$d = JArrayHelper::getValue($data, $smallerElHTMLName, 1);
+			$d = FArrayHelper::getValue($data, $smallerElHTMLName, 1);
 
 			if (is_object($d))
 			{

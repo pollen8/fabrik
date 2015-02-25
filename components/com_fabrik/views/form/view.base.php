@@ -806,7 +806,7 @@ class FabrikViewFormBase extends JViewLegacy
 			// see http://fabrikar.com/forums/showthread.php?t=10297&page=5
 
 			$fields[] = '<input type="hidden" name="usekey" value="' . $usekey . '" />';
-			$pk_val = JArrayHelper::getValue($model->data, FabrikString::safeColNameToArrayKey($listModel->getTable()->db_primary_key));
+			$pk_val = FArrayHelper::getValue($model->data, FabrikString::safeColNameToArrayKey($listModel->getTable()->db_primary_key));
 
 			if (empty($pk_val))
 			{
@@ -953,7 +953,7 @@ class FabrikViewFormBase extends JViewLegacy
 			if ($groupModel->isJoin())
 			{
 				$groupPk = $groupModel->getJoinModel()->getForeignId();
-				$groupRowIds = (array) JArrayHelper::getValue($this->data, $groupPk, array());
+				$groupRowIds = (array) FArrayHelper::getValue($this->data, $groupPk, array());
 				$groupRowIds = htmlentities(json_encode($groupRowIds));
 
 				// Used to check against in group process(), when deleting removed repeat groups
@@ -1020,7 +1020,7 @@ class FabrikViewFormBase extends JViewLegacy
 
 					if (is_array($input))
 					{
-						$input = JArrayHelper::getValue($input, 'raw', $input);
+						$input = FArrayHelper::getValue($input, 'raw', $input);
 					}
 
 					// $$$ hugh - the aptly named SimpleCrypt encrypt is going to barf and toss a warning if we try

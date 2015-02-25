@@ -120,8 +120,8 @@ class FabrikFEModelFormsession extends FabModel
 		$app = JFactory::getApplication();
 		$input = $app->input;
 		$formModel->copyToRaw($post);
-		$fabrik_vars = JArrayHelper::getValue($post, 'fabrik_vars', array());
-		$querystring = JArrayHelper::getValue($fabrik_vars, 'querystring', array());
+		$fabrik_vars = FArrayHelper::getValue($post, 'fabrik_vars', array());
+		$querystring = FArrayHelper::getValue($fabrik_vars, 'querystring', array());
 		$formModel->addEncrytedVarsToArray($post);
 
 		if (array_key_exists('fabrik_vars', $post))
@@ -255,7 +255,7 @@ class FabrikFEModelFormsession extends FabModel
 			{
 				$crypt = $this->getCrypt();
 				$cookiekey = $this->getCookieKey();
-				$cookieval = JArrayHelper::getValue($_COOKIE, $cookiekey, '');
+				$cookieval = FArrayHelper::getValue($_COOKIE, $cookiekey, '');
 
 				if ($cookieval !== '')
 				{
@@ -352,7 +352,7 @@ class FabrikFEModelFormsession extends FabModel
 			{
 				$crypt = $this->getCrypt();
 				$cookiekey = (int) $user->get('id') . ":" . $this->getFormId() . ":" . $this->getRowId();
-				$cookieval = JArrayHelper::getValue($_COOKIE, $cookiekey, '');
+				$cookieval = FArrayHelper::getValue($_COOKIE, $cookiekey, '');
 
 				if ($cookieval !== '')
 				{
