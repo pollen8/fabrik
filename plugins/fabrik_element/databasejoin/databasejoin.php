@@ -1059,6 +1059,17 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 			}
 		}
 
+		/*
+		 * $$$ hugh - experimenting with optional "filter where", will probably move this in to filterValueList_foo,
+		 * but first cut it's safer to put it here (don't ask).
+		 */
+		
+		$filterWhere = trim($params->get('database_join_filter_where_sql', ''));
+		if (JArrayHelper::getValue($opts, 'mode', '') === 'filter' && !empty($filterWhere))
+		{
+			$where .= JString::stristr($where, 'WHERE') ? ' AND ' . $filterWhere : ' WHERE ' . $filterWhere;
+		}
+		
 		if ($where == '')
 		{
 			return $query ? $query : $where;
