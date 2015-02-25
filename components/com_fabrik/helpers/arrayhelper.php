@@ -305,4 +305,80 @@ class FArrayHelper extends JArrayHelper
 
 		return  $even_emptierish ? empty($val) : $val === '' || !isset($val);
 	}
+	
+	/**	
+	 * Workaround for J! 3.4 change in JArrayHelper::getValue(), which now forces $array to be, well, an array.
+	 * We've been a bit naughty and using it for things like SimpleXMLElement.  So for J! 3.4 release, 2/25/2015,
+	 * globally replaced all use of JArrayHelper::getValue() with FArrayHelper::getValue().  This code is just a
+	 * copy of the J! code, it just doesn't specify "array $array".
+	 * 
+	 * @param   array   &$array   A named array
+	 * @param   string  $name     The key to search for
+	 * @param   mixed   $default  The default value to give if no key found
+	 * @param   string  $type     Return type for the variable (INT, FLOAT, STRING, WORD, BOOLEAN, ARRAY)
+	 *
+	 * @return  mixed  The value from the source array
+	 */
+	
+	public static function getValue(&$array, $name, $default = null, $type = '')
+	{
+		$result = null;
+
+		if (isset($array[$name]))
+		{
+			$result = $array[$name];
+		}
+
+		// Handle the default case
+		if (is_null($result))
+		{
+			$result = $default;
+		}
+
+		// Handle the type constraint
+		switch (strtoupper($type))
+		{
+			case 'INT':
+			case 'INTEGER':
+				// Only use the first integer value
+				@preg_match('/-?[0-9]+/', $result, $matches);
+				$result = @(int) $matches[0];
+				break;
+
+			case 'FLOAT':
+			case 'DOUBLE':
+				// Only use the first floating point value
+				@preg_match('/-?[0-9]+(\.[0-9]+)?/', $result, $matches);
+				$result = @(float) $matches[0];
+				break;
+
+			case 'BOOL':
+			case 'BOOLEAN':
+				$result = (bool) $result;
+				break;
+
+			case 'ARRAY':
+				if (!is_array($result))
+				{
+					$result = array($result);
+				}
+				break;
+
+			case 'STRING':
+				$result = (string) $result;
+				break;
+
+			case 'WORD':
+				$result = (string) preg_replace('#\W#', '', $result);
+				break;
+
+			case 'NONE':
+			default:
+				// No casting necessary
+				break;
+		}
+
+		return $result;
+	}
+	
 }
