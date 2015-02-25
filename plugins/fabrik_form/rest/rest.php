@@ -63,7 +63,7 @@ class PlgFabrik_FormRest extends PlgFabrik_Form
 			if ($fkElement)
 			{
 				$fkElementKey = $fkElement->getFullName();
-				$this->fkData = json_decode(JArrayHelper::getValue($formModel->formData, $fkElementKey));
+				$this->fkData = json_decode(FArrayHelper::getValue($formModel->formData, $fkElementKey));
 				$this->fkData = JArrayHelper::fromObject($this->fkData);
 
 				$fkEval = $params->get('foreign_key_eval', '');

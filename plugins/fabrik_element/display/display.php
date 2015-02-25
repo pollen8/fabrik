@@ -136,7 +136,7 @@ class PlgFabrik_ElementDisplay extends PlgFabrik_Element
 
 	protected function getDefaultOnACL($data, $opts)
 	{
-		return JArrayHelper::getValue($opts, 'use_default', true) == false ? '' : $this->getDefaultValue($data);
+		return FArrayHelper::getValue($opts, 'use_default', true) == false ? '' : $this->getDefaultValue($data);
 	}
 
 	/**
@@ -158,7 +158,7 @@ class PlgFabrik_ElementDisplay extends PlgFabrik_Element
 		if ($value === '')
 		{
 			// Query string for joined data
-			$value = JArrayHelper::getValue($data, $value);
+			$value = FArrayHelper::getValue($data, $value);
 		}
 
 		$formModel = $this->getFormModel();

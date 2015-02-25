@@ -217,7 +217,7 @@ class FabrikModelSlideshow extends FabrikFEModelVisualization
 					{
 						if ($params->get('slideshow_viz_thumbnails', false))
 						{
-							$small = (string) JArrayHelper::getValue($imgs[$i], 'src');
+							$small = (string) FArrayHelper::getValue($imgs[$i], 'src');
 							$small = str_replace(COM_FABRIK_LIVESITE, '', $small);
 							$pic_opts['thumbnail'] = $small;
 						}

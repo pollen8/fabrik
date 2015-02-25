@@ -75,13 +75,13 @@ class ModFabrikListHelper
 
 		if (!empty($conditions))
 		{
-			$joins = JArrayHelper::getValue($prefilters, 'filter-join', array());
+			$joins = FArrayHelper::getValue($prefilters, 'filter-join', array());
 			$listParams->set('filter-join', $joins);
 			$listParams->set('filter-fields', $prefilters['filter-fields']);
 			$listParams->set('filter-conditions', $prefilters['filter-conditions']);
 			$listParams->set('filter-value', $prefilters['filter-value']);
 			$listParams->set('filter-access', $prefilters['filter-access']);
-			$listParams->set('filter-eval', JArrayHelper::getValue($prefilters, 'filter-eval'));
+			$listParams->set('filter-eval', FArrayHelper::getValue($prefilters, 'filter-eval'));
 		}
 
 		return $model;

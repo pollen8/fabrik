@@ -303,21 +303,21 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 			{
 				$elementModel = $elementModels[$j];
 				$elkey = $elementModel->getFullName(true, false);
-				$v = JArrayHelper::getValue($d, $elkey);
+				$v = FArrayHelper::getValue($d, $elkey);
 
 				if (is_array($v))
 				{
-					$origdata = JArrayHelper::getValue($d, $elkey, array());
+					$origdata = FArrayHelper::getValue($d, $elkey, array());
 
 					foreach (array_keys($v) as $x)
 					{
-						$origval = JArrayHelper::getValue($origdata, $x);
+						$origval = FArrayHelper::getValue($origdata, $x);
 						$d[$elkey][$x] = $elementModel->getLabelForValue($v[$x], $origval, true, $x);
 					}
 				}
 				else
 				{
-					$d[$elkey] = $elementModel->getLabelForValue($v, JArrayHelper::getValue($d, $elkey), true);
+					$d[$elkey] = $elementModel->getLabelForValue($v, FArrayHelper::getValue($d, $elkey), true);
 				}
 			}
 		}
@@ -565,7 +565,7 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 
 				if ($this->getGroupModel()->canRepeat() && is_array($value))
 				{
-					$value = JArrayHelper::getValue($value, $repeatCounter);
+					$value = FArrayHelper::getValue($value, $repeatCounter);
 				}
 
 				// For radio buttons and dropdowns otherwise nothing is stored for them??
@@ -587,7 +587,7 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 	{
 		$fields = $listModel->getDBFields($this->getTableName(), 'Field');
 		$name = $this->getElement()->name;
-		$field = JArrayHelper::getValue($fields, $name, false);
+		$field = FArrayHelper::getValue($fields, $name, false);
 
 		if ($field !== false && $field->Type == 'time')
 		{
@@ -620,7 +620,7 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 	{
 		$fields = $listModel->getDBFields($this->getTableName(), 'Field');
 		$name = $this->getElement()->name;
-		$field = JArrayHelper::getValue($fields, $name, false);
+		$field = FArrayHelper::getValue($fields, $name, false);
 
 		if ($field !== false && $field->Type == 'time')
 		{
@@ -653,7 +653,7 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 	{
 		$fields = $listModel->getDBFields($this->getTableName(), 'Field');
 		$name = $this->getElement()->name;
-		$field = JArrayHelper::getValue($fields, $name, false);
+		$field = FArrayHelper::getValue($fields, $name, false);
 
 		if ($field !== false && $field->Type == 'time')
 		{

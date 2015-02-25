@@ -130,7 +130,7 @@ class PlgFabrik_ElementCheckbox extends PlgFabrik_ElementList
 		$params = $this->getParams();
 		$element = $this->getElement();
 
-		$value = JArrayHelper::getValue($data, $element->name, '');
+		$value = FArrayHelper::getValue($data, $element->name, '');
 		
 		if ($value === '')
 		{

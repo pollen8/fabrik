@@ -113,13 +113,13 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 		$params = $this->getParams();
 		$renderOrder = $input->getInt('renderOrder');
 		$toType = $params->get('emailtable_to_type');
-		$toType = is_array($toType) ? JArrayHelper::getValue($toType, $renderOrder, 'list') : $toType;
+		$toType = is_array($toType) ? FArrayHelper::getValue($toType, $renderOrder, 'list') : $toType;
 
 		if ($toType == 'field')
 		{
 			$email_to = '';
 			$to = $params->get('emailtable_to');
-			$to = is_array($to) ? JArrayHelper::getValue($to, $renderOrder) : $to;
+			$to = is_array($to) ? FArrayHelper::getValue($to, $renderOrder) : $to;
 
 			switch ($params->get('emailtable_email_to_field_how', 'readonly'))
 			{
@@ -228,7 +228,7 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 		$params = $this->getParams();
 		$allow = $params->get('emailtable_allow_attachment');
 
-		return is_array($allow) ? JArrayHelper::getValue($allow, $renderOrder, false) : $allow;
+		return is_array($allow) ? FArrayHelper::getValue($allow, $renderOrder, false) : $allow;
 	}
 
 	/**
@@ -244,9 +244,9 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 		$renderOrder = $input->getInt('renderOrder');
 		$params = $this->getParams();
 		$var = $params->get('emailtable_email_to_field_how', 'readonly');
-		$var = is_array($var) ? JArrayHelper::getValue($var, $renderOrder, 'readonly') : $var;
+		$var = is_array($var) ? FArrayHelper::getValue($var, $renderOrder, 'readonly') : $var;
 		$toType = $params->get('emailtable_to_type', 'list');
-		$toType = is_array($toType) ? JArrayHelper::getValue($toType, $renderOrder, 'single') : $toType;
+		$toType = is_array($toType) ? FArrayHelper::getValue($toType, $renderOrder, 'single') : $toType;
 
 		// Can only hide To if it's the simple field type, as all others require user input
 		return !($var == 'hidden' && $toType == 'field');
@@ -266,7 +266,7 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 		$params = $this->getParams();
 		$var = $params->get('emailtable_hide_subject');
 
-		return (is_array($var) ? JArrayHelper::getValue($var, $renderOrder, '') : $var) == '0';
+		return (is_array($var) ? FArrayHelper::getValue($var, $renderOrder, '') : $var) == '0';
 	}
 
 	/**
@@ -283,7 +283,7 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 		$params = $this->getParams();
 		$var = $params->get('email_subject');
 
-		return is_array($var) ? JArrayHelper::getValue($var, $renderOrder, '') : $var;
+		return is_array($var) ? FArrayHelper::getValue($var, $renderOrder, '') : $var;
 	}
 
 	/**
@@ -300,7 +300,7 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 		$params = $this->getParams();
 		$var = $params->get('email_message');
 
-		return is_array($var) ? JArrayHelper::getValue($var, $renderOrder, '') : $var;
+		return is_array($var) ? FArrayHelper::getValue($var, $renderOrder, '') : $var;
 	}
 
 	/**
@@ -426,7 +426,7 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 		$input = $app->input;
 		$user = JFactory::getUser();
 		$updateVal = $params->get($name);
-		$updateVal = is_array($updateVal) ? JArrayHelper::getValue($updateVal, $renderOrder, '') : $updateVal;
+		$updateVal = is_array($updateVal) ? FArrayHelper::getValue($updateVal, $renderOrder, '') : $updateVal;
 
 		if ($updateVal === 'now()')
 		{
@@ -474,21 +474,21 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 
 		if (is_array($merge_emails))
 		{
-			$merge_emails = (int) JArrayHelper::getValue($merge_emails, $renderOrder, 0);
+			$merge_emails = (int) FArrayHelper::getValue($merge_emails, $renderOrder, 0);
 		}
 
 		$toHow = $params->get('emailtable_to_how', 'single');
 
 		if (is_array($toHow))
 		{
-			$toHow = JArrayHelper::getValue($toHow, $renderOrder, 'single');
+			$toHow = FArrayHelper::getValue($toHow, $renderOrder, 'single');
 		}
 
 		$toType = $params->get('emailtable_to_type', 'list');
 
 		if (is_array($toType))
 		{
-			$toType = JArrayHelper::getValue($toType, $renderOrder, 'list');
+			$toType = FArrayHelper::getValue($toType, $renderOrder, 'list');
 		}
 
 		if ($toType == 'table' || $toType == 'table_picklist')
@@ -516,7 +516,7 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 
 					if (is_array($emailtable_to))
 					{
-						$emailtable_to  = JArrayHelper::getValue($emailtable_to, $renderOrder, '');
+						$emailtable_to  = FArrayHelper::getValue($emailtable_to, $renderOrder, '');
 					}
 
 					if (!empty($emailtable_to))
@@ -536,14 +536,14 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 
 		if (is_array($fromUser))
 		{
-			$fromUser = JArrayHelper::getValue($fromUser, $renderOrder, '');
+			$fromUser = FArrayHelper::getValue($fromUser, $renderOrder, '');
 		}
 
 		$emailTemplate = $params->get('emailtable_template', '');
 
 		if (is_array($emailTemplate))
 		{
-			$emailTemplate = JArrayHelper::getValue($emailTemplate, $renderOrder, '');
+			$emailTemplate = FArrayHelper::getValue($emailTemplate, $renderOrder, '');
 		}
 
 		if ($emailTemplate != "-1" && !empty($emailTemplate))
@@ -555,7 +555,7 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 
 		if (is_array($contentTemplate))
 		{
-			$contentTemplate = JArrayHelper::getValue($contentTemplate, $renderOrder, '');
+			$contentTemplate = FArrayHelper::getValue($contentTemplate, $renderOrder, '');
 		}
 
 		$content = empty($contentTemplate) ? '' : FabrikHelperHTML::getContentTemplate($contentTemplate);
@@ -789,9 +789,9 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 			$thistos = explode(',', $w->parseMessageForPlaceHolder($mailto, $first_row));
 			$thissubject = $w->parseMessageForPlaceHolder($subject, $first_row);
 			$preamble = $params->get('emailtable_message_preamble', '');
-			$preamble = is_array($preamble) ? JArrayHelper::getValue($preamble, $renderOrder, '') : $preamble;
+			$preamble = is_array($preamble) ? FArrayHelper::getValue($preamble, $renderOrder, '') : $preamble;
 			$postamble = $params->get('emailtable_message_postamble', '');
-			$postamble = is_array($postamble) ? JArrayHelper::getValue($postamble, $renderOrder, '') : $postamble;
+			$postamble = is_array($postamble) ? FArrayHelper::getValue($postamble, $renderOrder, '') : $postamble;
 			$merged_msg = $preamble . $merged_msg . $postamble;
 
 			if (!$old_style)
@@ -856,7 +856,7 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 		}
 
 		$updateField = $params->get('emailtable_update_field');
-		$updateField = is_array($updateField) ? JArrayHelper::getValue($updateField, $renderOrder, '') : $updateField;
+		$updateField = is_array($updateField) ? FArrayHelper::getValue($updateField, $renderOrder, '') : $updateField;
 		$updateVal = $this->updateVal('emailtable_update_value', $renderOrder);
 
 		if (!empty($updateVal) && !empty($updated))
@@ -873,7 +873,7 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 
 		// $$$ hugh - added second update field for Bea
 		$updateField = $params->get('emailtable_update_field2');
-		$updateField = is_array($updateField) ? JArrayHelper::getValue($updateField, $renderOrder, '') : $updateField;
+		$updateField = is_array($updateField) ? FArrayHelper::getValue($updateField, $renderOrder, '') : $updateField;
 
 		$updateVal = $this->updateVal('emailtable_update_value2', $renderOrder);
 

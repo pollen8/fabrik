@@ -32,12 +32,12 @@ class Twilio extends JObject
 	public function process($message = '')
 	{
 		jimport('twilio.services.twilio');
-		$username = JArrayHelper::getValue($opts, 'sms-username');
-		$token = JArrayHelper::getValue($opts, 'sms-password');
-		$smsto = JArrayHelper::getValue($opts, 'sms-to');
+		$username = FArrayHelper::getValue($opts, 'sms-username');
+		$token = FArrayHelper::getValue($opts, 'sms-password');
+		$smsto = FArrayHelper::getValue($opts, 'sms-to');
 
 		// From a valid Twilio number
-		$smsfrom = JArrayHelper::getValue($opts, 'sms-from');
+		$smsfrom = FArrayHelper::getValue($opts, 'sms-from');
 		$smstos = explode(",", $smsto);
 
 		foreach ($smstos as $smsto)

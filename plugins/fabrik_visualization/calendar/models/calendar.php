@@ -114,9 +114,9 @@ class FabrikModelCalendar extends FabrikFEModelVisualization
 				}
 
 				$rows[$i]->startdate_element = $dateFields[$i];
-				$rows[$i]->enddate_element = JArrayHelper::getValue($dateFields2, $i);
+				$rows[$i]->enddate_element = FArrayHelper::getValue($dateFields2, $i);
 				$rows[$i]->label_element = $labels[$i];
-				$rows[$i]->status = JArrayHelper::getValue($stati, $i, '');
+				$rows[$i]->status = FArrayHelper::getValue($stati, $i, '');
 				$rows[$i]->colour = $colours[$i];
 			}
 
@@ -230,8 +230,8 @@ class FabrikModelCalendar extends FabrikFEModelVisualization
 				{
 					$listModel->setId($tables[$i]);
 					$table = $listModel->getTable();
-					$endDate = JArrayHelper::getValue($table_enddate, $i, '');
-					$startDate = JArrayHelper::getValue($table_startdate, $i, '');
+					$endDate = FArrayHelper::getValue($table_enddate, $i, '');
+					$startDate = FArrayHelper::getValue($table_startdate, $i, '');
 
 					$startShowTime = true;
 					$startDateEl = $listModel->getFormModel()->getElement($startDate);
@@ -268,8 +268,8 @@ class FabrikModelCalendar extends FabrikFEModelVisualization
 						$table_label[$i] = '';
 					}
 
-					$customUrl = JArrayHelper::getValue($customUrls, $i, '');
-					$status = JArrayHelper::getValue($stati, $i, '');
+					$customUrl = FArrayHelper::getValue($customUrls, $i, '');
+					$status = FArrayHelper::getValue($stati, $i, '');
 					$this->events[$tables[$i]][] = array('startdate' => $startDate, 'enddate' => $endDate, 'startShowTime' => $startShowTime,
 						'endShowTime' => $endShowTime, 'label' => $table_label[$i], 'colour' => $colour[$i], 'legendtext' => $legend[$i],
 						'formid' => $table->form_id, 'listid' => $tables[$i], 'customUrl' => $customUrl, 'status' => $status);
@@ -419,7 +419,7 @@ class FabrikModelCalendar extends FabrikFEModelVisualization
 
 		foreach ($this->events as $listid => $record)
 		{
-			$this_where = JArrayHelper::getValue($where, $listid, '');
+			$this_where = FArrayHelper::getValue($where, $listid, '');
 			$listModel = JModelLegacy::getInstance('list', 'FabrikFEModel');
 			$listModel->setId($listid);
 

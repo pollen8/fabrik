@@ -137,7 +137,7 @@ class PlgFabrik_FormPaginate extends PlgFabrik_Form
 		$rows = $db->loadColumn();
 		$keys = array_flip($rows);
 		$o = new stdClass;
-		$o->index = JArrayHelper::getValue($keys, $formModel->getRowId(), 0);
+		$o->index = FArrayHelper::getValue($keys, $formModel->getRowId(), 0);
 		$o->first = $rows[0];
 		$o->lastKey = count($rows) - 1;
 		$o->last = $rows[$o->lastKey];

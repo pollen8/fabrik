@@ -494,7 +494,7 @@ class PlgFabrik_FormTwitter extends PlgFabrik_Form
 
 		foreach ($pairs as $paramname => $requestname)
 		{
-			$tokens = (array) JArrayHelper::getValue($opts, $paramname);
+			$tokens = (array) FArrayHelper::getValue($opts, $paramname);
 			$newtokens = array();
 
 			for ($i = 0; $i <= $counter; $i++)

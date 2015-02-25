@@ -95,9 +95,9 @@ endif;
 	<input type="hidden" name="boxchecked" value="" />
 	<input type="hidden" name="jform[drop_data]" value="<?php echo $this->drop_data ?>" />
 	<input type="hidden" name="jform[overwrite]" value="<?php echo $this->overwrite ?>" />
-	<input type="hidden" name="connection_id" value="<?php echo JArrayHelper::getValue($jform, 'connection_id')?>" />
-	<input type="hidden" name="jform[addkey]" value="<?php echo JArrayHelper::getValue($jform, 'addkey');?>" />
-	<input type="hidden" name="label" value="<?php echo JArrayHelper::getValue($jform, 'label')?>" />
-	<input type="hidden" name="db_table_name" value="<?php echo JArrayHelper::getValue($jform, 'db_table_name')?>" />
+	<input type="hidden" name="connection_id" value="<?php echo FArrayHelper::getValue($jform, 'connection_id')?>" />
+	<input type="hidden" name="jform[addkey]" value="<?php echo FArrayHelper::getValue($jform, 'addkey');?>" />
+	<input type="hidden" name="label" value="<?php echo FArrayHelper::getValue($jform, 'label')?>" />
+	<input type="hidden" name="db_table_name" value="<?php echo FArrayHelper::getValue($jform, 'db_table_name')?>" />
 	<?php echo JHTML::_('form.token'); ?>
 </form>

@@ -53,7 +53,7 @@ class PlgFabrik_FormUpsert extends PlgFabrik_Form
 
 		// Used for updating previously added records. Need previous pk val to ensure new records are still created.
 		$origData = $formModel->getOrigData();
-		$origData = JArrayHelper::getValue($origData, 0, new stdClass);
+		$origData = FArrayHelper::getValue($origData, 0, new stdClass);
 
 		if (isset($origData->__pk_val))
 		{

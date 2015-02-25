@@ -309,7 +309,7 @@ class PlgFabrik_ListRadius_Search extends PlgFabrik_List
 	{
 		$app = JFactory::getApplication();
 		$input = $app->input;
-		$values = JArrayHelper::getValue($this->filters, 'value', array());
+		$values = FArrayHelper::getValue($this->filters, 'value', array());
 		list($latitude, $longitude) = $this->getSearchLatLon();
 
 		if (trim($latitude) === '' && trim($longitude) === '')
@@ -356,7 +356,7 @@ class PlgFabrik_ListRadius_Search extends PlgFabrik_List
 		$app = JFactory::getApplication();
 		$baseContext = $this->getSessionContext();
 		$type = $app->input->get('radius_search_type' . $this->renderOrder, array(), 'array');
-		$type = JArrayHelper::getValue($type, 0);
+		$type = FArrayHelper::getValue($type, 0);
 
 		switch ($type)
 		{
@@ -511,7 +511,7 @@ class PlgFabrik_ListRadius_Search extends PlgFabrik_List
 		$params = $this->getParams();
 		$model = $this->getModel();
 		$elements = $model->getElements('id');
-		$this->mapElement = JArrayHelper::getValue($elements, $params->get('radius_mapelement'), false);
+		$this->mapElement = FArrayHelper::getValue($elements, $params->get('radius_mapelement'), false);
 
 		if ($this->mapElement === false)
 		{
@@ -584,7 +584,7 @@ class PlgFabrik_ListRadius_Search extends PlgFabrik_List
 		$app = JFactory::getApplication();
 		list($latitude, $longitude) = $this->getSearchLatLon();
 		$opts = $this->getElementJSOptions();
-		$containerOverride = JArrayHelper::getValue($args, 0, '');
+		$containerOverride = FArrayHelper::getValue($args, 0, '');
 
 		if (strstr($containerOverride, 'visualization'))
 		{

@@ -95,11 +95,11 @@ class PlgFabrik_ValidationruleUserExists extends PlgFabrik_Validationrule
 				{
 					// $$$ the array thing needs fixing, for now just grab 0
 					$formdata = $elementModel->getForm()->formData;
-					$user_id = JArrayHelper::getValue($formdata, $user_fullName . '_raw', JArrayHelper::getValue($formdata, $user_fullName, ''));
+					$user_id = FArrayHelper::getValue($formdata, $user_fullName . '_raw', FArrayHelper::getValue($formdata, $user_fullName, ''));
 
 					if (is_array($user_id))
 					{
-						$user_id = JArrayHelper::getValue($user_id, 0, '');
+						$user_id = FArrayHelper::getValue($user_id, 0, '');
 					}
 				}
 

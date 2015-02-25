@@ -104,8 +104,8 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 			{
 				$name = $this->getFullName(true, false);
 				$joinid = $groupModel->getGroup()->join_id;
-				$fileJoinData = JArrayHelper::getValue($_FILES['join']['name'], $joinid, array());
-				$fdata = JArrayHelper::getValue($fileJoinData, $name);
+				$fileJoinData = FArrayHelper::getValue($_FILES['join']['name'], $joinid, array());
+				$fdata = FArrayHelper::getValue($fileJoinData, $name);
 
 				// $fdata = $_FILES['join']['name'][$joinid][$name];
 			}
@@ -253,13 +253,13 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		$paramsKey = Fabrikstring::rtrimword($paramsKey, $this->getElement()->name);
 		$paramsKey .= 'params';
 		$formData = $this->getFormModel()->data;
-		$imgParams = JArrayHelper::getValue($formData, $paramsKey);
+		$imgParams = FArrayHelper::getValue($formData, $paramsKey);
 
 		// Above paramsKey stuff looks really wonky - lets test if null and use something which seems to build the correct key
 		if (is_null($imgParams))
 		{
 			$paramsKey = $this->getFullName(true, false) . '___params';
-			$imgParams = JArrayHelper::getValue($formData, $paramsKey);
+			$imgParams = FArrayHelper::getValue($formData, $paramsKey);
 		}
 
 		$value = $this->getValue(array(), $repeatCounter);
@@ -270,7 +270,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		$rawvalues = count($value) == 0 ? array() : array_fill(0, count($value), 0);
 		$fdata = $this->getFormModel()->data;
 		$rawkey = $this->getFullName(true, false) . '_raw';
-		$rawvalues = JArrayHelper::getValue($fdata, $rawkey, $rawvalues);
+		$rawvalues = FArrayHelper::getValue($fdata, $rawkey, $rawvalues);
 
 		if (!is_array($rawvalues))
 		{
@@ -282,7 +282,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 			 * $$$ hugh - nasty hack for now, if repeat group with simple
 			 * uploads, all raw values are in an array in $rawvalues[0]
 			 */
-			if (is_array(JArrayHelper::getValue($rawvalues, 0)))
+			if (is_array(FArrayHelper::getValue($rawvalues, 0)))
 			{
 				$rawvalues = $rawvalues[0];
 			}
@@ -384,7 +384,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 							$o->type = strstr($fileinfo['mime_type'], 'image/') ? 'image' : 'file';
 							$o->url = $this->getStorage()->pathToURL($value[$x]);
 							$o->recordid = $rawvalues[$x];
-							$o->params = json_decode(JArrayHelper::getValue($imgParams, $x, '{}'));
+							$o->params = json_decode(FArrayHelper::getValue($imgParams, $x, '{}'));
 							$oFiles->$iCounter = $o;
 							$iCounter++;
 						}
@@ -567,7 +567,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 			{
 				if ($data !== '')
 				{
-					$singleCropImg = JArrayHelper::getValue($data, 0);
+					$singleCropImg = FArrayHelper::getValue($data, 0);
 
 					if (empty($singleCropImg))
 					{
@@ -1003,7 +1003,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 
 		if (array_key_exists($repeatCounter, $files))
 		{
-			$file = JArrayHelper::getValue($files, $repeatCounter);
+			$file = FArrayHelper::getValue($files, $repeatCounter);
 		}
 		else
 		{
@@ -1166,8 +1166,8 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 				return true;
 			}
 
-			$crop = (array) JArrayHelper::getValue($raw, 'crop');
-			$ids = (array) JArrayHelper::getValue($raw, 'id');
+			$crop = (array) FArrayHelper::getValue($raw, 'crop');
+			$ids = (array) FArrayHelper::getValue($raw, 'id');
 			$ids = array_values($ids);
 
 			$saveParams = array();
@@ -1245,7 +1245,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		{
 			$filter = JFilterInput::getInstance();
 			$post = $filter->clean($_POST, 'array');
-			$raw = JArrayHelper::getValue($post, $name . '_raw', array());
+			$raw = FArrayHelper::getValue($post, $name . '_raw', array());
 
 			if (!$this->canUse())
 			{
@@ -1265,24 +1265,24 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 
 				if (array_key_exists(0, $raw))
 				{
-					$crop = (array) JArrayHelper::getValue($raw[0], 'crop');
-					$ids = (array) JArrayHelper::getValue($raw[0], 'id');
-					$cropData = (array) JArrayHelper::getValue($raw[0], 'cropdata');
+					$crop = (array) FArrayHelper::getValue($raw[0], 'crop');
+					$ids = (array) FArrayHelper::getValue($raw[0], 'id');
+					$cropData = (array) FArrayHelper::getValue($raw[0], 'cropdata');
 				}
 				else
 				{
 					// Single uploaded image.
-					$crop = (array) JArrayHelper::getValue($raw, 'crop');
-					$ids = (array) JArrayHelper::getValue($raw, 'id');
-					$cropData = (array) JArrayHelper::getValue($raw, 'cropdata');
+					$crop = (array) FArrayHelper::getValue($raw, 'crop');
+					$ids = (array) FArrayHelper::getValue($raw, 'id');
+					$cropData = (array) FArrayHelper::getValue($raw, 'cropdata');
 				}
 			}
 			else
 			{
 				// Single image
-				$crop = (array) JArrayHelper::getValue($raw, 'crop');
-				$ids = (array) JArrayHelper::getValue($raw, 'id');
-				$cropData = (array) JArrayHelper::getValue($raw, 'cropdata');
+				$crop = (array) FArrayHelper::getValue($raw, 'crop');
+				$ids = (array) FArrayHelper::getValue($raw, 'id');
+				$cropData = (array) FArrayHelper::getValue($raw, 'cropdata');
 			}
 
 			if ($raw == '')
@@ -1467,7 +1467,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		$deletedImages = $input->get('fabrik_fileupload_deletedfile', array(), 'array');
 		$gid = $groupModel->getId();
 
-		$deletedImages = JArrayHelper::getValue($deletedImages, $gid, array());
+		$deletedImages = FArrayHelper::getValue($deletedImages, $gid, array());
 		$imagesToKeep = array();
 
 		for ($j = 0; $j < count($origData); $j++)
@@ -1503,7 +1503,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		{
 			foreach ($fdata as $i => $f)
 			{
-				$myFileDir = JArrayHelper::getValue($myFileDirs, $i, '');
+				$myFileDir = FArrayHelper::getValue($myFileDirs, $i, '');
 				$file = array('name' => $_FILES[$name]['name'][$i],
 						'type' => $_FILES[$name]['type'][$i],
 						'tmp_name' => $_FILES[$name]['tmp_name'][$i],
@@ -1549,7 +1549,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		}
 		else
 		{
-			$myFileDir = JArrayHelper::getValue($myFileDirs, 0, '');
+			$myFileDir = FArrayHelper::getValue($myFileDirs, 0, '');
 			$file = array('name' => $_FILES[$name]['name'],
 					'type' => $_FILES[$name]['type'],
 					'tmp_name' => $_FILES[$name]['tmp_name'],
@@ -1562,7 +1562,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 			}
 			else
 			{
-				$files[0] = JArrayHelper::getValue($imagesToKeep, 0, '');
+				$files[0] = FArrayHelper::getValue($imagesToKeep, 0, '');
 			}
 
 			foreach ($imagesToKeep as $k => $v)
@@ -1677,13 +1677,13 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 				return parent::dataConsideredEmpty($data, $repeatCounter);
 			}
 
-			$olddaata = JArrayHelper::getValue($this->getFormModel()->_origData, $repeatCounter);
+			$olddaata = FArrayHelper::getValue($this->getFormModel()->_origData, $repeatCounter);
 
 			if (!is_null($olddaata))
 			{
 				$name = $this->getFullName(true, false);
 				$aoldData = JArrayHelper::fromObject($olddaata);
-				$r = JArrayHelper::getValue($aoldData, $name, '') === '' ? true : false;
+				$r = FArrayHelper::getValue($aoldData, $name, '') === '' ? true : false;
 
 				if (!$r)
 				{
@@ -1741,9 +1741,9 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 				$join = $this->getJoinModel()->getJoin();
 				$joinid = $join->id;
 				$joindata = $input->post->get('join', array(), 'array');
-				$joindata = JArrayHelper::getValue($joindata, $joinid, array());
-				$joindata = JArrayHelper::getValue($joindata, $name, array());
-				$joinids = JArrayHelper::getValue($joindata, 'id', array());
+				$joindata = FArrayHelper::getValue($joindata, $joinid, array());
+				$joindata = FArrayHelper::getValue($joindata, $name, array());
+				$joinids = FArrayHelper::getValue($joindata, 'id', array());
 
 				return empty($joinids) ? true : false;
 			}
@@ -1994,26 +1994,26 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 
 		if (array_key_exists($elName, $_FILES) && is_array($_FILES[$elName]))
 		{
-			$myFileName = JArrayHelper::getValue($_FILES[$elName], 'name', '');
+			$myFileName = FArrayHelper::getValue($_FILES[$elName], 'name', '');
 		}
 		else
 		{
 			if (array_key_exists('file', $_FILES) && is_array($_FILES['file']))
 			{
-				$myFileName = JArrayHelper::getValue($_FILES['file'], 'name', '');
+				$myFileName = FArrayHelper::getValue($_FILES['file'], 'name', '');
 			}
 		}
 
 		if (is_array($myFileName))
 		{
-			$myFileName = JArrayHelper::getValue($myFileName, $repeatCounter, '');
+			$myFileName = FArrayHelper::getValue($myFileName, $repeatCounter, '');
 		}
 
 		$myFileDir = array_key_exists($elNameRaw, $aData) && is_array($aData[$elNameRaw]) ? @$aData[$elNameRaw]['ul_end_dir'] : '';
 
 		if (is_array($myFileDir))
 		{
-			$myFileDir = JArrayHelper::getValue($myFileDir, $repeatCounter, '');
+			$myFileDir = FArrayHelper::getValue($myFileDir, $repeatCounter, '');
 		}
 
 		$storage = $this->getStorage();
@@ -2338,7 +2338,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 				{
 					$title = $formModel->data[$title_name];
 					$titles = FabrikWorker::JSONtoData($title, true);
-					$title = JArrayHelper::getValue($titles, $repeatCounter, $title);
+					$title = FArrayHelper::getValue($titles, $repeatCounter, $title);
 				}
 			}
 		}
@@ -2882,7 +2882,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		$elName = $this->getFullName(true, false);
 		$filepath = $row->$elName;
 		$filepath = FabrikWorker::JSONtoData($filepath, true);
-		$filepath = JArrayHelper::getValue($filepath, $repeatcount);
+		$filepath = FArrayHelper::getValue($filepath, $repeatcount);
 		$filepath = $storage->getFullPath($filepath);
 		$filecontent = $storage->read($filepath);
 
@@ -3164,8 +3164,8 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		{
 			if (!$this->isRepeatElement())
 			{
-				$farray = JArrayHelper::getValue($_FILES, $key, array(), 'array');
-				$fname = JArrayHelper::getValue($farray, 'name');
+				$farray = FArrayHelper::getValue($_FILES, $key, array(), 'array');
+				$fname = FArrayHelper::getValue($farray, 'name');
 				$form->updateFormData($key, $fname);
 				$form->updateFormData($rawkey, $fname);
 			}

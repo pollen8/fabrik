@@ -319,7 +319,7 @@ class FabrikAdminModelGroup extends FabModelAdmin
 			if (!array_key_exists($fname, $names))
 			{
 				$str = FabrikString::safeColName($fname);
-				$field = JArrayHelper::getValue($fields, $fname);
+				$field = FArrayHelper::getValue($fields, $fname);
 
 				if (is_object($field))
 				{

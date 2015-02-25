@@ -207,23 +207,23 @@ function fabrikParseRoute($segments)
 		case 'details':
 		case 'emailform':
 			$vars['view'] = $segments[0];
-			$vars['formid'] = JArrayHelper::getValue($segments, 1, 0);
-			$vars['rowid'] = JArrayHelper::getValue($segments, 2, '');
-			$vars['format'] = JArrayHelper::getValue($segments, 3, 'html');
+			$vars['formid'] = FArrayHelper::getValue($segments, 1, 0);
+			$vars['rowid'] = FArrayHelper::getValue($segments, 2, '');
+			$vars['format'] = FArrayHelper::getValue($segments, 3, 'html');
 			break;
 		case 'table':
 		case 'list':
-			$vars['view'] = JArrayHelper::getValue($segments, 0, '');
-			$vars['listid'] = JArrayHelper::getValue($segments, 1, 0);
+			$vars['view'] = FArrayHelper::getValue($segments, 0, '');
+			$vars['listid'] = FArrayHelper::getValue($segments, 1, 0);
 			break;
 		case 'import':
 			$vars['view'] = 'import';
-			$vars['listid'] = JArrayHelper::getValue($segments, 1, 0);
-			$vars['filetype'] = JArrayHelper::getValue($segments, 2, 0);
+			$vars['listid'] = FArrayHelper::getValue($segments, 1, 0);
+			$vars['filetype'] = FArrayHelper::getValue($segments, 2, 0);
 			break;
 		case 'visualization':
-			$vars['id'] = JArrayHelper::getValue($segments, 1, 0);
-			$vars['format'] = JArrayHelper::getValue($segments, 2, 'html');
+			$vars['id'] = FArrayHelper::getValue($segments, 1, 0);
+			$vars['format'] = FArrayHelper::getValue($segments, 2, 'html');
 			break;
 		default:
 			break;

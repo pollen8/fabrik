@@ -156,7 +156,7 @@ class PlgFabrik_ElementTags extends PlgFabrik_ElementDatabasejoin
 		{
 			$pk = $db->quoteName($join->table_join_alias . '.' . $join->table_key);
 			$name = $this->getFullName(true, false) . '_raw';
-			$tagIds = JArrayHelper::getValue($data, $name, array());
+			$tagIds = FArrayHelper::getValue($data, $name, array());
 			JArrayHelper::toInteger($tagIds);
 			$where = empty($tagIds) ? '6 = -6' : $pk . ' IN (' . implode(', ', $tagIds) . ')';
 		}

@@ -91,7 +91,7 @@ class FabrikAdminControllerConnections extends FabControllerAdmin
 		$cid = $input->get('cid', array(), 'array');
 		$data = array('setDefault' => 1, 'unsetDefault' => 0);
 		$task = $this->getTask();
-		$value = JArrayHelper::getValue($data, $task, 0, 'int');
+		$value = FArrayHelper::getValue($data, $task, 0, 'int');
 
 		if ($value == 0)
 		{

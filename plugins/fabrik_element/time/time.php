@@ -84,9 +84,9 @@ class PlgFabrik_ElementTime extends PlgFabrik_Element
 					$bits = $value;
 				}
 
-				$hour = JArrayHelper::getValue($bits, 0, '00');
-				$min = JArrayHelper::getValue($bits, 1, '00');
-				$sec = JArrayHelper::getValue($bits, 2, '00');
+				$hour = FArrayHelper::getValue($bits, 0, '00');
+				$min = FArrayHelper::getValue($bits, 1, '00');
+				$sec = FArrayHelper::getValue($bits, 2, '00');
 
 				// $$$ rob - all this below is nice but ... you still need to set a default
 				$detailvalue = '';
@@ -125,9 +125,9 @@ class PlgFabrik_ElementTime extends PlgFabrik_Element
 				$value = strstr($value, ',') ? (explode(',', $value)) : explode(':', $value);
 			}
 
-			$hourvalue = JArrayHelper::getValue($value, 0);
-			$minvalue = JArrayHelper::getValue($value, 1);
-			$secvalue = JArrayHelper::getValue($value, 2);
+			$hourvalue = FArrayHelper::getValue($value, 0);
+			$minvalue = FArrayHelper::getValue($value, 1);
+			$secvalue = FArrayHelper::getValue($value, 2);
 
 			$hours = array(JHTML::_('select.option', '', $params->get('time_hourlabel', FText::_('PLG_ELEMENT_TIME_SEPARATOR_HOUR'))));
 
@@ -208,9 +208,9 @@ class PlgFabrik_ElementTime extends PlgFabrik_Element
 	{
 		if (is_array($val) && implode($val) != '')
 		{
-			$h = JArrayHelper::getValue($val, 0, '00');
-			$m = JArrayHelper::getValue($val, 1, '00');
-			$s = JArrayHelper::getValue($val, 2, '00');
+			$h = FArrayHelper::getValue($val, 0, '00');
+			$m = FArrayHelper::getValue($val, 1, '00');
+			$s = FArrayHelper::getValue($val, 2, '00');
 
 			return $h . ':' . $m . ':' . $s;
 		}
@@ -368,9 +368,9 @@ class PlgFabrik_ElementTime extends PlgFabrik_Element
 			if ($d)
 			{
 				$bits = explode(':', $d);
-				$hour = JArrayHelper::getValue($bits, 0, '00');
-				$min = JArrayHelper::getValue($bits, 1, '00');
-				$sec = JArrayHelper::getValue($bits, 2, '00');
+				$hour = FArrayHelper::getValue($bits, 0, '00');
+				$min = FArrayHelper::getValue($bits, 1, '00');
+				$sec = FArrayHelper::getValue($bits, 2, '00');
 				$hms = $hour . $sep . $min . $sep . $sec;
 				$hm = $hour . $sep . $min;
 				$ms = $min . $sep . $sec;

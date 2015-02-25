@@ -482,7 +482,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 		// like on AJAX submissions?  Or maybe from getEmailData()?  Or both?
 		if (is_array($val))
 		{
-			$val = JArrayHelper::getValue($val, 'date', '');
+			$val = FArrayHelper::getValue($val, 'date', '');
 		}
 		else
 		{
@@ -581,7 +581,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 
 		if ($groupModel->isJoin() && is_array($val))
 		{
-			$val = JArrayHelper::getValue($val, 'date', '');
+			$val = FArrayHelper::getValue($val, 'date', '');
 		}
 		else
 		{
@@ -630,16 +630,16 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 
 		if (is_array($value))
 		{
-			$date = JArrayHelper::getValue($value, 'date');
+			$date = FArrayHelper::getValue($value, 'date');
 			$d = JFactory::getDate($date);
-			$time = JArrayHelper::getValue($value, 'time', '');
+			$time = FArrayHelper::getValue($value, 'time', '');
 
 			if ($time !== '')
 			{
 				$bits = explode(':', $time);
-				$h = JArrayHelper::getValue($bits, 0, 0);
-				$m = JArrayHelper::getValue($bits, 1, 0);
-				$s = JArrayHelper::getValue($bits, 2, 0);
+				$h = FArrayHelper::getValue($bits, 0, 0);
+				$m = FArrayHelper::getValue($bits, 1, 0);
+				$s = FArrayHelper::getValue($bits, 2, 0);
 				$d->setTime($h, $m, $s);
 			}
 
@@ -1041,7 +1041,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 		if (is_array($value))
 		{
 			// Submission posted as array but date & time in date key. Can be keyed to 0 if parent class casts string to array.
-			$value = JArrayHelper::getValue($value, 'date', JArrayHelper::getValue($value, 0));
+			$value = FArrayHelper::getValue($value, 'date', FArrayHelper::getValue($value, 0));
 		}
 
 		// in some corner cases, date will be db name quoted, like in CSV export after an advanced search!
@@ -1057,7 +1057,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 		// Element could be a date element (in which case no time stored) - check for both datetime and date null dates.
 		$nulldate = $db->getNullDate();
 		$shortNullDate = explode(' ', $nulldate);
-		$shortNullDate = JArrayHelper::getValue($shortNullDate, 0);
+		$shortNullDate = FArrayHelper::getValue($shortNullDate, 0);
 		$isNullDate = $nulldate == $value || $shortNullDate == $value;
 
 		if (!($formModel->isNewRecord() && $defaultToday) && $value == '')
@@ -1758,8 +1758,8 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 		 * This lets us do ranged query string and content plugin filters like ...
 		 * table___date[value][]=midnight%20yesterday&table___date[value][]=midnight%20today&table___date[condition]=BETWEEN
 		 */
-		$value[0] = FabrikWorker::specialStrToMySQL(JArrayHelper::getValue($value, 0));
-		$value[1] = FabrikWorker::specialStrToMySQL(JArrayHelper::getValue($value, 1));
+		$value[0] = FabrikWorker::specialStrToMySQL(FArrayHelper::getValue($value, 0));
+		$value[1] = FabrikWorker::specialStrToMySQL(FArrayHelper::getValue($value, 1));
 
 		// $$$ hugh - if the first date is later than the second, swap 'em round  to keep 'BETWEEN' in the query happy
 		if (strtotime($value[0]) > strtotime($value[1]))

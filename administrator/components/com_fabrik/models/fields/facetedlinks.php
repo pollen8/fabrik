@@ -54,8 +54,8 @@ class JFormFieldFacetedlinks extends JFormFieldList
 		$listOrder = json_decode($listParams->get('faceted_list_order'));
 		$form = $this->form;
 		$this->value = (array) $this->value;
-		$linkedLists = JArrayHelper::getValue($this->value, 'linkedlist', array());
-		$linkedForms = JArrayHelper::getValue($this->value, 'linkedform', array());
+		$linkedLists = FArrayHelper::getValue($this->value, 'linkedlist', array());
+		$linkedForms = FArrayHelper::getValue($this->value, 'linkedform', array());
 
 		if (empty($listOrder) || is_null($listOrder))
 		{
@@ -83,12 +83,12 @@ class JFormFieldFacetedlinks extends JFormFieldList
 			}
 		}
 
-		$listHeaders = JArrayHelper::getValue($this->value, 'linkedlistheader', array());
-		$formHeaders = JArrayHelper::getValue($this->value, 'linkedformheader', array());
-		$formLinkTypes = JArrayHelper::getValue($this->value, 'linkedform_linktype', array());
-		$listLinkTypes = JArrayHelper::getValue($this->value, 'linkedlist_linktype', array());
-		$listLinkTexts = JArrayHelper::getValue($this->value, 'linkedlisttext', array());
-		$formLinkTexts = JArrayHelper::getValue($this->value, 'linkedformtext', array());
+		$listHeaders = FArrayHelper::getValue($this->value, 'linkedlistheader', array());
+		$formHeaders = FArrayHelper::getValue($this->value, 'linkedformheader', array());
+		$formLinkTypes = FArrayHelper::getValue($this->value, 'linkedform_linktype', array());
+		$listLinkTypes = FArrayHelper::getValue($this->value, 'linkedlist_linktype', array());
+		$listLinkTexts = FArrayHelper::getValue($this->value, 'linkedlisttext', array());
+		$formLinkTexts = FArrayHelper::getValue($this->value, 'linkedformtext', array());
 
 		$this->linkedlists = array();
 		$f = 0;
@@ -138,7 +138,7 @@ class JFormFieldFacetedlinks extends JFormFieldList
 			$listreturn[] = '<td class="handle"></td>';
 			$listreturn[] = '<td>' . JHTML::_('tooltip', $hover, $label, 'tooltip.png', $label);
 
-			$yeschecked = JArrayHelper::getValue($linkedLists, $key, 0) != '0' ? 'checked="checked"' : '';
+			$yeschecked = FArrayHelper::getValue($linkedLists, $key, 0) != '0' ? 'checked="checked"' : '';
 			$nochecked = $yeschecked == '' ? 'checked="checked"' : '';
 
 			$listreturn[] = '<td>';
@@ -156,7 +156,7 @@ class JFormFieldFacetedlinks extends JFormFieldList
 			$listreturn[] = '<input type="text" name="' . $this->name . '[linkedlisttext][' . $key . ']" value="' . @$listLinkTexts[$key] . '" size="16" />';
 			$listreturn[] = '</td>';
 
-			$yeschecked = JArrayHelper::getValue($listLinkTypes, $key, 0) != '0' ? 'checked="checked"' : '';
+			$yeschecked = FArrayHelper::getValue($listLinkTypes, $key, 0) != '0' ? 'checked="checked"' : '';
 			$nochecked = $yeschecked == '' ? 'checked="checked"' : '';
 
 			$listreturn[] = '<td>';
@@ -181,7 +181,7 @@ class JFormFieldFacetedlinks extends JFormFieldList
 			$label = str_replace(array("\n", "\r", '<br>', '</br>'), '', $linkedList->listlabel);
 			$hover = FText::_('ELEMENT') . ': ' . $linkedList->element_label . ' [' . $linkedList->plugin . ']';
 
-			$yeschecked = JArrayHelper::getValue($linkedForms, $key, 0) != '0' ? 'checked="checked"' : '';
+			$yeschecked = FArrayHelper::getValue($linkedForms, $key, 0) != '0' ? 'checked="checked"' : '';
 			$nochecked = $yeschecked == '' ? 'checked="checked"' : '';
 
 			$formreturn[] = '<tr class="row' . ($f % 2) . '">';
@@ -202,7 +202,7 @@ class JFormFieldFacetedlinks extends JFormFieldList
 			$formreturn[] = '<input type="text" name="' . $this->name . '[linkedformtext][' . $key . ']" value="' . @$formLinkTexts[$key] . '" size="16" />';
 			$formreturn[] = '</td>';
 
-			$yeschecked = JArrayHelper::getValue($formLinkTypes, $key, 0) != '0' ? 'checked="checked"' : '';
+			$yeschecked = FArrayHelper::getValue($formLinkTypes, $key, 0) != '0' ? 'checked="checked"' : '';
 			$nochecked = $yeschecked == '' ? 'checked="checked"' : '';
 
 			$formreturn[] = '<td>';

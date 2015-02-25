@@ -74,7 +74,7 @@ class JFormFieldElement extends JFormFieldList
 		$include_calculations = (int) $this->element['include_calculations'];
 		$published = (int) $this->element['published'];
 		$showintable = (int) $this->element['showintable'];
-		$highlightpk = (bool) JArrayHelper::getValue($this->element, 'highlightpk', false);
+		$highlightpk = (bool) FArrayHelper::getValue($this->element, 'highlightpk', false);
 		$mode = (string) $this->element['mode'];
 
 		if ($include_calculations != 1)

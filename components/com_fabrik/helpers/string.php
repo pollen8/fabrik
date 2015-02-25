@@ -349,9 +349,9 @@ class FabrikString extends JString
 	{
 		$text = htmlspecialchars(strip_tags($text), ENT_QUOTES);
 		$orig = $text;
-		$wordCount = JArrayHelper::getValue($opts, 'wordcount', 10);
-		$showTip = JArrayHelper::getValue($opts, 'tip', true);
-		$title = JArrayHelper::getValue($opts, 'title', "");
+		$wordCount = FArrayHelper::getValue($opts, 'wordcount', 10);
+		$showTip = FArrayHelper::getValue($opts, 'tip', true);
+		$title = FArrayHelper::getValue($opts, 'title', "");
 		$text = explode(' ', $text);
 		$summary = array_slice($text, 0, $wordCount);
 
@@ -374,7 +374,7 @@ class FabrikString extends JString
 			$tip = htmlspecialchars('<div class="truncate_text">' . $title . $orig . '</div>');
 			$jOpts = new stdClass;
 			$jOpts->notice = true;
-			$jOpts->position = JArrayHelper::getValue($opts, 'position', 'top');
+			$jOpts->position = FArrayHelper::getValue($opts, 'position', 'top');
 			$jOpts = json_encode($jOpts);
 			$summary = '<span class="fabrikTip" opts=\'' . $jOpts . '\' title="' . $tip . '">' . $summary . '</span>';
 		}
@@ -398,12 +398,12 @@ class FabrikString extends JString
 		if (count($pair) === 2)
 		{
 			$url = $pair[0];
-			$bits = JArrayHelper::getValue($pair, 1);
+			$bits = FArrayHelper::getValue($pair, 1);
 		}
 		else
 		{
 			$url = '';
-			$bits = JArrayHelper::getValue($pair, 0);
+			$bits = FArrayHelper::getValue($pair, 0);
 		}
 
 		$glue = strstr($bits, '&amp;') ? '&amp;' : '&';
@@ -452,8 +452,8 @@ class FabrikString extends JString
 				foreach (explode('&', $qs) as $arg)
 				{
 					$bits = explode('=', $arg);
-					$key = JArrayHelper::getValue($bits, 0, '');
-					$val = JArrayHelper::getValue($bits, 1, '');
+					$key = FArrayHelper::getValue($bits, 0, '');
+					$val = FArrayHelper::getValue($bits, 1, '');
 					$new_qs[] = $key . "=" . urlencode($val);
 				}
 

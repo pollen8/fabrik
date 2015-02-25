@@ -81,11 +81,11 @@ class PlgFabrik_ValidationruleAreUniqueValues extends PlgFabrik_Validationrule
 		{
 			// $$$ the array thing needs fixing, for now just grab 0
 			$formdata = $elementModel->getForm()->formData;
-			$v = JArrayHelper::getValue($formdata, $otherFullName . '_raw', JArrayHelper::getValue($formdata, $otherFullName, ''));
+			$v = FArrayHelper::getValue($formdata, $otherFullName . '_raw', FArrayHelper::getValue($formdata, $otherFullName, ''));
 
 			if (is_array($v))
 			{
-				$v = JArrayHelper::getValue($v, 0, '');
+				$v = FArrayHelper::getValue($v, 0, '');
 			}
 
 			$query->where($db->quoteName($otherfield) . ' = ' . $db->quote($v));

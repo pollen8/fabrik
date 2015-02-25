@@ -65,12 +65,12 @@ class PlgFabrik_ElementUsergroup extends PlgFabrik_ElementList
 		if ($userEl)
 		{
 			$data = $formModel->getData();
-			$userid = JArrayHelper::getValue($data, $userEl->getFullName(true, false) . '_raw', 0);
+			$userid = FArrayHelper::getValue($data, $userEl->getFullName(true, false) . '_raw', 0);
 
 			// Failed validation
 			if (is_array($userid))
 			{
-				$userid = JArrayHelper::getValue($userid, 0);
+				$userid = FArrayHelper::getValue($userid, 0);
 			}
 
 			$thisUser = !empty($userid) ? JFactory::getUser($userid) : false;

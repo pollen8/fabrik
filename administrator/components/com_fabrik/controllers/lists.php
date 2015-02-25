@@ -69,7 +69,7 @@ class FabrikAdminControllerLists extends FabControllerAdmin
 		$cid = $input->get('cid', array(), 'array');
 		$data = array('publish' => 1, 'unpublish' => 0, 'archive' => 2, 'trash' => -2, 'report' => -3);
 		$task = $this->getTask();
-		$value = JArrayHelper::getValue($data, $task, 0, 'int');
+		$value = FArrayHelper::getValue($data, $task, 0, 'int');
 
 		if (empty($cid))
 		{
