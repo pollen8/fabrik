@@ -969,7 +969,8 @@ if (!$j3)
 
 			if (!self::inAjaxLoadedPage())
 			{
-				$document->addScript($jsAssetBaseURI . 'media/com_fabrik/js/lib/require/require.js');
+				// Now adding in fabrik system plugin onAfterRender()
+				// $document->addScript($jsAssetBaseURI . 'media/com_fabrik/js/lib/require/require.js');
 				JText::script('COM_FABRIK_LOADING');
 				$src[] = 'media/com_fabrik/js/fabrik' . $ext;
 				$src[] = 'media/com_fabrik/js/window' . $ext;
