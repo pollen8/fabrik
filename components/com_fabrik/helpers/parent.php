@@ -84,7 +84,35 @@ class FabrikWorker
 	 * @var  array
 	 */
 	static protected $doc_mime_types = array('pdf' => 'application/pdf', 'epub' => 'document/x-epub');
+	
+	/**
+	 * Valid view types, for sanity checking inputs, used by isViewType()
+	 */
+	static protected $viewTypes = array(
+		'article',
+		'cron',
+		'csv',
+		'details',
+		'element',
+		'form',
+		'list',
+		'package',
+		'visualization'
+	);
 
+	/**
+	 * Returns true if $view is a valid view type
+	 *
+	 * @param   string  $view  View type
+	 *
+	 * @return	bool
+	 */
+	
+	public static function isViewType($view)
+	{
+		return in_array($view, self::$viewTypes);
+	}
+	
 	/**
 	 * Returns true if $file has an image extension type
 	 *
