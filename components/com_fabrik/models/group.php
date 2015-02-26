@@ -1456,7 +1456,15 @@ class FabrikFEModelGroup extends FabModel
 		 * allows us to respect and prefilter that was applied to the list's data.
 		 */
 		$groupid = $this->getId();
-		$origGroupRowsIds = $input->get('fabrik_group_rowids', array(), 'array');
+		
+		/**
+		 * $$$ hugh - nooooo, on AJAX submit, request array hasn't been urldecoded, but formData has.
+		 * So in the request it's still hex-ified JSON.  Leaving this line and comment in here as a
+		 * reminder to self we may have other places this happens.
+		 * $origGroupRowsIds = $input->get('fabrik_group_rowids', array(), 'array');
+		 */
+		
+		$origGroupRowsIds = FArrayHelper::getValue($formModel->formData, 'fabrik_group_rowids', array());
 		$origGroupRowsIds = FArrayHelper::getValue($origGroupRowsIds, $groupid, array());
 		$origGroupRowsIds = json_decode($origGroupRowsIds);
 
