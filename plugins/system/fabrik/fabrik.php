@@ -223,14 +223,16 @@ class PlgSystemFabrik extends JPlugin
 
 		$script = self::js();
 
-		// Test inserting require.js as last
-		$jsAssetBaseURI = FabrikHelperHTML::getJSAssetBaseURI();
 		$content = JFactory::getApplication()->getBody();
 
-		$rjs = $jsAssetBaseURI . 'media/com_fabrik/js/lib/require/require.js';
-		$rjs = '<script src="' . $rjs . '" type="text/javascript"></script>';
-
-		$content = FabrikString::replaceLast('</head>', $rjs . "\n" . '</head>', $content);
+		// Test inserting require.js as last
+		if (!FabrikHelperHTML::inAjaxLoadedPage())
+		{
+			$jsAssetBaseURI = FabrikHelperHTML::getJSAssetBaseURI();
+			$rjs = $jsAssetBaseURI . 'media/com_fabrik/js/lib/require/require.js';
+			$rjs = '<script src="' . $rjs . '" type="text/javascript"></script>';
+			$content = FabrikString::replaceLast('</head>', $rjs . "\n" . '</head>', $content);
+		}
 		// End test insert
 
 		if (!stristr($content, '</body>'))
