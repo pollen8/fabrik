@@ -88,8 +88,8 @@ class PlgFabrik_ElementDropdown extends PlgFabrik_ElementList
 				$optgroup = true;
 			}
 
-			$tmpLabel = JArrayHelper::getValue($labels, $i);
-			$disable = JArrayHelper::getValue($endis, $i);
+			$tmpLabel = FArrayHelper::getValue($labels, $i);
+			$disable = FArrayHelper::getValue($endis, $i);
 				
 			// For values like '1"'
 			$tmpval = htmlspecialchars($tmpval, ENT_QUOTES);

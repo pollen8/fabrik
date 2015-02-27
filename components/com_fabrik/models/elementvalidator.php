@@ -74,11 +74,11 @@ class FabrikFEModelElementValidator extends JModelLegacy
 		$element = $this->elementModel->getElement();
 		$params = $this->elementModel->getParams();
 		$validations = (array) $params->get('validations', 'array');
-		$usedPlugins = (array) JArrayHelper::getValue($validations, 'plugin', array());
-		$published = JArrayHelper::getValue($validations, 'plugin_published', array());
-		$showIcon = JArrayHelper::getValue($validations, 'show_icon', array());
-		$validateIn = JArrayHelper::getValue($validations, 'validate_in', array());
-		$validationOn = JArrayHelper::getValue($validations, 'validation_on', array());
+		$usedPlugins = (array) FArrayHelper::getValue($validations, 'plugin', array());
+		$published = FArrayHelper::getValue($validations, 'plugin_published', array());
+		$showIcon = FArrayHelper::getValue($validations, 'show_icon', array());
+		$validateIn = FArrayHelper::getValue($validations, 'validate_in', array());
+		$validationOn = FArrayHelper::getValue($validations, 'validation_on', array());
 
 		$pluginManager = FabrikWorker::getPluginManager();
 		$pluginManager->getPlugInGroup('validationrule');
@@ -92,7 +92,7 @@ class FabrikFEModelElementValidator extends JModelLegacy
 		{
 			if ($usedPlugin !== '')
 			{
-				$isPublished = JArrayHelper::getValue($published, $i, true);
+				$isPublished = FArrayHelper::getValue($published, $i, true);
 
 				if ($isPublished)
 				{
@@ -108,9 +108,9 @@ class FabrikFEModelElementValidator extends JModelLegacy
 					// Set params relative to plugin render order
 					$plugIn->setParams($params, $i);
 
-					$plugIn->getParams()->set('show_icon', JArrayHelper::getValue($showIcon, $i, true));
-					$plugIn->getParams()->set('validate_in', JArrayHelper::getValue($validateIn, $i, 'both'));
-					$plugIn->getParams()->set('validation_on', JArrayHelper::getValue($validationOn, $i, 'both'));
+					$plugIn->getParams()->set('show_icon', FArrayHelper::getValue($showIcon, $i, true));
+					$plugIn->getParams()->set('validate_in', FArrayHelper::getValue($validateIn, $i, 'both'));
+					$plugIn->getParams()->set('validation_on', FArrayHelper::getValue($validationOn, $i, 'both'));
 
 					$c++;
 				}

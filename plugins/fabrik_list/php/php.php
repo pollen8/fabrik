@@ -43,7 +43,7 @@ class PlgFabrik_ListPhp extends plgFabrik_List
 
 		if (!empty($args))
 		{
-			$heading = JArrayHelper::getValue($args[0], 'heading');
+			$heading = FArrayHelper::getValue($args[0], 'heading');
 		}
 
 		if ($heading)

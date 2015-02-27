@@ -151,9 +151,9 @@ abstract class FabrikWebService
 				$to = $map['to'];
 				$map['from'] = $w->parseMessageForPlaceHolder($map['from'], $data, false);
 
-				if (JArrayHelper::getValue($map, 'match', '') !== '')
+				if (FArrayHelper::getValue($map, 'match', '') !== '')
 				{
-					if (JArrayHelper::getValue($map, 'eval') == 1)
+					if (FArrayHelper::getValue($map, 'eval') == 1)
 					{
 						$res = eval($map['match']);
 

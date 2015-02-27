@@ -42,7 +42,7 @@ class PlgFabrik_ElementTextarea extends PlgFabrik_Element
 		$params = $this->getParams();
 		$listModel = $this->getlistModel();
 		$filters = $listModel->getFilterArray();
-		$fkeys = JArrayHelper::getValue($filters, 'key', array());
+		$fkeys = FArrayHelper::getValue($filters, 'key', array());
 		$data = explode(",", strip_tags($data));
 		$tags = array();
 		$url = $params->get('textarea_tagifyurl');
@@ -51,8 +51,8 @@ class PlgFabrik_ElementTextarea extends PlgFabrik_Element
 		{
 			$url = $_SERVER['REQUEST_URI'];
 			$bits = explode('?', $url);
-			$root = JArrayHelper::getValue($bits, 0, '', 'string');
-			$bits = JArrayHelper::getValue($bits, 1, '', 'string');
+			$root = FArrayHelper::getValue($bits, 0, '', 'string');
+			$bits = FArrayHelper::getValue($bits, 1, '', 'string');
 			$bits = explode("&", $bits);
 			$fullName = $this->getFullName(true, false);
 

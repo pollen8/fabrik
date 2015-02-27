@@ -309,4 +309,29 @@ class PlgFabrik_ElementDigsig extends PlgFabrik_Element
 		// $$$ hugh - added this, and some logic in the view, so we will get called on a per-element basis
 		return false;
 	}
+	
+	/**
+	 * Does the element consider the data to be empty
+	 * Used in isempty validation rule
+	 *
+	 * @param   array  $data           data to test against
+	 * @param   int    $repeatCounter  repeat group #
+	 *
+	 * @return  bool
+	 */
+	
+	public function dataConsideredEmpty($data, $repeatCounter)
+	{
+		$data = (array) $data;
+	
+		foreach ($data as $d)
+		{
+			if ($d != '' && $d != '[]' && $d != '[""]')
+			{
+				return false;
+			}
+		}
+	
+		return true;
+	}
 }

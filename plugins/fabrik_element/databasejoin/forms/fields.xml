@@ -115,12 +115,19 @@
 					<option value="3">PLG_ELEMENT_DBJOIN_BOTH</option>
 			</field>
 
+<!--			
 			<field name="database_join_join_sql"
 				type="fabrikeditor"
 				mode="mysql"
 				description="PLG_ELEMENT_DBJOIN_JOIN_STATEMENT_DESC"
 				label="PLG_ELEMENT_DBJOIN_JOIN_STATEMENT_LABEL" />
-				
+-->
+			<field name="database_join_filter_where_sql"
+				type="fabrikeditor"
+				mode="mysql"
+				description="PLG_ELEMENT_DBJOIN_FILTER_WHERE_SQL_DESC"
+				label="PLG_ELEMENT_DBJOIN_FILTER_WHERE_SQL_LABEL" />
+		
 		</fieldset>
 		
 		<fieldset label="COM_FABRIK_PLEASE_SELECT" name="plg-databasejoin-xtra">

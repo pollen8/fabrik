@@ -134,7 +134,7 @@ class PlgFabrik_ElementFblike extends PlgFabrik_Element
 				if (is_object($el))
 				{
 					$name = $el->getFullName(true, false);
-					$v = JArrayHelper::getValue($data, $name);
+					$v = FArrayHelper::getValue($data, $name);
 
 					if ($k == 'og:image')
 					{
@@ -153,7 +153,7 @@ class PlgFabrik_ElementFblike extends PlgFabrik_Element
 
 		if ($locEl != '')
 		{
-			$loc = JArrayHelper::getValue($data, $locEl->getFullName(true, false));
+			$loc = FArrayHelper::getValue($data, $locEl->getFullName(true, false));
 			$loc = array_shift(explode(':', $loc));
 			$loc = explode(",", $loc);
 

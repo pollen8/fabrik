@@ -201,13 +201,13 @@ class FabrikAdminModelElements extends FabModelList
 			// Add a tip containing the access level information
 			$params = new JRegistry($item->params);
 
-			$addAccessTitle = JArrayHelper::getValue($viewLevels, $item->access);
+			$addAccessTitle = FArrayHelper::getValue($viewLevels, $item->access);
 			$addAccessTitle = is_object($addAccessTitle) ? $addAccessTitle->title : 'n/a';
 
-			$editAccessTitle = JArrayHelper::getValue($viewLevels, $params->get('edit_access', 1));
+			$editAccessTitle = FArrayHelper::getValue($viewLevels, $params->get('edit_access', 1));
 			$editAccessTitle = is_object($editAccessTitle) ? $editAccessTitle->title : 'n/a';
 
-			$viewAccessTitle = JArrayHelper::getValue($viewLevels, $params->get('view_access', 1));
+			$viewAccessTitle = FArrayHelper::getValue($viewLevels, $params->get('view_access', 1));
 			$viewAccessTitle = is_object($viewAccessTitle) ? $viewAccessTitle->title : 'n/a';
 
 			$item->tip = FText::_('COM_FABRIK_ACCESS_EDITABLE_ELEMENT') . ': ' . $addAccessTitle
@@ -248,7 +248,7 @@ class FabrikAdminModelElements extends FabModelList
 					}
 
 					$v[] = '&nbsp;&nbsp;<strong>' . $pname . ': <em>' . $published . '</em></strong>'
-						. '<br />&nbsp;&nbsp;&nbsp;&nbsp;' . FText::_('COM_FABRIK_FIELD_ERROR_MSG_LABEL') . ': <em>' . htmlspecialchars(JArrayHelper::getValue($msgs, $i, 'n/a')) . '</em>';
+						. '<br />&nbsp;&nbsp;&nbsp;&nbsp;' . FText::_('COM_FABRIK_FIELD_ERROR_MSG_LABEL') . ': <em>' . htmlspecialchars(FArrayHelper::getValue($msgs, $i, 'n/a')) . '</em>';
 				}
 			}
 

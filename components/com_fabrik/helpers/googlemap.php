@@ -54,8 +54,8 @@ class FabGoogleMapHelper
 
 		for ($i = 0; $i < count($features); $i ++)
 		{
-			$feature = JArrayHelper::getValue($features, $i);
-			$element = JArrayHelper::getValue($elements, $i);
+			$feature = FArrayHelper::getValue($features, $i);
+			$element = FArrayHelper::getValue($elements, $i);
 			$key = $feature . '|' . $element;
 
 			if (!array_key_exists($key, $stylers))
@@ -64,8 +64,8 @@ class FabGoogleMapHelper
 			}
 
 			$aStyle = new stdClass;
-			$styleKey = JArrayHelper::getValue($styleKeys, $i);
-			$styleValue = JArrayHelper::getValue($styleValues, $i);
+			$styleKey = FArrayHelper::getValue($styleKeys, $i);
+			$styleValue = FArrayHelper::getValue($styleValues, $i);
 
 			if ($styleKey && $styleValue)
 			{

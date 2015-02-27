@@ -72,11 +72,11 @@ class PlgFabrik_ListWebservice extends PlgFabrik_List
 
 	public function button(&$args)
 	{
-		$opts = JArrayHelper::getValue($args, 0, array());
+		$opts = FArrayHelper::getValue($args, 0, array());
 		$model = $this->getModel();
 		$this->buttonAction = $model->actionMethod();
 		$this->context = $model->getRenderContext();
-		$heading = (bool) JArrayHelper::getValue($opts, 'heading', false);
+		$heading = (bool) FArrayHelper::getValue($opts, 'heading', false);
 
 		return $heading;
 	}

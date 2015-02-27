@@ -86,7 +86,7 @@ class FabrikHelperElement
 		$listid = $listModel->getId();
 		$key = 'com_fabrik.list' . $listid . '_com_fabrik_' . $listid . '.filter';
 		$filters = JArrayHelper::fromObject($app->getUserState($key));
-		$elementIds = (array) JArrayHelper::getValue($filters, 'elementid', array());
+		$elementIds = (array) FArrayHelper::getValue($filters, 'elementid', array());
 		$index = array_search($elementId, $elementIds);
 		$value = $filters['value'][$index];
 

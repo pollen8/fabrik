@@ -247,7 +247,7 @@ class PlgFabrik_ListRadius_Lookup extends PlgFabrik_List
 		$params = $this->getParams();
 		$model = $this->getModel();
 		$elements = $model->getElements('id');
-		$this->mapElement = JArrayHelper::getValue($elements, $params->get('radius_lookup_mapelement'), false);
+		$this->mapElement = FArrayHelper::getValue($elements, $params->get('radius_lookup_mapelement'), false);
 
 		return $this->mapElement;
 	}
@@ -298,7 +298,7 @@ class PlgFabrik_ListRadius_Lookup extends PlgFabrik_List
 		$params = $this->getParams();
 		list($latitude, $longitude) = $this->getSearchLatLon();
 		$opts = $this->getElementJSOptions();
-		$containerOverride = JArrayHelper::getValue($args, 0, '');
+		$containerOverride = FArrayHelper::getValue($args, 0, '');
 
 		if (strstr($containerOverride, 'visualization'))
 		{

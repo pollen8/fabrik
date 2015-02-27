@@ -436,13 +436,13 @@ class FabrikAdminModelList extends FabModelAdmin
 
 		for ($i = 0; $i < count($afilterFields); $i++)
 		{
-			$selJoin = JArrayHelper::getValue($afilterJoins, $i, 'and');
+			$selJoin = FArrayHelper::getValue($afilterJoins, $i, 'and');
 
 			// 2.0 upgraded sites had quoted filter names
 			$selFilter = str_replace('`', '', $afilterFields[$i]);
-			$grouped = JArrayHelper::getValue($aGrouped, $i, 0);
+			$grouped = FArrayHelper::getValue($aGrouped, $i, 0);
 			$selCondition = $afilterConditions[$i];
-			$filerEval = (int) JArrayHelper::getValue($afilterEval, $i, '1');
+			$filerEval = (int) FArrayHelper::getValue($afilterEval, $i, '1');
 
 			if ($selCondition == '&gt;')
 			{
@@ -454,7 +454,7 @@ class FabrikAdminModelList extends FabModelAdmin
 				$selCondition = '<';
 			}
 
-			$selValue = JArrayHelper::getValue($afilterValues, $i, '');
+			$selValue = FArrayHelper::getValue($afilterValues, $i, '');
 			$selAccess = $afilterAccess[$i];
 
 			// Alow for multiline js variables ?
@@ -601,7 +601,7 @@ class FabrikAdminModelList extends FabModelAdmin
 			return false;
 		}
 
-		if (empty($data['_database_name']) && JArrayHelper::getValue($data, 'db_table_name') == '')
+		if (empty($data['_database_name']) && FArrayHelper::getValue($data, 'db_table_name') == '')
 		{
 			$this->setError(FText::_('COM_FABRIK_SELECT_DB_OR_ENTER_NAME'));
 
@@ -632,7 +632,7 @@ class FabrikAdminModelList extends FabModelAdmin
 		$date = JFactory::getDate();
 		$row = $this->getTable();
 
-		$id = JArrayHelper::getValue($data, 'id');
+		$id = FArrayHelper::getValue($data, 'id');
 		$row->load($id);
 
 		$params = new JRegistry($row->params);
@@ -683,7 +683,7 @@ class FabrikAdminModelList extends FabModelAdmin
 			$row->store();
 
 			$isNew = false;
-			$newtable = trim(JArrayHelper::getValue($data, '_database_name'));
+			$newtable = trim(FArrayHelper::getValue($data, '_database_name'));
 
 			// Mysql will force db table names to lower case even if you set the db name to upper case - so use clean()
 			$newtable = FabrikString::clean($newtable);
@@ -746,7 +746,7 @@ class FabrikAdminModelList extends FabModelAdmin
 		FabrikAdminHelper::prepareSaveDate($row->publish_down);
 		FabrikAdminHelper::prepareSaveDate($row->created);
 		FabrikAdminHelper::prepareSaveDate($row->publish_up);
-		$pk = JArrayHelper::getValue($data, 'db_primary_key');
+		$pk = FArrayHelper::getValue($data, 'db_primary_key');
 
 		if ($pk == '')
 		{
@@ -941,14 +941,14 @@ class FabrikAdminModelList extends FabModelAdmin
 		$params = $data['params'];
 		$aOldJoinsToKeep = array();
 		$joinModel = JModelLegacy::getInstance('Join', 'FabrikFEModel');
-		$joinIds = JArrayHelper::getValue($params, 'join_id', array());
-		$joinTypes = JArrayHelper::getValue($params, 'join_type', array());
-		$joinTableFrom = JArrayHelper::getValue($params, 'join_from_table', array());
-		$joinTable = JArrayHelper::getValue($params, 'table_join', array());
-		$tableKey = JArrayHelper::getValue($params, 'table_key', array());
-		$joinTableKey = JArrayHelper::getValue($params, 'table_join_key', array());
-		$groupIds = JArrayHelper::getValue($params, 'group_id', array());
-		$repeats = JArrayHelper::getValue($params, 'join_repeat', array());
+		$joinIds = FArrayHelper::getValue($params, 'join_id', array());
+		$joinTypes = FArrayHelper::getValue($params, 'join_type', array());
+		$joinTableFrom = FArrayHelper::getValue($params, 'join_from_table', array());
+		$joinTable = FArrayHelper::getValue($params, 'table_join', array());
+		$tableKey = FArrayHelper::getValue($params, 'table_key', array());
+		$joinTableKey = FArrayHelper::getValue($params, 'table_join_key', array());
+		$groupIds = FArrayHelper::getValue($params, 'group_id', array());
+		$repeats = FArrayHelper::getValue($params, 'join_repeat', array());
 		$jc = count($joinTypes);
 
 		// Test for repeat elements to eusure their join isnt removed from here
@@ -1069,7 +1069,7 @@ class FabrikAdminModelList extends FabModelAdmin
 		$groupData['label'] = $joinTable;
 		$groupId = $this->createLinkedGroup($groupData, true, $isRepeat);
 
-		$origTable = JArrayHelper::getValue($input->get('jform', array(), 'array'), 'db_table_name');
+		$origTable = FArrayHelper::getValue($input->get('jform', array(), 'array'), 'db_table_name');
 		$join = $this->getTable('Join');
 		$join->id = null;
 		$join->list_id = $this->getState('list.id');
@@ -1098,7 +1098,7 @@ class FabrikAdminModelList extends FabModelAdmin
 		if ($pk !== false)
 		{
 			// If it didn't return false, getPrimaryKeyAndExtra will have created and array with at least one key
-			$pk_col = JArrayHelper::getValue($pk[0], 'colname', '');
+			$pk_col = FArrayHelper::getValue($pk[0], 'colname', '');
 
 			if (!empty($pk_col))
 			{
@@ -1138,7 +1138,7 @@ class FabrikAdminModelList extends FabModelAdmin
 		if ($tableName === '')
 		{
 			$jform = $input->get('jform', array(), 'array');
-			$tableName = JArrayHelper::getValue($jform, 'db_table_name');
+			$tableName = FArrayHelper::getValue($jform, 'db_table_name');
 		}
 
 		$formModel = $this->getFormModel();
@@ -1253,7 +1253,7 @@ class FabrikAdminModelList extends FabModelAdmin
 
 			if (preg_match("/\((.*)\)/i", $type, $matches))
 			{
-				$maxLength = JArrayHelper::getValue($matches, 1, 255);
+				$maxLength = FArrayHelper::getValue($matches, 1, 255);
 				$maxLength = explode(',', $maxLength);
 
 				if (count($maxLength) > 1)
@@ -1270,7 +1270,7 @@ class FabrikAdminModelList extends FabModelAdmin
 
 			// Get the basic type
 			$type = explode(" ", $type);
-			$type = JArrayHelper::getValue($type, 0, '');
+			$type = FArrayHelper::getValue($type, 0, '');
 			$type = preg_replace("/\((.*)\)/i", '', $type);
 			$element = FabTable::getInstance('Element', 'FabrikTable');
 
@@ -1376,7 +1376,7 @@ class FabrikAdminModelList extends FabModelAdmin
 			}
 
 			$element->params = json_encode($p);
-			$element->label = JArrayHelper::getValue($elementLabels, $ordering, str_replace("_", " ", $label));
+			$element->label = FArrayHelper::getValue($elementLabels, $ordering, str_replace("_", " ", $label));
 
 			$element->store();
 			$elementModel = $pluginManager->getPlugIn($element->plugin, 'element');
@@ -2521,7 +2521,7 @@ class FabrikAdminModelList extends FabModelAdmin
 
 		// $$$ hugh - looks like this is now an array in jform
 		$jform = $input->get('jform', array(), 'array');
-		$arGroups = JArrayHelper::getValue($jform, 'current_groups', array(), 'array');
+		$arGroups = FArrayHelper::getValue($jform, 'current_groups', array(), 'array');
 
 		if (empty($arGroups))
 		{

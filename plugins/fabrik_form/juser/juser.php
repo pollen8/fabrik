@@ -111,7 +111,7 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 		$elementModel = FabrikWorker::getPluginManager()->getElementPlugin($params->get($pname));
 		$name = $elementModel->getFullName(true, false);
 
-		return JArrayHelper::getValue($data, $name, $default);
+		return FArrayHelper::getValue($data, $name, $default);
 	}
 
 	/**
@@ -200,14 +200,14 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 			if ($params->get('juser_sync_on_edit', 0) == 1)
 			{
 				$this->useridfield = $this->getFieldName('juser_field_userid');
-				$userid = (int) JArrayHelper::getValue($formModel->data, $this->useridfield . '_raw');
+				$userid = (int) FArrayHelper::getValue($formModel->data, $this->useridfield . '_raw');
 				/**
 				 * $$$ hugh - after a validation failure, userid _raw is an array.
 				 * Trying to work out why, and fix that, but need a bandaid for now.
 				 */
 				if (is_array($userid))
 				{
-					$userid = (int) JArrayHelper::getValue($userid, 0, 0);
+					$userid = (int) FArrayHelper::getValue($userid, 0, 0);
 				}
 
 				if ($userid > 0)
@@ -390,7 +390,7 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 					// $$$ hugh - if it's a user element, it'll be an array
 					if (is_array($original_id))
 					{
-						$original_id = JArrayHelper::getValue($original_id, 0, 0);
+						$original_id = FArrayHelper::getValue($original_id, 0, 0);
 					}
 				}
 			// }
@@ -437,7 +437,7 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 		if ($params->get('juser_field_block') != '')
 		{
 			$this->blockfield = $this->getFieldName('juser_field_block');
-			$blocked = JArrayHelper::getValue($formModel->formData, $this->blockfield, '');
+			$blocked = FArrayHelper::getValue($formModel->formData, $this->blockfield, '');
 
 			if (is_array($blocked))
 			{

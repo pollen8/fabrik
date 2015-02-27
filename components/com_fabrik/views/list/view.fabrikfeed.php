@@ -297,7 +297,7 @@ class FabrikViewList extends FabrikViewListBase
 				}
 
 
-				if (JArrayHelper::getValue($dbcolname, 'label') != '')
+				if (FArrayHelper::getValue($dbcolname, 'label') != '')
 				{
 					$str = $tstart . $str . "</table>";
 				}

@@ -29,7 +29,7 @@ if ($this->showPDF): ?>
 if ($this->showPrint): ?>
 	<a class="btn" data-fabrik-print href="<?php echo $this->printURL?>">
 		<i class="icon-print"></i>
-		<?php echo FText::_('JGLOBAL_PRINT')?>
+		<?php echo FText::_('COM_FABRIK_PRINT')?>
 	</a>
 <?php
 endif;

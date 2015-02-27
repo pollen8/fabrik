@@ -105,7 +105,7 @@ class PlgFabrik_ElementLink extends PlgFabrik_Element
 		{
 			if (count($data) == 1)
 			{
-				$data['label'] = JArrayHelper::getValue($data, 'link');
+				$data['label'] = FArrayHelper::getValue($data, 'link');
 			}
 
 			$href = trim($data['link']);
@@ -225,15 +225,15 @@ class PlgFabrik_ElementLink extends PlgFabrik_Element
 			$value = array('label' => '', 'link' => '');
 		}
 
-		if (FabrikWorker::getMenuOrRequestVar('rowid') == 0 && JArrayHelper::getValue($value, 'link', '') === '')
+		if (FabrikWorker::getMenuOrRequestVar('rowid') == 0 && FArrayHelper::getValue($value, 'link', '') === '')
 		{
 			$value['link'] = $params->get('link_default_url');
 		}
 
 		if (!$this->isEditable())
 		{
-			$lbl = trim(JArrayHelper::getValue($value, 'label'));
-			$href = trim(JArrayHelper::getValue($value, 'link'));
+			$lbl = trim(FArrayHelper::getValue($value, 'label'));
+			$href = trim(FArrayHelper::getValue($value, 'link'));
 			$w = new FabrikWorker;
 			$href = is_array($data) ? $w->parseMessageForPlaceHolder($href, $data) : $w->parseMessageForPlaceHolder($href);
 
@@ -264,7 +264,7 @@ class PlgFabrik_ElementLink extends PlgFabrik_Element
 		$html[] = $this->buildInput('input', $bits);
 		$bits['placeholder'] = FText::_('PLG_ELEMENT_LINK_URL');
 		$bits['name'] = $linkname;
-		$bits['value'] = JArrayHelper::getValue($value, 'link');
+		$bits['value'] = FArrayHelper::getValue($value, 'link');
 		if (is_a($bits['value'], 'stdClass'))
 		{
 			$bits['value'] = $bits['value']->{0};
@@ -290,8 +290,8 @@ class PlgFabrik_ElementLink extends PlgFabrik_Element
 		if (is_string($value))
 		{
 			$value = FabrikWorker::JSONtoData($value, true);
-			$value['label'] = JArrayHelper::getValue($value, 0);
-			$value['link'] = JArrayHelper::getValue($value, 1);
+			$value['label'] = FArrayHelper::getValue($value, 0);
+			$value['link'] = FArrayHelper::getValue($value, 1);
 		}
 
 		if (is_array($value))
@@ -433,13 +433,13 @@ class PlgFabrik_ElementLink extends PlgFabrik_Element
 				$values[$name]['data']['link'] = array();
 			}
 
-			$values[$name]['data']['label'][$c] = JArrayHelper::getValue($data, 'label');
-			$values[$name]['data']['link'][$c] = JArrayHelper::getValue($data, 'link');
+			$values[$name]['data']['label'][$c] = FArrayHelper::getValue($data, 'label');
+			$values[$name]['data']['link'][$c] = FArrayHelper::getValue($data, 'link');
 		}
 		else
 		{
-			$values[$name]['data']['label'] = JArrayHelper::getValue($data, 'label');
-			$values[$name]['data']['link'] = JArrayHelper::getValue($data, 'link');
+			$values[$name]['data']['label'] = FArrayHelper::getValue($data, 'label');
+			$values[$name]['data']['link'] = FArrayHelper::getValue($data, 'link');
 		}
 	}
 
@@ -502,7 +502,7 @@ class PlgFabrik_ElementLink extends PlgFabrik_Element
 				$d = strip_tags($d);
 			}
 
-			$link = JArrayHelper::getValue($data, 'link', '');
+			$link = FArrayHelper::getValue($data, 'link', '');
 
 			return $link === '' || $link === 'http://';
 		}

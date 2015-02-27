@@ -136,7 +136,7 @@ class FabrikAdminControllerForm extends JControllerForm
 			{
 				if ($this->isMambot)
 				{
-					$input->post->set('fabrik_referrer', JArrayHelper::getValue($_SERVER, 'HTTP_REFERER', ''));
+					$input->post->set('fabrik_referrer', FArrayHelper::getValue($_SERVER, 'HTTP_REFERER', ''));
 
 					/**
 					 * $$$ hugh - testing way of preserving form values after validation fails with form plugin

@@ -39,10 +39,10 @@ class Itagg extends JObject
 
 	public function process($message, $opts)
 	{
-		$username = JArrayHelper::getValue($opts, 'sms-username');
-		$password = JArrayHelper::getValue($opts, 'sms-password');
-		$smsfrom = JArrayHelper::getValue($opts, 'sms-from');
-		$smsto = JArrayHelper::getValue($opts, 'sms-to');
+		$username = FArrayHelper::getValue($opts, 'sms-username');
+		$password = FArrayHelper::getValue($opts, 'sms-password');
+		$smsfrom = FArrayHelper::getValue($opts, 'sms-from');
+		$smsto = FArrayHelper::getValue($opts, 'sms-to');
 		$smstos = explode(",", $smsto);
 		$message = urlencode($message);
 

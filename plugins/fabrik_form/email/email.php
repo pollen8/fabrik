@@ -650,7 +650,7 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 				{
 					$val = '';
 
-					if (is_array(JArrayHelper::getValue($data, $key)))
+					if (is_array(FArrayHelper::getValue($data, $key)))
 					{
 						// Repeat group data
 						foreach ($data[$key] as $k => $v)
@@ -665,7 +665,7 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 					}
 					else
 					{
-						$val = JArrayHelper::getValue($data, $key);
+						$val = FArrayHelper::getValue($data, $key);
 					}
 
 					$val = FabrikString::rtrimword($val, "<br />");

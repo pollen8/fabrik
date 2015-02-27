@@ -222,7 +222,18 @@ class PlgSystemFabrik extends JPlugin
 		}
 
 		$script = self::js();
-		$content = JResponse::getBody();
+
+		$content = JFactory::getApplication()->getBody();
+
+		// Test inserting require.js as last
+		if (!FabrikHelperHTML::inAjaxLoadedPage())
+		{
+			$jsAssetBaseURI = FabrikHelperHTML::getJSAssetBaseURI();
+			$rjs = $jsAssetBaseURI . 'media/com_fabrik/js/lib/require/require.js';
+			$rjs = '<script src="' . $rjs . '" type="text/javascript"></script>';
+			$content = FabrikString::replaceLast('</head>', $rjs . "\n" . '</head>', $content);
+		}
+		// End test insert
 
 		if (!stristr($content, '</body>'))
 		{
@@ -233,7 +244,7 @@ class PlgSystemFabrik extends JPlugin
 			$content = FabrikString::replaceLast('</body>', $script . '</body>', $content);
 		}
 
-		JResponse::setBody($content);
+		JFactory::getApplication()->setBody($content);
 	}
 
 	/**

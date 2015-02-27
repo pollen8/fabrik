@@ -90,7 +90,7 @@ class FabrikAdminControllerElements extends FabControllerAdmin
 		$cid = $input->get('cid', array(), 'array');
 		$data = array('showInListView' => 1, 'hideFromListView' => 0);
 		$task = $this->getTask();
-		$value = JArrayHelper::getValue($data, $task, 0, 'int');
+		$value = FArrayHelper::getValue($data, $task, 0, 'int');
 
 		if (empty($cid))
 		{

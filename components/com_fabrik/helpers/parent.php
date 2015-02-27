@@ -84,7 +84,35 @@ class FabrikWorker
 	 * @var  array
 	 */
 	static protected $doc_mime_types = array('pdf' => 'application/pdf', 'epub' => 'document/x-epub');
+	
+	/**
+	 * Valid view types, for sanity checking inputs, used by isViewType()
+	 */
+	static protected $viewTypes = array(
+		'article',
+		'cron',
+		'csv',
+		'details',
+		'element',
+		'form',
+		'list',
+		'package',
+		'visualization'
+	);
 
+	/**
+	 * Returns true if $view is a valid view type
+	 *
+	 * @param   string  $view  View type
+	 *
+	 * @return	bool
+	 */
+	
+	public static function isViewType($view)
+	{
+		return in_array($view, self::$viewTypes);
+	}
+	
 	/**
 	 * Returns true if $file has an image extension type
 	 *
@@ -652,7 +680,7 @@ class FabrikWorker
 			}
 		}
 
-		return $returnType === 'array' ? $msgs : JArrayHelper::getValue($msgs, 0, '');
+		return $returnType === 'array' ? $msgs : FArrayHelper::getValue($msgs, 0, '');
 	}
 
 	/**
@@ -732,12 +760,12 @@ class FabrikWorker
 		foreach ($matches as $match)
 		{
 			$bits = explode('->', str_replace(array('{', '}'), '', $match));
-			$userid = $app->input->getInt(JArrayHelper::getValue($bits, 1));
+			$userid = $app->input->getInt(FArrayHelper::getValue($bits, 1));
 
 			if ($userid !== 0)
 			{
 				$user = JFactory::getUser($userid);
-				$val = $user->get(JArrayHelper::getValue($bits, 2));
+				$val = $user->get(FArrayHelper::getValue($bits, 2));
 				$msg = str_replace($match, $val, $msg);
 			}
 		}
@@ -799,7 +827,7 @@ class FabrikWorker
 	protected function replaceWithFormData($matches)
 	{
 		// Merge any join data key val pairs down into the main data array
-		$joins = JArrayHelper::getValue($this->_searchData, 'join', array());
+		$joins = FArrayHelper::getValue($this->_searchData, 'join', array());
 
 		foreach ($joins as $k => $data)
 		{
@@ -1462,7 +1490,7 @@ class FabrikWorker
 
 		if (is_object($item))
 		{
-			$item = is_null($item->connection_id) ? JArrayHelper::getValue($jform, 'connection_id', -1) : $item->connection_id;
+			$item = is_null($item->connection_id) ? FArrayHelper::getValue($jform, 'connection_id', -1) : $item->connection_id;
 		}
 
 		$connId = (int) $item;
@@ -1660,7 +1688,7 @@ class FabrikWorker
 
 		if ($uri->getScheme() === 'https')
 		{
-			$gobackaction = 'onclick="parent.location=\'' . JArrayHelper::getValue($_SERVER, 'HTTP_REFERER') . '\'"';
+			$gobackaction = 'onclick="parent.location=\'' . FArrayHelper::getValue($_SERVER, 'HTTP_REFERER') . '\'"';
 		}
 		else
 		{

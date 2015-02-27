@@ -262,7 +262,7 @@ class PlgFabrik_ElementGooglemap extends PlgFabrik_Element
 		$opts->lat = (float) $o->coords[0];
 		$opts->lon = (float) $o->coords[1];
 		$opts->lat_dms = (float) $dms->coords[0];
-		$opts->rowid = (int) JArrayHelper::getValue($data, 'rowid');
+		$opts->rowid = (int) FArrayHelper::getValue($data, 'rowid');
 		$opts->lon_dms = (float) $dms->coords[1];
 		$opts->zoomlevel = (int) $o->zoomlevel;
 		$opts->control = $params->get('fb_gm_mapcontrol');
@@ -822,7 +822,7 @@ class PlgFabrik_ElementGooglemap extends PlgFabrik_Element
 		$db = FabrikWorker::getDbo();
 		$listModel = $this->getlistModel();
 		$table = $listModel->getTable();
-		$fullElName = JArrayHelper::getValue($opts, 'alias', $dbtable . '___' . $this->element->name);
+		$fullElName = FArrayHelper::getValue($opts, 'alias', $dbtable . '___' . $this->element->name);
 		$dbtable = $db->quoteName($dbtable);
 		$str = $dbtable . '.' . $db->quoteName($this->element->name) . ' AS ' . $db->quoteName($fullElName);
 

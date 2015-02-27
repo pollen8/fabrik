@@ -437,7 +437,7 @@ class PlgFabrik_ElementYesno extends PlgFabrik_ElementRadiobutton
 			}
 	
 			$shortPk = FabrikString::shortColName($pk);
-			$rowid = JArrayHelper::getValue($data, $shortPk, null);
+			$rowid = FArrayHelper::getValue($data, $shortPk, null);
 			
 			$query->update($this->actualTableName())->set($name . ' = 0');
 			

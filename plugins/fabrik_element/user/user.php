@@ -130,7 +130,7 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 					}
 				}
 
-				$id = JArrayHelper::getValue($data, $id, '');
+				$id = FArrayHelper::getValue($data, $id, '');
 
 				if ($id === '')
 				{
@@ -441,7 +441,7 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 			else if ($this->getListModel()->importingCSV)
 			{
 				$formData = $this->getFormModel()->formData;
-				$userid = JArrayHelper::getValue($formData, $element->name, '');
+				$userid = FArrayHelper::getValue($formData, $element->name, '');
 				if (!empty($userid) && !is_numeric($userid))
 				{
 					$user = JFactory::getUser($userid);
@@ -587,7 +587,7 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 		$element = $this->getElement();
 		$params = $this->getParams();
 		$db = FabrikWorker::getDbo();
-		$fullElName = JArrayHelper::getValue($opts, 'alias', $table . '___' . $element->name);
+		$fullElName = FArrayHelper::getValue($opts, 'alias', $table . '___' . $element->name);
 
 		// Check if main database is the same as the elements database
 		if ($this->inJDb())
@@ -604,7 +604,7 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 			$k = FabrikString::safeColName($k . '.' . $element->name);
 			$k2 = FabrikString::safeColName($this->getJoinLabelColumn());
 
-			if (JArrayHelper::getValue($opts, 'inc_raw', true))
+			if (FArrayHelper::getValue($opts, 'inc_raw', true))
 			{
 				$aFields[] = $k . ' AS ' . $db->quoteName($fullElName . '_raw');
 				$aAsFields[] = $db->quoteName($fullElName . '_raw');
@@ -1000,7 +1000,7 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 
 		if ($this->getGroup()->canRepeat())
 		{
-			$userid = JArrayHelper::getValue($userid, $repeatCounter, 0);
+			$userid = FArrayHelper::getValue($userid, $repeatCounter, 0);
 		}
 		
 		if (is_array($userid))
@@ -1013,7 +1013,7 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 			if (!is_int($userid))
 			{
 				$userid = FabrikWorker::JSONtoData($userid, true);
-				$userid = (int) JArrayHelper::getValue($userid, 0, 0);
+				$userid = (int) FArrayHelper::getValue($userid, 0, 0);
 			}
 		}
 

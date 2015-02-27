@@ -57,7 +57,7 @@ class PlgFabrik_ElementGoogleometer extends PlgFabrik_Element
 		$value = $this->getValue($data, $repeatCounter);
 		$range = $this->getRange();
 		$fullName = $this->getDataElementFullName();
-		$data = JArrayHelper::getValue($data, $fullName);
+		$data = FArrayHelper::getValue($data, $fullName);
 		$str = $this->_renderListData($data, $range);
 
 		return $str;

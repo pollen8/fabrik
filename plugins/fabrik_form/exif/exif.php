@@ -55,8 +55,8 @@ class PlgFabrik_FormExif extends PlgFabrik_Form
 		else
 		{
 			$bits = explode('/', $value, 2);
-			$base = JArrayHelper::getValue($bits, 0);
-			$divider = JArrayHelper::getValue($bits, 1);
+			$base = FArrayHelper::getValue($bits, 0);
+			$divider = FArrayHelper::getValue($bits, 1);
 
 			return ($divider == 0) ? sprintf($format, 0) : sprintf($format, ($base / $divider));
 		}

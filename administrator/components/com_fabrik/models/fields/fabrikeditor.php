@@ -52,8 +52,8 @@ class JFormFieldFabrikeditor extends JFormFieldTextArea
 		$required = $this->required ? ' required="required" aria-required="true"' : '';
 
 		// JS events are saved as encoded html - so we don't want to double encode them
-		$encoded = JArrayHelper::getValue($this->element, 'encoded', false);
-
+		$encoded = FArrayHelper::getValue($this->element, 'encoded', false);
+				
 		if (!$encoded)
 		{
 			$this->value = htmlspecialchars($this->value, ENT_COMPAT, 'UTF-8');

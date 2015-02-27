@@ -1530,7 +1530,7 @@ class FabrikFEModelForm extends FabModelForm
 
 		if (isset($value) && isset($repeatCount) && is_array($value))
 		{
-			$value = JArrayHelper::getValue($value, $repeatCount, $default);
+			$value = FArrayHelper::getValue($value, $repeatCount, $default);
 		}
 		
 		// If we didn't find it, set to default
@@ -1578,7 +1578,7 @@ class FabrikFEModelForm extends FabModelForm
 			 * which is a horribly expensive operation.
 			 */
 			$primaryKey = FabrikString::safeColNameToArrayKey($this->getListModel()->getTable()->db_primary_key);
-			$data['__pk_val'] = JArrayHelper::getValue($data, $primaryKey . '_raw', JArrayHelper::getValue($data, $primaryKey, ''));
+			$data['__pk_val'] = FArrayHelper::getValue($data, $primaryKey . '_raw', FArrayHelper::getValue($data, $primaryKey, ''));
 		}
 
 		// Apply querystring values if not already in post (so qs values doesn't overwrite the submitted values for dbjoin elements)
@@ -1652,7 +1652,7 @@ class FabrikFEModelForm extends FabModelForm
 		foreach ($groups as $groupModel)
 		{
 			$group = $groupModel->getGroup();
-			$repeatedGroupCount = JArrayHelper::getValue($repeatTotals, $group->id, 0, 'int');
+			$repeatedGroupCount = FArrayHelper::getValue($repeatTotals, $group->id, 0, 'int');
 			$elementModels = $groupModel->getPublishedElements();
 
 			for ($c = 0; $c < $repeatedGroupCount; $c++)
@@ -1676,7 +1676,7 @@ class FabrikFEModelForm extends FabModelForm
 
 	protected function removeEmptyNoneJoinedGroupData(&$data)
 	{
-		$repeats = JArrayHelper::getValue($data, 'fabrik_repeat_group', array());
+		$repeats = FArrayHelper::getValue($data, 'fabrik_repeat_group', array());
 		$groups = $this->getGroups();
 
 		foreach ($repeats as $groupid => $c)
@@ -1714,7 +1714,7 @@ class FabrikFEModelForm extends FabModelForm
 		$item = $listModel->getTable();
 		$k = $item->db_primary_key;
 		$k = FabrikString::safeColNameToArrayKey($k);
-		$origid = JArrayHelper::getValue($this->formData, $k, '');
+		$origid = FArrayHelper::getValue($this->formData, $k, '');
 
 		// COPY function should create new records
 		if (array_key_exists('Copy', $this->formData))
@@ -2671,7 +2671,7 @@ echo "form get errors";
 			}
 		}
 
-		if (JArrayHelper::getValue($opts, 'loadPrefilters', false))
+		if (FArrayHelper::getValue($opts, 'loadPrefilters', false))
 		{
 			$listModel = $this->getListModel();
 			list($afilterFields, $afilterConditions, $afilterValues, $afilterAccess, $afilterEval, $afilterJoins) = $listModel->prefilterSetting();
@@ -2705,7 +2705,7 @@ echo "form get errors";
 		{
 			$element = $elementModel->getElement();
 
-			if (JArrayHelper::getValue($opts, 'includePublised', true) && $element->published == 0)
+			if (FArrayHelper::getValue($opts, 'includePublised', true) && $element->published == 0)
 			{
 				continue;
 			}
@@ -3540,7 +3540,7 @@ echo "form get errors";
 		}
 
 		// Remove the additional rows - they should have been merged into [0] above. if no [0] then use main array
-		$data = JArrayHelper::fromObject(JArrayHelper::getValue($data, 0, $data));
+		$data = JArrayHelper::fromObject(FArrayHelper::getValue($data, 0, $data));
 	}
 
 	/**
@@ -3721,7 +3721,7 @@ echo "form get errors";
 			$sql .= $word . ' (' . implode(' ', $where) . ')';
 		}
 
-		if (!$random && JArrayHelper::getValue($opts, 'ignoreOrder', false) === false)
+		if (!$random && FArrayHelper::getValue($opts, 'ignoreOrder', false) === false)
 		{
 			// $$$ rob if showing joined repeat groups we want to be able to order them as defined in the table
 			$sql .= $listModel->buildQueryOrder();
@@ -4061,7 +4061,7 @@ echo "form get errors";
 					{
 						// $$$ hugh - if it's a one-to-one, it should be a single value
 						$aVals = array_values($array);
-						$jdata[$key] = JArrayHelper::getValue($aVals, 0, '');
+						$jdata[$key] = FArrayHelper::getValue($aVals, 0, '');
 					}
 				}
 			}
@@ -4340,7 +4340,7 @@ echo "form get errors";
 					if (empty($val))
 					{
 						$thisKey = $this->getListModel()->getTable()->db_table_name . '___' . $element->join_key_column . '_raw';
-						$val = JArrayHelper::getValue($this->data, $thisKey, $val);
+						$val = FArrayHelper::getValue($this->data, $thisKey, $val);
 
 						if (empty($val))
 						{
@@ -4370,7 +4370,7 @@ echo "form get errors";
 				 */
 
 				$linkKeyRaw = $linkKey . '_raw';
-				$popUpLink = JArrayHelper::getValue($linkedtable_linktype->$key, $f, false);
+				$popUpLink = FArrayHelper::getValue($linkedtable_linktype->$key, $f, false);
 				$count = is_array($recordCounts) && array_key_exists($val, $recordCounts) ? $recordCounts[$val]->total : 0;
 				$label = $facetedLinks->linkedlistheader->$key == '' ? $element->listlabel : $facetedLinks->linkedlistheader->$key;
 				$links[$element->list_id][] = $label . ': ' . $referringTable->viewDataLink($popUpLink, $element, null, $linkKey, $val, $count, $f);
@@ -4508,7 +4508,7 @@ echo "form get errors";
 
 		if ($app->isAdmin())
 		{
-			$action = JArrayHelper::getValue($_SERVER, 'REQUEST_URI', 'index.php');
+			$action = FArrayHelper::getValue($_SERVER, 'REQUEST_URI', 'index.php');
 			$action = $this->stripElementsFromUrl($action);
 			$action = str_replace("&", "&amp;", $action);
 
@@ -4576,7 +4576,7 @@ echo "form get errors";
 			{
 				// $$$ rob if embedding a form in a form, then the embedded form's url will contain
 				// the id of the main form - not sure if its an issue for now
-				$action = JArrayHelper::getValue($_SERVER, 'REQUEST_URI', 'index.php');
+				$action = FArrayHelper::getValue($_SERVER, 'REQUEST_URI', 'index.php');
 			}
 			else
 			{
@@ -4766,7 +4766,7 @@ echo "form get errors";
 
 			if (!empty($repeatGroups))
 			{
-				$repeatGroup = JArrayHelper::getValue($repeatGroups, $gkey, $repeatGroup);
+				$repeatGroup = FArrayHelper::getValue($repeatGroups, $gkey, $repeatGroup);
 
 				if ($repeatGroup == 0)
 				{
@@ -5135,7 +5135,7 @@ echo "form get errors";
 				if ($isMambot)
 				{
 					// Return to the same page
-					$url = JArrayHelper::getValue($_SERVER, 'HTTP_REFERER', 'index.php');
+					$url = FArrayHelper::getValue($_SERVER, 'HTTP_REFERER', 'index.php');
 				}
 				else
 				{
@@ -5311,7 +5311,7 @@ echo "form get errors";
 
 		if (!empty($msg))
 		{
-			$msg = JArrayHelper::getValue($msg, 0);
+			$msg = FArrayHelper::getValue($msg, 0);
 			$app->enqueueMessage($msg);
 		}
 		// Ensure its only shown once even if page is refreshed with isMambot in querystring
@@ -5357,7 +5357,7 @@ echo "form get errors";
 		 */
 		$custommsg = array_keys($smsg);
 		$custommsg = array_shift($custommsg);
-		$custommsg = JArrayHelper::getValue($smsg, $custommsg);
+		$custommsg = FArrayHelper::getValue($smsg, $custommsg);
 
 		if ($custommsg != '')
 		{

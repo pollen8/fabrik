@@ -207,7 +207,7 @@ class PlgContentFabrik extends JPlugin
 			$m = explode("=", $m);
 
 			// $$$ hugh - deal with %20 as space in arguments
-			$m[1] = urldecode(JArrayHelper::getValue($m, 1));
+			$m[1] = urldecode(FArrayHelper::getValue($m, 1));
 
 			switch ($m[0])
 			{
@@ -880,6 +880,16 @@ class PlgContentFabrik extends JPlugin
 
 	protected function generalIncludes($view)
 	{
+		if ($view == 'details')
+		{
+			$view = 'form';
+		}
+		
+		if (!FabrikWorker::isViewType($view))
+		{
+			throw new RuntimeException('Please specify a valid view type in your fabrik {} code: ' . $view, 500);
+		}
+		
 		$app = JFactory::getApplication();
 		$input = $app->input;
 		require_once COM_FABRIK_FRONTEND . '/controller.php';
@@ -898,16 +908,6 @@ class PlgContentFabrik extends JPlugin
 		JTable::addIncludePath(JPATH_ADMINISTRATOR . '/components/com_fabrik/tables');
 		JModelLegacy::addIncludePath(COM_FABRIK_FRONTEND . '/models');
 		JModelLegacy::addIncludePath(COM_FABRIK_FRONTEND . '/models', 'FabrikFEModel');
-
-		if ($view == 'details')
-		{
-			$view = 'form';
-		}
-
-		if ($view == '')
-		{
-			throw new RuntimeException('Please specify a view in your fabrik {} code', 500);
-		}
 
 		// $$$rob looks like including the view does something to the layout variable
 		$defaultLayout = FabrikWorker::j3() ? 'bootstrap' : 'default';

@@ -554,7 +554,7 @@ class FabrikModelFusionchart extends FabrikFEModelVisualization
 			* object if we call getPagination after render().  So call it first, then render() will
 			* get our cached pagination, rather than vice versa.
 			*/
-			$limit = (int) JArrayHelper::getValue($limits, $this->c, 0);
+			$limit = (int) FArrayHelper::getValue($limits, $this->c, 0);
 			$listModel->setLimits(0, $limit);
 			$nav = $listModel->getPagination(0, 0, $limit);
 			$listModel->render();
@@ -563,7 +563,7 @@ class FabrikModelFusionchart extends FabrikFEModelVisualization
 			$column = $chartElements[$this->c];
 			$pref = substr($column, 0, 6);
 
-			$label = JArrayHelper::getValue($x_axis_label, $this->c, '');
+			$label = FArrayHelper::getValue($x_axis_label, $this->c, '');
 
 			$tmpgdata = array();
 			$tmpglabels = array();
@@ -581,7 +581,7 @@ class FabrikModelFusionchart extends FabrikFEModelVisualization
 				$calcfound = true;
 				$column = JString::substr($column, 6);
 				$calckey = $calc_prefixmap[$pref];
-				$caldata = JArrayHelper::getValue($cals[$calckey], $column . '_obj');
+				$caldata = FArrayHelper::getValue($cals[$calckey], $column . '_obj');
 
 				if (is_array($caldata))
 				{
@@ -698,7 +698,7 @@ class FabrikModelFusionchart extends FabrikFEModelVisualization
 				{
 					$strParam .= ';pieBorderThickness=' . $params->get('fusionchart_borderthick', '');
 					$strParam .= ';pieBorderAlpha=' . $params->get('fusionchart_cnvalpha', '');
-					$strParam .= ';pieFillAlpha=' . JArrayHelper::getValue($params->get('fusionchart_elalpha', array()), 0);
+					$strParam .= ';pieFillAlpha=' . FArrayHelper::getValue($params->get('fusionchart_elalpha', array()), 0);
 				}
 
 				if ($this->c > 1)
@@ -728,13 +728,13 @@ class FabrikModelFusionchart extends FabrikFEModelVisualization
 					$labels = explode('|', $glabels[0]);
 
 					// $gsums = !array_key_exists(0, $chartCumulatives) || $chartCumulatives[0] == '0' ? explode(',', $gdata[0]) : explode(',', $gcumulatives[0]);
-					$gsums = JArrayHelper::getValue($chartCumulatives, 0, '0') == '0' ? explode(',', $gdata[0]) : $this->gcumulatives[0];
+					$gsums = FArrayHelper::getValue($chartCumulatives, 0, '0') == '0' ? explode(',', $gdata[0]) : $this->gcumulatives[0];
 
 					// Scale to percentages
 					$tot_sum = array_sum($gsums);
 					$arrData = array();
 					$labelStep = 0;
-					$label_step_ratio = (int) JArrayHelper::getValue($label_step_ratios, 0, 1);
+					$label_step_ratio = (int) FArrayHelper::getValue($label_step_ratios, 0, 1);
 
 					if ($label_step_ratio > 1)
 					{
@@ -831,7 +831,7 @@ class FabrikModelFusionchart extends FabrikFEModelVisualization
 						$strParam .= ';SYaxisName=' . implode(' ', $s_parents);
 					}
 
-					$label_step_ratio = (int) JArrayHelper::getValue($label_step_ratios, 0, 1);
+					$label_step_ratio = (int) FArrayHelper::getValue($label_step_ratios, 0, 1);
 
 					if ($label_step_ratio > 1)
 					{
@@ -865,10 +865,10 @@ class FabrikModelFusionchart extends FabrikFEModelVisualization
 
 					foreach ($gdata as $key => $chartdata)
 					{
-						$cdata = JArrayHelper::getValue($chartCumulatives, $key, '0') == '0' ? explode(',', $gdata[$key]) : $this->gcumulatives[$key];
+						$cdata = FArrayHelper::getValue($chartCumulatives, $key, '0') == '0' ? explode(',', $gdata[$key]) : $this->gcumulatives[$key];
 						$dataset = $this->axisLabels[$key];
 						$extras = 'parentYAxis=' . $dual_y_parents[$key];
-						$color = JArrayHelper::getValue($gcolours, $key, '');
+						$color = FArrayHelper::getValue($gcolours, $key, '');
 
 						if (!empty($color))
 						{
@@ -990,7 +990,7 @@ class FabrikModelFusionchart extends FabrikFEModelVisualization
 					$found = true;
 					$min = $this->min[$nbe];
 					$max = $this->max[$nbe];
-					$cumulative = JArrayHelper::getValue($cumulatives, $nbe, '0');
+					$cumulative = FArrayHelper::getValue($cumulatives, $nbe, '0');
 
 					if ($cumulative == '1')
 					{
@@ -999,7 +999,7 @@ class FabrikModelFusionchart extends FabrikFEModelVisualization
 						$max = max($this->gcumulatives[$nbe]);
 					}
 					// If Start & End values are not specifically defined, use the element's min & max values
-					$trendtype = JArrayHelper::getValue($trendtypes, $nbe, 'minmax');
+					$trendtype = FArrayHelper::getValue($trendtypes, $nbe, 'minmax');
 
 					switch ($trendtype)
 					{
@@ -1058,7 +1058,7 @@ class FabrikModelFusionchart extends FabrikFEModelVisualization
 		$strAddTrend = 'startValue=' . $startval . ';endValue=' . $endval;
 		$elcolour = (array) $params->get('fusionchart_elcolour', '');
 		$elalpha = (array) $params->get('fusionchart_elalpha', '');
-		$strAddTrend .= ';displayvalue=' . JArrayHelper::getValue($this->axisLabels, $nbe, $params->get('fusionchart_trendlabel', ''));
+		$strAddTrend .= ';displayvalue=' . FArrayHelper::getValue($this->axisLabels, $nbe, $params->get('fusionchart_trendlabel', ''));
 		$strAddTrend .= ';showOnTop=' . $params->get('fusionchart_trendshowontop', '1');
 
 		if ($startval < $endval)
@@ -1068,8 +1068,8 @@ class FabrikModelFusionchart extends FabrikFEModelVisualization
 
 		// Tooltext doesn't seem to be working:
 		$strAddTrend .= ';tooltext=' . $params->get('fusionchart_trendlabel', '');
-		$strAddTrend .= ';color=' . JArrayHelper::getValue($elcolour, $nbe, '333333');
-		$strAddTrend .= ';alpha=' . JArrayHelper::getValue($elalpha, $nbe, 50);
+		$strAddTrend .= ';color=' . FArrayHelper::getValue($elcolour, $nbe, '333333');
+		$strAddTrend .= ';alpha=' . FArrayHelper::getValue($elalpha, $nbe, 50);
 		$strAddTrend .= ';thickness=3';
 		$this->FC->addTrendLine($strAddTrend);
 	}
@@ -1103,7 +1103,7 @@ class FabrikModelFusionchart extends FabrikFEModelVisualization
 	{
 		$params = $this->getParams();
 		$trendtypes = (array) $params->get('fusionchart_trend_type');
-		$trendtype = JArrayHelper::getValue($trendtypes, $nbe, 'minmax');
+		$trendtype = FArrayHelper::getValue($trendtypes, $nbe, 'minmax');
 
 		switch ($trendtype)
 		{

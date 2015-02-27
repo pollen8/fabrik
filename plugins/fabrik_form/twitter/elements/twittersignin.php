@@ -47,7 +47,7 @@ class JFormFieldTwittersignin extends JFormField
 		$app = JFactory::getApplication();
 		$input = $app->input;
 		$cid = $input->get('id', array(0), 'array');
-		$cid = JArrayHelper::getValue($cid, 0);
+		$cid = FArrayHelper::getValue($cid, 0);
 
 		// $$$ hugh - when creating a new form, no 'cid' ... not sure what to do, so just set it to 0.  Should
 		// prolly just return something like 'available after save' ?

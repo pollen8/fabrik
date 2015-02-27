@@ -97,8 +97,8 @@ class PlgFabrik_ElementPicklist extends PlgFabrik_ElementList
 				continue;
 			}
 
-			$k = JArrayHelper::getValue($lookup, $v);
-			$tmptxt = addslashes(htmlspecialchars(JArrayHelper::getValue($arTxt, $k)));
+			$k = FArrayHelper::getValue($lookup, $v);
+			$tmptxt = addslashes(htmlspecialchars(FArrayHelper::getValue($arTxt, $k)));
 			$tolist[] = '<li id="' . $id . '_value_' . $v . '" class="' . $v . '">' . $tmptxt . '</li>';
 			$aRoValues[] = $tmptxt;
 			$i++;
