@@ -246,6 +246,16 @@
 				description="PLG_ELEMENT_DBJOIN_CLASS_DESC"
 				label="PLG_ELEMENT_DBJOIN_CLASS_LABEL" />
 				
+			<field name="advanced_behavior"
+				type="radio"
+				default="0"
+				class="btn-group"
+				label="PLG_ELEMENT_DROPDOWN_ADVANCED_BEHAVIOR_LABEL"
+				description="PLG_ELEMENT_DROPDOWN_ADVANCED_BEHAVIOR_DESC" >
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+			</field>
+			
 		</fieldset>
 		
 		<fieldset label="COM_FABRIK_ADVANCED" name="plg-databasejoin-advanced">

@@ -1355,7 +1355,13 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 			// $$$rob should be canUse() otherwise if user set to view but not use the dd was shown
 			if ($this->canUse())
 			{
-				$attribs = 'class="fabrikinput inputbox input ' . $params->get('bootstrap_class', 'input-large') . '" size="1"';
+
+        if (!$this->getGroup()->canRepeat())
+        {
+          $advanced = $params->get('advanced_behavior', '0') == '1' ? 'advancedSelect ' : '';
+        }
+
+				$attribs = 'class="fabrikinput inputbox input ' . $advanced . $params->get('bootstrap_class', 'input-large') . '" size="1"';
 
 				// If user can access the drop down
 				switch ($displayType)

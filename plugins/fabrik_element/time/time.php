@@ -157,7 +157,13 @@ class PlgFabrik_ElementTime extends PlgFabrik_Element
 			}
 
 			$errorCSS = $this->elementError != '' ? " elementErrorHighlight" : '';
-			$attribs = 'class="input-small fabrikinput inputbox' . $errorCSS . '"';
+
+        if (!$this->getGroup()->canRepeat())
+        {
+          $advanced = $params->get('advanced_behavior', '0') == '1' ? 'advancedSelect ' : '';
+        }
+
+			$attribs = 'class="input-small fabrikinput inputbox' . $advanced . $errorCSS . '"';
 			$str = array();
 			$str[] = '<div class="fabrikSubElementContainer" id="' . $id . '">';
 

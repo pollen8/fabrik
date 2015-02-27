@@ -63,7 +63,13 @@ class PlgFabrik_ElementDropdown extends PlgFabrik_ElementList
 		$selected = (array) $this->getValue($data, $repeatCounter);
 		$errorCSS = $this->elementError != '' ? " elementErrorHighlight" : '';
 		$boostrapClass = $params->get('bootstrap_class', '');
-		$attribs = 'class="fabrikinput inputbox input ' . $errorCSS . ' ' . $boostrapClass . '"';
+
+        if (!$this->getGroup()->canRepeat())
+        {
+          $advanced = $params->get('advanced_behavior', '0') == '1' ? 'advancedSelect ' : '';
+        }
+
+		$attribs = 'class="fabrikinput inputbox input ' . $advanced . $errorCSS . ' ' . $boostrapClass . '"';
 
 		if ($multiple == "1")
 		{
@@ -166,13 +172,6 @@ class PlgFabrik_ElementDropdown extends PlgFabrik_ElementList
 	public function elementJavascript($repeatCounter)
 	{
 		$params = $this->getParams();
-		$advanced = $params->get('advanced_behavior', '0') == '1';
-		
-		if ($advanced)
-		{
-			JHtml::_('formbehavior.chosen', 'select');
-		}
-		
 		$id = $this->getHTMLId($repeatCounter);
 		$element = $this->getElement();
 		$data = $this->getFormModel()->data;
