@@ -66,7 +66,11 @@ class PlgFabrik_ElementDropdown extends PlgFabrik_ElementList
 
         if (!$this->getGroup()->canRepeat())
         {
-          $advanced = $params->get('advanced_behavior', '0') == '1' ? 'advancedSelect ' : '';
+			$advanced = $params->get('advanced_behavior', '0') == '1' ? ' advancedSelect ' : '';
+        }
+        else
+        {
+        	$advanced = '';
         }
 
 		$attribs = 'class="fabrikinput inputbox input ' . $advanced . $errorCSS . ' ' . $boostrapClass . '"';
@@ -184,6 +188,16 @@ class PlgFabrik_ElementDropdown extends PlgFabrik_ElementList
 		$opts->defaultVal = $this->getDefaultValue($data);
 		$opts->data = (empty($values) && empty($labels)) ? array() : array_combine($values, $labels);
 		$opts->multiple = (bool) $params->get('multiple', '0') == '1';
+		
+		if (!$this->getGroup()->canRepeat())
+		{
+			$advanced = $params->get('advanced_behavior', '0') == '1';
+		}
+		else
+		{
+			$advanced = false;
+		}
+		
 		$opts->advanced = $advanced;
 		JText::script('PLG_ELEMENT_DROPDOWN_ENTER_VALUE_LABEL');
 

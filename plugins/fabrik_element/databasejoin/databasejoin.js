@@ -147,6 +147,10 @@ var FbDatabasejoin = new Class({
 			selected = sel.contains(v) ? 'selected' : '';
 			opt = new Element('option', {'value': v, 'selected': selected}).set('text', l);
 			document.id(this.element.id).adopt(opt);
+			if (this.options.advanced)
+			{
+				jQuery("#" + this.element.id).trigger("liszt:updated");
+			}
 			break;
 		case 'auto-complete':
 			if (autoCompleteUpdate) {

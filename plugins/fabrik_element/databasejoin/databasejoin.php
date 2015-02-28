@@ -1356,10 +1356,14 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 			if ($this->canUse())
 			{
 
-        if (!$this->getGroup()->canRepeat())
-        {
-          $advanced = $params->get('advanced_behavior', '0') == '1' ? 'advancedSelect ' : '';
-        }
+				if (!$this->getGroup()->canRepeat())
+				{
+					$advanced = $params->get('advanced_behavior', '0') == '1' ? ' advancedSelect ' : '';
+				}
+				else
+				{
+					$advanced = '';
+				}
 
 				$attribs = 'class="fabrikinput inputbox input ' . $advanced . $params->get('bootstrap_class', 'input-large') . '" size="1"';
 
@@ -2840,6 +2844,17 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		$this->elementJavascriptJoinOpts($opts);
 		$opts->isJoin = $this->isJoin();
 
+		if (!$this->getGroup()->canRepeat())
+		{
+			$advanced = $params->get('advanced_behavior', '0') == '1';
+		}
+		else
+		{
+			$advanced = false;
+		}
+		
+		$opts->advanced = $advanced;
+		
 		return $opts;
 	}
 
