@@ -1492,6 +1492,32 @@ if (!$j3)
 	}
 
 	/**
+	 * Add script to session - will then be added (in head) via Fabrik System plugin
+	 *
+	 * @param   string  $js  JS code
+	 *
+	 * @return  void
+	 */
+	
+	protected static function addToSessionHeadScripts($js)
+	{
+		$key = 'fabrik.js.head.scripts';
+		$session = JFactory::getSession();
+	
+		if ($session->has($key))
+		{
+			$scripts = $session->get($key);
+		}
+		else
+		{
+			$scripts = array();
+		}
+	
+		$scripts[] = $js;
+		$session->set($key, $scripts);
+	}
+	
+	/**
 	 * Load the slimbox / media box css and js files
 	 *
 	 * @return  void
@@ -2718,7 +2744,8 @@ if (!$j3)
 			$js[] = "  window.punycode = p;";
 			$js[] = "});";
 
-			$document->addScriptDeclaration(implode("\n", $js));
+			//$document->addScriptDeclaration(implode("\n", $js));
+			self::addToSessionHeadScripts(implode("\n", $js));
 		}
 
 		JHtml::_('script', 'system/validate.js', false, true);

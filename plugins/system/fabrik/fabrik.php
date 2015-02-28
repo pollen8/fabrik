@@ -162,8 +162,20 @@ class PlgSystemFabrik extends JPlugin
 			}
 		}
 
-		self::clearJs();
+		//self::clearJs();
 
+		return $script;
+	}
+	
+	/**
+	 * Get Page JavaScript from either session or cached .js file
+	 *
+	 * @return string
+	 */
+	
+	public static function headJs()
+	{
+		$script = self::buildHeadJs();
 		return $script;
 	}
 
@@ -176,6 +188,7 @@ class PlgSystemFabrik extends JPlugin
 	{
 		$session = JFactory::getSession();
 		$session->clear('fabrik.js.scripts');
+		$session->clear('fabrik.js.head.scripts');
 		$session->clear('fabrik.js.config');
 		$session->clear('fabrik.js.shim');
 	}
@@ -208,6 +221,30 @@ class PlgSystemFabrik extends JPlugin
 	}
 
 	/**
+	 * Build Page <script> tag for insertion into DOM or for storing in cache
+	 *
+	 * @return string
+	 */
+	
+	public static function buildHeadJs()
+	{
+		$session = JFactory::getSession();
+		$js = $session->get('fabrik.js.head.scripts', array());
+		$js = implode("\n", $js);
+	
+		if ($js !== '')
+		{
+			$script = '<script type="text/javascript">' . "\n" . $js . "\n" . '</script>';
+		}
+		else
+		{
+			$script = '';
+		}
+	
+		return $script;
+	}
+	
+	/**
 	 * Insert require.js config an app ini script into body.
 	 *
 	 * @return  void
@@ -222,6 +259,8 @@ class PlgSystemFabrik extends JPlugin
 		}
 
 		$script = self::js();
+		$headScript = self::headJs();
+		self::clearJs();
 
 		$content = JFactory::getApplication()->getBody();
 
@@ -231,7 +270,7 @@ class PlgSystemFabrik extends JPlugin
 			$jsAssetBaseURI = FabrikHelperHTML::getJSAssetBaseURI();
 			$rjs = $jsAssetBaseURI . 'media/com_fabrik/js/lib/require/require.js';
 			$rjs = '<script src="' . $rjs . '" type="text/javascript"></script>';
-			$content = FabrikString::replaceLast('</head>', $rjs . "\n" . '</head>', $content);
+			$content = FabrikString::replaceLast('</head>',  $rjs . "\n" . $headScript . "\n" . '</head>', $content);
 		}
 		// End test insert
 
