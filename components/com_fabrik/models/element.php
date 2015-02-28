@@ -1083,8 +1083,17 @@ class PlgFabrik_Element extends FabrikPlugin
 	}
 
 	/**
-	 * Does the element consider the data to be empty
-	 * Used in isempty validation rule
+	 * Is the element consider to be empty for purposes of rendering on the form,
+	 * i.e. for assigning classes, etc.  Can be overridden by individual elements.
+	 * 
+	 * NOTE - this was originally intended for validation, but wound up being used for both validation
+	 * AND rendering.  Which doesn't really work, because the $data can be entirely different.  Tried
+	 * adding dataConsideredEmptyForValidation() below, but that causes issues where elements don't have
+	 * one, we'd need to go through in one swoop and split them out in every element.  So for now, leave this
+	 * as the default which is called in both contexts, BUT the notempty validation checks to see if an
+	 * element model has a dataCOnsideredEmptyForValidation() method and calls that in preference to this
+	 * if it does.  We can come back and revisit this issue, as we gradually split out the funcitonality in each
+	 * element type.
 	 *
 	 * @param   array  $data           Data to test against
 	 * @param   int    $repeatCounter  Repeat group #
@@ -1096,6 +1105,27 @@ class PlgFabrik_Element extends FabrikPlugin
 	{
 		return ($data == '') ? true : false;
 	}
+	
+	/**
+	 * is the element consider to be empty for validation purposes, on form submit
+	 * Used in isempty validation rule.  Split out from dataConsideredEmpty in 3.2
+	 * 
+	 * NOTE - see comments on dataConsideredEmpty(), have to hold off on putting this in the main model.
+	 *
+	 * @param   array  $data           Data to test against
+	 * @param   int    $repeatCounter  Repeat group #
+	 *
+	 * @return  bool
+	 * 
+	 * @since   3.2
+	 */
+	
+	/*
+	public function dataConsideredEmptyForValidation($data, $repeatCounter)
+	{
+		return ($data == '') ? true : false;
+	}
+	*/
 
 	/**
 	 * Get an array of element html ids and their corresponding

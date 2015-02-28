@@ -311,8 +311,8 @@ class PlgFabrik_ElementDigsig extends PlgFabrik_Element
 	}
 	
 	/**
-	 * Does the element consider the data to be empty
-	 * Used in isempty validation rule
+	 * Is the element considered to be empty for purposes of validation
+	 * Used in isempty validation rule.
 	 *
 	 * @param   array  $data           data to test against
 	 * @param   int    $repeatCounter  repeat group #
@@ -320,7 +320,7 @@ class PlgFabrik_ElementDigsig extends PlgFabrik_Element
 	 * @return  bool
 	 */
 	
-	public function dataConsideredEmpty($data, $repeatCounter)
+	public function dataConsideredEmptyForValidation($data, $repeatCounter)
 	{
 		$data = (array) $data;
 	

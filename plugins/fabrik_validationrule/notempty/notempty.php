@@ -42,8 +42,15 @@ class PlgFabrik_ValidationruleNotempty extends PlgFabrik_Validationrule
 
 	public function validate($data, $repeatCounter)
 	{
-		$ok = $this->elementModel->dataConsideredEmpty($data, $repeatCounter);
-
+		if (method_exists($this->elementModel, 'dataConsideredEmptyForValidation'))
+		{
+			$ok = $this->elementModel->dataConsideredEmptyForValidation($data, $repeatCounter);
+		}
+		else
+		{
+			$ok = $this->elementModel->dataConsideredEmpty($data, $repeatCounter);
+		}
+		
 		return !$ok;
 	}
 }
