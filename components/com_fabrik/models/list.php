@@ -8426,16 +8426,22 @@ class FabrikFEModelList extends JModelForm
 
 	/**
 	 * Get the lists db table's indexes
+	 * 
+	 * @param   string  $table   table name, only needed if join
 	 *
 	 * @return array  list indexes
 	 */
 
-	protected function getIndexes()
+	protected function getIndexes($table = '')
 	{
+		if (empty($table))
+		{
+			$table = $this->getTable()->db_table_name;
+		}
 		if (!isset($this->indexes))
 		{
 			$db = $this->getDb();
-			$db->setQuery('SHOW INDEXES FROM ' . $db->quoteName($this->getTable()->db_table_name));
+			$db->setQuery('SHOW INDEXES FROM ' . $db->quoteName($table));
 			$this->indexes = $db->loadObjectList();
 		}
 
@@ -8456,8 +8462,7 @@ class FabrikFEModelList extends JModelForm
 
 	public function addIndex($field, $prefix = '', $type = 'INDEX', $size = '')
 	{
-		$indexes = $this->getIndexes();
-
+		
 		if (is_numeric($field))
 		{
 			$el = $this->getFormModel()->getElement($field, true);
@@ -8477,6 +8482,9 @@ class FabrikFEModelList extends JModelForm
 		// $$$ rob 28/02/2011 if index in joined table we need to use that the make the key on
 		$table = !strstr($field, '___') ? $this->getTable()->db_table_name : array_shift(explode('___', $field));
 		$field = FabrikString::shortColName($field);
+		
+		$indexes = $this->getIndexes($table);
+		
 		FArrayHelper::filter($indexes, 'Column_name', $field);
 
 		if (!empty($indexes))

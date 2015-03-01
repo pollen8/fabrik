@@ -1184,6 +1184,8 @@ class FabrikAdminModelElement extends FabModelAdmin
 		$data['params'] = json_encode($opts);
 		$join->bind($data);
 		$join->store();
+		
+		$listModel->addIndex($tableName . '___parent_id', 'parent_fk', 'INDEX', '');
 	}
 
 	/**
