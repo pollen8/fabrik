@@ -1356,15 +1356,14 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 			if ($this->canUse())
 			{
 
-				$advancedClass = $this->getAdvancedSelectClass();
-				
-				$attribs = 'class="fabrikinput inputbox input ' . $advancedClass . ' ' . $params->get('bootstrap_class', 'input-large') . '" size="1"';
 
 				// If user can access the drop down
 				switch ($displayType)
 				{
 					case 'dropdown':
 					default:
+						$advancedClass = $this->getAdvancedSelectClass();
+						$attribs = 'class="fabrikinput inputbox input ' . $advancedClass . ' ' . $params->get('bootstrap_class', 'input-large') . '" size="1"';
 						$html[] = JHTML::_('select.genericlist', $tmp, $name, $attribs, 'value', 'text', $default, $id);
 						break;
 					case 'radio':
@@ -1629,7 +1628,8 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		if ($this->isEditable())
 		{
 			$multiSize = (int) $params->get('dbjoin_multilist_size', 6);
-			$attribs = 'class="' . $class . '" size="' . $multiSize . '" multiple="true"';
+			$advancedClass = $this->getAdvancedSelectClass();
+			$attribs = 'class="' . $class . ' ' . $advancedClass . '" size="' . $multiSize . '" multiple="true"';
 			$html[] = JHTML::_('select.genericlist', $tmp, $elName, $attribs, 'value', 'text', $default, $id);
 		}
 		else
