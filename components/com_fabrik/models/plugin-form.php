@@ -49,6 +49,19 @@ class PlgFabrik_Form extends FabrikPlugin
 	{
 		return true;
 	}
+	
+	/**
+	 * Run from list model when deleting rows
+	 *
+	 * @param   array  &$groups  List data for deletion
+	 *
+	 * @return  bool
+	 */
+	
+	public function onAfterDeleteRowsForm(&$groups)
+	{
+		return true;
+	}
 
 	/**
 	 * Run right at the beginning of the form processing

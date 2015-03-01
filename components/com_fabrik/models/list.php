@@ -8785,7 +8785,17 @@ class FabrikFEModelList extends JModelForm
 		$cache->clean();
 
 		$this->unsetPluginQueryWhere('list.deleteRows');
+
+		if (in_array(false, $pluginManager->runPlugins('onAfterDeleteRowsForm', $this->getFormModel(), 'form', $rows)))
+		{
+			return false;
+		}
 		
+		if (in_array(false, $pluginManager->runPlugins('onAfterDeleteRows', $this, 'list')))
+		{
+			return false;
+		}
+				
 		return true;
 	}
 

@@ -105,6 +105,19 @@ class PlgFabrik_ListPhp_Events extends PlgFabrik_List
 
 		return $this->doEvaluate($params->get('list_phpevents_ondeleterows'));
 	}
+	
+	/**
+	 * Called after the model has deleted rows
+	 *
+	 * @return  bool  false if fail
+	 */
+	
+	public function onAfterDeleteRows()
+	{
+		$params = $this->getParams();
+	
+		return $this->doEvaluate($params->get('list_phpevents_onafterdeleterows'));
+	}
 
 	/**
 	 * Prep the button if needed

@@ -48,6 +48,13 @@
       	description="PLG_FABRIK_LIST_PHPEVENTS_ONDELETEROWS_DESC"
       	repeat="true" />
       	
+	<field name="list_phpevents_onafterdeleterows"
+      	type="fabrikeditor"
+		mode="php"
+      	label="PLG_FABRIK_LIST_PHPEVENTS_ONDELETEROWS_LABEL"
+      	description="PLG_FABRIK_LIST_PHPEVENTS_ONDELETEROWS_DESC"
+      	repeat="true" />
+      	
       <field name="list_phpevents_onbuildquerywhere"
       	type="fabrikeditor"
 		mode="php"
