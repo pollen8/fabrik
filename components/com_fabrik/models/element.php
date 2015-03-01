@@ -7511,4 +7511,30 @@ class PlgFabrik_Element extends FabrikPlugin
 		return 'change';
 	}
 	
+	/**
+	 * Returns class name to use for advanced select (no surrounding space), or empty string
+	 * 
+	 * @return  bool
+	 */
+	
+	public function getAdvancedSelectClass()
+	{
+		$fbConfig = JComponentHelper::getParams('com_fabrik');
+		$params = $this->getParams();
+		
+		$advancedClass = '';
+
+		if ($fbConfig->get('advanced_behavior', '0') == '1')
+		{
+
+			if (!$this->getGroup()->canRepeat())
+			{
+				$advancedClass = $params->get('advanced_behavior', '0') == '1'  ? 'advancedSelect' : '';
+			}
+			
+		}
+		
+		return $advancedClass;
+		
+	}
 }

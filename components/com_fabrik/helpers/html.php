@@ -943,7 +943,8 @@ if (!$j3)
 			$document = JFactory::getDocument();
 			$version = new JVersion;
 			$jsAssetBaseURI = self::getJSAssetBaseURI();
-
+			$fbConfig = JComponentHelper::getParams('com_fabrik');
+			
 			// Only use template test for testing in 2.5 with my temp J bootstrap template.
 			$bootstrapped = in_array($app->getTemplate(), array('bootstrap', 'fabrik4')) || $version->RELEASE > 2.5;
 
@@ -960,6 +961,12 @@ if (!$j3)
 			// Require js test - list with no cal loading ajax form with cal
 			JHTML::_('behavior.calendar');
 
+			if ($fbConfig->get('advanced_behavior', '0') == '1')
+			{
+				JHtml::_('formbehavior.chosen', 'select.advancedSelect');
+			}
+
+				
 			if (self::inAjaxLoadedPage() && !$bootstrapped)
 			{
 				// $$$ rob 06/02/2012 recall ant so that Color.detach is available (needed for opening a window from within a window)

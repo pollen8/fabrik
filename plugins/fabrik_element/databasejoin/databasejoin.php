@@ -1356,16 +1356,9 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 			if ($this->canUse())
 			{
 
-				if (!$this->getGroup()->canRepeat())
-				{
-					$advanced = $params->get('advanced_behavior', '0') == '1' ? ' advancedSelect ' : '';
-				}
-				else
-				{
-					$advanced = '';
-				}
-
-				$attribs = 'class="fabrikinput inputbox input ' . $advanced . $params->get('bootstrap_class', 'input-large') . '" size="1"';
+				$advancedClass = $this->getAdvancedSelectClass();
+				
+				$attribs = 'class="fabrikinput inputbox input ' . $advancedClass . ' ' . $params->get('bootstrap_class', 'input-large') . '" size="1"';
 
 				// If user can access the drop down
 				switch ($displayType)
@@ -2843,17 +2836,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		$opts->listName = $this->getListModel()->getTable()->db_table_name;
 		$this->elementJavascriptJoinOpts($opts);
 		$opts->isJoin = $this->isJoin();
-
-		if (!$this->getGroup()->canRepeat())
-		{
-			$advanced = $params->get('advanced_behavior', '0') == '1';
-		}
-		else
-		{
-			$advanced = false;
-		}
-		
-		$opts->advanced = $advanced;
+		$opts->advanced = $this->getAdvancedSelectClass() != '';
 		
 		return $opts;
 	}

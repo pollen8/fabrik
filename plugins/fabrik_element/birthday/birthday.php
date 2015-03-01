@@ -267,17 +267,9 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 			}
 
 			$errorCSS = (isset($this->_elementError) && $this->_elementError != '') ? " elementErrorHighlight" : '';
-
-			if (!$this->getGroup()->canRepeat())
-			{
-				$advanced = $params->get('advanced_behavior', '0') == '1' ? ' advancedSelect ' : '';
-			}
-			else
-			{
-				$advanced = '';
-			}
-
-			$attribs = 'class="input-small fabrikinput inputbox' . $advanced . $errorCSS . '"';
+			$advancedClass = $this->getAdvancedSelectClass();
+			
+			$attribs = 'class="input-small fabrikinput inputbox ' . $advancedClass . ' ' . $errorCSS . '"';
 			$str = array();
 			$str[] = '<div class="fabrikSubElementContainer" id="' . $id . '">';
 

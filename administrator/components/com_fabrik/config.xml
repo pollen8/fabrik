@@ -299,6 +299,7 @@
 				label="PLG_ELEMENT_DROPDOWN_ADVANCED_BEHAVIOR_LABEL"
 				description="PLG_ELEMENT_DROPDOWN_ADVANCED_BEHAVIOR_DESC" >
 					<option value="0">JNO</option>
+					<option value="1">PLG_ELEMENT_DROPDOWN_ADVANCED_BEHAVIOR_PER_ELEMENT</option>
 					<option value="1">JYES</option>
 			</field>
 			
