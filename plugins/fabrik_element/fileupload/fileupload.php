@@ -1063,7 +1063,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		if ($allowedFiles != '')
 		{
 			// $$$ hugh - strip spaces and leading ., as folk often do ".bmp, .jpg"
-			preg_replace('#(\s+|^)\.?#', '', trim($allowedFiles));
+			preg_replace('#(\s*|^)\.?#', '', trim($allowedFiles));
 			$aFileTypes = explode(",", $allowedFiles);
 		}
 		else
