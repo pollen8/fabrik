@@ -47,6 +47,15 @@
 				repeat="true"
 				valueformat="tableelement"/>
 			
+			<field name="comment-date-format"
+				type="text"
+				default=""
+				class="btn-group"
+				description="PLG_FORM_COMMENT_DATE_FORMAT_DESC"
+				label="PLG_FORM_COMMENT_DATE_FORMAT_LABEL"
+				>
+			</field>
+			
 			<field name="comment-internal-rating"
 				type="radio"
 				default="0"
@@ -114,7 +123,7 @@
 			</field>
 			
 			<field name="comment-thumb"
-				deafult="0"
+				default="0"
 				type="radio"
 				class="btn-group"
 				description="PLG_FORM_COMMENT_THUMB_DESC"
