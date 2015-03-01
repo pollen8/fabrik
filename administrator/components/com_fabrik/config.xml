@@ -300,7 +300,7 @@
 				description="PLG_ELEMENT_DROPDOWN_ADVANCED_BEHAVIOR_DESC" >
 					<option value="0">JNO</option>
 					<option value="1">PLG_ELEMENT_DROPDOWN_ADVANCED_BEHAVIOR_PER_ELEMENT</option>
-					<option value="1">JYES</option>
+					<option value="2">JYES</option>
 			</field>
 			
 	</fieldset>
