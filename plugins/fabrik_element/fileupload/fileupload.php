@@ -411,6 +411,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		$opts->ajax_silverlight_path = COM_FABRIK_LIVESITE . 'plugins/fabrik_element/fileupload/lib/plupload/js/plupload.flash.swf';
 		$opts->ajax_flash_path = COM_FABRIK_LIVESITE . 'plugins/fabrik_element/fileupload/lib/plupload/js/plupload.flash.swf';
 		$opts->max_file_size = (float) $params->get('ul_max_file_size');
+		$opts->device_capture = (float) $params->get('ul_device_capture');
 		$opts->ajax_chunk_size = (int) $params->get('ajax_chunk_size', 0);
 		$opts->filters = $this->ajaxFileFilters();
 		$opts->crop = $this->canCrop();
@@ -432,7 +433,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		$opts->listName = $this->getListModel()->getTable()->db_table_name;
 		$opts->useWIP = (bool) $params->get('upload_use_wip', '0') == '1';
 		$opts->page_url = COM_FABRIK_LIVESITE;
-		
+
 		JText::script('PLG_ELEMENT_FILEUPLOAD_MAX_UPLOAD_REACHED');
 		JText::script('PLG_ELEMENT_FILEUPLOAD_DRAG_FILES_HERE');
 		JText::script('PLG_ELEMENT_FILEUPLOAD_UPLOAD_ALL_FILES');
@@ -456,11 +457,6 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 	{
 		$return = new stdClass;
 		$exts = $this->_getAllowedExtension();
-
-		foreach ($exts as &$ext)
-		{
-			$ext = trim(str_replace('.', '', $ext));
-		}
 
 		$return->title = 'Allowed files';
 		$return->extensions = implode(',', $exts);
@@ -1066,8 +1062,8 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 
 		if ($allowedFiles != '')
 		{
-			// $$$ hugh - strip spaces, as folk often do ".foo, .bar"
-			preg_replace('#\s+#', '', $allowedFiles);
+			// $$$ hugh - strip spaces and leading ., as folk often do ".bmp, .jpg"
+			preg_replace('#(\s+|^)\.?#', '', trim($allowedFiles));
 			$aFileTypes = explode(",", $allowedFiles);
 		}
 		else
@@ -1100,12 +1096,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		$curr_f_ext = JString::strtolower(JFile::getExt($myFileName));
 		array_walk($aFileTypes, create_function('&$v', '$v = JString::strtolower($v);'));
 
-		if (in_array($curr_f_ext, $aFileTypes) || in_array("." . $curr_f_ext, $aFileTypes))
-		{
-			return true;
-		}
-
-		return false;
+		return in_array($curr_f_ext, $aFileTypes);
 	}
 
 	/**
@@ -1763,7 +1754,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 				{
 					$files = $input->files->get($name, array(), 'array');
 					$file = $files['name'];
-					
+
 					return $file == '' ? true : false;
 				}
 			}
@@ -2062,8 +2053,9 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		$groupModel = $this->getGroup();
 		$element = $this->getElement();
 		$params = $this->getParams();
-		
+
 		$use_wip = $params->get('upload_use_wip', '0') == '1';
+		$device_capture = $params->get('ul_device_capture', '0');
 
 		if ($element->hidden == '1')
 		{
@@ -2151,7 +2143,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 				if (
 					($use_wip && $this->isEditable())
 					|| (
-						$value != '' 
+						$value != ''
 						&& (
 							$storage->exists(COM_FABRIK_BASE . $value)
 							|| JString::substr($value, 0, 4) == 'http')
@@ -2199,7 +2191,31 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 
 		$allRenders = implode('<br/>', $allRenders);
 		$allRenders .= ($allRenders == '') ? '' : '<br/>';
-		$str[] = $allRenders . '<input class="fabrikinput" name="' . $name . '" type="file" id="' . $id . '" />' . "\n";
+		$capture = "";
+		switch ($device_capture)
+		{
+			case 1:
+				$capture = ' capture="camera"';
+			case 2:
+				$capture = ' accept="image/*"' . $capture;
+				break;
+			case 3:
+				$capture = ' capture="microphone"';
+			case 4:
+				$capture = ' accept="audio/*"' . $capture;
+				break;
+			case 5:
+				$capture = ' capture="camcorder"';
+			case 6:
+				$capture = ' accept="video/*"' . $capture;
+				break;
+			default:
+				$capture = implode(",.",$this->_getAllowedExtension());
+				$capture = $capture ? ' accept=".' . $capture . '"' : '';
+				break;
+		}
+
+		$str[] = $allRenders . '<input class="fabrikinput" name="' . $name . '" type="file" id="' . $id . '"' . $capture . ' />' . "\n";
 
 		if ($params->get('fileupload_storage_type', 'filesystemstorage') == 'filesystemstorage' && $params->get('upload_allow_folderselect') == '1')
 		{
@@ -3131,7 +3147,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 
 		return $rendered;
 	}
-	
+
 	/**
 	 * run on formModel::setFormData()
 	 * TESTING - stick the filename (if it's there) in to the formData, so things like validations
@@ -3142,7 +3158,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 	 *
 	 * @return void
 	 */
-	
+
 	public function preProcess_off($c)
 	{
 		$params = $this->getParams();
@@ -3150,7 +3166,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		$form = $this->getForm();
 		$data = unserialize(serialize($form->formData));
 		$group = $this->getGroup();
-	
+
 		/**
 		 * get the key name in dot format for updateFormData method
 		 * $$$ hugh - added $rawkey stuff, otherwise when we did "$key . '_raw'" in the updateFormData
@@ -3159,7 +3175,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		$key = $this->getFullName(true, false);
 		$shortkey = $this->getFullName(true, false);
 		$rawkey = $key . '_raw';
-	
+
 		if (!$group->canRepeat())
 		{
 			if (!$this->isRepeatElement())
@@ -3171,5 +3187,5 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 			}
 		}
 	}
-	
+
 }
