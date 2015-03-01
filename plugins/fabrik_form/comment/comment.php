@@ -561,6 +561,7 @@ class PlgFabrik_FormComment extends PlgFabrik_Form
 
 	private function writeComment($params, $comment)
 	{
+		$dateformat = $params->get('comment-date-format');
 		$app = JFactory::getApplication();
 		$input = $app->input;
 		$user = JFactory::getUser();
@@ -571,7 +572,7 @@ class PlgFabrik_FormComment extends PlgFabrik_Form
 		$data[] = '<small><i class="icon-user"></i> ';
 		$data[] = $name . ', ' . FText::_('PLG_FORM_COMMENT_WROTE_ON') . ' </small>';
 		$data[] = '<i class="icon-calendar"></i> ';
-		$data[] = ' <small>' . JHTML::date($comment->time_date) . '</small>';
+		$data[] = ' <small>' . JHTML::date($comment->time_date,$dateformat) . '</small>';
 
 		FabrikHelperHTML::addPath(COM_FABRIK_BASE . 'plugins/fabrik_form/comment/images/', 'image', 'form', false);
 		$insrc = FabrikHelperHTML::image("star_in.png", 'form', @$this->tmpl, array(), true);
