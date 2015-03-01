@@ -96,6 +96,7 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 		$opts->watchInSameGroup = $watchGroup->id === $group->id;
 		$opts->editing = ($this->isEditable() && $rowid !== '');
 		$opts->showDesc = $params->get('cdd_desc_column', '') === '' ? false : true;
+		$opts->advanced = $this->getAdvancedSelectClass() != '';
 		$formId = $this->getFormModel()->getId();
 		$opts->autoCompleteOpts = $opts->displayType == 'auto-complete'
 				? FabrikHelperHTML::autoCompleteOptions($opts->id, $this->getElement()->id, $formId, 'cascadingdropdown') : null;
@@ -278,7 +279,8 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 				case 'dropdown':
 				// Jaanus: $maxwidth to avoid dropdowns become too large (when choosing options they would still be of their full length
 					$maxwidth = $params->get('max-width', '') === '' ? '' : ' style="max-width:' . $params->get('max-width') . ';"';
-					$attribs = 'class="' . $class . '" ' . $disabled . ' size="1"' . $maxwidth;
+          $advancedClass = $this->getAdvancedSelectClass() != '' ?  ' ' . $this->getAdvancedSelectClass() : '';
+					$attribs = 'class="' . $class . $advancedClass . '" ' . $disabled . ' size="1"' . $maxwidth;
 					$html[] = JHTML::_('select.genericlist', $tmp, $name, $attribs, 'value', 'text', $default, $id);
 					break;
 			}
