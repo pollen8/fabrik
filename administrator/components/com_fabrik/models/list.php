@@ -968,28 +968,47 @@ class FabrikAdminModelList extends FabModelAdmin
 		for ($i = 0; $i < $jc; $i++)
 		{
 			$existingJoin = false;
+			$thisJoin = false;
 
 			foreach ($aOldJoins as $oOldJoin)
 			{
 				if ($joinIds[$i] == $oOldJoin->id)
 				{
 					$existingJoin = true;
+					$thisJoin = $oOldJoin;
+					break;
 				}
 			}
 
-			// $$$rob make an index on the join element (fk)
-			$els = $this->getFEModel()->getElements();
-
-			foreach ($els as $el)
+			if ($thisJoin !== false)
 			{
-				if ($el->getElement()->name == $tableKey[$i])
+				// $$$rob make an index on the join element (fk)
+				/*
+				$els = $this->getFEModel()->getElements();
+	
+				foreach ($els as $el)
 				{
-					$size = JString::stristr($el->getFieldDescription(), 'int') ? '' : '10';
+					if ($el->getElement()->name == $tableKey[$i])
+					{
+						$size = JString::stristr($el->getFieldDescription(), 'int') ? '' : '10';
+					}
 				}
+				*/
+				$fields = $this->getDBFields($thisJoin->table_join, 'Field');
+				$fkField = FArrayHelper::getValue($fields, $thisJoin->table_join_key, false);
+				switch ($pkField->BaseType) {
+					case 'VARCHAR':
+						$fkSize = (int) $fkField->BaseLength < 10 ? $fkField->BaseLength : 10;
+						break;
+					case 'INT':
+					case 'DATETIME':
+					default:
+						$fkSize = '';
+						break;
+				}
+				$joinField = $thisJoin->table_join . '___' . $thisJoin->table_join_key;
+				$this->getFEModel()->addIndex($joinField, 'join_fk', 'INDEX', $fkSize);
 			}
-
-			$this->getFEModel()->addIndex($tableKey[$i], 'join', 'INDEX', $size);
-
 			if (!$existingJoin)
 			{
 				$this->makeNewJoin($tableKey[$i], $joinTableKey[$i], $joinTypes[$i], $joinTable[$i], $joinTableFrom[$i], $repeats[$i][0]);
@@ -2676,7 +2695,7 @@ class FabrikAdminModelList extends FabModelAdmin
 				 * Grab the size part ...
 				 */
 				$matches = array();
-				if (preg_match('#\(\d+)\)$#', $row->Type,$matches))
+				if (preg_match('#\((\d+)\)$#', $row->Type,$matches))
 				{
 					$row->BaseLength = $matches[1];
 				}
