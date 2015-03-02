@@ -1187,6 +1187,22 @@ class FabrikAdminModelElement extends FabModelAdmin
 		
 		$fieldName = $tableName . '___parent_id';
 		$listModel->addIndex($fieldName, 'parent_fk', 'INDEX', '');
+		
+		$fields = $listModel->getDBFields($tableName, 'Field');
+		$field = FArrayHelper::getValue($fields, $row->name, false);
+		switch ($field->BaseType) {
+			case 'VARCHAR':
+				$size = (int) $field->BaseLength < 10 ? $field->BaseLength : 10;
+				break;
+			case 'INT':
+			case 'DATETIME':
+			default:
+				$size = '';
+				break;
+		}
+		$fieldName = $tableName . '___' . $row->name;
+		$listModel->addIndex($fieldName, 'repeat_el', 'INDEX', $size);
+		
 	}
 
 	/**
