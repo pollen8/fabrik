@@ -4455,6 +4455,19 @@ class FabrikFEModelList extends JModelForm
 				 */
 				$row->BaseType = strtoupper(preg_replace('#(\(\d+\))$#', '', $row->Type));
 				$row->BaseType = preg_replace('#(\s+SIGNED|\s+UNSIGNED)#', '', $row->BaseType);
+				
+				/**
+				 * Grab the size part ...
+				 */
+				$matches = array();
+				if (preg_match('#\((\d+)\)$#', $row->Type, $matches))
+				{
+					$row->BaseLength = $matches[1];
+				}
+				else
+				{
+					$row->BaseLength = '';
+				}
 			}
 		}
 

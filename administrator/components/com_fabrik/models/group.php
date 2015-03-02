@@ -305,10 +305,27 @@ class FabrikAdminModelGroup extends FabModelAdmin
 		$groupModel = JModelLegacy::getInstance('Group', 'FabrikFEModel');
 		$groupModel->setId($data['id']);
 		$listModel = $groupModel->getListModel();
-		$list = $listModel->getTable();
-		$tableName = $list->db_table_name . '_' . $data['id'] . '_repeat';
-		$fieldName = $tableName . '___parent_id';
-		$listModel->addIndex($fieldName, 'parent_fk', 'INDEX', '');
+		$item = FabTable::getInstance('Group', 'FabrikTable');
+		$item->load($data['id']);
+		$join = $this->getTable('join');
+		$join->load(array('id' => $item->join_id));
+		$fkFieldName = $join->table_join . '___' . $join->table_join_key;
+		$pkFieldName = $join->join_from_table . '___' . $join->table_key;
+		$formModel = $groupModel->getFormModel();
+		$pkElementModel = $formModel->getElement($pkFieldName);
+		$fields = $listModel->getDBFields($join->join_from_table, 'Field');
+		$pkField = FArrayHelper::getValue($fields, $join->table_key, false);
+		switch ($pkField->BaseType) {
+			case 'VARCHAR':
+				$pkSize = (int) $pkField->BaseLength < 10 ? $pkField->BaseLength : 10;
+				break;
+			case 'INT':
+			case 'DATETIME':
+			default:
+				$pkSize = '';
+				break;			
+		}
+		$listModel->addIndex($fieldName, 'parent_fk', 'INDEX', $pkSize);
 	}
 	
 	/**
