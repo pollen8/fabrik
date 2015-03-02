@@ -1185,7 +1185,8 @@ class FabrikAdminModelElement extends FabModelAdmin
 		$join->bind($data);
 		$join->store();
 		
-		$listModel->addIndex($tableName . '___parent_id', 'parent_fk', 'INDEX', '');
+		$fieldName = $tableName . '___parent_id';
+		$listModel->addIndex($fieldName, 'parent_fk', 'INDEX', '');
 	}
 
 	/**

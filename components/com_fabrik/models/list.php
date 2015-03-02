@@ -8480,7 +8480,16 @@ class FabrikFEModelList extends JModelForm
 		$field = str_replace('.', '___', $field);
 
 		// $$$ rob 28/02/2011 if index in joined table we need to use that the make the key on
-		$table = !strstr($field, '___') ? $this->getTable()->db_table_name : array_shift(explode('___', $field));
+		if (!strstr($field, '___'))
+		{
+			$table = $this->getTable()->db_table_name;
+		}
+		else
+		{
+			$fieldParts = explode('___', $field);
+			$table = array_shift($fieldParts);
+		}
+		
 		$field = FabrikString::shortColName($field);
 		
 		$indexes = $this->getIndexes($table);

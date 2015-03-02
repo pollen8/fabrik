@@ -211,11 +211,17 @@ class FabrikAdminModelGroup extends FabModelAdmin
 				{
 					$return = $this->makeJoinedGroup($data);
 				}
+				else
+				{
+					$this->checkFKIndex($data);
+				}
+				
 				// Update for the is_join change
 				if ($return)
 				{
 					$return = parent::save($data);
 				}
+				
 			}
 			else
 			{
@@ -285,6 +291,26 @@ class FabrikAdminModelGroup extends FabModelAdmin
 		}
 	}
 
+	/**
+	 * Check if an index exists on the parent_id for a repeat table.
+	 * We forgot to index the parent_id until 32/2015, which could have an ipact on getData()
+	 * query performance.  Only called from the save() method.
+	 * 
+	 * @param   array  $data  jform data
+
+	 */
+	
+	private function checkFKIndex($data)
+	{
+		$groupModel = JModelLegacy::getInstance('Group', 'FabrikFEModel');
+		$groupModel->setId($data['id']);
+		$listModel = $groupModel->getListModel();
+		$list = $listModel->getTable();
+		$tableName = $list->db_table_name . '_' . $data['id'] . '_repeat';
+		$fieldName = $tableName . '___parent_id';
+		$listModel->addIndex($fieldName, 'parent_fk', 'INDEX', '');
+	}
+	
 	/**
 	 * A group has been set to be repeatable but is not part of a join
 	 * so we want to:
@@ -399,8 +425,11 @@ class FabrikAdminModelGroup extends FabModelAdmin
 		$join->store();
 		$data['is_join'] = 1;
 
+		$listModel->addIndex($newTableName . '___parent_id', 'parent_fk', 'INDEX', '');
+		
 		return true;
 	}
+	
 
 	/**
 	 * Repeat has been turned off for a group, so we need to remove the join.
