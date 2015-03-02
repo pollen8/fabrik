@@ -8453,12 +8453,16 @@ class FabrikFEModelList extends JModelForm
 		}
 		if (!isset($this->indexes))
 		{
+			$this->indexes = array();
+		}
+		if (!array_key_exists($table, $this->indexes))
+		{
 			$db = $this->getDb();
 			$db->setQuery('SHOW INDEXES FROM ' . $db->quoteName($table));
-			$this->indexes = $db->loadObjectList();
+			$this->indexes[$table] = $db->loadObjectList();
 		}
 
-		return $this->indexes;
+		return $this->indexes[$table];
 	}
 
 	/**

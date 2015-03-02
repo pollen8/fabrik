@@ -938,6 +938,7 @@ class FabrikAdminModelList extends FabModelAdmin
 		$query->select('*')->from('#__{package}_joins')->where('list_id = ' . (int) $this->getState('list.id') . ' AND element_id = 0');
 		$db->setQuery($query);
 		$aOldJoins = $db->loadObjectList();
+		$aJoinsToIndex = array();
 		$params = $data['params'];
 		$aOldJoinsToKeep = array();
 		$joinModel = JModelLegacy::getInstance('Join', 'FabrikFEModel');
@@ -975,43 +976,14 @@ class FabrikAdminModelList extends FabModelAdmin
 				if ($joinIds[$i] == $oOldJoin->id)
 				{
 					$existingJoin = true;
-					$thisJoin = $oOldJoin;
+					$joinsToIndex[] = $oOldJoin;
 					break;
 				}
 			}
 
-			if ($thisJoin !== false)
-			{
-				// $$$rob make an index on the join element (fk)
-				/*
-				$els = $this->getFEModel()->getElements();
-	
-				foreach ($els as $el)
-				{
-					if ($el->getElement()->name == $tableKey[$i])
-					{
-						$size = JString::stristr($el->getFieldDescription(), 'int') ? '' : '10';
-					}
-				}
-				*/
-				$fields = $this->getDBFields($thisJoin->table_join, 'Field');
-				$fkField = FArrayHelper::getValue($fields, $thisJoin->table_join_key, false);
-				switch ($pkField->BaseType) {
-					case 'VARCHAR':
-						$fkSize = (int) $fkField->BaseLength < 10 ? $fkField->BaseLength : 10;
-						break;
-					case 'INT':
-					case 'DATETIME':
-					default:
-						$fkSize = '';
-						break;
-				}
-				$joinField = $thisJoin->table_join . '___' . $thisJoin->table_join_key;
-				$this->getFEModel()->addIndex($joinField, 'join_fk', 'INDEX', $fkSize);
-			}
 			if (!$existingJoin)
 			{
-				$this->makeNewJoin($tableKey[$i], $joinTableKey[$i], $joinTypes[$i], $joinTable[$i], $joinTableFrom[$i], $repeats[$i][0]);
+				$joinsToIndex[] = $this->makeNewJoin($tableKey[$i], $joinTableKey[$i], $joinTypes[$i], $joinTable[$i], $joinTableFrom[$i], $repeats[$i][0]);
 			}
 			else
 			{
@@ -1063,6 +1035,25 @@ class FabrikAdminModelList extends FabModelAdmin
 				}
 			}
 		}
+		
+		// And finally, Esther ... index the join FK's
+		foreach ($joinsToIndex as $thisJoin)
+		{
+			$fields = $this->getDBFields($thisJoin->table_join, 'Field');
+			$fkField = FArrayHelper::getValue($fields, $thisJoin->table_join_key, false);
+			switch ($pkField->BaseType) {
+				case 'VARCHAR':
+					$fkSize = (int) $fkField->BaseLength < 10 ? $fkField->BaseLength : 10;
+					break;
+				case 'INT':
+				case 'DATETIME':
+				default:
+					$fkSize = '';
+					break;
+			}
+			$joinField = $thisJoin->table_join . '___' . $thisJoin->table_join_key;
+			$this->getFEModel()->addIndex($joinField, 'join_fk', 'INDEX', $fkSize);
+		}
 	}
 
 	/**
@@ -1075,7 +1066,7 @@ class FabrikAdminModelList extends FabModelAdmin
 	 * @param   string  $joinTableFrom  join table
 	 * @param   bool    $isRepeat       is the group a repeat
 	 *
-	 * @return  void
+	 * @return  object  $join           returns new join object
 	 */
 
 	protected function makeNewJoin($tableKey, $joinTableKey, $joinType, $joinTable, $joinTableFrom, $isRepeat)
@@ -1131,6 +1122,8 @@ class FabrikAdminModelList extends FabModelAdmin
 		$join->store();
 
 		$this->createLinkedElements($groupId, $joinTable);
+		
+		return $join;
 	}
 
 	/**
