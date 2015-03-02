@@ -277,10 +277,10 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 					break;
 				default:
 				case 'dropdown':
-				// Jaanus: $maxwidth to avoid dropdowns become too large (when choosing options they would still be of their full length
+					// Jaanus: $maxwidth to avoid dropdowns become too large (when choosing options they would still be of their full length
 					$maxwidth = $params->get('max-width', '') === '' ? '' : ' style="max-width:' . $params->get('max-width') . ';"';
-          $advancedClass = $this->getAdvancedSelectClass() != '' ?  ' ' . $this->getAdvancedSelectClass() : '';
-					$attribs = 'class="' . $class . $advancedClass . '" ' . $disabled . ' size="1"' . $maxwidth;
+					$advancedClass = $this->getAdvancedSelectClass();
+					$attribs = 'class="' . $class . ' ' . $advancedClass . '" ' . $disabled . ' size="1"' . $maxwidth;
 					$html[] = JHTML::_('select.genericlist', $tmp, $name, $attribs, 'value', 'text', $default, $id);
 					break;
 			}
