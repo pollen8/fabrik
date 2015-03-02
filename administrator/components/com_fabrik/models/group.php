@@ -325,7 +325,7 @@ class FabrikAdminModelGroup extends FabModelAdmin
 				$pkSize = '';
 				break;			
 		}
-		$listModel->addIndex($fieldName, 'parent_fk', 'INDEX', $pkSize);
+		$listModel->addIndex($fkFieldName, 'parent_fk', 'INDEX', $pkSize);
 	}
 	
 	/**
