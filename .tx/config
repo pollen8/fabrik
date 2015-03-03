@@ -476,7 +476,17 @@ trans.ru-RU = plugins/fabrik_cron/rest/language/ru-RU/ru-RU.plg_fabrik_cron_rest
 trans.sk-SK = plugins/fabrik_cron/rest/language/sk-SK/sk-SK.plg_fabrik_cron_rest.sys.ini
 trans.tr-TR = plugins/fabrik_cron/rest/language/tr-TR/tr-TR.plg_fabrik_cron_rest.sys.ini
 
-
+[fabrik31.plg_element_access]
+file_filter = plugins/fabrik_element/access/language/<lang>/<lang>.plg_fabrik_element_access.ini
+source_file = plugins/fabrik_element/access/language/en-GB/en-GB.plg_fabrik_element_access.ini
+source_lang = en_GB
+trans.da-DK = plugins/fabrik_element/access/language/da-DK/da-DK.plg_fabrik_element_access.ini
+trans.de-DE = plugins/fabrik_element/access/language/de-DE/de-DE.plg_fabrik_element_access.ini
+trans.es-ES = plugins/fabrik_element/access/language/es-ES/es-ES.plg_fabrik_element_access.ini
+trans.et-EE = plugins/fabrik_element/access/language/et-EE/et-EE.plg_fabrik_element_access.ini
+trans.it-IT = plugins/fabrik_element/access/language/it-IT/it-IT.plg_fabrik_element_access.ini
+trans.pt-PT = plugins/fabrik_element/access/language/pt-PT/pt-PT.plg_fabrik_element_access.ini
+trans.ru-RU = plugins/fabrik_element/access/language/ru-RU/ru-RU.plg_fabrik_element_access.ini
 
 [fabrik31.plg_element_access_sys]
 file_filter = plugins/fabrik_element/access/language/<lang>/<lang>.plg_fabrik_element_access.sys.ini
@@ -490,9 +500,59 @@ trans.it-IT = plugins/fabrik_element/access/language/it-IT/it-IT.plg_fabrik_elem
 trans.pt-PT = plugins/fabrik_element/access/language/pt-PT/pt-PT.plg_fabrik_element_access.sys.ini
 trans.ru-RU = plugins/fabrik_element/access/language/ru-RU/ru-RU.plg_fabrik_element_access.sys.ini
 
+[fabrik31.plg_element_attending]
+file_filter = plugins/fabrik_element/attending/language/<lang>/<lang>.plg_fabrik_element_attending.ini
+source_file = plugins/fabrik_element/attending/language/en-GB/en-GB.plg_fabrik_element_attending.ini
+source_lang = en_GB
+trans.da-DK = plugins/fabrik_element/attending/language/da-DK/da-DK.plg_fabrik_element_attending.ini
+trans.pt-BR = plugins/fabrik_element/attending/language/pt-BR/pt-BR.plg_fabrik_element_attending.ini
 
+[fabrik31.plg_element_attending_sys]
+file_filter = plugins/fabrik_element/attending/language/<lang>/<lang>.plg_fabrik_element_attending.sys.ini
+source_file = plugins/fabrik_element/attending/language/en-GB/en-GB.plg_fabrik_element_attending.sys.ini
+source_lang = en_GB
+trans.da-DK = plugins/fabrik_element/attending/language/da-DK/da-DK.plg_fabrik_element_attending.sys.ini
+trans.pt-BR = plugins/fabrik_element/attending/language/pt-BR/pt-BR.plg_fabrik_element_attending.sys.ini
 
+[fabrik31.plg_element_birthday]
+file_filter = plugins/fabrik_element/birthday/language/<lang>/<lang>.plg_fabrik_element_birthday.ini
+source_file = plugins/fabrik_element/birthday/language/en-GB/en-GB.plg_fabrik_element_birthday.ini
+source_lang = en_GB
+trans.da-DK = plugins/fabrik_element/birthday/language/da-DK/da-DK.plg_fabrik_element_birthday.ini
+trans.de-DE = plugins/fabrik_element/birthday/language/de-DE/de-DE.plg_fabrik_element_birthday.ini
+trans.es-ES = plugins/fabrik_element/birthday/language/es-ES/es-ES.plg_fabrik_element_birthday.ini
+trans.et-EE = plugins/fabrik_element/birthday/language/et-EE/et-EE.plg_fabrik_element_birthday.ini
+trans.eu-ES = plugins/fabrik_element/birthday/language/eu-ES/eu-ES.plg_fabrik_element_birthday.ini
+trans.fr-FR = plugins/fabrik_element/birthday/language/fr-FR/fr-FR.plg_fabrik_element_birthday.ini
+trans.it-IT = plugins/fabrik_element/birthday/language/it-IT/it-IT.plg_fabrik_element_birthday.ini
+trans.ms-MY = plugins/fabrik_element/birthday/language/ms-MY/ms-MY.plg_fabrik_element_birthday.ini
+trans.nl-NL = plugins/fabrik_element/birthday/language/nl-NL/nl-NL.plg_fabrik_element_birthday.ini
+trans.pl-PL = plugins/fabrik_element/birthday/language/pl-PL/pl-PL.plg_fabrik_element_birthday.ini
+trans.pt-BR = plugins/fabrik_element/birthday/language/pt-BR/pt-BR.plg_fabrik_element_birthday.ini
+trans.pt-PT = plugins/fabrik_element/birthday/language/pt-PT/pt-PT.plg_fabrik_element_birthday.ini
+trans.ro-RO = plugins/fabrik_element/birthday/language/ro-RO/ro-RO.plg_fabrik_element_birthday.ini
+trans.ru-RU = plugins/fabrik_element/birthday/language/ru-RU/ru-RU.plg_fabrik_element_birthday.ini
+trans.sk-SK = plugins/fabrik_element/birthday/language/sk-SK/sk-SK.plg_fabrik_element_birthday.ini
 
+[fabrik31.plg_element_birthday_sys]
+file_filter = plugins/fabrik_element/birthday/language/<lang>/<lang>.plg_fabrik_element_birthday.sys.ini
+source_file = plugins/fabrik_element/birthday/language/en-GB/en-GB.plg_fabrik_element_birthday.sys.ini
+source_lang = en_GB
+trans.da-DK = plugins/fabrik_element/birthday/language/da-DK/da-DK.plg_fabrik_element_birthday.sys.ini
+trans.de-DE = plugins/fabrik_element/birthday/language/de-DE/de-DE.plg_fabrik_element_birthday.sys.ini
+trans.es-ES = plugins/fabrik_element/birthday/language/es-ES/es-ES.plg_fabrik_element_birthday.sys.ini
+trans.et-EE = plugins/fabrik_element/birthday/language/et-EE/et-EE.plg_fabrik_element_birthday.sys.ini
+trans.eu-ES = plugins/fabrik_element/birthday/language/eu-ES/eu-ES.plg_fabrik_element_birthday.sys.ini
+trans.fr-FR = plugins/fabrik_element/birthday/language/fr-FR/fr-FR.plg_fabrik_element_birthday.sys.ini
+trans.it-IT = plugins/fabrik_element/birthday/language/it-IT/it-IT.plg_fabrik_element_birthday.sys.ini
+trans.ms-MY = plugins/fabrik_element/birthday/language/ms-MY/ms-MY.plg_fabrik_element_birthday.sys.ini
+trans.nl-NL = plugins/fabrik_element/birthday/language/nl-NL/nl-NL.plg_fabrik_element_birthday.sys.ini
+trans.pl-PL = plugins/fabrik_element/birthday/language/pl-PL/pl-PL.plg_fabrik_element_birthday.sys.ini
+trans.pt-BR = plugins/fabrik_element/birthday/language/pt-BR/pt-BR.plg_fabrik_element_birthday.sys.ini
+trans.pt-PT = plugins/fabrik_element/birthday/language/pt-PT/pt-PT.plg_fabrik_element_birthday.sys.ini
+trans.ro-RO = plugins/fabrik_element/birthday/language/ro-RO/ro-RO.plg_fabrik_element_birthday.sys.ini
+trans.ru-RU = plugins/fabrik_element/birthday/language/ru-RU/ru-RU.plg_fabrik_element_birthday.sys.ini
+trans.sk-SK = plugins/fabrik_element/birthday/language/sk-SK/sk-SK.plg_fabrik_element_birthday.sys.ini
 
 [fabrik31.plg_element_button]
 file_filter = plugins/fabrik_element/button/language/<lang>/<lang>.plg_fabrik_element_button.ini
