@@ -646,9 +646,9 @@
 
 		<!-- copy over the database drivers -->
 		<mkdir dir="${cfg.destdir}/site/dbdriver" />
-		<copy file="${basedir}/libraries/joomla/database/database/mysql_fab.php" todir="${cfg.destdir}/site/dbdriver" />
+		<!--<copy file="${basedir}/libraries/joomla/database/database/mysql_fab.php" todir="${cfg.destdir}/site/dbdriver" />
 		<copy file="${basedir}/libraries/joomla/database/database/mysqli_fab.php" todir="${cfg.destdir}/site/dbdriver" />
-
+-->
 		<!--  J3.0 db drivers -->
 		<mkdir dir="${cfg.destdir}/site/driver" />
 		<copy file="${basedir}/libraries/joomla/database/driver/mysql_fab.php" todir="${cfg.destdir}/site/driver" />
@@ -911,8 +911,11 @@
 	<target name="changelog.update">
 		<input message="Changelog: Latest tag" addproperty="git.log.range.end" validargs="${git.tags}" defaultvalue="${project.current}" />
 		<input message="Changelog: Previous tag" addproperty="git.log.range.start" validargs="${git.tags}" defaultvalue="${project.previous}" />
+		<echo message="${git.log.range.end}"></echo>
+		<echo message="log --pretty=format:'* %s (%an)' ${git.log.range.start}..${git.log.range.end}"></echo>
 		<exec executable="git" failonerror="true" outputproperty="git.changelog">
-        	<arg line="log --pretty=format:'* %s (%an)' ${git.log.range.start}..${git.log.range.end}"/>
+        	
+			<arg line="log --pretty=format:'* %s (%an)' 3.2..3.3"/>
     	</exec>
     	<echo message="save change log to : ${cfg.destdir}/CHANGELOG-${git.log.range.end}.txt"></echo>
 		<!-- <echo message="${git.changelog}"></echo> -->

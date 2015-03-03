@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
 <extension xmlns="http://www.joomla.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" client="site" method="upgrade" type="component" version="2.5" xsi:schemaLocation="http://www.joomla.org extension.xsd ">
 	<name>com_fabrik</name>
-	<creationDate>August 2014</creationDate>
+	<creationDate>March 2015</creationDate>
 	<author>Rob Clayburn</author>
 	<copyright>Copyright (C) 2005-2015 fabrikar.com - All rights reserved.</copyright>
 	<license>GNU/GPL http://www.gnu.org/copyleft/gpl.html</license>
