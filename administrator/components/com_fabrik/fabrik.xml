@@ -3,11 +3,11 @@
 	<name>com_fabrik</name>
 	<creationDate>August 2014</creationDate>
 	<author>Rob Clayburn</author>
-	<copyright>Copyright (C) 2005-2014 fabrikar.com - All rights reserved.</copyright>
+	<copyright>Copyright (C) 2005-2015 fabrikar.com - All rights reserved.</copyright>
 	<license>GNU/GPL http://www.gnu.org/copyleft/gpl.html</license>
 	<authorEmail>rob@pollen-8.co.uk</authorEmail>
 	<authorUrl>www.pollen-8.co.uk</authorUrl>
-	<version>3.2</version>
+	<version>3.3</version>
 	<description>COM_FABRIK_XML_DESCRIPTION</description>
 
 	<scriptfile>com_fabrik.manifest.class.php</scriptfile>

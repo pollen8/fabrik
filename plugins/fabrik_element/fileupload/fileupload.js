@@ -1,8 +1,8 @@
 /**
  * File Upload Element
- *
- * @copyright: Copyright (C) 2005-2013, fabrikar.com - All rights reserved.
- * @license:   GNU/GPL http://www.gnu.org/copyleft/gpl.html
+ * 
+ * @copyright: Copyright (C) 2005-2015, fabrikar.com - All rights reserved.
+ * @license: GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
 var FbFileUpload = new Class({
@@ -19,7 +19,7 @@ var FbFileUpload = new Class({
 		if (this.options.useWIP && !this.options.ajax_upload && this.options.editable !== false) {
 			this.watchBrowseButton();
 		}
-		
+
 		if (this.options.ajax_upload && this.options.editable !== false) {
 			this.watchAjax();
 			this.options.files = $H(this.options.files);
@@ -44,10 +44,10 @@ var FbFileUpload = new Class({
 		this.watchDeleteButton();
 		this.watchTab();
 	},
-	
+
 	/**
-	 * Repoistion the hidden input field over the 'add' button. Called on initiate
-	 * and if in a tab and the tab is activated. Triggered from element.watchTab()
+	 * Repoistion the hidden input field over the 'add' button. Called on initiate and if in a tab and the tab is activated. Triggered from
+	 * element.watchTab()
 	 */
 	redraw: function () {
 		if (this.options.ajax_upload) {
@@ -59,7 +59,10 @@ var FbFileUpload = new Class({
 			if (file_element) {
 				var fileContainer = file_element.getParent();
 				var size = browseButton.getSize();
-				fileContainer.setStyles({'width': size.x, 'height': size.y});
+				fileContainer.setStyles({
+					'width': size.x,
+					'height': size.y
+				});
 				fileContainer.setStyle('top', diff);
 			}
 		}
@@ -91,7 +94,7 @@ var FbFileUpload = new Class({
 							var db = c.getElement('[data-file]');
 							if (db) {
 								db.addClass('fabrikHide');
-							}							
+							}
 						}.bind(this);
 					}.bind(this))(f);
 					// Read in the image file as a data URL.
@@ -100,7 +103,7 @@ var FbFileUpload = new Class({
 			}.bind(this));
 		}
 	},
-	
+
 	/**
 	 * Single file uploads can allow the user to delee the reference and/or file
 	 */
@@ -127,11 +130,11 @@ var FbFileUpload = new Class({
 							'rowid': this.form.options.rowid
 						}
 					}).send();
-					
+
 					if (confirm(Joomla.JText._('PLG_ELEMENT_FILEUPLOAD_CONFIRM_HARD_DELETE'))) {
 						this.makeDeletedImageField(this.groupid, b.get('data-file')).inject(this.getContainer(), 'inside');
 					}
-	
+
 					var delete_span = document.id(this.element.id + '_delete_span');
 					if (delete_span) {
 						delete_span.destroy();
@@ -142,12 +145,11 @@ var FbFileUpload = new Class({
 	},
 
 	/**
-	 * Sets the element key used in Fabrik.blocks.form_X.formElements
-	 * overwritten by dbjoin rendered as checkbox
-	 *
-	 * @since   3.0.7
-	 *
-	 * @return  string
+	 * Sets the element key used in Fabrik.blocks.form_X.formElements overwritten by dbjoin rendered as checkbox
+	 * 
+	 * @since 3.0.7
+	 * 
+	 * @return string
 	 */
 
 	getFormElementsKey: function (elId) {
@@ -160,12 +162,11 @@ var FbFileUpload = new Class({
 	},
 
 	/**
-	 * when in ajax form, on submit the list will call this, so we can remove the submit event
-	 * if we dont do that, upon a second form submission the original submitEvent is used causing a js error
-	 * as it still references the files uploaded in the first form
+	 * when in ajax form, on submit the list will call this, so we can remove the submit event if we dont do that, upon a second form submission the
+	 * original submitEvent is used causing a js error as it still references the files uploaded in the first form
 	 */
 	removeCustomEvents: function () {
-		//Fabrik.removeEvent('fabrik.form.submit.start', this.submitEvent);
+		// Fabrik.removeEvent('fabrik.form.submit.start', this.submitEvent);
 	},
 
 	cloned: function (c) {
@@ -192,11 +193,11 @@ var FbFileUpload = new Class({
 
 	/**
 	 * Create a hidden input which will tell fabrik, upon form submission, to delete the file
-	 *
-	 *  @param  int     groupid  group id
-	 *  @param  string  value    file to delete
-	 *
-	 *  @return  DOM Node - hidden input
+	 * 
+	 * @param int groupid group id
+	 * @param string value file to delete
+	 * 
+	 * @return DOM Node - hidden input
 	 */
 	makeDeletedImageField: function (groupid, value) {
 		return new Element('input', {
@@ -208,18 +209,18 @@ var FbFileUpload = new Class({
 
 	update: function (val) {
 		if (this.element) {
-                        if (val === '') {
-                                if (this.options.ajax_upload) {
-                                        this.uploader.files = [];
-                                        this.element.getParent().getElements('[id$=_dropList] tr').destroy();                        
-                                } else {
-                                        this.element.set('value', '');
-                                }                        
-                        } else {
-                                var i = this.element.getElement('img');
-                                if (typeOf(i) !== 'null') {
-                                        i.src = val;
-                                }
+			if (val === '') {
+				if (this.options.ajax_upload) {
+					this.uploader.files = [];
+					this.element.getParent().getElements('[id$=_dropList] tr').destroy();
+				} else {
+					this.element.set('value', '');
+				}
+			} else {
+				var i = this.element.getElement('img');
+				if (typeOf(i) !== 'null') {
+					i.src = val;
+				}
 			}
 		}
 	},
@@ -232,7 +233,8 @@ var FbFileUpload = new Class({
 		if (typeOf(dropTxt) !== 'null') {
 			dropTxt.show();
 		} else {
-			tr = new Element('tr.plupload_droptext').set('html', '<td colspan="4"><i class="icon-move"></i> ' + Joomla.JText._('PLG_ELEMENT_FILEUPLOAD_DRAG_FILES_HERE') + ' </td>');
+			tr = new Element('tr.plupload_droptext').set('html', '<td colspan="4"><i class="icon-move"></i> ' + Joomla.JText
+					._('PLG_ELEMENT_FILEUPLOAD_DRAG_FILES_HERE') + ' </td>');
 			this.container.getElement('tbody').adopt(tr);
 		}
 		this.container.getElement('thead').hide();
@@ -298,7 +300,7 @@ var FbFileUpload = new Class({
 			flash_swf_url: this.options.ajax_flash_path,
 			silverlight_xap_url: this.options.ajax_silverlight_path,
 			chunk_size: this.options.ajax_chunk_size + 'kb',
-			dragdrop : true,
+			dragdrop: true,
 			multipart: true,
 			filters: this.options.filters,
 			page_url: this.options.page_url
@@ -310,18 +312,17 @@ var FbFileUpload = new Class({
 			// FORCEFULLY NUKE GRACEFUL DEGRADING FALLBACK ON INIT
 			this.pluploadFallback.destroy();
 			this.pluploadContainer.removeClass("fabrikHide");
-			
+
 			if (up.features.dragdrop && up.settings.dragdrop) {
 				this.addDropArea();
 			}
 
 		}.bind(this));
-		
-	/*	this.uploader.bind('PostInit', function (up, params) {
-			debugger;
-			this.pluploadContainer.getElement('input').setStyle('width', '1px');
-		}.bind(this));
-*/
+
+		/*
+		 * this.uploader.bind('PostInit', function (up, params) { debugger; this.pluploadContainer.getElement('input').setStyle('width', '1px');
+		 * }.bind(this));
+		 */
 		this.uploader.bind('FilesRemoved', function (up, files) {
 		});
 
@@ -354,11 +355,13 @@ var FbFileUpload = new Class({
 							title = new Element('span').set('text', file.name);
 						} else {
 							a = new Element('span');
-							title = new Element('a', {'href': file.url}).set('text', file.name);
+							title = new Element('a', {
+								'href': file.url
+							}).set('text', file.name);
 						}
-						
+
 						innerli = this.imageCells(file, title, a);
-						
+
 						this.droplist.adopt(new Element(rElement, {
 							id: file.id,
 							'class': 'plupload_delete'
@@ -464,7 +467,7 @@ var FbFileUpload = new Class({
 		// (5) KICK-START PLUPLOAD
 		this.uploader.init();
 	},
-	
+
 	/**
 	 * Create an array of the dom elements to inject into a row representing an uploaded file
 	 * 
@@ -475,11 +478,11 @@ var FbFileUpload = new Class({
 		if (Fabrik.bootstrapped) {
 			var icon = new Element('td.span1.plupload_resize').adopt(a);
 			var progress = '<div class="progress progress-striped"><div class="bar" style="width: 0%;"></div></div>';
-			
+
 			status = new Element('td.span5.plupload_file_status', {}).set('html', progress);
-			
+
 			filename = new Element('td.span6.plupload_file_name', {}).adopt(title);
-	
+
 			return [filename, icon, status, del];
 		} else {
 			filename = new Element('div', {
@@ -494,7 +497,7 @@ var FbFileUpload = new Class({
 			var size = new Element('div', {
 				'class': 'plupload_file_size'
 			}).set('text', file.size);
-			
+
 			return [filename, del, status, size, new Element('div', {
 				'class': 'plupload_clearer'
 			})];
@@ -504,14 +507,16 @@ var FbFileUpload = new Class({
 	/**
 	 * Create edit image button
 	 */
-	
+
 	editImgButton: function () {
 		if (Fabrik.bootstrapped) {
 			return new Element('a.editImage', {
-				'href' : '#',
-				styles: {'display': 'none'},
-				alt : Joomla.JText._('PLG_ELEMENT_FILEUPLOAD_RESIZE'),
-				events : {
+				'href': '#',
+				styles: {
+					'display': 'none'
+				},
+				alt: Joomla.JText._('PLG_ELEMENT_FILEUPLOAD_RESIZE'),
+				events: {
 					'click': function (e) {
 						this.pluploadResize(e);
 					}.bind(this)
@@ -529,14 +534,13 @@ var FbFileUpload = new Class({
 			});
 		}
 	},
-	
+
 	/**
 	 * Create delete image button
 	 */
 	deleteImgButton: function () {
 		if (Fabrik.bootstrapped) {
-			return new Element('td.span1.plupload_file_action', {
-			}).adopt(new Element('a', {
+			return new Element('td.span1.plupload_file_action', {}).adopt(new Element('a', {
 				'href': '#',
 				'class': 'icon-delete',
 				events: {
@@ -628,13 +632,13 @@ var FbFileUpload = new Class({
 			this.widget.setImage(a.href, a.retrieve('filepath'));
 		}
 	},
-	
+
 	/**
-	 * Once the upload fires a FileUploaded bound function we test if all images for this element have been uploaded
-	 * If they have then we save the crop widget state and fire the callback - which is handled by FbFormSubmit()
+	 * Once the upload fires a FileUploaded bound function we test if all images for this element have been uploaded If they have then we save the
+	 * crop widget state and fire the callback - which is handled by FbFormSubmit()
 	 */
 	isSumbitDone: function () {
-		if (this.allUploaded() && typeof(this.submitCallBack) === 'function') {
+		if (this.allUploaded() && typeof (this.submitCallBack) === 'function') {
 			this.saveWidgetState();
 			this.submitCallBack(true);
 			delete this.submitCallBack;
@@ -642,9 +646,8 @@ var FbFileUpload = new Class({
 	},
 
 	/**
-	 * Called from FbFormSubmit.submit() handles testing.
-	 * If not yet uploaded, triggers the upload and defers the callback until the upload is complete.
-	 * If complete then saves widget state and calls parent onsubmit(). 
+	 * Called from FbFormSubmit.submit() handles testing. If not yet uploaded, triggers the upload and defers the callback until the upload is
+	 * complete. If complete then saves widget state and calls parent onsubmit().
 	 */
 	onsubmit: function (cb) {
 		this.submitCallBack = cb;
@@ -656,7 +659,7 @@ var FbFileUpload = new Class({
 			this.parent(cb);
 		}
 	},
-	
+
 	/**
 	 * Save the crop widget state as a json object
 	 */
@@ -667,7 +670,7 @@ var FbFileUpload = new Class({
 				var f = document.getElements('input[name*=' + key + ']').filter(function (fld) {
 					return fld.name.contains('[crop]');
 				});
-				f  = f.getLast();
+				f = f.getLast();
 
 				// $$$ rob - seems reloading ajax fileupload element in ajax form (e.g. from db join add record)
 				// is producing odd effects where old fileupload object constains info to previously uploaded image?
@@ -675,7 +678,7 @@ var FbFileUpload = new Class({
 
 					// Avoid circular reference in chrome when saving in ajax form
 					var i = image.img;
-					delete(image.img);
+					delete (image.img);
 					f.value = JSON.encode(image);
 					image.img = i;
 				}
@@ -683,7 +686,7 @@ var FbFileUpload = new Class({
 		}
 	},
 
-	allUploaded : function () {
+	allUploaded: function () {
 		var uploaded = true;
 		if (this.uploader) {
 			this.uploader.files.each(function (file) {
@@ -698,7 +701,7 @@ var FbFileUpload = new Class({
 
 var ImageWidget = new Class({
 
-	initialize : function (canvas, opts) {
+	initialize: function (canvas, opts) {
 		this.canvas = canvas;
 
 		this.imageDefault = {
@@ -718,7 +721,6 @@ var ImageWidget = new Class({
 			}
 		};
 
-		
 		Object.append(this.imageDefault, opts);
 
 		this.windowopts = {
@@ -732,17 +734,18 @@ var ImageWidget = new Class({
 			createShowOverLay: false,
 			crop: opts.crop,
 			destroy: false,
-			onClose : function () {
+			onClose: function () {
 				this.storeActiveImageData();
 			}.bind(this),
-			onContentLoaded : function () {
+			onContentLoaded: function () {
 				this.center();
 			},
 			onOpen: function () {
 				this.center();
 			}
 		};
-		this.windowopts.title = opts.crop ? Joomla.JText._('PLG_ELEMENT_FILEUPLOAD_CROP_AND_SCALE') : Joomla.JText._('PLG_ELEMENT_FILEUPLOAD_PREVIEW');
+		this.windowopts.title = opts.crop ? Joomla.JText._('PLG_ELEMENT_FILEUPLOAD_CROP_AND_SCALE') : Joomla.JText
+				._('PLG_ELEMENT_FILEUPLOAD_PREVIEW');
 		this.showWin();
 		this.images = $H({});
 		var parent = this;
@@ -772,7 +775,7 @@ var ImageWidget = new Class({
 			events: {
 				onDraw: function (ctx) {
 					if (typeOf(ctx) === 'null') {
-						//return;
+						// return;
 						ctx = this.CANVAS.ctx;
 					}
 					ctx.fillStyle = "#DFDFDF";
@@ -832,20 +835,20 @@ var ImageWidget = new Class({
 
 	/**
 	 * Add or make active an image in the editor
-	 *
-	 * @param  string  uri  Image URI
-	 * @param  string  filepath  Path to file
-	 * @param  object  params    Initial parameters
+	 * 
+	 * @param string uri Image URI
+	 * @param string filepath Path to file
+	 * @param object params Initial parameters
 	 */
 
 	setImage: function (uri, filepath, params) {
 		console.log('set Image', uri, filepath, params);
 		this.activeFilePath = filepath;
 		if (!this.images.has(filepath)) {
-			
+
 			// Needed to ensure they are available in onLoad
 			var tmpParams = params;
-			
+
 			// New image
 			var img = Asset.image(uri, {
 				onLoad: function () {
@@ -870,8 +873,8 @@ var ImageWidget = new Class({
 
 	/**
 	 * Set rotate, scale, image and crop values for a given image
-	 *
-	 * @param   object  params  Image parameters
+	 * 
+	 * @param object params Image parameters
 	 */
 	setInterfaceDimensions: function (params) {
 		if (this.scaleSlide) {
@@ -895,12 +898,12 @@ var ImageWidget = new Class({
 
 	/**
 	 * One time call to store initial image crop info in this.images
-	 *
-	 * @param   string   filepath  Path to image
-	 * @param   DOMnode  img       Image - just created
-	 * @param   params   object    Image parameters
-	 *
-	 * @return  object   Update image parameters
+	 * 
+	 * @param string filepath Path to image
+	 * @param DOMnode img Image - just created
+	 * @param params object Image parameters
+	 * 
+	 * @return object Update image parameters
 	 */
 
 	storeImageDimensions: function (filepath, img, params) {
@@ -930,7 +933,7 @@ var ImageWidget = new Class({
 			interactive: true,
 			rotation: 0,
 			scale: 1,
-			offset: [ 0, 0 ],
+			offset: [0, 0],
 			events: {
 				onMousemove: function (x, y) {
 					if (this.dragging) {
@@ -943,7 +946,7 @@ var ImageWidget = new Class({
 				onDraw: function (ctx) {
 					ctx = parent.CANVAS.ctx;
 					if (typeOf(parent.img) === 'null') {
-						//console.log('no parent img', parent);
+						// console.log('no parent img', parent);
 						return;
 					}
 
@@ -964,7 +967,7 @@ var ImageWidget = new Class({
 							ctx.drawImage(parent.img, w * -0.5, h * -0.5, w, h);
 						} catch (err) {
 							// only show this for debugging as if we upload a pdf then we get shown lots of these errors.
-							//fconsole(err, parent.img, w * -0.5, h * -0.5, w, h);
+							// fconsole(err, parent.img, w * -0.5, h * -0.5, w, h);
 						}
 					}
 					ctx.restore();
@@ -1023,9 +1026,8 @@ var ImageWidget = new Class({
 						return;
 					}
 					/*
-					 * calculate dimensions locally because they are have to be translated
-					 * in order to use translate and rotate with the desired effect:
-					 * rotate the item around its visual center
+					 * calculate dimensions locally because they are have to be translated in order to use translate and rotate with the desired
+					 * effect: rotate the item around its visual center
 					 */
 
 					var w = this.w;
@@ -1048,23 +1050,23 @@ var ImageWidget = new Class({
 
 					if (typeOf(parent.img) !== 'null' && parent.images.get(parent.activeFilePath)) {
 						parent.images.get(parent.activeFilePath).cropdim = {
-							x : this.x,
-							y : this.y,
-							w : w,
-							h : h
+							x: this.x,
+							y: this.y,
+							w: w,
+							h: h
 						};
 					}
 					this.setDims(x, y, w, h);
 				},
 
-				onMousedown : function (x, y) {
+				onMousedown: function (x, y) {
 					parent.CANVAS.setDrag(this);
-					this.offset = [ x - this.dims[0], y - this.dims[1] ];
+					this.offset = [x - this.dims[0], y - this.dims[1]];
 					this.dragging = true;
 					parent.overlay.withinCrop = true;
 				},
 
-				onMousemove : function (x, y) {
+				onMousemove: function (x, y) {
 					document.body.style.cursor = "move";
 					if (this.dragging) {
 						var w = this.w;
@@ -1074,19 +1076,19 @@ var ImageWidget = new Class({
 					}
 				},
 
-				onMouseup : function () {
+				onMouseup: function () {
 					parent.CANVAS.clearDrag();
 					this.dragging = false;
 					parent.overlay.withinCrop = false;
 				},
 
-				onMouseover : function () {
+				onMouseover: function () {
 					this.hover = true;
 					parent.overCrop = true;
 
 				},
 
-				onMouseout : function () {
+				onMouseout: function () {
 					if (!parent.overImg) {
 						document.body.style.cursor = "default";
 					}
@@ -1099,8 +1101,8 @@ var ImageWidget = new Class({
 
 	makeThread: function () {
 		this.CANVAS.addThread(new Thread({
-			id : 'myThread',
-			onExec : function () {
+			id: 'myThread',
+			onExec: function () {
 				if (typeOf(this.CANVAS) !== 'null') {
 					if (typeOf(this.CANVAS.ctxEl) !== 'null') {
 						this.CANVAS.clear().draw();
@@ -1124,8 +1126,8 @@ var ImageWidget = new Class({
 
 	/**
 	 * Takes the current active image and creates cropped image data via a canvas element
-	 *
-	 * @param   string  filepath  File path to image to crop. If blank use this.activeFilePath
+	 * 
+	 * @param string filepath File path to image to crop. If blank use this.activeFilePath
 	 */
 	storeActiveImageData: function (filepath) {
 		filepath = filepath ? filepath : this.activeFilePath;
@@ -1146,7 +1148,10 @@ var ImageWidget = new Class({
 		}
 		var canvas = win.getElement('canvas');
 
-		var target = new Element('canvas', {'width': w + 'px', 'height': h + 'px' }).inject(document.body);
+		var target = new Element('canvas', {
+			'width': w + 'px',
+			'height': h + 'px'
+		}).inject(document.body);
 		var ctx = target.getContext('2d');
 
 		var file = filepath.split('\\').getLast();
@@ -1170,8 +1175,8 @@ var ImageWidget = new Class({
 		}
 		this.scaleField = w.getElement('input[name=zoom-val]');
 		this.scaleSlide = new Slider(w.getElement('.fabrikslider-line'), w.getElement('.knob'), {
-			range : [ 20, 300 ],
-			onChange : function (pos) {
+			range: [20, 300],
+			onChange: function (pos) {
 				this.imgCanvas.scale = pos / 100;
 				if (typeOf(this.img) !== 'null') {
 					try {
@@ -1201,7 +1206,7 @@ var ImageWidget = new Class({
 		var r = w.getElement('.rotate');
 		this.rotateField = r.getElement('input[name=rotate-val]');
 		this.rotateSlide = new Slider(r.getElement('.fabrikslider-line'), r.getElement('.knob'), {
-			onChange : function (pos) {
+			onChange: function (pos) {
 				this.imgCanvas.rotation = pos;
 				if (typeOf(this.img) !== 'null') {
 					try {
@@ -1212,7 +1217,7 @@ var ImageWidget = new Class({
 				}
 				this.rotateField.value = pos;
 			}.bind(this),
-			steps : 360
+			steps: 360
 		}).set(0);
 		this.rotateField.addEvent('keyup', function (e) {
 			this.rotateSlide.set(e.target.get('value'));
