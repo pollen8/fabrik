@@ -35,6 +35,7 @@
 					<option value="mouseup">mouseup</option>
 					<option value="mousedown">mousedown</option>
 					<option value="mouseover">mouseover</option>
+					<option value="mouseout">mouseout</option>
 					<option value="select">select</option>
 					<option value="load">load</option>
 					<option value="unload">unload</option>
