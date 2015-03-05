@@ -70,7 +70,7 @@
 		<antcallback target="git.tags.get" return="project.current, git.tags, project.previous"/>
 		<input message="Component version:" addproperty="version" defaultvalue="${project.current}"/>
 
-		<input message="Deployment to test or live server?" addproperty="deploy.to" validargs="test,live" defaultvalue="test" />
+		<input message="Deployment to test or live server?" addproperty="deploy.to" validargs="test,live" defaultvalue="live" />
 
 		<!-- Set up deployment environment -->
 		<if>
@@ -126,7 +126,7 @@
 		</if>
 
 
-		<input message="Joomla target version:" addproperty="jversion" defaultvalue="3.2"/>
+		<input message="Joomla target version:" addproperty="jversion" defaultvalue="3.4"/>
 		<input message="Component version:" addproperty="version" defaultvalue="${git.log.range.end}"/>
 		<input message="build zips?" addproperty="zip.do" validargs="y,n" defaultvalue="y" />
 
