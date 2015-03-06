@@ -36,17 +36,10 @@ class FabrikModelUpgrade extends FabModelAdmin
 
 		if (!$this->shouldUpgrade())
 		{
-			JFactory::getApplication()->enqueueMessage('Already updated');
-
 			return parent::__construct($config);
 		}
 
-		if ($this->backUp())
-		{
-			$this->upgrade();
-		}
-
-		JFactory::getApplication()->enqueueMessage('Upgraded OK!');
+		$this->upgrade();
 
 		return parent::__construct($config);
 	}
@@ -111,6 +104,17 @@ class FabrikModelUpgrade extends FabModelAdmin
 
 	protected function upgrade()
 	{
+		if (!$this->shouldUpgrade())
+		{
+			JFactory::getApplication()->enqueueMessage('Already updated');
+			return;
+		}
+		
+		if (!$this->backUp())
+		{
+			return;
+		}
+		
 		$db = JFactory::getDbo(true);
 		$updates = array('#__fabrik_elements', '#__fabrik_cron', '#__fabrik_forms', '#__fabrik_groups', '#__fabrik_joins', '#__fabrik_jsactions',
 			'#__fabrik_tables', '#__fabrik_visualizations');
@@ -202,6 +206,9 @@ class FabrikModelUpgrade extends FabModelAdmin
 			$db->setQuery("ALTER TABLE " . $prefix . "fabrik_ratings CHANGE `tableid` `listid` INT( 6 ) NOT NULL");
 			$db->execute();
 		}
+		
+		JFactory::getApplication()->enqueueMessage('Upgraded OK!');
+		
 	}
 
 	/**
