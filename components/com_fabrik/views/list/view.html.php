@@ -42,21 +42,22 @@ class FabrikViewList extends FabrikViewListBase
 			if (!$app->isAdmin() && isset($this->params))
 			{
 				$this->state = $this->get('State');
+				$stateparams = $this->state->get('params');
 				$this->document = JFactory::getDocument();
 
-				if ($this->params->get('menu-meta_description'))
+				if ($stateparams->get('menu-meta_description'))
 				{
-					$this->document->setDescription($this->params->get('menu-meta_description'));
+					$this->document->setDescription($stateparams->get('menu-meta_description'));
 				}
 
-				if ($this->params->get('menu-meta_keywords'))
+				if ($stateparams->get('menu-meta_keywords'))
 				{
-					$this->document->setMetadata('keywords', $this->params->get('menu-meta_keywords'));
+					$this->document->setMetadata('keywords', $stateparams->get('menu-meta_keywords'));
 				}
 
-				if ($this->params->get('robots'))
+				if ($stateparams->get('robots'))
 				{
-					$this->document->setMetadata('robots', $this->params->get('robots'));
+					$this->document->setMetadata('robots', $stateparams->get('robots'));
 				}
 			}
 
