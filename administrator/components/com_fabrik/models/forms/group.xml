@@ -190,6 +190,8 @@
 			<field default="1" description="COM_FABRIK_SHOW_GROUP_DESC" label="COM_FABRIK_SHOW_GROUP_LABEL" name="repeat_group_show_first" type="list">
 					<option value="1">JYES</option>
 					<option value="-1">COM_FABRIK_YES_BUT_HIDDEN</option>
+					<option value="-2">COM_FABRIK_YES_BUT_HIDDEN_FORM</option>
+					<option value="-3">COM_FABRIK_YES_BUT_HIDDEN_DETAILS</option>
 					<option value="2">COM_FABRIK_DETAILS_VIEW_ONLY</option>
 					<option value="3">COM_FABRIK_FORM_VIEW_ONLY</option>
 					<option value="4">COM_FABRIK_SHOW_GROUP_USABLE_ELEMENTS_ONLY</option>
