@@ -995,6 +995,7 @@ class FabrikFEModelGroup extends FabModel
 		$group = new stdClass;
 		$groupTable = $this->getGroup();
 		$params = $this->getParams();
+		$view = $input->get('view');
 
 		if (!isset($this->editable))
 		{
