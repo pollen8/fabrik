@@ -995,6 +995,7 @@ class FabrikFEModelGroup extends FabModel
 		$group = new stdClass;
 		$groupTable = $this->getGroup();
 		$params = $this->getParams();
+		$view = $input->get('view');
 
 		if (!isset($this->editable))
 		{
@@ -1033,7 +1034,7 @@ class FabrikFEModelGroup extends FabModel
 		 */
 
 		if (array_key_exists($startpage, $pages) && is_array($pages[$startpage])
-			&& !in_array($groupTable->id, $pages[$startpage]) || $showGroup == -1 || $showGroup == 0)
+			&& !in_array($groupTable->id, $pages[$startpage]) || $showGroup == -1 || $showGroup == 0 || ($view == 'form' && $showGroup == -2) || ($view == 'details' && $showGroup == -3))
 		{
 			$groupTable->css .= ";display:none;";
 		}
