@@ -214,6 +214,7 @@ abstract class FabrikWebService
 		$formModel = $listModel->getFormModel();
 		$db = $listModel->getDb();
 		$item = $listModel->getTable();
+
 		$query = $db->getQuery(true);
 		$query->select($item->db_primary_key . ' AS id, ' . $fk)->from($item->db_table_name);
 		$db->setQuery($query);
@@ -251,7 +252,12 @@ abstract class FabrikWebService
 				$this->updateCount++;
 			}
 
+			$primaryKey = FabrikString::shortColName($item->db_primary_key);
+			$primaryKey = str_replace("`", "", $primaryKey);
+			$row[$primaryKey] = $pk;
+
 			$listModel->storeRow($row, $pk);
+
 		}
 	}
 
