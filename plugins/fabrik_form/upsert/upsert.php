@@ -61,7 +61,7 @@ class PlgFabrik_FormUpsert extends PlgFabrik_Form
 		}
 
 		$rowid = $w->parseMessageForPlaceholder($rowid, $this->data, false);
-		$fields = $this->upsertData();
+		$fields = $this->upsertData($rowid);
 		$query->set($fields);
 
 		if ($rowid === '')
@@ -74,6 +74,7 @@ class PlgFabrik_FormUpsert extends PlgFabrik_Form
 		}
 
 		$upsert_db->setQuery($query);
+		$sql = (string)$query;
 		$upsert_db->execute();
 
 		return true;
@@ -105,7 +106,7 @@ class PlgFabrik_FormUpsert extends PlgFabrik_Form
 	 * @return  array
 	 */
 
-	protected function upsertData()
+	protected function upsertData($rowid)
 	{
 		$params = $this->getParams();
 		$w = new FabrikWorker;
@@ -125,7 +126,47 @@ class PlgFabrik_FormUpsert extends PlgFabrik_Form
 				$v = $w->parseMessageForPlaceholder($upsert->upsert_default[$i], $this->data);
 			}
 
-			$fields[] = $k . ' = ' . $upsert_db->quote($v);
+			/*
+			 * $$$ hugh - permit the use of expressions, by putting the value in parens, with option use
+			 * of double :: to provide a default for new row (rowid is empty).  This default is seperate from
+			 * the simple default used above, which is predicated on value being empty.  So simple usage
+			 * might be ..
+			 * 
+			 * (counter+1::0)
+			 * 
+			 * ... if you want to increment a 'counter' field.  Or you might use a subquery, like ...
+			 * 
+			 * ((SELECT foo FROM other_table WHERE fk_id = {rowid})::'foo default')
+			 */
+			
+			if (!preg_match('#^\((.*)\)$#', $v))
+			{
+				$v = $insert_db->quote($v);
+			}
+			else
+			{
+				$matches = array();
+				preg_match('#^\((.*)\)$#', $v, $matches);
+				$v = $matches[1];
+				$v = explode('::', $v);
+				if (count($v) == 1)
+				{
+					$v = $v[0];
+				}
+				else
+				{
+					if (empty($rowid))
+					{
+						$v = $v[1];
+					}
+					else
+					{
+						$v = $v[0];
+					}
+				}	
+			}
+			
+			$fields[] = $k . ' = ' . $v;
 		}
 
 		return $fields;
