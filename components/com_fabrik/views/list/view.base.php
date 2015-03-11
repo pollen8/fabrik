@@ -419,6 +419,7 @@ class FabrikViewListBase extends JViewLegacy
 		$this->canDelete = $model->deletePossible() ? true : false;
 		$this->limitLength = $model->limitLength;
 		$this->ajax = $model->isAjax();
+		$this->showTitle = $input->getInt('show-title', FabrikWorker::getMenuOrRequestVar('show-title', $params->get('show-title', 1), $this->isMambot));
 
 		// 3.0 observed in list.js & html moved into fabrik_actions rollover
 		$this->showPDF = $params->get('pdf', $fbConfig->get('list_pdf', false));
