@@ -252,18 +252,27 @@ class PlgFabrik_ElementNotes extends PlgFabrik_ElementDatabasejoin
 			$where[] = $pk . ' = ' . $this->loadRow;
 		}
 
+		/**
+		 * $$$ hugh if where is still empty (most likely if new form) set it to "1 = -1", otherwise
+		 * we'll wind up selecting everything in the table.
+		 */
+		
 		if ($query)
 		{
 			if (!empty($where))
 			{
 				$query->where(implode(' OR ', $where));
 			}
+			else
+			{
+				$query->where('1 = -1');
+			}
 
 			return $query;
 		}
 		else
 		{
-			return empty($where) ? '' : 'WHERE ' . implode(' OR ', $where);
+			return empty($where) ? '1 = -1' : 'WHERE ' . implode(' OR ', $where);
 		}
 	}
 
