@@ -777,7 +777,7 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 					 * If we're running onAfterProcess, formData will have short names in it, which means getValue()
 					 * won't find the watch element, as it's looking for full names.  So if it exists, use formDataWithTableName.
 					 */
-					if (array_key_exists($watch, $formModel->formDataWithTableName))
+					if (is_array($formModel->formDataWithTableName) && array_key_exists($watch, $formModel->formDataWithTableName))
 					{
 						$whereval = $watchElement->getValue($formModel->formDataWithTableName, $repeatCounter, $watchOpts);
 					}
