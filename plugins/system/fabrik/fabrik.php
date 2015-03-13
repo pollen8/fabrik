@@ -262,7 +262,7 @@ class PlgSystemFabrik extends JPlugin
 		$headScript = self::headJs();
 		self::clearJs();
 
-		$content = JFactory::getApplication()->getBody();
+		$content = JResponse::getBody();
 
 		// Test inserting require.js as last
 		if (!FabrikHelperHTML::inAjaxLoadedPage())
@@ -283,7 +283,7 @@ class PlgSystemFabrik extends JPlugin
 			$content = FabrikString::replaceLast('</body>', $script . '</body>', $content);
 		}
 
-		JFactory::getApplication()->setBody($content);
+		JResponse::setBody($content);
 	}
 
 	/**
