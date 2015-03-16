@@ -284,6 +284,17 @@ class FabrikFEModelForm extends FabModelForm
 	 * @var array
 	 */
 	public $jsOpts = null;
+	
+	/**
+	 * Use this lastInsertId to store the main table's lastInsertId, so we can use this rather
+	 * than the list model lastInsertId, which could be for the last joined table rather than
+	 * the form's main table.
+	 * 
+	 * @since 3.3
+	 * 
+	 * @var mixed
+	 */
+	public $lastInsertId = null;
 
 	/**
 	 * Constructor
@@ -1920,6 +1931,7 @@ class FabrikFEModelForm extends FabModelForm
 		$listModel->setFormModel($this);
 		$item = $listModel->getTable();
 		$listModel->storeRow($data, $rowId);
+		$this->lastInsertId = $listModel->lastInsertId;
 		$usekey = $app->input->get('usekey', '');
 
 		if (!empty($usekey))
@@ -2857,6 +2869,18 @@ echo "form get errors";
 		return false;
 	}
 
+	/**
+	 * Get the last insert id, for situations where we need the 'rowid' for newly inserted forms,
+	 * and can't use getRowId() because it caches rowid as empty.  For example, in plugins running
+	 * onAfterProcess, like upsert.
+	 * 
+	 * Note that $this->lastInsertId is getting set in the 
+	 */
+	public function getInsertId()
+	{
+		return $this->lastInsertId;	
+	}
+	
 	/**
 	 * Are we creating a new record or editing an existing one?
 	 * Put here to ensure compat when we go from 3.0 where rowid = 0 = new, to row id '' = new
