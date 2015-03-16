@@ -1,0 +1,14 @@
+{
+    "name": "fabrik/form-payments",
+    "description": "A universal payment gateway for Fabrik",
+    "require": {
+        "omnipay/omnipay": "~2.3"
+    },
+    "license": "GPL2",
+    "authors": [
+        {
+            "name": "Fabrikar",
+            "email": "fabrikar@gmail.com"
+        }
+    ]
+}
