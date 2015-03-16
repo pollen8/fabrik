@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<extension group="fabrik_form" method="upgrade" type="plugin" version="30">
+	<name>plg_fabrik_form_payments</name>
+	<author>Fabrikar</author>
+	<creationDate>March 2015</creationDate>
+	<copyright>Copyright (C) 2005-2015 fabrikar.com - All rights reserved.</copyright>
+	<license>GPL2 http://www.gnu.org/licenses/gpl-2.0.html</license>
+	<authorEmail>fabrikar@gmail.com</authorEmail>
+	<authorUrl>www.fabrikar.com</authorUrl>
+	<version>3.3.1</version>
+	<help url="PLG_FORM_PAYMENTS_HELP_SERVER"/>
+	<description>PLG_FORM_PAYMENTS_DESCRIPTION</description>
+	<files>
+		<filename plugin="payments">payments.php</filename>
+		<filename>index.html</filename>
+		<folder>fields</folder>
+		<folder>forms</folder>
+		<folder>language</folder>
+		<folder>vendor</folder>
+	</files>
+</extension>

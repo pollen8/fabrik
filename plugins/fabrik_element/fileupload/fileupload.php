@@ -1755,7 +1755,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 				else
 				{
 					$files = $input->files->get($name, array(), 'array');
-					$file = $files['name'];
+					$file = JArrayHelper::getValue($files, 'name', '');
 
 					return $file == '' ? true : false;
 				}
