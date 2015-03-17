@@ -141,7 +141,7 @@ class PlgFabrik_FormUpsert extends PlgFabrik_Form
 			
 			if (!preg_match('#^\((.*)\)$#', $v))
 			{
-				$v = $insert_db->quote($v);
+				$v = $upsert_db->quote($v);
 			}
 			else
 			{
