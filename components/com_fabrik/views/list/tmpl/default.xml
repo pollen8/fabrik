@@ -23,6 +23,14 @@
 			label="COM_FABRIK_MENU_LIST_OPTIONS"
 		>
 
+        <field name="addurl"
+          type="text"
+          class="input-xlarge"
+          size="50"
+          label="COM_FABRIK_FIELD_ADD_URL_LABEL"
+          description="COM_FABRIK_FIELD_ADD_URL_DESC"
+        />
+
 			<field name="calculations"
 				type="radio"
 				class="btn-group"
