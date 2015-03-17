@@ -93,6 +93,11 @@
 				mode="php"
 				description="PLG_ELEMENT_CHECKBOX_POPULATE_DESC"
 				label="PLG_ELEMENT_CHECKBOX_POPULATE_LABEL" />
+
+			<field name="dropdown_populate_inline_desc"
+				type="spacer"
+				label="PLG_ELEMENT_CHECKBOX_POPULATE_DESC" />
+
 		</fieldset>
 	</fields>
 </form>
