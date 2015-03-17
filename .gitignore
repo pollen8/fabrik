@@ -59,6 +59,7 @@ plugins/fabrik_list/php/scripts/
 !plugins/fabrik_visualization/
 plugins/community/*
 !plugins/community/fabrik/
+premium/
 !tttplugins/system/fabrikcron/
 robots.txt
 sql/*

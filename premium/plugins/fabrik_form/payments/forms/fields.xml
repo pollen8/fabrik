@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<form>
+	<fields addfieldpath="/plugins/fabrik_form/payments/fields"
+	        name="params">
+		<fieldset name="plg-form-payments" label="PLG_FORM_PAYMENTS_GATEWAY_LABEL">
+
+			<field name="payments_gateway"
+			       type="omnipaygateways"
+			       repeat="true"
+			       label="PLG_FORM_PAYMENTS_GATEWAY_LABEL"
+			       description="PLG_FORM_PAYMENTS_GATEWAY_DESC">
+
+			</field>
+
+			<field name="testMode"
+			       type="radio"
+			       default="0"
+			       repeat="true"
+			       class="btn-group"
+			       description="PLG_FORM_PAYMENTS_TEST_MODE_DESC"
+			       label="PLG_FORM_PAYMENTS_TEST_MODE_LABEL"
+			       >
+				<option value="0">JNO</option>
+				<option value="1">JYES</option>
+
+			</field>
+		</fieldset>
+
+		<fieldset name="credentials_stripe" label="PLG_FORM_PAYMENTS_CREDENTIALS_STRIPE">
+
+			<field name="stripe_apiKey"
+			       type="text"
+			       repeat="true"
+			       label="API key" />
+
+		</fieldset>
+
+		<fieldset name="credentials_paypal" label="PLG_FORM_PAYMENTS_CREDENTIALS_PAYPAL">
+
+			<field name="paypal_apiKey"
+			       type="text"
+			       repeat="true"
+			       label="API key" />
+
+			<field name="paypal_username"
+			       type="text"
+			       description=""
+			       repeat="true"
+			       label="PLG_FORM_PAYMENTS_USERNAME_LABEL" />
+
+			<field name="paypal_password"
+			       type="text"
+			       description=""
+			       repeat="true"
+			       label="PLG_FORM_PAYMENTS_PASSWORD_LABEL" />
+
+			<field name="paypal_signature"
+			       type="text"
+			       repeat="true"
+			       label="Signature" />
+
+			<field name="paypal_cancel_url"
+			       type="text"
+			       repeat="true"
+			       description="PLG_FORM_PAYMENTS_CANCEL_URL_DESC"
+			       label="PLG_FORM_PAYMENTS_CANCEL_URL_LABEL" />
+
+
+		</fieldset>
+
+		<fieldset name="credentials_authorize" label="PLG_FORM_PAYMENTS_CREDENTIALS_AUTHORIZE">
+			<field name="authorize_apiLoginId"
+			       type="text"
+			       repeat="true"
+			       label="API Key" />
+
+			<field name="authorize_transactionKey"
+			       type="text"
+			       repeat="true"
+			       label="Transaction Key" />
+		</fieldset>
+
+		<fieldset name="item" label="PLG_FORM_PAYMENTS_ITEM">
+
+				<field name="description"
+				       type="listfields"
+				       mode="gui"
+				       repeat="true"
+				       valueformat="tableelement"
+				       addbrackets="true"
+				       description="PLG_FORM_PAYMENTS_ITEM_DESC"
+				       label="PLG_FORM_PAYMENTS_ITEM_LABEL" />
+
+			<field name="amount"
+			       type="listfields"
+			       mode="gui"
+			       repeat="true"
+			       valueformat="tableelement"
+			       addbrackets="true"
+			       description="PLG_FORM_PAYMENTS_PRICE_DESC"
+			       label="PLG_FORM_PAYMENTS_PRICE_LABEL" />
+
+			<field name="currency"
+			       type="listfields"
+			       mode="gui"
+			       repeat="true"
+			       valueformat="tableelement"
+			       addbrackets="true"
+			       description="PLG_FORM_PAYMENTS_CURRENCY_DESC"
+			       label="PLG_FORM_PAYMENTS_CURRENCY_LABEL" />
+
+		</fieldset>
+
+		<fieldset name="card" label="PLG_FORM_PAYMENTS_CARD" addfieldpath="/administrator/components/com_fabrik/models/fields">
+
+			<field name="firstName"
+			       type="listfields"
+			       repeat="true"
+			       description="PLG_FORM_PAYMENTS_FIRST_NAME_DESC"
+			       label="PLG_FORM_PAYMENTS_FIRST_NAME_LABEL"
+			       onlytablefields="0" />
+
+			<field name="lastName"
+			       type="listfields"
+			       repeat="true"
+			       description="PLG_FORM_PAYMENTS_LAST_NAME_DESC"
+			       label="PLG_FORM_PAYMENTS_LAST_NAME_LABEL"
+			       onlytablefields="0" />
+
+			<field name="number"
+			       type="listfields"
+			       description="PLG_FORM_PAYMENTS_CARD_DESC"
+			       label="PLG_FORM_PAYMENTS_CARD_LABEL"
+			       onlytablefields="0"
+			       repeat="true" />
+
+			<field name="expiryMonth"
+			       type="listfields"
+			       repeat="true"
+			       description="PLG_FORM_PAYMENTS_EXPIRY_MONTH_DESC"
+			       label="PLG_FORM_PAYMENTS_EXPIRY_MONTH_LABEL"
+			       onlytablefields="0" />
+
+			<field name="expiryYear"
+			       type="listfields"
+			       repeat="true"
+			       description="PLG_FORM_PAYMENTS_EXPIRY_YEAR_DESC"
+			       label="PLG_FORM_PAYMENTS_EXPIRY_YEAR_LABEL"
+			       onlytablefields="0" />
+
+			<field name="cvv"
+			       type="listfields"
+			       repeat="true"
+			       description="PLG_FORM_PAYMENTS_CVV_DESC"
+			       label="PLG_FORM_PAYMENTS_CVV_LABEL"
+			       onlytablefields="0" />
+
+		</fieldset>
+
+		<fieldset name="shipping" label="PLG_FORM_PAYMENTS_SHIPPING" addfieldpath="/administrator/components/com_fabrik/models/fields">
+
+			<field name="shippingAddress1"
+			       type="listfields"
+			       repeat="true"
+			       description="PLG_FORM_PAYMENTS_SHIPPING_ADDRESS_1_DESC"
+			       label="PLG_FORM_PAYMENTS_SHIPPING_ADDRESS_1_LABEL"
+			       onlytablefields="0" />
+
+			<field name="shippingAddress2"
+			       type="listfields"
+			       repeat="true"
+			       description="PLG_FORM_PAYMENTS_SHIPPING_ADDRESS_2_DESC"
+			       label="PLG_FORM_PAYMENTS_SHIPPING_ADDRESS_2_LABEL"
+			       onlytablefields="0" />
+
+			<field name="shippingCity"
+			       type="listfields"
+			       repeat="true"
+			       description="PLG_FORM_PAYMENTS_SHIPPING_CITY_DESC"
+			       label="PLG_FORM_PAYMENTS_SHIPPING_CITY_LABEL"
+			       onlytablefields="0" />
+
+			<field name="shippingPostcode"
+			       type="listfields"
+			       repeat="true"
+			       description="PLG_FORM_PAYMENTS_SHIPPING_POSTCODE_DESC"
+			       label="PLG_FORM_PAYMENTS_SHIPPING_POSTCODE_LABEL"
+			       onlytablefields="0" />
+
+			<field name="shippingState"
+			       type="listfields"
+			       repeat="true"
+			       description="PLG_FORM_PAYMENTS_SHIPPING_STATE_DESC"
+			       label="PLG_FORM_PAYMENTS_SHIPPING_STATE_LABEL"
+			       onlytablefields="0" />
+
+			<field name="shippingCountry"
+			       type="listfields"
+			       repeat="true"
+			       description="PLG_FORM_PAYMENTS_SHIPPING_COUNTRY_DESC"
+			       label="PLG_FORM_PAYMENTS_SHIPPING_COUNTRY_LABEL"
+			       onlytablefields="0" />
+
+			<field name="shippingPhone"
+			       type="listfields"
+			       repeat="true"
+			       description="PLG_FORM_PAYMENTS_SHIPPING_PHONE_DESC"
+			       label="PLG_FORM_PAYMENTS_SHIPPING_PHONE_LABEL"
+			       onlytablefields="0" />
+
+		</fieldset>
+
+		<fieldset name="callback" label="PLG_FORM_PAYMENTS_CALLBACK">
+
+			<field name="transaction_reference"
+			       type="listfields"
+			       repeat="true"
+			       description="PLG_FORM_PAYMENTS_TRANSACTION_REFERENCE_DESC"
+			       label="PLG_FORM_PAYMENTS_TRANSACTION_REFERENCE_LABEL"
+			       onlytablefields="0" />
+
+		</fieldset>
+	</fields>
+</form>
