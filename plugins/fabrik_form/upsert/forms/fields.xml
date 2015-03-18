@@ -15,7 +15,18 @@
 				label="PLG_FORM_UPSERT_TABLE_LABEL"
 				observe="params_connection_id"
 				repeat="true"/>
-				
+
+			<field name="upsert_pk_or_fk"
+				type="radio"
+				default="pk"
+				class="btn-group"
+				description="PLG_FORM_UPSERT_PK_OR_FK_DESC"
+				label="PLG_FORM_UPSERT_PK_OR_FK_LABEL"
+				repeat="true">
+					<option value="pk">PLG_FORM_UPSERT_PK_OR_FK_PK</option>
+					<option value="fk">PLG_FORM_UPSERT_PK_OR_FK_FK</option>
+			</field>
+							
 			<field name="primary_key"
 				type="element"
 				connection="params_connection_id"
@@ -58,6 +69,14 @@
 					</fieldset>
 				</fields>
 			</field>
+			
+			<field name="upsert_conditon"
+				type="fabrikeditor"
+				mode="php"
+				repeat="true"
+				description="PLG_FORM_UPSERT_CONDITION_DESC"
+				label="PLG_FORM_UPSERT_CONDITION_LABEL" />
+				
 		</fieldset>
 	</fields>
 </form>
