@@ -270,7 +270,9 @@ class JFormFieldListfields extends JFormFieldList
 		$script[] = "if (typeOf(FabrikAdmin.model.fields.listfields) === 'null') {";
 		$script[] = "FabrikAdmin.model.fields.listfields = {};";
 		$script[] = "}";
+		$script[] = "if (FabrikAdmin.model.fields.listfields['$this->id'] === undefined) {";
 		$script[] = "FabrikAdmin.model.fields.listfields['$this->id'] = new ListFieldsElement('$this->id', $opts);";
+		$script[] = "}";
 		$script = implode("\n", $script);
 
 		$srcs = array();

@@ -69,6 +69,10 @@
 				description="PLG_ELEMENT_PICKLIST_POPULATE_DESC"
 				label="PLG_ELEMENT_PICKLIST_POPULATE_LABEL" />
 
+			<field name="dropdown_populate_inline_desc"
+				type="spacer"
+				label="PLG_ELEMENT_PICKLIST_POPULATE_DESC" />
+
 		</fieldset>
 	</fields>
 </form>

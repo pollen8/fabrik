@@ -1,177 +1,227 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <form>
-	<fields addfieldpath="/administrator/components/com_fabrik/models/fields" name="params">
-		
-		<fieldset name="options" label="COM_FABRIK_OPTIONS">
-			
+	<fields addfieldpath="/administrator/components/com_fabrik/models/fields"
+	        name="params">
+
+		<fieldset name="options"
+		          label="COM_FABRIK_OPTIONS">
+
 			<field name="chart"
-				type="list"
-				default="pie"
-				label="PLG_FABRIK_VIZ_CHART_LABEL">
-					<option value="pieChart">Pie</option>
-					<option value="discreteBarChart">Discrete bar chart</option>
-					<option value="stackedAreaChart">stacked Area Chart</option>
-					<option value="lineWithFocusChart">line With Focus Chart</option>
-					<option value="multiBarChart">multi Bar Chart</option>
-					<option value="multiBarHorizontalChart">Multi bar Chart - horizontal</option>
-					<option value="lineChart">Line Chart</option>
-					<option value="scatterChart">Scatter Chart</option>
+			       type="list"
+			       default="pie"
+			       label="PLG_FABRIK_VIZ_CHART_LABEL">
+				<option value="pieChart">Pie</option>
+				<option value="discreteBarChart">Discrete bar chart</option>
+				<option value="stackedAreaChart">stacked Area Chart</option>
+				<option value="lineWithFocusChart">line With Focus Chart</option>
+				<option value="multiBarChart">multi Bar Chart</option>
+				<option value="multiBarHorizontalChart">Multi bar Chart - horizontal</option>
+				<option value="lineChart">Line Chart</option>
+				<option value="scatterChart">Scatter Chart</option>
 			</field>
-			
+
 			<field name="conn_id"
-				label="PLG_FABRIK_VIZ_NVD3_CONNECTON_LABEL"
-				type="connections"/> 
-			
+			       label="PLG_FABRIK_VIZ_NVD3_CONNECTON_LABEL"
+			       type="connections"/>
+
 			<field name="tbl"
-				type="tables"
-				observe="params_conn_id"
-				description="PLG_FABRIK_VIZ_NVD3_TABLE_DESC"
-				label="PLG_FABRIK_VIZ_NVD3_TABLE_LABEL" />
-			
+			       type="tables"
+			       observe="params_conn_id"
+			       description="PLG_FABRIK_VIZ_NVD3_TABLE_DESC"
+			       label="PLG_FABRIK_VIZ_NVD3_TABLE_LABEL"/>
+
 			<field name="script"
-				type="filelist"
-				hide_default="1"
-				description="PLG_FABRIK_VIZ_NVD3_DATA_SCRIPT_DESC"
-				directory="/plugins/fabrik_visualization/nvd3_chart/scripts/"
-				label="PLG_FABRIK_VIZ_NVD3_DATA_SCRIPT_LABEL"/>
+			       type="filelist"
+			       hide_default="1"
+			       description="PLG_FABRIK_VIZ_NVD3_DATA_SCRIPT_DESC"
+			       directory="/plugins/fabrik_visualization/nvd3_chart/scripts/"
+			       label="PLG_FABRIK_VIZ_NVD3_DATA_SCRIPT_LABEL"/>
 		</fieldset>
-		
-		<fieldset name="data" label="PLG_FABRIK_VIZ_NV3D_DATA_MODE">
-			
+
+		<fieldset name="data"
+		          label="PLG_FABRIK_VIZ_NV3D_DATA_MODE">
+
 			<field name="data_mode"
-				type="radio"
-				show="1" hide="0"
-				default="0"
-				label="PLG_FABRIK_VIZ_NV3D_DATA_MODE_LABEL"
-				description="PLG_FABRIK_VIZ_NV3D_DATA_MODE_DESC">
-					<option value="0">PLG_FABRIK_VIZ_NV3D_LABELS_IN_DATA</option>
-					<option value="1">PLG_FABRIK_VIZ_NV3D_LABELS_IN_FIELDNAMES</option>	
+			       type="radio"
+			       show="1"
+			       hide="0"
+			       default="0"
+			       label="PLG_FABRIK_VIZ_NV3D_DATA_MODE_LABEL"
+			       description="PLG_FABRIK_VIZ_NV3D_DATA_MODE_DESC">
+				<option value="0">PLG_FABRIK_VIZ_NV3D_LABELS_IN_DATA</option>
+				<option value="1">PLG_FABRIK_VIZ_NV3D_LABELS_IN_FIELDNAMES</option>
 			</field>
-			
+
 			<field name="split"
-				type="field"
-				description="PLG_FABRIK_VIZ_NV3D_SPLIT_DESC"
-				label="PLG_FABRIK_VIZ_NV3D_SPLIT_LABEL" />
-				
+			       type="listfields"
+			       table="params_tbl"
+			       connection="params_conn_id"
+			       description="PLG_FABRIK_VIZ_NV3D_SPLIT_DESC"
+			       label="PLG_FABRIK_VIZ_NV3D_SPLIT_LABEL"/>
+
 		</fieldset>
-		
-		<fieldset name="data-labels-in-data" label="PLG_FABRIK_VIZ_NV3D_LABELS_IN_DATA">
-			
+
+		<fieldset name="data-labels-in-data"
+		          label="PLG_FABRIK_VIZ_NV3D_LABELS_IN_DATA">
+
 			<field name="label_field"
-				type="listfields"
-				table="params_tbl"
-				connection="params_conn_id"
-				description="PLG_FABRIK_VIZ_NVD3_LABEL_DESC"
-				label="PLG_FABRIK_VIZ_NVD3_LABEL_LABEL" />
-				
+			       type="listfields"
+			       table="params_tbl"
+			       connection="params_conn_id"
+			       description="PLG_FABRIK_VIZ_NVD3_LABEL_DESC"
+			       label="PLG_FABRIK_VIZ_NVD3_LABEL_LABEL"/>
+
 			<field name="value_field"
-				type="listfields"
-				table="params_tbl"
-				connection="params_conn_id"
-				description="PLG_FABRIK_VIZ_NVD3_VALUE_DESC"
-				label="PLG_FABRIK_VIZ_NVD3_VALUE_LABEL"  />
-				
+			       type="listfields"
+			       table="params_tbl"
+			       connection="params_conn_id"
+			       description="PLG_FABRIK_VIZ_NVD3_VALUE_DESC"
+			       label="PLG_FABRIK_VIZ_NVD3_VALUE_LABEL"/>
+
 			<field name="value_calc"
-				type="list"
-				default=""
-				description="PLG_FABRIK_VIZ_NV3D_VALUE_CALC_DESC"
-				label="PLG_FABRIK_VIZ_NV3D_VALUE_CALC_LABEL">
-					<option value="">COM_FABRIK_NONE</option>
-					<option value="sum">COM_FABRIK_SUM</option>	
-					<option value="avg">COM_FABRIK_AVERAGE</option>
+			       type="list"
+			       default=""
+			       description="PLG_FABRIK_VIZ_NV3D_VALUE_CALC_DESC"
+			       label="PLG_FABRIK_VIZ_NV3D_VALUE_CALC_LABEL">
+				<option value="">COM_FABRIK_NONE</option>
+				<option value="sum">COM_FABRIK_SUM</option>
+				<option value="avg">COM_FABRIK_AVERAGE</option>
 			</field>
-			
-			
+
+
 		</fieldset>
-	
-		<fieldset name="data-labels-in-fieldnames" label="PLG_FABRIK_VIZ_NV3D_LABELS_IN_FIELDNAMES">
-		
+
+		<fieldset name="data-labels-in-fieldnames"
+		          label="PLG_FABRIK_VIZ_NV3D_LABELS_IN_FIELDNAMES">
+
 			<field name="label_columns"
-				type="textarea"
-				rows="6"
-				cols="3"
-				description="PLG_FABRIK_VIZ_NV3D_LABEL_COLUMNS_DESC"
-				label="PLG_FABRIK_VIZ_NV3D_LABEL_COLUMNS_LABEL" />
-			
+			       type="textarea"
+			       rows="6"
+			       cols="3"
+			       description="PLG_FABRIK_VIZ_NV3D_LABEL_COLUMNS_DESC"
+			       label="PLG_FABRIK_VIZ_NV3D_LABEL_COLUMNS_LABEL"/>
+
 			<field name="label_axis_values"
-				type="radio"
-				default="label_columns"
-				description="PLG_FABRIK_VIZ_NV3D_LABEL_AXIS_VALUES_DESC"
-				label="PLG_FABRIK_VIZ_NV3D_LABEL_AXIS_VALUES_LABEL">
-					<option value="label_columns">PLG_FABRIK_VIZ_NV3D_LABEL_COLUMNS</option>
-					<option value="split">PLG_FABRIK_VIZ_NV3D_SPLIT_COLUMNS</option>
+			       type="radio"
+			       default="label_columns"
+			       description="PLG_FABRIK_VIZ_NV3D_LABEL_AXIS_VALUES_DESC"
+			       label="PLG_FABRIK_VIZ_NV3D_LABEL_AXIS_VALUES_LABEL">
+				<option value="label_columns">PLG_FABRIK_VIZ_NV3D_LABEL_COLUMNS</option>
+				<option value="split">PLG_FABRIK_VIZ_NV3D_SPLIT_COLUMNS</option>
 			</field>
-				
+
 		</fieldset>
-		
-		<fieldset name="design" label="PLG_FABRIK_VIZ_NV3D_FORMATTIING">
-		
+
+		<fieldset name="design"
+		          label="PLG_FABRIK_VIZ_NV3D_FORMATTIING">
+
 			<field name="width"
-				default="350"
-				class="input-mini"
-				label="PLG_FABRIK_VIZ_NVD3_WIDTH_LABEL"
-				description="PLG_FABRIK_VIZ_NVD3_WIDTH_DESC" />
-				
+			       default="350"
+			       class="input-mini"
+			       label="PLG_FABRIK_VIZ_NVD3_WIDTH_LABEL"
+			       description="PLG_FABRIK_VIZ_NVD3_WIDTH_DESC"/>
+
 			<field name="height"
-				default="350"
-				class="input-mini"
-				label="PLG_FABRIK_VIZ_NVD3_HEIGHT_LABEL"
-				description="PLG_FABRIK_VIZ_NVD3_HEIGHT_DESC" />
-				
+			       default="350"
+			       class="input-mini"
+			       label="PLG_FABRIK_VIZ_NVD3_HEIGHT_LABEL"
+			       description="PLG_FABRIK_VIZ_NVD3_HEIGHT_DESC"/>
+
 			<field name="colours"
-					type="textarea"
-					default="#B9C872,#88B593,#388093,#994B89,#ED5FA2,#4D1018,#8F353E,#D35761,#43574E,#14303C"
-					description="PLG_FABRIK_VIZ_NVD3_COLOUR_DESC"
-					label="PLG_FABRIK_VIZ_NVD3_COLOUR_LABEL" />
-					
+			       type="textarea"
+			       default="#B9C872,#88B593,#388093,#994B89,#ED5FA2,#4D1018,#8F353E,#D35761,#43574E,#14303C"
+			       description="PLG_FABRIK_VIZ_NVD3_COLOUR_DESC"
+			       label="PLG_FABRIK_VIZ_NVD3_COLOUR_LABEL"/>
+
 			<field name="margin"
-				type="text"
-				default=""
-				description="PLG_FABRIK_VIZ_NV3D_MARGIN_DESC"
-				label="PLG_FABRIK_VIZ_NV3D_MARGIN_LABEL" />
-				
+			       type="text"
+			       default=""
+			       description="PLG_FABRIK_VIZ_NV3D_MARGIN_DESC"
+			       label="PLG_FABRIK_VIZ_NV3D_MARGIN_LABEL"/>
+
 			<field name="controls"
-				type="radio"
-				class="btn-group"
-				default="1"
-				description="PLG_FABRIK_VIZ_NV3D_CONTROLS_DESC"
-				label="PLG_FABRIK_VIZ_NV3D_CONTROLS_LABEL">
-					<option value="0">JNO</option>
-					<option value="1">JYES</option>
+			       type="radio"
+			       class="btn-group"
+			       default="1"
+			       description="PLG_FABRIK_VIZ_NV3D_CONTROLS_DESC"
+			       label="PLG_FABRIK_VIZ_NV3D_CONTROLS_LABEL">
+				<option value="0">JNO</option>
+				<option value="1">JYES</option>
 			</field>
-			
+
 			<field name="rotate_labels"
-				type="text"
-				default="45"
-				class="input-mini"
-				label="PLG_FABRIK_VIZ_NV3D_ROTATE_LABELS_LABEL"
-				description="PLG_FABRIK_VIZ_NV3D_ROTATE_LABELS_DESC" />
-					
+			       type="text"
+			       default="45"
+			       class="input-mini"
+			       label="PLG_FABRIK_VIZ_NV3D_ROTATE_LABELS_LABEL"
+			       description="PLG_FABRIK_VIZ_NV3D_ROTATE_LABELS_DESC"/>
+
 		</fieldset>
-		
-		<fieldset name="pie-options" label="PLG_FABRIK_VIZ_NV3D_PIE_OPTS">
-					
-				<field name="pie_labels"
-					type="radio"
-					class="btn-group"
-					default="1"
-					description="PLG_FABRIK_VIZ_NVD3_PIE_LABELS_DESC"
-					label="PLG_FABRIK_VIZ_NVD3_PIE_LABELS_LABEL">
-						<option value="0">JNO</option>
-						<option value="1">JYES</option>
-				</field>
-					
-				<field name="donut"
-					type="radio"
-					class="btn-group"
-					default="0"
-					description="PLG_FABRIK_VIZ_NVD3_DONUT_DESC"
-					label="PLG_FABRIK_VIZ_NVD3_DONUT_LABEL">
-						<option value="0">JNO</option>
-						<option value="1">JYES</option>	
-						
-				</field>
-				
+
+		<fieldset name="pie-options"
+		          label="PLG_FABRIK_VIZ_NV3D_PIE_OPTS">
+
+			<field name="pie_labels"
+			       type="radio"
+			       class="btn-group"
+			       default="1"
+			       description="PLG_FABRIK_VIZ_NVD3_PIE_LABELS_DESC"
+			       label="PLG_FABRIK_VIZ_NVD3_PIE_LABELS_LABEL">
+				<option value="0">JNO</option>
+				<option value="1">JYES</option>
+			</field>
+
+			<field name="donut"
+			       type="radio"
+			       class="btn-group"
+			       default="0"
+			       description="PLG_FABRIK_VIZ_NVD3_DONUT_DESC"
+			       label="PLG_FABRIK_VIZ_NVD3_DONUT_LABEL">
+				<option value="0">JNO</option>
+				<option value="1">JYES</option>
+
+			</field>
+
+		</fieldset>
+
+		<fieldset name="singleline-options"
+		          label="PLG_FABRIK_VIZ_NV3D_SINGLE_LINE_OPTS">
+
+			<field name="single_line_x_column"
+			       type="listfields"
+			       table="params_tbl"
+			       connection="params_conn_id"
+			       description="PLG_FABRIK_VIZ_NV3D_SINGLE_LINE_X_COLUMN_DESC"
+					label="PLG_FABRIK_VIZ_NV3D_SINGLE_LINE_X_COLUMN_LABEL" />
+
+			<field name="single_line_y_column"
+			       type="listfields"
+			       table="params_tbl"
+			       connection="params_conn_id"
+			       description="PLG_FABRIK_VIZ_NV3D_SINGLE_LINE_Y_COLUMN_DESC"
+			       label="PLG_FABRIK_VIZ_NV3D_SINGLE_LINE_Y_COLUMN_LABEL" />
+
+			<field name="single_line_split"
+			       type="listfields"
+			       table="params_tbl"
+			       connection="params_conn_id"
+			       description="PLG_FABRIK_VIZ_NV3D_SPLIT_DESC"
+			       label="PLG_FABRIK_VIZ_NV3D_SPLIT_LABEL"/>
+
+			<field name="singleline_key"
+			       type="text"
+			       description="PLG_FABRIK_VIZ_NV3D_SINGLE_LINE_KEY_DESC"
+			       label="PLG_FABRIK_VIZ_NV3D_SINGLE_LINE_KEY_LABEL" />
+
+			<field name="single_line_x_axis_label"
+			       type="text"
+			       description="PLG_FABRIK_VIZ_NV3D_SINGLE_LINE_X_AXIS_LABEL_DESC"
+			       label="PLG_FABRIK_VIZ_NV3D_SINGLE_LINE_X_AXIS_LABEL_LABEL" />
+
+			<field name="single_line_y_axis_label"
+			       type="text"
+			       description="PLG_FABRIK_VIZ_NV3D_SINGLE_LINE_Y_AXIS_LABEL_DESC"
+			       label="PLG_FABRIK_VIZ_NV3D_SINGLE_LINE_y_AXIS_LABEL_LABEL" />
 		</fieldset>
 	</fields>
 </form>

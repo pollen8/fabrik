@@ -10135,7 +10135,7 @@ class FabrikFEModelList extends JModelForm
 		$input = $app->input;
 		$Itemid = FabrikWorker::itemId();
 		$params = $this->getParams();
-		$addurl_url = $params->get('addurl', '');
+		$addurl_url = FabrikWorker::getMenuOrRequestVar('addurl', $params->get('addurl', ''), $this->isMambot);
 		$filters = $this->getRequestData();
 		$keys = FArrayHelper::getValue($filters, 'key', array());
 		$vals = FArrayHelper::getValue($filters, 'value', array());

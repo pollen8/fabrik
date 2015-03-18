@@ -43,8 +43,7 @@ define('LABELS_IN_VALUES', 0);
  * +--------+------+------+-------+
  * |   TX   |  12  | 6    |   43  |
  * +--------+------+------+-------+
- * @var unknown
-*/
+ */
 define('LABELS_IN_COLUMNS', 1);
 
 /**
@@ -54,7 +53,6 @@ define('LABELS_IN_COLUMNS', 1);
  * @subpackage  Fabrik.visualization.nvd3_chart
  * @since       3.0.7
  */
-
 class FabrikModelNvd3_Chart extends FabrikFEModelVisualization
 {
 	/**
@@ -84,8 +82,8 @@ class FabrikModelNvd3_Chart extends FabrikFEModelVisualization
 			return $this->data;
 		}
 
-		$params = $this->getParams();
-		$script = $params->get('script', '');
+		$params   = $this->getParams();
+		$script   = $params->get('script', '');
 		$fullPath = JPATH_ROOT . '/plugins/fabrik_visualization/nvd3_chart/scripts/' . $script;
 
 		if ($script != '' && JFile::exists($fullPath))
@@ -109,7 +107,7 @@ class FabrikModelNvd3_Chart extends FabrikFEModelVisualization
 			if (JFile::exists($chartFile))
 			{
 				require_once $chartFile;
-				$cls = JStringNormalise::toCamelCase($chartType);
+				$cls    = JStringNormalise::toCamelCase($chartType);
 				$render = new $cls($params);
 
 				return $render->render($params);
@@ -128,18 +126,18 @@ class FabrikModelNvd3_Chart extends FabrikFEModelVisualization
 				return $this->data;
 			}
 
-			$this->data = new stdClass;
+			$this->data      = new stdClass;
 			$this->data->key = 'todo2';
-			$db = JFactory::getDbo();
-			$query = $db->getQuery(true);
+			$db              = JFactory::getDbo();
+			$query           = $db->getQuery(true);
 
-			$tbl = $params->get('tbl', '');
+			$tbl   = $params->get('tbl', '');
 			$value = $params->get('value_field');
 			$label = $params->get('label_field');
 			$query->select($label . ' AS label, ' . $value . ' AS value')->from($tbl);
 			$db->setQuery($query);
 			$this->data->values = $db->loadObjectList();
-			$this->data = array($this->data);
+			$this->data         = array($this->data);
 		}
 
 		return $this->data;
@@ -149,7 +147,7 @@ class FabrikModelNvd3_Chart extends FabrikFEModelVisualization
 	 * Helper function for custom scripts (may be that we incorporate this as the default handler when its
 	 * more mature
 	 *
-	 * @param   int  $elementId  Element id to get data for
+	 * @param   int $elementId Element id to get data for
 	 *
 	 * @return  array  Chart data
 	 */
@@ -158,20 +156,20 @@ class FabrikModelNvd3_Chart extends FabrikFEModelVisualization
 		$pluginManager = FabrikWorker::getPluginManager();
 
 		$elementModel = $pluginManager->getPluginFromId($elementId);
-		$params = $elementModel->getParams();
-		$element = $elementModel->getElement();
+		$params       = $elementModel->getParams();
+		$element      = $elementModel->getElement();
 
 		// Get labels
 		$sub_options = $params->get('sub_options');
-		$sub_values = $sub_options->sub_values;
-		$sub_labels = $sub_options->sub_labels;
-		$labels = array_combine($sub_values, $sub_labels);
+		$sub_values  = $sub_options->sub_values;
+		$sub_labels  = $sub_options->sub_labels;
+		$labels      = array_combine($sub_values, $sub_labels);
 
 		// Get the column data
-		$listModel = $elementModel->getListModel();
-		$opts = array();
+		$listModel           = $elementModel->getListModel();
+		$opts                = array();
 		$opts['filterLimit'] = false;
-		$rows = $listModel->getColumnData($elementId, false, $opts);
+		$rows                = $listModel->getColumnData($elementId, false, $opts);
 
 		$total = count($rows);
 
@@ -191,15 +189,15 @@ class FabrikModelNvd3_Chart extends FabrikFEModelVisualization
 	/**
 	 * Set to nvd3 format, ready for json encoding
 	 *
-	 * @param   array  $data  Data
+	 * @param   array $data Data
 	 *
 	 * @return multitype:
 	 */
 
 	public function elementDataToNvs3($data)
 	{
-		$this->data = new stdClass;
-		$this->data->key = 'todo2';
+		$this->data         = new stdClass;
+		$this->data->key    = 'todo2';
 		$this->data->values = array();
 
 		foreach ($data as $d)
@@ -215,8 +213,8 @@ class FabrikModelNvd3_Chart extends FabrikFEModelVisualization
 	/**
 	 * Helper function to build data set from checkbox element data (json encoded)
 	 *
-	 * @param   array  $rows    Element data
-	 * @param   array  $labels  Element sub option labels keyed on sub option values
+	 * @param   array $rows   Element data
+	 * @param   array $labels Element sub option labels keyed on sub option values
 	 *
 	 * @return  multitype:stdClass
 	 */
@@ -235,14 +233,14 @@ class FabrikModelNvd3_Chart extends FabrikFEModelVisualization
 				{
 					if (!array_key_exists($val, $data))
 					{
-						$o = new stdClass;
-						$o->label = $labels[$val];
-						$o->value = 1;
+						$o          = new stdClass;
+						$o->label   = $labels[$val];
+						$o->value   = 1;
 						$data[$val] = $o;
 					}
 					else
 					{
-						$data[$val]->value ++;
+						$data[$val]->value++;
 					}
 				}
 			}
@@ -251,75 +249,105 @@ class FabrikModelNvd3_Chart extends FabrikFEModelVisualization
 		return $data;
 	}
 
-	/**
-	 * Single line
-	 *
-	 * @return multitype:stdClass
-	 */
-	protected function singleLineData()
+	protected function getLabelColums()
 	{
 		$params = $this->getParams();
 
 		if ($params->get('data_mode') == 0)
 		{
-			$labelColumns = $params->get('value_field');
+			$valueField = $params->get('value_field', '');
+
+			if ($valueField === '')
+			{
+				throw new UnexpectedValueException('Chart has Data mode set to "Labels in data" but no element selected for the "Value field" option');
+			}
+
+			$labelColumns = $valueField;
 		}
 		else
 		{
 			$labelColumns = explode(',', $params->get('label_columns'));
 		}
 
-		$table = $params->get('tbl');
-		$split = $params->get('split', '');
-		$groupBy = $params->get('group_by');
+		return $labelColumns;
+	}
 
-		$db = FabrikWorker::getDbo(false, $params->get('conn_id'));
+	/**
+	 * Single line
+	 * Uses its own fieldset jform options
+	 *
+	 * @return multitype:stdClass
+	 */
+	protected function singleLineData()
+	{
+		$params = $this->getParams();
+		$table  = $params->get('tbl');
+		$split  = $params->get('single_line_split', '');
+
+		$db    = FabrikWorker::getDbo(false, $params->get('conn_id'));
 		$query = $db->getQuery(true);
-		$query->select($labelColumns)->from($table);
+
+		$xCol = $params->get('single_line_x_column', '');
+		$yCol = $params->get('single_line_y_column', '');
+
+		if ($xCol === '')
+		{
+			throw new UnexpectedValueException('Single line chart must specify an x column');
+		}
+
+		if ($yCol === '')
+		{
+			throw new UnexpectedValueException('Single line chart must specify an y column');
+		}
+
+		$query->select(array($db->qn($xCol) . ' AS x ', $db->qn($yCol) . ' AS y'))->from($table);
 
 		if ($split !== '')
 		{
-			$query->select($split . ' AS ' . $db->quoteName('key'));
-		}
-		else
-		{
-			if ($params->get('data_mode') == 0)
-			{
-				$query->select('date AS ' . $db->quoteName('key'));
-			}
+			$query->select($split . ' AS ' . $db->qn('key'));
 		}
 
 		$db->setQuery($query);
-		$rows = $db->loadObjectList();
-		$keys = array_keys(JArrayHelper::fromObject($rows[0]));
+		$rows   = $db->loadObjectList();
 		$colors = explode(',', $params->get('colours', '#B9C872,#88B593,#388093,#994B89,#ED5FA2,#4D1018,#8F353E,#D35761,#43574E,#14303C'));
 		$return = array();
-		$i = 0;
+		$i      = 0;
 
-		foreach ($keys as $key)
+		if ($split !== '')
 		{
-			if ($key != 'key')
+			// Split the data out into one line per group of data
+			$rows = JArrayHelper::pivot($rows, 'key');
+			foreach ($rows as $key => $row)
 			{
-				$values = array();
-
-				foreach ($rows as $row)
+				// Single item after pivot is an object - wrap inside an array
+				if (is_object($row))
 				{
-					$o = new stdClass;
-
-					// Key needs to be a numeric value.
-					$o->x = (float) $row->key;
-					$o->y = (float) $row->$key;
-					$values[] = $o;
-					$a ++;
+					$row = array($row);
 				}
 
-				$entry = new stdClass;
-				$entry->values = $values;
-				$entry->key = $key;
-				$entry->color = $colors[$i];
-				$return[] = $entry;
-				$i ++;
+				foreach ($row as &$r)
+				{
+					$r->x = (float) $r->x;
+					$r->y = (float) $r->y;
+					unset($r->key);
+				}
+
+				$entry         = new stdClass;
+				$entry->values = $row;
+				$entry->key    = $key;
+				$entry->color  = $colors[$i];
+				$return[]      = $entry;
+				$i++;
 			}
+		}
+		else
+		{
+			// No key so create a single line
+			$entry         = new stdClass;
+			$entry->values = $rows;
+			$entry->key    = $params->get('singleline_key');
+			$entry->color  = $colors[$i];
+			$return[]      = $entry;
 		}
 
 		return $return;
@@ -332,25 +360,25 @@ class FabrikModelNvd3_Chart extends FabrikFEModelVisualization
 	 */
 	protected function scatterChartData()
 	{
-		$rows = $this->mulitLines();
-
-		$data = array();
-		$o = new stdClass;
-		$o->values = array();
+		$rows         = $this->mulitLines();
+		$labelColumns = $this->getLabelColums();
+		$data         = array();
+		$o            = new stdClass;
+		$o->values    = array();
 
 		foreach ($rows as $d)
 		{
-			if (!array_key_exists($d->key, $data))
+			/*if (!array_key_exists($d->key, $data))
 			{
 				$data[$d->key] = new stdClass;
 				$data[$d->key]->key = $d->key;
 				$data[$d->key]->values = array();
-			}
+			}*/
 
-			$point = new stdClass;
-			$point->x = (float) $d->x;
-			$point->y = (float) $d->y;
-			$point->size = is_null($d->size) ? 0.5 : (float) $d->size;
+			$point                   = new stdClass;
+			$point->x                = (float) $d->x;
+			$point->y                = (float) $d->y;
+			$point->size             = is_null($d->size) ? 0.5 : (float) $d->size;
 			$data[$d->key]->values[] = $point;
 		}
 
@@ -368,33 +396,24 @@ class FabrikModelNvd3_Chart extends FabrikFEModelVisualization
 	 */
 	protected function mulitLines()
 	{
-		$params = $this->getParams();
+		$params       = $this->getParams();
+		$labelColumns = $this->getLabelColums();
+		$table        = $params->get('tbl');
+		$split        = $params->get('split', '');
 
-		if ($params->get('data_mode') == 0)
-		{
-			$labelColumns = $params->get('value_field');
-		}
-		else
-		{
-			$labelColumns = explode(',', $params->get('label_columns'));
-		}
-
-		$table = $params->get('tbl');
-		$split = $params->get('split', '');
-
-		$db = FabrikWorker::getDbo(false, $params->get('conn_id'));
+		$db    = FabrikWorker::getDbo(false, $params->get('conn_id'));
 		$query = $db->getQuery(true);
 		$query->select($labelColumns)->from($table);
 
 		if ($split !== '')
 		{
-			$query->select($split . ' AS ' . $db->quoteName('key'));
+			$query->select($split . ' AS ' . $db->qn('key'));
 		}
 		else
 		{
 			if ($params->get('data_mode') == 0)
 			{
-				$query->select('date AS ' . $db->quoteName('key'));
+				$query->select('date AS ' . $db->qn('key'));
 			}
 		}
 
@@ -417,9 +436,10 @@ class FabrikModelNvd3_Chart extends FabrikFEModelVisualization
 
 	protected function multiChartData()
 	{
-		$params = $this->getParams();
-		$rows = $this->mulitLines();
+		$params          = $this->getParams();
+		$rows            = $this->mulitLines();
 		$labelAxisValues = $params->get('label_axis_values', 'label_columns');
+		$split           = $params->get('split', '');
 
 		if ($labelAxisValues === 'label_columns')
 		{
@@ -442,13 +462,13 @@ class FabrikModelNvd3_Chart extends FabrikFEModelVisualization
 	 * Organise data for showing in a multichart when the columns are used as the labels and no split
 	 * value has been assigned. Will basically group all the data into one record (as no split supplied)
 	 *
-	 * @param   array  $rows  Chart data
+	 * @param   array $rows Chart data
 	 *
 	 * @return stdClass
 	 */
 	protected function multiChartLabelsNoSplit($rows)
 	{
-		$o = new stdClass;
+		$o         = new stdClass;
 		$o->values = array();
 
 		foreach ($rows as $d)
@@ -457,9 +477,9 @@ class FabrikModelNvd3_Chart extends FabrikFEModelVisualization
 			{
 				if (!array_key_exists($k, $o->values))
 				{
-					$thisV = new stdClass;
-					$thisV->label = $k;
-					$thisV->value = (float) $v;
+					$thisV         = new stdClass;
+					$thisV->label  = $k;
+					$thisV->value  = (float) $v;
 					$o->values[$k] = $thisV;
 				}
 				else
@@ -470,7 +490,7 @@ class FabrikModelNvd3_Chart extends FabrikFEModelVisualization
 		}
 
 		$o->values = array_values($o->values);
-		$data[] = $o;
+		$data[]    = $o;
 
 		return $data;
 	}
@@ -479,7 +499,7 @@ class FabrikModelNvd3_Chart extends FabrikFEModelVisualization
 	 * Organise data for showing in a multichart when the columns are used as the labels and a split
 	 * value has been assigned.
 	 *
-	 * @param   array  $rows  Chart data
+	 * @param   array $rows Chart data
 	 *
 	 * @return stdClass
 	 */
@@ -489,7 +509,7 @@ class FabrikModelNvd3_Chart extends FabrikFEModelVisualization
 
 		foreach ($rows as $d)
 		{
-			$o = new stdClass;
+			$o      = new stdClass;
 			$o->key = $d->key;
 			$values = array();
 
@@ -497,15 +517,15 @@ class FabrikModelNvd3_Chart extends FabrikFEModelVisualization
 			{
 				if ($k != 'key')
 				{
-					$thisV = new stdClass;
+					$thisV        = new stdClass;
 					$thisV->label = $k;
 					$thisV->value = (float) $v;
-					$values[] = $thisV;
+					$values[]     = $thisV;
 				}
 			}
 
 			$o->values = $values;
-			$data[] = $o;
+			$data[]    = $o;
 		}
 
 		return $data;
@@ -514,7 +534,7 @@ class FabrikModelNvd3_Chart extends FabrikFEModelVisualization
 	/**
 	 * Organise data for showing in a multichart when the split column is used for the axis labels
 	 *
-	 * @param   array  $rows  Chart data
+	 * @param   array $rows Chart data
 	 *
 	 * @return stdClass
 	 */
@@ -527,23 +547,23 @@ class FabrikModelNvd3_Chart extends FabrikFEModelVisualization
 			return $data;
 		}
 
-		$firstRow = $rows[0];
+		$firstRow     = $rows[0];
 		$labelColumns = array_keys(get_object_vars($firstRow));
 
 		foreach ($labelColumns as $chartKey)
 		{
 			if ($chartKey !== 'key')
 			{
-				$o = new stdClass;
-				$o->key = $chartKey;
+				$o         = new stdClass;
+				$o->key    = $chartKey;
 				$o->values = array();
 
 				foreach ($rows as $d)
 				{
-					$thisV = new stdClass;
+					$thisV        = new stdClass;
 					$thisV->label = $d->key;
 					$thisV->value = (float) $d->$chartKey;
-					$o->values[] = $thisV;
+					$o->values[]  = $thisV;
 				}
 
 				$data[] = $o;
@@ -556,8 +576,8 @@ class FabrikModelNvd3_Chart extends FabrikFEModelVisualization
 	/**
 	 * Helper function to build data set from radio/default element data (plain text)
 	 *
-	 * @param   array  $rows    Element data
-	 * @param   array  $labels  Element sub option labels keyed on sub option values
+	 * @param   array $rows   Element data
+	 * @param   array $labels Element sub option labels keyed on sub option values
 	 *
 	 * @return  multitype:stdClass
 	 */
@@ -565,7 +585,7 @@ class FabrikModelNvd3_Chart extends FabrikFEModelVisualization
 	protected function radio($rows, $labels)
 	{
 		$suggestions = array();
-		$data = array();
+		$data        = array();
 
 		foreach ($rows as $val)
 		{
@@ -575,14 +595,14 @@ class FabrikModelNvd3_Chart extends FabrikFEModelVisualization
 				{
 					if (!array_key_exists($val, $data))
 					{
-						$o = new stdClass;
-						$o->label = $labels[$val];
-						$o->value = 1;
+						$o          = new stdClass;
+						$o->label   = $labels[$val];
+						$o->value   = 1;
 						$data[$val] = $o;
 					}
 					else
 					{
-						$data[$val]->value ++;
+						$data[$val]->value++;
 					}
 				}
 				else
@@ -609,9 +629,9 @@ class FabrikModelNvd3_Chart extends FabrikFEModelVisualization
 	protected function pieOpts()
 	{
 		$params = $this->getParams();
-		$str = array();
-		$str[] = $params->get('pie_labels', true) ? '.showLabels(true)' : '.showLabels(false)';
-		$str[] = $params->get('donut', false) ?  '.donut(true)' : '.donut(false)';
+		$str    = array();
+		$str[]  = $params->get('pie_labels', true) ? '.showLabels(true)' : '.showLabels(false)';
+		$str[]  = $params->get('donut', false) ? '.donut(true)' : '.donut(false)';
 
 		return implode("\n", $str);
 	}
@@ -625,8 +645,8 @@ class FabrikModelNvd3_Chart extends FabrikFEModelVisualization
 	protected function discreteBarChartOpts()
 	{
 		$params = $this->getParams();
-		$str = array();
-		$str[] = '.showValues(true)';
+		$str    = array();
+		$str[]  = '.showValues(true)';
 
 		// $str[] = '.staggerLabels(true);';
 		// Rotate the labels otherwise they get merged together
@@ -648,29 +668,29 @@ class FabrikModelNvd3_Chart extends FabrikFEModelVisualization
 
 	protected function margins()
 	{
-		$str = '';
+		$str    = '';
 		$params = $this->getParams();
 
 		if ($params->get('margin', '') !== '')
 		{
-			$margins = explode(',', $params->get('margin', ''));
-			$marg = new stdClass;
-			$marg->top = 10;
+			$margins      = explode(',', $params->get('margin', ''));
+			$marg         = new stdClass;
+			$marg->top    = 10;
 			$marg->bottom = 160;
-			$marg->right = 10;
-			$marg->left = 80;
+			$marg->right  = 10;
+			$marg->left   = 80;
 
 			if (count($margins) == 2)
 			{
-				$marg->top = $marg->bottom = $margins[0];
+				$marg->top  = $marg->bottom = $margins[0];
 				$marg->left = $marg->right = $margins[1];
 			}
 			elseif (count($margins) == 4)
 			{
-				$marg->top = $margins[0];
-				$marg->right = $margins[1];
+				$marg->top    = $margins[0];
+				$marg->right  = $margins[1];
 				$marg->bottom = $margins[2];
-				$marg->left = $margins[3];
+				$marg->left   = $margins[3];
 			}
 
 			$str = 'chart.margin(' . json_encode($marg) . ');';
@@ -682,16 +702,16 @@ class FabrikModelNvd3_Chart extends FabrikFEModelVisualization
 	/**
 	 * Should the chart show controls for swapping between views
 	 *
-	 * @param   array  &$str  JS output
+	 * @param   array &$str JS output
 	 *
 	 * @return void
 	 */
 
 	protected function showControls(&$str)
 	{
-		$allowed = array('stackedAreaChart', 'multiBarChart', 'lineWithFocusChart', 'multiBarHorizontalChart');
-		$params = $this->getParams();
-		$chart = $params->get('chart', 'pieChart');
+		$allowed  = array('stackedAreaChart', 'multiBarChart', 'lineWithFocusChart', 'multiBarHorizontalChart');
+		$params   = $this->getParams();
+		$chart    = $params->get('chart', 'pieChart');
 		$controls = $params->get('controls', 0);
 
 		if ($controls == 0 && in_array($chart, $allowed))
@@ -708,14 +728,14 @@ class FabrikModelNvd3_Chart extends FabrikFEModelVisualization
 
 	public function js()
 	{
-		$id = $this->getContainerId();
+		$id      = $this->getContainerId();
 		$rawData = $this->getData();
-		$data = json_encode($rawData);
-		$params = $this->getParams();
-		$chart = $params->get('chart', 'pieChart');
-		$str[] = 'window.addEvent("domready", function () {';
-		$str[] = 'nv.addGraph(function() {';
-		$str[] = 'var chart = nv.models.' . $chart . '()';
+		$data    = json_encode($rawData);
+		$params  = $this->getParams();
+		$chart   = $params->get('chart', 'pieChart');
+		$str[]   = 'window.addEvent("domready", function () {';
+		$str[]   = 'nv.addGraph(function() {';
+		$str[]   = 'var chart = nv.models.' . $chart . '()';
 
 		if (!empty($rawData) && !isset($rawData[0]->color))
 		{
@@ -772,10 +792,11 @@ class FabrikModelNvd3_Chart extends FabrikFEModelVisualization
 
 		switch ($chart)
 		{
-			// @TODO add line chart axis label options.
 			case 'lineChart':
-				// $str[] = 'chart.xAxis.axisLabel(\'Time (ms)\');';
-				// $str[] = 'chart.yAxis.axisLabel(\'Voltage (v)\');';
+				$str[] = 'chart.showYAxis(true);';
+				$str[] = 'chart.showXAxis(true)  ;';
+				$str[] = 'chart.xAxis.axisLabel(\'' . $params->get('single_line_x_axis_label') . '\');';
+				$str[] = 'chart.yAxis.axisLabel(\'' . $params->get('single_line_y_axis_label') . '\');';
 				break;
 			case 'discreteBarChart':
 				$str[] = 'chart.yAxis.tickFormat(d3.format("d"));';
@@ -784,7 +805,7 @@ class FabrikModelNvd3_Chart extends FabrikFEModelVisualization
 		}
 
 		$this->showControls($str);
-		$id = $this->getContainerId();
+		$id    = $this->getContainerId();
 		$str[] = 'd3.select("#' . $id . ' svg")';
 
 		$str[] = '.datum(' . $data . ')';

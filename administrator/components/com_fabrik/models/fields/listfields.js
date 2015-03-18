@@ -122,7 +122,7 @@ var ListFieldsElement = new Class({
 		if (this.addWatched === true) {
 			return;
 		}
-		
+		console.log('watch add', this);
 		this.addWatched = true;
 		var add = this.el.getParent().getElement('button');
 

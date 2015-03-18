@@ -87,9 +87,6 @@ class PlgSystemFabrik extends JPlugin
 
 	public static function js()
 	{
-		$config = JFactory::getConfig();
-		$app = JFactory::getApplication();
-
 		/**
 		 *  $$$ hugh - as per Skype session with Rob, looks like we'll get rid of this JS caching, as it
 		 *  really doesn't buy us anything, and introduces problems with things like per-user options on plugin
@@ -97,88 +94,9 @@ class PlgSystemFabrik extends JPlugin
 		 *  For now leave the code in, just short circuit it.  Rip it out after making sure this doesn't have
 		 *  any unforeseen side effects.
 		 */
-		//if ($config->get('caching') == 0 || $app->isAdmin())
-		if (true)
-		{
-			$script = self::buildJs();
-		}
-		else
-		{
-			$uri = JURI::getInstance();
-			$session = JFactory::getSession();
-			if ($session->has('fabrik.js.scripts'))
-			{
-				$uri = $uri->toString(array('path', 'query'));
-
-				/*
-				if ($_SERVER['REQUEST_METHOD'] === 'POST')
-				{
-					$uri .= serialize($_POST);
-				}
-				*/
-
-				$file = md5($uri) . '.js';
-				$folder = JPATH_SITE . '/cache/com_fabrik/js/';
-
-				/**
-				 * $$$ hugh - Added some belt and braces checking when creating the cache folder,
-				 * as some folk are reporting issues with file_put_contents() failing with "no such file or folder"
-				 * even when the permissions seem to be correct on the cache folder
-				 */
-
-				$folder_exists = JFolder::exists($folder);
-
-				if (!$folder_exists)
-				{
-					$folder_exists = JFolder::create($folder);
-				}
-
-				if ($folder_exists === true)
-				{
-					// folder definitely now exists, go ahead and use caching
-					$cacheFile = $folder . $file;
-
-					// Check for cached version
-					if (!JFile::exists($cacheFile))
-					{
-						$script = self::buildJs();
-						file_put_contents($cacheFile, $script);
-					}
-					else
-					{
-						$script = JFile::read($cacheFile);
-					}
-				}
-				else
-				{
-					// If the folder still doesn't exist, fall back to non-cached script build
-					$script = self::buildJs();
-				}
-			}
-			else
-			{
-				// No session fabrik.js.scripts key, so build
-				$script = self::buildJs();
-			}
-		}
-
-		//self::clearJs();
-
-		return $script;
+		return self::buildJs();;
 	}
 	
-	/**
-	 * Get Page JavaScript from either session or cached .js file
-	 *
-	 * @return string
-	 */
-	
-	public static function headJs()
-	{
-		$script = self::buildHeadJs();
-		return $script;
-	}
-
 	/**
 	 * Clear session js store
 	 *
@@ -194,7 +112,7 @@ class PlgSystemFabrik extends JPlugin
 	}
 
 	/**
-	 * Build Page <script> tag for insertion into DOM or for storing in cache
+	 * Build Page <script> tag for insertion into DOM
 	 *
 	 * @return string
 	 */
@@ -210,7 +128,24 @@ class PlgSystemFabrik extends JPlugin
 
 		if ($config . $js !== '')
 		{
-			$script = '<script type="text/javascript">' . "\n" . $config . "\n" . $js . "\n" . '</script>';
+			/*
+			 * Load requirejs into a DOM generated <script> tag - then load require.js code.
+			 * Avoids issues with previous implementation where we were loading requirejs at the end of the head and then
+			 * loading the code at the bottom of the page.
+			 * For example this previous method broke with the codemirror editor which first
+			 * tests if its inside requirejs (false) then loads scripts via <script> node creation. By the time the secondary
+			 * scripts were loaded, Fabrik had loaded requires js, and conflicts occurred.
+			 */
+			$jsAssetBaseURI = FabrikHelperHTML::getJSAssetBaseURI();
+			$rjs = $jsAssetBaseURI . 'media/com_fabrik/js/lib/require/require.js';
+			$script = '<script>
+            setTimeout(function(){
+				 jQuery.getScript( "' . $rjs. '", function() {
+				' . "\n" . $config . "\n" . $js . "\n" . '
+			});
+			 }, 600);
+			</script>
+      ';
 		}
 		else
 		{
@@ -220,30 +155,6 @@ class PlgSystemFabrik extends JPlugin
 		return $script;
 	}
 
-	/**
-	 * Build Page <script> tag for insertion into DOM or for storing in cache
-	 *
-	 * @return string
-	 */
-	
-	public static function buildHeadJs()
-	{
-		$session = JFactory::getSession();
-		$js = $session->get('fabrik.js.head.scripts', array());
-		$js = implode("\n", $js);
-	
-		if ($js !== '')
-		{
-			$script = '<script type="text/javascript">' . "\n" . $js . "\n" . '</script>';
-		}
-		else
-		{
-			$script = '';
-		}
-	
-		return $script;
-	}
-	
 	/**
 	 * Insert require.js config an app ini script into body.
 	 *
@@ -252,36 +163,19 @@ class PlgSystemFabrik extends JPlugin
 
 	public function onAfterRender()
 	{
-		// Could be component was unistalled but not the plugin
+		// Could be component was uninstalled but not the plugin
 		if (!class_exists('FabrikString'))
 		{
 			return;
 		}
 
+		$app = JFactory::getApplication();
 		$script = self::js();
-		$headScript = self::headJs();
 		self::clearJs();
 
 		$version = new JVersion;
-		
-		if (version_compare($version->RELEASE, '3.4', '<'))
-		{
-			$content = JResponse::getBody();
-		}
-		else
-		{		
-			$content = JFactory::getApplication()->getBody();
-		}
-		
-		// Test inserting require.js as last
-		if (!FabrikHelperHTML::inAjaxLoadedPage())
-		{
-			$jsAssetBaseURI = FabrikHelperHTML::getJSAssetBaseURI();
-			$rjs = $jsAssetBaseURI . 'media/com_fabrik/js/lib/require/require.js';
-			$rjs = '<script src="' . $rjs . '" type="text/javascript"></script>';
-			$content = FabrikString::replaceLast('</head>',  $rjs . "\n" . $headScript . "\n" . '</head>', $content);
-		}
-		// End test insert
+		$lessThanThreeFour = version_compare($version->RELEASE, '3.4', '<');
+		$content = $lessThanThreeFour ? JResponse::getBody() : $app->getBody();
 
 		if (!stristr($content, '</body>'))
 		{
@@ -292,14 +186,7 @@ class PlgSystemFabrik extends JPlugin
 			$content = FabrikString::replaceLast('</body>', $script . '</body>', $content);
 		}
 
-		if (version_compare($version->RELEASE, '3.4', '<'))
-		{
-			$content = JResponse::setBody($content);
-		}
-		else
-		{
-			JFactory::getApplication()->setBody($content);
-		}
+		$lessThanThreeFour ? JResponse::setBody($content) : $app->setBody($content);
 	}
 
 	/**
@@ -365,7 +252,6 @@ class PlgSystemFabrik extends JPlugin
 	public static function onDoContentSearch($text, $params, $phrase = '', $ordering = '')
 	{
 		$app = JFactory::getApplication();
-		$fbConfig = JComponentHelper::getParams('com_fabrik');
 		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 
 		if (defined('COM_FABRIK_SEARCH_RUN'))
@@ -377,7 +263,6 @@ class PlgSystemFabrik extends JPlugin
 		define('COM_FABRIK_SEARCH_RUN', true);
 		JModelLegacy::addIncludePath(COM_FABRIK_FRONTEND . '/models', 'FabrikFEModel');
 
-		$user = JFactory::getUser();
 		$db = FabrikWorker::getDbo(true);
 
 		require_once JPATH_SITE . '/components/com_content/helpers/route.php';

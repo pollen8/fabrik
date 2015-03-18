@@ -48,6 +48,8 @@ plugins/fabrik_list/sphera_php_events
 !plugins/fabrik_element/
 plugins/fabrik_element/mytristate/
 !plugins/fabrik_form/
+plugins/fabrik_form/payments/
+
 plugins/fabrik_form/php/scripts/
 plugins/fabrik_form/caneditgroup/
 !plugins/fabrik_list/
@@ -57,6 +59,7 @@ plugins/fabrik_list/php/scripts/
 !plugins/fabrik_visualization/
 plugins/community/*
 !plugins/community/fabrik/
+premium/
 !tttplugins/system/fabrikcron/
 robots.txt
 sql/*
