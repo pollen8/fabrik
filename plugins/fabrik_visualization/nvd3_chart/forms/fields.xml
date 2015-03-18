@@ -216,12 +216,12 @@
 			<field name="single_line_x_axis_label"
 			       type="text"
 			       description="PLG_FABRIK_VIZ_NV3D_SINGLE_LINE_X_AXIS_LABEL_DESC"
-			       lable="PLG_FABRIK_VIZ_NV3D_SINGLE_LINE_X_AXIS_LABEL_LABEL" />
+			       label="PLG_FABRIK_VIZ_NV3D_SINGLE_LINE_X_AXIS_LABEL_LABEL" />
 
 			<field name="single_line_y_axis_label"
 			       type="text"
 			       description="PLG_FABRIK_VIZ_NV3D_SINGLE_LINE_Y_AXIS_LABEL_DESC"
-			       lable="PLG_FABRIK_VIZ_NV3D_SINGLE_LINE_y_AXIS_LABEL_LABEL" />
+			       label="PLG_FABRIK_VIZ_NV3D_SINGLE_LINE_y_AXIS_LABEL_LABEL" />
 		</fieldset>
 	</fields>
 </form>
