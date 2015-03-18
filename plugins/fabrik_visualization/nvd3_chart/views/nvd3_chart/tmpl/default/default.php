@@ -24,6 +24,6 @@ $row = $this->row;
 	<p><?php echo $row->intro_text;?></p>
 	<?php echo $this->loadTemplate('filter'); ?>
 	<br/>
-	<svg style="height:<?php echo $this->params->get('height', 350); ?>px;width="<?php $this->params->get('width', 350)?>px"></svg>
+	<svg style="height:<?php echo $this->params->get('height', 350); ?>px;width=<?php $this->params->get('width', 350)?>px"></svg>
 	<?php echo $this->postText?>
 </div>
