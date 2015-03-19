@@ -38,6 +38,7 @@ class PlgFabrik_ElementTextarea extends PlgFabrik_Element
 
 	protected function tagify($data)
 	{
+		$app = JFactory::getApplication();
 		$name = $this->getFullName(true, false);
 		$params = $this->getParams();
 		$listModel = $this->getlistModel();
@@ -45,10 +46,13 @@ class PlgFabrik_ElementTextarea extends PlgFabrik_Element
 		$fkeys = FArrayHelper::getValue($filters, 'key', array());
 		$data = explode(",", strip_tags($data));
 		$tags = array();
+		$bits = array();
 		$url = $params->get('textarea_tagifyurl');
 
 		if ($url == '')
 		{
+			// $$$ hugh - don't think this is right, as if we're in details view, this will take us back there, instead of back to filtered list view
+			/*
 			$url = $_SERVER['REQUEST_URI'];
 			$bits = explode('?', $url);
 			$root = FArrayHelper::getValue($bits, 0, '', 'string');
@@ -80,11 +84,26 @@ class PlgFabrik_ElementTextarea extends PlgFabrik_Element
 					}
 				}
 			}
+			*/
+			if ($app->isAdmin())
+			{
+				$url = 'index.php?option=com_fabrik&amp;task=list.view&amp;listid=' . $this->getListModel()->getId();
+			}
+			else
+			{
+				$package = $app->getUserState('com_fabrik.package', 'fabrik');
+				$url = 'index.php?option=com_' . $package . '&view=list&listid=' . $this->getListModel()->getId();
+			}
 		}
 
+		/*
+		$root = FArrayHelper::getValue($bits, 0, '', 'string');
 		$url = $root . '?' . implode('&', $bits);
+		*/
 
 		// $$$ rob 24/02/2011 remove duplicates from tags
+		// $$$ hugh - strip spaces first, account for "foo,bar, baz, foo"
+		$data = array_map('trim', $data);
 		$data = array_unique($data);
 		$img = FabrikWorker::j3() ? 'bookmark.png' : 'tag.png';
 		$icon = FabrikHelperHTML::image($img, 'form', @$this->tmpl, array('alt' => 'tag'));
@@ -295,25 +314,29 @@ class PlgFabrik_ElementTextarea extends PlgFabrik_Element
 
 		if (!$this->isEditable())
 		{
-			if (!$wysiwyg)
-			{
-				$value = nl2br($value);
-			}
-
 			if ($params->get('textarea-tagify') == true)
 			{
 				$value = $this->tagify($value);
 			}
-			if (!$params->get('textarea-tagify') && $value !== ''
-				&&
-				((int) $params->get('textarea-truncate-where', 0) === 2 || (int) $params->get('textarea-truncate-where', 0) === 3))
+			else
 			{
-				$opts = array();
-				$opts['wordcount'] = (int) $params->get('textarea-truncate', 0);
-				$opts['tip'] = $params->get('textarea-hover');
-				$opts['position'] = $params->get('textarea_hover_location', 'top');
-				$value = fabrikString::truncate($value, $opts);
+				if (!$wysiwyg)
+				{
+					$value = nl2br($value);
+				}
+				
+				if ($value !== ''
+					&&
+					((int) $params->get('textarea-truncate-where', 0) === 2 || (int) $params->get('textarea-truncate-where', 0) === 3))
+				{
+					$opts = array();
+					$opts['wordcount'] = (int) $params->get('textarea-truncate', 0);
+					$opts['tip'] = $params->get('textarea-hover');
+					$opts['position'] = $params->get('textarea_hover_location', 'top');
+					$value = fabrikString::truncate($value, $opts);
+				}
 			}
+			
 			return $value;
 		}
 
