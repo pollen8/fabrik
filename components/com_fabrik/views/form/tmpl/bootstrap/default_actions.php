@@ -19,13 +19,11 @@ if ($this->hasActions) : ?>
 		<?php if ( $form->submitButton || $form->applyButton || $form->copyButton ): ?>
 			<div class="span4">
 				<div class="btn-group">
-		<?php endif; ?>
 					<?php
 					echo $form->submitButton . ' ';
 					echo $form->applyButton . ' ';
 					echo $form->copyButton;
 					?>
-		<?php if ( $form->submitButton || $form->applyButton || $form->copyButton ): ?>
 				</div>
 			</div>
 		<?php endif; ?>
