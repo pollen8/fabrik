@@ -16,32 +16,37 @@ $form = $this->form;
 if ($this->hasActions) : ?>
 <div class="fabrikActions form-actions">
 	<div class="row-fluid">
-		<div class="span4">
-			<div class="btn-group">
-			<?php
-			echo $form->submitButton . ' ';
-			echo $form->applyButton . ' ';
-			echo $form->copyButton;
-			?>
+		<?php if ( $form->submitButton || $form->applyButton || $form->copyButton ): ?>
+			<div class="span4">
+				<div class="btn-group">
+		<?php endif; ?>
+					<?php
+					echo $form->submitButton . ' ';
+					echo $form->applyButton . ' ';
+					echo $form->copyButton;
+					?>
+		<?php if ( $form->submitButton || $form->applyButton || echo $form->copyButton ): ?>
+				</div>
 			</div>
-		</div>
-		<div class="span1"></div>
-		<div class="span2">
-			<div class="btn-group">
-				<?php echo $form->prevButton . ' ' . $form->nextButton; ?>
+		<?php endif; ?>
+		<?php if ( $form->prevButton || $form->nextButton ): ?>
+			<div class="offset1 span2">
+				<div class="btn-group">
+					<?php echo $form->prevButton . ' ' . $form->nextButton; ?>
+				</div>
 			</div>
-		</div>
-		<div class="span1"></div>
-
-		<div class="span4">
-			<div class="pull-right btn-group">
-				<?php
-				echo $form->gobackButton  . ' ' . $this->message;
-				echo $form->resetButton . ' ';
-				echo  $form->deleteButton;
-				?>
+		<?php endif; ?>
+		<?php if ( $form->gobackButton || $form->resetButton || $form->deleteButton ): ?>
+			<div class="offset1 span4">
+				<div class="pull-right btn-group">
+					<?php
+					echo $form->gobackButton  . ' ' . $this->message;
+					echo $form->resetButton . ' ';
+					echo $form->deleteButton;
+					?>
+				</div>
 			</div>
-		</div>
+		<?php endif; ?>
 	</div>
 </div>
 <?php
