@@ -25,7 +25,7 @@ if ($this->hasActions) : ?>
 					echo $form->applyButton . ' ';
 					echo $form->copyButton;
 					?>
-		<?php if ( $form->submitButton || $form->applyButton || echo $form->copyButton ): ?>
+		<?php if ( $form->submitButton || $form->applyButton || $form->copyButton ): ?>
 				</div>
 			</div>
 		<?php endif; ?>
