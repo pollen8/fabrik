@@ -606,7 +606,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		$displayType = $this->getDisplayType();
 		
 		// Remove tags from labels
-		if ($this->canUse() && $displayType != 'radio')
+		if ($this->canUse() && $displayType != 'radio' && $displayType != 'checkbox')
 		{
 			foreach ($this->optionVals[$sqlKey] as $key => &$opt)
 			{
@@ -704,7 +704,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		{
 			// For values like '1"'
 			// $$$ hugh - added second two params so we set double_encode false
-			if ($this->getDisplayType() != 'radio') 
+			if ($this->getDisplayType() != 'radio' && $this->getDisplayType() != 'checkbox') 
 			{
 				$o->text = htmlspecialchars($o->text, ENT_NOQUOTES, 'UTF-8', false);
       			}
