@@ -58,7 +58,7 @@ class PlgFabrik_FormPaginate extends PlgFabrik_Form
 		$input = $app->input;
 		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$formId = $formModel->getForm()->id;
-		$mode = JString::strtolower($input->get('view'));
+		$mode = JString::strtolower($input->get('view', 'form'));
 		$this->ids = $this->getNavIds($formModel);
 		$linkStartPrev = $this->ids->index == 0 ? ' disabled' : '';
 		$linkNextEnd = $this->ids->index == $this->ids->lastKey ? ' disabled' : '';
