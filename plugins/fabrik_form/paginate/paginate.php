@@ -65,7 +65,7 @@ class PlgFabrik_FormPaginate extends PlgFabrik_Form
 
 		if ($app->isAdmin())
 		{
-			$url = 'index.php?option=com_fabrik&view=' . $mode . '&formid=' . $formId . '&rowid=';
+			$url = 'index.php?option=com_fabrik&task=' . $mode . '.view&formid=' . $formId . '&rowid=';
 		}
 		else
 		{
