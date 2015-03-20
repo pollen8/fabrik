@@ -768,7 +768,7 @@ class PlgFabrik_ElementGooglemap extends PlgFabrik_Element
 				if ($w !== '')
 				{
 					$w = 'width:' . $w;
-					$w .= !strstr($w, '%') 'px; ' : '; ';
+					$w .= !strstr($w, '%') ? 'px; ' : '; ';
 				}
 
 				$str .= '<div class="map" style="' . $w . 'height:' . $h . 'px"></div>';
