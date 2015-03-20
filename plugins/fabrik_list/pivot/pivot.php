@@ -311,6 +311,49 @@ class PlgFabrik_ListPivot extends PlgFabrik_List
 			$new[] = $newRow;
 		}
 
+		/**
+		 * Optionally order by the sum column. I'm sure there's some more elegant way of doing this,
+		 * but for now, two usort functions will do it.
+		 */
+		$order = $params->get('pivot_sort', '0');
+		
+		if ($order == '1')
+		{
+			usort($new, function($a, $b)
+			{
+				if ($a->pivot_total == $b->pivot_total)
+				{
+					return 0;
+				}
+				else if ($a->pivot_total > $b->pivot_total)
+				{
+					return -1;
+				}
+				else
+				{
+					return 1;
+				}
+			});
+		}
+		else if ($order == '2')
+		{
+			usort($new, function($a, $b)
+			{
+				if ($a->pivot_total == $b->pivot_total)
+				{
+					return 0;
+				}
+				else if ($a->pivot_total < $b->pivot_total)
+				{
+					return -1;
+				}
+				else
+				{
+					return 1;
+				}
+			});
+		}
+		
 		// Add totals @ bottom
 		$yColTotals = new stdClass;
 		$yColTotals->$yCol = FText::_('PLG_LIST_PIVOT_LIST_Y_TOTAL');
@@ -318,16 +361,73 @@ class PlgFabrik_ListPivot extends PlgFabrik_List
 
 		foreach ($xCols as $x)
 		{
-			$c = JArrayHelper::getColumn($new, $x);
-			$yColTotals->$x = array_sum($c);
-			$total += (float) $yColTotals->$x;
+			if (!empty($x))
+			{
+				$c = JArrayHelper::getColumn($new, $x);
+		
+				foreach ($c as &$cc)
+				{
+					$cc = strip_tags($cc);
+				}
+		
+				$yColTotals->$x = array_sum($c);
+				$total += (float) $yColTotals->$x;
+			}
 		}
-
+		
+		foreach ($yColTotals as $yKey => &$y)
+		{
+			if ($yKey == $yCol)
+			{
+				continue;
+			}
+		
+			$y = $this->numberFormat($y, $params);
+		}
+		
 		$yColTotals->pivot_total = $total;
 		$new[] = $yColTotals;
-
+		
+		foreach ($new as $newRow)
+		{
+			if (isset($newRow->pivot_total))
+			{
+				$newRow->pivot_total = $this->numberFormat($newRow->pivot_total, $params);
+			}
+		}
+		
 		$data[0] = $new;
 
 		return true;
 	}
+	
+	/**
+	 * Format a number value
+	 *
+	 * @param mixed $data (double/int)
+	 * @param
+	 *
+	 * @return string formatted number
+	 */
+	
+	protected function numberFormat($data, $params)
+	{
+		if ($params->get('pivot_format_totals', '0') == '0')
+		{
+			return $data;
+		}
+	
+		$decimal_length = (int) $params->get('pivot_round_to', 2);
+		$decimal_sep = $params->get('pivot_decimal_sepchar', '.');
+		$thousand_sep = $params->get('pivot_thousand_sepchar', ',');
+	
+		// Workaround for params not letting us save just a space!
+		if ($thousand_sep == '#32')
+		{
+			$thousand_sep = ' ';
+		}
+	
+		return number_format((float) $data, $decimal_length, $decimal_sep, $thousand_sep);
+	}
+	
 }

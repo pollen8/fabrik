@@ -42,9 +42,15 @@ class PlgFabrik_FormUpsert extends PlgFabrik_Form
 		$params = $this->getParams();
 		$w = new FabrikWorker;
 		$formModel = $this->getModel();
+		// @FIXME to use selected connection
 		$upsert_db = $this->getDb();
 		$query = $upsert_db->getQuery(true);
 		$this->data = $this->getProcessData();
+		
+		if (!$this->shouldProcess('upsert_conditon', null, $params))
+		{
+			return;
+		}
 
 		$table = $this->getTableName();
 		$pk = FabrikString::safeColName($params->get('primary_key'));
@@ -61,7 +67,8 @@ class PlgFabrik_FormUpsert extends PlgFabrik_Form
 		}
 
 		$rowid = $w->parseMessageForPlaceholder($rowid, $this->data, false);
-		$fields = $this->upsertData($rowid);
+		$upsertRowExists = $this->upsertRowExists($table, $pk, $rowid);
+		$fields = $this->upsertData($upsertRowExists);
 		$query->set($fields);
 
 		if ($rowid === '')
@@ -70,7 +77,14 @@ class PlgFabrik_FormUpsert extends PlgFabrik_Form
 		}
 		else
 		{
-			$query->update($table)->where($pk . ' = ' . $rowid);
+			if ($upsertRowExists)
+			{
+				$query->update($table)->where($pk . ' = ' . $rowid);
+			}
+			else
+			{
+				$query->insert($table);
+			}
 		}
 
 		$upsert_db->setQuery($query);
@@ -106,14 +120,29 @@ class PlgFabrik_FormUpsert extends PlgFabrik_Form
 	 * @return  array
 	 */
 
-	protected function upsertData($rowid)
+	protected function upsertData($upsertRowExists = false)
 	{
 		$params = $this->getParams();
 		$w = new FabrikWorker;
 		$upsert_db = $this->getDb();
 		$upsert = json_decode($params->get('upsert_fields'));
 		$fields = array();
-
+		$formModel = $this->getModel();
+		
+		if ($formModel->isNewRecord() || !$upsertRowExists)
+		{
+			if ($params->get('upsert_pk_or_fk', 'pk') == 'fk')
+			{
+				$row_value = $params->get('row_value', '');
+				if ($row_value == '{origid}')
+				{				
+					$fk = FabrikString::safeColName($params->get('primary_key'));
+					$rowid = $formModel->getInsertId();
+					$fields[] = $fk . ' = ' . $upsert_db->quote($rowid);
+				}
+			}
+		}
+		
 		for ($i = 0; $i < count($upsert->upsert_key); $i++)
 		{
 			$k = FabrikString::shortColName($upsert->upsert_key[$i]);
@@ -155,7 +184,7 @@ class PlgFabrik_FormUpsert extends PlgFabrik_Form
 				}
 				else
 				{
-					if (empty($rowid))
+					if ($formModel->isNewRecord())
 					{
 						$v = $v[1];
 					}
@@ -187,4 +216,22 @@ class PlgFabrik_FormUpsert extends PlgFabrik_Form
 
 		return $listModel->getTable()->db_table_name;
 	}
+	
+	/**
+	 * See if row exists on upsert table
+	 */
+	
+	protected function upsertRowExists($table, $field, $value)
+	{
+		$params = $this->getParams();
+		$cid = $params->get('connection_id');
+		$connectionModel = JModelLegacy::getInstance('connection', 'FabrikFEModel');
+		$connectionModel->setId($cid);
+		$db = $connectionModel->getDb();
+		$query = $db->getQuery(true);
+		$query->select('COUNT(*) AS total')->from($table)->where($field . ' = ' . $value);
+		$db->setQuery($query);
+		return (int)$db->loadResult() > 0;
+	}
+	
 }
