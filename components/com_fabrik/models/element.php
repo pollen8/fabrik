@@ -5900,7 +5900,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		{
 			if (!array_key_exists(0, $data))
 			{
-				// Occurs if we have created a list from an exisitng table whose data contains json objects (e.g. #__users.params)
+				// Occurs if we have created a list from an existing table whose data contains json objects (e.g. #__users.params)
 				$obj = JArrayHelper::toObject($data);
 				$data = array();
 				$data[0] = $obj;
@@ -5921,7 +5921,20 @@ class PlgFabrik_Element extends FabrikPlugin
 			$r = empty($data) ? '' : array_shift($data);
 		}
 
-		return $r;
+		$layout = $this->getLayout('list');
+		$data = array();
+		$data['text'] = $r;
+		$res = $layout->render($data);
+
+		// If no custom list layout found revert to the default list renderer
+		if ($res === '')
+		{
+			$basePath = COM_FABRIK_FRONTEND . '/components/com_fabrik/layouts/';
+			$layout = new JLayoutFile('fabrik-element-list', $basePath, array('debug' => false, 'component' => 'com_fabrik', 'client' => 'site'));
+			$res = $layout->render($data);
+		}
+
+		return $res;
 	}
 
 	/**
@@ -7535,6 +7548,22 @@ class PlgFabrik_Element extends FabrikPlugin
 		}
 		
 		return $advancedClass;
-		
+	}
+
+	/**
+	 * Get the element's JLayout file
+	 *
+	 * @param   string  $type  form/details/list
+	 *
+	 * @return JLayoutFile
+	 */
+	protected function getLayout($type)
+	{
+		$name = get_class($this);
+		$name = strtolower(JString::str_ireplace('PlgFabrik_Element', '', $name));
+		$basePath = COM_FABRIK_BASE . '/plugins/fabrik_element/' . $name . '/layouts/';
+		$layout = new JLayoutFile('fabrik-element-' . $name. '-' . $type, $basePath, array('debug' => false, 'component' => 'com_fabrik', 'client' => 'site'));
+
+		return $layout;
 	}
 }

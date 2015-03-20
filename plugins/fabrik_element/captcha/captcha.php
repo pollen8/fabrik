@@ -261,19 +261,7 @@ class PlgFabrik_ElementCaptcha extends PlgFabrik_Element
 			$session->set('com_' . $package . '.element.captcha.bg_color', $bg_color);
 			$session->set('com_' . $package . '.element.captcha.font', $this->font);
 
-			// $$$ hugh - changed from static image path to using simple image.php script, to get round IE caching images
-
-			/* e-kinst
-			 *	It seems too dangerous to set all parameters here,
-			 *	because everybody can enlarge image size and set noise color to
-			 *	background color to OCR captcha values without problems
-			*/
-			$str[] = '<img src="' . COM_FABRIK_LIVESITE . 'plugins/fabrik_element/captcha/image.php?foo=' . rand() . '" alt="'
-			. FText::_('security image') . '" />';
-
-			$str[] = '<div class="captcha_input">';
-
-			$type = $params->get('password') == '1' ? "password" : "text";
+			$type = $params->get('password') == '1' ? 'password' : 'text';
 
 			if ($this->elementError != '')
 			{
@@ -285,11 +273,17 @@ class PlgFabrik_ElementCaptcha extends PlgFabrik_Element
 				$type = 'hidden';
 			}
 
-			$sizeInfo = ' size="' . $size . '"';
-			$str[] = '<input class="inputbox ' . $type . '" type="' . $type . '" name="' . $name . '" id="' . $id . '" ' . $sizeInfo . ' value="" />';
-			$str[] = '</div>';
+			$layout = $this->getLayout('form');
+			$data = array();
+			$data['id'] = $id;
+			$data['name'] = $name;
 
-			return implode("\n", $str);
+			// $$$ hugh - changed from static image path to using simple image.php script, to get round IE caching images
+			$data['url'] = COM_FABRIK_LIVESITE . 'plugins/fabrik_element/captcha/image.php?foo=' . rand();
+			$data['type'] = $type;
+			$data['size'] = $size;
+
+			return $layout->render($data);
 		}
 	}
 

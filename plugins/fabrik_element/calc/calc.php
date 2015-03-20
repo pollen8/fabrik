@@ -444,25 +444,25 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 			}
 			else
 			{
-				if ($element->height <= 1)
-				{
-					$str[] = '<span class="fabrikinput" name="' . $name . '" id="' . $id . '">' . $value . '</span>';
-				}
-				else
-				{
-					$str[] = '<textarea class="fabrikinput" disabled="disabled" name="' . $name . '" id="' . $id
-					. '" cols="' . $element->width . '" rows="' . $element->height . '">' . $value . '</textarea>';
-				}
+				$layout = $this->getLayout('form');
+				$data = array();
+				$data['id'] = $id;
+				$data['name'] = $name;
+				$data['height'] = $element->height;
+				$data['value'] = $value;
+				$data['cols'] = $element->width;
+				$data['rows'] = $element->height;
+				$str[] = $layout->render($data);
 			}
 		}
 		else
 		{
-			/* make a hidden field instead*/
+			// Make a hidden field instead
 			$str[] = '<input type="hidden" class="fabrikinput" name="' . $name . '" id="' . $id . '" value="' . $value . '" />';
 		}
 
 		$opts = array('alt' => FText::_('PLG_ELEMENT_CALC_LOADING'), 'style' => 'display:none;padding-left:10px;', 'class' => 'loader');
-		$str[] = FabrikHelperHTML::image("ajax-loader.gif", 'form', @$this->tmpl, $opts);
+		$str[] = FabrikHelperHTML::image('ajax-loader.gif', 'form', @$this->tmpl, $opts);
 
 		return implode("\n", $str);
 	}

@@ -266,22 +266,33 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 				$years[] = JHTML::_('select.option', $i);
 			}
 
-			$errorCSS = (isset($this->_elementError) && $this->_elementError != '') ? " elementErrorHighlight" : '';
+			$errorCSS = (isset($this->_elementError) && $this->_elementError != '') ? ' elementErrorHighlight' : '';
 			$advancedClass = $this->getAdvancedSelectClass();
 			
 			$attribs = 'class="input-small fabrikinput inputbox ' . $advancedClass . ' ' . $errorCSS . '"';
-			$str = array();
-			$str[] = '<div class="fabrikSubElementContainer" id="' . $id . '">';
 
-			// $name already suffixed with [] as element hasSubElements = true
-			$str[] = JHTML::_('select.genericlist', $days, preg_replace('#(\[\])$#', '[0]', $name), $attribs, 'value', 'text', $dayvalue, $id . '_0');
-			$str[] = $params->get('birthday_separatorlabel', FText::_('/')) . ' '
-				. JHTML::_('select.genericlist', $months, preg_replace('#(\[\])$#', '[1]', $name), $attribs, 'value', 'text', $monthvalue, $id . '_1');
-			$str[] = $params->get('birthday_separatorlabel', FText::_('/')) . ' '
-				. JHTML::_('select.genericlist', $years, preg_replace('#(\[\])$#', '[2]', $name), $attribs, 'value', 'text', $yearvalue, $id . '_2');
-			$str[] = '</div>';
+			$layout = $this->getLayout('form');
+			$data = array();
+			$data['id'] = $id;
+			$data['separator'] = $params->get('birthday_separatorlabel', FText::_('/'));
+			$data['attribs'] = $attribs;
+			$data['day_name'] = preg_replace('#(\[\])$#', '[0]', $name);
+			$data['day_id'] = $id . '_0';
+			$data['day_options'] = $days;
+			$data['day_value'] = $dayvalue;
 
-			return implode("\n", $str);
+			$data['month_name'] = preg_replace('#(\[\])$#', '[1]', $name);
+			$data['month_id'] = $id . '_1';
+			$data['month_options'] = $months;
+			$data['month_value'] = $monthvalue;
+
+			$data['year_name'] = preg_replace('#(\[\])$#', '[2]', $name);
+			$data['year_id'] = $id . '_2';
+			$data['year_options'] = $years;
+			$data['year_value'] = $yearvalue;
+
+
+			return $layout->render($data);
 		}
 	}
 
