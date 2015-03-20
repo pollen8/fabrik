@@ -82,7 +82,7 @@ class PlgFabrik_FormPaginate extends PlgFabrik_Form
 
 		if ($j3)
 		{
-			$layout = new JLayoutFile('plugins.fabrik_form.paginate.layouts.default_paginate', JPATH_BASE);
+			$layout = new JLayoutFile('plugins.fabrik_form.paginate.layouts.default_paginate', JPATH_SITE);
 			$this->data = $layout->render($links);
 		}
 		else
