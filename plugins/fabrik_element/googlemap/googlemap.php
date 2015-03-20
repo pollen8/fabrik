@@ -767,7 +767,8 @@ class PlgFabrik_ElementGooglemap extends PlgFabrik_Element
 				// Allow for 100% width
 				if ($w !== '')
 				{
-					$w = 'width:' . $w . 'px;';
+					$w = 'width:' . $w;
+					$w .= !strstr($w, '%') 'px; ' : '; ';
 				}
 
 				$str .= '<div class="map" style="' . $w . 'height:' . $h . 'px"></div>';
