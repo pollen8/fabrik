@@ -2845,7 +2845,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		$rowid = $input->get('rowid', '', 'string');
 		$repeatcount = $input->getInt('repeatcount', 0);
 		$listModel = $this->getListModel();
-		$row = $listModel->getRow($rowid, false);
+		$row = $listModel->getRow($rowid, false, true);
 
 		if (!$this->canView())
 		{
@@ -2888,7 +2888,9 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		$storage = $this->getStorage();
 		$elName = $this->getFullName(true, false);
 		$filepath = $row->$elName;
-		$filepath = FabrikWorker::JSONtoData($filepath, true);
+		$filepath = FabrikWorker::JSONtoData($filepath, false);
+		$filepath = is_object($filepath) ? FArrayHelper::fromObject($filepath) : $filepath;
+		$foo = $filepath[$repeatcount];
 		$filepath = FArrayHelper::getValue($filepath, $repeatcount);
 		$filepath = $storage->getFullPath($filepath);
 		$filecontent = $storage->read($filepath);
