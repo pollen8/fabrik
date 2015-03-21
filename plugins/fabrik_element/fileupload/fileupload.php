@@ -1709,13 +1709,13 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 				return true;
 			}
 			*/
-
 			$files = $input->files->get($name, array(), 'array');
 
 			if ($groupModel->canRepeat())
 			{
+
 				//$file = $joindata[$joinid][$name][$repeatCounter]['name'];
-				$file = $files[$repeatCounter]['name'];
+				$file = empty($files) ? '' : $files[$repeatCounter]['name'];
 			}
 			else
 			{

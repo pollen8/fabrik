@@ -39,6 +39,12 @@ require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
  * ******
  * Test secret key: sk_test_GkWz3OFHm4PZnzyHfuQ6gU8f
  *
+ * Coinbase
+ *
+ * Key: xh8GgA0GjecvBl7u
+ * Secret: 7j1j40775YN0IZvRWCTphjuyrLrRHqUi
+ * Account id? : 5506d3f140380cac5e00008d
+ *
  * Test Card Details
  * ******************
  * Card #: 4111111111111111
@@ -124,7 +130,7 @@ class PlgFabrik_FormPayments extends PlgFabrik_Form
 		$gateway  = Omnipay::create($gateWayName);
 		$settings = $gateway->getDefaultParameters();
 		$prefix = strtolower($gateWayName);
-
+echo "<pre>";print_r($settings);
 		foreach ($settings as $setting => $default)
 		{
 			if ($default === '')
@@ -148,17 +154,12 @@ class PlgFabrik_FormPayments extends PlgFabrik_Form
 		$params = $this->getParams();
 		$mode   = (bool) $params->get('testMode');
 		$gateway->setTestMode($mode);
+		$name = $gateway->getName();
 
-		if ($mode)
+		if ($mode && ($name === 'Authorize.Net AIM' || $name === 'Authorize.Net SIM'))
 		{
-			try
-			{
-				// For Authorize.net AIM only
-				$gateway->setDeveloperMode(true);
-			} catch (Exception $e)
-			{
-
-			}
+			// For Authorize.net
+			$gateway->setDeveloperMode(true);
 		}
 	}
 
