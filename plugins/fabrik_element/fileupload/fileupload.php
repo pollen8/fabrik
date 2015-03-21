@@ -995,7 +995,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 
 		$name = $this->getFullName(true, false);
 		$ok = true;
-		$files = $input->files->get($name, array(), 'array');
+		$files = $input->files->get($name, array(), 'cmd');
 
 		if (array_key_exists($repeatCounter, $files))
 		{
@@ -1710,7 +1710,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 			}
 			*/
 
-			$files = $input->files->get($name, array(), 'array');
+			$files = $input->files->get($name, array(), 'raw');
 
 			if ($groupModel->canRepeat())
 			{
@@ -1754,7 +1754,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 				}
 				else
 				{
-					$files = $input->files->get($name, array(), 'array');
+					$files = $input->files->get($name, array(), 'raw');
 					$file = JArrayHelper::getValue($files, 'name', '');
 
 					return $file == '' ? true : false;
