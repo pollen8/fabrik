@@ -7205,6 +7205,18 @@ class PlgFabrik_Element extends FabrikPlugin
 	{
 		$this->defaults = null;
 	}
+	
+	/**
+	 * Clear default values, need to call this if we change an elements value in any of the formData
+	 * arrays during submisison process.
+	 *
+	 * @return  null
+	 */
+	
+	public function clearDefaults()
+	{
+		$this->defaults = null;
+	}
 
 	/**
 	 * Should the 'label' field be quoted.  Overridden by databasejoin and extended classes,
