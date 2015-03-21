@@ -1700,22 +1700,11 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		if ($groupModel->isJoin())
 		{
 			$name = $this->getFullName(true, false);
-			/*
-			$joinid = $groupModel->getGroup()->join_id;
-			$joindata = $input->files->get('join', array(), 'array');
-
-			if (empty($joindata))
-			{
-				return true;
-			}
-			*/
-
 			$files = $input->files->get($name, array(), 'raw');
 
 			if ($groupModel->canRepeat())
 			{
-				//$file = $joindata[$joinid][$name][$repeatCounter]['name'];
-				$file = $files[$repeatCounter]['name'];
+				$file = empty($files) ? '' : $files[$repeatCounter]['name'];
 			}
 			else
 			{

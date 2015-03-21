@@ -26,6 +26,26 @@
 			</field>
 		</fieldset>
 
+		<fieldset name="credentials_coinbase" label="PLG_FORM_PAYMENTS_CREDENTIALS_COINBASE">
+
+			<field name="coinbase_apiKey"
+			       type="text"
+			       repeat="true"
+			       label="API key" />
+
+			<field name="coinbase_secret"
+			       type="text"
+			       repeat="true"
+			       label="Secret" />
+
+			<field name="coinbase_accountId"
+			       type="text"
+			       repeat="true"
+			       label="Account id" />
+
+		</fieldset>
+
+
 		<fieldset name="credentials_stripe" label="PLG_FORM_PAYMENTS_CREDENTIALS_STRIPE">
 
 			<field name="stripe_apiKey"

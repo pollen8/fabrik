@@ -50,12 +50,13 @@ class JFormFieldOmnipayGateways extends JFormFieldList
 		$options = array();
 		$gateways = Omnipay::find();
 
-		$accepted = array('PayPal_Express', 'Stripe', 'AuthorizeNet_AIM', 'AuthorizeNet_SIM');
+		$accepted = array('PayPal_Express', 'Stripe', 'AuthorizeNet_AIM', 'AuthorizeNet_SIM', 'Coinbase');
 
 		$fieldSets = array('PayPal_Express' => 'credentials_paypal',
 			'Stripe' => 'credentials_stripe',
 			'AuthorizeNet_AIM' => 'credentials_authorize',
-			'AuthorizeNet_SIM' => 'credentials_authorize');
+			'AuthorizeNet_SIM' => 'credentials_authorize',
+			'Coinbase' => 'credentials_coinbase');
 
 		foreach ($gateways as $value)
 		{

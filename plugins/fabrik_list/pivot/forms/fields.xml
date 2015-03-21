@@ -10,7 +10,7 @@
 				type="listfields"
 				valueformat="tableelement"
 				usestep="true"
-				mode="gui"
+				raw="true"
 				repeat="true"
 				description="PLG_LIST_PIVOT_SUM_FIELDS_DESC"
 				label="PLG_LIST_PIVOT_SUM_FIELDS_LABEL"  />

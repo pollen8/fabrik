@@ -5929,7 +5929,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		// If no custom list layout found revert to the default list renderer
 		if ($res === '')
 		{
-			$basePath = COM_FABRIK_FRONTEND . '/components/com_fabrik/layouts/';
+			$basePath = COM_FABRIK_FRONTEND . '/layouts/';
 			$layout = new JLayoutFile('fabrik-element-list', $basePath, array('debug' => false, 'component' => 'com_fabrik', 'client' => 'site'));
 			$res = $layout->render($data);
 		}

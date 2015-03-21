@@ -4193,8 +4193,8 @@ echo "form get errors";
 	{
 		$m = explode(":", $match[0]);
 		array_shift($m);
-
-		return FabrikString::rtrimword(implode(":", $m), "}");
+		$m = implode(":", $m);
+		return FabrikString::rtrimword($m, "}");
 	}
 
 	/**
