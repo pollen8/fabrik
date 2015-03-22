@@ -594,7 +594,7 @@ class PlgFabrik_ElementGooglemap extends PlgFabrik_Element
 		if (is_null($w))
 		{
 			$w = $params->get('fb_gm_mapwidth', '200');
-			$w = empty($w) ? '200' : $w;
+			$w = empty($w) || strstr($w, '%') ? '200' : $w;
 		}
 
 		if (is_null($h))
