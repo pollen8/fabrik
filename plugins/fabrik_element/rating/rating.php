@@ -326,20 +326,10 @@ class PlgFabrik_ElementRating extends PlgFabrik_Element
 			return FText::_('PLG_ELEMENT_RATING_ONLY_ACCESSIBLE_IN_DETAILS_VIEW');
 		}
 
-		$element = $this->getElement();
 		$css = $this->canRate() ? 'cursor:pointer;' : '';
 		$value = $this->getValue($data, $repeatCounter);
 
 		FabrikHelperHTML::addPath(COM_FABRIK_BASE . 'plugins/fabrik_element/rating/images/', 'image', 'form', false);
-		$str = array();
-		$str[] = '<div id="' . $id . '_div" class="fabrikSubElementContainer">';
-		$imgOpts = array('icon-class' => 'small', 'style' => $css, 'data-rating' => -1);
-		$clearImg = FabrikHelperHTML::image('remove.png', 'list', @$this->tmpl, $imgOpts);
-
-		if ($params->get('rating-nonefirst') && $this->canRate())
-		{
-			$str[] = $clearImg;
-		}
 
 		$listid = $this->getlistModel()->getTable()->id;
 		$formid = $input->getInt('formid');
@@ -353,6 +343,15 @@ class PlgFabrik_ElementRating extends PlgFabrik_Element
 		else
 		{
 			list($avg, $total) = $this->getRatingAverage($value, $listid, $formid, $row_id);
+		}
+
+		/*$str[] = '<div id="' . $id . '_div" class="fabrikSubElementContainer">';
+		$imgOpts = array('icon-class' => 'small', 'style' => $css, 'data-rating' => -1);
+		$clearImg = FabrikHelperHTML::image('remove.png', 'list', @$this->tmpl, $imgOpts);
+
+		if ($params->get('rating-nonefirst') && $this->canRate())
+		{
+			$str[] = $clearImg;
 		}
 
 		$imgOpts = array('icon-class' => 'starRating', 'style' => $css);
@@ -378,9 +377,23 @@ class PlgFabrik_ElementRating extends PlgFabrik_Element
 		$str[] = '<div class="ratingMessage">';
 		$str[] = '</div>';
 		$str[] = '<input type="hidden" name="' . $name . '" id="' . $id . '" value="' . $value . '" />';
-		$str[] = '</div>';
+		$str[] = '</div>';*/
 
-		return implode("\n", $str);
+		$imgOpts = array('icon-class' => 'small', 'style' => $css, 'data-rating' => -1);
+
+		$layout = $this->getLayout('form');
+		$data = array();
+		$data['id'] = $id;
+		$data['name'] = $name;
+		$data['value'] = $value;
+		$data['clearImg'] = FabrikHelperHTML::image('remove.png', 'list', @$this->tmpl, $imgOpts);
+		$data['avg'] = $this->avg;
+		$data['canRate'] = $this->canRate();
+		$data['ratingNoneFirst'] = $params->get('rating-nonefirst');
+		$data['css'] = $css;
+		$data['tmpl'] = @$this->tmpl;
+
+		return $layout->render($data);
 	}
 
 	/**
