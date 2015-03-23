@@ -5929,7 +5929,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		// If no custom list layout found revert to the default list renderer
 		if ($res === '')
 		{
-			$basePath = COM_FABRIK_FRONTEND . '/components/com_fabrik/layouts/';
+			$basePath = COM_FABRIK_FRONTEND . '/layouts/';
 			$layout = new JLayoutFile('fabrik-element-list', $basePath, array('debug' => false, 'component' => 'com_fabrik', 'client' => 'site'));
 			$res = $layout->render($data);
 		}
@@ -7202,6 +7202,18 @@ class PlgFabrik_Element extends FabrikPlugin
 	 */
 
 	public function reset()
+	{
+		$this->defaults = null;
+	}
+	
+	/**
+	 * Clear default values, need to call this if we change an elements value in any of the formData
+	 * arrays during submisison process.
+	 *
+	 * @return  null
+	 */
+	
+	public function clearDefaults()
 	{
 		$this->defaults = null;
 	}

@@ -240,6 +240,34 @@ class FabrikString extends JString
 	}
 
 	/**
+	 * is it a raw element name, i.e. ends in _raw
+	 * 
+	 * @param   string  $str  Element name
+	 *
+	 * @since   3.3
+	 *
+	 * @return  bool
+	 */
+	
+	public static function isRawName($str) {
+		return substr($str, -4, 4) == '_raw';
+	}
+
+	/**
+	 * Strip _raw off the end
+	 *
+	 * @param   string  $str  Element name
+	 *
+	 * @since   3.3
+	 *
+	 * @return  bool
+	 */
+	
+	public static function stripRawName($str) {
+		return FabrikString::rtrimword($str, '_raw');
+	}
+	
+	/**
 	 * Clean variable names for use as fabrik element names
 	 * whitespace compressed and replaced with '_'
 	 * replace all non-alphanumeric chars except _ and - with '_'

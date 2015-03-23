@@ -995,7 +995,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 
 		$name = $this->getFullName(true, false);
 		$ok = true;
-		$files = $input->files->get($name, array(), 'array');
+		$files = $input->files->get($name, array(), 'cmd');
 
 		if (array_key_exists($repeatCounter, $files))
 		{
@@ -1700,21 +1700,10 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		if ($groupModel->isJoin())
 		{
 			$name = $this->getFullName(true, false);
-			/*
-			$joinid = $groupModel->getGroup()->join_id;
-			$joindata = $input->files->get('join', array(), 'array');
-
-			if (empty($joindata))
-			{
-				return true;
-			}
-			*/
-			$files = $input->files->get($name, array(), 'array');
+			$files = $input->files->get($name, array(), 'raw');
 
 			if ($groupModel->canRepeat())
 			{
-
-				//$file = $joindata[$joinid][$name][$repeatCounter]['name'];
 				$file = empty($files) ? '' : $files[$repeatCounter]['name'];
 			}
 			else
@@ -1754,7 +1743,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 				}
 				else
 				{
-					$files = $input->files->get($name, array(), 'array');
+					$files = $input->files->get($name, array(), 'raw');
 					$file = JArrayHelper::getValue($files, 'name', '');
 
 					return $file == '' ? true : false;
@@ -2856,7 +2845,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		$rowid = $input->get('rowid', '', 'string');
 		$repeatcount = $input->getInt('repeatcount', 0);
 		$listModel = $this->getListModel();
-		$row = $listModel->getRow($rowid, false);
+		$row = $listModel->getRow($rowid, false, true);
 
 		if (!$this->canView())
 		{
@@ -2899,7 +2888,9 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		$storage = $this->getStorage();
 		$elName = $this->getFullName(true, false);
 		$filepath = $row->$elName;
-		$filepath = FabrikWorker::JSONtoData($filepath, true);
+		$filepath = FabrikWorker::JSONtoData($filepath, false);
+		$filepath = is_object($filepath) ? FArrayHelper::fromObject($filepath) : $filepath;
+		$foo = $filepath[$repeatcount];
 		$filepath = FArrayHelper::getValue($filepath, $repeatcount);
 		$filepath = $storage->getFullPath($filepath);
 		$filecontent = $storage->read($filepath);
