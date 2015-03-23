@@ -58,11 +58,8 @@ class PlgFabrik_ElementSlider extends PlgFabrik_Element
 	public function render($data, $repeatCounter = 0)
 	{
 		FabrikHelperHTML::stylesheet(COM_FABRIK_LIVESITE . 'media/com_fabrik/css/slider.css');
-		$name = $this->getHTMLName($repeatCounter);
-		$id = $this->getHTMLId($repeatCounter);
 		$params = $this->getParams();
 		$width = (int) $params->get('slider_width', 250);
-		$element = $this->getElement();
 		$val = $this->getValue($data, $repeatCounter);
 
 		if (!$this->isEditable())
@@ -71,67 +68,42 @@ class PlgFabrik_ElementSlider extends PlgFabrik_Element
 		}
 
 		$labels = (explode(',', $params->get('slider-labels')));
-		$str = array();
-		$str[] = '<div id="' . $id . '" class="fabrikSubElementContainer">';
 		FabrikHelperHTML::addPath(COM_FABRIK_BASE . 'plugins/fabrik_element/slider/images/', 'image', 'form', false);
 
-		if ($params->get('slider-shownone'))
+		$layout = $this->getLayout('form');
+		$data = array();
+		$data['id'] = $this->getHTMLId($repeatCounter);;
+		$data['name'] = $this->getHTMLName($repeatCounter);;
+		$data['value'] = $val;
+		$data['width'] = $width;
+		$data['j3'] = FabrikWorker::j3();
+		$data['showNone'] = $params->get('slider-shownone');
+		$data['outSrc'] = FabrikHelperHTML::image('clear_rating_out.png', 'form', $this->tmpl, array(), true);
+		$data['labels'] = $labels;
+		$data['spanWidth'] = floor(($width - (2 * count($labels))) / count($labels));
+
+		$data['align'] = array();
+
+		for ($i = 0; $i < count($labels); $i++)
 		{
-			if (FabrikWorker::j3())
+			switch ($i)
 			{
-				$str[] = '<button class="btn btn-mini clearslider pull-left" style="margin-right:10px"><i class="icon-remove"></i></button>';
-			}
-			else
-			{
-				$outsrc = FabrikHelperHTML::image('clear_rating_out.png', 'form', $this->tmpl, array(), true);
-				$str[] = '<div class="clearslider_cont"><img src="' . $outsrc . '" style="cursor:pointer;padding:3px;" alt="'
-					. FText::_('PLG_ELEMENT_SLIDER_CLEAR') . '" class="clearslider" /></div>';
-			}
-		}
-
-		$str[] = '<div class="slider_cont" style="width:' . $width . 'px;">';
-		$str[] = '<div class="fabrikslider-line" style="width:' . $width . 'px">';
-		$str[] = '<div class="knob"></div>';
-		$str[] = '</div>';
-
-		if (count($labels) > 0 && $labels[0] !== '')
-		{
-			$spanwidth = floor(($width - (2 * count($labels))) / count($labels));
-			$str[] = '<ul class="slider-labels" style="width:' . $width . 'px;">';
-
-			for ($i = 0; $i < count($labels); $i++)
-			{
-				if ($i == ceil(floor($labels) / 2))
-				{
+				case 0:
+					$align = 'left';
+					break;
+				case count($labels) - 1:
+					$align = 'right';
+					break;
+				case 1:
+				default:
 					$align = 'center';
-				}
-
-				switch ($i)
-				{
-					case 0:
-						$align = 'left';
-						break;
-					case count($labels) - 1:
-						$align = 'right';
-						break;
-					case 1:
-					default:
-						$align = 'center';
-						break;
-				}
-
-				$str[] = '<li style="width:' . $spanwidth . 'px;text-align:' . $align . ';">' . $labels[$i] . '</li>';
+					break;
 			}
 
-			$str[] = '</ul>';
+			$data['align'][] = $align;
 		}
 
-		$str[] = '<input type="hidden" class="fabrikinput" name="' . $name . '" value="' . $val . '" />';
-		$str[] = '</div>';
-		$str[] = '<span class="slider_output badge badge-info">' . $val . '</span>';
-		$str[] = '</div>';
-
-		return implode("\n", $str);
+		return $layout->render($data);
 	}
 
 	/**
