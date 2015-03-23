@@ -3,7 +3,6 @@
 .settings/
 .tx/
 *.txt
-*.php
 *.xml
 *.jpg
 .htaccess
@@ -13,7 +12,6 @@ cache/*
 administrator/*
 !administrator/components/com_fabrik/
 administrator/components/com_fabrik/update/
-cache/*
 components/*
 !components/com_fabrik
 components/com_fabrik/js/*
@@ -28,6 +26,7 @@ language/*
 libraries/*
 !libraries/dompdf/
 libraries/dompdf/lib/fonts/log.htm
+logs
 modules/*
 !modules/mod_fabrik_form
 !modules/mod_fabrik_form/*
@@ -38,7 +37,7 @@ modules/*
 media/*
 !media/com_fabrik/*
 media/com_fabrik/uploads/
-logs
+node_modules/*
 plugins/*
 plugins/search/*
 !plugins/search/fabrik
@@ -59,7 +58,7 @@ plugins/fabrik_list/php/scripts/
 !plugins/fabrik_visualization/
 plugins/community/*
 !plugins/community/fabrik/
-premium/
+premium/*
 !tttplugins/system/fabrikcron/
 robots.txt
 sql/*
@@ -84,7 +83,6 @@ fabrik_build/cli/
 /index.html
 /image
 /language
-libraries/dompdf/lib/fonts/log.htm
 /docs
 /uploads
 libraries/dompdf/lib/fonts/dompdf_font_family_cache.dist.php
