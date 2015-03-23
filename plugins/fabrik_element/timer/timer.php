@@ -76,28 +76,8 @@ class PlgFabrik_ElementTimer extends PlgFabrik_Element
 		}
 		else
 		{
-			$value = explode(" ", $value);
+			$value = explode(' ', $value);
 			$value = array_pop($value);
-		}
-
-		$type = "text";
-
-		if ($this->elementError != '')
-		{
-			$type .= " elementErrorHighlight";
-		}
-
-		if ($element->hidden == '1')
-		{
-			$type = "hidden";
-		}
-
-		$sizeInfo = " size=\"$size\" ";
-
-		if ($params->get('timer_readonly'))
-		{
-			$sizeInfo .= " readonly=\"readonly\" ";
-			$type .= " readonly";
 		}
 
 		if (!$this->isEditable())
@@ -105,19 +85,17 @@ class PlgFabrik_ElementTimer extends PlgFabrik_Element
 			return ($element->hidden == '1') ? "<!-- " . $value . " -->" : $value;
 		}
 
-		$class = 'class="fabrikinput input-small inputbox ' . $type . '"';
-		$str[] = '<input type="text" ' . $class . ' name="' . $name . '" id="' . $id . '" ' . $sizeInfo . 'value="' . $value . '" />';
+		$layout = $this->getLayout('form');
+		$data['id'] = $id;
+		$data['type'] = $element->hidden ? 'hidden' : 'text';
+		$data['name'] = $name;
+		$data['value'] = $value;
+		$data['size'] = $size;
+		$data['elementError'] = $this->elementError;
+		$data['icon'] = $params->get('icon', 'icon-clock');
+		$data['timerReadOnly'] = $params->get('timer_readonly');
 
-		if (!$params->get('timer_readonly'))
-		{
-			array_unshift($str, '<div class="input-append">');
-			$icon = $params->get('icon', 'icon-clock');
-			$img = '<i class="' . $icon . '"></i> <span>' . FText::_('PLG_ELEMENT_TIMER_START') . '</span>';
-			$str[] = '<button class="btn" id="' . $id . '_button">' . $img . '</button>';
-			$str[] = '</div>';
-		}
-
-		return implode("\n", $str);
+		return $layout->render($data);
 	}
 
 	/**
