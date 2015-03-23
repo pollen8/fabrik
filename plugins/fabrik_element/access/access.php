@@ -83,7 +83,7 @@ class PlgFabrik_ElementAccess extends PlgFabrik_Element
 		$data = array();
 		$data['id'] = $id;
 		$data['name'] = $name;
-		$data['options'] = $this->getOpts();;
+		$data['options'] = $this->getOpts();
 		$data['selected'] =  $arSelected[0];
 
 		return $layout->render($data);

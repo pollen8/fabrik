@@ -54,8 +54,9 @@ class JFormFieldTwittersignin extends JFormField
 
 		$c = isset($this->form->repeatCounter) ? (int) $this->form->repeatCounter : 0;
 
-		$href = COM_FABRIK_LIVESITE . 'index.php?option=com_fabrik&task=plugin.pluginAjax&plugin=twitter
-			&g=form&method=authenticateAdmin&tmpl=component&formid=' . $cid . '&repeatCounter=' . $c;
+
+		$href = COM_FABRIK_LIVESITE . 'index.php?option=com_fabrik&task=plugin.pluginAjax&plugin=twitter';
+		$href .= '&g=form&method=authenticateAdmin&tmpl=component&formid=' . $cid . '&repeatCounter=' . $c;
 
 		$clearjs = '$(\'jform_params_twitter_oauth_token-' . $c . '\').value = \'\';';
 		$clearjs .= '$(\'jform_params_twitter_oauth_token_secret-' . $c . '\').value = \'\';';

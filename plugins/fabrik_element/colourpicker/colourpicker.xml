@@ -16,6 +16,7 @@
 		<folder>forms</folder>
 		<folder>images</folder>
 		<folder>language</folder>
+		<folder>layouts</folder>
 		<folder>swatches</folder>
 		<filename>colourpicker.js</filename>
 		<filename>colourpicker-min.js</filename>

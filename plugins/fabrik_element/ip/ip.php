@@ -33,7 +33,6 @@ class PlgFabrik_ElementIp extends PlgFabrik_Element
 	public function render($data, $repeatCounter = 0)
 	{
 		$app = JFactory::getApplication();
-		$element = $this->getElement();
 		$name = $this->getHTMLName($repeatCounter);
 		$id = $this->getHTMLId($repeatCounter);
 		$params = $this->getParams();
@@ -61,26 +60,31 @@ class PlgFabrik_ElementIp extends PlgFabrik_Element
 			}
 		}
 
-		$str = '';
+		$data = array();
+		$data['id'] = $id;
+		$data['name'] = $name;
+		$data['value'] = $ip;
 
 		if ($this->canView())
 		{
 			if (!$this->isEditable())
 			{
-				$str = $ip;
+				return $ip;
 			}
 			else
 			{
-				$str = '<input type="text" class="fabrikinput inputbox" readonly="readonly" name="' . $name . '" id="' . $id . '" value="' . $ip . '" />';
+				$data['type'] = 'text';
 			}
 		}
 		else
 		{
 			// Make a hidden field instead
-			$str = '<input type="hidden" class="fabrikinput" name="' . $name . '" id="' . $id . '" value="' . $ip . '" />';
+			$data['type'] = 'hidden';
 		}
 
-		return $str;
+		$layout = $this->getLayout('form');
+
+		return $layout->render($data);
 	}
 
 	/**
