@@ -165,14 +165,14 @@ class PlgFabrik_FormTwitter extends PlgFabrik_Form
 			case '304':
 				if ($show_success == 1)
 				{
-					$app->enqueueMessage(FText::_('PLG_FORM_TWITTER_SUCCESS_MSG'));
+					$app->enqueueMessage(FText::_('PLG_FORM_TWITTER_SUCCESS'));
 				}
 				break;
 			default:
-				$app->enqueueMessage(FText::_('PLG_FORM_TWITTER_ERR'), "$connection->http_code : $status->error");
+				$app->enqueueMessage(FText::_('PLG_FORM_TWITTER_ERR') . ": $connection->http_code : $status->error");
 		}
 
-		$url = $input->get('fabrik_referrer', '');
+		$url = $input->get('fabrik_referrer', '', 'string');
 		$context = $formModel->getRedirectContext();
 		$url = $session->get($context . 'url', array($url));
 		$url = array_shift($url);
