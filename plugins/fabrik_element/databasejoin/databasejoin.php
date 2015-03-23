@@ -692,11 +692,8 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 
 	protected function _getOptions($data = array(), $repeatCounter = 0, $incWhere = true, $opts = array())
 	{
-		$element = $this->getElement();
 		$params = $this->getParams();
-		$showBoth = $params->get('show_both_with_radio_dbjoin', '0');
 		$this->getDb();
-		$col = $element->name;
 		$tmp = array();
 		$aDdObjs = $this->_getOptionVals($data, $repeatCounter, $incWhere, $opts);
 
@@ -707,10 +704,8 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 			if ($this->getDisplayType() != 'radio' && $this->getDisplayType() != 'checkbox') 
 			{
 				$o->text = htmlspecialchars($o->text, ENT_NOQUOTES, 'UTF-8', false);
-      			}
+      		}
 		}
-
-		$table = $this->getlistModel()->getTable()->db_table_name;
 
 		if (is_array($aDdObjs))
 		{
@@ -788,16 +783,15 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 	{
 		// $$$ hugh - adding 'where when' so can control whether to apply WHERE either on
 		// new, edit or both (1, 2 or 3)
-		$app = JFactory::getApplication();
 		$params = $this->getParams();
-		$wherewhen = $params->get('database_join_where_when', '3');
-		$isnew = $this->getFormModel()->isNewRecord();
+		$whereWhen = $params->get('database_join_where_when', '3');
+		$isNew = $this->getFormModel()->isNewRecord();
 
-		if ($isnew && $wherewhen == '2')
+		if ($isNew && $whereWhen == '2')
 		{
 			return false;
 		}
-		elseif (!$isnew && $wherewhen == '1')
+		elseif (!$isNew && $whereWhen == '1')
 		{
 			return false;
 		}
@@ -828,8 +822,6 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		}
 
 		$params = $this->getParams();
-		$element = $this->getElement();
-		$formModel = $this->getForm();
 		$query = $this->buildQueryWhere($data, $incWhere, null, $opts, $query);
 
 		// $$$rob not sure these should be used anyway?
@@ -1093,7 +1085,6 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		}
 		else
 		{
-			// $where = JString::str_ireplace('WHERE', '', $where);
 			$where = FabrikString::ltrimword($where, 'WHERE', true);
 			$query->where($where);
 
@@ -1257,10 +1248,8 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		}
 
 		$params = $this->getParams();
-		$formModel = $this->getForm();
-		$groupModel = $this->getGroup();
+		$formModel = $this->getFormModel();
 		$displayType = $this->getDisplayType();
-		$db = $this->getDb();
 		$default = (array) $this->getValue($data, $repeatCounter, array('raw' => true));
 		$defaultLabels = (array) $this->getValue($data, $repeatCounter, array('raw' => false));
 
@@ -1269,8 +1258,6 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		$default = $w->parseMessageForPlaceHolder($default);
 		$name = $this->getHTMLName($repeatCounter);
 		$id = $this->getHTMLId($repeatCounter);
-
-		$optsPerRow = (int) $params->get('dbjoin_options_per_row', 0);
 		$html = array();
 
 		if (!$formModel->isEditable() || !$this->isEditable())
@@ -1309,7 +1296,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 				foreach ($defaultLabels as $key => $val)
 				{
 					/*
-					 * Calling getLabelForVaue works, but it generates a database query for each one.
+					 * Calling getLabelForValue works, but it generates a database query for each one.
 					* We should already have what we need in $tmp (the result of _getOptions), so lets
 					* grab it from there.
 					*/
@@ -1355,7 +1342,6 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 			// $$$rob should be canUse() otherwise if user set to view but not use the dd was shown
 			if ($this->canUse())
 			{
-
 
 				// If user can access the drop down
 				switch ($displayType)
@@ -1612,7 +1598,6 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 
 	protected function renderMultiSelectList($data, $repeatCounter, &$html, $tmp, $default)
 	{
-		$formModel = $this->getFormModel();
 		$elName = $this->getHTMLName($repeatCounter);
 		$params = $this->getParams();
 		$id = $this->getHTMLId($repeatCounter);
@@ -1673,12 +1658,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		}
 
 		$html[] = FabrikHelperHTML::aList('checkbox', $tmp, $name, $attribs, $default, 'value', 'text', $optsPerRow, $editable);
-// $$$ hugh - should convert this to use the grid() helper, so here's the code from the standard elementlist render that does it
-/*
-		$grid = FabrikHelperHTML::grid($values, $labels, $selected, $name, $this->inputType, $elBeforeLabel, $optionsPerRow, $classes, $buttonGroup);
-		array_unshift($grid, '<div class="fabrikSubElementContainer" id="' . $id . '">');
-		$grid[] = '</div><!-- close subElementContainer -->';
- */
+
 		if (empty($tmp))
 		{
 			$tmpids = array();
@@ -2236,7 +2216,6 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		* if duplicated then we need to join using a table alias
 		*/
 		$listModel = $this->getlistModel();
-		$table = $listModel->getTable();
 		$fabrikDb = $listModel->getDb();
 		$params = $this->getParams();
 		$joinTable = $params->get('join_db_name');
