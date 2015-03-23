@@ -133,6 +133,7 @@ var FbDatabasejoin = new Class({
 
 	addOption: function (v, l, autoCompleteUpdate)
 	{
+		//debugger;
 		l = Encoder.htmlDecode(l);
 		autoCompleteUpdate = typeof(autoCompleteUpdate) !== 'undefined' ? autoCompleteUpdate : true;
 		var opt, selected, chxed, last, subOpts = [], injectWhere, labelfield;
@@ -172,7 +173,7 @@ var FbDatabasejoin = new Class({
 				i.name = this.options.fullName + '[' + subOpts.length + ']';
 			}
 
-			opt.getElement('span').set('text', l);
+			opt.getElement('span').set('html', l);
 			opt.getElement('input').set('value', v);
 			last = subOpts.length === 0 ? this.element : subOpts.getLast();
 			injectWhere = subOpts.length === 0 ? 'bottom' : 'after';
@@ -201,7 +202,7 @@ var FbDatabasejoin = new Class({
 				'checked': true,
 				'name': name,
 				'value': v
-			}), new Element('span').set('text', l)]));
+			}), new Element('span').set('html', l)]));
 			subOpts = this.element.getElements('> .fabrik_subelement');
 			last = subOpts.length === 0 ? this.element : subOpts.getLast();
 			injectWhere = subOpts.length === 0 ? 'bottom' : 'after';

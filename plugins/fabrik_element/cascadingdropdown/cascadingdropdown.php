@@ -50,7 +50,6 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 		$app = JFactory::getApplication();
 		$input = $app->input;
 		$id = $this->getHTMLId($repeatCounter);
-		$app = JFactory::getApplication();
 		$params = $this->getParams();
 
 		if ($this->getDisplayType() === 'auto-complete')
@@ -183,12 +182,9 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 
 	public function render($data, $repeatCounter = 0)
 	{
-		$app = JFactory::getApplication();
-		$input = $app->input;
 		$db = $this->getDb();
 		$app = JFactory::getApplication();
 		$params = $this->getParams();
-		$element = $this->getElement();
 		$name = $this->getHTMLName($repeatCounter);
 		$opts = array('raw' => 1);
 		$default = (array) $this->getValue($data, $repeatCounter, $opts);
@@ -350,8 +346,6 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 
 	public function isJoin()
 	{
-		$params = $this->getParams();
-
 		if (in_array($this->getDisplayType(), array('checkbox', 'multilist')))
 		{
 			return true;
@@ -406,7 +400,6 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 		$input = $app->input;
 		$filterview = $app->input->get('filterview', '');
 		$this->loadMeForAjax();
-		$params = $this->getParams();
 
 		/**
 		 * $$$ hugh -added test for $filterview, and only do filtery stuff if we are being
@@ -480,7 +473,6 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 
 				if ($fullName == $watch)
 				{
-					$element = $elementModel->getElement();
 					/**
 					 * $$$ hugh - not sure what this is for, but changed class name to 3.x name,
 					 * as it was still set to the old 2.1 naming.
@@ -652,7 +644,6 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 
 	protected function getWatchFullName()
 	{
-		$listModel = $this->getlistModel();
 		$elementModel = $this->getWatchElement();
 
 		return $elementModel->getFullName();
@@ -668,7 +659,6 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 
 	protected function getWatchId($repeatCounter = 0)
 	{
-		$listModel = $this->getlistModel();
 		$elementModel = $this->getWatchElement();
 
 		return $elementModel->getHTMLId($repeatCounter);
@@ -740,7 +730,6 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 		}
 
 		$params = $this->getParams();
-		$element = $this->getElement();
 		$watch = $this->getWatchFullName();
 		$whereval = null;
 		$groups = $this->getForm()->getGroupsHiarachy();
@@ -1059,7 +1048,7 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 
 			if ($id == '')
 			{
-				JError::raiseWarning(500, 'Unable to get table for cascading dropdown (ignore if creating a new element)');
+				throw new RuntimeException('Unable to get table for cascading dropdown (ignore if creating a new element)');
 
 				return false;
 			}
@@ -1086,7 +1075,6 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 
 	public function filterJS($normal, $container)
 	{
-		$params = $this->getParams();
 		$element = $this->getElement();
 		$observerid = $this->getWatchId();
 		$observerid .= 'value';
@@ -1097,7 +1085,6 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 		if ($element->filter_type == 'dropdown')
 		{
 			$default = $this->getDefaultFilterVal($normal);
-			$observed = $this->_getObserverElement();
 			$filterid = $this->getHTMLId() . 'value';
 			FabrikHelperHTML::script('plugins/fabrik_element/cascadingdropdown/filter.js');
 			$opts = new stdClass;
@@ -1221,6 +1208,8 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 	 *
 	 * @param   array  $elementMap  copied element ids (keyed on original element id)
 	 *
+	 * @throws RuntimeException
+	 *
 	 * @return  mixed JError:void
 	 */
 
@@ -1233,7 +1222,7 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 
 		if (!array_key_exists($oldObeserveId, $elementMap))
 		{
-			JError::raiseWarning(E_ERROR, 'cascade dropdown: no id ' . $oldObeserveId . ' found in ' . implode(",", array_keys($elementMap)));
+			throw new RuntimeException('cascade dropdown: no id ' . $oldObeserveId . ' found in ' . implode(",", array_keys($elementMap)));
 		}
 
 		$newObserveId = $elementMap[$oldObeserveId];
@@ -1272,7 +1261,6 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 
 	protected function _getSelectLabel($filter = false)
 	{
-		//return FText::_($this->getParams()->get('cascadingdropdown_noselectionlabel', FText::_('COM_FABRIK_PLEASE_SELECT')));
 		$params = $this->getParams();
 		$label = $params->get('cascadingdropdown_noselectionlabel');
 
@@ -1315,7 +1303,6 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 
 	protected function buildFilterJoin()
 	{
-		$params = $this->getParams();
 		$joinTable = FabrikString::safeColName($this->getDbName());
 		$join = $this->getJoin();
 		$joinTableName = FabrikString::safeColName($join->table_join_alias);
