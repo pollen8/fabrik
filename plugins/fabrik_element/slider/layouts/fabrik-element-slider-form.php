@@ -29,7 +29,7 @@ $d = $displayData;
 		if (count($d['labels']) > 0 && $d['labels'][0] !== '') : ?>
 		<ul class="slider-labels" style="width:<?php echo $d['width']; ?>px;">
 			<?php
-			for ($i = 0; $i < count($labels); $i++) :
+			for ($i = 0; $i < count($d['labels']); $i++) :
 				?>
 				<li style="width:<?php echo $d['spanWidth'];?>px;text-align:<?php echo $d['align'][$i]; ?>"><?php echo $d['labels'][$i]; ?></li>
 			<?php
