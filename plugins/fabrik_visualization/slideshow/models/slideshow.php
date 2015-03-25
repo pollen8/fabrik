@@ -231,7 +231,7 @@ class FabrikModelSlideshow extends FabrikFEModelVisualization
 				else
 				{
 					$tmp = json_decode($pic->$slideshow_viz_file);
-					$k = $tmp == false ? $pic->$slideshow_viz_file : $k = $tmp[0];
+					$k = $tmp == false ? $pic->$slideshow_viz_file : $tmp[0];
 					$pic_opts['href'] = $slideElement->getStorage()->getFileUrl($k, 0);
 					$this->addThumbOpts($pic_opts);
 
@@ -325,7 +325,7 @@ class FabrikModelSlideshow extends FabrikFEModelVisualization
 		$opts = new stdClass;
 		$opts->slideshow_data = $slideshow_data = $this->getImageJSData();
 		$opts->id = $viz->id;
-		$opts->html_id = 'slideshow_viz';
+		$opts->html_id = $html_id = 'slideshow_viz_' . $viz->id;
 		$opts->slideshow_type = (int) $params->get('slideshow_viz_type', 1);
 		$opts->slideshow_width = (int) $params->get('slideshow_viz_width', 400);
 		$opts->slideshow_height = (int) $params->get('slideshow_viz_height', 300);
@@ -340,7 +340,7 @@ class FabrikModelSlideshow extends FabrikFEModelVisualization
 		$opts = json_encode($opts);
 		$ref = $this->getJSRenderContext();
 		$html = array();
-		$html[] = "$ref = new FbSlideshowViz('slideshow_viz', $opts)\n";
+		$html[] = "$ref = new FbSlideshowViz('" . $html_id . "', $opts)\n";
 		$html[] = "\n" . "Fabrik.addBlock('$ref', $ref);";
 		$html[] = $this->getFilterJs();
 

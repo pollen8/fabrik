@@ -23,9 +23,9 @@ $row = $this->row;
 	<div>
 		<?php echo $row->intro_text;?>
 	</div>
-	<div class="slideshow" id="slideshow_viz">
+	<div class="slideshow" id="slideshow_viz_<?php echo $row->id; ?>">
 		<div class="slideshow-images">
-			<a><img /> </a>
+			<a rel="lightbox"><img /> </a>
 			<div class="slideshow-loader"></div>
 		</div>
 		<div class="slideshow-captions"></div>
