@@ -1329,6 +1329,12 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 			foreach ($targetIds as $tkey => $targetId)
 			{
 				$tmpLabel = FArrayHelper::getValue($defaultLabels, $i, 'unknown label');
+				
+				if ($this->emptyConcatString($tmpLabel))
+				{
+					$tmpLabel = '';
+				}
+				
 				$defaultLabels[$i] = $this->getReadOnlyOutput($targetId, $tmpLabel);
 				$i++;
 			}
