@@ -953,6 +953,9 @@ class FabrikViewFormBase extends JViewLegacy
 			if ($groupModel->isJoin())
 			{
 				$groupPk = $groupModel->getJoinModel()->getForeignId();
+
+				// Use raw otherwise we inject the actual <input> into the hidden field's value
+				$groupPk .= '_raw';
 				$groupRowIds = (array) FArrayHelper::getValue($this->data, $groupPk, array());
 				$groupRowIds = htmlentities(json_encode($groupRowIds));
 
