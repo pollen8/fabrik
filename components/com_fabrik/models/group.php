@@ -1166,7 +1166,7 @@ class FabrikFEModelGroup extends FabModel
 	 * @return  void
 	 */
 
-	protected function setForeignKey($data)
+	protected function setForeignKey()
 	{
 		$formModel = $this->getFormModel();
 		$formData =& $formModel->formDataWithTableName;
