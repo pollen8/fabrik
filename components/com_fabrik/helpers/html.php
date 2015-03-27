@@ -2326,7 +2326,7 @@ if (!$j3)
 	 * @return  string  content item html
 	 */
 
-	public function getContentTemplate($contentTemplate, $part = 'both', $runPlugins = false)
+	public static function getContentTemplate($contentTemplate, $part = 'both', $runPlugins = false)
 	{
 		$app = JFactory::getApplication();
 
