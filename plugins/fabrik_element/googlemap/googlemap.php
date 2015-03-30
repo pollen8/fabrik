@@ -778,7 +778,8 @@ class PlgFabrik_ElementGooglemap extends PlgFabrik_Element
 				{
 					$arrloc = explode(',', $val);
 					$arrloc[0] = str_replace("(", "", $arrloc[0]);
-					$arrloc[1] = array_key_exists(1, $arrloc) ? str_replace(")", "", array_shift(explode(":", $arrloc[1]))) : '';
+					$arrloc_strict = explode(":", $arrloc[1]);
+					$arrloc[1] = array_key_exists(1, $arrloc) ? str_replace(")", "", array_shift($arrloc_strict)) : '';
 					$edit = $this->isEditable() ? '' : 'disabled="true"';
 					$str .= '<div class="coord" style="margin-top:5px;">
 					<input ' . $edit . ' size="23" value="' . $arrloc[0] . ' ° N" style="margin-right:5px" class="inputbox lat"/>
@@ -801,7 +802,12 @@ class PlgFabrik_ElementGooglemap extends PlgFabrik_Element
 				$str .= FText::_('PLG_ELEMENT_GOOGLEMAP_NO_LOCATION_SELECTED');
 			}
 
-			$str .= $this->_microformat($val);
+			/*
+			 * $$$ hugh - not sure why we still do this.  If they want to show lat/lng details, they can use the
+			 * gm_latlng option.  Problem with showing this is we never change it, so it's misleading.
+			 */
+			
+			// $str .= $this->_microformat($val);
 
 			return $str;
 		}

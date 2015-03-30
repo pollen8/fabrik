@@ -366,13 +366,15 @@ var FbGoogleMap = new Class({
 		lng = lng.replace(',', '.').toFloat();
 		var pnt = new google.maps.LatLng(lat, lng);
 		this.marker.setPosition(pnt);
-		this.map.setCenter(pnt, this.map.getZoom());
+		this.doSetCenter(pnt, this.map.getZoom(), true);
+		/*
 		this.field.value = this.marker.getPosition() + ":" + this.map.getZoom();
 		this.element.getElement('.latdms').value = this.latDecToDMS();
 		this.element.getElement('.lngdms').value = this.lngDecToDMS();
 		if (this.options.reverse_geocode) {
 			this.reverseGeocode();
 		}
+		*/
 	},
 
 	updateFromDMS : function () {
@@ -405,13 +407,15 @@ var FbGoogleMap = new Class({
 
 		var pnt = new google.maps.LatLng(latdms_topnt.toFloat(), lngdms_topnt.toFloat());
 		this.marker.setPosition(pnt);
-		this.map.setCenter(pnt, this.map.getZoom());
+		this.doSetCenter(pnt, this.map.getZoom(), true);
+		/*
 		this.field.value = this.marker.getPosition() + ":" + this.map.getZoom();
 		this.element.getElement('.lat').value = latdms_topnt + '° N';
 		this.element.getElement('.lng').value = lngdms_topnt + '° E';
 		if (this.options.reverse_geocode) {
 			this.reverseGeocode();
 		}
+		*/
 	},
 
 	latDecToDMS : function () {
@@ -493,7 +497,8 @@ var FbGoogleMap = new Class({
 				fconsole(address + " not found!");
 			} else {
 				this.marker.setPosition(results[0].geometry.location);
-				this.map.setCenter(results[0].geometry.location, this.map.getZoom());
+				this.doSetCenter(results[0].geometry.location, this.map.getZoom(), false);
+				/*
 				this.field.value = results[0].geometry.location + ":" + this.map.getZoom();
 				if (this.options.latlng === true) {
 					this.element.getElement('.lat').value = results[0].geometry.location.lat() + '° N';
@@ -503,6 +508,7 @@ var FbGoogleMap = new Class({
 					this.element.getElement('.latdms').value = this.latDecToDMS();
 					this.element.getElement('.lngdms').value = this.lngDecToDMS();
 				}
+				*/
 			}
 		}.bind(this));
 	},
@@ -583,7 +589,7 @@ var FbGoogleMap = new Class({
 		if (v.length < 2) {
 			v[1] = this.options.zoomlevel;
 		}
-		if (!this.ma) {
+		if (!this.map) {
 			return;
 		}
 		var zoom = v[1].toInt();
@@ -603,19 +609,23 @@ var FbGoogleMap = new Class({
 		// So instead, lets just set marker to default and recenter
 		var pnt = new google.maps.LatLng(pnts[0], pnts[1]);
 		this.marker.setPosition(pnt);
-		this.map.setCenter(pnt, this.map.getZoom());
+		this.doSetCenter(pnt, this.map.getZoom(), true);
+		/*
 		if (this.options.reverse_geocode) {
 			this.reverseGeocode();
 		}
+		*/
 	},
 
 	geoCenter: function (p) {
 		var pnt = new google.maps.LatLng(p.coords.latitude, p.coords.longitude);
 		this.marker.setPosition(pnt);
-		this.map.setCenter(pnt);
+		this.doSetCenter(pnt, this.map.getZoom(), true);
+		/*
 		if (this.options.reverse_geocode) {
 			this.reverseGeocode();
 		}
+		*/
 	},
 
 	geoCenterErr: function (p) {
@@ -705,6 +715,22 @@ var FbGoogleMap = new Class({
 				alert("Geocoder failed due to: " + status);
 			}
 		}.bind(this));
+	},
+	
+	doSetCenter: function (pnt, zoom, doReverseGeocode) {
+		this.map.setCenter(pnt, zoom);
+		this.field.value = this.marker.getPosition() + ":" + this.map.getZoom();
+		if (this.options.latlng === true) {
+			this.element.getElement('.lat').value = pnt.lat() + '° N';
+			this.element.getElement('.lng').value = pnt.lng() + '° E';
+		}
+		if (this.options.latlng_dms === true) {
+			this.element.getElement('.latdms').value = this.latDecToDMS();
+			this.element.getElement('.lngdms').value = this.lngDecToDMS();
+		}
+		if (doReverseGeocode && this.options.reverse_geocode) {
+			this.reverseGeocode();
+		}
 	}
 
 });
