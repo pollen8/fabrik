@@ -4144,22 +4144,28 @@ echo "form get errors";
 
 	protected function parseIntroOutroPlaceHolders($text)
 	{
-		$match = $this->isNewRecord() ? 'new' : 'edit';
-		$remove = $this->isNewRecord()  ? 'edit' : 'new';
-		$match = "/{" . $match . ":\s*.*?}/i";
-		$remove = "/{" . $remove . ":\s*.*?}/i";
-		$text = preg_replace_callback($match, array($this, '_getIntroOutro'), $text);
-		$text = preg_replace($remove, '', $text);
-		$text = str_replace('[', '{', $text);
-		$text = str_replace(']', '}', $text);
 
 		if (!$this->isEditable())
 		{
+			$remove = "/{new:\s*.*?}/i";
+			$text = preg_replace($remove, '', $text);
+			$remove = "/{edit:\s*.*?}/i";
+			$text = preg_replace($remove, '', $text);
 			$match = "/{details:\s*.*?}/i";
 			$text = preg_replace_callback($match, array($this, '_getIntroOutro'), $text);
+			$text = str_replace('[', '{', $text);
+			$text = str_replace(']', '}', $text);
 		}
 		else
 		{
+			$match = $this->isNewRecord() ? 'new' : 'edit';
+			$remove = $this->isNewRecord()  ? 'edit' : 'new';
+			$match = "/{" . $match . ":\s*.*?}/i";
+			$remove = "/{" . $remove . ":\s*.*?}/i";
+			$text = preg_replace_callback($match, array($this, '_getIntroOutro'), $text);
+			$text = preg_replace($remove, '', $text);
+			$text = str_replace('[', '{', $text);
+			$text = str_replace(']', '}', $text);
 			$text = preg_replace("/{details:\s*.*?}/i", '', $text);
 		}
 
