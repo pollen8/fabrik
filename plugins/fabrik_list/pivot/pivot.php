@@ -116,6 +116,7 @@ class PlgFabrik_ListPivot extends PlgFabrik_List
 		foreach ($sums as &$sum)
 		{
 			$sum = trim($sum);
+			$sum = FabrikString::rtrimword($sum, '_raw');
 			$as = FabrikString::safeColNameToArrayKey($sum);
 
 			$statement = $fn .'(' . FabrikString::safeColName($sum) . ')';
@@ -300,8 +301,8 @@ class PlgFabrik_ListPivot extends PlgFabrik_List
 						if ($row->$xCol === $xColData && $row->$yCol === $yColData)
 						{
 							$newRow->$xColData = $row->$sums;
-							// $total += (float) $row->$sums;
-							$total += (float) $row->$rawSums;
+							$total += (float) $this->unNumberFormat($row->$sums, $params);
+							//$total += (float) $row->$rawSums;
 						}
 					}
 				}
@@ -428,6 +429,31 @@ class PlgFabrik_ListPivot extends PlgFabrik_List
 		}
 	
 		return number_format((float) $data, $decimal_length, $decimal_sep, $thousand_sep);
+	}
+	
+	/**
+	 * Strip number format from a number value
+	 *
+	 * @param   mixed  $val  (double/int)
+	 *
+	 * @return  string	formatted number
+	 */
+	
+	public function unNumberFormat($val, $params)
+	{
+		if ($params->get('pivot_format_totals', '0') == '0')
+		{
+			return $val;
+		}	
+
+		$decimal_length = (int) $params->get('pivot_round_to', 2);
+		$decimal_sep = $params->get('pivot_decimal_sepchar', '.');
+		$thousand_sep = $params->get('pivot_thousand_sepchar', ',');
+		
+		$val = str_replace($thousand_sep, '', $val);
+		$val = str_replace($decimal_sep, '.', $val);
+	
+		return $val;
 	}
 	
 }
