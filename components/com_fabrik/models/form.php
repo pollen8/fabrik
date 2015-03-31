@@ -1598,7 +1598,7 @@ class FabrikFEModelForm extends FabModelForm
 
 		// Set here so element can call formModel::updateFormData()
 		$this->formData = $data;
-		$this->_fullFormData = $this->formData;
+		$this->fullFormData = $this->formData;
 		$session = JFactory::getSession();
 		$session->set('com_' . $package . '.form.data', $this->formData);
 
