@@ -365,13 +365,14 @@ class PlgFabrik_ListPivot extends PlgFabrik_List
 			if (!empty($x))
 			{
 				$c = JArrayHelper::getColumn($new, $x);
-		
+				$yColTotals->$x = 0;
+						
 				foreach ($c as &$cc)
 				{
 					$cc = strip_tags($cc);
+					$yColTotals->$x += $this->unNumberFormat($cc, $params);
 				}
 		
-				$yColTotals->$x = array_sum($c);
 				$total += (float) $yColTotals->$x;
 			}
 		}
@@ -449,6 +450,12 @@ class PlgFabrik_ListPivot extends PlgFabrik_List
 		$decimal_length = (int) $params->get('pivot_round_to', 2);
 		$decimal_sep = $params->get('pivot_decimal_sepchar', '.');
 		$thousand_sep = $params->get('pivot_thousand_sepchar', ',');
+		
+		// Workaround for params not letting us save just a space!
+		if ($thousand_sep == '#32')
+		{
+			$thousand_sep = ' ';
+		}
 		
 		$val = str_replace($thousand_sep, '', $val);
 		$val = str_replace($decimal_sep, '.', $val);

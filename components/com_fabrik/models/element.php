@@ -6706,6 +6706,13 @@ class PlgFabrik_Element extends FabrikPlugin
 		// Swap dec and thousand seps back to Normal People Decimal Format!
 		$decimal_sep = $params->get('field_decimal_sep', '.');
 		$thousand_sep = $params->get('field_thousand_sep', ',');
+		
+		// Workaround for params not letting us save just a space!
+		if ($thousand_sep == '#32')
+		{
+			$thousand_sep = ' ';
+		}
+		
 		$val = str_replace($thousand_sep, '', $val);
 		$val = str_replace($decimal_sep, '.', $val);
 
