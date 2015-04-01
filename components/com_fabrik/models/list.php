@@ -6384,7 +6384,7 @@ class FabrikFEModelList extends JModelForm
 					$firstFilter = $elementModel->getFilter(0, false);
 				}
 
-				$fieldNames[] = JHTML::_('select.option', $elName, strip_tags($element->label));
+				$fieldNames[] = JHTML::_('select.option', $elName, strip_tags(FText::_($element->label)));
 			}
 		}
 
