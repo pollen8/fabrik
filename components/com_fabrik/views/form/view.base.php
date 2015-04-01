@@ -101,9 +101,9 @@ class FabrikViewFormBase extends JViewLegacy
 
 		$this->editable = $model->isEditable();
 
-		$form->label = $model->getLabel();
-		$form->intro = $model->getIntro();
-		$form->outro = $model->getOutro();
+		$form->label = FText::_($model->getLabel());
+		$form->intro = FText::_($model->getIntro());
+		$form->outro = FText::_($model->getOutro());
 		$form->action = $model->getAction();
 		$form->class = $model->getFormClass();
 		$form->formid = $model->isEditable() ? 'form_' . $model->getId() : 'details_' . $model->getId();
