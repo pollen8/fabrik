@@ -580,6 +580,10 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 
 				foreach ($_REQUEST as $key => $val)
 				{
+					if (is_array($val))
+					{
+						$val = json_encode($val);
+					}
 					$all_data[] = "$key: $val";
 				}
 
