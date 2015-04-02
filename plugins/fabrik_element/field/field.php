@@ -111,7 +111,6 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 
 	public function render($data, $repeatCounter = 0)
 	{
-		$app = JFactory::getApplication();
 		$params = $this->getParams();
 		$element = $this->getElement();
 		$bits = $this->inputProperties($repeatCounter);
@@ -128,17 +127,6 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 
 		$value = $this->getValue($data, $repeatCounter);
 
-		/* $$$ hugh - if the form just failed validation, number formatted fields will already
-		 * be formatted, so we need to un-format them before formatting them!
-		 */
-		/*
-		if ($this->getFormModel()->failedValidation())
-		{
-			$value = $this->unNumberFormat($value);
-		}
-
-		$value = $this->numberFormat($value);
-		*/
 
 		if (!$this->getFormModel()->failedValidation())
 		{
@@ -194,7 +182,10 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 			$bits['x-webkit-speech'] = "x-webkit-speech";
 		}
 
-		return $this->buildInput('input', $bits);
+		$layout = $this->getLayout('form');
+		$data['attributes'] = $bits;
+
+		return $layout->render($data);
 	}
 
 	/**
@@ -518,7 +509,7 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 		$this->setId($input->getInt('element_id'));
 		$this->loadMeForAjax();
 		$this->getElement();
-		$params = $this->getParams();
+		$url = 'index.php';
 		$lang = JFactory::getLanguage();
 		$lang->load('com_fabrik.plg.element.field', JPATH_ADMINISTRATOR);
 
@@ -538,7 +529,6 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 			exit;
 		}
 
-		$repeatcount = $input->getInt('repeatcount', 0);
 		$listModel = $this->getListModel();
 		$row = $listModel->getRow($rowid, false);
 
@@ -651,8 +641,11 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 		$link = COM_FABRIK_LIVESITE
 		. 'index.php?option=com_' . $package . '&amp;task=plugin.pluginAjax&amp;plugin=field&amp;method=ajax_renderQRCode&amp;'
 				. 'format=raw&amp;element_id=' . $elementid . '&amp;formid=' . $formid . '&amp;rowid=' . $rowid . '&amp;repeatcount=0';
-		$value = '<img src="' . $link . '"/>';
-		return $value;
+
+		$layout = $this->getLayout('qr');
+		$data['link'] = $link;
+
+		return $layout->render($data);
 	}
 	
 	/**

@@ -2525,6 +2525,8 @@ class PlgFabrik_Element extends FabrikPlugin
 	/**
 	 * Helper method to build an input field
 	 *
+	 * @deprecated use JLayouts instead
+	 *
 	 * @param   string  $node      Input type default 'input'
 	 * @param   array   $bits      Input property => value
 	 * @param   bool    $shortTag  Is $node a <node/> or <node></node> tag

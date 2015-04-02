@@ -91,7 +91,6 @@ class PlgFabrik_ElementFolder extends PlgFabrik_Element
 		$data['errorCSS'] = $errorCSS;
 
 		return $layout->render($data);
-		return $str;
 	}
 
 	/**
