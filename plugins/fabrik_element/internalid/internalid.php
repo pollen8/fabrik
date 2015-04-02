@@ -41,7 +41,6 @@ class PlgFabrik_ElementInternalid extends PlgFabrik_Element
 	{
 		$name = $this->getHTMLName($repeatCounter);
 		$id = $this->getHTMLId($repeatCounter);
-		$params = $this->getParams();
 		$element = $this->getElement();
 		$value = $this->getValue($data, $repeatCounter);
 		$value = stripslashes($value);

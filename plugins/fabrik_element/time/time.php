@@ -47,12 +47,10 @@ class PlgFabrik_ElementTime extends PlgFabrik_Element
 
 	public function render($data, $repeatCounter = 0)
 	{
-		$db = JFactory::getDbo();
 		$name = $this->getHTMLName($repeatCounter);
 		$id = $this->getHTMLId($repeatCounter);
 		$params = $this->getParams();
 		$element = $this->getElement();
-		$bits = array();
 		/*
 		 * $$$ rob - not sure why we are setting $data to the form's data
 		 * but in table view when getting read only filter value from url filter this
@@ -156,31 +154,21 @@ class PlgFabrik_ElementTime extends PlgFabrik_Element
 				$secs[] = JHTML::_('select.option', $i);
 			}
 
-			$errorCSS = $this->elementError != '' ? " elementErrorHighlight" : '';
-			$advancedClass = $this->getAdvancedSelectClass();
+			$layout = $this->getLayout('form');
+			$data['id'] = $id;
+			$data['name'] = $name;
+			$data['advancedClass'] = $this->getAdvancedSelectClass();
+			$data['errorCss'] = $this->elementError != '' ? " elementErrorHighlight" : '';;
+			$data['format'] = $fd;
+			$data['sep'] = $sep;
+			$data['hours'] = $hours;
+			$data['mins'] = $mins;
+			$data['secs'] = $secs;
+			$data['hourValue'] = $hourvalue;
+			$data['minValue'] = $minvalue;
+			$data['secValue'] = $secvalue;
 
-			$attribs = 'class="input-small fabrikinput inputbox ' . $advancedClass . ' ' . $errorCSS . '"';
-			$str = array();
-			$str[] = '<div class="fabrikSubElementContainer" id="' . $id . '">';
-
-			// $name already suffixed with [] as element hasSubElements = true
-			if ($fd != 'i:s')
-			{
-				$str[] = JHTML::_('select.genericlist', $hours, preg_replace('#(\[\])$#', '[0]', $name), $attribs, 'value', 'text', $hourvalue) . ' '
-						. $sep;
-			}
-
-			$str[] = JHTML::_('select.genericlist', $mins, preg_replace('#(\[\])$#', '[1]', $name), $attribs, 'value', 'text', $minvalue);
-
-			if ($fd != 'H:i')
-			{
-				$str[] = $sep . ' '
-						. JHTML::_('select.genericlist', $secs, preg_replace('#(\[\])$#', '[2]', $name), $attribs, 'value', 'text', $secvalue);
-			}
-
-			$str[] = '</div>';
-
-			return implode("\n", $str);
+			return $layout->render($data);
 		}
 	}
 

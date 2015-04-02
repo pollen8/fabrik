@@ -1,2 +1,2 @@
-/*! fabrik 2015-03-23 */
+/*! fabrik */
 var Notify=new Class({initialize:function(a,b){this.options=b;var c,d=document.id(a);"none"===d.getStyle("display")&&(d=d.getParent()),d.addEvent("change",function(){c=document.id(a).checked?1:0,Fabrik.loader.start(d,Joomla.JText._("COM_FABRIK_LOADING"));new Request({url:"index.php?option=com_fabrik&task=plugin.pluginAjax&plugin=notification&method=toggleNotification",data:{g:"form",format:"raw",fabrik_notification:1,listid:this.options.listid,formid:this.options.formid,rowid:this.options.rowid,notify:c},onComplete:function(a){alert(a),Fabrik.loader.stop(d)}.bind(this)}).send()}.bind(this))}});

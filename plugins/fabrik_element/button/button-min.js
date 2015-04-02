@@ -1,2 +1,2 @@
-/*! fabrik 2015-03-23 */
+/*! fabrik */
 var FbButton=new Class({Extends:FbElement,initialize:function(a,b){this.plugin="fabrikButton",this.parent(a,b)},addNewEventAux:function(action,js){this.element.addEvent(action,function(e){e.stop(),"function"===typeOf(js)?js.delay(0,this,this):eval(js)}.bind(this))}});

@@ -331,53 +331,18 @@ class PlgFabrik_ElementRating extends PlgFabrik_Element
 
 		FabrikHelperHTML::addPath(COM_FABRIK_BASE . 'plugins/fabrik_element/rating/images/', 'image', 'form', false);
 
-		$listid = $this->getlistModel()->getTable()->id;
-		$formid = $input->getInt('formid');
-		$row_id = $this->getFormModel()->getRowId();
+		$listId = $this->getlistModel()->getTable()->id;
+		$formId = $input->getInt('formid');
+		$rowId = $this->getFormModel()->getRowId();
 
-		if ($params->get('rating-mode') == 'creator-rating')
+		if ($params->get('rating-mode') == 'creator-    rating')
 		{
 			$avg = $value;
-			$this->avg = $value;
 		}
 		else
 		{
-			list($avg, $total) = $this->getRatingAverage($value, $listid, $formid, $row_id);
+			list($avg, $total) = $this->getRatingAverage($value, $listId, $formId, $rowId);
 		}
-
-		/*$str[] = '<div id="' . $id . '_div" class="fabrikSubElementContainer">';
-		$imgOpts = array('icon-class' => 'small', 'style' => $css, 'data-rating' => -1);
-		$clearImg = FabrikHelperHTML::image('remove.png', 'list', @$this->tmpl, $imgOpts);
-
-		if ($params->get('rating-nonefirst') && $this->canRate())
-		{
-			$str[] = $clearImg;
-		}
-
-		$imgOpts = array('icon-class' => 'starRating', 'style' => $css);
-
-		for ($s = 0; $s < $avg; $s++)
-		{
-			$imgOpts['data-rating'] = $s + 1;
-			$str[] = FabrikHelperHTML::image("star.png", 'list', @$this->tmpl, $imgOpts);
-		}
-
-		for ($s = $avg; $s < 5; $s++)
-		{
-			$imgOpts['data-rating'] = $s + 1;
-			$str[] = FabrikHelperHTML::image("star-empty.png", 'list', @$this->tmpl, $imgOpts);
-		}
-
-		if (!$params->get('rating-nonefirst') && $this->canRate())
-		{
-			$str[] = $clearImg;
-		}
-
-		$str[] = '<span class="ratingScore badge badge-info">' . $this->avg . '</span>';
-		$str[] = '<div class="ratingMessage">';
-		$str[] = '</div>';
-		$str[] = '<input type="hidden" name="' . $name . '" id="' . $id . '" value="' . $value . '" />';
-		$str[] = '</div>';*/
 
 		$imgOpts = array('icon-class' => 'small', 'style' => $css, 'data-rating' => -1);
 
@@ -387,7 +352,7 @@ class PlgFabrik_ElementRating extends PlgFabrik_Element
 		$data['name'] = $name;
 		$data['value'] = $value;
 		$data['clearImg'] = FabrikHelperHTML::image('remove.png', 'list', @$this->tmpl, $imgOpts);
-		$data['avg'] = $this->avg;
+		$data['avg'] = $avg;
 		$data['canRate'] = $this->canRate();
 		$data['ratingNoneFirst'] = $params->get('rating-nonefirst');
 		$data['css'] = $css;

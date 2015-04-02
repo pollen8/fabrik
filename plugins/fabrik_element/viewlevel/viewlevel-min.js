@@ -1,2 +1,2 @@
-/*! fabrik 2015-03-23 */
+/*! fabrik */
 var FbViewlevel=new Class({Extends:FbElement,initialize:function(a,b){this.plugin="fabrikviewlevel",this.parent(a,b)}});

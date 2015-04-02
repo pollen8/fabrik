@@ -1,2 +1,2 @@
-/*! fabrik 2015-03-23 */
+/*! fabrik */
 var FbListArticle=new Class({Extends:FbListPlugin});

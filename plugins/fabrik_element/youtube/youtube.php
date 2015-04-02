@@ -110,8 +110,6 @@ class PlgFabrik_ElementYoutube extends PlgFabrik_Element
 			$data['maxlength'] = 255;
 
 			return $layout->render($data);
-
-			return $str;
 		}
 		else
 		{
@@ -214,20 +212,6 @@ class PlgFabrik_ElementYoutube extends PlgFabrik_Element
 						$dlink = $params->get('text_link') != null ? $params->get('text_link') : 'Watch Video';
 					}
 
-					/*if ($params->get('target_link') == 1)
-					{
-						$object_vid = '<a href="' . $url . $vid . '" target="blank">' . $dlink . '</a>';
-					}
-					elseif ($params->get('target_link') == 2)
-					{
-						$element = $this->getElement();
-						$object_vid = "<a href='" . $url . $vid . "' rel='lightbox[social " . $width . " " . $height . "]' title='" . $element->label
-							. "'>" . $dlink . "</a>";
-					}
-					else
-					{
-						$object_vid = '<a href="' . $url . $vid . '">' . $dlink . '</a>';
-					}*/
 					$element = $this->getElement();
 					$data = array();
 					$data['link'] = $params->get('target_link');
@@ -237,6 +221,7 @@ class PlgFabrik_ElementYoutube extends PlgFabrik_Element
 					$data['title'] = $element->label;
 					$data['label'] = $dlink;
 					$layout = $this->getLayout('list');
+
 					return $layout->render($data);
 				}
 			}

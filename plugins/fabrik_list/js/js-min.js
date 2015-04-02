@@ -1,2 +1,2 @@
-/*! fabrik 2015-03-23 */
+/*! fabrik */
 var FbListJs=new Class({Extends:FbListPlugin,options:{statusMsg:""},initialize:function(a){this.parent(a)},buttonAction:function(){var statusMsg,chxs=this.list.getForm().getElements("input[name^=ids]").filter(function(a){return a.checked}),ids=chxs.map(function(a){return a.get("value")}),rows={};chxs.each(function(a){var b=a.get("value");rows[b]=this.list.getRow(b)}.bind(this)),(""===this.options.js_code||eval(this.options.js_code)!==!1)&&(void 0===statusMsg&&(statusMsg=this.options.statusMsg),""!==statusMsg&&alert(statusMsg))}});

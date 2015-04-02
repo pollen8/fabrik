@@ -1,2 +1,2 @@
-/*! fabrik 2015-03-23 */
+/*! fabrik */
 var FbField=new Class({Extends:FbElement,initialize:function(a,b){this.plugin="fabrikfield",this.parent(a,b),this.options.use_input_mask&&jQuery("#"+a).mask(this.options.input_mask)},select:function(){var a=this.getElement();a&&this.getElement().select()},focus:function(){var a=this.getElement();a&&this.getElement().focus()},cloned:function(a){if(this.options.use_input_mask){var b=this.getElement();b&&jQuery("#"+b.id).mask(this.options.input_mask)}this.parent(a)}});

@@ -1,2 +1,2 @@
-/*! fabrik 2015-03-23 */
+/*! fabrik */
 FbUser=new Class({Extends:FbDatabasejoin});
