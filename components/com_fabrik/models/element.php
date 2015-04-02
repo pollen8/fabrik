@@ -6000,41 +6000,17 @@ class PlgFabrik_Element extends FabrikPlugin
 		{
 			return;
 		}
-
 		$id = $this->getHTMLId($repeatCounter);
-		$valueid = $id . '_ddVal';
-		$labelid = $id . '_ddLabel';
-		$value = '<input class="inputbox text" id="' . $valueid . '" name="addPicklistValue" />';
-		$label = '<input class="inputbox text" id="' . $labelid . '" name="addPicklistLabel" />';
-		$str[] = '<a href="#" title="' . FText::_('COM_FABRIK_ADD') . '" class="btn btn-info toggle-addoption">';
-		$str[] = FabrikHelperHTML::image('plus.png', 'form', @$this->tmpl, array('alt' => FText::_('COM_FABRIK_ADD')));
-		$str[] = '</a>';
-		$str[] = '<div style="clear:left">';
-		$str[] = '<div class="addoption"><div>' . FText::_('COM_FABRIK_ADD_A_NEW_OPTION_TO_THOSE_ABOVE') . '</div>';
 
-		if (!$params->get('allowadd-onlylabel') && $params->get('savenewadditions'))
-		{
-			// $$$ rob don't wrap in <dl> as the html is munged when rendered inside form tab template
-			$str[] = '<label for="' . $valueid . '">' . FText::_('COM_FABRIK_VALUE') . '</label>';
-			$str[] = $value;
+		$layout = $this->getLayout('addoptions');
+		$data['id'] = $this->getHTMLId($repeatCounter);
+		$data['add-image'] = FabrikHelperHTML::image('plus.png', 'form', @$this->tmpl, array('alt' => FText::_('COM_FABRIK_ADD')));
+		$data['allowadd-onlylabel'] = $params->get('allowadd-onlylabel');
+		$data['savenewadditions'] = $params->get('savenewadditions');
+		$data['onlylabel'] = $onlylabel;
+		$data['hidden-field'] = $this->getHiddenField($id . '_additions', '', $id . '_additions');
 
-			if (!$onlylabel)
-			{
-				$str[] = '<label for="' . $labelid . '">' . FText::_('COM_FABRIK_LABEL') . '</label>';
-				$str[] = $label;
-			}
-		}
-		else
-		{
-			$str[] = $label;
-		}
-
-		$str[] = '<input class="button btn btn-success" type="button" id="' . $id . '_dd_add_entry" value="' . FText::_('COM_FABRIK_ADD') . '" />';
-		$str[] = $this->getHiddenField($id . "_additions", '', $id . "_additions");
-		$str[] = '</div>';
-		$str[] = '</div>';
-
-		return implode("\n", $str);
+		return $layout->render($data);
 	}
 
 	/**
