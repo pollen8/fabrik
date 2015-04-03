@@ -20,7 +20,6 @@ require_once JPATH_SITE . '/components/com_fabrik/models/element.php';
  * @subpackage  Fabrik.element.picklist
  * @since       3.0
  */
-
 class PlgFabrik_ElementPicklist extends PlgFabrik_ElementList
 {
 	/**
@@ -29,11 +28,11 @@ class PlgFabrik_ElementPicklist extends PlgFabrik_ElementList
 	 * @var bool
 	 */
 	public $hasSubElements = false;
-	
+
 	/**
 	 * Method to set the element id
 	 *
-	 * @param   int  $id  element ID number
+	 * @param   int $id element ID number
 	 *
 	 * @return  void
 	 */
@@ -50,100 +49,83 @@ class PlgFabrik_ElementPicklist extends PlgFabrik_ElementList
 	/**
 	 * Draws the html form element
 	 *
-	 * @param   array  $data           To pre-populate element with
-	 * @param   int    $repeatCounter  Repeat group counter
+	 * @param   array $data          To pre-populate element with
+	 * @param   int   $repeatCounter Repeat group counter
 	 *
-	 * @return  string	elements html
+	 * @return  string    elements html
 	 */
 
 	public function render($data, $repeatCounter = 0)
 	{
-		$name = $this->getHTMLName($repeatCounter);
-		$id = $this->getHTMLId($repeatCounter);
-		$element = $this->getElement();
-		$params = $this->getParams();
-		$arVals = $this->getSubOptionValues();
-		$arTxt = $this->getSubOptionLabels();
-		$arSelected = (array) $this->getValue($data, $repeatCounter);
+		$values   = $this->getSubOptionValues();
+		$labels   = $this->getSubOptionLabels();
+		$selected = (array) $this->getValue($data, $repeatCounter);
+		$i        = 0;
+		$to       = array();
+		$from     = array();
 
-		$errorCSS = $this->elementError != '' ? " elementErrorHighlight" : '';
-		$attribs = 'class="span6 ' . $errorCSS . "\"";
-
-		FabrikHelperHTML::stylesheet(COM_FABRIK_LIVESITE . 'plugins/fabrik_element/picklist/picklist.css');
-		$i = 0;
-		$aRoValues = array();
-		$fromlist = array();
-		$tolist = array();
-		$fromlist[] = FText::_('PLG_FABRIK_PICKLIST_FROM') . ':<ul id="' . $id . '_fromlist" class="picklist well well-small fromList">';
-		$tolist[] = FText::_('PLG_FABRIK_PICKLIST_TO') . ':<ul id="' . $id . '_tolist" class="picklist well well-small toList">';
-
-		foreach ($arVals as $v)
+		foreach ($values as $v)
 		{
-			if (!in_array($v, $arSelected))
+			if (!in_array($v, $selected))
 			{
-				$fromlist[] = '<li id="' . $id . '_value_' . $v . '" class="picklist">' . $arTxt[$i] . '</li>';
+				$from[$v] = $labels[$i];
 			}
 
 			$i++;
 		}
 
-		$i = 0;
-		$lookup = array_flip($arVals);
+		$i      = 0;
+		$lookup = array_flip($values);
 
-		foreach ($arSelected as $v)
+		foreach ($selected as $v)
 		{
 			if ($v == '' || $v == '-' || $v == '[""]')
 			{
 				continue;
 			}
 
-			$k = FArrayHelper::getValue($lookup, $v);
-			$tmptxt = addslashes(htmlspecialchars(FArrayHelper::getValue($arTxt, $k)));
-			$tolist[] = '<li id="' . $id . '_value_' . $v . '" class="' . $v . '">' . $tmptxt . '</li>';
-			$aRoValues[] = $tmptxt;
+			$k      = FArrayHelper::getValue($lookup, $v);
+			$tmpTxt = addslashes(htmlspecialchars(FArrayHelper::getValue($labels, $k)));
+			$to[$v] = $tmpTxt;
 			$i++;
 		}
 
-		$dragLbl = FText::_('PLG_ELEMENT_PICKLIST_DRAG_OPTIONS_HERE');
-		$fromlist[] = '<li class="emptyplicklist" style="display:none"><i class="icon-move"></i> ' . $dragLbl . '</li>';
-		$tolist[] = '<li class="emptyplicklist" style="display:none"><i class="icon-move"></i> ' . $dragLbl . '</li>';
-		$fromlist[] = '</ul>';
-		$tolist[] = '</ul>';
-		$str = '<div ' . $attribs . '>' . implode("\n", $fromlist) . '</div>';
-		$str .= '<div class="span6">' . implode("\n", $tolist) . '</div>';
-		$str .= $this->getHiddenField($name, json_encode($arSelected), $id);
-
 		if (!$this->isEditable())
 		{
-			return implode(', ', $aRoValues);
+			return implode(', ', $to);
 		}
 
-		$str .= $this->getAddOptionFields($repeatCounter);
+		$layout                   = $this->getLayout('form');
+		$layoutData               = new stdClass;
+		$layoutData->id           = $this->getHTMLId($repeatCounter);
+		$layoutData->errorCSS     = $this->elementError != '' ? ' elementErrorHighlight' : '';
+		$layoutData->from         = $from;
+		$layoutData->to           = $to;
+		$layoutData->name         = $this->getHTMLName($repeatCounter);
+		$layoutData->value        = json_encode($selected);
+		$layoutData->addOptionsUi = $this->getAddOptionFields($repeatCounter);
 
-		return $str;
+		return $layout->render($layoutData);
 	}
 
 	/**
 	 * Returns javascript which creates an instance of the class defined in formJavascriptClass()
 	 *
-	 * @param   int  $repeatCounter  Repeat group counter
+	 * @param   int $repeatCounter Repeat group counter
 	 *
 	 * @return  array
 	 */
 
 	public function elementJavascript($repeatCounter)
 	{
-		$id = $this->getHTMLId($repeatCounter);
-		$element = $this->getElement();
-		$data = $this->getFormModel()->data;
-		$arVals = $this->getSubOptionValues();
-		$arTxt = $this->getSubOptionLabels();
-		$params = $this->getParams();
-		$opts = $this->getElementJSOptions($repeatCounter);
-		$opts->allowadd = (bool) $params->get('allowadd', false);
+		$id               = $this->getHTMLId($repeatCounter);
+		$data             = $this->getFormModel()->data;
+		$params           = $this->getParams();
+		$opts             = $this->getElementJSOptions($repeatCounter);
+		$opts->allowadd   = (bool) $params->get('allowadd', false);
 		$opts->defaultVal = $this->getValue($data, $repeatCounter);
 
-		$opts->hovercolour = $params->get('picklist-hovercolour', '#AFFFFD');
+		$opts->hovercolour   = $params->get('picklist-hovercolour', '#AFFFFD');
 		$opts->bghovercolour = $params->get('picklist-bghovercolour', '#FFFFDF');
 		JText::script('PLG_ELEMENT_PICKLIST_ENTER_VALUE_LABEL');
 
@@ -155,42 +137,42 @@ class PlgFabrik_ElementPicklist extends PlgFabrik_ElementList
 	 * sees then switch from the search string to the db value here
 	 * overwritten in things like checkbox and radio plugins
 	 *
-	 * @param   string  $value  FilterVal
+	 * @param   string $value FilterVal
 	 *
 	 * @return  string
 	 */
 
 	protected function prepareFilterVal($value)
 	{
-		$arVals = $this->getSubOptionValues();
-		$arTxt = $this->getSubOptionLabels();
+		$values = $this->getSubOptionValues();
+		$labels = $this->getSubOptionLabels();
 
-		for ($i = 0; $i < count($arTxt); $i++)
+		for ($i = 0; $i < count($labels); $i++)
 		{
-			if (JString::strtolower($arTxt[$i]) == JString::strtolower($val))
+			if (JString::strtolower($labels[$i]) == JString::strtolower($value))
 			{
-				$val = $arVals[$i];
+				$val = $values[$i];
 
 				return $val;
 			}
 		}
 
-		return $val;
+		return $value;
 	}
 
 	/**
 	 * Builds an array containing the filters value and condition
 	 *
-	 * @param   string  $value      Initial value
-	 * @param   string  $condition  Intial $condition
-	 * @param   string  $eval       How the value should be handled
+	 * @param   string $value     Initial value
+	 * @param   string $condition Intial $condition
+	 * @param   string $eval      How the value should be handled
 	 *
-	 * @return  array	(value condition)
+	 * @return  array    (value condition)
 	 */
 
 	public function getFilterValue($value, $condition, $eval)
 	{
-		$value = $this->prepareFilterVal($value);
+		$value  = $this->prepareFilterVal($value);
 		$return = parent::getFilterValue($value, $condition, $eval);
 
 		return $return;
@@ -200,8 +182,8 @@ class PlgFabrik_ElementPicklist extends PlgFabrik_ElementList
 	 * Does the element consider the data to be empty
 	 * Used in isempty validation rule
 	 *
-	 * @param   array  $data           data to test against
-	 * @param   int    $repeatCounter  repeat group #
+	 * @param   array $data          data to test against
+	 * @param   int   $repeatCounter repeat group #
 	 *
 	 * @return  bool
 	 */

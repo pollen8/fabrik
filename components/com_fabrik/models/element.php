@@ -6001,7 +6001,8 @@ class PlgFabrik_Element extends FabrikPlugin
 			return;
 		}
 
-		$layout = $this->getLayout('addoptions');
+		$basePath = COM_FABRIK_BASE . '/components/com_fabrik/layouts/element';
+		$layout = new JLayoutFile('fabrik-element-addoptions', $basePath, array('debug' => false, 'component' => 'com_fabrik', 'client' => 'site'));
 		$data = new stdClass;
 		$data->id = $this->getHTMLId($repeatCounter);
 		$data->add_image = FabrikHelperHTML::image('plus.png', 'form', @$this->tmpl, array('alt' => FText::_('COM_FABRIK_ADD')));
