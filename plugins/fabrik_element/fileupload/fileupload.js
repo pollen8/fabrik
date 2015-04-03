@@ -128,11 +128,15 @@ var FbFileUpload = new Class({
 							'element_id': this.options.id,
 							'formid': this.form.id,
 							'rowid': this.form.options.rowid
-						}
+						},
+						onComplete: function () {
+							Fabrik.fireEvent('fabrik.fileupload.clearfileref.complete', this);
+						}.bind(this)
 					}).send();
 
 					if (confirm(Joomla.JText._('PLG_ELEMENT_FILEUPLOAD_CONFIRM_HARD_DELETE'))) {
 						this.makeDeletedImageField(this.groupid, b.get('data-file')).inject(this.getContainer(), 'inside');
+						Fabrik.fireEvent('fabrik.fileupload.delete.complete', this);
 					}
 
 					var delete_span = document.id(this.element.id + '_delete_span');
