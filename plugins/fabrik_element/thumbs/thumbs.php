@@ -278,8 +278,6 @@ class PlgFabrik_ElementThumbs extends PlgFabrik_Element
 			return '';
 		}
 
-		$element = $this->getElement();
-
 		$listid = $this->getlistModel()->getTable()->id;
 		$formModel = $this->getFormModel();
 		$formid = isset($this->formid) ? $this->formid : $formModel->getId();
@@ -310,48 +308,30 @@ class PlgFabrik_ElementThumbs extends PlgFabrik_Element
 			$imagefiledown = 'thumb_down_in.gif';
 		}
 
-		$upActiveClass = $myThumb === 'up' ? ' btn-success' : '';
-		$downActiveClass = $myThumb === 'down' ? ' btn-danger' : '';
 
 		$id2 = FabrikString::rtrimword($id, '_ro');
 		$count = $this->_renderListData(FArrayHelper::getValue($data, $id2), $thisRow);
 		$count = FabrikWorker::JSONtoData($count, true);
-		$countUp = $count[0];
-		$countDown = $count[1];
-		$countDiff = $countUp - $countDown;
-		$commentdata = 'data-fabrik-thumb-rowid="' . $row_id . '"';
 
-		if ($j3)
-		{
-			$str[] = '<div class="btn-group">';
-			$str[] = '<button ' . $commentdata . ' data-fabrik-thumb-formid="' . $formid
-			. '" data-fabrik-thumb="up" class="btn btn-small thumb-up' . $upActiveClass . '">';
-			$str[] = '<span class="icon-thumbs-up"></span> <span class="thumb-count">' . $countUp . '</span></button>';
 
-			if ($params->get('show_down', 1))
-			{
-				$str[] = '<button ' . $commentdata . ' data-fabrik-thumb-formid="' . $formid
-				. '" data-fabrik-thumb="down" class="btn btn-small thumb-down' . $downActiveClass . '">';
-				$str[] = '<span class="icon-thumbs-down"></span> <span class="thumb-count">' . $countDown . '</span></button>';
-			}
+		$layout = $this->getLayout('form');
+		$layoutData = new stdClass;
+		$layoutData->j3 = $j3;
+		$layoutData->name = $name;
+		$layoutData->id = $id;
+		$layoutData->commentdata = 'data-fabrik-thumb-rowid="' . $row_id . '"';
+		$layoutData->formId = $formid;
+		$layoutData->upActiveClass = $myThumb === 'up' ? ' btn-success' : '';;
+		$layoutData->downActiveClass = $myThumb === 'down' ? ' btn-danger' : '';;
+		$layoutData->countUp = $count[0];
+		$layoutData->countDown = $count[1];
+		$layoutData->countDiff = $layoutData->countUp - $layoutData->countDown;
+		$layoutData->showDown = $params->get('show_down', 1);
+		$layoutData->imagepath = $imagepath;
+		$layoutData->imagefileup = $imagefileup;
+		$layoutData->imagefiledown = $imagefiledown;
 
-			$str[] = '</div>';
-		}
-		else
-		{
-			$str[] = '<span style="color:#32d723;" id="count_thumbup">' . $countUp . '</span>';
-			$str[] = '<img src="' . $imagepath . $imagefileup . '" style="padding:0px 5px 0 1px;" alt="UP" id="thumbup"/>';
-
-			if ($params->get('show_down', 1))
-			{
-				$str[] = '<span style="color:#f82516;" id="count_thumbdown">' . $countDown . '</span>';
-				$str[] = '<img src="' . $imagepath . $imagefiledown . '" style="padding:0px 5px 0 1px;" alt="DOWN" id="thumbdown"/>';
-			}
-		}
-
-		$str[] = '<input type="hidden" name="' . $name . '" id="' . $id . '" value="' . $countDiff . '" class="' . $id . '" />';
-
-		return implode("\n", $str);
+		return $layout->render($layoutData);
 	}
 
 	/**
