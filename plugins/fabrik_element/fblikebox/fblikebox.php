@@ -62,16 +62,14 @@ class PlgFabrik_ElementFbLikeBox extends PlgFabrik_Element
 		$data = new stdClass;
 
 		$data->graphApi = FabrikHelperHTML::facebookGraphAPI($params->get('opengraph_applicationid'));
-		$data->pageid = 185550966885;//$params->get('fblikebox_pageid', 0);
+		$data->pageid = $params->get('fblikebox_pageid', 0);
 		$data->stream = $params->get('fblikebox_stream', 1) == 1 ? 'true' : 'false';
 		$data->width = $params->get('fblikebox_width', 300);
 		$data->height = $params->get('fblikebox_height', 300);
 		$data->header = $params->get('fblikebox_header', 1) == 1 ? 'true' : 'false';
 		$data->connections = $params->get('fblikebox_connections', 10);
 
-		//return '<fb:like-box id="185550966885" width="292" height="440" connections="4" stream="true" header="true" />';
 		return $layout->render($data);
-		//$str .= '<fb:like-box id="185550966885" width="292" height="440" connections="4" stream="true" header="true" />';
 	}
 
 	/**

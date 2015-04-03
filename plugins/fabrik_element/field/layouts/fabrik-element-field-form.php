@@ -8,7 +8,7 @@ $d = $displayData;
 ?>
 
 <input
-	<?php foreach ($d['attributes'] as $key => $value) :
+	<?php foreach ($d->attributes as $key => $value) :
 	echo $key . '="' . $value . '"';
 endforeach;
 	?> />

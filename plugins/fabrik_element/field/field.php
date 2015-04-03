@@ -183,9 +183,10 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 		}
 
 		$layout = $this->getLayout('form');
-		$data['attributes'] = $bits;
+		$layoutData = new stdClass;
+		$layoutData->attributes = $bits;
 
-		return $layout->render($data);
+		return $layout->render($layoutData);
 	}
 
 	/**
@@ -594,13 +595,12 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 
 		$app = JFactory::getApplication();
 		$package = $app->getUserState('com_fabrik.package', 'fabrik');
-		$formModel = $this->getForm();
+		$formModel = $this->getFormModel();
 		$formid = $formModel->getId();
 		$rowid = $formModel->getRowId();
 
 		if (empty($rowid))
 		{
-			
 			/**
 			 * Meh.  See commentary at the start of $formModel->getEmailData() about rowid.  For now, if this is a new row,
 			 * the only place we're going to find it is in the list model's lastInsertId.  Bah humbug.
@@ -611,7 +611,6 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 			
 			if (empty($rowid))
 			{
-				
 				/**
 				 * Nope.  Try lastInsertId. Or maybe on top of the fridge?  Or in the microwave?  Down the back
 				 * of the couch cushions? 
@@ -628,9 +627,7 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 				{
 					return '';
 				}
-				
 			}
-			
 		}
 
 		/*
@@ -638,12 +635,13 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 		 */
 		
 		$elementid = $this->getId();
-		$link = COM_FABRIK_LIVESITE
+		$src = COM_FABRIK_LIVESITE
 		. 'index.php?option=com_' . $package . '&amp;task=plugin.pluginAjax&amp;plugin=field&amp;method=ajax_renderQRCode&amp;'
 				. 'format=raw&amp;element_id=' . $elementid . '&amp;formid=' . $formid . '&amp;rowid=' . $rowid . '&amp;repeatcount=0';
 
 		$layout = $this->getLayout('qr');
-		$data['link'] = $link;
+		$data = new stdClass;
+		$data->src = $src;
 
 		return $layout->render($data);
 	}

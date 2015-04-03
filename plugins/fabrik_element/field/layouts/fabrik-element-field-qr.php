@@ -7,4 +7,4 @@ $d = $displayData;
 
 ?>
 
-<img src="<?php echo $d['link']?>" />
+<img src="<?php echo $d->src; ?>" />

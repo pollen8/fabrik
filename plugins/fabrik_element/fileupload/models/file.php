@@ -68,7 +68,7 @@ class FileRender
 			{
 				$maxWidth = $params->get('thumb_max_width', 125);
 				$maxHeight = $params->get('thumb_max_height', 125);
-				$this->output .= '<img style="width: ' . $maxWidth . 'px;" src="" alt=""></a>';
+				$this->output .= '<img style="width: ' . $maxWidth . 'px;" src="" alt="" />';
 			}		
 		}
 		else
@@ -88,20 +88,18 @@ class FileRender
 	
 			$file = str_replace("\\", "/", $file);
 			$file = $model->storage->preRenderPath($file);
-			$thumb_path = COM_FABRIK_BASE . 'media/com_fabrik/images/' . $ext . '.png';
-	
-			// $$$ hugh - using 'make_thumbnail' to mean 'use default $ext.png as an icon
-			// instead of just putting the filename.
-			if ($params->get('make_thumbnail', false) && JFile::exists($thumb_path))
-			{
-				$thumb_file = COM_FABRIK_LIVESITE . "media/com_fabrik/images/" . $ext . ".png";
-				$this->output .= "<a class=\"download-archive fabrik-filetype-$ext\" title=\"$file\" href=\"$file\">
-				<img src=\"$thumb_file\" alt=\"$filename\"></a>";
-			}
-			else
-			{
-				$this->output .= "<a class=\"download-archive fabrik-filetype-$ext\" title=\"$file\" href=\"$file\">" . $filename . "</a>";
-			}
+
+
+			$layout = $model->getLayout('file');
+			$data = new stdClass;
+			$data->thumb =  COM_FABRIK_LIVESITE . 'media/com_fabrik/images/' . $ext . '.png';
+			$data->useThumb = $params->get('make_thumbnail', false) && JFile::exists($data->thumb);
+
+			$data->ext = $ext;
+			$data->filename = $filename;
+			$data->file = $file;
+
+			$this->output = $layout->render($data);
 		}
 	}
 

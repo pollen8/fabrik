@@ -91,12 +91,16 @@ class FlashRender
 			$h = 600;
 		}
 
-		// $$$ hugh - if they've enabled thumbnails, for Flash content we'll take that to mean they don't
-		// want to play the content inline in the table, and use mediabox (if available) to open it instead.
-		if (!$model->inDetailedView && $fbConfig->get('use_mediabox', true) && $params->get('make_thumbnail', false))
-		{
-			$element = $model->getElement();
+		$layout = $model->getLayout('flash');
+		$data = new stdClass;
+		$data->useThumbs = !$model->inDetailedView && $fbConfig->get('use_mediabox', true) && $params->get('make_thumbnail', false);
+		$data->width = $w;
+		$data->height = $h;
+		$data->inDetailedView = $model->inDetailedView;
+		$data->file = $file;
 
+		if ($data->useThumbs)
+		{
 			// @TODO - work out how to do thumbnails
 			$thumb_dir = $params->get('thumb_dir');
 
@@ -129,26 +133,11 @@ class FlashRender
 			}
 
 			$file = str_replace("\\", "/", COM_FABRIK_LIVESITE . $file);
-			$this->output .= "<a href='$file' rel='lightbox[flash $w $h]'><img src='$thumb_file' alt='Full Size'></a>";
+			$data->thumb = $thumb_file;
+			$data->file = $file;
 		}
-		elseif ($model->inDetailedView)
-		{
-			$file = str_replace("\\", "/", COM_FABRIK_LIVESITE . $file);
-			$this->output = "<object width=\"$w\" height=\"$h\">
-				<param name=\"movie\" value=\"$file\">
-				<embed src=\"$file\" width=\"$w\" height=\"$h\">
-				</embed>
-				</object>";
-		}
-		else
-		{
-			$file = str_replace("\\", "/", COM_FABRIK_LIVESITE . $file);
-			$this->output = "<object width=\"$w\" height=\"$h\">
-				<param name=\"movie\" value=\"$file\">
-				<embed src=\"$file\" width=\"$w\" height=\"$h\">
-				</embed>
-				</object>";
-		}
+
+		$this->output = $layout->render($data);
 	}
 
 	/**

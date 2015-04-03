@@ -7554,7 +7554,7 @@ class PlgFabrik_Element extends FabrikPlugin
 	 *
 	 * @return JLayoutFile
 	 */
-	protected function getLayout($type)
+	public function getLayout($type)
 	{
 		$name = get_class($this);
 		$name = strtolower(JString::str_ireplace('PlgFabrik_Element', '', $name));

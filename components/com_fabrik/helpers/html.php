@@ -2531,7 +2531,7 @@ if (!$j3)
 			case 0:
 			case 1:
 			default:
-				$attrs[] = "rel=lightbox{" . $group . "]";
+				$attrs[] = 'rel="lightbox[' . $group . ']"';
 				break;
 			case 2:
 				$attrs[] = "data-rokbox";
