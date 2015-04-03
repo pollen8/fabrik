@@ -115,10 +115,12 @@ class PlgFabrik_ElementDisplay extends PlgFabrik_Element
 	public function render($data, $repeatCounter = 0)
 	{
 		$params = $this->getParams();
-		$id = $this->getHTMLId($repeatCounter);
-		$value = $params->get('display_showlabel', true) ? $this->getValue($data, $repeatCounter) : '';
+		$layout = $this->getLayout('form');
+		$data = new stdClass;
+		$data->id = $this->getHTMLId($repeatCounter);
+		$data->value = $params->get('display_showlabel', true) ? $this->getValue($data, $repeatCounter) : '';
 
-		return '<div class="fabrikSubElementContainer" id="' . $id . '">' . $value . '</div>';
+		return $layout->render($data);
 	}
 
 	/**
@@ -151,8 +153,6 @@ class PlgFabrik_ElementDisplay extends PlgFabrik_Element
 
 	public function getValue($data, $repeatCounter = 0, $opts = array())
 	{
-		$element = $this->getElement();
-		$params = $this->getParams();
 		$value = $this->getDefaultOnACL($data, $opts);
 
 		if ($value === '')

@@ -53,7 +53,6 @@ class PlgFabrik_ElementDropdown extends PlgFabrik_ElementList
 	{
 		$name = $this->getHTMLName($repeatCounter);
 		$id = $this->getHTMLId($repeatCounter);
-		$element = $this->getElement();
 		$params = $this->getParams();
 		$values = $this->getSubOptionValues();
 		$labels = $this->getSubOptionLabels();
@@ -67,7 +66,7 @@ class PlgFabrik_ElementDropdown extends PlgFabrik_ElementList
 
 		$attribs = 'class="fabrikinput inputbox input ' . $advancedClass . ' ' . $errorCSS . ' ' . $boostrapClass . '"';
 
-		if ($multiple == "1")
+		if ($multiple == '1')
 		{
 			$attribs .= ' multiple="multiple" size="' . $multisize . '" ';
 		}
@@ -128,7 +127,6 @@ class PlgFabrik_ElementDropdown extends PlgFabrik_ElementList
 		$settings['list.attr'] = $attribs;
 		$settings['group.items'] = null;
 
-
 		if ($optgroup)
 		{
 			$groupedOpts = array();
@@ -145,11 +143,22 @@ class PlgFabrik_ElementDropdown extends PlgFabrik_ElementList
 				$groupedOpts[$groupOptLabel][] = $opt;
 			}
 
+			// @todo JLayout list
 			$str = JHTML::_('select.groupedlist', $groupedOpts, $name, $settings);
 		}
 		else
 		{
-			$str = JHTML::_('select.genericlist', $opts, $name, $settings);
+			$layout = $this->getLayout('form');
+			$data = new stdClass;
+			$data->options = $opts;
+			$data->name = $name;
+			$data->selected = $selected;
+			$data->id = $id;
+			$data->errorCSS = $errorCSS;
+			$data->multiple = $multiple;
+			$data->multisize = $multiple ? $multisize : '';
+
+			$str = $layout->render($data);
 		}
 
 		$str .= $this->getAddOptionFields($repeatCounter);
@@ -169,7 +178,6 @@ class PlgFabrik_ElementDropdown extends PlgFabrik_ElementList
 	{
 		$params = $this->getParams();
 		$id = $this->getHTMLId($repeatCounter);
-		$element = $this->getElement();
 		$data = $this->getFormModel()->data;
 		$arSelected = $this->getValue($data, $repeatCounter);
 		$values = $this->getSubOptionValues();
@@ -196,7 +204,6 @@ class PlgFabrik_ElementDropdown extends PlgFabrik_ElementList
 
 	public function getDefaultValue($data = array())
 	{
-		$params = $this->getParams();
 		$element = $this->getElement();
 
 		if (!isset($this->default))
@@ -295,12 +302,9 @@ class PlgFabrik_ElementDropdown extends PlgFabrik_ElementList
 			$s = str_replace("'", "", $s);
 		}
 
-		$element = $this->getElement();
 		$vals = $this->getSubOptionValues();
 		$labels = $this->getSubOptionLabels();
 		$return = array();
-		$aRoValues = array();
-		$opts = array();
 		$i = 0;
 
 		foreach ($labels as $label)

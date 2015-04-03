@@ -23,7 +23,7 @@ require_once JPATH_SITE . '/components/com_fabrik/models/element.php';
  * @since       3.0
  */
 
-class PlgFabrik_ElementFblikebox extends PlgFabrik_Element
+class PlgFabrik_ElementFbLikeBox extends PlgFabrik_Element
 {
 	/**
 	 * Does the element have a label
@@ -58,18 +58,18 @@ class PlgFabrik_ElementFblikebox extends PlgFabrik_Element
 	public function render($data, $repeatCounter = 0)
 	{
 		$params = $this->getParams();
-		$str = FabrikHelperHTML::facebookGraphAPI($params->get('opengraph_applicationid'));
-		$pageid = $params->get('fblikebox_pageid', 0);
-		$stream = $params->get('fblikebox_stream', 1) == 1 ? 'true' : 'false';
-		$width = $params->get('fblikebox_width', 300);
-		$height = $params->get('fblikebox_height', 300);
-		$header = $params->get('fblikebox_header', 1) == 1 ? 'true' : 'false';
-		$connections = $params->get('fblikebox_connections', 10);
+		$layout = $this->getLayout('form');
+		$data = new stdClass;
 
-		// $str .= "<fb:like-box id=\"$pageid\" width=\"$width\" height=\"$height\" connections=\"$connections\" stream=\"$stream\" header=\"$header\" />";
-		$str .= '<fb:like-box id="185550966885" width="292" height="440" connections="4" stream="true" header="true" />';
+		$data->graphApi = FabrikHelperHTML::facebookGraphAPI($params->get('opengraph_applicationid'));
+		$data->pageid = $params->get('fblikebox_pageid', 0);
+		$data->stream = $params->get('fblikebox_stream', 1) == 1 ? 'true' : 'false';
+		$data->width = $params->get('fblikebox_width', 300);
+		$data->height = $params->get('fblikebox_height', 300);
+		$data->header = $params->get('fblikebox_header', 1) == 1 ? 'true' : 'false';
+		$data->connections = $params->get('fblikebox_connections', 10);
 
-		return $str;
+		return $layout->render($data);
 	}
 
 	/**

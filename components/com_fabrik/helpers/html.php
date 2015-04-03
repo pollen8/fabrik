@@ -1712,8 +1712,8 @@ if (!$j3)
 	public static function folderAjaxSelect($folders, $path = '', $tpl = '')
 	{
 		$str = array();
-		$str[] = '<a href="#" class="toggle" title="' . FText::_('COM_FABRIK_BROWSE_FOLDERS') . '">';
-		$str[] = self::image('orderneutral.png', 'form', $tpl, array('alt' => FText::_('COM_FABRIK_BROWSE_FOLDERS')));
+		$str[] = '<a href="#" class="btn btn-default toggle" title="' . FText::_('COM_FABRIK_BROWSE_FOLDERS') . '">';
+		$str[] = self::image('orderneutral.png', 'form', $tpl, array('alt' => FText::_('COM_FABRIK_BROWSE_FOLDERS'), 'icon-class' => 'icon-menu-2'));
 		$str[] = '</a>';
 		$str[] = '<div class="folderselect-container">';
 		$str[] = '<span class="breadcrumbs"><a href="#">' . FText::_('HOME') . '</a><span> / </span>';
@@ -2112,8 +2112,6 @@ if (!$j3)
 	public static function gridItems($values, $labels, $selected, $name, $type = 'checkbox',
 		$elementBeforeLabel = true, $classes = array(), $buttonGroup = false)
 	{
-		$j3 = FabrikWorker::j3();
-		$version = new JVersion;
 		$items = array();
 
 		for ($i = 0; $i < count($values); $i++)
@@ -2164,8 +2162,6 @@ if (!$j3)
 	public static function grid($values, $labels, $selected, $name, $type = 'checkbox',
 		$elementBeforeLabel = true, $optionsPerRow = 4, $classes = array(), $buttonGroup = false)
 	{
-		$items = array();
-
 		if (FabrikWorker::j3())
 		{
 			$elementBeforeLabel = true;
@@ -2176,7 +2172,6 @@ if (!$j3)
 		$grid = array();
 		$optionsPerRow = empty($optionsPerRow) ? 4 : $optionsPerRow;
 		$w = floor(100 / $optionsPerRow);
-		$widthConstraint = '';
 
 		if ($buttonGroup && $type == 'radio')
 		{
@@ -2531,7 +2526,7 @@ if (!$j3)
 			case 0:
 			case 1:
 			default:
-				$attrs[] = "rel=lightbox{" . $group . "]";
+				$attrs[] = 'rel="lightbox[' . $group . ']"';
 				break;
 			case 2:
 				$attrs[] = "data-rokbox";

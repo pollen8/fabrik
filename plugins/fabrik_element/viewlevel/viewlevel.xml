@@ -16,6 +16,7 @@
 		<filename>viewlevel.js</filename>
 		<filename>viewlevel-min.js</filename>
 		<folder>language</folder>
+		<folder>layouts</folder>
 	</files>
 	
 </extension>

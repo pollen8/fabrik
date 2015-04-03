@@ -74,7 +74,14 @@ class PlgFabrik_ElementViewlevel extends PlgFabrik_ElementList
 
 		$options = array();
 
-		return JHtml::_('access.level', $name, $selected, 'class="inputbox" size="6"', $options, $id);
+		$layout = $this->getLayout('form');
+		$layoutData = new stdClass;
+		$layoutData->name = $name;
+		$layoutData->selected = $selected;
+		$layoutData->options = $options;
+		$layoutData->id = $id;
+
+		return $layout->render($layoutData);
 	}
 
 	/**

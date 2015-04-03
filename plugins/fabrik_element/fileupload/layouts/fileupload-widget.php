@@ -1,14 +1,15 @@
 <?php
-// Add span with id so that element fxs work.
+defined('JPATH_BASE') or die;
+
 $d = $displayData;
-$id = $d['id'];
-$winWidth = $d['winWidth'];
-$winHeight = $d['winHeight'];
-$canCrop = $d['canCrop'];
-$canvasSupport = $d['canvasSupport'];
-$dropBoxStyle = $d['dropBoxStyle'];
-$j3 = $d['j3'];
-$field = $d['field'];
+$id = $d->id;
+$winWidth = $d->winWidth;
+$winHeight = $d->winHeight;
+$canCrop = $d->canCrop;
+$canvasSupport = $d->canvasSupport;
+$dropBoxStyle = $d->dropBoxStyle;
+$j3 = $d->j3;
+$field = $d->field;
 ?>
 
 <span id="<?php echo $id; ?>"></span>
@@ -16,10 +17,9 @@ $field = $d['field'];
 	<canvas id="<?php echo $id; ?>-widget" width="<?php echo $winWidth?>" height="<?php echo $winHeight; ?>"></canvas>
 
 <?php
-if ($canCrop)
-{
+if ($canCrop) :
 ?>
-	<div class="zoom" style="float:left;margin-top:10px;padding-right:10x;width:180px">
+	<div class="zoom" style="float:left;margin-top:10px;padding-right:10px;width:180px">
 		zoom:
 		<div class="fabrikslider-line" style="width: 100px;float:left;">
 			<div class="knob"></div>
@@ -33,24 +33,22 @@ if ($canCrop)
 		<input name="rotate-val" value="" size="3"  class="input-mini"/>
 	</div>
 <?php
-}
+endif;
 
-if ($canvasSupport)
-{
+if ($canvasSupport) :
 ?>
 	<div style="text-align: right;float:right;margin:10px 0; width: 205px">
 		<input type="button" class="button btn btn-primary" name="close-crop" value="<?php echo FText::_('CLOSE'); ?>" />
 	</div>
 <?php
-}
+endif;
 ?>
 </div>
 
 <div class="plupload_container fabrikHide" id="<?php echo $id; ?>_container" style="<?php echo $dropBoxStyle; ?>">
 	<div class="plupload" id="<?php echo $id; ?>_dropList_container">
 <?php
-if ($j3)
-{
+if ($j3) :
 ?>
 		<table class="table table-striped table-condensed">
 			<thead style="display:none">
@@ -77,9 +75,7 @@ if ($j3)
 			</tfoot>
 		</table>
 <?php
-}
-else
-{
+else :
 	FabrikHelperHTML::stylesheet(COM_FABRIK_LIVESITE . 'plugins/fabrik_element/fileupload/lib/plupload/css/plupload.queue.css');
 ?>
 		<div class="plupload_header">
@@ -124,7 +120,7 @@ else
 			</div>
 		</div>
 <?php
-}
+endif;
 ?>
 	</div>
 	<!-- FALLBACK; SHOULD LOADING OF PLUPLOAD FAIL -->

@@ -18,5 +18,6 @@
 		<folder>forms</folder>
 		<folder>images</folder>
 		<folder>language</folder>
+		<folder>layouts</folder>
 	</files>
 </extension>

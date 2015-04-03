@@ -60,20 +60,20 @@ class PlgFabrik_ElementDigsig extends PlgFabrik_Element
 		$digsig_height = $params->get('digsig_form_height', '150');
 		$val           = $this->getValue($data, $repeatCounter);
 		$basePath      = COM_FABRIK_BASE . '/plugins/fabrik_element/digsig/layouts/';
-		$layoutData    = array();
+		$layoutData    = new stdClass;
 		$app           = JFactory::getApplication();
 		$input         = $app->input;
 		$format        = $input->get('format');
 
-		$layoutData['id']            = $id;
-		$layoutData['digsig_width']  = $digsig_width;
-		$layoutData['digsig_height'] = $digsig_height;
-		$layoutData['sig_id']        = $sig_id;
-		$layoutData['name']          = $name;
-		$layoutData['val']           = $val;
-		$listModel                   = $this->getListModel();
-		$pk                          = $listModel->getTable()->db_primary_key;
-		$pk                          = FabrikString::safeColNameToArrayKey($pk);
+		$layoutData->id            = $id;
+		$layoutData->digsig_width  = $digsig_width;
+		$layoutData->digsig_height = $digsig_height;
+		$layoutData->sig_id        = $sig_id;
+		$layoutData->name          = $name;
+		$layoutData->val           = $val;
+		$listModel                 = $this->getListModel();
+		$pk                        = $listModel->getTable()->db_primary_key;
+		$pk                        = FabrikString::safeColNameToArrayKey($pk);
 
 		if (!$this->isEditable())
 		{
@@ -85,7 +85,7 @@ class PlgFabrik_ElementDigsig extends PlgFabrik_Element
 				$rowId     = ArrayHelper::getValue($data, $pk);
 				$elementId = $this->getId();
 
-				$layoutData['link'] = COM_FABRIK_LIVESITE
+				$layoutData->link = COM_FABRIK_LIVESITE
 					. 'index.php?option=com_' . $package . '&amp;task=plugin.pluginAjax&amp;plugin=digsig&amp;method=ajax_signature_to_image&amp;'
 					. 'format=raw&amp;element_id=' . $elementId . '&amp;formid=' . $formId . '&amp;rowid=' . $rowId . '&amp;repeatcount=0';
 
@@ -121,21 +121,24 @@ class PlgFabrik_ElementDigsig extends PlgFabrik_Element
 			return '';
 		}
 
-		$params        = $this->getParams();
-		$digsig_width  = $params->get('digsig_list_width', '200');
-		$digsig_height = $params->get('digsig_list_height', '75');
-		$app           = JFactory::getApplication();
-		$package       = $app->getUserState('com_fabrik.package', 'fabrik');
-		$formModel     = $this->getFormModel();
-		$formid        = $formModel->getId();
-		$rowid         = $thisRow->__pk_val;
-		$elementid     = $this->getId();
+		$params    = $this->getParams();
+		$app       = JFactory::getApplication();
+		$package   = $app->getUserState('com_fabrik.package', 'fabrik');
+		$formModel = $this->getFormModel();
+		$formid    = $formModel->getId();
+		$rowid     = $thisRow->__pk_val;
+		$elementid = $this->getId();
 
 		$link = COM_FABRIK_LIVESITE
 			. 'index.php?option=com_' . $package . '&amp;task=plugin.pluginAjax&amp;plugin=digsig&amp;method=ajax_signature_to_image&amp;'
 			. 'format=raw&amp;element_id=' . $elementid . '&amp;formid=' . $formid . '&amp;rowid=' . $rowid . '&amp;repeatcount=0';
 
-		$data = '<img src="' . $link . '" width="' . $digsig_width . '" height="' . $digsig_height . '"/>';
+		$layoutData         = new stdClass;
+		$layoutData->width  = $params->get('digsig_list_width', '200');
+		$layoutData->height = $params->get('digsig_list_height', '75');;
+		$layoutData->src = $link;
+		$layout          = $this->getLayout('list');
+		$data            = $layout->render($layoutData);
 
 		return parent::renderListData($data, $thisRow);
 	}
@@ -175,8 +178,8 @@ class PlgFabrik_ElementDigsig extends PlgFabrik_Element
 			exit;
 		}
 
-		$listModel   = $this->getListModel();
-		$row         = $listModel->getRow($rowid, false);
+		$listModel = $this->getListModel();
+		$row       = $listModel->getRow($rowid, false);
 
 		if (empty($row))
 		{

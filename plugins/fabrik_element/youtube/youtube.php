@@ -103,13 +103,14 @@ class PlgFabrik_ElementYoutube extends PlgFabrik_Element
 			}
 
 			$layout = $this->getLayout('form');
-			$data['id'] = $id;
-			$data['name'] = $name;
-			$data['class'] = $class;;
-			$data['size'] = $params->get('width');
-			$data['maxlength'] = 255;
+			$layoutData = new stdClass;
+			$layoutData->id = $id;
+			$layoutData->name = $name;
+			$layoutData->class = $class;;
+			$layoutData->size = $params->get('width');
+			$layoutData->maxlength = 255;
 
-			return $layout->render($data);
+			return $layout->render($layoutData);
 		}
 		else
 		{
@@ -213,27 +214,27 @@ class PlgFabrik_ElementYoutube extends PlgFabrik_Element
 					}
 
 					$element = $this->getElement();
-					$data = array();
-					$data['link'] = $params->get('target_link');
-					$data['value'] = $url . $vid;
-					$data['width'] = $width;
-					$data['height'] = $height;
-					$data['title'] = $element->label;
-					$data['label'] = $dlink;
+					$layoutData = new stdClass;
+					$layoutData->link = $params->get('target_link');
+					$layoutData->value = $url . $vid;
+					$layoutData->width = $width;
+					$layoutData->height = $height;
+					$layoutData->title = $element->label;
+					$layoutData->label = $dlink;
 					$layout = $this->getLayout('list');
 
-					return $layout->render($data);
+					return $layout->render($layoutData);
 				}
 			}
 			else
 			{
 				$layout = $this->getLayout('detail');
-				$data = array();
-				$data['width'] = $width;
-				$data['height'] = $height;
-				$data['value'] = $url . $vid . '&hl=en&fs=1' . $rel;
+				$layoutData = new stdClass;
+				$layoutData->width = $width;
+				$layoutData->height = $height;
+				$layoutData->value = $url . $vid . '&hl=en&fs=1' . $rel;
 
-				return $layout->render($data);
+				return $layout->render($layoutData);
 			}
 		}
 		else

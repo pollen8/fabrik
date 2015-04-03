@@ -58,50 +58,44 @@ class PlgFabrik_ElementFbcomment extends PlgFabrik_Element
 	public function render($data, $repeatCounter = 0)
 	{
 		$params = $this->getParams();
-		$str = '';
+		$data = new stdClass;
+		$data->num = $params->get('fbcomment_number_of_comments', 10);
+		$data->width = $params->get('fbcomment_width', 300);
+		$data->colour = $params->get('fb_comment_scheme') == '' ? '' : ' colorscheme="dark" ';
+		$data->href = $params->get('fbcomment_href', '');
 
-		// $id = $params->get('fbcomment_uniqueid');
-		$href = $params->get('fbcomment_href');
-		$width = $params->get('fbcomment_width', 300);
-		$num = $params->get('fbcomment_number_of_comments', 10);
-		$colour = $params->get('fb_comment_scheme') == '' ? '' : ' colorscheme="dark" ';
-
-		if (empty($href))
+		if (empty($data->href))
 		{
 			$app = JFactory::getApplication();
-			$rowid = $app->input->getString('rowid', '', 'string');
+			$rowId = $app->input->getString('rowid', '', 'string');
 
-			if ($rowid != '')
+			if ($rowId != '')
 			{
-				$formModel = $this->getForm();
-				$formid = $formModel->getId();
-				$href = 'index.php?option=com_fabrik&view=form&formid=' . $formid . '&rowid=' . $rowid;
+				$formModel = $this->getFormModel();
+				$formId = $formModel->getId();
+				$href = 'index.php?option=com_fabrik&view=form&formid=' . $formId . '&rowid=' . $rowId;
 				$href = JRoute::_($href);
-				$href = COM_FABRIK_LIVESITE_ROOT . $href;
+				$data->href = COM_FABRIK_LIVESITE_ROOT . $href;
 			}
 		}
 
-		if (!empty($href))
+		if (!empty($data->href))
 		{
 			$w = new FabrikWorker;
-			$href = $w->parseMessageForPlaceHolder($href, $data);
+			$data->href = $w->parseMessageForPlaceHolder($data->href, $data);
 			$locale = $params->get('fbcomment_locale', 'en_US');
 
 			if (empty($locale))
 			{
-				$locale = "en_US";
+				$locale = 'en_US';
 			}
 
-			$str .= FabrikHelperHTML::facebookGraphAPI($params->get('opengraph_applicationid'), $locale);
-			$str .= '<div id="fb-root"><fb:comments href="' . $href . '" nmigrated="1" um_posts="' . $num
-			. '" width="' . $width . '"' . $colour . '></fb:comments>';
-		}
-		else
-		{
-			$str .= FText::_('PLG_ELEMENT_FBCOMMENT_AVAILABLE_WHEN_SAVED');
+			$data->graphApi = FabrikHelperHTML::facebookGraphAPI($params->get('opengraph_applicationid'), $locale);
 		}
 
-		return $str;
+		$layout = $this->getLayout('form');
+
+		return $layout->render($data);
 	}
 
 	/**

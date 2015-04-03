@@ -274,14 +274,14 @@ class PlgFabrik_ElementCaptcha extends PlgFabrik_Element
 			}
 
 			$layout = $this->getLayout('form');
-			$data = array();
-			$data['id'] = $id;
-			$data['name'] = $name;
+			$data = new stdClass;
+			$data->id = $id;
+			$data->name = $name;
 
 			// $$$ hugh - changed from static image path to using simple image.php script, to get round IE caching images
-			$data['url'] = COM_FABRIK_LIVESITE . 'plugins/fabrik_element/captcha/image.php?foo=' . rand();
-			$data['type'] = $type;
-			$data['size'] = $size;
+			$data->url = COM_FABRIK_LIVESITE . 'plugins/fabrik_element/captcha/image.php?foo=' . rand();
+			$data->type = $type;
+			$data->size = $size;
 
 			return $layout->render($data);
 		}

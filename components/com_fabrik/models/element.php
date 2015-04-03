@@ -2525,6 +2525,8 @@ class PlgFabrik_Element extends FabrikPlugin
 	/**
 	 * Helper method to build an input field
 	 *
+	 * @deprecated use JLayouts instead
+	 *
 	 * @param   string  $node      Input type default 'input'
 	 * @param   array   $bits      Input property => value
 	 * @param   bool    $shortTag  Is $node a <node/> or <node></node> tag
@@ -5999,40 +6001,17 @@ class PlgFabrik_Element extends FabrikPlugin
 			return;
 		}
 
-		$id = $this->getHTMLId($repeatCounter);
-		$valueid = $id . '_ddVal';
-		$labelid = $id . '_ddLabel';
-		$value = '<input class="inputbox text" id="' . $valueid . '" name="addPicklistValue" />';
-		$label = '<input class="inputbox text" id="' . $labelid . '" name="addPicklistLabel" />';
-		$str[] = '<a href="#" title="' . FText::_('COM_FABRIK_ADD') . '" class="btn btn-info toggle-addoption">';
-		$str[] = FabrikHelperHTML::image('plus.png', 'form', @$this->tmpl, array('alt' => FText::_('COM_FABRIK_ADD')));
-		$str[] = '</a>';
-		$str[] = '<div style="clear:left">';
-		$str[] = '<div class="addoption"><div>' . FText::_('COM_FABRIK_ADD_A_NEW_OPTION_TO_THOSE_ABOVE') . '</div>';
+		$basePath = COM_FABRIK_BASE . '/components/com_fabrik/layouts/element';
+		$layout = new JLayoutFile('fabrik-element-addoptions', $basePath, array('debug' => false, 'component' => 'com_fabrik', 'client' => 'site'));
+		$data = new stdClass;
+		$data->id = $this->getHTMLId($repeatCounter);
+		$data->add_image = FabrikHelperHTML::image('plus.png', 'form', @$this->tmpl, array('alt' => FText::_('COM_FABRIK_ADD')));
+		$data->allowadd_onlylabel = $params->get('allowadd-onlylabel');
+		$data->savenewadditions = $params->get('savenewadditions');
+		$data->onlylabel = $onlylabel;
+		$data->hidden_field = $this->getHiddenField($data->id . '_additions', '', $data->id . '_additions');
 
-		if (!$params->get('allowadd-onlylabel') && $params->get('savenewadditions'))
-		{
-			// $$$ rob don't wrap in <dl> as the html is munged when rendered inside form tab template
-			$str[] = '<label for="' . $valueid . '">' . FText::_('COM_FABRIK_VALUE') . '</label>';
-			$str[] = $value;
-
-			if (!$onlylabel)
-			{
-				$str[] = '<label for="' . $labelid . '">' . FText::_('COM_FABRIK_LABEL') . '</label>';
-				$str[] = $label;
-			}
-		}
-		else
-		{
-			$str[] = $label;
-		}
-
-		$str[] = '<input class="button btn btn-success" type="button" id="' . $id . '_dd_add_entry" value="' . FText::_('COM_FABRIK_ADD') . '" />';
-		$str[] = $this->getHiddenField($id . "_additions", '', $id . "_additions");
-		$str[] = '</div>';
-		$str[] = '</div>';
-
-		return implode("\n", $str);
+		return $layout->render($data);
 	}
 
 	/**
@@ -7576,7 +7555,7 @@ class PlgFabrik_Element extends FabrikPlugin
 	 *
 	 * @return JLayoutFile
 	 */
-	protected function getLayout($type)
+	public function getLayout($type)
 	{
 		$name = get_class($this);
 		$name = strtolower(JString::str_ireplace('PlgFabrik_Element', '', $name));

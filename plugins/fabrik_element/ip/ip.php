@@ -60,10 +60,10 @@ class PlgFabrik_ElementIp extends PlgFabrik_Element
 			}
 		}
 
-		$data = array();
-		$data['id'] = $id;
-		$data['name'] = $name;
-		$data['value'] = $ip;
+		$layoutData = new stdClass;
+		$layoutData->id = $id;
+		$layoutData->name = $name;
+		$layoutData->value = $ip;
 
 		if ($this->canView())
 		{
@@ -73,18 +73,18 @@ class PlgFabrik_ElementIp extends PlgFabrik_Element
 			}
 			else
 			{
-				$data['type'] = 'text';
+				$layoutData->type = 'text';
 			}
 		}
 		else
 		{
 			// Make a hidden field instead
-			$data['type'] = 'hidden';
+			$layoutData->type = 'hidden';
 		}
 
 		$layout = $this->getLayout('form');
 
-		return $layout->render($data);
+		return $layout->render($layoutData);
 	}
 
 	/**

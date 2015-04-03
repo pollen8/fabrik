@@ -41,65 +41,23 @@ class PlgFabrik_ElementTextarea extends PlgFabrik_Element
 		$app = JFactory::getApplication();
 		$name = $this->getFullName(true, false);
 		$params = $this->getParams();
-		$listModel = $this->getlistModel();
-		$filters = $listModel->getFilterArray();
-		$fkeys = FArrayHelper::getValue($filters, 'key', array());
-		$data = explode(",", strip_tags($data));
+		$data = explode(',', strip_tags($data));
 		$tags = array();
-		$bits = array();
 		$url = $params->get('textarea_tagifyurl');
+		$listId = $this->getListModel()->getId();
 
 		if ($url == '')
 		{
-			// $$$ hugh - don't think this is right, as if we're in details view, this will take us back there, instead of back to filtered list view
-			/*
-			$url = $_SERVER['REQUEST_URI'];
-			$bits = explode('?', $url);
-			$root = FArrayHelper::getValue($bits, 0, '', 'string');
-			$bits = FArrayHelper::getValue($bits, 1, '', 'string');
-			$bits = explode("&", $bits);
-			$fullName = $this->getFullName(true, false);
-
-			for ($b = count($bits) - 1; $b >= 0; $b --)
-			{
-				$parts = explode("=", $bits[$b]);
-
-				if (count($parts) > 1)
-				{
-					$key = FabrikString::ltrimword(FabrikString::safeColNameToArrayKey($parts[0]), '&');
-
-					if ($key == $fullName)
-					{
-						unset($bits[$b]);
-					}
-
-					if ($key == $fullName . '[value]')
-					{
-						unset($bits[$b]);
-					}
-
-					if ($key == $fullName . '[condition]')
-					{
-						unset($bits[$b]);
-					}
-				}
-			}
-			*/
 			if ($app->isAdmin())
 			{
-				$url = 'index.php?option=com_fabrik&amp;task=list.view&amp;listid=' . $this->getListModel()->getId();
+				$url = 'index.php?option=com_fabrik&amp;task=list.view&amp;listid=' . $listId;
 			}
 			else
 			{
 				$package = $app->getUserState('com_fabrik.package', 'fabrik');
-				$url = 'index.php?option=com_' . $package . '&view=list&listid=' . $this->getListModel()->getId();
+				$url = 'index.php?option=com_' . $package . '&view=list&listid=' . $listId;
 			}
 		}
-
-		/*
-		$root = FArrayHelper::getValue($bits, 0, '', 'string');
-		$url = $root . '?' . implode('&', $bits);
-		*/
 
 		// $$$ rob 24/02/2011 remove duplicates from tags
 		// $$$ hugh - strip spaces first, account for "foo,bar, baz, foo"
@@ -107,6 +65,8 @@ class PlgFabrik_ElementTextarea extends PlgFabrik_Element
 		$data = array_unique($data);
 		$img = FabrikWorker::j3() ? 'bookmark.png' : 'tag.png';
 		$icon = FabrikHelperHTML::image($img, 'form', @$this->tmpl, array('alt' => 'tag'));
+		$tmplData = new stdClass;
+		$tmplData->tags = array();
 
 		foreach ($data as $d)
 		{
@@ -116,8 +76,6 @@ class PlgFabrik_ElementTextarea extends PlgFabrik_Element
 			{
 				if (trim($params->get('textarea_tagifyurl')) == '')
 				{
-					$qs = strstr($url, '?');
-
 					if (substr($url, -1) === '?')
 					{
 						$thisurl = $url . $name . '[value]=' . $d;
@@ -135,11 +93,17 @@ class PlgFabrik_ElementTextarea extends PlgFabrik_Element
 					$thisurl = str_replace('{tag}', urlencode($d), $url);
 				}
 
-				$tags[] = '<a href="' . $thisurl . '" class="fabrikTag">' . $icon . $d . '</a>';
+				$o = new stdClass;
+				$o->url = $thisurl;
+				$o->icon = $icon;
+				$o->label = $d;
+				$tmplData->tags[] = $o;
 			}
 		}
 
-		return implode(' ', $tags);
+		$layout = $this->getLayout('tags');
+
+		return $layout->render($tmplData);
 	}
 
 	/**
@@ -293,8 +257,6 @@ class PlgFabrik_ElementTextarea extends PlgFabrik_Element
 
 	public function render($data, $repeatCounter = 0)
 	{
-		$app = JFactory::getApplication();
-		$input = $app->input;
 		$name = $this->getHTMLName($repeatCounter);
 		$id = $this->getHTMLId($repeatCounter);
 		$element = $this->getElement();
@@ -350,11 +312,15 @@ class PlgFabrik_ElementTextarea extends PlgFabrik_Element
 			$bits['class'] .= ' elementErrorHighlight';
 		}
 
+		$layoutData = new stdClass;
+		$this->charsLeft($value, $layoutData);
+
 		if ($wysiwyg)
 		{
 			$editor = JFactory::getEditor();
 			$buttons = (bool) $params->get('wysiwyg_extra_buttons', true);
-			$str = $editor->display($name, $value, $cols * 10, $rows * 15, $cols, $rows, $buttons, $id);
+			$layoutData->editor = $editor->display($name, $value, $cols * 10, $rows * 15, $cols, $rows, $buttons, $id);
+			$layout = $this->getLayout('wysiwyg');
 		}
 		else
 		{
@@ -373,26 +339,27 @@ class PlgFabrik_ElementTextarea extends PlgFabrik_Element
 			$bits['id'] = $id;
 			$bits['cols'] = $cols;
 			$bits['rows'] = $rows;
-			$bits['value'] = $value;
-			$str = $this->buildInput('textarea', $bits, false);
+			$layoutData['attributes'] = $bits;
+			$layoutData['value'] = $value;
+
+			$layout = $this->getLayout('form');
 		}
 
-		$str .= $this->charsLeft($value);
-
-		return $str;
+		return $layout->render($layoutData);
 	}
 
 	/**
 	 * Create the 'characters left' interface when the element is rendered in the form view
 	 *
 	 * @param   string  $value  Value
+	 * @param   array   &$data   Layout data
 	 *
-	 * @return  string  HTML
+	 * @return  array $data
 	 */
-	protected function charsLeft($value)
+	protected function charsLeft($value, &$data)
 	{
 		$params = $this->getParams();
-		$str = '';
+		$data['showCharsLeft'] = false;
 
 		if ($params->get('textarea-showmax'))
 		{
@@ -407,10 +374,12 @@ class PlgFabrik_ElementTextarea extends PlgFabrik_Element
 				$charsLeft = $params->get('textarea-maxlength') - count(explode(' ', $value));
 			}
 
-			$str .= '<div class="fabrik_characters_left muted" style="clear:both"><span class="badge">' . $charsLeft . '</span> ' . $label . '</div>';
+			$data['showCharsLeft'] = true;
+			$data['charsLeft'] = $charsLeft;
+			$data['charsLeftLabel'] = $label;
 		}
 
-		return $str;
+		return $data;
 	}
 
 	/**

@@ -41,7 +41,6 @@ class PlgFabrik_ElementNotes extends PlgFabrik_ElementDatabasejoin
 	public function elementJavascript($repeatCounter)
 	{
 		$id = $this->getHTMLId($repeatCounter);
-		$params = $this->getParams();
 		$opts = $this->getElementJSOptions($repeatCounter);
 		$opts->rowid = (int) $this->getFormModel()->getRowId();
 		$opts->id = $this->id;
@@ -61,79 +60,24 @@ class PlgFabrik_ElementNotes extends PlgFabrik_ElementDatabasejoin
 
 	public function render($data, $repeatCounter = 0)
 	{
-		$str = array();
 		$params = $this->getParams();
-		$j3 = FabrikWorker::j3();
-		$id = $this->getHTMLId($repeatCounter);
-		$name = $this->getHTMLName($repeatCounter);
 		$tmp = $this->_getOptions($data, $repeatCounter, true);
-		$rowid = $this->getFormModel()->getRowId();
-		
-		$str[] = '<div style="overflow:auto;height:150px;" class="well well-small row-striped">';
-
-		if ($j3)
-		{
-			$startRow = '<div class="row-fluid"><div class="span12">';
-			$endRow = '</div></div>';
-		}
-		else
-		{
-			$str[] = '<ul>';
-			$startRow = '<li class="oddRow%s">';
-			$endRow = '</li>';
-		}
-
-		$i = 0;
+		$layoutName = FabrikWorker::j3() ? 'form' : 'form-25';
+		$layout = $this->getLayout($layoutName);
+		$layoutData = new stdClass;
+		$layoutData->id = $this->getHTMLId($repeatCounter);
+		$layoutData->labels = array();
+		$layoutData->name = $this->getHTMLName($repeatCounter);;
+		$layoutData->fieldType = $params->get('fieldType', 'textarea');
+		$layoutData->editable = $this->isEditable();
+		$layoutData->rowid = $this->getFormModel()->getRowId();;
 
 		foreach ($tmp as $row)
 		{
-			$txt = $this->getDisplayLabel($row);
-			$str[] = sprintf($startRow, $i) . $txt . $endRow;
-			$i = 1 - $i;
+			$layoutData->labels[] = $this->getDisplayLabel($row);
 		}
 
-		if (!$j3)
-		{
-			$str[] = '</ul>';
-		}
-
-		$str[] = '</div>';
-		$str[] = '<div class="noteHandle" style="height:3px;"></div>';
-
-		// Jaanus - Submitting notes before saving form data results with the notes belonging to nowhere but new, not submitted forms.
-		if ($rowid > 0)
-		{
-			$class = 'fabrikinput inputbox text span12';
-
-			if ($params->get('fieldType', 'textarea') == 'field')
-			{
-				$str[] = '<input class="' . $class . '" name="' . $name . '"  />';
-			}
-			else
-			{
-				$str[] = '<textarea class="' . $class . '" name="' . $name . '" cols="50" rows="3" /></textarea>';
-			}
-
-			$str[] = '<input type="button" class="button btn" value="' . FText::_('PLG_ELEMENT_NOTES_ADD') . '"></input>';
-		}
-		else
-		{
-			$str[] = FText::_('PLG_ELEMENT_NOTES_SAVEFIRST');
-		}
-		
-		/*
-		 * If detail view, we'll get a div with the ID wrapped around us automagically, so don't want to dupe the ID.
-		* In form view, the ID element would usually be an input, but we don't actually submit anything with the form
-		* in the notes plugin, we just need something with the ID on it to keep the addElements() form init happy
-		*/
-		
-		if ($this->isEditable())
-		{
-			array_unshift($str, '<div id="' . $id . '">');
-			$str[] = '</div>';
-		}
-		
-		return implode("\n", $str);
+		return $layout->render($layoutData);
 	}
 
 	/**

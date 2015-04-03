@@ -72,7 +72,9 @@ class PlgFabrik_ElementYesno extends PlgFabrik_ElementRadiobutton
 
 		// Check if the data is in csv format, if so then the element is a multi drop down
 		$raw = $this->getFullName(true, false) . '_raw';
-		$displayData = array('value' => $thisRow->$raw, 'tmpl' => @$this->tmpl);
+		$displayData = new stdClass;
+		$displayData->value = $thisRow->$raw;
+		$displayData->tmpl = @$this->tmpl;
 		$basePath = JPATH_ROOT . '/plugins/fabrik_element/yesno/layouts';
 		$layout = new FabrikLayoutFile('fabrik_element_yesno_list', $basePath);
 		$layout->addIncludePaths(JPATH_THEMES . '/' . JFactory::getApplication()->getTemplate() . '/html/layouts');
@@ -216,7 +218,11 @@ class PlgFabrik_ElementYesno extends PlgFabrik_ElementRadiobutton
 
 	protected function getReadOnlyOutput($value, $label)
 	{
-		$displayData = array('value' => $value, 'tmpl' => @$this->tmpl);
+		$displayData = new stdClass;
+		$displayData->value = $value;
+		$displayData->tmpl = @$this->tmpl;
+		$app = JFactory::getApplication();
+		$displayData->format = $app->input->get('format', '');;
 		$basePath = JPATH_ROOT . '/plugins/fabrik_element/yesno/layouts';
 		$layout = new FabrikLayoutFile('fabrik_element_yesno_details', $basePath);
 		$layout->addIncludePaths(JPATH_THEMES . '/' . JFactory::getApplication()->getTemplate() . '/html/layouts');

@@ -155,18 +155,19 @@ class PlgFabrik_ElementTime extends PlgFabrik_Element
 			}
 
 			$layout = $this->getLayout('form');
-			$data['id'] = $id;
-			$data['name'] = $name;
-			$data['advancedClass'] = $this->getAdvancedSelectClass();
-			$data['errorCss'] = $this->elementError != '' ? " elementErrorHighlight" : '';;
-			$data['format'] = $fd;
-			$data['sep'] = $sep;
-			$data['hours'] = $hours;
-			$data['mins'] = $mins;
-			$data['secs'] = $secs;
-			$data['hourValue'] = $hourvalue;
-			$data['minValue'] = $minvalue;
-			$data['secValue'] = $secvalue;
+			$layoutData = new stdClass;
+			$layoutData->id = $id;
+			$layoutData->name = $name;
+			$layoutData->advancedClass = $this->getAdvancedSelectClass();
+			$layoutData->errorCss = $this->elementError != '' ? " elementErrorHighlight" : '';;
+			$layoutData->format = $fd;
+			$layoutData->sep = $sep;
+			$layoutData->hours = $hours;
+			$layoutData->mins = $mins;
+			$layoutData->secs = $secs;
+			$layoutData->hourValue = $hourvalue;
+			$layoutData->minValue = $minvalue;
+			$layoutData->secValue = $secvalue;
 
 			return $layout->render($data);
 		}

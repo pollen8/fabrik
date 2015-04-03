@@ -98,61 +98,22 @@ class VideoRender
 			}
 		}
 
-		$file = str_replace("\\", "/", COM_FABRIK_LIVESITE . $file);
+		$data = new stdClass;
+		$data->width = $w;
+		$data->height = $h;
+		$data->src = $src;
 
 		switch ($thisFileInfo['fileformat'])
 		{
 			case 'asf':
-				$this->output = '<object id="MediaPlayer" width=' . $w . ' height=' . $h
-				. ' classid="CLSID:22D6f312-B0F6-11D0-94AB-0080C74C7E95" standby="Loading Windows Media Player components"
-					type="application/x-oleobject" codebase="http://activex.microsoft.com/activex/controls/mplayer/en/nsmp2inf.cab#Version=6,4,7,1112">
-
-<param name="filename" value="http://yourdomain/yourmovie.wmv">
-<param name="Showcontrols" value="true">
-<param name="autoStart" value="false">
-
-<embed type="application/x-mplayer2" src="' . $src . '" name="MediaPlayer" width=' . $w . ' height=' . $h . '></embed>
-
-</object>';
+				$layout = $model->getLayout('video-asf');
 				break;
 			default:
-				/*
-				$this->output = "<object width=\"$w\" height=\"$h\"
-			classid=\"clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B\"
-			codebase=\"http://www.apple.com/qtactivex/qtplugin.cab\">
-			<param name=\"src\" value=\"$src\">
-			<param name=\"autoplay\" value=\"false\">
-			<param name=\"controller\" value=\"true\">
-			<embed src=\"$src\" width=\"$w\" height=\"$h\"
-			autoplay=\"false\" controller=\"true\"
-			pluginspage=\"http://www.apple.com/quicktime/download/\">
-			</embed>
-
-			</object>";
-				*/
-				$this->output = "
-					<video
-						width=\"$w\" height=\"$h\"
-						controls
-						src=\"$src\"
-					>
-						<object width=\"$w\" height=\"$h\"
-							classid=\"clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B\"
-							codebase=\"http://www.apple.com/qtactivex/qtplugin.cab\"
-						>
-							<param name=\"src\" value=\"$src\">
-							<param name=\"autoplay\" value=\"false\">
-							<param name=\"controller\" value=\"true\">
-							<embed src=\"$src\" width=\"$w\" height=\"$h\"
-								autoplay=\"false\" controller=\"true\"
-								pluginspage=\"http://www.apple.com/quicktime/download/\"
-							>
-							</embed>
-						</object
-					</video>
-				";
+				$layout = $model->getLayout('video');
 				break;
 		}
+
+		$this->output = $layout->render($data);
 	}
 
 	/**

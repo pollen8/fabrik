@@ -205,16 +205,17 @@ class PlgFabrik_ElementFblike extends PlgFabrik_Element
 			$href = '';
 		}
 
-		$layout = $params->get('fblike_layout', 'standard');
-		$showfaces = $params->get('fblike_showfaces', 0) == 1 ? 'true' : 'false';
-		$width = $params->get('fblike_width', 300);
-		$action = $params->get('fblike_action', 'like');
-		$font = $params->get('fblike_font', 'arial');
-		$colorscheme = $params->get('fblike_colorscheme', 'light');
-		$str = '<fb:like ' . $href . 'layout="' . $layout . '" show_faces="' . $showfaces . '" width="' . $width . '" action="' . $action
-			. '" font="' . $font . '" colorscheme="' . $colorscheme . '" />';
+		$data = new stdClass;
+		$data->href = $href;
+		$data->layout = $params->get('fblike_layout', 'standard');
+		$data->showfaces = $params->get('fblike_showfaces', 0) == 1 ? 'true' : 'false';
+		$data->width = $params->get('fblike_width', 300);
+		$data->action = $params->get('fblike_action', 'like');
+		$data->font = $params->get('fblike_font', 'arial');
+		$data->colorscheme = $params->get('fblike_colorscheme', 'light');
+		$jLayout = $this->getLayout('form');
 
-		return $str;
+		return $jLayout->render($data);
 	}
 
 	/**

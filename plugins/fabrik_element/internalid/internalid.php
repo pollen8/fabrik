@@ -39,8 +39,6 @@ class PlgFabrik_ElementInternalid extends PlgFabrik_Element
 
 	public function render($data, $repeatCounter = 0)
 	{
-		$name = $this->getHTMLName($repeatCounter);
-		$id = $this->getHTMLId($repeatCounter);
 		$element = $this->getElement();
 		$value = $this->getValue($data, $repeatCounter);
 		$value = stripslashes($value);
@@ -50,7 +48,14 @@ class PlgFabrik_ElementInternalid extends PlgFabrik_Element
 			return ($element->hidden == '1') ? "<!-- " . $value . " -->" : $value;
 		}
 
-		return $this->getHiddenField($name, $value, $id, 'fabrikinput inputbox hidden');
+		$layout = $this->getLayout('form');
+		$layoutData = new stdClass;
+		$layoutData->name = $this->getHTMLName($repeatCounter);;
+		$layoutData->id = $this->getHTMLId($repeatCounter);;
+		$layoutData->value = htmlspecialchars($value, ENT_COMPAT, 'UTF-8');
+		$layoutData->class = 'fabrikinput inputbox hidden';
+
+		return $layout->render($layoutData);
 	}
 
 	/**

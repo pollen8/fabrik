@@ -8,16 +8,16 @@ $d = $displayData;
 ?>
 
 <?php
-if ($d['link'] == 1) : ?>
-	<a href="<?php echo $d['value']; ?>" target="blank"><?php echo $d['label']; ?></a>
+if ($d->link == 1) : ?>
+	<a href="<?php echo $d->value; ?>" target="blank"><?php echo $d->label; ?></a>
 	<?php
-elseif  ($d['link'] == 2) :
+elseif  ($d->link == 2) :
 	?>
-	<a href="<?php echo $d['value']; ?>" rel="lightbox[social <?php echo $d['width']; ?> <?php $d['height']; ?>]"
-		title="<?php echo $d['title'] ?>"><?php echo $d['label']; ?></a>
+	<a href="<?php echo $d->value; ?>" rel="lightbox[social <?php echo $d->width; ?> <?php $d->height; ?>]"
+		title="<?php echo $d->title ?>"><?php echo $d->label; ?></a>
 	<?php
 else :
 	?>
-	<a href="<?php echo $d['value']; ?>"><?php echo $d['label']; ?></a>
+	<a href="<?php echo $d->value; ?>"><?php echo $d->label; ?></a>
 	<?php
 endif;
