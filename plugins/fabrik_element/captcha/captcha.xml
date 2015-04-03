@@ -20,5 +20,6 @@
 		<folder>forms</folder>
 		<folder>language</folder>
 		<folder>libs</folder>
+		<folder>layouts</folder>
 	</files>
 </extension>
