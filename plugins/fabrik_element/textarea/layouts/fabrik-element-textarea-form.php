@@ -7,11 +7,11 @@ $d = $displayData;
 
 ?>
 <textarea
-	<?php foreach ($d['attributes'] as $key => $value) :
+	<?php foreach ($d->attributes as $key => $value) :
 	echo $key . '="' . $value . '"';
 endforeach;
-	?>><?php echo $d['value'];?></textarea>
+	?>><?php echo $d->value;?></textarea>
 
-<?php if ($d['showCharsLeft']) : ?>
+<?php if ($d->showCharsLeft) : ?>
 	<?php echo $this->sublayout('charsleft', $d);?>
 <?php endif; ?>

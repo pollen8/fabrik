@@ -6,6 +6,6 @@ defined('JPATH_BASE') or die;
 $d = $displayData;
 ?>
 
-<div class="fabrik_characters_left muted" style="clear:both"><span class="badge"><?php echo $d['charsLeft'];?></span>
-<?php echo $d['charsLeftLabel'];?>
+<div class="fabrik_characters_left muted" style="clear:both"><span class="badge"><?php echo $d->charsLeft;?></span>
+<?php echo $d->charsLeftLabel;?>
 </div>

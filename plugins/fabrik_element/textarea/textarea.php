@@ -65,7 +65,8 @@ class PlgFabrik_ElementTextarea extends PlgFabrik_Element
 		$data = array_unique($data);
 		$img = FabrikWorker::j3() ? 'bookmark.png' : 'tag.png';
 		$icon = FabrikHelperHTML::image($img, 'form', @$this->tmpl, array('alt' => 'tag'));
-		$tmplData = array('tags' => array());
+		$tmplData = new stdClass;
+		$tmplData->tags = array();
 
 		foreach ($data as $d)
 		{
@@ -96,7 +97,7 @@ class PlgFabrik_ElementTextarea extends PlgFabrik_Element
 				$o->url = $thisurl;
 				$o->icon = $icon;
 				$o->label = $d;
-				$tmplData['tags'][] = $o;
+				$tmplData->tags[] = $o;
 			}
 		}
 
@@ -311,14 +312,14 @@ class PlgFabrik_ElementTextarea extends PlgFabrik_Element
 			$bits['class'] .= ' elementErrorHighlight';
 		}
 
-		$data = array();
-		$this->charsLeft($value, $data);
+		$layoutData = new stdClass;
+		$this->charsLeft($value, $layoutData);
 
 		if ($wysiwyg)
 		{
 			$editor = JFactory::getEditor();
 			$buttons = (bool) $params->get('wysiwyg_extra_buttons', true);
-			$data['editor'] = $editor->display($name, $value, $cols * 10, $rows * 15, $cols, $rows, $buttons, $id);
+			$layoutData->editor = $editor->display($name, $value, $cols * 10, $rows * 15, $cols, $rows, $buttons, $id);
 			$layout = $this->getLayout('wysiwyg');
 		}
 		else
@@ -338,13 +339,13 @@ class PlgFabrik_ElementTextarea extends PlgFabrik_Element
 			$bits['id'] = $id;
 			$bits['cols'] = $cols;
 			$bits['rows'] = $rows;
-			$data['attributes'] = $bits;
-			$data['value'] = $value;
+			$layoutData['attributes'] = $bits;
+			$layoutData['value'] = $value;
 
 			$layout = $this->getLayout('form');
 		}
 
-		return $layout->render($data);
+		return $layout->render($layoutData);
 	}
 
 	/**

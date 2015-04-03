@@ -6,8 +6,8 @@ defined('JPATH_BASE') or die;
 $d = $displayData;
 
 ?>
-<?php echo $d['editor'];?>
+<?php echo $d->editor;?>
 
-<?php if ($d['showCharsLeft']) : ?>
+<?php if ($d->showCharsLeft) : ?>
 	<?php echo $this->sublayout('charsleft', $d);?>
 <?php endif; ?>
