@@ -8,7 +8,6 @@
 var FbPicklist = new Class({
 	Extends : FbElement,
 	initialize : function (element, options) {
-		debugger;
 		this.plugin = 'fabrikpicklist';
 		this.parent(element, options);
 		if (this.options.allowadd === true) {
@@ -28,7 +27,6 @@ var FbPicklist = new Class({
 			to = c.getElement('.toList'),
 			dropcolour = from.getStyle('background-color'),
 			that = this;
-			debugger;
 			this.sortable = new Sortables([ from, to ], {
 				clone: true,
 				revert: true,
