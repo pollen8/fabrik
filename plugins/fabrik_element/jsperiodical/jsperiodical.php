@@ -70,27 +70,14 @@ class PlgFabrik_ElementJSPeriodical extends PlgFabrik_Element
 
 	public function render($data, $repeatCounter = 0)
 	{
-		$element = $this->getElement();
-		$value = $this->getValue($data, $repeatCounter);
-		$type = $element->hidden == '1' ? 'hidden' : 'text';
+		$layout = $this->getLayout('form');
+		$layoutData = new stdClass;
+		$layoutData->attributes = $this->inputProperties($repeatCounter);;
+		$layoutData->value = $this->getValue($data, $repeatCounter);;
+		$layoutData->isEditable = $this->isEditable();
+		$layoutData->hidden = $this->getElement()->hidden  == '1';
 
-		if (!$this->isEditable())
-		{
-			if ($element->hidden == '1')
-			{
-				return "<!--" . $value . "-->";
-			}
-			else
-			{
-				return $value;
-			}
-		}
-
-		$bits = $this->inputProperties($repeatCounter);
-		$bits['value'] = $value;
-		$str = $this->buildInput('input', $bits);
-
-		return $str;
+		return $layout->render($layoutData);
 	}
 
 	/**
