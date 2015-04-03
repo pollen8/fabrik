@@ -702,8 +702,8 @@ class PlgFabrik_ElementGooglemap extends PlgFabrik_Element
 		$data['src'] = Fabimage::cacheRemote($src, $folder, $file);
 		$data['id'] = $id;
 		$data['view'] = $tableView ? 'list' : 'details';
-		return $layout->render($data);
 
+		return $layout->render($data);
 	}
 
 	/**

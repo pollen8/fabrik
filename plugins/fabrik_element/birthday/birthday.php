@@ -272,24 +272,24 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 			$attribs = 'class="input-small fabrikinput inputbox ' . $advancedClass . ' ' . $errorCSS . '"';
 
 			$layout = $this->getLayout('form');
-			$data = array();
-			$data['id'] = $id;
-			$data['separator'] = $params->get('birthday_separatorlabel', FText::_('/'));
-			$data['attribs'] = $attribs;
-			$data['day_name'] = preg_replace('#(\[\])$#', '[0]', $name);
-			$data['day_id'] = $id . '_0';
-			$data['day_options'] = $days;
-			$data['day_value'] = $dayvalue;
+			$data = new stdClass;
+			$data->id = $id;
+			$data->separator = $params->get('birthday_separatorlabel', FText::_('/'));
+			$data->attribs = $attribs;
+			$data->day_name = preg_replace('#(\[\])$#', '[0]', $name);
+			$data->day_id = $id . '_0';
+			$data->day_options = $days;
+			$data->day_value = $dayvalue;
 
-			$data['month_name'] = preg_replace('#(\[\])$#', '[1]', $name);
-			$data['month_id'] = $id . '_1';
-			$data['month_options'] = $months;
-			$data['month_value'] = $monthvalue;
+			$data->month_name = preg_replace('#(\[\])$#', '[1]', $name);
+			$data->month_id = $id . '_1';
+			$data->month_options = $months;
+			$data->month_value = $monthvalue;
 
-			$data['year_name'] = preg_replace('#(\[\])$#', '[2]', $name);
-			$data['year_id'] = $id . '_2';
-			$data['year_options'] = $years;
-			$data['year_value'] = $yearvalue;
+			$data->year_name = preg_replace('#(\[\])$#', '[2]', $name);
+			$data->year_id = $id . '_2';
+			$data->year_options = $years;
+			$data->year_value = $yearvalue;
 
 
 			return $layout->render($data);

@@ -53,7 +53,7 @@ class PlgFabrik_ElementAttending extends PlgFabrik_Element
 	/**
 	 * Draws the html form element
 	 *
-	 * @param   array $data          to preopulate element with
+	 * @param   array $data          to pre-populate element with
 	 * @param   int   $repeatCounter repeat group counter
 	 *
 	 * @return  string    elements html
@@ -64,13 +64,20 @@ class PlgFabrik_ElementAttending extends PlgFabrik_Element
 		$id = $this->getHTMLId($repeatCounter);
 
 		$layout            = $this->getLayout('form');
-		$data              = array();
-		$data['attendees'] = $this->getAttendees();
-		$data['id']        = $id;
+		$data              = new stdClass;
+		$data->attendees = $this->getAttendees();
+		$data->id        = $id;
 
 		return $layout->render($data);
 	}
 
+	/**
+	 * Get attendees
+	 *
+	 * @return mixed
+	 *
+	 * @throws Exception
+	 */
 	protected function getAttendees()
 	{
 		$app       = JFactory::getApplication();

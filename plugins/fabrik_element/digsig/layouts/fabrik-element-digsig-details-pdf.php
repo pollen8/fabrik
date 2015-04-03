@@ -1,10 +1,6 @@
 <?php
-use \Joomla\Utilities\ArrayHelper;
-
-$d             = $displayData;
-$digsig_width  = ArrayHelper::getValue($d, 'digsig_width', 200);
-$digsig_height = ArrayHelper::getValue($d, 'digsig_height', 100);
-$link          = ArrayHelper::getValue($d, 'link');
+defined('JPATH_BASE') or die;
+$d = $displayData;
 ?>
 
-<img src="<?php echo $link; ?>" width="<?php echo $digsig_width; ?>" height="<?php echo $digsig_height; ?>" />
+<img src="<?php echo $d->link; ?>" width="<?php echo $d->digsig_width; ?>" height="<?php echo $d->digsig_height; ?>" />

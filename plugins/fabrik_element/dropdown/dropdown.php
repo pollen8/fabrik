@@ -149,13 +149,14 @@ class PlgFabrik_ElementDropdown extends PlgFabrik_ElementList
 		else
 		{
 			$layout = $this->getLayout('form');
-			$data['options'] = $opts;
-			$data['name'] = $name;
-			$data['selected'] = $selected;
-			$data['id'] = $id;
-			$data['errorCSS'] = $errorCSS;
-			$data['multiple'] = $multiple;
-			$data['multisize'] = $multiple ? $multisize : '';
+			$data = new stdClass;
+			$data->options = $opts;
+			$data->name = $name;
+			$data->selected = $selected;
+			$data->id = $id;
+			$data->errorCSS = $errorCSS;
+			$data->multiple = $multiple;
+			$data->multisize = $multiple ? $multisize : '';
 
 			$str = $layout->render($data);
 		}

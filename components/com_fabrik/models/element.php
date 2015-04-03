@@ -6000,15 +6000,15 @@ class PlgFabrik_Element extends FabrikPlugin
 		{
 			return;
 		}
-		$id = $this->getHTMLId($repeatCounter);
 
 		$layout = $this->getLayout('addoptions');
-		$data['id'] = $this->getHTMLId($repeatCounter);
-		$data['add-image'] = FabrikHelperHTML::image('plus.png', 'form', @$this->tmpl, array('alt' => FText::_('COM_FABRIK_ADD')));
-		$data['allowadd-onlylabel'] = $params->get('allowadd-onlylabel');
-		$data['savenewadditions'] = $params->get('savenewadditions');
-		$data['onlylabel'] = $onlylabel;
-		$data['hidden-field'] = $this->getHiddenField($id . '_additions', '', $id . '_additions');
+		$data = new stdClass;
+		$data->id = $this->getHTMLId($repeatCounter);
+		$data->add_image = FabrikHelperHTML::image('plus.png', 'form', @$this->tmpl, array('alt' => FText::_('COM_FABRIK_ADD')));
+		$data->allowadd_onlylabel = $params->get('allowadd-onlylabel');
+		$data->savenewadditions = $params->get('savenewadditions');
+		$data->onlylabel = $onlylabel;
+		$data->hidden_field = $this->getHiddenField($data->id . '_additions', '', $data->id . '_additions');
 
 		return $layout->render($data);
 	}

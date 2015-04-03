@@ -80,11 +80,11 @@ class PlgFabrik_ElementAccess extends PlgFabrik_Element
 		}
 
 		$layout = $this->getLayout('form');
-		$data = array();
-		$data['id'] = $id;
-		$data['name'] = $name;
-		$data['options'] = $this->getOpts();
-		$data['selected'] =  $arSelected[0];
+		$data = new stdClass;
+		$data->id = $id;
+		$data->name = $name;
+		$data->options = $this->getOpts();
+		$data->selected =  $arSelected[0];
 
 		return $layout->render($data);
 	}
@@ -150,8 +150,8 @@ class PlgFabrik_ElementAccess extends PlgFabrik_Element
 		}
 
 		$layout = $this->getLayout('list');
-		$data = array();
-		$data['text'] = $text;
+		$data = new stdClass;
+		$data->text = $text;
 
 		return $layout->render($data);
 	}
