@@ -492,8 +492,15 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 
 		$obs = array_unique($obs);
 
-		foreach ($obs as &$m)
+		foreach ($obs as $key => &$m)
 		{
+			
+			if (empty($m))
+			{
+				unset($obs[$key]);
+				continue;
+			}
+			
 			$m = str_replace(array('{', '}'), '', $m);
 
 			// $$$ hugh - we need to knock any _raw off, so JS can match actual element ID
