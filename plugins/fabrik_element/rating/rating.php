@@ -347,18 +347,18 @@ class PlgFabrik_ElementRating extends PlgFabrik_Element
 		$imgOpts = array('icon-class' => 'small', 'style' => $css, 'data-rating' => -1);
 
 		$layout = $this->getLayout('form');
-		$data = array();
-		$data['id'] = $id;
-		$data['name'] = $name;
-		$data['value'] = $value;
-		$data['clearImg'] = FabrikHelperHTML::image('remove.png', 'list', @$this->tmpl, $imgOpts);
-		$data['avg'] = $avg;
-		$data['canRate'] = $this->canRate();
-		$data['ratingNoneFirst'] = $params->get('rating-nonefirst');
-		$data['css'] = $css;
-		$data['tmpl'] = @$this->tmpl;
+		$layoutData = new stdClass;
+		$layoutData->id = $id;
+		$layoutData->name = $name;
+		$layoutData->value = $value;
+		$layoutData->clearImg = FabrikHelperHTML::image('remove.png', 'list', @$this->tmpl, $imgOpts);
+		$layoutData->avg = $avg;
+		$layoutData->canRate = $this->canRate();
+		$layoutData->ratingNoneFirst = $params->get('rating-nonefirst');
+		$layoutData->css = $css;
+		$layoutData->tmpl = @$this->tmpl;
 
-		return $layout->render($data);
+		return $layout->render($layoutData);
 	}
 
 	/**

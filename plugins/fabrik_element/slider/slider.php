@@ -71,18 +71,18 @@ class PlgFabrik_ElementSlider extends PlgFabrik_Element
 		FabrikHelperHTML::addPath(COM_FABRIK_BASE . 'plugins/fabrik_element/slider/images/', 'image', 'form', false);
 
 		$layout = $this->getLayout('form');
-		$data = array();
-		$data['id'] = $this->getHTMLId($repeatCounter);;
-		$data['name'] = $this->getHTMLName($repeatCounter);;
-		$data['value'] = $val;
-		$data['width'] = $width;
-		$data['j3'] = FabrikWorker::j3();
-		$data['showNone'] = $params->get('slider-shownone');
-		$data['outSrc'] = FabrikHelperHTML::image('clear_rating_out.png', 'form', $this->tmpl, array(), true);
-		$data['labels'] = $labels;
-		$data['spanWidth'] = floor(($width - (2 * count($labels))) / count($labels));
+		$layoutData = new stdClass;
+		$layoutData->id = $this->getHTMLId($repeatCounter);;
+		$layoutData->name = $this->getHTMLName($repeatCounter);;
+		$layoutData->value = $val;
+		$layoutData->width = $width;
+		$layoutData->j3 = FabrikWorker::j3();
+		$layoutData->showNone = $params->get('slider-shownone');
+		$layoutData->outSrc = FabrikHelperHTML::image('clear_rating_out.png', 'form', $this->tmpl, array(), true);
+		$layoutData->labels = $labels;
+		$layoutData->spanWidth = floor(($width - (2 * count($labels))) / count($labels));
 
-		$data['align'] = array();
+		$layoutData->align = array();
 
 		for ($i = 0; $i < count($labels); $i++)
 		{
@@ -100,10 +100,10 @@ class PlgFabrik_ElementSlider extends PlgFabrik_Element
 					break;
 			}
 
-			$data['align'][] = $align;
+			$layoutData->align[] = $align;
 		}
 
-		return $layout->render($data);
+		return $layout->render($layoutData);
 	}
 
 	/**
