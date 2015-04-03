@@ -86,14 +86,15 @@ class PlgFabrik_ElementTimer extends PlgFabrik_Element
 		}
 
 		$layout = $this->getLayout('form');
-		$data['id'] = $id;
-		$data['type'] = $element->hidden ? 'hidden' : 'text';
-		$data['name'] = $name;
-		$data['value'] = $value;
-		$data['size'] = $size;
-		$data['elementError'] = $this->elementError;
-		$data['icon'] = $params->get('icon', 'icon-clock');
-		$data['timerReadOnly'] = $params->get('timer_readonly');
+		$layoutData = new stdClass;
+		$layoutData->id = $id;
+		$layoutData->type = $element->hidden ? 'hidden' : 'text';
+		$layoutData->name = $name;
+		$layoutData->value = $value;
+		$layoutData->size = $size;
+		$layoutData->elementError = $this->elementError;
+		$layoutData->icon = $params->get('icon', 'icon-clock');
+		$layoutData->timerReadOnly = $params->get('timer_readonly');
 
 		return $layout->render($data);
 	}
