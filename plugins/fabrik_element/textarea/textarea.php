@@ -351,15 +351,15 @@ class PlgFabrik_ElementTextarea extends PlgFabrik_Element
 	/**
 	 * Create the 'characters left' interface when the element is rendered in the form view
 	 *
-	 * @param   string  $value  Value
-	 * @param   array   &$data   Layout data
+	 * @param   string    $value  Value
+	 * @param   stdClass  &$data  Layout data
 	 *
 	 * @return  array $data
 	 */
-	protected function charsLeft($value, &$data)
+	protected function charsLeft($value, stdClass &$data)
 	{
 		$params = $this->getParams();
-		$data['showCharsLeft'] = false;
+		$data->showCharsLeft = false;
 
 		if ($params->get('textarea-showmax'))
 		{
@@ -374,9 +374,9 @@ class PlgFabrik_ElementTextarea extends PlgFabrik_Element
 				$charsLeft = $params->get('textarea-maxlength') - count(explode(' ', $value));
 			}
 
-			$data['showCharsLeft'] = true;
-			$data['charsLeft'] = $charsLeft;
-			$data['charsLeftLabel'] = $label;
+			$data->showCharsLeft = true;
+			$data->charsLeft = $charsLeft;
+			$data->charsLeftLabel = $label;
 		}
 
 		return $data;
