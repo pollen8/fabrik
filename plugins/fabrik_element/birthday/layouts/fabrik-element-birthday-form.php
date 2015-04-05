@@ -4,7 +4,7 @@ defined('JPATH_BASE') or die;
 $d = $displayData;
 ?>
 
-<div class="fabrikSubElementContainer" id="<?php echo $d['id'];?>">
+<div class="fabrikSubElementContainer" id="<?php echo $d->id;?>">
 
 	<select name="<?php echo $d->day_name; ?>" id="<?php echo $d->day_id; ?>" <?php echo $d->attribs; ?>>
 		<?php foreach ($d->day_options as $opt) :
