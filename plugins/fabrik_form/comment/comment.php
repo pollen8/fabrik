@@ -572,7 +572,14 @@ class PlgFabrik_FormComment extends PlgFabrik_Form
 		$data[] = '<small><i class="icon-user"></i> ';
 		$data[] = $name . ', ' . FText::_('PLG_FORM_COMMENT_WROTE_ON') . ' </small>';
 		$data[] = '<i class="icon-calendar"></i> ';
-		$data[] = ' <small>' . JHTML::date($comment->time_date,$dateformat) . '</small>';
+
+		/*
+			@@@trob: Comment date-time is using MySQL timestamp which returns server time. 
+			So force JHTML::date not to add timezone.
+			Will still show wrong time if server time != Joomla time
+		*/
+
+		$data[] = ' <small>' . JHTML::date($comment->time_date,$dateformat,'UTC') . '</small>';
 
 		FabrikHelperHTML::addPath(COM_FABRIK_BASE . 'plugins/fabrik_form/comment/images/', 'image', 'form', false);
 		$insrc = FabrikHelperHTML::image("star_in.png", 'form', @$this->tmpl, array(), true);
