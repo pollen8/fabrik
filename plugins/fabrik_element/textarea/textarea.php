@@ -339,8 +339,8 @@ class PlgFabrik_ElementTextarea extends PlgFabrik_Element
 			$bits['id'] = $id;
 			$bits['cols'] = $cols;
 			$bits['rows'] = $rows;
-			$layoutData['attributes'] = $bits;
-			$layoutData['value'] = $value;
+			$layoutData->attributes = $bits;
+			$layoutData->value = $value;
 
 			$layout = $this->getLayout('form');
 		}

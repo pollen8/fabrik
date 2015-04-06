@@ -169,7 +169,7 @@ class PlgFabrik_ElementTime extends PlgFabrik_Element
 			$layoutData->minValue = $minvalue;
 			$layoutData->secValue = $secvalue;
 
-			return $layout->render($data);
+			return $layout->render($layoutData);
 		}
 	}
 
