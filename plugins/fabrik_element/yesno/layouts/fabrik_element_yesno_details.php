@@ -15,6 +15,8 @@ defined('_JEXEC') or die('Restricted access');
 $d = $displayData;
 $data = $d->value;
 $tmpl = $d->tmpl;
+$format = $d->format;
+
 $j3 = FabrikWorker::j3();
 
 $opts = array();
