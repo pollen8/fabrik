@@ -69,7 +69,15 @@
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>	
 			</field>
-			
+
+			<field name="window_offset_y"
+				type="text"
+				class="input-mini"
+				default=""
+				label="PLG_LIST_RADIUS_SEARCH_OFFSET_Y_LABEL"
+				description="PLG_LIST_RADIUS_SEARCH_OFFSET_Y_DESC"
+				repeat="true"
+				size="4" />			
 		</fieldset>
 		
 		<fieldset name="plg-list-radius_search-opts" label="PLG_LIST_RADIUS_SEARCH_OPTS">

@@ -92,7 +92,8 @@ var FbListRadiusSearch = new Class({
 		geocode_default_zoom: 4,
 		prefilter: true,
 		prefilterDistance: 1000,
-		prefilterDone: false
+		prefilterDone: false,
+		offset_y: 0
 	},
 
 	geocoder: null,
@@ -209,6 +210,7 @@ var FbListRadiusSearch = new Class({
 		var c = document.id(mapid).getParent('.radius_search');
 		var b = new Element('button.btn.button').set('html', '<i class="icon-location"></i> ' + Joomla.JText._('COM_FABRIK_SEARCH'));
 		c.getParent().adopt(b);
+		var offset_y = this.options.offset_y > 0 ? this.options.offset_y : null;
 		var winOpts = {
 				'id': 'win_' + mapid,
 				'title': Joomla.JText._('PLG_LIST_RADIUS_SEARCH'),
@@ -216,6 +218,7 @@ var FbListRadiusSearch = new Class({
 				'content': c,
 				'width': 500,
 				'height': 540,
+				'offset_y': offset_y,
 				'visible': false,
 				'destroy': false,
 				'onContentLoaded': function () {
