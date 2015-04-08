@@ -42,7 +42,6 @@ class PlgFabrik_ElementTextarea extends PlgFabrik_Element
 		$name = $this->getFullName(true, false);
 		$params = $this->getParams();
 		$data = explode(',', strip_tags($data));
-		$tags = array();
 		$url = $params->get('textarea_tagifyurl');
 		$listId = $this->getListModel()->getId();
 
@@ -193,9 +192,7 @@ class PlgFabrik_ElementTextarea extends PlgFabrik_Element
 
 	public function useEditor()
 	{
-		$params = $this->getParams();
 		$element = $this->getElement();
-		$app = JFactory::getApplication();
 
 		if ($this->useWysiwyg())
 		{
