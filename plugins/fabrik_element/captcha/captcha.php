@@ -221,6 +221,26 @@ class PlgFabrik_ElementCaptcha extends PlgFabrik_Element
 
 			return $ayah->getPublisherHTML();
 		}
+		elseif ($params->get('captcha-method') == 'nocaptcha')
+		{
+			/*
+			FabrikHelperHTML::addScriptDeclaration(
+				"var onloadCallback = function() {
+					grecaptcha.render('" . $id . "', {
+						'sitekey' : '" . $params->get('recaptcha_publickey') . "'
+					});
+				};"
+			);
+			*/
+			
+			$layout = $this->getLayout('nocaptcha');
+			$data = new stdClass;
+			$data->id = $id;
+			$data->name = $name;
+			$data->site_key = $params->get('recaptcha_publickey');			
+			
+			return $layout->render($data);			
+		}
 		else
 		{
 			if (!function_exists('imagettfbbox'))
@@ -320,6 +340,27 @@ class PlgFabrik_ElementCaptcha extends PlgFabrik_Element
 				$resp = recaptcha_check_answer($privatekey, $_SERVER["REMOTE_ADDR"], $challenge, $response);
 
 				return ($resp->is_valid) ? true : false;
+			}
+
+			return false;
+		}
+		elseif ($params->get('captcha-method') == 'nocaptcha')
+		{
+			if ($input->get('g-recaptcha-response'))
+			{
+				require_once JPATH_SITE . '/plugins/fabrik_element/captcha/libs/ReCaptcha/ReCaptcha.php';
+				require_once JPATH_SITE . '/plugins/fabrik_element/captcha/libs/ReCaptcha/RequestMethod.php';
+				require_once JPATH_SITE . '/plugins/fabrik_element/captcha/libs/ReCaptcha/RequestMethod/Post.php';
+				require_once JPATH_SITE . '/plugins/fabrik_element/captcha/libs/ReCaptcha/RequestParameters.php';
+				require_once JPATH_SITE . '/plugins/fabrik_element/captcha/libs/ReCaptcha/Response.php';
+				
+				$privatekey = $params->get('recaptcha_privatekey');
+				$nocaptcha = new \ReCaptcha\ReCaptcha($privatekey);
+				$response = $input->get('g-recaptcha-response');
+				$server = $input->server->get('REMOTE_ADDR');
+				$resp = $nocaptcha->verify($response, $server);
+
+				return $resp->isSuccess();
 			}
 
 			return false;
