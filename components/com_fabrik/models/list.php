@@ -11369,6 +11369,7 @@ class FabrikFEModelList extends JModelForm
 
 	public function getGroupByHeadings()
 	{
+		$formModel = $this->getFormModel();
 		$app = JFactory::getApplication();
 		$input = $app->input;
 		$base = JURI::getInstance();
@@ -11402,11 +11403,20 @@ class FabrikFEModelList extends JModelForm
 		{
 			if (!in_array($key, array('fabrik_select', 'fabrik_edit', 'fabrik_view', 'fabrik_delete', 'fabrik_actions')))
 			{
-				$thisurl = $url . 'group_by=' . $key;
-				$o = new stdClass;
-				$o->label = strip_tags($v);
-				$o->group_by = $key;
-				$a[$thisurl] = $o;
+				/**
+				 * $$$ hugh - other junk is showing up in $h, like 85___14-14-86_list_heading, or element
+				 * names ending in _form_heading.  May not be the most efficient method, but we need to
+				 * test if $key exists as an element, as well as the simple in_array() test above.
+				 */
+				
+				if ($formModel->hasElement($key, false, false))
+				{
+					$thisurl = $url . 'group_by=' . $key;
+					$o = new stdClass;
+					$o->label = strip_tags($v);
+					$o->group_by = $key;
+					$a[$thisurl] = $o;
+				}
 			}
 		}
 
