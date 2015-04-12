@@ -1987,7 +1987,25 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 
 		$folder = JPath::clean($folder);
 		$w = new FabrikWorker;
-		$folder = $w->parseMessageForPlaceHolder($folder);
+		
+		$groupModel = $this->getGroupModel();
+		$searchData = array();
+		if ($groupModel->canRepeat())
+		{
+			$elementModels = $groupModel->getPublishedElements();
+			$formModel = $this->getFormModel();
+			
+			foreach ($elementModels as $elementModel)
+			{
+				$tmpElName = $elementModel->getFullName(true, false);
+				if (array_key_exists($tmpElName, $formModel->formData) && is_array($formModel->formData[$tmpElName]) && array_key_exists($repeatCounter, $formModel->formData[$tmpElName]))
+				{
+					$searchData[$tmpElName] = $formModel->formData[$tmpElName][$repeatCounter];
+				}
+			}
+		}
+		
+		$folder = $w->parseMessageForPlaceHolder($folder, $searchData);
 
 		if ($storage->appendServerPath())
 		{

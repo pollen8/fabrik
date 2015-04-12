@@ -2418,6 +2418,8 @@ class PlgFabrik_Element extends FabrikPlugin
 				$repData[$k] = $val;
 			}
 
+			//$data['slug'] = str_replace(':', '-', $data['slug']);
+			//$data['slug'] = JApplication::stringURLSafe($data['slug']);
 			$customLink = $w->parseMessageForPlaceHolder($customLink, $data);
 			$customLink = $this->getListModel()->parseMessageForRowHolder($customLink, $data);
 

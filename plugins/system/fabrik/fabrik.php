@@ -369,6 +369,14 @@ class PlgSystemFabrik extends JPlugin
 			$table = $listModel->getTable();
 			$fabrikDb = $listModel->getDb();
 			$params = $listModel->getParams();
+			
+			/*
+			 * $$$ hugh - added 4/12/2015, if user doesn't have view list and view details, no searchee
+			 */
+			if (!$listModel->canView() || !$listModel->canViewDetails())
+			{
+				continue;
+			}
 
 			// Test for swap too boolean mode
 			$mode = $input->get('searchphrase', '') === 'all' ? 0 : 1;

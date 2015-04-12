@@ -655,7 +655,7 @@ class FabrikFEModelPluginmanager extends JModelLegacy
 
 								if (method_exists($plugin, $m))
 								{
-									$this->data[] = $plugin->$m($c);
+									$this->data[] = $mainData[] = $plugin->$m($c);
 								}
 							}
 
@@ -666,14 +666,14 @@ class FabrikFEModelPluginmanager extends JModelLegacy
 								$runningAway = true;
 							}
 
-							$mainData = $this->data;
+							//$mainData = $this->data;
 
 							if ($type == 'list' && $method !== 'observe')
 							{
 								$this->runPlugins('observe', $parentModel, 'list', $plugin, $method);
 							}
 
-							$this->data = $mainData;
+							//$this->data = $mainData;
 						}
 					}
 				}
@@ -682,6 +682,7 @@ class FabrikFEModelPluginmanager extends JModelLegacy
 			}
 		}
 
+		$this->data = $mainData;
 		$this->runPlugins = $runPlugins;
 
 		JDEBUG ? $profiler->mark("runPlugins: end: $method") : null;
