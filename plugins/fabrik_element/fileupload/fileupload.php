@@ -1991,9 +1991,13 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		/**
 		 * $$$ hugh - if the path uses placeholders, we need to work out if this element is in a repeat group,
 		 * and if it uses placeholders from within it's repeat instance, and if so, only use "this" repeat's
-		 * values, not the comma separated list of all repeat value we get from parseMessageForPlaceholder()
+		 * values, not the comma separated list of all repeat value we get from parseMessageForPlaceholder().
+		 * 
+		 * NOTE - @FIXME - no point trying to do this if no formData, which will be a problem for AJAX based deletions,
+		 * as this function gets called from onAjax_deleteFile(), but we already know using placeholders in AJAX-ified
+		 * uploads doesn't work anyway.  But might as well flag it with an 
 		 */
-		if (strstr($folder, '{'))
+		if (strstr($folder, '{') && isset($formModel->formData))
 		{
 			$groupModel = $this->getGroupModel();
 			if ($groupModel->canRepeat())
