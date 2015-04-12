@@ -1988,24 +1988,38 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		$folder = JPath::clean($folder);
 		$w = new FabrikWorker;
 		
-		$groupModel = $this->getGroupModel();
-		$searchData = array();
-		if ($groupModel->canRepeat())
+		/**
+		 * $$$ hugh - if the path uses placeholders, we need to work out if this element is in a repeat group,
+		 * and if it uses placeholders from within it's repeat instance, and if so, only use "this" repeat's
+		 * values, not the comma separated list of all repeat value we get from parseMessageForPlaceholder()
+		 */
+		if (strstr($folder, '{'))
 		{
-			$elementModels = $groupModel->getPublishedElements();
-			$formModel = $this->getFormModel();
-			
-			foreach ($elementModels as $elementModel)
+			$groupModel = $this->getGroupModel();
+			if ($groupModel->canRepeat())
 			{
-				$tmpElName = $elementModel->getFullName(true, false);
-				if (array_key_exists($tmpElName, $formModel->formData) && is_array($formModel->formData[$tmpElName]) && array_key_exists($repeatCounter, $formModel->formData[$tmpElName]))
+				$elementModels = $groupModel->getPublishedElements();
+				$formModel = $this->getFormModel();
+				
+				foreach ($elementModels as $elementModel)
 				{
-					$searchData[$tmpElName] = $formModel->formData[$tmpElName][$repeatCounter];
+					$repeatElName = $elementModel->getFullName(true, false);
+					foreach (array($repeatElName, repeatElName . '_raw') as $tmpElName)
+					{
+						if (strstr($folder, '{'.$tmpElName.'}'))
+						{
+							if (array_key_exists($tmpElName, $formModel->formData) && is_array($formModel->formData[$tmpElName]) && array_key_exists($repeatCounter, $formModel->formData[$tmpElName]))
+							{
+								$tmpVal = $formModel->formData[$tmpElName][$repeatCounter];
+								$folder = str_replace('{'.$tmpElname.'}', $tmpVal, $folder);
+							}
+						}
+					}
 				}
 			}
 		}
 		
-		$folder = $w->parseMessageForPlaceHolder($folder, $searchData);
+		$folder = $w->parseMessageForPlaceHolder($folder);
 
 		if ($storage->appendServerPath())
 		{
