@@ -7469,23 +7469,28 @@ class PlgFabrik_Element extends FabrikPlugin
 		{
 			$formData = $this->getFormModel()->formDataWithTableName;
 			$parentId = $formData[$k];
-			$query->delete($join->table_join)->where('parent_id = ' . $db->quote($parentId));
-			$db->setQuery($query);
-			$db->execute();
-		}
-
-		foreach ($idsToKeep as $parentId => $ids)
-		{
-			$query->clear();
-			$query->delete($join->table_join)->where('parent_id = ' . $parentId);
-
-			if (!empty($ids))
+			if (!empty($parentId))
 			{
-				$query->where('id NOT IN ( ' . implode($ids, ',') . ')');
+				$query->delete($join->table_join)->where('parent_id = ' . $db->quote($parentId));
+				$db->setQuery($query);
+				$db->execute();
 			}
-
-			$db->setQuery($query);
-			$db->execute();
+		}
+		else
+		{
+			foreach ($idsToKeep as $parentId => $ids)
+			{
+				$query->clear();
+				$query->delete($join->table_join)->where('parent_id = ' . $parentId);
+	
+				if (!empty($ids))
+				{
+					$query->where('id NOT IN ( ' . implode($ids, ',') . ')');
+				}
+	
+				$db->setQuery($query);
+				$db->execute();
+			}
 		}
 	}
 
