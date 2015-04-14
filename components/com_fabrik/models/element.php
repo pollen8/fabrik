@@ -2407,7 +2407,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		}
 
 		$params = $this->getParams();
-		$customLink = $params->get('custom_link');
+		$customLink = $params->get('custom_link', '');
 
 		if ($customLink !== '' && $this->getElement()->link_to_detail == '1' && $params->get('custom_link_indetails', true))
 		{
