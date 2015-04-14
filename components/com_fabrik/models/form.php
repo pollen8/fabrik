@@ -1534,9 +1534,9 @@ class FabrikFEModelForm extends FabModelForm
 		 * running after store, when non-joined data names have been reduced to short
 		 * names in formData, so peek in _fullFormData
 		 */
-		elseif (isset($this->_fullFormData) && array_key_exists($fullName, $this->_fullFormData))
+		elseif (isset($this->fullFormData) && array_key_exists($fullName, $this->fullFormData))
 		{
-			$value = $this->_fullFormData[$fullName];
+			$value = $this->fullFormData[$fullName];
 		}
 
 		if (isset($value) && isset($repeatCount) && is_array($value))
