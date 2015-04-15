@@ -446,14 +446,14 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 			else
 			{
 				$layout = $this->getLayout('form');
-				$data = new stdClass;
-				$data->id = $id;
-				$data->name = $name;
-				$data->height = $element->height;
-				$data->value = $value;
-				$data->cols = $element->width;
-				$data->rows = $element->height;
-				$str[] = $layout->render($data);
+				$layoutData = new stdClass;
+				$layoutData->id = $id;
+				$layoutData->name = $name;
+				$layoutData->height = $element->height;
+				$layoutData->value = $value;
+				$layoutData->cols = $element->width;
+				$layoutData->rows = $element->height;
+				$str[] = $layout->render($layoutData);
 			}
 		}
 		else
