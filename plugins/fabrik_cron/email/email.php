@@ -56,8 +56,9 @@ class PlgFabrik_Cronemail extends PlgFabrik_Cron
 		$to = explode(',', $params->get('to'));
 
 		$w = new FabrikWorker;
-		$MailFrom = $app->getCfg('mailfrom');
-		$FromName = $app->getCfg('fromname');
+		($params->get('cronemail_return', '') != '') ? $MailFrom = $params->get('cronemail_return') : $MailFrom = $app->getCfg('mailfrom');
+		($params->get('cronemail_from', '') != '') ? $FromName = $params->get('cronemail_from') : $FromName = $app->getCfg('fromname');
+		$sender = array($MailFrom,$FromName);
 		$subject = $params->get('subject', 'Fabrik cron job');
 		$eval = $params->get('cronemail-eval');
 		$condition = $params->get('cronemail_condition', '');
