@@ -126,7 +126,6 @@ class PlgFabrik_FormLimit extends PlgFabrik_Form
 			$query->where($db->quoteName($fk) . ' = ' . $db->quote($fkVal), 'AND');
 		}
 
-		$strq = (string) $query;
 		$db->setQuery($query);
 
 		return (int) $db->loadResult();

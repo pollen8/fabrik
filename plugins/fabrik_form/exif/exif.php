@@ -135,12 +135,10 @@ class PlgFabrik_FormExif extends PlgFabrik_Form
 	public function onBeforeStore()
 	{
 		// Initialize some variables
-		$db = FabrikWorker::getDbo();
 		$formModel = $this->getModel();
 		$data = $formModel->formData;
 		$params = $this->getParams();
 		$plugin = FabrikWorker::getPluginManager()->getElementPlugin($params->get('exif_map_field'));
-		$element = $plugin->getElement(true);
 		$this->map_field = $plugin->getFullName();
 		$plugin->setId($params->get('exif_upload_field'));
 		$element = $plugin->getElement(true);

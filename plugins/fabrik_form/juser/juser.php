@@ -349,9 +349,7 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 
 		// Initialize some variables
 		$me = JFactory::getUser();
-		$acl = JFactory::getACL();
 
-		$siteURL = JURI::base();
 		$bypassActivation = $params->get('juser_bypass_activation', false);
 		$bypassRegistration = $params->get('juser_bypass_registration', true);
 		$autoLogin = $params->get('juser_auto_login', false);
@@ -880,7 +878,6 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 
 		$session = JFactory::getSession();
 		$context = 'com_' . $package . '.form.' . $formModel->getId() . '.juser.';
-		$w = new FabrikWorker;
 
 		if ($app->login($credentials, $options) === true)
 		{
@@ -910,7 +907,6 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 		$params = $this->getParams();
 		$formModel = $this->getModel();
 		$app = JFactory::getApplication();
-		$input = $app->input;
 		$userElement = $formModel->getElement($params->get('juser_field_userid'), true);
 		$userElName = $userElement === false ? false : $userElement->getFullName();
 		$userId = (int) $post['id'];
