@@ -151,7 +151,6 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 
 		$data['tags'] = (array) $data['tags'];
 
-
 		$this->generateNewTitle($id, $catid, $data);
 
 		if (!$isNew)
@@ -320,7 +319,7 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 		if ($elementModel = $formModel->getElement($elementId, true))
 		{
 			$fullName = $elementModel->getFullName(true, false);
-			$value = $formModel->getElementData($fullName, false, $default, 0);
+			$value = $formModel->getElementData($fullName, true, $default, 0);
 
 			if (is_array($value) && count($value) === 1)
 			{
