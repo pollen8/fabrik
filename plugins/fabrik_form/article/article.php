@@ -40,6 +40,9 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 		$params = $this->getParams();
 		$this->data = $this->getProcessData();
 
+		// We need this for $formModel->getElementData() to work
+		$formModel->formData = $this->data;
+
 		if (!$this->shouldProcess('article_conditon', null))
 		{
 			return;
@@ -156,7 +159,6 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 			$readmore = 'index.php?option=com_content&view=article&id=' . $id;
 			$data['articletext'] = str_replace('{readmore}', $readmore, $data['articletext']);
 		}
-
 
 		$item = JTable::getInstance('Content');
 		$item->load($id);
@@ -552,7 +554,7 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 		if ($elementModel = $formModel->getElement($params->get('meta_store'), true))
 		{
 			$fullName = $elementModel->getFullName(true, false);
-			$metaStore = $formModel->getElementData($fullName);
+			$metaStore = $formModel->getElementData($fullName, false, $this->data[$fullName]);
 			$metaStore = json_decode($metaStore);
 		}
 		else
