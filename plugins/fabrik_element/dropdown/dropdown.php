@@ -60,6 +60,7 @@ class PlgFabrik_ElementDropdown extends PlgFabrik_ElementList
 		$multiple = $params->get('multiple', 0);
 		$multisize = $params->get('dropdown_multisize', 3);
 		$selected = (array) $this->getValue($data, $repeatCounter);
+
 		$errorCSS = $this->elementError != '' ? " elementErrorHighlight" : '';
 		$boostrapClass = $params->get('bootstrap_class', '');
 		$advancedClass = $this->getAdvancedSelectClass();
@@ -152,6 +153,12 @@ class PlgFabrik_ElementDropdown extends PlgFabrik_ElementList
 			$data = new stdClass;
 			$data->options = $opts;
 			$data->name = $name;
+
+			foreach ($selected as &$sel)
+			{
+				$sel = htmlspecialchars($sel, ENT_QUOTES);
+			}
+
 			$data->selected = $selected;
 			$data->id = $id;
 			$data->errorCSS = $errorCSS;

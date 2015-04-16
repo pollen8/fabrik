@@ -240,7 +240,6 @@ class FabrikHelperHTML
 	public static function windows($selector = '', $params = array())
 	{
 		$app = JFactory::getApplication();
-		$document = JFactory::getDocument();
 		$input = $app->input;
 		$script = '';
 
@@ -429,10 +428,6 @@ if (!$j3)
 
 	public static function printIcon($formModel, $params, $rowid = '')
 	{
-		$app = JFactory::getApplication();
-		$config = JFactory::getConfig();
-		$form = $formModel->getForm();
-		$table = $formModel->getTable();
 		$status = "status=no,toolbar=no,scrollbars=yes,titlebar=no,menubar=no,resizable=yes,width=400,height=350,directories=no,location=no";
 		$link = self::printURL($formModel);
 
@@ -940,7 +935,6 @@ if (!$j3)
 		if (!self::$framework)
 		{
 			$app = JFactory::getApplication();
-			$document = JFactory::getDocument();
 			$version = new JVersion;
 			$jsAssetBaseURI = self::getJSAssetBaseURI();
 			$fbConfig = JComponentHelper::getParams('com_fabrik');
@@ -975,8 +969,7 @@ if (!$j3)
 
 			if (!self::inAjaxLoadedPage())
 			{
-				// Now adding in fabrik system plugin onAfterRender()
-				// $document->addScript($jsAssetBaseURI . 'media/com_fabrik/js/lib/require/require.js');
+				// Require.js now added in fabrik system plugin onAfterRender()
 				JText::script('COM_FABRIK_LOADING');
 				$src[] = 'media/com_fabrik/js/fabrik' . $ext;
 				$src[] = 'media/com_fabrik/js/window' . $ext;
@@ -2726,7 +2719,6 @@ if (!$j3)
 		// Include MooTools More framework
 		static::framework('more');
 
-		$document = JFactory::getDocument();
 		$debug = JFactory::getConfig()->get('debug');
 		$version = new JVersion;
 
@@ -2745,7 +2737,6 @@ if (!$j3)
 			$js[] = "  window.punycode = p;";
 			$js[] = "});";
 
-			//$document->addScriptDeclaration(implode("\n", $js));
 			self::addToSessionHeadScripts(implode("\n", $js));
 		}
 
