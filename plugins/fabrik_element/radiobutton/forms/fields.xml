@@ -8,6 +8,7 @@
 
 			<field name="sub_options"
 				type="suboptions"
+				default_max="1"
 				label="COM_FABRIK_SUBOPTIONS"/>
 
 			<field name="options_per_row"

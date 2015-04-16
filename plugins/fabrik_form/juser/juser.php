@@ -329,8 +329,9 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 		 * we need to alter the form model to tell it not to store the main row
 		 * but to still store any joined rows
 		 */
-		$ftable = str_replace('#__', $app->getCfg('dbprefix'), $formModel->getlistModel()->getTable()->db_table_name);
-		$jos_users = $app->getCfg('dbprefix') . 'users';
+		$prefix = $config->get('dbprefix');
+		$ftable = str_replace('#__', $prefix, $formModel->getlistModel()->getTable()->db_table_name);
+		$jos_users = $prefix . 'users';
 
 		if ($ftable == $jos_users)
 		{
@@ -346,6 +347,7 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 		}
 
 		$usersConfig = JComponentHelper::getParams('com_users');
+		$userActivation = $usersConfig->get('useractivation');
 
 		// Initialize some variables
 		$me = JFactory::getUser();
@@ -358,7 +360,6 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 
 		// Check for request forgeries
 		JSession::checkToken() or jexit('Invalid Token');
-		$option = $input->get('option');
 		$original_id = 0;
 
 		if ($params->get('juser_field_userid') != '')
@@ -401,7 +402,6 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 
 		// Create a new JUser object
 		$user = new JUser($original_id);
-		$originalGroups = $user->getAuthorisedGroups();
 
 		// Are we dealing with a new user which we need to create?
 		$isNew = ($user->get('id') < 1);
@@ -452,15 +452,10 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 			$data['block'] = 0;
 		}
 
-		// $$$tom get password field to use in $origdata object if editing user and not changing password
-		$origdata = $formModel->_origData;
-		$pwfield = $this->passwordfield;
-
 		$data['username'] = $this->usernamevalue;
 		$data['password'] = $this->passwordvalue;
 		$data['password2'] = $this->passwordvalue;
 		$data['name'] = $this->namevalue;
-		$name = $this->namevalue;
 		$data['email'] = $this->emailvalue;
 
 		$ok = $this->check($data);
@@ -470,47 +465,16 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 			// @TODO - add some error reporting
 			return false;
 		}
-		// Set the registration timestamp
 
 		if ($isNew)
 		{
+			// Set the registration timestamp
 			$now = JFactory::getDate();
 			$user->set('registerDate', $now->toSql());
+			$this->setActivation($data);
 		}
 
-		if ($isNew)
-		{
-			// If user activation is turned on, we need to set the activation information
-			$useractivation = $usersConfig->get('useractivation');
-
-			if (($useractivation == '1' || $useractivation == '2') && !$bypassActivation)
-			{
-				jimport('joomla.user.helper');
-				$data['activation'] = JApplication::getHash(JUserHelper::genRandomPassword());
-				$data['block'] = 1;
-			}
-			// If Auto login is activated, we need to set activation and block to 0
-			if ($autoLogin)
-			{
-				$data['activation'] = 0;
-				$data['block'] = 0;
-			}
-		}
-
-		// Check that username is not greater than 150 characters
-		$username = $data['username'];
-
-		if (strlen($username) > 150)
-		{
-			$username = JString::substr($username, 0, 150);
-			$user->set('username', $username);
-		}
-
-		// Check that password is not greater than 100 characters @FIXME - 55 for j3.2
-		if (strlen($data['password']) > 100)
-		{
-			$data['password'] = JString::substr($data['password'], 0, 100);
-		}
+		$this->trimNamePassword($user, $data);
 
 		// End new
 		if (!$user->bind($data))
@@ -521,9 +485,7 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 			return false;
 		}
 
-		/*
-		 * Lets save the JUser object
-		 */
+		// Lets save the JUser object
 		if (!$user->save())
 		{
 			$app->enqueueMessage(FText::_('CANNOT SAVE THE USER INFORMATION'), 'message');
@@ -559,7 +521,7 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 				$base = $uri->toString(array('scheme', 'user', 'pass', 'host', 'port'));
 
 				// Handle account activation/confirmation emails.
-				if ($useractivation == 2 && !$bypassActivation && !$autoLogin)
+				if ($userActivation == 2 && !$bypassActivation && !$autoLogin)
 				{
 					// Set the link to confirm the user email.
 					$data['activate'] = $base . JRoute::_('index.php?option=com_users&task=registration.activate&token=' . $data['activation'], false);
@@ -571,7 +533,7 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 						$data['username'], $data['password_clear']
 					);
 				}
-				elseif ($useractivation == 1 && !$bypassActivation && !$autoLogin)
+				elseif ($userActivation == 1 && !$bypassActivation && !$autoLogin)
 				{
 					// Set the link to activate the user account.
 					$data['activate'] = $base . JRoute::_('index.php?option=com_users&task=registration.activate&token=' . $data['activation'], false);
@@ -602,7 +564,7 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 				if ($emailSubject !== '')
 				{
 					$return = $mail->sendMail($data['mailfrom'], $data['fromname'], $data['email'], $emailSubject, $emailBody);
-					$db = JFactory::getDbo();
+
 					/*
 					 * Added email to admin code, but haven't had a chance to test it yet.
 					 */
@@ -611,37 +573,11 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 					// Check for an error.
 					if ($return !== true)
 					{
-						$this->setError(FText::_('COM_USERS_REGISTRATION_SEND_MAIL_FAILED'));
-
-						// Send a system message to administrators receiving system mails
-						$query = $db->getQuery(true);
-						$query->select('id')->from('#__users')->where('block = 0 AND sendEmail = 1');
-						$db->setQuery($query);
-						$sendEmail = $db->loadColumn();
-
-						if (count($sendEmail) > 0)
-						{
-							$jdate = new JDate;
-
-							// Build the query to add the messages
-							$q = "INSERT INTO `#__messages` (`user_id_from`, `user_id_to`, `date_time`, `subject`, `message`)
-										VALUES ";
-							$messages = array();
-
-							foreach ($sendEmail as $userid)
-							{
-								$messages[] = "(" . $userid . ", " . $userid . ", '" . $jdate->toSql() . "', "
-									. $db->quote(FText::_('COM_USERS_MAIL_SEND_FAILURE_SUBJECT')) . ", "
-									. $db->quote(JText::sprintf('COM_USERS_MAIL_SEND_FAILURE_BODY', $return, $data['username'])) . ")";
-							}
-
-							$q .= implode(',', $messages);
-							$db->setQuery($q);
-							$db->execute();
-						}
+						$this->reportFailedMail($data);
 					}
 				}
 			}
+			exit;
 		}
 
 		// If updating self, load the new user object into the session
@@ -676,6 +612,109 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 		}
 
 		return true;
+	}
+
+	/**
+	 * If an error has occurred when sending an email, add an internal message
+	 * to admins who have their send mail option turned on.
+	 *
+	 * @param   array  $data  User data
+	 *
+	 * @return  void
+	 */
+	protected function reportFailedMail($data)
+	{
+		$db = JFactory::getDbo();
+		$this->setError(FText::_('COM_USERS_REGISTRATION_SEND_MAIL_FAILED'));
+
+		// Send a system message to administrators receiving system mails
+		$query = $db->getQuery(true);
+		$query->select('id')->from('#__users')->where('block = 0 AND sendEmail = 1');
+		$db->setQuery($query);
+		$sendEmail = $db->loadColumn();
+
+		if (count($sendEmail) > 0)
+		{
+			$now = new JDate;
+
+			// Build the query to add the messages
+			$q = "INSERT INTO `#__messages` (`user_id_from`, `user_id_to`, `date_time`, `subject`, `message`)
+										VALUES ";
+			$messages = array();
+
+			foreach ($sendEmail as $userid)
+			{
+				$messages[] = "(" . $userid . ", " . $userid . ", '" . $now->toSql() . "', "
+					. $db->quote(FText::_('COM_USERS_MAIL_SEND_FAILURE_SUBJECT')) . ", "
+					. $db->quote(JText::sprintf('COM_USERS_MAIL_SEND_FAILURE_BODY', false, $data['username'])) . ")";
+			}
+
+			$q .= implode(',', $messages);
+			$db->setQuery($q);
+			$db->execute();
+		}
+	}
+
+	/**
+	 * Check that username is not greater than 150 characters
+	 *
+	 * @param   JUser  $user
+	 * @param   array  &$data
+	 *
+	 * @return array $data
+	 */
+	protected function trimNamePassword($user, &$data)
+	{
+		// Check that username is not greater than 150 characters
+		$username = $data['username'];
+
+		if (strlen($username) > 150)
+		{
+			$username = JString::substr($username, 0, 150);
+			$user->set('username', $username);
+		}
+
+		// Check that password is not greater than 100 characters @FIXME - 55 for j3.2
+		if (strlen($data['password']) > 100)
+		{
+			$data['password'] = JString::substr($data['password'], 0, 100);
+		}
+
+		return $data;
+	}
+
+	/**
+	 * Set any activation code / block user info
+	 *
+	 * @param   array  &$data
+	 *
+	 * @return  array  $data
+	 */
+	protected function setActivation(&$data)
+	{
+		$usersConfig = JComponentHelper::getParams('com_users');
+		$params = $this->getParams();
+		$bypassActivation = $params->get('juser_bypass_activation', false);
+		$autoLogin = $params->get('juser_auto_login', false);
+
+		// If user activation is turned on, we need to set the activation information
+		$userActivation = $usersConfig->get('useractivation');
+
+		if (($userActivation == '1' || $userActivation == '2') && !$bypassActivation)
+		{
+			jimport('joomla.user.helper');
+			$data['activation'] = JApplication::getHash(JUserHelper::genRandomPassword());
+			$data['block'] = 1;
+		}
+
+		// If Auto login is activated, we need to set activation and block to 0
+		if ($autoLogin)
+		{
+			$data['activation'] = 0;
+			$data['block'] = 0;
+		}
+
+		return $data;
 	}
 
 	/**
