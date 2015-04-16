@@ -839,12 +839,10 @@ class FabrikFEModelList extends JModelForm
 
 		$profiler = JProfiler::getInstance('Application');
 		$pluginManager = FabrikWorker::getPluginManager();
-		$fbConfig = JComponentHelper::getParams('com_fabrik');
 		$pluginManager->runPlugins('onPreLoadData', $this, 'list');
 
 		// Needs to be off for FOUND_ROWS() to work
 		ini_set('mysql.trace_mode', 'off');
-		$fabrikDb = $this->getDb();
 		JDEBUG ? $profiler->mark('query build start') : null;
 
 		// Ajax call needs to recall this - not sure why
@@ -857,6 +855,7 @@ class FabrikFEModelList extends JModelForm
 		}
 		catch (Exception $e)
 		{
+			$item = $this->getTable();
 			$msg = 'Fabrik has generated an incorrect query for the list ' . $item->label . ': <br /><br /><pre>' . $e->getMessage() . '</pre>';
 			throw new RuntimeException($msg, 500);
 		}

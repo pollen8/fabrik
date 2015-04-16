@@ -1012,7 +1012,8 @@ var FbForm = new Class({
 				if (confirm(Joomla.JText._('COM_FABRIK_CONFIRM_DELETE_1'))) {
 					var res = Fabrik.fireEvent('fabrik.form.delete', [this, this.options.rowid]).eventResults;
 					if (typeOf(res) === 'null' || res.length === 0 || !res.contains(false)) {
-						this.form.getElement('input[name=task]').value = this.options.admin ? 'form.delete' : 'delete';
+						// Task value is the same for front and admin
+						this.form.getElement('input[name=task]').value = 'form.delete';
 						this.doSubmit(e, del);
 					} else {
 						e.stop();
