@@ -65,6 +65,8 @@ var FbForm = new Class({
 		this.events = {};
 
 		this.submitBroker = new FbFormSubmit();
+
+		Fabrik.fireEvent('fabrik.form.loaded', [this]);
 	},
 
 	_setMozBoxWidths: function () {
