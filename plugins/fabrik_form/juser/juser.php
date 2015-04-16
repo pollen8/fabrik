@@ -258,6 +258,48 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 	}
 
 	/**
+	 * Run when a list is emptied/truncated
+	 * Delete's all JUsers found in the list, except Admins
+	 *
+	 * @throws Exception
+	 *
+	 * @return bool
+	 */
+	public function onBeforeTruncate()
+	{
+		$params = $this->getParams();
+
+		if ($params->get('juser_field_userid') != '' && $params->get('juser_delete_user', false))
+		{
+			$app = JFactory::getApplication();
+			$formModel = $this->getModel();
+			$listModel = $formModel->getListModel();
+			$db = $listModel->getDb();
+			$query = $db->getQuery(true);
+			$userIdField = FabrikString::safeColName($this->getFieldName('juser_field_userid'));
+			$query->select($userIdField)->from($listModel->getTable()->db_table_name);
+			$userIds = $db->setQuery($query)->loadColumn();
+
+			foreach ($userIds as $userId)
+			{
+				$user = new JUser((int) $userId);
+
+				$isRoot = $user->authorise('core.admin');
+
+				if (!$isRoot)
+				{
+					if (!$user->delete())
+					{
+						$app->enqueueMessage('Unable to delete user id ' . $userId, 'error');
+					}
+				}
+			}
+		}
+
+		return true;
+	}
+
+	/**
 	 * Run from list model when deleting rows
 	 *
 	 * @param   array  &$groups  List data for deletion
@@ -268,6 +310,7 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 	public function onDeleteRowsForm(&$groups)
 	{
 		$params = $this->getParams();
+		$app = JFactory::getApplication();
 
 		if ($params->get('juser_field_userid') != '' && $params->get('juser_delete_user', false))
 		{
@@ -289,7 +332,7 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 								// Bail out now and return false, or just carry on?
 								if (!$user->delete())
 								{
-									JError::raiseWarning(500, 'Unable to delete user id ' . $row->$useridfield);
+									$app->enqueueMessage('Unable to delete user id ' . $row->$useridfield, 'error');
 								}
 							}
 						}

@@ -8681,7 +8681,6 @@ class FabrikFEModelList extends JModelForm
 		$app = JFactory::getApplication();
 		$table = $this->getTable();
 		$db = $this->getDb();
-		$params = $this->getParams();
 
 		if ($key == '')
 		{
@@ -8765,7 +8764,7 @@ class FabrikFEModelList extends JModelForm
 				$v = $db->quote($v);
 			}
 
-			$val = implode(",", $val);
+			$val = implode(',', $val);
 		}
 
 		$this->rowsToDelete = $rows;
@@ -8925,6 +8924,12 @@ class FabrikFEModelList extends JModelForm
 	{
 		$db = $this->getDb();
 		$item = $this->getTable();
+
+		$pluginManager = FabrikWorker::getPluginManager();
+
+		$formModel = $this->getFormModel();
+		$pluginManager->runPlugins('onBeforeTruncate', $this, 'list');
+		$pluginManager->runPlugins('onBeforeTruncate', $formModel, 'form');
 
 		// Remove any groups that were set to be repeating and hence were storing in their own db table.
 		$joinModels = $this->getInternalRepeatJoins();

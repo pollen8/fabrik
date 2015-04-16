@@ -54,7 +54,6 @@ var Suboptions = new Class({
 			if (this.options.defaultMax === 1) {
 				this.element.getElements('input.sub_initial_selection').each( function (el) {
 					if (el !== e.target) {
-						console.log(el);
 						el.checked = false;
 					}
 				});
