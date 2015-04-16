@@ -35,15 +35,18 @@ $d = $displayData;
 		if ($d->notify) :
 			?>
 			<tr>
+				<td colspan="2"><?php echo FText::_('PLG_FORM_COMMENT_NOTIFY_ME'); ?></td>
+			</tr>
+			<tr>
 				<td>
-					<?php echo FText::_('PLG_FORM_COMMENT_NOTIFY_ME'); ?>
-					<label><input type="radio" name="comment-plugin-notify[]" checked="checked" class="inputbox" value="1">
+
+					<label><input type="radio" name="notify[]" checked="checked" class="inputbox" value="0">
 						<?php echo FText::_('JNO'); ?>
 					</label>
 				</td>
 				<td>
 					<label>
-						<input type="radio" name="comment-plugin-notify[]" class="inputbox" value="0">
+						<input type="radio" name="notify[]" class="inputbox" value="1">
 						<?php echo FText::_('JYES'); ?>
 					</label>
 				</td>
@@ -103,7 +106,7 @@ $d = $displayData;
 					<?php echo FText::_('PLG_FORM_COMMENT_POST_COMMENT'); ?>
 				</button>
 				<input type="hidden" name="reply_to" value="<?php echo $d->replyTo; ?>" />
-				<input type="hidden" name="renderOrder" value="' . $d->renderOrder . '" />
+				<input type="hidden" name="renderOrder" value="<?php echo $d->renderOrder; ?>" />
 			</td>
 		</tr>
 	</table>

@@ -10,7 +10,8 @@ module.exports = function(grunt) {
 
 			all: {
 				files: grunt.file.expandMapping(['./plugins/fabrik_*/*/*.js',  "!./plugins/fabrik_*/**/*-min.js",
-				'./media/com_fabrik/js/*.js', '!./media/com_fabrik/js/*-min.js', '!/media/com_fabrik/js/**'], './plugins/fabrik_*/*/*.js', {
+				'./media/com_fabrik/js/*.js', '!./media/com_fabrik/js/*-min.js', '!/media/com_fabrik/js/**',
+				'./administrator/components/com_fabrik/models/fields/*.js', '!./administrator/components/com_fabrik/models/fields/*-min.js'], './plugins/fabrik_*/*/*.js', {
 					rename: function(destBase, destPath) {
 						console.log('making ' + destPath.replace('.js', '-min.js'));
 						return destPath.replace('.js', '-min.js');

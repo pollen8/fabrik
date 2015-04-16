@@ -193,9 +193,11 @@ var FabrikComment = new Class({
 			this.ajax.addComment.options.data.name = namestr;
 		}
 
-		var comment_plugin_notify = replyform.getElements('input[name^=comment-plugin-notify]').filter(function (i) {
+		var notify = replyform.getElements('input[name^=notify]').filter(function (i) {
 			return i.checked;
 		});
+
+		this.ajax.addComment.options.data.notify = notify[0].get('value');
 
 		var email = replyform.getElement('input[name=email]');
 		if (email) {
