@@ -13,5 +13,6 @@ CREATE TABLE IF NOT EXISTS `#__fabrik_comments` (
 	`row_id` INT( 6 ) NOT NULL,
 	`rating` CHAR(2) NOT NULL,
 	`annonymous` TINYINT(1) NOT NULL,
+	`notify` TINYINT(1) NOT NULL,
 	`diggs` INT( 6 ) NOT NULL
 );

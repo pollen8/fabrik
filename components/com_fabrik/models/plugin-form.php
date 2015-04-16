@@ -471,12 +471,11 @@ class PlgFabrik_Form extends FabrikPlugin
 	 *
 	 * @return  array  admin user objects
 	 */
-
 	protected function getAdminInfo()
 	{
-		$db = JFactory::getDBO(true);
-		$query = $db->getQuery();
-		$query->select(' id, name, email, sendEmail')->from('#__users')->where('WHERE sendEmail = "1"');
+		$db = JFactory::getDbo(true);
+		$query = $db->getQuery(true);
+		$query->select(' id, name, email, sendEmail')->from('#__users')->where('sendEmail = 1');
 		$db->setQuery($query);
 		$rows = $db->loadObjectList();
 
