@@ -50,6 +50,7 @@ class PlgFabrik_FormPaginate extends PlgFabrik_Form
 
 		if (!$this->show())
 		{
+			$this->data = '';
 			return;
 		}
 
