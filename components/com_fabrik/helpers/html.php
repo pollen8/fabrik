@@ -2233,15 +2233,15 @@ if (!$j3)
 				$grid[] = '</div><!-- grid close row -->';
 			}
 
-			if ($newLine && $columns > 1)
+			if ($newLine)
 			{
 				$grid[] = '<div class="row-fluid">';
 			}
 
-			$grid[] = $columns != 1 ? '<div class="' . $spanClass . ' span' . $span . '">' . $s . '</div>' : $s;
+			$grid[] = '<div class="' . $spanClass . ' span' . $span . '">' . $s . '</div>' ;
 		}
 
-		if ($i + 1 % $columns !== 0 && $columns > 1)
+		if ($i + 1 % $columns !== 0)
 		{
 			// Close opened and unfinished row.
 			$grid[] = '</div><!-- grid close end row -->';
