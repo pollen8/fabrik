@@ -2825,14 +2825,18 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 
 		if (empty($rowid))
 		{
-			$app->enqueueMessage(FText::_('PLG_ELEMENT_FILEUPLOAD_DOWNLOAD_NO_SUCH_FILE'));
+			$errmsg = FText::_('PLG_ELEMENT_FILEUPLOAD_DOWNLOAD_NO_SUCH_FILE');
+			$errmsg .= FabrikHelperHTML::isDebug() ? ' (empty rowid)' : '';
+			$app->enqueueMessage($errmsg);
 			$app->redirect($url);
 			exit;
 		}
 
 		if (empty($row))
 		{
-			$app->enqueueMessage(FText::_('PLG_ELEMENT_FILEUPLOAD_DOWNLOAD_NO_SUCH_FILE'));
+			$errmsg = FText::_('PLG_ELEMENT_FILEUPLOAD_DOWNLOAD_NO_SUCH_FILE');
+			$errmsg .= FabrikHelperHTML::isDebug() ? " (no such row)" : '';
+			$app->enqueueMessage($errmsg);
 			$app->redirect($url);
 			exit;
 		}
@@ -2870,7 +2874,9 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 
 			if ($thisFileInfo === false)
 			{
-				$app->enqueueMessage(FText::_('DOWNLOAD NO SUCH FILE'));
+				$errmsg = FText::_('PLG_ELEMENT_FILEUPLOAD_DOWNLOAD_NO_SUCH_FILE');
+				$errmsg .= FabrikHelperHTML::isDebug(true) ? ' (path: ' . $filepath . ')' : '';
+				$app->enqueueMessage($errmsg);
 				$app->redirect($url);
 				exit;
 			}
