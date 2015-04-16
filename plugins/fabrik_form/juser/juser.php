@@ -620,7 +620,6 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 					}
 				}
 			}
-			exit;
 		}
 
 		// If updating self, load the new user object into the session
