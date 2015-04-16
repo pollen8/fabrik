@@ -982,7 +982,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		}
 
 		// Perhaps an ajax upload? In any event $file empty was giving errors with upload element in multipage form.
-		if (!array_key_exists('name', $file))
+		if (!array_key_exists('name', $file) || empty($file['name']))
 		{
 			return true;
 		}
@@ -1997,13 +1997,15 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		 * as this function gets called from onAjax_deleteFile(), but we already know using placeholders in AJAX-ified
 		 * uploads doesn't work anyway.  But might as well flag it with an 
 		 */
+		
+		$formModel = $this->getFormModel();
 		if (strstr($folder, '{') && isset($formModel->formData))
 		{
 			$groupModel = $this->getGroupModel();
 			if ($groupModel->canRepeat())
 			{
 				$elementModels = $groupModel->getPublishedElements();
-				$formModel = $this->getFormModel();
+				
 				
 				foreach ($elementModels as $elementModel)
 				{
