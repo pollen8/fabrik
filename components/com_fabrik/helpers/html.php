@@ -966,7 +966,6 @@ if (!$j3)
 				JHtml::_('formbehavior.chosen', 'select.advancedSelect');
 			}
 
-				
 			if (self::inAjaxLoadedPage() && !$bootstrapped)
 			{
 				// $$$ rob 06/02/2012 recall ant so that Color.detach is available (needed for opening a window from within a window)

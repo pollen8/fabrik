@@ -5926,8 +5926,8 @@ class PlgFabrik_Element extends FabrikPlugin
 		}
 
 		$layout = $this->getLayout('list');
-		$data = array();
-		$data['text'] = $r;
+		$data = new stdClass;
+		$data->text = $r;
 		$res = $layout->render($data);
 
 		// If no custom list layout found revert to the default list renderer
@@ -7539,17 +7539,15 @@ class PlgFabrik_Element extends FabrikPlugin
 	{
 		$fbConfig = JComponentHelper::getParams('com_fabrik');
 		$params = $this->getParams();
-		
 		$advancedClass = '';
+		$globalAdvanced = (int) $fbConfig->get('advanced_behavior', '0');
 
-		if ($fbConfig->get('advanced_behavior', '0') == '1')
+		if ($globalAdvanced !== 0)
 		{
-
 			if (!$this->getGroup()->canRepeat())
 			{
-				$advancedClass = $params->get('advanced_behavior', '0') == '1'  ? 'advancedSelect' : '';
+				$advancedClass = $params->get('advanced_behavior', '0') == '1' || $globalAdvanced === 2  ? 'advancedSelect' : '';
 			}
-			
 		}
 		
 		return $advancedClass;
