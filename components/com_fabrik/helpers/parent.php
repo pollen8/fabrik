@@ -621,6 +621,56 @@ class FabrikWorker
 	}
 
 	/**
+	 * Prepare repeat data for running through parseMessageForPlaceholder.  When something is doing
+	 * replacements for elements which are in the "same" repeat group, almost always they will want
+	 * the value for the same repeat instance, not a comma seperated list of all the values.  So (say)
+	 * the upload element is creating a file path, for an upload element in a repeat group, of ...
+	 * '/uploads/{repeat_table___userid}/', and there are 4 repeat instance, it doesn't want a path of ...
+	 * '/uploads/34,45,94,103/', it just wants the one value from the same repeat count as the upload
+	 * element.
+	 * 
+	 * Rather than make this a part of parseMessageForPlaceHolder, for now I'm making it a prepare funciton,
+	 * which will modify the data array, to turn a repeat array into a single value, for all elements in the
+	 * group.
+	 * 
+	 * @param  array    $searchData      Data to search for placeholders
+	 * @param  object   $elementMpdel    Element model of the element which is doing the replacing
+	 * @param  int      $repeatCounter   Repeat instance
+	 * 
+	 * @return  array   modified data array
+	 */
+	
+	public function prepareRepeatForReplace($searchData, $elementModel, $repeatCounter)
+	{
+		if (strstr($folder, '{') && isset($formModel->formData))
+		{
+			$groupModel = $this->getGroupModel();
+			if ($groupModel->canRepeat())
+			{
+				$elementModels = $groupModel->getPublishedElements();
+				$formModel = $this->getFormModel();
+		
+				foreach ($elementModels as $elementModel)
+				{
+					$repeatElName = $elementModel->getFullName(true, false);
+					foreach (array($repeatElName, repeatElName . '_raw') as $tmpElName)
+					{
+						if (strstr($folder, '{'.$tmpElName.'}'))
+						{
+							if (array_key_exists($tmpElName, $formModel->formData) && is_array($formModel->formData[$tmpElName]) && array_key_exists($repeatCounter, $formModel->formData[$tmpElName]))
+							{
+								$tmpVal = $formModel->formData[$tmpElName][$repeatCounter];
+								$folder = str_replace('{'.$tmpElname.'}', $tmpVal, $folder);
+							}
+						}
+					}
+				}
+			}
+		}
+				
+	}
+	
+	/**
 	 * Iterates through string to replace every
 	 * {placeholder} with posted data
 	 *
