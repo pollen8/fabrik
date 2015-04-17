@@ -2173,13 +2173,15 @@ class PlgFabrik_Element extends FabrikPlugin
 		$element->element_ro = $this->getROElement($model->data, $c);
 		$element->value = $this->getValue($model->data, $c);
 
-		if (array_key_exists($elHTMLName . '_raw', $model->data))
+		$elName = $this->getFullName(true, false);
+		
+		if (array_key_exists($elName . '_raw', $model->data))
 		{
-			$element->element_raw = $model->data[$elHTMLName . '_raw'];
+			$element->element_raw = $model->data[$elName . '_raw'];
 		}
 		else
 		{
-			$element->element_raw = array_key_exists($elHTMLName, $model->data) ? $model->data[$elHTMLName] : $element->value;
+			$element->element_raw = array_key_exists($elName, $model->data) ? $model->data[$elName] : $element->value;
 		}
 
 		if ($this->dataConsideredEmpty($element->element_ro, $c))
