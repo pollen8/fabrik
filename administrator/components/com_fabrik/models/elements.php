@@ -171,7 +171,7 @@ class FabrikAdminModelElements extends FabModelList
 		}
 
 		//$sql = (string)$query;
-		
+
 		return $query;
 	}
 

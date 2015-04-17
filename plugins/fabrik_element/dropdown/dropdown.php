@@ -163,6 +163,7 @@ class PlgFabrik_ElementDropdown extends PlgFabrik_ElementList
 			$data->id = $id;
 			$data->errorCSS = $errorCSS;
 			$data->multiple = $multiple;
+			$data->attribs = $attribs;
 			$data->multisize = $multiple ? $multisize : '';
 
 			$str = $layout->render($data);

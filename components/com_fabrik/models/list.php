@@ -839,12 +839,10 @@ class FabrikFEModelList extends JModelForm
 
 		$profiler = JProfiler::getInstance('Application');
 		$pluginManager = FabrikWorker::getPluginManager();
-		$fbConfig = JComponentHelper::getParams('com_fabrik');
 		$pluginManager->runPlugins('onPreLoadData', $this, 'list');
 
 		// Needs to be off for FOUND_ROWS() to work
 		ini_set('mysql.trace_mode', 'off');
-		$fabrikDb = $this->getDb();
 		JDEBUG ? $profiler->mark('query build start') : null;
 
 		// Ajax call needs to recall this - not sure why
@@ -857,6 +855,7 @@ class FabrikFEModelList extends JModelForm
 		}
 		catch (Exception $e)
 		{
+			$item = $this->getTable();
 			$msg = 'Fabrik has generated an incorrect query for the list ' . $item->label . ': <br /><br /><pre>' . $e->getMessage() . '</pre>';
 			throw new RuntimeException($msg, 500);
 		}
@@ -1567,8 +1566,10 @@ class FabrikFEModelList extends JModelForm
 		$tpl = $this->getTmpl();
 		$align = $params->get('checkboxLocation', 'end') == 'end' ? 'right' : 'left';
 		$displayData = array('align' => $align);
-		$basePath = COM_FABRIK_FRONTEND . '/views/list/tmpl/' . $tpl . '/layouts/';
-		$layout = new JLayoutFile('listactions.' . $buttonAction, $basePath, array('debug' => false, 'component' => 'com_fabrik', 'client' => 'site'));
+		$basePath = COM_FABRIK_FRONTEND . '/components/com_fabrik/layouts';
+		$layout = new FabrikLayoutFile('listactions.' . $buttonAction, $basePath, array('debug' => false, 'component' => 'com_fabrik', 'client' => 'site'));
+		$layout->addIncludePaths(JPATH_THEMES . '/' . JFactory::getApplication()->getTemplate() . '/html/layouts');
+		$layout->addIncludePaths(COM_FABRIK_FRONTEND . '/views/list/tmpl/' . $tpl . '/layouts/');
 
 		foreach ($data as $groupKey => $group)
 		{
@@ -8681,7 +8682,6 @@ class FabrikFEModelList extends JModelForm
 		$app = JFactory::getApplication();
 		$table = $this->getTable();
 		$db = $this->getDb();
-		$params = $this->getParams();
 
 		if ($key == '')
 		{
@@ -8765,7 +8765,7 @@ class FabrikFEModelList extends JModelForm
 				$v = $db->quote($v);
 			}
 
-			$val = implode(",", $val);
+			$val = implode(',', $val);
 		}
 
 		$this->rowsToDelete = $rows;
@@ -8925,6 +8925,12 @@ class FabrikFEModelList extends JModelForm
 	{
 		$db = $this->getDb();
 		$item = $this->getTable();
+
+		$pluginManager = FabrikWorker::getPluginManager();
+
+		$formModel = $this->getFormModel();
+		$pluginManager->runPlugins('onBeforeTruncate', $this, 'list');
+		$pluginManager->runPlugins('onBeforeTruncate', $formModel, 'form');
 
 		// Remove any groups that were set to be repeating and hence were storing in their own db table.
 		$joinModels = $this->getInternalRepeatJoins();

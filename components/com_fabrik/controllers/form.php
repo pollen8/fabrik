@@ -593,15 +593,13 @@ class FabrikControllerForm extends JControllerLegacy
 			}
 
 			$ref = str_replace("limitstart$listid=$limitstart", "limitstart$listid=$newlimitstart", $ref);
-			$app = JFactory::getApplication();
 			$context = 'com_' . $package . '.list.' . $model->getRenderContext() . '.';
 			$app->setUserState($context . 'limitstart', $newlimitstart);
 		}
 
 		if ($input->get('format') == 'raw')
 		{
-			$input->set('view', 'list');
-			$this->display();
+			$app->redirect('index.php?option=com_fabrik&view=list&listid=' . $listid . '&format=raw');
 		}
 		else
 		{

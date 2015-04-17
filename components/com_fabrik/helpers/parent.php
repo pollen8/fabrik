@@ -2039,4 +2039,32 @@ class FabrikWorker
 		$app = JFactory::getApplication();
 		return $app->input->get('task') == 'form.process' || ($app->isAdmin() && $app->input->get('task') == 'process');
 	}
+
+	/**
+	 * Remove messages from JApplicationCMS
+	 *
+	 * @param   JApplicationCMS  $app   Application to kill messages from
+	 * @param   string           $type  Message type e.g. 'warning', 'error'
+	 *
+	 * @return  array  Remaining messages.
+	 */
+	public static function killMessage(JApplicationCMS $app, $type)
+	{
+		$appReflection = new ReflectionClass(get_class($app));
+		$_messageQueue = $appReflection->getProperty('_messageQueue');
+		$_messageQueue->setAccessible(true);
+		$messages = $_messageQueue->getValue($app);
+
+		foreach ($messages as $key => $message)
+		{
+			if ($message['type'] == $type)
+			{
+				unset($messages[$key]);
+			}
+		}
+
+		$_messageQueue->setValue($app, $messages);
+
+		return $messages;
+	}
 }

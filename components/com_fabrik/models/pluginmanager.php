@@ -545,8 +545,8 @@ class FabrikFEModelPluginmanager extends JModelLegacy
 		if ($type == 'form')
 		{
 			/**
-			 * $$$ rob allow for table plugins to hook into form plugin calls - methods are mapped as:
-			 * form method = 'onLoad' => table method => 'onFormLoad'
+			 * $$$ rob allow for list plugins to hook into form plugin calls - methods are mapped as:
+			 * form method = 'onLoad' => list method => 'onFormLoad'
 			 */
 			$tmethod = 'onForm' . FabrikString::ltrimword($method, 'on');
 			$listModel = $parentModel->getListModel();

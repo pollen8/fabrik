@@ -1853,8 +1853,6 @@ class FabrikFEModelForm extends FabModelForm
 		JDEBUG ? $profiler->mark('processToDb: start') : null;
 
 		$pluginManager = FabrikWorker::getPluginManager();
-		$app = JFactory::getApplication();
-		$input = $app->input;
 		$listModel = $this->getListModel();
 		$item = $listModel->getTable();
 		$origid = $this->prepareForCopy();
