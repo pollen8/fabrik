@@ -17,7 +17,7 @@ defined('_JEXEC') or die('Restricted access');
 		$style = empty($this->cellClass[$heading]['style']) ? '' : 'style="'.$this->cellClass[$heading]['style'].'"';
 		?>
 		<td class="<?php echo $this->cellClass[$heading]['class']?>" <?php echo $style?>>
-			<?php echo @$this->_row->data->$heading;?>
+			<?php echo isset($this->_row->data) ? $this->_row->data->$heading : '';?>
 		</td>
 	<?php }?>
 </tr>
