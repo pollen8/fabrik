@@ -177,6 +177,14 @@ class PlgFabrik_ElementPassword extends PlgFabrik_Element
 		$checkvalue    = urldecode($this->getValue($_REQUEST, $repeatCounter));
 		$element->name = $origname;
 
+		if ($this->getParams()->get('password_j_validate', false))
+		{
+			if (!$this->validateJRule('password', $value, JPATH_LIBRARIES . '/cms/form/rule'))
+			{
+				return false;
+			}
+		}
+
 		if ($checkvalue != $value)
 		{
 			$this->validationError = FText::_('PLG_ELEMENT_PASSWORD_PASSWORD_CONFIRMATION_DOES_NOT_MATCH');

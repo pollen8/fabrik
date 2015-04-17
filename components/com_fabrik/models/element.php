@@ -7572,4 +7572,47 @@ class PlgFabrik_Element extends FabrikPlugin
 
 		return $layout;
 	}
+
+	/**
+	 * Validate teh element against a Joomla form Rule
+	 *
+	 * @param   string  $type   Rule type e.g. 'password'
+	 * @param   mixed   $value  Value to validate
+	 * @param   mixed   $path   Optional path to load teh rule from
+	 *
+	 * @throws Exception
+	 *
+	 * @return bool
+	 */
+	protected function validateJRule($type, $value, $path = null)
+	{
+		if (!is_null($path))
+		{
+			JFormHelper::addRulePath($path);
+		}
+
+		$app = JFactory::getApplication();
+		$rule = JFormHelper::loadRuleType($type, true);
+		$xml  = new SimpleXMLElement('<xml></xml>');
+		$lang = JFactory::getLanguage();
+		$lang->load('com_users');
+
+		if (!$rule->test($xml, $value))
+		{
+			$this->validationError = '';
+
+			foreach ($app->getMessageQueue() as $i => $msg)
+			{
+				if ($msg['type'] === 'warning')
+				{
+					$this->validationError .= $msg['message'] . '<br />';
+				}
+			}
+			FabrikWorker::killMessage($app, 'warning');
+
+			return false;
+		}
+
+		return true;
+	}
 }
