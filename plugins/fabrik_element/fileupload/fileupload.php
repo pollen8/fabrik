@@ -1988,43 +1988,8 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		$folder = JPath::clean($folder);
 		$w = new FabrikWorker;
 		
-		/**
-		 * $$$ hugh - if the path uses placeholders, we need to work out if this element is in a repeat group,
-		 * and if it uses placeholders from within it's repeat instance, and if so, only use "this" repeat's
-		 * values, not the comma separated list of all repeat value we get from parseMessageForPlaceholder().
-		 * 
-		 * NOTE - @FIXME - no point trying to do this if no formData, which will be a problem for AJAX based deletions,
-		 * as this function gets called from onAjax_deleteFile(), but we already know using placeholders in AJAX-ified
-		 * uploads doesn't work anyway.  But might as well flag it with an 
-		 */
-		
 		$formModel = $this->getFormModel();
-		if (strstr($folder, '{') && isset($formModel->formData))
-		{
-			$groupModel = $this->getGroupModel();
-			if ($groupModel->canRepeat())
-			{
-				$elementModels = $groupModel->getPublishedElements();
-				
-				
-				foreach ($elementModels as $elementModel)
-				{
-					$repeatElName = $elementModel->getFullName(true, false);
-					foreach (array($repeatElName, repeatElName . '_raw') as $tmpElName)
-					{
-						if (strstr($folder, '{'.$tmpElName.'}'))
-						{
-							if (array_key_exists($tmpElName, $formModel->formData) && is_array($formModel->formData[$tmpElName]) && array_key_exists($repeatCounter, $formModel->formData[$tmpElName]))
-							{
-								$tmpVal = $formModel->formData[$tmpElName][$repeatCounter];
-								$folder = str_replace('{'.$tmpElname.'}', $tmpVal, $folder);
-							}
-						}
-					}
-				}
-			}
-		}
-		
+		$folder = $w->parseMessageForRepeats($folder, $formModel->formData, $this, $repeatCounter);
 		$folder = $w->parseMessageForPlaceHolder($folder);
 
 		if ($storage->appendServerPath())
