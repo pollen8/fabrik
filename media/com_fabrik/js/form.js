@@ -538,7 +538,7 @@ var FbForm = new Class({
 
 	changePage: function (dir) {
 		this.changePageDir = dir;
-		Fabrik.fireEvent('fabrik.form.page.change', [this]);
+		Fabrik.fireEvent('fabrik.form.page.change', [this, dir]);
 		if (this.result === false) {
 			this.result = true;
 			return;
@@ -555,8 +555,8 @@ var FbForm = new Class({
 		document.id('page_' + this.currentPage).setStyle('display', '');
 		this._setMozBoxWidths();
 		this.hideOtherPages();
-		Fabrik.fireEvent('fabrik.form.page.chage.end', [this]);
-		Fabrik.fireEvent('fabrik.form.page.change.end', [this]);
+		Fabrik.fireEvent('fabrik.form.page.chage.end', [this, dir]);
+		Fabrik.fireEvent('fabrik.form.page.change.end', [this, dir]);
 		if (this.result === false) {
 			this.result = true;
 			return;

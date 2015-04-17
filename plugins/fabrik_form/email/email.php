@@ -69,7 +69,6 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 		$db = JFactory::getDbo();
 		$w = new FabrikWorker;
 		$formModel = $this->getModel();
-		$formParams = $formModel->getParams();
 		$emailTemplate = JPath::clean(JPATH_SITE . '/plugins/fabrik_form/email/tmpl/' . $params->get('email_template', ''));
 
 		$this->data = $this->getProcessData();
