@@ -2829,7 +2829,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		$elName = $this->getFullName(true, false);
 		$filepath = $row->$elName;
 		$filepath = FabrikWorker::JSONtoData($filepath, false);
-		$filepath = is_object($filepath) ? FArrayHelper::fromObject($filepath) : $filepath;
+		$filepath = is_object($filepath) ? FArrayHelper::fromObject($filepath) : (array)$filepath;
 		$foo = $filepath[$repeatcount];
 		$filepath = FArrayHelper::getValue($filepath, $repeatcount);
 		$filepath = $storage->getFullPath($filepath);
