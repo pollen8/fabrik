@@ -2413,13 +2413,23 @@ class PlgFabrik_Element extends FabrikPlugin
 		{
 			$w = new FabrikWorker;
 
-			foreach ($data as $k => $val)
+			/**
+			 * $$$ hugh - this should really happen elsewhere, but I needed a quick fix for handling
+			 * {slug} in detail view links, which for some reason are not 'stringURLSafe' at this point,
+			 * so they are like "4:A Page Title" instead of 4-a-page-title.
+			 */
+			if (strstr($customLink, '{slug}'))
 			{
-				$repData[$k] = $val;
+				$slug = str_replace(':', '-', $data['slug']);
+				$slug = JApplication::stringURLSafe($slug);
+				$customLink = str_replace('{slug}', $slug, $customLink);
 			}
-
-			//$data['slug'] = str_replace(':', '-', $data['slug']);
-			//$data['slug'] = JApplication::stringURLSafe($data['slug']);
+			
+			/**
+			 * Testing new parseMessageForRepeats(), see comments on the function itself.
+			 */
+			$customLink = $w->parseMessageForRepeats($customLink, $data, $this, $repeatCounter);
+			
 			$customLink = $w->parseMessageForPlaceHolder($customLink, $data);
 			$customLink = $this->getListModel()->parseMessageForRowHolder($customLink, $data);
 

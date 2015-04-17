@@ -621,53 +621,54 @@ class FabrikWorker
 	}
 
 	/**
-	 * Prepare repeat data for running through parseMessageForPlaceholder.  When something is doing
+	 * Special case placeholder handling for repeat data. When something (usually an element plugin) is doing
 	 * replacements for elements which are in the "same" repeat group, almost always they will want
 	 * the value for the same repeat instance, not a comma seperated list of all the values.  So (say)
 	 * the upload element is creating a file path, for an upload element in a repeat group, of ...
 	 * '/uploads/{repeat_table___userid}/', and there are 4 repeat instance, it doesn't want a path of ...
 	 * '/uploads/34,45,94,103/', it just wants the one value from the same repeat count as the upload
-	 * element.
+	 * element.  Or a calc element doing "return '{repeat_table___first_name} {repeat_table___last_name}';".  Etc. 
 	 * 
-	 * Rather than make this a part of parseMessageForPlaceHolder, for now I'm making it a prepare funciton,
-	 * which will modify the data array, to turn a repeat array into a single value, for all elements in the
-	 * group.
+	 * Rather than make this a part of parseMessageForPlaceHolder, for now I'm making it a sperate function,
+	 * which just handles this one very specific data replacement.  Will look at merging it in with the main
+	 * parsing once we have a better understanding of where / when / how to do it.
 	 * 
+	 * @param  string   $msg             Text to parse
 	 * @param  array    $searchData      Data to search for placeholders
-	 * @param  object   $elementMpdel    Element model of the element which is doing the replacing
+	 * @param  object   $el    Element model of the element which is doing the replacing
 	 * @param  int      $repeatCounter   Repeat instance
 	 * 
-	 * @return  array   modified data array
+	 * @return  string  parsed message
 	 */
 	
-	public function prepareRepeatForReplace($searchData, $elementModel, $repeatCounter)
+	public function parseMessageForRepeats($msg, $searchData, $el, $repeatCounter)
 	{
-		if (strstr($folder, '{') && isset($formModel->formData))
+		if (strstr($msg, '{') && !empty($searchData))
 		{
-			$groupModel = $this->getGroupModel();
+			$groupModel = $el->getGroupModel();
 			if ($groupModel->canRepeat())
 			{
 				$elementModels = $groupModel->getPublishedElements();
-				$formModel = $this->getFormModel();
+				$formModel = $el->getFormModel();
 		
 				foreach ($elementModels as $elementModel)
 				{
 					$repeatElName = $elementModel->getFullName(true, false);
-					foreach (array($repeatElName, repeatElName . '_raw') as $tmpElName)
+					foreach (array($repeatElName, $repeatElName . '_raw') as $tmpElName)
 					{
-						if (strstr($folder, '{'.$tmpElName.'}'))
+						if (strstr($msg, '{'.$tmpElName.'}'))
 						{
-							if (array_key_exists($tmpElName, $formModel->formData) && is_array($formModel->formData[$tmpElName]) && array_key_exists($repeatCounter, $formModel->formData[$tmpElName]))
+							if (array_key_exists($tmpElName, $searchData) && is_array($searchData[$tmpElName]) && array_key_exists($repeatCounter, $searchData[$tmpElName]))
 							{
-								$tmpVal = $formModel->formData[$tmpElName][$repeatCounter];
-								$folder = str_replace('{'.$tmpElname.'}', $tmpVal, $folder);
+								$tmpVal = $searchData[$tmpElName][$repeatCounter];
+								$msg = str_replace('{'.$tmpElName.'}', $tmpVal, $msg);
 							}
 						}
 					}
 				}
 			}
 		}
-				
+		return $msg;
 	}
 	
 	/**
