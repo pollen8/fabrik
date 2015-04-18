@@ -1851,6 +1851,8 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		{
 			$thumbPath = $storage->clean(JPATH_SITE . '/' . $params->get('thumb_dir') . '/' . $myFileDir . '/', false);
 			$w = new FabrikWorker;
+			$formModel = $this->getFormModel();
+			$thumbPath = $w->parseMessageForRepeats($thumbPath, $formModel->formData, $this, $repeatGroupCounter);
 			$thumbPath = $w->parseMessageForPlaceHolder($thumbPath);
 			$thumbPrefix = $params->get('thumb_prefix');
 			$maxWidth = $params->get('thumb_max_width', 125);
