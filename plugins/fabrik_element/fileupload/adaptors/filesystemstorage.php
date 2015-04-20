@@ -74,7 +74,7 @@ class Filesystemstorage extends FabrikStorageAdaptor
 		// Don't write a index.html in root
 		if ($path === '')
 		{
-			return;
+			return true;
 		}
 
 		$index_file = $path . '/index.html';
