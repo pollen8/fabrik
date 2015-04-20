@@ -121,26 +121,57 @@ class PlgFabrik_ElementDigsig extends PlgFabrik_Element
 			return '';
 		}
 
+		$data = $this->toImage($thisRow->__pk_val);
+
+		return parent::renderListData($data, $thisRow);
+	}
+
+	/**
+	 * Use JLayouts to render an image representation of the signature.
+	 * Used in getEmail, and list views.
+	 *
+	 * @param   mixed $rowId Row id
+	 *
+	 * @throws Exception
+	 *
+	 * @return string
+	 */
+	private function toImage($rowId)
+	{
 		$params    = $this->getParams();
 		$app       = JFactory::getApplication();
 		$package   = $app->getUserState('com_fabrik.package', 'fabrik');
 		$formModel = $this->getFormModel();
 		$formid    = $formModel->getId();
-		$rowid     = $thisRow->__pk_val;
 		$elementid = $this->getId();
 
 		$link = COM_FABRIK_LIVESITE
 			. 'index.php?option=com_' . $package . '&amp;task=plugin.pluginAjax&amp;plugin=digsig&amp;method=ajax_signature_to_image&amp;'
-			. 'format=raw&amp;element_id=' . $elementid . '&amp;formid=' . $formid . '&amp;rowid=' . $rowid . '&amp;repeatcount=0';
+			. 'format=raw&amp;element_id=' . $elementid . '&amp;formid=' . $formid . '&amp;rowid=' . $rowId . '&amp;repeatcount=0';
 
 		$layoutData         = new stdClass;
 		$layoutData->width  = $params->get('digsig_list_width', '200');
 		$layoutData->height = $params->get('digsig_list_height', '75');;
 		$layoutData->src = $link;
-		$layout          = $this->getLayout('list');
-		$data            = $layout->render($layoutData);
+		$layout          = $this->getLayout('image');
 
-		return parent::renderListData($data, $thisRow);
+		return $layout->render($layoutData);
+	}
+
+	/**
+	 * Turn form value into email formatted value
+	 *
+	 * @param   mixed $value         Element value
+	 * @param   array $data          Form data
+	 * @param   int   $repeatCounter Group repeat counter
+	 *
+	 * @return  string  email formatted value
+	 */
+	protected function getIndEmailValue($value, $data = array(), $repeatCounter = 0)
+	{
+		$rowId = JArrayHelper::getValue($data, '__pk_val');
+
+		return $this->toImage($rowId);
 	}
 
 	/**
@@ -169,9 +200,9 @@ class PlgFabrik_ElementDigsig extends PlgFabrik_Element
 			exit;
 		}
 
-		$rowid = $input->get('rowid', '', 'string');
+		$rowId = $input->get('rowid', '', 'string');
 
-		if (empty($rowid))
+		if (empty($rowId))
 		{
 			$app->enqueueMessage(FText::_('PLG_ELEMENT_FDIGSIG_NO_SUCH_FILE'));
 			$app->redirect($url);
@@ -179,7 +210,7 @@ class PlgFabrik_ElementDigsig extends PlgFabrik_Element
 		}
 
 		$listModel = $this->getListModel();
-		$row       = $listModel->getRow($rowid, false);
+		$row       = $listModel->getRow($rowId, false);
 
 		if (empty($row))
 		{
@@ -194,12 +225,12 @@ class PlgFabrik_ElementDigsig extends PlgFabrik_Element
 		$opts        = array(
 			'imageSize' => array($digsig_width, $digsig_height)
 		);
-		$filecontent = sigJsonToImage($json_sig, $opts);
+		$fileContent = sigJsonToImage($json_sig, $opts);
 
-		if (!empty($filecontent))
+		if (!empty($fileContent))
 		{
 			ob_start();
-			imagepng($filecontent);
+			imagepng($fileContent);
 			$img = ob_get_contents();
 			ob_end_clean();
 
@@ -253,7 +284,6 @@ class PlgFabrik_ElementDigsig extends PlgFabrik_Element
 	 *
 	 * @return  array
 	 */
-
 	public function elementJavascript($repeatCounter)
 	{
 		$id          = $this->getHTMLId($repeatCounter);
@@ -282,7 +312,6 @@ class PlgFabrik_ElementDigsig extends PlgFabrik_Element
 	 *
 	 * @return void
 	 */
-
 	public function formJavascriptClass(&$srcs, $script = '', &$shim = array())
 	{
 		$s       = new stdClass;
@@ -318,7 +347,6 @@ class PlgFabrik_ElementDigsig extends PlgFabrik_Element
 	 *
 	 * @return  bool
 	 */
-
 	public function dataConsideredEmptyForValidation($data, $repeatCounter)
 	{
 		$data = (array) $data;

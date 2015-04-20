@@ -149,11 +149,10 @@ class PlgFabrik_ElementAccess extends PlgFabrik_Element
 			}
 		}
 
-		$layout = $this->getLayout('list');
-		$data = new stdClass;
-		$data->text = $text;
+		$layoutData = new stdClass;
+		$layoutData->text = $text;
 
-		return $layout->render($data);
+		return parent::renderListData($layoutData, $thisRow);
 	}
 
 	/**

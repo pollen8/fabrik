@@ -283,7 +283,6 @@ class PlgFabrik_Form extends FabrikPlugin
 			$model->getJoinGroupIds($joins);
 		}
 
-		$params = $model->getParams();
 		$this->emailData = array();
 		$model->emailData = array();
 
@@ -296,7 +295,6 @@ class PlgFabrik_Form extends FabrikPlugin
 
 			// Check if group is actually a table join
 			$repeatGroup = 1;
-			$foreignKey = null;
 
 			if ($groupModel->canRepeat())
 			{
@@ -304,12 +302,9 @@ class PlgFabrik_Form extends FabrikPlugin
 				{
 					$joinModel = $groupModel->getJoinModel();
 					$joinTable = $joinModel->getJoin();
-					$foreignKey = '';
 
 					if (is_object($joinTable))
 					{
-						$foreignKey = $joinTable->table_join_key;
-
 						if (!$groupParams->get('repeat_group_show_first'))
 						{
 							continue;
@@ -334,7 +329,6 @@ class PlgFabrik_Form extends FabrikPlugin
 
 			$groupModel->repeatTotal = $repeatGroup;
 			$group = $groupModel->getGroup();
-			$aSubGroups = array();
 
 			for ($c = 0; $c < $repeatGroup; $c++)
 			{
@@ -430,7 +424,7 @@ class PlgFabrik_Form extends FabrikPlugin
 		$model->emailData = $this->emailData;
 		
 		JDEBUG ? $profiler->mark("getEmailData: end") : null;
-		
+
 		return $this->emailData;
 	}
 
