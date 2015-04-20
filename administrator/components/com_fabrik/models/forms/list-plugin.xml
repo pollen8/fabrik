@@ -23,6 +23,12 @@
 				repeat="true"
 				required="true" />
 
+			<field name="plugin_description"
+			       type="text"
+			       repeat="true"
+			       label="COM_FABRIK_PLUGIN_DESCRIPTION_LABEL"
+			       description="COM_FABRIK_PLUGIN_DESCRIPTION_DESC" />
+
 		</fieldset>
 	</fields>
 	
