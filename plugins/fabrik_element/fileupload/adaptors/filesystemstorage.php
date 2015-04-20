@@ -71,6 +71,12 @@ class Filesystemstorage extends FabrikStorageAdaptor
 
 	public function createIndexFile($path)
 	{
+		// Don't write a index.html in root
+		if ($path === '')
+		{
+			return;
+		}
+
 		$index_file = $path . '/index.html';
 
 		if (!$this->exists($index_file))

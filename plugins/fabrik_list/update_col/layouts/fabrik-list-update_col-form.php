@@ -1,11 +1,10 @@
 <?php
 defined('JPATH_BASE') or die;
 $d     = $displayData;
-$class = $d->j3 ? 'table table-striped' : 'fabrikList';
 ?>
 <form id="update_col<?php echo $d->listRef; ?>">
 
-	<table class="<?php echo $class; ?>" style="width:100%">
+	<table class="table table-striped" style="width:100%">
 		<thead>
 		<tr>
 			<th><?php echo FText::_('COM_FABRIK_ELEMENT'); ?></th>
