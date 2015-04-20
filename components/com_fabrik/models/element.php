@@ -3533,12 +3533,16 @@ class PlgFabrik_Element extends FabrikPlugin
 	/**
 	 * Get sub option values
 	 *
+	 * @param   array  $data  Form data. If submitting a form, we want to use that form's data and not
+	 *                        re-query the form Model for its data as with multiple plugins of the same type
+	 *                        this was getting the plugin params out of sync.
+	 *
 	 * @return  array
 	 */
 
-	protected function getSubOptionValues()
+	protected function getSubOptionValues($data = array())
 	{
-		$phpOpts = $this->getPhpOptions();
+		$phpOpts = $this->getPhpOptions($data);
 
 		if (!$phpOpts)
 		{
@@ -3576,12 +3580,16 @@ class PlgFabrik_Element extends FabrikPlugin
 	/**
 	 * Get sub option labels
 	 *
+	 * @param   array  $data  Form data. If submitting a form, we want to use that form's data and not
+	 *                        re-query the form Model for its data as with multiple plugins of the same type
+	 *                        this was getting the plugin params out of sync.
+	 *
 	 * @return  array
 	 */
 
-	protected function getSubOptionLabels()
+	protected function getSubOptionLabels($data = array())
 	{
-		$phpOpts = $this->getPhpOptions();
+		$phpOpts = $this->getPhpOptions($data);
 
 		if (!$phpOpts)
 		{
@@ -3644,12 +3652,15 @@ class PlgFabrik_Element extends FabrikPlugin
 	/**
 	 * Should we get the elements sub options via the use of eval'd parameter setting
 	 *
+	 * @param   array  $data  Form data. If submitting a form, we want to use that form's data and not
+	 *                        re-query the form Model for its data as with multiple plugins of the same type
+	 *                        this was getting the plugin params out of sync.
 	 * @since  3.0.7
 	 *
 	 * @return mixed  false if no, otherwise needs to return array of JHTML::options
 	 */
 
-	protected function getPhpOptions()
+	protected function getPhpOptions($data = array())
 	{
 		$params = $this->getParams();
 		$pop = $params->get('dropdown_populate', '');
@@ -3657,7 +3668,8 @@ class PlgFabrik_Element extends FabrikPlugin
 		if ($pop !== '')
 		{
 			$w = new FabrikWorker;
-			$pop = $w->parseMessageForPlaceHolder($pop, $this->getFormModel()->getData());
+			$data = empty($data) ? $this->getFormModel()->getData() : $data;
+			$pop = $w->parseMessageForPlaceHolder($pop, $data);
 
 			if (FabrikHelperHTML::isDebug())
 			{

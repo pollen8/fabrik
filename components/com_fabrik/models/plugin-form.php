@@ -230,9 +230,9 @@ class PlgFabrik_Form extends FabrikPlugin
 		/**
 		 * NOTE - $$$ hugh - 9/17/2014  - we were originally caching in $this->emailData, but that provides no caching help at all,
 		 * as "this" is a plugin model, and the cache needs to be on the form model.  So changed it to use
-		 * the $model->emailData.  But for backward compat, we will continue to store a copy in $this.  This change has
+		 * the $model->emailData.  But for backward compatibility, we will continue to store a copy in $this.  This change has
 		 * yielded huge speed gains on form submission for larger forms (in my testing, more than cutting it in half),
-		 * as untill this change we were rebuiding the $emailData from scratch for every element on the form, which didn't
+		 * as until this change we were re-buiding the $emailData from scratch for every element on the form, which didn't
 		 * become apparent till we added the fabrikdebug=2 to allows profiling of submissions, and added the extra profiling
 		 * marks for the submission processing
 		 * 
@@ -244,7 +244,7 @@ class PlgFabrik_Form extends FabrikPlugin
 		 */
 		
 		$model = $this->getModel();
-		
+
 		if (isset($model->emailData))
 		{
 			JDEBUG ? $profiler->mark("getEmailData: cached") : null;

@@ -1199,7 +1199,6 @@ class FabrikFEModelForm extends FabModelForm
 		require_once COM_FABRIK_FRONTEND . '/helpers/uploader.php';
 		$form = $this->getForm();
 		$pluginManager = FabrikWorker::getPluginManager();
-		$params = $this->getParams();
 
 		$sessionModel = JModelLegacy::getInstance('Formsession', 'FabrikFEModel');
 		$sessionModel->setFormId($this->getId());
