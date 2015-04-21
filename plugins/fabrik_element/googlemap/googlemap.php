@@ -724,6 +724,7 @@ class PlgFabrik_ElementGooglemap extends PlgFabrik_Element
 		$params = $this->getParams();
 		$w = $params->get('fb_gm_mapwidth');
 		$h = $params->get('fb_gm_mapheight');
+		$str = '';
 
 		if ($this->_useStaticMap())
 		{
@@ -742,16 +743,8 @@ class PlgFabrik_ElementGooglemap extends PlgFabrik_Element
 				$data = array();
 				$data['id'] = $id;
 
-				$coords = explode(',', $val);
-				$coords[0] = str_replace('(', '', $coords[0]);
-
-				// Remove the zoom level from the coords
-				$bits = explode(':', $coords[1]);
-				$bits[0] = str_replace(')', '', $bits[0]);
-				$coords[1] = array_key_exists(1, $coords) ? str_replace(')', '', array_shift($bits)) : '';
-				$data['coords'] = $coords;
-
-				// If its not editable and there's no val don't show the map
+				$coords = FabrikString::mapStrToCoords($val);
+				$data['coords'] = $coords->coords;
 				$data['geoCodeEvent'] = $params->get('fb_gm_geocode_event', 'button');
 				$data['geocode'] = $params->get('fb_gm_geocode');
 				$data['editable'] = $this->isEditable();
