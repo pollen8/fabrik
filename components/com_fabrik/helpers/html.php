@@ -2228,7 +2228,7 @@ if (!$j3)
 			$endLine = ($i !== 0 && (($i ) % $columns == 0));
 			$newLine = ($i % $columns == 0);
 
-			if ($endLine && $columns > 1)
+			if ($endLine)
 			{
 				$grid[] = '</div><!-- grid close row -->';
 			}
