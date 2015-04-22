@@ -1716,7 +1716,6 @@ class FabrikFEModelList extends JModelForm
 
 	protected function deleteButton($tpl = '', $heading = false)
 	{
-		$params = $this->getParams();
 		$label = FText::_('COM_FABRIK_DELETE');
 		$buttonAction = $this->actionMethod();
 		$tpl = $this->getTmpl();
@@ -7007,7 +7006,8 @@ class FabrikFEModelList extends JModelForm
 				{
 					if ($this->actionMethod() == 'dropdown')
 					{
-						$aTableHeadings['fabrik_actions'] = FabrikHelperHTML::bootStrapDropDown($headingButtons);
+						$align = $params->get('checkboxLocation', 'end') == 'end' ? 'right' : 'left';
+						$aTableHeadings['fabrik_actions'] = FabrikHelperHTML::bootStrapDropDown($headingButtons, $align);
 					}
 					else
 					{
