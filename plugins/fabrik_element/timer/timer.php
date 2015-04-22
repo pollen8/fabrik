@@ -96,7 +96,7 @@ class PlgFabrik_ElementTimer extends PlgFabrik_Element
 		$layoutData->icon = $params->get('icon', 'icon-clock');
 		$layoutData->timerReadOnly = $params->get('timer_readonly');
 
-		return $layout->render($data);
+		return $layout->render($layoutData);
 	}
 
 	/**

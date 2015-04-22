@@ -234,12 +234,12 @@ class PlgFabrik_ElementCaptcha extends PlgFabrik_Element
 			*/
 			
 			$layout = $this->getLayout('nocaptcha');
-			$data = new stdClass;
-			$data->id = $id;
-			$data->name = $name;
-			$data->site_key = $params->get('recaptcha_publickey');			
+			$displayData = new stdClass;
+			$displayData->id = $id;
+			$displayData->name = $name;
+			$displayData->site_key = $params->get('recaptcha_publickey');
 			
-			return $layout->render($data);			
+			return $layout->render($displayData);
 		}
 		else
 		{
@@ -294,16 +294,16 @@ class PlgFabrik_ElementCaptcha extends PlgFabrik_Element
 			}
 
 			$layout = $this->getLayout('form');
-			$data = new stdClass;
-			$data->id = $id;
-			$data->name = $name;
+			$displayData = new stdClass;
+			$displayData->id = $id;
+			$displayData->name = $name;
 
 			// $$$ hugh - changed from static image path to using simple image.php script, to get round IE caching images
-			$data->url = COM_FABRIK_LIVESITE . 'plugins/fabrik_element/captcha/image.php?foo=' . rand();
-			$data->type = $type;
-			$data->size = $size;
+			$displayData->url = COM_FABRIK_LIVESITE . 'plugins/fabrik_element/captcha/image.php?foo=' . rand();
+			$displayData->type = $type;
+			$displayData->size = $size;
 
-			return $layout->render($data);
+			return $layout->render($displayData);
 		}
 	}
 

@@ -699,11 +699,12 @@ class PlgFabrik_ElementGooglemap extends PlgFabrik_Element
 
 		// If its not editable and there's no val don't show the map
 		$layout = $this->getLayout('static');
-		$data['src'] = Fabimage::cacheRemote($src, $folder, $file);
-		$data['id'] = $id;
-		$data['view'] = $tableView ? 'list' : 'details';
+		$displayData = new stdClass;
+		$displayData->src = Fabimage::cacheRemote($src, $folder, $file);
+		$displayData->id = $id;
+		$displayData->view = $tableView ? 'list' : 'details';
 
-		return $layout->render($data);
+		return $layout->render($displayData);
 	}
 
 	/**
@@ -740,25 +741,25 @@ class PlgFabrik_ElementGooglemap extends PlgFabrik_Element
 			if ((!$this->isEditable() && $val != '') || $this->isEditable())
 			{
 				$layout = $this->getLayout('form');
-				$data = array();
-				$data['id'] = $id;
+				$layoutData = new stdClass;
+				$layoutData->id = $id;
 
 				$coords = FabrikString::mapStrToCoords($val);
-				$data['coords'] = $coords->coords;
-				$data['geoCodeEvent'] = $params->get('fb_gm_geocode_event', 'button');
-				$data['geocode'] = $params->get('fb_gm_geocode');
-				$data['editable'] = $this->isEditable();
-				$data['width'] = $w;
-				$data['height'] = $h;
-				$data['name'] = $name;
-				$data['label'] = $element->label;
-				$data['value'] = htmlspecialchars($val, ENT_QUOTES);
-				$data['dms'] = $this->_strToDMS($val);
-				$data['staticmap'] = $params->get('fb_gm_staticmap');
-				$data['showdms'] = $params->get('fb_gm_latlng_dms');
-				$data['showlatlng'] = $params->get('fb_gm_latlng');
+				$layoutData->coords = $coords->coords;
+				$layoutData->geoCodeEvent = $params->get('fb_gm_geocode_event', 'button');
+				$layoutData->geocode = $params->get('fb_gm_geocode');
+				$layoutData->editable = $this->isEditable();
+				$layoutData->width = $w;
+				$layoutData->height = $h;
+				$layoutData->name = $name;
+				$layoutData->label = $element->label;
+				$layoutData->value = htmlspecialchars($val, ENT_QUOTES);
+				$layoutData->dms = $this->_strToDMS($val);
+				$layoutData->staticmap = $params->get('fb_gm_staticmap');
+				$layoutData->showdms = $params->get('fb_gm_latlng_dms');
+				$layoutData->showlatlng = $params->get('fb_gm_latlng');
 
-				return $layout->render($data);
+				return $layout->render($layoutData);
 			}
 			else
 			{

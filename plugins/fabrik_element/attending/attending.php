@@ -64,11 +64,11 @@ class PlgFabrik_ElementAttending extends PlgFabrik_Element
 		$id = $this->getHTMLId($repeatCounter);
 
 		$layout            = $this->getLayout('form');
-		$data              = new stdClass;
-		$data->attendees = $this->getAttendees();
-		$data->id        = $id;
+		$displayData              = new stdClass;
+		$displayData->attendees = $this->getAttendees();
+		$displayData->id        = $id;
 
-		return $layout->render($data);
+		return $layout->render($displayData);
 	}
 
 	/**

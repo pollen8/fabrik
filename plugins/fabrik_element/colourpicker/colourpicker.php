@@ -55,10 +55,10 @@ class PlgFabrik_ElementColourpicker extends PlgFabrik_Element
 		}
 
 		$layout = $this->getLayout('list');
-		$data = new stdClass;
-		$data->text = $str;
+		$displayData = new stdClass;
+		$displayData->text = $str;
 
-		return $layout->render($data);
+		return $layout->render($displayData);
 	}
 
 	/**
@@ -159,15 +159,15 @@ class PlgFabrik_ElementColourpicker extends PlgFabrik_Element
 		$params = $this->getParams();
 
 		$layout = $this->getLayout('form');
-		$data = new stdClass;
-		$data->id = $this->getHTMLId($repeatCounter);;
-		$data->name = $this->getHTMLName($repeatCounter);;
-		$data->value = $value;
-		$data->editable = $this->isEditable();
-		$data->j3 = FabrikWorker::j3();
-		$data->showPicker = (bool) $params->get('show_picker', 1);
+		$displayData = new stdClass;
+		$displayData->id = $this->getHTMLId($repeatCounter);;
+		$displayData->name = $this->getHTMLName($repeatCounter);;
+		$displayData->value = $value;
+		$displayData->editable = $this->isEditable();
+		$displayData->j3 = FabrikWorker::j3();
+		$displayData->showPicker = (bool) $params->get('show_picker', 1);
 
-		return $layout->render($data);
+		return $layout->render($displayData);
 	}
 
 	/**

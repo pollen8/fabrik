@@ -57,10 +57,10 @@ class AudioRender
 	public function render(&$model, &$params, $file)
 	{
 		$layout = $model->getLayout('audio');
-		$data = new stdClass;
-		$data->file = str_replace("\\", "/", COM_FABRIK_LIVESITE . $file);
+		$displayData = new stdClass;
+		$displayData->file = str_replace("\\", "/", COM_FABRIK_LIVESITE . $file);
 
-		$this->output = $layout->render($data);
+		$this->output = $layout->render($displayData);
 	}
 
 	/**

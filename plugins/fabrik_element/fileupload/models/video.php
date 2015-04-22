@@ -98,10 +98,10 @@ class VideoRender
 			}
 		}
 
-		$data = new stdClass;
-		$data->width = $w;
-		$data->height = $h;
-		$data->src = $src;
+		$displayData = new stdClass;
+		$displayData->width = $w;
+		$displayData->height = $h;
+		$displayData->src = $src;
 
 		switch ($thisFileInfo['fileformat'])
 		{
@@ -113,7 +113,7 @@ class VideoRender
 				break;
 		}
 
-		$this->output = $layout->render($data);
+		$this->output = $layout->render($displayData);
 	}
 
 	/**

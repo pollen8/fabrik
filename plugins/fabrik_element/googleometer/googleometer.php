@@ -153,9 +153,9 @@ class PlgFabrik_ElementGoogleometer extends PlgFabrik_Element
 		$options['range'] = 'chds=' . $range->min . ',' . $range->max;
 
 		$layout = $this->getLayout('chart');
-		$data = new stdClass;
-		$data->options = implode('&amp;', $options);
+		$layoutData = new stdClass;
+		$layoutData->options = implode('&amp;', $options);
 
-		return $layout->render($data);
+		return $layout->render($layoutData);
 	}
 }

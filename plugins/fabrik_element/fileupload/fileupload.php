@@ -856,16 +856,16 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 			$downloadImg = $params->get('fu_download_access_image');
 
 			$layout = $this->getLayout('downloadlink');
-			$data = new stdClass;
-			$data->canDownload = $canDownload;
-			$data->title = $title;
-			$data->noAccessImage = COM_FABRIK_LIVESITE . 'media/com_fabrik/images/' . $params->get('fu_download_noaccess_image');
-			$data->downloadImg = ($downloadImg && JFile::exists('media/com_fabrik/images/' . $downloadImg)) ? COM_FABRIK_LIVESITE . 'media/com_fabrik/images/' . $downloadImg : '';
-			$data->href =  COM_FABRIK_LIVESITE
+			$displayData = new stdClass;
+			$displayData->canDownload = $canDownload;
+			$displayData->title = $title;
+			$displayData->noAccessImage = COM_FABRIK_LIVESITE . 'media/com_fabrik/images/' . $params->get('fu_download_noaccess_image');
+			$displayData->downloadImg = ($downloadImg && JFile::exists('media/com_fabrik/images/' . $downloadImg)) ? COM_FABRIK_LIVESITE . 'media/com_fabrik/images/' . $downloadImg : '';
+			$displayData->href =  COM_FABRIK_LIVESITE
 				. 'index.php?option=com_' . $package . '&amp;task=plugin.pluginAjax&amp;plugin=fileupload&amp;method=ajax_download&amp;format=raw&amp;element_id='
 				. $elementid . '&amp;formid=' . $formid . '&amp;rowid=' . $rowid . '&amp;repeatcount=' . $i;;
 
-			return $layout->render($data);
+			return $layout->render($displayData);
 		}
 
 		if ($params->get('fu_show_image_in_table') == '0')
@@ -2320,17 +2320,17 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		$downloadImg = $params->get('fu_download_access_image');
 
 		$layout = $this->getLayout('downloadlink');
-		$data = new stdClass;
-		$data->canDownload = $canDownload;
-		$data->title = $title;
-		$data->noAccessImage = COM_FABRIK_LIVESITE . 'media/com_fabrik/images/' . $params->get('fu_download_noaccess_image');
-		$data->downloadImg = ($downloadImg && JFile::exists('media/com_fabrik/images/' . $downloadImg)) ? COM_FABRIK_LIVESITE . 'media/com_fabrik/images/' . $downloadImg : '';
-		$data->href = COM_FABRIK_LIVESITE . 'index.php?option=com_' . $package
+		$displayData = new stdClass;
+		$displayData->canDownload = $canDownload;
+		$displayData->title = $title;
+		$displayData->noAccessImage = COM_FABRIK_LIVESITE . 'media/com_fabrik/images/' . $params->get('fu_download_noaccess_image');
+		$displayData->downloadImg = ($downloadImg && JFile::exists('media/com_fabrik/images/' . $downloadImg)) ? COM_FABRIK_LIVESITE . 'media/com_fabrik/images/' . $downloadImg : '';
+		$displayData->href = COM_FABRIK_LIVESITE . 'index.php?option=com_' . $package
 			. '&task=plugin.pluginAjax&plugin=fileupload&method=ajax_download&format=raw&element_id='
 			. $elementid . '&formid=' . $formid . '&rowid=' . $rowid . '&repeatcount=' . $repeatCounter;
 
 
-		return $layout->render($data);
+		return $layout->render($displayData);
 	}
 
 	/**
@@ -2374,16 +2374,16 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		$basePath = COM_FABRIK_BASE . '/plugins/fabrik_element/fileupload/layouts/';
 		$layout = new JLayoutFile('fileupload-widget', $basePath, array('debug' => false, 'component' => 'com_fabrik', 'client' => 'site'));
 
-		$data = new stdClass;
-		$data->id = $this->getHTMLId($repeatCounter);
-		$data->winWidth = $params->get('win_width', 400);
-		$data->winHeight = $params->get('win_height', 400);
-		$data->canCrop = $this->canCrop();
-		$data->canvasSupport = FabrikHelperHTML::canvasSupport();
-		$data->dropBoxStyle = $dropBoxStyle;
-		$data->field = implode("\n", $str);
-		$data->j3 = FabrikWorker::j3();
-		$pstr = (array) $layout->render($data);
+		$displayData = new stdClass;
+		$displayData->id = $this->getHTMLId($repeatCounter);
+		$displayData->winWidth = $params->get('win_width', 400);
+		$displayData->winHeight = $params->get('win_height', 400);
+		$displayData->canCrop = $this->canCrop();
+		$displayData->canvasSupport = FabrikHelperHTML::canvasSupport();
+		$displayData->dropBoxStyle = $dropBoxStyle;
+		$displayData->field = implode("\n", $str);
+		$displayData->j3 = FabrikWorker::j3();
+		$pstr = (array) $layout->render($displayData);
 
 		return $pstr;
 	}

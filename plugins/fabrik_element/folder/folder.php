@@ -84,13 +84,14 @@ class PlgFabrik_ElementFolder extends PlgFabrik_Element
 		}
 
 		$layout = $this->getLayout('form');
-		$data['options'] = $opts;
-		$data['name'] = $name;
-		$data['selected'] = $selected;
-		$data['id'] = $id;
-		$data['errorCSS'] = $errorCSS;
+		$displayData = new stdClass;
+		$displayData->options = $opts;
+		$displayData->name = $name;
+		$displayData->selected = $selected;
+		$displayData->id = $id;
+		$displayData->errorCSS = $errorCSS;
 
-		return $layout->render($data);
+		return $layout->render($displayData);
 	}
 
 	/**

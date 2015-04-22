@@ -40,14 +40,14 @@ class PlgFabrik_ElementButton extends PlgFabrik_Element
 		$icon = $params->get('bootstrap_icon', '');
 
 		$layout = $this->getLayout('form');
-		$data = new stdClass;
-		$data->class = $class;
-		$data->id = $id;
-		$data->name = $name;
-		$data->label = $element->label;
-		$data->icon = $icon;
+		$displayData = new stdClass;
+		$displayData->class = $class;
+		$displayData->id = $id;
+		$displayData->name = $name;
+		$displayData->label = $element->label;
+		$displayData->icon = $icon;
 
-		return $layout->render($data);
+		return $layout->render($displayData);
 	}
 
 	/**

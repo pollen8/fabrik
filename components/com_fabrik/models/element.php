@@ -5950,16 +5950,16 @@ class PlgFabrik_Element extends FabrikPlugin
 		}
 
 		$layout = $this->getLayout('list');
-		$data = new stdClass;
-		$data->text = $r;
-		$res = $layout->render($data);
+		$displayData = new stdClass;
+		$displayData->text = $r;
+		$res = $layout->render($displayData);
 
 		// If no custom list layout found revert to the default list renderer
 		if ($res === '')
 		{
 			$basePath = COM_FABRIK_FRONTEND . '/layouts/';
 			$layout = new JLayoutFile('fabrik-element-list', $basePath, array('debug' => false, 'component' => 'com_fabrik', 'client' => 'site'));
-			$res = $layout->render($data);
+			$res = $layout->render($displayData);
 		}
 
 		return $res;
@@ -6029,15 +6029,15 @@ class PlgFabrik_Element extends FabrikPlugin
 
 		$basePath = COM_FABRIK_BASE . '/components/com_fabrik/layouts/element';
 		$layout = new JLayoutFile('fabrik-element-addoptions', $basePath, array('debug' => false, 'component' => 'com_fabrik', 'client' => 'site'));
-		$data = new stdClass;
-		$data->id = $this->getHTMLId($repeatCounter);
-		$data->add_image = FabrikHelperHTML::image('plus.png', 'form', @$this->tmpl, array('alt' => FText::_('COM_FABRIK_ADD')));
-		$data->allowadd_onlylabel = $params->get('allowadd-onlylabel');
-		$data->savenewadditions = $params->get('savenewadditions');
-		$data->onlylabel = $onlylabel;
-		$data->hidden_field = $this->getHiddenField($data->id . '_additions', '', $data->id . '_additions');
+		$displayData = new stdClass;
+		$displayData->id = $this->getHTMLId($repeatCounter);
+		$displayData->add_image = FabrikHelperHTML::image('plus.png', 'form', @$this->tmpl, array('alt' => FText::_('COM_FABRIK_ADD')));
+		$displayData->allowadd_onlylabel = $params->get('allowadd-onlylabel');
+		$displayData->savenewadditions = $params->get('savenewadditions');
+		$displayData->onlylabel = $onlylabel;
+		$displayData->hidden_field = $this->getHiddenField($displayData->id . '_additions', '', $displayData->id . '_additions');
 
-		return $layout->render($data);
+		return $layout->render($displayData);
 	}
 
 	/**

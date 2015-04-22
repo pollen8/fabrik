@@ -59,17 +59,17 @@ class PlgFabrik_ElementFbLikeBox extends PlgFabrik_Element
 	{
 		$params = $this->getParams();
 		$layout = $this->getLayout('form');
-		$data = new stdClass;
+		$displayData = new stdClass;
 
-		$data->graphApi = FabrikHelperHTML::facebookGraphAPI($params->get('opengraph_applicationid'));
-		$data->pageid = $params->get('fblikebox_pageid', 0);
-		$data->stream = $params->get('fblikebox_stream', 1) == 1 ? 'true' : 'false';
-		$data->width = $params->get('fblikebox_width', 300);
-		$data->height = $params->get('fblikebox_height', 300);
-		$data->header = $params->get('fblikebox_header', 1) == 1 ? 'true' : 'false';
-		$data->connections = $params->get('fblikebox_connections', 10);
+		$displayData->graphApi = FabrikHelperHTML::facebookGraphAPI($params->get('opengraph_applicationid'));
+		$displayData->pageid = $params->get('fblikebox_pageid', 0);
+		$displayData->stream = $params->get('fblikebox_stream', 1) == 1 ? 'true' : 'false';
+		$displayData->width = $params->get('fblikebox_width', 300);
+		$displayData->height = $params->get('fblikebox_height', 300);
+		$displayData->header = $params->get('fblikebox_header', 1) == 1 ? 'true' : 'false';
+		$displayData->connections = $params->get('fblikebox_connections', 10);
 
-		return $layout->render($data);
+		return $layout->render($displayData);
 	}
 
 	/**

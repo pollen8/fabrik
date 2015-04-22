@@ -322,6 +322,11 @@ class FArrayHelper extends JArrayHelper
 	
 	public static function getValue(&$array, $name, $default = null, $type = '')
 	{
+		if (is_object($array))
+		{
+			$array = JArrayHelper::fromObject($array);
+		}
+
 		$result = null;
 
 		if (isset($array[$name]))
