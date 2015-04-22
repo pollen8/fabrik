@@ -432,7 +432,7 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 
 			$where = $obsName . ' IN (' . implode(',', $obsValue) . ')';
 			$opts = array('where' => $where);
-			$ids = $listModel->getColumnData($this->getId(), true, $opts);
+			$ids = $listModel->getColumnData($this->getFullName(false, false, false), true, $opts);
 			$key = $this->queryKey();
 
 			if (is_array($ids))
