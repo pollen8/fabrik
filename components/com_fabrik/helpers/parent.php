@@ -110,6 +110,8 @@ class FabrikWorker
 	
 	public static function isViewType($view)
 	{
+		$view = strtolower(trim($view));
+
 		return in_array($view, self::$viewTypes);
 	}
 	
