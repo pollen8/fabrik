@@ -2070,4 +2070,27 @@ class FabrikWorker
 
 		return $messages;
 	}
+
+	/**
+	 * Loose casing to boolean
+	 *
+	 * @param   mixed  $var  Var to test
+	 * @param   boolean  $default if neither a truish or falsy match are found
+	 *
+	 * @return bool - Set to false if false is found.
+	 */
+	public static function toBoolean($var, $default)
+	{
+		if ($var === 'false' || $var === 0 || $var === false)
+		{
+			return false;
+		}
+
+		if ($var === 'true' || $var === 1 ||$var === true)
+		{
+			return true;
+		}
+
+		return $default;
+	}
 }
