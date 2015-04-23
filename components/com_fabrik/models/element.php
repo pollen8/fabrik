@@ -3585,7 +3585,6 @@ class PlgFabrik_Element extends FabrikPlugin
 	 *
 	 * @return  array
 	 */
-
 	protected function getSubOptionLabels($data = array())
 	{
 		$phpOpts = $this->getPhpOptions($data);

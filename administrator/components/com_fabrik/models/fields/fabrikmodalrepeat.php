@@ -44,7 +44,6 @@ class JFormFieldFabrikModalrepeat extends JFormField
 		// Initialize variables.
 		$app = JFactory::getApplication();
 		$document = JFactory::getDocument();
-		$options = array();
 		JHTML::stylesheet('administrator/components/com_fabrik/views/fabrikadmin.css');
 		$subForm = new JForm($this->name, array('control' => 'jform'));
 		$xml = $this->element->children()->asXML();
@@ -119,16 +118,16 @@ class JFormFieldFabrikModalrepeat extends JFormField
 		$j322 = ($j32 && $version->DEV_LEVEL >=3);
 		$j33 = version_compare($version->RELEASE, '3.3') >= 0 ? true : false;
 
-		$modalid = $j32 || $j33 ? 'attrib-' . $this->id . '_modal' : $this->id . '_modal';
+		$modalId = $j32 || $j33 ? 'attrib-' . $this->id . '_modal' : $this->id . '_modal';
 
 		// As JForm will render child fieldsets we have to hide it via CSS
-		$fieldSetId = str_replace('jform_params_', '', $modalid);
+		$fieldSetId = str_replace('jform_params_', '', $modalId);
 		$css = '#' . $fieldSetId . ' { display: none; }';
 		$document->addStyleDeclaration($css);
 
 		$path = 'templates/' . $app->getTemplate() . '/images/menu/';
 
-		$str[] = '<div id="' . $modalid . '" style="display:none">';
+		$str[] = '<div id="' . $modalId . '" style="display:none">';
 		$str[] = '<table class="adminlist ' . $this->element['class'] . ' table table-striped">';
 		$str[] = '<thead><tr class="row0">';
 		$names = array();
@@ -178,16 +177,16 @@ class JFormFieldFabrikModalrepeat extends JFormField
 		$str[] = '</table>';
 		$str[] = '</div>';
 		$form = implode("\n", $str);
-		static $modalrepeat;
+		static $modalRepeat;
 
-		if (!isset($modalrepeat))
+		if (!isset($modalRepeat))
 		{
-			$modalrepeat = array();
+			$modalRepeat = array();
 		}
 
-		if (!array_key_exists($modalid, $modalrepeat))
+		if (!array_key_exists($modalId, $modalRepeat))
 		{
-			$modalrepeat[$modalid] = array();
+			$modalRepeat[$modalId] = array();
 		}
 
 		if (!isset($this->form->repeatCounter))
@@ -195,17 +194,17 @@ class JFormFieldFabrikModalrepeat extends JFormField
 			$this->form->repeatCounter = 0;
 		}
 
-		if (!array_key_exists($this->form->repeatCounter, $modalrepeat[$modalid]))
+		if (!array_key_exists($this->form->repeatCounter, $modalRepeat[$modalId]))
 		{
 			// If loaded as js template then we don't want to repeat this again. (fabrik)
 			$names = json_encode($names);
-			$pane = str_replace('jform_params_', '', $modalid) . '-options';
+			$pane = str_replace('jform_params_', '', $modalId) . '-options';
 
-			$modalrepeat[$modalid][$this->form->repeatCounter] = true;
+			$modalRepeat[$modalId][$this->form->repeatCounter] = true;
 			$opts = new stdClass;
 			$opts->j3 = $j3;
 			$opts = json_encode($opts);
-			$script = str_replace('-', '', $modalid) . " = new FabrikModalRepeat('$modalid', $names, '$this->id', $opts);";
+			$script = str_replace('-', '', $modalId) . " = new FabrikModalRepeat('$modalId', $names, '$this->id', $opts);";
 			$option = $input->get('option');
 
 			if ($option === 'com_fabrik')
@@ -224,7 +223,7 @@ class JFormFieldFabrikModalrepeat extends JFormField
 						$context = 'COM_MODULES';
 					}
 
-					$j3pane = $context . '_' . str_replace('jform_params_', '', $modalid) . '_FIELDSET_LABEL';
+					$j3pane = $context . '_' . str_replace('jform_params_', '', $modalId) . '_FIELDSET_LABEL';
 
 					if ($j32)
 					{
@@ -284,14 +283,14 @@ class JFormFieldFabrikModalrepeat extends JFormField
 		{
 			$icon = $this->element['icon'] ? '<i class="icon-' . $this->element['icon'] . '"></i> ' : '';
 			$icon .= FText::_('JLIB_FORM_BUTTON_SELECT');
-			$str[] = '<button class="btn" id="' . $modalid . '_button" data-modal="' . $modalid . '">' . $icon . '</button>';
+			$str[] = '<button class="btn" id="' . $modalId . '_button" data-modal="' . $modalId . '">' . $icon . '</button>';
 			$str[] = '<input type="hidden" name="' . $this->name . '" id="' . $this->id . '" value="' . $value . '" />';
 		}
 		else
 		{
 			$str[] = '<div class="button2-left">';
 			$str[] = '	<div class="blank">';
-			$str[] = '		<a id="' . $modalid . '_button" data-modal="' . $modalid . '">' . FText::_('JLIB_FORM_BUTTON_SELECT') . '</a>';
+			$str[] = '		<a id="' . $modalId . '_button" data-modal="' . $modalId . '">' . FText::_('JLIB_FORM_BUTTON_SELECT') . '</a>';
 			$str[] = '		<input type="hidden" name="' . $this->name . '" id="' . $this->id . '" value="' . $value . '" />';
 			$str[] = '	</div>';
 			$str[] = '</div>';

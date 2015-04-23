@@ -29,12 +29,12 @@ JFormHelper::loadFieldClass('list');
  * @subpackage  Form
  * @since       3.0
  */
-
 class JFormFieldFabrikTables extends JFormFieldList
 {
 	/**
 	 * Element name
-	 * @var		string
+	 *
+	 * @var        string
 	 */
 	protected $name = 'Fabriktables';
 
@@ -43,7 +43,7 @@ class JFormFieldFabrikTables extends JFormFieldList
 	 *
 	 * @var  array
 	 */
-	protected static $fabriktables;
+	protected static $fabrikTables;
 
 	/**
 	 * Method to get the field options.
@@ -53,23 +53,13 @@ class JFormFieldFabrikTables extends JFormFieldList
 
 	protected function getOptions()
 	{
-		$app = JFactory::getApplication();
-
-		if (!isset($fabriktables))
+		if (!isset($fabrikTables))
 		{
-			$fabriktables = array();
+			$fabrikTables = array();
 		}
 
 		$connectionDd = $this->element['observe'];
-		$db = FabrikWorker::getDbo(true);
-		$id = $this->id;
-
-		if ($this->element['package'])
-		{
-			$package = $app->setUserState('com_fabrik.package', $this->element['package']);
-		}
-
-		$fullName = $this->name;
+		$db           = FabrikWorker::getDbo(true);
 
 		if ($connectionDd == '')
 		{
@@ -90,22 +80,22 @@ class JFormFieldFabrikTables extends JFormFieldList
 	/**
 	 * Method to get the field input markup.
 	 *
-	 * @return  string	The field input markup.
+	 * @return  string    The field input markup.
 	 */
 
 	protected function getInput()
 	{
-		$c = isset($this->form->repeatCounter) ? (int) $this->form->repeatCounter : 0;
-		$connectionDd = $this->element['observe'];
+		$c                  = isset($this->form->repeatCounter) ? (int) $this->form->repeatCounter : 0;
+		$connectionDd       = $this->getAttribute('observe');
+		$connectionInRepeat = FabrikWorker::toBoolean($this->getAttribute('connection_in_repeat', 'false'), false);
+		$script             = array();
 
-		if (!isset($fabriktables))
+		if (!isset($fabrikTables))
 		{
-			$fabriktables = array();
+			$fabrikTables = array();
 		}
 
-		$script = array();
-
-		if ($connectionDd != '' && !array_key_exists($this->id, $fabriktables))
+		if ($connectionDd != '' && !array_key_exists($this->id, $fabrikTables))
 		{
 			$repeatCounter = empty($this->form->repeatCounter) ? 0 : $this->form->repeatCounter;
 
@@ -116,35 +106,32 @@ class JFormFieldFabrikTables extends JFormFieldList
 			}
 			else
 			{
-				$connectionDd = ($c === false || $this->element['connection_in_repeat'] == 'false') ? $connectionDd : $connectionDd . '-' . $c;
+				$connectionDd = ($c === false || !$connectionInRepeat) ? $connectionDd : $connectionDd . '-' . $c;
 			}
 
-			$opts = new stdClass;
+			$opts           = new stdClass;
 			$opts->livesite = COM_FABRIK_LIVESITE;
-			$opts->conn = 'jform_' . $connectionDd;
+			$opts->conn     = 'jform_' . $connectionDd;
 
-			$opts->value = $this->value;
-			$opts->connInRepeat = (bool) $this->element['connection_in_repeat'][0];
+			$opts->value         = $this->value;
+			$opts->connInRepeat  = $connectionInRepeat;
 			$opts->inRepeatGroup = $this->form->repeat;
 			$opts->repeatCounter = $repeatCounter;
-			$opts->container = 'test';
-			$opts = json_encode($opts);
-			$script[] = "var p = new fabriktablesElement('$this->id', $opts);";
-			$script[] = "FabrikAdmin.model.fields.fabriktable['$this->id'] = p;";
+			$opts->container     = 'test';
+			$opts                = json_encode($opts);
+			$script[]            = "var p = new fabriktablesElement('$this->id', $opts);";
+			$script[]            = "FabrikAdmin.model.fields.fabriktable['$this->id'] = p;";
 
-			$fabriktables[$this->id] = true;
-			$src[] = 'media/com_fabrik/js/fabrik.js';
-			$src[] = 'administrator/components/com_fabrik/views/namespace.js';
-			$src[] = 'administrator/components/com_fabrik/models/fields/fabriktables.js';
+			$fabrikTables[$this->id] = true;
+			$src[]                   = 'media/com_fabrik/js/fabrik.js';
+			$src[]                   = 'administrator/components/com_fabrik/views/namespace.js';
+			$src[]                   = 'administrator/components/com_fabrik/models/fields/fabriktables.js';
 			FabrikHelperHTML::script($src, $script);
 		}
-
-		$script = implode("\n", $script);
 
 		$html = parent::getInput();
 		$html .= '<img style="margin-left:10px;display:none" id="' . $this->id . '_loader" src="components/com_fabrik/images/ajax-loader.gif" alt="'
 			. FText::_('LOADING') . '" />';
-		$script = '<script type="text/javascript">' . $script . '</script>';
 		FabrikHelperHTML::framework();
 		FabrikHelperHTML::iniRequireJS();
 

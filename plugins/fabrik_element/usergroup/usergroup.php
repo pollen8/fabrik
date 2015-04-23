@@ -139,7 +139,6 @@ class PlgFabrik_ElementUsergroup extends PlgFabrik_ElementList
 	 *
 	 * @return  array
 	 */
-
 	protected function getSubOptionLabels($data = array())
 	{
 		$opts = $this->allOpts();

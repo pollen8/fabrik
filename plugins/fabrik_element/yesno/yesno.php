@@ -60,8 +60,8 @@ class PlgFabrik_ElementYesno extends PlgFabrik_ElementRadiobutton
 	/**
 	 * Shows the data formatted for the list view
 	 *
-	 * @param   string  $data      Elements data
-	 * @param   object  &$thisRow  All the data in the lists current row
+	 * @param   string   $data      Elements data
+	 * @param   stdClass  &$thisRow  All the data in the lists current row
 	 *
 	 * @return  string	formatted value
 	 */
@@ -125,8 +125,8 @@ class PlgFabrik_ElementYesno extends PlgFabrik_ElementRadiobutton
 	public function renderListData_csv($data, &$thisRow)
 	{
 	    $raw = $this->getFullName(true, false) . '_raw';
-	    $rawdata = $thisRow->$raw;
-	    $data = (bool)$rawdata ? FText::_('JYES') : FText::_('JNO');
+	    $rawData = $thisRow->$raw;
+	    $data = (bool) $rawData ? FText::_('JYES') : FText::_('JNO');
 
 	    return $data;
 	}
@@ -147,14 +147,13 @@ class PlgFabrik_ElementYesno extends PlgFabrik_ElementRadiobutton
 
 	/**
 	 * Get sub option labels
-	 * 
+	 *
 	 * @param   array  $data  Form data. If submitting a form, we want to use that form's data and not
 	 *                        re-query the form Model for its data as with multiple plugins of the same type
 	 *                        this was getting the plugin params out of sync.
 	 *
 	 * @return  array
 	 */
-
 	protected function getSubOptionLabels($data = array())
 	{
 		return array(FText::_('JNO'), FText::_('JYES'));
@@ -170,7 +169,6 @@ class PlgFabrik_ElementYesno extends PlgFabrik_ElementRadiobutton
 
 	protected function reapplyFilterLabels(&$rows)
 	{
-		$element = $this->getElement();
 		$values = $this->getSubOptionValues();
 		$labels = $this->getSubOptionLabels();
 
@@ -450,13 +448,13 @@ class PlgFabrik_ElementYesno extends PlgFabrik_ElementRadiobutton
 			}
 	
 			$shortPk = FabrikString::shortColName($pk);
-			$rowid = FArrayHelper::getValue($data, $shortPk, null);
+			$rowId = FArrayHelper::getValue($data, $shortPk, null);
 			
 			$query->update($this->actualTableName())->set($name . ' = 0');
 			
-			if (!empty($rowid))
+			if (!empty($rowId))
 			{
-				$query->where($pk . ' <> ' . $rowid);
+				$query->where($pk . ' <> ' . $rowId);
 			}
 			
 			$toggle_where = $params->get('toggle_where', '');

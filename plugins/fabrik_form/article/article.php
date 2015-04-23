@@ -553,7 +553,7 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 		if ($elementModel = $formModel->getElement($params->get('meta_store'), true))
 		{
 			$fullName = $elementModel->getFullName(true, false);
-			$metaStore = $formModel->getElementData($fullName, false, $this->data[$fullName]);
+			$metaStore = $formModel->getElementData($fullName . '_raw', false, $this->data[$fullName]);
 			$metaStore = json_decode($metaStore);
 		}
 		else
