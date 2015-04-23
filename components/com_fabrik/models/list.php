@@ -11785,7 +11785,7 @@ class FabrikFEModelList extends JModelForm
 		 **/
 		$app = JFactory::getApplication();
 		$params = $this->getParams();
-		$tabsField = $this->getTabField();
+		$tabsField = $tabsElName = $this->getTabField();
 
 		if (empty($tabsField))
 		{
@@ -11805,13 +11805,28 @@ class FabrikFEModelList extends JModelForm
 		$tabsMax = (int) $params->get('tabs_max', 10);
 		$tabsAll = (bool) $params->get('tabs_all', '1');
 
-		// Get values and count in the tab field
-		$db = $this->getDb();
-		$query = $db->getQuery(true);
-		$query->select(array($tabsField, 'Count(' . $tabsField . ') as count'))
-			->from($db->quoteName($table->db_table_name))
-			->group($tabsField)
-			->order($tabsField);
+		// @FIXME - starting to implement code to handle join elements, not cooked yet
+		
+		$formModel = $this->getFormModel();
+		$elementModel = $formModel->getElement($tabsElName);
+		$is_join = (is_subclass_of($elementModel, 'PlgFabrik_ElementDatabasejoin') || get_class($elementModel) == 'PlgFabrik_ElementDatabasejoin');
+		if (!$is_join)
+		{
+			// Get values and count in the tab field
+			$db = $this->getDb();
+			$query = $db->getQuery(true);
+			$query->select(array($tabsField, 'Count(' . $tabsField . ') as count'))
+				->from($db->quoteName($table->db_table_name))
+				->group($tabsField)
+				->order($tabsField);
+		}
+		else
+		{
+			$app->enqueueMessage(sprintf(FText::_('COM_FABRIK_LIST_TABS_TABLE_ERROR'), $tableName, $table->db_table_name), 'error');
+			$joinTable = $elementModel->getJoinModel()->getJoin();
+			$fullFk = $joinTable->table_join . '___' . $joinTable->table_join_key;		
+			return;			
+		}
 
 		/**
 		 * Filters include any existing tab filters - so we cannot calculate tabs based on any user set filters
