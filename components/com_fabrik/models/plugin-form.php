@@ -401,10 +401,15 @@ class PlgFabrik_Form extends FabrikPlugin
 						$email_value = $this->emailData[$k];
 					}
 
-					if (!$elementModel->isJoin())
-					{
+					/**
+					 * $$$ hugh - no idea why we wouldn't call getEmailValue() for multiselect joins, happened in this commit:
+					 * https://github.com/Fabrik/fabrik/commit/06a03dbb430281951f00b9b3b691ea015a52ac7b
+					 * ... but afaict, it's bogus, as otherwise multiselect joins never get processed in to labels, and stay as raw values.
+					 */
+					//if (!$elementModel->isJoin())
+					//{
 						$this->emailData[$k] = $elementModel->getEmailValue($email_value, $model->formDataWithTableName, $c);
-					}
+					//}
 				}
 			}
 		}
