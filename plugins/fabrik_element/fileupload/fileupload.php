@@ -1388,6 +1388,47 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 	}
 
 	/**
+	 * Should we process as a standard file upload
+	 * Returns false if we cant use the element, or if its an ajax upload element
+	 * @return bool
+	 * @throws Exception
+	 */
+	protected function shouldDoNonAjaxUpload()
+	{
+		$input = JFactory::getApplication()->input;
+		$name = $this->getFullName(true, false);
+		$params = $this->getParams();
+
+		if (!$this->canUse())
+		{
+			// If the user can't use the plugin no point processing an non-existant upload
+			return false;
+		}
+
+		if ($this->processAjaxUploads($name))
+		{
+			// Stops form data being updated with blank data.
+			return false;
+		}
+
+		if ($input->getInt('fabrik_ajax') == 1)
+		{
+			// Inline edit for example no $_FILE data sent
+			return false;
+		}
+		/* If we've turned on crop but not set ajax upload then the cropping wont work so we shouldn't return
+		 * otherwise no standard image processed
+		 */
+		if ($this->crop($name) && $params->get('ajax_upload'))
+		{
+			// Stops form data being updated with blank data.
+			return false;
+		}
+
+		return true;
+	}
+
+	/**
 	 * OPTIONAL
 	 *
 	 * @return  void
@@ -1397,65 +1438,19 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 	{
 		$app = JFactory::getApplication();
 		$input = $app->input;
-		$params = $this->getParams();
-		$groupModel = $this->getGroup();
 		$formModel = $this->getFormModel();
-		$origData = $formModel->getOrigData();
 		$name = $this->getFullName(true, false);
 		$myFileDirs = $input->get($name, array(), 'array');
 
-		if (!$this->canUse())
+		if (!$this->shouldDoNonAjaxUpload())
 		{
-			// If the user can't use the plugin no point processing an non-existant upload
-			return;
-		}
-
-		if ($this->processAjaxUploads($name))
-		{
-			// Stops form data being updated with blank data.
-			return;
-		}
-
-		if ($input->getInt('fabrik_ajax') == 1)
-		{
-			// Inline edit for example no $_FILE data sent
-			return;
-		}
-		/* If we've turned on crop but not set ajax upload then the cropping wont work so we shouldn't return
-		 * otherwise no standard image processed
-		 */
-		if ($this->crop($name) && $params->get('ajax_upload'))
-		{
-			// Stops form data being updated with blank data.
 			return;
 		}
 
 		$files = array();
-		$deletedImages = $input->get('fabrik_fileupload_deletedfile', array(), 'array');
-		$gid = $groupModel->getId();
 
-		$deletedImages = FArrayHelper::getValue($deletedImages, $gid, array());
-		$imagesToKeep = array();
-
-		for ($j = 0; $j < count($origData); $j++)
-		{
-			foreach ($origData[$j] as $key => $val)
-			{
-				if ($key == $name && !empty($val))
-				{
-					if (in_array($val, $deletedImages))
-					{
-						unset($origData[$j]->$key);
-					}
-					else
-					{
-						$imagesToKeep[$j] = $origData[$j]->$key;
-					}
-
-					break;
-				}
-			}
-		}
+		$deletedImages = $this->filesToDelete();
+		$filesToKeep = $this->filesToKeep($deletedImages);
 
 		$fdata = $_FILES[$name]['name'];
 		/*
@@ -1483,14 +1478,14 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 				}
 				else
 				{
-					if (array_key_exists($i, $imagesToKeep))
+					if (array_key_exists($i, $filesToKeep))
 					{
-						$files[$i] = $imagesToKeep[$i];
+						$files[$i] = $filesToKeep[$i];
 					}
 				}
 			}
 
-			foreach ($imagesToKeep as $k => $v)
+			foreach ($filesToKeep as $k => $v)
 			{
 				if (!array_key_exists($k, $files))
 				{
@@ -1502,17 +1497,6 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 			{
 				$f = str_replace('\\', '/', $f);
 			}
-
-			if ($params->get('upload_delete_image', false))
-			{
-				foreach ($deletedImages as $filename)
-				{
-					$this->deleteFile($filename);
-				}
-			}
-
-			$formModel->updateFormData($name . '_raw', $files);
-			$formModel->updateFormData($name, $files);
 		}
 		else
 		{
@@ -1525,52 +1509,96 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 
 			if ($file['name'] != '')
 			{
-				$files[0] = $this->_processIndUpload($file, $myFileDir);
+				$files = $this->_processIndUpload($file, $myFileDir);
 			}
 			else
 			{
-				$files[0] = FArrayHelper::getValue($imagesToKeep, 0, '');
+				// No new file uploaded - keep the original one.
+				$files = FArrayHelper::getValue($filesToKeep, 0, '');
 			}
 
-			foreach ($imagesToKeep as $k => $v)
-			{
-				if (!array_key_exists($k, $files))
-				{
-					$files[$k] = $v;
-				}
-			}
+			// We are in a single upload element - should not re-add in previous images. So don't use filesToKeep
+			// see http://fabrikar.com/forums/index.php?threads/fileupload-in-repeated-group.41100/page-2
 
-			foreach ($files as &$f)
-			{
-				$f = str_replace('\\', '/', $f);
-			}
+			$files = str_replace('\\', '/', $files);
+		}
 
-			if ($params->get('upload_delete_image', false))
+		$this->deleteFiles($deletedImages);
+		$formModel->updateFormData($name . '_raw', $files);
+		$formModel->updateFormData($name, $files);
+	}
+
+	/**
+	 * Delete all files
+	 *
+	 * @param   array  $files Files to delete
+	 *
+	 * @return  void
+	 */
+	protected function deleteFiles($files)
+	{
+		$params = $this->getParams();
+
+		if ($params->get('upload_delete_image', false))
+		{
+			foreach ($files as $file)
 			{
-				foreach ($deletedImages as $filename)
-				{
-					$this->deleteFile($filename);
-				}
+				$this->deleteFile($file);
 			}
-			/*
-			 * Update form model with file data
-			 *
-			 * $$$ hugh - another monkey patch just to get simple upload going again
-			* We don't ever want to actually end up with the old GROUPSPLITTER arrangement,
-			* but if we've got repeat groups on the form, we'll have multiple entries in
-			* $files for the same single, simple upload.  So boil it down with an array_unique()
-			* HORRIBLE hack .. really need to fix this whole chunk of code.
-			*/
-			/*
-			$formModel->updateFormData($name . '_raw', $files);
-			$formModel->updateFormData($name, $files);
-			*/
-			$files = array_unique($files);
-			$strfiles = implode(GROUPSPLITTER, $files);
-			$formModel->updateFormData($name . '_raw', $strfiles);
-			$formModel->updateFormData($name, $strfiles);
 		}
 	}
+
+	/**
+	 * Collect an initial list of files to delete, these have only been set in the form when the ajax fileupload
+	 * is being used
+	 *
+	 * @return mixed
+	 * @throws Exception
+	 */
+	protected function filesToDelete()
+	{
+		$input = JFactory::getApplication()->input;
+		$groupModel = $this->getGroup();
+		$deletedFiles = $input->get('fabrik_fileupload_deletedfile', array(), 'array');
+		$gid = $groupModel->getId();
+
+		return FArrayHelper::getValue($deletedFiles, $gid, array());
+	}
+	/**
+	 * Make an array of images to keep during the upload process
+	 *
+	 * @param array $deletedImages
+	 *
+	 * @return array Image file paths
+	 */
+	protected function filesToKeep(array $deletedImages)
+	{
+		$origData = $this->getFormModel()->getOrigData();
+		$name = $this->getFullName(true, false);
+
+		for ($j = 0; $j < count($origData); $j++)
+		{
+			foreach ($origData[$j] as $key => $val)
+			{
+				if ($key == $name && !empty($val))
+				{
+					if (in_array($val, $deletedImages))
+					{
+						unset($origData[$j]->$key);
+					}
+					else
+					{
+						$filesToKeep[$j] = $origData[$j]->$key;
+					}
+
+					break;
+				}
+			}
+		}
+
+		return $filesToKeep;
+	}
+
 
 	/**
 	 * Delete the file
@@ -1683,7 +1711,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 			else
 			{
 				//$file = $joindata[$joinid][$name]['name'];
-				$file = $files['name'];
+				$file = JArrayHelper::getValue($files, 'name');
 			}
 
 			return $file == '' ? true : false;
