@@ -235,78 +235,7 @@ var FbGoogleMap = new Class({
 					this.element.getElement('.lngdms').value = this.lngDecToDMS();
 				}
 				if (this.options.reverse_geocode) {
-					this.geocoder.geocode({'latLng': this.marker.getPosition()}, function (results, status) {
-						if (status === google.maps.GeocoderStatus.OK) {
-							if (results[0]) {
-								//infowindow.setContent(results[1].formatted_address);
-								//infowindow.open(map, marker);
-								//alert(results[0].formatted_address);
-								/**
-								 * @TODO - simplify this, as we now index the reverse_geocode_fields with the same keys that
-								 * Google do.  So no need to go through each possibility and map to our key name.  In other words,
-								 * don't need to map "administrative_area_1" on to "state".  However, we do need to fix the handling
-								 * of street_number, route and street_address, as it seems that the Goog
-								 */
-								results[0].address_components.each(function (component) {
-									component.types.each(function (type) {
-										if (type === 'street_number') {
-											if (this.options.reverse_geocode_fields.route) {
-												//document.id(this.options.reverse_geocode_fields.route).value = component.long_name + ' ';
-												this.form.formElements.get(this.options.reverse_geocode_fields.route).update(component.long_name + ' ');
-											}
-										}
-										else if (type === 'route') {
-											if (this.options.reverse_geocode_fields.route) {
-												//document.id(this.options.reverse_geocode_fields.route).value = component.long_name;
-												this.form.formElements.get(this.options.reverse_geocode_fields.route).update(component.long_name);
-											}
-										}
-										else if (type === 'street_address') {
-											if (this.options.reverse_geocode_fields.route) {
-												//document.id(this.options.reverse_geocode_fields.route).value = component.long_name;
-												this.form.formElements.get(this.options.reverse_geocode_fields.route).update(component.long_name);
-											}
-										}
-										else if (type === 'neighborhood') {
-											if (this.options.reverse_geocode_fields.neighborhood) {
-												//document.id(this.options.reverse_geocode_fields.neighborhood).value = component.long_name;
-												this.form.formElements.get(this.options.reverse_geocode_fields.neighborhood).update(component.long_name);
-											}
-										}
-										else if (type === 'locality') {
-											if (this.options.reverse_geocode_fields.locality) {
-												//document.id(this.options.reverse_geocode_fields.locality).value = component.long_name;
-												this.form.formElements.get(this.options.reverse_geocode_fields.locality).updateByLabel(component.long_name);
-											}
-										}
-										else if (type === 'administrative_area_level_1') {
-											if (this.options.reverse_geocode_fields.administrative_area_level_1) {
-												//document.id(this.options.reverse_geocode_fields.state).value = component.long_name;
-												this.form.formElements.get(this.options.reverse_geocode_fields.administrative_area_level_1).updateByLabel(component.long_name);
-											}
-										}
-										else if (type === 'postal_code') {
-											if (this.options.reverse_geocode_fields.postal_code) {
-												//document.id(this.options.reverse_geocode_fields.zip).value = component.long_name;
-												this.form.formElements.get(this.options.reverse_geocode_fields.postal_code).updateByLabel(component.long_name);
-											}
-										}
-										else if (type === 'country') {
-											if (this.options.reverse_geocode_fields.country) {
-												//document.id(this.options.reverse_geocode_fields.country).value = component.long_name;
-												this.form.formElements.get(this.options.reverse_geocode_fields.country).updateByLabel(component.long_name);
-											}
-										}
-									}.bind(this));
-								}.bind(this));
-							}
-							else {
-								alert("No results found");
-							}
-						} else {
-							alert("Geocoder failed due to: " + status);
-						}
-					}.bind(this));
+					this.reverseGeocode();
 				}
 			}.bind(this));
 			google.maps.event.addListener(this.map, "zoom_changed", function (oldLevel, newLevel) {
@@ -437,10 +366,15 @@ var FbGoogleMap = new Class({
 		lng = lng.replace(',', '.').toFloat();
 		var pnt = new google.maps.LatLng(lat, lng);
 		this.marker.setPosition(pnt);
-		this.map.setCenter(pnt, this.map.getZoom());
+		this.doSetCenter(pnt, this.map.getZoom(), true);
+		/*
 		this.field.value = this.marker.getPosition() + ":" + this.map.getZoom();
 		this.element.getElement('.latdms').value = this.latDecToDMS();
 		this.element.getElement('.lngdms').value = this.lngDecToDMS();
+		if (this.options.reverse_geocode) {
+			this.reverseGeocode();
+		}
+		*/
 	},
 
 	updateFromDMS : function () {
@@ -473,10 +407,15 @@ var FbGoogleMap = new Class({
 
 		var pnt = new google.maps.LatLng(latdms_topnt.toFloat(), lngdms_topnt.toFloat());
 		this.marker.setPosition(pnt);
-		this.map.setCenter(pnt, this.map.getZoom());
+		this.doSetCenter(pnt, this.map.getZoom(), true);
+		/*
 		this.field.value = this.marker.getPosition() + ":" + this.map.getZoom();
 		this.element.getElement('.lat').value = latdms_topnt + '° N';
 		this.element.getElement('.lng').value = lngdms_topnt + '° E';
+		if (this.options.reverse_geocode) {
+			this.reverseGeocode();
+		}
+		*/
 	},
 
 	latDecToDMS : function () {
@@ -558,7 +497,8 @@ var FbGoogleMap = new Class({
 				fconsole(address + " not found!");
 			} else {
 				this.marker.setPosition(results[0].geometry.location);
-				this.map.setCenter(results[0].geometry.location, this.map.getZoom());
+				this.doSetCenter(results[0].geometry.location, this.map.getZoom(), false);
+				/*
 				this.field.value = results[0].geometry.location + ":" + this.map.getZoom();
 				if (this.options.latlng === true) {
 					this.element.getElement('.lat').value = results[0].geometry.location.lat() + '° N';
@@ -568,6 +508,7 @@ var FbGoogleMap = new Class({
 					this.element.getElement('.latdms').value = this.latDecToDMS();
 					this.element.getElement('.lngdms').value = this.lngDecToDMS();
 				}
+				*/
 			}
 		}.bind(this));
 	},
@@ -648,7 +589,7 @@ var FbGoogleMap = new Class({
 		if (v.length < 2) {
 			v[1] = this.options.zoomlevel;
 		}
-		if (!this.ma) {
+		if (!this.map) {
 			return;
 		}
 		var zoom = v[1].toInt();
@@ -668,13 +609,23 @@ var FbGoogleMap = new Class({
 		// So instead, lets just set marker to default and recenter
 		var pnt = new google.maps.LatLng(pnts[0], pnts[1]);
 		this.marker.setPosition(pnt);
-		this.map.setCenter(pnt, this.map.getZoom());
+		this.doSetCenter(pnt, this.map.getZoom(), true);
+		/*
+		if (this.options.reverse_geocode) {
+			this.reverseGeocode();
+		}
+		*/
 	},
 
 	geoCenter: function (p) {
 		var pnt = new google.maps.LatLng(p.coords.latitude, p.coords.longitude);
 		this.marker.setPosition(pnt);
-		this.map.setCenter(pnt);
+		this.doSetCenter(pnt, this.map.getZoom(), true);
+		/*
+		if (this.options.reverse_geocode) {
+			this.reverseGeocode();
+		}
+		*/
 	},
 
 	geoCenterErr: function (p) {
@@ -689,6 +640,97 @@ var FbGoogleMap = new Class({
 		var center = new google.maps.LatLng(this.options.lat, this.options.lon);
 		this.map.setCenter(center);
 		this.map.setZoom(this.map.getZoom());
+	},
+	
+	reverseGeocode: function () {
+		this.geocoder.geocode({'latLng': this.marker.getPosition()}, function (results, status) {
+			if (status === google.maps.GeocoderStatus.OK) {
+				if (results[0]) {
+					//infowindow.setContent(results[1].formatted_address);
+					//infowindow.open(map, marker);
+					//alert(results[0].formatted_address);
+					/**
+					 * @TODO - simplify this, as we now index the reverse_geocode_fields with the same keys that
+					 * Google do.  So no need to go through each possibility and map to our key name.  In other words,
+					 * don't need to map "administrative_area_1" on to "state".  However, we do need to fix the handling
+					 * of street_number, route and street_address, as it seems that the Goog
+					 */
+					results[0].address_components.each(function (component) {
+						component.types.each(function (type) {
+							if (type === 'street_number') {
+								if (this.options.reverse_geocode_fields.route) {
+									//document.id(this.options.reverse_geocode_fields.route).value = component.long_name + ' ';
+									this.form.formElements.get(this.options.reverse_geocode_fields.route).update(component.long_name + ' ');
+								}
+							}
+							else if (type === 'route') {
+								if (this.options.reverse_geocode_fields.route) {
+									//document.id(this.options.reverse_geocode_fields.route).value = component.long_name;
+									this.form.formElements.get(this.options.reverse_geocode_fields.route).update(component.long_name);
+								}
+							}
+							else if (type === 'street_address') {
+								if (this.options.reverse_geocode_fields.route) {
+									//document.id(this.options.reverse_geocode_fields.route).value = component.long_name;
+									this.form.formElements.get(this.options.reverse_geocode_fields.route).update(component.long_name);
+								}
+							}
+							else if (type === 'neighborhood') {
+								if (this.options.reverse_geocode_fields.neighborhood) {
+									//document.id(this.options.reverse_geocode_fields.neighborhood).value = component.long_name;
+									this.form.formElements.get(this.options.reverse_geocode_fields.neighborhood).update(component.long_name);
+								}
+							}
+							else if (type === 'locality') {
+								if (this.options.reverse_geocode_fields.locality) {
+									//document.id(this.options.reverse_geocode_fields.locality).value = component.long_name;
+									this.form.formElements.get(this.options.reverse_geocode_fields.locality).updateByLabel(component.long_name);
+								}
+							}
+							else if (type === 'administrative_area_level_1') {
+								if (this.options.reverse_geocode_fields.administrative_area_level_1) {
+									//document.id(this.options.reverse_geocode_fields.state).value = component.long_name;
+									this.form.formElements.get(this.options.reverse_geocode_fields.administrative_area_level_1).updateByLabel(component.long_name);
+								}
+							}
+							else if (type === 'postal_code') {
+								if (this.options.reverse_geocode_fields.postal_code) {
+									//document.id(this.options.reverse_geocode_fields.zip).value = component.long_name;
+									this.form.formElements.get(this.options.reverse_geocode_fields.postal_code).updateByLabel(component.long_name);
+								}
+							}
+							else if (type === 'country') {
+								if (this.options.reverse_geocode_fields.country) {
+									//document.id(this.options.reverse_geocode_fields.country).value = component.long_name;
+									this.form.formElements.get(this.options.reverse_geocode_fields.country).updateByLabel(component.long_name);
+								}
+							}
+						}.bind(this));
+					}.bind(this));
+				}
+				else {
+					alert("No results found");
+				}
+			} else {
+				alert("Geocoder failed due to: " + status);
+			}
+		}.bind(this));
+	},
+	
+	doSetCenter: function (pnt, zoom, doReverseGeocode) {
+		this.map.setCenter(pnt, zoom);
+		this.field.value = this.marker.getPosition() + ":" + this.map.getZoom();
+		if (this.options.latlng === true) {
+			this.element.getElement('.lat').value = pnt.lat() + '° N';
+			this.element.getElement('.lng').value = pnt.lng() + '° E';
+		}
+		if (this.options.latlng_dms === true) {
+			this.element.getElement('.latdms').value = this.latDecToDMS();
+			this.element.getElement('.lngdms').value = this.lngDecToDMS();
+		}
+		if (doReverseGeocode && this.options.reverse_geocode) {
+			this.reverseGeocode();
+		}
 	}
 
 });

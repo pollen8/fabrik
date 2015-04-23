@@ -8,6 +8,7 @@
 
 			<field name="sub_options"
 				type="suboptions"
+				default_max="1"
 				label="COM_FABRIK_SUBOPTIONS"/>
 
 			<field name="options_per_row"
@@ -76,6 +77,10 @@
 				mode="php"
 				description="PLG_ELEMENT_RADIO_POPULATE_DESC"
 				label="PLG_ELEMENT_RADIO_POPULATE_LABEL" />
+
+			<field name="dropdown_populate_inline_desc"
+				type="spacer"
+				label="PLG_ELEMENT_RADIO_POPULATE_DESC" />
 
 		</fieldset>
 	</fields>

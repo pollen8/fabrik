@@ -1,1 +1,2 @@
-var FbActivityfeed=new Class({Extends:FbElement,initialize:function(b,a){this.plugin="fbActivityfeed";this.parent(b,a)}});
+/*! fabrik */
+var FbActivityfeed=new Class({Extends:FbElement,initialize:function(a,b){this.plugin="fbActivityfeed",this.parent(a,b)}});

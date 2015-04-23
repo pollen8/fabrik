@@ -326,61 +326,39 @@ class PlgFabrik_ElementRating extends PlgFabrik_Element
 			return FText::_('PLG_ELEMENT_RATING_ONLY_ACCESSIBLE_IN_DETAILS_VIEW');
 		}
 
-		$element = $this->getElement();
 		$css = $this->canRate() ? 'cursor:pointer;' : '';
 		$value = $this->getValue($data, $repeatCounter);
 
 		FabrikHelperHTML::addPath(COM_FABRIK_BASE . 'plugins/fabrik_element/rating/images/', 'image', 'form', false);
-		$str = array();
-		$str[] = '<div id="' . $id . '_div" class="fabrikSubElementContainer">';
-		$imgOpts = array('icon-class' => 'small', 'style' => $css, 'data-rating' => -1);
-		$clearImg = FabrikHelperHTML::image('remove.png', 'list', @$this->tmpl, $imgOpts);
 
-		if ($params->get('rating-nonefirst') && $this->canRate())
-		{
-			$str[] = $clearImg;
-		}
+		$listId = $this->getlistModel()->getTable()->id;
+		$formId = $input->getInt('formid');
+		$rowId = $this->getFormModel()->getRowId();
 
-		$listid = $this->getlistModel()->getTable()->id;
-		$formid = $input->getInt('formid');
-		$row_id = $this->getFormModel()->getRowId();
-
-		if ($params->get('rating-mode') == 'creator-rating')
+		if ($params->get('rating-mode') == 'creator-    rating')
 		{
 			$avg = $value;
-			$this->avg = $value;
 		}
 		else
 		{
-			list($avg, $total) = $this->getRatingAverage($value, $listid, $formid, $row_id);
+			list($avg, $total) = $this->getRatingAverage($value, $listId, $formId, $rowId);
 		}
 
-		$imgOpts = array('icon-class' => 'starRating', 'style' => $css);
+		$imgOpts = array('icon-class' => 'small', 'style' => $css, 'data-rating' => -1);
 
-		for ($s = 0; $s < $avg; $s++)
-		{
-			$imgOpts['data-rating'] = $s + 1;
-			$str[] = FabrikHelperHTML::image("star.png", 'list', @$this->tmpl, $imgOpts);
-		}
+		$layout = $this->getLayout('form');
+		$layoutData = new stdClass;
+		$layoutData->id = $id;
+		$layoutData->name = $name;
+		$layoutData->value = $value;
+		$layoutData->clearImg = FabrikHelperHTML::image('remove.png', 'list', @$this->tmpl, $imgOpts);
+		$layoutData->avg = $avg;
+		$layoutData->canRate = $this->canRate();
+		$layoutData->ratingNoneFirst = $params->get('rating-nonefirst');
+		$layoutData->css = $css;
+		$layoutData->tmpl = @$this->tmpl;
 
-		for ($s = $avg; $s < 5; $s++)
-		{
-			$imgOpts['data-rating'] = $s + 1;
-			$str[] = FabrikHelperHTML::image("star-empty.png", 'list', @$this->tmpl, $imgOpts);
-		}
-
-		if (!$params->get('rating-nonefirst') && $this->canRate())
-		{
-			$str[] = $clearImg;
-		}
-
-		$str[] = '<span class="ratingScore badge badge-info">' . $this->avg . '</span>';
-		$str[] = '<div class="ratingMessage">';
-		$str[] = '</div>';
-		$str[] = '<input type="hidden" name="' . $name . '" id="' . $id . '" value="' . $value . '" />';
-		$str[] = '</div>';
-
-		return implode("\n", $str);
+		return $layout->render($layoutData);
 	}
 
 	/**

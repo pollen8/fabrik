@@ -76,7 +76,7 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 		 *  $$$ rob - if embedding a form inside a details view then rowid is true (for the detailed view) but we are still showing a new form
 		 *  so take a look at the element form's rowId and not app input
 		 */
-		$rowid = $this->getForm()->rowId;
+		$rowid = $this->getFormModel()->rowId;
 		/**
 		 * @TODO when editing a form with joined repeat group the rowid will be set but
 		 * the record is in fact new
@@ -166,48 +166,19 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 			}
 		}
 
-		/**
-		 *  If the table database is not the same as the joomla database then
-		 *  we should simply return a hidden field with the user id in it.
-		 */
-		if (!$this->inJDb())
-		{
-			return $this->getHiddenField($name, $user->get('id'), $html_id);
-		}
+		$displayParam = $this->getLabelOrConcatVal();
+		$layout = $this->getLayout('form');
+		$layoutData = new stdClass;
+		$layoutData->inJDb = $this->inJDb();
+		$layoutData->name = $name;
+		$layoutData->id = $html_id;
+		$layoutData->isEditable = $this->isEditable();
+		$layoutData->hidden = $element->hidden;
+		$layoutData->input = parent::render($data, $repeatCounter);
+		$layoutData->readOnly = is_a($user, 'JUser') ? $user->get($displayParam) : '';
+		$layoutData->value = is_a($user, 'JUser') ? $user->get('id') : '';
 
-		$str = '';
-
-		if ($this->isEditable())
-		{
-			$value = is_object($user) ? $user->get('id') : '';
-
-			if ($element->hidden)
-			{
-				$str = $this->getHiddenField($name, $value, $html_id);
-			}
-			else
-			{
-				$str = '<div class="input-append">';
-				$str .= parent::render($data, $repeatCounter);
-				$str .= '<span class="add-on"><span class="icon-user"></span></span>';
-				$str .= '</div>';
-			}
-		}
-		else
-		{
-			$displayParam = $this->getLabelOrConcatVal();
-
-			if (is_a($user, 'JUser'))
-			{
-				$str = $user->get($displayParam);
-			}
-			else
-			{
-				JError::raiseWarning(E_NOTICE, "Didn't load for $element->default");
-			}
-		}
-
-		return $str;
+		return $layout->render($layoutData);
 	}
 
 	/**
@@ -1034,8 +1005,6 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 
 	protected function getUserDisplayProperty($user)
 	{
-		static $displayMessage;
-		$params = $this->getParams();
 		$displayParam = $this->getLabelOrConcatVal();
 
 		return is_a($user, 'JUser') ? $user->get($displayParam) : false;
@@ -1049,7 +1018,6 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 
 	protected function getJoinValueColumn()
 	{
-		$params = $this->getParams();
 		$join = $this->getJoin();
 		$db = FabrikWorker::getDbo();
 

@@ -83,6 +83,10 @@
 				description="PLG_ELEMENT_DROPDOWN_POPULATE_DESC"
 				label="PLG_ELEMENT_DROPDOWN_POPULATE_LABEL" />
 
+			<field name="dropdown_populate_inline_desc"
+				type="spacer"
+				label="PLG_ELEMENT_DROPDOWN_POPULATE_DESC" />
+
 		</fieldset>
 		
 		<fieldset label="PLG_ELEMENT_DROPDOWN_FORMATTING" name="plg-dropdown-formatting">

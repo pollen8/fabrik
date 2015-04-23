@@ -1,1 +1,2 @@
-var FbInternalId=new Class({Extends:FbElement,initialize:function(b,a){this.plugin="fbInternalId";this.parent(b,a)}});
+/*! fabrik */
+var FbInternalId=new Class({Extends:FbElement,initialize:function(a,b){this.plugin="fbInternalId",this.parent(a,b)}});

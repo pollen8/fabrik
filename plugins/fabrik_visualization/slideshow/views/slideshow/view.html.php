@@ -91,11 +91,14 @@ class FabrikViewSlideshow extends JViewLegacy
 		FabrikHelperHTML::iniRequireJs($model->getShim());
 		FabrikHelperHTML::script($srcs, $this->js);
 
+		//FabrikHelperHTML::slimbox();
+		
 		$tpl = $j3 ? 'bootstrap' : 'default';
 		$tpl = $params->get('slideshow_viz_layout', $tpl);
 		$tmplpath = $model->pathBase . 'slideshow/views/slideshow/tmpl/' . $tpl;
 		$this->_setPath('template', $tmplpath);
 		FabrikHelperHTML::stylesheetFromPath('plugins/fabrik_visualization/slideshow/views/slideshow/tmpl/' . $tpl . '/template.css');
+		FabrikHelperHTML::stylesheetFromPath('plugins/fabrik_visualization/slideshow/views/slideshow/tmpl/' . $tpl . '/custom.css');
 		echo parent::display();
 	}
 }

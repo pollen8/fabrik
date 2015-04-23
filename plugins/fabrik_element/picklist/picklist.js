@@ -27,7 +27,6 @@ var FbPicklist = new Class({
 			to = c.getElement('.toList'),
 			dropcolour = from.getStyle('background-color'),
 			that = this;
-			
 			this.sortable = new Sortables([ from, to ], {
 				clone: true,
 				revert: true,

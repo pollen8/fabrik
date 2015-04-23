@@ -309,7 +309,7 @@ class FArrayHelper extends JArrayHelper
 	/**	
 	 * Workaround for J! 3.4 change in FArrayHelper::getValue(), which now forces $array to be, well, an array.
 	 * We've been a bit naughty and using it for things like SimpleXMLElement.  So for J! 3.4 release, 2/25/2015,
-	 * globally replaced all use of FArrayHelper::getValue() with FArrayHelper::getValue().  This code is just a
+	 * globally replaced all use of JArrayHelper::getValue() with FArrayHelper::getValue().  This code is just a
 	 * copy of the J! code, it just doesn't specify "array $array".
 	 * 
 	 * @param   array   &$array   A named array
@@ -322,6 +322,11 @@ class FArrayHelper extends JArrayHelper
 	
 	public static function getValue(&$array, $name, $default = null, $type = '')
 	{
+		if (is_object($array))
+		{
+			$array = JArrayHelper::fromObject($array);
+		}
+
 		$result = null;
 
 		if (isset($array[$name]))

@@ -98,6 +98,12 @@
 				label="PLG_FORM_LIMIT_MAX_ELEMENT_LABEL"
 				repeat="true"
 				table="params_limit_table" />
+
+			<field name="limit_add_sql"
+				type="fabrikeditor"
+				mode="mysql"
+				description="PLG_FORM_LIMIT_ADD_SQL_DESC"
+				label="PLG_FORM_LIMIT_ADD_SQL_LABEL" />
 				
 			<field name="limit_condition"
 				type="fabrikeditor"

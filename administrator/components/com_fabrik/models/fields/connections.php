@@ -25,13 +25,12 @@ JFormHelper::loadFieldClass('list');
  * @subpackage  Form
  * @since       3.0
  */
-
 class JFormFieldConnections extends JFormFieldList
 {
 	/**
 	 * Element name
 	 *
-	 * @var		string
+	 * @var        string
 	 */
 	protected $name = 'Connections';
 
@@ -43,8 +42,7 @@ class JFormFieldConnections extends JFormFieldList
 	protected function getOptions()
 	{
 		// Initialize variables.
-		$options = array();
-		$db = FabrikWorker::getDbo(true);
+		$db    = FabrikWorker::getDbo(true);
 		$query = $db->getQuery(true);
 
 		$query->select('id AS value, description AS text, ' . $db->quoteName('default'));
@@ -54,8 +52,8 @@ class JFormFieldConnections extends JFormFieldList
 
 		// Get the options.
 		$db->setQuery($query);
-		$options = $db->loadObjectList();
-		$sel = JHtml::_('select.option', '', FText::_('COM_FABRIK_PLEASE_SELECT'));
+		$options      = $db->loadObjectList();
+		$sel          = JHtml::_('select.option', '', FText::_('COM_FABRIK_PLEASE_SELECT'));
 		$sel->default = false;
 		array_unshift($options, $sel);
 
@@ -65,7 +63,7 @@ class JFormFieldConnections extends JFormFieldList
 	/**
 	 * Method to get the field input markup.
 	 *
-	 * @return	string	The field input markup.
+	 * @return    string    The field input markup.
 	 */
 
 	protected function getInput()
@@ -91,7 +89,7 @@ class JFormFieldConnections extends JFormFieldList
 		else
 		{
 			$options = (array) $this->getOptions();
-			$v = '';
+			$v       = '';
 
 			foreach ($options as $opt)
 			{
@@ -103,6 +101,6 @@ class JFormFieldConnections extends JFormFieldList
 		}
 
 		return '<input type="hidden" value="' . $this->value . '" name="' . $this->name . '" />' . '<input type="text" value="' . $v
-			. '" name="connection_justalabel" class="readonly" readonly="true" />';
+		. '" name="connection_justalabel" class="readonly" readonly="true" />';
 	}
 }

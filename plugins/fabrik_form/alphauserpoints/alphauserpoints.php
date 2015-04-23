@@ -28,6 +28,8 @@ class PlgFabrik_FormAlphaUserPoints extends PlgFabrik_Form
 	 * Run right at the end of the form processing
 	 * form needs to be set to record in database for this to hook to be called
 	 *
+	 * @throws Exception
+	 *
 	 * @return	bool
 	 */
 
@@ -47,7 +49,6 @@ class PlgFabrik_FormAlphaUserPoints extends PlgFabrik_Form
 			$userId = $params->get('user_id', '');
 			$userId = (int) $w->parseMessageForPlaceholder($userId, $this->data, false);
 
-			$user = JFactory::getUser();
 			$aupId = $aup->getAnyUserReferreID($userId);
 
 			// Replace these if you want to show a specific reference for the attributed points - doesn't seem to effect anything
@@ -78,9 +79,6 @@ class PlgFabrik_FormAlphaUserPoints extends PlgFabrik_Form
 
 			// If set to be greater than $randompoints then this is the # of points assigned (not sure when this would be used - commenting out for now)
 			$referralUserPoints = 0;
-
-			/* $referralUserPoints = $params->get('referral_user_points', 0);
-			$referralUserPoints = (float) $w->parseMessageForPlaceholder($referralUserPoints, $this->data, false); */
 
 			$aupPlugin = $params->get('aup_plugin', 'plgaup_fabrik');
 			$aupPlugin = $w->parseMessageForPlaceholder($aupPlugin, $this->data, false);

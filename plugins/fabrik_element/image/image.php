@@ -298,95 +298,88 @@ class PlgFabrik_ElementImage extends PlgFabrik_Element
 		// $$$ rob - 30/06/2011 can only select an image if its not a remote image
 		$canSelect = ($params->get('image_front_end_select', '0') && JString::substr($value, 0, 4) !== 'http');
 
-		// $$$ hugh - tidy up a bit so we don't have so many ///'s in the URL's
-		$rootFolder = JString::ltrim($rootFolder, '/');
-		$rootFolder = JString::rtrim($rootFolder, '/');
-		$rootFolder = $rootFolder === '' ? '' : $rootFolder . '/';
-
 		// $$$ rob - 30/062011 allow for full urls in the image. (e.g from csv import)
 		$defaultImage = JString::substr($value, 0, 4) == 'http' ? $value : COM_FABRIK_LIVESITE . $rootFolder . $value;
 
 		$float = $params->get('image_float');
 		$float = $float != '' ? "style='float:$float;'" : '';
-		$str = array();
-		$str[] = '<div class="fabrikSubElementContainer" id="' . $id . '">';
-
+		$w     = new FabrikWorker;
 		$rootFolder = str_replace('/', DS, $rootFolder);
 
-		if ($canSelect && $this->isEditable())
+		$layout = $this->getLayout('form');
+		$layoutData = new stdClass;
+		$layoutData->id = $id;
+		$layoutData->name = $name;
+		$layoutData->defaultImage = $defaultImage;
+		$layoutData->canSelect = $canSelect && $this->isEditable();
+
+		$layoutData->value = $w->parseMessageForPlaceHolder($value, $data);
+		$layoutData->float = $float;
+
+		if ($layoutData->canSelect)
 		{
-			$str[] = '<img src="' . $defaultImage . '" alt="' . $value . '" ' . $float . ' class="imagedisplayor"/>';
-
-			if (array_key_exists($name, $data))
-			{
-				if (trim($value) == '' && $rootFolder === '')
-				{
-					$path = "/";
-				}
-				else
-				{
-					$bits = explode("/", $value);
-
-					if (count($bits) > 1)
-					{
-						$path = '/' . array_shift($bits) . '/';
-						$path = $rootFolder . $path;
-						$val = array_shift($bits);
-					}
-					else
-					{
-						$path = $rootFolder;
-					}
-				}
-			}
-			else
-			{
-				$path = $rootFolder;
-			}
+			$path = $this->getPath($value, $data, $repeatCounter);
 
 			$images = array();
-			$imagenames = (array) JFolder::files(JPATH_SITE . '/' . $path);
+			$imageNames = (array) JFolder::files(JPATH_SITE . '/' . $path);
 
-			foreach ($imagenames as $n)
+			foreach ($imageNames as $n)
 			{
 				$images[] = JHTML::_('select.option', $n, $n);
 			}
 
 			// $$$rob not sure about his name since we are adding $repeatCounter to getHTMLName();
-			$imageName = $this->getGroupModel()->canRepeat() ? FabrikString::rtrimWord($name, "][$repeatCounter]") . "_image][$repeatCounter]"
+			$layoutData->imageName = $this->getGroupModel()->canRepeat() ? FabrikString::rtrimWord($name, "][$repeatCounter]") . "_image][$repeatCounter]"
 				: $id . '_image';
 			$bits = explode('/', $value);
 			$image = array_pop($bits);
 
 			// $$$ hugh - append $rootFolder to JPATH_SITE, otherwise we're showing folders
 			// they aren't supposed to be able to see.
-			$folders = JFolder::folders(JPATH_SITE . DS . $rootFolder);
+			$layoutData->folders = JFolder::folders(JPATH_SITE . '/' . $rootFolder);
+			$layoutData->images = $images;
+			$layoutData->image = $image;
+		}
 
-			// @TODO - if $folders is empty, hide the button/widget?  All they can do is select
-			// from the initial image dropdown list, so no point having the widget for changing folder?
-			$str[] = '<br/>' . JHTML::_('select.genericlist', $images, $imageName, 'class="inputbox imageselector" ', 'value', 'text', $image);
-			$str[] = FabrikHelperHTML::folderAjaxSelect($folders);
-			$str[] = '<input type="hidden" name="' . $name . '" value="' . $value . '" class="fabrikinput hiddenimagepath folderpath" />';
+		$layoutData->linkURL = $params->get('link_url', '');
+
+
+		return $layout->render($layoutData);
+	}
+
+	protected function getPath($value, $data, $repeatCounter)
+	{
+		$rootFolder = $this->rootFolder($value);
+		$rootFolder = str_replace('/', DS, $rootFolder);
+		$name = $this->getHTMLName($repeatCounter);
+
+		if (array_key_exists($name, $data))
+		{
+			if (trim($value) == '' && $rootFolder === '')
+			{
+				$path = "/";
+			}
+			else
+			{
+				$bits = explode("/", $value);
+
+				if (count($bits) > 1)
+				{
+					$path = '/' . array_shift($bits) . '/';
+					$path = $rootFolder . $path;
+				}
+				else
+				{
+					$path = $rootFolder;
+				}
+			}
 		}
 		else
 		{
-			$w = new FabrikWorker;
-			$value = $w->parseMessageForPlaceHolder($value, $data);
-			$linkURL = $params->get('link_url', '');
-			$imgstr = '<img src="' . $defaultImage . '" alt="' . $value . '" ' . $float . ' class="imagedisplayor"/>' . "\n";
-
-			if ($linkURL)
-			{
-				$imgstr = '<a href="' . $linkURL . '" target="_blank">' . $imgstr . '</a>';
-			}
-
-			$str[] = $imgstr;
-			$str[] = '<input type="hidden" name="' . $name . '" value="' . $value . '" class="fabrikinput hiddenimagepath folderpath" />';
+			$path = $rootFolder;
 		}
 
-		$str[] = '</div>';
-
-		return implode("\n", $str);
+		return $path;
 	}
 
 	/**
@@ -430,7 +423,6 @@ class PlgFabrik_ElementImage extends PlgFabrik_Element
 
 	public function elementJavascript($repeatCounter)
 	{
-		$app = JFactory::getApplication();
 		$params = $this->getParams();
 		$element = $this->getElement();
 		$id = $this->getHTMLId($repeatCounter);
@@ -464,6 +456,12 @@ class PlgFabrik_ElementImage extends PlgFabrik_Element
 		{
 			$rootFolder = $defaultImg;
 		}
+
+		// $$$ hugh - tidy up a bit so we don't have so many ///'s in the URL's
+		$rootFolder = JString::ltrim($rootFolder, '/');
+		$rootFolder = JString::rtrim($rootFolder, '/');
+		$rootFolder = $rootFolder === '' ? '' : $rootFolder . '/';
+
 
 		return $rootFolder;
 	}

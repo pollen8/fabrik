@@ -1,1 +1,2 @@
-var FbComment=new Class({Extends:FbElement,initialize:function(b,a){this.plugin="fbComment";this.parent(b,a)}});
+/*! fabrik */
+var FbComment=new Class({Extends:FbElement,initialize:function(a,b){this.plugin="fbComment",this.parent(a,b)}});

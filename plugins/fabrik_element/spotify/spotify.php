@@ -87,16 +87,12 @@ class PlgFabrik_ElementSpotify extends PlgFabrik_Element
 			$bits['value'] = htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
 			$bits['size'] = $size;
 			$bits['maxlength'] = $maxlength;
-			$str = "<input ";
 
-			foreach ($bits as $key => $val)
-			{
-				$str .= $key . ' = "' . $val . '" ';
-			}
+			$layout = $this->getLayout('form');
+			$layoutData = new stdClass;
+			$layoutData->attributes = $bits;
 
-			$str .= " />\n";
-
-			return $str;
+			return $layout->render($layoutData);
 		}
 		else
 		{
@@ -133,9 +129,11 @@ class PlgFabrik_ElementSpotify extends PlgFabrik_Element
 		$opts[] = 'width="' . $width . '"';
 		$opts[] = 'height="' . $height . '"';
 
-		$player = '<iframe ' . implode(' ', $opts) . ' frameborder="0" allowtransparency="true"></iframe>';
+		$layout = $this->getLayout('player');
+		$layoutData = new stdClass;
+		$layoutData->attributes = $opts;
 
-		return $player;
+		return $layout->render($layoutData);
 	}
 
 	/**
@@ -153,5 +151,4 @@ class PlgFabrik_ElementSpotify extends PlgFabrik_Element
 
 		return array('FbSpotify', $id, $opts);
 	}
-
 }

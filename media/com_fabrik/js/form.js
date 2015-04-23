@@ -65,6 +65,8 @@ var FbForm = new Class({
 		this.events = {};
 
 		this.submitBroker = new FbFormSubmit();
+
+		Fabrik.fireEvent('fabrik.form.loaded', [this]);
 	},
 
 	_setMozBoxWidths: function () {
@@ -536,7 +538,7 @@ var FbForm = new Class({
 
 	changePage: function (dir) {
 		this.changePageDir = dir;
-		Fabrik.fireEvent('fabrik.form.page.change', [this]);
+		Fabrik.fireEvent('fabrik.form.page.change', [this, dir]);
 		if (this.result === false) {
 			this.result = true;
 			return;
@@ -553,8 +555,8 @@ var FbForm = new Class({
 		document.id('page_' + this.currentPage).setStyle('display', '');
 		this._setMozBoxWidths();
 		this.hideOtherPages();
-		Fabrik.fireEvent('fabrik.form.page.chage.end', [this]);
-		Fabrik.fireEvent('fabrik.form.page.change.end', [this]);
+		Fabrik.fireEvent('fabrik.form.page.chage.end', [this, dir]);
+		Fabrik.fireEvent('fabrik.form.page.change.end', [this, dir]);
 		if (this.result === false) {
 			this.result = true;
 			return;
@@ -1010,7 +1012,8 @@ var FbForm = new Class({
 				if (confirm(Joomla.JText._('COM_FABRIK_CONFIRM_DELETE_1'))) {
 					var res = Fabrik.fireEvent('fabrik.form.delete', [this, this.options.rowid]).eventResults;
 					if (typeOf(res) === 'null' || res.length === 0 || !res.contains(false)) {
-						this.form.getElement('input[name=task]').value = this.options.admin ? 'form.delete' : 'delete';
+						// Task value is the same for front and admin
+						this.form.getElement('input[name=task]').value = 'form.delete';
 						this.doSubmit(e, del);
 					} else {
 						e.stop();

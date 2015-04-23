@@ -103,7 +103,7 @@ $states	= array(
 					<?php echo FText::_('COM_FABRIK_VALIDATIONS'); ?>
 				</th>
 				<th width="10%">
-				<?php echo JHTML::_('grid.sort', 'COM_FABRIK_GROUP', 'g.label', $listDirn, $listOrder); ?>
+				<?php echo JHTML::_('grid.sort', 'COM_FABRIK_GROUP', 'g.name', $listDirn, $listOrder); ?>
 				</th>
 				<th width="10%">
 					<?php echo JHTML::_('grid.sort', 'COM_FABRIK_PLUGIN', 'e.plugin', $listDirn, $listOrder); ?>

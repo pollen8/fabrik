@@ -240,7 +240,6 @@ class FabrikHelperHTML
 	public static function windows($selector = '', $params = array())
 	{
 		$app = JFactory::getApplication();
-		$document = JFactory::getDocument();
 		$input = $app->input;
 		$script = '';
 
@@ -429,10 +428,6 @@ if (!$j3)
 
 	public static function printIcon($formModel, $params, $rowid = '')
 	{
-		$app = JFactory::getApplication();
-		$config = JFactory::getConfig();
-		$form = $formModel->getForm();
-		$table = $formModel->getTable();
 		$status = "status=no,toolbar=no,scrollbars=yes,titlebar=no,menubar=no,resizable=yes,width=400,height=350,directories=no,location=no";
 		$link = self::printURL($formModel);
 
@@ -940,7 +935,6 @@ if (!$j3)
 		if (!self::$framework)
 		{
 			$app = JFactory::getApplication();
-			$document = JFactory::getDocument();
 			$version = new JVersion;
 			$jsAssetBaseURI = self::getJSAssetBaseURI();
 			$fbConfig = JComponentHelper::getParams('com_fabrik');
@@ -966,7 +960,6 @@ if (!$j3)
 				JHtml::_('formbehavior.chosen', 'select.advancedSelect');
 			}
 
-				
 			if (self::inAjaxLoadedPage() && !$bootstrapped)
 			{
 				// $$$ rob 06/02/2012 recall ant so that Color.detach is available (needed for opening a window from within a window)
@@ -976,8 +969,7 @@ if (!$j3)
 
 			if (!self::inAjaxLoadedPage())
 			{
-				// Now adding in fabrik system plugin onAfterRender()
-				// $document->addScript($jsAssetBaseURI . 'media/com_fabrik/js/lib/require/require.js');
+				// Require.js now added in fabrik system plugin onAfterRender()
 				JText::script('COM_FABRIK_LOADING');
 				$src[] = 'media/com_fabrik/js/fabrik' . $ext;
 				$src[] = 'media/com_fabrik/js/window' . $ext;
@@ -1023,7 +1015,8 @@ if (!$j3)
 	}
 
 	/**
-	 * Build JS to initiate tips
+	 * Build JS to initiate tips, and observer application state changes,
+	 * reloading the tips if needed.
 	 *
 	 * @return  string
 	 */
@@ -1041,6 +1034,12 @@ if (!$j3)
 		$tipJs[] = "\t\tFabrik.tips.hideAll();";
 		$tipJs[] = "\t});";
 		$tipJs[] = "\tFabrik.addEvent('fabrik.list.inlineedit.setData', function () {";
+		$tipJs[] = "\t\tFabrik.tips.attach('.fabrikTip');";
+		$tipJs[] = "\t});";
+
+		// Reload tips if a form is loaded (e.g. a list view with ajax links on which loads a form in a popup)
+		// see: https://github.com/Fabrik/fabrik/issues/1394
+		$tipJs[] = "\tFabrik.addEvent('fabrik.form.loaded', function () {";
 		$tipJs[] = "\t\tFabrik.tips.attach('.fabrikTip');";
 		$tipJs[] = "\t});";
 
@@ -1712,8 +1711,8 @@ if (!$j3)
 	public static function folderAjaxSelect($folders, $path = '', $tpl = '')
 	{
 		$str = array();
-		$str[] = '<a href="#" class="toggle" title="' . FText::_('COM_FABRIK_BROWSE_FOLDERS') . '">';
-		$str[] = self::image('orderneutral.png', 'form', $tpl, array('alt' => FText::_('COM_FABRIK_BROWSE_FOLDERS')));
+		$str[] = '<a href="#" class="btn btn-default toggle" title="' . FText::_('COM_FABRIK_BROWSE_FOLDERS') . '">';
+		$str[] = self::image('orderneutral.png', 'form', $tpl, array('alt' => FText::_('COM_FABRIK_BROWSE_FOLDERS'), 'icon-class' => 'icon-menu-2'));
 		$str[] = '</a>';
 		$str[] = '<div class="folderselect-container">';
 		$str[] = '<span class="breadcrumbs"><a href="#">' . FText::_('HOME') . '</a><span> / </span>';
@@ -2112,8 +2111,6 @@ if (!$j3)
 	public static function gridItems($values, $labels, $selected, $name, $type = 'checkbox',
 		$elementBeforeLabel = true, $classes = array(), $buttonGroup = false)
 	{
-		$j3 = FabrikWorker::j3();
-		$version = new JVersion;
 		$items = array();
 
 		for ($i = 0; $i < count($values); $i++)
@@ -2164,8 +2161,6 @@ if (!$j3)
 	public static function grid($values, $labels, $selected, $name, $type = 'checkbox',
 		$elementBeforeLabel = true, $optionsPerRow = 4, $classes = array(), $buttonGroup = false)
 	{
-		$items = array();
-
 		if (FabrikWorker::j3())
 		{
 			$elementBeforeLabel = true;
@@ -2176,7 +2171,6 @@ if (!$j3)
 		$grid = array();
 		$optionsPerRow = empty($optionsPerRow) ? 4 : $optionsPerRow;
 		$w = floor(100 / $optionsPerRow);
-		$widthConstraint = '';
 
 		if ($buttonGroup && $type == 'radio')
 		{
@@ -2234,20 +2228,20 @@ if (!$j3)
 			$endLine = ($i !== 0 && (($i ) % $columns == 0));
 			$newLine = ($i % $columns == 0);
 
-			if ($endLine && $columns > 1)
+			if ($endLine)
 			{
 				$grid[] = '</div><!-- grid close row -->';
 			}
 
-			if ($newLine && $columns > 1)
+			if ($newLine)
 			{
 				$grid[] = '<div class="row-fluid">';
 			}
 
-			$grid[] = $columns != 1 ? '<div class="' . $spanClass . ' span' . $span . '">' . $s . '</div>' : $s;
+			$grid[] = '<div class="' . $spanClass . ' span' . $span . '">' . $s . '</div>' ;
 		}
 
-		if ($i + 1 % $columns !== 0 && $columns > 1)
+		if ($i + 1 % $columns !== 0)
 		{
 			// Close opened and unfinished row.
 			$grid[] = '</div><!-- grid close end row -->';
@@ -2326,7 +2320,7 @@ if (!$j3)
 	 * @return  string  content item html
 	 */
 
-	public function getContentTemplate($contentTemplate, $part = 'both', $runPlugins = false)
+	public static function getContentTemplate($contentTemplate, $part = 'both', $runPlugins = false)
 	{
 		$app = JFactory::getApplication();
 
@@ -2531,7 +2525,7 @@ if (!$j3)
 			case 0:
 			case 1:
 			default:
-				$attrs[] = "rel=lightbox{" . $group . "]";
+				$attrs[] = 'rel="lightbox[' . $group . ']"';
 				break;
 			case 2:
 				$attrs[] = "data-rokbox";
@@ -2732,7 +2726,6 @@ if (!$j3)
 		// Include MooTools More framework
 		static::framework('more');
 
-		$document = JFactory::getDocument();
 		$debug = JFactory::getConfig()->get('debug');
 		$version = new JVersion;
 
@@ -2751,7 +2744,6 @@ if (!$j3)
 			$js[] = "  window.punycode = p;";
 			$js[] = "});";
 
-			//$document->addScriptDeclaration(implode("\n", $js));
 			self::addToSessionHeadScripts(implode("\n", $js));
 		}
 

@@ -25,13 +25,13 @@ require_once JPATH_ADMINISTRATOR . '/components/com_fabrik/helpers/element.php';
  * @subpackage  Form
  * @since       1.6
  */
-
 class JFormFieldListfields extends JFormFieldList
 {
 	/**
 	 * Element name
-	 * @access	protected
-	 * @var		string
+	 *
+	 * @access    protected
+	 * @var        string
 	 */
 	protected $name = 'Listfields';
 
@@ -45,7 +45,7 @@ class JFormFieldListfields extends JFormFieldList
 	/**
 	 * Method to get the field input markup.
 	 *
-	 * @return  string	The field input markup.
+	 * @return  string    The field input markup.
 	 */
 
 	protected function getInput()
@@ -55,123 +55,47 @@ class JFormFieldListfields extends JFormFieldList
 			$this->results = array();
 		}
 
-		$app = JFactory::getApplication();
-		$input = $app->input;
-		$controller = $input->get('view', $input->get('task'));
-		$formModel = false;
-		$aEls = array();
-		$pluginFilters = trim($this->element['filter']) == '' ? array() : explode('|', $this->element['filter']);
-		$c = (int) FabrikAdminElementHelper::getRepeatCounter($this);
-		$connection = $this->element['connection'];
+		$app           = JFactory::getApplication();
+		$input         = $app->input;
+		$controller    = $input->get('view', $input->get('task'));
+		$formModel     = false;
+		$filter        = $this->getAttribute('filter');
+		$pluginFilters = trim($filter) == '' ? array() : explode('|', $filter);
+		$attribs       = $this->element['@attributes'];
+		$connection    = $this->getAttribute('connection');
 		/*
 		 * 27/08/2011 - changed from default table-element to id - for juser form plugin - might cause havoc
 		 * else where but loading elements by id as default seems more robust (and is the default behaviour in f2.1
 		 */
-		$valueformat = (string) FArrayHelper::getValue($this->element, 'valueformat', 'id');
-		$onlylistfields = (int) FArrayHelper::getValue($this->element, 'onlylistfields', 0);
-		$showRaw = (bool) FArrayHelper::getValue($this->element, 'raw', false);
-		$labelMethod = (string) FArrayHelper::getValue($this->element, 'label_method');
-		$nojoins = (bool) FArrayHelper::getValue($this->element, 'nojoins', false);
-		$mode = (string) FArrayHelper::getValue($this->element, 'mode', false);
-		$useStep = (bool) FArrayHelper::getValue($this->element, 'usestep', false);
+		$valueFormat    = (string) $this->getAttribute('valueformat', 'id');
+		$onlyListFields = (int) $this->getAttribute('onlylistfields', 0);
+		$showRaw        = FabrikWorker::toBoolean($this->getAttribute('raw', false), false);
+		$labelMethod    = (string) $this->getAttribute('label_method');
+		$noJoins        = FabrikWorker::toBoolean($this->getAttribute('nojoins', false), false);
+		$mode           = (string) $this->getAttribute('mode', false);
+		$useStep        = FabrikWorker::toBoolean($this->getAttribute('usestep', false), false);
 
 		switch ($controller)
 		{
 			case 'validationrule':
-				$id = $input->getInt('id');
-				$pluginManager = FabrikWorker::getPluginManager();
-				$elementModel = $pluginManager->getElementPlugin($id);
-				$element = $elementModel->getElement();
-				$res = $this->loadFromGroupId($element->group_id);
+				$res = $this->_validationOptions();
 				break;
 			case 'visualization':
 			case 'element':
-				$repeat = FabrikAdminElementHelper::getRepeat($this) || $this->element['repeat'];
-
-				// @TODO this seems like we could re-factor it to use the formModel class as per the table and form switches below?
-				// $connectionDd = ($c === false) ? $connection : $connection . '-' . $c;
-				$connectionDd = $repeat ? $connection . '-' . $c : $connection;
-
-				if ($connection == '')
-				{
-					$groupId = isset($this->form->rawData) ? FArrayHelper::getValue($this->form->rawData, 'group_id', 0)
-						: $this->form->getValue('group_id');
-					$res = $this->loadFromGroupId($groupId);
-				}
-				else
-				{
-					$this->js();
-					$o = new stdClass;
-					$o->table_name = '';
-					$o->name = '';
-					$o->value = '';
-					$o->text = FText::_('COM_FABRIK_SELECT_A_TABLE_FIRST');
-					$res[] = $o;
-				}
+				$res = $this->_elementOptions($connection);
 				break;
 			case 'listform':
 			case 'list':
 			case 'module':
 			case 'item':
-			// Menu item
-				if ($controller === 'item')
-				{
-					$id = $this->form->getValue('request.listid');
-				}
-				else
-				{
-					$id = $this->form->getValue('id');
-				}
-
-				if (!isset($this->form->model))
-				{
-					if (!in_array($controller, array('item', 'module')))
-					{
-						// Seems to work anyway in the admin module page - so lets not raise notice
-						$app->enqueueMessage('Model not set in listfields field ' . $this->id, 'notice');
-					}
-
-					return;
-				}
-
-				$listModel = $this->form->model;
-
-				if ($id !== 0)
-				{
-					$formModel = $listModel->getFormModel();
-					$valfield = $valueformat == 'tableelement' ? 'name' : 'id';
-					$res = $formModel->getElementOptions($useStep, $valfield, $onlylistfields, $showRaw, $pluginFilters, $labelMethod, $nojoins);
-				}
-				else
-				{
-					$res = array();
-				}
-
+				// Menu item
+				$res = $this->_listOptions($controller, $valueFormat, $useStep, $onlyListFields, $showRaw, $pluginFilters, $labelMethod, $noJoins);
 				break;
 			case 'form':
-
-				if (!isset($this->form->model))
-				{
-					throw new RuntimeException('Model not set in listfields field ' . $this->id);
-
-					return;
-				}
-
-				$formModel = $this->form->model;
-				$valfield = $valueformat == 'tableelement' ? 'name' : 'id';
-				$res = $formModel->getElementOptions($useStep, $valfield, $onlylistfields, $showRaw, $pluginFilters, $labelMethod, $nojoins);
-
-				$jsres = $formModel->getElementOptions($useStep, $valfield, $onlylistfields, $showRaw, $pluginFilters, $labelMethod, $nojoins);
-				array_unshift($jsres, JHTML::_('select.option', '', FText::_('COM_FABRIK_PLEASE_SELECT')));
-				$this->js($jsres);
+				$res = $this->_formOptions($valueFormat, $useStep, $onlyListFields, $showRaw, $pluginFilters, $labelMethod, $noJoins);
 				break;
 			case 'group':
-				$valfield = $valueformat == 'tableelement' ? 'name' : 'id';
-				$id = $this->form->getValue('id');
-				$groupModel = JModelLegacy::getInstance('Group', 'FabrikFEModel');
-				$groupModel->setId($id);
-				$formModel = $groupModel->getFormModel();
-				$res = $formModel->getElementOptions($useStep, $valfield, $onlylistfields, $showRaw, $pluginFilters, $labelMethod, $nojoins);
+				$res = $this->_groupOptions($useStep, $valueFormat, $onlyListFields, $showRaw, $pluginFilters, $labelMethod, $noJoins);
 				break;
 			default:
 				return FText::_('The ListFields element is only usable by lists and elements');
@@ -182,48 +106,18 @@ class JFormFieldListfields extends JFormFieldList
 
 		if (is_array($res))
 		{
-			if ($controller == 'element')
-			{
-				foreach ($res as $o)
-				{
-					$s = new stdClass;
-
-					// Element already contains correct key
-					if ($controller != 'element')
-					{
-						$s->value = $valueformat == 'tableelement' ? $o->table_name . '.' . $o->text : $o->value;
-					}
-					else
-					{
-						$s->value = $o->value;
-					}
-
-					$s->text = FabrikString::getShortDdLabel($o->text);
-					$aEls[] = $s;
-				}
-			}
-			else
-			{
-				foreach ($res as &$o)
-				{
-					$o->text = FabrikString::getShortDdLabel($o->text);
-				}
-
-				$aEls = $res;
-			}
-			// Paul - Prepend rather than append "none" option.
-			array_unshift($aEls, JHTML::_('select.option', '', '-'));
+			$aEls = $this->_formatOptions($res, $valueFormat);
 
 			// For pk fields - we are no longer storing the key with '`' as that's mySQL specific
 			$this->value = str_replace('`', '', $this->value);
 
 			// Some elements were stored as names but subsequently changed to ids (need to check for old values an substitute with correct ones)
-			if ($valueformat == 'id' && !is_numeric($this->value) && $this->value != '')
+			if ($valueFormat == 'id' && !is_numeric($this->value) && $this->value != '')
 			{
 				if ($formModel)
 				{
 					$elementModel = $formModel->getElement($this->value);
-					$this->value = $elementModel ? $elementModel->getId() : $this->value;
+					$this->value  = $elementModel ? $elementModel->getId() : $this->value;
 				}
 			}
 
@@ -236,7 +130,7 @@ class JFormFieldListfields extends JFormFieldList
 			{
 				$return = JHTML::_('select.genericlist', $aEls, $this->name, 'class="inputbox" size="1" ', 'value', 'text', $this->value, $this->id);
 				$return .= '<img style="margin-left:10px;display:none" id="' . $this->id
-				. '_loader" src="components/com_fabrik/images/ajax-loader.gif" alt="' . FText::_('LOADING') . '" />';
+					. '_loader" src="components/com_fabrik/images/ajax-loader.gif" alt="' . FText::_('LOADING') . '" />';
 			}
 		}
 
@@ -246,34 +140,251 @@ class JFormFieldListfields extends JFormFieldList
 		return $return;
 	}
 
+	/**
+	 * Format options
+	 *
+	 * @param array $res
+	 * @param       $valueFormat
+	 *
+	 * @return array
+	 * @throws Exception
+	 */
+	private function _formatOptions(array $res, $valueFormat)
+	{
+		$aEls       = array();
+		$input      = JFactory::getApplication()->input;
+		$controller = $input->get('view', $input->get('task'));
+
+		if ($controller == 'element')
+		{
+			foreach ($res as $o)
+			{
+				$s = new stdClass;
+
+				// Element already contains correct key
+				if ($controller != 'element')
+				{
+					$s->value = $valueFormat == 'tableelement' ? $o->table_name . '.' . $o->text : $o->value;
+				}
+				else
+				{
+					$s->value = $o->value;
+				}
+
+				$s->text = FabrikString::getShortDdLabel($o->text);
+				$aEls[]  = $s;
+			}
+		}
+		else
+		{
+			foreach ($res as &$o)
+			{
+				$o->text = FabrikString::getShortDdLabel($o->text);
+			}
+
+			$aEls = $res;
+		}
+
+		// Paul - Prepend rather than append "none" option.
+		array_unshift($aEls, JHTML::_('select.option', '', '-'));
+
+		return $aEls;
+	}
+
+	/**
+	 * Get validation options
+	 *
+	 * @return array
+	 * @throws Exception
+	 */
+	private function _validationOptions()
+	{
+		$input         = JFactory::getApplication()->input;
+		$id            = $input->getInt('id');
+		$pluginManager = FabrikWorker::getPluginManager();
+		$elementModel  = $pluginManager->getElementPlugin($id);
+		$element       = $elementModel->getElement();
+
+		return $this->loadFromGroupId($element->group_id);
+	}
+
+	/**
+	 * Get element options
+	 *
+	 * @param $connection
+	 *
+	 * @return array
+	 */
+	private function _elementOptions($connection)
+	{
+		if ($connection == '')
+		{
+			$groupId = isset($this->form->rawData) ? FArrayHelper::getValue($this->form->rawData, 'group_id', 0)
+				: $this->form->getValue('group_id');
+			$res     = $this->loadFromGroupId($groupId);
+		}
+		else
+		{
+			$this->js();
+			$o             = new stdClass;
+			$o->table_name = '';
+			$o->name       = '';
+			$o->value      = '';
+			$o->text       = FText::_('COM_FABRIK_SELECT_A_TABLE_FIRST');
+			$res[]         = $o;
+		}
+
+		return $res;
+	}
+
+	/**
+	 * Get list options
+	 *
+	 * @param $controller
+	 * @param $valueFormat
+	 * @param $useStep
+	 * @param $onlyListFields
+	 * @param $showRaw
+	 * @param $pluginFilters
+	 * @param $labelMethod
+	 * @param $noJoins
+	 *
+	 * @return array|void
+	 * @throws Exception
+	 */
+	private function _listOptions($controller, $valueFormat, $useStep, $onlyListFields, $showRaw, $pluginFilters, $labelMethod, $noJoins)
+	{
+		$app = JFactory::getApplication();
+
+		if ($controller === 'item')
+		{
+			$id = $this->form->getValue('request.listid');
+		}
+		else
+		{
+			$id = $this->form->getValue('id');
+		}
+
+		if (!isset($this->form->model))
+		{
+			if (!in_array($controller, array('item', 'module')))
+			{
+				// Seems to work anyway in the admin module page - so lets not raise notice
+				$app->enqueueMessage('Model not set in listfields field ' . $this->id, 'notice');
+			}
+
+			return;
+		}
+
+		$listModel = $this->form->model;
+
+		if ($id !== 0)
+		{
+			$formModel = $listModel->getFormModel();
+			$valField  = $valueFormat == 'tableelement' ? 'name' : 'id';
+			$res       = $formModel->getElementOptions($useStep, $valField, $onlyListFields, $showRaw, $pluginFilters, $labelMethod, $noJoins);
+		}
+		else
+		{
+			$res = array();
+		}
+
+		return $res;
+	}
+
+	/**
+	 * Form options
+	 *
+	 * @param $valueFormat
+	 * @param $useStep
+	 * @param $onlyListFields
+	 * @param $showRaw
+	 * @param $pluginFilters
+	 * @param $labelMethod
+	 * @param $noJoins
+	 *
+	 * @return array
+	 */
+	private function _formOptions($valueFormat, $useStep, $onlyListFields, $showRaw, $pluginFilters, $labelMethod, $noJoins)
+	{
+		if (!isset($this->form->model))
+		{
+			throw new RuntimeException('Model not set in listfields field ' . $this->id);
+
+			return;
+		}
+
+		$formModel = $this->form->model;
+		$valField  = $valueFormat == 'tableelement' ? 'name' : 'id';
+		$res       = $formModel->getElementOptions($useStep, $valField, $onlyListFields, $showRaw, $pluginFilters, $labelMethod, $noJoins);
+
+		$jsRes = $formModel->getElementOptions($useStep, $valField, $onlyListFields, $showRaw, $pluginFilters, $labelMethod, $noJoins);
+		array_unshift($jsRes, JHTML::_('select.option', '', FText::_('COM_FABRIK_PLEASE_SELECT')));
+		$this->js($jsRes);
+
+		return $res;
+	}
+
+	/**
+	 * Get group view options
+	 *
+	 * @param $useStep
+	 * @param $valueFormat
+	 * @param $onlyListFields
+	 * @param $showRaw
+	 * @param $pluginFilters
+	 * @param $labelMethod
+	 * @param $noJoins
+	 *
+	 * @return array
+	 */
+	private function _groupOptions($useStep, $valueFormat, $onlyListFields, $showRaw, $pluginFilters, $labelMethod, $noJoins)
+	{
+		$valField   = $valueFormat == 'tableelement' ? 'name' : 'id';
+		$id         = $this->form->getValue('id');
+		$groupModel = JModelLegacy::getInstance('Group', 'FabrikFEModel');
+		$groupModel->setId($id);
+		$formModel = $groupModel->getFormModel();
+
+		return $formModel->getElementOptions($useStep, $valField, $onlyListFields, $showRaw, $pluginFilters, $labelMethod, $noJoins);
+	}
+
+	/**
+	 * Get JS
+	 *
+	 * @param array $res
+	 */
 	private function js($res = array())
 	{
-		$connection = $this->element['connection'];
-		$repeat = FabrikAdminElementHelper::getRepeat($this) || $this->element['repeat'];
-		$c = (int) FabrikAdminElementHelper::getRepeatCounter($this);
-		$mode = (string) FArrayHelper::getValue($this->element, 'mode', false);
-		$connectionDd = $repeat ? $connection . '-' . $c : $connection;
-		$highlightpk = (bool) FArrayHelper::getValue($this->element, 'highlightpk', false);
-		$tableDd = $this->element['table'];
-		$opts = new stdClass;
-		$opts->table = ($repeat) ? 'jform_' . $tableDd . '-' . $c : 'jform_' . $tableDd;
-		$opts->conn = 'jform_' . $connectionDd;
-		$opts->value = $this->value;
-		$opts->repeat = $repeat;
-		$opts->showAll = (int) FArrayHelper::getValue($this->element, 'showall', '1');
-		$opts->highlightpk = (int) $highlightpk;
-		$opts->mode = $mode;
+		$connection        = $this->getAttribute('connection');
+		$repeat            = FabrikWorker::toBoolean($this->getAttribute('repeat', false), false);
+		$repeat            = FabrikAdminElementHelper::getRepeat($this) || $repeat;
+		$c                 = (int) FabrikAdminElementHelper::getRepeatCounter($this);
+		$mode              = $this->getAttribute('mode');
+		$connectionDd      = $repeat ? $connection . '-' . $c : $connection;
+		$highlightPk       = FabrikWorker::toBoolean($this->getAttribute('highlightpk', false), false);
+		$tableDd           = $this->getAttribute('table');
+		$opts              = new stdClass;
+		$opts->table       = ($repeat) ? 'jform_' . $tableDd . '-' . $c : 'jform_' . $tableDd;
+		$opts->conn        = 'jform_' . $connectionDd;
+		$opts->value       = $this->value;
+		$opts->repeat      = $repeat;
+		$opts->showAll     = (int) $this->getAttribute('showall', '1');
+		$opts->highlightpk = (int) $highlightPk;
+		$opts->mode        = $mode;
 		$opts->defaultOpts = $res;
-		$opts->addBrackets = (bool) FArrayHelper::getValue($this->element, 'addbrackets', false);
-		$opts = json_encode($opts);
-		$script = array();
-		$script[] = "if (typeOf(FabrikAdmin.model.fields.listfields) === 'null') {";
-		$script[] = "FabrikAdmin.model.fields.listfields = {};";
-		$script[] = "}";
-		$script[] = "FabrikAdmin.model.fields.listfields['$this->id'] = new ListFieldsElement('$this->id', $opts);";
-		$script = implode("\n", $script);
+		$opts->addBrackets = FabrikWorker::toBoolean($this->getAttribute('addbrackets', false), false);
+		$opts              = json_encode($opts);
+		$script            = array();
+		$script[]          = "if (typeOf(FabrikAdmin.model.fields.listfields) === 'null') {";
+		$script[]          = "FabrikAdmin.model.fields.listfields = {};";
+		$script[]          = "}";
+		$script[]          = "if (FabrikAdmin.model.fields.listfields['$this->id'] === undefined) {";
+		$script[]          = "FabrikAdmin.model.fields.listfields['$this->id'] = new ListFieldsElement('$this->id', $opts);";
+		$script[]          = "}";
+		$script            = implode("\n", $script);
 
-		$srcs = array();
+		$srcs   = array();
 		$srcs[] = 'media/com_fabrik/js/fabrik.js';
 		$srcs[] = 'administrator/components/com_fabrik/models/fields/listfields.js';
 		FabrikHelperHTML::script($srcs, $script);
@@ -287,8 +398,9 @@ class JFormFieldListfields extends JFormFieldList
 
 	private function gui()
 	{
-		$str = array();
-		$modeField = (string) FArrayHelper::getValue($this->element, 'modefield', 'textarea');
+		$attribs   = $this->element['@attributes'];
+		$str       = array();
+		$modeField = (string) $this->getAttribute('modefield', 'textarea');
 
 		if ($modeField === 'textarea')
 		{
@@ -308,7 +420,7 @@ class JFormFieldListfields extends JFormFieldList
 	/**
 	 * Load the element list from the group id
 	 *
-	 * @param   int  $groupId  Group id
+	 * @param   int $groupId Group id
 	 *
 	 * @since   3.0.6
 	 *
@@ -317,23 +429,24 @@ class JFormFieldListfields extends JFormFieldList
 
 	protected function loadFromGroupId($groupId)
 	{
-		$app = JFactory::getApplication();
-		$input = $app->input;
-		$controller = $input->get('view', $input->get('task'));
-		$valueformat = (string) FArrayHelper::getValue($this->element, 'valueformat', 'id');
-		$onlylistfields = (int) FArrayHelper::getValue($this->element, 'onlylistfields', 0);
-		$pluginFilters = trim($this->element['filter']) == '' ? array() : explode('|', $this->element['filter']);
-		$labelMethod = (string) FArrayHelper::getValue($this->element, 'label_method');
-		$nojoins = (bool) FArrayHelper::getValue($this->element, 'nojoins', false);
+		$app            = JFactory::getApplication();
+		$input          = $app->input;
+		$controller     = $input->get('view', $input->get('task'));
+		$valueFormat    = (string) $this->getAttribute('valueformat', 'id');
+		$onlyListFields = (int) $this->getAttribute('onlylistfields', 0);
+		$filter         = (string) $this->getAttribute('filter', '');
+		$pluginFilters  = trim($filter) == '' ? array() : explode('|', $filter);
+		$labelMethod    = (string) $this->getAttribute('label_method');
+		$noJoins        = FabrikWorker::toBoolean($this->getAttribute('nojoins', false), false);
 
-		$bits = array();
-		$showRaw = (bool) FArrayHelper::getValue($this->element, 'raw', false);
+		$bits       = array();
+		$showRaw    = FabrikWorker::toBoolean($this->getAttribute('raw', false), false);
 		$groupModel = JModelLegacy::getInstance('Group', 'FabrikFEModel');
 		$groupModel->setId($groupId);
-		$optskey = $valueformat == 'tableelement' ? 'name' : 'id';
-		$useStep = (bool) FArrayHelper::getValue($this->element, 'usestep', false);
-		$res = $groupModel->getForm()->getElementOptions($useStep, $optskey, $onlylistfields, $showRaw, $pluginFilters, $labelMethod, $nojoins);
-		$hash = $controller . '.' . implode('.', $bits);
+		$optsKey = $valueFormat == 'tableelement' ? 'name' : 'id';
+		$useStep = FabrikWorker::toBoolean($this->getAttribute('usestep', false), false);
+		$res     = $groupModel->getForm()->getElementOptions($useStep, $optsKey, $onlyListFields, $showRaw, $pluginFilters, $labelMethod, $noJoins);
+		$hash    = $controller . '.' . implode('.', $bits);
 
 		if (array_key_exists($hash, $this->results))
 		{

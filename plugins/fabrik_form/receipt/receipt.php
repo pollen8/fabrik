@@ -35,24 +35,17 @@ class PlgFabrik_FormReceipt extends PlgFabrik_Form
 	public function getBottomContent()
 	{
 		$params = $this->getParams();
+		$layout = $this->getLayout('bottom');
+		$layoutData = new stdClass;
+		$layoutData->askReceipt = $params->get('ask-receipt');
+		$layoutData->label = $params->get('receipt_button_label', '');
 
-		if ($params->get('ask-receipt'))
+		if ($layoutData->label === '')
 		{
-			$label = $params->get('receipt_button_label', '');
-
-			if ($label === '')
-			{
-				$label = FText::_('PLG_FORM_RECEIPT_EMAIL_ME_A_COPY');
-			}
-
-			$this->html = "
-			<label><input type=\"checkbox\" name=\"fabrik_email_copy\" class=\"contact_email_copy\" value=\"1\"  />
-			 " . $label . "</label>";
+			$layoutData->label = FText::_('PLG_FORM_RECEIPT_EMAIL_ME_A_COPY');
 		}
-		else
-		{
-			$this->html = '';
-		}
+
+		$this->html = $layout->render($layoutData);
 	}
 
 	/**

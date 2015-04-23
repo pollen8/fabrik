@@ -357,6 +357,8 @@ class PlgFabrik_ListUpdate_Col extends PlgFabrik_List
 	private function getEmailUserIds($ids)
 	{
 		$elementModel = $this->getEmailElement();
+		$model = $this->getModel();
+		$item = $model->getTable();
 		$emailColumn = $elementModel->getFullName(false, false);
 		$tbl = array_shift(explode('.', $emailColumn));
 		$db = JFactory::getDbo();
@@ -498,12 +500,7 @@ class PlgFabrik_ListUpdate_Col extends PlgFabrik_List
 	{
 		$model = $this->getModel();
 		JText::script('PLG_LIST_UPDATE_COL_UPDATE');
-		$html = array();
-		$fieldNames = array();
 		$options[] = '<option value="">' . FText::_('COM_FABRIK_PLEASE_SELECT') . '</option>';
-		$form = $model->getFormModel();
-		$groups = $form->getGroupsHiarachy();
-		$gkeys = array_keys($groups);
 		$elementModels = $model->getElements(0, false, true);
 
 		foreach ($elementModels as $elementModel)
@@ -524,25 +521,17 @@ class PlgFabrik_ListUpdate_Col extends PlgFabrik_List
 		$j3 = FabrikWorker::j3();
 		$addImg = $j3 ? 'plus.png' : 'add.png';
 		$removeImg = $j3 ? 'remove.png' : 'del.png';
-		$add = '<a class="btn add button btn-primary" href="#">
-			' . FabrikHelperHTML::image($addImg, 'list', $model->getTmpl()) . '</a>';
-		$del = '<a class="btn button delete" href="#">' . FabrikHelperHTML::image($removeImg, 'list', $model->getTmpl()) . '</a>';
-		$html[] = '<form id="update_col' . $listRef . '">';
 
-		$class = $j3 ? 'table table-striped' : 'fabrikList';
-		$html[] = '<table class="' . $class . '" style="width:100%">';
-		$html[] = '<thead>';
-		$html[] = '<tr><th>' . FText::_('COM_FABRIK_ELEMENT') . '</th><th>' . FText::_('COM_FABRIK_VALUE') . '</th><th>' . $add . '</th><tr>';
-		$html[] = '</thead>';
 
-		$html[] = '<tbody>';
-		$html[] = '<tr><td>' . $elements . '</td><td class="update_col_value"></th><td><div class="btn-group">' . $add . $del . '</div></td></tr>';
-		$html[] = '</tbody>';
-		$html[] = '</table>';
-		$html[] = '<input class="button btn button-primary" value="' . FText::_('COM_FABRIK_APPLY') . '" type="button">';
-		$html[] = '</form>';
+		$layout = $this->getLayout('form');
+		$layoutData = new stdClass;
+		$layoutData->listRef = $listRef;
+		$layoutData->j3 = $j3;
+		$layoutData->addImg = FabrikHelperHTML::image($addImg, 'list', $model->getTmpl());
+		$layoutData->delImg = FabrikHelperHTML::image($removeImg, 'list', $model->getTmpl());
+		$layoutData->elements = $elements;
 
-		return implode("\n", $html);
+		return $layout->render($layoutData);
 	}
 
 	/**

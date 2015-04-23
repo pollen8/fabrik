@@ -10,7 +10,7 @@
 				type="listfields"
 				valueformat="tableelement"
 				usestep="true"
-				mode="gui"
+				raw="true"
 				repeat="true"
 				description="PLG_LIST_PIVOT_SUM_FIELDS_DESC"
 				label="PLG_LIST_PIVOT_SUM_FIELDS_LABEL"  />
@@ -50,7 +50,58 @@
 				repeat="true"
 				description="PLG_LIST_PIVOT_Y_COL_DESC"
 				label="PLG_LIST_PIVOT_Y_COL_LABEL"  />
+
+			<field name="pivot_sort" 
+				type="list" 
+				default="dblclick" 
+				description="PLG_LIST_PIVOT_SORT_BY_TOTAL_DESC" 
+				label="PLG_LIST_PIVOT_SORT_BY_TOTAL_LABEL" 
+				repeat="true"> 
+					<option value="0">JNO</option> 
+					<option value="1">PLG_LIST_PIVOT_SORT_DESC</option> 
+					<option value="2">PLG_LIST_PIVOT_SORT_ASC</option> 
+			</field> 
 				
+			<field name="pivot_format_totals" 
+				type="radio" 
+				default="0" 
+				repeat="true" 
+				class="btn-group" 
+				label="PLG_LIST_PIVOT_FORMAT_NUMBERS_LABEL" 
+				description="PLG_LIST_PIVOT_FORMAT_NUMBERS_DESC"> 
+					<option value="0">JNO</option> 
+					<option value="1">JYES</option> 
+			</field> 
+				
+			<field 
+				description="PLG_LIST_PIVOT_ROUND_TO_DESC" 
+				label="PLG_LIST_PIVOT_ROUND_TO_LABEL" 
+				name="pivot_round_to" 
+				repeat="true" 
+				size="3" 
+				type="text" 
+				default="2" 
+			/> 
+				
+			<field 
+				description="PLG_LIST_PIVOT_DECIMAL_SEPCHAR_DESC" 
+				label="PLG_LIST_PIVOT_DECIMAL_SEPCHAR_LABEL" 
+				name="pivot_decimal_sepchar" 
+				repeat="true" 
+				size="3" 
+				type="text" 
+				default="." 
+			/> 
+				
+			<field 
+				description="PLG_LIST_PIVOT_THOUSAND_SEPCHAR_DESC" 
+				label="PLG_LIST_PIVOT_THOUSAND_SEPCHAR_LABEL" 
+				name="pivot_thousand_sepchar" 
+				repeat="true" 
+				size="40" 
+				type="text" 
+			/> 
+	
 			<field name="pivot_cache"
 				type="radio"
 				default="1"

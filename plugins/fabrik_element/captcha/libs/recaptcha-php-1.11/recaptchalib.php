@@ -160,7 +160,7 @@ function fabrik_recaptcha_get_html ($id, $pubkey, $theme = "red", $lang = "en", 
 	$document = JFactory::getDocument();
 	$document->addScript($server . '/js/recaptcha_ajax.js');
 	FabrikHelperHTML::addScriptDeclaration(
-		'window.addEvent("load", function() {
+		'window.addEvent("fabrik.loaded", function() {
 			Recaptcha.create(
 				"'.$pubkey.'",
 	    		"'.$id.'",

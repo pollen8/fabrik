@@ -76,7 +76,6 @@ class PlgFabrik_FormKunena extends PlgFabrik_Form
 		$w = new FabrikWorker;
 
 		$catid = $params->get('kunena_category', 0);
-		$parentid = 0;
 
 		$files[] = COM_FABRIK_BASE . 'components/com_kunena/class.kunena.php';
 		$files[] = COM_FABRIK_BASE . 'components/com_kunena/lib/kunena.defines.php';
@@ -101,8 +100,6 @@ class PlgFabrik_FormKunena extends PlgFabrik_Form
 
 		// Added action in request
 		$input->set('action', $action);
-		$func = 'post';
-		$contentURL = 'empty';
 		$input->set('catid', $catid);
 		$msg = $w->parseMessageForPlaceHolder($params->get('kunena_content'), $formModel->fullFormData);
 		$subject = $params->get('kunena_title');
@@ -146,7 +143,6 @@ class PlgFabrik_FormKunena extends PlgFabrik_Form
 		$w = new FabrikWorker;
 
 		$catid = $params->get('kunena_category', 0);
-		$parentid = 0;
 
 		// Added action in request
 		$msg = $w->parseMessageForPlaceHolder($params->get('kunena_content'), $formModel->fullFormData);

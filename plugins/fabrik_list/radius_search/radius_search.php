@@ -165,7 +165,7 @@ class PlgFabrik_ListRadius_Search extends PlgFabrik_List
 
 		$str .=	'</tbody>
 		</table>';
-		$str .= '<div style="padding-top:5px;float:right">';
+		$str .= '<div class="radius_search_buttons" id="radius_search_buttons' . $this->renderOrder . '">';
 		$str .= '<input type="button" class="btn btn-link cancel" value="' . FText::_('COM_FABRIK_CANCEL') . '" /> ';
 		$str .= '<input type="button" name="filter" value="Go" class="fabrik_filter_submit button btn btn-primary"></div>';
 		$str .= '</div>';
@@ -607,6 +607,7 @@ class PlgFabrik_ListRadius_Search extends PlgFabrik_List
 		$opts->geocode_default_zoom = (int) $o->zoom;
 		$opts->geoCodeAsType = $params->get('geocode_as_type', 1);
 		$opts->renderOrder = $this->renderOrder;
+		$opts->offset_y = (int)$params->get('window_offset_y', '0');
 		$opts = json_encode($opts);
 		$this->jsInstance = "new FbListRadiusSearch($opts)";
 

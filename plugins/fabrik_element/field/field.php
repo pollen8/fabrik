@@ -111,7 +111,6 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 
 	public function render($data, $repeatCounter = 0)
 	{
-		$app = JFactory::getApplication();
 		$params = $this->getParams();
 		$element = $this->getElement();
 		$bits = $this->inputProperties($repeatCounter);
@@ -128,17 +127,6 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 
 		$value = $this->getValue($data, $repeatCounter);
 
-		/* $$$ hugh - if the form just failed validation, number formatted fields will already
-		 * be formatted, so we need to un-format them before formatting them!
-		 */
-		/*
-		if ($this->getFormModel()->failedValidation())
-		{
-			$value = $this->unNumberFormat($value);
-		}
-
-		$value = $this->numberFormat($value);
-		*/
 
 		if (!$this->getFormModel()->failedValidation())
 		{
@@ -194,7 +182,11 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 			$bits['x-webkit-speech'] = "x-webkit-speech";
 		}
 
-		return $this->buildInput('input', $bits);
+		$layout = $this->getLayout('form');
+		$layoutData = new stdClass;
+		$layoutData->attributes = $bits;
+
+		return $layout->render($layoutData);
 	}
 
 	/**
@@ -518,7 +510,7 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 		$this->setId($input->getInt('element_id'));
 		$this->loadMeForAjax();
 		$this->getElement();
-		$params = $this->getParams();
+		$url = 'index.php';
 		$lang = JFactory::getLanguage();
 		$lang->load('com_fabrik.plg.element.field', JPATH_ADMINISTRATOR);
 
@@ -538,7 +530,6 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 			exit;
 		}
 
-		$repeatcount = $input->getInt('repeatcount', 0);
 		$listModel = $this->getListModel();
 		$row = $listModel->getRow($rowid, false);
 
@@ -604,13 +595,12 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 
 		$app = JFactory::getApplication();
 		$package = $app->getUserState('com_fabrik.package', 'fabrik');
-		$formModel = $this->getForm();
+		$formModel = $this->getFormModel();
 		$formid = $formModel->getId();
 		$rowid = $formModel->getRowId();
 
 		if (empty($rowid))
 		{
-			
 			/**
 			 * Meh.  See commentary at the start of $formModel->getEmailData() about rowid.  For now, if this is a new row,
 			 * the only place we're going to find it is in the list model's lastInsertId.  Bah humbug.
@@ -621,7 +611,6 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 			
 			if (empty($rowid))
 			{
-				
 				/**
 				 * Nope.  Try lastInsertId. Or maybe on top of the fridge?  Or in the microwave?  Down the back
 				 * of the couch cushions? 
@@ -638,9 +627,7 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 				{
 					return '';
 				}
-				
 			}
-			
 		}
 
 		/*
@@ -648,11 +635,15 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 		 */
 		
 		$elementid = $this->getId();
-		$link = COM_FABRIK_LIVESITE
+		$src = COM_FABRIK_LIVESITE
 		. 'index.php?option=com_' . $package . '&amp;task=plugin.pluginAjax&amp;plugin=field&amp;method=ajax_renderQRCode&amp;'
 				. 'format=raw&amp;element_id=' . $elementid . '&amp;formid=' . $formid . '&amp;rowid=' . $rowid . '&amp;repeatcount=0';
-		$value = '<img src="' . $link . '"/>';
-		return $value;
+
+		$layout = $this->getLayout('qr');
+		$displayData = new stdClass;
+		$displayData->src = $src;
+
+		return $layout->render($displayData);
 	}
 	
 	/**

@@ -1,1 +1,2 @@
-var FbYouTube=new Class({Extends:FbElement,initialize:function(b,a){this.plugin="fabrikyoutube";this.parent(b,a)}});
+/*! fabrik */
+var FbYouTube=new Class({Extends:FbElement,initialize:function(a,b){this.plugin="fabrikyoutube",this.parent(a,b)}});

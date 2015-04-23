@@ -50,9 +50,21 @@ var PluginManager = new Class({
 					});
 					target.toggleClass('pane-toggler-down');
 				});
+
+				this.watchDescriptions(pluginArea);
 			}
 		}.bind(this));
 
+	},
+
+	watchDescriptions: function (pluginArea) {
+		pluginArea.addEvent('keyup:relay(input[name*=plugin_description])', function (e, target) {
+			var container = target.getParent('.actionContainer'),
+				title = container.getElement('.pluginTitle'),
+				plugin = container.getElement('select[name*=plugin]').getValue(),
+				desc = target.getValue();
+			title.set('text', plugin + ': ' + desc);
+		});
 	},
 
 	iniAccordion: function () {
@@ -253,7 +265,14 @@ var PluginManager = new Class({
 				}
 			}.bind(this),
 			onSuccess: function () {
-				document.id('plugins').getElements('.actionContainer')[c].getElement('span.pluginTitle').set('text', plugin);
+				var container = document.id('plugins').getElements('.actionContainer')[c];
+				var title = container.getElement('span.pluginTitle'),
+					heading = plugin,
+					desc = container.getElement('input[name*=plugin_description]');
+				if (desc) {
+					heading += ': ' + desc.getValue();
+				}
+				title.set('text', heading);
 				this.pluginTotal++;
 				this.updateBootStrap();
 				FabrikAdmin.reTip();

@@ -53,7 +53,6 @@ class PlgFabrik_ElementDropdown extends PlgFabrik_ElementList
 	{
 		$name = $this->getHTMLName($repeatCounter);
 		$id = $this->getHTMLId($repeatCounter);
-		$element = $this->getElement();
 		$params = $this->getParams();
 		$values = $this->getSubOptionValues();
 		$labels = $this->getSubOptionLabels();
@@ -61,13 +60,14 @@ class PlgFabrik_ElementDropdown extends PlgFabrik_ElementList
 		$multiple = $params->get('multiple', 0);
 		$multisize = $params->get('dropdown_multisize', 3);
 		$selected = (array) $this->getValue($data, $repeatCounter);
+
 		$errorCSS = $this->elementError != '' ? " elementErrorHighlight" : '';
 		$boostrapClass = $params->get('bootstrap_class', '');
 		$advancedClass = $this->getAdvancedSelectClass();
 
 		$attribs = 'class="fabrikinput inputbox input ' . $advancedClass . ' ' . $errorCSS . ' ' . $boostrapClass . '"';
 
-		if ($multiple == "1")
+		if ($multiple == '1')
 		{
 			$attribs .= ' multiple="multiple" size="' . $multisize . '" ';
 		}
@@ -128,7 +128,6 @@ class PlgFabrik_ElementDropdown extends PlgFabrik_ElementList
 		$settings['list.attr'] = $attribs;
 		$settings['group.items'] = null;
 
-
 		if ($optgroup)
 		{
 			$groupedOpts = array();
@@ -145,11 +144,29 @@ class PlgFabrik_ElementDropdown extends PlgFabrik_ElementList
 				$groupedOpts[$groupOptLabel][] = $opt;
 			}
 
+			// @todo JLayout list
 			$str = JHTML::_('select.groupedlist', $groupedOpts, $name, $settings);
 		}
 		else
 		{
-			$str = JHTML::_('select.genericlist', $opts, $name, $settings);
+			$layout = $this->getLayout('form');
+			$displayData = new stdClass;
+			$displayData->options = $opts;
+			$displayData->name = $name;
+
+			foreach ($selected as &$sel)
+			{
+				$sel = htmlspecialchars($sel, ENT_QUOTES);
+			}
+
+			$displayData->selected = $selected;
+			$displayData->id = $id;
+			$displayData->errorCSS = $errorCSS;
+			$displayData->multiple = $multiple;
+			$displayData->attribs = $attribs;
+			$displayData->multisize = $multiple ? $multisize : '';
+
+			$str = $layout->render($displayData);
 		}
 
 		$str .= $this->getAddOptionFields($repeatCounter);
@@ -169,7 +186,6 @@ class PlgFabrik_ElementDropdown extends PlgFabrik_ElementList
 	{
 		$params = $this->getParams();
 		$id = $this->getHTMLId($repeatCounter);
-		$element = $this->getElement();
 		$data = $this->getFormModel()->data;
 		$arSelected = $this->getValue($data, $repeatCounter);
 		$values = $this->getSubOptionValues();
@@ -196,7 +212,6 @@ class PlgFabrik_ElementDropdown extends PlgFabrik_ElementList
 
 	public function getDefaultValue($data = array())
 	{
-		$params = $this->getParams();
 		$element = $this->getElement();
 
 		if (!isset($this->default))
@@ -295,12 +310,9 @@ class PlgFabrik_ElementDropdown extends PlgFabrik_ElementList
 			$s = str_replace("'", "", $s);
 		}
 
-		$element = $this->getElement();
 		$vals = $this->getSubOptionValues();
 		$labels = $this->getSubOptionLabels();
 		$return = array();
-		$aRoValues = array();
-		$opts = array();
 		$i = 0;
 
 		foreach ($labels as $label)

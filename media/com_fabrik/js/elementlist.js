@@ -30,7 +30,7 @@ FbElementList = new Class({
 		if (!element) {
 			this.subElements = [];
 		} else {
-			this.subElements = element.getElements('input');
+			this.subElements = element.getElements('input[type=' + this.type+ ']');
 		}
 		return this.subElements;
 	},

@@ -45,19 +45,17 @@ class PlgFabrik_ListRadius_Lookup extends PlgFabrik_List
 		$listModel = new FabrikFEModelList();
 		$listModel->setId($params->get('radius_lookup_list'));
 
-		$displayData = array('renderOrder' => $this->renderOrder);
-		$displayData['vals'] = $app->input->get('radius_lookup' . $this->renderOrder, array(), 'array');
-		$displayData['lat'] = $app->getUserStateFromRequest($baseContext . 'lat' . $this->renderOrder, 'radius_search_lat' . $this->renderOrder);
-		$displayData['lon'] = $app->getUserStateFromRequest($baseContext . 'lon' . $this->renderOrder, 'radius_search_lon' . $this->renderOrder);
-		$displayData['data'] = $listModel->getData();
-		$displayData['distanceField'] = $params->get('distance_field');
-		$displayData['nameField'] = $params->get('name_field');
-		//echo "<pre>";print_r($displayData);
-		$basePath = JPATH_ROOT . '/plugins/fabrik_list/radius_lookup/layouts';
-		$layout = new FabrikLayoutFile('fabrik_list_radius_lookup', $basePath);
-		$layout->addIncludePaths(JPATH_THEMES . '/' . JFactory::getApplication()->getTemplate() . '/html/layouts');
+		$layoutData = array('renderOrder' => $this->renderOrder);
+		$layoutData['vals'] = $app->input->get('radius_lookup' . $this->renderOrder, array(), 'array');
+		$layoutData['lat'] = $app->getUserStateFromRequest($baseContext . 'lat' . $this->renderOrder, 'radius_search_lat' . $this->renderOrder);
+		$layoutData['lon'] = $app->getUserStateFromRequest($baseContext . 'lon' . $this->renderOrder, 'radius_search_lon' . $this->renderOrder);
+		$layoutData['data'] = $listModel->getData();
+		$layoutData['distanceField'] = $params->get('distance_field');
+		$layoutData['nameField'] = $params->get('name_field');
 
-		$str = $layout->render($displayData);
+		$layout = $this->getLayout('filters');
+
+		$str = $layout->render($layoutData);
 
 		$f = new stdClass;
 		$f->label = $params->get('radius_label', 'Radius search');
@@ -262,8 +260,6 @@ class PlgFabrik_ListRadius_Lookup extends PlgFabrik_List
 	public function loadJavascriptClass()
 	{
 		$params = $this->getParams();
-		$model = $this->getModel();
-
 		$opts = array();
 		$opts['container'] = 'radius_search_place_container';
 

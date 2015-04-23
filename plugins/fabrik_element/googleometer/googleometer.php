@@ -48,13 +48,6 @@ class PlgFabrik_ElementGoogleometer extends PlgFabrik_Element
 
 	public function render($data, $repeatCounter = 0)
 	{
-		$app = JFactory::getApplication();
-		$input = $app->input;
-		$name = $this->getHTMLName($repeatCounter);
-		$id = $this->getHTMLId($repeatCounter);
-		$params = $this->getParams();
-		$element = $this->getElement();
-		$value = $this->getValue($data, $repeatCounter);
 		$range = $this->getRange();
 		$fullName = $this->getDataElementFullName();
 		$data = FArrayHelper::getValue($data, $fullName);
@@ -158,9 +151,11 @@ class PlgFabrik_ElementGoogleometer extends PlgFabrik_Element
 		$options['value'] = 'chd=t:' . $data;
 		$options['label'] = 'chl=' . $params->get('googleometer_label');
 		$options['range'] = 'chds=' . $range->min . ',' . $range->max;
-		$options = implode('&amp;', $options);
-		$str = '<img alt="Google-o-meter" src="http://chart.apis.google.com/chart?' . $options . '"/>';
 
-		return $str;
+		$layout = $this->getLayout('chart');
+		$layoutData = new stdClass;
+		$layoutData->options = implode('&amp;', $options);
+
+		return $layout->render($layoutData);
 	}
 }

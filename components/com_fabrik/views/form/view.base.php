@@ -101,9 +101,9 @@ class FabrikViewFormBase extends JViewLegacy
 
 		$this->editable = $model->isEditable();
 
-		$form->label = $model->getLabel();
-		$form->intro = $model->getIntro();
-		$form->outro = $model->getOutro();
+		$form->label = FText::_($model->getLabel());
+		$form->intro = FText::_($model->getIntro());
+		$form->outro = FText::_($model->getOutro());
 		$form->action = $model->getAction();
 		$form->class = $model->getFormClass();
 		$form->formid = $model->isEditable() ? 'form_' . $model->getId() : 'details_' . $model->getId();
@@ -267,28 +267,28 @@ class FabrikViewFormBase extends JViewLegacy
 			if (is_object($menu) && !$this->isMambot)
 			{
 				$menu_params = is_a($menu->params, 'JRegistry') ? $menu->params : new JRegistry($menu->params);
-				$params->set('page_heading', $menu_params->get('page_heading', ''));
+				$params->set('page_heading', FText::_($menu_params->get('page_heading', '')));
 				$params->set('show_page_heading', $menu_params->get('show_page_heading', 0));
-				$browserTitle = $model->getPageTitle($menu_params->get('page_title'));
+				$browserTitle = $model->getPageTitle(FText::_($menu_params->get('page_title')));
 				$document->setTitle($w->parseMessageForPlaceHolder($browserTitle, $_REQUEST));
 			}
 			else
 			{
 				$params->set('show_page_heading', $input->getInt('show_page_heading', 0));
-				$params->set('page_heading', $input->get('title', $title, 'string'));
+				$params->set('page_heading', FText::_($input->get('title', $title, 'string')));
 				$params->set('show-title', $input->getInt('show-title', $params->get('show-title')));
 			}
 
 			if (!$this->isMambot)
 			{
 				$titleData = array_merge($_REQUEST, $model->data);
-				$title = $w->parseMessageForPlaceHolder($params->get('page_heading'), $titleData, false);
+				$title = $w->parseMessageForPlaceHolder(FText::_($params->get('page_heading')), $titleData, false);
 				$params->set('page_heading', $title);
 			}
 		}
 		else
 		{
-			$params->set('page_heading', $title);
+			$params->set('page_heading', FText::_($title));
 			$params->set('show_page_heading', 0);
 		}
 	}
@@ -953,6 +953,9 @@ class FabrikViewFormBase extends JViewLegacy
 			if ($groupModel->isJoin())
 			{
 				$groupPk = $groupModel->getJoinModel()->getForeignId();
+
+				// Use raw otherwise we inject the actual <input> into the hidden field's value
+				$groupPk .= '_raw';
 				$groupRowIds = (array) FArrayHelper::getValue($this->data, $groupPk, array());
 				$groupRowIds = htmlentities(json_encode($groupRowIds));
 

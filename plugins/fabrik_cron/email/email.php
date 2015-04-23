@@ -103,6 +103,10 @@ class PlgFabrik_Cronemail extends PlgFabrik_Cron
 							{
 								$this->log .= "\n failed sending to $thisto";
 							}
+							else
+							{
+								$this->log .= "\n sent to $thisto";
+							}
 						}
 						else
 						{

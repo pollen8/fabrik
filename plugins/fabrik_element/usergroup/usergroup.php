@@ -53,10 +53,7 @@ class PlgFabrik_ElementUsergroup extends PlgFabrik_ElementList
 
 	public function render($data, $repeatCounter = 0)
 	{
-		$element = $this->getElement();
 		$name = $this->getHTMLName($repeatCounter);
-		$html_id = $this->getHTMLId($repeatCounter);
-		$id = $html_id;
 		$params = $this->getParams();
 		$formModel = $this->getFormModel();
 		$userEl = $formModel->getElement($params->get('user_element'), true);
@@ -83,21 +80,16 @@ class PlgFabrik_ElementUsergroup extends PlgFabrik_ElementList
 			$selected = json_decode($selected);
 		}
 
-		if ($this->isEditable())
-		{
-			return JHtml::_('access.usergroups', $name, $selected,true);
-		}
-		else
+		if (!$this->isEditable())
 		{
 			if (!empty($thisUser))
 			{
 				$selected = $thisUser->groups;
 			}
-
 			// Get the titles for the user groups.
 			if (count($selected) > 0)
 			{
-				$db = JFactory::getDbo();
+				$db    = JFactory::getDbo();
 				$query = $db->getQuery(true);
 				$query->select($db->quoteName('title'));
 				$query->from($db->quoteName('#__usergroups'));
@@ -107,16 +99,25 @@ class PlgFabrik_ElementUsergroup extends PlgFabrik_ElementList
 			}
 		}
 
-		return is_array($selected) ? implode(', ', $selected) : "";
+		$layout = $this->getLayout('form');
+		$layoutData = new stdClass;
+		$layoutData->isEditable = $this->isEditable();
+		$layoutData->input = JHtml::_('access.usergroups', $name, $selected, true);
+		$layoutData->selected = is_array($selected) ? implode(', ', $selected) : '';
+
+		return $layout->render($layoutData);
 	}
 
 	/**
 	 * Get sub option values
 	 *
+	 * @param   array  $data  Form data. If submitting a form, we want to use that form's data and not
+	 *                        re-query the form Model for its data as with multiple plugins of the same type
+	 *                        this was getting the plugin params out of sync.
+	 *
 	 * @return  array
 	 */
-
-	protected function getSubOptionValues()
+	protected function getSubOptionValues($data = array())
 	{
 		$opts = $this->allOpts();
 		$return = array();
@@ -132,10 +133,13 @@ class PlgFabrik_ElementUsergroup extends PlgFabrik_ElementList
 	/**
 	 * Get sub option labels
 	 *
+	 * @param   array  $data  Form data. If submitting a form, we want to use that form's data and not
+	 *                        re-query the form Model for its data as with multiple plugins of the same type
+	 *                        this was getting the plugin params out of sync.
+	 *
 	 * @return  array
 	 */
-
-	protected function getSubOptionLabels()
+	protected function getSubOptionLabels($data = array())
 	{
 		$opts = $this->allOpts();
 		$return = array();
@@ -164,7 +168,6 @@ class PlgFabrik_ElementUsergroup extends PlgFabrik_ElementList
 	protected function filterValueList_Exact($normal, $tableName = '', $label = '', $id = '', $incjoin = true)
 	{
 		$listModel = $this->getListModel();
-		$table = $listModel->getTable();
 		$elName2 = $this->getFullName(false, false, false);
 		$tmpIds = $listModel->getColumnData($elName2);
 		$ids = array();

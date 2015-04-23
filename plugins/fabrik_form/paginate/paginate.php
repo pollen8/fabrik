@@ -50,6 +50,7 @@ class PlgFabrik_FormPaginate extends PlgFabrik_Form
 
 		if (!$this->show())
 		{
+			$this->data = '';
 			return;
 		}
 
@@ -58,14 +59,14 @@ class PlgFabrik_FormPaginate extends PlgFabrik_Form
 		$input = $app->input;
 		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$formId = $formModel->getForm()->id;
-		$mode = JString::strtolower($input->get('view'));
+		$mode = JString::strtolower($input->get('view', 'form'));
 		$this->ids = $this->getNavIds($formModel);
 		$linkStartPrev = $this->ids->index == 0 ? ' disabled' : '';
 		$linkNextEnd = $this->ids->index == $this->ids->lastKey ? ' disabled' : '';
 
 		if ($app->isAdmin())
 		{
-			$url = 'index.php?option=com_fabrik&view=' . $mode . '&formid=' . $formId . '&rowid=';
+			$url = 'index.php?option=com_fabrik&task=' . $mode . '.view&formid=' . $formId . '&rowid=';
 		}
 		else
 		{
@@ -82,7 +83,7 @@ class PlgFabrik_FormPaginate extends PlgFabrik_Form
 
 		if ($j3)
 		{
-			$layout = new JLayoutFile('plugins.fabrik_form.paginate.layouts.default_paginate', JPATH_BASE);
+			$layout = new JLayoutFile('plugins.fabrik_form.paginate.layouts.default_paginate', JPATH_SITE);
 			$this->data = $layout->render($links);
 		}
 		else
@@ -92,7 +93,7 @@ class PlgFabrik_FormPaginate extends PlgFabrik_Form
 				: '<a href="' . $links['first'] . '" class="pagenav paginateFirst ' . $linkStartPrev . '"><span>&lt;&lt;</span>'
 					. FText::_('COM_FABRIK_START') . '</a>';
 			$prevLink = ($linkStartPrev) ? '<span>&lt;</span>' . FText::_('COM_FABRIK_PREV')
-				: '<a href="' . $lins['prev'] . '" class="pagenav paginatePrevious ' . $linkStartPrev . '"><span>&lt;</span>'
+				: '<a href="' . $links['prev'] . '" class="pagenav paginatePrevious ' . $linkStartPrev . '"><span>&lt;</span>'
 					. FText::_('COM_FABRIK_PREV') . '</a>';
 
 			$nextLink = ($linkNextEnd) ? FText::_('COM_FABRIK_NEXT') . '<span>&gt;</span>'

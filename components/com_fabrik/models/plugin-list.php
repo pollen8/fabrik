@@ -413,4 +413,24 @@ class PlgFabrik_List extends FabrikPlugin
 	{
 		return false;
 	}
+
+	/**
+	 * Get the element's JLayout file
+	 * Its actually an instance of FabrikLayoutFile which inverses the ordering added include paths.
+	 * In FabrikLayoutFile the addedPath takes precedence over the default paths, which makes more sense!
+	 *
+	 * @param   string  $type  form/details/list
+	 *
+	 * @return FabrikLayoutFile
+	 */
+	public function getLayout($type)
+	{
+		$name = get_class($this);
+		$name = strtolower(JString::str_ireplace('PlgFabrik_List', '', $name));
+		$basePath = COM_FABRIK_BASE . '/plugins/fabrik_list/' . $name . '/layouts';
+		$layout = new FabrikLayoutFile('fabrik-list-' . $name. '-' . $type, $basePath, array('debug' => false, 'component' => 'com_fabrik', 'client' => 'site'));
+		$layout->addIncludePaths(JPATH_THEMES . '/' . JFactory::getApplication()->getTemplate() . '/html/layouts');
+
+		return $layout;
+	}
 }

@@ -18,14 +18,13 @@ defined('_JEXEC') or die('Restricted access');
  * @subpackage  Fabrik.element.password
  * @since       3.0
  */
-
 class PlgFabrik_ElementPassword extends PlgFabrik_Element
 {
 	/**
 	 * States if the element contains data which is recorded in the database
 	 * some elements (e.g. buttons) don't
 	 *
-	 * @param   array  $data  Posted data
+	 * @param   array $data Posted data
 	 *
 	 * @return  bool
 	 */
@@ -53,8 +52,8 @@ class PlgFabrik_ElementPassword extends PlgFabrik_Element
 	/**
 	 * Manipulates posted form data for insertion into database
 	 *
-	 * @param   mixed  $val   This elements posted form data
-	 * @param   array  $data  Posted form data
+	 * @param   mixed $val  This elements posted form data
+	 * @param   array $data Posted form data
 	 *
 	 * @return  mixed
 	 */
@@ -62,9 +61,9 @@ class PlgFabrik_ElementPassword extends PlgFabrik_Element
 	public function storeDatabaseFormat($val, $data)
 	{
 		jimport('joomla.user.helper');
-		$salt = JUserHelper::genRandomPassword(32);
+		$salt  = JUserHelper::genRandomPassword(32);
 		$crypt = JUserHelper::getCryptedPassword($val, $salt);
-		$val = $crypt . ':' . $salt;
+		$val   = $crypt . ':' . $salt;
 
 		return $val;
 	}
@@ -86,73 +85,53 @@ class PlgFabrik_ElementPassword extends PlgFabrik_Element
 	/**
 	 * Draws the html form element
 	 *
-	 * @param   array  $data           To pre-populate element with
-	 * @param   int    $repeatCounter  Repeat group counter
+	 * @param   array $data          To pre-populate element with
+	 * @param   int   $repeatCounter Repeat group counter
 	 *
-	 * @return  string	elements html
+	 * @return  string    elements html
 	 */
 
 	public function render($data, $repeatCounter = 0)
 	{
-		$element = $this->getElement();
-		$value = '';
+		$layout     = $this->getLayout('form');
+		$layoutData = new stdClass;
+		$element    = $this->getElement();
+		$value      = '';
+		$params     = $this->getParams();
 
 		if (!$this->isEditable())
 		{
 			return '***********';
 		}
 
-		$bits = $this->inputProperties($repeatCounter, 'password');
-		$bits['value'] = $value;
+		$bits                = $this->inputProperties($repeatCounter, 'password');
+		$bits['value']       = $value;
 		$bits['placeholder'] = FText::_('PLG_ELEMENT_PASSWORD_TYPE_PASSWORD');
-		$pw1 = $this->buildInput('input', $bits);
-		$origname = $element->name;
-		$element->name = $element->name . '_check';
-		$name = $this->getHTMLName($repeatCounter);
+
+		$layoutData->pw1Attributes = $bits;
+
+		$origname            = $element->name;
+		$element->name       = $element->name . '_check';
+		$name                = $this->getHTMLName($repeatCounter);
 		$bits['placeholder'] = FText::_('PLG_ELEMENT_PASSWORD_CONFIRM_PASSWORD');
 		$bits['class'] .= ' fabrikSubElement';
 		$bits['name'] = $name;
-		$bits['id'] = $name;
-		$pw2 = $this->buildInput('input', $bits);
-		$element->name = $origname;
+		$bits['id']   = $name;
 
-		$html = array();
-		$html[] = $pw1;
-		$html[] = $this->strengthMeter();
-		$html[] = $pw2;
+		$layoutData->pw2Attributes     = $bits;
+		$element->name                 = $origname;
+		$layoutData->j3                = FabrikWorker::j3();
+		$layoutData->showStrengthMeter = $params->get('strength_meter', 1) == 1;
 
-		return implode("\n", $html);
-	}
+		return $layout->render($layoutData);
 
-	/**
-	 * Build the password strength meter html output
-	 *
-	 * @return  string
-	 */
-	protected  function strengthMeter()
-	{
-		$params = $this->getParams();
-
-		if (!$params->get('strength_meter', 1))
-		{
-			return '';
-		}
-
-		if (FabrikWorker::j3())
-		{
-			return '<div class="strength progress progress-striped" style="margin-top:20px;width:40%;"></div>';
-		}
-		else
-		{
-			return '<span class="strength"></span>';
-		}
 	}
 
 	/**
 	 * Internal element validation
 	 *
-	 * @param   array  $data           Form data
-	 * @param   int    $repeatCounter  Repeat group counter
+	 * @param   array $data          Form data
+	 * @param   int   $repeatCounter Repeat group counter
 	 *
 	 * @return bool
 	 */
@@ -164,11 +143,11 @@ class PlgFabrik_ElementPassword extends PlgFabrik_Element
 			return true;
 		}
 
-		$app = JFactory::getApplication();
-		$input = $app->input;
-		$k = $this->getlistModel()->getTable()->db_primary_key;
-		$k = FabrikString::safeColNameToArrayKey($k);
-		$element = $this->getElement();
+		$app      = JFactory::getApplication();
+		$input    = $app->input;
+		$k        = $this->getlistModel()->getTable()->db_primary_key;
+		$k        = FabrikString::safeColNameToArrayKey($k);
+		$element  = $this->getElement();
 		$origname = $element->name;
 
 		/**
@@ -176,8 +155,8 @@ class PlgFabrik_ElementPassword extends PlgFabrik_Element
 		 * rather than using $data, to avoid issues with things like "foo%20bar" getting incorrectly
 		 * decoded as "foo bar" in $data.
 		 */
-		$value = urldecode($this->getValue($_REQUEST, $repeatCounter));
-		$name = $this->getFullName(true, false);
+		$value      = urldecode($this->getValue($_REQUEST, $repeatCounter));
+		$name       = $this->getFullName(true, false);
 		$check_name = str_replace($element->name, $element->name . '_check', $name);
 
 		/**
@@ -195,8 +174,16 @@ class PlgFabrik_ElementPassword extends PlgFabrik_Element
 
 		$this->setFullName($check_name, true, false);
 		$this->reset();
-		$checkvalue = urldecode($this->getValue($_REQUEST, $repeatCounter));
+		$checkvalue    = urldecode($this->getValue($_REQUEST, $repeatCounter));
 		$element->name = $origname;
+
+		if ($this->getParams()->get('password_j_validate', false))
+		{
+			if (!$this->validateJRule('password', $value, JPATH_LIBRARIES . '/cms/form/rule'))
+			{
+				return false;
+			}
+		}
 
 		if ($checkvalue != $value)
 		{
@@ -234,18 +221,18 @@ class PlgFabrik_ElementPassword extends PlgFabrik_Element
 	/**
 	 * Returns javascript which creates an instance of the class defined in formJavascriptClass()
 	 *
-	 * @param   int  $repeatCounter  Repeat group counter
+	 * @param   int $repeatCounter Repeat group counter
 	 *
 	 * @return  array
 	 */
 
 	public function elementJavascript($repeatCounter)
 	{
-		$id = $this->getHTMLId($repeatCounter);
-		$opts = $this->getElementJSOptions($repeatCounter);
-		$formparams = $this->getForm()->getParams();
+		$id                    = $this->getHTMLId($repeatCounter);
+		$opts                  = $this->getElementJSOptions($repeatCounter);
+		$formparams            = $this->getForm()->getParams();
 		$opts->ajax_validation = $formparams->get('ajax_validations') === '1';
-		$opts->progressbar = FabrikWorker::j3() ? true : false;
+		$opts->progressbar     = FabrikWorker::j3() ? true : false;
 
 		JText::script('PLG_ELEMENT_PASSWORD_STRONG');
 		JText::script('PLG_ELEMENT_PASSWORD_MEDIUM');
@@ -261,7 +248,7 @@ class PlgFabrik_ElementPassword extends PlgFabrik_Element
 	 * js events which trigger a validation.
 	 * Examples of where this would be overwritten include timedate element with time field enabled
 	 *
-	 * @param   int  $repeatCounter  Repeat group counter
+	 * @param   int $repeatCounter Repeat group counter
 	 *
 	 * @return  array  html ids to watch for validation
 	 */

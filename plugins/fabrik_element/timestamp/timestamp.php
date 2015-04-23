@@ -76,8 +76,6 @@ class PlgFabrik_ElementTimestamp extends PlgFabrik_Element
 
 	public function render($data, $repeatCounter = 0)
 	{
-		$name = $this->getHTMLName($repeatCounter);
-		$id = $this->getHTMLId($repeatCounter);
 		$date = JFactory::getDate();
 		$config = JFactory::getConfig();
 		$tz = new DateTimeZone($config->get('offset'));
@@ -86,7 +84,13 @@ class PlgFabrik_ElementTimestamp extends PlgFabrik_Element
 		$gmt_or_local = $params->get('gmt_or_local');
 		$gmt_or_local += 0;
 
-		return '<input name="' . $name . '" id="' . $id . '" type="hidden" value="' . $date->toSql($gmt_or_local) . '" />';
+		$layout = $this->getLayout('form');
+		$layoutData = new stdClass;
+		$layoutData->id =  $this->getHTMLId($repeatCounter);;
+		$layoutData->name = $this->getHTMLName($repeatCounter);;
+		$layoutData->value = $date->toSql($gmt_or_local);
+
+		return $layout->render($layoutData);
 	}
 
 	/**

@@ -72,8 +72,6 @@ class PlgFabrik_ElementAccess extends PlgFabrik_Element
 			}
 		}
 
-		$gtree = $this->getOpts();
-
 		if (!$this->isEditable())
 		{
 			$row = new stdClass;
@@ -81,7 +79,14 @@ class PlgFabrik_ElementAccess extends PlgFabrik_Element
 			return $this->renderListData($arSelected[0], $row);
 		}
 
-		return JHTML::_('select.genericlist', $gtree, $name, 'class="inputbox" size="6"', 'value', 'text', $arSelected[0], $id);
+		$layout = $this->getLayout('form');
+		$displayData = new stdClass;
+		$displayData->id = $id;
+		$displayData->name = $name;
+		$displayData->options = $this->getOpts();
+		$displayData->selected =  $arSelected[0];
+
+		return $layout->render($displayData);
 	}
 
 	/**
@@ -106,9 +111,13 @@ class PlgFabrik_ElementAccess extends PlgFabrik_Element
 			$options[$i]->text = str_repeat('- ', $options[$i]->level) . $options[$i]->text;
 		}
 
-		// If all usergroups is allowed, push it into the array.
+		// If all user groups is allowed, push it into the array.
 		if ($allowAll)
 		{
+			// If in front end we need to load the admin language..
+			$lang = JFactory::getLanguage();
+			$lang->load('joomla', JPATH_ADMINISTRATOR, null, false, false);
+
 			array_unshift($options, JHtml::_('select.option', '', FText::_('JOPTION_ACCESS_SHOW_ALL_GROUPS')));
 		}
 
@@ -126,16 +135,24 @@ class PlgFabrik_ElementAccess extends PlgFabrik_Element
 
 	public function renderListData($data, stdClass &$thisRow)
 	{
-		$gtree = $this->getOpts();
-		$filter = JFilterInput::getInstance(null, null, 1, 1);
+		$options = $this->getOpts();
+		$text = '';
 
-		foreach ($gtree as $o)
+		if ((string) $data !== '')
 		{
-			if ($o->value == $data)
+			foreach ($options as $o)
 			{
-				return JString::ltrim($filter->clean($o->text, 'word'), '&nbsp;');
+				if ($o->value == $data)
+				{
+					$text = JString::ltrim(str_replace('-', '', $o->text));
+				}
 			}
 		}
+
+		$layoutData = new stdClass;
+		$layoutData->text = $text;
+
+		return parent::renderListData($layoutData, $thisRow);
 	}
 
 	/**
@@ -146,8 +163,6 @@ class PlgFabrik_ElementAccess extends PlgFabrik_Element
 
 	public function getFieldDescription()
 	{
-		$p = $this->getParams();
-
 		if ($this->encryptMe())
 		{
 			return 'BLOB';

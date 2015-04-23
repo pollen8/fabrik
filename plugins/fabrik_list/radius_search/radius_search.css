@@ -30,3 +30,8 @@ ul.slider-labels li{
 .slider_cont{
 	float:left;
 }
+
+.radius_search_buttons{
+	padding-top:5px;
+	float:right;
+}

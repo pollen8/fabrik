@@ -1,1 +1,2 @@
-var FbLikebox=new Class({Extends:FbElement,initialize:function(b,a){this.plugin="fbLikebox";this.parent(b,a)}});
+/*! fabrik */
+var FbLikebox=new Class({Extends:FbElement,initialize:function(a,b){this.plugin="fbLikebox",this.parent(a,b)}});

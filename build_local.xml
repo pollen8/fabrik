@@ -22,7 +22,7 @@
 	<!-- Travis-ci properties -->
 	
 	<taskdef resource="net/sf/antcontrib/antcontrib.properties"/>
-	<taskdef name="xmltask" classname="com.oopsconsultancy.xmltask.ant.XmlTask"/>
+	<taskdef name="xmltask" classname="com.oopsconsultancy.xmltask.ant.XmlTask" classpath="xmltask.jar"/>
 
 	<target name="phpcs" description="Ensure Code Style Rules">
 		<if>

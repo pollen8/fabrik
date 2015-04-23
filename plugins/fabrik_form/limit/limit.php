@@ -126,7 +126,6 @@ class PlgFabrik_FormLimit extends PlgFabrik_Form
 			$query->where($db->quoteName($fk) . ' = ' . $db->quote($fkVal), 'AND');
 		}
 
-		$strq = (string) $query;
 		$db->setQuery($query);
 
 		return (int) $db->loadResult();
@@ -188,7 +187,29 @@ class PlgFabrik_FormLimit extends PlgFabrik_Form
 		}
 
 		$db->setQuery($query);
-		$limit = (int) $db->loadResult();
+		$limit = $db->loadResult();
+		
+		if (!isset($limit))
+		{
+			$add_sql = $params->get('limit_add_sql', '');
+			if (!empty($add_sql))
+			{
+				$w = new FabrikWorker;
+				$add_sql = $w->parseMessageForPlaceHolder($add_sql);
+				$db->setQuery($add_sql);
+				$db->execute();
+				$limit = (int) $params->get('limit_length', '0');
+				
+			}
+			else
+			{
+				$limit = 0;
+			}
+		}
+		else
+		{
+			$limit = (int) $limit;
+		}
 
 		return $limit;
 	}

@@ -230,9 +230,9 @@ class PlgFabrik_Form extends FabrikPlugin
 		/**
 		 * NOTE - $$$ hugh - 9/17/2014  - we were originally caching in $this->emailData, but that provides no caching help at all,
 		 * as "this" is a plugin model, and the cache needs to be on the form model.  So changed it to use
-		 * the $model->emailData.  But for backward compat, we will continue to store a copy in $this.  This change has
+		 * the $model->emailData.  But for backward compatibility, we will continue to store a copy in $this.  This change has
 		 * yielded huge speed gains on form submission for larger forms (in my testing, more than cutting it in half),
-		 * as untill this change we were rebuiding the $emailData from scratch for every element on the form, which didn't
+		 * as until this change we were re-buiding the $emailData from scratch for every element on the form, which didn't
 		 * become apparent till we added the fabrikdebug=2 to allows profiling of submissions, and added the extra profiling
 		 * marks for the submission processing
 		 * 
@@ -244,7 +244,7 @@ class PlgFabrik_Form extends FabrikPlugin
 		 */
 		
 		$model = $this->getModel();
-		
+
 		if (isset($model->emailData))
 		{
 			JDEBUG ? $profiler->mark("getEmailData: cached") : null;
@@ -283,7 +283,6 @@ class PlgFabrik_Form extends FabrikPlugin
 			$model->getJoinGroupIds($joins);
 		}
 
-		$params = $model->getParams();
 		$this->emailData = array();
 		$model->emailData = array();
 
@@ -296,7 +295,6 @@ class PlgFabrik_Form extends FabrikPlugin
 
 			// Check if group is actually a table join
 			$repeatGroup = 1;
-			$foreignKey = null;
 
 			if ($groupModel->canRepeat())
 			{
@@ -304,12 +302,9 @@ class PlgFabrik_Form extends FabrikPlugin
 				{
 					$joinModel = $groupModel->getJoinModel();
 					$joinTable = $joinModel->getJoin();
-					$foreignKey = '';
 
 					if (is_object($joinTable))
 					{
-						$foreignKey = $joinTable->table_join_key;
-
 						if (!$groupParams->get('repeat_group_show_first'))
 						{
 							continue;
@@ -334,7 +329,6 @@ class PlgFabrik_Form extends FabrikPlugin
 
 			$groupModel->repeatTotal = $repeatGroup;
 			$group = $groupModel->getGroup();
-			$aSubGroups = array();
 
 			for ($c = 0; $c < $repeatGroup; $c++)
 			{
@@ -430,7 +424,7 @@ class PlgFabrik_Form extends FabrikPlugin
 		$model->emailData = $this->emailData;
 		
 		JDEBUG ? $profiler->mark("getEmailData: end") : null;
-		
+
 		return $this->emailData;
 	}
 
@@ -471,12 +465,11 @@ class PlgFabrik_Form extends FabrikPlugin
 	 *
 	 * @return  array  admin user objects
 	 */
-
 	protected function getAdminInfo()
 	{
-		$db = JFactory::getDBO(true);
-		$query = $db->getQuery();
-		$query->select(' id, name, email, sendEmail')->from('#__users')->where('WHERE sendEmail = "1"');
+		$db = JFactory::getDbo(true);
+		$query = $db->getQuery(true);
+		$query->select(' id, name, email, sendEmail')->from('#__users')->where('sendEmail = 1');
 		$db->setQuery($query);
 		$rows = $db->loadObjectList();
 
@@ -507,5 +500,25 @@ class PlgFabrik_Form extends FabrikPlugin
 	public function usesSession_result()
 	{
 		return $this->usesSession;
+	}
+
+	/**
+	 * Get the element's JLayout file
+	 * Its actually an instance of FabrikLayoutFile which inverses the ordering added include paths.
+	 * In FabrikLayoutFile the addedPath takes precedence over the default paths, which makes more sense!
+	 *
+	 * @param   string  $type  form/details/list
+	 *
+	 * @return FabrikLayoutFile
+	 */
+	public function getLayout($type)
+	{
+		$name = get_class($this);
+		$name = strtolower(JString::str_ireplace('PlgFabrik_Form', '', $name));
+		$basePath = COM_FABRIK_BASE . '/plugins/fabrik_form/' . $name . '/layouts';
+		$layout = new FabrikLayoutFile('fabrik-form-' . $name. '-' . $type, $basePath, array('debug' => false, 'component' => 'com_fabrik', 'client' => 'site'));
+		$layout->addIncludePaths(JPATH_THEMES . '/' . JFactory::getApplication()->getTemplate() . '/html/layouts');
+
+		return $layout;
 	}
 }

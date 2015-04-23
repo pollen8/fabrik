@@ -107,6 +107,7 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 					foreach ($data as $name => $values)
 					{
 						// $$$ Paul - Because $data contains stuff other than placeholders, we have to exclude e.g. fabrik_repeat_group
+						// $$$ hugh - @FIXME we should probably get the group's elements and iterate through those rather than $data
 						if (is_array($values) && count($values) > 1 & isset($values[$repeatCounter]) && $name != 'fabrik_repeat_group')
 						{
 							$data[$name] = $data[$name][$repeatCounter];
@@ -444,25 +445,25 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 			}
 			else
 			{
-				if ($element->height <= 1)
-				{
-					$str[] = '<span class="fabrikinput" name="' . $name . '" id="' . $id . '">' . $value . '</span>';
-				}
-				else
-				{
-					$str[] = '<textarea class="fabrikinput" disabled="disabled" name="' . $name . '" id="' . $id
-					. '" cols="' . $element->width . '" rows="' . $element->height . '">' . $value . '</textarea>';
-				}
+				$layout = $this->getLayout('form');
+				$layoutData = new stdClass;
+				$layoutData->id = $id;
+				$layoutData->name = $name;
+				$layoutData->height = $element->height;
+				$layoutData->value = $value;
+				$layoutData->cols = $element->width;
+				$layoutData->rows = $element->height;
+				$str[] = $layout->render($layoutData);
 			}
 		}
 		else
 		{
-			/* make a hidden field instead*/
+			// Make a hidden field instead
 			$str[] = '<input type="hidden" class="fabrikinput" name="' . $name . '" id="' . $id . '" value="' . $value . '" />';
 		}
 
 		$opts = array('alt' => FText::_('PLG_ELEMENT_CALC_LOADING'), 'style' => 'display:none;padding-left:10px;', 'class' => 'loader');
-		$str[] = FabrikHelperHTML::image("ajax-loader.gif", 'form', @$this->tmpl, $opts);
+		$str[] = FabrikHelperHTML::image('ajax-loader.gif', 'form', @$this->tmpl, $opts);
 
 		return implode("\n", $str);
 	}
@@ -492,8 +493,15 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 
 		$obs = array_unique($obs);
 
-		foreach ($obs as &$m)
+		foreach ($obs as $key => &$m)
 		{
+			
+			if (empty($m))
+			{
+				unset($obs[$key]);
+				continue;
+			}
+			
 			$m = str_replace(array('{', '}'), '', $m);
 
 			// $$$ hugh - we need to knock any _raw off, so JS can match actual element ID

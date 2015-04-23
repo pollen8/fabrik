@@ -1172,9 +1172,9 @@ class FabrikFEModelGroup extends FabModel
 		$formData =& $formModel->formDataWithTableName;
 		$joinModel = $this->getJoinModel();
 		$masterInsertId = $this->masterInsertId();
-		$fk = $joinModel->getForeignKey();
-		$fks = array($fk, $fk . '_raw');
-
+		$fk_name = $joinModel->getForeignKey();
+		$fks = array($fk_name, $fk_name . '_raw');
+		
 		foreach ($fks as $fk)
 		{
 			if ($this->canRepeat() && array_key_exists($fk, $formData))
@@ -1199,6 +1199,16 @@ class FabrikFEModelGroup extends FabModel
 				$formData[$fk] = $masterInsertId;
 			}
 		}
+		
+		/**
+		 * 
+		 * $$$ hugh - added the clearDefaults method and need to call it here, otherwise if any pre-processing
+		 * has already called the element model's getValue(), the change we just made to formdata won't get picked up
+		 * during the row store processing, as getValue() will return the cached default.
+		 */
+		
+		$elementModel = $formModel->getElement($fk_name);
+		$elementModel->clearDefaults();
 	}
 
 	/**

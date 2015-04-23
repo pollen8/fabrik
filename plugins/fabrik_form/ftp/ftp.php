@@ -45,7 +45,6 @@ class PlgFabrik_FormFtp extends PlgFabrik_Form
 		$formModel = $this->getModel();
 		$app = JFactory::getApplication();
 		$input = $app->input;
-		$user = JFactory::getUser();
 		$config	= JFactory::getConfig();
 		$db = JFactory::getDbo();
 		$formParams	= $formModel->getParams();

@@ -18,7 +18,6 @@ defined('_JEXEC') or die('Restricted access');
  * @subpackage  Fabrik.element.fileupload
  * @since       3.0
  */
-
 class PdfRender
 {
 	/**
@@ -30,12 +29,14 @@ class PdfRender
 
 	/**
 	 * File extension for PDF thumbnails
+	 *
 	 * @var  string
 	 */
 	protected $pdf_thumb_type = 'png';
 
 	/**
 	 * Is the element in a list view
+	 *
 	 * @var  bool
 	 */
 	protected $inTableView = false;
@@ -43,9 +44,9 @@ class PdfRender
 	/**
 	 * When in form or detailed view, do we want to show the full image or thumbnail/link?
 	 *
-	 * @param   object  &$model   Element model
-	 * @param   object  &$params  Element params
-	 * @param   string  $file     Element's data
+	 * @param   object &$model  Element model
+	 * @param   object &$params Element params
+	 * @param   string $file    Element's data
 	 *
 	 * @return bool
 	 */
@@ -60,15 +61,15 @@ class PdfRender
 			}
 			else
 			{
-				$thumb_url = $model->getStorage()->_getThumb($file);
-				$thumb_file = $model->getStorage()->urlToPath($thumb_url);
+				$thumb_url      = $model->getStorage()->_getThumb($file);
+				$thumb_file     = $model->getStorage()->urlToPath($thumb_url);
 				$thumb_url_info = pathinfo($thumb_url);
 
 				if (JString::strtolower($thumb_url_info['extension'] == 'pdf'))
 				{
-					$thumb_url = $thumb_url_info['dirname'] . '/' . $thumb_url_info['filename'] . '.' . $this->pdf_thumb_type;
+					$thumb_url       = $thumb_url_info['dirname'] . '/' . $thumb_url_info['filename'] . '.' . $this->pdf_thumb_type;
 					$thumb_file_info = pathinfo($thumb_file);
-					$thumb_file = $thumb_file_info['dirname'] . '/' . $thumb_file_info['filename'] . '.' . $this->pdf_thumb_type;
+					$thumb_file      = $thumb_file_info['dirname'] . '/' . $thumb_file_info['filename'] . '.' . $this->pdf_thumb_type;
 				}
 
 				if ($model->getStorage()->exists($thumb_file))
@@ -100,10 +101,10 @@ class PdfRender
 	/**
 	 * Render PDF in the list view
 	 *
-	 * @param   object  &$model   Element model
-	 * @param   object  &$params  Element params
-	 * @param   string  $file     Row data for this element
-	 * @param   object  $thisRow  All row's data
+	 * @param   object &$model  Element model
+	 * @param   object &$params Element params
+	 * @param   string $file    Row data for this element
+	 * @param   object $thisRow All row's data
 	 *
 	 * @return  void
 	 */
@@ -117,9 +118,9 @@ class PdfRender
 	/**
 	 * Render PDF in the form view
 	 *
-	 * @param   object  &$model   Element model
-	 * @param   object  &$params  Element params
-	 * @param   string  $file     Row data for this element
+	 * @param   object &$model  Element model
+	 * @param   object &$params Element params
+	 * @param   string $file    Row data for this element
 	 *
 	 * @return  void
 	 */
@@ -127,38 +128,36 @@ class PdfRender
 	public function render(&$model, &$params, $file)
 	{
 		jimport('joomla.filesystem.file');
-		$filename = basename($file);
-		$filename = strip_tags($filename);
-		$ext = JFile::getExt($filename);
+		$layout      = $model->getLayout('pdf');
+		$displayData = new stdClass;
+		$filename    = basename($file);
+		$filename    = strip_tags($filename);
 
 		if (!strstr($file, 'http://') && !strstr($file, 'https://'))
 		{
-			// $$$rob only add in livesite if we dont already have a full url (e.g. from amazons3)
+			// $$$rob only add in livesite if we don't already have a full url (e.g. from amazons3)
 			// $$$ hugh trim / or \ off the start of $file
 			$file = JString::ltrim($file, '/\\');
 			$file = COM_FABRIK_LIVESITE . $file;
 		}
 
-		$file = str_replace("\\", "/", $file);
-		$file = $model->storage->preRenderPath($file);
-		$this->output = '<a class="download-archive fabrik-filetype-' . $ext . '" title="' . $filename . '" href="' . $file . '">';
+		$file                  = str_replace("\\", "/", $file);
+		$file                  = $model->storage->preRenderPath($file);
+		$displayData->file     = $file;
+		$displayData->filename = $filename;
+		$displayData->thumb    = $this->getThumbnail($model, $params, $file);
 
-		if ($thumb_file = $this->getThumbnail($model, $params, $file))
-		{
-			$filename = '<img src="' . $thumb_file . '" alt="' . $filename . '" />';
-		}
-
-		$this->output .= $filename . '</a>';
+		$this->output = $layout->render($displayData);
 	}
 
 	/**
 	 * Build Carousel HTML
 	 *
-	 * @param   string  $id       Widget HTML id
-	 * @param   array   $data     Images to add to the carousel
-	 * @param   object  $model    Element model
-	 * @param   object  $params   Element params
-	 * @param   object  $thisRow  All rows data
+	 * @param   string $id      Widget HTML id
+	 * @param   array  $data    Images to add to the carousel
+	 * @param   object $model   Element model
+	 * @param   object $params  Element params
+	 * @param   object $thisRow All rows data
 	 *
 	 * @return  string  HTML
 	 */
@@ -166,9 +165,11 @@ class PdfRender
 	public function renderCarousel($id = 'carousel', $data = array(), $model = null, $params = null, $thisRow = null)
 	{
 		$rendered = '';
+
 		/**
 		 * @TODO - build it!
 		 */
+
 		return $rendered;
 	}
 }

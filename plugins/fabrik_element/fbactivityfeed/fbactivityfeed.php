@@ -23,7 +23,7 @@ require_once JPATH_SITE . '/components/com_fabrik/models/element.php';
  * @since       3.0
  */
 
-class PlgFabrik_ElementFbactivityfeed extends PlgFabrik_Element
+class PlgFabrik_ElementFbActivityFeed extends PlgFabrik_Element
 {
 	/**
 	 * Does the element have a label
@@ -58,18 +58,18 @@ class PlgFabrik_ElementFbactivityfeed extends PlgFabrik_Element
 	public function render($data, $repeatCounter = 0)
 	{
 		$params = $this->getParams();
+		$layout = $this->getLayout('form');
 		$str = FabrikHelperHTML::facebookGraphAPI($params->get('opengraph_applicationid'));
-		$domain = $params->get('fbactivityfeed_domain');
-		$width = $params->get('fbactivityfeed_width', 300);
-		$height = $params->get('fbactivityfeed_height', 300);
-		$header = $params->get('fbactivityfeed_header', 1) ? 'true' : 'false';
-		$border = $params->get('fbactivityfeed_border', '');
-		$font = $params->get('fbactivityfeed_font', 'arial');
-		$colorscheme = $params->get('fbactivityfeed_colorscheme', 'light');
-		$str .= "<fb:activity site=\"$domain\" width=\"$width\" height=\"$height\" header=\"$header\"
-		colorscheme=\"$colorscheme\" font=\"$font\" border_color=\"$border\" />";
+		$displayData = new stdClass;
+		$displayData->domain = $params->get('fbactivityfeed_domain');
+		$displayData->width = $params->get('fbactivityfeed_width', 300);
+		$displayData->height = $params->get('fbactivityfeed_height', 300);
+		$displayData->header = $params->get('fbactivityfeed_header', 1) ? 'true' : 'false';
+		$displayData->border = $params->get('fbactivityfeed_border', '');
+		$displayData->font = $params->get('fbactivityfeed_font', 'arial');
+		$displayData->colorscheme = $params->get('fbactivityfeed_colorscheme', 'light');
 
-		return $str;
+		return $str . $layout->render($displayData);
 	}
 
 	/**

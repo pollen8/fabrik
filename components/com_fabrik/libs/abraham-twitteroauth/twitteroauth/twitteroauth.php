@@ -8,7 +8,7 @@
 
 /* Load OAuth lib. You can find it at http://oauth.net */
 if (!class_exists('OAuthException')) {
-	require_once('OAuth.php');
+	require_once(JPATH_ROOT . '/components/com_fabrik/libs/abraham-twitteroauth/twitteroauth/OAuth.php');
 }
 /**
  * Twitter OAuth class
