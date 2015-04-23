@@ -151,10 +151,12 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 	{
 		$app = JFactory::getApplication();
 		$rowId = (array) $app->input->get('rowid');
+		$joinPkVal = $app->input->get('joinPkVal');
 		$this->loadMeForAjax();
 		$col = $this->getFullName(false, false);
 		$listModel = $this->getListModel();
-		$listModel->updateRows($rowId, $col, '');
+
+		$listModel->updateRows($rowId, $col, '', '', $joinPkVal);
 	}
 
 	/**
@@ -2158,7 +2160,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 						}
 						else
 						{
-							$render->output = '<span class="fabrikUploadDelete" id="' . $id . '_delete_span">' . $this->deleteButton($value) . $render->output . '</span>';
+							$render->output = '<span class="fabrikUploadDelete" id="' . $id . '_delete_span">' . $this->deleteButton($value, $repeatCounter) . $render->output . '</span>';
 						}
 					}
 
@@ -2246,13 +2248,16 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 	 * Build the HTML to create the delete image button
 	 *
 	 * @param   string  $value  File to delete
+	 * @param   int     $repeatCounter  Repeat group counter
 	 *
 	 * @return string
 	 */
 
-	protected function deleteButton($value)
+	protected function deleteButton($value, $repeatCounter)
 	{
-		return '<button class="btn button" data-file="' . $value . '">' . FText::_('COM_FABRIK_DELETE') . '</button> ';
+		$joinedGroupPkVal = $this->getJoinedGroupPkVal($repeatCounter);
+
+		return '<button class="btn button" data-file="' . $value . '" data-join-pk-val="' . $joinedGroupPkVal . '">' . FText::_('COM_FABRIK_DELETE') . '</button> ';
 	}
 
 	/**
@@ -2980,21 +2985,8 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		if (empty($val))
 		{
 			$formModel = $this->getFormModel();
-			$groupModel = $this->getGroupModel();
-			$isjoin = $groupModel->isJoin();
 			$origData = $formModel->getOrigData();
-			$groupModel = $this->getGroup();
-
-			if ($isjoin)
-			{
-				$name = $this->getFullName(true, false);
-				$joinid = $groupModel->getGroup()->join_id;
-			}
-			else
-			{
-				$name = $this->getFullName(true, false);
-			}
-
+			$name = $this->getFullName(true, false);
 			$val = $origData[$name];
 		}
 
@@ -3126,8 +3118,6 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 
 	public function preProcess_off($c)
 	{
-		$params = $this->getParams();
-		$w = new FabrikWorker;
 		$form = $this->getFormModel();
 		$data = unserialize(serialize($form->formData));
 		$group = $this->getGroup();
@@ -3138,7 +3128,6 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		 * below on repeat data, it ended up in the wrong format, like join.XX.table___element.0_raw
 		*/
 		$key = $this->getFullName(true, false);
-		$shortkey = $this->getFullName(true, false);
 		$rawkey = $key . '_raw';
 
 		if (!$group->canRepeat())

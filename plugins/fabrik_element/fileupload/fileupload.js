@@ -117,6 +117,7 @@ var FbFileUpload = new Class({
 			b.addEvent('click', function (e) {
 				e.stop();
 				if (confirm(Joomla.JText._('PLG_ELEMENT_FILEUPLOAD_CONFIRM_SOFT_DELETE'))) {
+					var joinPkVal = b.get('data-join-pk-val');
 					new Request({
 						url: '',
 						data: {
@@ -127,7 +128,8 @@ var FbFileUpload = new Class({
 							'method': 'ajax_clearFileReference',
 							'element_id': this.options.id,
 							'formid': this.form.id,
-							'rowid': this.form.options.rowid
+							'rowid': this.form.options.rowid,
+							'joinPkVal': joinPkVal
 						},
 						onComplete: function () {
 							Fabrik.fireEvent('fabrik.fileupload.clearfileref.complete', this);

@@ -7631,4 +7631,30 @@ class PlgFabrik_Element extends FabrikPlugin
 
 		return true;
 	}
+
+	/**
+	 * Say an element is in a repeat group, this method gets that repeat groups primary
+	 * key value.
+	 *
+	 * @param int $repeatCounter
+	 *
+	 * @since 3.3.2
+	 *
+	 * @return mixed  False if not in a join
+	 */
+	protected function getJoinedGroupPkVal($repeatCounter = 0)
+	{
+		$groupModel = $this->getGroupModel();
+
+		if (!$groupModel->isJoin())
+		{
+			return false;
+		}
+
+		$formModel = $this->getFormModel();
+		$joinModel = $groupModel->getJoinModel();
+		$elementModel = $formModel->getElement($joinModel->getForeignID());
+
+		return $elementModel->getValue($formModel->data, $repeatCounter);
+	}
 }
