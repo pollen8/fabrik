@@ -208,7 +208,6 @@ class FabrikAdminControllerForm extends FabControllerForm
 	protected function handleError($view, $model)
 	{
 		$app = JFactory::getApplication();
-		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$input = $app->input;
 		$validated = false;
 

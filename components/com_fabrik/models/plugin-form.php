@@ -204,7 +204,7 @@ class PlgFabrik_Form extends FabrikPlugin
 		
 		$model = $this->getModel();
 		
-		// see comments in getEmailData() about caching in $this vs $model
+		// See comments in getEmailData() about caching in $this vs $model
 		unset($this->emailData);
 		unset($model->emailData);
 		$d = isset($model->formDataWithTableName) ? $model->formDataWithTableName : array();
@@ -273,7 +273,6 @@ class PlgFabrik_Form extends FabrikPlugin
 		 */
 
 		$listModel = $model->getListModel();
-		$table = is_object($listModel) ? $listModel->getTable() : null;
 		$editable = $model->isEditable();
 		$model->setEditable(false);
 
@@ -328,11 +327,9 @@ class PlgFabrik_Form extends FabrikPlugin
 			}
 
 			$groupModel->repeatTotal = $repeatGroup;
-			$group = $groupModel->getGroup();
 
 			for ($c = 0; $c < $repeatGroup; $c++)
 			{
-				$aSubGroupElements = array();
 				$elementModels = $groupModel->getPublishedElements();
 
 				foreach ($elementModels as $elementModel)
@@ -340,7 +337,6 @@ class PlgFabrik_Form extends FabrikPlugin
 					// Force reload?
 					$elementModel->defaults = null;
 					$elementModel->_repeatGroupTotal = $repeatGroup - 1;
-					$element = $elementModel->getElement();
 
 					$k = $elementModel->getFullName(true, false);
 					$key = $elementModel->getFullName(true, false);
@@ -378,9 +374,9 @@ class PlgFabrik_Form extends FabrikPlugin
 					}
 					elseif (array_key_exists($key, $model->formDataWithTableName))
 					{
-						$rawval = FArrayHelper::getValue($model->formDataWithTableName, $k . '_raw', '');
+						$rawValue = FArrayHelper::getValue($model->formDataWithTableName, $k . '_raw', '');
 
-						if ($rawval == '')
+						if ($rawValue == '')
 						{
 							$this->emailData[$k . '_raw'] = $model->formDataWithTableName[$key];
 						}
@@ -390,7 +386,7 @@ class PlgFabrik_Form extends FabrikPlugin
 							 * so don't overwrite that with the blank none-raw value
 							 * the none-raw value is add in getEmailValue()
 							 */
-							$this->emailData[$k . '_raw'] = $rawval;
+							$this->emailData[$k . '_raw'] = $rawValue;
 						}
 					}
 
