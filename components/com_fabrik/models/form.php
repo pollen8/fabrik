@@ -397,9 +397,9 @@ class FabrikFEModelForm extends FabModelForm
 
 	protected function isUserRowId($priority = 'menu')
 	{
-		$rowid = FabrikWorker::getMenuOrRequestVar('rowid', '', $this->isMambot, $priority);
+		$rowId = FabrikWorker::getMenuOrRequestVar('rowid', '', $this->isMambot, $priority);
 
-		return $rowid === '-1' || $rowid === ':1';
+		return $rowId === '-1' || $rowId === ':1';
 	}
 
 	/**
@@ -1226,7 +1226,7 @@ class FabrikFEModelForm extends FabModelForm
 		 * or onBeforeStore need to modify formData, not formDataWithTableName.
 		 */
 		$this->formDataWithTableName = $this->formData;
-		
+
 		JDEBUG ? $profiler->mark('process, onBeforeProcess plugins: start') : null;
 		if (in_array(false, $pluginManager->runPlugins('onBeforeProcess', $this)))
 		{
@@ -1542,7 +1542,7 @@ class FabrikFEModelForm extends FabModelForm
 		{
 			$value = FArrayHelper::getValue($value, $repeatCount, $default);
 		}
-		
+
 		// If we didn't find it, set to default
 		if (!isset($value))
 		{
@@ -2645,7 +2645,6 @@ echo "form get errors";
 	public function getElementList($name = 'order_by', $default = '', $excludeUnpublished = false,
 		$useStep = false, $incRaw = true, $key = 'name', $attribs = 'class="inputbox" size="1"')
 	{
-		$aEls = array();
 		$aEls = $this->getElementOptions($useStep, $key, false, $incRaw);
 		asort($aEls);
 
@@ -2744,7 +2743,6 @@ echo "form get errors";
 	{
 		$groups = $this->getGroupsHiarachy();
 		$aEls = array();
-		$step = $useStep ? '___' : '.';
 
 		foreach ($groups as $gid => $groupModel)
 		{
@@ -2830,14 +2828,13 @@ echo "form get errors";
 		$app = JFactory::getApplication();
 		$input = $app->input;
 		$c = $dir == 1 ? '>=' : '<=';
-		$limit = $dir == 1 ? 'LIMIT 2' : '';
 		$intLimit = $dir == 1 ? 2 : 0;
 		$listModel = $this->getListModel();
 		$item = $listModel->getTable();
-		$rowid = $input->getString('rowid', '', 'string');
+		$rowId = $input->getString('rowid', '', 'string');
 		$query = $db->getQuery(true);
 		$query->select($item->db_primary_key . ' AS ' . FabrikString::safeColNameToArrayKey($item->db_primary_key))->from($item->db_table_name)
-			->where($item->db_primary_key . ' ' . $c . ' ' . $db->quote($rowid));
+			->where($item->db_primary_key . ' ' . $c . ' ' . $db->quote($rowId));
 		$query = $listModel->buildQueryOrder($query);
 		$db->setQuery($query, 0, $intLimit);
 		$ids = $db->loadColumn();
@@ -2991,7 +2988,6 @@ echo "form get errors";
 	public function render()
 	{
 		$app = JFactory::getApplication();
-
 		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$profiler = JProfiler::getInstance('Application');
 		JDEBUG ? $profiler->mark('formmodel render: start') : null;
@@ -3087,14 +3083,14 @@ echo "form get errors";
 
 		if ($this->saveMultiPage(false))
 		{
-			$srow = $this->getSessionData();
+			$sessionRow = $this->getSessionData();
 			/*
 			 * Test if its a resumed paged form
 			 * if so _arErrors will be filled so check all elements had no errors
 			 */
 			$multiPageErrors = false;
 
-			if ($srow->data != '')
+			if ($sessionRow->data != '')
 			{
 				foreach ($this->errors as $err)
 				{
@@ -3188,12 +3184,12 @@ echo "form get errors";
 				// process() when it banged out.
 				if ($this->isMambot)
 				{
-					$srow = $this->getSessionData();
+					$sessionRow = $this->getSessionData();
 					$this->sessionModel->last_page = 0;
 
-					if ($srow->data != '')
+					if ($sessionRow->data != '')
 					{
-						$data = FArrayHelper::toObject(unserialize($srow->data), 'stdClass', false);
+						$data = FArrayHelper::toObject(unserialize($sessionRow->data), 'stdClass', false);
 						JFilterOutput::objectHTMLSafe($data);
 						$data = array($data);
 						FabrikHelperHTML::debug($data, 'form:getData from session (form in Mambot and errors)');
@@ -3219,10 +3215,10 @@ echo "form get errors";
 				// Test if its a resumed paged form
 				if ($this->saveMultiPage())
 				{
-					$srow = $this->getSessionData();
+					$sessionRow = $this->getSessionData();
 					JDEBUG ? $profiler->mark('formmodel getData: session data loaded') : null;
 
-					if ($srow->data != '')
+					if ($sessionRow->data != '')
 					{
 						$sessionLoaded = true;
 						/*
@@ -3230,7 +3226,7 @@ echo "form get errors";
 						 * problem is that later failed validation, non-repeat join element data is not formatted as arrays,
 						 * but from this point on, code is expecting even non-repeat join data to be arrays.
 						 */
-						$tmp_data = unserialize($srow->data);
+						$tmp_data = unserialize($sessionRow->data);
 						$groups = $this->getGroupsHiarachy();
 
 						foreach ($groups as $groupModel)

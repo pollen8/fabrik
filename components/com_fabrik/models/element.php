@@ -977,8 +977,6 @@ class PlgFabrik_Element extends FabrikPlugin
 
 	public function canUse($location = null, $event = null)
 	{
-		$element = $this->getElement();
-
 		// Odd! even though defined in initialize() for confirmation plugin access was not set.
 		if (!isset($this->access))
 		{
@@ -2127,8 +2125,6 @@ class PlgFabrik_Element extends FabrikPlugin
 			$this->setEditable($editable);
 		}
 
-		$params = $this->getParams();
-
 		// Force reload?
 		$this->HTMLids = null;
 		$elementTable = $this->getElement();
@@ -2375,8 +2371,6 @@ class PlgFabrik_Element extends FabrikPlugin
 
 	public function getROElement($data, $repeatCounter = 0)
 	{
-		$groupModel = $this->getGroup();
-
 		if (!$this->canView() && !$this->canUse())
 		{
 			return '';
@@ -7636,5 +7630,31 @@ class PlgFabrik_Element extends FabrikPlugin
 		}
 
 		return true;
+	}
+
+	/**
+	 * Say an element is in a repeat group, this method gets that repeat groups primary
+	 * key value.
+	 *
+	 * @param int $repeatCounter
+	 *
+	 * @since 3.3.2
+	 *
+	 * @return mixed  False if not in a join
+	 */
+	protected function getJoinedGroupPkVal($repeatCounter = 0)
+	{
+		$groupModel = $this->getGroupModel();
+
+		if (!$groupModel->isJoin())
+		{
+			return false;
+		}
+
+		$formModel = $this->getFormModel();
+		$joinModel = $groupModel->getJoinModel();
+		$elementModel = $formModel->getElement($joinModel->getForeignID());
+
+		return $elementModel->getValue($formModel->data, $repeatCounter);
 	}
 }

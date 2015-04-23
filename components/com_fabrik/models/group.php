@@ -1451,7 +1451,6 @@ class FabrikFEModelGroup extends FabModel
 			return true;
 		}
 		
-		$input = JFactory::getApplication()->input;
 		$listModel = $this->getListModel();
 		$list = $listModel->getTable();
 		$joinModel = $this->getJoinModel();
