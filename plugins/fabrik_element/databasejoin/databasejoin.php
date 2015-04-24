@@ -1834,7 +1834,9 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 	public function getEmailValue($value, $data = array(), $repeatCounter = 0)
 	{
 		$tmp = $this->_getOptions($data, $repeatCounter);
-
+		// $$$ hugh - PLEASE LEAVE.  No, we don't use $name, but I'm in here xdebug'ing stuff frequently, I use it as a time saver.
+		$name = $this->getFullName(false, true, false);
+		
 		if ($this->isJoin())
 		{
 			/**
