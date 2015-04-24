@@ -7045,6 +7045,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		$table = $this->list->getTable(true);
 		$table->form_id = $formId;
 		$element = $this->getElement(true);
+		$this->setEditable($this->canUse('form'));
 	}
 
 	/**
