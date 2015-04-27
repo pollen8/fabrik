@@ -785,8 +785,8 @@
 			<field name="tabs_field"
 				type="listfields"
 				valueformat="tableelement"
-				nojoins="true"
-				filter="field|calc"
+				nojoins="false"
+				filter="field|calc|join"
 				label="COM_FABRIK_LIST_TABS_FIELD_LABEL"
 				description="COM_FABRIK_LIST_TABS_FIELD_DESC"
 			/>

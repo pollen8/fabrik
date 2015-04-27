@@ -229,6 +229,20 @@
 
 	</fieldset>
 
+	<fieldset label="COM_FABRIK_LABELS" name="labels">
+        	<field name="format_labels"
+            		type="radio"
+            		default="0"
+            		description="COM_FABRIK_LABELS_DESC"
+            		label="COM_FABRIK_LABELS_LABEL">
+                		<option value="0">COM_FABRIK_LABELS_DEFAULT</option>      
+                		<option value="1">COM_FABRIK_LABELS_LOWERCASE</option>
+                		<option value="2">COM_FABRIK_LABELS_UCWORDS</option>
+                		<option value="3">COM_FABRIK_LABELS_CAPFIRST</option>
+                		<option value="4">COM_FABRIK_LABELS_CAPS</option>          
+        	</field>
+    	</fieldset>
+
 	<fieldset label="COM_FABRIK_FORMS" name="forms">
 
 		<field name="spoofcheck_on_formsubmission"

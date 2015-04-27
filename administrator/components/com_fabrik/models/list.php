@@ -1389,6 +1389,26 @@ class FabrikAdminModelList extends FabModelAdmin
 
 			$element->params = json_encode($p);
 			$element->label = FArrayHelper::getValue($elementLabels, $ordering, str_replace("_", " ", $label));
+			
+            		//Format Label
+            		$labelConfig = $fbConfig->get('format_labels','0');  
+            		switch($labelConfig)
+            		{
+                		case '1':
+                    			$element->label = strtolower($element->label);
+	                    		break;
+                		case '2':
+	                    		$element->label = ucwords($element->label);
+                    			break;
+                		case '3':
+                    			$element->label = ucfirst($element->label);
+                    			break;
+                		case '4':
+                    			$element->label = strtoupper($element->label);
+                    			break;  
+                		default:
+                    			break;
+            		}  			
 
 			$element->store();
 			$elementModel = $pluginManager->getPlugIn($element->plugin, 'element');
