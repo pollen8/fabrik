@@ -76,7 +76,7 @@ class JFormFieldElement extends JFormFieldList
 		$highlightPk         = FabrikWorker::toBoolean($this->getAttribute('highlightpk', false), false);
 		$mode                = $this->getAttribute('mode');
 		$connection          = $this->getAttribute('connection');
-		$connectionInRepeat  = FabrikWorker::toBoolean($this->getAttribute('connection_in_repeat', false), false);
+		$connectionInRepeat  = FabrikWorker::toBoolean($this->getAttribute('connection_in_repeat', true), true);
 		$excludeJoined       = (int) $this->getAttribute('excludejoined');
 
 		if ($includeCalculations != 1)

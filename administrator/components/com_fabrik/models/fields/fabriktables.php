@@ -87,7 +87,7 @@ class JFormFieldFabrikTables extends JFormFieldList
 	{
 		$c                  = isset($this->form->repeatCounter) ? (int) $this->form->repeatCounter : 0;
 		$connectionDd       = $this->getAttribute('observe');
-		$connectionInRepeat = FabrikWorker::toBoolean($this->getAttribute('connection_in_repeat', 'false'), false);
+		$connectionInRepeat = FabrikWorker::toBoolean($this->getAttribute('connection_in_repeat', 'true'), true);
 		$script             = array();
 
 		if (!isset($fabrikTables))
