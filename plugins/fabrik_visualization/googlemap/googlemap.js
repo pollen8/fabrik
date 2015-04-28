@@ -188,6 +188,7 @@ var FbGoogleMapViz = new Class({
 		}
 		*/
 
+		/*
 		this.addIcons();
 		this.addOverlays();
 
@@ -202,7 +203,8 @@ var FbGoogleMapViz = new Class({
 		google.maps.event.addListener(this.map, "zoomend", function (e) {
 			this.setCookies(e);
 		}.bind(this));
-
+		*/
+		
 		if (this.options.use_cookies) {
 			// $$$ jazzbass - get previous stored location
 			var mymapzoom = Cookie.read("mymapzoom_" + this.options.id);
