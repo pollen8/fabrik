@@ -3299,7 +3299,7 @@ class PlgFabrik_Element extends FabrikPlugin
 	 *
 	 * @since 3.0.7
 	 *
-	 * @return  string  Checkbox filter HTML
+	 * @return  string  Checkbox filter JLayout HTML
 	 */
 
 	protected function checkboxFilter($rows, $default, $v)
@@ -3315,7 +3315,23 @@ class PlgFabrik_Element extends FabrikPlugin
 
 		$default = (array) $default;
 
-		return implode("\n", FabrikHelperHTML::grid($values, $labels, $default, $v, 'checkbox', false, 1, array('input' => array('fabrik_filter'))));
+		$layout = $this->getLayout('list-filter-checkbox');
+		$displayData = new stdClass;
+		$displayData->values = $values;
+		$displayData->labels = $labels;
+		$displayData->default = $default;
+		$displayData->name = $v;
+		$res = $layout->render($displayData);
+
+		// If no custom list layout found revert to the default list-filter-checkbox renderer
+		if ($res === '')
+		{
+			$basePath = COM_FABRIK_FRONTEND . '/layouts/';
+			$layout = new JLayoutFile('fabrik-list-filter-checkbox', $basePath, array('debug' => false, 'component' => 'com_fabrik', 'client' => 'site'));
+			$res = $layout->render($displayData);
+		}
+
+		return $res;
 	}
 
 	/**
@@ -3397,7 +3413,6 @@ class PlgFabrik_Element extends FabrikPlugin
 	 *
 	 * @return  array  HTML bits
 	 */
-
 	protected function autoCompleteFilter($default, $v, $labelValue = null, $normal = true)
 	{
 		if (is_null($labelValue))
@@ -7615,7 +7630,9 @@ class PlgFabrik_Element extends FabrikPlugin
 		$name = strtolower(JString::str_ireplace('PlgFabrik_Element', '', $name));
 		$basePath = COM_FABRIK_BASE . '/plugins/fabrik_element/' . $name . '/layouts';
 		$layout = new FabrikLayoutFile('fabrik-element-' . $name. '-' . $type, $basePath, array('debug' => false, 'component' => 'com_fabrik', 'client' => 'site'));
+		$layout->addIncludePaths(JPATH_SITE . '/layouts');
 		$layout->addIncludePaths(JPATH_THEMES . '/' . JFactory::getApplication()->getTemplate() . '/html/layouts');
+		$layout->addIncludePaths(JPATH_THEMES . '/' . JFactory::getApplication()->getTemplate() . '/html/layouts/com_fabrik');
 
 		return $layout;
 	}
