@@ -367,14 +367,6 @@ var FbGoogleMap = new Class({
 		var pnt = new google.maps.LatLng(lat, lng);
 		this.marker.setPosition(pnt);
 		this.doSetCenter(pnt, this.map.getZoom(), true);
-		/*
-		this.field.value = this.marker.getPosition() + ":" + this.map.getZoom();
-		this.element.getElement('.latdms').value = this.latDecToDMS();
-		this.element.getElement('.lngdms').value = this.lngDecToDMS();
-		if (this.options.reverse_geocode) {
-			this.reverseGeocode();
-		}
-		*/
 	},
 
 	updateFromDMS : function () {
@@ -408,14 +400,6 @@ var FbGoogleMap = new Class({
 		var pnt = new google.maps.LatLng(latdms_topnt.toFloat(), lngdms_topnt.toFloat());
 		this.marker.setPosition(pnt);
 		this.doSetCenter(pnt, this.map.getZoom(), true);
-		/*
-		this.field.value = this.marker.getPosition() + ":" + this.map.getZoom();
-		this.element.getElement('.lat').value = latdms_topnt + '° N';
-		this.element.getElement('.lng').value = lngdms_topnt + '° E';
-		if (this.options.reverse_geocode) {
-			this.reverseGeocode();
-		}
-		*/
 	},
 
 	latDecToDMS : function () {
@@ -498,17 +482,6 @@ var FbGoogleMap = new Class({
 			} else {
 				this.marker.setPosition(results[0].geometry.location);
 				this.doSetCenter(results[0].geometry.location, this.map.getZoom(), false);
-				/*
-				this.field.value = results[0].geometry.location + ":" + this.map.getZoom();
-				if (this.options.latlng === true) {
-					this.element.getElement('.lat').value = results[0].geometry.location.lat() + '° N';
-					this.element.getElement('.lng').value = results[0].geometry.location.lng() + '° E';
-				}
-				if (this.options.latlng_dms === true) {
-					this.element.getElement('.latdms').value = this.latDecToDMS();
-					this.element.getElement('.lngdms').value = this.lngDecToDMS();
-				}
-				*/
 			}
 		}.bind(this));
 	},
@@ -610,22 +583,12 @@ var FbGoogleMap = new Class({
 		var pnt = new google.maps.LatLng(pnts[0], pnts[1]);
 		this.marker.setPosition(pnt);
 		this.doSetCenter(pnt, this.map.getZoom(), true);
-		/*
-		if (this.options.reverse_geocode) {
-			this.reverseGeocode();
-		}
-		*/
 	},
 
 	geoCenter: function (p) {
 		var pnt = new google.maps.LatLng(p.coords.latitude, p.coords.longitude);
 		this.marker.setPosition(pnt);
 		this.doSetCenter(pnt, this.map.getZoom(), true);
-		/*
-		if (this.options.reverse_geocode) {
-			this.reverseGeocode();
-		}
-		*/
 	},
 
 	geoCenterErr: function (p) {
