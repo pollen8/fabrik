@@ -1492,9 +1492,10 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 				}
 				else
 				{
-					$return[] = FText::_('COM_FABRIK_DATE_RANGE_BETWEEN')
+					$return[] = '<span class="fabrikFilterRangeLabel">' . FText::_('COM_FABRIK_DATE_RANGE_BETWEEN') . '</span>'
 						. $this->calendar($default[0], $v . '[0]', $this->getFilterHtmlId(0), $format, $calOpts);
-					$return[] = '<br />' . FText::_('COM_FABRIK_DATE_RANGE_AND')
+					$return[] = '<br />';
+					$return[] = '<span class="fabrikFilterRangeLabel">' . FText::_('COM_FABRIK_DATE_RANGE_AND') . '</span>'
 						. $this->calendar($default[1], $v . '[1]', $this->getFilterHtmlId(1), $format, $calOpts);
 					$return[] = '</div>';
 				}

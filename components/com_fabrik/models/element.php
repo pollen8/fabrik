@@ -3338,15 +3338,45 @@ class PlgFabrik_Element extends FabrikPlugin
 		$class = $this->filterClass();
 		$attribs = 'class="' . $class . '" size="1" ';
 		$default = (array) $default;
+		
+		if (count($default) === 1)
+		{
+			$default[1] = '';
+		}
+		
 		$def0 = array_key_exists('value', $default) ? $default['value'][0] : $default[0];
 		$def1 = array_key_exists('value', $default) ? $default['value'][1] : $default[1];
 
 		if ($type === 'list')
 		{
-			$return[] = FText::_('COM_FABRIK_BETWEEN');
+			$return[] = '<sp
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					-+n class="fabrikFilterRangeLabel">' . FText::_('COM_FABRIK_BETWEEN') . '</span>';
 			$return[] = JHTML::_('select.genericlist', $rows, $v . '[0]', $attribs, 'value', 'text', $def0, $element->name . '_filter_range_0');
-
-			$return[] = '<br /> ' . FText::_('COM_FABRIK_AND') . ' ';
+			$return[] = '<br />';
+			$return[] = '<span class="fabrikFilterRangeLabel">' . FText::_('COM_FABRIK_AND') . '</span>';
 			$return[] = JHTML::_('select.genericlist', $rows, $v . '[1]', $attribs, 'value', 'text', $def1, $element->name . '_filter_range_1');
 		}
 		else
@@ -3356,8 +3386,8 @@ class PlgFabrik_Element extends FabrikPlugin
 		}
 	}
 
-	/**
-	 * Build the HTML for the auto-complete filter
+	/**-
+	 * Build the HTML ////for the auto-complete filter
 	 *
 	 * @param   string  $default     Label
 	 * @param   string  $v           Field name
