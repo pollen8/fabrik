@@ -52,7 +52,6 @@ class JFormFieldFacetedlinks extends JFormFieldList
 		$listParams = $feListModel->getParams();
 		$formOrder = json_decode($listParams->get('faceted_form_order'));
 		$listOrder = json_decode($listParams->get('faceted_list_order'));
-		$form = $this->form;
 		$this->value = (array) $this->value;
 		$linkedLists = $this->getAttribute('linkedlist', array());
 		$linkedForms = $this->getAttribute('linkedform', array());
@@ -67,7 +66,7 @@ class JFormFieldFacetedlinks extends JFormFieldList
 			$formOrder = array_keys($linkedForms);
 		}
 
-		// Newly added releated elements
+		// Newly added related elements
 		foreach ($joins as $linkedList)
 		{
 			$key = $linkedList->list_id . '-' . $linkedList->form_id . '-' . $linkedList->element_id;
@@ -83,12 +82,12 @@ class JFormFieldFacetedlinks extends JFormFieldList
 			}
 		}
 
-		$listHeaders = $this->getAttribute('linkedlistheader', array());
-		$formHeaders = $this->getAttribute('linkedformheader', array());
-		$formLinkTypes = $this->getAttribute('linkedform_linktype', array());
-		$listLinkTypes = $this->getAttribute('linkedlist_linktype', array());
-		$listLinkTexts = $this->getAttribute('linkedlisttext', array());
-		$formLinkTexts = $this->getAttribute('linkedformtext', array());
+		$listHeaders = FArrayHelper::getValue($this->value, 'linkedlistheader', array());
+		$formHeaders = FArrayHelper::getValue($this->value, 'linkedformheader', array());
+		$formLinkTypes = FArrayHelper::getValue($this->value, 'linkedform_linktype', array());
+		$listLinkTypes = FArrayHelper::getValue($this->value, 'linkedlist_linktype', array());
+		$listLinkTexts = FArrayHelper::getValue($this->value, 'linkedlisttext', array());
+		$formLinkTexts = FArrayHelper::getValue($this->value, 'linkedformtext', array());
 
 		$this->linkedlists = array();
 		$f = 0;
