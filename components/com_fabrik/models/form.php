@@ -2139,8 +2139,8 @@ class FabrikFEModelForm extends FabModelForm
 					if (!array_key_exists($elName2Raw, $post) || $override)
 					{
 						// Post required getValue() later on
-						$input->set($elName2Raw, @$post[$elName2]);
-						$post[$elName2Raw] = @$post[$elName2];
+						$input->set($elName2Raw, FArrayHelper::getValue($post, $elName2, ''));
+						$post[$elName2Raw] = FArrayHelper::getValue($post, $elName2, '');
 					}
 				}
 				else
@@ -2148,8 +2148,8 @@ class FabrikFEModelForm extends FabModelForm
 					if (!array_key_exists($elName2 . '_raw', $post) || $override)
 					{
 						// Post required getValue() later on
-						$input->set($elName2, @$post[$elName2Raw]);
-						$post[$elName2] = @$post[$elName2Raw];
+						$input->set($elName2, FArrayHelper::getValue($post, $elName2Raw, ''));
+						$post[$elName2] = FArrayHelper::getValue($post, $elName2Raw, '');
 					}
 				}
 			}
