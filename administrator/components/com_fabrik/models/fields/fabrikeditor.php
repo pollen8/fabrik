@@ -69,6 +69,7 @@ class JFormFieldFabrikeditor extends JFormFieldTextArea
 		$mode      = $this->getAttribute('mode', 'html');
 		$theme     = $this->getAttribute('theme', 'github');
 		$height    = $this->getAttribute('height', '300px');
+		$width     =$this->getAttribute('width', '100%');
 		$maxHeight = $this->getAttribute('max-height', str_ireplace('px', '', $height) * 2 . 'px');
 
 		$editor = '<textarea name="' . $this->name . '" id="' . $this->id . '"'
