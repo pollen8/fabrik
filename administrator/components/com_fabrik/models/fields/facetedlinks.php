@@ -53,8 +53,8 @@ class JFormFieldFacetedlinks extends JFormFieldList
 		$formOrder = json_decode($listParams->get('faceted_form_order'));
 		$listOrder = json_decode($listParams->get('faceted_list_order'));
 		$this->value = (array) $this->value;
-		$linkedLists = $this->getAttribute('linkedlist', array());
-		$linkedForms = $this->getAttribute('linkedform', array());
+		$linkedLists = FArrayHelper::getValue($this->value, 'linkedlist', array());
+		$linkedForms = FArrayHelper::getValue($this->value, '$linkedForms', array());		
 
 		if (empty($listOrder) || is_null($listOrder))
 		{
