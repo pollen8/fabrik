@@ -786,7 +786,7 @@ class FabrikString extends JString
 	 */
 	public static function safeQuoteName($values, $commaSeparated = true)
 	{
-		return self::safeNameQuote($values, $commaSeperated);	
+		return self::safeNameQuote($values, $commaSeparated);	
 	}
 		
 	/**
