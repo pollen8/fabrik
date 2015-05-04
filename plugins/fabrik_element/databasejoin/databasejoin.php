@@ -1570,11 +1570,19 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		/*
 		 * $$$ rob 18/06/2012 if form submitted with errors - reshowing the auto-complete wont have access to the submitted values label
 		* 02/11/2012 if new form then labels not present either.
+		* 
+		* $$$ hugh 5/4/2015 - if we're coming from a related data link on a list, no non-raw data, so need
+		* to get it from $default[0]'s value
 		*/
-		if ($formModel->hasErrors() || $formModel->getRowId() === '')
+		if (array_key_exists('referring_table', $data))
+		{
+			$label = (array) $this->getLabelForValue($default[0], $default[0], true);
+		}
+		else if ($formModel->hasErrors() || $formModel->getRowId() === '')
 		{
 			$label = (array) $this->getLabelForValue($label[0], $label[0], true);
 		}
+
 
 		$class = ' class="fabrikinput inputbox autocomplete-trigger ' . $params->get('bootstrap_class', 'input-large') . '"';
 
