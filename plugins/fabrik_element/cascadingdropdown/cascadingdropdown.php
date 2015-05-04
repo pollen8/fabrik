@@ -885,6 +885,7 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 		}
 
 		$data = array_merge($data, $placeholders);
+		$where = $w->parseMessageForRepeats($where, $data, $this, $repeatCounter);
 		$where = $w->parseMessageForPlaceHolder($where, $data);
 		$table = $this->getDbName();
 		$key = $this->queryKey();
