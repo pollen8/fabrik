@@ -7681,4 +7681,14 @@ class PlgFabrik_Element extends FabrikPlugin
 
 		return $elementModel->getValue($formModel->data, $repeatCounter);
 	}
+	
+	/**
+	 * Is the element published.
+	 * 
+	 * @return boolean
+	 */
+	public function isPublished()
+	{
+		return $this->getElement()->published === '1';
+	}
 }

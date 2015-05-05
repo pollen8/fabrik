@@ -377,9 +377,9 @@ class PlgContentFabrik extends JPlugin
 			}
 
 			// $$$ hugh in case they have a typo in their elementname
-			if (empty($activeEl))
+			if (empty($activeEl) || !$activeEl->isPublished())
 			{
-				throw new RuntimeException('You are trying to embed an element called ' . $element . ' which is not present in the list');
+				throw new RuntimeException('You are trying to embed an element called ' . $element . ' which is not present in the list or has been unpublished');
 			}
 
 			if ($rowid === '')
