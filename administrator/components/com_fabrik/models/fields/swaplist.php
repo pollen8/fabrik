@@ -136,7 +136,7 @@ class JFormFieldSwapList extends JFormFieldList
 		$db->setQuery($query);
 		$groups = $db->loadObjectList();
 		$style = FabrikWorker::j3() ? '' : 'style="width:100%;"';
-		$list = JHTML::_('select.genericlist', $groups, 'jform[groups]', 'class="inputbox" size="10" ' . $style, 'value', 'text', null,
+		$list = JHTML::_('select.genericlist', $groups, 'jform[groups]', 'class="inputbox input-xxlarge" size="10" ' . $style, 'value', 'text', null,
 			$this->id . '-from');
 
 		return array($groups, $list);
@@ -161,7 +161,7 @@ class JFormFieldSwapList extends JFormFieldList
 		$db->setQuery($query);
 		$currentGroups = $db->loadObjectList();
 		$style = FabrikWorker::j3() ? '' : 'style="width:100%;"';
-		$attribs = 'class="inputbox" multiple="multiple" ' . $style . ' size="10" ';
+		$attribs = 'class="inputbox input-xxlarge" multiple="multiple" ' . $style . ' size="10" ';
 		$list = JHTML::_('select.genericlist', $currentGroups, $this->name, $attribs, 'value', 'text', '/', $this->id);
 
 		return array($currentGroups, $list);
