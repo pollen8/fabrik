@@ -57,18 +57,19 @@ class PlgFabrik_ElementFbRecommendations extends PlgFabrik_Element
 	public function render($data, $repeatCounter = 0)
 	{
 		$params            = $this->getParams();
-		$data->graphApi    = FabrikHelperHTML::facebookGraphAPI($params->get('opengraph_applicationid'));
-		$data->domain      = $params->get('fbrecommendations_domain');
-		$data->width       = $params->get('fbrecommendations_width', 300);
-		$data->height      = $params->get('fbrecommendations_height', 300);
-		$data->header      = $params->get('fbrecommendations_header', 1) == 1 ? 'true' : 'false';
-		$data->border      = $params->get('fbrecommendations_border', '');
-		$data->font        = $params->get('fbrecommendations_font', 'arial');
-		$data->colorscheme = $params->get('fbrecommendations_colorscheme', 'light');
+		$displayData = new stdClass;
+		$displayData->graphApi    = FabrikHelperHTML::facebookGraphAPI($params->get('opengraph_applicationid'));
+		$displayData->domain      = $params->get('fbrecommendations_domain');
+		$displayData->width       = $params->get('fbrecommendations_width', 300);
+		$displayData->height      = $params->get('fbrecommendations_height', 300);
+		$displayData->header      = $params->get('fbrecommendations_header', 1) == 1 ? 'true' : 'false';
+		$displayData->border      = $params->get('fbrecommendations_border', '');
+		$displayData->font        = $params->get('fbrecommendations_font', 'arial');
+		$displayData->colorscheme = $params->get('fbrecommendations_colorscheme', 'light');
 
 		$layout = $this->getLayout('form');
 
-		return $layout->render($data);
+		return $layout->render($displayData);
 	}
 
 	/**

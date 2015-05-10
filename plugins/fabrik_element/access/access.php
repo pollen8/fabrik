@@ -80,13 +80,13 @@ class PlgFabrik_ElementAccess extends PlgFabrik_Element
 		}
 
 		$layout = $this->getLayout('form');
-		$data = new stdClass;
-		$data->id = $id;
-		$data->name = $name;
-		$data->options = $this->getOpts();
-		$data->selected =  $arSelected[0];
+		$displayData = new stdClass;
+		$displayData->id = $id;
+		$displayData->name = $name;
+		$displayData->options = $this->getOpts();
+		$displayData->selected =  $arSelected[0];
 
-		return $layout->render($data);
+		return $layout->render($displayData);
 	}
 
 	/**
@@ -149,11 +149,10 @@ class PlgFabrik_ElementAccess extends PlgFabrik_Element
 			}
 		}
 
-		$layout = $this->getLayout('list');
-		$data = new stdClass;
-		$data->text = $text;
+		$layoutData = new stdClass;
+		$layoutData->text = $text;
 
-		return $layout->render($data);
+		return parent::renderListData($layoutData, $thisRow);
 	}
 
 	/**

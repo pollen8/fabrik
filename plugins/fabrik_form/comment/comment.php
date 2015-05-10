@@ -302,7 +302,7 @@ class PlgFabrik_FormComment extends PlgFabrik_Form
 		$layoutData->rating = $params->get('comment-internal-rating');
 		$layoutData->anonymous = $params->get('comment-internal-anonymous');
 		$layoutData->replyTo = $reply_to;
-		$layoutData->notify = $params->get('comment-plugin-notify') == 1 && $this->notificationPluginInstalled();
+		$layoutData->notify = $params->get('comment_allow_user_subscriptions_to_notifications') == 1;
 		$layoutData->name = trim($input->get('ide_people___voornaam', '', 'cookie') . ' ' . $input->get('ide_people___achternaam', '', 'cookie'));
 		$layoutData->email = $input->get('ide_people___email', '', 'cookie');
 		$layoutData->renderOrder = $this->renderOrder;
@@ -593,7 +593,8 @@ class PlgFabrik_FormComment extends PlgFabrik_Form
 		// First load all form params
 		$formModel = $this->setFormModel();
 		$params = $formModel->getParams();
-		$this->renderOrder = $input->get('renderOrder', 2);
+
+		$this->renderOrder = (int) $input->get('renderOrder', 0);
 
 		// Then map that data (for correct render order) onto this plugins params
 		$params = $this->setParams($params, $this->renderOrder);
@@ -608,7 +609,8 @@ class PlgFabrik_FormComment extends PlgFabrik_Form
 		$obj->content = $this->writeComment($params, $row);
 		$obj->depth = (int) $row->depth;
 		$obj->id = $row->id;
-		$notificationPlugin = $this->notificationPluginInstalled();
+		$notificationPlugin = $this->useNotificationPlugin();
+		$this->fixTable();
 
 		if ($notificationPlugin)
 		{
@@ -616,23 +618,41 @@ class PlgFabrik_FormComment extends PlgFabrik_Form
 		}
 
 		// Do we notify everyone?
-		if ($params->get('comment-internal-notify') == 1)
+		if ($notificationPlugin)
 		{
-			if ($notificationPlugin)
-			{
-				$this->saveNotificationToPlugin($row, $comments);
-			}
-			else
-			{
-				$this->sentNotifications($row, $comments);
-			}
+			$this->saveNotificationToPlugin($row, $comments);
+		}
+		else
+		{
+			$this->sentNotifications($row, $comments);
 		}
 
 		echo json_encode($obj);
 	}
 
 	/**
-	 * Add notification event
+	 * Initial code missed out adding a notify field to the db.
+	 * Manually add it in.
+	 *
+	 * @return void
+	 */
+	private function fixTable()
+	{
+		$table = FabTable::getInstance('Comment', 'FabrikTable');
+		$columns = $table->getFields();
+
+		if (!array_key_exists('notify', $columns))
+		{
+			$db = JFactory::getDbo();
+			$query = 'ALTER TABLE `#__fabrik_comments` ADD `notify` TINYINT(1) NOT NULL;';
+			$db->setQuery($query)
+				->execute();
+
+		}
+	}
+
+	/**
+	 * Add notification event.
 	 *
 	 * @param   object  $row  Row?
 	 *
@@ -645,12 +665,12 @@ class PlgFabrik_FormComment extends PlgFabrik_Form
 		$app = JFactory::getApplication();
 		$input = $app->input;
 		$db = FabrikWorker::getDbo();
-		$event = $db->quote('COMMENT_ADDED');
+		$event = $db->q('COMMENT_ADDED');
 		$user = JFactory::getUser();
 		$user_id = (int) $user->get('id');
 		$rowid = $input->get('rowid', '', 'string');
-		$ref = $db->quote($formModel->getlistModel()->getTable()->id . '.' . $formModel->get('id') . '.' . $rowid);
-		$date = $db->quote(JFactory::getDate()->toSql());
+		$ref = $db->q($formModel->getlistModel()->getTable()->id . '.' . $formModel->get('id') . '.' . $rowid);
+		$date = $db->q(JFactory::getDate()->toSql());
 		$query = $db->getQuery(true);
 		$query->insert('#__{package}_notification_event')
 			->set(array('event = ' . $event, 'user_id = ' . $user_id, 'reference = ' . $ref, 'date_time = ' . $date));
@@ -681,6 +701,7 @@ class PlgFabrik_FormComment extends PlgFabrik_Form
 
 	protected function saveNotificationToPlugin($row, $comments)
 	{
+		$params = $this->getParams();
 		$formModel = $this->getModel();
 		$app = JFactory::getApplication();
 		$input = $app->input;
@@ -691,22 +712,27 @@ class PlgFabrik_FormComment extends PlgFabrik_Form
 		$label = $db->quote($input->get('label', '', 'string'));
 		$ref = $db->quote($formModel->getlistModel()->getTable()->id . '.' . $formModel->get('id') . '.' . $rowid);
 		$query = $db->getQuery(true);
-		$query->insert('#__{package}_notification')
-			->set(array('reason = ' . $db->quote('commentor'), 'user_id = ' . $user_id, 'reference = ' . $ref, 'label = ' . $label));
-		$db->setQuery($query);
 
-		try
+		$onlySubscribed = (bool) $params->get('comment_allow_user_subscriptions_to_notifications');
+		$shouldSubscribe = $onlySubscribed === false || ($onlySubscribed && (int) $row->notify === 1);
+
+		if ((int) $params->get('comment-internal-notify') == 1 && $shouldSubscribe)
 		{
-			$db->execute();
-		}
-		catch (RuntimeException $e)
-		{
-			JLog::add('Couldn\'t save fabrik comment notification: ' + $db->stderr(true), JLog::WARNING, 'fabrik');
+			$query->insert('#__{package}_notification')
+				->set(array('reason = ' . $db->q('commentor'), 'user_id = ' . $user_id, 'reference = ' . $ref, 'label = ' . $label));
+			$db->setQuery($query);
 
-			return false;
-		}
+			try
+			{
+				$db->execute();
+			}
+			catch (RuntimeException $e)
+			{
+				JLog::add('Couldn\'t save fabrik comment notification: ' + $db->stderr(true), JLog::WARNING, 'fabrik');
 
-		$params = $formModel->getParams();
+				return false;
+			}
+		}
 
 		if ($params->get('comment-notify-admins') == 1)
 		{
@@ -716,6 +742,7 @@ class PlgFabrik_FormComment extends PlgFabrik_Form
 			{
 				if ($row->id != $user_id)
 				{
+					$query->clear();
 					$fields = array('reason = ' . $db->quote('admin observing a comment'), 'user_id = ' . $row->id, 'reference = ' . $ref,
 						'label = ' . $label);
 					$query->insert('#__{package}_notification')->set($fields);
@@ -743,6 +770,19 @@ class PlgFabrik_FormComment extends PlgFabrik_Form
 	protected function notificationPluginInstalled()
 	{
 		return FabrikWorker::getPluginManager()->pluginExists('cron', 'notification');
+	}
+
+	/**
+	 * Is the notification plugin installed and have we set the comment plugin option 'Use notification cron plugin'
+	 * to something other than 'no'
+	 *
+	 * @return bool
+	 */
+	protected function useNotificationPlugin()
+	{
+		$params = $this->getparams();
+
+		return $this->notificationPluginInstalled() && (int) $params->get('comment-plugin-notify') !== 0;
 	}
 
 	/**
@@ -778,18 +818,25 @@ class PlgFabrik_FormComment extends PlgFabrik_Form
 		$message .= "<br /><a href=\"{$row->url}\">" . FText::_('PLG_FORM_COMMENT_VIEW_COMMENT') . "</a>";
 		$mail = JFactory::getMailer();
 
-		foreach ($comments as $comment)
+		if ((int) $params->get('comment-internal-notify') == 1)
 		{
-			if ($comment->id == $row->id)
-			{
-				// Don't sent notification to user who just posted
-				continue;
-			}
+			$onlySubscribed = (bool) $params->get('comment_allow_user_subscriptions_to_notifications');
 
-			if (!in_array($comment->email, $sentto))
+			foreach ($comments as $comment)
 			{
-				$mail->sendMail($app->getCfg('mailfrom'), $app->getCfg('fromname'), $comment->email, $title, $message, true);
-				$sentto[] = $comment->email;
+				if ($comment->id == $row->id)
+				{
+					// Don't sent notification to user who just posted
+					continue;
+				}
+
+				$shouldSend = $onlySubscribed === false || ($onlySubscribed && (int) $comment->notify === 1);
+
+				if ($shouldSend && !in_array($comment->email, $sentto))
+				{
+					$mail->sendMail($app->getCfg('mailfrom'), $app->getCfg('fromname'), $comment->email, $title, $message, true);
+					$sentto[] = $comment->email;
+				}
 			}
 		}
 
@@ -797,7 +844,7 @@ class PlgFabrik_FormComment extends PlgFabrik_Form
 		$listModel = $formModel->getlistModel();
 		$rowdata = $listModel->getRow($row->row_id);
 
-		if (!in_array($rowdata->ide_idea___email_raw, $sentto))
+		if (isset($rowdata->ide_idea___email_raw) && !in_array($rowdata->ide_idea___email_raw, $sentto))
 		{
 			$mail->sendMail($app->getCfg('mailfrom'), $app->getCfg('fromname'), $rowdata->ide_idea___email_raw, $title, $message, true);
 			$sentto[] = $rowdata->ide_idea___email_raw;

@@ -200,30 +200,39 @@ function fabrikParseRoute($segments)
 		$view = array_shift($view);
 	}
 
-	// View (controller not passed into segments)
+	/**
+	 * View (controller not passed into segments)
+	 * 
+	 * $$$ hugh - don't use FArrayHelper::getValue() here, use original JArrayHelper.  Don't ask.
+	 * Well, since you asked, some users are reporting issues with the helper not having been
+	 * loaded (some bizarre 3rd party system plugin doing funky things), and since we don't need
+	 * what our wrapper does for this simple usage ... yes, we could specifically load our helper here,
+	 * and (dear reader) if you wanna do that be my guest.
+	 */
+	
 	switch ($view)
 	{
 		case 'form':
 		case 'details':
 		case 'emailform':
 			$vars['view'] = $segments[0];
-			$vars['formid'] = FArrayHelper::getValue($segments, 1, 0);
-			$vars['rowid'] = FArrayHelper::getValue($segments, 2, '');
-			$vars['format'] = FArrayHelper::getValue($segments, 3, 'html');
+			$vars['formid'] = JArrayHelper::getValue($segments, 1, 0);
+			$vars['rowid'] = JArrayHelper::getValue($segments, 2, '');
+			$vars['format'] = JArrayHelper::getValue($segments, 3, 'html');
 			break;
 		case 'table':
 		case 'list':
-			$vars['view'] = FArrayHelper::getValue($segments, 0, '');
-			$vars['listid'] = FArrayHelper::getValue($segments, 1, 0);
+			$vars['view'] = JArrayHelper::getValue($segments, 0, '');
+			$vars['listid'] = JArrayHelper::getValue($segments, 1, 0);
 			break;
 		case 'import':
 			$vars['view'] = 'import';
-			$vars['listid'] = FArrayHelper::getValue($segments, 1, 0);
-			$vars['filetype'] = FArrayHelper::getValue($segments, 2, 0);
+			$vars['listid'] = JArrayHelper::getValue($segments, 1, 0);
+			$vars['filetype'] = JArrayHelper::getValue($segments, 2, 0);
 			break;
 		case 'visualization':
-			$vars['id'] = FArrayHelper::getValue($segments, 1, 0);
-			$vars['format'] = FArrayHelper::getValue($segments, 2, 'html');
+			$vars['id'] = JArrayHelper::getValue($segments, 1, 0);
+			$vars['format'] = JArrayHelper::getValue($segments, 2, 'html');
 			break;
 		default:
 			break;

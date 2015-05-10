@@ -455,8 +455,11 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 		$params = $this->getParams();
 		$split_str = $params->get('options_split_str', '');
 		$element = $this->getElement();
-		$values = $this->getSubOptionValues();
-		$labels = $this->getSubOptionLabels();
+
+		// Pass in data - otherwise if using multiple plugins of the same type the plugin order gets messed
+		// up. Occurs for dropdown element using php eval options.
+		$values = $this->getSubOptionValues($data);
+		$labels = $this->getSubOptionLabels($data);
 		$aLabels = array();
 
 		if (is_string($value))

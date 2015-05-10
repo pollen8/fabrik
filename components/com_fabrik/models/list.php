@@ -839,12 +839,10 @@ class FabrikFEModelList extends JModelForm
 
 		$profiler = JProfiler::getInstance('Application');
 		$pluginManager = FabrikWorker::getPluginManager();
-		$fbConfig = JComponentHelper::getParams('com_fabrik');
 		$pluginManager->runPlugins('onPreLoadData', $this, 'list');
 
 		// Needs to be off for FOUND_ROWS() to work
 		ini_set('mysql.trace_mode', 'off');
-		$fabrikDb = $this->getDb();
 		JDEBUG ? $profiler->mark('query build start') : null;
 
 		// Ajax call needs to recall this - not sure why
@@ -857,6 +855,7 @@ class FabrikFEModelList extends JModelForm
 		}
 		catch (Exception $e)
 		{
+			$item = $this->getTable();
 			$msg = 'Fabrik has generated an incorrect query for the list ' . $item->label . ': <br /><br /><pre>' . $e->getMessage() . '</pre>';
 			throw new RuntimeException($msg, 500);
 		}
@@ -1567,8 +1566,10 @@ class FabrikFEModelList extends JModelForm
 		$tpl = $this->getTmpl();
 		$align = $params->get('checkboxLocation', 'end') == 'end' ? 'right' : 'left';
 		$displayData = array('align' => $align);
-		$basePath = COM_FABRIK_FRONTEND . '/views/list/tmpl/' . $tpl . '/layouts/';
-		$layout = new JLayoutFile('listactions.' . $buttonAction, $basePath, array('debug' => false, 'component' => 'com_fabrik', 'client' => 'site'));
+		$basePath = COM_FABRIK_FRONTEND . '/components/com_fabrik/layouts';
+		$layout = new FabrikLayoutFile('listactions.' . $buttonAction, $basePath, array('debug' => false, 'component' => 'com_fabrik', 'client' => 'site'));
+		$layout->addIncludePaths(JPATH_THEMES . '/' . JFactory::getApplication()->getTemplate() . '/html/layouts');
+		$layout->addIncludePaths(COM_FABRIK_FRONTEND . '/views/list/tmpl/' . $tpl . '/layouts/');
 
 		foreach ($data as $groupKey => $group)
 		{
@@ -1715,7 +1716,6 @@ class FabrikFEModelList extends JModelForm
 
 	protected function deleteButton($tpl = '', $heading = false)
 	{
-		$params = $this->getParams();
 		$label = FText::_('COM_FABRIK_DELETE');
 		$buttonAction = $this->actionMethod();
 		$tpl = $this->getTmpl();
@@ -2082,6 +2082,9 @@ class FabrikFEModelList extends JModelForm
 		{
 			$bits[] = 'view=list';
 			$bits[] = 'listid=' . $listid;
+			
+			// Jaanus 12 Apr 2015 - commenting out the Itemid stuff as it totally messed up things i.e when one list was under many menu items and prefiltered differently under each item
+			/*
 			$listLinks = $this->getTableLinks();
 
 			// $$$ rob 01/03/2011 find at matching itemid in another menu item for the related data link
@@ -2094,6 +2097,7 @@ class FabrikFEModelList extends JModelForm
 					break;
 				}
 			}
+			*/
 
 			$bits[] = 'Itemid=' . $Itemid;
 		}
@@ -6330,9 +6334,9 @@ class FabrikFEModelList extends JModelForm
 		list($fieldNames, $firstFilter) = $this->getAdvancedSearchElementList();
 		$statements = $this->getStatementsOpts();
 		$opts->elementList = JHTML::_('select.genericlist', $fieldNames, 'fabrik___filter[list_' . $listRef . '][key][]',
-				'class="inputbox key input-small" size="1" ', 'value', 'text');
+				'class="inputbox key" size="1" ', 'value', 'text');
 		$opts->statementList = JHTML::_('select.genericlist', $statements, 'fabrik___filter[list_' . $listRef . '][condition][]',
-				'class="inputbox input-small" size="1" ', 'value', 'text');
+				'class="inputbox" size="1" ', 'value', 'text');
 		$opts->listid = $list->id;
 		$opts->listref = $listRef;
 		$opts->ajax = $this->isAjax();
@@ -7006,7 +7010,8 @@ class FabrikFEModelList extends JModelForm
 				{
 					if ($this->actionMethod() == 'dropdown')
 					{
-						$aTableHeadings['fabrik_actions'] = FabrikHelperHTML::bootStrapDropDown($headingButtons);
+						$align = $params->get('checkboxLocation', 'end') == 'end' ? 'right' : 'left';
+						$aTableHeadings['fabrik_actions'] = FabrikHelperHTML::bootStrapDropDown($headingButtons, $align);
 					}
 					else
 					{
@@ -8681,7 +8686,6 @@ class FabrikFEModelList extends JModelForm
 		$app = JFactory::getApplication();
 		$table = $this->getTable();
 		$db = $this->getDb();
-		$params = $this->getParams();
 
 		if ($key == '')
 		{
@@ -8765,7 +8769,7 @@ class FabrikFEModelList extends JModelForm
 				$v = $db->quote($v);
 			}
 
-			$val = implode(",", $val);
+			$val = implode(',', $val);
 		}
 
 		$this->rowsToDelete = $rows;
@@ -8925,6 +8929,12 @@ class FabrikFEModelList extends JModelForm
 	{
 		$db = $this->getDb();
 		$item = $this->getTable();
+
+		$pluginManager = FabrikWorker::getPluginManager();
+
+		$formModel = $this->getFormModel();
+		$pluginManager->runPlugins('onBeforeTruncate', $this, 'list');
+		$pluginManager->runPlugins('onBeforeTruncate', $formModel, 'form');
 
 		// Remove any groups that were set to be repeating and hence were storing in their own db table.
 		$joinModels = $this->getInternalRepeatJoins();
@@ -10918,15 +10928,17 @@ class FabrikFEModelList extends JModelForm
 	/**
 	 * Update a series of rows with a key = val , works across joined tables
 	 *
-	 * @param   array   $ids     Pk values to update
-	 * @param   string  $col     Key to update should be in format 'table.element'
-	 * @param   string  $val     Val to set to
-	 * @param   string  $update  Optional update statement, overides $col = $val
+	 * @param   array   $ids         Pk values to update
+	 * @param   string  $col         Key to update should be in format 'table.element'
+	 * @param   string  $val         Val to set to
+	 * @param   string  $update      Optional update statement, overides $col = null
+	 * @param   mixed   $$joinPkVal  If deleteing a joined record, this value can specify which joined row to update
+	 *                               if left blank then all rows are updated.
 	 *
 	 * @return  void
 	 */
 
-	public function updateRows($ids, $col, $val, $update = '')
+	public function updateRows($ids, $col, $val, $update = '', $joinPkVal = null)
 	{
 		if (empty($col) && empty($update))
 		{
@@ -10947,8 +10959,8 @@ class FabrikFEModelList extends JModelForm
 		$table = $this->getTable();
 
 		$update = $update == '' ? $col . ' = ' . $db->quote($val) : $update;
-		$colbits = explode('.', $col);
-		$tbl = array_shift($colbits);
+		$colBits = explode('.', $col);
+		$tbl = array_shift($colBits);
 
 		$joinFound = false;
 		JArrayHelper::toInteger($ids);
@@ -10959,13 +10971,14 @@ class FabrikFEModelList extends JModelForm
 		// If the update element is in a join replace the key and table name with the join table's name and key
 		foreach ($joins as $join)
 		{
-			if ((int)$join->list_id != 0 && $join->table_join == $tbl)
+			if ((int) $join->list_id != 0 && $join->table_join == $tbl)
 			{
 				$joinFound = true;
 				$db->setQuery('DESCRIBE ' . $tbl);
 				$fields = $db->loadObjectList('Key');
-				$k = $tbl . '___' . $fields['PRI']->Field;
-				$dbk = $tbl . '.' . $fields['PRI']->Field;
+				$joinPkField = $fields['PRI']->Field;
+				$k = $tbl . '___' . $joinPkField;
+				$dbk = $db->qn($tbl . '.' . $joinPkField);
 				$db_table_name = $tbl;
 				$ids = array();
 
@@ -10977,7 +10990,7 @@ class FabrikFEModelList extends JModelForm
 
 						if ($v != '')
 						{
-							$ids[] = $v;
+							$ids[] = $db->q($v);
 						}
 					}
 				}
@@ -10986,7 +10999,16 @@ class FabrikFEModelList extends JModelForm
 				{
 					$query = $db->getQuery(true);
 					$ids = implode(',', $ids);
-					$query->update($db_table_name)->set($update)->where($dbk . ' IN (' . $ids . ')');
+					$query->update($db_table_name)->set($update);
+
+					if (!is_null($joinPkVal))
+					{
+						$query->where($dbk . ' = ' . $db->q($joinPkVal));
+					} else
+					{
+						$query->where($dbk . ' IN (' . $ids . ')');
+					}
+					
 					$db->setQuery($query);
 					$db->execute();
 				}
@@ -11779,7 +11801,7 @@ class FabrikFEModelList extends JModelForm
 		 **/
 		$app = JFactory::getApplication();
 		$params = $this->getParams();
-		$tabsField = $this->getTabField();
+		$tabsField = $tabsElName = $this->getTabField();
 
 		if (empty($tabsField))
 		{
@@ -11799,13 +11821,28 @@ class FabrikFEModelList extends JModelForm
 		$tabsMax = (int) $params->get('tabs_max', 10);
 		$tabsAll = (bool) $params->get('tabs_all', '1');
 
-		// Get values and count in the tab field
-		$db = $this->getDb();
-		$query = $db->getQuery(true);
-		$query->select(array($tabsField, 'Count(' . $tabsField . ') as count'))
-			->from($db->quoteName($table->db_table_name))
-			->group($tabsField)
-			->order($tabsField);
+		// @FIXME - starting to implement code to handle join elements, not cooked yet
+		
+		$formModel = $this->getFormModel();
+		$elementModel = $formModel->getElement($tabsElName);
+		$is_join = (is_subclass_of($elementModel, 'PlgFabrik_ElementDatabasejoin') || get_class($elementModel) == 'PlgFabrik_ElementDatabasejoin');
+		if (!$is_join)
+		{
+			// Get values and count in the tab field
+			$db = $this->getDb();
+			$query = $db->getQuery(true);
+			$query->select(array($tabsField, 'Count(' . $tabsField . ') as count'))
+				->from($db->quoteName($table->db_table_name))
+				->group($tabsField)
+				->order($tabsField);
+		}
+		else
+		{
+			$app->enqueueMessage(sprintf(FText::_('COM_FABRIK_LIST_TABS_TABLE_ERROR'), $tableName, $table->db_table_name), 'error');
+			$joinTable = $elementModel->getJoinModel()->getJoin();
+			$fullFk = $joinTable->table_join . '___' . $joinTable->table_join_key;		
+			return;			
+		}
 
 		/**
 		 * Filters include any existing tab filters - so we cannot calculate tabs based on any user set filters

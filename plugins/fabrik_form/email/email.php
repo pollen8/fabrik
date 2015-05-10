@@ -69,7 +69,6 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 		$db = JFactory::getDbo();
 		$w = new FabrikWorker;
 		$formModel = $this->getModel();
-		$formParams = $formModel->getParams();
 		$emailTemplate = JPath::clean(JPATH_SITE . '/plugins/fabrik_form/email/tmpl/' . $params->get('email_template', ''));
 
 		$this->data = $this->getProcessData();
@@ -484,7 +483,6 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 	protected function addAttachments()
 	{
 		$params = $this->getParams();
-		$pluginManager = FabrikWorker::getPluginManager();
 		$data = $this->getProcessData();
 		$formModel = $this->getModel();
 		$groups = $formModel->getGroupsHiarachy();
@@ -631,7 +629,6 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 		$config = JFactory::getConfig();
 		$ignore = $this->getDontEmailKeys();
 		$message = "";
-		$pluginManager = FabrikWorker::getPluginManager();
 		$formModel = $this->getModel();
 		$groupModels = $formModel->getGroupsHiarachy();
 

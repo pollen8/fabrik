@@ -67,17 +67,6 @@
 					<option value="1">JYES</option>
 			</field>
 			
-			<field name="comment-notify-admins"
-				type="radio"
-				default="0"
-				class="btn-group"
-				description="PLG_FORM_COMMENT_NOTIFY_ADMINS_DESC"
-				label="PLG_FORM_COMMENT_NOTIFY_ADMINS_LABEL"
-				repeat="true">
-					<option value="0">JNO</option>
-					<option value="1">JYES</option>
-			</field>
-			
 			<field name="comment-internal-anonymous"
 				type="radio"
 				default="0"
@@ -88,29 +77,7 @@
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
-			
-			<field name="comment-internal-notify"
-				type="radio"
-				default="0"
-				class="btn-group"
-				description="PLG_FORM_COMMENT_NOTIFY_ON_NEW_COMMENT_DESC"
-				label="PLG_FORM_COMMENT_NOTIFY_ON_NEW_COMMENT_LABEL"
-				repeat="true">
-					<option value="0">JNO</option>
-					<option value="1">JYES</option>
-			</field>
-			
-			<field name="comment-plugin-notify"
-				type="list"
-				default="0"
-				description="PLG_FORM_COMMENT_NOTIFY_PLUGIN_ON_NEW_COMMENT_DESC"
-				label="PLG_FORM_COMMENT_NOTIFY_PLUGIN_ON_NEW_COMMENT_LABEL"
-				repeat="true">
-					<option value="0">JNO</option>
-					<option value="1">Choice</option>
-					<option value="2">Automatic</option>
-			</field>
-			
+
 			<field name="comment-show-count-in-title"
 				type="radio"
 				default="1"
@@ -133,6 +100,52 @@
 					<option value="1">JYES</option>
 			</field>
 
+		</fieldset>
+
+		<fieldset name="plg-form-comment-local-notifications" label="PLG_FORM_COMMENT_NOTIFICATIONS">
+
+			<field name="comment-plugin-notify"
+			       type="list"
+			       default="0"
+			       description="PLG_FORM_COMMENT_NOTIFY_PLUGIN_ON_NEW_COMMENT_DESC"
+			       label="PLG_FORM_COMMENT_NOTIFY_PLUGIN_ON_NEW_COMMENT_LABEL"
+			       repeat="true">
+				<option value="0">Email</option>
+				<option value="2">Notification Cron Plugin</option>
+			</field>
+
+			<field name="comment-internal-notify"
+			       type="radio"
+			       default="0"
+			       class="btn-group"
+			       description="PLG_FORM_COMMENT_NOTIFY_ON_NEW_COMMENT_DESC"
+			       label="PLG_FORM_COMMENT_NOTIFY_ON_NEW_COMMENT_LABEL"
+			       repeat="true">
+				<option value="0">JNO</option>
+				<option value="1">JYES</option>
+			</field>
+
+			<field name="comment_allow_user_subscriptions_to_notifications"
+			       type="radio"
+			       default="0"
+			       class="btn-group"
+			       description="PLG_FORM_COMMENT_CAN_USER_SUBSCRIBE_TO_NOTIFICATIONS_DESC"
+			       label="PLG_FORM_COMMENT_CAN_USER_SUBSCRIBE_TO_NOTIFICATIONS_LABEL"
+					>
+				<option value="0">JNO</option>
+				<option value="1">JYES</option>
+			</field>
+
+			<field name="comment-notify-admins"
+			       type="radio"
+			       default="0"
+			       class="btn-group"
+			       description="PLG_FORM_COMMENT_NOTIFY_ADMINS_DESC"
+			       label="PLG_FORM_COMMENT_NOTIFY_ADMINS_LABEL"
+			       repeat="true">
+				<option value="0">JNO</option>
+				<option value="1">JYES</option>
+			</field>
 		</fieldset>
 	</fields>
 </form>

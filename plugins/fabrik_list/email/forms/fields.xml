@@ -21,17 +21,6 @@
 				size="30"
 			/>
 			
-			<field default="0"
-				class="btn-group"
-				description="PLG_LIST_EMAIL_SEND_FROM_USER_DESC"
-				label="PLG_LIST_EMAIL_SEND_FROM_USER_LABEL"
-				name="emailtable_from_user"
-				repeat="true"
-				type="radio">
-					<option value="0">JNO</option>
-					<option value="1">JYES</option>
-			</field>
-			
 			<field name="emailtable_condition"
 				type="fabrikeditor"
 				description="PLG_LIST_EMAIL_CONDITION_DESC"
@@ -48,6 +37,31 @@
 					<option value="1">JYES</option>	
 			</field>
 			
+		</fieldset>
+
+		<fieldset name="plg-list-email-sending" label="PLG_LIST_EMAIL_SENDING">
+			<field default="0"
+			       class="btn-group"
+			       description="PLG_LIST_EMAIL_SEND_FROM_USER_DESC"
+			       label="PLG_LIST_EMAIL_SEND_FROM_USER_LABEL"
+			       name="emailtable_from_user"
+			       repeat="true"
+			       type="radio">
+				<option value="0">JNO</option>
+				<option value="1">JYES</option>
+			</field>
+
+			<field name="email_from"
+			       type="text"
+			       description="PLG_LIST_EMAIL_FROM_DESC"
+			       label="PLG_LIST_EMAIL_FROM_LABEL"
+			       repeat="true" />
+
+			<field name="email_reply_to"
+			       type="text"
+			       description="PLG_LIST_EMAIL_REPLY_TO_DESC"
+			       label="PLG_LIST_EMAIL_REPLY_TO_LABEL"
+			       repeat="true" />
 		</fieldset>
 
 		<fieldset name="plg-list-email-mail" label="PLG_LIST_EMAIL_MAIL">

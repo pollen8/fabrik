@@ -92,14 +92,14 @@ class FlashRender
 		}
 
 		$layout = $model->getLayout('flash');
-		$data = new stdClass;
-		$data->useThumbs = !$model->inDetailedView && $fbConfig->get('use_mediabox', true) && $params->get('make_thumbnail', false);
-		$data->width = $w;
-		$data->height = $h;
-		$data->inDetailedView = $model->inDetailedView;
-		$data->file = $file;
+		$displayData = new stdClass;
+		$displayData->useThumbs = !$model->inDetailedView && $fbConfig->get('use_mediabox', true) && $params->get('make_thumbnail', false);
+		$displayData->width = $w;
+		$displayData->height = $h;
+		$displayData->inDetailedView = $model->inDetailedView;
+		$displayData->file = $file;
 
-		if ($data->useThumbs)
+		if ($displayData->useThumbs)
 		{
 			// @TODO - work out how to do thumbnails
 			$thumb_dir = $params->get('thumb_dir');
@@ -133,11 +133,11 @@ class FlashRender
 			}
 
 			$file = str_replace("\\", "/", COM_FABRIK_LIVESITE . $file);
-			$data->thumb = $thumb_file;
-			$data->file = $file;
+			$displayData->thumb = $thumb_file;
+			$displayData->file = $file;
 		}
 
-		$this->output = $layout->render($data);
+		$this->output = $layout->render($displayData);
 	}
 
 	/**

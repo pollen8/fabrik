@@ -238,11 +238,11 @@ var ListForm = new Class({
 		delButton.set('html', delHtml);
 
 		joinType = new Element('select', {'name': 'jform[params][join_type][]', 'class': 'inputbox input-mini'}).adopt(this._buildOptions(this.options.joinOpts, joinType));
-		var joinFrom = new Element('select', {'name': 'jform[params][join_from_table][]', 'class': 'inputbox join_from input-small'}).adopt(this._buildOptions(this.options.activetableOpts, joinFromTable));
+		var joinFrom = new Element('select', {'name': 'jform[params][join_from_table][]', 'class': 'inputbox join_from input-medium'}).adopt(this._buildOptions(this.options.activetableOpts, joinFromTable));
 		groupId = new Element('input', {'type': 'hidden', 'name': 'group_id[]', 'value': groupId});
-		var tableJoin = new Element('select', {'name': 'jform[params][table_join][]', 'class': 'inputbox join_to input-small'}).adopt(this._buildOptions(this.options.tableOpts, joinToTable));
-		var tableKey = new Element('select', {'name': 'jform[params][table_key][]', 'class': 'table_key inputbox input-small'}).adopt(this._buildOptions(joinFromFields, thisKey));
-		joinKey = new Element('select', {'name': 'jform[params][table_join_key][]', 'class': 'table_join_key inputbox input-small'}).adopt(this._buildOptions(joinToFields, joinKey));
+		var tableJoin = new Element('select', {'name': 'jform[params][table_join][]', 'class': 'inputbox join_to input-medium'}).adopt(this._buildOptions(this.options.tableOpts, joinToTable));
+		var tableKey = new Element('select', {'name': 'jform[params][table_key][]', 'class': 'table_key inputbox input-medium'}).adopt(this._buildOptions(joinFromFields, thisKey));
+		joinKey = new Element('select', {'name': 'jform[params][table_join_key][]', 'class': 'table_join_key inputbox input-medium'}).adopt(this._buildOptions(joinToFields, joinKey));
 		var repeatRadio =
 		"<fieldset class=\"radio\">" +
 		"<input type=\"radio\" id=\"joinrepeat" + this.joinCounter + "\" value=\"1\" name=\"jform[params][join_repeat][" + this.joinCounter + "][]\" " + repeaton + "/><label for=\"joinrepeat" + this.joinCounter + "\">" + Joomla.JText._('JYES') + "</label>" +
@@ -519,7 +519,7 @@ var adminFilters = new Class({
 				opts.push(new Element('option', {'value': pair.value}).set('text', pair.label));
 			}
 		});
-		return new Element('select', {'class': c + ' input-small', 'name': name}).adopt(opts);
+		return new Element('select', {'class': c + ' input-medium', 'name': name}).adopt(opts);
 	},
 
 	addFilterOption: function (selJoin, selFilter, selCondition, selValue, selAccess, evaluate, grouped) {
@@ -577,7 +577,7 @@ var adminFilters = new Class({
 			}
 			joinDd = new Element('select', {
 				'id': 'paramsfilter-join',
-				'class': 'inputbox  input-small',
+				'class': 'inputbox  input-medium',
 				'name': 'jform[params][filter-join][]'
 			}).adopt(
 		[and, or]);

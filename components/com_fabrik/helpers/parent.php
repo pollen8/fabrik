@@ -110,6 +110,8 @@ class FabrikWorker
 	
 	public static function isViewType($view)
 	{
+		$view = strtolower(trim($view));
+
 		return in_array($view, self::$viewTypes);
 	}
 	
@@ -620,6 +622,57 @@ class FabrikWorker
 		return $crypt;
 	}
 
+	/**
+	 * Special case placeholder handling for repeat data. When something (usually an element plugin) is doing
+	 * replacements for elements which are in the "same" repeat group, almost always they will want
+	 * the value for the same repeat instance, not a comma seperated list of all the values.  So (say)
+	 * the upload element is creating a file path, for an upload element in a repeat group, of ...
+	 * '/uploads/{repeat_table___userid}/', and there are 4 repeat instance, it doesn't want a path of ...
+	 * '/uploads/34,45,94,103/', it just wants the one value from the same repeat count as the upload
+	 * element.  Or a calc element doing "return '{repeat_table___first_name} {repeat_table___last_name}';".  Etc. 
+	 * 
+	 * Rather than make this a part of parseMessageForPlaceHolder, for now I'm making it a sperate function,
+	 * which just handles this one very specific data replacement.  Will look at merging it in with the main
+	 * parsing once we have a better understanding of where / when / how to do it.
+	 * 
+	 * @param  string   $msg             Text to parse
+	 * @param  array    $searchData      Data to search for placeholders
+	 * @param  object   $el    Element model of the element which is doing the replacing
+	 * @param  int      $repeatCounter   Repeat instance
+	 * 
+	 * @return  string  parsed message
+	 */
+	
+	public function parseMessageForRepeats($msg, $searchData, $el, $repeatCounter)
+	{
+		if (strstr($msg, '{') && !empty($searchData))
+		{
+			$groupModel = $el->getGroupModel();
+			if ($groupModel->canRepeat())
+			{
+				$elementModels = $groupModel->getPublishedElements();
+				$formModel = $el->getFormModel();
+		
+				foreach ($elementModels as $elementModel)
+				{
+					$repeatElName = $elementModel->getFullName(true, false);
+					foreach (array($repeatElName, $repeatElName . '_raw') as $tmpElName)
+					{
+						if (strstr($msg, '{'.$tmpElName.'}'))
+						{
+							if (array_key_exists($tmpElName, $searchData) && is_array($searchData[$tmpElName]) && array_key_exists($repeatCounter, $searchData[$tmpElName]))
+							{
+								$tmpVal = $searchData[$tmpElName][$repeatCounter];
+								$msg = str_replace('{'.$tmpElName.'}', $tmpVal, $msg);
+							}
+						}
+					}
+				}
+			}
+		}
+		return $msg;
+	}
+	
 	/**
 	 * Iterates through string to replace every
 	 * {placeholder} with posted data
@@ -1988,5 +2041,56 @@ class FabrikWorker
 	{
 		$app = JFactory::getApplication();
 		return $app->input->get('task') == 'form.process' || ($app->isAdmin() && $app->input->get('task') == 'process');
+	}
+
+	/**
+	 * Remove messages from JApplicationCMS
+	 *
+	 * @param   JApplicationCMS  $app   Application to kill messages from
+	 * @param   string           $type  Message type e.g. 'warning', 'error'
+	 *
+	 * @return  array  Remaining messages.
+	 */
+	public static function killMessage(JApplicationCMS $app, $type)
+	{
+		$appReflection = new ReflectionClass(get_class($app));
+		$_messageQueue = $appReflection->getProperty('_messageQueue');
+		$_messageQueue->setAccessible(true);
+		$messages = $_messageQueue->getValue($app);
+
+		foreach ($messages as $key => $message)
+		{
+			if ($message['type'] == $type)
+			{
+				unset($messages[$key]);
+			}
+		}
+
+		$_messageQueue->setValue($app, $messages);
+
+		return $messages;
+	}
+
+	/**
+	 * Loose casing to boolean
+	 *
+	 * @param   mixed  $var  Var to test
+	 * @param   boolean  $default if neither a truish or falsy match are found
+	 *
+	 * @return bool - Set to false if false is found.
+	 */
+	public static function toBoolean($var, $default)
+	{
+		if ($var === 'false' || $var === 0 || $var === false)
+		{
+			return false;
+		}
+
+		if ($var === 'true' || $var === 1 ||$var === true)
+		{
+			return true;
+		}
+
+		return $default;
 	}
 }

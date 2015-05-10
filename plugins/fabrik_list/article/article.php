@@ -21,7 +21,6 @@ require_once COM_FABRIK_FRONTEND . '/models/plugin-list.php';
  * @subpackage  Fabrik.list.article
  * @since       3.0
  */
-
 class PlgFabrik_ListArticle extends PlgFabrik_List
 {
 	/**
@@ -38,7 +37,6 @@ class PlgFabrik_ListArticle extends PlgFabrik_List
 	 *
 	 * @return  bool;
 	 */
-
 	public function button(&$args)
 	{
 		parent::button($args);
@@ -51,7 +49,6 @@ class PlgFabrik_ListArticle extends PlgFabrik_List
 	 *
 	 * @return  string
 	 */
-
 	protected function getAclParam()
 	{
 		return 'access';
@@ -62,7 +59,6 @@ class PlgFabrik_ListArticle extends PlgFabrik_List
 	 *
 	 * @return  bool
 	 */
-
 	public function canSelectRows()
 	{
 		return true;
@@ -73,7 +69,6 @@ class PlgFabrik_ListArticle extends PlgFabrik_List
 	 *
 	 * @return  string
 	 */
-
 	protected function buttonLabel()
 	{
 		$s = JString::strtoupper($this->buttonPrefix);

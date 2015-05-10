@@ -11,7 +11,8 @@ var Suboptions = new Class({
 
 	options: {
 		sub_initial_selection: [],
-		j3: false
+		j3: false,
+		defaultMax: 0
 	},
 
 	initialize: function (name, options) {
@@ -26,6 +27,7 @@ var Suboptions = new Class({
 			}
 		}
 		this.watchButtons();
+		this.watchDefaultCheckboxes();
 		this.counter = 0;
 		this.name = name;
 		Object.each(this.options.sub_values, function (v, x) {
@@ -44,6 +46,19 @@ var Suboptions = new Class({
 			Joomla.submitform(pressbutton);
 		}.bind(this);
 
+	},
+
+	// For radio buttons we only want to have one default selected at a time
+	watchDefaultCheckboxes: function () {
+		this.element.addEvent('click:relay(input.sub_initial_selection)', function (e) {
+			if (this.options.defaultMax === 1) {
+				this.element.getElements('input.sub_initial_selection').each( function (el) {
+					if (el !== e.target) {
+						el.checked = false;
+					}
+				});
+			}
+		}.bind(this));
 	},
 
 	watchButtons: function () {

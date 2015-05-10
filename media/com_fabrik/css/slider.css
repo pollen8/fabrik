@@ -38,3 +38,8 @@ ul.slider-labels li{
 .slider_cont {
 	margin-right: 20px;
 }
+
+/** see https://github.com/Fabrik/fabrik/issues/1421 **/
+.fabrikElementContainer.plg-slider {
+	position: relative;
+}

@@ -253,11 +253,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 
 	public function render($data, $repeatCounter = 0)
 	{
-		$app = JFactory::getApplication();
-		$input = $app->input;
-		$j3 = FabrikWorker::j3();
 		$this->offsetDate = '';
-		FabrikHelperHTML::loadcalendar();
 		$name = $this->getHTMLName($repeatCounter);
 		$id = $this->getHTMLId($repeatCounter);
 		$params = $this->getParams();
@@ -269,7 +265,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 			FabDate::strftimeFormatToDateFormat($format);
 		}
 
-		$timeformat = $params->get('date_time_format', 'H:i');
+		$timeFormat = $params->get('date_time_format', 'H:i');
 
 		// Value is in mySQL format GMT
 		$gmt = $this->getValue($data, $repeatCounter);
@@ -285,7 +281,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 			$localDate = $this->displayDate($gmt);
 
 			// Get the formatted time
-			$time = ($params->get('date_showtime', 0)) ? ' ' . $localDate->format($timeformat, true) : '';
+			$time = ($params->get('date_showtime', 0)) ? ' ' . $localDate->format($timeFormat, true) : '';
 
 			// Formatted date
 			$date = $localDate->format($format, true);
@@ -307,11 +303,9 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 		$class = 'fabrikinput inputbox inout ' . $params->get('bootstrap_class', 'input-small');
 		$element->width = (int) $element->width < 0 ? 1 : (int) $element->width;
 		$calopts = array('class' => $class, 'size' => $element->width, 'maxlength' => '19');
-		$readonly = '';
 
 		if ($params->get('date_allow_typing_in_field', true) == false)
 		{
-			$readonly = ' readonly="readonly" ';
 			$calopts['readonly'] = 'readonly';
 		}
 
@@ -344,18 +338,18 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 	{
 		$j3 = FabrikWorker::j3();
 		$params = $this->getParams();
-		$timeformat = $params->get('date_time_format', 'H:i');
+		$timeFormat = $params->get('date_time_format', 'H:i');
 		$class = 'inputbox fabrikinput timeField input ' . $params->get('bootstrap_time_class', 'input-mini');
-		$readonly = $params->get('date_allow_typing_in_field', true) == false ? ' readonly="readonly" ' : '';
+		$readOnly = $params->get('date_allow_typing_in_field', true) == false ? ' readonly="readonly" ' : '';
 
 		if ($j3)
 		{
 			$str[] = '<div class="input-append">';
 		}
 
-		$timelength = JString::strlen($timeformat);
+		$timeLength = JString::strlen($timeFormat);
 		FabrikHelperHTML::addPath(COM_FABRIK_BASE . 'plugins/fabrik_element/date/images/', 'image', 'form', false);
-		$str[] = '<input type="text" class="' . $class . '" ' . $readonly . ' size="' . $timelength . '" value="' . $time . '" name="'
+		$str[] = '<input type="text" class="' . $class . '" ' . $readOnly . ' size="' . $timeLength . '" value="' . $time . '" name="'
 				. $timeElName . '" />';
 		$opts = array('alt' => FText::_('PLG_ELEMENT_DATE_TIME'), 'class' => 'timeButton');
 		$file = FabrikWorker::j3() ? 'clock.png' : 'time.png';
@@ -710,10 +704,8 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 	protected function toLabel(&$v)
 	{
 		$params = $this->getParams();
-		$store_as_local = (int) $params->get('date_store_as_local', 0);
 		$f = $params->get('date_table_format', 'Y-m-d');
 		$timeZone = new DateTimeZone(JFactory::getConfig()->get('offset'));
-		$format = array();
 
 		if (FabrikWorker::isDate($v))
 		{
@@ -756,14 +748,13 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 	 * @param   array   $attribs        Additional html attributes
 	 * @param   int     $repeatCounter  Repeat group counter (not used)
 	 *
-	 * @deprecated - don't think its used
+	 * @deprecated - use JLayouts instead
 	 *
 	 * @return  string
 	 */
 
 	public function calendar($value, $name, $id, $format = '%Y-%m-%d', $attribs = null, $repeatCounter = 0)
 	{
-		FabrikHelperHTML::loadcalendar();
 		$j3 = FabrikWorker::j3();
 
 		if (is_array($attribs))
@@ -771,7 +762,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 			$attribs = JArrayHelper::toString($attribs);
 		}
 
-		$paths = FabrikHelperHTML::addPath(COM_FABRIK_BASE . 'media/system/images/', 'image', 'form', false);
+		FabrikHelperHTML::addPath(COM_FABRIK_BASE . 'media/system/images/', 'image', 'form', false);
 		$opts = $j3 ? array('alt' => 'calendar') : array('alt' => 'calendar', 'class' => 'calendarbutton', 'id' => $id . '_cal_img');
 		$img = FabrikHelperHTML::image('calendar.png', 'form', @$this->tmpl, $opts);
 		$html = array();
@@ -861,7 +852,6 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 
 	protected function getWatchId($repeatCounter = 0)
 	{
-		$listModel = $this->getlistModel();
 		$elementModel = $this->getWatchElement();
 
 		return $elementModel ? $elementModel->getHTMLId($repeatCounter) : '';
@@ -916,10 +906,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 
 	public function onAjax_getAllowedDates()
 	{
-		$app = JFactory::getApplication();
-		$input = $app->input;
 		$this->loadMeForAjax();
-		$params = $this->getParams();
 		$dates = $this->getAllowedPHPDates();
 		echo json_encode($dates);
 	}
@@ -975,9 +962,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 
 	public function getValidationWatchElements($repeatCounter)
 	{
-		$params = $this->getParams();
 		$return = array();
-		$elName = $this->getHTMLName($repeatCounter);
 		$id = $this->getHTMLId($repeatCounter);
 		$return[] = array('id' => $id, 'triggerEvent' => 'blur');
 
@@ -1035,8 +1020,6 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 		$formModel = $this->getFormModel();
 		$value = parent::getValue($data, $repeatCounter, $opts);
 		$db = FabrikWorker::getDbo();
-		$app = JFactory::getApplication();
-		$input = $app->input;
 
 		if (is_array($value))
 		{
@@ -1403,22 +1386,15 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 
 	public function getFilter($counter = 0, $normal = true)
 	{
-		$params = $this->getParams();
 		$listModel = $this->getListModel();
 		$table = $listModel->getTable();
 		$element = $this->getElement();
 		$origTable = $table->db_table_name;
-		$fabrikDb = $listModel->getDb();
 		$elName = $this->getFullName(true, false);
-		$elName2 = $this->getFullName(false, false);
 		$v = $this->filterName($counter, $normal);
-		$class = $this->filterClass();
 
 		// Correct default got
 		$default = $this->getDefaultFilterVal($normal, $counter);
-		$format = $params->get('date_table_format', 'Y-m-d');
-
-		$fromTable = $origTable;
 
 		// $$$ hugh - in advanced search, _aJoins wasn't getting set
 		$joins = $listModel->getJoins();
@@ -1448,16 +1424,13 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 			}
 		}
 
-		$htmlid = $this->getHTMLId();
 		$fType = $this->getFilterType();
-		$timeZone = new DateTimeZone(JFactory::getConfig()->get('offset'));
 
 		if (in_array($fType, array('dropdown', 'checkbox', 'multiselect')))
 		{
 			$rows = $this->filterValueList($normal);
 		}
 
-		$calOpts = $this->filterCalendarOpts();
 		$return = array();
 
 		switch ($fType)
@@ -1467,135 +1440,24 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 				break;
 			case 'range':
 			case 'range-hidden':
-				FabrikHelperHTML::loadcalendar();
-
-				if (empty($default))
-				{
-					$default = array('', '');
-				}
-				else
-				{
-					$d = new FabDate($default[0]);
-					$default[0] = $d->format($format);
-					$d = new FabDate($default[1]);
-					$default[1] = $d->format($format);
-				}
-
-				// Add wrapper div for list filter toggling
-				$return[] = '<div class="fabrik_filter_container">';
-
-				if ($fType === 'range-hidden')
-				{
-					$return[] = '<input type="hidden" name="' . $v . '[0]' . '" class="' . $class . '" value="' . $default[0] . '" id="' . $htmlid . '-0" />';
-					$return[] = '<input type="hidden" name="' . $v . '[1]' . '" class="' . $class . '" value="' . $default[1] . '" id="' . $htmlid . '-1" />';
-					$return[] = '</div>';
-				}
-				else
-				{
-					$return[] = FText::_('COM_FABRIK_DATE_RANGE_BETWEEN')
-						. $this->calendar($default[0], $v . '[0]', $this->getFilterHtmlId(0), $format, $calOpts);
-					$return[] = '<br />' . FText::_('COM_FABRIK_DATE_RANGE_AND')
-						. $this->calendar($default[1], $v . '[1]', $this->getFilterHtmlId(1), $format, $calOpts);
-					$return[] = '</div>';
-				}
-
+				$return[] = $this->rangeFilter($default, $v);
 				break;
 
 			case 'dropdown':
 			case 'multiselect':
-							/**
-							  *  cant do the format in the MySQL query as its not the same formatting
-							  *  e.g. M in MySQL is month and J's date code its minute
-							  */
-
-				$max = count($rows) < 7 ? count($rows) : 7;
-				$size = $element->filter_type === 'multiselect' ? 'multiple="multiple" size="' . $max . '"' : 'size="1"';
-				$v = $fType === 'multiselect' ? $v . '[]' : $v;
-
-				jimport('joomla.utilities.date');
-				$ddData = array();
-
-				foreach ($rows as $k => $o)
-				{
-					if ($fabrikDb->getNullDate() === $o->text)
-					{
-						$o->text = '';
-						$o->value = '';
-					}
-					else
-					{
-						$d = new FabDate($o->text);
-						$d->setTimeZone($timeZone);
-						$o->value = $d->toSql(true);
-						$o->text = $d->format($format, true);
-					}
-
-					if (!array_key_exists($o->value, $ddData))
-					{
-						$ddData[$o->value] = $o;
-					}
-				}
-
-				array_unshift($ddData, JHTML::_('select.option', '', $this->filterSelectLabel()));
-				$return[] = JHTML::_('select.genericlist', $ddData, $v, 'class="' . $class . '" ' . $size . ' maxlength="19"', 'value', 'text',
-					$default, $htmlid . '0');
+				$return[] = $this->selectListFilter($rows, $default, $v);
 				break;
 			default:
 			case 'field':
-				FabrikHelperHTML::loadcalendar();
-
-				if (is_array($default))
-				{
-					$default = array_shift($default);
-				}
-
-				if ($default !== '')
-				{
-					$d = new FabDate($default);
-					$default = $d->format($format);
-				}
-
-				// Add wrapper div for list filter toggling
-				$return[] = '<div class="fabrik_filter_container">';
-				$return[] = $this->calendar($default, $v, $this->getFilterHtmlId(0), $format, $calOpts);
-				$return[] = '</div>';
+				$return[] = $this->singleFilter($default, $v);
 				break;
 
 			case 'hidden':
-				if (is_array($default))
-				{
-					$default = array_shift($default);
-				}
-
-				if (get_magic_quotes_gpc())
-				{
-					$default = stripslashes($default);
-				}
-
-				$default = htmlspecialchars($default);
-
-				// Don't add id as caused issues with inline edit plugin and clashing ids.
-				$return[] = '<input type="hidden" name="' . $v . '" class="' . $class . '" value="' . $default . '" />';
+				$return[] = $this->hiddenFilter($default, $v);
 				break;
 
 			case 'auto-complete':
-				if (get_magic_quotes_gpc())
-				{
-					$default = stripslashes($default);
-				}
-
-				$default = htmlspecialchars($default);
-				$return[] = '<input type="hidden" name="' . $v . '" class="' . $class . '" value="' . $default . '" id="' . $htmlid . '" />';
-				$return[] = '<input type="text" name="' . $v . '-auto-complete" class="' . $class . ' autocomplete-trigger" value="'
-					. $default . '" id="' . $htmlid . '-auto-complete" />';
-				$autoId = '#' . $htmlid . '-auto-complete';
-
-				if (!$normal)
-				{
-					$autoId = '.advanced-search-list .autocomplete-trigger';
-				}
-
-				FabrikHelperHTML::autoComplete($autoId, $this->getElement()->id, $this->getFormModel()->getId(), 'date');
+				$return[] = $this->autoCompleteFilter($default, $v);
 				break;
 		}
 
@@ -1609,6 +1471,232 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 		}
 
 		return implode("\n", $return);
+	}
+	/**
+	 * Build the HTML for the auto-complete filter
+	 *
+	 * @param   string  $default     Label
+	 * @param   string  $v           Field name
+	 * @param   string  $labelValue  Label value
+	 * @param   bool    $normal      Do we render as a normal filter or as an advanced search filter
+	 * if normal include the hidden fields as well (default true, use false for advanced filter rendering)
+	 *
+	 * @return  string JLayout render
+	 */
+	protected function autoCompleteFilter($default, $v, $labelValue = null, $normal = true)
+	{
+		if (get_magic_quotes_gpc())
+		{
+			$default = stripslashes($default);
+		}
+
+		$default = htmlspecialchars($default);
+		$htmlId = $this->getHTMLId();
+
+		$layout = $this->getLayout('list-filter-autocomplete');
+		$displayData = new stdClass;
+		$displayData->class = $this->filterClass();
+		$displayData->name = $v;
+
+		$displayData->default = $default;
+		$displayData->htmlId = $htmlId;
+
+
+		$autoId = '#' . $htmlId . '-auto-complete';
+
+		if (!$normal)
+		{
+			$autoId = '.advanced-search-list .autocomplete-trigger';
+		}
+
+		FabrikHelperHTML::autoComplete($autoId, $this->getElement()->id, $this->getFormModel()->getId(), 'date');
+
+		return $layout->render($displayData);
+	}
+
+
+	/**
+	 * @param $default
+	 * @param $v
+	 *
+	 * @return  string  filter
+	 */
+	protected function hiddenFilter($default, $v)
+	{
+		if (is_array($default))
+		{
+			$default = array_shift($default);
+		}
+
+		if (get_magic_quotes_gpc())
+		{
+			$default = stripslashes($default);
+		}
+
+		$default = htmlspecialchars($default);
+		$class = $this->filterClass();
+
+		// Don't add id as caused issues with inline edit plugin and clashing ids.
+		return '<input type="hidden" name="' . $v . '" class="' . $class . '" value="' . $default . '" />';
+	}
+
+	/**
+	 * @param $rows
+	 * @param $default
+	 * @param $v
+	 *
+	 * @return string filter
+	 */
+	protected function selectListFilter($rows, $default, $v)
+	{
+		$element = $this->getElement();
+		$listModel = $this->getListModel();
+		$fabrikDb = $listModel->getDb();
+		$timeZone = new DateTimeZone(JFactory::getConfig()->get('offset'));
+		$params = $this->getParams();
+		$format = $params->get('date_table_format', 'Y-m-d');
+		/**
+		 *  cant do the format in the MySQL query as its not the same formatting
+		 *  e.g. M in MySQL is month and J's date code its minute
+		 */
+		$max = count($rows) < 7 ? count($rows) : 7;
+		$fType = $this->getFilterType();
+		$size = $element->filter_type === 'multiselect' ? 'multiple="multiple" size="' . $max . '"' : 'size="1"';
+		$v = $fType === 'multiselect' ? $v . '[]' : $v;
+
+		jimport('joomla.utilities.date');
+		$ddData = array();
+
+		foreach ($rows as $k => $o)
+		{
+			if ($fabrikDb->getNullDate() === $o->text)
+			{
+				$o->text = '';
+				$o->value = '';
+			}
+			else
+			{
+				$d = new FabDate($o->text);
+				$d->setTimeZone($timeZone);
+				$o->value = $d->toSql(true);
+				$o->text = $d->format($format, true);
+			}
+
+			if (!array_key_exists($o->value, $ddData))
+			{
+				$ddData[$o->value] = $o;
+			}
+		}
+
+		array_unshift($ddData, JHTML::_('select.option', '', $this->filterSelectLabel()));
+		$layout = $this->getLayout('list-filter-dropdown');
+		$displayData = new stdClass;
+		$displayData->rows = $ddData;
+		$displayData->name = $v;
+		$displayData->class = $this->filterClass();
+		$displayData->size = $size;
+		$displayData->default = $default;
+		$displayData->htmlId = $this->getHTMLId();
+
+		return $layout->render($displayData);
+	}
+	/**
+	 * @param $default
+	 * @param $v
+	 *
+	 * @return string  filter
+	 */
+	protected function singleFilter($default, $v)
+	{
+		$params = $this->getParams();
+		$format = $params->get('date_table_format', 'Y-m-d');
+
+		if (is_array($default))
+		{
+			$default = array_shift($default);
+		}
+
+		if ($default !== '')
+		{
+			$d = new FabDate($default);
+			$default = $d->format($format);
+		}
+
+		$layout = $this->getLayout('list-filter-field');
+		$displayData = new stdClass;
+		$displayData->j3 = FabrikWorker::j3();
+		$from = new stdClass;
+		$from->id = $this->getFilterHtmlId(0);
+		$from->value = $default;
+		$from->name = $v;
+
+		$imageOpts = $displayData->j3 ? array('alt' => 'calendar') : array('alt' => 'calendar', 'class' => 'calendarbutton', 'id' => $from->id . '_cal_img');
+		$from->img = FabrikHelperHTML::image('calendar.png', 'form', @$this->tmpl, $imageOpts);
+
+		$displayData->from = $from;
+
+		$displayData->format = $format;
+		$displayData->calOpts = $this->filterCalendarOpts();
+
+		return $layout->render($displayData);
+	}
+
+	/**
+	 * @param $default
+	 * @param $v
+	 *
+	 * @return string filter
+	 */
+	protected function rangeFilter($default, $v)
+	{
+		$params = $this->getParams();
+		$format = $params->get('date_table_format', 'Y-m-d');
+
+		if (empty($default))
+		{
+			$default = array('', '');
+		}
+		else
+		{
+			$d = new FabDate($default[0]);
+			$default[0] = $d->format($format);
+			$d = new FabDate($default[1]);
+			$default[1] = $d->format($format);
+		}
+
+		// Add wrapper div for list filter toggling
+		$return[] = '<div class="fabrik_filter_container">';
+
+		$layout = $this->getLayout('list-filter-range');
+		$displayData = new stdClass;
+		$displayData->htmlId = $this->getHTMLId();
+		$displayData->class = $this->filterClass();
+		$displayData->j3 = FabrikWorker::j3();
+		$from = new stdClass;
+		$from->id = $this->getFilterHtmlId(0);
+		$from->value = $default[0];
+		$from->name = $v . '[0]';
+
+		$imageOpts = $displayData->j3 ? array('alt' => 'calendar') : array('alt' => 'calendar', 'class' => 'calendarbutton', 'id' => $from->id . '_cal_img');
+		$from->img = FabrikHelperHTML::image('calendar.png', 'form', @$this->tmpl, $imageOpts);
+
+		$displayData->from = $from;
+
+		$displayData->format = $format;
+		$displayData->calOpts = $this->filterCalendarOpts();
+
+		$to = new stdClass;
+		$to->id = $this->getFilterHtmlId(1);
+		$to->value = $default[1];
+		$to->name = $v . '[1]';
+
+		$imageOpts = $displayData->j3 ? array('alt' => 'calendar') : array('alt' => 'calendar', 'class' => 'calendarbutton', 'id' => $to->id . '_cal_img');
+		$to->img = FabrikHelperHTML::image('calendar.png', 'form', @$this->tmpl, $imageOpts);
+
+		$displayData->to = $to;
+		$displayData->filterType = $this->getFilterType();
+
+		return $layout->render($displayData);
 	}
 
 	/**
@@ -2321,7 +2409,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 			return;
 		}
 
-		$htmlid = $this->getHTMLId();
+		$htmlId = $this->getHTMLId();
 		$params = $this->getParams();
 		$id = $this->getFilterHtmlId(0);
 		$id2 = $this->getFilterHtmlId(1);

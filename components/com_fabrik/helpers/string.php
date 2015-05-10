@@ -552,7 +552,7 @@ class FabrikString extends JString
 	 * @return  object  coords array and zoomlevel int
 	 */
 
-	public static function mapStrToCoords($v, $zoomlevel = 0)
+	public static function mapStrToCoords($v, $zoomlevel = 4)
 	{
 		$o = new stdClass;
 		$o->coords = array('', '');
@@ -561,7 +561,7 @@ class FabrikString extends JString
 		if (strstr($v, ","))
 		{
 			$ar = explode(":", $v);
-			$o->zoomlevel = count($ar) == 2 ? array_pop($ar) : 4;
+			$o->zoomlevel = count($ar) == 2 ? array_pop($ar) : $zoomlevel;
 			$v = self::ltrimword($ar[0], "(");
 			$v = rtrim($v, ")");
 			$v = str_replace(' ', '', $v);
@@ -786,7 +786,7 @@ class FabrikString extends JString
 	 */
 	public static function safeQuoteName($values, $commaSeparated = true)
 	{
-		return self::safeNameQuote($values, $commaSeperated);	
+		return self::safeNameQuote($values, $commaSeparated);	
 	}
 		
 	/**

@@ -23,7 +23,16 @@
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
-			
+
+			<field name="password_j_validate"
+			       type="radio"
+			       class="btn-group"
+			       default="0"
+			       description="PLG_ELEMENT_PASSWORD_JRULE_VALIDATION_DESC"
+			       label="PLG_ELEMENT_PASSWORD_JRULE_VALIDATION_LABEL">
+						<option value="0">JNO</option>
+						<option value="1">JYES</option>
+			</field>
 		</fieldset>
 	</fields>
 </form>

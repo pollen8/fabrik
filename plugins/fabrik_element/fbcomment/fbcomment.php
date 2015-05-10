@@ -58,11 +58,11 @@ class PlgFabrik_ElementFbcomment extends PlgFabrik_Element
 	public function render($data, $repeatCounter = 0)
 	{
 		$params = $this->getParams();
-		$data = new stdClass;
-		$data->num = $params->get('fbcomment_number_of_comments', 10);
-		$data->width = $params->get('fbcomment_width', 300);
-		$data->colour = $params->get('fb_comment_scheme') == '' ? '' : ' colorscheme="dark" ';
-		$data->href = $params->get('fbcomment_href', '');
+		$displayData = new stdClass;
+		$displayData->num = $params->get('fbcomment_number_of_comments', 10);
+		$displayData->width = $params->get('fbcomment_width', 300);
+		$displayData->colour = $params->get('fb_comment_scheme') == '' ? '' : ' colorscheme="dark" ';
+		$displayData->href = $params->get('fbcomment_href', '');
 
 		if (empty($data->href))
 		{
@@ -75,14 +75,14 @@ class PlgFabrik_ElementFbcomment extends PlgFabrik_Element
 				$formId = $formModel->getId();
 				$href = 'index.php?option=com_fabrik&view=form&formid=' . $formId . '&rowid=' . $rowId;
 				$href = JRoute::_($href);
-				$data->href = COM_FABRIK_LIVESITE_ROOT . $href;
+				$displayData->href = COM_FABRIK_LIVESITE_ROOT . $href;
 			}
 		}
 
-		if (!empty($data->href))
+		if (!empty($displayData->href))
 		{
 			$w = new FabrikWorker;
-			$data->href = $w->parseMessageForPlaceHolder($data->href, $data);
+			$displayData->href = $w->parseMessageForPlaceHolder($data->href, $data);
 			$locale = $params->get('fbcomment_locale', 'en_US');
 
 			if (empty($locale))
@@ -90,12 +90,12 @@ class PlgFabrik_ElementFbcomment extends PlgFabrik_Element
 				$locale = 'en_US';
 			}
 
-			$data->graphApi = FabrikHelperHTML::facebookGraphAPI($params->get('opengraph_applicationid'), $locale);
+			$displayData->graphApi = FabrikHelperHTML::facebookGraphAPI($params->get('opengraph_applicationid'), $locale);
 		}
 
 		$layout = $this->getLayout('form');
 
-		return $layout->render($data);
+		return $layout->render($displayData);
 	}
 
 	/**

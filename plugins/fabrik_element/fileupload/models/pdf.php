@@ -128,10 +128,10 @@ class PdfRender
 	public function render(&$model, &$params, $file)
 	{
 		jimport('joomla.filesystem.file');
-		$layout   = $model->getLayout('pdf');
-		$data     = new stdClass;
-		$filename = basename($file);
-		$filename = strip_tags($filename);
+		$layout      = $model->getLayout('pdf');
+		$displayData = new stdClass;
+		$filename    = basename($file);
+		$filename    = strip_tags($filename);
 
 		if (!strstr($file, 'http://') && !strstr($file, 'https://'))
 		{
@@ -141,13 +141,13 @@ class PdfRender
 			$file = COM_FABRIK_LIVESITE . $file;
 		}
 
-		$file           = str_replace("\\", "/", $file);
-		$file           = $model->storage->preRenderPath($file);
-		$data->file     = $file;
-		$data->filename = $filename;
-		$data->thumb    = $this->getThumbnail($model, $params, $file);
+		$file                  = str_replace("\\", "/", $file);
+		$file                  = $model->storage->preRenderPath($file);
+		$displayData->file     = $file;
+		$displayData->filename = $filename;
+		$displayData->thumb    = $this->getThumbnail($model, $params, $file);
 
-		$this->output = $layout->render($data);
+		$this->output = $layout->render($displayData);
 	}
 
 	/**

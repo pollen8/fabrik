@@ -60,16 +60,16 @@ class PlgFabrik_ElementFbActivityFeed extends PlgFabrik_Element
 		$params = $this->getParams();
 		$layout = $this->getLayout('form');
 		$str = FabrikHelperHTML::facebookGraphAPI($params->get('opengraph_applicationid'));
-		$data = new stdClass;
-		$data->domain = $params->get('fbactivityfeed_domain');
-		$data->width = $params->get('fbactivityfeed_width', 300);
-		$data->height = $params->get('fbactivityfeed_height', 300);
-		$data->header = $params->get('fbactivityfeed_header', 1) ? 'true' : 'false';
-		$data->border = $params->get('fbactivityfeed_border', '');
-		$data->font = $params->get('fbactivityfeed_font', 'arial');
-		$data->colorscheme = $params->get('fbactivityfeed_colorscheme', 'light');
+		$displayData = new stdClass;
+		$displayData->domain = $params->get('fbactivityfeed_domain');
+		$displayData->width = $params->get('fbactivityfeed_width', 300);
+		$displayData->height = $params->get('fbactivityfeed_height', 300);
+		$displayData->header = $params->get('fbactivityfeed_header', 1) ? 'true' : 'false';
+		$displayData->border = $params->get('fbactivityfeed_border', '');
+		$displayData->font = $params->get('fbactivityfeed_font', 'arial');
+		$displayData->colorscheme = $params->get('fbactivityfeed_colorscheme', 'light');
 
-		return $str . $layout->render($data);
+		return $str . $layout->render($displayData);
 	}
 
 	/**

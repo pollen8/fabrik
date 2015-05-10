@@ -640,10 +640,10 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 				. 'format=raw&amp;element_id=' . $elementid . '&amp;formid=' . $formid . '&amp;rowid=' . $rowid . '&amp;repeatcount=0';
 
 		$layout = $this->getLayout('qr');
-		$data = new stdClass;
-		$data->src = $src;
+		$displayData = new stdClass;
+		$displayData->src = $src;
 
-		return $layout->render($data);
+		return $layout->render($displayData);
 	}
 	
 	/**

@@ -116,11 +116,11 @@ class PlgFabrik_ElementDisplay extends PlgFabrik_Element
 	{
 		$params = $this->getParams();
 		$layout = $this->getLayout('form');
-		$data = new stdClass;
-		$data->id = $this->getHTMLId($repeatCounter);
-		$data->value = $params->get('display_showlabel', true) ? $this->getValue($data, $repeatCounter) : '';
+		$displayData = new stdClass;
+		$displayData->id = $this->getHTMLId($repeatCounter);
+		$displayData->value = $params->get('display_showlabel', true) ? $this->getValue($data, $repeatCounter) : '';
 
-		return $layout->render($data);
+		return $layout->render($displayData);
 	}
 
 	/**

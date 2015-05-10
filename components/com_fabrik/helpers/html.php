@@ -1015,7 +1015,8 @@ if (!$j3)
 	}
 
 	/**
-	 * Build JS to initiate tips
+	 * Build JS to initiate tips, and observer application state changes,
+	 * reloading the tips if needed.
 	 *
 	 * @return  string
 	 */
@@ -1033,6 +1034,12 @@ if (!$j3)
 		$tipJs[] = "\t\tFabrik.tips.hideAll();";
 		$tipJs[] = "\t});";
 		$tipJs[] = "\tFabrik.addEvent('fabrik.list.inlineedit.setData', function () {";
+		$tipJs[] = "\t\tFabrik.tips.attach('.fabrikTip');";
+		$tipJs[] = "\t});";
+
+		// Reload tips if a form is loaded (e.g. a list view with ajax links on which loads a form in a popup)
+		// see: https://github.com/Fabrik/fabrik/issues/1394
+		$tipJs[] = "\tFabrik.addEvent('fabrik.form.loaded', function () {";
 		$tipJs[] = "\t\tFabrik.tips.attach('.fabrikTip');";
 		$tipJs[] = "\t});";
 
@@ -2221,20 +2228,20 @@ if (!$j3)
 			$endLine = ($i !== 0 && (($i ) % $columns == 0));
 			$newLine = ($i % $columns == 0);
 
-			if ($endLine && $columns > 1)
+			if ($endLine)
 			{
 				$grid[] = '</div><!-- grid close row -->';
 			}
 
-			if ($newLine && $columns > 1)
+			if ($newLine)
 			{
 				$grid[] = '<div class="row-fluid">';
 			}
 
-			$grid[] = $columns != 1 ? '<div class="' . $spanClass . ' span' . $span . '">' . $s . '</div>' : $s;
+			$grid[] = '<div class="' . $spanClass . ' span' . $span . '">' . $s . '</div>' ;
 		}
 
-		if ($i + 1 % $columns !== 0 && $columns > 1)
+		if ($i + 1 % $columns !== 0)
 		{
 			// Close opened and unfinished row.
 			$grid[] = '</div><!-- grid close end row -->';

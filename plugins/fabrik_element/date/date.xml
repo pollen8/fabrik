@@ -19,5 +19,6 @@
 		<filename>filter-min.js</filename>
 		<folder>forms</folder>
 		<folder>language</folder>
+		<folder>layouts</folder>
 	</files>
 </extension>

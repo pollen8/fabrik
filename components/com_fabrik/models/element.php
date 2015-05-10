@@ -977,8 +977,6 @@ class PlgFabrik_Element extends FabrikPlugin
 
 	public function canUse($location = null, $event = null)
 	{
-		$element = $this->getElement();
-
 		// Odd! even though defined in initialize() for confirmation plugin access was not set.
 		if (!isset($this->access))
 		{
@@ -2127,8 +2125,6 @@ class PlgFabrik_Element extends FabrikPlugin
 			$this->setEditable($editable);
 		}
 
-		$params = $this->getParams();
-
 		// Force reload?
 		$this->HTMLids = null;
 		$elementTable = $this->getElement();
@@ -2173,13 +2169,15 @@ class PlgFabrik_Element extends FabrikPlugin
 		$element->element_ro = $this->getROElement($model->data, $c);
 		$element->value = $this->getValue($model->data, $c);
 
-		if (array_key_exists($elHTMLName . '_raw', $model->data))
+		$elName = $this->getFullName(true, false);
+		
+		if (array_key_exists($elName . '_raw', $model->data))
 		{
-			$element->element_raw = $model->data[$elHTMLName . '_raw'];
+			$element->element_raw = $model->data[$elName . '_raw'];
 		}
 		else
 		{
-			$element->element_raw = array_key_exists($elHTMLName, $model->data) ? $model->data[$elHTMLName] : $element->value;
+			$element->element_raw = array_key_exists($elName, $model->data) ? $model->data[$elName] : $element->value;
 		}
 
 		if ($this->dataConsideredEmpty($element->element_ro, $c))
@@ -2373,8 +2371,6 @@ class PlgFabrik_Element extends FabrikPlugin
 
 	public function getROElement($data, $repeatCounter = 0)
 	{
-		$groupModel = $this->getGroup();
-
 		if (!$this->canView() && !$this->canUse())
 		{
 			return '';
@@ -2413,13 +2409,23 @@ class PlgFabrik_Element extends FabrikPlugin
 		{
 			$w = new FabrikWorker;
 
-			foreach ($data as $k => $val)
+			/**
+			 * $$$ hugh - this should really happen elsewhere, but I needed a quick fix for handling
+			 * {slug} in detail view links, which for some reason are not 'stringURLSafe' at this point,
+			 * so they are like "4:A Page Title" instead of 4-a-page-title.
+			 */
+			if (strstr($customLink, '{slug}'))
 			{
-				$repData[$k] = $val;
+				$slug = str_replace(':', '-', $data['slug']);
+				$slug = JApplication::stringURLSafe($slug);
+				$customLink = str_replace('{slug}', $slug, $customLink);
 			}
-
-			//$data['slug'] = str_replace(':', '-', $data['slug']);
-			//$data['slug'] = JApplication::stringURLSafe($data['slug']);
+			
+			/**
+			 * Testing new parseMessageForRepeats(), see comments on the function itself.
+			 */
+			$customLink = $w->parseMessageForRepeats($customLink, $data, $this, $repeatCounter);
+			
 			$customLink = $w->parseMessageForPlaceHolder($customLink, $data);
 			$customLink = $this->getListModel()->parseMessageForRowHolder($customLink, $data);
 
@@ -3293,7 +3299,7 @@ class PlgFabrik_Element extends FabrikPlugin
 	 *
 	 * @since 3.0.7
 	 *
-	 * @return  string  Checkbox filter HTML
+	 * @return  string  Checkbox filter JLayout HTML
 	 */
 
 	protected function checkboxFilter($rows, $default, $v)
@@ -3309,7 +3315,23 @@ class PlgFabrik_Element extends FabrikPlugin
 
 		$default = (array) $default;
 
-		return implode("\n", FabrikHelperHTML::grid($values, $labels, $default, $v, 'checkbox', false, 1, array('input' => array('fabrik_filter'))));
+		$layout = $this->getLayout('list-filter-checkbox');
+		$displayData = new stdClass;
+		$displayData->values = $values;
+		$displayData->labels = $labels;
+		$displayData->default = $default;
+		$displayData->name = $v;
+		$res = $layout->render($displayData);
+
+		// If no custom list layout found revert to the default list-filter-checkbox renderer
+		if ($res === '')
+		{
+			$basePath = COM_FABRIK_FRONTEND . '/layouts/';
+			$layout = new JLayoutFile('fabrik-list-filter-checkbox', $basePath, array('debug' => false, 'component' => 'com_fabrik', 'client' => 'site'));
+			$res = $layout->render($displayData);
+		}
+
+		return $res;
 	}
 
 	/**
@@ -3332,15 +3354,21 @@ class PlgFabrik_Element extends FabrikPlugin
 		$class = $this->filterClass();
 		$attribs = 'class="' . $class . '" size="1" ';
 		$default = (array) $default;
+		
+		if (count($default) === 1)
+		{
+			$default[1] = '';
+		}
+		
 		$def0 = array_key_exists('value', $default) ? $default['value'][0] : $default[0];
 		$def1 = array_key_exists('value', $default) ? $default['value'][1] : $default[1];
 
 		if ($type === 'list')
 		{
-			$return[] = FText::_('COM_FABRIK_BETWEEN');
+			$return[] = '<span class="fabrikFilterRangeLabel">' . FText::_('COM_FABRIK_BETWEEN') . '</span>';
 			$return[] = JHTML::_('select.genericlist', $rows, $v . '[0]', $attribs, 'value', 'text', $def0, $element->name . '_filter_range_0');
-
-			$return[] = '<br /> ' . FText::_('COM_FABRIK_AND') . ' ';
+			$return[] = '<br />';
+			$return[] = '<span class="fabrikFilterRangeLabel">' . FText::_('COM_FABRIK_AND') . '</span>';
 			$return[] = JHTML::_('select.genericlist', $rows, $v . '[1]', $attribs, 'value', 'text', $def1, $element->name . '_filter_range_1');
 		}
 		else
@@ -3350,8 +3378,8 @@ class PlgFabrik_Element extends FabrikPlugin
 		}
 	}
 
-	/**
-	 * Build the HTML for the auto-complete filter
+	/**-
+	 * Build the HTML ////for the auto-complete filter
 	 *
 	 * @param   string  $default     Label
 	 * @param   string  $v           Field name
@@ -3361,7 +3389,6 @@ class PlgFabrik_Element extends FabrikPlugin
 	 *
 	 * @return  array  HTML bits
 	 */
-
 	protected function autoCompleteFilter($default, $v, $labelValue = null, $normal = true)
 	{
 		if (is_null($labelValue))
@@ -3521,12 +3548,15 @@ class PlgFabrik_Element extends FabrikPlugin
 	/**
 	 * Get sub option values
 	 *
+	 * @param   array  $data  Form data. If submitting a form, we want to use that form's data and not
+	 *                        re-query the form Model for its data as with multiple plugins of the same type
+	 *                        this was getting the plugin params out of sync.
+	 *
 	 * @return  array
 	 */
-
-	protected function getSubOptionValues()
+	protected function getSubOptionValues($data = array())
 	{
-		$phpOpts = $this->getPhpOptions();
+		$phpOpts = $this->getPhpOptions($data);
 
 		if (!$phpOpts)
 		{
@@ -3564,12 +3594,15 @@ class PlgFabrik_Element extends FabrikPlugin
 	/**
 	 * Get sub option labels
 	 *
+	 * @param   array  $data  Form data. If submitting a form, we want to use that form's data and not
+	 *                        re-query the form Model for its data as with multiple plugins of the same type
+	 *                        this was getting the plugin params out of sync.
+	 *
 	 * @return  array
 	 */
-
-	protected function getSubOptionLabels()
+	protected function getSubOptionLabels($data = array())
 	{
-		$phpOpts = $this->getPhpOptions();
+		$phpOpts = $this->getPhpOptions($data);
 
 		if (!$phpOpts)
 		{
@@ -3632,12 +3665,15 @@ class PlgFabrik_Element extends FabrikPlugin
 	/**
 	 * Should we get the elements sub options via the use of eval'd parameter setting
 	 *
+	 * @param   array  $data  Form data. If submitting a form, we want to use that form's data and not
+	 *                        re-query the form Model for its data as with multiple plugins of the same type
+	 *                        this was getting the plugin params out of sync.
 	 * @since  3.0.7
 	 *
 	 * @return mixed  false if no, otherwise needs to return array of JHTML::options
 	 */
 
-	protected function getPhpOptions()
+	protected function getPhpOptions($data = array())
 	{
 		$params = $this->getParams();
 		$pop = $params->get('dropdown_populate', '');
@@ -3645,7 +3681,8 @@ class PlgFabrik_Element extends FabrikPlugin
 		if ($pop !== '')
 		{
 			$w = new FabrikWorker;
-			$pop = $w->parseMessageForPlaceHolder($pop, $this->getFormModel()->getData());
+			$data = empty($data) ? $this->getFormModel()->getData() : $data;
+			$pop = $w->parseMessageForPlaceHolder($pop, $data);
 
 			if (FabrikHelperHTML::isDebug())
 			{
@@ -5926,16 +5963,16 @@ class PlgFabrik_Element extends FabrikPlugin
 		}
 
 		$layout = $this->getLayout('list');
-		$data = new stdClass;
-		$data->text = $r;
-		$res = $layout->render($data);
+		$displayData = new stdClass;
+		$displayData->text = $r;
+		$res = $layout->render($displayData);
 
 		// If no custom list layout found revert to the default list renderer
 		if ($res === '')
 		{
 			$basePath = COM_FABRIK_FRONTEND . '/layouts/';
 			$layout = new JLayoutFile('fabrik-element-list', $basePath, array('debug' => false, 'component' => 'com_fabrik', 'client' => 'site'));
-			$res = $layout->render($data);
+			$res = $layout->render($displayData);
 		}
 
 		return $res;
@@ -6005,15 +6042,15 @@ class PlgFabrik_Element extends FabrikPlugin
 
 		$basePath = COM_FABRIK_BASE . '/components/com_fabrik/layouts/element';
 		$layout = new JLayoutFile('fabrik-element-addoptions', $basePath, array('debug' => false, 'component' => 'com_fabrik', 'client' => 'site'));
-		$data = new stdClass;
-		$data->id = $this->getHTMLId($repeatCounter);
-		$data->add_image = FabrikHelperHTML::image('plus.png', 'form', @$this->tmpl, array('alt' => FText::_('COM_FABRIK_ADD')));
-		$data->allowadd_onlylabel = $params->get('allowadd-onlylabel');
-		$data->savenewadditions = $params->get('savenewadditions');
-		$data->onlylabel = $onlylabel;
-		$data->hidden_field = $this->getHiddenField($data->id . '_additions', '', $data->id . '_additions');
+		$displayData = new stdClass;
+		$displayData->id = $this->getHTMLId($repeatCounter);
+		$displayData->add_image = FabrikHelperHTML::image('plus.png', 'form', @$this->tmpl, array('alt' => FText::_('COM_FABRIK_ADD')));
+		$displayData->allowadd_onlylabel = $params->get('allowadd-onlylabel');
+		$displayData->savenewadditions = $params->get('savenewadditions');
+		$displayData->onlylabel = $onlylabel;
+		$displayData->hidden_field = $this->getHiddenField($displayData->id . '_additions', '', $displayData->id . '_additions');
 
-		return $layout->render($data);
+		return $layout->render($displayData);
 	}
 
 	/**
@@ -7029,6 +7066,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		$table = $this->list->getTable(true);
 		$table->form_id = $formId;
 		$element = $this->getElement(true);
+		$this->setEditable($this->canUse('form'));
 	}
 
 	/**
@@ -7568,8 +7606,89 @@ class PlgFabrik_Element extends FabrikPlugin
 		$name = strtolower(JString::str_ireplace('PlgFabrik_Element', '', $name));
 		$basePath = COM_FABRIK_BASE . '/plugins/fabrik_element/' . $name . '/layouts';
 		$layout = new FabrikLayoutFile('fabrik-element-' . $name. '-' . $type, $basePath, array('debug' => false, 'component' => 'com_fabrik', 'client' => 'site'));
+		$layout->addIncludePaths(JPATH_SITE . '/layouts');
 		$layout->addIncludePaths(JPATH_THEMES . '/' . JFactory::getApplication()->getTemplate() . '/html/layouts');
+		$layout->addIncludePaths(JPATH_THEMES . '/' . JFactory::getApplication()->getTemplate() . '/html/layouts/com_fabrik');
 
 		return $layout;
+	}
+
+	/**
+	 * Validate teh element against a Joomla form Rule
+	 *
+	 * @param   string  $type   Rule type e.g. 'password'
+	 * @param   mixed   $value  Value to validate
+	 * @param   mixed   $path   Optional path to load teh rule from
+	 *
+	 * @throws Exception
+	 *
+	 * @return bool
+	 */
+	protected function validateJRule($type, $value, $path = null)
+	{
+		if (!is_null($path))
+		{
+			JFormHelper::addRulePath($path);
+		}
+
+		$app = JFactory::getApplication();
+		$rule = JFormHelper::loadRuleType($type, true);
+		$xml  = new SimpleXMLElement('<xml></xml>');
+		$lang = JFactory::getLanguage();
+		$lang->load('com_users');
+
+		if (!$rule->test($xml, $value))
+		{
+			$this->validationError = '';
+
+			foreach ($app->getMessageQueue() as $i => $msg)
+			{
+				if ($msg['type'] === 'warning')
+				{
+					$this->validationError .= $msg['message'] . '<br />';
+				}
+			}
+			FabrikWorker::killMessage($app, 'warning');
+
+			return false;
+		}
+
+		return true;
+	}
+
+	/**
+	 * Say an element is in a repeat group, this method gets that repeat groups primary
+	 * key value.
+	 *
+	 * @param int $repeatCounter
+	 *
+	 * @since 3.3.2
+	 *
+	 * @return mixed  False if not in a join
+	 */
+	protected function getJoinedGroupPkVal($repeatCounter = 0)
+	{
+		$groupModel = $this->getGroupModel();
+
+		if (!$groupModel->isJoin())
+		{
+			return false;
+		}
+
+		$formModel = $this->getFormModel();
+		$joinModel = $groupModel->getJoinModel();
+		$elementModel = $formModel->getElement($joinModel->getForeignID());
+
+		return $elementModel->getValue($formModel->data, $repeatCounter);
+	}
+	
+	/**
+	 * Is the element published.
+	 * 
+	 * @return boolean
+	 */
+	public function isPublished()
+	{
+		return $this->getElement()->published === '1';
 	}
 }

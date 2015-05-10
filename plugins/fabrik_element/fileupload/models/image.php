@@ -99,13 +99,12 @@ class ImageRender
 			}
 		}
 
-		$bits     = FabrikWorker::JSONtoData($title, true);
-		$title    = FArrayHelper::getValue($bits, $model->_repeatGroupCounter, $title);
-		$title    = htmlspecialchars(strip_tags($title, ENT_NOQUOTES));
-		$file     = $model->getStorage()->getFileUrl($file);
+		$bits  = FabrikWorker::JSONtoData($title, true);
+		$title = FArrayHelper::getValue($bits, $model->_repeatGroupCounter, $title);
+		$title = htmlspecialchars(strip_tags($title, ENT_NOQUOTES));
+		$file  = $model->getStorage()->getFileUrl($file);
 
 		$fullSize = $file;
-
 
 		if (!$this->fullImageInRecord($params))
 		{
@@ -130,22 +129,22 @@ class ImageRender
 			$n = '';
 		}
 
-		$layout              = $model->getLayout('image');
-		$data                = new stdClass;
-		$data->lightboxAttrs = FabrikHelperHTML::getLightboxAttributes($title, $n);
-		$data->fullSize      = $model->storage->preRenderPath($fullSize);
-		$data->file          = $file;
-		$data->makeLink      = $params->get('make_link', true) && !$this->fullImageInRecord($params);
-		$data->title         = $title;
-		$data->isJoin        = $model->isJoin();
-		$data->width         = $width;
-		$data->showImage     = $params->get('fu_show_image');
-		$data->inListView    = $this->inTableView;
-		$data->height        = $height;
-		$data->isSlideShow   = ($this->inTableView && $params->get('fu_show_image_in_table', '0') == '2')
+		$layout                     = $model->getLayout('image');
+		$displayData                = new stdClass;
+		$displayData->lightboxAttrs = FabrikHelperHTML::getLightboxAttributes($title, $n);
+		$displayData->fullSize      = $model->storage->preRenderPath($fullSize);
+		$displayData->file          = $file;
+		$displayData->makeLink      = $params->get('make_link', true) && !$this->fullImageInRecord($params);
+		$displayData->title         = $title;
+		$displayData->isJoin        = $model->isJoin();
+		$displayData->width         = $width;
+		$displayData->showImage     = $params->get('fu_show_image');
+		$displayData->inListView    = $this->inTableView;
+		$displayData->height        = $height;
+		$displayData->isSlideShow   = ($this->inTableView && $params->get('fu_show_image_in_table', '0') == '2')
 			|| (!$this->inTableView && !$formModel->isEditable() && $params->get('fu_show_image', '0') == '3');
 
-		$this->output        = $layout->render($data);
+		$this->output = $layout->render($displayData);
 	}
 
 	/**
@@ -215,7 +214,7 @@ class ImageRender
 	public function renderCarousel($id = 'carousel', $data = array(), $model = null, $params = null, $thisRow = null)
 	{
 		$id .= '_carousel';
-		$layout   = $model->getLayout('carousel');
+		$layout         = $model->getLayout('carousel');
 		$layoutData     = new stdClass;
 		$layoutData->id = $id;
 		list($layoutData->width, $layoutData->height) = $this->imageDimensions($params);

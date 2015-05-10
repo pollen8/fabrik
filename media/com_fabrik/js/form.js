@@ -65,6 +65,8 @@ var FbForm = new Class({
 		this.events = {};
 
 		this.submitBroker = new FbFormSubmit();
+
+		Fabrik.fireEvent('fabrik.form.loaded', [this]);
 	},
 
 	_setMozBoxWidths: function () {
@@ -536,7 +538,7 @@ var FbForm = new Class({
 
 	changePage: function (dir) {
 		this.changePageDir = dir;
-		Fabrik.fireEvent('fabrik.form.page.change', [this]);
+		Fabrik.fireEvent('fabrik.form.page.change', [this, dir]);
 		if (this.result === false) {
 			this.result = true;
 			return;
@@ -553,8 +555,8 @@ var FbForm = new Class({
 		document.id('page_' + this.currentPage).setStyle('display', '');
 		this._setMozBoxWidths();
 		this.hideOtherPages();
-		Fabrik.fireEvent('fabrik.form.page.chage.end', [this]);
-		Fabrik.fireEvent('fabrik.form.page.change.end', [this]);
+		Fabrik.fireEvent('fabrik.form.page.chage.end', [this, dir]);
+		Fabrik.fireEvent('fabrik.form.page.change.end', [this, dir]);
 		if (this.result === false) {
 			this.result = true;
 			return;
@@ -1010,7 +1012,8 @@ var FbForm = new Class({
 				if (confirm(Joomla.JText._('COM_FABRIK_CONFIRM_DELETE_1'))) {
 					var res = Fabrik.fireEvent('fabrik.form.delete', [this, this.options.rowid]).eventResults;
 					if (typeOf(res) === 'null' || res.length === 0 || !res.contains(false)) {
-						this.form.getElement('input[name=task]').value = this.options.admin ? 'form.delete' : 'delete';
+						// Task value is the same for front and admin
+						this.form.getElement('input[name=task]').value = 'form.delete';
 						this.doSubmit(e, del);
 					} else {
 						e.stop();
@@ -1294,7 +1297,9 @@ var FbForm = new Class({
 
 		this.form.addEvent('click:relay(.deleteGroup)', function (e, target) {
 			e.preventDefault();
-			this.deleteGroup(e);
+			var group = e.target.getParent('.fabrikGroup'),
+				subGroup = e.target.getParent('.fabrikSubGroup');
+			this.deleteGroup(e, group, subGroup);
 		}.bind(this));
 
 		this.form.addEvent('click:relay(.addGroup)', function (e, target) {
@@ -1337,7 +1342,7 @@ var FbForm = new Class({
 			}
 
 			var repeat_counter = this.form.getElement('#fabrik_repeat_group_' + groupId + '_counter'),
-			repeat_rows, repeat_real, add_btn, del_btn, i, repeat_id_0, del_e;
+			repeat_rows, repeat_real, add_btn, deleteButton, i, repeat_id_0, deleteEvent;
 
 			if (typeOf(repeat_counter) === 'null') {
 				return;
@@ -1366,13 +1371,13 @@ var FbForm = new Class({
 			if (min === 0 && repeat_real === 0) {
 
 				// Create mock event
-				del_btn = this.form.getElement('#group' + groupId + ' .deleteGroup');
-				if (typeOf(del_btn) !== 'null') {
-
-					// Remove only group
-					del_e = new Event.Mock(del_btn, 'click');
-					this.deleteGroup(del_e);
-				}
+				deleteButton = this.form.getElement('#group' + groupId + ' .deleteGroup');
+				deleteEvent = typeOf(deleteButton) !== 'null' ? new Event.Mock(deleteButton, 'click') : false;
+				var group = this.form.getElement('#group' + groupId),
+				subGroup = group.getElement('.fabrikSubGroup');
+				// Remove only group
+				this.deleteGroup(deleteEvent, group, subGroup);
+				
 			}
 			else if (repeat_rows < min) {
 				// Create mock event
@@ -1389,14 +1394,24 @@ var FbForm = new Class({
 		}.bind(this));
 	},
 
-	deleteGroup: function (e) {
-		Fabrik.fireEvent('fabrik.form.group.delete', [this, e]);
+	/**
+	 * Delete an repeating group
+	 * 
+	 * @param e
+	 * @param group
+	 */
+	deleteGroup: function (e, group, subGroup) {
+		Fabrik.fireEvent('fabrik.form.group.delete', [this, e, group]);
 		if (this.result === false) {
 			this.result = true;
 			return;
 		}
-		e.stop();
-		var group = e.target.getParent('.fabrikGroup');
+		if (e) {
+			e.stop();	
+		}
+		
+		//var group = e.target.getParent('.fabrikGroup');
+		// var subGroup = e.target.getParent('.fabrikSubGroup');
 
 		// Find which repeat group was deleted
 		var delIndex = 0;
@@ -1411,10 +1426,10 @@ var FbForm = new Class({
 		if (repeats <= this.options.minRepeat[i] && this.options.minRepeat[i] !== 0) {
 			if (this.options.minMaxErrMsg[i] !== '')
 			{
-				var errmsg = this.options.minMaxErrMsg[i];
-				errmsg = errmsg.replace(/\{min\}/, this.options.minRepeat[i]);
-				errmsg = errmsg.replace(/\{max\}/, this.options.maxRepeat[i]);				
-				alert(errmsg);
+				var errorMessage = this.options.minMaxErrMsg[i];
+				errorMessage = errorMessage.replace(/\{min\}/, this.options.minRepeat[i]);
+				errorMessage = errorMessage.replace(/\{max\}/, this.options.maxRepeat[i]);				
+				alert(errorMessage);
 			}
 			return;
 		}
@@ -1425,7 +1440,6 @@ var FbForm = new Class({
 		}
 		var subgroups = group.getElements('.fabrikSubGroup');
 
-		var subGroup = e.target.getParent('.fabrikSubGroup');
 		this.subGroups.set(i, subGroup.clone());
 		if (subgroups.length <= 1) {
 			this.hideLastGroup(i, subGroup);
@@ -1567,10 +1581,10 @@ var FbForm = new Class({
 		if (repeats >= this.options.maxRepeat[i] && this.options.maxRepeat[i] !== 0) {
 			if (this.options.minMaxErrMsg[i] !== '')
 			{
-				var errmsg = this.options.minMaxErrMsg[i];
-				errmsg = errmsg.replace(/\{min\}/, this.options.minRepeat[i]);
-				errmsg = errmsg.replace(/\{max\}/, this.options.maxRepeat[i]);				
-				alert(errmsg);
+				var errorMessage = this.options.minMaxErrMsg[i];
+				errorMessage = errorMessage.replace(/\{min\}/, this.options.minRepeat[i]);
+				errorMessage = errorMessage.replace(/\{max\}/, this.options.maxRepeat[i]);				
+				alert(errorMessage);
 			}
 			return;
 		}

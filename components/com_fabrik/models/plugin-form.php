@@ -204,7 +204,7 @@ class PlgFabrik_Form extends FabrikPlugin
 		
 		$model = $this->getModel();
 		
-		// see comments in getEmailData() about caching in $this vs $model
+		// See comments in getEmailData() about caching in $this vs $model
 		unset($this->emailData);
 		unset($model->emailData);
 		$d = isset($model->formDataWithTableName) ? $model->formDataWithTableName : array();
@@ -230,9 +230,9 @@ class PlgFabrik_Form extends FabrikPlugin
 		/**
 		 * NOTE - $$$ hugh - 9/17/2014  - we were originally caching in $this->emailData, but that provides no caching help at all,
 		 * as "this" is a plugin model, and the cache needs to be on the form model.  So changed it to use
-		 * the $model->emailData.  But for backward compat, we will continue to store a copy in $this.  This change has
+		 * the $model->emailData.  But for backward compatibility, we will continue to store a copy in $this.  This change has
 		 * yielded huge speed gains on form submission for larger forms (in my testing, more than cutting it in half),
-		 * as untill this change we were rebuiding the $emailData from scratch for every element on the form, which didn't
+		 * as until this change we were re-buiding the $emailData from scratch for every element on the form, which didn't
 		 * become apparent till we added the fabrikdebug=2 to allows profiling of submissions, and added the extra profiling
 		 * marks for the submission processing
 		 * 
@@ -244,7 +244,7 @@ class PlgFabrik_Form extends FabrikPlugin
 		 */
 		
 		$model = $this->getModel();
-		
+
 		if (isset($model->emailData))
 		{
 			JDEBUG ? $profiler->mark("getEmailData: cached") : null;
@@ -273,7 +273,6 @@ class PlgFabrik_Form extends FabrikPlugin
 		 */
 
 		$listModel = $model->getListModel();
-		$table = is_object($listModel) ? $listModel->getTable() : null;
 		$editable = $model->isEditable();
 		$model->setEditable(false);
 
@@ -283,7 +282,6 @@ class PlgFabrik_Form extends FabrikPlugin
 			$model->getJoinGroupIds($joins);
 		}
 
-		$params = $model->getParams();
 		$this->emailData = array();
 		$model->emailData = array();
 
@@ -296,7 +294,6 @@ class PlgFabrik_Form extends FabrikPlugin
 
 			// Check if group is actually a table join
 			$repeatGroup = 1;
-			$foreignKey = null;
 
 			if ($groupModel->canRepeat())
 			{
@@ -304,12 +301,9 @@ class PlgFabrik_Form extends FabrikPlugin
 				{
 					$joinModel = $groupModel->getJoinModel();
 					$joinTable = $joinModel->getJoin();
-					$foreignKey = '';
 
 					if (is_object($joinTable))
 					{
-						$foreignKey = $joinTable->table_join_key;
-
 						if (!$groupParams->get('repeat_group_show_first'))
 						{
 							continue;
@@ -333,12 +327,9 @@ class PlgFabrik_Form extends FabrikPlugin
 			}
 
 			$groupModel->repeatTotal = $repeatGroup;
-			$group = $groupModel->getGroup();
-			$aSubGroups = array();
 
 			for ($c = 0; $c < $repeatGroup; $c++)
 			{
-				$aSubGroupElements = array();
 				$elementModels = $groupModel->getPublishedElements();
 
 				foreach ($elementModels as $elementModel)
@@ -346,7 +337,6 @@ class PlgFabrik_Form extends FabrikPlugin
 					// Force reload?
 					$elementModel->defaults = null;
 					$elementModel->_repeatGroupTotal = $repeatGroup - 1;
-					$element = $elementModel->getElement();
 
 					$k = $elementModel->getFullName(true, false);
 					$key = $elementModel->getFullName(true, false);
@@ -384,9 +374,9 @@ class PlgFabrik_Form extends FabrikPlugin
 					}
 					elseif (array_key_exists($key, $model->formDataWithTableName))
 					{
-						$rawval = FArrayHelper::getValue($model->formDataWithTableName, $k . '_raw', '');
+						$rawValue = FArrayHelper::getValue($model->formDataWithTableName, $k . '_raw', '');
 
-						if ($rawval == '')
+						if ($rawValue == '')
 						{
 							$this->emailData[$k . '_raw'] = $model->formDataWithTableName[$key];
 						}
@@ -396,7 +386,7 @@ class PlgFabrik_Form extends FabrikPlugin
 							 * so don't overwrite that with the blank none-raw value
 							 * the none-raw value is add in getEmailValue()
 							 */
-							$this->emailData[$k . '_raw'] = $rawval;
+							$this->emailData[$k . '_raw'] = $rawValue;
 						}
 					}
 
@@ -411,10 +401,15 @@ class PlgFabrik_Form extends FabrikPlugin
 						$email_value = $this->emailData[$k];
 					}
 
-					if (!$elementModel->isJoin())
-					{
+					/**
+					 * $$$ hugh - no idea why we wouldn't call getEmailValue() for multiselect joins, happened in this commit:
+					 * https://github.com/Fabrik/fabrik/commit/06a03dbb430281951f00b9b3b691ea015a52ac7b
+					 * ... but afaict, it's bogus, as otherwise multiselect joins never get processed in to labels, and stay as raw values.
+					 */
+					//if (!$elementModel->isJoin())
+					//{
 						$this->emailData[$k] = $elementModel->getEmailValue($email_value, $model->formDataWithTableName, $c);
-					}
+					//}
 				}
 			}
 		}
@@ -430,7 +425,7 @@ class PlgFabrik_Form extends FabrikPlugin
 		$model->emailData = $this->emailData;
 		
 		JDEBUG ? $profiler->mark("getEmailData: end") : null;
-		
+
 		return $this->emailData;
 	}
 
@@ -471,12 +466,11 @@ class PlgFabrik_Form extends FabrikPlugin
 	 *
 	 * @return  array  admin user objects
 	 */
-
 	protected function getAdminInfo()
 	{
-		$db = JFactory::getDBO(true);
-		$query = $db->getQuery();
-		$query->select(' id, name, email, sendEmail')->from('#__users')->where('WHERE sendEmail = "1"');
+		$db = JFactory::getDbo(true);
+		$query = $db->getQuery(true);
+		$query->select(' id, name, email, sendEmail')->from('#__users')->where('sendEmail = 1');
 		$db->setQuery($query);
 		$rows = $db->loadObjectList();
 

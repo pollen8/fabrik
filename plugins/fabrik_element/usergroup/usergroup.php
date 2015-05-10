@@ -111,10 +111,13 @@ class PlgFabrik_ElementUsergroup extends PlgFabrik_ElementList
 	/**
 	 * Get sub option values
 	 *
+	 * @param   array  $data  Form data. If submitting a form, we want to use that form's data and not
+	 *                        re-query the form Model for its data as with multiple plugins of the same type
+	 *                        this was getting the plugin params out of sync.
+	 *
 	 * @return  array
 	 */
-
-	protected function getSubOptionValues()
+	protected function getSubOptionValues($data = array())
 	{
 		$opts = $this->allOpts();
 		$return = array();
@@ -130,10 +133,13 @@ class PlgFabrik_ElementUsergroup extends PlgFabrik_ElementList
 	/**
 	 * Get sub option labels
 	 *
+	 * @param   array  $data  Form data. If submitting a form, we want to use that form's data and not
+	 *                        re-query the form Model for its data as with multiple plugins of the same type
+	 *                        this was getting the plugin params out of sync.
+	 *
 	 * @return  array
 	 */
-
-	protected function getSubOptionLabels()
+	protected function getSubOptionLabels($data = array())
 	{
 		$opts = $this->allOpts();
 		$return = array();
