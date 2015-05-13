@@ -213,7 +213,7 @@ var FabrikModalRepeat = new Class({
 			});
 			clone.getElements('.chzn-container').destroy();
 
-			jQuery('select').chosen({
+			jQuery(clone).find('select').chosen({
 				disable_search_threshold : 10,
 				allow_single_deselect : true
 			});

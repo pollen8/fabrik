@@ -13,7 +13,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 ?>
-<div class="row-fluid">
+<div class="fabrikButtonsContainer row-fluid">
 <ul class="nav nav-pills  pull-left">
 
 <?php if ($this->showAdd) :?>

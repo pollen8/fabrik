@@ -2082,6 +2082,9 @@ class FabrikFEModelList extends JModelForm
 		{
 			$bits[] = 'view=list';
 			$bits[] = 'listid=' . $listid;
+			
+			// Jaanus 12 Apr 2015 - commenting out the Itemid stuff as it totally messed up things i.e when one list was under many menu items and prefiltered differently under each item
+			/*
 			$listLinks = $this->getTableLinks();
 
 			// $$$ rob 01/03/2011 find at matching itemid in another menu item for the related data link
@@ -2094,6 +2097,7 @@ class FabrikFEModelList extends JModelForm
 					break;
 				}
 			}
+			*/
 
 			$bits[] = 'Itemid=' . $Itemid;
 		}
