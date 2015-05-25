@@ -387,7 +387,7 @@ class FabrikAdminModelElement extends FabModelAdmin
 
 			if (FabrikWorker::isReserved($data['name']))
 			{
-				$this->setError(FText::_('COM_FABRIK_RESEVED_NAME_USED'));
+				$this->setError(FText::_('COM_FABRIK_RESERVED_NAME_USED'));
 			}
 		}
 		else
@@ -399,7 +399,7 @@ class FabrikAdminModelElement extends FabModelAdmin
 
 			if ($nameChanged && FabrikWorker::isReserved($data['name'], false))
 			{
-				$this->setError(FText::_('COM_FABRIK_RESEVED_NAME_USED'));
+				$this->setError(FText::_('COM_FABRIK_RESERVED_NAME_USED'));
 			}
 		}
 
