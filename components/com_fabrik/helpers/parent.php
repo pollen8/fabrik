@@ -1745,7 +1745,8 @@ class FabrikWorker
 		}
 		else
 		{
-			$gobackaction = 'onclick=\'history.back();\'';
+			//$gobackaction = 'onclick=\'history.back();\'';
+			$gobackaction = 'onclick="parent.location=\'' . FArrayHelper::getValue($_SERVER, 'HTTP_REFERER') . '\'"';
 		}
 
 		return $gobackaction;
