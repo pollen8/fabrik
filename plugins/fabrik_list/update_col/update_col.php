@@ -142,7 +142,7 @@ class PlgFabrik_ListUpdate_Col extends PlgFabrik_List
 
 			$values = FArrayHelper::getValue($output, 'fabrik___filter', array());
 			$values = FArrayHelper::getValue($values, $key, array());
-
+			
 			$update = new stdClass;
 			$update->coltoupdate = array();
 			$update->update_value = array();
@@ -226,7 +226,9 @@ class PlgFabrik_ListUpdate_Col extends PlgFabrik_List
 		{
 			foreach ($update->coltoupdate as $i => $col)
 			{
-				$this->_process($model, $col, $update->update_value[$i], $update->update_eval[$i]);
+				// @TODO add evals to form
+				//$this->_process($model, $col, $update->update_value[$i], $update->update_eval[$i]);
+				$this->_process($model, $col, $update->update_value[$i], false);
 			}
 		}
 
@@ -290,6 +292,13 @@ class PlgFabrik_ListUpdate_Col extends PlgFabrik_List
 			foreach ($aids as $id)
 			{
 				$row = $model->getRow($id, true);
+				
+				/**
+				 * hugh - hack to work around this issue:
+				 * https://github.com/Fabrik/fabrik/issues/1499
+				 */
+				$this->params = $params;
+				
 				$to = $this->emailTo($row, $emailWhich);
 
 				if (JMailHelper::cleanAddress($to) && FabrikWorker::isEmail($to))
