@@ -46,7 +46,7 @@ endif;
 ?>
 
 
-<div class="map" style="<?php echo $d->width;?>height:<?php echo $d->height;?>px"></div>
+<div class="map" style="<?php echo $d->width;?>; height:<?php echo $d->height;?>px"></div>
 <input type="hidden" class="fabrikinput" name="<?php echo $d->name;?>"
 	value="<?php echo htmlspecialchars($d->value, ENT_QUOTES); ?>" />
 
