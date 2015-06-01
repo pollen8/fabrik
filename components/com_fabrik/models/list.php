@@ -2747,7 +2747,7 @@ class FabrikFEModelList extends JModelForm
 						$this->orderDirs[] = $dir;
 						$element->getAsField_html($this->selectedOrderFields, $aAsFields);
 
-						if ($query)
+						if ($query !== false)
 						{
 							$query->order($orderByName . ' ' . $dir);
 						}
