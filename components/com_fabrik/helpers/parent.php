@@ -848,6 +848,8 @@ class FabrikWorker
 		$msg = str_replace('{$mosConfig_mailfrom}', $config->get('mailfrom'), $msg);
 		$msg = str_replace('{$mosConfig_secret}', $config->get('secret'), $msg);
 		$msg = str_replace('{where_i_came_from}', $app->input->server->get('HTTP_REFERER', '', 'string'), $msg);
+		$msg = str_replace{'{date}', date('Ymd'), $msg);
+		$msg = str_replace{'{mysql_date}', date('Y-m-d H:i:s'), $msg);
 
 		foreach ($_SERVER as $key => $val)
 		{
