@@ -284,7 +284,8 @@ var FbFileUpload = new Class({
 					x: this.options.winWidth / 2,
 					y: this.options.winHeight / 2
 				},
-				crop: this.options.crop
+				crop: this.options.crop,
+                quality: this.options.quality
 			});
 		}
 		this.pluploadContainer = c.getElement('.plupload_container');
@@ -740,6 +741,7 @@ var ImageWidget = new Class({
 			createShowOverLay: false,
 			crop: opts.crop,
 			destroy: false,
+            quality: opts.quality,
 			onClose: function () {
 				this.storeActiveImageData();
 			}.bind(this),
@@ -848,7 +850,6 @@ var ImageWidget = new Class({
 	 */
 
 	setImage: function (uri, filepath, params) {
-		console.log('set Image', uri, filepath, params);
 		this.activeFilePath = filepath;
 		if (!this.images.has(filepath)) {
 
@@ -1166,7 +1167,8 @@ var ImageWidget = new Class({
 		});
 
 		ctx.drawImage(canvas, x, y, w, h, 0, 0, w, h);
-		f.set('value', target.toDataURL());
+        debugger;
+		f.set('value', target.toDataURL({quality: this.windowopts.quality}));
 		target.destroy();
 	},
 
@@ -1201,7 +1203,7 @@ var ImageWidget = new Class({
 	},
 
 	/**
-	 * set up and wath the rotate slide and input field
+	 * set up and watch the rotate slide and input field
 	 */
 
 	watchRotate: function () {
