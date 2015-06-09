@@ -116,7 +116,7 @@ class PlgFabrik_ElementDigsig extends PlgFabrik_Element
 
 	public function renderListData($data, stdClass &$thisRow)
 	{
-		if ($data === '' || empty($data))
+		if ($this->dataConsideredEmpty($data, 0))
 		{
 			return '';
 		}
@@ -338,6 +338,31 @@ class PlgFabrik_ElementDigsig extends PlgFabrik_Element
 		return false;
 	}
 
+	/**
+	 * Is the element consider to be empty for purposes of rendering on the form,
+	 * i.e. for assigning classes, etc.  Can be overridden by individual elements.
+	 *
+	 * @param   array  $data           Data to test against
+	 * @param   int    $repeatCounter  Repeat group #
+	 *
+	 * @return  bool
+	 */
+	
+	public function dataConsideredEmpty($data, $repeatCounter)
+	{
+		$data = (array) $data;
+
+		foreach ($data as $d)
+		{
+			if ($d != '' && $d != '[]' && $d != '[""]')
+			{
+				return false;
+			}
+		}
+
+		return true;
+	}
+	
 	/**
 	 * Is the element considered to be empty for purposes of validation
 	 * Used in isempty validation rule.

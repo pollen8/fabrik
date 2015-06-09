@@ -33,8 +33,8 @@ defined('_JEXEC') or die('Restricted access');
 	?>
 	<label>
 		<?php echo FText::_('PLG_LIST_EMAIL_SUBJECT') ?><br />
-		<input class="inputbox fabrikinput span12" type="text" name="subject" id="subject" value="<?php echo $this->subject?>" size="50" />
 	</label>
+		<input class="inputbox fabrikinput span12" type="text" name="subject" id="subject" value="<?php echo $this->subject?>" size="50" />
 	<?php
 	}
 	?>
