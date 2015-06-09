@@ -38,6 +38,13 @@ class FabrikFEModelCSVExport
 	public $outPutFormat = 'csv';
 
 	/**
+	 * Cell delimiter
+	 * 
+	 * @var string
+	 */
+	protected $delimiter = ';';
+
+	/**
 	 * Get csv export step
 	 *
 	 * @return  string  export step
@@ -66,41 +73,42 @@ class FabrikFEModelCSVExport
 		jimport('joomla.filesystem.file');
 		$start = $input->getInt('start', 0);
 		$filename = $this->getFileName();
-		$filepath = $this->getFilePath();
+		$filePath = $this->getFilePath();
 		$str = '';
 
-		if (JFile::exists($filepath))
+		if (JFile::exists($filePath))
 		{
 			if ($start === 0)
 			{
-				JFile::delete($filepath);
+				JFile::delete($filePath);
 			}
 			else
 			{
-				$str = file_get_contents($filepath);
+				$str = file_get_contents($filePath);
 			}
 		}
 		else
 		{
 			// Fabrik3 odd cant pass 2nd param by reference if we try to write '' so assign it to $tmp first
 			$tmp = '';
-			$ok = JFile::write($filepath, $tmp);
+			$ok = JFile::write($filePath, $tmp);
 
 			if (!$ok)
 			{
-				$this->reportWriteError($filepath);
+				$this->reportWriteError($filePath);
 				exit;
 			}
 
 			$str = '';
 		}
 
-		$session = JFactory::getSession();
 		$table = $this->model->getTable();
 		$this->model->render();
 		$this->removePkVal();
 		$this->outPutFormat = $input->get('excel') == 1 ? 'excel' : 'csv';
+		$config = JComponentHelper::getParams('com_fabrik');
 		$this->delimiter = $this->outPutFormat == 'excel' ? COM_FABRIK_EXCEL_CSV_DELIMITER : COM_FABRIK_CSV_DELIMITER;
+		$this->delimiter = $config->get('csv_delimiter', $this->delimiter);
 
 		if ($start === 0)
 		{
@@ -122,7 +130,7 @@ class FabrikFEModelCSVExport
 		$incData = $input->get('inctabledata', true);
 		$data = $this->model->getData();
 		$exportFormat = $this->model->getParams()->get('csvfullname');
-		$shortkey = FabrikString::shortColName($table->db_primary_key);
+		$shortKey = FabrikString::shortColName($table->db_primary_key);
 
 		foreach ($data as $group)
 		{
@@ -132,7 +140,7 @@ class FabrikFEModelCSVExport
 
 				if ($exportFormat == 1)
 				{
-					unset($a[$shortkey]);
+					unset($a[$shortKey]);
 				}
 
 				if (!$incRaw)
@@ -179,7 +187,7 @@ class FabrikFEModelCSVExport
 					array_unshift($a, ' ');
 				}
 
-				$this->carriageReutrnFix($a);
+				$this->carriageReturnFix($a);
 				$str .= implode($this->delimiter, array_map(array($this, "quote"), array_values($a)));
 				$str .= "\n";
 			}
@@ -188,7 +196,7 @@ class FabrikFEModelCSVExport
 		$res = new stdClass;
 		$res->total = $total;
 		$res->count = $start + $this->getStep();
-		$res->file = JFile::getName($filepath);
+		$res->file = JFile::getName($filePath);
 		$res->limitStart = $start;
 		$res->limitLength = $this->getStep();
 
@@ -198,11 +206,11 @@ class FabrikFEModelCSVExport
 		}
 
 		error_reporting(0);
-		$ok = JFile::write($filepath, $str);
+		$ok = JFile::write($filePath, $str);
 
 		if (!$ok)
 		{
-			$this->reportWriteError($filepath);
+			$this->reportWriteError($filePath);
 			exit;
 		}
 		else
@@ -214,15 +222,15 @@ class FabrikFEModelCSVExport
 	/**
 	 * Report a error writing the file
 	 *
-	 * @param   string  $filepath  file path we were trying to write to
+	 * @param   string  $filePath  file path we were trying to write to
 	 *
 	 * @return  null
 	 */
 
-	protected function reportWriteError($filepath)
+	protected function reportWriteError($filePath)
 	{
 		$o = new stdClass;
-		$o->err = 'cant write file ' . $filepath;
+		$o->err = 'cant write file ' . $filePath;
 		echo json_encode($o);
 	}
 
@@ -234,7 +242,7 @@ class FabrikFEModelCSVExport
 	 * @return  null
 	 */
 
-	private function carriageReutrnFix(&$row)
+	private function carriageReturnFix(&$row)
 	{
 		$newline = $this->model->getParams()->get('newline_csv_export', 'nl');
 
@@ -318,13 +326,13 @@ class FabrikFEModelCSVExport
 		@set_time_limit(0);
 		jimport('joomla.filesystem.file');
 		$filename = $this->getFileName();
-		$filepath = $this->getFilePath();
+		$filePath = $this->getFilePath();
 		$document = JFactory::getDocument();
 		$document->setMimeEncoding('application/zip');
 
-		if (JFile::exists($filepath))
+		if (JFile::exists($filePath))
 		{
-			$str = file_get_contents($filepath);
+			$str = file_get_contents($filePath);
 		}
 		else
 		{
@@ -348,7 +356,7 @@ class FabrikFEModelCSVExport
 		JResponse::setHeader('charset', $encoding);
 		JResponse::setBody($str);
 		echo JResponse::toString(false);
-		JFile::delete($filepath);
+		JFile::delete($filePath);
 
 		// $$$ rob 21/02/2012 - need to exit otherwise Chrome give 349 download error
 		exit;
@@ -512,7 +520,7 @@ class FabrikFEModelCSVExport
 		$w = new FabrikWorker;
 		$table = $this->model->getTable();
 		$params = $this->model->getParams();
-		$hformat = $params->get('csvfullname');
+		$headingFormat = $params->get('csvfullname');
 		$data = $this->model->getData();
 		$headings = array();
 		$g = current($data);
@@ -535,7 +543,7 @@ class FabrikFEModelCSVExport
 		$incRaw = $input->get('incraw', true);
 		$incData = $input->get('inctabledata', true);
 
-		$shortkey = FabrikString::shortColName($table->db_primary_key);
+		$shortKey = FabrikString::shortColName($table->db_primary_key);
 
 		foreach ($r as $heading => $value)
 		{
@@ -548,13 +556,13 @@ class FabrikFEModelCSVExport
 				foreach ($elementModels as $elementModel)
 				{
 					$element = $elementModel->getElement();
-					$fullname = $elementModel->getFullName(true, false);
+					$fullName = $elementModel->getFullName(true, false);
 
-					if ($fullname == $heading || $fullname . '_raw' == $heading)
+					if ($fullName == $heading || $fullName . '_raw' == $heading)
 					{
 						$found = true;
 
-						switch ($hformat)
+						switch ($headingFormat)
 						{
 							default:
 							case '0':
@@ -574,7 +582,7 @@ class FabrikFEModelCSVExport
 						 */
 						$n = $w->parseMessageForPlaceHolder($n, array());
 
-						if ($fullname . '_raw' == $heading)
+						if ($fullName . '_raw' == $heading)
 						{
 							$n .= '_raw';
 						}
@@ -613,7 +621,7 @@ class FabrikFEModelCSVExport
 				if (!(JString::substr($heading, JString::strlen($heading) - 4, JString::strlen($heading)) == '_raw' && !$incRaw))
 				{
 					// Stop id getting added to tables when exported with full element name key
-					if ($hformat != 1 && $heading != $shortkey)
+					if ($headingFormat != 1 && $heading != $shortKey)
 					{
 						$h[] = $heading;
 					}
