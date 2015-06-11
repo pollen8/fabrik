@@ -794,6 +794,52 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 		$params = $this->getParams();
 		$element = $this->getElement();
 
+		if ($type === 'prefilter')
+		{
+			switch ($condition)
+			{
+				case 'earlierthisyear':
+					throw new UnexpectedValueException('The birthday element can not deal with "Earlier This Year" prefilters');
+					break;
+				case 'laterthisyear':
+					throw new UnexpectedValueException('The birthday element can not deal with "Later This Year" prefilters');
+					break;
+				case 'today':
+					$search = array(date('Y'), date('n'), date('j'));
+					return $this->_dayMonthYearFilterQuery($key, $search);
+					break;
+				case 'yesterday':
+					$today = new DateTime();
+					$today->sub(new DateInterval('P1D'));
+					$search = array('', $today->format('n'), $today->format('j'));
+					return $this->_dayMonthYearFilterQuery($key, $search);
+					break;
+				case 'tomorrow':
+					$today = new DateTime();
+					$today->add(new DateInterval('P1D'));
+					$search = array('', $today->format('n'), $today->format('j'));
+					return $this->_dayMonthYearFilterQuery($key, $search);
+				case 'thismonth':
+					$search = array('', date('n'), '');
+					return $this->_dayMonthYearFilterQuery($key, $search);
+					break;
+				case 'lastmonth':
+					$today = new DateTime();
+					$today->sub(new DateInterval('P1M'));
+					$search = array('', $today->format('n'), '');
+					return $this->_dayMonthYearFilterQuery($key, $search);
+				case 'nextmonth':
+					$today = new DateTime();
+					$today->add(new DateInterval('P1M'));
+					$search = array('', $today->format('n'), '');
+					return $this->_dayMonthYearFilterQuery($key, $search);
+				case 'birthday':
+					$search = array('', date('n'), date('j'));
+					return $this->_dayMonthYearFilterQuery($key, $search);
+					break;
+			}
+		}
+
 		if ($element->filter_type === 'dropdown' && $params->get('list_filter_layout', 'individual') === 'day_mont_year')
 		{
 			return $this->_dayMonthYearFilterQuery($key, $originalValue);
@@ -812,7 +858,9 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 				return $query;
 			}
 
-			return parent::getFilterQuery($key, $condition, $value, $originalValue, $type);
+			$query = parent::getFilterQuery($key, $condition, $value, $originalValue, $type);
+
+			return $query;
 		}
 	}
 
