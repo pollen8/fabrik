@@ -21,7 +21,6 @@ CASE
    FROM #__fabrik_subs_cron_emails WHERE event_type = 'auto_renewal'");
 $auto_renewal_mails = $db->loadObjectList('emailday');
 echo $db->getQuery();
-echo "<pre>";print_r($auto_renewal_mails);exit;
 
 $db->setQuery("SELECT *,
 CASE

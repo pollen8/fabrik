@@ -19,7 +19,6 @@ $query->select('belangen ')->from('fab_userinfo');
 $db->setQuery($query);
 $data = array();
 $rows = $db->loadColumn();
-//echo "<pre>";print_r($rows);exit;
 foreach ($rows as $row)
 {
 	$vals = json_decode($row);
@@ -48,4 +47,3 @@ foreach ($data as $data)
 	$this->data->values[] = $data;
 }
 $this->data = array($this->data);
-//echo "<pre>";print_r($this->data);exit;
