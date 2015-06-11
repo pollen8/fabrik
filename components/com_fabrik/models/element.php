@@ -3196,7 +3196,6 @@ class PlgFabrik_Element extends FabrikPlugin
 			return '';
 		}
 
-		$table = $listModel->getTable();
 		$element = $this->getElement();
 		$elName = $this->getFullName(true, false);
 		$id = $this->getHTMLId() . 'value';
@@ -3431,7 +3430,7 @@ class PlgFabrik_Element extends FabrikPlugin
 	}
 
 	/**
-	 * Get dropdown filter select label
+	 * Get drop-down filter select label
 	 *
 	 * @return  string
 	 */
@@ -3528,7 +3527,6 @@ class PlgFabrik_Element extends FabrikPlugin
 
 	protected function reapplyFilterLabels(&$rows)
 	{
-		$element = $this->getElement();
 		$values = $this->getSubOptionValues();
 		$labels = $this->getSubOptionLabels();
 
@@ -3797,6 +3795,8 @@ class PlgFabrik_Element extends FabrikPlugin
 	 * @param   string  $id         field to use, defaults to element name
 	 * @param   bool    $incjoin    include join
 	 *
+	 * @throws ErrorException
+	 *
 	 * @return  array	filter value and labels
 	 */
 
@@ -3809,7 +3809,6 @@ class PlgFabrik_Element extends FabrikPlugin
 		$element = $this->getElement();
 		$origTable = $table->db_table_name;
 		$elName = $this->getFullName(true, false);
-		$params = $this->getParams();
 		$elName2 = $this->getFullName(false, false);
 
 		if (!$this->isJoin())
@@ -3989,14 +3988,13 @@ class PlgFabrik_Element extends FabrikPlugin
 
 	protected function filterValueList_All($normal, $tableName = '', $label = '', $id = '', $incjoin = true)
 	{
-		$element = $this->getElement();
-		$vals = $this->getSubOptionValues();
+		$values = $this->getSubOptionValues();
 		$labels = $this->getSubOptionLabels();
 		$return = array();
 
-		for ($i = 0; $i < count($vals); $i++)
+		for ($i = 0; $i < count($values); $i++)
 		{
-			$return[] = JHTML::_('select.option', $vals[$i], $labels[$i]);
+			$return[] = JHTML::_('select.option', $values[$i], $labels[$i]);
 		}
 
 		return $return;
@@ -4126,24 +4124,10 @@ class PlgFabrik_Element extends FabrikPlugin
 	protected function getAdvancedFilterHiddenFields()
 	{
 		$element = $this->getElement();
-		$elName = $this->getFilterFullName();
-
-		if (!is_a($this, 'PlgFabrik_ElementDatabasejoin'))
-		{
-			$elName = FabrikString::safeColName($elName);
-		}
-
-		$listModel = $this->getListModel();
-		$element = $this->getElement();
 		$return = array();
 		$prefix = '<input type="hidden" name="fabrik___filter[list_' . $this->getListModel()->getRenderContext() . ']';
 		$return[] = $prefix . '[elementid][]" value="' . $element->id . '" />';
-		/**
-		 * already added in advanced filter
-		 * $return[] = $prefix . '[key][]" value="'.$elName.'" />';
-		 * $return[] = $prefix . '[join][]" value="AND" />';
-		 * $return[] = $prefix . '[grouped_to_previous][]" value="0" />';
-		 */
+
 		return implode("\n", $return);
 	}
 
