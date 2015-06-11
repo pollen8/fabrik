@@ -69,14 +69,12 @@ class PlgFabrik_ElementPassword extends PlgFabrik_Element
 	}
 
 	/**
-	 * Determines if the element can contain data used in sending receipts,
-	 * e.g. fabrikfield returns true
+	 * Determines if the element can contain data used in sending receipts
 	 *
 	 * @deprecated - not used
 	 *
 	 * @return  bool
 	 */
-
 	public function isReceiptElement()
 	{
 		return true;
@@ -110,7 +108,7 @@ class PlgFabrik_ElementPassword extends PlgFabrik_Element
 
 		$layoutData->pw1Attributes = $bits;
 
-		$origname            = $element->name;
+		$origName            = $element->name;
 		$element->name       = $element->name . '_check';
 		$name                = $this->getHTMLName($repeatCounter);
 		$bits['placeholder'] = FText::_('PLG_ELEMENT_PASSWORD_CONFIRM_PASSWORD');
@@ -119,12 +117,11 @@ class PlgFabrik_ElementPassword extends PlgFabrik_Element
 		$bits['id']   = $name;
 
 		$layoutData->pw2Attributes     = $bits;
-		$element->name                 = $origname;
+		$element->name                 = $origName;
 		$layoutData->j3                = FabrikWorker::j3();
 		$layoutData->showStrengthMeter = $params->get('strength_meter', 1) == 1;
 
 		return $layout->render($layoutData);
-
 	}
 
 	/**
@@ -148,7 +145,7 @@ class PlgFabrik_ElementPassword extends PlgFabrik_Element
 		$k        = $this->getlistModel()->getTable()->db_primary_key;
 		$k        = FabrikString::safeColNameToArrayKey($k);
 		$element  = $this->getElement();
-		$origname = $element->name;
+		$origName = $element->name;
 
 		/**
 		 * $$$ hugh - need to fetch the value for the main data, as well as the confirmation,
@@ -174,8 +171,8 @@ class PlgFabrik_ElementPassword extends PlgFabrik_Element
 
 		$this->setFullName($check_name, true, false);
 		$this->reset();
-		$checkvalue    = urldecode($this->getValue($_REQUEST, $repeatCounter));
-		$element->name = $origname;
+		$checkValue    = urldecode($this->getValue($_REQUEST, $repeatCounter));
+		$element->name = $origName;
 
 		if ($this->getParams()->get('password_j_validate', false))
 		{
@@ -185,7 +182,7 @@ class PlgFabrik_ElementPassword extends PlgFabrik_Element
 			}
 		}
 
-		if ($checkvalue != $value)
+		if ($checkValue != $value)
 		{
 			$this->validationError = FText::_('PLG_ELEMENT_PASSWORD_PASSWORD_CONFIRMATION_DOES_NOT_MATCH');
 
@@ -230,8 +227,8 @@ class PlgFabrik_ElementPassword extends PlgFabrik_Element
 	{
 		$id                    = $this->getHTMLId($repeatCounter);
 		$opts                  = $this->getElementJSOptions($repeatCounter);
-		$formparams            = $this->getForm()->getParams();
-		$opts->ajax_validation = $formparams->get('ajax_validations') === '1';
+		$formParams            = $this->getFormModel()->getParams();
+		$opts->ajax_validation = $formParams->get('ajax_validations') === '1';
 		$opts->progressbar     = FabrikWorker::j3() ? true : false;
 
 		JText::script('PLG_ELEMENT_PASSWORD_STRONG');

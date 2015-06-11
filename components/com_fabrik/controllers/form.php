@@ -182,7 +182,6 @@ class FabrikControllerForm extends JControllerLegacy
 		JDEBUG ? $profiler->mark('controller process: start') : null;
 
 		$app = JFactory::getApplication();
-		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$input = $app->input;
 
 		if ($input->get('format', '') == 'raw')
@@ -240,7 +239,7 @@ class FabrikControllerForm extends JControllerLegacy
 		catch (Exception $e)
 		{
 			$model->errors['process_error'] = true;
-			JError::raiseWarning(500, $e->getMessage());
+			$app->enqueueMessage($e->getMessage(), 'error');
 		}
 
 		if ($input->getInt('elid', 0) !== 0)
@@ -369,7 +368,6 @@ class FabrikControllerForm extends JControllerLegacy
 	protected function handleError($view, $model)
 	{
 		$app = JFactory::getApplication();
-		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$input = $app->input;
 		$validated = false;
 
@@ -379,7 +377,7 @@ class FabrikControllerForm extends JControllerLegacy
 			if ($input->getInt('elid', 0) !== 0)
 			{
 				// Inline edit
-				$eMsgs = array();
+				$messages = array();
 				$errs = $model->getErrors();
 
 				// Only raise errors for fields that are present in the inline edit plugin
@@ -390,14 +388,14 @@ class FabrikControllerForm extends JControllerLegacy
 					if (in_array($errorKey, $toValidate) && count($e[0]) > 0)
 					{
 						array_walk_recursive($e, array('FabrikString', 'forHtml'));
-						$eMsgs[] = count($e[0]) === 1 ? '<li>' . $e[0][0] . '</li>' : '<ul><li>' . implode('</li><li>', $e[0]) . '</ul>';
+						$messages[] = count($e[0]) === 1 ? '<li>' . $e[0][0] . '</li>' : '<ul><li>' . implode('</li><li>', $e[0]) . '</ul>';
 					}
 				}
 
-				if (!empty($eMsgs))
+				if (!empty($messages))
 				{
-					$eMsgs = '<ul>' . implode('</li><li>', $eMsgs) . '</ul>';
-					header('HTTP/1.1 500 ' . FText::_('COM_FABRIK_FAILED_VALIDATION') . $eMsgs);
+					$messages = '<ul>' . implode('</li><li>', $messages) . '</ul>';
+					header('HTTP/1.1 500 ' . FText::_('COM_FABRIK_FAILED_VALIDATION') . $messages);
 					jexit();
 				}
 				else
@@ -571,35 +569,35 @@ class FabrikControllerForm extends JControllerLegacy
 		$model = $this->getModel('list', 'FabrikFEModel');
 		$ids = array($input->get('rowid', 0));
 
-		$listid = $input->getInt('listid');
-		$limitstart = $input->getInt('limitstart' . $listid);
-		$length = $input->getInt('limit' . $listid);
+		$listId = $input->getInt('listid');
+		$limitStart = $input->getInt('limitstart' . $listId);
+		$length = $input->getInt('limit' . $listId);
 
-		$oldtotal = $model->getTotalRecords();
-		$model->setId($listid);
+		$oldTotal = $model->getTotalRecords();
+		$model->setId($listId);
 		$ok = $model->deleteRows($ids);
 
-		$total = $oldtotal - count($ids);
+		$total = $oldTotal - count($ids);
 
-		$ref = $input->get('fabrik_referrer', 'index.php?option=com_' . $package . '&view=list&listid=' . $listid, 'string');
+		$ref = $input->get('fabrik_referrer', 'index.php?option=com_' . $package . '&view=list&listid=' . $listId, 'string');
 
-		if ($total >= $limitstart)
+		if ($total >= $limitStart)
 		{
-			$newlimitstart = $limitstart - $length;
+			$newLimitStart = $limitStart - $length;
 
-			if ($newlimitstart < 0)
+			if ($newLimitStart < 0)
 			{
-				$newlimitstart = 0;
+				$newLimitStart = 0;
 			}
 
-			$ref = str_replace("limitstart$listid=$limitstart", "limitstart$listid=$newlimitstart", $ref);
+			$ref = str_replace("limitstart$listId=$limitStart", "limitstart$listId=$newLimitStart", $ref);
 			$context = 'com_' . $package . '.list.' . $model->getRenderContext() . '.';
-			$app->setUserState($context . 'limitstart', $newlimitstart);
+			$app->setUserState($context . 'limitstart', $newLimitStart);
 		}
 
 		if ($input->get('format') == 'raw')
 		{
-			$app->redirect('index.php?option=com_fabrik&view=list&listid=' . $listid . '&format=raw');
+			$app->redirect('index.php?option=com_fabrik&view=list&listid=' . $listId . '&format=raw');
 		}
 		else
 		{

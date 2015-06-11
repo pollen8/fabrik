@@ -2229,13 +2229,12 @@ class FabrikFEModelForm extends FabModelForm
 		$groups = $this->getGroupsHiarachy();
 		$repeatTotals = $input->get('fabrik_repeat_group', array(0), 'array');
 		$ajaxPost = $input->getBool('fabrik_ajax');
-		$joindata = array();
+		$joinData = array();
 
 		foreach ($groups as $groupModel)
 		{
 			$groupCounter = $groupModel->getGroup()->id;
 			$elementModels = $groupModel->getPublishedElements();
-			$elDbVals = array();
 
 			if ($groupModel->isJoin())
 			{
@@ -2250,7 +2249,7 @@ class FabrikFEModelForm extends FabModelForm
 					continue;
 				}
 
-				$elDbVals = array();
+				$elDbValues = array();
 				$element = $elementModel->getElement();
 				$validation_rules = $elementModel->validator->findAll();
 
@@ -2315,12 +2314,12 @@ class FabrikFEModelForm extends FabModelForm
 					if ($groupModel->canRepeat())
 					{
 						// $$$ rob for repeat groups no join setting to array() means that $_POST only contained the last repeat group data
-						// $elDbVals = array();
-						$elDbVals[$c] = $form_data;
+						// $elDbValues = array();
+						$elDbValues[$c] = $form_data;
 					}
 					else
 					{
-						$elDbVals = $form_data;
+						$elDbValues = $form_data;
 					}
 					// Validations plugins attached to elements
 					if (!$elementModel->mustValidate())
@@ -2344,27 +2343,27 @@ class FabrikFEModelForm extends FabModelForm
 							{
 								if ($groupModel->canRepeat())
 								{
-									$elDbVals[$c] = $form_data;
-									$testreplace = $plugin->replace($elDbVals[$c], $c);
+									$elDbValues[$c] = $form_data;
+									$testReplace = $plugin->replace($elDbValues[$c], $c);
 
-									if ($testreplace != $elDbVals[$c])
+									if ($testReplace != $elDbValues[$c])
 									{
-										$elDbVals[$c] = $testreplace;
-										$this->modifiedValidationData[$elName][$c] = $testreplace;
-										$joindata[$elName2 . '_raw'][$c] = $testreplace;
-										$post[$elName . '_raw'][$c] = $testreplace;
+										$elDbValues[$c] = $testReplace;
+										$this->modifiedValidationData[$elName][$c] = $testReplace;
+										$joinData[$elName2 . '_raw'][$c] = $testReplace;
+										$post[$elName . '_raw'][$c] = $testReplace;
 									}
 								}
 								else
 								{
-									$testreplace = $plugin->replace($elDbVals, $c);
+									$testReplace = $plugin->replace($elDbValues, $c);
 
-									if ($testreplace != $elDbVals)
+									if ($testReplace != $elDbValues)
 									{
-										$elDbVals = $testreplace;
-										$this->modifiedValidationData[$elName] = $testreplace;
-										$input->set($elName . '_raw', $elDbVals);
-										$post[$elName . '_raw'] = $elDbVals;
+										$elDbValues = $testReplace;
+										$this->modifiedValidationData[$elName] = $testReplace;
+										$input->set($elName . '_raw', $elDbValues);
+										$post[$elName . '_raw'] = $elDbValues;
 									}
 								}
 							}
@@ -2374,19 +2373,19 @@ class FabrikFEModelForm extends FabModelForm
 
 				if ($groupModel->isJoin() || $elementModel->isJoin())
 				{
-					$joindata[$elName2] = $elDbVals;
+					$joinData[$elName2] = $elDbValues;
 				}
 				else
 				{
-					$input->set($elName, $elDbVals);
-					$post[$elName] = $elDbVals;
+					$input->set($elName, $elDbValues);
+					$post[$elName] = $elDbValues;
 				}
 				// Unset the defaults or the orig submitted form data will be used (see date plugin mysql vs form format)
 				$elementModel->defaults = null;
 			}
 		}
 		// Insert join data into request array
-		foreach ($joindata as $key => $val)
+		foreach ($joinData as $key => $val)
 		{
 			$input->set($key, $val);
 			$post[$key] = $val;
@@ -2419,7 +2418,7 @@ class FabrikFEModelForm extends FabModelForm
 		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$context = 'com_' . $package . '.form.' . $this->getId() . '.' . $this->getRowId() . '.';
 		$session = JFactory::getSession();
-echo "form get errors";
+
 		// Store errors in local array as clearErrors() removes $this->errors
 		$errors = array();
 
@@ -2427,7 +2426,6 @@ echo "form get errors";
 		{
 			if ($this->isMambot)
 			{
-				echo "is mambot<br>";
 				$errors = $session->get($context . 'errors', array());
 			}
 		}
@@ -2610,15 +2608,15 @@ echo "form get errors";
 		$db = FabrikWorker::getDbo();
 		$form = $this->getForm();
 		$nullDate = $db->getNullDate();
-		$publishup = JFactory::getDate($form->publish_up)->toUnix();
-		$publishdown = JFactory::getDate($form->publish_down)->toUnix();
+		$publishUp = JFactory::getDate($form->publish_up)->toUnix();
+		$publishDown = JFactory::getDate($form->publish_down)->toUnix();
 		$now = JFactory::getDate()->toUnix();
 
 		if ($form->published == '1')
 		{
-			if ($now >= $publishup || $form->publish_up == '' || $form->publish_up == $nullDate)
+			if ($now >= $publishUp || $form->publish_up == '' || $form->publish_up == $nullDate)
 			{
-				if ($now <= $publishdown || $form->publish_down == '' || $form->publish_down == $nullDate)
+				if ($now <= $publishDown || $form->publish_down == '' || $form->publish_down == $nullDate)
 				{
 					return true;
 				}
@@ -2713,12 +2711,10 @@ echo "form get errors";
 		{
 			$element = $elementModel->getElement();
 
-			if (FArrayHelper::getValue($opts, 'includePublised', true) && $element->published == 0)
+			if (!(FArrayHelper::getValue($opts, 'includePublised', true) && $element->published == 0))
 			{
-				continue;
+				$aEls[] = (int) $element->id;
 			}
-
-			$aEls[] = (int) $element->id;
 		}
 	}
 
@@ -2787,20 +2783,20 @@ echo "form get errors";
 
 					if ($incRaw && is_a($elementModel, 'PlgFabrik_ElementDatabasejoin'))
 					{
-						/* @FIXME - next line had been commented out, causing undefined warning for $rawval
+						/* @FIXME - next line had been commented out, causing undefined warning for $rawVal
 						 * on following line.  Not sure if getrawColumn is right thing to use here though,
 						 * like, it adds filed quotes, not sure if we need them.
 						 */
 						if ($elementModel->getElement()->published != 0)
 						{
-							$rawval = $elementModel->getRawColumn($useStep);
+							$rawVal = $elementModel->getRawColumn($useStep);
 
 							if (!$this->addDbQuote)
 							{
-								$rawval = str_replace('`', '', $rawval);
+								$rawVal = str_replace('`', '', $rawVal);
 							}
 
-							$aEls[$label . '(raw)'] = JHTML::_('select.option', $rawval, $label . '(raw)');
+							$aEls[$label . '(raw)'] = JHTML::_('select.option', $rawVal, $label . '(raw)');
 						}
 					}
 				}
