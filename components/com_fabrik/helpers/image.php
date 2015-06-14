@@ -221,11 +221,12 @@ class Fabimage
 	 * @param   int     $maxHeight  maximum image Height (px)
 	 * @param   string  $origFile   current images folder path (must have trailing end slash)
 	 * @param   string  $destFile   destination folder path for resized image (must have trailing end slash)
+	 * @param   int     $quality    Percentage image save quality 100 = no compression, 0 = max compression
 	 *
 	 * @return  object  image
 	 */
 
-	public function resize($maxWidth, $maxHeight, $origFile, $destFile)
+	public function resize($maxWidth, $maxHeight, $origFile, $destFile, $quality = 100)
 	{
 	}
 
@@ -339,9 +340,10 @@ class FabimageGD extends Fabimage
 	 *
 	 * @param   string  $file  file to create image from
 	 *
+	 * @throws Exception
+	 *
 	 * @return  array  (image, header string)
 	 */
-
 	public function imageFromFile($file)
 	{
 		$img = false;
@@ -510,11 +512,14 @@ class FabimageGD extends Fabimage
 	 * @param   int     $maxHeight  maximum image Height (px)
 	 * @param   string  $origFile   current images folder path (must have trailing end slash)
 	 * @param   string  $destFile   destination folder path for resized image (must have trailing end slash)
+	 * @param   int     $quality    Percentage image save quality 100 = no compression, 0 = max compression
+	 *
+	 * @throws Error
 	 *
 	 * @return  object  image
 	 */
 
-	public function resize($maxWidth, $maxHeight, $origFile, $destFile)
+	public function resize($maxWidth, $maxHeight, $origFile, $destFile, $quality = 100)
 	{
 		// Check if the file exists
 		if (!$this->storage->exists($origFile))
@@ -572,7 +577,7 @@ class FabimageGD extends Fabimage
 			throw new Error("resize: no image created for $origFile, extension = $ext, destination = $destFile");
 		}
 		// Save the file
-		$this->writeImg($img, $destFile, $header);
+		$this->writeImg($img, $destFile, $header, $quality);
 
 		$this->thumbPath = $destFile;
 	}
@@ -637,16 +642,27 @@ class FabimageGD extends Fabimage
 	 * @param   object  $img       image object
 	 * @param   string  $destFile  file path to save to
 	 * @param   string  $header    image type
+	 * @param   int     $quality    Percentage image save quality 100 = no compression, 0 = max compression
 	 *
 	 * @return  void
 	 */
 
-	public function writeImg($img, $destFile, $header)
+	public function writeImg($img, $destFile, $header, $quality = 100)
 	{
+		if ($quality < 0)
+		{
+			$quality = 0;
+		}
+
+		if ($quality > 100)
+		{
+			$quality = 100;
+		}
+
 		if ($header == "image/jpeg")
 		{
 			ob_start();
-			imagejpeg($img, null, 100);
+			imagejpeg($img, null, $quality);
 			$image = ob_get_contents();
 			ob_end_clean();
 			$this->storage->write($destFile, $image);
@@ -655,8 +671,9 @@ class FabimageGD extends Fabimage
 		{
 			if ($header == "image/png")
 			{
+				$quality = round((100 - $quality) * 9 / 100);
 				ob_start();
-				imagepng($img, null, 0);
+				imagepng($img, null, $quality);
 				$image = ob_get_contents();
 				ob_end_clean();
 				$this->storage->write($destFile, $image);
@@ -666,15 +683,14 @@ class FabimageGD extends Fabimage
 				if (function_exists("imagegif"))
 				{
 					ob_start();
-					imagegif($img, null, 100);
+					imagegif($img, null, $quality);
 					$image = ob_get_contents();
 					ob_end_clean();
 					$this->storage->write($destFile, $image);
 				}
 				else
 				{
-					// Try using imagemagick to convert gif to png
-					$image_file = imgkConvertImage($image_file, $baseDir, $destDir, ".png");
+					throw new Error('trying to save a gif by imagegif support not present in the GD library');
 				}
 			}
 		}
@@ -700,12 +716,15 @@ class FabimageGD2 extends FabimageGD
 	 * @param   int     $maxHeight  maximum image Height (px)
 	 * @param   string  $origFile   current images folder path (must have trailing end slash)
 	 * @param   string  $destFile   destination folder path for resized image (must have trailing end slash)
+	 * @param   int     $quality    Percentage image save quality 100 = no compression, 0 = max compression
 	 *
 	 * @return  object  image
 	 */
 
-	public function resize($maxWidth, $maxHeight, $origFile, $destFile)
+	public function resize($maxWidth, $maxHeight, $origFile, $destFile, $quality = 100)
 	{
+		$app = JFactory::getApplication();
+
 		// Check if the file exists
 		if (!$this->storage->exists($origFile))
 		{
@@ -751,7 +770,7 @@ class FabimageGD2 extends FabimageGD
 			}
 			else
 			{
-				JError::raiseWarning(21, "imagecreate from gif not available");
+				$app->enqueueMessage("imagecreate from gif not available");
 			}
 		}
 		// If an image was successfully loaded, test the image for size
@@ -787,7 +806,7 @@ class FabimageGD2 extends FabimageGD
 
 		if (!$img)
 		{
-			JError::raiseWarning(21, "no image created for $origFile, extension = $ext , destination = $destFile ");
+			$app->enqueueMessage("no image created for $origFile, extension = $ext , destination = $destFile ");
 		}
 
 		/* save the file
@@ -796,7 +815,7 @@ class FabimageGD2 extends FabimageGD
 		if ($header == "image/jpeg")
 		{
 			ob_start();
-			imagejpeg($img, null, 100);
+			imagejpeg($img, null, $quality);
 			$image = ob_get_contents();
 			ob_end_clean();
 			$this->storage->write($destFile, $image);
@@ -806,7 +825,8 @@ class FabimageGD2 extends FabimageGD
 			if ($header == "image/png")
 			{
 				ob_start();
-				imagepng($img, null, 0);
+				$quality = round((100 - $quality) * 9 / 100);
+				imagepng($img, null, $quality);
 				$image = ob_get_contents();
 				ob_end_clean();
 				$this->storage->write($destFile, $image);
@@ -816,15 +836,14 @@ class FabimageGD2 extends FabimageGD
 				if (function_exists("imagegif"))
 				{
 					ob_start();
-					imagegif($img, null, 100);
+					imagegif($img, null, $quality);
 					$image = ob_get_contents();
 					ob_end_clean();
 					$this->storage->write($destFile, $image);
 				}
 				else
 				{
-					/* try using imagemagick to convert gif to png:*/
-					$image_file = imgkConvertImage($image_file, $baseDir, $destDir, ".png");
+					$app->enqueueMessage("GD gif support not available: could not resize image");
 				}
 			}
 		}
@@ -853,11 +872,12 @@ class FabimageIM extends Fabimage
 	 * @param   int     $maxHeight  maximum image Height (px)
 	 * @param   string  $origFile   current images folder path (must have trailing end slash)
 	 * @param   string  $destFile   destination folder path for resized image (must have trailing end slash)
-	 *
+	 * @param   int     $quality    Percentage image save quality 100 = no compression, 0 = max compression
+	 *                              
 	 * @return  object  image
 	 */
 
-	public function resize($maxWidth, $maxHeight, $origFile, $destFile)
+	public function resize($maxWidth, $maxHeight, $origFile, $destFile, $quality = 100)
 	{
 		$ext = $this->getImgType($origFile);
 

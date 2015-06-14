@@ -12,7 +12,7 @@
 defined('_JEXEC') or die();
 
 /**
- * Plugin element to render day/month/year dropdowns
+ * Plugin element to render day/month/year drop-downs
  *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.element.birthday
@@ -22,7 +22,7 @@ defined('_JEXEC') or die();
 class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 {
 	/**
-	 * Does the element contain sub elements e.g checkboxes radiobuttons
+	 * Does the element contain sub elements e.g checkboxes radio-buttons
 	 *
 	 * @var bool
 	 */
@@ -84,8 +84,7 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 		$id = $this->getHTMLId($repeatCounter);
 		$params = $this->getParams();
 		$element = $this->getElement();
-		$monthLabels = array(FText::_('January'), FText::_('February'), FText::_('March'), FText::_('April'), FText::_('May'), FText::_('June'),
-			FText::_('July'), FText::_('August'), FText::_('September'), FText::_('October'), FText::_('November'), FText::_('December'));
+		$monthLabels = $this->_monthLabels();
 		$monthNumbers = array('01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12');
 		$daySys = array('01', '02', '03', '04', '05', '06', '07', '08', '09');
 		$daySimple = array('1', '2', '3', '4', '5', '6', '7', '8', '9');
@@ -239,63 +238,104 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 			$yearValue = FArrayHelper::getValue($value, 0);
 			$monthValue = FArrayHelper::getValue($value, 1);
 			$dayValue = FArrayHelper::getValue($value, 2);
-			$days = array(JHTML::_('select.option', '', $params->get('birthday_daylabel', FText::_('DAY'))));
-
-			for ($i = 1; $i < 32; $i++)
-			{
-				$days[] = JHTML::_('select.option', $i);
-			}
-
-			$months = array(JHTML::_('select.option', '', $params->get('birthday_monthlabel', FText::_('MONTH'))));
-
-			// Siin oli enne $monthLabels, viisin ülespoole
-			// google translation: this was before the $monthLabels, took up the
-			for ($i = 0; $i < count($monthLabels); $i++)
-			{
-				$months[] = JHTML::_('select.option', $i + 1, $monthLabels[$i]);
-			}
-
-			$years = array(JHTML::_('select.option', '', $params->get('birthday_yearlabel', FText::_('YEAR'))));
-
-			// Jaanus: now we can choose one exact year A.C to begin the dropdown AND would the latest year be current year or some years earlier/later.
-			$date = date('Y') + (int) $params->get('birthday_forward', 0);
-			$yearOpt = $params->get('birthday_yearopt');
-			$yearStart = (int) $params->get('birthday_yearstart');
-			$yearDiff = $yearOpt == 'number' ? $yearStart : $date - $yearStart;
-
-			for ($i = $date; $i >= $date - $yearDiff; $i--)
-			{
-				$years[] = JHTML::_('select.option', $i);
-			}
-
 			$errorCSS = (isset($this->_elementError) && $this->_elementError != '') ? ' elementErrorHighlight' : '';
 			$advancedClass = $this->getAdvancedSelectClass();
 			
-			$attribs = 'class="input-small fabrikinput inputbox ' . $advancedClass . ' ' . $errorCSS . '"';
+			$attributes = 'class="input-small fabrikinput inputbox ' . $advancedClass . ' ' . $errorCSS . '"';
 
 			$layout = $this->getLayout('form');
 			$layoutData = new stdClass;
 			$layoutData->id = $id;
 			$layoutData->separator = $params->get('birthday_separatorlabel', FText::_('/'));
-			$layoutData->attribs = $attribs;
+			$layoutData->attribs = $attributes;
 			$layoutData->day_name = preg_replace('#(\[\])$#', '[0]', $name);
 			$layoutData->day_id = $id . '_0';
-			$layoutData->day_options = $days;
+			$layoutData->day_options = $this->_dayOptions();
 			$layoutData->day_value = $dayValue;
 
 			$layoutData->month_name = preg_replace('#(\[\])$#', '[1]', $name);
 			$layoutData->month_id = $id . '_1';
-			$layoutData->month_options = $months;
+			$layoutData->month_options = $this->_monthOptions();
 			$layoutData->month_value = $monthValue;
 
 			$layoutData->year_name = preg_replace('#(\[\])$#', '[2]', $name);
 			$layoutData->year_id = $id . '_2';
-			$layoutData->year_options = $years;
+			$layoutData->year_options = $this->_yearOptions();
 			$layoutData->year_value = $yearValue;
 
 
 			return $layout->render($layoutData);
 		}
+	}
+
+	/**
+	 * Get month labels
+	 *
+	 * @return array
+	 */
+	private function _monthLabels()
+	{
+		return array(FText::_('January'), FText::_('February'), FText::_('March'), FText::_('April'), FText::_('May'), FText::_('June'),
+		FText::_('July'), FText::_('August'), FText::_('September'), FText::_('October'), FText::_('November'), FText::_('December'));
+	}
+
+	/**
+	 * Get select list day options
+	 * @return array
+	 */
+	private function _dayOptions()
+	{
+		$params = $this->getParams();
+		$days = array(JHTML::_('select.option', '', $params->get('birthday_daylabel', FText::_('DAY'))));
+
+		for ($i = 1; $i < 32; $i++)
+		{
+			$days[] = JHTML::_('select.option', $i);
+		}
+
+		return $days;
+	}
+
+	/**
+	 * Get select list month options
+	 *
+	 * @return array
+	 */
+	private function _monthOptions()
+	{
+		$params = $this->getParams();
+		$months = array(JHTML::_('select.option', '', $params->get('birthday_monthlabel', FText::_('MONTH'))));
+		$monthLabels = $this->_monthLabels();
+
+		for ($i = 0; $i < count($monthLabels); $i++)
+		{
+			$months[] = JHTML::_('select.option', $i + 1, $monthLabels[$i]);
+		}
+
+		return $months;
+	}
+
+	/**
+	 * Get select list year options
+	 * @return array
+	 */
+	private function _yearOptions()
+	{
+		$params = $this->getParams();
+		$years = array(JHTML::_('select.option', '', $params->get('birthday_yearlabel', FText::_('YEAR'))));
+
+		// Jaanus: now we can choose one exact year A.C to begin the dropdown AND would the latest year be current year or some years earlier/later.
+		$date = date('Y') + (int) $params->get('birthday_forward', 0);
+		$yearOpt = $params->get('birthday_yearopt');
+		$yearStart = (int) $params->get('birthday_yearstart');
+		$yearDiff = $yearOpt == 'number' ? $yearStart : $date - $yearStart;
+
+		for ($i = $date; $i >= $date - $yearDiff; $i--)
+		{
+			$years[] = JHTML::_('select.option', $i);
+		}
+		
+		return $years;
 	}
 
 	/**
@@ -465,7 +505,7 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 		/**
 		 * $$$ rob default to a format date
 		 * $date = JFactory::getDate($d);
-		 * $datedisp = $date->toFormat($ft);
+		 * $dateDisplay = $date->toFormat($ft);
 		 * Jaanus: sorry, but in this manner the element doesn't work with dates earlier than 1901
 		*/
 
@@ -478,36 +518,36 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 		$year = JString::ltrim($year, '0');
 		$dmy = $day . '.' . $month . '.' . $year;
 		$mdy = $month . '/' . $day . '/' . $year;
-		$dmonthyear = $dayDisplay . '. ' . $monthDisplay . ' ' . $year;
-		$monthdyear = $monthDisplay . ' ' . $dayDisplay . ', ' . $year;
-		$dmonth = $dayDisplay . '  ' . $monthDisplay;
+		$dMonthYear = $dayDisplay . '. ' . $monthDisplay . ' ' . $year;
+		$monthDYear = $monthDisplay . ' ' . $dayDisplay . ', ' . $year;
+		$dMonth = $dayDisplay . '  ' . $monthDisplay;
 
 		if ($ft == "d.m.Y")
 		{
-			$datedisp = $dmy;
+			$dateDisplay = $dmy;
 		}
 		else
 		{
 			switch ($ft)
 			{
 				case 'm.d.Y':
-					$datedisp = $mdy;
+					$dateDisplay = $mdy;
 					break;
 				case 'D. month YYYY':
-					$datedisp = $dmonthyear;
+					$dateDisplay = $dMonthYear;
 					break;
 				case 'Month d, YYYY':
-					$datedisp = $monthdyear;
+					$dateDisplay = $monthDYear;
 					break;
 				default:
-					$datedisp = $dmonth;
+					$dateDisplay = $dMonth;
 					break;
 			}
 		}
 
 		if ($fta == 'no')
 		{
-			return $datedisp;
+			return $dateDisplay;
 		}
 		else
 		{
@@ -521,17 +561,17 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 				{
 					if ($fta == '{age} date')
 					{
-						return '<font color ="#DD0000"><b>' . $datedisp . ' (' . ($thisYear - $year) . ')</b></font>';
+						return '<span style="color:#DD0000"><b>' . $dateDisplay . ' (' . ($thisYear - $year) . ')</b></span>';
 					}
 
 					if ($fta == '{age} this')
 					{
-						return '<font color ="#DD0000"><b>' . ($thisYear - $year) . ' (' . $datedisp . ')</b></font>';
+						return '<span style="color:#DD0000"><b>' . ($thisYear - $year) . ' (' . $dateDisplay . ')</b></span>';
 					}
 
 					if ($fta == '{age} next')
 					{
-						return '<font color ="#DD0000"><b>' . ($nextYear - $year) . ' (' . $datedisp . ')</b></font>';
+						return '<span style="color:#DD0000"><b>' . ($nextYear - $year) . ' (' . $dateDisplay . ')</b></span>';
 					}
 				}
 			}
@@ -541,11 +581,11 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 				{
 					if (date('m-d') > $month . '-' . $day)
 					{
-						return $datedisp . ' (' . ($thisYear - $year) . ')';
+						return $dateDisplay . ' (' . ($thisYear - $year) . ')';
 					}
 					else
 					{
-						return $datedisp . ' (' . ($lastYear - $year) . ')';
+						return $dateDisplay . ' (' . ($lastYear - $year) . ')';
 					}
 				}
 				else
@@ -567,11 +607,11 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 						{
 							if (in_array(substr(($thisYear - $year), -1), $jubileum) || in_array(substr(($thisYear - $year), -2), $jubileum))
 							{
-								return '<b>' . ($thisYear - $year) . ' (' . $datedisp . ')</b>';
+								return '<b>' . ($thisYear - $year) . ' (' . $dateDisplay . ')</b>';
 							}
 							else
 							{
-								return ($thisYear - $year) . ' (' . $datedisp . ')';
+								return ($thisYear - $year) . ' (' . $dateDisplay . ')';
 							}
 						}
 
@@ -579,11 +619,11 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 						{
 							if (in_array(substr(($nextYear - $year), -1), $jubileum) || in_array(substr(($nextYear - $year), -2), $jubileum))
 							{
-								return '<b>' . ($nextYear - $year) . ' (' . $datedisp . ')</b>';
+								return '<b>' . ($nextYear - $year) . ' (' . $dateDisplay . ')</b>';
 							}
 							else
 							{
-								return ($nextYear - $year) . ' (' . $datedisp . ')';
+								return ($nextYear - $year) . ' (' . $dateDisplay . ')';
 							}
 						}
 					}
@@ -628,6 +668,42 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 		$return = array_values($return);
 
 		return $return;
+	}
+	/**
+	 * Get the list filter for the element
+	 *
+	 * @param   int   $counter  Filter order
+	 * @param   bool  $normal   Do we render as a normal filter or as an advanced search filter
+	 * if normal include the hidden fields as well (default true, use false for advanced filter rendering)
+	 *
+	 * @return  string	Filter html
+	 */
+	public function getFilter($counter = 0, $normal = true)
+	{
+		$params = $this->getParams();
+		$element = $this->getElement();
+
+		if ($element->filter_type === 'dropdown' && $params->get('list_filter_layout', 'individual') === 'day_mont_year')
+		{
+			$layout = $this->getLayout('filter-select-day-month-year');
+			$elName = $this->getFullName(true, false);
+			$layoutData = new stdClass;
+			$layoutData->name = $this->filterName($counter, $normal);
+			$layoutData->days = $this->_dayOptions();
+			$layoutData->months = $this->_monthOptions();
+			$layoutData->years =  $this->_yearOptions();
+			$layoutData->default = $this->getDefaultFilterVal($normal, $counter);
+
+			$return = array();
+			$return[] = $layout->render($layoutData);
+			$return[] = $normal ? $this->getFilterHiddenFields($counter, $elName, false, $normal) : $this->getAdvancedFilterHiddenFields();
+
+			return implode("\n", $return);
+		}
+		else
+		{
+			return parent::getFilter($counter, $normal);
+		}
 	}
 
 	/**
@@ -714,19 +790,58 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 
 	public function getFilterQuery($key, $condition, $value, $originalValue, $type = 'normal')
 	{
-		$ft = $this->getParams()->get('list_date_format', 'd.m.Y');
 		$db = JFactory::getDbo();
+		$params = $this->getParams();
+		$element = $this->getElement();
 
-		if ($ft === 'd m')
+		if ($element->filter_type === 'dropdown' && $params->get('list_filter_layout', 'individual') === 'day_mont_year')
 		{
-			$value = explode('-', $originalValue);
-			array_shift($value);
-			$value = implode('-', $value);
-			$query = 'DATE_FORMAT(' . $key . ', \'%m-%d\') = ' . $db->q($value);
+			return $this->_dayMonthYearFilterQuery($key, $originalValue);
+		}
+		else
+		{
+			$ft = $this->getParams()->get('list_date_format', 'd.m.Y');
 
-			return $query;
+			if ($ft === 'd m')
+			{
+				$value = explode('-', $originalValue);
+				array_shift($value);
+				$value = implode('-', $value);
+				$query = 'DATE_FORMAT(' . $key . ', \'%m-%d\') = ' . $db->q($value);
+
+				return $query;
+			}
+
+			return parent::getFilterQuery($key, $condition, $value, $originalValue, $type);
+		}
+	}
+
+	/**
+	 * Get the filter query for the day/month/year select filter
+	 *
+	 * @param   string  $key            Key name
+	 * @param   array   $originalValue  Posted filter data
+	 *
+	 * @return string
+	 */
+	private function _dayMonthYearFilterQuery($key, $originalValue)
+	{
+		$db = JFactory::getDbo();
+		$search = array();
+
+		foreach ($originalValue as $i => $val)
+		{
+			if ($i <> 0 && strlen($val) === 1)
+			{
+				$val = '0' . $val;
+			}
+
+			$search[] = $val === '' ? '%' : $val;
 		}
 
-		return parent::getFilterQuery($key, $condition, $value, $originalValue, $type);
+		$search = implode('-', $search);
+
+		return $key . ' LIKE ' . $db->q($search);
 	}
+
 }

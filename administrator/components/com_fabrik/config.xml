@@ -107,6 +107,12 @@
 				<option value="dropdown">COM_FABRIK_FIELD_ACTION_METHOD_DROPDOWN</option>
 		</field>
 
+		<field name="csv_delimiter"
+		       type="text"
+		       default=""
+		       description="COM_FABRIK_FIELD_CSV_DELIMITER_OVERRIDE_DESC"
+		       label="COM_FABRIK_FIELD_CSV_DELIMITER_OVERRIDE_LABEL" />
+
 	</fieldset>
 
 	<fieldset label="COM_FABRIK_ELEMENTS" name="elements" addfieldpath="/administrator/components/com_fabrik/models/fields">
