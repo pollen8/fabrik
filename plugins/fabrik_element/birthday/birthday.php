@@ -693,7 +693,7 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 			$layoutData->days = $this->_dayOptions();
 			$layoutData->months = $this->_monthOptions();
 			$layoutData->years =  $this->_yearOptions();
-			$layoutData->default = $this->getDefaultFilterVal($normal, $counter);
+			$layoutData->default = (array) $this->getDefaultFilterVal($normal, $counter);
 
 			$return = array();
 			$return[] = $layout->render($layoutData);
