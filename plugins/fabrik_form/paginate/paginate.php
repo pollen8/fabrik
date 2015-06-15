@@ -134,6 +134,12 @@ class PlgFabrik_FormPaginate extends PlgFabrik_Form
 		$query = $listModel->buildQueryJoin($query);
 		$query = $listModel->buildQueryWhere(true, $query);
 		$query = $listModel->buildQueryOrder($query);
+
+		foreach ($listModel->orderEls as $orderName)
+		{
+			$query->select(FabrikString::safeColName($orderName) . ' AS ' . $orderName);
+		}
+
 		$db->setQuery($query);
 		$rows = $db->loadColumn();
 		$keys = array_flip($rows);
