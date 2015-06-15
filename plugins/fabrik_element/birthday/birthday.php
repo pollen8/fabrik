@@ -401,7 +401,8 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 
 	public function dataConsideredEmpty($data, $repeatCounter)
 	{
-		$data = str_replace('-', '', $data);
+
+		$data = str_replace('-', ',', $data);
 
 		if (strstr($data, ','))
 		{
