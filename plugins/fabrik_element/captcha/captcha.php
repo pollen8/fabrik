@@ -299,7 +299,10 @@ class PlgFabrik_ElementCaptcha extends PlgFabrik_Element
 			$displayData->name = $name;
 
 			// $$$ hugh - changed from static image path to using simple image.php script, to get round IE caching images
-			$displayData->url = COM_FABRIK_LIVESITE . 'plugins/fabrik_element/captcha/image.php?foo=' . rand();
+			//$displayData->url = COM_FABRIK_LIVESITE . 'plugins/fabrik_element/captcha/image.php?foo=' . rand();
+
+			// Changed to relative path as some sites were on site.com and loading from www.site.com (thus sessions different)
+			$displayData->url = JRoute::_('plugins/fabrik_element/captcha/image.php?foo=' . rand());
 			$displayData->type = $type;
 			$displayData->size = $size;
 

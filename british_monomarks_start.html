@@ -1,0 +1,236 @@
+<SCRIPT LANGUAGE="JavaScript">
+    <!-- Idea by:  Nic Wolfe -->
+    <!-- This script and many more are available free online at -->
+<!-- The JavaScript Source!! http://javascript.internet.com -->
+
+<!-- Begin
+function popUp(URL) {
+    day = new Date();
+    id = day.getTime();
+    eval("page" + id + " = window.open(URL, '" + id + "', 'toolbar=0,scrollbars=1,location=0,statusbar=0,menubar=0,resizable=0,width=400,height=300,left = 440,top = 362');");
+}
+// End -->
+</script>
+
+<style type="text/css">
+/* Changes the width for the mail redirection options*/
+#tfa_Letters-D, #tfa_MailHandlingSpec1-D, #tfa_Parcels-D { padding: 0px 10px 0px 10px;}
+
+
+.supportInfo {   display: none;}
+
+/* Sets sections to clear:both, to stop the padlock images from floating right.*/
+.wfSection {
+    clear:both;
+}
+
+/*
+ Changes to button style
+ */
+
+.wForm form .wfPagingButtons input
+{
+    background: none repeat scroll 0 1em #707B81;
+    color: white;
+    height: 35px;
+    width: 150px;
+    font-size: 16px;
+    border-width: 2px;
+    font-family: Arial,Arial,Helvetica,sans-serif;
+
+}
+
+.wForm form .wfPagingButtons .wfPageNextButton {
+    font-weight: bold;
+}
+
+.actions
+{
+    text-align:right;
+    padding-right:15px;
+}
+
+.wForm form .primaryAction{
+    background: none repeat scroll 0 1em #EB612C;
+    border-color: #777777 #777777 #000000;
+    border-width: 2px;
+    color: #FFFFFF;
+    font-family: Arial,Arial,Helvetica,sans-serif;
+    font-size: 16px;
+    height: 35px;
+    width: 150px;
+}
+
+
+
+.wForm form .wfPagingButtons
+{
+    text-align: right;
+}
+
+
+
+
+
+</style>
+
+
+
+<SCRIPT LANGUAGE="JavaScript">
+    /*
+     Added by Lee Armstrong, Perfect Coding, 20101119
+
+     Check if the form needs to display the 'International Only' messages.
+     */
+
+    /*
+     Changes an array into an object literal. Useful for the functions later.
+     */
+function pc_converter(a) {
+    var o = {};
+    for(var i=0;i<a.length;i++)
+    {
+        o[a[i]]='';
+    }
+    return o;
+}
+
+function pc_changeInternationalStatus() {
+    /*
+     Attach an onChange function to the customer's country select field.
+     When it changes, we need to decide whether to show or hide the VAT registered
+     company fieldset for International and EU customers.
+     */
+
+    // turn off the EU and International options
+
+    // hide these two to start with
+    document.getElementById('tfa_TradingStatusEUC').style.display = 'none';
+    document.getElementById('tfa_NonEUCustomers').style.display = 'none';
+
+    // hack to ensure that this works when it's put into the website via a plugin...
+    oForm = document.forms[1];
+    if(oForm==null) {
+        oForm = document.forms[0];
+    }
+
+    oFormInner1 = document.forms[1];
+    if(oFormInner1==null) {
+        oFormInner1 = document.forms[0];
+    }
+
+    // ensure that the "No" options are checked
+    oFormInner1.elements["tfa_No3"].checked = true;
+    oFormInner1.elements["tfa_No4"].checked = true;
+
+    oFormInner1.elements["tfa_Yes3"].checked = false;
+    oFormInner1.elements["tfa_Yes4"].checked = false;
+
+    oSelectOne = oForm.elements["tfa_Country"];
+    oSelectOne.onchange = function() {
+
+        oFormInner = document.forms[1];
+        if(oFormInner==null) {
+            oFormInner = document.forms[0];
+        }
+
+        // ensure that the "No" options are checked
+        oFormInner.elements["tfa_No3"].checked = true;
+        oFormInner.elements["tfa_No4"].checked = true;
+
+        oFormInner.elements["tfa_Yes3"].checked = false;
+        oFormInner.elements["tfa_Yes4"].checked = false;
+
+        // hack to ensure that this works when it's put into the website via a plugin...
+
+        countryselect = oFormInner.elements["tfa_Country"];
+        countryindex = countryselect.selectedIndex;
+        country = countryselect.options[countryindex].value;
+
+        var pc_euCountries = pc_getEU();
+
+        if(country in pc_converter(pc_euCountries)) {
+            // change status to show the registered company status fieldset for EU customers
+            document.getElementById('tfa_TradingStatusEUC').style.display = '';
+            // .. and hide the international one.
+            document.getElementById('tfa_NonEUCustomers').style.display = 'none';
+        } else {
+            // change status to show the registered company status fieldset for International customers
+            document.getElementById('tfa_NonEUCustomers').style.display = '';
+            // .. and hide the EU one.
+            document.getElementById('tfa_TradingStatusEUC').style.display = 'none';
+        }
+
+        // SPECIAL CASE: if the country is the UK, then don't display anything
+        if(country == 'tfa_UnitedKingdom1' || country == 'tfa_UnitedKingdom2') {
+            document.getElementById('tfa_TradingStatusEUC').style.display = 'none';
+            document.getElementById('tfa_NonEUCustomers').style.display = 'none';
+        }
+
+    };
+    return "";
+}
+
+function pc_calcchargevat() {
+
+    // hack to ensure that this works when it's put into the website via a plugin...
+    oFormInner = document.forms[1];
+    if(oFormInner==null) {
+        oFormInner = document.forms[0];
+    }
+
+    countryindex = oFormInner.elements["tfa_Country"].selectedIndex;
+    country = countryselect.options[countryindex].value;
+
+    // shortcut if UK is chose: add vat
+    if(country == 'tfa_UnitedKingdom1' || country == 'tfa_UnitedKingdom2') {
+        return 1;
+    }
+
+    // if either of the "Yes" boxes are checked, then we don't need to check VAT
+    if(oFormInner.elements["tfa_Yes3"].checked || oFormInner.elements["tfa_Yes4"].checked) {
+        return 0;
+    }
+
+    // otherwise, we need to add vat...
+    return 1;
+
+}
+
+function pc_getEU() {
+    /* These are the countries we're interested in. If it's NOT one of these, then we need to display the international sections of the form: */
+    var pc_euCountries = [];
+    pc_euCountries[0] = 'tfa_Austria1';
+    pc_euCountries[1] = 'tfa_Belgium1';
+    pc_euCountries[2] = 'tfa_Bulgaria1';
+    pc_euCountries[3] = 'tfa_Cyprus1';
+    pc_euCountries[4] = 'tfa_CzechRepublic1';
+    pc_euCountries[5] = 'tfa_Denmark1';
+    pc_euCountries[6] = 'tfa_Estonia1';
+    pc_euCountries[7] = 'tfa_Finland1';
+    pc_euCountries[8] = 'tfa_France1';
+    pc_euCountries[9] = 'tfa_Germany1';
+    pc_euCountries[10] = 'tfa_Greece1';
+    pc_euCountries[11] = 'tfa_Hungary1';
+    pc_euCountries[12] = 'tfa_Ireland1';
+    pc_euCountries[13] = 'tfa_Italy1';
+    pc_euCountries[14] = 'tfa_Latvia1';
+    pc_euCountries[15] = 'tfa_Lithuania1';
+    pc_euCountries[16] = 'tfa_Luxembourg1';
+    pc_euCountries[17] = 'tfa_Malta1';
+    pc_euCountries[18] = 'tfa_Netherlands1';
+    pc_euCountries[19] = 'tfa_Poland1';
+    pc_euCountries[20] = 'tfa_Portugal1';
+    pc_euCountries[21] = 'tfa_Romania1';
+    pc_euCountries[22] = 'tfa_SlovakRepublic';
+    pc_euCountries[23] = 'tfa_Slovenia1';
+    pc_euCountries[24] = 'tfa_Spain1';
+    pc_euCountries[25] = 'tfa_Sweden1';
+    pc_euCountries[26] = 'tfa_UnitedKingdom1';
+    pc_euCountries[27] = 'tfa_UnitedKingdom2';
+    return pc_euCountries;
+}
+
+window.onload = pc_changeInternationalStatus;
+
+</SCRIPT>

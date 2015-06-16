@@ -103,6 +103,23 @@ else
 }
 // $$$ hugh - @TODO - add some session identifier to the image name (maybe using the hash we use in the formsession stuff)
 
+// ... set no-cache (and friends) headers ...
+// Some time in the past
+header("Expires: Sat, 26 Jul 1997 05:00:00 GMT");
+header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
+header("Cache-Control: no-store, no-cache, must-revalidate");
+header("Cache-Control: post-check=0, pre-check=0", false);
+header("Pragma: no-cache");
+header('Accept-Ranges: bytes');
+
+// For some weird reason if we do this in 5.2.x the image gets truncated
+// http://fabrikar.com/forums/showthread.php?t=26941&page=5
+if (version_compare(PHP_VERSION, '5.3.0') < 0)
+{
+	header('Content-Length: ' . JString::strlen($img));
+}
+
+header('Content-Type: image/jpeg');
 
 ob_start();
 imagejpeg($image);
@@ -112,37 +129,14 @@ $img = ob_get_contents();
 Felixkat - Clean has been replaced with flush due to a image truncating issue
 Haven't been able to pinpoint the exact issue yet, possibly PHP version related
 http://fabrikar.com/forums/showthread.php?p=147606#post147606
-*/
+ */
 // Not this: ob_end_clean();
 ob_end_flush();
 imagedestroy($image);
+echo $img;
 
-if (!empty($img))
-{
-	// ... set no-cache (and friends) headers ...
-	// Some time in the past
-	header("Expires: Sat, 26 Jul 1997 05:00:00 GMT");
-	header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
-	header("Cache-Control: no-store, no-cache, must-revalidate");
-	header("Cache-Control: post-check=0, pre-check=0", false);
-	header("Pragma: no-cache");
-	header('Accept-Ranges: bytes');
-
-	// For some weird reason if we do this in 5.2.x the image gets truncated
-	// http://fabrikar.com/forums/showthread.php?t=26941&page=5
-	if (version_compare(PHP_VERSION, '5.3.0') < 0)
-	{
-		header('Content-Length: ' . JString::strlen($img));
-	}
-
-	header('Content-Type: image/jpeg');
-
-	// ... serve up the image ...
-	echo $img;
-
-	// ... and we're done.
-	exit();
-}
+// ... and we're done.
+exit();
 
 /**
  *  Simple function that calculates the *exact* bounding box (single pixel precision).

@@ -469,7 +469,7 @@ var FbList = new Class({
 		advancedPointer = 0,
 		testii,
 		usedAdvancedKeys = ['value', 'condition', 'join', 'key', 'search_type', 'match', 'full_words_only', 'eval', 'grouped_to_previous', 'hidden', 'elementid'];
-		
+
 		this.getFilters().each(function (f) {
 			bits = f.name.split('[');
 			if (bits.length > 3) {
