@@ -137,6 +137,7 @@ class PlgFabrik_FormPaginate extends PlgFabrik_Form
 
 		foreach ($listModel->orderEls as $orderName)
 		{
+			$orderName = FabrikString::safeColNameToArrayKey($orderName);
 			$query->select(FabrikString::safeColName($orderName) . ' AS ' . $orderName);
 		}
 
