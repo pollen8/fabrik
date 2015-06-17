@@ -274,10 +274,11 @@ class PlgFabrik_ElementDropdown extends PlgFabrik_ElementList
 
 	public function dataConsideredEmpty($data, $repeatCounter)
 	{
-		// $$$ hugh - $data seems to be an array now?
+		$data = $this->replaceLabelWithValue($data);
+		
 		if (is_array($data))
 		{
-			if (empty($data[0]))
+			if (empty($data[0]) || $data[0] == "-1")
 			{
 				return true;
 			}

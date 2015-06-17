@@ -8,7 +8,8 @@
 
 			<field name="sub_options"
 				type="suboptions"
-				label="COM_FABRIK_SUBOPTIONS" />
+				label="COM_FABRIK_SUBOPTIONS"
+				description="PLG_ELEMENT_DROPDOWN_SUBOPTIONS_DESC" />
 
 			<field name="multiple"
 				type="radio"
