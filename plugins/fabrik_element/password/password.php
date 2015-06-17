@@ -173,6 +173,7 @@ class PlgFabrik_ElementPassword extends PlgFabrik_Element
 		$this->reset();
 		$checkValue    = urldecode($this->getValue($_REQUEST, $repeatCounter));
 		$element->name = $origName;
+		$rowId = $input->get('rowid', '', 'string');
 
 		if ($this->getParams()->get('password_j_validate', false))
 		{
@@ -190,8 +191,6 @@ class PlgFabrik_ElementPassword extends PlgFabrik_Element
 		}
 		else
 		{
-			$rowId = $input->get('rowid', '', 'string');
-
 			// If its coming from an ajax form submit then the key is possibly an array.
 			$keyVal = FArrayHelper::getValue($_REQUEST, $k);
 
