@@ -253,6 +253,17 @@ var FbElement =  new Class({
 		return this.options.label;
 	},
 	
+	/**
+	 * set the label (uses textContent attribute, prolly won't work on IE < 9)
+	 */
+	setLabel: function (label) {
+		this.options.label = label;
+		var c = this.getLabelElement();
+		if (c) {
+			c[0].textContent = label;
+		}
+	},
+	
 	//below functions can override in plugin element classes
 	
 	update: function (val) {
@@ -364,6 +375,14 @@ var FbElement =  new Class({
 	getErrorElement: function ()
 	{
 		return this.getContainer().getElements('.fabrikErrorMessage');
+	},
+	
+	/**
+	 * get the dom element which contains the label
+	 */
+	getLabelElement: function ()
+	{
+		return this.getContainer().getElements('.fabrikLabel');
 	},
 	
 	/**
