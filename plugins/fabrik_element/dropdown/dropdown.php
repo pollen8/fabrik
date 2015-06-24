@@ -264,7 +264,7 @@ class PlgFabrik_ElementDropdown extends PlgFabrik_ElementList
 
 	/**
 	 * Does the element consider the data to be empty
-	 * Used in isempty validation rule
+	 * Used in rendering for adding fabrikEmoty class, etc
 	 *
 	 * @param   array  $data           data to test against
 	 * @param   int    $repeatCounter  repeat group #
@@ -294,6 +294,36 @@ class PlgFabrik_ElementDropdown extends PlgFabrik_ElementList
 		return false;
 	}
 
+	/**
+	 * Does the element consider the data to be empty
+	 * Used during form submission, eg. for isempty validation rule
+	 *
+	 * @param   array  $data           data to test against
+	 * @param   int    $repeatCounter  repeat group #
+	 *
+	 * @return  bool
+	 */
+	
+	public function dataConsideredEmptyForValidation($data, $repeatCounter)
+	{
+		if (is_array($data))
+		{
+			if (empty($data[0]) || $data[0] == "-1")
+			{
+				return true;
+			}
+		}
+		else
+		{
+			if ($data == '' || $data == '-1')
+			{
+				return true;
+			}
+		}
+	
+		return false;
+	}
+	
 	/**
 	 * Replace a value with its label
 	 *
