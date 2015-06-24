@@ -441,6 +441,20 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 	}
 
 	/**
+	 * Prepares the element data for CSV export
+	 *
+	 * @param   string  $data      Element data
+	 * @param   object  &$thisRow  All the data in the lists current row
+	 *
+	 * @return  string	Formatted CSV export value
+	 */
+
+	public function renderListData_csv($data, &$thisRow)
+	{
+		return $this->renderListData($data, $thisRow);
+	}
+
+	/**
 	 * Shows the data formatted for the list view
 	 *
 	 * @param   string    $data      elements data
