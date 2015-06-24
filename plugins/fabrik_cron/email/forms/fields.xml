@@ -3,6 +3,18 @@
 	<fields addfieldpath="/administrator/components/com_fabrik/models/fields" name="params">
 		<fieldset name="plg-cron-email" label="COM_FABRIK_OPTIONS">
 
+			<field name="cronemail_from"
+				type="text"
+				description="PLG_CRON_EMAIL_FROM_DESC"
+				label="PLG_CRON_EMAIL_FROM_LABEL"
+				size="30" />
+				
+			<field name="cronemail_return"
+				type="text"
+				description="PLG_CRON_EMAIL_RETURN_PATH_DESC"
+				label="PLG_CRON_EMAIL_RETURN_PATH_LABEL"
+				size="30" />
+				
 			<field name="to"
 				type="text"
 				description="PLG_CRON_EMAIL_TO_DESC"

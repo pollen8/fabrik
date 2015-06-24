@@ -1252,6 +1252,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		$displayType = $this->getDisplayType();
 		$default = (array) $this->getValue($data, $repeatCounter, array('raw' => true));
 		$defaultLabels = (array) $this->getValue($data, $repeatCounter, array('raw' => false));
+		$defaultLabels = array_values($defaultLabels);
 
 		$tmp = $this->_getOptions($data, $repeatCounter);
 		$w = new FabrikWorker;

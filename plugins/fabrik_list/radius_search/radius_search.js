@@ -242,6 +242,7 @@ var FbListRadiusSearch = new Class({
 			// Show the map.
 			c.setStyles({'position': 'relative', 'left': 0});
 			var w = b.retrieve('win');
+			w.center();
 			w.open();
 		}.bind(this));
 
@@ -339,7 +340,8 @@ var FbListRadiusSearch = new Class({
 
 	clearFilter: function () {
 		this.listform.getElement('input[name^=radius_search_active]').value = 0;
-		return this.injectIntoListForm();
+		//return this.injectIntoListForm();
+		return true;
 	}
 
 });
