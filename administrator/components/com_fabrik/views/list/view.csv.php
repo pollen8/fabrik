@@ -61,7 +61,7 @@ class FabrikAdminViewList extends JViewLegacy
 
 		$start = $input->getInt('start', 0);
 
-		if ($start <= $total)
+		if ($start < $total)
 		{
 			$exporter->writeFile($total);
 		}
