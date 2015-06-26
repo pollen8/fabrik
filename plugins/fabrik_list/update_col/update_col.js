@@ -43,7 +43,7 @@ var FbListUpdateCol = new Class({
 	initialize: function (options) {
 		this.parent(options);
 		if (this.options.userSelect) {
-			Fabrik['filter_update_col' + this.options.ref] = new UpdateColSelect();
+			Fabrik['filter_update_col' + this.options.ref + '_' + this.options.renderOrder] = new UpdateColSelect();
 			this.makeUpdateColWindow();
 		}
 	},
@@ -58,7 +58,7 @@ var FbListUpdateCol = new Class({
 
 	makeUpdateColWindow: function () {
 		this.windowopts = {
-			'id': 'update_col_win_' + this.options.ref,
+			'id': 'update_col_win_' + this.options.ref + '_' + this.options.renderOrder,
 			title: Joomla.JText._('PLG_LIST_UPDATE_COL_UPDATE'),
 			loadMethod: 'html',
 			content: this.options.form,
@@ -69,7 +69,7 @@ var FbListUpdateCol = new Class({
 				this.fitToContent(false);
 			},
 			onContentLoaded: function (win) {
-				var form = document.id('update_col' + this.options.ref);
+				var form = document.id('update_col' + this.options.ref + '_' + this.options.renderOrder);
 
 				// Add a row
 				form.addEvent('click:relay(a.add)', function (e, target) {
@@ -139,7 +139,7 @@ var FbListUpdateCol = new Class({
 				form.getElement('input[type=button]').addEvent('click', function (e) {
 					e.stop();
 					var i;
-					Fabrik['filter_update_col'  + this.options.ref].onSumbit();
+					Fabrik['filter_update_col'  + this.options.ref + '_' + this.options.renderOrder].onSumbit();
 
 					var listForm = document.id('listform_' + this.options.ref);
 

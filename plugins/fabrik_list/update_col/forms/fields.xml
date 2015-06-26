@@ -36,7 +36,25 @@
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>	
 			</field>
-			
+
+			<field name="update_user_select_elements" 
+				type="fabrikmodalrepeat"
+				label="PLG_LIST_UPDATE_COL_USER_SELECT_ELEMENTS_LABEL"
+				description="PLG_LIST_UPDATE_COL_USER_SELECT_ELEMENTS_DESC"
+				repeat="true"
+				default="{}"
+			>
+				<fields name="params">
+					<fieldset modal="true" name="update_user_select_elements_modal" repeat="true">
+						<field name="update_user_select_elements_list"
+							type="listfields"
+							size="30"
+							multiple="true"
+							label="PLG_LIST_UPDATE_COL_USER_SELECT_ELEMENTS_HEADING"
+						/>
+					</fieldset>
+				</fields>
+			</field>			
 		</fieldset>
 		
 		<fieldset label="PLG_LIST_UPDATE_COL_UPDATE_OPTIONS" name="plg-list-update_col-update">

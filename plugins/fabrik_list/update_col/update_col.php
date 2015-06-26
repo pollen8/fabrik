@@ -493,6 +493,7 @@ class PlgFabrik_ListUpdate_Col extends PlgFabrik_List
 		$opts = $this->getElementJSOptions();
 		$opts->userSelect = (bool) $params->get('update_user_select', 0);
 		$opts->form = $this->userSelectForm();
+		$opts->renderOrder = $this->renderOrder;
 		$opts = json_encode($opts);
 		$this->jsInstance = "new FbListUpdateCol($opts)";
 
@@ -507,6 +508,9 @@ class PlgFabrik_ListUpdate_Col extends PlgFabrik_List
 
 	protected function userSelectForm()
 	{
+		$params = $this->getParams();
+		$select_elements = json_decode($params->get('update_user_select_elements', "{}"));
+		
 		$model = $this->getModel();
 		JText::script('PLG_LIST_UPDATE_COL_UPDATE');
 		$options[] = '<option value="">' . FText::_('COM_FABRIK_PLEASE_SELECT') . '</option>';
@@ -516,6 +520,15 @@ class PlgFabrik_ListUpdate_Col extends PlgFabrik_List
 		{
 			$element = $elementModel->getElement();
 
+			/**
+			 * Added "User updateable elements" selection, so admin can specify which elements
+			 * can be chosen by the user.
+			 */
+			if (is_object($select_elements) && isset($select_elements->update_user_select_elements_list) && !in_array($element->id, $select_elements->update_user_select_elements_list))
+			{
+				continue;
+			}
+			
 			if ($elementModel->canUse($this, 'list') && $element->plugin !== 'internalid')
 			{
 				$elName = $elementModel->getFilterFullName();
@@ -535,6 +548,7 @@ class PlgFabrik_ListUpdate_Col extends PlgFabrik_List
 		$layout = $this->getLayout('form');
 		$layoutData = new stdClass;
 		$layoutData->listRef = $listRef;
+		$layoutData->renderOrder = $this->renderOrder;
 		$layoutData->j3 = $j3;
 		$layoutData->addImg = FabrikHelperHTML::image($addImg, 'list', $model->getTmpl());
 		$layoutData->delImg = FabrikHelperHTML::image($removeImg, 'list', $model->getTmpl());

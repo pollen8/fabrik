@@ -2,7 +2,7 @@
 defined('JPATH_BASE') or die;
 $d     = $displayData;
 ?>
-<form id="update_col<?php echo $d->listRef; ?>">
+<form id="update_col<?php echo $d->listRef; ?>_<?php echo $d->renderOrder; ?>">
 
 	<table class="table table-striped" style="width:100%">
 		<thead>
