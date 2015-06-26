@@ -83,7 +83,7 @@ class FabrikViewList extends FabrikViewListBase
 			$total = $session->get($key);
 		}
 
-		if ($start <= $total)
+		if ($start < $total)
 		{
 			if ((int) $total === 0)
 			{
