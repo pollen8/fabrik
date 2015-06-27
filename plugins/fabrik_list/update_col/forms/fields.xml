@@ -26,35 +26,7 @@
 				repeat="true"
 				size="20"/>
 			
-			<field name="update_user_select"
-				type="radio"
-				class="btn-group"
-				repeat="true"
-				default="0"
-				label="PLG_LIST_UPDATE_COL_USER_SELECT_LABEL"
-				description="PLG_LIST_UPDATE_COL_USER_SELECT_DESC">
-					<option value="0">JNO</option>
-					<option value="1">JYES</option>	
-			</field>
-
-			<field name="update_user_select_elements" 
-				type="fabrikmodalrepeat"
-				label="PLG_LIST_UPDATE_COL_USER_SELECT_ELEMENTS_LABEL"
-				description="PLG_LIST_UPDATE_COL_USER_SELECT_ELEMENTS_DESC"
-				repeat="true"
-				default="{}"
-			>
-				<fields name="params">
-					<fieldset modal="true" name="update_user_select_elements_modal" repeat="true">
-						<field name="update_user_select_elements_list"
-							type="listfields"
-							size="30"
-							multiple="true"
-							label="PLG_LIST_UPDATE_COL_USER_SELECT_ELEMENTS_HEADING"
-						/>
-					</fieldset>
-				</fields>
-			</field>			
+		
 		</fieldset>
 		
 		<fieldset label="PLG_LIST_UPDATE_COL_UPDATE_OPTIONS" name="plg-list-update_col-update">
@@ -91,7 +63,44 @@
 				
 			</field>
 			
-				
+			<field name="update_user_select"
+				type="radio"
+				class="btn-group"
+				repeat="true"
+				default="0"
+				label="PLG_LIST_UPDATE_COL_USER_SELECT_LABEL"
+				description="PLG_LIST_UPDATE_COL_USER_SELECT_DESC">
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>	
+			</field>
+
+			<field name="update_user_select_elements" 
+				type="fabrikmodalrepeat"
+				label="PLG_LIST_UPDATE_COL_USER_SELECT_ELEMENTS_LABEL"
+				description="PLG_LIST_UPDATE_COL_USER_SELECT_ELEMENTS_DESC"
+				repeat="true"
+				default="{}"
+			>
+				<fields name="params">
+					<fieldset modal="true" name="update_user_select_elements_modal" repeat="true">
+						<field name="update_user_select_elements_list"
+							type="listfields"
+							size="30"
+							multiple="true"
+							label="PLG_LIST_UPDATE_COL_USER_SELECT_ELEMENTS_HEADING"
+						/>
+					</fieldset>
+				</fields>
+			</field>
+
+			<field name="update_user_select_message"
+				type="text"
+				default=""
+				description="PLG_LIST_UPDATE_COL_UPDATE_USER_SELECT_MESSAGE_DESC"
+				label="PLG_LIST_UPDATE_COL_UPDATE_USER_SELECT_MESSAGE_LABEL"
+				repeat="true"
+				size="30"/>
+										
 			<field name="update_message"
 				type="text"
 				default=""

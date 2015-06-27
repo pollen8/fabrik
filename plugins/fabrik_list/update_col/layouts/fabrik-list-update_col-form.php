@@ -2,6 +2,17 @@
 defined('JPATH_BASE') or die;
 $d     = $displayData;
 ?>
+
+<?php 
+if (!empty($d->user_select_message))
+{
+?>
+<div class="update_col_user_select_message">
+<?php echo FText::_($d->user_select_message); ?>
+</div>
+<?php 
+}
+?>
 <form id="update_col<?php echo $d->listRef; ?>_<?php echo $d->renderOrder; ?>">
 
 	<table class="table table-striped" style="width:100%">

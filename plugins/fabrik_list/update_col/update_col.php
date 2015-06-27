@@ -132,6 +132,8 @@ class PlgFabrik_ListUpdate_Col extends PlgFabrik_List
 	{
 		$model = $this->getModel();
 
+		$update = json_decode($params->get('update_col_updates'));
+		
 		if ($params->get('update_user_select', 0))
 		{
 			$formModel = $model->getFormModel();
@@ -142,30 +144,27 @@ class PlgFabrik_ListUpdate_Col extends PlgFabrik_List
 
 			$values = FArrayHelper::getValue($output, 'fabrik___filter', array());
 			$values = FArrayHelper::getValue($values, $key, array());
-			
-			$update = new stdClass;
-			$update->coltoupdate = array();
-			$update->update_value = array();
 
 			for ($i = 0; $i < count($values['elementid']); $i ++)
 			{
 				$id = $values['elementid'][$i];
 				$elementModel = $formModel->getElement($id, true);
-				$update->coltoupdate[] = $elementModel->getFullName(false, false);
-				$update->update_value[] = $values['value'][$i];
-			}
-
-			// If no update input found return false to stop processing
-			if (empty($update->coltoupdate) && empty($update->update_value))
-			{
-				return false;
+				$elementName = $elementModel->getFullName(false, false);
+				if (!in_array($elementName, $update->coltoupdate))
+				{
+					$update->coltoupdate[] = $elementName;
+					$update->update_value[] = $values['value'][$i];
+					$update->udate_eval[] = '0';
+				}
 			}
 		}
-		else
+
+		// If no update input found return false to stop processing
+		if (empty($update->coltoupdate) && empty($update->update_value))
 		{
-			$update = json_decode($params->get('update_col_updates'));
+			return false;
 		}
-
+		
 		return $update;
 	}
 
@@ -226,9 +225,7 @@ class PlgFabrik_ListUpdate_Col extends PlgFabrik_List
 		{
 			foreach ($update->coltoupdate as $i => $col)
 			{
-				// @TODO add evals to form
-				//$this->_process($model, $col, $update->update_value[$i], $update->update_eval[$i]);
-				$this->_process($model, $col, $update->update_value[$i], false);
+				$this->_process($model, $col, $update->update_value[$i], $update->update_eval[$i]);
 			}
 		}
 
@@ -553,6 +550,7 @@ class PlgFabrik_ListUpdate_Col extends PlgFabrik_List
 		$layoutData->addImg = FabrikHelperHTML::image($addImg, 'list', $model->getTmpl());
 		$layoutData->delImg = FabrikHelperHTML::image($removeImg, 'list', $model->getTmpl());
 		$layoutData->elements = $elements;
+		$layoutData->user_select_message = $params->get('update_user_select_message', '');
 
 		return $layout->render($layoutData);
 	}
