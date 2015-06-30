@@ -3204,10 +3204,26 @@ class FabrikFEModelList extends JModelForm
 		$sig = !$query ? 'string' : 'query';
 		$sig .= (int) $incFilters;
 
-		if (isset($this->_whereSQL[$sig]))
+		/**
+		 * $$ hugh - caching is borked when using query builder object, as we're always returning a query
+		 * string, never an object.  So code like this:
+		 * 
+		 * $query = $db->getQuery(true);
+		 * // some code that does query building stuff here, then ...
+		 * $query = $listModel->buildQueryWhere(true, $query);
+		 * $query = $listModel->buildQueryJoin($query);
+		 * 
+		 * ... blows up in buildQueryJoin() if this function returns a cached query string, overwriting
+		 * the $query buider object.
+		 * 
+		 * "Real" fix would be to sort it out so we return the object, although I'm not convinced that's
+		 * the even the right fix.  But for now only use the cache if we're using string not object.
+		 */
+		if ($query === false && isset($this->_whereSQL[$sig]))
 		{
 			return $this->_whereSQL[$sig][$incFilters];
 		}
+
 
 		$filters = $this->getFilterArray();
 		$params = $this->getParams();
