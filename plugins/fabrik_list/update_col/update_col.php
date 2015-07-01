@@ -119,7 +119,9 @@ class PlgFabrik_ListUpdate_Col extends PlgFabrik_List
 
 	/**
 	 * Get the values to update the list with.
-	 * If user select the get them from the app's input else take from plug-in parameters
+	 * Can be either/or preset values from plugin params, or user selected from popup form.
+	 * If both are specified, values from user selects override those from plug-in parameters,
+	 * so the plugin parameter pre-sets basically become defaults.
 	 *
 	 * @param   JParameters  $params  Plugin parameters
 	 *
@@ -132,10 +134,13 @@ class PlgFabrik_ListUpdate_Col extends PlgFabrik_List
 	{
 		$model = $this->getModel();
 
+		// get the pre-set updates
 		$update = json_decode($params->get('update_col_updates'));
 		
+		// if we allow user selected updates ...
 		if ($params->get('update_user_select', 0))
 		{
+			// get the values from the form inputs
 			$formModel = $model->getFormModel();
 			$app = JFactory::getApplication();
 			$qs = $app->input->get('fabrik_update_col', '', 'string');
@@ -150,11 +155,22 @@ class PlgFabrik_ListUpdate_Col extends PlgFabrik_List
 				$id = $values['elementid'][$i];
 				$elementModel = $formModel->getElement($id, true);
 				$elementName = $elementModel->getFullName(false, false);
-				if (!in_array($elementName, $update->coltoupdate))
+				
+				// Was this element already pre-set?  Use array_search() rather than in_array() as we'll need the index if it exists.
+				$index = array_search($elementName, $update->coltoupdate);
+				
+				if ($index === false)
 				{
+					// nope, wasn't preset, so just add it to the updates
 					$update->coltoupdate[] = $elementName;
 					$update->update_value[] = $values['value'][$i];
 					$update->udate_eval[] = '0';
+				}
+				else
+				{
+					// yes it was preset, so use the $index to modify the existing value
+					$update->update_value[$index] = $values['value'][$i];
+					$update->udate_eval[$index] = '0';
 				}
 			}
 		}
