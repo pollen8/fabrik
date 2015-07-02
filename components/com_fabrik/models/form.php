@@ -3045,7 +3045,7 @@ class FabrikFEModelForm extends FabModelForm
 		$listModel = $this->getListModel();
 		$fabrikDb = $listModel->getDb();
 		$item = $listModel->getTable();
-		$k = $fabrikDb->quoteName($item->db_primary_key);
+		$k = FabrikString::safeNameQuote($item->db_primary_key);
 
 		// @TODO JQuery this
 		$fabrikDb->setQuery("SELECT MAX($k) FROM " . FabrikString::safeColName($item->db_table_name) . $listModel->buildQueryWhere());
