@@ -156,12 +156,6 @@ var FbGoogleMapViz = new Class({
 		});
 		this.bounds = new google.maps.LatLngBounds();
 
-		/*
-		if (this.options.clustering) {
-			this.markerMgr = new MarkerManager(this.map, {trackMarkers: true, maxZoom: 15});
-		}
-		*/
-
 		this.addIcons();
 		this.addOverlays();
 
@@ -180,30 +174,6 @@ var FbGoogleMapViz = new Class({
 		this.infoWindow = new google.maps.InfoWindow({
 			content: ''
 		});
-		this.bounds = new google.maps.LatLngBounds();
-
-		/*
-		if (this.options.clustering) {
-			this.markerMgr = new MarkerManager(this.map, {trackMarkers: true, maxZoom: 15});
-		}
-		*/
-
-		/*
-		this.addIcons();
-		this.addOverlays();
-
-		google.maps.event.addListener(this.map, "click", function (e) {
-			this.setCookies(e);
-		}.bind(this));
-
-		google.maps.event.addListener(this.map, "moveend", function (e) {
-			this.setCookies(e);
-		}.bind(this));
-
-		google.maps.event.addListener(this.map, "zoomend", function (e) {
-			this.setCookies(e);
-		}.bind(this));
-		*/
 		
 		if (this.options.use_cookies) {
 			// $$$ jazzbass - get previous stored location
@@ -391,7 +361,8 @@ var FbGoogleMapViz = new Class({
 			markerOptions.flat = true;
 			if (img.substr(0, 7) !== 'http://' && img.substr(0, 8) !== 'https://') {
 				//markerOptions.icon = Fabrik.liveSite + '/images/stories/' + img;
-				markerOptions.icon = Fabrik.liveSite + 'media/com_fabrik/images/' + img;
+				//markerOptions.icon = Fabrik.liveSite + 'media/com_fabrik/images/' + img;
+				markerOptions.icon = Fabrik.liveSite + img;
 			} else {
 				markerOptions.icon = img;
 			}
