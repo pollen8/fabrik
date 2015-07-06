@@ -1167,7 +1167,6 @@ var ImageWidget = new Class({
 		});
 
 		ctx.drawImage(canvas, x, y, w, h, 0, 0, w, h);
-        debugger;
 		f.set('value', target.toDataURL({quality: this.windowopts.quality}));
 		target.destroy();
 	},
