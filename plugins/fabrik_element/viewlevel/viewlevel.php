@@ -53,7 +53,8 @@ class PlgFabrik_ElementViewlevel extends PlgFabrik_ElementList
 
 	public function render($data, $repeatCounter = 0)
 	{
-		$name = $this->getHTMLName($repeatCounter);
+		$htmlName = $this->getHTMLName($repeatCounter);
+		$name = $this->getFullName(true, false);
 		$id = $this->getHTMLId($repeatCounter);
 		$user = JFactory::getUser();
 		$selected = $user->getAuthorisedViewLevels();
@@ -62,7 +63,7 @@ class PlgFabrik_ElementViewlevel extends PlgFabrik_ElementList
 
 		if (isset($data[$name]))
 		{
-			$selected = !is_array($data[$name]) ? explode(',', $data[$name]) : $selected = $data[$name];
+			$selected = !is_array($data[$name]) ? explode(',', $data[$name]) : $data[$name];
 		}
 
 		if (!$this->isEditable())
@@ -76,7 +77,7 @@ class PlgFabrik_ElementViewlevel extends PlgFabrik_ElementList
 
 		$layout = $this->getLayout('form');
 		$layoutData = new stdClass;
-		$layoutData->name = $name;
+		$layoutData->name = $htmlName;
 		$layoutData->selected = $selected;
 		$layoutData->options = $options;
 		$layoutData->id = $id;
