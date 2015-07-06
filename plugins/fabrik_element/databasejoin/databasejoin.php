@@ -1317,6 +1317,13 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 			}
 
 			$targetIds = $this->multiOptionTargetIds($data, $repeatCounter);
+			
+			// $$$ hugh - no selection, and not new row, so Nothing To See Here, Move Along.
+			if (FArrayHelper::emptyIsh($targetIds, true) && $formModel->getRowId() != '')
+			{
+				return '';
+			}
+			
 			$targetIds = $targetIds === false ? $default : $targetIds;
 			
 			// $$$ hugh - trying to fix issue with read only multiselects submitting wrong values
