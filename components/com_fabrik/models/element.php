@@ -2414,7 +2414,7 @@ class PlgFabrik_Element extends FabrikPlugin
 			 * {slug} in detail view links, which for some reason are not 'stringURLSafe' at this point,
 			 * so they are like "4:A Page Title" instead of 4-a-page-title.
 			 */
-			if (strstr($customLink, '{slug}'))
+			if (strstr($customLink, '{slug}') && array_key_exists('slug', $data))
 			{
 				$slug = str_replace(':', '-', $data['slug']);
 				$slug = JApplication::stringURLSafe($slug);
@@ -3237,12 +3237,28 @@ class PlgFabrik_Element extends FabrikPlugin
 
 			case 'field':
 			default:
-				// $$$ rob - if searching on "O'Fallon" from querystring filter the string has slashes added regardless
-				$default = (string) $default;
-				$default = stripslashes($default);
-				$default = htmlspecialchars($default);
-				$return[] = '<input type="text" name="' . $v . '" class="' . $class . '" size="' . $size . '" value="' . $default . '" id="'
-						. $id . '" />';
+				
+				/**
+				 * $$$ hugh - in some really freaky corner case(s), a ranged filter in advanced search winds up here.
+				 * I know I should track these cases down and fix the underlying cause, but right now I just need to make
+				 * an error go away, amd I've already spent 2 hours naging my head on this.  So if $default is as array,
+				 * fire it off to rangedFilterFields()!
+				 */
+				 
+				if (is_array($default))
+				{
+					// $$$ ack phffft, $rows doesn't exist, just ignore the damn thing for now.  Grrrrr.
+					//$this->rangedFilterFields($default, $return, $rows, $v, 'list');					
+				}
+				else
+				{
+					// $$$ rob - if searching on "O'Fallon" from querystring filter the string has slashes added regardless
+					$default = (string) $default;
+					$default = stripslashes($default);
+					$default = htmlspecialchars($default);
+					$return[] = '<input type="text" name="' . $v . '" class="' . $class . '" size="' . $size . '" value="' . $default . '" id="'
+							. $id . '" />';
+				}
 				break;
 
 			case 'hidden':
