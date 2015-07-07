@@ -1319,7 +1319,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 			$targetIds = $this->multiOptionTargetIds($data, $repeatCounter);
 			
 			// $$$ hugh - no selection, and not new row, so Nothing To See Here, Move Along.
-			if (FArrayHelper::emptyIsh($targetIds, true) && $formModel->getRowId() != '')
+			if ($this->isJoin() && FArrayHelper::emptyIsh($targetIds, true) && $formModel->getRowId() != '')
 			{
 				return '';
 			}
