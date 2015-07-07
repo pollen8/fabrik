@@ -218,8 +218,7 @@ class PlgFabrik_ListRadius_Search extends PlgFabrik_List
 			$str[] = '<button class="btn button">' . FText::_('COM_FABRIK_SEARCH') . '</button>';
 		}
 
-		$str[] = '<div class="radius_search_geocode_map" id="radius_search_geocode_map'
-			. $this->renderOrder . '" style="width:400px;height:270px;margin-top:15px;"></div>';
+		$str[] = '<div class="radius_search_geocode_map" id="radius_search_geocode_map' . $this->renderOrder . '"></div>';
 		$str[] = '<input type="hidden" name="radius_search_geocode_lat' . $this->renderOrder . '" value="' . $latitude . '" />';
 		$str[] = '<input type="hidden" name="radius_search_geocode_lon' . $this->renderOrder . '" value="' . $longitude . '" />';
 		$str[] = '</div>';
