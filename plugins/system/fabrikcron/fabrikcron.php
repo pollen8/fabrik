@@ -204,7 +204,7 @@ class PlgSystemFabrikcron extends JPlugin
 
 			// Email log message
 			$recipient = explode(',', $params->get('log_email', ''));
-			if (!empty($recipient))
+			if (!FArrayHelper::emptyish($recipient))
 			{
 				$subject = $config->get('sitename') . ': ' . $row->plugin . ' scheduled task';
 				$mailer->sendMail($config->get('mailfrom'), $config->get('fromname'), $recipient, $subject, $log->message, true);
