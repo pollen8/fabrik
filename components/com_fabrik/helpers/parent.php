@@ -1709,14 +1709,20 @@ class FabrikWorker
 	 * Is the email really an email (more strict than JMailHelper::isEmailAddress())
 	 *
 	 * @param   string  $email  Email address
+	 * @param   bool    $sms    test for SMS phone number instead of email, default false
 	 *
 	 * @since 3.0.4
 	 *
 	 * @return bool
 	 */
 
-	public static function isEmail($email)
+	public static function isEmail($email, $sms = false)
 	{
+		if ($sms)
+		{
+			return self::isSMS($email);
+		}
+		
 		$conf = JFactory::getConfig();
 		$mail = JFactory::getMailer();
 		$mailer = $conf->get('mailer');
@@ -1728,6 +1734,22 @@ class FabrikWorker
 		}
 
 		return JMailHelper::isEmailAddress($email);
+	}
+	
+	/**
+	 * Is valid SMS number format
+	 * This is just a stub which return true for now!
+	 *
+	 * @param   string  $sms  SMS number
+	 *
+	 * @since 3.4.0
+	 *
+	 * @return bool
+	 */
+	
+	public static function isSMS($sms)
+	{
+		return true;
 	}
 
 	/**
