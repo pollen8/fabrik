@@ -66,6 +66,17 @@
 
 		<fieldset name="plg-list-email-mail" label="PLG_LIST_EMAIL_MAIL">
 
+			<field name="emailtable_email_or_sms"
+				label="PLG_LIST_EMAIL_SMS_SEND_LABEL"
+				description="PLG_LIST_EMAIL_SMS_SEND_DESC"
+				type="list"
+				default="email"
+				repeat="true"
+			>
+				<option value="email">PLG_LIST_EMAIL_SMS_OR_EMAIL_EMAIL</option>
+				<option value="sms">PLG_LIST_EMAIL_SMS_OR_EMAIL_SMS</option>
+			</field>
+			
 			<field name="emailtable_to_how"
 				type="list"
 				default="multi"
@@ -273,5 +284,43 @@
 					type="text"
 				/>
 		</fieldset>
+		
+		<fieldset name="plg-list-email-sms"  label="PLG_FABRIK_LIST_EMAIL_SMS">
+		
+			<field description="PLG_LIST_EMAIL_SMS_GATEWAY_DESC"
+			       directory="components/com_fabrik/helpers/sms_gateways"
+			       hide_default="true"
+			       hide_none="true"
+			       label="PLG_LIST_EMAIL_SMS_GATEWAY_LABEL"
+			       name="emailtable_sms_gateway"
+			       repeat="true"
+			       type="filelist"/>
+
+			<field default=""
+			       label="PLG_LIST_EMAIL_SMS_USERNAME_LABEL"
+			       name="emailtable_sms_username"
+			       description="PLG_LIST_EMAIL_SMS_USERNAME_DESC"
+			       repeat="true"
+			       size="30"
+			       type="text"/>
+
+			<field default=""
+			       label="PLG_LIST_EMAIL_SMS_PASSWORD_LABEL"
+			       description="PLG_LIST_EMAIL_SMS_PASSWORD_DESC"
+			       name="emailtable_sms_password"
+			       repeat="true"
+			       size="30"
+			       type="text"/>
+
+			<field default=""
+			       description="PLG_LIST_EMAIL_SMS_SENDERS_MOBILE_NUM_DESC"
+			       label="PLG_LIST_EMAIL_SMS_SENDERS_MOBILE_NUM_LABEL"
+			       name="emailtable_sms_from"
+			       repeat="true"
+			       size="30"
+			       type="text"/>
+
+		</fieldset>
+		
 	</fields>
 </form>

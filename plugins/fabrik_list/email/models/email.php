@@ -28,6 +28,13 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 	 * @var string
 	 */
 	protected $buttonPrefix = 'envelope';
+	
+	/**
+	 * SMS gateway instance
+	 * 
+	 * @var object
+	 */
+	private $gateway = null;
 
 	/**
 	 * Can the plug-in select list rows
@@ -404,6 +411,7 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 
 	public function doEmail()
 	{
+		$params = $this->getParams();
 		$listModel = $this->listModel;
 		$app       = JFactory::getApplication();
 		$input     = $app->input;
@@ -417,8 +425,8 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 		$listModel->setId($input->getInt('id', 0));
 		$w           = new FabrikWorker;
 		$this->_type = 'table';
-		$params      = $this->getParams();
 		$mergeEmails = $params->get('emailtable_mergemessages', 0);
+		$sendSMS	= $params->get('emailtable_email_or_sms', 'email') == 'sms';
 		$toHow     = $this->_toHow();
 		$toType    = $this->_toType();
 		$to        = $this->_to();
@@ -482,7 +490,7 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 							{
 								$mailTo = $w->parseMessageForPlaceholder($mailTo, $row);
 
-								if (FabrikWorker::isEmail($mailTo))
+								if (FabrikWorker::isEmail($mailTo, $sendSMS))
 								{
 									$res = $this->_send($row, $mailTo);
 									$res ? $sent++ : $notSent++;
@@ -532,13 +540,15 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 	 */
 	private function _parseMailTos($mailTos, $row, $notSent)
 	{
+		$params = $this->getParams();
+		$sendSMS	= $param->get('emailtable_email_or_sms', 'email') == 'sms';
 		$w = new FabrikWorker;
 
 		foreach ($mailTos as $toKey => $thisTo)
 		{
 			$thisTo = $w->parseMessageForPlaceholder($thisTo, $row);
 
-			if (!FabrikWorker::isEmail($thisTo))
+			if (!FabrikWorker::isEmail($thisTo, $sendSMS))
 			{
 				unset($mailTos[$toKey]);
 				$notSent++;
@@ -586,17 +596,13 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 	 */
 	private function _send($row, $mailTo)
 	{
+		$params = $this->getParams();
+		$sendSMS	= $params->get('emailtable_email_or_sms', 'email') == 'sms';
 		$input         = JFactory::getApplication()->input;
-		$subject       = $input->get('subject', '', 'string');
 		$coverMessage  = nl2br($input->get('message', '', 'html'));
 		$oldStyle      = $this->_oldStyle();
 		$emailTemplate = $this->_emailTemplate();
 		$w             = new FabrikWorker;
-		$cc            = null;
-		$bcc           = null;
-		list($emailFrom, $fromName) = $this->_fromEmailName($row);
-		list($replyEmail, $replyEmailName) = $this->_replyEmailName($row);
-		$thisSubject = $w->parseMessageForPlaceholder($subject, $row);
 		$thisMsg     = $coverMessage;
 		list($phpMsg, $message) = $this->_message();
 
@@ -613,10 +619,24 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 		}
 
 		$thisMsg = $w->parseMessageForPlaceholder($thisMsg, $row);
-		$mail    = JFactory::getMailer();
 
-		return $mail->sendMail($emailFrom, $fromName, $mailTo, $thisSubject, $thisMsg, 1, $cc, $bcc, $this->filepath,
+		if ($sendSMS)
+		{
+			return $this->sendSMS($mailTo, $thisMsg, $row);
+		}
+		else
+		{
+			$subject       = $input->get('subject', '', 'string');
+			$cc            = null;
+			$bcc           = null;
+			list($emailFrom, $fromName) = $this->_fromEmailName($row);
+			list($replyEmail, $replyEmailName) = $this->_replyEmailName($row);
+			$thisSubject = $w->parseMessageForPlaceholder($subject, $row);
+				
+			$mail    = JFactory::getMailer();
+			return $mail->sendMail($emailFrom, $fromName, $mailTo, $thisSubject, $thisMsg, 1, $cc, $bcc, $this->filepath,
 			$replyEmail, $replyEmailName);
+		}
 	}
 
 	/**
@@ -995,4 +1015,51 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 			return '<textarea name="message" style="width:100%" rows="10" cols="10">' . $msg . '</textarea>';
 		}
 	}
+	
+	/**
+	 * Send SMS
+	 *
+	 * @return	bool
+	 */
+	
+	protected function sendSMS($to, $message, $data)
+	{
+		$params = $this->getParams();
+		$w = new FabrikWorker;
+		$opts = array();
+		$userName = $params->get('emailtable_sms_username');
+		$password = $params->get('emailtable_sms_password');
+		$from = $params->get('emailtable_sms_from');
+		$opts['sms-username'] = $w->parseMessageForPlaceHolder($userName, $data);
+		$opts['sms-password'] = $w->parseMessageForPlaceHolder($password, $data);
+		$opts['sms-from'] = $w->parseMessageForPlaceHolder($from, $data);
+		$opts['sms-to'] = $w->parseMessageForPlaceHolder($to, $data);
+		$gateway = $this->getSMSInstance();
+	
+		return $gateway->process($message, $opts);
+	}
+	
+	/**
+	 * Get specific SMS gateway instance
+	 *
+	 * @return  object  gateway
+	 */
+	
+	private function getSMSInstance()
+	{
+		if (!isset($this->gateway))
+		{
+			$params = $this->getParams();
+			$gateway = $params->get('emailtable_sms_gateway', 'kapow.php');
+			$input = new JFilterInput;
+			$gateway = $input->clean($gateway, 'CMD');
+			require_once JPATH_ROOT . '/components/com_fabrik/helpers/sms_gateways/' . JString::strtolower($gateway);
+			$gateway = JFile::stripExt($gateway);
+			$this->gateway = new $gateway;
+			$this->gateway->params = $params;
+		}
+	
+		return $this->gateway;
+	}
+	
 }
