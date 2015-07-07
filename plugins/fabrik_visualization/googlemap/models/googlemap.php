@@ -269,6 +269,7 @@ class FabrikModelGooglemap extends FabrikFEModelVisualization
 
 		// Image from marker data
 		$markerImages = (array) $params->get('fb_gm_iconimage2');
+		$markerImagesPath = (array) $params->get('fb_gm_iconimage2_path');
 
 		// Specified letter
 		$letters = (array) $params->get('fb_gm_icon_letter');
@@ -339,6 +340,11 @@ class FabrikModelGooglemap extends FabrikFEModelVisualization
 						}
 					}
 
+					if (!empty($iconImg))
+					{
+						$iconImg = '/media/com_fabrik/images/' . $iconImg;
+					}
+					
 					$v = $this->getCordsFromData($row->$coordColumn);
 
 					if ($v == array(0, 0))
@@ -406,29 +412,58 @@ class FabrikModelGooglemap extends FabrikFEModelVisualization
 
 						if ($iconImg != '')
 						{
+							/**
+							 * $$$ hugh - added 'path' choice for data icons, to make this option more flexible.  Up till
+							 * now we have been forcing paths relative to /media/com_fabrik/images (which was added in the JS).
+							 * New options for path root are:
+							 * 
+							 * media - (default) existing behavior of /meadia/com_fabrik/images
+							 * jroot - relative to J! root
+							 * absolute - full server path
+							 * url - url (surprise surprise)
+							 * img - img tag (so we extract src=)
+							 */
+							$iconImgPath = FArrayHelper::getValue($markerImagesPath, $c, 'media');
+							
 							$iconImg = FArrayHelper::getValue($rowdata, $iconImg, '');
 
-							// Get the src
-							preg_match('/src=["|\'](.*?)["|\']/', $iconImg, $matches);
-
-							if (array_key_exists(1, $matches))
-							{
-								$iconImg = $matches[1];
+							// Normalize the $iconimg so it is either a file path relative to J! root, or a non-local URL
+							switch ($iconImgPath) {
+								case 'media':
+								default:
+									$iconImg = 'media/com_fabrik/images' . $iconImg;
+									break;
+								case 'jroot':
+									break;
+								case 'absolute':
+									$iconImg = str_replace(JPATH_BASE, '', $iconImg);										
+									break;
+								case 'url':
+									$iconImg = str_replace(COM_FABRIK_LIVESITE, '', $iconImg);	
+									break;
+								case 'img':
+									// Get the src
+									preg_match('/src=["|\'](.*?)["|\']/', $iconImg, $matches);
+									
+									if (array_key_exists(1, $matches))
+									{
+										$iconImg = $matches[1];
+									}
+									
+									$iconImg = str_replace(COM_FABRIK_LIVESITE, '', $iconImg);
+									break;
 							}
 
-							// Check file exists
-							$path = str_replace(COM_FABRIK_LIVESITE, '', $iconImg);
-
-							if (JFile::exists(JPATH_BASE . $path))
+							if (strstr($iconImg, 'http://') || strstr($iconImg, 'https://') || JFile::exists(JPATH_BASE . $iconImg))
 							{
 								$customimagefound = true;
 							}
 
 						}
 
-						if ($iconImg != '')
+						if ($iconImg != '' && !(strstr($iconImg, 'http://') || strstr($iconImg, 'https://')))
 						{
-							list($width, $height) = $this->markerSize($iconImg);
+							list($width, $height) = $this->markerSize(JPATH_BASE . $iconImg);
 						}
 						else
 						{
@@ -440,7 +475,7 @@ class FabrikModelGooglemap extends FabrikFEModelVisualization
 					else
 					{
 						// Standard google map icon size
-						list($width, $height) = $this->markerSize(JPATH_SITE . '/images/stories/' . $iconImg);
+						list($width, $height) = $this->markerSize(JPATH_BASE . $iconImg);
 					}
 
 					$gClass = FArrayHelper::getValue($groupClass, 0, '');
@@ -523,7 +558,7 @@ class FabrikModelGooglemap extends FabrikFEModelVisualization
 			if ($iconImg != '' && !empty($icons))
 			{
 				list($width, $height) = $this->markerSize(JPATH_SITE . '/media/com_fabrik/images/' . $iconImg);
-				$icons[$v[0] . $v[1]][3] = $iconImg;
+				$icons[$v[0] . $v[1]][3] = '/media/com_fabrik/images/' . $iconImg;
 				$icons[$v[0] . $v[1]][4] = $width;
 				$icons[$v[0] . $v[1]][5] = $height;
 			}

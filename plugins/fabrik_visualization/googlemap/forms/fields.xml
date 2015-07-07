@@ -175,6 +175,19 @@
 				table="params_googlemap_table" />
 
 			<field
+				name="fb_gm_iconimage2_path"
+				type="list"
+				default="media"
+				label="PLG_VISUALIZATION_GOOGLEMAP_DATA_ICON_PATH_LABEL"
+				description="PLG_VISUALIZATION_GOOGLEMAP_DATA_ICON_PATH_DESC">
+					<option value="media">PLG_VISUALIZATION_GOOGLEMAP_DATA_ICON_PATH_MEDIA_RELATIVE</option>
+					<option value="jroot">PLG_VISUALIZATION_GOOGLEMAP_DATA_ICON_PATH_JOOMLA_RELATIVE</option>
+					<option value="absolute">PLG_VISUALIZATION_GOOGLEMAP_DATA_ICON_PATH_FULL_PATH</option>
+					<option value="url">PLG_VISUALIZATION_GOOGLEMAP_DATA_ICON_PATH_URL</option>
+					<option value="img">PLG_VISUALIZATION_GOOGLEMAP_DATA_ICON_PATH_IMG</option>			
+			</field>
+			
+			<field
 				name="fb_gm_icon_letter"
 				type="text"
 				class="input-mini"
