@@ -371,6 +371,13 @@ class PlgFabrik_ElementNotes extends PlgFabrik_ElementDatabasejoin
 			{
 				$query->set($db->quoteName($fk) . ' = ' . $db->quote($input->get('rowid')));
 			}
+			
+			$date = $params->get('date', '');
+			
+			if ($date !== '')
+			{
+				$query->set($db->quoteName($date) . ' = NOW()');
+			}
 
 			$db->setQuery($query);
 			$db->execute();

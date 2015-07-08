@@ -103,6 +103,14 @@
 				description="PLG_ELEMENT_NOTES_USER_FIELD_DESC"
 				label="PLG_ELEMENT_NOTES_USER_FIELD_LABEL"
 				table="params_join_db_name" />
+				
+			<field name="date"
+				type="listfields"
+				connection="params_join_conn_id"
+				description="PLG_ELEMENT_NOTES_DATE_FIELD_DESC"
+				label="PLG_ELEMENT_NOTES_DATE_FIELD_LABEL"
+				table="params_join_db_name" />
+				
 		</fieldset>
 
 	</fields>
