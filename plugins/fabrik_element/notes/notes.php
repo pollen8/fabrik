@@ -241,8 +241,8 @@ class PlgFabrik_ElementNotes extends PlgFabrik_ElementDatabasejoin
 		}
 		else
 		{
-			$order = $db->quoteName($orderBy) . ' ' . $params->get('notes_order_dir', 'ASC');
-
+			$order = FabrikString::safeQuoteName($params->get('join_db_name') . '.' . $orderBy) . ' ' . $params->get('notes_order_dir', 'ASC');
+				
 			if ($query)
 			{
 				$query->order($order);
