@@ -229,7 +229,7 @@ class PlgFabrik_FormUpsert extends PlgFabrik_Form
 		$connectionModel->setId($cid);
 		$db = $connectionModel->getDb();
 		$query = $db->getQuery(true);
-		$query->select('COUNT(*) AS total')->from($table)->where($field . ' = ' . $value);
+		$query->select('COUNT(*) AS total')->from($table)->where($field . ' = ' . $db->quote($value));
 		$db->setQuery($query);
 		return (int)$db->loadResult() > 0;
 	}
