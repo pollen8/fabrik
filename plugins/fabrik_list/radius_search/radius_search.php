@@ -42,10 +42,15 @@ class PlgFabrik_ListRadius_Search extends PlgFabrik_List
 	{
 		$options = array();
 		$params = $this->getParams();
+		$default_search = $type[0];
 
 		if ($params->get('myloc', 1) == 1)
 		{
 			$options[] = JHtml::_('select.option', 'mylocation', FText::_('PLG_VIEW_RADIUS_MY_LOCATION'));
+		}
+		else if ($default_search == 'mylocation')
+		{
+			$default_search = 'place';
 		}
 
 		if ($params->get('place', 1) == 1)
@@ -53,10 +58,18 @@ class PlgFabrik_ListRadius_Search extends PlgFabrik_List
 			$placeElement = $this->getPlaceElement()->getElement();
 			$options[] = JHtml::_('select.option', 'place', strip_tags($placeElement->label));
 		}
+		else if ($default_search == 'place')
+		{
+			$default_search = 'coords';
+		}
 
 		if ($params->get('coords', 1) == 1)
 		{
 			$options[] = JHtml::_('select.option', 'latlon', FText::_('PLG_VIEW_RADIUS_COORDINATES'));
+		}
+		else if ($default_search == 'latlon')
+		{
+			$default_search = 'geocode';
 		}
 
 		if ($params->get('geocode', 1) == 1)
@@ -65,7 +78,7 @@ class PlgFabrik_ListRadius_Search extends PlgFabrik_List
 		}
 
 		$selectName = 'radius_search_type' . $this->renderOrder . '[]';
-		$select = JHtml::_('select.genericlist', $options, $selectName, '', 'value', 'text', $type[0]);
+		$select = JHtml::_('select.genericlist', $options, $selectName, '', 'value', 'text', $default_search);
 
 		return $select;
 	}
@@ -93,7 +106,8 @@ class PlgFabrik_ListRadius_Search extends PlgFabrik_List
 		$f->label = $params->get('radius_label', 'Radius search');
 		$class = "class=\"inputbox fabrik_filter autocomplete-trigger\"";
 		$typeKey = $baseContext . 'radius_search_type' . $this->renderOrder;
-		$type = $app->getUserStateFromRequest($typeKey, 'radius_search_type' . $this->renderOrder, array('mylocation'));
+		$default_search = $params->get('default_search', 'mylocation');
+		$type = $app->getUserStateFromRequest($typeKey, 'radius_search_type' . $this->renderOrder, array($default_search));
 		$style = $type[0] == 'place' ? 'display:block' : 'display:none';
 
 		$context = $baseContext . 'radius_search_place-auto-complete';

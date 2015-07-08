@@ -82,6 +82,19 @@
 		
 		<fieldset name="plg-list-radius_search-opts" label="PLG_LIST_RADIUS_SEARCH_OPTS">
 		
+			<field name="default_search"
+				type="list"
+				default="mylocation"
+				label="PLG_LIST_RADIUS_SEARCH_DEFAULT_SEARCH_LABEL"
+				description="PLG_LIST_RADIUS_SEARCH_DEFAULT_SEARCH_DESC"
+				repeat="true"
+			>
+				<option value="mylocation">PLG_LIST_RADIUS_SEARCH_DEFAULT_SEARCH_MYLOCATION</option>
+				<option value="place">PLG_LIST_RADIUS_SEARCH_DEFAULT_SEARCH_PLACE</option>
+				<option value="latlon">PLG_LIST_RADIUS_SEARCH_DEFAULT_SEARCH_LATLON</option>
+				<option value="geocode">PLG_LIST_RADIUS_SEARCH_DEFAULT_SEARCH_GEOCODE</option>
+			</field>
+						
 			<field name="myloc"
 				type="radio"
 				class="btn-group"
