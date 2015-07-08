@@ -275,7 +275,7 @@ class PlgFabrik_ElementNotes extends PlgFabrik_ElementDatabasejoin
 			if ($user !== '')
 			{
 				$tbl = $db->quoteName($this->getJoin()->table_join_alias);
-				$fields .= ',' . $tbl . '.' . $db->quoteName($user) . 'AS userid, u.name AS username';
+				$fields .= $tbl . '.' . $db->quoteName($user) . 'AS userid, u.name AS username';
 			}
 		}
 
