@@ -19,6 +19,8 @@ defined('_JEXEC') or die('Restricted access');
  * @since       3.0
  */
 
+require_once COM_FABRIK_FRONTEND . '/helpers/sms.php';
+
 class Textopoly extends JObject
 {
 	/**

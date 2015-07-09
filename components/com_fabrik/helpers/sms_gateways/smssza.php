@@ -19,7 +19,9 @@ defined('_JEXEC') or die('Restricted access');
  * @since       3.0
  */
 
-class Kapow extends JObject
+require_once COM_FABRIK_FRONTEND . '/helpers/sms.php';
+
+class Smssza extends JObject
 {
 	/**
 	 * URL To Post SMS to
@@ -43,12 +45,9 @@ class Kapow extends JObject
 		$password = FArrayHelper::getValue($opts, 'sms-password');
 		$smsfrom = FArrayHelper::getValue($opts, 'sms-from');
 		$smsto = FArrayHelper::getValue($opts, 'sms-to');
-		$smstos = explode(',', $smsto);
 
-		foreach ($smstos as $smsto)
-		{
-			$url = sprintf($this->url, $username, $smsto, $smsfrom, $message);
-			FabrikSMS::doRequest('GET', $url, '');
-		}
+		$url = sprintf($this->url, $username, $smsto, $smsfrom, urlencode($message));
+		$response = FabrikSMS::doRequest('GET', $url, '');
+		return strstr($response, 'api_') !== false;
 	}
 }

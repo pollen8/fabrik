@@ -11,6 +11,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+require_once COM_FABRIK_FRONTEND . '/helpers/sms.php';
+
 /**
  * Kapow SMS gateway class
  *
