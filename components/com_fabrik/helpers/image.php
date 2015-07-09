@@ -80,22 +80,33 @@ class FabimageHelper
 	protected static function testGD()
 	{
 		$gd = array();
-		$GDfuncList = get_extension_funcs('gd');
-		ob_start();
-		@phpinfo(INFO_MODULES);
-		$output = ob_get_contents();
-		ob_end_clean();
-		$matches[1] = '';
-
-		if ($output !== '')
+		$output = '';
+		$gdversion = null;
+		$gd_info = null;
+		
+		//$GDfuncList = get_extension_funcs('gd');
+		if (function_exists('gd_info'))
 		{
-			if (preg_match("/GD Version[ \t]*(<[^>]+>[ \t]*)+([^<>]+)/s", $output, $matches))
+			$gd_info = gd_info();
+			$gdversion = $gd_info['GD Version'];
+		}
+		else
+		{
+			ob_start();
+			@phpinfo(INFO_MODULES);
+			$output = ob_get_contents();
+			ob_end_clean();
+			$matches[1] = '';
+			if ($output !== '')
 			{
-				$gdversion = $matches[2];
-			}
-			else
-			{
-				return $gd;
+				if (preg_match("/GD Version[ \t]*(<[^>]+>[ \t]*)+([^<>]+)/s", $output, $matches))
+				{
+					$gdversion = $matches[2];
+				}
+				else
+				{
+					return $gd;
+				}
 			}
 		}
 
