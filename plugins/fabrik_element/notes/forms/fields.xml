@@ -103,14 +103,26 @@
 				description="PLG_ELEMENT_NOTES_USER_FIELD_DESC"
 				label="PLG_ELEMENT_NOTES_USER_FIELD_LABEL"
 				table="params_join_db_name" />
+
+			<field name="userid_url"
+				type="text"
+				description="PLG_ELEMENT_NOTES_USERID_URL_DESC"
+				label="PLG_ELEMENT_NOTES_USERID_URL_LABEL"
+				size="40" />
 				
-			<field name="date"
+			<field name="notes_date"
 				type="listfields"
 				connection="params_join_conn_id"
 				description="PLG_ELEMENT_NOTES_DATE_FIELD_DESC"
 				label="PLG_ELEMENT_NOTES_DATE_FIELD_LABEL"
 				table="params_join_db_name" />
-				
+
+			<field name="notes_date_format"
+				type="text"
+				description="PLG_ELEMENT_NOTES_DATE_FORMAT_DESC"
+				label="PLG_ELEMENT_NOTES_DATE_FORMAT_LABEL"
+				size="40" />
+							
 		</fieldset>
 
 	</fields>

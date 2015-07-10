@@ -11,6 +11,10 @@ $d = $displayData;
 * in the notes plugin, we just need something with the ID on it to keep the addElements() form init happy
 */
 
+foreach ($d->rows as $row) :
+	$d->labels[] = $d->model->getDisplayLabel($row);
+endforeach;
+
 if ($d->editable) :
 	?>
 	<div id="<?php echo $d->id;?>">

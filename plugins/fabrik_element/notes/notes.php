@@ -70,12 +70,16 @@ class PlgFabrik_ElementNotes extends PlgFabrik_ElementDatabasejoin
 		$layoutData->name = $this->getHTMLName($repeatCounter);;
 		$layoutData->fieldType = $params->get('fieldType', 'textarea');
 		$layoutData->editable = $this->isEditable();
-		$layoutData->rowid = $this->getFormModel()->getRowId();;
-
+		$layoutData->rowid = $this->getFormModel()->getRowId();
+		$layoutData->rows = $tmp;
+		$layoutData->model = $this;
+		$layoutData->labels = array();
+		/*
 		foreach ($tmp as $row)
 		{
 			$layoutData->labels[] = $this->getDisplayLabel($row);
 		}
+		*/
 
 		return $layout->render($layoutData);
 	}
@@ -87,18 +91,35 @@ class PlgFabrik_ElementNotes extends PlgFabrik_ElementDatabasejoin
 	 *
 	 * @return string
 	 */
-	protected function getDisplayLabel($row)
+	public function getDisplayLabel($row)
 	{
 		$params = $this->getParams();
+		$txt = '';
+		$header = array();
 
 		if ($params->get('showuser', true))
 		{
-			$txt = $this->getUserNameLinked($row) . ' ' . $row->text;
+			$header[] = $this->getUserNameLinked($row);
 		}
-		else
+		
+		if ($params->get('notes_date', '') !== '')
 		{
-			$txt = $row->text;
+			$header[] = $this->getFormattedDate($row);
 		}
+		
+		if (!empty($header))
+		{
+			$spanX = 12 / count($header);
+			
+			foreach ($header as $head)
+			{
+				$txt .= '<div class="span' . $spanX . '">' . $head . '</div>';
+			}
+			
+			$txt = '<div class="row-fluid">' . $txt . '</div>';
+		}
+		
+		$txt .= $row->text;
 
 		return $txt;
 	}
@@ -110,17 +131,56 @@ class PlgFabrik_ElementNotes extends PlgFabrik_ElementDatabasejoin
 	 *
 	 * @return string
 	 */
-	protected function getUserNameLinked($row)
+	public function getUserNameLinked($row)
 	{
-		if ($this->hasComponent('com_uddeim'))
+		$ret = '';
+		
+		if (isset($row->username))
 		{
-			if (isset($row->username))
+			$params = $this->getParams();
+			$userid_url = $params->get('userid_url', '');
+				
+			if (!empty($userid_url))
+			{		
+				$userid_url = sprintf($userid_url, $row->userid);	
+				$ret = '<a href="' . $userid_url . '">' . $row->username . '</a>';
+			}
+			else
 			{
-				return '<a href="index.php?option=com_uddeim&task=new&recip=' . $row->userid . '">' . $row->username . '</a> ';
+				$ret = $row->username;
 			}
 		}
 
-		return '';
+		return $ret;
+	}
+	
+	/**
+	 * Get formatted date
+	 *
+	 * @param   object  $row  Row
+	 *
+	 * @return string
+	 */
+	public function getFormattedDate($row)
+	{
+		$ret = '';
+		
+		if (isset($row->date_time) && !empty($row->date_time))
+		{
+			$params = $this->getParams();	
+			$notes_date_format = $params->get('notes_date_format', '');
+			
+			if (!empty($notes_date_format))
+			{
+				$ret = date($notes_date_format, strtotime($row->date_time));
+			}
+			else
+			{
+				$ret = $row->date_time;
+			}
+		}
+	
+		return $ret;
 	}
 
 	/**
@@ -264,7 +324,7 @@ class PlgFabrik_ElementNotes extends PlgFabrik_ElementDatabasejoin
 
 	protected function getAdditionalQueryFields()
 	{
-		$fields = '';
+		$fields = array();
 		$db = $this->getDb();
 		$params = $this->getParams();
 
@@ -275,11 +335,20 @@ class PlgFabrik_ElementNotes extends PlgFabrik_ElementDatabasejoin
 			if ($user !== '')
 			{
 				$tbl = $db->quoteName($this->getJoin()->table_join_alias);
-				$fields .= $tbl . '.' . $db->quoteName($user) . 'AS userid, u.name AS username';
+				$fields[] = $tbl . '.' . $db->quoteName($user) . 'AS userid';
+				$fields[] = 'u.name AS username';
 			}
 		}
+		
+		$date = $params->get('notes_date', '');
+		
+		if ($date !== '')
+		{
+			$tbl = $db->quoteName($this->getJoin()->table_join_alias);
+			$fields[] = $tbl . '.' . $db->quoteName($date) . 'AS date_time';
+		}
 
-		return $fields;
+		return implode(', ', $fields);
 	}
 
 	/**
@@ -372,7 +441,7 @@ class PlgFabrik_ElementNotes extends PlgFabrik_ElementDatabasejoin
 				$query->set($db->quoteName($fk) . ' = ' . $db->quote($input->get('rowid')));
 			}
 			
-			$date = $params->get('date', '');
+			$date = $params->get('notes_date', '');
 			
 			if ($date !== '')
 			{
