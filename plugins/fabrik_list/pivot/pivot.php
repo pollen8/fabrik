@@ -93,7 +93,7 @@ class PlgFabrik_ListPivot extends PlgFabrik_List
 		foreach ($groups as &$group)
 		{
 			$group = trim($group);
-			$group = FabrikString::safeColName($group);
+			//$group = FabrikString::safeColName($group);
 		}
 
 		$group = implode(', ', $groups);
