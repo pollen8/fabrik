@@ -151,6 +151,7 @@ class PlgFabrik_ElementTextarea extends PlgFabrik_Element
 		)
 		{
 			$opts = array();
+			$opts['html_format'] = $params->get('textarea-truncate-html', '0') === '1';
 			$opts['wordcount'] = (int) $params->get('textarea-truncate', 0);
 			$opts['tip'] = $params->get('textarea-hover');
 			$opts['position'] = $params->get('textarea_hover_location', 'top');

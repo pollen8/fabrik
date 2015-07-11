@@ -170,6 +170,16 @@
 					<option value="3">PLG_ELEMENT_TEXTAREA_TRUNCATE_WHERE_BOTH</option>
 			</field>
 			
+			<field name="textarea-truncate-html"
+				type="radio"
+				default="0"
+				class="btn-group"
+				description="PLG_ELEMENT_TEXTAREA_TRUNCATE_HTML_DESC"
+				label="PLG_ELEMENT_TEXTAREA_TRUNCATE_HTML_LABEL">
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+			</field>
+			
 			<field name="textarea-truncate"
 				type="text"
 				class="input-mini"
