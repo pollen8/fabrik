@@ -78,7 +78,7 @@ class PlgContentFabrik extends JPlugin
 		// Simple performance check to determine whether bot should process further
 		$botRegex = $fparams->get('botRegex') != '' ? $fparams->get('botRegex') : 'fabrik';
 
-		if (JString::strpos($row->text, $botRegex) === false)
+		if (JString::strpos($row->text, '{' . $botRegex) === false)
 		{
 			return true;
 		}
@@ -92,7 +92,7 @@ class PlgContentFabrik extends JPlugin
 		$row->text = preg_replace_callback($pregex, array($this, 'preplace'), $row->text);
 
 		// $$$ hugh - having to change this to use {[]}
-		$regex = "/{" . $botRegex . "\s*.*?}/i";
+		$regex = "/{" . $botRegex . "\s+.*?}/i";
 		$row->text = preg_replace_callback($regex, array($this, 'replace'), $row->text);
 	}
 
