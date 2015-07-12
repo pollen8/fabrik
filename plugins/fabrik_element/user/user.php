@@ -296,7 +296,13 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 		{
 			return false;
 		}
-
+		
+		// $$$ hugh - if importing a CSV, just use the data as is
+		if ($this->getListModel()->importingCSV)
+		{
+			return true;
+		}
+		
 		$app = JFactory::getApplication();
 		$input = $app->input;
 
@@ -668,6 +674,11 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 
 	public function getValue($data, $repeatCounter = 0, $opts = array())
 	{
+		if ($this->getListModel()->importingCSV)
+		{
+			return parent::getValue($data, $repeatCounter, $opts);
+		}
+		
 		$app = JFactory::getApplication();
 		$input = $app->input;
 
