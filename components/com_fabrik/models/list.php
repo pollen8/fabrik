@@ -4882,7 +4882,7 @@ class FabrikFEModelList extends JModelForm
 	 * If not loaded this loads in the table's form model
 	 * also binds a reference of the table to the form.
 	 *
-	 * @return  object	form model with form table loaded
+	 * @return  FabrikFEModelForm	form model with form table loaded
 	 */
 
 	public function &getFormModel()

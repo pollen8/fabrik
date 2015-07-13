@@ -159,7 +159,7 @@ class PlgFabrik_List extends FabrikPlugin
 	/**
 	 * Build an array of properties to ini the plugins JS objects
 	 *
-	 * @return  array
+	 * @return  stdClass
 	 */
 
 	public function getElementJSOptions()
