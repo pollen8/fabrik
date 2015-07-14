@@ -99,6 +99,8 @@ class PlgFabrik_ListRadius_Search extends PlgFabrik_List
 		}
 
 		$params = $this->getParams();
+
+		/** @var  $model FabrikFEModelList */
 		$model = $this->getModel();
 		$app = JFactory::getApplication();
 		$baseContext = $this->getSessionContext();
@@ -250,25 +252,26 @@ class PlgFabrik_ListRadius_Search extends PlgFabrik_List
 
 	private function placeCoordinates($place)
 	{
-		$app = JFactory::getApplication();
-		$input = $app->input;
-
 		if (isset($this->placeCoordinates))
 		{
 			return $this->placeCoordinates;
 		}
 
+		$session = JFactory::getSession();
+		$session->set('fabrik.list.radius_search.filtersGot.ignore', true);
+
 		$app = JFactory::getApplication();
 		$input = $app->input;
+
+		/** @var  $model FabrikFEModelList */
 		$model = $this->getModel();
 		$mapElement = $this->getMapElement();
 		$mapName = $mapElement->getFullName(true, false);
 		$placeElement = $this->getPlaceElement()->getElement();
-		$db = $model->getDb();
-		$usekey = $input->get('usekey');
+		$useKey = $input->get('usekey');
 		$input->set('usekey', $placeElement->name);
 		$row = $model->getRow($place);
-		$input->set('usekey', $usekey);
+		$input->set('usekey', $useKey);
 
 		if (is_object($row))
 		{
@@ -322,14 +325,13 @@ class PlgFabrik_ListRadius_Search extends PlgFabrik_List
 	{
 		$app = JFactory::getApplication();
 		$input = $app->input;
-		$values = FArrayHelper::getValue($this->filters, 'value', array());
 		list($latitude, $longitude) = $this->getSearchLatLon();
 
 		if (trim($latitude) === '' && trim($longitude) === '')
 		{
 			$input->set('radius_search_active' . $this->renderOrder, array(0));
 
-			return;
+			return '';
 		}
 		// Need to unset for multiple radius searches to work
 		unset($this->mapElement);
@@ -398,15 +400,24 @@ class PlgFabrik_ListRadius_Search extends PlgFabrik_List
 
 	public function onFiltersGot()
 	{
+		$session = JFactory::getSession();
+
+		if ($session->get('fabrik.list.radius_search.filtersGot.ignore'))
+		{
+			$session->clear('fabrik.list.radius_search.filtersGot.ignore');
+			return true;
+		}
+
 		$params = $this->getParams();
+
+		/** @var  $model FabrikFEModelList */
 		$model = $this->getModel();
-		$key = $this->onGetFilterKey();
 		$app = JFactory::getApplication();
 		$active = $app->input->get('radius_search_active' . $this->renderOrder, array(0), 'array');
 
 		if ($active[0] == 0)
 		{
-			return;
+			return true;
 		}
 
 		$v = $this->getValue();
@@ -545,9 +556,9 @@ class PlgFabrik_ListRadius_Search extends PlgFabrik_List
 	{
 		$params = $this->getParams();
 		$model = $this->getModel();
-		$mapelement = $this->getMapElement();
+		$mapElement = $this->getMapElement();
 
-		if (!is_object($mapelement))
+		if (!is_object($mapElement))
 		{
 			throw new RuntimeException('Radius search plug-in active but map element unpublished');
 
@@ -559,13 +570,12 @@ class PlgFabrik_ListRadius_Search extends PlgFabrik_List
 
 		// Increase z-index with advanced class
 		$opts['menuclass'] = 'auto-complete-container advanced';
-		$listid = $model->get('id');
-		$formid = $model->getFormModel()->get('id');
+		$formId = $model->getFormModel()->get('id');
 
 		if ($params->get('place', 1) == 1)
 		{
 			$el = $this->getPlaceElement();
-			FabrikHelperHTML::autoComplete("radius_search_place{$this->renderOrder}", $el->getElement()->id, $formid, $el->getElement()->plugin, $opts);
+			FabrikHelperHTML::autoComplete("radius_search_place{$this->renderOrder}", $el->getElement()->id, $formId, $el->getElement()->plugin, $opts);
 		}
 
 		if ($params->get('myloc', 1) == 1)
@@ -609,10 +619,10 @@ class PlgFabrik_ListRadius_Search extends PlgFabrik_List
 		$opts->value = $this->getValue();
 		$opts->lat = $latitude;
 		$opts->lon = $longitude;
-		$prefilterDistance = $params->get('prefilter_distance', '');
-		$opts->prefilter = $prefilterDistance === '' ? false : true;
+		$preFilterDistance = $params->get('prefilter_distance', '');
+		$opts->prefilter = $preFilterDistance === '' ? false : true;
 		$opts->prefilterDone = (bool) $app->input->getBool('radius_prefilter', false);
-		$opts->prefilterDistance = $prefilterDistance;
+		$opts->prefilterDistance = $preFilterDistance;
 		$opts->myloc = $params->get('myloc', 1) == 1 ? true : false;
 		$o = FabrikString::mapStrToCoords($params->get('geocode_default', ''));
 		$opts->geocode_default_lat = $o->lat;

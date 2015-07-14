@@ -3601,7 +3601,6 @@ class FabrikFEModelForm extends FabModelForm
 		}
 
 		$db = FabrikWorker::getDbo();
-		$conf = JFactory::getConfig();
 		$app = JFactory::getApplication();
 		$input = $app->input;
 		$form = $this->getForm();
