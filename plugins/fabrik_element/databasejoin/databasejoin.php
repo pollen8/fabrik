@@ -2045,7 +2045,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		// Related data will pass a raw value in the query string but if the element filter is a field we need to change that to its label
 		if ($element->filter_type == 'field')
 		{
-			$default = $this->getLabelForValue($default);
+			$default = $this->getLabelForValue($default, $default);
 		}
 
 		return $default;
@@ -2065,8 +2065,6 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 	{
 		$params = $this->getParams();
 		$element = $this->getElement();
-		$listModel = $this->getlistModel();
-		$table = $listModel->getTable();
 		$elName = $this->getFilterFullName();
 		$htmlid = $this->getHTMLId() . 'value';
 		$v = $this->filterName($counter, $normal);
