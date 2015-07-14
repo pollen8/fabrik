@@ -384,7 +384,7 @@ class PlgFabrik_Element extends FabrikPlugin
 	/**
 	 * Get the element's fabrik list model
 	 *
-	 * @return  object	list model
+	 * @return  FabrikFEModelList	list model
 	 */
 
 	public function getListModel()

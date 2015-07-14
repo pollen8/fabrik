@@ -209,7 +209,7 @@ class FabrikFEModelConnection extends JModelLegacy
 	 *
 	 * @param   int  $id  connection id
 	 *
-	 * @return  object  connection tables
+	 * @return  FabTable  connection tables
 	 */
 
 	public function &getConnection($id = null)
