@@ -6345,6 +6345,7 @@ class FabrikFEModelList extends JModelForm
 		}
 		
 		$defaultStatement = $params->get('advanced-filter-default-statement', '<>');
+		$opts->defaultStatement = $defaultStatement;
 
 		$list = $this->getTable();
 		$listRef = $this->getRenderContext();
