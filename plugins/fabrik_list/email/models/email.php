@@ -274,35 +274,55 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 
 	public function getRecords($key = 'ids', $allData = false)
 	{
+		$params = $this->getParams();
+		$model       = $this->listModel;
 		$app   = JFactory::getApplication();
 		$input = $app->input;
 
-		if ($key === 'recordids')
+		$pk          = $model->getTable()->db_primary_key;
+		$pk2         = FabrikString::safeColNameToArrayKey($pk) . '_raw';
+		
+		/**
+		 * If the 'checkall' param is set, and the checkAll checkbox was used, ignore pagination and selected
+		 * ids, and just select all rows, subject to filtering.
+		 * 
+		 * If not doing 'checkall', use the selected ids as usual.
+		 */
+		if ($input->get('checkAll', '0') == '1' && $params->get('checkall', '0') == '1')
 		{
-			$ids = explode(',', $input->get($key, '', 'string'));
+			$whereClause = '';
 		}
 		else
 		{
-			$ids = (array) $input->get($key, array(), 'array');
+			if ($key === 'recordids')
+			{
+				$ids = explode(',', $input->get($key, '', 'string'));
+			}
+			else
+			{
+				$ids = (array) $input->get($key, array(), 'array');
+			}
+	
+			JArrayHelper::toInteger($ids);
+	
+			if (empty($ids))
+			{
+				throw new RuntimeException(FText::_('PLG_LIST_EMAIL_ERR_NO_RECORDS_SELECTED'), 400);
+			}
+	
+	
+			$whereClause = '(' . $pk . ' IN (' . implode(',', $ids) . '))';
 		}
-
-		JArrayHelper::toInteger($ids);
-
-		if (empty($ids))
-		{
-			throw new RuntimeException(FText::_('PLG_LIST_EMAIL_ERR_NO_RECORDS_SELECTED'), 400);
-		}
-
-		$params      = $this->getParams();
-		$model       = $this->listModel;
-		$pk          = $model->getTable()->db_primary_key;
-		$pk2         = FabrikString::safeColNameToArrayKey($pk) . '_raw';
-		$whereClause = '(' . $pk . ' IN (' . implode(',', $ids) . '))';
+		
 		$cond        = $params->get('emailtable_condition');
 
 		if (trim($cond) !== '')
 		{
-			$whereClause .= ' AND (' . $cond . ')';
+			if (empty($whereClause))
+			{
+				$whereClause .= ' AND ';
+			}
+			$whereClause .= '(' . $cond . ')';
 		}
 
 		$model->setLimits(0, -1);

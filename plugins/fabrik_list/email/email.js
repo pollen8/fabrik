@@ -20,6 +20,12 @@ var FbListEmail = new Class({
 				url += "&ids[]=" + id.get('value');
 			}
 		});
+		if (this.listform.getElement('input[name=checkAll]').checked) {
+			url += '&checkAll=1';
+		}
+		else {
+			url += '&checkAll=0';
+		}
 		var id = 'email-list-plugin';
 		this.windowopts = {
 			'id': id,
