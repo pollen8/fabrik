@@ -115,6 +115,12 @@ class FabrikViewFormBase extends JViewLegacy
 		}
 
 		$form->error = $form->error === '' ? FText::_('COM_FABRIK_FAILED_VALIDATION') : FText::_($form->error);
+		
+		if (!empty($model->formErrorMsg))
+		{
+			$form->error .= '<br />' . $model->formErrorMsg;	
+		}
+		
 		$form->origerror = $form->error;
 		$clearErrors = false;
 
