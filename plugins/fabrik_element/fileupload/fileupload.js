@@ -71,13 +71,13 @@ var FbFileUpload = new Class({
 	watchBrowseButton: function () {
 		if (window.File && window.FileReader && window.FileList && window.Blob) {
 			document.id(this.element.id).addEvent('change', function (evt) {
+				var reader;
 				var files = evt.target.files;
-				for (var i = 0, f; f = files[i]; i++) {
-					// Only process image files.
-					if (!files[0].type.match('image.*')) {
-						continue;
-					}
-					var reader = new FileReader();
+				var f = files[0];
+
+				// Only process image files.
+				if (f.type.match('image.*')) {
+					reader = new FileReader();
 					// Closure to capture the file information.
 					reader.onload = (function (theFile) {
 						return function (e) {
@@ -99,6 +99,41 @@ var FbFileUpload = new Class({
 					}.bind(this))(f);
 					// Read in the image file as a data URL.
 					reader.readAsDataURL(f);
+				}
+				else if (f.type.match('video.*'))
+				{
+					var c = this.getContainer();
+					if (!c) {
+						return;
+					}
+
+					var video = c.getElement('video');
+					if (!video) {
+						video = this.makeVideoPreview();
+						video.inject(c, 'inside');
+					}
+					
+					reader = new window.FileReader();
+					var url;
+					
+					reader = window.URL || window.webKitURL;
+
+					if (reader && reader.createObjectURL) {
+						url = reader.createObjectURL(f);
+						video.src = url;
+						return;
+					}
+
+					if (!window.FileReader) {
+						console.log('Sorry, not so much');
+						return;
+					}
+					
+					reader = new window.FileReader();
+					reader.onload = function (eo) {
+						video.src = eo.target.result;
+					};
+					reader.readAsDataURL(f);						
 				}
 			}.bind(this));
 		}
@@ -210,6 +245,13 @@ var FbFileUpload = new Class({
 			'type': 'hidden',
 			'name': 'fabrik_fileupload_deletedfile[' + groupid + '][]',
 			'value': value
+		});
+	},
+	
+	makeVideoPreview: function () {
+		return new Element('video', {
+			'id': this.element.id + '_video_preview',
+			'controls': true
 		});
 	},
 

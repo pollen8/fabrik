@@ -2158,10 +2158,12 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 							$render->output = '<span class="fabrikUploadDelete" id="' . $id . '_delete_span">' . $this->deleteButton($value, $repeatCounter) . $render->output . '</span>';
 						}
 						
+						/*
 						if ($use_wip)
 						{
 							$render->output .= '<video id="' . $id . '_video_preview" controls></video>';
 						}
+						*/
 					}
 
 					$allRenders[] = $render->output;
