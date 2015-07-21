@@ -353,6 +353,12 @@ var FbElement =  new Class({
 	 */
 	cloned: function (c) {
 		this.renewEvents();
+		if (this.element.hasClass('chzn-done')) {
+			this.element.removeClass('chzn-done');
+			this.element.addClass('chzn-select');
+			this.element.getParent().getElement('.chzn-container').destroy();
+			jQuery(".chzn-select").chosen();
+		}
 	},
 	
 	/**
