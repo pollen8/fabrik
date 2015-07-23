@@ -1679,10 +1679,9 @@ class FabrikFEModelList extends JModelForm
 		if ($params->get('actionMethod', 'default') == 'default')
 		{
 			// Use global
-			$fbConfig = JComponentHelper::getParams('com_fabrik');
 			$globalDefault = $fbConfig->get('actionMethod', 'floating');
 
-			// Floating depreacted in J3
+			// Floating deprecated in J3
 			if (FabrikWorker::j3() && $globalDefault === 'floating')
 			{
 				return 'inline';
@@ -1694,7 +1693,7 @@ class FabrikFEModelList extends JModelForm
 		{
 			$default = $params->get('actionMethod', 'floating');
 		}
-		// Floating depreacted in J3
+		// Floating deprecated in J3
 		if (FabrikWorker::j3() && $default === 'floating')
 		{
 			return 'inline';
@@ -3821,7 +3820,7 @@ class FabrikFEModelList extends JModelForm
 	/**
 	 * Load the database object associated with the list
 	 *
-	 * @return  object	database
+	 * @return  JDatabaseDriver	database
 	 */
 
 	public function &getDb()
@@ -4730,7 +4729,7 @@ class FabrikFEModelList extends JModelForm
 	 * Add or update a database column via sql
 	 *
 	 * @param   object  &$elementModel  element plugin
-	 * @param   string  $origColName    origional field name
+	 * @param   string  $origColName    original field name
 	 *
 	 * @return  bool
 	 */
@@ -7787,7 +7786,7 @@ class FabrikFEModelList extends JModelForm
 	 * @param   array   &$data           List data
 	 * @param   object  &$oRecord        To bind to table row
 	 * @param   int     $isJoin          Is record join record
-	 * @param   int     $rowid           Row id
+	 * @param   int     $rowId           Row id
 	 * @param   JTable  $joinGroupTable  Join group table
 	 *
 	 * @since	1.0.6
@@ -7797,12 +7796,11 @@ class FabrikFEModelList extends JModelForm
 	 * @return  void
 	 */
 
-	protected function addDefaultDataFromRO(&$data, &$oRecord, $isJoin, $rowid, $joinGroupTable)
+	protected function addDefaultDataFromRO(&$data, &$oRecord, $isJoin, $rowId, $joinGroupTable)
 	{
 		// $$$ rob since 1.0.6 : 10 June 08
 		// Get the current record - not that which was posted
 		$formModel = $this->getFormModel();
-		$table = $this->getTable();
 		$app = JFactory::getApplication();
 		$input = $app->input;
 
@@ -7813,37 +7811,36 @@ class FabrikFEModelList extends JModelForm
 			* OK for now, as we should catch RO data from the encrypted vars check
 			* later in this method.
 			*/
-			if (empty($rowid))
+			if (empty($rowId))
 			{
-				$this->origData = $origdata = array();
+				$this->origData = $origData = array();
 			}
 			else
 			{
 				$sql = $formModel->buildQuery();
 				$db = $this->getDb();
 				$db->setQuery($sql);
-				$origdata = $db->loadObject();
-				$origdata = JArrayHelper::fromObject($origdata);
-				$origdata = is_array($origdata) ? $origdata : array();
-				$this->origData = $origdata;
+				$origData = $db->loadObject();
+				$origData = JArrayHelper::fromObject($origData);
+				$origData = is_array($origData) ? $origData : array();
+				$this->origData = $origData;
 			}
 		}
 		else
 		{
-			$origdata = $this->origData;
+			$origData = $this->origData;
 		}
 
-		$form = $formModel->getForm();
 		$groups = $formModel->getGroupsHiarachy();
 
 		/* $$$ hugh - seems like there's no point in doing this chunk if there is no
-		 $origdata to work with?  Not sure if there's ever a valid reason for doing so,
+		 $origData to work with?  Not sure if there's ever a valid reason for doing so,
 		but it certainly breaks things like onCopyRow(), where (for instance) user
 		elements will get reset to 0 by this code.
 		*/
 		$repeatGroupCounts = $input->get('fabrik_repeat_group', array(), 'array');
 
-		if (!empty($origdata))
+		if (!empty($origData))
 		{
 			$gcounter = 0;
 
@@ -7877,14 +7874,14 @@ class FabrikFEModelList extends JModelForm
 							{
 								continue;
 							}
-							// Force a reload of the default value with $origdata
+							// Force a reload of the default value with $origData
 							unset($elementModel->defaults);
 							$default = array();
 							$repeatGroupCount = FArrayHelper::getValue($repeatGroupCounts, $groupModel->getGroup()->id);
 
 							for ($repeatCount = 0; $repeatCount < $repeatGroupCount; $repeatCount++)
 							{
-								$def = $elementModel->getValue($origdata, $repeatCount);
+								$def = $elementModel->getValue($origData, $repeatCount);
 
 								if (is_array($def))
 								{
@@ -8052,7 +8049,6 @@ class FabrikFEModelList extends JModelForm
 
 		$listModel = JModelLegacy::getInstance('List', 'FabrikFEModel');
 		$listModel->setId($listId);
-		$db = FabrikWorker::getDbo();
 		$formModel = $listModel->getFormModel();
 
 		JDEBUG ? $profiler->mark('cacheDoCalculations, getGroupsHiarachy: start') : null;
@@ -9665,11 +9661,11 @@ class FabrikFEModelList extends JModelForm
 			$query = $this->buildQueryJoin($query);
 			$query = $this->buildQueryOrder($query);
 			$fabrikDb->setQuery($query, $nav->limitstart, $nav->limit);
-			$rowid = $fabrikDb->loadResult();
-			$input->set('rowid', $rowid);
+			$rowId = $fabrikDb->loadResult();
+			$input->set('rowid', $rowId);
 			$app = JFactory::getApplication();
 			$formid = $input->getInt('formid');
-			$app->redirect('index.php?option=' . $package . '&view=form&formid=' . $formid . '&rowid=' . $rowid . '&format=raw');
+			$app->redirect('index.php?option=' . $package . '&view=form&formid=' . $formid . '&rowid=' . $rowId . '&format=raw');
 		}
 
 		return json_encode($data);

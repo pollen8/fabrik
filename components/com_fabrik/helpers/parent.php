@@ -25,7 +25,7 @@ class FabrikWorker
 	/**
 	 * Fabrik database objects
 	 *
-	 * @var  array
+	 * @var  JDatabaseDriver[]
 	 */
 	public static $database = null;
 
@@ -99,6 +99,18 @@ class FabrikWorker
 		'package',
 		'visualization'
 	);
+
+	/**
+	 * Add slashes in parse message
+	 * @var bool
+	 */
+	protected $parseAddSlashes = false;
+
+	/**
+	 * Search data to replace placeholders
+	 * @var array
+	 */
+	protected $_searchData = array();
 
 	/**
 	 * Returns true if $view is a valid view type
@@ -680,20 +692,20 @@ class FabrikWorker
 	 * @param   mixed   $msg               Text|Array to parse
 	 * @param   array   $searchData        Data to search for placeholders (default $_REQUEST)
 	 * @param   bool    $keepPlaceholders  If no data found for the place holder do we keep the {...} string in the message
-	 * @param   bool    $addslashes        Add slashed to the text?
+	 * @param   bool    $addSlashes        Add slashed to the text?
 	 * @param   object  $theirUser         User to use in replaceWithUserData (defaults to logged in user)
 	 *
 	 * @return  string  parsed message
 	 */
 
-	public function parseMessageForPlaceHolder($msg, $searchData = null, $keepPlaceholders = true, $addslashes = false, $theirUser = null)
+	public function parseMessageForPlaceHolder($msg, $searchData = null, $keepPlaceholders = true, $addSlashes = false, $theirUser = null)
 	{
 		$returnType = is_array($msg) ? 'array' : 'string';
 		$msgs = (array) $msg;
 
 		foreach ($msgs as &$msg)
 		{
-			$this->parseAddSlases = $addslashes;
+			$this->parseAddSlashes = $addSlashes;
 
 			if (!($msg == '' || is_array($msg) || JString::strpos($msg, '{') === false))
 			{
@@ -1018,7 +1030,7 @@ class FabrikWorker
 			$match = $aPost;
 		}
 
-		if ($this->parseAddSlases)
+		if ($this->parseAddSlashes)
 		{
 			$match = htmlspecialchars($match, ENT_QUOTES, 'UTF-8');
 		}
@@ -1226,7 +1238,7 @@ class FabrikWorker
 			else
 			{
 				// Black or white list.
-				// Preprocess the tags and attributes.
+				// Pre-process the tags and attributes.
 				$tags = explode(',', $filterData->filter_tags);
 				$attributes = explode(',', $filterData->filter_attributes);
 				$tempTags = array();
@@ -1445,7 +1457,7 @@ class FabrikWorker
 	 *
 	 * @param   mixed  $cnnId         If null then loads the fabrik default connection, if an int then loads the specified connection by its id
 	 *
-	 * @return  JDatabase object
+	 * @return  JDatabaseDriver object
 	 */
 
 	public static function getDbo($loadJoomlaDb = false, $cnnId = null)
@@ -1479,14 +1491,13 @@ class FabrikWorker
 				$database = $conf->get('db');
 			}
 
-			$dbprefix = $conf->get('dbprefix');
+			$dbPrefix = $conf->get('dbprefix');
 			$driver = $conf->get('dbtype');
 
 			// Test for swapping db table names
 			$driver .= '_fab';
-			$debug = $conf->get('debug');
 			$options = array('driver' => $driver, 'host' => $host, 'user' => $user, 'password' => $password, 'database' => $database,
-				'prefix' => $dbprefix);
+				'prefix' => $dbPrefix);
 
 			$version = new JVersion;
 			self::$database[$sig] = $version->RELEASE > 2.5 ? JDatabaseDriver::getInstance($options) : JDatabase::getInstance($options);
@@ -1534,7 +1545,7 @@ class FabrikWorker
 	 *
 	 * @since 3.0b
 	 *
-	 * @return object  connection
+	 * @return FabrikFEModelConnection  connection
 	 */
 
 	public static function getConnection($item = null)
@@ -1567,7 +1578,7 @@ class FabrikWorker
 				$connectionModel->setId($connectionModel->getConnection()->id);
 			}
 
-			$connection = $connectionModel->getConnection();
+			$connectionModel->getConnection();
 			self::$connection[$connId] = $connectionModel;
 		}
 
@@ -1724,7 +1735,6 @@ class FabrikWorker
 		}
 		
 		$conf = JFactory::getConfig();
-		$mail = JFactory::getMailer();
 		$mailer = $conf->get('mailer');
 
 		if ($mailer === 'mail')
