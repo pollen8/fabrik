@@ -15,7 +15,8 @@ AdvancedSearch = new Class({
 	options: {
 		'ajax': false,
 		'controller': 'list',
-		'parentView': ''
+		'parentView': '',
+		'defaultStatement': '='
 	},
 
 	initialize: function (options) {
@@ -183,13 +184,20 @@ AdvancedSearch = new Class({
 			}
 			if (i === 0) {
 				tr.getElements('.inputbox').each(function (dd) {
-					dd.selectedIndex = 0;
-				});
+					if (dd.id.test(/condition$/))
+					{
+						dd.value = this.options.defaultStatement;
+					}
+					else
+					{
+						dd.selectedIndex = 0;
+					}
+				}.bind(this));
 				tr.getElements('input').each(function (i) {
 					i.value = '';
 				});
 			}
-		});
+		}.bind(this));
 		this.watchDelete();
 		this.watchElementList();
 		Fabrik.fireEvent('fabrik.advancedSearch.reset', this);

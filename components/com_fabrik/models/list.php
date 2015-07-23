@@ -6342,6 +6342,9 @@ class FabrikFEModelList extends JModelForm
 		{
 			return $opts;
 		}
+		
+		$defaultStatement = $params->get('advanced-filter-default-statement', '<>');
+		$opts->defaultStatement = $defaultStatement;
 
 		$list = $this->getTable();
 		$listRef = $this->getRenderContext();
@@ -6351,7 +6354,7 @@ class FabrikFEModelList extends JModelForm
 		$opts->elementList = JHTML::_('select.genericlist', $fieldNames, 'fabrik___filter[list_' . $listRef . '][key][]',
 				'class="inputbox key" size="1" ', 'value', 'text');
 		$opts->statementList = JHTML::_('select.genericlist', $statements, 'fabrik___filter[list_' . $listRef . '][condition][]',
-				'class="inputbox" size="1" ', 'value', 'text');
+				'class="inputbox" size="1" ', 'value', 'text', $defaultStatement);
 		$opts->listid = $list->id;
 		$opts->listref = $listRef;
 		$opts->ajax = $this->isAjax();
@@ -6579,9 +6582,11 @@ class FabrikFEModelList extends JModelForm
 
 		if ($counter == 0)
 		{
+			$params = $this->getParams();
 			$join = FText::_('COM_FABRIK_WHERE') . '<input type="hidden" name="' . $prefix . 'join][]" value="WHERE" />';
 			$key = JHTML::_('select.genericlist', $fieldNames, $prefix . 'key][]', 'class="inputbox key" size="1" ', 'value', 'text', '');
-			$jsSel = JHTML::_('select.genericlist', $statements, $prefix . 'condition][]', 'class="inputbox" size="1" ', 'value', 'text', '');
+			$defaultStatement = $params->get('advanced-filter-default-statement', '<>');
+			$jsSel = JHTML::_('select.genericlist', $statements, $prefix . 'condition][]', 'class="inputbox" size="1" ', 'value', 'text', $defaultStatement);
 			$rows[] = array('join' => $join, 'element' => $key, 'condition' => $jsSel, 'filter' => $firstFilter, 'type' => $type,
 					'grouped' => $grouped);
 		}

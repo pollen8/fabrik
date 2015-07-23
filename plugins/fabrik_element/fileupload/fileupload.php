@@ -1571,7 +1571,8 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 	{
 		$origData = $this->getFormModel()->getOrigData();
 		$name = $this->getFullName(true, false);
-
+		$fileToKeep = array();
+		
 		for ($j = 0; $j < count($origData); $j++)
 		{
 			foreach ($origData[$j] as $key => $val)
@@ -2155,6 +2156,11 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 						else
 						{
 							$render->output = '<span class="fabrikUploadDelete" id="' . $id . '_delete_span">' . $this->deleteButton($value, $repeatCounter) . $render->output . '</span>';
+						}
+						
+						if ($use_wip)
+						{
+							$render->output .= '<video id="' . $id . '_video_preview" controls></video>';
 						}
 					}
 

@@ -347,6 +347,22 @@
 				<option value="1">JYES</option>
 			</field>
 
+			<field name="advanced-filter-default-statement"
+				type="list"
+				default="1"
+				label="COM_FABRIK_FIELD_ADVANCED_SEARCH_DEFAULT_STATEMENT_LABEL"
+				description="COM_FABRIK_FIELD_ADVANCED_SEARCH_DEFAULT_STATEMENT_DESC"
+			>
+				<option value="=">COM_FABRIK_EQUALS</option>
+				<option value="&lt;&gt;">COM_FABRIK_NOT_EQUALS</option>
+				<option value="BEGINS WITH">COM_FABRIK_BEGINS_WITH</option>
+				<option value="CONTAINS">COM_FABRIK_CONTAINS</option>
+				<option value="ENDS WITH">COM_FABRIK_ENDS_WITH</option>
+				<option value="&gt;">COM_FABRIK_GREATER_THAN</option>
+				<option value="&lt;">COM_FABRIK_LESS_THAN</option>
+				<option value="EMPTY">COM_FABRIK_IS_EMPTY</option>
+			</field>
+
 			<field name="search-mode"
 				type="radio"
 				class="btn-group"

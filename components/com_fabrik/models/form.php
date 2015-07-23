@@ -297,6 +297,15 @@ class FabrikFEModelForm extends FabModelForm
 	public $lastInsertId = null;
 
 	/**
+	 * Form plugins can set this to trigger a validation fail which isn't specific to an element
+	 * 
+	 * @since 3.4
+	 * 
+	 * @var mixed
+	 */
+	public $formErrorMsg = null;
+	
+	/**
 	 * Constructor
 	 *
 	 * @param   array  $config  An array of configuration options (name, state, dbo, table_path, ignore_request).
@@ -3054,6 +3063,16 @@ class FabrikFEModelForm extends FabModelForm
 	}
 
 	/**
+	 * If a submit plugin wants to fail validation not specific to an element
+	 * 
+	 * @param  string  $errMsg
+	 */
+	public function setFormErrorMsg($errMsg)
+	{
+		$this->formErrorMsg = $errMsg;
+	}
+	
+	/**
 	 * Does the form contain user errors
 	 *
 	 * @return  bool
@@ -3063,6 +3082,11 @@ class FabrikFEModelForm extends FabModelForm
 	{
 		$errorsFound = false;
 
+		if (isset($this->formErrorMsg))
+		{
+			$errorsFound = true;
+		}
+		
 		foreach ($this->errors as $field => $errors)
 		{
 			if (!empty($errors))
