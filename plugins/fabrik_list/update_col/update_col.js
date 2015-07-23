@@ -125,7 +125,7 @@ var FbListUpdateCol = new Class({
 							'counter': counter,
 							'listref':  this.options.ref,
 							'context': 'visualization',
-							'parentView': 'update_col' + this.options.ref,
+							'parentView': 'update_col' + this.options.ref + '_' + this.options.renderOrder,
 							'fabrikIngoreDefaultFilterVal': 1
 						},
 						'onComplete': function () {
