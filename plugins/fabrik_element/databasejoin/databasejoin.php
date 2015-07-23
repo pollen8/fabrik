@@ -97,6 +97,11 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 	protected $valueFormat = 'array';
 
 	/**
+	 * @var string
+	 */
+	protected $orderBy = '';
+
+	/**
 	 * Create the SQL select 'name AS alias' segment for list/form queries
 	 *
 	 * @param   array  &$aFields    array of element names
@@ -106,11 +111,6 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 	 * @return  void
 	 */
 	
-	/**
-	 * @var string
-	 */
-	protected $orderBy = '';
-
 	public function getAsField_html(&$aFields, &$aAsFields, $opts = array())
 	{
 		if ($this->isJoin())
@@ -2345,7 +2345,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		}
 		else
 		{
-			if (isset($this->orderBy))
+			if (!empty($this->orderBy))
 			{
 				if (!$query)
 				{
