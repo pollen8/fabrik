@@ -40,12 +40,14 @@
 
 		<field name="password"
 			type="password"
+			filter="raw"
 			description="COM_FABRIK_FIELD_PASSWORD_DESC"
 			label="COM_FABRIK_FIELD_PASSWORD_LABEL"
 			size="30"/>
 
 		<field name="passwordConf"
 			type="password"
+			filter="raw"
 			description="COM_FABRIK_FIELD_PASSWORDCONF_DESC"
 			label="COM_FABRIK_FIELD_PASSWORDCONF_LABEL"
 			size="30"/>
