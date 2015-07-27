@@ -379,6 +379,9 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 
 		$input->set('view', 'details');
 		$input->set('format', 'pdf');
+		
+		// set editable false so things like getFormCss() pick up the detail, not form, CSS
+		$model->setEditable(false);
 
 		// Ensure the package is set to fabrik
 		$prevUserState = $app->getUserState('com_fabrik.package');
@@ -434,6 +437,9 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 			$app->enqueueMessage($e->getMessage(), 'error');
 		}
 
+		// set back to editable
+		$model->setEditable(true);
+		
 		// Set the package back to what it was before rendering the module
 		$app->setUserState('com_fabrik.package', $prevUserState);
 
