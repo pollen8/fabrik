@@ -390,6 +390,12 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 		try
 		{
 			$model->getFormCss();
+			
+			foreach ($document->_styleSheets as $url => $ss)
+			{
+				$formCss[] = file_get_contents($url);
+			}
+			
 			// Require files and set up DOM pdf
 			require_once JPATH_SITE . '/components/com_fabrik/helpers/pdf.php';
 			require_once JPATH_SITE . '/components/com_fabrik/controllers/details.php';
@@ -415,6 +421,11 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 			$html = ob_get_contents();
 			ob_end_clean();
 
+			if (!empty($formCss))
+			{
+				$html = "<style>\n" . implode("\n", $formCss) . "</style>\n" . $html;	
+			}
+			
 			// Load the HTML into DOMPdf and render it.
 			$dompdf->load_html($html);
 			$dompdf->render();
