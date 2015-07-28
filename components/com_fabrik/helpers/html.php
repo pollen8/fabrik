@@ -2241,9 +2241,9 @@ if (!$j3)
 			$grid[] = '<div class="' . $spanClass . ' span' . $span . '">' . $s . '</div>' ;
 		}
 
-		if ($i + 1 % $columns !== 0)
+		if (!empty($items))
 		{
-			// Close opened and unfinished row.
+			// Close opened row, last row-fluid is always open if there's data
 			$grid[] = '</div><!-- grid close end row -->';
 		}
 
