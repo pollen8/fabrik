@@ -54,10 +54,12 @@ var FbListToggle = new Class({
 
 		if (state === 'open') {
 			document.getElements('.fabrik___heading .' + col).show();
+			document.getElements('.fabrikFilterContainer .' + col).show();
 			document.getElements('.fabrik_row  .' + col).show();
 			muted = '';
 		} else {
 			document.getElements('.fabrik___heading .' + col).hide();
+			document.getElements('.fabrikFilterContainer .' + col).hide();
 			document.getElements('.fabrik_row  .' + col).hide();
 			muted = ' muted';
 		}

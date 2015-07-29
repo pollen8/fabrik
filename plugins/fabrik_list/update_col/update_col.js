@@ -82,9 +82,16 @@ var FbListUpdateCol = new Class({
 						tr = target.getParent('tr');
 					}
 					if (tr.getStyle('display') === 'none') {
+						tds = tr.getElements('td');
+						tds[0].getElement('select').selectedIndex = 0;
+						tds[1].empty();
 						tr.show();
 					} else {
-						tr.clone().inject(tr, 'after');
+						tr_clone = tr.clone();
+						tds = tr_clone.getElements('td');
+						tds[0].getElement('select').selectedIndex = 0;
+						tds[1].empty();
+						tr_clone.inject(tr, 'after');
 					}
 
 				});
@@ -102,6 +109,17 @@ var FbListUpdateCol = new Class({
 
 				// Select an element plugin and load it
 				form.addEvent('change:relay(select.key)', function (e, target) {
+					var els = target.getParent('tbody').getElements('.update_col_elements');
+					for (i = 0; i < els.length; i++) {
+						if (els[i] === target) {
+							continue;
+						}
+						if (els[i].selectedIndex === target.selectedIndex) {
+							// @TODO language
+							alert('This element has already been selected!');
+							return;
+						}
+					}
 					var opt = target.options[target.selectedIndex];
 					var row = target.getParent('tr');
 					Fabrik.loader.start(row);

@@ -379,6 +379,9 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 
 		$input->set('view', 'details');
 		$input->set('format', 'pdf');
+		
+		// set editable false so things like getFormCss() pick up the detail, not form, CSS
+		$model->setEditable(false);
 
 		// Ensure the package is set to fabrik
 		$prevUserState = $app->getUserState('com_fabrik.package');
@@ -387,6 +390,12 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 		try
 		{
 			$model->getFormCss();
+			
+			foreach ($document->_styleSheets as $url => $ss)
+			{
+				$formCss[] = file_get_contents($url);
+			}
+			
 			// Require files and set up DOM pdf
 			require_once JPATH_SITE . '/components/com_fabrik/helpers/pdf.php';
 			require_once JPATH_SITE . '/components/com_fabrik/controllers/details.php';
@@ -412,6 +421,11 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 			$html = ob_get_contents();
 			ob_end_clean();
 
+			if (!empty($formCss))
+			{
+				$html = "<style>\n" . implode("\n", $formCss) . "</style>\n" . $html;	
+			}
+			
 			// Load the HTML into DOMPdf and render it.
 			$dompdf->load_html($html);
 			$dompdf->render();
@@ -434,6 +448,9 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 			$app->enqueueMessage($e->getMessage(), 'error');
 		}
 
+		// set back to editable
+		$model->setEditable(true);
+		
 		// Set the package back to what it was before rendering the module
 		$app->setUserState('com_fabrik.package', $prevUserState);
 
