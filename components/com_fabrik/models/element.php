@@ -4053,8 +4053,9 @@ class PlgFabrik_Element extends FabrikPlugin
 		$match = $this->isExactMatch(array('match' => $element->filter_exact_match));
 		$return = array();
 		$eval = FArrayHelper::getValue($filters, 'eval', array());
+		$joins = FArrayHelper::getValue($filters, 'join', array());
 		$condition = FArrayHelper::getValue($filters, 'condition', array());
-
+		$groupedTo = FArrayHelper::getValue($filters, 'grouped_to_previous', array());
 		/*
 		 * Element filter not found (could be a prefilter instead) so use element default options
 		 * see http://fabrikar.com/forums/index.php?threads/major-filter-issues.37360/
@@ -4070,16 +4071,19 @@ class PlgFabrik_Element extends FabrikPlugin
 			$eval = FArrayHelper::getValue($eval, $filterIndex, FABRIKFILTER_TEXT);
 		}
 
+		$join = FArrayHelper::getValue($joins, $filterIndex, 'AND');
+		$groupedToPrevious = FArrayHelper::getValue($groupedTo, $filterIndex, '0');
+
 		// Need to include class other wise csv export produces incorrect results when exporting
 		$prefix = '<input type="hidden" class="' . $class . '" name="fabrik___filter[list_' . $this->getListModel()->getRenderContext() . ']';
 		$return[] = $prefix . '[condition][' . $counter . ']" value="' . $condition . '" />';
-		$return[] = $prefix . '[join][' . $counter . ']" value="AND" />';
+		$return[] = $prefix . '[join][' . $counter . ']" value="' . $join . '" />';
 		$return[] = $prefix . '[key][' . $counter . ']" value="' . $elName . '" />';
 		$return[] = $prefix . '[search_type][' . $counter . ']" value="normal" />';
 		$return[] = $prefix . '[match][' . $counter . ']" value="' . $match . '" />';
 		$return[] = $prefix . '[full_words_only][' . $counter . ']" value="' . $params->get('full_words_only', '0') . '" />';
 		$return[] = $prefix . '[eval][' . $counter . ']" value="' . $eval . '" />';
-		$return[] = $prefix . '[grouped_to_previous][' . $counter . ']" value="0" />';
+		$return[] = $prefix . '[grouped_to_previous][' . $counter . ']" value="' . $groupedToPrevious . '" />';
 		$return[] = $prefix . '[hidden][' . $counter . ']" value="' . $hidden . '" />';
 		$return[] = $prefix . '[elementid][' . $counter . ']" value="' . $element->id . '" />';
 
