@@ -314,9 +314,9 @@ class FabrikFEModelListfilter extends FabModel
 			{
 				// Empty search string sent unset any searchall filters
 				$ks = array_keys($filters);
-				$filterkeys = array_keys(FArrayHelper::getValue($filters, 'search_type', array()));
+				$filterKeys = array_keys(FArrayHelper::getValue($filters, 'search_type', array()));
 
-				foreach ($filterkeys as $filterkey)
+				foreach ($filterKeys as $filterkey)
 				{
 					if (FArrayHelper::getValue($filters['search_type'], $filterkey, '') == 'searchall')
 					{
@@ -988,7 +988,7 @@ class FabrikFEModelListfilter extends FabModel
 		$filter = JFilterInput::getInstance();
 		$request = $filter->clean($_GET, 'array');
 		$formModel = $this->listModel->getFormModel();
-		$filterkeys = array_keys($filters);
+		$filterKeys = array_keys($filters);
 
 		foreach ($request as $key => $val)
 		{
@@ -998,7 +998,7 @@ class FabrikFEModelListfilter extends FabModel
 
 			if ($index !== false)
 			{
-				foreach ($filterkeys as $fkey)
+				foreach ($filterKeys as $fkey)
 				{
 					if (is_array($filters[$fkey]) && array_key_exists($index, $filters[$fkey]))
 					{
@@ -1191,7 +1191,7 @@ class FabrikFEModelListfilter extends FabModel
 		$item = $this->listModel->getTable();
 		$request = $this->getPostFilterArray();
 		$elements = $this->listModel->getElements('id');
-		$filterkeys = array_keys($filters);
+		$filterKeys = array_keys($filters);
 		$values = FArrayHelper::getValue($request, 'value', array());
 		$searchTypes = FArrayHelper::getValue($filters, 'search_type', array());
 		$conditions = FArrayHelper::getValue($request, 'condition', array());
@@ -1299,7 +1299,7 @@ class FabrikFEModelListfilter extends FabModel
 				// If the request key is already in the filter array - unset it
 				if ($index !== false)
 				{
-					foreach ($filterkeys as $fkey)
+					foreach ($filterKeys as $fkey)
 					{
 						if (is_array($filters[$fkey]) && array_key_exists($index, $filters[$fkey]))
 						{
@@ -1423,13 +1423,12 @@ class FabrikFEModelListfilter extends FabModel
 		$app = JFactory::getApplication();
 		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$elements = $this->listModel->getElements('id');
-		$item = $this->listModel->getTable();
 		$identifier = $app->input->get('listref', $this->listModel->getRenderContext());
 		$key = 'com_' . $package . '.list' . $identifier . '.filter';
-		$sessionfilters = JArrayHelper::fromObject($app->getUserState($key));
-		$filterkeys = array_keys($filters);
+		$sessionFilters = JArrayHelper::fromObject($app->getUserState($key));
+		$filterKeys = array_keys($filters);
 
-		if (!is_array($sessionfilters) || !array_key_exists('key', $sessionfilters))
+		if (!is_array($sessionFilters) || !array_key_exists('key', $sessionFilters))
 		{
 			return;
 		}
@@ -1451,21 +1450,21 @@ class FabrikFEModelListfilter extends FabModel
 		$pluginKeys = $this->getPluginFilterKeys();
 		JDEBUG ? $profiler->mark('listfilter:session filters getPluginFilterKeys') : null;
 		$search = $app->getUserStateFromRequest($key, $requestKey);
-		$postkeys = FArrayHelper::getValue($request, 'key', array());
+		$postKeys = FArrayHelper::getValue($request, 'key', array());
 
-		for ($i = 0; $i < count($sessionfilters['key']); $i++)
+		for ($i = 0; $i < count($sessionFilters['key']); $i++)
 		{
-			$elid = FArrayHelper::getValue($sessionfilters['elementid'], $i);
-			$key = FArrayHelper::getValue($sessionfilters['key'], $i, null);
+			$elid = FArrayHelper::getValue($sessionFilters['elementid'], $i);
+			$key = FArrayHelper::getValue($sessionFilters['key'], $i, null);
 			$index = FArrayHelper::getValue($filters['elementid'], $key, false);
 			$origCondition = FArrayHelper::getValue($filters['orig_condition'], $i, '');
 
 			// Used by radius search plugin
-			$sqlConds = FArrayHelper::getValue($sessionfilters, 'sqlCond', array());
+			$sqlConds = FArrayHelper::getValue($sessionFilters, 'sqlCond', array());
 
 			if ($index !== false)
 			{
-				foreach ($filterkeys as $fkey)
+				foreach ($filterKeys as $fkey)
 				{
 					if (is_array($filters[$fkey]) && array_key_exists($index, $filters[$fkey]))
 					{
@@ -1484,8 +1483,8 @@ class FabrikFEModelListfilter extends FabModel
 				}
 			}
 
-			$value = $sessionfilters['value'][$i];
-			$key2 = array_key_exists('key2', $sessionfilters) ? FArrayHelper::getValue($sessionfilters['key2'], $i, '') : '';
+			$value = $sessionFilters['value'][$i];
+			$key2 = array_key_exists('key2', $sessionFilters) ? FArrayHelper::getValue($sessionFilters['key2'], $i, '') : '';
 
 			if ($elid == -1)
 			{
@@ -1522,33 +1521,33 @@ class FabrikFEModelListfilter extends FabModel
 				// Check list plugins
 				if (in_array($elid, $pluginKeys))
 				{
-					$condition = $sessionfilters['condition'][$i];
-					$origCondition = $sessionfilters['orig_condition'][$i];
-					$eval = $sessionfilters['eval'][$i];
-					$search_type = $sessionfilters['search_type'][$i];
-					$join = $sessionfilters['join'][$i];
-					$grouped = $sessionfilters['grouped_to_previous'][$i];
-					$noFiltersSetup = $sessionfilters['no-filter-setup'][$i];
-					$hidden = $sessionfilters['hidden'][$i];
-					$match = $sessionfilters['match'][$i];
-					$fullWordsOnly = $sessionfilters['full_words_only'][$i];
-					$required = $sessionfilters['required'][$i];
-					$access = $sessionfilters['access'][$i];
-					$label = $sessionfilters['label'][$i];
+					$condition = $sessionFilters['condition'][$i];
+					$origCondition = $sessionFilters['orig_condition'][$i];
+					$eval = $sessionFilters['eval'][$i];
+					$search_type = $sessionFilters['search_type'][$i];
+					$join = $sessionFilters['join'][$i];
+					$grouped = $sessionFilters['grouped_to_previous'][$i];
+					$noFiltersSetup = $sessionFilters['no-filter-setup'][$i];
+					$hidden = $sessionFilters['hidden'][$i];
+					$match = $sessionFilters['match'][$i];
+					$fullWordsOnly = $sessionFilters['full_words_only'][$i];
+					$required = $sessionFilters['required'][$i];
+					$access = $sessionFilters['access'][$i];
+					$label = $sessionFilters['label'][$i];
 					$sqlCond = FArrayHelper::getValue($sqlConds, $i);
-					$raw = $sessionfilters['raw'][$i];
+					$raw = $sessionFilters['raw'][$i];
 					$counter = $elid;
 				}
 				else
 				{
 					$sqlCond = null;
-					$condition = array_key_exists($i, $sessionfilters['condition']) ? $sessionfilters['condition'][$i]
+					$condition = array_key_exists($i, $sessionFilters['condition']) ? $sessionFilters['condition'][$i]
 						: $elementModel->getDefaultFilterCondition();
 
-					$origFound = array_key_exists('orig_condition', $sessionfilters) && array_key_exists($i, $sessionfilters['orig_condition']);
-					$origCondition = $origFound ? $sessionfilters['orig_condition'][$i] : $elementModel->getDefaultFilterCondition();
-					$raw = array_key_exists($i, $sessionfilters['raw']) ? $sessionfilters['raw'][$i] : 0;
-					$eval = array_key_exists($i, $sessionfilters['eval']) ? $sessionfilters['eval'][$i] : FABRIKFILTER_TEXT;
+					$origFound = array_key_exists('orig_condition', $sessionFilters) && array_key_exists($i, $sessionFilters['orig_condition']);
+					$origCondition = $origFound ? $sessionFilters['orig_condition'][$i] : $elementModel->getDefaultFilterCondition();
+					$raw = array_key_exists($i, $sessionFilters['raw']) ? $sessionFilters['raw'][$i] : 0;
+					$eval = array_key_exists($i, $sessionFilters['eval']) ? $sessionFilters['eval'][$i] : FABRIKFILTER_TEXT;
 
 					if (!is_a($elementModel, 'PlgFabrik_ElementDatabasejoin'))
 					{
@@ -1567,11 +1566,11 @@ class FabrikFEModelListfilter extends FabModel
 					 * add request filter to end of filter array
 					 * with advanced search and then page nav this wasn't right
 					 */
-					$search_type = array_key_exists($i, $sessionfilters['search_type']) ? $sessionfilters['search_type'][$i]
+					$search_type = array_key_exists($i, $sessionFilters['search_type']) ? $sessionFilters['search_type'][$i]
 						: $elementModel->getDefaultFilterCondition();
 
-					$join = $sessionfilters['join'][$i];
-					$grouped = array_key_exists($i, $sessionfilters['grouped_to_previous']) ? $sessionfilters['grouped_to_previous'][$i] : 0;
+					$join = $sessionFilters['join'][$i];
+					$grouped = array_key_exists($i, $sessionFilters['grouped_to_previous']) ? $sessionFilters['grouped_to_previous'][$i] : 0;
 
 					$element = $elementModel->getElement();
 					$elparams = $elementModel->getParams();
@@ -1587,7 +1586,7 @@ class FabrikFEModelListfilter extends FabModel
 					 * $$$ rob if the session filter is also in the request data then set it to use the same key as the post data
 					 * when the post data is processed it should then overwrite these values
 					 */
-					$counter = array_search($key, $postkeys) !== false ? array_search($key, $postkeys) : $this->counter;
+					$counter = array_search($key, $postKeys) !== false ? array_search($key, $postKeys) : $this->counter;
 				}
 			}
 
@@ -1622,7 +1621,7 @@ class FabrikFEModelListfilter extends FabModel
 			$filters['raw'][$counter] = $raw;
 			$filters['orig_condition'][$counter] = $origCondition;
 
-			if (array_search($key, $postkeys) === false)
+			if (array_search($key, $postKeys) === false)
 			{
 				$this->counter++;
 			}
