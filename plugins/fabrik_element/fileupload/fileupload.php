@@ -892,7 +892,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		if ($render->output == '' && $params->get('default_image') != '')
 		{
 			$defaultURL = $storage->getFileUrl(str_replace(COM_FABRIK_BASE, '', $params->get('default_image')));
-			$render->output = '<img src="' . $defaultURL . '" alt="image" />';
+			$render->output = '<img class="fabrikDefaultImage" src="' . $defaultURL . '" alt="image" />';
 		}
 		else
 		{
