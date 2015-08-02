@@ -471,6 +471,7 @@ class PlgSystemFabrik extends JPlugin
 						}
 
 						$o->title = strip_tags($o->title);
+						$o->title = html_entity_decode($o->title);
 						$aAllowedList[] = $o;
 					}
 				}
