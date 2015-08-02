@@ -404,7 +404,7 @@ class PlgFabrik_ElementTags extends PlgFabrik_ElementDatabasejoin
 				$ids = explode(GROUPSPLITTER, $thisRow->$idname);
 			}
 			$merged = array_combine($ids, $data);
-			$baseUrl = $this->tagUrl($thisRow);
+			$baseUrl = $this->tagUrl();
 			$icon = $this->tagIcon();
 			$data = FabrikHelperHTML::tagify($merged, $baseUrl, $name, $icon);
 		}
@@ -412,12 +412,10 @@ class PlgFabrik_ElementTags extends PlgFabrik_ElementDatabasejoin
 
 	/**
 	 * Build the base URL for the tag filter links
-	 *
-	 * @param   array  $thisRow  Row data
 	 * 
 	 * @return string
 	 */
-	protected function tagUrl($thisRow = array())
+	protected function tagUrl()
 	{
 		$name = $this->getFullName(true, false);
 		$rawname = $name . '_raw';
