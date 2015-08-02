@@ -6109,7 +6109,6 @@ class FabrikFEModelList extends JModelForm
 		{
 			$app = JFactory::getApplication();
 			$profiler = JProfiler::getInstance('Application');
-			$params = $this->getParams();
 			$this->viewfilters = array();
 			JDEBUG ? $profiler->mark('fabrik makeFilters start') : null;
 			$modelFilters = $this->makeFilters($container, $type, $id, $ref);
