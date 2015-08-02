@@ -2405,14 +2405,15 @@ if (!$j3)
 	 * Get base tag url
 	 *
 	 * @param   string  $fullName  Full name (key value to remove from querystring)
+	 * @param   string  $rootUrl   Optional root to use rather than REQUEST_URI
 	 *
 	 * @return string
 	 */
-	public static function tagBaseUrl($fullName)
+	public static function tagBaseUrl($fullName, $rootUrl = null)
 	{
 		$url = $_SERVER['REQUEST_URI'];
 		$bits = explode('?', $url);
-		$root = FArrayHelper::getValue($bits, 0, '', 'string');
+		$root = isset($rootUrl) ? $rootUrl : FArrayHelper::getValue($bits, 0, '', 'string');
 		$bits = FArrayHelper::getValue($bits, 1, '', 'string');
 		$bits = explode("&", $bits);
 

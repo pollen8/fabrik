@@ -351,8 +351,14 @@ class PlgFabrik_ElementTags extends PlgFabrik_ElementDatabasejoin
 		$formData =& $this->getFormModel()->formDataWithTableName;
 		$tagIds = (array) $formData[$rawname];
 
-		foreach ($tagIds as &$tagId)
+		foreach ($tagIds as $tagKey => &$tagId)
 		{
+			if (empty($tagId))
+			{
+				unset($tagIds[$tagKey]);
+				continue;
+			}
+			
 			// New tag added
 			if (strstr($tagId, '#fabrik#'))
 			{
@@ -419,8 +425,7 @@ class PlgFabrik_ElementTags extends PlgFabrik_ElementDatabasejoin
 	{
 		$name = $this->getFullName(true, false);
 		$rawname = $name . '_raw';
-		//$baseUrl = FabrikHelperHTML::tagBaseUrl($rawname);
-		$baseUrl = $this->tagListURL();
+		$baseUrl = FabrikHelperHTML::tagBaseUrl($rawname, $this->tagListURL());
 		$baseUrl .= FabrikString::qsSepChar($baseUrl);
 		$baseUrl .= $rawname . '={key}';
 
