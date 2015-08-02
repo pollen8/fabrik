@@ -961,7 +961,32 @@ class FabrikString extends JString
 
 		return $value;
 	}
-
+	
+	/**
+	 * Return appropriate query string sepchar
+	 * 
+	 * @param  string  $url
+	 * 
+	 * @return  string  query string sepchar
+	 */
+	public static function qsSepChar($url)
+	{
+		if (strstr($url, '?'))
+		{
+			if (substr($url, -1) === '?')
+			{
+				return '';
+			}
+			else
+			{
+				return '&';
+			}
+		}
+		else
+		{
+			return '?';
+		}
+	}
 }
 
 /**
@@ -1021,4 +1046,5 @@ class FText extends JText
 		// if we got this far, hand it to JText::_() as normal
 		return parent::_($string, $jsSafe, $interpretBackSlashes, $script);
 	}
+
 }

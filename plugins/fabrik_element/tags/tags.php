@@ -162,7 +162,14 @@ class PlgFabrik_ElementTags extends PlgFabrik_ElementDatabasejoin
 		}
 		else
 		{
-			$where = $fk . ' = ' . $db->quote($rowid);
+			if (!empty($rowid))
+			{
+				$where = $fk . ' = ' . $db->quote($rowid);
+			}
+			else
+			{
+				$where = '';
+			}
 		}
 
 		$params->set('database_join_where_sql',  $where);
@@ -397,7 +404,7 @@ class PlgFabrik_ElementTags extends PlgFabrik_ElementDatabasejoin
 				$ids = explode(GROUPSPLITTER, $thisRow->$idname);
 			}
 			$merged = array_combine($ids, $data);
-			$baseUrl = $this->tagUrl();
+			$baseUrl = $this->tagUrl($thisRow);
 			$icon = $this->tagIcon();
 			$data = FabrikHelperHTML::tagify($merged, $baseUrl, $name, $icon);
 		}
@@ -406,14 +413,17 @@ class PlgFabrik_ElementTags extends PlgFabrik_ElementDatabasejoin
 	/**
 	 * Build the base URL for the tag filter links
 	 *
+	 * @param   array  $thisRow  Row data
+	 * 
 	 * @return string
 	 */
-	protected function tagUrl()
+	protected function tagUrl($thisRow = array())
 	{
 		$name = $this->getFullName(true, false);
 		$rawname = $name . '_raw';
-		$baseUrl = FabrikHelperHTML::tagBaseUrl($rawname);
-		$baseUrl .= strstr($baseUrl, '?') ? '&' : '?';
+		//$baseUrl = FabrikHelperHTML::tagBaseUrl($rawname);
+		$baseUrl = $this->tagListURL();
+		$baseUrl .= FabrikString::qsSepChar($baseUrl);
 		$baseUrl .= $rawname . '={key}';
 
 		return $baseUrl;
@@ -432,4 +442,27 @@ class PlgFabrik_ElementTags extends PlgFabrik_ElementDatabasejoin
 
 		return $icon;
 	}
+	
+	/**
+	 * Get tag list URL
+	 * 
+	 * @return string
+	 */
+	protected function tagListURL()
+	{
+		$listModel = $this->getListModel();
+		$app = JFactory::getApplication();
+		if ($app->isAdmin())
+		{
+			$url = 'index.php?option=com_fabrik&amp;task=list.view&amp;listid=' . $listModel->getId();
+		}
+		else
+		{
+			$package = $app->getUserState('com_fabrik.package', 'fabrik');
+			$url = 'index.php?option=com_' . $package . '&amp;view=list&amp;listid=' . $listModel->getId();
+			$url = JRoute::_($url);
+		}
+		return $url;
+	}
+	
 }
