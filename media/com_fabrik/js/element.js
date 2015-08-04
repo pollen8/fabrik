@@ -35,6 +35,13 @@ var FbElement =  new Class({
 		this.loadEvents = []; // need to store these for use if the form is reset
 		this.events = $H({}); // was changeEvents
 		this.setOptions(options);
+		// If this element is a 'chosen' select, we need to relay the jQuery change event to Moo
+		if (document.id(this.options.element + '_chzn')) {
+			var changeEvent = this.getChangeEvent();
+			jQuery('#' + this.options.element).on('change', {changeEvent: changeEvent}, function (event) {
+				document.id(this.id).fireEvent(event.data.changeEvent, new Event.Mock(event.data.changeEvent, document.id(this.id)));				
+			});
+		}
 		return this.setElement();
 	},
 	
@@ -357,7 +364,11 @@ var FbElement =  new Class({
 			this.element.removeClass('chzn-done');
 			this.element.addClass('chzn-select');
 			this.element.getParent().getElement('.chzn-container').destroy();
-			jQuery(".chzn-select").chosen();
+			jQuery('#' + this.element.id).chosen();
+			var changeEvent = this.getChangeEvent();
+			jQuery('#' + this.options.element).on('change', {changeEvent: changeEvent}, function (event) {
+				document.id(this.id).fireEvent(event.data.changeEvent, new Event.Mock(event.data.changeEvent, document.id(this.id)));				
+			});	
 		}
 	},
 	
