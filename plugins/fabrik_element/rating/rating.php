@@ -251,7 +251,14 @@ class PlgFabrik_ElementRating extends PlgFabrik_Element
 			$this->creatorIds = $db->loadObjectList('row_id');
 		}
 
-		return array_key_exists($row_id, $this->creatorIds) ? $this->creatorIds[$row_id]->user_id : 0;
+		if (empty($this->creatorIds))
+		{
+			return JFactory::getUser()->get('id');
+		}
+		else
+		{
+			return array_key_exists($row_id, $this->creatorIds) ? $this->creatorIds[$row_id]->user_id : 0;
+		}
 	}
 
 	/**
@@ -326,7 +333,14 @@ class PlgFabrik_ElementRating extends PlgFabrik_Element
 			return FText::_('PLG_ELEMENT_RATING_ONLY_ACCESSIBLE_IN_DETAILS_VIEW');
 		}
 
-		$css = $this->canRate() ? 'cursor:pointer;' : '';
+		$rowId = $this->getFormModel()->getRowId();
+		
+		if (empty($rowId))
+		{
+			return FText::_('PLG_ELEMENT_RATING_NO_RATING_TILL_CREATED');
+		}
+		
+		$css = $this->canRate($rowId) ? 'cursor:pointer;' : '';
 		$value = $this->getValue($data, $repeatCounter);
 
 		FabrikHelperHTML::addPath(COM_FABRIK_BASE . 'plugins/fabrik_element/rating/images/', 'image', 'form', false);
@@ -335,7 +349,7 @@ class PlgFabrik_ElementRating extends PlgFabrik_Element
 		$formId = $input->getInt('formid');
 		$rowId = $this->getFormModel()->getRowId();
 
-		if ($params->get('rating-mode') == 'creator-    rating')
+		if ($params->get('rating-mode') == 'creator-rating')
 		{
 			$avg = $value;
 		}
@@ -353,7 +367,7 @@ class PlgFabrik_ElementRating extends PlgFabrik_Element
 		$layoutData->value = $value;
 		$layoutData->clearImg = FabrikHelperHTML::image('remove.png', 'list', @$this->tmpl, $imgOpts);
 		$layoutData->avg = $avg;
-		$layoutData->canRate = $this->canRate();
+		$layoutData->canRate = $this->canRate($rowId);
 		$layoutData->ratingNoneFirst = $params->get('rating-nonefirst');
 		$layoutData->css = $css;
 		$layoutData->tmpl = @$this->tmpl;
@@ -405,15 +419,17 @@ class PlgFabrik_ElementRating extends PlgFabrik_Element
 		$input = $app->input;
 		$this->setId($input->getInt('element_id'));
 		$this->loadMeForAjax();
+		$params = $this->getParams();
 		$listModel = $this->getListModel();
 		$list = $listModel->getTable();
 		$listid = $list->id;
 		$formid = $listModel->getFormModel()->getId();
 		$row_id = $input->get('row_id');
 		$rating = $input->getInt('rating');
+		
 		$this->doRating($listid, $formid, $row_id, $rating);
 
-		if ($input->get('mode') == 'creator-rating')
+		if ($params->get('rating-mode') == 'creator-rating')
 		{
 			// @todo FIX for joins as well
 
