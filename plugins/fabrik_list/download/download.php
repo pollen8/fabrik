@@ -111,36 +111,34 @@ class PlgFabrik_ListDownload extends PlgFabrik_List
 		$filelist = array();
 		$zip_err = '';
 
-		// Check ajax upload file names
-		$formModel = $model->getFormModel();
-		$downloadElement = $formModel->getElement($download_file);
-
-		if ($downloadElement)
-		{
-			$download_file = $downloadElement->getFullName(true, true);
-		}
-
 		if (empty($download_fk) && empty($download_file) && empty($download_table))
 		{
 			return;
 		}
 		elseif (empty($download_fk) && empty($download_table) && !empty($download_file))
 		{
+			$download_files = explode(',', $download_file);
+			
 			foreach ($ids AS $id)
 			{
 				$row = $model->getRow($id);
-
-				if (isset($row->$download_file))
+				
+				foreach ($download_files as $dl)
 				{
-					$tmpFiles = explode(GROUPSPLITTER, $row->$download_file);
-
-					foreach ($tmpFiles as $tmpFile)
+					$dl = trim($dl);
+					
+					if (isset($row->$dl) && !empty($row->$dl))
 					{
-						$this_file = JPATH_SITE . '/' . $tmpFile;
-
-						if (is_file($this_file))
+						$tmpFiles = explode(GROUPSPLITTER, $row->$dl);
+	
+						foreach ($tmpFiles as $tmpFile)
 						{
-							$filelist[] = $this_file;
+							$this_file = JPATH_SITE . '/' . $tmpFile;
+	
+							if (JFile::exists($this_file))
+							{
+								$filelist[] = $this_file;
+							}
 						}
 					}
 				}
