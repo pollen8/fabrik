@@ -51,7 +51,8 @@ class PlgFabrik_ValidationruleIsEmail extends PlgFabrik_Validationrule
 		}
 
 		// Decode as it can be posted via ajax
-		$email = urldecode($email);
+		// (but first % encode any + characters, as urldecode() will turn + into space)
+		$email = urldecode(str_replace('+', '%2B', $email));
 		$params = $this->getParams();
 		$allow_empty = $params->get('isemail-allow_empty');
 
