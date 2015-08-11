@@ -537,16 +537,17 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 		$sql = $this->buildQuery($data, $incWhere, $opts);
 		$sqlKey = (string) $sql;
 		$sqlKey .= $this->isEditable() ? '0' : '1';
-		$db->setQuery($sql);
-
-		if (array_key_exists($sqlKey, $this->optionVals))
+		
+		$eval = $params->get('cdd_join_label_eval', '');
+		
+		if (trim($eval) === '' && array_key_exists($sqlKey, $this->optionVals))
 		{
 			return $this->optionVals[$sqlKey];
 		}
 
+		$db->setQuery($sql);
 		FabrikHelperHTML::debug($db->getQuery(), 'cascadingdropdown _getOptionVals');
 		$this->optionVals[$sqlKey] = $db->loadObjectList();
-		$eval = $params->get('cdd_join_label_eval', '');
 
 		if (trim($eval) !== '')
 		{
