@@ -646,6 +646,12 @@ class FabrikFEModelPluginmanager extends JModelLegacy
 							if ($ok === false)
 							{
 								$return[] = false;
+								$m = $method . '_result';
+								if (method_exists($plugin, $m))
+								{
+									$this->data[] = $mainData[] = $plugin->$m($c);
+									$this->dataModels[] = $plugin;
+								}
 							}
 							else
 							{
@@ -656,6 +662,7 @@ class FabrikFEModelPluginmanager extends JModelLegacy
 								if (method_exists($plugin, $m))
 								{
 									$this->data[] = $mainData[] = $plugin->$m($c);
+									$this->dataModels[] = $plugin;
 								}
 							}
 
