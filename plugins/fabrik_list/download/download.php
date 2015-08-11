@@ -181,7 +181,7 @@ class PlgFabrik_ListDownload extends PlgFabrik_List
 			$zipfile = tempnam(sys_get_temp_dir(), "zip");
 			$zipfile_basename = basename($zipfile);
 			$zip = new ZipArchive;
-			$zipres = $zip->open($zipfile, ZipArchive::OVERWRITE);
+			$zipres = $zip->open($zipfile, ZipArchive::CREATE);
 
 			if ($zipres === true)
 			{
@@ -247,7 +247,7 @@ class PlgFabrik_ListDownload extends PlgFabrik_List
 			}
 			else
 			{
-				$zip_err = FText::_('ZipArchive open error: ' . $zipres);
+				$zip_err = FText::_('ZipArchive open error, cannot create file : ' . $zipfile . ' : ' . $zipres);
 			}
 		}
 		else
