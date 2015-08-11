@@ -957,7 +957,9 @@ if (!$j3)
 
 			if ($fbConfig->get('advanced_behavior', '0') == '1')
 			{
-				JHtml::_('formbehavior.chosen', 'select.advancedSelect');
+				$chosen_options = $fbConfig->get('advanced_behavior_options', '{}');
+				$chosen_options = empty($chosen_options) ? array() : JArrayHelper::fromObject(json_decode($chosen_options));
+				JHtml::_('formbehavior.chosen', 'select.advancedSelect', null, $chosen_options);
 			}
 
 			if (self::inAjaxLoadedPage() && !$bootstrapped)
