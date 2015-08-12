@@ -1137,11 +1137,18 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 			}
 
 			$crop = (array) FArrayHelper::getValue($raw, 'crop');
-			$ids = (array) FArrayHelper::getValue($raw, 'id');
-			$ids = array_values($ids);
+			$id_keys = (array) FArrayHelper::getValue($raw, 'id');
+			$ids = array_values($id_keys);
 
 			$saveParams = array();
-			$files = array_keys($crop);
+			if (!empty($crop))
+			{
+				$files = array_keys($crop);
+			}
+			else
+			{
+				$files = array_keys($id_keys);
+			}
 			$groupModel = $this->getGroup();
 			$formModel = $this->getFormModel();
 			$isJoin = ($groupModel->isJoin() || $this->isJoin());
@@ -1719,14 +1726,18 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 
 			if ($this->isJoin())
 			{
+				/*
 				$join = $this->getJoinModel()->getJoin();
 				$joinid = $join->id;
 				$joindata = $input->post->get('join', array(), 'array');
 				$joindata = FArrayHelper::getValue($joindata, $joinid, array());
 				$joindata = FArrayHelper::getValue($joindata, $name, array());
 				$joinids = FArrayHelper::getValue($joindata, 'id', array());
-
 				return empty($joinids) ? true : false;
+				*/
+				$d = (array) $input->get($name, array(), 'array');				
+				return !array_key_exists('id', $d);
+
 			}
 			else
 			{
