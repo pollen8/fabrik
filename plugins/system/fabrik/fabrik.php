@@ -492,7 +492,9 @@ class PlgSystemFabrik extends JPlugin
 			}
 		}
 		if ($limit < 0) {
-			$msg = FText::_('Some_records_are_not_shown_due_to_search_limitations');
+			$language = JFactory::getLanguage();
+			$language->load('plg_system_fabrik', JPATH_SITE.'/plugins/system/fabrik');
+			$msg = FText::_('PLG_FABRIK_SYSTEM_SEARCH_LIMIT');
 			$app->enqueueMessage($msg);
 		}
 		return $allList;
