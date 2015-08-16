@@ -387,7 +387,7 @@ class PlgSystemFabrik extends JPlugin
 
 			// The table shouldn't be included in the search results or we have reached the max number of records to show.
 			if (!$params->get('search_use') || $limit <= 0)
-			{	
+			{
 				continue;
 			}
 
@@ -492,7 +492,7 @@ class PlgSystemFabrik extends JPlugin
 			}
 		}
 		if ($limit < 0) {
-			$msg = FText::_('Some records are not shown due to search limitations');
+			$msg = FText::_('Some_records_are_not_shown_due_to_search_limitations');
 			$app->enqueueMessage($msg);
 		}
 		return $allList;
