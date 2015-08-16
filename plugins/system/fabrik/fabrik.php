@@ -268,7 +268,8 @@ class PlgSystemFabrik extends JPlugin
 		require_once JPATH_SITE . '/components/com_content/helpers/route.php';
 
 		// Load plugin params info
-		$limit = $params->def('search_limit', 50);
+		//$limit = $params->def('search_limit', 50);
+		$limit = $params->get('search_limit', 50);
 		$text = trim($text);
 
 		if ($text == '')
@@ -433,6 +434,7 @@ class PlgSystemFabrik extends JPlugin
 					if (!in_array($href, $urls))
 					{
 						$limit--;
+						if ($limit < 0) continue;
 						$urls[] = $href;
 						$o = new stdClass;
 
@@ -489,7 +491,10 @@ class PlgSystemFabrik extends JPlugin
 				$allList = array_merge($allList, $li);
 			}
 		}
-
+		if ($limit < 0) {
+			$msg = FText::_('Some_records_are_not_shown_due_to_search_limitations');
+			$app->enqueueMessage($msg);
+		}
 		return $allList;
 	}
 }
