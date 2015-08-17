@@ -29,6 +29,10 @@ var FbDropdown = new Class({
 			fe.adopt(clone);
 			d = c.getElement('div.addoption');
 			d.setStyle('margin', 0);
+			var ad = d.getElement('input[name*=_additions]');
+			ad.id = this.element.id + '_additions';
+			ad.name = this.element.id + '_additions';
+
 		}
 		this.mySlider = new Fx.Slide(d, {
 			duration: 500
@@ -40,44 +44,51 @@ var FbDropdown = new Class({
 		}.bind(this));
 	},
 
+	addClick: function (e) {
+		var c = this.getContainer();
+		var l = c.getElement('input[name=addPicklistLabel]');
+		var v = c.getElement('input[name=addPicklistValue]');
+		var label = l.value;
+		if (v) {
+			val = v.value;
+		} else {
+			val = label;
+		}
+		if (val === '' || label === '') {
+			alert(Joomla.JText._('PLG_ELEMENT_DROPDOWN_ENTER_VALUE_LABEL'));
+		}
+		else {
+			var opt = new Element('option', {
+				'selected': 'selected',
+				'value': val
+			}).set('text', label).inject(document.id(this.element.id));
+			e.stop();
+			if (v) {
+				v.value = '';
+			}
+			l.value = '';
+			this.addNewOption(val, label);
+			document.id(this.element.id).fireEvent('change', {stop: function () {}});
+			if (this.mySlider) {
+				this.mySlider.toggle();
+			}
+			if (this.options.advanced)
+			{
+				jQuery("#" + this.element.id).trigger("liszt:updated");
+			}
+		}
+	},
+	
 	watchAdd: function () {
 		var val;
 		if (this.options.allowadd === true && this.options.editable !== false) {
 			var id = this.element.id;
 			var c = this.getContainer();
-			c.getElement('input[type=button]').addEvent('click', function (e) {
-				var l = c.getElement('input[name=addPicklistLabel]');
-				var v = c.getElement('input[name=addPicklistValue]');
-				var label = l.value;
-				if (v) {
-					val = v.value;
-				} else {
-					val = label;
-				}
-				if (val === '' || label === '') {
-					alert(Joomla.JText._('PLG_ELEMENT_DROPDOWN_ENTER_VALUE_LABEL'));
-				}
-				else {
-					var opt = new Element('option', {
-						'selected': 'selected',
-						'value': val
-					}).set('text', label).inject(document.id(this.element.id));
-					e.stop();
-					if (v) {
-						v.value = '';
-					}
-					l.value = '';
-					this.addNewOption(val, label);
-					document.id(this.element.id).fireEvent('change', {stop: function () {}});
-					if (this.mySlider) {
-						this.mySlider.toggle();
-					}
-					if (this.options.advanced)
-					{
-						jQuery("#" + this.element.id).trigger("liszt:updated");
-					}
-				}
-			}.bind(this));
+			if (this.addClickEvent) {
+				c.getElement('input[type=button]').removeEvent('click', this.addClickEvent);
+			}
+			this.addClickEvent = this.addClick.bind(this);
+			c.getElement('input[type=button]').addEvent('click', this.addClickEvent);
 		}
 	},
 
