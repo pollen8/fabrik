@@ -28,6 +28,13 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 	 * @var array
 	 */
 	protected $attachments = array();
+	
+	/**
+	 * Attachment files to delete after use
+	 *
+	 * @var array
+	 */
+	protected $deleteAttachments = array();
 
 	/**
 	 * Posted form keys that we don't want to include in the message
@@ -343,6 +350,14 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 				$app->enqueueMessage(JText::sprintf('PLG_FORM_EMAIL_DID_NOT_SEND_EMAIL_INVALID_ADDRESS', $email), 'notice');
 			}
 		}
+		
+		foreach($this->deleteAttachments as $attachment)
+		{
+			if (JFile::exists($attachment))
+			{
+				JFile::delete($attachment);
+			}			
+		}
 
 		return true;
 	}
@@ -546,6 +561,11 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 							if ($file !== false)
 							{
 								$this->attachments[] = $file;
+								
+								if ($elementModel->shouldDeleteEmailAttachment($v))
+								{
+									$this->deleteAttachments[] = $file;
+								}
 							}
 						}
 					}

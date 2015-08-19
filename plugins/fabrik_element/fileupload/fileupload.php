@@ -2542,23 +2542,70 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 
 		if ($params->get('ul_email_file'))
 		{
-			if (empty($data))
-			{
-				$data = $params->get('default_image');
-			}
 
-			if (strstr($data, JPATH_SITE))
+			if (empty($data) || $params->get('fileupload_storage_type', 'filesystemstorage') == 'filesystemstorage')
 			{
-				$p = str_replace(COM_FABRIK_LIVESITE, JPATH_SITE, $data);
+				if (empty($data))
+				{
+					$data = $params->get('default_image');
+				}
+				
+				if (strstr($data, JPATH_SITE))
+				{
+					$p = str_replace(COM_FABRIK_LIVESITE, JPATH_SITE, $data);
+				}
+				else
+				{
+					$p = JPATH_SITE . '/' . $data;
+				}
 			}
 			else
 			{
-				$p = JPATH_SITE . '/' . $data;
+				$ext = pathinfo($data, PATHINFO_EXTENSION);
+				$config = JFactory::getConfig();
+				$p = tempnam($config->get('tmp_path'), 'email_');
+				
+				if (empty($p)) {
+					return false;
+				}
+				
+				if (!empty($ext))
+				{
+					JFile::delete($p);
+					$p .= '.' . $ext;
+				}
+				
+				$storage = $this->getStorage();
+				$filecontent = $storage->read($data);
+				JFile::write($p, $filecontent);
 			}
 
 			return $p;
 		}
 
+		return false;
+	}
+	
+	/**
+	 * Should the attachment file we provided in addEmailAttachment() be removed after use
+	 *
+	 * @param   string  $data  Data
+	 *
+	 * @return  bool
+	 */
+	
+	public function shouldDeleteEmailAttachment($data)
+	{
+		$params = $this->getParams();
+	
+		if ($params->get('ul_email_file'))
+		{
+			if (!empty($data) && $params->get('fileupload_storage_type', 'filesystemstorage') == 'amazons3storage')
+			{
+				return true;
+			}
+		}
+	
 		return false;
 	}
 
