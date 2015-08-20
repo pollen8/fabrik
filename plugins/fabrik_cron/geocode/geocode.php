@@ -41,6 +41,17 @@ class PlgFabrik_CronGeocode extends PlgFabrik_Cron
 	}
 
 	/**
+	 * Whether cron should automagically load table data
+	 *
+	 * @return  bool
+	 */
+	
+	public function requiresTableData()
+	{
+		return true;
+	}
+	
+	/**
 	 * Do the plugin action
 	 *
 	 * @param   array   &$data       array data to process
@@ -53,11 +64,15 @@ class PlgFabrik_CronGeocode extends PlgFabrik_Cron
 	{
 		$params = $this->getParams();
 
+		$db = $listModel->getDb();
+		$query = $db->getQuery(true);
+		
 		// Grab the table model and find table name and PK
 		$table = $listModel->getTable();
 		$table_name = $table->db_table_name;
 		$primary_key = $table->db_primary_key;
 		$primary_key_element = FabrikString::shortColName($table->db_primary_key);
+		$primary_key_element_long = $table_name . '___' . $primary_key_element;
 
 		$connection = (int) $params->get('connection');
 
@@ -66,13 +81,14 @@ class PlgFabrik_CronGeocode extends PlgFabrik_Cron
 		 * because it can be arbitrarily filtered according to who happened to hit the page when cron
 		 * needed to run.
 		 */
+		/*
 		$mydata = array();
 		$db = FabrikWorker::getDbo(false, $connection);
 		$query = $db->getQuery(true);
 		$query->select('*')->from($table_name);
 		$db->setQuery($query);
 		$mydata[0] = $db->loadObjectList();
-
+		*/
 		// Grab all the params, like GMaps key, field names to use, etc.
 
 		$geocode_batch_limit = (int) $params->get('geocode_batch_limit', '0');
@@ -101,7 +117,7 @@ class PlgFabrik_CronGeocode extends PlgFabrik_Cron
 		$total_encoded = 0;
 		$total_attempts = 0;
 
-		foreach ($mydata as $gkey => $group)
+		foreach ($data as $gkey => $group)
 		{
 			if (is_array($group))
 			{
@@ -123,11 +139,11 @@ class PlgFabrik_CronGeocode extends PlgFabrik_Cron
 
 					if ($geocode_when == '1')
 					{
-						$do_geocode = empty($row->$geocode_map_element) || $row->$geocode_map_element == $geocode_is_empty;
+						$do_geocode = empty($row->$geocode_map_element_long) || $row->$geocode_map_element_long == $geocode_is_empty;
 					}
 					elseif ($geocode_when == '2')
 					{
-						$do_geocode = empty($row->$geocode_map_element);
+						$do_geocode = empty($row->$geocode_map_element_long);
 					}
 
 					if ($do_geocode)
@@ -143,51 +159,51 @@ class PlgFabrik_CronGeocode extends PlgFabrik_Cron
 						 * if so, see if it has a value in this row
 						 * if so, add it to the address array.
 						 */
-						if ($geocode_addr1_element)
+						if ($geocode_addr1_element_long)
 						{
-							if ($row->$geocode_addr1_element)
+							if ($row->$geocode_addr1_element_long)
 							{
-								$a_full_addr[] = $row->$geocode_addr1_element;
+								$a_full_addr[] = $row->$geocode_addr1_element_long;
 							}
 						}
 
-						if ($geocode_addr2_element)
+						if ($geocode_addr2_element_long)
 						{
-							if ($row->$geocode_addr2_element)
+							if ($row->$geocode_addr2_element_long)
 							{
-								$a_full_addr[] = $row->$geocode_addr2_element;
+								$a_full_addr[] = $row->$geocode_addr2_element_long;
 							}
 						}
 
-						if ($geocode_city_element)
+						if ($geocode_city_element_long)
 						{
-							if ($row->$geocode_city_element)
+							if ($row->$geocode_city_element_long)
 							{
-								$a_full_addr[] = $row->$geocode_city_element;
+								$a_full_addr[] = $row->$geocode_city_element_long;
 							}
 						}
 
-						if ($geocode_state_element)
+						if ($geocode_state_element_long)
 						{
-							if ($row->$geocode_state_element)
+							if ($row->$geocode_state_element_long)
 							{
-								$a_full_addr[] = $row->$geocode_state_element;
+								$a_full_addr[] = $row->$geocode_state_element_long;
 							}
 						}
 
-						if ($geocode_zip_element)
+						if ($geocode_zip_element_long)
 						{
-							if ($row->$geocode_zip_element)
+							if ($row->$geocode_zip_element_long)
 							{
-								$a_full_addr[] = $row->$geocode_zip_element;
+								$a_full_addr[] = $row->$geocode_zip_element_long;
 							}
 						}
 
-						if ($geocode_country_element)
+						if ($geocode_country_element_long)
 						{
-							if ($row->$geocode_country_element)
+							if ($row->$geocode_country_element_long)
 							{
-								$a_full_addr[] = $row->$geocode_country_element;
+								$a_full_addr[] = $row->$geocode_country_element_long;
 							}
 						}
 						// Now explode the address into a string
@@ -208,11 +224,14 @@ class PlgFabrik_CronGeocode extends PlgFabrik_Cron
 								if (!empty($lat) && !empty($long))
 								{
 									$map_value = "($lat,$long):$geocode_zoom_level";
+									/*
 									$query->clear();
 									$query->update($table_name)->set($geocode_map_element . ' = ' . $db->quote($map_value))
-									->where($primary_key . ' = ' . $db->quote($row->$primary_key_element));
+									->where($primary_key . ' = ' . $db->quote($row->$primary_key_element_long));
 									$db->setQuery($query);
 									$db->execute();
+									*/
+									$listModel->storeCell($row->$primary_key_element_long, $geocode_map_element, $map_value);
 									$total_encoded++;
 								}
 							}

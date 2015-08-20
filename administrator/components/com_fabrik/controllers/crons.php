@@ -108,7 +108,7 @@ class FabrikAdminControllerCrons extends FabControllerAdmin
 					$thisListModel->setLimits(0, 0);
 					$nav = $thisListModel->getPagination(0, 0, 0);
 					$data = $thisListModel->getData();
-					$log->message .= "\n" . $thisListModel->buildQuery();
+					//$log->message .= "\n" . (string) $thisListModel->mainQuery;
 				}
 			}
 			else
