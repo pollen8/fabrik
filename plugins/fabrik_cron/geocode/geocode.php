@@ -72,7 +72,7 @@ class PlgFabrik_CronGeocode extends PlgFabrik_Cron
 		$table_name = $table->db_table_name;
 		$primary_key = $table->db_primary_key;
 		$primary_key_element = FabrikString::shortColName($table->db_primary_key);
-		$primary_key_element_long = $table_name . '___' . $primary_key_element;
+		$primary_key_element_long = $table_name . '___' . $primary_key_element . '_raw';
 
 		$connection = (int) $params->get('connection');
 
@@ -237,7 +237,7 @@ class PlgFabrik_CronGeocode extends PlgFabrik_Cron
 							}
 							else
 							{
-								$logMsg = sprintf('Error (%s), no geocode result for: %s', $res['status'], $full_addr);
+								$logMsg = sprintf('Error (%s), id %s , no geocode result for: %s', $res['status'], $primary_key_element_long, $full_addr);
 								FabrikWorker::log('plg.cron.geocode.information', $logMsg);
 							}
 
@@ -248,13 +248,13 @@ class PlgFabrik_CronGeocode extends PlgFabrik_Cron
 						}
 						else
 						{
-							FabrikWorker::log('plg.cron.geocode.information', 'empty address');
+							FabrikWorker::log('plg.cron.geocode.information', 'empty address, id = '.$row->$primary_key_element_long');
 						}
 					}
 				}
 			}
 		}
-
+		FabrikWorker::log('plg.cron.geocode.information', 'Total encoded: '.$total_encoded);
 		return $total_encoded;
 	}
 }
