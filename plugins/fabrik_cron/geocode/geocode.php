@@ -248,7 +248,7 @@ class PlgFabrik_CronGeocode extends PlgFabrik_Cron
 						}
 						else
 						{
-							FabrikWorker::log('plg.cron.geocode.information', 'empty address, id = '.$row->$primary_key_element_long');
+							FabrikWorker::log('plg.cron.geocode.information', 'empty address, id = '.$row->$primary_key_element_long);
 						}
 					}
 				}
