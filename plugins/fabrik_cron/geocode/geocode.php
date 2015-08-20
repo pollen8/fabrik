@@ -237,7 +237,7 @@ class PlgFabrik_CronGeocode extends PlgFabrik_Cron
 							}
 							else
 							{
-								$logMsg = sprintf('Error (%s), id %s , no geocode result for: %s', $res['status'], $primary_key_element_long, $full_addr);
+								$logMsg = sprintf('Error (%s), id %s , no geocode result for: %s', $res['status'], $row->$primary_key_element_long, $full_addr);
 								FabrikWorker::log('plg.cron.geocode.information', $logMsg);
 							}
 
