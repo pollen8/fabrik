@@ -162,6 +162,8 @@ class PlgFabrik_ElementTags extends PlgFabrik_ElementDatabasejoin
 		}
 		else
 		{
+			// $$$ hugh - erm ... surely we don't want to select ALL tags on a new form?
+			/*
 			if (!empty($rowid))
 			{
 				$where = $fk . ' = ' . $db->quote($rowid);
@@ -170,6 +172,8 @@ class PlgFabrik_ElementTags extends PlgFabrik_ElementDatabasejoin
 			{
 				$where = '';
 			}
+			*/
+			$where = $fk . ' = ' . $db->quote($rowid);
 		}
 
 		$params->set('database_join_where_sql',  $where);
