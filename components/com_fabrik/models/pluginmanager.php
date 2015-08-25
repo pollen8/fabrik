@@ -646,11 +646,16 @@ class FabrikFEModelPluginmanager extends JModelLegacy
 							if ($ok === false)
 							{
 								$return[] = false;
-								$m = $method . '_result';
-								if (method_exists($plugin, $m))
+								
+								// if we were processing and it errored out, we need to pick up any error messages
+								if ($method === 'process')
 								{
-									$this->data[] = $mainData[] = $plugin->$m($c);
-									$this->dataModels[] = $plugin;
+									$m = $method . '_result';
+									if (method_exists($plugin, $m))
+									{
+										$this->data[] = $mainData[] = $plugin->$m($c);
+										$this->dataModels[] = $plugin;
+									}
 								}
 							}
 							else
