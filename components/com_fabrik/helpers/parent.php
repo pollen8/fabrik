@@ -55,7 +55,7 @@ class FabrikWorker
 	 *
 	 * @var  string
 	 */
-	protected $image_extensions_eregi = 'bmp|gif|jpg|jpeg|png';
+	static protected $image_extensions_eregi = 'bmp|gif|jpg|jpeg|png';
 
 	/**
 	 * Audio file extensions
@@ -131,8 +131,6 @@ class FabrikWorker
 	 * Returns true if $file has an image extension type
 	 *
 	 * @param   string  $file  Filename
-	 *
-	 * @deprecated - doesn't seem to be used
 	 *
 	 * @return	bool
 	 */

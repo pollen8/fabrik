@@ -1853,29 +1853,37 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		jimport('joomla.filesystem.path');
 		$storage->setPermissions($filePath);
 
-		// $$$ hugh @TODO - shouldn't we check to see if it's actually an image before we do any of this stuff???
-
-		// Resize main image
-		$oImage = FabimageHelper::loadLib($params->get('image_library'));
-		$oImage->setStorage($storage);
-		$mainWidth = $params->get('fu_main_max_width', '');
-		$mainHeight = $params->get('fu_main_max_height', '');
-
-		if ($mainWidth != '' || $mainHeight != '')
+		if (FabrikWorker::isImageExtension($filePath))
 		{
-			// $$$ rob ensure that both values are integers otherwise resize fails
-			if ($mainHeight == '')
+			// Resize main image
+			$oImage = FabimageHelper::loadLib($params->get('image_library'));
+			$oImage->setStorage($storage);
+			
+			if ($params->get('upload_use_wip', '0') == '1')
 			{
-				$mainHeight = (int) $mainWidth;
+				$oImage->rotateImageFromExif($filePath, '');
 			}
-
-			if ($mainWidth == '')
+			
+			$mainWidth = $params->get('fu_main_max_width', '');
+			$mainHeight = $params->get('fu_main_max_height', '');
+	
+			if ($mainWidth != '' || $mainHeight != '')
 			{
-				$mainWidth = (int) $mainHeight;
+				// $$$ rob ensure that both values are integers otherwise resize fails
+				if ($mainHeight == '')
+				{
+					$mainHeight = (int) $mainWidth;
+				}
+	
+				if ($mainWidth == '')
+				{
+					$mainWidth = (int) $mainHeight;
+				}
+	
+				$oImage->resize($mainWidth, $mainHeight, $filePath, $filePath, $quality);
 			}
-
-			$oImage->resize($mainWidth, $mainHeight, $filePath, $filePath, $quality);
 		}
+		
 		// $$$ hugh - if it's a PDF, make sure option is set to attempt PDF thumb
 		$make_thumbnail = $params->get('make_thumbnail') == '1' ? true : false;
 

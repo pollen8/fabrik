@@ -240,7 +240,7 @@ class Fabimage
 	public function resize($maxWidth, $maxHeight, $origFile, $destFile, $quality = 100)
 	{
 	}
-
+	
 	/**
 	 * Grab an image from a remote URI and store in cache, then serve cached image
 	 *
@@ -455,7 +455,7 @@ class FabimageGD extends Fabimage
 	 * Rotate an image
 	 *
 	 * @param   string  $source   filepath
-	 * @param   string  $dest     output path
+	 * @param   string  $dest     output path, if empty defaults to source
 	 * @param   double  $degrees  number of degrees to rotate
 	 *
 	 * @return  array  (image object, rotated images width, rotated images height)
@@ -463,6 +463,11 @@ class FabimageGD extends Fabimage
 
 	public function rotate($source, $dest = '', $degrees = 0)
 	{
+		if (empty($dest))
+		{
+			$dest = $source;
+		}
+		
 		$source = $this->imageCreateFrom($source);
 		$app = JFactory::getApplication();
 
@@ -474,14 +479,44 @@ class FabimageGD extends Fabimage
 			$app->enqueueMessage('Image rotation failed', 'notice');
 		}
 
-		if ($dest != '')
-		{
-			$this->imageToFile($dest, $rotate);
-			list($width, $height) = getimagesize($dest);
-		}
+		$this->imageToFile($dest, $rotate);
+		list($width, $height) = getimagesize($dest);
 
 		return array($rotate, $width, $height);
 	}
+	
+	/*
+	 * Check for EXIF orientation data, and rotate image accordingly
+	*
+	* @param   string   path to image file
+	*/
+	public function rotateImageFromExif($src, $dest)
+	{
+		if (function_exists('exif_read_data')) {
+			$exif = exif_read_data($src);
+			if($exif && isset($exif['Orientation'])) {
+				$orientation = $exif['Orientation'];
+				if($orientation != 1){
+					$deg = 0;
+					switch ($orientation) {
+						case 3:
+							$deg = 180;
+							break;
+						case 6:
+							$deg = 270;
+							break;
+						case 8:
+							$deg = 90;
+							break;
+					}
+					if ($deg) {
+						self::rotate($src, $dest, $deg);
+					}
+				}
+			}
+		}
+	}
+	
 
 	/**
 	 * Scale an image
