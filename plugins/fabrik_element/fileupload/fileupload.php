@@ -1855,15 +1855,36 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 
 		if (FabrikWorker::isImageExtension($filePath))
 		{
-			// Resize main image
 			$oImage = FabimageHelper::loadLib($params->get('image_library'));
 			$oImage->setStorage($storage);
-			
+				
 			if ($params->get('upload_use_wip', '0') == '1')
 			{
-				$oImage->rotateImageFromExif($filePath, '');
+				if ($params->get('fileupload_storage_type', 'filesystemstorage') == 'filesystemstorage')
+				{
+					$mapElementId = $params->get('fu_map_element');
+					
+					if (!empty($mapElementId))
+					{
+						$coords = $oImage->getExifCoordinates($filePath);
+						
+						if (!empty($coords))
+						{
+							$formModel = $this->getFormModel();
+							$mapElementModel = $formModel->getElement($mapElementId, true);
+							$mapParams = $mapElementModel->getParams();
+							$zoom = $mapParams->get('fb_gm_zoomlevel', '10');
+							$coords_str = '(' . $coords[0] . ',' . $coords[1] . '):' . $zoom;
+							$mapElementName = $mapElementModel->getFullName(true, false);
+							$formModel->updateFormData($mapElementName, $coords_str, true);
+						}
+					}
+					
+					$oImage->rotateImageFromExif($filePath, '');
+				}
 			}
 			
+			// Resize main image			
 			$mainWidth = $params->get('fu_main_max_width', '');
 			$mainHeight = $params->get('fu_main_max_height', '');
 	

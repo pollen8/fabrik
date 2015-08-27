@@ -332,6 +332,97 @@ class Fabimage
 
 		return $src;
 	}
+	
+	/**
+	 * Exif to number
+	 *
+	 * @param   string  $value   Value
+	 * @param   string  $format  Format
+	 *
+	 * @return string
+	 */
+	public static function exifToNumber($value, $format)
+	{
+		$spos = JString::strpos($value, '/');
+	
+		if ($spos === false)
+		{
+			return sprintf($format, $value);
+		}
+		else
+		{
+			$bits = explode('/', $value, 2);
+			$base = FArrayHelper::getValue($bits, 0);
+			$divider = FArrayHelper::getValue($bits, 1);
+	
+			return ($divider == 0) ? sprintf($format, 0) : sprintf($format, ($base / $divider));
+		}
+	}
+	
+	/**
+	 * Exif to coordinate
+	 *
+	 * @param   string  $reference   Reference
+	 * @param   string  $coordinate  Coordinates
+	 *
+	 * @return string
+	 */
+	public static function exifToCoordinate($reference, $coordinate)
+	{
+		$prefix = ($reference == 'S' || $reference == 'W') ? '-' : '';
+	
+		return $prefix
+		. sprintf('%.6F',
+				self::exifToNumber($coordinate[0], '%.6F') +
+				(((self::exifToNumber($coordinate[1], '%.6F') * 60) + (self::exifToNumber($coordinate[2], '%.6F'))) / 3600)
+		);
+	}
+	
+	/**
+	 * Get coordinates
+	 *
+	 * @param   string  $filename  File name
+	 *
+	 * @return multitype:string |boolean
+	 */
+	public static function getExifCoordinates($filename)
+	{
+		if (extension_loaded('exif'))
+		{
+			$exif = exif_read_data($filename, 'EXIF');
+	
+			if (isset($exif['GPSLatitudeRef']) && isset($exif['GPSLatitude']) && isset($exif['GPSLongitudeRef']) && isset($exif['GPSLongitude']))
+			{
+				return array(self::exifToCoordinate($exif['GPSLatitudeRef'], $exif['GPSLatitude']),
+						self::exifToCoordinate($exif['GPSLongitudeRef'], $exif['GPSLongitude']));
+			}
+		}
+	
+		return false;
+	}
+	
+	/**
+	 * Set coordinates to DMS
+	 *
+	 * @param   string  $coordinate  Image coordinate
+	 * @param   number  $pos         Postion
+	 * @param   number  $neg         Negative
+	 *
+	 * @return string
+	 */
+	public static function coordinate2DMS($coordinate, $pos, $neg)
+	{
+		$sign = $coordinate >= 0 ? $pos : $neg;
+		$coordinate = abs($coordinate);
+		$degree = intval($coordinate);
+		$coordinate = ($coordinate - $degree) * 60;
+		$minute = intval($coordinate);
+		$second = ($coordinate - $minute) * 60;
+	
+		return sprintf("%s %d&#xB0; %02d&#x2032; %05.2f&#x2033;", $sign, $degree, $minute, $second);
+	}
+	
+	
 }
 
 /**

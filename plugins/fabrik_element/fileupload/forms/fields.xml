@@ -197,6 +197,11 @@
 			       label="PLG_ELEMENT_FILEUPLOAD_TITLE_ELEMENT_LABEL"
 			       valueformat="tableelement"/>
 
+			<field name="fu_map_element"
+			       type="listfields"
+			       description="PLG_ELEMENT_FILEUPLOAD_MAP_ELEMENT_DESC"
+			       label="PLG_ELEMENT_FILEUPLOAD_MAP_ELEMENT_LABEL"/>
+
 			<field name="restrict_lightbox"
 			       type="radio"
 			       class="btn-group"
