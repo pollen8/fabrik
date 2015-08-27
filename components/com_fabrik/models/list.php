@@ -11287,6 +11287,10 @@ class FabrikFEModelList extends JModelForm
 
 			// $$$rob need &amp; for pdf output which is parsed through xml parser otherwise fails
 			$qs .= '&amp;buttoncount=' . $this->rowActionCount;
+			
+			// $$$ hugh - adding format, so custom CSS can do things like adding overrides for PDF
+			$qs .= '&amp;format=' . $app->input->get('format', 'html');
+			
 			$overRide = 'templates/' . $app->getTemplate() . '/html/com_fabrik/list/' . $tmpl . '/template_css.php' . $qs;
 
 			if (!FabrikHelperHTML::stylesheetFromPath($overRide))
