@@ -101,6 +101,7 @@ class PlgFabrik_ListDownload extends PlgFabrik_List
 		$input = $app->input;
 		$model = $this->getModel();
 		$ids = $input->get('ids', array(), 'array');
+		$download_pdfs = $params->get('download_pdfs', '0') === '1';
 		$download_table = $params->get('download_table');
 		$download_fk = $params->get('download_fk');
 		$download_file = $params->get('download_file');
@@ -110,8 +111,12 @@ class PlgFabrik_ListDownload extends PlgFabrik_List
 		$table = $model->getTable();
 		$filelist = array();
 		$zip_err = '';
-
-		if (empty($download_fk) && empty($download_file) && empty($download_table))
+		
+		if ($download_pdfs)
+		{
+			$filelist = $this->getPDFs('ids');
+		}
+		elseif (empty($download_fk) && empty($download_file) && empty($download_table))
 		{
 			return;
 		}
@@ -178,7 +183,13 @@ class PlgFabrik_ListDownload extends PlgFabrik_List
 				$oImage->setStorage($storage);
 			}
 
-			$zipfile = tempnam(sys_get_temp_dir(), "zip");
+			/**
+			 * $$$ hugh - system tmp dir is sometimes not readable, i.e. on restrictive open_base_dir setups,
+			 * so use J! tmp folder instead.
+			 * $zipfile = tempnam(sys_get_temp_dir(), "zip");
+			 */
+			$config = JFactory::getConfig();
+			$zipfile = tempnam($config->get('tmp_path'), "zip");
 			$zipfile_basename = basename($zipfile);
 			$zip = new ZipArchive;
 			$zipres = $zip->open($zipfile, ZipArchive::CREATE);
@@ -225,6 +236,14 @@ class PlgFabrik_ListDownload extends PlgFabrik_List
 					}
 				}
 
+				if ($download_pdfs)
+				{
+					foreach ($filelist as $tmp_file)
+					{
+						JFile::delete($tmp_file);
+					}
+				}
+				
 				if ($ziptot > 0)
 				{
 					// Stream the file to the client
@@ -316,4 +335,50 @@ class PlgFabrik_ListDownload extends PlgFabrik_List
 
 		return $this->storage;
 	}
+	
+	/**
+	 * Get the selected records
+	 *
+	 * @param   string $key     key
+	 * @param   bool   $allData data
+	 *
+	 * @return    array    pdf file paths
+	 */
+	
+	public function getPDFs($key = 'ids')
+	{
+		$pdf_files = array();
+		
+		$app = JFactory::getApplication();
+		$input = $app->input;
+		$params = $this->getParams();
+		$model       = $this->getModel();
+		$formModel = $model->getFormModel();
+		$formid = $formModel->getId();
+	
+		$ids = (array) $input->get($key, array(), 'array');
+
+		foreach ($ids as $rowid)
+		{
+			$config = JFactory::getConfig();
+			$p = tempnam($config->get('tmp_path'), 'download_');
+			
+			if (empty($p)) {
+				return false;
+			}
+			
+			JFile::delete($p);
+			$p .= '.pdf';
+			
+			$url = COM_FABRIK_LIVESITE . 'index.php?option=com_fabrik&view=details&formid=' . $formid . '&rowid=' . $rowid . '&format=pdf';
+			$pdf_content = file_get_contents($url);
+				
+			JFile::write($p, $pdf_content);
+			
+			$pdf_files[] = $p;
+		}	
+		
+		return $pdf_files;
+	}
+	
 }
