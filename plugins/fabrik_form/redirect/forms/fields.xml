@@ -12,6 +12,17 @@
 				repeat="true"
 				rows="2"/>
 
+			<field name="save_and_next"
+				type="radio"
+				default="0"
+				class="btn-group"
+				description="PLG_FORM_REDIRECT_SAVE_AND_NEXT_DESC"
+				label="PLG_FORM_REDIRECT_SAVE_AND_NEXT_LABEL"
+				repeat="true">
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+			</field>
+			
 			<field name="append_jump_url"
 				type="radio"
 				default="0"

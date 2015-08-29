@@ -52,6 +52,7 @@ class PlgFabrik_FormRedirect extends PlgFabrik_Form
 		$this->data = $this->getProcessData();
 
 		$this->data['append_jump_url'] = $params->get('append_jump_url');
+		$this->data['save_and_next'] = $params->get('save_and_next', '0');
 		$this->data['save_in_session'] = $params->get('save_insession');
 		$this->data['jump_page'] = $w->parseMessageForPlaceHolder($params->get('jump_page'), $this->data);
 		$this->data['thanks_message'] = $w->parseMessageForPlaceHolder($params->get('thanks_message'), $this->data);
@@ -76,6 +77,24 @@ class PlgFabrik_FormRedirect extends PlgFabrik_Form
 		$sshowsystemmsg[$this->renderOrder] = true;
 		$session->set($context . 'showsystemmsg', $sshowsystemmsg);
 
+		if ($this->data['save_and_next'] === '1')
+		{
+			$navIds = $this->getNavIds();
+			$next_rowid = $navIds->next == $navIds->last ? '' : '&rowid=' . $navIds->next;
+			$Itemid = FabrikWorker::itemId();
+			if ($app->isAdmin())
+			{
+				$url = 'index.php?option=com_' . $package . '&task=form.view&formid=' . $form->id . $keyIdentifier;
+			}
+			else
+			{
+				$url = 'index.php?option=com_' . $package . '&view=form&Itemid=' . $Itemid . '&formid=' . $form->id  . '&listid=' . $formModel->getListModel()->getId();
+			}
+			
+			$url .= $next_rowid;
+			$this->data['jump_page'] = JRoute::_($url);
+		}
+		
 		if ($this->data['jump_page'] != '')
 		{
 			$this->data['jump_page'] = $this->buildJumpPage();
@@ -463,5 +482,45 @@ class PlgFabrik_FormRedirect extends PlgFabrik_Form
 		}
 
 		return $this->shouldProcess('redirect_conditon');
+	}
+	
+	/**
+	 * Get the first last, prev and next record ids
+	 *
+	 * @return  object
+	 */
+	
+	protected function getNavIds()
+	{
+		$formModel = $this->getModel();
+		$listModel = $formModel->getListModel();
+		$table = $listModel->getTable();
+		$db = $listModel->getDb();
+		$query = $db->getQuery(true);
+	
+		// As we are selecting on primary key we can select all rows - 3000 records load in 0.014 seconds
+		$query->select($table->db_primary_key)->from($table->db_table_name);
+		$query = $listModel->buildQueryJoin($query);
+		$query = $listModel->buildQueryWhere(true, $query);
+		$query = $listModel->buildQueryOrder($query);
+	
+		foreach ($listModel->orderEls as $orderName)
+		{
+			$orderName = FabrikString::safeColNameToArrayKey($orderName);
+			$query->select(FabrikString::safeColName($orderName) . ' AS ' . $orderName);
+		}
+	
+		$db->setQuery($query);
+		$rows = $db->loadColumn();
+		$keys = array_flip($rows);
+		$o = new stdClass;
+		$o->index = FArrayHelper::getValue($keys, $formModel->getRowId(), 0);
+		$o->first = $rows[0];
+		$o->lastKey = count($rows) - 1;
+		$o->last = $rows[$o->lastKey];
+		$o->next = $o->index + 1 > $o->lastKey ? $o->lastKey : $rows[$o->index + 1];
+		$o->prev = $o->index - 1 < 0 ? 0 : $rows[$o->index - 1];
+	
+		return $o;
 	}
 }
