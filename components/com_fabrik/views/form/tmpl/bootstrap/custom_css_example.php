@@ -14,50 +14,26 @@
  * template, you can create a custom_css.php file, which will be loaded after
  * the main template_css.php for the template.
  *
- * This file will be invoked as a PHP file, so the view type and form ID
- * can be used in order to narrow the scope of any style changes.  You do
- * this by prepending #{$view}_$c to any selectors you use.  This will become
- * (say) #form_12, or #details_11, which will be the HTML ID of your form
- * on the page.
+ * This file will be invoked as a PHP file, so the view type, form ID and row ID
+ * can be used in order to narrow the scope of any style changes.  A new form will
+ * have an ID of "form_X" (where X is the form's numeric ID), while edit forms (for existing
+ * rows) will have an ID of "form_X_Y" (where Y is the rowid).  Detail views will always
+ * be of the format "details_X_Y".
+ * 
+ * So to apply styles for (say) form ID 123, you would use ...
+ * 
+ * #form_123, #form_123_$rowid { ... }
+ * 
+ * Or to style for any form / row, it would just be ...
+ * 
+ * #$form { ... }
  *
  * See examples below, which you should remove if you copy this file.
  *
  * Don't edit anything outside of the BEGIN and END comments.
  *
  * For more on custom CSS, see the Wiki at:
- *requirejs(['fab/fabrik'], function () {
-var form = Fabrik.getBlock('form_1', false, function (block) {
-
-var fieldNames = ['element_test___list', 'element_test___test'];
-var fields = [];
-for (var i = 0; i < fieldNames.length; i ++) {
-fields.push(block.elements.get(fieldNames[i]));
-}
-
-var rad = block.elements.get('element_test___rad');
-
-console.log(rad.get('value'));
-
-if (rad.get('value') == 0) {
-toggle(fields, false);
-}
-rad.addEvent('click', function () {
-state = rad.get('value') == 0 ? false : true;
-toggle(fields, state);
-});
-
-});
-});
-
-var toggle = function (fields, show) {
-for (var i = 0; i < fields.length; i ++) {
-if (show) {
-fields[i].show();
-} else {
-fields[i].hide();
-}
-}
-}
+ * 
  * http://www.fabrikar.com/forums/index.php?wiki/form-and-details-templates/#the-custom-css-file
  *
  * NOTE - for backward compatibility with Fabrik 2.1, and in case you
@@ -81,6 +57,10 @@ echo "
 /* BEGIN - Your CSS styling starts here */
 
 #$form .foobar {
+	display: none;
+}
+
+#form_123 .foobar, #form_123_$rowid .foobar {
 	display: none;
 }
 
