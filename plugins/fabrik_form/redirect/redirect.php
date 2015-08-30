@@ -24,6 +24,13 @@ require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
 
 class PlgFabrik_FormRedirect extends PlgFabrik_Form
 {
+	/*
+	 * Cache the navIds for "save and next" so we don't run the queries twice
+	 * 
+	 * @var  object
+	 */
+	private $navIds = null;
+	
 	/**
 	 * Process the plugin, called after form is submitted
 	 *
@@ -492,8 +499,21 @@ class PlgFabrik_FormRedirect extends PlgFabrik_Form
 	
 	protected function getNavIds()
 	{
+		if (isset($this->navIds))
+		{
+			return $this->navIds;
+		}
+		
 		$formModel = $this->getModel();
 		$listModel = $formModel->getListModel();
+		$listModel->filters = null;
+		$filterModel = $listModel->getFilterModel();
+		$filterModel->destroyRequest();
+		$app = JFactory::getApplication();
+		$app->input->set('view', 'list');
+		$package = $app->getUserState('com_fabrik.package', 'fabrik');
+		$listref = $listModel->getId() . '_com_' . $package . '_' . $listModel->getId();
+		$app->input->set('listref', $listref);
 		$table = $listModel->getTable();
 		$db = $listModel->getDb();
 		$query = $db->getQuery(true);
@@ -520,7 +540,10 @@ class PlgFabrik_FormRedirect extends PlgFabrik_Form
 		$o->last = $rows[$o->lastKey];
 		$o->next = $o->index + 1 > $o->lastKey ? $o->lastKey : $rows[$o->index + 1];
 		$o->prev = $o->index - 1 < 0 ? 0 : $rows[$o->index - 1];
+		$this->navIds = $o;
 	
-		return $o;
+		$app->input->set('view','form');
+		
+		return $this->navIds;
 	}
 }
