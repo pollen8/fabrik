@@ -183,5 +183,10 @@ window.FbRadio = new Class({
 		}
 		this.parent(c);
 		this.btnGroup();
+	},
+	
+	getChangeEvent: function () {
+		return this.options.changeEvent;
 	}
+	
 });
