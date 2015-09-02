@@ -1590,92 +1590,86 @@ class PlgFabrik_Element extends FabrikPlugin
 
 	public function getLabel($repeatCounter, $tmpl = '')
 	{
-		$config = JComponentHelper::getParams('com_fabrik');
 		$app = JFactory::getApplication();
-		$bLabel = $this->get('hasLabel');
 		$element = $this->getElement();
-		$elementHTMLId = $this->getHTMLId($repeatCounter);
+
 		$this->modHTMLId($elementHTMLId);
-		$view = $app->input->get('view', 'form');
+		$model = $this->getFormModel();
 
-		if ($view == 'form' && !($this->canUse() || $this->canView()))
+		$displayData = new stdClass;
+		$displayData->canView = $this->canView();
+		$displayData->id = $this->getHTMLId($repeatCounter);
+		$displayData->canUse = $this->canUse();
+		$displayData->j3 = FabrikWorker::j3();
+		$displayData->hidden = $this->isHidden();
+		$displayData->label = $element->label;
+		$displayData->hasLabel = $this->get('hasLabel');
+		$displayData->view = $app->input->get('view', 'form');
+		$displayData->tip = $this->tipHtml($model->data);
+		$displayData->rollOver = $this->isTipped();
+		$displayData->isEditable = $this->isEditable();
+
+		$labelClass = '';
+
+		if ($displayData->canView || $displayData->canUse)
 		{
-			return '';
-		}
-
-		if ($view == 'details' && !$this->canView())
-		{
-			return '';
-		}
-
-		$params = $this->getParams();
-		$str = '';
-		$j3 = FabrikWorker::j3();
-
-		if ($this->canView() || $this->canUse())
-		{
-			$rollOver = $this->isTipped();
 			$labelClass = 'fabrikLabel control-label';
 
-			if (empty($element->label))
+			if (empty($displayData->label))
 			{
 				$labelClass .= ' fabrikEmptyLabel';
 			}
 
-			if ($rollOver)
+			if ($displayData->rollOver)
 			{
 				$labelClass .= ' fabrikHover';
 			}
 
-			if ($bLabel && !$this->isHidden())
+			if ($displayData->hasLabel && !$displayData->hidden)
 			{
-				$model = $this->getFormModel();
-				$tip = $this->tipHtml($model->data);
-
-				if ($tip !== '')
+				if ($displayData->tip !== '')
 				{
 					$labelClass .= ' fabrikTip';
 				}
-
-				$str .= '<label for="' . $elementHTMLId . '" class="' . $labelClass . '" ' . $tip . '>';
-			}
-			elseif (!$bLabel && !$this->isHidden())
-			{
-				$str .= '<span class="' . $labelClass . ' faux-label">';
-			}
-
-			$labelText = FText::_($element->label);
-
-			$labelText = $labelText == '' ? '&nbsp;' : $labelText;
-			$l = $j3 ? '' : $labelText;
-			$iconOpts = array('icon-class' => 'small');
-
-			if ($rollOver)
-			{
-				$l .= FabrikHelperHTML::image('question-sign.png', 'form', $tmpl, $iconOpts) . ' ';
-			}
-
-			if ($this->isEditable())
-			{
-				$l .= $this->validator->labelIcons();
-			}
-
-			$l .= $j3 ? $labelText : '';
-			$model = $this->getFormModel();
-			$str .= $l;
-
-			if ($bLabel && !$this->isHidden())
-			{
-				$str .= '</label>';
-			}
-			elseif (!$bLabel && !$this->isHidden())
-			{
-				$str .= '</span>';
 			}
 		}
 
+		$displayData->icons = '';
+		$iconOpts  = array('icon-class' => 'small');
+
+		if ($displayData->rollOver)
+		{
+			$displayData->icons .= FabrikHelperHTML::image('question-sign.png', 'form', $tmpl, $iconOpts) . ' ';
+		}
+
+		if ($displayData->isEditable)
+		{
+			$displayData->icons .= $this->validator->labelIcons();
+		}
+		$displayData->labelClass = $labelClass;
+
+		$layout = FabrikHelperHTML::getLayout('fabrik-element-label', $this->labelPaths());
+
+		$str = $layout->render($displayData);
+
 		return $str;
 	}
+
+	/**
+	 * Get an array of paths to look for the element template.
+	 * @return array
+	 */
+	protected function labelPaths()
+	{
+		$basePath = COM_FABRIK_BASE . 'components/com_fabrik/layouts/element';
+
+		$name = get_class($this);
+		$name = strtolower(JString::str_ireplace('PlgFabrik_Element', '', $name));
+		$pluginPath = COM_FABRIK_BASE . '/plugins/fabrik_element/' . $name . '/layouts';
+
+		return array($basePath, $pluginPath);
+	}
+
 
 	/**
 	 * Set fabrikErrorMessage div with potential error messages
@@ -7602,15 +7596,23 @@ class PlgFabrik_Element extends FabrikPlugin
 	 * In FabrikLayoutFile the addedPath takes precedence over the default paths, which makes more sense!
 	 *
 	 * @param   string  $type  form/details/list
+	 * @param   array   $paths  Optional paths to add as includes
 	 *
 	 * @return FabrikLayoutFile
 	 */
-	public function getLayout($type)
+	public function getLayout($type, $paths = array(), $options = array())
 	{
 		$name = get_class($this);
+		$defaultOptions = array('debug' => false, 'component' => 'com_fabrik', 'client' => 'site');
+		$options = array_merge($defaultOptions, $options);
 		$name = strtolower(JString::str_ireplace('PlgFabrik_Element', '', $name));
 		$basePath = COM_FABRIK_BASE . '/plugins/fabrik_element/' . $name . '/layouts';
-		$layout = new FabrikLayoutFile('fabrik-element-' . $name. '-' . $type, $basePath, array('debug' => false, 'component' => 'com_fabrik', 'client' => 'site'));
+		$layout = new FabrikLayoutFile('fabrik-element-' . $name. '-' . $type, $basePath, $options);
+
+		foreach ($paths as $path)
+		{
+			$layout->addIncludePath($path);
+		}
 		$layout->addIncludePaths(JPATH_SITE . '/layouts');
 		$layout->addIncludePaths(JPATH_THEMES . '/' . JFactory::getApplication()->getTemplate() . '/html/layouts');
 		$layout->addIncludePaths(JPATH_THEMES . '/' . JFactory::getApplication()->getTemplate() . '/html/layouts/com_fabrik');
