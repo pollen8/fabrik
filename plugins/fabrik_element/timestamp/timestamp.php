@@ -39,20 +39,6 @@ class PlgFabrik_ElementTimestamp extends PlgFabrik_Element
 	protected $recordInDatabase = false;
 
 	/**
-	 * Get the element's HTML label
-	 *
-	 * @param   int     $repeatCounter  Group repeat counter
-	 * @param   string  $tmpl           Form template
-	 *
-	 * @return  string  label
-	 */
-
-	public function getLabel($repeatCounter, $tmpl = '')
-	{
-		return '';
-	}
-
-	/**
 	 * Set/get if element should record its data in the database
 	 *
 	 * @deprecated - not used

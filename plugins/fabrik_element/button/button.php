@@ -51,20 +51,6 @@ class PlgFabrik_ElementButton extends PlgFabrik_Element
 	}
 
 	/**
-	 * Get the element's HTML label
-	 *
-	 * @param   int     $repeatCounter  group repeat counter
-	 * @param   string  $tmpl           form template
-	 *
-	 * @return  string  label
-	 */
-
-	public function getLabel($repeatCounter, $tmpl = '')
-	{
-		return '';
-	}
-
-	/**
 	 * Returns javascript which creates an instance of the class defined in formJavascriptClass()
 	 *
 	 * @param   int  $repeatCounter  Repeat group counter

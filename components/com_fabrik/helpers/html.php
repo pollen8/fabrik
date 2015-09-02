@@ -2753,4 +2753,33 @@ if (!$j3)
 		JHtml::_('script', 'system/validate.js', false, true);
 		static::$loaded[__METHOD__] = true;
 	}
+
+	/**
+	 * Get the element's JLayout file
+	 * Its actually an instance of FabrikLayoutFile which inverses the ordering added include paths.
+	 * In FabrikLayoutFile the addedPath takes precedence over the default paths, which makes more sense!
+	 *
+	 * @param   string  $name     Layout file name (eg. fabrik-element-label)
+	 * @param   array   $paths    Optional paths to add as includes
+	 * @param   array   $options  Layout options
+	 *
+	 * @return FabrikLayoutFile
+	 */
+	public function getLayout($name, $paths = array(), $options = array())
+	{
+		$defaultOptions = array('debug' => false, 'component' => 'com_fabrik', 'client' => 'site');
+		$options = array_merge($defaultOptions, $options);
+		$basePath = COM_FABRIK_BASE . '/com_fabrik/layouts';
+		$layout = new FabrikLayoutFile($name, $basePath, $options);
+
+		foreach ($paths as $path)
+		{
+			$layout->addIncludePath($path);
+		}
+		$layout->addIncludePaths(JPATH_SITE . '/layouts');
+		$layout->addIncludePaths(JPATH_THEMES . '/' . JFactory::getApplication()->getTemplate() . '/html/layouts');
+		$layout->addIncludePaths(JPATH_THEMES . '/' . JFactory::getApplication()->getTemplate() . '/html/layouts/com_fabrik');
+
+		return $layout;
+	}
 }
