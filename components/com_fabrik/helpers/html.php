@@ -2765,7 +2765,7 @@ if (!$j3)
 	 *
 	 * @return FabrikLayoutFile
 	 */
-	public function getLayout($name, $paths = array(), $options = array())
+	public static function getLayout($name, $paths = array(), $options = array())
 	{
 		$defaultOptions = array('debug' => false, 'component' => 'com_fabrik', 'client' => 'site');
 		$options = array_merge($defaultOptions, $options);
