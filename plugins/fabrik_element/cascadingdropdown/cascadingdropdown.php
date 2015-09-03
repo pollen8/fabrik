@@ -546,7 +546,7 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 		}
 
 		$db->setQuery($sql);
-		FabrikHelperHTML::debug($db->getQuery(), 'cascadingdropdown _getOptionVals');
+		FabrikHelperHTML::debug((string) $db->getQuery(), 'cascadingdropdown _getOptionVals');
 		$this->optionVals[$sqlKey] = $db->loadObjectList();
 
 		if (trim($eval) !== '')
