@@ -99,7 +99,7 @@ module.exports = function (grunt) {
 
 		var v  = grunt.config('pkg.version');
 		grunt.log.writeln('Building fabrik......' + v);
-		filesPrep();
+		filesPrep(grunt);
 		return;
 		updateServer(grunt);
 
