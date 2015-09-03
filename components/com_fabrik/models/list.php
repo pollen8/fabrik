@@ -2136,6 +2136,7 @@ class FabrikFEModelList extends JModelForm
 		$element = $elementModel->getElement();
 		$params = $elementModel->getParams();
 		$customLink = trim($params->get('custom_link', ''));
+		$target = trim($params->get('custom_link_target', ''));
 
 		if ($this->outputFormat == 'csv' || ($element->link_to_detail == 0 && $customLink == ''))
 		{
@@ -2175,7 +2176,8 @@ class FabrikFEModelList extends JModelForm
 		$loadMethod = $this->getLoadMethod('custom_link');
 		$class = 'fabrik___rowlink ' . $class;
 		$dataList = 'list_' . $this->getRenderContext();
-		$data = '<a data-loadmethod="' . $loadMethod . '" data-list="' . $dataList . '" class="' . $class . '" href="' . $link . '">' . $data
+		if ($target !== '') $target = 'target="' . $target . '"';
+		$data = '<a data-loadmethod="' . $loadMethod . '" data-list="' . $dataList . '" class="' . $class . '" href="' . $link . '"' . $target . '>' . $data
 		. '</a>';
 
 		return $data;
