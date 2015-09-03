@@ -36,7 +36,7 @@
 
 			<field name="link_target"
 				type="list"
-				default="0" description="PLG_ELEMENT_LINK_TARGET_DESC"
+				default="_self" description="PLG_ELEMENT_LINK_TARGET_DESC"
 				label="PLG_ELEMENT_LINK_TARGET_LABEL" >
 					<option value="_self">PLG_ELEMENT_LINK_SELF</option>
 					<option value="_blank">PLG_ELEMENT_LINK_BLANK</option>
