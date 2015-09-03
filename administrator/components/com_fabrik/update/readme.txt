@@ -1,4 +1,4 @@
-these xml files go in http://fabrikar.com/update/fabrik/
+these xml files go in http://fabrikar.com/update/fabrik31/
 As an end user they are not needed for you to run fabrik.
 Below are some notes for fabrik contributors as to how the update system works.
 
@@ -9,7 +9,7 @@ Below are some notes for fabrik contributors as to how the update system works.
 The update server is defined in administrator/components/com_fabrik/pkg_fabrik.xml
 
 <updateservers>
-	<server type="collection">http://fabrikar.com/update/fabrik/package_list.xml</server>
+	<server type="collection">http://fabrikar.com/update/fabrik31/package_list.xml</server>
 </updateservers>
 
 This master xml file lists the current updates that can be applied to a fabrik component/module/plugin. 
@@ -38,9 +38,9 @@ plugins/content/fabrik/fabrik.xml should contain
 
 <version>4.0</version>
 
-and administrator/components/com_fabrik/update/fabrik/plg_content_fabrik.xml should contain an <update> section with 
+and administrator/components/com_fabrik/update/fabrik31/plg_content_fabrik.xml should contain an <update> section with
 
 <version>4.0</version>
 
 and a download url entry pointing to the 4.0 version of the plugin.
-administrator/components/com_fabrik/update/fabrik/plg_content_fabrik.xml  should then be uplaoded to /update/fabrik/plg_content_fabrik.xml
+administrator/components/com_fabrik/update/fabrik31/plg_content_fabrik.xml  should then be uplaoded to /update/fabrik/plg_content_fabrik.xml
