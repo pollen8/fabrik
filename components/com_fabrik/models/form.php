@@ -3285,7 +3285,7 @@ class FabrikFEModelForm extends FabModelForm
 						$opts = $input->get('task') == 'form.inlineedit' ? array('ignoreOrder' => true) : array();
 						$sql = $this->buildQuery($opts);
 						$fabrikDb->setQuery($sql);
-						FabrikHelperHTML::debug($fabrikDb->getQuery(), 'form:render');
+						FabrikHelperHTML::debug((string) $fabrikDb->getQuery(), 'form:render');
 						$rows = $fabrikDb->loadObjectList();
 
 						if (is_null($rows))
