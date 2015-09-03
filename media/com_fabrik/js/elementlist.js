@@ -159,4 +159,5 @@ FbElementList = new Class({
 			}.bind(this));
 		}
 	}
+	
 });

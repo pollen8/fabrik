@@ -24,7 +24,6 @@ var FbCascadingdropdown = new Class({
 			 */
 			this.doChangeEvent = this.doChange.bind(this);
 			document.id(this.options.watch).addEvent(this.options.watchChangeEvent, this.doChangeEvent);
-			//document.id(this.options.watch).addEvent('change', this.doChangeEvent);
 		}
 		if (this.options.showDesc === true) {
 			this.element.addEvent('change', function (e) {
@@ -252,11 +251,9 @@ var FbCascadingdropdown = new Class({
 				 */
 				if (this.options.watchInSameGroup) {
 					document.id(this.options.watch).removeEvent(this.options.watchChangeEvent, this.doChangeEvent);
-					//document.id(this.options.watch).removeEvent('change', this.doChangeEvent);
 				}
 				this.doChangeEvent = this.doChange.bind(this);
 				document.id(this.options.watch).addEvent(this.options.watchChangeEvent, this.doChangeEvent);
-				//document.id(this.options.watch).addEvent('change', this.doChangeEvent);
 			}
 
 		}
