@@ -33,6 +33,12 @@ var makePackageList = function (extensions) {
         root.addChild(node);
     }
     console.log(xmlDoc.toString());
+    try {
+        fs.writeFileSync(packageList, xmlDoc.toString());
+    } catch (err) {
+        console.log(err);
+    }
+
     return xmlDoc;
 }
 
