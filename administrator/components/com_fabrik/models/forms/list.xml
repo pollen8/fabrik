@@ -1029,6 +1029,16 @@
 				description="COM_FABRIK_DETAIL_DESC"
 			/>
 
+			<field name="list_detail_link_target"
+				type="list"
+				default="0" description="COM_FABRIK_FIELD_LIST_DETAIL_LINK_TARGET_DESC"
+				label="COM_FABRIK_FIELD_LIST_DETAIL_LINK_TARGET_LABEL" >
+					<option value="_self">COM_FABRIK_FIELD_LIST_DETAIL_LINK_TARGET_SELF</option>
+					<option value="_blank">COM_FABRIK_FIELD_LIST_DETAIL_LINK_TARGET_BLANK</option>
+					<option value="_parent">COM_FABRIK_FIELD_LIST_DETAIL_LINK_TARGET_PARENT</option>
+					<option value="_top">COM_FABRIK_FIELD_LIST_DETAIL_LINK_TARGET_TOP</option>
+			</field>
+			
 			<field name="editurl"
 				type="text"
 				class="input-xlarge"
@@ -1121,7 +1131,7 @@
 				label="COM_FABRIK_FIELD_ADD_BUTTON_LABEL_LABEL"
 				description="COM_FABRIK_FIELD_ADD_BUTTON_LABEL_DESC"
 			/>
-
+			
 			<field name="actionMethod"
 				type="list"
 				default="default"

@@ -1302,6 +1302,7 @@ class FabrikFEModelList extends JModelForm
 		$buttonAction = $this->actionMethod();
 		$tmpKey = '__pk_val';
 		$faceted = $params->get('facetedlinks');
+		$viewLinkTarget = $params->get('list_detail_link_target', '_self');
 
 		// Get a list of fabrik lists and ids for view list and form links
 		$oldLinksToForms = $this->getLinksToThisKey();
@@ -1419,7 +1420,7 @@ class FabrikFEModelList extends JModelForm
 				$loadMethod = $this->getLoadMethod('detailurl');
 				$img = FabrikHelperHTML::image('search.png', 'list', '', array('alt' => $viewLabel));
 				$viewLink = '<a data-loadmethod="' . $loadMethod . '" class="' . $class . '" ' . $detailsAttribs
-						. 'data-list="' . $dataList . '" href="' . $link . '" title="' . $viewLabel . '">' . $img
+						. 'data-list="' . $dataList . '" href="' . $link . '" title="' . $viewLabel . '" target="' . $viewLinkTarget . '">' . $img
 						. ' ' . $viewText . '</a>';
 
 				// 3.0 actions now in list in one cell
