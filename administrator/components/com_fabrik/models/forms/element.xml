@@ -250,12 +250,12 @@
 				rows="1"/>
 
 			<field name="custom_link_target"
-				type="radio"
+				type="list"
 				default=""
 				description="COM_FABRIK_FIELD_CUSTOM_LINK_TARGET_DESC"
 				label="COM_FABRIK_FIELD_CUSTOM_LINK_TARGET_LABEL">
-					<option value="">default</option>
-					<option value="_blank">new window/tab</option>
+					<option value="">COM_FABRIK_FIELD_CUSTOM_LINK_TARGET_DEFAULT</option>
+					<option value="_blank">COM_FABRIK_FIELD_CUSTOM_LINK_TARGET_BLANK</option>
 			</field>
 
 			<field name="custom_link_indetails"
