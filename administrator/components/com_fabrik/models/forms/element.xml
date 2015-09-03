@@ -249,6 +249,15 @@
 				label="COM_FABRIK_FIELD_CUSTOM_LINK_LABEL"
 				rows="1"/>
 
+			<field name="custom_link_target"
+				type="radio"
+				default=""
+				description="COM_FABRIK_FIELD_CUSTOM_LINK_TARGET_DESC"
+				label="COM_FABRIK_FIELD_CUSTOM_LINK_TARGET_LABEL">
+					<option value="">default</option>
+					<option value="_blank">new window/tab</option>
+			</field>
+
 			<field name="custom_link_indetails"
 				type="radio"
 				class="btn-group"
