@@ -57,6 +57,7 @@ var writeXml = function (xmlFile, props) {
 var buildXml = function (xmlFile, props) {
     var xml, xmlDoc;
 
+    // @TODO - check for existing entry - if found then delete it..
     try {
         xml = fs.readFileSync(xmlFile);
         xmlDoc = libxmljs.parseXmlString(xml.toString());

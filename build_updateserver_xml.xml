@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-	<!-- NOW THERES A PHP SCRIPT TO DO THIS.....subs.fabrikar.com/fabrik_downloads_update.php -->
-<!-- 
-	builds the individual plugin xml files which contain the update information.
-	ftps up xml and plugin zips to server
- -->

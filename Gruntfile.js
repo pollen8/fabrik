@@ -97,10 +97,10 @@ module.exports = function (grunt) {
 
 	grunt.registerTask('fabrik', 'testing build', function () {
 
+		// @TODO port over refresh files..
 		var v  = grunt.config('pkg.version');
 		grunt.log.writeln('Building fabrik......' + v);
 		filesPrep(grunt);
-		return;
 		updateServer(grunt);
 
 		var pluginTypes = ['fabrik_cron', 'fabrik_element', 'fabrik_form', 'fabrik_list', 'fabrik_validationrule', 'fabrik_visualization'];
@@ -122,7 +122,6 @@ module.exports = function (grunt) {
 			}
 		}
 
-
 		zipPlugin('plugins/content/fabrik', 'fabrik_build/pkg_fabrik_sink/packages/plg_fabrik_' + v + '.zip');
 		zipPlugin('plugins/search/fabrik', 'fabrik_build/pkg_fabrik_sink/packages/plg_fabrik_search_' + v + '.zip');
 		zipPlugin('plugins/system/fabrikcron', 'fabrik_build/pkg_fabrik_sink/packages/plg_fabrik_schedule_' + v + '.zip');
@@ -131,10 +130,11 @@ module.exports = function (grunt) {
 		zipPlugin('components/com_comprofiler/plugin/user/plug_fabrik', 'fabrik_build/pkg_fabrik_sink/packages/plug_cb_fabrik_' + v + '.zip');
 		zipPlugin('components/com_comprofiler/plugin/user/plug_fabrik', 'fabrik_build/pkg_fabrik_sink/packages/plug_cb_fabrik_' + v + '.zip');
 
-
 		buildPHPDocs();
 		uploadPHPDocs();
 		changelog();
+
+		console.log('You will need to run: subs.fabrikar.com/fabrik_downloads_update.php to update the db download entries');
 	})
 
 };
