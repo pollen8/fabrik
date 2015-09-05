@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<extension group="fabrik_element" method="upgrade" type="plugin" version="30">
+<extension group="fabrik_element" method="upgrade" type="plugin" version="3">
 	<name>plg_fabrik_element_birthday</name>
 	<author>Rob Clayburn</author>
 	<creationDate>September 2015</creationDate>

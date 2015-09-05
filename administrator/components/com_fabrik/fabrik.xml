@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<extension client="site" method="upgrade" type="component" version="30">
+<extension client="site" method="upgrade" type="component" version="3">
 	<name>com_fabrik</name>
 	<creationDate>September 2015</creationDate>
 	<author>Rob Clayburn</author>

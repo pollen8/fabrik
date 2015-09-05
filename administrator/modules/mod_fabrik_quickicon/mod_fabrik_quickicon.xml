@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<extension type="module" version="30" client="administrator">
+<extension type="module" version="3" client="administrator">
 	<name>mod_fabrik_quickicon</name>
 	<author>Fabrik</author>
 	<creationDate>September 2015</creationDate>

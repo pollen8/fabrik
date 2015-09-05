@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<extension group="content" method="upgrade" type="plugin" version="30">
+<extension group="content" method="upgrade" type="plugin" version="3">
 	<name>plg_fabrik</name>
 	<author>Pollen 8 Design Ltd</author>
 	<creationDate>September 2015</creationDate>

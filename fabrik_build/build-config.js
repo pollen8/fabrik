@@ -1,6 +1,46 @@
 module.exports = {
-    'pluginFolders': ['element', 'cron', 'form', 'list', 'validationrule', 'visualization'],
-    'modules'      : [
+    'pluginFolders'   : ['element', 'cron', 'form', 'list', 'validationrule', 'visualization'],
+    'corePackageFiles': [
+        'mod_fabrik_form_{version}.zip',
+        'mod_fabrik_list_{version}.zip',
+        'plg_system_fabrik_{version}.zip',
+        'plg_fabrik_{version}.zip',
+        'plg_fabrik_cron_email_{version}.zip',
+        'plg_fabrik_cron_php_{version}.zip',
+        'plg_fabrik_element_button_{version}.zip',
+        'plg_fabrik_element_checkbox_{version}.zip',
+        'plg_fabrik_element_databasejoin_{version}.zip',
+        'plg_fabrik_element_date_{version}.zip',
+        'plg_fabrik_element_display_{version}.zip',
+        'plg_fabrik_element_dropdown_{version}.zip',
+        'plg_fabrik_element_field_{version}.zip',
+        'plg_fabrik_element_fileupload_{version}.zip',
+        'plg_fabrik_element_googlemap_{version}.zip',
+        'plg_fabrik_element_image_{version}.zip',
+        'plg_fabrik_element_internalid_{version}.zip',
+        'plg_fabrik_element_link_{version}.zip',
+        'plg_fabrik_element_radiobutton_{version}.zip',
+        'plg_fabrik_element_textarea_{version}.zip',
+        'plg_fabrik_element_user_{version}.zip',
+        'plg_fabrik_form_email_{version}.zip',
+        'plg_fabrik_form_php_{version}.zip',
+        'plg_fabrik_form_receipt_{version}.zip',
+        'plg_fabrik_form_redirect_{version}.zip',
+        'plg_fabrik_list_copy_{version}.zip',
+        'plg_fabrik_list_php_{version}.zip',
+        'plg_fabrik_validationrule_isgreaterorlessthan_{version}.zip',
+        'plg_fabrik_validationrule_notempty_{version}.zip',
+        'plg_fabrik_validationrule_php_{version}.zip',
+        'plg_fabrik_validationrule_regex_{version}.zip',
+        'plg_fabrik_validationrule_isemail_{version}.zip',
+        'plg_fabrik_visualization_calendar_{version}.zip',
+        'plg_fabrik_visualization_chart_{version}.zip',
+        'plg_fabrik_visualization_googlemap_{version}.zip',
+        'plg_fabrik_visualization_media_{version}.zip',
+        'plg_fabrik_visualization_slideshow_{version}.zip',
+        'com_fabrik_{version}.zip'
+    ],
+    'modules'         : [
         {
             'name'    : 'Fabrik List Module',
             'path'    : 'modules/mod_fabrik_list',
@@ -43,7 +83,7 @@ module.exports = {
             'element' : 'mod_fabrik_visualization',
             'xmlFile' : 'mod_fabrik_admin_visualization.xml'
         }],
-    'plugins'      : {
+    'plugins'         : {
         'system'   : [{
             'name'    : 'Fabrik Content Plugin',
             'path'    : 'plugins/system/fabrik',

@@ -10,6 +10,11 @@ module.exports = function (grunt) {
     component(grunt)
 }
 
+/**
+ * Update XML file properties
+ * @param path
+ * @param grunt
+ */
 var updateAFile = function (path, grunt) {
 
     try {
