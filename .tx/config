@@ -91,6 +91,10 @@ trans.sr-YU = components/com_fabrik/language/sr-YU/sr-YU.com_fabrik.ini
 trans.tr-TR = components/com_fabrik/language/tr-TR/tr-TR.com_fabrik.ini
 trans.uk-UA = components/com_fabrik/language/uk-UA/uk-UA.com_fabrik.ini
 trans.zh-TW = components/com_fabrik/language/zh-TW/zh-TW.com_fabrik.ini
+[fabrik31.com_fabrik_ini]
+file_filter = components/com_fabrik/language/<lang>/<lang>.com_fabrik.sys.ini
+source_file = components/com_fabrik/language/en-GB/en-GB.com_fabrik.sys.ini
+source_lang = en_GB
 trans.ar-AA = components/com_fabrik/language/ar-AA/ar-AA.com_fabrik.sys.ini
 trans.da-DK = components/com_fabrik/language/da-DK/da-DK.com_fabrik.sys.ini
 trans.de-DE = components/com_fabrik/language/de-DE/de-DE.com_fabrik.sys.ini
@@ -118,6 +122,10 @@ trans.sr-YU = components/com_fabrik/language/sr-YU/sr-YU.com_fabrik.sys.ini
 trans.tr-TR = components/com_fabrik/language/tr-TR/tr-TR.com_fabrik.sys.ini
 trans.uk-UA = components/com_fabrik/language/uk-UA/uk-UA.com_fabrik.sys.ini
 trans.zh-TW = components/com_fabrik/language/zh-TW/zh-TW.com_fabrik.sys.ini
+[fabrik31.plg_content]
+file_filter = plugins/content/fabrik/language/<lang>/<lang>.plg_content_fabrik.ini
+source_file = plugins/content/fabrik/language/en-GB/en-GB.plg_content_fabrik.ini
+source_lang = en_GB
 trans.da-DK = plugins/content/fabrik/language/da-DK/da-DK.plg_content_fabrik.ini
 trans.de-DE = plugins/content/fabrik/language/de-DE/de-DE.plg_content_fabrik.ini
 trans.es-ES = plugins/content/fabrik/language/es-ES/es-ES.plg_content_fabrik.ini
@@ -469,18 +477,6 @@ trans.pt-PT = plugins/fabrik_cron/rest/language/pt-PT/pt-PT.plg_fabrik_cron_rest
 trans.ru-RU = plugins/fabrik_cron/rest/language/ru-RU/ru-RU.plg_fabrik_cron_rest.sys.ini
 trans.sk-SK = plugins/fabrik_cron/rest/language/sk-SK/sk-SK.plg_fabrik_cron_rest.sys.ini
 trans.tr-TR = plugins/fabrik_cron/rest/language/tr-TR/tr-TR.plg_fabrik_cron_rest.sys.ini
-
-[fabrik31.plg_element_access]
-file_filter = plugins/fabrik_element/access/language/<lang>/<lang>.plg_fabrik_element_access.ini
-source_file = plugins/fabrik_element/access/language/en-GB/en-GB.plg_fabrik_element_access.ini
-source_lang = en_GB
-trans.da-DK = plugins/fabrik_element/access/language/da-DK/da-DK.plg_fabrik_element_access.ini
-trans.de-DE = plugins/fabrik_element/access/language/de-DE/de-DE.plg_fabrik_element_access.ini
-trans.es-ES = plugins/fabrik_element/access/language/es-ES/es-ES.plg_fabrik_element_access.ini
-trans.et-EE = plugins/fabrik_element/access/language/et-EE/et-EE.plg_fabrik_element_access.ini
-trans.it-IT = plugins/fabrik_element/access/language/it-IT/it-IT.plg_fabrik_element_access.ini
-trans.pt-PT = plugins/fabrik_element/access/language/pt-PT/pt-PT.plg_fabrik_element_access.ini
-trans.ru-RU = plugins/fabrik_element/access/language/ru-RU/ru-RU.plg_fabrik_element_access.ini
 
 [fabrik31.plg_element_access_sys]
 file_filter = plugins/fabrik_element/access/language/<lang>/<lang>.plg_fabrik_element_access.sys.ini
