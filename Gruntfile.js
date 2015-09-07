@@ -63,7 +63,7 @@ module.exports = function (grunt) {
                             config : 'jversion',
                             type   : 'input',
                             message: 'Joomla target version #',
-                            default: '3.4'
+                            default: '3'
                         },
                         {
                             config : 'live',
