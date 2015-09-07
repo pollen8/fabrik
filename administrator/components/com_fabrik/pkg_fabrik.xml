@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<extension type="package" version="30"  method="upgrade">
+<extension type="package" version="3" method="upgrade">
 	<name>Fabrik Package</name>
 	<packagename>fabrik</packagename>
-	<version>3.3.2</version>
+	<version>3.3.3</version>
 	<url>http://www.fabrikar.com</url>
-	<creationDate>April 2015</creationDate>
+	<creationDate>September 2015</creationDate>
+	<copyright>Copyright (C) 2005-2015 fabrikar.com - All rights reserved.</copyright>
 	<author>Fabrik</author>
 	<packager>Rob Clayburn</packager>
 	<packagerurl>http://www.fabrikar.com</packagerurl>
