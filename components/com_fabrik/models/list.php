@@ -1302,6 +1302,7 @@ class FabrikFEModelList extends JModelForm
 		$buttonAction = $this->actionMethod();
 		$tmpKey = '__pk_val';
 		$faceted = $params->get('facetedlinks');
+		$viewLinkTarget = $params->get('list_detail_link_target', '_self');
 
 		// Get a list of fabrik lists and ids for view list and form links
 		$oldLinksToForms = $this->getLinksToThisKey();
@@ -1419,7 +1420,7 @@ class FabrikFEModelList extends JModelForm
 				$loadMethod = $this->getLoadMethod('detailurl');
 				$img = FabrikHelperHTML::image('search.png', 'list', '', array('alt' => $viewLabel));
 				$viewLink = '<a data-loadmethod="' . $loadMethod . '" class="' . $class . '" ' . $detailsAttribs
-						. 'data-list="' . $dataList . '" href="' . $link . '" title="' . $viewLabel . '">' . $img
+						. 'data-list="' . $dataList . '" href="' . $link . '" title="' . $viewLabel . '" target="' . $viewLinkTarget . '">' . $img
 						. ' ' . $viewText . '</a>';
 
 				// 3.0 actions now in list in one cell
@@ -2136,6 +2137,7 @@ class FabrikFEModelList extends JModelForm
 		$element = $elementModel->getElement();
 		$params = $elementModel->getParams();
 		$customLink = trim($params->get('custom_link', ''));
+		$target = trim($params->get('custom_link_target', ''));
 
 		if ($this->outputFormat == 'csv' || ($element->link_to_detail == 0 && $customLink == ''))
 		{
@@ -2175,7 +2177,8 @@ class FabrikFEModelList extends JModelForm
 		$loadMethod = $this->getLoadMethod('custom_link');
 		$class = 'fabrik___rowlink ' . $class;
 		$dataList = 'list_' . $this->getRenderContext();
-		$data = '<a data-loadmethod="' . $loadMethod . '" data-list="' . $dataList . '" class="' . $class . '" href="' . $link . '">' . $data
+		if ($target !== '') $target = 'target="' . $target . '"';
+		$data = '<a data-loadmethod="' . $loadMethod . '" data-list="' . $dataList . '" class="' . $class . '" href="' . $link . '"' . $target . '>' . $data
 		. '</a>';
 
 		return $data;

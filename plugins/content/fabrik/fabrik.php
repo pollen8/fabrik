@@ -429,6 +429,7 @@ class PlgContentFabrik extends JPlugin
 				else
 				{
 					$res = $activeEl->render($defaultdata, $repeatcounter);
+					$ref = $activeEl->elementJavascript($repeatcounter);
 				}
 
 				$input->set('rowid', $origRowid);

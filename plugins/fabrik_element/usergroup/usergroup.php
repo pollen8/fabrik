@@ -87,7 +87,8 @@ class PlgFabrik_ElementUsergroup extends PlgFabrik_ElementList
 				$selected = $thisUser->groups;
 			}
 			// Get the titles for the user groups.
-			if (count($selected) > 0)
+			//if (count($selected) > 0)
+			if (!FArrayHelper::emptyish($selected))
 			{
 				$db    = JFactory::getDbo();
 				$query = $db->getQuery(true);

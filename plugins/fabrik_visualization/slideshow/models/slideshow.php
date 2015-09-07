@@ -174,12 +174,21 @@ class FabrikModelSlideshow extends FabrikFEModelVisualization
 		$listModel = $this->getSlideListModel();
 		$table = $listModel->getTable();
 		$nav = $listModel->getPagination(0, 0, 0);
-		$listModel->render();
+		//$listModel->render();
 		$alldata = $listModel->getData();
 
 		$slideElement = $this->getSlideElement();
 
-		$slideshow_viz_file = $params->get('slideshow_viz_file', '') . '_raw';
+		$slideshow_viz_file = $params->get('slideshow_viz_file', '');
+		
+		/**
+		 * For AJAX upload, paths will be in non-raw, joined by GROUPSPLITTER,
+		 * with the join ID's being in the non raw.  For simple uploads, we need
+		 * unformatted simple path from _raw.
+		 */
+		//$slideshow_viz_file .= $slideElement->isJoin() ? '' : '_raw';
+		$slideshow_viz_file_raw = $slideshow_viz_file . '_raw';
+		
 		$slideshow_viz_caption = $params->get('slideshow_viz_caption', '');
 
 		$js_opts = new stdClass;
@@ -188,50 +197,41 @@ class FabrikModelSlideshow extends FabrikFEModelVisualization
 		{
 			foreach ($data as $pic)
 			{
-				if (!isset($pic->$slideshow_viz_file))
+				if (!isset($pic->$slideshow_viz_file) && !isset($pic->$slideshow_viz_file_raw))
 				{
-					throw new InvalidArgumentException($params->get('slideshow_viz_file', '') . ' not found - is it set to show in the list view?');
+					//throw new InvalidArgumentException($params->get('slideshow_viz_file', '') . ' not found - is it set to show in the list view?');
+					continue;
 				}
-
-				$pic->$slideshow_viz_file = str_replace("\\", "/", $pic->$slideshow_viz_file);
+				
+				$picData = '';
+				
+				if (!$slideElement->isJoin())
+				{
+					$picData = $pic->$slideshow_viz_file_raw;
+				}
+				else
+				{
+					$picData = $pic->$slideshow_viz_file;
+				}
+				
+				$picData = str_replace("\\", "/", $picData);
 				$pic_opts = array();
 
-				if (isset($pic->$slideshow_viz_caption))
+				if (!empty($slideshow_viz_caption) && isset($pic->$slideshow_viz_caption))
 				{
 					// Force it to a string for json_encode
 					$pic_opts['caption'] = $pic->$slideshow_viz_caption . ' ';
 				}
 
-				if ($slideElement->isJoin())
-				{
-					/*
-					 * For ajax multi uploads we need to get the src from the image html itself
-					 * and add all the images to the js options class
-					 */
-					$el = $params->get('slideshow_viz_file', '');
-					$ok = new SimpleXMLElement($pic->$el);
-					$imgs = $ok->xpath('//img');
-					$as = $ok->xpath('//a');
 
-					for ($i = 0; $i < count($as); $i++)
-					{
-						if ($params->get('slideshow_viz_thumbnails', false))
-						{
-							$small = (string) FArrayHelper::getValue($imgs[$i], 'src');
-							$small = str_replace(COM_FABRIK_LIVESITE, '', $small);
-							$pic_opts['thumbnail'] = $small;
-						}
-
-						$large = (string) $as[$i]['href'];
-						$large = str_replace(COM_FABRIK_LIVESITE, '', $large);
-						$pic_opts['href'] = $large;
-						$js_opts->$large = $pic_opts;
-					}
-				}
-				else
+				/**
+				 * AJAX uploads will (hopefully!) have been CONCAT'ed into the parent element
+				 * with the //..*..// group splitter.
+				 */
+				foreach (explode(GROUPSPLITTER, $picData) as $path)
 				{
-					$tmp = json_decode($pic->$slideshow_viz_file);
-					$k = $tmp == false ? $pic->$slideshow_viz_file : $tmp[0];
+					$tmp = json_decode($path);
+					$k = $tmp == false ? $path : $tmp[0];
 					$pic_opts['href'] = $slideElement->getStorage()->getFileUrl($k, 0);
 					$this->addThumbOpts($pic_opts);
 

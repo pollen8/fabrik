@@ -126,7 +126,16 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 		$params = $this->getParams();
 		$user = JFactory::getUser();
 		$data = array('articletext' => $this->buildContent(), 'catid' => $catid, 'state' => 1, 'language' => '*');
-		$attribs = array('title' => '', 'publish_up' => '', 'publish_down' => '', 'featured' => '0', 'state' => '1', 'metadesc' => '', 'metakey' => '', 'tags' => '');
+		$attribs = array(
+			'title' => '',
+			'publish_up' => '',
+			'publish_down' => '',
+			'featured' => '0',
+			'state' => '1',
+			'metadesc' => '',
+			'metakey' => '',
+			'tags' => ''
+		);
 
 		$data['images'] = json_encode($this->images());
 

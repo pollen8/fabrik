@@ -717,6 +717,7 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 		$opts->listRef = 'list_' . $this->getlistModel()->getRenderContext();
 		$opts->formid = $this->getFormModel()->getId();
 		$opts->elid = $this->getElement()->id;
+		$opts->doListUpdate = $params->get('calc_on_save_only', '1') == '0' && $params->get('calc_ajax', '0') == '1';
 		$opts = json_encode($opts);
 
 		return "new FbCalcList('$id', $opts);\n";

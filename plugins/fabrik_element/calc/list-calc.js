@@ -17,9 +17,11 @@ var FbCalcList = new Class({
 		this.setOptions(options);
 		this.col = $$('.' + id);
 		this.list = Fabrik.blocks[this.options.listRef];
-		Fabrik.addEvent('fabrik.list.updaterows', function () {
-			this.update();
-		}.bind(this));
+		if (this.options.doListUpdate) {
+			Fabrik.addEvent('fabrik.list.updaterows', function () {
+				this.update();
+			}.bind(this));
+		}
 	},
 
 	update: function () {
