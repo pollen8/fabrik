@@ -958,7 +958,7 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 		}
 
 		$this->sql[$sig] = $query;
-		FabrikHelperHTML::debug($this->sql[$sig]);
+		FabrikHelperHTML::debug((string) $this->sql[$sig]);
 
 		return $this->sql[$sig];
 	}

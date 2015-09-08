@@ -59,7 +59,7 @@ class FabrikFEModelElementValidator extends JModelLegacy
 	}
 
 	/**
-	 * Loads in elements published validation objects
+	 * Loads in element's published validation objects
 	 *
 	 * @return  array	validation objects
 	 */
@@ -85,7 +85,7 @@ class FabrikFEModelElementValidator extends JModelLegacy
 		$c = 0;
 		$this->validations = array();
 		$dispatcher = JDispatcher::getInstance();
-		$ok = JPluginHelper::importPlugin('fabrik_validationrule');
+		JPluginHelper::importPlugin('fabrik_validationrule');
 		$i = 0;
 
 		foreach ($usedPlugins as $usedPlugin)
@@ -101,7 +101,7 @@ class FabrikFEModelElementValidator extends JModelLegacy
 					$conf['name'] = JString::strtolower($usedPlugin);
 					$conf['type'] = JString::strtolower('fabrik_Validationrule');
 					$plugIn = new $class($dispatcher, $conf);
-					$oPlugin = JPluginHelper::getPlugin('fabrik_validationrule', $usedPlugin);
+					JPluginHelper::getPlugin('fabrik_validationrule', $usedPlugin);
 					$plugIn->elementModel = $this->elementModel;
 					$this->validations[] = $plugIn;
 
@@ -111,7 +111,7 @@ class FabrikFEModelElementValidator extends JModelLegacy
 					$plugIn->getParams()->set('show_icon', FArrayHelper::getValue($showIcon, $i, true));
 					$plugIn->getParams()->set('validate_in', FArrayHelper::getValue($validateIn, $i, 'both'));
 					$plugIn->getParams()->set('validation_on', FArrayHelper::getValue($validationOn, $i, 'both'));
-
+					$plugIn->js();
 					$c++;
 				}
 			}

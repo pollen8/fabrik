@@ -3921,7 +3921,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		$sql .= "\n" . $groupBy;
 		$sql = $listModel->pluginQuery($sql);
 		$fabrikDb->setQuery($sql, 0, $fbConfig->get('filter_list_max', 100));
-		FabrikHelperHTML::debug($fabrikDb->getQuery(), 'element filterValueList_Exact:');
+		FabrikHelperHTML::debug((string) $fabrikDb->getQuery(), 'element filterValueList_Exact:');
 
 		try
 		{

@@ -125,8 +125,6 @@ class PlgFabrik_Validationrule extends FabrikPlugin
 	protected function shouldValidateIn()
 	{
 		$params = $this->getParams();
-		$name = $this->elementModel->getFullName();
-
 		$app = JFactory::getApplication();
 		$in = $params->get('validate_in', 'both');
 
@@ -158,21 +156,20 @@ class PlgFabrik_Validationrule extends FabrikPlugin
 	protected function shouldValidateOn()
 	{
 		$params = $this->getParams();
-		$app = JFactory::getApplication();
 		$on = $params->get('validation_on', 'both');
-		$rowid = $this->elementModel->getFormModel()->getRowId();
+		$rowId = $this->elementModel->getFormModel()->getRowId();
 
 		if ($on === 'both')
 		{
 			return true;
 		}
 
-		if ($rowid === '' && $on === 'new')
+		if ($rowId === '' && $on === 'new')
 		{
 			return true;
 		}
 
-		if ($rowid !== '' && $on === 'edit')
+		if ($rowId !== '' && $on === 'edit')
 		{
 			return true;
 		}
@@ -327,5 +324,12 @@ class PlgFabrik_Validationrule extends FabrikPlugin
 	protected function allowEmpty()
 	{
 		return false;
+	}
+
+	/**
+	 * Attach js validation code - runs in addition to the main validation code.
+	 */
+	public function js()
+	{
 	}
 }

@@ -896,7 +896,7 @@ class FabrikFEModelList extends JModelForm
 			$fabrikDb->setQuery($query, $this->limitStart, $this->limitLength);
 		}
 
-		FabrikHelperHTML::debug($fabrikDb->getQuery(), 'list GetData:' . $this->getTable()->label);
+		FabrikHelperHTML::debug((string) $fabrikDb->getQuery(), 'list GetData:' . $this->getTable()->label);
 		JDEBUG ? $profiler->mark('before query run') : null;
 
 		/* set 2nd param to false in attempt to stop joomfish db adaptor from translating the original query
@@ -7712,7 +7712,7 @@ class FabrikFEModelList extends JModelForm
 			return false;
 		}
 
-		FabrikHelperHTML::debug($db->getQuery(), 'list model updateObject:');
+		FabrikHelperHTML::debug((string) $db->getQuery(), 'list model updateObject:');
 
 		return true;
 	}
@@ -7776,7 +7776,7 @@ class FabrikFEModelList extends JModelForm
 			$object->$keyName = $id;
 		}
 
-		FabrikHelperHTML::debug($db->getQuery(), 'list model insertObject:');
+		FabrikHelperHTML::debug((string) $db->getQuery(), 'list model insertObject:');
 
 		return true;
 	}
