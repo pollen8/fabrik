@@ -85,7 +85,7 @@ module.exports = {
         }],
     'plugins'         : {
         'system'   : [{
-            'name'    : 'Fabrik Content Plugin',
+            'name'    : 'Fabrik System Plugin',
             'path'    : 'plugins/system/fabrik',
             'fileName': 'plg_fabrik_{version}.zip',
             'element' : 'fabrik',

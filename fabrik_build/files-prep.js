@@ -22,7 +22,7 @@ var updateAFile = function (path, grunt) {
             console.log('not a file');
             return;
         }
-        //var path = './modules/mod_fabrik_form/mod_fabrik_form.xml';
+
         var version = grunt.config.get('pkg.version');
         var date = new Date();
 
@@ -94,6 +94,5 @@ var fabrikModules = function (grunt) {
 var component = function (grunt) {
     updateAFile('administrator/components/com_fabrik/pkg_fabrik.xml', grunt);
     updateAFile('administrator/components/com_fabrik/pkg_fabrik_sink.xml', grunt);
-
     updateAFile('administrator/components/com_fabrik/fabrik.xml', grunt);
 }

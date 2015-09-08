@@ -6,6 +6,7 @@
     "bluebird": "^2.9.34",
     "execSync": "^1.0.2",
     "fs-extra": "^0.24.0",
+    "ftp": "^0.3.10",
     "gitlog": "^2.1.0",
     "grunt": "^0.4.5",
     "grunt-contrib-compress": "^0.13.0",
@@ -20,10 +21,10 @@
   },
   "config": {
     "test": {
-      "downloadFolder": "http://fabrikar.com/media/downloads"
+      "downloadFolder": "http://fabrikar.com/media/downloads_test/"
     },
     "live": {
-      "downloadFolder": "http://fabrikar.com/media/downloads_test"
+      "downloadFolder": "http://fabrikar.com/media/downloads/"
     }
   }
 }

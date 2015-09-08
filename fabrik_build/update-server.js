@@ -113,6 +113,7 @@ var map = function (xmlDoc, props, update) {
 
 var component = function (grunt) {
     var version = grunt.config.get('pkg.version'),
+        jversion = grunt.config.get('jversion'),
         xmlFile,
         props = {
         'name'          : 'Fabrik',
@@ -131,7 +132,7 @@ var component = function (grunt) {
         'targetplatform': {
             '$': {
                 'name'   : 'joomla',
-                'version': version
+                'version': jversion
             }
         }
     };
@@ -146,6 +147,7 @@ var component = function (grunt) {
 
 var fabrikModules = function (grunt) {
     var version = grunt.config.get('pkg.version'),
+        jversion = grunt.config.get('jversion'),
         i, mod, props, xmlFile,
         updateFolder = grunt.config.get('pkg.config.live.downloadFolder');
     for (i = 0; i < buildConfig.modules.length; i ++) {
@@ -167,7 +169,7 @@ var fabrikModules = function (grunt) {
             'targetplatform': {
                 '$': {
                     'name'   : 'joomla',
-                    'version': version
+                    'version': jversion
                 }
             }
         };
@@ -183,6 +185,7 @@ var fabrikModules = function (grunt) {
 
 var jPlugins = function (grunt) {
     var version = grunt.config.get('pkg.version'),
+        jversion = grunt.config.get('jversion'),
         p, i, plg, props, xmlFile;
     for (p in buildConfig.plugins) {
         for (i = 0; i < buildConfig.plugins[p].length; i ++) {
@@ -206,13 +209,13 @@ var jPlugins = function (grunt) {
                 'targetplatform': {
                     '$': {
                         'name'   : 'joomla',
-                        'version': version
+                        'version': jversion
                     }
                 }
             };
 
             extensions.push({
-                '$': {'name': plg.name, 'element': plg.element, 'type': 'plugin', 'folder': p, 'version': version,
+                '$': {'name': plg.name, 'element': plg.element, 'type': 'plugin', 'folder': p.toLowerCase(), 'version': version,
                     detailsurl: 'http://fabrikar.com/update/fabrik31/' + plg.xmlFile }
             });
             
@@ -225,6 +228,7 @@ var jPlugins = function (grunt) {
 var fabrikPlugins = function (grunt) {
     var productName = grunt.config.get('pkg.name'),
         version = grunt.config.get('pkg.version'),
+        jversion = grunt.config.get('jversion'),
         i, pluginPath, plugins, j, name, xmlFile, props,
         folders = buildConfig.pluginFolders;
     for (i = 0; i < folders.length; i++) {
@@ -248,7 +252,7 @@ var fabrikPlugins = function (grunt) {
                         'downloads'     : {
                             'downloadurl': {
                                 '$': {'type': 'full', 'format': 'zip'},
-                                '_': grunt.config.get('pkg.config.live.downloadFolder') + 'plg_' + productName + '_' + folders[i] + '_' + plugins[j] + '_' + version + '.zip'
+                                '_': grunt.config.get('pkg.config.live.downloadFolder') + 'plg_' + productName.toLowerCase() + '_' + folders[i] + '_' + plugins[j] + '_' + version + '.zip'
                             }
                         },
                         'maintainer'    : 'Fabrikar.com',
@@ -256,13 +260,13 @@ var fabrikPlugins = function (grunt) {
                         'targetplatform': {
                             '$': {
                                 'name'   : 'joomla',
-                                'version': version
+                                'version': jversion
                             }
                         }
                     };
 
                     extensions.push({
-                        '$': {'name': name, 'element': element, 'type': 'plugin', 'folder': folder, 'version': version,
+                        '$': {'name': name, 'element': plugins[j], 'type': 'plugin', 'folder': folder.toLowerCase(), 'version': version,
                             detailsurl: 'http://fabrikar.com/update/fabrik31/plg_' + folders[i] + '_' + plugins[j] + '.xml' }
                     });
 

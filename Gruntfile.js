@@ -1,4 +1,5 @@
 var fs = require('fs-extra'),
+    Client = require('ftp'),
     Promise = require('bluebird'),
     archiver = require('archiver'),
     updateServer = require('./fabrik_build/update-server.js'),
@@ -72,6 +73,18 @@ module.exports = function (grunt) {
                             default: false
                         },
                         {
+                            config: 'upload.zips',
+                            type: 'confirm',
+                            message: 'Upload Zips to update server?',
+                            default: false
+                        },
+                        {
+                            config: 'upload.xml',
+                            type: 'confirm',
+                            message: 'Upload update XML files to update server?',
+                            default: false
+                        },
+                        {
                             config : 'phpdocs.create',
                             type   : 'confirm',
                             message: 'Build PHP Docs?'
@@ -103,10 +116,9 @@ module.exports = function (grunt) {
         done = this.async()
 
         grunt.log.writeln('Building fabrik......' + version);
-
         filesPrep(grunt);
         refreshFiles();
-        component(version);
+        component(version, grunt);
         console.log('-- Component built');
         updateServer(grunt);
         console.log('-- Update server files created');
@@ -127,7 +139,7 @@ module.exports = function (grunt) {
             }
         }
 
-        zipPromises.push(zipPlugin('plugins/content/fabrik', 'fabrik_build/output/pkg_fabrik_sink/packages/plg_fabrik_' + version + '.zip'));
+        zipPromises.push(zipPlugin('plugins/content/fabrik', 'fabrik_build/output/pkg_fabrik_sink/packages/plg_fabrik_content_' + version + '.zip'));
         zipPromises.push(zipPlugin('plugins/search/fabrik', 'fabrik_build/output/pkg_fabrik_sink/packages/plg_fabrik_search_' + version + '.zip'));
         zipPromises.push(zipPlugin('plugins/system/fabrikcron', 'fabrik_build/output/pkg_fabrik_sink/packages/plg_fabrik_schedule_' + version + '.zip'));
         zipPromises.push(zipPlugin('plugins/system/fabrik', 'fabrik_build/output/pkg_fabrik_sink/packages/plg_system_fabrik_' + version + '.zip'));
@@ -198,16 +210,16 @@ var zipPlugin = function (source, dest) {
 
 var buildPHPDocs = function (grunt) {
     console.log('todo: build php docs' + grunt.config('phpdocs.create'));
-}
+};
 
 var uploadPHPDocs = function (grunt) {
     console.log('todo: uploadPHPDocs: ' + grunt.config('phpdocs.upload'));
-}
+};
 
 var changelog = function (latest) {
     var result = shell.exec("git log --pretty=format:\"* %s (%an)\" " + latest + "..HEAD");
     fs.writeFileSync('fabrik_build/changelog.txt', result.stdout);
-}
+};
 
 /**
  * Copy over the component files into the fabrik_build folder.
@@ -240,6 +252,7 @@ var refreshFiles = function () {
             return true;
         }
     });
+    fs.copySync('components/com_fabrik/js/index.html', './fabrik_build/output/component/site/js/index.html');
     fs.copySync('media/com_fabrik/', './fabrik_build/output/component/media/com_fabrik', {
         'filter': function (f) {
             return f.indexOf('.zip') === -1;
@@ -313,6 +326,7 @@ var refreshFiles = function () {
     console.log('copying drivers');
     <!-- copy over the database drivers -->
     fs.mkdirsSync('./fabrik_build/output/component/site/dbdriver');
+    fs.copySync('components/com_fabrik/js/index.html', './fabrik_build/output/component/site/dbdriver/index.html');
     <!--  J3.0 db drivers -->
     fs.mkdirsSync('./fabrik_build/output/component/site/driver');
     fs.copySync('./libraries/joomla/database/driver/mysql_fab.php', './fabrik_build/output/component/site/driver/mysql_fab.php');
@@ -320,9 +334,9 @@ var refreshFiles = function () {
     fs.mkdirsSync('./fabrik_build/output/component/site/query');
     fs.copySync('./libraries/joomla/database/query/mysql_fab.php', './fabrik_build/output/component/site/query/mysql_fab.php');
     fs.copySync('./libraries/joomla/database/query/mysqli_fab.php', './fabrik_build/output/component/site/query/mysqli_fab.php');
-}
+};
 
-var component = function (version) {
+var component = function (version, grunt) {
     console.log('start component');
     <!-- need to move the package.xml file out of the component to avoid nasties -->
     fs.move('./fabrik_build/output/component/admin/fabrik.xml', './fabrik_build/output/component/fabrik.xml', function () {
@@ -332,15 +346,15 @@ var component = function (version) {
                     fs.move('./fabrik_build/output/component/admin/pkg_fabrik_sink.xml', './fabrik_build/output/pkg_fabrik_sink/pkg_fabrik_sink.xml', function () {
                         console.log('start zip');
                         zipPromises.push(zipPlugin('fabrik_build/output/component/', 'fabrik_build/output/pkg_fabrik_sink/packages/com_fabrik_' + version + '.zip'));
-                        packages(version);
+                        packages(version, grunt);
                     })
                 })
             })
         })
     });
-}
+};
 
-var packages = function (version) {
+var packages = function (version, grunt) {
     // Run once all the promises have finished
     Promise.settle(zipPromises)
         .then(function () {
@@ -366,9 +380,58 @@ var packages = function (version) {
             zipPlugin('fabrik_build/output/pkg_fabrik', 'fabrik_build/output/pkg_fabrik_' + version + '.zip')];
             Promise.settle(promises)
                 .then(function () {
-                    done();
-                })
+                    ftp(grunt, version);
+                });
 
         })
+};
 
-}
+var ftp = function (grunt, version) {
+
+        var c = new Client();
+        var config = grunt.file.readJSON('private.json').ftp;
+        var promises = [], i;
+        console.log('ftp config', config);
+        c.on('ready', function() {
+            console.log('connected');
+            if (grunt.config.get('upload.zips')) {
+                promises.push(ftpPromise(c, 'fabrik_build/output/pkg_fabrik_' + version + '.zip', '/public_html/media/downloads/pkg_fabrik_' + version + '.zip'));
+                promises.push(ftpPromise(c, 'fabrik_build/output/pkg_fabrik_sink_' + version + '.zip', '/public_html/media/downloads/pkg_fabrik_sink_' + version + '.zip'));
+
+                var plugins = fs.readdirSync('fabrik_build/output/pkg_fabrik_sink/packages');
+
+                for (i = 0; i < plugins.length; i++) {
+                    promises.push(ftpPromise(c, 'fabrik_build/output/pkg_fabrik_sink/packages/' + plugins[i], '/public_html/media/downloads/' + plugins[i]))
+                }
+            }
+            if (grunt.config.get('upload.xml')) {
+                var xmlFiles = fs.readdirSync('fabrik_build/output/updateserver');
+
+                for (i = 0; i < xmlFiles.length; i++) {
+                    promises.push(ftpPromise(c, 'fabrik_build/output/updateserver/' + xmlFiles[i], '/public_html/update/fabrik31/' + xmlFiles[i]))
+                }
+            }
+            Promise.settle(promises)
+                .then(function () {
+                    c.end();
+                    done();
+                });
+
+        });
+        // Connect
+        c.connect(config);
+
+};
+
+var ftpPromise = function (c, source, dest) {
+    return new Promise(function (resolve, reject) {
+        console.log('starting ftp:' + dest);
+        c.put(source, dest, function(err) {
+            if (err) {
+                reject();
+            }
+            console.log('uploaded: ' + dest);
+            resolve();
+        });
+    });
+};
