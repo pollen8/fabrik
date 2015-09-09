@@ -14,7 +14,6 @@
 		<filename plugin="sms">sms.php</filename>
 		<filename>index.html</filename>
 		<folder>forms</folder>
-		<folder>gateway</folder>
 		<folder>language</folder>
 	</files>
 </extension>
