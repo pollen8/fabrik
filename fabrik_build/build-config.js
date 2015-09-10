@@ -3,8 +3,8 @@ module.exports = {
     'corePackageFiles': [
         'mod_fabrik_form_{version}.zip',
         'mod_fabrik_list_{version}.zip',
-        'plg_system_fabrik_{version}.zip',
-        'plg_fabrik_{version}.zip',
+        'plg_fabrik_system_{version}.zip',
+        'plg_fabrik_content_{version}.zip',
         'plg_fabrik_cron_email_{version}.zip',
         'plg_fabrik_cron_php_{version}.zip',
         'plg_fabrik_element_button_{version}.zip',
@@ -87,7 +87,7 @@ module.exports = {
         'system'   : [{
             'name'    : 'Fabrik System Plugin',
             'path'    : 'plugins/system/fabrik',
-            'fileName': 'plg_fabrik_{version}.zip',
+            'fileName': 'plg_fabrik_system_{version}.zip',
             'element' : 'fabrik',
             'xmlFile' : 'plg_system_fabrik.xml'
         },
