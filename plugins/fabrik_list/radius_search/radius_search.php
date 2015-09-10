@@ -106,88 +106,42 @@ class PlgFabrik_ListRadius_Search extends PlgFabrik_List
 		$baseContext = $this->getSessionContext();
 		$f = new stdClass;
 		$f->label = $params->get('radius_label', 'Radius search');
-		$class = "class=\"inputbox fabrik_filter autocomplete-trigger\"";
 		$typeKey = $baseContext . 'radius_search_type' . $this->renderOrder;
 		$default_search = $params->get('default_search', 'mylocation');
-		$type = $app->getUserStateFromRequest($typeKey, 'radius_search_type' . $this->renderOrder, array($default_search));
-		$style = $type[0] == 'place' ? 'display:block' : 'display:none';
-
 		$context = $baseContext . 'radius_search_place-auto-complete';
-		$name = "radius_search_place{$this->renderOrder}-auto-complete";
-		$place = $app->getUserStateFromRequest($context, $name);
+		$name = 'radius_search_place' . $this->renderOrder . '-auto-complete';
 
-		$strPlace = array();
-		$strPlace[] = '<div class="radius_search_place_container" style="' . $style . ';position:relative;">';
-		$strPlace[] = '<input type="text" name="' . $name . '" id="' . $name . '" ' . $class . ' value="' . $place . '"/>';
-
-		$context = $baseContext . 'radius_search_place';
-		$name = 'radius_search_place' . $this->renderOrder;
-		$placeValue = $app->getUserStateFromRequest($context, $name);
-		$strPlace[] = '<input type="hidden" name="' . $name . '" id="' . $name . '" ' . $class . ' value="' . $placeValue . '"/>';
-		$strPlace[] = '</div>';
-		$strPlace = implode("\n", $strPlace);
-
-		$style = $type[0] == 'latlon' ? 'display:block' : 'display:none';
 		$lat = $app->getUserStateFromRequest($baseContext . 'lat' . $this->renderOrder, 'radius_search_lat' . $this->renderOrder);
 		$lon = $app->getUserStateFromRequest($baseContext . 'lon' . $this->renderOrder, 'radius_search_lon' . $this->renderOrder);
 
-		$strLatLon = "<div class=\"radius_search_coords_container\" style=\"$style\">
-		<table style=\"width:100%\"><tr><td><label for=\"radius_search_lat_" . $this->renderOrder . "\">" . FText::_('PLG_VIEW_RADIUS_LATITUDE')
-			. "</label></td><td><input type=\"text\" name=\"radius_search_lat\" value=\"$lat\" id=\"radius_search_lat_"
-				. $this->renderOrder . "\" $class size=\"6\"/></td></tr>
-		<tr><td><label for=\"radius_search_lon_" . $this->renderOrder . "\">" . FText::_('PLG_VIEW_RADIUS_LONGITUDE')
-			. "</label></td><td><input type=\"text\" name=\"radius_search_lon\" value=\"$lon\" id=\"radius_search_lon_"
-				. $this->renderOrder . "\" $class size=\"6\"/></td></tr></table></div>";
 
 		$o = FabrikString::mapStrToCoords($params->get('geocode_default', ''));
-
-		$defaultLat = $lat ? $lat : (float) $o->lat;
-		$defaultLon = $lon ? $lon : (float) $o->long;
-		$defaultZoom = (int) $o->zoom === 0 ? 7 : (int) $o->zoom;
-		$strSlider = $this->slider();
-
-		$str = '';
-		$geocodeSelected = $params->get('geocode', 1);
-		$totalOpts = $params->get('myloc', 1) + $params->get('place', 1) + $params->get('coords', 1) + $geocodeSelected;
-		$activeDef = array($params->get('start_active', 0));
-		$active = $app->getUserStateFromRequest($baseContext . 'radius_search_active', 'radius_search_active' . $this->renderOrder, $activeDef);
-
-		$str .= '<div class="radius_search" id="radius_search' . $this->renderOrder . '" style="left:-100000px;position:absolute;">';
-		$str .= '<input type="hidden" name="radius_search_active' . $this->renderOrder . '[]" value="' . $active[0] . '" />';
-
-		$str .= '<div class="radius_search_options">';
-
+		$layoutData = new stdClass;
 		/*
 		 * $$$ hugh - JS expects these, in geoCode(), so for now just leave
 		 * 'em, should really sort out the JS so it doesn't look for them if geocode turned off
 		 */
-			$str .= '<input type="hidden" name="geo_code_def_zoom" value="' . $defaultZoom . '" />'
-				. '<input type="hidden" name="geo_code_def_lat" value="' . $defaultLat . '" />'
-				. '<input type="hidden" name="geo_code_def_lon" value="' . $defaultLon . '" />';
-		$str .= '
-		<table class="radius_table fabrikList table" style="width:100%">
-			<tbody>
-			<tr>
-				<td>' . FText::_('PLG_VIEW_RADIUS_DISTANCE') . '</td>
-				<td>' . $strSlider . '</td>
-			</tr>';
+		$layoutData->defaultLat = $lat ? $lat : (float) $o->lat;
+		$layoutData->defaultLon = $lon ? $lon : (float) $o->long;
+		$layoutData->defaultZoom = (int) $o->zoom === 0 ? 7 : (int) $o->zoom;
+		$layoutData->renderOrder = $this->renderOrder;
+		$layoutData->place = $app->getUserStateFromRequest($context, $name);
+		list($layoutData->searchLatitude, $layoutData->searchLongitude) = $this->getSearchLatLon();
+		$layoutData->lon = $lon;
+		$layoutData->lat = $lat;
+		$layoutData->type = $app->getUserStateFromRequest($typeKey, 'radius_search_type' . $this->renderOrder, array($default_search));
+		$layoutData->hasGeoCode = $params->get('geocode', 1) ;
+		$layoutData->geoCode =  $this->geoCodeWidget($layoutData->type);
+		$layoutData->geoCodeAsYouType = $params->get('geocode_as_type', 1);
+		$layoutData->select = $this->searchSelectList($layoutData->type);
+		$layoutData->slider = $this->slider();
+		$activeDef = array($params->get('start_active', 0));
+		$layoutData->active = $app->getUserStateFromRequest($baseContext . 'radius_search_active', 'radius_search_active' . $this->renderOrder, $activeDef);
+		$layoutData->placeValue = $app->getUserStateFromRequest($baseContext . 'radius_search_place', 'radius_search_place' . $this->renderOrder);
+		$layoutData->address = $address = $app->getUserStateFromRequest($baseContext . 'geocode' . $this->renderOrder, 'radius_search_geocode_field' . $this->renderOrder);
+		$layout = $this->getLayout('filters');
+		$str = $layout->render($layoutData);
 
-		$strGeocode = $this->geoCodeWidget($type);
-
-		$select = $this->searchSelectList($type);
-
-		$str .= '<tr><td>' . FText::_('PLG_VIEW_RADIUS_FROM') . '</td><td>' . $select . '</td></tr>';
-		$str .= '<tr><td colspan="2">' . $strPlace . $strLatLon . $strGeocode . '</td></tr>';
-
-		$str .=	'</tbody>
-		</table>';
-		$str .= '<div class="radius_search_buttons" id="radius_search_buttons' . $this->renderOrder . '">';
-		$str .= '<input type="button" class="btn btn-link cancel" value="' . FText::_('COM_FABRIK_CANCEL') . '" /> ';
-		$str .= '<input type="button" name="filter" value="Go" class="fabrik_filter_submit button btn btn-primary"></div>';
-		$str .= '</div>';
-		$str .= '<input type="hidden" name="radius_prefilter" value="1" />';
-
-		$str .= "</div>";
 		$f->element = $str;
 		$f->required = '';
 

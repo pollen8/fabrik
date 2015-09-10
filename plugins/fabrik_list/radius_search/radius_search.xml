@@ -17,6 +17,7 @@
 		<filename>radius_search.js</filename>
 		<filename>radius_search-min.js</filename>
 		<folder>language</folder>
+		<folder>layouts</folder>
 		<folder>images</folder>
 		<folder>forms</folder>
 	</files>

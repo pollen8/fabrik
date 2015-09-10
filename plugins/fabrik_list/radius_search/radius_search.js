@@ -46,7 +46,7 @@ function geoCode() {
 				Fabrik.radiusSearch[map.id] = typeOf(Fabrik.radiusSearch[map.id]) === 'null' ? {} : Fabrik.radiusSearch[map.id];
 				Fabrik.radiusSearch[map.id].map = new google.maps.Map(map, mapOptions);
 
-				var uberC = c.getParent('.radius_search_options');
+				var uberC = c.getParent('.radius_search');
 
 				trigger.store('events-added', 1);
 				trigger.store('uberC', uberC);
@@ -128,7 +128,7 @@ var FbListRadiusSearch = new Class({
 
 				google.maps.event.addListener(Fabrik.radiusSearch[mapid].marker, "dragend", function () {
 					var loc = Fabrik.radiusSearch[mapid].marker.getPosition();
-					var uberC = document.id(mapid).getParent('.radius_search_options');
+					var uberC = document.id(mapid).getParent('.radius_search');
 					var geocodeLat = uberC.getElement('input[name^=radius_search_geocode_lat]');
 					if (typeOf(geocodeLat) !== 'null') {
 						geocodeLat.value = loc.lat();
@@ -310,7 +310,7 @@ var FbListRadiusSearch = new Class({
 	},
 
 	toggleFields: function (e) {
-		var c = e.target.getParent('.radius_search_options');
+		var c = e.target.getParent('.radius_search');
 
 		switch (e.target.get('value')) {
 		case 'latlon':
