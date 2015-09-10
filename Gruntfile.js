@@ -105,6 +105,8 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-contrib-compress');
     grunt.loadNpmTasks('grunt-prompt');
 
+    grunt.registerTask('js', 'uglify');
+
     // Default task(s).
     grunt.registerTask('default', ['prompt', 'fabrik']);
 
@@ -142,10 +144,8 @@ module.exports = function (grunt) {
         zipPromises.push(zipPlugin('plugins/content/fabrik', 'fabrik_build/output/pkg_fabrik_sink/packages/plg_fabrik_content_' + version + '.zip'));
         zipPromises.push(zipPlugin('plugins/search/fabrik', 'fabrik_build/output/pkg_fabrik_sink/packages/plg_fabrik_search_' + version + '.zip'));
         zipPromises.push(zipPlugin('plugins/system/fabrikcron', 'fabrik_build/output/pkg_fabrik_sink/packages/plg_fabrik_schedule_' + version + '.zip'));
-        zipPromises.push(zipPlugin('plugins/system/fabrik', 'fabrik_build/output/pkg_fabrik_sink/packages/plg_system_fabrik_' + version + '.zip'));
-        zipPromises.push(zipPlugin('plugins/system/fabrik', 'fabrik_build/output/pkg_fabrik_sink/packages/plg_system_fabrik_' + version + '.zip'));
-        zipPromises.push(zipPlugin('components/com_comprofiler/plugin/user/plug_fabrik', 'fabrik_build/output/pkg_fabrik_sink/packages/plug_cb_fabrik_' + version + '.zip'));
-        zipPromises.push(zipPlugin('components/com_comprofiler/plugin/user/plug_fabrik', 'fabrik_build/output/pkg_fabrik_sink/packages/plug_cb_fabrik_' + version + '.zip'));
+        zipPromises.push(zipPlugin('plugins/system/fabrik', 'fabrik_build/output/pkg_fabrik_sink/packages/plg_fabrik_system_' + version + '.zip'));
+        zipPromises.push(zipPlugin('components/com_comprofiler/plugin/user/plug_fabrik', 'fabrik_build/output/pkg_fabrik_sink/packages/plg_community_builder_fabrik_user_' + version + '.zip'));
 
         zipPromises.push(zipPlugin('administrator/modules/mod_fabrik_form', 'fabrik_build/output/pkg_fabrik_sink/packages/mod_fabrik_form_' + version + '.zip'));
         zipPromises.push(zipPlugin('administrator/modules/mod_fabrik_list', 'fabrik_build/output/pkg_fabrik_sink/packages/mod_fabrik_list_' + version + '.zip'));
