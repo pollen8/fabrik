@@ -2657,9 +2657,10 @@ class FabrikFEModelList extends JModelForm
 	 *
 	 * @param   mixed  $query  False or a query object
 	 *
+	 * @throws ErrorException
+	 *
 	 * @return  mixed  string or query object - Ordering part of sql statement
 	 */
-
 	public function buildQueryOrder($query = false)
 	{
 		$sig = $query ? 1 : 0;
@@ -2710,20 +2711,19 @@ class FabrikFEModelList extends JModelForm
 
 		$session = JFactory::getSession();
 
+		$strOrder = '';
+
 		/**
 		 * When list reordered the controller runs order() and
 		 * stores the order settings in the session by calling setOrderByAndDir()
 		 * it then redirects to the list view and here all we need to do it get
 		 * those order settings from the session
 		*/
-
 		$elements = $this->getElements();
 
 		// Build the order by statement from the session
-		$strOrder = '';
 		$clearOrdering = (bool) $input->getInt('clearordering', false) && $input->get('task') !== 'order';
 		$singleOrdering = $this->singleOrdering();
-		$id = $this->getId();
 
 		foreach ($elements as $element)
 		{
@@ -2761,9 +2761,24 @@ class FabrikFEModelList extends JModelForm
 				};
 			}
 		}
+		$userHasOrdered = ($strOrder == '') ? false : true;
+		$groupBy = $this->getGroupBy();
+
+		if ($groupBy !== '')
+		{
+			$strOrder == '' ? $strOrder = "\n ORDER BY " : $strOrder .= ',';
+			$strOrder .= FabrikString::safeColName($groupBy, false) . ' ASC';
+			$this->orderEls[] = $groupBy;
+			$this->orderDirs[] = 'ASC';
+
+			if ($query !== false && is_object($query))
+			{
+				$query->order(FabrikString::safeColName($groupBy, false) . ' ASC');
+			}
+		}
 
 		// If nothing found in session use default ordering (or that set by querystring)
-		if ($strOrder == '')
+		if (!$userHasOrdered)
 		{
 			$orderbys = explode(',', $input->getString('order_by', $input->getString('orderby', '')));
 
@@ -3634,9 +3649,9 @@ class FabrikFEModelList extends JModelForm
 		}
 
 		/**
-		 * temporaraily add in the db key so that the edit links work, must remove it before final return
-		 of getData();
-		*/
+		 * Temporarily add in the db key so that the edit links work, must remove it before final return
+		 * of getData();
+		 */
 		JDEBUG ? $profiler->mark('getAsFields: starting to test if a view') : null;
 
 		if (!$this->isView())
@@ -3659,7 +3674,7 @@ class FabrikFEModelList extends JModelForm
 
 		$this->group_by_added = false;
 
-		// If the group by element isnt in the fields (IE its not published) add it (otherwise group by wont work)
+		// If the group by element isn't in the fields (IE its not published) add it (otherwise group by wont work)
 		$longGroupBy = $this->getGroupByName();
 
 		if (!in_array($longGroupBy, $this->fields) && trim($longGroupBy) != '')
@@ -4568,9 +4583,9 @@ class FabrikFEModelList extends JModelForm
 		}
 
 		$existingfields = array_keys($dbdescriptions);
-		$lastfield = $existingfields[count($existingfields) - 1];
+		$lastField = $existingfields[count($existingfields) - 1];
 		$tableName = FabrikString::safeColName($tableName);
-		$lastfield = FabrikString::safeColName($lastfield);
+		$lastField = FabrikString::safeColName($lastField);
 		$altered = false;
 
 		if (!array_key_exists($element->name, $dbdescriptions))
@@ -4580,7 +4595,7 @@ class FabrikFEModelList extends JModelForm
 				if ($this->canAddFields())
 				{
 					$fabrikDb
-					->setQuery("ALTER TABLE $tableName ADD COLUMN " . FabrikString::safeColName($element->name) . " $objtype AFTER $lastfield");
+					->setQuery("ALTER TABLE $tableName ADD COLUMN " . FabrikString::safeColName($element->name) . " $objtype AFTER $lastField");
 
 					try
 					{
@@ -4658,9 +4673,9 @@ class FabrikFEModelList extends JModelForm
 
 		$return[4] = $existingDef;
 		$existingfields = array_keys($dbdescriptions);
-		$lastfield = $existingfields[count($existingfields) - 1];
+		$lastField = $existingfields[count($existingfields) - 1];
 		$tableName = FabrikString::safeColName($tableName);
-		$lastfield = FabrikString::safeColName($lastfield);
+		$lastField = FabrikString::safeColName($lastField);
 
 		if (empty($origColName) || !in_array($origColName, $existingfields) || ($app->input->get('task') === 'save2copy' && $this->canAddFields()))
 		{
@@ -4668,7 +4683,7 @@ class FabrikFEModelList extends JModelForm
 			{
 				if (!in_array($element->name, $existingfields))
 				{
-					$fabrikDb->setQuery("ALTER TABLE $tableName ADD COLUMN " . FabrikString::safeColName($element->name) . " $objtype AFTER $lastfield");
+					$fabrikDb->setQuery("ALTER TABLE $tableName ADD COLUMN " . FabrikString::safeColName($element->name) . " $objtype AFTER $lastField");
 
 					try
 					{
@@ -4778,14 +4793,14 @@ class FabrikFEModelList extends JModelForm
 				$existingfields[] = $fieldname;
 			}
 
-			$lastfield = $fieldname;
+			$lastField = $fieldname;
 			$element->name = FabrikString::safeColName($element->name);
 			$tableName = FabrikString::safeColName($tableName);
-			$lastfield = FabrikString::safeColName($lastfield);
+			$lastField = FabrikString::safeColName($lastField);
 
 			if (empty($origColName) || !in_array(JString::strtolower($origColName), $existingfields))
 			{
-				$fabrikDb->setQuery("ALTER TABLE $tableName ADD COLUMN $element->name $objtype AFTER $lastfield");
+				$fabrikDb->setQuery("ALTER TABLE $tableName ADD COLUMN $element->name $objtype AFTER $lastField");
 
 				try
 				{
@@ -5030,12 +5045,9 @@ class FabrikFEModelList extends JModelForm
 		$filterModel = $this->getFilterModel();
 		$db = FabrikWorker::getDbo();
 		$this->filters = array();
-		$user = JFactory::getUser();
 		$request = $this->getRequestData();
 		$this->storeRequestData($request);
 		FabrikHelperHTML::debug($request, 'filter:request');
-
-		$params = $this->getParams();
 		$elements = $this->getElements('id');
 
 		/* $$$ rob prefilters loaded before anything to avoid issues where you filter on something and
@@ -5081,7 +5093,7 @@ class FabrikFEModelList extends JModelForm
 
 		// Get a list of plugins
 		$pluginKeys = $filterModel->getPluginFilterKeys();
-		$elementids = FArrayHelper::getValue($this->filters, 'elementid', array());
+		$elementIds = FArrayHelper::getValue($this->filters, 'elementid', array());
 		$sqlCond = FArrayHelper::getValue($this->filters, 'sqlCond', array());
 		$raws = FArrayHelper::getValue($this->filters, 'raw', array());
 
@@ -5091,7 +5103,7 @@ class FabrikFEModelList extends JModelForm
 			$condition = JString::strtoupper($this->filters['condition'][$i]);
 			$key = $this->filters['key'][$i];
 			$filterEval = $this->filters['eval'][$i];
-			$elid = FArrayHelper::getValue($elementids, $i);
+			$elid = FArrayHelper::getValue($elementIds, $i);
 			$key2 = array_key_exists('key2', $this->filters) ? FArrayHelper::getValue($this->filters['key2'], $i, '') : '';
 
 			/* $$$ rob see if the key is a raw filter
@@ -6648,7 +6660,7 @@ class FabrikFEModelList extends JModelForm
 	}
 
 	/**
-	 * returns the table headings, separated from writetable function as
+	 * Returns the table headings, separated from writable function as
 	 * when group_by is selected multiple tables are written
 	 * 09/07/2011 moved headingClass into array rather than string
 	 *
@@ -10518,19 +10530,13 @@ class FabrikFEModelList extends JModelForm
 	/**
 	 * Ask each element to preFormatFormJoins() for $data
 	 *
-	 * @param   array  &$data  to preformat
+	 * @param   array  &$data  to pre-format
 	 *
 	 * @return  void
 	 */
-
 	protected function preFormatFormJoins(&$data)
 	{
-		$profiler = JProfiler::getInstance('Application');
 		$form = $this->getFormModel();
-		$tableParams = $this->getParams();
-		$table = $this->getTable();
-		$pluginManager = FabrikWorker::getPluginManager();
-		$method = 'renderListData_' . $this->outputFormat;
 		$this->_aLinkElements = array();
 
 		// $$$ hugh - temp foreach fix
@@ -10539,16 +10545,6 @@ class FabrikFEModelList extends JModelForm
 
 		foreach ($groups as $groupModel)
 		{
-			/* if (($tableParams->get('group_by_template', '') !== '' && $this->getGroupBy() != '') || $this->outputFormat == 'csv'
-			 || $this->outputFormat == 'feed')
-			{
-			$elementModels = $groupModel->getPublishedElements();
-			}
-			else
-			{
-			$elementModels = $groupModel->getPublishedListElements();
-			} */
-
 			/*
 			 * $$$ rob 29/10/2012 - see http://fabrikar.com/forums/showthread.php?t=28830
 			* Calc may be set to show in list via menu item, but groupModel::getPublishedListElements() doesn't know
@@ -10597,12 +10593,10 @@ class FabrikFEModelList extends JModelForm
 			return;
 		}
 
-		$listid = $this->getTable()->id;
 		$dbprimaryKey = FabrikString::safeColNameToArrayKey($this->getTable()->db_primary_key);
 		$formModel = $this->getFormModel();
 		$db = $this->getDb();
 		FabrikHelperHTML::debug($data, 'render:before formatForJoins');
-		$count = count($data);
 
 		$last_pk = '';
 		$last_i = 0;
