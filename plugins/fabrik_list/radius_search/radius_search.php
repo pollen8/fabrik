@@ -470,7 +470,8 @@ class PlgFabrik_ListRadius_Search extends PlgFabrik_List
 
 		if ($params->get('myloc', 1) == 1)
 		{
-			FabrikHelperHTML::script('components/com_fabrik/libs/geo-location/geo.js');
+			$ext = FabrikHelperHTML::isDebug() ? '.js' : '-min.js';
+			FabrikHelperHTML::script('media/com_fabrik/js/lib/geo-location/geo' . $ext);
 		}
 
 		parent::loadJavascriptClass();

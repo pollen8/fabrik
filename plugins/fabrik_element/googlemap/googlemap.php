@@ -200,13 +200,12 @@ class PlgFabrik_ElementGooglemap extends PlgFabrik_Element
 	{
 		if (!isset(self::$geoJs))
 		{
-			$document = JFactory::getDocument();
 			$params = $this->getParams();
 
 			if ($params->get('fb_gm_defaultloc'))
 			{
-				$uri = JURI::getInstance();
-				FabrikHelperHTML::script('components/com_fabrik/libs/geo-location/geo.js');
+				$ext = FabrikHelperHTML::isDebug() ? '.js' : '-min.js';
+				FabrikHelperHTML::script('media/com_fabrik/js/lib/geo-location/geo' . $ext);
 				self::$geoJs = true;
 			}
 		}

@@ -296,8 +296,8 @@ var FbListRadiusSearch = new Class({
 		if (typeOf(p) === 'null') {
 			alert(Joomla.JText._('PLG_VIEW_RADIUS_NO_GEOLOCATION_AVAILABLE'));
 		} else {
-			this.listform.getElement('input[name=radius_search_lat]').value = p.coords.latitude.toFixed(2);
-			this.listform.getElement('input[name=radius_search_lon]').value = p.coords.longitude.toFixed(2);
+			this.listform.getElement('input[name*=radius_search_lat]').value = p.coords.latitude.toFixed(2);
+			this.listform.getElement('input[name*=radius_search_lon]').value = p.coords.longitude.toFixed(2);
 		}
 	},
 
