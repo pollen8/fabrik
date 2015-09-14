@@ -53,6 +53,16 @@
 					<option value="radio">PLG_ELEMENT_CDD_RADIO_LIST</option>
 				</field>
 
+			<field name="advanced_behavior"
+				type="radio"
+				default="0"
+				class="btn-group"
+				label="PLG_ELEMENT_DROPDOWN_JQUERY_CHOSEN_LABEL"
+				description="PLG_ELEMENT_DROPDOWN_JQUERY_CHOSEN_DESC" >
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+			</field>
+
 			<field name="cascadingdropdown_connection"
 				type="connections"
 				label="PLG_ELEMENT_CDD_CONNECTION_LABEL" />
@@ -124,12 +134,12 @@
 				table="params_cascadingdropdown_table" />
 
 		</fieldset>
-		
+
 		<fieldset name="cascadingdropdown-please-select" label="COM_FABRIK_PLEASE_SELECT">
-			
+
 			<field type="helplink"
 				url="PLG_ELEMENT_CASCADINGDROPDOWN_HELP_SERVER" />
-				
+
 			<field name="cascadingdropdown_showpleaseselect"
 				type="radio"
 				default="1"
@@ -139,7 +149,7 @@
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
-			
+
 			<field name="cascadingdropdown_noselectionvalue"
 				type="text"
 				description="PLG_ELEMENT_CDD_NO_SELECTION_VALUE_DESC"
@@ -151,7 +161,7 @@
 				description="PLG_ELEMENT_CDD_NO_SELECTION_LABEL_DESC"
 				label="PLG_ELEMENT_CDD_NO_SELECTION_LABEL_LABEL"
 				size="35" />
-				
+
 		</fieldset>
 
 		<fieldset addfieldpath="/administrator/components/com_fabrik/models/fields" name="plg-cascadingdropdown-advanced" label="COM_FABRIK_ADVANCED">
@@ -159,16 +169,6 @@
 			<field type="helplink"
 				url="PLG_ELEMENT_CASCADINGDROPDOWN_HELP_SERVER" />
 
-			<field name="advanced_behavior"
-				type="radio"
-				default="0"
-				class="btn-group"
-				label="PLG_ELEMENT_DROPDOWN_ADVANCED_BEHAVIOR_LABEL"
-				description="PLG_ELEMENT_DROPDOWN_ADVANCED_BEHAVIOR_DESC" >
-					<option value="0">JNO</option>
-					<option value="1">JYES</option>
-			</field>
-			
 			<field name="cascadingdropdown_filter"
 				type="fabrikeditor"
 				mode="mysql"
