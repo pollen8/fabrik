@@ -35,10 +35,12 @@ class PlgFabrik_ElementJSPeriodical extends PlgFabrik_Element
 	{
 		$params = $this->getParams();
 		$format = $params->get('text_format_string');
+		$format_blank = $params->get('field_format_string_blank', true);
 
-		if ($format != '')
+		if ($format != '' && ($format_blank || $d != ''))
 		{
 			$str = sprintf($format, $data);
+			// ToDo - No idea why eval is here but not in similar code in field.php (Sophist)
 			$data = eval($str);
 		}
 
