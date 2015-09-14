@@ -34,15 +34,16 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 
 	public function renderListData($data, stdClass &$thisRow)
 	{
-		$params = $this->getParams();
 		$data = FabrikWorker::JSONtoData($data, true);
+		$params = $this->getParams();
 		$format = $params->get('text_format_string');
+		$format_blank = $params->get('field_format_string_blank', true);
 
 		foreach ($data as &$d)
 		{
 			$d = $this->numberFormat($d);
 
-			if ($format != '')
+			if ($format != '' && ($format_blank || $d != ''))
 			{
 				$d = sprintf($format, $d);
 			}
@@ -74,11 +75,12 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 
 	public function renderListData_csv($data, &$thisRow)
 	{
-		$params = $this->getParams();
 		$data = $this->numberFormat($data);
+		$params = $this->getParams();
 		$format = $params->get('text_format_string');
+		$format_blank = $params->get('field_format_string_blank', true);
 
-		if ($format != '')
+		if ($format != '' && ($format_blank || $d != ''))
 		{
 			$data = sprintf($format, $data);
 		}
@@ -144,8 +146,9 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 			{
 				$this->_guessLinkType($value, $data, $repeatCounter);
 				$format = $params->get('text_format_string');
+				$format_blank = $params->get('field_format_string_blank', true);
 
-				if ($format != '')
+				if ($format != '' && ($format_blank || $d != ''))
 				{
 					$value = sprintf($format, $value);
 				}
@@ -606,23 +609,23 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 			 * the only place we're going to find it is in the list model's lastInsertId.  Bah humbug.
 			 * But check __pk_val first anyway, what the heck.
 			 */
-			
+
 			$rowid = FArrayHelper::getValue($thisRow, '__pk_val', '');
-			
+
 			if (empty($rowid))
 			{
 				/**
 				 * Nope.  Try lastInsertId. Or maybe on top of the fridge?  Or in the microwave?  Down the back
-				 * of the couch cushions? 
+				 * of the couch cushions?
 				 */
-				
+
 				$rowid = $formModel->getListModel()->lastInsertId;
-				
+
 				/**
 				 * OK, give up.  If *still* no rowid, we're probably being called from something like getEmailData() on onBeforeProcess or
 				 * onBeforeStore, and it's a new form, so no rowid yet.  So no point returning anything yet.
 				 */
-					
+
 				if (empty($rowid))
 				{
 					return '';
@@ -633,7 +636,7 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 		/*
 		 * YAY!!!  w00t!!  We have a rowid.  Whoop de freakin' doo!!
 		 */
-		
+
 		$elementid = $this->getId();
 		$src = COM_FABRIK_LIVESITE
 		. 'index.php?option=com_' . $package . '&amp;task=plugin.pluginAjax&amp;plugin=field&amp;method=ajax_renderQRCode&amp;'
@@ -645,7 +648,7 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 
 		return $layout->render($displayData);
 	}
-	
+
 	/**
 	 * Turn form value into email formatted value
 	 *
@@ -655,11 +658,11 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 	 *
 	 * @return  string  email formatted value
 	 */
-	
+
 	protected function getIndEmailValue($value, $data = array(), $repeatCounter = 0)
 	{
 		$params = $this->getParams();
-		
+
 		if ($params->get('render_as_qrcode', '0') === '1')
 		{
 			return html_entity_decode($this->qrCodeLink($value, $data));
@@ -669,5 +672,5 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 			return parent::getIndEmailValue($value, $data, $repeatCounter);
 		}
 	}
-	
+
 }
