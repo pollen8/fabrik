@@ -1809,7 +1809,7 @@ class FabrikWorker
 				$query = $db->getQuery(true);
 				$query->select('m.id AS itemId')->from('#__extensions AS e')
 				->leftJoin('#__menu AS m ON m.component_id = e.extension_id')
-				->where('e.name = "fabrik" and e.type = "component" and m.link LIKE "%listid=' . $listId . '%"');
+				->where('e.name = "fabrik" and e.type = "component" and m.link LIKE "%listid=' . $listId . '"');
 				$db->setQuery($query);
 
 				if ($itemId = $db->loadResult())
