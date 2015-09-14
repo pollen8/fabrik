@@ -614,7 +614,7 @@
 				<field name="labelindetails"
 					type="radio"
 					class="btn-group"
-					default="1"
+					default="0"
 					description="COM_FABRIK_FIELD_TIPS_IN_DETAILED_VIEW_DESC"
 					label="COM_FABRIK_FIELD_TIPS_IN_DETAILED_VIEW_LABEL">
 						<option value="0">JNO</option>
