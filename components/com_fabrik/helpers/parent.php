@@ -1795,7 +1795,6 @@ class FabrikWorker
 	 *
 	 * @return mixed NULL if nothing found, int if menu item found
 	 */
-
 	public static function itemId($listId = null)
 	{
 		$app = JFactory::getApplication();
@@ -1806,10 +1805,13 @@ class FabrikWorker
 			if (!is_null($listId))
 			{
 				$db = JFactory::getDbo();
+				$myLanguage = JFactory::getLanguage();
+				$myTag = $myLanguage->getTag();
+				$qLanguage = !empty($myTag) ? ' AND '.$db->q($myTag) .' = '.$db->qn('m.language') : '';
 				$query = $db->getQuery(true);
 				$query->select('m.id AS itemId')->from('#__extensions AS e')
 				->leftJoin('#__menu AS m ON m.component_id = e.extension_id')
-				->where('e.name = "fabrik" and e.type = "component" and m.link LIKE "%listid=' . $listId . '"');
+				->where('e.name = "fabrik" and e.type = "component" and m.link LIKE "%listid=' . $listId . '"' . $qLanguage);
 				$db->setQuery($query);
 
 				if ($itemId = $db->loadResult())
