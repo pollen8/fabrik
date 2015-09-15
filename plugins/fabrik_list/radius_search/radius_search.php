@@ -526,6 +526,7 @@ class PlgFabrik_ListRadius_Search extends PlgFabrik_List
 		$this->jsInstance = "new FbListRadiusSearch($opts)";
 
 		JText::script('PLG_LIST_RADIUS_SEARCH_CLEAR_CONFIRM');
+		JText::script('PLG_LIST_RADIUS_SEARCH_GEOCODE_ERROR');
 
 		return true;
 	}

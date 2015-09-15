@@ -6,25 +6,41 @@
  */
 
 var doGeoCode = function (btn) {
-	var uberC = btn.retrieve('uberC');
-	var fld = btn.retrieve('fld');
-	var address = fld.value;
-	var geocoder = new google.maps.Geocoder();
+	var uberC = btn.retrieve('uberC'),
+		mapid = btn.retrieve('mapid'),
+		address =  btn.retrieve('fld').value,
+		geocoder = new google.maps.Geocoder();
+
+	if (!Fabrik.radiusSearchResults) {
+		Fabrik.radiusSearchResults = {};
+	}
+
+	if (Fabrik.radiusSearchResults[address]) {
+		parseGeoCodeResult(uberC, mapid, Fabrik.radiusSearchResults[address]);
+	}
 	geocoder.geocode({'address': address}, function (results, status) {
 		if (status === google.maps.GeocoderStatus.OK) {
-			var mapid = btn.retrieve('mapid');
-			var loc = results[0].geometry.location;
-			uberC.getElement('input[name^=radius_search_geocode_lat]').value = loc.lat();
-			uberC.getElement('input[name^=radius_search_geocode_lon]').value = loc.lng();
-			var pos = results[0].geometry.location;
-			Fabrik.radiusSearch[mapid].map.setCenter(pos);
-			Fabrik.radiusSearch[mapid].marker.setPosition(pos);
-			//uberC.getElement('input[name=radius_search_lat]').value = '';
+			parseGeoCodeResult(uberC, mapid, results[0].geometry.location);
+			Fabrik.radiusSearchResults[address] = results[0].geometry.location;
 		} else {
-			alert("Geocode was not successful for the following reason: " + status);
+			alert(Joomla.JText._('PLG_LIST_RADIUS_SEARCH_GEOCODE_ERROR').replace('%s', status));
 		}
 	});
 };
+
+/**
+ * Parse a google geocode result.
+ * @param {domnode} uberC Radius search container div
+ * @param {string} mapid  Map id
+ * @param {object} loc
+ */
+var parseGeoCodeResult = function (uberC, mapid, loc) {
+	uberC.getElement('input[name^=radius_search_geocode_lat]').value = loc.lat();
+	uberC.getElement('input[name^=radius_search_geocode_lon]').value = loc.lng();
+	Fabrik.radiusSearch[mapid].map.setCenter(loc);
+	Fabrik.radiusSearch[mapid].marker.setPosition(loc);
+}
+
 
 function geoCode() {
 	// Tell fabrik that the google map script has loaded and the callback has run
@@ -67,9 +83,17 @@ function geoCode() {
 						}
 					});
 				} else {
-
+					var timer;
 					fld.addEvent('keyup', function (e) {
-						doGeoCode(trigger);
+						if (timer) {
+							clearTimeout(timer);
+						}
+						if (e.key === 'enter') {
+							doGeoCode(trigger);
+						}
+						timer = window.setTimeout(function () {
+							doGeoCode(trigger);
+						}, 1000);
 					});
 				}
 

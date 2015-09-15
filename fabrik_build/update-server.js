@@ -188,39 +188,48 @@ var jPlugins = function (grunt) {
         jversion = grunt.config.get('jversion'),
         p, i, plg, props, xmlFile;
     for (p in buildConfig.plugins) {
-        for (i = 0; i < buildConfig.plugins[p].length; i ++) {
-            plg = buildConfig.plugins[p][i];
+        // Community builder plugins can't be installed via the update server.
+        if (p !== 'community') {
+            for (i = 0; i < buildConfig.plugins[p].length; i++) {
+                plg = buildConfig.plugins[p][i];
 
-            props = {
-                'name'          : plg.name,
-                'description'   : plg.name,
-                'element'       : plg.element,
-                'type'          : 'plugin',
-                'folder'        : p,
-                'version'       : version,
-                'downloads'     : {
-                    'downloadurl': {
-                        '$': {'type': 'full', 'format': 'zip'},
-                        '_': grunt.config.get('pkg.config.live.downloadFolder') + plg.fileName.replace('{version}', version)
+                props = {
+                    'name'          : plg.name,
+                    'description'   : plg.name,
+                    'element'       : plg.element,
+                    'type'          : 'plugin',
+                    'folder'        : p,
+                    'version'       : version,
+                    'downloads'     : {
+                        'downloadurl': {
+                            '$': {'type': 'full', 'format': 'zip'},
+                            '_': grunt.config.get('pkg.config.live.downloadFolder') + plg.fileName.replace('{version}', version)
+                        }
+                    },
+                    'maintainer'    : 'Fabrikar.com',
+                    'maintainerurl' : 'http://fabrikar.com',
+                    'targetplatform': {
+                        '$': {
+                            'name'   : 'joomla',
+                            'version': jversion
+                        }
                     }
-                },
-                'maintainer'    : 'Fabrikar.com',
-                'maintainerurl' : 'http://fabrikar.com',
-                'targetplatform': {
+                };
+
+                extensions.push({
                     '$': {
-                        'name'   : 'joomla',
-                        'version': jversion
+                        'name'    : plg.name,
+                        'element' : plg.element,
+                        'type'    : 'plugin',
+                        'folder'  : p.toLowerCase(),
+                        'version' : version,
+                        detailsurl: 'http://fabrikar.com/update/fabrik31/' + plg.xmlFile
                     }
-                }
-            };
+                });
 
-            extensions.push({
-                '$': {'name': plg.name, 'element': plg.element, 'type': 'plugin', 'folder': p.toLowerCase(), 'version': version,
-                    detailsurl: 'http://fabrikar.com/update/fabrik31/' + plg.xmlFile }
-            });
-            
-            xmlFile = updateDir + plg.xmlFile;
-            writeXml(xmlFile, props, version);
+                xmlFile = updateDir + plg.xmlFile;
+                writeXml(xmlFile, props, version);
+            }
         }
     }
 }
