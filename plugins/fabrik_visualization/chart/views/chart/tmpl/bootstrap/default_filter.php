@@ -38,7 +38,7 @@ if ($this->showFilters) : ?>
 	<tfoot>
 		<tr>
 			<th colspan="2" style="text-align:right;">
-  				<i class="icon-filter"></i>
+				<?php echo FabrikHelperHTML::icon('icon-filter'); ?>
   				<button type="submit" class="btn btn-primary">
   					<?php echo FText::_('GO') ?>
   				</button>

@@ -29,7 +29,8 @@ endif;
 	if (!$d->timerReadOnly) :
 	?>
 	<button class="btn" id="<?php echo $d->id; ?>_button">
-		<i class="<?php echo $d->icon; ?>"></i> <span><?php echo FText::_('PLG_ELEMENT_TIMER_START'); ?></span>
+		<?php echo FabrikHelperHTML::icon($d->icon); ?>
+		 <span><?php echo FText::_('PLG_ELEMENT_TIMER_START'); ?></span>
 	</button>
 </div>
 <?php

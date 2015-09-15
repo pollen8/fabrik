@@ -445,7 +445,7 @@ class PlgFabrik_ElementTags extends PlgFabrik_ElementDatabasejoin
 	{
 		$params = $this->getParams();
 		$icon = $params->get('tag_icon', '');
-		$icon = $icon === '' ? '' : '<i class="' . $icon . '"></i> ';
+		$icon = $icon === '' ? '' : FabrikHelperHTML::icon($icon);
 
 		return $icon;
 	}

@@ -102,7 +102,7 @@ $d = $displayData;
 		<tr>
 			<td colspan="2">
 				<button class="button btn btn-success submit" style="margin-left:0">
-					<i class="icon-comments-2"></i>
+					<?php echo FabrikHelperHTML::icon('icon-comments-2'); ?>
 					<?php echo FText::_('PLG_FORM_COMMENT_POST_COMMENT'); ?>
 				</button>
 				<input type="hidden" name="reply_to" value="<?php echo $d->replyTo; ?>" />

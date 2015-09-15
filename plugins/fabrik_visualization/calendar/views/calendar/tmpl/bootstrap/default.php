@@ -16,7 +16,7 @@ defined('_JEXEC') or die('Restricted access');
 
 $row = $this->row;
 ?>
-<div id="<?php echo $this->containerId;?>" class="fabrik_visualization" style="border:1px sold;margin:5px;">
+<div id="<?php echo $this->containerId;?>" class="fabrik_visualization" style="margin:5px;">
 	<?php if ($this->params->get('show-title', 0))
 	{?>
 		<h1><?php echo $row->label;?></h1>
@@ -33,7 +33,7 @@ $row = $this->row;
 
 			<?php if ($this->canAdd) :
 			?>
-			<a href="#" class="btn btn-success addEventButton" title="Add an event"><i class="icon-plus"></i> <?php echo FText::_('PLG_VISUALIZATION_CALENDAR_ADD') ?></a>
+			<a href="#" class="btn btn-success addEventButton" title="Add an event"><?php echo FabrikHelperHTML::icon('icon-plus'); ?> <?php echo FText::_('PLG_VISUALIZATION_CALENDAR_ADD') ?></a>
 		<?php endif;
 		?>
 		</div>
@@ -41,31 +41,31 @@ $row = $this->row;
 		<div class="span3">
 			<div class="btn-group">
 				<button class="btn previousPage">
-					<i class="icon-chevron-left"></i>
+					<?php echo FabrikHelperHTML::icon('icon-chevron-left'); ?>
 				</button>
 				<button class="btn nextPage">
-					<i class="icon-chevron-right"></i>
+					<?php echo FabrikHelperHTML::icon('icon-chevron-right'); ?>
 				</button>
 			</div>
 		</div>
 
 		<div class="span7">
 			<div class="btn-group pull-right">
-				<button class="btn centerOnToday"><i class="icon-flag"></i> <?php echo FText::_('PLG_VISUALIZATION_CALENDAR_TODAY')?></button>
+				<button class="btn centerOnToday"><?php echo FabrikHelperHTML::icon('icon-flag'); ?> <?php echo FText::_('PLG_VISUALIZATION_CALENDAR_TODAY')?></button>
 				<?php
 				if ($this->params->get('show_day', true)):
 				?>
-				<button class="btn dayViewLink"><i class="icon-bookmark"></i> <?php echo FText::_('PLG_VISUALIZATION_CALENDAR_DAY')?></button>
+				<button class="btn dayViewLink"><?php echo FabrikHelperHTML::icon('icon-bookmark'); ?> <?php echo FText::_('PLG_VISUALIZATION_CALENDAR_DAY')?></button>
 				<?php
 				endif;
 				if ($this->params->get('show_week', true)):
 				?>
-				<button class="btn weekViewLink"><i class="icon-list"></i> <?php echo FText::_('PLG_VISUALIZATION_CALENDAR_WEEK')?></button>
+				<button class="btn weekViewLink"><?php echo FabrikHelperHTML::icon('icon-list'); ?> <?php echo FText::_('PLG_VISUALIZATION_CALENDAR_WEEK')?></button>
 				<?php
 				endif;
 				if ($this->params->get('show_month', true)):
 				?>
-				<button class="btn monthViewLink"><i class="icon-calendar"></i> <?php echo FText::_('PLG_VISUALIZATION_CALENDAR_MONTH')?></button>
+				<button class="btn monthViewLink"><?php echo FabrikHelperHTML::icon('icon-calendar'); ?> <?php echo FText::_('PLG_VISUALIZATION_CALENDAR_MONTH')?></button>
 				<?php
 				endif;
 				?>

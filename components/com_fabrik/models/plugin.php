@@ -401,12 +401,12 @@ class FabrikPlugin extends JPlugin
 			{
 				if ($j3)
 				{
-					$str[] = '<a class="btn" href="#" data-button="addButton"><i class="icon-plus"></i> ' . FText::_('COM_FABRIK_ADD') . '</a>';
-					$str[] = '<a class="btn" href="#" data-button="deleteButton"><i class="icon-minus"></i> ' . FText::_('COM_FABRIK_REMOVE') . '</a>';
+					$str[] = '<a class="btn" href="#" data-button="addButton">' . FabrikHelperHTML::icon('icon-plus') . ' ' . FText::_('COM_FABRIK_ADD') . '</a>';
+					$str[] = '<a class="btn" href="#" data-button="deleteButton">' . FabrikHelperHTML::icon('icon-minus') . ' ' . FText::_('COM_FABRIK_REMOVE') . '</a>';
 				}
 				else
 				{
-					$str[] = '<a class="addButton" href="#" data-button="addButton"><i class="icon-plus"></i> ' . FText::_('COM_FABRIK_ADD') . '</a>';
+					$str[] = '<a class="addButton" href="#" data-button="addButton">' . FabrikHelperHTML::icon('icon-plus'). ' ' . FText::_('COM_FABRIK_ADD') . '</a>';
 				}
 			}
 
@@ -451,7 +451,7 @@ class FabrikPlugin extends JPlugin
 
 				if ($repeat && !$j3)
 				{
-					$str[] = '<li><a class="removeButton delete btn" href="#"><i class="icon-minus-sign"></i> ' . FText::_('COM_FABRIK_REMOVE')
+					$str[] = '<li><a class="removeButton delete btn" href="#">' . FabrikHelperHTML::icon('icon-minus-sign') . ' ' . FText::_('COM_FABRIK_REMOVE')
 					. '</a></li>';
 				}
 

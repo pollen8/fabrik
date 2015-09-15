@@ -20,7 +20,7 @@ if ($this->showFilters) :?>
 	  <table class="filtertable table table-striped"><tbody>
 	  <tr>
 		<th style="text-align:left"><?php echo FText::_('PLG_VISUALIZATION_CALENDAR_SEARCH'); ?>:</th>
-		<th style="text-align:right"><a href="#" class="clearFilters"><i class="icon-refresh"></i> <?php echo FText::_('PLG_VISUALIZATION_CALENDAR_CLEAR'); ?></a></th>
+		<th style="text-align:right"><a href="#" class="clearFilters"><?php echo FabrikHelperHTML::icon('icon-refresh'); ?> <?php echo FText::_('PLG_VISUALIZATION_CALENDAR_CLEAR'); ?></a></th>
 	</tr>
 	  <?php
 			$c = 0;
@@ -37,7 +37,7 @@ if ($this->showFilters) :?>
 	  <thead><tr><th colspan='2'><?php echo $table ?></th></tr></thead>
 	  <tfoot><tr><th colspan='2' style="text-align:right;">
 	  <button type="submit" class="btn btn-info">
-	  	<i class="icon-filter"></i> <?php echo FText::_('PLG_VISUALIZATION_CALENDAR_GO') ?>
+		  <?php echo FabrikHelperHTML::icon('icon-filter'); ?> <?php echo FText::_('PLG_VISUALIZATION_CALENDAR_GO') ?>
 	  </button>
 	  </th></tr></tfoot></table>
 	  <?php

@@ -18,7 +18,8 @@ $d = $displayData;
 
 			<?php if ($d->j3)
 			{?>
-			<a class="pull-right" href="#"><i class="icon-cancel icon-remove-sign"></i></a>
+			<a class="pull-right" href="#">
+				<?php echo FabrikHelperHTML::icon('icon-cancel icon-remove-sign'); ?></a>
 			<?php
 			}
 			else

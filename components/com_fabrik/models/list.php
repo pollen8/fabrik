@@ -1350,11 +1350,9 @@ class FabrikFEModelList extends JModelForm
 				// Done each row as its result can change
 				$canEdit = $this->canEdit($row);
 				$canView = $this->canView($row);
-				$canDelete = $this->canDelete($row);
-				$nextview = $canEdit ? 'form' : 'details';
 				$pKeyVal = array_key_exists($tmpKey, $row) ? $row->$tmpKey : '';
-				$pkcheck = array();
-				$pkcheck[] = '<div style="display:none">';
+				$pkCheck = array();
+				$pkCheck[] = '<div style="display:none">';
 
 				foreach ($joins as $join)
 				{
@@ -1377,17 +1375,17 @@ class FabrikFEModelList extends JModelForm
 								$fKeyVal = array_shift($fKeyVal);
 							}
 
-							$pkcheck[] = '<input type="checkbox" class="fabrik_joinedkey" value="' . htmlspecialchars($fKeyVal, ENT_COMPAT, 'UTF-8')
+							$pkCheck[] = '<input type="checkbox" class="fabrik_joinedkey" value="' . htmlspecialchars($fKeyVal, ENT_COMPAT, 'UTF-8')
 							. '" name="' . $join->table_join_alias . '[' . $row->__pk_val . ']" />';
 						}
 					}
 				}
 
-				$pkcheck[] = '</div>';
-				$pkcheck = implode("\n", $pkcheck);
+				$pkCheck[] = '</div>';
+				$pkCheck = implode("\n", $pkCheck);
 				$row->fabrik_select = $this->canSelectRow($row)
 				? '<input type="checkbox" id="id_' . $row->__pk_val . '" name="ids[' . $row->__pk_val . ']" value="'
-						. htmlspecialchars($pKeyVal, ENT_COMPAT, 'UTF-8') . '" />' . $pkcheck : '';
+						. htmlspecialchars($pKeyVal, ENT_COMPAT, 'UTF-8') . '" />' . $pkCheck : '';
 
 				// Add in some default links if no element chosen to be a link
 				$link = $this->viewDetailsLink($data[$groupKey][$i]);
@@ -1408,20 +1406,57 @@ class FabrikFEModelList extends JModelForm
 				$class = $j3 ? $btnClass . 'fabrik_edit fabrik__rowlink' : 'btn fabrik__rowlink';
 				$dataList = 'list_' . $this->getRenderContext();
 				$loadMethod = $this->getLoadMethod('editurl');
-				$img = FabrikHelperHTML::image('edit.png', 'list', '', array('alt' => $editLabel));
-				$editLink = '<a data-loadmethod="' . $loadMethod . '" class="' . $class . '" ' . $editAttribs
+
+				if ($j3)
+				{
+					$displayData = new stdClass;
+					$displayData->loadMethod = $loadMethod;
+					$displayData->class = $class;
+					$displayData->editAttributes = $editAttribs;
+					$displayData->dataList = $dataList;
+					$displayData->editLink = $edit_link;
+					$displayData->editLabel = $editLabel;
+					$displayData->editText = $editText;
+					$layout = FabrikHelperHTML::getLayout('fabrik-edit-button',  array(COM_FABRIK_BASE . 'components/com_fabrik/layouts/listactions'));
+					$editLink = $layout->render($displayData);
+				}
+				else
+				{
+					$img = FabrikHelperHTML::image('edit.png', 'list', '', array('alt' => $editLabel));
+					$editLink = '<a data-loadmethod="' . $loadMethod . '" class="' . $class . '" ' . $editAttribs
 						. 'data-list="' . $dataList . '" href="' . $edit_link . '" title="' . $editLabel . '">' . $img
 						. ' ' . $editText . '</a>';
+				}
 
 				$viewLabel = $this->viewLabel($data[$groupKey][$i]);
 				$viewText = $buttonAction == 'dropdown' ? $viewLabel : '<span class="hidden">' . $viewLabel . '</span>';
 				$class = $j3 ? $btnClass . 'fabrik_view fabrik__rowlink' : 'btn fabrik__rowlink';
 
 				$loadMethod = $this->getLoadMethod('detailurl');
-				$img = FabrikHelperHTML::image('search.png', 'list', '', array('alt' => $viewLabel));
-				$viewLink = '<a data-loadmethod="' . $loadMethod . '" class="' . $class . '" ' . $detailsAttribs
+
+				if ($j3)
+				{
+					$displayData = new stdClass;
+					$displayData->loadMethod = $loadMethod;
+					$displayData->class = $class;
+					$displayData->detailsAttributes = $detailsAttribs;
+					$displayData->link = $link;
+					$displayData->viewLabel = $viewLabel;
+					$displayData->viewLinkTarget = $viewLinkTarget;
+					$displayData->viewText = $viewText;
+					$displayData->dataList = $dataList;
+
+					$layout = FabrikHelperHTML::getLayout('fabrik-view-button',  array(COM_FABRIK_BASE . 'components/com_fabrik/layouts/listactions'));
+					$viewLink = $layout->render($displayData);
+				}
+				else
+				{
+					$img = FabrikHelperHTML::image('search.png', 'list', '', array('alt' => $viewLabel));
+					$viewLink = '<a data-loadmethod="' . $loadMethod . '" class="' . $class . '" ' . $detailsAttribs
 						. 'data-list="' . $dataList . '" href="' . $link . '" title="' . $viewLabel . '" target="' . $viewLinkTarget . '">' . $img
 						. ' ' . $viewText . '</a>';
+				}
+
 
 				// 3.0 actions now in list in one cell
 				$row->fabrik_actions = array();
@@ -1567,10 +1602,7 @@ class FabrikFEModelList extends JModelForm
 		$tpl = $this->getTmpl();
 		$align = $params->get('checkboxLocation', 'end') == 'end' ? 'right' : 'left';
 		$displayData = array('align' => $align);
-		$basePath = COM_FABRIK_FRONTEND . '/components/com_fabrik/layouts';
-		$layout = new FabrikLayoutFile('listactions.' . $buttonAction, $basePath, array('debug' => false, 'component' => 'com_fabrik', 'client' => 'site'));
-		$layout->addIncludePaths(JPATH_THEMES . '/' . JFactory::getApplication()->getTemplate() . '/html/layouts');
-		$layout->addIncludePaths(COM_FABRIK_FRONTEND . '/views/list/tmpl/' . $tpl . '/layouts/');
+		$layout = FabrikHelperHTML::getLayout($buttonAction, array(COM_FABRIK_BASE . 'components/com_fabrik/layouts/listactions'));
 
 		foreach ($data as $groupKey => $group)
 		{
@@ -1716,24 +1748,36 @@ class FabrikFEModelList extends JModelForm
 
 	protected function deleteButton($tpl = '', $heading = false)
 	{
+		$displayData = new stdClass;
 		$label = FText::_('COM_FABRIK_DELETE');
 		$buttonAction = $this->actionMethod();
-		$tpl = $this->getTmpl();
 		$j3 = FabrikWorker::j3();
-		$text = $buttonAction == 'dropdown' ? $label : '<span class="hidden">' . $label . '</span>';
-		$btnClass = ($j3 && $buttonAction != 'dropdown') ? 'btn ' : '';
-		$iconClass = $j3 ? 'icon-remove' : 'icon-minus';
-		$label = $j3 ? ' ' . FText::_('COM_FABRIK_DELETE') : '<span>' . FText::_('COM_FABRIK_DELETE') . '</span>';
-		$btn = '<a href="#" class="' . $btnClass . 'delete" data-listRef="list_' . $this->getRenderContext()
-				. '" title="' . FText::_('COM_FABRIK_DELETE') . '">'
-				. FabrikHelperHTML::image('delete.png', 'list', $tpl, array('alt' => $label, 'icon-class' => $iconClass)) . ' ' . $text . '</a>';
+		$displayData->tpl = $this->getTmpl();
+		$displayData->text = $buttonAction == 'dropdown' ? $label : '<span class="hidden">' . $label . '</span>';
+		$displayData->btnClass = ($j3 && $buttonAction != 'dropdown') ? 'btn btn-default ' : '';
+		$displayData->iconClass = $j3 ? 'icon-remove' : 'icon-minus';
+		$displayData->label = $j3 ? ' ' . FText::_('COM_FABRIK_DELETE') : '<span>' . FText::_('COM_FABRIK_DELETE') . '</span>';
+		$displayData->renderContext = $this->getRenderContext();
 
-		return $j3 ? $btn : '<li class="fabrik_delete">' . $btn . '</li>';
+		$layout = FabrikHelperHTML::getLayout('fabrik-delete-button',  array(COM_FABRIK_BASE . 'components/com_fabrik/layouts/listactions'));
+
+		if ($j3)
+		{
+			return $layout->render($displayData);
+		}
+		else
+		{
+			$btn = '<a href="#" class="' . $displayData->btnClass . 'delete" data-listRef="list_' . $displayData->renderContext
+				. '" title="' . FText::_('COM_FABRIK_DELETE') . '">'
+				. FabrikHelperHTML::image('delete.png', 'list', $displayData->tpl, array('alt' => $displayData->label, 'icon-class' => $displayData->iconClass)) . ' ' . $displayData->text . '</a>';
+
+			return '<li class="fabrik_delete">' . $btn . '</li>';
+		}
 	}
 
 	/**
 	 * Get a list of possible menus
-	 * USED TO BUILD RELTED TABLE LNKS WITH CORRECT iTEMD AND TEMPLATE
+	 * USED TO BUILD RELATED TABLE LINKS WITH CORRECT ITEMID AND TEMPLATE
 	 *
 	 * @since   2.0.4
 	 *
@@ -1932,7 +1976,7 @@ class FabrikFEModelList extends JModelForm
 			$label = FText::_('COM_FABRIK_LINKED_FORM_ADD');
 		}
 
-		$icon = '<i class="icon-plus"></i> ';
+		$icon = FabrikHelperHTML::icon('icon-plus') . ' ';
 		$trigger = $popUp ? 'data-fabrik-view="form"' : '';
 		$link = '<a ' . $trigger . ' href="' . $url . '" title="' . $label . '">' . $icon . $label . '</a>';
 		$url = '<span class="addbutton">' . $link . '</span></a>';
@@ -2037,7 +2081,7 @@ class FabrikFEModelList extends JModelForm
 
 		$title = $label;
 		$label = '<span class="fabrik_related_data_count">(' . $count . ')</span> ' . $label;
-		$icon = '<i class="icon-list-view"></i> ';
+		$icon = FabrikHelperHTML::icon('icon-list-view') . ' ';
 		$url = $this->releatedDataURL($key, $val, $listid);
 
 		if ($showRelated == 0 || ($showRelated == 2  && $count))
@@ -6995,7 +7039,6 @@ class FabrikFEModelList extends JModelForm
 	 *
 	 * @return  void
 	 */
-
 	protected function actionHeading(&$aTableHeadings, &$headingClass, &$cellClass)
 	{
 		$params = $this->getParams();
@@ -7029,7 +7072,7 @@ class FabrikFEModelList extends JModelForm
 				$headingButtons[] = $this->deleteButton('', true);
 			}
 
-			$return = $pluginManager->runPlugins('button', $this, 'list', array('heading' => true));
+			$pluginManager->runPlugins('button', $this, 'list', array('heading' => true));
 			$res = $pluginManager->data;
 
 			if (FabrikWorker::j3())

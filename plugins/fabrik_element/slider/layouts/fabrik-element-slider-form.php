@@ -8,7 +8,7 @@ $d = $displayData;
 <?php
 	if ($d->showNone) :
 		if ($d->j3) :?>
-		<button class="btn btn-mini clearslider pull-left" style="margin-right:10px"><i class="icon-remove"></i></button>
+		<button class="btn btn-mini clearslider pull-left" style="margin-right:10px"><?php echo FabrikHelperHTML::icon('icon-remove'); ?></button>
 		<?php
 		else:
 			?>

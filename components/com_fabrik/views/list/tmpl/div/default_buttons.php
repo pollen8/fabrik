@@ -19,7 +19,7 @@ defined('_JEXEC') or die('Restricted access');
 <?php if ($this->showAdd) :?>
 
 	<li><a class="addbutton addRecord" href="<?php echo $this->addRecordLink;?>">
-		<i class="icon-plus"></i>
+			<?php echo FabrikHelperHTML::icon('icon-plus'); ?>
 		<?php echo $this->addLabel?>
 	</a></li>
 <?php
@@ -33,7 +33,7 @@ if ($this->canGroupBy) :?>
 
 	<li class="dropdown">
 		<a href="#" class="dropdown-toggle groupBy" data-toggle="dropdown">
-			<i class="icon-list-view"></i>
+			<?php echo FabrikHelperHTML::icon('icon-list-view'); ?>
 			<?php echo FText::_('COM_FABRIK_GROUP_BY');?>
 			<b class="caret"></b>
 		</a>
@@ -49,7 +49,7 @@ if ($this->canGroupBy) :?>
 if (($this->showClearFilters && (($this->filterMode === 3 || $this->filterMode === 4))  || $this->bootShowFilters == false)) :?>
 	<li>
 		<a class="clearFilters" href="#">
-			<i class="icon-refresh"></i>
+			<?php echo FabrikHelperHTML::icon('icon-refresh'); ?>
 			<?php echo FText::_('COM_FABRIK_CLEAR')?>
 		</a>
 	</li>
@@ -65,7 +65,7 @@ if ($this->showFilters && $this->toggleFilters) :?>
 if ($this->advancedSearch !== '') : ?>
 	<li>
 		<a href="<?php echo $this->advancedSearchURL?>" class="advanced-search-link">
-			<i class="icon-search"></i>
+			<?php echo FabrikHelperHTML::icon('icon-search'); ?>
 			<?php echo FText::_('COM_FABRIK_ADVANCED_SEARCH');?>
 		</a>
 	</li>
@@ -73,21 +73,21 @@ if ($this->advancedSearch !== '') : ?>
 if ($this->showCSVImport || $this->showCSV) :?>
 	<li class="dropdown">
 		<a href="#" class="dropdown-toggle" data-toggle="dropdown">
-			<i class="icon-upload"></i>
+			<?php echo FabrikHelperHTML::icon('icon-upload'); ?>
 			<?php echo FText::_('COM_FABRIK_CSV');?>
 			<b class="caret"></b>
 		</a>
 		<ul class="dropdown-menu">
 			<?php if ($this->showCSVImport) :?>
 			<li><a href="<?php echo $this->csvImportLink;?>" class="csvImportButton">
-				<i class="icon-download"></i>
+					<?php echo FabrikHelperHTML::icon('icon-download'); ?>
 				<?php echo FText::_('COM_FABRIK_IMPORT_FROM_CSV');?>
 			</a></li>
 			<?php endif?>
 
 			<?php if ($this->showCSV) :?>
 			<li><a href="#" class="csvExportButton">
-				<i class="icon-upload"></i>
+					<?php echo FabrikHelperHTML::icon('icon-upload'); ?>
 				<?php echo FText::_('COM_FABRIK_EXPORT_TO_CSV');?>
 			</a></li>
 			<?php endif?>
@@ -105,7 +105,7 @@ if ($this->showRSS) :?>
 endif;
 if ($this->showPDF) :?>
 			<li><a href="<?php echo $this->pdfLink;?>" class="pdfButton">
-				<i class="icon-file"></i>
+					<?php echo FabrikHelperHTML::icon('icon-file'); ?>
 				<?php echo FText::_('COM_FABRIK_PDF');?>
 			</a></li>
 <?php endif;

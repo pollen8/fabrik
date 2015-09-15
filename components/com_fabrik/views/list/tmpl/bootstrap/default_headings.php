@@ -42,7 +42,7 @@ defined('_JEXEC') or die('Restricted access');
 			?>
 			<div style="text-align:center">
 				<button class="btn-info btn fabrik_filter_submit button" name="filter" >
-				<i class="icon-filter"></i>
+				<?php echo FabrikHelperHTML::icon('icon-filter'); ?>
 				<?php echo FText::_('COM_FABRIK_GO');?>
 				</button>
 			</div>

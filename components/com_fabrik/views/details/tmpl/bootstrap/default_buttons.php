@@ -14,21 +14,21 @@ defined('_JEXEC') or die('Restricted access');
 
 if ($this->showEmail): ?>
 	<a class="btn fabrikWin" rel='{"title":"<?php echo FText::_('JGLOBAL_EMAIL'); ?>", "loadMethod":"iframe", "height":"300px"}' href="<?php echo $this->emailURL?>">
-		<i class="icon-envelope"></i>
+		<?php echo FabrikHelperHTML::icon('icon-envelope');?>
 		<?php echo FText::_('JGLOBAL_EMAIL'); ?>
 	</a>
 <?php endif;
 
 if ($this->showPDF): ?>
 	<a class="btn" href="<?php echo $this->pdfURL?>">
-		<i class="icon-file"></i>
+		<?php echo FabrikHelperHTML::icon('icon-file');?>
 		<?php echo FText::_('COM_FABRIK_PDF')?>
 	</a>
 <?php endif;
 
 if ($this->showPrint): ?>
 	<a class="btn" data-fabrik-print href="<?php echo $this->printURL?>">
-		<i class="icon-print"></i>
+		<?php echo FabrikHelperHTML::icon('icon-print');?>
 		<?php echo FText::_('COM_FABRIK_PRINT')?>
 	</a>
 <?php

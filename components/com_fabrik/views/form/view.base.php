@@ -663,7 +663,7 @@ class FabrikViewFormBase extends JViewLegacy
 		$imgs->action_check = FabrikHelperHTML::image('action_check.png', 'form', $this->tmpl, '', true);
 
 		$imgs->ajax_loader = FabrikHelperHTML::image('ajax-loader.gif', 'form', $this->tmpl, '', true);
-		$imgs->ajax_loader = '<i class="icon-spinner icon-spin"></i>';
+		$imgs->ajax_loader = FabrikHelperHTML::icon('icon-spinner icon-spin');
 		$opts->images = $imgs;
 
 		// $$$rob if you are loading a list in a window from a form db join select record option
@@ -853,7 +853,7 @@ class FabrikViewFormBase extends JViewLegacy
 
 		if ($resetIcon !== '')
 		{
-			$resetIcon = '<i class="' . $resetIcon . '"></i>';
+			$resetIcon = FabrikHelperHTML::icon($resetIcon);
 			$before = $params->get('reset_icon_location', 'before') == 'before';
 			$resetLabel = $before ? $resetIcon . '&nbsp;' . $resetLabel : $resetLabel . '&nbsp;' . $resetIcon;
 		}
@@ -863,7 +863,7 @@ class FabrikViewFormBase extends JViewLegacy
 
 		if ($copyIcon !== '')
 		{
-			$copyIcon = '<i class="' . $copyIcon . '"></i>';
+			$copyIcon = FabrikHelperHTML::icon($copyIcon);
 			$copyLabel = $params->get('copy_icon_location', 'before') == 'before' ? $copyIcon . '&nbsp;' . $copyLabel : $copyLabel . '&nbsp;' . $copyIcon;
 		}
 
@@ -872,7 +872,7 @@ class FabrikViewFormBase extends JViewLegacy
 
 		if ($applyIcon !== '')
 		{
-			$applyIcon = '<i class="' . $applyIcon . '"></i>';
+			$applyIcon = FabrikHelperHTML::icon($applyIcon);
 			$before = $params->get('apply_icon_location', 'before') == 'before';
 			$applyLabel = $before ? $applyIcon . '&nbsp;' . $applyLabel : $applyLabel . '&nbsp;' . $applyIcon;
 		}
@@ -883,7 +883,7 @@ class FabrikViewFormBase extends JViewLegacy
 
 		if ($deleteIcon !== '')
 		{
-			$deleteIcon = '<i class="' . $deleteIcon . '"></i>';
+			$deleteIcon = FabrikHelperHTML::icon($deleteIcon);
 			$before = $params->get('delete_icon_location', 'before') == 'before';
 			$deleteLabel = $before ? $deleteIcon . '&nbsp;' . $deleteLabel : $deleteLabel . '&nbsp;' . $deleteIcon;
 		}
@@ -893,7 +893,7 @@ class FabrikViewFormBase extends JViewLegacy
 
 		if ($goBackIcon !== '')
 		{
-			$goBackIcon = '<i class="' . $goBackIcon . '"></i>';
+			$goBackIcon = FabrikHelperHTML::icon($goBackIcon);
 			$before = $params->get('goback_icon_location', 'before') == 'before';
 			$goBackLabel = $before ? $goBackIcon . '&nbsp;' . $goBackLabel : $goBackLabel . '&nbsp;' . $goBackIcon;
 		}
@@ -911,7 +911,7 @@ class FabrikViewFormBase extends JViewLegacy
 
 			if ($submitIcon !== '')
 			{
-				$submitIcon = '<i class="' . $submitIcon . '"></i>';
+				$submitIcon = FabrikHelperHTML::icon($submitIcon);
 				$before = $params->get('save_icon_location', 'before') == 'before';
 				$submitLabel = $before ? $submitIcon . '&nbsp;' . $submitLabel : $submitLabel . '&nbsp;' . $submitIcon;
 			}
@@ -926,10 +926,10 @@ class FabrikViewFormBase extends JViewLegacy
 
 		if ($this->isMultiPage)
 		{
-			$form->prevButton = '<button type="button" class="btn fabrikPagePrevious button" name="fabrikPagePrevious"><i class="icon-previous"></i>&nbsp;'
+			$form->prevButton = '<button type="button" class="btn fabrikPagePrevious button" name="fabrikPagePrevious">' . FabrikHelperHTML::icon('icon-previous'). '&nbsp;'
 				. FText::_('COM_FABRIK_PREV') . '</button>';
 			$form->nextButton = '<button type="button" class="btn fabrikPageNext button" name="fabrikPageNext">'
-				. FText::_('COM_FABRIK_NEXT') . '&nbsp;<i class="icon-next"></i></button>';
+				. FText::_('COM_FABRIK_NEXT') . '&nbsp;' . FabrikHelperHTML::icon('icon-next'). '</button>';
 		}
 		else
 		{

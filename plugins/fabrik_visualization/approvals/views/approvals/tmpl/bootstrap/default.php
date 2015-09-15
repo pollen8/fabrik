@@ -50,7 +50,7 @@ foreach ($this->rows as $row)
 					<a href="<?php echo $row->view ?>">
 					<a class="fabrikTip" opts="{position:'right'}" title="<?php echo FabrikString::truncate($row->content,
 		array('tip' => false, 'wordcount' => 200)) ?>" >
-						<i class="icon-search"></i>
+						<?php echo FabrikHelperHTML::icon('icon-search'); ?>
 					</a></td>
 					<td>
 						<div class="btn-group">
@@ -60,12 +60,12 @@ foreach ($this->rows as $row)
 							<ul class="dropdown-menu">
 								<li>
 									<a class="approve" href="<?php echo $url . 'approve'?>">
-										<i class="icon-ok"></i> <span>approve</span>
+										<?php echo FabrikHelperHTML::icon('icon-ok'); ?> <span>approve</span>
 									</a>
 								</li>
 								<li>
 									<a class="disapprove"  href="i<?php echo $url . 'disapprove'?>">
-										<i class="icon-remove"></i> <span>disapprove</span>
+										<?php echo FabrikHelperHTML::icon('icon-remove'); ?> <span>disapprove</span>
 									</a>
 								</li>
 							</ul>

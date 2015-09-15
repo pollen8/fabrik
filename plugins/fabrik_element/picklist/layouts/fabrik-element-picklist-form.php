@@ -22,7 +22,7 @@ FabrikHelperHTML::stylesheet(COM_FABRIK_LIVESITE . 'plugins/fabrik_element/pickl
 				endforeach;
 				?>
 
-				<li class="emptyplicklist" style="display:none"><i class="icon-move"></i>
+				<li class="emptyplicklist" style="display:none"><?php echo FabrikHelperHTML::icon('icon-move'); ?>
 					<?php echo FText::_('PLG_ELEMENT_PICKLIST_DRAG_OPTIONS_HERE'); ?>
 				</li>
 			</ul>
@@ -41,7 +41,7 @@ FabrikHelperHTML::stylesheet(COM_FABRIK_LIVESITE . 'plugins/fabrik_element/pickl
 				endforeach;
 				?>
 
-				<li class="emptyplicklist" style="display:none"><i class="icon-move"></i>
+				<li class="emptyplicklist" style="display:none"><?php echo FabrikHelperHTML::icon('icon-move'); ?>
 					<?php echo FText::_('PLG_ELEMENT_PICKLIST_DRAG_OPTIONS_HERE'); ?>
 				</li>
 			</ul>

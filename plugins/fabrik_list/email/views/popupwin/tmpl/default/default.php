@@ -14,7 +14,7 @@ defined('_JEXEC') or die('Restricted access');
 ?>
 <form method="post" enctype="multipart/form-data" action="<?php echo JURI::base();?>index.php" name="emailtable" id="emailtable">
 	<div class="alert alert-info">
-		<i class="icon-envelope"></i> <?php echo JText::plural('PLG_LIST_EMAIL_N_RECORDS', $this->recordcount) ?>
+		<?php echo FabrikHelperHTML::icon('icon-envelope'); ?> <?php echo JText::plural('PLG_LIST_EMAIL_N_RECORDS', $this->recordcount) ?>
 	</div>
 	<?php
 	if ($this->showToField)

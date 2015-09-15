@@ -529,7 +529,7 @@ if (!$j3)
 			if ($params->get('icons', true))
 			{
 				$j2img = JHtml::_('image', 'system/emailButton.png', FText::_('JGLOBAL_EMAIL'), null, true);
-				$image = FabrikWorker::j3() ? '<i class="icon-envelope"></i> ' : $j2img;
+				$image = FabrikWorker::j3() ? FabrikHelperHTML::icon('icon-envelope') . ' ' : $j2img;
 			}
 			else
 			{
@@ -2033,7 +2033,7 @@ if (!$j3)
 
 			if (!$srcOnly)
 			{
-				return '<i class="' . $class . '" ' . $p . '></i>';
+				return FabrikHelperHTML::icon($class, $p);
 			}
 			else
 			{
@@ -2781,5 +2781,18 @@ if (!$j3)
 		$layout->addIncludePaths(JPATH_THEMES . '/' . JFactory::getApplication()->getTemplate() . '/html/layouts/com_fabrik');
 
 		return $layout;
+	}
+
+	/**
+	 * Render an icon using JLayouts
+	 *
+	 * @param   string  $icon        Icon class name
+	 * @param   string  $properties  Additional html properties
+	 *
+	 * @return string
+	 */
+	public static function icon($icon, $properties = '')
+	{
+		return FabrikHelperHTML::getLayout('fabrik-icon')->render((object) array('icon' => $icon, 'properties' => $properties));
 	}
 }

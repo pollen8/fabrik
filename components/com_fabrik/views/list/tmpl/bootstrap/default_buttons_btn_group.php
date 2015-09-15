@@ -17,7 +17,7 @@ defined('_JEXEC') or die('Restricted access');
 	<?php if ($this->canGroupBy) :?>
 		<div class="btn-group">
 			<a href="#" class="btn dropdown-toggle groupBy" data-toggle="dropdown">
-				<i class="icon-list-view"></i>
+				<?php echo FabrikHelperHTML::icon('icon-list-view');?>
 				<?php echo FText::_('COM_FABRIK_GROUP_BY');?>
 			</a>
 			<ul class="dropdown-menu">
@@ -31,35 +31,35 @@ defined('_JEXEC') or die('Restricted access');
 
 	<?php if ($this->showAdd) {?>
 		<a class="addbutton btn addRecord" href="<?php echo $this->addRecordLink;?>">
-			<i class="icon-plus"></i>
+			<?php echo FabrikHelperHTML::icon('icon-plus');?>
 			<?php echo $this->addLabel?>
 		</a>
 	<?php }?>
 
 	<?php if ($this->showClearFilters) :?>
 		<a class="clearFilters btn" href="#">
-			<i class="icon-refresh"></i>
+			<?php echo FabrikHelperHTML::icon('icon-refresh'); ?>
 			<?php echo FText::_('COM_FABRIK_CLEAR')?>
 		</a>
 	<?php endif ?>
 
 	<?php if ($this->showCSV) {?>
 		<a href="#" class="btn csvExportButton">
-			<i class="icon-upload"></i>
+			<?php echo FabrikHelperHTML::icon('icon-upload'); ?>
 			<?php echo FText::_('COM_FABRIK_EXPORT_TO_CSV');?>
 		</a>
 	<?php }?>
 
 	<?php if ($this->advancedSearch !== '') : ?>
 		<a href="<?php echo $this->advancedSearchURL?>" class="btn advanced-search-link">
-			<i class="icon-search"></i>
+			<?php echo FabrikHelperHTML::icon('icon-search'); ?>
 			<?php echo FText::_('COM_FABRIK_ADVANCED_SEARCH');?>
 		</a>
 	<?php endif?>
 
 	<?php if ($this->showCSVImport) {?>
 		<a href="<?php echo $this->csvImportLink;?>" class="btn csvImportButton">
-			<i class="icon-download"></i>
+			<?php echo FabrikHelperHTML::icon('icon-download'); ?>
 			<?php echo FText::_('COM_FABRIK_IMPORT_FROM_CSV');?>
 		</a>
 	<?php }?>
@@ -72,7 +72,7 @@ defined('_JEXEC') or die('Restricted access');
 	<?php }
 	if ($this->showPDF) {?>
 			<a href="<?php echo $this->pdfLink;?>" class="btn pdfButton">
-				<i class="icon-file"></i>
+				<?php echo FabrikHelperHTML::icon('icon-file'); ?>
 				<?php echo FText::_('COM_FABRIK_PDF');?>
 			</a>
 	<?php }?>

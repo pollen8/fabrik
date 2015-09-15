@@ -184,12 +184,12 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 			{
 				$html = '<div class="pull-left" style="margin:0 20px 20px 0">';
 				$html .= JHTML::_('select.genericlist', $results, 'email_to_selectfrom[]', $attribs, 'email', 'name', '', 'email_to_selectfrom');
-				$html .= '<br /><a href="#" class="btn btn-small" id="email_add"><i class="icon-plus"></i> ' . FText::_('COM_FABRIK_ADD') . ' &gt;&gt;</a>';
+				$html .= '<br /><a href="#" class="btn btn-small" id="email_add">' . FabrikHelperHTML::icon('icon-plus') . ' ' . FText::_('COM_FABRIK_ADD') . ' &gt;&gt;</a>';
 				$html .= '</div>';
 				$html .= '<div class="span6">';
 				$html .= JHTML::_('select.genericlist', $empty, 'list_email_to[]', $attribs, 'email', 'name', '', 'list_email_to');
 				$html .= '<br /><a href="#" class="btn btn-small" id="email_remove">&lt;&lt; '
-					. FText::_('COM_FABRIK_DELETE') . ' <i class="icon-delete"></i></a>';
+					. FText::_('COM_FABRIK_DELETE') . ' ' . FabrikHelperHTML::icon('icon-delete') . '</a>';
 				$html .= '</div>';
 				$html .= '<div style="clear:both"></div>';
 			}
@@ -561,7 +561,7 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 	private function _parseMailTos($mailTos, $row, $notSent)
 	{
 		$params = $this->getParams();
-		$sendSMS	= $param->get('emailtable_email_or_sms', 'email') == 'sms';
+		$sendSMS	= $params->get('emailtable_email_or_sms', 'email') == 'sms';
 		$w = new FabrikWorker;
 
 		foreach ($mailTos as $toKey => $thisTo)

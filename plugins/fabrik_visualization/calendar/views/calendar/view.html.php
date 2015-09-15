@@ -148,9 +148,9 @@ class FabrikViewCalendar extends JViewLegacy
 		if (FabrikWorker::j3())
 		{
 			$options->buttons = new stdClass;
-			$options->buttons->del = '<button class="btn popupDelete" data-task="deleteCalEvent"><i class="icon-delete"></i></button>';
-			$options->buttons->edit = '<button class="btn popupEdit" data-task="editCalEvent"><i class="icon-edit"></i></button>';
-			$options->buttons->view = '<button class="btn popupView" data-task="viewCalEvent"><i class="icon-eye"></i></button>';
+			$options->buttons->del = '<button class="btn popupDelete" data-task="deleteCalEvent">' . FabrikHelperHTML::icon('icon-delete') . '</button>';
+			$options->buttons->edit = '<button class="btn popupEdit" data-task="editCalEvent">' . FabrikHelperHTML::icon('icon-edit') . '</button>';
+			$options->buttons->view = '<button class="btn popupView" data-task="viewCalEvent">' . FabrikHelperHTML::icon('icon-eye') . '</button>';
 		}
 		else
 		{

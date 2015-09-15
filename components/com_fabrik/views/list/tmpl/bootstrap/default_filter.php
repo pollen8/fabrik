@@ -35,7 +35,7 @@ else:
 			<th style="text-align:right">
 			<?php if ($this->showClearFilters) :?>
 				<a class="clearFilters" href="#">
-					<i class="icon-refresh"></i>
+					<?php echo FabrikHelperHTML::icon('icon-refresh'); ?>
 					<?php echo FText::_('COM_FABRIK_CLEAR')?>
 					</a>
 			<?php endif ?>
