@@ -976,7 +976,7 @@
 							label="COM_FABRIK_RESPONSIVE_CLASS_LABEL"
 						>
 							<option value="">COM_FABRIK_RESPONSIVE_CLASS_VISIBLE</option>
-							<option value="hidden-tablet hidden-phone">COM_FABRIK_RESPONSIVE_CLASS_VISIBLE_PHONE</option>
+							<option value="hidden-tablet hidden-desktop">COM_FABRIK_RESPONSIVE_CLASS_VISIBLE_PHONE</option>
 							<option value="hidden-phone hidden-desktop">COM_FABRIK_RESPONSIVE_CLASS_VISIBLE_TABLET</option>
 							<option value="hidden-phone hidden-tablet">COM_FABRIK_RESPONSIVE_CLASS_VISIBLE_DESKTOP</option>
 							<option value="hidden-phone">COM_FABRIK_RESPONSIVE_CLASS_HIDDEN_PHONE</option>
