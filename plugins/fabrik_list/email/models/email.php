@@ -318,7 +318,7 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 
 		if (trim($cond) !== '')
 		{
-			if (empty($whereClause))
+			if (!empty($whereClause))
 			{
 				$whereClause .= ' AND ';
 			}
