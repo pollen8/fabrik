@@ -1602,7 +1602,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		$displayData->canUse = $this->canUse();
 		$displayData->j3 = FabrikWorker::j3();
 		$displayData->hidden = $this->isHidden();
-		$displayData->label = $element->label;
+		$displayData->label = FText::_($element->label);
 		$displayData->hasLabel = $this->get('hasLabel');
 		$displayData->view = $app->input->get('view', 'form');
 		$displayData->tip = $this->tipHtml($model->data);
