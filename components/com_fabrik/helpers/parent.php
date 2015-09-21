@@ -981,22 +981,22 @@ class FabrikWorker
 
 				if (is_array($match))
 				{
-					$newmatch = '';
+					$newMatch = '';
 
 					// Deal with radio boxes etc. inside repeat groups
 					foreach ($match as $m)
 					{
 						if (is_array($m))
 						{
-							$newmatch .= ',' . implode(',', $m);
+							$newMatch .= ',' . implode(',', $m);
 						}
 						else
 						{
-							$newmatch .= ',' . $m;
+							$newMatch .= ',' . $m;
 						}
 					}
 
-					$match = JString::ltrim($newmatch, ',');
+					$match = JString::ltrim($newMatch, ',');
 				}
 			}
 			else
@@ -1007,7 +1007,7 @@ class FabrikWorker
 		else
 		{
 			// Could be looking for URL field type e.g. for $_POST[url][link] the match text will be url.link
-			$aMatch = explode(".", $match);
+			$aMatch = explode('.', $match);
 			$aPost = $this->_searchData;
 
 			foreach ($aMatch as $sPossibleArrayKey)

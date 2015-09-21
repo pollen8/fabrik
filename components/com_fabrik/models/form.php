@@ -1096,7 +1096,6 @@ class FabrikFEModelForm extends FabModelForm
 	 *
 	 * @return	array
 	 */
-
 	protected function setOrigData()
 	{
 		$app = JFactory::getApplication();
@@ -1862,7 +1861,6 @@ class FabrikFEModelForm extends FabModelForm
 
 		$pluginManager = FabrikWorker::getPluginManager();
 		$listModel = $this->getListModel();
-		$item = $listModel->getTable();
 		$origid = $this->prepareForCopy();
 		$this->formData = $listModel->removeTableNameFromSaveData($this->formData, '___');
 
@@ -2196,7 +2194,7 @@ class FabrikFEModelForm extends FabModelForm
 
 		require_once COM_FABRIK_FRONTEND . '/helpers/uploader.php';
 		$pluginManager = JModelLegacy::getInstance('Pluginmanager', 'FabrikFEModel');
-		$validationRules = $pluginManager->getPlugInGroup('validationrule');
+		$pluginManager->getPlugInGroup('validationrule');
 
 		$post = $this->setFormData();
 

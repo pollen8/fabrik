@@ -21,7 +21,6 @@ require_once JPATH_SITE . '/components/com_fabrik/models/plugin.php';
  * @package  Fabrik
  * @since    3.0
  */
-
 class PlgFabrik_Validationrule extends FabrikPlugin
 {
 	/**
@@ -53,7 +52,6 @@ class PlgFabrik_Validationrule extends FabrikPlugin
 	 *
 	 * @return  bool  true if validation passes, false if fails
 	 */
-
 	public function validate($data, $repeatCounter)
 	{
 		return true;
@@ -68,7 +66,6 @@ class PlgFabrik_Validationrule extends FabrikPlugin
 	 *
 	 * @return  string	original or replaced data
 	 */
-
 	public function replace($data, $repeatCounter)
 	{
 		return $data;
@@ -83,7 +80,6 @@ class PlgFabrik_Validationrule extends FabrikPlugin
 	 *
 	 * @return  bool	apply validation
 	 */
-
 	public function shouldValidate($data, $repeatCounter = 0)
 	{
 		if (!$this->shouldValidateIn())
@@ -105,8 +101,30 @@ class PlgFabrik_Validationrule extends FabrikPlugin
 		}
 
 		$w = new FabrikWorker;
-		$condition = trim($w->parseMessageForPlaceHolder($condition));
-		$formModel = $this->elementModel->getFormModel();
+		$groupModel = $this->elementModel->getGroupModel();
+		$inRepeat = $groupModel->canRepeat();
+
+		if ($inRepeat)
+		{
+			// Replace repeat data array with current repeatCounter value to ensure placeholders work.
+			// E.g. return {'table___field}' == '1';
+			$f = JFilterInput::getInstance();
+			$post = $f->clean($_REQUEST, 'array');
+			$groupElements = $groupModel->getMyElements();
+
+			foreach ($groupElements as $element)
+			{
+				$name = $element->getFullName(true, false);
+				$post[$name] = $post[$name][$repeatCounter];
+				$post[$name . '_raw'] = $post[$name . '_raw'][$repeatCounter];
+			}
+		}
+		else
+		{
+			$post = null;
+		}
+
+		$condition = trim($w->parseMessageForPlaceHolder($condition, $post));
 		$res = @eval($condition);
 
 		if (is_null($res))
@@ -182,7 +200,6 @@ class PlgFabrik_Validationrule extends FabrikPlugin
 	 *
 	 * @return  string
 	 */
-
 	public function getMessage()
 	{
 		if (isset($this->errorMsg))
@@ -212,7 +229,6 @@ class PlgFabrik_Validationrule extends FabrikPlugin
 	 *
 	 * @return  void
 	 */
-
 	public function setMessage($msg)
 	{
 		$this->errorMsg = $msg;
@@ -229,7 +245,6 @@ class PlgFabrik_Validationrule extends FabrikPlugin
 	 *
 	 * @return  string
 	 */
-
 	public function getIcon($c = 0, $tmpl = '')
 	{
 		$name = $this->elementModel->validator->getIcon($c);
@@ -243,7 +258,6 @@ class PlgFabrik_Validationrule extends FabrikPlugin
 	 *
 	 * @return  string
 	 */
-
 	public function iconImage()
 	{
 		$plugin = JPluginHelper::getPlugin('fabrik_validationrule', $this->pluginName);
@@ -279,7 +293,6 @@ class PlgFabrik_Validationrule extends FabrikPlugin
 	 *
 	 * @return  string
 	 */
-
 	public function getHoverText($c = null, $tmpl = '')
 	{
 		$name = $this->elementModel->validator->getIcon($c);
@@ -293,7 +306,6 @@ class PlgFabrik_Validationrule extends FabrikPlugin
 	 *
 	 * @return  string	label
 	 */
-
 	protected function getLabel()
 	{
 		$params = $this->getParams();
@@ -320,7 +332,6 @@ class PlgFabrik_Validationrule extends FabrikPlugin
 	 *
 	 * @return  bool
 	 */
-
 	protected function allowEmpty()
 	{
 		return false;
