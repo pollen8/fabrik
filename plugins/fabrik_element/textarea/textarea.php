@@ -150,17 +150,30 @@ class PlgFabrik_ElementTextarea extends PlgFabrik_Element
 			((int) $params->get('textarea-truncate-where', 0) === 1 || (int) $params->get('textarea-truncate-where', 0) === 3)
 		)
 		{
-			$opts = array();
-			$opts['html_format'] = $params->get('textarea-truncate-html', '0') === '1';
-			$opts['wordcount'] = (int) $params->get('textarea-truncate', 0);
-			$opts['tip'] = $params->get('textarea-hover');
-			$opts['position'] = $params->get('textarea_hover_location', 'top');
+			$opts = $this->truncateOpts();
 			$data = fabrikString::truncate($data, $opts);
 			$listModel = $this->getListModel();
 			$data = $listModel->_addLink($data, $this, $thisRow);
 		}
 
 		return $data;
+	}
+
+	/**
+	 * Get the truncate text options. Can be used for both list and details views.
+	 *
+	 * @return array
+	 */
+	private function truncateOpts()
+	{
+		$opts = array();
+		$params = $this->getParams();
+		$opts['html_format'] = $params->get('textarea-truncate-html', '0') === '1';
+		$opts['wordcount'] = (int) $params->get('textarea-truncate', 0);
+		$opts['tip'] = $params->get('textarea-hover');
+		$opts['position'] = $params->get('textarea_hover_location', 'top');
+
+		return $opts;
 	}
 
 	/**
@@ -289,10 +302,7 @@ class PlgFabrik_ElementTextarea extends PlgFabrik_Element
 					&&
 					((int) $params->get('textarea-truncate-where', 0) === 2 || (int) $params->get('textarea-truncate-where', 0) === 3))
 				{
-					$opts = array();
-					$opts['wordcount'] = (int) $params->get('textarea-truncate', 0);
-					$opts['tip'] = $params->get('textarea-hover');
-					$opts['position'] = $params->get('textarea_hover_location', 'top');
+					$opts = $this->truncateOpts();
 					$value = fabrikString::truncate($value, $opts);
 				}
 			}
@@ -315,7 +325,8 @@ class PlgFabrik_ElementTextarea extends PlgFabrik_Element
 
 		if ($wysiwyg)
 		{
-			$editor = JFactory::getEditor();
+			$config = JFactory::getConfig();
+			$editor = JEditor::getInstance($config->get('editor'));
 			$buttons = (bool) $params->get('wysiwyg_extra_buttons', true);
 			$layoutData->editor = $editor->display($name, $value, $cols * 10, $rows * 15, $cols, $rows, $buttons, $id);
 			$layout = $this->getLayout('wysiwyg');
