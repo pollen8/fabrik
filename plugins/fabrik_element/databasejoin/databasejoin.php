@@ -1535,14 +1535,12 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 	 *
 	 * @return  void
 	 */
-
 	protected function renderRadioList($data, $repeatCounter, &$html, $tmp, $defaultValue)
 	{
 		$id = $this->getHTMLId($repeatCounter);
 		$thisElName = $this->getHTMLName($repeatCounter);
 		$params = $this->getParams();
 		$attributes = 'class="fabrikinput inputbox" size="1" id="' . $id . '"';
-		$optsPerRow = (int) $params->get('dbjoin_options_per_row', 0);
 
 		// $$$ rob 24/05/2011 - always set one value as selected for radio button if none already set
 		if ($defaultValue == '' && !empty($tmp))
@@ -1550,13 +1548,28 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 			$defaultValue = $tmp[0]->value;
 		}
 
+		$layout = $this->getLayout('form-radiolist');
+		$displayData = new stdClass;
+		$displayData->options = $tmp;
+		$displayData->default = (array) $defaultValue;
+		$displayData->optsPerRow = (int) $params->get('dbjoin_options_per_row', 1);
+		$displayData->name = $thisElName;
+		$displayData->editable = $this->isEditable();
+
 		$html[] = '<div class="fabrikSubElementContainer" id="' . $id . '">';
-		$editable = $this->isEditable();
-		$html[] = FabrikHelperHTML::aList('radio', $tmp, $thisElName, $attributes, $defaultValue, 'value', 'text', $optsPerRow, $editable);
+
+		if (FabrikWorker::j3())
+		{
+			$html[] = $layout->render($displayData);
+		}
+		else
+		{
+			$html[] = FabrikHelperHTML::aList('radio', $tmp, $thisElName, $attributes, $defaultValue, 'value', 'text', $displayData->optsPerRow, $displayData->editable);
+		}
 	}
 
 	/**
-	 * Render autocomplete in form
+	 * Render auto-complete in form
 	 *
 	 * @param   array  $data           Form data
 	 * @param   int    $repeatCounter  Repeat group counter
@@ -1567,7 +1580,6 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 	 *
 	 * @return  void
 	 */
-
 	protected function renderAutoComplete($data, $repeatCounter, &$html, $default)
 	{
 		$formModel = $this->getFormModel();
@@ -1620,7 +1632,6 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 	 *
 	 * @return  void
 	 */
-
 	protected function renderMultiSelectList($data, $repeatCounter, &$html, $tmp, $default)
 	{
 		$elName = $this->getHTMLName($repeatCounter);
@@ -1662,16 +1673,13 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 	 *
 	 * @return  void
 	 */
-
 	protected function renderCheckBoxList($data, $repeatCounter, &$html, $tmp, $default)
 	{
 		$id = $this->getHTMLId($repeatCounter);
 		$name = $this->getHTMLName($repeatCounter);
 		$params = $this->getParams();
-		$optsPerRow = (int) $params->get('dbjoin_options_per_row', 0);
 
 		$html[] = '<div class="fabrikSubElementContainer" id="' . $id . '">';
-		$editable = $this->isEditable();
 		$attributes = 'class="fabrikinput inputbox" id="' . $id . '"';
 
 		$name = FabrikString::rtrimword($name, '[]');
@@ -1682,17 +1690,45 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 			$default = $targetIds;
 		}
 
-		$html[] = FabrikHelperHTML::aList('checkbox', $tmp, $name, $attributes, $default, 'value', 'text', $optsPerRow, $editable);
+		$layout = $this->getLayout('form-checkboxlist');
+		$displayData = new stdClass;
+		$displayData->options = $tmp;
+		$displayData->default = (array) $default;
+		$displayData->optsPerRow = (int) $params->get('dbjoin_options_per_row', 1);
+		$displayData->name = $name;
+		$displayData->editable = $this->isEditable();
+
+		$html[] = '<div class="fabrikSubElementContainer" id="' . $id . '">';
+
+		if (FabrikWorker::j3())
+		{
+			$html[] = $layout->render($displayData);
+		}
+		else
+		{
+			$html[] = FabrikHelperHTML::aList('checkbox', $tmp, $name, $attributes, $default, 'value', 'text', $displayData->optsPerRow, $displayData->editable);
+		}
 
 		if (empty($tmp))
 		{
-			$tmpids = array();
+			$tmpIds = array();
 			$o = new stdClass;
 			$o->text = 'dummy';
 			$o->value = 'dummy';
-			$tmpids[] = $o;
-			$tmp = $tmpids;
-			$dummy = FabrikHelperHTML::aList('checkbox', $tmp, $name, $attributes, $default, 'value', 'text', 1, true);
+			$tmpIds[] = $o;
+			$tmp = $tmpIds;
+
+			if (FabrikWorker::j3())
+			{
+				$displayData->options = $tmp;
+				$html[] = $layout->render($displayData);
+			}
+			else
+			{
+				$dummy = FabrikHelperHTML::aList('checkbox', $tmp, $name, $attributes, $default, 'value', 'text', 1, true);
+			}
+
+
 			$html[] = '<div class="chxTmplNode">' . $dummy . '</div>';
 		}
 

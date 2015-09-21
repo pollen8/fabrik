@@ -1976,9 +1976,9 @@ class FabrikFEModelList extends JModelForm
 			$label = FText::_('COM_FABRIK_LINKED_FORM_ADD');
 		}
 
-		$icon = FabrikHelperHTML::icon('icon-plus') . ' ';
+		$icon = FabrikHelperHTML::icon('icon-plus', $label);
 		$trigger = $popUp ? 'data-fabrik-view="form"' : '';
-		$link = '<a ' . $trigger . ' href="' . $url . '" title="' . $label . '">' . $icon . $label . '</a>';
+		$link = '<a ' . $trigger . ' href="' . $url . '" title="' . $label . '">' . $icon . '</a>';
 		$url = '<span class="addbutton">' . $link . '</span></a>';
 
 		return $url;
@@ -2081,13 +2081,13 @@ class FabrikFEModelList extends JModelForm
 
 		$title = $label;
 		$label = '<span class="fabrik_related_data_count">(' . $count . ')</span> ' . $label;
-		$icon = FabrikHelperHTML::icon('icon-list-view') . ' ';
+		$icon = FabrikHelperHTML::icon('icon-list-view', $label);
 		$url = $this->releatedDataURL($key, $val, $listid);
 
 		if ($showRelated == 0 || ($showRelated == 2  && $count))
 		{
 			$trigger = $popUp ? 'data-fabrik-view="list"' : '';
-			$html[] = '<a class="related_data" ' . $trigger . ' href="' . $url . '" title="' . $title . '">' . $icon . $label . '</a>';
+			$html[] = '<a class="related_data" ' . $trigger . ' href="' . $url . '" title="' . $title . '">' . $icon . '</a>';
 		}
 
 		if ($addLink != '' && ($showRelatedAdd === 1 || ($showRelatedAdd === 2 && $count === 0)))

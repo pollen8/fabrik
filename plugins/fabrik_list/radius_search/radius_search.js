@@ -160,7 +160,6 @@ var FbListRadiusSearch = new Class({
 					}
 				});
 
-				this.makeWin(mapid);
 			}.bind(this));
 
 			Fabrik.loadGoogleMap(true, 'geoCode');
@@ -225,6 +224,14 @@ var FbListRadiusSearch = new Class({
 				}
 			}
 		}
+
+		// Ensure that if in a map viz clearing the list filter is run.
+		Fabrik.addEvent('listfilter.clear', function (caller) {
+			if (caller.contains(this.options.ref)) {
+				this.clearFilter();
+			}
+		}.bind(this));
+		this.makeWin(mapid);
 	},
 
 	/**

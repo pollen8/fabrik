@@ -926,8 +926,9 @@ class FabrikViewFormBase extends JViewLegacy
 
 		if ($this->isMultiPage)
 		{
-			$form->prevButton = '<button type="button" class="btn fabrikPagePrevious button" name="fabrikPagePrevious">' . FabrikHelperHTML::icon('icon-previous'). '&nbsp;'
-				. FText::_('COM_FABRIK_PREV') . '</button>';
+			$form->prevButton = '<button type="button" class="btn fabrikPagePrevious button" name="fabrikPagePrevious">' .
+				FabrikHelperHTML::icon('icon-previous', FText::_('COM_FABRIK_PREV')) .
+				'</button>';
 			$form->nextButton = '<button type="button" class="btn fabrikPageNext button" name="fabrikPageNext">'
 				. FText::_('COM_FABRIK_NEXT') . '&nbsp;' . FabrikHelperHTML::icon('icon-next'). '</button>';
 		}

@@ -2033,7 +2033,7 @@ if (!$j3)
 
 			if (!$srcOnly)
 			{
-				return FabrikHelperHTML::icon($class, $p);
+				return FabrikHelperHTML::icon($class, '', $p);
 			}
 			else
 			{
@@ -2787,12 +2787,20 @@ if (!$j3)
 	 * Render an icon using JLayouts
 	 *
 	 * @param   string  $icon        Icon class name
+	 * @param   string  $label       Label
 	 * @param   string  $properties  Additional html properties
 	 *
 	 * @return string
 	 */
-	public static function icon($icon, $properties = '')
+	public static function icon($icon, $label = '', $properties = '')
 	{
-		return FabrikHelperHTML::getLayout('fabrik-icon')->render((object) array('icon' => $icon, 'properties' => $properties));
+		$icon = FabrikHelperHTML::getLayout('fabrik-icon')->render((object) array('icon' => $icon, 'properties' => $properties));
+
+		if ($label != '')
+		{
+			$icon .= ' ' . $label;
+		}
+
+		return $icon;
 	}
 }

@@ -14,7 +14,7 @@ defined('_JEXEC') or die('Restricted access');
 
 $d           = $displayData;
 $baseContext = $d->baseContext;
-$app = JFactory::getApplication();
+$app         = JFactory::getApplication();
 
 ?>
 <div class="radius_search" id="radius_search<?php echo $d->renderOrder; ?>" style="left:-100000px;position:absolute;">
@@ -113,12 +113,12 @@ $app = JFactory::getApplication();
 				<input type="hidden" name="radius_search_geocode_lat<?php echo $d->renderOrder; ?>" value="<?php echo $d->searchLatitude; ?>" />
 				<input type="hidden" name="radius_search_geocode_lon<?php echo $d->renderOrder; ?>" value="<?php echo $d->searchLongitude; ?>" />
 			</div>
-
+			<div class="radius_search_buttons" id="radius_search_buttons<?php echo $d->renderOrder; ?>">
+				<input type="button" class="btn btn-link cancel" value="<?php echo FText::_('COM_FABRIK_CANCEL'); ?>" />
+				<input type="button" name="filter" value="Go" class="fabrik_filter_submit button btn btn-primary"></div>
 		</div>
-		<div class="radius_search_buttons" id="radius_search_buttons<?php echo $d->renderOrder; ?>">
-			<input type="button" class="btn btn-link cancel" value="<?php echo FText::_('COM_FABRIK_CANCEL'); ?>" />
-			<input type="button" name="filter" value="Go" class="fabrik_filter_submit button btn btn-primary"></div>
 	</div>
+
 	<input type="hidden" name="radius_prefilter" value="1" />
 
 </div>
