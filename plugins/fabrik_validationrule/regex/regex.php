@@ -21,7 +21,6 @@ require_once COM_FABRIK_FRONTEND . '/models/validation_rule.php';
  * @subpackage  Fabrik.validationrule.regex
  * @since       3.0
  */
-
 class PlgFabrik_ValidationruleRegex extends PlgFabrik_Validationrule
 {
 	/**
@@ -39,19 +38,18 @@ class PlgFabrik_ValidationruleRegex extends PlgFabrik_Validationrule
 	 *
 	 * @return  bool  true if validation passes, false if fails
 	 */
-
 	public function validate($data, $repeatCounter)
 	{
-		// For multiselect elements
+		// For multi-select elements
 		if (is_array($data))
 		{
 			$data = implode('', $data);
 		}
 
 		$params = $this->getParams();
-		$domatch = $params->get('regex-match');
+		$doMatch = $params->get('regex-match');
 
-		if ($domatch)
+		if ($doMatch)
 		{
 			$matches = array();
 			$v = $params->get('regex-expression');
@@ -73,13 +71,12 @@ class PlgFabrik_ValidationruleRegex extends PlgFabrik_Validationrule
 	 *
 	 * @return  string	original or replaced data
 	 */
-
 	public function replace($data, $repeatCounter)
 	{
 		$params = $this->getParams();
-		$domatch = $params->get('regex-match');
+		$doMatch = $params->get('regex-match');
 
-		if (!$domatch)
+		if (!$doMatch)
 		{
 			$v = $params->get($this->pluginName . '-expression');
 			$v = trim($v);
@@ -99,7 +96,6 @@ class PlgFabrik_ValidationruleRegex extends PlgFabrik_Validationrule
 	 *
 	 * @return  string
 	 */
-
 	public function iconImage()
 	{
 		$plugin = JPluginHelper::getPlugin('fabrik_validationrule', $this->pluginName);

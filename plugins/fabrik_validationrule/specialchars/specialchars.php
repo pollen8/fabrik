@@ -21,7 +21,6 @@ require_once COM_FABRIK_FRONTEND . '/models/validation_rule.php';
  * @subpackage  Fabrik.validationrule.specialchars
  * @since       3.0
  */
-
 class PlgFabrik_ValidationruleSpecialChars extends PlgFabrik_Validationrule
 {
 	/**
@@ -39,19 +38,18 @@ class PlgFabrik_ValidationruleSpecialChars extends PlgFabrik_Validationrule
 	 *
 	 * @return  bool  true if validation passes, false if fails
 	 */
-
 	public function validate($data, $repeatCounter)
 	{
-		// For multiselect elements
+		// For multi-select elements
 		if (is_array($data))
 		{
 			$data = implode('', $data);
 		}
 
 		$params = $this->getParams();
-		$domatch = $params->get('specialchars-match');
+		$doMatch = $params->get('specialchars-match');
 
-		if ($domatch)
+		if ($doMatch)
 		{
 			$v = $params->get('specalchars');
 			$v = explode(',', $v);
@@ -77,15 +75,13 @@ class PlgFabrik_ValidationruleSpecialChars extends PlgFabrik_Validationrule
 	 *
 	 * @return  string	original or replaced data
 	 */
-
 	public function replace($data, $repeatCounter)
 	{
 		$params = $this->getParams();
-		$domatch = $params->get('specialchars-match');
+		$doMatch = $params->get('specialchars-match');
 
-		if (!$domatch)
+		if (!$doMatch)
 		{
-			$v = $params->get($this->pluginName . '-expression');
 			$replace = $params->get('specialchars-replacestring');
 
 			if ($replace === '_default')

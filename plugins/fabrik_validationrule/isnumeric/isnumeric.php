@@ -21,7 +21,6 @@ require_once COM_FABRIK_FRONTEND . '/models/validation_rule.php';
  * @subpackage  Fabrik.validationrule.isnumeric
  * @since       3.0
  */
-
 class PlgFabrik_ValidationruleIsNumeric extends PlgFabrik_Validationrule
 {
 	/**
@@ -39,10 +38,9 @@ class PlgFabrik_ValidationruleIsNumeric extends PlgFabrik_Validationrule
 	 *
 	 * @return  bool  true if validation passes, false if fails
 	 */
-
 	public function validate($data, $repeatCounter)
 	{
-		// Could be a dropdown with multivalues
+		// Could be a drop-down with multi-values
 		if (is_array($data))
 		{
 			$data = implode('', $data);

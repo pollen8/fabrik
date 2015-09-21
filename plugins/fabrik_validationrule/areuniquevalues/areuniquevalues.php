@@ -21,7 +21,6 @@ require_once COM_FABRIK_FRONTEND . '/models/validation_rule.php';
  * @subpackage  Fabrik.validationrule.areuniquevalues
  * @since       3.0
  */
-
 class PlgFabrik_ValidationruleAreUniqueValues extends PlgFabrik_Validationrule
 {
 	/**
@@ -39,7 +38,6 @@ class PlgFabrik_ValidationruleAreUniqueValues extends PlgFabrik_Validationrule
 	 *
 	 * @return  bool  true if validation passes, false if fails
 	 */
-
 	public function validate($data, $repeatCounter)
 	{
 		$app = JFactory::getApplication();
@@ -53,53 +51,52 @@ class PlgFabrik_ValidationruleAreUniqueValues extends PlgFabrik_Validationrule
 		}
 
 		$params = $this->getParams();
-		$otherfield = $params->get('areuniquevalues-otherfield', '');
-		$element = $elementModel->getElement();
+		$otherField = $params->get('areuniquevalues-otherfield', '');
 		$listModel = $elementModel->getlistModel();
 		$table = $listModel->getTable();
 
-		if ((int) $otherfield !== 0)
+		if ((int) $otherField !== 0)
 		{
 			$otherElementModel = $this->getOtherElement();
 			$otherFullName = $otherElementModel->getFullName(true, false);
-			$otherfield = $otherElementModel->getFullName(false, false);
+			$otherField = $otherElementModel->getFullName(false, false);
 		}
 		else
 		{
 			// Old fabrik 2.x params stored element name as a string
-			$otherFullName = $table->db_table_name . '___' . $otherfield;
+			$otherFullName = $table->db_table_name . '___' . $otherField;
 		}
 
 		$db = $listModel->getDb();
-		$lookuptable = $db->quoteName($table->db_table_name);
+		$lookupTable = $db->qn($table->db_table_name);
 		$data = $db->quote($data);
 		$query = $db->getQuery(true);
-		$query->select('COUNT(*)')->from($lookuptable)->where($db->quoteName($elementModel->getFullName(false, false)) . ' = ' . $data);
+		$query->select('COUNT(*)')->from($lookupTable)->where($db->qn($elementModel->getFullName(false, false)) . ' = ' . $data);
 		$listModel->buildQueryJoin($query);
 
-		if (!empty($otherfield))
+		if (!empty($otherField))
 		{
 			// $$$ the array thing needs fixing, for now just grab 0
-			$formdata = $elementModel->getForm()->formData;
-			$v = FArrayHelper::getValue($formdata, $otherFullName . '_raw', FArrayHelper::getValue($formdata, $otherFullName, ''));
+			$formData = $elementModel->getForm()->formData;
+			$v = FArrayHelper::getValue($formData, $otherFullName . '_raw', FArrayHelper::getValue($formData, $otherFullName, ''));
 
 			if (is_array($v))
 			{
 				$v = FArrayHelper::getValue($v, 0, '');
 			}
 
-			$query->where($db->quoteName($otherfield) . ' = ' . $db->quote($v));
+			$query->where($db->qn($otherField) . ' = ' . $db->quote($v));
 		}
 
 		/* $$$ hugh - need to check to see if we're editing a record, otherwise
 		 * will fail 'cos it finds the original record (assuming this element hasn't changed)
 		 * @TODO - is there a better way getting the rowid?  What if this is form a joined table?
 		 */
-		$rowid = $input->get('rowid');
+		$rowId = $input->get('rowid');
 
-		if (!empty($rowid))
+		if (!empty($rowId))
 		{
-			$query->where($table->db_primary_key . ' != ' . $db->quote($rowid));
+			$query->where($table->db_primary_key . ' != ' . $db->quote($rowId));
 		}
 
 		$db->setQuery($query);
@@ -113,13 +110,12 @@ class PlgFabrik_ValidationruleAreUniqueValues extends PlgFabrik_Validationrule
 	 *
 	 * @return	object element model
 	 */
-
 	private function getOtherElement()
 	{
 		$params = $this->getParams();
-		$otherfield = $params->get('areuniquevalues-otherfield');
+		$otherField = $params->get('areuniquevalues-otherfield');
 
-		return FabrikWorker::getPluginManager()->getElementPlugin($otherfield);
+		return FabrikWorker::getPluginManager()->getElementPlugin($otherField);
 	}
 
 	/**
@@ -127,14 +123,13 @@ class PlgFabrik_ValidationruleAreUniqueValues extends PlgFabrik_Validationrule
 	 *
 	 * @return	string	label
 	 */
-
 	protected function getLabel()
 	{
 		$otherElementModel = $this->getOtherElement();
 		$params = $this->getParams();
-		$otherfield = $params->get('areuniquevalues-otherfield');
+		$otherField = $params->get('areuniquevalues-otherfield');
 
-		if ((int) $otherfield !== 0)
+		if ((int) $otherField !== 0)
 		{
 			return JText::sprintf('PLG_VALIDATIONRULE_AREUNIQUEVALUES_ADDITIONAL_LABEL', $otherElementModel->getElement()->label);
 		}

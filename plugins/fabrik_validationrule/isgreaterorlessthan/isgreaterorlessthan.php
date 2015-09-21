@@ -40,7 +40,7 @@ class PlgFabrik_ValidationruleIsgreaterorlessthan extends PlgFabrik_Validationru
 	 */
 	public function validate($data, $repeatCounter)
 	{
-		// Could be a dropdown with multivalues
+		// Could be a drop-down with multi-values
 		if (is_array($data))
 		{
 			$data = implode('', $data);

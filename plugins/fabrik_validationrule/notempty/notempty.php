@@ -21,7 +21,6 @@ require_once COM_FABRIK_FRONTEND . '/models/validation_rule.php';
  * @subpackage  Fabrik.validationrule.notempty
  * @since       3.0
  */
-
 class PlgFabrik_ValidationruleNotempty extends PlgFabrik_Validationrule
 {
 	/**
@@ -39,7 +38,6 @@ class PlgFabrik_ValidationruleNotempty extends PlgFabrik_Validationrule
 	 *
 	 * @return  bool  true if validation passes, false if fails
 	 */
-
 	public function validate($data, $repeatCounter)
 	{
 		if (method_exists($this->elementModel, 'dataConsideredEmptyForValidation'))

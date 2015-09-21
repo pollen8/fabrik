@@ -21,7 +21,6 @@ require_once COM_FABRIK_FRONTEND . '/models/validation_rule.php';
  * @subpackage  Fabrik.validationrule.userexists
  * @since       3.0
  */
-
 class PlgFabrik_ValidationruleUserExists extends PlgFabrik_Validationrule
 {
 	/**
@@ -39,14 +38,13 @@ class PlgFabrik_ValidationruleUserExists extends PlgFabrik_Validationrule
 	 *
 	 * @return  bool  true if validation passes, false if fails
 	 */
-
 	public function validate($data, $repeatCounter)
 	{
 		$params = $this->getParams();
 		$elementModel = $this->elementModel;
 
 		// As ornot is a radio button it gets json encoded/decoded as an object
-		$ornot = $params->get('userexists_or_not', 'fail_if_exists');
+		$orNot = $params->get('userexists_or_not', 'fail_if_exists');
 		$user = JFactory::getUser();
 		jimport('joomla.user.helper');
 		$result = JUserHelper::getUserId($data);
@@ -55,14 +53,14 @@ class PlgFabrik_ValidationruleUserExists extends PlgFabrik_Validationrule
 		{
 			if (!$result)
 			{
-				if ($ornot == 'fail_if_exists')
+				if ($orNot == 'fail_if_exists')
 				{
 					return true;
 				}
 			}
 			else
 			{
-				if ($ornot == 'fail_if_not_exists')
+				if ($orNot == 'fail_if_not_exists')
 				{
 					return true;
 				}
@@ -74,40 +72,40 @@ class PlgFabrik_ValidationruleUserExists extends PlgFabrik_Validationrule
 		{
 			if (!$result)
 			{
-				if ($ornot == 'fail_if_exists')
+				if ($orNot == 'fail_if_exists')
 				{
 					return true;
 				}
 			}
 			else
 			{
-				$user_field = $params->get('userexists_user_field');
-				$user_id = 0;
+				$userField = $params->get('userexists_user_field');
+				$userId = 0;
 
-				if ((int) $user_field !== 0)
+				if ((int) $userField !== 0)
 				{
-					$user_elementModel = FabrikWorker::getPluginManager()->getElementPlugin($user_field);
-					$user_fullName = $user_elementModel->getFullName(true, false);
-					$user_field = $user_elementModel->getFullName(false, false);
+					$userElementModel = FabrikWorker::getPluginManager()->getElementPlugin($userField);
+					$userFullName = $userElementModel->getFullName(true, false);
+					$userField = $userElementModel->getFullName(false, false);
 				}
 
-				if (!empty($user_field))
+				if (!empty($userField))
 				{
 					// $$$ the array thing needs fixing, for now just grab 0
-					$formdata = $elementModel->getForm()->formData;
-					$user_id = FArrayHelper::getValue($formdata, $user_fullName . '_raw', FArrayHelper::getValue($formdata, $user_fullName, ''));
+					$formData = $elementModel->getForm()->formData;
+					$userId = FArrayHelper::getValue($formData, $userFullName . '_raw', FArrayHelper::getValue($formData, $userFullName, ''));
 
-					if (is_array($user_id))
+					if (is_array($userId))
 					{
-						$user_id = FArrayHelper::getValue($user_id, 0, '');
+						$userId = FArrayHelper::getValue($userId, 0, '');
 					}
 				}
 
-				if ($user_id != 0)
+				if ($userId != 0)
 				{
-					if ($result == $user_id)
+					if ($result == $userId)
 					{
-						return ($ornot == 'fail_if_exists') ? true : false;
+						return ($orNot == 'fail_if_exists') ? true : false;
 					}
 
 					return false;
@@ -117,7 +115,7 @@ class PlgFabrik_ValidationruleUserExists extends PlgFabrik_Validationrule
 					// The connected user is editing his own data
 					if ($result == $user->get('id'))
 					{
-						return ($ornot == 'fail_if_exists') ? true : false;
+						return ($orNot == 'fail_if_exists') ? true : false;
 					}
 
 					return false;

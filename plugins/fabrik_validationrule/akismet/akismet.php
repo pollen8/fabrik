@@ -21,7 +21,6 @@ require_once COM_FABRIK_FRONTEND . '/models/validation_rule.php';
  * @subpackage  Fabrik.validationrule.akismet
  * @since       3.0
  */
-
 class PlgFabrik_ValidationruleAkismet extends PlgFabrik_Validationrule
 {
 	/**
@@ -39,7 +38,6 @@ class PlgFabrik_ValidationruleAkismet extends PlgFabrik_Validationrule
 	 *
 	 * @return  bool  true if validation passes, false if fails
 	 */
-
 	public function validate($data, $repeatCounter)
 	{
 		$params = $this->getParams();
@@ -48,7 +46,6 @@ class PlgFabrik_ValidationruleAkismet extends PlgFabrik_Validationrule
 		if ($params->get('akismet-key') != '')
 		{
 			$username = $user->get('username') != '' ? $user->get('username') : $this->_randomSring();
-			$email = $user->get('email') != '' ? $user->get('email') : $this->_randomSring() . '@' . $this->_randomSring() . 'com';
 			require_once JPATH_COMPONENT . '/plugins/validationrule/akismet/libs/akismet.class.php';
 			$akismet_comment = array('author' => $username, 'email' => $user->get('email'), 'website' => JURI::base(), 'body' => $data);
 			$akismet = new Akismet(JURI::base(), $params->get('akismet-key'), $akismet_comment);
@@ -74,7 +71,6 @@ class PlgFabrik_ValidationruleAkismet extends PlgFabrik_Validationrule
 	 *
 	 * @return string
 	 */
-
 	protected function _randomSring()
 	{
 		return preg_replace('/([ ])/e', 'chr(rand(97,122))', '     ');

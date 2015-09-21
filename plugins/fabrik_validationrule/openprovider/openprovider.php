@@ -24,7 +24,6 @@ require_once JPATH_SITE . '/plugins/fabrik_validationrule/openprovider/libs/api.
  * @subpackage  Fabrik.validationrule.openprovider
  * @since       3.0
  */
-
 class PlgFabrik_ValidationruleOpenprovider extends PlgFabrik_Validationrule
 {
 	/**
@@ -42,7 +41,6 @@ class PlgFabrik_ValidationruleOpenprovider extends PlgFabrik_Validationrule
 	 *
 	 * @return  bool  true if validation passes, false if fails
 	 */
-
 	public function validate($data, $repeatCounter)
 	{
 		$params = $this->getParams();

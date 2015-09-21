@@ -21,7 +21,6 @@ require_once COM_FABRIK_FRONTEND . '/models/validation_rule.php';
  * @subpackage  Fabrik.validationrule.isemail
  * @since       3.0
  */
-
 class PlgFabrik_ValidationruleIsEmail extends PlgFabrik_Validationrule
 {
 	/**
@@ -39,12 +38,11 @@ class PlgFabrik_ValidationruleIsEmail extends PlgFabrik_Validationrule
 	 *
 	 * @return  bool  true if validation passes, false if fails
 	 */
-
 	public function validate($data, $repeatCounter)
 	{
 		$email = $data;
 
-		// Could be a dropdown with multivalues
+		// Could be a drop-down with multi-values
 		if (is_array($email))
 		{
 			$email = implode('', $email);
@@ -71,7 +69,6 @@ class PlgFabrik_ValidationruleIsEmail extends PlgFabrik_Validationrule
 	 *
 	 * @return  bool
 	 */
-
 	protected function allowEmpty()
 	{
 		$params = $this->getParams();
