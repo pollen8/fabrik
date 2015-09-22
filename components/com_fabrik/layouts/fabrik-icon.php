@@ -7,5 +7,6 @@
 defined('JPATH_BASE') or die;
 
 $d = $displayData;
+$props = isset($d->properties) ? $d->properties : '';
 ?>
-<i class="<?php echo $d->icon;?>" <?php echo $d->properties;?>></i>
+<i class="<?php echo $d->icon;?>" <?php echo $props;?>></i>

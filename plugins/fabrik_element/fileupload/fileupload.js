@@ -35,7 +35,9 @@ var FbFileUpload = new Class({
 					this.uploader.trigger('FileUploaded', file, {
 						response: JSON.encode(response)
 					});
-					document.id(file.id).getElement('.plupload_file_status  .bar').setStyle('width', '100%').addClass('bar-success');
+					var newBar = jQuery(Fabrik.jLayouts['fabrik-progress-bar-success'])[0];
+					var bar = document.id(file.id).getElement('.bar');
+					newBar.replaces(bar);
 				}.bind(this));
 			}
 			this.redraw();
@@ -381,7 +383,7 @@ var FbFileUpload = new Class({
 			var rElement = Fabrik.bootstrapped ? 'tr' : 'li';
 			this.lastAddedFiles = files;
 			if (Fabrik.bootstrapped) {
-				this.container.getElement('thead').show();
+				this.container.getElement('thead').style.display = '';
 			}
 			var count = this.droplist.getElements(rElement).length;
 			this.startbutton.removeClass('disabled');
@@ -409,12 +411,12 @@ var FbFileUpload = new Class({
 							}).set('text', file.name);
 						}
 
-						innerli = this.imageCells(file, title, a);
+						innerLi = this.imageCells(file, title, a);
 
 						this.droplist.adopt(new Element(rElement, {
 							id: file.id,
 							'class': 'plupload_delete'
-						}).adopt(innerli));
+						}).adopt(innerLi));
 					}
 				}
 			}.bind(this));
@@ -428,7 +430,8 @@ var FbFileUpload = new Class({
 					var bar = document.id(file.id).getElement('.plupload_file_status .bar');
 					bar.setStyle('width', file.percent + '%');
 					if (file.percent === 100) {
-						bar.addClass('bar-success');
+						var newBar = jQuery(Fabrik.jLayouts['fabrik-progress-bar-success'])[0];
+						newBar.replaces(bar);
 					}
 				} else {
 					document.id(file.id).getElement('.plupload_file_status').set('text', file.percent + '%');
@@ -526,7 +529,8 @@ var FbFileUpload = new Class({
 		var del = this.deleteImgButton(), filename, status;
 		if (Fabrik.bootstrapped) {
 			var icon = new Element('td.span1.plupload_resize').adopt(a);
-			var progress = '<div class="progress progress-striped"><div class="bar" style="width: 0%;"></div></div>';
+
+			var progress = Fabrik.jLayouts['fabrik-progress-bar'];
 
 			status = new Element('td.span5.plupload_file_status', {}).set('html', progress);
 
@@ -589,6 +593,8 @@ var FbFileUpload = new Class({
 	 */
 	deleteImgButton: function () {
 		if (Fabrik.bootstrapped) {
+
+			var icon = Fabrik.jLayouts['fabrik-icon-delete'];
 			return new Element('td.span1.plupload_file_action', {}).adopt(new Element('a', {
 				'href': '#',
 				'class': 'icon-delete',
@@ -598,7 +604,7 @@ var FbFileUpload = new Class({
 						this.pluploadRemoveFile(e);
 					}.bind(this)
 				}
-			}));
+			}).set('html', icon));
 		} else {
 			return new Element('div', {
 				'class': 'plupload_file_action'
@@ -628,9 +634,9 @@ var FbFileUpload = new Class({
 			return;
 		}
 
-		var id = e.target.getParent().getParent().id.split('_').getLast();// alreadyuploaded_8_13
+		var id = e.target.getParent('tr').id.split('_').getLast();// alreadyuploaded_8_13
 		// $$$ hugh - removed ' span' from the getElement(), as this blows up on some templates
-		var f = e.target.getParent().getParent().getElement('.plupload_file_name').get('text');
+		var f = e.target.getParent('tr').getElement('.plupload_file_name').get('text');
 
 		// Get a list of all of the uploaders files except the one to be deleted
 		var newFiles = [];

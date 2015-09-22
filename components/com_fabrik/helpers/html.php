@@ -64,6 +64,13 @@ class FabrikHelperHTML
 	protected static $scripts = array();
 
 	/**
+	 * Array of rendered jLayouts for use in JS code.
+	 *
+	 * @var array
+	 */
+	protected static $jLayoutsJs = array();
+
+	/**
 	 * CSS files loaded via AJAX
 	 *
 	 * @var  array
@@ -992,9 +999,11 @@ if (!$j3)
 
 				$liveSiteSrc = array();
 				$liveSiteSrc[] = "\tFabrik.liveSite = '" . COM_FABRIK_LIVESITE . "';";
-
+//print_r(self::$jLayoutsJs);exit;
 				$liveSiteSrc[] = "\tFabrik.debug = " . (self::isDebug() ? 'true;' : 'false;');
+				//$liveSiteSrc[] = "\tFabrik.jLayouts = {};";
 
+				$liveSiteSrc[] = "\tFabrik.jLayouts = " . json_encode(self::$jLayoutsJs) . ";";
 				if ($bootstrapped)
 				{
 					$liveSiteSrc[] = "\tFabrik.bootstrapped = true;";
@@ -1261,6 +1270,20 @@ if (!$j3)
 	public static function addScriptDeclaration($script)
 	{
 		self::addToSessionScripts($script);
+	}
+
+	/**
+	 * Add a rendered JLayout to the Fabrik.jLayouts object
+	 * @param   string    $name
+	 * @param   string    $layoutName
+	 * @param   stdClass  $data
+	 * @param   array     $paths
+	 * @param   array     $options
+	 */
+	public static function jLayoutJs($name, $layoutName, stdClass $data = null, $paths = array(), $options = array())
+	{
+		$layout =self::getLayout($layoutName, $paths, $options);
+		self::$jLayoutsJs[$name] = $layout->render($data);
 	}
 
 	/**
