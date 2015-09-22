@@ -679,7 +679,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 	{
 		$name = $this->getFullName(true, false);
 
-		// Needs to be set to raw = false for fileupload
+		// Needs to be set to raw = false for file-upload
 		$opts = array('raw' => false);
 		$group = $this->getGroup();
 
