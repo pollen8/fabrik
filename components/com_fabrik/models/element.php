@@ -4037,13 +4037,12 @@ class PlgFabrik_Element extends FabrikPlugin
 		}
 
 		// If querying via the querystring - then the condition and eval should be looked up against that key
-		$elementids = FArrayHelper::getValue($filters, 'elementid', array());
+		$elementIds = FArrayHelper::getValue($filters, 'elementid', array());
 
 		// Check that there is an element filter for this element in the element ids.
-		$filterIndex = array_search($this->getId(), $elementids);
+		$filterIndex = array_search($this->getId(), $elementIds);
 
 		$hidden = $hidden ? 1 : 0;
-		$table = $this->getListModel()->getTable();
 		$match = $this->isExactMatch(array('match' => $element->filter_exact_match));
 		$return = array();
 		$eval = FArrayHelper::getValue($filters, 'eval', array());

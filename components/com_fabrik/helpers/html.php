@@ -999,11 +999,9 @@ if (!$j3)
 
 				$liveSiteSrc = array();
 				$liveSiteSrc[] = "\tFabrik.liveSite = '" . COM_FABRIK_LIVESITE . "';";
-//print_r(self::$jLayoutsJs);exit;
 				$liveSiteSrc[] = "\tFabrik.debug = " . (self::isDebug() ? 'true;' : 'false;');
-				//$liveSiteSrc[] = "\tFabrik.jLayouts = {};";
-
 				$liveSiteSrc[] = "\tFabrik.jLayouts = " . json_encode(self::$jLayoutsJs) . ";";
+
 				if ($bootstrapped)
 				{
 					$liveSiteSrc[] = "\tFabrik.bootstrapped = true;";

@@ -693,7 +693,7 @@ class FabrikFEModelListfilter extends FabModel
 			}
 
 			$element = $elementModel->getElement();
-			$elparams = $elementModel->getParams();
+			$elParams = $elementModel->getParams();
 			$access = $this->defaultAccessLevel();
 
 			// $$$ rob so search all on checkboxes/radio buttons etc. will take the search value of 'one' and return '1'
@@ -915,7 +915,7 @@ class FabrikFEModelListfilter extends FabModel
 
 					$index = array_key_exists('key', $filters) ? array_search($key, $lookupkeys) : false;
 					$element = $elementModel->getElement();
-					$elparams = $elementModel->getParams();
+					$elParams = $elementModel->getParams();
 					$grouped = array_key_exists($i, $searchfilters['grouped_to_previous']) ? $searchfilters['grouped_to_previous'][$i] : 0;
 
 					$join = $searchfilters['join'][$i];
@@ -930,10 +930,10 @@ class FabrikFEModelListfilter extends FabModel
 						$filters['key'][] = $key;
 						$filters['search_type'][] = 'search';
 						$filters['match'][] = $element->filter_exact_match;
-						$filters['full_words_only'][] = $elparams->get('full_words_only');
+						$filters['full_words_only'][] = $elParams->get('full_words_only');
 						$filters['eval'][] = $eval;
-						$filters['required'][] = $elparams->get('filter_required');
-						$filters['access'][] = $elparams->get('filter_access');
+						$filters['required'][] = $elParams->get('filter_required');
+						$filters['access'][] = $elParams->get('filter_access');
 						$filters['grouped_to_previous'][] = $grouped;
 						$filters['label'][] = $elementModel->getListHeading();
 						$filters['raw'][] = false;
@@ -949,10 +949,10 @@ class FabrikFEModelListfilter extends FabModel
 						$filters['key'][$index] = $key;
 						$filters['search_type'][$index] = 'search';
 						$filters['match'][$index] = $element->filter_exact_match;
-						$filters['full_words_only'][$index] = $elparams->get('full_words_only');
+						$filters['full_words_only'][$index] = $elParams->get('full_words_only');
 						$filters['eval'][$index] = $eval;
-						$filters['required'][$index] = $elparams->get('filter_required');
-						$filters['access'][$index] = $elparams->get('filter_access');
+						$filters['required'][$index] = $elParams->get('filter_required');
+						$filters['access'][$index] = $elParams->get('filter_access');
 						$filters['grouped_to_previous'][$index] = $grouped;
 						$filters['label'][$index] = $elementModel->getListHeading();
 						$filters['raw'][$index] = false;
@@ -984,7 +984,7 @@ class FabrikFEModelListfilter extends FabModel
 
 	private function getQuerystringFilters(&$filters)
 	{
-		$item = $this->listModel->getTable();
+		//$item = $this->listModel->getTable();
 		$filter = JFilterInput::getInstance();
 		$request = $filter->clean($_GET, 'array');
 		$formModel = $this->listModel->getFormModel();
@@ -992,35 +992,35 @@ class FabrikFEModelListfilter extends FabModel
 
 		foreach ($request as $key => $val)
 		{
-			$oldkey = $key;
+			$oldKey = $key;
 			$key = FabrikString::safeColName($key);
 			$index = array_key_exists('key', $filters) ? array_search($key, $filters['key']) : false;
 
 			if ($index !== false)
 			{
-				foreach ($filterKeys as $fkey)
+				foreach ($filterKeys as $fKey)
 				{
-					if (is_array($filters[$fkey]) && array_key_exists($index, $filters[$fkey]))
+					if (is_array($filters[$fKey]) && array_key_exists($index, $filters[$fKey]))
 					{
-						unset($filters[$fkey][$index]);
+						unset($filters[$fKey][$index]);
 
 						// Reindex array
-						$filters[$fkey] = array_values($filters[$fkey]);
+						$filters[$fKey] = array_values($filters[$fKey]);
 					}
 				}
 			}
 
 			$raw = 0;
 
-			if (substr($oldkey, -4, 4) == '_raw')
+			if (substr($oldKey, -4, 4) == '_raw')
 			{
 				$raw = 1;
 
 				// Without this line related data links 'listname___elementname_raw=X' where not having their filter applied
-				$key = FabrikString::safeColName(FabrikString::rtrimword($oldkey, '_raw'));
+				$key = FabrikString::safeColName(FabrikString::rtrimword($oldKey, '_raw'));
 			}
 
-			$elementModel = $formModel->getElement(FabrikString::rtrimword($oldkey, '_raw'), false, false);
+			$elementModel = $formModel->getElement(FabrikString::rtrimword($oldKey, '_raw'), false, false);
 
 			if (!is_a($elementModel, 'PlgFabrik_Element'))
 			{
@@ -1089,7 +1089,7 @@ class FabrikFEModelListfilter extends FabModel
 	}
 
 	/**
-	 * insert individual querystring filter into filter array
+	 * Insert individual querystring filter into filter array
 	 *
 	 * @param   object  $elementModel  element model
 	 * @param   array   &$filters      filter array
@@ -1099,17 +1099,16 @@ class FabrikFEModelListfilter extends FabModel
 	 * @param   bool    $grouped       is grouped
 	 * @param   bool    $eval          is eval
 	 * @param   string  $key           element key
-	 * @param   string  $raw           is the filter a raw filter (tablename___elementname_raw=foo)
+	 * @param   bool    $raw           is the filter a raw filter (tablename___elementname_raw=foo)
 	 *
 	 * @return  void
 	 */
-
 	private function indQueryString($elementModel, &$filters, $value, $condition, $join, $grouped, $eval, $key, $raw = false)
 	{
 		$app = JFactory::getApplication();
 		$input = $app->input;
 		$element = $elementModel->getElement();
-		$elparams = $elementModel->getParams();
+		$elParams = $elementModel->getParams();
 
 		if (is_string($value))
 		{
@@ -1134,10 +1133,10 @@ class FabrikFEModelListfilter extends FabModel
 		$filters['key2'][] = '';
 		$filters['search_type'][] = $filterType;
 		$filters['match'][] = $element->filter_exact_match;
-		$filters['full_words_only'][] = $elparams->get('full_words_only');
+		$filters['full_words_only'][] = $elParams->get('full_words_only');
 		$filters['eval'][] = $eval;
-		$filters['required'][] = $elparams->get('filter_required');
-		$filters['access'][] = $elparams->get('filter_access');
+		$filters['required'][] = $elParams->get('filter_required');
+		$filters['access'][] = $elParams->get('filter_access');
 		$filters['grouped_to_previous'][] = $grouped;
 		$filters['label'][] = $elementModel->getListHeading();
 		$filters['elementid'][] = $element->id;
@@ -1199,7 +1198,7 @@ class FabrikFEModelListfilter extends FabModel
 		$usedMerges = array();
 
 		FabrikHelperHTML::debug($filters, 'filter array: start getPostFilters');
-		
+
 		if (!empty($request) && array_key_exists('key', $request))
 		{
 			$keyints = array_keys($request['key']);
@@ -1299,9 +1298,9 @@ class FabrikFEModelListfilter extends FabModel
 				// If the request key is already in the filter array - unset it
 				if ($index !== false)
 				{
-					foreach ($filterKeys as $fkey)
+					foreach ($filterKeys as $fKey)
 					{
-						if (is_array($filters[$fkey]) && array_key_exists($index, $filters[$fkey]))
+						if (is_array($filters[$fKey]) && array_key_exists($index, $filters[$fKey]))
 						{
 							// Don't unset search all filters when the value is empty and continue so we don't add in a new filter
 							if (FArrayHelper::getValue($searchTypes, $index) == 'searchall' && $value == '')
@@ -1310,7 +1309,7 @@ class FabrikFEModelListfilter extends FabModel
 							}
 
 							// $$$rob we DO need to unset
-							unset($filters[$fkey][$index]);
+							unset($filters[$fKey][$index]);
 						}
 					}
 				}
@@ -1369,7 +1368,7 @@ class FabrikFEModelListfilter extends FabModel
 
 				// Add request filter to end of filter array
 				$element = $elementModel->getElement();
-				$elparams = $elementModel->getParams();
+				$elParams = $elementModel->getParams();
 				$filters['value'][] = $value;
 				$filters['condition'][] = urldecode($condition);
 				$filters['join'][] = $joinMode;
@@ -1391,10 +1390,10 @@ class FabrikFEModelListfilter extends FabModel
 
 				$filters['search_type'][] = FArrayHelper::getValue($request['search_type'], $i, 'normal');
 				$filters['match'][] = $element->filter_exact_match;
-				$filters['full_words_only'][] = $elparams->get('full_words_only');
+				$filters['full_words_only'][] = $elParams->get('full_words_only');
 				$filters['eval'][] = $eval;
-				$filters['required'][] = $elparams->get('filter_required');
-				$filters['access'][] = $elparams->get('filter_access');
+				$filters['required'][] = $elParams->get('filter_required');
+				$filters['access'][] = $elParams->get('filter_access');
 				$filters['grouped_to_previous'][] = FArrayHelper::getValue($request['grouped_to_previous'], $i, '0');
 				$filters['label'][] = $elementModel->getListHeading();
 				$filters['elementid'][] = $elid;
@@ -1464,9 +1463,9 @@ class FabrikFEModelListfilter extends FabModel
 
 			if ($index !== false)
 			{
-				foreach ($filterKeys as $fkey)
+				foreach ($filterKeys as $fKey)
 				{
-					if (is_array($filters[$fkey]) && array_key_exists($index, $filters[$fkey]))
+					if (is_array($filters[$fKey]) && array_key_exists($index, $filters[$fKey]))
 					{
 						/**
 						 * $$$rob test1
@@ -1475,10 +1474,10 @@ class FabrikFEModelListfilter extends FabModel
 						 * converted to:
 						 * WHERE `#__users`.`name` REGEXP 'aaassss' OR `#___users`.`name` REGEXP ' X Administrator'
 						 *
-						 * unset($filters[$fkey][$index]);
+						 * unset($filters[$fKey][$index]);
 						 */
 
-						$filters[$fkey] = array_values($filters[$fkey]);
+						$filters[$fKey] = array_values($filters[$fKey]);
 					}
 				}
 			}
@@ -1573,13 +1572,13 @@ class FabrikFEModelListfilter extends FabModel
 					$grouped = array_key_exists($i, $sessionFilters['grouped_to_previous']) ? $sessionFilters['grouped_to_previous'][$i] : 0;
 
 					$element = $elementModel->getElement();
-					$elparams = $elementModel->getParams();
+					$elParams = $elementModel->getParams();
 					$noFiltersSetup = ($element->filter_type == '') ? 1 : 0;
 					$hidden = ($element->filter_type == '') ? 1 : 0;
 					$match = $element->filter_exact_match;
-					$fullWordsOnly = $elparams->get('full_words_only');
-					$required = $elparams->get('filter_required');
-					$access = $elparams->get('filter_access');
+					$fullWordsOnly = $elParams->get('full_words_only');
+					$required = $elParams->get('filter_required');
+					$access = $elParams->get('filter_access');
 					$label = $elementModel->getListHeading();
 
 					/**
