@@ -2,7 +2,7 @@
 <extension type="package" version="3" method="upgrade">
 	<name>Fabrik Package</name>
 	<packagename>fabrik</packagename>
-	<version>3.3.3</version>
+	<version>{version}</version>
 	<url>http://www.fabrikar.com</url>
 	<creationDate>September 2015</creationDate>
 	<copyright>Copyright (C) 2005-2015 fabrikar.com - All rights reserved.</copyright>
@@ -20,9 +20,9 @@
 		<file client="site" id="mod_fabrik_form" type="module">mod_fabrik_form_{version}.zip</file>
 		<file client="site" id="mod_fabrik_list" type="module">mod_fabrik_list_{version}.zip</file>
 		
-		<file group="system" id="system_fabrik" type="plugin">plg_system_fabrik_{version}.zip</file>
+		<file group="system" id="system_fabrik" type="plugin">plg_fabrik_system_{version}.zip</file>
 		
-		<file group="content" id="content_fabrik" type="plugin">plg_fabrik_{version}.zip</file>
+		<file group="content" id="content_fabrik" type="plugin">plg_fabrik_content_{version}.zip</file>
 		
 		<file group="fabrik_cron" id="cron_email" type="plugin">plg_fabrik_cron_email_{version}.zip</file>
 		<file group="fabrik_cron" id="cron_php" type="plugin">plg_fabrik_cron_php_{version}.zip</file>
