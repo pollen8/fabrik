@@ -52,6 +52,16 @@
 				<option value="multilist">PLG_ELEMENT_DBJOIN_MULTILIST</option>
 			</field>
 
+			<field name="advanced_behavior"
+			       type="radio"
+			       default="0"
+			       class="btn-group"
+			       label="PLG_ELEMENT_DROPDOWN_JQUERY_CHOSEN_LABEL"
+			       description="PLG_ELEMENT_DROPDOWN_JQUERY_CHOSEN_DESC">
+				<option value="0">JNO</option>
+				<option value="1">JYES</option>
+			</field>
+
 		</fieldset>
 
 		<fieldset label="COM_FABRIK_DATA"
@@ -162,7 +172,6 @@
 			       label="PLG_ELEMENT_DBJOIN_NO_SELECTION_LABEL_LABEL"
 			       size="35"/>
 
-
 		</fieldset>
 
 		<fieldset label="PLG_ELEMENT_DBJOIN_FRONTEND_ADD_LABEL"
@@ -251,16 +260,6 @@
 			       type="bootstrapfieldclass"
 			       description="PLG_ELEMENT_DBJOIN_CLASS_DESC"
 			       label="PLG_ELEMENT_DBJOIN_CLASS_LABEL"/>
-
-			<field name="advanced_behavior"
-			       type="radio"
-			       default="0"
-			       class="btn-group"
-			       label="PLG_ELEMENT_DROPDOWN_ADVANCED_BEHAVIOR_LABEL"
-			       description="PLG_ELEMENT_DROPDOWN_ADVANCED_BEHAVIOR_DESC">
-				<option value="0">JNO</option>
-				<option value="1">JYES</option>
-			</field>
 
 		</fieldset>
 
