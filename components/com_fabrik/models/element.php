@@ -683,7 +683,7 @@ class PlgFabrik_Element extends FabrikPlugin
 
 		// $pkfeld = $table->db_primary_key;
 		$pkfield = $this->groupConcactJoinKey();
-		$fullElName = $db->quoteName($dbtable . '___' . $this->element->name);
+		$fullElName = $db->qn($dbtable . '___' . $this->element->name);
 		$sql = '(SELECT GROUP_CONCAT(' . $jkey . ' SEPARATOR \'' . GROUPSPLITTER . '\') FROM ' . $jointable . ' WHERE parent_id = '
 				. $pkfield . ')';
 
@@ -712,7 +712,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		$dbtable = $this->actualTableName();
 		$db = JFactory::getDbo();
 		$table = $this->getListModel()->getTable();
-		$fullElName = $db->quoteName($dbtable . '___' . $this->element->name . '_raw');
+		$fullElName = $db->qn($dbtable . '___' . $this->element->name . '_raw');
 		$pkField = $this->groupConcactJoinKey();
 
 		return '(SELECT GROUP_CONCAT(id SEPARATOR \'' . GROUPSPLITTER . '\') FROM ' . $jointable . ' WHERE parent_id = ' . $pkField
@@ -752,14 +752,14 @@ class PlgFabrik_Element extends FabrikPlugin
 		$dbtable = $this->actualTableName();
 		$db = FabrikWorker::getDbo();
 		$table = $this->getListModel()->getTable();
-		$fullElName = FArrayHelper::getValue($opts, 'alias', $db->quoteName($dbtable . '___' . $this->element->name));
+		$fullElName = FArrayHelper::getValue($opts, 'alias', $db->qn($dbtable . '___' . $this->element->name));
 		$fName = $dbtable . '.' . $this->element->name;
-		$k = $db->quoteName($fName);
+		$k = $db->qn($fName);
 		$secret = JFactory::getConfig()->get('secret');
 
 		if ($this->encryptMe())
 		{
-			$k = 'AES_DECRYPT(' . $k . ', ' . $db->quote($secret) . ')';
+			$k = 'AES_DECRYPT(' . $k . ', ' . $db->q($secret) . ')';
 		}
 
 		if ($this->isJoin())
@@ -768,7 +768,7 @@ class PlgFabrik_Element extends FabrikPlugin
 
 			if ($this->encryptMe())
 			{
-				$jkey = 'AES_DECRYPT(' . $jkey . ', ' . $db->quote($secret) . ')';
+				$jkey = 'AES_DECRYPT(' . $jkey . ', ' . $db->q($secret) . ')';
 			}
 
 			$jointable = $this->getJoinModel()->getJoin()->table_join;
@@ -798,11 +798,11 @@ class PlgFabrik_Element extends FabrikPlugin
 				$aAsFields[] = $fullElName;
 			}
 
-			$k = $db->quoteName($dbtable . '.' . $this->element->name);
+			$k = $db->qn($dbtable . '.' . $this->element->name);
 
 			if ($this->encryptMe())
 			{
-				$k = 'AES_DECRYPT(' . $k . ', ' . $db->quote($secret) . ')';
+				$k = 'AES_DECRYPT(' . $k . ', ' . $db->q($secret) . ')';
 			}
 
 			if ($this->isJoin())
@@ -812,7 +812,7 @@ class PlgFabrik_Element extends FabrikPlugin
 				$aFields[] = $str;
 				$aAsFields[] = $fullElName;
 
-				$as = $db->quoteName($dbtable . '___' . $this->element->name . '___params');
+				$as = $db->qn($dbtable . '___' . $this->element->name . '___params');
 				$str = '(SELECT GROUP_CONCAT(params SEPARATOR \'' . GROUPSPLITTER . '\') FROM ' . $jointable . ' WHERE parent_id = '
 						. $pkField . ') AS ' . $as; 
 						// Jaanus: joined group pk set in groupConcactJoinKey()
@@ -821,7 +821,7 @@ class PlgFabrik_Element extends FabrikPlugin
 			}
 			else
 			{
-				$fullElName = $db->quoteName($dbtable . '___' . $this->element->name . '_raw');
+				$fullElName = $db->qn($dbtable . '___' . $this->element->name . '_raw');
 
 				if ($this->calcSelectModifier)
 				{
@@ -4167,7 +4167,7 @@ class PlgFabrik_Element extends FabrikPlugin
 			}
 			else
 			{
-				$value = $db->quote($value[0]) . ' AND ' . $db->quote($value[1]);
+				$value = $db->q($value[0]) . ' AND ' . $db->q($value[1]);
 			}
 
 			$condition = 'BETWEEN';
@@ -4178,7 +4178,7 @@ class PlgFabrik_Element extends FabrikPlugin
 			{
 				foreach ($value as &$v)
 				{
-					$v = $db->quote($v);
+					$v = $db->q($v);
 				}
 
 				$value = ' (' . implode(',', $value) . ')';
@@ -4286,29 +4286,29 @@ class PlgFabrik_Element extends FabrikPlugin
 					$condition = "<>";
 
 					// 2 = subquery so don't quote
-					$value = ($eval == FABRIKFILTER_QUERY) ? '(' . $value . ')' : $db->quote($value);
+					$value = ($eval == FABRIKFILTER_QUERY) ? '(' . $value . ')' : $db->q($value);
 					break;
 				case 'equals':
 				case '=':
 					$condition = "=";
-					$value = ($eval == FABRIKFILTER_QUERY) ? '(' . $value . ')' : $db->quote($value);
+					$value = ($eval == FABRIKFILTER_QUERY) ? '(' . $value . ')' : $db->q($value);
 					break;
 				case 'begins':
 				case 'begins with':
 					$condition = "LIKE";
-					$value = $eval == FABRIKFILTER_QUERY ? '(' . $value . ')' : $db->quote($value . '%');
+					$value = $eval == FABRIKFILTER_QUERY ? '(' . $value . ')' : $db->q($value . '%');
 					break;
 				case 'ends':
 				case 'ends with':
 					// @TODO test this with subquery
 					$condition = "LIKE";
-					$value = $eval == FABRIKFILTER_QUERY ? '(' . $value . ')' : $db->quote('%' . $value);
+					$value = $eval == FABRIKFILTER_QUERY ? '(' . $value . ')' : $db->q('%' . $value);
 					break;
 				case 'contains':
 				case 'like':
 					// @TODO test this with subquery
 					$condition = "LIKE";
-					$value = $eval == FABRIKFILTER_QUERY ? '(' . $value . ')' : $db->quote('%' . $value . '%');
+					$value = $eval == FABRIKFILTER_QUERY ? '(' . $value . ')' : $db->q('%' . $value . '%');
 					break;
 				case '>':
 				case '&gt;':
@@ -4356,7 +4356,7 @@ class PlgFabrik_Element extends FabrikPlugin
 					{
 						if (!is_numeric($value))
 						{
-							$value = $db->quote($value);
+							$value = $db->q($value);
 						}
 					}
 					break;
@@ -4473,7 +4473,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		{
 			$db = FabrikWorker::getDbo();
 			$secret = JFactory::getConfig()->get('secret');
-			$key = 'AES_DECRYPT(' . $key . ', ' . $db->quote($secret) . ')';
+			$key = 'AES_DECRYPT(' . $key . ', ' . $db->q($secret) . ')';
 		}
 	}
 
@@ -4775,11 +4775,11 @@ class PlgFabrik_Element extends FabrikPlugin
 		{
 			if (!empty($whereSQL))
 			{
-				$whereSQL .= " AND $name = " . $db->quote($count_condition);
+				$whereSQL .= " AND $name = " . $db->q($count_condition);
 			}
 			else
 			{
-				$whereSQL = "WHERE $name = " . $db->quote($count_condition);
+				$whereSQL = "WHERE $name = " . $db->q($count_condition);
 			}
 		}
 
@@ -5755,7 +5755,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		$app = JFactory::getApplication();
 		$input = $app->input;
 		$this->_cnnId = $input->getInt('cid', 0);
-		$tbl = $db->quoteName($input->get('table'));
+		$tbl = $db->qn($input->get('table'));
 		$fieldDropDown = $listModel->getFieldsDropDown($this->_cnnId, $tbl, '-', false, 'params[join_val_column]');
 		$fieldDropDown2 = $listModel->getFieldsDropDown($this->_cnnId, $tbl, '-', false, 'params[join_key_column]');
 		echo "$('addJoinVal').innerHTML = '$fieldDropDown';";
@@ -6119,7 +6119,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		$db = FabrikWorker::getDbo(true);
 		$element->params = $this->getParams()->toString();
 		$query = $db->getQuery(true);
-		$query->update('#__{package}_elements')->set('params = ' . $db->quote($element->params))->where('id = ' . (int) $element->id);
+		$query->update('#__{package}_elements')->set('params = ' . $db->q($element->params))->where('id = ' . (int) $element->id);
 		$db->setQuery($query);
 		$res = $db->execute();
 
@@ -6511,7 +6511,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		$query = $db->getQuery(true);
 		$tableName = $listModel->getTable()->db_table_name;
 		$query->select('DISTINCT(' . $name . ') AS value, ' . $name . ' AS text')->from($tableName);
-		$query->where($name . ' LIKE ' . $db->quote(addslashes('%' . $search . '%')));
+		$query->where($name . ' LIKE ' . $db->q(addslashes('%' . $search . '%')));
 		$query = $listModel->buildQueryJoin($query);
 		$query = $listModel->buildQueryWhere(false, $query);
 		$query = $listModel->pluginQuery($query);
@@ -6867,35 +6867,34 @@ class PlgFabrik_Element extends FabrikPlugin
 	}
 
 	/**
-	 * when saving an element pk we need to update any join which has the same params->pk
+	 * When saving an element pk we need to update any join which has the same params->pk
 	 *
-	 * @param   string  $oldName  (prevoius element name)
+	 * @param   string  $oldName  (previous element name)
 	 * @param   string  $newName  (new element name)
 	 *
 	 * @since	3.0.6
 	 *
 	 * @return  void
 	 */
-
 	public function updateJoinedPks($oldName, $newName)
 	{
-		$db = $this->getListModel()->getDb();
+		$db = JFactory::getDbo();
 		$item = $this->getListModel()->getTable();
 		$query = $db->getQuery(true);
 
 		// Update linked lists id.
-		$query->update('#__{package}_joins')->set('table_key = ' . $db->quote($newName))
-		->where('join_from_table = ' . $db->quote($item->db_table_name))->where('table_key = ' . $db->quote($oldName));
+		$query->update('#__{package}_joins')->set('table_key = ' . $db->q($newName))
+		->where('join_from_table = ' . $db->q($item->db_table_name))->where('table_key = ' . $db->q($oldName));
 		$db->setQuery($query);
 		$db->execute();
 
 		// Update join pk parameter
 		$query->clear();
-		$query->select('id')->from('#__{package}_joins')->where('table_join = ' . $db->quote($item->db_table_name));
+		$query->select('id')->from('#__{package}_joins')->where('table_join = ' . $db->q($item->db_table_name));
 		$db->setQuery($query);
 		$ids = $db->loadColumn();
-		$teskPk = $db->quoteName($item->db_table_name . '.' . $oldName);
-		$newPk = $db->quoteName($item->db_table_name . '.' . $newName);
+		$testPk = $db->qn($item->db_table_name . '.' . $oldName);
+		$newPk = $db->qn($item->db_table_name . '.' . $newName);
 
 		foreach ($ids as $id)
 		{
@@ -6903,7 +6902,7 @@ class PlgFabrik_Element extends FabrikPlugin
 			$join->load($id);
 			$params = new JRegistry($join->params);
 
-			if ($params->get('pk') === $teskPk)
+			if ($params->get('pk') === $testPk)
 			{
 				$params->set('pk', $newPk);
 				$join->params = (string) $params;
@@ -6917,7 +6916,6 @@ class PlgFabrik_Element extends FabrikPlugin
 	 *
 	 * @return  bool
 	 */
-
 	public function isJoin()
 	{
 		return $this->getParams()->get('repeat', false);
@@ -6953,7 +6951,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		$db = $listModel->getDb();
 		$tbl = $this->actualTableName();
 		$name = $this->getElement()->name;
-		$db->setQuery("UPDATE $tbl SET " . $name . " = AES_ENCRYPT(" . $name . ", " . $db->quote($secret) . ")");
+		$db->setQuery("UPDATE $tbl SET " . $name . " = AES_ENCRYPT(" . $name . ", " . $db->q($secret) . ")");
 		$db->execute();
 	}
 
@@ -6972,7 +6970,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		$db = $listModel->getDb();
 		$tbl = $this->actualTableName();
 		$name = $this->getElement()->name;
-		$db->setQuery("UPDATE $tbl SET " . $name . " = AES_DECRYPT(" . $name . ", " . $db->quote($secret) . ")");
+		$db->setQuery("UPDATE $tbl SET " . $name . " = AES_DECRYPT(" . $name . ", " . $db->q($secret) . ")");
 		$db->execute();
 	}
 
@@ -7506,7 +7504,7 @@ class PlgFabrik_Element extends FabrikPlugin
 			$parentId = $formData[$k];
 			if (!empty($parentId))
 			{
-				$query->delete($join->table_join)->where('parent_id = ' . $db->quote($parentId));
+				$query->delete($join->table_join)->where('parent_id = ' . $db->q($parentId));
 				$db->setQuery($query);
 				$db->execute();
 			}
