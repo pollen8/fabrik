@@ -21,7 +21,6 @@ require_once 'fabcontrollerform.php';
  * @subpackage  Fabrik
  * @since       3.0
  */
-
 class FabrikAdminControllerElement extends FabControllerForm
 {
 	/**
@@ -40,7 +39,6 @@ class FabrikAdminControllerElement extends FabControllerForm
 	 *
 	 * @return	JController	This object to support chaining.
 	 */
-
 	public function setRedirect($url, $msg = null, $type = null)
 	{
 		$app = JFactory::getApplication();
@@ -81,7 +79,6 @@ class FabrikAdminControllerElement extends FabControllerForm
 	 *
 	 * @since   11.1
 	 */
-
 	protected function getRedirectToItemAppend($recordId = null, $urlVar = 'id')
 	{
 		$app = JFactory::getApplication();
@@ -102,7 +99,6 @@ class FabrikAdminControllerElement extends FabControllerForm
 	 *
 	 * @return  null
 	 */
-
 	public function updateStructure()
 	{
 		// Check for request forgeries
@@ -140,11 +136,10 @@ class FabrikAdminControllerElement extends FabControllerForm
 	}
 
 	/**
-	 * user decided to cancel update
+	 * User decided to cancel update
 	 *
 	 * @return  null
 	 */
-
 	public function cancelUpdateStructure()
 	{
 		JSession::checkToken() or die('Invalid Token');
@@ -160,11 +155,11 @@ class FabrikAdminControllerElement extends FabControllerForm
 
 		if ($input->get('origtask') == 'save')
 		{
-			$this->setRedirect('index.php?option=com_fabrik&view=elements', $msg);
+			$this->setRedirect('index.php?option=com_fabrik&view=elements');
 		}
 		else
 		{
-			$this->setRedirect('index.php?option=com_fabrik&task=element.edit&id=' . $element->id, $msg);
+			$this->setRedirect('index.php?option=com_fabrik&task=element.edit&id=' . $element->id);
 		}
 	}
 
@@ -197,13 +192,12 @@ class FabrikAdminControllerElement extends FabControllerForm
 	 *
 	 * @return  void
 	 */
-
 	public function parentredirect()
 	{
 		$app = JFactory::getApplication();
 		$input = $app->input;
-		$jform = $input->get('jform', array(), 'array');
-		$id = (int) FArrayHelper::getValue($jform, 'id', 0);
+		$jForm = $input->get('jform', array(), 'array');
+		$id = (int) FArrayHelper::getValue($jForm, 'id', 0);
 		$pluginManager = JModelLegacy::getInstance('Pluginmanager', 'FabrikFEModel');
 		$className = $input->post->get('plugin', 'field');
 		$elementModel = $pluginManager->getPlugIn($className, 'element');

@@ -1550,11 +1550,11 @@ class FabrikWorker
 	{
 		$app = JFactory::getApplication();
 		$input = $app->input;
-		$jform = $input->get('jform', array(), 'array');
+		$jForm = $input->get('jform', array(), 'array');
 
 		if (is_object($item))
 		{
-			$item = is_null($item->connection_id) ? FArrayHelper::getValue($jform, 'connection_id', -1) : $item->connection_id;
+			$item = is_null($item->connection_id) ? FArrayHelper::getValue($jForm, 'connection_id', -1) : $item->connection_id;
 		}
 
 		$connId = (int) $item;
