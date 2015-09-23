@@ -20,7 +20,6 @@ require_once JPATH_SITE . '/plugins/fabrik_element/databasejoin/databasejoin.php
  * @subpackage  Fabrik.element.cascadingdropdown
  * @since       3.0
  */
-
 class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 {
 	/**
@@ -44,7 +43,6 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 	 *
 	 * @return  array
 	 */
-
 	public function elementJavascript($repeatCounter)
 	{
 		$app = JFactory::getApplication();
@@ -111,7 +109,6 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 	 *
 	 * @return	string join label column either returns concat statement or quotes `tablename`.`elementname`
 	 */
-
 	public function getJoinLabelColumn($useStep = false)
 	{
 		$params = $this->getParams();
@@ -164,7 +161,6 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 	 *
 	 * @return  void
 	 */
-
 	protected function _resetCache()
 	{
 		unset($this->optionVals);
@@ -179,7 +175,6 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 	 *
 	 * @return  string	elements html
 	 */
-
 	public function render($data, $repeatCounter = 0)
 	{
 		$db = $this->getDb();
@@ -343,7 +338,6 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 	 *
 	 * @return	bool
 	 */
-
 	public function isJoin()
 	{
 		if (in_array($this->getDisplayType(), array('checkbox', 'multilist')))
@@ -379,7 +373,6 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 	 *
 	 * @return  array	option objects
 	 */
-
 	protected function _getOptions($data = array(), $repeatCounter = 0, $incWhere = true, $opts = array())
 	{
 		$tmp = $this->_getOptionVals($data, $repeatCounter);
@@ -392,7 +385,6 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 	 *
 	 * @return  void
 	 */
-
 	public function onAjax_getOptions()
 	{
 		$app = JFactory::getApplication();
@@ -456,7 +448,6 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 	 *
 	 * @return  void
 	 */
-
 	protected function _replaceAjaxOptsWithDbJoinOpts(&$opts)
 	{
 		$groups = $this->getFormModel()->getGroupsHiarachy();
@@ -521,7 +512,6 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 	 *
 	 * @return  array	option values
 	 */
-
 	protected function _getOptionVals($data = array(), $repeatCounter = 0, $incWhere = true, $opts = array())
 	{
 		$params = $this->getParams();
@@ -594,11 +584,10 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 	}
 
 	/**
-	 * Create the select option for dropdown
+	 * Create the select option for drop-down
 	 *
 	 *  @return  object
 	 */
-
 	private function selectOption()
 	{
 		$params = $this->getParams();
@@ -612,7 +601,6 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 	 *
 	 * @return  bool
 	 */
-
 	protected function showPleaseSelect()
 	{
 		$params = $this->getParams();
@@ -641,7 +629,6 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 	 *
 	 * @return  string
 	 */
-
 	protected function getWatchFullName()
 	{
 		$elementModel = $this->getWatchElement();
@@ -656,7 +643,6 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 	 *
 	 * @return  string
 	 */
-
 	protected function getWatchId($repeatCounter = 0)
 	{
 		$elementModel = $this->getWatchElement();
@@ -669,7 +655,6 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 	 *
 	 * @return  plgFabrik_Element
 	 */
-
 	protected function getWatchElement()
 	{
 		if (!isset($this->watchElement))
@@ -693,8 +678,8 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 				$children = $parent->getElementDescendents();
 
 				// Match the possible element ids with the current form's element ids
-				$elids = $this->getFormModel()->getElementIds();
-				$matched = array_values(array_intersect($elids, $children));
+				$elementIds = $this->getFormModel()->getElementIds();
+				$matched = array_values(array_intersect($elementIds, $children));
 
 				// Load the matched element
 				$this->watchElement = $pluginManager->getElementPlugin($matched[0]);
@@ -705,8 +690,8 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 	}
 
 	/**
-	 * Create the sql query used to get the possible selectionable value/labels used to create
-	 * the dropdown/checkboxes
+	 * Create the sql query used to get the possible selectable value/labels used to create
+	 * the drop-down/checkboxes
 	 *
 	 * @param   array  $data      data
 	 * @param   bool   $incWhere  include where
@@ -714,7 +699,6 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 	 *
 	 * @return  mixed	JDatabaseQuery or false if query can't be built
 	 */
-
 	protected function buildQuery($data = array(), $incWhere = true, $opts = array())
 	{
 		$app = JFactory::getApplication();
@@ -732,7 +716,7 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 		$params = $this->getParams();
 		$watch = $this->getWatchFullName();
 		$whereVal = null;
-		$groups = $this->getForm()->getGroupsHiarachy();
+		$groups = $this->getFormModel()->getGroupsHiarachy();
 		$formModel = $this->getFormModel();
 		$watchElement = $this->getWatchElement();
 
@@ -970,7 +954,6 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 	 *
 	 * @return  string
 	 */
-
 	protected function queryKey()
 	{
 		$db = FabrikWorker::getDbo();
@@ -989,7 +972,6 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 	 *
 	 * @return  string
 	 */
-
 	protected function getLabelOrConcatVal()
 	{
 		$params = $this->getParams();
@@ -1014,7 +996,6 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 	 *
 	 * @return  object	connection table
 	 */
-
 	protected function loadConnection()
 	{
 		$params = $this->getParams();
@@ -1039,7 +1020,6 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 	 *
 	 * @return  db name or false if unable to get name
 	 */
-
 	protected function getDbName()
 	{
 		if (!isset($this->dbname) || $this->dbname == '')
@@ -1073,7 +1053,6 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 	 *
 	 * @return  void
 	 */
-
 	public function filterJS($normal, $container)
 	{
 		$element = $this->getElement();
@@ -1086,11 +1065,11 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 		if ($element->filter_type == 'dropdown')
 		{
 			$default = $this->getDefaultFilterVal($normal);
-			$filterid = $this->getHTMLId() . 'value';
+			$filterId = $this->getHTMLId() . 'value';
 			FabrikHelperHTML::script('plugins/fabrik_element/cascadingdropdown/filter.js');
 			$opts = new stdClass;
 			$opts->formid = $formId;
-			$opts->filterid = $filterid;
+			$opts->filterid = $filterId;
 			$opts->elid = $this->getId();
 			$opts->def = $default;
 			$opts->filterobj = 'Fabrik.filter_' . $container;
@@ -1110,7 +1089,6 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 	 *
 	 * @return void
 	 */
-
 	public function formJavascriptClass(&$srcs, $script = '', &$shim = array())
 	{
 		$s = new stdClass;
@@ -1126,7 +1104,6 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 	 *
 	 * @return  string
 	 */
-
 	protected function getJoinValueFieldName()
 	{
 		$params = $this->getParams();
@@ -1140,12 +1117,11 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 	 *
 	 * @return mixed element model or false
 	 */
-
 	protected function _getObserverElement()
 	{
 		$params = $this->getParams();
 		$observer = $params->get('cascadingdropdown_observe');
-		$formModel = $this->getForm();
+		$formModel = $this->getFormModel();
 		$groups = $formModel->getGroupsHiarachy();
 
 		foreach ($groups as $groupModel)
@@ -1173,7 +1149,6 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 	 *
 	 * @return null
 	 */
-
 	public function beforeSave(&$row)
 	{
 		/*
@@ -1187,13 +1162,12 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 	/**
 	 * Get an array of element html ids and their corresponding
 	 * js events which trigger a validation.
-	 * Examples of where this would be overwritten include timedate element with time field enabled
+	 * Examples of where this would be overwritten include time date element with time field enabled
 	 *
 	 * @param   int  $repeatCounter  repeat group counter
 	 *
 	 * @return  array  html ids to watch for validation
 	 */
-
 	public function getValidationWatchElements($repeatCounter)
 	{
 		$id = $this->getHTMLId($repeatCounter);
@@ -1213,7 +1187,6 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 	 *
 	 * @return  mixed JError:void
 	 */
-
 	public function finalCopyCheck($elementMap)
 	{
 		$element = $this->getElement();
@@ -1242,11 +1215,10 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 	 * Return an array of parameter names which should not get updated if a linked element's parent is saved
 	 * notably any parameter which references another element id should be returned in this array
 	 * called from admin element model updateChildIds()
-	 * see cascadingdropdown element for example
+	 * see cascading-drop-down element for example
 	 *
 	 * @return  array	parameter names to not alter
 	 */
-
 	public function getFixedChildParameters()
 	{
 		return array('cascadingdropdown_observe');
@@ -1259,7 +1231,6 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 	 *
 	 * @return  string
 	 */
-
 	protected function _getSelectLabel($filter = false)
 	{
 		$params = $this->getParams();
@@ -1287,7 +1258,6 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 	 *
 	 * @return boolean
 	 */
-
 	protected function quoteLabel()
 	{
 		$params = $this->getParams();
@@ -1302,7 +1272,6 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 	 *
 	 * @return  string  required join text to ensure exact filter list code produces a valid query.
 	 */
-
 	protected function buildFilterJoin()
 	{
 		$joinTable = FabrikString::safeColName($this->getDbName());
@@ -1329,7 +1298,6 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 	 *
 	 * @return boolean
 	 */
-
 	public function dataIsNull($data, $val)
 	{
 		return false;
@@ -1340,7 +1308,6 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 	 *
 	 * @return  string
 	 */
-
 	protected function filterSelectLabel()
 	{
 		$params = $this->getParams();
