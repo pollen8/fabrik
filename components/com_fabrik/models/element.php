@@ -716,7 +716,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		$pkField = $this->groupConcactJoinKey();
 
 		return '(SELECT GROUP_CONCAT(id SEPARATOR \'' . GROUPSPLITTER . '\') FROM ' . $jointable . ' WHERE parent_id = ' . $pkField
-		. ') AS ' . $fullElName; 
+		. ') AS ' . $fullElName;
 		// Jaanus: joined group pk set in groupConcactJoinKey()
 	}
 
@@ -732,9 +732,9 @@ class PlgFabrik_Element extends FabrikPlugin
 	{
 		$group = $this->getGroupModel()->getGroup();
 		$name = $this->getFullName(true, false);
-		$rawname = $name . '_raw';
+		$rawName = $name . '_raw';
 
-		return array($name, $rawname);
+		return array($name, $rawName);
 	}
 
 	/**
@@ -814,7 +814,7 @@ class PlgFabrik_Element extends FabrikPlugin
 
 				$as = $db->qn($dbtable . '___' . $this->element->name . '___params');
 				$str = '(SELECT GROUP_CONCAT(params SEPARATOR \'' . GROUPSPLITTER . '\') FROM ' . $jointable . ' WHERE parent_id = '
-						. $pkField . ') AS ' . $as; 
+						. $pkField . ') AS ' . $as;
 						// Jaanus: joined group pk set in groupConcactJoinKey()
 				$aFields[] = $str;
 				$aAsFields[] = $as;
@@ -1083,7 +1083,7 @@ class PlgFabrik_Element extends FabrikPlugin
 	/**
 	 * Is the element consider to be empty for purposes of rendering on the form,
 	 * i.e. for assigning classes, etc.  Can be overridden by individual elements.
-	 * 
+	 *
 	 * NOTE - this was originally intended for validation, but wound up being used for both validation
 	 * AND rendering.  Which doesn't really work, because the $data can be entirely different.  Tried
 	 * adding dataConsideredEmptyForValidation() below, but that causes issues where elements don't have
@@ -1103,21 +1103,21 @@ class PlgFabrik_Element extends FabrikPlugin
 	{
 		return ($data == '') ? true : false;
 	}
-	
+
 	/**
 	 * is the element consider to be empty for validation purposes, on form submit
 	 * Used in isempty validation rule.  Split out from dataConsideredEmpty in 3.2
-	 * 
+	 *
 	 * NOTE - see comments on dataConsideredEmpty(), have to hold off on putting this in the main model.
 	 *
 	 * @param   array  $data           Data to test against
 	 * @param   int    $repeatCounter  Repeat group #
 	 *
 	 * @return  bool
-	 * 
+	 *
 	 * @since   3.2
 	 */
-	
+
 	/*
 	public function dataConsideredEmptyForValidation($data, $repeatCounter)
 	{
@@ -2164,7 +2164,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		$element->value = $this->getValue($model->data, $c);
 
 		$elName = $this->getFullName(true, false);
-		
+
 		if (array_key_exists($elName . '_raw', $model->data))
 		{
 			$element->element_raw = $model->data[$elName . '_raw'];
@@ -2414,12 +2414,12 @@ class PlgFabrik_Element extends FabrikPlugin
 				$slug = JApplication::stringURLSafe($slug);
 				$customLink = str_replace('{slug}', $slug, $customLink);
 			}
-			
+
 			/**
 			 * Testing new parseMessageForRepeats(), see comments on the function itself.
 			 */
 			$customLink = $w->parseMessageForRepeats($customLink, $data, $this, $repeatCounter);
-			
+
 			$customLink = $w->parseMessageForPlaceHolder($customLink, $data);
 			$customLink = $this->getListModel()->parseMessageForRowHolder($customLink, $data);
 
@@ -3231,18 +3231,18 @@ class PlgFabrik_Element extends FabrikPlugin
 
 			case 'field':
 			default:
-				
+
 				/**
 				 * $$$ hugh - in some really freaky corner case(s), a ranged filter in advanced search winds up here.
 				 * I know I should track these cases down and fix the underlying cause, but right now I just need to make
 				 * an error go away, amd I've already spent 2 hours naging my head on this.  So if $default is as array,
 				 * fire it off to rangedFilterFields()!
 				 */
-				 
+
 				if (is_array($default))
 				{
 					// $$$ ack phffft, $rows doesn't exist, just ignore the damn thing for now.  Grrrrr.
-					//$this->rangedFilterFields($default, $return, $rows, $v, 'list');					
+					//$this->rangedFilterFields($default, $return, $rows, $v, 'list');
 				}
 				else
 				{
@@ -3363,12 +3363,12 @@ class PlgFabrik_Element extends FabrikPlugin
 		$class = $this->filterClass();
 		$attribs = 'class="' . $class . '" size="1" ';
 		$default = (array) $default;
-		
+
 		if (count($default) === 1)
 		{
 			$default[1] = '';
 		}
-		
+
 		$def0 = array_key_exists('value', $default) ? $default['value'][0] : $default[0];
 		$def1 = array_key_exists('value', $default) ? $default['value'][1] : $default[1];
 
@@ -3649,13 +3649,13 @@ class PlgFabrik_Element extends FabrikPlugin
 
 		return $opts;
 	}
-	
+
 	/**
 	 * Get sub option enabled/disabled state
 	 *
 	 * @return  array
 	 */
-	
+
 	protected function getSubOptionEnDis()
 	{
 		$opts = array();
@@ -4433,9 +4433,9 @@ class PlgFabrik_Element extends FabrikPlugin
 				{
 					// Query the joined table concatenating into one field
 					$jointable = $this->getJoinModel()->getJoin()->table_join;
-					//$pk = $this->getListModel()->getTable()->db_primary_key; 
+					//$pk = $this->getListModel()->getTable()->db_primary_key;
 					// Jaanus: joined group pk set in groupConcactJoinKey()
-					$pk = $this->groupConcactJoinKey(); 
+					$pk = $this->groupConcactJoinKey();
 					/**
 					 *  Jaanus: joined group pk?
 					 *  set in groupConcactJoinKey()
@@ -6721,13 +6721,13 @@ class PlgFabrik_Element extends FabrikPlugin
 		// Swap dec and thousand seps back to Normal People Decimal Format!
 		$decimal_sep = $params->get('field_decimal_sep', '.');
 		$thousand_sep = $params->get('field_thousand_sep', ',');
-		
+
 		// Workaround for params not letting us save just a space!
 		if ($thousand_sep == '#32')
 		{
 			$thousand_sep = ' ';
 		}
-		
+
 		$val = str_replace($thousand_sep, '', $val);
 		$val = str_replace($decimal_sep, '.', $val);
 
@@ -7226,14 +7226,14 @@ class PlgFabrik_Element extends FabrikPlugin
 	{
 		$this->defaults = null;
 	}
-	
+
 	/**
 	 * Clear default values, need to call this if we change an elements value in any of the formData
 	 * arrays during submisison process.
 	 *
 	 * @return  null
 	 */
-	
+
 	public function clearDefaults()
 	{
 		$this->defaults = null;
@@ -7296,7 +7296,6 @@ class PlgFabrik_Element extends FabrikPlugin
 	 *
 	 * @return  void
 	 */
-
 	public function onFinalStoreRow(&$data)
 	{
 		if (!$this->isJoin())
@@ -7306,21 +7305,20 @@ class PlgFabrik_Element extends FabrikPlugin
 
 		$groupModel = $this->getGroupModel();
 		$listModel = $this->getListModel();
-		$joinModel = $this->getJoinModel();
 		$db = $listModel->getDb();
 		$query = $db->getQuery(true);
 		$formData =& $this->getFormModel()->formDataWithTableName;
-		$tableName = $listModel->getTable()->db_table_name;
 
 		// I set this to raw for cdd.
 		$name = $this->getFullName(true, false);
-		$rawname = $name . '_raw';
+		$ajaxSubmit = JFactory::getApplication()->input->get('fabrik_ajax');
+		$rawName = $name . '_raw';
 		$shortName = $this->getElement()->name;
 
 		$join = $this->getJoin();
 
 		// The submitted element's values
-		$d = FArrayHelper::getValue($formData, $rawname, FArrayHelper::getValue($formData, $name));
+		$d = FArrayHelper::getValue($formData, $rawName, FArrayHelper::getValue($formData, $name));
 		$allJoinValues = FabrikWorker::JSONtoData($d, true);
 
 		if ($groupModel->isJoin())
@@ -7372,6 +7370,13 @@ class PlgFabrik_Element extends FabrikPlugin
 				$ids = (array) $db->loadObjectList($shortName);
 			}
 
+			// If doing an ajax form submit and the element is an ajax file upload then its data is different.
+			if (get_class($this) === 'PlgFabrik_ElementFileupload' && $ajaxSubmit)
+			{
+				$allParams = array_values($joinValues['crop']);
+				$joinValues = array_keys($joinValues['id']);
+			}
+
 			foreach ($joinValues as $jIndex => $jid)
 			{
 				$record = new stdClass;
@@ -7380,7 +7385,7 @@ class PlgFabrik_Element extends FabrikPlugin
 				$record->$shortName = $fkVal;
 				$record->params = FArrayHelper::getValue($allParams, $jIndex);
 
-				// Stop notice with fileupload where fkVal is an array
+				// Stop notice with file-upload where fkVal is an array
 				if (array_key_exists($fkVal, $ids))
 				{
 					$record->id = $ids[$fkVal]->id;
@@ -7398,10 +7403,10 @@ class PlgFabrik_Element extends FabrikPlugin
 
 					if (!$this->allowDuplicates)
 					{
-						$newid = new stdClass;
-						$newid->id = $lastInsertId;
-						$newid->$shortName = $record->$shortName;
-						$ids[$record->$shortName] = $newid;
+						$newId = new stdClass;
+						$newId->id = $lastInsertId;
+						$newId->$shortName = $record->$shortName;
+						$ids[$record->$shortName] = $newId;
 					}
 
 					$idsToKeep[$parentId][] = $lastInsertId;

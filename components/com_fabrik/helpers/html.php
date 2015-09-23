@@ -158,7 +158,6 @@ class FabrikHelperHTML
 	 *
 	 * @return  void
 	 */
-
 	public static function mocha($selector = '', $params = array())
 	{
 		self::windows($selector, $params);
@@ -172,7 +171,6 @@ class FabrikHelperHTML
 	 *
 	 * @return  string
 	 */
-
 	public static function bootStrapDropDown($lis, $align = 'left')
 	{
 		$class = 'btn-group fabrik_action';
@@ -195,7 +193,6 @@ class FabrikHelperHTML
 	 *
 	 * @return string
 	 */
-
 	public static function bootStrapButtonGroup($items)
 	{
 		return '<div class="btn-group">' . implode(' ', $items) . '</div>';
@@ -210,7 +207,6 @@ class FabrikHelperHTML
 	 *
 	 * @return   array  request headers assoc
 	 */
-
 	public static function parseRequestHeaders()
 	{
 		if (isset(self::$requestHeaders))
@@ -243,7 +239,6 @@ class FabrikHelperHTML
 	 *
 	 * @return  void
 	 */
-
 	public static function windows($selector = '', $params = array())
 	{
 		$app = JFactory::getApplication();
@@ -287,8 +282,6 @@ class FabrikHelperHTML
 		$opt['onMove'] = (isset($params['onMove'])) ? $params['onMove'] : null;
 		$opt['onShow'] = (isset($params['onShow'])) ? $params['onShow'] : null;
 		$opt['onHide'] = (isset($params['onHide'])) ? $params['onHide'] : null;
-
-		$options = json_encode($opt);
 
 		// Attach modal behavior to document
 		// Set default values which can be overwritten in <a>'s rel attribute
@@ -335,7 +328,6 @@ EOD;
 	 *
 	 * @return  void
 	 */
-
 	public static function emailForm($formModel, $template = '')
 	{
 		$app = JFactory::getApplication();
@@ -405,7 +397,6 @@ if (!$j3)
 	 *
 	 * @return  void
 	 */
-
 	public static function emailSent()
 	{
 		$config = JFactory::getConfig();
@@ -426,13 +417,12 @@ if (!$j3)
 	/**
 	 * Writes a print icon
 	 *
-	 * @param   object  $formModel  form model
-	 * @param   object  $params     parameters
-	 * @param   int     $rowid      row id
+	 * @param   object       $formModel  form model
+	 * @param   object       $params     parameters
+	 * @param   int|string   $rowid      row id
 	 *
 	 * @return  string	print html icon/link
 	 */
-
 	public static function printIcon($formModel, $params, $rowid = '')
 	{
 		$status = "status=no,toolbar=no,scrollbars=yes,titlebar=no,menubar=no,resizable=yes,width=400,height=350,directories=no,location=no";
@@ -449,16 +439,16 @@ if (!$j3)
 
 		if ($params->get('popup', 1))
 		{
-			$ahref = '<a class=\"printlink\" href="javascript:void(0)" onclick="javascript:window.print(); return false" title="'
+			$aHref = '<a class=\"printlink\" href="javascript:void(0)" onclick="javascript:window.print(); return false" title="'
 				. FText::_('COM_FABRIK_PRINT') . '">';
 		}
 		else
 		{
-			$ahref = "<a href=\"#\" class=\"printlink\" onclick=\"window.open('$link','win2','$status;');return false;\"  title=\""
+			$aHref = "<a href=\"#\" class=\"printlink\" onclick=\"window.open('$link','win2','$status;');return false;\"  title=\""
 			. FText::_('COM_FABRIK_PRINT') . "\">";
 		}
 
-		return $ahref . $image . "</a>";
+		return $aHref . $image . "</a>";
 	}
 
 	/**
@@ -470,7 +460,6 @@ if (!$j3)
 	 *
 	 * @return  string
 	 */
-
 	public static function printURL($formModel)
 	{
 
@@ -523,7 +512,6 @@ if (!$j3)
 	 *
 	 * @return  string	Email icon/link html
 	 */
-
 	public static function emailIcon($formModel, $params)
 	{
 		$popup = $params->get('popup', 1);
@@ -557,7 +545,6 @@ if (!$j3)
 	 *
 	 * @return  string
 	 */
-
 	public static function emailURL($formModel)
 	{
 		/**
@@ -606,7 +593,6 @@ if (!$j3)
 	 *
 	 * @return  string	html select list
 	 */
-
 	public static function conditionList($listid, $sel = '')
 	{
 		$conditions = array();
@@ -624,7 +610,6 @@ if (!$j3)
 	 *
 	 * @return  mixed	html select list or error
 	 */
-
 	public static function tableList($sel = '')
 	{
 		$db = FabrikWorker::getDbo(true);
@@ -643,7 +628,6 @@ if (!$j3)
 	 *
 	 * @return  void
 	 */
-
 	public static function loadCalendar()
 	{
 	}
@@ -659,7 +643,6 @@ if (!$j3)
 	 *
 	 * @return  null
 	 */
-
 	public static function stylesheet($file, $attribs = array())
 	{
 		// $$$ hugh - moved this to top of function, as we now apply livesite in either usage cases below.
@@ -670,8 +653,6 @@ if (!$j3)
 
 		if (self::cssAsAsset())
 		{
-			$attribs = json_encode(JArrayHelper::toObject($attribs));
-
 			// Send an inline script back which will inject the css file into the doc head
 			// Note your ajax call must have 'evalScripts':true set in its properties
 			if (!in_array($file, self::$ajaxCssFiles))
@@ -703,17 +684,16 @@ if (!$j3)
 	 *
 	 * @return  bool
 	 */
-
 	public static function cssAsAsset()
 	{
 		$app = JFactory::getApplication();
 		$input = $app->input;
 		$tpl = $input->get('tmpl');
-		$iframe = $input->get('iframe');
+		$iFrame = $input->get('iframe');
 		$print = $input->get('print');
 		$format = $input->get('format');
 
-		return $input->get('format') == 'raw' || ($tpl == 'component' && $iframe != 1) && $print != 1 && $format !== 'pdf';
+		return $input->get('format') == 'raw' || ($tpl == 'component' && $iFrame != 1) && $print != 1 && $format !== 'pdf';
 	}
 
 	/**
@@ -723,7 +703,6 @@ if (!$j3)
 	 *
 	 * @return	bool	if loaded or not
 	 */
-
 	public static function stylesheetFromPath($path)
 	{
 		if (strstr($path, '?'))
@@ -780,7 +759,6 @@ if (!$j3)
 	 *
 	 * @return	string	HTML for the select list
 	 */
-
 	public static function aList($type, &$arr, $tag_name, $tag_attribs, $selected = null,
 		$key = 'value', $text = 'text', $options_per_row = 0, $editable = true)
 	{
@@ -880,7 +858,6 @@ if (!$j3)
 	 *
 	 * @return  void
 	 */
-
 	public static function keepalive()
 	{
 		// Test since 2.0b3 don't do anything if loading from Fabrik win
@@ -897,7 +874,6 @@ if (!$j3)
 	 *
 	 * @return  void
 	 */
-
 	public static function mcl()
 	{
 		if (!self::$mcl)
@@ -924,7 +900,6 @@ if (!$j3)
 	 *
 	 * @return  void
 	 */
-
 	public static function addToFrameWork(&$srcs, $file)
 	{
 		$ext = self::isDebug() ? '.js' : '-min.js';
@@ -936,7 +911,6 @@ if (!$j3)
 	 *
 	 * @return  array  Framework js files
 	 */
-
 	public static function framework()
 	{
 		if (!self::$framework)
@@ -1000,7 +974,7 @@ if (!$j3)
 				$liveSiteSrc = array();
 				$liveSiteSrc[] = "\tFabrik.liveSite = '" . COM_FABRIK_LIVESITE . "';";
 				$liveSiteSrc[] = "\tFabrik.debug = " . (self::isDebug() ? 'true;' : 'false;');
-				$liveSiteSrc[] = "\tFabrik.jLayouts = " . json_encode(self::$jLayoutsJs) . ";";
+				$liveSiteSrc[] = "\tFabrik.jLayouts = " . json_encode(JArrayHelper::toObject(self::$jLayoutsJs)) . ";";
 
 				if ($bootstrapped)
 				{
@@ -1015,6 +989,16 @@ if (!$j3)
 				$liveSiteSrc[] = self::tipInt();
 				$liveSiteSrc = implode("\n", $liveSiteSrc);
 				self::script($liveSiteReq, $liveSiteSrc);
+			} 
+			else 
+			{
+				$liveSiteSrc[] = "\tif (!Fabrik.jLayouts) {
+				Fabrik.jLayouts = {};
+				}
+				Fabrik.jLayouts = jQuery.extend(Fabrik.jLayouts, " . json_encode(self::$jLayoutsJs) . ");";
+				$liveSiteReq[] = 'media/com_fabrik/js/fabrik' . $ext;
+				self::script($liveSiteReq, $liveSiteSrc);
+
 			}
 
 			self::$framework = $src;
@@ -1029,7 +1013,6 @@ if (!$j3)
 	 *
 	 * @return  string
 	 */
-
 	public static function tipInt()
 	{
 		$tipOpts = self::tipOpts();
@@ -1421,9 +1404,7 @@ if (!$j3)
 			$onLoad = implode("\n", $onLoad);
 		}
 
-		$document = JFactory::getDocument();
 		$app = JFactory::getApplication();
-		$input = $app->input;
 		$ext = self::isDebug() ? '.js' : '-min.js';
 		$paths = self::requirePaths();
 		$files = (array) $file;

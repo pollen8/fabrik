@@ -757,6 +757,14 @@ var FbFileUpload = new Class({
 var ImageWidget = new Class({
 
 	initialize: function (canvas, opts) {
+		// When element is in modal window it renders fine the first time. But the second time
+		// the original window is still there - so we end up with 2 dom structures and one window object.
+		// To get round this set the first window to be destroyed and close it.
+		if (Fabrik.Windows[canvas.id + '-mocha']) {
+			Fabrik.Windows[canvas.id + '-mocha'].options.destroy = true;
+			Fabrik.Windows[canvas.id + '-mocha'].close();
+		}
+
 		this.canvas = canvas;
 
 		this.imageDefault = {
