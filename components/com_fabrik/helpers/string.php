@@ -18,7 +18,6 @@ defined('_JEXEC') or die('Restricted access');
  * @subpackage  Fabrik.helpers
  * @since       3.0
  */
-
 class FabrikString extends JString
 {
 	/**
@@ -64,7 +63,6 @@ class FabrikString extends JString
 	 *
 	 * @return  string  the trimmed string
 	 */
-
 	public static function rtrimword(&$str, $word = false)
 	{
 		$l = JString::strlen($word);
@@ -89,7 +87,6 @@ class FabrikString extends JString
 	 *
 	 * @return  string  the trimmed string
 	 */
-
 	public static function ltrimiword($str, $word = false)
 	{
 		$pos = stripos($str, $word);
@@ -111,7 +108,6 @@ class FabrikString extends JString
 	 *
 	 * @return string in `table`.field` format
 	 */
-
 	public static function safeColName($col)
 	{
 		$db = FabrikWorker::getDbo();
@@ -156,11 +152,10 @@ class FabrikString extends JString
 	 *
 	 * @return  string  in table___field format
 	 */
-
 	public static function safeColNameToArrayKey($col)
 	{
-		$col = str_replace(array("`.`", "."), '___', $col);
-		$col = str_replace("`", "", $col);
+		$col = str_replace(array('`.`', '.'), '___', $col);
+		$col = str_replace('`', '', $col);
 
 		return $col;
 	}
@@ -173,7 +168,6 @@ class FabrikString extends JString
 	 *
 	 * @return  string  element name
 	 */
-
 	public static function shortColName($col)
 	{
 		if (strstr($col, '.'))
@@ -187,20 +181,19 @@ class FabrikString extends JString
 			$col = array_pop($bits);
 		}
 
-		$col = str_replace("`", "", $col);
+		$col = str_replace('`', '', $col);
 
 		return $col;
 	}
 
 	/**
 	 * Get a shortened version of the element label - so that the admin pages
-	 * don't get too stretched when we populate dropdowns with the label
+	 * don't get too stretched when we populate drop-downs with the label
 	 *
 	 * @param   string  $label  Complete element label
 	 *
 	 * @return  string  shortened element label
 	 */
-
 	public static function getShortDdLabel($label)
 	{
 		$label = strip_tags($label);
@@ -225,7 +218,6 @@ class FabrikString extends JString
 	 *
 	 * @return  string
 	 */
-
 	public static function dbFieldName($str)
 	{
 		$name = JFilterInput::getInstance()->clean($str, 'CMD');
@@ -240,7 +232,7 @@ class FabrikString extends JString
 	}
 
 	/**
-	 * is it a raw element name, i.e. ends in _raw
+	 * Is it a raw element name, i.e. ends in _raw
 	 * 
 	 * @param   string  $str  Element name
 	 *
@@ -248,7 +240,6 @@ class FabrikString extends JString
 	 *
 	 * @return  bool
 	 */
-	
 	public static function isRawName($str) {
 		return substr($str, -4, 4) == '_raw';
 	}
@@ -262,8 +253,8 @@ class FabrikString extends JString
 	 *
 	 * @return  bool
 	 */
-	
-	public static function stripRawName($str) {
+	public static function stripRawName($str)
+	{
 		return FabrikString::rtrimword($str, '_raw');
 	}
 	
@@ -281,7 +272,6 @@ class FabrikString extends JString
 	 *
 	 * @return  string  cleaned
 	 */
-
 	public static function iclean($str, $fromEnc = "UTF-8", $toEnc = "ASCII//IGNORE//TRANSLIT")
 	{
 		// Replace umlauts
@@ -294,25 +284,25 @@ class FabrikString extends JString
 			switch ($ch)
 			{
 				case 195:
-					$out .= "";
+					$out .= '';
 					break;
 				case 164:
-					$out .= "ae";
+					$out .= 'ae';
 					break;
 				case 188:
-					$out .= "ue";
+					$out .= 'ue';
 					break;
 				case 182:
-					$out .= "oe";
+					$out .= 'oe';
 					break;
 				case 132:
-					$out .= "Ae";
+					$out .= 'Ae';
 					break;
 				case 156:
-					$out .= "Ue";
+					$out .= 'Ue';
 					break;
 				case 150:
-					$out .= "Oe";
+					$out .= 'Oe';
 					break;
 
 				// Fix for cleaning value of 1
@@ -358,7 +348,6 @@ class FabrikString extends JString
 	 *
 	 * @return  string  cleaned
 	 */
-
 	public static function clean($str, $fromEnc = "UTF-8", $toEnc = "ASCII//IGNORE//TRANSLIT")
 	{
 		return JString::strtolower(self::iclean($str, $fromEnc, $toEnc));
@@ -377,93 +366,132 @@ class FabrikString extends JString
 	 *
 	 * @return string Trimmed string.
 	 */
-	public static function truncateHtml($text, $length = 100, $ending = '...', $exact = false, $considerHtml = true) {
-		if ($considerHtml) {
-			// if the plain text is shorter than the maximum length, return the whole text
-			if (strlen(preg_replace('/<.*?>/', '', $text)) <= $length) {
+	public static function truncateHtml($text, $length = 100, $ending = '...', $exact = false, $considerHtml = true)
+	{
+		if ($considerHtml)
+		{
+			// If the plain text is shorter than the maximum length, return the whole text
+			if (strlen(preg_replace('/<.*?>/', '', $text)) <= $length)
+			{
 				return $text;
 			}
-			// splits all html-tags to scanable lines
+			// Splits all html-tags to scanable lines
 			preg_match_all('/(<.+?>)?([^<>]*)/s', $text, $lines, PREG_SET_ORDER);
-			$total_length = strlen($ending);
+			$totalLength = strlen($ending);
 			$open_tags = array();
 			$truncate = '';
-			foreach ($lines as $line_matchings) {
-				// if there is any html-tag in this line, handle it and add it (uncounted) to the output
-				if (!empty($line_matchings[1])) {
-					// if it's an "empty element" with or without xhtml-conform closing slash
-					if (preg_match('/^<(\s*.+?\/\s*|\s*(img|br|input|hr|area|base|basefont|col|frame|isindex|link|meta|param)(\s.+?)?)>$/is', $line_matchings[1])) {
-						// do nothing
-						// if tag is a closing tag
-					} else if (preg_match('/^<\s*\/([^\s]+?)\s*>$/s', $line_matchings[1], $tag_matchings)) {
-						// delete tag from $open_tags list
-						$pos = array_search($tag_matchings[1], $open_tags);
-						if ($pos !== false) {
+			
+			foreach ($lines as $lineMatchings)
+			{
+				// If there is any html-tag in this line, handle it and add it (uncounted) to the output
+				if (!empty($lineMatchings[1]))
+				{
+					// If it's an "empty element" with or without xhtml-conform closing slash
+					if (preg_match('/^<(\s*.+?\/\s*|\s*(img|br|input|hr|area|base|basefont|col|frame|isindex|link|meta|param)(\s.+?)?)>$/is', $lineMatchings[1]))
+					{
+						// Do nothing if tag is a closing tag
+					}
+					else if (preg_match('/^<\s*\/([^\s]+?)\s*>$/s', $lineMatchings[1], $tagMatchings))
+					{
+						// Delete tag from $open_tags list
+						$pos = array_search($tagMatchings[1], $open_tags);
+						
+						if ($pos !== false)
+						{
 							unset($open_tags[$pos]);
 						}
-						// if tag is an opening tag
-					} else if (preg_match('/^<\s*([^\s>!]+).*?>$/s', $line_matchings[1], $tag_matchings)) {
-						// add tag to the beginning of $open_tags list
-						array_unshift($open_tags, strtolower($tag_matchings[1]));
+						// If tag is an opening tag
 					}
-					// add html-tag to $truncate'd text
-					$truncate .= $line_matchings[1];
+					else if (preg_match('/^<\s*([^\s>!]+).*?>$/s', $lineMatchings[1], $tagMatchings))
+					{
+						// Add tag to the beginning of $open_tags list
+						array_unshift($open_tags, strtolower($tagMatchings[1]));
+					}
+					
+					// Add html-tag to $truncate'd text
+					$truncate .= $lineMatchings[1];
 				}
-				// calculate the length of the plain text part of the line; handle entities as one character
-				$content_length = strlen(preg_replace('/&[0-9a-z]{2,8};|&#[0-9]{1,7};|[0-9a-f]{1,6};/i', ' ', $line_matchings[2]));
-				if ($total_length+$content_length> $length) {
-					// the number of characters which are left
-					$left = $length - $total_length;
-					$entities_length = 0;
-					// search for html entities
-					if (preg_match_all('/&[0-9a-z]{2,8};|&#[0-9]{1,7};|[0-9a-f]{1,6};/i', $line_matchings[2], $entities, PREG_OFFSET_CAPTURE)) {
-						// calculate the real length of all entities in the legal range
-						foreach ($entities[0] as $entity) {
-							if ($entity[1]+1-$entities_length <= $left) {
+				
+				// Calculate the length of the plain text part of the line; handle entities as one character
+				$contentLength = strlen(preg_replace('/&[0-9a-z]{2,8};|&#[0-9]{1,7};|[0-9a-f]{1,6};/i', ' ', $lineMatchings[2]));
+				
+				if ($totalLength+$contentLength> $length)
+				{
+					// The number of characters which are left
+					$left = $length - $totalLength;
+					$entitiesLength = 0;
+					
+					// Search for html entities
+					if (preg_match_all('/&[0-9a-z]{2,8};|&#[0-9]{1,7};|[0-9a-f]{1,6};/i', $lineMatchings[2], $entities, PREG_OFFSET_CAPTURE))
+					{
+						// Calculate the real length of all entities in the legal range
+						foreach ($entities[0] as $entity)
+						{
+							if ($entity[1]+1-$entitiesLength <= $left)
+							{
 								$left--;
-								$entities_length += strlen($entity[0]);
-							} else {
-								// no more characters left
+								$entitiesLength += strlen($entity[0]);
+							}
+							else
+							{
+								// No more characters left
 								break;
 							}
 						}
 					}
-					$truncate .= substr($line_matchings[2], 0, $left+$entities_length);
-					// maximum lenght is reached, so get off the loop
+					
+					$truncate .= substr($lineMatchings[2], 0, $left + $entitiesLength);
+					
+					// Maximum length is reached, so get off the loop
 					break;
-				} else {
-					$truncate .= $line_matchings[2];
-					$total_length += $content_length;
 				}
-				// if the maximum length is reached, get off the loop
-				if($total_length>= $length) {
+				else
+				{
+					$truncate .= $lineMatchings[2];
+					$totalLength += $contentLength;
+				}
+				
+				// If the maximum length is reached, get off the loop
+				if($totalLength>= $length)
+				{
 					break;
 				}
 			}
-		} else {
-			if (strlen($text) <= $length) {
+		}
+		else
+		{
+			if (strlen($text) <= $length)
+			{
 				return $text;
-			} else {
+			}
+			else
+			{
 				$truncate = substr($text, 0, $length - strlen($ending));
 			}
 		}
-		// if the words shouldn't be cut in the middle...
-		if (!$exact) {
-			// ...search the last occurance of a space...
-			$spacepos = strrpos($truncate, ' ');
-			if (isset($spacepos)) {
+		
+		// If the words shouldn't be cut in the middle...
+		if (!$exact)
+		{
+			// ...search the last occurrence of a space...
+			$spacePos = strrpos($truncate, ' ');
+			if (isset($spacePos)) {
 				// ...and cut the text in this position
-				$truncate = substr($truncate, 0, $spacepos);
+				$truncate = substr($truncate, 0, $spacePos);
 			}
 		}
 		// add the defined ending to the text
 		$truncate .= $ending;
-		if($considerHtml) {
-			// close all unclosed html-tags
-			foreach ($open_tags as $tag) {
+		
+		if($considerHtml)
+		{
+			// Close all unclosed html-tags
+			foreach ($open_tags as $tag)
+			{
 				$truncate .= '</' . $tag . '>';
 			}
 		}
+		
 		return $truncate;
 	}
 	
@@ -475,13 +503,12 @@ class FabrikString extends JString
 	 *
 	 * @return  string
 	 */
-
 	public static function truncate($text, $opts = array())
 	{
 		$origText = $text;
 		$wordCount = FArrayHelper::getValue($opts, 'wordcount', 10);
 		$showTip = FArrayHelper::getValue($opts, 'tip', true);
-		$title = FArrayHelper::getValue($opts, 'title', "");
+		$title = FArrayHelper::getValue($opts, 'title', '');
 		$strippedText = htmlspecialchars(strip_tags($text), ENT_QUOTES);;
 		
 		if (JArrayHelper::getValue($opts, 'html_format', false))
@@ -523,14 +550,13 @@ class FabrikString extends JString
 	}
 
 	/**
-	 * Removes a querystring key from a url/queyrstring
+	 * Removes a querystring key from a url/querystring
 	 *
 	 * @param   string  $url  Or querystring
 	 * @param   string  $key  To remove
 	 *
 	 * @return  string  url/querystring
 	 */
-
 	public static function removeQSVar($url, $key)
 	{
 		$pair = explode('?', $url);
@@ -578,7 +604,6 @@ class FabrikString extends JString
 	 *
 	 * @return  encoded url
 	 */
-
 	public static function encodeurl($url)
 	{
 		if (strstr($url, '?'))
@@ -594,10 +619,10 @@ class FabrikString extends JString
 					$bits = explode('=', $arg);
 					$key = FArrayHelper::getValue($bits, 0, '');
 					$val = FArrayHelper::getValue($bits, 1, '');
-					$new_qs[] = $key . "=" . urlencode($val);
+					$new_qs[] = $key . '=' . urlencode($val);
 				}
 
-				$url = $site . "?" . implode("&", $new_qs);
+				$url = $site . '?' . implode('&', $new_qs);
 			}
 		}
 
@@ -627,7 +652,6 @@ class FabrikString extends JString
 	 *
 	 * @return  void
 	 */
-
 	public static function forHtml(&$string)
 	{
 		// Special chars such as <>
@@ -648,7 +672,6 @@ class FabrikString extends JString
 	 *
 	 * @since   3.0.1
 	 */
-
 	public static function usesElementPlaceholders($str)
 	{
 		return preg_match("#\{\w+___\w+\}#", $str);
@@ -659,25 +682,24 @@ class FabrikString extends JString
 	 * Copied from map element, as we end up needing this elsewhere.
 	 *
 	 * @param   string  $v          coordinates
-	 * @param   int     $zoomlevel  default zoom level
+	 * @param   int     $zoomLevel  default zoom level
 	 *
-	 * @return  object  coords array and zoomlevel int
+	 * @return  object  coords array and zoom level int
 	 */
-
-	public static function mapStrToCoords($v, $zoomlevel = 4)
+	public static function mapStrToCoords($v, $zoomLevel = 4)
 	{
 		$o = new stdClass;
 		$o->coords = array('', '');
-		$o->zoomlevel = (int) $zoomlevel;
+		$o->zoomlevel = (int) $zoomLevel;
 
-		if (strstr($v, ","))
+		if (strstr($v, ','))
 		{
-			$ar = explode(":", $v);
-			$o->zoomlevel = count($ar) == 2 ? array_pop($ar) : $zoomlevel;
-			$v = self::ltrimword($ar[0], "(");
-			$v = rtrim($v, ")");
+			$ar = explode(':', $v);
+			$o->zoomlevel = count($ar) == 2 ? array_pop($ar) : $zoomLevel;
+			$v = self::ltrimword($ar[0], '(');
+			$v = rtrim($v, ')');
 			$v = str_replace(' ', '', $v);
-			$o->coords = explode(",", $v);
+			$o->coords = explode(',', $v);
 		}
 		else
 		{
@@ -698,7 +720,6 @@ class FabrikString extends JString
 	 *
 	 * @return   string  RGB string
 	 */
-
 	public static function hex2rgb($hex)
 	{
 		$hex = str_replace('#', '', $hex);
@@ -727,7 +748,6 @@ class FabrikString extends JString
 	 *
 	 * @return  string
 	 */
-
 	public static function translate($text)
 	{
 		$plain = strip_tags($text);
@@ -742,13 +762,12 @@ class FabrikString extends JString
 	}
 
 	/**
-	 * Is the string a CONCAT statemenet?
+	 * Is the string a CONCAT statement?
 	 *
 	 * @param   string  $text  Text to test
 	 *
 	 * @return  bool
 	 */
-
 	public static function isConcat($text)
 	{
 		return preg_match('/^\s*(CONCAT|CONCAT_WS)\b/i', preg_quote($text));
@@ -762,7 +781,6 @@ class FabrikString extends JString
 	 *
 	 * @return string
 	 */
-
 	public static function stripSpace($text, $only_spaces = false)
 	{
 		if ($only_spaces)
@@ -806,7 +824,7 @@ class FabrikString extends JString
 	}
 
 	/**
-	 * Replace last occurance of a string
+	 * Replace last occurrence of a string
 	 *
 	 * @param   string  $search   Text to search for
 	 * @param   string  $replace  Text to replace the search string
@@ -839,7 +857,8 @@ class FabrikString extends JString
 	public static function safeQuote($values, $commaSeparated = true) {
 		$values2 = $values;
 
-		if ($commaSeparated) {
+		if ($commaSeparated)
+		{
 			$values2 = explode(',', $values2);
 		}
 
@@ -855,7 +874,8 @@ class FabrikString extends JString
 			$values2 = self::safeQuoteOne($values2);
 		}
 
-		if ($commaSeparated) {
+		if ($commaSeparated)
+		{
 			$values2 = implode(',', $values2);
 		}
 
@@ -911,10 +931,12 @@ class FabrikString extends JString
 	 *
 	 * @return   mixed   quoted values
 	 */
-	public static function safeNameQuote($values, $commaSeparated = true) {
+	public static function safeNameQuote($values, $commaSeparated = true)
+	{
 		$values2 = $values;
 
-		if ($commaSeparated) {
+		if ($commaSeparated)
+		{
 			$values2 = explode(',', $values2);
 		}
 
@@ -930,7 +952,8 @@ class FabrikString extends JString
 			$values2 = self::safeNameQuoteOne($values2);
 		}
 
-		if ($commaSeparated) {
+		if ($commaSeparated)
+		{
 			$values2 = implode(',', $values2);
 		}
 
@@ -1046,5 +1069,4 @@ class FText extends JText
 		// if we got this far, hand it to JText::_() as normal
 		return parent::_($string, $jsSafe, $interpretBackSlashes, $script);
 	}
-
 }
