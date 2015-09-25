@@ -1525,6 +1525,8 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		$displayData->optsPerRow = (int) $params->get('dbjoin_options_per_row', 1);
 		$displayData->name = $thisElName;
 		$displayData->editable = $this->isEditable();
+		$displayData->optionLayout =  $this->getLayout('form-radio');
+		FabrikHelperHTML::jLayoutJs('fabrik-element-databasejoin-form-radio', 'fabrik-element-databasejoin-form-radio', $displayData, array($this->layoutBasePath()));
 
 		$html[] = '<div class="fabrikSubElementContainer" id="' . $id . '">';
 
@@ -1667,8 +1669,10 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		$displayData->optsPerRow = (int) $params->get('dbjoin_options_per_row', 1);
 		$displayData->name = $name;
 		$displayData->editable = $this->isEditable();
+		$displayData->optionLayout =  $this->getLayout('form-checkbox');
 
 		$html[] = '<div class="fabrikSubElementContainer" id="' . $id . '">';
+		FabrikHelperHTML::jLayoutJs('fabrik-element-databasejoin-form-checkbox', 'fabrik-element-databasejoin-form-checkbox', $displayData, array($this->layoutBasePath()));
 
 		if (FabrikWorker::j3())
 		{
@@ -2251,7 +2255,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 			. $fabrikDb->qn($joinTableName) . " \n ";
 		$where = $this->buildQueryWhere(array(), true, null, array('mode' => 'filter'));
 
-		// Ensure table prefilter is applied to query
+		// Ensure table pre-filter is applied to query
 		$preFilterWhere = $listModel->buildQueryPrefilterWhere($this);
 		$elementName = FabrikString::safeColName($this->getFullName(false, false));
 		$preFilterWhere = str_replace($elementName, $joinKey, $preFilterWhere);
@@ -2437,7 +2441,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 	public function getFilterQuery($key, $condition, $value, $originalValue, $type = 'normal')
 	{
 		/* $$$ rob $this->_rawFilter set in tableModel::getFilterArray()
-		 used in pre-filter dropdown in admin to allow users to pre-filter on raw db join value */
+		 used in pre-filter drop-down in admin to allow users to pre-filter on raw db join value */
 		$params = $this->getParams();
 		$db = JFactory::getDBO();
 
@@ -3485,14 +3489,8 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 
 		if ($this->isJoin())
 		{
-			$element = $this->getElement();
-			$group = $this->getGroup()->getGroup();
-			$join = $this->getJoinModel()->getJoin();
-			$repeatName = $this->getFullName(true, false) . '___repeatnum';
-			$a[] = $repeatName;
-
-			$repeatName = $this->getFullName(true, false) . '_id';
-			$a[] = $repeatName;
+			$a[] = $this->getFullName(true, false) . '___repeatnum';
+			$a[] = $this->getFullName(true, false) . '_id';
 		}
 
 		return $a;

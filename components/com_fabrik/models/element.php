@@ -1662,14 +1662,10 @@ class PlgFabrik_Element extends FabrikPlugin
 	protected function labelPaths()
 	{
 		$basePath = COM_FABRIK_BASE . 'components/com_fabrik/layouts/element';
-
-		$name = get_class($this);
-		$name = strtolower(JString::str_ireplace('PlgFabrik_Element', '', $name));
-		$pluginPath = COM_FABRIK_BASE . '/plugins/fabrik_element/' . $name . '/layouts';
+		$pluginPath = COM_FABRIK_BASE . '/plugins/fabrik_element/' . $this->getPluginName() . '/layouts';
 
 		return array($basePath, $pluginPath);
 	}
-
 
 	/**
 	 * Set fabrikErrorMessage div with potential error messages
@@ -5783,12 +5779,11 @@ class PlgFabrik_Element extends FabrikPlugin
 	 *
 	 * @return  string  db field type
 	 */
-
 	public function getFieldDescription()
 	{
-		$element = strtolower(str_ireplace('PlgFabrik_Element', '', get_class($this)));
+		$element = $this->getPluginName();
 		$plugin = JPluginHelper::getPlugin('fabrik_element', $element);
-		$fparams = new JRegistry($plugin->params);
+		$fParams = new JRegistry($plugin->params);
 		$p = $this->getParams();
 
 		if ($this->encryptMe())
@@ -5805,12 +5800,12 @@ class PlgFabrik_Element extends FabrikPlugin
 		else
 		{
 			$size = $p->get('maxlength', $this->fieldSize);
-			$objtype = sprintf($this->fieldDesc, $size);
+			$objType = sprintf($this->fieldDesc, $size);
 		}
 
-		$objtype = $fparams->get('defaultFieldType', $objtype);
+		$objType = $fParams->get('defaultFieldType', $objType);
 
-		return $objtype;
+		return $objType;
 	}
 
 	/**
@@ -7604,12 +7599,10 @@ class PlgFabrik_Element extends FabrikPlugin
 	 */
 	public function getLayout($type, $paths = array(), $options = array())
 	{
-		$name = get_class($this);
 		$defaultOptions = array('debug' => false, 'component' => 'com_fabrik', 'client' => 'site');
 		$options = array_merge($defaultOptions, $options);
-		$name = strtolower(JString::str_ireplace('PlgFabrik_Element', '', $name));
-		$basePath = COM_FABRIK_BASE . '/plugins/fabrik_element/' . $name . '/layouts';
-		$layout = new FabrikLayoutFile('fabrik-element-' . $name. '-' . $type, $basePath, $options);
+		$basePath = $this->layoutBasePath();
+		$layout = new FabrikLayoutFile('fabrik-element-' . $this->getPluginName(). '-' . $type, $basePath, $options);
 
 		foreach ($paths as $path)
 		{
@@ -7620,6 +7613,29 @@ class PlgFabrik_Element extends FabrikPlugin
 		$layout->addIncludePaths(JPATH_THEMES . '/' . JFactory::getApplication()->getTemplate() . '/html/layouts/com_fabrik');
 
 		return $layout;
+	}
+
+	/**
+	 * Get the JLayout base path for the plugin's layout files.
+	 * 
+	 * @return string
+	 */
+	protected function layoutBasePath()
+	{
+		return COM_FABRIK_BASE . '/plugins/fabrik_element/' . $this->getPluginName() . '/layouts';
+	}
+
+	/**
+	 * Get lower case plugin name based off class name: 
+	 * E.g. PlgFabrik_ElementDatabasejoin => databasejoin
+	 * 
+	 * @return string
+	 */
+	protected function getPluginName()
+	{
+		$name = get_class($this);
+		
+		return strtolower(JString::str_ireplace('PlgFabrik_Element', '', $name));
 	}
 
 	/**
