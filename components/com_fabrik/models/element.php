@@ -6646,7 +6646,7 @@ class PlgFabrik_Element extends FabrikPlugin
 	 */
 	public function updateJoinedPks($oldName, $newName)
 	{
-		$db = JFactory::getDbo();
+		$db = FabrikWorker::getDbo(true);
 		$item = $this->getListModel()->getTable();
 		$query = $db->getQuery(true);
 
