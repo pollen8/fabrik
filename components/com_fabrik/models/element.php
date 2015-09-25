@@ -7368,8 +7368,8 @@ class PlgFabrik_Element extends FabrikPlugin
 			// If doing an ajax form submit and the element is an ajax file upload then its data is different.
 			if (get_class($this) === 'PlgFabrik_ElementFileupload' && $ajaxSubmit)
 			{
-				$allParams = array_values($joinValues['crop']);
-				$joinValues = array_keys($joinValues['id']);
+				$allParams = array_key_exists('crop', $joinValues) ? array_values($joinValues['crop']) : array();
+				$joinValues = array_key_exists('id', $joinValues) ? array_keys($joinValues['id']) : array();
 			}
 
 			foreach ($joinValues as $jIndex => $jid)
