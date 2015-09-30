@@ -24,6 +24,7 @@ foreach ($d->options as $option) :
 	<?php endif;
 
 	$d->option = $option;
+	$d->option->checked =$checked;
 	$d->colCounter = $colCounter;
 	echo $d->optionLayout->render($d);
 	$colCounter++;
