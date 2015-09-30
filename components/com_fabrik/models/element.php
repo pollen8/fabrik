@@ -4488,7 +4488,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		if ($groupModel->isJoin())
 		{
 			// Element is in a joined column - lets presume the user wants to sum all cols, rather than reducing down to the main cols totals
-			return "SELECT ROUND(AVG($name), $roundTo) AS value, $label FROM " . FabrikString::safeColName($item->db_table_name)
+			$sql = "SELECT ROUND(AVG($name), $roundTo) AS value, $label FROM " . FabrikString::safeColName($item->db_table_name)
 			. " $joinSQL $whereSQL";
 		}
 		else
@@ -4499,10 +4499,12 @@ class PlgFabrik_Element extends FabrikPlugin
 			 */
 			$distinct = $this->getListModel()->isView() && trim($joinSQL) == '' ? '': 'DISTINCT';
 
-			return "SELECT ROUND(AVG(value), $roundTo) AS value, label
+			$sql = "SELECT ROUND(AVG(value), $roundTo) AS value, label
 			FROM (SELECT " . $distinct . " $item->db_primary_key, $name AS value, $label FROM " . FabrikString::safeColName($item->db_table_name)
 			. " $joinSQL $whereSQL) AS t";
 		}
+
+		return $this->additionalElementCalcJoin($sql, 'avg_split');
 	}
 
 	/**
@@ -4525,7 +4527,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		if ($groupModel->isJoin())
 		{
 			// Element is in a joined column - lets presume the user wants to sum all cols, rather than reducing down to the main cols totals
-			return "SELECT SUM($name) AS value, $label FROM " . FabrikString::safeColName($item->db_table_name) . " $joinSQL $whereSQL";
+			$sql = "SELECT SUM($name) AS value, $label FROM " . FabrikString::safeColName($item->db_table_name) . " $joinSQL $whereSQL";
 		}
 		else
 		{
@@ -4535,10 +4537,34 @@ class PlgFabrik_Element extends FabrikPlugin
 			 */
 			$distinct = $this->getListModel()->isView() && trim($joinSQL) == '' ? '': 'DISTINCT';
 
-			return "SELECT SUM(value) AS value, label
+			$sql = "SELECT SUM(value) AS value, label
 			FROM (SELECT " . $distinct. " $item->db_primary_key, $name AS value, $label FROM " . FabrikString::safeColName($item->db_table_name)
 			. " $joinSQL $whereSQL) AS t";
 		}
+
+		return $this->additionalElementCalcJoin($sql, 'sum_split');
+	}
+
+	/**
+	 * If split then the split element could require an additional join to get the sum query to work
+	 *
+	 * @param   string  $sql          Calculation sql
+	 * @param   string  $splitParam   Name of calculation split param. Loads up split calculation element
+	 *
+	 * @return string Sql
+	 */
+	private function additionalElementCalcJoin($sql, $splitParam)
+	{
+		$elementId = $this->getParams()->get($splitParam, null);
+
+		if (!is_null($elementId))
+		{
+			$pluginManager = FabrikWorker::getPluginManager();
+			$plugin = $pluginManager->getElementPlugin($elementId);
+			$sql .= ' ' . $plugin->buildFilterJoin();
+		}
+
+		return $sql;
 	}
 
 	/**
@@ -4594,8 +4620,10 @@ class PlgFabrik_Element extends FabrikPlugin
 		$joinSQL = $listModel->buildQueryJoin();
 		$whereSQL = $listModel->buildQueryWhere();
 
-		return 'SELECT ' . $this->getFullName(false, false, false) . ' AS value, ' . $label . ' FROM ' . FabrikString::safeColName($item->db_table_name)
+		$sql = 'SELECT ' . $this->getFullName(false, false, false) . ' AS value, ' . $label . ' FROM ' . FabrikString::safeColName($item->db_table_name)
 		. ' ' . $joinSQL . ' ' . $whereSQL;
+
+		return $this->additionalElementCalcJoin($sql, 'median_split');
 	}
 
 	/**
@@ -4636,17 +4664,17 @@ class PlgFabrik_Element extends FabrikPlugin
 		if ($groupModel->isJoin())
 		{
 			// Element is in a joined column - lets presume the user wants to sum all cols, rather than reducing down to the main cols totals
-			return "SELECT COUNT($name) AS value, $label FROM " . FabrikString::safeColName($item->db_table_name) . " $joinSQL $whereSQL";
+			$sql = "SELECT COUNT($name) AS value, $label FROM " . FabrikString::safeColName($item->db_table_name) . " $joinSQL $whereSQL";
 		}
 		else
 		{
 			// Need to do first query to get distinct records as if we are doing left joins the sum is too large
-			$query = "SELECT COUNT(value) AS value, label
+			$sql = "SELECT COUNT(value) AS value, label
 			FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label FROM " . FabrikString::safeColName($item->db_table_name)
 			. " $joinSQL $whereSQL) AS t";
 		}
 
-		return $query;
+		return $this->additionalElementCalcJoin($sql, 'count_split');;
 	}
 
 	/**
