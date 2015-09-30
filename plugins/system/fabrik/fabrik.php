@@ -22,7 +22,6 @@ jimport('joomla.filesystem.file');
  * @subpackage  System
  * @since       3.0
  */
-
 class PlgSystemFabrik extends JPlugin
 {
 	/**
@@ -84,7 +83,6 @@ class PlgSystemFabrik extends JPlugin
 	 *
 	 * @return string
 	 */
-
 	public static function js()
 	{
 		/**
@@ -213,7 +211,6 @@ class PlgSystemFabrik extends JPlugin
 	 *
 	 * @return  void
 	 */
-
 	protected function setBigSelects()
 	{
 		$fbConfig = JComponentHelper::getParams('com_fabrik');
@@ -248,7 +245,6 @@ class PlgSystemFabrik extends JPlugin
 	 *
 	 * @return  array
 	 */
-
 	public static function onDoContentSearch($text, $params, $phrase = '', $ordering = '')
 	{
 		$app = JFactory::getApplication();
