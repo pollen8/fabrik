@@ -1700,10 +1700,8 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 			else
 			{
 				$dummy = FabrikHelperHTML::aList('checkbox', $tmp, $name, $attributes, $default, 'value', 'text', 1, true);
+				$html[] = '<div class="chxTmplNode">' . $dummy . '</div>';
 			}
-
-
-			$html[] = '<div class="chxTmplNode">' . $dummy . '</div>';
 		}
 
 		$html[] = '</div>';
