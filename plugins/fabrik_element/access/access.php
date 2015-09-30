@@ -127,13 +127,13 @@ class PlgFabrik_ElementAccess extends PlgFabrik_Element
 	/**
 	 * Shows the data formatted for the list view
 	 *
-	 * @param   string    $data      elements data
-	 * @param   stdClass  &$thisRow  all the data in the lists current row
+	 * @param   string    $data      Elements data
+	 * @param   stdClass  &$thisRow  All the data in the lists current row
+	 * @param   array     $opts      Rendering options
 	 *
 	 * @return  string	formatted value
 	 */
-
-	public function renderListData($data, stdClass &$thisRow)
+	public function renderListData($data, stdClass &$thisRow, $opts = array())
 	{
 		$options = $this->getOpts();
 		$text = '';
@@ -152,7 +152,7 @@ class PlgFabrik_ElementAccess extends PlgFabrik_Element
 		$layoutData = new stdClass;
 		$layoutData->text = $text;
 
-		return parent::renderListData($layoutData, $thisRow);
+		return parent::renderListData($layoutData, $thisRow. $opts);
 	}
 
 	/**

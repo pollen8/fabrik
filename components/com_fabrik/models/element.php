@@ -4770,7 +4770,7 @@ class PlgFabrik_Element extends FabrikPlugin
 	{
 		$db = $listModel->getDb();
 		$params = $this->getParams();
-		$item = $listModel->getTable();
+		//$item = $listModel->getTable();
 		$splitSum = $params->get('sum_split', '');
 		list($groupBys, $groupByLabels) = $this->calcGroupBys('sum_split', $listModel);
 		$split = empty($groupBys) ? false : true;
@@ -5066,7 +5066,7 @@ class PlgFabrik_Element extends FabrikPlugin
 	 * @param   object  &$plugin    element that the data is SPLIT on
 	 * @param   string  $type       of calculation
 	 *
-	 * @return  unknown_type
+	 * @return  array
 	 */
 	protected function formatCalcSplitLabels(&$results2, &$plugin, $type = '')
 	{
@@ -5098,7 +5098,8 @@ class PlgFabrik_Element extends FabrikPlugin
 			{
 				$d = new stdClass;
 				$d->$name = $val->label;
-				$val->label = $plugin->renderListData($val->label, $d);
+				$opts = array('rollover' => false, 'link' => false);
+				$val->label = $plugin->renderListData($val->label, $d, $opts);
 			}
 
 			if (array_key_exists($val->label, $results))
@@ -5708,12 +5709,13 @@ class PlgFabrik_Element extends FabrikPlugin
 	/**
 	 * Shows the data formatted for the list view
 	 *
-	 * @param   string    $data      elements data
-	 * @param   stdClass  &$thisRow  all the data in the lists current row
+	 * @param   string    $data      Elements data
+	 * @param   stdClass  &$thisRow  All the data in the lists current row
+	 * @param   array     $opts      Rendering options
 	 *
 	 * @return  string	formatted value
 	 */
-	public function renderListData($data, stdClass &$thisRow)
+	public function renderListData($data, stdClass &$thisRow, $opts = array())
 	{
 		$params = $this->getParams();
 		$listModel = $this->getListModel();
@@ -5721,14 +5723,21 @@ class PlgFabrik_Element extends FabrikPlugin
 
 		foreach ($data as $i => &$d)
 		{
-			if ($params->get('icon_folder') == '1')
+			if ($params->get('icon_folder') == '1' && JArrayHelper::getValue($opts, 'icon', 1))
 			{
 				// $$$ rob was returning here but that stopped us being able to use links and icons together
 				$d = $this->replaceWithIcons($d, 'list', $listModel->getTmpl());
 			}
 
-			$d = $this->rollover($d, $thisRow, 'list');
-			$d = $listModel->_addLink($d, $this, $thisRow, $i);
+			if (JArrayHelper::getValue($opts, 'rollover', 1))
+			{
+				$d = $this->rollover($d, $thisRow, 'list');
+			}
+
+			if (JArrayHelper::getValue($opts, 'link', 1))
+			{
+				$d = $listModel->_addLink($d, $this, $thisRow, $i);
+			}
 		}
 
 		return $this->renderListDataFinal($data);

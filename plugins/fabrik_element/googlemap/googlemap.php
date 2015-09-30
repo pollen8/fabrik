@@ -48,13 +48,13 @@ class PlgFabrik_ElementGooglemap extends PlgFabrik_Element
 	/**
 	 * Shows the data formatted for the list view
 	 *
-	 * @param   string    $data      elements data
-	 * @param   stdClass  &$thisRow  all the data in the lists current row
+	 * @param   string    $data      Elements data
+	 * @param   stdClass  &$thisRow  All the data in the lists current row
+	 * @param   array     $opts      Rendering options
 	 *
 	 * @return  string	formatted value
 	 */
-
-	public function renderListData($data, stdClass &$thisRow)
+	public function renderListData($data, stdClass &$thisRow, $opts = array())
 	{
 		$listModel = $this->getListModel();
 		$params = $this->getParams();
@@ -70,7 +70,7 @@ class PlgFabrik_ElementGooglemap extends PlgFabrik_Element
 				$d = $this->_staticMap($d, $w, $h, $z, $i, true, JArrayHelper::fromObject($thisRow));
 			}
 
-			if ($params->get('icon_folder') == '1')
+			if ($params->get('icon_folder') == '1' && JArrayHelper::getValue($opts, 'icon', 1))
 			{
 				// $$$ rob was returning here but that stopped us being able to use links and icons together
 				$d = $this->replaceWithIcons($d, 'list', $listModel->getTmpl());
@@ -82,9 +82,15 @@ class PlgFabrik_ElementGooglemap extends PlgFabrik_Element
 					$d = $params->get('fb_gm_staticmap_tableview_type_coords', 'num') == 'dms' ? $this->_dmsformat($d) : $this->_microformat($d);
 				}
 			}
+			if (JArrayHelper::getValue($opts, 'rollover', 1))
+			{
+				$d = $this->rollover($d, $thisRow, 'list');
+			}
 
-			$d = $this->rollover($d, $thisRow, 'list');
-			$d = $listModel->_addLink($d, $this, $thisRow, $i);
+			if (JArrayHelper::getValue($opts, 'link', 1))
+			{
+				$d = $listModel->_addLink($d, $this, $thisRow, $i);
+			}
 		}
 
 		return $this->renderListDataFinal($data);

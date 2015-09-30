@@ -32,11 +32,11 @@ class PlgFabrik_ElementYoutube extends PlgFabrik_Element
 	 *
 	 * @param   string    $data      Elements data
 	 * @param   stdClass  &$thisRow  All the data in the lists current row
+	 * @param   array     $opts      Rendering options
 	 *
 	 * @return  string	formatted value
 	 */
-
-	public function renderListData($data, stdClass &$thisRow)
+	public function renderListData($data, stdClass &$thisRow, $opts = array())
 	{
 		return $this->constructVideoPlayer($data, 'list');
 	}

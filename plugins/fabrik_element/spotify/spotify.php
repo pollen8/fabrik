@@ -30,13 +30,13 @@ class PlgFabrik_ElementSpotify extends PlgFabrik_Element
 	/**
 	 * Shows the data formatted for the list view
 	 *
-	 * @param   string  $data      Elements data
-	 * @param   object  &$thisRow  All the data in the lists current row
+	 * @param   string    $data      Elements data
+	 * @param   stdClass  &$thisRow  All the data in the lists current row
+	 * @param   array     $opts      Rendering options
 	 *
 	 * @return  string	formatted value
 	 */
-
-	public function renderListData($data, stdClass &$thisRow)
+	public function renderListData($data, stdClass &$thisRow, $opts = array())
 	{
 		return $this->constructPlayer($data, 'list');
 	}

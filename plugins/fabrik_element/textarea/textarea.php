@@ -110,13 +110,13 @@ class PlgFabrik_ElementTextarea extends PlgFabrik_Element
 	 *
 	 * @param   string    $data      Elements data
 	 * @param   stdClass  &$thisRow  All the data in the lists current row
+	 * @param   array     $opts      Rendering options
 	 *
-	 * @return  string	Formatted value
+	 * @return  string	formatted value
 	 */
-
-	public function renderListData($data, stdClass &$thisRow)
+	public function renderListData($data, stdClass &$thisRow, $opts = array())
 	{
-		$data = parent::renderListData($data, $thisRow);
+		$data = parent::renderListData($data, $thisRow, $opts);
 		$params = $this->getParams();
 
 		if ($params->get('textarea-tagify') == true)
@@ -153,7 +153,11 @@ class PlgFabrik_ElementTextarea extends PlgFabrik_Element
 			$opts = $this->truncateOpts();
 			$data = fabrikString::truncate($data, $opts);
 			$listModel = $this->getListModel();
-			$data = $listModel->_addLink($data, $this, $thisRow);
+
+			if (JArrayHelper::getValue($opts, 'link', 1))
+			{
+				$data = $listModel->_addLink($data, $this, $thisRow);
+			}
 		}
 
 		return $data;

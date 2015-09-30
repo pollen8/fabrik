@@ -59,13 +59,13 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 	/**
 	 * Shows the data formatted for the list view
 	 *
-	 * @param   string    $data      elements data
-	 * @param   stdClass  &$thisRow  all the data in the lists current row
+	 * @param   string    $data      Elements data
+	 * @param   stdClass  &$thisRow  All the data in the lists current row
+	 * @param   array     $opts      Rendering options
 	 *
 	 * @return  string	formatted value
 	 */
-
-	public function renderListData($data, stdClass &$thisRow)
+	public function renderListData($data, stdClass &$thisRow, $opts = array())
 	{
 		if ($data == '')
 		{
@@ -75,8 +75,6 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 		// @TODO: deal with time options (currently can be defined in date_table_format param).
 		$timeZone = new DateTimeZone(JFactory::getConfig()->get('offset'));
 		$params = $this->getParams();
-		$store_as_local = (int) $params->get('date_store_as_local', 0);
-		$groupModel = $this->getGroup();
 		$data = FabrikWorker::JSONtoData($data, true);
 		$f = $params->get('date_table_format', 'Y-m-d');
 		$format = array();
@@ -114,7 +112,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 
 		$data = json_encode($format);
 
-		return parent::renderListData($data, $thisRow);
+		return parent::renderListData($data, $thisRow, $opts);
 	}
 
 	/**

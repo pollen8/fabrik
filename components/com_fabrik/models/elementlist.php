@@ -595,16 +595,17 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 	 *
 	 * @param   string    $data      Elements data
 	 * @param   stdClass  &$thisRow  All the data in the lists current row
+	 * @param   array     $opts      Rendering options
 	 *
 	 * @return  string	formatted value
 	 */
-	public function renderListData($data, stdClass &$thisRow)
+	public function renderListData($data, stdClass &$thisRow, $opts = array())
 	{
 		$params = $this->getParams();
 		$listModel = $this->getListModel();
 		$multiple = $this->isMultiple();
 		$mergeGroupRepeat = ($this->getGroup()->canRepeat() && $this->getListModel()->mergeJoinedData());
-		$useIcon = $params->get('icon_folder', 0);
+		$useIcon = $params->get('icon_folder', 0) && JArrayHelper::getValue($opts, 'icon', 1);
 
 		// Give priority to raw value icons (podion)
 		$raw = $this->isJoin() ? $this->getFullName(true, false) . '_raw' : $this->getFullName(true, false) . '_id';
@@ -635,9 +636,9 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 		foreach ($gdata as $i => $d)
 		{
 			$lis = array();
-			$vals = is_array($d) ? $d : FabrikWorker::JSONtoData($d, true);
+			$values = is_array($d) ? $d : FabrikWorker::JSONtoData($d, true);
 
-			foreach ($vals as $tmpVal)
+			foreach ($values as $tmpVal)
 			{
 				$l = $useIcon ? $this->replaceWithIcons($tmpVal, 'list', $listModel->getTmpl()) : $tmpVal;
 
@@ -657,8 +658,14 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 
 				if ($this->renderWithHTML)
 				{
-					$l = $this->rollover($l, $thisRow, 'list');
-					$l = $listModel->_addLink($l, $this, $thisRow, $i);
+					if (JArrayHelper::getValue($opts, 'rollover', 1))
+					{
+						$l = $this->rollover($l, $thisRow, 'list');
+					}
+					if (JArrayHelper::getValue($opts, 'link', 1))
+					{
+						$l = $listModel->_addLink($l, $this, $thisRow, $i);
+					}
 				}
 
 				if (trim($l) !== '')
@@ -684,16 +691,16 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 			}
 		}
 
-		$consdenced = array();
+		$condensed = array();
 
 		if ($condense)
 		{
 			foreach ($uls as $ul)
 			{
-				$consdenced[] = $ul[0];
+				$condensed[] = $ul[0];
 			}
 
-			return $addHtml ? '<ul class="fabrikRepeatData"><li>' . implode('</li><li>', $consdenced) . '</li></ul>' : implode(' ', $consdenced);
+			return $addHtml ? '<ul class="fabrikRepeatData"><li>' . implode('</li><li>', $condensed) . '</li></ul>' : implode(' ', $condensed);
 		}
 		else
 		{

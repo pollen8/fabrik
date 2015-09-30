@@ -20,7 +20,6 @@ jimport('joomla.application.component.view');
  * @subpackage  Fabrik
  * @since       3.0.6
  */
-
 class FabrikViewListBase extends JViewLegacy
 {
 	public $isMambot = null;
@@ -32,7 +31,6 @@ class FabrikViewListBase extends JViewLegacy
 	 *
 	 * @return  void
 	 */
-
 	protected function getManagementJS($data = array())
 	{
 		$app = JFactory::getApplication();
@@ -41,8 +39,8 @@ class FabrikViewListBase extends JViewLegacy
 		$model = $this->getModel();
 		$params = $model->getParams();
 		$item = $model->getTable();
-		$listref = $model->getRenderContext();
-		$listid = $model->getId();
+		$listRef = $model->getRenderContext();
+		$listId = $model->getId();
 		$formModel = $model->getFormModel();
 		$elementsNotInTable = $formModel->getElementsNotInTable();
 		$toggleCols = (bool) $params->get('toggle_cols', false);
@@ -102,8 +100,8 @@ class FabrikViewListBase extends JViewLegacy
 		$opts->links = array('detail' => $params->get('detailurl', ''), 'edit' => $params->get('editurl', ''), 'add' => $params->get('addurl', ''));
 		$opts->filterMethod = $this->filter_action;
 		$opts->advancedFilters = $model->getAdvancedFilterValues();
-		$opts->form = 'listform_' . $listref;
-		$this->listref = $listref;
+		$opts->form = 'listform_' . $listRef;
+		$this->listref = $listRef;
 		$opts->headings = $model->jsonHeadings();
 		$labels = $this->headings;
 
@@ -115,7 +113,7 @@ class FabrikViewListBase extends JViewLegacy
 		$opts->labels = $labels;
 		$opts->primaryKey = $item->db_primary_key;
 		$opts->Itemid = $tmpItemid;
-		$opts->listRef = $listref;
+		$opts->listRef = $listRef;
 		$opts->formid = $model->getFormModel()->getId();
 		$opts->canEdit = $model->canEdit() ? "1" : "0";
 		$opts->canView = $model->canView() ? "1" : "0";
@@ -246,10 +244,10 @@ class FabrikViewListBase extends JViewLegacy
 		JText::script('COM_FABRIK_LIST_SHORTCUTS_FILTER');
 
 		$script[] = "window.addEvent('domready', function () {";
-		$script[] = "\tvar list = new FbList('$listid',";
+		$script[] = "\tvar list = new FbList('$listId',";
 		$script[] = "\t" . $opts;
 		$script[] = "\t);";
-		$script[] = "\tFabrik.addBlock('list_{$listref}', list);";
+		$script[] = "\tFabrik.addBlock('list_{$listRef}', list);";
 
 		// Add in plugin objects
 		$params = $model->getParams();
@@ -356,7 +354,7 @@ class FabrikViewListBase extends JViewLegacy
 			foreach ($elementModels as $elementModel)
 			{
 				$elementModel->setContext($groupModel, $form, $model);
-				$rowclass = $elementModel->setRowClass($data);
+				$elementModel->setRowClass($data);
 			}
 		}
 
@@ -701,6 +699,11 @@ class FabrikViewListBase extends JViewLegacy
 				{
 					if ($k != 'calc')
 					{
+						if (!array_key_exists($k, $oCalcs->grouped))
+						{
+							$oCalcs->grouped[$k] = '';
+						}
+
 						$oCalcs->grouped[$k] .= '<span class="calclabel">' . $v->calLabel . ':</span> ' . $v->value . '<br />';
 					}
 				}
@@ -724,6 +727,11 @@ class FabrikViewListBase extends JViewLegacy
 				{
 					if ($k != 'calc')
 					{
+						if (!array_key_exists($k, $oCalcs->grouped))
+						{
+							$oCalcs->grouped[$k] = '';
+						}
+
 						$oCalcs->grouped[$k] .= '<span class="calclabel">' . $v->calLabel . ':</span> ' . $v->value . '<br />';
 					}
 				}
@@ -738,6 +746,11 @@ class FabrikViewListBase extends JViewLegacy
 				{
 					if ($k != 'calc')
 					{
+						if (!array_key_exists($k, $oCalcs->grouped))
+						{
+							$oCalcs->grouped[$k] = '';
+						}
+
 						$oCalcs->grouped[$k] .= '<span class="calclabel">' . $v->calLabel . ':</span> ' . $v->value . '<br />';
 					}
 				}
@@ -761,6 +774,11 @@ class FabrikViewListBase extends JViewLegacy
 				{
 					if ($k != 'calc')
 					{
+						if (!array_key_exists($k, $oCalcs->grouped))
+						{
+							$oCalcs->grouped[$k] = '';
+						}
+
 						$oCalcs->grouped[$k] .= '<span class="calclabel">' . $v->calLabel . ':</span> ' . $v->value . '<br />';
 					}
 				}
@@ -784,6 +802,11 @@ class FabrikViewListBase extends JViewLegacy
 				{
 					if ($k != 'calc')
 					{
+						if (!array_key_exists($k, $oCalcs->grouped))
+						{
+							$oCalcs->grouped[$k] = '';
+						}
+
 						$oCalcs->grouped[$k] .= '<span class="calclabel">' . $v->calLabel . ':</span> ' . $v->value . '<br />';
 					}
 				}

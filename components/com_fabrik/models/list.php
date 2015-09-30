@@ -7297,7 +7297,6 @@ class FabrikFEModelList extends JModelForm
 	 *
 	 * @return  array  calculations
 	 */
-
 	public function getCalculations()
 	{
 		if (!empty($this->runCalculations))
@@ -8112,7 +8111,6 @@ class FabrikFEModelList extends JModelForm
 
 			foreach ($elementModels as $elementModel)
 			{
-				$element = $elementModel->getElement();
 				$params = $elementModel->getParams();
 				$update = false;
 

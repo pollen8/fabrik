@@ -19,7 +19,6 @@ defined('_JEXEC') or die('Restricted access');
  * @subpackage  Fabrik.helpers
  * @since       3.0
  */
-
 class FabrikWorker
 {
 	/**
@@ -48,7 +47,7 @@ class FabrikWorker
 	 *
 	 * @var  string
 	 */
-	static protected $finalformat = null;
+	static protected $finalFormat = null;
 
 	/**
 	 * Image file extensions
@@ -56,13 +55,6 @@ class FabrikWorker
 	 * @var  string
 	 */
 	static protected $image_extensions_eregi = 'bmp|gif|jpg|jpeg|png';
-
-	/**
-	 * Audio file extensions
-	 *
-	 * @var  string
-	 */
-	protected $audio_extensions_eregi = 'mp3';
 
 	/**
 	 * Audio mime types
@@ -119,7 +111,6 @@ class FabrikWorker
 	 *
 	 * @return	bool
 	 */
-	
 	public static function isViewType($view)
 	{
 		$view = strtolower(trim($view));
@@ -134,7 +125,6 @@ class FabrikWorker
 	 *
 	 * @return	bool
 	 */
-
 	public static function isImageExtension($file)
 	{
 		$path_parts = pathinfo($file);
@@ -143,24 +133,7 @@ class FabrikWorker
 	}
 
 	/**
-	 * Returns true if $file has an image extension type
-	 *
-	 * @param   string  $file  Filename
-	 *
-	 * @deprecated - doesn't seem to be used
-	 *
-	 * @return	bool
-	 */
-
-	public static function isAudioExtension($file)
-	{
-		$path_parts = pathinfo($file);
-
-		return preg_match('/' . self::$audio_extensions_eregi . '/i', $path_parts['extension']);
-	}
-
-	/**
-	 * Get Audoio Mime type
+	 * Get Audio Mime type
 	 *
 	 * @param   string  $file  Filename
 	 *
@@ -168,7 +141,6 @@ class FabrikWorker
 	 *
 	 * @return  bool
 	 */
-
 	public static function getAudioMimeType($file)
 	{
 		$path_parts = pathinfo($file);
@@ -190,7 +162,6 @@ class FabrikWorker
 	 *
 	 * @return  bool
 	 */
-
 	public static function getVideoMimeType($file)
 	{
 		$path_parts = pathinfo($file);
@@ -212,7 +183,6 @@ class FabrikWorker
 	 *
 	 * @return  bool
 	 */
-
 	public static function getPodcastMimeType($file)
 	{
 		$path_parts = pathinfo($file);
@@ -237,27 +207,22 @@ class FabrikWorker
 	 * Format a string to datetime
 	 *
 	 * http://fr.php.net/strftime
-	 * (use as strptime)
+	 * (use as strftime)
 	 *
 	 * @param   string  $date    String date to format
 	 * @param   string  $format  Date format strftime format
 	 *
-	 * @return	array	date info
+	 * @return	array|void	date info
 	 */
-
 	public static function strToDateTime($date, $format)
 	{
 		$weekdays = array('Sun' => '0', 'Mon' => '1', 'Tue' => '2', 'Wed' => '3', 'Thu' => '4', 'Fri' => '5', 'Sat' => '6');
-		$months = array('Jan' => '01', 'Feb' => '02', 'Mar' => '03', 'Apr' => '04', 'May' => '05', 'Jun' => '06', 'Jul' => '07', 'Aug' => '08',
-			'Sep' => '09', 'Oct' => '10', 'Nov' => '11', 'Dec' => '12');
 
 		if (!($date = self::str2Time($date, $format)))
 		{
 			return;
 		}
 
-		$months = array(FText::_('January'), FText::_('February'), FText::_('March'), FText::_('April'), FText::_('May'), FText::_('June'),
-			FText::_('July'), FText::_('August'), FText::_('September'), FText::_('October'), FText::_('November'), FText::_('December'));
 		$shortMonths = array(FText::_('Jan'), FText::_('Feb'), FText::_('Mar'), FText::_('Apr'), FText::_('May'), FText::_('Jun'), FText::_('Jul'),
 			FText::_('Aug'), FText::_('Sept'), FText::_('Oct'), FText::_('Nov'), FText::_('Dec'));
 
@@ -323,7 +288,6 @@ class FabrikWorker
 	 *
 	 * @return	string	date
 	 */
-
 	public static function specialStrToMySQL($date, $gmt = true)
 	{
 		/**
@@ -374,7 +338,6 @@ class FabrikWorker
 	 *
 	 * @return	array	date bits keyed on date representations e.g.  m/d/Y
 	 */
-
 	public static function str2Time($date, $format)
 	{
 		/**
@@ -430,7 +393,7 @@ class FabrikWorker
 			}
 		}
 		// @TODO: some of these aren't right for strftime
-		self::$finalformat = $format;
+		self::$finalFormat = $format;
 		$search = array('%d', '%e', '%D', '%j', '%m', '%b', '%Y', '%y', '%g', '%H', '%h', '%i', '%s', '%S', '%M');
 
 		$replace = array('(\d{2})', '(\d{1,2})', '(\w{3})', '(\d{1,2})', '(\d{2})', '(\w{3})', '(\d{4})', '(\d{2})', '(\d{1,2})', '(\d{2})',
@@ -451,7 +414,7 @@ class FabrikWorker
 
 			array_pop($format);
 			$format = trim(implode('%', $format));
-			self::$finalformat = $format;
+			self::$finalFormat = $format;
 
 			return self::str2Time($date, $format);
 		}
@@ -481,19 +444,6 @@ class FabrikWorker
 	}
 
 	/**
-	 * Get final date format
-	 *
-	 * @deprecated - not used?
-	 *
-	 * @return  string
-	 */
-
-	public static function getFinalDateFormat()
-	{
-		return self::$finalformat;
-	}
-
-	/**
 	 * Removed day of week name from string
 	 *
 	 * @param   string  $date  The string date
@@ -501,7 +451,6 @@ class FabrikWorker
 	 *
 	 * @return	string	date
 	 */
-
 	public static function stripDay($date, $abrv = false)
 	{
 		if ($abrv)
@@ -536,7 +485,6 @@ class FabrikWorker
 	 *
 	 * @return  string
 	 */
-
 	public static function monthToInt($date, $abrv = false)
 	{
 		if ($abrv)
@@ -581,24 +529,23 @@ class FabrikWorker
 	 *
 	 * @return bool
 	 */
-
 	public static function isReserved($str, $strict = true)
 	{
-		$_reservedWords = array("task", "view", "layout", "option", "formid", "submit", "ul_max_file_size"
+		$reservedWords = array("task", "view", "layout", "option", "formid", "submit", "ul_max_file_size"
 				, "ul_file_types", "ul_directory", 'adddropdownvalue', 'adddropdownlabel', 'ul_end_dir');
 		/*
 		 * $$$ hugh - a little arbitrary, but need to be able to exclude these so people can create lists from things like
 		 * log files, which include field names like rowid and itemid.  So when saving an element, we now set strict mode
 		 * to false if it's not a new element.
 		 */
-		$_strictWords = array("listid", 'rowid', 'itemid');
+		$strictWords = array("listid", 'rowid', 'itemid');
 
 		if ($strict)
 		{
-			$_reservedWords = array_merge($_reservedWords, $_strictWords);
+			$reservedWords = array_merge($reservedWords, $strictWords);
 		}
 
-		if (in_array(JString::strtolower($str), $_reservedWords))
+		if (in_array(JString::strtolower($str), $reservedWords))
 		{
 			return true;
 		}
@@ -613,7 +560,6 @@ class FabrikWorker
 	 *
 	 * @return  JCrypt
 	 */
-
 	public static function getCrypt()
 	{
 		jimport('joomla.crypt.crypt');
@@ -652,7 +598,6 @@ class FabrikWorker
 	 * 
 	 * @return  string  parsed message
 	 */
-	
 	public function parseMessageForRepeats($msg, $searchData, $el, $repeatCounter)
 	{
 		if (strstr($msg, '{') && !empty($searchData))
@@ -695,13 +640,12 @@ class FabrikWorker
 	 *
 	 * @return  string  parsed message
 	 */
-
 	public function parseMessageForPlaceHolder($msg, $searchData = null, $keepPlaceholders = true, $addSlashes = false, $theirUser = null)
 	{
 		$returnType = is_array($msg) ? 'array' : 'string';
-		$msgs = (array) $msg;
+		$messages = (array) $msg;
 
-		foreach ($msgs as &$msg)
+		foreach ($messages as &$msg)
 		{
 			$this->parseAddSlashes = $addSlashes;
 
@@ -743,7 +687,7 @@ class FabrikWorker
 			}
 		}
 
-		return $returnType === 'array' ? $msgs : FArrayHelper::getValue($msgs, 0, '');
+		return $returnType === 'array' ? $messages : FArrayHelper::getValue($messages, 0, '');
 	}
 
 	/**
@@ -753,7 +697,6 @@ class FabrikWorker
 	 *
 	 * @return  void
 	 */
-
 	public function replaceRequest(&$msg)
 	{
 		$f = JFilterInput::getInstance();
@@ -782,7 +725,6 @@ class FabrikWorker
 	 *
 	 * @return	string	parsed message
 	 */
-
 	public static function replaceWithUserData($msg, $user = null, $prefix = 'my')
 	{
 		$app = JFactory::getApplication();
@@ -823,11 +765,11 @@ class FabrikWorker
 		foreach ($matches as $match)
 		{
 			$bits = explode('->', str_replace(array('{', '}'), '', $match));
-			$userid = $app->input->getInt(FArrayHelper::getValue($bits, 1));
+			$userId = $app->input->getInt(FArrayHelper::getValue($bits, 1));
 
-			if ($userid !== 0)
+			if ($userId !== 0)
 			{
-				$user = JFactory::getUser($userid);
+				$user = JFactory::getUser($userId);
 				$val = $user->get(FArrayHelper::getValue($bits, 2));
 				$msg = str_replace($match, $val, $msg);
 			}
@@ -844,16 +786,15 @@ class FabrikWorker
 	 *
 	 * @return	string	parsed message
 	 */
-
 	public static function replaceWithGlobals($msg)
 	{
 		$app = JFactory::getApplication();
-		$Itemid = self::itemId();
+		$itemId = self::itemId();
 		$config = JFactory::getConfig();
 		$msg = str_replace('{$mosConfig_absolute_path}', JPATH_SITE, $msg);
 		$msg = str_replace('{$mosConfig_live_site}', COM_FABRIK_LIVESITE, $msg);
 		$msg = str_replace('{$mosConfig_offset}', $config->get('offset'), $msg);
-		$msg = str_replace('{$Itemid}', $Itemid, $msg);
+		$msg = str_replace('{$Itemid}', $itemId, $msg);
 		$msg = str_replace('{$mosConfig_sitename}', $config->get('sitename'), $msg);
 		$msg = str_replace('{$mosConfig_mailfrom}', $config->get('mailfrom'), $msg);
 		$msg = str_replace('{$mosConfig_secret}', $config->get('secret'), $msg);
@@ -888,7 +829,6 @@ class FabrikWorker
 	 *
 	 * @return	string	posted data that corresponds with placeholder
 	 */
-
 	protected function replaceWithFormData($matches)
 	{
 		// Merge any join data key val pairs down into the main data array
@@ -930,7 +870,6 @@ class FabrikWorker
 		if (count($bits) == 2)
 		{
 			$match = self::parseMessageForPlaceHolder('{' . $bits[0] . '}', $this->_searchData, false);
-			$default = $bits[1];
 
 			if ($match == '')
 			{
@@ -1048,7 +987,6 @@ class FabrikWorker
 	 *
 	 * @return  void
 	 */
-
 	public static function readImages($imagePath, $folderPath, &$folders, &$images, $aFolderFilter, $makeOptions = true)
 	{
 		$imgFiles = self::fabrikReadDirectory($imagePath, '.', false, false, $aFolderFilter);
@@ -1082,14 +1020,13 @@ class FabrikWorker
 	 * @param   string  $path           The file system path
 	 * @param   string  $filter         A filter for the names
 	 * @param   bool    $recurse        Recurse search into sub-directories
-	 * @param   bool    $fullpath       True if to prepend the full path to the file name
+	 * @param   bool    $fullPath       True if to prepend the full path to the file name
 	 * @param   array   $aFolderFilter  Folder names not to recurse into
 	 * @param   bool    $foldersOnly    Return a list of folders only (true)
 	 *
 	 * @return	array	of file/folder names
 	 */
-
-	public static function fabrikReadDirectory($path, $filter = '.', $recurse = false, $fullpath = false, $aFolderFilter = array(),
+	public static function fabrikReadDirectory($path, $filter = '.', $recurse = false, $fullPath = false, $aFolderFilter = array(),
 		$foldersOnly = false)
 	{
 		$arr = array();
@@ -1112,7 +1049,7 @@ class FabrikWorker
 				{
 					if (($isDir && $foldersOnly) || !$foldersOnly)
 					{
-						if ($fullpath)
+						if ($fullPath)
 						{
 							$arr[] = trim(JPath::clean($path . '/' . $file));
 						}
@@ -1137,7 +1074,7 @@ class FabrikWorker
 
 					if ($goDown)
 					{
-						$arr2 = self::fabrikReadDirectory($dir, $filter, $recurse, $fullpath, $aFolderFilter, $foldersOnly);
+						$arr2 = self::fabrikReadDirectory($dir, $filter, $recurse, $fullPath, $aFolderFilter, $foldersOnly);
 						$arrDiff = array_diff($arr, $arr2);
 						$arr = array_merge($arrDiff);
 					}
@@ -1161,7 +1098,6 @@ class FabrikWorker
 	 *
 	 * @return	string	first two letters of lang code - e.g. nl from 'nl-NL'
 	 */
-
 	public static function getJoomfishLang()
 	{
 		$lang = JFactory::getLanguage();
@@ -1175,10 +1111,8 @@ class FabrikWorker
 	 *
 	 * @return   array  (bool should the filter be used, object the filter to use)
 	 */
-
 	public static function getContentFilter()
 	{
-		$dofilter = false;
 		$filter = false;
 
 		// Filter settings
@@ -1204,7 +1138,6 @@ class FabrikWorker
 		$whiteListTags = array();
 		$whiteListAttributes = array();
 
-		$noHtml = false;
 		$whiteList = false;
 		$blackList = false;
 		$unfiltered = false;
@@ -1226,7 +1159,6 @@ class FabrikWorker
 			if ($filterType == 'NH')
 			{
 				// Maximum HTML filtering.
-				$noHtml = true;
 			}
 			elseif ($filterType == 'NONE')
 			{
@@ -1288,13 +1220,13 @@ class FabrikWorker
 		// Unfiltered assumes first priority.
 		if ($unfiltered)
 		{
-			$dofilter = false;
+			$doFilter = false;
 
 			// Don't apply filtering.
 		}
 		else
 		{
-			$dofilter = true;
+			$doFilter = true;
 
 			// Black lists take second precedence.
 			if ($blackList)
@@ -1316,7 +1248,7 @@ class FabrikWorker
 			}
 		}
 
-		return array($dofilter, $filter);
+		return array($doFilter, $filter);
 	}
 
 	/**
@@ -1324,7 +1256,6 @@ class FabrikWorker
 	 *
 	 * @return  void
 	 */
-
 	public static function clearEval()
 	{
 		/**
@@ -1343,7 +1274,6 @@ class FabrikWorker
 	 *
 	 * @return  void
 	 */
-
 	public static function logEval($val, $msg)
 	{
 		if ($val !== false)
@@ -1393,7 +1323,6 @@ class FabrikWorker
 	 *
 	 * @return  void
 	 */
-
 	public static function logError($errString, $msgType)
 	{
 		if (FabrikHelperHTML::isDebug())
@@ -1430,7 +1359,6 @@ class FabrikWorker
 	 *
 	 * @return  void
 	 */
-
 	public static function log($type, $msg, $jsonEncode = true)
 	{
 		if ($jsonEncode)
@@ -1457,7 +1385,6 @@ class FabrikWorker
 	 *
 	 * @return  JDatabaseDriver object
 	 */
-
 	public static function getDbo($loadJoomlaDb = false, $cnnId = null)
 	{
 		$sig = (int) $loadJoomlaDb . '.' . $cnnId;
@@ -1545,7 +1472,6 @@ class FabrikWorker
 	 *
 	 * @return FabrikFEModelConnection  connection
 	 */
-
 	public static function getConnection($item = null)
 	{
 		$app = JFactory::getApplication();
@@ -1590,7 +1516,6 @@ class FabrikWorker
 	 *
 	 * @return	object	plugin manager
 	 */
-
 	public static function getPluginManager()
 	{
 		if (!self::$pluginManager)
@@ -1610,7 +1535,6 @@ class FabrikWorker
 	 *
 	 * @return  mixed data
 	 */
-
 	public static function JSONtoData($data, $toArray = false)
 	{
 		if (is_string($data))
@@ -1660,7 +1584,6 @@ class FabrikWorker
 	 *
 	 * @return	bool
 	 */
-
 	public static function isDate($d)
 	{
 		$db = self::getDbo();
@@ -1698,7 +1621,6 @@ class FabrikWorker
 	 *
 	 * @return bool
 	 */
-
 	public static function isJSON($data)
 	{
 		if (!is_string($data))
@@ -1724,7 +1646,6 @@ class FabrikWorker
 	 *
 	 * @return bool
 	 */
-
 	public static function isEmail($email, $sms = false)
 	{
 		if ($sms)
@@ -1754,7 +1675,6 @@ class FabrikWorker
 	 *
 	 * @return bool
 	 */
-	
 	public static function isSMS($sms)
 	{
 		return true;
@@ -1765,7 +1685,6 @@ class FabrikWorker
 	 *
 	 * @return string
 	 */
-
 	public static function goBackAction()
 	{
 		jimport('joomla.environment.browser');
@@ -1773,15 +1692,15 @@ class FabrikWorker
 
 		if ($uri->getScheme() === 'https')
 		{
-			$gobackaction = 'onclick="parent.location=\'' . FArrayHelper::getValue($_SERVER, 'HTTP_REFERER') . '\'"';
+			$goBackAction = 'onclick="parent.location=\'' . FArrayHelper::getValue($_SERVER, 'HTTP_REFERER') . '\'"';
 		}
 		else
 		{
-			//$gobackaction = 'onclick=\'history.back();\'';
-			$gobackaction = 'onclick="parent.location=\'' . FArrayHelper::getValue($_SERVER, 'HTTP_REFERER') . '\'"';
+			//$goBackAction = 'onclick=\'history.back();\'';
+			$goBackAction = 'onclick="parent.location=\'' . FArrayHelper::getValue($_SERVER, 'HTTP_REFERER') . '\'"';
 		}
 
-		return $gobackaction;
+		return $goBackAction;
 	}
 
 	/**
@@ -1849,7 +1768,6 @@ class FabrikWorker
 	 *
 	 * @return  string
 	 */
-
 	public static function getMenuOrRequestVar($name, $val = '', $mambot = false, $priority = 'menu')
 	{
 		$app = JFactory::getApplication();
@@ -1901,7 +1819,6 @@ class FabrikWorker
 	 *
 	 * @return	mixed	- if ACL setting defined here return bool, otherwise return -1 to continue with default acl setting
 	 */
-
 	public static function canUserDo($params, $row, $col)
 	{
 		if (!is_null($row))
@@ -1909,46 +1826,46 @@ class FabrikWorker
 			$app = JFactory::getApplication();
 			$input = $app->input;
 			$user = JFactory::getUser();
-			$usercol = $params->get($col, '');
+			$userCol = $params->get($col, '');
 
-			if ($usercol != '')
+			if ($userCol != '')
 			{
-				$usercol = FabrikString::safeColNameToArrayKey($usercol);
+				$userCol = FabrikString::safeColNameToArrayKey($userCol);
 
-				if (!array_key_exists($usercol, $row))
+				if (!array_key_exists($userCol, $row))
 				{
 					return false;
 				}
 				else
 				{
-					if (array_key_exists($usercol . '_raw', $row))
+					if (array_key_exists($userCol . '_raw', $row))
 					{
-						$usercol .= '_raw';
+						$userCol .= '_raw';
 					}
 
-					$myid = $user->get('id');
+					$myId = $user->get('id');
 
 					// -1 for menu items that link to their own records
-					$usercol_val = is_array($row) ? $row[$usercol] : $row->$usercol;
+					$userColVal = is_array($row) ? $row[$userCol] : $row->$userCol;
 
 					// User element stores as object
-					if (is_object($usercol_val))
+					if (is_object($userColVal))
 					{
-						$usercol_val = JArrayHelper::fromObject($usercol_val);
+						$userColVal = JArrayHelper::fromObject($userColVal);
 					}
 
 					// Could be coming back from a failed validation in which case val might be an array
-					if (is_array($usercol_val))
+					if (is_array($userColVal))
 					{
-						$usercol_val = array_shift($usercol_val);
+						$userColVal = array_shift($userColVal);
 					}
 
-					if (empty($usercol_val) && empty($myid))
+					if (empty($userColVal) && empty($myId))
 					{
 						return false;
 					}
 
-					if (intVal($usercol_val) === intVal($myid) || $input->get('rowid') == -1)
+					if (intVal($userColVal) === intVal($myId) || $input->get('rowid') == -1)
 					{
 						return true;
 					}
@@ -1966,7 +1883,6 @@ class FabrikWorker
 	 *
 	 * @return bool
 	 */
-
 	public static function canPdf()
 	{
 		$file = JPATH_LIBRARIES . '/dompdf/dompdf_config.inc.php';
@@ -1989,7 +1905,6 @@ class FabrikWorker
 	 *
 	 * @return  JCache
 	 */
-
 	public static function getCache($listModel = null)
 	{
 		$app = JFactory::getApplication();
@@ -2020,7 +1935,6 @@ class FabrikWorker
 	 *
 	 * @return  array  key field name, value default value
 	 */
-
 	public static function formDefaults($form)
 	{
 		JForm::addFormPath(JPATH_COMPONENT . '/models/forms');
@@ -2052,7 +1966,6 @@ class FabrikWorker
 	 *
 	 * @return  bool
 	 */
-
 	public static function j3()
 	{
 		$app = JFactory::getApplication();
@@ -2071,7 +1984,6 @@ class FabrikWorker
 	 * 
 	 * @return bool
 	 */
-	
 	public static function inFormProcess()
 	{
 		$app = JFactory::getApplication();

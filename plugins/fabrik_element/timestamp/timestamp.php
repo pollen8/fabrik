@@ -82,19 +82,19 @@ class PlgFabrik_ElementTimestamp extends PlgFabrik_Element
 	/**
 	 * Shows the data formatted for the list view
 	 *
-	 * @param   string    $data      elements data
-	 * @param   stdClass  &$thisRow  all the data in the lists current row
+	 * @param   string    $data      Elements data
+	 * @param   stdClass  &$thisRow  All the data in the lists current row
+	 * @param   array     $opts      Rendering options
 	 *
 	 * @return  string	formatted value
 	 */
-
-	public function renderListData($data, stdClass &$thisRow)
+	public function renderListData($data, stdClass &$thisRow, $opts = array())
 	{
 		$params = $this->getParams();
 		$tz_offset = $params->get('gmt_or_local', '0') == '0';
 		$data = JHTML::_('date', $data, FText::_($params->get('timestamp_format', 'DATE_FORMAT_LC2')), $tz_offset);
 
-		return parent::renderListData($data, $thisRow);
+		return parent::renderListData($data, $thisRow, $opts);
 	}
 
 	/**

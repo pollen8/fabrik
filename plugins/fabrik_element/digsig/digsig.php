@@ -108,13 +108,13 @@ class PlgFabrik_ElementDigsig extends PlgFabrik_Element
 	/**
 	 * Shows the data formatted for the list view
 	 *
-	 * @param   string   $data     Elements data
-	 * @param   stdClass &$thisRow All the data in the lists current row
+	 * @param   string    $data      Elements data
+	 * @param   stdClass  &$thisRow  All the data in the lists current row
+	 * @param   array     $opts      Rendering options
 	 *
-	 * @return  string    Formatted value
+	 * @return  string	formatted value
 	 */
-
-	public function renderListData($data, stdClass &$thisRow)
+	public function renderListData($data, stdClass &$thisRow, $opts = array())
 	{
 		if ($this->dataConsideredEmpty($data, 0))
 		{
@@ -123,7 +123,7 @@ class PlgFabrik_ElementDigsig extends PlgFabrik_Element
 
 		$data = $this->toImage($thisRow->__pk_val);
 
-		return parent::renderListData($data, $thisRow);
+		return parent::renderListData($data, $thisRow, $opts);
 	}
 
 	/**

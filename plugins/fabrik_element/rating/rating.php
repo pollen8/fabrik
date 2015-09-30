@@ -70,13 +70,13 @@ class PlgFabrik_ElementRating extends PlgFabrik_Element
 	/**
 	 * Shows the data formatted for the list view
 	 *
-	 * @param   string    $data      elements data
-	 * @param   stdClass  &$thisRow  all the data in the lists current row
+	 * @param   string    $data      Elements data
+	 * @param   stdClass  &$thisRow  All the data in the lists current row
+	 * @param   array     $opts      Rendering options
 	 *
 	 * @return  string	formatted value
 	 */
-
-	public function renderListData($data, stdClass &$thisRow)
+	public function renderListData($data, stdClass &$thisRow, $opts = array())
 	{
 		$params = $this->getParams();
 		$formid = $this->getFormModel()->getId();
@@ -91,8 +91,6 @@ class PlgFabrik_ElementRating extends PlgFabrik_Element
 		}
 
 		$app = JFactory::getApplication();
-		$package = $app->getUserState('com_fabrik.package', 'fabrik');
-		$user = JFactory::getUser();
 		$data = FabrikWorker::JSONtoData($data, true);
 		FabrikHelperHTML::addPath(COM_FABRIK_BASE . 'plugins/fabrik_element/rating/images/', 'image', 'list', false);
 		$colData = $this->getListModel()->getData();
@@ -104,7 +102,6 @@ class PlgFabrik_ElementRating extends PlgFabrik_Element
 			$avg = $this->_renderListData($data[$i], $thisRow);
 			$atpl = '';
 			$a2 = '';
-			$css = $canRate ? 'cursor:pointer;' : '';
 			$str = array();
 			$str[] = '<div style="width:101px;position:relative;">';
 
@@ -140,7 +137,7 @@ class PlgFabrik_ElementRating extends PlgFabrik_Element
 
 		$data = json_encode($data);
 
-		return parent::renderListData($data, $thisRow);
+		return parent::renderListData($data, $thisRow, $opts);
 	}
 
 	/**

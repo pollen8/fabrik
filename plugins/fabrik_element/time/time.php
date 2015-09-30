@@ -333,15 +333,14 @@ class PlgFabrik_ElementTime extends PlgFabrik_Element
 	/**
 	 * Shows the data formatted for the list view
 	 *
-	 * @param   string    $data      elements data
-	 * @param   stdClass  &$thisRow  all the data in the lists current row
+	 * @param   string    $data      Elements data
+	 * @param   stdClass  &$thisRow  All the data in the lists current row
+	 * @param   array     $opts      Rendering options
 	 *
 	 * @return  string	formatted value
 	 */
-
-	public function renderListData($data, stdClass &$thisRow)
+	public function renderListData($data, stdClass &$thisRow, $opts = array())
 	{
-		$db = FabrikWorker::getDbo();
 		$params = $this->getParams();
 		$groupModel = $this->getGroup();
 		/*
@@ -397,7 +396,7 @@ class PlgFabrik_ElementTime extends PlgFabrik_Element
 
 		$data = json_encode($format);
 
-		return parent::renderListData($data, $thisRow);
+		return parent::renderListData($data, $thisRow, $opts);
 	}
 
 	/**

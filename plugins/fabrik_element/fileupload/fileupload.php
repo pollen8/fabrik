@@ -481,10 +481,11 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 	 *
 	 * @param   string    $data      Elements data
 	 * @param   stdClass  &$thisRow  All the data in the lists current row
+	 * @param   array     $opts      Rendering options
 	 *
-	 * @return  string	Formatted value
+	 * @return  string	formatted value
 	 */
-	public function renderListData($data, stdClass &$thisRow)
+	public function renderListData($data, stdClass &$thisRow, $opts = array())
 	{
 		$data = FabrikWorker::JSONtoData($data, true);
 		$params = $this->getParams();
@@ -521,7 +522,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		if ($params->get('fu_show_image_in_table', '0') != '2')
 		{
 			$data = json_encode($data);
-			$rendered = parent::renderListData($data, $thisRow);
+			$rendered = parent::renderListData($data, $thisRow, $opts);
 		}
 
 		return $rendered;

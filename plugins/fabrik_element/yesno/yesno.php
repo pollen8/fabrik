@@ -60,13 +60,13 @@ class PlgFabrik_ElementYesno extends PlgFabrik_ElementRadiobutton
 	/**
 	 * Shows the data formatted for the list view
 	 *
-	 * @param   string   $data      Elements data
+	 * @param   string    $data      Elements data
 	 * @param   stdClass  &$thisRow  All the data in the lists current row
+	 * @param   array     $opts      Rendering options
 	 *
 	 * @return  string	formatted value
 	 */
-
-	public function renderListData($data, stdClass &$thisRow)
+	public function renderListData($data, stdClass &$thisRow, $opts = array())
 	{
 		FabrikHelperHTML::addPath(COM_FABRIK_BASE . 'plugins/fabrik_element/yesno/images/', 'image', 'list', false);
 
