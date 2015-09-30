@@ -1863,6 +1863,12 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 			$make_thumbnail = false;
 		}
 
+		// $$$ trob - oImage->rezise is only set if isImageExtension
+		if (!FabrikWorker::isImageExtension($filePath))
+		{
+			$make_thumbnail = false;
+		}
+
 		if ($make_thumbnail)
 		{
 			$thumbPath = $storage->clean(JPATH_SITE . '/' . $params->get('thumb_dir') . '/' . $myFileDir . '/', false);
