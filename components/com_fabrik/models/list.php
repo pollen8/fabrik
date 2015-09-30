@@ -8948,6 +8948,7 @@ class FabrikFEModelList extends JModelForm
 
 	/**
 	 * Create the RSS href link to go in the table template
+	 * Always returns FRONT end URL - as /administrator links will not be accessible for a feed reader
 	 *
 	 * @return  string	RSS link
 	 */
@@ -8959,8 +8960,10 @@ class FabrikFEModelList extends JModelForm
 
 		if ($this->getParams()->get('rss') == '1')
 		{
+			$base = JURI::getInstance()->toString(array('scheme', 'user', 'pass', 'host', 'port', 'path'));
+
 			// $$$ rob test fabrik's own feed renderer
-			$link = 'index.php?option=com_' . $package . '&view=list&listid=' . $this->getId() . "&format=fabrikfeed";
+			$link = $base . '?option=com_' . $package . '&view=list&listid=' . $this->getId() . "&format=fabrikfeed";
 
 			if (!$app->isAdmin())
 			{
