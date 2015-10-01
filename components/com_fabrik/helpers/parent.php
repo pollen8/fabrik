@@ -1659,7 +1659,7 @@ class FabrikWorker
 		if ($mailer === 'mail')
 		{
 			// Sendmail and Joomla isEmailAddress don't use the same conditions
-			return (JMailHelper::isEmailAddress($email) && PHPMailer::ValidateAddress($email));
+			return (JMailHelper::isEmailAddress($email) && JMail::ValidateAddress($email));
 		}
 
 		return JMailHelper::isEmailAddress($email);
