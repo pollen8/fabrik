@@ -333,7 +333,7 @@ EOD;
 	{
 		$app = JFactory::getApplication();
 		$input = $app->input;
-		$layout = self::getLayout('fabrik-email-form');
+		$layout = self::getLayout('form.fabrik-email-form');
 		$displayData = new stdClass;
 		$displayData->j3 = FabrikWorker::j3();
 		$displayData->package = $app->getUserState('com_fabrik.package', 'fabrik');
@@ -378,30 +378,23 @@ EOD;
 	 */
 	public static function printIcon($formModel, $params, $rowid = '')
 	{
-		$status = "status=no,toolbar=no,scrollbars=yes,titlebar=no,menubar=no,resizable=yes,width=400,height=350,directories=no,location=no";
-		$link = self::printURL($formModel);
+		$layout = self::getLayout('form.fabrik-print-icon');
+		$displayData = new stdClass;
+
+		$displayData->status = "status=no,toolbar=no,scrollbars=yes,titlebar=no,menubar=no,resizable=yes,width=400,height=350,directories=no,location=no";
+		$displayData->link = self::printURL($formModel);
+		$displayData->popup = $params->get('popup', 1);
 
 		if ($params->get('icons', true))
 		{
-			$image = self::image('print.png');
+			$displayData->image = self::image('print.png');
 		}
 		else
 		{
-			$image = '&nbsp;' . FText::_('COM_FABRIK_PRINT');
+			$displayData->image = '&nbsp;' . FText::_('COM_FABRIK_PRINT');
 		}
 
-		if ($params->get('popup', 1))
-		{
-			$aHref = '<a class=\"printlink\" href="javascript:void(0)" onclick="javascript:window.print(); return false" title="'
-				. FText::_('COM_FABRIK_PRINT') . '">';
-		}
-		else
-		{
-			$aHref = "<a href=\"#\" class=\"printlink\" onclick=\"window.open('$link','win2','$status;');return false;\"  title=\""
-			. FText::_('COM_FABRIK_PRINT') . "\">";
-		}
-
-		return $aHref . $image . "</a>";
+		return $layout->render($displayData);
 	}
 
 	/**
@@ -415,20 +408,6 @@ EOD;
 	 */
 	public static function printURL($formModel)
 	{
-
-		/**
-		 * Comment this out for now, as it causes issues with multiple forms per page.
-		 * We could always create a $sig for it, but that would need the info from the form and
-		 * table models, which are probably the most 'expensive' aprt of this function anyway.
-		 */
-
-		/*
-		if (isset(self::$printURL))
-		{
-			return self::$printURL;
-		}
-		*/
-
 		$app = JFactory::getApplication();
 		$input = $app->input;
 		$form = $formModel->getForm();
@@ -467,26 +446,14 @@ EOD;
 	 */
 	public static function emailIcon($formModel, $params)
 	{
-		$popup = $params->get('popup', 1);
+		$layout = self::getLayout('form.fabrik-email-icon');
+		$displayData = new stdClass;
+		$displayData->popup = $params->get('popup', 1);
+		$displayData->status = "status=no,toolbar=no,scrollbars=yes,titlebar=no,menubar=no,resizable=yes,width=400,height=250,directories=no,location=no";
+		$displayData->link = self::emailURL($formModel);
+		$displayData->icons = $params->get('icons', true);
 
-		if (!$popup)
-		{
-			$status = "status=no,toolbar=no,scrollbars=yes,titlebar=no,menubar=no,resizable=yes,width=400,height=250,directories=no,location=no";
-			$link = self::emailURL($formModel);
-
-			if ($params->get('icons', true))
-			{
-				$j2img = JHtml::_('image', 'system/emailButton.png', FText::_('JGLOBAL_EMAIL'), null, true);
-				$image = FabrikWorker::j3() ? FabrikHelperHTML::icon('icon-envelope') . ' ' : $j2img;
-			}
-			else
-			{
-				$image = '&nbsp;' . FText::_('JGLOBAL_EMAIL');
-			}
-
-			return "<a href=\"#\" onclick=\"window.open('$link','win2','$status;');return false;\"  title=\"" . FText::_('JGLOBAL_EMAIL')
-			. "\">$image</a>\n";
-		}
+		return $layout->render($displayData);
 	}
 
 	/**
@@ -500,19 +467,6 @@ EOD;
 	 */
 	public static function emailURL($formModel)
 	{
-		/**
-		 * Comment this out for now, as it causes issues with multiple forms per page.
-		 * We could always create a $sig for it, but that would need the info from the form and
-		 * table models, which are probably the most 'expensive' aprt of this function anyway.
-		 */
-
-		/*
-		if (isset(self::$emailURL))
-		{
-			return self::$emailURL;
-		}
-		*/
-
 		$app = JFactory::getApplication();
 		$input = $app->input;
 		$package = $app->getUserState('com_fabrik.package', 'fabrik');
@@ -691,7 +645,6 @@ EOD;
 	 *
 	 * @return  string	HTML for the select list
 	 */
-
 	public static function radioList(&$arr, $tag_name, $tag_attribs, $selected = null, $key = 'value', $text = 'text', $options_per_row = 0)
 	{
 		return self::aList('radio', $arr, $tag_name, $tag_attribs, $selected, $key, $text, $options_per_row);
@@ -1027,11 +980,9 @@ EOD;
 	 *
 	 * @return  void
 	 */
-
 	public static function iniRequireJs($shim = array())
 	{
 		$session = JFactory::getSession();
-		$document = JFactory::getDocument();
 		$requirePaths = self::requirePaths();
 		$pathBits = array();
 		$framework = array();
@@ -1120,8 +1071,6 @@ EOD;
 		$config[] = "\n";
 
 		// Store in session - included in fabrik system plugin
-		$uri = JURI::getInstance();
-		$uri = $uri->toString(array('path', 'query'));
 		$session->set('fabrik.js.shim', $newShim);
 		$session->set('fabrik.js.config', $config);
 	}
@@ -1133,7 +1082,6 @@ EOD;
 	 *
 	 * @return stdClass
 	 */
-
 	protected static function requirePaths()
 	{
 		$r = new stdClass;
@@ -1163,7 +1111,6 @@ EOD;
 	 *
 	 * @return  void
 	 */
-
 	public static function mootools()
 	{
 		self::framework();
@@ -1174,7 +1121,6 @@ EOD;
 	 *
 	 * @return stdClass
 	 */
-
 	public static function tipOpts()
 	{
 		$usersConfig = JComponentHelper::getParams('com_fabrik');
@@ -1200,7 +1146,6 @@ EOD;
 	 *
 	 * @return  null
 	 */
-
 	public static function addScriptDeclaration($script)
 	{
 		self::addToSessionScripts($script);
@@ -1227,7 +1172,6 @@ EOD;
 	 *
 	 * @return  void
 	 */
-
 	public static function addStyleDeclaration($style)
 	{
 		$app = JFactory::getApplication();
@@ -1289,7 +1233,6 @@ EOD;
 	 *
 	 * @return  bool
 	 */
-
 	public static function isDebug($enabled = false)
 	{
 		$app = JFactory::getApplication();
@@ -1317,7 +1260,6 @@ EOD;
 	 *
 	 * @return  bool
 	 */
-
 	public static function isDebugSubmit($enabled = false)
 	{
 		$app = JFactory::getApplication();
@@ -1328,8 +1270,8 @@ EOD;
 			return false;
 		}
 
-		$jconfig = JFactory::getConfig();
-		$debug = (int) $jconfig->get('debug');
+		$jConfig = JFactory::getConfig();
+		$debug = (int) $jConfig->get('debug');
 
 		return $debug === 1 && $app->input->get('fabrikdebug', 0) == 2;
 	}
@@ -1344,7 +1286,6 @@ EOD;
 	 *
 	 * @return  void
 	 */
-
 	public static function script($file, $onLoad = '')
 	{
 		if (empty($file))
@@ -1357,7 +1298,6 @@ EOD;
 			$onLoad = implode("\n", $onLoad);
 		}
 
-		$app = JFactory::getApplication();
 		$ext = self::isDebug() ? '.js' : '-min.js';
 		$paths = self::requirePaths();
 		$files = (array) $file;
@@ -1435,7 +1375,6 @@ EOD;
 	 *
 	 * @return  void
 	 */
-
 	protected static function addToSessionScripts($js)
 	{
 		$key = 'fabrik.js.scripts';
@@ -1461,7 +1400,6 @@ EOD;
 	 *
 	 * @return  void
 	 */
-	
 	protected static function addToSessionHeadScripts($js)
 	{
 		$key = 'fabrik.js.head.scripts';
@@ -1485,7 +1423,6 @@ EOD;
 	 *
 	 * @return  void
 	 */
-
 	public static function slimbox()
 	{
 		$input = JFactory::getApplication()->input;
@@ -1534,7 +1471,6 @@ EOD;
 	 *
 	 * @return  void
 	 */
-
 	public static function slideshow()
 	{
 		/*
@@ -1556,7 +1492,6 @@ EOD;
 	 *
 	 * @return  void
 	 */
-
 	public static function tips($selector = '.hasTip', $params = array(), $selectorPrefix = 'document')
 	{
 		$sig = md5(serialize(array($selector, $params)));
@@ -1597,7 +1532,6 @@ EOD;
 	 *
 	 * @return  void
 	 */
-
 	public static function debug($content, $title = 'output:')
 	{
 		$config = JComponentHelper::getParams('com_fabrik');
@@ -1715,7 +1649,6 @@ EOD;
 	 *
 	 * @return  void
 	 */
-
 	public static function autoComplete($htmlid, $elementid, $formid, $plugin = 'field', $opts = array())
 	{
 		$input = JFactory::getApplication()->input;
@@ -1756,7 +1689,6 @@ EOD;
 	 *
 	 * @return  array	Autocomplete options (needed for elements so when duplicated we can create a new FabAutocomplete object
 	 */
-
 	public static function autoCompleteOptions($htmlid, $elementid, $formid, $plugin = 'field', $opts = array())
 	{
 		$json = new stdClass;
@@ -1793,13 +1725,12 @@ EOD;
 	}
 
 	/**
-	 * Load the autocomplete script once
+	 * Load the auto-complete script once
 	 *
 	 * @deprecated since 3.1b
 	 *
 	 * @return  void
 	 */
-
 	public static function autoCompleteScript()
 	{
 	}
@@ -1813,7 +1744,6 @@ EOD;
 	 *
 	 * @return  void
 	 */
-
 	public static function facebookGraphAPI($appid, $locale = 'en_US', $meta = array())
 	{
 		if (!isset(self::$facebookgraphapi))
@@ -1882,7 +1812,6 @@ EOD;
 	 *
 	 * @return  array paths
 	 */
-
 	public static function addPath($path = '', $type = 'image', $view = 'form', $highPriority = true)
 	{
 		if (!array_key_exists($type, self::$helperpaths))
@@ -1928,7 +1857,6 @@ EOD;
 	 *
 	 * @return  string	full path name if found, original filename if not found
 	 */
-
 	public static function getImagePath($file, $type = 'form', $tmpl = '')
 	{
 		$file = JString::ltrim($file, DIRECTORY_SEPARATOR);
@@ -1964,7 +1892,6 @@ EOD;
 	 *
 	 * @return  string  image
 	 */
-
 	public static function image($file, $type = 'form', $tmpl = '', $properties = array(), $srcOnly = false, $opts = array())
 	{
 		if (is_string($properties))
@@ -2062,7 +1989,6 @@ EOD;
 	 *
 	 * @return  array  Grid items
 	 */
-
 	public static function gridItems($values, $labels, $selected, $name, $type = 'checkbox',
 		$elementBeforeLabel = true, $classes = array(), $buttonGroup = false)
 	{
@@ -2071,7 +1997,7 @@ EOD;
 		for ($i = 0; $i < count($values); $i++)
 		{
 			$item = array();
-			$thisname = $type === 'checkbox' ? FabrikString::rtrimword($name, '[]') . '[' . $i . ']' : $name;
+			$thisName = $type === 'checkbox' ? FabrikString::rtrimword($name, '[]') . '[' . $i . ']' : $name;
 			$label = '<span>' . $labels[$i] . '</span>';
 
 			// For values like '1"'
@@ -2083,7 +2009,7 @@ EOD;
 				$inputClass .= ' ' . implode(' ', $classes['input']);
 			}
 
-			$chx = '<input type="' . $type . '" class="fabrikinput ' . $inputClass . '" name="' . $thisname . '" value="' . $value . '" ';
+			$chx = '<input type="' . $type . '" class="fabrikinput ' . $inputClass . '" name="' . $thisName . '" value="' . $value . '" ';
 			$sel = in_array($values[$i], $selected);
 			$chx .= $sel ? ' checked="checked" />' : ' />';
 			$labelClass = FabrikWorker::j3() && !$buttonGroup ? $type : '';
@@ -2112,7 +2038,6 @@ EOD;
 	 *
 	 * @return  string  grid
 	 */
-
 	public static function grid($values, $labels, $selected, $name, $type = 'checkbox',
 		$elementBeforeLabel = true, $optionsPerRow = 4, $classes = array(), $buttonGroup = false)
 	{
@@ -2171,16 +2096,16 @@ EOD;
 	 *
 	 * @return mixed  string/array based on $explode parameter
 	 */
-
 	public static function bootstrapGrid($items, $columns, $spanClass = '', $explode = false)
 	{
+		// @TODO jLayout this
 		$span = floor(12 / $columns);
 		$i = 0;
 		$grid = array();
 
 		foreach ($items as $i => $s)
 		{
-			$endLine = ($i !== 0 && (($i ) % $columns == 0));
+			$endLine = ($i !== 0 && (($i) % $columns == 0));
 			$newLine = ($i % $columns == 0);
 
 			if ($endLine)
@@ -2212,7 +2137,6 @@ EOD;
 	 *
 	 * @return boolean
 	 */
-
 	public static function canvasSupport()
 	{
 		$navigator = JBrowser::getInstance();
@@ -2229,7 +2153,6 @@ EOD;
 	 *
 	 * @since   3.0.7
 	 */
-
 	public static function runContentPlugins(&$text)
 	{
 		$app = JFactory::getApplication();
@@ -2275,7 +2198,6 @@ EOD;
 	 *
 	 * @return  string  content item html
 	 */
-
 	public static function getContentTemplate($contentTemplate, $part = 'both', $runPlugins = false)
 	{
 		$app = JFactory::getApplication();
@@ -2323,7 +2245,6 @@ EOD;
 	 *
 	 * @return   string  template content
 	 */
-
 	public static function getTemplateFile($templateFile)
 	{
 		return file_get_contents($templateFile);
@@ -2338,7 +2259,6 @@ EOD;
 	 *
 	 * @return   mixed  email message or false
 	 */
-
 	public function getPHPTemplate($tmpl, $data = array(), $model = null)
 	{
 		// Start capturing output into a buffer
@@ -2413,7 +2333,6 @@ EOD;
 	 *
 	 * @return  string	tagified string
 	 */
-
 	public static function tagify($data, $baseUrl = '', $name = '', $icon = '')
 	{
 		$url = $baseUrl;
@@ -2439,23 +2358,23 @@ EOD;
 
 					if (substr($url, -1) === '?')
 					{
-						$thisurl = $url . $name . '[value]=' . $d;
+						$thisUrl = $url . $name . '[value]=' . $d;
 					}
 					else
 					{
-						$thisurl = strstr($url, '?') ? $url . '&' . $name . '[value]=' . urlencode($d) : $url . '?' . $name . '[value]=' . urlencode($d);
+						$thisUrl = strstr($url, '?') ? $url . '&' . $name . '[value]=' . urlencode($d) : $url . '?' . $name . '[value]=' . urlencode($d);
 					}
 
-					$thisurl .= '&' . $name . '[condition]=CONTAINS';
-					$thisurl .= '&resetfilters=1';
+					$thisUrl .= '&' . $name . '[condition]=CONTAINS';
+					$thisUrl .= '&resetfilters=1';
 				}
 				else
 				{
-					$thisurl = str_replace('{tag}', urlencode($d), $url);
-					$thisurl = str_replace('{key}', urlencode($key), $url);
+					$thisUrl = str_replace('{tag}', urlencode($d), $url);
+					$thisUrl = str_replace('{key}', urlencode($key), $url);
 				}
 
-				$tags[] = '<a href="' . $thisurl . '" class="fabrikTag">' . $icon . $d . '</a>';
+				$tags[] = '<a href="' . $thisUrl . '" class="fabrikTag">' . $icon . $d . '</a>';
 			}
 		}
 
@@ -2465,38 +2384,38 @@ EOD;
 	/**
 	 * Return a set of attributes for an <a> tag
 	 *
-	 * @param string $title  title to use for popup image
-	 * @param string $group  grouping tag for next/prev, if applicable
+	 * @param   string  $title  Title to use for popup image
+	 * @param   string  $group  Grouping tag for next/prev, if applicable
 	 *
+	 * @return string
 	 */
-
 	public static function getLightboxAttributes($title = "", $group = "")
 	{
 		$fbConfig = JComponentHelper::getParams('com_fabrik');
-		$lightboxScript = $fbConfig->get('use_mediabox', '0');
+		$lightBoxScript = $fbConfig->get('use_mediabox', '0');
+		$attributes = array();
 
-		$attrs = array();
-
-		switch ($lightboxScript)
+		switch ($lightBoxScript)
 		{
 			case 0:
 			case 1:
 			default:
-				$attrs[] = 'rel="lightbox[' . $group . ']"';
+				$attributes[] = 'rel="lightbox[' . $group . ']"';
 				break;
 			case 2:
-				$attrs[] = "data-rokbox";
+				$attributes[] = "data-rokbox";
 				if (!empty($title))
 				{
-					$attrs[] = 'data-rockbox-caption="' . addslashes($title) . '"';
+					$attributes[] = 'data-rockbox-caption="' . addslashes($title) . '"';
 				}
 				if (!empty($group))
 				{
-					$attrs[] = 'data-rokbox-album="' . addslashes($group) . '"';
+					$attributes[] = 'data-rokbox-album="' . addslashes($group) . '"';
 				}
 				break;
 		}
-		return implode(' ', $attrs);
+
+		return implode(' ', $attributes);
 	}
 
 	/**
@@ -2510,7 +2429,6 @@ EOD;
 	 *
 	 * @return string  <a> tag or empty string if not $href
 	 */
-
 	public static function a($href, $lbl = '', $opts = array())
 	{
 		if (empty($href) || JString::strtolower($href) == 'http://' || JString::strtolower($href) == 'https://')
@@ -2563,7 +2481,6 @@ EOD;
 	 *
 	 * @return  array width, height, type of link
 	 */
-
 	public static function getSmartLinkType($link)
 	{
 		/* $$$ hugh - not really sure how much of this is necessary, like setting different widths
