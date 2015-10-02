@@ -99,7 +99,7 @@ class PlgFabrik_ListRadius_Search extends PlgFabrik_List
 		$model = $this->getModel();
 		$params = $this->getParams();
 		$f = new stdClass;
-		$f->label = $params->get('radius_label', 'Radius search');
+		$f->label = FText::_($params->get('radius_label', 'Radius search'));
 		$app = JFactory::getApplication();
 		FabrikHelperHTML::stylesheet('plugins/fabrik_list/radius_search/radius_search.css');
 
