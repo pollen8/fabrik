@@ -2294,9 +2294,10 @@ if (!$j3)
 		 * What we really need to do is work out a way to prevent ONLY cloaking of emails in form inputs,
 		 * but that's not going to be trivial.  So bandaid is to turn it off in form and list views, so
 		 * addresses only get cloaked in details view.
+		 * In addition, if we are in a details PDF view we should not run the eamil cloak plugin.
 		 */
 
-		if ($view !== 'details')
+		if ($view !== 'details' || $input->get('format') === 'pdf')
 		{
 			$text .= '{emailcloak=off}';
 		}
