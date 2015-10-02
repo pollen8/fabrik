@@ -321,75 +321,28 @@ EOD;
 	}
 
 	/**
-	 * Show form to allow users to email form to a friend
+	 * Show form to allow users to email form to a friend.
+	 * Echo's out form HTML.
 	 *
-	 * @param   object  $formModel  form model
-	 * @param   string  $template   template
+	 * @param   object  $formModel  Form model
+	 * @param   string  $template   Template
 	 *
 	 * @return  void
 	 */
 	public static function emailForm($formModel, $template = '')
 	{
 		$app = JFactory::getApplication();
-		$package = $app->getUserState('com_fabrik.package', 'fabrik');
-		$document = JFactory::getDocument();
-		$app = JFactory::getApplication();
 		$input = $app->input;
-		$j3 = FabrikWorker::j3();
+		$layout = self::getLayout('fabrik-email-form');
+		$displayData = new stdClass;
+		$displayData->j3 = FabrikWorker::j3();
+		$displayData->package = $app->getUserState('com_fabrik.package', 'fabrik');
+		$displayData->referrer = $input->get('referrer', '', 'string');
+		$document = JFactory::getDocument();
 		$form = $formModel->getForm();
 		$document->setTitle($form->label);
 		$document->addStyleSheet('templates/' . $template . '/css/template_css.css');
-		?>
-<form method="post" action="index.php" name="frontendForm">
-	<table>
-		<tr>
-			<td><label for="email"><?php echo FText::_('COM_FABRIK_YOUR_FRIENDS_EMAIL') ?>:</label>
-			</td>
-			<td><input class="input" type="text" size="25" name="email" id="email" /></td>
-		</tr>
-		<tr>
-			<td><label for="yourname"><?php echo FText::_('COM_FABRIK_YOUR_NAME'); ?>:</label>
-			</td>
-			<td><input class="input" type="text" size="25" name="yourname" id="yourname" /></td>
-		</tr>
-		<tr>
-			<td><label for="youremail"><?php echo FText::_('COM_FABRIK_YOUR_EMAIL'); ?>:</label>
-			</td>
-			<td><input class="input" type="text" size="25" name="youremail" id="youremail" /></td>
-		</tr>
-		<tr>
-			<td><label for="subject"><?php echo FText::_('COM_FABRIK_MESSAGE_SUBJECT'); ?>:</label>
-			</td>
-			<td><input class="input" type="text" size="40" maxlength="40" name="subject"
-				id="subject" /></td>
-		</tr>
-		<tr>
-			<td colspan="2">
-			<input type="submit" name="submit" class="button btn btn-primary"
-				value="<?php echo FText::_('COM_FABRIK_SEND_EMAIL'); ?>" />
-<?php
-
-if (!$j3)
-{
-?>
-			<input type="button" name="cancel"
-				value="<?php echo FText::_('COM_FABRIK_CANCEL'); ?>" class="button btn"
-				onclick="window.close();" /></td>
-				<?php
-}
-			?>
-		</tr>
-	</table>
-	<input name="referrer"
-		value="<?php echo $input->get('referrer', '', 'string'); ?>"
-		type="hidden" /> <input type="hidden" name="option"
-		value="com_<?php echo $package; ?>" /> <input type="hidden"
-		name="view" value="emailform" /> <input type="hidden" name="tmpl"
-		value="component" />
-
-	<?php echo JHTML::_('form.token'); ?>
-</form>
-<?php
+		echo $layout->render($displayData);
 	}
 
 	/**
@@ -1577,7 +1530,7 @@ if (!$j3)
 	}
 
 	/**
-	 * Load the slideshow css and js files
+	 * Load the slide-show css and js files
 	 *
 	 * @return  void
 	 */
@@ -1685,7 +1638,6 @@ if (!$j3)
 		if (!isset(self::$debug))
 		{
 			self::$debug = true;
-			$document = JFactory::getDocument();
 			$style = ".fabrikDebugOutputTitle{padding:5px;background:#efefef;color:#333;border:1px solid #999;cursor:pointer}";
 			$style .= ".fabrikDebugOutput{padding:5px;background:#efefef;color:#999;}";
 			$style .= ".fabrikDebugOutput pre{padding:5px;background:#efefef;color:#999;}";
@@ -1703,7 +1655,7 @@ if (!$j3)
 	}
 
 	/**
-	 * Create html for ajax folder browser (used by fileupload and image elements)
+	 * Create html for ajax folder browser (used by file-upload and image elements)
 	 *
 	 * @param   array   $folders  array of folders to show
 	 * @param   string  $path     start path
@@ -1711,7 +1663,6 @@ if (!$j3)
 	 *
 	 * @return  string	html snippet
 	 */
-
 	public static function folderAjaxSelect($folders, $path = '', $tpl = '')
 	{
 		$str = array();
@@ -1753,7 +1704,7 @@ if (!$j3)
 	}
 
 	/**
-	 * Add autocomplete JS code to head
+	 * Add auto-complete JS code to head
 	 *
 	 * @param   string  $htmlid     Of element to turn into autocomplete
 	 * @param   int     $elementid  Element id
