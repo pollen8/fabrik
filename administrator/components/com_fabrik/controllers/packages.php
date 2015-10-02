@@ -21,7 +21,6 @@ require_once 'fabcontrolleradmin.php';
  * @subpackage  Fabrik
  * @since       3.0
  */
-
 class FabrikAdminControllerPackages extends FabControllerAdmin
 {
 	/**
@@ -46,7 +45,6 @@ class FabrikAdminControllerPackages extends FabControllerAdmin
 	 *
 	 * @return  J model
 	 */
-
 	public function &getModel($name = 'Package', $prefix = 'FabrikAdminModel')
 	{
 		$model = parent::getModel($name, $prefix, array('ignore_request' => true));

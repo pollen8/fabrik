@@ -20,7 +20,6 @@ jimport('joomla.application.component.controller');
  * @package  Fabrik
  * @since    3.0
  */
-
 class FabrikAdminControllerEmailform extends JControllerLegacy
 {
 	/**

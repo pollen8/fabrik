@@ -21,7 +21,6 @@ jimport('joomla.application.component.controllerform');
  * @subpackage  Fabrik
  * @since       3.0
  */
-
 class FabrikAdminControllerVisualization extends JControllerForm
 {
 	/**
@@ -36,20 +35,18 @@ class FabrikAdminControllerVisualization extends JControllerForm
 	 * Called via ajax to perform viz ajax task (defined by plugintask method)
 	 *
 	 * @param   boolean  $cachable   If true, the view output will be cached
-	 * @param   array    $urlparams  An array of safe url parameters and their variable types, for valid values see {@link JFilterInput::clean()}.
+	 * @param   boolean  $urlparams  An array of safe url parameters and their variable types, for valid values see {@link JFilterInput::clean()}.
 	 *
 	 * @return  JController  A JController object to support chaining.
 	 */
-
 	public function display($cachable = false, $urlparams = false)
 	{
-		$document = JFactory::getDocument();
 		$app = JFactory::getApplication();
 		$input = $app->input;
 		$id = $input->getInt('visualizationid');
 		$viz = FabTable::getInstance('Visualization', 'FabrikTable');
 		$viz->load($id);
-		$modelpaths = JModelLegacy::addIncludePath(JPATH_SITE . '/plugins/fabrik_visualization/' . $viz->plugin . '/models');
+		JModelLegacy::addIncludePath(JPATH_SITE . '/plugins/fabrik_visualization/' . $viz->plugin . '/models');
 		$model = $this->getModel($viz->plugin);
 		$model->setId($id);
 		$pluginTask = $input->get('plugintask', '', 'request');
@@ -79,10 +76,9 @@ class FabrikAdminControllerVisualization extends JControllerForm
 			$controller->addViewPath(COM_FABRIK_FRONTEND . '/views');
 
 			// Add the model path
-			$modelpaths = JModelLegacy::addIncludePath(JPATH_SITE . '/plugins/fabrik_visualization/' . $viz->plugin . '/models');
-			$modelpaths = JModelLegacy::addIncludePath(COM_FABRIK_FRONTEND . '/models');
+			JModelLegacy::addIncludePath(JPATH_SITE . '/plugins/fabrik_visualization/' . $viz->plugin . '/models');
+			JModelLegacy::addIncludePath(COM_FABRIK_FRONTEND . '/models');
 
-			$origId = $input->getInt('visualizationid');
 			$input->set('visualizationid', $id);
 			$controller->$task();
 		}
@@ -95,7 +91,6 @@ class FabrikAdminControllerVisualization extends JControllerForm
 	 *
 	 * @return  null
 	 */
-
 	public function getPluginHTML()
 	{
 		$app = JFactory::getApplication();

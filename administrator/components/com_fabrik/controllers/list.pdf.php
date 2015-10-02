@@ -34,7 +34,6 @@ class FabrikAdminControllerList extends FabControllerForm
 	 *
 	 * @return  void
 	 */
-
 	public function view()
 	{
 		$app = JFactory::getApplication();

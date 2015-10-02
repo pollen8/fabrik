@@ -21,7 +21,6 @@ require_once 'fabcontrolleradmin.php';
  * @subpackage  Fabrik
  * @since       3.0
  */
-
 class FabrikAdminControllerCrons extends FabControllerAdmin
 {
 	/**
@@ -47,7 +46,6 @@ class FabrikAdminControllerCrons extends FabControllerAdmin
 	 *
 	 * @return  J model
 	 */
-
 	public function getModel($name = 'Cron', $prefix = 'FabrikAdminModel', $config = array())
 	{
 		$model = parent::getModel($name, $prefix, array('ignore_request' => true));
@@ -60,7 +58,6 @@ class FabrikAdminControllerCrons extends FabControllerAdmin
 	 *
 	 * @return  void
 	 */
-
 	public function run()
 	{
 		$mailer = JFactory::getMailer();
@@ -93,7 +90,7 @@ class FabrikAdminControllerCrons extends FabControllerAdmin
 			$table = FabTable::getInstance('cron', 'FabrikTable');
 			$table->load($row->id);
 			$plugin->setRow($table);
-			$params = $plugin->getParams();
+			$plugin->getParams();
 			$thisListModel = clone ($listModel);
 			$thisAdminListModel = clone ($adminListModel);
 			$tid = (int) $rowParams->table;
@@ -106,9 +103,8 @@ class FabrikAdminControllerCrons extends FabControllerAdmin
 				if ($plugin->requiresTableData())
 				{
 					$thisListModel->setLimits(0, 0);
-					$nav = $thisListModel->getPagination(0, 0, 0);
+					$thisListModel->getPagination(0, 0, 0);
 					$data = $thisListModel->getData();
-					//$log->message .= "\n" . (string) $thisListModel->mainQuery;
 				}
 			}
 			else

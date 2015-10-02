@@ -22,7 +22,6 @@ require_once 'fabcontrollerform.php';
  * @subpackage  Fabrik
  * @since       3.0
  */
-
 class FabrikAdminControllerPackage extends FabControllerForm
 {
 	/**
@@ -44,8 +43,8 @@ class FabrikAdminControllerPackage extends FabControllerForm
 		$cid = $input->get('cid', array(), 'array');
 		$model = $this->getModel();
 		$model->export($cid);
-		$ntext = $this->text_prefix . '_N_ITEMS_EXPORTED';
-		$this->setMessage(JText::plural($ntext, count($cid)));
+		$nText = $this->text_prefix . '_N_ITEMS_EXPORTED';
+		$this->setMessage(JText::plural($nText, count($cid)));
 		$this->setRedirect('index.php?option=com_fabrik&view=packages');
 	}
 

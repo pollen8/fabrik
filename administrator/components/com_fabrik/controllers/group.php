@@ -23,7 +23,6 @@ require_once 'fabcontrollerform.php';
  * @subpackage  Fabrik
  * @since       3.0
  */
-
 class FabrikAdminControllerGroup extends FabControllerForm
 {
 	/**

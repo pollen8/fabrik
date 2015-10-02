@@ -20,7 +20,6 @@ jimport('joomla.application.component.controlleradmin');
  * @subpackage  Fabrik
  * @since       3.0
  */
-
 class FabrikAdminControllerHome extends JControllerAdmin
 {
 	/**
@@ -28,7 +27,6 @@ class FabrikAdminControllerHome extends JControllerAdmin
 	 *
 	 * @return null
 	 */
-
 	public function reset()
 	{
 		$model = $this->getModel('Home');
@@ -41,7 +39,6 @@ class FabrikAdminControllerHome extends JControllerAdmin
 	 *
 	 * @return null
 	 */
-
 	public function installSampleData()
 	{
 		$model = $this->getModel('Home');
@@ -54,7 +51,6 @@ class FabrikAdminControllerHome extends JControllerAdmin
 	 *
 	 * @return string
 	 */
-
 	public function getRSSFeed()
 	{
 		// Get RSS parsed object
@@ -96,10 +92,10 @@ class FabrikAdminControllerHome extends JControllerAdmin
 					}
 
 					$output .= '</td></tr>';
+					$k = 1 - $k;
 				}
 			}
 
-			$k = 1 - $k;
 			$output .= '</table>';
 		}
 

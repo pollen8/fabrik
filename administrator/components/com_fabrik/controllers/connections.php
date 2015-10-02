@@ -21,7 +21,6 @@ require_once 'fabcontrolleradmin.php';
  * @subpackage  Fabrik
  * @since       1.6
  */
-
 class FabrikAdminControllerConnections extends FabControllerAdmin
 {
 	/**
@@ -47,7 +46,6 @@ class FabrikAdminControllerConnections extends FabControllerAdmin
 	 *
 	 * @since	1.6
 	 */
-
 	public function __construct($config = array())
 	{
 		parent::__construct($config);
@@ -64,7 +62,6 @@ class FabrikAdminControllerConnections extends FabControllerAdmin
 	 *
 	 * @return  J model
 	 */
-
 	public function &getModel($name = 'Connection', $prefix = 'FabrikAdminModel')
 	{
 		$model = parent::getModel($name, $prefix, array('ignore_request' => true));
@@ -79,7 +76,6 @@ class FabrikAdminControllerConnections extends FabControllerAdmin
 	 *
 	 * @return null
 	 */
-
 	public function setDefault()
 	{
 		// Check for request forgeries

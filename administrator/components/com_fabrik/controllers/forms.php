@@ -46,7 +46,6 @@ class FabrikAdminControllerForms extends FabControllerAdmin
 	 *
 	 * @return  model
 	 */
-
 	public function &getModel($name = 'Form', $prefix = 'FabrikAdminModel')
 	{
 		$model = parent::getModel($name, $prefix, array('ignore_request' => true));
@@ -59,7 +58,6 @@ class FabrikAdminControllerForms extends FabControllerAdmin
 	 *
 	 * @return  null
 	 */
-
 	public function updateDatabase()
 	{
 		// Check for request forgeries
@@ -74,7 +72,6 @@ class FabrikAdminControllerForms extends FabControllerAdmin
 	 *
 	 * @return  null
 	 */
-
 	public function listview()
 	{
 		$app = JFactory::getApplication();
@@ -85,7 +82,7 @@ class FabrikAdminControllerForms extends FabControllerAdmin
 		$query = $db->getQuery(true);
 		$query->select('id')->from('#__fabrik_lists')->where('form_id = ' . (int) $cid);
 		$db->setQuery($query);
-		$listid = $db->loadResult();
-		$this->setRedirect('index.php?option=com_fabrik&task=list.view&listid=' . $listid);
+		$listId = $db->loadResult();
+		$this->setRedirect('index.php?option=com_fabrik&task=list.view&listid=' . $listId);
 	}
 }

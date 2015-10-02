@@ -36,7 +36,6 @@ class FabrikAdminControllerPackage extends JControllerForm
 	 *
 	 * @return  null
 	 */
-
 	public function dolist()
 	{
 		$app = JFactory::getApplication();

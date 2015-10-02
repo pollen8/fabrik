@@ -22,7 +22,6 @@ require_once 'fabcontrollerform.php';
  * @package  Fabrik
  * @since    3.0
  */
-
 class FabrikAdminControllerPlugin extends FabControllerForm
 {
 	/**
@@ -39,7 +38,6 @@ class FabrikAdminControllerPlugin extends FabControllerForm
 	 *
 	 * @return  void
 	 */
-
 	public function pluginAjax()
 	{
 		$app = JFactory::getApplication();
@@ -73,7 +71,6 @@ class FabrikAdminControllerPlugin extends FabControllerForm
 	 *
 	 * @return   void
 	 */
-
 	public function userAjax()
 	{
 		$db = FabrikWorker::getDbo();
@@ -96,7 +93,6 @@ class FabrikAdminControllerPlugin extends FabControllerForm
 	 *
 	 * @return  void
 	 */
-
 	public function doCron(&$pluginManager)
 	{
 		$db = FabrikWorker::getDbo();

@@ -21,7 +21,6 @@ jimport('joomla.application.component.controllerform');
  * @subpackage  Fabrik
  * @since       1.6
  */
-
 class FabrikAdminControllerCron extends JControllerForm
 {
 	/**
@@ -36,7 +35,6 @@ class FabrikAdminControllerCron extends JControllerForm
 	 *
 	 * @return  void
 	 */
-
 	public function getPluginHTML()
 	{
 		$app = JFactory::getApplication();

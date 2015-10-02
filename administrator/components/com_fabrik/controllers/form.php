@@ -23,7 +23,6 @@ require_once 'fabcontrollerform.php';
  * @subpackage  Fabrik
  * @since       3.0
  */
-
 class FabrikAdminControllerForm extends FabControllerForm
 {
 	/**
@@ -52,7 +51,6 @@ class FabrikAdminControllerForm extends FabControllerForm
 	 *
 	 * @return null
 	 */
-
 	public function view()
 	{
 		$document = JFactory::getDocument();
@@ -86,10 +84,10 @@ class FabrikAdminControllerForm extends FabControllerForm
 			$user = JFactory::getUser();
 			$uri = JURI::getInstance();
 			$uri = $uri->toString(array('path', 'query'));
-			$cacheid = serialize(array($uri, $input->post, $user->get('id'), get_class($view), 'display', $this->cacheId));
+			$cacheId = serialize(array($uri, $input->post, $user->get('id'), get_class($view), 'display', $this->cacheId));
 			$cache = JFactory::getCache('com_fabrik', 'view');
 			ob_start();
-			$cache->get($view, 'display', $cacheid);
+			$cache->get($view, 'display', $cacheId);
 			$contents = ob_get_contents();
 			ob_end_clean();
 			$token = JSession::getFormToken();
@@ -106,7 +104,6 @@ class FabrikAdminControllerForm extends FabControllerForm
 	 *
 	 * @return  null
 	 */
-
 	public function process()
 	{
 		$this->name = 'Fabrik';
@@ -178,8 +175,8 @@ class FabrikAdminControllerForm extends FabControllerForm
 
 		if ($input->getInt('packageId') !== 0)
 		{
-			$rowid = $input->get('rowid', '', 'string');
-			echo json_encode(array('msg' => $msg, 'rowid' => $rowid));
+			$rowId = $input->get('rowid', '', 'string');
+			echo json_encode(array('msg' => $msg, 'rowid' => $rowId));
 
 			return;
 		}
@@ -286,7 +283,6 @@ class FabrikAdminControllerForm extends FabControllerForm
 	 *
 	 * @return  null
 	 */
-
 	protected function savepage()
 	{
 		$app = JFactory::getApplication();
@@ -306,7 +302,6 @@ class FabrikAdminControllerForm extends FabControllerForm
 	 * @deprecated - since 3.0.6 not used
 	 * @return  null
 	 */
-
 	protected function makeRedirect(&$model, $msg = null)
 	{
 		$app = JFactory::getApplication();
@@ -347,37 +342,36 @@ class FabrikAdminControllerForm extends FabControllerForm
 		$model = $this->getModel('list', 'FabrikFEModel');
 		$ids = array($input->get('rowid', 0, 'string'));
 
-		$listid = $input->get('listid');
-		$limitstart = $input->getInt('limitstart' . $listid);
-		$length = $input->getInt('limit' . $listid);
+		$listId = $input->get('listid');
+		$limitStart = $input->getInt('limitstart' . $listId);
+		$length = $input->getInt('limit' . $listId);
 
-		$oldtotal = $model->getTotalRecords();
-		$model->setId($listid);
+		$oldTotal = $model->getTotalRecords();
+		$model->setId($listId);
 		$ok = $model->deleteRows($ids);
 
-		$total = $oldtotal - count($ids);
+		$total = $oldTotal - count($ids);
 
-		$ref = 'index.php?option=com_fabrik&task=list.view&listid=' . $listid;
+		$ref = 'index.php?option=com_fabrik&task=list.view&listid=' . $listId;
 
-		if ($total >= $limitstart)
+		if ($total >= $limitStart)
 		{
-			$newlimitstart = $limitstart - $length;
+			$newLimitStart = $limitStart - $length;
 
-			if ($newlimitstart < 0)
+			if ($newLimitStart < 0)
 			{
-				$newlimitstart = 0;
+				$newLimitStart = 0;
 			}
 
-			$ref = str_replace("limitstart$listid=$limitstart", "limitstart$listid=$newlimitstart", $ref);
+			$ref = str_replace("limitstart$listId=$limitStart", "limitstart$listId=$newLimitStart", $ref);
 			$app = JFactory::getApplication();
 			$context = 'com_fabrik.list.' . $model->getRenderContext() . '.';
-			$app->setUserState($context . 'limitstart', $newlimitstart);
+			$app->setUserState($context . 'limitstart', $newLimitStart);
 		}
 
 		if ($input->get('format') == 'raw')
 		{
 			$input->set('view', 'list');
-
 			$this->display();
 		}
 		else

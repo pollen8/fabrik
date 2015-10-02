@@ -23,7 +23,6 @@ require_once 'fabcontrollerform.php';
  * @subpackage  Fabrik
  * @since       3.0
  */
-
 class FabrikAdminControllerUpgrade extends JControllerAdmin
 {
 	/**
@@ -31,7 +30,6 @@ class FabrikAdminControllerUpgrade extends JControllerAdmin
 	 *
 	 * @return  null
 	 */
-
 	public function check()
 	{
 		$model = $this->getModel('Upgrade');

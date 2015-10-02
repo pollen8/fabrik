@@ -20,7 +20,6 @@ require_once 'fabcontrollerform.php';
  * @subpackage  Fabrik
  * @since       3.0
  */
-
 class FabrikAdminControllerImport extends FabControllerForm
 {
 	/**
@@ -34,7 +33,6 @@ class FabrikAdminControllerImport extends FabControllerForm
 	 *
 	 * @return  array  All headings (previously found and newly added)
 	 */
-
 	protected function addElements($model, $headings)
 	{
 		$app = JFactory::getApplication();
@@ -125,7 +123,6 @@ class FabrikAdminControllerImport extends FabControllerForm
 	 *
 	 * @return  boolean  True if access level checks pass, false otherwise.
 	 */
-
 	public function cancel($key = null)
 	{
 		$this->setRedirect('index.php?option=com_fabrik&view=lists');
@@ -138,7 +135,6 @@ class FabrikAdminControllerImport extends FabControllerForm
 	 *
 	 * @return  null
 	 */
-
 	public function makeTableFromCSV()
 	{
 		// Called when creating new elements from csv import into existing list
@@ -147,16 +143,15 @@ class FabrikAdminControllerImport extends FabControllerForm
 		$input = $app->input;
 		$model = $this->getModel('Importcsv', 'FabrikFEModel');
 		$model->import();
-		$listid = $input->getInt('fabrik_list', $input->get('listid'));
+		$listId = $input->getInt('fabrik_list', $input->get('listid'));
 
-		if ($listid == 0)
+		if ($listId == 0)
 		{
 			$plugins = $input->get('plugin', array(), 'array');
 			$createElements = $input->get('createElements', array(), 'array');
-			$dataRemoved = false;
 			$newElements = array();
 			$c = 0;
-			$dbname = $input->get('db_table_name', '', 'string');
+			$dbName = $input->get('db_table_name', '', 'string');
 			$model->matchedHeadings = array();
 
 			foreach ($createElements as $elname => $add)
@@ -166,7 +161,7 @@ class FabrikAdminControllerImport extends FabControllerForm
 					$name = FabrikString::dbFieldName($elname);
 					$plugin = $plugins[$c];
 					$newElements[$name] = $plugin;
-					$model->matchedHeadings[$dbname . '.' . $name] = $name;
+					$model->matchedHeadings[$dbName . '.' . $name] = $name;
 				}
 
 				$c++;
@@ -176,9 +171,9 @@ class FabrikAdminControllerImport extends FabControllerForm
 
 			// Create db
 			$listModel = $this->getModel('list', 'FabrikAdminModel');
-			$data = array('id' => 0, '_database_name' => $dbname, 'connection_id' => $input->getInt('connection_id'), 'access' => 0,
+			$data = array('id' => 0, '_database_name' => $dbName, 'connection_id' => $input->getInt('connection_id'), 'access' => 0,
 				'rows_per_page' => 10, 'template' => 'default', 'published' => 1, 'access' => 1, 'label' => $input->getString('label'),
-				'jform' => array('id' => 0, '_database_name' => $dbname, 'db_table_name' => ''));
+				'jform' => array('id' => 0, '_database_name' => $dbName, 'db_table_name' => ''));
 			$input->set('jform', $data['jform']);
 			$listModel->save($data);
 			$model->listModel = null;
@@ -189,7 +184,7 @@ class FabrikAdminControllerImport extends FabControllerForm
 			$headings = $session->get('com_fabrik.matchedHeadings');
 			$model->matchedHeadings = $this->addElements($model, $headings);
 			$model->listModel = null;
-			$input->set('listid', $listid);
+			$input->set('listid', $listId);
 		}
 
 		$model->insertData();
@@ -205,7 +200,6 @@ class FabrikAdminControllerImport extends FabControllerForm
 	 *
 	 * @return  JControllerLegacy  A JControllerLegacy object to support chaining.
 	 */
-
 	public function display($cachable = false, $urlparams = array())
 	{
 		$viewType = JFactory::getDocument()->getType();
@@ -229,7 +223,6 @@ class FabrikAdminControllerImport extends FabControllerForm
 	 *
 	 * @return  null
 	 */
-
 	public function doimport()
 	{
 		$model = $this->getModel('Importcsv', 'FabrikFEModel');

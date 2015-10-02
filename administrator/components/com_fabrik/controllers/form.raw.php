@@ -43,7 +43,6 @@ class FabrikAdminControllerForm extends JControllerForm
 	 *
 	 * @return  void
 	 */
-
 	public function inlineedit()
 	{
 		$model = JModelLegacy::getInstance('FormInlineEdit', 'FabrikFEModel');
@@ -55,16 +54,11 @@ class FabrikAdminControllerForm extends JControllerForm
 	 *
 	 * @return  void
 	 */
-
 	public function process()
 	{
 		$app = JFactory::getApplication();
 		$input = $app->input;
-		$document = JFactory::getDocument();
-		$app = JFactory::getApplication();
-		$input = $app->input;
 		$viewName = $input->get('view', 'form');
-		$viewType = $document->getType();
 
 		// For now lets route this to the html view.
 		$view = $this->getView($viewName, 'html');
@@ -188,8 +182,8 @@ class FabrikAdminControllerForm extends JControllerForm
 
 		if ($input->getInt('packageId', 0) !== 0)
 		{
-			$rowid = $input->getString('rowid', '', 'string');
-			echo json_encode(array('msg' => $msg, 'rowid' => $rowid));
+			$rowId = $input->getString('rowid', '', 'string');
+			echo json_encode(array('msg' => $msg, 'rowid' => $rowId));
 
 			return;
 		}
@@ -214,7 +208,6 @@ class FabrikAdminControllerForm extends JControllerForm
 	 * @deprecated - since 3.0.6 not used
 	 * @return  null
 	 */
-
 	protected function makeRedirect($model, $msg = null)
 	{
 		$app = JFactory::getApplication();
@@ -243,7 +236,6 @@ class FabrikAdminControllerForm extends JControllerForm
 	 *
 	 * @return  null
 	 */
-
 	public function ajax_validate()
 	{
 		$app = JFactory::getApplication();

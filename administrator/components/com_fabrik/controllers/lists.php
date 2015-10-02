@@ -21,7 +21,6 @@ require_once 'fabcontrolleradmin.php';
  * @subpackage  Fabrik
  * @since       3.0
  */
-
 class FabrikAdminControllerLists extends FabControllerAdmin
 {
 	/**
@@ -61,7 +60,6 @@ class FabrikAdminControllerLists extends FabControllerAdmin
 	 *
 	 * @return  null
 	 */
-
 	public function publish()
 	{
 		$app = JFactory::getApplication();
@@ -80,12 +78,11 @@ class FabrikAdminControllerLists extends FabControllerAdmin
 			// Make sure the item ids are integers
 			JArrayHelper::toInteger($cid);
 			$model = $this->getModel('Form', 'FabrikAdminModel');
-			$formids = $model->swapListToFormIds($cid);
+			$formIds = $model->swapListToFormIds($cid);
 
 			// Publish the items.
-			$formKeys = array();
 
-			if (!$model->publish($formids, $value))
+			if (!$model->publish($formIds, $value))
 			{
 				JError::raiseWarning(500, $model->getError());
 			}
@@ -96,11 +93,11 @@ class FabrikAdminControllerLists extends FabControllerAdmin
 
 				if (is_object($groupModel))
 				{
-					$groupids = $groupModel->swapFormToGroupIds($formids);
+					$groupIds = $groupModel->swapFormToGroupIds($formIds);
 
-					if (!empty($groupids))
+					if (!empty($groupIds))
 					{
-						if ($groupModel->publish($groupids, $value) === false)
+						if ($groupModel->publish($groupIds, $value) === false)
 						{
 							JError::raiseWarning(500, $groupModel->getError());
 						}
@@ -108,7 +105,7 @@ class FabrikAdminControllerLists extends FabControllerAdmin
 						{
 							// Publish the elements
 							$elementModel = $this->getModel('Element');
-							$elementIds = $elementModel->swapGroupToElementIds($groupids);
+							$elementIds = $elementModel->swapGroupToElementIds($groupIds);
 
 							if (!$elementModel->publish($elementIds, $value))
 							{
@@ -130,7 +127,6 @@ class FabrikAdminControllerLists extends FabControllerAdmin
 	 *
 	 * @return  null
 	 */
-
 	public function delete()
 	{
 		$listsModel = $this->getModel('lists');

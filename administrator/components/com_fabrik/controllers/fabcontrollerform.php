@@ -21,7 +21,6 @@ jimport('joomla.application.component.controllerform');
  * @subpackage  Fabrik
  * @since       3.0
  */
-
 class FabControllerForm extends JControllerForm
 {
 	/**
@@ -36,7 +35,6 @@ class FabControllerForm extends JControllerForm
 	 *
 	 * @return  null
 	 */
-
 	public function copy()
 	{
 		$model = $this->getModel();
@@ -52,8 +50,8 @@ class FabControllerForm extends JControllerForm
 		{
 			if ($model->copy())
 			{
-				$ntext = $this->text_prefix . '_N_ITEMS_COPIED';
-				$this->setMessage(JText::plural($ntext, count($cid)));
+				$nText = $this->text_prefix . '_N_ITEMS_COPIED';
+				$this->setMessage(JText::plural($nText, count($cid)));
 			}
 		}
 
@@ -73,7 +71,6 @@ class FabControllerForm extends JControllerForm
 	 *
 	 * @return  boolean  True if access level check and checkout passes, false otherwise.
 	 */
-
 	public function edit($key = null, $urlVar = null)
 	{
 		$this->option = 'com_fabrik';

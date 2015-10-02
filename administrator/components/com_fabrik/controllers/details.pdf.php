@@ -21,7 +21,6 @@ jimport('joomla.application.component.controllerform');
  * @subpackage  Fabrik
  * @since       3.0
  */
-
 class FabrikAdminControllerDetails extends JControllerForm
 {
 	/**
@@ -36,7 +35,6 @@ class FabrikAdminControllerDetails extends JControllerForm
 	 *
 	 * @return  void
 	 */
-
 	public function view()
 	{
 		$document = JFactory::getDocument();

@@ -46,7 +46,6 @@ class FabrikAdminControllerList extends FabControllerForm
 	 *
 	 * @return  boolean  True if access level check and checkout passes, false otherwise.
 	 */
-
 	public function edit($key = null, $urlVar = null)
 	{
 		$model = $this->getModel('connections');
@@ -64,7 +63,6 @@ class FabrikAdminControllerList extends FabControllerForm
 	 *
 	 * @return mixed notice or null
 	 */
-
 	public function copy()
 	{
 		$app = JFactory::getApplication();
@@ -90,7 +88,6 @@ class FabrikAdminControllerList extends FabControllerForm
 	 *
 	 * @return  null
 	 */
-
 	public function doCopy()
 	{
 		// Check for request forgeries
@@ -99,8 +96,8 @@ class FabrikAdminControllerList extends FabControllerForm
 		$input = $app->input;
 		$model = $this->getModel();
 		$model->copy();
-		$ntext = $this->text_prefix . '_N_ITEMS_COPIED';
-		$this->setMessage(JText::plural($ntext, count($input->get('cid', array(), 'array'))));
+		$nText = $this->text_prefix . '_N_ITEMS_COPIED';
+		$this->setMessage(JText::plural($nText, count($input->get('cid', array(), 'array'))));
 		$this->setRedirect(JRoute::_('index.php?option=' . $this->option . '&view=' . $this->view_list, false));
 	}
 
@@ -111,7 +108,6 @@ class FabrikAdminControllerList extends FabControllerForm
 	 *
 	 * @return  null
 	 */
-
 	public function view($model = null)
 	{
 		$app = JFactory::getApplication();
@@ -147,7 +143,7 @@ class FabrikAdminControllerList extends FabControllerForm
 		$user = JFactory::getUser();
 		$uri = JURI::getInstance();
 		$uri = $uri->toString(array('path', 'query'));
-		$cacheid = serialize(array($uri, $input->post, $user->get('id'), get_class($view), 'display', $this->cacheId));
+		$cacheId = serialize(array($uri, $input->post, $user->get('id'), get_class($view), 'display', $this->cacheId));
 		$cache = JFactory::getCache('com_fabrik', 'view');
 
 		if (in_array($input->get('format'), array('raw', 'csv', 'pdf', 'json', 'fabrikfeed')))
@@ -156,7 +152,7 @@ class FabrikAdminControllerList extends FabControllerForm
 		}
 		else
 		{
-			$cache->get($view, 'display', $cacheid);
+			$cache->get($view, 'display', $cacheId);
 		}
 
 		FabrikAdminHelper::addSubmenu($input->getWord('view', 'lists'));
@@ -188,16 +184,6 @@ class FabrikAdminControllerList extends FabControllerForm
 	}
 
 	/**
-	 * actally delete the requested lists forms etc
-	 * // $$$ rob refractored to FabControllerAdmin
-	 */
-
-	/*public function dodelete()
-	 {
-	}
-	 */
-
-	/**
 	 * Order the lists
 	 *
 	 * @return  null
@@ -226,7 +212,6 @@ class FabrikAdminControllerList extends FabControllerForm
 	 *
 	 * @return  null
 	 */
-
 	public function clearfilter()
 	{
 		$app = JFactory::getApplication();
@@ -239,7 +224,6 @@ class FabrikAdminControllerList extends FabControllerForm
 	 *
 	 * @return  void
 	 */
-
 	public function filter()
 	{
 		// Check for request forgeries
@@ -262,7 +246,6 @@ class FabrikAdminControllerList extends FabControllerForm
 	 *
 	 * @return  null
 	 */
-
 	public function delete()
 	{
 		// Check for request forgeries
@@ -270,28 +253,28 @@ class FabrikAdminControllerList extends FabControllerForm
 		$app = JFactory::getApplication();
 		$input = $app->input;
 		$model = JModelLegacy::getInstance('List', 'FabrikFEModel');
-		$listid = $input->getInt('listid');
-		$model->setId($listid);
+		$listId = $input->getInt('listid');
+		$model->setId($listId);
 		$ids = $input->get('ids', array(), 'array');
-		$limitstart = $input->getInt('limitstart' . $listid);
-		$length = $input->getInt('limit' . $listid);
-		$oldtotal = $model->getTotalRecords();
+		$limitStart = $input->getInt('limitstart' . $listId);
+		$length = $input->getInt('limit' . $listId);
+		$oldTotal = $model->getTotalRecords();
 		$ok = $model->deleteRows($ids);
-		$total = $oldtotal - count($ids);
-		$ref = 'index.php?option=com_fabrik&task=list.view&cid=' . $listid;
+		$total = $oldTotal - count($ids);
+		$ref = 'index.php?option=com_fabrik&task=list.view&cid=' . $listId;
 
-		if ($total >= $limitstart)
+		if ($total >= $limitStart)
 		{
-			$newlimitstart = $limitstart - $length;
+			$newLimitStart = $limitStart - $length;
 
-			if ($newlimitstart < 0)
+			if ($newLimitStart < 0)
 			{
-				$newlimitstart = 0;
+				$newLimitStart = 0;
 			}
 
-			$ref = str_replace('limitstart' . $listid . '=' . $limitstart, 'limitstart' . $listid . '=' . $newlimitstart, $ref);
+			$ref = str_replace('limitstart' . $listId . '=' . $limitStart, 'limitstart' . $listId . '=' . $newLimitStart, $ref);
 			$context = 'com_fabrik.list' . $model->getRenderContext() . '.list.';
-			$app->setUserState($context . 'limitstart' . $listid, $newlimitstart);
+			$app->setUserState($context . 'limitstart' . $listId, $newLimitStart);
 		}
 
 		if ($input->get('format') == 'raw')
@@ -312,15 +295,14 @@ class FabrikAdminControllerList extends FabControllerForm
 	 *
 	 * @return  null
 	 */
-
 	public function doempty()
 	{
 		$model = $this->getModel('list', 'FabrikFEModel');
 		$app = JFactory::getApplication();
 		$input = $app->input;
 		$model->truncate();
-		$listid = $input->getInt('listid');
-		$ref = $input->get('fabrik_referrer', 'index.php?option=com_fabrik&view=list&cid=' . $listid, 'string');
+		$listId = $input->getInt('listid');
+		$ref = $input->get('fabrik_referrer', 'index.php?option=com_fabrik&view=list&cid=' . $listId, 'string');
 		$this->setRedirect($ref);
 	}
 
@@ -329,7 +311,6 @@ class FabrikAdminControllerList extends FabControllerForm
 	 *
 	 * @return  null
 	 */
-
 	public function doPlugin()
 	{
 		$app = JFactory::getApplication();
@@ -347,7 +328,7 @@ class FabrikAdminControllerList extends FabControllerForm
 		// If showing n tables in article page then ensure that only activated table runs its plugin
 		if ($input->getInt('id') == $model->get('id') || $input->get('origid', '', 'string') == '')
 		{
-			$msgs = $model->processPlugin();
+			$messages = $model->processPlugin();
 
 			if ($input->get('format') == 'raw')
 			{
@@ -355,7 +336,7 @@ class FabrikAdminControllerList extends FabControllerForm
 			}
 			else
 			{
-				foreach ($msgs as $msg)
+				foreach ($messages as $msg)
 				{
 					$app->enqueueMessage($msg);
 				}

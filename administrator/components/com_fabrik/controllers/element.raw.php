@@ -21,7 +21,6 @@ jimport('joomla.application.component.controllerform');
  * @subpackage  Fabrik
  * @since       3.0
  */
-
 class FabrikAdminControllerElement extends JControllerForm
 {
 	/**
@@ -43,7 +42,6 @@ class FabrikAdminControllerElement extends JControllerForm
 	 *
 	 * @return  void
 	 */
-
 	public function getPluginHTML()
 	{
 		$app = JFactory::getApplication();
@@ -63,7 +61,6 @@ class FabrikAdminControllerElement extends JControllerForm
 	 *
 	 * @return  boolean  True if successful, false otherwise.
 	 */
-
 	public function save($key = null, $urlVar = null)
 	{
 		$app = JFactory::getApplication();

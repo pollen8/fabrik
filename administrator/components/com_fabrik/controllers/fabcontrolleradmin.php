@@ -21,7 +21,6 @@ jimport('joomla.application.component.controlleradmin');
  * @subpackage  Fabrik
  * @since       3.0
  */
-
 class FabControllerAdmin extends JControllerAdmin
 {
 	/**
@@ -29,7 +28,6 @@ class FabControllerAdmin extends JControllerAdmin
 	 *
 	 * @var string
 	 */
-
 	public $option = 'com_fabrik';
 
 	/**
@@ -37,7 +35,6 @@ class FabControllerAdmin extends JControllerAdmin
 	 *
 	 * @return null
 	 */
-
 	public function dodelete()
 	{
 		parent::delete();

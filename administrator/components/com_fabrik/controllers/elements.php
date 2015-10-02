@@ -21,7 +21,6 @@ require_once 'fabcontrolleradmin.php';
  * @subpackage  Fabrik
  * @since       3.0
  */
-
 class FabrikAdminControllerElements extends FabControllerAdmin
 {
 	/**
@@ -46,7 +45,6 @@ class FabrikAdminControllerElements extends FabControllerAdmin
 	 * @see		JController
 	 * @since	1.6
 	 */
-
 	public function __construct($config = array())
 	{
 		parent::__construct($config);
@@ -63,7 +61,6 @@ class FabrikAdminControllerElements extends FabControllerAdmin
 	 *
 	 * @return  J model
 	 */
-
 	public function getModel($name = 'Element', $prefix = 'FabrikAdminModel', $config = array())
 	{
 		$config = array();
@@ -78,7 +75,6 @@ class FabrikAdminControllerElements extends FabControllerAdmin
 	 *
 	 * @return null
 	 */
-
 	public function toggleInList()
 	{
 		// Check for request forgeries
@@ -113,14 +109,14 @@ class FabrikAdminControllerElements extends FabControllerAdmin
 			{
 				if ($value == 1)
 				{
-					$ntext = $this->text_prefix . '_N_ITEMS_ADDED_TO_LIST_VIEW';
+					$nText = $this->text_prefix . '_N_ITEMS_ADDED_TO_LIST_VIEW';
 				}
 				else
 				{
-					$ntext = $this->text_prefix . '_N_ITEMS_REMOVED_FROM_LIST_VIEW';
+					$nText = $this->text_prefix . '_N_ITEMS_REMOVED_FROM_LIST_VIEW';
 				}
 
-				$this->setMessage(JText::plural($ntext, count($cid)));
+				$this->setMessage(JText::plural($nText, count($cid)));
 			}
 		}
 
@@ -134,7 +130,6 @@ class FabrikAdminControllerElements extends FabControllerAdmin
 	 *
 	 * @return null
 	 */
-
 	public function delete()
 	{
 		$viewType = JFactory::getDocument()->getType();
@@ -157,7 +152,6 @@ class FabrikAdminControllerElements extends FabControllerAdmin
 	 *
 	 * @return  null
 	 */
-
 	public function cancel()
 	{
 		$this->setRedirect('index.php?option=com_fabrik&view=elements');
@@ -168,7 +162,6 @@ class FabrikAdminControllerElements extends FabControllerAdmin
 	 *
 	 * @return  null
 	 */
-
 	public function copySelectGroup()
 	{
 		JSession::checkToken() or die('Invalid Token');
@@ -193,7 +186,6 @@ class FabrikAdminControllerElements extends FabControllerAdmin
 	 *
 	 * @return  void
 	 */
-
 	public function batch()
 	{
 		JSession::checkToken() or die('Invalid Token');
@@ -213,7 +205,6 @@ class FabrikAdminControllerElements extends FabControllerAdmin
 	 *
 	 * @since   3.1rc1
 	 */
-
 	public function saveOrderAjax()
 	{
 		$pks = $this->input->post->get('cid', array(), 'array');
@@ -243,7 +234,6 @@ class FabrikAdminControllerElements extends FabControllerAdmin
 	 *
 	 * @return  null
 	 */
-
 	public function publish()
 	{
 		$app = JFactory::getApplication();
