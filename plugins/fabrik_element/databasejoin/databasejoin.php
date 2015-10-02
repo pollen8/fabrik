@@ -1526,7 +1526,8 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		$displayData->name = $thisElName;
 		$displayData->editable = $this->isEditable();
 		$displayData->optionLayout =  $this->getLayout('form-radio');
-		FabrikHelperHTML::jLayoutJs('fabrik-element-databasejoin-form-radio', 'fabrik-element-databasejoin-form-radio', $displayData, array($this->layoutBasePath()));
+		$singleLayout = 'fabrik-element-' . $this->getPluginName() . '-form-radio';
+		FabrikHelperHTML::jLayoutJs($singleLayout, $singleLayout, $displayData, array($this->layoutBasePath()));
 
 		$html[] = '<div class="fabrikSubElementContainer" id="' . $id . '">';
 
@@ -1672,7 +1673,8 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		$displayData->optionLayout =  $this->getLayout('form-checkbox');
 
 		$html[] = '<div class="fabrikSubElementContainer" id="' . $id . '">';
-		FabrikHelperHTML::jLayoutJs('fabrik-element-databasejoin-form-checkbox', 'fabrik-element-databasejoin-form-checkbox', $displayData, array($this->layoutBasePath()));
+		$singleLayout = 'fabrik-element-' . $this->getPluginName() . '-form-checkbox';
+		FabrikHelperHTML::jLayoutJs($singleLayout, $singleLayout, $displayData, array($this->layoutBasePath()));
 
 		if (FabrikWorker::j3())
 		{
@@ -1695,7 +1697,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 			if (FabrikWorker::j3())
 			{
 				$displayData->options = $tmp;
-				$html[] = $layout->render($displayData);
+				// $html[] = $layout->render($displayData);
 			}
 			else
 			{

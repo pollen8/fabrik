@@ -1162,6 +1162,7 @@ EOD;
 	public static function jLayoutJs($name, $layoutName, stdClass $data = null, $paths = array(), $options = array())
 	{
 		$layout =self::getLayout($layoutName, $paths, $options);
+		//echo "<pre>";print_r($layout);echo "</pre>";
 		self::$jLayoutsJs[$name] = $layout->render($data);
 	}
 

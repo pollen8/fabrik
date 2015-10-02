@@ -169,18 +169,18 @@ var FbDatabasejoin = new Class({
 			break;
 		case 'checkbox':
 			opt = this.getCheckboxTmplNode().clone();
-			this._addOption(opt, l);
+			this._addOption(opt, l, v);
 			break;
 		case 'radio':
 		/* falls through */
 		default:
-			var opt = jQuery(Fabrik.jLayouts['fabrik-element-databasejoin-form-radio'])[0];
-			this._addOption(opt, l);
+			var opt = jQuery(Fabrik.jLayouts['fabrik-element-' + this.plugin + '-form-radio'])[0];
+			this._addOption(opt, l, v);
 			break;
 		}
 	},
 
-	_addOption: function (opt, l) {
+	_addOption: function (opt, l, v) {
 		var sel = typeOf(this.options.value) === 'array' ? this.options.value : Array.from(this.options.value),
 			i = opt.getElement('input'),
 			last, injectWhere,
@@ -220,7 +220,7 @@ var FbDatabasejoin = new Class({
 	 */
 	getCheckboxTmplNode: function () {
 		if (Fabrik.bootstrapped) {
-			this.chxTmplNode = jQuery(Fabrik.jLayouts['fabrik-element-databasejoin-form-checkbox'])[0];
+			this.chxTmplNode = jQuery(Fabrik.jLayouts['fabrik-element-' + this.plugin + '-form-checkbox'])[0];
 		} else {
 			if (!this.chxTmplNode && this.options.displayType === 'checkbox')
 			{

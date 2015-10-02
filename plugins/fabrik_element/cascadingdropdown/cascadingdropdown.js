@@ -65,7 +65,7 @@ var FbCascadingdropdown = new Class({
 
 	/**
 	 * Change
-	 * @param   v          Value of observered element
+	 * @param   v          Value of observed element
 	 * @param   triggerid  Observed element's HTML id
 	 */
 	change: function (v, triggerid)
@@ -170,7 +170,7 @@ var FbCascadingdropdown = new Class({
 			//this.element.disabled = (this.element.options.length === 1 ? true : false);
 			if (this.options.editable && this.options.displayType === 'dropdown') {
 				if (this.element.options.length === 1) {
-					// SELECTS DONT HAVE READONLY PROPERTIES
+					// SELECTS DON'T HAVE READONLY PROPERTIES
 					//this.element.setProperty('readonly', true);
 					this.element.addClass('readonly');
 				} else {
@@ -205,7 +205,7 @@ var FbCascadingdropdown = new Class({
 		case 'radio':
 			/* falls through */
 		case 'checkbox':
-			this.getContainer().getElements('.fabrik_subelement').destroy();
+			this.getContainer().getElements('*[data-role="suboption"]').destroy();
 			break;
 		case 'dropdown':
 			/* falls through */
@@ -260,7 +260,7 @@ var FbCascadingdropdown = new Class({
 		if (this.options.watchInSameGroup === true) {
 			this.element.empty();
 			// Set ingoreAjax so that the ajax event that is fired when the element is added to the form manager
-			// does not update the newly cloned dropdown
+			// does not update the newly cloned drop-down
 			this.ignoreAjax = true;
 		}
 		if (this.options.showDesc === true) {
@@ -272,7 +272,7 @@ var FbCascadingdropdown = new Class({
 	},
 
 	/**
-	 * Update auto-complete fields id and create new autocompleter object for duplicated element
+	 * Update auto-complete fields id and create new auto-completer object for duplicated element
 	 */
 	cloneAutoComplete: function () {
 		var f = this.getAutoCompleteLabelField();
@@ -286,18 +286,19 @@ var FbCascadingdropdown = new Class({
 		if (this.ingoreShowDesc === true) {
 			return;
 		}
-		var v = document.id(e.target).selectedIndex;
-		var c = this.getContainer().getElement('.dbjoin-description');
-		var show = c.getElement('.description-' + v);
+		var v = document.id(e.target).selectedIndex,
+			c = this.getContainer().getElement('.dbjoin-description'),
+			show = c.getElement('.description-' + v),
+			myFx;
 		c.getElements('.notice').each(function (d) {
 			if (d === show) {
-				var myfx = new Fx.Style(show, 'opacity', {
+				myFx = new Fx.Style(show, 'opacity', {
 					duration: 400,
 					transition: Fx.Transitions.linear
 				});
-				myfx.set(0);
+				myFx.set(0);
 				d.show();
-				myfx.start(0, 1);
+				myFx.start(0, 1);
 			} else {
 				d.hide();
 			}

@@ -18,23 +18,22 @@ $colCounter = 0;
 foreach ($d->options as $option) :
 	$checked = in_array($option->value, $d->default) ? 'checked="checked"' : '';
 	$name = $d->name . '[' . $colCounter . ']';
-	if (($colSize * $colCounter) % 12 === 0) : ?>
+	if (($colSize * $colCounter) % 12 === 0 || $colCounter == 0) :
+		?>
 		<div class="row-fluid">
-	<?php endif; ?>
-	<div class="span<?php echo $colSize; ?>">
-		<label class="checkbox">
-			<input type="checkbox" value="<?php echo $option->value; ?>" name="<?php echo $name; ?>" class="fabrikinput" <?php echo $checked; ?> />
-			<?php echo $option->text; ?>
-		</label>
-	</div>
+	<?php endif;
 
-	<?php
+	$d->option = $option;
+	$d->option->checked =$checked;
+	$d->colCounter = $colCounter;
+	echo $d->optionLayout->render($d);
+	$colCounter++;
 	if (($colSize * $colCounter) % 12 === 0 && $colCounter !== 0) :
 		?>
 		</div>
 	<?php endif; ?>
 	<?php
-	$colCounter++;
+
 endforeach;
 ?>
 </div>
