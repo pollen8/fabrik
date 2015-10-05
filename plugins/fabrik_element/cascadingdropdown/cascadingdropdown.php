@@ -14,7 +14,7 @@ defined('_JEXEC') or die('Restricted access');
 require_once JPATH_SITE . '/plugins/fabrik_element/databasejoin/databasejoin.php';
 
 /**
- * Plugin element to render cascading dropdown
+ * Plugin element to render cascading drop-down
  *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.element.cascadingdropdown
@@ -196,7 +196,7 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 		 */
 		$tmp = array();
 		$rowId = $app->input->string('rowid', '', 'string');
-		$show_please = $this->showPleaseSelect();
+		$showPlease = $this->showPleaseSelect();
 
 		// $$$ hugh testing to see if we need to load options after a validation failure, but I don't think we do, as JS will reload via AJAX
 		if (!$this->isEditable() || ($this->isEditable() && $rowId !== ''))
@@ -205,14 +205,14 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 		}
 		else
 		{
-			if ($show_please)
+			if ($showPlease)
 			{
 				$tmp[] = $this->selectOption();
 			}
 		}
 
 		$imageOpts = array('alt' => FText::_('PLG_ELEMENT_CALC_LOADING'), 'style' => 'display:none;padding-left:10px;', 'class' => 'loader');
-		$this->loadingImg = FabrikHelperHTML::image("ajax-loader.gif", 'form', @$this->tmpl, $imageOpts);
+		$this->loadingImg = FabrikHelperHTML::image('ajax-loader.gif', 'form', @$this->tmpl, $imageOpts);
 
 		// Get the default label for the drop down (use in read only templates)
 		$defaultLabel = '';
@@ -234,15 +234,13 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 
 		if (count($tmp) == 1)
 		{
-			$class .= " readonly";
+			$class .= ' readonly';
 
 			// Selects don't have readonly properties !
 		}
 
 		$w = new FabrikWorker;
 		$default = $w->parseMessageForPlaceHolder($default);
-
-		// Not yet implemented always going to use dropdown for now
 		$displayType = $params->get('cdd_display_type', 'dropdown');
 		$html = array();
 
@@ -268,11 +266,11 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 					break;
 				default:
 				case 'dropdown':
-					// Jaanus: $maxWidth to avoid dropdowns become too large (when choosing options they would still be of their full length
+					// Jaanus: $maxWidth to avoid drop-downs become too large (when choosing options they would still be of their full length
 					$maxWidth = $params->get('max-width', '') === '' ? '' : ' style="max-width:' . $params->get('max-width') . ';"';
 					$advancedClass = $this->getAdvancedSelectClass();
-					$attribs = 'class="' . $class . ' ' . $advancedClass . '" ' . $disabled . ' size="1"' . $maxWidth;
-					$html[] = JHTML::_('select.genericlist', $tmp, $name, $attribs, 'value', 'text', $default, $id);
+					$attributes = 'class="' . $class . ' ' . $advancedClass . '" ' . $disabled . ' size="1"' . $maxWidth;
+					$html[] = JHTML::_('select.genericlist', $tmp, $name, $attributes, 'value', 'text', $default, $id);
 					break;
 			}
 
@@ -527,9 +525,9 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 		$sql = $this->buildQuery($data, $incWhere, $opts);
 		$sqlKey = (string) $sql;
 		$sqlKey .= $this->isEditable() ? '0' : '1';
-		
+
 		$eval = $params->get('cdd_join_label_eval', '');
-		
+
 		if (trim($eval) === '' && array_key_exists($sqlKey, $this->optionVals))
 		{
 			return $this->optionVals[$sqlKey];
@@ -813,9 +811,9 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 				foreach ($whereVal as &$v)
 				{
 
-					// Jaanus: Solving bug: imploded arrays when chbx in repeated group         
-					
-					if (is_array($v)) 
+					// Jaanus: Solving bug: imploded arrays when chbx in repeated group
+
+					if (is_array($v))
 					{
 						foreach ($v as &$vchild)
 						{
@@ -828,9 +826,9 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 						$v = FabrikString::safeQuote($v);
 					}
 				}
-      
+
 				// Jaanus: if count of where values is 0 or if there are no letters or numbers, only commas in imploded array
-				
+
 				$where .= count($whereVal) == 0 || !preg_match('/\w/', implode(',', $whereVal)) ? '4 = -4' : $whereKey . ' IN ' . '(' . str_replace(',,', ',\'\',', implode(',', $whereVal)) . ')';
 			}
 			else
