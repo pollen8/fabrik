@@ -363,9 +363,6 @@ class FabrikViewFormBase extends JViewLegacy
 
 		$this->showPDF = $params->get('pdf', $fbConfig->get('form_pdf', false));
 
-		$buttonProperties = array('class' => 'fabrikTip', 'opts' => "{notice:true}", 'title' => '<span>' . FText::_('COM_FABRIK_PDF') . '</span>',
-				'alt' => FText::_('COM_FABRIK_PDF'));
-
 		if ($this->showPDF)
 		{
 			FabrikWorker::canPdf();
@@ -380,7 +377,10 @@ class FabrikViewFormBase extends JViewLegacy
 			}
 
 			$this->pdfURL = JRoute::_($this->pdfURL);
-			$this->pdfLink = '<a href="' . $this->pdfURL . '">' . FabrikHelperHTML::image('pdf.png', 'list', $this->tmpl, $buttonProperties) . '</a>';
+			$layout = FabrikHelperHTML::getLayout('form.fabrik-pdf-icon');
+			$pdfDisplayData = new stdClass;
+			$pdfDisplayData->pdfURL = $this->pdfURL;
+			$this->pdfLink = $layout->render($pdfDisplayData);
 		}
 	}
 
@@ -393,12 +393,11 @@ class FabrikViewFormBase extends JViewLegacy
 	 */
 	protected function _addJavascript($listId)
 	{
-		$app = JFactory::getApplication();
 		$pluginManager = FabrikWorker::getPluginManager();
 		$model = $this->getModel();
 		$aLoadedElementPlugins = array();
 		$jsActions = array();
-		$bkey = $model->jsKey();
+		$bKey = $model->jsKey();
 		$srcs = FabrikHelperHTML::framework();
 		$shim = array();
 
@@ -462,7 +461,7 @@ class FabrikViewFormBase extends JViewLegacy
 
 				for ($c = 0; $c < $eventMax; $c++)
 				{
-					$jsAct = $elementModel->getFormattedJSActions($bkey, $c);
+					$jsAct = $elementModel->getFormattedJSActions($bKey, $c);
 
 					if (!empty($jsAct))
 					{
@@ -478,7 +477,7 @@ class FabrikViewFormBase extends JViewLegacy
 		$table = $listModel->getTable();
 		$form = $model->getForm();
 		FabrikHelperHTML::windows('a.fabrikWin');
-		FabrikHelperHTML::tips('.hasTip', array(), "$('$bkey')");
+		FabrikHelperHTML::tips('.hasTip', array(), "$('$bKey')");
 		$model->getFormCss();
 		$opts = $this->jsOpts();
 
@@ -498,20 +497,20 @@ class FabrikViewFormBase extends JViewLegacy
 
 		JText::script('COM_FABRIK_FORM_SAVED');
 
-		// $$$ rob don't declare as var $bkey, but rather assign to window, as if loaded via ajax window the function is wrapped
-		// inside an anonymous function, and therefore $bkey wont be available as a global var in window
+		// $$$ rob don't declare as var $bKey, but rather assign to window, as if loaded via ajax window the function is wrapped
+		// inside an anonymous function, and therefore $bKey wont be available as a global var in window
 		$script = array();
-		/* $script[] = "\twindow.$bkey = new FbForm(" . $model->getId() . ", $opts);";
+		/* $script[] = "\twindow.$bKey = new FbForm(" . $model->getId() . ", $opts);";
 		$script[] = "\tif(typeOf(Fabrik) !== 'null') {";
-		$script[] = "\t\tFabrik.addBlock('$bkey', $bkey);";
+		$script[] = "\t\tFabrik.addBlock('$bKey', $bKey);";
 		$script[] = "\t}"; */
 
-		$script[] = "\t\tvar $bkey = Fabrik.form('$bkey', " . $model->getId() . ", $opts);";
+		$script[] = "\t\tvar $bKey = Fabrik.form('$bKey', " . $model->getId() . ", $opts);";
 
 		// Instantiate js objects for each element
 		$vstr = "\n";
 		$groups = $model->getGroupsHiarachy();
-		$script[] = "\tFabrik.blocks['{$bkey}'].addElements(";
+		$script[] = "\tFabrik.blocks['{$bKey}'].addElements(";
 		$groupedJs = new stdClass;
 
 		foreach ($groups as $groupModel)
@@ -563,7 +562,7 @@ class FabrikViewFormBase extends JViewLegacy
 
 							foreach ($watchElements as $watchElement)
 							{
-								$vstr .= "\tFabrik.blocks['$bkey'].watchValidation('" . $watchElement['id'] . "', '" . $watchElement['triggerEvent'] . "');\n";
+								$vstr .= "\tFabrik.blocks['$bKey'].watchValidation('" . $watchElement['id'] . "', '" . $watchElement['triggerEvent'] . "');\n";
 							}
 						}
 					}
@@ -585,7 +584,7 @@ class FabrikViewFormBase extends JViewLegacy
 		if (FabrikHelperHTML::inAjaxLoadedPage())
 		{
 			$tipOpts = FabrikHelperHTML::tipOpts();
-			$script[] = "new FloatingTips('#" . $bkey . " .fabrikTip', " . json_encode($tipOpts) . ");";
+			$script[] = "new FloatingTips('#" . $bKey . " .fabrikTip', " . json_encode($tipOpts) . ");";
 		}
 
 		$res = $pluginManager->runPlugins('onJSReady', $model);
@@ -1052,6 +1051,7 @@ class FabrikViewFormBase extends JViewLegacy
 	 */
 	protected function _cryptViewOnlyElements(&$aHiddenFields)
 	{
+		/** @var FabrikFEModelForm $model */
 		$model = $this->getModel();
 		$crypt = FabrikWorker::getCrypt();
 		$fields = array();
