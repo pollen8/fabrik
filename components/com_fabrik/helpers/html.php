@@ -825,7 +825,7 @@ EOD;
 			$version = new JVersion;
 			$jsAssetBaseURI = self::getJSAssetBaseURI();
 			$fbConfig = JComponentHelper::getParams('com_fabrik');
-			
+
 			// Only use template test for testing in 2.5 with my temp J bootstrap template.
 			$bootstrapped = in_array($app->getTemplate(), array('bootstrap', 'fabrik4')) || $version->RELEASE > 2.5;
 
@@ -879,6 +879,7 @@ EOD;
 
 				$liveSiteSrc = array();
 				$liveSiteSrc[] = "\tFabrik.liveSite = '" . COM_FABRIK_LIVESITE . "';";
+				$liveSiteSrc[] = "\tFabrik.package = '" .  $app->getUserState('com_fabrik.package', 'fabrik') . "';";
 				$liveSiteSrc[] = "\tFabrik.debug = " . (self::isDebug() ? 'true;' : 'false;');
 				$liveSiteSrc[] = "\tFabrik.jLayouts = " . json_encode(JArrayHelper::toObject(self::$jLayoutsJs)) . ";";
 
@@ -895,8 +896,8 @@ EOD;
 				$liveSiteSrc[] = self::tipInt();
 				$liveSiteSrc = implode("\n", $liveSiteSrc);
 				self::script($liveSiteReq, $liveSiteSrc);
-			} 
-			else 
+			}
+			else
 			{
 				$liveSiteSrc[] = "\tif (!Fabrik.jLayouts) {
 				Fabrik.jLayouts = {};
@@ -1404,7 +1405,7 @@ EOD;
 	{
 		$key = 'fabrik.js.head.scripts';
 		$session = JFactory::getSession();
-	
+
 		if ($session->has($key))
 		{
 			$scripts = $session->get($key);
@@ -1413,11 +1414,11 @@ EOD;
 		{
 			$scripts = array();
 		}
-	
+
 		$scripts[] = $js;
 		$session->set($key, $scripts);
 	}
-	
+
 	/**
 	 * Load the slimbox / media box css and js files
 	 *

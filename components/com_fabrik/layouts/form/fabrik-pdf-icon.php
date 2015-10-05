@@ -6,9 +6,7 @@
 defined('JPATH_BASE') or die;
 
 $d = $displayData;
-$buttonProperties = array('class' => 'fabrikTip', 'opts' => "{notice:true}", 'title' => '<span>' . FText::_('COM_FABRIK_PDF') . '</span>',
-	'alt' => FText::_('COM_FABRIK_PDF'));
 ?>
-<a href="<?php echo $d->pdfURL; ?>">
-	<?php echo FabrikHelperHTML::image('pdf.png', 'list', $this->tmpl, $buttonProperties);?>
-</a>
+<a href="<?php echo $d->pdfURL; ?>" data-role="open-form-pdf" class="btn btn-default">
+	<?php echo FabrikHelperHTML::icon('icon-file', FText::_('COM_FABRIK_PDF'));?>
+</a>&nbsp;
