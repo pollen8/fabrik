@@ -343,7 +343,7 @@ class FabrikViewFormBase extends JViewLegacy
 		if ($this->showPrint)
 		{
 			$text = FabrikHelperHTML::image('print.png');
-			$this->printLink = '<a href="#" class="printlink" onclick="window.print();return false;">' . $text . '</a>';
+			$this->printLink = '<a href="#" class="btn btn-default" class="printlink" onclick="window.print();return false;">' . $text . '</a>';
 		}
 
 		if ($input->get('tmpl') != 'component')
@@ -380,6 +380,8 @@ class FabrikViewFormBase extends JViewLegacy
 			$layout = FabrikHelperHTML::getLayout('form.fabrik-pdf-icon');
 			$pdfDisplayData = new stdClass;
 			$pdfDisplayData->pdfURL = $this->pdfURL;
+			$pdfDisplayData->tmpl = $this->tmpl;
+
 			$this->pdfLink = $layout->render($pdfDisplayData);
 		}
 	}

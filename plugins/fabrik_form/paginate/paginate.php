@@ -28,6 +28,14 @@ class PlgFabrik_FormPaginate extends PlgFabrik_Form
 	 * @var string
 	 */
 	protected $data = '';
+
+	/**
+	 * Navigation ids.
+	 *
+	 * @var Object
+	 */
+	protected $ids;
+
 	/**
 	 * Inject custom html into the bottom of the form
 	 *
@@ -47,6 +55,7 @@ class PlgFabrik_FormPaginate extends PlgFabrik_Form
 	 */
 	public function getBottomContent()
 	{
+		/** @var FabrikFEModelForm $formModel */
 		$formModel = $this->getModel();
 
 		if (!$this->show())
@@ -61,7 +70,7 @@ class PlgFabrik_FormPaginate extends PlgFabrik_Form
 		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$formId = $formModel->getForm()->id;
 		$mode = JString::strtolower($input->get('view', 'form'));
-		$this->ids = $this->getNavIds($formModel);
+		$this->ids = $this->getNavIds();
 		$linkStartPrev = $this->ids->index == 0 ? ' disabled' : '';
 		$linkNextEnd = $this->ids->index == $this->ids->lastKey ? ' disabled' : '';
 
@@ -122,6 +131,7 @@ class PlgFabrik_FormPaginate extends PlgFabrik_Form
 	 */
 	protected function getNavIds()
 	{
+		/** @var FabrikFEModelForm $formModel */
 		$formModel = $this->getModel();
 		$listModel = $formModel->getListModel();
 		$table = $listModel->getTable();
@@ -167,6 +177,8 @@ class PlgFabrik_FormPaginate extends PlgFabrik_Form
 		 * Let's set it here before use it
 		 */
 		$params = $this->getParams();
+
+		/** @var FabrikFEModelForm $formModel */
 		$formModel = $this->getModel();
 		$formModel->checkAccessFromListSettings();
 		$where = $params->get('paginate_where');
@@ -193,6 +205,7 @@ class PlgFabrik_FormPaginate extends PlgFabrik_Form
 	 */
 	public function onAfterJSLoad()
 	{
+		/** @var FabrikFEModelForm $formModel */
 		$formModel = $this->getModel();
 		$params = $this->getParams();
 
