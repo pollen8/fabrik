@@ -22,7 +22,6 @@ require_once COM_FABRIK_FRONTEND . '/helpers/element.php';
  * @subpackage  Fabrik
  * @since       3.0
  */
-
 class FabrikFEModelForm extends FabModelForm
 {
 	/**
@@ -216,7 +215,7 @@ class FabrikFEModelForm extends FabModelForm
 
 	/**
 	 * Form data - keys use the full element name (listname___elementname)
-	 * @var unknown_type
+	 * @var array
 	 */
 	public $formDataWithTableName = null;
 
@@ -284,7 +283,33 @@ class FabrikFEModelForm extends FabModelForm
 	 * @var array
 	 */
 	public $jsOpts = null;
-	
+
+	/**
+	 * @var array
+	 */
+	public $_origData;
+
+	/**
+	 * Original Row id before form is saved.
+	 *
+	 * @var string
+	 */
+	public $origRowId;
+
+	/**
+	 * Is the form being posted via ajax.
+	 *
+	 * @var bool
+	 */
+	protected $ajaxPost = false;
+
+	/**
+	 * Posted form data with full names?
+	 * 
+	 * @var array
+	 */
+	public $fullFormData = array();
+
 	/**
 	 * Use this lastInsertId to store the main table's lastInsertId, so we can use this rather
 	 * than the list model lastInsertId, which could be for the last joined table rather than
@@ -312,7 +337,6 @@ class FabrikFEModelForm extends FabModelForm
 	 *
 	 * @since       1.5
 	 */
-
 	public function __construct($config = array())
 	{
 		parent::__construct($config);
@@ -331,7 +355,6 @@ class FabrikFEModelForm extends FabModelForm
 	 *
 	 * @return  void
 	 */
-
 	public function setId($id)
 	{
 		// Set new form ID
@@ -351,7 +374,6 @@ class FabrikFEModelForm extends FabModelForm
 	 *
 	 * @return  void
 	 */
-
 	public function setRowId($id)
 	{
 		$this->rowId = $id;
@@ -362,7 +384,6 @@ class FabrikFEModelForm extends FabModelForm
 	 *
 	 * @return  int
 	 */
-
 	public function getId()
 	{
 		return $this->getState('form.id');
@@ -373,7 +394,6 @@ class FabrikFEModelForm extends FabModelForm
 	 *
 	 * @return  object  form table
 	 */
-
 	public function getForm()
 	{
 		return $this->getTable();
@@ -384,7 +404,6 @@ class FabrikFEModelForm extends FabModelForm
 	 *
 	 * @return  object  params
 	 */
-
 	public function getParams()
 	{
 		if (!isset($this->params))
@@ -403,7 +422,6 @@ class FabrikFEModelForm extends FabModelForm
 	 *
 	 * @return boolean
 	 */
-
 	protected function isUserRowId($priority = 'menu')
 	{
 		$rowId = FabrikWorker::getMenuOrRequestVar('rowid', '', $this->isMambot, $priority);
@@ -418,7 +436,6 @@ class FabrikFEModelForm extends FabModelForm
 	 *
 	 * @return  int  0 = no access, 1 = view only , 2 = full form view, 3 = add record only
 	 */
-
 	public function checkAccessFromListSettings()
 	{
 		$form = $this->getForm();
@@ -487,7 +504,6 @@ class FabrikFEModelForm extends FabModelForm
 	 *
 	 * @return string tmpl name
 	 */
-
 	public function getTmpl()
 	{
 		$app = JFactory::getApplication();
@@ -549,7 +565,6 @@ class FabrikFEModelForm extends FabModelForm
 	 *
 	 * @return  void
 	 */
-
 	public function getFormCss()
 	{
 		$app = JFactory::getApplication();
@@ -584,7 +599,7 @@ class FabrikFEModelForm extends FabModelForm
 
 			if (!FabrikHelperHTML::stylesheetFromPath($tmplPath))
 			{
-				$ok = FabrikHelperHTML::stylesheetFromPath('components/com_fabrik/views/' . $view . '/' . $jTmplFolder . '/' . $tmpl . '/template_css.php' . $qs);
+				FabrikHelperHTML::stylesheetFromPath('components/com_fabrik/views/' . $view . '/' . $jTmplFolder . '/' . $tmpl . '/template_css.php' . $qs);
 			}
 
 			/* $$$ hugh - as per Skype convos with Rob, decided to re-instate the custom.css convention.  So I'm adding two files:
@@ -614,23 +629,22 @@ class FabrikFEModelForm extends FabModelForm
 	/**
 	 * Load the JS files into the document
 	 *
-	 * @param   array  &$srcs  js script srcs to load in the head
+	 * @param   array  &$scripts  Js script sources to load in the head
 	 *
 	 * @return null
 	 */
-
-	public function getCustomJsAction(&$srcs)
+	public function getCustomJsAction(&$scripts)
 	{
 		// $$$ hugh - added ability to use form_XX, as am adding custom list_XX
 		$view = $this->isEditable() ? 'form' : 'details';
 
 		if (JFile::exists(COM_FABRIK_FRONTEND . '/js/' . $this->getId() . '.js'))
 		{
-			$srcs[] = 'components/com_fabrik/js/' . $this->getId() . '.js';
+			$scripts[] = 'components/com_fabrik/js/' . $this->getId() . '.js';
 		}
 		elseif (JFile::exists(COM_FABRIK_FRONTEND . '/js/' . $view . '_' . $this->getId() . '.js'))
 		{
-			$srcs[] = 'components/com_fabrik/js/' . $view . '_' . $this->getId() . '.js';
+			$scripts[] = 'components/com_fabrik/js/' . $view . '_' . $this->getId() . '.js';
 		}
 	}
 
@@ -641,7 +655,6 @@ class FabrikFEModelForm extends FabModelForm
 	 *
 	 * @return	string	Browser title
 	 */
-
 	public function getPageTitle($title = '')
 	{
 		$title = $title == '' ? $this->getLabel() : $title;
@@ -672,7 +685,6 @@ class FabrikFEModelForm extends FabModelForm
 	 *
 	 * @return	array	array(group_id =>join_id)
 	 */
-
 	public function getJoinGroupIds($joins = null)
 	{
 		$listModel = $this->getlistModel();
@@ -706,7 +718,6 @@ class FabrikFEModelForm extends FabModelForm
 	 *
 	 * @return  array  javascript actions
 	 */
-
 	public function getJsActions()
 	{
 		if (isset($this->jsActions))
@@ -716,7 +727,6 @@ class FabrikFEModelForm extends FabModelForm
 
 		$this->jsActions = array();
 		$db = FabrikWorker::getDbo(true);
-		$j = new JRegistry;
 		$aJsActions = array();
 		$aElIds = array();
 		$groups = $this->getGroupsHiarachy();
@@ -752,7 +762,7 @@ class FabrikFEModelForm extends FabModelForm
 		{
 			foreach ($res as $r)
 			{
-				// Merge the js attribs back into the array
+				// Merge the js attributes back into the array
 				$a = json_decode($r->params);
 
 				foreach ($a as $k => $v)
@@ -778,7 +788,6 @@ class FabrikFEModelForm extends FabModelForm
 	 *
 	 * @return  array
 	 */
-
 	public function getPublishedGroups()
 	{
 		$db = FabrikWorker::getDbo(true);
@@ -814,29 +823,11 @@ class FabrikFEModelForm extends FabModelForm
 	 *
 	 * @return  array  group ids
 	 */
-
 	public function getGroupIds()
 	{
 		$groups = $this->getPublishedGroups();
 
 		return array_keys($groups);
-	}
-
-	/**
-	 * Force load in the group ids
-	 * separate from getGroupIds as you need to force load these
-	 * when saving the table
-	 *
-	 * @deprecated - not used?
-	 *
-	 * @return  array  group ids
-	 */
-
-	protected function _loadGroupIds()
-	{
-		unset($this->_publishedformGroups);
-
-		return $this->getGroupIds();
 	}
 
 	/**
@@ -846,7 +837,6 @@ class FabrikFEModelForm extends FabModelForm
 	 *
 	 * @return  array
 	 */
-
 	private function mergeGroupsWithJoins($groups)
 	{
 		$db = FabrikWorker::getDbo(true);
@@ -855,13 +845,13 @@ class FabrikFEModelForm extends FabModelForm
 		if ($form->record_in_database)
 		{
 			$listModel = $this->getListModel();
-			$listid = (int) $listModel->getId();
+			$listId = (int) $listModel->getId();
 
-			if (is_object($listModel) && $listid !== 0)
+			if (is_object($listModel) && $listId !== 0)
 			{
 				$query = $db->getQuery(true);
 				$query->select('g.id, j.id AS joinid')->from('#__{package}_joins AS j')
-					->join('INNER', '#__{package}_groups AS g ON g.id = j.group_id')->where('list_id = ' . $listid . ' AND g.published = 1');
+					->join('INNER', '#__{package}_groups AS g ON g.id = j.group_id')->where('list_id = ' . $listId . ' AND g.published = 1');
 
 				// Added as otherwise you could potentially load a element joinid as a group join id. 3.1
 				$query->where('j.element_id = 0');
@@ -884,9 +874,8 @@ class FabrikFEModelForm extends FabModelForm
 	/**
 	 * Get the forms published group objects
 	 *
-	 * @return  array  Group model objects with table row loaded
+	 * @return  FabrikFEModelGroup[]  Group model objects with table row loaded
 	 */
-
 	public function getGroups()
 	{
 		if (!isset($this->groups))
@@ -894,18 +883,18 @@ class FabrikFEModelForm extends FabModelForm
 			$this->groups = array();
 			$listModel = $this->getListModel();
 			$groupModel = JModelLegacy::getInstance('Group', 'FabrikFEModel');
-			$groupdata = $this->getPublishedGroups();
+			$groupData = $this->getPublishedGroups();
 
-			foreach ($groupdata as $id => $groupd)
+			foreach ($groupData as $id => $groupD)
 			{
 				$thisGroup = clone ($groupModel);
 				$thisGroup->setId($id);
 				$thisGroup->setContext($this, $listModel);
 
-				// $$ rob 25/02/2011 this was doing a query per group - pointless as we bind $groupd to $row afterwards
+				// $$ rob 25/02/2011 this was doing a query per group - pointless as we bind $groupD to $row afterwards
 				// $row = $thisGroup->getGroup();
 				$row = FabTable::getInstance('Group', 'FabrikTable');
-				$row->bind($groupd);
+				$row->bind($groupD);
 				$thisGroup->setGroup($row);
 
 				if ($row->published == 1)
@@ -925,7 +914,6 @@ class FabrikFEModelForm extends FabModelForm
 	 *
 	 * @return  array  element objects
 	 */
-
 	public function getFormGroups($excludeUnpublished = true)
 	{
 		$params = $this->getParams();
@@ -969,9 +957,8 @@ class FabrikFEModelForm extends FabModelForm
 	 * --->group
 	 * if run before then existing data returned
 	 *
-	 * @return  array  element objects
+	 * @return  FabrikFEModelGroup[]  Group & element objects
 	 */
-
 	public function getGroupsHiarachy()
 	{
 		if (!isset($this->groups))
@@ -988,7 +975,6 @@ class FabrikFEModelForm extends FabModelForm
 	 *
 	 * @return  array  of element table objects
 	 */
-
 	public function getElementsNotInTable()
 	{
 		if (!isset($this->elementsNotInList))
@@ -1024,7 +1010,6 @@ class FabrikFEModelForm extends FabModelForm
 	 *
 	 * @return  string  form encoding type
 	 */
-
 	public function getFormEncType()
 	{
 		$groups = $this->getGroupsHiarachy();
@@ -1046,37 +1031,6 @@ class FabrikFEModelForm extends FabModelForm
 	}
 
 	/**
-	 * Run a method on all the element plugins in the form
-	 *
-	 * @param   string  $method  method to call
-	 * @param   array   $data    posted form data
-	 *
-	 * @deprecated - not used?
-	 *
-	 * @return  void
-	 */
-
-	public function runElementPlugins($method, $data)
-	{
-		$groups = $this->getGroupsHiarachy();
-
-		foreach ($groups as $groupModel)
-		{
-			$elementModels = $groupModel->getPublishedElements();
-
-			foreach ($elementModels as $elementModel)
-			{
-				$params = $elementModel->getParams();
-
-				if (method_exists($elementModel, $method))
-				{
-					$elementModel->$method($params, $data);
-				}
-			}
-		}
-	}
-
-	/**
 	 * Get the plugin manager
 	 *
 	 * @deprecated use return FabrikWorker::getPluginManager(); instead since 3.0b
@@ -1091,7 +1045,7 @@ class FabrikFEModelForm extends FabModelForm
 
 	/**
 	 * When the form is submitted we want to get the original record it
-	 * is updating - this is used in things like the fileupload element
+	 * is updating - this is used in things like the file upload element
 	 * to check for changes in uploaded files and process the difference
 	 *
 	 * @return	array
@@ -1118,7 +1072,7 @@ class FabrikFEModelForm extends FabModelForm
 
 			if ($isUserRow)
 			{
-				$orig_usekey = $input->get('usekey', '');
+				$origUseKey = $input->get('usekey', '');
 				$input->set('usekey', '');
 			}
 
@@ -1130,7 +1084,7 @@ class FabrikFEModelForm extends FabModelForm
 
 			if ($isUserRow)
 			{
-				$input->set('usekey', $orig_usekey);
+				$input->set('usekey', $origUseKey);
 			}
 		}
 	}
@@ -1141,7 +1095,6 @@ class FabrikFEModelForm extends FabModelForm
 	 *
 	 * @return  array
 	 */
-
 	public function getOrigData()
 	{
 		if (!isset($this->_origData))
@@ -1159,7 +1112,6 @@ class FabrikFEModelForm extends FabModelForm
 	 *
 	 * @return  bool
 	 */
-
 	public function origDataIsEmpty()
 	{
 		if (!isset($this->_origData))
@@ -1177,7 +1129,6 @@ class FabrikFEModelForm extends FabModelForm
 	 *
 	 * @return	bool
 	 */
-
 	public function copyingRow($set = false)
 	{
 		if ($set)
@@ -1193,7 +1144,6 @@ class FabrikFEModelForm extends FabModelForm
 	 *
 	 * @return  bool  false if one of the plugins returns an error otherwise true
 	 */
-
 	public function process()
 	{
 		$profiler = JProfiler::getInstance('Application');
@@ -1211,7 +1161,7 @@ class FabrikFEModelForm extends FabModelForm
 		$sessionModel = JModelLegacy::getInstance('Formsession', 'FabrikFEModel');
 		$sessionModel->setFormId($this->getId());
 		$sessionModel->setRowId($this->rowId);
-		/* $$$ rob rowId can be updated by juser plugin so plugin can use check (for new/edit)
+		/* $$$ rob rowId can be updated by jUser plugin so plugin can use check (for new/edit)
 		 * now looks at origRowId
 		 */
 		$this->origRowId = $this->rowId;
@@ -1312,7 +1262,6 @@ class FabrikFEModelForm extends FabModelForm
 	 *
 	 * @return bool
 	 */
-
 	protected function _doUpload()
 	{
 		$oUploader = $this->getUploader();
@@ -1328,7 +1277,7 @@ class FabrikFEModelForm extends FabModelForm
 
 	/**
 	 * Update the data that gets posted via the form and stored by the form
-	 * model. Used in elements to modify posted data see fabrikfileupload
+	 * model. Used in elements to modify posted data see file upload
 	 *
 	 * @param   string  $key          in key.dot.format to set a recursive array
 	 * @param   string  $val          value to set to
@@ -1337,7 +1286,6 @@ class FabrikFEModelForm extends FabModelForm
 	 *
 	 * @return  void
 	 */
-
 	public function updateFormData($key, $val, $update_raw = false, $override_ro = false)
 	{
 		if (strstr($key, '.'))
@@ -1367,36 +1315,36 @@ class FabrikFEModelForm extends FabModelForm
 			$ns = $val;
 
 			// $$$ hugh - changed name of $ns, as re-using after using it to set by reference was borking things up!
-			$ns_table = &$this->formDataWithTableName;
+			$nsTable = &$this->formDataWithTableName;
 
 			for ($i = 0; $i <= $pathNodes; $i++)
 			{
 				// If any node along the registry path does not exist, create it
-				if (!isset($ns_table[$nodes[$i]]))
+				if (!isset($nsTable[$nodes[$i]]))
 				{
-					$ns_table[$nodes[$i]] = array();
+					$nsTable[$nodes[$i]] = array();
 				}
 
-				$ns_table = &$ns_table[$nodes[$i]];
+				$nsTable = &$nsTable[$nodes[$i]];
 			}
 
-			$ns_table = $val;
+			$nsTable = $val;
 
 			// $$$ hugh - changed name of $ns, as re-using after using it to set by reference was borking things up!
-			$ns_full = &$this->fullFormData;
+			$nsFull = &$this->fullFormData;
 
 			for ($i = 0; $i <= $pathNodes; $i++)
 			{
 				// If any node along the registry path does not exist, create it
-				if (!isset($ns_full[$nodes[$i]]))
+				if (!isset($nsFull[$nodes[$i]]))
 				{
-					$ns_full[$nodes[$i]] = array();
+					$nsFull[$nodes[$i]] = array();
 				}
 
-				$ns_full = &$ns_full[$nodes[$i]];
+				$nsFull = &$nsFull[$nodes[$i]];
 			}
 
-			$ns_full = $val;
+			$nsFull = $val;
 
 			// $$$ hugh - FIXME - nope, this won't work!  We don't know which path node is the element name.
 			// $$$ hugh again - should now work, with little preg_replace hack, if last part is numeric, then second to last will be element name
@@ -1420,35 +1368,35 @@ class FabrikFEModelForm extends FabModelForm
 					$pathNodes = 0;
 				}
 
-				$ns_raw = &$this->formData;
+				$nsRaw = &$this->formData;
 
 				for ($i = 0; $i <= $pathNodes; $i++)
 				{
 					// If any node along the registry path does not exist, create it
-					if (!isset($ns_raw[$nodes[$i]]))
+					if (!isset($nsRaw[$nodes[$i]]))
 					{
-						$ns_raw[$nodes[$i]] = array();
+						$nsRaw[$nodes[$i]] = array();
 					}
 
-					$ns_raw = &$ns_raw[$nodes[$i]];
+					$nsRaw = &$nsRaw[$nodes[$i]];
 				}
 
-				$ns_raw = $val;
+				$nsRaw = $val;
 
-				$ns_raw_full = $this->_fullFormData;
+				$nsRawFull = $this->_fullFormData;
 
 				for ($i = 0; $i <= $pathNodes; $i++)
 				{
 					// If any node along the registry path does not exist, create it
-					if (!isset($ns_raw_full[$nodes[$i]]))
+					if (!isset($nsRawFull[$nodes[$i]]))
 					{
-						$ns_raw_full[$nodes[$i]] = array();
+						$nsRawFull[$nodes[$i]] = array();
 					}
 
-					$ns_raw_full = &$ns_raw_full[$nodes[$i]];
+					$nsRawFull = &$nsRawFull[$nodes[$i]];
 				}
 
-				$ns_raw_full = $val;
+				$nsRawFull = $val;
 			}
 		}
 		else
@@ -1567,7 +1515,6 @@ class FabrikFEModelForm extends FabModelForm
 	 *
 	 * @return  array  form data
 	 */
-
 	public function &setFormData()
 	{
 		if (isset($this->formData))
@@ -1620,7 +1567,6 @@ class FabrikFEModelForm extends FabModelForm
 	 *
 	 * @return  void
 	 */
-
 	protected function _clean(&$item)
 	{
 		if (is_array($item))
@@ -1658,12 +1604,11 @@ class FabrikFEModelForm extends FabModelForm
 	 *
 	 * @return  void
 	 */
-
-	private function callElementPreprocess()
+	private function callElementPreProcess()
 	{
 		$app = JFactory::getApplication();
 		$input = $app->input;
-		$repeatTotals = $input->get('fabrik_repeat_group', array(0), 'post', 'array');
+		$repeatTotals = $input->get('fabrik_repeat_group', array(0));
 		$groups = $this->getGroupsHiarachy();
 
 		// Currently this is just used by calculation elements
@@ -1691,17 +1636,16 @@ class FabrikFEModelForm extends FabModelForm
 	 *
 	 * @return  void
 	 */
-
 	protected function removeEmptyNoneJoinedGroupData(&$data)
 	{
 		$repeats = FArrayHelper::getValue($data, 'fabrik_repeat_group', array());
 		$groups = $this->getGroups();
 
-		foreach ($repeats as $groupid => $c)
+		foreach ($repeats as $groupId => $c)
 		{
 			if ($c == 0)
 			{
-				$group = $groups[$groupid];
+				$group = $groups[$groupId];
 
 				if ($group->isJoin())
 				{
@@ -1725,14 +1669,13 @@ class FabrikFEModelForm extends FabModelForm
 	 *
 	 * @return  string  Original records reference
 	 */
-
 	protected function prepareForCopy()
 	{
 		$listModel = $this->getListModel();
 		$item = $listModel->getTable();
 		$k = $item->db_primary_key;
 		$k = FabrikString::safeColNameToArrayKey($k);
-		$origid = FArrayHelper::getValue($this->formData, $k, '');
+		$origId = FArrayHelper::getValue($this->formData, $k, '');
 
 		// COPY function should create new records
 		if (array_key_exists('Copy', $this->formData))
@@ -1742,25 +1685,25 @@ class FabrikFEModelForm extends FabModelForm
 			$this->formData['rowid'] = '';
 		}
 
-		return $origid;
+		return $origId;
 	}
 
 	/**
 	 * As part of the form process we may need to update the referring url if making a copy
 	 *
-	 * @param   string  $origid    Original record ref
+	 * @param   string  $origId    Original record ref
 	 * @param   string  $insertId  New insert reference
 	 *
-	 * @return  void
-	 */
-	protected function updateRefferrer($origid, $insertId)
+	 * @return  void referrer
+	 */ 
+	protected function updateReferrer($origId, $insertId)
 	{
 		$input = JFactory::getApplication()->input;
 
 		// Set the redirect page to the form's url if making a copy and set the id to the new insertid
 		if (array_key_exists('Copy', $this->formData))
 		{
-			$u = str_replace('rowid=' . $origid, 'rowid=' . $insertId, $input->get('HTTP_REFERER', '', 'string'));
+			$u = str_replace('rowid=' . $origId, 'rowid=' . $insertId, $input->get('HTTP_REFERER', '', 'string'));
 			$input->set('fabrik_referrer', $u);
 		}
 	}
@@ -1772,7 +1715,6 @@ class FabrikFEModelForm extends FabModelForm
 	 *
 	 * @return  void
 	 */
-
 	public function setInsertId($insertId)
 	{
 		$input = JFactory::getApplication()->input;
@@ -1804,11 +1746,10 @@ class FabrikFEModelForm extends FabModelForm
 	/**
 	 * Process groups when the form is submitted
 	 *
-	 *@param   int  $parentId  insert ID of parent table
+	 * @param   int  $parentId  insert ID of parent table
 	 *
 	 * @return  void
 	 */
-
 	protected function processGroups($parentId = null)
 	{
 		$groupModels = $this->getGroups();
@@ -1832,7 +1773,6 @@ class FabrikFEModelForm extends FabModelForm
 	 *
 	 * @return  void
 	 */
-
 	protected function processElements()
 	{
 		$groups = $this->getGroupsHiarachy();
@@ -1853,7 +1793,6 @@ class FabrikFEModelForm extends FabModelForm
 	 *
 	 * @return void
 	 */
-
 	public function processToDB()
 	{
 		$profiler = JProfiler::getInstance('Application');
@@ -1861,13 +1800,13 @@ class FabrikFEModelForm extends FabModelForm
 
 		$pluginManager = FabrikWorker::getPluginManager();
 		$listModel = $this->getListModel();
-		$origid = $this->prepareForCopy();
+		$origId = $this->prepareForCopy();
 		$this->formData = $listModel->removeTableNameFromSaveData($this->formData, '___');
 
 		JDEBUG ? $profiler->mark('processToDb, submitToDatabase: start') : null;
 		$insertId = $this->storeMainRow ? $this->submitToDatabase($this->rowId) : $this->rowId;
 
-		$this->updateRefferrer($origid, $insertId);
+		$this->updateReferrer($origId, $insertId);
 		$this->setInsertId($insertId);
 
 		// Store join data
@@ -1894,16 +1833,14 @@ class FabrikFEModelForm extends FabModelForm
 	/**
 	 * Saves the form data to the database
 	 *
-	 * @param   int  $rowId  If '' then insert a new row - otherwise update this row id
+	 * @param   string  $rowId  If '' then insert a new row - otherwise update this row id
 	 *
 	 * @return	mixed	insert id (or rowid if updating existing row) if ok, else string error message
 	 */
-
 	protected function submitToDatabase($rowId = '')
 	{
 		$app = JFactory::getApplication();
 		$this->getGroupsHiarachy();
-		$pluginManager = FabrikWorker::getPluginManager();
 		$groups = $this->getGroupsHiarachy();
 		$listModel = $this->getListModel();
 		$listModel->encrypt = array();
@@ -1933,12 +1870,12 @@ class FabrikFEModelForm extends FabModelForm
 
 		$listModel = $this->getListModel();
 		$listModel->setFormModel($this);
-		$item = $listModel->getTable();
+		$listModel->getTable();
 		$listModel->storeRow($data, $rowId);
 		$this->lastInsertId = $listModel->lastInsertId;
-		$usekey = $app->input->get('usekey', '');
+		$useKey = $app->input->get('usekey', '');
 
-		if (!empty($usekey))
+		if (!empty($useKey))
 		{
 			return $listModel->lastInsertId;
 		}
@@ -1949,25 +1886,11 @@ class FabrikFEModelForm extends FabModelForm
 	}
 
 	/**
-	 * Get list model
-	 *
-	 * @depreciated as of fabrik 3.0 - use getListModel instead
-	 *
-	 * @return  object  list model
-	 */
-
-	public function getTableModel()
-	{
-		return $this->getListModel();
-	}
-
-	/**
 	 * Get the form's list model
 	 * (was getTable but that clashed with J1.5 func)
 	 *
 	 * @return  FabrikFEModelList  fabrik list model
 	 */
-
 	public function getListModel()
 	{
 		if (!isset($this->listModel))
@@ -1988,7 +1911,6 @@ class FabrikFEModelForm extends FabModelForm
 	 *
 	 * @return	array	(validationruleid => classname )
 	 */
-
 	public function loadValidationRuleClasses()
 	{
 		if (is_null($this->validationRuleClasses))
@@ -2016,7 +1938,6 @@ class FabrikFEModelForm extends FabModelForm
 	 *
 	 * @return	null
 	 */
-
 	public function addEncrytedVarsToArray(&$post)
 	{
 		if (array_key_exists('fabrik_vars', $_REQUEST) && array_key_exists('querystring', $_REQUEST['fabrik_vars']))
@@ -2031,7 +1952,7 @@ class FabrikFEModelForm extends FabModelForm
 
 				foreach ($elementModels as $elementModel)
 				{
-					$element = $elementModel->getElement();
+					$elementModel->getElement();
 
 					foreach ($_REQUEST['fabrik_vars']['querystring'] as $key => $encrypted)
 					{
@@ -2096,7 +2017,6 @@ class FabrikFEModelForm extends FabModelForm
 	 *
 	 * @return	null
 	 */
-
 	public function copyToRaw(&$post, $override = false)
 	{
 		$this->copyToFromRaw($post, 'toraw', $override);
@@ -2110,7 +2030,6 @@ class FabrikFEModelForm extends FabModelForm
 	 *
 	 * @return	null
 	 */
-
 	public function copyFromRaw(&$post, $override = false)
 	{
 		$this->copyToFromRaw($post, 'fromraw', $override);
@@ -2125,7 +2044,6 @@ class FabrikFEModelForm extends FabModelForm
 	 *
 	 * @return	null
 	 */
-
 	protected function copyToFromRaw(&$post, $direction = 'toraw', $override = false)
 	{
 		$groups = $this->getGroupsHiarachy();
@@ -2168,7 +2086,6 @@ class FabrikFEModelForm extends FabModelForm
 	 *
 	 * @return bool
 	 */
-
 	public function failedValidation()
 	{
 		return $this->hasErrors();
@@ -2180,7 +2097,6 @@ class FabrikFEModelForm extends FabModelForm
 	 *
 	 * @return  bool  true if form validated ok
 	 */
-
 	public function validate()
 	{
 		$app = JFactory::getApplication();
@@ -2228,7 +2144,7 @@ class FabrikFEModelForm extends FabModelForm
 
 		// $$$ hugh - moved this to after addEncryptedVarsToArray(), so read only data is
 		// available to things like calcs running in preProcess phase.
-		$this->callElementPreprocess();
+		$this->callElementPreProcess();
 
 		// Add in raw fields - the data is already in raw format so just copy the values
 		$this->copyToRaw($post);
@@ -2257,7 +2173,7 @@ class FabrikFEModelForm extends FabModelForm
 				}
 
 				$elDbValues = array();
-				$element = $elementModel->getElement();
+				$elementModel->getElement();
 				$validation_rules = $elementModel->validator->findAll();
 
 				// $$ rob incorrect for ajax validation on joined elements
@@ -2266,7 +2182,7 @@ class FabrikFEModelForm extends FabModelForm
 				$this->errors[$elName] = array();
 				$elName2 = $elementModel->getFullName(true, false);
 
-				// $$$rob fix notice on validation of multipage forms
+				// $$$rob fix notice on validation of multi-page forms
 				if (!array_key_exists($groupCounter, $repeatTotals))
 				{
 					$repeatTotals[$groupCounter] = 1;
@@ -2418,7 +2334,6 @@ class FabrikFEModelForm extends FabModelForm
 	 *
 	 * @return  array  errors
 	 */
-
 	public function getErrors()
 	{
 		$app = JFactory::getApplication();
@@ -2451,7 +2366,6 @@ class FabrikFEModelForm extends FabModelForm
 	 *
 	 * @return  void
 	 */
-
 	public function clearErrors()
 	{
 		$session = JFactory::getSession();
@@ -2474,7 +2388,6 @@ class FabrikFEModelForm extends FabModelForm
 	 *
 	 * @return void
 	 */
-
 	public function setErrors($errors)
 	{
 		$session = JFactory::getSession();
@@ -2490,7 +2403,6 @@ class FabrikFEModelForm extends FabModelForm
 	 *
 	 * @return string
 	 */
-
 	public function getJsonErrors()
 	{
 		$data = array('modified' => $this->modifiedValidationData, 'errors' => $this->errors);
@@ -2503,7 +2415,6 @@ class FabrikFEModelForm extends FabModelForm
 	 *
 	 * @return	bool
 	 */
-
 	public function spoofCheck()
 	{
 		$fbConfig = JComponentHelper::getParams('com_fabrik');
@@ -2516,7 +2427,6 @@ class FabrikFEModelForm extends FabModelForm
 	 *
 	 * @return  object  uploader
 	 */
-
 	public function &getUploader()
 	{
 		if (is_null($this->uploader))
@@ -2534,7 +2444,6 @@ class FabrikFEModelForm extends FabModelForm
 	 *
 	 * @return  string  table name
 	 */
-
 	public function getTableName()
 	{
 		$this->getListModel();
@@ -2546,12 +2455,11 @@ class FabrikFEModelForm extends FabModelForm
 	 * Get the form row
 	 *
 	 * @param   string  $name     table name
-	 * @param   string  $prefix   table name prefx
+	 * @param   string  $prefix   table name prefix
 	 * @param   array   $options  initial state options
 	 *
 	 * @return object form row
 	 */
-
 	public function getTable($name = '', $prefix = 'Table', $options = array())
 	{
 		if (is_null($this->form))
@@ -2570,46 +2478,10 @@ class FabrikFEModelForm extends FabModelForm
 	}
 
 	/**
-	 * Sets the variable of each of the form's group's elements to the value
-	 * specified
-	 *
-	 * @param   string  $varName  variable name
-	 * @param   string  $varVal   variable value
-	 *
-	 * @deprecated  not used
-	 *
-	 * @return  bool  false if update error occurs
-	 */
-
-	public function setElementVars($varName, $varVal)
-	{
-		if ($this->elements == null)
-		{
-			$this->getFormGroups();
-		}
-
-		foreach ($this->elements as $el)
-		{
-			$element = FabTable::getInstance('Element', 'FabrikTable');
-			$element->load($el->id);
-
-			if (!$element->set($varName, $varVal))
-			{
-				return false;
-			}
-
-			$element->store();
-		}
-
-		return true;
-	}
-
-	/**
 	 * Determines if the form can be published
 	 *
 	 * @return  bool  true if publish dates are ok
 	 */
-
 	public function canPublish()
 	{
 		$db = FabrikWorker::getDbo();
@@ -2646,7 +2518,6 @@ class FabrikFEModelForm extends FabModelForm
 	 *
 	 * @return	string	html list
 	 */
-
 	public function getElementList($name = 'order_by', $default = '', $excludeUnpublished = false,
 		$useStep = false, $incRaw = true, $key = 'name', $attribs = 'class="inputbox" size="1"')
 	{
@@ -2663,12 +2534,11 @@ class FabrikFEModelForm extends FabModelForm
 	 * Get an array of the form's element's ids
 	 *
 	 * @param   array  $ignore  ClassNames to ignore e.g. array('FabrikModelFabrikCascadingdropdown')
-	 * @param   array  $opts    Property 'includePublised' can be set to 0; @since 3.0.7
-	 *                          Property 'loadPrefilters' @since 3.0.7.1 - used to ensure that prefilter elements are loaded in inline edit
+	 * @param   array  $opts    Property 'includePublished' can be set to 0; @since 3.0.7
+	 *                          Property 'loadPrefilters' @since 3.0.7.1 - used to ensure that pre-filter elements are loaded in inline edit
 	 *
-	 * @return  array  ints ids
+	 * @return  array  int ids
 	 */
-
 	public function getElementIds($ignore = array(), $opts = array())
 	{
 		$aEls = array();
@@ -2740,7 +2610,6 @@ class FabrikFEModelForm extends FabModelForm
 	 *
 	 * @return	array	html options
 	 */
-
 	public function getElementOptions($useStep = false, $key = 'name', $show_in_list_summary = false, $incRaw = false,
 		$filter = array(), $labelMethod = '', $noJoins = false)
 	{
@@ -2824,7 +2693,6 @@ class FabrikFEModelForm extends FabModelForm
 	 *
 	 * @return  bool  new row id loaded.
 	 */
-
 	public function paginateRowId($dir)
 	{
 		$db = FabrikWorker::getDbo();
@@ -2837,7 +2705,7 @@ class FabrikFEModelForm extends FabModelForm
 		$rowId = $input->getString('rowid', '', 'string');
 		$query = $db->getQuery(true);
 		$query->select($item->db_primary_key . ' AS ' . FabrikString::safeColNameToArrayKey($item->db_primary_key))->from($item->db_table_name)
-			->where($item->db_primary_key . ' ' . $c . ' ' . $db->quote($rowId));
+			->where($item->db_primary_key . ' ' . $c . ' ' . $db->q($rowId));
 		$query = $listModel->buildQueryOrder($query);
 		$db->setQuery($query, 0, $intLimit);
 		$ids = $db->loadColumn();
@@ -2886,7 +2754,6 @@ class FabrikFEModelForm extends FabModelForm
 	 *
 	 * @return  boolean
 	 */
-
 	public function isNewRecord()
 	{
 		return $this->getRowId() === '';
@@ -2901,7 +2768,6 @@ class FabrikFEModelForm extends FabModelForm
 	 *
 	 * @return  string  rowid
 	 */
-
 	public function getRowId()
 	{
 		if (isset($this->rowId))
@@ -2987,7 +2853,6 @@ class FabrikFEModelForm extends FabModelForm
 	 *
 	 * @return  mixed  bool
 	 */
-
 	public function render()
 	{
 		$app = JFactory::getApplication();
@@ -3041,7 +2906,6 @@ class FabrikFEModelForm extends FabModelForm
 	 *
 	 * @return  int  max row id
 	 */
-
 	protected function getMaxRowId()
 	{
 		if (!$this->getForm()->record_in_database)
@@ -3075,7 +2939,6 @@ class FabrikFEModelForm extends FabModelForm
 	 *
 	 * @return  bool
 	 */
-
 	public function hasErrors()
 	{
 		$errorsFound = false;
@@ -3176,7 +3039,7 @@ class FabrikFEModelForm extends FabModelForm
 
 		$data = $clean_request;
 		$form = $this->getForm();
-		$aGroups = $this->getGroupsHiarachy();
+		$this->getGroupsHiarachy();
 		JDEBUG ? $profiler->mark('formmodel getData: groups loaded') : null;
 
 		if (!$form->record_in_database)
@@ -3191,7 +3054,7 @@ class FabrikFEModelForm extends FabModelForm
 			JDEBUG ? $profiler->mark('formmodel getData: end get list model') : null;
 			$fabrikDb = $listModel->getDb();
 			JDEBUG ? $profiler->mark('formmodel getData: db created') : null;
-			$item = $listModel->getTable();
+			$listModel->getTable();
 			JDEBUG ? $profiler->mark('formmodel getData: table row loaded') : null;
 			$this->aJoinObjs = $listModel->getJoins();
 			JDEBUG ? $profiler->mark('formmodel getData: joins loaded') : null;
@@ -3271,9 +3134,9 @@ class FabrikFEModelForm extends FabModelForm
 					 * use !== '' as rowid may be alphanumeric.
 					 * Unlike 3.0 rowId does equal '' if using rowid=-1 and user not logged in
 					 */
-					$usekey = FabrikWorker::getMenuOrRequestVar('usekey', '', $this->isMambot);
+					$useKey = FabrikWorker::getMenuOrRequestVar('usekey', '', $this->isMambot);
 
-					if (!empty($usekey) || $this->rowId !== '')
+					if (!empty($useKey) || $this->rowId !== '')
 					{
 						// $$$ hugh - once we have a few join elements, our select statements are
 						// getting big enough to hit default select length max in MySQL.
@@ -3330,7 +3193,7 @@ class FabrikFEModelForm extends FabModelForm
 							else
 							{
 								// If no key found set rowid to 0 so we can insert a new record.
-								if (empty($usekey) && !$this->isMambot && in_array($input->get('view'), array('form', 'details')))
+								if (empty($useKey) && !$this->isMambot && in_array($input->get('view'), array('form', 'details')))
 								{
 									$this->rowId = '';
 									/**
@@ -3367,8 +3230,8 @@ class FabrikFEModelForm extends FabModelForm
 	}
 
 	/**
-	 * Checks if user is logged in and form multipage settings to determine
-	 * if the form saves to the session table on multipage navigation
+	 * Checks if user is logged in and form multi-page settings to determine
+	 * if the form saves to the session table on multi-page navigation
 	 *
 	 * @param   bool  $useSessionOn  Return true if JSession contains session.on - used in confirmation
 	 * plugin to re-show the previously entered form data. Not used in $this->hasErrors() otherwise logged in users
@@ -3376,7 +3239,6 @@ class FabrikFEModelForm extends FabModelForm
 	 *
 	 * @return  bool
 	 */
-
 	public function saveMultiPage($useSessionOn = true)
 	{
 		$app = JFactory::getApplication();
@@ -3420,7 +3282,6 @@ class FabrikFEModelForm extends FabModelForm
 	 *
 	 * @return  void
 	 */
-
 	public function setJoinData(&$data)
 	{
 		$this->_joinDefaultData = array();
@@ -3466,10 +3327,10 @@ class FabrikFEModelForm extends FabModelForm
 		 */
 		$data_copy = unserialize(serialize($data));
 
-		foreach ($groups as $groupID => $groupModel)
+		foreach ($groups as $groupId => $groupModel)
 		{
 			$group = $groupModel->getGroup();
-			$join_pks_seen[$groupID] = array();
+			$join_pks_seen[$groupId] = array();
 			$elementModels = $groupModel->getMyElements();
 
 			foreach ($elementModels as $elementModelID => $elementModel)
@@ -3480,7 +3341,7 @@ class FabrikFEModelForm extends FabModelForm
 					{
 						$joinModel = $groupModel->getJoinModel();
 						$join_pk = $joinModel->getForeignID();
-						$join_pks_seen[$groupID][$elementModelID] = array();
+						$join_pks_seen[$groupId][$elementModelID] = array();
 					}
 
 					$names = $elementModel->getJoinDataNames();
@@ -3507,7 +3368,7 @@ class FabrikFEModelForm extends FabModelForm
 							 * Check for empty as well, just in case - as we're loading existing data,
 							 * it darn well should have a value!
 							 */
-							if (empty($join_pk_val) || in_array($join_pk_val, $join_pks_seen[$groupID][$elementModelID]))
+							if (empty($join_pk_val) || in_array($join_pk_val, $join_pks_seen[$groupId][$elementModelID]))
 							{
 								continue;
 							}
@@ -3554,7 +3415,7 @@ class FabrikFEModelForm extends FabModelForm
 							 * Make a Note To Self that we've now handled the data for this element's row,
 							 * and can skip it from now on.
 							 */
-							$join_pks_seen[$groupID][$elementModelID][] = $join_pk_val;
+							$join_pks_seen[$groupId][$elementModelID][] = $join_pk_val;
 						}
 					}
 				}
@@ -3566,11 +3427,10 @@ class FabrikFEModelForm extends FabModelForm
 	}
 
 	/**
-	 * Get the forms session data (used when using multipage forms)
+	 * Get the forms session data (used when using multi-page forms)
 	 *
 	 * @return  object	session data
 	 */
-
 	protected function getSessionData()
 	{
 		$params = $this->getParams();
@@ -3600,10 +3460,9 @@ class FabrikFEModelForm extends FabModelForm
 	 *
 	 * @return  string	sql query to get row
 	 */
-
 	public function _buildQuery($opts = array())
 	{
-		return $this->buildQuery($opts = array());
+		return $this->buildQuery($opts);
 	}
 
 	/**
@@ -3614,7 +3473,6 @@ class FabrikFEModelForm extends FabModelForm
 	 *
 	 * @return  string  query
 	 */
-
 	public function buildQuery($opts = array())
 	{
 		if (isset($this->query))
@@ -3638,16 +3496,16 @@ class FabrikFEModelForm extends FabModelForm
 		$sql .= $listModel->buildQueryJoin();
 		$emptyRowId = $this->rowId === '' ? true : false;
 		$random = $input->get('random');
-		$usekey = FabrikWorker::getMenuOrRequestVar('usekey', '', $this->isMambot, 'var');
+		$useKey = FabrikWorker::getMenuOrRequestVar('usekey', '', $this->isMambot, 'var');
 
-		if ($usekey != '')
+		if ($useKey != '')
 		{
-			$usekey = explode('|', $usekey);
+			$useKey = explode('|', $useKey);
 
-			foreach ($usekey as &$tmpk)
+			foreach ($useKey as &$tmpK)
 			{
-				$tmpk = !strstr($tmpk, '.') ? $item->db_table_name . '.' . $tmpk : $tmpk;
-				$tmpk = FabrikString::safeColName($tmpk);
+				$tmpK = !strstr($tmpK, '.') ? $item->db_table_name . '.' . $tmpK : $tmpK;
+				$tmpK = FabrikString::safeColName($tmpK);
 			}
 
 			if (!is_array($this->rowId))
@@ -3657,20 +3515,20 @@ class FabrikFEModelForm extends FabModelForm
 		}
 
 		$comparison = $input->get('usekey_comparison', '=');
-		$viewpk = $input->get('view_primary_key');
+		$viewPk = $input->get('view_primary_key');
 
 		// $$$ hugh - changed this to !==, as in rowid=-1/usekey situations, we can have a rowid of 0
 		// I don't THINK this will have any untoward side effects, but ...
-		if ((!$random && !$emptyRowId) || !empty($usekey))
+		if ((!$random && !$emptyRowId) || !empty($useKey))
 		{
 			$sql .= ' WHERE ';
 
-			if (!empty($usekey))
+			if (!empty($useKey))
 			{
 				$sql .= "(";
 				$parts = array();
 
-				for ($k = 0; $k < count($usekey); $k++)
+				for ($k = 0; $k < count($useKey); $k++)
 				{
 					/**
 					 *
@@ -3685,11 +3543,11 @@ class FabrikFEModelForm extends FabModelForm
 					// Ensure that the key value is not quoted as we Quote() afterwards
 					if ($comparison == '=')
 					{
-						$parts[] = ' ' . $usekey[$k] . ' = ' . $db->quote($aRowIds[$k]);
+						$parts[] = ' ' . $useKey[$k] . ' = ' . $db->q($aRowIds[$k]);
 					}
 					else
 					{
-						$parts[] = ' ' . $usekey[$k] . ' LIKE ' . $db->quote('%' . $aRowIds[$k] . '%');
+						$parts[] = ' ' . $useKey[$k] . ' LIKE ' . $db->q('%' . $aRowIds[$k] . '%');
 					}
 				}
 
@@ -3698,14 +3556,14 @@ class FabrikFEModelForm extends FabModelForm
 			}
 			else
 			{
-				$sql .= ' ' . $item->db_primary_key . ' = ' . $db->quote($this->rowId);
+				$sql .= ' ' . $item->db_primary_key . ' = ' . $db->q($this->rowId);
 			}
 		}
 		else
 		{
-			if ($viewpk != '')
+			if ($viewPk != '')
 			{
-				$sql .= ' WHERE ' . $viewpk . ' ';
+				$sql .= ' WHERE ' . $viewPk . ' ';
 			}
 			elseif ($random)
 			{
@@ -3713,16 +3571,16 @@ class FabrikFEModelForm extends FabModelForm
 				$sql .= ' ORDER BY RAND() LIMIT 1 ';
 			}
 		}
-		// Get prefilter conditions from table and apply them to the record
+		// Get pre-filter conditions from table and apply them to the record
 		// the false, ignores any filters set by the table
 		$where = $listModel->buildQueryWhere(false);
 
 		if (strstr($sql, 'WHERE'))
 		{
-			// Do it this way as queries may contain subqueries which we want to keep the where
-			$firstword = JString::substr($where, 0, 5);
+			// Do it this way as queries may contain sub-queries which we want to keep the where
+			$firstWord = JString::substr($where, 0, 5);
 
-			if ($firstword == 'WHERE')
+			if ($firstWord == 'WHERE')
 			{
 				$where = JString::substr_replace($where, 'AND', 0, 5);
 			}
@@ -3762,7 +3620,6 @@ class FabrikFEModelForm extends FabModelForm
 	 *
 	 * @return  bool  true if found, false if not found
 	 */
-
 	public function hasElement($searchName, $checkInt = false, $checkShort = true)
 	{
 		$groups = $this->getGroupsHiarachy();
@@ -3825,7 +3682,6 @@ class FabrikFEModelForm extends FabModelForm
 	 *
 	 * @return  mixed  ok: element model not ok: false
 	 */
-
 	public function getElement($searchName, $checkInt = false, $checkShort = true)
 	{
 		return $this->hasElement($searchName, $checkInt, $checkShort) ? $this->currentElement : false;
@@ -3838,18 +3694,16 @@ class FabrikFEModelForm extends FabModelForm
 	 *
 	 * @return  void
 	 */
-
 	public function setListModel(&$listModel)
 	{
 		$this->listModel = $listModel;
 	}
 
 	/**
-	 * Is the page a multipage form?
+	 * Is the page a multi-page form?
 	 *
 	 * @return  bool
 	 */
-
 	public function isMultiPage()
 	{
 		$groups = $this->getGroupsHiarachy();
@@ -3872,7 +3726,6 @@ class FabrikFEModelForm extends FabModelForm
 	 *
 	 * @return  object
 	 */
-
 	public function getPages()
 	{
 		if (!is_null($this->pages))
@@ -3969,7 +3822,6 @@ class FabrikFEModelForm extends FabModelForm
 	 *
 	 * @return  void
 	 */
-
 	protected function _reduceDataForXRepeatedJoins()
 	{
 		$groups = $this->getGroupsHiarachy();
@@ -4004,7 +3856,7 @@ class FabrikFEModelForm extends FabModelForm
 					continue;
 				}
 
-				$jdata = &$this->data['join'][$tblJoin->id];
+				$jData = &$this->data['join'][$tblJoin->id];
 				$db = $listModel->getDb();
 				$fields = $db->getTableColumns($tblJoin->table_join, false);
 				$keyCount = 0;
@@ -4037,11 +3889,11 @@ class FabrikFEModelForm extends FabModelForm
 					return;
 				}
 
-				$usedkeys = array();
+				$usedKeys = array();
 
-				if (!empty($jdata) && array_key_exists($pkField, $jdata))
+				if (!empty($jData) && array_key_exists($pkField, $jData))
 				{
-					foreach ($jdata[$pkField] as $key => $value)
+					foreach ($jData[$pkField] as $key => $value)
 					{
 						/*
 						 * $$$rob
@@ -4051,38 +3903,38 @@ class FabrikFEModelForm extends FabModelForm
 						 * with a form with repeating groups (with empty data in the key fields
 						 *
 						 */
-						if (!in_array($value, $usedkeys) || ($value === '' && !empty($this->errors)))
+						if (!in_array($value, $usedKeys) || ($value === '' && !empty($this->errors)))
 						{
-							$usedkeys[$key] = $value;
+							$usedKeys[$key] = $value;
 						}
 					}
 				}
 
-				$keystokeep = array_keys($usedkeys);
+				$keysToKeep = array_keys($usedKeys);
 
 				// Remove unneeded data from array
-				foreach ($jdata as $key => $value)
+				foreach ($jData as $key => $value)
 				{
 					foreach ($value as $key2 => $v)
 					{
-						if (!in_array($key2, $keystokeep))
+						if (!in_array($key2, $keysToKeep))
 						{
-							unset($jdata[$key][$key2]);
+							unset($jData[$key][$key2]);
 						}
 					}
 				}
 				// Reduce the keys so that we don't have keys of 0, 2
-				foreach ($jdata as $key => $array)
+				foreach ($jData as $key => $array)
 				{
 					if ($groupModel->canRepeat())
 					{
-						$jdata[$key] = array_values($array);
+						$jData[$key] = array_values($array);
 					}
 					else
 					{
 						// $$$ hugh - if it's a one-to-one, it should be a single value
 						$aVals = array_values($array);
-						$jdata[$key] = FArrayHelper::getValue($aVals, 0, '');
+						$jData[$key] = FArrayHelper::getValue($aVals, 0, '');
 					}
 				}
 			}
@@ -4099,20 +3951,20 @@ class FabrikFEModelForm extends FabModelForm
 	public function getFormPluginHTML()
 	{
 		$pluginManager = FabrikWorker::getPluginManager();
-		$formPlugins = $pluginManager->getPlugInGroup('form');
+		$pluginManager->getPlugInGroup('form');
 		$form = $this->getForm();
 
 		$pluginManager->runPlugins('getBottomContent', $this, 'form');
-		$pluginbottom = implode("<br />", array_filter($pluginManager->data));
+		$pluginBottom = implode("<br />", array_filter($pluginManager->data));
 
 		$pluginManager->runPlugins('getTopContent', $this, 'form');
-		$plugintop = implode("<br />", array_filter($pluginManager->data));
+		$pluginTop = implode("<br />", array_filter($pluginManager->data));
 
 		// Inserted after the form's closing </form> tag
 		$pluginManager->runPlugins('getEndContent', $this, 'form');
-		$pluginend = implode("<br />", array_filter($pluginManager->data));
+		$pluginEnd = implode("<br />", array_filter($pluginManager->data));
 
-		return array($plugintop, $pluginbottom, $pluginend);
+		return array($pluginTop, $pluginBottom, $pluginEnd);
 	}
 
 	/**
@@ -4134,7 +3986,6 @@ class FabrikFEModelForm extends FabModelForm
 	 *
 	 * @return string modified intro
 	 */
-
 	public function getIntro()
 	{
 		$intro = $this->getForm()->intro;
@@ -4151,7 +4002,6 @@ class FabrikFEModelForm extends FabModelForm
 	 *
 	 * @return  string
 	 */
-
 	protected function parseIntroOutroPlaceHolders($text)
 	{
 
@@ -4184,9 +4034,9 @@ class FabrikFEModelForm extends FabModelForm
 
 		// Jaanus: to remove content plugin code from intro and/or outro when plugins are not processed
 		$params = $this->getParams();
-		$jplugins = (int) $params->get('process-jplugins', '2');
+		$jPlugins = (int) $params->get('process-jplugins', '2');
 
-		if ($jplugins === 0 || ($jplugins === 2 && $this->isEditable()))
+		if ($jPlugins === 0 || ($jPlugins === 2 && $this->isEditable()))
 		{
 			$text = preg_replace("/{\s*.*?}/i", '', $text);
 		}
@@ -4198,13 +4048,12 @@ class FabrikFEModelForm extends FabModelForm
 
 	/**
 	 * Used from getIntro as preg_replace_callback function to strip
-	 * undeisred text from form label intro
+	 * undesired text from form label intro
 	 *
 	 * @param   array  $match  Preg matched strings
 	 *
 	 * @return  string  intro text
 	 */
-
 	private function _getIntroOutro($match)
 	{
 		$m = explode(":", $match[0]);
@@ -4218,7 +4067,6 @@ class FabrikFEModelForm extends FabModelForm
 	 *
 	 * @return  string  Outro
 	 */
-
 	public function getOutro()
 	{
 		$params = $this->getParams();
@@ -4232,7 +4080,6 @@ class FabrikFEModelForm extends FabModelForm
 	 *
 	 * @return  string  Label
 	 */
-
 	public function getLabel()
 	{
 		$label = $this->getForm()->label;
@@ -4258,7 +4105,6 @@ class FabrikFEModelForm extends FabModelForm
 	 *
 	 * @return  object  Form table
 	 */
-
 	public function copy()
 	{
 		// Array key = old id value new id
@@ -4281,12 +4127,12 @@ class FabrikFEModelForm extends FabModelForm
 
 		foreach ($groupModels as $groupModel)
 		{
-			$oldid = $groupModel->getId();
+			$oldId = $groupModel->getId();
 
 			// $$$rob use + rather than array_merge to preserve keys
 			$groupModel->_newFormid = $form->id;
 			$newElements = $newElements + $groupModel->copy();
-			$this->groupidmap[$oldid] = $groupModel->getGroup()->id;
+			$this->groupidmap[$oldId] = $groupModel->getGroup()->id;
 		}
 		// Need to do finalCopyCheck() on form elements
 		$pluginManager = FabrikWorker::getPluginManager();
@@ -4310,10 +4156,8 @@ class FabrikFEModelForm extends FabModelForm
 	 *
 	 * @return  array  Links to view the related lists
 	 */
-
 	public function getRelatedTables()
 	{
-		$db = FabrikWorker::getDbo(true);
 		$app = JFactory::getApplication();
 		$input = $app->input;
 		$links = array();
@@ -4331,7 +4175,6 @@ class FabrikFEModelForm extends FabModelForm
 		// but for now just defaulting to that if no other variable found (e.g when links in sef urls)
 		$tid = $input->getInt('referring_table', $input->getInt('listid', $listModel->getTable()->id));
 		$referringTable->setId($tid);
-		$tmpKey = '__pk_val';
 		$tableParams = $referringTable->getParams();
 		$table = $referringTable->getTable();
 		$joinsToThisKey = $referringTable->getJoinsToThisKey();
@@ -4453,10 +4296,8 @@ class FabrikFEModelForm extends FabModelForm
 	 *
 	 * @return  string
 	 */
-
 	public function getFormClass()
 	{
-		$params = $this->getParams();
 		$class = array('fabrikForm');
 
 		/*
@@ -4525,7 +4366,6 @@ class FabrikFEModelForm extends FabModelForm
 	 *
 	 * @return	string	Url
 	 */
-
 	public function getAction()
 	{
 		$app = JFactory::getApplication();
@@ -4556,18 +4396,18 @@ class FabrikFEModelForm extends FabModelForm
 			 * mung it well good and proper like.
 			 *
 			 */
-			$queryvars = $router->getVars();
+			$queryVars = $router->getVars();
 
 			if ($this->isAjax())
 			{
-				$queryvars['format'] = 'raw';
-				unset($queryvars['view']);
-				$queryvars['task'] = 'form.process';
+				$queryVars['format'] = 'raw';
+				unset($queryVars['view']);
+				$queryVars['task'] = 'form.process';
 			}
 
 			$qs = array();
 
-			foreach ($queryvars as $k => $v)
+			foreach ($queryVars as $k => $v)
 			{
 				if ($k == 'rowid')
 				{
@@ -4623,7 +4463,6 @@ class FabrikFEModelForm extends FabModelForm
 	 *
 	 * @return	string	HTML hidden field
 	 */
-
 	protected function _makeJoinIdElement(&$groupTable)
 	{
 		$listModel = $this->getListModel();
@@ -4694,17 +4533,6 @@ class FabrikFEModelForm extends FabModelForm
 	}
 
 	/**
-	 * Get an array of read only values
-	 *
-	 * @return  array
-	 */
-
-	public function getreadOnlyVals()
-	{
-		return $this->readOnlyVals;
-	}
-
-	/**
 	 * Prepare the elements for rendering
 	 *
 	 * @param   string  $tmpl  Form template
@@ -4713,7 +4541,6 @@ class FabrikFEModelForm extends FabModelForm
 	 *
 	 * @return  array
 	 */
-
 	public function getGroupView($tmpl = '')
 	{
 		if (isset($this->groupView))
@@ -4947,7 +4774,6 @@ class FabrikFEModelForm extends FabModelForm
 	 *
 	 * @return  array
 	 */
-
 	public function getLinkedFabrikLists($table)
 	{
 		if (!isset($this->linkedFabrikLists))
@@ -4966,7 +4792,7 @@ class FabrikFEModelForm extends FabModelForm
 			else
 			{
 				$query = $db->getQuery(true);
-				$query->select('*')->from('#__{package}_lists')->where('db_table_name = ' . $db->quote($table));
+				$query->select('*')->from('#__{package}_lists')->where('db_table_name = ' . $db->q($table));
 				$db->setQuery($query);
 			}
 
@@ -4987,7 +4813,6 @@ class FabrikFEModelForm extends FabModelForm
 	 *
 	 * @return bool
 	 */
-
 	public function updatedByPlugin($fullname = '', $value = null)
 	{
 		if (isset($value))
@@ -5003,7 +4828,6 @@ class FabrikFEModelForm extends FabModelForm
 	 *
 	 * @return  void
 	 */
-
 	protected function populateState()
 	{
 		$app = JFactory::getApplication('site');
@@ -5031,7 +4855,6 @@ class FabrikFEModelForm extends FabModelForm
 	 *
 	 * @return  bool
 	 */
-
 	public function isEditable()
 	{
 		return $this->editable;
@@ -5046,7 +4869,6 @@ class FabrikFEModelForm extends FabModelForm
 	 *
 	 * @return  void
 	 */
-
 	public function setEditable($editable)
 	{
 		$this->editable = $editable;
@@ -5054,12 +4876,11 @@ class FabrikFEModelForm extends FabModelForm
 
 	/**
 	 * Helper method to get the session redirect key. Redirect plugin stores this
-	 * other form plugins such as twitter or paypal may need to query the session to perform the final redirect
+	 * other form plugins such as twitter or Paypal may need to query the session to perform the final redirect
 	 * once the user has returned from those sites.
 	 *
 	 * @return  string  Session key to store redirect information (note: ends in '.')
 	 */
-
 	public function getRedirectContext()
 	{
 		$app = JFactory::getApplication();
@@ -5075,7 +4896,6 @@ class FabrikFEModelForm extends FabModelForm
 	 *
 	 * @return  void
 	 */
-
 	public function unsetData($unset_groups = false)
 	{
 		unset($this->data);
@@ -5115,7 +4935,6 @@ class FabrikFEModelForm extends FabModelForm
 	 *
 	 * @return  void
 	 */
-
 	public function reset()
 	{
 		$this->unsetData(true);
@@ -5131,7 +4950,6 @@ class FabrikFEModelForm extends FabModelForm
 	 *
 	 * @since 3.0.6 (was in form controller)
 	 */
-
 	public function getRedirectURL($incSession = true, $isMambot = false)
 	{
 		$app = JFactory::getApplication();
@@ -5170,13 +4988,13 @@ class FabrikFEModelForm extends FabModelForm
 					$url = urldecode($input->post->get('fabrik_referrer', 'index.php', 'string'));
 				}
 
-				$Itemid = (int) FabrikWorker::itemId();
+				$itemId = (int) FabrikWorker::itemId();
 
 				if ($url == '')
 				{
-					if ($Itemid !== 0)
+					if ($itemId !== 0)
 					{
-						$url = 'index.php?' . http_build_query($app->getMenu('site')->getActive()->query) . '&Itemid=' . $Itemid;
+						$url = 'index.php?' . http_build_query($app->getMenu('site')->getActive()->query) . '&Itemid=' . $itemId;
 					}
 					else
 					{
@@ -5206,25 +5024,25 @@ class FabrikFEModelForm extends FabModelForm
 		$context = $this->getRedirectContext();
 
 		// If the redirect plug-in has set a url use that in preference to the default url
-		$surl = $session->get($context . 'url', array());
+		$sUrl = $session->get($context . 'url', array());
 
-		if (!empty($surl))
+		if (!empty($sUrl))
 		{
 			$baseRedirect = false;
 		}
 
-		if (!is_array($surl))
+		if (!is_array($sUrl))
 		{
-			$surl = array($surl);
+			$sUrl = array($sUrl);
 		}
 
-		if (empty($surl))
+		if (empty($sUrl))
 		{
-			$surl[] = $url;
+			$sUrl[] = $url;
 		}
 
-		$url = array_shift($surl);
-		$session->set($context . 'url', $surl);
+		$url = array_shift($sUrl);
+		$session->set($context . 'url', $sUrl);
 
 		// Redirect URL which set prefilters of < were converted to &lt; which then gave mySQL error
 		$url = htmlspecialchars_decode($url);
@@ -5239,7 +5057,6 @@ class FabrikFEModelForm extends FabModelForm
 	 *
 	 * @return boolean
 	 */
-
 	public function showSuccessMsg()
 	{
 		$mode = $this->getParams()->get('suppress_msgs', '0');
@@ -5284,7 +5101,6 @@ class FabrikFEModelForm extends FabModelForm
 	 *
 	 * @return boolean
 	 */
-
 	public function showACLMsg()
 	{
 		$mode = $this->getParams()->get('suppress_msgs', '0');
@@ -5300,7 +5116,6 @@ class FabrikFEModelForm extends FabModelForm
 	 *
 	 * @return string
 	 */
-
 	public function aclMessage()
 	{
 		if (!$this->showACLMsg())
@@ -5320,7 +5135,6 @@ class FabrikFEModelForm extends FabModelForm
 	 *
 	 * @return  void
 	 */
-
 	public function applyMsgOnce()
 	{
 		$app = JFactory::getApplication();
@@ -5352,7 +5166,6 @@ class FabrikFEModelForm extends FabModelForm
 	 *
 	 * @since   3.0.6 (was in form controller)
 	 */
-
 	public function getRedirectMessage()
 	{
 		$app = JFactory::getApplication();
@@ -5365,30 +5178,30 @@ class FabrikFEModelForm extends FabModelForm
 
 		$msg = $this->getSuccessMsg();
 		$context = $this->getRedirectContext();
-		$smsg = $session->get($context . 'msg', array($msg));
+		$sMsg = $session->get($context . 'msg', array($msg));
 
-		if (!is_array($smsg))
+		if (!is_array($sMsg))
 		{
-			$smsg = array($smsg);
+			$sMsg = array($sMsg);
 		}
 
-		if (empty($smsg))
+		if (empty($sMsg))
 		{
-			$smsg[] = $msg;
+			$sMsg[] = $msg;
 		}
 
 		/**
-		 * $$$ rob Was using array_shift to set $msg, not to really remove it from $smsg
+		 * $$$ rob Was using array_shift to set $msg, not to really remove it from $sMsg
 		 * without the array_shift the custom message is never attached to the redirect page.
 		 * Use-case: redirect plugin with jump page pointing to a J page and thanks message selected.
 		 */
-		$custommsg = array_keys($smsg);
-		$custommsg = array_shift($custommsg);
-		$custommsg = FArrayHelper::getValue($smsg, $custommsg);
+		$customMsg = array_keys($sMsg);
+		$customMsg = array_shift($customMsg);
+		$customMsg = FArrayHelper::getValue($sMsg, $customMsg);
 
-		if ($custommsg != '')
+		if ($customMsg != '')
 		{
-			$msg = $custommsg;
+			$msg = $customMsg;
 		}
 
 		$q = $app->getMessageQueue();
@@ -5409,16 +5222,16 @@ class FabrikFEModelForm extends FabModelForm
 			$msg = null;
 		}
 
-		$showmsg = null;
-		$session->set($context . 'msg', $smsg);
-		$showmsg = (array) $session->get($context . 'showsystemmsg', array(true));
+		$showMsg = null;
+		$session->set($context . 'msg', $sMsg);
+		$showMsg = (array) $session->get($context . 'showsystemmsg', array(true));
 
-		if (is_array($showmsg))
+		if (is_array($showMsg))
 		{
-			$showmsg = array_shift($showmsg);
+			$showMsg = array_shift($showMsg);
 		}
 
-		$msg = $showmsg == 1 ? $msg : '';
+		$msg = $showMsg == 1 ? $msg : '';
 
 		// $$$ hugh - testing allowing placeholders in success msg
 		$w = new FabrikWorker;
@@ -5434,7 +5247,6 @@ class FabrikFEModelForm extends FabModelForm
 	 *
 	 * @return  string
 	 */
-
 	public function jsKey()
 	{
 		$key = $this->isEditable() ? 'form_' . $this->getId() : 'details_' . $this->getId();
@@ -5468,6 +5280,7 @@ class FabrikFEModelForm extends FabModelForm
 			{
 				switch ($view)
 				{
+					default:
 					case 'form':
 						$accessible = $elementModel->canUse($view);
 						break;

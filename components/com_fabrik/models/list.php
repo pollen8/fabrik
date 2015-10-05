@@ -109,11 +109,18 @@ class FabrikFEModelList extends JModelForm
 	protected $dbFields = null;
 
 	/**
-	 * Used when making custom links to determine if we need to append the rowid to the url
+	 * Used when making custom links to determine if we need to append the rowId to the url
 	 *
 	 * @var bool
 	 */
 	protected $rowIdentifierAdded = false;
+
+	/**
+	 * Total number of records in the list
+	 *
+	 * @var int
+	 */
+	protected $totalRecords;
 
 	/**
 	 * Is ajax used
@@ -142,7 +149,7 @@ class FabrikFEModelList extends JModelForm
 
 	/**
 	 * Used to determine which filter action to use.
-	 * If a filter is a range then override lists setting with onsubmit
+	 * If a filter is a range then override lists setting with "on submit"
 	 *
 	 * @var string
 	 */
@@ -303,7 +310,7 @@ class FabrikFEModelList extends JModelForm
 	public $importingCSV = false;
 
 	/**
-	 * CSV in overwite mode
+	 * CSV in over-write mode
 	 *
 	 * @var bool
 	 */
@@ -406,7 +413,7 @@ class FabrikFEModelList extends JModelForm
 
 	/**
 	 * Empty data message
-	 * 
+	 *
 	 * @var string
 	 */
 	public $emptyMsg = null;
@@ -439,6 +446,14 @@ class FabrikFEModelList extends JModelForm
 	 * @var array
 	 */
 	protected $selectedOrderFields = array();
+
+	/**
+	 * Array of short element names, for elements which
+	 * should be wrapped in a link to details/form href.
+	 *
+	 * @var array
+	 */
+	private $_aLinkElements = array();
 
 	/**
 	 * Load form
@@ -1107,7 +1122,7 @@ class FabrikFEModelList extends JModelForm
 	 *
 	 * @return  void
 	 */
-	protected function formatData(&$data)
+	public function formatData(&$data)
 	{
 		$profiler = JProfiler::getInstance('Application');
 		$app = JFactory::getApplication();
@@ -1212,42 +1227,37 @@ class FabrikFEModelList extends JModelForm
 
 			for ($i = 0; $i < count($data); $i++)
 			{
-				$sdata = isset($data[$i]->$groupBy) ? $data[$i]->$groupBy : '';
+				$sData = isset($data[$i]->$groupBy) ? $data[$i]->$groupBy : '';
 
 				// Get rid of & as it blows up SimpleXMLElement, and don't want to use htmlspecialchars as don't want to mess with <, >, etc.
-				$sdata = str_replace('&', '&amp;', str_replace('&amp;', '&', $sdata));
+				$sData = str_replace('&', '&amp;', str_replace('&amp;', '&', $sData));
 
 				// Test if its just an <a>*</a> tag - if so allow HTML (enables use of icons)
-				$xml = new SimpleXMLElement('<div>' . $sdata . '</div>');
+				$xml = new SimpleXMLElement('<div>' . $sData . '</div>');
 				$children = $xml->children();
 
 				// Not working in PHP5.2	if (!($xml->count() === 1 && $children[0]->getName() == 'a'))
 				if (!(count($xml->children()) === 1 && $children[0]->getName() == 'a'))
 				{
-					$sdata = strip_tags($sdata);
+					$sData = strip_tags($sData);
 				}
 
-				if (!in_array($sdata, $aGroupTitles))
+				if (!in_array($sData, $aGroupTitles))
 				{
-					$aGroupTitles[] = $sdata;
-					$grouptemplate = ($w->parseMessageForPlaceHolder($groupTemplate, JArrayHelper::fromObject($data[$i])));
-					$this->groupTemplates[$sdata] = nl2br($grouptemplate);
-					$groupedData[$sdata] = array();
+					$aGroupTitles[] = $sData;
+					$groupTemplate = ($w->parseMessageForPlaceHolder($groupTemplate, JArrayHelper::fromObject($data[$i])));
+					$this->groupTemplates[$sData] = nl2br($groupTemplate);
+					$groupedData[$sData] = array();
 				}
 
-				$data[$i]->_groupId = $sdata;
-				$gKey = $sdata;
+				$data[$i]->_groupId = $sData;
+				$gKey = $sData;
 
 				// If the group_by was added in in getAsFields remove it from the returned data set (to avoid mess in package view)
 
 				if ($this->group_by_added)
 				{
 					unset($data[$i]->$groupBy);
-				}
-
-				if ($this->temp_db_key_addded)
-				{
-					$k = $table->db_primary_key;
 				}
 
 				$groupedData[$gKey][] = $data[$i];
@@ -1257,15 +1267,11 @@ class FabrikFEModelList extends JModelForm
 		}
 		else
 		{
-			for ($i = 0; $i < count($data); $i++)
-			{
-				if ($this->temp_db_key_addded)
-				{
-					$k = $table->db_primary_key;
-				}
-			}
-			// Make sure that the none grouped data is in the same format
-			$data = array($data);
+			//if ($this->outputFormat != 'csv')
+			//{
+				// Make sure that the none grouped data is in the same format
+				$data = array($data);
+			//}
 		}
 
 		JDEBUG ? $profiler->mark('table grouped-by applied') : null;
@@ -1351,11 +1357,11 @@ class FabrikFEModelList extends JModelForm
 					if ($join->list_id !== '0')
 					{
 						// $$$ rob 22/02/2011 was not using _raw before which was inserting html into the value for image elements
-						$fkey = $join->table_join_alias . '___' . $join->table_key . '_raw';
+						$fKey = $join->table_join_alias . '___' . $join->table_key . '_raw';
 
-						if (isset($row->$fkey))
+						if (isset($row->$fKey))
 						{
-							$fKeyVal = $row->$fkey;
+							$fKeyVal = $row->$fKey;
 
 							if (is_object($fKeyVal))
 							{
@@ -2014,7 +2020,6 @@ class FabrikFEModelList extends JModelForm
 		$elKey = $element->list_id . '-' . $element->form_id . '-' . $element->element_id;
 		$listId = $element->list_id;
 		$html = array();
-		$app = JFactory::getApplication();
 		$params = $this->getParams();
 		$faceted = $params->get('facetedlinks');
 
@@ -2108,7 +2113,7 @@ class FabrikFEModelList extends JModelForm
 		{
 			$bits[] = 'view=list';
 			$bits[] = 'listid=' . $listId;
-			
+
 			// Jaanus 12 Apr 2015 - commenting out the Itemid stuff as it totally messed up things i.e when one list was under many menu items and prefiltered differently under each item
 			/*
 			$listLinks = $this->getTableLinks();
@@ -3234,15 +3239,15 @@ class FabrikFEModelList extends JModelForm
 		/**
 		 * $$ hugh - caching is borked when using query builder object, as we're always returning a query
 		 * string, never an object.  So code like this:
-		 * 
+		 *
 		 * $query = $db->getQuery(true);
 		 * // some code that does query building stuff here, then ...
 		 * $query = $listModel->buildQueryWhere(true, $query);
 		 * $query = $listModel->buildQueryJoin($query);
-		 * 
+		 *
 		 * ... blows up in buildQueryJoin() if this function returns a cached query string, overwriting
 		 * the $query buider object.
-		 * 
+		 *
 		 * "Real" fix would be to sort it out so we return the object, although I'm not convinced that's
 		 * the even the right fix.  But for now only use the cache if we're using string not object.
 		 */
@@ -4450,7 +4455,7 @@ class FabrikFEModelList extends JModelForm
 				 */
 				$row->BaseType = strtoupper(preg_replace('#(\(\d+\))$#', '', $row->Type));
 				$row->BaseType = preg_replace('#(\s+SIGNED|\s+UNSIGNED)#', '', $row->BaseType);
-				
+
 				/**
 				 * Grab the size part ...
 				 */
@@ -4474,8 +4479,8 @@ class FabrikFEModelList extends JModelForm
 	 * if a new element it will run the sql to add to field,
 	 * if existing element and name changed will create query to be used later
 	 *
-	 * @param   object  &$elementModel  element model
-	 * @param   string  $origColName    original column name
+	 * @param   PlgFabrik_Element  &$elementModel  element model
+	 * @param   string             $origColName    original column name
 	 *
 	 * @throws ErrorException
 	 *
@@ -5177,7 +5182,7 @@ class FabrikFEModelList extends JModelForm
 					// $$$ 15/11/2012 - moved from before getFilterValue() to after as otherwise date filters in querystrings created wonky query
 					$value = 'LOWER(' . $db->q($value, false) . ')';
 				}
-			
+
 			}
 
 			if (!array_key_exists($i, $sqlCond) || $sqlCond[$i] == '')
@@ -5240,9 +5245,9 @@ class FabrikFEModelList extends JModelForm
 
 		foreach ($readOnlyValues as $key => $val)
 		{
-			foreach ($this->filters['key'] as $i => $fkey)
+			foreach ($this->filters['key'] as $i => $fKey)
 			{
-				if ($fkey === $key)
+				if ($fKey === $key)
 				{
 					$this->filters['filter'][$i] = implode("<br>", $val);
 				}
@@ -6274,7 +6279,7 @@ class FabrikFEModelList extends JModelForm
 		{
 			return $opts;
 		}
-		
+
 		$defaultStatement = $params->get('advanced-filter-default-statement', '<>');
 		$opts->defaultStatement = $defaultStatement;
 
@@ -7565,7 +7570,7 @@ class FabrikFEModelList extends JModelForm
 	 * @param   object  &$object      update object
 	 * @param   string  $keyName      name of pk field
 	 * @param   bool    $updateNulls  update null values
-	 *                                
+	 *
 	 * @throws Exception
 	 *
 	 * @return  mixed  query result
@@ -7637,7 +7642,7 @@ class FabrikFEModelList extends JModelForm
 	 * @param   string  $table    The name of the table
 	 * @param   object  &$object  An object whose properties match table fields
 	 * @param   string  $keyName  The name of the primary key. If provided the object property is updated.
-	 *                            
+	 *
 	 * @thorws Exception
 	 *
 	 * @return  bool
@@ -8363,7 +8368,7 @@ class FabrikFEModelList extends JModelForm
 
 	/**
 	 * Get the lists db table's indexes
-	 * 
+	 *
 	 * @param   string  $table   table name, only needed if join
 	 *
 	 * @return array  list indexes
@@ -8401,7 +8406,7 @@ class FabrikFEModelList extends JModelForm
 	 */
 	public function addIndex($field, $prefix = '', $type = 'INDEX', $size = '')
 	{
-		
+
 		if (is_numeric($field))
 		{
 			$el = $this->getFormModel()->getElement($field, true);
@@ -8428,11 +8433,11 @@ class FabrikFEModelList extends JModelForm
 			$fieldParts = explode('___', $field);
 			$table = array_shift($fieldParts);
 		}
-		
+
 		$field = FabrikString::shortColName($field);
-		
+
 		$indexes = $this->getIndexes($table);
-		
+
 		FArrayHelper::filter($indexes, 'Column_name', $field);
 
 		if (!empty($indexes))
@@ -8741,12 +8746,12 @@ class FabrikFEModelList extends JModelForm
 		{
 			return false;
 		}
-		
+
 		if (in_array(false, $pluginManager->runPlugins('onAfterDeleteRows', $this, 'list')))
 		{
 			return false;
 		}
-				
+
 		return true;
 	}
 
@@ -10840,7 +10845,7 @@ class FabrikFEModelList extends JModelForm
 					{
 						$query->where($dbk . ' IN (' . $ids . ')');
 					}
-					
+
 					$db->setQuery($query);
 					$db->execute();
 				}
@@ -10856,7 +10861,7 @@ class FabrikFEModelList extends JModelForm
 			$db->execute();
 		}
 	}
-	
+
 	/**
 	 * Update a single row with a key = val, does NOT work across joins, main table only
 	 *
@@ -10869,7 +10874,7 @@ class FabrikFEModelList extends JModelForm
 	public function updateRow($id, $col, $val)
 	{
 		$field = FabrikString::shortColname($col);
-		
+
 		if (empty($field) || empty($id))
 		{
 			return;
@@ -11096,10 +11101,10 @@ class FabrikFEModelList extends JModelForm
 
 			// $$$rob need &amp; for pdf output which is parsed through xml parser otherwise fails
 			$qs .= '&amp;buttoncount=' . $this->rowActionCount;
-			
+
 			// $$$ hugh - adding format, so custom CSS can do things like adding overrides for PDF
 			$qs .= '&amp;format=' . $app->input->get('format', 'html');
-			
+
 			$overRide = 'templates/' . $app->getTemplate() . '/html/com_fabrik/list/' . $tmpl . '/template_css.php' . $qs;
 
 			if (!FabrikHelperHTML::stylesheetFromPath($overRide))
@@ -11256,7 +11261,7 @@ class FabrikFEModelList extends JModelForm
 				 * names ending in _form_heading.  May not be the most efficient method, but we need to
 				 * test if $key exists as an element, as well as the simple in_array() test above.
 				 */
-				
+
 				if ($formModel->hasElement($key, false, false))
 				{
 					$thisUrl = $url . 'group_by=' . $key;
@@ -11634,7 +11639,7 @@ class FabrikFEModelList extends JModelForm
 		$tabsAll = (bool) $params->get('tabs_all', '1');
 
 		// @FIXME - starting to implement code to handle join elements, not cooked yet
-		
+
 		$formModel = $this->getFormModel();
 		$elementModel = $formModel->getElement($tabsElName);
 		$is_join = (is_subclass_of($elementModel, 'PlgFabrik_ElementDatabasejoin') || get_class($elementModel) == 'PlgFabrik_ElementDatabasejoin');
@@ -11652,8 +11657,8 @@ class FabrikFEModelList extends JModelForm
 		{
 			$app->enqueueMessage(sprintf(FText::_('COM_FABRIK_LIST_TABS_TABLE_ERROR'), $tableName, $table->db_table_name), 'error');
 			$joinTable = $elementModel->getJoinModel()->getJoin();
-			$fullFk = $joinTable->table_join . '___' . $joinTable->table_join_key;		
-			return;			
+			$fullFk = $joinTable->table_join . '___' . $joinTable->table_join_key;
+			return;
 		}
 
 		/**
@@ -11896,17 +11901,17 @@ class FabrikFEModelList extends JModelForm
 
 		return $cols;
 	}
-	
+
 	/**
 	 * Set the table label (title), overwrites table->label
-	 * 
+	 *
 	 * @since 3.4
-	 * 
+	 *
 	 * @param  string  $label  label to use for list
 	 */
 	public function setLabel($label)
 	{
-		$this->getTable()->label = $label;	
+		$this->getTable()->label = $label;
 	}
-	
+
 }

@@ -21,7 +21,6 @@ require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
  * @subpackage  Fabrik.form.paypal
  * @since       3.0
  */
-
 class PlgFabrik_FormPaypal extends PlgFabrik_Form
 {
 	/**
@@ -30,7 +29,6 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 	 *
 	 * @return	bool
 	 */
-
 	public function onAfterProcess()
 	{
 		$params = $this->getParams();
@@ -50,7 +48,7 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 		$w = new FabrikWorker;
 
 		$user = JFactory::getUser();
-		$userid = $user->get('id');
+		$userId = $user->get('id');
 
 		$ipn = $this->getIPNHandler($params);
 
@@ -62,13 +60,13 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 			}
 		}
 
-		$paypal_testmode = $params->get('paypal_testmode', $input->get('paypal_testmode', false));
-		$url = $paypal_testmode == 1 ? 'https://www.sandbox.paypal.com/us/cgi-bin/webscr?' : 'https://www.paypal.com/cgi-bin/webscr?';
+		$testMode = $params->get('paypal_testmode', $input->get('paypal_testmode', false));
+		$url = $testMode == 1 ? 'https://www.sandbox.paypal.com/us/cgi-bin/webscr?' : 'https://www.paypal.com/cgi-bin/webscr?';
 
 		$opts = array();
 		$opts['cmd'] = $params->get('paypal_cmd', "_xclick");
 
-		$email = $paypal_testmode ? 'paypal_accountemail_testmode' : 'paypal_accountemail';
+		$email = $testMode ? 'paypal_accountemail_testmode' : 'paypal_accountemail';
 		$email = $params->get($email);
 
 		if (trim($email) == '')
@@ -231,95 +229,95 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 
 		if ($shipping_table !== false)
 		{
-			$thisTable = $formModel->getTableModel()->getTable()->db_table_name;
-			$shipping_userid = $userid;
+			$thisTable = $formModel->getListModel()->getTable()->db_table_name;
+			$shippingUserId = $userId;
 
 			/*
 			 * If the shipping table is the same as the form's table, and no user logged in
 			 * then use the shipping data entered into the form:
 			 * see http://fabrikar.com/forums/index.php?threads/paypal-shipping-address-without-joomla-userid.33229/
 			 */
-			if ($shipping_userid === 0 && $thisTable === $shipping_table)
+			if ($shippingUserId === 0 && $thisTable === $shipping_table)
 			{
-				$shipping_userid = $formModel->formData['id'];
+				$shippingUserId = $formModel->formData['id'];
 			}
 
-			if ($shipping_userid > 0)
+			if ($shippingUserId > 0)
 			{
-				$shipping_select = array();
+				$shippingSelect = array();
 
 				$db = FabrikWorker::getDbo();
 				$query = $db->getQuery(true);
 
 				if ($params->get('paypal_shippingdata_firstname'))
 				{
-					$shipping_first_name = FabrikString::shortColName($params->get('paypal_shippingdata_firstname'));
-					$shipping_select['first_name'] = $shipping_first_name;
+					$shippingFirstName = FabrikString::shortColName($params->get('paypal_shippingdata_firstname'));
+					$shippingSelect['first_name'] = $shippingFirstName;
 				}
 
 				if ($params->get('paypal_shippingdata_lastname'))
 				{
-					$shipping_last_name = FabrikString::shortColName($params->get('paypal_shippingdata_lastname'));
-					$shipping_select['last_name'] = $shipping_last_name;
+					$shippingLastName = FabrikString::shortColName($params->get('paypal_shippingdata_lastname'));
+					$shippingSelect['last_name'] = $shippingLastName;
 				}
 
 				if ($params->get('paypal_shippingdata_address1'))
 				{
-					$shipping_address1 = FabrikString::shortColName($params->get('paypal_shippingdata_address1'));
-					$shipping_select['address1'] = $shipping_address1;
+					$shippingAddress1 = FabrikString::shortColName($params->get('paypal_shippingdata_address1'));
+					$shippingSelect['address1'] = $shippingAddress1;
 				}
 
 				if ($params->get('paypal_shippingdata_address2'))
 				{
-					$shipping_address2 = FabrikString::shortColName($params->get('paypal_shippingdata_address2'));
-					$shipping_select['address2'] = $shipping_address2;
+					$shippingAddress2 = FabrikString::shortColName($params->get('paypal_shippingdata_address2'));
+					$shippingSelect['address2'] = $shippingAddress2;
 				}
 
 				if ($params->get('paypal_shippingdata_zip'))
 				{
-					$shipping_zip = FabrikString::shortColName($params->get('paypal_shippingdata_zip'));
-					$shipping_select['zip'] = $shipping_zip;
+					$shippingZip = FabrikString::shortColName($params->get('paypal_shippingdata_zip'));
+					$shippingSelect['zip'] = $shippingZip;
 				}
 
 				if ($params->get('paypal_shippingdata_state'))
 				{
-					$shipping_state = FabrikString::shortColName($params->get('paypal_shippingdata_state'));
-					$shipping_select['state'] = $shipping_state;
+					$shippingState = FabrikString::shortColName($params->get('paypal_shippingdata_state'));
+					$shippingSelect['state'] = $shippingState;
 				}
 
 				if ($params->get('paypal_shippingdata_city'))
 				{
-					$shipping_city = FabrikString::shortColName($params->get('paypal_shippingdata_city'));
-					$shipping_select['city'] = $shipping_city;
+					$shippingCity = FabrikString::shortColName($params->get('paypal_shippingdata_city'));
+					$shippingSelect['city'] = $shippingCity;
 				}
 
 				if ($params->get('paypal_shippingdata_country'))
 				{
-					$shipping_country = FabrikString::shortColName($params->get('paypal_shippingdata_country'));
-					$shipping_select['country'] = $shipping_country;
+					$shippingCountry = FabrikString::shortColName($params->get('paypal_shippingdata_country'));
+					$shippingSelect['country'] = $shippingCountry;
 				}
 
 				$query->clear();
 
-				if (empty($shipping_select) || $shipping_table == '')
+				if (empty($shippingSelect) || $shipping_table == '')
 				{
 					$app->enqueueMessage('No shipping lookup table or shipping fields selected');
 				}
 				else
 				{
-					$query->select($shipping_select)->from($shipping_table)
-					->where(FabrikString::shortColName($params->get('paypal_shippingdata_id')) . ' = ' . $db->quote($shipping_userid));
+					$query->select($shippingSelect)->from($shipping_table)
+					->where(FabrikString::shortColName($params->get('paypal_shippingdata_id')) . ' = ' . $db->q($shippingUserId));
 
 					$db->setQuery($query);
-					$user_shippingdata = $db->loadObject();
+					$userShippingData = $db->loadObject();
 
-					foreach ($shipping_select as $opt => $val)
+					foreach ($shippingSelect as $opt => $val)
 					{
 						// $$$tom Since we test on the current userid, it always adds the &name=&street=....
 						// Even if those vars are empty...
 						if ($val)
 						{
-							$opts[$opt] = $user_shippingdata->$val;
+							$opts[$opt] = $userShippingData->$val;
 						}
 					}
 				}
@@ -331,16 +329,16 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 			$opts['address_override'] = 1;
 		}
 
-		$paypal_currency_code = $params->get('paypal_currencycode', 'USD');
-		$paypal_currency_code = $w->parseMessageForPlaceHolder($paypal_currency_code, $this->data);
-		$opts['currency_code'] = $paypal_currency_code;
+		$currencyCode = $params->get('paypal_currencycode', 'USD');
+		$currencyCode = $w->parseMessageForPlaceHolder($currencyCode, $this->data);
+		$opts['currency_code'] = $currencyCode;
 
-		$paypal_test_site = $params->get('paypal_test_site', '');
-		$paypal_test_site = rtrim($paypal_test_site, '/');
+		$testSite = $params->get('paypal_test_site', '');
+		$testSite = rtrim($testSite, '/');
 
-		if ($paypal_testmode == 1 && !empty($paypal_test_site))
+		if ($testMode == 1 && !empty($testSite))
 		{
-			$ppurl = $paypal_test_site . '/index.php?option=com_' . $package . '&c=plugin&task=plugin.pluginAjax&formid=' . $formModel->get('id')
+			$ppurl = $testSite . '/index.php?option=com_' . $package . '&c=plugin&task=plugin.pluginAjax&formid=' . $formModel->get('id')
 				. '&g=form&plugin=paypal&method=ipn';
 		}
 		else
@@ -349,11 +347,11 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 				. '&g=form&plugin=paypal&method=ipn';
 		}
 
-		$paypal_test_site_qs = $params->get('paypal_test_site_qs', '');
+		$testSite_qs = $params->get('paypal_test_site_qs', '');
 
-		if ($paypal_testmode == 1 && !empty($paypal_test_site_qs))
+		if ($testMode == 1 && !empty($testSite_qs))
 		{
-			$ppurl .= $paypal_test_site_qs;
+			$ppurl .= $testSite_qs;
 		}
 
 		$ppurl .= '&renderOrder=' . $this->renderOrder;
@@ -362,7 +360,7 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 		$paypal_return_url = $params->get('paypal_return_url', '');
 		$paypal_return_url = $w->parseMessageForPlaceHolder($paypal_return_url, $this->data);
 
-		if ($paypal_testmode == 1 && !empty($paypal_return_url))
+		if ($testMode == 1 && !empty($paypal_return_url))
 		{
 			if (preg_match('#^http:\/\/#', $paypal_return_url))
 			{
@@ -370,9 +368,9 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 			}
 			else
 			{
-				if (!empty($paypal_test_site))
+				if (!empty($testSite))
 				{
-					$opts['return'] = $paypal_test_site . '/' . $paypal_return_url;
+					$opts['return'] = $testSite . '/' . $paypal_return_url;
 				}
 				else
 				{
@@ -380,9 +378,9 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 				}
 			}
 
-			if (!empty($paypal_test_site_qs))
+			if (!empty($testSite_qs))
 			{
-				$opts['return'] .= $paypal_test_site_qs;
+				$opts['return'] .= $testSite_qs;
 			}
 		}
 		elseif (!empty($paypal_return_url))
@@ -399,9 +397,9 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 		else
 		{
 			// Using default thanks() method so don't forget to add renderOrder
-			if ($paypal_testmode == '1' && !empty($paypal_test_site))
+			if ($testMode == '1' && !empty($testSite))
 			{
-				$opts['return'] = $paypal_test_site . '/index.php?option=com_' . $package . '&task=plugin.pluginAjax&formid=' . $formModel->get('id')
+				$opts['return'] = $testSite . '/index.php?option=com_' . $package . '&task=plugin.pluginAjax&formid=' . $formModel->get('id')
 					. '&g=form&plugin=paypal&method=thanks&rowid=' . $this->data['rowid'] . '&renderOrder=' . $this->renderOrder;
 			}
 			else
@@ -496,7 +494,6 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 	 *
 	 * @return boolean
 	 */
-
 	protected function isSubscription($params)
 	{
 		$data = $this->data;
@@ -549,7 +546,6 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 	 *
 	 * @return  void
 	 */
-
 	public function onThanks()
 	{
 		/* @TODO - really need to work out how to get the plugin params at this point,
@@ -558,11 +554,11 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 		 */
 		$app = JFactory::getApplication();
 		$input = $app->input;
-		$formid = $input->getInt('formid');
-		$rowid = $input->getString('rowid', '', 'string');
+		$formId = $input->getInt('formid');
+		$rowId = $input->getString('rowid', '', 'string');
 		JModelLegacy::addIncludePath(COM_FABRIK_FRONTEND . '/models');
 		$formModel = JModelLegacy::getInstance('Form', 'FabrikFEModel');
-		$formModel->setId($formid);
+		$formModel->setId($formId);
 		$params = $formModel->getParams();
 		$ret_msg = (array) $params->get('paypal_return_msg', array());
 		$ret_msg = $ret_msg[$input->getInt('renderOrder')];
@@ -571,7 +567,7 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 		{
 			$w = new FabrikWorker;
 			$listModel = $formModel->getlistModel();
-			$row = $listModel->getRow($rowid);
+			$row = $listModel->getRow($rowId);
 			$ret_msg = $w->parseMessageForPlaceHolder($ret_msg, $row);
 
 			if (JString::stristr($ret_msg, '[show_all]'))
@@ -606,7 +602,6 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 	 *
 	 * @return  void
 	 */
-
 	public function onIpn()
 	{
 		$config = JFactory::getConfig();
@@ -622,39 +617,41 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 
 		// Lets try to load in the custom returned value so we can load up the form and its parameters
 		$custom = $input->get('custom', '', 'string');
-		list($formid, $rowid, $ipn_value) = explode(":", $custom);
+		list($formId, $rowId, $ipn_value) = explode(":", $custom);
 
 		// Pretty sure they are added but double add
 		JModelLegacy::addIncludePath(COM_FABRIK_FRONTEND . '/models');
+
+		/** @var FabrikFEModelForm $formModel */
 		$formModel = JModelLegacy::getInstance('Form', 'FabrikFEModel');
-		$formModel->setId($formid);
+		$formModel->setId($formId);
 		$listModel = $formModel->getlistModel();
 		$params = $formModel->getParams();
 		$table = $listModel->getTable();
 		$db = $listModel->getDb();
 		$query = $db->getQuery(true);
 
-		$paypal_testmode = $params->get('paypal_testmode', false);
+		$testMode = $params->get('paypal_testmode', false);
 
 		/* $$$ hugh
 		 * @TODO shortColName won't handle joined data, need to fix this to use safeColName
 		 * (don't forget to change quoteName stuff later on as well)
 		 */
 		$renderOrder = $input->getInt('renderOrder');
-		$ipn_txn_field = (array) $params->get('paypal_ipn_txn_id_element', array());
-		$ipn_txn_field = FabrikString::shortColName($ipn_txn_field[$renderOrder]);
+		$ipnTxnField = (array) $params->get('paypal_ipn_txn_id_element', array());
+		$ipnTxnField = FabrikString::shortColName($ipnTxnField[$renderOrder]);
 
-		$ipn_payment_field = (array) $params->get('paypal_ipn_payment_element', array());
-		$ipn_payment_field = FabrikString::shortColName($ipn_payment_field[$renderOrder]);
+		$ipnPaymentField = (array) $params->get('paypal_ipn_payment_element', array());
+		$ipnPaymentField = FabrikString::shortColName($ipnPaymentField[$renderOrder]);
 
-		$ipn_field = (array) $params->get('paypal_ipn_element', array());
-		$ipn_field = FabrikString::shortColName($ipn_field[$renderOrder]);
+		$ipnField = (array) $params->get('paypal_ipn_element', array());
+		$ipnField = FabrikString::shortColName($ipnField[$renderOrder]);
 
-		$ipn_status_field = (array) $params->get('paypal_ipn_status_element', array());
-		$ipn_status_field = FabrikString::shortColName($ipn_status_field[$renderOrder]);
+		$ipnStatusField = (array) $params->get('paypal_ipn_status_element', array());
+		$ipnStatusField = FabrikString::shortColName($ipnStatusField[$renderOrder]);
 
-		$ipn_address_field = (array) $params->get('paypal_ipn_address_element', array());
-		$ipn_address_field = FabrikString::shortColName($ipn_address_field[$renderOrder]);
+		$ipnAddressField = (array) $params->get('paypal_ipn_address_element', array());
+		$ipnAddressField = FabrikString::shortColName($ipnAddressField[$renderOrder]);
 
 		$w = new FabrikWorker;
 		$ipn_value = str_replace('[', '{', $ipn_value);
@@ -673,18 +670,18 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 		}
 
 		// Post back to PayPal system to validate
-		$header .= "POST /cgi-bin/webscr HTTP/1.0\r\n";
+		$header = "POST /cgi-bin/webscr HTTP/1.0\r\n";
 		$header .= "Host: www.paypal.com:443\r\n";
 		$header .= "Content-Type: application/x-www-form-urlencoded\r\n";
 		$header .= "Content-Length: " . JString::strlen($req) . "\r\n\r\n";
 
 		if ($_POST['test_ipn'] == 1)
 		{
-			$paypalurl = 'ssl://www.sandbox.paypal.com';
+			$paypalUrl = 'ssl://www.sandbox.paypal.com';
 		}
 		else
 		{
-			$paypalurl = 'ssl://www.paypal.com';
+			$paypalUrl = 'ssl://www.paypal.com';
 		}
 
 		// Assign posted variables to local variables
@@ -703,22 +700,22 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 			. $input->get('address_city', '', 'string') . ' ' . $input->get('address_country_code', '', 'string');
 
 		$status = 'ok';
-		$err_msg = '';
+		$errMsg = '';
 
-		if (empty($formid))
+		if (empty($formId))
 		{
 			$status = 'form.paypal.ipnfailure.custom_error';
-			$err_msg = "formid or rowid empty in custom: $custom";
+			$errMsg = "formid or rowid empty in custom: $custom";
 		}
 		else
 		{
 			// @TODO implement a curl alternative as fsockopen is not always available
-			$fp = fsockopen($paypalurl, 443, $errno, $errstr, 30);
+			$fp = fsockopen($paypalUrl, 443, $errno, $errstr, 30);
 
 			if (!$fp)
 			{
 				$status = 'form.paypal.ipnfailure.fsock_error';
-				$err_msg = "fsock error: $errno;$errstr";
+				$errMsg = "fsock error: $errno;$errstr";
 			}
 			else
 			{
@@ -738,11 +735,11 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 					{
 						// $$tom This block Paypal from updating the IPN field if the payment status evolves (e.g. from Pending to Completed)
 						// $$$ hugh - added check of status, so only barf if there is a status field, and it is Completed for this txn_id
-						if (!empty($ipn_txn_field) && !empty($ipn_status_field))
+						if (!empty($ipnTxnField) && !empty($ipnStatusField))
 						{
 							$query->clear();
-							$query->select($ipn_status_field)->from($table->db_table_name)
-							->where($db->quoteName($ipn_txn_field) . ' = ' . $db->quote($txn_id));
+							$query->select($ipnStatusField)->from($table->db_table_name)
+							->where($db->qn($ipnTxnField) . ' = ' . $db->q($txn_id));
 							$db->setQuery($query);
 							$txn_result = $db->loadResult();
 
@@ -753,7 +750,7 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 									if ($payment_status != 'Reversed' && $payment_status != 'Refunded')
 									{
 										$status = 'form.paypal.ipnfailure.txn_seen';
-										$err_msg = "transaction id already seen as Completed, new payment status makes no sense: $txn_id, $payment_status";
+										$errMsg = "transaction id already seen as Completed, new payment status makes no sense: $txn_id, $payment_status";
 									}
 								}
 								elseif ($txn_result == 'Reversed')
@@ -761,7 +758,7 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 									if ($payment_status != 'Canceled_Reversal')
 									{
 										$status = 'form.paypal.ipnfailure.txn_seen';
-										$err_msg = "transaction id already seen as Reversed, new payment status makes no sense: $txn_id, $payment_status";
+										$errMsg = "transaction id already seen as Reversed, new payment status makes no sense: $txn_id, $payment_status";
 									}
 								}
 							}
@@ -771,34 +768,34 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 						{
 							$set_list = array();
 
-							if (!empty($ipn_field))
+							if (!empty($ipnField))
 							{
 								if (empty($ipn_value))
 								{
 									$ipn_value = $txn_id;
 								}
 
-								$set_list[$ipn_field] = $ipn_value;
+								$set_list[$ipnField] = $ipn_value;
 							}
 
-							if (!empty($ipn_txn_field))
+							if (!empty($ipnTxnField))
 							{
-								$set_list[$ipn_txn_field] = $txn_id;
+								$set_list[$ipnTxnField] = $txn_id;
 							}
 
-							if (!empty($ipn_payment_field))
+							if (!empty($ipnPaymentField))
 							{
-								$set_list[$ipn_payment_field] = $payment_amount;
+								$set_list[$ipnPaymentField] = $payment_amount;
 							}
 
-							if (!empty($ipn_status_field))
+							if (!empty($ipnStatusField))
 							{
-								$set_list[$ipn_status_field] = $payment_status;
+								$set_list[$ipnStatusField] = $payment_status;
 							}
 
-							if (!empty($ipn_address_field))
+							if (!empty($ipnAddressField))
 							{
-								$set_list[$ipn_address_field] = $buyer_address;
+								$set_list[$ipnAddressField] = $buyer_address;
 							}
 
 							$ipn = $this->getIPNHandler($params, $renderOrder);
@@ -810,7 +807,7 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 
 								if (method_exists($ipn, $ipn_function))
 								{
-									$status = $ipn->$ipn_function($listModel, $request, $set_list, $err_msg);
+									$status = $ipn->$ipn_function($listModel, $request, $set_list, $errMsg);
 
 									if ($status != 'ok')
 									{
@@ -818,11 +815,11 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 									}
 								}
 
-								$txn_type_function = "txn_type_" . $txn_type;
+								$txnTypeFunction = "txn_type_" . $txn_type;
 
-								if (method_exists($ipn, $txn_type_function))
+								if (method_exists($ipn, $txnTypeFunction))
 								{
-									$status = $ipn->$txn_type_function($listModel, $request, $set_list, $err_msg);
+									$status = $ipn->$txnTypeFunction($listModel, $request, $set_list, $errMsg);
 
 									if ($status != 'ok')
 									{
@@ -837,25 +834,25 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 
 								foreach ($set_list as $set_field => $set_value)
 								{
-									$set_value = $db->quote($set_value);
-									$set_field = $db->quoteName($set_field);
+									$set_value = $db->q($set_value);
+									$set_field = $db->qn($set_field);
 									$set_array[] = "$set_field = $set_value";
 								}
 
 								$query->clear();
 								$query->update($table->db_table_name)
 								->set(implode(',', $set_array))
-								->where($table->db_primary_key . ' = ' . $db->quote($rowid));
+								->where($table->db_primary_key . ' = ' . $db->q($rowId));
 								$db->setQuery($query);
 
 								if (!$db->execute())
 								{
 									$status = 'form.paypal.ipnfailure.query_error';
-									$err_msg = 'sql query error: ' . $db->getErrorMsg();
+									$errMsg = 'sql query error: ' . $db->getErrorMsg();
 								}
 								else
 								{
-									if ($paypal_testmode == 1)
+									if ($testMode == 1)
 									{
 										$log->message_type = 'form.paypal.ipndebug.ipn_query';
 										$log->message = "IPN query: " . $query;
@@ -866,14 +863,14 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 							else
 							{
 								$status = 'form.paypal.ipnfailure.set_list_empty';
-								$err_msg = 'no IPN status fields found on form for rowid: ' . $rowid;
+								$errMsg = 'no IPN status fields found on form for rowid: ' . $rowId;
 							}
 						}
 					}
 					elseif (JString::strcmp($res, "INVALID") == 0)
 					{
 						$status = 'form.paypal.ipnfailure.invalid';
-						$err_msg = 'paypal postback failed with INVALID';
+						$errMsg = 'paypal postback failed with INVALID';
 					}
 				}
 
@@ -885,28 +882,29 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 		$receive_debug_emails = $receive_debug_emails[$renderOrder];
 		$send_default_email = (array) $params->get('paypal_send_default_email');
 		$send_default_email = $send_default_email[$renderOrder];
-
+		$emailText = '';
+		
 		if ($status != 'ok')
 		{
 			if ($receive_debug_emails == '1')
 			{
 				foreach ($_POST as $key => $value)
 				{
-					$emailtext .= $key . " = " . $value . "\n\n";
+					$emailText .= $key . " = " . $value . "\n\n";
 				}
 
 				$subject = $config->get('sitename') . ": Error with PayPal IPN from Fabrik";
-				$mail->sendMail($email_from, $email_from, $admin_email, $subject, $emailtext, false);
+				$mail->sendMail($email_from, $email_from, $admin_email, $subject, $emailText, false);
 			}
 
 			$log->message_type = $status;
-			$log->message = $emailtext . "\n//////////////\n" . $res . "\n//////////////\n" . $req . "\n//////////////\n" . $err_msg;
+			$log->message = $emailText . "\n//////////////\n" . $res . "\n//////////////\n" . $req . "\n//////////////\n" . $errMsg;
 
 			if ($send_default_email == '1')
 			{
 				$subject = $config->get('sitename') . ": Error with PayPal IPN from Fabrik";
-				$payer_emailtext = FText::_('PLG_FORM_PAYPAL_ERR_PROCESSING_PAYMENT');
-				$mail->sendMail($email_from, $email_from, $payer_email, $subject, $payer_emailtext, false);
+				$payerEmailText = FText::_('PLG_FORM_PAYPAL_ERR_PROCESSING_PAYMENT');
+				$mail->sendMail($email_from, $email_from, $payer_email, $subject, $payerEmailText, false);
 			}
 		}
 		else
@@ -915,27 +913,27 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 			{
 				foreach ($_POST as $key => $value)
 				{
-					$emailtext .= $key . " = " . $value . "\n\n";
+					$emailText .= $key . " = " . $value . "\n\n";
 				}
 
 				$subject = $config->get('sitename') . ': IPN ' . $payment_status;
-				$mail->sendMail($email_from, $email_from, $admin_email, $subject, $emailtext, false);
+				$mail->sendMail($email_from, $email_from, $admin_email, $subject, $emailText, false);
 			}
 
 			$log->message_type = 'form.paypal.ipn.' . $payment_status;
 			$query = $db->getQuery();
-			$log->message = $emailtext . "\n//////////////\n" . $res . "\n//////////////\n" . $req . "\n//////////////\n" . $query;
+			$log->message = $emailText . "\n//////////////\n" . $res . "\n//////////////\n" . $req . "\n//////////////\n" . $query;
 
 			if ($send_default_email == '1')
 			{
 				$payer_subject = "PayPal success";
-				$payer_emailtext = "Your PayPal payment was succesfully processed.  The PayPal transaction id was $txn_id";
-				$mail->sendMail($email_from, $email_from, $payer_email, $payer_subject, $payer_emailtext, false);
+				$payerEmailText = "Your PayPal payment was succesfully processed.  The PayPal transaction id was $txn_id";
+				$mail->sendMail($email_from, $email_from, $payer_email, $payer_subject, $payerEmailText, false);
 			}
 		}
 
 		$log->message .= "\n IPN custom function = $ipn_function";
-		$log->message .= "\n IPN custom transaction function = $txn_type_function";
+		$log->message .= "\n IPN custom transaction function = $txnTypeFunction";
 		$log->store();
 		jexit();
 	}
@@ -948,7 +946,6 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 	 *
 	 * @return  mixed	false or class instance
 	 */
-
 	protected function getIPNHandler($params, $renderOrder = 0)
 	{
 		$php_file = (array) $params->get('paypal_run_php_file');

@@ -396,7 +396,7 @@ class PlgFabrik_Element extends FabrikPlugin
 	 *
 	 * @param   int  $groupId  group id
 	 *
-	 * @return  object	group model
+	 * @return  FabrikFEModelGroup	group model
 	 */
 	public function &getGroup($groupId = null)
 	{
