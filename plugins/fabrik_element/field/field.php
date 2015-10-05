@@ -35,22 +35,10 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 	{
 		$data = FabrikWorker::JSONtoData($data, true);
 		$params = $this->getParams();
-		$format = $params->get('text_format_string');
-		$formatBlank = $params->get('field_format_string_blank', true);
 
 		foreach ($data as &$d)
 		{
-			$d = $this->numberFormat($d);
-
-			if ($format != '' && ($formatBlank || $d != ''))
-			{
-				$d = sprintf($format, $d);
-			}
-
-			if ($params->get('password') == "1")
-			{
-				$d = str_pad('', JString::strlen($d), '*');
-			}
+			$d = $this->format($d);
 
 			$this->_guessLinkType($d, $thisRow);
 
@@ -64,6 +52,32 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 	}
 
 	/**
+	 * Format the string for use in list view, email data
+	 * @param $d
+	 *
+	 * @return string
+	 */
+	protected function format(&$d)
+	{
+		$params = $this->getParams();
+		$format = $params->get('text_format_string');
+		$formatBlank = $params->get('field_format_string_blank', true);
+		$d = $this->numberFormat($d);
+
+		if ($format != '' && ($formatBlank || $d != ''))
+		{
+			$d = sprintf($format, $d);
+		}
+
+		if ($params->get('password') == '1')
+		{
+			$d = str_pad('', JString::strlen($d), '*');
+		}
+
+		return $d;
+	}
+
+	/**
 	 * Prepares the element data for CSV export
 	 *
 	 * @param   string  $data      Element data
@@ -73,15 +87,7 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 	 */
 	public function renderListData_csv($data, &$thisRow)
 	{
-		$data = $this->numberFormat($data);
-		$params = $this->getParams();
-		$format = $params->get('text_format_string');
-		$formatBlank = $params->get('field_format_string_blank', true);
-
-		if ($format != '' && ($formatBlank || $data != ''))
-		{
-			$data = sprintf($format, $data);
-		}
+		$data = $this->format($data);
 
 		return $data;
 	}
@@ -141,19 +147,7 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 			else
 			{
 				$this->_guessLinkType($value, $data);
-				$format = $params->get('text_format_string');
-				$formatBlank = $params->get('field_format_string_blank', true);
-
-				if ($format != '' && ($formatBlank || $data != ''))
-				{
-					$value = sprintf($format, $value);
-				}
-
-				if ($params->get('password') == "1")
-				{
-					$value = str_pad('', JString::strlen($value), '*');
-				}
-
+				$value = $this->format($value);
 				$value = $this->getReadOnlyOutput($value, $value);
 			}
 
@@ -645,6 +639,7 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 		}
 		else
 		{
+			$value = $this->format($value);
 			return parent::getIndEmailValue($value, $data, $repeatCounter);
 		}
 	}
