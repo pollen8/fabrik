@@ -35,7 +35,6 @@ class JDocumentpdf extends JDocumentHTML
 	 *
 	 * @param   array  $options  Associative array of options
 	 */
-
 	public function __construct($options = array())
 	{
 		parent::__construct($options);
@@ -65,7 +64,6 @@ class JDocumentpdf extends JDocumentHTML
 	 *
 	 * @return  bool
 	 */
-
 	protected function iniDomPdf()
 	{
 		if (FabrikPDFHelper::iniDomPdf())
@@ -82,7 +80,7 @@ class JDocumentpdf extends JDocumentHTML
 	/**
 	 * Set the paper size and orientation
 	 * Note if too small for content then the pdf renderer will bomb out in an infinite loop
-	 * Legal seems to be more leiniant than a4 for example
+	 * Legal seems to be more lenient than a4 for example
 	 * If doing landscape set large paper size
 	 *
 	 * @param   string  $size         Paper size E.g A4,legal
@@ -92,7 +90,6 @@ class JDocumentpdf extends JDocumentHTML
 	 *
 	 * @return  void
 	 */
-
 	public function setPaper($size = 'A4', $orientation = 'landscape')
 	{
 		$size = strtoupper($size);
@@ -106,7 +103,6 @@ class JDocumentpdf extends JDocumentHTML
 	 *
 	 * @return  void
 	 */
-
 	public function setName($name = 'joomla')
 	{
 		$this->name = $name;
@@ -117,7 +113,6 @@ class JDocumentpdf extends JDocumentHTML
 	 *
 	 * @return	string
 	 */
-
 	public function getName()
 	{
 		return $this->name;
@@ -131,7 +126,6 @@ class JDocumentpdf extends JDocumentHTML
 	 *
 	 * @return	string
 	 */
-
 	public function render($cache = false, $params = array())
 	{
 		// mb_encoding foo when content-type had been set to text/html; uft-8;
@@ -168,7 +162,6 @@ class JDocumentpdf extends JDocumentHTML
 	 *
 	 * @return  The output of the renderer
 	 */
-
 	public function getBuffer($type = null, $name = null, $attribs = array())
 	{
 		if ($type == 'head' || $type == 'component')
