@@ -149,7 +149,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 			}
 
 			$joinTableName = $join->table_join_alias;
-			$tables = $this->getForm()->getLinkedFabrikLists($params->get('join_db_name'));
+			$tables = $this->getFormModel()->getLinkedFabrikLists($params->get('join_db_name'));
 
 			/*	store unjoined values as well (used in non-join group table views)
 			 * this wasn't working for test case:
@@ -162,8 +162,8 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 			*$k = isset($join->keytable) ? $join->keytable : $join->join_from_table;
 			*$k = FabrikString::safeColName("`$join->keytable`.`$element->name`");
 			*/
-			$keytable = isset($join->keytable) ? $join->keytable : $join->join_from_table;
-			$k = FabrikString::safeColName($keytable . '.' . $element->name);
+			$keyTable = isset($join->keytable) ? $join->keytable : $join->join_from_table;
+			$k = FabrikString::safeColName($keyTable . '.' . $element->name);
 			$k2 = $this->getJoinLabelColumn();
 
 			if (FArrayHelper::getValue($opts, 'inc_raw', true))
@@ -3091,7 +3091,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 	}
 
 	/**
-	 * Used by elements with suboptions, given a value, return its label
+	 * Used by elements with sub-options, given a value, return its label
 	 *
 	 * @param   string  $v             Value
 	 * @param   string  $defaultLabel  Default label
@@ -3112,7 +3112,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 			/*
 			 * temp fix while I work out the details ... the code after this references $repeatCounter, apparently assuming
 			 * that if $vv is an array, we're in a repeat group.  But that's a hangover from 3.0.  As far as I can tell, the
-			 * only time I can see where $v may be an array is displaying a mutiselect join, in a repeat group (?), in a
+			 * only time I can see where $v may be an array is displaying a multi-select join, in a repeat group (?), in a
 			 * read only context.  In which case, we'll already have the labels, so all we need to check is if the value and
 			 * label arrays are the same - i.e. we have the label in the value.  So the following test should be all we need to
 			 * do.  I'll run this for a while, if no unexpected side effects, I'll re-do the code after this accordingly.
@@ -3136,7 +3136,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 				// In a repeat group
 				if (is_array($v))
 				{
-					$v = FArrayHelper::getValue($v, $repeatCounter);
+					$v = FArrayHelper::getValue($v, 0);
 				}
 			}
 
@@ -3212,7 +3212,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 	}
 
 	/**
-	 * Cache method to populate autocomplete options
+	 * Cache method to populate auto-complete options
 	 *
 	 * @param   plgFabrik_Element  $elementModel  element model
 	 * @param   string             $search        search string

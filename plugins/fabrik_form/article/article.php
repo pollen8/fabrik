@@ -140,7 +140,7 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 		$data['images'] = json_encode($this->images());
 
 		$isNew = is_null($id) ? true : false;
-		
+
 		if ($isNew)
 		{
 			$data['created'] = JFactory::getDate()->toSql();
@@ -182,7 +182,7 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 		 * Featured is handled by the admin content model, when you are saving in ADMIN
 		 * Otherwise we've had to hack over the admin featured() method into this plugin for the front end
 		 */
-		
+
 		$version = new JVersion;
 		JTable::addIncludePath(COM_FABRIK_BASE . 'administrator/components/com_content/tables');
 
@@ -214,7 +214,7 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 			$cache = JFactory::getCache('com_content');
 			$cache->clean($id);
 		}
-		
+
 		return $item;
 	}
 
@@ -646,7 +646,7 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 		$params = $this->getParams();
 		$template = JPath::clean(JPATH_SITE . '/plugins/fabrik_form/article/tmpl/' . $params->get('template', ''));
 		$contentTemplate = $params->get('template_content');
-		$content = $contentTemplate != '' ? $this->_getConentTemplate($contentTemplate) : '';
+		$content = $contentTemplate != '' ? $this->_getContentTemplate($contentTemplate) : '';
 		$messageTemplate = '';
 
 		if (JFile::exists($template))
@@ -743,7 +743,7 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 	 * @return  string  content item html (translated with Joomfish if installed)
 	 */
 
-	protected function _getConentTemplate($contentTemplate)
+	protected function _getContentTemplate($contentTemplate)
 	{
 		$app = JFactory::getApplication();
 

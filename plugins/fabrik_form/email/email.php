@@ -305,9 +305,7 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 
 				$userId = array_key_exists($email, $userIds) ? $userIds[$email]->id : 0;
 				$thisUser = JFactory::getUser($userId);
-
 				$thisMessage = $w->parseMessageForPlaceholder($message, $this->data, true, false, $thisUser);
-				echo $thisMessage;exit;
 				$thisSubject = strip_tags($w->parseMessageForPlaceholder($subject, $this->data, true, false, $thisUser));
 
 				if (!empty($attachType))
@@ -574,11 +572,11 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 		// $$$ hugh - added an optional eval for adding attachments.
 		// Eval'd code should just return an array of file paths which we merge with $this->attachments[]
 		$w = new FabrikWorker;
-		$email_attach_eval = $w->parseMessageForPlaceholder($params->get('email_attach_eval', ''), $this->data, false);
+		$emailAttachEval = $w->parseMessageForPlaceholder($params->get('email_attach_eval', ''), $this->data, false);
 
-		if (!empty($email_attach_eval))
+		if (!empty($emailAttachEval))
 		{
-			$email_attach_array = @eval($email_attach_eval);
+			$email_attach_array = @eval($emailAttachEval);
 			FabrikWorker::logEval($email_attach_array, 'Caught exception on eval in email email_attach_eval : %s');
 
 			if (!empty($email_attach_array))
@@ -628,7 +626,7 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 	 *
 	 * @return  string  content item html (translated with Joomfish if installed)
 	 */
-	protected function _getConentTemplate($contentTemplate)
+	protected function _getContentTemplate($contentTemplate)
 	{
 		$app = JFactory::getApplication();
 
@@ -636,7 +634,7 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 		{
 			$db = JFactory::getDbo();
 			$query = $db->getQuery(true);
-			$query->select('introtext, ' . $db->quoteName('fulltext'))->from('#__content')->where('id = ' . (int) $contentTemplate);
+			$query->select('introtext, ' . $db->qn('fulltext'))->from('#__content')->where('id = ' . (int) $contentTemplate);
 			$db->setQuery($query);
 			$res = $db->loadObject();
 		}
@@ -660,7 +658,7 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 		$data = $this->getProcessData();
 		$config = JFactory::getConfig();
 		$ignore = $this->getDontEmailKeys();
-		$message = "";
+		$message = '';
 		$formModel = $this->getModel();
 		$groupModels = $formModel->getGroupsHiarachy();
 

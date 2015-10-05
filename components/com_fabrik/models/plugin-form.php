@@ -61,7 +61,7 @@ class PlgFabrik_Form extends FabrikPlugin
 	{
 		return true;
 	}
-	
+
 	/**
 	 * Run from list model when deleting rows
 	 *
@@ -203,9 +203,9 @@ class PlgFabrik_Form extends FabrikPlugin
 	{
 		$profiler = JProfiler::getInstance('Application');
 		JDEBUG ? $profiler->mark("getProcessData: start") : null;
-		
+
 		$model = $this->getModel();
-		
+
 		// See comments in getEmailData() about caching in $this vs $model
 		unset($this->emailData);
 		unset($model->emailData);
@@ -213,7 +213,7 @@ class PlgFabrik_Form extends FabrikPlugin
 		$this->data = array_merge($d, $this->getEmailData());
 
 		JDEBUG ? $profiler->mark("getProcessData: end") : null;
-		
+
 		return $this->data;
 	}
 
@@ -236,14 +236,14 @@ class PlgFabrik_Form extends FabrikPlugin
 		 * as until this change we were re-buiding the $emailData from scratch for every element on the form, which didn't
 		 * become apparent till we added the fabrikdebug=2 to allows profiling of submissions, and added the extra profiling
 		 * marks for the submission processing
-		 * 
-		 * ... which is great, but ... 
-		 *  
+		 *
+		 * ... which is great, but ...
+		 *
 		 * I have a sneaky suspicion it may have some unforeseen side effects for things like calcs, in certain corner
 		 * cases where this function gets called early in submission processing.  So watch out for that.  If calcs start
 		 * showing up with incorrect values in emails, this is probably why.
 		 */
-		
+
 		$model = $this->getModel();
 
 		if (isset($model->emailData))
@@ -290,7 +290,7 @@ class PlgFabrik_Form extends FabrikPlugin
 		// $$$ hugh - temp foreach fix
 		$groups = $model->getGroupsHiarachy();
 
-		foreach ($groups as $gkey => $groupModel)
+		foreach ($groups as $gKey => $groupModel)
 		{
 			$groupParams = $groupModel->getParams();
 
@@ -423,7 +423,7 @@ class PlgFabrik_Form extends FabrikPlugin
 
 		$model->setEditable($editable);
 		$model->emailData = $this->emailData;
-		
+
 		JDEBUG ? $profiler->mark("getEmailData: end") : null;
 
 		return $this->emailData;
