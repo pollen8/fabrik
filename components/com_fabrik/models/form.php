@@ -305,7 +305,7 @@ class FabrikFEModelForm extends FabModelForm
 
 	/**
 	 * Posted form data with full names?
-	 * 
+	 *
 	 * @var array
 	 */
 	public $fullFormData = array();
@@ -314,22 +314,22 @@ class FabrikFEModelForm extends FabModelForm
 	 * Use this lastInsertId to store the main table's lastInsertId, so we can use this rather
 	 * than the list model lastInsertId, which could be for the last joined table rather than
 	 * the form's main table.
-	 * 
+	 *
 	 * @since 3.3
-	 * 
+	 *
 	 * @var mixed
 	 */
 	public $lastInsertId = null;
 
 	/**
 	 * Form plugins can set this to trigger a validation fail which isn't specific to an element
-	 * 
+	 *
 	 * @since 3.4
-	 * 
+	 *
 	 * @var mixed
 	 */
 	public $formErrorMsg = null;
-	
+
 	/**
 	 * Constructor
 	 *
@@ -1695,7 +1695,7 @@ class FabrikFEModelForm extends FabModelForm
 	 * @param   string  $insertId  New insert reference
 	 *
 	 * @return  void referrer
-	 */ 
+	 */
 	protected function updateReferrer($origId, $insertId)
 	{
 		$input = JFactory::getApplication()->input;
@@ -2738,14 +2738,14 @@ class FabrikFEModelForm extends FabModelForm
 	 * Get the last insert id, for situations where we need the 'rowid' for newly inserted forms,
 	 * and can't use getRowId() because it caches rowid as empty.  For example, in plugins running
 	 * onAfterProcess, like upsert.
-	 * 
-	 * Note that $this->lastInsertId is getting set in the 
+	 *
+	 * Note that $this->lastInsertId is getting set in the
 	 */
 	public function getInsertId()
 	{
-		return $this->lastInsertId;	
+		return $this->lastInsertId;
 	}
-	
+
 	/**
 	 * Are we creating a new record or editing an existing one?
 	 * Put here to ensure compat when we go from 3.0 where rowid = 0 = new, to row id '' = new
@@ -2926,14 +2926,14 @@ class FabrikFEModelForm extends FabModelForm
 
 	/**
 	 * If a submit plugin wants to fail validation not specific to an element
-	 * 
+	 *
 	 * @param  string  $errMsg
 	 */
 	public function setFormErrorMsg($errMsg)
 	{
 		$this->formErrorMsg = $errMsg;
 	}
-	
+
 	/**
 	 * Does the form contain user errors
 	 *
@@ -2947,7 +2947,7 @@ class FabrikFEModelForm extends FabModelForm
 		{
 			$errorsFound = true;
 		}
-		
+
 		foreach ($this->errors as $field => $errors)
 		{
 			if (!empty($errors))
@@ -4530,6 +4530,16 @@ class FabrikFEModelForm extends FabModelForm
 		}
 
 		return $element;
+	}
+
+	/**
+	 * Get an array of read only values
+	 *
+	 * @return  array
+	 */
+	public function getreadOnlyVals()
+	{
+		return $this->readOnlyVals;
 	}
 
 	/**
