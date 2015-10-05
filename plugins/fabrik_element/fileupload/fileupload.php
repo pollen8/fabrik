@@ -1123,7 +1123,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 			{
 				$files = array_keys($id_keys);
 			}
-			
+
 			$groupModel = $this->getGroup();
 			$formModel = $this->getFormModel();
 			$isJoin = ($groupModel->isJoin() || $this->isJoin());
@@ -1543,7 +1543,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		$origData = $this->getFormModel()->getOrigData();
 		$name = $this->getFullName(true, false);
 		$filesToKeep = array();
-		
+
 		for ($j = 0; $j < count($origData); $j++)
 		{
 			foreach ($origData[$j] as $key => $val)
@@ -1686,7 +1686,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 
 			if ($this->isJoin())
 			{
-				$d = (array) $input->get($name, array(), 'array');				
+				$d = (array) $input->get($name, array(), 'array');
 				return !array_key_exists('id', $d);
 
 			}
@@ -1807,17 +1807,17 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		{
 			$oImage = FabimageHelper::loadLib($params->get('image_library'));
 			$oImage->setStorage($storage);
-				
+
 			if ($params->get('upload_use_wip', '0') == '1')
 			{
 				if ($params->get('fileupload_storage_type', 'filesystemstorage') == 'filesystemstorage')
 				{
 					$mapElementId = $params->get('fu_map_element');
-					
+
 					if (!empty($mapElementId))
 					{
 						$coordinates = $oImage->getExifCoordinates($filePath);
-						
+
 						if (!empty($coordinates))
 						{
 							$formModel = $this->getFormModel();
@@ -1829,15 +1829,15 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 							$formModel->updateFormData($mapElementName, $coordinates_str, true);
 						}
 					}
-					
+
 					$oImage->rotateImageFromExif($filePath, '');
 				}
 			}
-			
-			// Resize main image			
+
+			// Resize main image
 			$mainWidth = $params->get('fu_main_max_width', '');
 			$mainHeight = $params->get('fu_main_max_height', '');
-	
+
 			if ($mainWidth != '' || $mainHeight != '')
 			{
 				// $$$ rob ensure that both values are integers otherwise resize fails
@@ -1845,16 +1845,16 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 				{
 					$mainHeight = (int) $mainWidth;
 				}
-	
+
 				if ($mainWidth == '')
 				{
 					$mainWidth = (int) $mainHeight;
 				}
-	
+
 				$oImage->resize($mainWidth, $mainHeight, $filePath, $filePath, $quality);
 			}
 		}
-		
+
 		// $$$ hugh - if it's a PDF, make sure option is set to attempt PDF thumb
 		$make_thumbnail = $params->get('make_thumbnail') == '1' ? true : false;
 
@@ -2005,7 +2005,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 
 		$folder = JPath::clean($folder);
 		$w = new FabrikWorker;
-		
+
 		$formModel = $this->getFormModel();
 		$folder = $w->parseMessageForRepeats($folder, $formModel->formData, $this, $repeatCounter);
 		$folder = $w->parseMessageForPlaceHolder($folder);
@@ -2147,7 +2147,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 						{
 							$render->output = '<span class="fabrikUploadDelete" id="' . $id . '_delete_span">' . $this->deleteButton($value, $repeatCounter) . $render->output . '</span>';
 						}
-						
+
 						/*
 						if ($use_wip)
 						{
@@ -2508,7 +2508,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 				{
 					$data = $params->get('default_image');
 				}
-				
+
 				if (strstr($data, JPATH_SITE))
 				{
 					$p = str_replace(COM_FABRIK_LIVESITE, JPATH_SITE, $data);
@@ -2523,17 +2523,17 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 				$ext = pathinfo($data, PATHINFO_EXTENSION);
 				$config = JFactory::getConfig();
 				$p = tempnam($config->get('tmp_path'), 'email_');
-				
+
 				if (empty($p)) {
 					return false;
 				}
-				
+
 				if (!empty($ext))
 				{
 					JFile::delete($p);
 					$p .= '.' . $ext;
 				}
-				
+
 				$storage = $this->getStorage();
 				$fileContent = $storage->read($data);
 				JFile::write($p, $fileContent);
@@ -2544,7 +2544,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 
 		return false;
 	}
-	
+
 	/**
 	 * Should the attachment file we provided in addEmailAttachment() be removed after use
 	 *
@@ -2555,7 +2555,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 	public function shouldDeleteEmailAttachment($data)
 	{
 		$params = $this->getParams();
-	
+
 		if ($params->get('ul_email_file'))
 		{
 			if (!empty($data) && $params->get('fileupload_storage_type', 'filesystemstorage') == 'amazons3storage')
@@ -2563,7 +2563,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 				return true;
 			}
 		}
-	
+
 		return false;
 	}
 
@@ -2801,6 +2801,18 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 	{
 		$v = $this->getValue($data, $repeatCounter);
 		$storage = $this->getStorage();
+
+		if (is_array($v))
+		{
+			$return = array();
+
+			foreach ($v as $tmpV)
+			{
+				$return[] = $storage->pathToURL($tmpV);
+			}
+
+			return $return;
+		}
 
 		return $storage->pathToURL($v);
 	}
