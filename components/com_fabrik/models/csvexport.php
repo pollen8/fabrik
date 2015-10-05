@@ -130,22 +130,16 @@ class FabrikFEModelCSVExport
 		$incRaw = $input->get('incraw', true);
 		$incData = $input->get('inctabledata', true);
 		$data = $this->model->getData();
-		//echo "data = ";print_r($data);
-		$this->model->formatData($data);
-		echo "formatted data = ";print_r($data);;
-
 		$exportFormat = $this->model->getParams()->get('csvfullname');
 		$shortKey = FabrikString::shortColName($table->db_primary_key);
 		$a = array();
 
 		foreach ($data as $group)
 		{
-			echo "gorup =";print_r($group);
 			foreach ($group as $row)
 			{
-				echo "row = ";print_r($row);
 				$a = JArrayHelper::fromObject($row);
-				echo "row = ";print_r($a);
+
 				if ($exportFormat == 1)
 				{
 					unset($a[$shortKey]);
@@ -196,13 +190,11 @@ class FabrikFEModelCSVExport
 				}
 
 				$this->carriageReturnFix($a);
-				print_r($a);
 				$str .= implode($this->delimiter, array_map(array($this, 'quote'), array_values($a)));
 				$str .= "\n";
 			}
 		}
-		echo $str;
-		exit;
+
 		$res = new stdClass;
 		$res->total = $total;
 		$res->count = $start + $this->getStep();

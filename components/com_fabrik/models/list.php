@@ -1122,7 +1122,7 @@ class FabrikFEModelList extends JModelForm
 	 *
 	 * @return  void
 	 */
-	public function formatData(&$data)
+	protected function formatData(&$data)
 	{
 		$profiler = JProfiler::getInstance('Application');
 		$app = JFactory::getApplication();
@@ -1267,11 +1267,8 @@ class FabrikFEModelList extends JModelForm
 		}
 		else
 		{
-			//if ($this->outputFormat != 'csv')
-			//{
-				// Make sure that the none grouped data is in the same format
-				$data = array($data);
-			//}
+			// Make sure that the none grouped data is in the same format
+			$data = array($data);
 		}
 
 		JDEBUG ? $profiler->mark('table grouped-by applied') : null;
@@ -3246,7 +3243,7 @@ class FabrikFEModelList extends JModelForm
 		 * $query = $listModel->buildQueryJoin($query);
 		 *
 		 * ... blows up in buildQueryJoin() if this function returns a cached query string, overwriting
-		 * the $query buider object.
+		 * the $query builder object.
 		 *
 		 * "Real" fix would be to sort it out so we return the object, although I'm not convinced that's
 		 * the even the right fix.  But for now only use the cache if we're using string not object.
@@ -8406,7 +8403,6 @@ class FabrikFEModelList extends JModelForm
 	 */
 	public function addIndex($field, $prefix = '', $type = 'INDEX', $size = '')
 	{
-
 		if (is_numeric($field))
 		{
 			$el = $this->getFormModel()->getElement($field, true);
