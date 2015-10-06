@@ -158,6 +158,11 @@ class FabrikViewFormBase extends JViewLegacy
 		JDEBUG ? $profiler->mark('form view before group view got') : null;
 
 		$this->groups = $model->getGroupView($tmpl);
+		$btnData = new stdClass;
+		$l = FabrikHelperHTML::getLayout('form.fabrik-repeat-group-delete');
+		$this->removeRepeatGroupButton = $l->render($btnData);
+		$l = FabrikHelperHTML::getLayout('form.fabrik-repeat-group-add');
+		$this->addRepeatGroupButton = $l->render($btnData);
 		JDEBUG ? $profiler->mark('form view after group view got') : null;
 		$this->data = $model->tmplData;
 		$this->params = $params;

@@ -20,17 +20,12 @@ foreach ($group->subgroups as $subgroup) :
 		// Add the add/remove repeat group buttons
 		if ($group->editable && ($group->canAddRepeat || $group->canDeleteRepeat)) : ?>
 			<div class="fabrikGroupRepeater pull-right btn-group">
-				<?php if ($group->canAddRepeat) :?>
-					<a class="addGroup btn btn-small btn-success" href="#">
-						<i class="icon-plus fabrikTip tip-small" opts="{trigger: 'hover'}" title="<?php echo FText::_('COM_FABRIK_ADD_GROUP'); ?>"></i>
-					</a>
-				<?php
+				<?php if ($group->canAddRepeat) :
+					echo $this->addRepeatGroupButton;
 				endif;
-				if ($group->canDeleteRepeat) :?>
-					<a class="deleteGroup btn btn-small btn-danger" href="#">
-						<i class="icon-minus fabrikTip tip-small" opts="{trigger: 'hover'}" title="<?php echo FText::_('COM_FABRIK_DELETE_GROUP'); ?>"></i>
-					</a>
-				<?php endif;?>
+				if ($group->canDeleteRepeat) :
+					echo $this->removeRepeatGroupButton;
+				endif;?>
 			</div>
 		<?php
 		endif;
