@@ -107,7 +107,8 @@ class FabrikViewFormBase extends JViewLegacy
 		}
 
 		$params = $model->getParams();
-		$this->setTitle($w, $params, $model);
+		$this->setTitle($w, $params);
+		$this->setCanonicalLink($model);
 		FabrikHelperHTML::debug($params->get('note'), 'note');
 		$params->def('icons', $app->getCfg('icons'));
 		$params->set('popup', ($input->get('tmpl') == 'component') ? 1 : 0);
@@ -255,16 +256,33 @@ class FabrikViewFormBase extends JViewLegacy
 		$this->message = $message;
 	}
 
+	public function setCanonicalLink()
+	{
+		$app = JFactory::getApplication();
+
+		if (!$app->isAdmin() && !$this->isMambot)
+		{
+			/** @var FabrikFEModelForm  $model */
+			$model = $this->getModel();
+			$package = $app->getUserState('com_fabrik.package', 'fabrik');
+			$data = $model->getData();
+			$formId = $model->getId();
+			$rowId = JArrayHelper::getValue($data, 'slug', $model->getRowId());
+			$url = 'index.php?option=com_' . $package . '&view=form&formid=' . $formId . '&rowid=' . $rowId;
+			JFactory::getSession()->set('fabrik.clearCanonical', true);
+			JFactory::getDocument()->addCustomTag('<link rel="canonical" href="' . htmlspecialchars($url) . '" />');
+		}
+	}
+
 	/**
 	 * Set the page title
 	 *
 	 * @param   object  $w        parent worker
 	 * @param   object  &$params  parameters
-	 * @param   object  $model    form model
 	 *
 	 * @return  void
 	 */
-	protected function setTitle($w, &$params, $model)
+	protected function setTitle($w, &$params)
 	{
 		$document = JFactory::getDocument();
 
@@ -274,7 +292,7 @@ class FabrikViewFormBase extends JViewLegacy
 		$input = $app->input;
 		$title = '';
 
-		if ($app->getName() !== 'administrator')
+		if (!$app->isAdmin())
 		{
 			$menus = $app->getMenu();
 			$menu = $menus->getActive();
@@ -282,10 +300,10 @@ class FabrikViewFormBase extends JViewLegacy
 			// If there is a menu item available AND the form is not rendered in a content plugin or module
 			if (is_object($menu) && !$this->isMambot)
 			{
-				$menu_params = is_a($menu->params, 'JRegistry') ? $menu->params : new JRegistry($menu->params);
-				$params->set('page_heading', FText::_($menu_params->get('page_heading', '')));
-				$params->set('show_page_heading', $menu_params->get('show_page_heading', 0));
-				$browserTitle = $model->getPageTitle(FText::_($menu_params->get('page_title')));
+				$menuParams = is_a($menu->params, 'JRegistry') ? $menu->params : new JRegistry($menu->params);
+				$params->set('page_heading', FText::_($menuParams->get('page_heading', '')));
+				$params->set('show_page_heading', $menuParams->get('show_page_heading', 0));
+				$browserTitle = $model->getPageTitle(FText::_($menuParams->get('page_title')));
 				$document->setTitle($w->parseMessageForPlaceHolder($browserTitle, $_REQUEST));
 			}
 			else

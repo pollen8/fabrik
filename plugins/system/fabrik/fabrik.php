@@ -36,7 +36,6 @@ class PlgSystemFabrik extends JPlugin
 	 *
 	 * @since	1.0
 	 */
-
 	public function plgSystemFabrik(&$subject, $config)
 	{
 		/**
@@ -94,7 +93,7 @@ class PlgSystemFabrik extends JPlugin
 		 */
 		return self::buildJs();;
 	}
-	
+
 	/**
 	 * Clear session js store
 	 *
@@ -114,7 +113,6 @@ class PlgSystemFabrik extends JPlugin
 	 *
 	 * @return string
 	 */
-
 	public static function buildJs()
 	{
 		$session = JFactory::getSession();
@@ -158,7 +156,6 @@ class PlgSystemFabrik extends JPlugin
 	 *
 	 * @return  void
 	 */
-
 	public function onAfterRender()
 	{
 		// Could be component was uninstalled but not the plugin
@@ -194,7 +191,6 @@ class PlgSystemFabrik extends JPlugin
 	 *
 	 * @return  void
 	 */
-
 	public function onAfterInitialise()
 	{
 		jimport('joomla.filesystem.file');
@@ -331,8 +327,6 @@ class PlgSystemFabrik extends JPlugin
 			// $$$ geros - http://fabrikar.com/forums/showthread.php?t=21134&page=2
 			$key = 'com_' . $package . '.list' . $id . '.filter.searchall';
 			$app->setUserState($key, null);
-
-			$used = memory_get_usage();
 			$usage[] = memory_get_usage();
 
 			if (count($usage) > 2)
@@ -364,9 +358,8 @@ class PlgSystemFabrik extends JPlugin
 			$input->set($requestKey, $text, 'post');
 
 			$table = $listModel->getTable();
-			$fabrikDb = $listModel->getDb();
 			$params = $listModel->getParams();
-			
+
 			/*
 			 * $$$ hugh - added 4/12/2015, if user doesn't have view list and view details, no searchee
 			 */
@@ -390,9 +383,9 @@ class PlgSystemFabrik extends JPlugin
 			// Set the table search mode to OR - this will search ALL fields with the search term
 			$params->set('search-mode', 'OR');
 
-			$allrows = $listModel->getData();
+			$allRows = $listModel->getData();
 			$elementModel = $listModel->getFormModel()->getElement($params->get('search_description', $table->label), true);
-			$descname = is_object($elementModel) ? $elementModel->getFullName() : '';
+			$descName = is_object($elementModel) ? $elementModel->getFullName() : '';
 
 			$elementModel = $listModel->getFormModel()->getElement($params->get('search_title', 0), true);
 			$title = is_object($elementModel) ? $elementModel->getFullName() : '';
@@ -402,17 +395,17 @@ class PlgSystemFabrik extends JPlugin
 			 * standard MySQL format will cause a fatal error in J!'s search code when it does the JDate create
 			 */
 			$elementModel = $listModel->getFormModel()->getElement($params->get('search_date', 0), true);
-			$date_element = is_object($elementModel) ? $elementModel->getFullName() : '';
+			$dateElement = is_object($elementModel) ? $elementModel->getFullName() : '';
 
-			if (!empty($date_element))
+			if (!empty($dateElement))
 			{
-				$date_element .= '_raw';
+				$dateElement .= '_raw';
 			}
 
 			$aAllowedList = array();
 			$pk = $table->db_primary_key;
 
-			foreach ($allrows as $group)
+			foreach ($allRows as $group)
 			{
 				foreach ($group as $oData)
 				{
@@ -448,9 +441,9 @@ class PlgSystemFabrik extends JPlugin
 						$o->href = $href;
 
 						// Need to make sure it's a valid date in MySQL format, otherwise J!'s code will pitch a fatal error
-						if (isset($oData->$date_element) && FabrikString::isMySQLDate($oData->$date_element))
+						if (isset($oData->$dateElement) && FabrikString::isMySQLDate($oData->$dateElement))
 						{
-							$o->created = $oData->$date_element;
+							$o->created = $oData->$dateElement;
 						}
 						else
 						{
@@ -459,9 +452,9 @@ class PlgSystemFabrik extends JPlugin
 
 						$o->browsernav = 2;
 
-						if (isset($oData->$descname))
+						if (isset($oData->$descName))
 						{
-							$o->text = $oData->$descname;
+							$o->text = $oData->$descName;
 						}
 						else
 						{
@@ -494,5 +487,31 @@ class PlgSystemFabrik extends JPlugin
 			$app->enqueueMessage($msg);
 		}
 		return $allList;
+	}
+
+	/**
+	 * If a form or details view has set a canonical link - removed any J created links
+	 *
+	 * @throws Exception
+	 */
+	public function onAfterDispatch()
+	{
+		$doc = JFactory::getDocument();
+		$session = JFactory::getSession();
+		$package = JFactory::getApplication()->getUserState('com_fabrik.package', 'fabrik');
+
+		if (isset($doc->_links) && $session->get('fabrik.clearCanonical'))
+		{
+			$session->clear('fabrik.clearCanonical');
+
+			foreach ($doc->_links as $k => $link)
+			{
+				if ($link['relation'] == 'canonical' && !strstr($k, $package))
+				{
+					unset($doc->_links[$k]);
+					break;
+				}
+			}
+		}
 	}
 }
