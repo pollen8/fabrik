@@ -2782,7 +2782,7 @@ class FabrikFEModelForm extends FabModelForm
 		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 
 		// $$$rob if we show a form module when in a fabrik form component view - we shouldn't use
-		// the request rowid for the mambot as that value is destined for the component
+		// the request rowid for the content plugin as that value is destined for the component
 		if ($this->isMambot && $input->get('option') == 'com_' . $package)
 		{
 			$this->rowId = $usersConfig->get('rowid');

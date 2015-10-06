@@ -267,6 +267,8 @@ class FabrikViewFormBase extends JViewLegacy
 	protected function setTitle($w, &$params, $model)
 	{
 		$document = JFactory::getDocument();
+
+		/** @var FabrikFEModelForm  $model */
 		$model = $this->getModel();
 		$app = JFactory::getApplication();
 		$input = $app->input;
@@ -329,6 +331,8 @@ class FabrikViewFormBase extends JViewLegacy
 		$fbConfig = JComponentHelper::getParams('com_fabrik');
 		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$input = $app->input;
+
+		/** @var FabrikFEModelForm  $model */
 		$model = $this->getModel();
 		$params = $model->getParams();
 		$this->showEmail = $params->get('email', $fbConfig->get('form_email', 0));
@@ -391,11 +395,13 @@ class FabrikViewFormBase extends JViewLegacy
 	 *
 	 * @param   int  $listId  table id
 	 *
-	 * @return  void
+	 * @return  void|boolean
 	 */
 	protected function _addJavascript($listId)
 	{
 		$pluginManager = FabrikWorker::getPluginManager();
+
+		/** @var FabrikFEModelForm  $model */
 		$model = $this->getModel();
 		$aLoadedElementPlugins = array();
 		$jsActions = array();
@@ -502,11 +508,6 @@ class FabrikViewFormBase extends JViewLegacy
 		// $$$ rob don't declare as var $bKey, but rather assign to window, as if loaded via ajax window the function is wrapped
 		// inside an anonymous function, and therefore $bKey wont be available as a global var in window
 		$script = array();
-		/* $script[] = "\twindow.$bKey = new FbForm(" . $model->getId() . ", $opts);";
-		$script[] = "\tif(typeOf(Fabrik) !== 'null') {";
-		$script[] = "\t\tFabrik.addBlock('$bKey', $bKey);";
-		$script[] = "\t}"; */
-
 		$script[] = "\t\tvar $bKey = Fabrik.form('$bKey', " . $model->getId() . ", $opts);";
 
 		// Instantiate js objects for each element
@@ -539,9 +540,6 @@ class FabrikViewFormBase extends JViewLegacy
 				{
 					continue;
 				}
-
-				$fullName = $elementModel->getFullName();
-				$id = $elementModel->getHTMLId();
 
 				// If the view is a form then we should always add the js as long as the element is editable or viewable
 				// if the view is details then we should only add the js if the element is viewable.
@@ -618,6 +616,8 @@ class FabrikViewFormBase extends JViewLegacy
 	{
 		$app = JFactory::getApplication();
 		$input = $app->input;
+
+		/** @var FabrikFEModelForm $model */
 		$model = $this->getModel();
 		$fbConfig = JComponentHelper::getParams('com_fabrik');
 		$form = $model->getForm();
@@ -781,6 +781,8 @@ class FabrikViewFormBase extends JViewLegacy
 		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$input = $app->input;
 		$itemId = FabrikWorker::itemId();
+
+		/** @var FabrikFEModelForm  $model */
 		$model = $this->getModel();
 		$listModel = $model->getListModel();
 		$row = JArrayHelper::toObject($model->data);
