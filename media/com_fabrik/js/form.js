@@ -1700,7 +1700,9 @@ var FbForm = new Class({
 
 				newEl.container = null;
 				newEl.options.repeatCounter = c;
-				newEl.origId = origelid;
+				
+				// This seems to be wrong, as it'll set origId to the repeat ID with the _X appended.
+				//newEl.origId = origelid;
 
 				if (hasSubElements && typeOf(subElementContainer) !== 'null') {
 					newEl.element = document.id(subElementContainer);
