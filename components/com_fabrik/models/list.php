@@ -6089,7 +6089,6 @@ class FabrikFEModelList extends JModelForm
 	protected function &makeFilters($container = 'listform_1', $type = 'list', $id = '', $ref = '')
 	{
 		$aFilters = array();
-		$table = $this->getTable();
 		$opts = new stdClass;
 		$opts->container = $container;
 		$opts->type = $type;
@@ -6226,6 +6225,9 @@ class FabrikFEModelList extends JModelForm
 
 		if ($params->get('advanced-filter', '0'))
 		{
+			FabrikHelperHTML::jLayoutJs('modal-close', 'modal.fabrik-close');
+			FabrikHelperHTML::jLayoutJs('icon-expand', 'fabrik-icon', (object) array('icon' => 'icon-expand'));
+			FabrikHelperHTML::jLayoutJs('icon-full-screen', 'fabrik-icon', (object) array('icon' => 'icon-out-2 icon-fullscreen'));
 			$tmpl = $this->getTmpl();
 			$url = $this->getAdvancedSearchURL();
 			$title = '<span>' . FText::_('COM_FABRIK_ADVANCED_SEARCH') . '</span>';

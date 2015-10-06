@@ -387,7 +387,7 @@ class FabrikViewFormBase extends JViewLegacy
 
 			if ($this->showPrint)
 			{
-				$this->printLink = FabrikHelperHTML::printIcon($model, $params, $model->getRowId());
+				$this->printLink = FabrikHelperHTML::printIcon($model, $params);
 				$this->printURL = FabrikHelperHTML::printURL($model);
 			}
 		}
