@@ -20,7 +20,6 @@ jimport('joomla.filesystem.file');
  * @package  Fabrik
  * @since    3.0
  */
-
 class PlgFabrik_Element extends FabrikPlugin
 {
 	/**
@@ -396,7 +395,7 @@ class PlgFabrik_Element extends FabrikPlugin
 	 *
 	 * @param   int  $groupId  group id
 	 *
-	 * @return  object	group model
+	 * @return  FabrikFEModelGroup	group model
 	 */
 	public function &getGroup($groupId = null)
 	{
@@ -560,7 +559,7 @@ class PlgFabrik_Element extends FabrikPlugin
 
 		//If subdir is set prepend file name with subdirectory (so first search through [template folders]/subdir for icons, e.g. images/subdir)
 		$iconSubDir = $params->get('icon_subdir', '');
-		
+
 		if ($iconSubDir != '')
 		{
 			$iconSubDir = rtrim($iconSubDir,'/') . '/';
@@ -4301,7 +4300,7 @@ class PlgFabrik_Element extends FabrikPlugin
 				{
 					// Query the joined table concatenating into one field
 					$joinTable = $this->getJoinModel()->getJoin()->table_join;
-					
+
 					// Jaanus: joined group pk set in groupConcactJoinKey()
 					$pk = $this->groupConcactJoinKey();
 					$key = "(SELECT GROUP_CONCAT(id SEPARATOR '" . GROUPSPLITTER . "') FROM $joinTable WHERE parent_id = $pk)";
@@ -7303,12 +7302,12 @@ class PlgFabrik_Element extends FabrikPlugin
 			{
 				$query->clear();
 				$query->delete($join->table_join)->where('parent_id = ' . $parentId);
-	
+
 				if (!empty($ids))
 				{
 					$query->where('id NOT IN ( ' . implode($ids, ',') . ')');
 				}
-	
+
 				$db->setQuery($query);
 				$db->execute();
 			}
@@ -7334,7 +7333,7 @@ class PlgFabrik_Element extends FabrikPlugin
 	{
 		return '';
 	}
-	
+
 	/**
 	 * Return JS event required to trigger a 'change', usually 'change',
 	 * but some elements need a 'click' or a 'blur'.  Used initially by CDD element.
@@ -7346,10 +7345,10 @@ class PlgFabrik_Element extends FabrikPlugin
 	{
 		return 'change';
 	}
-	
+
 	/**
 	 * Returns class name to use for advanced select (no surrounding space), or empty string
-	 * 
+	 *
 	 * @return  bool
 	 */
 	public function getAdvancedSelectClass()
@@ -7367,7 +7366,7 @@ class PlgFabrik_Element extends FabrikPlugin
 				$advancedClass = $params->get('advanced_behavior', '0') == '1' || $globalAdvanced === 2  ? 'advancedSelect' : '';
 			//}
 		}
-		
+
 		return $advancedClass;
 	}
 
@@ -7401,7 +7400,7 @@ class PlgFabrik_Element extends FabrikPlugin
 
 	/**
 	 * Get the JLayout base path for the plugin's layout files.
-	 * 
+	 *
 	 * @return string
 	 */
 	protected function layoutBasePath()
@@ -7410,15 +7409,15 @@ class PlgFabrik_Element extends FabrikPlugin
 	}
 
 	/**
-	 * Get lower case plugin name based off class name: 
+	 * Get lower case plugin name based off class name:
 	 * E.g. PlgFabrik_ElementDatabasejoin => databasejoin
-	 * 
+	 *
 	 * @return string
 	 */
 	protected function getPluginName()
 	{
 		$name = get_class($this);
-		
+
 		return strtolower(JString::str_ireplace('PlgFabrik_Element', '', $name));
 	}
 
@@ -7490,10 +7489,10 @@ class PlgFabrik_Element extends FabrikPlugin
 
 		return $elementModel->getValue($formModel->data, $repeatCounter);
 	}
-	
+
 	/**
 	 * Is the element published.
-	 * 
+	 *
 	 * @return boolean
 	 */
 	public function isPublished()

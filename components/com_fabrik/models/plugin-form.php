@@ -20,7 +20,6 @@ jimport('joomla.application.component.model');
  * @subpackage  Fabrik
  * @since       3.0
  */
-
 class PlgFabrik_Form extends FabrikPlugin
 {
 	/**
@@ -38,18 +37,31 @@ class PlgFabrik_Form extends FabrikPlugin
 	protected $html = '';
 
 	/**
-	 * Run from list model when deleting rows
+	 * Uses session during processing
 	 *
-	 * @param   array  &$groups  List data for deletion
+	 * @var bool
+	 */
+	protected $usesSession = false;
+
+	/**
+	 * Data
+	 *
+	 * @var array
+	 */
+	protected $data = array();
+
+	/**
+	 * Run from form model when deleting record
+	 *
+	 * @param   array  &$groups  Form data for deletion
 	 *
 	 * @return  bool
 	 */
-
 	public function onDeleteRowsForm(&$groups)
 	{
 		return true;
 	}
-	
+
 	/**
 	 * Run from list model when deleting rows
 	 *
@@ -57,7 +69,6 @@ class PlgFabrik_Form extends FabrikPlugin
 	 *
 	 * @return  bool
 	 */
-	
 	public function onAfterDeleteRowsForm(&$groups)
 	{
 		return true;
@@ -68,7 +79,6 @@ class PlgFabrik_Form extends FabrikPlugin
 	 *
 	 * @return	bool
 	 */
-
 	public function onBeforeProcess()
 	{
 		return true;
@@ -79,7 +89,6 @@ class PlgFabrik_Form extends FabrikPlugin
 	 *
 	 * @return	bool
 	 */
-
 	public function onError()
 	{
 	}
@@ -89,7 +98,6 @@ class PlgFabrik_Form extends FabrikPlugin
 	 *
 	 * @return	bool
 	 */
-
 	public function onBeforeCalculations()
 	{
 		return true;
@@ -101,7 +109,6 @@ class PlgFabrik_Form extends FabrikPlugin
 	 *
 	 * @return	bool
 	 */
-
 	public function onAfterProcess()
 	{
 		return true;
@@ -114,7 +121,6 @@ class PlgFabrik_Form extends FabrikPlugin
 	 *
 	 * @return bool
 	 */
-
 	public function customProcessResult($method)
 	{
 		return true;
@@ -125,7 +131,6 @@ class PlgFabrik_Form extends FabrikPlugin
 	 *
 	 * @return void
 	 */
-
 	public function getBottomContent()
 	{
 		$this->html = '';
@@ -138,7 +143,6 @@ class PlgFabrik_Form extends FabrikPlugin
 	 *
 	 * @return  string  html
 	 */
-
 	public function getBottomContent_result($c)
 	{
 		return $this->html;
@@ -149,7 +153,6 @@ class PlgFabrik_Form extends FabrikPlugin
 	 *
 	 * @return  bool
 	 */
-
 	public function getTopContent()
 	{
 		$this->html = '';
@@ -160,7 +163,6 @@ class PlgFabrik_Form extends FabrikPlugin
 	 *
 	 * @return  string  html
 	 */
-
 	public function getTopContent_result()
 	{
 		return $this->html;
@@ -201,9 +203,9 @@ class PlgFabrik_Form extends FabrikPlugin
 	{
 		$profiler = JProfiler::getInstance('Application');
 		JDEBUG ? $profiler->mark("getProcessData: start") : null;
-		
+
 		$model = $this->getModel();
-		
+
 		// See comments in getEmailData() about caching in $this vs $model
 		unset($this->emailData);
 		unset($model->emailData);
@@ -211,7 +213,7 @@ class PlgFabrik_Form extends FabrikPlugin
 		$this->data = array_merge($d, $this->getEmailData());
 
 		JDEBUG ? $profiler->mark("getProcessData: end") : null;
-		
+
 		return $this->data;
 	}
 
@@ -221,7 +223,6 @@ class PlgFabrik_Form extends FabrikPlugin
 	 *
 	 * @return array email data
 	 */
-
 	public function getEmailData()
 	{
 		$profiler = JProfiler::getInstance('Application');
@@ -235,14 +236,14 @@ class PlgFabrik_Form extends FabrikPlugin
 		 * as until this change we were re-buiding the $emailData from scratch for every element on the form, which didn't
 		 * become apparent till we added the fabrikdebug=2 to allows profiling of submissions, and added the extra profiling
 		 * marks for the submission processing
-		 * 
-		 * ... which is great, but ... 
-		 *  
+		 *
+		 * ... which is great, but ...
+		 *
 		 * I have a sneaky suspicion it may have some unforeseen side effects for things like calcs, in certain corner
 		 * cases where this function gets called early in submission processing.  So watch out for that.  If calcs start
 		 * showing up with incorrect values in emails, this is probably why.
 		 */
-		
+
 		$model = $this->getModel();
 
 		if (isset($model->emailData))
@@ -251,6 +252,7 @@ class PlgFabrik_Form extends FabrikPlugin
 			return $model->emailData;
 		}
 
+		/** @var FabrikFEModelForm  $model */
 		$model = $this->getModel();
 
 		if (is_null($model->formDataWithTableName))
@@ -267,7 +269,7 @@ class PlgFabrik_Form extends FabrikPlugin
 		 *$model->render();
 		 *
 		 * $$$ hugh - hmmmm problem with that is, there's quite a few things that need the rowid, if we're running
-		 * 'onAfterProcess' ... I think we need to have a seperate $model->isNewRow, or some such, which gets set at
+		 * 'onAfterProcess' ... I think we need to have a separate $model->isNewRow, or some such, which gets set at
 		 * the start of processing, and anything which needs to know if we're new vs edit uses that, rather than looking
 		 * for rowid / __pk_val, or whatever.
 		 */
@@ -288,7 +290,7 @@ class PlgFabrik_Form extends FabrikPlugin
 		// $$$ hugh - temp foreach fix
 		$groups = $model->getGroupsHiarachy();
 
-		foreach ($groups as $gkey => $groupModel)
+		foreach ($groups as $gKey => $groupModel)
 		{
 			$groupParams = $groupModel->getParams();
 
@@ -349,8 +351,6 @@ class PlgFabrik_Form extends FabrikPlugin
 
 					if ($groupModel->isJoin())
 					{
-						$join = $elementModel->getJoinModel()->getJoin();
-
 						if ($groupModel->canRepeat())
 						{
 							$raw = FArrayHelper::getValue($model->formDataWithTableName[$k], $c, '');
@@ -390,15 +390,15 @@ class PlgFabrik_Form extends FabrikPlugin
 						}
 					}
 
-					$email_value = '';
+					$emailValue = '';
 
 					if (array_key_exists($k . '_raw', $this->emailData))
 					{
-						$email_value = $this->emailData[$k . '_raw'];
+						$emailValue = $this->emailData[$k . '_raw'];
 					}
 					elseif (array_key_exists($k, $this->emailData))
 					{
-						$email_value = $this->emailData[$k];
+						$emailValue = $this->emailData[$k];
 					}
 
 					/**
@@ -408,7 +408,7 @@ class PlgFabrik_Form extends FabrikPlugin
 					 */
 					//if (!$elementModel->isJoin())
 					//{
-						$this->emailData[$k] = $elementModel->getEmailValue($email_value, $model->formDataWithTableName, $c);
+						$this->emailData[$k] = $elementModel->getEmailValue($emailValue, $model->formDataWithTableName, $c);
 					//}
 				}
 			}
@@ -423,7 +423,7 @@ class PlgFabrik_Form extends FabrikPlugin
 
 		$model->setEditable($editable);
 		$model->emailData = $this->emailData;
-		
+
 		JDEBUG ? $profiler->mark("getEmailData: end") : null;
 
 		return $this->emailData;
@@ -437,7 +437,6 @@ class PlgFabrik_Form extends FabrikPlugin
 	 *
 	 * @return void
 	 */
-
 	public function formJavascriptClass()
 	{
 		$formModel = $this->getModel();
@@ -470,7 +469,7 @@ class PlgFabrik_Form extends FabrikPlugin
 	{
 		$db = JFactory::getDbo(true);
 		$query = $db->getQuery(true);
-		$query->select(' id, name, email, sendEmail')->from('#__users')->where('sendEmail = 1');
+		$query->select('id, name, email, sendEmail')->from('#__users')->where('sendEmail = 1');
 		$db->setQuery($query);
 		$rows = $db->loadObjectList();
 
@@ -484,7 +483,6 @@ class PlgFabrik_Form extends FabrikPlugin
 	 *
 	 * @return  void
 	 */
-
 	public function usesSession()
 	{
 		$this->usesSession = false;

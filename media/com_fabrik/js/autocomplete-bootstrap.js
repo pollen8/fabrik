@@ -164,14 +164,14 @@ var FbAutocomplete = new Class({
 
 	populateMenu: function (data) {
 		// $$$ hugh - added decoding of things like &amp; in the text strings
-		var li, a;
+		var li, a, form, elModel, blurEvent, pair;
 		data.map(function (item, index) {
 			item.text = Encoder.htmlDecode(item.text);
 			return item;
 		});
 		this.data = data;
-		var max = this.getListMax();
-		var ul = this.menu;
+		var max = this.getListMax(),
+			ul = this.menu;
 		ul.empty();
 		if (data.length === 1 && this.options.autoLoadSingleResult) {
 			this.element.value = data[0].value;
@@ -181,9 +181,13 @@ var FbAutocomplete = new Class({
 			this.fireEvent('selection', [this, this.element.value]);
 			// $$$ hugh - need to fire change event, in case it's something like a join element
 			// with a CDD that watches it.
-			var elModel = Fabrik.getBlock(this.options.formRef).formElements.get(this.element.id);
-			var blurEvent = elModel.getBlurEvent();
-			this.element.fireEvent(blurEvent, new Event.Mock(this.element, blurEvent), 700);
+			form = Fabrik.getBlock(this.options.formRef);
+			if (form !== false) {
+				elModel = form.formElements.get(this.element.id);
+				blurEvent = elModel.getBlurEvent();
+				this.element.fireEvent(blurEvent, new Event.Mock(this.element, blurEvent), 700);
+			}
+
 			// $$$ hugh - fire a Fabrik event, just for good luck.  :)
 			Fabrik.fireEvent('fabrik.autocomplete.selected', [this, this.element.value]);
 			return false;
@@ -193,7 +197,7 @@ var FbAutocomplete = new Class({
 			li.inject(ul);
 		}
 		for (var i = 0; i < max; i ++) {
-			var pair = data[i];
+			pair = data[i];
 			a = new Element('a', {'href': '#', 'data-value': pair.value, tabindex: '-1'}).set('text', pair.text);
 			li = new Element('li').adopt(a);
 			li.inject(ul);
@@ -257,7 +261,7 @@ var FbAutocomplete = new Class({
 		var v = this.getInputElement().get('value');
 		return v.length >= this.options.minTriggerChars;
 	},
-	
+
 	doTestMenuClose: function () {
 		if (!this.mouseinsde) {
 			this.closeMenu();

@@ -130,6 +130,7 @@ var FbForm = new Class({
 		}
 
 		this.watchPrintButton();
+		this.watchPdfButton();
 	},
 
 	/**
@@ -141,12 +142,27 @@ var FbForm = new Class({
 			if (this.options.print) {
 				window.print();
 			} else {
-				window.open(e.target.get('href'), 'win2', 'status=no,toolbar=no,scrollbars=yes,titlebar=no,menubar=no,resizable=yes,width=400,height=350,directories=no,location=no;');
+				// Build URL as we could have changed the rowid via ajax pagination
+				var url = 'index.php?option=com_' + Fabrik.package + '&view=details&tmpl=component&formid=' + this.id + '&listid=' + this.options.listid + '&rowid=' + this.options.rowid + '&iframe=1&print=1';
+				window.open(url, 'win2', 'status=no,toolbar=no,scrollbars=yes,titlebar=no,menubar=no,resizable=yes,width=400,height=350,directories=no,location=no;');
 			}
 		}.bind(this));
 	},
-	// Go back button in ajax pop up window should close the window
 
+	/**
+	 * PDF button action.
+	 */
+	watchPdfButton: function () {
+		document.getElements('*[data-role="open-form-pdf"]').addEvent('click', function (e) {
+			e.stop();
+			// Build URL as we could have changed the rowid via ajax pagination
+			window.location = 'index.php?option=com_' + Fabrik.package + '&view=details&formid=' + this.id + '&rowid=' + this.options.rowid + '&format=pdf'
+		}.bind(this))
+	},
+
+	/**
+	 * Go back button in ajax pop up window should close the window
+ 	 */
 	watchGoBackButton: function () {
 		if (this.options.ajax) {
 			var goback = this._getButton('Goback');
@@ -191,16 +207,22 @@ var FbForm = new Class({
 	},
 
 	getForm: function () {
-		this.form = document.id(this.getBlock());
+		if (typeOf(this.form) === 'null') {
+			this.form = document.id(this.getBlock());
+		}
+
 		return this.form;
 	},
 
 	getBlock: function () {
-		var block = this.options.editable === true ? 'form_' + this.id : 'details_' + this.id;
-		if (this.options.rowid !== '') {
-			block += '_' + this.options.rowid;
+		if (typeOf(this.block) === 'null') {
+			this.block = this.options.editable === true ? 'form_' + this.id : 'details_' + this.id;
+			if (this.options.rowid !== '') {
+				this.block += '_' + this.options.rowid;
+			}
 		}
-		return block;
+
+		return this.block;
 	},
 
 	/**
@@ -264,7 +286,7 @@ var FbForm = new Class({
 			}
 
 			this.fx.elements[k].css = new Fx.Morph(fxdiv, opts);
-			
+
 			if (typeOf(fxdiv) !== 'null' && (method === 'slide in' || method === 'slide out' || method === 'slide toggle')) {
 				this.fx.elements[k].slide = new Fx.Slide(fxdiv, opts);
 			}
@@ -1377,7 +1399,7 @@ var FbForm = new Class({
 				subGroup = group.getElement('.fabrikSubGroup');
 				// Remove only group
 				this.deleteGroup(deleteEvent, group, subGroup);
-				
+
 			}
 			else if (repeat_rows < min) {
 				// Create mock event
@@ -1396,7 +1418,7 @@ var FbForm = new Class({
 
 	/**
 	 * Delete an repeating group
-	 * 
+	 *
 	 * @param e
 	 * @param group
 	 */
@@ -1407,9 +1429,9 @@ var FbForm = new Class({
 			return;
 		}
 		if (e) {
-			e.stop();	
+			e.stop();
 		}
-		
+
 		//var group = e.target.getParent('.fabrikGroup');
 		// var subGroup = e.target.getParent('.fabrikSubGroup');
 
@@ -1428,7 +1450,7 @@ var FbForm = new Class({
 			{
 				var errorMessage = this.options.minMaxErrMsg[i];
 				errorMessage = errorMessage.replace(/\{min\}/, this.options.minRepeat[i]);
-				errorMessage = errorMessage.replace(/\{max\}/, this.options.maxRepeat[i]);				
+				errorMessage = errorMessage.replace(/\{max\}/, this.options.maxRepeat[i]);
 				alert(errorMessage);
 			}
 			return;
@@ -1583,7 +1605,7 @@ var FbForm = new Class({
 			{
 				var errorMessage = this.options.minMaxErrMsg[i];
 				errorMessage = errorMessage.replace(/\{min\}/, this.options.minRepeat[i]);
-				errorMessage = errorMessage.replace(/\{max\}/, this.options.maxRepeat[i]);				
+				errorMessage = errorMessage.replace(/\{max\}/, this.options.maxRepeat[i]);
 				alert(errorMessage);
 			}
 			return;

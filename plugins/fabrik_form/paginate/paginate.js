@@ -9,27 +9,33 @@ FabRecordSet = new Class({
 
 	initialize: function (form, options) {
 		this.form = form;
-		this.options = {};
+		this.options = {
+			liveSite: ''
+		};
 		Object.append(this.options, options);
-		var f = this.form.getForm();
-		var tableId = form.options.listid ? form.options.listid : f.getElement('input[name=listid]').get('value');
+		var f = this.form.getForm(),
+			formId = this.form.id;
 		this.pkfield = f.getElement('input[name=rowid]');
-		var formId = this.form.id;
 		this.view = this.form.options.editable === true ? 'form':'details';
 		this.url = this.options.liveSite + 'index.php?option=com_fabrik&format=raw&view=plugin&g=form&task=pluginAjax&plugin=paginate&method=xRecord&formid=' + formId + '&mode=' + this.options.view + '&rowid=';
 		this.watchButtons();
 	},
 
 	doUpdate: function (json) {
-		var o = JSON.decode(json);
+		var o = JSON.decode(json),
+			r = this.view === 'form' ? o.data : o.html,
+			s;
 		this.options.ids = o.ids;
-		var r = this.view === 'form' ? o.data : o.html;
 		this.form.formElements.each(function (oEl, key) {
 			if (key.substr(-3) !== '_ro') {
-				var s = r[key];
+				s = r[key];
 				try {
 					if (typeOf(s) !== 'null') {
-						this.view === 'form' ? oEl.update(s) : oEl.update(Encoder.htmlDecode(s));
+						if (oEl.updateUsingRaw())  {
+							oEl.update(o.data[key]);
+						} else {
+							this.view === 'form' ? oEl.update(s) : oEl.update(Encoder.htmlDecode(s));
+						}
 					} else {
 						oEl.update('');
 					}
@@ -41,12 +47,15 @@ FabRecordSet = new Class({
 		if (this.view === 'form') {
 			this.pkfield.value = r[this.options.pkey];
 		}
+
+		this.form.options.rowid = o.data[this.options.pkey];
 		this.reScan();
 		window.fireEvent('fabrik.form.refresh', [o.post.rowid]);
 		Fabrik.loader.stop(this.form.getBlock());
 	},
-	
+
 	reScan: function () {
+		var form, dir;
 		if (typeof(Slimbox) !== 'undefined') {
 			Slimbox.scanPage();
 		}
@@ -56,10 +65,11 @@ FabRecordSet = new Class({
 		if (typeof(Mediabox) !== 'undefined') {
 			Mediabox.scanPage();
 		}
-		
+
 		form = this.form.getForm();
+
 		form.getElements('*[data-paginate]').each(function (el) {
-			var dir = el.get('data-paginate');
+			dir = el.get('data-paginate');
 			switch (dir) {
 			case 'first':
 			/* falls through */
@@ -126,8 +136,7 @@ FabRecordSet = new Class({
 	},
 
 	watchButtons: function () {
-		var n, form;
-		form = this.form.getForm();
+		var form = this.form.getForm();
 		form.addEvent('click:relay(*[data-paginate])', function (e, target) {
 			e.preventDefault();
 			this.doNav(target);

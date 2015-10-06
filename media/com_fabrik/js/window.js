@@ -7,9 +7,9 @@
 
 /**
  * Window factory
- * 
+ *
  * @param   object  opts  Options
- * 
+ *
  * @return  Fabrik.Window
  */
 Fabrik.getWindow = function (opts) {
@@ -93,8 +93,8 @@ Fabrik.Window = new Class({
 		}.bind(this);
 		var del;
 		if (Fabrik.bootstrapped) {
-			del = new Element('a', {'href': '#', 'class': 'closeFabWin', 'events': {'click': delClick}});
-			del.adopt(new Element('i.icon-cancel.icon-remove-sign'));
+			del = jQuery(Fabrik.jLayouts['modal-close'])[0];
+			del.addEvent('click', delClick);
 		} else {
 			del = new Element('a', {'href': '#', 'class': 'close', 'events': {'click': delClick}});
 			var art = Fabrik.iconGen.create(icon.cross);
@@ -113,14 +113,14 @@ Fabrik.Window = new Class({
 		h = h.toInt();
 		var d = {'width': w + 'px', 'height': h + 'px'};
 		this.window.setStyles(d);
-		
+
 		if (!(Fabrik.bootstrapped && this.modal)) {
 			var yy = window.getSize().y / 2 + window.getScroll().y - (h / 2);
 			d.top = typeOf(this.options.offset_y) !== 'null' ? window.getScroll().y + this.options.offset_y : yy;
-			
+
 			var xx = window.getSize().x / 2  + window.getScroll().x - w / 2;
 			d.left = typeOf(this.options.offset_x) !== 'null' ? window.getScroll().x + this.options.offset_x : xx;
-			
+
 		} else {
 			// Fileupload crop uses this
 			var offset = (window.getSize().y - h) / 2;
@@ -168,7 +168,7 @@ Fabrik.Window = new Class({
 	{
 		var draggerC, dragger, expandButton, expandIcon, resizeIcon, label, cw, ch, handleParts = [];
 		this.window = new Element('div', {'id': this.options.id, 'class': 'fabrikWindow ' + this.classSuffix + ' modal'});
-		
+
 		// Set window dimensions before center - needed for fileupload crop
 		this.window.setStyle('width', this.options.width);
 		this.window.setStyle('height', this.options.height);
@@ -179,11 +179,10 @@ Fabrik.Window = new Class({
 		var hclass = 'handlelabel';
 		if (!this.modal) {
 			hclass += ' draggable';
-			var bClss = Fabrik.bootstrapped ? 'bottomBar BootStrapped' : 'bottomBar';
 			draggerC = new Element('div', {'class': 'bottomBar modal-footer'});
 			dragger = new Element('div', {'class': 'dragger'});
 			if (Fabrik.bootstrapped) {
-				resizeIcon = new Element('i.icon-expand');
+				resizeIcon = jQuery(Fabrik.jLayouts['icon-expand'])[0];
 			} else {
 				resizeIcon = Fabrik.iconGen.create(icon.resize, {
 					scale: 0.8,
@@ -202,7 +201,7 @@ Fabrik.Window = new Class({
 		}
 
 		if (Fabrik.bootstrapped) {
-			expandIcon = new Element('i.icon-out-2.icon-fullscreen');
+			expandIcon = jQuery(Fabrik.jLayouts['icon-full-screen'])[0];
 			label = new Element('h3', {'class': hclass}).set('text', this.options.title);
 
 		} else {
@@ -329,9 +328,9 @@ Fabrik.Window = new Class({
 					Fabrik.loader.stop(u);
 					this.fireEvent('onContentLoaded', [this]);
 					this.watchTabs();
-					
+
 					// Needed for IE11
-					this.center(); 
+					this.center();
 					// Ini any Fabrik JS code that was loaded with the ajax request
 					// window.fireEvent('fabrik.loaded');
 				}.bind(this)

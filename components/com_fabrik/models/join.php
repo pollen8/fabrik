@@ -20,7 +20,6 @@ jimport('joomla.application.component.model');
  * @subpackage  Fabrik
  * @since       3.0
  */
-
 class FabrikFEModelJoin extends FabModel
 {
 	/**
@@ -91,9 +90,8 @@ class FabrikFEModelJoin extends FabModel
 	/**
 	 * Get Join
 	 *
-	 * @return  FabTable
+	 * @return  FabrikTableJoin
 	 */
-
 	public function getJoin()
 	{
 		if (!isset($this->join))

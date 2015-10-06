@@ -29,6 +29,17 @@ class FabrikTableGroup extends FabTable
 	 */
 	public $join_id = null;
 
+	public $is_join = false;
+
+	public $params = '';
+
+	public $id = null;
+
+	public $name = '';
+
+	public $label = '';
+
+	public $css = '';
 	/**
 	 * Constructor
 	 *

@@ -25,13 +25,13 @@ if (!function_exists('shFetchFormName'))
 	/**
 	 * Fetch the form's name
 	 *
-	 * @param   number  $formid  Form id
+	 * @param   number  $formId  Form id
 	 *
 	 * @return NULL|Ambiguous <string, unknown>
 	 */
-	function shFetchFormName($formid)
+	function shFetchFormName($formId)
 	{
-		if (empty($formid))
+		if (empty($formId))
 		{
 			return null;
 		}
@@ -39,8 +39,8 @@ if (!function_exists('shFetchFormName'))
 		$db = JFactory::getDBO();
 		$query = $db->getQuery(true);
 		$query->select('label')
-			->from($query->quoteName('#__fabrik_forms'))
-			->where('id = ' . $db->quote($formid));
+			->from($query->qn('#__fabrik_forms'))
+			->where('id = ' . $db->q($formId));
 		$db->setQuery($query);
 		$formName = $db->loadResult();
 
@@ -53,13 +53,13 @@ if (!function_exists('shFetchListName'))
 	/**
 	 * Fetch the list's name from the form ID
 	 *
-	 * @param   int  $formid  Form id
+	 * @param   int  $formId  Form id
 	 *
 	 * @return NULL|Ambiguous <string, unknown>
 	 */
-	function shFetchListName($formid)
+	function shFetchListName($formId)
 	{
-		if (empty($formid))
+		if (empty($formId))
 		{
 			return null;
 		}
@@ -67,8 +67,8 @@ if (!function_exists('shFetchListName'))
 		$db = JFactory::getDBO();
 		$query = $db->getQuery(true);
 		$query->select('label')
-			->from($query->quoteName('#__fabrik_lists'))
-			->where('form_id = ' . $query->quote($formid));
+			->from($query->qn('#__fabrik_lists'))
+			->where('form_id = ' . $query->q($formId));
 		$db->setQuery($query);
 		$listName = $db->loadResult();
 
@@ -82,11 +82,11 @@ if (!function_exists('shFetchSlug'))
 	 * Fetch slug
 	 *
 	 * @param   string  $rowid   Row id
-	 * @param   number  $formid  Form id
+	 * @param   number  $formId  Form id
 	 *
 	 * @return NULL|Ambiguous <string, NULL, Ambiguous, unknown>
 	 */
-	function shFetchSlug($rowid, $formid)
+	function shFetchSlug($rowid, $formId)
 	{
 		if (empty($rowid) || $rowid == '-1')
 		{
@@ -94,7 +94,7 @@ if (!function_exists('shFetchSlug'))
 		}
 		else
 		{
-			$slug = shFetchRecordName($rowid, $formid);
+			$slug = shFetchRecordName($rowid, $formId);
 
 			return isset($slug) ? $slug : '';
 		}
@@ -120,8 +120,8 @@ if (!function_exists('shFetchTableName'))
 		$db = JFactory::getDbo();
 		$query = $db->getQuery(true);
 		$query->select('label')
-			->from($query->quoteName('#__fabrik_lists'))
-			->where('id = ' . $query->quote($listid));
+			->from($query->qn('#__fabrik_lists'))
+			->where('id = ' . $query->q($listid));
 		$db->setQuery($query);
 		$tableName = $db->loadResult();
 
@@ -135,13 +135,13 @@ if (!function_exists('shFetchRecordName'))
 	 * Fetch the record's name
 	 *
 	 * @param   string  $rowid   Rowid
-	 * @param   number  $formid  Form id
+	 * @param   number  $formId  Form id
 	 *
 	 * @return NULL|Ambiguous <string, unknown>
 	 */
-	function shFetchRecordName($rowid, $formid)
+	function shFetchRecordName($rowid, $formId)
 	{
-		if (empty($rowid) || empty($formid))
+		if (empty($rowid) || empty($formId))
 		{
 			return null;
 		}
@@ -151,8 +151,8 @@ if (!function_exists('shFetchRecordName'))
 
 		// Get database table's name and slug first
 		$query->select('db_table_name, params')
-			->from($query->quoteName('#__fabrik_lists'))
-			->where('form_id = ' . $query->quote($formid));
+			->from($query->qn('#__fabrik_lists'))
+			->where('form_id = ' . $query->q($formId));
 		$db->setQuery($query);
 		$result = $db->loadObject();
 
@@ -162,9 +162,9 @@ if (!function_exists('shFetchRecordName'))
 
 		// Get record's name
 		$query = $db->getQuery(true);
-		$query->select($query->quoteName($slug))
-			->from($query->quoteName($listName))
-			->where('id = ' . $query->quote($rowid));
+		$query->select($query->qn($slug))
+			->from($query->qn($listName))
+			->where('id = ' . $query->q($rowid));
 		$db->setQuery($query);
 		$recordName = $db->loadResult();
 
@@ -191,8 +191,8 @@ if (!function_exists('shFetchVizName'))
 		$db = JFactory::getDbo();
 		$query = $db->getQuery(true);
 		$query->select('label')
-			->from($query->quoteName('#__fabrik_visualizations'))
-			->where('id = ' . $query->quote($id));
+			->from($query->qn('#__fabrik_visualizations'))
+			->where('id = ' . $query->q($id));
 		$db->setQuery($query);
 		$vizName = $db->loadResult();
 
@@ -224,7 +224,7 @@ if ($dosef == false)
 $listid = isset($listid) ? @$listid : null;
 $id     = isset($id) ? @$id : null;
 $view   = isset($view) ? @$view : null;
-$formid = isset($formid) ? @$formid : null;
+$formId = isset($formId) ? @$formId : null;
 $rowid  = isset($rowid) ? @$rowid : null;
 
 // Get fabrik SEF configuration - used to include/exclude list's names in SEF urls
@@ -233,15 +233,15 @@ $config = JComponentHelper::getParams('com_fabrik');
 switch ($view)
 {
 	case 'form':
-		if (isset($formid) && $rowid != '')
+		if (isset($formId) && $rowid != '')
 		{
 			$config->get('fabrik_sef_customtxt_edit') == '' ? $edit = 'edit' : $edit = $config->get('fabrik_sef_customtxt_edit');
-			$title[] = shFetchFormName($formid) . '-' . $rowid . '-' . FText::_($edit);
+			$title[] = shFetchFormName($formId) . '-' . $rowid . '-' . FText::_($edit);
 		}
 		else
 		{
 			$config->get('fabrik_sef_customtxt_new') == '' ? $new = 'new' : $new = $config->get('fabrik_sef_customtxt_new');
-			$title[] = shFetchFormName($formid) . '-' . FText::_($new);
+			$title[] = shFetchFormName($formId) . '-' . FText::_($new);
 		}
 		break;
 
@@ -259,9 +259,9 @@ switch ($view)
 		// Insert table name if set so in Fabrik's options
 		if ($config->get('fabrik_sef_tablename_on_forms') == 1)
 		{
-			if (isset($formid))
+			if (isset($formId))
 			{
-				$title[] = shFetchListName($formid);
+				$title[] = shFetchListName($formId);
 			}
 			else
 			{
@@ -281,15 +281,15 @@ switch ($view)
 					shRemoveFromGETVarsList('rowid');
 					break;
 				case 'id_slug':
-					$title[] = $rowid . '-' . shFetchSlug($rowid, $formid);
+					$title[] = $rowid . '-' . shFetchSlug($rowid, $formId);
 					shRemoveFromGETVarsList('rowid');
 					break;
 				case 'slug_id':
-					$title[] = shFetchSlug($rowid, $formid) . '-' . $rowid;
+					$title[] = shFetchSlug($rowid, $formId) . '-' . $rowid;
 					shRemoveFromGETVarsList('rowid');
 					break;
 				case 'slug_only':
-					$title[] = shFetchSlug($rowid, $formid);
+					$title[] = shFetchSlug($rowid, $formId);
 					shRemoveFromGETVarsList('rowid');
 					break;
 			}
@@ -312,11 +312,11 @@ switch ($view)
 			// Get the rowid and formid from the menu object
 			$menu_params = new JParameter($menusId[$itemId]->params);
 			$rowid 	     = $menu_params->get('rowid');
-			$formid      = $menusId[$itemId]->query['formid'];
+			$formId      = $menusId[$itemId]->query['formid'];
 
-			if ($formid)
+			if ($formId)
 			{
-				$title[] = shFetchRecordName($rowid, $formid);
+				$title[] = shFetchRecordName($rowid, $formId);
 				shMustCreatePageId('set', true);
 			}
 		}

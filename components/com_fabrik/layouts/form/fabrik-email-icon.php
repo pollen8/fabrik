@@ -8,17 +8,13 @@ defined('JPATH_BASE') or die;
 $d = $displayData;
 
 if (!$d->popup):
-	if ($d->icons) :
-		$j2img = JHtml::_('image', 'system/emailButton.png', FText::_('JGLOBAL_EMAIL'), null, true);
-		$image = FabrikWorker::j3() ? FabrikHelperHTML::icon('icon-envelope') . ' ' : $j2img;
-	else:
-		$image = '&nbsp;' . FText::_('JGLOBAL_EMAIL');
-	endif;
+
 ?>
 
-<a href="#" onclick="window.open('<?php echo $d->link;?>','win2','<?php echo $d->status;?>;');return false;"
-title="<?php echo FText::_('JGLOBAL_EMAIL'); ?>"><?php echo $image;?></a>
+	<a class="btn btn-default fabrikWin" rel='{"title":"<?php echo FText::_('JGLOBAL_EMAIL'); ?>", "loadMethod":"iframe", "height":"300px"}' href="<?php echo $d->link;?>">
+		<?php echo FabrikHelperHTML::icon('icon-envelope', FText::_('JGLOBAL_EMAIL'));?>
+	</a>
 
-<?php
+	<?php
 endif;
 

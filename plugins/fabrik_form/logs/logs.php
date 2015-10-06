@@ -333,7 +333,7 @@ class PlgFabrik_FormLogs extends PlgFabrik_Form
 
 			foreach ($labtyp as $klb => $vlb)
 			{
-				$klb = $db->quoteName($klb);
+				$klb = $db->qn($klb);
 
 				if ($vlb == 'varchar')
 				{
@@ -353,7 +353,7 @@ class PlgFabrik_FormLogs extends PlgFabrik_Form
 
 			if ($params->get('compare_data') == 1)
 			{
-				$clabels_createdb .= ', ' . $db->quoteName(FText::_('COMPARE_DATA_LABEL_DB')) . ' text NOT NULL';
+				$clabels_createdb .= ', ' . $db->qn(FText::_('COMPARE_DATA_LABEL_DB')) . ' text NOT NULL';
 			}
 
 			// @todo - what if we use different db driver which doesn't name quote with `??
@@ -363,7 +363,7 @@ class PlgFabrik_FormLogs extends PlgFabrik_Form
 
 			if ($params->get('compare_data') == 1)
 			{
-				$clabels_db .= ', ' . $db->quoteName(FText::_('PLG_FORM_LOG_COMPARE_DATA_LABEL_DB'));
+				$clabels_db .= ', ' . $db->qn(FText::_('PLG_FORM_LOG_COMPARE_DATA_LABEL_DB'));
 			}
 
 			// Data for CSV & for DB
@@ -407,40 +407,40 @@ class PlgFabrik_FormLogs extends PlgFabrik_Form
 			$clabelsDb = array();
 			$cdataDb = array();
 
-			$clabelsCreateDb[] = $db->quoteName('date') . " datetime NOT NULL";
-			$clabelsDb[] = $db->quoteName('date');
+			$clabelsCreateDb[] = $db->qn('date') . " datetime NOT NULL";
+			$clabelsDb[] = $db->qn('date');
 			$cdataDb[] = "NOW()";
 
-			$clabelsCreateDb[] = $db->quoteName('ip') . " varchar(32) NOT NULL";
-			$clabelsDb[] = $db->quoteName('ip');
+			$clabelsCreateDb[] = $db->qn('ip') . " varchar(32) NOT NULL";
+			$clabelsDb[] = $db->qn('ip');
 			$cdataDb[] = $params->get('logs_record_ip') == '1' ? $db->quote($_SERVER['REMOTE_ADDR']) : $db->quote('');
 
-			$clabelsCreateDb[] = $db->quoteName('referer') . " varchar(255) NOT NULL";
-			$clabelsDb[] = $db->quoteName('referer');
+			$clabelsCreateDb[] = $db->qn('referer') . " varchar(255) NOT NULL";
+			$clabelsDb[] = $db->qn('referer');
 			$cdataDb[] = $params->get('logs_record_referer') == '1' ? $db->quote($http_referrer) : $db->quote('');
 
-			$clabelsCreateDb[] = $db->quoteName('user_agent') . " varchar(255) NOT NULL";
-			$clabelsDb[] = $db->quoteName('user_agent');
+			$clabelsCreateDb[] = $db->qn('user_agent') . " varchar(255) NOT NULL";
+			$clabelsDb[] = $db->qn('user_agent');
 			$cdataDb[] = $params->get('logs_record_useragent') == '1' ? $db->quote($_SERVER['HTTP_USER_AGENT']) : $db->quote('');
 
-			$clabelsCreateDb[] = $db->quoteName('data_comparison') . " TEXT NOT NULL";
-			$clabelsDb[] = $db->quoteName('data_comparison');
+			$clabelsCreateDb[] = $db->qn('data_comparison') . " TEXT NOT NULL";
+			$clabelsDb[] = $db->qn('data_comparison');
 			$cdataDb[] = $params->get('compare_data') == '1' ? $db->quote($result_compare) : $db->quote('');
 
-			$clabelsCreateDb[] = $db->quoteName('rowid') . " INT(11) NOT NULL";
-			$clabelsDb[] = $db->quoteName('rowid');
+			$clabelsCreateDb[] = $db->qn('rowid') . " INT(11) NOT NULL";
+			$clabelsDb[] = $db->qn('rowid');
 			$cdataDb[] = $db->quote($rowid);
 
-			$clabelsCreateDb[] = $db->quoteName('userid') . " INT(11) NOT NULL";
-			$clabelsDb[] = $db->quoteName('userid');
+			$clabelsCreateDb[] = $db->qn('userid') . " INT(11) NOT NULL";
+			$clabelsDb[] = $db->qn('userid');
 			$cdataDb[] = $db->quote((int) $userid);
 
-			$clabelsCreateDb[] = $db->quoteName('tableid') . " INT(11) NOT NULL";
-			$clabelsDb[] = $db->quoteName('tableid');
-			$cdataDb[] = $db->quote($formModel->getTableModel()->getId());
+			$clabelsCreateDb[] = $db->qn('tableid') . " INT(11) NOT NULL";
+			$clabelsDb[] = $db->qn('tableid');
+			$cdataDb[] = $db->quote($formModel->getListModel()->getId());
 
-			$clabelsCreateDb[] = $db->quoteName('formid') . " INT(11) NOT NULL";
-			$clabelsDb[] = $db->quoteName('formid');
+			$clabelsCreateDb[] = $db->qn('formid') . " INT(11) NOT NULL";
+			$clabelsDb[] = $db->qn('formid');
 			$cdataDb[] = $db->quote($formModel->getId());
 
 			$clabels_createdb = implode(", ", $clabelsCreateDb);
@@ -662,11 +662,11 @@ class PlgFabrik_FormLogs extends PlgFabrik_Form
 				$fid = $form->id;
 				$db
 				->setQuery(
-					"SELECT " . $db->quoteName('db_table_name') . " FROM " . $db->quoteName('#__fabrik_lists') . " WHERE "
-					. $db->quoteName('form_id') . " = " . (int) $fid
+					"SELECT " . $db->qn('db_table_name') . " FROM " . $db->qn('#__fabrik_lists') . " WHERE "
+					. $db->qn('form_id') . " = " . (int) $fid
 				);
 				$tname = $db->loadResult();
-				$rdb = $db->quoteName($tname . $db_suff);
+				$rdb = $db->qn($tname . $db_suff);
 			}
 
 			// Making the message to record
@@ -685,15 +685,15 @@ class PlgFabrik_FormLogs extends PlgFabrik_Form
 			*/
 			if ($params->get('record_in') == '')
 			{
-				$in_db = "INSERT INTO $rdb (" . $db->quoteName('referring_url') . ", " . $db->quoteName('message_type') . ", "
-					. $db->quoteName('message') . ") VALUES (" . $db->quote($http_referrer) . ", " . $db->quote($messageType) . ", "
+				$in_db = "INSERT INTO $rdb (" . $db->qn('referring_url') . ", " . $db->qn('message_type') . ", "
+					. $db->qn('message') . ") VALUES (" . $db->quote($http_referrer) . ", " . $db->quote($messageType) . ", "
 						. $db->quote($message) . ");";
 				$db->setQuery($in_db);
 				$db->execute();
 			}
 			else
 			{
-				$create_custom_table = "CREATE TABLE IF NOT EXISTS $rdb (" . $db->quoteName('id')
+				$create_custom_table = "CREATE TABLE IF NOT EXISTS $rdb (" . $db->qn('id')
 				. " int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY, $clabels_createdb);";
 				$db->setQuery($create_custom_table);
 				$db->execute();

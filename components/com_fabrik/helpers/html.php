@@ -372,11 +372,10 @@ EOD;
 	 *
 	 * @param   object       $formModel  form model
 	 * @param   object       $params     parameters
-	 * @param   int|string   $rowid      row id
 	 *
 	 * @return  string	print html icon/link
 	 */
-	public static function printIcon($formModel, $params, $rowid = '')
+	public static function printIcon($formModel, $params)
 	{
 		$layout = self::getLayout('form.fabrik-print-icon');
 		$displayData = new stdClass;
@@ -495,17 +494,17 @@ EOD;
 	/**
 	 * Get a list of condition options - used in advanced search
 	 *
-	 * @param   string  $listid  list ref
+	 * @param   string  $listId  list ref
 	 * @param   string  $sel     selected value
 	 *
 	 * @return  string	html select list
 	 */
-	public static function conditionList($listid, $sel = '')
+	public static function conditionList($listId, $sel = '')
 	{
 		$conditions = array();
 		$conditions[] = JHTML::_('select.option', 'AND', FText::_('COM_FABRIK_AND'));
 		$conditions[] = JHTML::_('select.option', 'OR', FText::_('COM_FABRIK_OR'));
-		$name = 'fabrik___filter[list_' . $listid . '][join][]';
+		$name = 'fabrik___filter[list_' . $listId . '][join][]';
 
 		return JHTML::_('select.genericlist', $conditions, $name, 'class="inputbox input-mini" size="1" ', 'value', 'text', $sel);
 	}
@@ -542,7 +541,7 @@ EOD;
 	/**
 	 * Fabrik script to load in a style sheet
 	 * takes into account if you are viewing the page in raw format
-	 * if so sends js code back to webpage to inject css file into document head
+	 * if so sends js code back to web page to inject css file into document head
 	 * If not raw format then apply standard J stylesheet
 	 *
 	 * @param   string  $file     stylesheet URL
@@ -825,7 +824,7 @@ EOD;
 			$version = new JVersion;
 			$jsAssetBaseURI = self::getJSAssetBaseURI();
 			$fbConfig = JComponentHelper::getParams('com_fabrik');
-			
+
 			// Only use template test for testing in 2.5 with my temp J bootstrap template.
 			$bootstrapped = in_array($app->getTemplate(), array('bootstrap', 'fabrik4')) || $version->RELEASE > 2.5;
 
@@ -879,6 +878,7 @@ EOD;
 
 				$liveSiteSrc = array();
 				$liveSiteSrc[] = "\tFabrik.liveSite = '" . COM_FABRIK_LIVESITE . "';";
+				$liveSiteSrc[] = "\tFabrik.package = '" .  $app->getUserState('com_fabrik.package', 'fabrik') . "';";
 				$liveSiteSrc[] = "\tFabrik.debug = " . (self::isDebug() ? 'true;' : 'false;');
 				$liveSiteSrc[] = "\tFabrik.jLayouts = " . json_encode(JArrayHelper::toObject(self::$jLayoutsJs)) . ";";
 
@@ -895,8 +895,8 @@ EOD;
 				$liveSiteSrc[] = self::tipInt();
 				$liveSiteSrc = implode("\n", $liveSiteSrc);
 				self::script($liveSiteReq, $liveSiteSrc);
-			} 
-			else 
+			}
+			else
 			{
 				$liveSiteSrc[] = "\tif (!Fabrik.jLayouts) {
 				Fabrik.jLayouts = {};
@@ -1153,16 +1153,16 @@ EOD;
 
 	/**
 	 * Add a rendered JLayout to the Fabrik.jLayouts object
-	 * @param   string    $name
-	 * @param   string    $layoutName
-	 * @param   stdClass  $data
-	 * @param   array     $paths
-	 * @param   array     $options
+	 *
+	 * @param   string    $name        Reference to layout, used in JavaScript
+	 * @param   string    $layoutName  Dot syntax path to layout file
+	 * @param   stdClass  $data        Template data
+	 * @param   array     $paths       Additional layout paths
+	 * @param   array     $options     Options
 	 */
 	public static function jLayoutJs($name, $layoutName, stdClass $data = null, $paths = array(), $options = array())
 	{
 		$layout =self::getLayout($layoutName, $paths, $options);
-		//echo "<pre>";print_r($layout);echo "</pre>";
 		self::$jLayoutsJs[$name] = $layout->render($data);
 	}
 
@@ -1199,7 +1199,7 @@ EOD;
 		$app = JFactory::getApplication();
 		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 
-		// Are we in fabrik or a content view, if not return false (things like com_config need to load in mootools)
+		// Are we in fabrik or a content view, if not return false (things like com_config need to load in Mootools)
 		$app = JFactory::getApplication();
 		$input = $app->input;
 		$option = $input->get('option');
@@ -1261,7 +1261,7 @@ EOD;
 	 *
 	 * @return  bool
 	 */
-	public static function isDebugSubmit($enabled = false)
+	public static function isDebugSubmit()
 	{
 		$app = JFactory::getApplication();
 		$config = JComponentHelper::getParams('com_fabrik');
@@ -1405,7 +1405,7 @@ EOD;
 	{
 		$key = 'fabrik.js.head.scripts';
 		$session = JFactory::getSession();
-	
+
 		if ($session->has($key))
 		{
 			$scripts = $session->get($key);
@@ -1414,11 +1414,11 @@ EOD;
 		{
 			$scripts = array();
 		}
-	
+
 		$scripts[] = $js;
 		$session->set($key, $scripts);
 	}
-	
+
 	/**
 	 * Load the slimbox / media box css and js files
 	 *
@@ -1739,13 +1739,13 @@ EOD;
 	/**
 	 * Load the Facebook Graph API
 	 *
-	 * @param   string  $appid   Application id
+	 * @param   string  $appId   Application id
 	 * @param   string  $locale  locale e.g 'en_US'
 	 * @param   array   $meta    meta tags to add
 	 *
-	 * @return  void
+	 * @return  void|string
 	 */
-	public static function facebookGraphAPI($appid, $locale = 'en_US', $meta = array())
+	public static function facebookGraphAPI($appId, $locale = 'en_US', $meta = array())
 	{
 		if (!isset(self::$facebookgraphapi))
 		{
@@ -1754,7 +1754,7 @@ EOD;
 			return "<div id=\"fb-root\"></div>
 			<script>
 			window.fbAsyncInit = function() {
-			FB.init({appId: '$appid', status: true, cookie: true,
+			FB.init({appId: '$appId', status: true, cookie: true,
 			xfbml: true});
 		};
 		(function() {
@@ -1862,7 +1862,6 @@ EOD;
 	{
 		$file = JString::ltrim($file, DIRECTORY_SEPARATOR);
 		$paths = self::addPath('', 'image', $type, true);
-		$src = '';
 
 		foreach ($paths as $path)
 		{
@@ -2674,5 +2673,12 @@ EOD;
 		}
 
 		return $icon;
+	}
+
+	public static function modalJLayouts()
+	{
+		FabrikHelperHTML::jLayoutJs('modal-close', 'modal.fabrik-close');
+		FabrikHelperHTML::jLayoutJs('icon-expand', 'fabrik-icon', (object) array('icon' => 'icon-expand'));
+		FabrikHelperHTML::jLayoutJs('icon-full-screen', 'fabrik-icon', (object) array('icon' => 'icon-out-2 icon-fullscreen'));
 	}
 }

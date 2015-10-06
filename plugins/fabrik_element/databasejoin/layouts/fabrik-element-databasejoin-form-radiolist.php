@@ -22,7 +22,11 @@ foreach ($d->options as $option) :
 	<?php endif;
 	$d->option = $option;
 	$d->colCounter = $colCounter;
-	echo $d->optionLayout->render($d);
+	if ($d->editable) :
+		echo $d->optionLayout->render($d);
+	elseif ($checked) : ?>
+		<span><?php echo $d->option->text;?></span>
+	<?php endif;
 	$colCounter++;
 	if (($colSize * $colCounter) % 12 === 0 || $colCounter == 0) :
 		?>

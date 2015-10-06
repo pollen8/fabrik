@@ -487,7 +487,9 @@ var FbDatabasejoin = new Class({
 			if (val === '') {
 				return;
 			}
-			val = JSON.decode(val);
+			if (typeOf(val) === 'string') {
+				val = JSON.decode(val);
+			}
 			var h = this.form.getFormData();
 			if (typeOf(h) === 'object') {
 				h = $H(h);
@@ -546,7 +548,7 @@ var FbDatabasejoin = new Class({
 		}
 		this.options.value = val;
 	},
-	
+
 	/**
 	 * $$$ hugh - testing being able to set a dropdown join by label rather than value,
 	 * needed in corner cases like reverse geocoding in the map element, where (say) the
@@ -823,5 +825,15 @@ var FbDatabasejoin = new Class({
 			}
 		}
 		return this.parent(delIndex);
+	},
+
+	/**
+	 * When a form/details view is updating its own data, then should we use the raw data or the html?
+	 * Raw is used for cdd/db join elements
+	 *
+	 * @returns {boolean}
+	 */
+	updateUsingRaw: function () {
+		return true;
 	}
 });

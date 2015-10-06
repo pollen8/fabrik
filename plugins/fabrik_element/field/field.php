@@ -20,7 +20,6 @@ jimport('joomla.application.component.model');
  * @subpackage  Fabrik.element.field
  * @since       3.0
  */
-
 class PlgFabrik_ElementField extends PlgFabrik_Element
 {
 	/**
@@ -36,32 +35,46 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 	{
 		$data = FabrikWorker::JSONtoData($data, true);
 		$params = $this->getParams();
-		$format = $params->get('text_format_string');
-		$format_blank = $params->get('field_format_string_blank', true);
 
 		foreach ($data as &$d)
 		{
-			$d = $this->numberFormat($d);
+			$d = $this->format($d);
 
-			if ($format != '' && ($format_blank || $d != ''))
-			{
-				$d = sprintf($format, $d);
-			}
-
-			if ($params->get('password') == "1")
-			{
-				$d = str_pad('', JString::strlen($d), '*');
-			}
-
-			$this->_guessLinkType($d, $thisRow, 0);
+			$this->_guessLinkType($d, $thisRow);
 
 			if ($params->get('render_as_qrcode', '0') === '1')
 			{
-				$d = $this->qrCodeLink($d, $thisRow);
+				$d = $this->qrCodeLink($thisRow);
 			}
 		}
 
 		return parent::renderListData($data, $thisRow, $opts);
+	}
+
+	/**
+	 * Format the string for use in list view, email data
+	 * @param $d
+	 *
+	 * @return string
+	 */
+	protected function format(&$d)
+	{
+		$params = $this->getParams();
+		$format = $params->get('text_format_string');
+		$formatBlank = $params->get('field_format_string_blank', true);
+		$d = $this->numberFormat($d);
+
+		if ($format != '' && ($formatBlank || $d != ''))
+		{
+			$d = sprintf($format, $d);
+		}
+
+		if ($params->get('password') == '1')
+		{
+			$d = str_pad('', JString::strlen($d), '*');
+		}
+
+		return $d;
 	}
 
 	/**
@@ -72,31 +85,21 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 	 *
 	 * @return  string	Formatted CSV export value
 	 */
-
 	public function renderListData_csv($data, &$thisRow)
 	{
-		$data = $this->numberFormat($data);
-		$params = $this->getParams();
-		$format = $params->get('text_format_string');
-		$format_blank = $params->get('field_format_string_blank', true);
-
-		if ($format != '' && ($format_blank || $d != ''))
-		{
-			$data = sprintf($format, $data);
-		}
+		$data = $this->format($data);
 
 		return $data;
 	}
 
 	/**
 	 * Determines if the element can contain data used in sending receipts,
-	 * e.g. fabrikfield returns true
+	 * e.g. field returns true
 	 *
 	 * @deprecated - not used
 	 *
 	 * @return  bool
 	 */
-
 	public function isReceiptElement()
 	{
 		return true;
@@ -110,7 +113,6 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 	 *
 	 * @return  string	elements html
 	 */
-
 	public function render($data, $repeatCounter = 0)
 	{
 		$params = $this->getParams();
@@ -140,24 +142,12 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 			if ($params->get('render_as_qrcode', '0') === '1')
 			{
 				// @TODO - skip this is new form
-				$value = $this->qrCodeLink($value, $data);
+				$value = $this->qrCodeLink($data);
 			}
 			else
 			{
-				$this->_guessLinkType($value, $data, $repeatCounter);
-				$format = $params->get('text_format_string');
-				$format_blank = $params->get('field_format_string_blank', true);
-
-				if ($format != '' && ($format_blank || $d != ''))
-				{
-					$value = sprintf($format, $value);
-				}
-
-				if ($params->get('password') == "1")
-				{
-					$value = str_pad('', JString::strlen($value), '*');
-				}
-
+				$this->_guessLinkType($value, $data);
+				$value = $this->format($value);
 				$value = $this->getReadOnlyOutput($value, $value);
 			}
 
@@ -201,7 +191,6 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 	 *
 	 * @return  string	value
 	 */
-
 	public function getValue($data, $repeatCounter = 0, $opts = array())
 	{
 		$value = parent::getValue($data, $repeatCounter, $opts);
@@ -219,15 +208,12 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 	 *
 	 * @param   string  &$value         Original field value
 	 * @param   array   $data           Record data
-	 * @param   int     $repeatCounter  Repeat counter
 	 *
 	 * @return  void
 	 */
-
-	protected function _guessLinkType(&$value, $data, $repeatCounter = 0)
+	protected function _guessLinkType(&$value, $data)
 	{
 		$params = $this->getParams();
-		$guessed = false;
 
 		if ($params->get('guess_linktype') == '1')
 		{
@@ -237,12 +223,10 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 
 			if (FabrikWorker::isEmail($value) || JString::stristr($value, 'http'))
 			{
-				$guessed = true;
 			}
 			elseif (JString::stristr($value, 'www.'))
 			{
 				$value = 'http://' . $value;
-				$guessed = true;
 			}
 
 			if ($title !== '')
@@ -259,7 +243,6 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 	 *
 	 * @return  array
 	 */
-
 	protected function linkOpts()
 	{
 		$fbConfig = JComponentHelper::getParams('com_fabrik');
@@ -297,20 +280,18 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 	 *
 	 * @return  array
 	 */
-
 	public function elementJavascript($repeatCounter)
 	{
 		$params = $this->getParams();
-
 		$id = $this->getHTMLId($repeatCounter);
 		$opts = $this->getElementJSOptions($repeatCounter);
 
-		$input_mask = trim($params->get('text_input_mask', ''));
+		$inputMask = trim($params->get('text_input_mask', ''));
 
-		if (!empty($input_mask))
+		if (!empty($inputMask))
 		{
 			$opts->use_input_mask = true;
-			$opts->input_mask = $input_mask;
+			$opts->input_mask = $inputMask;
 		}
 		else
 		{
@@ -337,15 +318,14 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 	 * @param   string  $script  Script to load once class has loaded
 	 * @param   array   &$shim   Dependant class names to load before loading the class - put in requirejs.config shim
 	 *
-	 * @return void
+	 * @return void|boolean
 	 */
-
 	public function formJavascriptClass(&$srcs, $script = '', &$shim = array())
 	{
 		$params = $this->getParams();
-		$input_mask = trim($params->get('text_input_mask', ''));
+		$inputMask = trim($params->get('text_input_mask', ''));
 
-		if (!empty($input_mask))
+		if (!empty($inputMask))
 		{
 			$s = new stdClass;
 			$s->deps = array('fab/element');
@@ -365,7 +345,6 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 	 *
 	 * @return  string  db field type
 	 */
-
 	public function getFieldDescription()
 	{
 		$p = $this->getParams();
@@ -379,18 +358,18 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 		{
 			case 'text':
 			default:
-				$objtype = "VARCHAR(" . $p->get('maxlength', 255) . ")";
+				$objType = "VARCHAR(" . $p->get('maxlength', 255) . ")";
 				break;
 			case 'integer':
-				$objtype = "INT(" . $p->get('integer_length', 11) . ")";
+				$objType = "INT(" . $p->get('integer_length', 11) . ")";
 				break;
 			case 'decimal':
 				$total = (int) $p->get('integer_length', 11) + (int) $p->get('decimal_length', 2);
-				$objtype = "DECIMAL(" . $total . "," . $p->get('decimal_length', 2) . ")";
+				$objType = "DECIMAL(" . $total . "," . $p->get('decimal_length', 2) . ")";
 				break;
 		}
 
-		return $objtype;
+		return $objType;
 	}
 
 	/**
@@ -400,27 +379,26 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 	 *
 	 * @return  array	key=>value options
 	 */
-
 	public function getJoomfishOptions()
 	{
 		$params = $this->getParams();
 		$return = array();
 		$size = (int) $this->getElement()->width;
-		$maxlength = (int) $params->get('maxlength');
+		$maxLength = (int) $params->get('maxlength');
 
 		if ($size !== 0)
 		{
 			$return['length'] = $size;
 		}
 
-		if ($maxlength === 0)
+		if ($maxLength === 0)
 		{
-			$maxlength = $size;
+			$maxLength = $size;
 		}
 
-		if ($params->get('textarea-showmax') && $maxlength !== 0)
+		if ($params->get('textarea-showmax') && $maxLength !== 0)
 		{
-			$return['maxlength'] = $maxlength;
+			$return['maxlength'] = $maxLength;
 		}
 
 		return $return;
@@ -431,7 +409,6 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 	 *
 	 * @return  bool
 	 */
-
 	public function canEncrypt()
 	{
 		return true;
@@ -445,7 +422,6 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 	 *
 	 * @return  mixed
 	 */
-
 	public function storeDatabaseFormat($val, $data)
 	{
 		if (is_array($val))
@@ -472,7 +448,6 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 	 *
 	 * @return  string
 	 */
-
 	protected function _indStoreDatabaseFormat($val)
 	{
 		return $this->unNumberFormat($val);
@@ -485,7 +460,6 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 	 *
 	 * @return  string	css classes
 	 */
-
 	public function getCellClass()
 	{
 		$params = $this->getParams();
@@ -505,7 +479,6 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 	 *
 	 * @since 3.1
 	 */
-
 	public function onAjax_renderQRCode()
 	{
 		$app = JFactory::getApplication();
@@ -524,9 +497,9 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 			exit;
 		}
 
-		$rowid = $input->get('rowid', '', 'string');
+		$rowId = $input->get('rowid', '', 'string');
 
-		if (empty($rowid))
+		if (empty($rowId))
 		{
 			// $app->enqueueMessage(FText::_('PLG_ELEMENT_FIELD_NO_SUCH_FILE'));
 			$app->redirect($url);
@@ -534,7 +507,7 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 		}
 
 		$listModel = $this->getListModel();
-		$row = $listModel->getRow($rowid, false);
+		$row = $listModel->getRow($rowId, false);
 
 		if (empty($row))
 		{
@@ -581,15 +554,13 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 	/**
 	 * Get a link to this element which will call onAjax_renderQRCode().
 	 *
-	 * @param   value  string  element's value
-	 * @param   thisRow  array  row data
+	 * @param   array|object  $thisRow  Row data
 	 *
 	 * @since 3.1
 	 *
 	 * @return   string  QR code link
 	 */
-
-	protected function qrCodeLink($value, $thisRow)
+	protected function qrCodeLink($thisRow)
 	{
 		if (is_object($thisRow))
 		{
@@ -599,10 +570,10 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 		$app = JFactory::getApplication();
 		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$formModel = $this->getFormModel();
-		$formid = $formModel->getId();
-		$rowid = $formModel->getRowId();
+		$formId = $formModel->getId();
+		$rowId = $formModel->getRowId();
 
-		if (empty($rowid))
+		if (empty($rowId))
 		{
 			/**
 			 * Meh.  See commentary at the start of $formModel->getEmailData() about rowid.  For now, if this is a new row,
@@ -610,23 +581,23 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 			 * But check __pk_val first anyway, what the heck.
 			 */
 
-			$rowid = FArrayHelper::getValue($thisRow, '__pk_val', '');
+			$rowId = FArrayHelper::getValue($thisRow, '__pk_val', '');
 
-			if (empty($rowid))
+			if (empty($rowId))
 			{
 				/**
 				 * Nope.  Try lastInsertId. Or maybe on top of the fridge?  Or in the microwave?  Down the back
 				 * of the couch cushions?
 				 */
 
-				$rowid = $formModel->getListModel()->lastInsertId;
+				$rowId = $formModel->getListModel()->lastInsertId;
 
 				/**
 				 * OK, give up.  If *still* no rowid, we're probably being called from something like getEmailData() on onBeforeProcess or
 				 * onBeforeStore, and it's a new form, so no rowid yet.  So no point returning anything yet.
 				 */
 
-				if (empty($rowid))
+				if (empty($rowId))
 				{
 					return '';
 				}
@@ -637,10 +608,10 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 		 * YAY!!!  w00t!!  We have a rowid.  Whoop de freakin' doo!!
 		 */
 
-		$elementid = $this->getId();
+		$elementId = $this->getId();
 		$src = COM_FABRIK_LIVESITE
 		. 'index.php?option=com_' . $package . '&amp;task=plugin.pluginAjax&amp;plugin=field&amp;method=ajax_renderQRCode&amp;'
-				. 'format=raw&amp;element_id=' . $elementid . '&amp;formid=' . $formid . '&amp;rowid=' . $rowid . '&amp;repeatcount=0';
+				. 'format=raw&amp;element_id=' . $elementId . '&amp;formid=' . $formId . '&amp;rowid=' . $rowId . '&amp;repeatcount=0';
 
 		$layout = $this->getLayout('qr');
 		$displayData = new stdClass;
@@ -658,19 +629,18 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 	 *
 	 * @return  string  email formatted value
 	 */
-
 	protected function getIndEmailValue($value, $data = array(), $repeatCounter = 0)
 	{
 		$params = $this->getParams();
 
 		if ($params->get('render_as_qrcode', '0') === '1')
 		{
-			return html_entity_decode($this->qrCodeLink($value, $data));
+			return html_entity_decode($this->qrCodeLink($data));
 		}
 		else
 		{
+			$value = $this->format($value);
 			return parent::getIndEmailValue($value, $data, $repeatCounter);
 		}
 	}
-
 }

@@ -17,14 +17,19 @@ $colCounter = 0;
 
 foreach ($d->options as $option) :
 	$checked = in_array($option->value, $d->default) ? 'checked="checked"' : '';
-	if ($colSize <> 12 || (($colSize * $colCounter) % 12 === 0  || $colCounter == 0)) : ?>
+	if (count($d->options) > 1 && $colSize <> 12  && ((($colSize * $colCounter) % 12 === 0 || $colCounter == 0))) : ?>
 		<div class="row-fluid">
 	<?php endif;
 	$d->option = $option;
+	$d->option->checked = $checked;
 	$d->colCounter = $colCounter;
-	echo $d->optionLayout->render($d);
+	if ($d->editable) :
+		echo $d->optionLayout->render($d);
+	elseif ($checked) : ?>
+		<span><?php echo $d->option->text;?></span>
+	<?php endif;
 	$colCounter++;
-	if ($colSize <> 12 || (($colSize * $colCounter) % 12 === 0 || $colCounter == 0)) :
+	if (count($d->options) > 1 && $colSize <> 12 && ((($colSize * $colCounter) % 12 === 0 || $colCounter == 0))) :
 		?>
 		</div>
 	<?php endif; ?>

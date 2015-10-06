@@ -149,7 +149,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 			}
 
 			$joinTableName = $join->table_join_alias;
-			$tables = $this->getForm()->getLinkedFabrikLists($params->get('join_db_name'));
+			$tables = $this->getFormModel()->getLinkedFabrikLists($params->get('join_db_name'));
 
 			/*	store unjoined values as well (used in non-join group table views)
 			 * this wasn't working for test case:
@@ -162,8 +162,8 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 			*$k = isset($join->keytable) ? $join->keytable : $join->join_from_table;
 			*$k = FabrikString::safeColName("`$join->keytable`.`$element->name`");
 			*/
-			$keytable = isset($join->keytable) ? $join->keytable : $join->join_from_table;
-			$k = FabrikString::safeColName($keytable . '.' . $element->name);
+			$keyTable = isset($join->keytable) ? $join->keytable : $join->join_from_table;
+			$k = FabrikString::safeColName($keyTable . '.' . $element->name);
 			$k2 = $this->getJoinLabelColumn();
 
 			if (FArrayHelper::getValue($opts, 'inc_raw', true))
@@ -597,7 +597,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		}
 
 		$displayType = $this->getDisplayType();
-		
+
 		// Remove tags from labels
 		if ($this->canUse() && $displayType != 'radio' && $displayType != 'checkbox')
 		{
@@ -612,9 +612,9 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 
 	/**
 	 * For fields that use the concat label, it may try to insert constants, but if no
-	 * replacement data found then the concatinated constants should be conidered as emtyp
+	 * replacement data found then the concatenated constants should be considered as empty
 	 *
-	 * @param   string  $label  Concatinate label
+	 * @param   string  $label  Concatenate label
 	 *
 	 * @return boolean
 	 */
@@ -629,9 +629,9 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		}
 
 		$bits = explode(',', $concat);
-		$countb = count($bits); //unset is modifying count($bits)
-		
-		for ($i = 0; $i < $countb; $i ++)
+		$countBits = count($bits); //unset is modifying count($bits)
+
+		for ($i = 0; $i < $countBits; $i ++)
 		{
 			if (strstr(trim($bits[$i]), '{thistable}.'))
 			{
@@ -692,7 +692,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		{
 			// For values like '1"'
 			// $$$ hugh - added second two params so we set double_encode false
-			if ($this->getDisplayType() != 'radio' && $this->getDisplayType() != 'checkbox') 
+			if ($this->getDisplayType() != 'radio' && $this->getDisplayType() != 'checkbox')
 			{
 				$o->text = htmlspecialchars($o->text, ENT_NOQUOTES, 'UTF-8', false);
       		}
@@ -1037,13 +1037,13 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		 * $$$ hugh - experimenting with optional "filter where", will probably move this in to filterValueList_foo,
 		 * but first cut it's safer to put it here (don't ask).
 		 */
-		
+
 		$filterWhere = trim($params->get('database_join_filter_where_sql', ''));
 		if (FArrayHelper::getValue($opts, 'mode', '') === 'filter' && !empty($filterWhere))
 		{
 			$where .= JString::stristr($where, 'WHERE') ? ' AND ' . $filterWhere : ' WHERE ' . $filterWhere;
 		}
-		
+
 		if ($where == '')
 		{
 			return $query ? $query : $where;
@@ -1291,15 +1291,15 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 			}
 
 			$targetIds = $this->multiOptionTargetIds($data, $repeatCounter);
-			
+
 			// $$$ hugh - no selection, and not new row, so Nothing To See Here, Move Along.
 			if ($this->isJoin() && FArrayHelper::emptyIsh($targetIds, true) && $formModel->getRowId() != '')
 			{
 				return '';
 			}
-			
+
 			$targetIds = $targetIds === false ? $default : $targetIds;
-			
+
 			// $$$ hugh - trying to fix issue with read only multiselects submitting wrong values
 			$formModel->tmplData[$id . '_raw'] = $targetIds;
 			$formModel->data[$id . '_raw'] = $targetIds;
@@ -1311,12 +1311,12 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 			foreach ($targetIds as $tkey => $targetId)
 			{
 				$tmpLabel = FArrayHelper::getValue($defaultLabels, $i, 'unknown label');
-				
+
 				if ($this->emptyConcatString($tmpLabel))
 				{
 					$tmpLabel = '';
 				}
-				
+
 				$defaultLabels[$i] = $this->getReadOnlyOutput($targetId, $tmpLabel);
 				$i++;
 			}
@@ -1492,6 +1492,21 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		return $url;
 	}
 
+	protected function renderReadOnlyTrimOptions(&$tmp, $defaultValue)
+	{
+		$defaultValue = (array) $defaultValue;
+
+		if (!$this->isEditable())
+		{
+			foreach ($tmp as $tmpKey => $tmpVal)
+			{
+				if (!in_array($tmpVal->value, $defaultValue))
+				{
+					unset($tmp[$tmpKey]);
+				}
+			}
+		}
+	}
 	/**
 	 * Render auto-complete in form
 	 *
@@ -1518,6 +1533,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 			$defaultValue = $tmp[0]->value;
 		}
 
+		$this->renderReadOnlyTrimOptions($tmp, $defaultValue);
 		$layout = $this->getLayout('form-radiolist');
 		$displayData = new stdClass;
 		$displayData->options = $tmp;
@@ -1566,7 +1582,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		/*
 		 * $$$ rob 18/06/2012 if form submitted with errors - reshowing the auto-complete wont have access to the submitted values label
 		* 02/11/2012 if new form then labels not present either.
-		* 
+		*
 		* $$$ hugh 5/4/2015 - if we're coming from a related data link on a list, no non-raw data, so need
 		* to get it from $default[0]'s value
 		*/
@@ -1656,13 +1672,19 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		$attributes = 'class="fabrikinput inputbox" id="' . $id . '"';
 
 		$name = FabrikString::rtrimword($name, '[]');
-		$targetIds = $this->multiOptionTargetIds($data, $repeatCounter);
 
-		if ($targetIds !== false)
+		if (!$this->getFormModel()->isNewRecord())
 		{
-			$default = $targetIds;
+			// If its a new record we don't want to look up defaults in the look up table as they will not exist
+			$targetIds = $this->multiOptionTargetIds($data, $repeatCounter);
+
+			if ($targetIds !== false)
+			{
+				$default = $targetIds;
+			}
 		}
 
+		$this->renderReadOnlyTrimOptions($tmp, $default);
 		$layout = $this->getLayout('form-checkboxlist');
 		$displayData = new stdClass;
 		$displayData->options = $tmp;
@@ -1685,7 +1707,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 			$html[] = FabrikHelperHTML::aList('checkbox', $tmp, $name, $attributes, $default, 'value', 'text', $displayData->optsPerRow, $displayData->editable);
 		}
 
-		if (empty($tmp))
+		if (empty($tmp) && !FabrikWorker::j3())
 		{
 			$tmpIds = array();
 			$o = new stdClass;
@@ -1693,17 +1715,8 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 			$o->value = 'dummy';
 			$tmpIds[] = $o;
 			$tmp = $tmpIds;
-
-			if (FabrikWorker::j3())
-			{
-				$displayData->options = $tmp;
-				// $html[] = $layout->render($displayData);
-			}
-			else
-			{
-				$dummy = FabrikHelperHTML::aList('checkbox', $tmp, $name, $attributes, $default, 'value', 'text', 1, true);
-				$html[] = '<div class="chxTmplNode">' . $dummy . '</div>';
-			}
+			$dummy = FabrikHelperHTML::aList('checkbox', $tmp, $name, $attributes, $default, 'value', 'text', 1, true);
+			$html[] = '<div class="chxTmplNode">' . $dummy . '</div>';
 		}
 
 		$html[] = '</div>';
@@ -1860,7 +1873,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		$tmp = $this->_getOptions($data, $repeatCounter);
 		// $$$ hugh - PLEASE LEAVE.  No, we don't use $name, but I'm in here xdebug'ing stuff frequently, I use it as a time saver.
 		$name = $this->getFullName(false, true, false);
-		
+
 		if ($this->isJoin())
 		{
 			/**
@@ -1900,11 +1913,8 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 							break;
 						}
 					}
-
-					//$v2 = $this->renderListData($v2, new stdClass);
 				}
 
-				//$val = $value;
 				$val = $this->renderListData($value, new stdClass);
 			}
 			else
@@ -1949,7 +1959,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 			$opts = $this->_getOptionVals();
 			$name = $this->getFullName(false, true, false) . '_raw';
 
-			// If coming from fabrikemail plugin $thisRow is empty
+			// If coming from email plugin $thisRow is empty
 			if (isset($thisRow->$name))
 			{
 				$data = $thisRow->$name;
@@ -2024,7 +2034,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 	}
 
 	/**
-	 * TESTING for JFQ, issue with autocomplete filters using 'contains' instead of '='
+	 * TESTING for JFQ, issue with auto-complete filters using 'contains' instead of '='
 	 * Need to override this for joins, make sure exact match is applied
 	 * return  string
 	 */
@@ -2827,7 +2837,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		$this->elementJavascriptJoinOpts($opts);
 		$opts->isJoin = $this->isJoin();
 		$opts->advanced = $this->getAdvancedSelectClass() != '';
-		
+
 		return $opts;
 	}
 
@@ -3083,7 +3093,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 	}
 
 	/**
-	 * Used by elements with suboptions, given a value, return its label
+	 * Used by elements with sub-options, given a value, return its label
 	 *
 	 * @param   string  $v             Value
 	 * @param   string  $defaultLabel  Default label
@@ -3104,11 +3114,11 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 			/*
 			 * temp fix while I work out the details ... the code after this references $repeatCounter, apparently assuming
 			 * that if $vv is an array, we're in a repeat group.  But that's a hangover from 3.0.  As far as I can tell, the
-			 * only time I can see where $v may be an array is displaying a mutiselect join, in a repeat group (?), in a
+			 * only time I can see where $v may be an array is displaying a multi-select join, in a repeat group (?), in a
 			 * read only context.  In which case, we'll already have the labels, so all we need to check is if the value and
 			 * label arrays are the same - i.e. we have the label in the value.  So the following test should be all we need to
-			 * do.  I'll run this for a while, if no unexpected side effects, I'll re-do the code after this accordingly. 
-			 */ 
+			 * do.  I'll run this for a while, if no unexpected side effects, I'll re-do the code after this accordingly.
+			 */
 			if (is_array($v) && is_array($defaultLabel))
 			{
 				if ($v == $defaultLabel)
@@ -3116,7 +3126,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 					return $v;
 				}
 			}
-				
+
 			$rows = $this->checkboxRows('id');
 
 			if (count($v) === 0)
@@ -3128,7 +3138,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 				// In a repeat group
 				if (is_array($v))
 				{
-					$v = FArrayHelper::getValue($v, $repeatCounter);
+					$v = FArrayHelper::getValue($v, 0);
 				}
 			}
 
@@ -3204,7 +3214,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 	}
 
 	/**
-	 * Cache method to populate autocomplete options
+	 * Cache method to populate auto-complete options
 	 *
 	 * @param   plgFabrik_Element  $elementModel  element model
 	 * @param   string             $search        search string
@@ -3644,7 +3654,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 
 		return false;
 	}
-	
+
 	/**
 	 * Called by form model to build an array of values to encrypt
 	 *
@@ -3657,19 +3667,19 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 	public function getValuesToEncrypt(&$values, $data, $c)
 	{
 		$displayType = $this->getDisplayType();
-		
+
 		if ($displayType == 'checkbox' || $displayType == 'multilist')
 		{
 			$name = $this->getFullName(true, false);
 			$group = $this->getGroup();
-			
+
 			if ($group->canRepeat())
 			{
 				if (!array_key_exists($name, $values))
 				{
 					$values[$name]['data'] = array();
 				}
-			
+
 				$values[$name]['data'][$c] = $this->multiOptionTargetIds($data, $c);
 			}
 			else

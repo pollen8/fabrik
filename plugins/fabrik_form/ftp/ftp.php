@@ -57,7 +57,7 @@ class PlgFabrik_FormFtp extends PlgFabrik_Form
 		}
 
 		$contentTemplate = $params->get('ftp_template_content');
-		$content = $contentTemplate != '' ? $this->_getConentTemplate($contentTemplate) : '';
+		$content = $contentTemplate != '' ? $this->_getContentTemplate($contentTemplate) : '';
 
 		if (JFile::exists($ftpTemplate))
 		{
@@ -252,7 +252,7 @@ class PlgFabrik_FormFtp extends PlgFabrik_Form
 	 * @return  string  Content item html (translated with Joomfish if installed)
 	 */
 
-	protected function _getConentTemplate($contentTemplate)
+	protected function _getContentTemplate($contentTemplate)
 	{
 		$app = JFactory::getApplication();
 
