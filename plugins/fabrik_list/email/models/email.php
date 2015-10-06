@@ -238,7 +238,7 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 
 	public function getShowSubject()
 	{
-		return $this->getParams()->get('emailtable_hide_subject');
+		return $this->getParams()->get('emailtable_hide_subject', '0') === '0';
 	}
 
 	/**
