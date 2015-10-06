@@ -134,7 +134,12 @@
 				type="text"
 				label="COM_FABRIK_REPEAT_GROUP_MINMAX_ERR_LABEL"
 				description="COM_FABRIK_REPEAT_GROUP_MINMAX_DESC" />
-				
+
+			<field name="repeat_intro"
+			       type="textarea"
+			       description="COM_FABRIK_REPEAT_INTRO_DESC"
+			       label="COM_FABRIK_REPEAT_INTRO_LABEL" />
+
 			<field name="repeat_add_access"
 				type="accesslevel"
 				default="1"
