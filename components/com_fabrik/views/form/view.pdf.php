@@ -57,13 +57,14 @@ class FabrikViewForm extends FabrikViewFormBase
 	 *
 	 * @param   object  $w        parent worker
 	 * @param   object  &$params  parameters
-	 * @param   object  $model    form model
 	 *
 	 * @return  void
 	 */
-	protected function setTitle($w, &$params, $model)
+	protected function setTitle($w, &$params)
 	{
-		parent::setTitle($w, $params, $model);
+		parent::setTitle($w, $params);
+		
+		$model = $this->getModel();
 
 		// Set the download file name based on the document title
 		/** @var JDocumentpdf $document */
