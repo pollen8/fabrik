@@ -3680,7 +3680,7 @@ class FabrikFEModelForm extends FabModelForm
 	 * @param   bool    $checkInt    Check search name against element id
 	 * @param   bool    $checkShort  Check short element name
 	 *
-	 * @return  mixed  ok: element model not ok: false
+	 * @return  PlgFabrik_Element|boolean  ok: element model not ok: false
 	 */
 	public function getElement($searchName, $checkInt = false, $checkShort = true)
 	{

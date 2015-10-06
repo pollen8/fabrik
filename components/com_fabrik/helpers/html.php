@@ -2674,4 +2674,11 @@ EOD;
 
 		return $icon;
 	}
+
+	public static function modalJLayouts()
+	{
+		FabrikHelperHTML::jLayoutJs('modal-close', 'modal.fabrik-close');
+		FabrikHelperHTML::jLayoutJs('icon-expand', 'fabrik-icon', (object) array('icon' => 'icon-expand'));
+		FabrikHelperHTML::jLayoutJs('icon-full-screen', 'fabrik-icon', (object) array('icon' => 'icon-out-2 icon-fullscreen'));
+	}
 }

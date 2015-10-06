@@ -6225,9 +6225,7 @@ class FabrikFEModelList extends JModelForm
 
 		if ($params->get('advanced-filter', '0'))
 		{
-			FabrikHelperHTML::jLayoutJs('modal-close', 'modal.fabrik-close');
-			FabrikHelperHTML::jLayoutJs('icon-expand', 'fabrik-icon', (object) array('icon' => 'icon-expand'));
-			FabrikHelperHTML::jLayoutJs('icon-full-screen', 'fabrik-icon', (object) array('icon' => 'icon-out-2 icon-fullscreen'));
+			FabrikHelperHTML::modalJLayouts();
 			$tmpl = $this->getTmpl();
 			$url = $this->getAdvancedSearchURL();
 			$title = '<span>' . FText::_('COM_FABRIK_ADVANCED_SEARCH') . '</span>';
@@ -9664,6 +9662,7 @@ class FabrikFEModelList extends JModelForm
 	 */
 	public static function columnData($listId, $col, $distinct = true, $opts = array())
 	{
+		/** @var FabrikFEModelList $listModel */
 		$listModel = JModelLegacy::getInstance('List', 'FabrikFEModel');
 		$listModel->setId($listId);
 		$listModel->filters = FArrayHelper::getValue($opts, 'filters');
