@@ -256,6 +256,12 @@ class FabrikViewFormBase extends JViewLegacy
 		$this->message = $message;
 	}
 
+	/**
+	 * Set the canonical link - this is the definitive URL that Google et all, will use
+	 * to determine if duplicate URLs are the same content
+	 *
+	 * @throws Exception
+	 */
 	public function setCanonicalLink()
 	{
 		$app = JFactory::getApplication();
@@ -268,7 +274,10 @@ class FabrikViewFormBase extends JViewLegacy
 			$data = $model->getData();
 			$formId = $model->getId();
 			$rowId = JArrayHelper::getValue($data, 'slug', $model->getRowId());
-			$url = 'index.php?option=com_' . $package . '&view=form&formid=' . $formId . '&rowid=' . $rowId;
+			$view = $model->isEditable() ? 'form': 'details';
+			$url = JRoute::_('index.php?option=com_' . $package . '&view=' . $view . '&formid=' . $formId . '&rowid=' . $rowId);
+
+			// Set a flag so that the system plugin can clear out any other canonical links.
 			JFactory::getSession()->set('fabrik.clearCanonical', true);
 			JFactory::getDocument()->addCustomTag('<link rel="canonical" href="' . htmlspecialchars($url) . '" />');
 		}
