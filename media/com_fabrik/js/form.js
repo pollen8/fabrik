@@ -1432,9 +1432,6 @@ var FbForm = new Class({
 			e.stop();
 		}
 
-		//var group = e.target.getParent('.fabrikGroup');
-		// var subGroup = e.target.getParent('.fabrikSubGroup');
-
 		// Find which repeat group was deleted
 		var delIndex = 0;
 		group.getElements('.deleteGroup').each(function (b, x) {
@@ -1521,6 +1518,7 @@ var FbForm = new Class({
 		document.id('fabrik_repeat_group_' + i + '_counter').value = document.id('fabrik_repeat_group_' + i + '_counter').get('value').toInt() - 1;
 		// $$$ hugh - no, mustn't decrement this!  See comment in setupAll
 		this.repeatGroupMarkers.set(i, this.repeatGroupMarkers.get(i) - 1);
+		this.setRepeatGroupIntro(group, i);
 	},
 
 	hideLastGroup: function (groupid, subGroup) {
@@ -1647,12 +1645,13 @@ var FbForm = new Class({
 		tocheck.each(function (i) {
 			i.setProperty('checked', true);
 		});
-		// Remove values and increment ids
-		var newElementControllers = [];
+
 		this.subelementCounter = 0;
-		var hasSubElements = false;
-		var inputs = clone.getElements('.fabrikinput');
-		var lastinput = null;
+		// Remove values and increment ids
+		var newElementControllers = [],
+			hasSubElements = false,
+			inputs = clone.getElements('.fabrikinput'),
+			lastinput = null;
 		this.formElements.each(function (el) {
 			var formElementFound = false;
 			subElementContainer = null;
@@ -1762,9 +1761,9 @@ var FbForm = new Class({
 		this.addElements(o);
 
 		// Only scroll the window if the new element is not visible
-		var win_size = window.getHeight();
-		var win_scroll = document.id(window).getScroll().y;
-		var obj = clone.getCoordinates();
+		var win_size = window.getHeight(),
+			win_scroll = document.id(window).getScroll().y,
+			obj = clone.getCoordinates();
 		// If the bottom of the new repeat goes below the bottom of the visible
 		// window,
 		// scroll up just enough to show it.
@@ -1781,7 +1780,25 @@ var FbForm = new Class({
 		// $$$ hugh - added groupid (i) and repeatCounter (c) as args
 		// note I commented out the increment of c a few lines above//duplicate
 		Fabrik.fireEvent('fabrik.form.group.duplicate.end', [this, e, i, c]);
+
+		this.setRepeatGroupIntro(group, i);
 		this.repeatGroupMarkers.set(i, this.repeatGroupMarkers.get(i) + 1);
+	},
+
+	/**
+	 * Set the repeat group intro text
+	 * @param group
+	 * @param groupId
+	 */
+	setRepeatGroupIntro: function (group, groupId) {
+		var intro = this.options.group_repeat_intro[groupId],
+			tmpIntro = '',
+			targets = group.getElements('*[data-role="group-repeat-intro"]');
+
+		targets.each(function (target, i) {
+			tmpIntro = intro.replace('{i}', i + 1);
+			target.set('html', tmpIntro);
+		});
 	},
 
 	update: function (o) {

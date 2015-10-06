@@ -4741,6 +4741,7 @@ class FabrikFEModelForm extends FabModelForm
 			$group->elements = $aElements;
 			$group->subgroups = $aSubGroups;
 			$group->startHidden = $startHidden;
+			$group->repeatIntro = $groupParams->get('repeat_intro', '');
 
 			$group->class[] = 'fabrikGroup';
 

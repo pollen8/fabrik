@@ -16,6 +16,9 @@ $group = $this->group;
 foreach ($group->subgroups as $subgroup) :
 	?>
 	<div class="fabrikSubGroup">
+		<div data-role="group-repeat-intro">
+			<?php echo $w->parseMessageForPlaceHolder($group->repeatIntro, $introData);?>
+		</div>
 	<?php
 		// Add the add/remove repeat group buttons
 		if ($group->editable && ($group->canAddRepeat || $group->canDeleteRepeat)) : ?>
