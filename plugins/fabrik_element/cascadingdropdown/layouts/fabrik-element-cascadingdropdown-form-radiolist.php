@@ -17,7 +17,7 @@ $colCounter = 0;
 
 foreach ($d->options as $option) :
 	$checked = in_array($option->value, $d->default) ? 'checked="checked"' : '';
-	if (count($d->options) > 1 && ($colSize <> 12 || (($colSize * $colCounter) % 12 === 0  || $colCounter == 0))) : ?>
+	if (count($d->options) > 1 && $colSize <> 12  && ((($colSize * $colCounter) % 12 === 0 || $colCounter == 0))) : ?>
 		<div class="row-fluid">
 	<?php endif;
 	$d->option = $option;
@@ -29,7 +29,7 @@ foreach ($d->options as $option) :
 		<span><?php echo $d->option->text;?></span>
 	<?php endif;
 	$colCounter++;
-	if (count($d->options) > 1 && ($colSize <> 12 || (($colSize * $colCounter) % 12 === 0  || $colCounter == 0))) :
+	if (count($d->options) > 1 && $colSize <> 12 && ((($colSize * $colCounter) % 12 === 0 || $colCounter == 0))) :
 		?>
 		</div>
 	<?php endif; ?>

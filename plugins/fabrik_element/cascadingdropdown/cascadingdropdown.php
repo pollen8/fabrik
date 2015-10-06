@@ -99,6 +99,16 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 				? FabrikHelperHTML::autoCompleteOptions($opts->id, $this->getElement()->id, $formId, 'cascadingdropdown') : null;
 		$this->elementJavascriptJoinOpts($opts);
 
+		$data = $this->getFormModel()->data;
+
+		// Was otherwise using the none-raw value.
+		$opts->value = $this->getValue($data, $repeatCounter, array('raw' => true));
+
+		if (is_array($opts->value) && count($opts->value) > 0)
+		{
+			$opts->value = JArrayHelper::getValue($opts->value, 0);
+		}
+
 		return array('FbCascadingdropdown', $id, $opts);
 	}
 
@@ -135,7 +145,7 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 
 		if ($label == '')
 		{
-			// This is being raised with checkbox rendering and using dropdown filter, everything seems to be working with using the element name though!
+			// This is being raised with checkbox rendering and using drop-down filter, everything seems to be working with using the element name though!
 			// JError::raiseWarning(500, 'Could not find the join label for ' . $this->getElement()->name . ' try unlinking and saving it');
 			$label = $this->getElement()->name;
 		}
@@ -254,7 +264,7 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 					$defaultLabel = implode("\n", $html);
 					break;
 				case 'radio':
-					$this->renderRadioList($data, $repeatCounter, $html, $tmp, $defaultValue);
+					$this->renderRadioList($data, $repeatCounter, $html, $tmp, $default);
 					$defaultLabel = implode("\n", $html);
 					break;
 				case 'multilist':

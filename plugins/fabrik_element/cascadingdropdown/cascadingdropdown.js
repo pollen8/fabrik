@@ -36,7 +36,7 @@ var FbCascadingdropdown = new Class({
 	},
 
 	attachedToForm: function ()
-	{		
+	{
 		// $$$ rob have to call update here otherwise all options can be shown
 		//use this method as getValue on el wont work if el readonly
 		// $$$ hugh - only do this if not editing an existing row, see ticket #725
@@ -117,11 +117,10 @@ var FbCascadingdropdown = new Class({
 			this.spinner.hide();
 		}.bind(this),
 		onSuccess: function (json) {
-			var origvalue = this.options.def,
+			var origValue = this.getValue(),
 			updateField,
 			c;
 			this.spinner.hide();
-			this.setValue(this.getValue());
 
 			json = JSON.decode(json);
 			if (this.options.editable) {
@@ -144,13 +143,13 @@ var FbCascadingdropdown = new Class({
 						item.text = item.text.replace(/\n/g, '<br />');
 						new Element('div').set('html', item.text).inject(this.element);
 					} else {
-						updateField = (item.value !== '' && item.value === this.getValue()) || singleResult;
+						updateField = (item.value !== '' && item.value === origValue) || singleResult;
 						this.addOption(item.value, item.text, updateField);
 					}
 
 					if (this.options.showDesc === true && item.description) {
-						var classname = this.options.showPleaseSelect ? 'notice description-' + (k) : 'notice description-' + (k - 1);
-						new Element('div', {styles: {display: 'none'}, 'class': classname}).set('html', item.description).inject(c);
+						var className = this.options.showPleaseSelect ? 'notice description-' + (k) : 'notice description-' + (k - 1);
+						new Element('div', {styles: {display: 'none'}, 'class': className}).set('html', item.description).inject(c);
 					}
 				}.bind(this));
 			} else {
@@ -159,7 +158,7 @@ var FbCascadingdropdown = new Class({
 					if (this.options.editable === false) {
 						new Element('div').set('text', item.text).inject(this.element);
 					} else {
-						updateField = (item.value !== '' && item.value === this.getValue()) || singleResult;
+						updateField = (item.value !== '' && item.value === origValue) || singleResult;
 						this.addOption(item.value, item.text, updateField);
 						new Element('option', {'value': item.value, 'selected': 'selected'}).set('text', item.text).inject(this.element);
 					}
@@ -191,6 +190,10 @@ var FbCascadingdropdown = new Class({
 				this.ingoreShowDesc = false;
 			}
 			this.ignoreAjax = false;
+
+			var newV = [this.getValue()];
+			this.setValue(newV);
+
 			Fabrik.fireEvent('fabrik.cdd.update', this);
 		}.bind(this),
 		'onFailure': function (xhr) {
@@ -243,7 +246,7 @@ var FbCascadingdropdown = new Class({
 				 * being updated on a change.  This issue only surfaced when we changed this code to use
 				 * a bound function, so it actually started removing the event, which it never did before
 				 * when we referenced an inline function().
-				 * 
+				 *
 				 * Update ... if the watched element is in the repeat group, we do want to remove it,
 				 * but if the watch is on the main form, we don't.  In other words, if the watch is on the main
 				 * form, then every CDD in this repeat is watching it.  If it's in the repeat group, then each repeat

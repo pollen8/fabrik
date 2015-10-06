@@ -612,9 +612,9 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 
 	/**
 	 * For fields that use the concat label, it may try to insert constants, but if no
-	 * replacement data found then the concatinated constants should be conidered as emtyp
+	 * replacement data found then the concatenated constants should be considered as empty
 	 *
-	 * @param   string  $label  Concatinate label
+	 * @param   string  $label  Concatenate label
 	 *
 	 * @return boolean
 	 */
@@ -629,9 +629,9 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		}
 
 		$bits = explode(',', $concat);
-		$countb = count($bits); //unset is modifying count($bits)
+		$countBits = count($bits); //unset is modifying count($bits)
 
-		for ($i = 0; $i < $countb; $i ++)
+		for ($i = 0; $i < $countBits; $i ++)
 		{
 			if (strstr(trim($bits[$i]), '{thistable}.'))
 			{
@@ -1672,11 +1672,16 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		$attributes = 'class="fabrikinput inputbox" id="' . $id . '"';
 
 		$name = FabrikString::rtrimword($name, '[]');
-		$targetIds = $this->multiOptionTargetIds($data, $repeatCounter);
 
-		if ($targetIds !== false)
+		if (!$this->getFormModel()->isNewRecord())
 		{
-			$default = $targetIds;
+			// If its a new record we don't want to look up defaults in the look up table as they will not exist
+			$targetIds = $this->multiOptionTargetIds($data, $repeatCounter);
+
+			if ($targetIds !== false)
+			{
+				$default = $targetIds;
+			}
 		}
 
 		$this->renderReadOnlyTrimOptions($tmp, $default);
@@ -1908,11 +1913,8 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 							break;
 						}
 					}
-
-					//$v2 = $this->renderListData($v2, new stdClass);
 				}
 
-				//$val = $value;
 				$val = $this->renderListData($value, new stdClass);
 			}
 			else
@@ -1957,7 +1959,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 			$opts = $this->_getOptionVals();
 			$name = $this->getFullName(false, true, false) . '_raw';
 
-			// If coming from fabrikemail plugin $thisRow is empty
+			// If coming from email plugin $thisRow is empty
 			if (isset($thisRow->$name))
 			{
 				$data = $thisRow->$name;
@@ -2032,7 +2034,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 	}
 
 	/**
-	 * TESTING for JFQ, issue with autocomplete filters using 'contains' instead of '='
+	 * TESTING for JFQ, issue with auto-complete filters using 'contains' instead of '='
 	 * Need to override this for joins, make sure exact match is applied
 	 * return  string
 	 */
