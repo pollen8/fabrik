@@ -134,7 +134,7 @@ class FabrikModelNvd3_Chart extends FabrikFEModelVisualization
 			$tbl   = $params->get('tbl', '');
 			$value = $params->get('value_field');
 			$label = $params->get('label_field');
-			$query->select($label . ' AS label, ' . $value . ' AS value')->from($tbl);
+			$query->select($db->qn($label) . ' AS label, ' . $db->qn($value) . ' AS value')->from($tbl);
 			$db->setQuery($query);
 			$this->data->values = $db->loadObjectList();
 			$this->data         = array($this->data);
@@ -403,17 +403,17 @@ class FabrikModelNvd3_Chart extends FabrikFEModelVisualization
 
 		$db    = FabrikWorker::getDbo(false, $params->get('conn_id'));
 		$query = $db->getQuery(true);
-		$query->select($labelColumns)->from($table);
+		$query->select($db->qn($labelColumns))->from($table);
 
 		if ($split !== '')
 		{
-			$query->select($split . ' AS ' . $db->qn('key'));
+			$query->select($db->qn($split) . ' AS ' . $db->qn('key'));
 		}
 		else
 		{
 			if ($params->get('data_mode') == 0)
 			{
-				$query->select('date AS ' . $db->qn('key'));
+				$query->select($db->qn('date') . ' AS ' . $db->qn('key'));
 			}
 		}
 
