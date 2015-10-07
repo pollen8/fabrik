@@ -62,6 +62,13 @@ class PlgFabrik_FormLimit extends PlgFabrik_Form
 
 		$limit = $this->limit();
 		$c = $this->count();
+		
+		if ($c === false)
+		{
+			JFactory::getApplication()->enqueueMessage(FText::_("PLG_FORM_LIMIT_NOT_SETUP"));
+			
+			return false;
+		}
 
 		// Allow for unlimited
 		if ($limit == -1)
@@ -102,6 +109,11 @@ class PlgFabrik_FormLimit extends PlgFabrik_Form
 		$fk = $params->get('limit_fk');
 		$fkVal = '';
 
+		if (empty($field))
+		{
+			return false;	
+		}
+		
 		if (!empty($fk))
 		{
 			$fkVal = FArrayHelper::getValue(
