@@ -6985,7 +6985,7 @@ class PlgFabrik_Element extends FabrikPlugin
 
 						// $$$ rob 24/02/2011 can't have numeric class names so prefix with element name
 						// $$$ hugh can't have class names which start with a number, so need preg_match, not is_numeric()
-						if (preg_match('^\d', $c))
+						if (preg_match('#^\d#', $c))
 						{
 							$c = $this->getElement()->name . $c;
 						}
