@@ -68,13 +68,13 @@ class FabrikHelperElement
 	}
 
 	/**
-	 * Short cut for getting the element's filter value
+	 * Short cut for getting the element's filter value, or false if no value
 	 *
 	 * @param   int  $elementId  Element id
 	 *
 	 * @since   3.0.7
 	 *
-	 * @return  string
+	 * @return  mixed
 	 */
 
 	public static function filterValue($elementId)
@@ -88,7 +88,7 @@ class FabrikHelperElement
 		$filters = JArrayHelper::fromObject($app->getUserState($key));
 		$elementIds = (array) FArrayHelper::getValue($filters, 'elementid', array());
 		$index = array_search($elementId, $elementIds);
-		$value = $filters['value'][$index];
+		$value = $index === false ? false : FArrayHelper::getValue($filters['value'], $index, false);
 
 		return $value;
 	}
