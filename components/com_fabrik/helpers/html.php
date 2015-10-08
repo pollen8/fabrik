@@ -1880,12 +1880,12 @@ EOD;
 	/**
 	 * Search various folder locations for a template image
 	 *
-	 * @param   string  $file        File name
-	 * @param   string  $type        Type e.g. form/list/element
-	 * @param   string  $tmpl        Template folder name
-	 * @param   array   $properties  Assoc list of properties or string (if you just want to set the image alt tag)
-	 * @param   bool    $srcOnly     Src only (default false)
-	 * @param   array   $opts        Additional render options:
+	 * @param   string         $file        File name
+	 * @param   string         $type        Type e.g. form/list/element
+	 * @param   string         $tmpl        Template folder name
+	 * @param   array|string   $properties  Assoc list of properties or string (if you just want to set the image alt tag)
+	 * @param   bool           $srcOnly     Src only (default false)
+	 * @param   array          $opts        Additional render options:
 	 *                                 forceImage: regardless of in J3 site - render an <img> if set to true (bypasses bootstrap icon loading)
 	 *
 	 * @since 3.0

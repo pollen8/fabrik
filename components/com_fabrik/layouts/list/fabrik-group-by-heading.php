@@ -13,6 +13,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 $d = $displayData;
+$imgProps = array('alt' => FText::_('COM_FABRIK_TOGGLE'), 'data-role' => 'toggle', 'data-expand-icon' => 'fa fa-arrow-down', 'data-collapse-icon' => 'fa fa-arrow-right');
 ?>
 
 <?php if ($d->emptyDataMessage != '') : ?>
@@ -20,7 +21,7 @@ $d = $displayData;
 	<?php else: ?>
 	<a href="#" class="toggle fabrikTip" title="<?php echo $d->emptyDataMessage ?>" opts='{trigger: "hover"}'>
 		<?php endif; ?>
-		<?php echo FabrikHelperHTML::image('arrow-down.png', 'list', $d->tmpl, FText::_('COM_FABRIK_TOGGLE')); ?>
+		<?php echo FabrikHelperHTML::image('arrow-down.png', 'list', $d->tmpl, $imgProps); ?>
 		<span class="groupTitle">
 			<?php echo $d->title; ?> <span class="groupCount">( <?php echo $d->count ?> )</span>
 		</span>

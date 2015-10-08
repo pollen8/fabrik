@@ -48,7 +48,7 @@ var FbList = new Class({
 		'singleOrdering' : false,
 		'tmpl': '',
 		'groupedBy' : '',
-		'toggleCols': false	
+		'toggleCols': false
 	},
 
 	initialize: function (id, options) {
@@ -64,11 +64,11 @@ var FbList = new Class({
 				'floatPos': this.options.floatPos
 			});
 		}
-		
+
 		if (this.options.toggleCols) {
 			this.toggleCols = new FbListToggle(this.form);
 		}
-		
+
 		this.groupToggle = new FbGroupedToggler(this.form, this.options.groupByOpts);
 		new FbListKeys(this);
 		if (this.list) {
@@ -88,10 +88,10 @@ var FbList = new Class({
 		Fabrik.addEvent('fabrik.form.submitted', function () {
 			this.updateRows();
 		}.bind(this));
-		
+
 		/**
 		 * once an ajax form has been submitted lets clear out any loose events and the form object itself
-		 * 
+		 *
 		 * Commenting out as this causes issues for cdd after ajax form post
 		 * http://www.fabrikar.com/forums/index.php?threads/cdd-only-triggers-js-change-code-on-first-change.32793/
 		 */
@@ -101,8 +101,8 @@ var FbList = new Class({
 			});
 			delete Fabrik.blocks['form_' + form.id];
 		});*/
-		
-		// Reload state 
+
+		// Reload state
 		if (!!(window.history && history.pushState) && history.state && this.options.ajax) {
 			this._updateRows(history.state);
 		}
@@ -118,7 +118,7 @@ var FbList = new Class({
 			}
 		}
 	},
-	
+
 	/**
 	 * Used for db join select states.
 	 */
@@ -152,7 +152,7 @@ var FbList = new Class({
 			this.watchButtons();
 		}
 	},
-	
+
 	watchGroupByMenu: function () {
 		if (this.options.ajax) {
 			this.form.addEvent('click:relay(*[data-groupBy])', function (e, target) {
@@ -178,7 +178,7 @@ var FbList = new Class({
 			bootstrap: this.options.j3
 		};
 		if (this.options.view === 'csv') {
-			
+
 			// For csv links e.g. index.php?option=com_fabrik&view=csv&listid=10
 			this.openCSVWindow();
 		} else {
@@ -194,7 +194,7 @@ var FbList = new Class({
 			}
 		}
 	},
-	
+
 	openCSVWindow: function () {
 		var thisc = this.makeCSVExportForm();
 		this.exportWindowOpts.content = thisc;
@@ -211,19 +211,19 @@ var FbList = new Class({
 			return this._csvAutoStart();
 		}
 	},
-	
+
 	_csvAutoStart: function () {
 		var c = new Element('div', {
 			'id': 'csvmsg'
 		}).set('html', Joomla.JText._('COM_FABRIK_LOADING') + ' <br /><span id="csvcount">0</span> / <span id="csvtotal"></span> ' + Joomla.JText._('COM_FABRIK_RECORDS') + '.<br/>' + Joomla.JText._('COM_FABRIK_SAVING_TO') + '<span id="csvfile"></span>');
-		
+
 		this.csvopts = this.options.csvOpts;
 		this.csvfields = this.options.csvFields;
-		
+
 		this.triggerCSVExport(-1);
 		return c;
 	},
-	
+
 	_csvExportForm: function () {
 		// Can't build via dom as ie7 doesn't accept checked status
 		var rad = "<input type='radio' value='1' name='incfilters' checked='checked' />" + Joomla.JText._('JYES');
@@ -401,7 +401,7 @@ var FbList = new Class({
 		}
 
 		opts = this.csvExportFilterOpts(opts);
-		
+
 		opts.start = start;
 		opts.option = 'com_fabrik';
 		opts.view = 'list';
@@ -410,12 +410,12 @@ var FbList = new Class({
 		opts.listid = this.id;
 		opts.listref = this.options.listRef;
 		opts.setListRefFromRequest = 1;
-		
+
 		this.options.csvOpts.custom_qs.split('&').each(function (qs) {
 			var key = qs.split('=');
 			opts[key[0]] = key[1];
 		});
-		
+
 		// Append the custom_qs to the URL to enable querystring filtering of the list data
 		var myAjax = new Request.JSON({
 			url: '?' + this.options.csvOpts.custom_qs,
@@ -458,9 +458,9 @@ var FbList = new Class({
 
 	/**
 	 * Add filter options to CSV export info
-	 * 
+	 *
 	 * @param   objet  opts
-	 * 
+	 *
 	 * @return  opts
 	 */
 	csvExportFilterOpts: function (opts) {
@@ -475,7 +475,7 @@ var FbList = new Class({
 			if (bits.length > 3) {
 				testii = bits[3].replace(']', '').toInt();
 				ii = testii > ii ? testii : ii;
-				
+
 				if (f.get('type') === 'checkbox' || f.get('type') === 'radio') {
 					if (f.checked) {
 						opts[f.name] = f.get('value');
@@ -485,9 +485,9 @@ var FbList = new Class({
 				}
 			}
 		}.bind(this));
-		
+
 		ii ++;
-		
+
 		Object.each(this.options.advancedFilters, function (values, key) {
 			if (usedAdvancedKeys.contains(key)) {
 				advancedPointer = 0;
@@ -498,17 +498,17 @@ var FbList = new Class({
 				}
 			}
 		}.bind(this));
-		
+
 		return opts;
 	},
-	
+
 	addPlugins: function (a) {
 		a.each(function (p) {
 			p.list = this;
 		}.bind(this));
 		this.plugins = a;
 	},
-	
+
 	firePlugin: function (method) {
 		var args = Array.prototype.slice.call(arguments);
 		args = args.slice(1, args.length);
@@ -578,7 +578,7 @@ var FbList = new Class({
 				h.className = newOrderClass;
 				var i = h.getElement('img');
 				var icon = h.getElement('*[class^="icon"]');
-				
+
 				// Swap images - if list doing ajax nav then we need to do this
 				if (this.options.singleOrdering) {
 					document.id(this.options.form).getElements('.fabrikorder, .fabrikorder-asc, .fabrikorder-desc').each(function (otherH) {
@@ -594,7 +594,7 @@ var FbList = new Class({
 						}
 					});
 				}
-				
+
 				if (Fabrik.bootstrapped) {
 					icon.className = bsClass;
 				} else {
@@ -603,14 +603,14 @@ var FbList = new Class({
 						i.src += img;
 					}
 				}
-				
+
 				this.fabrikNavOrder(elementId, orderdir);
 				e.stop();
 			}.bind(this));
 		}.bind(this));
 
 	},
-	
+
 	getFilters: function () {
 		return document.id(this.options.form).getElements('.fabrik_filter');
 	},
@@ -622,7 +622,7 @@ var FbList = new Class({
 			}
 		}.bind(this));
 	},
-	
+
 	watchFilters: function () {
 		var e = '';
 		var submit = document.id(this.options.form).getElements('.fabrik_filter_submit');
@@ -642,7 +642,7 @@ var FbList = new Class({
 				}.bind(this));
 			}
 		}.bind(this));
-			
+
 		// Watch submit if present regardless of this.options.filterMethod
 		if (submit) {
 			submit.removeEvents();
@@ -658,7 +658,7 @@ var FbList = new Class({
 			}
 		}.bind(this));
 	},
-	
+
 	doFilter: function () {
 		var res = Fabrik.fireEvent('list.filter', [this]).eventResults;
 		if (typeOf(res) === 'null') {
@@ -684,21 +684,21 @@ var FbList = new Class({
 		}
 		return row;
 	},
-	
+
 	watchRows: function () {
 		if (!this.list) {
 			return;
 		}
 		this.rowClicks();
 	},
-	
+
 	getForm: function () {
 		if (!this.form) {
 			this.form = document.id(this.options.form);
 		}
 		return this.form;
 	},
-	
+
 	uncheckAll: function () {
 		this.form.getElements('input[name^=ids]').each(function (c) {
 			c.checked = '';
@@ -721,7 +721,7 @@ var FbList = new Class({
 				Fabrik.loader.stop('listform_' + this.options.listRef);
 				return false;
 			}
-			var delMsg = delCount === 1 ? Joomla.JText._('COM_FABRIK_CONFIRM_DELETE_1') : Joomla.JText._('COM_FABRIK_CONFIRM_DELETE').replace('%s', delCount); 
+			var delMsg = delCount === 1 ? Joomla.JText._('COM_FABRIK_CONFIRM_DELETE_1') : Joomla.JText._('COM_FABRIK_CONFIRM_DELETE').replace('%s', delCount);
 			if (!confirm(delMsg)) {
 				Fabrik.loader.stop('listform_' + this.options.listRef);
 				this.uncheckAll();
@@ -748,7 +748,7 @@ var FbList = new Class({
 			this.form.getElement('input[name=option]').value = 'com_fabrik';
 			this.form.getElement('input[name=view]').value = 'list';
 			this.form.getElement('input[name=format]').value = 'raw';
-			
+
 			var data = this.form.toQueryString();
 			if (task === 'list.filter' && this.advancedSearch !== false) {
 				var advSearchForm = document.getElement('form.advancedSeach_' + this.options.listRef);
@@ -759,9 +759,9 @@ var FbList = new Class({
 			}
 			// Pass the elements that are shown in the list - to ensure they are formatted
 			for (var i = 0; i < this.options.fabrik_show_in_list.length; i ++) {
-				data += '&fabrik_show_in_list[]=' + this.options.fabrik_show_in_list[i]; 
+				data += '&fabrik_show_in_list[]=' + this.options.fabrik_show_in_list[i];
 			}
-			
+
 			// Add in tmpl for custom nav in admin
 			data += '&tmpl=' + this.options.tmpl;
 			if (!this.request) {
@@ -783,7 +783,7 @@ var FbList = new Class({
 				this.request.options.data = data;
 			}
 			this.request.send();
-			
+
 			if (window.history && window.history.pushState) {
 				history.pushState(data, 'fabrik.list.submit');
 			}
@@ -807,13 +807,13 @@ var FbList = new Class({
 		this.submit('list.view');
 		return false;
 	},
-	
+
 	/**
 	 * Get the primary keys for the visible rows
-	 * 
+	 *
 	 * @since   3.0.7
-	 * 
-	 * @return  array 
+	 *
+	 * @return  array
 	 */
 	getRowIds: function () {
 		var keys = [];
@@ -825,14 +825,14 @@ var FbList = new Class({
 		});
 		return keys;
 	},
-	
+
 	/**
 	 * Get a single row's data
-	 * 
+	 *
 	 * @param   string  id  ID
-	 * 
+	 *
 	 * @since  3.0.8
-	 * 
+	 *
 	 * @return object
 	 */
 	getRow: function (id) {
@@ -959,7 +959,7 @@ var FbList = new Class({
 			gdata.each(function (groupData, groupKey) {
 				var container, thisrowtemplate;
 				tbody = this.options.isGrouped ? this.list.getElements('.fabrik_groupdata')[gcounter] : this.tbody;
-				
+
 				// Set the group by heading
 				if (this.options.isGrouped && tbody) {
 					groupHeading = tbody.getPrevious();
@@ -968,7 +968,7 @@ var FbList = new Class({
 				if (typeOf(tbody) !== 'null') {
 					gcounter++;
 					for (i = 0; i < groupData.length; i++) {
-	
+
 						if (typeOf(this.options.rowtemplate) === 'string') {
 							container = (this.options.rowtemplate.trim().slice(0, 3) === '<tr') ? 'table' : 'div';
 							thisrowtemplate = new Element(container);
@@ -1023,7 +1023,7 @@ var FbList = new Class({
 					}
 				}
 			});
-			
+
 			var fabrikDataContainer = this.list.getParent('.fabrikDataContainer');
 			var emptyDataMessage = this.list.getParent('.fabrikForm').getElement('.emptyDataMessage');
 			if (rowcounter === 0) {
@@ -1077,7 +1077,7 @@ var FbList = new Class({
 			Mediabox.scanPage();
 		}
 	},
-	
+
 	addRow: function (obj) {
 		var r = new Element('tr', {
 			'class': 'oddRow1'
@@ -1217,7 +1217,7 @@ var FbList = new Class({
 				}.bind(this));
 			}.bind(this));
 		}
-		
+
 		// Not working in J3.2 see http://fabrikar.com/forums/index.php?threads/bug-pagination-not-working-in-chrome.37277/
 	/*	if (this.options.admin) {
 			Fabrik.addEvent('fabrik.block.added', function (block) {
@@ -1234,7 +1234,7 @@ var FbList = new Class({
 		}*/
 		this.watchCheckAll();
 	},
-	
+
 	/**
 	 * currently only called from element raw view when using inline edit plugin
 	 * might need to use for ajax nav as well?
@@ -1299,13 +1299,13 @@ var FbListKeys = new Class({
 
 var FbGroupedToggler = new Class({
 	Implements: Options,
-	
+
 	options: {
 		collapseOthers: false,
 		startCollapsed: false,
 		bootstrap: false
 	},
-	
+
 	initialize: function (container, options) {
 		var rows, h, img, state;
 		if (typeOf(container) === 'null') {
@@ -1323,17 +1323,17 @@ var FbGroupedToggler = new Class({
 			}
 			e.stop();
 			e.preventDefault(); //should work according to http://mootools.net/blog/2011/09/10/mootools-1-4-0/
-			
+
 			if (this.options.collapseOthers) {
 				this.collapse();
 			}
 			h = e.target.getParent('.fabrik_groupheading');
-			img = this.options.bootstrap ? h.getElement('i') : h.getElement('img');
+			img = this.options.bootstrap ? h.getElement('*[data-role="toggle"]') : h.getElement('img');
 			state = img.retrieve('showgroup', true);
-			
+
 			if (h.getNext() && h.getNext().hasClass('fabrik_groupdata')) {
 				// For div tmpl
-				rows = h.getNext(); 
+				rows = h.getNext();
 			} else {
 				rows = h.getParent().getNext();
 			}
@@ -1344,15 +1344,17 @@ var FbGroupedToggler = new Class({
 			return false;
 		}.bind(this));
 	},
-	
+
 	setIcon: function (img, state) {
 		if (this.options.bootstrap) {
-			if (!state) {
-				img.removeClass('icon-arrow-right');
-				img.addClass('icon-arrow-down');
+			var expandIcon = img.get('data-expand-icon'),
+				collapsedIcon = img.get('data-collapse-icon');
+			if (state) {
+				img.removeClass(expandIcon);
+				img.addClass(collapsedIcon);
 			} else {
-				img.addClass('icon-arrow-right');
-				img.removeClass('icon-arrow-down');
+				img.addClass(expandIcon);
+				img.removeClass(collapsedIcon);
 			}
 		} else {
 			if (state) {
@@ -1362,7 +1364,7 @@ var FbGroupedToggler = new Class({
 			}
 		}
 	},
-	
+
 	collapse: function () {
 		this.container.getElements('.fabrik_groupdata').hide();
 		var selector = this.options.bootstrap ? 'i' : 'img';
@@ -1375,7 +1377,7 @@ var FbGroupedToggler = new Class({
 			this.setIcon(img, true);
 		}.bind(this));
 	},
-	
+
 	expand: function () {
 		this.container.getElements('.fabrik_groupdata').show();
 		var i = this.container.getElements('.fabrik_groupheading a img');
@@ -1387,7 +1389,7 @@ var FbGroupedToggler = new Class({
 			this.setIcon(img, false);
 		}.bind(this));
 	},
-	
+
 	toggle: function () {
 		this.toggleState === 'shown' ? this.collapse() : this.expand();
 		this.toggleState = this.toggleState === 'shown' ? 'hidden' : 'shown';
@@ -1513,7 +1515,7 @@ var FbListActions = new Class({
 								return e.target.checked;
 							}.bind(this.list)
 						};
-					
+
 					var tipOpts = Fabrik.tips ? Object.merge(Object.clone(Fabrik.tips.options), opts) : opts;
 					var tip = new FloatingTips(i, tipOpts);
 				}
@@ -1528,7 +1530,7 @@ var FbListActions = new Class({
 		if (typeOf(chxall) !== 'null') {
 			chxall.store('listid', this.list.id);
 		}
-		
+
 		var c = function (el) {
 			var p = el.getParent('.fabrik___heading');
 			return typeOf(p) !== 'null' ? p.getElement(this.options.selector) : '';
