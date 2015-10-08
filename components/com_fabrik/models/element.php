@@ -3228,11 +3228,11 @@ class PlgFabrik_Element extends FabrikPlugin
 		$displayData->name = $v;
 		$res = $layout->render($displayData);
 
-		// If no custom list layout found revert to the default list-filter-checkbox renderer
+		// If no custom list layout found revert to the default list.filter.fabrik-filter-checkbox renderer
 		if ($res === '')
 		{
 			$basePath = COM_FABRIK_FRONTEND . '/layouts/';
-			$layout = new JLayoutFile('fabrik-list-filter-checkbox', $basePath, array('debug' => false, 'component' => 'com_fabrik', 'client' => 'site'));
+			$layout = new JLayoutFile('list.filter.fabrik-filter-checkbox', $basePath, array('debug' => false, 'component' => 'com_fabrik', 'client' => 'site'));
 			$res = $layout->render($displayData);
 		}
 
@@ -7401,6 +7401,9 @@ class PlgFabrik_Element extends FabrikPlugin
 		$layout->addIncludePaths(JPATH_SITE . '/layouts');
 		$layout->addIncludePaths(JPATH_THEMES . '/' . JFactory::getApplication()->getTemplate() . '/html/layouts');
 		$layout->addIncludePaths(JPATH_THEMES . '/' . JFactory::getApplication()->getTemplate() . '/html/layouts/com_fabrik');
+
+		// Custom per element layout...
+		$layout->addIncludePaths(JPATH_THEMES . '/' . JFactory::getApplication()->getTemplate() . '/html/layouts/com_fabrik/element/' . $this->getFullName(true, false));
 
 		return $layout;
 	}
