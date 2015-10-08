@@ -49,7 +49,7 @@ if ($this->showFilters && $this->bootShowFilters) :
 	echo $this->loadTemplate('filter');
 endif;
 //for some really ODD reason loading the headings template inside the group
-//template causes an error as $this->_path['template'] doesnt cotain the correct
+//template causes an error as $this->_path['template'] doesn't contain the correct
 // path to this template - go figure!
 $headingsHtml = $this->loadTemplate('headings');
 echo $this->loadTemplate('tabs');
@@ -121,18 +121,18 @@ endforeach;
 			<?php if ($this->hasCalculations) : ?>
 			<tfoot>
 				<tr class="fabrik_calculations">
-				
-				<?php 
+
+				<?php
 				foreach ($this->headings as $key => $heading) :
 					$h = $this->headingClass[$key];
 					$style = empty($h['style']) ? '' : 'style="' . $h['style'] . '"';?>
 					<td class="<?php echo $h['class']?>" <?php echo $style?>>
-						<?php 
+						<?php
 						$cal = $this->calculations[$key];
 						echo array_key_exists($groupedby, $cal->grouped) ? $cal->grouped[$groupedby] : $cal->calc;
 						?>
 					</td>
-				<?php 
+				<?php
 				endforeach;
 				?>
 

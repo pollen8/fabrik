@@ -1245,8 +1245,8 @@ class FabrikFEModelList extends JModelForm
 				if (!in_array($sData, $aGroupTitles))
 				{
 					$aGroupTitles[] = $sData;
-					$groupTemplate = ($w->parseMessageForPlaceHolder($groupTemplate, JArrayHelper::fromObject($data[$i])));
-					$this->groupTemplates[$sData] = nl2br($groupTemplate);
+					$tmpGroupTemplate = ($w->parseMessageForPlaceHolder($groupTemplate, JArrayHelper::fromObject($data[$i])));
+					$this->groupTemplates[$sData] = nl2br($tmpGroupTemplate);
 					$groupedData[$sData] = array();
 				}
 
@@ -2594,8 +2594,8 @@ class FabrikFEModelList extends JModelForm
 	/**
 	 * Get the select part of the query
 	 *
-	 * @param   string              $mode   List/form - effects which elements are selected
-	 * @param   JQueryBuilder|bool  $query  QueryBuilder (false to return string)
+	 * @param   string                      $mode   List/form - effects which elements are selected
+	 * @param   JDatabaseQueryElement|bool  $query  QueryBuilder (false to return string)
 	 *
 	 * @return  mixed  string if $query = false, otherwise $query
 	 */
