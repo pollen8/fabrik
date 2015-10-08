@@ -97,7 +97,10 @@ endforeach;
 					<?php endif;?>
 							<?php echo FabrikHelperHTML::image('arrow-down.png', 'list', $this->tmpl, FText::_('COM_FABRIK_TOGGLE'));?>
 							<span class="groupTitle">
-								<?php echo $this->grouptemplates[$groupedby]; ?> ( <?php echo count($group)?> )
+								<?php echo $this->grouptemplates[$groupedby]; ?>
+							</span>
+							<span class="groupCount">
+								( <?php echo count($group)?> )
 							</span>
 						</a>
 					</td>
