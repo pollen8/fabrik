@@ -85,21 +85,12 @@ endforeach;
 			<?php
 		endif;
 		$gCounter = 0;
-		foreach ($this->rows as $groupedby => $group) :
+		foreach ($this->rows as $groupedBy => $group) :
 			if ($this->isGrouped) : ?>
 			<tbody>
 				<tr class="fabrik_groupheading info">
 					<td colspan="<?php echo $this->colCount;?>">
-					<?php if ($this->emptyDataMessage != '') : ?>
-					<a href="#" class="toggle">
-					<?php else: ?>
-						<a href="#" class="toggle fabrikTip" title="<?php echo $this->emptyDataMessage?>" opts='{trigger: "hover"}'>
-					<?php endif;?>
-							<?php echo FabrikHelperHTML::image('arrow-down.png', 'list', $this->tmpl, FText::_('COM_FABRIK_TOGGLE'));?>
-							<span class="groupTitle">
-								<?php echo $this->grouptemplates[$groupedby]; ?> ( <?php echo count($group)?> )
-							</span>
-						</a>
+						<?php echo $this->layoutGroupHeading($groupedBy, $group); ?>
 					</td>
 				</tr>
 			</tbody>
@@ -129,7 +120,7 @@ endforeach;
 					<td class="<?php echo $h['class']?>" <?php echo $style?>>
 						<?php
 						$cal = $this->calculations[$key];
-						echo array_key_exists($groupedby, $cal->grouped) ? $cal->grouped[$groupedby] : $cal->calc;
+						echo array_key_exists($groupedBy, $cal->grouped) ? $cal->grouped[$groupedBy] : $cal->calc;
 						?>
 					</td>
 				<?php

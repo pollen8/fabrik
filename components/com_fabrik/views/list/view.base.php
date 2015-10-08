@@ -22,6 +22,11 @@ jimport('joomla.application.component.view');
  */
 class FabrikViewListBase extends JViewLegacy
 {
+	/**
+	 * @var JRegistry
+	 */
+	public $params;
+
 	public $isMambot = null;
 
 	/**

@@ -11761,7 +11761,7 @@ class FabrikFEModelList extends JModelForm
 
 		if (!is_array($tabs) || empty($tabs))
 		{
-			return;
+			return $this->tabs;
 		}
 
 		$app = JFactory::getApplication();
