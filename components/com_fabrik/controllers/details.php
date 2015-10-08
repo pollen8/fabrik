@@ -21,7 +21,6 @@ jimport('joomla.application.component.controller');
  * @subpackage  Fabrik
  * @since       1.5
  */
-
 class FabrikControllerDetails extends JControllerLegacy
 {
 	/**
@@ -41,12 +40,11 @@ class FabrikControllerDetails extends JControllerLegacy
 	/**
 	 * Display the view
 	 *
-	 * @param   boolean  $cachable   If true, the view output will be cached - NOTE not actually used to control caching!!!
-	 * @param   array    $urlparams  An array of safe url parameters and their variable types, for valid values see {@link JFilterInput::clean()}.
+	 * @param   boolean          $cachable   If true, the view output will be cached - NOTE not actually used to control caching!!!
+	 * @param   array|boolean    $urlparams  An array of safe url parameters and their variable types, for valid values see {@link JFilterInput::clean()}.
 	 *
 	 * @return  JController  A JController object to support chaining.
 	 */
-
 	public function display($cachable = false, $urlparams = false)
 	{
 		$session = JFactory::getSession();
@@ -54,14 +52,6 @@ class FabrikControllerDetails extends JControllerLegacy
 		$app = JFactory::getApplication();
 		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$input = $app->input;
-		$viewName = $input->get('view', 'form');
-		$modelName = $viewName;
-
-		if ($viewName == 'emailform')
-		{
-			$modelName = 'form';
-		}
-
 		$viewName = 'form';
 		$modelName = 'form';
 
@@ -77,6 +67,7 @@ class FabrikControllerDetails extends JControllerLegacy
 		$view = $this->getView($viewName, $viewType);
 
 		// Push a model into the view
+		/** @var FabrikFEModelForm $model */
 		$model = !isset($this->_model) ? $this->getModel($modelName, 'FabrikFEModel') : $this->_model;
 
 		// If errors made when submitting from a J plugin they are stored in the session lets get them back and insert them into the form model
@@ -105,22 +96,22 @@ class FabrikControllerDetails extends JControllerLegacy
 			$user = JFactory::getUser();
 			$uri = JURI::getInstance();
 			$uri = $uri->toString(array('path', 'query'));
-			$cacheid = serialize(array($uri, $input->post, $user->get('id'), get_class($view), 'display', $this->cacheId));
+			$cacheId = serialize(array($uri, $input->post, $user->get('id'), get_class($view), 'display', $this->cacheId));
 			$cache = JFactory::getCache('com_' . $package, 'view');
-			echo $cache->get($view, 'display', $cacheid);
+			echo $cache->get($view, 'display', $cacheId);
 		}
 	}
 
 	/**
-	 * process the form
+	 * Process the form
 	 *
 	 * @return  null
 	 */
-
 	public function process()
 	{
 		@set_time_limit(300);
 		$app = JFactory::getApplication();
+		$session = JFactory::getSession();
 		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$input = $app->input;
 		$document = JFactory::getDocument();
@@ -128,6 +119,7 @@ class FabrikControllerDetails extends JControllerLegacy
 		$viewType = $document->getType();
 		$view = $this->getView($viewName, $viewType);
 
+		/** @var FabrikFEModelForm $model */
 		if ($model = $this->getModel('form', 'FabrikFEModel'))
 		{
 			$view->setModel($model, true);
@@ -198,8 +190,7 @@ class FabrikControllerDetails extends JControllerLegacy
 
 		// Reset errors as validate() now returns ok validations as empty arrays
 		$model->errors = array();
-
-		$defaultAction = $model->process();
+		$model->process();
 
 		// Check if any plugin has created a new validation error
 		if (!empty($model->errors))
@@ -245,48 +236,47 @@ class FabrikControllerDetails extends JControllerLegacy
 	/**
 	 * Set the redirect url
 	 *
-	 * @param   string  $url   default url
-	 * @param   string  $msg   optional message to apply on redirect
-	 * @param   string  $type  optional message type
+	 * @param   string  $url   Default url
+	 * @param   string  $msg   Optional message to apply on redirect
+	 * @param   string  $type  Optional message type
 	 *
 	 * @return  null
 	 */
-
 	public function setRedirect($url, $msg = null, $type = 'message')
 	{
 		$session = JFactory::getSession();
 		$app = JFactory::getApplication();
 		$package = $app->getUserState('com_fabrik.package', 'fabrik');
-		$formdata = $session->get('com_' . $package . '.form.data');
-		$context = 'com_' . $package . '.form.' . $formdata['fabrik'] . '.redirect.';
+		$formData = $session->get('com_' . $package . '.form.data');
+		$context = 'com_' . $package . '.form.' . $formData['fabrik'] . '.redirect.';
 
 		// If the redirect plug-in has set a url use that in preference to the default url
-		$surl = $session->get($context . 'url', array($url));
+		$sUrl = $session->get($context . 'url', array($url));
 
-		if (!is_array($surl))
+		if (!is_array($sUrl))
 		{
-			$surl = array($surl);
+			$sUrl = array($sUrl);
 		}
 
-		if (empty($surl))
+		if (empty($sUrl))
 		{
-			$surl[] = $url;
+			$sUrl[] = $url;
 		}
 
-		$smsg = $session->get($context . 'msg', array($msg));
+		$sMsg = $session->get($context . 'msg', array($msg));
 
-		if (!is_array($smsg))
+		if (!is_array($sMsg))
 		{
-			$smsg = array($smsg);
+			$sMsg = array($sMsg);
 		}
 
-		if (empty($smsg))
+		if (empty($sMsg))
 		{
-			$smsg[] = $msg;
+			$sMsg[] = $msg;
 		}
 
-		$url = array_shift($surl);
-		$msg = array_shift($smsg);
+		$url = array_shift($sUrl);
+		$msg = array_shift($sMsg);
 
 		$app = JFactory::getApplication();
 		$q = $app->getMessageQueue();
@@ -307,22 +297,21 @@ class FabrikControllerDetails extends JControllerLegacy
 			$msg = null;
 		}
 
-		$session->set($context . 'url', $surl);
-		$session->set($context . 'msg', $smsg);
-		$showmsg = array_shift($session->get($context . 'showsystemmsg', array(true)));
-		$msg = $showmsg ? $msg : null;
+		$session->set($context . 'url', $sUrl);
+		$session->set($context . 'msg', $sMsg);
+		$showMsg = array_shift($session->get($context . 'showsystemmsg', array(true)));
+		$msg = $showMsg ? $msg : null;
 		parent::setRedirect($url, $msg, $type);
 	}
 
 	/**
-	 * generic function to redirect
+	 * Generic function to redirect
 	 *
-	 * @param   object  &$model  form model
-	 * @param   string  $msg     redirection message to show
+	 * @param   object  &$model  Form model
+	 * @param   string  $msg     Redirection message to show
 	 *
 	 * @return  null
 	 */
-
 	protected function makeRedirect(&$model, $msg = null)
 	{
 		$app = JFactory::getApplication();
@@ -370,11 +359,11 @@ class FabrikControllerDetails extends JControllerLegacy
 					$url = urldecode($input->post->get('fabrik_referrer', 'index.php', 'string'));
 				}
 
-				$Itemid = FabrikWorker::itemId();
+				$itemId = FabrikWorker::itemId();
 
 				if ($url == '')
 				{
-					$url = 'index.php?option=com_' . $package . '&Itemid=' . $Itemid;
+					$url = 'index.php?option=com_' . $package . '&Itemid=' . $itemId;
 				}
 			}
 
@@ -390,11 +379,10 @@ class FabrikControllerDetails extends JControllerLegacy
 	}
 
 	/**
-	 * validate via ajax
+	 * Validate via ajax
 	 *
 	 * @return  null
 	 */
-
 	public function ajax_validate()
 	{
 		$app = JFactory::getApplication();
@@ -412,11 +400,10 @@ class FabrikControllerDetails extends JControllerLegacy
 	}
 
 	/**
-	 * save a form's page to the session table
+	 * Save a form's page to the session table
 	 *
 	 * @return  null
 	 */
-
 	public function savepage()
 	{
 		$app = JFactory::getApplication();
@@ -428,12 +415,11 @@ class FabrikControllerDetails extends JControllerLegacy
 	}
 
 	/**
-	 * clear down any temp db records or cookies
+	 * Clear down any temp db records or cookies
 	 * containing partially filled in form data
 	 *
 	 * @return  null
 	 */
-
 	public function removeSession()
 	{
 		$app = JFactory::getApplication();
@@ -446,11 +432,10 @@ class FabrikControllerDetails extends JControllerLegacy
 	}
 
 	/**
-	 * called via ajax to page through form records
+	 * Called via ajax to page through form records
 	 *
 	 * @return  null
 	 */
-
 	public function paginate()
 	{
 		$app = JFactory::getApplication();
@@ -462,11 +447,10 @@ class FabrikControllerDetails extends JControllerLegacy
 	}
 
 	/**
-	 * delete a record from a form
+	 * Delete a record from a form
 	 *
 	 * @return  null
 	 */
-
 	public function delete()
 	{
 		// Check for request forgeries
@@ -477,31 +461,31 @@ class FabrikControllerDetails extends JControllerLegacy
 		$model = $this->getModel('list', 'FabrikFEModel');
 		$ids = array($input->get('rowid', 0, 'string'));
 
-		$listid = $input->getInt('listid');
-		$limitstart = $input->getInt('limitstart' . $listid);
-		$length = $input->getInt('limit' . $listid);
+		$listId = $input->getInt('listid');
+		$limitStart = $input->getInt('limitstart' . $listId);
+		$length = $input->getInt('limit' . $listId);
 
-		$oldtotal = $model->getTotalRecords();
-		$model->setId($listid);
+		$oldTotal = $model->getTotalRecords();
+		$model->setId($listId);
 		$model->deleteRows($ids);
 
-		$total = $oldtotal - count($ids);
+		$total = $oldTotal - count($ids);
 
-		$ref = $input->get('fabrik_referrer', "index.php?option=com_' . $package . '&view=table&listid=$listid", 'string');
+		$ref = $input->get('fabrik_referrer', "index.php?option=com_' . $package . '&view=table&listid=$listId", 'string');
 
-		if ($total >= $limitstart)
+		if ($total >= $limitStart)
 		{
-			$newlimitstart = $limitstart - $length;
+			$newLimitStart = $limitStart - $length;
 
-			if ($newlimitstart < 0)
+			if ($newLimitStart < 0)
 			{
-				$newlimitstart = 0;
+				$newLimitStart = 0;
 			}
 
-			$ref = str_replace("limitstart$listid=$limitstart", "limitstart$listid=$newlimitstart", $ref);
+			$ref = str_replace("limitstart$listId=$limitStart", "limitstart$listId=$newLimitStart", $ref);
 			$app = JFactory::getApplication();
 			$context = 'com_' . $package . '.list.' . $model->getRenderContext() . '.';
-			$app->setUserState($context . 'limitstart', $newlimitstart);
+			$app->setUserState($context . 'limitstart', $newLimitStart);
 		}
 
 		if ($input->get('format') == 'raw')

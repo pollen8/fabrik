@@ -21,7 +21,6 @@ jimport('joomla.application.component.controller');
  * @subpackage  Fabrik
  * @since       1.5
  */
-
 class FabrikControllerForm extends JControllerLegacy
 {
 	/**
@@ -39,17 +38,21 @@ class FabrikControllerForm extends JControllerLegacy
 	public $cacheId = 0;
 
 	/**
+	 * @var boolean
+	 */
+	protected $baseRedirect = false;
+
+	/**
 	 * Magic method to convert the object to a string gracefully.
 	 *
 	 * $$$ hugh - added 08/05/2012.  No idea what's going on, but I had to add this to stop
-	 * the classname 'FabrikControllerForm' being output at the bottom of the form, when rendered
+	 * the class name 'FabrikControllerForm' being output at the bottom of the form, when rendered
 	 * through a Fabrik form module.  See:
 	 *
 	 * https://github.com/Fabrik/fabrik/issues/398
 	 *
 	 * @return  string  empty string.
 	 */
-
 	public function __toString()
 	{
 		return '';
@@ -62,7 +65,6 @@ class FabrikControllerForm extends JControllerLegacy
 	 *
 	 * @return  null
 	 */
-
 	public function inlineedit()
 	{
 		$model = JModelLegacy::getInstance('FormInlineEdit', 'FabrikFEModel');
@@ -75,15 +77,13 @@ class FabrikControllerForm extends JControllerLegacy
 	 * @param   boolean  $cachable   If true, the view output will be cached - NOTE not actually used to control caching!!!
 	 * @param   array    $urlparams  An array of safe url parameters and their variable types, for valid values see {@link JFilterInput::clean()}.
 	 *
-	 * @return  JController  A JController object to support chaining.
+	 * @return  JController|void  A JController object to support chaining.
 	 */
-
 	public function display($cachable = false, $urlparams = array())
 	{
 		$app = JFactory::getApplication();
 		$input = $app->input;
 		$package = $app->getUserState('com_fabrik.package', 'fabrik');
-		$session = JFactory::getSession();
 		$document = JFactory::getDocument();
 		$viewName = $input->get('view', 'form');
 		$modelName = $viewName;
@@ -99,6 +99,7 @@ class FabrikControllerForm extends JControllerLegacy
 		$view = $this->getView($viewName, $viewType);
 
 		// Push a model into the view (may have been set in content plugin already)
+		/** @var FabrikFEModelForm $model */
 		$model = !isset($this->_model) ? $this->getModel($modelName, 'FabrikFEModel') : $this->_model;
 		$model->isMambot = $this->isMambot;
 		$model->packageId = $app->input->getInt('packageId');
@@ -152,10 +153,10 @@ class FabrikControllerForm extends JControllerLegacy
 		{
 			$uri = JURI::getInstance();
 			$uri = $uri->toString(array('path', 'query'));
-			$cacheid = serialize(array($uri, $input->post, $user->get('id'), get_class($view), 'display', $this->cacheId));
+			$cacheId = serialize(array($uri, $input->post, $user->get('id'), get_class($view), 'display', $this->cacheId));
 			$cache = JFactory::getCache('com_' . $package, 'view');
 			ob_start();
-			$cache->get($view, 'display', $cacheid);
+			$cache->get($view, 'display', $cacheId);
 			$contents = ob_get_contents();
 			ob_end_clean();
 
@@ -175,7 +176,6 @@ class FabrikControllerForm extends JControllerLegacy
 	 *
 	 * @return  null
 	 */
-
 	public function process()
 	{
 		$profiler = JProfiler::getInstance('Application');
@@ -192,6 +192,7 @@ class FabrikControllerForm extends JControllerLegacy
 		$viewName = $input->get('view', 'form');
 		$view = $this->getView($viewName, JFactory::getDocument()->getType());
 
+		/** @var FabrikFEModelForm $model */
 		if ($model = $this->getModel('form', 'FabrikFEModel'))
 		{
 			$view->setModel($model, true);
@@ -200,7 +201,6 @@ class FabrikControllerForm extends JControllerLegacy
 		$model->setId($input->getInt('formid', 0));
 		$model->packageId = $input->getInt('packageId');
 		$this->isMambot = $input->get('isMambot', 0);
-		$form = $model->getForm();
 		$model->rowId = $input->get('rowid', '', 'string');
 
 		/**
@@ -358,8 +358,8 @@ class FabrikControllerForm extends JControllerLegacy
 	/**
 	 * Handle the view error
 	 *
-	 * @param   JView   $view   View
-	 * @param   JModel  $model  Form Model
+	 * @param   JViewLegacy        $view   View
+	 * @param   FabrikFEModelForm  $model  Form Model
 	 *
 	 * @since   3.1b
 	 *
@@ -454,7 +454,6 @@ class FabrikControllerForm extends JControllerLegacy
 	 *
 	 * @return  string  redirect message
 	 */
-
 	protected function getRedirectMessage($model)
 	{
 		return $model->getRedirectMessage();
@@ -463,8 +462,8 @@ class FabrikControllerForm extends JControllerLegacy
 	/**
 	 * Get redirect URL
 	 *
-	 * @param   object  $model       form model
-	 * @param   bool    $incSession  set url in session?
+	 * @param   FabrikFEModelForm  $model       Form model
+	 * @param   bool               $incSession  Set url in session?
 	 *
 	 * @since 3.0
 	 *
@@ -472,7 +471,6 @@ class FabrikControllerForm extends JControllerLegacy
 	 *
 	 * @return   string  redirect url
 	 */
-
 	protected function getRedirectURL($model, $incSession = true)
 	{
 		$res = $model->getRedirectURL($incSession, $this->isMambot);
@@ -486,7 +484,6 @@ class FabrikControllerForm extends JControllerLegacy
 	 *
 	 * @return  null
 	 */
-
 	public function ajax_validate()
 	{
 		$app = JFactory::getApplication();
@@ -508,7 +505,6 @@ class FabrikControllerForm extends JControllerLegacy
 	 *
 	 * @return  null
 	 */
-
 	public function savepage()
 	{
 		$app = JFactory::getApplication();
@@ -525,7 +521,6 @@ class FabrikControllerForm extends JControllerLegacy
 	 *
 	 * @return  null
 	 */
-
 	public function removeSession()
 	{
 		$app = JFactory::getApplication();
@@ -542,7 +537,6 @@ class FabrikControllerForm extends JControllerLegacy
 	 *
 	 * @return  null
 	 */
-
 	public function paginate()
 	{
 		$app = JFactory::getApplication();
@@ -558,7 +552,6 @@ class FabrikControllerForm extends JControllerLegacy
 	 *
 	 * @return  null
 	 */
-
 	public function delete()
 	{
 		// Check for request forgeries

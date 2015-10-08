@@ -20,7 +20,6 @@ jimport('joomla.application.component.controller');
  * @subpackage  Fabrik
  * @since       1.5
  */
-
 class FabrikControllerElement extends JControllerLegacy
 {
 	/**
@@ -49,15 +48,12 @@ class FabrikControllerElement extends JControllerLegacy
 	 *
 	 * @return  null
 	 */
-
 	public function display()
 	{
 		$document = JFactory::getDocument();
 		$app = JFactory::getApplication();
 		$input = $app->input;
 		$viewName = $input->get('view', 'element', 'cmd');
-		$modelName = $viewName;
-
 		$viewType = $document->getType();
 
 		// Set the default view name from the Request
@@ -79,7 +75,6 @@ class FabrikControllerElement extends JControllerLegacy
 	 *
 	 * @return  null
 	 */
-
 	public function save()
 	{
 		$app = JFactory::getApplication();

@@ -19,7 +19,6 @@ jimport('joomla.application.component.controller');
  * @package  Fabrik
  * @since    3.0
  */
-
 class FabrikControllerPackage extends JControllerLegacy
 {
 	/**
@@ -37,7 +36,6 @@ class FabrikControllerPackage extends JControllerLegacy
 	 *
 	 * @return  JController  A JController object to support chaining.
 	 */
-
 	public function display($cachable = false, $urlparams = false)
 	{
 		$document = JFactory::getDocument();

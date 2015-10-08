@@ -21,7 +21,6 @@ jimport('joomla.application.component.controller');
  * @subpackage  Fabrik
  * @since       1.5
  */
-
 class FabrikControllerPlugin extends JControllerLegacy
 {
 	/**
@@ -78,7 +77,6 @@ class FabrikControllerPlugin extends JControllerLegacy
 	 *
 	 * @return  null
 	 */
-
 	public function userAjax()
 	{
 		$db = FabrikWorker::getDbo();
@@ -101,7 +99,6 @@ class FabrikControllerPlugin extends JControllerLegacy
 	 *
 	 * @return  null
 	 */
-
 	public function doCron(&$pluginManager)
 	{
 		$db = FabrikWorker::getDbo();
@@ -131,6 +128,7 @@ class FabrikControllerPlugin extends JControllerLegacy
 		foreach ($rows as $row)
 		{
 			// Load in the plugin
+			/** @var PlgFabrik_Cron $plugin */
 			$plugin = $pluginManager->getPlugIn($row->plugin, 'cron');
 			$plugin->setId($row->id);
 			$params = $plugin->getParams();

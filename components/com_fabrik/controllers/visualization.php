@@ -23,7 +23,6 @@ require_once COM_FABRIK_FRONTEND . '/helpers/params.php';
  * @subpackage  Fabrik
  * @since       1.5
  */
-
 class FabrikControllerVisualization extends JControllerLegacy
 {
 	/**
@@ -43,7 +42,6 @@ class FabrikControllerVisualization extends JControllerLegacy
 	 *
 	 * @since   12.2
 	 */
-
 	public function display($cachable = false, $urlparams = array())
 	{
 		$document = JFactory::getDocument();
@@ -84,9 +82,9 @@ class FabrikControllerVisualization extends JControllerLegacy
 			$user = JFactory::getUser();
 			$uri = JURI::getInstance();
 			$uri = $uri->toString(array('path', 'query'));
-			$cacheid = serialize(array($uri, $input->post, $user->get('id'), get_class($view), 'display', $this->cacheId));
+			$cacheId = serialize(array($uri, $input->post, $user->get('id'), get_class($view), 'display', $this->cacheId));
 			$cache = JFactory::getCache('com_fabrik', 'view');
-			$cache->get($view, 'display', $cacheid);
+			$cache->get($view, 'display', $cacheId);
 		}
 
 		return $this;
@@ -97,7 +95,6 @@ class FabrikControllerVisualization extends JControllerLegacy
 	 *
 	 * @return   string  view name
 	 */
-
 	protected function getViewName()
 	{
 		$viz = FabTable::getInstance('Visualization', 'FabrikTable');
@@ -122,7 +119,6 @@ class FabrikControllerVisualization extends JControllerLegacy
 	 *
 	 * @return  object  Reference to the view or an error.
 	 */
-
 	public function getView($name = '', $type = '', $prefix = '', $config = array())
 	{
 		$viewName = str_replace('FabrikControllerVisualization', '', get_class($this));

@@ -19,7 +19,6 @@ jimport('joomla.application.component.controller');
  * @package  Fabrik
  * @since    3.0
  */
-
 class FabrikControllerImport extends JControllerLegacy
 {
 	/**
@@ -46,6 +45,8 @@ class FabrikControllerImport extends JControllerLegacy
 
 		// Set the default view name from the Request
 		$view = $this->getView($viewName, $viewType);
+
+		/** @var FabrikFEModelImportcsv $model */
 		$model = $this->getModel('Importcsv', 'FabrikFEModel');
 		$view->setModel($model, true);
 		$view->display();
@@ -57,11 +58,12 @@ class FabrikControllerImport extends JControllerLegacy
 	 *
 	 * @return null
 	 */
-
 	public function doimport()
 	{
 		$app = JFactory::getApplication();
 		$input = $app->input;
+
+		/** @var FabrikFEModelImportcsv $model */
 		$model = $this->getModel('Importcsv', 'FabrikFEModel');
 		$listModel = $model->getListModel();
 
@@ -83,7 +85,7 @@ class FabrikControllerImport extends JControllerLegacy
 		$viewType = $document->getType();
 
 		// Set the default view name from the Request
-		$view = $this->getView($viewName, $viewType);
+		$this->getView($viewName, $viewType);
 		$model->import();
 		$Itemid = $input->getInt('Itemid');
 
