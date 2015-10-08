@@ -61,9 +61,8 @@ class FabrikFEModelElementValidator extends JModelLegacy
 	/**
 	 * Loads in element's published validation objects
 	 *
-	 * @return  array	validation objects
+	 * @return  PlgFabrik_Validationrule[]	Validation objects
 	 */
-
 	public function findAll()
 	{
 		if (isset($this->validations))
@@ -236,7 +235,7 @@ class FabrikFEModelElementValidator extends JModelLegacy
 		$validations = array_unique($this->findAll());
 		$emptyIcon = $this->getIcon();
 		$icon = empty($emptyIcon) && empty($validations) ? "" : FabrikHelperHTML::image($emptyIcon, 'form', $tmpl, $this->iconOpts) . ' ';
-		
+
 		return $icon;
 	}
 

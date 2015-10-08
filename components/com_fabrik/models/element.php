@@ -238,6 +238,12 @@ class PlgFabrik_Element extends FabrikPlugin
 	 * @var  string
 	 */
 	public $calcSelectModifier = null;
+
+	/**
+	 * @var FabrikFEModelElementValidator
+	 */
+	public $validator;
+
 	/**
 	 * Constructor
 	 *

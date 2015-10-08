@@ -1608,7 +1608,7 @@ class FabrikFEModelForm extends FabModelForm
 	{
 		$app = JFactory::getApplication();
 		$input = $app->input;
-		$repeatTotals = $input->get('fabrik_repeat_group', array(0));
+		$repeatTotals = $input->get('fabrik_repeat_group', array(0), 'array');
 		$groups = $this->getGroupsHiarachy();
 
 		// Currently this is just used by calculation elements
@@ -2174,7 +2174,7 @@ class FabrikFEModelForm extends FabModelForm
 
 				$elDbValues = array();
 				$elementModel->getElement();
-				$validation_rules = $elementModel->validator->findAll();
+				$validationRules = $elementModel->validator->findAll();
 
 				// $$ rob incorrect for ajax validation on joined elements
 				// $elName = $elementModel->getFullName(true, false);
@@ -2193,13 +2193,13 @@ class FabrikFEModelForm extends FabModelForm
 					$this->errors[$elName][$c] = array();
 
 					// $$$ rob $this->formData was $_POST, but failed to get anything for calculation elements in php 5.2.1
-					$form_data = $elementModel->getValue($this->formData, $c, array('runplugins' => 0, 'use_default' => false, 'use_querystring' => false));
+					$formData = $elementModel->getValue($this->formData, $c, array('runplugins' => 0, 'use_default' => false, 'use_querystring' => false));
 
 					if (get_magic_quotes_gpc())
 					{
-						if (is_array($form_data))
+						if (is_array($formData))
 						{
-							foreach ($form_data as &$d)
+							foreach ($formData as &$d)
 							{
 								if (is_string($d))
 								{
@@ -2214,17 +2214,17 @@ class FabrikFEModelForm extends FabModelForm
 						}
 						else
 						{
-							$form_data = stripslashes($form_data);
+							$formData = stripslashes($formData);
 
 							if ($ajaxPost)
 							{
-								$form_data = rawurldecode($form_data);
+								$formData = rawurldecode($formData);
 							}
 						}
 					}
 
 					// Internal element plugin validations
-					if (!$elementModel->validate(@$form_data, $c))
+					if (!$elementModel->validate(@$formData, $c))
 					{
 						$ok = false;
 						$this->errors[$elName][$c][] = $elementModel->getValidationErr();
@@ -2238,11 +2238,11 @@ class FabrikFEModelForm extends FabModelForm
 					{
 						// $$$ rob for repeat groups no join setting to array() means that $_POST only contained the last repeat group data
 						// $elDbValues = array();
-						$elDbValues[$c] = $form_data;
+						$elDbValues[$c] = $formData;
 					}
 					else
 					{
-						$elDbValues = $form_data;
+						$elDbValues = $formData;
 					}
 					// Validations plugins attached to elements
 					if (!$elementModel->mustValidate())
@@ -2250,13 +2250,13 @@ class FabrikFEModelForm extends FabModelForm
 						continue;
 					}
 
-					foreach ($validation_rules as $plugin)
+					foreach ($validationRules as $plugin)
 					{
 						$plugin->formModel = $this;
 
-						if ($plugin->shouldValidate($form_data, $c))
+						if ($plugin->shouldValidate($formData, $c))
 						{
-							if (!$plugin->validate($form_data, $c))
+							if (!$plugin->validate($formData, $c))
 							{
 								$this->errors[$elName][$c][] = $w->parseMessageForPlaceHolder($plugin->getMessage());
 								$ok = false;
@@ -2266,7 +2266,7 @@ class FabrikFEModelForm extends FabModelForm
 							{
 								if ($groupModel->canRepeat())
 								{
-									$elDbValues[$c] = $form_data;
+									$elDbValues[$c] = $formData;
 									$testReplace = $plugin->replace($elDbValues[$c], $c);
 
 									if ($testReplace != $elDbValues[$c])
@@ -3310,15 +3310,15 @@ class FabrikFEModelForm extends FabModelForm
 		 * group, with 3 and 2 copies of each respectively.  So we need to track which
 		 * instances of each repeat we have already copied into the main row.
 		 *
-		 * So $join_pks_seen will be indexed by $join_pks_seen[groupid][elementid]
+		 * So $joinPksSeen will be indexed by $joinPksSeen[groupid][elementid]
 		 */
-		$join_pks_seen = array();
+		$joinPksSeen = array();
 		/**
 		 * Have to copy the data for the PK's seen stuff, as we're modifying the original $data
 		 * as we go, which screws up the PK logic once we've modified the PK value itself in the
 		 * original $data.  Probably only needed for $data[0], as that's the only row we actually
 		 * modify, but for now I'm just copying the whole thing, which then gets used for doing the ...
-		 * $join_pk_val = $data_copy[$row_index]->$join_pk;
+		 * $joinPkVal = $data_copy[$row_index]->$joinPk;
 		 * ... inside the $data iteration below.
 		 *
 		 * PS, could probably just do a $data_copy = $data, as our usage of the copy isn't going to
@@ -3330,7 +3330,7 @@ class FabrikFEModelForm extends FabModelForm
 		foreach ($groups as $groupId => $groupModel)
 		{
 			$group = $groupModel->getGroup();
-			$join_pks_seen[$groupId] = array();
+			$joinPksSeen[$groupId] = array();
 			$elementModels = $groupModel->getMyElements();
 
 			foreach ($elementModels as $elementModelID => $elementModel)
@@ -3340,8 +3340,8 @@ class FabrikFEModelForm extends FabModelForm
 					if ($groupModel->isJoin())
 					{
 						$joinModel = $groupModel->getJoinModel();
-						$join_pk = $joinModel->getForeignID();
-						$join_pks_seen[$groupId][$elementModelID] = array();
+						$joinPk = $joinModel->getForeignID();
+						$joinPksSeen[$groupId][$elementModelID] = array();
 					}
 
 					$names = $elementModel->getJoinDataNames();
@@ -3357,18 +3357,18 @@ class FabrikFEModelForm extends FabModelForm
 							 * If the join's PK element isn't published or for any other reason not
 							 * in $data, we're hosed!
 							 */
-							if (!isset($data_copy[$row_index]->$join_pk))
+							if (!isset($data_copy[$row_index]->$joinPk))
 							{
 								continue;
 							}
 
-							$join_pk_val = $data_copy[$row_index]->$join_pk;
+							$joinPkVal = $data_copy[$row_index]->$joinPk;
 							/**
 							 * if we've seen the PK value for this element's row before, skip it.
 							 * Check for empty as well, just in case - as we're loading existing data,
 							 * it darn well should have a value!
 							 */
-							if (empty($join_pk_val) || in_array($join_pk_val, $join_pks_seen[$groupId][$elementModelID]))
+							if (empty($joinPkVal) || in_array($joinPkVal, $joinPksSeen[$groupId][$elementModelID]))
 							{
 								continue;
 							}
@@ -3415,7 +3415,7 @@ class FabrikFEModelForm extends FabModelForm
 							 * Make a Note To Self that we've now handled the data for this element's row,
 							 * and can skip it from now on.
 							 */
-							$join_pks_seen[$groupId][$elementModelID][] = $join_pk_val;
+							$joinPksSeen[$groupId][$elementModelID][] = $joinPkVal;
 						}
 					}
 				}

@@ -488,6 +488,8 @@ class FabrikControllerForm extends JControllerLegacy
 	{
 		$app = JFactory::getApplication();
 		$input = $app->input;
+
+		/** @var FabrikFEModelForm $model */
 		$model = $this->getModel('form', 'FabrikFEModel');
 		$model->setId($input->getInt('formid', 0));
 		$model->getForm();
