@@ -20,15 +20,13 @@ require_once JPATH_ADMINISTRATOR . '/components/com_fabrik/tables/fabtable.php';
  * @subpackage  Fabrik
  * @since       3.0
  */
-
 class FabrikTableFormGroup extends FabTable
 {
 	/**
 	 * Constructor
 	 *
-	 * @param   object  &$db  database object
+	 * @param   JDatabaseDriver  &$db  database object
 	 */
-
 	public function __construct(&$db)
 	{
 		parent::__construct('#__{package}_formgroup', 'id', $db);

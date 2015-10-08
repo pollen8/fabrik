@@ -27,7 +27,7 @@ class FabrikTableJoin extends FabTable
 	/**
 	 * Construct
 	 *
-	 * @param   object  &$db  database object
+	 * @param   JDatabaseDriver  &$db  database object
 	 */
 	public function __construct(&$db)
 	{

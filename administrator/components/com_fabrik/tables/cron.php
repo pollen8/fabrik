@@ -26,9 +26,8 @@ class FabrikTableCron extends FabTable
 	/**
 	 * Constructor
 	 *
-	 * @param   object  &$db  database object
+	 * @param   JDatabaseDriver  &$db  database object
 	 */
-
 	public function __construct(&$db)
 	{
 		parent::__construct('#__{package}_cron', 'id', $db);
@@ -42,7 +41,6 @@ class FabrikTableCron extends FabTable
 	 *
 	 * @return  boolean  True on success.
 	 */
-
 	public function bind($src, $ignore = array())
 	{
 		if (isset($src['params']) && is_array($src['params']))

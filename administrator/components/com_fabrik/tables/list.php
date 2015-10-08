@@ -26,9 +26,8 @@ class FabrikTableList extends FabTable
 	/**
 	 * Constructor
 	 *
-	 * @param   object  &$db  database object
+	 * @param   JDatabaseDriver  &$db  database object
 	 */
-
 	public function __construct(&$db)
 	{
 		parent::__construct('#__{package}_lists', 'id', $db);
@@ -44,7 +43,6 @@ class FabrikTableList extends FabTable
 	 *
 	 * @return  boolean  True on success.
 	 */
-
 	public function bind($src, $ignore = array())
 	{
 		// Bind the rules.
@@ -72,7 +70,6 @@ class FabrikTableList extends FabTable
 	 *
 	 * @return	string
 	 */
-
 	protected function _getAssetName()
 	{
 		$k = $this->_tbl_key;
@@ -85,7 +82,6 @@ class FabrikTableList extends FabTable
 	 *
 	 * @return	string
 	 */
-
 	protected function _getAssetTitle()
 	{
 		return $this->label;
@@ -101,7 +97,6 @@ class FabrikTableList extends FabTable
 	 *
 	 * @return  boolean  True if successful. False if row not found or on error (internal error state set in that case).
 	 */
-
 	public function load($keys = null, $reset = true)
 	{
 		if (empty($keys))
@@ -169,7 +164,6 @@ class FabrikTableList extends FabTable
 	 *
 	 * @return  boolean  True on success.
 	 */
-
 	public function delete($pk = null)
 	{
 		if (!parent::delete())

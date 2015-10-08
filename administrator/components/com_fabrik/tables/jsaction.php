@@ -25,9 +25,8 @@ class FabrikTableJsaction extends FabTable
 	/**
 	 * Construct
 	 *
-	 * @param   object  &$db  database object
+	 * @param   JDatabaseDriver  &$db  database object
 	 */
-
 	public function __construct(&$db)
 	{
 		parent::__construct('#__{package}_jsactions', 'id', $db);

@@ -21,13 +21,12 @@ require_once JPATH_ADMINISTRATOR . '/components/com_fabrik/tables/fabtable.php';
  * @since       3.0
  * @deprecated  not used?
  */
-
 class FabrikTableValidationrule extends FabTable
 {
 	/**
 	 * Constructor
 	 *
-	 * @param   object  &$db  database object
+	 * @param   JDatabaseDriver  &$db  database object
 	 */
 
 	public function __construct(&$db)

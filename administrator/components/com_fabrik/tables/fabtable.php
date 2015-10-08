@@ -22,6 +22,13 @@ defined('_JEXEC') or die('Restricted access');
 class FabTable extends JTable
 {
 	/**
+	 * JSON encoded JFormField param options
+	 *
+	 * @var string
+	 */
+	public $params = '';
+
+	/**
 	 * Static method to get an instance of a JTable class if it can be found in
 	 * the table include paths.  To add include paths for searching for JTable
 	 * classes @see JTable::addIncludePath().
@@ -32,7 +39,6 @@ class FabTable extends JTable
 	 *
 	 * @return  mixed	A JTable object if found or boolean false if one could not be found.
 	 */
-
 	public static function getInstance($type, $prefix = 'JTable', $config = array())
 	{
 		$config['dbo'] = FabrikWorker::getDbo(true);
@@ -49,7 +55,6 @@ class FabTable extends JTable
 	 *
 	 * @return  bool
 	 */
-
 	public function batch($batch)
 	{
 		$batchParams = FArrayHelper::getValue($batch, 'params');

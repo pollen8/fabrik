@@ -23,9 +23,8 @@ class FabrikTableFormsession extends JTable
 	/**
 	 * Constructor
 	 *
-	 * @param   object  &$db  database object
+	 * @param   JDatabaseDriver  &$db  database object
 	 */
-
 	public function __construct(&$db)
 	{
 		parent::__construct('#__{package}_form_sessions', 'id', $db);
