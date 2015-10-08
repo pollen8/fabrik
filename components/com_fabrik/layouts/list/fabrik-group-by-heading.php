@@ -22,7 +22,7 @@ $d = $displayData;
 		<?php endif; ?>
 		<?php echo FabrikHelperHTML::image('arrow-down.png', 'list', $d->tmpl, FText::_('COM_FABRIK_TOGGLE')); ?>
 		<span class="groupTitle">
-			<?php echo $d->title; ?> ( <?php echo $d->count ?> )
+			<?php echo $d->title; ?> <span class="groupCount">( <?php echo $d->count ?> )</span>
 		</span>
 	</a>
 
