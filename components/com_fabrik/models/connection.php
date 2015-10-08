@@ -20,7 +20,6 @@ jimport('joomla.application.component.model');
  * @subpackage  Fabrik
  * @since       3.0
  */
-
 class FabrikFEModelConnection extends JModelLegacy
 {
 	/**
@@ -58,24 +57,10 @@ class FabrikFEModelConnection extends JModelLegacy
 	 *
 	 * @return  null
 	 */
-
 	public function setId($id)
 	{
 		// Set new element ID
 		$this->id = $id;
-	}
-
-	/**
-	 * Is the connection table the default connection
-	 *
-	 * @deprecated - don't think its used
-	 *
-	 * @return  bool
-	 */
-
-	public function isDefault()
-	{
-		return $this->getConnection()->default;
 	}
 
 	/**
@@ -86,7 +71,6 @@ class FabrikFEModelConnection extends JModelLegacy
 	 *
 	 * @return boolean  True if the same
 	 */
-
 	public function isJdb()
 	{
 		// $$$rob lets see if we have an exact config match with J db if so just return that
@@ -97,7 +81,6 @@ class FabrikFEModelConnection extends JModelLegacy
 		$database = $conf->get('db');
 		$prefix = $conf->get('dbprefix');
 		$driver = $conf->get('dbtype');
-		$debug = $conf->get('debug');
 
 		$default_options = array('driver' => $driver, 'host' => $host, 'user' => $user, 'password' => $password, 'database' => $database,
 				'prefix' => $prefix);
@@ -117,7 +100,6 @@ class FabrikFEModelConnection extends JModelLegacy
 	 *
 	 * @return  JDatabaseDriver|JDatabase
 	 */
-
 	public function getDriverInstance($options)
 	{
 		$version = new JVersion;
@@ -126,67 +108,14 @@ class FabrikFEModelConnection extends JModelLegacy
 	}
 
 	/**
-	 * Creates a html dropdown box for the current connection
-	 *
-	 * @param   string  $javascript  to add to select box
-	 * @param   string  $name        of dropdown box
-	 * @param   string  $selected    the selected element in the list
-	 * @param   string  $class       input class name
-	 *
-	 * @deprecated - don't think its used
-	 *
-	 * @return string
-	 */
-
-	public function getTableDdForThisConnection($javascript = '', $name = 'table_join', $selected = '', $class = 'inputbox')
-	{
-		$tableOptions = array();
-		$cn = $this->getConnection();
-
-		if ($cn->host and $cn->published == '1')
-		{
-			if (@mysql_connect($cn->host, $cn->user, $cn->password))
-			{
-				// Ensure db files are included
-				jimport('joomla.database.database');
-				$options = $this->getConnectionOptions($cn);
-				$fabrikDb = $this->getDriverInstance($options);
-				$tables = $fabrikDb->getTableList();
-				$tableOptions[] = JHTML::_('select.option', '', '-');
-
-				if (is_array($tables))
-				{
-					foreach ($tables as $table)
-					{
-						$tableOptions[] = JHTML::_('select.option', $table, $table);
-					}
-				}
-			}
-			else
-			{
-				$tableOptions[] = JHTML::_('select.option', 'couldn\'t connect');
-			}
-		}
-		else
-		{
-			$tableOptions[] = JHTML::_('select.option', 'host not set');
-		}
-
-		$attribs = 'class="' . $class . '" size="1" id="' . $name . '" ' . $javascript;
-
-		return JHTML::_('select.genericlist', $tableOptions, $name, $attribs, 'value', 'text', $selected);
-	}
-
-	/**
 	 * Decrypt once a connection password - if its params->encryptedPw option is true
 	 *
-	 * @param   JTable  &$cnn  Connection
+	 * @param   JTable  &FabrikTableConnection  Connection
 	 *
 	 * @since   3.1rc1
 	 *
 	 * @return  void
 	 */
-
 	protected function decryptPw(&$cnn)
 	{
 		if (isset($cnn->decrypted) && $cnn->decrypted)
@@ -209,9 +138,8 @@ class FabrikFEModelConnection extends JModelLegacy
 	 *
 	 * @param   int  $id  connection id
 	 *
-	 * @return  FabTable  connection tables
+	 * @return  FabrikTableConnection  Connection tables
 	 */
-
 	public function &getConnection($id = null)
 	{
 		if (!is_null($id))
@@ -238,7 +166,7 @@ class FabrikFEModelConnection extends JModelLegacy
 		{
 			throw new RuntimeException('Connection ID #' . $this->connection->get('id') . ' is unpublished or trashed', E_ERROR);
 		}
-		
+
 		return $this->connection;
 	}
 
@@ -247,7 +175,6 @@ class FabrikFEModelConnection extends JModelLegacy
 	 *
 	 * @return  object  database object using connection details false if connection error
 	 */
-
 	public function &getDb()
 	{
 		if (!isset(self::$dbs))
@@ -357,7 +284,6 @@ class FabrikFEModelConnection extends JModelLegacy
 	 *
 	 * @return  bool
 	 */
-
 	private function compareConnectionOpts($opts1, $opts2)
 	{
 		/**
@@ -382,7 +308,6 @@ class FabrikFEModelConnection extends JModelLegacy
 	 *
 	 * @return  array  connection options
 	 */
-
 	public function getConnectionOptions(&$cn)
 	{
 		$conf = JFactory::getConfig();
@@ -395,7 +320,6 @@ class FabrikFEModelConnection extends JModelLegacy
 
 		// Test for swapping db table names
 		$driver .= '_fab';
-		$debug = $conf->get('debug');
 		$options = array('driver' => $driver, 'host' => $host, 'user' => $user, 'password' => $password, 'database' => $database, 'prefix' => $prefix);
 
 		return $options;
@@ -406,7 +330,6 @@ class FabrikFEModelConnection extends JModelLegacy
 	 *
 	 * @return  array  of connection tables id, description
 	 */
-
 	public function getConnections()
 	{
 		$db = FabrikWorker::getDbo();
@@ -424,69 +347,6 @@ class FabrikFEModelConnection extends JModelLegacy
 	}
 
 	/**
-	 * Gets dropdown list of published connections
-	 *
-	 * @param   object  $connections  connections stored in database
-	 * @param   string  $javascript   to run on change
-	 * @param   int     $selected     default value
-	 * @param   string  $id           element id
-	 * @param   string  $name         of connection drop down
-	 * @param   string  $attribs      dropdown properties
-	 *
-	 * @deprecated - can't see that its used
-	 *
-	 * @return  string  connection dropdown
-	 */
-
-	public function getConnectionsDd($connections, $javascript, $selected, $id = '', $name = 'connection_id', $attribs = 'class="inputbox" size="1" ')
-	{
-		if ($id == '')
-		{
-			$id = $name;
-		}
-
-		$cnns[] = JHTML::_('select.option', '-1', FText::_('COM_FABRIK_PLEASE_SELECT'));
-		$cnns = array_merge($cnns, $connections);
-		$attribs .= $javascript;
-
-		return JHTML::_('select.genericlist', $cnns, $name, $attribs, 'value', 'text', $selected, $id);
-	}
-
-	/**
-	 * Queries all published connections and returns an multidimensional array
-	 * of tables and fields for each connection
-	 * WARNING: this is likely to
-	 * exceed php script execution time if querying a larger remote database
-	 *
-	 * @param   object  $connections  all available connections
-	 *
-	 * @return  array
-	 */
-
-	public function getConnectionTableFields($connections)
-	{
-		$connectionTableFields = array();
-		$connectionTableFields[-1] = array();
-		$connectionTableFields[-1][] = JHTML::_('select.option', '-1', FText::_('COM_FABRIK_PLEASE_SELECT'));
-
-		foreach ($connections as $cn)
-		{
-			$connectionTableFields[$cn->value] = array();
-
-			if ($cn->host and $cn->published == '1')
-			{
-				$options = $this->getConnectionOptions($cn);
-				$fabrikDb = $this->getDriverInstance($options);
-				$tables = $fabrikDb->getTableList();
-				$fields = $fabrikDb->getTableColumns($tables);
-				$connectionTableFields[$cn->value][$key] = $fields;
-			}
-		}
-
-		return $connectionTableFields;
-	}
-
-	/**
 	 * Queries all published connections and returns an multidimensional array
 	 * of tables for each connection
 	 *
@@ -494,12 +354,10 @@ class FabrikFEModelConnection extends JModelLegacy
 	 *
 	 * @return  array
 	 */
-
 	public function getConnectionTables($connections)
 	{
 		$connectionTables = array();
 		$connectionTables[-1] = array();
-		$db = FabrikWorker::getDbo();
 		$connectionTables[-1][] = JHTML::_('select.option', '-1', FText::_('COM_FABRIK_PLEASE_SELECT'));
 
 		foreach ($connections as $cn)
@@ -534,10 +392,9 @@ class FabrikFEModelConnection extends JModelLegacy
 	 *
 	 * @return array tables
 	 */
-
 	public function getThisTables($addBlank = false)
 	{
-		$cn = $this->getConnection();
+		$this->getConnection();
 		$fabrikDb = $this->getDb();
 		$tables = $fabrikDb->getTableList();
 
@@ -561,12 +418,11 @@ class FabrikFEModelConnection extends JModelLegacy
 	 *
 	 * @return  bool  true if connection made otherwise false
 	 */
-
 	public function testConnection()
 	{
 		try
 		{
-			$db = $this->getDb();
+			$this->getDb();
 		}
 		catch (RuntimeException $e)
 		{
@@ -579,9 +435,8 @@ class FabrikFEModelConnection extends JModelLegacy
 	/**
 	 * Load the default connection
 	 *
-	 * @return  object  default connection
+	 * @return  FabrikTableConnection  default connection
 	 */
-
 	public function &loadDefaultConnection()
 	{
 		if (!$this->defaultConnection)

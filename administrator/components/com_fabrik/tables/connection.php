@@ -24,11 +24,24 @@ require_once JPATH_ADMINISTRATOR . '/components/com_fabrik/tables/fabtable.php';
 class FabrikTableConnection extends JTable
 {
 	/**
+	 * @var int
+	 */
+	public $id;
+
+	/**
+	 * @var int
+	 */
+	public $default = 0;
+
+	/**
+	 * @var string
+	 */
+	public $password = '';
+	/**
 	 * Constructor
 	 *
 	 * @param   object  &$db  database object
 	 */
-
 	public function __construct(&$db)
 	{
 		parent::__construct('#__fabrik_connections', 'id', $db);
