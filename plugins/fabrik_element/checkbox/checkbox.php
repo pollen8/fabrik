@@ -18,7 +18,6 @@ defined('_JEXEC') or die('Restricted access');
  * @subpackage  Fabrik.element.checkbox
  * @since       3.0
  */
-
 class PlgFabrik_ElementCheckbox extends PlgFabrik_ElementList
 {
 	protected $inputType = 'checkbox';
@@ -31,7 +30,6 @@ class PlgFabrik_ElementCheckbox extends PlgFabrik_ElementList
 	 *
 	 * @return  void
 	 */
-
 	public function setId($id)
 	{
 		parent::setId($id);
@@ -52,7 +50,6 @@ class PlgFabrik_ElementCheckbox extends PlgFabrik_ElementList
 	 *
 	 * @return  string	formatted value
 	 */
-
 	public function renderRawListData($data, $thisRow)
 	{
 		return json_encode($data);
@@ -65,7 +62,6 @@ class PlgFabrik_ElementCheckbox extends PlgFabrik_ElementList
 	 *
 	 * @return  bool
 	 */
-
 	protected function isMultiple()
 	{
 		return true;
@@ -78,7 +74,6 @@ class PlgFabrik_ElementCheckbox extends PlgFabrik_ElementList
 	 *
 	 * @return  array
 	 */
-
 	public function elementJavascript($repeatCounter)
 	{
 		$params = $this->getParams();
@@ -106,7 +101,6 @@ class PlgFabrik_ElementCheckbox extends PlgFabrik_ElementList
 	 *
 	 * @return void
 	 */
-
 	public function formJavascriptClass(&$srcs, $script = '', &$shim = array())
 	{
 		$s = new stdClass;
@@ -123,14 +117,13 @@ class PlgFabrik_ElementCheckbox extends PlgFabrik_ElementList
 	 *
 	 * @return  array  form data
 	 */
-
 	public function getEmptyDataValue(&$data)
 	{
 		$params = $this->getParams();
 		$element = $this->getElement();
 
 		$value = FArrayHelper::getValue($data, $element->name, '');
-		
+
 		if ($value === '')
 		{
 			$data[$element->name] = $params->get('sub_default_value');
@@ -147,7 +140,6 @@ class PlgFabrik_ElementCheckbox extends PlgFabrik_ElementList
 	 *
 	 * @return  string
 	 */
-
 	protected function prepareFilterVal($value)
 	{
 		$values = $this->getSubOptionValues();
@@ -170,7 +162,6 @@ class PlgFabrik_ElementCheckbox extends PlgFabrik_ElementList
 	 *
 	 * @return  string	default filter condition ('=', 'REGEXP' etc.)
 	 */
-
 	public function getDefaultFilterCondition()
 	{
 		return '=';
@@ -184,7 +175,6 @@ class PlgFabrik_ElementCheckbox extends PlgFabrik_ElementList
 	 *
 	 * @return  mixed
 	 */
-
 	public function storeDatabaseFormat($val, $data)
 	{
 		if (is_array($val))
