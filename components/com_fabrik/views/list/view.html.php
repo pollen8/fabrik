@@ -20,7 +20,6 @@ require_once JPATH_SITE . '/components/com_fabrik/views/list/view.base.php';
  * @subpackage  Fabrik
  * @since       3.0
  */
-
 class FabrikViewList extends FabrikViewListBase
 {
 	/**
@@ -33,7 +32,7 @@ class FabrikViewList extends FabrikViewListBase
 	/**
 	 * Display the template
 	 *
-	 * @param   sting  $tpl  template
+	 * @param   string  $tpl  Template
 	 *
 	 * @return void
 	 */
@@ -48,7 +47,8 @@ class FabrikViewList extends FabrikViewListBase
 
 			if (!$app->isAdmin() && isset($this->params))
 			{
-				$state = $this->get('State');
+				/** @var JObject $state */
+				$state = $model->getState();
 				$stateParams = $state->get('params');
 				$document = JFactory::getDocument();
 

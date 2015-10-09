@@ -822,6 +822,7 @@ EOD;
 		{
 			$app = JFactory::getApplication();
 			$version = new JVersion;
+			FabrikHelperHTML::modalJLayouts();
 			$jsAssetBaseURI = self::getJSAssetBaseURI();
 			$fbConfig = JComponentHelper::getParams('com_fabrik');
 
@@ -1162,8 +1163,11 @@ EOD;
 	 */
 	public static function jLayoutJs($name, $layoutName, stdClass $data = null, $paths = array(), $options = array())
 	{
-		$layout =self::getLayout($layoutName, $paths, $options);
-		self::$jLayoutsJs[$name] = $layout->render($data);
+		if (!array_key_exists($name, self::$jLayoutsJs))
+		{
+			$layout =self::getLayout($layoutName, $paths, $options);
+			self::$jLayoutsJs[$name] = $layout->render($data);
+		}
 	}
 
 	/**
@@ -2675,6 +2679,11 @@ EOD;
 		return $icon;
 	}
 
+	/**
+	 * Add the js jLayout objects for rendering the modal
+	 *
+	 * @return void
+	 */
 	public static function modalJLayouts()
 	{
 		FabrikHelperHTML::jLayoutJs('modal-close', 'modal.fabrik-close');

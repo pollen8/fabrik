@@ -6225,7 +6225,6 @@ class FabrikFEModelList extends JModelForm
 
 		if ($params->get('advanced-filter', '0'))
 		{
-			FabrikHelperHTML::modalJLayouts();
 			$tmpl = $this->getTmpl();
 			$url = $this->getAdvancedSearchURL();
 			$title = '<span>' . FText::_('COM_FABRIK_ADVANCED_SEARCH') . '</span>';
