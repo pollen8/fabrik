@@ -533,11 +533,14 @@ var FbDatabasejoin = new Class({
 					if (typeOf(val) === 'string') {
 						val = val === '' ? [] : JSON.decode(val);
 					}
+					if (typeOf(val) !== 'array') {
+						val = [val];
+					}
 					this._getSubElements();
 					this.subElements.each(function (el) {
 						var chx = false;
 						val.each(function (v) {
-							if (v === el.value) {
+							if (v.toString() === el.value) {
 								chx = true;
 							}
 						}.bind(this));
