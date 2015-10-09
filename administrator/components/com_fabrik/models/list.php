@@ -1511,6 +1511,7 @@ class FabrikAdminModelList extends FabModelAdmin
 		// Create form group
 		$formId = $this->getState('list.form_id');
 		$formGroup = $this->getTable('FormGroup');
+		
 		$formGroup->id = null;
 		$formGroup->form_id = $formId;
 		$formGroup->group_id = $group->id;

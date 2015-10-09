@@ -43,7 +43,20 @@ class FabTable extends JTable
 	{
 		$config['dbo'] = FabrikWorker::getDbo(true);
 
-		return parent::getInstance($type, $prefix, $config);
+		$instance = parent::getInstance($type, $prefix, $config);
+		
+		/**
+		 * $$$ hugh - we added $params in this commit:
+		 * https://github.com/Fabrik/fabrik/commit/d98ad7dfa48fefc8b2db55dd5c7a8de16f9fbab4
+		 * ... but the FormGroup table doesn't have a params column.  For now, zap the params for FormGroup,
+		 * until we do another release and can add an SQL update to add it.
+		 */
+		if ($type === 'FormGroup')
+		{
+			unset($instance->params);
+		}
+		
+		return $instance;
 	}
 
 	/**
