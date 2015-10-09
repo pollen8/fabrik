@@ -309,6 +309,8 @@ class FabrikViewListBase extends JViewLegacy
 		$profiler = JProfiler::getInstance('Application');
 		$app = JFactory::getApplication();
 		$input = $app->input;
+
+		/** @var FabrikFEModelList $model */
 		$model = $this->getModel();
 
 		// Force front end templates
