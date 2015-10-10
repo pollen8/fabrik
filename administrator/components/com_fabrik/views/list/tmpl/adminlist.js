@@ -100,7 +100,7 @@ var ListForm = new Class({
             this.autoChangeDbName = jQuery('#jform__database_name').val() === '';
             jQuery('#jform_label').on('keyup', function (e) {
                 if (this.autoChangeDbName) {
-                    var label = jQuery('#jform_label').val().trim();
+                    var label = jQuery('#jform_label').val().trim().toLowerCase();
                     label = label.replace(/\W+/g, '_');
                     jQuery('#jform__database_name').val(label);
                 }
@@ -109,8 +109,7 @@ var ListForm = new Class({
             jQuery('#jform__database_name').on('keyup', function () {
                 this.autoChangeDbName = false;
             }.bind(this));
-
-        } ,
+        },
 
         watchOrderButtons: function () {
             document.getElements('.addOrder').removeEvents('click');

@@ -20,7 +20,6 @@ jimport('joomla.application.component.model');
  * @subpackage  Fabrik
  * @since       3.0
  */
-
 class FabrikPlugin extends JPlugin
 {
 	/**
