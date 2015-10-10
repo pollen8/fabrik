@@ -8,17 +8,17 @@
 			type="hidden"
 			filter="unset" />
 
+		<field name="label"
+		       type="textorwysiwyg"
+		       description="COM_FABRIK_FIELD_ELEMENT_LABEL_DESC"
+		       label="COM_FABRIK_FIELD_ELEMENT_LABEL_LABEL"
+		       size="35" />
+
 		<field name="name"
 			type="text"
 			description="COM_FABRIK_FIELD_ELEMENT_NAME_DESC"
 			label="COM_FABRIK_FIELD_ELEMENT_NAME_LABEL"
 			required="true"
-			size="35" />
-
-		<field name="label"
-			type="textorwysiwyg"
-			description="COM_FABRIK_FIELD_ELEMENT_LABEL_DESC"
-			label="COM_FABRIK_FIELD_ELEMENT_LABEL_LABEL"
 			size="35" />
 
 		<field name="plugin"
@@ -209,7 +209,7 @@
 				default="input-medium"
 				description="COM_FABRIK_FIELD_FILTER_CLASS_DESC"
 				label="COM_FABRIK_FIELD_FILTER_CLASS_LABEL" />
-				
+
 			<field name="filter_responsive_class"
 				type="list"
 				default=""

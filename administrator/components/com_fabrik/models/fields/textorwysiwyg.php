@@ -13,6 +13,9 @@ defined('_JEXEC') or die('Restricted access');
 
 require_once JPATH_ADMINISTRATOR . '/components/com_fabrik/helpers/element.php';
 
+jimport('joomla.form.helper');
+JFormHelper::loadFieldClass('text');
+
 /**
  * Renders either a plain <textarea> or WYSIWYG editor
  *
@@ -20,7 +23,6 @@ require_once JPATH_ADMINISTRATOR . '/components/com_fabrik/helpers/element.php';
  * @subpackage  Form
  * @since       1.6
  */
-
 class JFormFieldTextorwysiwyg extends JFormFieldText
 {
 	/**
@@ -36,7 +38,6 @@ class JFormFieldTextorwysiwyg extends JFormFieldText
 	 *
 	 * @return  string	The field input markup.
 	 */
-
 	protected function getInput()
 	{
 		$config = JComponentHelper::getParams('com_fabrik');
@@ -105,7 +106,6 @@ class JFormFieldTextorwysiwyg extends JFormFieldText
 	 *
 	 * @return  object  The JEditor object.
 	 */
-
 	protected function &getEditor()
 	{
 		// Only create the editor if it is not already created.

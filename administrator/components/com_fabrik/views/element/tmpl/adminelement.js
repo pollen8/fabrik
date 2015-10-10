@@ -49,6 +49,8 @@ var fabrikAdminElement = new Class({
 				}.bind(this));
 			}
 
+			this.watchLabel();
+			this.watchGroup();
 			this.options.jsevents.each(function (opt) {
 				this.addJavascript(opt);
 			}.bind(this));
@@ -82,6 +84,45 @@ var fabrikAdminElement = new Class({
 
 		}.bind(this));
 
+	},
+
+	/**
+	 * Automatically fill in the db table name from the label if no
+	 * db table name existed when the form loaded and when the user has not
+	 * edited the db table name.
+	 */
+	watchLabel: function () {
+		this.autoChangeDbName = jQuery('#jform_name').val() === '';
+		jQuery('#jform_label').on('keyup', function (e) {
+			if (this.autoChangeDbName) {
+				var label = jQuery('#jform_label').val().trim().toLowerCase();
+				label = label.replace(/\W+/g, '_');
+				jQuery('#jform_name').val(label);
+			}
+		}.bind(this));
+
+		jQuery('#jform_name').on('keyup', function () {
+			this.autoChangeDbName = false;
+		}.bind(this));
+	},
+
+	watchGroup: function ()  {
+		var cookieName = 'fabrik_element_group';
+		debugger;
+
+		if (jQuery('#jform_group_id').val() === '') {
+			var keyValue = document.cookie.match('(^|;) ?' + cookieName + '=([^;]*)(;|$)');
+			var val = keyValue ? keyValue[2] : null;
+			jQuery('#jform_group_id').val(val);
+		}
+
+		jQuery('#jform_group_id').on('change', function () {
+			var value = jQuery('#jform_group_id').val();
+			var date = new Date();
+			date.setTime(date.getTime() + (1 * 24 * 60 * 60 * 1000));
+			var expires = "; expires=" + date.toGMTString();
+			document.cookie = cookieName + '=' + encodeURIComponent(value) + expires;
+		})
 	},
 
 	iniJsAccordion: function () {

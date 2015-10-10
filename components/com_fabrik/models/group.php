@@ -682,7 +682,7 @@ class FabrikFEModelGroup extends FabModel
 					/**
 					 * As this function seems to be used to build both the list view and the form view, we should NOT
 					 * include elements in the list query if the user can not view them, as their data is sent to the json object
-					 * and thus visible in the page source. 
+					 * and thus visible in the page source.
 					 * Jaanus: also when we exclude elements globally with group settings ($groupParams->get('list_view_and_query', 1) == 0)
 					 */
 
@@ -785,7 +785,7 @@ class FabrikFEModelGroup extends FabModel
 			foreach ($elements as $elementModel)
 			{
 				$element = $elementModel->getElement();
-      
+
 				if ($params->get('list_view_and_query', 1) == 1 && $element->published == 1 && $elementModel->canView('list'))
 				{
 					if (empty($showInList))
@@ -1142,7 +1142,7 @@ class FabrikFEModelGroup extends FabModel
 		$masterInsertId = $this->masterInsertId();
 		$fk_name = $joinModel->getForeignKey();
 		$fks = array($fk_name, $fk_name . '_raw');
-		
+
 		foreach ($fks as $fk)
 		{
 			if ($this->canRepeat() && array_key_exists($fk, $formData))
@@ -1167,21 +1167,21 @@ class FabrikFEModelGroup extends FabModel
 				$formData[$fk] = $masterInsertId;
 			}
 		}
-		
+
 		/**
-		 * 
+		 *
 		 * $$$ hugh - added the clearDefaults method and need to call it here, otherwise if any pre-processing
 		 * has already called the element model's getValue(), the change we just made to formdata won't get picked up
 		 * during the row store processing, as getValue() will return the cached default.
 		 */
-		
+
 		$elementModel = $formModel->getElement($fk_name);
 		$elementModel->clearDefaults();
 	}
 
 	/**
-	 * 
-	 * 
+	 *
+	 *
 	 */
 	public function fkOnParent()
 	{
@@ -1198,16 +1198,16 @@ class FabrikFEModelGroup extends FabModel
 		* ... which means it needs different handling, like we don't set the FK value in the child, rather
 		* we have to go back and update the FK value in the parent after writing the child row.
 		*/
-		
+
 		// @TODO - handle joins which don't involve the parent!
-		
+
 		$joinModel = $this->getJoinModel();
 		$pkField = $joinModel->getForeignID();
 		$fk = $joinModel->getForeignKey();
-		
-		return $pkField === $fk;		
+
+		return $pkField === $fk;
 	}
-	
+
 	/**
 	 * Get the number of times the group was repeated when the user fills
 	 * in the form
@@ -1226,7 +1226,7 @@ class FabrikFEModelGroup extends FabModel
 
 	/**
 	 * Group specific form submission code - deals with saving joined data.
-	 * 
+	 *
 	 * @param   int  $parentId  insert ID of parent table
 	 *
 	 * @return  void
@@ -1243,9 +1243,9 @@ class FabrikFEModelGroup extends FabModel
 		$joinModel = $this->getJoinModel();
 		$pkField = $joinModel->getForeignID();
 		$fk = $joinModel->getForeignKey();
-		
+
 		$fkOnParent = $this->fkOnParent();
-		
+
 		$listModel = $this->getListModel();
 		$item = $this->getGroup();
 		$formModel = $this->getFormModel();
@@ -1255,7 +1255,7 @@ class FabrikFEModelGroup extends FabModel
 		{
 			$this->setForeignKey();
 		}
-		
+
 		$elementModels = $this->getMyElements();
 		$list = $listModel->getTable();
 		$tblName = $list->db_table_name;
@@ -1268,7 +1268,7 @@ class FabrikFEModelGroup extends FabModel
 		$usedKeys = array();
 
 		$insertId = false;
-		
+
 		if (!$fkOnParent)
 		{
 			/*
@@ -1277,16 +1277,16 @@ class FabrikFEModelGroup extends FabModel
 			for ($i = 0; $i < $repeats; $i ++)
 			{
 				$data = array();
-	
+
 				foreach ($elementModels as $elementModel)
 				{
 					$elementModel->onStoreRow($data, $i);
 				}
-	
+
 				if ($formModel->copyingRow())
 				{
 					$pk = '';
-					
+
 					if ($canRepeat)
 					{
 						$formData[$pkField][$i] = '';
@@ -1295,21 +1295,21 @@ class FabrikFEModelGroup extends FabModel
 					{
 						$formData[$pkField] = '';
 					}
-					
+
 				}
 				else
 				{
 					$pk = $canRepeat ? FArrayHelper::getValue($formData[$pkField], $i, '') : $formData[$pkField];
-		
+
 					// Say for some reason the pk was set as a dbjoin!
 					if (is_array($pk))
 					{
 						$pk = array_shift($pk);
 					}
 				}
-	
+
 				$insertId = $listModel->storeRow($data, $pk, true, $item);
-	
+
 				// Update key
 				if ($canRepeat)
 				{
@@ -1319,10 +1319,10 @@ class FabrikFEModelGroup extends FabModel
 				{
 					$formData[$pkField] = $insertId;
 				}
-	
+
 				$usedKeys[] = $insertId;
 			}
-			
+
 			// Delete any removed groups
 			$this->deleteRepeatGroups($usedKeys);
 		}
@@ -1331,9 +1331,9 @@ class FabrikFEModelGroup extends FabModel
 			/*
 			 * It's an abnormal join!  FK is on the parent.  Can't repeat, and the $pk needs to be derived differently
 			 */
-			
+
 			$data = array();
-			
+
 			foreach ($elementModels as $elementModel)
 			{
 				$elementModel->onStoreRow($data, 0);
@@ -1345,25 +1345,25 @@ class FabrikFEModelGroup extends FabModel
 			 */
 			$fkField = $joinModel->getPrimaryKey('___');
 			$pk = FArrayHelper::getValue($formData, $fkField . '_raw', FArrayHelper::getValue($formData, $fkField, ''));
-			
+
 			if (is_array($pk))
 			{
 				$pk = array_shift($pk);
 			}
-			
+
 			// storeRow treats 0 or '0' differently to empty string!  So if empty(), specifically set to empty string
 			if (empty($pk))
 			{
 				$pk = '';
 			}
-			
+
 			$insertId = $listModel->storeRow($data, $pk, true, $item);
 		}
 
 		// Reset the list's table name
 		$list->db_table_name = $tblName;
 		$list->db_primary_key = $tblPk;
-		
+
 		/*
 		 * If the FK is on the parent, we (may) need to update the parent row with the FK value
 		 * for the joined row we just upserted.
@@ -1374,7 +1374,7 @@ class FabrikFEModelGroup extends FabModel
 			 * Only bother doing this is the FK isn't there or has been changed.  Again, don't be
 			 * confused by using getPrimaryKey, it's really the FK 'cos the relationship is flipped
 			 * from a "normal" join, with the FK on the parent.
-			 */ 
+			 */
 			$fkField = $joinModel->getPrimaryKey('___');
 			if (!array_key_exists($fkField, $formData) || $formData[$fkField] != $insertId)
 			{
@@ -1384,7 +1384,7 @@ class FabrikFEModelGroup extends FabModel
 				$listModel->updateRow($parentId, $fkField, $insertId);
 			}
 		}
-		
+
 	}
 
 	/**
@@ -1408,14 +1408,14 @@ class FabrikFEModelGroup extends FabModel
 		/*
 		 * If we are copying a row, everything is new, leave old groups alone
 		 */
-		
+
 		$formModel = $this->getFormModel();
-		
+
 		if ($formModel->copyingRow())
 		{
 			return true;
 		}
-		
+
 		$listModel = $this->getListModel();
 		$list = $listModel->getTable();
 		$joinModel = $this->getJoinModel();
@@ -1431,14 +1431,14 @@ class FabrikFEModelGroup extends FabModel
 		 * allows us to respect and prefilter that was applied to the list's data.
 		 */
 		$groupId = $this->getId();
-		
+
 		/**
 		 * $$$ hugh - nooooo, on AJAX submit, request array hasn't been urldecoded, but formData has.
 		 * So in the request it's still hex-ified JSON.  Leaving this line and comment in here as a
 		 * reminder to self we may have other places this happens.
 		 * $origGroupRowsIds = $input->get('fabrik_group_rowids', array(), 'array');
 		 */
-		
+
 		$origGroupRowsIds = FArrayHelper::getValue($formModel->formData, 'fabrik_group_rowids', array());
 		$origGroupRowsIds = FArrayHelper::getValue($origGroupRowsIds, $groupId, array());
 		$origGroupRowsIds = json_decode($origGroupRowsIds);
@@ -1447,7 +1447,7 @@ class FabrikFEModelGroup extends FabModel
 		 * Find out which keys were origionally in the form, but were not submitted
 		 * i.e. those keys whose records were removed
 		 */
-		
+
 		if (!$formModel->isNewRecord())
 		{
 			$keysToDelete = array_diff($origGroupRowsIds, $usedKeys);
