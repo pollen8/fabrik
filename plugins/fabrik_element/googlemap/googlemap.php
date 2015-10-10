@@ -274,6 +274,7 @@ class PlgFabrik_ElementGooglemap extends PlgFabrik_Element
 		$opts->scalecontrol = (bool) $params->get('fb_gm_scalecontrol');
 		$opts->maptypecontrol = (bool) $params->get('fb_gm_maptypecontrol');
 		$opts->overviewcontrol = (bool) $params->get('fb_gm_overviewcontrol');
+		$opts->traffic = (bool) $params->get('fb_gm_trafficlayer', '0');
 		$opts->drag = (bool) $formModel->isEditable();
 		$opts->staticmap = $this->_useStaticMap() ? true : false;
 		$opts->maptype = $params->get('fb_gm_maptype');
