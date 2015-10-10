@@ -68,7 +68,7 @@ var FbGoogleMap = new Class({
 		'reverse_geocode': false,
 		'use_radius': false,
 		'geocode_on_load': false,
-		'traffic': true,
+		'traffic': false,
 		'styles': []
 	},
 

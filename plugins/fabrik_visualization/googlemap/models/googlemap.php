@@ -89,6 +89,7 @@ class FabrikModelGooglemap extends FabrikFEModelVisualization
 		$opts->scalecontrol = (bool) $params->get('fb_gm_scalecontrol');
 		$opts->scrollwheel = (bool) $params->get('fb_gm_scrollwheelcontrol');
 		$opts->maptypecontrol = (bool) $params->get('fb_gm_maptypecontrol');
+		$opts->traffic = (bool) $params->get('fb_gm_trafficlayer', '0');		
 		$opts->overviewcontrol = (bool) $params->get('fb_gm_overviewcontrol');
 		$opts->streetView = (bool) $params->get('street_view');
 		$opts->center = $params->get('fb_gm_center');

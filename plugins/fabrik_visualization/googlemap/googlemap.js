@@ -34,6 +34,7 @@ var FbGoogleMapViz = new Class({
 		'zoomStyle': 0,
 		'radius_fill_colors': [],
 		'streetView': false,
+		'traffic': false,
 		'styles': []
 	},
 
@@ -150,6 +151,11 @@ var FbGoogleMapViz = new Class({
 		};
 		this.map = new google.maps.Map(document.id(this.element_map), mapOpts);
 		this.map.setOptions({'styles': this.options.styles});
+		
+		if (this.options.traffic) {
+			  var trafficLayer = new google.maps.TrafficLayer();
+			  trafficLayer.setMap(this.map);	
+		}
 
 		this.infoWindow = new google.maps.InfoWindow({
 			content: ''
