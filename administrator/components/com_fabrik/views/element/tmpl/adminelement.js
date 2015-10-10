@@ -106,9 +106,12 @@ var fabrikAdminElement = new Class({
 		}.bind(this));
 	},
 
+	/**
+	 * Set the last selected group as a cookie value.
+	 * Then on page load if no group set, set to the cookie value.
+	 */
 	watchGroup: function ()  {
 		var cookieName = 'fabrik_element_group';
-		debugger;
 
 		if (jQuery('#jform_group_id').val() === '') {
 			var keyValue = document.cookie.match('(^|;) ?' + cookieName + '=([^;]*)(;|$)');
