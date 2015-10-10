@@ -1964,6 +1964,10 @@ class FabrikFEModelList extends JModelForm
 			}
 
 		}
+		else
+		{
+			$url = "";
+		}
 
 		$displayData = new stdClass;
 		$displayData->url = $url;
