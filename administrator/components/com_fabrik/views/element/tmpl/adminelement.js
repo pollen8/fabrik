@@ -108,7 +108,7 @@ var fabrikAdminElement = new Class({
 
 	watchGroup: function ()  {
 		var cookieName = 'fabrik_element_group';
-		debugger;
+		//debugger;
 
 		if (jQuery('#jform_group_id').val() === '') {
 			var keyValue = document.cookie.match('(^|;) ?' + cookieName + '=([^;]*)(;|$)');
