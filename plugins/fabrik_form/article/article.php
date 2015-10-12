@@ -86,7 +86,7 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 	protected function mapCategoryChanges($categories, &$store)
 	{
 		$defaultAricleId = null;
-echo "<pre>tore = ";print_r($store);
+
 		if (!empty($categories))
 		{
 			foreach ($store as $catid => $articleId)
