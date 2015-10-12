@@ -61,11 +61,12 @@ class FabrikFEModelCSVExport
 	/**
 	 * Write the file
 	 *
-	 * @param   int  $total  total # of records
+	 * @param   int  $total         Total # of records
+	 * @param   bool  $canDownload  Can we also download the file (at end of export)
 	 *
 	 * @return  null
 	 */
-	public function writeFile($total)
+	public function writeFile($total, $canDownload = false)
 	{
 		$app = JFactory::getApplication();
 		$input = $app->input;
@@ -217,7 +218,10 @@ class FabrikFEModelCSVExport
 		}
 		else
 		{
-			echo json_encode($res);
+			if (!$canDownload)
+			{
+				echo json_encode($res);
+			}
 		}
 	}
 

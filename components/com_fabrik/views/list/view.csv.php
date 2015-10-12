@@ -20,7 +20,6 @@ require_once JPATH_SITE . '/components/com_fabrik/views/list/view.base.php';
  * @subpackage  Fabrik
  * @since       3.0
  */
-
 class FabrikViewList extends FabrikViewListBase
 {
 	/**
@@ -30,13 +29,16 @@ class FabrikViewList extends FabrikViewListBase
 	 *
 	 * @return  mixed  A string if successful, otherwise a JError object.
 	 */
-
 	public function display($tpl = null)
 	{
 		$app = JFactory::getApplication();
 		$input = $app->input;
 		$session = JFactory::getSession();
+
+		/** @var FabrikFEModelCSVExport $exporter */
 		$exporter = JModelLegacy::getInstance('Csvexport', 'FabrikFEModel');
+
+		/** @var FabrikFEModelList $model */
 		$model = JModelLegacy::getInstance('list', 'FabrikFEModel');
 		$model->setId($input->getInt('listid'));
 
@@ -48,7 +50,8 @@ class FabrikViewList extends FabrikViewListBase
 		$model->setOutPutFormat('csv');
 		$exporter->model = $model;
 		$input->set('limitstart' . $model->getId(), $input->getInt('start', 0));
-		$input->set('limit' . $model->getId(), $exporter->getStep());
+		$limit = $exporter->getStep();
+		$input->set('limit' . $model->getId(), $limit);
 
 		// $$$ rob moved here from csvimport::getHeadings as we need to do this before we get
 		// the list total
@@ -94,17 +97,38 @@ class FabrikViewList extends FabrikViewListBase
 				return;
 			}
 
-			$exporter->writeFile($total);
+			$canDownload = $start + $limit >= $total;
+			$exporter->writeFile($total, $canDownload);
+
+			if ($canDownload)
+			{
+				$this->download($model, $exporter, $key);
+			}
 		}
 		else
 		{
-			$input->set('limitstart' . $model->getId(), 0);
-
-			// Remove the total from the session
-			$session->clear($key);
-			$exporter->downloadFile();
+			$this->download($model, $exporter, $key);
 		}
 
 		return;
+	}
+
+	/**
+     * Start the download process
+     *
+	 * @param   FabrikFEModelList       $model
+	 * @param   FabrikFEModelCSVExport  $exporter
+	 * @param   string                  $key
+	 *
+	 * @throws Exception
+	 */
+	protected function download($model, $exporter, $key)
+	{
+		$session = JFactory::getSession();
+		JFactory::getApplication()->input->set('limitstart' . $model->getId(), 0);
+
+		// Remove the total from the session
+		$session->clear($key);
+		$exporter->downloadFile();
 	}
 }
