@@ -125,10 +125,21 @@ class FabrikViewList extends FabrikViewListBase
 	protected function download($model, $exporter, $key)
 	{
 		$session = JFactory::getSession();
-		JFactory::getApplication()->input->set('limitstart' . $model->getId(), 0);
+		$input = JFactory::getApplication()->input;
+		$input->set('limitstart' . $model->getId(), 0);
+		$download = $input->getBool('download', true);
 
 		// Remove the total from the session
 		$session->clear($key);
-		$exporter->downloadFile();
+
+		if ($download)
+		{
+			$exporter->downloadFile();
+		}
+		else
+		{
+			$exporter->writeCSVFile();
+		}
+
 	}
 }
