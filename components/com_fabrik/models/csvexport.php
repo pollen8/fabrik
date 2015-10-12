@@ -59,13 +59,14 @@ class FabrikFEModelCSVExport
 	}
 
 	/**
-	 * Write the file
+	 * Write the current batch section of the CSV file
 	 *
-	 * @param   int  $total  total # of records
+	 * @param   int  $total         Total # of records
+	 * @param   bool  $canDownload  Can we also download the file (at end of export)
 	 *
 	 * @return  null
 	 */
-	public function writeFile($total)
+	public function writeFile($total, $canDownload = false)
 	{
 		$app = JFactory::getApplication();
 		$input = $app->input;
@@ -217,7 +218,10 @@ class FabrikFEModelCSVExport
 		}
 		else
 		{
-			echo json_encode($res);
+			if (!$canDownload)
+			{
+				echo json_encode($res);
+			}
 		}
 	}
 
@@ -312,6 +316,38 @@ class FabrikFEModelCSVExport
 	}
 
 	/**
+	 * Write the final csv file
+	 */
+	public function writeCSVFile()
+	{
+		$filePath = $this->getFilePath();
+		$str = $this->getCSVContent();
+		JFile::delete($filePath);
+		echo $str;exit;
+	}
+
+	/**
+	 * Get the final CSV content
+	 * @return bool
+	 */
+	protected function getCSVContent()
+	{
+		$filePath = $this->getFilePath();
+
+		if (JFile::exists($filePath))
+		{
+			$str = file_get_contents($filePath);
+		}
+		else
+		{
+			// If we cant find the file then don't try to auto download it
+			return false;
+		}
+
+		return $str;
+	}
+
+	/**
 	 * Start the download of the completed csv file
 	 *
 	 * @return null
@@ -327,17 +363,7 @@ class FabrikFEModelCSVExport
 		$filePath = $this->getFilePath();
 		$document = JFactory::getDocument();
 		$document->setMimeEncoding('application/zip');
-
-		if (JFile::exists($filePath))
-		{
-			$str = file_get_contents($filePath);
-		}
-		else
-		{
-			// If we cant find the file then don't try to auto download it
-			return false;
-		}
-
+		$str = $this->getCSVContent();
 		$app->clearHeaders();
 		$encoding = $this->getEncoding();
 

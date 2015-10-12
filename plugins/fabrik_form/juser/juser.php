@@ -353,7 +353,6 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 	 *
 	 * @return  bool  should the form model continue to save
 	 */
-
 	public function onBeforeStore()
 	{
 		$formModel = $this->getModel();
@@ -838,7 +837,7 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 		JArrayHelper::toInteger($groupIds);
 		$data = array();
 		$authLevels = $me->getAuthorisedGroups();
-		
+
 		if (!$isNew)
 		{
 
@@ -871,7 +870,7 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 				{
 					$groupIds = (array) $defaultGroup;
 				}
-				
+
 				if (count($groupIds) === 1 && $groupIds[0] == 0)
 				{
 					$data = (array) $defaultGroup;
@@ -889,7 +888,7 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 						{
 							throw new RuntimeException("could not alter user group to $groupId as you are not assigned to that group");
 						}
-					}				
+					}
 				}
 			}
 			else
@@ -1073,7 +1072,6 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 	 *
 	 * @return  void
 	 */
-
 	protected function raiseError(&$err, $field, $msg)
 	{
 		$app = JFactory::getApplication();

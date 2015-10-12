@@ -97,11 +97,15 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 					$defaultAricleId = $articleId;
 				}
 			}
+
 			foreach ($categories as $category)
 			{
 				if (!isset($store->$category))
 				{
-					$store->$category = $defaultAricleId;
+					if ($category !== '')
+					{
+						$store->$category = $defaultAricleId;
+					}
 				}
 			}
 		}
@@ -570,6 +574,10 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 			throw new RuntimeException('metaStore: No meta store element found for element id ' . $params->get('meta_store'));
 		}
 
+		if (!is_object($metaStore))
+		{
+			$metaStore = new stdClass;
+		}
 		return $metaStore;
 	}
 
@@ -768,5 +776,58 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 		}
 
 		return $res->introtext . ' ' . $res->fulltext;
+	}
+
+	/**
+	 * Before the record is stored, this plugin will see if it should process
+	 * and if so store the form data in the session.
+	 *
+	 * @return  bool  Should the form model continue to save
+	 */
+	public function onBeforeStore()
+	{
+		$formModel = $this->getModel();
+		$params = $this->getParams();
+		$this->data = $this->getProcessData();
+
+		if ($catElement = $formModel->getElement($params->get('categories_element'), true))
+		{
+			$catName = $catElement->getFullName();
+			$cat = $catName . '_raw';
+			$categories = (array) FArrayHelper::getValue($this->data, $cat);
+
+			if (empty($categories) || is_array($categories) && $categories[0] === '')
+			{
+				$this->raiseError($formModel->errors, $catName, FText::_('PLG_FABRIK_FORM_ARTICLE_ERR_NO_CATEGORY'));
+
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+
+	/**
+	 * Raise an error - depends on whether you are in admin or not as to what to do
+	 *
+	 * @param   array   &$err   Form models error array
+	 * @param   string  $field  Name
+	 * @param   string  $msg    Message
+	 *
+	 * @return  void
+	 */
+	protected function raiseError(&$err, $field, $msg)
+	{
+		$app = JFactory::getApplication();
+
+		if ($app->isAdmin())
+		{
+			$app->enqueueMessage($msg, 'notice');
+		}
+		else
+		{
+			$err[$field][0][] = $msg;
+		}
 	}
 }
