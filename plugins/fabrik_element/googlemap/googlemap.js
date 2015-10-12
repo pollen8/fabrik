@@ -68,6 +68,7 @@ var FbGoogleMap = new Class({
 		'reverse_geocode': false,
 		'use_radius': false,
 		'geocode_on_load': false,
+		'traffic': false,
 		'styles': []
 	},
 
@@ -187,6 +188,12 @@ var FbGoogleMap = new Class({
 				};
 			this.map = new google.maps.Map(document.id(this.element).getElement('.map'), mapOpts);
 			this.map.setOptions({'styles': this.options.styles});
+			
+			if (this.options.traffic) {
+				  var trafficLayer = new google.maps.TrafficLayer();
+				  trafficLayer.setMap(this.map);	
+			}
+			
 			var point = new google.maps.LatLng(this.options.lat, this.options.lon);
 			var opts = {
 				map: this.map,
