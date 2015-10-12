@@ -1088,7 +1088,10 @@ var FbForm = new Class({
 			if (this.options.ajax) {
 				// Do ajax val only if onSubmit val ok
 				if (this.form) {
-					Fabrik.loader.start(this.getBlock(), Joomla.JText._('COM_FABRIK_LOADING'));
+					// if showLoader is enabled (for non AJAX submits) the loader will already have been shown up there ^^
+					if (!this.options.showLoader) {
+						Fabrik.loader.start(this.getBlock(), Joomla.JText._('COM_FABRIK_LOADING'));
+					}
 
 					// Get all values from the form
 					var data = $H(this.getFormData());
