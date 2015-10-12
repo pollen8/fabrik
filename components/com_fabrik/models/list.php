@@ -1413,7 +1413,7 @@ class FabrikFEModelList extends JModelForm
 					$displayData->editLink = $edit_link;
 					$displayData->editLabel = $editLabel;
 					$displayData->editText = $editText;
-					$layout = FabrikHelperHTML::getLayout('fabrik-edit-button',  array(COM_FABRIK_BASE . 'components/com_fabrik/layouts/listactions'));
+					$layout = FabrikHelperHTML::getLayout('listactions.fabrik-edit-button');
 					$editLink = $layout->render($displayData);
 				}
 				else
@@ -1442,7 +1442,7 @@ class FabrikFEModelList extends JModelForm
 					$displayData->viewText = $viewText;
 					$displayData->dataList = $dataList;
 
-					$layout = FabrikHelperHTML::getLayout('fabrik-view-button',  array(COM_FABRIK_BASE . 'components/com_fabrik/layouts/listactions'));
+					$layout = FabrikHelperHTML::getLayout('listactions.fabrik-view-button');
 					$viewLink = $layout->render($displayData);
 				}
 				else
@@ -1598,7 +1598,7 @@ class FabrikFEModelList extends JModelForm
 		$tpl = $this->getTmpl();
 		$align = $params->get('checkboxLocation', 'end') == 'end' ? 'right' : 'left';
 		$displayData = array('align' => $align);
-		$layout = FabrikHelperHTML::getLayout($buttonAction, array(COM_FABRIK_BASE . 'components/com_fabrik/layouts/listactions'));
+		$layout = FabrikHelperHTML::getLayout('listactions.' . $buttonAction);
 
 		foreach ($data as $groupKey => $group)
 		{
@@ -1753,7 +1753,7 @@ class FabrikFEModelList extends JModelForm
 		$displayData->label = $j3 ? ' ' . FText::_('COM_FABRIK_DELETE') : '<span>' . FText::_('COM_FABRIK_DELETE') . '</span>';
 		$displayData->renderContext = $this->getRenderContext();
 
-		$layout = FabrikHelperHTML::getLayout('fabrik-delete-button',  array(COM_FABRIK_BASE . 'components/com_fabrik/layouts/listactions'));
+		$layout = FabrikHelperHTML::getLayout('listactions.fabrik-delete-button');
 
 		if ($j3)
 		{

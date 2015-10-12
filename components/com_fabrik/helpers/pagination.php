@@ -318,7 +318,7 @@ class FPagination extends JPagination
 	{
 		$displayData = new stdClass;
 		$displayData->list = $list;
-		$layout = FabrikHelperHTML::getLayout('fabrik-pagination-links', array(COM_FABRIK_FRONTEND . '/layouts/pagination'));
+		$layout = FabrikHelperHTML::getLayout('pagination.fabrik-pagination-links');
 
 		return $layout->render($displayData);
 	}
@@ -428,7 +428,7 @@ class FPagination extends JPagination
 		$displayData->pagesCounter = $list['pagescounter'];
 		$displayData->listName =  'limit' . $this->id;
 		$displayData->links = $list['pageslinks'];
-		$layout = FabrikHelperHTML::getLayout('fabrik-pagination-footer', array(COM_FABRIK_FRONTEND . '/layouts/pagination'));
+		$layout = FabrikHelperHTML::getLayout('pagination.fabrik-pagination-footer');
 
 		return $layout->render($displayData);
 	}
