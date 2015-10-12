@@ -295,7 +295,6 @@ class FabrikViewListBase extends JViewLegacy
 	 *
 	 * @return void
 	 */
-
 	public function display($tpl = null)
 	{
 		if ($this->getLayout() == '_advancedsearch')
@@ -331,6 +330,7 @@ class FabrikViewListBase extends JViewLegacy
 		$c = 0;
 		$form = $model->getFormModel();
 		$nav = $model->getPagination();
+		$this->setCanonicalLink();
 
 		foreach ($data as $groupk => $group)
 		{
@@ -554,7 +554,6 @@ class FabrikViewListBase extends JViewLegacy
 	 *
 	 * @return  void
 	 */
-
 	protected function setTitle($w, &$params, $model)
 	{
 		$app = JFactory::getApplication();
@@ -602,11 +601,8 @@ class FabrikViewListBase extends JViewLegacy
 	 *
 	 * @return  void
 	 */
-
 	protected function output()
 	{
-		$app = JFactory::getApplication();
-		$input = $app->input;
 		$profiler = JProfiler::getInstance('Application');
 		$text = $this->loadTemplate();
 		JDEBUG ? $profiler->mark('template loaded') : null;
@@ -629,7 +625,6 @@ class FabrikViewListBase extends JViewLegacy
 	 *
 	 * @return  void
 	 */
-
 	protected function buttons()
 	{
 		$model = $this->getModel();
@@ -673,7 +668,6 @@ class FabrikViewListBase extends JViewLegacy
 	 *
 	 * @return  array
 	 */
-
 	protected function _getCalculations($aCols)
 	{
 		$aData = array();
@@ -843,7 +837,6 @@ class FabrikViewListBase extends JViewLegacy
 	 *
 	 * @return  string  hidden fields
 	 */
-
 	protected function loadTemplateBottom()
 	{
 		$app = JFactory::getApplication();
@@ -931,5 +924,28 @@ class FabrikViewListBase extends JViewLegacy
 		$action = $input->server->get('HTTP_REFERER', 'index.php?option=com_' . $package, 'string');
 		$this->action = $action;
 		$this->listid = $id;
+	}
+
+	/**
+	 * Set the canonical link - this is the definitive URL that Google et all, will use
+	 * to determine if duplicate URLs are the same content
+	 *
+	 * @throws Exception
+	 */
+	public function setCanonicalLink()
+	{
+		$app = JFactory::getApplication();
+
+		if (!$app->isAdmin() && !$this->isMambot)
+		{
+			$model = $this->getModel();
+			$id = $model->getId();
+			$package = $app->getUserState('com_fabrik.package', 'fabrik');
+			$url = JRoute::_('index.php?option=com_' . $package . '&view=list&listid=' . $id);
+
+			// Set a flag so that the system plugin can clear out any other canonical links.
+			JFactory::getSession()->set('fabrik.clearCanonical', true);
+			JFactory::getDocument()->addCustomTag('<link rel="canonical" href="' . htmlspecialchars($url) . '" />');
+		}
 	}
 }
