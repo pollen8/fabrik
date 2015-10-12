@@ -1476,7 +1476,7 @@ var FbForm = new Class({
 						if (typeOf(e.element) !== 'null') {
 							if (typeOf(document.id(e.element.id)) === 'null') {
 								e.decloned(i);
-								delete this.formElements.k;
+								delete this.formElements[k];
 							}
 						}
 					}.bind(this));
@@ -1582,7 +1582,6 @@ var FbForm = new Class({
 	 *
 	 * @param   event  e  Click event
 	 */
-
 	duplicateGroup: function (e) {
 		var subElementContainer, container;
 		Fabrik.fireEvent('fabrik.form.group.duplicate', [this, e]);
@@ -1721,7 +1720,7 @@ var FbForm = new Class({
 
 				newEl.container = null;
 				newEl.options.repeatCounter = c;
-				
+
 				// This seems to be wrong, as it'll set origId to the repeat ID with the _X appended.
 				//newEl.origId = origelid;
 
