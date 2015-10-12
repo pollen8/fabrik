@@ -64,6 +64,10 @@ function fabrikBuildRoute(&$query)
 
 		unset($query['id']);
 
+		if (isset($query['listid']))
+		{
+			unset($query['listid']);
+		}
 		return $segments;
 	}
 
