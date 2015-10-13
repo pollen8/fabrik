@@ -1011,26 +1011,6 @@ class FabrikString extends JString
 		}
 	}
 	
-	/**
-	 * Get a list ID from a X_<scop>_X listRef, like 1_com_fabrik_1.  All it does is regex out the numeric
-	 * suffix, but putting this in a helper in case we ever change the listRef format.
-	 *
-	 * @param  string  $listRef
-	 *
-	 * @return  string|boolean  list ID or false
-	 */
-	public static function getIdFromListRef($listRef)
-	{
-		$matches = array();
-	
-		if (preg_match('#_(\d+)$#', $listRef, $matches))
-		{
-			return $matches[1];
-		}
-	
-		return false;
-	}
-	
 }
 
 /**

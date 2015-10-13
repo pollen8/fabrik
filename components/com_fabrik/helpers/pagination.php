@@ -430,13 +430,7 @@ class FPagination extends JPagination
 		$displayData->listName =  'limit' . $this->id;
 		$displayData->links = $list['pageslinks'];
 		
-		if (isset($this->listRef))
-		{
-			if ($listId = FabrikString::getIdFromListRef($this->listRef))
-			{
-				$paths[] = JPATH_THEMES . '/' . JFactory::getApplication()->getTemplate() . '/html/layouts/com_fabrik/list_' . $listId;
-			}
-		}
+		$paths[] = JPATH_THEMES . '/' . JFactory::getApplication()->getTemplate() . '/html/layouts/com_fabrik/list_' . $this->id;
 		
 		$layout = FabrikHelperHTML::getLayout('pagination.fabrik-pagination-footer', $paths);
 
