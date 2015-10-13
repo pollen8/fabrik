@@ -5528,7 +5528,7 @@ class FabrikFEModelList extends JModelForm
 	 * Load in the elements for the table's form
 	 * If no form loaded for the list object then one is loaded
 	 *
-	 * @return  array	element objects
+	 * @return  FabrikFEModelGroup[]	element objects
 	 */
 	public function getFormGroupElementData()
 	{
@@ -9474,7 +9474,7 @@ class FabrikFEModelList extends JModelForm
 	 *
 	 * @param   string  $plugin  name
 	 *
-	 * @return  array	matched element models
+	 * @return  PlgFabrik_Element[]	matched element models
 	 */
 	public function getElementsOfType($plugin)
 	{

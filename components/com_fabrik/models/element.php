@@ -3551,13 +3551,15 @@ class PlgFabrik_Element extends FabrikPlugin
 	{
 		$opts = array();
 		$phpOpts = $this->getPhpOptions();
+
 		if ($phpOpts)
 		{
 			foreach ($phpOpts as $phpOpt)
 			{
-				$opts[] = $phpOpt->disable;
+				$opts[] = isset($phpOpt->disable) ? $phpOpt->disable : false;
 			}
 		}
+
 		return $opts;
 	}
 
@@ -3632,14 +3634,14 @@ class PlgFabrik_Element extends FabrikPlugin
 	{
 		$usersConfig = JComponentHelper::getParams('com_fabrik');
 		$params = $this->getParams();
-		$filter_build = $params->get('filter_build_method', 0);
+		$filterBuild = $params->get('filter_build_method', 0);
 
-		if ($filter_build == 0)
+		if ($filterBuild == 0)
 		{
-			$filter_build = $usersConfig->get('filter_build_method');
+			$filterBuild = $usersConfig->get('filter_build_method');
 		}
 
-		return $filter_build;
+		return $filterBuild;
 	}
 
 	/**
@@ -3650,21 +3652,21 @@ class PlgFabrik_Element extends FabrikPlugin
 	 * @param   string  $tableName  table name to use - defaults to element's current table
 	 * @param   string  $label      field to use, defaults to element name
 	 * @param   string  $id         field to use, defaults to element name
-	 * @param   bool    $incjoin    include join
+	 * @param   bool    $incJoin    include join
 	 *
 	 * @return  array  text/value objects
 	 */
-	public function filterValueList($normal, $tableName = '', $label = '', $id = '', $incjoin = true)
+	public function filterValueList($normal, $tableName = '', $label = '', $id = '', $incJoin = true)
 	{
-		$filter_build = $this->getFilterBuildMethod();
+		$filterBuild = $this->getFilterBuildMethod();
 
-		if ($filter_build == 2 && $this->hasSubElements)
+		if ($filterBuild == 2 && $this->hasSubElements)
 		{
-			return $this->filterValueList_All($normal, $tableName, $label, $id, $incjoin);
+			return $this->filterValueList_All($normal, $tableName, $label, $id, $incJoin);
 		}
 		else
 		{
-			return $this->filterValueList_Exact($normal, $tableName, $label, $id, $incjoin);
+			return $this->filterValueList_Exact($normal, $tableName, $label, $id, $incJoin);
 		}
 	}
 
@@ -3688,13 +3690,13 @@ class PlgFabrik_Element extends FabrikPlugin
 	 * @param   string  $tableName  table name to use - defaults to element's current table
 	 * @param   string  $label      field to use, defaults to element name
 	 * @param   string  $id         field to use, defaults to element name
-	 * @param   bool    $incjoin    include join
+	 * @param   bool    $incJoin    include join
 	 *
 	 * @throws ErrorException
 	 *
 	 * @return  array	filter value and labels
 	 */
-	protected function filterValueList_Exact($normal, $tableName = '', $label = '', $id = '', $incjoin = true)
+	protected function filterValueList_Exact($normal, $tableName = '', $label = '', $id = '', $incJoin = true)
 	{
 		$listModel = $this->getListModel();
 		$fbConfig = JComponentHelper::getParams('com_fabrik');
@@ -3723,7 +3725,7 @@ class PlgFabrik_Element extends FabrikPlugin
 			}
 		}
 
-		$incjoin = $this->isJoin() ? false : $incjoin;
+		$incJoin = $this->isJoin() ? false : $incJoin;
 		/**
 		 * filter the drop downs lists if the table_view_own_details option is on
 		 * other wise the lists contain data the user should not be able to see
@@ -3732,7 +3734,7 @@ class PlgFabrik_Element extends FabrikPlugin
 
 		// Check if the elements group id is on of the table join groups if it is then we swap over the table name
 		$fromTable = $this->isJoin() ? $this->getJoinModel()->getJoin()->table_join : $origTable;
-		$joinStr = $incjoin ? $listModel->buildQueryJoin() : $this->buildFilterJoin();
+		$joinStr = $incJoin ? $listModel->buildQueryJoin() : $this->buildFilterJoin();
 
 		// New option not to order elements - required if you want to use db joins 'Joins where and/or order by statement'
 		$groupBy = $this->getOrderBy('filter');
@@ -3873,11 +3875,11 @@ class PlgFabrik_Element extends FabrikPlugin
 	 * @param   string  $tableName  table name to use - defaults to element's current table
 	 * @param   string  $label      field to use, defaults to element name
 	 * @param   string  $id         field to use, defaults to element name
-	 * @param   bool    $incjoin    include join
+	 * @param   bool    $incJoin    include join
 	 *
 	 * @return  array	filter value and labels
 	 */
-	protected function filterValueList_All($normal, $tableName = '', $label = '', $id = '', $incjoin = true)
+	protected function filterValueList_All($normal, $tableName = '', $label = '', $id = '', $incJoin = true)
 	{
 		$values = $this->getSubOptionValues();
 		$labels = $this->getSubOptionLabels();
