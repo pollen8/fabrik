@@ -27,7 +27,7 @@ if (!function_exists('shFetchFormName'))
 	 *
 	 * @param   number  $formId  Form id
 	 *
-	 * @return NULL|Ambiguous <string, unknown>
+	 * @return NULL|string
 	 */
 	function shFetchFormName($formId)
 	{
@@ -55,7 +55,7 @@ if (!function_exists('shFetchListName'))
 	 *
 	 * @param   int  $formId  Form id
 	 *
-	 * @return NULL|Ambiguous <string, unknown>
+	 * @return string
 	 */
 	function shFetchListName($formId)
 	{
@@ -81,20 +81,20 @@ if (!function_exists('shFetchSlug'))
 	/**
 	 * Fetch slug
 	 *
-	 * @param   string  $rowid   Row id
+	 * @param   string  $rowId   Row id
 	 * @param   number  $formId  Form id
 	 *
-	 * @return NULL|Ambiguous <string, NULL, Ambiguous, unknown>
+	 * @return NULL|String
 	 */
-	function shFetchSlug($rowid, $formId)
+	function shFetchSlug($rowId, $formId)
 	{
-		if (empty($rowid) || $rowid == '-1')
+		if (empty($rowId) || $rowId == '-1')
 		{
 			return null;
 		}
 		else
 		{
-			$slug = shFetchRecordName($rowid, $formId);
+			$slug = shFetchRecordName($rowId, $formId);
 
 			return isset($slug) ? $slug : '';
 		}
@@ -106,13 +106,13 @@ if (!function_exists('shFetchTableName'))
 	/**
 	 * Fetch the table's name
 	 *
-	 * @param   int  $listid  List id
+	 * @param   int  $listId  List id
 	 *
-	 * @return NULL|Ambiguous <string, unknown>
+	 * @return string
 	 */
-	function shFetchTableName($listid)
+	function shFetchTableName($listId)
 	{
-		if (empty($listid))
+		if (empty($listId))
 		{
 			return null;
 		}
@@ -121,7 +121,7 @@ if (!function_exists('shFetchTableName'))
 		$query = $db->getQuery(true);
 		$query->select('label')
 			->from($query->qn('#__fabrik_lists'))
-			->where('id = ' . $query->q($listid));
+			->where('id = ' . $query->q($listId));
 		$db->setQuery($query);
 		$tableName = $db->loadResult();
 
@@ -134,14 +134,14 @@ if (!function_exists('shFetchRecordName'))
 	/**
 	 * Fetch the record's name
 	 *
-	 * @param   string  $rowid   Rowid
+	 * @param   string  $rowId   Row id
 	 * @param   number  $formId  Form id
 	 *
-	 * @return NULL|Ambiguous <string, unknown>
+	 * @return string
 	 */
-	function shFetchRecordName($rowid, $formId)
+	function shFetchRecordName($rowId, $formId)
 	{
-		if (empty($rowid) || empty($formId))
+		if (empty($rowId) || empty($formId))
 		{
 			return null;
 		}
@@ -164,7 +164,7 @@ if (!function_exists('shFetchRecordName'))
 		$query = $db->getQuery(true);
 		$query->select($query->qn($slug))
 			->from($query->qn($listName))
-			->where('id = ' . $query->q($rowid));
+			->where('id = ' . $query->q($rowId));
 		$db->setQuery($query);
 		$recordName = $db->loadResult();
 
@@ -179,7 +179,7 @@ if (!function_exists('shFetchVizName'))
 	 *
 	 * @param   int  $id  Id
 	 *
-	 * @return NULL|Ambiguous <string, unknown>
+	 * @return string
 	 */
 	function shFetchVizName($id)
 	{
@@ -206,9 +206,9 @@ $shLangName     = '';
 $shLangIso      = '';
 $title          = array();
 $shItemidString = '';
-$dosef          = shInitializePlugin($lang, $shLangName, $shLangIso, $option);
+$doSef          = shInitializePlugin($lang, $shLangName, $shLangIso, $option);
 
-if ($dosef == false)
+if ($doSef == false)
 {
 	return;
 }
@@ -221,11 +221,11 @@ if ($dosef == false)
 
 // $task   = isset($task) ? @$task : null;
 // $Itemid = isset($Itemid) ? @$Itemid : null;
-$listid = isset($listid) ? @$listid : null;
+$listId = isset($listId) ? @$listId : null;
 $id     = isset($id) ? @$id : null;
 $view   = isset($view) ? @$view : null;
 $formId = isset($formId) ? @$formId : null;
-$rowid  = isset($rowid) ? @$rowid : null;
+$rowId  = isset($rowId) ? @$rowId : null;
 
 // Get fabrik SEF configuration - used to include/exclude list's names in SEF urls
 $config = JComponentHelper::getParams('com_fabrik');
@@ -233,10 +233,10 @@ $config = JComponentHelper::getParams('com_fabrik');
 switch ($view)
 {
 	case 'form':
-		if (isset($formId) && $rowid != '')
+		if (isset($formId) && $rowId != '')
 		{
 			$config->get('fabrik_sef_customtxt_edit') == '' ? $edit = 'edit' : $edit = $config->get('fabrik_sef_customtxt_edit');
-			$title[] = shFetchFormName($formId) . '-' . $rowid . '-' . FText::_($edit);
+			$title[] = shFetchFormName($formId) . '-' . $rowId . '-' . FText::_($edit);
 		}
 		else
 		{
@@ -269,7 +269,7 @@ switch ($view)
 			}
 		}
 
-		if (isset($rowid))
+		if (isset($rowId))
 		{
 			switch ($config->get('fabrik_sef_format_records'))
 			{
@@ -277,19 +277,19 @@ switch ($view)
 					$title[] = '';
 					break;
 				case 'id_only':
-					$title[] = $rowid;
+					$title[] = $rowId;
 					shRemoveFromGETVarsList('rowid');
 					break;
 				case 'id_slug':
-					$title[] = $rowid . '-' . shFetchSlug($rowid, $formId);
+					$title[] = $rowId . '-' . shFetchSlug($rowId, $formId);
 					shRemoveFromGETVarsList('rowid');
 					break;
 				case 'slug_id':
-					$title[] = shFetchSlug($rowid, $formId) . '-' . $rowid;
+					$title[] = shFetchSlug($rowId, $formId) . '-' . $rowId;
 					shRemoveFromGETVarsList('rowid');
 					break;
 				case 'slug_only':
-					$title[] = shFetchSlug($rowid, $formId);
+					$title[] = shFetchSlug($rowId, $formId);
 					shRemoveFromGETVarsList('rowid');
 					break;
 			}
@@ -310,13 +310,13 @@ switch ($view)
 			$menusId = $menus->getMenu();
 
 			// Get the rowid and formid from the menu object
-			$menu_params = new JParameter($menusId[$itemId]->params);
-			$rowid 	     = $menu_params->get('rowid');
+			$menu_params = new JRegistry($menusId[$itemId]->params);
+			$rowId 	     = $menu_params->get('rowid');
 			$formId      = $menusId[$itemId]->query['formid'];
 
 			if ($formId)
 			{
-				$title[] = shFetchRecordName($rowid, $formId);
+				$title[] = shFetchRecordName($rowId, $formId);
 				shMustCreatePageId('set', true);
 			}
 		}
@@ -341,9 +341,9 @@ switch ($view)
 		}
 		else
 		{
-			if (isset($listid))
+			if (isset($listId))
 			{
-				$title[] = shFetchTableName($listid);
+				$title[] = shFetchTableName($listId);
 				shMustCreatePageId('set', true);
 			}
 		}
@@ -391,12 +391,12 @@ shRemoveFromGETVarsList('calculations');
 shRemoveFromGETVarsList('random');
 
 // ------------------  standard plugin finalize function - don't change ---------------------------
-if ($dosef)
+if ($doSef)
 {
 	$string = shFinalizePlugin(
 		$string, $title, $shAppendString, $shItemidString, (isset($limit) ? @$limit : null),
 		(
-			isset($limitstart) ? @$limitstart : null), (isset($shLangName) ? @$shLangName : null)
+			isset($limitStart) ? @$limitStart : null), (isset($shLangName) ? @$shLangName : null)
 	);
 }
 
