@@ -383,7 +383,7 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 		// Needed for shouldProcess...
 		$this->data = $this->getProcessData();
 
-		if (!$this->shouldProcess('juser_conditon', null))
+		if (!$this->shouldProcess('juser_conditon', null, $params))
 		{
 			return true;
 		}

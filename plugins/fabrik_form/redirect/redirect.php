@@ -26,11 +26,11 @@ class PlgFabrik_FormRedirect extends PlgFabrik_Form
 {
 	/*
 	 * Cache the navIds for "save and next" so we don't run the queries twice
-	 * 
+	 *
 	 * @var  object
 	 */
 	private $navIds = null;
-	
+
 	/**
 	 * Process the plugin, called after form is submitted
 	 *
@@ -97,11 +97,11 @@ class PlgFabrik_FormRedirect extends PlgFabrik_Form
 			{
 				$url = 'index.php?option=com_' . $package . '&view=form&Itemid=' . $Itemid . '&formid=' . $form->id  . '&listid=' . $formModel->getListModel()->getId();
 			}
-			
+
 			$url .= $next_rowid;
 			$this->data['jump_page'] = JRoute::_($url);
 		}
-		
+
 		if ($this->data['jump_page'] != '')
 		{
 			$this->data['jump_page'] = $this->buildJumpPage();
@@ -488,22 +488,23 @@ class PlgFabrik_FormRedirect extends PlgFabrik_Form
 			return false;
 		}
 
-		return $this->shouldProcess('redirect_conditon');
+		$params = $this->getParams();
+		return $this->shouldProcess('redirect_conditon', null, $params);
 	}
-	
+
 	/**
 	 * Get the first last, prev and next record ids
 	 *
 	 * @return  object
 	 */
-	
+
 	protected function getNavIds()
 	{
 		if (isset($this->navIds))
 		{
 			return $this->navIds;
 		}
-		
+
 		$formModel = $this->getModel();
 		$listModel = $formModel->getListModel();
 		$listModel->filters = null;
@@ -517,19 +518,19 @@ class PlgFabrik_FormRedirect extends PlgFabrik_Form
 		$table = $listModel->getTable();
 		$db = $listModel->getDb();
 		$query = $db->getQuery(true);
-	
+
 		// As we are selecting on primary key we can select all rows - 3000 records load in 0.014 seconds
 		$query->select($table->db_primary_key)->from($table->db_table_name);
 		$query = $listModel->buildQueryJoin($query);
 		$query = $listModel->buildQueryWhere(true, $query);
 		$query = $listModel->buildQueryOrder($query);
-	
+
 		foreach ($listModel->orderEls as $orderName)
 		{
 			$orderName = FabrikString::safeColNameToArrayKey($orderName);
 			$query->select(FabrikString::safeColName($orderName) . ' AS ' . $orderName);
 		}
-	
+
 		$db->setQuery($query);
 		$rows = $db->loadColumn();
 		$keys = array_flip($rows);
@@ -541,9 +542,9 @@ class PlgFabrik_FormRedirect extends PlgFabrik_Form
 		$o->next = $o->index + 1 > $o->lastKey ? $o->lastKey : $rows[$o->index + 1];
 		$o->prev = $o->index - 1 < 0 ? 0 : $rows[$o->index - 1];
 		$this->navIds = $o;
-	
+
 		$app->input->set('view','form');
-		
+
 		return $this->navIds;
 	}
 }

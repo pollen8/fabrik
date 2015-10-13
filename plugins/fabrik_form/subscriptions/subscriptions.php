@@ -386,7 +386,7 @@ class PlgFabrik_FormSubscriptions extends PlgFabrik_Form
 		$input = $app->input;
 		$this->data = $formModel->fullFormData;
 
-		if (!$this->shouldProcess('subscriptions_conditon'))
+		if (!$this->shouldProcess('subscriptions_conditon', null, $params))
 		{
 			return true;
 		}
