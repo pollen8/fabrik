@@ -75,6 +75,7 @@ class PlgFabrik_FormConfirmation extends PlgFabrik_Form
 	public function onBeforeStore()
 	{
 		$formModel = $this->getModel();
+		$params = $this->getParams();
 		$app = JFactory::getApplication();
 		$input = $app->input;
 		$package = $app->getUserState('com_fabrik.package', 'fabrik');
@@ -88,7 +89,7 @@ class PlgFabrik_FormConfirmation extends PlgFabrik_Form
 		$this->runAway = false;
 		$this->data = $formModel->formData;
 
-		if (!$this->shouldProcess('confirmation_condition'))
+		if (!$this->shouldProcess('confirmation_condition', null, $params))
 		{
 			$this->clearSession($formModel->getId());
 

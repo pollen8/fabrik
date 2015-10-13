@@ -51,7 +51,7 @@ class PlgFabrik_FormFtp extends PlgFabrik_Form
 		$ftpTemplate = JPath::clean(JPATH_SITE . '/plugins/fabrik_form/ftp/tmpl/' . $params->get('ftp_template', ''));
 		$this->data = $this->getProcessData();
 
-		if (!$this->shouldProcess('ftp_conditon', null))
+		if (!$this->shouldProcess('ftp_conditon', null, $params))
 		{
 			return;
 		}

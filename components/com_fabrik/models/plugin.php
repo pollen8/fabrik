@@ -78,7 +78,6 @@ class FabrikPlugin extends JPlugin
 	 *
 	 * @return  void
 	 */
-
 	public function setId($id)
 	{
 		$this->id = $id;
@@ -89,7 +88,6 @@ class FabrikPlugin extends JPlugin
 	 *
 	 * @return  int  id
 	 */
-
 	public function getId()
 	{
 		return $this->id;
@@ -122,7 +120,6 @@ class FabrikPlugin extends JPlugin
 	 *
 	 * @return string
 	 */
-
 	public function getName()
 	{
 		return isset($this->name) ? $this->name : get_class($this);
@@ -134,7 +131,6 @@ class FabrikPlugin extends JPlugin
 	 * @param   object  &$subject  The object to observe
 	 * @param   array   $config    An array that holds the plugin configuration
 	 */
-
 	public function __construct(&$subject, $config = array())
 	{
 		parent::__construct($subject, $config);
@@ -144,9 +140,8 @@ class FabrikPlugin extends JPlugin
 	/**
 	 * Get the JForm object for the plugin
 	 *
-	 * @return object jform
+	 * @return JForm
 	 */
-
 	public function getJForm()
 	{
 		if (!isset($this->jform))
@@ -173,7 +168,6 @@ class FabrikPlugin extends JPlugin
 	 *
 	 * @return  void
 	 */
-
 	protected function renderFromNavTabHeadings($form, &$output, $repeatCounter = 0)
 	{
 		$fieldsets = $form->getFieldsets();
@@ -218,13 +212,11 @@ class FabrikPlugin extends JPlugin
 	 *
 	 * @return  string	admin html
 	 */
-
 	public function onRenderAdminSettings($data = array(), $repeatCounter = null, $mode = null)
 	{
 		$this->makeDbTable();
 		$version = new JVersion;
 		$j3 = version_compare($version->RELEASE, '3.0') >= 0 ? true : false;
-		$document = JFactory::getDocument();
 		$type = str_replace('fabrik_', '', $this->_type);
 		JForm::addFormPath(JPATH_SITE . '/plugins/' . $this->_type . '/' . $this->_name);
 		$xmlFile = JPATH_SITE . '/plugins/' . $this->_type . '/' . $this->_name . '/forms/fields.xml';
@@ -498,7 +490,6 @@ class FabrikPlugin extends JPlugin
 	 *
 	 * @return   object  params
 	 */
-
 	public function setParams(&$params, $repeatCounter)
 	{
 		$opts = $params->toArray();
@@ -526,12 +517,10 @@ class FabrikPlugin extends JPlugin
 	 *
 	 * @return  JRegistry  params
 	 */
-
 	public function getParams()
 	{
 		if (!isset($this->params))
 		{
-			//echo "plugin params not set - recreating <br>";
 			$row = $this->getRow();
 			$this->params = new JRegistry($row->params);
 		}
@@ -544,7 +533,6 @@ class FabrikPlugin extends JPlugin
 	 *
 	 * @return  JTable
 	 */
-
 	protected function getRow()
 	{
 		if (!isset($this->row))
@@ -563,7 +551,6 @@ class FabrikPlugin extends JPlugin
 	 *
 	 * @return  void
 	 */
-
 	public function setRow($row)
 	{
 		$this->row = $row;
@@ -572,9 +559,8 @@ class FabrikPlugin extends JPlugin
 	/**
 	 *  Get db row/item loaded
 	 *
-	 * @return  JTable
+	 * @return  FabTable
 	 */
-
 	public function getTable()
 	{
 		return FabTable::getInstance('Extension', 'JTable');
@@ -589,7 +575,6 @@ class FabrikPlugin extends JPlugin
 	 *
 	 * @return  bool  true if we should run the plugin otherwise false
 	 */
-
 	public function canUse($location = null, $event = null)
 	{
 		$ok = false;
@@ -655,7 +640,6 @@ class FabrikPlugin extends JPlugin
 	 *
 	 * @return boolean
 	 */
-
 	public function customProcessResult($method)
 	{
 		return true;
@@ -678,7 +662,6 @@ class FabrikPlugin extends JPlugin
 	 *
 	 * @return  void
 	 */
-
 	public function ajax_tables()
 	{
 		$app = JFactory::getApplication();
@@ -726,7 +709,6 @@ class FabrikPlugin extends JPlugin
 	 *
 	 * @return  void
 	 */
-
 	public function onAjax_fields()
 	{
 		$this->ajax_fields();
@@ -737,7 +719,6 @@ class FabrikPlugin extends JPlugin
 	 *
 	 * @return  string  json encoded list of fields
 	 */
-
 	public function ajax_fields()
 	{
 		$app = JFactory::getApplication();
@@ -749,7 +730,7 @@ class FabrikPlugin extends JPlugin
 		$showAll = $input->getBool('showall', false);
 
 		// Should we highlight the PK as a recommended option
-		$highlightpk = $input->getBool('highlightpk');
+		$highlightPk = $input->getBool('highlightpk');
 
 		// Only used if showall = false, includes validations as separate entries
 		$incCalculations = $input->get('calcs', false);
@@ -777,7 +758,7 @@ class FabrikPlugin extends JPlugin
 						$tid = $jDb->loadResult();
 					}
 
-					$db->setQuery('DESCRIBE ' . $db->quoteName($tid));
+					$db->setQuery('DESCRIBE ' . $db->qn($tid));
 					$rows = $db->loadObjectList();
 
 					if (is_array($rows))
@@ -788,7 +769,7 @@ class FabrikPlugin extends JPlugin
 							$c->value = $r->Field;
 							$c->label = $r->Field;
 
-							if ($highlightpk && $r->Key === 'PRI')
+							if ($highlightPk && $r->Key === 'PRI')
 							{
 								$c->label .= ' [' . FText::_('COM_FABRIK_RECOMMENDED') . ']';
 								array_unshift($arr, $c);
@@ -811,13 +792,14 @@ class FabrikPlugin extends JPlugin
 				* $keyType 1 = $element->id;
 				* $keyType 2 = tablename___elementname
 				*/
+				/** @var FabrikFEModelList $model */
 				$model = JModelLegacy::getInstance('List', 'FabrikFEModel');
 				$model->setId($tid);
 				$table = $model->getTable();
 				$db = $model->getDb();
 				$groups = $model->getFormGroupElementData();
 				$published = $input->get('published', false);
-				$showintable = $input->get('showintable', false);
+				$showInTable = $input->get('showintable', false);
 
 				foreach ($groups as $g => $groupModel)
 				{
@@ -845,7 +827,7 @@ class FabrikPlugin extends JPlugin
 					{
 						$element = $eVal->getElement();
 
-						if ($showintable == true && $element->show_in_list_summary == 0)
+						if ($showInTable == true && $element->show_in_list_summary == 0)
 						{
 							continue;
 						}
@@ -877,7 +859,7 @@ class FabrikPlugin extends JPlugin
 						$c->label = $label;
 
 						// Show hightlight primary key and shift to top of options
-						if ($highlightpk && $table->db_primary_key === $db->quoteName($eVal->getFullName(false, false)))
+						if ($highlightPk && $table->db_primary_key === $db->qn($eVal->getFullName(false, false)))
 						{
 							$c->label .= ' [' . FText::_('COM_FABRIK_RECOMMENDED') . ']';
 							array_unshift($arr, $c);
@@ -969,7 +951,6 @@ class FabrikPlugin extends JPlugin
 	 *
 	 * @return  object
 	 */
-
 	protected function getAdminJsOpts($html)
 	{
 		$opts = new stdClass;
@@ -987,7 +968,6 @@ class FabrikPlugin extends JPlugin
 	 *
 	 * @return  bool
 	 */
-
 	public function runAway($method)
 	{
 		return false;
@@ -1003,7 +983,6 @@ class FabrikPlugin extends JPlugin
 	 *
 	 * @return  bool
 	 */
-
 	protected function shouldProcess($paramName, $data = null, $params = null)
 	{
 		if (is_null($data))
@@ -1053,7 +1032,6 @@ class FabrikPlugin extends JPlugin
 	 *
 	 * @return  string
 	 */
-
 	protected function replace_num_entity($ord)
 	{
 		$ord = $ord[1];
@@ -1067,7 +1045,7 @@ class FabrikPlugin extends JPlugin
 			$ord = intval($ord);
 		}
 
-		$no_bytes = 0;
+		$noBytes = 0;
 		$byte = array();
 
 		if ($ord < 128)
@@ -1076,22 +1054,22 @@ class FabrikPlugin extends JPlugin
 		}
 		elseif ($ord < 2048)
 		{
-			$no_bytes = 2;
+			$noBytes = 2;
 		}
 		elseif ($ord < 65536)
 		{
-			$no_bytes = 3;
+			$noBytes = 3;
 		}
 		elseif ($ord < 1114112)
 		{
-			$no_bytes = 4;
+			$noBytes = 4;
 		}
 		else
 		{
-			return;
+			return '';
 		}
 
-		switch ($no_bytes)
+		switch ($noBytes)
 		{
 			case 2:
 				$prefix = array(31, 192);
@@ -1104,15 +1082,15 @@ class FabrikPlugin extends JPlugin
 				break;
 		}
 
-		for ($i = 0; $i < $no_bytes; $i++)
+		for ($i = 0; $i < $noBytes; $i++)
 		{
-			$byte[$no_bytes - $i - 1] = (($ord & (63 * pow(2, 6 * $i))) / pow(2, 6 * $i)) & 63 | 128;
+			$byte[$noBytes - $i - 1] = (($ord & (63 * pow(2, 6 * $i))) / pow(2, 6 * $i)) & 63 | 128;
 		}
 
 		$byte[0] = ($byte[0] & $prefix[0]) | $prefix[1];
 		$ret = '';
 
-		for ($i = 0; $i < $no_bytes; $i++)
+		for ($i = 0; $i < $noBytes; $i++)
 		{
 			$ret .= chr($byte[$i]);
 		}
@@ -1129,7 +1107,6 @@ class FabrikPlugin extends JPlugin
 	 *
 	 * @return  FabrikFEModelPluginmanager
 	 */
-
 	protected function getPluginManager()
 	{
 		return FabrikWorker::getPluginManager();
@@ -1145,7 +1122,6 @@ class FabrikPlugin extends JPlugin
 	 *
 	 * @return  array  users' property defined in $field
 	 */
-
 	protected function getUsersInGroups($sendTo, $field = 'id')
 	{
 		if (empty($sendTo))
@@ -1169,7 +1145,6 @@ class FabrikPlugin extends JPlugin
 	 *
 	 * @return  void
 	 */
-
 	protected function makeDbTable()
 	{
 		$db = FabrikWorker::getDbo();

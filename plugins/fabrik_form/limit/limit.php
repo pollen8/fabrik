@@ -45,7 +45,7 @@ class PlgFabrik_FormLimit extends PlgFabrik_Form
 		$formModel = $this->getModel();
 		$this->data = $this->getProcessData();
 
-		if (!$this->shouldProcess('limit_condition', null))
+		if (!$this->shouldProcess('limit_condition', null, $params))
 		{
 			return;
 		}
@@ -62,11 +62,11 @@ class PlgFabrik_FormLimit extends PlgFabrik_Form
 
 		$limit = $this->limit();
 		$c = $this->count();
-		
+
 		if ($c === false)
 		{
 			JFactory::getApplication()->enqueueMessage(FText::_("PLG_FORM_LIMIT_NOT_SETUP"));
-			
+
 			return false;
 		}
 
@@ -111,9 +111,9 @@ class PlgFabrik_FormLimit extends PlgFabrik_Form
 
 		if (empty($field))
 		{
-			return false;	
+			return false;
 		}
-		
+
 		if (!empty($fk))
 		{
 			$fkVal = FArrayHelper::getValue(
@@ -200,7 +200,7 @@ class PlgFabrik_FormLimit extends PlgFabrik_Form
 
 		$db->setQuery($query);
 		$limit = $db->loadResult();
-		
+
 		if (!isset($limit))
 		{
 			$add_sql = $params->get('limit_add_sql', '');
@@ -211,7 +211,7 @@ class PlgFabrik_FormLimit extends PlgFabrik_Form
 				$db->setQuery($add_sql);
 				$db->execute();
 				$limit = (int) $params->get('limit_length', '0');
-				
+
 			}
 			else
 			{

@@ -40,7 +40,7 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 		JTable::addIncludePath(JPATH_ADMINISTRATOR . '/components/com_fabrik/tables');
 		$log = FabTable::getInstance('log', 'FabrikTable');
 
-		if (!$this->shouldProcess('paypal_conditon'))
+		if (!$this->shouldProcess('paypal_conditon', null, $params))
 		{
 			return true;
 		}
@@ -883,7 +883,7 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 		$send_default_email = (array) $params->get('paypal_send_default_email');
 		$send_default_email = $send_default_email[$renderOrder];
 		$emailText = '';
-		
+
 		if ($status != 'ok')
 		{
 			if ($receive_debug_emails == '1')
