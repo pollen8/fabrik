@@ -32,7 +32,7 @@ class FabrikTableElement extends FabTable
 	 * @var bool
 	 */
 	public $published = true;
-	
+
 	/**
 	 * Construct
 	 *
