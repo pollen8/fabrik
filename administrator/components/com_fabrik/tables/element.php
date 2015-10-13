@@ -31,7 +31,8 @@ class FabrikTableElement extends FabTable
 	/**
 	 * @var bool
 	 */
-	public $published = false;
+	public $published = true;
+	
 	/**
 	 * Construct
 	 *
