@@ -1610,8 +1610,10 @@ class PlgFabrik_Element extends FabrikPlugin
 	{
 		$basePath = COM_FABRIK_BASE . 'components/com_fabrik/layouts/element';
 		$pluginPath = COM_FABRIK_BASE . '/plugins/fabrik_element/' . $this->getPluginName() . '/layouts';
-
-		return array($basePath, $pluginPath);
+		$perThemePath = JPATH_THEMES . '/' . JFactory::getApplication()->getTemplate() . '/html/layouts/com_fabrik/element';
+		$perElementPath = JPATH_THEMES . '/' . JFactory::getApplication()->getTemplate() . '/html/layouts/com_fabrik/element/' . $this->getFullName(true, false);
+		
+		return array($basePath, $pluginPath, $perThemePath, $perElementPath);
 	}
 
 	/**
