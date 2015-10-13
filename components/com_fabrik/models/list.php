@@ -5703,7 +5703,7 @@ class FabrikFEModelList extends JModelForm
 	 *
 	 * @return  string	formatted slug
 	 */
-	protected function getSlug($row)
+	public function getSlug($row)
 	{
 		if (!isset($row->slug))
 		{

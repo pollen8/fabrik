@@ -278,7 +278,8 @@ class FabrikViewFormBase extends JViewLegacy
 			$package = $app->getUserState('com_fabrik.package', 'fabrik');
 			$data = $model->getData();
 			$formId = $model->getId();
-			$rowId = JArrayHelper::getValue($data, 'slug', $model->getRowId());
+			$slug = $model->getListModel()->getSlug(JArrayHelper::toObject($data));
+			$rowId = $slug === '' ? $model->getRowId() : $slug;
 			$view = $model->isEditable() ? 'form': 'details';
 			$url = JRoute::_('index.php?option=com_' . $package . '&view=' . $view . '&formid=' . $formId . '&rowid=' . $rowId);
 
