@@ -98,7 +98,7 @@ class FPagination extends JPagination
 	 *
 	 * @return	string	Pagination footer
 	 */
-	public function getListFooter($listRef = 0, $tmpl = 'default')
+	public function getListFooter($listRef = '', $tmpl = 'default')
 	{
 		$app = JFactory::getApplication();
 		$this->listRef = $listRef;
@@ -411,7 +411,7 @@ class FPagination extends JPagination
 	/**
 	 * Create the HTML for a list footer
 	 *
-	 * @param   array  $list  Pagination list data structure.
+	 * @param   array   $list  Pagination list data structure.
 	 *
 	 * @return  string  HTML for a list footer
 	 */
@@ -420,6 +420,7 @@ class FPagination extends JPagination
 		$limitLabel = $this->showDisplayNum ? FText::_('COM_FABRIK_DISPLAY_NUM') : '';
 
 		// Initialize variables
+		$paths = array();
 		$displayData = new stdClass;
 		$displayData->id = $this->id;
 		$displayData->label = $limitLabel;
@@ -428,7 +429,10 @@ class FPagination extends JPagination
 		$displayData->pagesCounter = $list['pagescounter'];
 		$displayData->listName =  'limit' . $this->id;
 		$displayData->links = $list['pageslinks'];
-		$layout = FabrikHelperHTML::getLayout('pagination.fabrik-pagination-footer');
+		
+		$paths[] = JPATH_THEMES . '/' . JFactory::getApplication()->getTemplate() . '/html/layouts/com_fabrik/list_' . $this->id;
+		
+		$layout = FabrikHelperHTML::getLayout('pagination.fabrik-pagination-footer', $paths);
 
 		return $layout->render($displayData);
 	}

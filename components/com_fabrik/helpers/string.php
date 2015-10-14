@@ -1010,6 +1010,7 @@ class FabrikString extends JString
 			return '?';
 		}
 	}
+	
 }
 
 /**
@@ -1069,4 +1070,5 @@ class FText extends JText
 		// if we got this far, hand it to JText::_() as normal
 		return parent::_($string, $jsSafe, $interpretBackSlashes, $script);
 	}
+	
 }

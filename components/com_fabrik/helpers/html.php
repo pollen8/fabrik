@@ -2647,14 +2647,15 @@ EOD;
 		$basePath = COM_FABRIK_BASE . '/com_fabrik/layouts';
 		$layout = new FabrikLayoutFile($name, $basePath, $options);
 
+		$layout->addIncludePaths(JPATH_SITE . '/layouts');
+		$layout->addIncludePaths(JPATH_THEMES . '/' . JFactory::getApplication()->getTemplate() . '/html/layouts');
+		$layout->addIncludePaths(JPATH_THEMES . '/' . JFactory::getApplication()->getTemplate() . '/html/layouts/com_fabrik');
+		
 		foreach ($paths as $path)
 		{
 			$layout->addIncludePath($path);
 		}
-		$layout->addIncludePaths(JPATH_SITE . '/layouts');
-		$layout->addIncludePaths(JPATH_THEMES . '/' . JFactory::getApplication()->getTemplate() . '/html/layouts');
-		$layout->addIncludePaths(JPATH_THEMES . '/' . JFactory::getApplication()->getTemplate() . '/html/layouts/com_fabrik');
-
+		
 		return $layout;
 	}
 

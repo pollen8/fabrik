@@ -245,6 +245,7 @@ class PlgSystemFabrik extends JPlugin
 	{
 		$app = JFactory::getApplication();
 		$package = $app->getUserState('com_fabrik.package', 'fabrik');
+		$fbConfig = JComponentHelper::getParams('com_fabrik');
 
 		if (defined('COM_FABRIK_SEARCH_RUN'))
 		{
@@ -383,6 +384,13 @@ class PlgSystemFabrik extends JPlugin
 			// Set the table search mode to OR - this will search ALL fields with the search term
 			$params->set('search-mode', 'OR');
 
+			/**
+			 * Disable pagination limits.
+			 * For now, use filter_list_max limit, just to prevent totally unconstrained queries,
+			 * might add seperate config setting for global search max at some point.
+			 */
+			$listModel->setLimits(0, $fbConfig->get('filter_list_max', 100));
+			
 			$allRows = $listModel->getData();
 			$elementModel = $listModel->getFormModel()->getElement($params->get('search_description', $table->label), true);
 			$descName = is_object($elementModel) ? $elementModel->getFullName() : '';
