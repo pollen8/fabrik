@@ -708,6 +708,10 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		if ($this->showPleaseSelect())
 		{
 			array_unshift($tmp, JHTML::_('select.option', $params->get('database_join_noselectionvalue', ''), $this->_getSelectLabel()));
+			if($params->get('join_desc_column', '') !== '')
+			{
+				$tmp[0]->description = '';
+			}
 		}
 
 		return $tmp;
@@ -1332,9 +1336,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 				{
 					case 'dropdown':
 					default:
-						$advancedClass = $this->getAdvancedSelectClass();
-						$attributes = 'class="fabrikinput inputbox input ' . $advancedClass . ' ' . $params->get('bootstrap_class', 'input-large') . '" size="1"';
-						$html[] = JHTML::_('select.genericlist', $tmp, $name, $attributes, 'value', 'text', $default, $id);
+						$this->renderDropdownList($data, $repeatCounter, $html, $tmp, $default);
 						break;
 					case 'radio':
 						$this->renderRadioList($data, $repeatCounter, $html, $tmp, FArrayHelper::getValue($default, 0));
@@ -1505,8 +1507,48 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 			}
 		}
 	}
+
 	/**
-	 * Render auto-complete in form
+	 * Render dropdown in form
+	 *
+	 * @param   array   $data           Form data
+	 * @param   int     $repeatCounter  Repeat group counter
+	 * @param   array   &$html          HTML to assign output to
+	 * @param   array   $tmp            List of value/label objects
+	 * @param   string  $defaultValue   Default value
+	 *
+	 * @since   3.0.7
+	 *
+	 * @return  void
+	 */
+	protected function renderDropdownList($data, $repeatCounter, &$html, $tmp, $defaultValue)
+	{
+		$id = $this->getHTMLId($repeatCounter);
+		$name = $this->getHTMLName($repeatCounter);
+		$params = $this->getParams();
+			
+		if (FabrikWorker::j3())
+		{
+			$layout = $this->getLayout('form-dropdownlist');
+			$displayData = new stdClass;
+			$displayData->id = $id;
+			$displayData->options = $tmp;
+			$displayData->default = (array) $defaultValue;
+			$displayData->name = $name;
+			$displayData->editable = $this->isEditable();
+			$displayData->attributes = 'class="fabrikinput inputbox input ' . $this->getAdvancedSelectClass() . ' ' . $params->get('bootstrap_class', 'input-large') . '" size="1"';
+			$html[] = $layout->render($displayData);
+		}
+		else
+		{
+			$advancedClass = $this->getAdvancedSelectClass();
+			$attributes = 'class="fabrikinput inputbox input ' . $advancedClass . ' ' . $params->get('bootstrap_class', 'input-large') . '" size="1"';
+			$html[] = JHTML::_('select.genericlist', $tmp, $name, $attributes, 'value', 'text', $default, $id);
+		}
+	}
+	
+	/**
+	 * Render radio buttons in form
 	 *
 	 * @param   array   $data           Form data
 	 * @param   int     $repeatCounter  Repeat group counter
