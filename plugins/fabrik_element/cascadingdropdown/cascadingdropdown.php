@@ -308,7 +308,7 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 			return $defaultLabel . $this->loadingImg;
 		}
 
-		$this->renderDescription($html, $default);
+		$html[] = $this->renderDescription($tmp, $default);
 
 		return implode("\n", $html);
 	}
@@ -316,29 +316,27 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 	/**
 	 * Add the description to the element's form HTML
 	 *
-	 * @param   array  &$html    Output HTML
+	 * @param   array  $options  Select options
 	 * @param   array  $default  Default values
 	 *
 	 * @return  void
 	 */
-	protected function renderDescription(&$html, $default)
+	protected function renderDescription($options = array(), $default = array())
 	{
 		$params = $this->getParams();
 
 		if ($params->get('cdd_desc_column', '') !== '')
 		{
-			$html[] = '<div class="dbjoin-description">';
+			$layout = $this->getLayout('form-description');
+			$displayData = new stdClass;
+			$displayData->opts = $options;
+			$displayData->default = FArrayHelper::getValue($default, 0);
+			$displayData->showPleaseSelect = $this->showPleaseSelect();
 
-			for ($i = 0; $i < count($this->optionVals); $i++)
-			{
-				$opt = $this->optionVals[$i];
-				$display = in_array($opt->value, $default) ? '' : 'none';
-				$c = $i + 1;
-				$html[] = '<div style="display:' . $display . '" class="notice description-' . $c . '">' . $opt->description . '</div>';
-			}
-
-			$html[] = '</div>';
+			return $layout->render($displayData);
 		}
+
+		return '';
 	}
 
 	/**
@@ -365,7 +363,6 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 	 *
 	 * @return  string
 	 */
-
 	protected function getDisplayType()
 	{
 		return $this->getParams()->get('cdd_display_type', 'dropdown');
@@ -777,21 +774,21 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 			else
 			{
 				// $$$ hugh - probably rendering table view ...
-				$watch_raw = $watch . '_raw';
+				$watchRaw = $watch . '_raw';
 
-				if (isset($data[$watch_raw]))
+				if (isset($data[$watchRaw]))
 				{
-					$whereVal = $data[$watch_raw];
+					$whereVal = $data[$watchRaw];
 				}
 				else
 				{
 					// $$$ hugh ::sigh:: might be coming in via swapLabelsForvalues in pre_process phase
 					// and join array in data will have been flattened.  So try regular element name for watch.
-					$no_join_watch_raw = $watchElement->getFullName(true, false) . '_raw';
+					$noJoinWatchRaw = $watchElement->getFullName(true, false) . '_raw';
 
-					if (isset($data[$no_join_watch_raw]))
+					if (isset($data[$noJoinWatchRaw]))
 					{
-						$whereVal = $data[$no_join_watch_raw];
+						$whereVal = $data[$noJoinWatchRaw];
 					}
 					else
 					{
@@ -897,13 +894,13 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 		else
 		{
 			$val = FabrikString::safeColName($params->get($this->labelParam));
-			$val = preg_replace("#^`($table)`\.#", $db->quoteName($join->table_join_alias) . '.', $val);
+			$val = preg_replace("#^`($table)`\.#", $db->qn($join->table_join_alias) . '.', $val);
 
 			foreach ($tables as $tid)
 			{
 				$listModel->setId($tid);
 				$listModel->getTable();
-				$formModel = $this->getForm();
+				$formModel = $this->getFormModel();
 				$formModel->getGroupsHiarachy();
 				$orderBy = $val;
 

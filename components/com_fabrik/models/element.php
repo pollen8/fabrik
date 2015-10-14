@@ -453,7 +453,7 @@ class PlgFabrik_Element extends FabrikPlugin
 	 *
 	 * @deprecated use getFormModel
 	 *
-	 * @return  object	form model
+	 * @return  FabrikFEModelForm	Form model
 	 */
 	public function getForm()
 	{
@@ -463,7 +463,7 @@ class PlgFabrik_Element extends FabrikPlugin
 	/**
 	 * get the element's form model
 	 *
-	 * @return  object  form model
+	 * @return  FabrikFEModelForm  Form model
 	 */
 	public function getFormModel()
 	{
@@ -482,7 +482,7 @@ class PlgFabrik_Element extends FabrikPlugin
 	/**
 	 * Set form model
 	 *
-	 * @param   object  $model  form model
+	 * @param   FabrikFEModelForm  $model  form model
 	 *
 	 * @return  void
 	 */

@@ -1210,9 +1210,6 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 	 */
 	public function render($data, $repeatCounter = 0)
 	{
-		$app = JFactory::getApplication();
-		$package = $app->getUserState('com_fabrik.package', 'fabrik');
-
 		// For repeating groups we need to unset this where each time the element is rendered
 		unset($this->autocomplete_where);
 
@@ -1330,7 +1327,6 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 			// $$$rob should be canUse() otherwise if user set to view but not use the dd was shown
 			if ($this->canUse())
 			{
-
 				// If user can access the drop down
 				switch ($displayType)
 				{
@@ -1354,53 +1350,8 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 						break;
 				}
 
-				$frontEndSelect = $params->get('fabrikdatabasejoin_frontend_select');
-				$frontEndAdd = $params->get('fabrikdatabasejoin_frontend_add');
-
-				// If add and select put them in a button group.
-				if ($frontEndSelect && $frontEndAdd && $this->isEditable())
-				{
-					// Set position inherit otherwise btn-group blocks selection of checkboxes
-					$html[] = '<div class="btn-group" style="position:inherit">';
-				}
-
-				if ($frontEndSelect && $this->isEditable())
-				{
-					$forms = $this->getLinkedForms();
-					$popupForm = (int) $params->get('databasejoin_popupform');
-					$popupListId = (empty($popupForm) || !isset($forms[$popupForm])) ? '' : $forms[$popupForm]->listid;
-					JText::script('PLG_ELEMENT_DBJOIN_SELECT');
-
-					if ($app->isAdmin())
-					{
-						$chooseUrl = 'index.php?option=com_fabrik&amp;task=list.view&amp;listid=' . $popupListId . '&amp;tmpl=component&amp;ajax=1';
-					}
-					else
-					{
-						$chooseUrl = 'index.php?option=com_' . $package . '&amp;view=list&amp;listid=' . $popupListId . '&amp;tmpl=component&amp;ajax=1';
-					}
-
-					$html[] = '<a href="' . $chooseUrl . '" class="toggle-selectoption btn" title="' . FText::_('COM_FABRIK_SELECT') . '">'
-						. FabrikHelperHTML::image('search.png', 'form', @$this->tmpl, array('alt' => FText::_('COM_FABRIK_SELECT'))) . '</a>';
-				}
-
-				if ($frontEndAdd && $this->isEditable())
-				{
-					JText::script('PLG_ELEMENT_DBJOIN_ADD');
-					$popupForm = (int) $params->get('databasejoin_popupform');
-					$addURL = 'index.php?option=com_fabrik';
-					$addURL .= $app->isAdmin() ? '&amp;task=form.view' : '&amp;view=form';
-					$addURL .= '&amp;tmpl=component&amp;ajax=1&amp;formid=' . $popupForm;
-					$html[] = '<a href="' . $addURL . '" title="' . FText::_('COM_FABRIK_ADD') . '" class="toggle-addoption btn">';
-					$html[] = FabrikHelperHTML::image('plus.png', 'form', @$this->tmpl, array('alt' => FText::_('COM_FABRIK_SELECT'))) . '</a>';
-				}
-				// If add and select put them in a button group.
-				if ($frontEndSelect && $frontEndAdd && $this->isEditable())
-				{
-					$html[] = '</div>';
-				}
-
-				$html[] = ($displayType == 'radio') ? '</div>' : '';
+				$html[] = $this->renderFrontEndSelect($html);
+				$html[] = $displayType == 'radio' ? '</div>' : '';
 			}
 			elseif ($this->canView())
 			{
@@ -1408,25 +1359,72 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 			}
 		}
 
-		if ($params->get('join_desc_column', '') !== '')
-		{
-			$html[] = '<div class="dbjoin-description">';
-			$opts = $this->_getOptionVals($data, $repeatCounter);
-			$default_val = FArrayHelper::getValue($default, 0);
-
-			// @FIXME - if read only, surely no need to insert every possible value, we just need the selected one?
-			for ($i = 0; $i < count($opts); $i++)
-			{
-				$opt = $opts[$i];
-				$display = $opt->value == $default_val ? '' : 'style="display: none"';
-				$c = $this->showPleaseSelect() ? $i + 1 : $i;
-				$html[] = '<div ' . $display . ' class="notice description-' . $c . '">' . $opt->description . '</div>';
-			}
-
-			$html[] = '</div>';
-		}
+		$html[] = $this->renderDescription($tmp, $default);
 
 		return implode("\n", $html);
+	}
+
+	/**
+	 * Render the front end select / add buttons in a JLayout file
+	 *
+	 * @return  string
+	 */
+	protected function renderFrontEndSelect()
+	{
+		$params = $this->getParams();
+		$app = JFactory::getApplication();
+		$package = $app->getUserState('com_fabrik.package', 'fabrik');
+		$displayData = new stdClass;
+		$displayData->frontEndSelect = $params->get('fabrikdatabasejoin_frontend_select');
+		$displayData->frontEndAdd = $params->get('fabrikdatabasejoin_frontend_add');
+		$forms = $this->getLinkedForms();
+		$popupForm = (int) $params->get('databasejoin_popupform');
+		$popupListId = (empty($popupForm) || !isset($forms[$popupForm])) ? '' : $forms[$popupForm]->listid;
+		$layout = $this->getLayout('form-front-end-select');
+		$displayData->tmpl = $this->tmpl;
+
+		if ($app->isAdmin())
+		{
+			$displayData->chooseUrl = 'index.php?option=com_fabrik&amp;task=list.view&amp;listid=' . $popupListId . '&amp;tmpl=component&amp;ajax=1';
+		}
+		else
+		{
+			$displayData->chooseUrl = 'index.php?option=com_' . $package . '&amp;view=list&amp;listid=' . $popupListId . '&amp;tmpl=component&amp;ajax=1';
+		}
+
+		$popupForm = (int) $params->get('databasejoin_popupform');
+		$displayData->addURL = 'index.php?option=com_fabrik';
+		$displayData->addURL .= $app->isAdmin() ? '&amp;task=form.view' : '&amp;view=form';
+		$displayData->addURL .= '&amp;tmpl=component&amp;ajax=1&amp;formid=' . $popupForm;
+		$displayData->editable = $this->isEditable();
+
+		return $layout->render($displayData);
+	}
+
+	/**
+	 * Add the description to the element's form HTML
+	 *
+	 * @param   array  $options  Select options
+	 * @param   array  $default  Default values
+	 *
+	 * @return  void
+	 */
+	protected function renderDescription($options = array(), $default = array())
+	{
+		$params = $this->getParams();
+
+		if ($params->get('join_desc_column', '') !== '')
+		{
+			$layout = $this->getLayout('form-description');
+			$displayData = new stdClass;
+			$displayData->opts = $options;
+			$displayData->default = FArrayHelper::getValue($default, 0);
+			$displayData->showPleaseSelect = $this->showPleaseSelect();
+
+			return $layout->render($displayData);
+		}
+
+		return '';
 	}
 
 	/**
