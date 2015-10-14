@@ -541,6 +541,14 @@ class FabrikAdminModelList extends FabModelAdmin
 			 * $this->formModel->setId($this->getState('list.form_id', $item->id));
 			 * $this->formModel->getForm();
 			 */
+			
+			/**
+			 * $$$ hugh - we need the setId(), otherwise Bad Things <tm> happen when the ID isn't set
+			 * in the form model.  Like index creation borks, because getPublishedGroups() thinks form ID is 0.
+			 */
+			$item = $this->getItem();
+			$this->formModel->setId($this->getState('list.form_id', $item->id));
+				
 
 			/**
 			 * $$$ rob isnt this wrong as normally the front end form models list model is the fe list model?
