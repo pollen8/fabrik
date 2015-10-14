@@ -711,6 +711,23 @@ class FabrikFEModelList extends JModelForm
 				// If a list (assoc with a menu item) loads a form, with db join & front end select - don't use the orig menu's rows_per_page value.
 				$mambot = $this->isMambot || ($input->get('tmpl') === 'component' && $input->getInt('ajax') === 1);
 				$rowsPerPage = FabrikWorker::getMenuOrRequestVar('rows_per_page', $item->rows_per_page, $mambot);
+
+				// If a menu item specifically sets the # of rows to show this should be stored (and used) in its own session context.
+				// See: http://fabrikar.com/forums/index.php?threads/list-results-split-by-wrong-rows-per-page-number.42182/#post-213703
+				if (!$app->isAdmin() && !$mambot)
+				{
+					$menus = $app->getMenu();
+					$menu = $menus->getActive();
+
+					if (is_object($menu))
+					{
+						if (!is_null($menu->params->get('rows_per_page')))
+						{
+							$context .= $menu->id . '.';
+						}
+					}
+				}
+
 				$limitLength = $app->getUserStateFromRequest($context . 'limitlength', 'limit' . $id, $rowsPerPage);
 
 				if (!$this->randomRecords)
