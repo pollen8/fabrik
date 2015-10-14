@@ -13,7 +13,7 @@ defined('_JEXEC') or die('Restricted access');
 
 /**
  * if using file extensions sef and htaccess :
- * you need to edit yout .htaccess file to:
+ * you need to edit your .htaccess file to:
  *
  * RewriteCond %{REQUEST_URI} (/|\.csv|\.php|\.html|\.htm|\.feed|\.pdf|\.raw|/[^.]*)$  [NC]
  *
@@ -28,7 +28,6 @@ defined('_JEXEC') or die('Restricted access');
  *
  * @return  array url
  */
-
 function fabrikBuildRoute(&$query)
 {
 	$segments = array();
@@ -47,9 +46,7 @@ function fabrikBuildRoute(&$query)
 	}
 
 	// Are we dealing with a view that is attached to a menu item https://github.com/Fabrik/fabrik/issues/498?
-	$hasMenu = ($menuItem instanceof stdClass) && isset($query['view'])
-	&& array_key_exists('view', $menuItem->query) && $menuItem->query['view'] == $query['view']
-		&& isset($query['id'])  && isset($menuItem->query['id']) && $menuItem->query['id'] == intval($query['id']);
+	$hasMenu = _fabrikRouteMatchesMenuItem($query, $menuItem);
 
 	if ($hasMenu)
 	{
@@ -67,6 +64,10 @@ function fabrikBuildRoute(&$query)
 
 		unset($query['id']);
 
+		if (isset($query['listid']))
+		{
+			unset($query['listid']);
+		}
 		return $segments;
 	}
 
@@ -176,6 +177,47 @@ function fabrikBuildRoute(&$query)
 }
 
 /**
+ * Ascertain is the route that is being parsed is the same as the menu item desginated in
+ * its Itemid value.
+ *
+ * @param $query
+ * @param $menuItem
+ *
+ * @return bool
+ */
+function _fabrikRouteMatchesMenuItem($query, $menuItem)
+{
+	if (!$menuItem instanceof stdClass || !isset($query['view']))
+	{
+		return false;
+	}
+	$queryView = JArrayHelper::getValue($query, 'view');
+	$menuView = JArrayHelper::getValue($menuItem->query, 'view');
+
+	if ($queryView !== $menuView)
+	{
+		return false;
+	}
+	unset($query['Itemid']);
+
+	switch ($queryView)
+	{
+		case 'list':
+			if (!isset($query['listid']))
+			{
+				$query['listid'] = $query['id'];
+				unset($query['id']);
+			}
+
+			break;
+	}
+
+	return $query === $menuItem->query;
+
+	return true;
+}
+
+/**
  * parse route
  *
  * @param   array  $segments  url
@@ -187,11 +229,6 @@ function fabrikParseRoute($segments)
 {
 	// $vars are what Joomla then uses for its $_REQUEST array
 	$vars = array();
-
-	// Get the active menu item
-	$app = JFactory::getApplication();
-	$menu = $app->getMenu();
-	$item = $menu->getActive();
 	$view = $segments[0];
 
 	if (strstr($view, '.'))
@@ -202,14 +239,14 @@ function fabrikParseRoute($segments)
 
 	/**
 	 * View (controller not passed into segments)
-	 * 
+	 *
 	 * $$$ hugh - don't use FArrayHelper::getValue() here, use original JArrayHelper.  Don't ask.
 	 * Well, since you asked, some users are reporting issues with the helper not having been
 	 * loaded (some bizarre 3rd party system plugin doing funky things), and since we don't need
 	 * what our wrapper does for this simple usage ... yes, we could specifically load our helper here,
 	 * and (dear reader) if you wanna do that be my guest.
 	 */
-	
+
 	switch ($view)
 	{
 		case 'form':
