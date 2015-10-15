@@ -1612,7 +1612,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		$pluginPath = COM_FABRIK_BASE . '/plugins/fabrik_element/' . $this->getPluginName() . '/layouts';
 		$perThemePath = JPATH_THEMES . '/' . JFactory::getApplication()->getTemplate() . '/html/layouts/com_fabrik/element';
 		$perElementPath = JPATH_THEMES . '/' . JFactory::getApplication()->getTemplate() . '/html/layouts/com_fabrik/element/' . $this->getFullName(true, false);
-		
+
 		return array($basePath, $pluginPath, $perThemePath, $perElementPath);
 	}
 
@@ -3948,7 +3948,12 @@ class PlgFabrik_Element extends FabrikPlugin
 			$eval = FArrayHelper::getValue($eval, $filterIndex, FABRIKFILTER_TEXT);
 		}
 
-		$join = FArrayHelper::getValue($joins, $filterIndex, 'AND');
+		$searchTypes = FArrayHelper::getValue($filters, 'search_type', array());
+		$searchType = FArrayHelper::getValue($searchTypes, $filterIndex, 'normal');
+
+		// If our previous filter was a pre-filter we never want to use its join value as it could result in the pre-filter being ignored
+		// Thus in this instance we should always use 'AND'
+		$join = $searchType === 'prefilter' ? 'AND' : FArrayHelper::getValue($joins, $filterIndex, 'AND');
 		$groupedToPrevious = FArrayHelper::getValue($groupedTo, $filterIndex, '0');
 
 		// Need to include class other wise csv export produces incorrect results when exporting
