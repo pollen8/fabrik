@@ -2017,6 +2017,10 @@ EOD;
 			$sel = in_array($values[$i], $selected);
 			$chx .= $sel ? ' checked="checked" />' : ' />';
 			$labelClass = FabrikWorker::j3() && !$buttonGroup ? $type : '';
+			if (array_key_exists('label', $classes))
+			{
+				$labelClass .= ' ' . implode(' ', $classes['label']);
+			}
 
 			$item[] = '<label class="fabrikgrid_' . $value . ' ' . $labelClass . '">';
 			$item[] = $elementBeforeLabel == '1' ? $chx . $label : $label . $chx;
@@ -2037,18 +2041,22 @@ EOD;
 	 * @param   string  $type                Checkbox/radio etc.
 	 * @param   bool    $elementBeforeLabel  Element before or after the label - deprecated - not used in Joomla 3
 	 * @param   int     $optionsPerRow       Number of suboptions to show per row
-	 * @param   array   $classes             Label classes
+	 * @param   array   $classes             Array of arrays, for 'label' and 'container' classes
 	 * @param   bool    $buttonGroup         Should it be rendered as a bootstrap button group (radio only)
+	 * @param   array  $dataAttributes           Additional data-foo="bar", like YesNo needs data-toogle="button"
 	 *
 	 * @return  string  grid
 	 */
 	public static function grid($values, $labels, $selected, $name, $type = 'checkbox',
-		$elementBeforeLabel = true, $optionsPerRow = 4, $classes = array(), $buttonGroup = false)
+		$elementBeforeLabel = true, $optionsPerRow = 4, $classes = array(), $buttonGroup = false, $dataAttributes = array())
 	{
 		if (FabrikWorker::j3())
 		{
 			$elementBeforeLabel = true;
 		}
+
+		$containerClasses = array_key_exists('container', $classes) ? implode(' ', $classes['container']) : '';
+		$dataAttributes = implode(' ', $dataAttributes);
 
 		$items = self::gridItems($values, $labels, $selected, $name, $type, $elementBeforeLabel, $classes, $buttonGroup);
 
@@ -2058,7 +2066,7 @@ EOD;
 
 		if ($buttonGroup && $type == 'radio')
 		{
-			$grid[] = '<fieldset class="' . $type . ' btn-group">';
+			$grid[] = '<fieldset class="' . $type . ' ' . $containerClasses . ' btn-group" ' . $dataAttributes . '>';
 
 			foreach ($items as $i => $s)
 			{
@@ -2650,12 +2658,12 @@ EOD;
 		$layout->addIncludePaths(JPATH_SITE . '/layouts');
 		$layout->addIncludePaths(JPATH_THEMES . '/' . JFactory::getApplication()->getTemplate() . '/html/layouts');
 		$layout->addIncludePaths(JPATH_THEMES . '/' . JFactory::getApplication()->getTemplate() . '/html/layouts/com_fabrik');
-		
+
 		foreach ($paths as $path)
 		{
 			$layout->addIncludePath($path);
 		}
-		
+
 		return $layout;
 	}
 

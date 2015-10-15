@@ -420,23 +420,23 @@ class PlgFabrik_ElementYesno extends PlgFabrik_ElementRadiobutton
 		}
 
 		$value = $this->getValue($data, $repeatCounter);
-		
+
 		if ($value == '1')
 		{
 			$params = $this->getParams();
 			$toggle = (bool) $params->get('toggle_others', false);
-	
+
 			if ($toggle === false)
 			{
 				return;
 			}
-	
+
 			$listModel = $this->getListModel();
-	
+
 			$name = $this->getElement()->name;
 			$db = $listModel->getDb();
 			$query = $db->getQuery(true);
-	
+
 			if ($this->isJoin())
 			{
 				$joinModel = $this->getJoinModel();
@@ -446,42 +446,66 @@ class PlgFabrik_ElementYesno extends PlgFabrik_ElementRadiobutton
 			{
 				$pk = $listModel->getTable()->db_primary_key;
 			}
-	
+
 			$shortPk = FabrikString::shortColName($pk);
 			$rowId = FArrayHelper::getValue($data, $shortPk, null);
-			
+
 			$query->update($this->actualTableName())->set($name . ' = 0');
-			
+
 			if (!empty($rowId))
 			{
 				$query->where($pk . ' <> ' . $rowId);
 			}
-			
+
 			$toggle_where = $params->get('toggle_where', '');
 			FabrikString::ltrimiword($toggle_where, 'where');
-			
+
 			if (!empty($toggle_where))
 			{
 				$w = new FabrikWorker;
 				$toggle_where = $w->parseMessageForPlaceHolder($toggle_where);
 				$query->where($toggle_where);
 			}
-			
+
 			$db->setQuery($query);
 			$db->execute();
 		}
 	}
-	
+
 	/**
 	 * Return JS event required to trigger a 'change', this is overriding default element model.
 	 * When in BS mode with button-grp, needs to be 'click'.
 	 *
 	 * @return  string
 	 */
-	
+
 	public function getChangeEvent()
 	{
 		return $this->buttonGroup() ? 'click' : 'change';
 	}
-	
+
+	/**
+	 * Get classes to assign to the grid
+	 * An array of arrays of class names, keyed as 'container', 'label' or 'input',
+	 *
+	 * @return  array
+	 */
+	protected function gridClasses()
+	{
+		return array(
+			'label' => array('btn-default'),
+			'container' => array('btn-radio')
+		);
+	}
+
+	/**
+	 * Get data attributes to assign to the container
+	 *
+	 * @return  array
+	 */
+	protected function dataAttributes()
+	{
+		return array('data-toggle="buttons"');
+	}
+
 }
