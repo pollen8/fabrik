@@ -20,9 +20,34 @@ jimport('joomla.application.component.model');
  * @subpackage  Fabrik
  * @since       3.0
  */
-
 class FabModel extends JModelLegacy
 {
+	/**
+	 * @var JApplicationCms
+	 */
+	protected $app;
+
+	/**
+	 * @var JUser
+	 */
+	protected $user;
+
+	/**
+	 * Constructor
+	 *
+	 * @param   array  $config  An array of configuration options (name, state, dbo, table_path, ignore_request).
+	 *
+	 * @since   3.3.4
+	 * @throws  Exception
+	 */
+	public function __construct($config = array())
+	{
+		$this->app = JArrayHelper::getValue($config, 'app', JFactory::getApplication());
+		$this->user = JArrayHelper::getValue($config, 'user', JFactory::getUser());
+
+		parent::__construct($config);
+	}
+
 	/**
 	 * Method to load and return a model object.
 	 *
@@ -32,7 +57,6 @@ class FabModel extends JModelLegacy
 	 *
 	 * @return	mixed	Model object or boolean false if failed
 	 */
-
 	protected function _createTable($name, $prefix = 'Table', $config = array())
 	{
 		// Clean the model name

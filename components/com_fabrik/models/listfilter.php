@@ -17,7 +17,6 @@ defined('_JEXEC') or die('Restricted access');
  * @package  Fabrik
  * @since    3.0
  */
-
 class FabrikFEModelListfilter extends FabModel
 {
 	/**
@@ -28,13 +27,19 @@ class FabrikFEModelListfilter extends FabModel
 	protected $request = null;
 
 	/**
+	 * List model
+	 *
+	 * @var FabrikFEModelList
+	 */
+	protected $listModel;
+
+	/**
 	 * Set the list model
 	 *
-	 * @param   object  $model  list model
+	 * @param   FabrikFEModelList  $model  list model
 	 *
 	 * @return  void
 	 */
-
 	public function setListModel($model)
 	{
 		$this->listModel = $model;
@@ -49,7 +54,6 @@ class FabrikFEModelListfilter extends FabModel
 	 *
 	 * @return void
 	 */
-
 	public function getTable($name = '', $prefix = 'Table', $options = array())
 	{
 		return $this->listModel->getTable();
@@ -60,11 +64,9 @@ class FabrikFEModelListfilter extends FabModel
 	 *
 	 * @return  bool - is the list currently being rendered the list that initially triggered the filter
 	 */
-
 	protected function activeTable()
 	{
-		$app = JFactory::getApplication();
-		$input = $app->input;
+		$input = $this->app->input;
 
 		return $input->getInt('id') == $input->getInt('activelistid') || $input->get('activelistid') == '';
 	}
@@ -74,7 +76,6 @@ class FabrikFEModelListfilter extends FabModel
 	 *
 	 * @return  void
 	 */
-
 	public function destroyRequest()
 	{
 		unset($this->request);
@@ -86,11 +87,9 @@ class FabrikFEModelListfilter extends FabModel
 	 *
 	 * @return array
 	 */
-
 	public function getFilters()
 	{
-		$app = JFactory::getApplication();
-		$input = $app->input;
+		$input = $this->app->input;
 
 		// Form or detailed views should not apply filters? what about querystrings to set up the default values?
 		if ($input->get('view') == 'details' || $input->get('view') == 'form')
@@ -188,7 +187,6 @@ class FabrikFEModelListfilter extends FabModel
 	 *
 	 * @return  void
 	 */
-
 	private function normalizeKeys(&$filters)
 	{
 		$properties = array_keys($filters);
@@ -217,10 +215,10 @@ class FabrikFEModelListfilter extends FabModel
 	 *
 	 * @return  void
 	 */
-
 	public function checkAccess(&$filters)
 	{
 		$access = FArrayHelper::getValue($filters, 'access', array());
+		$viewLevels = $this->user->getAuthorisedViewLevels();
 
 		foreach ($access as $key => $selAccess)
 		{
@@ -229,7 +227,7 @@ class FabrikFEModelListfilter extends FabModel
 			$selAccess = $selAccess == '0' ? '1' : $selAccess;
 			$i = $filters['key'][$key];
 
-			if (!in_array($selAccess, JFactory::getUser()->getAuthorisedViewLevels()))
+			if (!in_array($selAccess, $viewLevels))
 			{
 				$filters['sqlCond'][$key] = '1=1';
 			}
@@ -245,11 +243,9 @@ class FabrikFEModelListfilter extends FabModel
 	 *
 	 * @return  string
 	 */
-
 	public function getSearchAllValue($mode = 'html')
 	{
-		$app = JFactory::getApplication();
-		$package = $app->getUserState('com_fabrik.package', 'fabrik');
+		$package = $this->app->getUserState('com_fabrik.package', 'fabrik');
 		$identifier = $this->listModel->getRenderContext();
 
 		// Test new option to have one field to search them all
@@ -257,15 +253,15 @@ class FabrikFEModelListfilter extends FabModel
 
 		// Seems like post keys 'name.1' get turned into 'name_1'
 		$requestKey = $this->getSearchAllRequestKey();
-		$v = $app->getUserStateFromRequest($key, $requestKey);
+		$v = $this->app->getUserStateFromRequest($key, $requestKey);
 
 		if (trim($v) == '')
 		{
-			$fromFormId = $app->getUserState('com_' . $package . '.searchform.fromForm');
+			$fromFormId = $this->app->getUserState('com_' . $package . '.searchform.fromForm');
 
 			if ($fromFormId != $this->listModel->getFormModel()->getForm()->id)
 			{
-				$v = $app->getUserState('com_' . $package . '.searchform.form' . $fromFormId . '.searchall');
+				$v = $this->app->getUserState('com_' . $package . '.searchform.form' . $fromFormId . '.searchall');
 			}
 		}
 
@@ -300,11 +296,9 @@ class FabrikFEModelListfilter extends FabModel
 	 *
 	 * @return  void
 	 */
-
 	private function getSearchAllFilters(&$filters)
 	{
-		$app = JFactory::getApplication();
-		$input = $app->input;
+		$input = $this->app->input;
 		$requestKey = $this->getSearchAllRequestKey();
 		$search = $this->getSearchAllValue('query');
 
@@ -316,16 +310,16 @@ class FabrikFEModelListfilter extends FabModel
 				$ks = array_keys($filters);
 				$filterKeys = array_keys(FArrayHelper::getValue($filters, 'search_type', array()));
 
-				foreach ($filterKeys as $filterkey)
+				foreach ($filterKeys as $filterKey)
 				{
-					if (FArrayHelper::getValue($filters['search_type'], $filterkey, '') == 'searchall')
+					if (FArrayHelper::getValue($filters['search_type'], $filterKey, '') == 'searchall')
 					{
 						foreach ($ks as $k)
 						{
 							/**
 							 * $$$ rob 10/04/2012  simply unsetting the array leaves the array pointer, but somewhere we recreate
 							 * $filters['search_type'] so its index becomes out of sync. see http://fabrikar.com/forums/showthread.php?t=25698
-							 * unset($filters[$k][$filterkey]);
+							 * unset($filters[$k][$filterKey]);
 							 */
 							$filters[$k] = array();
 						}
@@ -345,10 +339,10 @@ class FabrikFEModelListfilter extends FabModel
 			return;
 		}
 
-		$listid = $input->getInt('listid', -1);
+		$listId = $input->getInt('listid', -1);
 
 		// Check that we actually have the correct list id (or -1 if filter from viz)
-		if ($this->listModel->getTable()->id == $listid || $listid == -1)
+		if ($this->listModel->getTable()->id == $listId || $listId == -1)
 		{
 			if ($this->listModel->getParams()->get('search-mode-advanced'))
 			{
@@ -369,7 +363,6 @@ class FabrikFEModelListfilter extends FabModel
 	 *
 	 * @return  void
 	 */
-
 	public function clearAFilter(&$filters, $id)
 	{
 		$keys = array_keys($filters);
@@ -389,7 +382,7 @@ class FabrikFEModelListfilter extends FabModel
 	}
 
 	/**
-	 * for extended search all test if the search string is long enough
+	 * For extended search all test if the search string is long enough
 	 *
 	 * @param   string  $s  search string
 	 *
@@ -399,7 +392,6 @@ class FabrikFEModelListfilter extends FabModel
 	 *
 	 * @return  bool	search string long enough?
 	 */
-
 	protected function testBooleanSearchLength($s)
 	{
 		$db = JFactory::getDbo();
@@ -415,18 +407,16 @@ class FabrikFEModelListfilter extends FabModel
 	}
 
 	/**
-	 * do a boolean search
+	 * Do a boolean search
 	 *
 	 * @param   array   &$filters  filter array
 	 * @param   string  $search    term
 	 *
 	 * @return  void
 	 */
-
 	private function doBooleanSearch(&$filters, $search)
 	{
-		$app = JFactory::getApplication();
-		$input = $app->input;
+		$input = $this->app->input;
 		$mode = $input->get('search-mode-advanced', 'and');
 
 		if (trim($search) == '')
@@ -508,18 +498,16 @@ class FabrikFEModelListfilter extends FabModel
 	 *
 	 * @return  void
 	 */
-
 	public function clearFilters()
 	{
-		$app = JFactory::getApplication();
-		$package = $app->getUserState('com_fabrik.package', 'fabrik');
+		$package = $this->app->getUserState('com_fabrik.package', 'fabrik');
 		$session = JFactory::getSession();
 		$registry = $session->get('registry');
-		$id = $app->input->get('listref', $this->listModel->getRenderContext());
+		$id = $this->app->input->get('listref', $this->listModel->getRenderContext());
 		$tid = 'list' . $id;
 		$listContext = 'com_' . $package . '.list' . $id . '.';
 		$context = $listContext . 'filter';
-		$app->setUserState($listContext . 'limitstart', 0);
+		$this->app->setUserState($listContext . 'limitstart', 0);
 
 		if (!is_object($registry))
 		{
@@ -537,11 +525,11 @@ class FabrikFEModelListfilter extends FabModel
 		 * #post-184335
 		 */
 		$reg = JArrayHelper::fromObject($reg);
-		$serachTypes = FArrayHelper::getValue($reg, 'search_type', array());
+		$searchTypes = FArrayHelper::getValue($reg, 'search_type', array());
 
-		for ($i = 0; $i < count($serachTypes); $i++)
+		for ($i = 0; $i < count($searchTypes); $i++)
 		{
-			if ($this->canClear($serachTypes[$i]))
+			if ($this->canClear($searchTypes[$i]))
 			{
 				$this->clearAFilter($reg, $i);
 			}
@@ -559,12 +547,12 @@ class FabrikFEModelListfilter extends FabModel
 		}
 
 		$key = 'com_' . $package . '.' . $tid . '.searchall';
-		$v = $app->setUserState($key, '');
-		$fromFormId = $app->getUserState('com_' . $package . '.searchform.fromForm');
+		$this->app->setUserState($key, '');
+		$fromFormId = $this->app->getUserState('com_' . $package . '.searchform.fromForm');
 
 		if ($fromFormId != $this->listModel->getFormModel()->get('id'))
 		{
-			$app->setUserState('com_' . $package . '.searchform.form' . $fromFormId . '.searchall', '');
+			$this->app->setUserState('com_' . $package . '.searchform.form' . $fromFormId . '.searchall', '');
 		}
 	}
 
@@ -579,11 +567,9 @@ class FabrikFEModelListfilter extends FabModel
 	 */
 	protected function canClear($searchType)
 	{
-		$app = JFactory::getApplication();
-
-		if (!$app->isAdmin() && $this->activeTable())
+		if (!$this->app->isAdmin() && $this->activeTable())
 		{
-			$menus = $app->getMenu();
+			$menus = $this->app->getMenu();
 			$menu = $menus->getActive();
 
 			if (is_object($menu))
@@ -603,10 +589,9 @@ class FabrikFEModelListfilter extends FabModel
 	 *
 	 * @return  int  access level
 	 */
-
 	protected function defaultAccessLevel()
 	{
-		$accessLevels = JFactory::getUser()->getAuthorisedViewLevels();
+		$accessLevels = $this->user->getAuthorisedViewLevels();
 
 		return FArrayHelper::getValue($accessLevels, 0, 1);
 	}
@@ -619,10 +604,8 @@ class FabrikFEModelListfilter extends FabModel
 	 *
 	 * @return null
 	 */
-
 	private function insertSearchAllIntoFilters(&$filters, $search)
 	{
-		$app = JFactory::getApplication();
 		$elements = $this->listModel->getElements('id', false);
 		$keys = array_keys($elements);
 		$i = 0;
@@ -697,13 +680,13 @@ class FabrikFEModelListfilter extends FabModel
 			$access = $this->defaultAccessLevel();
 
 			// $$$ rob so search all on checkboxes/radio buttons etc. will take the search value of 'one' and return '1'
-			$newsearch = $elementModel->getFilterValue($search, $condition, $eval);
-			$newsearch = $newsearch[0];
+			$newSearch = $elementModel->getFilterValue($search, $condition, $eval);
+			$newSearch = $newSearch[0];
 
 			if ($key !== false)
 			{
 				$filters['orig_condition'][$key] = $condition;
-				$filters['value'][$key] = $newsearch;
+				$filters['value'][$key] = $newSearch;
 				$filters['condition'][$key] = $condition;
 				$filters['join'][$key] = 'OR';
 				$filters['no-filter-setup'][$key] = ($element->filter_type == '') ? 1 : 0;
@@ -730,7 +713,7 @@ class FabrikFEModelListfilter extends FabModel
 			else
 			{
 				$filters['orig_condition'][] = $condition;
-				$filters['value'][] = $newsearch;
+				$filters['value'][] = $newSearch;
 				$filters['condition'][] = $condition;
 				$filters['join'][] = 'OR';
 				$filters['no-filter-setup'][] = ($element->filter_type == '') ? 1 : 0;
@@ -766,7 +749,7 @@ class FabrikFEModelListfilter extends FabModel
 
 		if (!$searchable)
 		{
-			$app->enqueueMessage(FText::_('COM_FABRIK_NOTICE_SEARCH_ALL_BUT_NO_ELEMENTS'));
+			$this->app->enqueueMessage(FText::_('COM_FABRIK_NOTICE_SEARCH_ALL_BUT_NO_ELEMENTS'));
 		}
 	}
 
@@ -777,19 +760,17 @@ class FabrikFEModelListfilter extends FabModel
 	 *
 	 * @return  void
 	 */
-
 	private function getSearchFormSearchAllFilters(&$filters)
 	{
 		// See if there was a search all created from a search form
-		$app = JFactory::getApplication();
-		$package = $app->getUserState('com_fabrik.package', 'fabrik');
+		$package = $this->app->getUserState('com_fabrik.package', 'fabrik');
 		$formModel = $this->listModel->getFormModel();
 		$key = 'com_' . $package . '.searchform.fromForm';
-		$fromFormId = $app->getUserState($key);
+		$fromFormId = $this->app->getUserState($key);
 
 		if ($fromFormId != $formModel->getId())
 		{
-			$search = $app->getUserState('com_' . $package . '.searchform.form' . $fromFormId . '.searchall');
+			$search = $this->app->getUserState('com_' . $package . '.searchform.form' . $fromFormId . '.searchall');
 
 			if (trim($search) == '')
 			{
@@ -805,14 +786,12 @@ class FabrikFEModelListfilter extends FabModel
 	 *
 	 * @return  int  search form id
 	 */
-
 	private function getSearchFormId()
 	{
-		$app = JFactory::getApplication();
-		$package = $app->getUserState('com_fabrik.package', 'fabrik');
+		$package = $this->app->getUserState('com_fabrik.package', 'fabrik');
 		$key = 'com_' . $package . '.searchform.fromForm';
 
-		return $app->getUserState($key);
+		return $this->app->getUserState($key);
 	}
 
 	/**
@@ -822,13 +801,11 @@ class FabrikFEModelListfilter extends FabModel
 	 *
 	 * @return  void
 	 */
-
 	private function setSearchFormId($id = null)
 	{
-		$app = JFactory::getApplication();
-		$package = $app->getUserState('com_fabrik.package', 'fabrik');
+		$package = $this->app->getUserState('com_fabrik.package', 'fabrik');
 		$key = 'com_' . $package . '.searchform.fromForm';
-		$app->setUserState($key, $id);
+		$this->app->setUserState($key, $id);
 	}
 
 	/**
@@ -838,18 +815,16 @@ class FabrikFEModelListfilter extends FabModel
 	 *
 	 * @return  void
 	 */
-
 	private function getSearchFormFilters(&$filters)
 	{
-		$app = JFactory::getApplication();
-		$package = $app->getUserState('com_fabrik.package', 'fabrik');
+		$package = $this->app->getUserState('com_fabrik.package', 'fabrik');
 		$fromFormId = $this->getSearchFormId();
 
 		if (!empty($fromFormId))
 		{
 			$formModel = $this->listModel->getFormModel();
 			$db = FabrikWorker::getDbo();
-			$lookupkeys = FArrayHelper::getValue($filters, 'key', array());
+			$lookupKeys = FArrayHelper::getValue($filters, 'key', array());
 
 			if ($fromFormId != $formModel->get('id'))
 			{
@@ -862,15 +837,15 @@ class FabrikFEModelListfilter extends FabModel
 				 */
 				$elements = $this->listModel->getElements('id');
 				$filter_elements = $this->listModel->getElements('filtername');
-				$tablename = $db->quoteName($this->listModel->getTable()->db_table_name);
-				$searchfilters = $app->getUserState('com_' . $package . '.searchform.form' . $fromFormId . '.filters');
+				$tableName = $db->quoteName($this->listModel->getTable()->db_table_name);
+				$searchFilters = $this->app->getUserState('com_' . $package . '.searchform.form' . $fromFormId . '.filters');
 
-				for ($i = 0; $i < count($searchfilters['key']); $i++)
+				for ($i = 0; $i < count($searchFilters['key']); $i++)
 				{
 					$eval = FABRIKFILTER_TEXT;
 					$found = false;
-					$key = $searchfilters['key'][$i];
-					$elid = $searchfilters['elementid'][$i];
+					$key = $searchFilters['key'][$i];
+					$elid = $searchFilters['elementid'][$i];
 
 					if (array_key_exists($elid, $elements))
 					{
@@ -881,7 +856,7 @@ class FabrikFEModelListfilter extends FabModel
 					{
 						// If sent from a search form - the table name will be blank
 						$key = explode('.', $key);
-						$key = $tablename . '.' . array_pop($key);
+						$key = $tableName . '.' . array_pop($key);
 
 						if (array_key_exists($key, $filter_elements))
 						{
@@ -913,16 +888,16 @@ class FabrikFEModelListfilter extends FabModel
 						continue;
 					}
 
-					$index = array_key_exists('key', $filters) ? array_search($key, $lookupkeys) : false;
+					$index = array_key_exists('key', $filters) ? array_search($key, $lookupKeys) : false;
 					$element = $elementModel->getElement();
 					$elParams = $elementModel->getParams();
-					$grouped = array_key_exists($i, $searchfilters['grouped_to_previous']) ? $searchfilters['grouped_to_previous'][$i] : 0;
+					$grouped = array_key_exists($i, $searchFilters['grouped_to_previous']) ? $searchFilters['grouped_to_previous'][$i] : 0;
 
-					$join = $searchfilters['join'][$i];
+					$join = $searchFilters['join'][$i];
 
 					if ($index === false)
 					{
-						$filters['value'][] = $searchfilters['value'][$i];
+						$filters['value'][] = $searchFilters['value'][$i];
 						$filters['condition'][] = $elementModel->getDefaultFilterCondition();
 						$filters['join'][] = $join;
 						$filters['no-filter-setup'][] = ($element->filter_type == '') ? 1 : 0;
@@ -940,8 +915,8 @@ class FabrikFEModelListfilter extends FabModel
 					}
 					else
 					{
-						unset($lookupkeys[$index]);
-						$filters['value'][$index] = $searchfilters['value'][$i];
+						unset($lookupKeys[$index]);
+						$filters['value'][$index] = $searchFilters['value'][$i];
 						$filters['condition'][$index] = $elementModel->getDefaultFilterCondition();
 						$filters['join'][$index] = $join;
 						$filters['no-filter-setup'][$index] = ($element->filter_type == '') ? 1 : 0;
@@ -981,7 +956,6 @@ class FabrikFEModelListfilter extends FabModel
 	 *
 	 * @return  void
 	 */
-
 	private function getQuerystringFilters(&$filters)
 	{
 		//$item = $this->listModel->getTable();
@@ -1105,8 +1079,7 @@ class FabrikFEModelListfilter extends FabModel
 	 */
 	private function indQueryString($elementModel, &$filters, $value, $condition, $join, $grouped, $eval, $key, $raw = false)
 	{
-		$app = JFactory::getApplication();
-		$input = $app->input;
+		$input = $this->app->input;
 		$element = $elementModel->getElement();
 		$elParams = $elementModel->getParams();
 
@@ -1148,7 +1121,6 @@ class FabrikFEModelListfilter extends FabModel
 	 *
 	 * @return  array
 	 */
-
 	private function getPostFilterArray()
 	{
 		if (!isset($this->request))
@@ -1182,11 +1154,9 @@ class FabrikFEModelListfilter extends FabModel
 	 *
 	 * @return  void
 	 */
-
 	private function getPostFilters(&$filters)
 	{
-		$app = JFactory::getApplication();
-		$input = $app->input;
+		$input = $this->app->input;
 		$item = $this->listModel->getTable();
 		$request = $this->getPostFilterArray();
 		$elements = $this->listModel->getElements('id');
@@ -1201,12 +1171,12 @@ class FabrikFEModelListfilter extends FabModel
 
 		if (!empty($request) && array_key_exists('key', $request))
 		{
-			$keyints = array_keys($request['key']);
+			$keyInts = array_keys($request['key']);
 			$ajaxPost = JString::strtolower($input->server->get('HTTP_X_REQUESTED_WITH'));
 			$this->listModel->ajaxPost = $ajaxPost;
 			$this->listModel->postValues = $values;
 
-			foreach ($keyints as $i)
+			foreach ($keyInts as $i)
 			{
 				$value = FArrayHelper::getValue($values, $i, '');
 				$key = FArrayHelper::getValue($request['key'], $i);
@@ -1415,16 +1385,14 @@ class FabrikFEModelListfilter extends FabModel
 	 *
 	 * @return  void
 	 */
-
 	private function getSessionFilters(&$filters)
 	{
 		$profiler = JProfiler::getInstance('Application');
-		$app = JFactory::getApplication();
-		$package = $app->getUserState('com_fabrik.package', 'fabrik');
+		$package = $this->app->getUserState('com_fabrik.package', 'fabrik');
 		$elements = $this->listModel->getElements('id');
-		$identifier = $app->input->get('listref', $this->listModel->getRenderContext());
+		$identifier = $this->app->input->get('listref', $this->listModel->getRenderContext());
 		$key = 'com_' . $package . '.list' . $identifier . '.filter';
-		$sessionFilters = JArrayHelper::fromObject($app->getUserState($key));
+		$sessionFilters = JArrayHelper::fromObject($this->app->getUserState($key));
 		$filterKeys = array_keys($filters);
 
 		if (!is_array($sessionFilters) || !array_key_exists('key', $sessionFilters))
@@ -1448,7 +1416,7 @@ class FabrikFEModelListfilter extends FabModel
 		JDEBUG ? $profiler->mark('listfilter:session filters getSearchAllRequestKey') : null;
 		$pluginKeys = $this->getPluginFilterKeys();
 		JDEBUG ? $profiler->mark('listfilter:session filters getPluginFilterKeys') : null;
-		$search = $app->getUserStateFromRequest($key, $requestKey);
+		$search = $this->app->getUserStateFromRequest($key, $requestKey);
 		$postKeys = FArrayHelper::getValue($request, 'key', array());
 
 		for ($i = 0; $i < count($sessionFilters['key']); $i++)
@@ -1628,11 +1596,10 @@ class FabrikFEModelListfilter extends FabModel
 	}
 
 	/**
-	 * get an array of the lists's plugin filter keys
+	 * Get an array of the lists's plugin filter keys
 	 *
 	 * @return  array  key names
 	 */
-
 	public function getPluginFilterKeys()
 	{
 		$pluginManager = FabrikWorker::getPluginManager();
