@@ -36,8 +36,7 @@ class PlgFabrik_Crongmail extends PlgFabrik_Cron
 	public function process(&$data, &$listModel)
 	{
 		$params = $this->getParams();
-		$app = JFactory::getApplication();
-		$input = $app->input;
+		$input = $this->app->input;
 		$email = $params->get('plugin-options.email');
 		$pw = $params->get('plugin-options.password');
 

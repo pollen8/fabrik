@@ -18,8 +18,7 @@ defined('_JEXEC') or die('Restricted access');
  * @subpackage  Fabrik.element.fileupload
  * @since       3.0
  */
-
-class FlashRender
+class FlashRender extends FabModel
 {
 	/**
 	 * Render output
@@ -38,7 +37,6 @@ class FlashRender
 	 *
 	 * @return  void
 	 */
-
 	public function renderListData(&$model, &$params, $file, $thisRow)
 	{
 		$this->render($model, $params, $file);
@@ -53,7 +51,6 @@ class FlashRender
 	 *
 	 * @return  void
 	 */
-
 	public function render(&$model, &$params, $file)
 	{
 		$fbConfig = JComponentHelper::getParams('com_fabrik');
@@ -62,7 +59,7 @@ class FlashRender
 		require_once COM_FABRIK_FRONTEND . '/libs/getid3/getid3/getid3.lib.php';
 
 		getid3_lib::IncludeDependency(COM_FABRIK_FRONTEND . '/libs/getid3/getid3/extension.cache.mysql.php', __FILE__, true);
-		$config = JFactory::getConfig();
+		$config = $this->config;
 		$host = $config->get('host');
 		$database = $config->get('db');
 		$username = $config->get('user');
@@ -151,7 +148,6 @@ class FlashRender
 	 *
 	 * @return  string  HTML
 	 */
-
 	public function renderCarousel($id = 'carousel', $data = array(), $model = null, $params = null, $thisRow = null)
 	{
 		$rendered = '';

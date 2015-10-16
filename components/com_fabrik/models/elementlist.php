@@ -250,7 +250,6 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 	protected function filterQueryMultiValues ($key, $condition, $originalValue)
 	{
 		$str = array();
-		$db = JFactory::getDbo();
 
 		if ($condition === 'NOT IN')
 		{
@@ -295,7 +294,8 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 		foreach ($originalValue as $v2)
 		{
 			$v2 = str_replace("/", "\\\\/", $v2);
-			$str[] = '(' . $key . $partialComparison . $db->q('%"' . $v2 . '"%') . $glue . $key . $comparison . $db->q($v2) . ') ';
+			$str[] = '(' . $key . $partialComparison . $this->_db->q('%"' . $v2 . '"%') . $glue . $key .
+				$comparison . $this->_db->q($v2) . ') ';
 		}
 
 		return '(' . implode($glue, $str) . ')';
@@ -760,8 +760,7 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 	public function render($data, $repeatCounter = 0)
 	{
 		$name = $this->getHTMLName($repeatCounter);
-		$app = JFactory::getApplication();
-		$input = $app->input;
+		$input = $this->app->input;
 		$id = $this->getHTMLId($repeatCounter);
 		$params = $this->getParams();
 		$values = $this->getSubOptionValues();

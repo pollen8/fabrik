@@ -65,22 +65,19 @@ class PlgFabrik_ElementFblike extends PlgFabrik_Element
 	 */
 	public function renderListData($data, stdClass &$thisRow, $opts = array())
 	{
-		$app = JFactory::getApplication();
-
-		if ($app->input->get('format') === 'raw')
+		if ($this->app->input->get('format') === 'raw')
 		{
 			return $data;
 		}
 
 		$params = $this->getParams();
 		$meta = array();
-		$config = JFactory::getConfig();
 		$ex = $_SERVER['SERVER_PORT'] == 80 ? 'http://' : 'https://';
 
 		// $$$ rob no need to get other meta data as we are linking to the details which contains full meta info on what it is
 		// you are liking
 		$meta['og:url'] = $ex . $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'];
-		$meta['og:site_name'] = $config->get('sitename');
+		$meta['og:site_name'] = $this->config->get('sitename');
 		$meta['fb:admins'] = $params->get('fblike_opengraph_applicationid');
 		$str = FabrikHelperHTML::facebookGraphAPI($params->get('opengraph_applicationid'), $params->get('fblike_locale', 'en_US'), $meta);
 
@@ -92,7 +89,7 @@ class PlgFabrik_ElementFblike extends PlgFabrik_Element
 		{
 			if (!self::$warned)
 			{
-				$app->enqueueMessage('Your list needs to have viewable details records for the FB Like button to work');
+				$this->app->enqueueMessage('Your list needs to have viewable details records for the FB Like button to work');
 				self::$warned = true;
 			}
 
@@ -115,8 +112,7 @@ class PlgFabrik_ElementFblike extends PlgFabrik_Element
 	{
 		$params = $this->getParams();
 		$meta = array();
-		$formModel = $this->getForm();
-		$config = JFactory::getConfig();
+		$formModel = $this->getFormModel();
 		$ex = $_SERVER['SERVER_PORT'] == 80 ? 'http://' : 'https://';
 		$map = array('og:title' => 'fblike_title', 'og:type' => 'fblike_type', 'og:image' => 'fblike_image',
 			'og:description' => 'fblike_description', 'og:street-address' => 'fblike_street_address', 'og:locality' => 'fblike_locality',
@@ -165,7 +161,7 @@ class PlgFabrik_ElementFblike extends PlgFabrik_Element
 		}
 
 		$meta['og:url'] = $ex . $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'];
-		$meta['og:site_name'] = $config->get('sitename');
+		$meta['og:site_name'] = $this->config->get('sitename');
 		$meta['fb:app_id'] = $params->get('fblike_opengraph_applicationid');
 		$str = FabrikHelperHTML::facebookGraphAPI($params->get('fblike_opengraph_applicationid'), $params->get('fblike_locale', 'en_US'), $meta);
 		$url = $params->get('fblike_url');
@@ -183,7 +179,6 @@ class PlgFabrik_ElementFblike extends PlgFabrik_Element
 	 *
 	 * @return string
 	 */
-
 	protected function _render($url)
 	{
 		$params = $this->getParams();
@@ -225,7 +220,6 @@ class PlgFabrik_ElementFblike extends PlgFabrik_Element
 	 *
 	 * @return  array
 	 */
-
 	public function elementJavascript($repeatCounter)
 	{
 		$id = $this->getHTMLId($repeatCounter);
@@ -242,15 +236,13 @@ class PlgFabrik_ElementFblike extends PlgFabrik_Element
 	 *
 	 * @return  null
 	 */
-
 	public function onAjax_rate()
 	{
-		$app = JFactory::getApplication();
-		$input = $app->input;
+		$input = $this->app->input;
 		$this->loadMeForAjax();
-		$listid = $input->getInt('listid');
+		$listId = $input->getInt('listid');
 		$list = JModelLegacy::getInstance('list', 'FabrikFEModel');
-		$list->setId($listid);
+		$list->setId($listId);
 		$rowId = $input->get('row_id');
 		$direction = $input->get('direction', '+');
 		$field = $this->getFullName(false, false, false);

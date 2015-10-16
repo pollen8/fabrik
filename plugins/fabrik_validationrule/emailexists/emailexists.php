@@ -81,9 +81,8 @@ class PlgFabrik_ValidationruleEmailExists extends PlgFabrik_Validationrule
 		$query->select('id')->from('#__users')->where('email = ' . $db->quote($data));
 		$db->setQuery($query);
 		$result = $db->loadResult();
-		$user = JFactory::getUser();
 
-		if ($user->get('guest'))
+		if ($this->user->get('guest'))
 		{
 			if (!$result)
 			{
@@ -121,7 +120,7 @@ class PlgFabrik_ValidationruleEmailExists extends PlgFabrik_Validationrule
 				}
 				else
 				{
-					if ($result == $user->get('id')) // The connected user is editing his own data
+					if ($result == $this->user->get('id')) // The connected user is editing his own data
 					{
 						return ($orNot == 'fail_if_exists') ? true : false;
 					}

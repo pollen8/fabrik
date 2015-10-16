@@ -21,7 +21,6 @@ require_once COM_FABRIK_FRONTEND . '/models/plugin-list.php';
  * @subpackage  Fabrik.list.order
  * @since       3.0
  */
-
 class PlgFabrik_ListOrder extends PlgFabrik_List
 {
 	/**
@@ -29,7 +28,6 @@ class PlgFabrik_ListOrder extends PlgFabrik_List
 	 *
 	 * @return  string
 	 */
-
 	protected function getAclParam()
 	{
 		return 'order_access';
@@ -40,7 +38,6 @@ class PlgFabrik_ListOrder extends PlgFabrik_List
 	 *
 	 * @return  bool
 	 */
-
 	public function canSelectRows()
 	{
 		return false;
@@ -51,7 +48,6 @@ class PlgFabrik_ListOrder extends PlgFabrik_List
 	 *
 	 * @return  mixed  string or array
 	 */
-
 	public function loadJavascriptClass_result()
 	{
 		$ext = FabrikHelperHTML::isDebug() ? '.js' : '-min.js';
@@ -67,7 +63,6 @@ class PlgFabrik_ListOrder extends PlgFabrik_List
 	 *
 	 * @return bool
 	 */
-
 	public function onLoadJavascriptInstance($args)
 	{
 		if (!$this->canUse())
@@ -75,10 +70,10 @@ class PlgFabrik_ListOrder extends PlgFabrik_List
 			return;
 		}
 
+		/** @var FabrikFEModelList $model */
 		$model = $this->getModel();
 		$params = $this->getParams();
 		$orderEl = $model->getFormModel()->getElement($params->get('order_element'), true);
-		$form_id = $model->getFormModel()->getId();
 		$opts = $this->getElementJSOptions();
 		$opts->enabled = (FabrikString::safeColNameToArrayKey($model->orderEls[0]) == FabrikString::safeColNameToArrayKey($orderEl->getOrderByName())) ? true
 			: false;
@@ -103,13 +98,12 @@ class PlgFabrik_ListOrder extends PlgFabrik_List
 	 *
 	 * @return  void
 	 */
-
 	public function onAjaxReorder()
 	{
 		// Get list model
+		/** @var FabrikFEModelList $model */
 		$model = JModelLegacy::getInstance('list', 'FabrikFEModel');
-		$app = JFactory::getApplication();
-		$input = $app->input;
+		$input = $this->app->input;
 		$model->setId($input->getInt('listid'));
 		$db = $model->getDb();
 		$direction = $input->get('direction');
@@ -187,11 +181,7 @@ class PlgFabrik_ListOrder extends PlgFabrik_List
 
 			$db->setQuery($query);
 
-			if (!$db->execute())
-			{
-				echo $db->getErrorMsg();
-			}
-			else
+			if ($db->execute())
 			{
 				// Change the order of the moved record
 				$query = "UPDATE " . $table->db_table_name . " SET " . $orderBy . ' = ' . $o;

@@ -78,8 +78,7 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 		 * Jaanus: needed also here to not to show 0000-00-00 in detail view;
 		 * see also 58, added && !in_array($value, $aNullDates) (same reason).
 		 */
-		$db = JFactory::getDbo();
-		$aNullDates = array('0000-00-000000-00-00', '0000-00-00 00:00:00', '0000-00-00', '', $db->getNullDate());
+		$aNullDates = array('0000-00-000000-00-00', '0000-00-00 00:00:00', '0000-00-00', '', $this->_db->getNullDate());
 		$name = $this->getHTMLName($repeatCounter);
 		$id = $this->getHTMLId($repeatCounter);
 		$params = $this->getParams();
@@ -240,7 +239,7 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 			$dayValue = FArrayHelper::getValue($value, 2);
 			$errorCSS = (isset($this->_elementError) && $this->_elementError != '') ? ' elementErrorHighlight' : '';
 			$advancedClass = $this->getAdvancedSelectClass();
-			
+
 			$attributes = 'class="input-small fabrikinput inputbox ' . $advancedClass . ' ' . $errorCSS . '"';
 
 			$layout = $this->getLayout('form');
@@ -334,7 +333,7 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 		{
 			$years[] = JHTML::_('select.option', $i);
 		}
-		
+
 		return $years;
 	}
 
@@ -387,6 +386,8 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 				return $val;
 			}
 		}
+
+		return '';
 	}
 
 	/**
@@ -570,7 +571,7 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 			{
 				if ($fta == '{age}')
 				{
-					return '<font color ="#DD0000"><b>' . ($thisYear - $year) . "</b></font>";
+					return '<span style="color:#DD0000"><b>' . ($thisYear - $year) . '</b></span>';
 				}
 				else
 				{
@@ -645,6 +646,8 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 				}
 			}
 		}
+
+		return '';
 	}
 
 	/**
@@ -751,7 +754,7 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 			}
 			else
 			{
-				$today = JFactory::getDate();
+				$today = $this->date;
 				$thisMonth = $today->format('m');
 				$thisDay = $today->format('d');
 
@@ -805,7 +808,6 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 
 	public function getFilterQuery($key, $condition, $value, $originalValue, $type = 'normal')
 	{
-		$db = JFactory::getDbo();
 		$params = $this->getParams();
 		$element = $this->getElement();
 
@@ -868,7 +870,7 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 				$value = explode('-', $originalValue);
 				array_shift($value);
 				$value = implode('-', $value);
-				$query = 'DATE_FORMAT(' . $key . ', \'%m-%d\') = ' . $db->q($value);
+				$query = 'DATE_FORMAT(' . $key . ', \'%m-%d\') = ' . $this->_db->q($value);
 
 				return $query;
 			}
@@ -889,7 +891,6 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 	 */
 	private function _dayMonthYearFilterQuery($key, $originalValue)
 	{
-		$db = JFactory::getDbo();
 		$search = array();
 
 		foreach ($originalValue as $i => $val)
@@ -904,7 +905,7 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 
 		$search = implode('-', $search);
 
-		return $key . ' LIKE ' . $db->q($search);
+		return $key . ' LIKE ' . $this->_db->q($search);
 	}
 
 }

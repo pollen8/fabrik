@@ -21,7 +21,6 @@ require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
  * @subpackage  Fabrik.form.ftp
  * @since       3.0.7
  */
-
 class PlgFabrik_FormFtp extends PlgFabrik_Form
 {
 	/**
@@ -37,17 +36,12 @@ class PlgFabrik_FormFtp extends PlgFabrik_Form
 	 *
 	 * @return  bool
 	 */
-
 	public function onAfterProcess()
 	{
 		$params = $this->getParams();
 		jimport('joomla.mail.helper');
 		$formModel = $this->getModel();
-		$app = JFactory::getApplication();
-		$input = $app->input;
-		$config	= JFactory::getConfig();
-		$db = JFactory::getDbo();
-		$formParams	= $formModel->getParams();
+		$input = $this->app->input;
 		$ftpTemplate = JPath::clean(JPATH_SITE . '/plugins/fabrik_form/ftp/tmpl/' . $params->get('ftp_template', ''));
 		$this->data = $this->getProcessData();
 
@@ -92,75 +86,75 @@ class PlgFabrik_FormFtp extends PlgFabrik_Form
 			. $formModel->get('id') . "&amp;rowid=" . $input->get('rowid', '', 'string');
 		$viewURL = COM_FABRIK_LIVESITE . "index.php?option=com_fabrik&amp;view=details&amp;fabrik=" . $formModel->get('id')
 		. "&amp;rowid=" . $input->get('rowid', '', 'string');
-		$editlink = "<a href=\"$editURL\">" . FText::_('EDIT') . "</a>";
-		$viewlink = "<a href=\"$viewURL\">" . FText::_('VIEW') . "</a>";
-		$message = str_replace('{fabrik_editlink}', $editlink, $message);
-		$message = str_replace('{fabrik_viewlink}', $viewlink, $message);
+		$editLink = "<a href=\"$editURL\">" . FText::_('EDIT') . "</a>";
+		$viewLink = "<a href=\"$viewURL\">" . FText::_('VIEW') . "</a>";
+		$message = str_replace('{fabrik_editlink}', $editLink, $message);
+		$message = str_replace('{fabrik_viewlink}', $viewLink, $message);
 		$message = str_replace('{fabrik_editurl}', $editURL, $message);
 		$message = str_replace('{fabrik_viewurl}', $viewURL, $message);
 
-		$ftp_filename = $params->get('ftp_filename', '');
-		$ftp_filename = $w->parseMessageForPlaceholder($ftp_filename, $this->data, false);
-		$ftp_eval_filename = (int) $params->get('ftp_eval_filename', '0');
+		$ftpFileName = $params->get('ftp_filename', '');
+		$ftpFileName = $w->parseMessageForPlaceholder($ftpFileName, $this->data, false);
+		$ftpEvalFileName = (int) $params->get('ftp_eval_filename', '0');
 
-		if ($ftp_eval_filename)
+		if ($ftpEvalFileName)
 		{
-			$ftp_filename = @eval($ftp_filename);
-			FabrikWorker::logEval($email_to_eval, 'Caught exception on eval in ftp filename eval : %s');
+			$ftpFileName = @eval($ftpFileName);
+			FabrikWorker::logEval($ftpEvalFileName, 'Caught exception on eval in ftp filename eval : %s');
 		}
 
-		if (empty($ftp_filename))
+		if (empty($ftpFileName))
 		{
-			$ftp_filename = 'fabrik_ftp_' . md5(uniqid()) . '.txt';
+			$ftpFileName = 'fabrik_ftp_' . md5(uniqid()) . '.txt';
 		}
 
-		$ftp_host = $w->parseMessageForPlaceholder($params->get('ftp_host', ''), $this->data, false);
-		$ftp_port = $w->parseMessageForPlaceholder($params->get('ftp_port', '21'), $this->data, false);
-		$ftp_chdir = $w->parseMessageForPlaceholder($params->get('ftp_chdir', ''), $this->data, false);
-		$ftp_user = $w->parseMessageForPlaceholder($params->get('ftp_user', ''), $this->data, false);
-		$ftp_password = $w->parseMessageForPlaceholder($params->get('ftp_password', ''), $this->data, false);
+		$ftpHost = $w->parseMessageForPlaceholder($params->get('ftp_host', ''), $this->data, false);
+		$ftpPort = $w->parseMessageForPlaceholder($params->get('ftp_port', '21'), $this->data, false);
+		$ftpChDir = $w->parseMessageForPlaceholder($params->get('ftp_chdir', ''), $this->data, false);
+		$ftpUser = $w->parseMessageForPlaceholder($params->get('ftp_user', ''), $this->data, false);
+		$ftpPassword = $w->parseMessageForPlaceholder($params->get('ftp_password', ''), $this->data, false);
 
-		$tmp_dir = rtrim($config->getValue('config.tmp_path'), '/');
+		$tmpDir = rtrim($this->config->getValue('config.tmp_path'), '/');
 
-		if (empty($tmp_dir) || !JFolder::exists($tmp_dir))
+		if (empty($tmpDir) || !JFolder::exists($tmpDir))
 		{
 			throw new RuntimeException('PLG_FORM_FTP_NO_JOOMLA_TEMP_DIR', 500);
 		}
 
-		$tmp_file = $tmp_dir . '/fabrik_ftp_' . md5(uniqid());
+		$tmpFile = $tmpDir . '/fabrik_ftp_' . md5(uniqid());
 		$message = $w->parseMessageForPlaceholder($message, $this->data, true, false);
 
-		if (JFile::write($tmp_file, $message))
+		if (JFile::write($tmpFile, $message))
 		{
-			$conn_id = ftp_connect($ftp_host, $ftp_port);
+			$conn_id = ftp_connect($ftpHost, $ftpPort);
 
 			if ($conn_id)
 			{
-				if (@ftp_login($conn_id, $ftp_user, $ftp_password))
+				if (@ftp_login($conn_id, $ftpUser, $ftpPassword))
 				{
-					if (!empty($ftp_chdir))
+					if (!empty($ftpChDir))
 					{
-						if (!ftp_chdir($conn_id, $ftp_chdir))
+						if (!ftp_chdir($conn_id, $ftpChDir))
 						{
-							$app->enqueueMessage(FText::_('PLG_FORM_FTP_COULD_NOT_CHDIR'), 'notice');
-							JFile::delete($tmp_file);
+							$this->app->enqueueMessage(FText::_('PLG_FORM_FTP_COULD_NOT_CHDIR'), 'notice');
+							JFile::delete($tmpFile);
 
 							return false;
 						}
 					}
 
-					if (!ftp_put($conn_id, $ftp_filename, $tmp_file, FTP_ASCII))
+					if (!ftp_put($conn_id, $ftpFileName, $tmpFile, FTP_ASCII))
 					{
-						$app->enqueueMessage(FText::_('PLG_FORM_FTP_COULD_NOT_SEND_FILE'), 'notice');
-						JFile::delete($tmp_file);
+						$this->app->enqueueMessage(FText::_('PLG_FORM_FTP_COULD_NOT_SEND_FILE'), 'notice');
+						JFile::delete($tmpFile);
 
 						return false;
 					}
 				}
 				else
 				{
-					$app->enqueueMessage(FText::_('PLG_FORM_FTP_COULD_NOT_LOGIN'), 'notice');
-					JFile::delete($tmp_file);
+					$this->app->enqueueMessage(FText::_('PLG_FORM_FTP_COULD_NOT_LOGIN'), 'notice');
+					JFile::delete($tmpFile);
 
 					return false;
 				}
@@ -168,7 +162,7 @@ class PlgFabrik_FormFtp extends PlgFabrik_Form
 			else
 			{
 				throw new RuntimeException('PLG_FORM_FTP_COULD_NOT_CONNECT', 500);
-				JFile::delete($tmp_file);
+				JFile::delete($tmpFile);
 
 				return false;
 			}
@@ -176,12 +170,12 @@ class PlgFabrik_FormFtp extends PlgFabrik_Form
 		else
 		{
 			throw new RuntimeException('PLG_FORM_FTP_COULD_NOT_WRITE_TEMP_FILE', 500);
-			JFile::delete($tmp_file);
+			JFile::delete($tmpFile);
 
 			return false;
 		}
 
-		JFile::delete($tmp_file);
+		JFile::delete($tmpFile);
 
 		return true;
 	}
@@ -193,7 +187,6 @@ class PlgFabrik_FormFtp extends PlgFabrik_Form
 	 *
 	 * @return  string  Email message
 	 */
-
 	protected function _getPHPTemplateFtp($tmpl)
 	{
 		// Start capturing output into a buffer
@@ -215,7 +208,6 @@ class PlgFabrik_FormFtp extends PlgFabrik_Form
 	 *
 	 * @return  array
 	 */
-
 	protected function getDontEmailKeys()
 	{
 		if (is_null($this->dontEmailKeys))
@@ -238,7 +230,6 @@ class PlgFabrik_FormFtp extends PlgFabrik_Form
 	 *
 	 * @return  string  Email message
 	 */
-
 	protected function _getTemplateFtp($ftpTemplate)
 	{
 		return file_get_contents($ftpTemplate);
@@ -251,16 +242,13 @@ class PlgFabrik_FormFtp extends PlgFabrik_Form
 	 *
 	 * @return  string  Content item html (translated with Joomfish if installed)
 	 */
-
 	protected function _getContentTemplate($contentTemplate)
 	{
-		$app = JFactory::getApplication();
-
-		if ($app->isAdmin())
+		if ($this->app->isAdmin())
 		{
-			$db = JFactory::getDbo();
+			$db = $this->_db;
 			$query = $db->getQuery(true);
-			$query->select('introtext, ' . $db->quoteName('fulltext'))->from('#__content')->where('id = ' . (int) $contentTemplate);
+			$query->select('introtext, ' . $db->qn('fulltext'))->from('#__content')->where('id = ' . (int) $contentTemplate);
 			$db->setQuery($query);
 			$res = $db->loadObject();
 		}
@@ -279,14 +267,13 @@ class PlgFabrik_FormFtp extends PlgFabrik_Form
 	 *
 	 * @return  string  Email message
 	 */
-
 	protected function _getTextFtp()
 	{
 		$data = $this->getProcessData();
-		$config = JFactory::getConfig();
 		$ignore = $this->getDontEmailKeys();
-		$message = "";
-		$pluginManager = FabrikWorker::getPluginManager();
+		$message = '';
+
+		/** @var FabrikFEModelForm $formModel */
 		$formModel = $this->getModel();
 		$groupModels = $formModel->getGroupsHiarachy();
 
@@ -346,7 +333,7 @@ class PlgFabrik_FormFtp extends PlgFabrik_Form
 			}
 		}
 
-		$message = FText::_('Email from') . ' ' . $config->get('sitename') . '<br />' . FText::_('Message') . ':'
+		$message = FText::_('Email from') . ' ' . $this->config->get('sitename') . '<br />' . FText::_('Message') . ':'
 			. "<br />===================================<br />" . "<br />" . stripslashes($message);
 
 		return $message;

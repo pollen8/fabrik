@@ -470,6 +470,16 @@ class FabrikFEModelList extends JModelForm
 	protected $user;
 
 	/**
+	 * @var JConfig
+	 */
+	protected $config;
+
+	/**
+	 * @var JLanguage
+	 */
+	protected $lang;
+
+	/**
 	 * Load form
 	 *
 	 * @param   array  $data      form data
@@ -504,6 +514,9 @@ class FabrikFEModelList extends JModelForm
 		$this->app = JArrayHelper::getValue($config, 'app', JFactory::getApplication());
 		$this->session = JArrayHelper::getValue($config, 'session', JFactory::getSession());
 		$this->user = JArrayHelper::getValue($config, 'user', JFactory::getUser());
+		$this->config = JArrayHelper::getValue($config, 'config', JFactory::getConfig());
+		$this->lang = JArrayHelper::getValue($config, 'lang', JFactory::getLanguage());
+
 		$input = $this->app->input;
 		$id = $input->getInt('listid', $usersConfig->get('listid'));
 		$this->packageId = (int) $input->getInt('packageId', $usersConfig->get('packageId'));
@@ -1080,8 +1093,7 @@ class FabrikFEModelList extends JModelForm
 			$table = $this->getTable();
 			$db = FabrikWorker::getDbo();
 			$jf = JoomFishManager::getInstance();
-			$config = JFactory::getConfig();
-			$tableName = str_replace($config->get('dbprefix'), '', $table->db_table_name);
+			$tableName = str_replace($this->config->get('dbprefix'), '', $table->db_table_name);
 			$contentElement = $jf->getContentElement($tableName);
 
 			if (!is_object($contentElement))
@@ -1091,8 +1103,7 @@ class FabrikFEModelList extends JModelForm
 
 			$title = Fabrikstring::shortColName($params->get('joomfish-title'));
 			$activeLangs = $jf->getActiveLanguages();
-			$registry = JFactory::getConfig();
-			$langId = $activeLangs[$registry->get("jflang")]->id;
+			$langId = $activeLangs[$this->config->get("jflang")]->id;
 			$db->setQuery($contentElement->createContentSQL($langId));
 
 			if ($title == '')
@@ -7304,7 +7315,7 @@ class FabrikFEModelList extends JModelForm
 	public function updateObject($table, &$object, $keyName, $updateNulls = true)
 	{
 		$db = $this->getDb();
-		$secret = JFactory::getConfig()->get('secret');
+		$secret = $this->config->get('secret');
 		$fmtSql = 'UPDATE ' . $db->qn($table) . ' SET %s WHERE %s';
 		$tmp = array();
 
@@ -7376,7 +7387,7 @@ class FabrikFEModelList extends JModelForm
 	public function insertObject($table, &$object, $keyName = null)
 	{
 		$db = $this->getDb();
-		$secret = JFactory::getConfig()->get('secret');
+		$secret = $this->config->get('secret');
 		$fmtSql = 'INSERT INTO ' . $db->qn($table) . ' ( %s ) VALUES ( %s ) ';
 		$fields = array();
 		$values = array();
@@ -8739,7 +8750,7 @@ class FabrikFEModelList extends JModelForm
 		*/
 		$msg = preg_replace_callback("/{[^}\s]+}/i", array($this, 'replaceWithRowData'), $msg);
 
-		$lang = JFactory::getLanguage()->getTag();
+		$lang = $this->lang->getTag();
 		$lang = str_replace('-', '_', $lang);
 		$msg = str_replace('{lang}', $lang, $msg);
 

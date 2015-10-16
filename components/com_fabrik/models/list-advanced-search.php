@@ -20,7 +20,7 @@ jimport('joomla.application.component.model');
  * @subpackage  Fabrik
  * @since       3.3.4
  */
-class FabrikFEModelAdvancedSearch extends JModelLegacy
+class FabrikFEModelAdvancedSearch extends FabModel
 {
 	/**
 	 * @var FabrikFEModelList
@@ -147,8 +147,7 @@ class FabrikFEModelAdvancedSearch extends JModelLegacy
 
 		$model = $this->model;
 		$statements = $this->getStatementsOpts();
-		$app = JFactory::getApplication();
-		$input = $app->input;
+		$input = $this->app->input;
 		$rows = array();
 		$elementModels = $model->getElements();
 		list($fieldNames, $firstFilter) = $this->getAdvancedSearchElementList();
@@ -325,14 +324,12 @@ class FabrikFEModelAdvancedSearch extends JModelLegacy
 	public function url()
 	{
 		$model = $this->model;
-		$app = JFactory::getApplication();
 		$table = $model->getTable();
-		$package = $app->getUserState('com_fabrik.package', 'fabrik');
-		$url = COM_FABRIK_LIVESITE . 'index.php?option=com_' . $package . '&amp;view=list&amp;layout=_advancedsearch&amp;tmpl=component&amp;listid='
-			. $table->id . '&amp;nextview=' . $app->input->get('view', 'list');
+		$url = COM_FABRIK_LIVESITE . 'index.php?option=com_' . $this->package . '&amp;view=list&amp;layout=_advancedsearch&amp;tmpl=component&amp;listid='
+			. $table->id . '&amp;nextview=' . $this->app->input->get('view', 'list');
 
 		// Defines if we are in a module or in the component.
-		$url .= '&amp;scope=' . $app->scope;
+		$url .= '&amp;scope=' . $this->app->scope;
 		$url .= '&amp;tkn=' . JSession::getFormToken();
 
 		return $url;
@@ -346,8 +343,7 @@ class FabrikFEModelAdvancedSearch extends JModelLegacy
 	public function elementFilter()
 	{
 		$model = $this->model;
-		$app = JFactory::getApplication();
-		$input = $app->input;
+		$input = $this->app->input;
 		$elementId = $input->getId('elid');
 		$pluginManager = FabrikWorker::getPluginManager();
 		$className = $input->get('plugin');
@@ -355,9 +351,9 @@ class FabrikFEModelAdvancedSearch extends JModelLegacy
 		$plugin->setId($elementId);
 		$plugin->getElement();
 
-		if ($app->input->get('context') == 'visualization')
+		if ($input->get('context') == 'visualization')
 		{
-			$container = $app->input->get('parentView');
+			$container = $input->get('parentView');
 		}
 		else
 		{

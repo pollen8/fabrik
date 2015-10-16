@@ -18,7 +18,6 @@ defined('_JEXEC') or die('Restricted access');
  * @subpackage  Fabrik.element.access
  * @since       3.0
  */
-
 class PlgFabrik_ElementAccess extends PlgFabrik_Element
 {
 	/**
@@ -52,7 +51,6 @@ class PlgFabrik_ElementAccess extends PlgFabrik_Element
 	 *
 	 * @return  string	elements html
 	 */
-
 	public function render($data, $repeatCounter = 0)
 	{
 		$name = $this->getHTMLName($repeatCounter);
@@ -99,12 +97,11 @@ class PlgFabrik_ElementAccess extends PlgFabrik_Element
 
 	private function getOpts($allowAll = true)
 	{
-		$db = JFactory::getDbo();
-		$db
+		$this->_db
 			->setQuery(
 				'SELECT a.id AS value, a.title AS text, COUNT(DISTINCT b.id) AS level' . ' FROM #__usergroups AS a'
 					. ' LEFT JOIN `#__usergroups` AS b ON a.lft > b.lft AND a.rgt < b.rgt' . ' GROUP BY a.id' . ' ORDER BY a.lft ASC');
-		$options = $db->loadObjectList();
+		$options = $this->_db->loadObjectList();
 
 		for ($i = 0, $n = count($options); $i < $n; $i++)
 		{
@@ -115,8 +112,7 @@ class PlgFabrik_ElementAccess extends PlgFabrik_Element
 		if ($allowAll)
 		{
 			// If in front end we need to load the admin language..
-			$lang = JFactory::getLanguage();
-			$lang->load('joomla', JPATH_ADMINISTRATOR, null, false, false);
+			$this->lang->load('joomla', JPATH_ADMINISTRATOR, null, false, false);
 
 			array_unshift($options, JHtml::_('select.option', '', FText::_('JOPTION_ACCESS_SHOW_ALL_GROUPS')));
 		}
@@ -152,7 +148,7 @@ class PlgFabrik_ElementAccess extends PlgFabrik_Element
 		$layoutData = new stdClass;
 		$layoutData->text = $text;
 
-		return parent::renderListData($layoutData, $thisRow. $opts);
+		return parent::renderListData($layoutData, $thisRow, $opts);
 	}
 
 	/**
@@ -160,7 +156,6 @@ class PlgFabrik_ElementAccess extends PlgFabrik_Element
 	 *
 	 * @return  string  db field type
 	 */
-
 	public function getFieldDescription()
 	{
 		if ($this->encryptMe())
@@ -178,7 +173,6 @@ class PlgFabrik_ElementAccess extends PlgFabrik_Element
 	 *
 	 * @return  array
 	 */
-
 	public function elementJavascript($repeatCounter)
 	{
 		$id = $this->getHTMLId($repeatCounter);

@@ -20,7 +20,6 @@ require_once JPATH_SITE . '/plugins/fabrik_element/databasejoin/databasejoin.php
  * @subpackage  Fabrik.element.notes
  * @since       3.0
  */
-
 class PlgFabrik_ElementNotes extends PlgFabrik_ElementDatabasejoin
 {
 	/**
@@ -37,7 +36,6 @@ class PlgFabrik_ElementNotes extends PlgFabrik_ElementDatabasejoin
 	 *
 	 * @return  array
 	 */
-
 	public function elementJavascript($repeatCounter)
 	{
 		$id = $this->getHTMLId($repeatCounter);
@@ -57,7 +55,6 @@ class PlgFabrik_ElementNotes extends PlgFabrik_ElementDatabasejoin
 	 *
 	 * @return  string	elements html
 	 */
-
 	public function render($data, $repeatCounter = 0)
 	{
 		$params = $this->getParams();
@@ -101,24 +98,24 @@ class PlgFabrik_ElementNotes extends PlgFabrik_ElementDatabasejoin
 		{
 			$header[] = $this->getUserNameLinked($row);
 		}
-		
+
 		if ($params->get('notes_date', '') !== '')
 		{
 			$header[] = $this->getFormattedDate($row);
 		}
-		
+
 		if (!empty($header))
 		{
 			$spanX = 12 / count($header);
-			
+
 			foreach ($header as $head)
 			{
 				$txt .= '<div class="span' . $spanX . '">' . $head . '</div>';
 			}
-			
+
 			$txt = '<div class="row-fluid">' . $txt . '</div>';
 		}
-		
+
 		$txt .= $row->text;
 
 		return $txt;
@@ -134,15 +131,15 @@ class PlgFabrik_ElementNotes extends PlgFabrik_ElementDatabasejoin
 	public function getUserNameLinked($row)
 	{
 		$ret = '';
-		
+
 		if (isset($row->username))
 		{
 			$params = $this->getParams();
 			$userid_url = $params->get('userid_url', '');
-				
+
 			if (!empty($userid_url))
-			{		
-				$userid_url = sprintf($userid_url, $row->userid);	
+			{
+				$userid_url = sprintf($userid_url, $row->userid);
 				$ret = '<a href="' . $userid_url . '">' . $row->username . '</a>';
 			}
 			else
@@ -153,7 +150,7 @@ class PlgFabrik_ElementNotes extends PlgFabrik_ElementDatabasejoin
 
 		return $ret;
 	}
-	
+
 	/**
 	 * Get formatted date
 	 *
@@ -164,12 +161,12 @@ class PlgFabrik_ElementNotes extends PlgFabrik_ElementDatabasejoin
 	public function getFormattedDate($row)
 	{
 		$ret = '';
-		
+
 		if (isset($row->date_time) && !empty($row->date_time))
 		{
-			$params = $this->getParams();	
+			$params = $this->getParams();
 			$notes_date_format = $params->get('notes_date_format', '');
-			
+
 			if (!empty($notes_date_format))
 			{
 				$ret = date($notes_date_format, strtotime($row->date_time));
@@ -179,7 +176,7 @@ class PlgFabrik_ElementNotes extends PlgFabrik_ElementDatabasejoin
 				$ret = $row->date_time;
 			}
 		}
-	
+
 		return $ret;
 	}
 
@@ -199,11 +196,10 @@ class PlgFabrik_ElementNotes extends PlgFabrik_ElementDatabasejoin
 
 		if (!array_key_exists($c, $this->components))
 		{
-			$db = JFactory::getDbo();
-			$query = $db->getQuery(true);
-			$query->select('COUNT(id)')->from('#__extensions')->where('name = ' . $db->quote($c));
-			$db->seQuery($query);
-			$found = $db->loadResult();
+			$query = $this->_db->getQuery(true);
+			$query->select('COUNT(id)')->from('#__extensions')->where('name = ' . $this->_db->q($c));
+			$this->_db->seQuery($query);
+			$found = $this->db->loadResult();
 			$this->components[$c] = $found;
 		}
 
@@ -213,15 +209,14 @@ class PlgFabrik_ElementNotes extends PlgFabrik_ElementDatabasejoin
 	/**
 	 * Create the where part for the query that selects the list options
 	 *
-	 * @param   array           $data            Current row data to use in placeholder replacements
-	 * @param   bool            $incWhere        Should the additional user defined WHERE statement be included
-	 * @param   string          $thisTableAlias  Db table alias
-	 * @param   array           $opts            Options
-	 * @param   JDatabaseQuery  $query           Append where to JDatabaseQuery object or return string (false)
+	 * @param   array                $data            Current row data to use in placeholder replacements
+	 * @param   bool                 $incWhere        Should the additional user defined WHERE statement be included
+	 * @param   string               $thisTableAlias  Db table alias
+	 * @param   array                $opts            Options
+	 * @param   JDatabaseQuery|bool  $query           Append where to JDatabaseQuery object or return string (false)
 	 *
 	 * @return string|JDatabaseQuery
 	 */
-
 	protected function buildQueryWhere($data = array(), $incWhere = true, $thisTableAlias = null, $opts = array(), $query = false)
 	{
 		$params = $this->getParams();
@@ -229,7 +224,7 @@ class PlgFabrik_ElementNotes extends PlgFabrik_ElementDatabasejoin
 		$field = $params->get('notes_where_element');
 		$value = $params->get('notes_where_value');
 		$fk = $params->get('join_fk_column', '');
-		$rowid = $this->getFormModel()->getRowId();
+		$rowId = $this->getFormModel()->getRowId();
 		$where = array();
 
 		// Jaanus: here we can choose whether WHERE has to have single or (if field is the same as FK then only) custom (single or multiple) criteria,
@@ -237,7 +232,7 @@ class PlgFabrik_ElementNotes extends PlgFabrik_ElementDatabasejoin
 		{
 			if ($field != '' && $field !== $fk)
 			{
-				$where[] = $db->quoteName($field) . ' = ' . $db->quote($value);
+				$where[] = $db->qn($field) . ' = ' . $db->q($value);
 			}
 			else
 			{
@@ -245,14 +240,14 @@ class PlgFabrik_ElementNotes extends PlgFabrik_ElementDatabasejoin
 			}
 		}
 		// Jaanus: when we choose WHERE field to be the same as FK then WHERE criteria is automatically FK = rowid, custom criteria(s) above may be added
-		if ($fk !== '' && $field === $fk && $rowid != '')
+		if ($fk !== '' && $field === $fk && $rowId != '')
 		{
-			$where[] = $db->quoteName($fk) . ' = ' . $rowid;
+			$where[] = $db->qn($fk) . ' = ' . $rowId;
 		}
 
 		if ($this->loadRow != '')
 		{
-			$pk = $db->quoteName($this->getJoin()->table_join_alias . '.' . $params->get('join_key_column'));
+			$pk = $db->qn($this->getJoin()->table_join_alias . '.' . $params->get('join_key_column'));
 			$where[] = $pk . ' = ' . $this->loadRow;
 		}
 
@@ -260,7 +255,7 @@ class PlgFabrik_ElementNotes extends PlgFabrik_ElementDatabasejoin
 		 * $$$ hugh if where is still empty (most likely if new form) set it to "1 = -1", otherwise
 		 * we'll wind up selecting everything in the table.
 		 */
-		
+
 		if ($query)
 		{
 			if (!empty($where))
@@ -283,16 +278,14 @@ class PlgFabrik_ElementNotes extends PlgFabrik_ElementDatabasejoin
 	/**
 	 * Get options order by
 	 *
-	 * @param   string         $view   View mode '' or 'filter'
-	 * @param   JDatabasQuery  $query  Set to false to return a string
+	 * @param   string               $view   View mode '' or 'filter'
+	 * @param   JDatabaseQuery|bool  $query  Set to false to return a string
 	 *
 	 * @return  string  order by statement
 	 */
-
 	protected function getOrderBy($view = '', $query = false)
 	{
 		$params = $this->getParams();
-		$db = $this->getDb();
 		$orderBy = $params->get('notes_order_element');
 
 		if ($orderBy == '')
@@ -301,8 +294,8 @@ class PlgFabrik_ElementNotes extends PlgFabrik_ElementDatabasejoin
 		}
 		else
 		{
-			$order = FabrikString::safeQuoteName($params->get('join_db_name') . '.' . $orderBy) . ' ' . $params->get('notes_order_dir', 'ASC');
-				
+			$order = FabrikString::safeqn($params->get('join_db_name') . '.' . $orderBy) . ' ' . $params->get('notes_order_dir', 'ASC');
+
 			if ($query)
 			{
 				$query->order($order);
@@ -321,7 +314,6 @@ class PlgFabrik_ElementNotes extends PlgFabrik_ElementDatabasejoin
 	 *
 	 * @return string fields to add e.g return ',name, username AS other'
 	 */
-
 	protected function getAdditionalQueryFields()
 	{
 		$fields = array();
@@ -334,18 +326,18 @@ class PlgFabrik_ElementNotes extends PlgFabrik_ElementDatabasejoin
 
 			if ($user !== '')
 			{
-				$tbl = $db->quoteName($this->getJoin()->table_join_alias);
-				$fields[] = $tbl . '.' . $db->quoteName($user) . 'AS userid';
+				$tbl = $db->qn($this->getJoin()->table_join_alias);
+				$fields[] = $tbl . '.' . $db->qn($user) . 'AS userid';
 				$fields[] = 'u.name AS username';
 			}
 		}
-		
+
 		$date = $params->get('notes_date', '');
-		
+
 		if ($date !== '')
 		{
-			$tbl = $db->quoteName($this->getJoin()->table_join_alias);
-			$fields[] = $tbl . '.' . $db->quoteName($date) . 'AS date_time';
+			$tbl = $db->qn($this->getJoin()->table_join_alias);
+			$fields[] = $tbl . '.' . $db->qn($date) . 'AS date_time';
 		}
 
 		return implode(', ', $fields);
@@ -358,9 +350,8 @@ class PlgFabrik_ElementNotes extends PlgFabrik_ElementDatabasejoin
 	 *
 	 * @since 3.0rc1
 	 *
-	 * @return string|JQueryerBuilder join statement to add
+	 * @return string|JDatabaseQuery join statement to add
 	 */
-
 	protected function buildQueryJoin($query = false)
 	{
 		$join = '';
@@ -373,15 +364,15 @@ class PlgFabrik_ElementNotes extends PlgFabrik_ElementDatabasejoin
 
 			if ($user !== '')
 			{
-				$tbl = $db->quoteName($this->getJoin()->table_join_alias);
+				$tbl = $db->qn($this->getJoin()->table_join_alias);
 
 				if (!$query)
 				{
-					$join .= ' LEFT JOIN #__users AS u ON u.id = ' . $tbl . '.' . $db->quoteName($user);
+					$join .= ' LEFT JOIN #__users AS u ON u.id = ' . $tbl . '.' . $db->qn($user);
 				}
 				else
 				{
-					$query->join('LEFT', '#__users AS u ON u.id = ' . $tbl . '.' . $db->quoteName($user));
+					$query->join('LEFT', '#__users AS u ON u.id = ' . $tbl . '.' . $db->qn($user));
 				}
 			}
 		}
@@ -396,7 +387,6 @@ class PlgFabrik_ElementNotes extends PlgFabrik_ElementDatabasejoin
 	 *
 	 * @return boolean
 	 */
-
 	protected function showPleaseSelect()
 	{
 		return false;
@@ -407,45 +397,42 @@ class PlgFabrik_ElementNotes extends PlgFabrik_ElementDatabasejoin
 	 *
 	 * @return  void
 	 */
-
 	public function onAjax_addNote()
 	{
-		$app = JFactory::getApplication();
-		$input = $app->input;
+		$input = $this->app->input;
 		$this->loadMeForAjax();
 		$return = new stdClass;
 		$db = $this->getDb();
 		$query = $db->getQuery(true);
 		$params = $this->getParams();
-		$table = $db->quoteName($params->get('join_db_name'));
+		$table = $db->qn($params->get('join_db_name'));
 		$col = $params->get('join_val_column');
-		$key = $db->quoteName($params->get('join_key_column'));
 		$v = $input->get('v', '', '', 'string');
-		$rowid = $this->getFormModel()->getRowId();
+		$rowId = $this->getFormModel()->getRowId();
 
-		// Jaanus - avoid inserting data when the form is 'new' not submitted ($rowid == '')
-		if ($rowid !== '')
+		// Jaanus - avoid inserting data when the form is 'new' not submitted ($rowId == '')
+		if ($rowId !== '')
 		{
-			$query->insert($table)->set($col . ' = ' . $db->quote($v));
+			$query->insert($table)->set($col . ' = ' . $db->q($v));
 			$user = $params->get('userid', '');
 
 			if ($user !== '')
 			{
-				$query->set($db->quoteName($user) . ' = ' . (int) JFactory::getUser()->get('id'));
+				$query->set($db->qn($user) . ' = ' . (int) $this->user->get('id'));
 			}
 
 			$fk = $params->get('join_fk_column', '');
 
 			if ($fk !== '')
 			{
-				$query->set($db->quoteName($fk) . ' = ' . $db->quote($input->get('rowid')));
+				$query->set($db->qn($fk) . ' = ' . $db->q($input->get('rowid')));
 			}
-			
+
 			$date = $params->get('notes_date', '');
-			
+
 			if ($date !== '')
 			{
-				$query->set($db->quoteName($date) . ' = NOW()');
+				$query->set($db->qn($date) . ' = NOW()');
 			}
 
 			$db->setQuery($query);

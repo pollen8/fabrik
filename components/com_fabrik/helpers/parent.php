@@ -76,7 +76,7 @@ class FabrikWorker
 	 * @var  array
 	 */
 	static protected $doc_mime_types = array('pdf' => 'application/pdf', 'epub' => 'document/x-epub');
-	
+
 	/**
 	 * Valid view types, for sanity checking inputs, used by isViewType()
 	 */
@@ -117,7 +117,7 @@ class FabrikWorker
 
 		return in_array($view, self::$viewTypes);
 	}
-	
+
 	/**
 	 * Returns true if $file has an image extension type
 	 *
@@ -585,17 +585,17 @@ class FabrikWorker
 	 * the upload element is creating a file path, for an upload element in a repeat group, of ...
 	 * '/uploads/{repeat_table___userid}/', and there are 4 repeat instance, it doesn't want a path of ...
 	 * '/uploads/34,45,94,103/', it just wants the one value from the same repeat count as the upload
-	 * element.  Or a calc element doing "return '{repeat_table___first_name} {repeat_table___last_name}';".  Etc. 
-	 * 
+	 * element.  Or a calc element doing "return '{repeat_table___first_name} {repeat_table___last_name}';".  Etc.
+	 *
 	 * Rather than make this a part of parseMessageForPlaceHolder, for now I'm making it a sperate function,
 	 * which just handles this one very specific data replacement.  Will look at merging it in with the main
 	 * parsing once we have a better understanding of where / when / how to do it.
-	 * 
+	 *
 	 * @param  string   $msg             Text to parse
 	 * @param  array    $searchData      Data to search for placeholders
 	 * @param  object   $el    Element model of the element which is doing the replacing
 	 * @param  int      $repeatCounter   Repeat instance
-	 * 
+	 *
 	 * @return  string  parsed message
 	 */
 	public function parseMessageForRepeats($msg, $searchData, $el, $repeatCounter)
@@ -607,7 +607,7 @@ class FabrikWorker
 			{
 				$elementModels = $groupModel->getPublishedElements();
 				$formModel = $el->getFormModel();
-		
+
 				foreach ($elementModels as $elementModel)
 				{
 					$repeatElName = $elementModel->getFullName(true, false);
@@ -627,7 +627,7 @@ class FabrikWorker
 		}
 		return $msg;
 	}
-	
+
 	/**
 	 * Iterates through string to replace every
 	 * {placeholder} with posted data
@@ -1435,18 +1435,18 @@ class FabrikWorker
 			 *  default connection as well, essentially enabling it for ALL queries we do.
 			 */
 			$fbConfig = JComponentHelper::getParams('com_fabrik');
-			
+
 			if ($fbConfig->get('enable_big_selects', 0) == '1')
 			{
 				$fabrikDb = self::$database[$sig];
-				
+
 				/**
 				 * Use of OPTION in SET deprecated from MySQL 5.1. onward
 				 * http://www.fabrikar.com/forums/index.php?threads/enable-big-selects-error.39463/#post-198293
 				 * NOTE - technically, using verison_compare on MySQL version could fail, if it's a "gamma"
 				 * release, which PHP desn't grok!
 				 */
-				
+
 				if (version_compare($fabrikDb->getVersion(), '5.1.0', '>='))
 				{
 					$fabrikDb->setQuery("SET SQL_BIG_SELECTS=1, GROUP_CONCAT_MAX_LEN=10240");
@@ -1455,7 +1455,7 @@ class FabrikWorker
 				{
 					$fabrikDb->setQuery("SET OPTION SQL_BIG_SELECTS=1, GROUP_CONCAT_MAX_LEN=10240");
 				}
-				
+
 				$fabrikDb->execute();
 			}
 		}
@@ -1514,7 +1514,7 @@ class FabrikWorker
 	 *
 	 * @since	3.0b
 	 *
-	 * @return	object	plugin manager
+	 * @return	FabrikFEModelPluginmanager	Plugin manager
 	 */
 	public static function getPluginManager()
 	{
@@ -1652,7 +1652,7 @@ class FabrikWorker
 		{
 			return self::isSMS($email);
 		}
-		
+
 		$conf = JFactory::getConfig();
 		$mailer = $conf->get('mailer');
 
@@ -1664,7 +1664,7 @@ class FabrikWorker
 
 		return JMailHelper::isEmailAddress($email);
 	}
-	
+
 	/**
 	 * Is valid SMS number format
 	 * This is just a stub which return true for now!
@@ -1976,12 +1976,12 @@ class FabrikWorker
 
 		return ($tpl === 'bootstrap' || $tpl === 'fabrik4' || $version->RELEASE > 2.5);
 	}
-	
+
 	/**
 	 * Are we in a form process task
-	 * 
+	 *
 	 * @since 3.2
-	 * 
+	 *
 	 * @return bool
 	 */
 	public static function inFormProcess()

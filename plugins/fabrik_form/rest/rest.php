@@ -32,6 +32,8 @@ class PlgFabrik_FormRest extends PlgFabrik_Form
 	 */
 	protected function requestMethod()
 	{
+		/** @var FabrikFEModelForm $formModel */
+		$formModel = $this->getModel();
 		$method = $formModel->isNewRecord() ? 'POST' : 'PUT';
 		$fkData = $this->fkData();
 
@@ -49,11 +51,12 @@ class PlgFabrik_FormRest extends PlgFabrik_Form
 	 *
 	 * @return  mixed string|int
 	 */
-
 	protected function fkData()
 	{
 		if (!isset($this->fkData))
 		{
+			/** @var FabrikFEModelForm $formModel */
+			$formModel = $this->getModel();
 			$params = $this->getParams();
 			$this->fkData = array();
 
@@ -89,7 +92,6 @@ class PlgFabrik_FormRest extends PlgFabrik_Form
 	 *
 	 * @return  object  Fabrik element
 	 */
-
 	protected function fkElement()
 	{
 		$params = $this->getParams();
@@ -105,7 +107,6 @@ class PlgFabrik_FormRest extends PlgFabrik_Form
 	 *
 	 * @return	bool
 	 */
-
 	public function onBeforeStore()
 	{
 		if ($this->shouldUpdateFk())
@@ -121,7 +122,6 @@ class PlgFabrik_FormRest extends PlgFabrik_Form
 	 *
 	 * @return	bool
 	 */
-
 	public function onAfterProcess()
 	{
 		if (!$this->shouldUpdateFk())
@@ -233,10 +233,11 @@ class PlgFabrik_FormRest extends PlgFabrik_Form
 	 *
 	 * @return mixed
 	 */
-
 	private function buildOutput($include, $xmlParent, &$headers)
 	{
 		$postData = array();
+
+		/** @var FabrikFEModelForm $formModel */
 		$formModel = $this->getModel();
 		$w = new FabrikWorker;
 		$fkElement = $this->fkElement();
@@ -347,20 +348,14 @@ class PlgFabrik_FormRest extends PlgFabrik_Form
 	 *
 	 * @return  array
 	 */
-
 	private function buildCurlOpts($method, &$headers, $endpoint, $output)
 	{
 		$params = $this->getParams();
 
 		// The username/password
-		if ($params->get('username', '') === '' && $params->get('password') === '')
+		if (!($params->get('username', '') === '' && $params->get('password') === ''))
 		{
-			$config_userpass = '';
-		}
-		else
-		{
-			$config_userpass = $params->get('username') . ':' . $params->get('password');
-			$curlOpts[CURLOPT_USERPWD] = $config_userpass;
+			$curlOpts[CURLOPT_USERPWD] = $params->get('username') . ':' . $params->get('password');
 		}
 
 		$curlOpts = array();
@@ -393,7 +388,6 @@ class PlgFabrik_FormRest extends PlgFabrik_Form
 	 *
 	 * @return boolean
 	 */
-
 	private function handleError(&$output, $chandle)
 	{
 		$formModel = $this->getModel();
@@ -442,7 +436,7 @@ class PlgFabrik_FormRest extends PlgFabrik_Form
 
 		if (curl_errno($chandle))
 		{
-			JFactory::getApplication()->enqueueMessage('Fabrik Rest form plugin: ' . curl_error($chandle), 'error');
+			$this->app->enqueueMessage('Fabrik Rest form plugin: ' . curl_error($chandle), 'error');
 
 			return false;
 		}
@@ -485,9 +479,7 @@ class PlgFabrik_FormRest extends PlgFabrik_Form
 	 */
 	public function onLoad()
 	{
-		$app = JFactory::getApplication();
-		$input = $app->input;
-		$formModel = $this->getModel();
+		$input = $this->app->input;
 		$params = $this->getParams();
 
 		if ($params->get('oauth_consumer_key', '') === '')
@@ -503,30 +495,26 @@ class PlgFabrik_FormRest extends PlgFabrik_Form
 		 * require_once COM_FABRIK_BASE . '/components/com_fabrik/libs/oauth-php/OAuthRequester.php';
 		 */
 
-		$config = JFactory::getConfig();
-
 		define("OAUTH_CALLBACK_URL", JUri::getInstance());
-		define('OAUTH_TMP_DIR', $config->get('tmp_path'));
+		define('OAUTH_TMP_DIR', $this->config->get('tmp_path'));
 		define("OAUTH_AUTHORIZE_URL", $params->get('authorize_uri'));
 
 		$this->getOAuthStore();
 
-		$session = JFactory::getSession();
-		$user = JFactory::getUser();
-		$userid = $user->get('id');
-		define(OATH_SESSION_KEY, 'fabrik.rest.xing' . $userid);
-		$sessionResponseKey = 'fabrik.rest.xing' . $userid . '.response';
+		$userId = $this->user->get('id');
+		define(OATH_SESSION_KEY, 'fabrik.rest.xing' . $userId);
+		$sessionResponseKey = 'fabrik.rest.xing' . $userId . '.response';
 
 		if ($input->get('reset') == 1 && $input->get('oauth_token', '') === '')
 		{
-			$session->destroy($sessionResponseKey);
+			$this->session->destroy($sessionResponseKey);
 
 			return;
 		}
 
-		if ($session->has($sessionResponseKey))
+		if ($this->session->has($sessionResponseKey))
 		{
-			$responseBody = $session->get($sessionResponseKey);
+			$responseBody = $this->session->get($sessionResponseKey);
 		}
 		else
 		{
@@ -556,7 +544,7 @@ class PlgFabrik_FormRest extends PlgFabrik_Form
 				}
 
 				// Save access token for subsequent requests (without asking the user for permission again)
-				$session->set($sessionResponseKey, $responseBody);
+				$this->session->set($sessionResponseKey, $responseBody);
 			}
 		}
 
@@ -582,7 +570,6 @@ class PlgFabrik_FormRest extends PlgFabrik_Form
 	{
 		$params = $this->getParams();
 		$consumerKey = $params->get('oauth_consumer_key');
-		$app = JFactory::getApplication();
 		$tokenParams = array(
 			'oauth_callback' => OAUTH_CALLBACK_URL,
 			'oauth_consumer_key' => $consumerKey
@@ -595,7 +582,7 @@ class PlgFabrik_FormRest extends PlgFabrik_Form
 
 		// $tokenResult = OAuthRequester::requestRequestToken($consumerKey, 0, $tokenParams, 'POST', $requestOpts, $curlOpts);
 		$uri = OAUTH_AUTHORIZE_URL . "?btmpl=mobile&oauth_token=" . $tokenResult['token'];
-		$app->redirect($uri);
+		$this->app->redirect($uri);
 	}
 
 	/**
@@ -615,11 +602,9 @@ class PlgFabrik_FormRest extends PlgFabrik_Form
 	 */
 	protected function getAccessToken()
 	{
-		$app = JFactory::getApplication();
 		$params = $this->getParams();
 		$consumerKey = $params->get('oauth_consumer_key');
-		$session = JFactory::getSession();
-		$oauthToken = $app->input->get('oauth_token', '', 'string');
+		$oauthToken = $this->app->input->get('oauth_token', '', 'string');
 
 		try
 		{
@@ -679,14 +664,12 @@ class PlgFabrik_FormRest extends PlgFabrik_Form
 	 *
 	 * @return  void
 	 */
-
 	protected function updateFormModelData($params, $responseBody, $data)
 	{
 		$w = new FabrikWorker;
 		$dataMap = $params->get('put_include_list', '');
 		$include = $w->parseMessageForPlaceholder($dataMap, $responseBody, true);
 		$formModel = $this->getModel();
-		$params = $this->getParams();
 
 		if (FabrikWorker::isJSON($include))
 		{

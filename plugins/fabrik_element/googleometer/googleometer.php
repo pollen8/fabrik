@@ -97,7 +97,7 @@ class PlgFabrik_ElementGoogleometer extends PlgFabrik_Element
 		$listModel = $this->getlistModel();
 		$db = $listModel->getDb();
 		$element = $this->getDataElement();
-		$name = $db->quoteName($element->getElement()->name);
+		$name = $db->qn($element->getElement()->name);
 		$query = $db->getQuery(true);
 		$query->select('MIN(' . $name . ') AS min, MAX(' . $name . ') AS max')
 		->from($listModel->getTable()->db_table_name);

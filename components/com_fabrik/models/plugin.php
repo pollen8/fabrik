@@ -72,6 +72,48 @@ class FabrikPlugin extends JPlugin
 	public $model = null;
 
 	/**
+	 * @var JDatabaseDriver
+	 */
+	protected $_db;
+
+	/**
+	 * @var Registry
+	 */
+	protected $config;
+
+	/**
+	 * @var JUser
+	 */
+	protected $user;
+
+	/**
+	 * @var JApplicationCms
+	 */
+	protected $app;
+
+	/**
+	 * @var JLanguage
+	 */
+	protected $lang;
+
+	/**
+	 * @var JDate
+	 */
+	protected $date;
+
+	/**
+	 * @var JSession
+	 */
+	protected $session;
+
+	/**
+	 * App
+	 *
+	 * @var string
+	 */
+	protected $package = 'fabrik';
+
+	/**
 	 * Set the plugin id
 	 *
 	 * @param   int  $id  id to use
@@ -134,6 +176,14 @@ class FabrikPlugin extends JPlugin
 	public function __construct(&$subject, $config = array())
 	{
 		parent::__construct($subject, $config);
+		$this->_db = JArrayHelper::getValue($config, 'db', JFactory::getDbo());
+		$this->config = JArrayHelper::getValue($config, 'config', JFactory::getConfig());
+		$this->user = JArrayHelper::getValue($config, 'user', JFactory::getUser());
+		$this->app = JArrayHelper::getValue($config, 'app', JFactory::getApplication());
+		$this->lang = JArrayHelper::getValue($config, 'lang', JFactory::getLanguage());
+		$this->date = JArrayHelper::getValue($config, 'date', JFactory::getDate());
+		$this->session = JArrayHelper::getValue($config, 'session', JFactory::getSession());
+		$this->package = $this->app->getUserState('com_fabrik.package', 'fabrik');
 		$this->loadLanguage();
 	}
 
@@ -578,19 +628,18 @@ class FabrikPlugin extends JPlugin
 	public function canUse($location = null, $event = null)
 	{
 		$ok = false;
-		$app = JFactory::getApplication();
 		$model = $this->getModel();
 
 		switch ($location)
 		{
 			case 'front':
-				if (!$app->isAdmin())
+				if (!$this->app->isAdmin())
 				{
 					$ok = true;
 				}
 				break;
 			case 'back':
-				if ($app->isAdmin())
+				if ($this->app->isAdmin())
 				{
 					$ok = true;
 				}
@@ -664,8 +713,7 @@ class FabrikPlugin extends JPlugin
 	 */
 	public function ajax_tables()
 	{
-		$app = JFactory::getApplication();
-		$input = $app->input;
+		$input = $this->app->input;
 		$cid = $input->getInt('cid', -1);
 		$rows = array();
 		$showFabrikLists = $input->get('showf', false);
@@ -721,8 +769,7 @@ class FabrikPlugin extends JPlugin
 	 */
 	public function ajax_fields()
 	{
-		$app = JFactory::getApplication();
-		$input = $app->input;
+		$input = $this->app->input;
 		$tid = $input->get('t');
 		$keyType = $input->getInt('k', 1);
 

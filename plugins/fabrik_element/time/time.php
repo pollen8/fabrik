@@ -252,7 +252,7 @@ class PlgFabrik_ElementTime extends PlgFabrik_Element
 
 		return 'SELECT SUM(substr(' . $name . ' FROM 1 FOR 2) * 60 * 60 + substr(' . $name . ' FROM 4 FOR 2) * 60
 			+ substr(' . $name . ' FROM 7 FOR 2))  AS value, ' . $label . ' FROM '
-				. $db->quoteName($table->db_table_name) . ' ' . $joinSQL . ' ' . $whereSQL;
+				. $db->qn($table->db_table_name) . ' ' . $joinSQL . ' ' . $whereSQL;
 	}
 
 	/**

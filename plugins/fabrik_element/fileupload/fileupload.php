@@ -73,8 +73,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 	 */
 	public function ignoreOnUpdate($val)
 	{
-		$app = JFactory::getApplication();
-		$input = $app->input;
+		$input = $this->app->input;
 
 		// Check if its a CSV import if it is allow the val to be inserted
 		if ($input->get('task') === 'makeTableFromCSV' || $this->getListModel()->importingCSV)
@@ -142,9 +141,8 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 	 */
 	public function onAjax_clearFileReference()
 	{
-		$app = JFactory::getApplication();
-		$rowId = (array) $app->input->get('rowid');
-		$joinPkVal = $app->input->get('joinPkVal');
+		$rowId = (array) $this->app->input->get('rowid');
+		$joinPkVal = $this->app->input->get('joinPkVal');
 		$this->loadMeForAjax();
 		$col = $this->getFullName(false, false);
 		$listModel = $this->getListModel();
@@ -748,8 +746,6 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 	 */
 	protected function _renderListData($data, &$thisRow, $i = 0)
 	{
-		$app = JFactory::getApplication();
-		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$this->_repeatGroupCounter = $i;
 		$params = $this->getParams();
 
@@ -808,8 +804,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 			{
 				$aclEl = $aclEl->getFullName();
 				$aclElRaw = $aclEl . '_raw';
-				$user = JFactory::getUser();
-				$groups = $user->getAuthorisedViewLevels();
+				$groups = $this->user->getAuthorisedViewLevels();
 				$canDownload = in_array($thisRow->$aclElRaw, $groups);
 			}
 
@@ -847,7 +842,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 			$displayData->noAccessImage = COM_FABRIK_LIVESITE . 'media/com_fabrik/images/' . $params->get('fu_download_noaccess_image');
 			$displayData->downloadImg = ($downloadImg && JFile::exists('media/com_fabrik/images/' . $downloadImg)) ? COM_FABRIK_LIVESITE . 'media/com_fabrik/images/' . $downloadImg : '';
 			$displayData->href =  COM_FABRIK_LIVESITE
-				. 'index.php?option=com_' . $package . '&amp;task=plugin.pluginAjax&amp;plugin=fileupload&amp;method=ajax_download&amp;format=raw&amp;element_id='
+				. 'index.php?option=com_' . $this->package . '&amp;task=plugin.pluginAjax&amp;plugin=fileupload&amp;method=ajax_download&amp;format=raw&amp;element_id='
 				. $elementId . '&amp;formid=' . $formId . '&amp;rowid=' . $rowId . '&amp;repeatcount=' . $i;;
 
 			return $layout->render($displayData);
@@ -942,8 +937,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 	 */
 	public function validate($data = array(), $repeatCounter = 0)
 	{
-		$app = JFactory::getApplication();
-		$input = $app->input;
+		$input = $this->app->input;
 		$params = $this->getParams();
 		$this->_validationErr = '';
 		$errors = array();
@@ -1084,8 +1078,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 	 */
 	protected function processAjaxUploads($name)
 	{
-		$app = JFactory::getApplication();
-		$input = $app->input;
+		$input = $this->app->input;
 		$params = $this->getParams();
 
 		if ($this->canCrop() == false && $input->get('task') !== 'pluginAjax' && $params->get('ajax_upload') == true)
@@ -1181,8 +1174,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 	 */
 	protected function crop($name)
 	{
-		$app = JFactory::getApplication();
-		$input = $app->input;
+		$input = $this->app->input;
 		$params = $this->getParams();
 
 		if ($this->canCrop() == true && $input->get('task') !== 'pluginAjax')
@@ -1363,7 +1355,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 	 */
 	protected function shouldDoNonAjaxUpload()
 	{
-		$input = JFactory::getApplication()->input;
+		$input = $this->app->input;
 		$name = $this->getFullName(true, false);
 		$params = $this->getParams();
 
@@ -1403,8 +1395,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 	 */
 	public function processUpload()
 	{
-		$app = JFactory::getApplication();
-		$input = $app->input;
+		$input = $this->app->input;
 		$formModel = $this->getFormModel();
 		$name = $this->getFullName(true, false);
 		$myFileDirs = $input->get($name, array(), 'array');
@@ -1524,7 +1515,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 	 */
 	protected function filesToDelete()
 	{
-		$input = JFactory::getApplication()->input;
+		$input = $this->app->input;
 		$groupModel = $this->getGroup();
 		$deletedFiles = $input->get('fabrik_fileupload_deletedfile', array(), 'array');
 		$gid = $groupModel->getId();
@@ -1577,12 +1568,11 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 	protected function deleteFile($filename)
 	{
 		$storage = $this->getStorage();
-		$user = JFactory::getUser();
 		$file = $storage->clean(JPATH_SITE . '/' . $filename);
 		$thumb = $storage->clean($storage->_getThumb($filename));
 		$cropped = $storage->clean($storage->_getCropped($filename));
 
-		$logMsg = 'Delete files: ' . $file . ' , ' . $thumb . ', ' . $cropped . '; user = ' . $user->get('id');
+		$logMsg = 'Delete files: ' . $file . ' , ' . $thumb . ', ' . $cropped . '; user = ' . $this->user->get('id');
 		JLog::add($logMsg, JLog::WARNING, 'com_fabrik.element.fileupload');
 
 		if ($storage->exists($file))
@@ -1626,9 +1616,8 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 	 */
 	public function dataConsideredEmpty($data, $repeatCounter)
 	{
-		$app = JFactory::getApplication();
 		$params = $this->getParams();
-		$input = $app->input;
+		$input = $this->app->input;
 
 		if ($input->get('rowid', '') !== '')
 		{
@@ -1736,7 +1725,6 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 	protected function _processIndUpload(&$file, $myFileDir = '', $repeatGroupCounter = 0)
 	{
 		$params = $this->getParams();
-		$user = JFactory::getUser();
 		$storage = $this->getStorage();
 		$quality = (int) $params->get('image_quality', 100);
 
@@ -1785,7 +1773,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 					$filePath = FabrikUploader::incrementFileName($filePath, $filePath, 1);
 					break;
 				case 2:
-					JLog::add('Ind upload Delete file: ' . $filePath . '; user = ' . $user->get('id'), JLog::WARNING, 'com_fabrik.element.fileupload');
+					JLog::add('Ind upload Delete file: ' . $filePath . '; user = ' . $this->user->get('id'), JLog::WARNING, 'com_fabrik.element.fileupload');
 					$storage->delete($filePath);
 					break;
 			}
@@ -2291,9 +2279,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 	 */
 	protected function downloadLink($value, $data, $repeatCounter = 0)
 	{
-		$app = JFactory::getApplication();
-		$package = $app->getUserState('com_fabrik.package', 'fabrik');
-		$input = $app->input;
+		$input = $this->app->input;
 		$params = $this->getParams();
 		$storage = $this->getStorage();
 		$formModel = $this->getFormModel();
@@ -2309,7 +2295,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		if (!empty($aclEl))
 		{
 			$aclEl = $aclEl->getFullName();
-			$canDownload = in_array($data[$aclEl], JFactory::getUser()->getAuthorisedViewLevels());
+			$canDownload = in_array($data[$aclEl], $this->user->getAuthorisedViewLevels());
 		}
 
 		$formId = $formModel->getId();
@@ -2347,7 +2333,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		$displayData->title = $title;
 		$displayData->noAccessImage = COM_FABRIK_LIVESITE . 'media/com_fabrik/images/' . $params->get('fu_download_noaccess_image');
 		$displayData->downloadImg = ($downloadImg && JFile::exists('media/com_fabrik/images/' . $downloadImg)) ? COM_FABRIK_LIVESITE . 'media/com_fabrik/images/' . $downloadImg : '';
-		$displayData->href = COM_FABRIK_LIVESITE . 'index.php?option=com_' . $package
+		$displayData->href = COM_FABRIK_LIVESITE . 'index.php?option=com_' . $this->package
 			. '&task=plugin.pluginAjax&plugin=fileupload&method=ajax_download&format=raw&element_id='
 			. $elementId . '&formid=' . $formId . '&rowid=' . $rowId . '&repeatcount=' . $repeatCounter;
 
@@ -2404,8 +2390,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 	 */
 	public function onAjax_upload()
 	{
-		$app = JFactory::getApplication();
-		$input = $app->input;
+		$input = $this->app->input;
 		$this->loadMeForAjax();
 
 		/*
@@ -2521,8 +2506,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 			else
 			{
 				$ext = pathinfo($data, PATHINFO_EXTENSION);
-				$config = JFactory::getConfig();
-				$p = tempnam($config->get('tmp_path'), 'email_');
+				$p = tempnam($this->config->get('tmp_path'), 'email_');
 
 				if (empty($p)) {
 					return false;
@@ -2630,7 +2614,6 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		}
 
 		$db = $this->getListModel()->getDb();
-		$user = JFactory::getUser();
 		require_once COM_FABRIK_FRONTEND . '/helpers/uploader.php';
 		$params = $this->getParams();
 
@@ -2666,7 +2649,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 								$query->delete($db->qn($join->table_join))
 									->where($db->qn('id') . ' IN (' . implode(', ', array_keys($imageRows)) . ')');
 								$db->setQuery($query);
-								$logMsg = 'onDeleteRows Delete records query: ' . $db->getQuery() . '; user = ' . $user->get('id');
+								$logMsg = 'onDeleteRows Delete records query: ' . $db->getQuery() . '; user = ' . $this->user->get('id');
 								JLog::add($logMsg, JLog::WARNING, 'com_fabrik.element.fileupload');
 								$db->execute();
 							}
@@ -2825,15 +2808,13 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 	 */
 	public function onAjax_download()
 	{
-		$app = JFactory::getApplication();
-		$input = $app->input;
+		$input = $this->app->input;
 		$this->setId($input->getInt('element_id'));
 		$this->loadMeForAjax();
 		$this->getElement();
 		$params = $this->getParams();
 		$url = $input->server->get('HTTP_REFERER', '', 'string');
-		$lang = JFactory::getLanguage();
-		$lang->load('com_fabrik.plg.element.fabrikfileupload', JPATH_ADMINISTRATOR);
+		$this->lang->load('com_fabrik.plg.element.fabrikfileupload', JPATH_ADMINISTRATOR);
 		$rowId = $input->get('rowid', '', 'string');
 		$repeatCount = $input->getInt('repeatcount', 0);
 		$listModel = $this->getListModel();
@@ -2841,8 +2822,8 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 
 		if (!$this->canView())
 		{
-			$app->enqueueMessage(FText::_('PLG_ELEMENT_FILEUPLOAD_DOWNLOAD_NO_PERMISSION'));
-			$app->redirect($url);
+			$this->app->enqueueMessage(FText::_('PLG_ELEMENT_FILEUPLOAD_DOWNLOAD_NO_PERMISSION'));
+			$this->app->redirect($url);
 			exit;
 		}
 
@@ -2850,8 +2831,8 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		{
 			$errMsg = FText::_('PLG_ELEMENT_FILEUPLOAD_DOWNLOAD_NO_SUCH_FILE');
 			$errMsg .= FabrikHelperHTML::isDebug() ? ' (empty rowid)' : '';
-			$app->enqueueMessage($errMsg);
-			$app->redirect($url);
+			$this->app->enqueueMessage($errMsg);
+			$this->app->redirect($url);
 			exit;
 		}
 
@@ -2859,8 +2840,8 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		{
 			$errMsg = FText::_('PLG_ELEMENT_FILEUPLOAD_DOWNLOAD_NO_SUCH_FILE');
 			$errMsg .= FabrikHelperHTML::isDebug() ? " (no such row)" : '';
-			$app->enqueueMessage($errMsg);
-			$app->redirect($url);
+			$this->app->enqueueMessage($errMsg);
+			$this->app->redirect($url);
 			exit;
 		}
 
@@ -2870,14 +2851,13 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		{
 			$aclEl = $aclEl->getFullName();
 			$aclElRaw = $aclEl . '_raw';
-			$user = JFactory::getUser();
-			$groups = $user->getAuthorisedViewLevels();
+			$groups = $this->user->getAuthorisedViewLevels();
 			$canDownload = in_array($row->$aclElRaw, $groups);
 
 			if (!$canDownload)
 			{
-				$app->enqueueMessage(FText::_('PLG_ELEMENT_FILEUPLOAD_DOWNLOAD_NO_PERMISSION'));
-				$app->redirect($url);
+				$this->app->enqueueMessage(FText::_('PLG_ELEMENT_FILEUPLOAD_DOWNLOAD_NO_PERMISSION'));
+				$this->app->redirect($url);
 			}
 		}
 
@@ -2898,8 +2878,8 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 			{
 				$errMsg = FText::_('PLG_ELEMENT_FILEUPLOAD_DOWNLOAD_NO_SUCH_FILE');
 				$errMsg .= FabrikHelperHTML::isDebug(true) ? ' (path: ' . $filePath . ')' : '';
-				$app->enqueueMessage($errMsg);
-				$app->redirect($url);
+				$this->app->enqueueMessage($errMsg);
+				$this->app->redirect($url);
 				exit;
 			}
 			// Some time in the past
@@ -2925,8 +2905,8 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		}
 		else
 		{
-			$app->enqueueMessage(FText::_('PLG_ELEMENT_FILEUPLOAD_DOWNLOAD_NO_SUCH_FILE'));
-			$app->redirect($url);
+			$this->app->enqueueMessage(FText::_('PLG_ELEMENT_FILEUPLOAD_DOWNLOAD_NO_SUCH_FILE'));
+			$this->app->redirect($url);
 			exit;
 		}
 	}
@@ -2973,17 +2953,15 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 
 		if ((int) $params->get('fu_download_log', 0))
 		{
-			$app = JFactory::getApplication();
-			$input = $app->input;
+			$input = $this->app->input;
 			JTable::addIncludePath(JPATH_ADMINISTRATOR . '/components/com_fabrik/tables');
 			$log = JTable::getInstance('log', 'Table');
 			$log->message_type = 'fabrik.fileupload.download';
-			$user = JFactory::getUser();
 			$msg = new stdClass;
 			$msg->file = $filePath;
-			$msg->userid = $user->get('id');
-			$msg->username = $user->get('username');
-			$msg->email = $user->get('email');
+			$msg->userid = $this->user->get('id');
+			$msg->username = $this->user->get('username');
+			$msg->email = $this->user->get('email');
 			$log->referring_url = $input->server->get('REMOTE_ADDR', '', 'string');
 			$log->message = json_encode($msg);
 			$log->store();
@@ -3030,9 +3008,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 	 */
 	public function onAjax_deleteFile()
 	{
-		$app = JFactory::getApplication();
-		$user = JFactory::getUser();
-		$input = $app->input;
+		$input = $this->app->input;
 		$this->loadMeForAjax();
 		$filename = $input->get('file', 'string', '');
 
@@ -3072,7 +3048,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 			->where($db->qn('id') . ' = ' . $db->q($input->getString('recordid')));
 			$db->setQuery($query);
 
-			JLog::add('Delete join image entry: ' . $db->getQuery() . '; user = ' . $user->get('id'), JLog::WARNING, 'com_fabrik.element.fileupload');
+			JLog::add('Delete join image entry: ' . $db->getQuery() . '; user = ' . $this->user->get('id'), JLog::WARNING, 'com_fabrik.element.fileupload');
 			$db->execute();
 		}
 	}

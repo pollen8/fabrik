@@ -21,7 +21,6 @@ require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
  * @subpackage  Fabrik.form.confirmation
  * @since       3.0
  */
-
 class PlgFabrik_FormConfirmation extends PlgFabrik_Form
 {
 	protected $runAway = false;
@@ -34,7 +33,6 @@ class PlgFabrik_FormConfirmation extends PlgFabrik_Form
 	 *
 	 * @return  bool
 	 */
-
 	public function runAway($method)
 	{
 		if ($method == 'onBeforeStore')
@@ -55,14 +53,10 @@ class PlgFabrik_FormConfirmation extends PlgFabrik_Form
 	 *
 	 * @return  void
 	 */
-
 	protected function clearSession($id)
 	{
-		$app = JFactory::getApplication();
-		$package = $app->getUserState('com_fabrik.package', 'fabrik');
-		$session = JFactory::getSession();
-		$session->clear('com_' . $package . '.form.' . $id . '.session.on');
-		$session->clear('com_' . $package . '.form.' . $id . '.session.hash');
+		$this->session->clear('com_' . $this->package . '.form.' . $id . '.session.on');
+		$this->session->clear('com_' . $this->package . '.form.' . $id . '.session.hash');
 	}
 
 	/**
@@ -71,14 +65,12 @@ class PlgFabrik_FormConfirmation extends PlgFabrik_Form
 	 *
 	 * @return  bool  should the form model continue to save
 	 */
-
 	public function onBeforeStore()
 	{
+		/** @var FabrikFEModelForm $formModel */
 		$formModel = $this->getModel();
 		$params = $this->getParams();
-		$app = JFactory::getApplication();
-		$input = $app->input;
-		$package = $app->getUserState('com_fabrik.package', 'fabrik');
+		$input = $this->app->input;
 
 		if ($input->getInt('fabrik_ignorevalidation') === 1 || $input->getInt('fabrik_ajax') === 1)
 		{
@@ -118,14 +110,14 @@ class PlgFabrik_FormConfirmation extends PlgFabrik_Form
 		// Save the posted form data to the form session, for retrieval later
 		$sessionModel = JModelLegacy::getInstance('Formsession', 'FabrikFEModel');
 		$sessionModel->setFormId($formModel->getId());
-		$rowid = $input->get('rowid', 0);
-		$sessionModel->setRowId($rowid);
+		$rowId = $input->get('rowid', 0);
+		$sessionModel->setRowId($rowId);
 		$sessionModel->savePage($formModel);
 
 		// Tell the form model that it's data is loaded from the session
-		$session = JFactory::getSession();
-		$session->set('com_' . $package . '.form.' . $formModel->getId() . '.session.on', true);
-		$session->set('com_' . $package . '.form.' . $formModel->getId() . '.session.hash', $sessionModel->getHash());
+		$session = $this->session;
+		$session->set('com_' . $this->package . '.form.' . $formModel->getId() . '.session.on', true);
+		$session->set('com_' . $this->package . '.form.' . $formModel->getId() . '.session.hash', $sessionModel->getHash());
 
 		// Set an error so we can reshow the same form for confirmation purposes
 		$formModel->errors['confirmation_required'] = array(FText::_('PLG_FORM_CONFIRMATION_PLEASE_CONFIRM_YOUR_DETAILS'));
@@ -166,20 +158,16 @@ class PlgFabrik_FormConfirmation extends PlgFabrik_Form
 	 *
 	 * @return void
 	 */
-
 	public function getBottomContent()
 	{
-		$app = JFactory::getApplication();
 		$formModel = $this->getModel();
-		$input = $app->input;
+		$input = $this->app->input;
 
 		// If we have already processed the form
 		$this->html = '';
 
 		if ($input->getInt('fabrik_confirmation') === 1)
 		{
-			$session = JFactory::getSession();
-
 			// Unset this flag
 			$input->set('fabrik_confirmation', 2);
 
@@ -193,21 +181,21 @@ class PlgFabrik_FormConfirmation extends PlgFabrik_Form
 			// $$$ 24/10/2011 testing removing this as data is retrieved via the session not through posted data
 			foreach ($post as $key => $val)
 			{
-				$noneraw = JString::substr($key, 0, JString::strlen($key) - 4);
+				$noneRaw = JString::substr($key, 0, JString::strlen($key) - 4);
 
 				if ($key == 'fabrik_vars')
 				{
 					continue;
 				}
 
-				if ($formModel->hasElement($key) || $formModel->hasElement($noneraw))
+				if ($formModel->hasElement($key) || $formModel->hasElement($noneRaw))
 				{
 					// Return;
 				}
 
-				if ($formModel->hasElement($noneraw))
+				if ($formModel->hasElement($noneRaw))
 				{
-					$key = $formModel->getElement($noneraw)->getHTMLName(0);
+					$key = $formModel->getElement($noneRaw)->getHTMLName(0);
 
 					// $$$ rob include both raw and non-raw keys (non raw for radios etc., _raw for db joins)
 					if (is_array($val))
@@ -268,7 +256,6 @@ class PlgFabrik_FormConfirmation extends PlgFabrik_Form
 	 *
 	 * @return  string  html
 	 */
-
 	public function getBottomContent_result($c)
 	{
 		return $this->html;
@@ -279,7 +266,6 @@ class PlgFabrik_FormConfirmation extends PlgFabrik_Form
 	 *
 	 * @return  void
 	 */
-
 	public function usesSession()
 	{
 		$this->usesSession = true;

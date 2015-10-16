@@ -340,9 +340,8 @@ class FabrikFEModelForm extends FabModelForm
 	public function __construct($config = array())
 	{
 		parent::__construct($config);
-		$app = JFactory::getApplication();
 		$usersConfig = JComponentHelper::getParams('com_fabrik');
-		$id = $app->input->getInt('formid', $usersConfig->get('formid'));
+		$id = $this->app->input->getInt('formid', $usersConfig->get('formid'));
 		$this->setId($id);
 	}
 
@@ -439,7 +438,6 @@ class FabrikFEModelForm extends FabModelForm
 	public function checkAccessFromListSettings()
 	{
 		$form = $this->getForm();
-		$app = JFactory::getApplication();
 
 		if ($form->record_in_database == 0)
 		{
@@ -489,7 +487,7 @@ class FabrikFEModelForm extends FabModelForm
 		$editable = ($ret <= 1) ? false : true;
 		$this->setEditable($editable);
 
-		if ($app->input->get('view', 'form') == 'details')
+		if ($this->app->input->get('view', 'form') == 'details')
 		{
 			$this->setEditable(false);
 		}
@@ -506,8 +504,7 @@ class FabrikFEModelForm extends FabModelForm
 	 */
 	public function getTmpl()
 	{
-		$app = JFactory::getApplication();
-		$input = $app->input;
+		$input = $this->app->input;
 		$params = $this->getParams();
 		$item = $this->getForm();
 		$tmpl = '';
@@ -521,7 +518,7 @@ class FabrikFEModelForm extends FabModelForm
 		}
 		else
 		{
-			if ($app->isAdmin())
+			if ($this->app->isAdmin())
 			{
 				$tmpl = $this->isEditable() ? $params->get('admin_form_template') : $params->get('admin_details_template');
 				$tmpl = $tmpl == '' ? $default : $tmpl;
@@ -567,8 +564,7 @@ class FabrikFEModelForm extends FabModelForm
 	 */
 	public function getFormCss()
 	{
-		$app = JFactory::getApplication();
-		$input = $app->input;
+		$input = $this->app->input;
 		$jTmplFolder = FabrikWorker::j3() ? 'tmpl' : 'tmpl25';
 		$tmpl = $this->getTmpl();
 		$v = $this->isEditable() ? 'form' : 'details';
@@ -595,7 +591,7 @@ class FabrikFEModelForm extends FabModelForm
 				$qs .= '&amp;rowid=' . $this->getRowId();
 			}
 
-			$tmplPath = 'templates/' . $app->getTemplate() . '/html/com_fabrik/' . $view . '/' . $tmpl . '/template_css.php' . $qs;
+			$tmplPath = 'templates/' . $this->app->getTemplate() . '/html/com_fabrik/' . $view . '/' . $tmpl . '/template_css.php' . $qs;
 
 			if (!FabrikHelperHTML::stylesheetFromPath($tmplPath))
 			{
@@ -607,12 +603,12 @@ class FabrikFEModelForm extends FabModelForm
 			 * custom_css.php - what we'll recommend people use for custom css moving forward.
 			 */
 
-			if (!FabrikHelperHTML::stylesheetFromPath('templates/' . $app->getTemplate() . '/html/com_fabrik/' . $view . '/' . $tmpl . '/custom.css' . $qs))
+			if (!FabrikHelperHTML::stylesheetFromPath('templates/' . $this->app->getTemplate() . '/html/com_fabrik/' . $view . '/' . $tmpl . '/custom.css' . $qs))
 			{
 				FabrikHelperHTML::stylesheetFromPath('components/com_fabrik/views/' . $view . '/' . $jTmplFolder . '/' . $tmpl . '/custom.css' . $qs);
 			}
 
-			$path = 'templates/' . $app->getTemplate() . '/html/com_fabrik/' . $view . '/' . $tmpl . '/custom_css.php' . $qs;
+			$path = 'templates/' . $this->app->getTemplate() . '/html/com_fabrik/' . $view . '/' . $tmpl . '/custom_css.php' . $qs;
 
 			if (!FabrikHelperHTML::stylesheetFromPath($path))
 			{
@@ -620,7 +616,7 @@ class FabrikFEModelForm extends FabModelForm
 			}
 		}
 
-		if ($app->isAdmin() && $input->get('tmpl') === 'components')
+		if ($this->app->isAdmin() && $input->get('tmpl') === 'components')
 		{
 			FabrikHelperHTML::stylesheet('administrator/templates/system/css/system.css');
 		}
@@ -1053,8 +1049,7 @@ class FabrikFEModelForm extends FabModelForm
 	 */
 	protected function setOrigData()
 	{
-		$app = JFactory::getApplication();
-		$input = $app->input;
+		$input = $this->app->input;
 
 		if ($this->isNewRecord() || !$this->getForm()->record_in_database)
 		{
@@ -1149,9 +1144,7 @@ class FabrikFEModelForm extends FabModelForm
 	{
 		$profiler = JProfiler::getInstance('Application');
 		JDEBUG ? $profiler->mark('process: start') : null;
-
-		$app = JFactory::getApplication();
-		$input = $app->input;
+		$input = $this->app->input;
 
 		error_reporting(error_reporting() ^ (E_WARNING | E_NOTICE));
 		@set_time_limit(300);
@@ -1247,11 +1240,9 @@ class FabrikFEModelForm extends FabModelForm
 			return false;
 		}
 
-		$package = $app->getUserState('com_fabrik.package', 'fabrik');
-
 		// Clean both admin and front end cache.
-		parent::cleanCache('com_' . $package, 1);
-		parent::cleanCache('com_' . $package, 0);
+		parent::cleanCache('com_' . $this->package, 1);
+		parent::cleanCache('com_' . $this->package, 0);
 
 		JDEBUG ? $profiler->mark('process: end') : null;
 
@@ -1523,11 +1514,9 @@ class FabrikFEModelForm extends FabModelForm
 			return $this->formData;
 		}
 
-		$app = JFactory::getApplication();
-		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		list($this->dofilter, $this->filter) = FabrikWorker::getContentFilter();
 
-		$this->ajaxPost = $app->input->getBool('fabrik_ajax');
+		$this->ajaxPost = $this->app->input->getBool('fabrik_ajax');
 
 		// Set up post data, and copy values to raw (for failed form submissions)
 		$data = $_POST;
@@ -1554,8 +1543,7 @@ class FabrikFEModelForm extends FabModelForm
 		// Set here so element can call formModel::updateFormData()
 		$this->formData = $data;
 		$this->fullFormData = $this->formData;
-		$session = JFactory::getSession();
-		$session->set('com_' . $package . '.form.data', $this->formData);
+		$this->session->set('com_' . $this->package . '.form.data', $this->formData);
 
 		return $this->formData;
 	}
@@ -1607,8 +1595,7 @@ class FabrikFEModelForm extends FabModelForm
 	 */
 	private function callElementPreProcess()
 	{
-		$app = JFactory::getApplication();
-		$input = $app->input;
+		$input = $this->app->input;
 		$repeatTotals = $input->get('fabrik_repeat_group', array(0), 'array');
 		$groups = $this->getGroupsHiarachy();
 
@@ -1699,7 +1686,7 @@ class FabrikFEModelForm extends FabModelForm
 	 */
 	protected function updateReferrer($origId, $insertId)
 	{
-		$input = JFactory::getApplication()->input;
+		$input = $this->app->input;
 
 		// Set the redirect page to the form's url if making a copy and set the id to the new insertid
 		if (array_key_exists('Copy', $this->formData))
@@ -1718,7 +1705,7 @@ class FabrikFEModelForm extends FabModelForm
 	 */
 	public function setInsertId($insertId)
 	{
-		$input = JFactory::getApplication()->input;
+		$input = $this->app->input;
 		$listModel = $this->getListModel();
 		$item = $listModel->getTable();
 		$tmpKey = str_replace("`", "", $item->db_primary_key);
@@ -1840,7 +1827,6 @@ class FabrikFEModelForm extends FabModelForm
 	 */
 	protected function submitToDatabase($rowId = '')
 	{
-		$app = JFactory::getApplication();
 		$this->getGroupsHiarachy();
 		$groups = $this->getGroupsHiarachy();
 		$listModel = $this->getListModel();
@@ -1874,7 +1860,7 @@ class FabrikFEModelForm extends FabModelForm
 		$listModel->getTable();
 		$listModel->storeRow($data, $rowId);
 		$this->lastInsertId = $listModel->lastInsertId;
-		$useKey = $app->input->get('usekey', '');
+		$useKey = $this->app->input->get('usekey', '');
 
 		if (!empty($useKey))
 		{
@@ -2048,8 +2034,7 @@ class FabrikFEModelForm extends FabModelForm
 	protected function copyToFromRaw(&$post, $direction = 'toraw', $override = false)
 	{
 		$groups = $this->getGroupsHiarachy();
-		$app = JFactory::getApplication();
-		$input = $app->input;
+		$input = $this->app->input;
 
 		foreach ($groups as $groupModel)
 		{
@@ -2100,8 +2085,7 @@ class FabrikFEModelForm extends FabModelForm
 	 */
 	public function validate()
 	{
-		$app = JFactory::getApplication();
-		$input = $app->input;
+		$input = $this->app->input;
 
 		if ((bool) $input->getBool('fabrik_ignorevalidation', false) === true)
 		{
@@ -2337,10 +2321,7 @@ class FabrikFEModelForm extends FabModelForm
 	 */
 	public function getErrors()
 	{
-		$app = JFactory::getApplication();
-		$package = $app->getUserState('com_fabrik.package', 'fabrik');
-		$context = 'com_' . $package . '.form.' . $this->getId() . '.' . $this->getRowId() . '.';
-		$session = JFactory::getSession();
+		$context = 'com_' . $this->package . '.form.' . $this->getId() . '.' . $this->getRowId() . '.';
 
 		// Store errors in local array as clearErrors() removes $this->errors
 		$errors = array();
@@ -2349,7 +2330,7 @@ class FabrikFEModelForm extends FabModelForm
 		{
 			if ($this->isMambot)
 			{
-				$errors = $session->get($context . 'errors', array());
+				$errors = $this->session->get($context . 'errors', array());
 			}
 		}
 		else
@@ -2369,17 +2350,14 @@ class FabrikFEModelForm extends FabModelForm
 	 */
 	public function clearErrors()
 	{
-		$session = JFactory::getSession();
-		$app = JFactory::getApplication();
-		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$this->errors = array();
-		$context = 'com_' . $package . '.form.' . $this->getId() . '.' . $this->getRowId() . '.';
-		$session->clear($context . 'errors');
+		$context = 'com_' . $this->package . '.form.' . $this->getId() . '.' . $this->getRowId() . '.';
+		$this->session->clear($context . 'errors');
 		/* $$$ rob this was commented out, but putting back in to test issue that if we have ajax validations on
 		 * and a field is validated, then we don't submit the form, and go back to add the form, the previously validated
 		 * values are shown in the form.
 		 */
-		$session->set($context . 'session.on', false);
+		$this->session->set($context . 'session.on', false);
 	}
 
 	/**
@@ -2391,12 +2369,9 @@ class FabrikFEModelForm extends FabModelForm
 	 */
 	public function setErrors($errors)
 	{
-		$session = JFactory::getSession();
-		$app = JFactory::getApplication();
-		$package = $app->getUserState('com_fabrik.package', 'fabrik');
-		$context = 'com_' . $package . '.form.' . $this->getId() . '.' . $this->getRowId() . '.';
-		$session->set($context . 'errors', $errors);
-		$session->set($context . 'session.on', true);
+		$context = 'com_' . $this->package . '.form.' . $this->getId() . '.' . $this->getRowId() . '.';
+		$this->session->set($context . 'errors', $errors);
+		$this->session->set($context . 'session.on', true);
 	}
 
 	/**
@@ -2490,7 +2465,7 @@ class FabrikFEModelForm extends FabModelForm
 		$nullDate = $db->getNullDate();
 		$publishUp = JFactory::getDate($form->publish_up)->toUnix();
 		$publishDown = JFactory::getDate($form->publish_down)->toUnix();
-		$now = JFactory::getDate()->toUnix();
+		$now = $this->date->toUnix();
 
 		if ($form->published == '1')
 		{
@@ -2697,8 +2672,7 @@ class FabrikFEModelForm extends FabModelForm
 	public function paginateRowId($dir)
 	{
 		$db = FabrikWorker::getDbo();
-		$app = JFactory::getApplication();
-		$input = $app->input;
+		$input = $this->app->input;
 		$c = $dir == 1 ? '>=' : '<=';
 		$intLimit = $dir == 1 ? 2 : 0;
 		$listModel = $this->getListModel();
@@ -2776,15 +2750,12 @@ class FabrikFEModelForm extends FabModelForm
 			return $this->rowId;
 		}
 
-		$app = JFactory::getApplication();
-		$input = $app->input;
+		$input = $this->app->input;
 		$usersConfig = JComponentHelper::getParams('com_fabrik');
-		$user = JFactory::getUser();
-		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 
 		// $$$rob if we show a form module when in a fabrik form component view - we shouldn't use
 		// the request rowid for the content plugin as that value is destined for the component
-		if ($this->isMambot && $input->get('option') == 'com_' . $package)
+		if ($this->isMambot && $input->get('option') == 'com_' . $this->package)
 		{
 			$this->rowId = $usersConfig->get('rowid');
 		}
@@ -2815,7 +2786,7 @@ class FabrikFEModelForm extends FabModelForm
 		{
 			case '-1':
 				// New rows (no logged in user) should be ''
-				$this->rowId = $user->get('id') == 0 ? '' : $user->get('id');
+				$this->rowId = $this->user->get('id') == 0 ? '' : $this->user->get('id');
 				break;
 			case '-2':
 				// Set rowid to -2 to load in the last recorded record
@@ -2856,8 +2827,6 @@ class FabrikFEModelForm extends FabModelForm
 	 */
 	public function render()
 	{
-		$app = JFactory::getApplication();
-		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$profiler = JProfiler::getInstance('Application');
 		JDEBUG ? $profiler->mark('formmodel render: start') : null;
 
@@ -2895,8 +2864,7 @@ class FabrikFEModelForm extends FabModelForm
 		// $this->_reduceDataForXRepeatedJoins();
 		JDEBUG ? $profiler->mark('formmodel render end') : null;
 
-		$session = JFactory::getSession();
-		$session->set('com_' . $package . '.form.' . $this->getId() . '.data', $this->data);
+		$this->session->set('com_' . $this->package . '.form.' . $this->getId() . '.data', $this->data);
 
 		// $$$ rob return res - if its false the the form will not load
 		return $res;
@@ -3009,8 +2977,7 @@ class FabrikFEModelForm extends FabModelForm
 		}
 
 		$this->getRowId();
-		$app = JFactory::getApplication();
-		$input = $app->input;
+		$input = $this->app->input;
 		$profiler = JProfiler::getInstance('Application');
 		JDEBUG ? $profiler->mark('formmodel getData: start') : null;
 		$this->data = array();
@@ -3242,10 +3209,7 @@ class FabrikFEModelForm extends FabModelForm
 	 */
 	public function saveMultiPage($useSessionOn = true)
 	{
-		$app = JFactory::getApplication();
-		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$params = $this->getParams();
-		$session = JFactory::getSession();
 
 		// Set in plugins such as confirmation plugin
 		$pluginManager = FabrikWorker::getPluginManager();
@@ -3253,16 +3217,15 @@ class FabrikFEModelForm extends FabModelForm
 
 		if (in_array(true, $pluginManager->data))
 		{
-			if ($session->get('com_' . $package . '.form.' . $this->getId() . '.' . $this->getRowId() . '.session.on') == true && $useSessionOn)
+			if ($this->session->get('com_' . $this->package . '.form.' . $this->getId() . '.' . $this->getRowId() . '.session.on') == true && $useSessionOn)
 			{
 				return true;
 			}
 		}
 
 		$save = (int) $params->get('multipage_save', 0);
-		$user = JFactory::getUser();
 
-		if ($user->get('id') !== 0)
+		if ($this->user->get('id') !== 0)
 		{
 			return $save === 0 ? false : true;
 		}
@@ -3482,8 +3445,7 @@ class FabrikFEModelForm extends FabModelForm
 		}
 
 		$db = FabrikWorker::getDbo();
-		$app = JFactory::getApplication();
-		$input = $app->input;
+		$input = $this->app->input;
 		$form = $this->getForm();
 
 		if (!$form->record_in_database)
@@ -3774,8 +3736,7 @@ class FabrikFEModelForm extends FabModelForm
 	{
 		if (is_null($this->ajax))
 		{
-			$app = JFactory::getApplication();
-			$this->ajax = $app->input->getBool('ajax', false);
+			$this->ajax = $this->app->input->getBool('ajax', false);
 
 			// $$$ rob - no element requires AJAX submission!
 
@@ -4110,8 +4071,7 @@ class FabrikFEModelForm extends FabModelForm
 	{
 		// Array key = old id value new id
 		$this->groupidmap = array();
-		$app = JFactory::getApplication();
-		$input = $app->input;
+		$input = $this->app->input;
 		$groupModels = $this->getGroups();
 		$this->form = null;
 		$form = $this->getTable();
@@ -4159,8 +4119,7 @@ class FabrikFEModelForm extends FabModelForm
 	 */
 	public function getRelatedTables()
 	{
-		$app = JFactory::getApplication();
-		$input = $app->input;
+		$input = $this->app->input;
 		$links = array();
 		$params = $this->getParams();
 
@@ -4276,8 +4235,8 @@ class FabrikFEModelForm extends FabModelForm
 						}
 
 						// Jaanus: when no link to list and no form headers then people still know where they add data
-						$fkey = $facetedLinks->linkedformheader->$key;
-						$label = $fkey != '' ? ': ' . $fkey : (isset($linkedLists->$key) && $linkedLists->$key != 0 ? '' : ': ' . $element->listlabel);
+						$fKey = $facetedLinks->linkedformheader->$key;
+						$label = $fKey != '' ? ': ' . $fKey : (isset($linkedLists->$key) && $linkedLists->$key != 0 ? '' : ': ' . $element->listlabel);
 
 						// Jaanus: label after add link if no list link helps to make difference between data view links and only add links.
 						$links[$element->list_id][] = $referringTable->viewFormLink($popUpLink, $element, null, $linkKey, $val, false, $f) . $label;
@@ -4369,12 +4328,10 @@ class FabrikFEModelForm extends FabModelForm
 	 */
 	public function getAction()
 	{
-		$app = JFactory::getApplication();
-		$package = $app->getUserState('com_fabrik.package', 'fabrik');
-		$option = $app->input->get('option');
-		$router = $app->getRouter();
+		$option = $this->app->input->get('option');
+		$router = $this->app->getRouter();
 
-		if ($app->isAdmin())
+		if ($this->app->isAdmin())
 		{
 			$action = FArrayHelper::getValue($_SERVER, 'REQUEST_URI', 'index.php');
 			$action = $this->stripElementsFromUrl($action);
@@ -4383,7 +4340,7 @@ class FabrikFEModelForm extends FabModelForm
 			return $action;
 		}
 
-		if ($option === 'com_' . $package)
+		if ($option === 'com_' . $this->package)
 		{
 			$page = 'index.php?';
 
@@ -4560,8 +4517,7 @@ class FabrikFEModelForm extends FabModelForm
 		}
 
 		$params = $this->getParams();
-		$app = JFactory::getApplication();
-		$input = $app->input;
+		$input = $this->app->input;
 
 		// $$$rob - do regardless of whether form is editable as $data is required for hidden encrypted fields
 		// and not used anywhere else (avoids a warning message)
@@ -4842,13 +4798,12 @@ class FabrikFEModelForm extends FabModelForm
 	 */
 	protected function populateState()
 	{
-		$app = JFactory::getApplication('site');
-		$input = $app->input;
+		$input = $this->app->input;
 
-		if (!$app->isAdmin())
+		if (!$this->app->isAdmin())
 		{
 			// Load the menu item / component parameters.
-			$params = $app->getParams();
+			$params = $this->app->getParams();
 			$this->setState('params', $params);
 
 			// Load state from the request.
@@ -4895,10 +4850,7 @@ class FabrikFEModelForm extends FabModelForm
 	 */
 	public function getRedirectContext()
 	{
-		$app = JFactory::getApplication();
-		$package = $app->getUserState('com_fabrik.package', 'fabrik');
-
-		return 'com_' . $package . '.form.' . $this->getId() . '.redirect.';
+		return 'com_' . $this->package . '.form.' . $this->getId() . '.redirect.';
 	}
 
 	/**
@@ -4964,11 +4916,9 @@ class FabrikFEModelForm extends FabModelForm
 	 */
 	public function getRedirectURL($incSession = true, $isMambot = false)
 	{
-		$app = JFactory::getApplication();
-		$input = $app->input;
-		$package = $app->getUserState('com_fabrik.package', 'fabrik');
+		$input = $this->app->input;
 
-		if ($app->isAdmin())
+		if ($this->app->isAdmin())
 		{
 			// Admin always uses option com_fabrik
 			if (array_key_exists('apply', $this->formData))
@@ -4984,7 +4934,7 @@ class FabrikFEModelForm extends FabModelForm
 		{
 			if (array_key_exists('apply', $this->formData))
 			{
-				$url = 'index.php?option=com_' . $package . '&view=form&formid=' . $input->getInt('formid') . '&rowid=' . $input->getString('rowid', '', 'string')
+				$url = 'index.php?option=com_' . $this->package . '&view=form&formid=' . $input->getInt('formid') . '&rowid=' . $input->getString('rowid', '', 'string')
 					. '&listid=' . $input->getInt('listid');
 			}
 			else
@@ -5006,19 +4956,17 @@ class FabrikFEModelForm extends FabModelForm
 				{
 					if ($itemId !== 0)
 					{
-						$url = 'index.php?' . http_build_query($app->getMenu('site')->getActive()->query) . '&Itemid=' . $itemId;
+						$url = 'index.php?' . http_build_query($this->app->getMenu('site')->getActive()->query) . '&Itemid=' . $itemId;
 					}
 					else
 					{
 						// No menu link so redirect back to list view
-						$url = 'index.php?option=com_' . $package . '&view=list&listid=' . $input->getInt('listid');
+						$url = 'index.php?option=com_' . $this->package . '&view=list&listid=' . $input->getInt('listid');
 					}
 				}
 			}
 
-			$config = JFactory::getConfig();
-
-			if ($config->get('sef'))
+			if ($this->config->get('sef'))
 			{
 				$url = JRoute::_($url);
 			}
@@ -5031,12 +4979,11 @@ class FabrikFEModelForm extends FabModelForm
 			return array('url' => $url, 'baseRedirect' => $baseRedirect);
 		}
 
-		$session = JFactory::getSession();
-		$formdata = $session->get('com_' . $package . '.form.data');
+		$formdata = $this->session->get('com_' . $this->package . '.form.data');
 		$context = $this->getRedirectContext();
 
 		// If the redirect plug-in has set a url use that in preference to the default url
-		$sUrl = $session->get($context . 'url', array());
+		$sUrl = $this->session->get($context . 'url', array());
 
 		if (!empty($sUrl))
 		{
@@ -5054,7 +5001,7 @@ class FabrikFEModelForm extends FabModelForm
 		}
 
 		$url = array_shift($sUrl);
-		$session->set($context . 'url', $sUrl);
+		$this->session->set($context . 'url', $sUrl);
 
 		// Redirect URL which set prefilters of < were converted to &lt; which then gave mySQL error
 		$url = htmlspecialchars_decode($url);
@@ -5083,13 +5030,10 @@ class FabrikFEModelForm extends FabModelForm
 	 */
 	public function getSuccessMsg()
 	{
-		$app = JFactory::getApplication();
-		$session = JFactory::getSession();
-		$package = $app->getUserState('com_fabrik.package', 'fabrik');
-		$registry = $session->get('registry');
+		$registry = $this->session->get('registry');
 
 		// $$$ rob 30/03/2011 if using as a search form don't show record added message
-		if ($registry && $registry->get('com_' . $package . '.searchform.fromForm') != $this->get('id'))
+		if ($registry && $registry->get('com_' . $this->package . '.searchform.fromForm') != $this->get('id'))
 		{
 			if (!$this->showSuccessMsg())
 			{
@@ -5135,7 +5079,7 @@ class FabrikFEModelForm extends FabModelForm
 			return '';
 		}
 
-		$input = JFactory::getApplication()->input;
+		$input = $this->app->input;
 		$msg = $input->get('rowid', '', 'string') == 0 ? 'COM_FABRIK_NOTICE_CANT_ADD_RECORDS' : 'COM_FABRIK_NOTICE_CANT_EDIT_RECORDS';
 
 		return FText::_($msg);
@@ -5149,26 +5093,23 @@ class FabrikFEModelForm extends FabModelForm
 	 */
 	public function applyMsgOnce()
 	{
-		$app = JFactory::getApplication();
-
-		if (!$app->input->get('isMambot'))
+		if (!$this->app->input->get('isMambot'))
 		{
 			// Don't apply if not isMambot
 			return;
 		}
 
 		// Proceed, isMambot set in PlgFabrik_FormRedirect::buildJumpPage()
-		$session = JFactory::getSession();
 		$context = $this->getRedirectContext();
-		$msg = $session->get($context . 'msg', array());
+		$msg = $this->session->get($context . 'msg', array());
 
 		if (!empty($msg))
 		{
 			$msg = FArrayHelper::getValue($msg, 0);
-			$app->enqueueMessage($msg);
+			$this->app->enqueueMessage($msg);
 		}
 		// Ensure its only shown once even if page is refreshed with isMambot in querystring
-		$session->clear($context . 'msg');
+		$this->session->clear($context . 'msg');
 	}
 
 	/**
@@ -5180,9 +5121,6 @@ class FabrikFEModelForm extends FabModelForm
 	 */
 	public function getRedirectMessage()
 	{
-		$app = JFactory::getApplication();
-		$session = JFactory::getSession();
-
 		if (!$this->showSuccessMsg())
 		{
 			return '';
@@ -5190,7 +5128,7 @@ class FabrikFEModelForm extends FabModelForm
 
 		$msg = $this->getSuccessMsg();
 		$context = $this->getRedirectContext();
-		$sMsg = $session->get($context . 'msg', array($msg));
+		$sMsg = $this->session->get($context . 'msg', array($msg));
 
 		if (!is_array($sMsg))
 		{
@@ -5216,7 +5154,7 @@ class FabrikFEModelForm extends FabModelForm
 			$msg = $customMsg;
 		}
 
-		$q = $app->getMessageQueue();
+		$q = $this->app->getMessageQueue();
 		$found = false;
 
 		foreach ($q as $m)
@@ -5235,8 +5173,8 @@ class FabrikFEModelForm extends FabModelForm
 		}
 
 		$showMsg = null;
-		$session->set($context . 'msg', $sMsg);
-		$showMsg = (array) $session->get($context . 'showsystemmsg', array(true));
+		$this->session->set($context . 'msg', $sMsg);
+		$showMsg = (array) $this->session->get($context . 'showsystemmsg', array(true));
 
 		if (is_array($showMsg))
 		{

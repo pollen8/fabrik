@@ -19,7 +19,6 @@ require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
  * @subpackage  Fabrik.form.article
  * @since       3.0
  */
-
 class PlgFabrik_FormArticle extends PlgFabrik_Form
 {
 	/**
@@ -33,7 +32,6 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 	 *
 	 * @return	bool
 	 */
-
 	public function onAfterProcess()
 	{
 		/** @var FabrikFEModelForm $formModel */
@@ -129,7 +127,6 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 		JPluginHelper::importPlugin('content');
 
 		$params = $this->getParams();
-		$user = JFactory::getUser();
 		$data = array('articletext' => $this->buildContent(), 'catid' => $catId, 'state' => 1, 'language' => '*');
 		$attributes = array(
 			'title' => '',
@@ -148,13 +145,13 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 
 		if ($isNew)
 		{
-			$data['created'] = JFactory::getDate()->toSql();
-			$attributes['created_by'] = $user->get('id');
+			$data['created'] = $this->date->toSql();
+			$attributes['created_by'] = $this->user->get('id');
 		}
 		else
 		{
-			$data['modified'] = JFactory::getDate()->toSql();
-			$data['modified_by'] = $user->get('id');
+			$data['modified'] = $this->date->toSql();
+			$data['modified_by'] = $this->user->get('id');
 		}
 
 		foreach ($attributes as $attrib => $default)
@@ -178,7 +175,7 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 		$item->bind($data);
 
 		// Trigger the onContentBeforeSave event.
-		$result = $dispatcher->trigger('onContentBeforeSave', array('com_content.article', $item, $isNew));
+		$dispatcher->trigger('onContentBeforeSave', array('com_content.article', $item, $isNew));
 
 		$item->store();
 
@@ -189,7 +186,7 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 
 		JTable::addIncludePath(COM_FABRIK_BASE . 'administrator/components/com_content/tables');
 
-		if (JFactory::getApplication()->isAdmin())
+		if ($this->app->isAdmin())
 		{
 			JModelLegacy::addIncludePath(COM_FABRIK_BASE . 'administrator/components/com_content/models');
 			$articleModel = JModelLegacy::getInstance('Article', 'ContentModel');
@@ -201,7 +198,7 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 		}
 
 		// Trigger the onContentAfterSave event.
-		$result = $dispatcher->trigger('onContentAfterSave', array('com_content.article', $item, $isNew));
+		$dispatcher->trigger('onContentAfterSave', array('com_content.article', $item, $isNew));
 
 		// New record - need to re-save with {readmore} replacement
 		if ($isNew && strstr($data['articletext'], '{readmore}'))
@@ -235,7 +232,7 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 		// Sanitize the ids.
 		$pks = (array) $pks;
 		JArrayHelper::toInteger($pks);
-		$db = JFactory::getDbo();
+		$db = $this->_db;
 
 		if (empty($pks))
 		{
@@ -546,7 +543,7 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 			// Ensure we store to the main db table
 			$listModel->clearTable();
 
-			$rowId = JFactory::getApplication()->input->getString('rowid');
+			$rowId = $this->app->input->getString('rowid');
 			$listModel->storeCell($rowId, $key, $val);
 		}
 		else
@@ -598,7 +595,7 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 		$params = $this->getParams();
 		$deleteMode = $params->get('delete_mode', 'DELETE');
 		$item = JTable::getInstance('Content');
-		$userId = JFactory::getUser()->get('id');
+		$userId = $this->user->get('id');
 
 		if ($elementModel = $formModel->getElement($params->get('meta_store'), true))
 		{
@@ -624,7 +621,7 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 										$item->delete($articleId);
 										break;
 									case 'UNPUBLISH':
-										$ok = $item->publish(array($articleId), 0, $userId);
+										$item->publish(array($articleId), 0, $userId);
 										break;
 									case 'TRASH':
 										$item->publish(array($articleId), -2, $userId);
@@ -651,9 +648,7 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 	{
 		$images = $this->images();
 		$formModel = $this->getModel();
-		$app = JFactory::getApplication();
-		$input = $app->input;
-		$package = $app->getUserState('com_fabrik.package', 'fabrik');
+		$input = $this->app->input;
 		$params = $this->getParams();
 		$template = JPath::clean(JPATH_SITE . '/plugins/fabrik_form/article/tmpl/' . $params->get('template', ''));
 		$contentTemplate = $params->get('template_content');
@@ -685,14 +680,14 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 
 		$message = stripslashes($message);
 
-		$editURL = COM_FABRIK_LIVESITE . 'index.php?option=com_' . $package . '&amp;view=form&amp;formid=' . $formModel->get('id') . '&amp;rowid='
+		$editURL = COM_FABRIK_LIVESITE . 'index.php?option=com_' . $this->package . '&amp;view=form&amp;formid=' . $formModel->get('id') . '&amp;rowid='
 			. $input->get('rowid', '', 'string');
-		$viewURL = COM_FABRIK_LIVESITE . 'index.php?option=com_' . $package . '&amp;view=details&amp;formid=' . $formModel->get('id') . '&amp;rowid='
+		$viewURL = COM_FABRIK_LIVESITE . 'index.php?option=com_' . $this->package . '&amp;view=details&amp;formid=' . $formModel->get('id') . '&amp;rowid='
 			. $input->get('rowid', '', 'string');
-		$editlink = '<a href="' . $editURL . '">' . FText::_('EDIT') . '</a>';
-		$viewlink = '<a href="' . $viewURL . '">' . FText::_('VIEW') . '</a>';
-		$message = str_replace('{fabrik_editlink}', $editlink, $message);
-		$message = str_replace('{fabrik_viewlink}', $viewlink, $message);
+		$editLink = '<a href="' . $editURL . '">' . FText::_('EDIT') . '</a>';
+		$viewLink = '<a href="' . $viewURL . '">' . FText::_('VIEW') . '</a>';
+		$message = str_replace('{fabrik_editlink}', $editLink, $message);
+		$message = str_replace('{fabrik_viewlink}', $viewLink, $message);
 		$message = str_replace('{fabrik_editurl}', $editURL, $message);
 		$message = str_replace('{fabrik_viewurl}', $viewURL, $message);
 
@@ -756,11 +751,9 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 
 	protected function _getContentTemplate($contentTemplate)
 	{
-		$app = JFactory::getApplication();
-
-		if ($app->isAdmin())
+		if ($this->app->isAdmin())
 		{
-			$db = JFactory::getDbo();
+			$db = $this->_db;
 			$query = $db->getQuery(true);
 			$query->select('introtext, ' . $db->qn('fulltext'))->from('#__content')->where('id = ' . (int) $contentTemplate);
 			$db->setQuery($query);
@@ -822,11 +815,9 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 	 */
 	protected function raiseError(&$err, $field, $msg)
 	{
-		$app = JFactory::getApplication();
-
-		if ($app->isAdmin())
+		if ($this->app->isAdmin())
 		{
-			$app->enqueueMessage($msg, 'notice');
+			$this->app->enqueueMessage($msg, 'notice');
 		}
 		else
 		{

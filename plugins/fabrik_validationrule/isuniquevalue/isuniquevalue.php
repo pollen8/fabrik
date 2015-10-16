@@ -40,8 +40,7 @@ class PlgFabrik_ValidationruleIsUniqueValue extends PlgFabrik_Validationrule
 	 */
 	public function validate($data, $repeatCounter)
 	{
-		$app = JFactory::getApplication();
-		$input = $app->input;
+		$input = $this->app->input;
 		$elementModel = $this->elementModel;
 
 		// Could be a drop-down with multi-values

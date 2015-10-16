@@ -18,7 +18,6 @@ defined('_JEXEC') or die('Restricted access');
  * @subpackage  Fabrik.element.colourpicker
  * @since       3.0
  */
-
 class PlgFabrik_ElementColourpicker extends PlgFabrik_Element
 {
 	/**
@@ -69,7 +68,6 @@ class PlgFabrik_ElementColourpicker extends PlgFabrik_Element
 	 *
 	 * @return  mixed
 	 */
-
 	public function storeDatabaseFormat($val, $data)
 	{
 		$val = parent::storeDatabaseFormat($val, $data);
@@ -84,7 +82,6 @@ class PlgFabrik_ElementColourpicker extends PlgFabrik_Element
 	 *
 	 * @return  array
 	 */
-
 	public function elementJavascript($repeatCounter)
 	{
 		if (!$this->isEditable())
@@ -135,7 +132,6 @@ class PlgFabrik_ElementColourpicker extends PlgFabrik_Element
 	 *
 	 * @return  string	value
 	 */
-
 	public function getValue($data, $repeatCounter = 0, $opts = array())
 	{
 		$value = parent::getValue($data, $repeatCounter, $opts);
@@ -152,7 +148,6 @@ class PlgFabrik_ElementColourpicker extends PlgFabrik_Element
 	 *
 	 * @return  string	elements html
 	 */
-
 	public function render($data, $repeatCounter = 0)
 	{
 		$value = $this->getValue($data, $repeatCounter);
@@ -175,7 +170,6 @@ class PlgFabrik_ElementColourpicker extends PlgFabrik_Element
 	 *
 	 * @return  string  Bb field type
 	 */
-
 	public function getFieldDescription()
 	{
 		if ($this->encryptMe())
@@ -183,6 +177,6 @@ class PlgFabrik_ElementColourpicker extends PlgFabrik_Element
 			return 'BLOB';
 		}
 
-		return "VARCHAR(30)";
+		return 'VARCHAR(30)';
 	}
 }

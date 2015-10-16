@@ -18,7 +18,6 @@ defined('_JEXEC') or die('Restricted access');
  * @subpackage  Fabrik.element.ip
  * @since       3.0
  */
-
 class PlgFabrik_ElementIp extends PlgFabrik_Element
 {
 	/**
@@ -29,21 +28,19 @@ class PlgFabrik_ElementIp extends PlgFabrik_Element
 	 *
 	 * @return  string	elements html
 	 */
-
 	public function render($data, $repeatCounter = 0)
 	{
-		$app = JFactory::getApplication();
 		$name = $this->getHTMLName($repeatCounter);
 		$id = $this->getHTMLId($repeatCounter);
 		$params = $this->getParams();
 
-		$rowid = $app->input->get('rowid', false);
+		$rowId = $this->app->input->get('rowid', false);
 		/**
 		 * @TODO when editing a form with joined repeat group the rowid will be set but
 		 * the record is in fact new
 		 */
 
-		if ($params->get('ip_update_on_edit') || !$rowid || ($this->inRepeatGroup && $this->_inJoin && $this->_repeatGroupTotal == $repeatCounter))
+		if ($params->get('ip_update_on_edit') || !$rowId || ($this->inRepeatGroup && $this->_inJoin && $this->_repeatGroupTotal == $repeatCounter))
 		{
 			$ip = $_SERVER['REMOTE_ADDR'];
 		}
@@ -97,7 +94,6 @@ class PlgFabrik_ElementIp extends PlgFabrik_Element
 	 *
 	 * @return  bool  If false, data should not be added.
 	 */
-
 	public function onStoreRow(&$data, $repeatCounter = 0)
 	{
 		if (!parent::onStoreRow($data, $repeatCounter))
@@ -134,7 +130,6 @@ class PlgFabrik_ElementIp extends PlgFabrik_Element
 	 *
 	 * @return mixed
 	 */
-
 	public function getDefaultValue($data = array())
 	{
 		if (!isset($this->default))
@@ -154,7 +149,6 @@ class PlgFabrik_ElementIp extends PlgFabrik_Element
 	 *
 	 * @return  string	value
 	 */
-
 	public function getValue($data, $repeatCounter = 0, $opts = array())
 	{
 		// Kludge for 2 scenarios

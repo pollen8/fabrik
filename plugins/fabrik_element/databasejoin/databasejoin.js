@@ -185,12 +185,14 @@ var FbDatabasejoin = new Class({
 			i = opt.getElement('input'),
 			last, injectWhere,
 			subOpts = this.getSubOptions(),
-			checked = sel.contains(v) ? true : false;
+			checked = sel.contains(v) ? true : false,
+			nameInterator = this.options.displayType === 'radio' ? '' : subOpts.length;
+
 
 		if (this.options.canRepeat) {
-			i.name = this.options.fullName + '[' + this.options.repeatCounter + '][' + subOpts.length + ']';
+			i.name = this.options.fullName + '[' + this.options.repeatCounter + '][' + nameInterator + ']';
 		} else {
-			i.name = this.options.fullName + '[' + subOpts.length + ']';
+			i.name = this.options.fullName + '[' + nameInterator + ']';
 		}
 
 		opt.getElement('span').set('html', l);

@@ -26,7 +26,6 @@ require_once JPATH_SITE . '/components/com_fabrik/models/element.php';
  * @subpackage  Fabrik.element.count
  * @since       3.0
  */
-
 class PlgFabrik_ElementCount extends PlgFabrik_Element
 {
 	/**
@@ -50,36 +49,20 @@ class PlgFabrik_ElementCount extends PlgFabrik_Element
 	 *
 	 * @return  void
 	 */
-
 	public function getAsField_html(&$aFields, &$aAsFields, $opts = array())
 	{
-		$dbtable = $this->actualTableName();
-		$app = JFactory::getApplication();
+		$dbTable = $this->actualTableName();
 		$db = FabrikWorker::getDbo();
 
-		if ($app->input->get('c') != 'form')
+		if ($this->app->input->get('c') != 'form')
 		{
 			$params = $this->getParams();
-			$fullElName = FArrayHelper::getValue($opts, 'alias', $db->quoteName($dbtable . '___' . $this->getElement()->name));
+			$fullElName = FArrayHelper::getValue($opts, 'alias', $db->qn($dbTable . '___' . $this->getElement()->name));
 			$r = 'COUNT(' . $params->get('count_field', '*') . ')';
 			$aFields[] = $r . ' AS ' . $fullElName;
 			$aAsFields[] = $fullElName;
-			$aAsFields[] = $db->quoteName($dbtable . '___' . $this->getElement()->name . '_raw');
+			$aAsFields[] = $db->qn($dbTable . '___' . $this->getElement()->name . '_raw');
 		}
-	}
-
-	/**
-	 * Determines if the element can contain data used in sending receipts,
-	 * e.g. fabrikfield returns true
-	 *
-	 * @deprecated - not used
-	 *
-	 * @return  bool
-	 */
-
-	public function isReceiptElement()
-	{
-		return false;
 	}
 
 	/**
@@ -90,7 +73,6 @@ class PlgFabrik_ElementCount extends PlgFabrik_Element
 	 *
 	 * @return  bool can use or not
 	 */
-
 	public function canUse($location = null, $event = null)
 	{
 		return false;
@@ -104,7 +86,6 @@ class PlgFabrik_ElementCount extends PlgFabrik_Element
 	 *
 	 * @return  string	elements html
 	 */
-
 	public function render($data, $repeatCounter = 0)
 	{
 		return '';
@@ -117,7 +98,6 @@ class PlgFabrik_ElementCount extends PlgFabrik_Element
 	 *
 	 * @return  array
 	 */
-
 	public function elementJavascript($repeatCounter)
 	{
 		$id = $this->getHTMLId($repeatCounter);

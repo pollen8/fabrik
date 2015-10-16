@@ -30,7 +30,6 @@ class FabrikControllerCroncronnotification extends JControllerLegacy
 	 *
 	 * @return  void
 	 */
-
 	public function display()
 	{
 		$document = JFactory::getDocument();
@@ -58,7 +57,6 @@ class FabrikControllerCroncronnotification extends JControllerLegacy
 	 *
 	 * @return false
 	 */
-
 	public function delete()
 	{
 		$model = $this->getModel('cronnotification');

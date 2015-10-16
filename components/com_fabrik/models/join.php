@@ -57,7 +57,6 @@ class FabrikFEModelJoin extends FabModel
 	 *
 	 * @return  void
 	 */
-
 	public function setId($id)
 	{
 		$this->id = $id;
@@ -68,7 +67,6 @@ class FabrikFEModelJoin extends FabModel
 	 *
 	 * @return  int  join id
 	 */
-
 	public function getId()
 	{
 		return $this->id;
@@ -81,7 +79,6 @@ class FabrikFEModelJoin extends FabModel
 	 *
 	 * @return  void
 	 */
-
 	public function setData($data)
 	{
 		$this->data = $data;
@@ -120,7 +117,6 @@ class FabrikFEModelJoin extends FabModel
 	 *
 	 * @return  void
 	 */
-
 	private function paramsType(&$join)
 	{
 		if (is_string($join->params))
@@ -138,7 +134,6 @@ class FabrikFEModelJoin extends FabModel
 	 *
 	 * @return  void
 	 */
-
 	public function clearJoin()
 	{
 		unset($this->join);
@@ -152,7 +147,6 @@ class FabrikFEModelJoin extends FabModel
 	 *
 	 * @return  FabTable  join
 	 */
-
 	public function getJoinFromKey($key, $id)
 	{
 		if (!isset($this->join))
@@ -173,7 +167,6 @@ class FabrikFEModelJoin extends FabModel
 	 *
 	 * @return  string
 	 */
-
 	public function getForeignID($glue = '___')
 	{
 		$join = $this->getJoin();
@@ -190,7 +183,6 @@ class FabrikFEModelJoin extends FabModel
 	 *
 	 * @return string
 	 */
-
 	public function getForeignKey($glue = '___')
 	{
 		$join = $this->getJoin();
@@ -206,7 +198,6 @@ class FabrikFEModelJoin extends FabModel
 	 *
 	 * @return string
 	 */
-
 	public function getPrimaryKey($glue = '___')
 	{
 		$join = $this->getJoin();
@@ -222,7 +213,6 @@ class FabrikFEModelJoin extends FabModel
 	 *
 	 * @return string
 	 */
-
 	public function getJoinedToTablePk($glue = '___')
 	{
 		$join = $this->getJoin();
@@ -237,7 +227,6 @@ class FabrikFEModelJoin extends FabModel
 	 *
 	 * @return  void
 	 */
-
 	public function setElementId($id)
 	{
 		$this->join->element_id = $id;
@@ -251,7 +240,6 @@ class FabrikFEModelJoin extends FabModel
 	 *
 	 * @return void/JError
 	 */
-
 	public function deleteAll($groupId)
 	{
 		$db = FabrikWorker::getDbo(true);
@@ -279,7 +267,6 @@ class FabrikFEModelJoin extends FabModel
 	 *
 	 * @return  bool
 	 */
-
 	public function save($source)
 	{
 		if (!$this->bind($source))
@@ -308,7 +295,6 @@ class FabrikFEModelJoin extends FabModel
 	 *
 	 * @return  bool	true if table is a view
 	 */
-
 	public function isView()
 	{
 		$join = $this->getJoin();

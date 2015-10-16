@@ -44,7 +44,6 @@ class PlgFabrik_Cron extends FabrikPlugin
 	 *
 	 * @return  object
 	 */
-
 	public function &getTable($force = false)
 	{
 		if (!$this->row || $force)
@@ -63,7 +62,6 @@ class PlgFabrik_Cron extends FabrikPlugin
 	 *
 	 * @return  bool
 	 */
-
 	public function requiresTableData()
 	{
 		return true;
@@ -74,7 +72,6 @@ class PlgFabrik_Cron extends FabrikPlugin
 	 *
 	 * @return  string
 	 */
-
 	public function getLog()
 	{
 		return $this->log;
@@ -88,10 +85,8 @@ class PlgFabrik_Cron extends FabrikPlugin
 	 *
 	 * @return  bool
 	 */
-
 	public function queryStringActivated()
 	{
-		$app = JFactory::getApplication();
 		$params = $this->getParams();
 
 		if (!$params->get('require_qs', false))
@@ -100,6 +95,6 @@ class PlgFabrik_Cron extends FabrikPlugin
 			return true;
 		}
 
-		return $app->input->getInt('fabrik_cron', 0);
+		return $this->app->input->getInt('fabrik_cron', 0);
 	}
 }

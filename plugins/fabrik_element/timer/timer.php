@@ -42,17 +42,6 @@ class PlgFabrik_ElementTimer extends PlgFabrik_Element
 	protected $fieldDesc = 'TIME';
 
 	/**
-	 * Determines if the element can contain data used in sending receipts,
-	 * e.g. fabrikfield returns true
-	 *
-	 * @return  bool
-	 */
-	public function isReceiptElement()
-	{
-		return true;
-	}
-
-	/**
 	 * Draws the html form element
 	 *
 	 * @param   array  $data           to pre-populate element with
@@ -160,7 +149,7 @@ class PlgFabrik_ElementTimer extends PlgFabrik_Element
 		$name = $this->getFullName(false, false);
 
 		return "SELECT DATE_FORMAT(FROM_UNIXTIME(AVG(UNIX_TIMESTAMP($name))), '%H:%i:%s') AS value, $label FROM " .
-		$db->quoteName($table->db_table_name) . " $joinSQL $whereSQL";
+		$db->qn($table->db_table_name) . " $joinSQL $whereSQL";
 	}
 
 	/**
@@ -182,7 +171,7 @@ class PlgFabrik_ElementTimer extends PlgFabrik_Element
 		$name = $this->getFullName(false, false);
 
 		return "SELECT DATE_FORMAT(FROM_UNIXTIME((UNIX_TIMESTAMP($name))), '%H:%i:%s') AS value, $label FROM
-		" . $db->quoteName($table->db_table_name) . " $joinSQL $whereSQL";
+		" . $db->qn($table->db_table_name) . " $joinSQL $whereSQL";
 	}
 
 	/**

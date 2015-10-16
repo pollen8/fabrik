@@ -20,7 +20,6 @@ jimport('joomla.application.component.model');
  * @subpackage  Fabrik
  * @since       3.0
  */
-
 class PlgFabrik_List extends FabrikPlugin
 {
 	/**
@@ -42,7 +41,6 @@ class PlgFabrik_List extends FabrikPlugin
 	 *
 	 * @return  string
 	 */
-
 	protected function getAclParam()
 	{
 		return '';
@@ -57,7 +55,6 @@ class PlgFabrik_List extends FabrikPlugin
 	 *
 	 * @return  bool  true if we should run the plugin otherwise false
 	 */
-
 	public function canUse($location = null, $event = null)
 	{
 		$aclParam = $this->getAclParam();
@@ -68,7 +65,7 @@ class PlgFabrik_List extends FabrikPlugin
 		}
 
 		$params = $this->getParams();
-		$groups = JFactory::getUser()->getAuthorisedViewLevels();
+		$groups = $this->user->getAuthorisedViewLevels();
 
 		return in_array($params->get($aclParam), $groups);
 	}
@@ -78,7 +75,6 @@ class PlgFabrik_List extends FabrikPlugin
 	 *
 	 * @return  bool
 	 */
-
 	public function canSelectRows()
 	{
 		return false;
@@ -89,7 +85,6 @@ class PlgFabrik_List extends FabrikPlugin
 	 *
 	 * @return  string
 	 */
-
 	protected function buttonLabel()
 	{
 		$s = JString::strtoupper($this->buttonPrefix);
@@ -106,7 +101,6 @@ class PlgFabrik_List extends FabrikPlugin
 	 *
 	 * @return  bool;
 	 */
-
 	public function button(&$args)
 	{
 		$model = $this->getModel();
@@ -121,7 +115,6 @@ class PlgFabrik_List extends FabrikPlugin
 	 *
 	 * @return  string
 	 */
-
 	public function button_result()
 	{
 		if ($this->canUse())
@@ -150,7 +143,6 @@ class PlgFabrik_List extends FabrikPlugin
 	 *
 	 * @return   string  image
 	 */
-
 	protected function getImageName()
 	{
 		return $this->getParams()->get('list_' . $this->buttonPrefix . '_image_name', $this->buttonPrefix . '.png');
@@ -161,7 +153,6 @@ class PlgFabrik_List extends FabrikPlugin
 	 *
 	 * @return  stdClass
 	 */
-
 	public function getElementJSOptions()
 	{
 		$opts = new stdClass;
@@ -180,7 +171,6 @@ class PlgFabrik_List extends FabrikPlugin
 	 *
 	 * @return	bool
 	 */
-
 	public function onLoadJavascriptInstance($args)
 	{
 		JText::script('COM_FABRIK_PLEASE_SELECT_A_ROW');
@@ -195,7 +185,6 @@ class PlgFabrik_List extends FabrikPlugin
 	 *
 	 * @return bool currently ignored
 	 */
-
 	public function onLoadData(&$args)
 	{
 		return true;
@@ -206,7 +195,6 @@ class PlgFabrik_List extends FabrikPlugin
 	 *
 	 * @return bool currently ignored
 	 */
-
 	public function onFiltersGot()
 	{
 		return true;
@@ -221,7 +209,6 @@ class PlgFabrik_List extends FabrikPlugin
 	 *
 	 * @return  object  language
 	 */
-
 	protected function _getLang()
 	{
 		$lang = new stdClass;
@@ -245,7 +232,6 @@ class PlgFabrik_List extends FabrikPlugin
 	 *
 	 * @return	string|boolean
 	 */
-
 	public function process_preflightCheck()
 	{
 		if ($this->buttonPrefix == '')
@@ -253,8 +239,7 @@ class PlgFabrik_List extends FabrikPlugin
 			return false;
 		}
 
-		$app = JFactory::getApplication();
-		$input = $app->input;
+		$input = $this->app->input;
 		$postedRenderOrder = $input->getInt('fabrik_listplugin_renderOrder', -1);
 
 		return $input->get('fabrik_listplugin_name') == $this->buttonPrefix && $this->renderOrder == $postedRenderOrder;
@@ -267,7 +252,6 @@ class PlgFabrik_List extends FabrikPlugin
 	 *
 	 * @return  string  key
 	 */
-
 	public function onGetFilterKey()
 	{
 		$this->filterKey = JString::strtolower(str_ireplace('PlgFabrik_List', '', get_class($this)));
@@ -280,7 +264,6 @@ class PlgFabrik_List extends FabrikPlugin
 	 *
 	 * @return  string
 	 */
-
 	public function onGetFilterKey_result()
 	{
 		if (!isset($this->filterKey))
@@ -297,13 +280,9 @@ class PlgFabrik_List extends FabrikPlugin
 	 *
 	 * @return  string
 	 */
-
 	protected function getSessionContext()
 	{
-		$app = JFactory::getApplication();
-		$package = $app->getUserState('com_fabrik.package', 'fabrik');
-
-		return 'com_' . $package . '.list' . $this->model->getRenderContext() . '.plugins.' . $this->onGetFilterKey() . '.';
+		return 'com_' . $this->package . '.list' . $this->model->getRenderContext() . '.plugins.' . $this->onGetFilterKey() . '.';
 	}
 
 	/**
@@ -312,7 +291,6 @@ class PlgFabrik_List extends FabrikPlugin
 	 *
 	 * @return  string  javascript to create instance. Instance name must be 'el'
 	 */
-
 	public function onLoadJavascriptInstance_result()
 	{
 		return $this->jsInstance;
@@ -327,7 +305,6 @@ class PlgFabrik_List extends FabrikPlugin
 	 *
 	 * @return  void;
 	 */
-
 	public function onQueryBuilt(&$args)
 	{
 	}
@@ -338,7 +315,6 @@ class PlgFabrik_List extends FabrikPlugin
 	 *
 	 * @return  string  javascript class file
 	 */
-
 	public function loadJavascriptClass()
 	{
 		return true;
@@ -349,7 +325,6 @@ class PlgFabrik_List extends FabrikPlugin
 	 *
 	 * @return  mixed  string or array or null. If string then is relative path to either compressed or uncompress js file.
 	 */
-
 	public function loadJavascriptClass_result()
 	{
 		$this->onGetFilterKey();
@@ -367,7 +342,6 @@ class PlgFabrik_List extends FabrikPlugin
 	 *
 	 * @return  void
 	 */
-
 	public function requireJSShim()
 	{
 	}
@@ -380,7 +354,6 @@ class PlgFabrik_List extends FabrikPlugin
 	 *
 	 * @return  object  shim
 	 */
-
 	public function requireJSShim_result()
 	{
 		$deps = new stdClass;
@@ -397,7 +370,6 @@ class PlgFabrik_List extends FabrikPlugin
 	 *
 	 * @return  null
 	 */
-
 	public function requireFilterSubmit()
 	{
 	}
@@ -429,7 +401,7 @@ class PlgFabrik_List extends FabrikPlugin
 		$name = strtolower(JString::str_ireplace('PlgFabrik_List', '', $name));
 		$basePath = COM_FABRIK_BASE . '/plugins/fabrik_list/' . $name . '/layouts';
 		$layout = new FabrikLayoutFile('fabrik-list-' . $name. '-' . $type, $basePath, array('debug' => false, 'component' => 'com_fabrik', 'client' => 'site'));
-		$layout->addIncludePaths(JPATH_THEMES . '/' . JFactory::getApplication()->getTemplate() . '/html/layouts');
+		$layout->addIncludePaths(JPATH_THEMES . '/' . $this->app->getTemplate() . '/html/layouts');
 
 		return $layout;
 	}

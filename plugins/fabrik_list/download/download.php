@@ -97,8 +97,7 @@ class PlgFabrik_ListDownload extends PlgFabrik_List
 	public function process($opts = array())
 	{
 		$params = $this->getParams();
-		$app = JFactory::getApplication();
-		$input = $app->input;
+		$input = $this->app->input;
 		$model = $this->getModel();
 		$ids = $input->get('ids', array(), 'array');
 		$download_pdfs = $params->get('download_pdfs', '0') === '1';
@@ -111,7 +110,7 @@ class PlgFabrik_ListDownload extends PlgFabrik_List
 		$table = $model->getTable();
 		$filelist = array();
 		$zip_err = '';
-		
+
 		if ($download_pdfs)
 		{
 			$filelist = $this->getPDFs('ids');
@@ -123,23 +122,23 @@ class PlgFabrik_ListDownload extends PlgFabrik_List
 		elseif (empty($download_fk) && empty($download_table) && !empty($download_file))
 		{
 			$download_files = explode(',', $download_file);
-			
+
 			foreach ($ids AS $id)
 			{
 				$row = $model->getRow($id);
-				
+
 				foreach ($download_files as $dl)
 				{
 					$dl = trim($dl);
-					
+
 					if (isset($row->$dl) && !empty($row->$dl))
 					{
 						$tmpFiles = explode(GROUPSPLITTER, $row->$dl);
-	
+
 						foreach ($tmpFiles as $tmpFile)
 						{
 							$this_file = JPATH_SITE . '/' . $tmpFile;
-	
+
 							if (JFile::exists($this_file))
 							{
 								$filelist[] = $this_file;
@@ -188,8 +187,7 @@ class PlgFabrik_ListDownload extends PlgFabrik_List
 			 * so use J! tmp folder instead.
 			 * $zipfile = tempnam(sys_get_temp_dir(), "zip");
 			 */
-			$config = JFactory::getConfig();
-			$zipfile = tempnam($config->get('tmp_path'), "zip");
+			$zipfile = tempnam($this->config->get('tmp_path'), "zip");
 			$zipfile_basename = basename($zipfile);
 			$zip = new ZipArchive;
 			$zipres = $zip->open($zipfile, ZipArchive::CREATE);
@@ -243,7 +241,7 @@ class PlgFabrik_ListDownload extends PlgFabrik_List
 						JFile::delete($tmp_file);
 					}
 				}
-				
+
 				if ($ziptot > 0)
 				{
 					// Stream the file to the client
@@ -335,7 +333,7 @@ class PlgFabrik_ListDownload extends PlgFabrik_List
 
 		return $this->storage;
 	}
-	
+
 	/**
 	 * Get the selected records
 	 *
@@ -344,41 +342,37 @@ class PlgFabrik_ListDownload extends PlgFabrik_List
 	 *
 	 * @return    array    pdf file paths
 	 */
-	
+
 	public function getPDFs($key = 'ids')
 	{
-		$pdf_files = array();
-		
-		$app = JFactory::getApplication();
-		$input = $app->input;
-		$params = $this->getParams();
+		$pdfFiles = array();
+		$input = $this->app->input;
 		$model       = $this->getModel();
 		$formModel = $model->getFormModel();
-		$formid = $formModel->getId();
-	
+		$formId = $formModel->getId();
+
 		$ids = (array) $input->get($key, array(), 'array');
 
-		foreach ($ids as $rowid)
+		foreach ($ids as $rowId)
 		{
-			$config = JFactory::getConfig();
-			$p = tempnam($config->get('tmp_path'), 'download_');
-			
-			if (empty($p)) {
+			$p = tempnam($this->config->get('tmp_path'), 'download_');
+
+			if (empty($p))
+			{
 				return false;
 			}
-			
+
 			JFile::delete($p);
 			$p .= '.pdf';
-			
-			$url = COM_FABRIK_LIVESITE . 'index.php?option=com_fabrik&view=details&formid=' . $formid . '&rowid=' . $rowid . '&format=pdf';
+
+			$url = COM_FABRIK_LIVESITE . 'index.php?option=com_fabrik&view=details&formid=' . $formId . '&rowid=' . $rowId . '&format=pdf';
 			$pdf_content = file_get_contents($url);
-				
+
 			JFile::write($p, $pdf_content);
-			
-			$pdf_files[] = $p;
-		}	
-		
-		return $pdf_files;
+
+			$pdfFiles[] = $p;
+		}
+
+		return $pdfFiles;
 	}
-	
 }

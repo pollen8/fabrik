@@ -21,7 +21,6 @@ require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
  * @subpackage  Fabrik.form.receipt
  * @since       3.0
  */
-
 class PlgFabrik_FormReceipt extends PlgFabrik_Form
 {
 	protected $html = null;
@@ -31,7 +30,6 @@ class PlgFabrik_FormReceipt extends PlgFabrik_Form
 	 *
 	 * @return void
 	 */
-
 	public function getBottomContent()
 	{
 		$params = $this->getParams();
@@ -55,7 +53,6 @@ class PlgFabrik_FormReceipt extends PlgFabrik_Form
 	 *
 	 * @return  string  html
 	 */
-
 	public function getBottomContent_result($c)
 	{
 		return $this->html;
@@ -67,14 +64,11 @@ class PlgFabrik_FormReceipt extends PlgFabrik_Form
 	 *
 	 * @return	bool
 	 */
-
 	public function onAfterProcess()
 	{
 		$params = $this->getParams();
-		$app = JFactory::getApplication();
-		$input = $app->input;
+		$input = $this->app->input;
 		$formModel = $this->getModel();
-		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 
 		if ($params->get('ask-receipt'))
 		{
@@ -84,20 +78,19 @@ class PlgFabrik_FormReceipt extends PlgFabrik_Form
 			}
 		}
 
-		$rowid = $input->get('rowid');
+		$rowId = $input->get('rowid');
 		$config = JFactory::getConfig();
 		$w = new FabrikWorker;
-		$form = $formModel->getForm();
 		$data = $this->getProcessData();
 		$message = $params->get('receipt_message');
-		$editURL = COM_FABRIK_LIVESITE . "index.php?option=com_" . $package . "&amp;view=form&amp;fabrik=" . $formModel->get('id') . "&amp;rowid="
-			. $rowid;
-		$viewURL = COM_FABRIK_LIVESITE . "index.php?option=com_" . $package . "&amp;view=details&amp;fabrik=" . $formModel->get('id') . "&amp;rowid="
-			. $rowid;
-		$editlink = "<a href=\"$editURL\">" . FText::_('EDIT') . "</a>";
-		$viewlink = "<a href=\"$viewURL\">" . FText::_('VIEW') . "</a>";
-		$message = str_replace('{fabrik_editlink}', $editlink, $message);
-		$message = str_replace('{fabrik_viewlink}', $viewlink, $message);
+		$editURL = COM_FABRIK_LIVESITE . "index.php?option=com_" . $this->package . "&amp;view=form&amp;fabrik=" . $formModel->get('id') . "&amp;rowid="
+			. $rowId;
+		$viewURL = COM_FABRIK_LIVESITE . "index.php?option=com_" . $this->package . "&amp;view=details&amp;fabrik=" . $formModel->get('id') . "&amp;rowid="
+			. $rowId;
+		$editLink = "<a href=\"$editURL\">" . FText::_('EDIT') . "</a>";
+		$viewLink = "<a href=\"$viewURL\">" . FText::_('VIEW') . "</a>";
+		$message = str_replace('{fabrik_editlink}', $editLink, $message);
+		$message = str_replace('{fabrik_viewlink}', $viewLink, $message);
 		$message = str_replace('{fabrik_editurl}', $editURL, $message);
 		$message = str_replace('{fabrik_viewurl}', $viewURL, $message);
 
@@ -117,24 +110,24 @@ class PlgFabrik_FormReceipt extends PlgFabrik_Form
 		$subject = html_entity_decode($params->get('receipt_subject', ''));
 		$subject = JText::_($w->parseMessageForPlaceHolder($subject, $data, false));
 		$from = $config->get('mailfrom', '');
-		$fromname = $config->get('fromname', '');
+		$fromName = $config->get('fromname', '');
 
 		// Darn silly hack for poor joomfish settings where lang parameters are set to override joomla global config but not mail translations entered
-		$rawconfig = new JConfig;
+		$rawConfig = new JConfig;
 
 		if ($from === '')
 		{
-			$from = $rawconfig->mailfrom;
+			$from = $rawConfig->mailfrom;
 		}
 
-		if ($fromname === '')
+		if ($fromName === '')
 		{
-			$fromname = $rawconfig->fromname;
+			$fromName = $rawConfig->fromname;
 		}
 
 		$from = $params->get('from_email', $from);
 		$mail = JFactory::getMailer();
-		$res = $mail->sendMail($from, $fromname, $to, $subject, $message, true);
+		$res = $mail->sendMail($from, $fromName, $to, $subject, $message, true);
 
 		if (!$res)
 		{

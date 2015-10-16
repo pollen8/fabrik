@@ -20,7 +20,6 @@ require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
  * @subpackage  Fabrik.form.notification
  * @since       3.0
  */
-
 class PlgFabrik_FormNotification extends PlgFabrik_Form
 {
 	/**
@@ -30,7 +29,6 @@ class PlgFabrik_FormNotification extends PlgFabrik_Form
 	 *
 	 * @return  string  html
 	 */
-
 	public function getBottomContent_result($c)
 	{
 		return $this->html;
@@ -41,16 +39,13 @@ class PlgFabrik_FormNotification extends PlgFabrik_Form
 	 *
 	 * @return void
 	 */
-
 	public function getBottomContent()
 	{
-		$user = JFactory::getUser();
 		$params = $this->getParams();
 		$formModel = $this->getModel();
-		$app = JFactory::getApplication();
-		$input = $app->input;
+		$input = $this->app->input;
 
-		if ($user->get('id') == 0)
+		if ($this->user->get('id') == 0)
 		{
 			$this->html = FText::_('PLG_CRON_NOTIFICATION_SIGN_IN_TO_RECEIVE_NOTIFICATIONS');
 
@@ -82,12 +77,13 @@ class PlgFabrik_FormNotification extends PlgFabrik_Form
 		$db = FabrikWorker::getDbo();
 		$ref = $this->getRef($formModel->getListModel()->getId());
 		$query = $db->getQuery(true);
-		$query->select('COUNT(id)')->from('#__{package}_notification')->where('user_id = ' . (int) $user->get('id') . ' AND reference = ' . $ref);
+		$query->select('COUNT(id)')->from('#__{package}_notification')->where('user_id = ' .
+			(int) $this->user->get('id') . ' AND reference = ' . $ref);
 		$db->setQuery($query);
 		$found = $db->loadResult();
 		$checked = $found ? 'checked="checked"' : '';
 		$this->html = '
-		<label><input id="' . $id . '" ' . $checked . ' type="checkbox" name="fabrik_notification" class="input" value="1"  />
+		<label><input id="' . $id . '" ' . $checked . ' type="checkbox" name="fabrik_notification" class="input" value="1" />
 		 ' . FText::_('PLG_CRON_NOTIFICATION_NOTIFY_ME') . '</label>';
 	}
 
@@ -96,29 +92,25 @@ class PlgFabrik_FormNotification extends PlgFabrik_Form
 	 *
 	 * @return  void
 	 */
-
 	public function onToggleNotification()
 	{
-		$app = JFactory::getApplication();
-		$notify = $app->input->getBool('notify');
+		$notify = $this->app->input->getBool('notify');
 		$this->process($notify, 'observer');
 	}
 
 	/**
 	 * Get notification reference
 	 *
-	 * @param   int  $listid  Default list id
+	 * @param   int  $listId  Default list id
 	 *
 	 * @return string
 	 */
-
-	protected function getRef($listid = 0)
+	protected function getRef($listId = 0)
 	{
 		$db = FabrikWorker::getDbo();
-		$app = JFactory::getApplication();
-		$input = $app->input;
+		$input = $this->app->input;
 
-		return $db->quote($input->getInt('listid', $listid) . '.' . $input->getInt('formid', 0) . '.' . $input->get('rowid', '', 'string'));
+		return $db->q($input->getInt('listid', $listId) . '.' . $input->getInt('formid', 0) . '.' . $input->get('rowid', '', 'string'));
 	}
 
 	/**
@@ -129,31 +121,29 @@ class PlgFabrik_FormNotification extends PlgFabrik_Form
 	 *
 	 * @return  void
 	 */
-
 	protected function process($add, $why)
 	{
 		$params = $this->getParams();
-		$db = FabrikWorker::getDbo();
 		$user = JFactory::getUser();
-		$userid = (int) $user->get('id');
+		$userId = (int) $user->get('id');
 		$ref = $this->getRef();
-		$query = $db->getQuery(true);
+		$query = $this->_db->getQuery(true);
 		$fields = array('reference = ' . $ref);
 
 		if ($params->get('send_mode', 0) == '0')
 		{
-			$fields[] = 'user_id = ' . $userid;
+			$fields[] = 'user_id = ' . $userId;
 
 			if ($add)
 			{
-				$fields[] = 'reason = ' . $db->quote($why);
+				$fields[] = 'reason = ' . $this->_db->q($why);
 				$query->insert('#__{package}_notification')->set($fields);
-				$db->setQuery($query);
+				$this->_db->setQuery($query);
 				$ok = true;
 
 				try
 				{
-					$db->execute();
+					$this->_db->execute();
 				}
 				catch (Exception $e)
 				{
@@ -167,7 +157,7 @@ class PlgFabrik_FormNotification extends PlgFabrik_Form
 				}
 				else
 				{
-					echo "oho" . $db->getQuery();
+					echo "oho" . $this->_db->getQuery();
 					exit;
 				}
 			}
@@ -175,22 +165,22 @@ class PlgFabrik_FormNotification extends PlgFabrik_Form
 			{
 				$query->delete('#__{package}_notification')->where($fields);
 				echo FText::_('PLG_CRON_NOTIFICATION_REMOVED');
-				$db->setQuery($query);
-				$db->execute();
+				$this->_db->setQuery($query);
+				$this->_db->execute();
 			}
 		}
 		else
 		{
 			$sendTo = (array) $params->get('sendto');
-			$userids = $this->getUsersInGroups($sendTo);
+			$userIds = $this->getUsersInGroups($sendTo);
 
-			foreach ($userids as $userid)
+			foreach ($userIds as $userId)
 			{
 				$query->clear('set');
-				$fields2 = array_merge($fields, array('user_id = ' . $userid));
+				$fields2 = array_merge($fields, array('user_id = ' . $userId));
 				$query->insert('#__{package}_notification')->set($fields2);
-				$db->setQuery($query);
-				$db->execute();
+				$this->_db->setQuery($query);
+				$this->_db->execute();
 			}
 		}
 	}
@@ -200,7 +190,6 @@ class PlgFabrik_FormNotification extends PlgFabrik_Form
 	 *
 	 * @return  bool
 	 */
-
 	protected function triggered()
 	{
 		$formModel = $this->getModel();
@@ -228,21 +217,17 @@ class PlgFabrik_FormNotification extends PlgFabrik_Form
 	 *
 	 * @return	bool
 	 */
-
 	public function onAfterProcess()
 	{
 		$params = $this->getParams();
-		$app = JFactory::getApplication();
-		$formModel = $this->getModel();
-		$input = $app->input;
+		$input = $this->_app->input;
 
 		if ($params->get('notification_ajax', 0) == 1)
 		{
 			return;
 		}
 
-		$user = JFactory::getUser();
-		$userid = $user->get('id');
+		$userId = $this->user->get('id');
 		$notify = $input->getInt('fabrik_notification', 0);
 
 		if (!$this->triggered())
@@ -259,9 +244,8 @@ class PlgFabrik_FormNotification extends PlgFabrik_Form
 		 * see which new events have been generated and notify subscribers of said events.
 		 */
 		$db = FabrikWorker::getDbo();
-		$event = $rowId == '' ? $db->quote(FText::_('RECORD_ADDED')) : $db->quote(FText::_('RECORD_UPDATED'));
-		$date = JFactory::getDate();
-		$date = $db->quote($date->toSql());
+		$event = $rowId == '' ? $db->q(FText::_('RECORD_ADDED')) : $db->q(FText::_('RECORD_UPDATED'));
+		$date = $db->q($this->date->toSql());
 		$ref = $this->getRef();
 		$msg = $notify ? FText::_('PLG_CRON_NOTIFICATION_ADDED') : FText::_('PLG_CRON_NOTIFICATION_REMOVED');
 		$app = JFactory::getApplication();
@@ -271,7 +255,7 @@ class PlgFabrik_FormNotification extends PlgFabrik_Form
 
 		if ($params->get('send_mode') == '0')
 		{
-			$fields[] = 'user_id = ' . (int) $userid;
+			$fields[] = 'user_id = ' . (int) $userId;
 			$query->insert('#__{package}_notification_event')->set($fields);
 			$db->setQuery($query);
 			$db->execute();
@@ -279,13 +263,13 @@ class PlgFabrik_FormNotification extends PlgFabrik_Form
 		else
 		{
 			$sendTo = (array) $params->get('sendto');
-			$userids = $this->getUsersInGroups($sendTo);
+			$userIds = $this->getUsersInGroups($sendTo);
 			$query->clear();
 
-			foreach ($userids as $userid)
+			foreach ($userIds as $userId)
 			{
 				$query->clear('set');
-				$fields2 = array_merge($fields, array('user_id = ' . $userid));
+				$fields2 = array_merge($fields, array('user_id = ' . $userId));
 				$query->insert('#__{package}_notification_event')->set($fields2);
 				$db->setQuery($query);
 				$db->execute();

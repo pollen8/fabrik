@@ -20,7 +20,7 @@ jimport('joomla.application.component.model');
  * @subpackage  Fabrik
  * @since       3.0
  */
-class FabrikFEModelConnection extends JModelLegacy
+class FabrikFEModelConnection extends FabModel
 {
 	/**
 	 * Current connection
@@ -74,7 +74,7 @@ class FabrikFEModelConnection extends JModelLegacy
 	public function isJdb()
 	{
 		// $$$rob lets see if we have an exact config match with J db if so just return that
-		$conf = JFactory::getConfig();
+		$conf = $this->config;
 		$host = $conf->get('host');
 		$user = $conf->get('user');
 		$password = $conf->get('password');
@@ -184,8 +184,7 @@ class FabrikFEModelConnection extends JModelLegacy
 
 		$error = false;
 		$cn = $this->getConnection();
-		$app = JFactory::getApplication();
-		$input = $app->input;
+		$input = $this->app->input;
 
 		if ($input->get('task') == 'test')
 		{
@@ -234,7 +233,7 @@ class FabrikFEModelConnection extends JModelLegacy
 				}
 				else
 				{
-					if (!$app->isAdmin())
+					if (!$this->app->isAdmin())
 					{
 						throw new RuntimeException('Could not connection to database', E_ERROR);
 					}
@@ -310,7 +309,7 @@ class FabrikFEModelConnection extends JModelLegacy
 	 */
 	public function getConnectionOptions(&$cn)
 	{
-		$conf = JFactory::getConfig();
+		$conf = $this->config;
 		$host = $cn->host;
 		$user = $cn->user;
 		$password = $cn->password;

@@ -133,11 +133,12 @@ class FabrikModelCalendar extends FabrikFEModelVisualization
 	 */
 	public function getAddStandardEventFormInfo()
 	{
-		$config = JFactory::getConfig();
-		$prefix = $config->get('dbprefix');
-		$params = $this->getParams();
+		$prefix = $this->config->get('dbprefix');
 		$db = FabrikWorker::getDbo();
-		$db->setQuery("SELECT form_id, id FROM #__{package}_lists WHERE db_table_name = '{$prefix}fabrik_calendar_events' AND private = '1'");
+		$query = $db->getQuery(true);
+		$query->select('form_id, id')->from('#__{package}_lists')
+			->where('db_table_name = ' . $db->q($prefix . 'fabrik_calendar_events') . ' AND private = 1');
+		$db->setQuery($query);
 		$o = $db->loadObject();
 
 		if (is_object($o))
@@ -157,12 +158,9 @@ class FabrikModelCalendar extends FabrikFEModelVisualization
 	 *
 	 * @return  boolean False if not saved, otherwise id of saved calendar
 	 */
-
 	public function save()
 	{
-		$user = JFactory::getUser();
-		$app = JFactory::getApplication();
-		$input = $app->input;
+		$input = $this->app->input;
 		$filter = JFilterInput::getInstance();
 		$post = $filter->clean($_POST, 'array');
 
@@ -177,12 +175,12 @@ class FabrikModelCalendar extends FabrikFEModelVisualization
 		if ($this->id == 0)
 		{
 			$this->created = date('Y-m-d H:i:s');
-			$this->created_by = $user->get('id');
+			$this->created_by = $this->user->get('id');
 		}
 		else
 		{
 			$this->modified = date('Y-m-d H:i:s');
-			$this->modified_by = $user->get('id');
+			$this->modified_by = $this->user->get('id');
 		}
 
 		if (!$this->check())
@@ -318,9 +316,9 @@ class FabrikModelCalendar extends FabrikFEModelVisualization
 		$request = $filter->clean($_REQUEST, 'array');
 		$listModel = JModelLegacy::getInstance('list', 'FabrikFEModel');
 
-		foreach ($this->events as $listid => $record)
+		foreach ($this->events as $listId => $record)
 		{
-			$listModel->setId($listid);
+			$listModel->setId($listId);
 			$table = $listModel->getTable();
 			$formModel = $listModel->getFormModel();
 
@@ -403,26 +401,23 @@ class FabrikModelCalendar extends FabrikFEModelVisualization
 
 	public function getEvents()
 	{
-		$app = JFactory::getApplication();
-		$package = $app->getUserState('com_fabrik.package', 'fabrik');
-		$Itemid = FabrikWorker::itemId();
-		$config = JFactory::getConfig();
-		$tzoffset = $config->get('offset');
-		$tz = new DateTimeZone($tzoffset);
+		$itemId = FabrikWorker::itemId();
+		$tzOffset = $this->config->get('offset');
+		$tz = new DateTimeZone($tzOffset);
 		$w = new FabrikWorker;
 		$this->setupEvents();
 		$calendar = $this->getRow();
 		$aLegend = "$this->calName.addLegend([";
 		$jsevents = array();
-		$input = $app->input;
+		$input = $this->app->input;
 		$where = $input->get('where', array(), 'array');
 
-		foreach ($this->events as $listid => $record)
+		foreach ($this->events as $listId => $record)
 		{
-			$this_where = FArrayHelper::getValue($where, $listid, '');
+			$this_where = FArrayHelper::getValue($where, $listId, '');
 			$this_where = html_entity_decode($this_where, ENT_QUOTES);
 			$listModel = JModelLegacy::getInstance('list', 'FabrikFEModel');
-			$listModel->setId($listid);
+			$listModel->setId($listId);
 
 			if (!$listModel->canView())
 			{
@@ -493,7 +488,7 @@ class FabrikModelCalendar extends FabrikFEModelVisualization
 					{
 						if ($row->startdate != '')
 						{
-							$defaultURL = 'index.php?option=com_' . $package . '&Itemid=' . $Itemid . '&view=form&formid='
+							$defaultURL = 'index.php?option=com_' . $this->package . '&Itemid=' . $itemId . '&view=form&formid='
 								. $table->form_id . '&rowid=' . $row->id . '&tmpl=component';
 							$thisCustomUrl = $w->parseMessageForPlaceHolder($customUrl, $row);
 							$row->link = $thisCustomUrl !== '' ? $thisCustomUrl : $defaultURL;
@@ -589,10 +584,10 @@ class FabrikModelCalendar extends FabrikFEModelVisualization
 		$aLegend = "$ref.addLegend([";
 		$jsevents = array();
 
-		foreach ($this->events as $listid => $record)
+		foreach ($this->events as $listId => $record)
 		{
 			$listModel = JModelLegacy::getInstance('list', 'FabrikFEModel');
-			$listModel->setId($listid);
+			$listModel->setId($listId);
 			$table = $listModel->getTable();
 
 			foreach ($record as $data)
@@ -648,21 +643,20 @@ class FabrikModelCalendar extends FabrikFEModelVisualization
 
 	public function deleteEvent()
 	{
-		$app = JFactory::getApplication();
-		$input = $app->input;
+		$input = $this->app->input;
 		$id = $input->getInt('id');
-		$listid = $input->getInt('listid');
+		$listId = $input->getInt('listid');
 		$listModel = JModelLegacy::getInstance('list', 'FabrikFEModel');
-		$listModel->setId($listid);
+		$listModel->setId($listId);
 		$list = $listModel->getTable();
 		$tableDb = $listModel->getDb();
 		$db = FabrikWorker::getDbo(true);
 		$query = $db->getQuery(true);
-		$query->select('db_table_name')->from('#__{package}_lists')->where('id = ' . $listid);
+		$query->select('db_table_name')->from('#__{package}_lists')->where('id = ' . $listId);
 		$db->setQuery($query);
-		$tablename = $db->loadResult();
+		$tableName = $db->loadResult();
 		$query = $tableDb->getQuery(true);
-		$query->delete(FabrikString::safeColName($tablename))->where($list->db_primary_key . ' = ' . $id);
+		$query->delete(FabrikString::safeColName($tableName))->where($list->db_primary_key . ' = ' . $id);
 		$tableDb->setQuery($query);
 		$tableDb->execute();
 	}

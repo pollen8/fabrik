@@ -20,7 +20,6 @@ require_once JPATH_SITE . '/plugins/fabrik_element/databasejoin/databasejoin.php
  * @subpackage  Fabrik.element.tags
  * @since       3.0
  */
-
 class PlgFabrik_ElementTags extends PlgFabrik_ElementDatabasejoin
 {
 	/**
@@ -34,7 +33,6 @@ class PlgFabrik_ElementTags extends PlgFabrik_ElementDatabasejoin
 	 *
 	 * @return  object  default element params
 	 */
-
 	public function getParams()
 	{
 		if (!isset($this->params))
@@ -53,11 +51,9 @@ class PlgFabrik_ElementTags extends PlgFabrik_ElementDatabasejoin
 	 *
 	 * @return  array
 	 */
-
 	public function elementJavascript($repeatCounter)
 	{
 		$id = $this->getHTMLId($repeatCounter);
-		$params = $this->getParams();
 		$opts = $this->getElementJSOptions($repeatCounter);
 		$opts->rowid = $this->getFormModel()->getRowId();
 		$opts->id = $this->id;
@@ -73,14 +69,12 @@ class PlgFabrik_ElementTags extends PlgFabrik_ElementDatabasejoin
 	 *
 	 * @return  string	elements html
 	 */
-
 	public function render($data, $repeatCounter = 0)
 	{
 		$str = array();
 		$params = $this->getParams();
 		$id = $this->getHTMLId($repeatCounter);
 		$name = $this->getHTMLName($repeatCounter);
-		$formModel = $this->getFormModel();
 
 		if ($this->isEditable())
 		{
@@ -101,8 +95,8 @@ class PlgFabrik_ElementTags extends PlgFabrik_ElementDatabasejoin
 			JHtml::_('stylesheet', 'jui/chosen.css', false, true);
 			JHtml::_('script', 'jui/ajax-chosen' . $ext, false, true, false, false);
 
-			$boostrapClass = $params->get('bootstrap_class', 'span12');
-			$attr = 'multiple="multiple" class="inputbox ' . $boostrapClass. ' small"';
+			$bootstrapClass = $params->get('bootstrap_class', 'span12');
+			$attr = 'multiple="multiple" class="inputbox ' . $bootstrapClass. ' small"';
 			$selected = $tmp;
 			$str[] = JHtml::_('select.genericlist', $tmp, $name, trim($attr), 'value', 'text', $selected, $id);
 
@@ -139,13 +133,12 @@ class PlgFabrik_ElementTags extends PlgFabrik_ElementDatabasejoin
 	 *
 	 * @return string|JDatabaseQuery
 	 */
-
 	protected function buildQueryWhere($data = array(), $incWhere = true, $thisTableAlias = null, $opts = array(), $query = false)
 	{
-		$rowid = $this->getFormModel()->getRowId();
+		$rowId = $this->getFormModel()->getRowId();
 		$db = $this->getDb();
 		$join = $this->getJoin();
-		$fk = $db->quoteName($join->table_join_alias . '.' . $join->table_join_key);
+		$fk = $db->qn($join->table_join_alias . '.' . $join->table_join_key);
 		$params = $this->getParams();
 		$formModel = $this->getFormModel();
 
@@ -154,7 +147,7 @@ class PlgFabrik_ElementTags extends PlgFabrik_ElementDatabasejoin
 
 		if ($formModel->failedValidation())
 		{
-			$pk = $db->quoteName($join->table_join_alias . '.' . $join->table_key);
+			$pk = $db->qn($join->table_join_alias . '.' . $join->table_key);
 			$name = $this->getFullName(true, false) . '_raw';
 			$tagIds = FArrayHelper::getValue($data, $name, array());
 			JArrayHelper::toInteger($tagIds);
@@ -164,16 +157,16 @@ class PlgFabrik_ElementTags extends PlgFabrik_ElementDatabasejoin
 		{
 			// $$$ hugh - erm ... surely we don't want to select ALL tags on a new form?
 			/*
-			if (!empty($rowid))
+			if (!empty($rowId))
 			{
-				$where = $fk . ' = ' . $db->quote($rowid);
+				$where = $fk . ' = ' . $db->quote($rowId);
 			}
 			else
 			{
 				$where = '';
 			}
 			*/
-			$where = $fk . ' = ' . $db->quote($rowid);
+			$where = $fk . ' = ' . $db->quote($rowId);
 		}
 
 		$params->set('database_join_where_sql',  $where);
@@ -192,11 +185,10 @@ class PlgFabrik_ElementTags extends PlgFabrik_ElementDatabasejoin
 	 *
 	 * @return string|JQueryerBuilder join statement to add
 	 */
-
 	protected function buildQueryJoin($query = false)
 	{
 		$db = $this->getDb();
-		$f = $db->quoteName($this->getJoin()->table_join_alias . '.tags');
+		$f = $db->qn($this->getJoin()->table_join_alias . '.tags');
 
 		if ($query !== false)
 		{
@@ -213,7 +205,6 @@ class PlgFabrik_ElementTags extends PlgFabrik_ElementDatabasejoin
 	 *
 	 * @return boolean
 	 */
-
 	protected function showPleaseSelect()
 	{
 		return false;
@@ -224,7 +215,6 @@ class PlgFabrik_ElementTags extends PlgFabrik_ElementDatabasejoin
 	 *
 	 * @return  string  db field type
 	 */
-
 	public function getFieldDescription()
 	{
 		return "INT(11)";
@@ -235,7 +225,6 @@ class PlgFabrik_ElementTags extends PlgFabrik_ElementDatabasejoin
 	 *
 	 * @return	bool
 	 */
-
 	public function isJoin()
 	{
 		return true;
@@ -246,7 +235,6 @@ class PlgFabrik_ElementTags extends PlgFabrik_ElementDatabasejoin
 	 *
 	 * @return  string	database name
 	 */
-
 	protected function getDbName()
 	{
 		$this->dbname = '#__tags';
@@ -259,7 +247,6 @@ class PlgFabrik_ElementTags extends PlgFabrik_ElementDatabasejoin
 	 *
 	 * @return  string
 	 */
-
 	protected function getJoinValueFieldName()
 	{
 		return 'id';
@@ -270,7 +257,6 @@ class PlgFabrik_ElementTags extends PlgFabrik_ElementDatabasejoin
 	 *
 	 * @return string
 	 */
-
 	protected function getLabelParamVal()
 	{
 		if (!isset($this->labelParamVal))
@@ -290,7 +276,6 @@ class PlgFabrik_ElementTags extends PlgFabrik_ElementDatabasejoin
 	 *
 	 * @return  string	Label
 	 */
-
 	public function getLabelForValue($v, $defaultLabel = null, $forceCheck = false)
 	{
 		// Band aid - as this is called in listModel::addLabels() lets not bother - re-querying the db (label already loaded)
@@ -321,16 +306,15 @@ class PlgFabrik_ElementTags extends PlgFabrik_ElementDatabasejoin
 	 *
 	 * @return  mixed	JDatabaseQuery or false if query can't be built
 	 */
-
 	protected function buildQuery($data = array(), $incWhere = true, $opts = array())
 	{
 		$db = $this->getDb();
 		$query = $db->getQuery(true);
 		$join = $this->getJoin();
 		$query = $this->buildQueryWhere($data, $incWhere, null, $opts, $query);
-		$query->select('DISTINCT(t.id) AS value,' . $db->quoteName('title') . ' AS text')
-		->from($db->quoteName($join->table_join) . ' AS ' . $db->quoteName($join->table_join_alias))
-		->join('LEFT', '#__tags AS t ON t.id = ' . $db->quoteName($join->table_join_alias . '.' . $join->table_key));
+		$query->select('DISTINCT(t.id) AS value,' . $db->qn('title') . ' AS text')
+		->from($db->qn($join->table_join) . ' AS ' . $db->qn($join->table_join_alias))
+		->join('LEFT', '#__tags AS t ON t.id = ' . $db->qn($join->table_join_alias . '.' . $join->table_key));
 
 		return $query;
 	}
@@ -344,16 +328,13 @@ class PlgFabrik_ElementTags extends PlgFabrik_ElementDatabasejoin
 	 *
 	 * @return  void
 	 */
-
 	public function onFinalStoreRow(&$data)
 	{
 		$name = $this->getFullName(true, false);
-		$rawname = $name . '_raw';
-		$user = JFactory::getUser();
-		$date = JFactory::getDate();
+		$rawName = $name . '_raw';
 		$db = FabrikWorker::getDbo(true);
 		$formData =& $this->getFormModel()->formDataWithTableName;
-		$tagIds = (array) $formData[$rawname];
+		$tagIds = (array) $formData[$rawName];
 
 		foreach ($tagIds as $tagKey => &$tagId)
 		{
@@ -362,14 +343,14 @@ class PlgFabrik_ElementTags extends PlgFabrik_ElementDatabasejoin
 				unset($tagIds[$tagKey]);
 				continue;
 			}
-			
+
 			// New tag added
 			if (strstr($tagId, '#fabrik#'))
 			{
 				$tagId = $db->quote(str_replace('#fabrik#', '', $tagId));
 				$query = $db->getQuery(true);
-				$query->insert('#__tags')->set('level = 1, published = 1, parent_id = 1, created_user_id = ' . (int) $user->get('id'))
-				->set('created_time = ' . $db->quote($date->toSql()), ', language = "*", version = 1')
+				$query->insert('#__tags')->set('level = 1, published = 1, parent_id = 1, created_user_id = ' . (int) $this->user->get('id'))
+				->set('created_time = ' . $db->q($this->date->toSql()), ', language = "*", version = 1')
 				->set('path = ' . $tagId . ', title = ' . $tagId . ', alias = ' . $tagId);
 				$db->setQuery($query);
 				$db->execute();
@@ -378,7 +359,7 @@ class PlgFabrik_ElementTags extends PlgFabrik_ElementDatabasejoin
 		}
 
 		$formData[$name] = $tagIds;
-		$formData[$rawname] = $tagIds;
+		$formData[$rawName] = $tagIds;
 		parent::onFinalStoreRow($data);
 	}
 
@@ -398,21 +379,20 @@ class PlgFabrik_ElementTags extends PlgFabrik_ElementDatabasejoin
 		}
 
 		$name = $this->getFullName(true, false);
-		$idname = $name . '_id';
-		
+		$idName = $name . '_id';
+
 		// isn't set when coming back from submit from AJAX popup form
-		if (isset($thisRow->$idname))
+		if (isset($thisRow->$idName))
 		{
-			$rawname = $name . '_raw';
-			$ids = array();
-			if (is_object($thisRow->$idname))
+			if (is_object($thisRow->$idName))
 			{
-				$ids = JArrayHelper::fromObject($thisRow->$idname);
+				$ids = JArrayHelper::fromObject($thisRow->$idName);
 			}
 			else
 			{
-				$ids = explode(GROUPSPLITTER, $thisRow->$idname);
+				$ids = explode(GROUPSPLITTER, $thisRow->$idName);
 			}
+
 			$merged = array_combine($ids, $data);
 			$baseUrl = $this->tagUrl();
 			$icon = $this->tagIcon();
@@ -422,16 +402,16 @@ class PlgFabrik_ElementTags extends PlgFabrik_ElementDatabasejoin
 
 	/**
 	 * Build the base URL for the tag filter links
-	 * 
+	 *
 	 * @return string
 	 */
 	protected function tagUrl()
 	{
 		$name = $this->getFullName(true, false);
-		$rawname = $name . '_raw';
-		$baseUrl = FabrikHelperHTML::tagBaseUrl($rawname, $this->tagListURL());
+		$rawName = $name . '_raw';
+		$baseUrl = FabrikHelperHTML::tagBaseUrl($rawName, $this->tagListURL());
 		$baseUrl .= FabrikString::qsSepChar($baseUrl);
-		$baseUrl .= $rawname . '={key}';
+		$baseUrl .= $rawName . '={key}';
 
 		return $baseUrl;
 	}
@@ -449,27 +429,25 @@ class PlgFabrik_ElementTags extends PlgFabrik_ElementDatabasejoin
 
 		return $icon;
 	}
-	
+
 	/**
 	 * Get tag list URL
-	 * 
+	 *
 	 * @return string
 	 */
 	protected function tagListURL()
 	{
 		$listModel = $this->getListModel();
-		$app = JFactory::getApplication();
-		if ($app->isAdmin())
+
+		if ($this->app->isAdmin())
 		{
 			$url = 'index.php?option=com_fabrik&amp;task=list.view&amp;listid=' . $listModel->getId();
 		}
 		else
 		{
-			$package = $app->getUserState('com_fabrik.package', 'fabrik');
-			$url = 'index.php?option=com_' . $package . '&amp;view=list&amp;listid=' . $listModel->getId();
+			$url = 'index.php?option=com_' . $this->package . '&amp;view=list&amp;listid=' . $listModel->getId();
 			$url = JRoute::_($url);
 		}
 		return $url;
 	}
-	
 }

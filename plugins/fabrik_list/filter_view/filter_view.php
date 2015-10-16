@@ -19,7 +19,6 @@ require_once COM_FABRIK_FRONTEND . '/models/plugin-list.php';
  * @subpackage  Fabrik.list.filterview
  * @since       3.0
  */
-
 class PlgFabrik_ListFilter_View extends PlgFabrik_List
 {
 	protected $buttonPrefix = 'filter_view';
@@ -47,13 +46,12 @@ class PlgFabrik_ListFilter_View extends PlgFabrik_List
 	{
 		$params = $this->getParams();
 		$model = $this->getModel();
-		$app = JFactory::getApplication();
-		$package = $app->getUserState('com_fabrik.package', 'fabrik');
+		$package = $this->app->getUserState('com_fabrik.package', 'fabrik');
 		$opts = json_decode($params->get('filter_view_settings'));
 		$labels = $opts ? $opts->label : array();
 		$db = $model->getDb();
 		$item = $model->getTable();
-		$href = 'index.php?option=com_' . $package . '&view=list&listid=' . $model->getId();
+		$href = 'index.php?option=com_' . $this->package . '&view=list&listid=' . $model->getId();
 		$html = array();
 		$html[] = '<div class="filter_view" style="width:200px">';
 
@@ -153,7 +151,6 @@ class PlgFabrik_ListFilter_View extends PlgFabrik_List
 	 *
 	 * @return string
 	 */
-
 	public function onGetContentBeforeList_result()
 	{
 		return $this->html;
@@ -166,7 +163,6 @@ class PlgFabrik_ListFilter_View extends PlgFabrik_List
 	 *
 	 * @return bool
 	 */
-
 	public function onLoadJavascriptInstance($args)
 	{
 		parent::onLoadJavascriptInstance($args);
