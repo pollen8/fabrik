@@ -461,17 +461,11 @@ class PlgFabrik_ElementYesno extends PlgFabrik_ElementRadiobutton
 	 *
 	 * @return  string
 	 */
-<<<<<<< HEAD
-=======
-
->>>>>>> joomla3
 	public function getChangeEvent()
 	{
 		return $this->buttonGroup() ? 'click' : 'change';
 	}
 
-<<<<<<< HEAD
-=======
 	/**
 	 * Get classes to assign to the grid
 	 * An array of arrays of class names, keyed as 'container', 'label' or 'input',
@@ -496,5 +490,4 @@ class PlgFabrik_ElementYesno extends PlgFabrik_ElementRadiobutton
 		return array('data-toggle="buttons"');
 	}
 
->>>>>>> joomla3
 }
