@@ -49,48 +49,6 @@ class FabrikWorker
 	 */
 	static protected $finalFormat = null;
 
-	/**
-	 * Image file extensions
-	 *
-	 * @var  string
-	 */
-	static protected $image_extensions_eregi = 'bmp|gif|jpg|jpeg|png';
-
-	/**
-	 * Audio mime types
-	 *
-	 * @var array
-	 */
-	static protected $audio_mime_types = array('mp3' => 'audio/x-mpeg', 'm4a' => 'audio/x-m4a');
-
-	/**
-	 * Video mime types
-	 *
-	 * @var  array
-	 */
-	static protected $video_mime_types = array('mp4' => 'video/mp4', 'm4v' => 'video/x-m4v', 'mov' => 'video/quicktime');
-
-	/**
-	 * Document mime types
-	 *
-	 * @var  array
-	 */
-	static protected $doc_mime_types = array('pdf' => 'application/pdf', 'epub' => 'document/x-epub');
-	
-	/**
-	 * Valid view types, for sanity checking inputs, used by isViewType()
-	 */
-	static protected $viewTypes = array(
-		'article',
-		'cron',
-		'csv',
-		'details',
-		'element',
-		'form',
-		'list',
-		'package',
-		'visualization'
-	);
 
 	/**
 	 * Add slashes in parse message
@@ -105,6 +63,26 @@ class FabrikWorker
 	protected $_searchData = array();
 
 	/**
+	 * Get array of valid view types
+	 *
+	 * @return  array
+	 */
+	public static function getViewTypes()
+	{
+		return array(
+			'article',
+			'cron',
+			'csv',
+			'details',
+			'element',
+			'form',
+			'list',
+			'package',
+			'visualization'
+		);
+	}
+
+	/**
 	 * Returns true if $view is a valid view type
 	 *
 	 * @param   string  $view  View type
@@ -114,10 +92,11 @@ class FabrikWorker
 	public static function isViewType($view)
 	{
 		$view = strtolower(trim($view));
+		$viewTypes = self::getViewTypes();
 
-		return in_array($view, self::$viewTypes);
+		return in_array($view, $viewTypes);
 	}
-	
+
 	/**
 	 * Returns true if $file has an image extension type
 	 *
@@ -129,7 +108,53 @@ class FabrikWorker
 	{
 		$path_parts = pathinfo($file);
 
-		return preg_match('/' . self::$image_extensions_eregi . '/i', $path_parts['extension']);
+		if (array_key_exists('extension', $path_parts))
+		{
+			$image_extensions_eregi = 'bmp|gif|jpg|jpeg|png';
+			return preg_match('/' . $image_extensions_eregi . '/i', $path_parts['extension']) > 0;
+		}
+
+		return false;
+	}
+
+	/**
+	 * Get audio mime type array, keyed by file extension
+	 *
+	 * @return array
+	 */
+	public static function getAudioMimeTypes()
+	{
+		return array(
+			'mp3' => 'audio/x-mpeg',
+			'm4a' => 'audio/x-m4a'
+		);
+	}
+
+	/**
+	 * Get document mime type array, keyed by file extension
+	 *
+	 * @return array
+	 */
+	public static function getDocMimeTypes()
+	{
+		return array(
+			'pdf' => 'application/pdf',
+			'epub' => 'document/x-epub'
+		);
+	}
+
+	/**
+	 * Get video mime type array, keyed by file extension
+	 *
+	 * @return array
+	 */
+	public static function getVideoMimeTypes()
+	{
+		return array(
+				'mp4' => 'video/mp4',
+				'm4v' => 'video/x-m4v',
+				'mov' => 'video/quicktime'
+		);
 	}
 
 	/**
@@ -139,15 +164,16 @@ class FabrikWorker
 	 *
 	 * @deprecated - doesn't seem to be used
 	 *
-	 * @return  bool
+	 * @return  bool|string
 	 */
 	public static function getAudioMimeType($file)
 	{
 		$path_parts = pathinfo($file);
+		$audio_mime_types = self::getAudioMimeTypes();
 
-		if (array_key_exists($path_parts['extension'], self::$audio_mime_types))
+		if (array_key_exists($path_parts['extension'], $audio_mime_types))
 		{
-			return self::$audio_mime_types[$path_parts['extension']];
+			return $audio_mime_types[$path_parts['extension']];
 		}
 
 		return false;
@@ -160,15 +186,38 @@ class FabrikWorker
 	 *
 	 * @deprecated - doesn't seem to be used
 	 *
-	 * @return  bool
+	 * @return  bool|string
 	 */
 	public static function getVideoMimeType($file)
 	{
 		$path_parts = pathinfo($file);
+		$video_mime_types = self::getVideoMimeTypes();
 
-		if (array_key_exists($path_parts['extension'], self::$video_mime_types))
+		if (array_key_exists($path_parts['extension'], $video_mime_types))
 		{
-			return self::$video_mime_types[$path_parts['extension']];
+			return $video_mime_types[$path_parts['extension']];
+		}
+
+		return false;
+	}
+
+	/**
+	 * Get Video Mime type
+	 *
+	 * @param   string  $file  Filename
+	 *
+	 * @deprecated - doesn't seem to be used
+	 *
+	 * @return  bool|string
+	 */
+	public static function getDocMimeType($file)
+	{
+		$path_parts = pathinfo($file);
+		$doc_mime_types = self::getDocMimeTypes();
+
+		if (array_key_exists($path_parts['extension'], $doc_mime_types))
+		{
+			return $doc_mime_types[$path_parts['extension']];
 		}
 
 		return false;
@@ -179,28 +228,29 @@ class FabrikWorker
 	 *
 	 * @param   string  $file  Filename
 	 *
-	 * @deprecated - doesn't seem to be used
-	 *
-	 * @return  bool
+	 * @return  bool|string
 	 */
 	public static function getPodcastMimeType($file)
 	{
-		$path_parts = pathinfo($file);
+		$audio_mime_types = self::getAudioMimeTypes();
+		$video_mime_types = self::getVideoMimeTypes();
+		$doc_mime_types = self::getVideoMimeTypes();
+		$mime_type = false;
 
-		if (array_key_exists($path_parts['extension'], self::$video_mime_types))
+		if ($mime_type = self::getVideoMimeType($file))
 		{
-			return self::$video_mime_types[$path_parts['extension']];
+			return $mime_type;
 		}
-		elseif (array_key_exists($path_parts['extension'], self::$audio_mime_types))
+		elseif ($mime_type = self::getAudioMimeType($file))
 		{
-			return self::$audio_mime_types[$path_parts['extension']];
+			return $mime_type;
 		}
-		elseif (array_key_exists($path_parts['extension'], self::$doc_mime_types))
+		elseif ($mime_type = self::getDocMimeType($file))
 		{
-			return self::$doc_mime_types[$path_parts['extension']];
+			return $mime_type;
 		}
 
-		return false;
+		return $mime_type;
 	}
 
 	/**
@@ -585,17 +635,17 @@ class FabrikWorker
 	 * the upload element is creating a file path, for an upload element in a repeat group, of ...
 	 * '/uploads/{repeat_table___userid}/', and there are 4 repeat instance, it doesn't want a path of ...
 	 * '/uploads/34,45,94,103/', it just wants the one value from the same repeat count as the upload
-	 * element.  Or a calc element doing "return '{repeat_table___first_name} {repeat_table___last_name}';".  Etc. 
-	 * 
+	 * element.  Or a calc element doing "return '{repeat_table___first_name} {repeat_table___last_name}';".  Etc.
+	 *
 	 * Rather than make this a part of parseMessageForPlaceHolder, for now I'm making it a sperate function,
 	 * which just handles this one very specific data replacement.  Will look at merging it in with the main
 	 * parsing once we have a better understanding of where / when / how to do it.
-	 * 
+	 *
 	 * @param  string   $msg             Text to parse
 	 * @param  array    $searchData      Data to search for placeholders
 	 * @param  object   $el    Element model of the element which is doing the replacing
 	 * @param  int      $repeatCounter   Repeat instance
-	 * 
+	 *
 	 * @return  string  parsed message
 	 */
 	public function parseMessageForRepeats($msg, $searchData, $el, $repeatCounter)
@@ -607,7 +657,7 @@ class FabrikWorker
 			{
 				$elementModels = $groupModel->getPublishedElements();
 				$formModel = $el->getFormModel();
-		
+
 				foreach ($elementModels as $elementModel)
 				{
 					$repeatElName = $elementModel->getFullName(true, false);
@@ -627,7 +677,7 @@ class FabrikWorker
 		}
 		return $msg;
 	}
-	
+
 	/**
 	 * Iterates through string to replace every
 	 * {placeholder} with posted data
@@ -1435,18 +1485,18 @@ class FabrikWorker
 			 *  default connection as well, essentially enabling it for ALL queries we do.
 			 */
 			$fbConfig = JComponentHelper::getParams('com_fabrik');
-			
+
 			if ($fbConfig->get('enable_big_selects', 0) == '1')
 			{
 				$fabrikDb = self::$database[$sig];
-				
+
 				/**
 				 * Use of OPTION in SET deprecated from MySQL 5.1. onward
 				 * http://www.fabrikar.com/forums/index.php?threads/enable-big-selects-error.39463/#post-198293
 				 * NOTE - technically, using verison_compare on MySQL version could fail, if it's a "gamma"
 				 * release, which PHP desn't grok!
 				 */
-				
+
 				if (version_compare($fabrikDb->getVersion(), '5.1.0', '>='))
 				{
 					$fabrikDb->setQuery("SET SQL_BIG_SELECTS=1, GROUP_CONCAT_MAX_LEN=10240");
@@ -1455,7 +1505,7 @@ class FabrikWorker
 				{
 					$fabrikDb->setQuery("SET OPTION SQL_BIG_SELECTS=1, GROUP_CONCAT_MAX_LEN=10240");
 				}
-				
+
 				$fabrikDb->execute();
 			}
 		}
@@ -1652,7 +1702,7 @@ class FabrikWorker
 		{
 			return self::isSMS($email);
 		}
-		
+
 		$conf = JFactory::getConfig();
 		$mailer = $conf->get('mailer');
 
@@ -1664,7 +1714,7 @@ class FabrikWorker
 
 		return JMailHelper::isEmailAddress($email);
 	}
-	
+
 	/**
 	 * Is valid SMS number format
 	 * This is just a stub which return true for now!
@@ -1976,12 +2026,12 @@ class FabrikWorker
 
 		return ($tpl === 'bootstrap' || $tpl === 'fabrik4' || $version->RELEASE > 2.5);
 	}
-	
+
 	/**
 	 * Are we in a form process task
-	 * 
+	 *
 	 * @since 3.2
-	 * 
+	 *
 	 * @return bool
 	 */
 	public static function inFormProcess()
