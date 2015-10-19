@@ -20,7 +20,6 @@ require_once JPATH_ADMINISTRATOR . '/components/com_fabrik/tables/fabtable.php';
  * @subpackage  Fabrik
  * @since       3.0
  */
-
 class FabrikTableElement extends FabTable
 {
 	/**
@@ -32,6 +31,11 @@ class FabrikTableElement extends FabTable
 	 * @var bool
 	 */
 	public $published = true;
+
+	/**
+	 * @var string
+	 */
+	public $name = '';
 
 	/**
 	 * Construct

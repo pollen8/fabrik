@@ -130,6 +130,11 @@ class FabrikFEModelForm extends FabModelForm
 	protected $currentElement = null;
 
 	/**
+	 * @var JFilterInput
+	 */
+	protected $filter;
+
+	/**
 	 * If true encase table and element names with "`" when getting element list
 	 *
 	 * @var bool
@@ -1688,7 +1693,7 @@ class FabrikFEModelForm extends FabModelForm
 	{
 		$input = $this->app->input;
 
-		// Set the redirect page to the form's url if making a copy and set the id to the new insertid
+		// Set the redirect page to the form's url if making a copy and set the id to the new insert id
 		if (array_key_exists('Copy', $this->formData))
 		{
 			$u = str_replace('rowid=' . $origId, 'rowid=' . $insertId, $input->get('HTTP_REFERER', '', 'string'));
@@ -1779,7 +1784,7 @@ class FabrikFEModelForm extends FabModelForm
 	/**
 	 * Process the form to the database
 	 *
-	 * @return void
+	 * @return string Insert id
 	 */
 	public function processToDB()
 	{
@@ -1806,6 +1811,7 @@ class FabrikFEModelForm extends FabModelForm
 		$this->processElements();
 
 		JDEBUG ? $profiler->mark('processToDb, onBeforeCalculations plugins: start') : null;
+
 		if (in_array(false, $pluginManager->runPlugins('onBeforeCalculations', $this)))
 		{
 			return $insertId;
@@ -1815,6 +1821,7 @@ class FabrikFEModelForm extends FabModelForm
 		$this->listModel->doCalculations();
 
 		JDEBUG ? $profiler->mark('processToDb: end') : null;
+
 		return $insertId;
 	}
 
@@ -1971,8 +1978,8 @@ class FabrikFEModelForm extends FabModelForm
 								$v = empty($encrypted) ? '' : $crypt->decrypt($encrypted);
 
 								/*
-								 * $$$ hugh - things like elementlist elements (radios, etc) seem to use
-								 * their JSON data for encrypted read only vals, need to decode.
+								 * $$$ hugh - things like element list elements (radios, etc) seem to use
+								 * their JSON data for encrypted read only values, need to decode.
 								 */
 
 								if (is_subclass_of($elementModel, 'PlgFabrik_ElementList'))

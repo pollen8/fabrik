@@ -102,7 +102,7 @@ class PlgFabrik_Element extends FabrikPlugin
 	/**
 	 * Element object
 	 *
-	 * @var JTable
+	 * @var FabrikTableElement
 	 */
 	public $element = null;
 
@@ -288,7 +288,7 @@ class PlgFabrik_Element extends FabrikPlugin
 	 *
 	 * @param   bool  $force  default false - force load the element
 	 *
-	 * @return  object  element table
+	 * @return  FabrikTableElement  element table
 	 */
 	public function &getElement($force = false)
 	{
@@ -5598,7 +5598,7 @@ class PlgFabrik_Element extends FabrikPlugin
 	/**
 	 * Get join row
 	 *
-	 * @return  JTable	join table or false if not loaded
+	 * @return  FabrikTableJoin	join table or false if not loaded
 	 */
 	protected function getJoin()
 	{
@@ -6639,7 +6639,7 @@ class PlgFabrik_Element extends FabrikPlugin
 	/**
 	 * get the element's associated join model
 	 *
-	 * @return  object	join model
+	 * @return  FabrikFEModelJoin	join model
 	 */
 	public function getJoinModel()
 	{

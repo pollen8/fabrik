@@ -114,8 +114,6 @@ class FabrikFEModelFormsession extends FabModel
 		$app = JFactory::getApplication();
 		$input = $app->input;
 		$formModel->copyToRaw($post);
-		$fabrik_vars = FArrayHelper::getValue($post, 'fabrik_vars', array());
-		$querystring = FArrayHelper::getValue($fabrik_vars, 'querystring', array());
 		$formModel->addEncrytedVarsToArray($post);
 
 		if (array_key_exists('fabrik_vars', $post))
@@ -125,11 +123,9 @@ class FabrikFEModelFormsession extends FabModel
 
 		$data = serialize($post);
 		$hash = $this->getHash();
-		$userId = $this->getUserId();
-		$user = JFactory::getUser();
 		$row = $this->load();
 		$row->hash = $hash;
-		$row->user_id = (int) $user->get('id');
+		$row->user_id = (int) $this->user->get('id');
 		$row->form_id = $this->getFormId();
 		$row->row_id = $this->getRowId();
 		$row->last_page = $input->get('page');

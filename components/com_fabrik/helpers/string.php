@@ -233,7 +233,7 @@ class FabrikString extends JString
 
 	/**
 	 * Is it a raw element name, i.e. ends in _raw
-	 * 
+	 *
 	 * @param   string  $str  Element name
 	 *
 	 * @since   3.3
@@ -257,7 +257,7 @@ class FabrikString extends JString
 	{
 		return FabrikString::rtrimword($str, '_raw');
 	}
-	
+
 	/**
 	 * Clean variable names for use as fabrik element names
 	 * whitespace compressed and replaced with '_'
@@ -355,7 +355,7 @@ class FabrikString extends JString
 
 	/**
 	 * truncateHtml can truncate a string up to a number of characters while preserving whole words and HTML tags
-	 * 
+	 *
 	 * (ripped off from Cake PHP framework)
 	 *
 	 * @param  string  $text String to truncate.
@@ -380,7 +380,7 @@ class FabrikString extends JString
 			$totalLength = strlen($ending);
 			$open_tags = array();
 			$truncate = '';
-			
+
 			foreach ($lines as $lineMatchings)
 			{
 				// If there is any html-tag in this line, handle it and add it (uncounted) to the output
@@ -395,7 +395,7 @@ class FabrikString extends JString
 					{
 						// Delete tag from $open_tags list
 						$pos = array_search($tagMatchings[1], $open_tags);
-						
+
 						if ($pos !== false)
 						{
 							unset($open_tags[$pos]);
@@ -407,20 +407,20 @@ class FabrikString extends JString
 						// Add tag to the beginning of $open_tags list
 						array_unshift($open_tags, strtolower($tagMatchings[1]));
 					}
-					
+
 					// Add html-tag to $truncate'd text
 					$truncate .= $lineMatchings[1];
 				}
-				
+
 				// Calculate the length of the plain text part of the line; handle entities as one character
 				$contentLength = strlen(preg_replace('/&[0-9a-z]{2,8};|&#[0-9]{1,7};|[0-9a-f]{1,6};/i', ' ', $lineMatchings[2]));
-				
+
 				if ($totalLength+$contentLength> $length)
 				{
 					// The number of characters which are left
 					$left = $length - $totalLength;
 					$entitiesLength = 0;
-					
+
 					// Search for html entities
 					if (preg_match_all('/&[0-9a-z]{2,8};|&#[0-9]{1,7};|[0-9a-f]{1,6};/i', $lineMatchings[2], $entities, PREG_OFFSET_CAPTURE))
 					{
@@ -439,9 +439,9 @@ class FabrikString extends JString
 							}
 						}
 					}
-					
+
 					$truncate .= substr($lineMatchings[2], 0, $left + $entitiesLength);
-					
+
 					// Maximum length is reached, so get off the loop
 					break;
 				}
@@ -450,7 +450,7 @@ class FabrikString extends JString
 					$truncate .= $lineMatchings[2];
 					$totalLength += $contentLength;
 				}
-				
+
 				// If the maximum length is reached, get off the loop
 				if($totalLength>= $length)
 				{
@@ -469,7 +469,7 @@ class FabrikString extends JString
 				$truncate = substr($text, 0, $length - strlen($ending));
 			}
 		}
-		
+
 		// If the words shouldn't be cut in the middle...
 		if (!$exact)
 		{
@@ -482,7 +482,7 @@ class FabrikString extends JString
 		}
 		// add the defined ending to the text
 		$truncate .= $ending;
-		
+
 		if($considerHtml)
 		{
 			// Close all unclosed html-tags
@@ -491,10 +491,10 @@ class FabrikString extends JString
 				$truncate .= '</' . $tag . '>';
 			}
 		}
-		
+
 		return $truncate;
 	}
-	
+
 	/**
 	 * Truncate text possibly setting a tip to show all of the text
 	 *
@@ -510,7 +510,7 @@ class FabrikString extends JString
 		$showTip = FArrayHelper::getValue($opts, 'tip', true);
 		$title = FArrayHelper::getValue($opts, 'title', '');
 		$strippedText = htmlspecialchars(strip_tags($text), ENT_QUOTES);;
-		
+
 		if (JArrayHelper::getValue($opts, 'html_format', false))
 		{
 			$summary = FabrikString::truncateHtml($text, $wordCount);
@@ -520,15 +520,15 @@ class FabrikString extends JString
 			$text = htmlspecialchars(strip_tags($text), ENT_QUOTES);
 			$text = explode(' ', $text);
 			$summary = array_slice($text, 0, $wordCount);
-	
+
 			if (count($text) > $wordCount)
 			{
 				$summary[] = " ...";
 			}
-	
+
 			$summary = implode(' ', $summary);
 		}
-		
+
 		if ($showTip && $origText != $summary)
 		{
 			FabrikHelperHTML::tips();
@@ -918,16 +918,16 @@ class FabrikString extends JString
 	 */
 	public static function safeQuoteName($values, $commaSeparated = true)
 	{
-		return self::safeNameQuote($values, $commaSeparated);	
+		return self::safeNameQuote($values, $commaSeparated);
 	}
-		
+
 	/**
 	 * DB name quote a single string or an array of strings, first checking to see if they are
 	 * already quoted.  Which the J! $db->quote() doesn't do, unfortunately.
 	 * Does NOT modify the input.  Does not quote if value starts with CONCAT.
 	 *
-	 * @param unknown $values
-	 * @param bool    $commaSeparated  individually quote a comma separated string of values
+	 * @param string|array $values
+	 * @param bool         $commaSeparated  individually quote a comma separated string of values
 	 *
 	 * @return   mixed   quoted values
 	 */
@@ -984,12 +984,12 @@ class FabrikString extends JString
 
 		return $value;
 	}
-	
+
 	/**
 	 * Return appropriate query string sepchar
-	 * 
+	 *
 	 * @param  string  $url
-	 * 
+	 *
 	 * @return  string  query string sepchar
 	 */
 	public static function qsSepChar($url)
@@ -1010,7 +1010,7 @@ class FabrikString extends JString
 			return '?';
 		}
 	}
-	
+
 }
 
 /**
@@ -1070,5 +1070,5 @@ class FText extends JText
 		// if we got this far, hand it to JText::_() as normal
 		return parent::_($string, $jsSafe, $interpretBackSlashes, $script);
 	}
-	
+
 }

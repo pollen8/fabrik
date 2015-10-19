@@ -225,7 +225,6 @@ class FabrikFEModelFormInlineEdit extends FabModelForm
 	 *
 	 * @return string
 	 */
-
 	public function showResults()
 	{
 		$input = $this->app->input;
