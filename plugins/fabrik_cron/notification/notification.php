@@ -64,9 +64,8 @@ class PlgFabrik_Cronnotification extends PlgFabrik_Cron
 		$db->setQuery($query);
 		$rows = $db->loadObjectList();
 
-		$config = JFactory::getConfig();
-		$email_from = $config->get('mailfrom');
-		$sitename = $config->get('sitename');
+		$email_from = $this->config->get('mailfrom');
+		$siteName = $this->config->get('sitename');
 		$sent = array();
 		$usermsgs = array();
 
@@ -80,9 +79,9 @@ class PlgFabrik_Cronnotification extends PlgFabrik_Cron
 			 * dear %s, %s has %s on %s
 			 */
 			$event = FText::_($row->event);
-			list($listid, $formid, $rowid) = explode('.', $row->reference);
+			list($listId, $formId, $rowId) = explode('.', $row->reference);
 
-			$url = JRoute::_('index.php?option=com_fabrik&view=details&listid=' . $listid . '&formid=' . $formid . '&rowid=' . $rowid);
+			$url = JRoute::_('index.php?option=com_fabrik&view=details&listid=' . $listId . '&formid=' . $formId . '&rowid=' . $rowId);
 			$msg = JText::sprintf('FABRIK_NOTIFICATION_EMAIL_PART', $row->creator_name, $url, $event);
 
 			if (!array_key_exists($row->observer_id, $usermsgs))
@@ -97,7 +96,7 @@ class PlgFabrik_Cronnotification extends PlgFabrik_Cron
 			$sent[] = (string) $query;
 		}
 
-		$subject = $sitename . ": " . FText::_('FABRIK_NOTIFICATION_EMAIL_SUBJECT');
+		$subject = $siteName . ": " . FText::_('FABRIK_NOTIFICATION_EMAIL_SUBJECT');
 
 		foreach ($usermsgs as $email => $messages)
 		{

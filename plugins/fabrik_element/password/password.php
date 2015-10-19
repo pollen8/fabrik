@@ -28,7 +28,6 @@ class PlgFabrik_ElementPassword extends PlgFabrik_Element
 	 *
 	 * @return  bool
 	 */
-
 	public function recordInDatabase($data = null)
 	{
 		$element = $this->getElement();
@@ -57,7 +56,6 @@ class PlgFabrik_ElementPassword extends PlgFabrik_Element
 	 *
 	 * @return  mixed
 	 */
-
 	public function storeDatabaseFormat($val, $data)
 	{
 		jimport('joomla.user.helper');
@@ -69,18 +67,6 @@ class PlgFabrik_ElementPassword extends PlgFabrik_Element
 	}
 
 	/**
-	 * Determines if the element can contain data used in sending receipts
-	 *
-	 * @deprecated - not used
-	 *
-	 * @return  bool
-	 */
-	public function isReceiptElement()
-	{
-		return true;
-	}
-
-	/**
 	 * Draws the html form element
 	 *
 	 * @param   array $data          To pre-populate element with
@@ -88,7 +74,6 @@ class PlgFabrik_ElementPassword extends PlgFabrik_Element
 	 *
 	 * @return  string    elements html
 	 */
-
 	public function render($data, $repeatCounter = 0)
 	{
 		$layout     = $this->getLayout('form');
@@ -132,7 +117,6 @@ class PlgFabrik_ElementPassword extends PlgFabrik_Element
 	 *
 	 * @return bool
 	 */
-
 	public function validate($data, $repeatCounter = 0)
 	{
 		if ($this->isEditable() === false)
@@ -140,8 +124,7 @@ class PlgFabrik_ElementPassword extends PlgFabrik_Element
 			return true;
 		}
 
-		$app      = JFactory::getApplication();
-		$input    = $app->input;
+		$input    = $this->app->input;
 		$k        = $this->getlistModel()->getTable()->db_primary_key;
 		$k        = FabrikString::safeColNameToArrayKey($k);
 		$element  = $this->getElement();
@@ -152,9 +135,9 @@ class PlgFabrik_ElementPassword extends PlgFabrik_Element
 		 * rather than using $data, to avoid issues with things like "foo%20bar" getting incorrectly
 		 * decoded as "foo bar" in $data.
 		 */
-		$value      = urldecode($this->getValue($_REQUEST, $repeatCounter));
-		$name       = $this->getFullName(true, false);
-		$check_name = str_replace($element->name, $element->name . '_check', $name);
+		$value     = urldecode($this->getValue($_REQUEST, $repeatCounter));
+		$name      = $this->getFullName(true, false);
+		$checkName = str_replace($element->name, $element->name . '_check', $name);
 
 		/**
 		 * $$$ hugh - there must be a better way of doing this, but ...
@@ -164,16 +147,16 @@ class PlgFabrik_ElementPassword extends PlgFabrik_Element
 		 */
 		$ajax = $input->getBool('fabrik_ajax', false);
 
-		if ($ajax && !array_key_exists($check_name, $_REQUEST))
+		if ($ajax && !array_key_exists($checkName, $_REQUEST))
 		{
 			return true;
 		}
 
-		$this->setFullName($check_name, true, false);
+		$this->setFullName($checkName, true, false);
 		$this->reset();
 		$checkValue    = urldecode($this->getValue($_REQUEST, $repeatCounter));
 		$element->name = $origName;
-		$rowId = $input->get('rowid', '', 'string');
+		$rowId         = $input->get('rowid', '', 'string');
 
 		if ($this->getParams()->get('password_j_validate', false))
 		{
@@ -221,7 +204,6 @@ class PlgFabrik_ElementPassword extends PlgFabrik_Element
 	 *
 	 * @return  array
 	 */
-
 	public function elementJavascript($repeatCounter)
 	{
 		$id                    = $this->getHTMLId($repeatCounter);
@@ -248,7 +230,6 @@ class PlgFabrik_ElementPassword extends PlgFabrik_Element
 	 *
 	 * @return  array  html ids to watch for validation
 	 */
-
 	public function getValidationWatchElements($repeatCounter)
 	{
 		$id = $this->getHTMLId($repeatCounter) . '_check';
@@ -262,7 +243,6 @@ class PlgFabrik_ElementPassword extends PlgFabrik_Element
 	 *
 	 * @return  string
 	 */
-
 	public function internalValidationIcon()
 	{
 		return 'star';
@@ -273,7 +253,6 @@ class PlgFabrik_ElementPassword extends PlgFabrik_Element
 	 *
 	 * @return  string
 	 */
-
 	public function internalValidataionText()
 	{
 		return FText::_('PLG_ELEMENT_PASSWORD_VALIDATION_TIP');

@@ -22,7 +22,6 @@ require_once JPATH_SITE . '/components/com_fabrik/models/element.php';
  * @subpackage  Fabrik.element.spotify
  * @since       3.0
  */
-
 class PlgFabrik_ElementSpotify extends PlgFabrik_Element
 {
 	protected $pluginName = 'spotify';
@@ -49,11 +48,9 @@ class PlgFabrik_ElementSpotify extends PlgFabrik_Element
 	 *
 	 * @return  string	elements html
 	 */
-
 	public function render($data, $repeatCounter = 0)
 	{
-		$app = JFactory::getApplication();
-		$input = $app->input;
+		$input = $this->app->input;
 		$params = $this->getParams();
 		$element = $this->getElement();
 		$data = $this->getFormModel()->data;
@@ -64,7 +61,7 @@ class PlgFabrik_ElementSpotify extends PlgFabrik_Element
 			$name = $this->getHTMLName($repeatCounter);
 			$id = $this->getHTMLId($repeatCounter);
 			$size = $params->get('width');
-			$maxlength = 255;
+			$maxLength = 255;
 			$bits = array();
 			$type = "text";
 
@@ -86,7 +83,7 @@ class PlgFabrik_ElementSpotify extends PlgFabrik_Element
 			// Stop "'s from breaking the content out of the field.
 			$bits['value'] = htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
 			$bits['size'] = $size;
-			$bits['maxlength'] = $maxlength;
+			$bits['maxlength'] = $maxLength;
 
 			$layout = $this->getLayout('form');
 			$layoutData = new stdClass;
@@ -108,7 +105,6 @@ class PlgFabrik_ElementSpotify extends PlgFabrik_Element
 	 *
 	 * @return string
 	 */
-
 	private function constructPlayer($value, $mode = 'form')
 	{
 		$params = $this->getParams();
@@ -143,7 +139,6 @@ class PlgFabrik_ElementSpotify extends PlgFabrik_Element
 	 *
 	 * @return  array
 	 */
-
 	public function elementJavascript($repeatCounter)
 	{
 		$id = $this->getHTMLId($repeatCounter);

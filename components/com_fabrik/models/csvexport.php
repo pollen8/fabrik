@@ -20,7 +20,7 @@ jimport('joomla.application.component.model');
  * @subpackage  Fabrik
  * @since       3.0
  */
-class FabrikFEModelCSVExport
+class FabrikFEModelCSVExport extends FabModel
 {
 	/**
 	 * Number of records to output at a time
@@ -68,8 +68,7 @@ class FabrikFEModelCSVExport
 	 */
 	public function writeFile($total, $canDownload = false)
 	{
-		$app = JFactory::getApplication();
-		$input = $app->input;
+		$input = $this->app->input;
 
 		// F3 turn off error reporting as this is an ajax call
 		error_reporting(0);
@@ -119,8 +118,8 @@ class FabrikFEModelCSVExport
 			if (empty($headings))
 			{
 				$url = $input->server->get('HTTP_REFERER', '');
-				$app->enqueueMessage(FText::_('No data to export'));
-				$app->redirect($url);
+				$this->app->enqueueMessage(FText::_('No data to export'));
+				$this->app->redirect($url);
 
 				return;
 			}
@@ -295,8 +294,7 @@ class FabrikFEModelCSVExport
 	 */
 	private function getFileName()
 	{
-		$app = JFactory::getApplication();
-		$this->model->setId($app->input->getInt('listid'));
+		$this->model->setId($this->app->input->getInt('listid'));
 		$table = $this->model->getTable();
 		$filename = $table->db_table_name . '-export.csv';
 
@@ -310,9 +308,7 @@ class FabrikFEModelCSVExport
 	 */
 	private function getFilePath()
 	{
-		$config = JFactory::getConfig();
-
-		return $config->get('tmp_path') . '/' . $this->getFileName();
+		return $this->config->get('tmp_path') . '/' . $this->getFileName();
 	}
 
 	/**
@@ -357,29 +353,28 @@ class FabrikFEModelCSVExport
 		// To prevent long file from getting cut off from     //max_execution_time
 		error_reporting(0);
 		@set_time_limit(0);
-		$app = JFactory::getApplication();
 		jimport('joomla.filesystem.file');
 		$filename = $this->getFileName();
 		$filePath = $this->getFilePath();
 		$document = JFactory::getDocument();
 		$document->setMimeEncoding('application/zip');
 		$str = $this->getCSVContent();
-		$app->clearHeaders();
+		$this->app->clearHeaders();
 		$encoding = $this->getEncoding();
 
 		// Set the response to indicate a file download
-		$app->setHeader('Content-Type', 'application/zip');
-		$app->setHeader('Content-Disposition', "attachment;filename=\"" . $filename . "\"");
+		$this->app->setHeader('Content-Type', 'application/zip');
+		$this->app->setHeader('Content-Disposition', "attachment;filename=\"" . $filename . "\"");
 
 		// Xls formatting for accents
 		if ($this->outPutFormat == 'excel')
 		{
-			$app->setHeader('Content-Type', 'application/vnd.ms-excel');
+			$this->app->setHeader('Content-Type', 'application/vnd.ms-excel');
 		}
 
-		$app->setHeader('charset', $encoding);
-		$app->setBody($str);
-		echo $app->toString(false);
+		$this->app->setHeader('charset', $encoding);
+		$this->app->setBody($str);
+		echo $this->app->toString(false);
 		JFile::delete($filePath);
 
 		// $$$ rob 21/02/2012 - need to exit otherwise Chrome give 349 download error
@@ -396,8 +391,7 @@ class FabrikFEModelCSVExport
 	 */
 	protected function addCalculations($a, &$str)
 	{
-		$app = JFactory::getApplication();
-		$input = $app->input;
+		$input = $this->app->input;
 
 		if ($input->get('inccalcs') == 1)
 		{
@@ -535,8 +529,7 @@ class FabrikFEModelCSVExport
 	 */
 	public function getHeadings()
 	{
-		$app = JFactory::getApplication();
-		$input = $app->input;
+		$input = $this->app->input;
 		$w = new FabrikWorker;
 		$table = $this->model->getTable();
 		$params = $this->model->getParams();

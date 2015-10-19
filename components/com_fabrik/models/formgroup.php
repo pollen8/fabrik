@@ -20,7 +20,6 @@ jimport('joomla.application.component.model');
  * @since       3.0
  * @deprecated  Not used
  */
-
 class FabrikFEModelFormGroup extends JModelLegacy
 {
 }

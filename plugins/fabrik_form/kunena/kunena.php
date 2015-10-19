@@ -21,7 +21,6 @@ require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
  * @subpackage  Fabrik.form.kunena
  * @since       3.0
  */
-
 class PlgFabrik_FormKunena extends PlgFabrik_Form
 {
 	/**
@@ -34,7 +33,7 @@ class PlgFabrik_FormKunena extends PlgFabrik_Form
 	public function onAfterProcess()
 	{
 		$params = $this->getParams();
-		$app = JFactory::getApplication();
+		$app = $this->app;
 		$formModel = $this->getModel();
 		$input = $app->input;
 		jimport('joomla.filesystem.file');
@@ -70,7 +69,7 @@ class PlgFabrik_FormKunena extends PlgFabrik_Form
 	protected function post2x()
 	{
 		$params = $this->getParams();
-		$app = JFactory::getApplication();
+		$app = $this->app;
 		$formModel = $this->getModel();
 		$input = $app->input;
 		$w = new FabrikWorker;
@@ -130,16 +129,16 @@ class PlgFabrik_FormKunena extends PlgFabrik_Form
 	protected function post3x()
 	{
 		// Load front end language file as well
-		$lang = JFactory::getLanguage();
+		$lang = $this->lang;
 		$lang->load('com_kunena', JPATH_SITE . '/components/com_kunena');
 
 		$params = $this->getParams();
-		$app = JFactory::getApplication();
+		$app = $this->app;
 		$formModel = $this->getModel();
 		$input = $app->input;
 
-		$user = JFactory::getUser();
-		$now = JFactory::getDate();
+		$user = $this->user;
+		$now = $this->date;
 		$w = new FabrikWorker;
 
 		$catid = $params->get('kunena_category', 0);

@@ -96,19 +96,6 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 	}
 
 	/**
-	 * Determines if the element can contain data used in sending receipts,
-	 * e.g. field returns true
-	 *
-	 * @deprecated - not used
-	 *
-	 * @return  bool
-	 */
-	public function isReceiptElement()
-	{
-		return true;
-	}
-
-	/**
 	 * Draws the html form element
 	 *
 	 * @param   array  $data           To pre-populate element with
@@ -487,19 +474,17 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 	 */
 	public function onAjax_renderQRCode()
 	{
-		$app = JFactory::getApplication();
-		$input = $app->input;
+		$input = $this->app->input;
 		$this->setId($input->getInt('element_id'));
 		$this->loadMeForAjax();
 		$this->getElement();
 		$url = 'index.php';
-		$lang = JFactory::getLanguage();
-		$lang->load('com_fabrik.plg.element.field', JPATH_ADMINISTRATOR);
+		$this->lang->load('com_fabrik.plg.element.field', JPATH_ADMINISTRATOR);
 
 		if (!$this->canView())
 		{
-			$app->enqueueMessage(FText::_('PLG_ELEMENT_FIELD_NO_PERMISSION'));
-			$app->redirect($url);
+			$this->app->enqueueMessage(FText::_('PLG_ELEMENT_FIELD_NO_PERMISSION'));
+			$this->app->redirect($url);
 			exit;
 		}
 
@@ -507,8 +492,7 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 
 		if (empty($rowId))
 		{
-			// $app->enqueueMessage(FText::_('PLG_ELEMENT_FIELD_NO_SUCH_FILE'));
-			$app->redirect($url);
+			$this->app->redirect($url);
 			exit;
 		}
 
@@ -517,8 +501,7 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 
 		if (empty($row))
 		{
-			// $app->enqueueMessage(FText::_('PLG_ELEMENT_FIELD_NO_SUCH_FILE'));
-			$app->redirect($url);
+			$this->app->redirect($url);
 			exit;
 		}
 
@@ -581,8 +564,6 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 			$thisRow = JArrayHelper::fromObject($thisRow);
 		}
 
-		$app = JFactory::getApplication();
-		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$formModel = $this->getFormModel();
 		$formId = $formModel->getId();
 		$rowId = $formModel->getRowId();
@@ -624,7 +605,7 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 
 		$elementId = $this->getId();
 		$src = COM_FABRIK_LIVESITE
-		. 'index.php?option=com_' . $package . '&amp;task=plugin.pluginAjax&amp;plugin=field&amp;method=ajax_renderQRCode&amp;'
+		. 'index.php?option=com_' . $this->package . '&amp;task=plugin.pluginAjax&amp;plugin=field&amp;method=ajax_renderQRCode&amp;'
 				. 'format=raw&amp;element_id=' . $elementId . '&amp;formid=' . $formId . '&amp;rowid=' . $rowId . '&amp;repeatcount=0';
 
 		$layout = $this->getLayout('qr');

@@ -33,6 +33,28 @@ class FabModel extends JModelLegacy
 	protected $user;
 
 	/**
+	 * @var JDate
+	 */
+	protected $date;
+
+	/**
+	 * App name
+	 *
+	 * @var string
+	 */
+	protected $package = 'fabrik';
+
+	/**
+	 * @var Registry
+	 */
+	protected $config;
+
+	/**
+	 * @var JLanguage
+	 */
+	protected $lang;
+
+	/**
 	 * Constructor
 	 *
 	 * @param   array  $config  An array of configuration options (name, state, dbo, table_path, ignore_request).
@@ -44,6 +66,11 @@ class FabModel extends JModelLegacy
 	{
 		$this->app = JArrayHelper::getValue($config, 'app', JFactory::getApplication());
 		$this->user = JArrayHelper::getValue($config, 'user', JFactory::getUser());
+		$this->config = JArrayHelper::getValue($config, 'config', JFactory::getConfig());
+		$this->session = JArrayHelper::getValue($config, 'session', JFactory::getSession());
+		$this->date = JArrayHelper::getValue($config, 'date', JFactory::getDate());
+		$this->lang = JArrayHelper::getValue($config, 'lang', JFactory::getLanguage());
+		$this->package = $this->app->getUserState('com_fabrik.package', 'fabrik');
 
 		parent::__construct($config);
 	}
@@ -79,7 +106,7 @@ class FabModel extends JModelLegacy
 	 * @param   string  $prefix   The class prefix. Optional.
 	 * @param   array   $options  Configuration array for model. Optional.
 	 *
-	 * @return	object	The table
+	 * @return	JTable	The table
 	 */
 	public function getTable($name = '', $prefix = 'Table', $options = array())
 	{

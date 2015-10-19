@@ -18,7 +18,6 @@ defined('_JEXEC') or die('Restricted access');
  * @subpackage  Fabrik.element.textarea
  * @since       3.0
  */
-
 class PlgFabrik_ElementTextarea extends PlgFabrik_Element
 {
 	/**
@@ -35,10 +34,8 @@ class PlgFabrik_ElementTextarea extends PlgFabrik_Element
 	 *
 	 * @return  string	Tagified string
 	 */
-
 	protected function tagify($data)
 	{
-		$app = JFactory::getApplication();
 		$name = $this->getFullName(true, false);
 		$params = $this->getParams();
 		$data = explode(',', strip_tags($data));
@@ -47,14 +44,13 @@ class PlgFabrik_ElementTextarea extends PlgFabrik_Element
 
 		if ($url == '')
 		{
-			if ($app->isAdmin())
+			if ($this->app->isAdmin())
 			{
 				$url = 'index.php?option=com_fabrik&amp;task=list.view&amp;listid=' . $listId;
 			}
 			else
 			{
-				$package = $app->getUserState('com_fabrik.package', 'fabrik');
-				$url = 'index.php?option=com_' . $package . '&view=list&listid=' . $listId;
+				$url = 'index.php?option=com_' . $this->package . '&view=list&listid=' . $listId;
 			}
 		}
 
@@ -188,7 +184,6 @@ class PlgFabrik_ElementTextarea extends PlgFabrik_Element
 	 *
 	 * @return  string  label
 	 */
-
 	public function getLabel($repeatCounter = 0, $tmpl = '')
 	{
 		$params = $this->getParams();
@@ -207,7 +202,6 @@ class PlgFabrik_ElementTextarea extends PlgFabrik_Element
 	 *
 	 * @return  mixed	False if not using the wysiwyg editor. String (element name) if it is
 	 */
-
 	public function useEditor()
 	{
 		$element = $this->getElement();
@@ -223,30 +217,16 @@ class PlgFabrik_ElementTextarea extends PlgFabrik_Element
 	}
 
 	/**
-	 * Determines if the element can contain data used in sending receipts,
-	 * e.g. fabrikfield returns true
-	 *
-	 * @return  bool
-	 */
-
-	public function isReceiptElement()
-	{
-		return true;
-	}
-
-	/**
 	 * Should the element use the WYSIWYG editor
 	 *
 	 * @since   3.0.6.2
 	 *
 	 * @return  bool
 	 */
-
 	protected function useWysiwyg()
 	{
 		$params = $this->getParams();
-		$app = JFactory::getApplication();
-		$input = $app->input;
+		$input = $this->app->input;
 
 		if ($input->get('format') == 'raw')
 		{
@@ -269,7 +249,6 @@ class PlgFabrik_ElementTextarea extends PlgFabrik_Element
 	 *
 	 * @return  string	Elements html
 	 */
-
 	public function render($data, $repeatCounter = 0)
 	{
 		$name = $this->getHTMLName($repeatCounter);
@@ -301,7 +280,7 @@ class PlgFabrik_ElementTextarea extends PlgFabrik_Element
 				{
 					$value = nl2br($value);
 				}
-				
+
 				if ($value !== ''
 					&&
 					((int) $params->get('textarea-truncate-where', 0) === 2 || (int) $params->get('textarea-truncate-where', 0) === 3))
@@ -310,7 +289,7 @@ class PlgFabrik_ElementTextarea extends PlgFabrik_Element
 					$value = fabrikString::truncate($value, $opts);
 				}
 			}
-			
+
 			return $value;
 		}
 
@@ -329,8 +308,7 @@ class PlgFabrik_ElementTextarea extends PlgFabrik_Element
 
 		if ($wysiwyg)
 		{
-			$config = JFactory::getConfig();
-			$editor = JEditor::getInstance($config->get('editor'));
+			$editor = JEditor::getInstance($this->config->get('editor'));
 			$buttons = (bool) $params->get('wysiwyg_extra_buttons', true);
 			$layoutData->editor = $editor->display($name, $value, $cols * 10, $rows * 15, $cols, $rows, $buttons, $id);
 			$layout = $this->getLayout('wysiwyg');
@@ -404,7 +382,6 @@ class PlgFabrik_ElementTextarea extends PlgFabrik_Element
 	 *
 	 * @return  string	formatted value
 	 */
-
 	public function getEmailValue($value, $data = array(), $repeatCounter = 0)
 	{
 		$groupModel = $this->getGroup();
@@ -429,7 +406,6 @@ class PlgFabrik_ElementTextarea extends PlgFabrik_Element
 	 *
 	 * @return  array  text/value objects
 	 */
-
 	public function filterValueList($normal, $tableName = '', $label = '', $id = '', $incjoin = true)
 	{
 		$params = $this->getParams();
@@ -451,7 +427,6 @@ class PlgFabrik_ElementTextarea extends PlgFabrik_Element
 	 *
 	 * @return   array
 	 */
-
 	protected function getTags()
 	{
 		$listModel = $this->getListModel();
@@ -486,7 +461,6 @@ class PlgFabrik_ElementTextarea extends PlgFabrik_Element
 	 *
 	 * @return  array
 	 */
-
 	public function elementJavascript($repeatCounter)
 	{
 		$params = $this->getParams();
@@ -527,7 +501,6 @@ class PlgFabrik_ElementTextarea extends PlgFabrik_Element
 	 *
 	 * @return bool
 	 */
-
 	public function validate($data, $repeatCounter = 0)
 	{
 		$params = $this->getParams();
@@ -555,7 +528,6 @@ class PlgFabrik_ElementTextarea extends PlgFabrik_Element
 	 *
 	 * @return  string
 	 */
-
 	public function getValidationErr()
 	{
 		return FText::_('PLG_ELEMENT_TEXTAREA_CONTENT_TOO_LONG');
@@ -568,7 +540,6 @@ class PlgFabrik_ElementTextarea extends PlgFabrik_Element
 	 *
 	 * @return  string	joomfish translation type e.g. text/textarea/referenceid/titletext
 	 */
-
 	public function getJoomfishTranslationType()
 	{
 		return 'textarea';
@@ -581,7 +552,6 @@ class PlgFabrik_ElementTextarea extends PlgFabrik_Element
 	 *
 	 * @return  array	Key=>value options
 	 */
-
 	public function getJoomfishOptions()
 	{
 		$params = $this->getParams();
@@ -600,7 +570,6 @@ class PlgFabrik_ElementTextarea extends PlgFabrik_Element
 	 *
 	 * @return  bool
 	 */
-
 	public function canEncrypt()
 	{
 		return true;

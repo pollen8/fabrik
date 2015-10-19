@@ -21,7 +21,7 @@ jimport('joomla.application.component.model');
  * @subpackage  Fabrik
  * @since       3.1b2
  */
-class FabrikFEModelElementValidator extends JModelLegacy
+class FabrikFEModelElementValidator extends FabModel
 {
 	/**
 	 * Validation objects associated with the element
@@ -98,6 +98,8 @@ class FabrikFEModelElementValidator extends JModelLegacy
 					$conf = array();
 					$conf['name'] = JString::strtolower($usedPlugin);
 					$conf['type'] = JString::strtolower('fabrik_Validationrule');
+
+					/** @var PlgFabrik_Validationrule $plugIn */
 					$plugIn = new $class($dispatcher, $conf);
 					JPluginHelper::getPlugin('fabrik_validationrule', $usedPlugin);
 					$plugIn->elementModel = $this->elementModel;
@@ -125,7 +127,6 @@ class FabrikFEModelElementValidator extends JModelLegacy
 	 *
 	 * @return boolean
 	 */
-
 	private function showIcon()
 	{
 		$validations = $this->findAll();
@@ -158,7 +159,6 @@ class FabrikFEModelElementValidator extends JModelLegacy
 	 *
 	 * @return string
 	 */
-
 	public function getIcon($c = null)
 	{
 		$j3 = FabrikWorker::j3();
@@ -227,7 +227,6 @@ class FabrikFEModelElementValidator extends JModelLegacy
 	 *
 	 * @return string
 	 */
-
 	public function labelIcons()
 	{
 		$tmpl = $this->elementModel->getFormModel()->getTmpl();

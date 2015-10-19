@@ -33,7 +33,7 @@ class PlgFabrik_Validationrule extends FabrikPlugin
 	/**
 	 * Validation rule's element model
 	 *
-	 * @var JModel
+	 * @var PlgFabrik_Element
 	 */
 	public $elementModel = null;
 
@@ -143,10 +143,9 @@ class PlgFabrik_Validationrule extends FabrikPlugin
 	protected function shouldValidateIn()
 	{
 		$params = $this->getParams();
-		$app = JFactory::getApplication();
 		$in = $params->get('validate_in', 'both');
 
-		$admin = $app->isAdmin();
+		$admin = $this->app->isAdmin();
 
 		if ($in === 'both')
 		{
@@ -248,7 +247,7 @@ class PlgFabrik_Validationrule extends FabrikPlugin
 	public function getIcon($c = 0, $tmpl = '')
 	{
 		$name = $this->elementModel->validator->getIcon($c);
-		$i = FabrikHelperHTML::image($name, 'form', $tmpl, array('class' => $this->pluginName));
+		FabrikHelperHTML::image($name, 'form', $tmpl, array('class' => $this->pluginName));
 	}
 
 	/**

@@ -22,7 +22,6 @@ require_once JPATH_SITE . '/components/com_fabrik/models/visualization.php';
  * @subpackage  Fabrik.visualization.approvals
  * @since       3.0
  */
-
 class FabrikModelApprovals extends FabrikFEModelVisualization
 {
 	/**
@@ -30,11 +29,8 @@ class FabrikModelApprovals extends FabrikFEModelVisualization
 	 *
 	 * @return   array
 	 */
-
 	public function getRows()
 	{
-		$app = JFactory::getApplication();
-		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$params = $this->getParams();
 		$ids = (array) $params->get('approvals_table');
 		$approveEls = (array) $params->get('approvals_approve_element');
@@ -70,7 +66,7 @@ class FabrikModelApprovals extends FabrikFEModelVisualization
 
 			foreach ($rows as &$row)
 			{
-				$row->view = 'index.php?option=com_' . $package . '&task=form.view&formid=' . $formModel->getId() . '&rowid=' . $row->pk;
+				$row->view = 'index.php?option=com_' . $this->package . '&task=form.view&formid=' . $formModel->getId() . '&rowid=' . $row->pk;
 				$row->rowid = $row->pk;
 				$row->listid = $ids[$x];
 			}
@@ -114,7 +110,6 @@ class FabrikModelApprovals extends FabrikFEModelVisualization
 	 *
 	 * @return  void
 	 */
-
 	public function disapprove()
 	{
 		$this->decide(0);
@@ -126,7 +121,6 @@ class FabrikModelApprovals extends FabrikFEModelVisualization
 	 *
 	 * @return  void
 	 */
-
 	public function approve()
 	{
 		$this->decide(1);
@@ -140,18 +134,16 @@ class FabrikModelApprovals extends FabrikFEModelVisualization
 	 *
 	 * @return  void
 	 */
-
 	protected function decide($v)
 	{
-		$app = JFactory::getApplication();
-		$input = $app->input;
+		$input = $this->app->input;
 		$params = $this->getParams();
 		$ids = (array) $params->get('approvals_table');
 		$approveEls = (array) $params->get('approvals_approve_element');
 
-		foreach ($ids as $key => $listid)
+		foreach ($ids as $key => $listId)
 		{
-			if ($listid == $input->getInt('listid'))
+			if ($listId == $input->getInt('listid'))
 			{
 				$listModel = JModelLegacy::getInstance('List', 'FabrikFEModel');
 				$listModel->setId($input->getInt('listid'));
@@ -172,7 +164,6 @@ class FabrikModelApprovals extends FabrikFEModelVisualization
 	 *
 	 * @return  void
 	 */
-
 	protected function setListIds()
 	{
 		if (!isset($this->listids))

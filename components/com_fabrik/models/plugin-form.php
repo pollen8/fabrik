@@ -173,7 +173,6 @@ class PlgFabrik_Form extends FabrikPlugin
 	 *
 	 * @return  void
 	 */
-
 	public function getEndContent()
 	{
 		$this->html = '';
@@ -184,7 +183,6 @@ class PlgFabrik_Form extends FabrikPlugin
 	 *
 	 * @return	string	html
 	 */
-
 	public function getEndContent_result()
 	{
 		return $this->html;
@@ -467,11 +465,10 @@ class PlgFabrik_Form extends FabrikPlugin
 	 */
 	protected function getAdminInfo()
 	{
-		$db = JFactory::getDbo(true);
-		$query = $db->getQuery(true);
+		$query = $this->_db->getQuery(true);
 		$query->select('id, name, email, sendEmail')->from('#__users')->where('sendEmail = 1');
-		$db->setQuery($query);
-		$rows = $db->loadObjectList();
+		$this->_db->setQuery($query);
+		$rows = $this->_db->loadObjectList();
 
 		return $rows;
 	}
@@ -516,7 +513,7 @@ class PlgFabrik_Form extends FabrikPlugin
 		$name = strtolower(JString::str_ireplace('PlgFabrik_Form', '', $name));
 		$basePath = COM_FABRIK_BASE . '/plugins/fabrik_form/' . $name . '/layouts';
 		$layout = new FabrikLayoutFile('fabrik-form-' . $name. '-' . $type, $basePath, array('debug' => false, 'component' => 'com_fabrik', 'client' => 'site'));
-		$layout->addIncludePaths(JPATH_THEMES . '/' . JFactory::getApplication()->getTemplate() . '/html/layouts');
+		$layout->addIncludePaths(JPATH_THEMES . '/' . $this->app->getTemplate() . '/html/layouts');
 
 		return $layout;
 	}

@@ -85,27 +85,25 @@ class PlgFabrik_FormTwitter extends PlgFabrik_Form
 
 	public function tweet()
 	{
-		$session = JFactory::getSession();
 		global $_SESSION;
-		$app = JFactory::getApplication();
-		$input = $app->input;
+		$input = $this->app->input;
 		$this->buildModel($input->get('formid'));
 		$params = $this->getParams();
 		$renderOrder = $input->getInt('renderOrder');
-		$consumer_key = $params->get('twitter_consumer_key');
-		$consumer_secret = $params->get('twitter_consumer_secret');
+		$consumerKey = $params->get('twitter_consumer_key');
+		$consumerSecret = $params->get('twitter_consumer_secret');
 
-		if (is_array($consumer_key))
+		if (is_array($consumerKey))
 		{
-			$consumer_key = $consumer_key[$renderOrder];
+			$consumerKey = $consumerKey[$renderOrder];
 		}
 
-		if (is_array($consumer_secret))
+		if (is_array($consumerSecret))
 		{
-			$consumer_secret = $consumer_secret[$renderOrder];
+			$consumerSecret = $consumerSecret[$renderOrder];
 		}
 
-		$connection = new TwitterOAuth($consumer_key, $consumer_secret, $_SESSION['oauth_token'], $_SESSION['oauth_token_secret']);
+		$connection = new TwitterOAuth($consumerKey, $consumerSecret, $_SESSION['oauth_token'], $_SESSION['oauth_token_secret']);
 
 		/* Request access tokens from twitter */
 		$access_token = $connection->getAccessToken($_REQUEST['oauth_verifier']);
@@ -132,13 +130,9 @@ class PlgFabrik_FormTwitter extends PlgFabrik_Form
 
 	protected function sendTweet($connection)
 	{
-		$params = $this->getParams();
-		$session = JFactory::getSession();
 		$formModel = $this->getModel();
-		$app = JFactory::getApplication();
-		$package = $app->getUserState('com_fabrik.package', 'fabrik');
-		$input = $app->input;
-		$formdata = $session->get('com_' . $package . '.form.data');
+		$input = $this->app->input;
+		$formdata = $this->session->get('com_' . $this->package . '.form.data');
 
 		/*
 		 * @TODO incorrect for API1.1 should implement this
@@ -153,11 +147,10 @@ class PlgFabrik_FormTwitter extends PlgFabrik_Form
 		// Get logged in user to help with tests
 		$user = $connection->get('account/verify_credentials');
 		$msg = $_SESSION['msg'];
-		$data = JFactory::getDate();
 
 		$parameters = array('status' => $msg);
 		$status = $connection->post('statuses/update', $parameters);
-		$show_success = (int) $session->get('com_' . $package . '.form.twitter.showmessage', 0);
+		$show_success = (int) $this->session->get('com_' . $this->package . '.form.twitter.showmessage', 0);
 
 		switch ($connection->http_code)
 		{
@@ -165,18 +158,18 @@ class PlgFabrik_FormTwitter extends PlgFabrik_Form
 			case '304':
 				if ($show_success == 1)
 				{
-					$app->enqueueMessage(FText::_('PLG_FORM_TWITTER_SUCCESS'));
+					$this->app->enqueueMessage(FText::_('PLG_FORM_TWITTER_SUCCESS'));
 				}
 				break;
 			default:
-				$app->enqueueMessage(FText::_('PLG_FORM_TWITTER_ERR') . ": $connection->http_code : $status->error");
+				$this->app->enqueueMessage(FText::_('PLG_FORM_TWITTER_ERR') . ": $connection->http_code : $status->error");
 		}
 
 		$url = $input->get('fabrik_referrer', '', 'string');
 		$context = $formModel->getRedirectContext();
-		$url = $session->get($context . 'url', array($url));
+		$url = $this->session->get($context . 'url', array($url));
 		$url = array_shift($url);
-		$app->redirect($url);
+		$this->app->redirect($url);
 	}
 
 	/**
@@ -188,18 +181,15 @@ class PlgFabrik_FormTwitter extends PlgFabrik_Form
 	{
 		$params = $this->getParams();
 		global $_SESSION;
-		$app = JFactory::getApplication();
-		$input = $app->input;
-		$package = $app->getUserState('com_fabrik.package', 'fabrik');
+		$input = $this->app->input;
 		$formModel = $this->getModel();
-		$session = JFactory::getSession();
 
-		$session->set('com_' . $package . '.form.twitter.showmessage', $params->get('twitter-show-success-msg', 0));
+		$this->session->set('com_' . $this->package . '.form.twitter.showmessage', $params->get('twitter-show-success-msg', 0));
 		$_SESSION['msg'] = $this->getMessage();
 
 		// If the admin has specified an account use that
-		$consumer_key = $params->get('twitter_consumer_key');
-		$consumer_secret = $params->get('twitter_consumer_secret');
+		$consumerKey = $params->get('twitter_consumer_key');
+		$consumerSecret = $params->get('twitter_consumer_secret');
 
 		if ($params->get('twitter_oauth_token') == '')
 		{
@@ -216,7 +206,7 @@ class PlgFabrik_FormTwitter extends PlgFabrik_Form
 			$input->set('oauth_verifier', $params->get('twitter_oauth_verifier'));
 			$token = $params->get('twitter_oauth_token');
 			$secret = $params->get('twitter_oauth_token_secret');
-			$connection = new TwitterOAuth($consumer_key, $consumer_secret, $token, $secret);
+			$connection = new TwitterOAuth($consumerKey, $consumerSecret, $token, $secret);
 			$this->sendTweet($connection);
 
 			return;
@@ -225,30 +215,30 @@ class PlgFabrik_FormTwitter extends PlgFabrik_Form
 		// Otherwise get authorization url from user to use their own account
 
 		// $this->row not set ?! so this callback url was giving notices
-		$callback = COM_FABRIK_LIVESITE . 'index.php?option=com_' . $package . '&task=plugin.pluginAjax&plugin=twitter&g=form&method=tweet&formid='
+		$callback = COM_FABRIK_LIVESITE . 'index.php?option=com_' . $this->package . '&task=plugin.pluginAjax&plugin=twitter&g=form&method=tweet&formid='
 			. $formModel->getId();
 		$callback .= '&renderOrder=' . $this->renderOrder;
 
 		// Build TwitterOAuth object with client credentials
-		if ($consumer_key == '')
+		if ($consumerKey == '')
 		{
 			throw new RuntimeException('Please enter your consumer key. You may need to save the form first before continuing');
 		}
 
-		if ($consumer_secret == '')
+		if ($consumerSecret == '')
 		{
 			throw new RuntimeException('Please enter your consumer secret. You may need to save the form first before continuing');
 		}
 
-		$connection = new TwitterOAuth($consumer_key, $consumer_secret);
+		$connection = new TwitterOAuth($consumerKey, $consumerSecret);
 
 		// Get temporary credentials.
-		$request_token = $connection->getRequestToken($callback);
+		$requestToken = $connection->getRequestToken($callback);
 
 		// Save temporary credentials to session.
 
-		$_SESSION['oauth_token'] = $token = $request_token['oauth_token'];
-		$_SESSION['oauth_token_secret'] = $request_token['oauth_token_secret'];
+		$_SESSION['oauth_token'] = $token = $requestToken['oauth_token'];
+		$_SESSION['oauth_token_secret'] = $requestToken['oauth_token_secret'];
 
 		// If last connection failed don't display authorization link.
 		switch ($connection->http_code)
@@ -268,20 +258,17 @@ class PlgFabrik_FormTwitter extends PlgFabrik_Form
 	 *
 	 * @return array email data
 	 */
-
 	public function getEmailData()
 	{
-		$app = JFactory::getApplication();
-		$input = $app->input;
+		$input = $this->app->input;
 		$formModel = $this->getModel();
-		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$data = parent::getEmailData();
 		$id = $input->get('rowid');
 		$formId = $formModel->getId();
 		$data['fabrik_editurl'] = COM_FABRIK_LIVESITE
-			. JRoute::_("index.php?option=com_" . $package . "&amp;view=form&amp;formid=" . $formId . "&amp;rowid=" . $id);
+			. JRoute::_("index.php?option=com_" . $this->package . "&amp;view=form&amp;formid=" . $formId . "&amp;rowid=" . $id);
 		$data['fabrik_viewurl'] = COM_FABRIK_LIVESITE
-			. JRoute::_("index.php?option=com_" . $package . "&amp;view=details&amp;formid=" . $formId . "&amp;rowid=" . $id);
+			. JRoute::_("index.php?option=com_" . $this->package . "&amp;view=details&amp;formid=" . $formId . "&amp;rowid=" . $id);
 
 		// $$$ rob fabrik_viewurl/fabrik_editurl described in help text as fabrik_edit_url/fabrik_view_url.
 		// $$$ hugh - so let's add edit_link and view_link as well, just for consistency
@@ -302,7 +289,6 @@ class PlgFabrik_FormTwitter extends PlgFabrik_Form
 	 *
 	 * @return  string  shortened url
 	 */
-
 	private function bitlifyCallback($url)
 	{
 		$return_url = $url[1];
@@ -332,7 +318,6 @@ class PlgFabrik_FormTwitter extends PlgFabrik_Form
 	 *
 	 * @return  string   message
 	 */
-
 	private function bitlifyMessage($msg)
 	{
 		static $bitly;
@@ -368,7 +353,6 @@ class PlgFabrik_FormTwitter extends PlgFabrik_Form
 	 *
 	 * @return  string  message
 	 */
-
 	protected function getMessage()
 	{
 		$params = $this->getParams();
@@ -401,7 +385,6 @@ class PlgFabrik_FormTwitter extends PlgFabrik_Form
 	 *
 	 * @return  void
 	 */
-
 	public function onAuthenticateAdmin()
 	{
 		$app = JFactory::getApplication();
@@ -409,14 +392,14 @@ class PlgFabrik_FormTwitter extends PlgFabrik_Form
 		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$formModel = $this->buildModel($input->getInt('formid'));
 		$params = $formModel->getParams();
-		$consumer_key = $input->get('twitter_consumer_key');
-		$consumer_secret = $input->get('twitter_consumer_secret');
+		$consumerKey = $input->get('twitter_consumer_key');
+		$consumerSecret = $input->get('twitter_consumer_secret');
 		$counter = $input->getInt('repeatCounter');
-		$consumer_key = (array) $params->get('twitter_consumer_key');
-		$consumer_key = $consumer_key[$counter];
+		$consumerKey = (array) $params->get('twitter_consumer_key');
+		$consumerKey = $consumerKey[$counter];
 
-		$consumer_secret = (array) $params->get('twitter_consumer_secret');
-		$consumer_secret = $consumer_secret[$counter];
+		$consumerSecret = (array) $params->get('twitter_consumer_secret');
+		$consumerSecret = $consumerSecret[$counter];
 
 		$callback = COM_FABRIK_LIVESITE
 			. 'index.php?option=com_' . $package . '&task=plugin.pluginAjax&plugin=twitter&tmpl=component&g=form&method=updateAdmin&formid='
@@ -429,15 +412,15 @@ class PlgFabrik_FormTwitter extends PlgFabrik_Form
 		}
 
 		// Build TwitterOAuth object with client credentials.
-		$connection = new TwitterOAuth($consumer_key, $consumer_secret);
+		$connection = new TwitterOAuth($consumerKey, $consumerSecret);
 
 		// Get temporary credentials.
-		$request_token = $connection->getRequestToken($callback);
+		$requestToken = $connection->getRequestToken($callback);
 
 		// Save temporary credentials to session.
-		$_SESSION['oauth_token'] = $token = $request_token['oauth_token'];
-		$_SESSION['oauth_token_secret'] = $request_token['oauth_token_secret'];
-		$_SESSION['oauth_callback_confirmed'] = $request_token['oauth_callback_confirmed'];
+		$_SESSION['oauth_token'] = $token = $requestToken['oauth_token'];
+		$_SESSION['oauth_token_secret'] = $requestToken['oauth_token_secret'];
+		$_SESSION['oauth_callback_confirmed'] = $requestToken['oauth_callback_confirmed'];
 
 		// If last connection failed don't display authorization link.
 		switch ($connection->http_code)
@@ -461,20 +444,18 @@ class PlgFabrik_FormTwitter extends PlgFabrik_Form
 	 *
 	 * @return  void
 	 */
-
 	public function onUpdateAdmin()
 	{
-		$app = JFactory::getApplication();
-		$input = $app->input;
+		$input = $this->app->input;
 		$formModel = $this->buildModel($input->getInt('formid'));
 		$params = $formModel->getParams();
 		$renderOrder = $input->getInt('repeatCounter');
 
-		$consumer_key = $params->get('twitter_consumer_key');
-		$consumer_key = $consumer_key[$renderOrder];
-		$consumer_secret = $params->get('twitter_consumer_secret');
-		$consumer_secret = $consumer_secret[$renderOrder];
-		$connection = new TwitterOAuth($consumer_key, $consumer_secret, $_SESSION['oauth_token'], $_SESSION['oauth_token_secret']);
+		$consumerKey = $params->get('twitter_consumer_key');
+		$consumerKey = $consumerKey[$renderOrder];
+		$consumerSecret = $params->get('twitter_consumer_secret');
+		$consumerSecret = $consumerSecret[$renderOrder];
+		$connection = new TwitterOAuth($consumerKey, $consumerSecret, $_SESSION['oauth_token'], $_SESSION['oauth_token_secret']);
 
 		/* Request access tokens from twitter */
 		$access_token = $connection->getAccessToken($_REQUEST['oauth_verifier']);
@@ -508,15 +489,10 @@ class PlgFabrik_FormTwitter extends PlgFabrik_Form
 		}
 
 		$row->params = json_encode($opts);
+		$row->store();
 
-		if (!$row->store())
-		{
-			JError::raiseWarning(500, $row->getError());
-		}
-
-		$lang = JFactory::getLanguage();
-		$langfile = 'com_fabrik.plg.form.fabriktwitter';
-		$lang->load($langfile, JPATH_ADMINISTRATOR, null, true);
+		$langFile = 'com_fabrik.plg.form.fabriktwitter';
+		$this->lang->load($langFile, JPATH_ADMINISTRATOR, null, true);
 
 		// If we had already authorized the app then we will still be in the admin page - so update the fields:
 		echo FText::_('PLG_FORM_TWITTER_CREDENTIALS_SAVED');

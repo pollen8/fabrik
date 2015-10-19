@@ -391,8 +391,7 @@ class PlgFabrik_ElementImage extends PlgFabrik_Element
 	public function onAjax_files()
 	{
 		$this->loadMeForAjax();
-		$app = JFactory::getApplication();
-		$folder = $app->input->get('folder', '', 'string');
+		$folder = $this->app->input->get('folder', '', 'string');
 
 		if (!strstr($folder, JPATH_SITE))
 		{

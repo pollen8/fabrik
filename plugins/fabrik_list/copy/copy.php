@@ -21,7 +21,6 @@ require_once COM_FABRIK_FRONTEND . '/models/plugin-list.php';
  * @subpackage  Fabrik.list.copy
  * @since       3.0
  */
-
 class PlgFabrik_ListCopy extends PlgFabrik_List
 {
 	/**
@@ -38,7 +37,6 @@ class PlgFabrik_ListCopy extends PlgFabrik_List
 	 *
 	 * @return  bool;
 	 */
-
 	public function button(&$args)
 	{
 		parent::button($args);
@@ -51,7 +49,6 @@ class PlgFabrik_ListCopy extends PlgFabrik_List
 	 *
 	 * @return  string
 	 */
-
 	protected function getAclParam()
 	{
 		return 'copytable_access';
@@ -62,7 +59,6 @@ class PlgFabrik_ListCopy extends PlgFabrik_List
 	 *
 	 * @return  bool
 	 */
-
 	public function canSelectRows()
 	{
 		return true;
@@ -75,13 +71,10 @@ class PlgFabrik_ListCopy extends PlgFabrik_List
 	 *
 	 * @return  bool
 	 */
-
 	public function process($opts = array())
 	{
-		$params = $this->getParams();
-		$app = JFactory::getApplication();
 		$model = $this->getModel();
-		$ids = $app->input->get('ids', array(), 'array');
+		$ids = $this->app->input->get('ids', array(), 'array');
 		$formModel = $model->getFormModel();
 
 		return $model->copyRows($ids);
@@ -94,11 +87,9 @@ class PlgFabrik_ListCopy extends PlgFabrik_List
 	 *
 	 * @return  string
 	 */
-
 	public function process_result($c)
 	{
-		$app = JFactory::getApplication();
-		$ids = $app->input->get('ids', array(), 'array');
+		$ids = $this->app->input->get('ids', array(), 'array');
 
 		return JText::sprintf('PLG_LIST_ROWS_COPIED', count($ids));
 	}
@@ -110,7 +101,6 @@ class PlgFabrik_ListCopy extends PlgFabrik_List
 	 *
 	 * @return bool
 	 */
-
 	public function onLoadJavascriptInstance($args)
 	{
 		parent::onLoadJavascriptInstance($args);

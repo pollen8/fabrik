@@ -22,7 +22,6 @@ require_once JPATH_SITE . '/components/com_fabrik/models/element.php';
  * @subpackage  Fabrik.element.youtube
  * @since       3.0
  */
-
 class PlgFabrik_ElementYoutube extends PlgFabrik_Element
 {
 	protected $pluginName = 'youtube';
@@ -46,20 +45,7 @@ class PlgFabrik_ElementYoutube extends PlgFabrik_Element
 	 *
 	 * @return  bool
 	 */
-
 	public function requiresLightBox()
-	{
-		return true;
-	}
-
-	/**
-	 * Determines if the element can contain data used in sending receipts,
-	 * e.g. fabrikfield returns true
-	 *
-	 * @return  bool
-	 */
-
-	public function isReceiptElement()
 	{
 		return true;
 	}
@@ -72,11 +58,9 @@ class PlgFabrik_ElementYoutube extends PlgFabrik_Element
 	 *
 	 * @return  string	elements html
 	 */
-
 	public function render($data, $repeatCounter = 0)
 	{
-		$app = JFactory::getApplication();
-		$input = $app->input;
+		$input = $this->app->input;
 		$params = $this->getParams();
 		$element = $this->getElement();
 		$data = $this->getFormModel()->data;
@@ -126,7 +110,6 @@ class PlgFabrik_ElementYoutube extends PlgFabrik_Element
 	 *
 	 * @return string
 	 */
-
 	private function constructVideoPlayer($value, $mode = 'form')
 	{
 		$params = $this->getParams();
@@ -252,7 +235,6 @@ class PlgFabrik_ElementYoutube extends PlgFabrik_Element
 	 *
 	 * @return  array
 	 */
-
 	public function elementJavascript($repeatCounter)
 	{
 		$id = $this->getHTMLId($repeatCounter);
@@ -266,7 +248,6 @@ class PlgFabrik_ElementYoutube extends PlgFabrik_Element
 	 *
 	 * @return  string  db field type
 	 */
-
 	public function getFieldDescription()
 	{
 		$p = $this->getParams();
@@ -276,8 +257,8 @@ class PlgFabrik_ElementYoutube extends PlgFabrik_Element
 			return 'BLOB';
 		}
 
-		$objtype = "VARCHAR(" . $p->get('maxlength', 255) . ")";
+		$objType = 'VARCHAR(' . $p->get('maxlength', 255) . ')';
 
-		return $objtype;
+		return $objType;
 	}
 }

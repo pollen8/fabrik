@@ -18,7 +18,6 @@ defined('_JEXEC') or die('Restricted access');
  * @subpackage  Fabrik.element.viewlevel
  * @since       3.0.6
  */
-
 class PlgFabrik_ElementViewlevel extends PlgFabrik_ElementList
 {
 	/**
@@ -50,14 +49,12 @@ class PlgFabrik_ElementViewlevel extends PlgFabrik_ElementList
 	 *
 	 * @return  string	Elements html
 	 */
-
 	public function render($data, $repeatCounter = 0)
 	{
 		$htmlName = $this->getHTMLName($repeatCounter);
 		$name = $this->getFullName(true, false);
 		$id = $this->getHTMLId($repeatCounter);
-		$user = JFactory::getUser();
-		$selected = $user->getAuthorisedViewLevels();
+		$selected = $this->user->getAuthorisedViewLevels();
 		arsort($selected);
 		$selected = array_shift($selected);
 
@@ -92,7 +89,6 @@ class PlgFabrik_ElementViewlevel extends PlgFabrik_ElementList
 	 *
 	 * @return  array
 	 */
-
 	public function elementJavascript($repeatCounter)
 	{
 		$id = $this->getHTMLId($repeatCounter);
@@ -106,15 +102,14 @@ class PlgFabrik_ElementViewlevel extends PlgFabrik_ElementList
 	 *
 	 * @return  array
 	 */
-
 	private function allOpts()
 	{
 		if (!isset($this->allOpts))
 		{
-			$db = JFactory::getDbo();
+			$db = $this->_db;
 			$query = $db->getQuery(true);
 			$query->select('id, title');
-			$query->from($db->quoteName('#__viewlevels'));
+			$query->from($db->qn('#__viewlevels'));
 			$db->setQuery($query);
 			$this->allOpts = $db->loadObjectList('id');
 		}

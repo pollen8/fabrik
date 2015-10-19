@@ -116,11 +116,11 @@ class PlgFabrik_FormSalesforce extends PlgFabrik_Form
 		}
 
 		$key = FabrikString::safeColNameToArrayKey($formModel->getlistModel()->getTable()->db_primary_key);
-		$customkey = $params->get('salesforce_customid') . '__c';
+		$customKey = $params->get('salesforce_customid') . '__c';
 
 		if ($params->get('salesforce_allowupsert', 0))
 		{
-			$submission[$customkey] = $formModel->fullFormData[$key];
+			$submission[$customKey] = $formModel->fullFormData[$key];
 		}
 
 		$sObjects = array();
@@ -130,11 +130,10 @@ class PlgFabrik_FormSalesforce extends PlgFabrik_Form
 		$sObject->type = $updateObject;
 		$sObject->fields = $submission;
 		array_push($sObjects, $sObject);
-		$app = JFactory::getApplication();
 
 		if ($params->get('salesforce_allowupsert', 0))
 		{
-			$result = $this->upsert($client, $sObjects, $customkey);
+			$result = $this->upsert($client, $sObjects, $customKey);
 		}
 		else
 		{
@@ -145,11 +144,11 @@ class PlgFabrik_FormSalesforce extends PlgFabrik_Form
 		{
 			if ($result->created == '' && $params->get('salesforce_allowupsert', 0))
 			{
-				$app->enqueueMessage(JText::sprintf(SALESFORCE_UPDATED, $updateObject));
+				$this->app->enqueueMessage(JText::sprintf(SALESFORCE_UPDATED, $updateObject));
 			}
 			else
 			{
-				$app->enqueueMessage(JText::sprintf(SALESFORCE_CREATED, $updateObject));
+				$this->app->enqueueMessage(JText::sprintf(SALESFORCE_CREATED, $updateObject));
 			}
 		}
 		else
@@ -160,7 +159,7 @@ class PlgFabrik_FormSalesforce extends PlgFabrik_Form
 				{
 					foreach ($result->errors as $error)
 					{
-						JError::raiseWarning(500, FText::_('SALESFORCE_ERR') . $errors->message);
+						JError::raiseWarning(500, FText::_('SALESFORCE_ERR') . $error->message);
 					}
 				}
 				else

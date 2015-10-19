@@ -40,8 +40,7 @@ class PlgFabrik_ValidationruleAreUniqueValues extends PlgFabrik_Validationrule
 	 */
 	public function validate($data, $repeatCounter)
 	{
-		$app = JFactory::getApplication();
-		$input = $app->input;
+		$input = $this->app->input;
 		$elementModel = $this->elementModel;
 
 		// Could be a dropdown with multivalues
@@ -69,7 +68,7 @@ class PlgFabrik_ValidationruleAreUniqueValues extends PlgFabrik_Validationrule
 
 		$db = $listModel->getDb();
 		$lookupTable = $db->qn($table->db_table_name);
-		$data = $db->quote($data);
+		$data = $db->q($data);
 		$query = $db->getQuery(true);
 		$query->select('COUNT(*)')->from($lookupTable)->where($db->qn($elementModel->getFullName(false, false)) . ' = ' . $data);
 		$listModel->buildQueryJoin($query);
@@ -96,7 +95,7 @@ class PlgFabrik_ValidationruleAreUniqueValues extends PlgFabrik_Validationrule
 
 		if (!empty($rowId))
 		{
-			$query->where($table->db_primary_key . ' != ' . $db->quote($rowId));
+			$query->where($table->db_primary_key . ' != ' . $db->q($rowId));
 		}
 
 		$db->setQuery($query);

@@ -34,7 +34,6 @@ require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
  * @subpackage  Fabrik.form.autofill
  * @since       3.0
  */
-
 class PlgFabrik_FormAutofill extends PlgFabrik_Form
 {
 	/**
@@ -43,14 +42,12 @@ class PlgFabrik_FormAutofill extends PlgFabrik_Form
 	 *
 	 * @return  void
 	 */
-
 	public function onAfterJSLoad()
 	{
 		$params = $this->getParams();
 		$formModel = $this->getModel();
-		$app = JFactory::getApplication();
-		$input = $app->input;
-		$rowid = $input->get('rowid', '', 'string');
+		$input = $this->app->input;
+		$rowId = $input->get('rowid', '', 'string');
 		$opts = new stdClass;
 		$opts->observe = str_replace('.', '___', $params->get('autofill_field_name'));
 		$opts->trigger = str_replace('.', '___', $params->get('autofill_trigger'));
@@ -70,10 +67,10 @@ class PlgFabrik_FormAutofill extends PlgFabrik_Form
 				$opts->fillOnLoad = false;
 				break;
 			case '1':
-				$opts->fillOnLoad = ($rowid === '');
+				$opts->fillOnLoad = ($rowId === '');
 				break;
 			case '2':
-				$opts->fillOnLoad = ($rowid !== '');
+				$opts->fillOnLoad = ($rowId !== '');
 				break;
 			case '3':
 				$opts->fillOnLoad = true;
@@ -99,12 +96,9 @@ class PlgFabrik_FormAutofill extends PlgFabrik_Form
 	 *
 	 * @return	string	json object of record data
 	 */
-
 	public function onajax_getAutoFill()
 	{
-		$app = JFactory::getApplication();
-		$input = $app->input;
-		$model = JModelLegacy::getInstance('form', 'FabrikFEModel');
+		$input = $this->app->input;
 		$cnn = (int) $input->getInt('cnn');
 		$element = $input->get('observe');
 		$value = $input->get('v', '', 'string');
@@ -114,14 +108,16 @@ class PlgFabrik_FormAutofill extends PlgFabrik_Form
 		if ($cnn === 0 || $cnn == -1)
 		{
 			// No connection selected so query current forms' table data
-			$formid = $input->getInt('formid');
+			$formId = $input->getInt('formid');
 			$input->set($element, $value, 'get');
+			/** @var FabrikFEModelForm $model */
 			$model = JModelLegacy::getInstance('form', 'FabrikFEModel');
-			$model->setId($formid);
+			$model->setId($formId);
 			$listModel = $model->getlistModel();
 		}
 		else
 		{
+			/** @var FabrikFEModelList $listModel */
 			$listModel = JModelLegacy::getInstance('list', 'FabrikFEModel');
 			$listModel->setId($input->getInt('table'));
 		}
@@ -132,13 +128,13 @@ class PlgFabrik_FormAutofill extends PlgFabrik_Form
 			if ($input->get('autofill_lookup_field', '') !== '')
 			{
 				// Load on a fk
-				$fkid = $input->get('autofill_lookup_field', '');
+				$fkId = $input->get('autofill_lookup_field', '');
 				$db = $listModel->getDb();
-				$fk = $listModel->getFormModel()->getElement($fkid, true);
-				$elname = $fk->getElement()->name;
+				$fk = $listModel->getFormModel()->getElement($fkId, true);
+				$elName = $fk->getElement()->name;
 				$table = $listModel->getTable();
 				$query = $db->getQuery(true);
-				$query->select($table->db_primary_key)->from($table->db_table_name)->where($elname . ' = ' . $db->quote($value));
+				$query->select($table->db_primary_key)->from($table->db_table_name)->where($elName . ' = ' . $db->q($value));
 				$db->setQuery($query);
 				$value = $db->loadResult();
 			}
@@ -162,11 +158,11 @@ class PlgFabrik_FormAutofill extends PlgFabrik_Form
 
 			if (!empty($map))
 			{
-				$newdata = new stdClass;
+				$newData = new stdClass;
 				/*
 				 * need __pk_val if 'edit original row'
 				 */
-				$newdata->__pk_val = $data->__pk_val;
+				$newData->__pk_val = $data->__pk_val;
 
 				foreach ($map as $from => $to)
 				{
@@ -174,21 +170,21 @@ class PlgFabrik_FormAutofill extends PlgFabrik_Form
 					{
 						foreach ($to as $to2)
 						{
-							$this->fillField($data, $newdata, $from, $to2);
+							$this->fillField($data, $newData, $from, $to2);
 						}
 					}
 					else
 					{
-						$this->fillField($data, $newdata, $from, $to);
+						$this->fillField($data, $newData, $from, $to);
 					}
 				}
 			}
 			else
 			{
-				$newdata = $data;
+				$newData = $data;
 			}
 
-			echo json_encode($newdata);
+			echo json_encode($newData);
 		}
 	}
 
@@ -196,26 +192,26 @@ class PlgFabrik_FormAutofill extends PlgFabrik_Form
 	 * Fill the response with the lookup data
 	 *
 	 * @param   object  $data      Lookup List - Row data
-	 * @param   object  &$newdata  Data to fill the form with
+	 * @param   object  &$newData  Data to fill the form with
 	 * @param   string  $from      Key to search for in $data - may be either element full name, or placeholders
 	 * @param   string  $to        Form's field to insert data into
 	 *
 	 * @return  null
 	 */
-	protected function fillField($data, &$newdata, $from, $to)
+	protected function fillField($data, &$newData, $from, $to)
 	{
 		$matched = false;
-		$toraw = $to . '_raw';
-		$fromraw = $from . '_raw';
+		$toRaw = $to . '_raw';
+		$fromRaw = $from . '_raw';
 
 		if (array_key_exists($from, $data))
 		{
 			$matched = true;
 		}
 
-		$newdata->$to = isset($data->$from) ? $data->$from : '';
+		$newData->$to = isset($data->$from) ? $data->$from : '';
 
-		if (array_key_exists($fromraw, $data))
+		if (array_key_exists($fromRaw, $data))
 		{
 			$matched = true;
 		}
@@ -223,11 +219,11 @@ class PlgFabrik_FormAutofill extends PlgFabrik_Form
 		if (!$matched)
 		{
 			$w = new FabrikWorker;
-			$newdata->$toraw = $newdata->$to = $w->parseMessageForPlaceHolder($from, $data);
+			$newData->$toRaw = $newData->$to = $w->parseMessageForPlaceHolder($from, $data);
 		}
 		else
 		{
-			$newdata->$toraw = isset($data->$fromraw) ? $data->$fromraw : '';
+			$newData->$toRaw = isset($data->$fromRaw) ? $data->$fromRaw : '';
 		}
 	}
 }

@@ -71,8 +71,6 @@ class PlgFabrik_ListArticle extends PlgFabrik_List
 	 */
 	protected function buttonLabel()
 	{
-		$s = JString::strtoupper($this->buttonPrefix);
-
 		return FText::_('PLG_LIST_ARTICLE_UPDATE_ARTICLE');
 	}
 
@@ -83,17 +81,17 @@ class PlgFabrik_ListArticle extends PlgFabrik_List
 	 *
 	 * @return  bool
 	 */
-
 	public function process($opts = array())
 	{
+		/** @var FabrikFEModelList $model */
 		$model = $this->getModel();
-		$params = $this->getParams();
-		$input = JFactory::getApplication()->input;
+		$input = $this->app->input;
 		$ids = $input->get('ids', array(), 'array');
 		$origRowId = $input->get('rowid');
 		$pluginManager = JModelLegacy::getInstance('Pluginmanager', 'FabrikFEModel');
 
 		// Abstract version of the form article plugin
+		/** @var PlgFabrik_FormArticle $articlePlugin */
 		$articlePlugin = $pluginManager->getPlugin('article', 'form');
 
 		$formModel = $model->getFormModel();
@@ -131,10 +129,9 @@ class PlgFabrik_ListArticle extends PlgFabrik_List
 	 *
 	 * @return  string
 	 */
-
 	public function process_result($c)
 	{
-		$input = JFactory::getApplication()->input;
+		$input = $this->app->input;
 		$ids = $input->get('ids', array(), 'array');
 
 		return JText::sprintf('PLG_LIST_ARTICLES_UPDATED', count($ids));
@@ -147,12 +144,10 @@ class PlgFabrik_ListArticle extends PlgFabrik_List
 	 *
 	 * @return bool
 	 */
-
 	public function onLoadJavascriptInstance($args)
 	{
-		$model = $this->getModel();
 		parent::onLoadJavascriptInstance($args);
-		$opts = $this->getElementJSOptions($model);
+		$opts = $this->getElementJSOptions();
 		$opts = json_encode($opts);
 		$this->jsInstance = "new FbListArticle($opts)";
 

@@ -18,7 +18,6 @@ defined('_JEXEC') or die('Restricted access');
  * @subpackage  Fabrik.element.usergroup
  * @since       3.0.6
  */
-
 class PlgFabrik_ElementUsergroup extends PlgFabrik_ElementList
 {
 	/**
@@ -50,7 +49,6 @@ class PlgFabrik_ElementUsergroup extends PlgFabrik_ElementList
 	 *
 	 * @return  string	elements html
 	 */
-
 	public function render($data, $repeatCounter = 0)
 	{
 		$name = $this->getHTMLName($repeatCounter);
@@ -58,19 +56,19 @@ class PlgFabrik_ElementUsergroup extends PlgFabrik_ElementList
 		$formModel = $this->getFormModel();
 		$userEl = $formModel->getElement($params->get('user_element'), true);
 		$thisUser = false;
-		
+
 		if ($userEl)
 		{
 			$data = $formModel->getData();
-			$userid = FArrayHelper::getValue($data, $userEl->getFullName(true, false) . '_raw', 0);
+			$userId = FArrayHelper::getValue($data, $userEl->getFullName(true, false) . '_raw', 0);
 
 			// Failed validation
-			if (is_array($userid))
+			if (is_array($userId))
 			{
-				$userid = FArrayHelper::getValue($userid, 0);
+				$userId = FArrayHelper::getValue($userId, 0);
 			}
 
-			$thisUser = !empty($userid) ? JFactory::getUser($userid) : false;
+			$thisUser = !empty($userId) ? JFactory::getUser($userId) : false;
 		}
 
 		$selected = $this->getValue($data, $repeatCounter);
@@ -90,13 +88,12 @@ class PlgFabrik_ElementUsergroup extends PlgFabrik_ElementList
 			//if (count($selected) > 0)
 			if (!FArrayHelper::emptyish($selected))
 			{
-				$db    = JFactory::getDbo();
-				$query = $db->getQuery(true);
-				$query->select($db->quoteName('title'));
-				$query->from($db->quoteName('#__usergroups'));
-				$query->where($db->quoteName('id') . ' IN ( ' . implode(' , ', $selected) . ')');
-				$db->setQuery($query);
-				$selected = $db->loadColumn();
+				$query = $this->_db->getQuery(true);
+				$query->select($this->_db->qn('title'));
+				$query->from($this->_db->qn('#__usergroups'));
+				$query->where($this->_db->qn('id') . ' IN ( ' . implode(' , ', $selected) . ')');
+				$this->_db->setQuery($query);
+				$selected = $this->_db->loadColumn();
 			}
 		}
 
@@ -165,11 +162,10 @@ class PlgFabrik_ElementUsergroup extends PlgFabrik_ElementList
 	 *
 	 * @return  array	Filter value and labels
 	 */
-
 	protected function filterValueList_Exact($normal, $tableName = '', $label = '', $id = '', $incjoin = true)
 	{
 		$listModel = $this->getListModel();
-		$elName2 = $this->getFullName(false, false, false);
+		$elName2 = $this->getFullName(false, false);
 		$tmpIds = $listModel->getColumnData($elName2);
 		$ids = array();
 
@@ -207,10 +203,10 @@ class PlgFabrik_ElementUsergroup extends PlgFabrik_ElementList
 	{
 		if (!isset($this->allOpts))
 		{
-			$db = JFactory::getDbo();
+			$db = $this->_db;
 			$query = $db->getQuery(true);
 			$query->select('id, title');
-			$query->from($db->quoteName('#__usergroups'));
+			$query->from($db->qn('#__usergroups'));
 			$db->setQuery($query);
 			$this->allOpts = $db->loadObjectList('id');
 		}
@@ -225,7 +221,6 @@ class PlgFabrik_ElementUsergroup extends PlgFabrik_ElementList
 	 *
 	 * @return  array
 	 */
-
 	public function elementJavascript($repeatCounter)
 	{
 		$opts = parent::getElementJSOptions($repeatCounter);
@@ -243,7 +238,6 @@ class PlgFabrik_ElementUsergroup extends PlgFabrik_ElementList
 	 *
 	 * @return  string	value
 	 */
-
 	public function getValue($data, $repeatCounter = 0, $opts = array())
 	{
 		$value = parent::getValue($data, $repeatCounter, $opts);
@@ -266,7 +260,6 @@ class PlgFabrik_ElementUsergroup extends PlgFabrik_ElementList
 	 *
 	 * @return mixed
 	 */
-
 	public function getDefaultValue($data = array())
 	{
 		if (!isset($this->_default))
@@ -275,8 +268,7 @@ class PlgFabrik_ElementUsergroup extends PlgFabrik_ElementList
 
 			if ($params->get('default_to_current_user_group', 1))
 			{
-				$user = JFactory::getUser();
-				$this->_default = $user->get('groups');
+				$this->_default = $this->user->get('groups');
 				$this->_default = array_values($this->_default);
 				$this->_default = json_encode($this->_default);
 			}
@@ -301,15 +293,14 @@ class PlgFabrik_ElementUsergroup extends PlgFabrik_ElementList
 	 *
 	 * @return  array	Filter value and labels
 	 */
-
 	protected function filterValueList_All($normal, $tableName = '', $label = '', $id = '', $incjoin = true)
 	{
-		$db = JFactory::getDbo();
-		$query = $db->getQuery(true);
+		$query = $this->_db->getQuery(true);
 		$query->select('id, title');
-		$query->from($db->quoteName('#__usergroups'));
-		$db->setQuery($query);
-		$selected = $db->loadObjectList();
+		$query->from($this->_db->qn('#__usergroups'));
+		$this->_db->setQuery($query);
+		$selected = $this->_db->loadObjectList();
+		$return = array();
 
 		for ($i = 0; $i < count($selected); $i++)
 		{

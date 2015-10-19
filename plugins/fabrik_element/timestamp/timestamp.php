@@ -20,7 +20,6 @@ require_once JPATH_SITE . '/components/com_fabrik/models/element.php';
  * @subpackage  Fabrik.element.timestamp
  * @since       3.0
  */
-
 class PlgFabrik_ElementTimestamp extends PlgFabrik_Element
 {
 	/**
@@ -45,7 +44,6 @@ class PlgFabrik_ElementTimestamp extends PlgFabrik_Element
 	 *
 	 * @return bool
 	 */
-
 	public function setIsRecordedInDatabase()
 	{
 		$this->recordInDatabase = false;
@@ -59,22 +57,20 @@ class PlgFabrik_ElementTimestamp extends PlgFabrik_Element
 	 *
 	 * @return  string	elements html
 	 */
-
 	public function render($data, $repeatCounter = 0)
 	{
 		$date = JFactory::getDate();
-		$config = JFactory::getConfig();
-		$tz = new DateTimeZone($config->get('offset'));
+		$tz = new DateTimeZone($this->config->get('offset'));
 		$date->setTimezone($tz);
 		$params = $this->getParams();
-		$gmt_or_local = $params->get('gmt_or_local');
-		$gmt_or_local += 0;
+		$gmtOrLocal = $params->get('gmt_or_local');
+		$gmtOrLocal += 0;
 
 		$layout = $this->getLayout('form');
 		$layoutData = new stdClass;
 		$layoutData->id =  $this->getHTMLId($repeatCounter);;
 		$layoutData->name = $this->getHTMLName($repeatCounter);;
-		$layoutData->value = $date->toSql($gmt_or_local);
+		$layoutData->value = $date->toSql($gmtOrLocal);
 
 		return $layout->render($layoutData);
 	}
@@ -102,7 +98,6 @@ class PlgFabrik_ElementTimestamp extends PlgFabrik_Element
 	 *
 	 * @return  string  db field type
 	 */
-
 	public function getFieldDescription()
 	{
 		$params = $this->getParams();
@@ -127,7 +122,6 @@ class PlgFabrik_ElementTimestamp extends PlgFabrik_Element
 	 *
 	 * @return  bool
 	 */
-
 	public function isHidden()
 	{
 		return true;

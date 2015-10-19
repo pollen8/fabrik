@@ -128,7 +128,7 @@ class FabrikModelNvd3_Chart extends FabrikFEModelVisualization
 
 			$this->data      = new stdClass;
 			$this->data->key = 'todo2';
-			$db              = JFactory::getDbo();
+			$db              = $this->_db;
 			$query           = $db->getQuery(true);
 
 			$tbl   = $params->get('tbl', '');

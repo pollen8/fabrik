@@ -24,6 +24,10 @@ class FabrikTableJoin extends FabTable
 {
 	public $params = '';
 
+	public $table_join = '';
+
+	public $table_join_alias = '';
+
 	/**
 	 * Construct
 	 *

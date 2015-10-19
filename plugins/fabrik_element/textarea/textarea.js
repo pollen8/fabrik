@@ -29,19 +29,19 @@ var FbTextarea = new Class({
 				this.watchTextContainer();
 			}
 		};
-		
+
 		var p = this.periodFn.periodical(200, this);
-		
+
 		Fabrik.addEvent('fabrik.form.page.change.end', function (form) {
 			this.refreshEditor();
 		}.bind(this));
-		
+
 		Fabrik.addEvent('fabrik.form.elements.added', function (form) {
 			if (form.isMultiPage()) {
 				this.refreshEditor();
 			}
 		}.bind(this));
-		
+
 		Fabrik.addEvent('fabrik.form.submit.start', function (form) {
 			if (this.options.wysiwyg && form.options.ajax) {
 				if (typeof tinyMCE !== 'undefined') {
@@ -49,7 +49,7 @@ var FbTextarea = new Class({
 				}
 			}
 		}.bind(this));
-		
+
 	},
 
 	unclonableProperties: function ()
@@ -96,29 +96,30 @@ var FbTextarea = new Class({
 				this.warningFX = new Fx.Morph(element, {duration: 1000, transition: Fx.Transitions.Quart.easeOut});
 				this.origCol = element.getStyle('color');
 				if (this.options.wysiwyg && typeof(tinymce) !== 'undefined') {
-					
+
 					// Joomla 3.2 + usess tinyMce 4
 					if (tinymce.majorVersion >= 4) {
-						tinyMCE.get(this.element.id).on('keyup', function (e) {
+						var inst = this._getTinyInstance();
+						inst.on('keyup', function (e) {
 							this.informKeyPress(e);
 						}.bind(this));
-						
-						tinyMCE.get(this.element.id).on('focus', function (e) {
+
+						inst.on('focus', function (e) {
 							var c = this.element.getParent('.fabrikElementContainer');
 							c.getElement('span.badge').addClass('badge-info');
 							c.getElement('.fabrik_characters_left').removeClass('muted');
 						}.bind(this));
-						
-						tinyMCE.get(this.element.id).on('blur', function (e) {
+
+						inst.on('blur', function (e) {
 							var c = this.element.getParent('.fabrikElementContainer');
 							c.getElement('span.badge').removeClass('badge-info');
 							c.getElement('.fabrik_characters_left').addClass('muted');
 						}.bind(this));
-						
-						tinyMCE.get(this.element.id).on('blur', function (e) {
+
+						inst.on('blur', function (e) {
 							this.forwardEvent('blur');
 						}.bind(this));
-						
+
 					} else {
 						tinymce.dom.Event.add(this.container, 'keyup', function (e) {
 							this.informKeyPress(e);
@@ -132,11 +133,11 @@ var FbTextarea = new Class({
 						this.container.addEvent('keydown', function (e) {
 							this.informKeyPress(e);
 						}.bind(this));
-						
+
 						this.container.addEvent('blur', function (e) {
 							this.blurCharsLeft(e);
 						}.bind(this));
-						
+
 						this.container.addEvent('focus', function (e) {
 							this.focusCharsLeft(e);
 						}.bind(this));
@@ -145,10 +146,10 @@ var FbTextarea = new Class({
 			}
 		}
 	},
-	
+
 	/**
 	 * Forward an event from tinyMce to the text editor - useful for triggering ajax validations
-	 * 
+	 *
 	 * @param   string  event  Event name
 	 */
 	forwardEvent: function (event) {
@@ -157,13 +158,13 @@ var FbTextarea = new Class({
 		textarea.set('value', c);
 		textarea.fireEvent('blur', new Event.Mock(textarea, event));
 	},
-	
+
 	focusCharsLeft: function () {
 		var c = this.element.getParent('.fabrikElementContainer');
 		c.getElement('span.badge').addClass('badge-info');
 		c.getElement('.fabrik_characters_left').removeClass('muted');
 	},
-	
+
 	blurCharsLeft: function () {
 		var c = this.element.getParent('.fabrikElementContainer');
 		c.getElement('span.badge').removeClass('badge-info');
@@ -245,7 +246,7 @@ var FbTextarea = new Class({
 			return this.container.value;
 		}
 	},
-	
+
 	/**
 	 * On ajax loaded page need to re-load the editor
 	 * For Chrome
@@ -260,13 +261,17 @@ var FbTextarea = new Class({
 			// Need to re-observe the editor
 			this.watchTextContainer();
 		}
-	},	
+	},
+
+	_getTinyInstance: function () {
+		return tinyMCE.majorVersion.toInt() >= 4 ? tinyMCE.get(this.element.id) : tinyMCE.getInstanceById(this.element.id);
+	},
 
 	setContent: function (c)
 	{
 		if (this.options.wysiwyg) {
-			var ti = tinyMCE.majorVersion.toInt() >= 4 ? tinyMCE.get(this.element.id) : tinyMCE.getInstanceById(this.element.id);
-			var r = ti.setContent(c);
+			var ti = this._getTinyInstance(),
+				r = ti.setContent(c);
 			this.moveCursorToEnd();
 			return r;
 		} else {
@@ -282,7 +287,7 @@ var FbTextarea = new Class({
 	 * For tinymce move the cursor to the end
 	 */
 	moveCursorToEnd: function () {
-		var inst = tinyMCE.getInstanceById(this.element.id);
+		var inst = this._getTinyInstance();
 		inst.selection.select(inst.getBody(), true);
 		inst.selection.collapse(false);
 	},

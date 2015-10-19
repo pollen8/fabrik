@@ -22,7 +22,6 @@ require_once COM_FABRIK_FRONTEND . '/helpers/params.php';
  * @subpackage  Fabrik.list.email
  * @since       3.0
  */
-
 class FabrikControllerListemail extends JControllerLegacy
 {
 	/**
@@ -40,7 +39,6 @@ class FabrikControllerListemail extends JControllerLegacy
 	 *
 	 * @return null
 	 */
-
 	public function display($cachable = false, $urlparams = array())
 	{
 		echo "display";
@@ -52,11 +50,9 @@ class FabrikControllerListemail extends JControllerLegacy
 	 *
 	 * @return string html
 	 */
-
 	public function popupwin()
 	{
-		$app = JFactory::getApplication();
-		$input = $app->input;
+		$input = $this->app->input;
 		$document = JFactory::getDocument();
 		$viewName = 'popupwin';
 		$viewType = $document->getType();
@@ -91,11 +87,9 @@ class FabrikControllerListemail extends JControllerLegacy
 	 *
 	 * @return  void
 	 */
-
 	public function doemail()
 	{
-		$app = JFactory::getApplication();
-		$input = $app->input;
+		$input = $this->app->input;
 		$pluginManager = JModelLegacy::getInstance('Pluginmanager', 'FabrikFEModel');
 		$model = $pluginManager->getPlugIn('email', 'list');
 		$listModel = $this->getModel('List', 'FabrikFEModel');

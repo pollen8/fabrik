@@ -41,13 +41,12 @@ class PlgFabrik_ValidationruleAkismet extends PlgFabrik_Validationrule
 	public function validate($data, $repeatCounter)
 	{
 		$params = $this->getParams();
-		$user = JFactory::getUser();
 
 		if ($params->get('akismet-key') != '')
 		{
-			$username = $user->get('username') != '' ? $user->get('username') : $this->_randomSring();
+			$username = $this->user->get('username') != '' ? $this->user->get('username') : $this->_randomSring();
 			require_once JPATH_COMPONENT . '/plugins/validationrule/akismet/libs/akismet.class.php';
-			$akismet_comment = array('author' => $username, 'email' => $user->get('email'), 'website' => JURI::base(), 'body' => $data);
+			$akismet_comment = array('author' => $username, 'email' => $this->user->get('email'), 'website' => JURI::base(), 'body' => $data);
 			$akismet = new Akismet(JURI::base(), $params->get('akismet-key'), $akismet_comment);
 
 			if ($akismet->errorsExist())

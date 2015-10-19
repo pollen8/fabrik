@@ -23,7 +23,6 @@ require_once JPATH_SITE . '/components/com_fabrik/helpers/googlemap.php';
  * @subpackage  Fabrik.visualization.googlemap
  * @since       3.0
  */
-
 class FabrikModelGooglemap extends FabrikFEModelVisualization
 {
 	/**
@@ -63,7 +62,6 @@ class FabrikModelGooglemap extends FabrikFEModelVisualization
 	 *
 	 * @return string
 	 */
-
 	public function getJs()
 	{
 		$this->setPrefilters();
@@ -74,8 +72,7 @@ class FabrikModelGooglemap extends FabrikFEModelVisualization
 			return '';
 		}
 
-		$app = JFactory::getApplication();
-		$input = $app->input;
+		$input = $this->app->input;
 		$params = $this->getParams();
 		$viz = $this->getVisualization();
 
@@ -89,7 +86,7 @@ class FabrikModelGooglemap extends FabrikFEModelVisualization
 		$opts->scalecontrol = (bool) $params->get('fb_gm_scalecontrol');
 		$opts->scrollwheel = (bool) $params->get('fb_gm_scrollwheelcontrol');
 		$opts->maptypecontrol = (bool) $params->get('fb_gm_maptypecontrol');
-		$opts->traffic = (bool) $params->get('fb_gm_trafficlayer', '0');		
+		$opts->traffic = (bool) $params->get('fb_gm_trafficlayer', '0');
 		$opts->overviewcontrol = (bool) $params->get('fb_gm_overviewcontrol');
 		$opts->streetView = (bool) $params->get('street_view');
 		$opts->center = $params->get('fb_gm_center');
@@ -144,7 +141,6 @@ class FabrikModelGooglemap extends FabrikFEModelVisualization
 	 *
 	 * @return  void
 	 */
-
 	protected function setListIds()
 	{
 		if (!isset($this->listids))
@@ -159,18 +155,17 @@ class FabrikModelGooglemap extends FabrikFEModelVisualization
 	 *
 	 * @return  array  of lines each line being an array of points
 	 */
-
 	protected function getPolyline()
 	{
 		$params = $this->getParams();
 		$lines = array();
-		$polyelements = (array) $params->get('fb_gm_polyline_element');
+		$polyElements = (array) $params->get('fb_gm_polyline_element');
 		$listModels = $this->getlistModels();
 		$c = 0;
 
 		foreach ($listModels as $listModel)
 		{
-			$k = FabrikString::safeColName(FabrikString::rtrimword($polyelements[$c], '[]'));
+			$k = FabrikString::safeColName(FabrikString::rtrimword($polyElements[$c], '[]'));
 
 			if ($k == '``')
 			{
@@ -218,7 +213,6 @@ class FabrikModelGooglemap extends FabrikFEModelVisualization
 	 *
 	 * @return  array
 	 */
-
 	private function getCordsFromData($d)
 	{
 		$v = trim($d);
@@ -252,18 +246,16 @@ class FabrikModelGooglemap extends FabrikFEModelVisualization
 	 *
 	 * @return  array
 	 */
-
 	public function getJSIcons()
 	{
-		$app = JFactory::getApplication();
-		$input = $app->input;
+		$input = $this->app->input;
 		$icons = array();
 		$w = new FabrikWorker;
 		$uri = JURI::getInstance();
 		$params = $this->getParams();
 		$templates = (array) $params->get('fb_gm_detailtemplate');
 		$templates_nl2br = (array) $params->get('fb_gm_detailtemplate_nl2br');
-		$listids = (array) $params->get('googlemap_table');
+		$listIds = (array) $params->get('googlemap_table');
 
 		// Images for file system
 		$aIconImgs = (array) $params->get('fb_gm_iconimage');
@@ -286,15 +278,15 @@ class FabrikModelGooglemap extends FabrikFEModelVisualization
 		$this->recordCount = 0;
 
 		$maxMarkers = $params->get('fb_gm_markermax', 0);
-		$recLimit = count($listids) == 1 ? $maxMarkers : 0;
+		$recLimit = count($listIds) == 1 ? $maxMarkers : 0;
 		$limitMessageShown = false;
 		$limitMessage = $params->get('fb_gm_markermax_message');
 		$groupedIcons = array();
 		$lc = 0;
 
-		foreach ($listids as $listid)
+		foreach ($listIds as $listId)
 		{
-			$listModel = $this->getlistModel($listid);
+			$listModel = $this->getlistModel($listId);
 
 			$template = FArrayHelper::getValue($templates, $c, '');
 			/**
@@ -317,9 +309,9 @@ class FabrikModelGooglemap extends FabrikFEModelVisualization
 			$listModel->_randomRecords = ($params->get('fb_gm_random_marker') == 1 && $recLimit != 0) ? true : false;
 
 			// Used in list model setLimits
-			$input->set('limit' . $listid, $recLimit);
+			$input->set('limit' . $listId, $recLimit);
 			$listModel->setLimits();
-			$nav = $listModel->getPagination(0, 0, $recLimit);
+			$listModel->getPagination(0, 0, $recLimit);
 			$data = $listModel->getData();
 			$this->txt = array();
 			$k = 0;
@@ -328,7 +320,7 @@ class FabrikModelGooglemap extends FabrikFEModelVisualization
 			{
 				foreach ($group as $row)
 				{
-					$customimagefound = false;
+					$customImageFound = false;
 					$iconImg = FArrayHelper::getValue($aIconImgs, $c, '');
 
 					if ($k == 0)
@@ -345,7 +337,7 @@ class FabrikModelGooglemap extends FabrikFEModelVisualization
 					{
 						$iconImg = '/media/com_fabrik/images/' . $iconImg;
 					}
-					
+
 					$v = $this->getCordsFromData($row->$coordColumn);
 
 					if ($v == array(0, 0))
@@ -354,9 +346,9 @@ class FabrikModelGooglemap extends FabrikFEModelVisualization
 						continue;
 					}
 
-					$rowdata = JArrayHelper::fromObject($row);
-					$rowdata['rowid'] = $rowdata['__pk_val'];
-					$html = $w->parseMessageForPlaceHolder($template, $rowdata);
+					$rowData = JArrayHelper::fromObject($row);
+					$rowData['rowid'] = $rowData['__pk_val'];
+					$html = $w->parseMessageForPlaceHolder($template, $rowData);
 
 					$titleElement = FArrayHelper::getValue($titleElements, $c, '');
 					$title = $titleElement == '' ? '' : strip_tags($row->$titleElement);
@@ -365,28 +357,28 @@ class FabrikModelGooglemap extends FabrikFEModelVisualization
 					 * $$$ hugh - at some point the fabrik_view / fabrik_edit links became optional
 					 */
 
-					if (empty($html) && (array_key_exists('fabrik_view', $rowdata) || array_key_exists('fabrik_edit', $rowdata)))
+					if (empty($html) && (array_key_exists('fabrik_view', $rowData) || array_key_exists('fabrik_edit', $rowData)))
 					{
 						// Don't insert line break in empty bubble without links $html .= "<br />";
 
 						// Use edit link by preference
-						if (array_key_exists('fabrik_edit', $rowdata))
+						if (array_key_exists('fabrik_edit', $rowData))
 						{
-							if ($rowdata['fabrik_edit'] != '')
+							if ($rowData['fabrik_edit'] != '')
 							{
 								$html .= "<br />";
 							}
 
-							$html .= $rowdata['fabrik_edit'];
+							$html .= $rowData['fabrik_edit'];
 						}
 						else
 						{
-							if ($rowdata['fabrik_view'] != '')
+							if ($rowData['fabrik_view'] != '')
 							{
 								$html .= "<br />";
 							}
 
-							$html .= $rowdata['fabrik_view'];
+							$html .= $rowData['fabrik_view'];
 						}
 					}
 
@@ -417,7 +409,7 @@ class FabrikModelGooglemap extends FabrikFEModelVisualization
 							 * $$$ hugh - added 'path' choice for data icons, to make this option more flexible.  Up till
 							 * now we have been forcing paths relative to /media/com_fabrik/images (which was added in the JS).
 							 * New options for path root are:
-							 * 
+							 *
 							 * media - (default) existing behavior of /meadia/com_fabrik/images
 							 * jroot - relative to J! root
 							 * absolute - full server path
@@ -425,8 +417,8 @@ class FabrikModelGooglemap extends FabrikFEModelVisualization
 							 * img - img tag (so we extract src=)
 							 */
 							$iconImgPath = FArrayHelper::getValue($markerImagesPath, $c, 'media');
-							
-							$iconImg = FArrayHelper::getValue($rowdata, $iconImg, '');
+
+							$iconImg = FArrayHelper::getValue($rowData, $iconImg, '');
 
 							// Normalize the $iconimg so it is either a file path relative to J! root, or a non-local URL
 							switch ($iconImgPath) {
@@ -437,27 +429,27 @@ class FabrikModelGooglemap extends FabrikFEModelVisualization
 								case 'jroot':
 									break;
 								case 'absolute':
-									$iconImg = str_replace(JPATH_BASE, '', $iconImg);										
+									$iconImg = str_replace(JPATH_BASE, '', $iconImg);
 									break;
 								case 'url':
-									$iconImg = str_replace(COM_FABRIK_LIVESITE, '', $iconImg);	
+									$iconImg = str_replace(COM_FABRIK_LIVESITE, '', $iconImg);
 									break;
 								case 'img':
 									// Get the src
 									preg_match('/src=["|\'](.*?)["|\']/', $iconImg, $matches);
-									
+
 									if (array_key_exists(1, $matches))
 									{
 										$iconImg = $matches[1];
 									}
-									
+
 									$iconImg = str_replace(COM_FABRIK_LIVESITE, '', $iconImg);
 									break;
 							}
 
 							if (strstr($iconImg, 'http://') || strstr($iconImg, 'https://') || JFile::exists(JPATH_BASE . $iconImg))
 							{
-								$customimagefound = true;
+								$customImageFound = true;
 							}
 
 						}
@@ -505,14 +497,14 @@ class FabrikModelGooglemap extends FabrikFEModelVisualization
 
 							$icons[$v[0] . $v[1]][2] = $icons[$v[0] . $v[1]][2] . $html;
 
-							if ($customimagefound)
+							if ($customImageFound)
 							{
 								$icons[$v[0] . $v[1]][3] = $iconImg;
 							}
 						}
 						else
 						{
-							$groupedIcons[] = array($v[0], $v[1], $html, $iconImg, $width, $height, 'groupkey' => $groupKey, 'listid' => $listid,
+							$groupedIcons[] = array($v[0], $v[1], $html, $iconImg, $width, $height, 'groupkey' => $groupKey, 'listid' => $listId,
 								'title' => $title, 'groupClass' => 'type' . $gClass);
 						}
 					}
@@ -524,7 +516,7 @@ class FabrikModelGooglemap extends FabrikFEModelVisualization
 							$iconImg = $uri->getScheme() . '://www.google.com/mapfiles/marker' . JString::strtoupper($letters[$c]) . '.png';
 						}
 
-						$icons[$v[0] . $v[1]] = array($v[0], $v[1], $html, $iconImg, $width, $height, 'groupkey' => $groupKey, 'listid' => $listid,
+						$icons[$v[0] . $v[1]] = array($v[0], $v[1], $html, $iconImg, $width, $height, 'groupkey' => $groupKey, 'listid' => $listId,
 							'title' => $title, 'groupClass' => 'type' . $gClass);
 					}
 
@@ -579,7 +571,7 @@ class FabrikModelGooglemap extends FabrikFEModelVisualization
 
 		if (!$limitMessageShown && $recLimit !== 0 && $limitMessage != '')
 		{
-			$app->enqueueMessage($limitMessage);
+			$this->app->enqueueMessage($limitMessage);
 		}
 
 		FabrikHelperHTML::debug($icons, 'map');
@@ -594,7 +586,6 @@ class FabrikModelGooglemap extends FabrikFEModelVisualization
 	 *
 	 * @return  array  (width, height)
 	 */
-
 	private function markerSize($iconImg)
 	{
 		if (!array_key_exists($iconImg, $this->markerSizes))
@@ -624,7 +615,6 @@ class FabrikModelGooglemap extends FabrikFEModelVisualization
 	 *
 	 * @return  string
 	 */
-
 	public function onAjax_getMarkers()
 	{
 		echo json_encode($this->getJSIcons());
@@ -635,12 +625,11 @@ class FabrikModelGooglemap extends FabrikFEModelVisualization
 	 *
 	 * @return  string  html image
 	 */
-
 	public function getStaticMap()
 	{
 		$params = $this->getParams();
 		$icons = $this->getJSIcons();
-		$iconstr = '';
+		$iconStr = '';
 		$lat = 0;
 		$lon = 0;
 
@@ -657,7 +646,7 @@ class FabrikModelGooglemap extends FabrikFEModelVisualization
 					break;
 				}
 
-				$iconstr .= "&markers=" . trim($i[0]) . ',' . trim($i[1]);
+				$iconStr .= "&markers=" . trim($i[0]) . ',' . trim($i[1]);
 
 				if ($i[0] < $bounds['lat'][0])
 				{
@@ -710,7 +699,7 @@ class FabrikModelGooglemap extends FabrikFEModelVisualization
 		}
 
 		$uri = JURI::getInstance();
-		$src = $uri->getScheme() . "://maps.google.com/staticmap?center=$lat,$lon&zoom={$z}&size={$w}x{$h}&maptype=mobile$iconstr";
+		$src = $uri->getScheme() . "://maps.google.com/staticmap?center=$lat,$lon&zoom={$z}&size={$w}x{$h}&maptype=mobile$iconStr";
 		$str = '<img src="' . $src . '" alt="static map" />';
 
 		return $str;
@@ -722,7 +711,6 @@ class FabrikModelGooglemap extends FabrikFEModelVisualization
 	 *
 	 * @return  string
 	 */
-
 	public function getSidebar()
 	{
 		$params = $this->getParams();
@@ -737,7 +725,6 @@ class FabrikModelGooglemap extends FabrikFEModelVisualization
 	 *
 	 * @return  bool
 	 */
-
 	public function getShowSideBar()
 	{
 		$params = $this->getParams();
@@ -761,11 +748,10 @@ class FabrikModelGooglemap extends FabrikFEModelVisualization
 	 *
 	 * @return  array
 	 */
-
 	public function getGroupTemplates()
 	{
 		$models = $this->getListModels();
-		$groupbyTemplates = array();
+		$groupByTemplates = array();
 
 		foreach ($models as $model)
 		{
@@ -775,10 +761,10 @@ class FabrikModelGooglemap extends FabrikFEModelVisualization
 			foreach ($tmpls as $k => $v)
 			{
 				$k = preg_replace('#[^0-9a-zA-Z_]#', '', $k);
-				$groupbyTemplates[$id][$k] = $v;
+				$groupByTemplates[$id][$k] = $v;
 			}
 		}
 
-		return $groupbyTemplates;
+		return $groupByTemplates;
 	}
 }

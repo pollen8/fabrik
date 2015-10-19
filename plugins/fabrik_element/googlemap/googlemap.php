@@ -229,7 +229,6 @@ class PlgFabrik_ElementGooglemap extends PlgFabrik_Element
 	{
 		if (!isset(self::$radiusJs))
 		{
-			$document = JFactory::getDocument();
 			$params = $this->getParams();
 
 			if ((int) $params->get('fb_gm_radius', '0'))
@@ -288,7 +287,7 @@ class PlgFabrik_ElementGooglemap extends PlgFabrik_Element
 		$opts->geocode_fields = array();
 		// geocode_on_load, 0 = no, 1 = new, 2 = edit, 3 = always
 		$geocode_on_load = $params->get('fb_gm_geocode_on_load', '0');
-		$opts->geocode_on_load = $this->isEditable() && 
+		$opts->geocode_on_load = $this->isEditable() &&
 				(
 					($geocode_on_load == 1 && $formModel->isNewRecord())
 					|| ($geocode_on_load == 2 && !$formModel->isNewRecord())
@@ -776,7 +775,7 @@ class PlgFabrik_ElementGooglemap extends PlgFabrik_Element
 			 * $$$ hugh - not sure why we still do this.  If they want to show lat/lng details, they can use the
 			 * gm_latlng option.  Problem with showing this is we never change it, so it's misleading.
 			 */
-			
+
 			// $str .= $this->_microformat($val);
 
 			return $str;
@@ -800,8 +799,8 @@ class PlgFabrik_ElementGooglemap extends PlgFabrik_Element
 		$listModel = $this->getlistModel();
 		$table = $listModel->getTable();
 		$fullElName = FArrayHelper::getValue($opts, 'alias', $dbtable . '___' . $this->element->name);
-		$dbtable = $db->quoteName($dbtable);
-		$str = $dbtable . '.' . $db->quoteName($this->element->name) . ' AS ' . $db->quoteName($fullElName);
+		$dbtable = $db->qn($dbtable);
+		$str = $dbtable . '.' . $db->qn($this->element->name) . ' AS ' . $db->qn($fullElName);
 
 		if ($table->db_primary_key == $fullElName)
 		{
@@ -811,10 +810,10 @@ class PlgFabrik_ElementGooglemap extends PlgFabrik_Element
 		else
 		{
 			$aFields[] = $str;
-			$aAsFields[] = $db->quoteName($fullElName);
+			$aAsFields[] = $db->qn($fullElName);
 			$rawName = $fullElName . '_raw';
-			$aFields[] = $dbtable . '.' . $db->quoteName($this->element->name) . ' AS ' . $db->quoteName($rawName);
-			$aAsFields[] = $db->quoteName($rawName);
+			$aFields[] = $dbtable . '.' . $db->qn($this->element->name) . ' AS ' . $db->qn($rawName);
+			$aAsFields[] = $db->qn($rawName);
 		}
 	}
 

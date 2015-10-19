@@ -23,7 +23,6 @@ require_once COM_FABRIK_FRONTEND . '/helpers/sms.php';
  * @subpackage  Fabrik.form.sms
  * @since       3.0
  */
-
 class PlgFabrik_FormSMS extends PlgFabrik_Form
 {
 	/**
@@ -32,7 +31,6 @@ class PlgFabrik_FormSMS extends PlgFabrik_Form
 	 *
 	 * @return	bool
 	 */
-
 	public function onAfterProcess()
 	{
 		return $this->process();
@@ -43,7 +41,6 @@ class PlgFabrik_FormSMS extends PlgFabrik_Form
 	 *
 	 * @return	bool
 	 */
-
 	protected function process()
 	{
 		$formModel = $this->getModel();
@@ -70,7 +67,6 @@ class PlgFabrik_FormSMS extends PlgFabrik_Form
 	 *
 	 * @return  object  gateway
 	 */
-
 	private function getInstance()
 	{
 		if (!isset($this->gateway))
@@ -93,7 +89,6 @@ class PlgFabrik_FormSMS extends PlgFabrik_Form
 	 *
 	 * @return	string	email message
 	 */
-
 	protected function getMessage()
 	{
 		$params = $this->getParams();
@@ -112,9 +107,11 @@ class PlgFabrik_FormSMS extends PlgFabrik_Form
 		}
 	}
 
+	/**
+	 * @return string
+	 */
 	protected function defaultMessage()
 	{
-		$config = JFactory::getConfig();
 		$formModel = $this->getModel();
 		$data = $formModel->formData;
 		$arDontEmailThesKeys = array();
@@ -125,7 +122,7 @@ class PlgFabrik_FormSMS extends PlgFabrik_Form
 			$arDontEmailThesKeys[] = $key;
 		}
 
-		$message = "";
+		$message = '';
 		$groups = $formModel->getGroupsHiarachy();
 
 		foreach ($groups as $groupModel)
@@ -174,7 +171,7 @@ class PlgFabrik_FormSMS extends PlgFabrik_Form
 			}
 		}
 
-		$message = FText::_('PLG_FORM_SMS_FROM') . $config->get('sitename') . "\r \n \r \nMessage:\r \n" . stripslashes($message);
+		$message = FText::_('PLG_FORM_SMS_FROM') . $this->config->get('sitename') . "\r \n \r \nMessage:\r \n" . stripslashes($message);
 
 		return $message;
 	}

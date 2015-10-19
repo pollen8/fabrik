@@ -49,7 +49,6 @@ class FabrikWorker
 	 */
 	static protected $finalFormat = null;
 
-
 	/**
 	 * Add slashes in parse message
 	 * @var bool
@@ -1564,7 +1563,7 @@ class FabrikWorker
 	 *
 	 * @since	3.0b
 	 *
-	 * @return	object	plugin manager
+	 * @return	FabrikFEModelPluginmanager	Plugin manager
 	 */
 	public static function getPluginManager()
 	{

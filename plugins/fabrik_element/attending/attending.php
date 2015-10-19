@@ -37,20 +37,6 @@ class PlgFabrik_ElementAttending extends PlgFabrik_Element
 	protected $fieldSize = '1';
 
 	/**
-	 * Determines if the element can contain data used in sending receipts,
-	 * e.g. fabrikfield returns true
-	 *
-	 * @deprecated - not used
-	 *
-	 * @return  bool
-	 */
-
-	public function isReceiptElement()
-	{
-		return true;
-	}
-
-	/**
 	 * Draws the html form element
 	 *
 	 * @param   array $data          to pre-populate element with
@@ -80,8 +66,7 @@ class PlgFabrik_ElementAttending extends PlgFabrik_Element
 	 */
 	protected function getAttendees()
 	{
-		$app       = JFactory::getApplication();
-		$input     = $app->input;
+		$input     = $this->app->input;
 		$listModel = $this->getListModel();
 		$list      = $listModel->getTable();
 		$listId    = $list->id;
@@ -106,44 +91,6 @@ class PlgFabrik_ElementAttending extends PlgFabrik_Element
 	}
 
 	/**
-	 * Called via widget ajax, stores the selected rating and returns the average
-	 *
-	 * @return  void
-	 */
-
-	public function onAjax_rate()
-	{
-		$app   = JFactory::getApplication();
-		$input = $app->input;
-		$this->setId($input->getInt('element_id'));
-		$this->loadMeForAjax();
-		$listModel = $this->getListModel();
-		$list      = $listModel->getTable();
-		$listid    = $list->id;
-		$formid    = $listModel->getFormModel()->getId();
-		$row_id    = $input->get('row_id');
-		$rating    = $input->getInt('rating');
-		$this->doRating($listid, $formid, $row_id, $rating);
-
-		if ($input->get('mode') == 'creator-rating')
-		{
-			// @todo FIX for joins as well
-
-			// Store in elements table as well
-			$db      = $listModel->getDb();
-			$element = $this->getElement();
-			$query   = $db->getQuery(true);
-			$query->update($list->db_table_name)
-				->set($element->name . '=' . $rating)->where($list->db_primary_key . ' = ' . $db->quote($row_id));
-			$db->setQuery($query);
-			$db->execute();
-		}
-
-		$this->getRatingAverage('', $listid, $formid, $row_id);
-		echo $this->avg;
-	}
-
-	/**
 	 * Main method to store a rating
 	 *
 	 * @param   int    $listid List id
@@ -158,11 +105,10 @@ class PlgFabrik_ElementAttending extends PlgFabrik_Element
 	{
 		$this->createRatingTable();
 		$db        = FabrikWorker::getDbo(true);
-		$config    = JFactory::getConfig();
-		$tzoffset  = $config->get('offset');
+		$tzoffset  = $this->config->get('offset');
 		$date      = JFactory::getDate('now', $tzoffset);
-		$strDate   = $db->quote($date->toSql());
-		$userid    = JFactory::getUser()->get('id');
+		$strDate   = $db->q($date->toSql());
+		$userid    = $this->user->get('id');
 		$elementid = (int) $this->getElement()->id;
 		$query     = $db->getQuery(true);
 		$formid    = (int) $formid;
@@ -188,9 +134,8 @@ class PlgFabrik_ElementAttending extends PlgFabrik_Element
 
 	public function elementJavascript($repeatCounter)
 	{
-		$app    = JFactory::getApplication();
-		$input  = $app->input;
-		$user   = JFactory::getUser();
+		$input  = $this->app->input;
+		$user   = $this->user;
 		$params = $this->getParams();
 
 		$id      = $this->getHTMLId($repeatCounter);

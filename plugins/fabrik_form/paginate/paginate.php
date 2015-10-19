@@ -65,22 +65,20 @@ class PlgFabrik_FormPaginate extends PlgFabrik_Form
 		}
 
 		$j3 = FabrikWorker::j3();
-		$app = JFactory::getApplication();
-		$input = $app->input;
-		$package = $app->getUserState('com_fabrik.package', 'fabrik');
+		$input = $this->app->input;
 		$formId = $formModel->getForm()->id;
 		$mode = JString::strtolower($input->get('view', 'form'));
 		$this->ids = $this->getNavIds();
 		$linkStartPrev = $this->ids->index == 0 ? ' disabled' : '';
 		$linkNextEnd = $this->ids->index == $this->ids->lastKey ? ' disabled' : '';
 
-		if ($app->isAdmin())
+		if ($this->app->isAdmin())
 		{
 			$url = 'index.php?option=com_fabrik&task=' . $mode . '.view&formid=' . $formId . '&rowid=';
 		}
 		else
 		{
-			$url = 'index.php?option=com_' . $package . '&view=' . $mode . '&formid=' . $formId . '&rowid=';
+			$url = 'index.php?option=com_' . $this->package . '&view=' . $mode . '&formid=' . $formId . '&rowid=';
 		}
 
 		$links = array();
@@ -120,8 +118,6 @@ class PlgFabrik_FormPaginate extends PlgFabrik_Form
 		}
 
 		FabrikHelperHTML::stylesheet('plugins/fabrik_form/paginate/paginate.css');
-
-		return true;
 	}
 
 	/**
@@ -195,6 +191,8 @@ class PlgFabrik_FormPaginate extends PlgFabrik_Form
 				return (bool) $formModel->isEditable() == 0;
 				break;
 		}
+
+		return false;
 	}
 
 	/**
@@ -219,8 +217,7 @@ class PlgFabrik_FormPaginate extends PlgFabrik_Form
 			return;
 		}
 
-		$app = JFactory::getApplication();
-		$input = $app->input;
+		$input = $this->app->input;
 		$opts = new stdClass;
 		$opts->liveSite = COM_FABRIK_LIVESITE;
 		$opts->view = $input->get('view');
@@ -228,7 +225,7 @@ class PlgFabrik_FormPaginate extends PlgFabrik_Form
 		$opts->pkey = FabrikString::safeColNameToArrayKey($formModel->getListModel()->getTable()->db_primary_key);
 		$opts = json_encode($opts);
 		$container = $formModel->jsKey();
-		$this->formJavascriptClass($params, $formModel);
+		$this->formJavascriptClass();
 		$formModel->formPluginJS .= "\n var " . $container . "_paginate = new FabRecordSet($container, $opts);";
 	}
 
@@ -239,9 +236,7 @@ class PlgFabrik_FormPaginate extends PlgFabrik_Form
 	 */
 	public function onXRecord()
 	{
-		$app = JFactory::getApplication();
-		$package = $app->getUserState('com_fabrik.package', 'fabrik');
-		$input = $app->input;
+		$input = $this->app->input;
 		$formId = $input->getInt('formid');
 		$rowId = $input->get('rowid', '', 'string');
 		$mode = $input->get('mode', 'details');
@@ -250,7 +245,7 @@ class PlgFabrik_FormPaginate extends PlgFabrik_Form
 		$this->setModel($model);
 		$model->rowId = $rowId;
 		$ids = $this->getNavIds();
-		$url = COM_FABRIK_LIVESITE . 'index.php?option=com_' . $package . '&view=' . $mode . '&formid=' . $formId . '&rowid=' . $rowId . '&format=raw';
+		$url = COM_FABRIK_LIVESITE . 'index.php?option=com_' . $this->package . '&view=' . $mode . '&formid=' . $formId . '&rowid=' . $rowId . '&format=raw';
 		$ch = curl_init();
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 		curl_setopt($ch, CURLOPT_URL, $url);

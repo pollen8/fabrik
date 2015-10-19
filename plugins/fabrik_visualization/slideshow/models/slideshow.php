@@ -58,8 +58,6 @@ class FabrikModelSlideshow extends FabrikFEModelVisualization
 	public function getPlaylist()
 	{
 		$params = $this->getParams();
-		$app = JFactory::getApplication();
-		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$mediaElement = $params->get('media_media_elementList');
 		$mediaElement .= '_raw';
 		$titleElement = $params->get('media_title_elementList', '');
@@ -89,10 +87,10 @@ class FabrikModelSlideshow extends FabrikFEModelVisualization
 		$listModel->render();
 		$alldata = $listModel->getData();
 		$document = JFactory::getDocument();
-		$retstr = "<?xml version=\"1.0\" encoding=\"" . $document->_charset . "\"?>\n";
-		$retstr .= "<playlist version=\"1\" xmlns = \"http://xspf.org/ns/0/\">\n";
-		$retstr .= "	<title>" . $list->label . "</title>\n";
-		$retstr .= "	<trackList>\n";
+		$str = "<?xml version=\"1.0\" encoding=\"" . $document->_charset . "\"?>\n";
+		$str .= "<playlist version=\"1\" xmlns = \"http://xspf.org/ns/0/\">\n";
+		$str .= "	<title>" . $list->label . "</title>\n";
+		$str .= "	<trackList>\n";
 
 		foreach ($alldata as $data)
 		{
@@ -113,13 +111,13 @@ class FabrikModelSlideshow extends FabrikFEModelVisualization
 				$location = str_replace('\\', '/', $location);
 				$location = JString::ltrim($location, '/');
 				$location = COM_FABRIK_LIVESITE . $location;
-				$retstr .= "		<track>\n";
-				$retstr .= "			<location>" . $location . "</location>\n";
+				$str .= "		<track>\n";
+				$str .= "			<location>" . $location . "</location>\n";
 
 				if (!empty($titleElement))
 				{
 					$title = $row->$titleElement;
-					$retstr .= "			<title>" . $title . "</title>\n";
+					$str .= "			<title>" . $title . "</title>\n";
 				}
 
 				if (!empty($imageElement))
@@ -131,35 +129,35 @@ class FabrikModelSlideshow extends FabrikFEModelVisualization
 						$image = str_replace('\\', '/', $image);
 						$image = JString::ltrim($image, '/');
 						$image = COM_FABRIK_LIVESITE . $image;
-						$retstr .= "			<image>" . $image . "</image>\n";
+						$str .= "			<image>" . $image . "</image>\n";
 					}
 				}
 
 				if (!empty($noteElement))
 				{
 					$note = $row->$noteElement;
-					$retstr .= "			<annotation>" . $note . "</annotation>\n";
+					$str .= "			<annotation>" . $note . "</annotation>\n";
 				}
 
 				if (!empty($infoElement))
 				{
 					$link = $row->$titleElement;
-					$retstr .= "			<info>" . $link . "</info>\n";
+					$str .= "			<info>" . $link . "</info>\n";
 				}
 				else
 				{
-					$link = JRoute::_('index.php?option=com_' . $package . '&view=form&formid=' . $form->getId() . '&rowid=' . $row->__pk_val);
-					$retstr .= "			<info>" . $link . "</info>\n";
+					$link = JRoute::_('index.php?option=com_' . $this->package . '&view=form&formid=' . $form->getId() . '&rowid=' . $row->__pk_val);
+					$str .= "			<info>" . $link . "</info>\n";
 				}
 
-				$retstr .= "		</track>\n";
+				$str .= "		</track>\n";
 			}
 		}
 
-		$retstr .= "	</trackList>\n";
-		$retstr .= "</playlist>\n";
+		$str .= "	</trackList>\n";
+		$str .= "</playlist>\n";
 
-		return $retstr;
+		return $str;
 	}
 
 	/**
@@ -173,14 +171,14 @@ class FabrikModelSlideshow extends FabrikFEModelVisualization
 		$params = $this->getParams();
 		$listModel = $this->getSlideListModel();
 		$table = $listModel->getTable();
-		$nav = $listModel->getPagination(0, 0, 0);
+		$listModel->getPagination(0, 0, 0);
 		//$listModel->render();
 		$alldata = $listModel->getData();
 
 		$slideElement = $this->getSlideElement();
 
 		$slideshow_viz_file = $params->get('slideshow_viz_file', '');
-		
+
 		/**
 		 * For AJAX upload, paths will be in non-raw, joined by GROUPSPLITTER,
 		 * with the join ID's being in the non raw.  For simple uploads, we need
@@ -188,7 +186,7 @@ class FabrikModelSlideshow extends FabrikFEModelVisualization
 		 */
 		//$slideshow_viz_file .= $slideElement->isJoin() ? '' : '_raw';
 		$slideshow_viz_file_raw = $slideshow_viz_file . '_raw';
-		
+
 		$slideshow_viz_caption = $params->get('slideshow_viz_caption', '');
 
 		$js_opts = new stdClass;
@@ -202,9 +200,9 @@ class FabrikModelSlideshow extends FabrikFEModelVisualization
 					//throw new InvalidArgumentException($params->get('slideshow_viz_file', '') . ' not found - is it set to show in the list view?');
 					continue;
 				}
-				
+
 				$picData = '';
-				
+
 				if (!$slideElement->isJoin())
 				{
 					$picData = $pic->$slideshow_viz_file_raw;
@@ -213,7 +211,7 @@ class FabrikModelSlideshow extends FabrikFEModelVisualization
 				{
 					$picData = $pic->$slideshow_viz_file;
 				}
-				
+
 				$picData = str_replace("\\", "/", $picData);
 				$pic_opts = array();
 

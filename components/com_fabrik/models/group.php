@@ -255,8 +255,7 @@ class FabrikFEModelGroup extends FabModel
 		}
 
 		// Get the group access level
-		$user = JFactory::getUser();
-		$groups = $user->getAuthorisedViewLevels();
+		$groups = $this->user->getAuthorisedViewLevels();
 		$groupAccess = $params->get('access', '');
 
 		if ($groupAccess !== '')
@@ -500,7 +499,7 @@ class FabrikFEModelGroup extends FabModel
 
 		if (trim($widths) === '')
 		{
-			return;
+			return '';
 		}
 
 		$widths = explode(',', $widths);
@@ -562,7 +561,7 @@ class FabrikFEModelGroup extends FabModel
 	/**
 	 * Get the groups list model
 	 *
-	 * @return  object	list model
+	 * @return  FabrikFEModelList	list model
 	 */
 	public function getlistModel()
 	{
@@ -583,8 +582,7 @@ class FabrikFEModelGroup extends FabModel
 			$this->publishedElements = array();
 		}
 
-		$app = JFactory::getApplication();
-		$ids = (array) $app->input->get('elementid', array(), 'array');
+		$ids = (array) $this->app->input->get('elementid', array(), 'array');
 		$sig = implode('.', $ids);
 
 		if (!array_key_exists($sig, $this->publishedElements))
@@ -624,8 +622,7 @@ class FabrikFEModelGroup extends FabModel
 			$this->listQueryElements = array();
 		}
 
-		$app = JFactory::getApplication();
-		$input = $app->input;
+		$input = $this->app->input;
 		$groupParams = $this->getParams();
 
 		// $$$ rob fabrik_show_in_list set in admin module params (will also be set in menu items and content plugins later on)
@@ -768,8 +765,7 @@ class FabrikFEModelGroup extends FabModel
 			$this->publishedListElements = array();
 		}
 
-		$app = JFactory::getApplication();
-		$input = $app->input;
+		$input = $this->app->input;
 		$params = $this->getParams();
 
 		// $$$ rob fabrik_show_in_list set in admin module params (will also be set in menu items and content plugins later on)
@@ -833,8 +829,7 @@ class FabrikFEModelGroup extends FabModel
 
 		if ($ok)
 		{
-			$user = JFactory::getUser();
-			$groups = $user->getAuthorisedViewLevels();
+			$groups = $this->user->getAuthorisedViewLevels();
 			$ok = in_array($params->get('repeat_add_access', 1), $groups);
 		}
 
@@ -860,8 +855,7 @@ class FabrikFEModelGroup extends FabModel
 
 			if ($ok === -1)
 			{
-				$user = JFactory::getUser();
-				$groups = $user->getAuthorisedViewLevels();
+				$groups = $this->user->getAuthorisedViewLevels();
 				$ok = in_array($params->get('repeat_delete_access', 1), $groups);
 			}
 		}
@@ -963,7 +957,7 @@ class FabrikFEModelGroup extends FabModel
 	public function getGroupProperties(&$formModel)
 	{
 		$w = new FabrikWorker;
-		$input = JFactory::getApplication()->input;
+		$input = $this->app->input;
 		$group = new stdClass;
 		$groupTable = $this->getGroup();
 		$params = $this->getParams();
@@ -1062,8 +1056,7 @@ class FabrikFEModelGroup extends FabModel
 	 */
 	public function copy()
 	{
-		$app = JFactory::getApplication();
-		$input = $app->input;
+		$input = $this->app->input;
 		$elements = $this->getMyElements();
 		$group = $this->getGroup();
 
@@ -1218,7 +1211,7 @@ class FabrikFEModelGroup extends FabModel
 	 */
 	protected function repeatTotals()
 	{
-		$input = JFactory::getApplication()->input;
+		$input = $this->app->input;
 		$repeatTotals = $input->get('fabrik_repeat_group', array(0), 'post', 'array');
 
 		return (int) FArrayHelper::getValue($repeatTotals, $this->getGroup()->id, 0);
@@ -1475,7 +1468,7 @@ class FabrikFEModelGroup extends FabModel
 		}
 		else
 		{
-			$query->where($db->qn($join->table_join_key) . ' = ' . $db->quote($masterInsertId));
+			$query->where($db->qn($join->table_join_key) . ' = ' . $db->q($masterInsertId));
 		}
 
 		$query->where($pk . 'IN (' . implode(',', $db->q($keysToDelete)) . ') ');

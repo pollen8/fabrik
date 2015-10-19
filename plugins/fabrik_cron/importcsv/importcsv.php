@@ -85,8 +85,7 @@ class PlgFabrik_Cronimportcsv extends PlgFabrik_Cron
 
 	public function process(&$data, &$listModel)
 	{
-		$app = JFactory::getApplication();
-		$input = $app->input;
+		$input = $this->app->input;
 		$params = $this->getParams();
 
 		// Get plugin settings and save state of request array vars we might change
@@ -95,32 +94,32 @@ class PlgFabrik_Cronimportcsv extends PlgFabrik_Cron
 		$cronDir = $params->get('cron_importcsv_directory');
 		$useTableName = (int) $params->get('cron_importcsv_usetablename', false);
 
-		$dropdata = $params->get('cron_importcsv_dropdata', '0');
-		$orig_dropdata = $input->get('dropdata', -1);
+		$dropData = $params->get('cron_importcsv_dropdata', '0');
+		$origDropData = $input->get('dropdata', -1);
 
 		$overwrite = $params->get('cron_importcsv_overwrite', '0');
-		$orig_overwrite = $input->get('overwrite', -1);
+		$origOverwrite = $input->get('overwrite', -1);
 
-		$field_delimiter = $params->get('cron_importcsv_field_delimiter', ',');
-		$orig_field_delimiter = $input->get('field_delimiter', -1);
+		$fieldDelimiter = $params->get('cron_importcsv_field_delimiter', ',');
+		$origFieldDelimiter = $input->get('field_delimiter', -1);
 
-		$text_delimiter = $params->get('cron_importcsv_text_delimiter', '0');
+		$textDelimiter = $params->get('cron_importcsv_text_delimiter', '0');
 		$orig_text_delimiter = $input->get('text_delimiter', -1);
 
-		$jform = array();
-		$jform['drop_data'] = $dropdata;
-		$jform['overwrite'] = $overwrite;
-		$jform['field_delimiter'] = $field_delimiter;
+		$jForm = array();
+		$jForm['drop_data'] = $dropData;
+		$jForm['overwrite'] = $overwrite;
+		$jForm['field_delimiter'] = $fieldDelimiter;
 
-		if ($field_delimiter == '\t')
+		if ($fieldDelimiter == '\t')
 		{
-			$jform['tabdelimited'] = '1';
+			$jForm['tabdelimited'] = '1';
 		}
 
-		$jform['text_delimiter'] = $text_delimiter;
+		$jForm['text_delimiter'] = $textDelimiter;
 
-		$input->set('jform', $jform);
-		$orig_listid = $input->getInt('listid', -1);
+		$input->set('jform', $jForm);
+		$origListId = $input->getInt('listid', -1);
 
 		// Fabrik use this as the base directory, so we need a new directory under 'media'
 		define("FABRIK_CSV_IMPORT_ROOT", JPATH_ROOT . '/media');
@@ -129,77 +128,77 @@ class PlgFabrik_Cronimportcsv extends PlgFabrik_Cron
 		// TODO: Need to also have a FILTER for CSV files ONLY.
 		$filter = "\.CSV$|\.csv$";
 		$exclude = array('done', '.svn', 'CVS');
-		$arrfiles = JFolder::files($d, $filter, true, true, $exclude);
+		$files = JFolder::files($d, $filter, true, true, $exclude);
 
 		// The csv import class needs to know we are doing a cron import
 		$input->set('cron_csvimport', true);
 		$xfiles = 0;
 
-		foreach ($arrfiles as $full_csvfile)
+		foreach ($files as $fullCsvFile)
 		{
 			if (++$xfiles > $maxFiles)
 			{
 				break;
 			}
 
-			FabrikWorker::log('plg.cron.cronimportcsv.information', "Starting import: $full_csvfile:  ");
+			FabrikWorker::log('plg.cron.cronimportcsv.information', "Starting import: $fullCsvFile:  ");
 			$clsImportCSV = JModelLegacy::getInstance('Importcsv', 'FabrikFEModel');
 
 			if ($useTableName)
 			{
-				$listid = $this->getListIdFromFileName(basename($full_csvfile));
+				$listId = $this->getListIdFromFileName(basename($fullCsvFile));
 			}
 			else
 			{
 				$table = &$listModel->getTable();
-				$listid = $table->id;
+				$listId = $table->id;
 			}
 
-			if (empty($listid))
+			if (empty($listId))
 			{
-				FabrikWorker::log('plg.cron.cronimportcsv.warning', "List with name $filename does not exist");
+				FabrikWorker::log('plg.cron.cronimportcsv.warning', "List for $fullCsvFile does not exist");
 				continue;
 			}
 
-			$input->set('listid', $listid);
+			$input->set('listid', $listId);
 
 			// Grab the CSV file, need to strip import root off path first
-			$csvfile = str_replace(FABRIK_CSV_IMPORT_ROOT, '', $full_csvfile);
+			$csvFile = str_replace(FABRIK_CSV_IMPORT_ROOT, '', $fullCsvFile);
 			$clsImportCSV->setBaseDir(FABRIK_CSV_IMPORT_ROOT);
-			$clsImportCSV->readCSV($csvfile);
+			$clsImportCSV->readCSV($csvFile);
 
 			// Get this->matchedHeading
 			$clsImportCSV->findExistingElements();
 			$msg = $clsImportCSV->makeTableFromCSV();
 
-			if ($app->isAdmin())
+			if ($this->app->isAdmin())
 			{
-				$app->enqueueMessage($msg);
+				$this->app->enqueueMessage($msg);
 			}
 
 			if ($deleteFile == '1')
 			{
-				JFile::delete($full_csvfile);
+				JFile::delete($fullCsvFile);
 			}
 			elseif ($deleteFile == '2')
 			{
-				$new_csvfile = $full_csvfile . '.' . time();
-				JFile::move($full_csvfile, $new_csvfile);
+				$new_csvfile = $fullCsvFile . '.' . time();
+				JFile::move($fullCsvFile, $new_csvfile);
 			}
 			elseif ($deleteFile == '3')
 			{
-				$done_folder = dirname($full_csvfile) . '/done';
+				$done_folder = dirname($fullCsvFile) . '/done';
 
 				if (JFolder::exists($done_folder))
 				{
-					$new_csvfile = $done_folder . '/' . basename($full_csvfile);
-					JFile::move($full_csvfile, $new_csvfile);
+					$new_csvfile = $done_folder . '/' . basename($fullCsvFile);
+					JFile::move($fullCsvFile, $new_csvfile);
 				}
 				else
 				{
-					if ($app->isAdmin())
+					if ($this->app->isAdmin())
 					{
-						$app->enqueueMessage("Move file requested, but can't find 'done' folder: $done_folder");
+						$this->app->enqueueMessage("Move file requested, but can't find 'done' folder: $done_folder");
 					}
 				}
 			}
@@ -208,24 +207,24 @@ class PlgFabrik_Cronimportcsv extends PlgFabrik_Cron
 		}
 
 		// Leave the request array how we found it
-		if (!empty($orig_listid))
+		if (!empty($origListId))
 		{
-			$input->set('listid', $orig_listid);
+			$input->set('listid', $origListId);
 		}
 
-		if ($orig_dropdata != -1)
+		if ($origDropData != -1)
 		{
-			$input->set('drop_data', $orig_dropdata);
+			$input->set('drop_data', $origDropData);
 		}
 
-		if ($orig_overwrite != -1)
+		if ($origOverwrite != -1)
 		{
-			$input->set('overwite', $orig_overwrite);
+			$input->set('overwite', $origOverwrite);
 		}
 
-		if ($orig_field_delimiter != -1)
+		if ($origFieldDelimiter != -1)
 		{
-			$input->set('field_delimiter', $orig_field_delimiter);
+			$input->set('field_delimiter', $origFieldDelimiter);
 		}
 
 		if ($orig_text_delimiter != -1)

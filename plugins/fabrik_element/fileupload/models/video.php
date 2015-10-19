@@ -18,8 +18,7 @@ defined('_JEXEC') or die('Restricted access');
  * @subpackage  Fabrik.element.fileupload
  * @since       3.0
  */
-
-class VideoRender
+class VideoRender extends FabModel
 {
 	/**
 	 * Render output
@@ -38,7 +37,6 @@ class VideoRender
 	 *
 	 * @return  void
 	 */
-
 	public function renderListData(&$model, &$params, $file, $thisRow)
 	{
 		$this->render($model, $params, $file);
@@ -53,7 +51,6 @@ class VideoRender
 	 *
 	 * @return  void
 	 */
-
 	public function render(&$model, &$params, $file)
 	{
 		$src = str_replace("\\", "/", COM_FABRIK_LIVESITE . $file);
@@ -62,7 +59,7 @@ class VideoRender
 		require_once COM_FABRIK_FRONTEND . '/libs/getid3/getid3/getid3.lib.php';
 
 		getid3_lib::IncludeDependency(COM_FABRIK_FRONTEND . '/libs/getid3/getid3/extension.cache.mysql.php', __FILE__, true);
-		$config = JFactory::getConfig();
+		$config = $this->config;
 		$host = $config->get('host');
 		$database = $config->get('db');
 		$username = $config->get('user');
@@ -138,8 +135,8 @@ class VideoRender
 			$rendered = '
 			<div id="' . $id . '"></div>
 			';
-			$app = JFactory::getApplication();
-			$input = $app->input;
+			$input = $this->pp->input;
+
 			if ($input->get('format') != 'raw')
 			{
 				$js = '

@@ -20,7 +20,6 @@ jimport('joomla.application.component.view');
  * @subpackage  Fabrik.list.email
  * @since       3.0
  */
-
 class FabrikViewPopupwin extends JViewLegacy
 {
 	/**
