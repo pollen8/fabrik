@@ -528,13 +528,7 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 
 		if (empty($img))
 		{
-<<<<<<< HEAD
-			$this->app->enqueueMessage(FText::_('PLG_ELEMENT_FIELD_NO_SUCH_FILE'));
-			$this->app->redirect($url);
-			exit;
-=======
 			$img = file_get_contents(JPATH_SITE . '/media/system/images/notice-note.png');
->>>>>>> joomla3
 		}
 
 		// Some time in the past
