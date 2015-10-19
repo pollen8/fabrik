@@ -5,6 +5,15 @@
 
 			<field type="helplink"
 				url="PLG_ELEMENT_BUTTON_HELP_SERVER" />
+				
+			<field name="button_type"
+				type="list"
+				label="PLG_ELEMENT_BUTTON_TYPE_LABEL"
+				description="PLG_ELEMENT_BUTTON_TYPE_DESC">
+				<option value="button">button</option>
+				<option value="submit">submit</option>
+				<option value="reset">reset</option>
+			</field>
 
 			<field name="bootstrap_class"
 				type="list"

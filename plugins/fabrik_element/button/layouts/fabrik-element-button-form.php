@@ -6,7 +6,7 @@ $d = $displayData;
 
 ?>
 
-<button class="<?php echo $d->class; ?>" id="<?php echo $d->id; ?>" name="<?php echo $d->name; ?>">
+<button class="<?php echo $d->class; ?>" id="<?php echo $d->id; ?>" name="<?php echo $d->name; ?>" type="<?php echo $d->type; ?>">
 	<?php if ($d->icon !== '') : ?>
 		<span class="<?php echo $d->icon; ?>"></span>
 	<?php endif; ?>

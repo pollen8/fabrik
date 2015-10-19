@@ -627,7 +627,7 @@ class FabrikModelFusionchart extends FabrikFEModelVisualization
 						}
 
 						$tmpgdata[] = (trim($row->$column) == '') ? -1 : (float) $row->$column;
-						$tmpglabels[] = !empty($label) ? strip_tags($row->$label) : '';
+						$tmpglabels[] = !empty($label) ? html_entity_decode(strip_tags($row->$label)) : '';
 					}
 
 					if (!empty($tmpgdata))

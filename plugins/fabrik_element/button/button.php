@@ -36,6 +36,7 @@ class PlgFabrik_ElementButton extends PlgFabrik_Element
 		$params = $this->getParams();
 		$class = $params->get('bootstrap_class', '') . ' fabrikinput button btn';
 		$icon = $params->get('bootstrap_icon', '');
+		$type = $params->get('button_type', 'button');
 
 		$layout = $this->getLayout('form');
 		$displayData = new stdClass;
@@ -44,6 +45,8 @@ class PlgFabrik_ElementButton extends PlgFabrik_Element
 		$displayData->name = $name;
 		$displayData->label = $element->label;
 		$displayData->icon = $icon;
+		$displayData->type = $type;
+
 
 		return $layout->render($displayData);
 	}

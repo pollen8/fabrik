@@ -44,7 +44,10 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 
 			if ($params->get('render_as_qrcode', '0') === '1')
 			{
-				$d = $this->qrCodeLink($thisRow);
+				if (!empty($d))
+				{
+					$d = $this->qrCodeLink($thisRow);
+				}
 			}
 		}
 
@@ -129,7 +132,10 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 			if ($params->get('render_as_qrcode', '0') === '1')
 			{
 				// @TODO - skip this is new form
-				$value = $this->qrCodeLink($data);
+				if (!empty($value))
+				{
+					$value = $this->qrCodeLink($data);
+				}
 			}
 			else
 			{
@@ -502,36 +508,50 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 		$elName = $this->getFullName(true, false);
 		$value = $row->$elName;
 
+		/*
 		require JPATH_SITE . '/components/com_fabrik/libs/qrcode/qrcode.php';
 
 		// Usage: $a=new QR('234DSKJFH23YDFKJHaS');$a->image(4);
 		$qr = new QR($value);
 		$img = $qr->image(4);
+		*/
 
-		if (!empty($img))
+		if (!empty($value))
 		{
-			// Some time in the past
-			header("Expires: Sat, 26 Jul 1997 05:00:00 GMT");
-			header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
-			header("Cache-Control: no-store, no-cache, must-revalidate");
-			header("Cache-Control: post-check=0, pre-check=0", false);
-			header("Pragma: no-cache");
-			header('Accept-Ranges: bytes');
-			header('Content-Length: ' . strlen($img));
-			header('Content-Type: ' . 'image/gif');
+			require JPATH_SITE . '/components/com_fabrik/libs/phpqrcode/phpqrcode.php';
 
-			// Serve up the file
-			echo $img;
-
-			// And we're done.
-			exit();
+			ob_start();
+			QRCode::png($value);
+			$img = ob_get_contents();
+			ob_end_clean();
 		}
-		else
+
+		if (empty($img))
 		{
+<<<<<<< HEAD
 			$this->app->enqueueMessage(FText::_('PLG_ELEMENT_FIELD_NO_SUCH_FILE'));
 			$this->app->redirect($url);
 			exit;
+=======
+			$img = file_get_contents(JPATH_SITE . '/media/system/images/notice-note.png');
+>>>>>>> joomla3
 		}
+
+		// Some time in the past
+		header("Expires: Sat, 26 Jul 1997 05:00:00 GMT");
+		header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
+		header("Cache-Control: no-store, no-cache, must-revalidate");
+		header("Cache-Control: post-check=0, pre-check=0", false);
+		header("Pragma: no-cache");
+		header('Accept-Ranges: bytes');
+		header('Content-Length: ' . strlen($img));
+		//header('Content-Type: ' . 'image/gif');
+
+		// Serve up the file
+		echo $img;
+
+		// And we're done.
+		exit();
 	}
 
 	/**

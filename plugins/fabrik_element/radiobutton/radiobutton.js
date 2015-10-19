@@ -5,7 +5,7 @@
  * @license:   GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
-window.FbRadio = new Class({
+FbRadio = new Class({
 	Extends: FbElementList,
 
 	options: {

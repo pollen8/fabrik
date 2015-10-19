@@ -851,9 +851,10 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 			$optionsPerRow = 1;
 		}
 
-		$classes = $this->labelClasses();
+		$classes = $this->gridClasses();
+		$dataAttributes = $this->dataAttributes();
 		$buttonGroup = $this->buttonGroup();
-		$grid = FabrikHelperHTML::grid($values, $labels, $selected, $name, $this->inputType, $elBeforeLabel, $optionsPerRow, $classes, $buttonGroup);
+		$grid = FabrikHelperHTML::grid($values, $labels, $selected, $name, $this->inputType, $elBeforeLabel, $optionsPerRow, $classes, $buttonGroup, $dataAttributes);
 		array_unshift($grid, '<div class="fabrikSubElementContainer" id="' . $id . '">');
 		$grid[] = '</div><!-- close subElementContainer -->';
 
@@ -881,11 +882,22 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 	}
 
 	/**
-	 * Get classes to assign to the label
+	 * Get classes to assign to the grid
+	 * An array of arrays of class names, keyed as 'container', 'label' or 'input',
 	 *
 	 * @return  array
 	 */
-	protected function labelClasses()
+	protected function gridClasses()
+	{
+		return array();
+	}
+
+	/**
+	 * Get data attributes to assign to the container
+	 *
+	 * @return  array
+	 */
+	protected function dataAttributes()
 	{
 		return array();
 	}

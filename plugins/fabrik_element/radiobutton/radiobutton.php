@@ -234,17 +234,56 @@ class PlgFabrik_ElementRadiobutton extends PlgFabrik_ElementList
 
 		return $v;
 	}
-	
+
 	/**
 	 * Return JS event required to trigger a 'change', this is overriding default element model.
 	 * When in BS mode with button-grp, needs to be 'click'.
 	 *
 	 * @return  string
 	 */
-	
+
 	public function getChangeEvent()
 	{
 		return $this->buttonGroup() ? 'click' : 'change';
 	}
-	
+
+	/**
+	 * Get classes to assign to the grid
+	 * An array of arrays of class names, keyed as 'container', 'label' or 'input',
+	 *
+	 * @return  array
+	 */
+	protected function gridClasses()
+	{
+		if ($this->buttonGroup())
+		{
+			return array(
+				'label' => array('btn-default'),
+				'container' => array('btn-radio')
+			);
+		}
+		else
+		{
+			return array();
+		}
+	}
+
+	/**
+	 * Get data attributes to assign to the container
+	 *
+	 * @return  array
+	 */
+	protected function dataAttributes()
+	{
+		if ($this->buttonGroup())
+		{
+			return array('data-toggle="buttons"');
+		}
+		else
+		{
+			return array();
+		}
+	}
+
+
 }
