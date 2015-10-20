@@ -756,6 +756,13 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 								}
 							}
 						}
+						else
+						{
+							$log->message_type = 'form.paypal.ipndebug.ipn_no_txn_fields';
+							$log->message = "No IPN txn or status fields specified, can't test for reversed, refunded or cancelled";
+							$log->store();
+						}
+
 
 						if ($status == 'ok')
 						{
@@ -804,6 +811,9 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 
 									if ($status != 'ok')
 									{
+										$log->message_type = 'form.paypal.ipndebug.ipn_function_not_ok';
+										$log->message = "The IPN function $ipnFunction did not return ok";
+										$log->store();
 										break;
 									}
 								}
@@ -816,9 +826,18 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 
 									if ($status != 'ok')
 									{
+										$log->message_type = 'form.paypal.ipndebug.ipn_txn_type_function_not_ok';
+										$log->message = "The IPN txn type function $txnTypeFunction did not return ok";
+										$log->store();
 										break;
 									}
 								}
+							}
+							else
+							{
+								$log->message_type = 'form.paypal.ipndebug.ipn_cannot_load';
+								$log->message = "Can't load the custom IPN handler class";
+								$log->store();
 							}
 
 							if (!empty($set_list))
@@ -842,6 +861,9 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 								{
 									$status = 'form.paypal.ipnfailure.query_error';
 									$errMsg = 'sql query error: ' . $db->getErrorMsg();
+									$log->message_type = 'form.paypal.ipnfailure.query_error';
+									$log->message = $errMsg;
+									$log->store();
 								}
 								else
 								{
@@ -857,6 +879,9 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 							{
 								$status = 'form.paypal.ipnfailure.set_list_empty';
 								$errMsg = 'no IPN status fields found on form for rowid: ' . $rowId;
+								$log->message_type = 'form.paypal.ipnfailure.set_list_empty';
+								$log->message = $errMsg;
+								$log->store();
 							}
 						}
 					}
@@ -864,6 +889,9 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 					{
 						$status = 'form.paypal.ipnfailure.invalid';
 						$errMsg = 'paypal postback failed with INVALID';
+						$log->message_type = 'form.paypal.ipnfailure.invalid';
+						$log->message = $errMsg;
+						$log->store();
 					}
 				}
 
