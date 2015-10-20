@@ -893,6 +893,14 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 						$log->message = $errMsg;
 						$log->store();
 					}
+					else
+					{
+						$status = 'form.paypal.ipnfailure.unknown';
+						$errMsg = 'paypal postback failed with unknown response: ' . $res;
+						$log->message_type = 'form.paypal.ipnfailure.unknown';
+						$log->message = $errMsg;
+						$log->store();
+					}
 				}
 
 				fclose($fp);
