@@ -12,4 +12,4 @@
 defined('_JEXEC') or die('Restricted access');
 
 require_once JPATH_SITE . '/plugins/fabrik_element/fileupload/models/image.php';
-$render = new imageRender;
+$render = new ImageRenderModel;

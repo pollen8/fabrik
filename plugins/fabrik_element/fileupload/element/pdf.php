@@ -12,4 +12,4 @@
 defined('_JEXEC') or die('Restricted access');
 
 require_once JPATH_SITE . '/plugins/fabrik_element/fileupload/models/pdf.php';
-$render = new pdfRender;
+$render = new PdfRenderModel;

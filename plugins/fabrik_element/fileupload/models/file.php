@@ -19,7 +19,7 @@ defined('_JEXEC') or die('Restricted access');
  * @since       3.0
  */
 
-class FileRender
+class FileRenderModel
 {
 	/**
 	 * Render output
@@ -57,7 +57,7 @@ class FileRender
 	public function render(&$model, &$params, $file)
 	{
 		jimport('joomla.filesystem.file');
-		
+
 		/*
 		 * $$$ hugh - TESTING - if $file is empty, we're going to just build an empty bit of DOM
 		 * which can then be filled in with the selected image using HTML5 in browser.
@@ -69,23 +69,23 @@ class FileRender
 				$maxWidth = $params->get('thumb_max_width', 125);
 				$maxHeight = $params->get('thumb_max_height', 125);
 				$this->output .= '<img style="width: ' . $maxWidth . 'px;" src="" alt="" />';
-			}		
+			}
 		}
 		else
 		{
 			$filename = basename($file);
 			$filename = strip_tags($filename);
 			$ext = JFile::getExt($filename);
-	
+
 			if (!strstr($file, 'http://') && !strstr($file, 'https://'))
 			{
 				// $$$rob only add in livesite if we don't already have a full url (e.g. from amazons3)
-	
+
 				// Trim / or \ off the start of $file
 				$file = JString::ltrim($file, '/\\');
 				$file = COM_FABRIK_LIVESITE . $file;
 			}
-	
+
 			$file = str_replace("\\", "/", $file);
 			$file = $model->storage->preRenderPath($file);
 

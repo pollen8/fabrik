@@ -18,7 +18,7 @@ defined('_JEXEC') or die('Restricted access');
  * @subpackage  Fabrik.element.fileupload
  * @since       3.0
  */
-class AudioRender extends FabModel
+class AudioRenderModel extends FabModel
 {
 	/**
 	 * Render output
