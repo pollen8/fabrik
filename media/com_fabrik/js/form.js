@@ -831,7 +831,7 @@ var FbForm = new Class({
 				return;
 			}
 		}
-		Fabrik.fireEvent('fabrik.form.element.validaton.start', [this, el, e]);
+		Fabrik.fireEvent('fabrik.form.element.validation.start', [this, el, e]);
 		if (this.result === false) {
 			this.result = true;
 			return;
@@ -874,7 +874,7 @@ var FbForm = new Class({
 		this.formElements.each(function (el, key) {
 			el.afterAjaxValidation();
 		});
-		Fabrik.fireEvent('fabrik.form.elemnet.validation.complete', [this, r, id, origid]);
+		Fabrik.fireEvent('fabrik.form.element.validation.complete', [this, r, id, origid]);
 		if (this.result === false) {
 			this.result = true;
 			return;
