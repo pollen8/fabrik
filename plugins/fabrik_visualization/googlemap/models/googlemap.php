@@ -348,6 +348,8 @@ class FabrikModelGooglemap extends FabrikFEModelVisualization
 
 					$rowData = JArrayHelper::fromObject($row);
 					$rowData['rowid'] = $rowData['__pk_val'];
+					$rowData['coords'] = $v[0] . ',' . $v[1];
+					$rowData['nav_url'] = "http://maps.google.com/maps?q=loc:" . $rowData['coords'] . "&navigate=yes";
 					$html = $w->parseMessageForPlaceHolder($template, $rowData);
 
 					$titleElement = FArrayHelper::getValue($titleElements, $c, '');
