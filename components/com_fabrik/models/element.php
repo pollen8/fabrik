@@ -1532,6 +1532,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		$displayData->hasLabel = $this->get('hasLabel');
 		$displayData->view = $this->app->input->get('view', 'form');
 		$displayData->tip = $this->tipHtml($model->data);
+		$displayData->tipText = $this->tipTextAndValidations('form', $model->data);
 		$displayData->rollOver = $this->isTipped();
 		$displayData->isEditable = $this->isEditable();
 
@@ -1716,6 +1717,7 @@ class PlgFabrik_Element extends FabrikPlugin
 
 		// $$$ rob - looks like htmlspecialchars is needed otherwise invalid markup created and pdf output issues.
 		$rollOver = htmlspecialchars($rollOver, ENT_QUOTES);
+		//$rollOver = str_replace('"', '&quot;', $rollOver);
 
 		return $rollOver;
 	}
