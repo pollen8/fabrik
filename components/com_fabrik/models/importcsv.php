@@ -570,9 +570,6 @@ class FabrikFEModelImportcsv extends JModelForm
 			$element = $elementModel->getElement();
 			$elementModel->prepareCSVData($this->data, $key, $rawMap[$key]);
 		}
-
-		print_r($this->newHeadings);
-		exit;
 	}
 
 	/**
