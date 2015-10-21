@@ -19,7 +19,7 @@ defined('_JEXEC') or die('Restricted access');
  * @since       3.0
  */
 
-class AllVideosRender
+class AllVideosRenderModel
 {
 	/**
 	 * Render output

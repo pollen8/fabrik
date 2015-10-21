@@ -212,8 +212,8 @@
 				type="radio"
 				class="btn-group"
 				default="-1"
-				label="COM_FABRIK_FIELD_LABELS_ABOVE_LABEL"
-				description="COM_FABRIK_FIELD_LABELS_ABOVE_DESC" >
+				label="COM_FABRIK_FIELD_GROUP_LABELS_ABOVE_LABEL"
+				description="COM_FABRIK_FIELD_GROUP_LABELS_ABOVE_DESC" >
 					<option value="-1">COM_FABRIK_FIELD_LABELS_ABOVE_GLOBAL</option>
 					<option value="0">COM_FABRIK_FIELD_LABELS_ABOVE_LEFT</option>
 					<option value="1">COM_FABRIK_FIELD_LABELS_ABOVE_ABOVE</option>
@@ -224,8 +224,8 @@
 				type="radio"
 				class="btn-group"
 				default="-1"
-				label="COM_FABRIK_FIELD_LABELS_ABOVE_DETAILS_LABEL"
-				description="COM_FABRIK_FIELD_LABELS_ABOVE_DETAILS_DESC" >
+				label="COM_FABRIK_FIELD_GROUP_LABELS_ABOVE_DETAILS_LABEL"
+				description="COM_FABRIK_FIELD_GROUP_LABELS_ABOVE_DETAILS_DESC" >
 					<option value="-1">COM_FABRIK_FIELD_LABELS_ABOVE_GLOBAL</option>
 					<option value="0">COM_FABRIK_FIELD_LABELS_ABOVE_LEFT</option>
 					<option value="1">COM_FABRIK_FIELD_LABELS_ABOVE_ABOVE</option>

@@ -13,9 +13,9 @@ $d = $displayData;
 	for ($i = 0; $i < count($d->opts); $i++) :
 		$opt = $d->opts[$i];
 		$display = $opt->value == $d->default ? '' : 'style="display: none"';
-		$c = $d->showPleaseSelect ? $i + 1 : $i;
+		//$c = $d->showPleaseSelect ? $i + 1 : $i;
 	?>
-		<div <?php echo $display ;?> class="notice description-<?php echo  $c; ?>">
+		<div <?php echo $display ;?> class="notice description-<?php echo  $i; ?>">
 			<?php echo $opt->description; ?>
 		</div>
 	<?php

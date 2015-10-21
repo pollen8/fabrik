@@ -38,12 +38,12 @@ class FabrikViewImport extends JViewLegacy
 		$app = JFactory::getApplication();
 		$input = $app->input;
 		$this->listid = $input->getInt('listid', 0);
-		$listModel = JModelLegacy::getInstance('List', 'FabrikFEModel');
-		$listModel->setId($this->listid);
-		$this->table = $listModel->getTable();
+		$this->model = JModelLegacy::getInstance('List', 'FabrikFEModel');
+		$this->model->setId($this->listid);
+		$this->table = $this->model->getTable();
 		$this->form = $this->get('Form');
 
-		if (!$listModel->canCSVImport())
+		if (!$this->model->canCSVImport())
 		{
 			throw new RuntimeException('Naughty naughty!', 400);
 		}
@@ -91,6 +91,12 @@ class FabrikViewImport extends JViewLegacy
 		}
 
 		$fieldsets = array('details');
+
+		if ($this->model->canEmpty())
+		{
+			$fieldsets[] = 'drop';
+		}
+
 		$fieldsets[] = $id === 0 ? 'creation' : 'append';
 		$fieldsets[] = 'format';
 

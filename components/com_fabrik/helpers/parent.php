@@ -50,49 +50,6 @@ class FabrikWorker
 	static protected $finalFormat = null;
 
 	/**
-	 * Image file extensions
-	 *
-	 * @var  string
-	 */
-	static protected $image_extensions_eregi = 'bmp|gif|jpg|jpeg|png';
-
-	/**
-	 * Audio mime types
-	 *
-	 * @var array
-	 */
-	static protected $audio_mime_types = array('mp3' => 'audio/x-mpeg', 'm4a' => 'audio/x-m4a');
-
-	/**
-	 * Video mime types
-	 *
-	 * @var  array
-	 */
-	static protected $video_mime_types = array('mp4' => 'video/mp4', 'm4v' => 'video/x-m4v', 'mov' => 'video/quicktime');
-
-	/**
-	 * Document mime types
-	 *
-	 * @var  array
-	 */
-	static protected $doc_mime_types = array('pdf' => 'application/pdf', 'epub' => 'document/x-epub');
-
-	/**
-	 * Valid view types, for sanity checking inputs, used by isViewType()
-	 */
-	static protected $viewTypes = array(
-		'article',
-		'cron',
-		'csv',
-		'details',
-		'element',
-		'form',
-		'list',
-		'package',
-		'visualization'
-	);
-
-	/**
 	 * Add slashes in parse message
 	 * @var bool
 	 */
@@ -105,6 +62,26 @@ class FabrikWorker
 	protected $_searchData = array();
 
 	/**
+	 * Get array of valid view types
+	 *
+	 * @return  array
+	 */
+	public static function getViewTypes()
+	{
+		return array(
+			'article',
+			'cron',
+			'csv',
+			'details',
+			'element',
+			'form',
+			'list',
+			'package',
+			'visualization'
+		);
+	}
+
+	/**
 	 * Returns true if $view is a valid view type
 	 *
 	 * @param   string  $view  View type
@@ -114,8 +91,9 @@ class FabrikWorker
 	public static function isViewType($view)
 	{
 		$view = strtolower(trim($view));
+		$viewTypes = self::getViewTypes();
 
-		return in_array($view, self::$viewTypes);
+		return in_array($view, $viewTypes);
 	}
 
 	/**
@@ -129,7 +107,53 @@ class FabrikWorker
 	{
 		$path_parts = pathinfo($file);
 
-		return preg_match('/' . self::$image_extensions_eregi . '/i', $path_parts['extension']);
+		if (array_key_exists('extension', $path_parts))
+		{
+			$image_extensions_eregi = 'bmp|gif|jpg|jpeg|png';
+			return preg_match('/' . $image_extensions_eregi . '/i', $path_parts['extension']) > 0;
+		}
+
+		return false;
+	}
+
+	/**
+	 * Get audio mime type array, keyed by file extension
+	 *
+	 * @return array
+	 */
+	public static function getAudioMimeTypes()
+	{
+		return array(
+			'mp3' => 'audio/x-mpeg',
+			'm4a' => 'audio/x-m4a'
+		);
+	}
+
+	/**
+	 * Get document mime type array, keyed by file extension
+	 *
+	 * @return array
+	 */
+	public static function getDocMimeTypes()
+	{
+		return array(
+			'pdf' => 'application/pdf',
+			'epub' => 'document/x-epub'
+		);
+	}
+
+	/**
+	 * Get video mime type array, keyed by file extension
+	 *
+	 * @return array
+	 */
+	public static function getVideoMimeTypes()
+	{
+		return array(
+				'mp4' => 'video/mp4',
+				'm4v' => 'video/x-m4v',
+				'mov' => 'video/quicktime'
+		);
 	}
 
 	/**
@@ -139,15 +163,16 @@ class FabrikWorker
 	 *
 	 * @deprecated - doesn't seem to be used
 	 *
-	 * @return  bool
+	 * @return  bool|string
 	 */
 	public static function getAudioMimeType($file)
 	{
 		$path_parts = pathinfo($file);
+		$audio_mime_types = self::getAudioMimeTypes();
 
-		if (array_key_exists($path_parts['extension'], self::$audio_mime_types))
+		if (array_key_exists($path_parts['extension'], $audio_mime_types))
 		{
-			return self::$audio_mime_types[$path_parts['extension']];
+			return $audio_mime_types[$path_parts['extension']];
 		}
 
 		return false;
@@ -160,15 +185,38 @@ class FabrikWorker
 	 *
 	 * @deprecated - doesn't seem to be used
 	 *
-	 * @return  bool
+	 * @return  bool|string
 	 */
 	public static function getVideoMimeType($file)
 	{
 		$path_parts = pathinfo($file);
+		$video_mime_types = self::getVideoMimeTypes();
 
-		if (array_key_exists($path_parts['extension'], self::$video_mime_types))
+		if (array_key_exists($path_parts['extension'], $video_mime_types))
 		{
-			return self::$video_mime_types[$path_parts['extension']];
+			return $video_mime_types[$path_parts['extension']];
+		}
+
+		return false;
+	}
+
+	/**
+	 * Get Video Mime type
+	 *
+	 * @param   string  $file  Filename
+	 *
+	 * @deprecated - doesn't seem to be used
+	 *
+	 * @return  bool|string
+	 */
+	public static function getDocMimeType($file)
+	{
+		$path_parts = pathinfo($file);
+		$doc_mime_types = self::getDocMimeTypes();
+
+		if (array_key_exists($path_parts['extension'], $doc_mime_types))
+		{
+			return $doc_mime_types[$path_parts['extension']];
 		}
 
 		return false;
@@ -179,28 +227,29 @@ class FabrikWorker
 	 *
 	 * @param   string  $file  Filename
 	 *
-	 * @deprecated - doesn't seem to be used
-	 *
-	 * @return  bool
+	 * @return  bool|string
 	 */
 	public static function getPodcastMimeType($file)
 	{
-		$path_parts = pathinfo($file);
+		$audio_mime_types = self::getAudioMimeTypes();
+		$video_mime_types = self::getVideoMimeTypes();
+		$doc_mime_types = self::getVideoMimeTypes();
+		$mime_type = false;
 
-		if (array_key_exists($path_parts['extension'], self::$video_mime_types))
+		if ($mime_type = self::getVideoMimeType($file))
 		{
-			return self::$video_mime_types[$path_parts['extension']];
+			return $mime_type;
 		}
-		elseif (array_key_exists($path_parts['extension'], self::$audio_mime_types))
+		elseif ($mime_type = self::getAudioMimeType($file))
 		{
-			return self::$audio_mime_types[$path_parts['extension']];
+			return $mime_type;
 		}
-		elseif (array_key_exists($path_parts['extension'], self::$doc_mime_types))
+		elseif ($mime_type = self::getDocMimeType($file))
 		{
-			return self::$doc_mime_types[$path_parts['extension']];
+			return $mime_type;
 		}
 
-		return false;
+		return $mime_type;
 	}
 
 	/**

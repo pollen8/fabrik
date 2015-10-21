@@ -8,12 +8,22 @@
 		
 	</fieldset>
 	
-	<fieldset name="append">
-		
-		<field class="btn-group" default="0" description="COM_FABRIK_FIELD_CSV_IMPORT_DROP_DATA_DESC" label="COM_FABRIK_FIELD_CSV_IMPORT_DROP_DATA_LABEL" name="drop_data" type="radio">
+	<fieldset name="drop">
+	
+		<field 
+			class="btn-group"
+			default="0"
+			description="COM_FABRIK_FIELD_CSV_IMPORT_DROP_DATA_DESC"
+			label="COM_FABRIK_FIELD_CSV_IMPORT_DROP_DATA_LABEL"
+			name="drop_data"
+			type="radio">
 				<option value="0">JNO</option>
 				<option value="1">JYES</option>
-			</field>
+		</field>
+		
+	</fieldset>
+	
+	<fieldset name="append">
 		
 		<field name="overwrite"
 			type="radio"

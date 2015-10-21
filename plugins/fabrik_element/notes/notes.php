@@ -294,7 +294,7 @@ class PlgFabrik_ElementNotes extends PlgFabrik_ElementDatabasejoin
 		}
 		else
 		{
-			$order = FabrikString::safeqn($params->get('join_db_name') . '.' . $orderBy) . ' ' . $params->get('notes_order_dir', 'ASC');
+			$order = FabrikString::safeQuoteName($params->get('join_db_name') . '.' . $orderBy) . ' ' . $params->get('notes_order_dir', 'ASC');
 
 			if ($query)
 			{
