@@ -1450,7 +1450,7 @@ EOD;
 			{
 				$folder = 'components/com_fabrik/libs/mediabox-advanced/';
 				$mbStyle = $fbConfig->get('mediabox_style', 'Dark');
-				JHTML::stylesheet($folder . 'mediaboxAdv-' . $mbStyle . '.css');
+				JHTML::stylesheet($folder . 'mediabox-' . $mbStyle . '.css');
 				self::script($folder . 'mediaboxAdv.js');
 			}
 			else
