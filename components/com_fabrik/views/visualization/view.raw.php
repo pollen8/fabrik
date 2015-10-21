@@ -2,7 +2,7 @@
 /**
  * @package     Joomla
  * @subpackage  Fabrik
- * @copyright   Copyright (C) 2005-2013 fabrikar.com - All rights reserved.
+ * @copyright   Copyright (C) 2005-2015 fabrikar.com - All rights reserved.
  * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
@@ -18,7 +18,7 @@ jimport('joomla.application.component.view');
  * @subpackage  Fabrik
  * @since       3.0.6
  */
-class FabrikViewVisualization extends JViewLegacy
+class FabrikViewVisualization extends FabrikView
 {
 	/**
 	 * Display

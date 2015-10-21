@@ -4,7 +4,7 @@
  *
  * @package     Joomla
  * @subpackage  Fabrik
- * @copyright   Copyright (C) 2005-2013 fabrikar.com - All rights reserved.
+ * @copyright   Copyright (C) 2005-2015 fabrikar.com - All rights reserved.
  * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
@@ -20,8 +20,7 @@ jimport('joomla.application.component.view');
  * @subpackage  Fabrik
  * @since       3.0
  */
-
-class FabrikViewForm extends JViewLegacy
+class FabrikViewForm extends FabrikViewFormBase
 {
 	/**
 	 * Access value
@@ -33,30 +32,23 @@ class FabrikViewForm extends JViewLegacy
 	/**
 	 * Execute and display a template script.
 	 *
-	 * @param   string  $tpl  The name of the template file to parse; automatically searches through the template paths.
+	 * @param   string $tpl The name of the template file to parse; automatically searches through the template paths.
 	 *
 	 * @return  mixed  A string if successful, otherwise a JError object.
 	 */
-
 	public function display($tpl = null)
 	{
-		$app = JFactory::getApplication();
-		$input = $app->input;
-		$w = new FabrikWorker;
-		$config = JFactory::getConfig();
+		$input = $this->app->input;
 		$model = $this->getModel('form');
-		$document = JFactory::getDocument();
 
 		// Get the active menu item
-		$usersConfig = JComponentHelper::getParams('com_fabrik');
-		$form = $model->getForm();
 		$model->render();
 
 		$listModel = $model->getListModel();
 
 		if (!$model->canPublish())
 		{
-			if (!$app->isAdmin())
+			if (!$this->app->isAdmin())
 			{
 				echo FText::_('COM_FABRIK_FORM_NOT_PUBLISHED');
 
@@ -68,7 +60,7 @@ class FabrikViewForm extends JViewLegacy
 
 		if ($this->access == 0)
 		{
-			return JError::raiseWarning(500, FText::_('JERROR_ALERTNOAUTHOR'));
+			$this->app->enqueueMessage(FText::_('JERROR_ALERTNOAUTHOR'), 'error');
 		}
 
 		if (is_object($listModel))
@@ -78,7 +70,7 @@ class FabrikViewForm extends JViewLegacy
 		}
 
 		$params = $model->getParams();
-		$params->def('icons', $app->getCfg('icons'));
+		$params->def('icons', $this->app->get('icons'));
 		$pop = ($input->get('tmpl') == 'component') ? 1 : 0;
 		$params->set('popup', $pop);
 		$view = $input->get('view', 'form');
@@ -88,29 +80,29 @@ class FabrikViewForm extends JViewLegacy
 			$model->setEditable(false);
 		}
 
-		$groups = $model->getGroupsHiarachy();
-		$gkeys = array_keys($groups);
+		$groups    = $model->getGroupsHiarachy();
+		$gkeys     = array_keys($groups);
 		$JSONarray = array();
-		$JSONHtml = array();
+		$JSONHtml  = array();
 
 		for ($i = 0; $i < count($gkeys); $i++)
 		{
-			$groupModel = $groups[$gkeys[$i]];
-			$groupTable = $groupModel->getGroup();
-			$group = new stdClass;
+			$groupModel  = $groups[$gkeys[$i]];
+			$groupTable  = $groupModel->getGroup();
+			$group       = new stdClass;
 			$groupParams = $groupModel->getParams();
-			$aElements = array();
+			$aElements   = array();
 
 			// Check if group is actually a table join
 			$repeatGroup = 1;
-			$foreignKey = null;
+			$foreignKey  = null;
 
 			if ($groupModel->canRepeat())
 			{
 				if ($groupModel->isJoin())
 				{
-					$joinModel = $groupModel->getJoinModel();
-					$joinTable = $joinModel->getJoin();
+					$joinModel  = $groupModel->getJoinModel();
+					$joinTable  = $joinModel->getJoin();
 					$foreignKey = '';
 
 					if (is_object($joinTable))
@@ -125,21 +117,21 @@ class FabrikViewForm extends JViewLegacy
 
 						$elementModels = $groupModel->getPublishedElements();
 						reset($elementModels);
-						$tmpElement = current($elementModels);
+						$tmpElement        = current($elementModels);
 						$smallerElHTMLName = $tmpElement->getFullName(true, false);
-						$repeatGroup = count($model->data[$smallerElHTMLName]);
+						$repeatGroup       = count($model->data[$smallerElHTMLName]);
 					}
 				}
 			}
 
 			$groupModel->repeatTotal = $repeatGroup;
-			$aSubGroups = array();
+			$aSubGroups              = array();
 
 			for ($c = 0; $c < $repeatGroup; $c++)
 			{
 				$aSubGroupElements = array();
-				$elCount = 0;
-				$elementModels = $groupModel->getPublishedElements();
+				$elCount           = 0;
+				$elementModels     = $groupModel->getPublishedElements();
 
 				foreach ($elementModels as $elementModel)
 				{
@@ -155,7 +147,7 @@ class FabrikViewForm extends JViewLegacy
 
 					// Force reload?
 					$elementModel->HTMLids = null;
-					$elementHTMLId = $elementModel->getHTMLId($c);
+					$elementHTMLId         = $elementModel->getHTMLId($c);
 
 					if (!$model->isEditable())
 					{
@@ -168,7 +160,7 @@ class FabrikViewForm extends JViewLegacy
 					// Test for paginate plugin
 					if (!$model->isEditable())
 					{
-						$elementModel->HTMLids = null;
+						$elementModel->HTMLids        = null;
 						$elementModel->inDetailedView = true;
 					}
 

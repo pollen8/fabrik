@@ -4,7 +4,7 @@
  *
  * @package     Joomla
  * @subpackage  Fabrik
- * @copyright   Copyright (C) 2005-2013 fabrikar.com - All rights reserved.
+ * @copyright   Copyright (C) 2005-2015 fabrikar.com - All rights reserved.
  * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
@@ -20,7 +20,6 @@ require_once JPATH_SITE . '/components/com_fabrik/views/list/view.base.php';
  * @subpackage  Fabrik
  * @since       3.0
  */
-
 class FabrikViewList extends FabrikViewListBase
 {
 	/**
@@ -30,12 +29,11 @@ class FabrikViewList extends FabrikViewListBase
 	 *
 	 * @return void
 	 */
-
 	public function display($tpl = null)
 	{
-		$app = JFactory::getApplication();
-		$input = $app->input;
-		$package = $app->getUserState('com_fabrik.package', 'fabrik');
+		$input = $this->app->input;
+
+		/** @var FabrikFEModelList $model */
 		$model = $this->getModel();
 		$model->setId($input->getInt('listid'));
 
@@ -46,7 +44,7 @@ class FabrikViewList extends FabrikViewListBase
 
 		$table = $model->getTable();
 		$params = $model->getParams();
-		$rowid = $input->getString('rowid', '', 'string');
+		$rowId = $input->getString('rowid', '', 'string');
 		list($this->headings, $groupHeadings, $this->headingClass, $this->cellClass) = $this->get('Headings');
 		$data = $model->render();
 		$this->emptyDataMessage = $this->get('EmptyDataMsg');
@@ -54,24 +52,24 @@ class FabrikViewList extends FabrikViewListBase
 		$form = $model->getFormModel();
 		$c = 0;
 
-		foreach ($data as $groupk => $group)
+		foreach ($data as $groupKey => $group)
 		{
 			foreach ($group as $i => $x)
 			{
 				$o = new stdClass;
 
-				if (is_object($data[$groupk]))
+				if (is_object($data[$groupKey]))
 				{
-					$o->data = JArrayHelper::fromObject($data[$groupk]);
+					$o->data = JArrayHelper::fromObject($data[$groupKey]);
 				}
 				else
 				{
-					$o->data = $data[$groupk][$i];
+					$o->data = $data[$groupKey][$i];
 				}
 
-				if (array_key_exists($groupk, $model->groupTemplates))
+				if (array_key_exists($groupKey, $model->groupTemplates))
 				{
-					$o->groupHeading = $model->groupTemplates[$groupk] . ' ( ' . count($group) . ' )';
+					$o->groupHeading = $model->groupTemplates[$groupKey] . ' ( ' . count($group) . ' )';
 				}
 
 				$o->cursor = $i + $nav->limitstart;
@@ -79,13 +77,13 @@ class FabrikViewList extends FabrikViewListBase
 				$o->id = 'list_' . $model->getRenderContext() . '_row_' . @$o->data->__pk_val;
 				$o->class = 'fabrik_row oddRow' . $c;
 
-				if (is_object($data[$groupk]))
+				if (is_object($data[$groupKey]))
 				{
-					$data[$groupk] = $o;
+					$data[$groupKey] = $o;
 				}
 				else
 				{
-					$data[$groupk][$i] = $o;
+					$data[$groupKey][$i] = $o;
 				}
 
 				$c = 1 - $c;
@@ -105,9 +103,9 @@ class FabrikViewList extends FabrikViewListBase
 			}
 		}
 
-		$d = array('id' => $table->id, 'listRef' => $input->get('listref'), 'rowid' => $rowid, 'model' => 'list', 'data' => $data,
+		$d = array('id' => $table->id, 'listRef' => $input->get('listref'), 'rowid' => $rowId, 'model' => 'list', 'data' => $data,
 			'headings' => $this->headings, 'formid' => $model->getTable()->form_id,
-			'lastInsertedRow' => JFactory::getSession()->get('lastInsertedRow', 'test'));
+			'lastInsertedRow' => $this->session->get('lastInsertedRow', 'test'));
 
 		$d['nav'] = get_object_vars($nav);
 		$tmpl = $input->get('tmpl', $this->getTmpl());
@@ -115,13 +113,12 @@ class FabrikViewList extends FabrikViewListBase
 		$d['calculations'] = $model->getCalculations();
 
 		// $$$ hugh - see if we have a message to include, set by a list plugin
-		$context = 'com_' . $package . '.list' . $model->getRenderContext() . '.msg';
-		$session = JFactory::getSession();
+		$context = 'com_' . $this->package . '.list' . $model->getRenderContext() . '.msg';
 
-		if ($session->has($context))
+		if ($this->session->has($context))
 		{
-			$d['msg'] = $session->get($context);
-			$session->clear($context);
+			$d['msg'] = $this->session->get($context);
+			$this->session->clear($context);
 		}
 
 		echo json_encode($d);
@@ -132,16 +129,14 @@ class FabrikViewList extends FabrikViewListBase
 	 *
 	 * @return  string template name
 	 */
-
 	private function getTmpl()
 	{
-		$app = JFactory::getApplication();
-		$input = $app->input;
+		$input = $this->app->input;
 		$model = $this->getModel();
 		$table = $model->getTable();
 		$params = $model->getParams();
 
-		if ($app->isAdmin())
+		if ($this->app->isAdmin())
 		{
 			$tmpl = $params->get('admin_template');
 

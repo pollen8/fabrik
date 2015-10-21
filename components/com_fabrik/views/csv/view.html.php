@@ -4,7 +4,7 @@
  *
  * @package     Joomla
  * @subpackage  Fabrik
- * @copyright   Copyright (C) 2005-2013 fabrikar.com - All rights reserved.
+ * @copyright   Copyright (C) 2005-2015 fabrikar.com - All rights reserved.
  * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
@@ -20,28 +20,25 @@ jimport('joomla.application.component.view');
  * @subpackage  Fabrik
  * @since       3.0.6
  */
-
-class FabrikViewCsv extends JViewLegacy
+class FabrikViewCsv extends FabrikView
 {
 	/**
 	 * Display the view
 	 *
-	 * @param   string  $tpl  Template name
+	 * @param   string $tpl Template name
 	 *
 	 * @return  mixed  A string if successful, otherwise a JError object.
 	 */
-
 	public function display($tpl = null)
 	{
-		$app = JFactory::getApplication();
-		$this->listid = $app->input->get('listid', 0);
-		$listModel = JModelLegacy::getInstance('List', 'FabrikFEModel');
+		$this->listid = $this->app->input->get('listid', 0);
+		$listModel    = JModelLegacy::getInstance('List', 'FabrikFEModel');
 		$listModel->setId($this->listid);
 		$this->setModel($listModel, true);
 		$this->table = $listModel->getTable();
-		$data = array();
+		$data        = array();
 		$this->getManagementJS($data);
-		$this->id = $listModel->getId();
+		$this->id   = $listModel->getId();
 		$this->form = $listModel->getForm();
 		$this->shim();
 
@@ -62,9 +59,9 @@ class FabrikViewCsv extends JViewLegacy
 	 */
 	protected function shim()
 	{
-		$shim = array();
-		$dep = new stdClass;
-		$dep->deps = array('fab/fabrik', 'fab/listfilter', 'fab/advanced-search', 'fab/encoder');
+		$shim             = array();
+		$dep              = new stdClass;
+		$dep->deps        = array('fab/fabrik', 'fab/listfilter', 'fab/advanced-search', 'fab/encoder');
 		$shim['fab/list'] = $dep;
 		FabrikHelperHTML::iniRequireJS($shim);
 	}
@@ -72,20 +69,19 @@ class FabrikViewCsv extends JViewLegacy
 	/**
 	 * Get the js needed for the view
 	 *
-	 * @param   array  $data  empty array
+	 * @param   array $data empty array
 	 *
 	 * @return  void
 	 */
 
 	protected function getManagementJS($data = array())
 	{
-		$app = JFactory::getApplication();
-		$model = $this->getModel();
-		$listid = $model->getId();
-		$script = array();
-		$opts = new stdClass;
-		$opts->admin = $app->isAdmin();
-		$opts->form = 'listform_' . $listid;
+		$model          = $this->getModel();
+		$listId         = $model->getId();
+		$script         = array();
+		$opts           = new stdClass;
+		$opts->admin    = $this->app->isAdmin();
+		$opts->form     = 'listform_' . $listId;
 		$opts->headings = $model->jsonHeadings();
 		list($this->headings, $groupHeadings, $this->headingClass, $this->cellClass) = $model->getHeadings();
 		$labels = $this->headings;
@@ -95,24 +91,24 @@ class FabrikViewCsv extends JViewLegacy
 			$l = strip_tags($l);
 		}
 
-		$listParams = $model->getParams();
-		$opts->labels = $labels;
-		$opts->csvChoose = (bool) $listParams->get('csv_frontend_selection');
-		$csvOpts = new stdClass;
-		$csvOpts->excel = (int) $listParams->get('csv_format');
+		$listParams            = $model->getParams();
+		$opts->labels          = $labels;
+		$opts->csvChoose       = (bool) $listParams->get('csv_frontend_selection');
+		$csvOpts               = new stdClass;
+		$csvOpts->excel        = (int) $listParams->get('csv_format');
 		$csvOpts->inctabledata = (int) $listParams->get('csv_include_data');
-		$csvOpts->incraw = (int) $listParams->get('csv_include_raw_data');
-		$csvOpts->inccalcs = (int) $listParams->get('csv_include_calculations');
-		$csvOpts->custom_qs = $listParams->get('csv_custom_qs', '');
-		$opts->csvOpts = $csvOpts;
-		$opts->csvFields = $this->get('CsvFields');
-		$csvOpts->incfilters = 0;
-		$opts->view = 'csv';
+		$csvOpts->incraw       = (int) $listParams->get('csv_include_raw_data');
+		$csvOpts->inccalcs     = (int) $listParams->get('csv_include_calculations');
+		$csvOpts->custom_qs    = $listParams->get('csv_custom_qs', '');
+		$opts->csvOpts         = $csvOpts;
+		$opts->csvFields       = $this->get('CsvFields');
+		$csvOpts->incfilters   = 0;
+		$opts->view            = 'csv';
 
 		// $$$rob if you are loading a table in a window from a form db join select record option
 		// then we want to know the id of the window so we can set its showSpinner() method
-		$opts->winid = $app->input->get('winid', '');
-		$opts = json_encode($opts);
+		$opts->winid = $this->app->input->get('winid', '');
+		$opts        = json_encode($opts);
 
 		JText::script('COM_FABRIK_CSV_COMPLETE');
 		JText::script('COM_FABRIK_CSV_DOWNLOAD_HERE');
@@ -130,12 +126,12 @@ class FabrikViewCsv extends JViewLegacy
 		JText::script('JYES');
 		JText::script('COM_FABRIK_SAVING_TO');
 
-		$srcs = FabrikHelperHTML::framework();
+		$srcs   = FabrikHelperHTML::framework();
 		$srcs[] = 'media/com_fabrik/js/list-plugin.js';
 		$srcs[] = 'media/com_fabrik/js/list.js';
 
-		$script[] = 'var list = new FbList(' . $listid . ',' . $opts . ');';
-		$script[] = 'Fabrik.addBlock(\'list_' . $listid . '\', list);';
+		$script[] = 'var list = new FbList(' . $listId . ',' . $opts . ');';
+		$script[] = 'Fabrik.addBlock(\'list_' . $listId . '\', list);';
 		FabrikHelperHTML::script($srcs, implode("\n", $script));
 	}
 }

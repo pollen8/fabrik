@@ -296,7 +296,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		{
 			if ($this->app->input->get('override_join_val_column_concat') != 1)
 			{
-				$val = str_replace("{thistable}", $join->table_join_alias, $params->get($this->concatLabelParam));
+				$val = $this->parseThisTable($params->get($this->concatLabelParam), $join);
 				$w = new FabrikWorker;
 				$val = $w->parseMessageForPlaceHolder($val, array(), false);
 				$this->joinLabelCols[(int) $useStep] = 'CONCAT_WS(\'\', ' . $val . ')';
@@ -320,6 +320,28 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		$this->joinLabelCols[(int) $useStep] = $useStep ? $joinTableName . '___' . $label : $db->qn($joinTableName . '.' . $label);
 
 		return $this->joinLabelCols[(int) $useStep];
+	}
+
+	/**
+	 * @param   string          $string Search string
+	 * @param   FabrikTableJoin $join   Join table
+	 * @param   string          $alias  Table alias - defaults to the join->table_join_alias
+	 *
+	 * @return mixed
+	 */
+	protected function parseThisTable($string, $join = null, $alias = null)
+	{
+		if (is_null($join))
+		{
+			$join = $this->getJoin();
+		}
+
+		if (is_null($alias))
+		{
+			$alias = $join->table_join_alias;
+		}
+
+		return str_replace('{thistable}', FabrikString::safeNameQuote($alias), $string);
 	}
 
 	/**
@@ -970,7 +992,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 						 * It's an odd index, so should be the rest of the expression.
 						* Do {thistable} replacement on it, trim it, and stuff it in the exprs array
 						*/
-						$join = str_replace("{thistable}", $ojoin->table_join_alias, $join);
+						$join = $this->parseThisTable($join, $ojoin);
 						$join_exprs[] = trim($join);
 					}
 				}
@@ -1013,7 +1035,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		// $$$rob 11/10/2011  remove order by statements which will be re-inserted at the end of buildQuery()
 		if (preg_match('/(ORDER\s+BY)(.*)/i', $where, $matches))
 		{
-			$this->orderBy = str_replace("{thistable}", $join->table_join_alias, $matches[0]);
+			$this->orderBy = $this->parseThisTable($matches[0], $join);
 			$where = str_replace($this->orderBy, '', $where);
 			$where = str_replace($matches[0], '', $where);
 		}
@@ -1048,7 +1070,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 			return $query ? $query : $where;
 		}
 
-		$where = str_replace("{thistable}", $thisTableAlias, $where);
+		$where = $this->parseThisTable($where, $join, $thisTableAlias);
 		$w = new FabrikWorker;
 		$data = is_array($data) ? $data : array();
 
@@ -1109,7 +1131,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		}
 		else
 		{
-			$val = str_replace("{thistable}", $join->table_join_alias, $params->get($this->concatLabelParam));
+			$val = $this->parseThisTable($params->get($this->concatLabelParam), $join);
 			$w = new FabrikWorker;
 			$val = $w->parseMessageForPlaceHolder($val, array(), false);
 

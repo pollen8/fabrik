@@ -5,7 +5,7 @@
  *
  * @package     Joomla
  * @subpackage  Fabrik
- * @copyright   Copyright (C) 2005-2013 fabrikar.com - All rights reserved.
+ * @copyright   Copyright (C) 2005-2015 fabrikar.com - All rights reserved.
  * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
@@ -35,36 +35,33 @@ class FabrikViewList extends FabrikViewListBase
 	{
 		if (parent::display($tpl) !== false)
 		{
-			$app = JFactory::getApplication();
-
-			if (!$app->isAdmin())
+			if (!$this->app->isAdmin())
 			{
 				$state = $this->get('State');
 				$this->params = $state->get('params');
-				$document = JFactory::getDocument();
 
 				if ($this->params->get('menu-meta_description'))
 				{
-					$document->setDescription($this->params->get('menu-meta_description'));
+					$this->doc->setDescription($this->params->get('menu-meta_description'));
 				}
 
 				if ($this->params->get('menu-meta_keywords'))
 				{
-					$document->setMetadata('keywords', $this->params->get('menu-meta_keywords'));
+					$this->doc->setMetadata('keywords', $this->params->get('menu-meta_keywords'));
 				}
 
 				if ($this->params->get('robots'))
 				{
-					$document->setMetadata('robots', $this->params->get('robots'));
+					$this->doc->setMetadata('robots', $this->params->get('robots'));
 				}
 			}
 
 			// Set the response to indicate a file download
-			$app->setHeader('Content-Type', 'application/vnd.ms-word');
+			$this->app->setHeader('Content-Type', 'application/vnd.ms-word');
 			$name = $this->getModel()->getTable()->label;
 			$name = JStringNormalise::toDashSeparated($name);
-			$app->setHeader('Content-Disposition', "attachment;filename=\"" . $name . ".doc\"");
-			$document->setMimeEncoding('text/html; charset=Windows-1252', false);
+			$this->app->setHeader('Content-Disposition', "attachment;filename=\"" . $name . ".doc\"");
+			$this->doc->setMimeEncoding('text/html; charset=Windows-1252', false);
 			$this->output();
 		}
 	}

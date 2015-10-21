@@ -4,7 +4,7 @@
  *
  * @package     Joomla
  * @subpackage  Fabrik
- * @copyright   Copyright (C) 2005-2013 fabrikar.com - All rights reserved.
+ * @copyright   Copyright (C) 2005-2015 fabrikar.com - All rights reserved.
  * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
@@ -43,28 +43,26 @@ class FabrikViewList extends FabrikViewListBase
 			/** @var FabrikFEModelList $model */
 			$model = $this->getModel();
 			$this->tabs = $model->loadTabs();
-			$app = JFactory::getApplication();
 
-			if (!$app->isAdmin() && isset($this->params))
+			if (!$this->app->isAdmin() && isset($this->params))
 			{
 				/** @var JObject $state */
 				$state = $model->getState();
 				$stateParams = $state->get('params');
-				$document = JFactory::getDocument();
 
 				if ($stateParams->get('menu-meta_description'))
 				{
-					$document->setDescription($stateParams->get('menu-meta_description'));
+					$this->doc->setDescription($stateParams->get('menu-meta_description'));
 				}
 
 				if ($stateParams->get('menu-meta_keywords'))
 				{
-					$document->setMetadata('keywords', $stateParams->get('menu-meta_keywords'));
+					$this->doc->setMetadata('keywords', $stateParams->get('menu-meta_keywords'));
 				}
 
 				if ($stateParams->get('robots'))
 				{
-					$document->setMetadata('robots', $stateParams->get('robots'));
+					$this->doc->setMetadata('robots', $stateParams->get('robots'));
 				}
 			}
 

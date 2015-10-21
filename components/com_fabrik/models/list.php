@@ -3602,12 +3602,13 @@ class FabrikFEModelList extends JModelForm
 
 		$db = FabrikWorker::getDbo();
 
-		// If the group by element isnt in the fields (IE its not published) add it (otherwise group by wont work)
+		// If the group by element isn't in the fields (IE its not published) add it (otherwise group by wont work)
 		$longGroupBy = $db->qn($this->getGroupBy());
+		$groupBy = $this->getGroupBy();
 
-		if (!in_array($longGroupBy, $searchAllFields) && trim($table->group_by) != '')
+		if (!in_array($longGroupBy, $searchAllFields) && trim($groupBy) != '')
 		{
-			$this->searchAllAsFields[] = FabrikString::safeColName($this->getGroupBy()) . ' AS ' . $longGroupBy;
+			$this->searchAllAsFields[] = FabrikString::safeColName($groupBy) . ' AS ' . $longGroupBy;
 			$searchAllFields[] = $longGroupBy;
 		}
 

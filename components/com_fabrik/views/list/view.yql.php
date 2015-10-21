@@ -4,7 +4,7 @@
  *
  * @package     Joomla
  * @subpackage  Fabrik
- * @copyright   Copyright (C) 2005-2013 fabrikar.com - All rights reserved.
+ * @copyright   Copyright (C) 2005-2015 fabrikar.com - All rights reserved.
  * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
@@ -20,7 +20,6 @@ require_once JPATH_SITE . '/components/com_fabrik/views/list/view.base.php';
  * @subpackage  Fabrik
  * @since       3.0.6
  */
-
 class FabrikViewList extends FabrikViewListBase
 {
 	/**
@@ -30,21 +29,18 @@ class FabrikViewList extends FabrikViewListBase
 	 *
 	 * @return void
 	 */
-
 	public function display($tpl = null)
 	{
-		$document = JFactory::getDocument();
 		$model = $this->getModel();
-		$app = JFactory::getApplication();
-		$input = $app->input;
+		$input = $this->app->input;
 		$usersConfig = JComponentHelper::getParams('com_fabrik');
 		$model->setId($input->getInt('listid', $usersConfig->get('listid')));
 		$model->render();
 		$table = $model->getTable();
-		$document->title = $table->label;
-		$document->description = $table->introduction;
-		$document->copyright = '';
-		$document->listid = $table->id;
-		$document->items = $model->getData();
+		$this->doc->title = $table->label;
+		$this->doc->description = $table->introduction;
+		$this->doc->copyright = '';
+		$this->doc->listid = $table->id;
+		$this->doc->items = $model->getData();
 	}
 }
