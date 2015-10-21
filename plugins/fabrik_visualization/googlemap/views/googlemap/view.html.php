@@ -4,7 +4,7 @@
  *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.visualization.googlemap
- * @copyright   Copyright (C) 2005-2013 fabrikar.com - All rights reserved.
+ * @copyright   Copyright (C) 2005-2015 fabrikar.com - All rights reserved.
  * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
@@ -107,7 +107,7 @@ class FabrikViewGooglemap extends JViewLegacy
 			$template = null;
 		}
 
-		// Assign plugin js to viz so we can then run clearFilters() 
+		// Assign plugin js to viz so we can then run clearFilters()
 		$aObjs = $model->getPluginJsObjects();
 
 		if (!empty($aObjs))

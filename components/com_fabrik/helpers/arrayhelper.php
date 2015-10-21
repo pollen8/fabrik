@@ -4,7 +4,7 @@
  *
  * @package     Joomla
  * @subpackage  Fabrik.helpers
- * @copyright   Copyright (C) 2005-2013 fabrikar.com - All rights reserved.
+ * @copyright   Copyright (C) 2005-2015 fabrikar.com - All rights reserved.
  * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
@@ -305,13 +305,13 @@ class FArrayHelper extends JArrayHelper
 
 		return  $even_emptierish ? empty($val) : $val === '' || !isset($val);
 	}
-	
-	/**	
+
+	/**
 	 * Workaround for J! 3.4 change in FArrayHelper::getValue(), which now forces $array to be, well, an array.
 	 * We've been a bit naughty and using it for things like SimpleXMLElement.  So for J! 3.4 release, 2/25/2015,
 	 * globally replaced all use of JArrayHelper::getValue() with FArrayHelper::getValue().  This code is just a
 	 * copy of the J! code, it just doesn't specify "array $array".
-	 * 
+	 *
 	 * @param   array   &$array   A named array
 	 * @param   string  $name     The key to search for
 	 * @param   mixed   $default  The default value to give if no key found
@@ -319,7 +319,7 @@ class FArrayHelper extends JArrayHelper
 	 *
 	 * @return  mixed  The value from the source array
 	 */
-	
+
 	public static function getValue(&$array, $name, $default = null, $type = '')
 	{
 		if (is_object($array))
@@ -385,5 +385,5 @@ class FArrayHelper extends JArrayHelper
 
 		return $result;
 	}
-	
+
 }

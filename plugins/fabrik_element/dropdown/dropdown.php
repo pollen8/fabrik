@@ -4,7 +4,7 @@
  *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.element.dropdown
- * @copyright   Copyright (C) 2005-2013 fabrikar.com - All rights reserved.
+ * @copyright   Copyright (C) 2005-2015 fabrikar.com - All rights reserved.
  * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
@@ -85,7 +85,7 @@ class PlgFabrik_ElementDropdown extends PlgFabrik_ElementList
 
 			$tmpLabel = FArrayHelper::getValue($labels, $i);
 			$disable = FArrayHelper::getValue($endIs, $i);
-				
+
 			// For values like '1"'
 			$tmpVal = htmlspecialchars($tmpVal, ENT_QUOTES);
 			$opt = JHTML::_('select.option', $tmpVal, $tmpLabel);
@@ -193,7 +193,7 @@ class PlgFabrik_ElementDropdown extends PlgFabrik_ElementList
 		$opts->value = $arSelected;
 		$opts->defaultVal = $this->getDefaultValue($data);
 		$opts->data = (empty($values) && empty($labels)) ? array() : array_combine($values, $labels);
-		$opts->multiple = (bool) $params->get('multiple', '0') == '1';		
+		$opts->multiple = (bool) $params->get('multiple', '0') == '1';
 		$opts->advanced = $this->getAdvancedSelectClass() != '';
 		JText::script('PLG_ELEMENT_DROPDOWN_ENTER_VALUE_LABEL');
 
@@ -271,7 +271,7 @@ class PlgFabrik_ElementDropdown extends PlgFabrik_ElementList
 	public function dataConsideredEmpty($data, $repeatCounter)
 	{
 		$data = $this->replaceLabelWithValue($data);
-		
+
 		if (is_array($data))
 		{
 			if (empty($data[0]) || $data[0] == "-1")
@@ -315,10 +315,10 @@ class PlgFabrik_ElementDropdown extends PlgFabrik_ElementList
 				return true;
 			}
 		}
-	
+
 		return false;
 	}
-	
+
 	/**
 	 * Replace a value with its label
 	 *

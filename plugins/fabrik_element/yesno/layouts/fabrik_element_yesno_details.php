@@ -4,7 +4,7 @@
  *
  * @package     Joomla
  * @subpackage  Fabrik
- * @copyright   Copyright (C) 2005-2014 fabrikar.com - All rights reserved.
+ * @copyright   Copyright (C) 2005-2015 fabrikar.com - All rights reserved.
  * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  * @since       3.2
  */
@@ -35,6 +35,6 @@ if ($data == '1') :
 else :
 	$icon = $j3 && $format != 'pdf' ? 'remove.png' : '0.png';
 	$properties['alt'] = FText::_('JNO');
-	
+
 	echo FabrikHelperHTML::image($icon, 'list', $tmpl, $properties, false, $opts);
 endif;

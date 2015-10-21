@@ -5,7 +5,7 @@
  *
  * @package     Joomla.Plugin
  * @subpackage  System
- * @copyright   Copyright (C) 2005-2013 fabrikar.com - All rights reserved.
+ * @copyright   Copyright (C) 2005-2015 fabrikar.com - All rights reserved.
  * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
@@ -390,7 +390,7 @@ class PlgSystemFabrik extends JPlugin
 			 * might add seperate config setting for global search max at some point.
 			 */
 			$listModel->setLimits(0, $fbConfig->get('filter_list_max', 100));
-			
+
 			$allRows = $listModel->getData();
 			$elementModel = $listModel->getFormModel()->getElement($params->get('search_description', $table->label), true);
 			$descName = is_object($elementModel) ? $elementModel->getFullName() : '';

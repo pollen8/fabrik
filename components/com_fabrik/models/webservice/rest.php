@@ -4,7 +4,7 @@
  *
  * @package     Joomla
  * @subpackage  Fabrik
- * @copyright   Copyright (C) 2005-2013 fabrikar.com - All rights reserved.
+ * @copyright   Copyright (C) 2005-2015 fabrikar.com - All rights reserved.
  * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
@@ -65,34 +65,34 @@ class FabrikWebServiceRest extends FabrikWebService
 		curl_setopt($session, CURLOPT_HTTPGET, true);
 		curl_setopt($session, CURLOPT_POST, false);
 		$json = curl_exec($session);
-		
+
 		if ($json === false)
 		{
 			$error = 'Fabrik webservice rest: CURL err: ' . curl_error($session);
 			throw new Exception($error, 500);
-			
-			return array();		
+
+			return array();
 		}
 		else
 		{
 			$phpObj = json_decode($json);
-	
+
 			if (!is_null($phpObj))
 			{
 				$startPoints = explode('.', $startPoint);
-	
+
 				foreach ($startPoints as $p)
 				{
 					$phpObj = &$phpObj->$p;
 				}
-	
+
 				return $phpObj;
 			}
 			else
 			{
 				$error = (string) $json === '' ? 'Fabrik webservice rest: Returned data not parseable as JSON' : (string) $json;
 				throw new Exception($error, 500);
-	
+
 				return array();
 			}
 		}
