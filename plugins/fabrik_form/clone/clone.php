@@ -21,7 +21,6 @@ require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
  * @subpackage  Fabrik.form.clone
  * @since       3.0
  */
-
 class PlgFabrik_FormClone extends PlgFabrik_Form
 {
 	/**
@@ -30,7 +29,6 @@ class PlgFabrik_FormClone extends PlgFabrik_Form
 	 *
 	 * @return	bool
 	 */
-
 	public function onAfterProcess()
 	{
 		return $this->_process();
@@ -41,10 +39,11 @@ class PlgFabrik_FormClone extends PlgFabrik_Form
 	 *
 	 * @return  bool
 	 */
-
 	private function _process()
 	{
 		$params = $this->getParams();
+
+		/** @var FabrikFEModelForm $formModel */
 		$formModel = $this->getModel();
 		$clone_times_field_id = $params->get('clone_times_field', '');
 		$clone_batchid_field_id = $params->get('clone_batchid_field', '');
@@ -62,7 +61,7 @@ class PlgFabrik_FormClone extends PlgFabrik_Form
 				$formModel->formData[$id_element->name . '_raw'] = $formModel->fullFormData['rowid'];
 				$listModel = $formModel->getlistModel();
 				$listModel->setFormModel($formModel);
-				$primaryKey = FabrikString::shortColName($listModel->getTable()->db_primary_key);
+				$primaryKey = FabrikString::shortColName($listModel->getPrimaryKey());
 				$formModel->formData[$primaryKey] = $formModel->fullFormData['rowid'];
 				$formModel->formData[$primaryKey . '_raw'] = $formModel->fullFormData['rowid'];
 				$listModel->storeRow($formModel->formData, $formModel->fullFormData['rowid']);

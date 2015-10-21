@@ -7211,7 +7211,7 @@ class FabrikFEModelList extends JModelForm
 			}
 		}
 
-		$primaryKey = FabrikString::shortColName($this->getTable()->db_primary_key);
+		$primaryKey = FabrikString::shortColName($this->getPrimaryKey());
 
 		if ($rowId != '' && $c == 1 && $lastKey == $primaryKey)
 		{
@@ -7362,13 +7362,7 @@ class FabrikFEModelList extends JModelForm
 		}
 
 		$db->setQuery(sprintf($fmtSql, implode(",", $tmp), $where));
-
-		if (!$db->execute())
-		{
-			throw new Exception($db->getErrorMsg());
-
-			return false;
-		}
+		$db->execute();
 
 		FabrikHelperHTML::debug((string) $db->getQuery(), 'list model updateObject:');
 
@@ -10097,6 +10091,26 @@ class FabrikFEModelList extends JModelForm
 	}
 
 	/**
+	 * Get the list's primary key field. Takes its value from the admin form options (so no inspection of the actual db
+	 * table)
+	 *
+	 * @param  bool  $step  False return dot syntax, true uses ___
+	 *
+	 * @return string
+	 */
+	public function getPrimaryKey($step = false)
+	{
+		$k = $this->getTable()->db_primary_key;
+
+		if ($step)
+		{
+			$k = FabrikString::safeColNameToArrayKey($k);
+		}
+
+		return $k;
+	}
+
+	/**
 	 * $$$ rob 19/10/2011 now called before formatData() from getData() as otherwise element tips (created in element->renderListData())
 	 * only contained first merged records data and not all merged records
 	 *
@@ -10119,7 +10133,7 @@ class FabrikFEModelList extends JModelForm
 			return;
 		}
 
-		$dbPrimaryKey = FabrikString::safeColNameToArrayKey($this->getTable()->db_primary_key);
+		$dbPrimaryKey = $this->getPrimaryKey(true);
 		$formModel = $this->getFormModel();
 		$db = $this->getDb();
 		FabrikHelperHTML::debug($data, 'render:before formatForJoins');
@@ -10377,7 +10391,7 @@ class FabrikFEModelList extends JModelForm
 		$data[$key] = $value;
 
 		// Ensure the primary key is set in $data
-		$primaryKey = FabrikString::shortColName($this->getTable()->db_primary_key);
+		$primaryKey = FabrikString::shortColName($this->getPrimaryKey());
 		$primaryKey = str_replace("`", "", $primaryKey);
 
 		if (!isset($data[$primaryKey]))
@@ -10498,51 +10512,56 @@ class FabrikFEModelList extends JModelForm
 		JArrayHelper::toInteger($ids);
 		$ids = implode(',', $ids);
 		$dbk = $k = $table->db_primary_key;
-		$joins = $this->getJoins();
+		// $joins = $this->getJoins();
 
 		// If the update element is in a join replace the key and table name with the join table's name and key
-		foreach ($joins as $join)
+		$groupModels = $this->getFormGroupElementData();
+
+		foreach ($groupModels as $groupModel)
 		{
-			if ((int) $join->list_id != 0 && $join->table_join == $tbl)
+			if ($groupModel->isJoin())
 			{
-				$joinFound = true;
-				$db->setQuery('DESCRIBE ' . $tbl);
-				$fields = $db->loadObjectList('Key');
-				$joinPkField = $fields['PRI']->Field;
-				$k = $tbl . '___' . $joinPkField;
-				$dbk = $db->qn($tbl . '.' . $joinPkField);
-				$db_table_name = $tbl;
-				$ids = array();
+				$joinModel = $groupModel->getJoinModel();
+				$join = $joinModel->getJoin();
 
-				foreach ($data as $groupData)
+				if ($tbl === $join->table_join)
 				{
-					foreach ($groupData as $d)
-					{
-						$v = $d->{$k . '_raw'};
+					$joinFound = true;
+					$k = $joinModel->getForeignID();
+					$dbk = $db->qn($joinModel->getForeignID('.'));
+					$db_table_name = $tbl;
 
-						if ($v != '')
+					foreach ($data as $groupData)
+					{
+						foreach ($groupData as $d)
 						{
-							$ids[] = $db->q($v);
+							$v = $d->{$k . '_raw'};
+
+							if ($v != '')
+							{
+								$ids[] = $db->q($v);
+							}
 						}
 					}
-				}
+					$ids = array_unique($ids);
 
-				if (!empty($ids))
-				{
-					$query = $db->getQuery(true);
-					$ids = implode(',', $ids);
-					$query->update($db_table_name)->set($update);
+					if (!empty($ids))
+					{
+						$query = $db->getQuery(true);
+						$ids = implode(',', $ids);
+						$query->update($db_table_name)->set($update);
 
-					if (!is_null($joinPkVal))
-					{
-						$query->where($dbk . ' = ' . $db->q($joinPkVal));
-					} else
-					{
-						$query->where($dbk . ' IN (' . $ids . ')');
+						if (!is_null($joinPkVal))
+						{
+							$query->where($dbk . ' = ' . $db->q($joinPkVal));
+						} else
+						{
+							$query->where($dbk . ' IN (' . $ids . ')');
+						}
+
+						$db->setQuery($query);
+						$db->execute();
 					}
-
-					$db->setQuery($query);
-					$db->execute();
 				}
 			}
 		}
@@ -11079,7 +11098,7 @@ class FabrikFEModelList extends JModelForm
 		$field = explode("AS", $col);
 		$field = array_shift($field);
 		$db = $this->getDb();
-		$k = $this->getTable()->db_primary_key;
+		$k = $this->getPrimaryKey();
 		$tbl = $this->getTable()->db_table_name;
 
 		// Get the primary keys and ordering values for the selection.

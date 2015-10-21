@@ -69,10 +69,11 @@ class PlgFabrik_FormSalesforce extends PlgFabrik_Form
 	 *
 	 * @return	bool
 	 */
-
 	public function onAfterProcess()
 	{
 		@ini_set("soap.wsdl_cache_enabled", "0");
+
+		/** @var FabrikFEModelForm $formModel */
 		$formModel = $this->getModel();
 		$client = $this->client();
 		$params = $this->getParams();
@@ -115,7 +116,7 @@ class PlgFabrik_FormSalesforce extends PlgFabrik_Form
 			}
 		}
 
-		$key = FabrikString::safeColNameToArrayKey($formModel->getlistModel()->getTable()->db_primary_key);
+		$key = $formModel->getlistModel()->getPrimaryKey(true);
 		$customKey = $params->get('salesforce_customid') . '__c';
 
 		if ($params->get('salesforce_allowupsert', 0))

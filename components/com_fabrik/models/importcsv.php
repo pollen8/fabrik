@@ -1165,7 +1165,7 @@ class FabrikFEModelImportcsv extends JModelForm
 
 		$model = $this->getlistModel();
 
-		if (trim($model->getTable()->db_primary_key) !== '')
+		if (trim($model->getPrimaryKey()) !== '')
 		{
 			return false;
 		}

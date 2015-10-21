@@ -1537,7 +1537,7 @@ class FabrikFEModelForm extends FabModelForm
 			 * $$$ hugh - There HAS to be an easier way of getting the PK element name, that doesn't involve calling getPrimaryKeyAndExtra(),
 			 * which is a horribly expensive operation.
 			 */
-			$primaryKey = FabrikString::safeColNameToArrayKey($this->getListModel()->getTable()->db_primary_key);
+			$primaryKey = $this->getListModel()->getPrimaryKey(true);
 			$data['__pk_val'] = FArrayHelper::getValue($data, $primaryKey . '_raw', FArrayHelper::getValue($data, $primaryKey, ''));
 		}
 
@@ -3650,7 +3650,7 @@ class FabrikFEModelForm extends FabModelForm
 	 * @param   bool    $checkInt    Check search name against element id
 	 * @param   bool    $checkShort  Check short element name
 	 *
-	 * @return  PlgFabrik_Element|boolean  ok: element model not ok: false
+	 * @return  PlgFabrik_Element  ok: element model not ok: false
 	 */
 	public function getElement($searchName, $checkInt = false, $checkShort = true)
 	{

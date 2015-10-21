@@ -209,7 +209,6 @@ class PlgFabrik_Form extends FabrikPlugin
 		unset($model->emailData);
 		$d = isset($model->formDataWithTableName) ? $model->formDataWithTableName : array();
 		$this->data = array_merge($d, $this->getEmailData());
-
 		JDEBUG ? $profiler->mark("getProcessData: end") : null;
 
 		return $this->data;
@@ -412,9 +411,11 @@ class PlgFabrik_Form extends FabrikPlugin
 			}
 		}
 
-		if (is_object($listModel))
+		$pk = $listModel->getPrimaryKey(true);
+
+		// If form contained joins then this was altering the exiting pk data to be the joined table's id - not good!
+		if (is_object($listModel) && empty($this->emailData[$pk]))
 		{
-			$pk = FabrikString::safeColNameToArrayKey($listModel->getTable()->db_primary_key);
 			$this->emailData[$pk] = $listModel->lastInsertId;
 			$this->emailData[$pk . '_raw'] = $listModel->lastInsertId;
 		}
