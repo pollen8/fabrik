@@ -3,7 +3,7 @@
  * Fabrik JS-Periodical - run JS every x ms
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.element.jsperiodical
- * @copyright   Copyright (C) 2005-2013 fabrikar.com - All rights reserved.
+ * @copyright   Copyright (C) 2005-2015 fabrikar.com - All rights reserved.
  * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 

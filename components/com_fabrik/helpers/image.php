@@ -4,7 +4,7 @@
  *
  * @package     Joomla
  * @subpackage  Fabrik.helpers
- * @copyright   Copyright (C) 2005-2013 fabrikar.com - All rights reserved.
+ * @copyright   Copyright (C) 2005-2015 fabrikar.com - All rights reserved.
  * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
@@ -16,7 +16,7 @@ defined('_JEXEC') or die('Restricted access');
  *
  * @package     Joomla
  * @subpackage  Fabrik.helpers
- * @copyright   Copyright (C) 2005-2013 fabrikar.com - All rights reserved.
+ * @copyright   Copyright (C) 2005-2015 fabrikar.com - All rights reserved.
  * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  * @since       1.0
  */
@@ -83,7 +83,7 @@ class FabimageHelper
 		$output = '';
 		$gdversion = null;
 		$gd_info = null;
-		
+
 		//$GDfuncList = get_extension_funcs('gd');
 		if (function_exists('gd_info'))
 		{
@@ -240,7 +240,7 @@ class Fabimage
 	public function resize($maxWidth, $maxHeight, $origFile, $destFile, $quality = 100)
 	{
 	}
-	
+
 	/**
 	 * Grab an image from a remote URI and store in cache, then serve cached image
 	 *
@@ -273,23 +273,23 @@ class Fabimage
 		 * ... we should probably clean $file, replace non alphanumeric chars with
 		 * underscores, as filenames with things like commas, = signs etc. could be problematic, both in
 		 * the file system, and on the IMG URL.
-		 * 
+		 *
 		 * EDIT - hopefully just md5()'ing the file should fix the above, needed to do it as we finally had
 		 * someone report a problem with invalid file name, see ...
-		 * 
+		 *
 		 * https://github.com/Fabrik/fabrik/pull/1307
-		 * 
+		 *
 		 * So ... just preserve original extension (if any) and append it to md5() of file name.
 		 */
-		
+
 		$ext = pathinfo($file, PATHINFO_EXTENSION);
 		$file = md5($file);
-		
+
 		if (!empty($ext))
 		{
 			$file .= '.' . $ext;
 		}
-		
+
 		$folder = JPATH_SITE . '/' . ltrim($path, '/');
 
 		// For SSL a user agent may need to be set.
@@ -332,7 +332,7 @@ class Fabimage
 
 		return $src;
 	}
-	
+
 	/**
 	 * Exif to number
 	 *
@@ -344,7 +344,7 @@ class Fabimage
 	public static function exifToNumber($value, $format)
 	{
 		$spos = JString::strpos($value, '/');
-	
+
 		if ($spos === false)
 		{
 			return sprintf($format, $value);
@@ -354,11 +354,11 @@ class Fabimage
 			$bits = explode('/', $value, 2);
 			$base = FArrayHelper::getValue($bits, 0);
 			$divider = FArrayHelper::getValue($bits, 1);
-	
+
 			return ($divider == 0) ? sprintf($format, 0) : sprintf($format, ($base / $divider));
 		}
 	}
-	
+
 	/**
 	 * Exif to coordinate
 	 *
@@ -370,14 +370,14 @@ class Fabimage
 	public static function exifToCoordinate($reference, $coordinate)
 	{
 		$prefix = ($reference == 'S' || $reference == 'W') ? '-' : '';
-	
+
 		return $prefix
 		. sprintf('%.6F',
 				self::exifToNumber($coordinate[0], '%.6F') +
 				(((self::exifToNumber($coordinate[1], '%.6F') * 60) + (self::exifToNumber($coordinate[2], '%.6F'))) / 3600)
 		);
 	}
-	
+
 	/**
 	 * Get coordinates
 	 *
@@ -390,17 +390,17 @@ class Fabimage
 		if (extension_loaded('exif'))
 		{
 			$exif = exif_read_data($filename, 'EXIF');
-	
+
 			if (isset($exif['GPSLatitudeRef']) && isset($exif['GPSLatitude']) && isset($exif['GPSLongitudeRef']) && isset($exif['GPSLongitude']))
 			{
 				return array(self::exifToCoordinate($exif['GPSLatitudeRef'], $exif['GPSLatitude']),
 						self::exifToCoordinate($exif['GPSLongitudeRef'], $exif['GPSLongitude']));
 			}
 		}
-	
+
 		return false;
 	}
-	
+
 	/**
 	 * Set coordinates to DMS
 	 *
@@ -418,11 +418,11 @@ class Fabimage
 		$coordinate = ($coordinate - $degree) * 60;
 		$minute = intval($coordinate);
 		$second = ($coordinate - $minute) * 60;
-	
+
 		return sprintf("%s %d&#xB0; %02d&#x2032; %05.2f&#x2033;", $sign, $degree, $minute, $second);
 	}
-	
-	
+
+
 }
 
 /**
@@ -430,7 +430,7 @@ class Fabimage
  *
  * @package     Joomla
  * @subpackage  Fabrik.helpers
- * @copyright   Copyright (C) 2005-2013 fabrikar.com - All rights reserved.
+ * @copyright   Copyright (C) 2005-2015 fabrikar.com - All rights reserved.
  * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  * @since       1.0
  */
@@ -558,7 +558,7 @@ class FabimageGD extends Fabimage
 		{
 			$dest = $source;
 		}
-		
+
 		$source = $this->imageCreateFrom($source);
 		$app = JFactory::getApplication();
 
@@ -575,7 +575,7 @@ class FabimageGD extends Fabimage
 
 		return array($rotate, $width, $height);
 	}
-	
+
 	/*
 	 * Check for EXIF orientation data, and rotate image accordingly
 	*
@@ -607,7 +607,7 @@ class FabimageGD extends Fabimage
 			}
 		}
 	}
-	
+
 
 	/**
 	 * Scale an image
@@ -839,7 +839,7 @@ class FabimageGD extends Fabimage
  *
  * @package     Joomla
  * @subpackage  Fabrik.helpers
- * @copyright   Copyright (C) 2005-2013 fabrikar.com - All rights reserved.
+ * @copyright   Copyright (C) 2005-2015 fabrikar.com - All rights reserved.
  * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  * @since       1.0
  */
@@ -995,7 +995,7 @@ class FabimageGD2 extends FabimageGD
  *
  * @package     Joomla
  * @subpackage  Fabrik.helpers
- * @copyright   Copyright (C) 2005-2013 fabrikar.com - All rights reserved.
+ * @copyright   Copyright (C) 2005-2015 fabrikar.com - All rights reserved.
  * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  * @since       1.0
  */
@@ -1010,7 +1010,7 @@ class FabimageIM extends Fabimage
 	 * @param   string  $origFile   current images folder path (must have trailing end slash)
 	 * @param   string  $destFile   destination folder path for resized image (must have trailing end slash)
 	 * @param   int     $quality    Percentage image save quality 100 = no compression, 0 = max compression
-	 *                              
+	 *
 	 * @return  object  image
 	 */
 

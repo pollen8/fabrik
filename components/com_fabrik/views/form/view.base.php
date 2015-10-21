@@ -65,6 +65,13 @@ class FabrikViewFormBase extends FabrikView
 
 		/** @var FabrikFEModelForm $model */
 		$model           = $this->getModel('form');
+
+		if (!$model)
+		{
+			// Dodgy URL - can't find the form name see https://github.com/Fabrik/fabrik/issues/1248
+			return;
+		}
+
 		$model->isMambot = $this->isMambot;
 		$form            = $model->getForm();
 

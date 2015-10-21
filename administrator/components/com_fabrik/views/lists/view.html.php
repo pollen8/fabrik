@@ -4,7 +4,7 @@
  *
  * @package     Joomla
  * @subpackage  Fabrik
- * @copyright   Copyright (C) 2005-2013 fabrikar.com - All rights reserved.
+ * @copyright   Copyright (C) 2005-2015 fabrikar.com - All rights reserved.
  * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
@@ -138,12 +138,12 @@ class FabrikAdminViewLists extends JViewLegacy
 		}
 
 		JToolBarHelper::divider();
-		
+
 		if (JFactory::getUser()->authorise('core.manage', 'com_checkin'))
 		{
 			JToolBarHelper::custom('lists.checkin', 'checkin.png', 'checkin_f2.png', 'JTOOLBAR_CHECKIN', true);
 		}
-		
+
 		JToolBarHelper::divider();
 
 		if ($this->state->get('filter.published') == -2 && $canDo->get('core.delete'))

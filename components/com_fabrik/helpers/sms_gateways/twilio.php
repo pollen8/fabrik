@@ -4,7 +4,7 @@
  *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.form.sms
- * @copyright   Copyright (C) 2005-2013 fabrikar.com - All rights reserved.
+ * @copyright   Copyright (C) 2005-2015 fabrikar.com - All rights reserved.
  * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
@@ -42,7 +42,7 @@ class Twilio extends JObject
 		$smstos = explode(",", $smsto);
 
 		$client = new Services_Twilio($username, $token);
-		
+
 		foreach ($smstos as $smsto)
 		{
 			try {
@@ -57,11 +57,11 @@ class Twilio extends JObject
 			catch (Services_Twilio_RestException $e)
 			{
 				//echo $e->getMessage();
-				
+
 				return false;
 			}
 		}
-		
+
 		return true;
 	}
 }

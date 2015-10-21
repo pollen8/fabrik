@@ -4,7 +4,7 @@
  *
  * @package     Joomla
  * @subpackage  Form
- * @copyright   Copyright (C) 2005-2013 fabrikar.com - All rights reserved.
+ * @copyright   Copyright (C) 2005-2015 fabrikar.com - All rights reserved.
  * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
@@ -54,7 +54,7 @@ class JFormFieldFacetedlinks extends JFormFieldList
 		$listOrder = json_decode($listParams->get('faceted_list_order'));
 		$this->value = (array) $this->value;
 		$linkedLists = FArrayHelper::getValue($this->value, 'linkedlist', array());
-		$linkedForms = FArrayHelper::getValue($this->value, 'linkedform', array());		
+		$linkedForms = FArrayHelper::getValue($this->value, 'linkedform', array());
 
 		if (empty($listOrder) || is_null($listOrder))
 		{

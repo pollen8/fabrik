@@ -4,7 +4,7 @@
  *
  * @package     Joomla.Administrator
  * @subpackage  Fabrik
- * @copyright   Copyright (C) 2005-2013 fabrikar.com - All rights reserved.
+ * @copyright   Copyright (C) 2005-2015 fabrikar.com - All rights reserved.
  * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  * @since       1.6
  */
@@ -109,12 +109,12 @@ class FabrikModelUpgrade extends FabModelAdmin
 			JFactory::getApplication()->enqueueMessage('Already updated');
 			return;
 		}
-		
+
 		if (!$this->backUp())
 		{
 			return;
 		}
-		
+
 		$db = JFactory::getDbo(true);
 		$updates = array('#__fabrik_elements', '#__fabrik_cron', '#__fabrik_forms', '#__fabrik_groups', '#__fabrik_joins', '#__fabrik_jsactions',
 			'#__fabrik_tables', '#__fabrik_visualizations');
@@ -206,9 +206,9 @@ class FabrikModelUpgrade extends FabModelAdmin
 			$db->setQuery("ALTER TABLE " . $prefix . "fabrik_ratings CHANGE `tableid` `listid` INT( 6 ) NOT NULL");
 			$db->execute();
 		}
-		
+
 		JFactory::getApplication()->enqueueMessage('Upgraded OK!');
-		
+
 	}
 
 	/**

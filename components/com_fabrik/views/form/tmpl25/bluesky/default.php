@@ -4,7 +4,7 @@
  *
  * @package     Joomla
  * @subpackage  Fabrik
- * @copyright   Copyright (C) 2005-2013 fabrikar.com - All rights reserved.
+ * @copyright   Copyright (C) 2005-2015 fabrikar.com - All rights reserved.
  * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  * @since       3.0
  */
@@ -87,7 +87,7 @@ echo "$form->error</div>";?>
 		<div class="groupoutro"><?php echo $group->outro ?></div>
 	<?php
 	endif;
-	?>	
+	?>
 
 	</fieldset>
 <?php

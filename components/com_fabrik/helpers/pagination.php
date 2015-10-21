@@ -4,7 +4,7 @@
  *
  * @package     Joomla
  * @subpackage  Fabrik
- * @copyright   Copyright (C) 2005-2013 fabrikar.com - All rights reserved.
+ * @copyright   Copyright (C) 2005-2015 fabrikar.com - All rights reserved.
  * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
@@ -429,9 +429,9 @@ class FPagination extends JPagination
 		$displayData->pagesCounter = $list['pagescounter'];
 		$displayData->listName =  'limit' . $this->id;
 		$displayData->links = $list['pageslinks'];
-		
+
 		$paths[] = JPATH_THEMES . '/' . JFactory::getApplication()->getTemplate() . '/html/layouts/com_fabrik/list_' . $this->id;
-		
+
 		$layout = FabrikHelperHTML::getLayout('pagination.fabrik-pagination-footer', $paths);
 
 		return $layout->render($displayData);

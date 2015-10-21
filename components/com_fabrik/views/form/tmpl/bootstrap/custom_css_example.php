@@ -4,7 +4,7 @@
  *
  * @package     Joomla
  * @subpackage  Fabrik
- * @copyright   Copyright (C) 2005-2013 fabrikar.com - All rights reserved.
+ * @copyright   Copyright (C) 2005-2015 fabrikar.com - All rights reserved.
  * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  * @since       3.0
  */
@@ -19,13 +19,13 @@
  * have an ID of "form_X" (where X is the form's numeric ID), while edit forms (for existing
  * rows) will have an ID of "form_X_Y" (where Y is the rowid).  Detail views will always
  * be of the format "details_X_Y".
- * 
+ *
  * So to apply styles for (say) form ID 123, you would use ...
- * 
+ *
  * #form_123, #form_123_$rowid { ... }
- * 
+ *
  * Or to style for any form / row, it would just be ...
- * 
+ *
  * #$form { ... }
  *
  * See examples below, which you should remove if you copy this file.
@@ -33,7 +33,7 @@
  * Don't edit anything outside of the BEGIN and END comments.
  *
  * For more on custom CSS, see the Wiki at:
- * 
+ *
  * http://www.fabrikar.com/forums/index.php?wiki/form-and-details-templates/#the-custom-css-file
  *
  * NOTE - for backward compatibility with Fabrik 2.1, and in case you

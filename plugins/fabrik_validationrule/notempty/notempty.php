@@ -4,7 +4,7 @@
  *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.validationrule.notempty
- * @copyright   Copyright (C) 2005-2013 fabrikar.com - All rights reserved.
+ * @copyright   Copyright (C) 2005-2015 fabrikar.com - All rights reserved.
  * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
@@ -48,7 +48,7 @@ class PlgFabrik_ValidationruleNotempty extends PlgFabrik_Validationrule
 		{
 			$ok = $this->elementModel->dataConsideredEmpty($data, $repeatCounter);
 		}
-		
+
 		return !$ok;
 	}
 }

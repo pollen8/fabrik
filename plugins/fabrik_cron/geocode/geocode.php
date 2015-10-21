@@ -4,7 +4,7 @@
  *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.cron.geocode
- * @copyright   Copyright (C) 2005-2013 fabrikar.com - All rights reserved.
+ * @copyright   Copyright (C) 2005-2015 fabrikar.com - All rights reserved.
  * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
@@ -45,12 +45,12 @@ class PlgFabrik_CronGeocode extends PlgFabrik_Cron
 	 *
 	 * @return  bool
 	 */
-	
+
 	public function requiresTableData()
 	{
 		return true;
 	}
-	
+
 	/**
 	 * Do the plugin action
 	 *
@@ -66,7 +66,7 @@ class PlgFabrik_CronGeocode extends PlgFabrik_Cron
 
 		$db = $listModel->getDb();
 		$query = $db->getQuery(true);
-		
+
 		// Grab the table model and find table name and PK
 		$table = $listModel->getTable();
 		$table_name = $table->db_table_name;

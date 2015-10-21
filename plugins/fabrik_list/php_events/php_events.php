@@ -4,7 +4,7 @@
  *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.list.phpevents
- * @copyright   Copyright (C) 2005-2013 fabrikar.com - All rights reserved.
+ * @copyright   Copyright (C) 2005-2015 fabrikar.com - All rights reserved.
  * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
@@ -105,17 +105,17 @@ class PlgFabrik_ListPhp_Events extends PlgFabrik_List
 
 		return $this->doEvaluate($params->get('list_phpevents_ondeleterows'));
 	}
-	
+
 	/**
 	 * Called after the model has deleted rows
 	 *
 	 * @return  bool  false if fail
 	 */
-	
+
 	public function onAfterDeleteRows()
 	{
 		$params = $this->getParams();
-	
+
 		return $this->doEvaluate($params->get('list_phpevents_onafterdeleterows'));
 	}
 

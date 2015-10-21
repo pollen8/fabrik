@@ -4,7 +4,7 @@
  *
  * @package     Joomla
  * @subpackage  Fabrik
- * @copyright   Copyright (C) 2005-2013 fabrikar.com - All rights reserved.
+ * @copyright   Copyright (C) 2005-2015 fabrikar.com - All rights reserved.
  * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
@@ -30,7 +30,7 @@ endif;
 ?>
 <?php if ($this->tablePicker != '') { ?>
 	<div style="text-align:right"><?php echo FText::_('COM_FABRIK_LIST') ?>: <?php echo $this->tablePicker; ?></div>
-<?php } 
+<?php }
 if ($this->showTitle == 1) { ?>
 	<h1><?php echo $this->table->label;?></h1>
 <?php }?>
