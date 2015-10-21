@@ -992,7 +992,6 @@ class FabrikAdminModelElement extends FabModelAdmin
 		JArrayHelper::toInteger($ids);
 		$db    = FabrikWorker::getDbo(true);
 		$query = $db->getQuery(true);
-		JArrayHelper::toInteger($ids);
 		$query->select('id')->from('#__{package}_elements')->where('group_id IN (' . implode(',', $ids) . ')');
 
 		return $db->setQuery($query)->loadColumn();
@@ -1000,6 +999,7 @@ class FabrikAdminModelElement extends FabModelAdmin
 
 	/**
 	 * Potentially drop fields then remove element record
+	 * Will also do the same for child elements
 	 *
 	 * @param   array &$pks To delete
 	 *
@@ -1018,14 +1018,25 @@ class FabrikAdminModelElement extends FabModelAdmin
 			}
 
 			$pluginModel = $this->pluginManager->getElementPlugin($id);
-			$pluginModel->onRemove($id);
+			$pluginModel->onRemove();
+			$children = $pluginModel->getElementDescendents($id);
+
+			foreach ($children as $childId)
+			{
+				$childModel = $this->pluginManager->getElementPlugin($childId);
+				$childModel->onRemove();
+			}
+
+			// Enables the deletion of child elements
+			$pks = array_merge($pks, $children);
+
 			$element = $pluginModel->getElement();
 
 			if ($pluginModel->isRepeatElement())
 			{
 				$listModel = $pluginModel->getListModel();
 				$db        = $listModel->getDb();
-				$tableName = $db->quoteName($this->getRepeatElementTableName($pluginModel));
+				$tableName = $db->qn($this->getRepeatElementTableName($pluginModel));
 				$db->setQuery('DROP TABLE ' . $tableName);
 				$db->execute();
 			}
@@ -1037,7 +1048,7 @@ class FabrikAdminModelElement extends FabModelAdmin
 			if (!empty($item->id))
 			{
 				$db = $listModel->getDb();
-				$db->setQuery('ALTER TABLE ' . $db->quoteName($item->db_table_name) . ' DROP ' . $db->quoteName($element->name));
+				$db->setQuery('ALTER TABLE ' . $db->qn($item->db_table_name) . ' DROP ' . $db->qn($element->name));
 				$db->execute();
 			}
 		}

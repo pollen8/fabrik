@@ -4386,11 +4386,9 @@ class PlgFabrik_Element extends FabrikPlugin
 	/**
 	 * Called from admin element controller when element is removed
 	 *
-	 * @param   bool  $drop  has the user elected to drop column?
-	 *
 	 * @return  bool  save ok or not
 	 */
-	public function onRemove($drop = false)
+	public function onRemove()
 	{
 		// Delete js actions
 		$db = FabrikWorker::getDbo(true);
@@ -6537,7 +6535,7 @@ class PlgFabrik_Element extends FabrikPlugin
 	 *
 	 * @return  array
 	 */
-	protected function getElementDescendents($id = 0)
+	public function getElementDescendents($id = 0)
 	{
 		if (empty($id))
 		{
