@@ -599,6 +599,8 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 	 */
 	public function onIpn()
 	{
+		//header('HTTP/1.1 200 OK');
+
 		$input = $this->app->input;
 		$mail = JFactory::getMailer();
 		JTable::addIncludePath(JPATH_ADMINISTRATOR . '/components/com_fabrik/tables');
@@ -662,21 +664,24 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 			$req .= "&$key=$value";
 		}
 
-		// Post back to PayPal system to validate
-		$header = "POST /cgi-bin/webscr HTTP/1.1\r\n";
-		$header .= "Host: www.paypal.com:443\r\n";
-		$header .= "Content-Type: application/x-www-form-urlencoded\r\n";
-		$header .= "Content-Length: " . JString::strlen($req) . "\r\n\r\n";
-		$header .= "Connection: close\r\n";
-
 		if ($_POST['test_ipn'] == 1)
 		{
-			$paypalUrl = 'ssl://www.sandbox.paypal.com';
+			$paypalHost = 'www.sandbox.paypal.com';
 		}
 		else
 		{
-			$paypalUrl = 'ssl://www.paypal.com';
+			$paypalHost = 'www.paypal.com';
 		}
+
+		$paypalUrl = 'ssl://' . $paypalHost;
+
+		// Post back to PayPal system to validate
+		$header = "POST /cgi-bin/webscr HTTP/1.1\r\n";
+		$header .= "Host: " . $paypalHost . "\r\n";
+		$header .= "Connection: close\r\n";
+		$header .= "Content-Type: application/x-www-form-urlencoded\r\n";
+		$header .= "Content-Length: " . JString::strlen($req) . "\r\n\r\n";
+
 
 		// Assign posted variables to local variables
 		$item_name = $input->get('item_name', '', 'string');
@@ -725,7 +730,7 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 					 * check that payment_amount/payment_currency are correct
 					 * process payment
 					 */
-					if (JString::strcmp($res, "VERIFIED") == 0)
+					if (JString::strcmp($res, "VERIFIED") === 0)
 					{
 						// $$tom This block Paypal from updating the IPN field if the payment status evolves (e.g. from Pending to Completed)
 						// $$$ hugh - added check of status, so only barf if there is a status field, and it is Completed for this txn_id
@@ -886,7 +891,7 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 							}
 						}
 					}
-					elseif (JString::strcmp($res, "INVALID") == 0)
+					elseif (JString::strcmp($res, "INVALID") === 0)
 					{
 						$status = 'form.paypal.ipnfailure.invalid';
 						$errMsg = 'paypal postback failed with INVALID';
@@ -894,14 +899,8 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 						$log->message = $errMsg;
 						$log->store();
 					}
-					else
-					{
-						$status = 'form.paypal.ipnfailure.unknown';
-						$errMsg = 'paypal postback failed with unknown response: ' . $res;
-						$log->message_type = 'form.paypal.ipnfailure.unknown';
-						$log->message = $errMsg;
-						$log->store();
-					}
+
+					$fullResponse .= $res;
 				}
 
 				fclose($fp);
