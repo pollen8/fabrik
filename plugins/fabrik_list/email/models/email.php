@@ -266,7 +266,7 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 		$model       = $this->listModel;
 		$input = $this->app->input;
 
-		$pk          = $model->getTable()->db_primary_key;
+		$pk          = $model->getPrimaryKey();
 		$pk2         = FabrikString::safeColNameToArrayKey($pk) . '_raw';
 
 		/**

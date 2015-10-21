@@ -21,7 +21,6 @@ require_once 'fabmodeladmin.php';
  * @subpackage  Fabrik
  * @since       3.0
  */
-
 class FabrikAdminModelImport extends FabModelAdmin
 {
 	/**
@@ -33,6 +32,7 @@ class FabrikAdminModelImport extends FabModelAdmin
 
 	/**
 	 * JTables to import
+	 *
 	 * @var JTables
 	 */
 	protected $tables = array();
@@ -40,20 +40,19 @@ class FabrikAdminModelImport extends FabModelAdmin
 	/**
 	 * Returns a reference to the a Table object, always creating it.
 	 *
-	 * @param   string  $type    The table type to instantiate
-	 * @param   string  $prefix  A prefix for the table class name. Optional.
-	 * @param   array   $config  Configuration array for model. Optional.
+	 * @param   string $type   The table type to instantiate
+	 * @param   string $prefix A prefix for the table class name. Optional.
+	 * @param   array  $config Configuration array for model. Optional.
 	 *
-	 * @return  JTable	A database object
+	 * @return  JTable    A database object
 	 */
-
 	public function getTable($type = 'List', $prefix = 'FabrikTable', $config = array())
 	{
 		$sig = $type . $prefix . implode('.', $config);
 
 		if (!array_key_exists($sig, $this->tables))
 		{
-			$config['dbo'] = FabrikWorker::getDbo(true);
+			$config['dbo']      = FabrikWorker::getDbo(true);
 			$this->tables[$sig] = FabTable::getInstance($type, $prefix, $config);
 		}
 
@@ -63,12 +62,11 @@ class FabrikAdminModelImport extends FabModelAdmin
 	/**
 	 * Method to get the record form.
 	 *
-	 * @param   array  $data      Data for the form.
-	 * @param   bool   $loadData  True if the form is to load its own data (default case), false if not.
+	 * @param   array $data     Data for the form.
+	 * @param   bool  $loadData True if the form is to load its own data (default case), false if not.
 	 *
-	 * @return  mixed	A JForm object on success, false on failure
+	 * @return  mixed    A JForm object on success, false on failure
 	 */
-
 	public function getForm($data = array(), $loadData = true)
 	{
 		// Get the form.
@@ -87,13 +85,12 @@ class FabrikAdminModelImport extends FabModelAdmin
 	/**
 	 * Method to get the data that should be injected in the form.
 	 *
-	 * @return  mixed	The data for the form.
+	 * @return  mixed    The data for the form.
 	 */
-
 	protected function loadFormData()
 	{
 		// Check the session for previously entered form data.
-		$data = JFactory::getApplication()->getUserState('com_fabrik.edit.import.data', array());
+		$data = $this->app->getUserState('com_fabrik.edit.import.data', array());
 
 		if (empty($data))
 		{

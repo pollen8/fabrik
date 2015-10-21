@@ -851,7 +851,7 @@ class FabrikViewFormBase extends JViewLegacy
 			// see http://fabrikar.com/forums/showthread.php?t=10297&page=5
 
 			$fields[] = '<input type="hidden" name="usekey" value="' . $useKey . '" />';
-			$pk_val = FArrayHelper::getValue($model->data, FabrikString::safeColNameToArrayKey($listModel->getTable()->db_primary_key));
+			$pk_val = FArrayHelper::getValue($model->data, $listModel->getPrimaryKey(true));
 
 			if (empty($pk_val))
 			{

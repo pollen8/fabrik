@@ -51,7 +51,6 @@ class FabrikModelGooglemap extends FabrikFEModelVisualization
 	 *
 	 * @return  string
 	 */
-
 	public function getText()
 	{
 		return $this->txt;
@@ -301,7 +300,6 @@ class FabrikModelGooglemap extends FabrikFEModelVisualization
 			}
 
 			$template_nl2br = FArrayHelper::getValue($templates_nl2br, $c, '1') == '1';
-			$table = $listModel->getTable();
 			$mapsElements = FabrikHelperList::getElements($listModel, array('plugin' => 'googlemap', 'published' => 1));
 			$coordColumn = $mapsElements[0]->getFullName(true, false) . "_raw";
 
@@ -758,9 +756,9 @@ class FabrikModelGooglemap extends FabrikFEModelVisualization
 		foreach ($models as $model)
 		{
 			$id = $model->getTable()->id;
-			$tmpls = $model->groupTemplates;
+			$templates = $model->groupTemplates;
 
-			foreach ($tmpls as $k => $v)
+			foreach ($templates as $k => $v)
 			{
 				$k = preg_replace('#[^0-9a-zA-Z_]#', '', $k);
 				$groupByTemplates[$id][$k] = $v;

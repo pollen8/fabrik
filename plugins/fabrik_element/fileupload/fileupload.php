@@ -2928,7 +2928,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		{
 			JError::setErrorHandling(E_ALL, 'ignore');
 			$listModel = $this->getListModel();
-			$pk = $listModel->getTable()->db_primary_key;
+			$pk = $listModel->getPrimaryKey();
 			$fabrikDb = $listModel->getDb();
 			list($table_name, $element_name) = explode('.', $hit_counter);
 			$sql = "UPDATE $table_name SET $element_name = COALESCE($element_name,0) + 1 WHERE $pk = " . $fabrikDb->q($rowId);

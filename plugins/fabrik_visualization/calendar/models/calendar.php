@@ -451,12 +451,12 @@ class FabrikModelCalendar extends FabrikFEModelVisualization
 					}
 				}
 
-				$pk = $listModel->getTable()->db_primary_key;
+				$pk = $listModel->getPrimaryKey();
 				$query = $db->getQuery(true);
 				$query = $listModel->buildQuerySelect('list', $query);
 				$status = trim($data['status']) !== '' ? FabrikString::safeColName($data['status']) : "''";
 				$query->select($pk . ' AS id, ' . $pk . ' AS rowid, ' . $startDate . ' AS startdate, ' . $endDate . ' AS enddate')
-					->select('"" AS link, ' . $label . ' AS label, ' . $db->quote($data['colour']) . ' AS colour, 0 AS formid')
+					->select('"" AS link, ' . $label . ' AS label, ' . $db->q($data['colour']) . ' AS colour, 0 AS formid')
 				->select($status . ' AS status')
 				->order($startDate . ' ASC');
 				$query = $listModel->buildQueryJoin($query);

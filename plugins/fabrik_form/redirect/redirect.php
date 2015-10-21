@@ -360,12 +360,13 @@ class PlgFabrik_FormRedirect extends PlgFabrik_Form
 	 */
 	protected function _storeInSession()
 	{
+		/** @var FabrikFEModelForm $formModel */
 		$formModel = $this->getModel();
 		$listModel = $formModel->getlistModel();
 		$input = $this->app->input;
 		$store = array();
 
-		$pk = FabrikString::safeColNameToArrayKey($listModel->getTable()->db_primary_key);
+		$pk = $listModel->getPrimaryKey(true);
 
 		if ($this->data['save_in_session'] == '1')
 		{

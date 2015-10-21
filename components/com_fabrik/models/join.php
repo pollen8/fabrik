@@ -151,7 +151,6 @@ class FabrikFEModelJoin extends FabModel
 	{
 		if (!isset($this->join))
 		{
-			$db = FabrikWorker::getDbo(true);
 			$this->join = FabTable::getInstance('join', 'FabrikTable');
 			$this->join->load(array($key => $id));
 			$this->paramsType($this->join);

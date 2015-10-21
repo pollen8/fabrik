@@ -21,7 +21,6 @@ require_once 'fabmodeladmin.php';
  * @subpackage  Fabrik
  * @since       3.0
  */
-
 class FabrikAdminModelHome extends FabModelAdmin
 {
 	/**
@@ -34,13 +33,12 @@ class FabrikAdminModelHome extends FabModelAdmin
 	/**
 	 * Returns a reference to the a Table object, always creating it.
 	 *
-	 * @param   string  $type    The table type to instantiate
-	 * @param   string  $prefix  A prefix for the table class name. Optional.
-	 * @param   array   $config  Configuration array for model. Optional.
+	 * @param   string $type   The table type to instantiate
+	 * @param   string $prefix A prefix for the table class name. Optional.
+	 * @param   array  $config Configuration array for model. Optional.
 	 *
-	 * @return  JTable	A database object
+	 * @return  JTable    A database object
 	 */
-
 	public function getTable($type = 'Cron', $prefix = 'FabrikTable', $config = array())
 	{
 		$config['dbo'] = FabrikWorker::getDbo(true);
@@ -51,12 +49,11 @@ class FabrikAdminModelHome extends FabModelAdmin
 	/**
 	 * Method to get the record form.
 	 *
-	 * @param   array  $data      Data for the form.
-	 * @param   bool   $loadData  True if the form is to load its own data (default case), false if not.
+	 * @param   array $data     Data for the form.
+	 * @param   bool  $loadData True if the form is to load its own data (default case), false if not.
 	 *
-	 * @return  mixed	A JForm object on success, false on failure
+	 * @return  mixed    A JForm object on success, false on failure
 	 */
-
 	public function getForm($data = array(), $loadData = true)
 	{
 		return false;
@@ -67,7 +64,6 @@ class FabrikAdminModelHome extends FabModelAdmin
 	 *
 	 * @return string
 	 */
-
 	public function getRSSFeed()
 	{
 		//  Get RSS parsed object - Turn off error reporting as SimplePie creates strict error notices.
@@ -78,8 +74,8 @@ class FabrikAdminModelHome extends FabModelAdmin
 		if ($version->RELEASE == 2.5)
 		{
 			//  get RSS parsed object
-			$options = array();
-			$options['rssUrl'] = 'http://feeds.feedburner.com/fabrik';
+			$options               = array();
+			$options['rssUrl']     = 'http://feeds.feedburner.com/fabrik';
 			$options['cache_time'] = 86400;
 
 			$rssDoc = JFactory::getXMLparser('RSS', $options);
@@ -97,12 +93,12 @@ class FabrikAdminModelHome extends FabModelAdmin
 		{
 			// Channel header and link
 			$title = $rssDoc->get_title();
-			$link = $rssDoc->get_link();
+			$link  = $rssDoc->get_link();
 
 			$output = '<table class="adminlist">';
 			$output .= '<tr><th colspan="3"><a href="' . $link . '" target="_blank">' . FText::_($title) . '</th></tr>';
 
-			$items = array_slice($rssDoc->get_items(), 0, 3);
+			$items    = array_slice($rssDoc->get_items(), 0, 3);
 			$numItems = count($items);
 
 			if ($numItems == 0)
@@ -144,20 +140,19 @@ class FabrikAdminModelHome extends FabModelAdmin
 	 *
 	 * @return  void
 	 */
-
 	public function installSampleData()
 	{
-		$cnn = FabrikWorker::getConnection();
+		$cnn      = FabrikWorker::getConnection();
 		$defaulDb = $cnn->getDb();
-		$db = FabrikWorker::getDbo(true);
-		$group = $this->getTable('Group');
-		$config = JFactory::getConfig();
+		$db       = FabrikWorker::getDbo(true);
+		$group    = $this->getTable('Group');
+		$config   = $this->config;
 
 		$dbTableName = $config->get('dbprefix') . "fb_contact_sample";
 		echo "<div style='text-align:left;border:1px dotted #cccccc;padding:10px;'>" . "<h3>Installing data...</h3><ol>";
 
-		$group->name = "Contact Details";
-		$group->label = "Contact Details";
+		$group->name      = "Contact Details";
+		$group->label     = "Contact Details";
 		$group->published = 1;
 
 		if (!$group->store())
@@ -172,9 +167,9 @@ class FabrikAdminModelHome extends FabModelAdmin
 		echo "<li>Group 'Contact Details' created</li>";
 		echo "<li>Element 'Email' added to group 'Contact Details'</li>";
 
-		$group = $this->getTable('Group');
-		$group->name = "Your Enquiry";
-		$group->label = "Your Enquiry";
+		$group            = $this->getTable('Group');
+		$group->name      = "Your Enquiry";
+		$group->label     = "Your Enquiry";
 		$group->published = 1;
 
 		if (!$group->store())
@@ -187,15 +182,15 @@ class FabrikAdminModelHome extends FabModelAdmin
 
 		echo "<li>Element 'Message' added to group 'Your Enquiry'</li>";
 
-		$form = $this->getTable('Form');
-		$form->label = "Contact Us";
+		$form                     = $this->getTable('Form');
+		$form->label              = "Contact Us";
 		$form->record_in_database = 1;
-		$form->intro = "This is a sample contact us form, that is stored in a database table";
+		$form->intro              = "This is a sample contact us form, that is stored in a database table";
 
 		$form->submit_button_label = "Submit";
-		$form->published = 1;
+		$form->published           = 1;
 
-		$form->form_template = "default";
+		$form->form_template      = "default";
 		$form->view_only_template = "default";
 
 		if (!$form->store())
@@ -227,21 +222,21 @@ class FabrikAdminModelHome extends FabModelAdmin
 		}
 
 		echo "<li>Groups added to 'Contact Us' form</li>";
-		$listModel = JModelLegacy::getInstance('List', 'FabrikAdminModel');
-		$list = $this->getTable('List');
-		$list->label = "Contact Us Data";
-		$list->introduction = "This table stores the data submitted in the contact us form";
-		$list->form_id = $formId;
+		$listModel           = JModelLegacy::getInstance('List', 'FabrikAdminModel');
+		$list                = $this->getTable('List');
+		$list->label         = "Contact Us Data";
+		$list->introduction  = "This table stores the data submitted in the contact us form";
+		$list->form_id       = $formId;
 		$list->connection_id = $cnn->getConnection()->id;
 		$list->db_table_name = $dbTableName;
 
 		// Store without name quotes as that's db specific
 		$list->db_primary_key = $dbTableName . '.id';
-		$list->auto_inc = 1;
-		$list->published = 1;
-		$list->rows_per_page = 10;
-		$list->params = $listModel->getDefaultParams();
-		$list->template = 'default';
+		$list->auto_inc       = 1;
+		$list->published      = 1;
+		$list->rows_per_page  = 10;
+		$list->params         = $listModel->getDefaultParams();
+		$list->template       = 'default';
 
 		$list->store();
 		echo "<li>Table for 'Contact Us' created</li></div>";
@@ -267,10 +262,9 @@ class FabrikAdminModelHome extends FabModelAdmin
 	 *
 	 * @return  void or JError
 	 */
-
 	public function reset()
 	{
-		$db = FabrikWorker::getDbo(true);
+		$db     = FabrikWorker::getDbo(true);
 		$prefix = '#__{package}_';
 		$tables = array('cron', 'elements', 'formgroup', 'forms', 'form_sessions', 'groups', 'joins', 'jsactions', 'packages', 'lists',
 			'validations', 'visualizations');
@@ -287,12 +281,11 @@ class FabrikAdminModelHome extends FabModelAdmin
 	 *
 	 * @return  void
 	 */
-
 	public function dropData()
 	{
 		$connModel = JModelLegacy::getInstance('Connection', 'FabrikFEModel');
 		$connModel->setId($item->connection_id);
-		$db = FabrikWorker::getDbo(true);
+		$db    = FabrikWorker::getDbo(true);
 		$query = $db->getQuery(true);
 		$query->select("connection_id, db_table_name")->from('#__{package}_lists');
 		$db->setQuery($query);
@@ -301,7 +294,7 @@ class FabrikAdminModelHome extends FabModelAdmin
 		foreach ($rows as $row)
 		{
 			$connModel->setId($row->connection_id);
-			$c = $connModel->getConnection($row->connection_id);
+			$c        = $connModel->getConnection($row->connection_id);
 			$fabrikDb = $connModel->getDb();
 			$fabrikDb->dropTable($row->db_table_name);
 		}

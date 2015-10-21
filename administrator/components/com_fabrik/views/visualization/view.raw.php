@@ -20,7 +20,6 @@ jimport('joomla.application.component.view');
  * @subpackage  Fabrik
  * @since       3.0
  */
-
 class FabrikAdminViewVisualization extends JViewLegacy
 {
 	/**
@@ -47,11 +46,10 @@ class FabrikAdminViewVisualization extends JViewLegacy
 	/**
 	 * Display the view
 	 *
-	 * @param   string  $tpl  Template
+	 * @param   string $tpl Template
 	 *
 	 * @return  void
 	 */
-
 	public function display($tpl = null)
 	{
 		echo "Fabrik Visualization admin raw display";
