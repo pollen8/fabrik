@@ -698,8 +698,10 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 			. ' ' . $input->get('address_state', '', 'string') . ' '
 			. $input->get('address_city', '', 'string') . ' ' . $input->get('address_country_code', '', 'string');
 
-		$status = 'ok';
+		$status = 'form.paypal.ipnfailure.empty';
 		$errMsg = '';
+
+		$fullResponse = array();
 
 		if (empty($formId))
 		{
@@ -732,6 +734,8 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 					 */
 					if (JString::strcmp($res, "VERIFIED") === 0)
 					{
+						$status = 'ok';
+
 						// $$tom This block Paypal from updating the IPN field if the payment status evolves (e.g. from Pending to Completed)
 						// $$$ hugh - added check of status, so only barf if there is a status field, and it is Completed for this txn_id
 						if (!empty($ipnTxnField) && !empty($ipnStatusField))
@@ -900,7 +904,7 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 						$log->store();
 					}
 
-					$fullResponse .= $res;
+					$fullResponse[] = $res;
 				}
 
 				fclose($fp);
@@ -927,7 +931,7 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 			}
 
 			$log->message_type = $status;
-			$log->message = $emailText . "\n//////////////\n" . $res . "\n//////////////\n" . $req . "\n//////////////\n" . $errMsg;
+			$log->message = $emailText . "\n//////////////\n" . $fullResponse . "\n//////////////\n" . $req . "\n//////////////\n" . $errMsg;
 
 			if ($send_default_email == '1')
 			{
