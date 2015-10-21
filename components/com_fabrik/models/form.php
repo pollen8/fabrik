@@ -3981,9 +3981,12 @@ class FabrikFEModelForm extends FabModelForm
 			$remove = "/{edit:\s*.*?}/i";
 			$text = preg_replace($remove, '', $text);
 			$match = "/{details:\s*.*?}/i";
+
 			$text = preg_replace_callback($match, array($this, '_getIntroOutro'), $text);
-			$text = str_replace('[', '{', $text);
-			$text = str_replace(']', '}', $text);
+
+			// Was removing [rowid] from  {fabrik view=list id=2 countries___id=[rowid]} in details intro
+			//$text = str_replace('[', '{', $text);
+			//$text = str_replace(']', '}', $text);
 		}
 		else
 		{
@@ -3993,8 +3996,10 @@ class FabrikFEModelForm extends FabModelForm
 			$remove = "/{" . $remove . ":\s*.*?}/i";
 			$text = preg_replace_callback($match, array($this, '_getIntroOutro'), $text);
 			$text = preg_replace($remove, '', $text);
-			$text = str_replace('[', '{', $text);
-			$text = str_replace(']', '}', $text);
+
+			// Was removing [rowid] from  {fabrik view=list id=2 countries___id=[rowid]} in form intro
+			//$text = str_replace('[', '{', $text);
+			//$text = str_replace(']', '}', $text);
 			$text = preg_replace("/{details:\s*.*?}/i", '', $text);
 		}
 
