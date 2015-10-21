@@ -409,6 +409,7 @@ var FbList = new Class({
 		opts.Itemid = this.options.Itemid;
 		opts.listid = this.id;
 		opts.listref = this.options.listRef;
+		opts.download = 0;
 		opts.setListRefFromRequest = 1;
 
 		this.options.csvOpts.custom_qs.split('&').each(function (qs) {

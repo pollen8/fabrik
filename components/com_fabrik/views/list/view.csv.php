@@ -77,7 +77,7 @@ class FabrikViewList extends FabrikViewListBase
 		{
 			// Only get the total if not set - otherwise causes memory issues when we downloading
 			$total = $model->getTotalRecords();
-			$session->set($key, $total);
+			$this->session->set($key, $total);
 		}
 		else
 		{
@@ -95,7 +95,8 @@ class FabrikViewList extends FabrikViewListBase
 				return;
 			}
 
-			$canDownload = $start + $limit >= $total;
+			$download = (bool) $input->getInt('download', true);
+			$canDownload = ($start + $limit >= $total) && $download;
 			$exporter->writeFile($total, $canDownload);
 
 			if ($canDownload)
@@ -124,18 +125,9 @@ class FabrikViewList extends FabrikViewListBase
 	{
 		$input = $this->app->input;
 		$input->set('limitstart' . $model->getId(), 0);
-		$download = $input->getBool('download', true);
 
 		// Remove the total from the session
 		$this->session->clear($key);
-
-		if ($download)
-		{
-			$exporter->downloadFile();
-		}
-		else
-		{
-			$exporter->writeCSVFile();
-		}
+		$exporter->downloadFile();
 	}
 }
