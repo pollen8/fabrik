@@ -25,13 +25,6 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 {
 
 	/**
-	 * Number has been formatted
-	 *
-	 * @var Boolean
-	 */
-	protected $numberFormatted = false;
-
-	/**
 	 * Shows the data formatted for the list view
 	 *
 	 * @param   string    $data      Elements data
