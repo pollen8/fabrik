@@ -21,7 +21,6 @@ require_once JPATH_SITE . '/components/com_fabrik/helpers/googlemap.php';
  * @subpackage  Fabrik.element.googlemap
  * @since       3.0
  */
-
 class PlgFabrik_ElementGooglemap extends PlgFabrik_Element
 {
 	/**

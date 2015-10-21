@@ -20,7 +20,6 @@ jimport('joomla.application.component.view');
  * @subpackage  Fabrik
  * @since       3.0
  */
-
 class FabrikAdminViewVisualization extends JViewLegacy
 {
 	/**
@@ -46,6 +45,7 @@ class FabrikAdminViewVisualization extends JViewLegacy
 
 	/**
 	 * Plugin HTML
+	 *
 	 * @var string
 	 */
 	protected $pluginFields;
@@ -53,17 +53,16 @@ class FabrikAdminViewVisualization extends JViewLegacy
 	/**
 	 * Display the view
 	 *
-	 * @param   string  $tpl  Template
+	 * @param   string $tpl Template
 	 *
 	 * @return  void
 	 */
-
 	public function display($tpl = null)
 	{
 		// Initialise variables.
-		$this->form = $this->get('Form');
-		$this->item = $this->get('Item');
-		$this->state = $this->get('State');
+		$this->form         = $this->get('Form');
+		$this->item         = $this->get('Item');
+		$this->state        = $this->get('State');
 		$this->pluginFields = $this->get('PluginHTML');
 
 		// Check for errors.
@@ -75,20 +74,20 @@ class FabrikAdminViewVisualization extends JViewLegacy
 		$this->addToolbar();
 		FabrikAdminHelper::setViewLayout($this);
 
-		$srcs = FabrikHelperHTML::framework();
-		$srcs[] = 'media/com_fabrik/js/fabrik.js';
-		$srcs[] = 'administrator/components/com_fabrik/views/namespace.js';
-		$srcs[] = 'administrator/components/com_fabrik/views/pluginmanager.js';
-		$srcs[] = 'administrator/components/com_fabrik/views/visualization/adminvisualization.js';
+		$source   = FabrikHelperHTML::framework();
+		$source[] = 'media/com_fabrik/js/fabrik.js';
+		$source[] = 'administrator/components/com_fabrik/views/namespace.js';
+		$source[] = 'administrator/components/com_fabrik/views/pluginmanager.js';
+		$source[] = 'administrator/components/com_fabrik/views/visualization/adminvisualization.js';
 
-		$shim = array();
-		$dep = new stdClass;
-		$dep->deps = array('admin/pluginmanager');
+		$shim                                           = array();
+		$dep                                            = new stdClass;
+		$dep->deps                                      = array('admin/pluginmanager');
 		$shim['admin/visualization/adminvisualization'] = $dep;
 
 		FabrikHelperHTML::iniRequireJS($shim);
 
-		$opts = new stdClass;
+		$opts         = new stdClass;
 		$opts->plugin = $this->item->plugin;
 
 		$js = "
@@ -96,29 +95,29 @@ class FabrikAdminViewVisualization extends JViewLegacy
 		Fabrik.controller = new AdminVisualization(options);
 ";
 
-		FabrikHelperHTML::script($srcs, $js);
+		FabrikHelperHTML::script($source, $js);
 		parent::display($tpl);
 	}
 
 	/**
 	 * Add the page title and toolbar.
 	 *
-	 * @since	1.6
+	 * @since    1.6
 	 *
 	 * @return  null
 	 */
-
 	protected function addToolbar()
 	{
 		$app = JFactory::getApplication();
 		$app->input->set('hidemainmenu', true);
-		$user = JFactory::getUser();
-		$isNew = ($this->item->id == 0);
-		$userId = $user->get('id');
-		$checkedOut	= !($this->item->checked_out == 0 || $this->item->checked_out == $user->get('id'));
-		$canDo = FabrikAdminHelper::getActions($this->state->get('filter.category_id'));
-		$title = $isNew ? FText::_('COM_FABRIK_MANAGER_VISUALIZATION_NEW') : FText::_('COM_FABRIK_MANAGER_VISUALIZATION_EDIT');
-		$title .= $isNew ? '' : ' "' . $this->item->label . '"';
+		$user         = JFactory::getUser();
+		$isNew        = ($this->item->get('id') == 0);
+		$userId       = $user->get('id');
+		$checkedOutBy = $this->item->get('checked_out');
+		$checkedOut   = !($checkedOutBy == 0 || $checkedOutBy == $user->get('id'));
+		$canDo        = FabrikAdminHelper::getActions($this->state->get('filter.category_id'));
+		$title        = $isNew ? FText::_('COM_FABRIK_MANAGER_VISUALIZATION_NEW') : FText::_('COM_FABRIK_MANAGER_VISUALIZATION_EDIT');
+		$title .= $isNew ? '' : ' "' . $this->item->get('label') . '"';
 		JToolBarHelper::title($title, 'visualization.png');
 
 		if ($isNew)
@@ -139,7 +138,7 @@ class FabrikAdminViewVisualization extends JViewLegacy
 			if (!$checkedOut)
 			{
 				// Since it's an existing record, check the edit permission, or fall back to edit own if the owner.
-				if ($canDo->get('core.edit') || ($canDo->get('core.edit.own') && $this->item->created_by == $userId))
+				if ($canDo->get('core.edit') || ($canDo->get('core.edit.own') && $this->item->get('created_by') == $userId))
 				{
 					JToolBarHelper::apply('visualization.apply', 'JTOOLBAR_APPLY');
 					JToolBarHelper::save('visualization.save', 'JTOOLBAR_SAVE');
