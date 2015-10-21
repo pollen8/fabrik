@@ -21,7 +21,6 @@ require_once 'fabmodeladmin.php';
  * @subpackage  Fabrik
  * @since       3.0
  */
-
 class FabrikAdminModelCron extends FabModelAdmin
 {
 	/**
@@ -34,13 +33,12 @@ class FabrikAdminModelCron extends FabModelAdmin
 	/**
 	 * Returns a reference to the a Table object, always creating it.
 	 *
-	 * @param   string  $type    The table type to instantiate
-	 * @param   string  $prefix  A prefix for the table class name. Optional.
-	 * @param   array   $config  Configuration array for model. Optional.
+	 * @param   string $type   The table type to instantiate
+	 * @param   string $prefix A prefix for the table class name. Optional.
+	 * @param   array  $config Configuration array for model. Optional.
 	 *
 	 * @return  JTable  A database object
 	 */
-
 	public function getTable($type = 'Cron', $prefix = 'FabrikTable', $config = array())
 	{
 		$config['dbo'] = FabrikWorker::getDbo(true);
@@ -51,12 +49,11 @@ class FabrikAdminModelCron extends FabModelAdmin
 	/**
 	 * Method to get the record form.
 	 *
-	 * @param   array  $data      Data for the form.
-	 * @param   bool   $loadData  True if the form is to load its own data (default case), false if not.
+	 * @param   array $data     Data for the form.
+	 * @param   bool  $loadData True if the form is to load its own data (default case), false if not.
 	 *
 	 * @return  mixed  A JForm object on success, false on failure
 	 */
-
 	public function getForm($data = array(), $loadData = true)
 	{
 		// Get the form.
@@ -75,11 +72,10 @@ class FabrikAdminModelCron extends FabModelAdmin
 	 *
 	 * @return  mixed  The data for the form.
 	 */
-
 	protected function loadFormData()
 	{
 		// Check the session for previously entered form data.
-		$data = JFactory::getApplication()->getUserState('com_fabrik.edit.cron.data', array());
+		$data = $this->app->getUserState('com_fabrik.edit.cron.data', array());
 
 		if (empty($data))
 		{
@@ -93,11 +89,10 @@ class FabrikAdminModelCron extends FabModelAdmin
 	 * Get html form fields for a plugin (filled with
 	 * current element's plugin data
 	 *
-	 * @param   string  $plugin  plugin name
+	 * @param   string $plugin plugin name
 	 *
-	 * @return  string	html form fields
+	 * @return  string    html form fields
 	 */
-
 	public function getPluginHTML($plugin = null)
 	{
 		$item = $this->getItem();
@@ -120,8 +115,8 @@ class FabrikAdminModelCron extends FabModelAdmin
 		else
 		{
 			$plugin = $pluginManager->getPlugIn($plugin, 'Cron');
-			$mode = FabrikWorker::j3() ? 'nav-tabs' : '';
-			$str = $plugin->onRenderAdminSettings(JArrayHelper::fromObject($item), null, $mode);
+			$mode   = FabrikWorker::j3() ? 'nav-tabs' : '';
+			$str    = $plugin->onRenderAdminSettings(JArrayHelper::fromObject($item), null, $mode);
 		}
 
 		return $str;
@@ -130,16 +125,15 @@ class FabrikAdminModelCron extends FabModelAdmin
 	/**
 	 * Save the cron job - merging plugin parameters
 	 *
-	 * @param   array  $data  The form data.
+	 * @param   array $data The form data.
 	 *
 	 * @return  boolean  True on success, False on error.
 	 */
-
 	public function save($data)
 	{
 		if (FArrayHelper::getValue($data, 'lastrun') == '')
 		{
-			$date = JFactory::getDate();
+			$date            = JFactory::getDate();
 			$data['lastrun'] = $date->toSql();
 		}
 
@@ -151,20 +145,19 @@ class FabrikAdminModelCron extends FabModelAdmin
 	/**
 	 * Method to validate the form data.
 	 *
-	 * @param   JForm   $form   The form to validate against.
-	 * @param   array   $data   The data to validate.
-	 * @param   string  $group  The name of the field group to validate.
+	 * @param   JForm  $form  The form to validate against.
+	 * @param   array  $data  The data to validate.
+	 * @param   string $group The name of the field group to validate.
 	 *
 	 * @see     JFormRule
 	 * @see     JFilterInput
 	 *
 	 * @return  mixed  Array of filtered data if valid, false otherwise.
 	 */
-
 	public function validate($form, $data, $group = null)
 	{
 		$params = $data['params'];
-		$ok = parent::validate($form, $data);
+		$ok     = parent::validate($form, $data);
 
 		// Standard jform validation failed so we shouldn't test further as we can't be sure of the data
 

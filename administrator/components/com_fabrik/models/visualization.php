@@ -21,7 +21,6 @@ require_once 'fabmodeladmin.php';
  * @subpackage  Fabrik
  * @since       3.0
  */
-
 class FabrikAdminModelVisualization extends FabModelAdmin
 {
 	/**
@@ -40,7 +39,6 @@ class FabrikAdminModelVisualization extends FabModelAdmin
 	 *
 	 * @return  JTable	A database object
 	 */
-
 	public function getTable($type = 'Visualization', $prefix = 'FabrikTable', $config = array())
 	{
 		$config['dbo'] = FabrikWorker::getDbo(true);
@@ -58,7 +56,6 @@ class FabrikAdminModelVisualization extends FabModelAdmin
 	 *
 	 * @since	1.6
 	 */
-
 	public function getForm($data = array(), $loadData = true)
 	{
 		// Get the form.
@@ -84,7 +81,7 @@ class FabrikAdminModelVisualization extends FabModelAdmin
 	protected function loadFormData()
 	{
 		// Check the session for previously entered form data.
-		$data = JFactory::getApplication()->getUserState('com_fabrik.edit.visualization.data', array());
+		$data = $this->app->getUserState('com_fabrik.edit.visualization.data', array());
 
 		if (empty($data))
 		{
@@ -102,11 +99,9 @@ class FabrikAdminModelVisualization extends FabModelAdmin
 	 *
 	 * @return  string	html form fields
 	 */
-
 	public function getPluginHTML($plugin = null)
 	{
-		$app = JFactory::getApplication();
-		$input = $app->input;
+		$input = $this->app->input;
 		$item = $this->getItem();
 
 		if (is_null($plugin))
@@ -144,7 +139,6 @@ class FabrikAdminModelVisualization extends FabModelAdmin
 	 * @see     JFormRule
 	 * @see     JFilterInput
 	 */
-
 	public function validate($form, $data, $group = null)
 	{
 		parent::validate($form, $data);
@@ -159,7 +153,6 @@ class FabrikAdminModelVisualization extends FabModelAdmin
 	 *
 	 * @return  boolean  True on success, False on error.
 	 */
-
 	public function save($data)
 	{
 		parent::cleanCache('com_fabrik');
