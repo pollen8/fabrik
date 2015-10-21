@@ -4,7 +4,7 @@
  *
  * @package     Joomla
  * @subpackage  Fabrik
- * @copyright   Copyright (C) 2005-2013 fabrikar.com - All rights reserved.
+ * @copyright   Copyright (C) 2005-2015 fabrikar.com - All rights reserved.
  * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
@@ -20,8 +20,7 @@ jimport('joomla.application.component.view');
  * @subpackage  Fabrik
  * @since       3.0
  */
-
-class FabrikViewElement extends JViewLegacy
+class FabrikViewElement extends FabrikView
 {
 	/**
 	 * Element id (not used?)
@@ -39,7 +38,6 @@ class FabrikViewElement extends JViewLegacy
 	 *
 	 * @return  void
 	 */
-
 	public function setId($id)
 	{
 		$this->id = $id;
@@ -52,7 +50,6 @@ class FabrikViewElement extends JViewLegacy
 	 *
 	 * @return void
 	 */
-
 	public function display($tpl = null)
 	{
 	}

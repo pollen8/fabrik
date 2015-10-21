@@ -2,7 +2,7 @@
 /**
  * @package     Joomla
  * @subpackage  Fabrik
- * @copyright   Copyright (C) 2005-2013 fabrikar.com - All rights reserved.
+ * @copyright   Copyright (C) 2005-2015 fabrikar.com - All rights reserved.
  * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
@@ -28,12 +28,10 @@ class FabrikViewlist extends FabrikViewListBase
 	 *
 	 * @return  void
 	 */
-
 	public function display($tpl = null)
 	{
-		$app = JFactory::getApplication();
 		$model = $this->getModel();
-		$model->setId($app->input->getInt('listid'));
+		$model->setId($this->app->input->getInt('listid'));
 
 		if (!parent::access($model))
 		{

@@ -2,7 +2,7 @@
 /**
  * @package     Joomla.Administrator
  * @subpackage  Fabrik
- * @copyright   Copyright (C) 2005-2013 fabrikar.com - All rights reserved.
+ * @copyright   Copyright (C) 2005-2015 fabrikar.com - All rights reserved.
  * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  * @since       3.0.5
  */
@@ -20,7 +20,6 @@ require_once COM_FABRIK_FRONTEND . '/views/list/view.base.php';
  * @subpackage  Fabrik
  * @since       3.0.5
  */
-
 class FabrikViewList extends FabrikViewListBase
 {
 	/**
@@ -30,7 +29,6 @@ class FabrikViewList extends FabrikViewListBase
 	 *
 	 * @return  void
 	 */
-
 	public function display($tpl = null)
 	{
 		if (!JFolder::exists(COM_FABRIK_BASE . '/libraries/dompdf'))
@@ -42,12 +40,11 @@ class FabrikViewList extends FabrikViewListBase
 
 		if (parent::display($tpl) !== false)
 		{
-			$document = JFactory::getDocument();
 			$model = $this->getModel();
 			$params = $model->getParams();
 			$size = $params->get('pdf_size', 'A4');
 			$orientation = $params->get('pdf_orientation', 'portrait');
-			$document->setPaper($size, $orientation);
+			$this->doc->setPaper($size, $orientation);
 			$this->nav = '';
 			$this->showPDF = false;
 			$this->showRSS = false;
@@ -64,7 +61,6 @@ class FabrikViewList extends FabrikViewListBase
 	 *
 	 * @return  void
 	 */
-
 	protected function buttons()
 	{
 		// Don't add buttons as pdf is not interactive
@@ -80,13 +76,11 @@ class FabrikViewList extends FabrikViewListBase
 	 *
 	 * @return  void
 	 */
-
 	protected function setTitle($w, &$params, $model)
 	{
 		parent::setTitle($w, $params, $model);
 
 		// Set the download file name based on the document title
-		$document = JFactory::getDocument();
-		$document->setName($document->getTitle());
+		$this->doc->setName($this->document->getTitle());
 	}
 }

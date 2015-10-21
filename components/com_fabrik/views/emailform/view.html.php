@@ -1,10 +1,10 @@
 <?php
 /**
- * Emailform view
+ * Email form view
  *
  * @package     Joomla
  * @subpackage  Fabrik
- * @copyright   Copyright (C) 2005-2013 fabrikar.com - All rights reserved.
+ * @copyright   Copyright (C) 2005-2015 fabrikar.com - All rights reserved.
  * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
@@ -20,8 +20,7 @@ jimport('joomla.application.component.view');
  * @subpackage  Fabrik
  * @since       3.0
  */
-
-class FabrikViewEmailform extends JViewLegacy
+class FabrikViewEmailform extends FabrikView
 {
 	public $rowId = null;
 
@@ -34,18 +33,17 @@ class FabrikViewEmailform extends JViewLegacy
 	/**
 	 * Display
 	 *
-	 * @param   string  $tpl  Template
+	 * @param   string $tpl Template
 	 *
 	 * @return  void
 	 */
 	public function display($tpl = null)
 	{
 		FabrikHelperHTML::framework();
-		$app = JFactory::getApplication();
-		$input = $app->input;
-		$model = $this->getModel('form');
+		$input  = $this->app->input;
+		$model  = $this->getModel('form');
 		$filter = JFilterInput::getInstance();
-		$post = $filter->clean($_POST, 'array');
+		$post   = $filter->clean($_POST, 'array');
 
 		if (!array_key_exists('youremail', $post))
 		{
@@ -57,7 +55,7 @@ class FabrikViewEmailform extends JViewLegacy
 
 			if ($this->sendMail($to))
 			{
-				$app->enqueueMessage(FText::_('COM_FABRIK_THIS_ITEM_HAS_BEEN_SENT_TO') . ' ' . $to, 'success');
+				$this->app->enqueueMessage(FText::_('COM_FABRIK_THIS_ITEM_HAS_BEEN_SENT_TO') . ' ' . $to, 'success');
 			}
 
 			FabrikHelperHTML::emailSent();
@@ -67,7 +65,7 @@ class FabrikViewEmailform extends JViewLegacy
 	/**
 	 * Send email
 	 *
-	 * @param   string  $email  Email
+	 * @param   string $email Email
 	 *
 	 * @throws RuntimeException
 	 *
@@ -76,8 +74,7 @@ class FabrikViewEmailform extends JViewLegacy
 	public function sendMail($email)
 	{
 		JSession::checkToken() or die('Invalid Token');
-		$app = JFactory::getApplication();
-		$input = $app->input;
+		$input = $this->app->input;
 
 		/*
 		 * First, make sure the form was posted from a browser.
@@ -115,30 +112,29 @@ class FabrikViewEmailform extends JViewLegacy
 		// Made it past spammer test, free up some memory
 		// and continue rest of script:
 		unset($k, $v, $v2, $badStrings);
-		$email = $input->getString('email', '');
-		$yourname = $input->getString('yourname', '');
-		$youremail = $input->getString('youremail', '');
-		$subject_default = JText::sprintf('Email from', $yourname);
-		$subject = $input->getString('subject', $subject_default);
+		$email           = $input->getString('email', '');
+		$yourName        = $input->getString('yourname', '');
+		$yourEmail       = $input->getString('youremail', '');
+		$subject_default = JText::sprintf('Email from', $yourName);
+		$subject         = $input->getString('subject', $subject_default);
 		jimport('joomla.mail.helper');
 
-		if (!$email || !$youremail || (FabrikWorker::isEmail($email) == false) || (FabrikWorker::isEmail($youremail) == false))
+		if (!$email || !$yourEmail || (FabrikWorker::isEmail($email) == false) || (FabrikWorker::isEmail($yourEmail) == false))
 		{
-			$app->enqueueMessage(FText::_('PHPMAILER_INVALID_ADDRESS'));
+			$this->app->enqueueMessage(FText::_('PHPMAILER_INVALID_ADDRESS'));
 		}
 
-		$config = JFactory::getConfig();
-		$sitename = $config->get('sitename');
+		$siteName = $this->config->get('sitename');
 
 		// Link sent in email
 		$link = $input->get('referrer', '', 'string');
 
 		// Message text
-		$msg = JText::sprintf('COM_FABRIK_EMAIL_MSG', $sitename, $yourname, $youremail, $link);
+		$msg = JText::sprintf('COM_FABRIK_EMAIL_MSG', $siteName, $yourName, $yourEmail, $link);
 
 		// Mail function
 		$mail = JFactory::getMailer();
 
-		return $mail->sendMail($youremail, $yourname, $email, $subject, $msg);
+		return $mail->sendMail($yourEmail, $yourName, $email, $subject, $msg);
 	}
 }

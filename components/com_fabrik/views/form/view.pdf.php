@@ -4,7 +4,7 @@
  *
  * @package     Joomla
  * @subpackage  Fabrik
- * @copyright   Copyright (C) 2005-2013 fabrikar.com - All rights reserved.
+ * @copyright   Copyright (C) 2005-2015 fabrikar.com - All rights reserved.
  * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
@@ -26,7 +26,7 @@ class FabrikViewForm extends FabrikViewFormBase
 	/**
 	 * Main setup routine for displaying the form/detail view
 	 *
-	 * @param   string  $tpl  template
+	 * @param   string $tpl template
 	 *
 	 * @return  void
 	 */
@@ -40,12 +40,12 @@ class FabrikViewForm extends FabrikViewFormBase
 		if (parent::display($tpl) !== false)
 		{
 			/** @var JDocumentpdf $document */
-			$document = JFactory::getDocument();
+			$document = $this->doc;
 
 			/** @var FabrikFEModelList $model */
-			$model = $this->getModel();
-			$params = $model->getParams();
-			$size = $params->get('pdf_size', 'A4');
+			$model       = $this->getModel();
+			$params      = $model->getParams();
+			$size        = $params->get('pdf_size', 'A4');
 			$orientation = $params->get('pdf_orientation', 'portrait');
 			$document->setPaper($size, $orientation);
 			$this->output();
@@ -55,20 +55,20 @@ class FabrikViewForm extends FabrikViewFormBase
 	/**
 	 * Set the page title
 	 *
-	 * @param   object  $w        parent worker
-	 * @param   object  &$params  parameters
+	 * @param   object $w       parent worker
+	 * @param   object &$params parameters
 	 *
 	 * @return  void
 	 */
 	protected function setTitle($w, &$params)
 	{
 		parent::setTitle($w, $params);
-		
+
 		$model = $this->getModel();
 
 		// Set the download file name based on the document title
 		/** @var JDocumentpdf $document */
-		$document = JFactory::getDocument();
+		$document = $this->doc;
 		$document->setName($document->getTitle() . '-' . $model->getRowId());
 	}
 }
