@@ -931,7 +931,7 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 			}
 
 			$log->message_type = $status;
-			$log->message = $emailText . "\n//////////////\n" . $fullResponse . "\n//////////////\n" . $req . "\n//////////////\n" . $errMsg;
+			$log->message = $emailText . "\n//////////////\n" . implode("/n",$fullResponse) . "\n//////////////\n" . $req . "\n//////////////\n" . $errMsg;
 
 			if ($send_default_email == '1')
 			{
