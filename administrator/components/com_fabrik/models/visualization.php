@@ -111,7 +111,6 @@ class FabrikAdminModelVisualization extends FabModelAdmin
 
 		$input->set('view', 'visualization');
 		JPluginHelper::importPlugin('fabrik_visualization', $plugin);
-		$pluginManager = JModelLegacy::getInstance('Pluginmanager', 'FabrikFEModel');
 
 		if ($plugin == '')
 		{
@@ -119,7 +118,7 @@ class FabrikAdminModelVisualization extends FabModelAdmin
 		}
 		else
 		{
-			$plugin = $pluginManager->getPlugIn($plugin, 'Visualization');
+			$plugin = $this->pluginManager->getPlugIn($plugin, 'Visualization');
 			$mode = FabrikWorker::j3() ? 'nav-tabs' : '';
 			$str = $plugin->onRenderAdminSettings(JArrayHelper::fromObject($item), null, $mode);
 		}

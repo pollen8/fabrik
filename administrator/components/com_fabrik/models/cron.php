@@ -103,7 +103,6 @@ class FabrikAdminModelCron extends FabModelAdmin
 		}
 
 		JPluginHelper::importPlugin('fabrik_cron');
-		$pluginManager = JModelLegacy::getInstance('Pluginmanager', 'FabrikFEModel');
 
 		// Trim old f2 cron prefix.
 		$plugin = FabrikString::ltrimiword($plugin, 'cron');
@@ -114,7 +113,7 @@ class FabrikAdminModelCron extends FabModelAdmin
 		}
 		else
 		{
-			$plugin = $pluginManager->getPlugIn($plugin, 'Cron');
+			$plugin = $this->pluginManager->getPlugIn($plugin, 'Cron');
 			$mode   = FabrikWorker::j3() ? 'nav-tabs' : '';
 			$str    = $plugin->onRenderAdminSettings(JArrayHelper::fromObject($item), null, $mode);
 		}

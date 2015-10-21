@@ -252,10 +252,7 @@ class FabrikAdminModelElement extends FabModelAdmin
 	 */
 	public function getJs()
 	{
-		$plugins       = $this->getPlugins();
 		$item          = $this->getItem();
-		$pluginManager = JModelLegacy::getInstance('Pluginmanager', 'FabrikFEModel');
-
 		$opts               = new stdClass;
 		$opts->plugin       = $item->plugin;
 		$opts->parentid     = (int) $item->parent_id;
@@ -303,7 +300,6 @@ class FabrikAdminModelElement extends FabModelAdmin
 
 		$input->set('view', 'element');
 		JPluginHelper::importPlugin('fabrik_element', $plugin);
-		$pluginManager = JModelLegacy::getInstance('Pluginmanager', 'FabrikFEModel');
 
 		if ($plugin == '')
 		{
@@ -311,7 +307,7 @@ class FabrikAdminModelElement extends FabModelAdmin
 		}
 		else
 		{
-			$plugin = $pluginManager->getPlugIn($plugin, 'Element');
+			$plugin = $this->pluginManager->getPlugIn($plugin, 'Element');
 			$mode   = FabrikWorker::j3() ? 'nav-tabs' : '';
 			$str    = $plugin->onRenderAdminSettings(JArrayHelper::fromObject($item), null, $mode);
 		}
@@ -446,9 +442,8 @@ class FabrikAdminModelElement extends FabModelAdmin
 	 */
 	private function getElementPluginModel($data)
 	{
-		$pluginManager = JModelLegacy::getInstance('Pluginmanager', 'FabrikFEModel');
 		$id            = $data['id'];
-		$elementModel  = $pluginManager->getPlugIn($data['plugin'], 'element');
+		$elementModel  = $this->pluginManager->getPlugIn($data['plugin'], 'element');
 		/**
 		 * $$$ rob f3 - need to bind the data in here otherwise validate fails on dup name test (as no group_id set)
 		 * $$$ rob 29/06/2011 removed as you can't then test name changes in validate() so now bind should be done after
@@ -831,11 +826,10 @@ class FabrikAdminModelElement extends FabModelAdmin
 			'checked_out_time',
 			'show_in_list_summary'
 		);
-		$pluginManager = JModelLegacy::getInstance('Pluginmanager', 'FabrikFEModel');
 
 		foreach ($ids as $id)
 		{
-			$plugin = $pluginManager->getElementPlugin($id);
+			$plugin = $this->pluginManager->getElementPlugin($id);
 			$leave  = $plugin->getFixedChildParameters();
 			$item   = $plugin->getElement();
 
@@ -1014,7 +1008,6 @@ class FabrikAdminModelElement extends FabModelAdmin
 	public function delete(&$pks)
 	{
 		// Initialize variables
-		$pluginManager = JModelLegacy::getInstance('Pluginmanager', 'FabrikFEModel');
 		$elementIds    = $this->app->input->get('elementIds', array(), 'array');
 
 		foreach ($elementIds as $id)
@@ -1024,7 +1017,7 @@ class FabrikAdminModelElement extends FabModelAdmin
 				continue;
 			}
 
-			$pluginModel = $pluginManager->getElementPlugin($id);
+			$pluginModel = $this->pluginManager->getElementPlugin($id);
 			$pluginModel->onRemove($id);
 			$element = $pluginModel->getElement();
 

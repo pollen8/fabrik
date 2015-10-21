@@ -326,9 +326,7 @@ class FabrikAdminModelList extends FabModelAdmin
 	public function getJs()
 	{
 		$connModel = $this->getCnn();
-		$plugins = $this->getPlugins();
 		$item = $this->getItem();
-		$pluginManager = JModelLegacy::getInstance('Pluginmanager', 'FabrikFEModel');
 		JText::script('COM_FABRIK_OPTIONS');
 		JText::script('COM_FABRIK_JOIN');
 		JText::script('COM_FABRIK_FIELD');
@@ -2452,7 +2450,6 @@ class FabrikAdminModelList extends FabModelAdmin
 		$input = $this->app->input;
 		$query = $db->getQuery(true);
 		$table = $this->table;
-		$pluginManager = JModelLegacy::getInstance('Pluginmanager', 'FabrikFEModel');
 		$amend = false;
 		$tableName = $table->db_table_name;
 		$fabrikDb = $this->getDb();
@@ -2519,7 +2516,7 @@ class FabrikAdminModelList extends FabModelAdmin
 							// Any elements that are names the same (eg radio buttons) can not be entered twice into the database
 							$arAddedObj[] = $objName;
 							$pluginClassName = $obj->plugin;
-							$plugin = $pluginManager->getPlugIn($pluginClassName, 'element');
+							$plugin = $this->pluginManager->getPlugIn($pluginClassName, 'element');
 
 							if (is_object($plugin))
 							{

@@ -49,6 +49,11 @@ abstract class FabModelAdmin extends JModelAdmin
 	protected $db;
 
 	/**
+	 * @var FabrikFEModelPluginmanager
+	 */
+	protected $pluginManager;
+
+	/**
 	 * Component name
 	 *
 	 * @var  string
@@ -70,6 +75,7 @@ abstract class FabModelAdmin extends JModelAdmin
 		$this->config  = JArrayHelper::getValue($config, 'config', JFactory::getConfig());
 		$this->session = JArrayHelper::getValue($config, 'session', JFactory::getSession());
 		$this->db      = JArrayHelper::getValue($config, 'db', JFactory::getDbo());
+		$this->pluginManager = JArrayHelper::getValue($config, 'pluginManager',  JModelLegacy::getInstance('Pluginmanager', 'FabrikFEModel'));
 		parent::__construct($config);
 	}
 
