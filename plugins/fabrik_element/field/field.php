@@ -1,4 +1,5 @@
 <?php
+use Zend\Db\Sql\Ddl\Column\Boolean;
 /**
  * Plugin element to render fields
  *
@@ -22,6 +23,14 @@ jimport('joomla.application.component.model');
  */
 class PlgFabrik_ElementField extends PlgFabrik_Element
 {
+
+	/**
+	 * Number has been formatted
+	 *
+	 * @var Boolean
+	 */
+	protected $numberFormatted = false;
+
 	/**
 	 * Shows the data formatted for the list view
 	 *
@@ -56,16 +65,22 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 
 	/**
 	 * Format the string for use in list view, email data
-	 * @param $d
+	 *
+	 * @param  $d             data
+	 * @param  $doNumberFormat  run numberFormat()
 	 *
 	 * @return string
 	 */
-	protected function format(&$d)
+	protected function format(&$d, $doNumberFormat = true)
 	{
 		$params = $this->getParams();
 		$format = $params->get('text_format_string');
 		$formatBlank = $params->get('field_format_string_blank', true);
-		$d = $this->numberFormat($d);
+
+		if ($doNumberFormat)
+		{
+			$d = $this->numberFormat($d);
+		}
 
 		if ($format != '' && ($formatBlank || $d != ''))
 		{
@@ -140,7 +155,7 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 			else
 			{
 				$this->_guessLinkType($value, $data);
-				$value = $this->format($value);
+				$value = $this->format($value, false);
 				$value = $this->getReadOnlyOutput($value, $value);
 			}
 
