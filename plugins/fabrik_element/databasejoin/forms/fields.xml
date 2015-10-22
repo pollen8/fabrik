@@ -163,14 +163,17 @@
 			<field name="database_join_noselectionvalue"
 			       type="text"
 			       description="PLG_ELEMENT_DBJOIN_NO_SELECTION_VALUE_DESC"
-			       label="PLG_ELEMENT_DBJOIN_NO_SELECTION_VALUE_LABEL"
-			       size="5"/>
+			       label="PLG_ELEMENT_DBJOIN_NO_SELECTION_VALUE_LABEL" />
 
 			<field name="database_join_noselectionlabel"
 			       type="text"
 			       description="PLG_ELEMENT_DBJOIN_NO_SELECTION_LABEL_DESC"
-			       label="PLG_ELEMENT_DBJOIN_NO_SELECTION_LABEL_LABEL"
-			       size="35"/>
+			       label="PLG_ELEMENT_DBJOIN_NO_SELECTION_LABEL_LABEL" />
+
+			<field name="placeholder"
+			       type="text"
+			       description="PLG_ELEMENT_DBJOIN_PLACEHOLDER_DESC"
+			       label="PLG_ELEMENT_DBJOIN_PLACEHOLDER_LABEL" />
 
 		</fieldset>
 
