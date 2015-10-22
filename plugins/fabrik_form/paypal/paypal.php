@@ -679,6 +679,7 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 		$header = "POST /cgi-bin/webscr HTTP/1.1\r\n";
 		$header .= "Host: " . $paypalHost . "\r\n";
 		$header .= "Connection: close\r\n";
+		$header .= "User-Agent: Fabrik Joomla Plugin\r\n";
 		$header .= "Content-Type: application/x-www-form-urlencoded\r\n";
 		$header .= "Content-Length: " . JString::strlen($req) . "\r\n\r\n";
 
