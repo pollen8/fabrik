@@ -725,6 +725,7 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 				while (!feof($fp))
 				{
 					$res = fgets($fp, 1024);
+					$tres = trim($res);
 					/* paypal steps (from their docs):
 					 * check the payment_status is Completed
 					 * check that txn_id has not been previously processed
@@ -732,7 +733,7 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 					 * check that payment_amount/payment_currency are correct
 					 * process payment
 					 */
-					if (JString::strcmp($res, "VERIFIED") === 0)
+					if (JString::strcmp($tres, "VERIFIED") === 0)
 					{
 						$status = 'ok';
 
@@ -895,7 +896,7 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 							}
 						}
 					}
-					elseif (JString::strcmp($res, "INVALID") === 0)
+					elseif (JString::strcmp($tres, "INVALID") === 0)
 					{
 						$status = 'form.paypal.ipnfailure.invalid';
 						$errMsg = 'paypal postback failed with INVALID';
@@ -931,7 +932,7 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 			}
 
 			$log->message_type = $status;
-			$log->message = $emailText . "\n//////////////\n" . implode("/n",$fullResponse) . "\n//////////////\n" . $req . "\n//////////////\n" . $errMsg;
+			$log->message = $emailText . "\n//////////////\n" . implode("",$fullResponse) . "\n//////////////\n" . $req . "\n//////////////\n" . $errMsg;
 
 			if ($send_default_email == '1')
 			{
