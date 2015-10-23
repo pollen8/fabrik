@@ -11,7 +11,12 @@
 
 // No direct access
 defined('_JEXEC') or die('Restricted access');
-
+$btnLayout  = FabrikHelperHTML::getLayout('fabrik-button');
+$layoutData = (object) array(
+	'class' => 'btn-info fabrik_filter_submit button',
+	'name' => 'filter',
+	'label' => FabrikHelperHTML::icon('icon-filter', FText::_('COM_FABRIK_GO'))
+);
 ?>
 <tr class="fabrik___heading">
 <?php foreach ($this->headings as $key => $heading) :
@@ -41,9 +46,7 @@ defined('_JEXEC') or die('Restricted access');
 		<?php elseif ($key == 'fabrik_actions' && $this->filter_action != 'onchange') :
 			?>
 			<div style="text-align:center">
-				<button class="btn-info btn fabrik_filter_submit button" name="filter" >
-				<?php echo FabrikHelperHTML::icon('icon-filter', FText::_('COM_FABRIK_GO')); ?>
-				</button>
+				<?php echo $btnLayout->render($layoutData); ?>
 			</div>
 		<?php endif;?>
 		</th>

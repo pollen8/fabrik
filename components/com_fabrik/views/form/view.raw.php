@@ -12,6 +12,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 jimport('joomla.application.component.view');
+require_once JPATH_SITE . '/components/com_fabrik/views/form/view.base.php';
 
 /**
  * Fabrik Raw Form View

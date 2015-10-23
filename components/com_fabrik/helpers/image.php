@@ -20,7 +20,6 @@ defined('_JEXEC') or die('Restricted access');
  * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  * @since       1.0
  */
-
 class FabimageHelper
 {
 	/**
@@ -28,11 +27,10 @@ class FabimageHelper
 	 *
 	 * @return  array
 	 */
-
 	public static function getLibs()
 	{
 		$libs = array();
-		$gds = self::testGD();
+		$gds  = self::testGD();
 
 		foreach ($gds as $key => $val)
 		{
@@ -52,11 +50,10 @@ class FabimageHelper
 	/**
 	 * load in the correct image library
 	 *
-	 * @param   string  $lib  image lib to load
+	 * @param   string $lib image lib to load
 	 *
-	 * @return  object  image lib
+	 * @return  Fabimage  image lib
 	 */
-
 	public static function loadLib($lib)
 	{
 		$class = "Fabimage" . $lib;
@@ -76,19 +73,18 @@ class FabimageHelper
 	 *
 	 * @return  array
 	 */
-
 	protected static function testGD()
 	{
-		$gd = array();
-		$output = '';
-		$gdversion = null;
-		$gd_info = null;
+		$gd        = array();
+		$output    = '';
+		$gdVersion = null;
+		$gdInfo    = null;
 
 		//$GDfuncList = get_extension_funcs('gd');
 		if (function_exists('gd_info'))
 		{
-			$gd_info = gd_info();
-			$gdversion = $gd_info['GD Version'];
+			$gdInfo    = gd_info();
+			$gdVersion = $gdInfo['GD Version'];
 		}
 		else
 		{
@@ -101,7 +97,7 @@ class FabimageHelper
 			{
 				if (preg_match("/GD Version[ \t]*(<[^>]+>[ \t]*)+([^<>]+)/s", $output, $matches))
 				{
-					$gdversion = $matches[2];
+					$gdVersion = $matches[2];
 				}
 				else
 				{
@@ -112,13 +108,13 @@ class FabimageHelper
 
 		if (function_exists('imagecreatetruecolor') && function_exists('imagecreatefromjpeg'))
 		{
-			$gdversion = isset($gdversion) ? $gdversion : 2;
-			$gd['gd2'] = "GD: " . $gdversion;
+			$gdVersion = isset($gdVersion) ? $gdVersion : 2;
+			$gd['gd2'] = "GD: " . $gdVersion;
 		}
 		elseif (function_exists('imagecreatefromjpeg'))
 		{
-			$gdversion = isset($gdversion) ? $gdversion : 1;
-			$gd['gd1'] = "GD: " . $gdversion;
+			$gdVersion = isset($gdVersion) ? $gdVersion : 1;
+			$gd['gd1'] = "GD: " . $gdVersion;
 		}
 
 		return $gd;
@@ -129,12 +125,11 @@ class FabimageHelper
 	 *
 	 * @return  array
 	 */
-
 	protected static function testImagemagick()
 	{
-		if (function_exists("NewMagickWand"))
+		if (function_exists('NewMagickWand'))
 		{
-			$im["IM"] = "Magick wand";
+			$im['IM'] = 'Magick wand';
 		}
 		else
 		{
@@ -147,7 +142,7 @@ class FabimageHelper
 			{
 				if (preg_match("/imagemagick[ \t]+([0-9\.]+)/i", $output[0], $matches))
 				{
-					$im["IM"] = $matches[0];
+					$im['IM'] = $matches[0];
 				}
 			}
 
@@ -167,7 +162,6 @@ class FabimageHelper
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  * @since       1.0
  */
-
 class Fabimage
 {
 	/**
@@ -187,11 +181,10 @@ class Fabimage
 	/**
 	 * Set the filesystem storage manager
 	 *
-	 * @param   object  &$storage  storage object
+	 * @param   object &$storage storage object
 	 *
 	 * @return  void
 	 */
-
 	public function setStorage(&$storage)
 	{
 		$this->storage = $storage;
@@ -200,11 +193,10 @@ class Fabimage
 	/**
 	 * Get the image type git/jpg/png
 	 *
-	 * @param   string  $filename  image file path
+	 * @param   string $filename image file path
 	 *
 	 * @return  string
 	 */
-
 	public function getImgType($filename)
 	{
 		$info = getimagesize($filename);
@@ -212,13 +204,13 @@ class Fabimage
 		switch ($info[2])
 		{
 			case 1:
-				return "gif";
+				return 'gif';
 				break;
 			case 2:
-				return "jpg";
+				return 'jpg';
 				break;
 			case 3:
-				return "png";
+				return 'png';
 				break;
 			default:
 				return false;
@@ -228,15 +220,14 @@ class Fabimage
 	/**
 	 * Resize an image to a specific width/height
 	 *
-	 * @param   int     $maxWidth   maximum image Width (px)
-	 * @param   int     $maxHeight  maximum image Height (px)
-	 * @param   string  $origFile   current images folder path (must have trailing end slash)
-	 * @param   string  $destFile   destination folder path for resized image (must have trailing end slash)
-	 * @param   int     $quality    Percentage image save quality 100 = no compression, 0 = max compression
+	 * @param   int    $maxWidth  maximum image Width (px)
+	 * @param   int    $maxHeight maximum image Height (px)
+	 * @param   string $origFile  current images folder path (must have trailing end slash)
+	 * @param   string $destFile  destination folder path for resized image (must have trailing end slash)
+	 * @param   int    $quality   Percentage image save quality 100 = no compression, 0 = max compression
 	 *
 	 * @return  object  image
 	 */
-
 	public function resize($maxWidth, $maxHeight, $origFile, $destFile, $quality = 100)
 	{
 	}
@@ -244,10 +235,10 @@ class Fabimage
 	/**
 	 * Grab an image from a remote URI and store in cache, then serve cached image
 	 *
-	 * @param   string  $src       Remote URI to image
-	 * @param   string  $path      Local folder to store the image in e.g. 'cache/com_fabrik/images'
-	 * @param   string  $file      Local filename
-	 * @param   number  $lifeTime  Number of days to cache the image for
+	 * @param   string  $src      Remote URI to image
+	 * @param   string  $path     Local folder to store the image in e.g. 'cache/com_fabrik/images'
+	 * @param   string  $file     Local filename
+	 * @param   integer $lifeTime Number of days to cache the image for
 	 *
 	 * @return  boolean|string  Local URI to cached image
 	 */
@@ -282,7 +273,7 @@ class Fabimage
 		 * So ... just preserve original extension (if any) and append it to md5() of file name.
 		 */
 
-		$ext = pathinfo($file, PATHINFO_EXTENSION);
+		$ext  = pathinfo($file, PATHINFO_EXTENSION);
 		$file = md5($file);
 
 		if (!empty($ext))
@@ -301,7 +292,7 @@ class Fabimage
 		}
 
 		// make sure we have one, and only one, / on the end of folder.  Really should add a helper for this which looks for legacy \ as well!
-		$folder = rtrim($folder, '/') . '/';
+		$folder    = rtrim($folder, '/') . '/';
 		$cacheFile = $folder . $file;
 
 		// result to test file_put_contents() with
@@ -312,11 +303,11 @@ class Fabimage
 		{
 			// Check its age- Google T&C allow you to store for no more than 30 days.
 			$createDate = JFactory::getDate(filemtime($cacheFile));
-			$now = JFactory::getDate();
-			$interval = $now->diff($createDate);
-			$daysOld = (float) $interval->format('%R%a');
+			$now        = JFactory::getDate();
+			$interval   = $now->diff($createDate);
+			$daysOld    = (float) $interval->format('%R%a');
 
-			if ($daysOld < - $lifeTime)
+			if ($daysOld < -$lifeTime)
 			{
 				// Remove out of date
 				JFile::delete($cacheFile);
@@ -350,23 +341,23 @@ class Fabimage
 	/**
 	 * Exif to number
 	 *
-	 * @param   string  $value   Value
-	 * @param   string  $format  Format
+	 * @param   string $value  Value
+	 * @param   string $format Format
 	 *
 	 * @return string
 	 */
 	public static function exifToNumber($value, $format)
 	{
-		$spos = JString::strpos($value, '/');
+		$pos = JString::strpos($value, '/');
 
-		if ($spos === false)
+		if ($pos === false)
 		{
 			return sprintf($format, $value);
 		}
 		else
 		{
-			$bits = explode('/', $value, 2);
-			$base = FArrayHelper::getValue($bits, 0);
+			$bits    = explode('/', $value, 2);
+			$base    = FArrayHelper::getValue($bits, 0);
 			$divider = FArrayHelper::getValue($bits, 1);
 
 			return ($divider == 0) ? sprintf($format, 0) : sprintf($format, ($base / $divider));
@@ -376,8 +367,8 @@ class Fabimage
 	/**
 	 * Exif to coordinate
 	 *
-	 * @param   string  $reference   Reference
-	 * @param   string  $coordinate  Coordinates
+	 * @param   string $reference  Reference
+	 * @param   string $coordinate Coordinates
 	 *
 	 * @return string
 	 */
@@ -387,17 +378,17 @@ class Fabimage
 
 		return $prefix
 		. sprintf('%.6F',
-				self::exifToNumber($coordinate[0], '%.6F') +
-				(((self::exifToNumber($coordinate[1], '%.6F') * 60) + (self::exifToNumber($coordinate[2], '%.6F'))) / 3600)
+			self::exifToNumber($coordinate[0], '%.6F') +
+			(((self::exifToNumber($coordinate[1], '%.6F') * 60) + (self::exifToNumber($coordinate[2], '%.6F'))) / 3600)
 		);
 	}
 
 	/**
 	 * Get coordinates
 	 *
-	 * @param   string  $filename  File name
+	 * @param   string $filename File name
 	 *
-	 * @return multitype:string |boolean
+	 * @return array|boolean
 	 */
 	public static function getExifCoordinates($filename)
 	{
@@ -408,7 +399,7 @@ class Fabimage
 			if (isset($exif['GPSLatitudeRef']) && isset($exif['GPSLatitude']) && isset($exif['GPSLongitudeRef']) && isset($exif['GPSLongitude']))
 			{
 				return array(self::exifToCoordinate($exif['GPSLatitudeRef'], $exif['GPSLatitude']),
-						self::exifToCoordinate($exif['GPSLongitudeRef'], $exif['GPSLongitude']));
+					self::exifToCoordinate($exif['GPSLongitudeRef'], $exif['GPSLongitude']));
 			}
 		}
 
@@ -418,24 +409,23 @@ class Fabimage
 	/**
 	 * Set coordinates to DMS
 	 *
-	 * @param   string  $coordinate  Image coordinate
-	 * @param   number  $pos         Postion
-	 * @param   number  $neg         Negative
+	 * @param   string $coordinate Image coordinate
+	 * @param   number $pos        Position
+	 * @param   number $neg        Negative
 	 *
 	 * @return string
 	 */
 	public static function coordinate2DMS($coordinate, $pos, $neg)
 	{
-		$sign = $coordinate >= 0 ? $pos : $neg;
+		$sign       = $coordinate >= 0 ? $pos : $neg;
 		$coordinate = abs($coordinate);
-		$degree = intval($coordinate);
+		$degree     = intval($coordinate);
 		$coordinate = ($coordinate - $degree) * 60;
-		$minute = intval($coordinate);
-		$second = ($coordinate - $minute) * 60;
+		$minute     = intval($coordinate);
+		$second     = ($coordinate - $minute) * 60;
 
 		return sprintf("%s %d&#xB0; %02d&#x2032; %05.2f&#x2033;", $sign, $degree, $minute, $second);
 	}
-
 
 }
 
@@ -448,13 +438,12 @@ class Fabimage
  * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  * @since       1.0
  */
-
 class FabimageGD extends Fabimage
 {
 	/**
 	 * Create an image object from a file path
 	 *
-	 * @param   string  $file  file to create image from
+	 * @param   string $file file to create image from
 	 *
 	 * @throws Exception
 	 *
@@ -467,12 +456,12 @@ class FabimageGD extends Fabimage
 
 		if ($ext == 'jpg' || $ext == 'jpeg')
 		{
-			$img = @imagecreatefromjpeg($file);
+			$img    = @imagecreatefromjpeg($file);
 			$header = "image/jpeg";
 		}
 		elseif ($ext == 'png')
 		{
-			$img = @imagecreatefrompng($file);
+			$img    = @imagecreatefrompng($file);
 			$header = "image/png";
 
 			// Only if your version of GD includes GIF support
@@ -481,7 +470,7 @@ class FabimageGD extends Fabimage
 		{
 			if (function_exists('imagecreatefromgif'))
 			{
-				$img = @imagecreatefromgif($file);
+				$img    = @imagecreatefromgif($file);
 				$header = "image/gif";
 			}
 			else
@@ -496,11 +485,10 @@ class FabimageGD extends Fabimage
 	/**
 	 * Create a gd image from a file
 	 *
-	 * @param   string  $source  path to file
+	 * @param   string $source path to file
 	 *
 	 * @return image
 	 */
-
 	protected function imageCreateFrom($source)
 	{
 		$ext = JString::strtolower(JFile::getExt($source));
@@ -525,12 +513,11 @@ class FabimageGD extends Fabimage
 	/**
 	 * Convert an image object into a file
 	 *
-	 * @param   string  $destCropFile  file path
-	 * @param   object  $image         image object to save
+	 * @param   string $destCropFile file path
+	 * @param   object $image        image object to save
 	 *
 	 * @return  bool  True on success
 	 */
-
 	public function imageToFile($destCropFile, $image)
 	{
 		$ext = JString::strtolower(JFile::getExt($destCropFile));
@@ -559,13 +546,12 @@ class FabimageGD extends Fabimage
 	/**
 	 * Rotate an image
 	 *
-	 * @param   string  $source   filepath
-	 * @param   string  $dest     output path, if empty defaults to source
-	 * @param   double  $degrees  number of degrees to rotate
+	 * @param   string $source  filepath
+	 * @param   string $dest    output path, if empty defaults to source
+	 * @param   int    $degrees number of degrees to rotate
 	 *
 	 * @return  array  (image object, rotated images width, rotated images height)
 	 */
-
 	public function rotate($source, $dest = '', $degrees = 0)
 	{
 		if (empty($dest))
@@ -574,7 +560,7 @@ class FabimageGD extends Fabimage
 		}
 
 		$source = $this->imageCreateFrom($source);
-		$app = JFactory::getApplication();
+		$app    = JFactory::getApplication();
 
 		// Rotates the image
 		$rotate = imagerotate($source, $degrees, 0);
@@ -597,13 +583,17 @@ class FabimageGD extends Fabimage
 	*/
 	public function rotateImageFromExif($src, $dest)
 	{
-		if (function_exists('exif_read_data')) {
+		if (function_exists('exif_read_data'))
+		{
 			$exif = exif_read_data($src);
-			if($exif && isset($exif['Orientation'])) {
+			if ($exif && isset($exif['Orientation']))
+			{
 				$orientation = $exif['Orientation'];
-				if($orientation != 1){
+				if ($orientation != 1)
+				{
 					$deg = 0;
-					switch ($orientation) {
+					switch ($orientation)
+					{
 						case 3:
 							$deg = 180;
 							break;
@@ -614,7 +604,8 @@ class FabimageGD extends Fabimage
 							$deg = 90;
 							break;
 					}
-					if ($deg) {
+					if ($deg)
+					{
 						self::rotate($src, $dest, $deg);
 					}
 				}
@@ -622,19 +613,17 @@ class FabimageGD extends Fabimage
 		}
 	}
 
-
 	/**
 	 * Scale an image
 	 *
-	 * @param   string  $file        file to scale
-	 * @param   string  $dest        save location
-	 * @param   int     $percentage  scale percentage
-	 * @param   int     $destX       start scale from x coord
-	 * @param   int     $destY       start scale from y coord
+	 * @param   string $file       file to scale
+	 * @param   string $dest       save location
+	 * @param   int    $percentage scale percentage
+	 * @param   int    $destX      start scale from x coord
+	 * @param   int    $destY      start scale from y coord
 	 *
 	 * @return  object  image
 	 */
-
 	public function scale($file, $dest = '', $percentage = 100, $destX = 0, $destY = 0)
 	{
 		list($image, $header) = $this->imageFromFile($file);
@@ -643,9 +632,9 @@ class FabimageGD extends Fabimage
 
 		list($width, $height) = getimagesize($file);
 
-		$new_width = $width * ((float) $percentage / 100);
+		$new_width  = $width * ((float) $percentage / 100);
 		$new_height = $height * ((float) $percentage / 100);
-		$image_p = imagecreatetruecolor($new_width, $new_height);
+		$image_p    = imagecreatetruecolor($new_width, $new_height);
 		imagecopyresampled($image_p, $image, $destX, $destY, 0, 0, $new_width, $new_height, $width, $height);
 
 		if ($dest != '')
@@ -659,17 +648,16 @@ class FabimageGD extends Fabimage
 	/**
 	 * Resize an image to a specific width/height
 	 *
-	 * @param   int     $maxWidth   maximum image Width (px)
-	 * @param   int     $maxHeight  maximum image Height (px)
-	 * @param   string  $origFile   current images folder path (must have trailing end slash)
-	 * @param   string  $destFile   destination folder path for resized image (must have trailing end slash)
-	 * @param   int     $quality    Percentage image save quality 100 = no compression, 0 = max compression
+	 * @param   int    $maxWidth  maximum image Width (px)
+	 * @param   int    $maxHeight maximum image Height (px)
+	 * @param   string $origFile  current images folder path (must have trailing end slash)
+	 * @param   string $destFile  destination folder path for resized image (must have trailing end slash)
+	 * @param   int    $quality   Percentage image save quality 100 = no compression, 0 = max compression
 	 *
 	 * @throws Error
 	 *
 	 * @return  object  image
 	 */
-
 	public function resize($maxWidth, $maxHeight, $origFile, $destFile, $quality = 100)
 	{
 		// Check if the file exists
@@ -697,14 +685,14 @@ class FabimageGD extends Fabimage
 				imagesavealpha($img, true);
 			}
 			// Get image size and scale ratio
-			$width = imagesx($img);
+			$width  = imagesx($img);
 			$height = imagesy($img);
-			$scale = min($maxWidth / $width, $maxHeight / $height);
+			$scale  = min($maxWidth / $width, $maxHeight / $height);
 
 			// If the image is larger than the max shrink it
 			if ($scale < 1)
 			{
-				$new_width = floor($scale * $width);
+				$new_width  = floor($scale * $width);
 				$new_height = floor($scale * $height);
 
 				// Create a new temporary image
@@ -736,33 +724,25 @@ class FabimageGD extends Fabimage
 	/**
 	 * Crop an image to specific dimensions
 	 *
-	 * @param   string  $origFile  path to image to crop from
-	 * @param   string  $destFile  path to cropped file
-	 * @param   int     $srcX      x coord on $origFile to start crop from
-	 * @param   int     $srcY      y coord on $origFile to start crop from
-	 * @param   int     $dstW      cropped image width
-	 * @param   int     $dstH      cropped image height
-	 * @param   int     $dstX      destination x coord of destination point
-	 * @param   int     $dstY      destination y coord of destination point
-	 * @param   string  $bg        hex background colour
+	 * @param   string $origFile path to image to crop from
+	 * @param   string $destFile path to cropped file
+	 * @param   int    $srcX     x coord on $origFile to start crop from
+	 * @param   int    $srcY     y coord on $origFile to start crop from
+	 * @param   int    $dstW     cropped image width
+	 * @param   int    $dstH     cropped image height
+	 * @param   int    $dstX     destination x coord of destination point
+	 * @param   int    $dstY     destination y coord of destination point
+	 * @param   string $bg       hex background colour
 	 *
 	 * @return  void
 	 */
-
 	public function crop($origFile, $destFile, $srcX, $srcY, $dstW, $dstH, $dstX = 0, $dstY = 0, $bg = '#FFFFFF')
 	{
-		/*list($origImg, $header) = $this->imageFromFile($origFile);
-		$destImg = imagecreatetruecolor($dstW, $dstH);
-		$srcW = imagesx($destImg);
-		$srcH = imagesy($destImg);
-		imagecopyresampled($destImg, $origImg, $dstX, $dstY, $srcX, $srcY, $dstW, $dstH, $srcW, $srcH);
-		$this->writeImg($destImg, $destFile, $header);*/
-
 		// Convert hex to rgb colours.
 		list($r, $g, $b) = sscanf($bg, '#%2x%2x%2x');
 		list($origImg, $header) = $this->imageFromFile($origFile);
 		$destImg = imagecreatetruecolor($dstW, $dstH);
-		$bg = imagecolorallocate($destImg, $r, $g, $b);
+		$bg      = imagecolorallocate($destImg, $r, $g, $b);
 
 		// Draw a bg rectangle
 		imagefilledrectangle($destImg, 0, 0, (int) $dstW, (int) $dstH, $bg);
@@ -790,14 +770,15 @@ class FabimageGD extends Fabimage
 	/**
 	 * Write an image to the server
 	 *
-	 * @param   object  $img       image object
-	 * @param   string  $destFile  file path to save to
-	 * @param   string  $header    image type
-	 * @param   int     $quality    Percentage image save quality 100 = no compression, 0 = max compression
+	 * @param   object $img      image object
+	 * @param   string $destFile file path to save to
+	 * @param   string $header   image type
+	 * @param   int    $quality  Percentage image save quality 100 = no compression, 0 = max compression
+	 *
+	 * @throws Error
 	 *
 	 * @return  void
 	 */
-
 	public function writeImg($img, $destFile, $header, $quality = 100)
 	{
 		if ($quality < 0)
@@ -857,21 +838,19 @@ class FabimageGD extends Fabimage
  * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  * @since       1.0
  */
-
 class FabimageGD2 extends FabimageGD
 {
 	/**
 	 * Resize an image to a specific width/height
 	 *
-	 * @param   int     $maxWidth   maximum image Width (px)
-	 * @param   int     $maxHeight  maximum image Height (px)
-	 * @param   string  $origFile   current images folder path (must have trailing end slash)
-	 * @param   string  $destFile   destination folder path for resized image (must have trailing end slash)
-	 * @param   int     $quality    Percentage image save quality 100 = no compression, 0 = max compression
+	 * @param   int    $maxWidth  maximum image Width (px)
+	 * @param   int    $maxHeight maximum image Height (px)
+	 * @param   string $origFile  current images folder path (must have trailing end slash)
+	 * @param   string $destFile  destination folder path for resized image (must have trailing end slash)
+	 * @param   int    $quality   Percentage image save quality 100 = no compression, 0 = max compression
 	 *
 	 * @return  object  image
 	 */
-
 	public function resize($maxWidth, $maxHeight, $origFile, $destFile, $quality = 100)
 	{
 		$app = JFactory::getApplication();
@@ -892,22 +871,22 @@ class FabimageGD2 extends FabimageGD
 		}
 
 		ini_set('display_errors', true);
-		$memory = ini_get('memory_limit');
-		$intmemory = FabrikString::rtrimword($memory, 'M');
+		$memory    = ini_get('memory_limit');
+		$intMemory = FabrikString::rtrimword($memory, 'M');
 
-		if ($intmemory < 50)
+		if ($intMemory < 50)
 		{
 			ini_set('memory_limit', '50M');
 		}
 
 		if ($ext == 'jpg' || $ext == 'jpeg')
 		{
-			$img = imagecreatefromjpeg($origFile);
+			$img    = imagecreatefromjpeg($origFile);
 			$header = "image/jpeg";
 		}
 		elseif ($ext == 'png')
 		{
-			$img = imagecreatefrompng($origFile);
+			$img    = imagecreatefrompng($origFile);
 			$header = "image/png";
 
 			// Only if your version of GD includes GIF support
@@ -916,7 +895,7 @@ class FabimageGD2 extends FabimageGD
 		{
 			if (function_exists('imagecreatefromgif'))
 			{
-				$img = imagecreatefromgif($origFile);
+				$img    = imagecreatefromgif($origFile);
 				$header = "image/gif";
 			}
 			else
@@ -935,14 +914,14 @@ class FabimageGD2 extends FabimageGD
 			}
 
 			// Get image size and scale ratio
-			$width = imagesx($img);
+			$width  = imagesx($img);
 			$height = imagesy($img);
-			$scale = min($maxWidth / $width, $maxHeight / $height);
+			$scale  = min($maxWidth / $width, $maxHeight / $height);
 
 			// If the image is larger than the max shrink it
 			if ($scale < 1)
 			{
-				$new_width = floor($scale * $width);
+				$new_width  = floor($scale * $width);
 				$new_height = floor($scale * $height);
 
 				// Create a new temporary image
@@ -1013,21 +992,19 @@ class FabimageGD2 extends FabimageGD
  * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  * @since       1.0
  */
-
 class FabimageIM extends Fabimage
 {
 	/**
 	 * Resize an image to a specific width/height
 	 *
-	 * @param   int     $maxWidth   maximum image Width (px)
-	 * @param   int     $maxHeight  maximum image Height (px)
-	 * @param   string  $origFile   current images folder path (must have trailing end slash)
-	 * @param   string  $destFile   destination folder path for resized image (must have trailing end slash)
-	 * @param   int     $quality    Percentage image save quality 100 = no compression, 0 = max compression
+	 * @param   int    $maxWidth  maximum image Width (px)
+	 * @param   int    $maxHeight maximum image Height (px)
+	 * @param   string $origFile  current images folder path (must have trailing end slash)
+	 * @param   string $destFile  destination folder path for resized image (must have trailing end slash)
+	 * @param   int    $quality   Percentage image save quality 100 = no compression, 0 = max compression
 	 *
 	 * @return  object  image
 	 */
-
 	public function resize($maxWidth, $maxHeight, $origFile, $destFile, $quality = 100)
 	{
 		$ext = $this->getImgType($origFile);
@@ -1036,9 +1013,9 @@ class FabimageIM extends Fabimage
 		{
 			// False so not an image type so cant resize
 			// $$$ hugh - testing making thumbs for PDF's, so need a little tweak here
-			$originfo = pathinfo($origFile);
+			$origInfo = pathinfo($origFile);
 
-			if (JString::strtolower($originfo['extension']) != 'pdf')
+			if (JString::strtolower($origInfo['extension']) != 'pdf')
 			{
 				return;
 			}
@@ -1054,32 +1031,19 @@ class FabimageIM extends Fabimage
 			 * it'll just fail if no GS.
 			 */
 
-			$originfo = pathinfo($origFile);
+			$origInfo = pathinfo($origFile);
 
-			if (JString::strtolower($originfo['extension']) == 'pdf')
+			if (JString::strtolower($origInfo['extension']) == 'pdf')
 			{
-				$pdf_thumb_type = 'png';
+				$pdfThumbType = 'png';
 
 				// OK, it's a PDF, so first we need to add the page number we want to the source filename
-				$pdf_file = $origFile . '[0]';
+				$pdfFile = $origFile . '[0]';
 
-				// Now check to see if the destination filename needs changing - existing code will probably
-				// just have used the sourcefile extension for the thumb file.
-				$destinfo = pathinfo($destFile);
-
-				if (JString::strtolower($destinfo['extension']) == 'pdf')
-				{
-					// Rebuild $destFile with valid image extension
-					// NOTE - changed $destFile arg to pass by reference OOOPS can't do that!
-
-					// $$$ rob 04/08/2011 wont work in php 5.1
-					// $destFile = $destinfo['dirname'] . '/' . $destinfo['filename'] . '.' . $pdf_thumb_type;
-					$thumb_file = JFile::stripExt($destFile) . '.' . $pdf_thumb_type;
-				}
 				// Now just load it, set format, resize, save and garbage collect.
 				// Hopefully IM will call the right delegate (ghostscript) to load the PDF.
-				$im = new Imagick($pdf_file);
-				$im->setImageFormat($pdf_thumb_type);
+				$im = new Imagick($pdfFile);
+				$im->setImageFormat($pdfThumbType);
 				$im->thumbnailImage($maxWidth, $maxHeight, true);
 				$im->writeImage($destFile);
 				$im->destroy();
@@ -1113,7 +1077,7 @@ class FabimageIM extends Fabimage
 				print_r(MagickGetException($resource));
 			}
 
-			$resource = MagickTransformImage($resource, '0x0', $maxWidth . 'x' . $maxWidth);
+			$resource        = MagickTransformImage($resource, '0x0', $maxWidth . 'x' . $maxWidth);
 			$this->thumbPath = $destFile;
 			MagickWriteImage($resource, $destFile);
 		}

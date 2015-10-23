@@ -23,7 +23,6 @@ JFormHelper::loadFieldClass('folderlist');
  * @subpackage  Form
  * @since       3.1b
  */
-
 class JFormFieldFabrikTemplate extends JFormFieldFolderList
 {
 	/**
@@ -39,7 +38,6 @@ class JFormFieldFabrikTemplate extends JFormFieldFolderList
 	 *
 	 * @return  array  The field option objects.
 	 */
-
 	protected function getOptions()
 	{
 		$view = $this->element['view'] ? $this->element['view'] : 'list';
