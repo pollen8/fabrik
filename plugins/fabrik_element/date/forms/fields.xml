@@ -67,6 +67,11 @@
 				label="PLG_ELEMENT_DATE_BOOTSTRAP_TIME_CLASS_LABEL"
 				description="PLG_ELEMENT_DATE_BOOTSTRAP_TIME_CLASS_DESC" />
 
+			<field name="placeholder"
+			       type="text"
+			       description="PLG_ELEMENT_DATE_PLACEHOLDER_DESC"
+			       label="PLG_ELEMENT_DATE_PLACEHOLDER_LABEL" />
+
 		</fieldset>
 
 		<fieldset label="PLG_ELEMENT_DATE_DATE_FORMATS_HEADING" name="plg-element-date-extra">
@@ -177,7 +182,7 @@
 				mode="javascript"
 				description="PLG_ELEMENT_DATE_ALLOW_PHP_FUNC_DESC"
 				label="PLG_ELEMENT_DATE_ALLOW_PHP_FUNC_LABEL" />
-				
+
 			<field name="date_observe"
 				type="listfields"
 				description="PLG_ELEMENT_DATE_WATCH_DESC"
