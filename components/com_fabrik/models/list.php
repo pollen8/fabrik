@@ -4515,6 +4515,12 @@ class FabrikFEModelList extends JModelForm
 		$element = $elementModel->getElement();
 		$pluginManager = FabrikWorker::getPluginManager();
 		$basePlugIn = $pluginManager->getPlugIn($element->plugin, 'element');
+
+		if (!$basePlugIn->recordInDatabase())
+		{
+			return $return;
+		}
+
 		$fabrikDb = $this->getDb();
 		$group = $elementModel->getGroup();
 		$dropKey = false;
