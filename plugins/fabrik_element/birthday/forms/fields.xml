@@ -81,7 +81,8 @@
 			       description="PLG_ELEMENT_BIRTHDAY_DETAILS_DATEFORMATDESC"
 			       label="PLG_ELEMENT_BIRTHDAY_DETAILS_DATE_FORMAT">
 				<option value="d.m.Y">01.03.1789</option>
-				<option value="m.d.Y">03/01/1789</option>
+				<option value="m.d.Y">03.01.1789</option>
+				<option value="d/m/Y">01/03/1789</option>
 				<option value="D. month YYYY">PLG_ELEMENT_BIRTHDAY_D_MONTH_YYYY</option>
 				<option value="Month d, YYYY">PLG_ELEMENT_BIRTHDAY_MONTH_D_YYYY</option>
 				<option value="{age}">PLG_ELEMENT_BIRTHDAY_AGEONLY</option>
@@ -114,7 +115,8 @@
 			       description="PLG_ELEMENT_BIRTHDAY_LIST_DATEFORMATDESC"
 			       label="PLG_ELEMENT_BIRTHDAY_LIST_DATE_FORMAT">
 				<option value="d.m.Y">01.03.1789</option>
-				<option value="m.d.Y">03/01/1789</option>
+				<option value="m.d.Y">03.01.1789</option>
+				<option value="d/m/Y">01/03/1789</option>
 				<option value="d m">PLG_ELEMENT_BIRTHDAY_DAY_MONTH</option>
 				<option value="D. month YYYY">PLG_ELEMENT_BIRTHDAY_D_MONTH_YYYY</option>
 				<option value="Month d, YYYY">PLG_ELEMENT_BIRTHDAY_MONTH_D_YYYY</option>
