@@ -704,7 +704,22 @@ class PlgFabrik_ElementGooglemap extends PlgFabrik_Element
 		// If its not editable and there's no val don't show the map
 		$layout = $this->getLayout('static');
 		$displayData = new stdClass;
-		$displayData->src = Fabimage::cacheRemote($src, $folder, $file);
+
+		if (!$tableView || ($tableView && $params->get('fb_gm_staticmap_tableview', '0') === '1'))
+		{
+			$displayData->src = Fabimage::cacheRemote($src, $folder, $file);
+
+			// if cacheImage returned false, probably an issue with permissions on the cache folder, so punt to direct URL
+			if ($displayData->src === false)
+			{
+				$displayData->src = $src;
+			}
+		}
+		else
+		{
+			$displayData->src = $src;
+		}
+
 		$displayData->id = $id;
 		$displayData->view = $tableView ? 'list' : 'details';
 

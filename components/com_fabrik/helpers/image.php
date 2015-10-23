@@ -249,7 +249,7 @@ class Fabimage
 	 * @param   string  $file      Local filename
 	 * @param   number  $lifeTime  Number of days to cache the image for
 	 *
-	 * @return  string  Local URI to cached image
+	 * @return  boolean|string  Local URI to cached image
 	 */
 	public static function cacheRemote($src, $path, $file, $lifeTime = 29)
 	{
@@ -304,6 +304,9 @@ class Fabimage
 		$folder = rtrim($folder, '/') . '/';
 		$cacheFile = $folder . $file;
 
+		// result to test file_put_contents() with
+		$res = false;
+
 		// Check for cached version
 		if (JFile::exists($cacheFile))
 		{
@@ -319,16 +322,27 @@ class Fabimage
 				JFile::delete($cacheFile);
 
 				// Grab image from Google and store
-				file_put_contents($cacheFile, file_get_contents($src));
+				$res = file_put_contents($cacheFile, file_get_contents($src));
+			}
+			else
+			{
+				$res = true;
 			}
 		}
 		else
 		{
 			// No cached image, grab image from remote URI and store locally
-			file_put_contents($cacheFile, file_get_contents($src));
+			$res = file_put_contents($cacheFile, file_get_contents($src));
 		}
 
-		$src = COM_FABRIK_LIVESITE . $path . $file;
+		if ($res === false)
+		{
+			$src = false;
+		}
+		else
+		{
+			$src = COM_FABRIK_LIVESITE . $path . $file;
+		}
 
 		return $src;
 	}
