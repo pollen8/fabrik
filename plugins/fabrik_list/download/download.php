@@ -263,7 +263,7 @@ class PlgFabrik_ListDownload extends PlgFabrik_List
 					}
 					else
 					{
-						$zipErr .= FText::_('ZIP is empty');
+						$zipErr .= FText::_('PLG_FABRIK_LIST_DOWNLOAD_ZIP_EMPTY');
 					}
 				}
 			}
@@ -274,7 +274,7 @@ class PlgFabrik_ListDownload extends PlgFabrik_List
 		}
 		else
 		{
-			$zipErr = "No files to ZIP!";
+			$zipErr = FText::_("PLG_FABRIK_LIST_DOWNLOAD_ZIP_NO_FILES");
 		}
 
 		if (empty($zipErr))
