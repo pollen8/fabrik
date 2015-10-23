@@ -142,9 +142,14 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 				{
 					if ($fd == 'm.d.Y')
 					{
-						$detailValue = $month . '/' . $day . '/' . $year;
+						$detailValue = $month . '.' . $day . '.' . $year;
 					}
-
+					
+					if ($fd == 'd/m/Y')
+					{
+						$detailValue = $day . '/' . $month . '/' . $year;
+					}
+					
 					if ($fd == 'D. month YYYY')
 					{
 						$detailValue = $dayDisplay . '. ' . $monthDisplay . ' ' . $year;
@@ -533,7 +538,8 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 		$thisYear = date('Y');
 		$year = JString::ltrim($year, '0');
 		$dmy = $day . '.' . $month . '.' . $year;
-		$mdy = $month . '/' . $day . '/' . $year;
+		$mdy = $month . '.' . $day . '.' . $year;
+		$dmy_slash = $day . '/' . $month . '/' . $year;
 		$dMonthYear = $dayDisplay . '. ' . $monthDisplay . ' ' . $year;
 		$monthDYear = $monthDisplay . ' ' . $dayDisplay . ', ' . $year;
 		$dMonth = $dayDisplay . '  ' . $monthDisplay;
@@ -548,6 +554,9 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 			{
 				case 'm.d.Y':
 					$dateDisplay = $mdy;
+					break;
+				case 'd/m/Y':
+					$dateDisplay = $dmy_salsh;
 					break;
 				case 'D. month YYYY':
 					$dateDisplay = $dMonthYear;
