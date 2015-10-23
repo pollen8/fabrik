@@ -477,8 +477,6 @@ class FabrikViewFormBase extends FabrikView
 					$aWYSIWYGNames[] = $res;
 				}
 
-				$eparams = $elementModel->getParams();
-
 				// Load in once the element js class files
 				$element = $elementModel->getElement();
 
@@ -511,9 +509,6 @@ class FabrikViewFormBase extends FabrikView
 
 		FabrikHelperHTML::iniRequireJS($shim);
 		$actions   = trim(implode("\n", $jsActions));
-		$listModel = $model->getlistModel();
-		$table     = $listModel->getTable();
-		$form      = $model->getForm();
 		FabrikHelperHTML::windows('a.fabrikWin');
 		FabrikHelperHTML::tips('.hasTip', array(), "$('$bKey')");
 		$model->getFormCss();
@@ -966,7 +961,6 @@ class FabrikViewFormBase extends FabrikView
 
 		if ($model->isEditable() && $params->get('submit_button', 1))
 		{
-			$button      =
 			$submitClass = FabrikString::clean($form->submit_button_label);
 			$submitIcon  = $params->get('save_icon', '');
 			$submitLabel = FText::_($form->submit_button_label);

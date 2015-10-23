@@ -5394,11 +5394,17 @@ class PlgFabrik_Element extends FabrikPlugin
 			$shim['element/' . $name . '/' . $name] = $s;
 		}
 
+		$formId = $this->getFormModel()->getId();
 		static $elementClasses;
 
 		if (!isset($elementClasses))
 		{
 			$elementClasses = array();
+		}
+
+		if (!array_key_exists($formId, $elementClasses))
+		{
+			$elementClasses[$formId] = array();
 		}
 		// Load up the default script
 		if ($script == '')
@@ -5406,10 +5412,10 @@ class PlgFabrik_Element extends FabrikPlugin
 			$script = 'plugins/fabrik_element/' . $name . '/' . $name . $ext;
 		}
 
-		if (empty($elementClasses[$script]))
+		if (empty($elementClasses[$formId][$script]))
 		{
 			$srcs[] = $script;
-			$elementClasses[$script] = 1;
+			$elementClasses[$formId][$script] = 1;
 		}
 	}
 
