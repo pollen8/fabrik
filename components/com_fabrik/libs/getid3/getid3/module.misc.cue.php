@@ -3,6 +3,7 @@
 /// getID3() by James Heinrich <info@getid3.org>               //
 //  available at http://getid3.sourceforge.net                 //
 //            or http://www.getid3.org                         //
+//          also https://github.com/JamesHeinrich/getID3       //
 /////////////////////////////////////////////////////////////////
 // See readme.txt for more details                             //
 /////////////////////////////////////////////////////////////////
@@ -14,7 +15,7 @@
 /////////////////////////////////////////////////////////////////
 //                                                             //
 // Module originally written [2009-Mar-25] by                  //
-//      Nigel Barnes <ngbarnes�hotmail*com>                    //
+//      Nigel Barnes <ngbarnesØhotmail*com>                    //
 // Minor reformatting and similar small changes to integrate   //
 //   into getID3 by James Heinrich <info@getid3.org>           //
 //                                                            ///
@@ -32,9 +33,9 @@
  */
 class getid3_cue extends getid3_handler
 {
-	var $cuesheet = array();
+	public $cuesheet = array();
 
-	function Analyze() {
+	public function Analyze() {
 		$info = &$this->getid3->info;
 
 		$info['fileformat'] = 'cue';
@@ -45,7 +46,7 @@ class getid3_cue extends getid3_handler
 
 
 
-	function readCueSheetFilename($filename)
+	public function readCueSheetFilename($filename)
 	{
 		$filedata = file_get_contents($filename);
 		return $this->readCueSheet($filedata);
@@ -53,9 +54,9 @@ class getid3_cue extends getid3_handler
 	/**
 	* Parses a cue sheet file.
 	*
-* @param string $filename - The filename for the cue sheet to open.
+	* @param string $filename - The filename for the cue sheet to open.
 	*/
-	function readCueSheet(&$filedata)
+	public function readCueSheet(&$filedata)
 	{
 		$cue_lines = array();
 		foreach (explode("\n", str_replace("\r", null, $filedata)) as $line)
@@ -73,9 +74,9 @@ class getid3_cue extends getid3_handler
 	/**
 	* Parses the cue sheet array.
 	*
-* @param array $file - The cuesheet as an array of each line.
+	* @param array $file - The cuesheet as an array of each line.
 	*/
-	function parseCueSheet($file)
+	public function parseCueSheet($file)
 	{
 		//-1 means still global, all others are track specific
 		$track_on = -1;
@@ -126,10 +127,10 @@ class getid3_cue extends getid3_handler
 	/**
 	* Parses the REM command.
 	*
-* @param string $line - The line in the cue file that contains the TRACK command.
-* @param   integer $track_on - The track currently processing.
+	* @param string $line - The line in the cue file that contains the TRACK command.
+	* @param integer $track_on - The track currently processing.
 	*/
-	function parseComment($line, $track_on)
+	public function parseComment($line, $track_on)
 	{
 		$explodedline = explode(' ', $line, 3);
 		$comment_REM  = (isset($explodedline[0]) ? $explodedline[0] : '');
@@ -149,10 +150,10 @@ class getid3_cue extends getid3_handler
 	/**
 	* Parses the FILE command.
 	*
-* @param string $line - The line in the cue file that contains the FILE command.
+	* @param string $line - The line in the cue file that contains the FILE command.
 	* @return array - Array of FILENAME and TYPE of file..
 	*/
-	function parseFile($line)
+	public function parseFile($line)
 	{
 		$line =            substr($line, strpos($line, ' ') + 1);
 		$type = strtolower(substr($line, strrpos($line, ' ')));
@@ -169,10 +170,10 @@ class getid3_cue extends getid3_handler
 	/**
 	* Parses the FLAG command.
 	*
-* @param string $line - The line in the cue file that contains the TRACK command.
-* @param   integer $track_on - The track currently processing.
+	* @param string $line - The line in the cue file that contains the TRACK command.
+	* @param integer $track_on - The track currently processing.
 	*/
-	function parseFlags($line, $track_on)
+	public function parseFlags($line, $track_on)
 	{
 		if ($track_on != -1)
 		{
@@ -207,10 +208,10 @@ class getid3_cue extends getid3_handler
 	/**
 	* Collect any unidentified data.
 	*
-* @param string $line - The line in the cue file that contains the TRACK command.
-* @param   integer $track_on - The track currently processing.
+	* @param string $line - The line in the cue file that contains the TRACK command.
+	* @param integer $track_on - The track currently processing.
 	*/
-	function parseGarbage($line, $track_on)
+	public function parseGarbage($line, $track_on)
 	{
 		if ( strlen($line) > 0 )
 		{
@@ -228,10 +229,10 @@ class getid3_cue extends getid3_handler
 	/**
 	* Parses the INDEX command of a TRACK.
 	*
-* @param string $line - The line in the cue file that contains the TRACK command.
-* @param   integer $track_on - The track currently processing.
+	* @param string $line - The line in the cue file that contains the TRACK command.
+	* @param integer $track_on - The track currently processing.
 	*/
-	function parseIndex($line, $track_on)
+	public function parseIndex($line, $track_on)
 	{
 		$type = strtolower(substr($line, 0, strpos($line, ' ')));
 		$line =            substr($line, strpos($line, ' ') + 1);
@@ -260,7 +261,7 @@ class getid3_cue extends getid3_handler
 		}
 	}
 
-	function parseString($line, $track_on)
+	public function parseString($line, $track_on)
 	{
 		$category = strtolower(substr($line, 0, strpos($line, ' ')));
 		$line     =            substr($line, strpos($line, ' ') + 1);
@@ -293,13 +294,13 @@ class getid3_cue extends getid3_handler
 	/**
 	* Parses the TRACK command.
 	*
-* @param string $line - The line in the cue file that contains the TRACK command.
-* @param   integer $track_on - The track currently processing.
+	* @param string $line - The line in the cue file that contains the TRACK command.
+	* @param integer $track_on - The track currently processing.
 	*/
-	function parseTrack($line, $track_on)
+	public function parseTrack($line, $track_on)
 	{
 		$line = substr($line, strpos($line, ' ') + 1);
-		$track = JString::ltrim(substr($line, 0, strpos($line, ' ')), '0');
+		$track = ltrim(substr($line, 0, strpos($line, ' ')), '0');
 
 		//find the data type.
 		$datatype = strtolower(substr($line, strpos($line, ' ') + 1));
@@ -309,4 +310,3 @@ class getid3_cue extends getid3_handler
 
 }
 
-?>
