@@ -216,7 +216,7 @@ var FbTextarea = new Class({
 		if (this.options.wysiwyg) {
 			var id = this.options.isGroupJoin ? this.options.htmlId : this.options.element;
 			tinyMCE.execCommand('mceFocus', false, id);
-			this._tinyRemoveEditor(id);
+			this._removeTinyEditor(id);
 		}
 	},
 
