@@ -154,6 +154,13 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 
 			return ($element->hidden == '1') ? "<!-- " . $value . " -->" : $value;
 		}
+		else
+		{
+			if ($params->get('autocomplete', '0') === '3')
+			{
+				$bits['class'] .= ' fabrikGeocomplete';
+			}
+		}
 
 		/* stop "'s from breaking the content out of the field.
 		 * $$$ rob below now seemed to set text in field from "test's" to "test&#039;s" when failed validation
@@ -300,6 +307,8 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 			$opts->input_mask = '';
 		}
 
+		$opts->geocomplete = $params->get('autocomplete', '0') === '3';
+
 		if ($this->getParams()->get('autocomplete', '0') == '2')
 		{
 			$autoOpts = array();
@@ -325,14 +334,33 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 	{
 		$params = $this->getParams();
 		$inputMask = trim($params->get('text_input_mask', ''));
+		$geocomplete = $params->get('autocomplete', '0') === '3';
+
+		$s = new stdClass;
+		$s->deps = array('fab/element');
 
 		if (!empty($inputMask))
 		{
-			$s = new stdClass;
-			$s->deps = array('fab/element');
 			$folder = 'components/com_fabrik/libs/masked_input/';
 			$s->deps[] = $folder . 'jquery.maskedinput';
-			$shim['element/field/field'] = $s;
+		}
+
+		if ($geocomplete)
+		{
+			$folder = 'components/com_fabrik/libs/googlemaps/geocomplete/';
+			$s->deps[] = $folder . 'jquery.geocomplete';
+		}
+
+		if (count($s->deps) > 1)
+		{
+			if (array_key_exists('element/field/field', $shim))
+			{
+				$shim['element/field/field']->deps = array_merge($shim['element/field/field']->deps, $s->deps);
+			}
+			else
+			{
+				$shim['element/field/field'] = $s;
+			}
 		}
 
 		parent::formJavascriptClass($srcs, $script, $shim);
