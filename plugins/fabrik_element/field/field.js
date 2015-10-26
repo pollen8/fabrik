@@ -5,6 +5,14 @@
  * @license:   GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
+function geolocateLoad () {
+	if (document.body) {
+		window.fireEvent('google.geolocate.loaded');
+	} else {
+		console.log('no body');
+	}
+}
+
 var FbField = new Class({
 	Extends: FbElement,
 	initialize: function (element, options) {
@@ -16,6 +24,17 @@ var FbField = new Class({
 		 */
 		if (this.options.use_input_mask) {
 			jQuery('#' + element).mask(this.options.input_mask);
+		}
+		if (this.options.geocomplete) {
+			this.gcMade = false;
+			this.loadFn = function () {
+				if (this.gcMade === false) {
+					jQuery('#' + this.element.id).geocomplete();
+					this.gcMade = true;
+				}
+			}.bind(this);
+			window.addEvent('google.geolocate.loaded', this.loadFn);
+			Fabrik.loadGoogleMap(false, 'geolocateLoad');
 		}
 	},
 
@@ -38,6 +57,12 @@ var FbField = new Class({
 			var element = this.getElement();
 			if (element) {
 				jQuery('#' + element.id).mask(this.options.input_mask);
+			}
+		}
+		if (this.options.geocomplete) {
+			var element = this.getElement();
+			if (element) {
+				jQuery('#' + element.id).geocomplete();
 			}
 		}
 		this.parent(c);

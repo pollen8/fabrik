@@ -3,6 +3,7 @@
 /// getID3() by James Heinrich <info@getid3.org>               //
 //  available at http://getid3.sourceforge.net                 //
 //            or http://www.getid3.org                         //
+//          also https://github.com/JamesHeinrich/getID3       //
 /////////////////////////////////////////////////////////////////
 // See readme.txt for more details                             //
 /////////////////////////////////////////////////////////////////
@@ -17,11 +18,11 @@
 class getid3_exe extends getid3_handler
 {
 
-	function Analyze() {
+	public function Analyze() {
 		$info = &$this->getid3->info;
 
-		fseek($this->getid3->fp, $info['avdataoffset'], SEEK_SET);
-		$EXEheader = fread($this->getid3->fp, 28);
+		$this->fseek($info['avdataoffset']);
+		$EXEheader = $this->fread(28);
 
 		$magic = 'MZ';
 		if (substr($EXEheader, 0, 2) != $magic) {
@@ -50,12 +51,9 @@ class getid3_exe extends getid3_handler
 		$info['exe']['mz']['memory_minimum']     = $info['exe']['mz']['raw']['min_memory_paragraphs'] * 16;
 		$info['exe']['mz']['memory_recommended'] = $info['exe']['mz']['raw']['max_memory_paragraphs'] * 16;
 
-$info['error'][] = 'EXE parsing not enabled in this version of getID3()';
+$info['error'][] = 'EXE parsing not enabled in this version of getID3() ['.$this->getid3->version().']';
 return false;
 
 	}
 
 }
-
-
-?>

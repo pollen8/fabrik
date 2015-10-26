@@ -136,12 +136,28 @@ class PlgFabrik_List extends FabrikPlugin
 				$opts['forceImage'] = true;
 			}
 
+
 			$img = FabrikHelperHTML::image($imageName, 'list', $tmpl, $properties, false, $opts);
 			$text = $this->buttonAction == 'dropdown' ? $label : '<span class="hidden">' . $label . '</span>';
-			$btnClass = ($j3 && $this->buttonAction != 'dropdown') ? 'btn ' : '';
-			$a = '<a href="#" data-list="' . $this->context . '" class="' . $btnClass . $name . ' listplugin" title="' . $label . '">';
 
-			return $a . $img . ' ' . $text . '</a>';
+			if ($j3 && $this->buttonAction != 'dropdown')
+			{
+				$layout = FabrikHelperHTML::getLayout('fabrik-button');
+				$layoutData = (object) array(
+					'tag' => 'a',
+					'attributes' => 'data-list="' . $this->context . '" title="' . $label . '"',
+					'class' => $name . ' listplugin',
+					'label' => $img . ' ' . $text
+				);
+
+				return $layout->render($layoutData);
+			}
+			else
+			{
+				$a = '<a href="#" data-list="' . $this->context . '" class="' . $name . ' listplugin" title="' . $label . '">';
+
+				return $a . $img . ' ' . $text . '</a>';
+			}
 		}
 
 		return '';

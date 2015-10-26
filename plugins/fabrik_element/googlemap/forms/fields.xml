@@ -406,7 +406,8 @@
 				description="PLG_ELEMENT_GOOGLE_MAP_STATIC_MAP_TABLE_VIEW_DESC"
 				label="PLG_ELEMENT_GOOGLE_MAP_STATIC_MAP_TABLE_VIEW_LABEL">
 					<option value="0">JNO</option>
-					<option value="1">JYES</option>
+					<option value="1">PLG_ELEMENT_GOOGLE_MAP_STATIC_MAP_TABLE_VIEW_CACHED</option>
+					<option value="2">JYES</option>
 			</field>
 
 			<field name="fb_gm_staticmap_tableview_type_coords"

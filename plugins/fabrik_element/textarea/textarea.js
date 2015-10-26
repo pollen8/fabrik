@@ -201,7 +201,8 @@ var FbTextarea = new Class({
 			txt.setStyle('display', '');
 			this.element = txt;
 			var id = this.options.isGroupJoin ? this.options.htmlId : this.options.element;
-			tinyMCE.execCommand('mceAddControl', false, id);
+			//tinyMCE.execCommand('mceAddControl', false, id);
+			this._addTinyEditor(id);
 		}
 		this.getTextContainer();
 		this.watchTextContainer();
@@ -215,7 +216,7 @@ var FbTextarea = new Class({
 		if (this.options.wysiwyg) {
 			var id = this.options.isGroupJoin ? this.options.htmlId : this.options.element;
 			tinyMCE.execCommand('mceFocus', false, id);
-			tinyMCE.execCommand('mceRemoveControl', false, id);
+			this._removeTinyEditor(id);
 		}
 	},
 
@@ -265,6 +266,26 @@ var FbTextarea = new Class({
 
 	_getTinyInstance: function () {
 		return tinyMCE.majorVersion.toInt() >= 4 ? tinyMCE.get(this.element.id) : tinyMCE.getInstanceById(this.element.id);
+	},
+	
+	_addTinyEditor: function(id) {
+		if (tinyMCE.majorVersion.toInt() >= 4) {
+			tinyMCE.execCommand('mceAddEditor', false, id);
+		}
+		else
+		{
+			tinyMCE.execCommand('mceAddControl', false, id);
+		}
+	},
+	
+	_removeTinyEditor: function(id) {
+		if (tinyMCE.majorVersion.toInt() >= 4) {
+			tinyMCE.execCommand('mceRemoveEditor', false, id);
+		}
+		else
+		{
+			tinyMCE.execCommand('mceRemoveControl', false, id);
+		}
 	},
 
 	setContent: function (c)

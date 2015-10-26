@@ -92,6 +92,7 @@
 					<option value="0">JNO</option>
 					<option value="1">PLG_ELEMENT_FIELD_AUTOCOMPLETE_BROWSER</option>
 					<option value="2">PLG_ELEMENT_FIELD_AUTOCOMPLETE_VALUES</option>
+					<option value="3">PLG_ELEMENT_FIELD_AUTOCOMPLETE_GEOCODE</option>
 			</field>
 
 			<field name="speech"

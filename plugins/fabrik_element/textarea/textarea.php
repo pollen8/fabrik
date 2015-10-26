@@ -468,10 +468,10 @@ class PlgFabrik_ElementTextarea extends PlgFabrik_Element
 		if ($this->useWysiwyg())
 		{
 			// $$$ rob need to use the NAME as the ID when wysiwyg end in joined group
-			$id = $this->getHTMLName($repeatCounter);
+			//$id = $this->getHTMLName($repeatCounter);
 
 			// Testing not using name as duplication of group does not trigger clone()
-			// $id = $this->getHTMLId($repeatCounter);
+			$id = $this->getHTMLId($repeatCounter);
 
 			if ($this->inDetailedView)
 			{

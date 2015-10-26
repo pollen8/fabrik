@@ -477,8 +477,6 @@ class FabrikViewFormBase extends FabrikView
 					$aWYSIWYGNames[] = $res;
 				}
 
-				$eparams = $elementModel->getParams();
-
 				// Load in once the element js class files
 				$element = $elementModel->getElement();
 
@@ -511,9 +509,6 @@ class FabrikViewFormBase extends FabrikView
 
 		FabrikHelperHTML::iniRequireJS($shim);
 		$actions   = trim(implode("\n", $jsActions));
-		$listModel = $model->getlistModel();
-		$table     = $listModel->getTable();
-		$form      = $model->getForm();
 		FabrikHelperHTML::windows('a.fabrikWin');
 		FabrikHelperHTML::tips('.hasTip', array(), "$('$bKey')");
 		$model->getFormCss();
@@ -880,6 +875,7 @@ class FabrikViewFormBase extends FabrikView
 		$deleteIcon  = $params->get('delete_icon', '');
 		$goBackLabel = FText::_($params->get('goback_button_label'));
 		$goBackIcon  = $params->get('goback_icon', '');
+		$btnLayout  = FabrikHelperHTML::getLayout('fabrik-button');
 
 		if ($resetIcon !== '')
 		{
@@ -888,8 +884,14 @@ class FabrikViewFormBase extends FabrikView
 			$resetLabel = $before ? $resetIcon . '&nbsp;' . $resetLabel : $resetLabel . '&nbsp;' . $resetIcon;
 		}
 
-		$form->resetButton = $params->get('reset_button', 0) && $this->editable == "1"
-			? '<button type="reset" class="btn btn-warning button" name="Reset">' . $resetLabel . '</button>' : '';
+		$layoutData = (object) array(
+			'type' => 'reset',
+			'class' => 'btn-warning button',
+			'name' => 'Reset',
+			'label' => $resetLabel
+		);
+
+		$form->resetButton = $params->get('reset_button', 0) && $this->editable == '1' ? $btnLayout->render($layoutData) : '';
 
 		if ($copyIcon !== '')
 		{
@@ -897,8 +899,14 @@ class FabrikViewFormBase extends FabrikView
 			$copyLabel = $params->get('copy_icon_location', 'before') == 'before' ? $copyIcon . '&nbsp;' . $copyLabel : $copyLabel . '&nbsp;' . $copyIcon;
 		}
 
+		$layoutData = (object) array(
+			'type' => 'submit',
+			'class' => 'button',
+			'name' => 'Copy',
+			'label' => $copyLabel
+		);
 		$form->copyButton = $params->get('copy_button', 0) && $this->editable && $model->getRowId() != ''
-			? '<button type="submit" class="btn button" name="Copy">' . $copyLabel . '</button>' : '';
+			? $btnLayout->render($layoutData) : '';
 
 		if ($applyIcon !== '')
 		{
@@ -907,9 +915,15 @@ class FabrikViewFormBase extends FabrikView
 			$applyLabel = $before ? $applyIcon . '&nbsp;' . $applyLabel : $applyLabel . '&nbsp;' . $applyIcon;
 		}
 
-		$applyButtonType   = $model->isAjax() ? 'button' : 'submit';
+		$layoutData = (object) array(
+			'type' =>  $model->isAjax() ? 'button' : 'submit',
+			'class' => 'button',
+			'name' => 'apply',
+			'label' => $applyLabel
+		);
+
 		$form->applyButton = $params->get('apply_button', 0) && $this->editable
-			? '<button type="' . $applyButtonType . '" class="btn button" name="apply">' . $applyLabel . '</button>' : '';
+			? $btnLayout->render($layoutData) : '';
 
 		if ($deleteIcon !== '')
 		{
@@ -918,8 +932,15 @@ class FabrikViewFormBase extends FabrikView
 			$deleteLabel = $before ? $deleteIcon . '&nbsp;' . $deleteLabel : $deleteLabel . '&nbsp;' . $deleteIcon;
 		}
 
+		$layoutData = (object) array(
+			'type' =>  'submit',
+			'class' => 'btn-danger button',
+			'name' => 'delete',
+			'label' => $deleteLabel
+		);
+
 		$form->deleteButton = $params->get('delete_button', 0) && $canDelete && $this->editable && $thisRowId != ''
-			? '<button type="submit" class="btn btn-danger button" name="delete">' . $deleteLabel . '</button>' : '';
+			? $btnLayout->render($layoutData) : '';
 
 		if ($goBackIcon !== '')
 		{
@@ -928,13 +949,18 @@ class FabrikViewFormBase extends FabrikView
 			$goBackLabel = $before ? $goBackIcon . '&nbsp;' . $goBackLabel : $goBackLabel . '&nbsp;' . $goBackIcon;
 		}
 
-		$goBack             = $model->isAjax() ? '' : FabrikWorker::goBackAction();
-		$form->gobackButton = $params->get('goback_button', 0)
-			? '<button type="button" class="btn button" name="Goback" ' . $goBack . '>' . $goBackLabel . '</button>' : '';
+		$layoutData = (object) array(
+			'type' =>  'button',
+			'class' => 'button',
+			'name' => 'Goback',
+			'label' => $goBackLabel,
+			'attributes' => $model->isAjax() ? '' : FabrikWorker::goBackAction()
+		);
+
+		$form->gobackButton = $params->get('goback_button', 0) ? $btnLayout->render($layoutData) : '';
 
 		if ($model->isEditable() && $params->get('submit_button', 1))
 		{
-			$button      = $model->isAjax() ? "button" : "submit";
 			$submitClass = FabrikString::clean($form->submit_button_label);
 			$submitIcon  = $params->get('save_icon', '');
 			$submitLabel = FText::_($form->submit_button_label);
@@ -946,8 +972,14 @@ class FabrikViewFormBase extends FabrikView
 				$submitLabel = $before ? $submitIcon . '&nbsp;' . $submitLabel : $submitLabel . '&nbsp;' . $submitIcon;
 			}
 
-			$form->submitButton = '<button type="' . $button . '" class="btn btn-primary button ' . $submitClass . '" name="Submit">'
-				. $submitLabel . '</button>';
+			$layoutData = (object) array(
+				'type' =>  $model->isAjax() ? 'button' : 'submit',
+				'class' => 'btn-primary button ' . $submitClass,
+				'name' => 'Submit',
+				'label' => $submitLabel
+			);
+
+			$form->submitButton = $btnLayout->render($layoutData);
 		}
 		else
 		{
@@ -956,11 +988,22 @@ class FabrikViewFormBase extends FabrikView
 
 		if ($this->isMultiPage)
 		{
-			$form->prevButton = '<button type="button" class="btn fabrikPagePrevious button" name="fabrikPagePrevious">' .
-				FabrikHelperHTML::icon('icon-previous', FText::_('COM_FABRIK_PREV')) .
-				'</button>';
-			$form->nextButton = '<button type="button" class="btn fabrikPageNext button" name="fabrikPageNext">'
-				. FText::_('COM_FABRIK_NEXT') . '&nbsp;' . FabrikHelperHTML::icon('icon-next') . '</button>';
+			$layoutData = (object) array(
+				'type' =>  'button',
+				'class' => 'fabrikPagePrevious button',
+				'name' => 'fabrikPagePrevious',
+				'label' => FabrikHelperHTML::icon('icon-previous', FText::_('COM_FABRIK_PREV'))
+			);
+			$form->prevButton = $btnLayout->render($layoutData);
+
+			$layoutData = (object) array(
+				'type' =>  'button',
+				'class' => 'fabrikPageNext button',
+				'name' => 'fabrikPageNext',
+				'label' => FText::_('COM_FABRIK_NEXT') . '&nbsp;' . FabrikHelperHTML::icon('icon-next')
+			);
+
+			$form->nextButton = $btnLayout->render($layoutData);
 		}
 		else
 		{
@@ -1144,7 +1187,7 @@ class FabrikViewFormBase extends FabrikView
 				}
 			}
 
-			$safeKey = FabrikString::rtrimword($key, "[]");
+			$safeKey = FabrikString::rtrimword($key, '[]');
 
 			// $$$ rob - no don't do below as it will strip out join names join[x][fullname] => join
 			// $key = preg_replace("/\[(.*)\]/", '', $key);

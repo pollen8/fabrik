@@ -3,6 +3,7 @@
 /// getID3() by James Heinrich <info@getid3.org>               //
 //  available at http://getid3.sourceforge.net                 //
 //            or http://www.getid3.org                         //
+//          also https://github.com/JamesHeinrich/getID3       //
 /////////////////////////////////////////////////////////////////
 //                                                             //
 // extension.cache.dbm.php - part of getID3()                  //
@@ -10,7 +11,7 @@
 //                                                            ///
 /////////////////////////////////////////////////////////////////
 //                                                             //
-// This extension written by Allan Hansen <ahØartemis*dk>      //
+// This extension written by Allan Hansen <ahÃ˜artemis*dk>      //
 //                                                            ///
 /////////////////////////////////////////////////////////////////
 
@@ -73,7 +74,7 @@ class getID3_cached_dbm extends getID3
 {
 
 	// public: constructor - see top of this file for cache type and cache_options
-	function getID3_cached_dbm($cache_type, $dbm_filename, $lock_filename) {
+	public function getID3_cached_dbm($cache_type, $dbm_filename, $lock_filename) {
 
 		// Check for dba extension
 		if (!extension_loaded('dba')) {
@@ -120,7 +121,7 @@ class getID3_cached_dbm extends getID3
 			}
 
 			// Insert getID3 version number
-			dba_insert($this::VERSION, $this::VERSION, $this->dba);
+			dba_insert(getID3::VERSION, getID3::VERSION, $this->dba);
 		}
 
 		// Init misc values
@@ -131,17 +132,17 @@ class getID3_cached_dbm extends getID3
 		register_shutdown_function(array($this, '__destruct'));
 
 		// Check version number and clear cache if changed
-		if (dba_fetch($this::VERSION, $this->dba) != $this::VERSION) {
+		if (dba_fetch(getID3::VERSION, $this->dba) != getID3::VERSION) {
 			$this->clear_cache();
 		}
 
-		parent::getID3();
+		parent::__construct();
 	}
 
 
 
-	// public: destuctor
-	function __destruct() {
+	// public: destructor
+	public function __destruct() {
 
 		// Close dbm file
 		dba_close($this->dba);
@@ -156,7 +157,7 @@ class getID3_cached_dbm extends getID3
 
 
 	// public: clear cache
-	function clear_cache() {
+	public function clear_cache() {
 
 		// Close dbm file
 		dba_close($this->dba);
@@ -169,7 +170,7 @@ class getID3_cached_dbm extends getID3
 		}
 
 		// Insert getID3 version number
-		dba_insert($this::VERSION, $this::VERSION, $this->dba);
+		dba_insert(getID3::VERSION, getID3::VERSION, $this->dba);
 
 		// Re-register shutdown function
 		register_shutdown_function(array($this, '__destruct'));
@@ -178,7 +179,7 @@ class getID3_cached_dbm extends getID3
 
 
 	// public: analyze file
-	function analyze($filename) {
+	public function analyze($filename) {
 
 		if (file_exists($filename)) {
 
@@ -206,6 +207,3 @@ class getID3_cached_dbm extends getID3
 	}
 
 }
-
-
-?>
