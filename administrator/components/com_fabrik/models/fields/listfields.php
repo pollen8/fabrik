@@ -400,14 +400,16 @@ class JFormFieldListfields extends JFormFieldList
 		$str       = array();
 		$modeField = (string) $this->getAttribute('modefield', 'textarea');
 		$class = $this->element['class'] ? ' class="' . (string) $this->element['class'] . '"' : '';
+		$placeholder = $this->element['placeholder'] ? ' placeholder="' . (string) $this->element['placeholder'] . '"' : '';
+		$rows = $this->element['rows'] ? $this->element['rows'] : 3;
 
 		if ($modeField === 'textarea')
 		{
-			$str[] = '<textarea ' . $class. ' cols="20" row="30" id="' . $this->id . '" name="' . $this->name . '">' . $this->value . '</textarea>';
+			$str[] = '<textarea ' . $class . $placeholder . ' cols="20" rows="' . $rows . '" id="' . $this->id . '" name="' . $this->name . '">' . $this->value . '</textarea>';
 		}
 		else
 		{
-			$str[] = '<input class="input" id="' . $this->id . '" name="' . $this->name . '" value="' . $this->value . '" />';
+			$str[] = '<input ' . $class . $placeholder . ' id="' . $this->id . '" name="' . $this->name . '" value="' . $this->value . '" />';
 		}
 
 		$str[] = '<button class="button btn"><span class="icon-arrow-left"></span> ' . FText::_('COM_FABRIK_ADD') . '</button>';
