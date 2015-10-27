@@ -13,7 +13,7 @@
 	border-top:1px dotted #666;
 	margin:10px 0;
 }
-	
+
 .removeButton {
 	background: transparent url(../images/remove.png) no-repeat 5px center;
 	border: 1px dotted #CCCCCC;
@@ -62,4 +62,8 @@ ul.subelements table:hover{
 /* hack to prevent MCE editors from stepping across the page if you have more than one */
 table.mceLayout {
 	clear: both;
+}
+
+.textarea {
+	height: auto;
 }
