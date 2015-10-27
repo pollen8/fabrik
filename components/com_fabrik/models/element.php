@@ -1535,6 +1535,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		$displayData->tipText = $this->tipTextAndValidations('form', $model->data);
 		$displayData->rollOver = $this->isTipped();
 		$displayData->isEditable = $this->isEditable();
+		$displayData->tipOpts = $this->tipOpts();
 
 		$labelClass = '';
 
@@ -1562,7 +1563,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		}
 
 		$displayData->icons = '';
-		$iconOpts  = array('icon-class' => 'small');
+		$iconOpts = array('icon-class' => 'small');
 
 		if ($displayData->rollOver)
 		{
@@ -1573,8 +1574,8 @@ class PlgFabrik_Element extends FabrikPlugin
 		{
 			$displayData->icons .= $this->validator->labelIcons();
 		}
-		$displayData->labelClass = $labelClass;
 
+		$displayData->labelClass = $labelClass;
 		$layout = FabrikHelperHTML::getLayout('fabrik-element-label', $this->labelPaths());
 
 		$str = $layout->render($displayData);
@@ -1890,68 +1891,62 @@ class PlgFabrik_Element extends FabrikPlugin
 	 * Copy an element table row
 	 *
 	 * @param   int     $id       Element id to copy
-	 * @param   string  $copytxt  Feedback msg
-	 * @param   int     $groupid  Group model id
+	 * @param   string  $copyText  Feedback msg
+	 * @param   int     $groupId  Group model id
 	 * @param   string  $name     New element name
 	 *
 	 * @return  mixed	Error or new row
 	 */
-	public function copyRow($id, $copytxt = 'Copy of %s', $groupid = null, $name = null)
+	public function copyRow($id, $copyText = 'Copy of %s', $groupId = null, $name = null)
 	{
+		/** @var FabrikTableElement $rule */
 		$rule = FabTable::getInstance('Element', 'FabrikTable');
 
-		if ($rule->load((int) $id))
+		$rule->load((int) $id);
+		$rule->id = null;
+		$rule->label = sprintf($copyText, $rule->label);
+
+		if (!is_null($groupId))
 		{
-			$rule->id = null;
-			$rule->label = sprintf($copytxt, $rule->label);
+			$rule->group_id = $groupId;
+		}
 
-			if (!is_null($groupid))
+		if (!is_null($name))
+		{
+			$rule->name = $name;
+		}
+
+		$groupModel = JModelLegacy::getInstance('Group', 'FabrikFEModel');
+		$groupModel->setId($groupId);
+		$groupListModel = $groupModel->getListModel();
+
+		// $$$ rob - if its a joined group then it can have the same element names
+		if ((int) $groupModel->getGroup()->is_join === 0)
+		{
+			if ($groupListModel->fieldExists($rule->name))
 			{
-				$rule->group_id = $groupid;
-			}
-
-			if (!is_null($name))
-			{
-				$rule->name = $name;
-			}
-
-			$groupModel = JModelLegacy::getInstance('Group', 'FabrikFEModel');
-			$groupModel->setId($groupid);
-			$groupListModel = $groupModel->getListModel();
-
-			// $$$ rob - if its a joined group then it can have the same element names
-			if ((int) $groupModel->getGroup()->is_join === 0)
-			{
-				if ($groupListModel->fieldExists($rule->name))
-				{
-					return JError::raiseWarning(500, FText::_('COM_FABRIK_ELEMENT_NAME_IN_USE'));
-				}
-			}
-
-			$date = $this->date;
-			$tz = new DateTimeZone($this->app->get('offset'));
-			$date->setTimezone($tz);
-			$rule->created = $date->toSql();
-			$params = $rule->params == '' ? new stdClass : json_decode($rule->params);
-			$params->parent_linked = 1;
-			$rule->params = json_encode($params);
-			$rule->parent_id = $id;
-			$config = JComponentHelper::getParams('com_fabrik');
-
-			if ($config->get('unpublish_clones', false))
-			{
-				$rule->published = 0;
-			}
-
-			if (!$rule->store())
-			{
-				return JError::raiseWarning($rule->getError());
+				$this->app->enqueueMessage(FText::_('COM_FABRIK_ELEMENT_NAME_IN_USE'), 'error');
+				return;
 			}
 		}
-		else
+
+		$date = $this->date;
+		$tz = new DateTimeZone($this->app->get('offset'));
+		$date->setTimezone($tz);
+		$rule->created = $date->toSql();
+		$params = $rule->params == '' ? new stdClass : json_decode($rule->params);
+		$params->parent_linked = 1;
+		$rule->params = json_encode($params);
+		$rule->parent_id = $id;
+		$config = JComponentHelper::getParams('com_fabrik');
+
+		if ($config->get('unpublish_clones', false))
 		{
-			return JError::raiseWarning(500, $rule->getError());
+			$rule->published = 0;
 		}
+
+		$rule->store();
+
 
 		/**
 		 * I thought we did this in an overridden element model method, like onCopy?

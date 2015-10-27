@@ -51,7 +51,6 @@ class FabrikFEModelElementValidator extends FabModel
 	 *
 	 * @return  void
 	 */
-
 	public function setElementModel(&$elementModel)
 	{
 		$this->elementModel = $elementModel;
@@ -69,7 +68,6 @@ class FabrikFEModelElementValidator extends FabModel
 			return $this->validations;
 		}
 
-		$element = $this->elementModel->getElement();
 		$params = $this->elementModel->getParams();
 		$validations = (array) $params->get('validations', 'array');
 		$usedPlugins = (array) FArrayHelper::getValue($validations, 'plugin', array());
@@ -199,7 +197,7 @@ class FabrikFEModelElementValidator extends FabModel
 	 *
 	 * @param   int  $repeatCounter  Repeat group counter
 	 *
-	 * @return multitype:stdClass
+	 * @return array
 	 */
 	public function jsWatchElements($repeatCounter = 0)
 	{
