@@ -1548,7 +1548,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 			$displayData->default = $default;
 			$displayData->name = $name;
 			$displayData->editable = $this->isEditable();
-			$displayData->attributes = 'class="fabrikinput inputbox input ' . $this->getAdvancedSelectClass() . ' ' . $params->get('bootstrap_class', 'input-large') . '" size="1"';
+			$displayData->attributes = 'class="fabrikinput form-control inputbox input ' . $this->getAdvancedSelectClass() . ' ' . $params->get('bootstrap_class', 'input-large') . '" size="1"';
 			$html[] = $layout->render($displayData);
 		}
 		else
