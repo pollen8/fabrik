@@ -22,7 +22,9 @@ else :
 			?>
 			<div class="input-append">
 				<?php echo $d->input;?>
-				<span class="add-on"><span class="icon-user"></span></span>
+				<span class="add-on">
+					<?php echo FabrikHelperHTML::icon('icon-user'); ?>
+				</span>
 			</div>
 		<?php
 		endif;

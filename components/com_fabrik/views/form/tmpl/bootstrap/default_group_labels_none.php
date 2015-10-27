@@ -22,11 +22,11 @@ $element = $this->element;
 
 <div class="fabrikElement">
 	<?php echo $element->element;?>
-</div><!-- end fabrikElement -->
+</div>
 
 <div class="<?php echo $this->class?>">
 	<?php echo $element->error ?>
-</div><!-- end element error -->
+</div>
 
 <?php if ($this->tipLocation == 'side') : ?>
 	<span class=""><?php echo $element->tipSide ?></span>

@@ -10,7 +10,7 @@
  */
 var FloatingTips = new Class({
 	Implements: [Options, Events],
-	
+
 	options: {
 		fxProperties: {transition: Fx.Transitions.linear, duration: 500},
 		'position': 'top',
@@ -44,11 +44,15 @@ var FloatingTips = new Class({
 			}
 		}
 	},
-	
+
 	initialize: function (elements, options) {
+		if (Fabrik.bootstrapVersion('modal') === '3.x') {
+			// We should override any Fabrik3 custom tip settings with bootstrap3 data-foo attributes in JLayouts
+			return;
+		}
 		this.setOptions(options);
 		this.options.fxProperties = {transition: eval(this.options.tipfx), duration: this.options.duration};
-		
+
 		// Any tip (not necessarily in this instance has asked for all other tips to be hidden.
 		window.addEvent('tips.hideall', function (e, trigger) {
 			this.hideOthers(trigger);
@@ -57,9 +61,9 @@ var FloatingTips = new Class({
 			this.attach(elements);
 		}
 	},
-	
+
 	attach: function (elements) {
-		this.elements = $$(elements);
+		this.elements = document.getElements(elements);
 		this.elements.each(function (trigger) {
 			var thisOpts = JSON.decode(trigger.get('opts', '{}').opts);
 			thisOpts = thisOpts ? thisOpts : {};
@@ -75,10 +79,11 @@ var FloatingTips = new Class({
 				var c = opts.content(trigger);
 				opts.content = typeOf(c) === 'null' ? '' : c.innerHTML;
 			}
-			// Should always use the default placement function which can then via the Fabrik event allow for custom tip placement
+			// Should always use the default placement function which can then via the
+			// Fabrik event allow for custom tip placement
 			opts.placement = this.options.placement;
 			opts.title = opts.heading;
-			
+
 			if (trigger.hasClass('tip-small')) {
 				opts.title = opts.content;
 				jQuery(trigger).tooltip(opts);
@@ -88,37 +93,37 @@ var FloatingTips = new Class({
 				}
 				jQuery(trigger).popoverex(opts);
 			}
-			
+
 		}.bind(this));
-	
+
 	},
-	
+
 	addStartEvent: function (trigger, evnt) {
-		
+
 	},
-	
+
 	addEndEvent: function (trigger, evnt) {
-		
+
 	},
-	
+
 	getTipContent: function (trigger, evnt) {
-		
+
 	},
-	
+
 	show: function (trigger, evnt) {
-		
+
 	},
-	
+
 	hide: function (trigger, evnt) {
-		
+
 	},
-	
+
 	hideOthers: function (except) {
-		
+
 	},
-	
+
 	hideAll: function () {
-		
+
 	}
 
 });
@@ -140,9 +145,9 @@ var FloatingTips = new Class({
 					this.$tip.addClass(this.options.modifier);
 				}
 			}
-			return this.$tip; 
+			return this.$tip;
 		},
-		
+
 		show: function () {
 			var $tip, inside, pos, actualWidth, actualHeight, placement, tp;
 			if (this.hasContent() && this.enabled) {
@@ -152,14 +157,15 @@ var FloatingTips = new Class({
 				if (this.options.animation) {
 					$tip.addClass('fade');
 				}
-				placement = typeof this.options.placement === 'function' ? this.options.placement.call(this, $tip[0], this.$element[0]) : this.options.placement;
+				var p = this.options.placement;
+				placement = typeof p === 'function' ? p.call(this, $tip[0], this.$element[0]) : p;
 				inside = /in/.test(placement);
 
 				$tip
 				.remove()
 				.css({ top: 0, left: 0, display: 'block' })
 				.appendTo(inside ? this.$element : document.body);
-				
+
 				pos = this.getPosition(inside);
 
 				actualWidth = $tip[0].offsetWidth;
