@@ -1,7 +1,7 @@
 <?php
 /**
  * Any of these defines can be overwritten by copying this file to
- * components/com_fabrik/user_defines.php
+ * plugins/system/fabrik/user_defines.php
  *
  * @package     Joomla
  * @subpackage  Fabrik
