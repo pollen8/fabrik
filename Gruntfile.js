@@ -24,12 +24,13 @@ module.exports = function (grunt) {
             },
 
             all: {
-                files: grunt.file.expandMapping(['./plugins/fabrik_*/*/*.js', "!./plugins/fabrik_*/**/*-min.js",
+                files: grunt.file.expandMapping(['./plugins/fabrik_*/*/*.js', '!./plugins/fabrik_*/**/*-min.js',
                         './media/com_fabrik/js/*.js', '!./media/com_fabrik/js/*-min.js', '!/media/com_fabrik/js/**',
-                        './administrator/components/com_fabrik/models/fields/*.js', '!./administrator/components/com_fabrik/models/fields/*-min.js',
-                        './administrator/components/com_fabrik/views/**/*.js', '!./administrator/components/com_fabrik/views/**/*-min.js']
-
-                    , './plugins/fabrik_*/*/*.js', {
+                        './administrator/components/com_fabrik/models/fields/*.js',
+                        '!./administrator/components/com_fabrik/models/fields/*-min.js',
+                        './administrator/components/com_fabrik/views/**/*.js',
+                        '!./administrator/components/com_fabrik/views/**/*-min.js'],
+                    './plugins/fabrik_*/*/*.js', {
                         rename: function (destBase, destPath) {
                             console.log('making ' + destPath.replace('.js', '-min.js'));
                             return destPath.replace('.js', '-min.js');
@@ -112,10 +113,11 @@ module.exports = function (grunt) {
 
     grunt.registerTask('fabrik', 'testing build', function () {
         var version = grunt.config.get('pkg.version'),
-            p, i,
-            pluginTypes = ['fabrik_cron', 'fabrik_element', 'fabrik_form', 'fabrik_list', 'fabrik_validationrule', 'fabrik_visualization']
+            p, i, j,
+            pluginTypes = ['fabrik_cron', 'fabrik_element', 'fabrik_list',
+                'fabrik_validationrule', 'fabrik_visualization', 'fabrik_form'],
         simpleGit = require('simple-git')('./');
-        done = this.async()
+        done = this.async();
 
         grunt.log.writeln('Building fabrik......' + version);
         filesPrep(grunt);
@@ -131,39 +133,65 @@ module.exports = function (grunt) {
 
         console.log('-- Package folders created');
         for (p = 0; p < pluginTypes.length; p++) {
-            fs.mkdirsSync('fabrik_build/output/plugins/' + pluginTypes[p]);
-            fs.copySync('plugins/' + pluginTypes[p], 'fabrik_build/output/plugins/' + pluginTypes[p]);
+            var pluginFolder = 'fabrik_build/output/plugins/' + pluginTypes[p],
+                sourceFolder = 'plugins/' + pluginTypes[p],
+                files = fs.readdirSync(sourceFolder);
 
-            var plugins = fs.readdirSync('fabrik_build/output/plugins/' + pluginTypes[p]);
+            // Copy folders ignoring any symlinked folders.
+            for (j = 0; j < files.length; j++) {
+                var file = sourceFolder + '/' + files[j];
+                var stat = fs.lstatSync(file);
+                if (stat.isDirectory() && !stat.isSymbolicLink(file)) {
+                    fs.mkdirsSync(pluginFolder + '/' + file);
+                    fs.copySync(file, pluginFolder + '/' + file);
+                }
+            }
+
+            var plugins = fs.readdirSync(pluginFolder);
 
             for (i = 0; i < plugins.length; i++) {
-                zipPromises.push(zipPlugin('fabrik_build/output/plugins/' + pluginTypes[p] + '/' + plugins[i], 'fabrik_build/output/pkg_fabrik_sink/packages/plg_' + pluginTypes[p] + '_' + plugins[i] + '_' + version + '.zip'))
+                var dest = 'fabrik_build/output/pkg_fabrik_sink/packages/plg_' +
+                     pluginTypes[p] + '_' + plugins[i] + '_' + version + '.zip';
+                zipPromises.push(zipPlugin(pluginFolder + '/' + plugins[i], dest));
             }
         }
+        console.log('-- Fabrik Plugin folders created');
 
-        zipPromises.push(zipPlugin('plugins/content/fabrik', 'fabrik_build/output/pkg_fabrik_sink/packages/plg_fabrik_content_' + version + '.zip'));
-        zipPromises.push(zipPlugin('plugins/search/fabrik', 'fabrik_build/output/pkg_fabrik_sink/packages/plg_fabrik_search_' + version + '.zip'));
-        zipPromises.push(zipPlugin('plugins/system/fabrikcron', 'fabrik_build/output/pkg_fabrik_sink/packages/plg_fabrik_schedule_' + version + '.zip'));
-        zipPromises.push(zipPlugin('plugins/system/fabrik', 'fabrik_build/output/pkg_fabrik_sink/packages/plg_fabrik_system_' + version + '.zip'));
-        zipPromises.push(zipPlugin('components/com_comprofiler/plugin/user/plug_fabrik', 'fabrik_build/output/pkg_fabrik_sink/packages/plg_community_builder_fabrik_user_' + version + '.zip'));
+        zipPromises.push(zipPlugin('plugins/content/fabrik',
+            'fabrik_build/output/pkg_fabrik_sink/packages/plg_fabrik_content_' + version + '.zip'));
+        zipPromises.push(zipPlugin('plugins/search/fabrik',
+            'fabrik_build/output/pkg_fabrik_sink/packages/plg_fabrik_search_' + version + '.zip'));
+        zipPromises.push(zipPlugin('plugins/system/fabrikcron',
+            'fabrik_build/output/pkg_fabrik_sink/packages/plg_fabrik_schedule_' + version + '.zip'));
+        zipPromises.push(zipPlugin('plugins/system/fabrik',
+            'fabrik_build/output/pkg_fabrik_sink/packages/plg_fabrik_system_' + version + '.zip'));
+        zipPromises.push(zipPlugin('components/com_comprofiler/plugin/user/plug_fabrik',
+            'fabrik_build/output/pkg_fabrik_sink/packages/plg_community_builder_fabrik_user_' + version + '.zip'));
 
-        zipPromises.push(zipPlugin('administrator/modules/mod_fabrik_form', 'fabrik_build/output/pkg_fabrik_sink/packages/mod_fabrik_form_' + version + '.zip'));
-        zipPromises.push(zipPlugin('administrator/modules/mod_fabrik_list', 'fabrik_build/output/pkg_fabrik_sink/packages/mod_fabrik_list_' + version + '.zip'));
-        zipPromises.push(zipPlugin('administrator/modules/mod_fabrik_quickicon', 'fabrik_build/output/pkg_fabrik_sink/packages/mod_fabrik_quickicon_' + version + '.zip'));
-        zipPromises.push(zipPlugin('administrator/modules/mod_fabrik_visualization', 'fabrik_build/output/pkg_fabrik_sink/packages/mod_fabrik_visualization_' + version + '.zip'));
+        zipPromises.push(zipPlugin('administrator/modules/mod_fabrik_form',
+            'fabrik_build/output/pkg_fabrik_sink/packages/mod_fabrik_form_' + version + '.zip'));
+        zipPromises.push(zipPlugin('administrator/modules/mod_fabrik_list',
+            'fabrik_build/output/pkg_fabrik_sink/packages/mod_fabrik_list_' + version + '.zip'));
+        zipPromises.push(zipPlugin('administrator/modules/mod_fabrik_quickicon',
+            'fabrik_build/output/pkg_fabrik_sink/packages/mod_fabrik_quickicon_' + version + '.zip'));
+        zipPromises.push(zipPlugin('administrator/modules/mod_fabrik_visualization',
+            'fabrik_build/output/pkg_fabrik_sink/packages/mod_fabrik_visualization_' + version + '.zip'));
 
-        zipPromises.push(zipPlugin('modules/mod_fabrik_form', 'fabrik_build/output/pkg_fabrik_sink/packages/mod_fabrik_form_' + version + '.zip'));
-        zipPromises.push(zipPlugin('modules/mod_fabrik_list', 'fabrik_build/output/pkg_fabrik_sink/packages/mod_fabrik_list_' + version + '.zip'));
+        zipPromises.push(zipPlugin('modules/mod_fabrik_form',
+            'fabrik_build/output/pkg_fabrik_sink/packages/mod_fabrik_form_' + version + '.zip'));
+        zipPromises.push(zipPlugin('modules/mod_fabrik_list',
+            'fabrik_build/output/pkg_fabrik_sink/packages/mod_fabrik_list_' + version + '.zip'));
 
         buildPHPDocs(grunt);
         uploadPHPDocs(grunt);
 
-        console.log('You will need to run: subs.fabrikar.com/fabrik_downloads_update.php to update the db download entries');
+        console.log('You will need to run: subs.fabrikar.com/fabrik_downloads_update.php ' +
+            'to update the db download entries');
 
         simpleGit.tags(function (err, tags) {
             if (tags.all.indexOf(version) !== -1) {
                 // A previous tag with the same version exists - remove it and reset latest version #
-                shell.exec("git tag -d " + version);
+                shell.exec('git tag -d ' + version);
                 tags.latest = tags.all[tags.all.length - 2];
             }
 
@@ -172,10 +200,10 @@ module.exports = function (grunt) {
                 // Add the new tag
                 simpleGit.addTag(version, function (err, res) {
                     console.log(err, res);
-                })
+                });
             }
         });
-    })
+    });
 
 };
 
@@ -188,7 +216,6 @@ module.exports = function (grunt) {
 var zipPlugin = function (source, dest) {
 
     return new Promise(function (resolve, reject) {
-        console.log('making zip:' + dest);
         var archive = archiver.create('zip', {});
         var output = fs.createWriteStream(dest);
 
@@ -205,8 +232,9 @@ var zipPlugin = function (source, dest) {
         archive.pipe(output);
         archive.directory(source, false);
         archive.finalize();
+
     });
-}
+};
 
 var buildPHPDocs = function (grunt) {
     console.log('todo: build php docs' + grunt.config('phpdocs.create'));
@@ -225,6 +253,7 @@ var changelog = function (latest) {
  * Copy over the component files into the fabrik_build folder.
  */
 var refreshFiles = function () {
+    var tmpl;
     rimraf.sync('./fabrik_build/output/');
     fs.mkdirsSync('./fabrik_build/output/component/admin');
     fs.mkdirsSync('./fabrik_build/output/component/site/fabrikfeed');
@@ -265,37 +294,45 @@ var refreshFiles = function () {
     fs.removeSync('./fabrik_build/output/component/site/views/list/tmpl');
 
     console.log('copying list templates');
-    <!-- explicitly include list 2.5 templates -->
+    // explicitly include list 2.5 templates
     fs.mkdirsSync('./fabrik_build/output/component/site/views/list/tmpl25');
-    fs.copySync('./components/com_fabrik/views/list/tmpl25/default.xml', './fabrik_build/output/component/site/views/list/tmpl25/default.xml');
-    fs.copySync('./components/com_fabrik/views/list/tmpl25/_advancedsearch.php', './fabrik_build/output/component/site/views/list/tmpl25/_advancedsearch.php');
+    fs.copySync('./components/com_fabrik/views/list/tmpl25/default.xml',
+        './fabrik_build/output/component/site/views/list/tmpl25/default.xml');
+    fs.copySync('./components/com_fabrik/views/list/tmpl25/_advancedsearch.php',
+        './fabrik_build/output/component/site/views/list/tmpl25/_advancedsearch.php');
     var tmpls = ['admin', 'adminmodule', 'bluesky', 'default', 'div'];
     for (var i = 0; i < tmpls.length; i++) {
-        var tmpl = tmpls[i];
+        tmpl = tmpls[i];
         fs.mkdirsSync('./fabrik_build/output/component/site/views/list/tmpl25/' + tmpl);
-        fs.copySync('./components/com_fabrik/views/list/tmpl25/' + tmpl, './fabrik_build/output/component/site/views/list/tmpl25/' + tmpl);
+        fs.copySync('./components/com_fabrik/views/list/tmpl25/' + tmpl,
+            './fabrik_build/output/component/site/views/list/tmpl25/' + tmpl);
     }
 
-    <!-- explicitly include 3.0 list templates -->
+    // explicitly include 3.0 list templates
     fs.mkdirsSync('./fabrik_build/output/component/site/views/list/tmpl');
-    fs.copySync('./components/com_fabrik/views/list/tmpl/default.xml', './fabrik_build/output/component/site/views/list/tmpl/default.xml');
-    fs.copySync('./components/com_fabrik/views/list/tmpl/_advancedsearch.php', './fabrik_build/output/component/site/views/list/tmpl/_advancedsearch.php');
+    fs.copySync('./components/com_fabrik/views/list/tmpl/default.xml',
+        './fabrik_build/output/component/site/views/list/tmpl/default.xml');
+    fs.copySync('./components/com_fabrik/views/list/tmpl/_advancedsearch.php',
+        './fabrik_build/output/component/site/views/list/tmpl/_advancedsearch.php');
     tmpls = ['bootstrap', 'div'];
     for (i = 0; i < tmpls.length; i++) {
         tmpl = tmpls[i];
         fs.mkdirsSync('./fabrik_build/output/component/site/views/list/tmpl/' + tmpl);
-        fs.copySync('./components/com_fabrik/views/list/tmpl/' + tmpl, './fabrik_build/output/component/site/views/list/tmpl/' + tmpl);
+        fs.copySync('./components/com_fabrik/views/list/tmpl/' + tmpl,
+            './fabrik_build/output/component/site/views/list/tmpl/' + tmpl);
     }
 
     console.log('copying form templates');
-    <!-- explicitly include 2.5 form templates -->
+    // explicitly include 2.5 form templates
     fs.mkdirsSync('./fabrik_build/output/component/site/views/form/tmpl25');
-    fs.copySync('./components/com_fabrik/views/form/tmpl25/default.xml', './fabrik_build/output/component/site/views/form/tmpl25/default.xml');
+    fs.copySync('./components/com_fabrik/views/form/tmpl25/default.xml',
+        './fabrik_build/output/component/site/views/form/tmpl25/default.xml');
     tmpls = ['admin', 'bluesky', 'contacts_custom', 'default', 'default_rtl', 'mint', 'no-labels', 'tabs'];
     for (i = 0; i < tmpls.length; i++) {
         tmpl = tmpls[i];
         fs.mkdirsSync('./fabrik_build/output/component/site/views/form/tmpl25/' + tmpl);
-        fs.copySync('./components/com_fabrik/views/form/tmpl25/' + tmpl, './fabrik_build/output/component/site/views/form/tmpl25/' + tmpl,
+        fs.copySync('./components/com_fabrik/views/form/tmpl25/' + tmpl,
+            './fabrik_build/output/component/site/views/form/tmpl25/' + tmpl,
             {
                 'filter': function (f) {
                     if (f.indexOf('custom_css.php') !== -1) {
@@ -306,14 +343,16 @@ var refreshFiles = function () {
             });
     }
 
-    <!-- explicitly include 3.0 form templates -->
+    // explicitly include 3.0 form templates
     fs.mkdirsSync('./fabrik_build/output/component/site/views/form/tmpl');
-    fs.copySync('./components/com_fabrik/views/form/tmpl/default.xml', './fabrik_build/output/component/site/views/form/tmpl/default.xml');
+    fs.copySync('./components/com_fabrik/views/form/tmpl/default.xml',
+        './fabrik_build/output/component/site/views/form/tmpl/default.xml');
     tmpls = ['bootstrap', 'bootstrap_tabs'];
     for (i = 0; i < tmpls.length; i++) {
         tmpl = tmpls[i];
         fs.mkdirsSync('./fabrik_build/output/component/site/views/form/tmpl/' + tmpl);
-        fs.copySync('./components/com_fabrik/views/form/tmpl/' + tmpl, './fabrik_build/output/component/site/views/form/tmpl/' + tmpl,
+        fs.copySync('./components/com_fabrik/views/form/tmpl/' + tmpl,
+            './fabrik_build/output/component/site/views/form/tmpl/' + tmpl,
             {
                 'filter': function (f) {
                     if (f.indexOf('custom_css.php') !== -1) {
@@ -324,33 +363,44 @@ var refreshFiles = function () {
             });
     }
     console.log('copying drivers');
-    <!-- copy over the database drivers -->
+
+    // Copy over the database drivers
     fs.mkdirsSync('./fabrik_build/output/component/site/dbdriver');
     fs.copySync('components/com_fabrik/js/index.html', './fabrik_build/output/component/site/dbdriver/index.html');
-    <!--  J3.0 db drivers -->
+
+    // J3.0 db drivers
     fs.mkdirsSync('./fabrik_build/output/component/site/driver');
-    fs.copySync('./libraries/joomla/database/driver/mysql_fab.php', './fabrik_build/output/component/site/driver/mysql_fab.php');
-    fs.copySync('./libraries/joomla/database/driver/mysqli_fab.php', './fabrik_build/output/component/site/driver/mysqli_fab.php');
+    fs.copySync('./libraries/joomla/database/driver/mysql_fab.php',
+        './fabrik_build/output/component/site/driver/mysql_fab.php');
+    fs.copySync('./libraries/joomla/database/driver/mysqli_fab.php',
+        './fabrik_build/output/component/site/driver/mysqli_fab.php');
     fs.mkdirsSync('./fabrik_build/output/component/site/query');
-    fs.copySync('./libraries/joomla/database/query/mysql_fab.php', './fabrik_build/output/component/site/query/mysql_fab.php');
-    fs.copySync('./libraries/joomla/database/query/mysqli_fab.php', './fabrik_build/output/component/site/query/mysqli_fab.php');
+    fs.copySync('./libraries/joomla/database/query/mysql_fab.php',
+        './fabrik_build/output/component/site/query/mysql_fab.php');
+    fs.copySync('./libraries/joomla/database/query/mysqli_fab.php',
+        './fabrik_build/output/component/site/query/mysqli_fab.php');
 };
 
 var component = function (version, grunt) {
-    console.log('start component');
-    <!-- need to move the package.xml file out of the component to avoid nasties -->
-    fs.move('./fabrik_build/output/component/admin/fabrik.xml', './fabrik_build/output/component/fabrik.xml', function () {
-        fs.move('./fabrik_build/output/admin/com_fabrik.manifest.class.php', './fabrik_build/output/component/com_fabrik.manifest.class.php', function () {
-            fs.move('./fabrik_build/output/component/admin/com_fabrik.manifest.class.php', './fabrik_build/output/component/com_fabrik.manifest.class.php', function () {
-                fs.move('./fabrik_build/output/component/admin/pkg_fabrik.xml', './fabrik_build/output/pkg_fabrik/pkg_fabrik.xml', function () {
-                    fs.move('./fabrik_build/output/component/admin/pkg_fabrik_sink.xml', './fabrik_build/output/pkg_fabrik_sink/pkg_fabrik_sink.xml', function () {
+    // Need to move the package.xml file out of the component to avoid nasties
+    fs.move('./fabrik_build/output/component/admin/fabrik.xml',
+        './fabrik_build/output/component/fabrik.xml', function () {
+        fs.move('./fabrik_build/output/admin/com_fabrik.manifest.class.php',
+            './fabrik_build/output/component/com_fabrik.manifest.class.php', function () {
+            fs.move('./fabrik_build/output/component/admin/com_fabrik.manifest.class.php',
+                './fabrik_build/output/component/com_fabrik.manifest.class.php', function () {
+                fs.move('./fabrik_build/output/component/admin/pkg_fabrik.xml',
+                    './fabrik_build/output/pkg_fabrik/pkg_fabrik.xml', function () {
+                    fs.move('./fabrik_build/output/component/admin/pkg_fabrik_sink.xml',
+                        './fabrik_build/output/pkg_fabrik_sink/pkg_fabrik_sink.xml', function () {
                         console.log('start zip');
-                        zipPromises.push(zipPlugin('fabrik_build/output/component/', 'fabrik_build/output/pkg_fabrik_sink/packages/com_fabrik_' + version + '.zip'));
+                        zipPromises.push(zipPlugin('fabrik_build/output/component/',
+                            'fabrik_build/output/pkg_fabrik_sink/packages/com_fabrik_' + version + '.zip'));
                         packages(version, grunt);
-                    })
-                })
-            })
-        })
+                    });
+                });
+            });
+        });
     });
 };
 
@@ -363,9 +413,10 @@ var packages = function (version, grunt) {
 
             var i, zips = buildConfig.corePackageFiles;
             replace({
-                regex: "{version}",
+                regex: '{version}',
                 replacement: version,
-                paths: ['./fabrik_build/output/pkg_fabrik/pkg_fabrik.xml', './fabrik_build/output/pkg_fabrik_sink/pkg_fabrik_sink.xml'],
+                paths: ['./fabrik_build/output/pkg_fabrik/pkg_fabrik.xml',
+                    './fabrik_build/output/pkg_fabrik_sink/pkg_fabrik_sink.xml'],
                 recursive: false,
                 silent: false
             });
@@ -373,7 +424,8 @@ var packages = function (version, grunt) {
             for (i = 0; i < zips.length; i ++) {
                 zips[i] = zips[i].replace('{version}', version);
                 console.log(zips[i]);
-                fs.copySync('fabrik_build/output/pkg_fabrik_sink/packages/' + zips[i], 'fabrik_build/output/pkg_fabrik/packages/' + zips[i]);
+                fs.copySync('fabrik_build/output/pkg_fabrik_sink/packages/' + zips[i],
+                    'fabrik_build/output/pkg_fabrik/packages/' + zips[i]);
             }
             var promises = [
             zipPlugin('fabrik_build/output/pkg_fabrik_sink', 'fabrik_build/output/pkg_fabrik_sink_' + version + '.zip'),
@@ -383,7 +435,7 @@ var packages = function (version, grunt) {
                     ftp(grunt, version);
                 });
 
-        })
+        });
 };
 
 var ftp = function (grunt, version) {
@@ -395,20 +447,24 @@ var ftp = function (grunt, version) {
         c.on('ready', function() {
             console.log('connected');
             if (grunt.config.get('upload.zips')) {
-                promises.push(ftpPromise(c, 'fabrik_build/output/pkg_fabrik_' + version + '.zip', '/public_html/media/downloads/pkg_fabrik_' + version + '.zip'));
-                promises.push(ftpPromise(c, 'fabrik_build/output/pkg_fabrik_sink_' + version + '.zip', '/public_html/media/downloads/pkg_fabrik_sink_' + version + '.zip'));
+                promises.push(ftpPromise(c, 'fabrik_build/output/pkg_fabrik_' + version + '.zip',
+                    '/public_html/media/downloads/pkg_fabrik_' + version + '.zip'));
+                promises.push(ftpPromise(c, 'fabrik_build/output/pkg_fabrik_sink_' + version + '.zip',
+                    '/public_html/media/downloads/pkg_fabrik_sink_' + version + '.zip'));
 
                 var plugins = fs.readdirSync('fabrik_build/output/pkg_fabrik_sink/packages');
 
                 for (i = 0; i < plugins.length; i++) {
-                    promises.push(ftpPromise(c, 'fabrik_build/output/pkg_fabrik_sink/packages/' + plugins[i], '/public_html/media/downloads/' + plugins[i]))
+                    promises.push(ftpPromise(c, 'fabrik_build/output/pkg_fabrik_sink/packages/' + plugins[i],
+                        '/public_html/media/downloads/' + plugins[i]));
                 }
             }
             if (grunt.config.get('upload.xml')) {
                 var xmlFiles = fs.readdirSync('fabrik_build/output/updateserver');
 
                 for (i = 0; i < xmlFiles.length; i++) {
-                    promises.push(ftpPromise(c, 'fabrik_build/output/updateserver/' + xmlFiles[i], '/public_html/update/fabrik31/' + xmlFiles[i]))
+                    promises.push(ftpPromise(c, 'fabrik_build/output/updateserver/' + xmlFiles[i],
+                        '/public_html/update/fabrik31/' + xmlFiles[i]));
                 }
             }
             Promise.settle(promises)
