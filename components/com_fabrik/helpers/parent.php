@@ -51,12 +51,14 @@ class FabrikWorker
 
 	/**
 	 * Add slashes in parse message
+	 *
 	 * @var bool
 	 */
 	protected $parseAddSlashes = false;
 
 	/**
 	 * Search data to replace placeholders
+	 *
 	 * @var array
 	 */
 	protected $_searchData = array();
@@ -84,13 +86,13 @@ class FabrikWorker
 	/**
 	 * Returns true if $view is a valid view type
 	 *
-	 * @param   string  $view  View type
+	 * @param   string $view View type
 	 *
-	 * @return	bool
+	 * @return    bool
 	 */
 	public static function isViewType($view)
 	{
-		$view = strtolower(trim($view));
+		$view      = strtolower(trim($view));
 		$viewTypes = self::getViewTypes();
 
 		return in_array($view, $viewTypes);
@@ -99,9 +101,9 @@ class FabrikWorker
 	/**
 	 * Returns true if $file has an image extension type
 	 *
-	 * @param   string  $file  Filename
+	 * @param   string $file Filename
 	 *
-	 * @return	bool
+	 * @return    bool
 	 */
 	public static function isImageExtension($file)
 	{
@@ -110,6 +112,7 @@ class FabrikWorker
 		if (array_key_exists('extension', $path_parts))
 		{
 			$image_extensions_eregi = 'bmp|gif|jpg|jpeg|png';
+
 			return preg_match('/' . $image_extensions_eregi . '/i', $path_parts['extension']) > 0;
 		}
 
@@ -150,16 +153,16 @@ class FabrikWorker
 	public static function getVideoMimeTypes()
 	{
 		return array(
-				'mp4' => 'video/mp4',
-				'm4v' => 'video/x-m4v',
-				'mov' => 'video/quicktime'
+			'mp4' => 'video/mp4',
+			'm4v' => 'video/x-m4v',
+			'mov' => 'video/quicktime'
 		);
 	}
 
 	/**
 	 * Get Audio Mime type
 	 *
-	 * @param   string  $file  Filename
+	 * @param   string $file Filename
 	 *
 	 * @deprecated - doesn't seem to be used
 	 *
@@ -167,7 +170,7 @@ class FabrikWorker
 	 */
 	public static function getAudioMimeType($file)
 	{
-		$path_parts = pathinfo($file);
+		$path_parts       = pathinfo($file);
 		$audio_mime_types = self::getAudioMimeTypes();
 
 		if (array_key_exists($path_parts['extension'], $audio_mime_types))
@@ -181,7 +184,7 @@ class FabrikWorker
 	/**
 	 * Get Video Mime type
 	 *
-	 * @param   string  $file  Filename
+	 * @param   string $file Filename
 	 *
 	 * @deprecated - doesn't seem to be used
 	 *
@@ -189,7 +192,7 @@ class FabrikWorker
 	 */
 	public static function getVideoMimeType($file)
 	{
-		$path_parts = pathinfo($file);
+		$path_parts       = pathinfo($file);
 		$video_mime_types = self::getVideoMimeTypes();
 
 		if (array_key_exists($path_parts['extension'], $video_mime_types))
@@ -203,7 +206,7 @@ class FabrikWorker
 	/**
 	 * Get Video Mime type
 	 *
-	 * @param   string  $file  Filename
+	 * @param   string $file Filename
 	 *
 	 * @deprecated - doesn't seem to be used
 	 *
@@ -211,7 +214,7 @@ class FabrikWorker
 	 */
 	public static function getDocMimeType($file)
 	{
-		$path_parts = pathinfo($file);
+		$path_parts     = pathinfo($file);
 		$doc_mime_types = self::getDocMimeTypes();
 
 		if (array_key_exists($path_parts['extension'], $doc_mime_types))
@@ -225,7 +228,7 @@ class FabrikWorker
 	/**
 	 * Get Podcast Mime type
 	 *
-	 * @param   string  $file  Filename
+	 * @param   string $file Filename
 	 *
 	 * @return  bool|string
 	 */
@@ -233,8 +236,8 @@ class FabrikWorker
 	{
 		$audio_mime_types = self::getAudioMimeTypes();
 		$video_mime_types = self::getVideoMimeTypes();
-		$doc_mime_types = self::getVideoMimeTypes();
-		$mime_type = false;
+		$doc_mime_types   = self::getVideoMimeTypes();
+		$mime_type        = false;
 
 		if ($mime_type = self::getVideoMimeType($file))
 		{
@@ -258,10 +261,10 @@ class FabrikWorker
 	 * http://fr.php.net/strftime
 	 * (use as strftime)
 	 *
-	 * @param   string  $date    String date to format
-	 * @param   string  $format  Date format strftime format
+	 * @param   string $date   String date to format
+	 * @param   string $format Date format strftime format
 	 *
-	 * @return	array|void	date info
+	 * @return    array|void    date info
 	 */
 	public static function strToDateTime($date, $format)
 	{
@@ -332,10 +335,10 @@ class FabrikWorker
 	/**
 	 * Check for, and convert, any 'special' formats for strtotime, like 'yesterday', etc.
 	 *
-	 * @param   string  $date  Date to check
-	 * @param   bool    $gmt   Set date to universal time?
+	 * @param   string $date Date to check
+	 * @param   bool   $gmt  Set date to universal time?
 	 *
-	 * @return	string	date
+	 * @return    string    date
 	 */
 	public static function specialStrToMySQL($date, $gmt = true)
 	{
@@ -344,7 +347,7 @@ class FabrikWorker
 		 */
 		if (empty($date))
 		{
-			$d = JFactory::getDate();
+			$d    = JFactory::getDate();
 			$date = $d->toSql(!$gmt);
 
 			return $date;
@@ -356,7 +359,7 @@ class FabrikWorker
 		 * do this before we urldecode the date otherwise the + is replaced with ' ';
 		 */
 
-		$matches = array();
+		$matches  = array();
 		$matches2 = array();
 		$matches3 = array();
 
@@ -372,7 +375,7 @@ class FabrikWorker
 
 		if (!empty($matches))
 		{
-			$d = JFactory::getDate($date);
+			$d    = JFactory::getDate($date);
 			$date = $d->toSql(!$gmt);
 		}
 
@@ -382,10 +385,10 @@ class FabrikWorker
 	/**
 	 * String to time
 	 *
-	 * @param   string  $date    Date representation
-	 * @param   string  $format  Date format
+	 * @param   string $date   Date representation
+	 * @param   string $format Date format
 	 *
-	 * @return	array	date bits keyed on date representations e.g.  m/d/Y
+	 * @return    array    date bits keyed on date representations e.g.  m/d/Y
 	 */
 	public static function str2Time($date, $format)
 	{
@@ -394,7 +397,7 @@ class FabrikWorker
 		 * http://php.net/strtotime - this means we can use "+2 week" as a url filter
 		 * do this before we urldecode the date otherwise the + is replaced with ' ';
 		 */
-		$matches = array();
+		$matches  = array();
 		$matches2 = array();
 		$matches3 = array();
 
@@ -410,7 +413,7 @@ class FabrikWorker
 
 		if (!empty($matches))
 		{
-			$d = JFactory::getDate($date);
+			$d    = JFactory::getDate($date);
 			$date = $d->format($format);
 		}
 
@@ -427,7 +430,7 @@ class FabrikWorker
 			if (strstr($format, $day))
 			{
 				$format = str_replace($day, '', $format);
-				$date = self::stripDay($date, $day == '%a' ? true : false);
+				$date   = self::stripDay($date, $day == '%a' ? true : false);
 			}
 		}
 
@@ -438,12 +441,12 @@ class FabrikWorker
 			if (strstr($format, $month))
 			{
 				$format = str_replace($month, '%m', $format);
-				$date = self::monthToInt($date, $month == '%B' ? false : true);
+				$date   = self::monthToInt($date, $month == '%B' ? false : true);
 			}
 		}
 		// @TODO: some of these aren't right for strftime
 		self::$finalFormat = $format;
-		$search = array('%d', '%e', '%D', '%j', '%m', '%b', '%Y', '%y', '%g', '%H', '%h', '%i', '%s', '%S', '%M');
+		$search            = array('%d', '%e', '%D', '%j', '%m', '%b', '%Y', '%y', '%g', '%H', '%h', '%i', '%s', '%S', '%M');
 
 		$replace = array('(\d{2})', '(\d{1,2})', '(\w{3})', '(\d{1,2})', '(\d{2})', '(\w{3})', '(\d{4})', '(\d{2})', '(\d{1,2})', '(\d{2})',
 			'(\d{2})', '(\d{2})', '(\d{2})', '(\d{2})', '(\d{2})');
@@ -462,7 +465,7 @@ class FabrikWorker
 			}
 
 			array_pop($format);
-			$format = trim(implode('%', $format));
+			$format            = trim(implode('%', $format));
 			self::$finalFormat = $format;
 
 			return self::str2Time($date, $format);
@@ -495,10 +498,10 @@ class FabrikWorker
 	/**
 	 * Removed day of week name from string
 	 *
-	 * @param   string  $date  The string date
-	 * @param   bool    $abrv  Abbreviated day?
+	 * @param   string $date The string date
+	 * @param   bool   $abrv Abbreviated day?
 	 *
-	 * @return	string	date
+	 * @return    string    date
 	 */
 	public static function stripDay($date, $abrv = false)
 	{
@@ -529,8 +532,8 @@ class FabrikWorker
 	/**
 	 * Convert a month (could be in any language) into the month number (1 = jan)
 	 *
-	 * @param   string  $date  Data to convert
-	 * @param   bool    $abrv  Is the month is a short or full name version
+	 * @param   string $date Data to convert
+	 * @param   bool   $abrv Is the month is a short or full name version
 	 *
 	 * @return  string
 	 */
@@ -573,15 +576,15 @@ class FabrikWorker
 	/**
 	 * Check a string is not reserved by Fabrik
 	 *
-	 * @param   string  $str     To check
-	 * @param   bool    $strict  Include things like rowid, listid in the reserved words, defaults to true
+	 * @param   string $str    To check
+	 * @param   bool   $strict Include things like rowid, listid in the reserved words, defaults to true
 	 *
 	 * @return bool
 	 */
 	public static function isReserved($str, $strict = true)
 	{
 		$reservedWords = array("task", "view", "layout", "option", "formid", "submit", "ul_max_file_size"
-				, "ul_file_types", "ul_directory", 'adddropdownvalue', 'adddropdownlabel', 'ul_end_dir');
+		, "ul_file_types", "ul_directory", 'adddropdownvalue', 'adddropdownlabel', 'ul_end_dir');
 		/*
 		 * $$$ hugh - a little arbitrary, but need to be able to exclude these so people can create lists from things like
 		 * log files, which include field names like rowid and itemid.  So when saving an element, we now set strict mode
@@ -621,7 +624,7 @@ class FabrikWorker
 			throw new RuntimeException('You must supply a secret code in your Joomla configuration.php file');
 		}
 
-		$key = new JCryptKey('simple', $secret, $secret);
+		$key   = new JCryptKey('simple', $secret, $secret);
 		$crypt = new JCrypt(new JCryptCipherSimple, $key);
 
 		return $crypt;
@@ -640,10 +643,10 @@ class FabrikWorker
 	 * which just handles this one very specific data replacement.  Will look at merging it in with the main
 	 * parsing once we have a better understanding of where / when / how to do it.
 	 *
-	 * @param  string   $msg             Text to parse
-	 * @param  array    $searchData      Data to search for placeholders
-	 * @param  object   $el    Element model of the element which is doing the replacing
-	 * @param  int      $repeatCounter   Repeat instance
+	 * @param  string $msg           Text to parse
+	 * @param  array  $searchData    Data to search for placeholders
+	 * @param  object $el            Element model of the element which is doing the replacing
+	 * @param  int    $repeatCounter Repeat instance
 	 *
 	 * @return  string  parsed message
 	 */
@@ -655,25 +658,26 @@ class FabrikWorker
 			if ($groupModel->canRepeat())
 			{
 				$elementModels = $groupModel->getPublishedElements();
-				$formModel = $el->getFormModel();
+				$formModel     = $el->getFormModel();
 
 				foreach ($elementModels as $elementModel)
 				{
 					$repeatElName = $elementModel->getFullName(true, false);
 					foreach (array($repeatElName, $repeatElName . '_raw') as $tmpElName)
 					{
-						if (strstr($msg, '{'.$tmpElName.'}'))
+						if (strstr($msg, '{' . $tmpElName . '}'))
 						{
 							if (array_key_exists($tmpElName, $searchData) && is_array($searchData[$tmpElName]) && array_key_exists($repeatCounter, $searchData[$tmpElName]))
 							{
 								$tmpVal = $searchData[$tmpElName][$repeatCounter];
-								$msg = str_replace('{'.$tmpElName.'}', $tmpVal, $msg);
+								$msg    = str_replace('{' . $tmpElName . '}', $tmpVal, $msg);
 							}
 						}
 					}
 				}
 			}
 		}
+
 		return $msg;
 	}
 
@@ -681,18 +685,19 @@ class FabrikWorker
 	 * Iterates through string to replace every
 	 * {placeholder} with posted data
 	 *
-	 * @param   mixed   $msg               Text|Array to parse
-	 * @param   array   $searchData        Data to search for placeholders (default $_REQUEST)
-	 * @param   bool    $keepPlaceholders  If no data found for the place holder do we keep the {...} string in the message
-	 * @param   bool    $addSlashes        Add slashed to the text?
-	 * @param   object  $theirUser         User to use in replaceWithUserData (defaults to logged in user)
+	 * @param   mixed  $msg              Text|Array to parse
+	 * @param   array  $searchData       Data to search for placeholders (default $_REQUEST)
+	 * @param   bool   $keepPlaceholders If no data found for the place holder do we keep the {...} string in the
+	 *                                   message
+	 * @param   bool   $addSlashes       Add slashed to the text?
+	 * @param   object $theirUser        User to use in replaceWithUserData (defaults to logged in user)
 	 *
 	 * @return  string  parsed message
 	 */
 	public function parseMessageForPlaceHolder($msg, $searchData = null, $keepPlaceholders = true, $addSlashes = false, $theirUser = null)
 	{
 		$returnType = is_array($msg) ? 'array' : 'string';
-		$messages = (array) $msg;
+		$messages   = (array) $msg;
 
 		foreach ($messages as &$msg)
 		{
@@ -707,8 +712,8 @@ class FabrikWorker
 					$searchData = JArrayHelper::fromObject($searchData);
 				}
 				// Merge in request and specified search data
-				$f = JFilterInput::getInstance();
-				$post = $f->clean($_REQUEST, 'array');
+				$f                 = JFilterInput::getInstance();
+				$post              = $f->clean($_REQUEST, 'array');
 				$this->_searchData = is_null($searchData) ? $post : array_merge($post, $searchData);
 
 				// Enable users to use placeholder to insert session token
@@ -742,13 +747,13 @@ class FabrikWorker
 	/**
 	 * Replace {varname} with request data (called from J content plugin)
 	 *
-	 * @param   string  &$msg  String to parse
+	 * @param   string &$msg String to parse
 	 *
 	 * @return  void
 	 */
 	public function replaceRequest(&$msg)
 	{
-		$f = JFilterInput::getInstance();
+		$f       = JFilterInput::getInstance();
 		$request = $f->clean($_REQUEST, 'array');
 
 		foreach ($request as $key => $val)
@@ -768,11 +773,11 @@ class FabrikWorker
 	 * AND
 	 * {$their->var->email} placeholders
 	 *
-	 * @param   string  $msg     Message to parse
-	 * @param   object  $user    Joomla user object
-	 * @param   string  $prefix  Search string to look for e.g. 'my' to look for {$my->id}
+	 * @param   string $msg    Message to parse
+	 * @param   object $user   Joomla user object
+	 * @param   string $prefix Search string to look for e.g. 'my' to look for {$my->id}
 	 *
-	 * @return	string	parsed message
+	 * @return    string    parsed message
 	 */
 	public static function replaceWithUserData($msg, $user = null, $prefix = 'my')
 	{
@@ -813,14 +818,14 @@ class FabrikWorker
 
 		foreach ($matches as $match)
 		{
-			$bits = explode('->', str_replace(array('{', '}'), '', $match));
+			$bits   = explode('->', str_replace(array('{', '}'), '', $match));
 			$userId = $app->input->getInt(FArrayHelper::getValue($bits, 1));
 
 			if ($userId !== 0)
 			{
 				$user = JFactory::getUser($userId);
-				$val = $user->get(FArrayHelper::getValue($bits, 2));
-				$msg = str_replace($match, $val, $msg);
+				$val  = $user->get(FArrayHelper::getValue($bits, 2));
+				$msg  = str_replace($match, $val, $msg);
 			}
 		}
 
@@ -831,52 +836,79 @@ class FabrikWorker
 	 * Called from parseMessageForPlaceHolder to iterate through string to replace
 	 * {placeholder} with global data
 	 *
-	 * @param   string  $msg  Message to parse
+	 * @param   string $msg Message to parse
 	 *
-	 * @return	string	parsed message
+	 * @return    string    parsed message
 	 */
 	public static function replaceWithGlobals($msg)
 	{
-		$app = JFactory::getApplication();
-		$itemId = self::itemId();
-		$config = JFactory::getConfig();
-		$msg = str_replace('{$mosConfig_absolute_path}', JPATH_SITE, $msg);
-		$msg = str_replace('{$mosConfig_live_site}', COM_FABRIK_LIVESITE, $msg);
-		$msg = str_replace('{$mosConfig_offset}', $config->get('offset'), $msg);
-		$msg = str_replace('{$Itemid}', $itemId, $msg);
-		$msg = str_replace('{$mosConfig_sitename}', $config->get('sitename'), $msg);
-		$msg = str_replace('{$mosConfig_mailfrom}', $config->get('mailfrom'), $msg);
-		$msg = str_replace('{$mosConfig_secret}', $config->get('secret'), $msg);
-		$msg = str_replace('{where_i_came_from}', $app->input->server->get('HTTP_REFERER', '', 'string'), $msg);
-		$msg = str_replace('{date}', date('Ymd'), $msg);
-		$msg = str_replace('{mysql_date}', date('Y-m-d H:i:s'), $msg);
+		$replacements = self::globalReplacements();
+
+		foreach ($replacements as $key => $value)
+		{
+			$msg = str_replace($key, $value, $msg);
+		}
+
+		return $msg;
+	}
+
+	/**
+	 * Get an associative array of replacements strings and values
+	 *
+	 * @return array
+	 * @throws Exception
+	 */
+	public static function globalReplacements()
+	{
+		$app     = JFactory::getApplication();
+		$itemId  = self::itemId();
+		$config  = JFactory::getConfig();
+		$session = JFactory::getSession();
+		$token   = $session->get('session.token');
+		$lang    = JFactory::getLanguage()->getTag();
+		$lang    = str_replace('-', '_', $lang);
+
+		// Deprecated the mosConfig values - use the jConfig ones instead
+		$replacements = array(
+			'{$mosConfig_absolute_path}' => JPATH_SITE,
+			'{$mosConfig_live_site}' => COM_FABRIK_LIVESITE,
+			'{$mosConfig_offset}' => $config->get('offset'),
+			'{$mosConfig_sitename}' => $config->get('sitename'),
+			'{$mosConfig_mailfrom}' => $config->get('mailfrom'),
+			'{$mosConfig_secret}' => $config->get('secret'),
+			'{$jConfig_absolute_path}' => JPATH_SITE,
+			'{$jConfig_live_site}' => COM_FABRIK_LIVESITE,
+			'{$jConfig_offset}' => $config->get('offset'),
+			'{$Itemid}' => $itemId,
+			'{$jConfig_sitename}' => $config->get('sitename'),
+			'{$jConfig_mailfrom}' => $config->get('mailfrom'),
+			'{$jConfig_secret}' => $config->get('secret'),
+			'{where_i_came_from}' => $app->input->server->get('HTTP_REFERER', '', 'string'),
+			'{date}' => date('Ymd'),
+			'{mysql_date}' => date('Y-m-d H:i:s'),
+			'{lang}' => $lang,
+			'{session.token}' => $token,
+		);
 
 		foreach ($_SERVER as $key => $val)
 		{
 			if (!is_object($val) && !is_array($val))
 			{
-				$msg = str_replace('{$_SERVER->' . $key . '}', $val, $msg);
-				$msg = str_replace('{$_SERVER-&gt;' . $key . '}', $val, $msg);
+				$replacements['{$_SERVER->' . $key . '}']    = $val;
+				$replacements['{$_SERVER-&gt;' . $key . '}'] = $val;
 			}
 		}
 
-		$lang = JFactory::getLanguage()->getTag();
-		$lang = str_replace('-', '_', $lang);
-		$msg = str_replace('{lang}', $lang, $msg);
-		$session = JFactory::getSession();
-		$token = $session->get('session.token');
-		$msg = str_replace('{session.token}', $token, $msg);
-
-		return $msg;
+		return $replacements;
 	}
 
 	/**
 	 * Called from parseMessageForPlaceHolder to iterate through string to replace
 	 * {placeholder} with posted data
 	 *
-	 * @param   string  $matches  Placeholder e.g. {placeholder}
+	 * @param   string $matches Placeholder e.g. {placeholder}
 	 *
-	 * @return	string	posted data that corresponds with placeholder
+	 * @return    string    posted data that corresponds with placeholder
 	 */
 	protected function replaceWithFormData($matches)
 	{
@@ -900,7 +932,7 @@ class FabrikWorker
 		}
 
 		$match = $matches[0];
-		$orig = $match;
+		$orig  = $match;
 
 		// Strip the {}
 		$match = JString::substr($match, 1, JString::strlen($match) - 2);
@@ -911,7 +943,7 @@ class FabrikWorker
 		 */
 		$config = JFactory::getConfig();
 		$prefix = $config->get('dbprefix');
-		$match = str_replace('#__', $prefix, $match);
+		$match  = str_replace('#__', $prefix, $match);
 
 		// $$$ rob test this format searchvalue||defaultsearchvalue
 		$bits = explode('||', $match);
@@ -948,8 +980,8 @@ class FabrikWorker
 
 				if (count($aKeyParts) == 2)
 				{
-					$tablePrefix = array_shift($aKeyParts);
-					$field = array_pop($aKeyParts);
+					$tablePrefix           = array_shift($aKeyParts);
+					$field                 = array_pop($aKeyParts);
 					$aPrefixFields[$field] = $tablePrefix;
 				}
 			}
@@ -996,7 +1028,7 @@ class FabrikWorker
 		{
 			// Could be looking for URL field type e.g. for $_POST[url][link] the match text will be url.link
 			$aMatch = explode('.', $match);
-			$aPost = $this->_searchData;
+			$aPost  = $this->_searchData;
 
 			foreach ($aMatch as $sPossibleArrayKey)
 			{
@@ -1027,12 +1059,12 @@ class FabrikWorker
 	/**
 	 * Internal function to recursive scan directories
 	 *
-	 * @param   string  $imagePath      Image path
-	 * @param   string  $folderPath     Path to scan
-	 * @param   string  &$folders       Root path of this folder
-	 * @param   array   &$images        Value array of all existing folders
-	 * @param   array   $aFolderFilter  Value array of all existing images
-	 * @param   bool    $makeOptions    Make options out for the results
+	 * @param   string $imagePath     Image path
+	 * @param   string $folderPath    Path to scan
+	 * @param   string &$folders      Root path of this folder
+	 * @param   array  &$images       Value array of all existing folders
+	 * @param   array  $aFolderFilter Value array of all existing images
+	 * @param   bool   $makeOptions   Make options out for the results
 	 *
 	 * @return  void
 	 */
@@ -1043,7 +1075,7 @@ class FabrikWorker
 		foreach ($imgFiles as $file)
 		{
 			$ff_ = $folderPath . $file . '/';
-			$ff = $folderPath . $file;
+			$ff  = $folderPath . $file;
 			$i_f = $imagePath . '/' . $file;
 
 			if (is_dir($i_f) && $file != 'CVS' && $file != '.svn')
@@ -1057,7 +1089,7 @@ class FabrikWorker
 			elseif (preg_match('/bmp|gif|jpg|png/i', $file) && is_file($i_f))
 			{
 				// Leading / we don't need
-				$imageFile = JString::substr($ff, 1);
+				$imageFile             = JString::substr($ff, 1);
 				$images[$folderPath][] = $makeOptions ? JHTML::_('select.option', $imageFile, $file) : $file;
 			}
 		}
@@ -1066,14 +1098,14 @@ class FabrikWorker
 	/**
 	 * Utility function to read the files in a directory
 	 *
-	 * @param   string  $path           The file system path
-	 * @param   string  $filter         A filter for the names
-	 * @param   bool    $recurse        Recurse search into sub-directories
-	 * @param   bool    $fullPath       True if to prepend the full path to the file name
-	 * @param   array   $aFolderFilter  Folder names not to recurse into
-	 * @param   bool    $foldersOnly    Return a list of folders only (true)
+	 * @param   string $path          The file system path
+	 * @param   string $filter        A filter for the names
+	 * @param   bool   $recurse       Recurse search into sub-directories
+	 * @param   bool   $fullPath      True if to prepend the full path to the file name
+	 * @param   array  $aFolderFilter Folder names not to recurse into
+	 * @param   bool   $foldersOnly   Return a list of folders only (true)
 	 *
-	 * @return	array	of file/folder names
+	 * @return    array    of file/folder names
 	 */
 	public static function fabrikReadDirectory($path, $filter = '.', $recurse = false, $fullPath = false, $aFolderFilter = array(),
 		$foldersOnly = false)
@@ -1089,7 +1121,7 @@ class FabrikWorker
 
 		while ($file = readdir($handle))
 		{
-			$dir = JPath::clean($path . '/' . $file);
+			$dir   = JPath::clean($path . '/' . $file);
 			$isDir = is_dir($dir);
 
 			if ($file != "." && $file != "..")
@@ -1123,9 +1155,9 @@ class FabrikWorker
 
 					if ($goDown)
 					{
-						$arr2 = self::fabrikReadDirectory($dir, $filter, $recurse, $fullPath, $aFolderFilter, $foldersOnly);
+						$arr2    = self::fabrikReadDirectory($dir, $filter, $recurse, $fullPath, $aFolderFilter, $foldersOnly);
 						$arrDiff = array_diff($arr, $arr2);
-						$arr = array_merge($arrDiff);
+						$arr     = array_merge($arrDiff);
 					}
 				}
 			}
@@ -1145,7 +1177,7 @@ class FabrikWorker
 	 *
 	 * @since 2.0.5
 	 *
-	 * @return	string	first two letters of lang code - e.g. nl from 'nl-NL'
+	 * @return    string    first two letters of lang code - e.g. nl from 'nl-NL'
 	 */
 	public static function getJoomfishLang()
 	{
@@ -1168,27 +1200,27 @@ class FabrikWorker
 		jimport('joomla.application.component.helper');
 
 		// Get Config and Filters in Joomla 2.5
-		$config = JComponentHelper::getParams('com_config');
+		$config  = JComponentHelper::getParams('com_config');
 		$filters = $config->get('filters');
 
 		// If no filter data found, get from com_content (Joomla 1.6/1.7 sites)
 		if (empty($filters))
 		{
 			$contentParams = JComponentHelper::getParams('com_content');
-			$filters = $contentParams->get('filters');
+			$filters       = $contentParams->get('filters');
 		}
 
-		$user = JFactory::getUser();
+		$user       = JFactory::getUser();
 		$userGroups = JAccess::getGroupsByUser($user->get('id'));
 
-		$blackListTags = array();
+		$blackListTags       = array();
 		$blackListAttributes = array();
 
-		$whiteListTags = array();
+		$whiteListTags       = array();
 		$whiteListAttributes = array();
 
-		$whiteList = false;
-		$blackList = false;
+		$whiteList  = false;
+		$blackList  = false;
 		$unfiltered = false;
 
 		// Cycle through each of the user groups the user is in.
@@ -1218,9 +1250,9 @@ class FabrikWorker
 			{
 				// Black or white list.
 				// Pre-process the tags and attributes.
-				$tags = explode(',', $filterData->filter_tags);
-				$attributes = explode(',', $filterData->filter_attributes);
-				$tempTags = array();
+				$tags           = explode(',', $filterData->filter_tags);
+				$attributes     = explode(',', $filterData->filter_attributes);
+				$tempTags       = array();
 				$tempAttributes = array();
 
 				foreach ($tags as $tag)
@@ -1247,23 +1279,23 @@ class FabrikWorker
 				// Each list is cumulative.
 				if ($filterType == 'BL')
 				{
-					$blackList = true;
-					$blackListTags = array_merge($blackListTags, $tempTags);
+					$blackList           = true;
+					$blackListTags       = array_merge($blackListTags, $tempTags);
 					$blackListAttributes = array_merge($blackListAttributes, $tempAttributes);
 				}
 				elseif ($filterType == 'WL')
 				{
-					$whiteList = true;
-					$whiteListTags = array_merge($whiteListTags, $tempTags);
+					$whiteList           = true;
+					$whiteListTags       = array_merge($whiteListTags, $tempTags);
 					$whiteListAttributes = array_merge($whiteListAttributes, $tempAttributes);
 				}
 			}
 		}
 
 		// Remove duplicates before processing (because the black list uses both sets of arrays).
-		$blackListTags = array_unique($blackListTags);
+		$blackListTags       = array_unique($blackListTags);
 		$blackListAttributes = array_unique($blackListAttributes);
-		$whiteListTags = array_unique($whiteListTags);
+		$whiteListTags       = array_unique($whiteListTags);
 		$whiteListAttributes = array_unique($whiteListAttributes);
 
 		// Unfiltered assumes first priority.
@@ -1281,7 +1313,7 @@ class FabrikWorker
 			if ($blackList)
 			{
 				// Remove the white-listed attributes from the black-list.
-				$tags = array_diff($blackListTags, $whiteListTags);
+				$tags   = array_diff($blackListTags, $whiteListTags);
 				$filter = JFilterInput::getInstance($tags, array_diff($blackListAttributes, $whiteListAttributes), 1, 1);
 			}
 			// White lists take third precedence.
@@ -1318,8 +1350,8 @@ class FabrikWorker
 	/**
 	 * Raise a J Error notice if the eval'd result is false and there is a error
 	 *
-	 * @param   mixed   $val  Evaluated result
-	 * @param   string  $msg  Error message, should contain %s as we sprintf in the error_get_last()'s message property
+	 * @param   mixed  $val Evaluated result
+	 * @param   string $msg Error message, should contain %s as we sprintf in the error_get_last()'s message property
 	 *
 	 * @return  void
 	 */
@@ -1349,7 +1381,7 @@ class FabrikWorker
 
 		$enqMsgType = 'error';
 		$indentHTML = '<br/>&nbsp;&nbsp;&nbsp;&nbsp;Debug:&nbsp;';
-		$errString = FText::_('COM_FABRIK_EVAL_ERROR_USER_WARNING');
+		$errString  = FText::_('COM_FABRIK_EVAL_ERROR_USER_WARNING');
 
 		// Give a technical error message to the developer
 		if (version_compare(phpversion(), '5.2.0', '>=') && $error && is_array($error))
@@ -1367,8 +1399,8 @@ class FabrikWorker
 	/**
 	 * Raise a J Error notice if in dev mode or log a J error otherwise
 	 *
-	 * @param   string  $errString  Message to display / log
-	 * @param   string  $msgType    Joomla enqueueMessage message type e.g. 'error', 'warning' etc.
+	 * @param   string $errString Message to display / log
+	 * @param   string $msgType   Joomla enqueueMessage message type e.g. 'error', 'warning' etc.
 	 *
 	 * @return  void
 	 */
@@ -1402,9 +1434,9 @@ class FabrikWorker
 	/**
 	 * Log  to table jos_fabrik_logs
 	 *
-	 * @param   string  $type        E.g. 'fabrik.fileupload.download'
-	 * @param   mixed   $msg         Array/object/string
-	 * @param   bool    $jsonEncode  Should we json encode the message?
+	 * @param   string $type       E.g. 'fabrik.fileupload.download'
+	 * @param   mixed  $msg        Array/object/string
+	 * @param   bool   $jsonEncode Should we json encode the message?
 	 *
 	 * @return  void
 	 */
@@ -1415,9 +1447,9 @@ class FabrikWorker
 			$msg = json_encode($msg);
 		}
 
-		$log = FabTable::getInstance('log', 'FabrikTable');
+		$log               = FabTable::getInstance('log', 'FabrikTable');
 		$log->message_type = $type;
-		$log->message = $msg;
+		$log->message      = $msg;
 		$log->store();
 	}
 
@@ -1427,10 +1459,12 @@ class FabrikWorker
 	 * Returns the global {@link JDatabase} object, only creating it
 	 * if it doesn't already exist.
 	 *
-	 * @param   bool   $loadJoomlaDb  Force (if true) the loading of the main J database,
-	 * needed in admin to connect to J db whilst still using fab db drivers "{package}" replacement text
+	 * @param   bool  $loadJoomlaDb Force (if true) the loading of the main J database,
+	 *                              needed in admin to connect to J db whilst still using fab db drivers "{package}"
+	 *                              replacement text
 	 *
-	 * @param   mixed  $cnnId         If null then loads the fabrik default connection, if an int then loads the specified connection by its id
+	 * @param   mixed $cnnId        If null then loads the fabrik default connection, if an int then loads the
+	 *                              specified connection by its id
 	 *
 	 * @return  JDatabaseDriver object
 	 */
@@ -1450,30 +1484,30 @@ class FabrikWorker
 
 			if (!$loadJoomlaDb)
 			{
-				$cnModel = JModelLegacy::getInstance('Connection', 'FabrikFEModel');
-				$cn = $cnModel->getConnection($cnnId);
-				$host = $cn->host;
-				$user = $cn->user;
+				$cnModel  = JModelLegacy::getInstance('Connection', 'FabrikFEModel');
+				$cn       = $cnModel->getConnection($cnnId);
+				$host     = $cn->host;
+				$user     = $cn->user;
 				$password = $cn->password;
 				$database = $cn->database;
 			}
 			else
 			{
-				$host = $conf->get('host');
-				$user = $conf->get('user');
+				$host     = $conf->get('host');
+				$user     = $conf->get('user');
 				$password = $conf->get('password');
 				$database = $conf->get('db');
 			}
 
 			$dbPrefix = $conf->get('dbprefix');
-			$driver = $conf->get('dbtype');
+			$driver   = $conf->get('dbtype');
 
 			// Test for swapping db table names
 			$driver .= '_fab';
 			$options = array('driver' => $driver, 'host' => $host, 'user' => $user, 'password' => $password, 'database' => $database,
 				'prefix' => $dbPrefix);
 
-			$version = new JVersion;
+			$version              = new JVersion;
 			self::$database[$sig] = $version->RELEASE > 2.5 ? JDatabaseDriver::getInstance($options) : JDatabase::getInstance($options);
 
 			/*
@@ -1515,7 +1549,7 @@ class FabrikWorker
 	/**
 	 * Helper function get get a connection
 	 *
-	 * @param   mixed  $item  A list table or connection id
+	 * @param   mixed $item A list table or connection id
 	 *
 	 * @since 3.0b
 	 *
@@ -1523,7 +1557,7 @@ class FabrikWorker
 	 */
 	public static function getConnection($item = null)
 	{
-		$app = JFactory::getApplication();
+		$app   = JFactory::getApplication();
 		$input = $app->input;
 		$jForm = $input->get('jform', array(), 'array');
 
@@ -1561,9 +1595,9 @@ class FabrikWorker
 	/**
 	 * Get the plugin manager
 	 *
-	 * @since	3.0b
+	 * @since    3.0b
 	 *
-	 * @return	FabrikFEModelPluginmanager	Plugin manager
+	 * @return    FabrikFEModelPluginmanager    Plugin manager
 	 */
 	public static function getPluginManager()
 	{
@@ -1579,8 +1613,8 @@ class FabrikWorker
 	 * Takes a string which may or may not be json and returns either string/array/object
 	 * will also turn valGROUPSPLITTERval2 to array
 	 *
-	 * @param   string  $data     Json encoded string
-	 * @param   bool    $toArray  Force data to be an array
+	 * @param   string $data    Json encoded string
+	 * @param   bool   $toArray Force data to be an array
 	 *
 	 * @return  mixed data
 	 */
@@ -1629,13 +1663,13 @@ class FabrikWorker
 	/**
 	 * Test if a string is a compatible date
 	 *
-	 * @param   string  $d  Date to test
+	 * @param   string $d Date to test
 	 *
-	 * @return	bool
+	 * @return    bool
 	 */
 	public static function isDate($d)
 	{
-		$db = self::getDbo();
+		$db         = self::getDbo();
 		$aNullDates = array('0000-00-000000-00-00', '0000-00-00 00:00:00', '0000-00-00', '', $db->getNullDate());
 
 		// Catch for ','
@@ -1652,8 +1686,7 @@ class FabrikWorker
 		try
 		{
 			$dt = new DateTime($d);
-		}
-		catch (Exception $e)
+		} catch (Exception $e)
 		{
 			return false;
 		}
@@ -1664,9 +1697,9 @@ class FabrikWorker
 	/**
 	 * See if data is JSON or not.
 	 *
-	 * @param   mixed  $data  Date to test
+	 * @param   mixed $data Date to test
 	 *
-	 * @since	3.0.6
+	 * @since    3.0.6
 	 *
 	 * @return bool
 	 */
@@ -1688,8 +1721,8 @@ class FabrikWorker
 	/**
 	 * Is the email really an email (more strict than JMailHelper::isEmailAddress())
 	 *
-	 * @param   string  $email  Email address
-	 * @param   bool    $sms    test for SMS phone number instead of email, default false
+	 * @param   string $email Email address
+	 * @param   bool   $sms   test for SMS phone number instead of email, default false
 	 *
 	 * @since 3.0.4
 	 *
@@ -1702,7 +1735,7 @@ class FabrikWorker
 			return self::isSMS($email);
 		}
 
-		$conf = JFactory::getConfig();
+		$conf   = JFactory::getConfig();
 		$mailer = $conf->get('mailer');
 
 		if ($mailer === 'mail')
@@ -1718,7 +1751,7 @@ class FabrikWorker
 	 * Is valid SMS number format
 	 * This is just a stub which return true for now!
 	 *
-	 * @param   string  $sms  SMS number
+	 * @param   string $sms SMS number
 	 *
 	 * @since 3.4.0
 	 *
@@ -1759,7 +1792,7 @@ class FabrikWorker
 	 *  - Then checks if itemId in $input
 	 *  - Finally checked active menu item
 	 *
-	 * @param   int  $listId  List id to attempt to get the menu item id for the list.
+	 * @param   int $listId List id to attempt to get the menu item id for the list.
 	 *
 	 * @return mixed NULL if nothing found, int if menu item found
 	 */
@@ -1772,14 +1805,14 @@ class FabrikWorker
 			// Attempt to get Itemid from possible list menu item.
 			if (!is_null($listId))
 			{
-				$db = JFactory::getDbo();
+				$db         = JFactory::getDbo();
 				$myLanguage = JFactory::getLanguage();
-				$myTag = $myLanguage->getTag();
-				$qLanguage = !empty($myTag) ? ' AND '.$db->q($myTag) .' = '.$db->qn('m.language') : '';
-				$query = $db->getQuery(true);
+				$myTag      = $myLanguage->getTag();
+				$qLanguage  = !empty($myTag) ? ' AND ' . $db->q($myTag) . ' = ' . $db->qn('m.language') : '';
+				$query      = $db->getQuery(true);
 				$query->select('m.id AS itemId')->from('#__extensions AS e')
-				->leftJoin('#__menu AS m ON m.component_id = e.extension_id')
-				->where('e.name = "fabrik" and e.type = "component" and m.link LIKE "%listid=' . $listId . '"' . $qLanguage);
+					->leftJoin('#__menu AS m ON m.component_id = e.extension_id')
+					->where('e.name = "fabrik" and e.type = "component" and m.link LIKE "%listid=' . $listId . '"' . $qLanguage);
 				$db->setQuery($query);
 
 				if ($itemId = $db->loadResult())
@@ -1796,7 +1829,7 @@ class FabrikWorker
 			}
 
 			$menus = $app->getMenu();
-			$menu = $menus->getActive();
+			$menu  = $menus->getActive();
 
 			if (is_object($menu))
 			{
@@ -1810,16 +1843,17 @@ class FabrikWorker
 	/**
 	 * Attempt to get a variable first from the menu params (if they exists) if not from request
 	 *
-	 * @param   string  $name      Param name
-	 * @param   mixed   $val       Default
-	 * @param   bool    $mambot    If set to true menu params ignored
-	 * @param   string  $priority  Defaults that menu priorities override request - set to 'request' to inverse this priority
+	 * @param   string $name     Param name
+	 * @param   mixed  $val      Default
+	 * @param   bool   $mambot   If set to true menu params ignored
+	 * @param   string $priority Defaults that menu priorities override request - set to 'request' to inverse this
+	 *                           priority
 	 *
 	 * @return  string
 	 */
 	public static function getMenuOrRequestVar($name, $val = '', $mambot = false, $priority = 'menu')
 	{
-		$app = JFactory::getApplication();
+		$app   = JFactory::getApplication();
 		$input = $app->input;
 
 		if ($priority === 'menu')
@@ -1829,7 +1863,7 @@ class FabrikWorker
 			if (!$app->isAdmin())
 			{
 				$menus = $app->getMenu();
-				$menu = $menus->getActive();
+				$menu  = $menus->getActive();
 
 				// If there is a menu item available AND the view is not rendered in a content plugin
 				if (is_object($menu) && !$mambot)
@@ -1843,7 +1877,7 @@ class FabrikWorker
 			if (!$app->isAdmin())
 			{
 				$menus = $app->getMenu();
-				$menu = $menus->getActive();
+				$menu  = $menus->getActive();
 
 				// If there is a menu item available AND the view is not rendered in a content plugin
 				if (is_object($menu) && !$mambot)
@@ -1862,19 +1896,20 @@ class FabrikWorker
 	 * Access control function for determining if the user can perform
 	 * a designated function on a specific row
 	 *
-	 * @param   object  $params  Item params to test
-	 * @param   object  $row     Data
-	 * @param   string  $col     Access control setting to compare against
+	 * @param   object $params Item params to test
+	 * @param   object $row    Data
+	 * @param   string $col    Access control setting to compare against
 	 *
-	 * @return	mixed	- if ACL setting defined here return bool, otherwise return -1 to continue with default acl setting
+	 * @return    mixed    - if ACL setting defined here return bool, otherwise return -1 to continue with default acl
+	 *                     setting
 	 */
 	public static function canUserDo($params, $row, $col)
 	{
 		if (!is_null($row))
 		{
-			$app = JFactory::getApplication();
-			$input = $app->input;
-			$user = JFactory::getUser();
+			$app     = JFactory::getApplication();
+			$input   = $app->input;
+			$user    = JFactory::getUser();
 			$userCol = $params->get($col, '');
 
 			if ($userCol != '')
@@ -1948,7 +1983,7 @@ class FabrikWorker
 	 * Get a cache handler
 	 * $$$ hugh - added $listModel arg, needed so we can see if they have set "Disable Caching" on the List
 	 *
-	 * @param   object  $listModel  List Model
+	 * @param   object $listModel List Model
 	 *
 	 * @since   3.0.7
 	 *
@@ -1956,13 +1991,13 @@ class FabrikWorker
 	 */
 	public static function getCache($listModel = null)
 	{
-		$app = JFactory::getApplication();
+		$app     = JFactory::getApplication();
 		$package = $app->getUserState('com_fabrik.package', 'fabrik');
-		$time = ((float) 2 * 60 * 60);
-		$base = JPATH_BASE . '/cache/';
-		$opts = array('defaultgroup' => 'com_' . $package, 'cachebase' => $base, 'lifetime' => $time, 'language' => 'en-GB', 'storage' => 'file');
-		$cache = JCache::getInstance('callback', $opts);
-		$config = JFactory::getConfig();
+		$time    = ((float) 2 * 60 * 60);
+		$base    = JPATH_BASE . '/cache/';
+		$opts    = array('defaultgroup' => 'com_' . $package, 'cachebase' => $base, 'lifetime' => $time, 'language' => 'en-GB', 'storage' => 'file');
+		$cache   = JCache::getInstance('callback', $opts);
+		$config  = JFactory::getConfig();
 		$doCache = $config->get('caching', 0) > 0 ? true : false;
 
 		if ($doCache && $listModel !== null)
@@ -1978,7 +2013,7 @@ class FabrikWorker
 	/**
 	 * Get the default values for a given JForm
 	 *
-	 * @param   string  $form  Form name e.g. list, form etc.
+	 * @param   string $form Form name e.g. list, form etc.
 	 *
 	 * @since   3.0.7
 	 *
@@ -1989,14 +2024,14 @@ class FabrikWorker
 		JForm::addFormPath(JPATH_COMPONENT . '/models/forms');
 		JForm::addFieldPath(JPATH_COMPONENT . '/models/fields');
 		$form = JForm::getInstance('com_fabrik.' . $form, $form, array('control' => '', 'load_data' => true));
-		$fs = $form->getFieldset();
+		$fs   = $form->getFieldset();
 		$json = array('params' => array());
 
 		foreach ($fs as $name => $field)
 		{
 			if (substr($name, 0, 7) === 'params_')
 			{
-				$name = str_replace('params_', '', $name);
+				$name                  = str_replace('params_', '', $name);
 				$json['params'][$name] = $field->value;
 			}
 			else
@@ -2017,7 +2052,7 @@ class FabrikWorker
 	 */
 	public static function j3()
 	{
-		$app = JFactory::getApplication();
+		$app     = JFactory::getApplication();
 		$version = new JVersion;
 
 		// Only use template test for testing in 2.5 with my temp J bootstrap template.
@@ -2036,14 +2071,15 @@ class FabrikWorker
 	public static function inFormProcess()
 	{
 		$app = JFactory::getApplication();
+
 		return $app->input->get('task') == 'form.process' || ($app->isAdmin() && $app->input->get('task') == 'process');
 	}
 
 	/**
 	 * Remove messages from JApplicationCMS
 	 *
-	 * @param   JApplicationCMS  $app   Application to kill messages from
-	 * @param   string           $type  Message type e.g. 'warning', 'error'
+	 * @param   JApplicationCMS $app  Application to kill messages from
+	 * @param   string          $type Message type e.g. 'warning', 'error'
 	 *
 	 * @return  array  Remaining messages.
 	 */
@@ -2070,8 +2106,8 @@ class FabrikWorker
 	/**
 	 * Loose casing to boolean
 	 *
-	 * @param   mixed  $var  Var to test
-	 * @param   boolean  $default if neither a truish or falsy match are found
+	 * @param   mixed   $var     Var to test
+	 * @param   boolean $default if neither a truish or falsy match are found
 	 *
 	 * @return bool - Set to false if false is found.
 	 */
@@ -2082,7 +2118,7 @@ class FabrikWorker
 			return false;
 		}
 
-		if ($var === 'true' || $var === 1 ||$var === true)
+		if ($var === 'true' || $var === 1 || $var === true)
 		{
 			return true;
 		}

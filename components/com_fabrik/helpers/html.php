@@ -85,19 +85,18 @@ class FabrikHelperHTML
 	protected static $debug = null;
 
 	/**
-	 * Has the auto-complete JavaScript js file been loaded
-	 *
-	 * @var bool
-	 */
-	protected static $autocomplete = null;
-
-	/**
 	 * Has the Facebook API JavaScript file been loaded
 	 *
 	 * @var  bool
 	 */
 	protected static $facebookgraphapi = null;
 
+	/**
+	 * Has the at who js file been loaded
+	 *
+	 * @var array
+	 */
+	protected static $atWho = array();
 	/**
 	 * Folders to search for media
 	 *
@@ -1292,10 +1291,11 @@ EOD;
 	 * @param   mixed  $file       String or array of files to load, relative path to root for local files
 	 *                             e.g. 'administrator/components/com_fabrik/models/fields/tables.js'
 	 * @param   string $onLoad     Optional js to run once the Js file has been loaded
+	 * @param   string $minSuffix  The minimised file suffix to use, replaces '.js'
 	 *
 	 * @return  void
 	 */
-	public static function script($file, $onLoad = '')
+	public static function script($file, $onLoad = '', $minSuffix = '-min.js')
 	{
 		if (empty($file))
 		{
@@ -1307,7 +1307,7 @@ EOD;
 			$onLoad = implode("\n", $onLoad);
 		}
 
-		$ext   = self::isDebug() ? '.js' : '-min.js';
+		$ext   = self::isDebug() ? '.js' : $minSuffix;
 		$paths = self::requirePaths();
 		$files = (array) $file;
 
@@ -1649,16 +1649,16 @@ EOD;
 	/**
 	 * Add auto-complete JS code to head
 	 *
-	 * @param   string $htmlid      Of element to turn into autocomplete
-	 * @param   int    $elementid   Element id
-	 * @param   int    $formid      Form id
+	 * @param   string $htmlId      Of element to turn into autocomplete
+	 * @param   int    $elementId   Element id
+	 * @param   int    $formId      Form id
 	 * @param   string $plugin      Plugin name
 	 * @param   array  $opts        * onSelection - function to run when option selected
 	 *                              * max - max number of items to show in selection list
 	 *
 	 * @return  void
 	 */
-	public static function autoComplete($htmlid, $elementid, $formid, $plugin = 'field', $opts = array())
+	public static function autoComplete($htmlId, $elementId, $formId, $plugin = 'field', $opts = array())
 	{
 		$input = JFactory::getApplication()->input;
 
@@ -1667,7 +1667,7 @@ EOD;
 			return;
 		}
 
-		$json = self::autoCompleteOptions($htmlid, $elementid, $formid, $plugin, $opts);
+		$json = self::autoCompleteOptions($htmlId, $elementId, $formId, $plugin, $opts);
 		$str  = json_encode($json);
 		JText::script('COM_FABRIK_NO_RECORDS');
 		JText::script('COM_FABRIK_AUTOCOMPLETE_AJAX_ERROR');
@@ -1681,7 +1681,7 @@ EOD;
 		$needed   = implode("', '", $needed);
 		self::addScriptDeclaration(
 			"requirejs(['$needed'], function () {
-	new $class('$htmlid', $str);
+	new $class('$htmlId', $str);
 });"
 		);
 	}
@@ -1690,9 +1690,9 @@ EOD;
 	 * Gets auto complete js options (needed separate from autoComplete as db js class needs these values for repeat
 	 * group duplication)
 	 *
-	 * @param   string $htmlid      Element to turn into autocomplete
-	 * @param   int    $elementid   Element id
-	 * @param   int    $formid      Form id
+	 * @param   string $htmlId      Element to turn into autocomplete
+	 * @param   int    $elementId   Element id
+	 * @param   int    $formId      Form id
 	 * @param   string $plugin      Plugin type
 	 * @param   array  $opts        * onSelection - function to run when option selected
 	 *                              * max - max number of items to show in selection list
@@ -1700,7 +1700,7 @@ EOD;
 	 * @return  array    Autocomplete options (needed for elements so when duplicated we can create a new
 	 *                   FabAutocomplete object
 	 */
-	public static function autoCompleteOptions($htmlid, $elementid, $formid, $plugin = 'field', $opts = array())
+	public static function autoCompleteOptions($htmlId, $elementId, $formId, $plugin = 'field', $opts = array())
 	{
 		$json = new stdClass;
 
@@ -1714,8 +1714,8 @@ EOD;
 		$package   = $app->getUserState('com_fabrik.package', 'fabrik');
 		$json->url = 'index.php?option=com_' . $package . '&format=raw';
 		$json->url .= $app->isAdmin() ? '&task=plugin.pluginAjax' : '&view=plugin&task=pluginAjax';
-		$json->url .= '&g=element&element_id=' . $elementid
-			. '&formid=' . $formid . '&plugin=' . $plugin . '&method=autocomplete_options&package=' . $package;
+		$json->url .= '&g=element&element_id=' . $elementId
+			. '&formid=' . $formId . '&plugin=' . $plugin . '&method=autocomplete_options&package=' . $package;
 		$c = FArrayHelper::getValue($opts, 'onSelection');
 
 		if ($c != '')
@@ -1728,7 +1728,7 @@ EOD;
 			$json->$k = $v;
 		}
 
-		$json->formRef   = FArrayHelper::getValue($opts, 'formRef', 'form_' . $formid);
+		$json->formRef   = FArrayHelper::getValue($opts, 'formRef', 'form_' . $formId);
 		$json->container = FArrayHelper::getValue($opts, 'container', 'fabrikElementContainer');
 		$json->menuclass = FArrayHelper::getValue($opts, 'menuclass', 'auto-complete-container');
 
@@ -1744,6 +1744,48 @@ EOD;
 	 */
 	public static function autoCompleteScript()
 	{
+	}
+
+	public static function atWho($selector, $placeHolders = array())
+	{
+		array_filter($placeHolders);
+		$key = $selector . implode('.', $placeHolders);
+
+		if (!array_key_exists($key, self::$atWho))
+		{
+			$replacements = FabrikWorker::globalReplacements();
+			$replacements = array_keys($replacements);
+
+			$replacements = array_map(function ($v)
+			{
+				$v = str_replace(array('{', '}'), array('', ''), $v);
+
+				return $v;
+			}, $replacements);
+
+			$placeHolders = array_merge($placeHolders, $replacements);
+
+			$placeHolders      = json_encode($placeHolders);
+			$script[]          = "jQuery('$selector').atwho({
+				'at': '{',
+				'insertTpl' : '\${atwho-at}\${name}}',
+				data: $placeHolders,
+				 limit: 5,
+            });";
+			self::$atWho[$key] = true;
+			$css = self::isDebug() ? 'jquery.atwho.css' : 'jquery.atwho.min.css';
+			FabrikHelperHTML::stylesheet('media/com_fabrik/js/lib/at/' . $css);
+
+			$needed[] = self::isDebug() ? '\'fab/lib/caret/caret\'' : '\'fab/lib/caret/caret-min\'';
+			$needed[] = self::isDebug() ? '\'fab/lib/at/atwho\'' : '\'fab/lib/at/atwho-min\'';
+			$needed   = implode(", ", $needed);
+			$script   = implode("\n", $script);
+			self::addScriptDeclaration(
+				"requirejs([$needed], function (j, f) {
+	$script
+});"
+			);
+		}
 	}
 
 	/**
