@@ -708,6 +708,11 @@ var FbList = new Class({
 
 	submit: function (task) {
 		this.getForm();
+		var doAJAX = this.options.ajax;
+		if (task === 'list.doPlugin.noAJAX') {
+			task = 'list.doPlugin';
+			doAJAX = false;
+		}
 		if (task === 'list.delete') {
 			var ok = false;
 			var delCount = 0;
@@ -742,7 +747,7 @@ var FbList = new Class({
 				this.form.task.value = task;
 			}
 		}
-		if (this.options.ajax) {
+		if (doAJAX) {
 			Fabrik.loader.start('listform_' + this.options.listRef);
 			// For module & mambot
 			// $$$ rob with modules only set view/option if ajax on
@@ -901,10 +906,13 @@ var FbList = new Class({
 			};
 		var url = '';
 		data['limit' + this.id] = this.options.limitLength;
-		new Request.JSON({
+		new Request({
 			'url': url,
 			'data': data,
+			'evalScripts': false,
 			onSuccess: function (json) {
+				json = json.stripScripts();
+				json = JSON.decode;
 				this._updateRows(json);
 				// Fabrik.fireEvent('fabrik.list.update', [this, json]);
 			}.bind(this),

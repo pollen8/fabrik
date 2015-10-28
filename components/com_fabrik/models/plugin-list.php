@@ -81,6 +81,16 @@ class PlgFabrik_List extends FabrikPlugin
 	}
 
 	/**
+	 * Can the plug-in use AJAX
+	 *
+	 * @return  bool
+	 */
+	public function canAJAX()
+	{
+		return true;
+	}
+
+	/**
 	 * Get the button label
 	 *
 	 * @return  string
@@ -187,6 +197,7 @@ class PlgFabrik_List extends FabrikPlugin
 		$opts->ref = $model->getRenderContext();
 		$opts->name = $this->_getButtonName();
 		$opts->listid = $model->getId();
+		$opts->canAJAX = $this->canAJAX();
 
 		return $opts;
 	}
