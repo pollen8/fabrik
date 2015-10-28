@@ -1049,6 +1049,29 @@ class FabrikFEModelGroup extends FabModel
 	}
 
 	/**
+	 * Get the label positions, if set to global then return form's label positions
+	 *
+	 * @param string $view   form|details
+	 *
+	 * @return int
+	 */
+	public function labelPosition($view = 'form')
+	{
+		$property = $view === 'form' ? 'labels_above' : 'labels_above_details';
+		$params = $this->getParams();
+
+		$position = (int) $params->get($property, 0);
+
+		if ($position === -1)
+		{
+			$formParams = $this->getFormModel()->getParams();
+			$position = (int) $formParams->get($property. 0);
+		}
+
+		return $position;
+	}
+
+	/**
 	 * Copies a group, form group and its elements
 	 * (when copying a table (and hence a group) the groups join is copied in table->copyJoins)
 	 *

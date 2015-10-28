@@ -10,7 +10,7 @@ var ListFieldsElement = new Class({
 	Implements: [Options, Events],
 
 	addWatched: false,
-	
+
 	options: {
 		conn: null,
 		highlightpk: false,
@@ -22,10 +22,10 @@ var ListFieldsElement = new Class({
 
 	initialize: function (el, options) {
 		this.strEl = el;
-		var label;
+		var label, els;
 		this.el = el;
 		this.setOptions(options);
-		
+
 		if (this.options.defaultOpts.length > 0) {
 			this.el = document.id(this.el);
 			if (this.options.mode === 'gui') {
@@ -40,11 +40,11 @@ var ListFieldsElement = new Class({
 				document.id(this.strEl).empty();
 			}
 			var opts = this.options.defaultOpts;
-			
+
 			Array.each(els, function (el) {
 				document.id(el).empty();
 			});
-			
+
 			opts.each(function (opt) {
 				var o = {'value': opt.value};
 				if (opt.value === this.options.value) {
@@ -55,10 +55,7 @@ var ListFieldsElement = new Class({
 					new Element('option', o).set('text', label).inject(el);
 				});
 			}.bind(this));
-			
 		} else {
-			
-		
 			if (typeOf(document.id(this.options.conn)) === 'null') {
 				this.cnnperiodical = this.getCnn.periodical(500, this);
 			} else {
@@ -103,6 +100,7 @@ var ListFieldsElement = new Class({
 		if (this.options.mode === 'gui') {
 			this.select = this.el.getParent().getElement('select.elements');
 		}
+
 		document.id(this.options.conn).addEvent('change', function () {
 			this.updateMe();
 		}.bind(this));
@@ -136,7 +134,7 @@ var ListFieldsElement = new Class({
 			});
 		}
 	},
-	
+
 	updateMe: function (e) {
 		if (typeOf(e) === 'event') {
 			e.stop();
@@ -160,7 +158,7 @@ var ListFieldsElement = new Class({
 			},
 			onComplete: function (r) {
 				var els;
-				
+
 				// Googlemap inside repeat group & modal repeat
 				if (typeOf(document.id(this.strEl)) !== null) {
 					this.el = document.id(this.strEl);
@@ -173,11 +171,11 @@ var ListFieldsElement = new Class({
 					document.id(this.strEl).empty();
 				}
 				var opts = eval(r);
-				
+
 				Array.each(els, function (el) {
 					document.id(el).empty();
 				});
-				
+
 				opts.each(function (opt) {
 					var o = {'value': opt.value};
 					if (opt.value === this.options.value) {
@@ -194,9 +192,9 @@ var ListFieldsElement = new Class({
 		});
 		Fabrik.requestQueue.add(myAjax);
 	},
-	
+
 	/**
-	 * If rendering with mode=gui then add button should insert selected element placeholder into 
+	 * If rendering with mode=gui then add button should insert selected element placeholder into
 	 * text area
 	 */
 	addPlaceHolder: function () {
@@ -208,16 +206,16 @@ var ListFieldsElement = new Class({
 		}
 		this.insertTextAtCaret(this.el, v);
 	},
-	
+
 	/**
-	 * Start of text insertion code - taken from 
+	 * Start of text insertion code - taken from
 	 * http://stackoverflow.com/questions/3510351/how-do-i-add-text-to-a-textarea-at-the-cursor-location-using-javascript
 	 */
 	getInputSelection: function (el) {
 		var start = 0, end = 0, normalizedValue, range,
 		textInputRange, len, endRange;
 
-		if (typeof el.selectionStart === "number" && typeof el.selectionEnd === "number") {
+		if (typeof el.selectionStart === 'number' && typeof el.selectionEnd === 'number') {
 			start = el.selectionStart;
 			end = el.selectionEnd;
 		} else {
@@ -225,7 +223,7 @@ var ListFieldsElement = new Class({
 
 			if (range && range.parentElement() === el) {
 				len = el.value.length;
-				normalizedValue = el.value.replace(/\r\n/g, "\n");
+				normalizedValue = el.value.replace(/\r\n/g, '\n');
 
 				// Create a working TextRange that lives only in the input
 				textInputRange = el.createTextRange();
@@ -237,17 +235,17 @@ var ListFieldsElement = new Class({
 				endRange = el.createTextRange();
 				endRange.collapse(false);
 
-				if (textInputRange.compareEndPoints("StartToEnd", endRange) > -1) {
+				if (textInputRange.compareEndPoints('StartToEnd', endRange) > -1) {
 					start = end = len;
 				} else {
-					start = -textInputRange.moveStart("character", -len);
-					start += normalizedValue.slice(0, start).split("\n").length - 1;
+					start = -textInputRange.moveStart('character', -len);
+					start += normalizedValue.slice(0, start).split('\n').length - 1;
 
-					if (textInputRange.compareEndPoints("EndToEnd", endRange) > -1) {
+					if (textInputRange.compareEndPoints('EndToEnd', endRange) > -1) {
 						end = len;
 					} else {
-						end = -textInputRange.moveEnd("character", -len);
-						end += normalizedValue.slice(0, end).split("\n").length - 1;
+						end = -textInputRange.moveEnd('character', -len);
+						end += normalizedValue.slice(0, end).split('\n').length - 1;
 					}
 				}
 			}
@@ -258,24 +256,24 @@ var ListFieldsElement = new Class({
 			end: end
 		};
 	},
-	
+
 	offsetToRangeCharacterMove: function (el, offset) {
-		return offset - (el.value.slice(0, offset).split("\r\n").length - 1);
+		return offset - (el.value.slice(0, offset).split('\r\n').length - 1);
 	},
 
 	setSelection: function (el, start, end) {
-		if (typeof el.selectionStart === "number" && typeof el.selectionEnd === "number") {
+		if (typeof el.selectionStart === 'number' && typeof el.selectionEnd === 'number') {
 			el.selectionStart = start;
 			el.selectionEnd = end;
-		} else if (typeof el.createTextRange !== "undefined") {
+		} else if (typeof el.createTextRange !== 'undefined') {
 			var range = el.createTextRange();
 			var startCharMove = this.offsetToRangeCharacterMove(el, start);
 			range.collapse(true);
 			if (start === end) {
-				range.move("character", startCharMove);
+				range.move('character', startCharMove);
 			} else {
-				range.moveEnd("character", this.offsetToRangeCharacterMove(el, end));
-				range.moveStart("character", startCharMove);
+				range.moveEnd('character', this.offsetToRangeCharacterMove(el, end));
+				range.moveStart('character', startCharMove);
 			}
 			range.select();
 		}

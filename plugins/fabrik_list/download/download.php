@@ -44,7 +44,6 @@ class PlgFabrik_ListDownload extends PlgFabrik_List
 	 *
 	 * @return  bool;
 	 */
-
 	public function button(&$args)
 	{
 		parent::button($args);
@@ -170,7 +169,7 @@ class PlgFabrik_ListDownload extends PlgFabrik_List
 			$query = $db->getQuery(true);
 			$query->select($db->qn($downloadFile))
 				->from($db->qn($downloadTable))
-				->where($db->qn($downloadFk) . ' IN (' . implode(',', $db->quote($ids)) . ')');
+				->where($db->qn($downloadFk) . ' IN (' . implode(',', $db->q($ids)) . ')');
 			$db->setQuery($query);
 			$results = $db->loadObjectList();
 

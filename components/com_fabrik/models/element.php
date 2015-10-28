@@ -2090,10 +2090,8 @@ class PlgFabrik_Element extends FabrikPlugin
 			$tip = FabrikHelperHTML::image('question-sign.png', 'form', $tmpl) . ' ' . $tip;
 		}
 
-		$global_labels = $model->getParams()->get('labels_above');
-		$global_dlabels = $model->getParams()->get('labels_above_details');
-		$element->labels = $group->labels == -1 ? $global_labels : $group->labels;
-		$element->dlabels = $group->dlabels == -1 ? $global_dlabels : $group->dlabels;
+		$element->labels = $groupModel->labelPosition('form');
+		$element->dlabels = $groupModel->labelPosition('details');
 
 		switch ($model->getParams()->get('tiplocation'))
 		{

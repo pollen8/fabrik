@@ -1,6 +1,6 @@
 /**
  * File Upload Element
- * 
+ *
  * @copyright: Copyright (C) 2005-2015, fabrikar.com - All rights reserved.
  * @license: GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
@@ -11,7 +11,7 @@ var FbFileUpload = new Class({
 		this.plugin = 'fileupload';
 		this.parent(element, options);
 		this.toppath = this.options.dir;
-		if (this.options.folderSelect === "1" && this.options.editable === true) {
+		if (this.options.folderSelect === '1' && this.options.editable === true) {
 			this.ajaxFolder();
 		}
 
@@ -48,8 +48,8 @@ var FbFileUpload = new Class({
 	},
 
 	/**
-	 * Repoistion the hidden input field over the 'add' button. Called on initiate and if in a tab and the tab is activated. Triggered from
-	 * element.watchTab()
+	 * Reposition the hidden input field over the 'add' button. Called on initiate and if in a tab
+	 * and the tab is activated. Triggered from element.watchTab()
 	 */
 	redraw: function () {
 		if (this.options.ajax_upload) {
@@ -114,10 +114,10 @@ var FbFileUpload = new Class({
 						video = this.makeVideoPreview();
 						video.inject(c, 'inside');
 					}
-					
+
 					reader = new window.FileReader();
 					var url;
-					
+
 					reader = window.URL || window.webKitURL;
 
 					if (reader && reader.createObjectURL) {
@@ -130,12 +130,12 @@ var FbFileUpload = new Class({
 						console.log('Sorry, not so much');
 						return;
 					}
-					
+
 					reader = new window.FileReader();
 					reader.onload = function (eo) {
 						video.src = eo.target.result;
 					};
-					reader.readAsDataURL(f);						
+					reader.readAsDataURL(f);
 				}
 			}.bind(this));
 		}
@@ -153,7 +153,7 @@ var FbFileUpload = new Class({
 		if (typeOf(b) !== 'null') {
 			b.addEvent('click', function (e) {
 				e.stop();
-				if (confirm(Joomla.JText._('PLG_ELEMENT_FILEUPLOAD_CONFIRM_SOFT_DELETE'))) {
+				if (window.confirm(Joomla.JText._('PLG_ELEMENT_FILEUPLOAD_CONFIRM_SOFT_DELETE'))) {
 					var joinPkVal = b.get('data-join-pk-val');
 					new Request({
 						url: '',
@@ -173,7 +173,7 @@ var FbFileUpload = new Class({
 						}.bind(this)
 					}).send();
 
-					if (confirm(Joomla.JText._('PLG_ELEMENT_FILEUPLOAD_CONFIRM_HARD_DELETE'))) {
+					if (window.confirm(Joomla.JText._('PLG_ELEMENT_FILEUPLOAD_CONFIRM_HARD_DELETE'))) {
 						this.makeDeletedImageField(this.groupid, b.get('data-file')).inject(this.getContainer(), 'inside');
 						Fabrik.fireEvent('fabrik.fileupload.delete.complete', this);
 					}
@@ -189,9 +189,9 @@ var FbFileUpload = new Class({
 
 	/**
 	 * Sets the element key used in Fabrik.blocks.form_X.formElements overwritten by dbjoin rendered as checkbox
-	 * 
+	 *
 	 * @since 3.0.7
-	 * 
+	 *
 	 * @return string
 	 */
 
@@ -236,11 +236,11 @@ var FbFileUpload = new Class({
 
 	/**
 	 * Create a hidden input which will tell fabrik, upon form submission, to delete the file
-	 * 
+	 *
 	 * @param int groupid group id
 	 * @param string value file to delete
-	 * 
-	 * @return DOM Node - hidden input
+	 *
+	 * @return Element DOM Node - hidden input
 	 */
 	makeDeletedImageField: function (groupid, value) {
 		return new Element('input', {
@@ -249,7 +249,7 @@ var FbFileUpload = new Class({
 			'value': value
 		});
 	},
-	
+
 	makeVideoPreview: function () {
 		return new Element('video', {
 			'id': this.element.id + '_video_preview',
@@ -389,10 +389,10 @@ var FbFileUpload = new Class({
 			this.startbutton.removeClass('disabled');
 			files.each(function (file, idx) {
 				if (file.size > this.options.max_file_size * 1000) {
-					alert(Joomla.JText._('PLG_ELEMENT_FILEUPLOAD_FILE_TOO_LARGE_SHORT'));
+					window.alert(Joomla.JText._('PLG_ELEMENT_FILEUPLOAD_FILE_TOO_LARGE_SHORT'));
 				} else {
 					if (count >= this.options.ajax_max) {
-						alert(Joomla.JText._('PLG_ELEMENT_FILEUPLOAD_MAX_UPLOAD_REACHED'));
+						window.alert(Joomla.JText._('PLG_ELEMENT_FILEUPLOAD_MAX_UPLOAD_REACHED'));
 					} else {
 						count++;
 						var a, title, innerLi;
@@ -444,7 +444,7 @@ var FbFileUpload = new Class({
 				var row = document.id(file.id);
 				if (typeOf(row) !== 'null') {
 					row.destroy();
-					alert(err.message);
+					window.alert(err.message);
 				}
 				this.addDropArea();
 			}.bind(this));
@@ -462,7 +462,7 @@ var FbFileUpload = new Class({
 		this.uploader.bind('FileUploaded', function (up, file, response) {
 			response = JSON.decode(response.response);
 			if (response.error) {
-				alert(response.error);
+				window.alert(response.error);
 				document.id(file.id).destroy();
 				return;
 			}
@@ -522,7 +522,7 @@ var FbFileUpload = new Class({
 
 	/**
 	 * Create an array of the dom elements to inject into a row representing an uploaded file
-	 * 
+	 *
 	 * @return array
 	 */
 	imageCells: function (file, title, a) {
@@ -630,7 +630,7 @@ var FbFileUpload = new Class({
 
 	pluploadRemoveFile: function (e) {
 		e.stop();
-		if (!confirm(Joomla.JText._('PLG_ELEMENT_FILEUPLOAD_CONFIRM_HARD_DELETE'))) {
+		if (!window.confirm(Joomla.JText._('PLG_ELEMENT_FILEUPLOAD_CONFIRM_HARD_DELETE'))) {
 			return;
 		}
 
@@ -899,7 +899,7 @@ var ImageWidget = new Class({
 
 	/**
 	 * Add or make active an image in the editor
-	 * 
+	 *
 	 * @param string uri Image URI
 	 * @param string filepath Path to file
 	 * @param object params Initial parameters
@@ -936,7 +936,7 @@ var ImageWidget = new Class({
 
 	/**
 	 * Set rotate, scale, image and crop values for a given image
-	 * 
+	 *
 	 * @param object params Image parameters
 	 */
 	setInterfaceDimensions: function (params) {
@@ -961,11 +961,11 @@ var ImageWidget = new Class({
 
 	/**
 	 * One time call to store initial image crop info in this.images
-	 * 
+	 *
 	 * @param string filepath Path to image
 	 * @param DOMnode img Image - just created
 	 * @param params object Image parameters
-	 * 
+	 *
 	 * @return object Update image parameters
 	 */
 
@@ -1189,7 +1189,7 @@ var ImageWidget = new Class({
 
 	/**
 	 * Takes the current active image and creates cropped image data via a canvas element
-	 * 
+	 *
 	 * @param string filepath File path to image to crop. If blank use this.activeFilePath
 	 */
 	storeActiveImageData: function (filepath) {
