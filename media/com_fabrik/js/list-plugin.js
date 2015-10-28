@@ -14,7 +14,8 @@
 var FbListPlugin = new Class({
 	Implements: [Events, Options],
 	options: {
-		requireChecked: true
+		requireChecked: true,
+		canAJAX: true
 	},
 
 	initialize: function (options) {
@@ -115,6 +116,7 @@ var FbListPlugin = new Class({
 	},
 
 	buttonAction: function () {
-		this.list.submit('list.doPlugin');
+		var task = this.options.canAJAX ? 'list.doPlugin' : 'list.doPlugin.noAJAX';
+		this.list.submit(task);
 	}
 });

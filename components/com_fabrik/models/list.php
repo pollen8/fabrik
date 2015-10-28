@@ -2133,7 +2133,8 @@ class FabrikFEModelList extends JModelForm
 	 */
 	protected function relatedDataURL($key, $val, $listId)
 	{
-		$itemId = FabrikWorker::itemId();
+
+		$itemId = FabrikWorker::itemId($listId);
 		$package = $this->app->getUserState('com_fabrik.package', 'fabrik');
 		$url = 'index.php?option=com_' . $package . '&';
 

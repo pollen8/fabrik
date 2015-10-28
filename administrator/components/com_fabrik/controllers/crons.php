@@ -37,6 +37,8 @@ class FabrikAdminControllerCrons extends FabControllerAdmin
 	 */
 	protected $view_item = 'crons';
 
+	protected $runningId = null;
+
 	/**
 	 * Proxy for getModel.
 	 *
@@ -52,6 +54,22 @@ class FabrikAdminControllerCrons extends FabControllerAdmin
 
 		return $model;
 	}
+
+	public function shutdownHandler()
+	{
+		$id = $this->runningId;
+		if (@is_array($e = @error_get_last())) {
+			$code = isset($e['type']) ? $e['type'] : 0;
+			$msg = isset($e['message']) ? $e['message'] : '';
+			$file = isset($e['file']) ? $e['file'] : '';
+			$line = isset($e['line']) ? $e['line'] : '';
+			if ($code>0) {
+				$this->log->message = "$code,$msg,$file,$line";
+				$this->log->store();
+			}
+		}
+	}
+
 
 	/**
 	 * Run the selected cron plugins
@@ -76,16 +94,18 @@ class FabrikAdminControllerCrons extends FabControllerAdmin
 		$pluginManager = JModelLegacy::getInstance('Pluginmanager', 'FabrikFEModel');
 		$listModel = JModelLegacy::getInstance('list', 'FabrikFEModel');
 		$c = 0;
-		$log = FabTable::getInstance('Log', 'FabrikTable');
+		$this->log = FabTable::getInstance('Log', 'FabrikTable');
+
+		register_shutdown_function(array($this, 'shutdownHandler'));
 
 		foreach ($rows as $row)
 		{
 			// Load in the plugin
 			$rowParams = json_decode($row->params);
-			$log->message = '';
-			$log->id = null;
-			$log->referring_url = '';
-			$log->message_type = 'plg.cron.' . $row->plugin;
+			$this->log->message = '';
+			$this->log->id = null;
+			$this->log->referring_url = '';
+			$this->log->message_type = 'plg.cron.' . $row->plugin;
 			$plugin = $pluginManager->getPlugIn($row->plugin, 'cron');
 			$table = FabTable::getInstance('cron', 'FabrikTable');
 			$table->load($row->id);
@@ -98,7 +118,7 @@ class FabrikAdminControllerCrons extends FabControllerAdmin
 			if ($tid !== 0)
 			{
 				$thisListModel->setId($tid);
-				$log->message .= "\n\n$row->plugin\n listid = " . $thisListModel->getId();
+				$this->log->message .= "\n\n$row->plugin\n listid = " . $thisListModel->getId();
 
 				if ($plugin->requiresTableData())
 				{
@@ -111,14 +131,16 @@ class FabrikAdminControllerCrons extends FabControllerAdmin
 			{
 				$data = array();
 			}
+
+			$this->runningId = $row->id;
 			// $$$ hugh - added table model param, in case plugin wants to do further table processing
 			$c = $c + $plugin->process($data, $thisListModel, $thisAdminListModel);
 
-			$log->message = $plugin->getLog() . "\n\n" . $log->message;
+			$this->log->message = $plugin->getLog() . "\n\n" . $this->log->message;
 
 			if ($plugin->getParams()->get('log', 0) == 1)
 			{
-				$log->store();
+				$this->log->store();
 			}
 
 			// Email log message
@@ -128,7 +150,7 @@ class FabrikAdminControllerCrons extends FabControllerAdmin
 			{
 				$recipient = explode(',', $recipient);
 				$subject = $config->get('sitename') . ': ' . $row->plugin . ' scheduled task';
-				$mailer->sendMail($config->get('mailfrom'), $config->get('fromname'), $recipient, $subject, $log->message, true);
+				$mailer->sendMail($config->get('mailfrom'), $config->get('fromname'), $recipient, $subject, $this->log->message, true);
 			}
 		}
 

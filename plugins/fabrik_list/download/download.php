@@ -95,6 +95,16 @@ class PlgFabrik_ListDownload extends PlgFabrik_List
 	}
 
 	/**
+	 * Can the plug-in use AJAX
+	 *
+	 * @return  bool
+	 */
+	public function canAJAX()
+	{
+		return false;
+	}
+
+	/**
 	 * Do the plug-in action
 	 *
 	 * @param   array $opts Custom options
