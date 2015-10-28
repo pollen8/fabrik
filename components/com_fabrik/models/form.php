@@ -4270,31 +4270,7 @@ class FabrikFEModelForm extends FabModelForm
 	 */
 	public function getFormClass()
 	{
-		$class = array('fabrikForm');
-
-		/*
-		$horiz = true;
-		$groups = $this->getGroupsHiarachy();
-
-		foreach ($groups as $gkey => $groupModel)
-		{
-			$groupParams = $groupModel->getParams();
-
-			if ($groupParams->get('group_columns', 1) > 1)
-			{
-				$horiz = false;
-			}
-		}
-
-		if ($horiz
-			&& (($this->isEditable() && $params->get('labels_above', 0) != 1)
-			|| (!$this->isEditable() && $params->get('labels_above_details', 0) != 1)))
-		{
-			$class[] = 'form-horizontal';
-		}
-		*/
-
-		return implode(' ', $class);
+		return 'fabrikForm';
 	}
 
 	/**
@@ -4716,8 +4692,8 @@ class FabrikFEModelForm extends FabModelForm
 
 			if ((int) $groupParams->get('group_columns', 1) == 1)
 			{
-				if (($this->isEditable() && $params->get('labels_above', 0) != 1)
-					|| (!$this->isEditable() && $params->get('labels_above_details', 0) != 1))
+				if (($this->isEditable() && $groupModel->labelPosition('form') !== 1)
+					|| (!$this->isEditable() && $groupModel->labelPosition('details') !== 1))
 				{
 					$group->class[] = 'form-horizontal';
 				}

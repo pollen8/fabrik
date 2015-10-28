@@ -34,16 +34,17 @@ foreach ($this->elements as $element) :
 	?>
 			<div class="control-group <?php echo $element->containerClass . $span; ?>" <?php echo $style?>>
 	<?php
-	$labels_above = $element->labels;
-	if ($labels_above == 1)
+	$labelsAbove = $element->labels;
+
+	if ($labelsAbove == 1)
 	{
 		echo $this->loadTemplate('group_labels_above');
 	}
-	elseif ($labels_above == 2)
+	elseif ($labelsAbove == 2)
 	{
 		echo $this->loadTemplate('group_labels_none');
 	}
-	elseif ($element->span == 'span12' || $element->span == '' || $labels_above == 0)
+	elseif ($element->span == 'span12' || $element->span == '' || $labelsAbove == 0)
 	{
 		echo $this->loadTemplate('group_labels_side');
 	}
