@@ -117,7 +117,7 @@ class PlgFabrik_Validationrule extends FabrikPlugin
 				$name = $element->getFullName(true, false);
 				$elementData = JArrayHelper::getValue($post, $name, array());
 				$post[$name] = JArrayHelper::getValue($elementData, $repeatCounter, '');
-				$rawData = JArrayHelper::getValue($post, $name . '_raw');
+				$rawData = JArrayHelper::getValue($post, $name . '_raw', array());
 				$post[$name . '_raw'] = JArrayHelper::getValue($rawData, $repeatCounter, '');
 			}
 		}
