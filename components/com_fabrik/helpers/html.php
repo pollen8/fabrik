@@ -902,6 +902,16 @@ EOD;
 			}
 			else
 			{
+				if ($bootstrapped)
+				{
+					$liveSiteSrc[] = "\tFabrik.bootstrapped = true;";
+				}
+				else
+				{
+					$liveSiteSrc[] = "\tFabrik.iconGen = new IconGenerator({scale: 0.5});";
+					$liveSiteSrc[] = "\tFabrik.bootstrapped = false;";
+				}
+
 				$liveSiteSrc[] = "\tif (!Fabrik.jLayouts) {
 				Fabrik.jLayouts = {};
 				}
