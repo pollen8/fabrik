@@ -17,7 +17,7 @@ $colClass = (int) $colSize === 12 ? '' : 'class="span' . $colSize . '"';
 ?>
 <div <?php echo $colClass;?> data-role="suboption">
 	<label class="radio">
-		<input type="radio" value="<?php echo $value;?>" data-role="fabrikinput" name="<?php echo $d->name; ?>" class="fabrikinput" />
+		<input type="radio" value="<?php echo $value;?>" <?php echo $d->checked;?> data-role="fabrikinput" name="<?php echo $d->name; ?>" class="fabrikinput" />
 		<span><?php echo $label;?></span>
 	</label>
 </div>
