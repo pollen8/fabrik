@@ -242,7 +242,9 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 				$opts['title'] = strip_tags($w->parseMessageForPlaceHolder($title, $data));
 			}
 
-			$value = FabrikHelperHTML::a($value, $value, $opts);
+			$label = FArrayHelper::getValue($opts, 'title', '') !== '' ? $opts['title'] : $value;
+
+			$value = FabrikHelperHTML::a($value, $label, $opts);
 		}
 	}
 
