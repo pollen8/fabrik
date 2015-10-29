@@ -7,8 +7,8 @@ module.exports = function (grunt) {
     jPlugins(grunt);
     fabrikPlugins(grunt);
     fabrikModules(grunt);
-    component(grunt)
-}
+    component(grunt);
+};
 
 /**
  * Update XML file properties
@@ -24,7 +24,8 @@ var updateAFile = function (path, grunt) {
         }
 
         var version = grunt.config.get('pkg.version');
-        var date = new Date();
+        var date = new Date(),
+            xml;
 
         var createDate = moment().format('MMMM YYYY');
         xml = fs.readFileSync(path);
@@ -51,8 +52,7 @@ var updateAFile = function (path, grunt) {
     } catch (err) {
         console.error(err);
     }
-
-}
+};
 
 var jPlugins = function (grunt) {
     var path;
@@ -63,7 +63,7 @@ var jPlugins = function (grunt) {
             updateAFile(path, grunt);
         }
     }
-}
+};
 
 var fabrikPlugins = function (grunt) {
     var folders = buildConfig.pluginFolders;
@@ -80,7 +80,7 @@ var fabrikPlugins = function (grunt) {
             }
         }
     }
-}
+};
 
 var fabrikModules = function (grunt) {
     for (var i = 0; i < buildConfig.modules.length; i++) {
@@ -89,7 +89,7 @@ var fabrikModules = function (grunt) {
         updateAFile(path, grunt);
     }
 
-}
+};
 
 var component = function (grunt) {
     updateAFile('administrator/components/com_fabrik/pkg_fabrik.xml', grunt);

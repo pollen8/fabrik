@@ -244,7 +244,7 @@ var fabrikPlugins = function (grunt) {
         jversion = grunt.config.get('jversion'),
         i, pluginPath, plugins, j, name, xmlFile, props,
         folders = buildConfig.pluginFolders;
-    console.log('fabrik plugin folders', folders);
+
     for (i = 0; i < folders.length; i++) {
 
         //
@@ -265,12 +265,12 @@ var fabrikPlugins = function (grunt) {
             console.log('----------> pluginPath: ' + pluginPath);
             plugins = fs.readdirSync(pluginPath);
             for (j = 0; j < plugins.length; j++) {
-               // console.log(pluginPath + '/' + plugins[j]);
+
                 var pluginDir = fs.lstatSync(pluginPath + '/' + plugins[j]);
                 if (pluginDir.isDirectory() && !pluginDir.isSymbolicLink()) {
                     xmlFile = updateDir + '/plg_' + folders[i] + '_' + plugins[j] + '.xml';
                     name = productName + ' ' + folders[i] + ': ' + plugins[j],
-                        element = 'plg_' + folders[i] + '_' + plugins[j]
+                        element = 'plg_' + folders[i] + '_' + plugins[j],
                         folder = productName + '_' + folders[i];
                     props = {
                         'name'          : name,
