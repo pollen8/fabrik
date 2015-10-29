@@ -16,7 +16,7 @@ $colSize    = floor(floatval(12) / $d->optsPerRow);
 $colCounter = 0;
 
 foreach ($d->options as $option) :
-	$checked = in_array($option->value, $d->default) ? 'checked="checked"' : '';
+	$d->checked = in_array($option->value, $d->default) ? 'checked="checked"' : '';
 	if (($colSize * $colCounter) % 12 === 0  || $colCounter == 0) : ?>
 		<div class="row-fluid">
 	<?php endif;
@@ -24,7 +24,7 @@ foreach ($d->options as $option) :
 	$d->colCounter = $colCounter;
 	if ($d->editable) :
 		echo $d->optionLayout->render($d);
-	elseif ($checked) : ?>
+	elseif ($d->checked) : ?>
 		<span><?php echo $d->option->text;?></span>
 	<?php endif;
 	$colCounter++;
