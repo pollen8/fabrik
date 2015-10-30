@@ -81,6 +81,6 @@ class FabrikViewList extends FabrikViewListBase
 		parent::setTitle($w, $params, $model);
 
 		// Set the download file name based on the document title
-		$this->doc->setName($this->document->getTitle());
+		$this->doc->setName($this->doc->getTitle());
 	}
 }
