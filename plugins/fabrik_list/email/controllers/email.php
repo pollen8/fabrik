@@ -52,7 +52,8 @@ class FabrikControllerListemail extends JControllerLegacy
 	 */
 	public function popupwin()
 	{
-		$input = $this->app->input;
+		$app = JFactory::getApplication();
+		$input = $app->input;
 		$document = JFactory::getDocument();
 		$viewName = 'popupwin';
 		$viewType = $document->getType();
@@ -89,7 +90,8 @@ class FabrikControllerListemail extends JControllerLegacy
 	 */
 	public function doemail()
 	{
-		$input = $this->app->input;
+		$app = JFactory::getApplication();
+		$input = $app->input;
 		$pluginManager = JModelLegacy::getInstance('Pluginmanager', 'FabrikFEModel');
 		$model = $pluginManager->getPlugIn('email', 'list');
 		$listModel = $this->getModel('List', 'FabrikFEModel');
