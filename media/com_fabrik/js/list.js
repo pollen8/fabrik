@@ -912,7 +912,7 @@ var FbList = new Class({
 			'evalScripts': false,
 			onSuccess: function (json) {
 				json = json.stripScripts();
-				json = JSON.decode;
+				json = JSON.decode(json);
 				this._updateRows(json);
 				// Fabrik.fireEvent('fabrik.list.update', [this, json]);
 			}.bind(this),
