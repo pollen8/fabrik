@@ -197,7 +197,7 @@ var FabrikComment = new Class({
 			return i.checked;
 		});
 
-		this.ajax.addComment.options.data.notify = notify[0].get('value');
+		this.ajax.addComment.options.data.notify = notify.length > 0 ? notify[0].get('value') : '0';
 
 		var email = replyform.getElement('input[name=email]');
 		if (email) {

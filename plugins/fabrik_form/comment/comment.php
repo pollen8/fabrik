@@ -205,7 +205,7 @@ class PlgFabrik_FormComment extends PlgFabrik_Form
 		$layoutData->commnents = $this->writeComments($params, $comments);
 		$layoutData->commentsLocked = $this->commentsLocked;
 		$layoutData->anonymous = $params->get('comment-internal-anonymous');
-		$layoutData->userLoggedIn = $this->user->get('id') == 0;
+		$layoutData->userLoggedIn = $this->user->get('id') != 0;
 		$layoutData->form = $this->getAddCommentForm(0, true);
 
 		if ($this->doThumbs())
