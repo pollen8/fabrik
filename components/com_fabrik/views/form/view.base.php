@@ -387,6 +387,10 @@ class FabrikViewFormBase extends FabrikView
 				$this->emailLink = FabrikHelperHTML::emailIcon($model, $params);
 				$this->emailURL  = FabrikHelperHTML::emailURL($model);
 			}
+		}
+		//Also in popup window create first a printURL ..&tmpl=component&iframe=1&print=1...
+		if ($input->get('print',0) != 1)
+		{
 
 			if ($this->showPrint)
 			{
