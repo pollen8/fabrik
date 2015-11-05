@@ -27,7 +27,7 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 	 *
 	 * @var string
 	 */
-	protected $buttonPrefix = 'envelope';
+	protected $buttonPrefix = 'email';
 
 	/**
 	 * SMS gateway instance

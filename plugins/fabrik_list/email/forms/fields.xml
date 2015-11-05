@@ -20,7 +20,15 @@
 				repeat="true"
 				size="30"
 			/>
-			
+
+			<field name="list_email_image_name"
+				type="text"
+				default="envelope"
+				description="PLG_LIST_EMAIL_IMAGE_DESC"
+				label="PLG_LIST_EMAIL_IMAGE_LABEL"
+				repeat="true" size="20"
+			/>
+							
 			<field name="emailtable_condition"
 				type="fabrikeditor"
 				description="PLG_LIST_EMAIL_CONDITION_DESC"
