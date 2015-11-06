@@ -46,6 +46,26 @@ class PlgSystemFabrikcron extends JPlugin
 	}
 
 	/**
+	 * Catch any fatal errors and log them
+	 */
+	public function shutdownHandler()
+	{
+		$id = $this->runningId;
+		if (@is_array($e = @error_get_last())) {
+			$code = isset($e['type']) ? $e['type'] : 0;
+			$msg = isset($e['message']) ? $e['message'] : '';
+			$file = isset($e['file']) ? $e['file'] : '';
+			$line = isset($e['line']) ? $e['line'] : '';
+			if ($code>0) {
+				$this->log->message = "$code,$msg,$file,$line";
+				$this->log->store();
+			}
+		}
+
+	}
+
+
+	/**
 	 * Run all active cron jobs
 	 *
 	 * @return void
@@ -71,7 +91,7 @@ class PlgSystemFabrikcron extends JPlugin
 		$db = FabrikWorker::getDbo(true);
 		$now = $input->get('fabrikcron_run', false);
 
-		$log = FabTable::getInstance('Log', 'FabrikTable');
+		$this->log = FabTable::getInstance('Log', 'FabrikTable');
 
 		if (!$now)
 		{
@@ -104,7 +124,7 @@ class PlgSystemFabrikcron extends JPlugin
 			return;
 		}
 
-		$log->message = '';
+		$this->log->message = '';
 
 		$ids = array();
 		foreach ($rows as $row)
@@ -122,11 +142,11 @@ class PlgSystemFabrikcron extends JPlugin
 			$plugin = $pluginManager->getPluginFromId($row->id, 'Cron');
 
 			$params = $plugin->getParams();
-			$log->message = '';
-			$log->id = null;
-			$log->referring_url = '';
+			$this->log->message = '';
+			$this->log->id = null;
+			$this->log->referring_url = '';
 
-			$log->message_type = 'plg.cron.' . $row->plugin;
+			$this->log->message_type = 'plg.cron.' . $row->plugin;
 			if (!$plugin->queryStringActivated())
 			{
 				// $$$ hugh - don't forget to make it runnable again before continuing
@@ -141,22 +161,23 @@ class PlgSystemFabrikcron extends JPlugin
 			if ($tid !== 0)
 			{
 				$thisListModel->setId($tid);
-				$log->message .= "\n\n$row->plugin\n listid = " . $thisListModel->getId();
+				$this->log->message .= "\n\n$row->plugin\n listid = " . $thisListModel->getId();
 				if ($plugin->requiresTableData())
 				{
 					$table = $thisListModel->getTable();
 					$total = $thisListModel->getTotalRecords();
 					$nav = $thisListModel->getPagination($total, 0, $total);
 					$data = $thisListModel->getData();
-					$log->message .= "\n" . $thisListModel->buildQuery();
+					$this->log->message .= "\n" . $thisListModel->buildQuery();
 				}
 			}
 			else
 			{
 				$data = array();
 			}
+
 			$res = $plugin->process($data, $thisListModel);
-			$log->message = $plugin->getLog() . "\n\n" . $log->message;
+			$this->log->message = $plugin->getLog() . "\n\n" . $this->log->message;
 			$now = JFactory::getDate();
 			$now = $now->toUnix();
 			$new = JFactory::getDate($row->nextrun);
@@ -199,7 +220,7 @@ class PlgSystemFabrikcron extends JPlugin
 			// Log if asked for
 			if ($params->get('log', 0) == 1)
 			{
-				$log->store();
+				$this->log->store();
 			}
 
 			// Email log message
@@ -207,7 +228,7 @@ class PlgSystemFabrikcron extends JPlugin
 			if (!FArrayHelper::emptyish($recipient))
 			{
 				$subject = $config->get('sitename') . ': ' . $row->plugin . ' scheduled task';
-				$mailer->sendMail($config->get('mailfrom'), $config->get('fromname'), $recipient, $subject, $log->message, true);
+				$mailer->sendMail($config->get('mailfrom'), $config->get('fromname'), $recipient, $subject, $this->log->message, true);
 			}
 		}
 	}
