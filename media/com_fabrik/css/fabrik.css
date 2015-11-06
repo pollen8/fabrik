@@ -699,3 +699,9 @@ form.fabrikForm label.radio {
 	margin-top:15px;
 }
 }
+
+/** Fix for some templates without input-append, like Purity III */
+
+.input-append input, .input-append select {
+	display: inline-block;
+}
