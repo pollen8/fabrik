@@ -166,7 +166,14 @@ class PlgFabrik_ElementTags extends PlgFabrik_ElementDatabasejoin
 				$where = '';
 			}
 			*/
-			$where = $fk . ' = ' . $db->quote($rowId);
+			if (FArrayHelper::getValue($opts, 'mode', '') !== 'filter')
+			{
+				$where = $fk . ' = ' . $db->quote($rowId);
+			}
+			else
+			{
+				$where = '';
+			}
 		}
 
 		$params->set('database_join_where_sql',  $where);
