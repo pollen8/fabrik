@@ -2014,7 +2014,7 @@ EOD;
 	 *
 	 * @return string
 	 */
-	protected static function propertiesFromArray($properties)
+	public static function propertiesFromArray($properties)
 	{
 		$bits = array();
 		$p    = '';

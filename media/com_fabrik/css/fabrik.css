@@ -705,3 +705,11 @@ form.fabrikForm label.radio {
 .input-append input, .input-append select {
 	display: inline-block;
 }
+
+/** Prevent line breaks between sort icon and heading label in lists */
+
+.heading.fabrik_ordercell {
+	white-space: nowrap;
+}
+
+} 
