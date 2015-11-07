@@ -694,7 +694,7 @@ class FabrikViewFormBase extends FabrikView
 		$imgs->action_check = FabrikHelperHTML::image('action_check.png', 'form', $this->tmpl, '', true);
 
 		$imgs->ajax_loader = FabrikHelperHTML::image('ajax-loader.gif', 'form', $this->tmpl, '', true);
-		$imgs->ajax_loader = FabrikHelperHTML::icon('icon-spinner icon-spin');
+		//$imgs->ajax_loader = FabrikHelperHTML::icon('icon-spinner icon-spin');
 		$opts->images      = $imgs;
 
 		// $$$rob if you are loading a list in a window from a form db join select record option
