@@ -728,7 +728,7 @@ class FabrikPlugin extends JPlugin
 			if ($cid !== 0)
 			{
 				$query = $db->getQuery(true);
-				$query->select('id, label')->from('#__{package}_lists')->where('connection_id = ' . $cid)->order('label ASC');
+				$query->select('id, label')->from('#__{package}_lists')->where('connection_id = ' . $cid)->where('published <> -2')->order('label ASC');
 				$db->setQuery($query);
 				$rows = $db->loadObjectList();
 			}
