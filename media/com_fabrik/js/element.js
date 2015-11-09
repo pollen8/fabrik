@@ -93,7 +93,7 @@ var FbElement =  new Class({
 			this.successImage = new Asset.image(this.form.options.images.action_check);
 		}
 
-		if (this.form.options.images.ajax_loader.contains('<i')) {
+		if (jQuery(this.form.options.images.ajax_loader).data('isicon')) {
 			this.loadingImage = new Element('span').set('html', this.form.options.images.ajax_loader);
 		} else {
 			this.loadingImage = new Asset.image(this.form.options.images.ajax_loader);
