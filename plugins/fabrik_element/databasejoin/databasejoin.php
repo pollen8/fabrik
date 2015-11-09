@@ -1720,7 +1720,6 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		$name = $this->getHTMLName($repeatCounter);
 		$params = $this->getParams();
 
-		$html[] = '<div class="fabrikSubElementContainer" id="' . $id . '">';
 		$attributes = 'class="fabrikinput inputbox" id="' . $id . '"';
 
 		$name = FabrikString::rtrimword($name, '[]');
