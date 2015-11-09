@@ -387,6 +387,10 @@ class FabrikViewFormBase extends FabrikView
 				$this->emailLink = FabrikHelperHTML::emailIcon($model, $params);
 				$this->emailURL  = FabrikHelperHTML::emailURL($model);
 			}
+		}
+		//Also in popup window create first a printURL ..&tmpl=component&iframe=1&print=1...
+		if ($input->get('print',0) != 1)
+		{
 
 			if ($this->showPrint)
 			{
@@ -690,7 +694,7 @@ class FabrikViewFormBase extends FabrikView
 		$imgs->action_check = FabrikHelperHTML::image('action_check.png', 'form', $this->tmpl, '', true);
 
 		$imgs->ajax_loader = FabrikHelperHTML::image('ajax-loader.gif', 'form', $this->tmpl, '', true);
-		$imgs->ajax_loader = FabrikHelperHTML::icon('icon-spinner icon-spin');
+		//$imgs->ajax_loader = FabrikHelperHTML::icon('icon-spinner icon-spin');
 		$opts->images      = $imgs;
 
 		// $$$rob if you are loading a list in a window from a form db join select record option

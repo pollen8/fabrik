@@ -6438,11 +6438,29 @@ class FabrikFEModelList extends JModelForm
 						{
 							$orderDir = FArrayHelper::getValue($orderDirs, $ix, '');
 						}
+						else
+						{
+							// nothing set, make an executive decision!
+							$orderDir = '';
+						}
 					}
 
-					$class = '';
-					$tmpl = $this->getTmpl();
+					$displayData = new stdClass;
+					$displayData->tmpl = $this->getTmpl();
+					$displayData->orderDir = $orderDir;
+					$displayData->class = '';
+					$displayData->key = $key;
+					$displayData->orderBys = $orderBys;
+					$displayData->item = $item;
+					$displayData->elementParams = $elementParams;
+					$displayData->label = $label;
+					$layout = FabrikHelperHTML::getLayout('list.fabrik-order-heading');
+					$heading = $layout->render($displayData);
 
+					/*
+					$class = '';
+					return $layout->render($displayData);
+					}
 					switch ($orderDir)
 					{
 						case 'desc':
@@ -6477,13 +6495,14 @@ class FabrikFEModelList extends JModelForm
 
 					if ($elementParams->get('can_order', false))
 					{
-						$heading = '<a ' . $class . ' href="#">' . $img . $label . '</a>';
+						$heading = '<a ' . $displayData->class . ' href="#">' . $img . $label . '</a>';
 					}
 					else
 					{
 						$img = $orderDir === 'asc' ? '' : $img;
 						$heading = $img . $label;
 					}
+					*/
 				}
 				else
 				{

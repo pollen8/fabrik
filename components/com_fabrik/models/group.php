@@ -1060,12 +1060,12 @@ class FabrikFEModelGroup extends FabModel
 		$property = $view === 'form' ? 'labels_above' : 'labels_above_details';
 		$params = $this->getParams();
 
-		$position = (int) $params->get($property, 0);
+		$position = (int) $params->get($property, -1);
 
 		if ($position === -1)
 		{
 			$formParams = $this->getFormModel()->getParams();
-			$position = (int) $formParams->get($property. 0);
+			$position = (int) $formParams->get($property, 0);
 		}
 
 		return $position;

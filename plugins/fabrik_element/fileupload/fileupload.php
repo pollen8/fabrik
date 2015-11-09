@@ -2054,16 +2054,17 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		// $$$ rob - explode as it may be grouped data (if element is a repeating upload)
 		$values = is_array($value) ? $value : FabrikWorker::JSONtoData($value, true);
 
+		// Failed validations - format different!
+		if (array_key_exists('id', $values))
+		{
+			$values = array_keys($values['id']);
+		}
+
 		if (!$this->isEditable() && ($use_download_script == FU_DOWNLOAD_SCRIPT_DETAIL || $use_download_script == FU_DOWNLOAD_SCRIPT_BOTH))
 		{
 			$links = array();
 
-			if (!is_array($value))
-			{
-				$value = (array) $value;
-			}
-
-			foreach ($value as $v)
+			foreach ($values as $v)
 			{
 				$links[] = $this->downloadLink($v, $data, $repeatCounter);
 			}
@@ -2080,12 +2081,6 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		 */
 		if ($params->get('fu_show_image') === '3' && !$this->isEditable())
 		{
-			// Failed validations - format different!
-			if (array_key_exists('id', $values))
-			{
-				$values = array_keys($values['id']);
-			}
-
 			$rendered = $this->buildCarousel($id, $values, $params, $data);
 
 			return $rendered;
@@ -2093,33 +2088,26 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 
 		if (($params->get('fu_show_image') !== '0' && !$params->get('ajax_upload')) || !$this->isEditable())
 		{
-			// Failed validations - format different!
-			if (array_key_exists('id', $values))
+			foreach ($values as $v)
 			{
-				$values = array_keys($values['id']);
-			}
-
-			// End failed validations
-			foreach ($values as $value)
-			{
-				if (is_object($value))
+				if (is_object($v))
 				{
-					$value = $value->file;
+					$v = $v->file;
 				}
 
-				$render = $this->loadElement($value);
+				$render = $this->loadElement($v);
 
 				if (
 					($use_wip && $this->isEditable())
 					|| (
-						$value != ''
+						$v != ''
 						&& (
-							$storage->exists(COM_FABRIK_BASE . $value)
-							|| JString::substr($value, 0, 4) == 'http')
+							$storage->exists(COM_FABRIK_BASE . $v)
+							|| JString::substr($v, 0, 4) == 'http')
 						)
 					)
 				{
-					$render->render($this, $params, $value);
+					$render->render($this, $params, $v);
 				}
 
 				if ($render->output != '')
@@ -2127,13 +2115,13 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 					if ($this->isEditable())
 					{
 						// $$$ hugh - TESTING - using HTML5 to show a selected image, so if no file, still need the span, hidden, but not the actual delete button
-						if ($use_wip && empty($value))
+						if ($use_wip && empty($v))
 						{
 							$render->output = '<span class="fabrikUploadDelete fabrikHide" id="' . $id . '_delete_span">' . $render->output . '</span>';
 						}
 						else
 						{
-							$render->output = '<span class="fabrikUploadDelete" id="' . $id . '_delete_span">' . $this->deleteButton($value, $repeatCounter) . $render->output . '</span>';
+							$render->output = '<span class="fabrikUploadDelete" id="' . $id . '_delete_span">' . $this->deleteButton($v, $repeatCounter) . $render->output . '</span>';
 						}
 
 						/*
@@ -2142,6 +2130,37 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 							$render->output .= '<video id="' . $id . '_video_preview" controls></video>';
 						}
 						*/
+					}
+
+					$allRenders[] = $render->output;
+				}
+			}
+		}
+
+		// if show images is off, still want to render a filename when editable, so they know a file has been uploaded
+		if (($params->get('fu_show_image') == '0' && !$params->get('ajax_upload')) && $this->isEditable())
+		{
+			foreach ($values as $v)
+			{
+				if (is_object($v))
+				{
+					$v = $v->file;
+				}
+
+				$render = $this->loadElement($v);
+				$render->render($this, $params, $v);
+
+
+				if ($render->output != '')
+				{
+					// $$$ hugh - TESTING - using HTML5 to show a selected image, so if no file, still need the span, hidden, but not the actual delete button
+					if ($use_wip && empty($v))
+					{
+						$render->output = '<span class="fabrikUploadDelete fabrikHide" id="' . $id . '_delete_span">' . $render->output . '</span>';
+					}
+					else
+					{
+						$render->output = '<span class="fabrikUploadDelete" id="' . $id . '_delete_span">' . $this->deleteButton($v, $repeatCounter) . $render->output . '</span>';
 					}
 
 					$allRenders[] = $render->output;

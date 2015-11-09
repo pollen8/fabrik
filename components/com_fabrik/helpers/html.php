@@ -2014,7 +2014,7 @@ EOD;
 	 *
 	 * @return string
 	 */
-	protected static function propertiesFromArray($properties)
+	public static function propertiesFromArray($properties)
 	{
 		$bits = array();
 		$p    = '';
@@ -2169,36 +2169,15 @@ EOD;
 	 */
 	public static function bootstrapGrid($items, $columns, $spanClass = '', $explode = false)
 	{
-		// @TODO jLayout this
-		$span = floor(12 / $columns);
-		$i    = 0;
-		$grid = array();
+		$layout      = self::getLayout('fabrik-bootstrap-grid');
+		$displayData = new stdClass;
+		$displayData->items = $items;
+		$displayData->columns = $columns;
+		$displayData->spanClass = $spanClass;
+		$displayData->explode = $explode;
 
-		foreach ($items as $i => $s)
-		{
-			$endLine = ($i !== 0 && (($i) % $columns == 0));
-			$newLine = ($i % $columns == 0);
-
-			if ($endLine)
-			{
-				$grid[] = '</div><!-- grid close row -->';
-			}
-
-			if ($newLine)
-			{
-				$grid[] = '<div class="row-fluid">';
-			}
-
-			$grid[] = '<div class="' . $spanClass . ' span' . $span . '">' . $s . '</div>';
-		}
-
-		if (!empty($items))
-		{
-			// Close opened row, last row-fluid is always open if there's data
-			$grid[] = '</div><!-- grid close end row -->';
-		}
-
-		return $explode ? implode('', $grid) : $grid;
+		$grid = $layout->render($displayData);
+		return $explode ? $grid : explode("\n", $grid);
 	}
 
 	/**

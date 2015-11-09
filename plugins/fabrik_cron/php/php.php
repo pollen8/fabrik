@@ -59,6 +59,7 @@ class PlgFabrik_Cronphp extends PlgFabrik_Cron
 		if (JFile::exists($file))
 		{
 			require_once $file;
+
 		}
 
 		if (isset($processed))

@@ -867,15 +867,10 @@ class FabrikWorker
 		$token   = $session->get('session.token');
 		$lang    = JFactory::getLanguage()->getTag();
 		$lang    = str_replace('-', '_', $lang);
+		$shortlang = explode('_', $lang);
+		$shortlang = $shortlang[0];
 
-		// Deprecated the mosConfig values - use the jConfig ones instead
 		$replacements = array(
-			'{$mosConfig_absolute_path}' => JPATH_SITE,
-			'{$mosConfig_live_site}' => COM_FABRIK_LIVESITE,
-			'{$mosConfig_offset}' => $config->get('offset'),
-			'{$mosConfig_sitename}' => $config->get('sitename'),
-			'{$mosConfig_mailfrom}' => $config->get('mailfrom'),
-			'{$mosConfig_secret}' => $config->get('secret'),
 			'{$jConfig_absolute_path}' => JPATH_SITE,
 			'{$jConfig_live_site}' => COM_FABRIK_LIVESITE,
 			'{$jConfig_offset}' => $config->get('offset'),
@@ -887,6 +882,7 @@ class FabrikWorker
 			'{date}' => date('Ymd'),
 			'{mysql_date}' => date('Y-m-d H:i:s'),
 			'{lang}' => $lang,
+			'{shortlang}' => $shortlang,
 			'{session.token}' => $token,
 		);
 
