@@ -227,7 +227,6 @@ class FabrikPlugin extends JPlugin
 			return;
 		}
 
-		$output[] = '<div class="row-fluid">';
 		$tabs = array();
 		$i = 0;
 
@@ -238,10 +237,9 @@ class FabrikPlugin extends JPlugin
 				continue;
 			}
 
-			$id    = 'tab-' . $fieldset->name;
-			$id .= '-' . $repeatCounter;
 			$tab = new stdClass;
-			$tab->id = $id;
+			$tab->href = 'tab-' . $fieldset->name . '-' . $repeatCounter;
+			$tab->id = 'tab-' . $fieldset->name;
 			$tab->class = $i === 0 ? 'active' : '';
 			$tab->label = $fieldset->label;
 			$tabs[] = $tab;
@@ -252,7 +250,6 @@ class FabrikPlugin extends JPlugin
 		$displayData->tabs = $tabs;
 		$layout = FabrikHelperHTML::getLayout('fabrik-tabs');
 		$output[] = $layout->render($displayData);
-		$output[] = '</div>';
 	}
 
 	/**
@@ -400,7 +397,7 @@ class FabrikPlugin extends JPlugin
 			if ($mode === 'nav-tabs')
 			{
 				$tabClass = $c === 0 ? ' active' : '';
-				$str[]    = '<div class="tab-pane' . $tabClass . '" id="tab-' . $fieldset->name . '-' . $repeatCounter . '">';
+				$str[]    = '<div role="tabpanel" class="tab-pane' . $tabClass . '" id="tab-' . $fieldset->name . '-' . $repeatCounter . '">';
 			}
 
 			$class = $j3 ? 'form-horizontal ' : 'adminform ';
