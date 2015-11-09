@@ -243,6 +243,8 @@ class FabrikPlugin extends JPlugin
 			$tab = new stdClass;
 			$tab->id = $id;
 			$tab->class = $i === 0 ? 'active' : '';
+			$tab->label = $fieldset->label;
+			$tabs[] = $tab;
 			$i ++;
 		}
 
@@ -250,7 +252,6 @@ class FabrikPlugin extends JPlugin
 		$displayData->tabs = $tabs;
 		$layout = FabrikHelperHTML::getLayout('fabrik-tabs');
 		$output[] = $layout->render($displayData);
-
 		$output[] = '</div>';
 	}
 
