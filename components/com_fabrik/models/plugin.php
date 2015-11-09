@@ -228,8 +228,8 @@ class FabrikPlugin extends JPlugin
 		}
 
 		$output[] = '<div class="row-fluid">';
-		$output[] = '<ul class="nav nav-tabs">';
-		$i        = 0;
+		$tabs = array();
+		$i = 0;
 
 		foreach ($fieldsets as $fieldset)
 		{
@@ -238,18 +238,19 @@ class FabrikPlugin extends JPlugin
 				continue;
 			}
 
-			$class = $i === 0 ? ' class="active"' : '';
 			$id    = 'tab-' . $fieldset->name;
 			$id .= '-' . $repeatCounter;
-			$output[] = '<li' . $class . '>
-				<a data-toggle="tab" href="#' . $id . '">
-					' . FText::_($fieldset->label) . '
-						</a>
-		    </li>';
-			$i++;
+			$tab = new stdClass;
+			$tab->id = $id;
+			$tab->class = $i === 0 ? 'active' : '';
+			$i ++;
 		}
 
-		$output[] = '</ul>';
+		$displayData = new stdClass;
+		$displayData->tabs = $tabs;
+		$layout = FabrikHelperHTML::getLayout('fabrik-tabs');
+		$output[] = $layout->render($displayData);
+
 		$output[] = '</div>';
 	}
 

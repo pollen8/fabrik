@@ -11531,24 +11531,26 @@ class FabrikFEModelList extends JModelForm
 
 			if (is_null($range))
 			{
-				$row->url = $urlBase;
+				$row->href = $urlBase;
 			}
 			elseif (!is_array($range))
 			{
-				$row->url = sprintf($urlEquals, $range);
+				$row->href = sprintf($urlEquals, $range);
 			}
 			else
 			{
 				list($low, $high) = $range;
-				$row->url = sprintf($urlEquals, sprintf($urlRange, $low, $high));
+				$row->href = sprintf($urlEquals, sprintf($urlRange, $low, $high));
 			}
 
 			if ($itemId)
 			{
-				$row->url .= '&Itemid=' . $itemId;
+				$row->href .= '&Itemid=' . $itemId;
 			}
 
-			$row->class = ($thisUri == $row->url) ? 'class="active"' : '';
+			$row->id = 'list_tabs_' . $this->getId() . '_' . $i;
+			$row->js = false;
+			$row->class = ($thisUri == $row->href) ? 'active' : '';
 			$this->tabs[] = $row;
 		}
 
