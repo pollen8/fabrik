@@ -1068,6 +1068,7 @@ class FabrikFEModelList extends JModelForm
 			 * where things like plugin bubble templates use placeholders for elements not shown in the list.
 			 */
 			$alwaysRenderElements = $this->getAlwaysRenderElements(true);
+			$showInList = $this->showInList();
 			$elementModels = $groupModel->getPublishedListElements();
 			$elementModels = array_merge($elementModels, $alwaysRenderElements);
 		}
