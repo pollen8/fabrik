@@ -1453,6 +1453,33 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 	}
 
 	/**
+	 * Override for main model getFilterRO to handle search all corner case
+	 *
+	 * @param   mixed  $data  String or array of filter value(s)
+	 *
+	 * @since   3.0.7
+	 *
+	 * @return  string
+	 */
+	public function getFilterRO($data)
+	{
+		/**
+		 * This rather fugly chunk of code is needed to handle 'search all', where the filter data has already
+		 * been converted into textual AND format.
+		 */
+		if (strstr(FArrayHelper::getValue($data, $this->getFullName(true, false), ''), ' AND '))
+		{
+			foreach (explode(' AND ', FArrayHelper::getValue($data, $this->getFullName(true, false), array())) as $d) {
+				$return[] = $this->getROElement(trim($d,"'"));
+			}
+
+			return FText::_('COM_FABRIK_BETWEEN') . '<br />' . implode('<br />' . FText::_('COM_FABRIK_AND') . "<br />", $return);
+		}
+
+		return parent::getFilterRO($data);
+	}
+
+	/**
 	 * Build the HTML for the auto-complete filter
 	 *
 	 * @param   string $default    Label
