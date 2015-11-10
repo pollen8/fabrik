@@ -944,7 +944,7 @@ class PlgFabrik_Element extends FabrikPlugin
 	 *
 	 * @return  bool can use or not
 	 */
-	public function canUse($location = null, $event = null)
+	public function canUse($location = 'form', $event = null)
 	{
 		// Odd! even though defined in initialize() for confirmation plugin access was not set.
 		if (!isset($this->access))
@@ -978,6 +978,38 @@ class PlgFabrik_Element extends FabrikPlugin
 
 				$groups = $this->user->getAuthorisedViewLevels();
 				$this->access->use = in_array($viewLevel, $groups);
+
+				// Override with check on lookup element's value = logged in user id.
+				$params = $this->getParams();
+
+				if (!$this->access->use && $params->get('edit_access_user', '') !== '' && $location == 'form')
+				{
+					$formModel = $this->getFormModel();
+					$data = $formModel->getData();
+
+					if (!empty($data) &&  $this->user->get('id') !== 0)
+					{
+						$lookUpId = $params->get('edit_access_user', '');
+						$lookUp = $formModel->getElement($lookUpId, true);
+
+						// Could be  a linked parent element in which case the form doesn't contain the element whose id is $lookUpId
+						if (!$lookUp)
+						{
+							$lookUp = FabrikWorker::getPluginManager()->getElementPlugin($lookUpId);
+						}
+
+						if ($lookUp)
+						{
+							$fullName = $lookUp->getFullName(true, true);
+							$value = (array) $formModel->getElementData($fullName, true);
+							$this->access->use = in_array($this->user->get('id'), $value);
+						}
+						else
+						{
+							FabrikWorker::logError('Did not load element ' . $lookUpId . ' for element::canUse()', 'error');
+						}
+					}
+				}
 			}
 		}
 
