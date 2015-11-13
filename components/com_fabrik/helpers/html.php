@@ -1042,6 +1042,8 @@ EOD;
 			$deps->deps[] = 'fab/lib/flexiejs/flexie' . $ext;
 		}
 
+		$deps->deps[] = 'jquery';
+
 		$deps->deps[] = 'fab/mootools-ext' . $ext;
 		$deps->deps[] = 'fab/lib/Event.mock';
 
@@ -1074,8 +1076,17 @@ EOD;
 			$pathBits[] = "\n\t\t$reqK : '$repPath'";
 		}
 
+		//$pathBits[] = "\n\t\tjquery: 'media/com_fabrik/js/dummy-jquery'";
+		//$pathBits[] = "\n\t\tjquery: 'media/jui/js/jquery'";
+
 		$pathString = '{' . implode(',', $pathBits) . '}';
 		$config     = array();
+
+		$config[] = "define('jquery', [], function() {
+		console.log('require js define jquery as ', jQuery);
+			return jQuery;
+		});";
+
 		$config[]   = "requirejs.config({";
 		$config[]   = "\tbaseUrl: '" . $requirejsBaseURI . "',";
 		$config[]   = "\tpaths: " . $pathString . ",";
