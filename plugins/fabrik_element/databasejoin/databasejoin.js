@@ -128,6 +128,39 @@ var FbDatabasejoin = new Class({
 		}
 		return this.parent();
 	},
+	
+	/**
+	 * Removes an option from the db join element
+	 * 
+	 * @param {string} v Option value
+	 * @return  void
+	 */
+	removeOption: function (v, sel)
+	{
+		var el = document.id(this.element.id);
+		switch (this.options.displayType) {
+		case 'dropdown':
+		/* falls through */
+		case 'multilist':
+			var sel = typeOf(this.options.value) === 'array' ? this.options.value : Array.from(this.options.value);
+			options = el.options;
+			for (i=0; i < options.length; i++) {
+				if (options[i].value === v) {
+					el.remove(i);
+					if (sel) {
+						el.selectedIndex = 0;
+					}
+					if (this.options.advanced)
+					{
+						jQuery("#" + this.element.id).trigger("liszt:updated");
+					}
+					break;
+				}
+			}
+			break;
+		}
+	},
+
 
 	/**
 	 * Adds an option to the db join element, for drop-downs and radio buttons
@@ -246,6 +279,7 @@ var FbDatabasejoin = new Class({
 	 */
 	updateFromServer: function (v)
 	{
+		var formdata = this.form.getFormElementData();
 		var data = {
 				'option': 'com_fabrik',
 				'format': 'raw',
@@ -255,6 +289,8 @@ var FbDatabasejoin = new Class({
 				'element_id': this.options.id,
 				'formid': this.options.formid
 			};
+		data = Object.append(formdata, data);
+
 		// $$$ hugh - don't think we need to fetch values if auto-complete
 		// and v is empty, otherwise we'll just fetch every row in the target table,
 		// and do thing with it in onComplete?
@@ -271,20 +307,36 @@ var FbDatabasejoin = new Class({
 			method: 'post',
 			'data': data,
 			onSuccess: function (json) {
-				var sel, existingValues = this.getOptionValues();
+				var sel, changed = false, existingValues = this.getOptionValues();
 
 				// If duplicating an element in a repeat group when its auto-complete we dont want to update its value
 				if (this.options.displayType === 'auto-complete' && v === '' && existingValues.length === 0) {
 					return;
 				}
+				
+				jsonValues = [];
 				json.each(function (o) {
+					jsonValues.push(o.value);
 					if (!existingValues.contains(o.value) && typeOf(o.value) !== 'null') {
 						sel = this.options.value === o.value;
 						this.addOption(o.value, o.text, sel);
-						this.element.fireEvent('change', new Event.Mock(this.element, 'change'));
-						this.element.fireEvent('blur', new Event.Mock(this.element, 'blur'));
+						changed = true;
 					}
 				}.bind(this));
+				
+				existingValues.each(function (ev) {
+					if (!jsonValues.contains(ev)) {
+						sel = this.options.value === ev;
+						this.removeOption(ev, sel);
+						changed = true;
+					}
+				}.bind(this));
+				
+				if (changed) {
+					this.element.fireEvent('change', new Event.Mock(this.element, 'change'));
+					this.element.fireEvent('blur', new Event.Mock(this.element, 'blur'));
+				}
+				
 				this.activePopUp = false;
 			}.bind(this)
 		}).post();
