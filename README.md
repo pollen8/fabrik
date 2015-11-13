@@ -3,6 +3,8 @@ Fabrik is the Joomla application builder
 Installation
 ================
 
+[![Join the chat at https://gitter.im/Fabrik/fabrik](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/Fabrik/fabrik?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 - Check out the files into your Joomla installations root directory
 - Log into your Joomla administration control panel
 - Go to Extensions > Extension Manager
