@@ -23,6 +23,12 @@ var FbField = new Class({
 		 * http://digitalbush.com/projects/masked-input-plugin/
 		 */
 		if (this.options.use_input_mask) {
+			if (this.options.input_mask_definitions !== '') {
+				var definitions = JSON.parse(this.options.input_mask_definitions);
+				$H(definitions).each(function (v, k) {
+					jQuery.mask.definitions[k] = v;
+				});
+			}
 			jQuery('#' + element).mask(this.options.input_mask);
 		}
 		if (this.options.geocomplete) {
@@ -56,6 +62,12 @@ var FbField = new Class({
 		if (this.options.use_input_mask) {
 			var element = this.getElement();
 			if (element) {
+				if (this.options.input_mask_definitions !== '') {
+					var definitions = JSON.parse(this.options.input_mask_definitions);
+					$H(definitions).each(function (v, k) {
+						jQuery.mask.definitions[k] = v;
+					});
+				}
 				jQuery('#' + element.id).mask(this.options.input_mask);
 			}
 		}
