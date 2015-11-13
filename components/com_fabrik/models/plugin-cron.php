@@ -95,6 +95,30 @@ class PlgFabrik_Cron extends FabrikPlugin
 			return true;
 		}
 
-		return $this->app->input->getInt('fabrik_cron', 0);
+		// check to see if a specific keyword is needed to run this plugin
+		if ($secret = $params->get('require_qs_secret', ''))
+		{
+			return $this->app->input->getString('fabrik_cron', '') === $secret;
+		}
+		else
+		{
+			return $this->app->input->getInt('fabrik_cron', 0) === 1;
+		}
+	}
+
+	/**
+	 * Only applicable to cron plugins but as there's no sub class for them
+	 * the methods here for now
+	 *
+	 * Check if we should do run gating for this cron job, whereby we set the task to unpublished
+	 * until it has finished running, to prevent multiple copies running.
+	 *
+	 * @return  bool
+	 */
+	public function doRunGating()
+	{
+		$params = $this->getParams();
+
+		return $params->get('cron_rungate', '0') === '1';
 	}
 }

@@ -101,6 +101,22 @@
 				<option value="0">JNO</option>
 				<option value="1">JYES</option>
 			</field>
+			
+			<field name="require_qs_secret"
+				type="field"
+				default=""
+				description="COM_FABRIK_CRON_FIELD_REQUIRE_QS_SECRET_DESC"
+				label="COM_FABRIK_CRON_FIELD_REQUIRE_QS_SECRET_LABEL" />
+			
+			<field name="cron_rungate"
+				type="radio"
+				class="btn-group"
+				default="0"
+				description="COM_FABRIK_CRON_FIELD_RUNGATE_DESC"
+				label="COM_FABRIK_CRON_FIELD_RUNGATE_LABEL">
+				<option value="0">JNO</option>
+				<option value="1">JYES</option>
+			</field>
 
 		</fieldset>
 
