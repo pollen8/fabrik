@@ -32,7 +32,7 @@ foreach ($d->items as $i => $s)
 	$grid[] = '<div class="' . $d->spanClass . ' span' . $span . '">' . $s . '</div>';
 }
 
-if (!empty($items))
+if (!empty($d->items))
 {
 	// Close opened row, last row-fluid is always open if there's data
 	$grid[] = '</div><!-- grid close end row -->';
