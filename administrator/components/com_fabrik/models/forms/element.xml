@@ -24,6 +24,7 @@
 		<field name="plugin"
 			type="pluginlist"
 			plugin="fabrik_element"
+			   default="field"
 			description="COM_FABRIK_FIELD_ELEMENT_PLUGIN_DESC"
 			label="COM_FABRIK_FIELD_ELEMENT_PLUGIN_LABEL"
 			required="true" />
@@ -652,7 +653,7 @@
 						type="listfields"
 						label="COM_FABRIK_OR_USE_VALUE_LABEL"
 						description="COM_FABRIK_EDIT_OR_USE_VALUE_DESC" />
-						
+
 					<field name="view_access"
 						type="accesslevel"
 						default="1"
