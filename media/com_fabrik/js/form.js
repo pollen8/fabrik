@@ -404,6 +404,88 @@ var FbForm = new Class({
 		fx.lastMethod = method;
 		Fabrik.fireEvent('fabrik.form.doelementfx', [this]);
 	},
+	
+	/**
+	 * Get a group's tab, if it exists
+	 * 
+	 * These tab funcions are currently just helpers for user scripts
+	 * 
+	 * @param groupId
+	 * 
+	 * @return tab | false
+	 */
+	getGroupTab: function(groupid) {
+		if (document.id('group' + groupid).getParent().hasClass('tab-pane')) {
+			var tabid = document.id('group' + groupid).getParent().id;
+			var tab_anchor = this.form.getElement('a[href=#' + tabid + ']');
+			return tab_anchor.getParent();
+		}
+		return false;
+	},
+	
+	/**
+	 * Get a group's tab, if it exists
+	 * 
+	 * These tab funcions are currently just helpers for user scripts
+	 * 
+	 * @param groupId
+	 * 
+	 * @return tab | false
+	 */
+	getGroupTab: function(groupid) {
+		if (document.id('group' + groupid).getParent().hasClass('tab-pane')) {
+			var tabid = document.id('group' + groupid).getParent().id;
+			var tab_anchor = this.form.getElement('a[href=#' + tabid + ']');
+			return tab_anchor.getParent();
+		}
+		return false;
+	},
+	
+	/**
+	 * Hide a group's tab, if it exists
+	 * 
+	 * @param groupId
+	 */
+	hideGroupTab: function(groupid) {
+		var tab = this.getGroupTab(groupid);
+		if (tab !== false) {
+			tab.hide();
+			if (tab.hasClass('active')) {
+				if (tab.getPrevious()) {
+					jQuery(tab.getPrevious().getFirst()).tab('show');
+				}
+				else if (tab.getNext()) {
+					jQuery(tab.getNext().getFirst()).tab('show');
+				}
+			}
+		}
+	},
+
+	/**
+	 * Hide a group's tab, if it exists
+	 * 
+	 * @param groupId
+	 */
+	selectGroupTab: function(groupid) {
+		var tab = this.getGroupTab(groupid);
+		if (tab !== false) {
+			if (!tab.hasClass('active')) {
+				jQuery(tab.getFirst()).tab('show');
+			}
+		}	
+	},
+	
+	/**
+	 * Hide a group's tab, if it exists
+	 * 
+	 * @param groupId
+	 */
+	showGroupTab: function(groupid) {
+		var tab = this.getGroupTab(groupid);
+		if (tab !== false) {
+			tab.show();
+		}
+	},
 
 	watchClearSession: function () {
 		if (this.form && this.form.getElement('.clearSession')) {
