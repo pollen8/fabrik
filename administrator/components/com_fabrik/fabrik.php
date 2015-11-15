@@ -34,11 +34,6 @@ $input = $app->input;
 jimport('joomla.application.component.controller');
 jimport('joomla.filesystem.file');
 
-if ($input->get('format', 'html') === 'html')
-{
-	FabrikHelperHTML::framework();
-}
-
 JHTML::stylesheet('administrator/components/com_fabrik/headings.css');
 
 // Check for plugin views (e.g. list email plugin's "email form"
@@ -88,4 +83,10 @@ if (count($db->loadResult()) === 0)
 
 // Execute the task.
 $controller->execute($input->get('task', 'home.display'));
+
+if ($input->get('format', 'html') === 'html')
+{
+	FabrikHelperHTML::framework();
+}
+
 $controller->redirect();
