@@ -1883,8 +1883,15 @@ var FbForm = new Class({
 
 		targets.each(function (target, i) {
 			tmpIntro = intro.replace('{i}', i + 1);
+			// poor man's parseMsgForPlaceholder ... ignore elements in joined groups.
+			this.formElements.each(function (el) {
+				if (!el.options.inRepeatGroup) {
+					// might should do a match first, to avoid always calling getValue(), just not sure which is more overhead!
+					tmpIntro = tmpIntro.replace(re, el.getValue());
+				}
+			});
 			target.set('html', tmpIntro);
-		});
+		}.bind(this));
 	},
 
 	update: function (o) {
