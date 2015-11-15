@@ -920,7 +920,7 @@ var FbList = new Class({
 		});
 	},
 
-	updateRows: function () {
+	updateRows: function (extraData) {
 		var data = {
 				'option': 'com_fabrik',
 				'view': 'list',
@@ -932,6 +932,11 @@ var FbList = new Class({
 			};
 		var url = '';
 		data['limit' + this.id] = this.options.limitLength;
+		
+		if (extraData) {
+			Object.append(data, extraData);
+		}
+		
 		new Request({
 			'url': url,
 			'data': data,
