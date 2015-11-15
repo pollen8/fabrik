@@ -924,6 +924,7 @@ class FabrikAdminModelList extends FabModelAdmin
 		$aOldJoins = $db->loadObjectList();
 		$params = $data['params'];
 		$aOldJoinsToKeep = array();
+		$joinsToIndex = array();
 		$joinModel = JModelLegacy::getInstance('Join', 'FabrikFEModel');
 		$joinIds = FArrayHelper::getValue($params, 'join_id', array());
 		$joinTypes = FArrayHelper::getValue($params, 'join_type', array());
