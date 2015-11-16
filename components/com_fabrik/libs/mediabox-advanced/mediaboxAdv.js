@@ -205,7 +205,11 @@ var Mediabox;
 			setup(true);
 			top = window.getScrollTop() + (window.getHeight()/2);
 			left = window.getScrollLeft() + (window.getWidth()/2);
-			margin = center.getStyle('padding-left').toInt()+media.getStyle('margin-left').toInt()+media.getStyle('padding-left').toInt();
+			/**
+			 * $$$ hugh - patch to fix margin in IE11
+			 */
+			//margin = center.getStyle('padding-left').toInt()+media.getStyle('margin-left').toInt()+media.getStyle('padding-left').toInt();
+			margin = (center.getStyle('padding-left').toInt() || 0) + (media.getStyle('margin-left').toInt() || 0) + (media.getStyle('padding-left').toInt() || 0);
 			marginBottom = bottom.getStyle('margin-left').toInt()+bottom.getStyle('padding-left').toInt()+bottom.getStyle('margin-right').toInt()+bottom.getStyle('padding-right').toInt();
 
 /****/		center.setStyles({top: top, left: left, width: options.initialWidth, height: options.initialHeight, marginTop: -(options.initialHeight/2)-margin, marginLeft: -(options.initialWidth/2)-margin, display: ""});
