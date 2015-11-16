@@ -3118,7 +3118,15 @@ class FabrikFEModelForm extends FabModelForm
 						$listModel->setBigSelects();
 
 						// Otherwise lets get the table record
-						$opts = $input->get('task') == 'form.inlineedit' ? array('ignoreOrder' => true) : array();
+
+						/**
+						 * $$$ hugh - 11/14/2015 - ran into issue with the order by from a list being added to the form query, when
+						 * rendering a form with a content plugin in a list intro.  And I don't think we ever need to
+						 * apply ordering to a form's select, by definition it's only one row.  Leaving this here for
+						 * now just as a reminder in case there's any unforeseen side effects.
+						 */
+						// $opts = $input->get('task') == 'form.inlineedit' ? array('ignoreOrder' => true) : array();
+						$opts = array('ignoreOrder' => true);
 						$sql = $this->buildQuery($opts);
 						$fabrikDb->setQuery($sql);
 						FabrikHelperHTML::debug((string) $fabrikDb->getQuery(), 'form:render');
