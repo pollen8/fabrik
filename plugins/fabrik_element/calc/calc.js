@@ -98,7 +98,7 @@ var FbCalc = new Class({
 				'formid': this.form.id
 			};
 		data = Object.append(formdata, data);
-		Fabrik.loader.start(this.element.getParent(), Joomla.JText._('COM_FABRIK_VALIDATING'));
+		Fabrik.loader.start(this.element.getParent(), Joomla.JText._('COM_FABRIK_LOADING'));
 		var myAjax = new Request({'url': '', method: 'post', 'data': data,
 		onComplete: function (r) {
 			Fabrik.loader.stop(this.element.getParent());

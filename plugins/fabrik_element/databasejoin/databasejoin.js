@@ -24,7 +24,8 @@ var FbDatabasejoin = new Class({
 		'fullName': '',
 		'show_please_select': false,
 		'allowadd': false,
-		'autoCompleteOpts': null
+		'autoCompleteOpts': null,
+		'observe': null
 	},
 
 	initialize: function (element, options) {
@@ -303,10 +304,14 @@ var FbDatabasejoin = new Class({
 			// Joined elements strElement isnt right so use fullName as well
 			data[this.options.fullName + '_raw'] = v;
 		}
+		
+		Fabrik.loader.start(this.element.getParent(), Joomla.JText._('COM_FABRIK_LOADING'));
+
 		new Request.JSON({url: '',
 			method: 'post',
 			'data': data,
 			onSuccess: function (json) {
+				Fabrik.loader.stop(this.element.getParent());
 				var sel, changed = false, existingValues = this.getOptionValues();
 
 				// If duplicating an element in a repeat group when its auto-complete we dont want to update its value
@@ -764,6 +769,50 @@ var FbDatabasejoin = new Class({
 		document.id(f.id).value = '';
 		new FbAutocomplete(this.element.id, this.options.autoCompleteOpts);
 	},
+	
+	watchObserve: function () {
+		this.options.observe.each(function (o) {
+			if (o === '') {
+				return;
+			}
+			if (this.form.formElements[o]) {
+				this.form.formElements[o].addNewEventAux(this.form.formElements[o].getChangeEvent(), function (e) {
+					this.updateFromServer();
+				}.bind(this));
+			}
+			else {
+				var o2;
+				if (this.options.canRepeat) {
+					o2 = o + '_' + this.options.repeatCounter;
+					if (this.form.formElements[o2]) {
+						this.form.formElements[o2].addNewEventAux(this.form.formElements[o2].getChangeEvent(), function (e) {
+							this.updateFromServer();
+						}.bind(this));
+					}
+				}
+				else {
+					this.form.repeatGroupMarkers.each(function (v, k) {
+						o2 = '';
+						for (v2 = 0; v2 < v; v2++) {
+							o2 = 'join___' + this.form.options.group_join_ids[k] + '___' + o + '_' + v2;
+							if (this.form.formElements[o2]) {
+								// $$$ hugh - think we can add this one as sticky ...
+								this.form.formElements[o2].addNewEvent(this.form.formElements[o2].getChangeEvent(), function (e) {
+									this.updateFromServer();
+								}.bind(this));
+							}
+						}
+					}.bind(this));
+				}
+			}
+		}.bind(this));
+	},
+	
+	attachedToForm : function () {
+		if (this.options.editable) {
+			this.watchObserve();
+		}
+	},
 
 	init: function () {
 		// Could be in a popup add record form, in which case we don't want to ini on a main page load
@@ -773,7 +822,7 @@ var FbDatabasejoin = new Class({
 		if (this.options.editable) {
 			this.getCheckboxTmplNode();
 		}
-
+		
 		// If users can add records to the database join drop down
 		if (this.options.allowadd === true && this.options.editable !== false) {
 			this.watchAdd();

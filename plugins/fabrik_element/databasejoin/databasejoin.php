@@ -2888,6 +2888,43 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		$opts->isJoin = $this->isJoin();
 		$opts->advanced = $this->getAdvancedSelectClass() != '';
 
+		/*
+		 * Testing watching placeholders used in the where, and AJAX reloading the join when changed
+		 */
+		$obs = array();
+
+		if ($params->get('databasejoin_where_ajax', '0') === '1')
+		{
+			$whereSql = $params->get('database_join_where_sql', '');
+
+			if (preg_match_all("/{[^}\s]+}/i", $whereSql, $matches) !== 0)
+			{
+				$obs = $matches[0];
+			}
+
+			$obs = array_unique($obs);
+
+			foreach ($obs as $key => &$m)
+			{
+
+				if (empty($m))
+				{
+					unset($obs[$key]);
+					continue;
+				}
+
+				$m = str_replace(array('{', '}'), '', $m);
+
+				// $$$ hugh - we need to knock any _raw off, so JS can match actual element ID
+				$m = preg_replace('#_raw$#', '', $m);
+			}
+
+			// remove any placeholders we don't want
+			$obs = array_diff($obs, array('thistable'));
+		}
+
+		$opts->observe = array_values($obs);
+
 		return $opts;
 	}
 
