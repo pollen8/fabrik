@@ -1958,7 +1958,7 @@ class PlgFabrik_Element extends FabrikPlugin
 			if ($groupListModel->fieldExists($rule->name))
 			{
 				$this->app->enqueueMessage(FText::_('COM_FABRIK_ELEMENT_NAME_IN_USE'), 'error');
-				return;
+				return false;
 			}
 		}
 

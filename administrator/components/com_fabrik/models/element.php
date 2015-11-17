@@ -1078,6 +1078,12 @@ class FabrikAdminModelElement extends FabModelAdmin
 				$elementModel = $this->getElementPluginModel($data);
 				$elementModel->getElement()->bind($data);
 				$newRule      = $elementModel->copyRow($id, $rule->label, $groupid, $name);
+
+				if ($newRule === false)
+				{
+					return false;
+				}
+
 				$data         = JArrayHelper::fromObject($newRule);
 				$elementModel = $this->getElementPluginModel($data);
 				$elementModel->getElement()->bind($data);
