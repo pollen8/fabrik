@@ -21,6 +21,7 @@ var FbFileUpload = new Class({
 		}
 
 		if (this.options.ajax_upload && this.options.editable !== false) {
+			Fabrik.fireEvent('fabrik.fileupload.plupload.build.start', this);
 			this.watchAjax();
 			this.options.files = $H(this.options.files);
 			if (this.options.files.getLength() !== 0) {
