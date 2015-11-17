@@ -162,12 +162,18 @@ class FabrikViewFormBase extends FabrikView
 		$this->_addButtons();
 		JDEBUG ? $profiler->mark('form view before group view got') : null;
 
-		$this->groups                  = $model->getGroupView($tmpl);
-		$btnData                       = new stdClass;
-		$l                             = FabrikHelperHTML::getLayout('form.fabrik-repeat-group-delete');
-		$this->removeRepeatGroupButton = $l->render($btnData);
-		$l                             = FabrikHelperHTML::getLayout('form.fabrik-repeat-group-add');
-		$this->addRepeatGroupButton    = $l->render($btnData);
+		$this->groups                     = $model->getGroupView($tmpl);
+		$btnData                          = new stdClass;
+		$btnData->tmpl					  = $tmpl;
+		$l                                = FabrikHelperHTML::getLayout('form.fabrik-repeat-group-delete');
+		$this->removeRepeatGroupButton    = $l->render($btnData);
+		$l                                = FabrikHelperHTML::getLayout('form.fabrik-repeat-group-add');
+		$this->addRepeatGroupButton       = $l->render($btnData);
+		$l                                = FabrikHelperHTML::getLayout('form.fabrik-repeat-group-row-delete');
+		$this->removeRepeatGroupButtonRow = $l->render($btnData);
+		$l                                = FabrikHelperHTML::getLayout('form.fabrik-repeat-group-row-add');
+		$this->addRepeatGroupButtonRow    = $l->render($btnData);
+
 		JDEBUG ? $profiler->mark('form view after group view got') : null;
 		$this->data        = $model->tmplData;
 		$this->params      = $params;
