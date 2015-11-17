@@ -67,8 +67,12 @@ class FabrikViewForm extends FabrikViewFormBase
 		$model = $this->getModel();
 
 		// Set the download file name based on the document title
-		/** @var JDocumentpdf $document */
-		$document = $this->doc;
-		$document->setName($document->getTitle() . '-' . $model->getRowId());
+
+		$layout                 = FabrikHelperHTML::getLayout('form.fabrik-pdf-title');
+		$displayData         = new stdClass;
+		$displayData->doc	= $this->doc;
+		$displayData->model	= $this->getModel();
+
+		$this->doc->setName($layout->render($displayData));
 	}
 }
