@@ -810,10 +810,9 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 		$input  = $this->app->input;
 		list($replyEmail, $replyEmailName) = $this->_replyEmailName($firstRow);
 		list($emailFrom, $fromName) = $this->_fromEmailName($firstRow);
-		$w      = new FabrikWorker;
-		$toType = $toType = $this->_toType();
-		// Arbitrarily use first row for placeholders
-		$to           = $this->_emailTo();
+		$w            = new FabrikWorker;
+		$toType       = $this->_toType();
+		$to           = $this->_to();
 		$oldStyle     = $this->_oldStyle();
 		$toHow        = $this->_toHow();
 		$mailTo       = $toType == 'list' ? $firstRow->$to : $to;
