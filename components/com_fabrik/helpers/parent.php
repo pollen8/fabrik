@@ -732,7 +732,7 @@ class FabrikWorker
 				$msg = preg_replace("/{}/", "", $msg);
 
 				// Replace {element name} with form data
-				$msg = preg_replace_callback("/{[^}\s]+}/i", array($this, 'replaceWithFormData'), $msg);
+				$msg = preg_replace_callback("/{([^}\s]+(\|\|[\w|\s]+)*)}/i", array($this, 'replaceWithFormData'), $msg);
 
 				if (!$keepPlaceholders)
 				{
