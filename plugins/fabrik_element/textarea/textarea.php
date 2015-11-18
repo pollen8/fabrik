@@ -386,7 +386,7 @@ class PlgFabrik_ElementTextarea extends PlgFabrik_Element
 	{
 		$groupModel = $this->getGroup();
 
-		if ($groupModel->isJoin() && $groupModel->canRepeat())
+		if (is_array($value) && $groupModel->isJoin() && $groupModel->canRepeat())
 		{
 			$value = $value[$repeatCounter];
 		}
