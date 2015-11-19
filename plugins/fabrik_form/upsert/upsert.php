@@ -77,7 +77,7 @@ class PlgFabrik_FormUpsert extends PlgFabrik_Form
 		{
 			if ($upsertRowExists)
 			{
-				$query->update($table)->where($pk . ' = ' . $rowId);
+				$query->update($table)->where($pk . ' = ' . $upsertDb->quote($rowId));
 			}
 			else
 			{
