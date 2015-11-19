@@ -214,7 +214,8 @@ class FabrikModelGooglemap extends FabrikFEModelVisualization
 	 */
 	private function getCordsFromData($d)
 	{
-		$v = trim($d);
+		$v = str_replace(' ', '', $d);
+		$v = trim($v);
 		$v = FabrikString::ltrimword($v, "(");
 
 		if (strstr($v, ","))
