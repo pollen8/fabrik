@@ -129,7 +129,7 @@ var FbGoogleMapViz = new Class({
 		case 'G_HYBRID_MAP':
 			this.options.maptype = google.maps.MapTypeId.HYBRID;
 			break;
-		case 'TERRAIN':
+		case 'G_TERRAIN_MAP':
 			this.options.maptype = google.maps.MapTypeId.TERRAIN;
 			break;
 		}

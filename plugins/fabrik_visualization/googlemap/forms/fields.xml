@@ -311,6 +311,7 @@
 					<option value="G_NORMAL_MAP">Normal</option>
 					<option value="G_SATELLITE_MAP">Satelite</option>
 					<option value="G_HYBRID_MAP">Hybrid</option>
+					<option value="G_TERRAIN_MAP">Terrain</option>
 			</field>
 
 			<field
