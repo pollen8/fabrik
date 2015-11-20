@@ -193,13 +193,16 @@ var Autofill = new Class({
 
 	// Update the form from the ajax request returned data
 	updateForm: function (json) {
+		this.json = $H(json);
+		Fabrik.fireEvent('fabrik.form.autofill.update.start', [this, json]);
+
 		var repeatNum = this.element.getRepeatNum();
-		json = $H(json);
-		if (json.length === 0) {
+
+		if (this.json.length === 0) {
 			alert(Joomla.JText._('PLG_FORM_AUTOFILL_NORECORDS_FOUND'));
 		}
 
-		json.each(function (val, key) {
+		this.json.each(function (val, key) {
 			var k2 = key.substr(key.length - 4, 4);
 			if (k2 === '_raw') {
 				key = key.replace('_raw', '');
@@ -239,7 +242,7 @@ var Autofill = new Class({
 			}
 		}.bind(this));
 		if (this.options.editOrig === true) {
-			this.form.getForm().getElement('input[name=rowid]').value = json.__pk_val;
+			this.form.getForm().getElement('input[name=rowid]').value = this.json.__pk_val;
 		}
 		Fabrik.fireEvent('fabrik.form.autofill.update.end', [this, json]);
 	},
