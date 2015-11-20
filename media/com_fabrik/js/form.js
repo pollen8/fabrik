@@ -1886,6 +1886,7 @@ var FbForm = new Class({
 			// poor man's parseMsgForPlaceholder ... ignore elements in joined groups.
 			this.formElements.each(function (el) {
 				if (!el.options.inRepeatGroup) {
+					var re = new RegExp('\{' + el.element.id + '\}');
 					// might should do a match first, to avoid always calling getValue(), just not sure which is more overhead!
 					tmpIntro = tmpIntro.replace(re, el.getValue());
 				}
