@@ -1064,6 +1064,7 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 		// 3.1 Cdd filter set up elsewhere
 		if ($element->filter_type == 'dropdown')
 		{
+			$params = $this->getParams();
 			$default = $this->getDefaultFilterVal($normal);
 			$filterId = $this->getHTMLId() . 'value';
 			FabrikHelperHTML::script('plugins/fabrik_element/cascadingdropdown/filter.js');
@@ -1072,6 +1073,7 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 			$opts->filterid = $filterId;
 			$opts->elid = $this->getId();
 			$opts->def = $default;
+			$opts->noselectionvalue = $params->get('cascadingdropdown_noselectionvalue', '');
 			$opts->filterobj = 'Fabrik.filter_' . $container;
 			$opts = json_encode($opts);
 
@@ -1320,4 +1322,46 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 
 		return $label;
 	}
+
+	/**
+	 * Create an array of label/values which will be used to populate the elements filter dropdown
+	 * returns all possible options
+	 *
+	 * @param   bool    $normal     do we render as a normal filter or as an advanced search filter
+	 * @param   string  $tableName  table name to use - defaults to element's current table
+	 * @param   string  $label      field to use, defaults to element name
+	 * @param   string  $id         field to use, defaults to element name
+	 * @param   bool    $incjoin    include join
+	 *
+	 * @return  array	filter value and labels
+	 */
+	protected function filterValueList_All($normal, $tableName = '', $label = '', $id = '', $incjoin = true)
+	{
+		/**
+		 * Don't build filter options on page build, it gets done via AJAX from the page.
+		 */
+		return array();
+	}
+
+	/**
+	 * Create an array of label/values which will be used to populate the elements filter dropdown
+	 * returns only data found in the table you are filtering on
+	 *
+	 * @param   bool    $normal     do we render as a normal filter or as an advanced search filter
+	 * @param   string  $tableName  table name to use - defaults to element's current table
+	 * @param   string  $label      field to use, defaults to element name
+	 * @param   string  $id         field to use, defaults to element name
+	 * @param   bool    $incjoin    include join
+	 *
+	 * @return  array	filter value and labels
+	 */
+	protected function filterValueList_Exact($normal, $tableName = '', $label = '', $id = '', $incjoin = true)
+	{
+		/**
+		 * Don't bother building a filter list on page load, that'll get done via AJAX from the page
+		 */
+		return array();
+	}
+
+
 }
