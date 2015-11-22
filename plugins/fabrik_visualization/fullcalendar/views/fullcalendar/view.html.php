@@ -158,27 +158,27 @@ class FabrikViewFullcalendar extends JViewLegacy
 		{
 			$src = COM_FABRIK_LIVESITE . 'plugins/fabrik_visualization/calendar/views/calendar/tmpl/' . $tpl . '/images/minus-sign.png';
 			$options->buttons = '<img src="' . $src . '"
-				alt = "del" class="fabrikDeleteEvent" />' . FText::_('PLG_VISUALIZATION_CALENDAR_DELETE');
+				alt = "del" class="fabrikDeleteEvent" />' . FText::_('PLG_VISUALIZATION_FULLCALENDAR_DELETE');
 		}
 
 		$json = json_encode($options);
 
-		JText::script('PLG_VISUALIZATION_CALENDAR_NEXT');
-		JText::script('PLG_VISUALIZATION_CALENDAR_PREVIOUS');
-		JText::script('PLG_VISUALIZATION_CALENDAR_DAY');
-		JText::script('PLG_VISUALIZATION_CALENDAR_WEEK');
-		JText::script('PLG_VISUALIZATION_CALENDAR_MONTH');
-		JText::script('PLG_VISUALIZATION_CALENDAR_KEY');
-		JText::script('PLG_VISUALIZATION_CALENDAR_TODAY');
-		JText::script('PLG_VISUALIZATION_CALENDAR_CONF_DELETE');
-		JText::script('PLG_VISUALIZATION_CALENDAR_DELETE');
-		JText::script('PLG_VISUALIZATION_CALENDAR_VIEW');
-		JText::script('PLG_VISUALIZATION_CALENDAR_EDIT');
-		JText::script('PLG_VISUALIZATION_CALENDAR_ADD_EDIT_EVENT');
+		JText::script('PLG_VISUALIZATION_FULLCALENDAR_NEXT');
+		JText::script('PLG_VISUALIZATION_FULLCALENDAR_PREVIOUS');
+		JText::script('PLG_VISUALIZATION_FULLCALENDAR_DAY');
+		JText::script('PLG_VISUALIZATION_FULLCALENDAR_WEEK');
+		JText::script('PLG_VISUALIZATION_FULLCALENDAR_MONTH');
+		JText::script('PLG_VISUALIZATION_FULLCALENDAR_KEY');
+		JText::script('PLG_VISUALIZATION_FULLCALENDAR_TODAY');
+		JText::script('PLG_VISUALIZATION_FULLCALENDAR_CONF_DELETE');
+		JText::script('PLG_VISUALIZATION_FULLCALENDAR_DELETE');
+		JText::script('PLG_VISUALIZATION_FULLCALENDAR_VIEW');
+		JText::script('PLG_VISUALIZATION_FULLCALENDAR_EDIT');
+		JText::script('PLG_VISUALIZATION_FULLCALENDAR_ADD_EDIT_EVENT');
 		JText::script('COM_FABRIK_FORM_SAVED');
-		JText::script('PLG_VISUALIZATION_CALENDAR_EVENT_START_END');
-		JText::script('PLG_VISUALIZATION_CALENDAR_DATE_ADD_TOO_LATE');
-		JText::script('PLG_VISUALIZATION_CALENDAR_DATE_ADD_TOO_EARLY');
+		JText::script('PLG_VISUALIZATION_FULLCALENDAR_EVENT_START_END');
+		JText::script('PLG_VISUALIZATION_FULLCALENDAR_DATE_ADD_TOO_LATE');
+		JText::script('PLG_VISUALIZATION_FULLCALENDAR_DATE_ADD_TOO_EARLY');
 
 		$ref = $model->getJSRenderContext();
 
@@ -235,12 +235,12 @@ class FabrikViewFullcalendar extends JViewLegacy
 		$o = $model->getAddStandardEventFormInfo();
 		$calendar = $model->getVisualization();
 		$options = array();
-		$options[] = JHTML::_('select.option', '', FText::_('PLG_VISUALIZATION_CALENDAR_PLEASE_SELECT'));
+		$options[] = JHTML::_('select.option', '', FText::_('PLG_VISUALIZATION_FULLCALENDAR_PLEASE_SELECT'));
 
 		if ($o != null)
 		{
 			$listid = $o->id;
-			$options[] = JHTML::_('select.option', $listid, FText::_('PLG_VISUALIZATION_CALENDAR_STANDARD_EVENT'));
+			$options[] = JHTML::_('select.option', $listid, FText::_('PLG_VISUALIZATION_FULLCALENDAR_STANDARD_EVENT'));
 		}
 
 		$model->getEvents();
@@ -282,7 +282,7 @@ class FabrikViewFullcalendar extends JViewLegacy
 		$script[] = "});";
 		//$script[] = "});";
 
-		echo '<h2>' . FText::_('PLG_VISUALIZATION_CALENDAR_PLEASE_CHOOSE_AN_EVENT_TYPE') . ':</h2>';
+		echo '<h2>' . FText::_('PLG_VISUALIZATION_FULLCALENDAR_PLEASE_CHOOSE_AN_EVENT_TYPE') . ':</h2>';
 		echo $this->_eventTypeDd;
 		FabrikHelperHTML::addScriptDeclaration(implode("\n", $script));
 	}

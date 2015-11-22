@@ -245,7 +245,7 @@ var fabrikFullcalendar = new Class({
 		if (this.options.dateLimits.min !== '') {
 			var min = new Date(this.options.dateLimits.min);
 			if (d < min) {
-				alert(Joomla.JText._('PLG_VISUALIZATION_CALENDAR_DATE_ADD_TOO_EARLY'));
+				alert(Joomla.JText._('PLG_VISUALIZATION_FULLCALENDAR_DATE_ADD_TOO_EARLY'));
 				return false;
 			}
 		}
@@ -253,7 +253,7 @@ var fabrikFullcalendar = new Class({
 		if (this.options.dateLimits.max !== '') {
 			var max = new Date(this.options.dateLimits.max);
 			if (d > max) {
-				alert(Joomla.JText._('PLG_VISUALIZATION_CALENDAR_DATE_ADD_TOO_LATE'));
+				alert(Joomla.JText._('PLG_VISUALIZATION_FULLCALENDAR_DATE_ADD_TOO_LATE'));
 				return false;
 			}
 		}
