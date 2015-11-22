@@ -33,7 +33,7 @@ $row = $this->row;
 		<?php if ($this->canAdd)
 		{
 		?>
-		<a href="#" class="addEventButton" title="Add an event"><?php echo FText::_('PLG_VISUALIZATION_CALENDAR_ADD') ?></a>
+		<a href="#" class="addEventButton" title="Add an event"><?php echo FText::_('PLG_VISUALIZATION_FULLCALENDAR_ADD') ?></a>
 	<?php }
 	?>
 	<div class="well well-small monthDisplay">
