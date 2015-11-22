@@ -90,12 +90,14 @@ var fabrikFullcalendar = new Class({
 			default:
 				break;
 		}
+		var tFormat = this.options.time_format;
 	    jQuery('#calendar').fullCalendar({
 			header: {
 				left: 'prev,next today',
 				center: 'title',
 				right: rightbuttons
 			},
+			timeFormat: tFormat,
 			defaultView: dView,
 	    	eventSources: eventSources,
 	        // put your options and callbacks here
@@ -121,6 +123,7 @@ var fabrikFullcalendar = new Class({
 				{
 					title: e.label,
 					start: e.startdate_locale,
+					end: e.enddate_locale,
 					url: e.link,
 					listid: e._listid,
 					rowid: e.__pk_val,

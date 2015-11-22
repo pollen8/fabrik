@@ -167,7 +167,7 @@
 			<field name="time_format"
 				type="text"
 				class="input-small"
-				default="%X"
+				default="H(:mm)"
 				description="PLG_VISUALIAZATION_FULLCALENDAR_TIME_FORMAT_DESC"
 				label="PLG_VISUALIAZATION_FULLCALENDAR_TIME_FORMAT_LABEL" />
 
