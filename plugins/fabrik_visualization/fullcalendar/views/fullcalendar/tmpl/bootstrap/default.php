@@ -21,6 +21,13 @@ $row = $this->row;
 	{?>
 		<h1><?php echo $row->label;?></h1>
 	<?php }?>
+
+	<?php if ($row->intro_text != '')
+	{?>
+	<div><?php echo $row->intro_text;?></div>
+	<?php }
+	?>
+
 	<div class='calendar-message'>
 
 	</div>
@@ -38,11 +45,5 @@ $row = $this->row;
 		?>
 		</div>
 	</div>
-
-	<?php if ($row->intro_text != '')
-	{?>
-	<div><?php echo $row->intro_text;?></div>
-	<?php }
-	?>
-
+	
 </div>

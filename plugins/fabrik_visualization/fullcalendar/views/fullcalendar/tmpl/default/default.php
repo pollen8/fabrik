@@ -21,6 +21,11 @@ $row = $this->row;
 	{?>
 		<h1><?php echo $row->label;?></h1>
 	<?php }?>
+	<?php if ($row->intro_text != '')
+	{?>
+	<div><?php echo $row->intro_text;?></div>
+	<?php }
+	?>
 	<div class='calendar-message'>
 
 	</div>
@@ -29,11 +34,6 @@ $row = $this->row;
 		{
 		?>
 		<a href="#" class="addEventButton" title="Add an event"><?php echo FText::_('PLG_VISUALIZATION_CALENDAR_ADD') ?></a>
-	<?php }
-	?>
-	<?php if ($row->intro_text != '')
-	{?>
-	<div><?php echo $row->intro_text;?></div>
 	<?php }
 	?>
 	<div class="well well-small monthDisplay">
