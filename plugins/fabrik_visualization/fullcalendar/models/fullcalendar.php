@@ -711,19 +711,19 @@ class FabrikModelFullcalendar extends FabrikFEModelVisualization
 
 		if ($min !== '' && $max === '')
 		{
-			$msg = '<br />' . JText::sprintf('PLG_VISUALIZATION_CALENDAR_LIMIT_AFTER', JFactory::getDate($min)->format($f));
+			$msg = '<br />' . JText::sprintf('PLG_VISUALIZATION_FULLCALENDAR_LIMIT_AFTER', JFactory::getDate($min)->format($f));
 		}
 
 		if ($min === '' && $max !== '')
 		{
-			$msg = '<br />' . JText::sprintf('PLG_VISUALIZATION_CALENDAR_LIMIT_BEFORE', JFactory::getDate($max)->format($f));
+			$msg = '<br />' . JText::sprintf('PLG_VISUALIZATION_FULLCALENDAR_LIMIT_BEFORE', JFactory::getDate($max)->format($f));
 		}
 
 		if ($min !== '' && $max !== '')
 		{
 			$min = JFactory::getDate($min)->format($f);
 			$max = JFactory::getDate($max)->format($f);
-			$msg = '<br />' . JText::sprintf('PLG_VISUALIZATION_CALENDAR_LIMIT_RANGE', $min, $max);
+			$msg = '<br />' . JText::sprintf('PLG_VISUALIZATION_FULLCALENDAR_LIMIT_RANGE', $min, $max);
 		}
 
 		return $msg;

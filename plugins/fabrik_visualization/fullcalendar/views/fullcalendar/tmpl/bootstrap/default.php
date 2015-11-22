@@ -21,6 +21,13 @@ $row = $this->row;
 	{?>
 		<h1><?php echo $row->label;?></h1>
 	<?php }?>
+
+	<?php if ($row->intro_text != '')
+	{?>
+	<div><?php echo $row->intro_text;?></div>
+	<?php }
+	?>
+
 	<div class='calendar-message'>
 
 	</div>
@@ -33,16 +40,10 @@ $row = $this->row;
 
 			<?php if ($this->canAdd) :
 			?>
-			<a href="#" class="btn btn-success addEventButton" title="Add an event"><i class="icon-plus"></i> <?php echo FText::_('PLG_VISUALIZATION_CALENDAR_ADD') ?></a>
+			<a href="#" class="btn btn-success addEventButton" title="Add an event"><i class="icon-plus"></i> <?php echo FText::_('PLG_VISUALIZATION_FULLCALENDAR_ADD') ?></a>
 		<?php endif;
 		?>
 		</div>
 	</div>
-
-	<?php if ($row->intro_text != '')
-	{?>
-	<div><?php echo $row->intro_text;?></div>
-	<?php }
-	?>
-
+	
 </div>

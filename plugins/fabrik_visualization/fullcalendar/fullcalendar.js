@@ -13,7 +13,6 @@ var fabrikFullcalendar = new Class({
 	initialize: function (ref, options) {
 		this.el  = document.id(ref);
 		this.setOptions(options);
-		
 		this.date = new Date();
 
 		this.windowopts = {
@@ -65,12 +64,39 @@ var fabrikFullcalendar = new Class({
 		}.bind(this));
 		
 		var self = this;
+		var rightbuttons = "";
+		if (this.options.show_week !== false) {
+			rightbuttons += 'agendaWeek';
+		}
+		if (this.options.show_day !== false) {
+			if (rightbuttons.length > 0)
+				rightbuttons += ',';
+			rightbuttons += 'agendaDay';
+		}
+		if (rightbuttons.length > 0)
+			rightbuttons = 'month,'+ rightbuttons;
+		var dView = 'month';
+		switch(this.options.default_view) {
+			case 'monthView':
+				break;
+			case 'weekView':
+				if (this.options.show_week !== false)
+					dView = 'agendaWeek';
+				break;
+			case 'dayView':
+				if (this.options.show_day !== false)
+					dView = 'agendaDay';
+				break;
+			default:
+				break;
+		}
 	    jQuery('#calendar').fullCalendar({
 			header: {
 				left: 'prev,next today',
 				center: 'title',
-				right: 'month,agendaWeek,agendaDay'
+				right: rightbuttons
 			},
+			defaultView: dView,
 	    	eventSources: eventSources,
 	        // put your options and callbacks here
 	        eventClick: function (calEvent, jsEvent, view) {
@@ -245,7 +271,7 @@ var fabrikFullcalendar = new Class({
 		if (this.options.dateLimits.min !== '') {
 			var min = new Date(this.options.dateLimits.min);
 			if (d < min) {
-				alert(Joomla.JText._('PLG_VISUALIZATION_CALENDAR_DATE_ADD_TOO_EARLY'));
+				alert(Joomla.JText._('PLG_VISUALIZATION_FULLCALENDAR_DATE_ADD_TOO_EARLY'));
 				return false;
 			}
 		}
@@ -253,7 +279,7 @@ var fabrikFullcalendar = new Class({
 		if (this.options.dateLimits.max !== '') {
 			var max = new Date(this.options.dateLimits.max);
 			if (d > max) {
-				alert(Joomla.JText._('PLG_VISUALIZATION_CALENDAR_DATE_ADD_TOO_LATE'));
+				alert(Joomla.JText._('PLG_VISUALIZATION_FULLCALENDAR_DATE_ADD_TOO_LATE'));
 				return false;
 			}
 		}
