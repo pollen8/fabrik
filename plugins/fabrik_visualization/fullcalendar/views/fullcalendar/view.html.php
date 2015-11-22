@@ -120,6 +120,7 @@ class FabrikViewFullcalendar extends JViewLegacy
 		$options->show_day = (bool) $params->get('show_day', true);
 		$options->show_week = (bool) $params->get('show_week', true);
 		$options->default_view = $params->get('fullcalendar_default_view', 'month'); 
+		$options->time_format = $params->get('time_format', 'H(:mm)'); 
 		$options->days = array(FText::_('SUNDAY'), FText::_('MONDAY'), FText::_('TUESDAY'), FText::_('WEDNESDAY'), FText::_('THURSDAY'),
 			FText::_('FRIDAY'), FText::_('SATURDAY'));
 		$options->shortDays = array(FText::_('SUN'), FText::_('MON'), FText::_('TUE'), FText::_('WED'), FText::_('THU'), FText::_('FRI'),
