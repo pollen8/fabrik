@@ -90,15 +90,15 @@ var fabrikFullcalendar = new Class({
 			default:
 				break;
 		}
-		var tFormat = this.options.time_format;
 	    jQuery('#calendar').fullCalendar({
 			header: {
 				left: 'prev,next today',
 				center: 'title',
 				right: rightbuttons
 			},
-			timeFormat: tFormat,
+			timeFormat: this.options.time_format,
 			defaultView: dView,
+			nextDayThreshold: "00:00:00",
 	    	eventSources: eventSources,
 	        // put your options and callbacks here
 	        eventClick: function (calEvent, jsEvent, view) {
