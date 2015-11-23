@@ -1720,8 +1720,13 @@ var FbForm = new Class({
 		var clone = this.getSubGroupToClone(i);
 		var tocheck = this.repeatGetChecked(group);
 
-		if (group.getElement('table.repeatGroupTable')) {
-			group.getElement('table.repeatGroupTable').appendChild(clone);
+		// Check for table style group, which may or may not have a tbody in it
+		var groupTable = group.getElement('table.repeatGroupTable');
+		if (groupTable) {
+			if (groupTable.getElement('tbody')) {
+				groupTable = groupTable.getElement('tbody');
+			}
+			groupTable.appendChild(clone);
 		} else {
 			group.appendChild(clone);
 		}
