@@ -94,7 +94,7 @@ class FabrikViewFullcalendar extends JViewLegacy
 
 		$options->deleteables = $model->getDeleteAccess();
 		$options->eventLists = $model->getEventLists();
-		
+
 		$options->calendarId = $calendar->id;
 		$options->popwiny = $params->get('yoffset', 0);
 		$options->urlfilters = $urlfilters;
@@ -120,6 +120,7 @@ class FabrikViewFullcalendar extends JViewLegacy
 		$options->show_day = (bool) $params->get('show_day', true);
 		$options->show_week = (bool) $params->get('show_week', true);
 		$options->default_view = $params->get('fullcalendar_default_view', 'month'); 
+		$options->add_type = $params->get('add_type', 'both'); 
 		$options->time_format = $params->get('time_format', 'H(:mm)'); 
 		$options->days = array(FText::_('SUNDAY'), FText::_('MONDAY'), FText::_('TUESDAY'), FText::_('WEDNESDAY'), FText::_('THURSDAY'),
 			FText::_('FRIDAY'), FText::_('SATURDAY'));

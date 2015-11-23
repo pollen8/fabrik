@@ -90,6 +90,16 @@ var fabrikFullcalendar = new Class({
 			default:
 				break;
 		}
+		var dayFunction = function(){};
+		if (this.options.add_type != 'addOnly') {
+			dayFunction = function(date, cell) {
+	        	cell.bind('dblclick', {date: date}, function(e) {
+					var view = 'month';
+	        		self.openAddEvent(e, view,  e.data.date)
+	        	});
+	        }
+		}
+			
 	    jQuery('#calendar').fullCalendar({
 			header: {
 				left: 'prev,next today',
@@ -105,14 +115,8 @@ var fabrikFullcalendar = new Class({
 	        	self.viewEntry(calEvent);
 	        	return false;
 	        },
-	        dayRender: function(date, cell) {
-	        	cell.bind('dblclick', {date: date}, function(e) {
-	        		alert('double click: ' + e.data.date.toString());
-	        		var view = 'month';
-	        		self.openAddEvent(e, view,  e.data.date)
-	        	});
-	        }
-	    })
+	        dayRender: dayFunction,
+		});
 	},
 	
 	processEvents: function (json, callback) {
@@ -202,7 +206,7 @@ var fabrikFullcalendar = new Class({
 	openAddEvent: function (e, view, moment)
 	{
 		var rawd, day, hour, min, m, o, now, thisDay;
-		
+
 		if (this.options.canAdd === false) {
 			return;
 		}
@@ -210,8 +214,9 @@ var fabrikFullcalendar = new Class({
 		if (this.options.viewType === 'monthView' && this.options.readonlyMonth === true) {
 			return;
 		}
-		
-		e.stop();
+
+		if (e.type != 'dblclick')
+			e.stop();
 		
 		if (e.target.hasClass('addEventButton')) {
 			now = new Date();
