@@ -13,7 +13,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 $d = $displayData;
-$imgProps = array('alt' => FText::_('COM_FABRIK_TOGGLE'), 'data-role' => 'toggle', 'data-expand-icon' => 'fa fa-arrow-down', 'data-collapse-icon' => 'fa fa-arrow-right');
+$imgProps = array('alt' => FText::_('COM_FABRIK_TOGGLE'), 'data-role' => 'toggle', 'data-expand-icon' => 'icon-arrow-down', 'data-collapse-icon' => 'icon-arrow-right');
 ?>
 
 <?php if ($d->emptyDataMessage != '') : ?>
