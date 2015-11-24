@@ -9,6 +9,13 @@ var CascadeFilter = new Class({
 	initialize: function (observerid, opts) {
 		this.options = opts;
 		this.observer = document.id(observerid);
+		// autocompletes don't have an id on the hidden value field, but have it as class
+		if (!this.observer) {
+			this.observer = document.getElements("." + observerid);
+			if (this.observer) {
+				this.observer = this.observer[0];
+			}
+		}
 		if (this.observer) {
 			new Element('img', {'id': this.options.filterid + '_loading', 'src': Fabrik.liveSite + 'media/com_fabrik/images/ajax-loader.gif', 'alt': 'loading...', 'styles': {'opacity': '0'}}).inject(this.observer, 'before');
 			var v = this.observer.get('value');
@@ -90,5 +97,10 @@ var CascadeFilter = new Class({
 	{
 		document.id(this.options.filterid + '_loading').setStyle('opacity', '0');
 		clearInterval(this.periodical);
+		document.id(this.options.filterid).value = this.options.noselectionvalue;
+		if (this.options.advanced)
+		{
+			jQuery("#" + this.options.filterid).trigger("liszt:updated");
+		}
 	}
 });
