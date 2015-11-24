@@ -106,6 +106,7 @@ var fabrikFullcalendar = new Class({
 				center: 'title',
 				right: rightbuttons
 			},
+			fixedWeekCount: false,
 			timeFormat: this.options.time_format,
 			defaultView: dView,
 			nextDayThreshold: "00:00:00",
@@ -117,6 +118,11 @@ var fabrikFullcalendar = new Class({
 	        },
 	        dayRender: dayFunction,
 		});
+		if (this.options.greyscaledweekend == true) {
+			jQuery("td.fc-sat").css('background',"#f2f2f2");
+			jQuery("td.fc-sun").css('background',"#f2f2f2");
+		}
+		
 	},
 	
 	processEvents: function (json, callback) {
