@@ -352,7 +352,7 @@ class FabrikModelGooglemap extends FabrikFEModelVisualization
 					$html = $w->parseMessageForPlaceHolder($template, $rowData);
 
 					$titleElement = FArrayHelper::getValue($titleElements, $c, '');
-					$title = $titleElement == '' ? '' : strip_tags($row->$titleElement);
+					$title = $titleElement == '' ? '' : html_entity_decode(strip_tags($row->$titleElement),ENT_COMPAT, 'UTF-8');
 					/* $$$ hugh - if they provided a template, lets assume they will handle the link themselves.
 					 * http://fabrikar.com/forums/showthread.php?p=41550#post41550
 					 * $$$ hugh - at some point the fabrik_view / fabrik_edit links became optional
