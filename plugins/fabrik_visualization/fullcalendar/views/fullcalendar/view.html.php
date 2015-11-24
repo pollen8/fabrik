@@ -85,7 +85,7 @@ class FabrikViewFullcalendar extends JViewLegacy
 		. '&controller=visualization.fullcalendar&view=visualization&task=deleteEvent&format=raw&Itemid=' . $Itemid . '&id=' . $id;
 		$urls->add = 'index.php?option=com_' . $package . '&view=visualization&format=raw&Itemid=' . $Itemid . '&id=' . $id;
 		$user = JFactory::getUser();
-		$legend = $params->get('show_fullcalendar_legend', 0) ? $model->getLegend() : '';
+		
 		$tpl = $j3 ? 'bootstrap' : 'default';
 		$tpl = $params->get('fullcalendar_layout', $j3);
 		$options = new stdClass;

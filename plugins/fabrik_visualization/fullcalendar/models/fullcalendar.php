@@ -590,14 +590,13 @@ class FabrikModelFullcalendar extends FabrikFEModelVisualization
 		$db = FabrikWorker::getDbo();
 		$params = $this->getParams();
 		$this->setupEvents();
-		$tables = (array) $params->get('calendar_table');
+		$tables = (array) $params->get('fullcalendar_table');
 		$colour = (array) $params->get('colour');
 		$legend = (array) $params->get('legendtext');
-		$ref = $this->getJSRenderContext();
 
 		// @TODO: json encode the returned value and move to the view
 		$calendar = $this->getRow();
-		$aLegend = "$ref.addLegend([";
+		$aLegend = array();
 		$jsevents = array();
 
 		foreach ($this->events as $listid => $record)
@@ -612,11 +611,10 @@ class FabrikModelFullcalendar extends FabrikFEModelVisualization
 				$colour = FabrikString::ltrimword($data['colour'], $rubbish);
 				$legend = FabrikString::ltrimword($data['legendtext'], $rubbish);
 				$label = (empty($legend)) ? $table->label : $legend;
-				$aLegend .= "{'label':'" . $label . "','colour':'" . $colour . "'},";
+				$aLegend[] = array('label' => $label, 'colour' => $colour);
 			}
 		}
 
-		$aLegend = rtrim($aLegend, ",") . "]);";
 
 		return $aLegend;
 	}
