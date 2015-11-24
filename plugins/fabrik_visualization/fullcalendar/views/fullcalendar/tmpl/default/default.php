@@ -35,7 +35,7 @@ $row = $this->row;
 	<div class="row-fluid">
 		<div class="span2">
 	<?php echo $this->loadTemplate('filter'); ?>
-		<?php if ($this->canAdd)
+		<?php if ($this->canAdd && $this->params->get('add_type', 'both') != 'dblClickOnly')
 		{
 		?>
 		<a href="#" class="addEventButton" title="Add an event"><?php echo FText::_('PLG_VISUALIZATION_FULLCALENDAR_ADD') ?></a>
