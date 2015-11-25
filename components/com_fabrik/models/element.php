@@ -164,6 +164,16 @@ class PlgFabrik_Element extends FabrikPlugin
 	public $inRepeatGroup = null;
 
 	/**
+	 * Is the element in a new group.
+	 *
+	 * Used by pre rendering / getGroupView so elements can set a default on new repeat groups,
+	 * even if it isn't a new record.
+	 *
+	 * @var bool
+	 */
+	public $newGroup = null;
+
+	/**
 	 * Default value
 	 *
 	 * @var string
@@ -7175,7 +7185,7 @@ class PlgFabrik_Element extends FabrikPlugin
 			if (get_class($this) === 'PlgFabrik_ElementFileupload' && $ajaxSubmit)
 			{
 				$allParams = array_key_exists('crop', $joinValues) ? array_values($joinValues['crop']) : array();
-				$joinValues = array_key_exists('id', $joinValues) ? array_keys($joinValues['id']) : array();
+				$joinValues = array_key_exists('id', $joinValues) ? array_keys($joinValues['id']) : $joinValues;
 			}
 
 			foreach ($joinValues as $jIndex => $jid)
