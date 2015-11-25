@@ -102,8 +102,8 @@ var FbList = new Class({
 			delete Fabrik.blocks['form_' + form.id];
 		});*/
 
-		// Reload state
-		if (!!(window.history && history.pushState) && history.state && this.options.ajax) {
+		// Reload state only if reset filters is not on
+		if (!this.options.resetFilters && ((window.history && history.pushState) && history.state && this.options.ajax)) {
 			this._updateRows(history.state);
 		}
 	},
@@ -548,16 +548,16 @@ var FbList = new Class({
 				if (h.tagName !== 'a') {
 					h = td.getElement('a');
 				}
-				
+
 				/**
 				 * Figure out what we need to change the icon from / to.  We don't know in advance for
 				 * bootstrapped templates what icons will be used, so the fabrik-order-header layout
 				 * will have set data-sort-foo properties of each of the three states.  Another wrinkle
 				 * is that we can't just set the new icon class blindly, because there may be other classes
 				 * on the icon.  For instancee BS3 using Font Awesome will have "fa fa-sort-foo".  So we have
-				 * to specifically remove the current class and add the new one. 
+				 * to specifically remove the current class and add the new one.
 				 */
-				
+
 				switch (h.className) {
 				case 'fabrikorder-asc':
 					newOrderClass = 'fabrikorder-desc';
@@ -593,7 +593,7 @@ var FbList = new Class({
 				h.className = newOrderClass;
 				var i = h.getElement('img');
 				var icon = h.firstElementChild;
-				
+
 				// Swap images - if list doing ajax nav then we need to do this
 				if (this.options.singleOrdering) {
 					document.id(this.options.form).getElements('.fabrikorder, .fabrikorder-asc, .fabrikorder-desc').each(function (otherH) {
@@ -932,11 +932,11 @@ var FbList = new Class({
 			};
 		var url = '';
 		data['limit' + this.id] = this.options.limitLength;
-		
+
 		if (extraData) {
 			Object.append(data, extraData);
 		}
-		
+
 		new Request({
 			'url': url,
 			'data': data,

@@ -104,6 +104,7 @@ class FabrikViewListBase extends FabrikView
 		$opts->links           = array('detail' => $params->get('detailurl', ''), 'edit' => $params->get('editurl', ''), 'add' => $params->get('addurl', ''));
 		$opts->filterMethod    = $this->filter_action;
 		$opts->advancedFilters = $model->getAdvancedFilterValues();
+		$opts->resetFilters    = (bool) FabrikWorker::getMenuOrRequestVar('resetfilters', 0, false, 'request');
 		$opts->form            = 'listform_' . $listRef;
 		$this->listref         = $listRef;
 		$opts->headings        = $model->jsonHeadings();
