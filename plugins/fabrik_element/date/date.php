@@ -1467,10 +1467,13 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 		 * This rather fugly chunk of code is needed to handle 'search all', where the filter data has already
 		 * been converted into textual AND format.
 		 */
-		if (strstr(FArrayHelper::getValue($data, $this->getFullName(true, false), ''), ' AND '))
+		$v = FArrayHelper::getValue($data, $this->getFullName(true, false), '');
+
+		if (is_string($v) && strstr($v, ' AND '))
 		{
-			foreach (explode(' AND ', FArrayHelper::getValue($data, $this->getFullName(true, false), array())) as $d) {
-				$return[] = $this->getROElement(trim($d,"'"));
+			foreach (explode(' AND ', FArrayHelper::getValue($data, $this->getFullName(true, false), array())) as $d)
+			{
+				$return[] = $this->getROElement(trim($d, "'"));
 			}
 
 			return FText::_('COM_FABRIK_BETWEEN') . '<br />' . implode('<br />' . FText::_('COM_FABRIK_AND') . "<br />", $return);

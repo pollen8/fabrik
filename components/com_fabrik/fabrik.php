@@ -107,7 +107,7 @@ else
 	}
 	else
 	{
-		$controller = $controllerName;
+		$controller = $cName === 'oai' ? $cName : $controllerName;
 	}
 
 	$path = JPATH_COMPONENT . '/controllers/' . $controller . '.php';

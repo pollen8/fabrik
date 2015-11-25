@@ -31,6 +31,11 @@ defined('_JEXEC') or die('Restricted access');
 	    		<?php echo FText::_('COM_FABRIK_GROUP_LABEL_CSV')?>
 	    	</a>
 	    </li>
+		<li>
+			<a data-toggle="tab" href="#publishing-oai">
+				<?php echo FText::_('COM_FABRIK_OPEN_ARCHIVE_INITIATIVE'); ?>
+			</a>
+		</li>
 	    <li>
 	    	<a data-toggle="tab" href="#publishing-search">
 	    		<?php echo FText::_('COM_FABRIK_GROUP_LABEL_SEARCH')?>
@@ -70,6 +75,16 @@ defined('_JEXEC') or die('Restricted access');
 			</fieldset>
 		</div>
 
+		<div class="tab-pane" id="publishing-oai">
+			<fieldset class="form-horizontal">
+				<div class="alert"><?php echo FText::_('COM_FABRIK_OPEN_ARCHIVE_INITIATIVE'); ?></div>
+				<?php foreach ($this->form->getFieldset('open_archive_initiative') as $this->field) :
+					echo $this->loadTemplate('control_group');
+				endforeach;
+				?>
+			</fieldset>
+		</div>
+
 		<div class="tab-pane" id="publishing-search">
 			<fieldset class="form-horizontal">
 				<div class="alert"><?php echo FText::_('COM_FABRIK_SPECIFY_ELEMENTS_IN_DETAILS_FILTERS'); ?></div>
@@ -79,5 +94,6 @@ defined('_JEXEC') or die('Restricted access');
 				?>
 			</fieldset>
 		</div>
+
 	</div>
 </div>

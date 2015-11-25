@@ -948,7 +948,7 @@ class FabrikFEModelList extends JModelForm
 		$fabrikDb = $this->getDb();
 		$this->setBigSelects();
 		$query = $this->buildQuery();
-
+//echo $query;
 		// $$$ rob - if merging joined data then we don't want to limit
 		// the query as we have already done so in buildQuery()
 		if ($this->mergeJoinedData() || $this->limitLength === -1)
@@ -2666,7 +2666,7 @@ class FabrikFEModelList extends JModelForm
 		$distinct = $params->get('distinct', true) ? 'DISTINCT' : '';
 
 		// $$$rob added raw as an option to fix issue in saving calendar data
-		if (trim($table->db_primary_key) != '' && (in_array($this->outputFormat, array('raw', 'html', 'feed', 'pdf', 'phocapdf', 'csv', 'word', 'yql'))))
+		if (trim($table->db_primary_key) != '' && (in_array($this->outputFormat, array('raw', 'html', 'feed', 'pdf', 'phocapdf', 'csv', 'word', 'yql', 'oai'))))
 		{
 			$sFields .= ', ';
 			$strPKey = $pk . ' AS ' . $db->qn('__pk_val') . "\n";
