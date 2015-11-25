@@ -110,6 +110,7 @@ var fabrikFullcalendar = new Class({
 			timeFormat: this.options.time_format,
 			defaultView: dView,
 			nextDayThreshold: "00:00:00",
+			firstDay: this.options.first_week_day,
 	    	eventSources: eventSources,
 	        // put your options and callbacks here
 	        eventClick: function (calEvent, jsEvent, view) {
