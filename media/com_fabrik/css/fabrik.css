@@ -711,3 +711,7 @@ form.fabrikForm label.radio {
 .heading.fabrik_ordercell, .fabrikTag {
 	white-space: nowrap;
 }
+
+.chzn-container {
+	text-align: start;
+}

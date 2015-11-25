@@ -4562,6 +4562,7 @@ class FabrikFEModelForm extends FabModelForm
 			$repeatGroup = 1;
 			$foreignKey = null;
 			$startHidden = false;
+			$newGroup = false;
 
 			if ($groupModel->canRepeat())
 			{
@@ -4571,6 +4572,12 @@ class FabrikFEModelForm extends FabModelForm
 				if (is_object($joinTable))
 				{
 					$repeatGroup = $groupModel->repeatCount();
+
+					if ($repeatGroup === 0)
+					{
+						$newGroup = true;
+						$repeatGroup = 1;
+					}
 
 					if (!$groupModel->fkPublished())
 					{
@@ -4590,6 +4597,8 @@ class FabrikFEModelForm extends FabModelForm
 					$repeatGroup = 1;
 					$startHidden = true;
 				}
+
+				$newGroup = false;
 			}
 
 			$groupModel->repeatTotal = $startHidden ? 0 : $repeatGroup;
@@ -4608,6 +4617,7 @@ class FabrikFEModelForm extends FabModelForm
 					 */
 					$elementModel->setFormModel($this);
 					$elementModel->tmpl = $tmpl;
+					$elementModel->newGroup = $newGroup;
 
 					/* $$$rob test don't include the element in the form is we can't use and edit it
 					 * test for captcha element when user logged in

@@ -1073,6 +1073,7 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 			$opts->filterid = $filterId;
 			$opts->elid = $this->getId();
 			$opts->def = $default;
+			$opts->advanced = $this->getAdvancedSelectClass();
 			$opts->noselectionvalue = $params->get('cascadingdropdown_noselectionvalue', '');
 			$opts->filterobj = 'Fabrik.filter_' . $container;
 			$opts = json_encode($opts);

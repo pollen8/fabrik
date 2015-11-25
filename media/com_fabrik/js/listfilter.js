@@ -117,6 +117,14 @@ var FbListFilter = new Class({
 				var mywin = Fabrik.getWindow(this.windowopts);
 			}.bind(this));
 		}
+		
+		if (this.filterContainer[0]) {
+			this.filterContainer[0].getElements('.advancedSelect').each(function (f) {
+				jQuery('#' + f.id).on('change', {changeEvent: 'change'}, function (event) {
+					document.id(this.id).fireEvent(event.data.changeEvent, new Event.Mock(event.data.changeEvent, document.id(this.id)));
+				});
+			});
+		}
 	},
 
 	getList: function () {

@@ -1548,7 +1548,7 @@ class FabrikFEModelGroup extends FabModel
 		if (!empty($elementModels))
 		{
 			$smallerElHTMLName = $tmpElement->getFullName(true, false);
-			$d = FArrayHelper::getValue($data, $smallerElHTMLName, 1);
+			$d = FArrayHelper::getValue($data, $smallerElHTMLName, array());
 
 			if (is_object($d))
 			{

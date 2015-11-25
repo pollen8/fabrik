@@ -392,10 +392,17 @@ class FabrikAdminModelElement extends FabModelAdmin
 		 */
 		if (!$input->get('unlink', false) && (int) $data['id'] === 0)
 		{
+			/**
+			 * @FIXME - if a repeat group is  created through the Group settings, we don't add the auto-created
+			 * table to the #_fabrik_lists table, so the following query obviously doesn't find it ... so we
+			 * barf when creating element in the repeat group with a "duplicate name", even though it's going
+			 * to be on a seperate table.
+			 */
 			$query = $db->getQuery(true);
 			$query->select('t.id')->from('#__{package}_joins AS j');
 			$query->join('INNER', '#__{package}_lists AS t ON j.table_join = t.db_table_name');
 			$query->where('group_id = ' . (int) $data['group_id'] . ' AND element_id = 0');
+			$sql = (string)$query;
 			$db->setQuery($query);
 			$joinTblId = (int) $db->loadResult();
 			$ignore    = array($data['id']);

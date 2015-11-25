@@ -21,26 +21,44 @@ $row = $this->row;
 	{?>
 		<h1><?php echo $row->label;?></h1>
 	<?php }?>
+
 	<?php if ($row->intro_text != '')
 	{?>
 	<div><?php echo $row->intro_text;?></div>
 	<?php }
 	?>
+
 	<div class='calendar-message'>
 
 	</div>
+	<?php echo $this->loadTemplate('filter'); ?>
 
-	<div id="calendar">
-	</div>
 	<div class="row-fluid">
 		<div class="span2">
-	<?php echo $this->loadTemplate('filter'); ?>
-		<?php if ($this->canAdd)
-		{
+
+			<?php if ($this->canAdd && $this->params->get('add_type', 'both') != 'dblClickOnly') :
+			?>
+			<div id="addEventButton" style='display:inline;'>
+			<a  href="#" class="btn btn-success addEventButton" title="Add an event"><i class="icon-plus"></i> <?php echo FText::_('PLG_VISUALIZATION_FULLCALENDAR_ADD') ?></a>
+			</div>
+			
+		<?php endif;
 		?>
-		<a href="#" class="addEventButton" title="Add an event"><?php echo FText::_('PLG_VISUALIZATION_FULLCALENDAR_ADD') ?></a>
-	<?php }
-	?>
 		</div>
+	<div id="calendar">
+	</div>
+	</div>
+	<div class='calendar-legend'>
+		<?php if ( $this->params->get('show_fullcalendar_legend', 0) ) {
+				$legends = $this->getModel()->getLegend(); 
+				echo "<h3>" . JText::_('PLG_VISUALIZATION_FULLCALENDAR_KEY') . "</h3>"; 
+				echo "<ul>";
+				foreach($legends as $legend){
+						echo '<li><div style="background-color: ' . $legend['colour'] . ';"></div>';
+						echo '<span>' . $legend['label'] . '</span>';
+						echo '</li>';
+				}
+				echo '</ul>';
+		}?>
 	</div>
 </div>

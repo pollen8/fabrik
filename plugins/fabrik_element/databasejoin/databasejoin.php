@@ -2158,6 +2158,8 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 				* So we'll just return an otherwise empty menu with just the 'select label'
 				*/
 				$rows = array();
+				$advancedClass = $this->getAdvancedSelectClass();
+				$class .= !empty($advancedClass) ? ' ' . $advancedClass : '';
 				array_unshift($rows, JHTML::_('select.option', '', $this->filterSelectLabel()));
 				$return[] = JHTML::_('select.genericlist', $rows, $v, 'class="' . $class . '" size="1" ', "value", 'text', $default, $htmlId);
 
@@ -2181,6 +2183,8 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 				$return[] = $this->checkboxFilter($rows, $default, $v);
 				break;
 			case 'dropdown':
+				$advancedClass = $this->getAdvancedSelectClass();
+				$class .= !empty($advancedClass) ? ' ' . $advancedClass : '';
 			default:
 			case '':
 			case 'multiselect':

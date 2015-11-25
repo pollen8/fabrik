@@ -57,18 +57,13 @@ if ($this->showFilters) {
 
 	<?php
 	$gCounter = 0;
-	foreach ($this->rows as $groupedby => $group) :?>
+	foreach ($this->rows as $groupedBy => $group) :?>
 	<?php
 	if ($this->isGrouped) :
 		$imgProps = array('alt' => FText::_('COM_FABRIK_TOGGLE'), 'data-role' => 'toggle', 'data-expand-icon' => 'fa fa-arrow-down', 'data-collapse-icon' => 'fa fa-arrow-right');
 	?>
 	<div class="fabrik_groupheading">
-		<a href="#" class="toggle">
-			<?php echo FabrikHelperHTML::image('arrow-down.png', 'list', $this->tmpl, $imgProps);?>
-			<span class="groupTitle">
-				<?php echo $this->grouptemplates[$groupedby]; ?> ( <?php echo count($group)?> )
-			</span>
-		</a>
+		<?php echo $this->layoutGroupHeading($groupedBy, $group); ?>
 	</div>
 	<?php
 	endif;
