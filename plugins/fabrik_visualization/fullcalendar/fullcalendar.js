@@ -93,7 +93,7 @@ var fabrikFullcalendar = new Class({
 		var dayFunction = function(){};
 		if (this.options.add_type != 'addOnly') {
 			dayFunction = function(date, cell) {
-	        	cell.bind('dblclick', {date: date}, function(e) {
+	        	cell.on('dblclick', {date: date}, function(e) {
 					var view = 'month';
 	        		self.openAddEvent(e, view,  e.data.date)
 	        	});
