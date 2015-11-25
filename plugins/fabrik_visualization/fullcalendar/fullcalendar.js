@@ -117,11 +117,13 @@ var fabrikFullcalendar = new Class({
 	        	return false;
 	        },
 	        dayRender: dayFunction,
+			viewRender:function(view, e) {
+				if (view.name == 'month' && self.options.greyscaledweekend == true) {
+					jQuery("td.fc-sat").css('background',"#f2f2f2");
+					jQuery("td.fc-sun").css('background',"#f2f2f2");
+				}
+			}
 		});
-		if (this.options.greyscaledweekend == true) {
-			jQuery("td.fc-sat").css('background',"#f2f2f2");
-			jQuery("td.fc-sun").css('background',"#f2f2f2");
-		}
 		
 	},
 	
