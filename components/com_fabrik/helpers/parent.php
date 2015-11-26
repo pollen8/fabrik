@@ -948,10 +948,8 @@ class FabrikWorker
 		{
 			$match = self::parseMessageForPlaceHolder('{' . $bits[0] . '}', $this->_searchData, false);
 
-			if ($match == '')
+			if (in_array($match, array('', '<ul></ul>', '<ul><li></li></ul>')))
 			{
-				// 	$$$ rob seems like bits[1] in fabrik plugin is already matched so return that rather then reparsing
-				// $match = self::parseMessageForPlaceHolder("{".$bits[1]."}", $this->_searchData);
 				return $bits[1] !== '' ? $bits[1] : $orig;
 			}
 			else
