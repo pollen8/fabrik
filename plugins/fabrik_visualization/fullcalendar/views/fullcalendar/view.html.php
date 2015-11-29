@@ -132,7 +132,8 @@ class FabrikViewFullcalendar extends JViewLegacy
 			FText::_('MAY_SHORT'), FText::_('JUNE_SHORT'), FText::_('JULY_SHORT'), FText::_('AUGUST_SHORT'), FText::_('SEPTEMBER_SHORT'),
 			FText::_('OCTOBER_SHORT'), FText::_('NOVEMBER_SHORT'), FText::_('DECEMBER_SHORT'));
 		$options->first_week_day = (int) $params->get('first_week_day', 0);
-
+		$options->minDuration = $params->get('minimum_duration', "00:30:00");
+/*
 		$options->monthday = new stdClass;
 		$options->monthday->width = (int) $params->get('calendar-monthday-width', 90);
 		$options->monthday->height = (int) $params->get('calendar-monthday-height', 80);
@@ -142,8 +143,10 @@ class FabrikViewFullcalendar extends JViewLegacy
 		$options->weekday = new stdClass;
 		$options->weekday->width = (int) $params->get('calendar-weekday-width', 90);
 		$options->weekday->height = (int) $params->get('calendar-weekday-height', 10);
-		$options->open = (int) $params->get('open-hour', 0);
-		$options->close = (int) $params->get('close-hour', 24);
+*/		
+		$options->open =  $params->get('open-hour', "00:00:00");
+		$options->close =  $params->get('close-hour', "24:00:00");
+		
 		$options->showweekends = (bool) $params->get('calendar-show-weekends', true);
 		$options->readonly = (bool) $params->get('calendar-read-only', false);
 		$options->timeFormat = $params->get('time_format', '%X');
@@ -215,6 +218,7 @@ class FabrikViewFullcalendar extends JViewLegacy
 		$document = JFactory::getDocument();
 		$lib = COM_FABRIK_LIVESITE . 'plugins/fabrik_visualization/fullcalendar/libs/fullcalendar/';
 		$document->addScript($lib . 'lib/moment.min.js');
+//		$document->addScript('//cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.6/moment.js');
 		$document->addScript($lib . 'fullcalendar.js');
 		
 		return parent::display();

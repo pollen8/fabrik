@@ -110,7 +110,7 @@ class FabrikControllerVisualizationfullcalendar extends FabrikControllerVisualiz
 	 */
 
 	public function addEvForm()
-	{
+	{ 
 		$app = JFactory::getApplication();
 		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$input = $app->input;
@@ -125,15 +125,18 @@ class FabrikControllerVisualizationfullcalendar extends FabrikControllerVisualiz
 		$prefix = $config->get('dbprefix');
 
 		if (array_key_exists($listid, $model->events))
-		{
-			$datefield = $model->events[$listid][0]['startdate'];
+		{ 
+			$startDateField = $model->events[$listid][0]['startdate'];
+			$endDateField = $model->events[$listid][0]['enddate'];
 		}
 		else
 		{
-			$datefield = $prefix . 'fabrik_calendar_events___start_date';
+			$startDateField = $prefix . 'fabrik_calendar_events___start_date';
+			$endDateField = $prefix . 'fabrik_calendar_events___end_date';
 		}
 
-		$datefield = FabrikString::safeColNameToArrayKey($datefield);
+		$startDateField = FabrikString::safeColNameToArrayKey($startDateField);
+		$endDateField = FabrikString::safeColNameToArrayKey($endDateField);
 		$rowid = $input->getString('rowid', '', 'string');
 		$listModel = JModelLegacy::getInstance('list', 'FabrikFEModel');
 		$listModel->setId($listid);
@@ -148,10 +151,15 @@ class FabrikControllerVisualizationfullcalendar extends FabrikControllerVisualiz
 		$link .= '&fabrik_window_id=' . $input->get('fabrik_window_id');
 
 		$start_date = $input->getString('start_date', '');
+		$end_date = $input->getString('end_date', '');
 
 		if (!empty($start_date))
 		{
-			$link .= "&$datefield=" . $start_date;
+			$link .= "&$startDateField=" . $start_date;
+		}
+		if (!empty($end_date))
+		{
+			$link .= "&$endDateField=" . $end_date;
 		}
 
 		// $$$ rob have to add this to stop the calendar filtering itself after adding an new event?

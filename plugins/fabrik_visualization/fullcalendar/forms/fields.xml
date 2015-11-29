@@ -178,9 +178,16 @@
 				type="text"
 				class="input-small"
 				default="H(:mm)"
-				description="PLG_VISUALIAZATION_FULLCALENDAR_TIME_FORMAT_DESC"
-				label="PLG_VISUALIAZATION_FULLCALENDAR_TIME_FORMAT_LABEL" />
+				description="PLG_VISUALIZATION_FULLCALENDAR_TIME_FORMAT_DESC"
+				label="PLG_VISUALIZATION_FULLCALENDAR_TIME_FORMAT_LABEL" />
 
+			<field name="minimum_duration"
+				type="text"
+				class="input-small"
+				default="00:30:00"
+				description="PLG_VISUALIZATION_FULLCALENDAR_MINIMUM_DURATION_DESC"
+				label="PLG_VISUALIZATION_FULLCALENDAR_MINIMUM_DURATION_LABEL" />
+				
 			<field name="fullcalendar_show_messages"
 				type="radio"
 				default="1"
@@ -194,22 +201,6 @@
 		</fieldset>
 	
 		<fieldset label="PLG_VISUALIZATION_FULLCALENDAR_MONTH_VIEW_OPTIONS" name="plg-visualization-fullcalendar-monthview">
-		
-			<field name="fullcalendar-monthday-width"
-				 type="text"
-				class="input-mini"
-				default="90"
-				description="PLG_VISUALIZATION_FULLCALENDAR_MONTH_DAY_WIDTH_LABEL"
-				label="PLG_VISUALIZATION_FULLCALENDAR_MONTH_DAY_WIDTH_LABEL"
-				size="3" />
-				
-			<field name="fullcalendar-monthday-height"
-				class="input-mini"
-				type="text"
-				default="80"
-				description="PLG_VISUALIZATION_FULLCALENDAR_MONTH_DAY_HEIGHT_DESC"
-				label="PLG_VISUALIZATION_FULLCALENDAR_MONTH_DAY_HEIGHT_LABEL"
-				size="3"/>
 				
 			<field name="greyscaled-week-end"
 				type="radio"
@@ -253,19 +244,19 @@
 				
 			<field name="open-hour"
 				class="input-mini"
-				default="0"
+				default="00:00:00"
 				description="PLG_VISUALIZATION_FULLCALENDAR_OPEN_HOUR_DESC"
 				label="PLG_VISUALIZATION_FULLCALENDAR_OPEN_HOUR_LABEL"
-				size="3"
+				size="8"
 				type="text"/>
 					
 			<field name="close-hour"
 				type="text"
 				class="input-mini"
-				default="24"
+				default="24:00:00"
 				description="PLG_VISUALIZATION_FULLCALENDAR_CLOSE_HOUR_DESC"
 				label="PLG_VISUALIZATION_FULLCALENDAR_CLOSE_HOUR_LABEL"
-				size="3" />
+				size="8" />
 			
 			<field name="fullcalendar-show-weekends"
 				type="radio"
