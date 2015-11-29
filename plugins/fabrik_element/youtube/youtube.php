@@ -90,7 +90,8 @@ class PlgFabrik_ElementYoutube extends PlgFabrik_Element
 			$layoutData = new stdClass;
 			$layoutData->id = $id;
 			$layoutData->name = $name;
-			$layoutData->class = $class;;
+			$layoutData->class = $class;
+			$layoutData->value = $value;
 			$layoutData->size = $params->get('width');
 			$layoutData->maxlength = 255;
 
