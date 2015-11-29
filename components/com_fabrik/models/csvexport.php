@@ -100,7 +100,8 @@ class FabrikFEModelCSVExport extends FabModel
 				exit;
 			}
 
-			$str = '';
+			//Excel needs BOM
+			$str = $input->get('excel') == 1 ? "\xEF\xBB\xBF" : '';
 		}
 
 		$table = $this->model->getTable();
