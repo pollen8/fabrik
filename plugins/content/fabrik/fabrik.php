@@ -701,9 +701,9 @@ class PlgContentFabrik extends JPlugin
 	/**
 	 * Get the model
 	 *
-	 * @param   object &$controller controller
-	 * @param   string $viewName    view name
-	 * @param   int    $id          item id
+	 * @param   JControllerLegacy &$controller Controller
+	 * @param   string            $viewName    View name
+	 * @param   int               $id          Item id
 	 *
 	 * @return  mixed    JModel or false
 	 */

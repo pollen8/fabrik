@@ -932,6 +932,7 @@ class FabrikFEModelList extends JModelForm
 		$args->data =& $this->data;
 
 		$pluginManager->runPlugins('onLoadData', $this, 'list', $args);
+		$pluginManager->runPlugins('onLoadListData', $this->getFormModel(), 'form', $args);
 
 		return $this->data;
 	}
@@ -6451,53 +6452,6 @@ class FabrikFEModelList extends JModelForm
 					$displayData->label = $label;
 					$layout = FabrikHelperHTML::getLayout('list.fabrik-order-heading');
 					$heading = $layout->render($displayData);
-
-					/*
-					$class = '';
-					return $layout->render($displayData);
-					}
-					switch ($orderDir)
-					{
-						case 'desc':
-							$orderDir = '-';
-							$class = 'class="fabrikorder-desc"';
-							$img = FabrikHelperHTML::image('arrow-up.png', 'list', $tmpl, array('alt' => FText::_('COM_FABRIK_ORDER')));
-							break;
-						case 'asc':
-							$orderDir = 'desc';
-							$class = 'class="fabrikorder-asc"';
-							$img = FabrikHelperHTML::image('arrow-down.png', 'list', $tmpl, array('alt' => FText::_('COM_FABRIK_ORDER')));
-							break;
-						case '':
-						case '-':
-							$orderDir = 'asc';
-							$class = 'class="fabrikorder"';
-							$img = FabrikHelperHTML::image('menu-2.png', 'list', $tmpl, array('alt' => FText::_('COM_FABRIK_ORDER')));
-							break;
-					}
-
-					if ($class === '')
-					{
-						if (in_array($key, $orderBys))
-						{
-							if ($item->order_dir === 'desc')
-							{
-								$class = 'class="fabrikorder-desc"';
-								$img = FabrikHelperHTML::image('orderdesc.png', 'list', $tmpl, array('alt' => FText::_('COM_FABRIK_ORDER')));
-							}
-						}
-					}
-
-					if ($elementParams->get('can_order', false))
-					{
-						$heading = '<a ' . $displayData->class . ' href="#">' . $img . $label . '</a>';
-					}
-					else
-					{
-						$img = $orderDir === 'asc' ? '' : $img;
-						$heading = $img . $label;
-					}
-					*/
 				}
 				else
 				{
@@ -6636,6 +6590,7 @@ class FabrikFEModelList extends JModelForm
 		$args['data'] = $this->data;
 
 		FabrikWorker::getPluginManager()->runPlugins('onGetPluginRowHeadings', $this, 'list', $args);
+		FabrikWorker::getPluginManager()->runPlugins('onGetPluginRowHeadings', $this->getFormModel(), 'form', $args);
 
 		return array($aTableHeadings, $groupHeadings, $headingClass, $cellClass);
 	}
@@ -8848,7 +8803,7 @@ class FabrikFEModelList extends JModelForm
 	 *
 	 * @return  string  link
 	 */
-	protected function viewDetailsLink(&$row, $view = null)
+	public function viewDetailsLink(&$row, $view = null)
 	{
 		$package = $this->app->getUserState('com_fabrik.package', 'fabrik');
 		$itemId = FabrikWorker::itemId();
@@ -8953,11 +8908,11 @@ class FabrikFEModelList extends JModelForm
 	/**
 	 * Get the link to edit the records details
 	 *
-	 * @param   object  &$row  active table row
+	 * @param   object  &$row  Active table row
 	 *
-	 * @return  string  url of view details link
+	 * @return  string  Url of view details link
 	 */
-	protected function editLink(&$row)
+	public function editLink(&$row)
 	{
 		$package = $this->app->getUserState('com_fabrik.package', 'fabrik');
 		$itemId = FabrikWorker::itemId();

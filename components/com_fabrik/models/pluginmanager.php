@@ -283,7 +283,7 @@ class FabrikFEModelPluginmanager extends FabModel
 	 *
 	 * @throws RuntimeException
 	 *
-	 * @return  mixed	False if not loaded - otherwise plugin object
+	 * @return  FabrikPlugin Plugin object
 	 */
 	public function loadPlugIn($className = '', $group = '')
 	{
