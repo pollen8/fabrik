@@ -820,7 +820,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 		// Used uniquely in reset();
 		$opts->defaultVal     = $this->getFrontDefaultValue();
 		$opts->showtime       = (!$element->hidden && $params->get('date_showtime', 0)) ? true : false;
-		$opts->timelabel      = FText::_('time');
+		$opts->timelabel      = FText::_('PLG_ELEMENT_DATE_TIME_LABEL', true);
 		$opts->typing         = (bool) $params->get('date_allow_typing_in_field', true);
 		$opts->timedisplay    = $params->get('date_timedisplay', 1);
 		$opts->dateTimeFormat = $params->get('date_time_format', '');
