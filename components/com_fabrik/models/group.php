@@ -1446,18 +1446,8 @@ class FabrikFEModelGroup extends FabModel
 		 * Get the original row ids. We can ONLY delete from within this set. This
 		 * allows us to respect and prefilter that was applied to the list's data.
 		 */
-		$groupId = $this->getId();
 
-		/**
-		 * $$$ hugh - nooooo, on AJAX submit, request array hasn't been urldecoded, but formData has.
-		 * So in the request it's still hex-ified JSON.  Leaving this line and comment in here as a
-		 * reminder to self we may have other places this happens.
-		 * $origGroupRowsIds = $input->get('fabrik_group_rowids', array(), 'array');
-		 */
-
-		$origGroupRowsIds = FArrayHelper::getValue($formModel->formData, 'fabrik_group_rowids', array());
-		$origGroupRowsIds = FArrayHelper::getValue($origGroupRowsIds, $groupId, array());
-		$origGroupRowsIds = json_decode($origGroupRowsIds);
+		$origGroupRowsIds = $this->getOrigGroupRowsIds();
 
 		/*
 		 * Find out which keys were origionally in the form, but were not submitted
@@ -1498,6 +1488,20 @@ class FabrikFEModelGroup extends FabModel
 		$db->setQuery($query);
 
 		return $db->execute();
+	}
+
+	/**
+	 * Get original group Ids from form metadata
+	 */
+	public function getOrigGroupRowsIds()
+	{
+		$groupId = $this->getId();
+		$formModel = $this->getFormModel();
+		$origGroupRowsIds = FArrayHelper::getValue($formModel->formData, 'fabrik_group_rowids', array());
+		$origGroupRowsIds = FArrayHelper::getValue($origGroupRowsIds, $groupId, array());
+		$origGroupRowsIds = json_decode($origGroupRowsIds);
+
+		return $origGroupRowsIds;
 	}
 
 	/**
