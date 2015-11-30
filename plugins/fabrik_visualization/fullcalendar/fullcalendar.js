@@ -90,16 +90,26 @@ var fabrikFullcalendar = new Class({
 			default:
 				break;
 		}
-		var dayFunction = function(){};
-		if (this.options.add_type != 'addOnly') {
-			dayFunction = function(date, cell) {
-	        	cell.on('dblclick', {date: date}, function(e) {
-					var view = 'month';
-	        		self.openAddEvent(e, view,  e.data.date)
-	        	});
-	        }
-		}
 			
+		var slotMoment = null, slotView = null;
+    
+		function dayClickCallback(date, e, view){
+			slotMoment = date;
+			slotView = view.name;
+			jQuery("#calendar").on("mousemove", forgetSlot);
+		}
+
+		function forgetSlot(){
+			slotMoment = slotView = null;
+			jQuery("#calendar").off("mousemove", forgetSlot);
+		}
+
+		jQuery("#calendar").dblclick(function(e) {
+			if(slotMoment){
+	        	self.openAddEvent(e, slotView,  slotMoment);
+			}
+		});
+
 	    jQuery('#calendar').fullCalendar({
 			header: {
 				left: 'prev,next today',
@@ -110,19 +120,24 @@ var fabrikFullcalendar = new Class({
 			timeFormat: this.options.time_format,
 			defaultView: dView,
 			nextDayThreshold: "00:00:00",
+			firstDay: this.options.first_week_day,
 	    	eventSources: eventSources,
 	        // put your options and callbacks here
 	        eventClick: function (calEvent, jsEvent, view) {
 	        	self.viewEntry(calEvent);
 	        	return false;
 	        },
-	        dayRender: dayFunction,
+			defaultTimedEventDuration: this.options.minDuration,
+			dayClick: dayClickCallback,
 			viewRender:function(view, e) {
 				if (view.name == 'month' && self.options.greyscaledweekend == true) {
 					jQuery("td.fc-sat").css('background',"#f2f2f2");
 					jQuery("td.fc-sun").css('background',"#f2f2f2");
 				}
-			}
+			},
+			minTime: this.options.open, // a start time (10am in this example)
+			maxTime : this.options.close // an end time (6pm in this example)
+
 		});
 		
 	},
@@ -167,9 +182,11 @@ var fabrikFullcalendar = new Class({
 		}
 		
 		url += '&fabrik_window_id=' + this.windowopts.id;
-
-		if (typeof(this.doubleclickdate) !== 'undefined') {
-			url += '&start_date=' + this.doubleclickdate;
+		if (typeof(this.clickdate) !== 'undefined') {
+			/* First add the default minimum duration to the end date */
+			var minDur = jQuery('#calendar').fullCalendar('option', 'defaultTimedEventDuration').split(":");
+			var endDate = moment(this.clickdate).add({h:minDur[0], m:minDur[1], s:minDur[2]}).format('YYYY-MM-DD HH:mm:ss');
+			url += '&start_date=' + this.clickdate + '&end_date=' + endDate;
 		}
 		
 		this.windowopts.type = 'window';
@@ -211,90 +228,72 @@ var fabrikFullcalendar = new Class({
 	 * @param e    Event
 	 * @param view The view which triggered the opening
 	 */
-	openAddEvent: function (e, view, moment)
+	openAddEvent: function (e, view, theMoment)
 	{
-		var rawd, day, hour, min, m, o, now, thisDay;
+		var rawd, day, hour, min, m, y, o, now, theDay;
 
 		if (this.options.canAdd === false) {
 			return;
 		}
 		
-		if (this.options.viewType === 'monthView' && this.options.readonlyMonth === true) {
+		if (view == 'month' && this.options.readonlyMonth === true) {
 			return;
 		}
 
-		if (e.type != 'dblclick')
-			e.stop();
-		
-		if (e.target.hasClass('addEventButton')) {
-			now = new Date();
-			rawd = now.getTime();
+		switch (e.type) {
+			case 'dblclick':
+				theDay = theMoment;
+				break;
+			case 'click':
+				e.stop();
+				theDay = moment();
+				break;
+			default:
+				alert('Unknown event in OpenAddEvent: ' + e.type);
+				return;
+		}
+		if (view == 'month') {
+			hour = min = "00";
 		} else {
-			//rawd = this._getTimeFromClassName(e.target.className);
-			now = new Date();
-			now = moment.toDate();
-			rawd = now.getTime();
+			/* in week/day views use the time where the mouse was clicked */
+			hour = ((hour = theDay.hour()) < 10) ? "0" + hour : hour;
+			min = ((min = theDay.minute()) < 10) ? "0" + min : min;
 		}
-		
-		if (!this.dateInLimits(rawd)) {
+		day = ((day = theDay.date()) < 10) ? "0" + day : day;
+		m = ((m = (theDay.month()+1)) < 10) ? "0" + m : m;
+		y = theDay.year();
+
+		this.clickdate = y + "-" + m + "-" + day + " " + hour + ":" + min + ":00";
+		if (e.type == 'dblclick' && !this.dateInLimits(this.clickdate)) {
 			return;
-		}
-		
-		if (e.target.get('data-date')) {
-			console.log('data-date = ', e.target.get('data-date'));
-			
-		}
-		this.date.setTime(rawd);
-		d = 0;
-		if (!isNaN(rawd) && rawd !== '') {
-			thisDay = new Date();
-			thisDay.setTime(rawd);
-			m = thisDay.getMonth() + 1;
-			m = (m < 10) ? "0" + m : m;
-			day = thisDay.getDate();
-			day = (day <  10) ? "0" + day : day;
-			
-			if (view !== 'month') {
-				hour = thisDay.getHours();
-				hour = (hour <  10) ? "0" + hour : hour;
-				min = thisDay.getMinutes();
-				min = (min <  10) ? "0" + min : min;
-			} else {
-				hour = '00';
-				min = '00';
-			}
-			
-			this.doubleclickdate = thisDay.getFullYear() + "-" + m + "-" + day + ' ' + hour + ':' + min + ':00';
-			d = '&jos_fabrik_calendar_events___start_date=' + this.doubleclickdate;
 		}
 
 		if (this.options.eventLists.length > 1) {
-			this.openChooseEventTypeForm(this.doubleclickdate, rawd);
+			this.openChooseEventTypeForm(this.clickdate, rawd);
 		} else {
 			o = {};
 			o.rowid = '';
 			o.id = '';
-			d = '&' + this.options.eventLists[0].startdate_element + '=' + this.doubleclickdate;
+//			d = '&' + this.options.eventLists[0].startdate_element + '=' + this.clickdate;
 			o.listid = this.options.eventLists[0].value;
 			this.addEvForm(o);
 		}
 	},
 	
-	dateInLimits: function (time) {
-		var d = new Date();
-		d.setTime(time);
+	dateInLimits: function (date) {
+		var d = new moment(date);
 		
 		if (this.options.dateLimits.min !== '') {
-			var min = new Date(this.options.dateLimits.min);
-			if (d < min) {
+			var min = new moment(this.options.dateLimits.min);
+			if (d.isBefore(min)) {
 				alert(Joomla.JText._('PLG_VISUALIZATION_FULLCALENDAR_DATE_ADD_TOO_EARLY'));
 				return false;
 			}
 		}
 		
 		if (this.options.dateLimits.max !== '') {
-			var max = new Date(this.options.dateLimits.max);
-			if (d > max) {
+			var max = new moment(this.options.dateLimits.max);
+			if (d.isAfter(max)) {
 				alert(Joomla.JText._('PLG_VISUALIZATION_FULLCALENDAR_DATE_ADD_TOO_LATE'));
 				return false;
 			}

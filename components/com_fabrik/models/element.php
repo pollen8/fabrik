@@ -1427,6 +1427,11 @@ class PlgFabrik_Element extends FabrikPlugin
 				$name .= '_raw';
 			}
 
+			/**
+			 * @FIXME - if an element is NULL in the table, we will be applying the default even if this
+			 * isn't a new form.  Probaby needs to be a global option, although not entirely sure what
+			 * we would set it to ...
+			 */
 			$values = FArrayHelper::getValue($data, $name, $default);
 
 			// Querystring override (seems on http://fabrikar.com/subscribe/form/22 querystring var was not being set into $data)

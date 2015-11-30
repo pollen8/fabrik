@@ -531,6 +531,18 @@
 				label="COM_FABRIK_FIELD_SEF_SLUG_LABEL"
 				description="COM_FABRIK_FIELD_SEF_SLUG_DESC"
 			/>
+			
+			<field name="show-table-picker"
+				type="radio"
+				class="btn-group"
+				default="1"
+				description="COM_FABRIK_FIELD_SHOW_TABLE_PICKER_DESC"
+				label="COM_FABRIK_FIELD_SHOW_TABLE_PICKER_LABEL"
+			>
+				<option value="0">JNO</option>
+				<option value="1">JYES</option>
+			</field>
+			
 
 		</fieldset>
 
