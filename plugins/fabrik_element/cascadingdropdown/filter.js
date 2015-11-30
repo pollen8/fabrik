@@ -11,7 +11,7 @@ var CascadeFilter = new Class({
 		this.observer = document.id(observerid);
 		// autocompletes don't have an id on the hidden value field, but have it as class
 		if (!this.observer) {
-			this.observer = document.getElements("." + observerid);
+			this.observer = document.getElements('.' + observerid);
 			if (this.observer) {
 				this.observer = this.observer[0];
 			}
@@ -100,7 +100,7 @@ var CascadeFilter = new Class({
 		document.id(this.options.filterid).value = this.options.noselectionvalue;
 		if (this.options.advanced)
 		{
-			jQuery("#" + this.options.filterid).trigger("liszt:updated");
+			jQuery('#' + this.options.filterid).trigger('liszt:updated');
 		}
 	}
 });
