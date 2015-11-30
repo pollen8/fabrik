@@ -52,14 +52,15 @@ class PlgFabrik_FormSalesforce extends PlgFabrik_Form
 	/**
 	 * Sets up HTML to be injected into the form's bottom
 	 *
+	 * @throws Exception
+	 *
 	 * @return void
 	 */
-
 	public function getBottomContent()
 	{
 		if (!class_exists('SoapClient'))
 		{
-			JError::raiseWarning(E_WARNING, FText::_('PLG_FORM_SALESFORCE_ERR_SOAP_NOT_INSTALLED'));
+			throw new Exception(FText::_('PLG_FORM_SALESFORCE_ERR_SOAP_NOT_INSTALLED'));
 		}
 	}
 
