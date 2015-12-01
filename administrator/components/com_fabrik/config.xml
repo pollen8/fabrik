@@ -2,6 +2,11 @@
 <config>
 	<fieldset label="COM_FABRIK_GLOBAL" name="global">
 
+		<field name="fabrik_product_key"
+		       type="text"
+		       description="COM_FABRIK_FIELD_PRODUCT_KEY_DESC"
+		       label="COM_FABRIK_FIELD_PRODUCT_KEY_LABEL" />
+
 		<field name="enable_big_selects"
 			class="radio btn-group"
 			type="radio"
