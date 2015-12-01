@@ -82,7 +82,6 @@ var CascadeFilter = new Class({
 		document.id(this.options.filterid).empty();
 		json.each(function (item) {
 			new Element('option', {'value': item.value}).appendText(item.text).inject(document.id(this.options.filterid));
-			document.id(this.options.filterid).value = this.options.def;
 		}.bind(this));
 		if (json.length > 0) {
 			if ((json.length === 1 && json[0].value === this.options.noselectionvalue) === false) {
@@ -97,7 +96,7 @@ var CascadeFilter = new Class({
 	{
 		document.id(this.options.filterid + '_loading').setStyle('opacity', '0');
 		clearInterval(this.periodical);
-		document.id(this.options.filterid).value = this.options.noselectionvalue;
+		document.id(this.options.filterid).value = this.options.def;
 		if (this.options.advanced)
 		{
 			jQuery('#' + this.options.filterid).trigger('liszt:updated');
