@@ -2149,23 +2149,6 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 				$r->text = strip_tags($r->text);
 			}
 
-			if (!$rows)
-			{
-				/* $$$ hugh - let's not raise a warning, as there are valid cases where a join may not yield results, see
-				 * http://fabrikar.com/forums/showthread.php?p=100466#post100466
-				* JError::raiseWarning(500, 'database join filter query incorrect');
-				* Moved warning to element model filterValueList_Exact()
-				* So we'll just return an otherwise empty menu with just the 'select label'
-				*/
-				$rows = array();
-				$advancedClass = $this->getAdvancedSelectClass();
-				$class .= !empty($advancedClass) ? ' ' . $advancedClass : '';
-				array_unshift($rows, JHTML::_('select.option', '', $this->filterSelectLabel()));
-				$return[] = JHTML::_('select.genericlist', $rows, $v, 'class="' . $class . '" size="1" ', "value", 'text', $default, $htmlId);
-
-				return implode("\n", $return);
-			}
-
 			$this->unmergeFilterSplits($rows);
 			$this->reapplyFilterLabels($rows);
 
