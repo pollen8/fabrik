@@ -15,10 +15,8 @@ var FbFileUpload = new Class({
 			this.ajaxFolder();
 		}
 
-		// New "work in progress" feature using HTML5 to show new (image file) selection in browser
-		if (this.options.useWIP && !this.options.ajax_upload && this.options.editable !== false) {
-			this.watchBrowseButton();
-		}
+		this.doBrowseEvent = null;
+		this.watchBrowseButton();
 
 		if (this.options.ajax_upload && this.options.editable !== false) {
 			Fabrik.fireEvent('fabrik.fileupload.plupload.build.start', this);
@@ -44,6 +42,7 @@ var FbFileUpload = new Class({
 			this.redraw();
 		}
 
+		this.doDeleteEvent = null;
 		this.watchDeleteButton();
 		this.watchTab();
 	},
@@ -71,77 +70,122 @@ var FbFileUpload = new Class({
 		}
 	},
 
-	watchBrowseButton: function () {
+	doBrowse: function (evt) {
 		if (window.File && window.FileReader && window.FileList && window.Blob) {
-			document.id(this.element.id).addEvent('change', function (evt) {
-				var reader;
-				var files = evt.target.files;
-				var f = files[0];
+			var reader;
+			var files = evt.target.files;
+			var f = files[0];
 
-				// Only process image files.
-				if (f.type.match('image.*')) {
-					reader = new FileReader();
-					// Closure to capture the file information.
-					reader.onload = (function (theFile) {
-						return function (e) {
-							var c = this.getContainer();
-							if (!c) {
-								return;
-							}
-							var b = c.getElement('img');
-							b.src = e.target.result;
-							var d = b.findClassUp('fabrikHide');
-							if (d) {
-								d.removeClass('fabrikHide');
-							}
-							var db = c.getElement('[data-file]');
-							if (db) {
-								db.addClass('fabrikHide');
-							}
-						}.bind(this);
-					}.bind(this))(f);
-					// Read in the image file as a data URL.
-					reader.readAsDataURL(f);
+			// Only process image files.
+			if (f.type.match('image.*')) {
+				reader = new FileReader();
+				// Closure to capture the file information.
+				reader.onload = (function (theFile) {
+					return function (e) {
+						var c = this.getContainer();
+						if (!c) {
+							return;
+						}
+						var b = c.getElement('img');
+						b.src = e.target.result;
+						var d = b.findClassUp('fabrikHide');
+						if (d) {
+							d.removeClass('fabrikHide');
+						}
+						var db = c.getElement('[data-file]');
+						if (db) {
+							db.addClass('fabrikHide');
+						}
+					}.bind(this);
+				}.bind(this))(f);
+				// Read in the image file as a data URL.
+				reader.readAsDataURL(f);
+			}
+			else if (f.type.match('video.*'))
+			{
+				var c = this.getContainer();
+				if (!c) {
+					return;
 				}
-				else if (f.type.match('video.*'))
-				{
-					var c = this.getContainer();
-					if (!c) {
-						return;
-					}
 
-					var video = c.getElement('video');
-					if (!video) {
-						video = this.makeVideoPreview();
-						video.inject(c, 'inside');
-					}
-
-					reader = new window.FileReader();
-					var url;
-
-					reader = window.URL || window.webKitURL;
-
-					if (reader && reader.createObjectURL) {
-						url = reader.createObjectURL(f);
-						video.src = url;
-						return;
-					}
-
-					if (!window.FileReader) {
-						console.log('Sorry, not so much');
-						return;
-					}
-
-					reader = new window.FileReader();
-					reader.onload = function (eo) {
-						video.src = eo.target.result;
-					};
-					reader.readAsDataURL(f);
+				var video = c.getElement('video');
+				if (!video) {
+					video = this.makeVideoPreview();
+					video.inject(c, 'inside');
 				}
-			}.bind(this));
+
+				reader = new window.FileReader();
+				var url;
+
+				reader = window.URL || window.webKitURL;
+
+				if (reader && reader.createObjectURL) {
+					url = reader.createObjectURL(f);
+					video.src = url;
+					return;
+				}
+
+				if (!window.FileReader) {
+					console.log('Sorry, not so much');
+					return;
+				}
+
+				reader = new window.FileReader();
+				reader.onload = function (eo) {
+					video.src = eo.target.result;
+				};
+				reader.readAsDataURL(f);
+			}
+		}
+	},
+	
+	watchBrowseButton: function () {
+		if (this.options.useWIP && !this.options.ajax_upload && this.options.editable !== false) {
+			document.id(this.element.id).removeEvent('change', this.doBrowseEvent);
+			this.doBrowseEvent = this.doBrowse.bind(this);
+			document.id(this.element.id).addEvent('change', this.doBrowseEvent);			
 		}
 	},
 
+	/**
+	 * Called from watchDeleteButton
+	 */
+	doDelete: function (e) {
+		e.stop();
+		var c = this.getContainer();
+		if (!c) {
+			return;
+		}
+		var b = c.getElement('[data-file]');
+		if (window.confirm(Joomla.JText._('PLG_ELEMENT_FILEUPLOAD_CONFIRM_SOFT_DELETE'))) {
+			var joinPkVal = b.get('data-join-pk-val');
+			new Request({
+				url: '',
+				data: {
+					'option': 'com_fabrik',
+					'format': 'raw',
+					'task': 'plugin.pluginAjax',
+					'plugin': 'fileupload',
+					'method': 'ajax_clearFileReference',
+					'element_id': this.options.id,
+					'formid': this.form.id,
+					'rowid': this.form.options.rowid,
+					'joinPkVal': joinPkVal
+				},
+				onComplete: function () {
+					Fabrik.fireEvent('fabrik.fileupload.clearfileref.complete', this);
+				}.bind(this)
+			}).send();
+
+			if (window.confirm(Joomla.JText._('PLG_ELEMENT_FILEUPLOAD_CONFIRM_HARD_DELETE'))) {
+				this.makeDeletedImageField(this.groupid, b.get('data-file')).inject(this.getContainer(), 'inside');
+				Fabrik.fireEvent('fabrik.fileupload.delete.complete', this);
+			}
+
+			b.destroy();
+		}		
+	},
+	
 	/**
 	 * Single file uploads can allow the user to delee the reference and/or file
 	 */
@@ -152,39 +196,9 @@ var FbFileUpload = new Class({
 		}
 		var b = c.getElement('[data-file]');
 		if (typeOf(b) !== 'null') {
-			b.addEvent('click', function (e) {
-				e.stop();
-				if (window.confirm(Joomla.JText._('PLG_ELEMENT_FILEUPLOAD_CONFIRM_SOFT_DELETE'))) {
-					var joinPkVal = b.get('data-join-pk-val');
-					new Request({
-						url: '',
-						data: {
-							'option': 'com_fabrik',
-							'format': 'raw',
-							'task': 'plugin.pluginAjax',
-							'plugin': 'fileupload',
-							'method': 'ajax_clearFileReference',
-							'element_id': this.options.id,
-							'formid': this.form.id,
-							'rowid': this.form.options.rowid,
-							'joinPkVal': joinPkVal
-						},
-						onComplete: function () {
-							Fabrik.fireEvent('fabrik.fileupload.clearfileref.complete', this);
-						}.bind(this)
-					}).send();
-
-					if (window.confirm(Joomla.JText._('PLG_ELEMENT_FILEUPLOAD_CONFIRM_HARD_DELETE'))) {
-						this.makeDeletedImageField(this.groupid, b.get('data-file')).inject(this.getContainer(), 'inside');
-						Fabrik.fireEvent('fabrik.fileupload.delete.complete', this);
-					}
-
-					var delete_span = document.id(this.element.id + '_delete_span');
-					if (delete_span) {
-						delete_span.destroy();
-					}
-				}
-			}.bind(this));
+			b.removeEvent('click', this.doDeleteEvent);
+			this.doDeleteEvent = this.doDelete.bind(this);
+			b.addEvent('click', this.doDeleteEvent);
 		}
 	},
 
@@ -220,18 +234,23 @@ var FbFileUpload = new Class({
 		}
 		var i = this.element.getParent('.fabrikElement').getElement('img');
 		if (i) {
-			i.src = Fabrik.liveSite + this.options.defaultImage;
+			i.src = this.options.defaultImage !== '' ? Fabrik.liveSite + this.options.defaultImage : '';
 		}
+		var c = this.getContainer();
+		if (c) {
+			var b = c.getElement('[data-file]');
+			if (b) {
+				b.destroy();
+			}
+		}
+		this.watchBrowseButton();
 		this.parent(c);
 	},
 
 	decloned: function (groupid) {
-		var f = document.id('form_' + this.form.id);
-
-		// erm fabrik_deletedimages is never created why test?
-		var i = f.getElement('input[name=fabrik_deletedimages[' + groupid + ']');
+		var i = this.form.form.getElement('input[name=fabrik_deletedimages[' + groupid + ']');
 		if (typeOf(i) === 'null') {
-			this.makeDeletedImageField(groupid, this.options.value).inject(f);
+			this.makeDeletedImageField(groupid, this.options.value).inject(this.form.form);
 		}
 	},
 

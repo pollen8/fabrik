@@ -10123,6 +10123,7 @@ class FabrikFEModelList extends JModelForm
 		$canRepeatsKeys = array();
 		$canRepeatsPkValues = array();
 		$remove = array();
+		$first_pk_i = array();
 
 		if (empty($data))
 		{
@@ -10211,7 +10212,9 @@ class FabrikFEModelList extends JModelForm
 			// $$$rob if rendering J article in PDF format __pk_val not in pdf table view
 			$next_pk = isset($data[$i]->__pk_val) ? $data[$i]->__pk_val : $data[$i]->$dbPrimaryKey;
 
-			if (!empty($last_pk) && ($last_pk == $next_pk))
+
+			//if (!empty($last_pk) && ($last_pk == $next_pk))
+			if (array_key_exists($next_pk, $first_pk_i))
 			{
 				foreach ($data[$i] as $key => $val)
 				{
@@ -10255,22 +10258,24 @@ class FabrikFEModelList extends JModelForm
 								* $$$ hugh - added processing of raw data, needed for _raw placeholders
 								* in things like custom links
 								*/
+								/*
 								$data[$last_i]->$key = (array) $data[$last_i]->$key;
 								array_push($data[$last_i]->$key, $val);
+								*/
+								$data[$first_pk_i[$next_pk]]->$key = (array) $data[$first_pk_i[$next_pk]]->$key;
+								array_push($data[$first_pk_i[$next_pk]]->$key, $val);
+
 								$rawKey = $key . '_raw';
-								/* if (!isset($data[$i]->$rawKey))
-								{
-									$rawKey = $key;
-								}
-								$rawval = $data[$i]->$rawKey;
-								$data[$last_i]->$rawKey = (array) $data[$last_i]->$rawKey;
-								array_push($data[$last_i]->$rawKey, $rawval); */
 
 								if (isset($data[$i]->$rawKey))
 								{
 									$rawval = $data[$i]->$rawKey;
+									/*
 									$data[$last_i]->$rawKey = (array) $data[$last_i]->$rawKey;
 									array_push($data[$last_i]->$rawKey, $rawval);
+									*/
+									$data[$first_pk_i[$next_pk]]->$rawKey = (array) $data[$first_pk_i[$next_pk]]->$rawKey;
+									array_push($data[$first_pk_i[$next_pk]]->$rawKey, $rawval);
 								}
 							}
 						}
@@ -10291,6 +10296,8 @@ class FabrikFEModelList extends JModelForm
 			}
 			else
 			{
+				$first_pk_i[$next_pk] = $i;
+
 				if ($merge == 2)
 				{
 					foreach ($data[$i] as $key => $val)
