@@ -656,7 +656,7 @@ class FabrikPlugin extends JPlugin
 		{
 			// $$$ hugh @FIXME - added copyingRow() stuff to form model, need to do it
 			// for list model as well.
-			$k = array_key_exists('origRowId', $model) ? 'origRowId' : 'rowId';
+			$k = array_key_exists('origRowId', $model) && isset($model->origRowId) ? 'origRowId' : 'rowId';
 
 			switch ($event)
 			{
