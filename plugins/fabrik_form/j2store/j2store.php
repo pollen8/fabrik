@@ -309,6 +309,11 @@ class PlgFabrik_FormJ2Store extends PlgFabrik_Form
 	 */
 	public function onLoadListData($opts)
 	{
+		if ($this->app->isAdmin())
+		{
+			return;
+		}
+
 		$lang = JFactory::getLanguage();
 		$lang->load('com_j2store', JPATH_SITE . '/administrator', null, false, true);
 		$data = $opts[0]->data;
@@ -370,6 +375,11 @@ class PlgFabrik_FormJ2Store extends PlgFabrik_Form
 	 */
 	public function onGetPluginRowHeadings($args)
 	{
+		if ($this->app->isAdmin())
+		{
+			return;
+		}
+
 		$args[0]['tableHeadings']['j2store'] = '';
 		$args[0]['headingClass']['j2store']  = array('class' => '', 'style' => '');
 		$args[0]['cellClass']['j2store']     = array('class' => '', 'style' => '');
