@@ -40,4 +40,3 @@ foreach ($d->options as $option) :
 
 endforeach;
 ?>
-</div>
