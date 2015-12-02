@@ -1368,7 +1368,6 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 				}
 
 				$html[] = $this->renderFrontEndSelect($html);
-				$html[] = $displayType == 'radio' ? '</div>' : '';
 			}
 			elseif ($this->canView())
 			{
@@ -1607,6 +1606,8 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		{
 			$html[] = FabrikHelperHTML::aList('radio', $tmp, $thisElName, $attributes, $defaultValue, 'value', 'text', $displayData->optsPerRow, $displayData->editable);
 		}
+
+		$html[] = '</div>';
 	}
 
 	/**
