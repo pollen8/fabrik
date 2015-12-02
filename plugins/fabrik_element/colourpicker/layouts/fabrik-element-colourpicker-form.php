@@ -6,7 +6,7 @@ $d = $displayData;
 
 <div class="fabrikSubElementContainer">
 	<input class="fabrikinput" type="hidden" name="<?php echo $d->name; ?>" id="<?php echo $d->id; ?>" />
-	<div class="colourpicker_bgoutput img-rounded " style="border:1px solid #EEEEEE;float:left;width:25px;height:25px;background-color:rgb('<?php echo $d->value; ?>')">
+	<div class="colourpicker_bgoutput img-rounded " style="border:1px solid #EEEEEE;float:left;width:25px;height:25px;background-color:rgb(<?php echo $d->value; ?>)">
 	</div>
 <?php
 	if ($d->editable) :
