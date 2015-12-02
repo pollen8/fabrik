@@ -1066,6 +1066,12 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 		{
 			$params = $this->getParams();
 			$default = $this->getDefaultFilterVal($normal);
+
+			if ($default === '')
+			{
+				$default = $params->get('cascadingdropdown_noselectionvalue', '');
+			}
+
 			$filterId = $this->getHTMLId() . 'value';
 			FabrikHelperHTML::script('plugins/fabrik_element/cascadingdropdown/filter.js');
 			$opts = new stdClass;

@@ -38,6 +38,7 @@ var CascadeFilter = new Class({
 			});
 
 			this.observer.addEvent('change', function () {
+				/*
 				this.periodcount = 0;
 				document.id(this.options.filterid + '_loading').setStyle('opacity', '1');
 				var v = this.observer.get('value');
@@ -46,11 +47,14 @@ var CascadeFilter = new Class({
 				$filterData = eval(this.options.filterobj).getFilterData();
 				Object.append(this.myAjax.options.data, $filterData);
 				this.myAjax.send();
+				*/
+				this.update();
 			}.bind(this));
 
-			v = this.observer.get('value');
-			this.periodical = this.update.periodical(500, this);
-			this.periodcount = 0;
+			//v = this.observer.get('value');
+			//this.periodical = this.update.periodical(500, this);
+			//this.periodcount = 0;
+			this.update();
 		} else {
 			fconsole('observer not found ', observerid);
 		}
@@ -68,11 +72,13 @@ var CascadeFilter = new Class({
 
 	ajaxComplete: function (json) {
 		json = JSON.decode(json);
+		/*
 		this.periodcount ++;
 		if (this.periodcount > 5) {
 			this.endAjax();
 			return;
 		}
+		*/
 		if (typeOf(document.id(this.options.filterid)) === 'null') {
 			fconsole('filterid not found: ', this.options.filterid);
 			this.endAjax();
@@ -83,19 +89,22 @@ var CascadeFilter = new Class({
 		json.each(function (item) {
 			new Element('option', {'value': item.value}).appendText(item.text).inject(document.id(this.options.filterid));
 		}.bind(this));
+		/*
 		if (json.length > 0) {
-			if ((json.length === 1 && json[0].value === this.options.noselectionvalue) === false) {
+			if (!this.setupDone && (json.length === 1 && json[0].value === this.options.noselectionvalue) === false) {
 				this.endAjax();
 			}
 		} else {
 			this.endAjax();
 		}
+		*/
+		this.endAjax();
 	},
 
 	endAjax: function ()
 	{
 		document.id(this.options.filterid + '_loading').setStyle('opacity', '0');
-		clearInterval(this.periodical);
+		//clearInterval(this.periodical);
 		document.id(this.options.filterid).value = this.options.def;
 		if (this.options.advanced)
 		{
