@@ -295,7 +295,7 @@ class PlgFabrik_ElementTextarea extends PlgFabrik_Element
 
 		if ($params->get('textarea_placeholder', '') !== '')
 		{
-			$bits['placeholder'] = $params->get('textarea_placeholder');
+			$bits['placeholder'] = FText::_($params->get('textarea_placeholder'));
 		}
 
 		if ($this->elementError != '')
