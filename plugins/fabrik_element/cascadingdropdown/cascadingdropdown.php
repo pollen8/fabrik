@@ -282,7 +282,6 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 			}
 
 			$html[] = $this->loadingImg;
-			$html[] = ($displayType == 'radio') ? '</div>' : '';
 		}
 
 		if (!$this->isEditable())

@@ -41,14 +41,12 @@ var FbDatabasejoin = new Class({
 			var b = c.getElement('.toggle-addoption');
 
 			// If duplicated remove old events
+						
+			b.removeEvent('click', this.watchAddEvent);
 
-			b.removeEvent('click', function (e) {
-				this.start(e);
-			}.bind(this));
+			this.watchAddEvent = this.start.bind(this);
 
-			b.addEvent('click', function (e) {
-				this.start(e);
-			}.bind(this));
+			b.addEvent('click', this.watchAddEvent);
 		}
 	},
 
@@ -825,6 +823,7 @@ var FbDatabasejoin = new Class({
 		
 		// If users can add records to the database join drop down
 		if (this.options.allowadd === true && this.options.editable !== false) {
+			this.watchAddEvent = this.start.bind(this);
 			this.watchAdd();
 			Fabrik.addEvent('fabrik.form.submitted', function (form, json) {
 
