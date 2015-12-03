@@ -26,6 +26,7 @@
 		<element name="name"
 		         plugin="field"
 		         label="Name"
+		         published="1"
 		         show_in_list_summary="1"/>
 
 		<element name="address"
@@ -35,6 +36,7 @@
 
 		<element name="phone"
 		         plugin="field"
+		         published="1"
 		         label="Phone"/>
 
 	</group>

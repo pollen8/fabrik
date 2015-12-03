@@ -61,4 +61,20 @@ class JFormFieldFabrikContentTypeList extends JFormFieldList
 
 		return $options;
 	}
+
+	/**
+	 * Method to get the field input markup for a generic list.
+	 * Use the multiple attribute to enable multiselect.
+	 *
+	 * @return  string  The field input markup.
+	 */
+	protected function getInput()
+	{
+		$str = parent::getInput();
+		$str .= '<div id="contentTypeListPreview"></div>';
+		$script = 'new FabrikContentTypeList(\'' . $this->id . '\')';
+		FabrikHelperHTML::script('administrator/components/com_fabrik/models/fields/fabrikcontenttypelist.js', $script);
+
+		return $str;
+	}
 }

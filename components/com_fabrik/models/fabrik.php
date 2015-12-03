@@ -82,7 +82,7 @@ class FabModel extends JModelLegacy
 	 * @param   string  $prefix  The class prefix. Optional.
 	 * @param   array   $config  configuration
 	 *
-	 * @return	mixed	Model object or boolean false if failed
+	 * @return	FabTable|false	Model object or boolean false if failed
 	 */
 	protected function _createTable($name, $prefix = 'Table', $config = array())
 	{

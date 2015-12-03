@@ -584,11 +584,14 @@ class FabrikFEModelGroup extends FabModel
 
 		$ids = (array) $this->app->input->get('elementid', array(), 'array');
 		$sig = implode('.', $ids);
-
+		if ($sig === '')
+		{
+			$sig = 'default';
+		}
 		if (!array_key_exists($sig, $this->publishedElements))
 		{
 			$this->publishedElements[$sig] = array();
-			$elements = $this->getMyElements();
+			$elements = (array) $this->getMyElements();
 
 			foreach ($elements as $elementModel)
 			{
@@ -1581,11 +1584,13 @@ class FabrikFEModelGroup extends FabModel
 	{
 		$allHidden = true;
 
-		foreach ($this->elements as $elementModel)
+		foreach ((array) $this->elements as $elementModel)
 		{
 			$allHidden &= $elementModel->isHidden();
 		}
-		if ((!$allHidden || !empty($group->intro)) && trim($group->title) !== '') {
+
+		if ((!$allHidden || !empty($group->intro)) && trim($group->title) !== '')
+		{
 			return true;
 		}
 

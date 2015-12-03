@@ -23,15 +23,15 @@ use Joomla\Utilities\ArrayHelper;
  * @subpackage  Fabrik
  * @since       3.3.5
  */
-class FabrikAdminModelContentType
+class FabrikAdminModelContentType extends FabModelAdmin
 {
 
 	/**
-	 * Include paths for searching for JTable classes.
+	 * Include paths for searching for Content type XML files
 	 *
 	 * @var    array
 	 */
-	private static $_includePaths = array();
+	private static $_contentTypeIncludePaths = array();
 
 	/**
 	 * Content type DOM document
@@ -56,6 +56,7 @@ class FabrikAdminModelContentType
 	 */
 	public function __construct($config = array())
 	{
+		parent::__construct($config);
 		$listModel = ArrayHelper::getValue($config, 'listModel');
 
 		if (!is_a($listModel, 'FabrikAdminModelList'))
@@ -63,6 +64,29 @@ class FabrikAdminModelContentType
 			throw new UnexpectedValueException('Content Type Constructor requires an Admin List Model');
 		}
 		$this->listModel = $listModel;
+	}
+
+	/**
+	 * Method to get the select content type form.
+	 *
+	 * @param   array $data     Data for the form.
+	 * @param   bool  $loadData True if the form is to load its own data (default case), false if not.
+	 *
+	 * @return  mixed  A JForm object on success, false on failure
+	 *
+	 * @since    3.3.5
+	 */
+	public function getForm($data = array(), $loadData = true)
+	{
+		// Get the form.
+		$form = $this->loadForm('com_fabrik.content-type', 'content-type', array('control' => 'jform', 'load_data' => $loadData));
+
+		if (empty($form))
+		{
+			return false;
+		}
+
+		return $form;
 	}
 
 	/**
@@ -76,7 +100,7 @@ class FabrikAdminModelContentType
 	 */
 	public function loadContentType($name)
 	{
-		$paths = self::addIncludePath();
+		$paths = self::addContentTypeIncludePath();
 		$path  = JPath::find($paths, $name);
 
 		if (!$path)
@@ -89,22 +113,6 @@ class FabrikAdminModelContentType
 		$this->doc->loadXML($xml);
 
 		return $this;
-	}
-
-	public function getFields()
-	{
-		if (!$this->doc)
-		{
-			throw new UnexpectedValueException('A content type must be loaded before groups can be created');
-		}
-
-		$xpath  = new DOMXpath($this->doc);
-		$groups = $xpath->query('/contenttype/group');
-
-		foreach ($groups as $group)
-		{
-
-		}
 	}
 
 	/**
@@ -138,14 +146,13 @@ class FabrikAdminModelContentType
 			foreach ($elements as $element)
 			{
 				$elementData             = $this->domNodeAttributesToArray($element);
-				$groupData['params']     = $this->nodeParams($element);
+				$elementData['params']   = $this->nodeParams($element);
 				$elementData['group_id'] = $groupId;
 				$name                    = (string) $element->getAttribute('name');
 				$fields[$name]           = $this->listModel->makeElement($name, $elementData);
 			}
 
 			$groupIds[] = $groupId;
-
 		}
 
 		return $fields;
@@ -204,12 +211,12 @@ class FabrikAdminModelContentType
 	 *
 	 * @return  array  An array of filesystem paths to find Content type XML files.
 	 */
-	public static function addIncludePath($path = null)
+	public static function addContentTypeIncludePath($path = null)
 	{
 		// If the internal paths have not been initialised, do so with the base table path.
-		if (empty(self::$_includePaths))
+		if (empty(self::$_contentTypeIncludePaths))
 		{
-			self::$_includePaths = JPATH_COMPONENT_ADMINISTRATOR . '/models/content_types';
+			self::$_contentTypeIncludePaths = JPATH_COMPONENT_ADMINISTRATOR . '/models/content_types';
 		}
 
 		// Convert the passed path(s) to add to an array.
@@ -225,13 +232,55 @@ class FabrikAdminModelContentType
 				$dir = trim($dir);
 
 				// Add to the front of the list so that custom paths are searched first.
-				if (!in_array($dir, self::$_includePaths))
+				if (!in_array($dir, self::$_contentTypeIncludePaths))
 				{
-					array_unshift(self::$_includePaths, $dir);
+					array_unshift(self::$_contentTypeIncludePaths, $dir);
 				}
 			}
 		}
 
-		return self::$_includePaths;
+		return self::$_contentTypeIncludePaths;
+	}
+
+	/**
+	 * Prepare the group and element models for form view preview
+	 *
+	 * @return array
+	 */
+	public function preview()
+	{
+		$pluginManager = FabrikWorker::getPluginManager();
+		$xpath         = new DOMXpath($this->doc);
+		$groups        = $xpath->query('/contenttype/group');
+		$return        = array();
+
+		foreach ($groups as $group)
+		{
+			$groupData           = array();
+			$groupData           = $this->domNodeAttributesToArray($group, $groupData);
+			$groupData['params'] = $this->nodeParams($group);
+			$groupModel          = JModelLegacy::getInstance('Group', 'FabrikFEModel');
+			$groupTable          = FabTable::getInstance('Group', 'FabrikTable');
+			$groupTable->bind($groupData);
+			$groupModel->setGroup($groupTable);
+
+			$elements      = $xpath->query('/contenttype/group/element');
+			$elementModels = array();
+
+			foreach ($elements as $element)
+			{
+				$elementData            = $this->domNodeAttributesToArray($element);
+				$elementData['params']  = $this->nodeParams($element);
+				$elementModel           = clone($pluginManager->getPlugIn($elementData['plugin'], 'element'));
+				$elementModel->element  = $elementModel->getDefaultProperties($elementData);
+				$elementModel->editable = true;
+				$elementModels[]        = $elementModel;
+			}
+
+			$groupModel->elements = $elementModels;
+			$return[]             = $groupModel;
+		}
+
+		return $return;
 	}
 }

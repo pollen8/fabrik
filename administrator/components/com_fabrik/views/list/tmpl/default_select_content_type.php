@@ -31,3 +31,12 @@ defined('_JEXEC') or die('Restricted access');
 	<input type="hidden" name="task" value="list.doSave" />
 	<?php echo JHtml::_('form.token'); ?>
 </form>
+<style>
+	#contentTypeListPreview {
+		pointer-events:none
+	}
+	#contentTypeListPreview .fabrikGroup .fabrikHide {
+		display: block !important;
+		opacity: 0.5
+	}
+</style>

@@ -54,8 +54,7 @@ class FabrikAdminControllerForm extends FabControllerForm
 	public function view()
 	{
 		$document = JFactory::getDocument();
-		$app = JFactory::getApplication();
-		$input = $app->input;
+		$input = $this->input;
 		$model = JModelLegacy::getInstance('Form', 'FabrikFEModel');
 		$viewType = $document->getType();
 		$this->setPath('view', COM_FABRIK_FRONTEND . '/views');
