@@ -299,11 +299,11 @@ class PlgFabrik_ListUpdate_Col extends PlgFabrik_List
 				 */
 				$this->params = $params;
 
-				$to = $this->emailTo($row, $emailWhich);
+				$to = trim($this->emailTo($row, $emailWhich));
 				$tos = explode(',', $to);
 				$cleanTo = true;
 
-				foreach ($tos as $email)
+				foreach ($tos as &$email)
 				{
 					$email = trim($email);
 
@@ -315,6 +315,11 @@ class PlgFabrik_ListUpdate_Col extends PlgFabrik_List
 
 				if ($cleanTo)
 				{
+					if (count($tos) > 1)
+					{
+						$to = $tos;
+					}
+
 					$thisSubject = $w->parseMessageForPlaceholder($subject, $row);
 					$thisMessage = $w->parseMessageForPlaceholder($message, $row);
 
