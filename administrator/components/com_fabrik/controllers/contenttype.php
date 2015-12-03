@@ -24,6 +24,11 @@ require_once 'fabcontrollerform.php';
  */
 class FabrikAdminControllerContentType extends FabControllerForm
 {
+	/**
+	 * Previews the content type's groups and elements
+	 *
+	 * @throws Exception
+	 */
 	public function preview()
 	{
 		$contentType = $this->input->get('contentType');

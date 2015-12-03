@@ -1,6 +1,6 @@
 <?php
 /**
- * Admin List Confirm Copy Tmpl
+ * Admin Form Confirm Copy Tmpl
  *
  * @package     Joomla.Administrator
  * @subpackage  Fabrik
@@ -28,7 +28,7 @@ defined('_JEXEC') or die('Restricted access');
 	endforeach; ?>
 
 	<input type="hidden" name="option" value="com_fabrik" />
-	<input type="hidden" name="task" value="list.doSave" />
+	<input type="hidden" name="task" value="form.doSave" />
 	<?php echo JHtml::_('form.token'); ?>
 </form>
 <style>

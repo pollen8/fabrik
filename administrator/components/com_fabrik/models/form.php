@@ -14,6 +14,8 @@ defined('_JEXEC') or die('Restricted access');
 
 require_once 'fabmodeladmin.php';
 
+use Joomla\Utilities\ArrayHelper;
+
 /**
  * Fabrik Admin Form Model
  *
@@ -166,7 +168,7 @@ class FabrikAdminModelForm extends FabModelAdmin
 	 * 3) Recreate the form group records
 	 * 4) Make a table view if needed
 	 *
-	 * @param   array $data jform data
+	 * @param   array $data jForm data
 	 *
 	 * @throws Exception
 	 *
@@ -177,93 +179,22 @@ class FabrikAdminModelForm extends FabModelAdmin
 	public function saveFormGroups($data)
 	{
 		// These are set in parent::save() and contain the updated form id and if the form is a new form
-		$formId        = $this->getState($this->getName() . '.id');
-		$isNew         = $this->getState($this->getName() . '.new');
-		$db            = FabrikWorker::getDbo(true);
-		$currentGroups = (array) FArrayHelper::getValue($data, 'current_groups');
+		$formId    = $this->getState($this->getName() . '.id');
+		$isNew     = $this->getState($this->getName() . '.new');
+		$listModel = JModelLegacy::getInstance('List', 'FabrikAdminModel');
+		$item      = $listModel->loadFromFormId($formId);
+		$listModel->set('form.id', $formId);
+		$listModel->setState('list.form_id', $formId);
+		$recordInDatabase = $data['record_in_database'];
+		$fields           = $this->getInsertFields($isNew, $data, $listModel);
 
-		if (empty($currentGroups) && !$isNew)
+		if ($recordInDatabase == '1')
 		{
-			throw new Exception(FText::_('COM_FABRIK_ERR_ONE_GROUP_MUST_BE_SELECTED'));
-		}
-
-		$record_in_database = $data['record_in_database'];
-		$createGroup        = $data['_createGroup'];
-		$form               = $this->getForm();
-		$fields             = array('id' => 'internalid', 'date_time' => 'date');
-
-		// If new and record in db and group selected then we want to get those groups elements to create fields for in the db table
-		if ($isNew && $record_in_database)
-		{
-			$groups = FArrayHelper::getValue($data, 'current_groups');
-
-			if (!empty($groups))
-			{
-				$query = $db->getQuery(true);
-				$query->select('plugin, name')->from('#__fabrik_elements')->where('group_id IN (' . implode(',', $groups) . ')');
-				$db->setQuery($query);
-				$rows = $db->loadObjectList();
-
-				foreach ($rows as $row)
-				{
-					$fields[$row->name] = $row->plugin;
-				}
-			}
-		}
-
-		if ($createGroup)
-		{
-			$group            = FabTable::getInstance('Group', 'FabrikTable');
-			$group->name      = $data['label'];
-			$group->published = 1;
-			$group->store();
-			$currentGroups[] = $db->insertid();
-		}
-
-		$this->_makeFormGroups($data, $currentGroups);
-
-		if ($record_in_database == '1')
-		{
-			$listModel = JModelLegacy::getInstance('List', 'FabrikAdminModel');
-			$item      = $listModel->loadFromFormId($formId);
-
-			if ($isNew)
-			{
-				$dbTableName = $data['db_table_name'] !== '' ? $data['db_table_name'] : $data['label'];
-
-				// Mysql will force db table names to lower case even if you set the db name to upper case - so use clean()
-				$dbTableName = FabrikString::clean($dbTableName);
-
-				// Otherwise part of the table name is taken for element names
-				$dbTableName = str_replace('___', '_', $dbTableName);
-			}
-			else
-			{
-				$dbTableName = $item->db_table_name == '' ? $data['database_name'] : $item->db_table_name;
-			}
-
+			$dbTableName   = $this->safeTableName($isNew, $data, $item);
 			$dbTableExists = $listModel->databaseTableExists($dbTableName);
 
 			if (!$dbTableExists)
 			{
-				/**
-				 * @TODO - need to sanitize table name (get rid of non alphanumeirc or _),
-				 * just not sure whether to do it here, or above (before we test for existinance)
-				 * $$$ hugh - for now, just do it here, after we test for the 'unsanitized', as
-				 * need to do some more testing on MySQL table name case sensitivity
-				 * BUT ... as we're potentially changing the table name after testing for existance
-				 * we need to test again.
-				 * $$$ rob - was replacing with '_' but if your form name was 'x - y' then this was
-				 * converted to x___y which then blows up element name code due to '___' being presumed to be the element splitter.
-				 */
-				$dbTableName = preg_replace('#[^0-9a-zA-Z_]#', '', $dbTableName);
-
-				if ($listModel->databaseTableExists($dbTableName))
-				{
-					return JError::raiseWarning(500, FText::_("COM_FABRIK_DB_TABLE_ALREADY_EXISTS"));
-				}
-
-				$listModel->set('form.id', $formId);
 				$listModel->createDBTable($dbTableName, $fields);
 			}
 
@@ -276,7 +207,7 @@ class FabrikAdminModelForm extends FabModelAdmin
 				$item->connection_id = $connection->getConnection()->id;
 				$item->db_table_name = $dbTableName;
 
-				// Store key without quoteNames as thats db specific *which we no longer want
+				// Store key without quoteNames as that is db specific which we no longer want
 				$item->db_primary_key = $dbTableName . '.id';
 				$item->auto_inc       = 1;
 				$item->published      = $data['published'];
@@ -284,31 +215,112 @@ class FabrikAdminModelForm extends FabModelAdmin
 				$item->created_by     = $data['created_by'];
 				$item->access         = 1;
 				$item->params         = $listModel->getDefaultParams();
-				$res                  = $item->store();
+				$item->store();
 			}
 			else
 			{
-				// Update existing table (seems to need to reload here to ensure that _table is set
-				$item = $listModel->loadFromFormId($formId);
+				// Update existing table (seems to need to reload here to ensure that _table is set)
+				$listModel->loadFromFormId($formId);
 				$listModel->ammendTable();
 			}
 		}
 	}
 
 	/**
+	 * @param $isNew
+	 * @param $data
+	 * @param $listModel
+	 *
+	 * @throws Exception
+	 *
+	 * @return array
+	 */
+	private function getInsertFields($isNew, $data, $listModel)
+	{
+		$db               = FabrikWorker::getDbo(true);
+		$fields           = array('id' => 'internalid', 'date_time' => 'date');
+		$createGroup      = $data['_createGroup'];
+		$recordInDatabase = $data['record_in_database'];
+		$jForm            = $this->app->input->get('jform', array(), 'array');
+		$contentTypeModel = JModelLegacy::getInstance('ContentType', 'FabrikAdminModel', array('listModel' => $listModel));
+		$groups           = FArrayHelper::getValue($data, 'current_groups');
+
+		if (empty($groups) && !$isNew)
+		{
+			throw new Exception(FText::_('COM_FABRIK_ERR_ONE_GROUP_MUST_BE_SELECTED'));
+		}
+
+		// If new and record in db and group selected then we want to get those groups elements to create fields for in the db table
+		if ($isNew && $recordInDatabase)
+		{
+			if (!empty($groups))
+			{
+				$query = $db->getQuery(true);
+				$query->select('plugin, name')->from('#__fabrik_elements')
+					->where('group_id IN (' . implode(',', $groups) . ')');
+				$db->setQuery($query);
+				$rows = $db->loadObjectList();
+
+				foreach ($rows as $row)
+				{
+					$fields[$row->name] = $row->plugin;
+				}
+
+				$this->_makeFormGroups($groups);
+			}
+		}
+
+		if ($createGroup)
+		{
+			$contentType = ArrayHelper::getValue($jForm, 'contenttype');
+			$fields = $contentTypeModel->getDefaultInsertFields($contentType);
+		}
+
+		return $fields;
+	}
+
+	/**
+	 * Create a safe table name from the input
+	 *
+	 * @param   bool            $isNew
+	 * @param   array           $data
+	 * @param   FabrikTableList $item
+	 *
+	 * @return mixed
+	 */
+	private function safeTableName($isNew, $data, $item)
+	{
+		if ($isNew)
+		{
+			$dbTableName = $data['db_table_name'] !== '' ? $data['db_table_name'] : $data['label'];
+
+			// Mysql will force db table names to lower case even if you set the db name to upper case - so use clean()
+			$dbTableName = FabrikString::clean($dbTableName);
+
+			// Otherwise part of the table name is taken for element names
+			$dbTableName = str_replace('___', '_', $dbTableName);
+		}
+		else
+		{
+			$dbTableName = $item->db_table_name == '' ? $data['database_name'] : $item->db_table_name;
+		}
+
+		return preg_replace('#[^0-9a-zA-Z_]#', '', $dbTableName);
+	}
+
+	/**
 	 * Reinsert the groups ids into formgroup rows
 	 *
-	 * @param   array $data          jform post data
 	 * @param   array $currentGroups group ids
 	 *
 	 * @return  void
 	 */
-	protected function _makeFormGroups($data, $currentGroups)
+	protected function _makeFormGroups($currentGroups)
 	{
 		$formId = $this->getState($this->getName() . '.id');
 		$db     = FabrikWorker::getDbo(true);
 		$query  = $db->getQuery(true);
-		JArrayHelper::toInteger($currentGroups);
+		ArrayHelper::toInteger($currentGroups);
 		$query->delete('#__{package}_formgroup')->where('form_id = ' . (int) $formId);
 
 		if (!empty($currentGroups))
@@ -319,7 +331,7 @@ class FabrikAdminModelForm extends FabModelAdmin
 		$db->setQuery($query);
 
 		// Delete the old form groups
-		!$db->execute();
+		$db->execute();
 
 		// Get previously saved form groups
 		$query->clear()->select('id, group_id')->from('#__{package}_formgroup')->where('form_id = ' . (int) $formId);
@@ -368,7 +380,7 @@ class FabrikAdminModelForm extends FabModelAdmin
 			return array();
 		}
 
-		JArrayHelper::toInteger($ids);
+		ArrayHelper::toInteger($ids);
 		$db    = FabrikWorker::getDbo(true);
 		$query = $db->getQuery(true);
 		$query->select('form_id')->from('#__{package}_lists')->where('id IN (' . implode(',', $ids) . ')');
@@ -473,17 +485,17 @@ class FabrikAdminModelForm extends FabModelAdmin
 	/**
 	 * Delete form and form groups
 	 *
-	 * @param   array &$cids to delete
+	 * @param   array &$ids to delete
 	 *
 	 * @return  bool
 	 */
-	public function delete(&$cids)
+	public function delete(&$ids)
 	{
-		$res = parent::delete($cids);
+		$res = parent::delete($ids);
 
 		if ($res)
 		{
-			foreach ($cids as $cid)
+			foreach ($ids as $cid)
 			{
 				$item = FabTable::getInstance('FormGroup', 'FabrikTable');
 				$item->load(array('form_id' => $cid));

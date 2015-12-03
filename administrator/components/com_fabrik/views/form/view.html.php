@@ -158,4 +158,47 @@ class FabrikAdminViewForm extends JViewLegacy
 		JToolBarHelper::divider();
 		JToolBarHelper::help('JHELP_COMPONENTS_FABRIK_FORMS_EDIT', false, FText::_('JHELP_COMPONENTS_FABRIK_FORMS_EDIT'));
 	}
+
+	/**
+	 * Once a form is saved - we need to display the select content type form.
+	 *
+	 * @param null $tpl
+	 *
+	 * @return void
+	 */
+	public function selectContentType($tpl = null)
+	{
+		$model      = $this->getModel();
+		$this->form = $model->getContentTypeForm();
+		$input      = JFactory::getApplication()->input;
+		$this->data = $input->post->get('jform', array(), 'array');
+		$this->addSelectSaveToolBar();
+		FabrikHelperHTML::framework();
+		FabrikHelperHTML::iniRequireJS();
+
+		parent::display($tpl);
+	}
+
+	/**
+	 * Add select content type tool bar
+	 *
+	 * @throws Exception
+	 *
+	 * @return void
+	 */
+	protected function addSelectSaveToolBar()
+	{
+		$app         = JFactory::getApplication();
+		$this->state = $this->get('State');
+		$input       = $app->input;
+		$input->set('hidemainmenu', true);
+		$canDo = FabrikAdminHelper::getActions($this->state->get('filter.category_id'));
+
+		// For new records, check the create permission.
+		if ($canDo->get('core.create'))
+		{
+			JToolBarHelper::save('form.doSave', 'JTOOLBAR_SAVE');
+			JToolBarHelper::cancel('form.cancel', 'JTOOLBAR_CANCEL');
+		}
+	}
 }
