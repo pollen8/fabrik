@@ -106,8 +106,7 @@ class FabrikAdminControllerForm extends FabControllerForm
 	public function process()
 	{
 		$this->name = 'Fabrik';
-		$app = JFactory::getApplication();
-		$input = $app->input;
+		$input = $this->input;
 		$document = JFactory::getDocument();
 		$viewName = $input->get('view', 'form');
 		$viewType = $document->getType();
@@ -203,8 +202,7 @@ class FabrikAdminControllerForm extends FabControllerForm
 	 */
 	protected function handleError($view, $model)
 	{
-		$app = JFactory::getApplication();
-		$input = $app->input;
+		$input = $this->input;
 		$validated = false;
 
 		// If its in a module with ajax or in a package or inline edit
@@ -284,8 +282,7 @@ class FabrikAdminControllerForm extends FabControllerForm
 	 */
 	protected function savepage()
 	{
-		$app = JFactory::getApplication();
-		$input = $app->input;
+		$input = $this->input;
 		$model = $this->getModel('Formsession', 'FabrikFEModel');
 		$formModel = $this->getModel('Form', 'FabrikFEModel');
 		$formModel->setId($input->getInt('formid'));
@@ -303,8 +300,7 @@ class FabrikAdminControllerForm extends FabControllerForm
 	 */
 	protected function makeRedirect(&$model, $msg = null)
 	{
-		$app = JFactory::getApplication();
-		$input = $app->input;
+		$input = $this->input;
 
 		if (is_null($msg))
 		{
@@ -337,7 +333,7 @@ class FabrikAdminControllerForm extends FabControllerForm
 		// Check for request forgeries
 		JSession::checkToken() or die('Invalid Token');
 		$app = JFactory::getApplication();
-		$input = $app->input;
+		$input = $this->input;
 		$model = $this->getModel('list', 'FabrikFEModel');
 		$ids = array($input->get('rowid', 0, 'string'));
 
@@ -363,7 +359,6 @@ class FabrikAdminControllerForm extends FabControllerForm
 			}
 
 			$ref = str_replace("limitstart$listId=$limitStart", "limitstart$listId=$newLimitStart", $ref);
-			$app = JFactory::getApplication();
 			$context = 'com_fabrik.list.' . $model->getRenderContext() . '.';
 			$app->setUserState($context . 'limitstart', $newLimitStart);
 		}
@@ -379,5 +374,47 @@ class FabrikAdminControllerForm extends FabControllerForm
 			$app->enqueueMessage($msg);
 			$app->redirect($ref);
 		}
+	}
+
+	/**
+	 * Method to save a record or if a new list show the 'select content type' form.
+	 *
+	 * @param   string $key    The name of the primary key of the URL variable.
+	 * @param   string $urlVar The name of the URL variable if different from the primary key (sometimes required to
+	 *                         avoid router collisions).
+	 *
+	 * @return  boolean  True if successful, false otherwise.
+	 */
+	public function save($key = null, $urlVar = null)
+	{
+		$data = $this->input->post->get('jform', array(), 'array');
+
+		if ((int) $data['id'] === 0)
+		{
+			$viewType = JFactory::getDocument()->getType();
+			$model    = JModelLegacy::getInstance('List', 'FabrikAdminModel');
+
+			$view = $this->getView($this->view_item, $viewType, '');
+			$view->setModel($model, true);
+			$view->selectContentType('select_content_type');
+
+			return true;
+		}
+
+		parent::save($key, $urlVar);
+	}
+
+	/**
+	 * Method to always save a list.
+	 *
+	 * @param   string $key    The name of the primary key of the URL variable.
+	 * @param   string $urlVar The name of the URL variable if different from the primary key (sometimes required to
+	 *                         avoid router collisions).
+	 *
+	 * @return  boolean  True if successful, false otherwise.
+	 */
+	public function doSave($key = null, $urlVar = null)
+	{
+		return parent::save($key, $urlVar);
 	}
 }

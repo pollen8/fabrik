@@ -57,7 +57,7 @@ class FabrikAdminModelContentType extends FabModelAdmin
 	public function __construct($config = array())
 	{
 		parent::__construct($config);
-		$listModel = ArrayHelper::getValue($config, 'listModel');
+		$listModel = ArrayHelper::getValue($config, 'listModel', JModelLegacy::getInstance('List', 'FabrikAdminModel'));
 
 		if (!is_a($listModel, 'FabrikAdminModelList'))
 		{
@@ -282,5 +282,30 @@ class FabrikAdminModelContentType extends FabModelAdmin
 		}
 
 		return $return;
+	}
+
+	/**
+	 * Get default insert fields - either from content type or defaultfields input value
+	 *
+	 * @param string|null $contentType
+	 *
+	 * @return array
+	 */
+	public function getDefaultInsertFields($contentType = null)
+	{
+		$input = $this->app->input;
+
+		if (!is_null($contentType))
+		{
+			$fields = $this->loadContentType($contentType)
+					->createGroupsFromContentType();
+		}
+		else
+		{
+			// Could be importing from a CSV in which case default fields are set.
+			$fields =  $input->get('defaultfields',array('id' => 'internalid', 'date_time' => 'date'));
+		}
+
+		return $fields;
 	}
 }
