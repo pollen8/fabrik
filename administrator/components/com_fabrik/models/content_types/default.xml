@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<contenttype>
+	<name>Default</name>
+
+	<group name="details"
+	       label="">
+
+		<element plugin="internalid"
+		         label="id"
+		         name="id"
+		         type="list"/>
+
+		<element plugin="date"
+		         label="datetime"
+		         name="datetme"/>
+
+	</group>
+</contenttype>

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<contenttype>
+	<name>Contact us</name>
+
+	<group name="contact us"
+	       label="Your details">
+
+		<params
+				group_columns="1"
+		/>
+		<element name="id"
+		         plugin="internalid"
+		         label="id"
+		         type="list">
+			<params
+					can_order="1"
+					view_access="1">
+				<validataions></validataions>
+			</params>
+		</element>
+
+		<element name="datetme"
+		         plugin="date"
+		         label="datetime"/>
+
+		<element name="name"
+		         plugin="field"
+		         label="Name"
+		         show_in_list_summary="1"/>
+
+		<element name="address"
+		         plugin="textarea"
+		         label="Address"
+		         show_in_list_summary="1"/>
+
+		<element name="phone"
+		         plugin="field"
+		         label="Phone"/>
+
+	</group>
+</contenttype>
