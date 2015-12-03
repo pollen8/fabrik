@@ -153,15 +153,9 @@ class FabrikAdminModelList extends FabModelAdmin
 	 */
 	public function getContentTypeForm($data = array(), $loadData = true)
 	{
-		// Get the form.
-		$form = $this->loadForm('com_fabrik.content-type', 'content-type', array('control' => 'jform', 'load_data' => $loadData));
+		$contentTypeModel = JModelLegacy::getInstance('ContentType', 'FabrikAdminModel', array('listModel' => $this));
 
-		if (empty($form))
-		{
-			return false;
-		}
-
-		return $form;
+		return $contentTypeModel->getForm($data, $loadData);
 	}
 
 	/**

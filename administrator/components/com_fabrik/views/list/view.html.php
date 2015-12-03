@@ -205,6 +205,9 @@ class FabrikAdminViewList extends JViewLegacy
 		$input      = JFactory::getApplication()->input;
 		$this->data = $input->post->get('jform', array(), 'array');
 		$this->addSelectSaveToolBar();
+		FabrikHelperHTML::framework();
+		FabrikHelperHTML::iniRequireJS();
+
 		parent::display($tpl);
 	}
 

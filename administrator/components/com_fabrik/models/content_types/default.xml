@@ -3,15 +3,19 @@
 	<name>Default</name>
 
 	<group name="details"
-	       label="">
+	       published="1"
+	       private="0"
+	       label="Details group">
 
 		<element plugin="internalid"
 		         label="id"
 		         name="id"
+		         published="1"
 		         type="list"/>
 
 		<element plugin="date"
 		         label="datetime"
+		         published="1"
 		         name="datetme"/>
 
 	</group>

@@ -396,7 +396,7 @@ class FabrikFEModelForm extends FabModelForm
 	/**
 	 * Get form table (alias to getTable())
 	 *
-	 * @return  object  form table
+	 * @return  FabTable  form table
 	 */
 	public function getForm()
 	{
@@ -2441,7 +2441,7 @@ class FabrikFEModelForm extends FabModelForm
 	 * @param   string  $prefix   table name prefix
 	 * @param   array   $options  initial state options
 	 *
-	 * @return object form row
+	 * @return FabTable form row
 	 */
 	public function getTable($name = '', $prefix = 'Table', $options = array())
 	{
@@ -4512,7 +4512,6 @@ class FabrikFEModelForm extends FabModelForm
 			return $this->groupView;
 		}
 
-		$params = $this->getParams();
 		$input = $this->app->input;
 
 		// $$$rob - do regardless of whether form is editable as $data is required for hidden encrypted fields
