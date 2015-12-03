@@ -6063,21 +6063,24 @@ class PlgFabrik_Element extends FabrikPlugin
 	 * load a new set of default properties and params for the element
 	 * can be overridden in plugin class
 	 *
-	 * @return  object	element (id = 0)
+	 * @param   array $properties Default props
+	 *
+	 * @return  FabrikTableElement	element (id = 0)
 	 */
-	public function getDefaultProperties()
+	public function getDefaultProperties($properties = array())
 	{
 		$now = $this->date->toSql();
 		$this->setId(0);
 		$item = $this->getElement();
-		$item->plugin = $this->_name;
-		$item->params = $this->getDefaultAttribs();
-		$item->created = $now;
-		$item->created_by = $this->user->get('id');
-		$item->created_by_alias = $this->user->get('username');
-		$item->published = '1';
-		$item->show_in_list_summary = '1';
-		$item->link_to_detail = '1';
+		$item->set('plugin', $this->_name);
+		$item->set('params', $this->getDefaultAttribs());
+		$item->set('created', $now);
+		$item->set('created_by', $this->user->get('id'));
+		$item->set('created_by_alias', $this->user->get('username'));
+		$item->set('published', '1');
+		$item->set('show_in_list_summary', '1');
+		$item->set('link_to_detail', '1');
+		$item->bind($properties);
 
 		return $item;
 	}

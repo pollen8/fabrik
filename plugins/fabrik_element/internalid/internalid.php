@@ -97,12 +97,13 @@ class PlgFabrik_ElementInternalid extends PlgFabrik_Element
 	}
 
 	/**
-	 * Load a new set of default properties and params for the element
+	 * load a new set of default properties and params for the element
 	 *
-	 * @return  object	element (id = 0)
+	 * @param   array $properties Default props
+	 *
+	 * @return  FabrikTableElement	element (id = 0)
 	 */
-
-	public function getDefaultProperties()
+	public function getDefaultProperties($properties = array())
 	{
 		$item = parent::getDefaultProperties();
 		$item->primary_key = true;
