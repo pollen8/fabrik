@@ -122,11 +122,14 @@ $listDirn	= $this->state->get('list.direction');
 						</a>
 					</td>
 					<td>
-						<?php //echo ;$label, $icon = '', $id = '', $task = ''
-						JHtml::_('actionsdropdown.addCustomItem', FText::_('COM_FABRIK_EXPORT_CONTENT_TYPE'), 'upload', 'cb' . $i, 'form.exportcontenttype');
+						<div class="btn-group">
+						<?php
+						JHtml::_('actionsdropdown.addCustomItem', FText::_('COM_FABRIK_CONTENT_TYPE_EXPORT'), 'upload', 'cb' . $i, 'form.exportcontenttype');
+						JHtml::_('actionsdropdown.addCustomItem', FText::_('COM_FABRIK_CONTENT_TYPE_DOWNLOAD'), 'download', 'cb' . $i, 'form.exportcontenttype');
 
 						// Render dropdown list
 						echo JHtml::_('actionsdropdown.render', $this->escape(FText::_('COM_FABRIK_EXPORT_CONTENT_TYPE')));?>
+							</div>
 					</td>
 					<td>
 						<a href="#edit" onclick="return listItemTask('cb<?php echo $i; ?>','forms.updateDatabase')">

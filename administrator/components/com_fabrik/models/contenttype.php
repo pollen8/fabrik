@@ -167,11 +167,12 @@ class FabrikAdminModelContentType extends FabModelAdmin
 	{
 		$params = $node->getElementsByTagName('params');
 		$return = new stdClass;
-		if ($params->length > 0)
+
+		foreach ($params as $param)
 		{
-			if ($params[0]->hasAttributes())
+			if ($param->hasAttributes())
 			{
-				foreach ($params[0]->attributes as $attr)
+				foreach ($param->attributes as $attr)
 				{
 					$name          = $attr->nodeName;
 					$return->$name = $attr->nodeValue;
