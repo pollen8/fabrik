@@ -44,7 +44,7 @@ class FabrikAdminControllerLists extends FabControllerAdmin
 	 * @param   string  $prefix  The class prefix. Optional.
 	 * @param   array   $config  Configuration array for model. Optional.
 	 *
-	 * @return  object  The model.
+	 * @return  JModelLegacy  The model.
 	 *
 	 * @since   12.2
 	 */
@@ -62,8 +62,7 @@ class FabrikAdminControllerLists extends FabControllerAdmin
 	 */
 	public function publish()
 	{
-		$app = JFactory::getApplication();
-		$input = $app->input;
+		$input = $this->input;
 		$cid = $input->get('cid', array(), 'array');
 		$data = array('publish' => 1, 'unpublish' => 0, 'archive' => 2, 'trash' => -2, 'report' => -3);
 		$task = $this->getTask();
@@ -71,7 +70,7 @@ class FabrikAdminControllerLists extends FabControllerAdmin
 
 		if (empty($cid))
 		{
-			JError::raiseWarning(500, FText::_($this->text_prefix . '_NO_ITEM_SELECTED'));
+			$this->setMessage(FText::_($this->text_prefix . '_NO_ITEM_SELECTED'), 'error');
 		}
 		else
 		{
@@ -84,7 +83,7 @@ class FabrikAdminControllerLists extends FabControllerAdmin
 
 			if (!$model->publish($formIds, $value))
 			{
-				JError::raiseWarning(500, $model->getError());
+				$this->setMessage($model->getError(), 'error');
 			}
 			else
 			{
@@ -99,7 +98,7 @@ class FabrikAdminControllerLists extends FabControllerAdmin
 					{
 						if ($groupModel->publish($groupIds, $value) === false)
 						{
-							JError::raiseWarning(500, $groupModel->getError());
+							$this->setMessage($groupModel->getError(), 'error');
 						}
 						else
 						{
@@ -109,7 +108,7 @@ class FabrikAdminControllerLists extends FabControllerAdmin
 
 							if (!$elementModel->publish($elementIds, $value))
 							{
-								JError::raiseWarning(500, $elementModel->getError());
+								$this->setMessage($elementModel->getError(), 'error');
 							}
 						}
 					}
