@@ -15,6 +15,11 @@ defined('_JEXEC') or die('Restricted access');
 JHtml::addIncludePath(JPATH_COMPONENT . '/helpers/html');
 JHtml::_('behavior.tooltip');
 JHTML::_('script','system/multiselect.js',false,true);
+
+JHtml::_('bootstrap.tooltip');
+JHtml::_('behavior.multiselect');
+JHtml::_('formbehavior.chosen', 'select');
+
 $user	= JFactory::getUser();
 $userId	= $user->get('id');
 $listOrder	= $this->state->get('list.ordering');
@@ -62,7 +67,10 @@ $listDirn	= $this->state->get('list.direction');
 				<th width="10%">
 					<?php echo FText::_('COM_FABRIK_ELEMENT');?>
 				</th>
-				<th width="15%">
+				<th width="5%">
+					<?php echo FText::_('COM_FABRIK_CONTENT_TYPE'); ?>
+				</th>
+				<th width="10%">
 					<?php echo FText::_('COM_FABRIK_UPDATE_DATABASE'); ?>
 				</th>
 				<th width="12%">
@@ -88,7 +96,7 @@ $listDirn	= $this->state->get('list.direction');
 			$canEdit	= $user->authorise('core.edit',			'com_fabrik.form.1');
 			$canCheckin	= $user->authorise('core.manage',		'com_checkin') || $item->checked_out==$user->get('id') || $item->checked_out==0;
 			$canChange	= $user->authorise('core.edit.state',	'com_fabrik.form.1') && $canCheckin;
-			//$this->table_groups[$item->id]->group_id
+
 			$elementLink = JRoute::_('index.php?option=com_fabrik&task=element.edit&id=0&filter_groupId=' . $item->group_id);
 			?>
 			<tr class="row<?php echo $i % 2; ?>">
@@ -112,6 +120,13 @@ $listDirn	= $this->state->get('list.direction');
 						<a href="<?php echo $elementLink?>">
 							<i class="icon-plus"></i> <?php echo FText::_('COM_FABRIK_ADD');?>
 						</a>
+					</td>
+					<td>
+						<?php //echo ;$label, $icon = '', $id = '', $task = ''
+						JHtml::_('actionsdropdown.addCustomItem', FText::_('COM_FABRIK_EXPORT_CONTENT_TYPE'), 'upload', 'cb' . $i, 'form.exportcontenttype');
+
+						// Render dropdown list
+						echo JHtml::_('actionsdropdown.render', $this->escape(FText::_('COM_FABRIK_EXPORT_CONTENT_TYPE')));?>
 					</td>
 					<td>
 						<a href="#edit" onclick="return listItemTask('cb<?php echo $i; ?>','forms.updateDatabase')">
