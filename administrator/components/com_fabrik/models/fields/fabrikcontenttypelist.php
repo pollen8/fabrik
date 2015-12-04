@@ -51,7 +51,7 @@ class JFormFieldFabrikContentTypeList extends JFormFieldList
 			$doc = new DOMDocument();
 			$doc->loadXML($xml);
 			$xpath = new DOMXpath($doc);
-			$name  = $xpath->query('/contenttype/name');
+			$name  = iterator_to_array($xpath->query('/contenttype/name'));
 
 			if (!is_null($name) && count($name) > 0)
 			{
