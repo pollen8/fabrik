@@ -214,6 +214,7 @@ var fabrikFullcalendar = new Class({
 	},
 	
 	viewEntry: function (calEvent) {
+		this.clickdate = null;
 		var o = {};
 		o.id = calEvent.formid;
 		o.rowid = calEvent.rowid;
