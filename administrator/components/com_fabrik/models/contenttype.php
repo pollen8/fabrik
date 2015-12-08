@@ -442,14 +442,23 @@ class FabrikAdminModelContentType extends FabModelAdmin
 			throw new Exception('unable to create ZIP');
 		}
 
+		if (!JFile::exists($file))
+		{
+			throw new Exception('Content type file not found');
+		}
+
 		if (!$zip->addFile($file, basename($file)))
 		{
 			throw new Exception('unable to add file ' . $file . ' to zip');
 		}
 
+		$zip->close();
 		header('Content-Type: application/zip');
 		header('Content-Length: ' . filesize($zipFile));
 		header('Content-Disposition: attachment; filename="' . basename($zipFile) . '"');
 		echo file_get_contents($zipFile);
+
+		// Must exit to produce valid Zip download
+		exit;
 	}
 }
