@@ -273,7 +273,7 @@ class FabrikAdminModelForm extends FabModelAdmin
 		if ($createGroup)
 		{
 			$contentType = ArrayHelper::getValue($jForm, 'contenttype');
-			$fields = $contentTypeModel->getDefaultInsertFields($contentType);
+			$fields      = $contentTypeModel->getDefaultInsertFields($contentType);
 		}
 
 		return $fields;

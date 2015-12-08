@@ -63,7 +63,11 @@ class FabrikAdminModelContentType extends FabModelAdmin
 		{
 			throw new UnexpectedValueException('Content Type Constructor requires an Admin List Model');
 		}
-		$this->listModel = $listModel;
+
+		$this->listModel               = $listModel;
+		$this->doc                     = new DOMDocument();
+		$this->doc->preserveWhiteSpace = false;
+		$this->doc->formatOutput       = true;
 	}
 
 	/**
@@ -108,8 +112,7 @@ class FabrikAdminModelContentType extends FabModelAdmin
 			throw new UnexpectedValueException('Content type not found in paths');
 		}
 
-		$xml       = file_get_contents($path);
-		$this->doc = new DOMDocument();
+		$xml = file_get_contents($path);
 		$this->doc->loadXML($xml);
 
 		return $this;
@@ -146,7 +149,7 @@ class FabrikAdminModelContentType extends FabModelAdmin
 			foreach ($elements as $element)
 			{
 				$elementData             = $this->domNodeAttributesToArray($element);
-				$elementData['params']   = $this->nodeParams($element);
+				$elementData['params']   = json_encode($this->nodeParams($element));
 				$elementData['group_id'] = $groupId;
 				$name                    = (string) $element->getAttribute('name');
 				$fields[$name]           = $this->listModel->makeElement($name, $elementData);
@@ -299,14 +302,154 @@ class FabrikAdminModelContentType extends FabModelAdmin
 		if (!is_null($contentType))
 		{
 			$fields = $this->loadContentType($contentType)
-					->createGroupsFromContentType();
+				->createGroupsFromContentType();
 		}
 		else
 		{
 			// Could be importing from a CSV in which case default fields are set.
-			$fields =  $input->get('defaultfields',array('id' => 'internalid', 'date_time' => 'date'));
+			$fields = $input->get('defaultfields', array('id' => 'internalid', 'date_time' => 'date'));
 		}
 
 		return $fields;
+	}
+
+	/**
+	 * Create the content type
+	 * Save it to /administrator/components/com_fabrik/models/content_types
+	 * Update form model with content type path
+	 *
+	 * @param   FabrikFEModelForm $formModel
+	 *
+	 * @return  bool
+	 */
+	public function create($formModel)
+	{
+		$contentType = $this->doc->createElement('contenttype');
+		$label       = $formModel->getForm()->get('label');
+		$name        = $this->doc->createElement('name', $label);
+		$contentType->appendChild($name);
+		$groups = $formModel->getGroupsHiarachy();
+
+		foreach ($groups as $groupModel)
+		{
+
+			$groupData     = $groupModel->getGroup()->getProperties();
+			$group         = $this->buildExportNode('group', $groupData);
+			$elementModels = $groupModel->getMyElements();
+
+			foreach ($elementModels as $elementModel)
+			{
+				$elementData = $elementModel->getElement()->getProperties();
+				$element     = $this->buildExportNode('element', $elementData);
+				$group->appendChild($element);
+			}
+
+			$contentType->appendChild($group);
+
+		}
+		$this->doc->appendChild($contentType);
+		$xml  = $this->doc->saveXML();
+		$path = JPATH_COMPONENT_ADMINISTRATOR . '/models/content_types/' . $label . '.xml';
+
+		if (JFile::write($path, $xml))
+		{
+			$form   = $formModel->getForm();
+			$params = $formModel->getParams();
+			$params->set('content_type_path', $path);
+			$form->params = $params->toString();
+
+			return $form->save($form->getProperties());
+		}
+
+		return false;
+	}
+
+	/**
+	 * Create an export node presuming that the array has a params property which should be split into a child
+	 * node
+	 *
+	 * @param   string $nodeName
+	 * @param   array  $data
+	 * @param   array  $ignore Array of keys to ignore when creating attributes
+	 *
+	 * @return DOMElement
+	 */
+	private function buildExportNode($nodeName, $data,
+			$ignore = array('id', 'created_by', 'created_by_alias', 'group_id', 'modified', 'modified_by',
+					'checked_out', 'checked_out_time'))
+	{
+		$node = $this->doc->createElement($nodeName);
+
+		foreach ($data as $key => $value)
+		{
+			if (in_array($key, $ignore))
+			{
+				continue;
+			}
+
+			if ($key === 'params')
+			{
+				$params = json_decode($value);
+				$p      = $this->doc->createElement('params');
+
+				foreach ($params as $pKey => $pValue)
+				{
+					if (in_array($pKey, $ignore))
+					{
+						continue;
+					}
+
+					if (is_string($pValue) || is_numeric($pValue))
+					{
+						$p->setAttribute($pKey, $pValue);
+					}
+					else
+					{
+						$p->setAttribute($pKey, json_encode($pValue));
+					}
+				}
+
+				$node->appendChild($p);
+			}
+			else
+			{
+				$node->setAttribute($key, $value);
+			}
+		}
+
+		return $node;
+	}
+
+	/**
+	 * Download the content type
+	 *
+	 * @param   FabrikFEModelForm $formModel
+	 *
+	 * @throws Exception
+	 */
+	public function download($formModel)
+	{
+		$params = $formModel->getParams();
+		$file = $params->get('content_type_path');
+		$label = 'content-type-' . $formModel->getForm()->get('label');
+		$label = JFile::makeSafe($label);
+		$zip             = new ZipArchive;
+		$zipFile         = $this->config->get('tmp_path') . '/' . $label . '.zip';
+		$zipRes          = $zip->open($zipFile, ZipArchive::CREATE);
+
+		if (!$zipRes)
+		{
+			throw new Exception('unable to create ZIP');
+		}
+
+		if (!$zip->addFile($file, basename($file)))
+		{
+			throw new Exception('unable to add file ' . $file . ' to zip');
+		}
+
+		header('Content-Type: application/zip');
+		header('Content-Length: ' . filesize($zipFile));
+		header('Content-Disposition: attachment; filename="' . basename($zipFile) . '"');
+		echo file_get_contents($zipFile);
 	}
 }
