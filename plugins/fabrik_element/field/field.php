@@ -59,8 +59,8 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 	/**
 	 * Format the string for use in list view, email data
 	 *
-	 * @param  $d             data
-	 * @param  $doNumberFormat  run numberFormat()
+	 * @param   mixed $d               data
+	 * @param   bool  $doNumberFormat  run numberFormat()
 	 *
 	 * @return string
 	 */
@@ -180,7 +180,7 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 
 		if ($params->get('speech', 0))
 		{
-			$bits['x-webkit-speech'] = "x-webkit-speech";
+			$bits['x-webkit-speech'] = 'x-webkit-speech';
 		}
 
 		$layout = $this->getLayout('form');
