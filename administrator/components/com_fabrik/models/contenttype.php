@@ -14,7 +14,11 @@ defined('_JEXEC') or die('Restricted access');
 
 require_once 'fabmodeladmin.php';
 
+// Tmp fix until https://issues.joomla.org/tracker/joomla-cms/7378 is merged
+require JPATH_COMPONENT_ADMINISTRATOR . '/models/databaseimporter.php';
+require JPATH_COMPONENT_ADMINISTRATOR . '/models/databaseexporter.php';
 use Joomla\Utilities\ArrayHelper;
+use \Joomla\Registry\Registry;
 
 /**
  * Fabrik Admin Content Type Model
@@ -45,6 +49,20 @@ class FabrikAdminModelContentType extends FabModelAdmin
 	 * @var FabrikAdminModelList
 	 */
 	private $listModel;
+
+	/**
+	 * Plugin names that we can not use in a content type
+	 *
+	 * @var array
+	 */
+	private $invalidPlugins = array('cascadingdropdown');
+
+	/**
+	 * Plugin names that require an import/export of a database table.
+	 *
+	 * @var array
+	 */
+	private $pluginsWithTables = array('databasejoin');
 
 	/**
 	 * Constructor.
@@ -157,7 +175,36 @@ class FabrikAdminModelContentType extends FabModelAdmin
 			$groupIds[] = $groupId;
 		}
 
+		$this->importTables();
+
 		return $fields;
+	}
+
+	/**
+	 * Import any database table's defined in the XML's files '/contenttype/database/table_structure section
+	 * These are table's needed for database join element's to work.
+	 */
+	private function importTables()
+	{
+		$xpath  = new DOMXpath($this->doc);
+		$tables = $xpath->query('/contenttype/database/table_structure');
+		// $importer = $this->db->getImporter();
+
+		// Tmp fix until https://issues.joomla.org/tracker/joomla-cms/7378 is merged
+		$importer = new JDatabaseImporterMysqli2;
+		$importer->setDbo($this->db);
+
+		foreach ($tables as $table)
+		{
+			$xmlDoc     = new DOMDocument;
+			$database   = $xmlDoc->createElement('database');
+			$root       = $xmlDoc->createElement('root');
+			$tableClone = $xmlDoc->importNode($table, true);
+			$database->appendChild($tableClone);
+			$root->appendChild($database);
+			$xml = simplexml_import_dom($root);
+			$importer->from($xml)->mergeStructure();
+		}
 	}
 
 	/**
@@ -316,7 +363,7 @@ class FabrikAdminModelContentType extends FabModelAdmin
 	 * Ensure that before creating a list/form from a content type, that all
 	 * elements are installed and published
 	 *
-	 * @param   string  $contentType
+	 * @param   string $contentType
 	 *
 	 * @throws UnexpectedValueException
 	 *
@@ -359,7 +406,12 @@ class FabrikAdminModelContentType extends FabModelAdmin
 	 */
 	public function create($formModel)
 	{
+		//$db          = $this->db;
+		//$exporter    = $db->getExporter();
+		$exporter = $importer = new JDatabaseExporterMysqli2;
+		$exporter->setDbo($this->db);
 		$contentType = $this->doc->createElement('contenttype');
+		$tables      = $this->doc->createElement('database');
 		$label       = $formModel->getForm()->get('label');
 		$name        = $this->doc->createElement('name', $label);
 		$contentType->appendChild($name);
@@ -375,13 +427,36 @@ class FabrikAdminModelContentType extends FabModelAdmin
 			foreach ($elementModels as $elementModel)
 			{
 				$elementData = $elementModel->getElement()->getProperties();
-				$element     = $this->buildExportNode('element', $elementData);
+
+				if (in_array($elementData['plugin'], $this->invalidPlugins))
+				{
+					throw new UnexpectedValueException('Sorry we can not create content types with ' .
+						$elementData['plugin'] . ' element plugins');
+				}
+
+				if (in_array($elementData['plugin'], $this->pluginsWithTables))
+				{
+					$elementParams = new Registry($elementData['params']);
+					$exporter->from($elementParams->get('join_db_name'));
+					$tableDoc = new DOMDocument();
+					$tableDoc->loadXML((string) $exporter);
+					$structures = $tableDoc->getElementsByTagName('table_structure');
+
+					foreach ($structures as $table)
+					{
+						$table = $this->doc->importNode($table, true);
+						$tables->appendChild($table);
+					}
+				};
+
+				$element = $this->buildExportNode('element', $elementData);
 				$group->appendChild($element);
 			}
 
 			$contentType->appendChild($group);
 
 		}
+		$contentType->appendChild($tables);
 		$this->doc->appendChild($contentType);
 		$xml  = $this->doc->saveXML();
 		$path = JPATH_COMPONENT_ADMINISTRATOR . '/models/content_types/' . $label . '.xml';
