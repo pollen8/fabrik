@@ -11,6 +11,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\String\String;
+
 /**
  * Itagg SMS gateway class
  *
@@ -50,7 +52,7 @@ class Itagg extends JObject
 
 		foreach ($smstos as $smsto)
 		{
-			if (substr($smsto, 0, 1) == '+' && JString::substr($smsto, 1, 2) != '44')
+			if (substr($smsto, 0, 1) == '+' && String::substr($smsto, 1, 2) != '44')
 			{
 				// Global sms
 				$route = 8;

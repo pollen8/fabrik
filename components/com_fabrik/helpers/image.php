@@ -11,6 +11,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\String\String;
+
 /**
  * Image manipulation class
  *
@@ -348,7 +350,7 @@ class Fabimage
 	 */
 	public static function exifToNumber($value, $format)
 	{
-		$pos = JString::strpos($value, '/');
+		$pos = String::strpos($value, '/');
 
 		if ($pos === false)
 		{
@@ -452,7 +454,7 @@ class FabimageGD extends Fabimage
 	public function imageFromFile($file)
 	{
 		$img = false;
-		$ext = JString::strtolower(end(explode('.', $file)));
+		$ext = String::strtolower(end(explode('.', $file)));
 
 		if ($ext == 'jpg' || $ext == 'jpeg')
 		{
@@ -491,7 +493,7 @@ class FabimageGD extends Fabimage
 	 */
 	protected function imageCreateFrom($source)
 	{
-		$ext = JString::strtolower(JFile::getExt($source));
+		$ext = String::strtolower(JFile::getExt($source));
 
 		switch ($ext)
 		{
@@ -520,7 +522,7 @@ class FabimageGD extends Fabimage
 	 */
 	public function imageToFile($destCropFile, $image)
 	{
-		$ext = JString::strtolower(JFile::getExt($destCropFile));
+		$ext = String::strtolower(JFile::getExt($destCropFile));
 		ob_start();
 
 		switch ($ext)
@@ -673,7 +675,7 @@ class FabimageGD extends Fabimage
 			return $img;
 		}
 
-		$ext = JString::strtolower(end(explode('.', $origFile)));
+		$ext = String::strtolower(end(explode('.', $origFile)));
 
 		// If an image was successfully loaded, test the image for size
 		if ($img)
@@ -1015,7 +1017,7 @@ class FabimageIM extends Fabimage
 			// $$$ hugh - testing making thumbs for PDF's, so need a little tweak here
 			$origInfo = pathinfo($origFile);
 
-			if (JString::strtolower($origInfo['extension']) != 'pdf')
+			if (String::strtolower($origInfo['extension']) != 'pdf')
 			{
 				return;
 			}
@@ -1033,7 +1035,7 @@ class FabimageIM extends Fabimage
 
 			$origInfo = pathinfo($origFile);
 
-			if (JString::strtolower($origInfo['extension']) == 'pdf')
+			if (String::strtolower($origInfo['extension']) == 'pdf')
 			{
 				$pdfThumbType = 'png';
 

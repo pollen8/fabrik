@@ -8,6 +8,8 @@
  * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
+use Joomla\String\String;
+
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
@@ -109,7 +111,7 @@ class FabrikModelSlideshow extends FabrikFEModelVisualization
 				}
 
 				$location = str_replace('\\', '/', $location);
-				$location = JString::ltrim($location, '/');
+				$location = String::ltrim($location, '/');
 				$location = COM_FABRIK_LIVESITE . $location;
 				$str .= "		<track>\n";
 				$str .= "			<location>" . $location . "</location>\n";
@@ -127,7 +129,7 @@ class FabrikModelSlideshow extends FabrikFEModelVisualization
 					if (!empty($image))
 					{
 						$image = str_replace('\\', '/', $image);
-						$image = JString::ltrim($image, '/');
+						$image = String::ltrim($image, '/');
 						$image = COM_FABRIK_LIVESITE . $image;
 						$str .= "			<image>" . $image . "</image>\n";
 					}

@@ -11,6 +11,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\String\String;
+
 // Access check.
 if (!JFactory::getUser()->authorise('core.manage', 'com_fabrik'))
 {
@@ -39,7 +41,7 @@ JHTML::stylesheet('administrator/components/com_fabrik/headings.css');
 // Check for plugin views (e.g. list email plugin's "email form"
 $cName = $input->getCmd('controller');
 
-if (JString::strpos($cName, '.') != false)
+if (String::strpos($cName, '.') != false)
 {
 	list($type, $name) = explode('.', $cName);
 
@@ -55,7 +57,7 @@ if (JString::strpos($cName, '.') != false)
 		require_once $path;
 		$controller = $type . $name;
 
-		$classname = 'FabrikController' . JString::ucfirst($controller);
+		$classname = 'FabrikController' . String::ucfirst($controller);
 		$controller = new $classname;
 
 		// Add in plugin view

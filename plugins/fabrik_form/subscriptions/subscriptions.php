@@ -11,6 +11,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\String\String;
+
 // Require the abstract plugin class
 require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
 JTable::addIncludePath(JPATH_ADMINISTRATOR . '/components/com_fabrik/tables');
@@ -532,7 +534,7 @@ class PlgFabrik_FormSubscriptions extends PlgFabrik_Form
 			$row = $listModel->getRow($rowId);
 			$msg = $w->parseMessageForPlaceHolder($msg, $row);
 
-			if (JString::stristr($msg, '[show_all]'))
+			if (String::stristr($msg, '[show_all]'))
 			{
 				$all_data = array();
 
@@ -625,7 +627,7 @@ class PlgFabrik_FormSubscriptions extends PlgFabrik_Form
 		$header = "POST /cgi-bin/webscr HTTP/1.0\r\n";
 		$header .= $sandBox ? "Host: www.sandbox.paypal.com:443\r\n" : "Host: www.paypal.com:443\r\n";
 		$header .= "Content-Type: application/x-www-form-urlencoded\r\n";
-		$header .= "Content-Length: " . JString::strlen($req) . "\r\n\r\n";
+		$header .= "Content-Length: " . String::strlen($req) . "\r\n\r\n";
 
 		$subscriptionsurl = $sandBox ? 'ssl://www.sandbox.paypal.com' : 'ssl://www.paypal.com';
 
@@ -676,7 +678,7 @@ class PlgFabrik_FormSubscriptions extends PlgFabrik_Form
 					* check that payment_amount/payment_currency are correct
 					* process payment
 					*/
-					if (JString::strcmp(strtoupper($res), "VERIFIED") == 0)
+					if (String::strcmp(strtoupper($res), "VERIFIED") == 0)
 					{
 						$query = $db->getQuery(true);
 						$query->select($ipn_status_field)->from('#__fabrik_subs_invoices')
@@ -778,7 +780,7 @@ class PlgFabrik_FormSubscriptions extends PlgFabrik_Form
 							}
 						}
 					}
-					elseif (JString::strcmp($res, "INVALID") == 0)
+					elseif (String::strcmp($res, "INVALID") == 0)
 					{
 						$status = false;
 						$err_title = 'form.subscriptions.ipnfailure.invalid';

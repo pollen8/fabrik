@@ -11,6 +11,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\String\String;
+
 /**
  * Generic tools that all models use
  * This code used to be in models/parent.php
@@ -597,7 +599,7 @@ class FabrikWorker
 			$reservedWords = array_merge($reservedWords, $strictWords);
 		}
 
-		if (in_array(JString::strtolower($str), $reservedWords))
+		if (in_array(String::strtolower($str), $reservedWords))
 		{
 			return true;
 		}
@@ -703,7 +705,7 @@ class FabrikWorker
 		{
 			$this->parseAddSlashes = $addSlashes;
 
-			if (!($msg == '' || is_array($msg) || JString::strpos($msg, '{') === false))
+			if (!($msg == '' || is_array($msg) || String::strpos($msg, '{') === false))
 			{
 				$msg = str_replace(array('%7B', '%7D'), array('{', '}'), $msg);
 
@@ -931,7 +933,7 @@ class FabrikWorker
 		$orig  = $match;
 
 		// Strip the {}
-		$match = JString::substr($match, 1, JString::strlen($match) - 2);
+		$match = String::substr($match, 1, JString::strlen($match) - 2);
 
 		/* $$$ hugh - added dbprefix substitution
 		 * Not 100% if we should do this on $match before copying to $orig, but for now doing it
@@ -1010,7 +1012,7 @@ class FabrikWorker
 						}
 					}
 
-					$match = JString::ltrim($newMatch, ',');
+					$match = String::ltrim($newMatch, ',');
 				}
 			}
 			else
@@ -1083,7 +1085,7 @@ class FabrikWorker
 			elseif (preg_match('/bmp|gif|jpg|png/i', $file) && is_file($i_f))
 			{
 				// Leading / we don't need
-				$imageFile             = JString::substr($ff, 1);
+				$imageFile             = String::substr($ff, 1);
 				$images[$folderPath][] = $makeOptions ? JHTML::_('select.option', $imageFile, $file) : $file;
 			}
 		}
@@ -1229,7 +1231,7 @@ class FabrikWorker
 
 			// Each group the user is in could have different filtering properties.
 			$filterData = $filters->$groupId;
-			$filterType = JString::strtoupper($filterData->filter_type);
+			$filterType = String::strtoupper($filterData->filter_type);
 
 			if ($filterType == 'NH')
 			{

@@ -10,6 +10,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\String\String;
+
 jimport('joomla.application.component.model');
 
 /**
@@ -55,7 +57,7 @@ class FabrikModelNotification extends FabModel
 			{
 				$key = explode('___', $key);
 				$key = array_pop($key);
-				$k = JString::strtolower($key);
+				$k = String::strtolower($key);
 
 				if ($k == 'title')
 				{
