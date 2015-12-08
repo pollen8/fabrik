@@ -11,6 +11,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\String\String;
+
 /**
  *  Plugin element to render list of data looked up from a database table
  *  Can render as checkboxes, radio buttons, select lists, multi select lists and auto-complete
@@ -1050,7 +1052,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 				|| ($mode == 'form' && $displayType == 'auto-complete')
 				|| ($mode == 'filter' && $displayType == 'auto-complete'))
 			{
-				$where .= JString::stristr($where, 'WHERE') ? ' AND ' . $this->autocomplete_where : ' WHERE ' . $this->autocomplete_where;
+				$where .= String::stristr($where, 'WHERE') ? ' AND ' . $this->autocomplete_where : ' WHERE ' . $this->autocomplete_where;
 			}
 		}
 
@@ -1062,7 +1064,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		$filterWhere = trim($params->get('database_join_filter_where_sql', ''));
 		if (FArrayHelper::getValue($opts, 'mode', '') === 'filter' && !empty($filterWhere))
 		{
-			$where .= JString::stristr($where, 'WHERE') ? ' AND ' . $filterWhere : ' WHERE ' . $filterWhere;
+			$where .= String::stristr($where, 'WHERE') ? ' AND ' . $filterWhere : ' WHERE ' . $filterWhere;
 		}
 
 		if ($where == '')
@@ -2310,7 +2312,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		$where .= $preFilterWhere;
 		$sql .= $where;
 
-		if (!JString::stristr($where, 'order by'))
+		if (!String::stristr($where, 'order by'))
 		{
 			$sql .= $this->getOrderBy('filter');
 		}
@@ -2352,7 +2354,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 					// Check if the 'Joins where and/or order by statement' has an order by
 					$joinWhere = $params->get('database_join_where_sql');
 
-					if (JString::stristr($joinWhere, 'ORDER BY'))
+					if (String::stristr($joinWhere, 'ORDER BY'))
 					{
 						$joinWhere = str_replace('order by', 'ORDER BY', $joinWhere);
 						$joinWhere = explode('ORDER BY', $joinWhere);
@@ -2389,7 +2391,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 				}
 				else
 				{
-					$order = JString::str_ireplace('ORDER BY', '', $this->orderBy);
+					$order = String::str_ireplace('ORDER BY', '', $this->orderBy);
 					$query->order($order);
 
 					return $query;
@@ -3466,7 +3468,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		$params = $this->getParams();
 		$jKey = $this->getLabelOrConcatVal();
 		$where = $this->buildQueryWhere(array(), true, $params->get('join_db_name'));
-		$where = JString::stristr($where, 'order by') ? $where : '';
+		$where = String::stristr($where, 'order by') ? $where : '';
 		$dbName = $this->getDbName();
 		/**
 		 * Use lookup alias rather than directly referencing $dbName

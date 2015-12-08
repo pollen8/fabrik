@@ -11,6 +11,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\String\String;
+
 require_once JPATH_SITE . '/plugins/fabrik_element/databasejoin/databasejoin.php';
 
 /**
@@ -935,7 +937,7 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 			$query->where($where);
 		}
 
-		if (!JString::stristr($where, 'order by'))
+		if (!String::stristr($where, 'order by'))
 		{
 			$query->order($orderBy . ' ASC');
 		}

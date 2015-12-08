@@ -12,6 +12,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\String\String;
+
 jimport('joomla.application.component.modeladmin');
 
 require_once 'fabmodeladmin.php';
@@ -435,7 +437,7 @@ class FabrikAdminModelElement extends FabModelAdmin
 			}
 		}
 		// Strip <p> tag from label
-		$data['label'] = JString::str_ireplace(array('<p>', '</p>'), '', $data['label']);
+		$data['label'] = String::str_ireplace(array('<p>', '</p>'), '', $data['label']);
 
 		return count($this->getErrors()) == 0 ? $data : false;
 	}
@@ -897,7 +899,7 @@ class FabrikAdminModelElement extends FabModelAdmin
 		$fieldType = $elementModel->getFieldDescription();
 
 		// Int elements can't have a index size attribute
-		$size = JString::stristr($fieldType, 'int') || $fieldType == 'DATETIME' ? '' : '10';
+		$size = String::stristr($fieldType, 'int') || $fieldType == 'DATETIME' ? '' : '10';
 
 		if ($elementModel->getParams()->get('can_order'))
 		{
@@ -1325,10 +1327,10 @@ class FabrikAdminModelElement extends FabModelAdmin
 		{
 			if ($usedPlugin !== '')
 			{
-				$class                = 'plgFabrik_Validationrule' . JString::ucfirst($usedPlugin);
+				$class                = 'plgFabrik_Validationrule' . String::ucfirst($usedPlugin);
 				$conf                 = array();
-				$conf['name']         = JString::strtolower($usedPlugin);
-				$conf['type']         = JString::strtolower('fabrik_Validationrule');
+				$conf['name']         = String::strtolower($usedPlugin);
+				$conf['type']         = String::strtolower('fabrik_Validationrule');
 				$plugIn               = new $class($dispatcher, $conf);
 				$oPlugin              = JPluginHelper::getPlugin('fabrik_validationrule', $usedPlugin);
 				$plugIn->elementModel = $elementModel;

@@ -2,9 +2,9 @@
 <extension type="package" version="3" method="upgrade">
 	<name>Fabrik Package</name>
 	<packagename>fabrik</packagename>
-	<version>3.3.4</version>
+	<version>3.4</version>
 	<url>http://www.fabrikar.com</url>
-	<creationDate>November 2015</creationDate>
+	<creationDate>December 2015</creationDate>
 	<copyright>Copyright (C) 2005-2015 fabrikar.com - All rights reserved.</copyright>
 	<author>Fabrik</author>
 	<packager>Rob Clayburn</packager>

@@ -11,6 +11,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\String\String;
+
 require_once JPATH_ROOT . '/plugins/fabrik_element/fileupload/adaptor.php';
 
 /**
@@ -273,7 +275,7 @@ class Filesystemstorage extends FabrikStorageAdaptor
 	{
 		$livesite = COM_FABRIK_LIVESITE;
 		$livesite = rtrim($livesite, '/\\');
-		$file = JString::ltrim($file, '/\\');
+		$file = String::ltrim($file, '/\\');
 
 		return str_replace("\\", "/", $livesite . '/' . $file);
 	}
@@ -314,9 +316,9 @@ class Filesystemstorage extends FabrikStorageAdaptor
 
 		// Replace things like $my->id may barf on other stuff
 		$afile = str_replace(JURI::root(), '', $file);
-		$afile = JString::ltrim($afile, "/");
-		$ulDir = JString::ltrim($ulDir, "/");
-		$ulDir = JString::rtrim($ulDir, "/");
+		$afile = String::ltrim($afile, "/");
+		$ulDir = String::ltrim($ulDir, "/");
+		$ulDir = String::rtrim($ulDir, "/");
 		$ulDirbits = explode('/', $ulDir);
 		$filebits = explode('/', $afile);
 

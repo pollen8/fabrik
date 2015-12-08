@@ -9,6 +9,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\String\String;
+
 // Require the abstract plugin class
 require_once COM_FABRIK_FRONTEND . '/models/plugin-list.php';
 
@@ -63,7 +65,7 @@ class PlgFabrik_ListFilter_View extends PlgFabrik_List
 			for ($i = 0; $i < count($labels); $i ++)
 			{
 				$base = JURI::base();
-				$base .= JString::strpos($base, '?') ? '&' : '?';
+				$base .= String::strpos($base, '?') ? '&' : '?';
 				$class = $links[$i] == urldecode($_SERVER['QUERY_STRING']) ? 'active' : '';
 				$links[$i] = str_replace('+', '%2B', $links[$i]);
 				$url = $base . $links[$i];

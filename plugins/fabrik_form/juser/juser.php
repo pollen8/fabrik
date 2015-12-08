@@ -11,6 +11,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\String\String;
+
 // Require the abstract plugin class
 require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
 
@@ -696,14 +698,14 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 
 		if (strlen($username) > 150)
 		{
-			$username = JString::substr($username, 0, 150);
+			$username = String::substr($username, 0, 150);
 			$user->set('username', $username);
 		}
 
 		// Check that password is not greater than 100 characters @FIXME - 55 for j3.2
 		if (strlen($data['password']) > 100)
 		{
-			$data['password'] = JString::substr($data['password'], 0, 100);
+			$data['password'] = String::substr($data['password'], 0, 100);
 		}
 
 		return $data;
@@ -980,7 +982,7 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 			$ok = false;
 		}
 
-		if (preg_match("#[<>\"'%;()&]#i", $post['username']) || JString::strlen(utf8_decode($post['username'])) < 2)
+		if (preg_match("#[<>\"'%;()&]#i", $post['username']) || String::strlen(utf8_decode($post['username'])) < 2)
 		{
 			$this->raiseError($formModel->errors, $this->usernamefield, JText::sprintf('VALID_AZ09', FText::_('Username'), 2));
 			$ok = false;

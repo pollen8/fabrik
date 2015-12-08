@@ -11,6 +11,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\String\String;
+
 jimport('joomla.application.component.view');
 
 /**
@@ -164,7 +166,7 @@ class FabrikViewList extends JViewLegacy
 
 							if (!strstr($this->doc->_namespace, $namespace))
 							{
-								$rssTag                 = JString::substr($rssTag, 1, JString::strlen($rssTag) - 2);
+								$rssTag                 = String::substr($rssTag, 1, String::strlen($rssTag) - 2);
 								$this->doc->_itemTags[] = $rssTag;
 								$this->doc->_namespace .= $namespace . "\n";
 							}

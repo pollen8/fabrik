@@ -11,6 +11,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\String\String;
+
 require_once JPATH_SITE . '/components/com_fabrik/models/element.php';
 
 /**
@@ -149,7 +151,7 @@ class PlgFabrik_ElementPicklist extends PlgFabrik_ElementList
 
 		for ($i = 0; $i < count($labels); $i++)
 		{
-			if (JString::strtolower($labels[$i]) == JString::strtolower($value))
+			if (String::strtolower($labels[$i]) == String::strtolower($value))
 			{
 				$val = $values[$i];
 

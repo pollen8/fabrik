@@ -11,6 +11,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\String\String;
+
 /**
  * List filter model
  *
@@ -396,7 +398,7 @@ class FabrikFEModelListfilter extends FabModel
 		$this->_db->setQuery('SHOW VARIABLES LIKE \'ft_min_word_len\'');
 		$res = $this->_db->loadObject();
 
-		if (!JString::strlen($s) >= $res->Value)
+		if (!String::strlen($s) >= $res->Value)
 		{
 			throw new UnexpectedValueException(FText::_('COM_FABRIK_NOTICE_SEARCH_STRING_TOO_SHORT'));
 		}
@@ -641,7 +643,7 @@ class FabrikFEModelListfilter extends FabModel
 			{
 				$fieldDesc = $elementModel->getFieldDescription();
 
-				if (JString::stristr($fieldDesc, 'INT'))
+				if (String::stristr($fieldDesc, 'INT'))
 				{
 					if (is_numeric($search) && $condition == '=')
 					{
@@ -1002,7 +1004,7 @@ class FabrikFEModelListfilter extends FabModel
 			{
 				$fieldDesc = $elementModel->getFieldDescription();
 
-				if (JString::stristr($fieldDesc, 'INT'))
+				if (String::stristr($fieldDesc, 'INT'))
 				{
 					if (is_numeric($val) && $condition == '=')
 					{
@@ -1166,7 +1168,7 @@ class FabrikFEModelListfilter extends FabModel
 		if (!empty($request) && array_key_exists('key', $request))
 		{
 			$keyInts = array_keys($request['key']);
-			$ajaxPost = JString::strtolower($input->server->get('HTTP_X_REQUESTED_WITH'));
+			$ajaxPost = String::strtolower($input->server->get('HTTP_X_REQUESTED_WITH'));
 			$this->listModel->ajaxPost = $ajaxPost;
 			$this->listModel->postValues = $values;
 
@@ -1296,7 +1298,7 @@ class FabrikFEModelListfilter extends FabModel
 				{
 					$fieldDesc = $elementModel->getFieldDescription();
 
-					if (JString::stristr($fieldDesc, 'INT'))
+					if (String::stristr($fieldDesc, 'INT'))
 					{
 						if (is_numeric($value) && $request['condition'][$i] == '=')
 						{
@@ -1310,7 +1312,7 @@ class FabrikFEModelListfilter extends FabModel
 				 * post filter query overwrites search all query, but uses add so = where id REGEX 'USA' AND country LIKE '%USA'
 				 * this code swaps the first
 				 */
-				$joinMode = JString::strtolower($request['join'][$i]) != 'where' ? $request['join'][$i] : 'AND';
+				$joinMode = String::strtolower($request['join'][$i]) != 'where' ? $request['join'][$i] : 'AND';
 
 				if (!empty($filters))
 				{
@@ -1513,7 +1515,7 @@ class FabrikFEModelListfilter extends FabModel
 					{
 						$fieldDesc = $elementModel->getFieldDescription();
 
-						if (JString::stristr($fieldDesc, 'INT'))
+						if (String::stristr($fieldDesc, 'INT'))
 						{
 							if (is_numeric($search) && $condition == '=')
 							{

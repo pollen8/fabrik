@@ -11,6 +11,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\String\String;
+
 /**
  * Plugin element to render two fields to capture a link (url/label)
  *
@@ -112,15 +114,15 @@ class PlgFabrik_ElementLink extends PlgFabrik_Element
 			$lbl = trim($data['label']);
 			$href = $w->parseMessageForPlaceHolder(urldecode($href), JArrayHelper::fromObject($thisRow));
 
-			if (JString::strtolower($href) == 'http://' || JString::strtolower($href) == 'https://')
+			if (String::strtolower($href) == 'http://' || String::strtolower($href) == 'https://')
 			{
 				// Treat some default values as empty
 				$href = '';
 			}
 			else if (strlen($href) > 0 && substr($href, 0, 1) != "/"
-				&& substr(JString::strtolower($href), 0, 7) != 'http://'
-				&& substr(JString::strtolower($href), 0, 8) != 'https://'
-				&& substr(JString::strtolower($href), 0, 6) != 'ftp://'
+				&& substr(String::strtolower($href), 0, 7) != 'http://'
+				&& substr(String::strtolower($href), 0, 8) != 'https://'
+				&& substr(String::strtolower($href), 0, 6) != 'ftp://'
 				)
 			{
 					$href = 'http://' . $href;
