@@ -263,9 +263,9 @@ class PlgFabrik_ListDownload extends PlgFabrik_List
 
 					if ($fileSize > 0)
 					{
-						header("Content-Type: application/zip");
-						header("Content-Length: " . filesize($zipFile));
-						header("Content-Disposition: attachment; filename=\"$zipFileBasename.zip\"");
+						header('Content-Type: application/zip');
+						header('Content-Length: ' . filesize($zipFile));
+						header('Content-Disposition: attachment; filename="' . $zipFileBasename . '.zip"');
 						echo file_get_contents($zipFile);
 						JFile::delete($zipFile);
 						exit;
