@@ -12,6 +12,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 use Joomla\String\String;
+use \Joomla\Registry\Registry;
 
 jimport('joomla.application.component.view');
 
@@ -88,7 +89,7 @@ class FabrikViewList extends JViewLegacy
 		foreach ($aJoinsToThisKey as $element)
 		{
 			$element  = $elementModel->getElement();
-			$elParams = new JRegistry($element->attribs);
+			$elParams = new Registry($element->attribs);
 
 			if ($elParams->get('show_in_rss_feed') == '1')
 			{

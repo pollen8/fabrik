@@ -54,7 +54,7 @@ class PlgFabrik_FormMailchimp extends PlgFabrik_Form
 	/**
 	 * Get Mailchimp email groups
 	 *
-	 * @param   JRegistry  $params  Params
+	 * @param   \Joomla\Registry\Registry  $params  Params
 	 *
 	 * @throws RuntimeException
 	 *

@@ -14,6 +14,7 @@ defined('_JEXEC') or die('Restricted access');
 jimport('joomla.application.component.modelform');
 
 use Joomla\String\String;
+use \Joomla\Registry\Registry;
 
 require_once COM_FABRIK_FRONTEND . '/helpers/pagination.php';
 require_once COM_FABRIK_FRONTEND . '/helpers/list.php';
@@ -3767,7 +3768,7 @@ class FabrikFEModelList extends JModelForm
 
 		if (!isset($this->params))
 		{
-			$this->params = new JRegistry($item->params);
+			$this->params = new Registry($item->params);
 		}
 
 		return $this->params;
@@ -4275,7 +4276,7 @@ class FabrikFEModelList extends JModelForm
 			{
 				if (is_string($join->params))
 				{
-					$join->params = new JRegistry($join->params);
+					$join->params = new Registry($join->params);
 					$this->setJoinPk($join);
 				}
 			}
@@ -4317,7 +4318,7 @@ class FabrikFEModelList extends JModelForm
 			{
 			}
 
-			$join->params = new JRegistry($join->params);
+			$join->params = new Registry($join->params);
 		}
 	}
 

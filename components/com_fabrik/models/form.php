@@ -12,6 +12,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 use Joomla\String\String;
+use \Joomla\Registry\Registry;
 
 jimport('joomla.application.component.model');
 require_once 'fabrikmodelform.php';
@@ -98,7 +99,7 @@ class FabrikFEModelForm extends FabModelForm
 	/**
 	 * Parameters
 	 *
-	 * @var JRegistry
+	 * @var Registry
 	 */
 	protected $params = null;
 
@@ -415,7 +416,7 @@ class FabrikFEModelForm extends FabModelForm
 		if (!isset($this->params))
 		{
 			$form = $this->getForm();
-			$this->params = new JRegistry($form->params);
+			$this->params = new Registry($form->params);
 		}
 
 		return $this->params;

@@ -11,6 +11,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use \Joomla\Registry\Registry;
+
 require_once JPATH_SITE . '/plugins/fabrik_element/databasejoin/databasejoin.php';
 
 /**
@@ -37,7 +39,7 @@ class PlgFabrik_ElementTags extends PlgFabrik_ElementDatabasejoin
 	{
 		if (!isset($this->params))
 		{
-			$this->params = new JRegistry($this->getElement()->params);
+			$this->params = new Registry($this->getElement()->params);
 			$this->params->set('table_join', $this->getDbName());
 		}
 

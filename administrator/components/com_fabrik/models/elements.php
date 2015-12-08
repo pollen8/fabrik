@@ -12,6 +12,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use \Joomla\Registry\Registry;
+
 require_once 'fabmodellist.php';
 
 /**
@@ -199,7 +201,7 @@ class FabrikAdminModelElements extends FabModelList
 			}
 
 			// Add a tip containing the access level information
-			$params = new JRegistry($item->params);
+			$params = new Registry($item->params);
 
 			$addAccessTitle = FArrayHelper::getValue($viewLevels, $item->access);
 			$addAccessTitle = is_object($addAccessTitle) ? $addAccessTitle->title : 'n/a';

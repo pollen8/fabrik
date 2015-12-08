@@ -658,9 +658,9 @@ class PlgFabrik_FormRest extends PlgFabrik_Form
 	/**
 	 * Update the form models data with data from CURL request
 	 *
-	 * @param   JRegistry  $params        Parameters
-	 * @param   array      $responseBody  Response body
-	 * @param   array      $data          Data returned from CURL request
+	 * @param   Joomla\Registry\Registry  $params        Parameters
+	 * @param   array                     $responseBody  Response body
+	 * @param   array                     $data          Data returned from CURL request
 	 *
 	 * @return  void
 	 */

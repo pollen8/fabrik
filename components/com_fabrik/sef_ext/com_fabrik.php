@@ -20,6 +20,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use \Joomla\Registry\Registry;
+
 if (!function_exists('shFetchFormName'))
 {
 	/**
@@ -310,7 +312,7 @@ switch ($view)
 			$menusId = $menus->getMenu();
 
 			// Get the rowid and formid from the menu object
-			$menu_params = new JRegistry($menusId[$itemId]->params);
+			$menu_params = new Registry($menusId[$itemId]->params);
 			$rowId 	     = $menu_params->get('rowid');
 			$formId      = $menusId[$itemId]->query['formid'];
 

@@ -12,6 +12,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 use Joomla\String\String;
+use \Joomla\Registry\Registry;
 
 jimport('joomla.application.component.model');
 
@@ -283,7 +284,7 @@ class PlgFabrik_Validationrule extends FabrikPlugin
 		}
 		*/
 
-		$params = new JRegistry($plugin->params);
+		$params = new Registry($plugin->params);
 
 		return $params->get('icon', 'star');
 	}

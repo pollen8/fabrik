@@ -12,6 +12,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 use Joomla\String\String;
+use \Joomla\Registry\Registry;
 
 /**
  *  Plugin element to render list of data looked up from a database table
@@ -433,7 +434,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 
 					if (is_string($this->join->params))
 					{
-						$this->join->params = new JRegistry($this->join->params);
+						$this->join->params = new Registry($this->join->params);
 					}
 
 					return $this->join;
@@ -449,7 +450,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 
 				if (is_string($this->join->params))
 				{
-					$this->join->params = new JRegistry($this->join->params);
+					$this->join->params = new Registry($this->join->params);
 				}
 
 				return $this->join;

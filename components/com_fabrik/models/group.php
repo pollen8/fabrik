@@ -12,6 +12,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 use Joomla\String\String;
+use \Joomla\Registry\Registry;
 
 jimport('joomla.application.component.model');
 
@@ -26,7 +27,7 @@ class FabrikFEModelGroup extends FabModel
 	/**
 	 * Parameters
 	 *
-	 * @var JRegistry
+	 * @var Registry
 	 */
 	protected $params = null;
 
@@ -945,7 +946,7 @@ class FabrikFEModelGroup extends FabModel
 	{
 		if (!$this->params)
 		{
-			$this->params = new JRegistry($this->getGroup()->params);
+			$this->params = new Registry($this->getGroup()->params);
 		}
 
 		return $this->params;

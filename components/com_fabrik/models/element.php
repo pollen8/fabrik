@@ -12,6 +12,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 use Joomla\String\String;
+use \Joomla\Registry\Registry;
 use Joomla\Utilities\ArrayHelper;
 
 jimport('joomla.application.component.model');
@@ -2743,7 +2744,7 @@ class PlgFabrik_Element extends FabrikPlugin
 	{
 		if (!isset($this->params))
 		{
-			$this->params = new JRegistry($this->getElement()->params);
+			$this->params = new Registry($this->getElement()->params);
 		}
 
 		return $this->params;
@@ -2761,7 +2762,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		if (isset($this->xmlPath))
 		{
 			$element = $this->getElement();
-			$pluginParams = new JRegistry($element->params);
+			$pluginParams = new Registry($element->params);
 
 			return $pluginParams;
 		}
@@ -5727,7 +5728,7 @@ class PlgFabrik_Element extends FabrikPlugin
 	{
 		$element = $this->getPluginName();
 		$plugin = JPluginHelper::getPlugin('fabrik_element', $element);
-		$fParams = new JRegistry($plugin->params);
+		$fParams = new Registry($plugin->params);
 		$p = $this->getParams();
 
 		if ($this->encryptMe())
@@ -6800,7 +6801,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		{
 			$join = FabTable::getInstance('Join', 'FabrikTable');
 			$join->load($id);
-			$params = new JRegistry($join->params);
+			$params = new Registry($join->params);
 
 			if ($params->get('pk') === $testPk)
 			{
