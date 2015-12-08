@@ -25,7 +25,6 @@ use Joomla\Utilities\ArrayHelper;
  */
 class FabrikAdminModelContentType extends FabModelAdmin
 {
-
 	/**
 	 * Include paths for searching for Content type XML files
 	 *

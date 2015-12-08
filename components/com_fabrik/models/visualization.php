@@ -12,6 +12,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 use Joomla\String\String;
+use \Joomla\Registry\Registry;
 
 jimport('joomla.application.component.model');
 
@@ -100,7 +101,7 @@ class FabrikFEModelVisualization extends FabModel
 	 *
 	 * @deprecated  since 3.1b
 	 *
-	 * @return  JRegistry
+	 * @return  Registry
 	 */
 	public function getPluginParams()
 	{
@@ -567,7 +568,7 @@ class FabrikFEModelVisualization extends FabModel
 		{
 			$v = $this->getVisualization();
 			$input = $this->app->input;
-			$this->params = new JRegistry($v->params);
+			$this->params = new Registry($v->params);
 			$this->params->set('show-title', $input->getInt('show-title', $this->params->get('show-title', 1)));
 		}
 

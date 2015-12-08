@@ -11,6 +11,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use \Joomla\Registry\Registry;
+
 jimport('joomla.application.component.view');
 
 /**
@@ -23,7 +25,7 @@ jimport('joomla.application.component.view');
 class FabrikViewListBase extends FabrikView
 {
 	/**
-	 * @var JRegistry
+	 * @var Registry
 	 */
 	public $params;
 
@@ -562,7 +564,7 @@ class FabrikViewListBase extends FabrikView
 		 */
 		if (is_object($menu) && !$this->isMambot)
 		{
-			$menu_params = new JRegistry((string) $menu->params);
+			$menu_params = new Registry((string) $menu->params);
 			$params->set('page_heading', FText::_($menu_params->get('page_heading')));
 			$params->set('show_page_heading', $menu_params->get('show_page_heading'));
 			$params->set('pageclass_sfx', $menu_params->get('pageclass_sfx'));

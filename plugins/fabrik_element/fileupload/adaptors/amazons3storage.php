@@ -43,7 +43,7 @@ class Amazons3storage extends FabrikStorageAdaptor
 	/**
 	 * Constructor
 	 *
-	 * @param   JRegistry  &$params  options
+	 * @param   Registry  &$params  options
 	 */
 
 	public function __construct(&$params)

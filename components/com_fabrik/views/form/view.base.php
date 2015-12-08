@@ -11,6 +11,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use \Joomla\Registry\Registry;
+
 jimport('joomla.application.component.view');
 
 /**
@@ -67,7 +69,7 @@ class FabrikViewFormBase extends FabrikView
 		$tmpl         = $model->getTmpl();
 		$this->tmpl   = $tmpl;
 		$this->form   = $this->prepareFormTable();
-		$this->params = new JRegistry;
+		$this->params = new Registry;
 		$this->groups = $model->getGroupView($tmpl);
 		$this->setTmplFolders($tmpl);
 	}
@@ -363,7 +365,7 @@ class FabrikViewFormBase extends FabrikView
 			// If there is a menu item available AND the form is not rendered in a content plugin or module
 			if (is_object($menu) && !$this->isMambot)
 			{
-				$menuParams = is_a($menu->params, 'JRegistry') ? $menu->params : new JRegistry($menu->params);
+				$menuParams = is_a($menu->params, 'Registry') || is_a($menu->params, 'JRegistry')? $menu->params : new Registry($menu->params);
 				$params->set('page_heading', FText::_($menuParams->get('page_heading', '')));
 				$params->set('show_page_heading', $menuParams->get('show_page_heading', 0));
 				$browserTitle = $model->getPageTitle(FText::_($menuParams->get('page_title')));
@@ -788,9 +790,9 @@ class FabrikViewFormBase extends FabrikView
 			{
 				$joinParams = $groupModel->getJoinModel()->getJoin()->params;
 
-				if (!is_a($joinParams, 'JRegistry'))
+				if (!(is_a($joinParams, 'Registry') || is_a($joinParams, 'JRegistry')))
 				{
-					$joinParams = new JRegistry($joinParams);
+					$joinParams = new Registry($joinParams);
 				}
 
 				$groupId                                                = $groupModel->getGroup()->id;

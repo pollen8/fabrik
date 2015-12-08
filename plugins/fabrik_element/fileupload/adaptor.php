@@ -32,7 +32,7 @@ abstract class FabrikStorageAdaptor
 	/**
 	 * Constructor
 	 *
-	 * @param   JRegistry  &$params  Options
+	 * @param   Registry  &$params  Options
 	 */
 	public function __construct(&$params)
 	{
@@ -42,7 +42,7 @@ abstract class FabrikStorageAdaptor
 	/**
 	 * Get params
 	 *
-	 * @return  JRegistry
+	 * @return  Registry
 	 */
 	public function &getParams()
 	{

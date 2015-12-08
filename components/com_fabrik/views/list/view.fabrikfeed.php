@@ -12,6 +12,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 use Joomla\String\String;
+use \Joomla\Registry\Registry;
 
 require_once JPATH_SITE . '/components/com_fabrik/views/list/view.base.php';
 
@@ -118,7 +119,7 @@ class FabrikViewList extends FabrikViewListBase
 		foreach ($aJoinsToThisKey as $element)
 		{
 			$element = $elementModel->getElement();
-			$elParams = new JRegistry($element->attribs);
+			$elParams = new Registry($element->attribs);
 
 			if ($elParams->get('show_in_rss_feed') == '1')
 			{
@@ -339,7 +340,7 @@ class FabrikViewList extends FabrikViewListBase
 	/**
 	 * Add <image> to document
 	 *
-	 * @param   object  $params    JRegistry list parameters
+	 * @param   object  $params    Registry list parameters
 	 *
 	 * @return  document
 	 */

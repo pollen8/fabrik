@@ -11,6 +11,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use \Joomla\Registry\Registry;
+
 jimport('joomla.application.component.model');
 
 /**
@@ -32,7 +34,7 @@ class FabrikPlugin extends JPlugin
 	/**
 	 * Params (must be public)
 	 *
-	 * @var JRegistry
+	 * @var Registry
 	 */
 	public $params = null;
 
@@ -560,7 +562,7 @@ class FabrikPlugin extends JPlugin
 			}
 		}
 
-		$this->params = new JRegistry(json_encode($data));
+		$this->params = new Registry(json_encode($data));
 
 		return $this->params;
 	}
@@ -568,14 +570,14 @@ class FabrikPlugin extends JPlugin
 	/**
 	 * Load params
 	 *
-	 * @return  JRegistry  params
+	 * @return  Registry  params
 	 */
 	public function getParams()
 	{
 		if (!isset($this->params))
 		{
 			$row          = $this->getRow();
-			$this->params = new JRegistry($row->params);
+			$this->params = new Registry($row->params);
 		}
 
 		return $this->params;
@@ -1027,7 +1029,7 @@ class FabrikPlugin extends JPlugin
 	 *
 	 * @param   string    $paramName   Param name which contains the PHP code to eval
 	 * @param   array     $data        Data
-	 * @param   JRegistry $params      Plugin parameters - hacky fix ini email plugin where in
+	 * @param   Registry  $params      Plugin parameters - hacky fix ini email plugin where in
 	 *                                 php 5.3.29 email params were getting confused between multiple plugin instances
 	 *
 	 * @return  bool
