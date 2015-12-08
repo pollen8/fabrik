@@ -179,8 +179,10 @@ class FabrikAdminModelForm extends FabModelAdmin
 	public function saveFormGroups($data)
 	{
 		// These are set in parent::save() and contain the updated form id and if the form is a new form
-		$formId    = $this->getState($this->getName() . '.id');
-		$isNew     = $this->getState($this->getName() . '.new');
+		$formId = (int) $this->getState($this->getName() . '.id');
+		$isNew  = (bool) $this->getState($this->getName() . '.new');
+
+		/** @var FabrikAdminModelList $listModel */
 		$listModel = JModelLegacy::getInstance('List', 'FabrikAdminModel');
 		$item      = $listModel->loadFromFormId($formId);
 		$listModel->set('form.id', $formId);
@@ -200,21 +202,21 @@ class FabrikAdminModelForm extends FabModelAdmin
 
 			if (!$dbTableExists || $isNew)
 			{
-				$connection          = FabrikWorker::getConnection(-1);
-				$item->id            = null;
-				$item->label         = $data['label'];
-				$item->form_id       = $formId;
-				$item->connection_id = $connection->getConnection()->id;
-				$item->db_table_name = $dbTableName;
+				$connection = FabrikWorker::getConnection(-1);
+				$item->set('id', null);
+				$item->set('label', $data['label']);
+				$item->set('form_id', $formId);
+				$item->set('connection_id', $connection->getConnection()->id);
+				$item->set('db_table_name', $dbTableName);
 
 				// Store key without quoteNames as that is db specific which we no longer want
-				$item->db_primary_key = $dbTableName . '.id';
-				$item->auto_inc       = 1;
-				$item->published      = $data['published'];
-				$item->created        = $data['created'];
-				$item->created_by     = $data['created_by'];
-				$item->access         = 1;
-				$item->params         = $listModel->getDefaultParams();
+				$item->set('db_primary_key', $dbTableName . '.id');
+				$item->set('auto_inc', 1);
+				$item->set('published', $data['published']);
+				$item->set('created', $data['created']);
+				$item->set('created_by', $data['created_by']);
+				$item->set('access', 1);
+				$item->set('params', $listModel->getDefaultParams());
 				$item->store();
 			}
 			else
@@ -244,6 +246,12 @@ class FabrikAdminModelForm extends FabModelAdmin
 		$jForm            = $this->app->input->get('jform', array(), 'array');
 		$contentTypeModel = JModelLegacy::getInstance('ContentType', 'FabrikAdminModel', array('listModel' => $listModel));
 		$groups           = FArrayHelper::getValue($data, 'current_groups');
+		$contentType      = ArrayHelper::getValue($jForm, 'contenttype');
+
+		if ($createGroup)
+		{
+			$contentTypeModel->checkInsertFields($contentType);
+		}
 
 		if (empty($groups) && !$isNew)
 		{
@@ -272,8 +280,7 @@ class FabrikAdminModelForm extends FabModelAdmin
 
 		if ($createGroup)
 		{
-			$contentType = ArrayHelper::getValue($jForm, 'contenttype');
-			$fields      = $contentTypeModel->getDefaultInsertFields($contentType);
+			$fields = $contentTypeModel->getDefaultInsertFields($contentType);
 		}
 
 		return $fields;
@@ -286,7 +293,7 @@ class FabrikAdminModelForm extends FabModelAdmin
 	 * @param   array           $data
 	 * @param   FabrikTableList $item
 	 *
-	 * @return mixed
+	 * @return string
 	 */
 	private function safeTableName($isNew, $data, $item)
 	{
@@ -302,14 +309,14 @@ class FabrikAdminModelForm extends FabModelAdmin
 		}
 		else
 		{
-			$dbTableName = $item->db_table_name == '' ? $data['database_name'] : $item->db_table_name;
+			$dbTableName = $item->get('db_table_name', '') == '' ? $data['database_name'] : $item->get('db_table_name');
 		}
 
 		return preg_replace('#[^0-9a-zA-Z_]#', '', $dbTableName);
 	}
 
 	/**
-	 * Reinsert the groups ids into formgroup rows
+	 * Reinsert the groups ids into form group rows
 	 *
 	 * @param   array $currentGroups group ids
 	 *
@@ -426,7 +433,7 @@ class FabrikAdminModelForm extends FabModelAdmin
 				$query->select('group_id')->from('#__{package}_formgroup AS fg')->join('LEFT', '#__{package}_groups AS g ON g.id = fg.group_id')
 					->where('fg.form_id = ' . $formId . ' AND g.is_join != 1');
 				$db->setQuery($query);
-				$groupIds = $db->loadResultArray();
+				$groupIds = $db->loadColumn();
 
 				if (!empty($groupIds))
 				{
@@ -457,7 +464,7 @@ class FabrikAdminModelForm extends FabModelAdmin
 	/**
 	 * Method to validate the form data.
 	 *
-	 * @param   object $form  The form to validate against.
+	 * @param   JForm  $form  The form to validate against.
 	 * @param   array  $data  The data to validate.
 	 * @param   string $group The name of the field group to validate.
 	 *
@@ -470,7 +477,7 @@ class FabrikAdminModelForm extends FabModelAdmin
 		$params = $data['params'];
 		$ok     = parent::validate($form, $data);
 
-		// Standard jform validation failed so we shouldn't test further as we can't be sure of the data
+		// Standard jForm validation failed so we shouldn't test further as we can't be sure of the data
 		if (!$ok)
 		{
 			return false;

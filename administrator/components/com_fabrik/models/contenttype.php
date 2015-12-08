@@ -313,6 +313,42 @@ class FabrikAdminModelContentType extends FabModelAdmin
 	}
 
 	/**
+	 * Ensure that before creating a list/form from a content type, that all
+	 * elements are installed and published
+	 *
+	 * @param   string  $contentType
+	 *
+	 * @throws UnexpectedValueException
+	 *
+	 * @return bool
+	 */
+	public function checkInsertFields($contentType)
+	{
+		$this->loadContentType($contentType);
+		$xpath    = new DOMXpath($this->doc);
+		$elements = $xpath->query('/contenttype/group/element');
+		$db       = FabrikWorker::getDbo(true);
+		$query    = $db->getQuery(true);
+		$query->select('element')->from('#__extensions')
+			->where('folder =' . $db->q('fabrik_element'))
+			->where('enabled = 1');
+		$db->setQuery($query);
+		$allowed = $db->loadColumn();
+
+		foreach ($elements as $element)
+		{
+			$pluginName = $element->getAttribute('plugin');
+
+			if (!in_array($pluginName, $allowed))
+			{
+				throw new UnexpectedValueException($pluginName . ' not installed or published');
+			}
+		}
+
+		return true;
+	}
+
+	/**
 	 * Create the content type
 	 * Save it to /administrator/components/com_fabrik/models/content_types
 	 * Update form model with content type path
@@ -374,8 +410,8 @@ class FabrikAdminModelContentType extends FabModelAdmin
 	 * @return DOMElement
 	 */
 	private function buildExportNode($nodeName, $data,
-			$ignore = array('id', 'created_by', 'created_by_alias', 'group_id', 'modified', 'modified_by',
-					'checked_out', 'checked_out_time'))
+		$ignore = array('id', 'created_by', 'created_by_alias', 'group_id', 'modified', 'modified_by',
+			'checked_out', 'checked_out_time'))
 	{
 		$node = $this->doc->createElement($nodeName);
 
@@ -428,13 +464,13 @@ class FabrikAdminModelContentType extends FabModelAdmin
 	 */
 	public function download($formModel)
 	{
-		$params = $formModel->getParams();
-		$file = $params->get('content_type_path');
-		$label = 'content-type-' . $formModel->getForm()->get('label');
-		$label = JFile::makeSafe($label);
-		$zip             = new ZipArchive;
-		$zipFile         = $this->config->get('tmp_path') . '/' . $label . '.zip';
-		$zipRes          = $zip->open($zipFile, ZipArchive::CREATE);
+		$params  = $formModel->getParams();
+		$file    = $params->get('content_type_path');
+		$label   = 'content-type-' . $formModel->getForm()->get('label');
+		$label   = JFile::makeSafe($label);
+		$zip     = new ZipArchive;
+		$zipFile = $this->config->get('tmp_path') . '/' . $label . '.zip';
+		$zipRes  = $zip->open($zipFile, ZipArchive::CREATE);
 
 		if (!$zipRes)
 		{
