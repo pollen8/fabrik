@@ -12,6 +12,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 use Joomla\String\String;
+use Joomla\Utilities\ArrayHelper;
 
 jimport('joomla.application.component.model');
 
@@ -347,7 +348,7 @@ class FabrikModelGooglemap extends FabrikFEModelVisualization
 						continue;
 					}
 
-					$rowData = JArrayHelper::fromObject($row);
+					$rowData = ArrayHelper::fromObject($row);
 					$rowData['rowid'] = $rowData['__pk_val'];
 					$rowData['coords'] = $v[0] . ',' . $v[1];
 					$rowData['nav_url'] = "http://maps.google.com/maps?q=loc:" . $rowData['coords'] . "&navigate=yes";
@@ -537,7 +538,7 @@ class FabrikModelGooglemap extends FabrikFEModelVisualization
 						}
 						else
 						{
-							$default = (float) JArrayHelper::getvalue($radiusDefaults, $c, 50);
+							$default = (float) ArrayHelper::getvalue($radiusDefaults, $c, 50);
 							$default *= $radiusMeters;
 							$icons[$v[0] . $v[1]]['radius'] = $default;
 						}

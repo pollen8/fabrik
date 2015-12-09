@@ -11,6 +11,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\Utilities\ArrayHelper;
+
 // Require the abstract plugin class
 require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
 
@@ -143,7 +145,7 @@ class PlgFabrik_FormJ2Store extends PlgFabrik_Form
 			$key                   = str_replace('j2store_', '', $field);
 			$fileDisplayName       = $params->get($field);
 			$simpleFileDisplayName = str_replace(array('{', '}'), array('', ''), $fileDisplayName);
-			$displayNames          = JArrayHelper::getValue($placeholderData, $simpleFileDisplayName, array($fileDisplayName));
+			$displayNames          = ArrayHelper::getValue($placeholderData, $simpleFileDisplayName, array($fileDisplayName));
 			$i                     = 0;
 
 			foreach ($displayNames as $displayName)

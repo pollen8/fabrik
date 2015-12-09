@@ -10,6 +10,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 use Joomla\String\String;
+use Joomla\Utilities\ArrayHelper;
 
 // Require the abstract plugin class
 require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
@@ -234,7 +235,7 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 	{
 		// Sanitize the ids.
 		$pks = (array) $pks;
-		JArrayHelper::toInteger($pks);
+		ArrayHelper::toInteger($pks);
 		$db = $this->_db;
 
 		if (empty($pks))
@@ -547,7 +548,7 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 			$formModel  = $this->getModel();
 			$listModel  = $formModel->getListModel();
 			$pkName     = $listModel->getPrimaryKey(true);
-			$pk         = JArrayHelper::getValue($this->data, $pkName);
+			$pk         = ArrayHelper::getValue($this->data, $pkName);
 			$titleField = $formModel->getElement($this->getParams()->get('title'), true);
 			$titleField = $titleField->getFullName(false, false);
 			$listModel->updateRows(array($pk), $titleField, $title);
@@ -649,7 +650,7 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 
 						if (is_object($store))
 						{
-							$store = JArrayHelper::fromObject($store);
+							$store = ArrayHelper::fromObject($store);
 
 							foreach ($store as $catId => $articleId)
 							{

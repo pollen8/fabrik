@@ -11,6 +11,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\Utilities\ArrayHelper;
+
 jimport('joomla.application.component.model');
 
 require_once JPATH_SITE . '/components/com_fabrik/models/visualization.php';
@@ -71,7 +73,7 @@ class FabrikModelFullcalendar extends FabrikFEModelVisualization
 		if (!isset($this->listids))
 		{
 			$this->listids = (array) $this->getParams()->get('calendar_table');
-			JArrayHelper::toInteger($this->listids);
+			ArrayHelper::toInteger($this->listids);
 		}
 	}
 
@@ -89,7 +91,7 @@ class FabrikModelFullcalendar extends FabrikFEModelVisualization
 			$db = FabrikWorker::getDbo(true);
 			$params = $this->getParams();
 			$lists = (array) $params->get('fullcalendar_table');
-			JArrayHelper::toInteger($lists);
+			ArrayHelper::toInteger($lists);
 			$dateFields = (array) $params->get('fullcalendar_startdate_element');
 			$dateFields2 = (array) $params->get('fullcalendar_enddate_element');
 			$labels = (array) $params->get('fullcalendar_label_element');
@@ -397,7 +399,7 @@ class FabrikModelFullcalendar extends FabrikFEModelVisualization
 
 	/**
 	 * Query one or all tables linked to the calendar and return them
-	 * 
+	 *
 	 * @param  string  $listid  list id
 	 *
 	 * @return  string	javascript array containing json objects
@@ -425,7 +427,7 @@ class FabrikModelFullcalendar extends FabrikFEModelVisualization
 			{
 				continue;
 			}
-			
+
 			$this_where = FArrayHelper::getValue($where, $this_listid, '');
 			$this_where = html_entity_decode($this_where, ENT_QUOTES);
 			$listModel = JModelLegacy::getInstance('list', 'FabrikFEModel');

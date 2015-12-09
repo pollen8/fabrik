@@ -13,6 +13,7 @@ defined('_JEXEC') or die('Restricted access');
 
 use Joomla\String\String;
 use \Joomla\Registry\Registry;
+use Joomla\Utilities\ArrayHelper;
 
 jimport('joomla.application.component.model');
 
@@ -1562,7 +1563,7 @@ class FabrikFEModelGroup extends FabModel
 
 			if (is_object($d))
 			{
-				$d = JArrayHelper::fromObject($d);
+				$d = ArrayHelper::fromObject($d);
 			}
 
 			$repeatGroup = count($d);

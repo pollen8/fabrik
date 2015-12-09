@@ -11,6 +11,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\Utilities\ArrayHelper;
+
 /**
  * String helpers
  *
@@ -511,7 +513,7 @@ class FabrikString extends JString
 		$title = FArrayHelper::getValue($opts, 'title', '');
 		$strippedText = htmlspecialchars(strip_tags($text), ENT_QUOTES);;
 
-		if (JArrayHelper::getValue($opts, 'html_format', false))
+		if (ArrayHelper::getValue($opts, 'html_format', false))
 		{
 			$summary = FabrikString::truncateHtml($text, $wordCount);
 		}

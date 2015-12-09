@@ -13,6 +13,7 @@ defined('_JEXEC') or die('Restricted access');
 
 use Joomla\String\String;
 use \Joomla\Registry\Registry;
+use Joomla\Utilities\ArrayHelper;
 
 jimport('joomla.application.component.model');
 require_once 'fabrikmodelform.php';
@@ -3063,7 +3064,7 @@ class FabrikFEModelForm extends FabModelForm
 
 					// $$$rob ensure "<tags>text</tags>" that are entered into plain text areas are shown correctly
 					JFilterOutput::objectHTMLSafe($data);
-					$data = JArrayHelper::fromObject($data);
+					$data = ArrayHelper::fromObject($data);
 					FabrikHelperHTML::debug($data, 'form:getData from POST (form not in Mambot and errors)');
 				}
 			}
@@ -3156,7 +3157,7 @@ class FabrikFEModelForm extends FabModelForm
 									$this->rowId = isset($row->__pk_val) ? $row->__pk_val : $this->rowId;
 								}
 
-								$row = empty($row) ? array() : JArrayHelper::fromObject($row);
+								$row = empty($row) ? array() : ArrayHelper::fromObject($row);
 								$request = $clean_request;
 								$request = array_merge($row, $request);
 								$data[] = FArrayHelper::toObject($request);
@@ -3405,7 +3406,7 @@ class FabrikFEModelForm extends FabModelForm
 		}
 
 		// Remove the additional rows - they should have been merged into [0] above. if no [0] then use main array
-		$data = JArrayHelper::fromObject(FArrayHelper::getValue($data, 0, $data));
+		$data = ArrayHelper::fromObject(FArrayHelper::getValue($data, 0, $data));
 	}
 
 	/**

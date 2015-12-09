@@ -11,7 +11,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use \Joomla\Registry\Registry;
+use Joomla\Registry\Registry;
+use Joomla\Utilities\ArrayHelper;
 
 jimport('joomla.application.component.view');
 
@@ -331,7 +332,7 @@ class FabrikViewFormBase extends FabrikView
 			$model  = $this->getModel();
 			$data   = $model->getData();
 			$formId = $model->getId();
-			$slug   = $model->getListModel()->getSlug(JArrayHelper::toObject($data));
+			$slug   = $model->getListModel()->getSlug(ArrayHelper::toObject($data));
 			$rowId  = $slug === '' ? $model->getRowId() : $slug;
 			$view   = $model->isEditable() ? 'form' : 'details';
 			$url    = JRoute::_('index.php?option=com_' . $this->package . '&view=' . $view . '&formid=' . $formId . '&rowid=' . $rowId);
@@ -861,7 +862,7 @@ class FabrikViewFormBase extends FabrikView
 		/** @var FabrikFEModelForm $model */
 		$model     = $this->getModel();
 		$listModel = $model->getListModel();
-		$row       = JArrayHelper::toObject($model->data);
+		$row       = ArrayHelper::toObject($model->data);
 		$canDelete = $listModel->canDelete($row);
 		$params    = $model->getParams();
 		$task      = 'form.process';

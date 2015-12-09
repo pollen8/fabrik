@@ -12,6 +12,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 use Joomla\String\String;
+use Joomla\Utilities\ArrayHelper;
 
 require_once COM_FABRIK_FRONTEND . '/helpers/image.php';
 
@@ -1696,7 +1697,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 			if (!is_null($oldDaata))
 			{
 				$name = $this->getFullName(true, false);
-				$aOldData = JArrayHelper::fromObject($oldDaata);
+				$aOldData = ArrayHelper::fromObject($oldDaata);
 				$r = FArrayHelper::getValue($aOldData, $name, '') === '' ? true : false;
 
 				if (!$r)
@@ -1729,7 +1730,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 			}
 			else
 			{
-				$file = JArrayHelper::getValue($files, 'name');
+				$file = ArrayHelper::getValue($files, 'name');
 			}
 
 			return $file == '' ? true : false;
@@ -1759,7 +1760,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 				else
 				{
 					$files = $input->files->get($name, array(), 'raw');
-					$file = JArrayHelper::getValue($files, 'name', '');
+					$file = ArrayHelper::getValue($files, 'name', '');
 
 					return $file == '' ? true : false;
 				}

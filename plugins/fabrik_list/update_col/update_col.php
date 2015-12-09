@@ -11,6 +11,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\Utilities\ArrayHelper;
+
 // Require the abstract plugin class
 require_once COM_FABRIK_FRONTEND . '/models/plugin-list.php';
 
@@ -205,7 +207,7 @@ class PlgFabrik_ListUpdate_Col extends PlgFabrik_List
 
 		// Array_unique for left joined table data
 		$ids = array_unique($input->get('ids', array(), 'array'));
-		JArrayHelper::toInteger($ids);
+		ArrayHelper::toInteger($ids);
 		$this->row_count = count($ids);
 		$ids = implode(',', $ids);
 		$model->reset();
@@ -442,7 +444,7 @@ class PlgFabrik_ListUpdate_Col extends PlgFabrik_List
 			$emailFieldRaw = $emailField . '_raw';
 			$userId = (int) $row->$emailFieldRaw;
 			$ids = array_unique($input->get('ids', array(), 'array'));
-			JArrayHelper::toInteger($ids);
+			ArrayHelper::toInteger($ids);
 			$ids = implode(',', $ids);
 			$userIdsEmails = $this->getEmailUserIds($ids);
 			$to = FArrayHelper::getValue($userIdsEmails, $userId);

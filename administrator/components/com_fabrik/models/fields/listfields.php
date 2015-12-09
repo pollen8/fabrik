@@ -12,6 +12,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\Utilities\ArrayHelper;
+
 jimport('joomla.html.html');
 jimport('joomla.form.formfield');
 jimport('joomla.form.helper');
@@ -360,7 +362,7 @@ class JFormFieldListfields extends JFormFieldList
 
 		if ($at === 'true')
 		{
-			FabrikHelperHTML::atWHo('textarea[data-at]', JArrayHelper::getColumn($res, 'value'));
+			FabrikHelperHTML::atWHo('textarea[data-at]', ArrayHelper::getColumn($res, 'value'));
 		}
 
 		$connection        = $this->getAttribute('connection');

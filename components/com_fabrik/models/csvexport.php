@@ -12,6 +12,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 use Joomla\String\String;
+use \Joomla\Utilities\ArrayHelper;
 
 jimport('joomla.application.component.model');
 
@@ -141,7 +142,7 @@ class FabrikFEModelCSVExport extends FabModel
 		{
 			foreach ($group as $row)
 			{
-				$a = JArrayHelper::fromObject($row);
+				$a = ArrayHelper::fromObject($row);
 
 				if ($exportFormat == 1)
 				{

@@ -15,6 +15,7 @@ jimport('joomla.application.component.modelform');
 
 use Joomla\String\String;
 use \Joomla\Registry\Registry;
+use Joomla\Utilities\ArrayHelper;
 
 require_once COM_FABRIK_FRONTEND . '/helpers/pagination.php';
 require_once COM_FABRIK_FRONTEND . '/helpers/list.php';
@@ -520,11 +521,11 @@ class FabrikFEModelList extends JModelForm
 	{
 		parent::__construct();
 		$usersConfig = JComponentHelper::getParams('com_fabrik');
-		$this->app = JArrayHelper::getValue($config, 'app', JFactory::getApplication());
-		$this->session = JArrayHelper::getValue($config, 'session', JFactory::getSession());
-		$this->user = JArrayHelper::getValue($config, 'user', JFactory::getUser());
-		$this->config = JArrayHelper::getValue($config, 'config', JFactory::getConfig());
-		$this->lang = JArrayHelper::getValue($config, 'lang', JFactory::getLanguage());
+		$this->app = ArrayHelper::getValue($config, 'app', JFactory::getApplication());
+		$this->session = ArrayHelper::getValue($config, 'session', JFactory::getSession());
+		$this->user = ArrayHelper::getValue($config, 'user', JFactory::getUser());
+		$this->config = ArrayHelper::getValue($config, 'config', JFactory::getConfig());
+		$this->lang = ArrayHelper::getValue($config, 'lang', JFactory::getLanguage());
 
 		$input = $this->app->input;
 		$id = $input->getInt('listid', $usersConfig->get('listid'));
@@ -1301,7 +1302,7 @@ class FabrikFEModelList extends JModelForm
 				if (!in_array($sData, $aGroupTitles))
 				{
 					$aGroupTitles[] = $sData;
-					$tmpGroupTemplate = ($w->parseMessageForPlaceHolder($groupTemplate, JArrayHelper::fromObject($data[$i])));
+					$tmpGroupTemplate = ($w->parseMessageForPlaceHolder($groupTemplate, ArrayHelper::fromObject($data[$i])));
 					$this->groupTemplates[$sData] = nl2br($tmpGroupTemplate);
 					$groupedData[$sData] = array();
 				}
@@ -1418,7 +1419,7 @@ class FabrikFEModelList extends JModelForm
 
 							if (is_object($fKeyVal))
 							{
-								$fKeyVal = JArrayHelper::fromObject($fKeyVal);
+								$fKeyVal = ArrayHelper::fromObject($fKeyVal);
 							}
 
 							if (is_array($fKeyVal))
@@ -1637,7 +1638,7 @@ class FabrikFEModelList extends JModelForm
 							// $$$rob moved these two lines here as there were giving warnings since Hugh commented out the if ($element != '') {
 							$linkKey = @$join->db_table_name . '___' . @$join->name;
 							$gKey = $linkKey . '_form_heading';
-							$row2 = JArrayHelper::fromObject($row);
+							$row2 = ArrayHelper::fromObject($row);
 							$linkLabel = $this->parseMessageForRowHolder($faceted->linkedformtext->$f, $row2);
 							$group[$i]->$gKey = $this->viewFormLink($popupLink, $join, $row, $linkKey, $val, false, $f);
 						}
@@ -1956,9 +1957,9 @@ class FabrikFEModelList extends JModelForm
 		$listId = $element->list_id;
 		$formId = $element->form_id;
 		$faceted = $params->get('facetedlinks');
-		$linkedFormText = JArrayHelper::fromObject($faceted->linkedformtext);
+		$linkedFormText = ArrayHelper::fromObject($faceted->linkedformtext);
 		$msg = FArrayHelper::getValue($linkedFormText, $elKey);
-		$row2 = JArrayHelper::fromObject($row);
+		$row2 = ArrayHelper::fromObject($row);
 		$label = $this->parseMessageForRowHolder($msg, $row2);
 		$package = $this->app->getUserState('com_fabrik.package', 'fabrik');
 		$itemId = FabrikWorker::itemId();
@@ -2081,7 +2082,7 @@ class FabrikFEModelList extends JModelForm
 		* why though!  I just needed to make this error go away NAO!
 		*/
 		$linkedListText = isset($faceted->linkedlisttext->$elKey) ? $faceted->linkedlisttext->$elKey : '';
-		$row2 = JArrayHelper::fromObject($row);
+		$row2 = ArrayHelper::fromObject($row);
 		$label = $this->parseMessageForRowHolder($linkedListText, $row2);
 
 		if (is_null($listId))
@@ -2287,7 +2288,7 @@ class FabrikFEModelList extends JModelForm
 		}
 		else
 		{
-			$array = JArrayHelper::fromObject($row);
+			$array = ArrayHelper::fromObject($row);
 
 			foreach ($array as $k => &$v)
 			{
@@ -2492,7 +2493,7 @@ class FabrikFEModelList extends JModelForm
 			*/
 			while (count($ids) < $maxPossibleIds && $lookupC >= 0)
 			{
-				$ids = JArrayHelper::getColumn($idRows, '__pk_val' . $lookupC);
+				$ids = ArrayHelper::getColumn($idRows, '__pk_val' . $lookupC);
 
 				for ($idx = count($ids) - 1; $idx >= 0; $idx--)
 				{
@@ -5375,7 +5376,7 @@ class FabrikFEModelList extends JModelForm
 
 		if (isset($properties))
 		{
-			$prefilters = JArrayHelper::fromObject(json_decode($properties));
+			$prefilters = ArrayHelper::fromObject(json_decode($properties));
 			$conditions = (array) $prefilters['filter-conditions'];
 
 			if (!empty($conditions))
@@ -6524,13 +6525,13 @@ class FabrikFEModelList extends JModelForm
 			if (is_null($listOrder))
 			{
 				// Not yet saved with order
-				$listOrder = is_object($faceted) && is_object($faceted->linkedlist) ? array_keys(JArrayHelper::fromObject($faceted->linkedlist)) : array();
+				$listOrder = is_object($faceted) && is_object($faceted->linkedlist) ? array_keys(ArrayHelper::fromObject($faceted->linkedlist)) : array();
 			}
 
 			if (is_null($formOrder))
 			{
 				// Not yet saved with order
-				$formOrder = is_object($faceted) && is_object($faceted->linkedform) ? array_keys(JArrayHelper::fromObject($faceted->linkedform)) : array();
+				$formOrder = is_object($faceted) && is_object($faceted->linkedform) ? array_keys(ArrayHelper::fromObject($faceted->linkedform)) : array();
 			}
 
 			foreach ($listOrder as $key)
@@ -7454,7 +7455,7 @@ class FabrikFEModelList extends JModelForm
 				$db = $this->getDb();
 				$db->setQuery($sql);
 				$origData = $db->loadObject();
-				$origData = JArrayHelper::fromObject($origData);
+				$origData = ArrayHelper::fromObject($origData);
 				$origData = is_array($origData) ? $origData : array();
 				$this->origData = $origData;
 			}
@@ -8857,7 +8858,7 @@ class FabrikFEModelList extends JModelForm
 	{
 		$link = htmlspecialchars($link);
 		$keyIdentifier = $this->getKeyIndetifier($row);
-		$row = JArrayHelper::fromObject($row);
+		$row = ArrayHelper::fromObject($row);
 		$link = $this->parseMessageForRowHolder($link, $row);
 
 		if (preg_match('/([\?&]rowid=)/', htmlspecialchars_decode($link)))
@@ -9164,7 +9165,7 @@ class FabrikFEModelList extends JModelForm
 
 			if ($format == true)
 			{
-				$rows = array(JArrayHelper::toObject($rows));
+				$rows = array(ArrayHelper::toObject($rows));
 				$this->formatData($rows);
 				$rows = $rows[0];
 				/* $$$ hugh - if list is grouped, formatData will have re-index as assoc array,
@@ -9181,7 +9182,7 @@ class FabrikFEModelList extends JModelForm
 
 		if (is_array($this->rows[$sig]))
 		{
-			$this->rows[$sig] = JArrayHelper::toObject($this->rows[$sig]);
+			$this->rows[$sig] = ArrayHelper::toObject($this->rows[$sig]);
 		}
 
 		return $this->rows[$sig];
@@ -9653,7 +9654,8 @@ class FabrikFEModelList extends JModelForm
 	public function viewLabel($row)
 	{
 		$params = $this->getParams();
-		$row = JArrayHelper::fromObject($row);
+		$row = ArrayHelper::fromObject($row);
+
 		return FText::_($this->parseMessageForRowHolder($params->get('detaillabel', FText::_('COM_FABRIK_VIEW')), $row));
 	}
 
@@ -9669,7 +9671,8 @@ class FabrikFEModelList extends JModelForm
 	public function editLabel($row)
 	{
 		$params = $this->getParams();
-		$row = JArrayHelper::fromObject($row);
+		$row = ArrayHelper::fromObject($row);
+
 		return FText::_($this->parseMessageForRowHolder($params->get('editlabel', FText::_('COM_FABRIK_EDIT')), $row));
 	}
 
@@ -10496,7 +10499,7 @@ class FabrikFEModelList extends JModelForm
 		$tbl = array_shift($colBits);
 
 		$joinFound = false;
-		JArrayHelper::toInteger($ids);
+		ArrayHelper::toInteger($ids);
 		$ids = implode(',', $ids);
 		$dbk = $k = $table->db_primary_key;
 		// $joins = $this->getJoins();

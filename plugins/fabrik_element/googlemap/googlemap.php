@@ -11,6 +11,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\Utilities\ArrayHelper;
+
 require_once JPATH_SITE . '/components/com_fabrik/models/element.php';
 require_once JPATH_SITE . '/components/com_fabrik/helpers/googlemap.php';
 
@@ -66,10 +68,10 @@ class PlgFabrik_ElementGooglemap extends PlgFabrik_Element
 		{
 			if ($params->get('fb_gm_staticmap_tableview'))
 			{
-				$d = $this->_staticMap($d, $w, $h, $z, $i, true, JArrayHelper::fromObject($thisRow));
+				$d = $this->_staticMap($d, $w, $h, $z, $i, true, ArrayHelper::fromObject($thisRow));
 			}
 
-			if ($params->get('icon_folder') == '1' && JArrayHelper::getValue($opts, 'icon', 1))
+			if ($params->get('icon_folder') == '1' && ArrayHelper::getValue($opts, 'icon', 1))
 			{
 				// $$$ rob was returning here but that stopped us being able to use links and icons together
 				$d = $this->replaceWithIcons($d, 'list', $listModel->getTmpl());
@@ -81,12 +83,12 @@ class PlgFabrik_ElementGooglemap extends PlgFabrik_Element
 					$d = $params->get('fb_gm_staticmap_tableview_type_coords', 'num') == 'dms' ? $this->_dmsformat($d) : $this->_microformat($d);
 				}
 			}
-			if (JArrayHelper::getValue($opts, 'rollover', 1))
+			if (ArrayHelper::getValue($opts, 'rollover', 1))
 			{
 				$d = $this->rollover($d, $thisRow, 'list');
 			}
 
-			if (JArrayHelper::getValue($opts, 'link', 1))
+			if (ArrayHelper::getValue($opts, 'link', 1))
 			{
 				$d = $listModel->_addLink($d, $this, $thisRow, $i);
 			}

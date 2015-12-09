@@ -12,6 +12,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 use Joomla\String\String;
+use Joomla\Utilities\ArrayHelper;
 
 jimport('joomla.filesystem.file');
 
@@ -850,7 +851,7 @@ EOD;
 			if ($fbConfig->get('advanced_behavior', '0') == '1')
 			{
 				$chosenOptions = $fbConfig->get('advanced_behavior_options', '{}');
-				$chosenOptions = empty($chosenOptions) ? array() : JArrayHelper::fromObject(json_decode($chosenOptions));
+				$chosenOptions = empty($chosenOptions) ? array() : ArrayHelper::fromObject(json_decode($chosenOptions));
 				JHtml::_('formbehavior.chosen', 'select.advancedSelect', null, $chosenOptions);
 			}
 
@@ -886,7 +887,7 @@ EOD;
 				$liveSiteSrc[] = "\tFabrik.liveSite = '" . COM_FABRIK_LIVESITE . "';";
 				$liveSiteSrc[] = "\tFabrik.package = '" . $app->getUserState('com_fabrik.package', 'fabrik') . "';";
 				$liveSiteSrc[] = "\tFabrik.debug = " . (self::isDebug() ? 'true;' : 'false;');
-				$liveSiteSrc[] = "\tFabrik.jLayouts = " . json_encode(JArrayHelper::toObject(self::$jLayoutsJs)) . ";";
+				$liveSiteSrc[] = "\tFabrik.jLayouts = " . json_encode(ArrayHelper::toObject(self::$jLayoutsJs)) . ";";
 
 				if ($bootstrapped)
 				{

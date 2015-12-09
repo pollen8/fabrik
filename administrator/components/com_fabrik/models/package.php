@@ -13,6 +13,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 use Joomla\String\String;
+use Joomla\Utilities\ArrayHelper;
 
 require_once 'fabmodeladmin.php';
 
@@ -838,7 +839,7 @@ class FabrikAdminModelPackage extends FabModelAdmin
 
 		$lookups = $this->getInstallItems($row);
 		$lids    = $lookups->list;
-		JArrayHelper::toInteger($lids);
+		ArrayHelper::toInteger($lids);
 		$plugins = array();
 
 		foreach ($lids as $lid)
@@ -990,7 +991,7 @@ class FabrikAdminModelPackage extends FabModelAdmin
 		$listModel = JModelLegacy::getInstance('list', 'FabrikFEModel');
 		$lookups = $this->getInstallItems($row);
 		$tids = $lookups->list;
-		JArrayHelper::toInteger($tids);
+		ArrayHelper::toInteger($tids);
 		foreach ($tids as $tid) {
 		    $listModel->setId($tid);
 		    $table = $listModel->getTable()->db_table_name;

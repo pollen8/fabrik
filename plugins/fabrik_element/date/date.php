@@ -12,6 +12,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 use Joomla\String\String;
+use Joomla\Utilities\ArrayHelper;
 
 /**
  * Plugin element to render date picker
@@ -750,7 +751,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 
 		if (is_array($attribs))
 		{
-			$attribs = JArrayHelper::toString($attribs);
+			$attribs = ArrayHelper::toString($attribs);
 		}
 
 		FabrikHelperHTML::addPath(COM_FABRIK_BASE . 'media/system/images/', 'image', 'form', false);
