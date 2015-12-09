@@ -53,6 +53,12 @@ class FabrikFEModelJoin extends FabModel
 	protected $isView = null;
 
 	/**
+	 * Params
+	 *
+	 * @var string
+	 */
+	public $params = null;
+	/**
 	 * Set the join id
 	 *
 	 * @param   int  $id  join id
