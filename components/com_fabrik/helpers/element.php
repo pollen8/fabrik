@@ -12,6 +12,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 use Joomla\String\String;
+use Joomla\Utilities\ArrayHelper;
 
 /**
  * Element Helper class
@@ -87,7 +88,7 @@ class FabrikHelperElement
 		$listModel = $model->getListModel();
 		$listId = $listModel->getId();
 		$key = 'com_fabrik.list' . $listId . '_com_fabrik_' . $listId . '.filter';
-		$filters = JArrayHelper::fromObject($app->getUserState($key));
+		$filters = ArrayHelper::fromObject($app->getUserState($key));
 		$elementIds = (array) FArrayHelper::getValue($filters, 'elementid', array());
 		$index = array_search($elementId, $elementIds);
 		$value = $index === false ? false : FArrayHelper::getValue($filters['value'], $index, false);

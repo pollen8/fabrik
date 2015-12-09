@@ -11,6 +11,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\Utilities\ArrayHelper;
+
 // Require the abstract plugin class
 require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
 
@@ -67,7 +69,7 @@ class PlgFabrik_FormRest extends PlgFabrik_Form
 			{
 				$fkElementKey = $fkElement->getFullName();
 				$this->fkData = json_decode(FArrayHelper::getValue($formModel->formData, $fkElementKey));
-				$this->fkData = JArrayHelper::fromObject($this->fkData);
+				$this->fkData = ArrayHelper::fromObject($this->fkData);
 
 				$fkEval = $params->get('foreign_key_eval', '');
 

@@ -11,6 +11,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\Utilities\ArrayHelper;
+
 jimport('joomla.application.component.view');
 
 /**
@@ -91,7 +93,7 @@ class FabrikAdminViewPackage extends JViewLegacy
 		$blocks->list = FArrayHelper::getValue($b, 'list', array());
 		$blocks->visualization = FArrayHelper::getValue($b, 'visualization', array());
 
-		$opts = JArrayHelper::getvalue($canvas, 'options', array());
+		$opts = ArrayHelper::getvalue($canvas, 'options', array());
 		$d = new stdClass;
 		$layout = FArrayHelper::getValue($canvas, 'layout', $d);
 		$document = JFactory::getDocument();

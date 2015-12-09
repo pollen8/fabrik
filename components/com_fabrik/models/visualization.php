@@ -13,7 +13,7 @@ defined('_JEXEC') or die('Restricted access');
 
 use Joomla\String\String;
 use \Joomla\Registry\Registry;
-
+use Joomla\Utilities\ArrayHelper;
 jimport('joomla.application.component.model');
 
 require_once JPATH_SITE . '/components/com_fabrik/models/plugin.php';
@@ -437,7 +437,7 @@ class FabrikFEModelVisualization extends FabModel
 			// Set pre-filter params
 			$listParams = $listModel->getParams();
 			$preFilter = FArrayHelper::getValue($preFilters, $c);
-			$preFilter = JArrayHelper::fromObject(json_decode($preFilter));
+			$preFilter = ArrayHelper::fromObject(json_decode($preFilter));
 			$conditions = (array) $preFilter['filter-conditions'];
 
 			if (!empty($conditions))

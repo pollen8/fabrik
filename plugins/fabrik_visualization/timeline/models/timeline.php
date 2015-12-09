@@ -12,6 +12,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 use Joomla\String\String;
+use Joomla\Utilities\ArrayHelper;
 
 jimport('joomla.application.component.model');
 
@@ -225,7 +226,7 @@ class FabrikModelTimeline extends FabrikFEModelVisualization
 					foreach ($group as $row)
 					{
 						$event = new stdClass;
-						$html = $w->parseMessageForPlaceHolder($template, JArrayHelper::fromObject($row), false, true);
+						$html = $w->parseMessageForPlaceHolder($template, ArrayHelper::fromObject($row), false, true);
 
 						if ($eval)
 						{
@@ -435,7 +436,7 @@ class FabrikModelTimeline extends FabrikFEModelVisualization
 
 		if ($customLink !== '')
 		{
-			$url = @ $w->parseMessageForPlaceHolder($customLink, JArrayHelper::fromObject($row), false, true);
+			$url = @ $w->parseMessageForPlaceHolder($customLink, ArrayHelper::fromObject($row), false, true);
 			$url = str_replace('{rowid}', $row->__pk_val, $url);
 		}
 		else

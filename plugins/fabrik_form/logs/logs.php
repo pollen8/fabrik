@@ -10,6 +10,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 use Joomla\String\String;
+use Joomla\Utilities\ArrayHelper;
 
 // Require the abstract plugin class
 require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
@@ -217,7 +218,7 @@ class PlgFabrik_FormLogs extends PlgFabrik_Form
 					$filter = JFilterInput::getInstance();
 					$post = $filter->clean($_POST, 'array');
 					$tableModel = $formModel->getTable();
-					$origDataCount = count(array_keys(JArrayHelper::fromObject($formModel->_origData[0])));
+					$origDataCount = count(array_keys(ArrayHelper::fromObject($formModel->_origData[0])));
 
 					if ($origDataCount > 0)
 					{

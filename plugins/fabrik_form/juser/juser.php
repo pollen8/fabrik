@@ -12,6 +12,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 use Joomla\String\String;
+use Joomla\Utilities\ArrayHelper;
 
 // Require the abstract plugin class
 require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
@@ -815,10 +816,10 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 		// If the group ids where encrypted (e.g. user can't edit the element) they appear as an object in groupIds[0]
 		if (!empty($groupIds) && is_object($groupIds[0]))
 		{
-			$groupIds = JArrayHelper::fromObject($groupIds[0]);
+			$groupIds = ArrayHelper::fromObject($groupIds[0]);
 		}
 
-		JArrayHelper::toInteger($groupIds);
+		ArrayHelper::toInteger($groupIds);
 		$data = array();
 		$authLevels = $me->getAuthorisedGroups();
 

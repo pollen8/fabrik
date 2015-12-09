@@ -12,6 +12,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 use Joomla\String\String;
+use Joomla\Utilities\ArrayHelper;
 
 require_once JPATH_SITE . '/plugins/fabrik_element/databasejoin/databasejoin.php';
 
@@ -107,7 +108,7 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 
 		if (is_array($opts->value) && count($opts->value) > 0)
 		{
-			$opts->value = JArrayHelper::getValue($opts->value, 0);
+			$opts->value = ArrayHelper::getValue($opts->value, 0);
 		}
 
 		return array('FbCascadingdropdown', $id, $opts);

@@ -12,6 +12,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 use Joomla\String\String;
+use Joomla\Utilities\ArrayHelper;
 
 /**
  * Plugin element to render text area or wysiwyg editor
@@ -151,7 +152,7 @@ class PlgFabrik_ElementTextarea extends PlgFabrik_Element
 				$data = fabrikString::truncate($data, $opts);
 				$listModel = $this->getListModel();
 
-				if (JArrayHelper::getValue($opts, 'link', 1))
+				if (ArrayHelper::getValue($opts, 'link', 1))
 				{
 					$data = $listModel->_addLink($data, $this, $thisRow);
 				}

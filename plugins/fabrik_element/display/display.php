@@ -11,6 +11,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\Utilities\ArrayHelper;
+
 /**
  * Plugin element to render plain text/HTML
  *
@@ -98,7 +100,7 @@ class PlgFabrik_ElementDisplay extends PlgFabrik_Element
 	public function renderListData($data, stdClass &$thisRow, $opts = array())
 	{
 		unset($this->default);
-		$value = $this->getValue(JArrayHelper::fromObject($thisRow));
+		$value = $this->getValue(ArrayHelper::fromObject($thisRow));
 
 		return parent::renderListData($value, $thisRow, $opts);
 	}

@@ -11,6 +11,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use \Joomla\Utilities\ArrayHelper;
+
 jimport('joomla.application.component.controller');
 
 /**
@@ -139,9 +141,9 @@ class FabrikControllerOai extends JControllerLegacy
 
 		$resumptionToken = urldecode($this->input->getString('resumptionToken'));
 		parse_str($resumptionToken, $token);
-		$from  = JArrayHelper::getValue($token, 'from', $this->input->get('from', ''));
-		$until = JArrayHelper::getValue($token, 'until', $this->input->get('until', ''));
-		$start = JArrayHelper::getValue($token, 'limitstart' . $listId, $this->input->get('limitstart' . $listId));
+		$from  = ArrayHelper::getValue($token, 'from', $this->input->get('from', ''));
+		$until = ArrayHelper::getValue($token, 'until', $this->input->get('until', ''));
+		$start = ArrayHelper::getValue($token, 'limitstart' . $listId, $this->input->get('limitstart' . $listId));
 
 		if ($from !== '')
 		{

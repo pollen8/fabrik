@@ -11,7 +11,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use \Joomla\Registry\Registry;
+use Joomla\Registry\Registry;
+use Joomla\Utilities\ArrayHelper;
 
 jimport('joomla.application.component.model');
 
@@ -178,13 +179,13 @@ class FabrikPlugin extends JPlugin
 	public function __construct(&$subject, $config = array())
 	{
 		parent::__construct($subject, $config);
-		$this->_db     = JArrayHelper::getValue($config, 'db', JFactory::getDbo());
-		$this->config  = JArrayHelper::getValue($config, 'config', JFactory::getConfig());
-		$this->user    = JArrayHelper::getValue($config, 'user', JFactory::getUser());
-		$this->app     = JArrayHelper::getValue($config, 'app', JFactory::getApplication());
-		$this->lang    = JArrayHelper::getValue($config, 'lang', JFactory::getLanguage());
-		$this->date    = JArrayHelper::getValue($config, 'date', JFactory::getDate());
-		$this->session = JArrayHelper::getValue($config, 'session', JFactory::getSession());
+		$this->_db     = ArrayHelper::getValue($config, 'db', JFactory::getDbo());
+		$this->config  = ArrayHelper::getValue($config, 'config', JFactory::getConfig());
+		$this->user    = ArrayHelper::getValue($config, 'user', JFactory::getUser());
+		$this->app     = ArrayHelper::getValue($config, 'app', JFactory::getApplication());
+		$this->lang    = ArrayHelper::getValue($config, 'lang', JFactory::getLanguage());
+		$this->date    = ArrayHelper::getValue($config, 'date', JFactory::getDate());
+		$this->session = ArrayHelper::getValue($config, 'session', JFactory::getSession());
 		$this->package = $this->app->getUserState('com_fabrik.package', 'fabrik');
 		$this->loadLanguage();
 	}
@@ -1058,7 +1059,7 @@ class FabrikPlugin extends JPlugin
 		if (!is_null($formModel))
 		{
 			$origData = $formModel->getOrigData();
-			$origData = JArrayHelper::fromObject($origData[0]);
+			$origData = ArrayHelper::fromObject($origData[0]);
 		}
 		else
 		{

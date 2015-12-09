@@ -13,7 +13,7 @@ defined('_JEXEC') or die('Restricted access');
 
 use Joomla\String\String;
 use \Joomla\Registry\Registry;
-use Joomla\Utilities\ArrayHelper;
+use \Joomla\Utilities\ArrayHelper;
 
 jimport('joomla.application.component.model');
 jimport('joomla.filesystem.file');
@@ -375,7 +375,7 @@ class PlgFabrik_Element extends FabrikPlugin
 
 		if (is_object($row))
 		{
-			$row = JArrayHelper::fromObject($row);
+			$row = ArrayHelper::fromObject($row);
 		}
 
 		$this->element->bind($row);
@@ -1464,7 +1464,7 @@ class PlgFabrik_Element extends FabrikPlugin
 				// Weird bug where stdClass with key 0, when cast to (array) you couldn't access values[0]
 				if (is_object($values))
 				{
-					$values = JArrayHelper::fromObject($values);
+					$values = ArrayHelper::fromObject($values);
 				}
 
 				if (!is_array($values))
@@ -1696,7 +1696,7 @@ class PlgFabrik_Element extends FabrikPlugin
 	{
 		if (is_object($data))
 		{
-			$data = JArrayHelper::fromObject($data);
+			$data = ArrayHelper::fromObject($data);
 		}
 
 		$rollOver = $this->tipHtml($data, $mode);
@@ -5847,18 +5847,18 @@ class PlgFabrik_Element extends FabrikPlugin
 
 		foreach ($data as $i => &$d)
 		{
-			if ($params->get('icon_folder') == '1' && JArrayHelper::getValue($opts, 'icon', 1))
+			if ($params->get('icon_folder') == '1' && ArrayHelper::getValue($opts, 'icon', 1))
 			{
 				// $$$ rob was returning here but that stopped us being able to use links and icons together
 				$d = $this->replaceWithIcons($d, 'list', $listModel->getTmpl());
 			}
 
-			if (JArrayHelper::getValue($opts, 'rollover', 1))
+			if (ArrayHelper::getValue($opts, 'rollover', 1))
 			{
 				$d = $this->rollover($d, $thisRow, 'list');
 			}
 
-			if (JArrayHelper::getValue($opts, 'link', 1))
+			if (ArrayHelper::getValue($opts, 'link', 1))
 			{
 				$d = $listModel->_addLink($d, $this, $thisRow, $i);
 			}
@@ -5882,7 +5882,7 @@ class PlgFabrik_Element extends FabrikPlugin
 			if (!array_key_exists(0, $data))
 			{
 				// Occurs if we have created a list from an existing table whose data contains json objects (e.g. #__users.params)
-				$obj = JArrayHelper::toObject($data);
+				$obj = ArrayHelper::toObject($data);
 				$data = array();
 				$data[0] = $obj;
 			}

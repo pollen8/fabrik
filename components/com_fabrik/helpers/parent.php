@@ -12,6 +12,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 use Joomla\String\String;
+use Joomla\Utilities\ArrayHelper;
 
 /**
  * Generic tools that all models use
@@ -711,7 +712,7 @@ class FabrikWorker
 
 				if (is_object($searchData))
 				{
-					$searchData = JArrayHelper::fromObject($searchData);
+					$searchData = ArrayHelper::fromObject($searchData);
 				}
 				// Merge in request and specified search data
 				$f                 = JFilterInput::getInstance();
@@ -1931,7 +1932,7 @@ class FabrikWorker
 					// User element stores as object
 					if (is_object($userColVal))
 					{
-						$userColVal = JArrayHelper::fromObject($userColVal);
+						$userColVal = ArrayHelper::fromObject($userColVal);
 					}
 
 					// Could be coming back from a failed validation in which case val might be an array

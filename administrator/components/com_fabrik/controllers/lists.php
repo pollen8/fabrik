@@ -12,6 +12,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\Utilities\ArrayHelper;
+
 require_once 'fabcontrolleradmin.php';
 
 /**
@@ -75,7 +77,7 @@ class FabrikAdminControllerLists extends FabControllerAdmin
 		else
 		{
 			// Make sure the item ids are integers
-			JArrayHelper::toInteger($cid);
+			ArrayHelper::toInteger($cid);
 			$model = $this->getModel('Form', 'FabrikAdminModel');
 			$formIds = $model->swapListToFormIds($cid);
 

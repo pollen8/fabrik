@@ -12,6 +12,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 use Joomla\String\String;
+use Joomla\Utilities\ArrayHelper;
 
 /**
  * List filter model
@@ -522,7 +523,7 @@ class FabrikFEModelListfilter extends FabModel
 		 * /forums/index.php?threads/many-to-many-relationship-show-all-related-items-as-list-on-the-joined-list-details.36697/
 		 * #post-184335
 		 */
-		$reg = JArrayHelper::fromObject($reg);
+		$reg = ArrayHelper::fromObject($reg);
 		$searchTypes = FArrayHelper::getValue($reg, 'search_type', array());
 
 		for ($i = 0; $i < count($searchTypes); $i++)
@@ -534,7 +535,7 @@ class FabrikFEModelListfilter extends FabModel
 		}
 
 		$reg['searchall'] = '';
-		$reg = JArrayHelper::toObject($reg);
+		$reg = ArrayHelper::toObject($reg);
 		$registry->set($context, $reg);
 		$reg = $registry->get($context, new stdClass);
 
@@ -1387,7 +1388,7 @@ class FabrikFEModelListfilter extends FabModel
 		$elements = $this->listModel->getElements('id');
 		$identifier = $this->app->input->get('listref', $this->listModel->getRenderContext());
 		$key = 'com_' . $this->package . '.list' . $identifier . '.filter';
-		$sessionFilters = JArrayHelper::fromObject($this->app->getUserState($key));
+		$sessionFilters = ArrayHelper::fromObject($this->app->getUserState($key));
 		$filterKeys = array_keys($filters);
 
 		if (!is_array($sessionFilters) || !array_key_exists('key', $sessionFilters))

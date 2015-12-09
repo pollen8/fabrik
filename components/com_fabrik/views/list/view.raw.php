@@ -11,6 +11,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\Utilities\ArrayHelper;
+
 require_once JPATH_SITE . '/components/com_fabrik/views/list/view.base.php';
 
 /**
@@ -60,7 +62,7 @@ class FabrikViewList extends FabrikViewListBase
 
 				if (is_object($data[$groupKey]))
 				{
-					$o->data = JArrayHelper::fromObject($data[$groupKey]);
+					$o->data = ArrayHelper::fromObject($data[$groupKey]);
 				}
 				else
 				{

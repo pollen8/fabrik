@@ -1,5 +1,4 @@
 <?php
-use Zend\Db\Sql\Ddl\Column\Boolean;
 /**
  * Plugin element to render fields
  *
@@ -13,6 +12,7 @@ use Zend\Db\Sql\Ddl\Column\Boolean;
 defined('_JEXEC') or die('Restricted access');
 
 use Joomla\String\String;
+use Joomla\Utilities\ArrayHelper;
 
 jimport('joomla.application.component.model');
 
@@ -602,7 +602,7 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 	{
 		if (is_object($thisRow))
 		{
-			$thisRow = JArrayHelper::fromObject($thisRow);
+			$thisRow = ArrayHelper::fromObject($thisRow);
 		}
 
 		$formModel = $this->getFormModel();

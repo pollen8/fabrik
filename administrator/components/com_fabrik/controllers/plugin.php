@@ -13,6 +13,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 use Joomla\String\String;
+use Joomla\Utilities\ArrayHelper;
 
 jimport('joomla.application.component.controller');
 
@@ -101,7 +102,7 @@ class FabrikAdminControllerPlugin extends FabControllerForm
 		$app = JFactory::getApplication();
 		$input = $app->input;
 		$cid = $input->get('element_id', array(), 'array');
-		JArrayHelper::toInteger($cid);
+		ArrayHelper::toInteger($cid);
 
 		if (empty($cid))
 		{

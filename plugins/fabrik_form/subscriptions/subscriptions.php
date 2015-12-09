@@ -12,6 +12,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 use Joomla\String\String;
+use Joomla\Utilities\ArrayHelper;
 
 // Require the abstract plugin class
 require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
@@ -217,7 +218,7 @@ class PlgFabrik_FormSubscriptions extends PlgFabrik_Form
 		$filter = JFilterInput::getInstance();
 		$post = $filter->clean($_REQUEST, 'array');
 		$name = $this->config->get('sitename') . ' {plan_name}  User: {jos_fabrik_subs_users___name} ({jos_fabrik_subs_users___username})';
-		$tmp = array_merge($post, JArrayHelper::fromObject($sub));
+		$tmp = array_merge($post, ArrayHelper::fromObject($sub));
 
 		// 'http://fabrikar.com/ '.$sub->item_name. ' - User: subtest26012010 (subtest26012010)';
 		$opts['item_name'] = $w->parseMessageForPlaceHolder($name, $tmp);

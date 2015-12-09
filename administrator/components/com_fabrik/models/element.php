@@ -13,6 +13,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 use Joomla\String\String;
+use Joomla\Utilities\ArrayHelper;
 
 jimport('joomla.application.component.modeladmin');
 
@@ -311,7 +312,7 @@ class FabrikAdminModelElement extends FabModelAdmin
 		{
 			$plugin = $this->pluginManager->getPlugIn($plugin, 'Element');
 			$mode   = FabrikWorker::j3() ? 'nav-tabs' : '';
-			$str    = $plugin->onRenderAdminSettings(JArrayHelper::fromObject($item), null, $mode);
+			$str    = $plugin->onRenderAdminSettings(ArrayHelper::fromObject($item), null, $mode);
 		}
 
 		return $str;
@@ -998,7 +999,7 @@ class FabrikAdminModelElement extends FabModelAdmin
 			return array();
 		}
 
-		JArrayHelper::toInteger($ids);
+		ArrayHelper::toInteger($ids);
 		$db    = FabrikWorker::getDbo(true);
 		$query = $db->getQuery(true);
 		$query->select('id')->from('#__{package}_elements')->where('group_id IN (' . implode(',', $ids) . ')');
@@ -1074,7 +1075,7 @@ class FabrikAdminModelElement extends FabModelAdmin
 	{
 		$input = $this->app->input;
 		$cid   = $input->get('cid', array(), 'array');
-		JArrayHelper::toInteger($cid);
+		ArrayHelper::toInteger($cid);
 		$names = $input->get('name', array(), 'array');
 		$rule  = $this->getTable('element');
 
@@ -1083,7 +1084,7 @@ class FabrikAdminModelElement extends FabModelAdmin
 			if ($rule->load((int) $id))
 			{
 				$name         = FArrayHelper::getValue($names, $id, $rule->name);
-				$data         = JArrayHelper::fromObject($rule);
+				$data         = ArrayHelper::fromObject($rule);
 				$elementModel = $this->getElementPluginModel($data);
 				$elementModel->getElement()->bind($data);
 				$newRule      = $elementModel->copyRow($id, $rule->label, $groupid, $name);
@@ -1093,7 +1094,7 @@ class FabrikAdminModelElement extends FabModelAdmin
 					return false;
 				}
 
-				$data         = JArrayHelper::fromObject($newRule);
+				$data         = ArrayHelper::fromObject($newRule);
 				$elementModel = $this->getElementPluginModel($data);
 				$elementModel->getElement()->bind($data);
 				$listModel = $elementModel->getListModel();

@@ -12,6 +12,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\Utilities\ArrayHelper;
+
 jimport('joomla.application.component.controllerform');
 
 /**
@@ -48,7 +50,7 @@ class FabControllerForm extends JControllerForm
 	 */
 	public function __construct($config = array())
 	{
-		$this->app = JArrayHelper::getValue($config, 'app', JFactory::getApplication());
+		$this->app = ArrayHelper::getValue($config, 'app', JFactory::getApplication());
 		parent::__construct($config);
 	}
 	/**

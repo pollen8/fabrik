@@ -11,6 +11,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 use Joomla\String\String;
+use Joomla\Utilities\ArrayHelper;
 
 jimport('joomla.application.component.model');
 
@@ -94,7 +95,7 @@ class FabrikModelNotification extends FabModel
 		// Check for request forgeries
 		JSessoin::checkToken() or die('Invalid Token');
 		$ids = $this->app->input->get('cid', array());
-		JArrayHelper::toInteger($ids);
+		ArrayHelper::toInteger($ids);
 
 		if (empty($ids))
 		{

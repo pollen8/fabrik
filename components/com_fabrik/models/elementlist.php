@@ -12,6 +12,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 use Joomla\String\String;
+use Joomla\Utilities\ArrayHelper;
 
 jimport('joomla.application.component.model');
 jimport('joomla.filesystem.file');
@@ -354,7 +355,7 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 
 			if ($params->get('filter_groupby') != -1)
 			{
-				JArrayHelper::sortObjects($rows, $params->get('filter_groupby', 'text'));
+				ArrayHelper::sortObjects($rows, $params->get('filter_groupby', 'text'));
 			}
 
 			$this->getFilterDisplayValues($default, $rows);
@@ -588,7 +589,7 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 		$listModel = $this->getListModel();
 		$multiple = $this->isMultiple();
 		$mergeGroupRepeat = ($this->getGroup()->canRepeat() && $this->getListModel()->mergeJoinedData());
-		$useIcon = $params->get('icon_folder', 0) && JArrayHelper::getValue($opts, 'icon', 1);
+		$useIcon = $params->get('icon_folder', 0) && ArrayHelper::getValue($opts, 'icon', 1);
 
 		// Give priority to raw value icons (podion)
 		$raw = $this->isJoin() ? $this->getFullName(true, false) . '_raw' : $this->getFullName(true, false) . '_id';
@@ -641,11 +642,11 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 
 				if ($this->renderWithHTML)
 				{
-					if (JArrayHelper::getValue($opts, 'rollover', 1))
+					if (ArrayHelper::getValue($opts, 'rollover', 1))
 					{
 						$l = $this->rollover($l, $thisRow, 'list');
 					}
-					if (JArrayHelper::getValue($opts, 'link', 1))
+					if (ArrayHelper::getValue($opts, 'link', 1))
 					{
 						$l = $listModel->_addLink($l, $this, $thisRow, $i);
 					}

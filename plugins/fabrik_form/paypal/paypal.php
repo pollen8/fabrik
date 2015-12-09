@@ -12,6 +12,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 use Joomla\String\String;
+use Joomla\Utilities\ArrayHelper;
 
 // Require the abstract plugin class
 require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
@@ -188,7 +189,7 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 
 				$filter = JFilterInput::getInstance();
 				$post = $filter->clean($_POST, 'array');
-				$tmp = array_merge($post, JArrayHelper::fromObject($sub));
+				$tmp = array_merge($post, ArrayHelper::fromObject($sub));
 
 				// 'http://fabrikar.com/ '.$sub->item_name.' - User: subtest26012010 (subtest26012010)';
 				$opts['item_name'] = $w->parseMessageForPlaceHolder($name, $tmp);

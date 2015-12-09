@@ -1,11 +1,13 @@
 <?php
 defined('JPATH_BASE') or die;
 
+use Joomla\Utilities\ArrayHelper;
+
 $d    = $displayData;
 $from = $d->from;
 $to   = $d->to;
 
-$calOpts = JArrayHelper::toString($d->calOpts);
+$calOpts = ArrayHelper::toString($d->calOpts);
 
 if ($d->j3) :
 	$from->img = '<button id ="' . $from->id . '_cal_img" class="btn calendarbutton">' . $from->img . '</button>';

@@ -11,6 +11,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\Utilities\ArrayHelper;
+
 jimport('joomla.application.component.model');
 
 require_once JPATH_SITE . '/components/com_fabrik/models/visualization.php';
@@ -70,7 +72,7 @@ class FabrikModelCalendar extends FabrikFEModelVisualization
 		if (!isset($this->listids))
 		{
 			$this->listids = (array) $this->getParams()->get('calendar_table');
-			JArrayHelper::toInteger($this->listids);
+			ArrayHelper::toInteger($this->listids);
 		}
 	}
 
@@ -87,7 +89,7 @@ class FabrikModelCalendar extends FabrikFEModelVisualization
 			$db = FabrikWorker::getDbo(true);
 			$params = $this->getParams();
 			$lists = (array) $params->get('calendar_table');
-			JArrayHelper::toInteger($lists);
+			ArrayHelper::toInteger($lists);
 			$dateFields = (array) $params->get('calendar_startdate_element');
 			$dateFields2 = (array) $params->get('calendar_enddate_element');
 			$labels = (array) $params->get('calendar_label_element');

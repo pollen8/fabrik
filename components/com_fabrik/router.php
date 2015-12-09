@@ -11,6 +11,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use \Joomla\Utilities\ArrayHelper;
+
 /**
  * if using file extensions sef and htaccess :
  * you need to edit your .htaccess file to:
@@ -191,8 +193,8 @@ function _fabrikRouteMatchesMenuItem($query, $menuItem)
 	{
 		return false;
 	}
-	$queryView = JArrayHelper::getValue($query, 'view');
-	$menuView = JArrayHelper::getValue($menuItem->query, 'view');
+	$queryView = ArrayHelper::getValue($query, 'view');
+	$menuView = ArrayHelper::getValue($menuItem->query, 'view');
 
 	if ($queryView !== $menuView)
 	{
@@ -240,7 +242,7 @@ function fabrikParseRoute($segments)
 	/**
 	 * View (controller not passed into segments)
 	 *
-	 * $$$ hugh - don't use FArrayHelper::getValue() here, use original JArrayHelper.  Don't ask.
+	 * $$$ hugh - don't use FArrayHelper::getValue() here, use original ArrayHelper.  Don't ask.
 	 * Well, since you asked, some users are reporting issues with the helper not having been
 	 * loaded (some bizarre 3rd party system plugin doing funky things), and since we don't need
 	 * what our wrapper does for this simple usage ... yes, we could specifically load our helper here,
@@ -253,23 +255,23 @@ function fabrikParseRoute($segments)
 		case 'details':
 		case 'emailform':
 			$vars['view'] = $segments[0];
-			$vars['formid'] = JArrayHelper::getValue($segments, 1, 0);
-			$vars['rowid'] = JArrayHelper::getValue($segments, 2, '');
-			$vars['format'] = JArrayHelper::getValue($segments, 3, 'html');
+			$vars['formid'] = ArrayHelper::getValue($segments, 1, 0);
+			$vars['rowid'] = ArrayHelper::getValue($segments, 2, '');
+			$vars['format'] = ArrayHelper::getValue($segments, 3, 'html');
 			break;
 		case 'table':
 		case 'list':
-			$vars['view'] = JArrayHelper::getValue($segments, 0, '');
-			$vars['listid'] = JArrayHelper::getValue($segments, 1, 0);
+			$vars['view'] = ArrayHelper::getValue($segments, 0, '');
+			$vars['listid'] = ArrayHelper::getValue($segments, 1, 0);
 			break;
 		case 'import':
 			$vars['view'] = 'import';
-			$vars['listid'] = JArrayHelper::getValue($segments, 1, 0);
-			$vars['filetype'] = JArrayHelper::getValue($segments, 2, 0);
+			$vars['listid'] = ArrayHelper::getValue($segments, 1, 0);
+			$vars['filetype'] = ArrayHelper::getValue($segments, 2, 0);
 			break;
 		case 'visualization':
-			$vars['id'] = JArrayHelper::getValue($segments, 1, 0);
-			$vars['format'] = JArrayHelper::getValue($segments, 2, 'html');
+			$vars['id'] = ArrayHelper::getValue($segments, 1, 0);
+			$vars['format'] = ArrayHelper::getValue($segments, 2, 'html');
 			break;
 		default:
 			break;

@@ -11,6 +11,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use \Joomla\Utilities\ArrayHelper;
+
 jimport('joomla.application.component.controller');
 
 /**
@@ -351,7 +353,7 @@ class FabrikControllerDetails extends JControllerLegacy
 				if ($this->isMambot)
 				{
 					// Return to the same page
-					$url = JArrayHelper::getvalue($_SERVER, 'HTTP_REFERER', 'index.php');
+					$url = ArrayHelper::getvalue($_SERVER, 'HTTP_REFERER', 'index.php');
 				}
 				else
 				{

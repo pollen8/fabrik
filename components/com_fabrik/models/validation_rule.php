@@ -13,6 +13,7 @@ defined('_JEXEC') or die('Restricted access');
 
 use Joomla\String\String;
 use \Joomla\Registry\Registry;
+use Joomla\Utilities\ArrayHelper;
 
 jimport('joomla.application.component.model');
 
@@ -118,10 +119,10 @@ class PlgFabrik_Validationrule extends FabrikPlugin
 			foreach ($groupElements as $element)
 			{
 				$name = $element->getFullName(true, false);
-				$elementData = JArrayHelper::getValue($post, $name, array());
-				$post[$name] = JArrayHelper::getValue($elementData, $repeatCounter, '');
-				$rawData = JArrayHelper::getValue($post, $name . '_raw', array());
-				$post[$name . '_raw'] = JArrayHelper::getValue($rawData, $repeatCounter, '');
+				$elementData = ArrayHelper::getValue($post, $name, array());
+				$post[$name] = ArrayHelper::getValue($elementData, $repeatCounter, '');
+				$rawData = ArrayHelper::getValue($post, $name . '_raw', array());
+				$post[$name . '_raw'] = ArrayHelper::getValue($rawData, $repeatCounter, '');
 			}
 		}
 		else
