@@ -93,7 +93,7 @@ class FabrikAdminViewForms extends JViewLegacy
 	{
 		require_once JPATH_COMPONENT . '/helpers/fabrik.php';
 		$canDo = FabrikAdminHelper::getActions($this->state->get('filter.category_id'));
-		JToolBarHelper::title(FText::_('COM_FABRIK_MANAGER_FORMS'), 'forms.png');
+		JToolBarHelper::title(FText::_('COM_FABRIK_MANAGER_FORMS'), 'file-2');
 
 		if ($canDo->get('core.create'))
 		{

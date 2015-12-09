@@ -70,8 +70,11 @@ class JFormFieldFabrikContentTypeList extends JFormFieldList
 	 */
 	protected function getInput()
 	{
-		$str = parent::getInput();
-		$str .= '<div id="contentTypeListPreview"></div>';
+		$str = '<div class="row-fluid">
+		<div class="span3">' . parent::getInput() . '</div><div class="span9">';
+		$str .= '<legend>' . JText::_('COM_FABRIK_PREVIEW') . ': </legend>';
+		$str .= '<div class="well" id="contentTypeListPreview"></div>';
+		$str .= '</div>';
 		$script = 'new FabrikContentTypeList(\'' . $this->id . '\')';
 		FabrikHelperHTML::script('administrator/components/com_fabrik/models/fields/fabrikcontenttypelist.js', $script);
 

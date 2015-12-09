@@ -92,7 +92,7 @@ class FabrikAdminViewGroup extends JViewLegacy
 		$checkedOut	= !($this->item->checked_out == 0 || $this->item->checked_out == $user->get('id'));
 		$canDo = FabrikAdminHelper::getActions($this->state->get('filter.category_id'));
 		$title = $isNew ? FText::_('COM_FABRIK_MANAGER_GROUP_NEW') : FText::_('COM_FABRIK_MANAGER_GROUP_EDIT') . ' "' . $this->item->name . '"';
-		JToolBarHelper::title($title, 'group.png');
+		JToolBarHelper::title($title, 'stack');
 
 		if ($isNew)
 		{

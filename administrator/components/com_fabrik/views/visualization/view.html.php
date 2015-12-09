@@ -118,7 +118,7 @@ class FabrikAdminViewVisualization extends JViewLegacy
 		$canDo        = FabrikAdminHelper::getActions($this->state->get('filter.category_id'));
 		$title        = $isNew ? FText::_('COM_FABRIK_MANAGER_VISUALIZATION_NEW') : FText::_('COM_FABRIK_MANAGER_VISUALIZATION_EDIT');
 		$title .= $isNew ? '' : ' "' . $this->item->get('label') . '"';
-		JToolBarHelper::title($title, 'visualization.png');
+		JToolBarHelper::title($title, 'chart');
 
 		if ($isNew)
 		{
