@@ -412,7 +412,7 @@ class FabrikAdminModelContentType extends FabModelAdmin
 		$exporter->setDbo($this->db);
 		$contentType = $this->doc->createElement('contenttype');
 		$tables      = $this->doc->createElement('database');
-		$label       = $formModel->getForm()->get('label');
+		$label       = JFile::makeSafe($formModel->getForm()->get('label'));
 		$name        = $this->doc->createElement('name', $label);
 		$contentType->appendChild($name);
 		$groups = $formModel->getGroupsHiarachy();
