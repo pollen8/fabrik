@@ -133,7 +133,7 @@ class FabrikAdminControllerList extends FabControllerForm
 
 		// Set the layout
 		$view->setLayout($viewLayout);
-		JToolBarHelper::title(FText::_('COM_FABRIK_MANAGER_LISTS'), 'lists.png');
+		JToolBarHelper::title(FText::_('COM_FABRIK_MANAGER_LISTS'), 'list');
 
 		// Build unique cache id on url, post and user id
 		$user    = JFactory::getUser();

@@ -225,11 +225,12 @@ class FabrikAdminViewList extends JViewLegacy
 		$input       = $app->input;
 		$input->set('hidemainmenu', true);
 		$canDo = FabrikAdminHelper::getActions($this->state->get('filter.category_id'));
+		JToolBarHelper::title(FText::_('COM_FABRIK_MANAGER_SELECT_CONTENT_TYPE'), 'puzzle');
 
 		// For new records, check the create permission.
 		if ($canDo->get('core.create'))
 		{
-			JToolBarHelper::save('list.doSave', 'JTOOLBAR_SAVE');
+			JToolBarHelper::apply('list.doSave', 'JTOOLBAR_SAVE');
 			JToolBarHelper::cancel('list.cancel', 'JTOOLBAR_CANCEL');
 		}
 	}
@@ -250,7 +251,7 @@ class FabrikAdminViewList extends JViewLegacy
 		$checkedOut = !($this->item->checked_out == 0 || $this->item->checked_out == $user->get('id'));
 		$canDo      = FabrikAdminHelper::getActions($this->state->get('filter.category_id'));
 		$title      = $isNew ? FText::_('COM_FABRIK_MANAGER_LIST_NEW') : FText::_('COM_FABRIK_MANAGER_LIST_EDIT') . ' "' . $this->item->label . '"';
-		JToolBarHelper::title($title, 'list.png');
+		JToolBarHelper::title($title, 'list');
 
 		if ($isNew)
 		{
@@ -305,7 +306,7 @@ class FabrikAdminViewList extends JViewLegacy
 		$app   = JFactory::getApplication();
 		$input = $app->input;
 		$input->set('hidemainmenu', true);
-		JToolBarHelper::title(FText::_('COM_FABRIK_MANAGER_LIST_LINKED_ELEMENTS'), 'list.png');
+		JToolBarHelper::title(FText::_('COM_FABRIK_MANAGER_LIST_LINKED_ELEMENTS'), 'list');
 		JToolBarHelper::cancel('list.cancel', 'JTOOLBAR_CLOSE');
 		JToolBarHelper::divider();
 		JToolBarHelper::help('JHELP_COMPONENTS_FABRIK_LISTS_EDIT');
@@ -321,7 +322,7 @@ class FabrikAdminViewList extends JViewLegacy
 		$app   = JFactory::getApplication();
 		$input = $app->input;
 		$input->set('hidemainmenu', true);
-		JToolBarHelper::title(FText::_('COM_FABRIK_MANAGER_LIST_COPY'), 'list.png');
+		JToolBarHelper::title(FText::_('COM_FABRIK_MANAGER_LIST_COPY'), 'list');
 		JToolBarHelper::cancel('list.cancel', 'JTOOLBAR_CLOSE');
 		JToolBarHelper::save('list.doCopy', 'JTOOLBAR_SAVE');
 		JToolBarHelper::divider();

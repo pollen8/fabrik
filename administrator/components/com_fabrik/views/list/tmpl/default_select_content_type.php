@@ -13,7 +13,13 @@
 defined('_JEXEC') or die('Restricted access');
 
 ?>
-<form action="<?php JRoute::_('index.php?option=com_fabrik'); ?>" method="post" name="adminForm" id="adminForm" class="form-validate">
+<form action="<?php JRoute::_('index.php?option=com_fabrik'); ?>" method="post" name="adminForm"
+	id="adminForm" class="form-validate form-horizontal">
+
+	<div class="alert alert-info">
+		<span class="icon-puzzle"></span> <?php echo JText::_('COM_FABRIK_FIELD_CONTENT_TYPE_INTRO_LABEL'); ?>
+	</div>
+	<hr />
 
 	<?php echo $this->form->renderFieldset('details'); ?>
 
@@ -33,10 +39,16 @@ defined('_JEXEC') or die('Restricted access');
 </form>
 <style>
 	#contentTypeListPreview {
-		pointer-events:none
+		pointer-events : none
 	}
+
+	#contentTypeListPreview .page-header,
+	#contentTypeListPreview .row-fluid.nav {
+		display : none;
+	}
+
 	#contentTypeListPreview .fabrikGroup .fabrikHide {
-		display: block !important;
-		opacity: 0.5
+		display : block !important;
+		opacity : 0.5
 	}
 </style>
