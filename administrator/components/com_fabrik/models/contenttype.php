@@ -151,6 +151,7 @@ class FabrikAdminModelContentType extends FabModelAdmin
 		$fields   = array();
 		$xpath    = new DOMXpath($this->doc);
 		$groups   = $xpath->query('/contenttype/group');
+		$i        = 1;
 
 		foreach ($groups as $group)
 		{
@@ -161,7 +162,7 @@ class FabrikAdminModelContentType extends FabModelAdmin
 			$isJoin   = ArrayHelper::getValue($groupData, 'is_join', false);
 			$isRepeat = isset($groupData['params']->repeat_group_button) ? $groupData['params']->repeat_group_button : false;
 			$groupId  = $this->listModel->createLinkedGroup($groupData, $isJoin, $isRepeat);
-			$elements = $xpath->query('/contenttype/group/element');
+			$elements = $xpath->query('/contenttype/group[' . $i . ']/element');
 
 			foreach ($elements as $element)
 			{
@@ -173,6 +174,7 @@ class FabrikAdminModelContentType extends FabModelAdmin
 			}
 
 			$groupIds[] = $groupId;
+			$i++;
 		}
 
 		$this->importTables();
@@ -303,6 +305,7 @@ class FabrikAdminModelContentType extends FabModelAdmin
 		$xpath         = new DOMXpath($this->doc);
 		$groups        = $xpath->query('/contenttype/group');
 		$return        = array();
+		$i             = 1;
 
 		foreach ($groups as $group)
 		{
@@ -314,7 +317,7 @@ class FabrikAdminModelContentType extends FabModelAdmin
 			$groupTable->bind($groupData);
 			$groupModel->setGroup($groupTable);
 
-			$elements      = $xpath->query('/contenttype/group/element');
+			$elements      = $xpath->query('/contenttype/group[' . $i . ']/element');
 			$elementModels = array();
 
 			foreach ($elements as $element)
@@ -329,6 +332,7 @@ class FabrikAdminModelContentType extends FabModelAdmin
 
 			$groupModel->elements = $elementModels;
 			$return[]             = $groupModel;
+			$i++;
 		}
 
 		return $return;
@@ -419,7 +423,6 @@ class FabrikAdminModelContentType extends FabModelAdmin
 
 		foreach ($groups as $groupModel)
 		{
-
 			$groupData     = $groupModel->getGroup()->getProperties();
 			$group         = $this->buildExportNode('group', $groupData);
 			$elementModels = $groupModel->getMyElements();
