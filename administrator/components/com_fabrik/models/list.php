@@ -192,7 +192,7 @@ class FabrikAdminModelList extends FabModelAdmin
 	public function publish(&$pks, $value = 1)
 	{
 		// Initialise variables.
-		$dispatcher = JDispatcher::getInstance();
+		$dispatcher = JEventDispatcher::getInstance();
 		$table      = $this->getTable();
 		$pks        = (array) $pks;
 
@@ -647,12 +647,16 @@ class FabrikAdminModelList extends FabModelAdmin
 
 		$this->setState('list.id', $id);
 		$this->setState('list.form_id', $row->get('form_id'));
-		$feModel          = $this->getFEModel();
+		$feModel = $this->getFEModel();
 
 		/** @var $contentTypeModel FabrikAdminModelContentType */
 		$contentTypeModel = JModelLegacy::getInstance('ContentType', 'FabrikAdminModel', array('listModel' => $this));
-		$contentType      = ArrayHelper::getValue($jForm, 'contenttype');
-		$contentTypeModel->checkInsertFields($contentType);
+		$contentType      = ArrayHelper::getValue($jForm, 'contenttype', '');
+
+		if ($contentType !== '')
+		{
+			$contentTypeModel->checkInsertFields($contentType);
+		}
 
 		// Get original collation
 		$db            = $feModel->getDb();
@@ -792,9 +796,10 @@ class FabrikAdminModelList extends FabModelAdmin
 	 */
 	protected function createIndexes($params, $row)
 	{
-		$map     = array();
-		$feModel = $this->getFormModel();
-		$groups  = $feModel->getGroupsHiarachy();
+		$map         = array();
+		$feModel     = $this->getFormModel();
+		$feListModel = $this->getFEModel();
+		$groups      = $feModel->getGroupsHiarachy();
 
 		foreach ($groups as $groupModel)
 		{
@@ -829,18 +834,18 @@ class FabrikAdminModelList extends FabModelAdmin
 			{
 				if (array_key_exists($orderBy, $map))
 				{
-					$feModel->addIndex($orderBy, 'tableorder', 'INDEX', $map[$orderBy]);
+					$feListModel->addIndex($orderBy, 'tableorder', 'INDEX', $map[$orderBy]);
 				}
 			}
 		}
 		if ($row->group_by !== '' && array_key_exists($row->group_by, $map))
 		{
-			$feModel->addIndex($row->get('group_by'), 'groupby', 'INDEX', $map[$row->group_by]);
+			$feListModel->addIndex($row->get('group_by'), 'groupby', 'INDEX', $map[$row->group_by]);
 		}
 
 		if (trim($params->get('group_by_order')) !== '')
 		{
-			$feModel->addIndex($params->get('group_by_order'), 'groupbyorder', 'INDEX', $map[$params->get('group_by_order')]);
+			$feListModel->addIndex($params->get('group_by_order'), 'groupbyorder', 'INDEX', $map[$params->get('group_by_order')]);
 		}
 
 		$filterFields = (array) $params->get('filter-fields', array());
@@ -849,7 +854,7 @@ class FabrikAdminModelList extends FabModelAdmin
 		{
 			if (array_key_exists($field, $map))
 			{
-				$feModel->addIndex($field, 'prefilter', 'INDEX', $map[$field]);
+				$feListModel->addIndex($field, 'prefilter', 'INDEX', $map[$field]);
 			}
 		}
 	}
@@ -1246,7 +1251,7 @@ class FabrikAdminModelList extends FabModelAdmin
 	protected function makeElementsFromFields($groupId, $tableName)
 	{
 		$fabrikDb      = $this->getFEModel()->getDb();
-		$dispatcher    = JDispatcher::getInstance();
+		$dispatcher    = JEventDispatcher::getInstance();
 		$input         = $this->app->input;
 		$elementModel  = new PlgFabrik_Element($dispatcher);
 		$pluginManager = FabrikWorker::getPluginManager();
@@ -1623,8 +1628,6 @@ class FabrikAdminModelList extends FabModelAdmin
 
 			if (!$item->store())
 			{
-				$this->setError($item->getError());
-
 				return false;
 			}
 
@@ -1897,7 +1900,7 @@ class FabrikAdminModelList extends FabModelAdmin
 
 		foreach ($elements as $element)
 		{
-			if ($table->db_primary_key == FabrikString::safeColName($element->getFullName(false, false)))
+			if ($table->get('db_primary_key') == FabrikString::safeColName($element->getFullName(false, false)))
 			{
 				// Primary key element
 				$type = 'referenceid';
@@ -1959,7 +1962,7 @@ class FabrikAdminModelList extends FabModelAdmin
 	public function delete(&$pks)
 	{
 		// Initialise variables.
-		$dispatcher = JDispatcher::getInstance();
+		$dispatcher = JEventDispatcher::getInstance();
 		$pks        = (array) $pks;
 		$table      = $this->getTable();
 
@@ -2241,7 +2244,7 @@ class FabrikAdminModelList extends FabModelAdmin
 		$this->__state_set = true;
 		$item->load(array('form_id' => $formId));
 		$this->table = $item;
-		$this->setState('list.id', $item->id);
+		$this->setState('list.id', $item->get('id'));
 
 		return $item;
 	}

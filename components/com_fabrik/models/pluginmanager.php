@@ -301,7 +301,7 @@ class FabrikFEModelPluginmanager extends FabModel
 		* Application 0.242 seconds (+0.005); 20.13 MB (+0.268) - pluginmanager: form email imported
 		*/
 		$ok = JPluginHelper::importPlugin('fabrik_' . $group, $className);
-		$dispatcher = JDispatcher::getInstance();
+		$dispatcher = JEventDispatcher::getInstance();
 
 		if ($className != '')
 		{

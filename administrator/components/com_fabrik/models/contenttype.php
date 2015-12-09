@@ -121,6 +121,10 @@ class FabrikAdminModelContentType extends FabModelAdmin
 	 */
 	public function loadContentType($name)
 	{
+		if ((string) $name === '')
+		{
+			throw new UnexpectedValueException('no content type supplied');
+		}
 		$paths = self::addContentTypeIncludePath();
 		$path  = JPath::find($paths, $name);
 
@@ -226,7 +230,13 @@ class FabrikAdminModelContentType extends FabModelAdmin
 				foreach ($param->attributes as $attr)
 				{
 					$name          = $attr->nodeName;
-					$return->$name = $attr->nodeValue;
+					$value = (string) $attr->nodeValue;
+
+					if (FabrikWorker::isJSON($value))
+					{
+						$value = json_decode($value);
+					}
+					$return->$name = $value;
 				}
 			}
 		}
