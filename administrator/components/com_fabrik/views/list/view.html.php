@@ -78,11 +78,11 @@ class FabrikAdminViewList extends JViewLegacy
 		{
 			$this->order_by = array();
 			$feListModel    = $formModel->getListModel();
-			$orderbys       = $feListModel->getOrderBys();
+			$orderBys       = $feListModel->getOrderBys();
 
-			foreach ($orderbys as $orderby)
+			foreach ($orderBys as $orderBy)
 			{
-				$this->order_by[] = $formModel->getElementList('order_by[]', $orderby, true, false, false, 'id');
+				$this->order_by[] = $formModel->getElementList('order_by[]', $orderBy, true, false, false, 'id');
 			}
 
 			if (empty($this->order_by))
