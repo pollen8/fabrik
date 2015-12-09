@@ -31,7 +31,7 @@ class FabrikAdminControllerContentType extends FabControllerForm
 	 */
 	public function preview()
 	{
-		$contentType = $this->input->get('contentType');
+		$contentType = $this->input->getString('contentType');
 		$listModel = $this->getModel('list');
 		$model = $this->getModel('contenttype', '', array('listModel' => $listModel));
 		$viewType = JFactory::getDocument()->getType();
