@@ -82,7 +82,7 @@ class FabrikFEModelElementValidator extends FabModel
 		$pluginManager->getPlugInGroup('validationrule');
 		$c = 0;
 		$this->validations = array();
-		$dispatcher = JDispatcher::getInstance();
+		$dispatcher = JEventDispatcher::getInstance();
 		JPluginHelper::importPlugin('fabrik_validationrule');
 		$i = 0;
 
