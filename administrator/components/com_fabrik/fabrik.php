@@ -16,7 +16,7 @@ use Joomla\String\String;
 // Access check.
 if (!JFactory::getUser()->authorise('core.manage', 'com_fabrik'))
 {
-	return JError::raiseWarning(404, JText::_('JERROR_ALERTNOAUTHOR'));
+	throw new Exception(JText::_('JERROR_ALERTNOAUTHOR'), 404);
 }
 
 // Load front end language file as well
@@ -57,14 +57,14 @@ if (String::strpos($cName, '.') != false)
 		require_once $path;
 		$controller = $type . $name;
 
-		$classname = 'FabrikController' . String::ucfirst($controller);
-		$controller = new $classname;
+		$className = 'FabrikController' . String::ucfirst($controller);
+		$controller = new $className;
 
 		// Add in plugin view
 		$controller->addViewPath(JPATH_SITE . '/plugins/fabrik_' . $type . '/' . $name . '/views');
 
 		// Add the model path
-		$modelpaths = JModelLegacy::addIncludePath(JPATH_SITE . '/plugins/fabrik_' . $type . '/' . $name . '/models');
+		JModelLegacy::addIncludePath(JPATH_SITE . '/plugins/fabrik_' . $type . '/' . $name . '/models');
 	}
 }
 else

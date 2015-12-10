@@ -2732,7 +2732,7 @@ class PlgFabrik_Element extends FabrikPlugin
 	/**
 	 * Load element params
 	 *
-	 * @return  object  default element params
+	 * @return  Registry  default element params
 	 */
 	public function getParams()
 	{

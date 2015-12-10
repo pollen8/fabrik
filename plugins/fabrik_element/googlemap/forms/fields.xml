@@ -160,7 +160,7 @@
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
-			
+
 			<field name="fb_gm_trafficlayer"
 				type="radio"
 				default="0"
@@ -170,7 +170,7 @@
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
-			
+
 
 			<field name="fb_gm_overviewcontrol"
 				type="radio"
@@ -326,7 +326,7 @@
 					<option value="button">PLG_ELEMENT_GOOGLE_MAP_BUTTON</option>
 					<option value="change">PLG_ELEMENT_GOOGLE_MAP_AS_YOU_TYPE</option>
 			</field>
-			
+
 			<field name="fb_gm_geocode_on_load"
 				type="list"
 				default="0"

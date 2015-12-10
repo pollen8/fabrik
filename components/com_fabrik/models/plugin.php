@@ -231,7 +231,7 @@ class FabrikPlugin extends JPlugin
 		}
 
 		$tabs = array();
-		$i = 0;
+		$i    = 0;
 
 		foreach ($fieldsets as $fieldset)
 		{
@@ -240,19 +240,42 @@ class FabrikPlugin extends JPlugin
 				continue;
 			}
 
-			$tab = new stdClass;
-			$tab->href = 'tab-' . $fieldset->name . '-' . $repeatCounter;
-			$tab->id = 'tab-' . $fieldset->name;
+			$tab        = new stdClass;
+			$tab->href  = 'tab-' . $fieldset->name . '-' . $repeatCounter;
+			$tab->id    = 'tab-' . $fieldset->name;
 			$tab->class = $i === 0 ? 'active' : '';
 			$tab->label = $fieldset->label;
-			$tabs[] = $tab;
-			$i ++;
+			$tabs[]     = $tab;
+			$i++;
 		}
 
-		$displayData = new stdClass;
+		$displayData       = new stdClass;
 		$displayData->tabs = $tabs;
-		$layout = FabrikHelperHTML::getLayout('fabrik-tabs');
-		$output[] = $layout->render($displayData);
+		$layout            = FabrikHelperHTML::getLayout('fabrik-tabs');
+		$output[]          = $layout->render($displayData);
+	}
+
+	/**
+	 * Get the plugin's jForm
+	 *
+	 * @param null $repeatCounter
+	 *
+	 * @return JForm
+	 */
+	public function getPluginForm($repeatCounter = null)
+	{
+		$path = JPATH_SITE . '/plugins/' . $this->_type . '/' . $this->_name;
+		JForm::addFormPath($path);
+		$xmlFile = $path . '/forms/fields.xml';
+		$form    = $this->getJForm();
+		// Used by fields when rendering the [x] part of their repeat name
+		// see administrator/components/com_fabrik/classes/formfield.php getName()
+		$form->repeatCounter = $repeatCounter;
+
+		// Add the plugin specific fields to the form.
+		$form->loadFile($xmlFile, false);
+
+		return $form;
 	}
 
 	/**
@@ -270,17 +293,9 @@ class FabrikPlugin extends JPlugin
 		$version = new JVersion;
 		$j3      = version_compare($version->RELEASE, '3.0') >= 0 ? true : false;
 		$type    = str_replace('fabrik_', '', $this->_type);
-		JForm::addFormPath(JPATH_SITE . '/plugins/' . $this->_type . '/' . $this->_name);
-		$xmlFile      = JPATH_SITE . '/plugins/' . $this->_type . '/' . $this->_name . '/forms/fields.xml';
-		$form         = $this->getJForm();
+
+		$form         = $this->getPluginForm($repeatCounter);
 		$repeatScript = '';
-
-		// Used by fields when rendering the [x] part of their repeat name
-		// see administrator/components/com_fabrik/classes/formfield.php getName()
-		$form->repeatCounter = $repeatCounter;
-
-		// Add the plugin specific fields to the form.
-		$form->loadFile($xmlFile, false);
 
 		// Copy over the data into the params array - plugin fields can have data in either
 		// jform[params][name] or jform[name]
@@ -615,7 +630,7 @@ class FabrikPlugin extends JPlugin
 	/**
 	 *  Get db row/item loaded
 	 *
-	 * @return  FabTable
+	 * @return  FabTableExtension
 	 */
 	public function getTable()
 	{
@@ -1028,9 +1043,9 @@ class FabrikPlugin extends JPlugin
 	/**
 	 * Process the plugin, called when form is submitted
 	 *
-	 * @param   string    $paramName   Param name which contains the PHP code to eval
-	 * @param   array     $data        Data
-	 * @param   Registry  $params      Plugin parameters - hacky fix ini email plugin where in
+	 * @param   string   $paramName    Param name which contains the PHP code to eval
+	 * @param   array    $data         Data
+	 * @param   Registry $params       Plugin parameters - hacky fix ini email plugin where in
 	 *                                 php 5.3.29 email params were getting confused between multiple plugin instances
 	 *
 	 * @return  bool
@@ -1207,7 +1222,7 @@ class FabrikPlugin extends JPlugin
 		if (JFile::exists($file))
 		{
 			$sql  = file_get_contents($file);
-			$sqls = explode(";", $sql);
+			$sqls = explode(';', $sql);
 
 			if (!empty($sqls))
 			{
