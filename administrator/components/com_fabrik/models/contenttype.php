@@ -151,11 +151,12 @@ class FabrikAdminModelContentType extends FabModelAdmin
 			throw new UnexpectedValueException('A content type must be loaded before groups can be created');
 		}
 
-		$groupIds = array();
-		$fields   = array();
-		$xpath    = new DOMXpath($this->doc);
-		$groups   = $xpath->query('/contenttype/group');
-		$i        = 1;
+		$groupIds   = array();
+		$fields     = array();
+		$xpath      = new DOMXpath($this->doc);
+		$groups     = $xpath->query('/contenttype/group');
+		$i          = 1;
+		$elementMap = array();
 
 		foreach ($groups as $group)
 		{
@@ -170,20 +171,76 @@ class FabrikAdminModelContentType extends FabModelAdmin
 
 			foreach ($elements as $element)
 			{
-				$elementData             = $this->domNodeAttributesToArray($element);
+				$elementData = $this->domNodeAttributesToArray($element);
+				$oldId       = $elementData['id'];
+				unset($elementData['id']);
 				$elementData['params']   = json_encode($this->nodeParams($element));
 				$elementData['group_id'] = $groupId;
 				$name                    = (string) $element->getAttribute('name');
 				$fields[$name]           = $this->listModel->makeElement($name, $elementData);
+				$elementMap[$oldId]      = $fields[$name]->element->id;
 			}
 
 			$groupIds[] = $groupId;
 			$i++;
 		}
 
+		$this->mapElementIdParams($elementMap);
 		$this->importTables();
 
 		return $fields;
+	}
+
+	/**
+	 * Element's can have parameters which point to a specific element ID. We need to update those paramters
+	 * to use the cloned element's ID
+	 *
+	 * @param   array  $elementMap
+	 *
+	 * @return bool  True if all elements successfully saved
+	 */
+	private function mapElementIdParams($elementMap)
+	{
+		$return = true;
+		$formModel     = $this->listModel->getFormModel();
+		$pluginManager = FabrikWorker::getPluginManager();
+
+		foreach ($elementMap as $origId => $newId)
+		{
+			// The XML Dom object describing the element's plugin properties
+			$pluginManifest = $pluginManager->getPluginFromId($newId)->getPluginForm()->getXml();
+
+			// Get all listfield parameters where the value format property is no 'tableelement'
+			$listFields     = $pluginManifest->xpath('//field[@type=\'listfields\'][(@valueformat=\'tableelement\') != true()]');
+			$paramNames     = array();
+
+			foreach ($listFields as $listField)
+			{
+				$paramNames[] = (string) $listField->attributes()->name;
+			}
+
+			if (!empty($paramNames))
+			{
+				$elementModel  = $formModel->getElement($newId, true);
+				$element       = $elementModel->getElement();
+				$elementParams = new Registry($element->params);
+
+				foreach ($paramNames as $paramName)
+				{
+					$orig = $elementParams->get($paramName, null);
+
+					if (!is_null($orig))
+					{
+						$elementParams->set($paramName, $elementMap[$orig]);
+					}
+				}
+
+				$element->set('params', (string) $elementParams);
+				$return = $return && $element->store();
+			}
+		}
+
+		return $return;
 	}
 
 	/**
@@ -229,7 +286,7 @@ class FabrikAdminModelContentType extends FabModelAdmin
 			{
 				foreach ($param->attributes as $attr)
 				{
-					$name          = $attr->nodeName;
+					$name  = $attr->nodeName;
 					$value = (string) $attr->nodeValue;
 
 					if (FabrikWorker::isJSON($value))
@@ -498,7 +555,7 @@ class FabrikAdminModelContentType extends FabModelAdmin
 	 * @return DOMElement
 	 */
 	private function buildExportNode($nodeName, $data,
-		$ignore = array('id', 'created_by', 'created_by_alias', 'group_id', 'modified', 'modified_by',
+		$ignore = array('created_by', 'created_by_alias', 'group_id', 'modified', 'modified_by',
 			'checked_out', 'checked_out_time'))
 	{
 		$node = $this->doc->createElement($nodeName);

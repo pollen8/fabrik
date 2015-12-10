@@ -419,6 +419,7 @@ class FabrikAdminModelElement extends FabModelAdmin
 			}
 			else
 			{
+				/** @var FabrikFEModelList $joinListModel */
 				$joinListModel = JModelLegacy::getInstance('list', 'FabrikFEModel');
 				$joinListModel->setId($joinTblId);
 				$joinEls = $joinListModel->getElements();
