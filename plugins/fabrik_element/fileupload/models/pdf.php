@@ -53,7 +53,7 @@ class PdfRenderModel
 
 	private function getThumbnail(&$model, &$params, $file)
 	{
-		if ($this->inTableView || ($params->get('make_thumbnail') == '1' && $params->get('fu_show_image') == 1))
+		if (($this->inTableView || ($params->get('make_thumbnail') == '1' && $params->get('fu_show_image') == 1)) && $params->get('fu_make_pdf_thumb', '0') == '1')
 		{
 			if (!$params->get('make_thumbnail', false))
 			{
@@ -64,12 +64,13 @@ class PdfRenderModel
 				$thumb_url      = $model->getStorage()->_getThumb($file);
 				$thumb_file     = $model->getStorage()->urlToPath($thumb_url);
 				$thumb_url_info = pathinfo($thumb_url);
+				$pdfPage = (int) $params->get('pdf_thumb_from_page', 1) - 1;
 
 				if (JString::strtolower($thumb_url_info['extension'] == 'pdf'))
 				{
-					$thumb_url       = $thumb_url_info['dirname'] . '/' . $thumb_url_info['filename'] . '.' . $this->pdf_thumb_type;
+					$thumb_url       = $thumb_url_info['dirname'] . '/' . $thumb_url_info['filename'] . '-' . $pdfPage . '.' .$this->pdf_thumb_type;
 					$thumb_file_info = pathinfo($thumb_file);
-					$thumb_file      = $thumb_file_info['dirname'] . '/' . $thumb_file_info['filename'] . '.' . $this->pdf_thumb_type;
+					$thumb_file      = $thumb_file_info['dirname'] . '/' . $thumb_file_info['filename'] . '-' . $pdfPage . '.' . $this->pdf_thumb_type;
 				}
 
 				if ($model->getStorage()->exists($thumb_file))

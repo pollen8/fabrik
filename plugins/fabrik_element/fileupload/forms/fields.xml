@@ -230,6 +230,23 @@
 				<option value="1">JYES</option>
 			</field>
 
+			<field default="0"
+			       class="btn-group"
+			       description="PLG_ELEMENT_FILEUPLOAD_MAKE_PDF_THUMB_DESC"
+			       label="PLG_ELEMENT_FILEUPLOAD_MAKE_PDF_THUMB_LABEL"
+			       name="fu_make_pdf_thumb"
+			       type="radio">
+				<option value="0">JNO</option>
+				<option value="1">JYES</option>
+			</field>
+
+			<field name="pdf_thumb_from_page"
+			       type="text"
+				   default="0"
+			       description="PLG_ELEMENT_FILEUPLOAD_PDF_THUMB_PAGE_DESC"
+			       label="PLG_ELEMENT_FILEUPLOAD_PDF_THUMB_PAGE_LABEL"
+			       size="10" />
+>
 			<field name="thumb_dir"
 			       type="text"
 			       default="images/stories/thumbs"
