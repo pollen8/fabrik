@@ -4324,8 +4324,28 @@ class FabrikFEModelList extends JModelForm
 	}
 
 	/**
+	 * Rebuild the join aliases
+	 *
+	 * @param   object $newJoin
+	 *
+	 * @return array
+	 */
+	public function makeJoinAliases($newJoin = null)
+	{
+		if (!is_null($newJoin))
+		{
+			$this->joins[] = $newJoin;
+		}
+
+
+		$this->_makeJoinAliases($this->joins);
+
+		return $this->joins;
+	}
+
+	/**
 	 * As you may be joining to multiple versions of the same db table we need
-	 * to set the various database name alaises that our SQL query will use
+	 * to set the various database name aliases that our SQL query will use
 	 *
 	 * @param   array  &$joins  joins
 	 *

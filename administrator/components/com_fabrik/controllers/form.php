@@ -403,7 +403,17 @@ class FabrikAdminControllerForm extends FabControllerForm
 			return true;
 		}
 
-		return parent::save($key, $urlVar);
+		try
+		{
+			echo "Here";exit;
+			parent::save($key, $urlVar);
+		} catch (Exception $e)
+		{
+			$this->setMessage($e->getMessage(), 'error');
+			$this->setRedirect('index.php?option=com_fabrik&view=forms');
+		}
+
+		return true;
 	}
 
 	/**
@@ -417,7 +427,17 @@ class FabrikAdminControllerForm extends FabControllerForm
 	 */
 	public function doSave($key = null, $urlVar = null)
 	{
-		return parent::save($key, $urlVar);
+		try
+		{
+			parent::save($key, $urlVar);
+		} catch (Exception $e)
+		{
+			print_r($e);
+			$this->setMessage($e->getMessage(), 'error');
+			$this->setRedirect('index.php?option=com_fabrik&view=forms');
+		}
+
+		return true;
 	}
 
 	/**
@@ -450,10 +470,10 @@ class FabrikAdminControllerForm extends FabControllerForm
 	 */
 	public function downloadContentType()
 	{
-		$id        = $this->input->get('cid', array(), 'array');
-		$id        = array_pop($id);
+		$id           = $this->input->get('cid', array(), 'array');
+		$id           = array_pop($id);
 		$contentModel = $this->getModel('ContentType');
-		$formModel = $this->getModel('Form', 'FabrikFEModel');
+		$formModel    = $this->getModel('Form', 'FabrikFEModel');
 		$formModel->setId($id);
 		$contentModel->download($formModel);
 	}
