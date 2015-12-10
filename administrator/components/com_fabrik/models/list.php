@@ -655,7 +655,7 @@ class FabrikAdminModelList extends FabModelAdmin
 
 		if ($contentType !== '')
 		{
-			$contentTypeModel->checkInsertFields($contentType);
+			$contentTypeModel->check($contentType);
 		}
 
 		// Get original collation

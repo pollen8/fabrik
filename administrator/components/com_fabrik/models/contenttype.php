@@ -195,13 +195,13 @@ class FabrikAdminModelContentType extends FabModelAdmin
 	 * Element's can have parameters which point to a specific element ID. We need to update those paramters
 	 * to use the cloned element's ID
 	 *
-	 * @param   array  $elementMap
+	 * @param   array $elementMap
 	 *
 	 * @return bool  True if all elements successfully saved
 	 */
 	private function mapElementIdParams($elementMap)
 	{
-		$return = true;
+		$return        = true;
 		$formModel     = $this->listModel->getFormModel();
 		$pluginManager = FabrikWorker::getPluginManager();
 
@@ -211,12 +211,15 @@ class FabrikAdminModelContentType extends FabModelAdmin
 			$pluginManifest = $pluginManager->getPluginFromId($newId)->getPluginForm()->getXml();
 
 			// Get all listfield parameters where the value format property is no 'tableelement'
-			$listFields     = $pluginManifest->xpath('//field[@type=\'listfields\'][(@valueformat=\'tableelement\') != true()]');
-			$paramNames     = array();
+			$listFields = $pluginManifest->xpath('//field[@type=\'listfields\'][(@valueformat=\'tableelement\') != true()]');
+			$paramNames = array();
 
 			foreach ($listFields as $listField)
 			{
-				$paramNames[] = (string) $listField->attributes()->name;
+				if ((string) $listField->attributes()->valueformat !== '')
+				{
+					$paramNames[] = (string) $listField->attributes()->name;
+				}
 			}
 
 			if (!empty($paramNames))
@@ -431,6 +434,8 @@ class FabrikAdminModelContentType extends FabModelAdmin
 	}
 
 	/**
+	 * Pre-installation check
+	 *
 	 * Ensure that before creating a list/form from a content type, that all
 	 * elements are installed and published
 	 *
@@ -440,12 +445,13 @@ class FabrikAdminModelContentType extends FabModelAdmin
 	 *
 	 * @return bool
 	 */
-	public function checkInsertFields($contentType)
+	public function check($contentType)
 	{
 		$this->loadContentType($contentType);
-		$xpath    = new DOMXpath($this->doc);
+		$xpath = new DOMXpath($this->doc);
+		$this->validateViewLevelXML();
 		$elements = $xpath->query('/contenttype/group/element');
-		$db       = FabrikWorker::getDbo(true);
+		$db       = $this->db;
 		$query    = $db->getQuery(true);
 		$query->select('element')->from('#__extensions')
 			->where('folder =' . $db->q('fabrik_element'))
@@ -527,6 +533,7 @@ class FabrikAdminModelContentType extends FabModelAdmin
 
 		}
 		$contentType->appendChild($tables);
+		$contentType->appendChild($this->createViewLevelXML());
 		$this->doc->appendChild($contentType);
 		$xml  = $this->doc->saveXML();
 		$path = JPATH_COMPONENT_ADMINISTRATOR . '/models/content_types/' . $label . '.xml';
@@ -539,6 +546,65 @@ class FabrikAdminModelContentType extends FabModelAdmin
 			$form->params = $params->toString();
 
 			return $form->save($form->getProperties());
+		}
+
+		return false;
+	}
+
+	/**
+	 * Create the view levels ACL info
+	 *
+	 * @return DOMElement
+	 */
+	private function createViewLevelXML()
+	{
+		$db    = $this->db;
+		$query = $db->getQuery(true);
+		$query->select('*')->from('#__viewlevels');
+		$rows       = $db->setQuery($query)->loadAssocList();
+		$viewLevels = $this->doc->createElement('viewlevels');
+
+		foreach ($rows as $row)
+		{
+			$viewLevel = $this->buildExportNode('viewlevel', $row);
+			$viewLevels->appendChild($viewLevel);
+		}
+
+		return $viewLevels;
+	}
+
+	/**
+	 * Ensure that the content type's view level XML matches the site's view levels
+	 *
+	 * @throws Exception
+	 *
+	 * @return bool
+	 */
+	private function validateViewLevelXML()
+	{
+		$query = $this->db->getQuery(true);
+		$query->select('*')->from('#__viewlevels');
+		$rows       = $this->db->setQuery($query)->loadAssocList();
+		$xpath      = new DOMXpath($this->doc);
+		$viewLevels = $xpath->query('/contenttype/viewlevels/viewlevel');
+
+		if (count($rows) !== $viewLevels->length)
+		{
+			throw new Exception('Content type: View levels mismatch');
+		}
+
+		$i = 0;
+
+		foreach ($viewLevels as $viewLevel)
+		{
+			$id = (int) $viewLevel->getAttribute('id');
+
+			if (!($id === (int) $rows[$i]['id'] &&
+				(string) $viewLevel->getAttribute('rules') === $rows[$i]['rules']))
+			{
+				throw new Exception('Content type: view level data for ' . $id . ' not the same as server info');
+			}
+			$i++;
 		}
 
 		return false;

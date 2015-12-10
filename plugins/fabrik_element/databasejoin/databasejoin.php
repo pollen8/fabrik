@@ -126,18 +126,6 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		$db = FabrikWorker::getDbo();
 		$listModel = $this->getlistModel();
 		$element = $this->getElement();
-		$tableRow = $listModel->getTable();
-		$joins = $listModel->getJoins();
-
-		foreach ($joins as $tmpJoin)
-		{
-			if ($tmpJoin->element_id == $element->id)
-			{
-				$join = $tmpJoin;
-				break;
-			}
-		}
-
 		$connection = $listModel->getConnection();
 
 		// Make sure same connection as this table
@@ -460,6 +448,12 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		// Try to build the join record (could have been generated from a content type import)
 		$data = array('id' => 0, 'group_id' => $element->get('group_id'));
 		$this->join = $this->updateFabrikJoin($data, $element->get('id'), $this->getDbName(), $this->getJoinValueFieldName(), $this->getLabelParamVal());
+
+		// Rebuild the join aliases.
+		$this->getlistModel()->getJoins();
+		$j = (object) $this->join->getProperties();
+		$j->params = (string) $j->params;
+		$this->getlistModel()->makeJoinAliases($j);
 
 		if ($this->join)
 		{

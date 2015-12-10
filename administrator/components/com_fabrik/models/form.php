@@ -250,7 +250,7 @@ class FabrikAdminModelForm extends FabModelAdmin
 
 		if ($createGroup)
 		{
-			$contentTypeModel->checkInsertFields($contentType);
+			$contentTypeModel->check($contentType);
 		}
 
 		if (empty($groups) && !$isNew)
