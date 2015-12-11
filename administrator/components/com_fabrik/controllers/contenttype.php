@@ -49,7 +49,13 @@ class FabrikAdminControllerContentType extends FabControllerForm
 		$formModel->getGroupView('bootstrap');
 
 		$view->preview();
+		$res = new stdClass;
+		ob_start();
 		$view->output();
+		$res->preview = ob_get_contents();
+		ob_end_clean();
+		$res->aclMap = $model->aclCheckUI();
+		echo json_encode($res);
 		exit;
 	}
 }
