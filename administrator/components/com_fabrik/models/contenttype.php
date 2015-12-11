@@ -65,6 +65,20 @@ class FabrikAdminModelContentType extends FabModelAdmin
 	private $pluginsWithTables = array('databasejoin');
 
 	/**
+	 * This site's view levels
+	 *
+	 * @var array
+	 */
+	private $viewLevels;
+
+	/**
+	 * This site's groups
+	 *
+	 * @var array
+	 */
+	private $groups;
+
+	/**
 	 * Constructor.
 	 *
 	 * @param   array $config An optional associative array of configuration settings.
@@ -160,9 +174,11 @@ class FabrikAdminModelContentType extends FabModelAdmin
 
 		foreach ($groups as $group)
 		{
-			$groupData           = array();
-			$groupData           = $this->domNodeAttributesToArray($group, $groupData);
+			$groupData = array();
+			$groupData = $this->domNodeAttributesToArray($group, $groupData);
+
 			$groupData['params'] = $this->nodeParams($group);
+			$this->mapGroupACL($groupData);
 
 			$isJoin   = ArrayHelper::getValue($groupData, 'is_join', false);
 			$isRepeat = isset($groupData['params']->repeat_group_button) ? $groupData['params']->repeat_group_button : false;
@@ -176,9 +192,10 @@ class FabrikAdminModelContentType extends FabModelAdmin
 				unset($elementData['id']);
 				$elementData['params']   = json_encode($this->nodeParams($element));
 				$elementData['group_id'] = $groupId;
-				$name                    = (string) $element->getAttribute('name');
-				$fields[$name]           = $this->listModel->makeElement($name, $elementData);
-				$elementMap[$oldId]      = $fields[$name]->element->id;
+				$this->mapElementACL($elementData);
+				$name               = (string) $element->getAttribute('name');
+				$fields[$name]      = $this->listModel->makeElement($name, $elementData);
+				$elementMap[$oldId] = $fields[$name]->element->id;
 			}
 
 			$groupIds[] = $groupId;
@@ -189,6 +206,51 @@ class FabrikAdminModelContentType extends FabModelAdmin
 		$this->importTables();
 
 		return $fields;
+	}
+
+	/**
+	 * Map any changes in element ACL parameters
+	 *
+	 * @param   &$data  Element Data
+	 */
+	private function mapElementACL(&$data)
+	{
+		$map            = $this->app->input->get('aclMap', array(), 'array');
+		$params         = array('edit_access', 'view_access', 'list_view_access', 'filter_access', 'sum_access', 'avg_access',
+			'median_access', 'count_access', 'custom_calc_access');
+		$data['access'] = $map[$data['access']];
+		$origParams     = json_decode($data['params']);
+
+		foreach ($params as $param)
+		{
+			if (array_key_exists($origParams->$param, $map))
+			{
+				$origParams->$param = $map[$origParams->$param];
+			}
+		}
+
+		$data['params'] = json_encode($origParams);
+	}
+
+	/**
+	 * Map any ACL changes in group params
+	 *
+	 * @param   &$data
+	 */
+	private function mapGroupACL(&$data)
+	{
+		$map        = $this->app->input->get('aclMap', array(), 'array');
+		$params     = array('access', 'repeat_add_access', 'repeat_delete_access');
+		$origParams = $data['params'];
+
+		foreach ($params as $param)
+		{
+			if (array_key_exists($origParams->$param, $map))
+			{
+				$origParams->$param = $map[$origParams->$param];
+			}
+		}
+
 	}
 
 	/**
@@ -282,9 +344,17 @@ class FabrikAdminModelContentType extends FabModelAdmin
 	{
 		$params = $node->getElementsByTagName('params');
 		$return = new stdClass;
+		$i      = 0;
 
 		foreach ($params as $param)
 		{
+			// Avoid nested descendants when asking for group params
+			if ($i > 0)
+			{
+				continue;
+			}
+
+			$i++;
 			if ($param->hasAttributes())
 			{
 				foreach ($param->attributes as $attr)
@@ -448,8 +518,7 @@ class FabrikAdminModelContentType extends FabModelAdmin
 	public function check($contentType)
 	{
 		$this->loadContentType($contentType);
-		$xpath = new DOMXpath($this->doc);
-		$this->validateViewLevelXML();
+		$xpath    = new DOMXpath($this->doc);
 		$elements = $xpath->query('/contenttype/group/element');
 		$db       = $this->db;
 		$query    = $db->getQuery(true);
@@ -534,6 +603,7 @@ class FabrikAdminModelContentType extends FabModelAdmin
 		}
 		$contentType->appendChild($tables);
 		$contentType->appendChild($this->createViewLevelXML());
+		$contentType->appendChild($this->createGroupXML());
 		$this->doc->appendChild($contentType);
 		$xml  = $this->doc->saveXML();
 		$path = JPATH_COMPONENT_ADMINISTRATOR . '/models/content_types/' . $label . '.xml';
@@ -558,10 +628,7 @@ class FabrikAdminModelContentType extends FabModelAdmin
 	 */
 	private function createViewLevelXML()
 	{
-		$db    = $this->db;
-		$query = $db->getQuery(true);
-		$query->select('*')->from('#__viewlevels');
-		$rows       = $db->setQuery($query)->loadAssocList();
+		$rows       = $this->getViewLevels();
 		$viewLevels = $this->doc->createElement('viewlevels');
 
 		foreach ($rows as $row)
@@ -574,6 +641,63 @@ class FabrikAdminModelContentType extends FabModelAdmin
 	}
 
 	/**
+	 * Create the group ACL info
+	 *
+	 * @return DOMElement
+	 */
+	private function createGroupXML()
+	{
+		$rows   = $this->getGroups();
+		$groups = $this->doc->createElement('groups');
+
+		foreach ($rows as $row)
+		{
+			$group = $this->doc->createElement('group');
+
+			foreach ($row as $key => $value)
+			{
+				$group->setAttribute($key, $value);
+			}
+			$groups->appendChild($group);
+		}
+
+		return $groups;
+	}
+
+	/**
+	 * Get the site's view levels
+	 *
+	 * @return array|mixed
+	 */
+	private function getViewLevels()
+	{
+		if (isset($this->viewLevels))
+		{
+			return $this->viewLevels;
+		}
+
+		$query = $this->db->getQuery(true);
+		$query->select('*')->from('#__viewlevels');
+		$this->viewLevels = $this->db->setQuery($query)->loadAssocList();
+
+		return $this->viewLevels;
+	}
+
+	private function getGroups()
+	{
+		if (isset($this->groups))
+		{
+			return $this->groups;
+		}
+
+		$query = $this->db->getQuery(true);
+		$query->select('*')->from('#__usergroups');
+		$this->groups = $this->db->setQuery($query)->loadAssocList('id');
+
+		return $this->groups;
+	}
+
+	/**
 	 * Ensure that the content type's view level XML matches the site's view levels
 	 *
 	 * @throws Exception
@@ -582,9 +706,7 @@ class FabrikAdminModelContentType extends FabModelAdmin
 	 */
 	private function validateViewLevelXML()
 	{
-		$query = $this->db->getQuery(true);
-		$query->select('*')->from('#__viewlevels');
-		$rows       = $this->db->setQuery($query)->loadAssocList();
+		$rows       = $this->getViewLevels();
 		$xpath      = new DOMXpath($this->doc);
 		$viewLevels = $xpath->query('/contenttype/viewlevels/viewlevel');
 
@@ -600,10 +722,12 @@ class FabrikAdminModelContentType extends FabModelAdmin
 			$id = (int) $viewLevel->getAttribute('id');
 
 			if (!($id === (int) $rows[$i]['id'] &&
-				(string) $viewLevel->getAttribute('rules') === $rows[$i]['rules']))
+				(string) $viewLevel->getAttribute('rules') === $rows[$i]['rules'])
+			)
 			{
 				throw new Exception('Content type: view level data for ' . $id . ' not the same as server info');
 			}
+
 			$i++;
 		}
 
@@ -712,5 +836,87 @@ class FabrikAdminModelContentType extends FabModelAdmin
 
 		// Must exit to produce valid Zip download
 		exit;
+	}
+
+	/**
+	 * Attempt to compare exported ACL setting with the site's existing ACL setting
+	 * 
+	 * @return string
+	 */
+	public function aclCheckUI()
+	{
+		$xpath            = new DOMXpath($this->doc);
+		$importViewLevels = $xpath->query('/contenttype/viewlevels/viewlevel');
+		$importGroups     = $xpath->query('/contenttype/groups/group');
+
+		$contentTypeViewLevels = array();
+		$contentTypeGroups     = array();
+		$alteredGroups         = array();
+
+		foreach ($importGroups as $importGroup)
+		{
+			$group                           = $this->domNodeAttributesToArray($importGroup);
+			$contentTypeGroups[$group['id']] = $group;
+		}
+
+		foreach ($importViewLevels as $importViewLevel)
+		{
+			$viewLevel = $this->domNodeAttributesToArray($importViewLevel);
+			$rules     = json_decode($viewLevel['rules']);
+			foreach ($rules as &$rule)
+			{
+				$rule = array_key_exists($rule, $contentTypeGroups) ? $contentTypeGroups[$rule]['title'] : $rule;
+			}
+			$viewLevel['rules_labels'] = implode(', ', $rules);
+			$contentTypeViewLevels[]   = $viewLevel;
+		}
+
+		$viewLevels = $this->getViewLevels();
+		$groups     = $this->getGroups();
+
+		foreach ($viewLevels as &$viewLevel)
+		{
+			$rules = json_decode($viewLevel['rules']);
+
+			foreach ($rules as &$rule)
+			{
+				$rule = array_key_exists($rule, $groups) ? $groups[$rule]['title'] : $rule;
+			}
+
+			$viewLevel['rules_labels'] = implode(', ', $rules);
+		}
+
+		foreach ($groups as $group)
+		{
+			if (array_key_exists($group['id'], $contentTypeGroups))
+			{
+				$importGroup = $contentTypeGroups[$group['id']];
+
+				if ($group['lft'] !== $importGroup['lft'] || $group['rgt'] !== $importGroup['rgt'] || $group['parent_id'] !== $importGroup['parent_id'])
+				{
+					$alteredGroups[] = $group;
+				}
+			}
+		}
+
+		$layoutData = (object) array(
+			'viewLevels' => $viewLevels,
+			'contentTypeViewLevels' => $contentTypeViewLevels,
+			'match' => true,
+			'groups' => $groups,
+			'importGroups' => $contentTypeGroups,
+			'alteredGroups' => $alteredGroups
+		);
+		try
+		{
+			$this->validateViewLevelXML();
+		} catch (Exception $e)
+		{
+			$layoutData->match = false;
+		}
+
+		$layout = FabrikHelperHTML::getLayout('fabrik-content-type-compare');
+
+		return $layout->render($layoutData);
 	}
 }

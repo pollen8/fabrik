@@ -19,4 +19,12 @@
 		         name="datetme"/>
 
 	</group>
+
+	<viewlevels>
+		<viewlevel id="1" title="Public" ordering="0" rules="[1]"/>
+		<viewlevel id="2" title="Registered" ordering="2" rules="[6,2,8]"/>
+		<viewlevel id="3" title="Special" ordering="3" rules="[6,3,8]"/>
+		<viewlevel id="5" title="Guest" ordering="1" rules="[9]"/>
+		<viewlevel id="6" title="Super Users" ordering="4" rules="[8]"/>
+	</viewlevels>
 </contenttype>
