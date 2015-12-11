@@ -840,7 +840,7 @@ class FabrikAdminModelContentType extends FabModelAdmin
 
 	/**
 	 * Attempt to compare exported ACL setting with the site's existing ACL setting
-	 * 
+	 *
 	 * @return string
 	 */
 	public function aclCheckUI()
