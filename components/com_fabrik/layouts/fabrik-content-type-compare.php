@@ -43,7 +43,7 @@ else:
 	</div>
 
 	<div class="alert alert-info"><span class="icon-question"></span>
-		Please select the most appropriate view level and we will update the imported element ACL to match
+		Please select the most appropriate view level and we will update the imported group and element ACL to match
 	</div>
 
 	<table class="table table-striped">
