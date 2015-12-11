@@ -582,6 +582,11 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		// $$$ rob 18/06/2012 cache the option vals on a per query basis (was previously incwhere but this was not ok
 		// for auto-completes in repeating groups
 		$sql = $this->buildQuery($data, $incWhere, $opts);
+
+		if (!$sql)
+		{
+			return array();
+		}
 		$sqlKey = (string) $sql;
 
 		if (isset($this->optionVals[$sqlKey]))
@@ -2422,6 +2427,10 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		$join = $this->getJoin();
 		$db = FabrikWorker::getDbo();
 
+		if ((string) $join->table_join_alias === '')
+		{
+			return '';
+		}
 		return $db->qn($join->table_join_alias . '.' . $this->getJoinValueFieldName());
 	}
 
@@ -3219,6 +3228,11 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 
 		$db = $this->getDb();
 		$query = $this->buildQuery(array(), false);
+
+		if (!$query)
+		{
+			return '';
+		}
 		$key = $this->getJoinValueColumn();
 		$query->clear('where');
 
