@@ -633,6 +633,12 @@ class FabrikAdminModelContentType extends FabModelAdmin
 				continue;
 			}
 
+			// Ensure elements are never listed as children.
+			if ($key === 'parent_id')
+			{
+				$value = '0';
+			}
+
 			if ($key === 'params')
 			{
 				$params = json_decode($value);
@@ -645,11 +651,6 @@ class FabrikAdminModelContentType extends FabModelAdmin
 						continue;
 					}
 
-					// Ensure elements are never listed as children.
-					if ($pKey === 'parent_id')
-					{
-						$pValue = '0';
-					}
 					if (is_string($pValue) || is_numeric($pValue))
 					{
 						$p->setAttribute($pKey, $pValue);
