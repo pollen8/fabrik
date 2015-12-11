@@ -1047,7 +1047,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		}
 
 		$curr_f_ext = String::strtolower(JFile::getExt($myFileName));
-		array_walk($aFileTypes, create_function('&$v', '$v = String::strtolower($v);'));
+		array_walk($aFileTypes, create_function('&$v', '$v = Joomla\String\String::strtolower($v);'));
 
 		return in_array($curr_f_ext, $aFileTypes);
 	}
