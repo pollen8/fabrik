@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
-<contenttype>
+<contenttype
+	ignoreacl="true">
 	<name>Default</name>
 
 	<group name="details"

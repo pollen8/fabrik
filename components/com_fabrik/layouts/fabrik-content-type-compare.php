@@ -17,8 +17,8 @@ $max = max(count($viewLevels), count($contentTypeViewLevels));
 	<hr />
 <?php if (!empty($d->alteredGroups)) : ?>
 	<div class="alert alert-warning"><span class="icon-stack"></span>
-		<strong>Groups hierarchy mismatch.</strong> You can continue to save, but do check that your form behaves as expected.<hr />
-		<p>The following groups are affected:</p>
+		<?php echo JText::_('COM_FABRIK_CONTENT_TYPE_ACL_GROUP_MISMATCH'); ?><hr />
+		<p><?php echo JText::_('COM_FABRIK_CONTENT_TYPE_ACL_GROUP_MISMATCH_FOLLOWING'); ?></p>
 		<div class="">
 			<?php
 
@@ -34,24 +34,26 @@ endif;?>
 <?php
 if ($d->match) :
 	?>
-	<div class="alert alert-info"><span class="icon-ok"></span> ACL Matched</div>
+	<div class="alert alert-info"><span class="icon-ok"></span>
+		<?php echo JText::_('COM_FABRIK_CONTENT_TYPE_ACL_MATCH'); ?>
+	</div>
 	<?php
 else:
 	?>
 	<div class="alert alert-warning"><span class="icon-warning"></span>
-		<strong>ACL mismatch</strong> The content type you are importing contains an access level which does not existing in your site.
+		<?php echo JText::_('COM_FABRIK_CONTENT_TYPE_ACL_MISMATCH'); ?>
 	</div>
 
 	<div class="alert alert-info"><span class="icon-question"></span>
-		Please select the most appropriate view level and we will update the imported group and element ACL to match
+		<?php echo JText::_('COM_FABRIK_CONTENT_TYPE_ACL_MISMATCH_INFO'); ?>
 	</div>
 
 	<table class="table table-striped">
 		<thead>
 		<tr>
-			<th>Content Type Access level</th>
-			<th class="muted">Groups</th>
-			<th>Site Access level</th>
+			<th><?php echo JText::_('COM_FABRIK_CONTENT_TYPE_ACCESS_LEVEL'); ?></th>
+			<th class="muted"><?php echo JText::_('COM_FABRIK_GROUPS'); ?></th>
+			<th><?php echo JText::_('COM_FABRIK_CONTENT_TYPE_SITE_ACCESS_LEVEL'); ?></th>
 		</tr>
 		<tbody>
 		<?php

@@ -846,6 +846,7 @@ class FabrikAdminModelContentType extends FabModelAdmin
 	public function aclCheckUI()
 	{
 		$xpath            = new DOMXpath($this->doc);
+		$parent           = $xpath->query('/contenttype');
 		$importViewLevels = $xpath->query('/contenttype/viewlevels/viewlevel');
 		$importGroups     = $xpath->query('/contenttype/groups/group');
 
@@ -913,6 +914,11 @@ class FabrikAdminModelContentType extends FabModelAdmin
 		} catch (Exception $e)
 		{
 			$layoutData->match = false;
+		}
+
+		if ($parent[0]->getAttribute('ignoreacl') === 'true')
+		{
+			$layoutData->match = true;
 		}
 
 		$layout = FabrikHelperHTML::getLayout('fabrik-content-type-compare');
