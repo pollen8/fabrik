@@ -1753,8 +1753,8 @@ var FbForm = new Class({
 				var testid = (hasSubElements && container) ? container.id : input.id;
 				var cloneName = el.getCloneName();
 
-				// Looser test that previous === to catch db join rendered as checkbox
-				if (testid.contains(cloneName)) {
+				// Test ===, plus special case for join rendered as auto-complete
+				if (testid === cloneName || testid === cloneName + '-auto-complete') {
 					lastinput = input;
 					formElementFound = true;
 
