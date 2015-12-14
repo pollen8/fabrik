@@ -782,6 +782,12 @@ var FbList = new Class({
 			this.form.getElement('input[name=format]').value = 'raw';
 
 			var data = this.form.toQueryString();
+			
+			if (task === 'list.doPlugin') {
+				data += '&setListRefFromRequest=1';	
+				data += '&listref=' + this.options.listRef;
+			}
+			
 			if (task === 'list.filter' && this.advancedSearch !== false) {
 				var advSearchForm = document.getElement('form.advancedSeach_' + this.options.listRef);
 				if (typeOf(advSearchForm) !== 'null') {

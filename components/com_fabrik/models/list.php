@@ -10864,7 +10864,7 @@ class FabrikFEModelList extends JModelForm
 		else
 		{
 			$task = $input->getString('task');
-			if ((($task == 'list.view' || $task == 'list.delete' || $task === 'view') && $input->get('format') == 'raw')
+			if ((($task == 'list.view' || $task == 'list.delete' || $task === 'view' || $task == 'list.doPlugin') && $input->get('format') == 'raw')
 				|| $input->get('layout') == '_advancedsearch' || $task === 'list.elementFilter'
 				|| $input->get('setListRefFromRequest') == 1)
 			{
