@@ -78,6 +78,8 @@ class FabrikAdminModelContentType extends FabModelAdmin
 	 */
 	private $groups;
 
+	private static $exportedTables = array();
+
 	/**
 	 * Constructor.
 	 *
@@ -552,10 +554,6 @@ class FabrikAdminModelContentType extends FabModelAdmin
 	 */
 	public function create($formModel)
 	{
-		//$db          = $this->db;
-		//$exporter    = $db->getExporter();
-		$exporter = $importer = new JDatabaseExporterMysqli2;
-		$exporter->setDbo($this->db);
 		$contentType = $this->doc->createElement('contenttype');
 		$tables      = $this->doc->createElement('database');
 		$label       = JFile::makeSafe($formModel->getForm()->get('label'));
@@ -565,9 +563,20 @@ class FabrikAdminModelContentType extends FabModelAdmin
 
 		foreach ($groups as $groupModel)
 		{
-			$groupData     = $groupModel->getGroup()->getProperties();
+			$groupData = $groupModel->getGroup()->getProperties();
+
 			$group         = $this->buildExportNode('group', $groupData);
 			$elementModels = $groupModel->getMyElements();
+
+			if ($groupData['is_join'] === '1')
+			{
+				$join = FabTable::getInstance('Join', 'FabrikTable');
+				$join->load($groupData['join_id']);
+				$this->createTableXML($tables, $join->get('table_join'));
+				$this->createTableXML($tables, $join->get('join_from_table'));
+				$groupJoin = $this->buildExportNode('join', $join->getProperties(), array('id'));
+				$group->appendChild($groupJoin);
+			}
 
 			foreach ($elementModels as $elementModel)
 			{
@@ -582,25 +591,17 @@ class FabrikAdminModelContentType extends FabModelAdmin
 				if (in_array($elementData['plugin'], $this->pluginsWithTables))
 				{
 					$elementParams = new Registry($elementData['params']);
-					$exporter->from($elementParams->get('join_db_name'));
-					$tableDoc = new DOMDocument();
-					$tableDoc->loadXML((string) $exporter);
-					$structures = $tableDoc->getElementsByTagName('table_structure');
-
-					foreach ($structures as $table)
-					{
-						$table = $this->doc->importNode($table, true);
-						$tables->appendChild($table);
-					}
+					$this->createTableXML($tables, $elementParams->get('join_db_name'));
 				};
 
 				$element = $this->buildExportNode('element', $elementData);
 				$group->appendChild($element);
+
 			}
 
 			$contentType->appendChild($group);
-
 		}
+
 		$contentType->appendChild($tables);
 		$contentType->appendChild($this->createViewLevelXML());
 		$contentType->appendChild($this->createGroupXML());
@@ -619,6 +620,37 @@ class FabrikAdminModelContentType extends FabModelAdmin
 		}
 
 		return false;
+	}
+
+	/**
+	 * Create XML for table import
+	 *
+	 * @param   DOMElement $tables    Parent node to attach xml to
+	 * @param   string     $tableName Table name to export
+	 *
+	 * @throws Exception
+	 */
+	private function createTableXML(&$tables, $tableName)
+	{
+		if (in_array($tableName, self::$exportedTables))
+		{
+			return;
+		}
+
+		self::$exportedTables[] = $tableName;
+		//$exporter    = $this->db->getExporter();
+		$exporter = new JDatabaseExporterMysqli2;
+		$exporter->setDbo($this->db);
+		$exporter->from($tableName);
+		$tableDoc = new DOMDocument();
+		$tableDoc->loadXML((string) $exporter);
+		$structures = $tableDoc->getElementsByTagName('table_structure');
+
+		foreach ($structures as $table)
+		{
+			$table = $this->doc->importNode($table, true);
+			$tables->appendChild($table);
+		}
 	}
 
 	/**
