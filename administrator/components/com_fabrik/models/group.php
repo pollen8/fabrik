@@ -101,7 +101,7 @@ class FabrikAdminModelGroup extends FabModelAdmin
 		}
 
 		JArrayHelper::toInteger($ids);
-		$db    = FabrikWorker::getDbo();
+		$db    = FabrikWorker::getDbo(true);
 		$query = $db->getQuery(true);
 		$query->select('group_id')->from('#__{package}_formgroup')->where('form_id IN (' . implode(',', $ids) . ')');
 		$db->setQuery($query);
