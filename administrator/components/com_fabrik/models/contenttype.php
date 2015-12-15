@@ -367,15 +367,15 @@ class FabrikAdminModelContentType extends FabModelAdmin
 	 * For group joins, the list id is not available. The join is thus finalised in
 	 * finaliseImport()
 	 *
-	 * @param   array $groupMap    array(oldGroupId => newGroupId)
-	 * @param   array $elementMap  array(oldElementId => newElementId)
+	 * @param   array $groupMap   array(oldGroupId => newGroupId)
+	 * @param   array $elementMap array(oldElementId => newElementId)
 	 *
 	 * @return  void
 	 */
 	private function importJoins($groupMap, $elementMap)
 	{
-		$xpath  = new DOMXpath($this->doc);
-		$joins = $xpath->query('/contenttype/group[join]/join');
+		$xpath    = new DOMXpath($this->doc);
+		$joins    = $xpath->query('/contenttype/group[join]/join');
 		$elements = $xpath->query('/contenttype/group/element[join]/join');
 
 		foreach ($joins as $join)
@@ -389,16 +389,15 @@ class FabrikAdminModelContentType extends FabModelAdmin
 			$joinTable->save($joinData);
 			$this->joinIds[] = $joinTable->get('id');
 		}
+
 		foreach ($elements as $join)
 		{
-			print_r( $this->domNodeAttributesToArray($join));
 			$oldElementId = (string) $join->getAttribute('element_id');
-			$newId = $elementMap[$oldElementId];
+			$newId        = $elementMap[$oldElementId];
 			$join->setAttribute('element_id', $newId);
 			$joinData           = $this->domNodeAttributesToArray($join);
 			$joinData['params'] = json_encode($this->nodeParams($join));
-			$joinTable = FabTable::getInstance('Join', 'FabrikTable');
-			//$joinTable->load(array('element_id' => $oldElementId));
+			$joinTable          = FabTable::getInstance('Join', 'FabrikTable');
 			$joinTable->save($joinData);
 		}
 	}
@@ -407,7 +406,7 @@ class FabrikAdminModelContentType extends FabModelAdmin
 	 * Called at the end of a list save.
 	 * Update the created joins with the created list's id and db_table_name
 	 *
-	 * @param   FabrikTableList  $row  List data
+	 * @param   FabrikTableList $row List data
 	 *
 	 * @return  void
 	 */
@@ -456,6 +455,7 @@ class FabrikAdminModelContentType extends FabModelAdmin
 					{
 						$value = json_decode($value);
 					}
+
 					$return->$name = $value;
 				}
 			}
