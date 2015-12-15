@@ -6086,6 +6086,8 @@ class FabrikFEModelList extends JModelForm
 					$f->label = $filter->label;
 					$f->element = $filter->filter;
 					$f->required = array_key_exists('required', $filter) ? $filter->required : '';
+					$f->displayValue = is_array($filter->displayValue) ? implode(', ', $filter->displayValue) :
+							$filter->displayValue;
 					$this->viewfilters[$filter->name] = $f;
 				}
 			}
@@ -6194,6 +6196,7 @@ class FabrikFEModelList extends JModelForm
 						$fScript .= $elementModel->filterJS(true, $container);
 						$o->required = $elementModel->getParams()->get('filter_required');
 						$o->label = $elementModel->getListHeading();
+						$o->displayValue = $elementModel->filterDisplayValues;
 						$aFilters[] = $o;
 						$counter++;
 					}
@@ -6227,6 +6230,7 @@ class FabrikFEModelList extends JModelForm
 
 				$o->name = FabrikString::safeColNameToArrayKey($filters['key'][$i]);
 				$o->label = $filters['label'][$i];
+				$o->displayValue = $elementModel->filterDisplayValues;
 				$aFilters[] = $o;
 				$counter++;
 			}

@@ -2132,11 +2132,10 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		$params = $this->getParams();
 		$element = $this->getElement();
 		$elName = $this->getFilterFullName();
-		$htmlId = $this->getHTMLId() . 'value';
 		$v = $this->filterName($counter, $normal);
 		$return = array();
-		$class = $this->filterClass();
 		$default = $this->getDefaultFilterVal($normal, $counter);
+		$this->filterDisplayValues = array($default);
 		$rows = array();
 
 		if (in_array($element->filter_type, array('range', 'dropdown', '', 'checkbox', 'multiselect')))
@@ -2150,6 +2149,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 				$r->text = strip_tags($r->text);
 			}
 
+			$this->getFilterDisplayValues($default, $rows);
 			$this->unmergeFilterSplits($rows);
 			$this->reapplyFilterLabels($rows);
 
@@ -2159,35 +2159,26 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 			}
 		}
 
-		$size = $params->get('filter_length', 20);
-
 		switch ($element->filter_type)
 		{
 			case 'checkbox':
 				$return[] = $this->checkboxFilter($rows, $default, $v);
 				break;
 			case 'dropdown':
-				$advancedClass = $this->getAdvancedSelectClass();
-				$class .= !empty($advancedClass) ? ' ' . $advancedClass : '';
 			default:
 			case '':
 			case 'multiselect':
-				$max = count($rows) < 7 ? count($rows) : 7;
-				$size = $element->filter_type === 'multiselect' ? 'multiple="multiple" size="' . $max . '"' : 'size="1"';
-				$v = $element->filter_type === 'multiselect' ? $v . '[]' : $v;
 				$this->addSpaceToEmptyLabels($rows, 'text');
-				$return[] = JHTML::_('select.genericlist', $rows, $v, 'class="' . $class . '" ' . $size, "value", 'text', $default, $htmlId);
+				$return[] = $this->selectFilter($rows, $default, $v);
 				break;
 
-			case "field":
-				$return[] = '<input type="text" class="' . $class . '" name="' . $v . '" value="' . $default . '" size="' . $size . '" id="'
-					. $htmlId . '" />';
+			case 'field':
+					$return[] = $this->singleFilter($default, $v);
 					$return[] = $this->filterHiddenFields();
 					break;
 
-			case "hidden":
-				$return[] = '<input type="hidden" class="' . $class . '" name="' . $v . '" value="' . $default . '" size="' . $size
-				. '" id="' . $htmlId . '" />';
+			case 'hidden':
+				$return[] = $this->singleFilter($default, $v, 'hidden');
 				$return[] = $this->filterHiddenFields();
 				break;
 			case 'auto-complete':

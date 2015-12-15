@@ -89,4 +89,24 @@ class FabrikViewList extends FabrikViewListBase
 
 		return $layout->render($displayData);
 	}
+
+	/**
+	 * Create and render layout of the list's filters
+	 *
+	 * @return string
+	 */
+	public function layoutFilters()
+	{
+		$displayData = new stdClass;
+		$displayData->filterMode = $this->filterMode;
+		$displayData->toggleFilters = $this->toggleFilters;
+		$displayData->filterCols = $this->filterCols;
+		$displayData->showClearFilters = $this->showClearFilters;
+		$displayData->filters = $this->filters;
+		$displayData->filter_action = $this->filter_action;
+		$layoutFile =  $this->filterMode === 5 ? 'fabrik-filters-modal' : 'fabrik-filters';
+		$layout = FabrikHelperHTML::getLayout('list.' . $layoutFile);
+
+		return $layout->render($displayData);
+	}
 }

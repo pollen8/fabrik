@@ -144,12 +144,12 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 					{
 						$detailValue = $month . '.' . $day . '.' . $year;
 					}
-					
+
 					if ($fd == 'd/m/Y')
 					{
 						$detailValue = $day . '/' . $month . '/' . $year;
 					}
-					
+
 					if ($fd == 'D. month YYYY')
 					{
 						$detailValue = $dayDisplay . '. ' . $monthDisplay . ' ' . $year;
@@ -720,6 +720,8 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 			$layoutData->months = $this->_monthOptions();
 			$layoutData->years =  $this->_yearOptions();
 			$layoutData->default = (array) $this->getDefaultFilterVal($normal, $counter);
+			$layoutData->elementName = $this->getFullName(true, false);
+			$this->filterDisplayValues = array($layoutData->default);
 
 			$return = array();
 			$return[] = $layout->render($layoutData);

@@ -1374,6 +1374,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 
 		// Correct default got
 		$default = $this->getDefaultFilterVal($normal, $counter);
+		$this->filterDisplayValues = array($default);
 
 		// $$$ hugh - in advanced search, _aJoins wasn't getting set
 		$joins = $listModel->getJoins();
@@ -1408,6 +1409,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 		if (in_array($fType, array('dropdown', 'checkbox', 'multiselect')))
 		{
 			$rows = $this->filterValueList($normal);
+			$this->getFilterDisplayValues($default, $rows);
 		}
 
 		$return = array();
@@ -1611,12 +1613,14 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 	}
 
 	/**
+	 * Create a input type field filter
+	 *
 	 * @param $default
 	 * @param $v
 	 *
 	 * @return string  filter
 	 */
-	protected function singleFilter($default, $v)
+	protected function singleFilter($default, $v, $type = 'text')
 	{
 		$params = $this->getParams();
 		$format = $params->get('date_table_format', 'Y-m-d');
@@ -1640,7 +1644,8 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 		$from->value     = $default;
 		$from->name      = $v;
 
-		$imageOpts = $displayData->j3 ? array('alt' => 'calendar') : array('alt' => 'calendar', 'class' => 'calendarbutton', 'id' => $from->id . '_cal_img');
+		$imageOpts = $displayData->j3 ? array('alt' => 'calendar') : array('alt' => 'calendar',
+				'class' => 'calendarbutton', 'id' => $from->id . '_cal_img');
 		$from->img = FabrikHelperHTML::image('calendar.png', 'form', @$this->tmpl, $imageOpts);
 
 		$displayData->from = $from;
