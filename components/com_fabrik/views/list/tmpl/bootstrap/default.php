@@ -46,7 +46,7 @@ if ($this->hasButtons):
 endif;
 
 if ($this->showFilters && $this->bootShowFilters) :
-	echo $this->loadTemplate('filter');
+	echo $this->layoutFilters();
 endif;
 //for some really ODD reason loading the headings template inside the group
 //template causes an error as $this->_path['template'] doesn't contain the correct

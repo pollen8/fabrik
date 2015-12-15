@@ -11,6 +11,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\Utilities\ArrayHelper;
+
 jimport('joomla.application.component.model');
 jimport('joomla.filesystem.file');
 
@@ -253,6 +255,12 @@ class PlgFabrik_Element extends FabrikPlugin
 	 * @var FabrikFEModelElementValidator
 	 */
 	public $validator;
+
+	/**
+	 * Selected filter value labels
+	 * @var array
+	 */
+	public $filterDisplayValues = array();
 
 	/**
 	 * Constructor
@@ -3111,11 +3119,11 @@ class PlgFabrik_Element extends FabrikPlugin
 
 		$element = $this->getElement();
 		$elName = $this->getFullName(true, false);
-		$id = $this->getHTMLId() . 'value';
 		$v = $this->filterName($counter, $normal);
 
 		// Correct default got
 		$default = $this->getDefaultFilterVal($normal, $counter);
+		$this->filterDisplayValues = array($default);
 		$return = array();
 
 		if (in_array($element->filter_type, array('range', 'dropdown', 'checkbox', 'multiselect')))
@@ -3127,10 +3135,9 @@ class PlgFabrik_Element extends FabrikPlugin
 			{
 				array_unshift($rows, JHTML::_('select.option', '', $this->filterSelectLabel()));
 			}
-		}
 
-		$size = (int) $this->getParams()->get('filter_length', 20);
-		$class = $this->filterClass();
+			$this->getFilterDisplayValues($default, $rows);
+		}
 
 		switch ($element->filter_type)
 		{
@@ -3142,36 +3149,12 @@ class PlgFabrik_Element extends FabrikPlugin
 				break;
 			case 'dropdown':
 			case 'multiselect':
-				$max = count($rows) < 7 ? count($rows) : 7;
-				$size = $element->filter_type === 'multiselect' ? 'multiple="multiple" size="' . $max . '"' : 'size="1"';
-				$v = $element->filter_type === 'multiselect' ? $v . '[]' : $v;
-				$return[] = JHTML::_('select.genericlist', $rows, $v, 'class="' . $class . '" ' . $size, 'value', 'text', $default, $id);
+				$return[] = $this->selectFilter($rows, $default, $v);
 				break;
 
 			case 'field':
 			default:
-
-				/**
-				 * $$$ hugh - in some really freaky corner case(s), a ranged filter in advanced search winds up here.
-				 * I know I should track these cases down and fix the underlying cause, but right now I just need to make
-				 * an error go away, amd I've already spent 2 hours naging my head on this.  So if $default is as array,
-				 * fire it off to rangedFilterFields()!
-				 */
-
-				if (is_array($default))
-				{
-					// $$$ ack phffft, $rows doesn't exist, just ignore the damn thing for now.  Grrrrr.
-					//$this->rangedFilterFields($default, $return, $rows, $v, 'list');
-				}
-				else
-				{
-					// $$$ rob - if searching on "O'Fallon" from querystring filter the string has slashes added regardless
-					$default = (string) $default;
-					$default = stripslashes($default);
-					$default = htmlspecialchars($default);
-					$return[] = '<input type="text" name="' . $v . '" class="' . $class . '" size="' . $size . '" value="' . $default . '" id="'
-							. $id . '" />';
-				}
+				$return[] = $this->singleFilter($default, $v);
 				break;
 
 			case 'hidden':
@@ -3181,9 +3164,7 @@ class PlgFabrik_Element extends FabrikPlugin
 				}
 				else
 				{
-					$default = stripslashes($default);
-					$default = htmlspecialchars($default);
-					$return[] = '<input type="hidden" name="' . $v . '" class="' . $class . '" value="' . $default . '" id="' . $id . '" />';
+					$return[] = $this->singleFilter($default, $v, 'hidden');
 				}
 
 				break;
@@ -3197,6 +3178,57 @@ class PlgFabrik_Element extends FabrikPlugin
 		$return[] = $normal ? $this->getFilterHiddenFields($counter, $elName, false, $normal) : $this->getAdvancedFilterHiddenFields();
 
 		return implode("\n", $return);
+	}
+
+	/**
+	 * Build a select list filter
+	 * @param $rows
+	 * @param $default
+	 * @param $v
+	 *
+	 * @return mixed
+	 */
+	protected function selectFilter($rows, $default, $v)
+	{
+		$class = $this->filterClass();
+		$element = $this->getElement();
+		$id = $this->getHTMLId() . 'value';
+
+		if ($element->filter_type === 'dropdown')
+		{
+			$advancedClass = $this->getAdvancedSelectClass();
+			$class .= !empty($advancedClass) ? ' ' . $advancedClass : '';
+		}
+
+		$max = count($rows) < 7 ? count($rows) : 7;
+		$size = $element->filter_type === 'multiselect' ? 'multiple="multiple" size="' . $max . '"' : 'size="1"';
+		$v = $element->filter_type === 'multiselect' ? $v . '[]' : $v;
+		$data = 'data-filter-name="' . $this->getFullName(true, false) . '"';
+
+		return JHTML::_('select.genericlist', $rows, $v, 'class="' . $class . '" ' . $size . ' ' . $data, 'value', 'text', $default, $id);
+	}
+	/**
+	 * Get the labels for the filter values
+	 *
+	 * @param   array|string  $default
+	 * @param   array         $rows
+	 *
+	 * @return  array
+	 */
+	protected function getFilterDisplayValues($default, $rows)
+	{
+		$default = (array) $default;
+		$this->filterDisplayValues = array();
+
+		foreach ($rows as $row)
+		{
+			if (in_array($row->value, $default) && $row->value != '')
+			{
+				$this->filterDisplayValues[] = $row->text;
+			}
+		}
+
+		return $this->filterDisplayValues;
 	}
 
 	/**
@@ -3246,6 +3278,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		$displayData->values = $values;
 		$displayData->labels = $labels;
 		$displayData->default = $default;
+		$displayData->elementName = $this->getFullName(true, false);
 		$displayData->name = $v;
 		$res = $layout->render($displayData);
 
@@ -3278,6 +3311,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		$element = $this->getElement();
 		$class = $this->filterClass();
 		$attributes = 'class="' . $class . '" size="1" ';
+		$attributes .= 'data-filter-name="' . $this->getFullName(true, false) . '"';
 		$default = (array) $default;
 
 		if (count($default) === 1)
@@ -3298,9 +3332,35 @@ class PlgFabrik_Element extends FabrikPlugin
 		}
 		else
 		{
-			$return[] = '<input type="hidden" class="' . $class . '" name="' . $v . '[0]" value="' . $def0 . '" id="' . $element->name . '_filter_range_0" />';
-			$return[] = '<input type="hidden" class="' . $class . '" name="' . $v . '[1]" value="' . $def1 . '" id="' . $element->name . '_filter_range_1" />';
+			$return[] = '<input type="hidden" data-filter-name="' . $this->getFullName(true, false) . '" class="' .
+					$class . '" name="' . $v . '[0]" value="' . $def0 . '" id="' . $element->name . '_filter_range_0" />';
+			$return[] = '<input type="hidden" data-filter-name="' . $this->getFullName(true, false) . '" class="' .
+					$class . '" name="' . $v . '[1]" value="' . $def1 . '" id="' . $element->name . '_filter_range_1" />';
 		}
+	}
+
+	/**
+	 * Create a input type text/hidden filter
+	 *
+	 * @param   string  $default  Value
+	 * @param   string  $v        Filter name
+	 * @param   string  $type     Type: 'text' or 'hidden'
+	 *
+	 * @return string  filter
+	 */
+	protected function singleFilter($default, $v, $type = 'text')
+	{
+		// $$$ rob - if searching on "O'Fallon" from querystring filter the string has slashes added regardless
+		$default = (string) $default;
+		$default = stripslashes($default);
+		$default = htmlspecialchars($default);
+		$size = (int) $this->getParams()->get('filter_length', 20);
+		$class = $this->filterClass();
+		$id = $this->getHTMLId() . 'value';
+
+		return '<input type="' . $type . '" data-filter-name="' . $this->getFullName(true, false) .
+				'" name="' . $v . '" class="' . $class . '" size="' . $size . '" value="' . $default . '" id="'
+				. $id . '" />';
 	}
 
 	/**
@@ -3332,8 +3392,9 @@ class PlgFabrik_Element extends FabrikPlugin
 		 * showing and not produce invalid html & duplicate js calls
 		*/
 		$return = array();
-		$return[] = '<input type="hidden" name="' . $v . '" class="' . $class . ' ' . $id . '" value="' . $default . '" />';
-		$return[] = '<input type="text" name="' . 'auto-complete' . $this->getElement()->id . '" class="' . $class . ' autocomplete-trigger '
+		$return[] = '<input type="hidden" " data-filter-name="' . $this->getFullName(true, false) .
+				'" name="' . $v . '" class="' . $class . ' ' . $id . '" value="' . $default . '" />';
+		$return[] = '<input type="text" name="auto-complete' . $this->getElement()->id . '" class="' . $class . ' autocomplete-trigger '
 				. $id . '-auto-complete" size="' . $size . '" value="' . $labelValue . '" />';
 		$opts = array();
 

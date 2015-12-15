@@ -341,10 +341,9 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 		$element = $this->getElement();
 		$values = $this->getSubOptionValues();
 		$default = $this->getDefaultFilterVal($normal, $counter);
+		$this->filterDisplayValues = array($default);
 		$elName = $this->getFullName(true, false);
-		$htmlId = $this->getHTMLId() . 'value';
 		$params = $this->getParams();
-		$class = $this->filterClass();
 		$v = $this->filterName($counter, $normal);
 
 		if (in_array($element->filter_type, array('range', 'dropdown', '', 'checkbox', 'multiselect')))
@@ -356,28 +355,26 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 				JArrayHelper::sortObjects($rows, $params->get('filter_groupby', 'text'));
 			}
 
+			$this->getFilterDisplayValues($default, $rows);
+
 			if (!in_array('', $values) && !in_array($element->filter_type, array('checkbox', 'multiselect')))
 			{
 				array_unshift($rows, JHTML::_('select.option', '', $this->filterSelectLabel()));
 			}
 		}
 
-		$attributes = 'class="' . $class . '" size="1" ';
-		$size = $params->get('filter_length', 20);
 		$return = array();
 
 		switch ($element->filter_type)
 		{
 			case 'range':
+
 				if (!is_array($default))
 				{
 					$default = array('', '');
 				}
 
-				$return[] = JHTML::_('select.genericlist', $rows, $v . '[]', $attributes, 'value', 'text', $default[0],
-					$element->name . "_filter_range_0");
-				$return[] = JHTML::_('select.genericlist', $rows, $v . '[]', $attributes, 'value', 'text', $default[1],
-					$element->name . "_filter_range_1");
+				$this->rangedFilterFields($default, $return, $rows, $v, 'list');
 				break;
 			case 'checkbox':
 				$return[] = $this->checkboxFilter($rows, $default, $v);
@@ -385,31 +382,15 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 			case 'dropdown':
 			case 'multiselect':
 			default:
-				$size = $element->filter_type === 'multiselect' ? 'multiple="multiple" size="7"' : 'size="1"';
-				$attributes = 'class="' . $class . '" ' . $size;
-				$v = $element->filter_type === 'multiselect' ? $v . '[]' : $v;
-				$return[] = JHTML::_('select.genericlist', $rows, $v, $attributes, 'value', 'text', $default, $htmlId);
+				$return[] = $this->selectFilter($rows, $default, $v);
 				break;
 
 			case 'field':
-				if (get_magic_quotes_gpc())
-				{
-					$default = stripslashes($default);
-				}
-
-				$default = htmlspecialchars($default);
-				$return[] = '<input type="text" name="' . $v . '" class="' . $class . '" size="' . $size . '" value="' . $default . '" id="'
-					. $htmlId . '" />';
+				$return[] = $this->singleFilter($default, $v);
 				break;
 
 			case 'hidden':
-				if (get_magic_quotes_gpc())
-				{
-					$default = stripslashes($default);
-				}
-
-				$default = htmlspecialchars($default);
-				$return[] = '<input type="hidden" name="' . $v . '" class="' . $class . '" value="' . $default . '" id="' . $htmlId . '" />';
+				$return[] = $this->singleFilter($default, $v, 'hidden');
 				break;
 
 			case 'auto-complete':

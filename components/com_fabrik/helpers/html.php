@@ -2052,21 +2052,24 @@ EOD;
 	/**
 	 * Build array of items for use in grid()
 	 *
-	 * @param   array  $values             Option values
-	 * @param   array  $labels             Option labels
-	 * @param   array  $selected           Selected options
-	 * @param   string $name               Input name
-	 * @param   string $type               Checkbox/radio etc
-	 * @param   bool   $elementBeforeLabel Element before or after the label - deprecated - not used in Joomla 3
-	 * @param   array  $classes            Label classes
-	 * @param   bool   $buttonGroup        Should it be rendered as a bootstrap button group (radio only)
+	 * @param   array  $values               Option values
+	 * @param   array  $labels               Option labels
+	 * @param   array  $selected             Selected options
+	 * @param   string $name                 Input name
+	 * @param   string $type                 Checkbox/radio etc
+	 * @param   bool   $elementBeforeLabel   Element before or after the label - deprecated - not used in Joomla 3
+	 * @param   array  $classes              Label classes
+	 * @param   bool   $buttonGroup          Should it be rendered as a bootstrap button group (radio only)
+	 * @param   array  $inputDataAttributes  Input data attributes e.g. array('data-foo="bar")
+
 	 *
 	 * @return  array  Grid items
 	 */
 	public static function gridItems($values, $labels, $selected, $name, $type = 'checkbox',
-		$elementBeforeLabel = true, $classes = array(), $buttonGroup = false)
+		$elementBeforeLabel = true, $classes = array(), $buttonGroup = false, $inputDataAttributes = array())
 	{
 		$items = array();
+		$inputDataAttributes = implode(' ', $inputDataAttributes);
 
 		for ($i = 0; $i < count($values); $i++)
 		{
@@ -2083,10 +2086,12 @@ EOD;
 				$inputClass .= ' ' . implode(' ', $classes['input']);
 			}
 
-			$chx = '<input type="' . $type . '" class="fabrikinput ' . $inputClass . '" name="' . $thisName . '" value="' . $value . '" ';
+			$chx = '<input type="' . $type . '" class="fabrikinput ' . $inputClass . '" ' . $inputDataAttributes .
+					' name="' . $thisName . '" value="' . $value . '" ';
 			$sel = in_array($values[$i], $selected);
 			$chx .= $sel ? ' checked="checked" />' : ' />';
 			$labelClass = FabrikWorker::j3() && !$buttonGroup ? $type : '';
+
 			if (array_key_exists('label', $classes))
 			{
 				$labelClass .= ' ' . implode(' ', $classes['label']);
@@ -2104,21 +2109,23 @@ EOD;
 	/**
 	 * Make a grid of items
 	 *
-	 * @param   array  $values             Option values
-	 * @param   array  $labels             Option labels
-	 * @param   array  $selected           Selected options
-	 * @param   string $name               Input name
-	 * @param   string $type               Checkbox/radio etc.
-	 * @param   bool   $elementBeforeLabel Element before or after the label - deprecated - not used in Joomla 3
-	 * @param   int    $optionsPerRow      Number of suboptions to show per row
-	 * @param   array  $classes            Array of arrays, for 'label' and 'container' classes
-	 * @param   bool   $buttonGroup        Should it be rendered as a bootstrap button group (radio only)
-	 * @param   array  $dataAttributes     Additional data-foo="bar", like YesNo needs data-toogle="button"
+	 * @param   array  $values               Option values
+	 * @param   array  $labels               Option labels
+	 * @param   array  $selected             Selected options
+	 * @param   string $name                 Input name
+	 * @param   string $type                 Checkbox/radio etc.
+	 * @param   bool   $elementBeforeLabel   Element before or after the label - deprecated - not used in Joomla 3
+	 * @param   int    $optionsPerRow        Number of suboptions to show per row
+	 * @param   array  $classes              Array of arrays, for 'label' and 'container' classes
+	 * @param   bool   $buttonGroup          Should it be rendered as a bootstrap button group (radio only)
+	 * @param   array  $dataAttributes       Additional array('data-foo="bar"), like YesNo needs data-toggle="button"
+	 * @param   array  $inputDataAttributes  Input data attributes e.g. array('data-foo="bar")
 	 *
 	 * @return  string  grid
 	 */
 	public static function grid($values, $labels, $selected, $name, $type = 'checkbox',
-		$elementBeforeLabel = true, $optionsPerRow = 4, $classes = array(), $buttonGroup = false, $dataAttributes = array())
+		$elementBeforeLabel = true, $optionsPerRow = 4, $classes = array(), $buttonGroup = false, $dataAttributes = array(),
+$inputDataAttributes = array())
 	{
 		if (FabrikWorker::j3())
 		{
@@ -2128,7 +2135,7 @@ EOD;
 		$containerClasses = array_key_exists('container', $classes) ? implode(' ', $classes['container']) : '';
 		$dataAttributes   = implode(' ', $dataAttributes);
 
-		$items = self::gridItems($values, $labels, $selected, $name, $type, $elementBeforeLabel, $classes, $buttonGroup);
+		$items = self::gridItems($values, $labels, $selected, $name, $type, $elementBeforeLabel, $classes, $buttonGroup, $inputDataAttributes);
 
 		$grid          = array();
 		$optionsPerRow = empty($optionsPerRow) ? 4 : $optionsPerRow;

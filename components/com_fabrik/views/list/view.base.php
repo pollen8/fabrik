@@ -490,7 +490,7 @@ class FabrikViewListBase extends FabrikView
 		$this->clearFliterLink = $model->getClearButton();
 		JDEBUG ? $profiler->mark('fabrik getfilters end') : null;
 		$this->filterMode       = (int) $params->get('show-table-filters');
-		$this->toggleFilters    = $this->filterMode == 2 || $this->filterMode == 4;
+		$this->toggleFilters    = in_array($this->filterMode, array(2, 4, 5));
 		$this->showFilters      = $model->getShowFilters();
 		$this->filterCols       = (int) $params->get('list_filter_cols', '1');
 		$this->showClearFilters = ($this->showFilters || $params->get('advanced-filter')) ? true : false;
@@ -543,9 +543,9 @@ class FabrikViewListBase extends FabrikView
 	/**
 	 * Set page title
 	 *
-	 * @param   object $w       Fabrikworker
-	 * @param   object &$params List params
-	 * @param   object $model   List model
+	 * @param   FabrikWorker $w       Fabrik worker
+	 * @param   object       &$params List params
+	 * @param   object       $model   List model
 	 *
 	 * @return  void
 	 */
