@@ -4265,20 +4265,11 @@ class FabrikFEModelList extends JModelForm
 			{
 				$query->where('element_id IN ( ' . implode(', ', $ids) . ')');
 			}
-
-			$groupIds = $this->getFormModel()->getGroupIds();
-			print_r($groupIds);
-			if (!empty($groupIds))
-			{
-				$query->where('element_id = 0 AND list_id = 0 AND group_id IN (' . implode(',', $groupIds) .')');
-			}
-
 			/* maybe we will have to order by element_id asc to ensure that table joins are loaded
 			 * before element joins (if an element join is in a table join then its 'join_from_table' key needs to be updated
 			 		*/
 			$query->order('id');
 			$db->setQuery($query);
-			echo $query->dump();
 			$this->joins = $db->loadObjectList();
 			$this->_makeJoinAliases($this->joins);
 

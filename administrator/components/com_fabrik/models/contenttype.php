@@ -78,6 +78,18 @@ class FabrikAdminModelContentType extends FabModelAdmin
 	 */
 	private $groups;
 
+	/**
+	 * Array of created join ids
+	 *
+	 * @var array
+	 */
+	private $joinIds = array();
+
+	/**
+	 * Exported tables
+	 *
+	 * @var array
+	 */
 	private static $exportedTables = array();
 
 	/**
@@ -209,7 +221,7 @@ class FabrikAdminModelContentType extends FabModelAdmin
 
 		$this->mapElementIdParams($elementMap);
 		$this->importTables();
-		$this->importJoins($groupMap);
+		$this->importJoins($groupMap, $elementMap);
 
 		return $fields;
 	}
@@ -337,37 +349,77 @@ class FabrikAdminModelContentType extends FabModelAdmin
 			$database->appendChild($tableClone);
 			$root->appendChild($database);
 			$xml = simplexml_import_dom($root);
-			$importer->from($xml)->mergeStructure();
+
+			try
+			{
+				$importer->from($xml)->mergeStructure();
+			} catch (Exception $e)
+			{
+				echo "error: " . $e->getMessage();
+			}
+
 		}
 	}
 
 	/**
 	 * Import any group join entries from in /contenttypes/group/join,
-	 * List id is not available - we will have to add checks when loading the join in the main code.
+	 * and element join entries from /contenttypes/element/join
+	 * For group joins, the list id is not available. The join is thus finalised in
+	 * finaliseImport()
 	 *
-	 * @param   array $groupMap array(oldGroupId => newGroupId)
+	 * @param   array $groupMap    array(oldGroupId => newGroupId)
+	 * @param   array $elementMap  array(oldElementId => newElementId)
 	 *
 	 * @return  void
 	 */
-	private function importJoins($groupMap)
+	private function importJoins($groupMap, $elementMap)
 	{
 		$xpath  = new DOMXpath($this->doc);
-		$groups = $xpath->query('/contenttype/group[join]');
+		$joins = $xpath->query('/contenttype/group[join]/join');
+		$elements = $xpath->query('/contenttype/group/element[join]/join');
 
-		foreach ($groups as $group)
+		foreach ($joins as $join)
 		{
-			$joins = $group->getElementsByTagName('join');
+			$newGroupId = $groupMap[(string) $join->getAttribute('group_id')];
+			$join->setAttribute('group_id', $newGroupId);
+			$joinData           = $this->domNodeAttributesToArray($join);
+			$joinData['params'] = json_encode($this->nodeParams($join));
+			unset($joinData['list_id']);
+			$joinTable = FabTable::getInstance('Join', 'FabrikTable');
+			$joinTable->save($joinData);
+			$this->joinIds[] = $joinTable->get('id');
+		}
+		foreach ($elements as $join)
+		{
+			print_r( $this->domNodeAttributesToArray($join));
+			$oldElementId = (string) $join->getAttribute('element_id');
+			$newId = $elementMap[$oldElementId];
+			$join->setAttribute('element_id', $newId);
+			$joinData           = $this->domNodeAttributesToArray($join);
+			$joinData['params'] = json_encode($this->nodeParams($join));
+			$joinTable = FabTable::getInstance('Join', 'FabrikTable');
+			//$joinTable->load(array('element_id' => $oldElementId));
+			$joinTable->save($joinData);
+		}
+	}
 
-			foreach ($joins as $join)
-			{
-				$newGroupId = $groupMap[(string) $join->getAttribute('group_id')];
-				$join->setAttribute('group_id', $newGroupId);
-				$joinData           = $this->domNodeAttributesToArray($join);
-				$joinData['params'] = json_encode($this->nodeParams($join));
-				unset($joinData['list_id']);
-				$joinTable = FabTable::getInstance('Join', 'FabrikTable');
-				$joinTable->save($joinData);
-			}
+	/**
+	 * Called at the end of a list save.
+	 * Update the created joins with the created list's id and db_table_name
+	 *
+	 * @param   FabrikTableList  $row  List data
+	 *
+	 * @return  void
+	 */
+	public function finaliseImport($row)
+	{
+		foreach ($this->joinIds as $joinId)
+		{
+			$joinTable = FabTable::getInstance('Join', 'FabrikTable');
+			$joinTable->load($joinId);
+			$joinTable->set('list_id', $row->get('id'));
+			$joinTable->set('join_from_table', $row->get('db_table_name'));
+			$joinTable->store();
 		}
 	}
 
@@ -610,7 +662,6 @@ class FabrikAdminModelContentType extends FabModelAdmin
 				$join->load($groupData['join_id']);
 				$this->createTableXML($tables, $join->get('table_join'));
 				$this->createTableXML($tables, $join->get('join_from_table'));
-				print_r($join->getProperties());
 				$groupJoin = $this->buildExportNode('join', $join->getProperties(), array('id'));
 				$group->appendChild($groupJoin);
 			}
@@ -632,8 +683,16 @@ class FabrikAdminModelContentType extends FabModelAdmin
 				};
 
 				$element = $this->buildExportNode('element', $elementData);
-				$group->appendChild($element);
 
+				if (is_a($elementModel, 'PlgFabrik_ElementDatabasejoin'))
+				{
+					$join = FabTable::getInstance('Join', 'FabrikTable');
+					$join->load(array('element_id' => $elementData['id']));
+					$elementJoin = $this->buildExportNode('join', $join->getProperties(), array('id'));
+					$element->appendChild($elementJoin);
+				}
+
+				$group->appendChild($element);
 			}
 
 			$contentType->appendChild($group);

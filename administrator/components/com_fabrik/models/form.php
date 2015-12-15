@@ -42,6 +42,11 @@ class FabrikAdminModelForm extends FabModelAdmin
 	protected $pluginType = 'Form';
 
 	/**
+	 * @var FabrikAdminModelContentType
+	 */
+	protected $contentTypeModel;
+
+	/**
 	 * Returns a reference to the a Table object, always creating it.
 	 *
 	 * @param   string $type   The table type to instantiate
@@ -190,41 +195,45 @@ class FabrikAdminModelForm extends FabModelAdmin
 		$recordInDatabase = $data['record_in_database'];
 		$fields           = $this->getInsertFields($isNew, $data, $listModel);
 
-		if ($recordInDatabase == '1')
+		if ($recordInDatabase != '1')
 		{
-			$dbTableName   = $this->safeTableName($isNew, $data, $item);
-			$dbTableExists = $listModel->databaseTableExists($dbTableName);
+			return;
+		}
 
-			if (!$dbTableExists)
-			{
-				$listModel->createDBTable($dbTableName, $fields);
-			}
+		$dbTableName   = $this->safeTableName($isNew, $data, $item);
+		$dbTableExists = $listModel->databaseTableExists($dbTableName);
 
-			if (!$dbTableExists || $isNew)
-			{
-				$connection = FabrikWorker::getConnection(-1);
-				$item->set('id', null);
-				$item->set('label', $data['label']);
-				$item->set('form_id', $formId);
-				$item->set('connection_id', $connection->getConnection()->id);
-				$item->set('db_table_name', $dbTableName);
+		if (!$dbTableExists)
+		{
+			$listModel->createDBTable($dbTableName, $fields);
+		}
 
-				// Store key without quoteNames as that is db specific which we no longer want
-				$item->set('db_primary_key', $dbTableName . '.id');
-				$item->set('auto_inc', 1);
-				$item->set('published', $data['published']);
-				$item->set('created', $data['created']);
-				$item->set('created_by', $data['created_by']);
-				$item->set('access', 1);
-				$item->set('params', $listModel->getDefaultParams());
-				$item->store();
-			}
-			else
-			{
-				// Update existing table (seems to need to reload here to ensure that _table is set)
-				$listModel->loadFromFormId($formId);
-				$listModel->ammendTable();
-			}
+		if (!$dbTableExists || $isNew)
+		{
+			$connection = FabrikWorker::getConnection(-1);
+			$item->set('id', null);
+			$item->set('label', $data['label']);
+			$item->set('form_id', $formId);
+			$item->set('connection_id', $connection->getConnection()->id);
+			$item->set('db_table_name', $dbTableName);
+
+			// Store key without quoteNames as that is db specific which we no longer want
+			$item->set('db_primary_key', $dbTableName . '.id');
+			$item->set('auto_inc', 1);
+			$item->set('published', $data['published']);
+			$item->set('created', $data['created']);
+			$item->set('created_by', $data['created_by']);
+			$item->set('access', 1);
+			$item->set('params', $listModel->getDefaultParams());
+			$item->store();
+
+			$this->contentTypeModel->finaliseImport($item);
+		}
+		else
+		{
+			// Update existing table (seems to need to reload here to ensure that _table is set)
+			$listModel->loadFromFormId($formId);
+			$listModel->ammendTable();
 		}
 	}
 
@@ -244,13 +253,13 @@ class FabrikAdminModelForm extends FabModelAdmin
 		$createGroup      = $data['_createGroup'];
 		$recordInDatabase = $data['record_in_database'];
 		$jForm            = $this->app->input->get('jform', array(), 'array');
-		$contentTypeModel = JModelLegacy::getInstance('ContentType', 'FabrikAdminModel', array('listModel' => $listModel));
+		$this->contentTypeModel = JModelLegacy::getInstance('ContentType', 'FabrikAdminModel', array('listModel' => $listModel));
 		$groups           = FArrayHelper::getValue($data, 'current_groups');
 		$contentType      = ArrayHelper::getValue($jForm, 'contenttype');
 
 		if ($createGroup)
 		{
-			$contentTypeModel->check($contentType);
+			$this->contentTypeModel->check($contentType);
 		}
 
 		if (empty($groups) && !$isNew)
@@ -280,7 +289,7 @@ class FabrikAdminModelForm extends FabModelAdmin
 
 		if ($createGroup)
 		{
-			$fields = $contentTypeModel->getDefaultInsertFields($contentType);
+			$fields = $this->contentTypeModel->getDefaultInsertFields($contentType);
 		}
 
 		return $fields;

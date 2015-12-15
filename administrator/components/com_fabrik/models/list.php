@@ -77,7 +77,7 @@ class FabrikAdminModelList extends FabModelAdmin
 	 * @param   string $prefix A prefix for the table class name. Optional.
 	 * @param   array  $config Configuration array for model. Optional.
 	 *
-	 * @return  JTable    A database object
+	 * @return  FabTableList    List table
 	 *
 	 * @since    1.6
 	 */
@@ -784,6 +784,11 @@ class FabrikAdminModelList extends FabModelAdmin
 		$this->setState($this->getName() . '.new', $isNew);
 		parent::cleanCache('com_fabrik');
 
+			if ($id == 0)
+		{
+			$contentTypeModel->finaliseImport($row);
+		}
+
 		return true;
 	}
 
@@ -951,7 +956,7 @@ class FabrikAdminModelList extends FabModelAdmin
 	/**
 	 * Deals with ensuring joins are managed correctly when table is saved
 	 *
-	 * @param   array $data jform data
+	 * @param   array $data jForm data
 	 *
 	 * @return  void
 	 */
