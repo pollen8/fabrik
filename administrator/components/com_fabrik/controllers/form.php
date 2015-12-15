@@ -405,7 +405,6 @@ class FabrikAdminControllerForm extends FabControllerForm
 
 		try
 		{
-			echo "Here";exit;
 			parent::save($key, $urlVar);
 		} catch (Exception $e)
 		{
