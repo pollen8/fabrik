@@ -70,4 +70,14 @@ if (($d->editable || $d->staticmap == '2') && $d->showdms == '1') :
 endif;
 ?>
 
+<?php
+if (($d->editable || $d->staticmap == '2') && $d->showosref == '1') :
+?>
+	<div class="coord" style="margin-top:5px;">
+		<input <?php echo $edit;?> size="30" value="<?php echo $d->osref;?>" style="margin-right:5px" class="osref"/>
+<?php
+endif;
+?>
+
+
 </div>

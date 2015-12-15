@@ -230,6 +230,16 @@
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
+			
+			<field name="fb_gm_latlng_osref"
+				type="radio"
+				default="0"
+				class="btn-group"
+				description="PLG_ELEMENT_GOOGLE_MAP_LATLNG_OSREF_DESC"
+				label="PLG_ELEMENT_GOOGLE_MAP_LATLNG_OSREF_LABEL">
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+			</field>
 
 		</fieldset>
 

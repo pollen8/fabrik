@@ -193,7 +193,7 @@ class PlgFabrik_FormComment extends PlgFabrik_Form
 		$this->inJDb = $formModel->getListModel()->inJDb();
 		$this->formModel = $formModel;
 		$jsFiles = array();
-		JHTML::stylesheet('/plugins/fabrik_form/comment/comments.css');
+		JHTML::stylesheet('plugins/fabrik_form/comment/comments.css');
 		$jsFiles[] = 'media/com_fabrik/js/fabrik.js';
 		$jsFiles[] = 'plugins/fabrik_form/comment/comments.js';
 		$jsFiles[] = 'plugins/fabrik_form/comment/inlineedit.js';
