@@ -684,8 +684,6 @@ class FabrikAdminModelList extends FabModelAdmin
 			{
 				$row->set('created', $date->toSql());
 			}
-			// Save the row now
-			$row->store();
 
 			$isNew    = false;
 			$newTable = trim(FArrayHelper::getValue($data, '_database_name'));
@@ -693,7 +691,7 @@ class FabrikAdminModelList extends FabModelAdmin
 			// Mysql will force db table names to lower case even if you set the db name to upper case - so use clean()
 			$newTable = FabrikString::clean($newTable);
 
-			// Check the entered database table doesnt already exist
+			// Check the entered database table doesn't already exist
 			if ($newTable != '' && $this->databaseTableExists($newTable))
 			{
 				throw new RuntimeException(FText::_('COM_FABRIK_DATABASE_TABLE_ALREADY_EXISTS'));
@@ -703,6 +701,9 @@ class FabrikAdminModelList extends FabModelAdmin
 			{
 				throw new RuntimeException(FText::_('COM_FABRIK_INSUFFICIENT_RIGHTS_TO_CREATE_TABLE'));
 			}
+
+			// Save the row now
+			$row->store();
 
 			// Create fabrik form
 			$this->createLinkedForm();

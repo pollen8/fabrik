@@ -4265,11 +4265,20 @@ class FabrikFEModelList extends JModelForm
 			{
 				$query->where('element_id IN ( ' . implode(', ', $ids) . ')');
 			}
+
+			$groupIds = $this->getFormModel()->getGroupIds();
+			print_r($groupIds);
+			if (!empty($groupIds))
+			{
+				$query->where('element_id = 0 AND list_id = 0 AND group_id IN (' . implode(',', $groupIds) .')');
+			}
+
 			/* maybe we will have to order by element_id asc to ensure that table joins are loaded
 			 * before element joins (if an element join is in a table join then its 'join_from_table' key needs to be updated
 			 		*/
 			$query->order('id');
 			$db->setQuery($query);
+			echo $query->dump();
 			$this->joins = $db->loadObjectList();
 			$this->_makeJoinAliases($this->joins);
 
@@ -4704,7 +4713,7 @@ class FabrikFEModelList extends JModelForm
 						// Don't throw error for attempting to re-add an existing db column
 						if (!array_key_exists($element->name, $dbDescriptions))
 						{
-							throw new ErrorException('alter structure: ' . $fabrikDb->getErrorMsg(), 500);
+							throw new ErrorException('alter structure: ' . $e->getMessage(), 500);
 						}
 					}
 				}
@@ -4724,7 +4733,6 @@ class FabrikFEModelList extends JModelForm
 				}
 
 				$q = 'ALTER TABLE ' . $tableName . ' CHANGE ' . $origColName . ' ' . FabrikString::safeColName($element->name) . ' ' . $objType . ' ';
-				$testColName = $tableName . '.' . FabrikString::safeColName($element->name);
 
 				if (FabrikString::safeColName($primaryKey) == $tableName . '.' . FabrikString::safeColName($element->name) && $table->auto_inc)
 				{
@@ -4794,7 +4802,7 @@ class FabrikFEModelList extends JModelForm
 
 				if (String::strtolower($element->name) == $fieldName && String::strtolower($dbDescription->Type) == String::strtolower($objType))
 				{
-					return;
+					return true;
 				}
 
 				$existingFields[] = $fieldName;

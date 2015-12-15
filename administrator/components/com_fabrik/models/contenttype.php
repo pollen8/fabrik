@@ -172,6 +172,7 @@ class FabrikAdminModelContentType extends FabModelAdmin
 		$xpath      = new DOMXpath($this->doc);
 		$groups     = $xpath->query('/contenttype/group');
 		$i          = 1;
+		$groupMap   = array();
 		$elementMap = array();
 
 		foreach ($groups as $group)
@@ -184,8 +185,10 @@ class FabrikAdminModelContentType extends FabModelAdmin
 
 			$isJoin   = ArrayHelper::getValue($groupData, 'is_join', false);
 			$isRepeat = isset($groupData['params']->repeat_group_button) ? $groupData['params']->repeat_group_button : false;
-			$groupId  = $this->listModel->createLinkedGroup($groupData, $isJoin, $isRepeat);
-			$elements = $xpath->query('/contenttype/group[' . $i . ']/element');
+
+			$groupId                    = $this->listModel->createLinkedGroup($groupData, $isJoin, $isRepeat);
+			$groupMap[$groupData['id']] = $groupId;
+			$elements                   = $xpath->query('/contenttype/group[' . $i . ']/element');
 
 			foreach ($elements as $element)
 			{
@@ -206,6 +209,7 @@ class FabrikAdminModelContentType extends FabModelAdmin
 
 		$this->mapElementIdParams($elementMap);
 		$this->importTables();
+		$this->importJoins($groupMap);
 
 		return $fields;
 	}
@@ -220,12 +224,12 @@ class FabrikAdminModelContentType extends FabModelAdmin
 		$map            = $this->app->input->get('aclMap', array(), 'array');
 		$params         = array('edit_access', 'view_access', 'list_view_access', 'filter_access', 'sum_access', 'avg_access',
 			'median_access', 'count_access', 'custom_calc_access');
-		$data['access'] = $map[$data['access']];
+		$data['access'] = ArrayHelper::getValue($map, $data['access']);
 		$origParams     = json_decode($data['params']);
 
 		foreach ($params as $param)
 		{
-			if (array_key_exists($origParams->$param, $map))
+			if (isset($origParams->$param) && array_key_exists($origParams->$param, $map))
 			{
 				$origParams->$param = $map[$origParams->$param];
 			}
@@ -247,7 +251,7 @@ class FabrikAdminModelContentType extends FabModelAdmin
 
 		foreach ($params as $param)
 		{
-			if (array_key_exists($origParams->$param, $map))
+			if (isset($origParams->$param) && array_key_exists($origParams->$param, $map))
 			{
 				$origParams->$param = $map[$origParams->$param];
 			}
@@ -338,6 +342,38 @@ class FabrikAdminModelContentType extends FabModelAdmin
 	}
 
 	/**
+	 * Import any group join entries from in /contenttypes/group/join,
+	 * List id is not available - we will have to add checks when loading the join in the main code.
+	 *
+	 * @param   array $groupMap array(oldGroupId => newGroupId)
+	 *
+	 * @return  void
+	 */
+	private function importJoins($groupMap)
+	{
+		$xpath  = new DOMXpath($this->doc);
+		$groups = $xpath->query('/contenttype/group[join]');
+
+		foreach ($groups as $group)
+		{
+			$joins = $group->getElementsByTagName('join');
+
+			foreach ($joins as $join)
+			{
+				$newGroupId = $groupMap[(string) $join->getAttribute('group_id')];
+				$join->setAttribute('group_id', $newGroupId);
+				$joinData           = $this->domNodeAttributesToArray($join);
+				$joinData['params'] = json_encode($this->nodeParams($join));
+				unset($joinData['list_id']);
+				$joinTable = FabTable::getInstance('Join', 'FabrikTable');
+				$joinTable->save($joinData);
+			}
+		}
+	}
+
+	/**
+	 * Create a params object based on a XML dom node.
+	 *
 	 * @param   DOMElement $node
 	 *
 	 * @return stdClass
@@ -574,6 +610,7 @@ class FabrikAdminModelContentType extends FabModelAdmin
 				$join->load($groupData['join_id']);
 				$this->createTableXML($tables, $join->get('table_join'));
 				$this->createTableXML($tables, $join->get('join_from_table'));
+				print_r($join->getProperties());
 				$groupJoin = $this->buildExportNode('join', $join->getProperties(), array('id'));
 				$group->appendChild($groupJoin);
 			}
