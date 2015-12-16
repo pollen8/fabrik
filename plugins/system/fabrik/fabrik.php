@@ -38,6 +38,12 @@ class PlgSystemFabrik extends JPlugin
 	 */
 	public function plgSystemFabrik(&$subject, $config)
 	{
+		// Could be component was uninstalled but not the plugin
+		if (!class_exists('FabrikString'))
+		{
+			return;
+		}
+
 		/**
 		 * Moved these from defines.php to here, to fix an issue with Kunena.  Kunena imports the J!
 		 * JForm class in their system plugin, in the class constructor  So if we wait till onAfterInitialize

@@ -25,7 +25,7 @@ class Com_FabrikInstallerScript
 	 *
 	 * @var array
 	 */
-	protected $drivers = array('mysql_fab.php', 'mysqli_fab.php');
+	protected $drivers = array('mysql_fab.php', 'mysqli_fab.php', 'pdomysql_fab.php');
 
 	/**
 	 * Run when the component is installed
@@ -202,6 +202,19 @@ class Com_FabrikInstallerScript
 				JFile::delete($dest . '/' . $driver);
 			}
 		}
+
+		$this->disableFabrikPlugins();
+	}
+
+	protected function disableFabrikPlugins()
+	{
+		$db    = JFactory::getDbo();
+		$query = $db->getQuery(true);
+		$query
+			->update('#__extensions')
+			->set('enabled = 0')
+			->where('folder LIKE "%fabrik%" OR element LIKE "%fabrik%"');
+		$db->setQuery($query)->execute();
 	}
 
 	/**
