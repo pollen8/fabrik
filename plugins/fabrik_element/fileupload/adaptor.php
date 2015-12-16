@@ -61,10 +61,11 @@ abstract class FabrikStorageAdaptor
 	 * Does a file exist
 	 *
 	 * @param   string  $filepath  File path to test
+	 * @param   bool    $prependRoot  also test with root prepended
 	 *
 	 * @return bool
 	 */
-	public abstract function exists($filepath);
+	public abstract function exists($filepath, $prependRoot = false);
 
 	/**
 	 * Does a folder exist

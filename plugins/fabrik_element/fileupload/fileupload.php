@@ -1630,6 +1630,11 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 	 */
 	protected function deleteFile($filename)
 	{
+		if (empty($filename))
+		{
+			return;
+		}
+
 		$storage = $this->getStorage();
 		$file = $storage->clean(JPATH_SITE . '/' . $filename);
 		$thumb = $storage->clean($storage->_getThumb($filename));
@@ -1649,9 +1654,9 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		}
 		else
 		{
-			if ($storage->exists(JPATH_SITE . '/' . $thumb))
+			if ($storage->exists(JPATH_SITE . '/' . FabrikString::ltrim($thumb, '/')))
 			{
-				$storage->delete(JPATH_SITE . '/' . $thumb);
+				$storage->delete(JPATH_SITE . '/' . FabrikString::ltrim($thumb, '/'));
 			}
 		}
 
@@ -1661,9 +1666,9 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		}
 		else
 		{
-			if ($storage->exists(JPATH_SITE . '/' . $cropped))
+			if ($storage->exists(JPATH_SITE . '/' . FabrikString::ltrim($cropped, '/')))
 			{
-				$storage->delete(JPATH_SITE . '/' . $cropped);
+				$storage->delete(JPATH_SITE . '/' . FabrikString::ltrim($cropped, '/'));
 			}
 		}
 	}
@@ -2738,7 +2743,16 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 						}
 						else
 						{
-							$files = explode(GROUPSPLITTER, $row->{$elName . '_raw'});
+							$files = $row->{$elName . '_raw'};
+
+							if (FabrikWorker::isJSON($files))
+							{
+								$files = FabrikWorker::JSONtoData($files, true);
+							}
+							else
+							{
+								$files = explode(GROUPSPLITTER, $files);
+							}
 
 							foreach ($files as $filename)
 							{

@@ -82,12 +82,13 @@ class Amazons3storage extends FabrikStorageAdaptor
 	/**
 	 * Does a file exist
 	 *
-	 * @param   string  $filepath  path to test for
+	 * @param   string  $filepath     path to test for
+	 * @param   bool    $prependRoot  ignored in this adaptor
 	 *
 	 * @return  bool
 	 */
 
-	public function exists($filepath)
+	public function exists($filepath, $prependRoot = false)
 	{
 		if (!$this->bucketExists())
 		{
