@@ -186,14 +186,13 @@ class FabrikAdminModelContentType extends FabModelAdmin
 			throw new UnexpectedValueException('A content type must be loaded before groups can be created');
 		}
 
-		$groupIds    = array();
-		$fields      = array();
-		$xpath       = new DOMXpath($this->doc);
-		$groups      = $xpath->query('/contenttype/group');
-		$i           = 1;
-		$groupMap    = array();
-		$elementMap  = array();
-		$sourceTable = $this->getSourceTableName();
+		$groupIds   = array();
+		$fields     = array();
+		$xpath      = new DOMXpath($this->doc);
+		$groups     = $xpath->query('/contenttype/group');
+		$i          = 1;
+		$groupMap   = array();
+		$elementMap = array();
 
 		foreach ($groups as $group)
 		{
