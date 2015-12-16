@@ -63,6 +63,9 @@ class FabrikViewFormBase extends FabrikView
 	public $tipLocation = 'above';
 	public $rowid = '';
 
+	/**
+	 * Preview the form, used in content type admin page.
+	 */
 	public function preview()
 	{
 		/** @var FabrikFEModelForm $model */
@@ -72,7 +75,22 @@ class FabrikViewFormBase extends FabrikView
 		$this->form   = $this->prepareFormTable();
 		$this->params = new Registry;
 		$this->groups = $model->getGroupView($tmpl);
+		$this->_repeatGroupButtons($tmpl);
 		$this->setTmplFolders($tmpl);
+	}
+
+	/**
+	 * Set the repeat group button layouts
+	 *
+	 * @param   string $tmpl Template
+	 */
+	private function _repeatGroupButtons($tmpl)
+	{
+		$btnData                          = (object) array('tmpl' => $tmpl);
+		$this->removeRepeatGroupButton    = FabrikHelperHTML::getLayout('form.fabrik-repeat-group-delete')->render($btnData);
+		$this->addRepeatGroupButton       = FabrikHelperHTML::getLayout('form.fabrik-repeat-group-add')->render($btnData);
+		$this->removeRepeatGroupButtonRow = FabrikHelperHTML::getLayout('form.fabrik-repeat-group-row-delete')->render($btnData);
+		$this->addRepeatGroupButtonRow    = FabrikHelperHTML::getLayout('form.fabrik-repeat-group-row-add')->render($btnData);
 	}
 
 	/**
@@ -164,17 +182,8 @@ class FabrikViewFormBase extends FabrikView
 		$this->_addButtons();
 		JDEBUG ? $profiler->mark('form view before group view got') : null;
 
-		$this->groups                     = $model->getGroupView($tmpl);
-		$btnData                          = new stdClass;
-		$btnData->tmpl                    = $tmpl;
-		$l                                = FabrikHelperHTML::getLayout('form.fabrik-repeat-group-delete');
-		$this->removeRepeatGroupButton    = $l->render($btnData);
-		$l                                = FabrikHelperHTML::getLayout('form.fabrik-repeat-group-add');
-		$this->addRepeatGroupButton       = $l->render($btnData);
-		$l                                = FabrikHelperHTML::getLayout('form.fabrik-repeat-group-row-delete');
-		$this->removeRepeatGroupButtonRow = $l->render($btnData);
-		$l                                = FabrikHelperHTML::getLayout('form.fabrik-repeat-group-row-add');
-		$this->addRepeatGroupButtonRow    = $l->render($btnData);
+		$this->groups = $model->getGroupView($tmpl);
+		$this->_repeatGroupButtons($tmpl);
 
 		JDEBUG ? $profiler->mark('form view after group view got') : null;
 		$this->data        = $model->tmplData;
@@ -239,7 +248,7 @@ class FabrikViewFormBase extends FabrikView
 		$form->origerror = $form->error;
 		$form->error     = $model->hasErrors() ? $form->error : '';
 		$form->attribs   = ' class="' . $form->class . '" name="' . $form->name . '" id="' .
-				$form->formid . '" enctype="' . $model->getFormEncType() . '"';
+			$form->formid . '" enctype="' . $model->getFormEncType() . '"';
 
 		return $form;
 	}
@@ -260,7 +269,6 @@ class FabrikViewFormBase extends FabrikView
 
 		$root = $this->app->isAdmin() ? JPATH_ADMINISTRATOR : JPATH_SITE;
 		$this->addTemplatePath($root . '/templates/' . $this->app->getTemplate() . '/html/com_fabrik/' . $folder . '/' . $tmpl);
-
 	}
 
 	/**
@@ -366,7 +374,7 @@ class FabrikViewFormBase extends FabrikView
 			// If there is a menu item available AND the form is not rendered in a content plugin or module
 			if (is_object($menu) && !$this->isMambot)
 			{
-				$menuParams = is_a($menu->params, 'Registry') || is_a($menu->params, 'JRegistry')? $menu->params : new Registry($menu->params);
+				$menuParams = is_a($menu->params, 'Registry') || is_a($menu->params, 'JRegistry') ? $menu->params : new Registry($menu->params);
 				$params->set('page_heading', FText::_($menuParams->get('page_heading', '')));
 				$params->set('show_page_heading', $menuParams->get('show_page_heading', 0));
 				$browserTitle = $model->getPageTitle(FText::_($menuParams->get('page_title')));
@@ -890,7 +898,7 @@ class FabrikViewFormBase extends FabrikView
 		// Allow things like join element with frontend Add to squash redirects
 		if ($input->getInt('noredirect', 0) !== 0)
 		{
-			$fields[]  = '<input type="hidden" name="noredirect" value="1" />';
+			$fields[] = '<input type="hidden" name="noredirect" value="1" />';
 		}
 
 		if ($useKey = FabrikWorker::getMenuOrRequestVar('usekey', ''))
