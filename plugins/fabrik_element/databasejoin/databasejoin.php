@@ -1899,19 +1899,24 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 			$joinKey = $params->get('join_key_column');
 		}
 
-		$db->setQuery('DESCRIBE ' . $db->qn($dbName));
-		$fields = $db->loadObjectList();
+		try {
+			$db->setQuery('DESCRIBE ' . $db->qn($dbName));
+			$fields = $db->loadObjectList();
 
-		if (is_array($fields))
-		{
-			foreach ($fields as $field)
+			if (is_array($fields))
 			{
-				if ($field->Field == $joinKey)
+				foreach ($fields as $field)
 				{
-					return $field->Type;
+					if ($field->Field == $joinKey)
+					{
+						return $field->Type;
+					}
 				}
 			}
+		} catch (Exception $e) {
+			// If importing from a content type then the db table my not yet exist
 		}
+
 
 		// Nope? oh well default to this:
 		return 'VARCHAR(255)';

@@ -86,6 +86,13 @@ class FabrikAdminModelContentType extends FabModelAdmin
 	private $joinIds = array();
 
 	/**
+	 * Array of created element ids
+	 *
+	 * @var array
+	 */
+	private $elementIds = array();
+
+	/**
 	 * Exported tables
 	 *
 	 * @var array
@@ -179,13 +186,14 @@ class FabrikAdminModelContentType extends FabModelAdmin
 			throw new UnexpectedValueException('A content type must be loaded before groups can be created');
 		}
 
-		$groupIds   = array();
-		$fields     = array();
-		$xpath      = new DOMXpath($this->doc);
-		$groups     = $xpath->query('/contenttype/group');
-		$i          = 1;
-		$groupMap   = array();
-		$elementMap = array();
+		$groupIds    = array();
+		$fields      = array();
+		$xpath       = new DOMXpath($this->doc);
+		$groups      = $xpath->query('/contenttype/group');
+		$i           = 1;
+		$groupMap    = array();
+		$elementMap  = array();
+		$sourceTable = $this->getSourceTableName();
 
 		foreach ($groups as $group)
 		{
@@ -213,6 +221,7 @@ class FabrikAdminModelContentType extends FabModelAdmin
 				$name               = (string) $element->getAttribute('name');
 				$fields[$name]      = $this->listModel->makeElement($name, $elementData);
 				$elementMap[$oldId] = $fields[$name]->element->id;
+				$this->elementIds[] = $elementMap[$oldId];
 			}
 
 			$groupIds[] = $groupId;
@@ -272,7 +281,7 @@ class FabrikAdminModelContentType extends FabModelAdmin
 	}
 
 	/**
-	 * Element's can have parameters which point to a specific element ID. We need to update those paramters
+	 * Element's can have parameters which point to a specific element ID. We need to update those parameters
 	 * to use the cloned element's ID
 	 *
 	 * @param   array $elementMap
@@ -394,12 +403,29 @@ class FabrikAdminModelContentType extends FabModelAdmin
 		{
 			$oldElementId = (string) $join->getAttribute('element_id');
 			$newId        = $elementMap[$oldElementId];
+			$newGroupId   = $groupMap[(string) $join->getAttribute('group_id')];
+			$join->setAttribute('group_id', $newGroupId);
 			$join->setAttribute('element_id', $newId);
 			$joinData           = $this->domNodeAttributesToArray($join);
 			$joinData['params'] = json_encode($this->nodeParams($join));
 			$joinTable          = FabTable::getInstance('Join', 'FabrikTable');
 			$joinTable->save($joinData);
+			$this->joinIds[] = $joinTable->get('id');
 		}
+	}
+
+	/**
+	 * Get the source table name, defined in XML file.
+	 *
+	 * @return string
+	 */
+	private function getSourceTableName()
+	{
+		$xpath  = new DOMXpath($this->doc);
+		$source = $xpath->query('/contenttype/database/source');
+		$source = iterator_to_array($source);
+
+		return (string) $source[0]->nodeValue;
 	}
 
 	/**
@@ -412,13 +438,54 @@ class FabrikAdminModelContentType extends FabModelAdmin
 	 */
 	public function finaliseImport($row)
 	{
+		$source      = $this->getSourceTableName();
+		$targetTable = $row->get('db_table_name');
+
 		foreach ($this->joinIds as $joinId)
 		{
 			$joinTable = FabTable::getInstance('Join', 'FabrikTable');
 			$joinTable->load($joinId);
-			$joinTable->set('list_id', $row->get('id'));
-			$joinTable->set('join_from_table', $row->get('db_table_name'));
+
+			if ((int) $joinTable->get('element_id') === 0)
+			{
+				// Group join
+				$joinTable->set('list_id', $row->get('id'));
+				$joinTable->set('join_from_table', $targetTable);
+			}
+			else
+			{
+				// Element join
+				$tableLookUps = array('join_from_table', 'table_join', 'table_join_alias');
+
+				foreach ($tableLookUps as $tableLookup)
+				{
+					if ($joinTable->get($tableLookup) === $source)
+					{
+						$joinTable->set($tableLookup, $targetTable);
+					}
+				}
+			}
+
 			$joinTable->store();
+			echo "<pre>";
+			print_r($joinTable);
+
+		}
+
+		// Update element params with source => target table name conversion
+		foreach ($this->elementIds as $elementId)
+		{
+			/** @var FabrikTableElement $element */
+			$element = FabTable::getInstance('Element', 'FabrikTable');
+			$element->load($elementId);
+			$elementParams = new Registry($element->params);
+
+			if ($elementParams->get('join_db_name') === $source)
+			{
+				$elementParams->set('join_db_name', $targetTable);
+				$element->set('params', $elementParams->toString());
+				$element->store();
+			}
 		}
 	}
 
@@ -632,6 +699,23 @@ class FabrikAdminModelContentType extends FabModelAdmin
 	}
 
 	/**
+	 * Initialise the table XML section.
+	 * Add the source list name. Needed on import for mapping join table info from
+	 * source main table to target main table
+	 *
+	 * @return DOMElement
+	 */
+	private function iniTableXML()
+	{
+		$tables    = $this->doc->createElement('database');
+		$mainTable = $this->listModel->getTable()->get('db_table_name');
+		$source    = $this->doc->createElement('source', $mainTable);
+		$tables->appendChild($source);
+
+		return $tables;
+	}
+
+	/**
 	 * Create the content type
 	 * Save it to /administrator/components/com_fabrik/models/content_types
 	 * Update form model with content type path
@@ -643,12 +727,14 @@ class FabrikAdminModelContentType extends FabModelAdmin
 	public function create($formModel)
 	{
 		// We don't want to export the main table, as a new one is created when importing the content type
-		$mainTable   = $formModel->getListModel()->getTable()->get('db_table_name');
-		$tableParams = array('table_join', 'join_from_table');
-		$contentType = $this->doc->createElement('contenttype');
-		$tables      = $this->doc->createElement('database');
-		$label       = JFile::makeSafe($formModel->getForm()->get('label'));
-		$name        = $this->doc->createElement('name', $label);
+		$this->listModel = $formModel->getListModel();
+		$mainTable       = $this->listModel->getTable()->get('db_table_name');
+		$tableParams     = array('table_join', 'join_from_table');
+		$contentType     = $this->doc->createElement('contenttype');
+		$tables          = $this->iniTableXML();
+
+		$label = JFile::makeSafe($formModel->getForm()->get('label'));
+		$name  = $this->doc->createElement('name', $label);
 		$contentType->appendChild($name);
 		$groups = $formModel->getGroupsHiarachy();
 
