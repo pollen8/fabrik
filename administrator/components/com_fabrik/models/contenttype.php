@@ -642,6 +642,9 @@ class FabrikAdminModelContentType extends FabModelAdmin
 	 */
 	public function create($formModel)
 	{
+		// We don't want to export the main table, as a new one is created when importing the content type
+		$mainTable   = $formModel->getListModel()->getTable()->get('db_table_name');
+		$tableParams = array('table_join', 'join_from_table');
 		$contentType = $this->doc->createElement('contenttype');
 		$tables      = $this->doc->createElement('database');
 		$label       = JFile::makeSafe($formModel->getForm()->get('label'));
@@ -660,8 +663,15 @@ class FabrikAdminModelContentType extends FabModelAdmin
 			{
 				$join = FabTable::getInstance('Join', 'FabrikTable');
 				$join->load($groupData['join_id']);
-				$this->createTableXML($tables, $join->get('table_join'));
-				$this->createTableXML($tables, $join->get('join_from_table'));
+
+				foreach ($tableParams as $tableParam)
+				{
+					if ($join->get($tableParam) !== $mainTable)
+					{
+						$this->createTableXML($tables, $join->get($tableParam));
+					}
+				}
+
 				$groupJoin = $this->buildExportNode('join', $join->getProperties(), array('id'));
 				$group->appendChild($groupJoin);
 			}
@@ -679,7 +689,11 @@ class FabrikAdminModelContentType extends FabModelAdmin
 				if (in_array($elementData['plugin'], $this->pluginsWithTables))
 				{
 					$elementParams = new Registry($elementData['params']);
-					$this->createTableXML($tables, $elementParams->get('join_db_name'));
+
+					if ($elementParams->get('join_db_name') !== $mainTable)
+					{
+						$this->createTableXML($tables, $elementParams->get('join_db_name'));
+					}
 				};
 
 				$element = $this->buildExportNode('element', $elementData);
