@@ -504,6 +504,7 @@ class PlgFabrik_ListUpdate_Col extends PlgFabrik_List
 	 */
 	public function onLoadJavascriptInstance($args)
 	{
+		parent::onLoadJavascriptInstance($args);
 		$params = $this->getParams();
 		$opts = $this->getElementJSOptions();
 		$opts->userSelect = (bool) $params->get('update_user_select', 0);
