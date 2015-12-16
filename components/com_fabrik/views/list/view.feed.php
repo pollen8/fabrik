@@ -23,7 +23,7 @@ jimport('joomla.application.component.view');
  * @subpackage  Fabrik
  * @since       3.0
  */
-class FabrikViewList extends JViewLegacy
+class FabrikViewList extends FabrikView
 {
 	/**
 	 * Display the Feed

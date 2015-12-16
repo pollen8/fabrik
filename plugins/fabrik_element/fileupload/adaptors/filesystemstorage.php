@@ -28,14 +28,15 @@ class Filesystemstorage extends FabrikStorageAdaptor
 	/**
 	 * Does a file exist
 	 *
-	 * @param   string  $filepath  File path to test
+	 * @param   string  $filepath     File path to test
+	 * @param   bool    $prependRoot  also test with root prepended
 	 *
 	 * @return bool
 	 */
 
-	public function exists($filepath)
+	public function exists($filepath, $prependRoot = false)
 	{
-		if ($filepath == '\\')
+		if (empty($filepath) || $filepath == '\\')
 		{
 			return false;
 		}
@@ -45,9 +46,14 @@ class Filesystemstorage extends FabrikStorageAdaptor
 		    return true;
 		}
 
-		$filepath = COM_FABRIK_BASE . '/' . FabrikString::ltrimword($filepath, COM_FABRIK_BASE . '/');
+		if ($prependRoot)
+		{
+			$filepath = COM_FABRIK_BASE . '/' . FabrikString::ltrimword($filepath, COM_FABRIK_BASE . '/');
 
-		return JFile::exists($filepath);
+			return JFile::exists($filepath);
+		}
+
+		return false;
 	}
 
 	/**

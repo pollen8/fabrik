@@ -100,13 +100,13 @@ class PlgFabrik_ElementYesno extends PlgFabrik_ElementRadiobutton
 		{
 			$icon = $j3 ? 'checkmark.png' : '1_8bit.png';
 
-			return FabrikHelperHTML::image($icon, 'list', $this->tmpl, array('alt' => FText::_('JYES')));
+			return FabrikHelperHTML::image($icon, 'list', @$this->tmpl, array('alt' => FText::_('JYES')));
 		}
 		else
 		{
 			$icon = $j3 ? 'remove.png' : '0_8bit.png';
 
-			return FabrikHelperHTML::image($icon, 'list', $this->tmpl, array('alt' => FText::_('JNO')));
+			return FabrikHelperHTML::image($icon, 'list', @$this->tmpl, array('alt' => FText::_('JNO')));
 		}
 	}
 

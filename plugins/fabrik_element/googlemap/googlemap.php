@@ -40,6 +40,13 @@ class PlgFabrik_ElementGooglemap extends PlgFabrik_Element
 	protected static $radiusJs = null;
 
 	/**
+	 * Has the OSRef js been loaded
+	 *
+	 * @var bool
+	 */
+	protected static $OSRefJs = null;
+
+	/**
 	 * Determine if we use a google static map
 	 *
 	 * @var bool
@@ -219,6 +226,30 @@ class PlgFabrik_ElementGooglemap extends PlgFabrik_Element
 	}
 
 	/**
+	 * JS lib for OSRef
+	 * As different map instances may or may not load this we shouldn't put it in
+	 * formJavascriptClass() but call this code from elementJavascript() instead.
+	 * The files are still only loaded when needed and only once
+	 *
+	 * @return  void
+	 */
+
+	protected function OSRefJs()
+	{
+		if (!isset(self::$OSRefJs))
+		{
+			$params = $this->getParams();
+
+			if ($params->get('fb_gm_latlng_osref'))
+			{
+				$ext = FabrikHelperHTML::isDebug() ? '.js' : '-min.js';
+				FabrikHelperHTML::script('media/com_fabrik/js/lib/jscoord-1.1.1/jscoord-1.1.1' . $ext);
+				self::$OSRefJs = true;
+			}
+		}
+	}
+
+	/**
 	 * As different map instances may or may not load radius widget JS we shouldn't put it in
 	 * formJavascriptClass() but call this code from elementJavascript() instead.
 	 * The files are still only loaded when needed and only once
@@ -260,7 +291,9 @@ class PlgFabrik_ElementGooglemap extends PlgFabrik_Element
 		$o = $this->_strToCoords($v, $zoomlevel);
 		$dms = $this->_strToDMS($v);
 		$opts = $this->getElementJSOptions($repeatCounter);
+
 		$this->geoJs();
+		$this->OSRefJs();
 
 		$mapShown = $this->isEditable() || (!$this->isEditable() && $v != '');
 
@@ -283,6 +316,7 @@ class PlgFabrik_ElementGooglemap extends PlgFabrik_Element
 		$opts->latlng = $this->isEditable() ? (bool) $params->get('fb_gm_latlng', false) : false;
 		$opts->sensor = (bool) $params->get('fb_gm_sensor', false);
 		$opts->latlng_dms = $this->isEditable() ? (bool) $params->get('fb_gm_latlng_dms', false) : false;
+		$opts->latlng_osref = $this->isEditable() ? (bool) $params->get('fb_gm_latlng_osref', false) : false;
 		$opts->geocode = $params->get('fb_gm_geocode', '0');
 		$opts->geocode_event = $params->get('fb_gm_geocode_event', 'button');
 		$opts->geocode_fields = array();
@@ -776,9 +810,11 @@ class PlgFabrik_ElementGooglemap extends PlgFabrik_Element
 				$layoutData->label = $element->label;
 				$layoutData->value = htmlspecialchars($val, ENT_QUOTES);
 				$layoutData->dms = $this->_strToDMS($val);
+				$layoutData->osref = "";
 				$layoutData->staticmap = $params->get('fb_gm_staticmap');
 				$layoutData->showdms = $params->get('fb_gm_latlng_dms');
 				$layoutData->showlatlng = $params->get('fb_gm_latlng');
+				$layoutData->showosref = $params->get('fb_gm_latlng_osref');
 
 				return $layout->render($layoutData);
 			}

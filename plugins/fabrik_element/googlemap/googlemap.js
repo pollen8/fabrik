@@ -241,6 +241,9 @@ var FbGoogleMap = new Class({
 					this.element.getElement('.latdms').value = this.latDecToDMS();
 					this.element.getElement('.lngdms').value = this.lngDecToDMS();
 				}
+				if (this.options.latlng_osref === true) {
+					this.element.getElement('.osref').value = this.latLonToOSRef();
+				}
 				if (this.options.reverse_geocode) {
 					this.reverseGeocode();
 				}
@@ -465,6 +468,12 @@ var FbGoogleMap = new Class({
 
 		return dmslng_dir + dmslng_d + '°' + dmslng_m + '\'' + dmslng_s + '"';
 
+	},
+	
+	latLonToOSRef: function () {
+		var ll2 = new LatLng(this.marker.getPosition().lng(), this.marker.getPosition().lng());
+		var OSRef = ll2.toOSRef();
+		return OSRef.toSixFigureString();
 	},
 
 	geoCode: function (e) {

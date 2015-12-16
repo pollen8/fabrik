@@ -74,9 +74,9 @@ class FabrikViewList extends FabrikViewListBase
 		//$imageEl = $formModel->getElement($imageEl, true);
 		$titleEl = $formModel->getElement($titleEl, true);
 		$dateEl = $formModel->getElement($dateEl, true);
-		$title = $titleEl === false ? '' : $titleEl->getFullName(true, false);
-		$date = $dateEl === false ? '' : $dateEl->getFullName(true, false);
-		$dateRaw = $date . '_raw';
+		$titleElName = $titleEl === false ? '' : $titleEl->getFullName(true, false);
+		$dateElName = $dateEl === false ? '' : $dateEl->getFullName(true, false);
+		$dateElNameRaw = $dateElName . '_raw';
 
 		foreach ($groupModels as $groupModel)
 		{
@@ -286,9 +286,9 @@ class FabrikViewList extends FabrikViewListBase
 					}
 				}
 
-				if (isset($row->$title))
+				if (isset($row->$titleElName))
 				{
-					$title = $row->$title;
+					$title = $row->$titleElName;
 				}
 
 
@@ -311,10 +311,7 @@ class FabrikViewList extends FabrikViewListBase
 				// Strip html from feed item description text
 				$author = @$row->created_by_alias ? @$row->created_by_alias : @$row->author;
 
-				if ($date != '')
-				{
-					$item->date = $row->$date ? date('r', strtotime(@$row->$dateRaw)) : '';
-				}
+				$item->date = isset($row->$dateElName) && $row->$dateElName ? date('r', strtotime(@$row->$dateElNameRaw)) : '';
 
 				// Load individual item creator class
 
