@@ -1228,8 +1228,14 @@ class FabrikFEModelList extends JModelForm
 							$data[$i]->$col = $elementModel->renderListData($colData, $thisRow);
 							$rawCol = $col . '_raw';
 
-							// Rendering of accented characters in DomPDF
-							$data[$i]->$col = htmlspecialchars_decode(htmlentities($data[$i]->$col, ENT_NOQUOTES, 'UTF-8'), ENT_NOQUOTES);
+							/**
+							 * Rendering of accented characters in DomPDF
+							 * Don't do this on feeds, as it produces non XMLS entities like &eacute that blow XML parsers up
+							 */
+							if ($this->app->input->get('format', '') !== 'fabrikfeed')
+							{
+								$data[$i]->$col = htmlspecialchars_decode(htmlentities($data[$i]->$col, ENT_NOQUOTES, 'UTF-8'), ENT_NOQUOTES);
+							}
 
 							/* Not sure if this works, as far as I can tell _raw will always exist, even if
 							 * the element model hasn't explicitly done anything with it (except maybe unsetting it?)

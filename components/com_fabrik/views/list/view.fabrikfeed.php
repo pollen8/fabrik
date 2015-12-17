@@ -152,7 +152,7 @@ class FabrikViewList extends FabrikViewListBase
 		$w = new FabrikWorker;
 		$rows = $model->getData();
 
-		$this->doc->title = htmlentities($w->parseMessageForPlaceHolder($table->label, $_REQUEST), ENT_COMPAT, 'UTF-8');
+		$this->doc->title = htmlspecialchars($w->parseMessageForPlaceHolder($table->label, $_REQUEST), ENT_COMPAT, 'UTF-8');
 		$this->doc->description = htmlspecialchars(trim(strip_tags($w->parseMessageForPlaceHolder($table->introduction, $_REQUEST))));
 		$this->doc->link = JRoute::_('index.php?option=com_' . $this->package . '&view=list&listid=' . $table->id . '&Itemid=' . $itemId);
 

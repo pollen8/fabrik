@@ -148,9 +148,9 @@ class JDocumentRendererrss extends JDocumentRenderer
 		for ($i = 0; $i < count($data->items); $i++)
 		{
 			$feed.= "		<item>\n";
-			$feed.= "			<title>" . htmlspecialchars(strip_tags($data->items[$i]->title), ENT_COMPAT, 'UTF-8') . "</title>\n";
+			$feed.= "			<title><![CDATA[" .  htmlspecialchars(strip_tags($data->items[$i]->title), ENT_COMPAT, 'UTF-8') . "]]></title>\n";
 			$feed.= "			<link>" . $url . $data->items[$i]->link . "</link>\n";
-			$feed.= "			<description><![CDATA[" . $this->_relToAbs($data->items[$i]->description) . "]]></description>\n";
+			$feed.= "			<description><![CDATA[" . htmlspecialchars($this->_relToAbs($data->items[$i]->description), ENT_COMPAT, 'UTF-8') . "]]></description>\n";
 
 			if ($data->items[$i]->author != "")
 			{
