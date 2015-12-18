@@ -67,7 +67,14 @@ class PlgFabrik_FormUpsert extends PlgFabrik_Form
 		$rowId = $w->parseMessageForPlaceholder($rowId, $this->data, false);
 		$upsertRowExists = $this->upsertRowExists($table, $pk, $rowId);
 
-		if ($upsertRowExists && $params->get('upsert_insert_only', '0') === '1')
+		/**
+		 * If row exists and "insert only", or row doesn't exist and "update only", bail out
+		 */
+		if (
+			($upsertRowExists && $params->get('upsert_insert_only', '0') === '1'))
+			||
+			(!$upsertRowExists && $params->get('upsert_insert_only', '0') === '2')
+		)
 		{
 			return true;
 		}
