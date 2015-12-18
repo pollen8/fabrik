@@ -4620,7 +4620,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		if ($groupModel->isJoin())
 		{
 			// Element is in a joined column - lets presume the user wants to sum all cols, rather than reducing down to the main cols totals
-			$sql = "SELECT SUM($name) AS value, $label FROM " . FabrikString::safeColName($item->db_table_name) . " $joinSQL $whereSQL " . $this->additionalElementCalcJoin('count_split');
+			$sql = "SELECT SUM($name) AS value, $label FROM " . FabrikString::safeColName($item->db_table_name) . " $joinSQL $whereSQL " . $this->additionalElementCalcJoin('sum_split');
 		}
 		else
 		{
@@ -4632,7 +4632,7 @@ class PlgFabrik_Element extends FabrikPlugin
 
 			$sql = "SELECT SUM(value) AS value, label
 			FROM (SELECT " . $distinct. " $item->db_primary_key, $name AS value, $label FROM " . FabrikString::safeColName($item->db_table_name)
-			. " $joinSQL $whereSQL " . $this->additionalElementCalcJoin('count_split') . ") AS t";
+			. " $joinSQL $whereSQL " . $this->additionalElementCalcJoin('sum_split') . ") AS t";
 		}
 
 		return $sql;
@@ -4654,7 +4654,17 @@ class PlgFabrik_Element extends FabrikPlugin
 		{
 			$pluginManager = FabrikWorker::getPluginManager();
 			$plugin = $pluginManager->getElementPlugin($elementId);
-			$sql = ' ' . $plugin->buildFilterJoin();
+
+			/**
+			 * If the join table_join_alias is set, it has already been joined in the buildQueryJoin
+			 * so we don't need to add it (it'll blow up with a "Not unique table/alias" if we do)
+			 */
+
+			$join = $plugin->getJoin();
+			if (!(isset($join->table_join_alias) && !empty($join->table_join_alias)))
+			{
+				$sql = ' ' . $plugin->buildFilterJoin();
+			}
 		}
 
 		return $sql;
