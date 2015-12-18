@@ -4582,7 +4582,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		{
 			// Element is in a joined column - lets presume the user wants to sum all cols, rather than reducing down to the main cols totals
 			$sql = "SELECT ROUND(AVG($name), $roundTo) AS value, $label FROM " . FabrikString::safeColName($item->db_table_name)
-			. " $joinSQL $whereSQL";
+			. " $joinSQL $whereSQL " . $this->additionalElementCalcJoin('avg_split');
 		}
 		else
 		{
@@ -4594,10 +4594,10 @@ class PlgFabrik_Element extends FabrikPlugin
 
 			$sql = "SELECT ROUND(AVG(value), $roundTo) AS value, label
 			FROM (SELECT " . $distinct . " $item->db_primary_key, $name AS value, $label FROM " . FabrikString::safeColName($item->db_table_name)
-			. " $joinSQL $whereSQL) AS t";
+			. " $joinSQL $whereSQL " . $this->additionalElementCalcJoin('avg_split') . ") AS t";
 		}
 
-		return $this->additionalElementCalcJoin('avg_split');
+		return $sql;
 	}
 
 	/**
@@ -4714,9 +4714,9 @@ class PlgFabrik_Element extends FabrikPlugin
 		$whereSQL = $listModel->buildQueryWhere();
 
 		$sql = 'SELECT ' . $this->getFullName(false, false) . ' AS value, ' . $label . ' FROM ' . FabrikString::safeColName($item->db_table_name)
-		. ' ' . $joinSQL . ' ' . $whereSQL;
+		. ' ' . $joinSQL . ' ' . $whereSQL . ' ' . $this->additionalElementCalcJoin('median_split');
 
-		return $sql . $this->additionalElementCalcJoin('median_split');
+		return $sql;
 	}
 
 	/**
