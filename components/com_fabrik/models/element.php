@@ -265,6 +265,12 @@ class PlgFabrik_Element extends FabrikPlugin
 	public $filterDisplayValues = array();
 
 	/**
+	 * Cache for eval'ed options for dropdowns
+	 * @var array
+	 */
+	protected $phpOptions = array();
+
+	/**
 	 * Constructor
 	 *
 	 * @param   object  &$subject  The object to observe
@@ -3668,6 +3674,14 @@ class PlgFabrik_Element extends FabrikPlugin
 			$data = empty($data) ? $this->getFormModel()->getData() : $data;
 			$pop = $w->parseMessageForPlaceHolder($pop, $data);
 
+			$key = md5($pop) . '-' . md5(serialize($data));
+
+			if (isset($this->phpOptions[$key]))
+			{
+				return $this->phpOptions[$key];
+			}
+
+
 			if (FabrikHelperHTML::isDebug())
 			{
 				$res = eval($pop);
@@ -3678,6 +3692,8 @@ class PlgFabrik_Element extends FabrikPlugin
 			}
 
 			FabrikWorker::logEval($res, 'Eval exception : ' . $this->element->name . '::getPhpOptions() : ' . $pop . ' : %s');
+
+			$this->phpOptions[$key] = $res;
 
 			return $res;
 		}
