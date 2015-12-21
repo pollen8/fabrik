@@ -379,11 +379,15 @@ var refreshFiles = function () {
         './fabrik_build/output/component/site/driver/mysql_fab.php');
     fs.copySync('./libraries/joomla/database/driver/mysqli_fab.php',
         './fabrik_build/output/component/site/driver/mysqli_fab.php');
+    fs.copySync('./libraries/joomla/database/driver/pdomysql_fab.php',
+    	'./fabrik_build/output/component/site/driver/pdomysql_fab.php');
     fs.mkdirsSync('./fabrik_build/output/component/site/query');
     fs.copySync('./libraries/joomla/database/query/mysql_fab.php',
         './fabrik_build/output/component/site/query/mysql_fab.php');
     fs.copySync('./libraries/joomla/database/query/mysqli_fab.php',
         './fabrik_build/output/component/site/query/mysqli_fab.php');
+    fs.copySync('./libraries/joomla/database/query/pdomysql_fab.php',
+    	'./fabrik_build/output/component/site/query/pdomysql_fab.php');
 };
 
 var component = function (version, grunt) {
