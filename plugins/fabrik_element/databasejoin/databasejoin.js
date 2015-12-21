@@ -610,6 +610,10 @@ var FbDatabasejoin = new Class({
 			}
 		}
 		this.options.value = val;
+		if (this.options.advanced)
+		{
+			jQuery("#" + this.element.id).trigger("liszt:updated");
+		}
 	},
 
 	/**
