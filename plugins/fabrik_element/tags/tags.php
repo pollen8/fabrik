@@ -60,7 +60,10 @@ class PlgFabrik_ElementTags extends PlgFabrik_ElementDatabasejoin
 		$opts = $this->getElementJSOptions($repeatCounter);
 		$opts->rowid = $this->getFormModel()->getRowId();
 		$opts->id = $this->id;
-
+		$opts->allTags = $this->allTagsJSON();
+		$opts->formid = $this->getFormModel()->id;
+		$opts->listid = $this->getListModel()->getId();
+		$opts->url = $this->tagListURL();
 		return array('FbTags', $id, $opts);
 	}
 
@@ -120,7 +123,6 @@ class PlgFabrik_ElementTags extends PlgFabrik_ElementDatabasejoin
 			$baseUrl = $this->tagUrl();
 			$icon = $this->tagIcon();
 			$data = FabrikHelperHTML::tagify($d, $baseUrl, $name, $icon);
-
 			return implode("\n", $data);
 		}
 	}
@@ -326,8 +328,24 @@ class PlgFabrik_ElementTags extends PlgFabrik_ElementDatabasejoin
 		$query->select('DISTINCT(t.id) AS value,' . $db->qn('title') . ' AS text')
 		->from($db->qn($join->table_join) . ' AS ' . $db->qn($join->table_join_alias))
 		->join('LEFT', $this->getDbName() . ' AS t ON t.id = ' . $db->qn($join->table_join_alias . '.' . $join->table_key));
+		$db->setQuery($query);
+		$query->opts = $db->loadObjectList();
 
 		return $query;
+	}
+
+	public function allTagsJSON()
+	{
+		$db = $this->getDb();
+		$query = $db->getQuery(true);
+		$query->select($db->qn('id') . ' AS value, ' . $db->qn('title') . ' AS text')
+		->from($db->qn($this->getDbName()))
+		->where($db->qn('parent_id') . ' > 0');
+		$query = $this->buildQueryWhere(null, null, null, null, $query);
+		$db->setQuery($query);
+		$query->opts = $db->loadObjectList();
+
+		return $query->opts;
 	}
 
 	/**
