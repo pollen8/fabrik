@@ -1381,7 +1381,7 @@ class Csv_Bv
 		}
 
 		// Decode three byte unicode characters
-		$pattern = "/([\340-\357])([\200-\277])([\200-\277])";
+		$pattern = "/([\340-\357])([\200-\277])([\200-\277])/";
 		$string  = preg_replace_callback(
 			$pattern,
 			function($m) {
@@ -1392,7 +1392,7 @@ class Csv_Bv
 
 		// Decode two byte unicode characters
 		$string = preg_replace_callback(
-			"/([\300-\337])([\200-\277])",
+			"/([\300-\337])([\200-\277])/",
 			function ($m) {
 				return '&#' . ((ord($m[1])-192)*64+(ord($m[2])-128));
 			},
