@@ -8979,15 +8979,19 @@ class FabrikFEModelList extends JModelForm
 	/**
 	 * Make the drop sql statement for the table
 	 *
-	 * @return  string  drop table sql
+	 * @return  string|bool  drop table sql
 	 */
 	public function getDropTableSQL()
 	{
 		$db = FabrikWorker::getDbo();
 		$genTable = $this->getGenericTableName();
-		$sql = "DROP TABLE IF EXISTS " . $db->qn($genTable);
 
-		return $sql;
+		if ($genTable === '')
+		{
+			return false;
+		}
+
+		return 'DROP TABLE IF EXISTS ' . $db->qn($genTable);
 	}
 
 	/**
