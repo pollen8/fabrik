@@ -1853,7 +1853,6 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		$filePath = $storage->getUploadedFilePath();
 		jimport('joomla.filesystem.path');
 		$storage->setPermissions($filePath);
-		$fileExt = JFile::getExt($filePath);
 
 		if (FabrikWorker::isImageExtension($filePath))
 		{
@@ -1909,9 +1908,8 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 
 		// $$$ hugh - if it's a PDF, make sure option is set to attempt PDF thumb
 		$make_thumbnail = $params->get('make_thumbnail') == '1' ? true : false;
-		$pdfPage = (int) $params->get('pdf_thumb_from_page', 1) - 1;
 
-		if ($fileExt == 'pdf' && $params->get('fu_make_pdf_thumb', '0') == '0')
+		if (JFile::getExt($filePath) == 'pdf' && $params->get('fu_make_pdf_thumb', '0') == '0')
 		{
 			$make_thumbnail = false;
 		}
@@ -1944,27 +1942,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 			}
 
 			$fileURL = $storage->getFileUrl(str_replace(COM_FABRIK_BASE, '', $filePath));
-			if ($fileExt = 'pdf')
-			{
-				/*
-				$imagick = new Imagick();
-				$imagick->readImage($fileURL);
-				$fileURL = (str_replace('.pdf', '.jpg', $fileURL));
-				$imagick->writeImage($fileURL);
-				$nameto = str_replace('.jpg', '-' . $pdfPage . '.jpg', $fileURL);
-				*/
-				$location   = "/usr/local/bin/convert"; // Binaries Location
-				$name       = $fileURL . '[' . $pdfPage . ']'; //Source PDF File
-				$to     = str_replace('.pdf', '.png', $fileURL); // Output File
-				$convert    = $location . " " . $name . " ".$to; // Command creating
-				exec ($convert); // Execution of complete command.
-				$nameto = str_replace('.png', '-' . $pdfPage . '.png', $to);
-				$destThumbFile = $storage->_getThumb($nameto);
-			}
-			else
-			{
-				$destThumbFile = $storage->_getThumb($fileURL);
-			}
+			$destThumbFile = $storage->_getThumb($fileURL);
 			$destThumbFile = $storage->urlToPath($destThumbFile);
 			$oImage->resize($maxWidth, $maxHeight, $filePath, $destThumbFile, $quality);
 			$storage->setPermissions($destThumbFile);
