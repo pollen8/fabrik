@@ -283,7 +283,16 @@ class FabrikFEModelImportcsv extends JModelForm
 				foreach ($arr_data as &$heading)
 				{
 					// Remove UFT8 Byte-Order-Mark if present
-					if (substr($heading, 0, 3) == pack("CCC", 0xef, 0xbb, 0xbf))
+
+					/*
+					 * $$$ hugh - for some bizarre reason, this code was stripping the first two characters of the heading
+					 * on one of my client sites, so "Foo Bar" was becoming "o_Bar" if the CSV had a BOM.  So I'm experimenting with just using a str_replace,
+					 * which works on the CSV I'm having issues with.  I've left the original code in place as belt-and-braces.
+					 */
+					$heading = str_replace("\xEF\xBB\xBF",'',$heading);
+
+					$bom = pack("CCC", 0xef, 0xbb, 0xbf);
+					if (0 === strncmp($heading, $bom, 3))
 					{
 						$heading = String::substr($heading, 3);
 					}
