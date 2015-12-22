@@ -638,10 +638,11 @@ class FabrikAdminModelContentType extends FabModelAdmin
 	 * Get default insert fields - either from content type or defaultfields input value
 	 *
 	 * @param string|null $contentType
+	 * @param array       $groupData   Group info
 	 *
 	 * @return array
 	 */
-	public function getDefaultInsertFields($contentType = null)
+	public function getDefaultInsertFields($contentType = null, $groupData = array())
 	{
 		$input = $this->app->input;
 
@@ -653,7 +654,20 @@ class FabrikAdminModelContentType extends FabModelAdmin
 		else
 		{
 			// Could be importing from a CSV in which case default fields are set.
-			$fields = $input->get('defaultfields', array('id' => 'internalid', 'date_time' => 'date'), 'array');
+			$fields     = $input->get('defaultfields', array('id' => 'internalid', 'date_time' => 'date'), 'array');
+			$primaryKey = array_keys($input->get('key', array(), 'array'));
+			$primaryKey = array_pop($primaryKey);
+			$elements   = array();
+
+			foreach ($fields as $name => $plugin)
+			{
+				$pk         = $name === $primaryKey ? 1 : 0;
+				$elements[] = array('plugin' => $plugin, 'label' => $name, 'name' => $name, 'primary_key' => $pk);
+			}
+
+			$xml = $this->createXMLFromArray($groupData, $elements);
+			$this->doc->loadXML($xml);
+			$fields = $this->createGroupsFromContentType();
 		}
 
 		return $fields;
@@ -728,7 +742,6 @@ class FabrikAdminModelContentType extends FabModelAdmin
 		// We don't want to export the main table, as a new one is created when importing the content type
 		$this->listModel = $formModel->getListModel();
 		$mainTable       = $this->listModel->getTable()->get('db_table_name');
-		$tableParams     = array('table_join', 'join_from_table');
 		$contentType     = $this->doc->createElement('contenttype');
 		$tables          = $this->iniTableXML();
 
@@ -739,62 +752,16 @@ class FabrikAdminModelContentType extends FabModelAdmin
 
 		foreach ($groups as $groupModel)
 		{
-			$groupData = $groupModel->getGroup()->getProperties();
-
-			$group         = $this->buildExportNode('group', $groupData);
+			$groupData     = $groupModel->getGroup()->getProperties();
+			$elements      = arary();
 			$elementModels = $groupModel->getMyElements();
-
-			if ($groupData['is_join'] === '1')
-			{
-				$join = FabTable::getInstance('Join', 'FabrikTable');
-				$join->load($groupData['join_id']);
-
-				foreach ($tableParams as $tableParam)
-				{
-					if ($join->get($tableParam) !== $mainTable)
-					{
-						$this->createTableXML($tables, $join->get($tableParam));
-					}
-				}
-
-				$groupJoin = $this->buildExportNode('join', $join->getProperties(), array('id'));
-				$group->appendChild($groupJoin);
-			}
 
 			foreach ($elementModels as $elementModel)
 			{
-				$elementData = $elementModel->getElement()->getProperties();
-
-				if (in_array($elementData['plugin'], $this->invalidPlugins))
-				{
-					throw new UnexpectedValueException('Sorry we can not create content types with ' .
-						$elementData['plugin'] . ' element plugins');
-				}
-
-				if (in_array($elementData['plugin'], $this->pluginsWithTables))
-				{
-					$elementParams = new Registry($elementData['params']);
-
-					if ($elementParams->get('join_db_name') !== $mainTable)
-					{
-						$this->createTableXML($tables, $elementParams->get('join_db_name'));
-					}
-				};
-
-				$element = $this->buildExportNode('element', $elementData);
-
-				if (is_a($elementModel, 'PlgFabrik_ElementDatabasejoin'))
-				{
-					$join = FabTable::getInstance('Join', 'FabrikTable');
-					$join->load(array('element_id' => $elementData['id']));
-					$elementJoin = $this->buildExportNode('join', $join->getProperties(), array('id'));
-					$element->appendChild($elementJoin);
-				}
-
-				$group->appendChild($element);
+				$elements[] = $elementModel->getElement()->getProperties();
 			}
 
-			$contentType->appendChild($group);
+			$contentType->appendChild($this->createFabrikGroupXML($groupData, $elements, $tables, $mainTable));
 		}
 
 		$contentType->appendChild($tables);
@@ -815,6 +782,113 @@ class FabrikAdminModelContentType extends FabModelAdmin
 		}
 
 		return false;
+	}
+
+	/**
+	 * Create content type XML from an array of group/element data
+	 * Used in CSV import
+	 *
+	 * @param   array $groupData
+	 * @param   array $elements
+	 *
+	 * @return string
+	 */
+	protected function createXMLFromArray($groupData, $elements)
+	{
+		$contentType = $this->doc->createElement('contenttype');
+		$tables      = $this->iniTableXML();
+		$name        = $this->doc->createElement('name', 'tmp');
+		$contentType->appendChild($name);
+		$contentType->appendChild($this->createFabrikGroupXML($groupData, $elements, $tables));
+		$contentType->appendChild($tables);
+		$contentType->appendChild($this->createViewLevelXML());
+		$contentType->appendChild($this->createGroupXML());
+		$this->doc->appendChild($contentType);
+
+		return $this->doc->saveXML();
+	}
+
+	/**
+	 * Create group XML
+	 *
+	 * @param array      $data     Group data
+	 * @param array      $elements Element data
+	 * @param DomElement $tables
+	 * @param string     $mainTable
+	 *
+	 * @return DOMElement
+	 */
+	private function createFabrikGroupXML($data, $elements, $tables, $mainTable = '')
+	{
+		$tableParams = array('table_join', 'join_from_table');
+
+		$group = $this->buildExportNode('group', $data);
+
+		if ($data['is_join'] === '1')
+		{
+			$join = FabTable::getInstance('Join', 'FabrikTable');
+			$join->load($data['join_id']);
+
+			foreach ($tableParams as $tableParam)
+			{
+				if ($join->get($tableParam) !== $mainTable)
+				{
+					$this->createTableXML($tables, $join->get($tableParam));
+				}
+			}
+
+			$groupJoin = $this->buildExportNode('join', $join->getProperties(), array('id'));
+			$group->appendChild($groupJoin);
+		}
+
+		foreach ($elements as $element)
+		{
+			$group->appendChild($this->createFabrikElementXML($element, $tables, $mainTable));
+		}
+
+		return $group;
+	}
+
+	/**
+	 * Create element XML
+	 *
+	 * @param   array      $data Element data
+	 * @param   DomElement $tables
+	 * @param   string     $mainTable
+	 *
+	 * @return DOMElement
+	 */
+	private function createFabrikElementXML($data, $tables, $mainTable)
+	{
+		if (in_array($data['plugin'], $this->invalidPlugins))
+		{
+			throw new UnexpectedValueException('Sorry we can not create content types with ' .
+				$data['plugin'] . ' element plugins');
+		}
+
+		if (in_array($data['plugin'], $this->pluginsWithTables))
+		{
+			$params = new Registry($data['params']);
+
+			if ($params->get('join_db_name') !== $mainTable)
+			{
+				$this->createTableXML($tables, $params->get('join_db_name'));
+			}
+		};
+
+		$element       = $this->buildExportNode('element', $data);
+		$pluginManager = FabrikWorker::getPluginManager();
+		$elementModel  = clone($pluginManager->getPlugIn($data['plugin'], 'element'));
+
+		if (is_a($elementModel, 'PlgFabrik_ElementDatabasejoin'))
+		{
+			$join = FabTable::getInstance('Join', 'FabrikTable');
+			$join->load(array('element_id' => $data['id']));
+			$elementJoin = $this->buildExportNode('join', $join->getProperties(), array('id'));
+			$element->appendChild($elementJoin);
+		}
+
+		return $element;
 	}
 
 	/**
@@ -1143,9 +1217,12 @@ class FabrikAdminModelContentType extends FabModelAdmin
 			$layoutData->match = false;
 		}
 
-		if ($parent[0]->getAttribute('ignoreacl') === 'true')
+		foreach ($parent as $p)
 		{
-			$layoutData->match = true;
+			if ($p->getAttribute('ignoreacl') === 'true')
+			{
+				$layoutData->match = true;
+			}
 		}
 
 		$layout = FabrikHelperHTML::getLayout('fabrik-content-type-compare');
