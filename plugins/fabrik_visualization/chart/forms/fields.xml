@@ -12,7 +12,7 @@
 			<field name="deprecated"
 			       type="spacer"
 			       label="COM_FABRIK_DEPRECATED_PLUGIN"/>
-			
+
 			<field label="PLG_VISUALIZATION_CHART_CONNECTION_LABEL"
 			       name="chart_connection"
 			       type="connections"/>
