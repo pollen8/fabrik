@@ -1707,7 +1707,7 @@ class PlgFabrik_Element extends FabrikPlugin
 
 		$rollOver = $this->tipHtml($data, $mode);
 
-		return $rollOver !== '' ? '<span class="fabrikTip" ' . $rollOver . '">' . $txt . '</span>' : $txt;
+		return $rollOver !== '' ? '<span class="fabrikTip" ' . $rollOver . '>' . $txt . '</span>' : $txt;
 	}
 
 	/**
