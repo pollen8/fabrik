@@ -685,8 +685,9 @@ class FabrikAdminModelList extends FabModelAdmin
 				$row->set('created', $date->toSql());
 			}
 
-			$isNew    = false;
-			$newTable = trim(FArrayHelper::getValue($data, '_database_name'));
+			$isNew         = false;
+			$existingTable = ArrayHelper::getValue($data, 'db_table_name', '');
+			$newTable      = $existingTable === '' ? trim(FArrayHelper::getValue($data, '_database_name')) : '';
 
 			// Mysql will force db table names to lower case even if you set the db name to upper case - so use clean()
 			$newTable = FabrikString::clean($newTable);
