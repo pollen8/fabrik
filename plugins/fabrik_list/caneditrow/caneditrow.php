@@ -11,6 +11,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\Utilities\ArrayHelper;
+
 // Require the abstract plugin class
 require_once COM_FABRIK_FRONTEND . '/models/plugin-list.php';
 
@@ -57,7 +59,7 @@ class PlgFabrik_ListCaneditrow extends PlgFabrik_List
 
 		if (is_array($row[0]))
 		{
-			$data = JArrayHelper::toObject($row[0]);
+			$data = ArrayHelper::toObject($row[0]);
 		}
 		else
 		{
@@ -89,7 +91,7 @@ class PlgFabrik_ListCaneditrow extends PlgFabrik_List
 		if (!empty($caneditrow_eval))
 		{
 			$w = new FabrikWorker;
-			$data = JArrayHelper::fromObject($data);
+			$data = ArrayHelper::fromObject($data);
 			$caneditrow_eval = $w->parseMessageForPlaceHolder($caneditrow_eval, $data);
 			FabrikWorker::clearEval();
 			$caneditrow_eval = @eval($caneditrow_eval);
@@ -111,7 +113,7 @@ class PlgFabrik_ListCaneditrow extends PlgFabrik_List
 
 			if (is_object($data->$field))
 			{
-				$data->$field = JArrayHelper::fromObject($data->$field);
+				$data->$field = ArrayHelper::fromObject($data->$field);
 			}
 
 			switch ($operator)

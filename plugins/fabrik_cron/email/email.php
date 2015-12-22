@@ -11,6 +11,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\Utilities\ArrayHelper;
+
 // Require the abstract plugin class
 require_once COM_FABRIK_FRONTEND . '/models/plugin-cron.php';
 
@@ -76,7 +78,7 @@ class PlgFabrik_Cronemail extends PlgFabrik_Cron
 						}
 					}
 
-					$row = JArrayHelper::fromObject($row);
+					$row = ArrayHelper::fromObject($row);
 
 					foreach ($to as $thisTo)
 					{

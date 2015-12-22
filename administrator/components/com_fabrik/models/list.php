@@ -14,6 +14,10 @@ defined('_JEXEC') or die('Restricted access');
 
 require_once 'fabmodeladmin.php';
 
+use \Joomla\String\String;
+use \Joomla\Utilities\ArrayHelper;
+use \Joomla\Registry\Registry;
+
 /**
  * Fabrik Admin List Model
  *
@@ -69,13 +73,13 @@ class FabrikAdminModelList extends FabModelAdmin
 	/**
 	 * Returns a reference to the a Table object, always creating it.
 	 *
-	 * @param   string  $type    The table type to instantiate
-	 * @param   string  $prefix  A prefix for the table class name. Optional.
-	 * @param   array   $config  Configuration array for model. Optional.
+	 * @param   string $type   The table type to instantiate
+	 * @param   string $prefix A prefix for the table class name. Optional.
+	 * @param   array  $config Configuration array for model. Optional.
 	 *
-	 * @return  JTable	A database object
+	 * @return  FabTableList    List table
 	 *
-	 * @since	1.6
+	 * @since    1.6
 	 */
 	public function getTable($type = 'List', $prefix = 'FabrikTable', $config = array())
 	{
@@ -83,7 +87,7 @@ class FabrikAdminModelList extends FabModelAdmin
 
 		if (!array_key_exists($sig, $this->tables))
 		{
-			$config['dbo'] = FabrikWorker::getDbo(true);
+			$config['dbo']      = FabrikWorker::getDbo(true);
 			$this->tables[$sig] = FabTable::getInstance($type, $prefix, $config);
 		}
 
@@ -93,12 +97,12 @@ class FabrikAdminModelList extends FabModelAdmin
 	/**
 	 * Method to get the record form.
 	 *
-	 * @param   array  $data      Data for the form.
-	 * @param   bool   $loadData  True if the form is to load its own data (default case), false if not.
+	 * @param   array $data     Data for the form.
+	 * @param   bool  $loadData True if the form is to load its own data (default case), false if not.
 	 *
-	 * @return  mixed	A JForm object on success, false on failure
+	 * @return  mixed    A JForm object on success, false on failure
 	 *
-	 * @since	1.6
+	 * @since    1.6
 	 */
 	public function getForm($data = array(), $loadData = true)
 	{
@@ -118,12 +122,12 @@ class FabrikAdminModelList extends FabModelAdmin
 	/**
 	 * Method to get the confirm list delete form.
 	 *
-	 * @param   array  $data      Data for the form.
-	 * @param   bool   $loadData  True if the form is to load its own data (default case), false if not.
+	 * @param   array $data     Data for the form.
+	 * @param   bool  $loadData True if the form is to load its own data (default case), false if not.
 	 *
 	 * @return  mixed  A JForm object on success, false on failure
 	 *
-	 * @since	1.6
+	 * @since    1.6
 	 */
 	public function getConfirmDeleteForm($data = array(), $loadData = true)
 	{
@@ -139,11 +143,28 @@ class FabrikAdminModelList extends FabModelAdmin
 	}
 
 	/**
+	 * Method to get the select content type form.
+	 *
+	 * @param   array $data     Data for the form.
+	 * @param   bool  $loadData True if the form is to load its own data (default case), false if not.
+	 *
+	 * @return  JForm|bool  A JForm object on success, false on failure
+	 *
+	 * @since    3.3.5
+	 */
+	public function getContentTypeForm($data = array(), $loadData = true)
+	{
+		$contentTypeModel = JModelLegacy::getInstance('ContentType', 'FabrikAdminModel', array('listModel' => $this));
+
+		return $contentTypeModel->getForm($data, $loadData);
+	}
+
+	/**
 	 * Method to get the data that should be injected in the form.
 	 *
-	 * @return  mixed	The data for the form.
+	 * @return  mixed    The data for the form.
 	 *
-	 * @since	1.6
+	 * @since    1.6
 	 */
 	protected function loadFormData()
 	{
@@ -161,19 +182,19 @@ class FabrikAdminModelList extends FabModelAdmin
 	/**
 	 * Method to change the published state of one or more records.
 	 *
-	 * @param   array  &$pks   A list of the primary keys to change.
-	 * @param   int    $value  The value of the published state.
+	 * @param   array &$pks  A list of the primary keys to change.
+	 * @param   int   $value The value of the published state.
 	 *
-	 * @return  boolean	True on success.
+	 * @return  boolean    True on success.
 	 *
-	 * @since	1.6
+	 * @since    1.6
 	 */
 	public function publish(&$pks, $value = 1)
 	{
 		// Initialise variables.
-		$dispatcher = JDispatcher::getInstance();
-		$table = $this->getTable();
-		$pks = (array) $pks;
+		$dispatcher = JEventDispatcher::getInstance();
+		$table      = $this->getTable();
+		$pks        = (array) $pks;
 
 		// Include the content plugins for the change of state event.
 		JPluginHelper::importPlugin('content');
@@ -218,18 +239,18 @@ class FabrikAdminModelList extends FabModelAdmin
 	/**
 	 * Build and/or dropdown list
 	 *
-	 * @param   bool    $addSlashes  to reutrn data
-	 * @param   string  $name        input name
+	 * @param   bool   $addSlashes to reutrn data
+	 * @param   string $name       input name
 	 *
 	 * @return string dropdown
 	 */
 	protected function getFilterJoinDd($addSlashes = true, $name = 'join')
 	{
-		$aConditions = array();
+		$aConditions   = array();
 		$aConditions[] = JHTML::_('select.option', 'AND');
 		$aConditions[] = JHTML::_('select.option', 'OR');
-		$attribs = 'class="inputbox input-small" size="1"';
-		$dd = str_replace("\n", "", JHTML::_('select.genericlist', $aConditions, $name, $attribs, 'value', 'text', ''));
+		$attribs       = 'class="inputbox input-small" size="1"';
+		$dd            = str_replace("\n", "", JHTML::_('select.genericlist', $aConditions, $name, $attribs, 'value', 'text', ''));
 
 		if ($addSlashes)
 		{
@@ -242,9 +263,9 @@ class FabrikAdminModelList extends FabModelAdmin
 	/**
 	 * Build prefilter dropdown
 	 *
-	 * @param   bool    $addSlashes  add slashes to reutrn data
-	 * @param   string  $name        name of the drop down
-	 * @param   int     $mode        states what values get put into drop down
+	 * @param   bool   $addSlashes add slashes to reutrn data
+	 * @param   string $name       name of the drop down
+	 * @param   int    $mode       states what values get put into drop down
 	 *
 	 * @return string dropdown
 	 */
@@ -310,7 +331,7 @@ class FabrikAdminModelList extends FabModelAdmin
 	 */
 	protected function getCnn()
 	{
-		$item = $this->getItem();
+		$item      = $this->getItem();
 		$connModel = JModelLegacy::getInstance('Connection', 'FabrikFEModel');
 		$connModel->setId($item->connection_id);
 		$connModel->getConnection($item->connection_id);
@@ -326,7 +347,7 @@ class FabrikAdminModelList extends FabModelAdmin
 	public function getJs()
 	{
 		$connModel = $this->getCnn();
-		$item = $this->getItem();
+		$item      = $this->getItem();
 		JText::script('COM_FABRIK_OPTIONS');
 		JText::script('COM_FABRIK_JOIN');
 		JText::script('COM_FABRIK_FIELD');
@@ -351,47 +372,47 @@ class FabrikAdminModelList extends FabModelAdmin
 		JText::script('COM_FABRIK_REPEAT_GROUP_BUTTON_LABEL');
 		JText::script('COM_FABRIK_PUBLISHED');
 
-		$joinTypeOpts = array();
-		$joinTypeOpts[] = array('inner', FText::_('INNER JOIN'));
-		$joinTypeOpts[] = array('left', FText::_('LEFT JOIN'));
-		$joinTypeOpts[] = array('right', FText::_('RIGHT JOIN'));
-		$activetableOpts[] = "";
-		$activetableOpts[] = $item->db_table_name;
+		$joinTypeOpts      = array();
+		$joinTypeOpts[]    = array('inner', FText::_('INNER JOIN'));
+		$joinTypeOpts[]    = array('left', FText::_('LEFT JOIN'));
+		$joinTypeOpts[]    = array('right', FText::_('RIGHT JOIN'));
+		$activeTableOpts[] = '';
+		$activeTableOpts[] = $item->get('db_table_name');
 
 		$joins = $this->getJoins();
 
 		for ($i = 0; $i < count($joins); $i++)
 		{
-			$j = $joins[$i];
-			$activetableOpts[] = $j->table_join;
-			$activetableOpts[] = $j->join_from_table;
+			$j                 = $joins[$i];
+			$activeTableOpts[] = $j->table_join;
+			$activeTableOpts[] = $j->join_from_table;
 		}
 
-		$activetableOpts = array_unique($activetableOpts);
-		$activetableOpts = array_values($activetableOpts);
-		$opts = new stdClass;
-		$opts->joinOpts = $joinTypeOpts;
-		$opts->tableOpts = $connModel->getThisTables(true);
-		$opts->activetableOpts = $activetableOpts;
-		$opts->j3 = FabrikWorker::j3();
-		$opts = json_encode($opts);
+		$activeTableOpts       = array_unique($activeTableOpts);
+		$activeTableOpts       = array_values($activeTableOpts);
+		$opts                  = new stdClass;
+		$opts->joinOpts        = $joinTypeOpts;
+		$opts->tableOpts       = $connModel->getThisTables(true);
+		$opts->activetableOpts = $activeTableOpts;
+		$opts->j3              = FabrikWorker::j3();
+		$opts                  = json_encode($opts);
 
-		$filterOpts = new stdClass;
+		$filterOpts               = new stdClass;
 		$filterOpts->filterJoinDd = $this->getFilterJoinDd(false, 'jform[params][filter-join][]');
 		$filterOpts->filterCondDd = $this->getFilterConditionDd(false, 'jform[params][filter-conditions][]', 2);
 		$filterOpts->filterAccess = JHtml::_('access.level', 'jform[params][filter-access][]', $item->access, 'class="input-small"');
 		$filterOpts->filterAccess = str_replace(array("\n", "\r"), '', $filterOpts->filterAccess);
-		$filterOpts->j3 = FabrikWorker::j3();
-		$filterOpts = json_encode($filterOpts);
+		$filterOpts->j3           = FabrikWorker::j3();
+		$filterOpts               = json_encode($filterOpts);
 
-		$formModel = $this->getFormModel();
-		$attribs = 'class="inputbox input-small" size="1"';
+		$formModel    = $this->getFormModel();
+		$attribs      = 'class="inputbox input-small" size="1"';
 		$filterfields = $formModel->getElementList('jform[params][filter-fields][]', '', false, false, true, 'name', $attribs);
 		$filterfields = addslashes(str_replace(array("\n", "\r"), '', $filterfields));
 
 		$plugins = json_encode($this->getPlugins());
 
-		$js = array();
+		$js   = array();
 		$js[] = "window.addEvent('domready', function () {";
 		$js[] = "Fabrik.controller = new PluginManager($plugins, " . (int) $this->getItem()->id . ", 'list');";
 
@@ -401,35 +422,35 @@ class FabrikAdminModelList extends FabModelAdmin
 		for ($i = 0; $i < count($joins); $i++)
 		{
 			$joinGroupParams = json_decode($joins[$i]->params);
-			$j = $joins[$i];
-			$joinFormFields = json_encode($j->joinFormFields);
-			$joinToFields = json_encode($j->joinToFields);
-			$repeat = $joinGroupParams->repeat_group_button == 1 ? 1 : 0;
-			$js[] = "	oAdminTable.addJoin('{$j->group_id}','{$j->id}','{$j->join_type}','{$j->table_join}',"
-			. "'{$j->table_key}','{$j->table_join_key}','{$j->join_from_table}', $joinFormFields, $joinToFields, $repeat);";
+			$j               = $joins[$i];
+			$joinFormFields  = json_encode($j->joinFormFields);
+			$joinToFields    = json_encode($j->joinToFields);
+			$repeat          = $joinGroupParams->repeat_group_button == 1 ? 1 : 0;
+			$js[]            = "	oAdminTable.addJoin('{$j->group_id}','{$j->id}','{$j->join_type}','{$j->table_join}',"
+				. "'{$j->table_key}','{$j->table_join_key}','{$j->join_from_table}', $joinFormFields, $joinToFields, $repeat);";
 		}
 
-		$js[] = "oAdminFilters = new adminFilters('filterContainer', '$filterfields', $filterOpts);";
-		$form = $this->getForm();
+		$js[]         = "oAdminFilters = new adminFilters('filterContainer', '$filterfields', $filterOpts);";
+		$form         = $this->getForm();
 		$afilterJoins = $form->getValue('params.filter-join');
 
 		// Force to arrays as single prefilters imported from 2.x will be stored as string values
-		$afilterFields = (array) $form->getValue('params.filter-fields');
+		$filterFields      = (array) $form->getValue('params.filter-fields');
 		$afilterConditions = (array) $form->getValue('params.filter-conditions');
-		$afilterEval = (array) $form->getValue('params.filter-eval');
-		$afilterValues = (array) $form->getValue('params.filter-value');
-		$afilterAccess = (array) $form->getValue('params.filter-access');
-		$aGrouped = (array) $form->getValue('params.filter-grouped');
+		$afilterEval       = (array) $form->getValue('params.filter-eval');
+		$afilterValues     = (array) $form->getValue('params.filter-value');
+		$afilterAccess     = (array) $form->getValue('params.filter-access');
+		$aGrouped          = (array) $form->getValue('params.filter-grouped');
 
-		for ($i = 0; $i < count($afilterFields); $i++)
+		for ($i = 0; $i < count($filterFields); $i++)
 		{
 			$selJoin = FArrayHelper::getValue($afilterJoins, $i, 'and');
 
 			// 2.0 upgraded sites had quoted filter names
-			$selFilter = str_replace('`', '', $afilterFields[$i]);
-			$grouped = FArrayHelper::getValue($aGrouped, $i, 0);
+			$selFilter    = str_replace('`', '', $filterFields[$i]);
+			$grouped      = FArrayHelper::getValue($aGrouped, $i, 0);
 			$selCondition = $afilterConditions[$i];
-			$filerEval = (int) FArrayHelper::getValue($afilterEval, $i, '1');
+			$filerEval    = (int) FArrayHelper::getValue($afilterEval, $i, '1');
 
 			if ($selCondition == '&gt;')
 			{
@@ -441,7 +462,7 @@ class FabrikAdminModelList extends FabModelAdmin
 				$selCondition = '<';
 			}
 
-			$selValue = FArrayHelper::getValue($afilterValues, $i, '');
+			$selValue  = FArrayHelper::getValue($afilterValues, $i, '');
 			$selAccess = $afilterAccess[$i];
 
 			// Allow for multi-line js variables ?
@@ -471,18 +492,18 @@ class FabrikAdminModelList extends FabModelAdmin
 			return array();
 		}
 
-		$db = FabrikWorker::getDbo(true);
+		$db    = FabrikWorker::getDbo(true);
 		$query = $db->getQuery(true);
 		$query->select('*, j.id AS id, j.params as jparams')->from('#__{package}_joins AS j')
 			->join('INNER', '#__{package}_groups AS g ON g.id = j.group_id')->where('j.list_id = ' . (int) $item->id);
 		$db->setQuery($query);
-		$joins = $db->loadObjectList();
+		$joins    = $db->loadObjectList();
 		$fabrikDb = $this->getFEModel()->getDb();
-		$c = count($joins);
+		$c        = count($joins);
 
 		for ($i = 0; $i < $c; $i++)
 		{
-			$join =& $joins[$i];
+			$join    =& $joins[$i];
 			$jparams = $join->jparams == '' ? new stdClass : json_decode($join->jparams);
 
 			if (isset($jparams->type) && ($jparams->type == 'element' || $jparams->type == 'repeatElement'))
@@ -497,11 +518,12 @@ class FabrikAdminModelList extends FabModelAdmin
 				continue;
 			}
 
-			$fields = $fabrikDb->getTableColumns($join->join_from_table);
+			$fields               = $fabrikDb->getTableColumns($join->join_from_table);
 			$join->joinFormFields = array_keys($fields);
-			$fields = $fabrikDb->getTableColumns($join->table_join);
-			$join->joinToFields = array_keys($fields);
+			$fields               = $fabrikDb->getTableColumns($join->table_join);
+			$join->joinToFields   = array_keys($fields);
 		}
+
 		// $$$ re-index the array in case we zapped anything
 		return array_values($joins);
 	}
@@ -515,8 +537,8 @@ class FabrikAdminModelList extends FabModelAdmin
 	{
 		if (is_null($this->formModel))
 		{
-			$config = array();
-			$config['dbo'] = FabrikWorker::getDbo(true);
+			$config          = array();
+			$config['dbo']   = FabrikWorker::getDbo(true);
 			$this->formModel = JModelLegacy::getInstance('Form', 'FabrikFEModel', $config);
 			$this->formModel->setDbo($config['dbo']);
 
@@ -534,7 +556,6 @@ class FabrikAdminModelList extends FabModelAdmin
 			$item = $this->getItem();
 			$this->formModel->setId($this->getState('list.form_id', $item->id));
 
-
 			/**
 			 * $$$ rob isnt this wrong as normally the front end form models list model is the fe list model?
 			 * $this->formModel->setListModel($this);
@@ -547,7 +568,7 @@ class FabrikAdminModelList extends FabModelAdmin
 	/**
 	 * Set the form model
 	 *
-	 * @param   object  $model  form model
+	 * @param   object $model form model
 	 *
 	 * @return  void
 	 */
@@ -575,16 +596,16 @@ class FabrikAdminModelList extends FabModelAdmin
 	/**
 	 * Validate the form
 	 *
-	 * @param   object  $form   The form to validate against.
-	 * @param   array   $data   The data to validate.
-	 * @param   string  $group  The name of the field group to validate.
+	 * @param   JForm  $form  The form to validate against.
+	 * @param   array  $data  The data to validate.
+	 * @param   string $group The name of the field group to validate.
 	 *
 	 * @return mixed  false or data
 	 */
 	public function validate($form, $data, $group = null)
 	{
 		$params = $data['params'];
-		$data = parent::validate($form, $data, $group);
+		$data   = parent::validate($form, $data, $group);
 
 		if (!$data)
 		{
@@ -607,7 +628,7 @@ class FabrikAdminModelList extends FabModelAdmin
 	/**
 	 * Save the form
 	 *
-	 * @param   array  $data  the jform part of the request data
+	 * @param   array $data the jForm part of the request data
 	 *
 	 * @return  bool
 	 */
@@ -615,37 +636,35 @@ class FabrikAdminModelList extends FabModelAdmin
 	{
 		$this->populateState();
 		$input = $this->app->input;
-		$date = JFactory::getDate();
-		$row = $this->getTable();
+		$jForm = $input->get('jform', array(), 'array');
+		$date  = JFactory::getDate();
+		$row   = $this->getTable();
 
 		$id = FArrayHelper::getValue($data, 'id');
 		$row->load($id);
 
-		$params = new JRegistry($row->params);
+		$params = new Registry($row->get('params'));
 
 		$this->setState('list.id', $id);
-		$this->setState('list.form_id', $row->form_id);
+		$this->setState('list.form_id', $row->get('form_id'));
 		$feModel = $this->getFEModel();
-		$formModel = $this->getFormModel();
+
+		/** @var $contentTypeModel FabrikAdminModelContentType */
+		$contentTypeModel = JModelLegacy::getInstance('ContentType', 'FabrikAdminModel', array('listModel' => $this));
+		$contentType      = ArrayHelper::getValue($jForm, 'contenttype', '');
+
+		if ($contentType !== '')
+		{
+			$contentTypeModel->check($contentType);
+		}
 
 		// Get original collation
-		$db = $feModel->getDb();
-
-		if (!empty($data['db_table_name']))
-		{
-			$db->setQuery('SHOW TABLE STATUS LIKE ' . $db->quote($data['db_table_name']));
-			$info = $db->loadObject();
-			$origCollation = is_object($info) ? $info->Collation : $params->get('collation', 'none');
-		}
-		else
-		{
-			$origCollation = $params->get('collation', 'none');
-		}
-
+		$db            = $feModel->getDb();
+		$origCollation = $this->getOriginalCollation($params, $db, $data['db_table_name']);
 		$row->bind($data);
 
-		$row->order_by = json_encode($input->get('order_by', array(), 'array'));
-		$row->order_dir = json_encode($input->get('order_dir', array(), 'array'));
+		$row->set('order_by', json_encode($input->get('order_by', array(), 'array')));
+		$row->set('order_dir', json_encode($input->get('order_dir', array(), 'array')));
 
 		$row->check();
 
@@ -654,81 +673,72 @@ class FabrikAdminModelList extends FabModelAdmin
 
 		if ($row->id != 0)
 		{
-			$datenow = JFactory::getDate();
-			$row->modified = $datenow->toSql();
-			$row->modified_by = $this->user->get('id');
+			$dateNow = JFactory::getDate();
+			$row->set('modified', $dateNow->toSql());
+			$row->set('modified_by', $this->user->get('id'));
 		}
 
 		if ($id == 0)
 		{
-			if ($row->created == '')
+			if ($row->get('created', '') == '')
 			{
-				$row->created = $date->toSql();
+				$row->set('created', $date->toSql());
 			}
-			// Save the row now
-			$row->store();
 
-			$isNew = false;
+			$isNew    = false;
 			$newTable = trim(FArrayHelper::getValue($data, '_database_name'));
 
 			// Mysql will force db table names to lower case even if you set the db name to upper case - so use clean()
 			$newTable = FabrikString::clean($newTable);
 
-			// Check the entered database table doesnt already exist
+			// Check the entered database table doesn't already exist
 			if ($newTable != '' && $this->databaseTableExists($newTable))
 			{
 				throw new RuntimeException(FText::_('COM_FABRIK_DATABASE_TABLE_ALREADY_EXISTS'));
-
-				return false;
 			}
 
 			if (!$this->canCreateDbTable())
 			{
 				throw new RuntimeException(FText::_('COM_FABRIK_INSUFFICIENT_RIGHTS_TO_CREATE_TABLE'));
-
-				return false;
 			}
 
-			// Create fabrik form
-			$formModel = $this->createLinkedForm();
-			$row->form_id = $this->getState('list.form_id');
+			// Save the row now
+			$row->store();
 
-			// Create fabrik group
-			$groupData = FabrikWorker::formDefaults('group');
-			$groupData['name'] = $row->label;
-			$groupData['label'] = $row->label;
-			$input->set('_createGroup', 1, 'post');
-			$groupId = $this->createLinkedGroup($groupData, false);
+			// Create fabrik form
+			$this->createLinkedForm();
+			$row->set('form_id', $this->getState('list.form_id'));
 
 			if ($newTable == '')
 			{
+				// Create fabrik group
+				$groupData          = FabrikWorker::formDefaults('group');
+				$groupData['name']  = $row->label;
+				$groupData['label'] = $row->label;
+				$input->set('_createGroup', 1, 'post');
+				$groupId = $this->createLinkedGroup($groupData, false);
+
 				// New fabrik list but existing db table
 				$this->createLinkedElements($groupId);
 			}
 			else
 			{
-				$row->db_table_name = $newTable;
-				$row->auto_inc = 1;
+				$row->set('db_table_name', $newTable);
+				$row->set('auto_inc', 1);
 
-				$dbOpts = array();
-				$params = new JRegistry($row->params);
+				$dbOpts            = array();
+				$params            = new Registry($row->get('params'));
 				$dbOpts['COLLATE'] = $params->get('collation', '');
-				$res = $this->createDBTable($newTable, $input->get('defaultfields', array('id' => 'internalid', 'date_time' => 'date'), 'array'), $dbOpts);
+				$fields            = $contentTypeModel->getDefaultInsertFields($contentType);
+				$res               = $this->createDBTable($newTable, $fields, $dbOpts);
 
 				if (is_array($res))
 				{
-					$row->db_primary_key = $newTable . '.' . $res[0];
+					$row->set('db_primary_key', $newTable . '.' . $res[0]);
 				}
 			}
 		}
 
-		/*
-		 * // Not right - as it meant only isview parameter saved on new list. Something
-		 * to do with isView() also saving list parameters.
-		 * $params = new JRegistry($row->params);
-		$params->set('isview', $feModel->isView());
-		$row->params = (string) $params;
-		*/
 		FabrikAdminHelper::prepareSaveDate($row->publish_down);
 		FabrikAdminHelper::prepareSaveDate($row->created);
 		FabrikAdminHelper::prepareSaveDate($row->publish_up);
@@ -736,17 +746,17 @@ class FabrikAdminModelList extends FabModelAdmin
 
 		if ($pk == '')
 		{
-			$pk = $feModel->getPrimaryKeyAndExtra($row->db_table_name);
-			$key = $pk[0]['colname'];
+			$pk    = $feModel->getPrimaryKeyAndExtra($row->get('db_table_name'));
+			$key   = $pk[0]['colname'];
 			$extra = $pk[0]['extra'];
 
-			// Store without quoteNames as thats db specific
-			$row->db_primary_key = $row->db_primary_key == '' ? $row->db_table_name . "." . $key : $row->db_primary_key;
-			$row->auto_inc = JString::stristr($extra, 'auto_increment') ? true : false;
+			// Store without qns as that's db specific
+			$row->set('db_primary_key', $row->get('db_primary_key', '') == '' ? $row->get('db_table_name') . '.' . $key
+				: $row->get('db_primary_key'));
+			$row->set('auto_inc', String::stristr($extra, 'auto_increment') ? true : false);
 		}
 
 		$row->store();
-		$pk = $row->db_primary_key;
 		$this->updateJoins($data);
 
 		// Needed to ensure pk field is not quoted
@@ -757,9 +767,45 @@ class FabrikAdminModelList extends FabModelAdmin
 			$this->updatePrimaryKey($row->db_primary_key, $row->auto_inc);
 		}
 
-		// Make an array of elments and a presumed index size, map is then used in creating indexes
-		$map = array();
-		$groups = $this->getFormModel()->getGroupsHiarachy();
+		// Make an array of elements and a presumed index size, map is then used in creating indexes
+		$this->createIndexes($params, $row);
+		$pkName = $row->getKeyName();
+
+		if (isset($row->$pkName))
+		{
+			$this->setState($this->getName() . '.id', $row->get($pkName));
+		}
+
+		/**
+		 * $$$ hugh - I don't know what this state gets used for, but $iNew is
+		 * currently ending up the wrong way round.  New tables it's false,
+		 * existing tables it's true.
+		 */
+		$this->setState($this->getName() . '.new', $isNew);
+		parent::cleanCache('com_fabrik');
+
+			if ($id == 0)
+		{
+			$contentTypeModel->finaliseImport($row);
+		}
+
+		return true;
+	}
+
+	/**
+	 * Make an array of elements and a presumed index size, map is then used in creating indexes
+	 *
+	 * @param   Registry $params
+	 * @param   JTable   $row
+	 *
+	 * @return  void
+	 */
+	protected function createIndexes($params, $row)
+	{
+		$map         = array();
+		$feModel     = $this->getFormModel();
+		$feListModel = $this->getFEModel();
+		$groups      = $feModel->getGroupsHiarachy();
 
 		foreach ($groups as $groupModel)
 		{
@@ -770,11 +816,11 @@ class FabrikAdminModelList extends FabModelAdmin
 				// Int and DATETIME elements cant have a index size attribute
 				$colType = $element->getFieldDescription();
 
-				if (JString::stristr($colType, 'int'))
+				if (String::stristr($colType, 'int'))
 				{
 					$size = '';
 				}
-				elseif (JString::stristr($colType, 'datetime'))
+				elseif (String::stristr($colType, 'datetime'))
 				{
 					$size = '';
 				}
@@ -784,66 +830,72 @@ class FabrikAdminModelList extends FabModelAdmin
 				}
 
 				$map[$element->getFullName(false, false)] = $size;
-				$map[$element->getElement()->id] = $size;
+				$map[$element->getElement()->get('id')]   = $size;
 			}
 		}
 		// Update indexes (added array_key_exists check as these may be during after CSV import)
-		if (!empty($aOrderBy) && array_key_exists($row->order_by, $map))
+		if (!empty($orderBys) && array_key_exists($row->get('order_by'), $map))
 		{
-			foreach ($aOrderBy as $orderBy)
+			foreach ($orderBys as $orderBy)
 			{
 				if (array_key_exists($orderBy, $map))
 				{
-					$feModel->addIndex($orderBy, 'tableorder', 'INDEX', $map[$orderBy]);
+					$feListModel->addIndex($orderBy, 'tableorder', 'INDEX', $map[$orderBy]);
 				}
 			}
 		}
-
 		if ($row->group_by !== '' && array_key_exists($row->group_by, $map))
 		{
-			$feModel->addIndex($row->group_by, 'groupby', 'INDEX', $map["$row->group_by"]);
+			$feListModel->addIndex($row->get('group_by'), 'groupby', 'INDEX', $map[$row->group_by]);
 		}
 
 		if (trim($params->get('group_by_order')) !== '')
 		{
-			$feModel->addIndex($params->get('group_by_order'), 'groupbyorder', 'INDEX', $map[$params->get('group_by_order')]);
+			$feListModel->addIndex($params->get('group_by_order'), 'groupbyorder', 'INDEX', $map[$params->get('group_by_order')]);
 		}
 
-		$afilterFields = (array) $params->get('filter-fields', array());
+		$filterFields = (array) $params->get('filter-fields', array());
 
-		foreach ($afilterFields as $field)
+		foreach ($filterFields as $field)
 		{
 			if (array_key_exists($field, $map))
 			{
-				$feModel->addIndex($field, 'prefilter', 'INDEX', $map[$field]);
+				$feListModel->addIndex($field, 'prefilter', 'INDEX', $map[$field]);
 			}
 		}
+	}
 
-		$pkName = $row->getKeyName();
-
-		if (isset($row->$pkName))
+	/**
+	 * Get the the collation for a given table
+	 *
+	 * @param   Registry        $params
+	 * @param   JDatabaseDriver $db
+	 * @param   string          $tableName
+	 *
+	 * @return string
+	 */
+	protected function getOriginalCollation($params, $db, $tableName)
+	{
+		if (!empty($tableName))
 		{
-			$this->setState($this->getName() . '.id', $row->$pkName);
+			$db->setQuery('SHOW TABLE STATUS LIKE ' . $db->q($tableName));
+			$info          = $db->loadObject();
+			$origCollation = is_object($info) ? $info->Collation : $params->get('collation', 'none');
+		}
+		else
+		{
+			$origCollation = $params->get('collation', 'none');
 		}
 
-		/**
-		 * $$$ hugh - I don't know what this state gets used for, but $iNew is
-		 * currently ending up the wrong way round.  New tables it's false,
-		 * existing tables it's true.
-		 */
-
-		$this->setState($this->getName() . '.new', $isNew);
-		parent::cleanCache('com_fabrik');
-
-		return true;
+		return $origCollation;
 	}
 
 	/**
 	 * Alter the db table's collation
 	 *
-	 * @param   object  $feModel        Front end list model
-	 * @param   string  $origCollation  Original collection name
-	 * @param   string  $row            New collation
+	 * @param   object $feModel       Front end list model
+	 * @param   string $origCollation Original collection name
+	 * @param   string $row           New collation
 	 *
 	 * @since   3.0.7
 	 *
@@ -857,12 +909,12 @@ class FabrikAdminModelList extends FabModelAdmin
 			return;
 		}
 
-		$params = new JRegistry($row->params);
+		$params       = new Registry($row->params);
 		$newCollation = $params->get('collation');
 
 		if ($newCollation !== $origCollation)
 		{
-			$db = $feModel->getDb();
+			$db   = $feModel->getDb();
 			$item = $feModel->getTable();
 			$db->setQuery('ALTER TABLE ' . $item->db_table_name . ' COLLATE  ' . $newCollation);
 			$db->execute();
@@ -874,9 +926,9 @@ class FabrikAdminModelList extends FabModelAdmin
 	/**
 	 * Check to see if a table exists
 	 *
-	 * @param   string  $tableName  name of table (ovewrites form_id val to test)
+	 * @param   string $tableName name of table (ovewrites form_id val to test)
 	 *
-	 * @return  bool	false if no table found true if table found
+	 * @return  bool    false if no table found true if table found
 	 */
 	public function databaseTableExists($tableName = null)
 	{
@@ -893,7 +945,7 @@ class FabrikAdminModelList extends FabModelAdmin
 		}
 
 		$fabrikDatabase = $this->getDb();
-		$sql = 'SHOW TABLES LIKE ' . $fabrikDatabase->quote($tableName);
+		$sql            = 'SHOW TABLES LIKE ' . $fabrikDatabase->quote($tableName);
 		$fabrikDatabase->setQuery($sql);
 		$total = $fabrikDatabase->loadResult();
 		echo $fabrikDatabase->getError();
@@ -904,13 +956,13 @@ class FabrikAdminModelList extends FabModelAdmin
 	/**
 	 * Deals with ensuring joins are managed correctly when table is saved
 	 *
-	 * @param   array  $data  jform data
+	 * @param   array $data jForm data
 	 *
 	 * @return  void
 	 */
 	private function updateJoins($data)
 	{
-		$db = FabrikWorker::getDbo(true);
+		$db    = FabrikWorker::getDbo(true);
 		$query = $db->getQuery(true);
 
 		// If we are creating a new list then don't update any joins - can result in groups and elements being removed.
@@ -921,19 +973,19 @@ class FabrikAdminModelList extends FabModelAdmin
 		// $$$ hugh - added "AND element_id = 0" to avoid fallout from "random join and group deletion" issue from May 2012
 		$query->select('*')->from('#__{package}_joins')->where('list_id = ' . (int) $this->getState('list.id') . ' AND element_id = 0');
 		$db->setQuery($query);
-		$aOldJoins = $db->loadObjectList();
-		$params = $data['params'];
+		$aOldJoins       = $db->loadObjectList();
+		$params          = $data['params'];
 		$aOldJoinsToKeep = array();
-		$joinsToIndex = array();
-		$joinModel = JModelLegacy::getInstance('Join', 'FabrikFEModel');
-		$joinIds = FArrayHelper::getValue($params, 'join_id', array());
-		$joinTypes = FArrayHelper::getValue($params, 'join_type', array());
-		$joinTableFrom = FArrayHelper::getValue($params, 'join_from_table', array());
-		$joinTable = FArrayHelper::getValue($params, 'table_join', array());
-		$tableKey = FArrayHelper::getValue($params, 'table_key', array());
-		$joinTableKey = FArrayHelper::getValue($params, 'table_join_key', array());
-		$repeats = FArrayHelper::getValue($params, 'join_repeat', array());
-		$jc = count($joinTypes);
+		$joinsToIndex    = array();
+		$joinModel       = JModelLegacy::getInstance('Join', 'FabrikFEModel');
+		$joinIds         = FArrayHelper::getValue($params, 'join_id', array());
+		$joinTypes       = FArrayHelper::getValue($params, 'join_type', array());
+		$joinTableFrom   = FArrayHelper::getValue($params, 'join_from_table', array());
+		$joinTable       = FArrayHelper::getValue($params, 'table_join', array());
+		$tableKey        = FArrayHelper::getValue($params, 'table_key', array());
+		$joinTableKey    = FArrayHelper::getValue($params, 'table_join_key', array());
+		$repeats         = FArrayHelper::getValue($params, 'join_repeat', array());
+		$jc              = count($joinTypes);
 
 		// Test for repeat elements to ensure their join isn't removed from here
 		foreach ($aOldJoins as $oldJoin)
@@ -957,7 +1009,7 @@ class FabrikAdminModelList extends FabModelAdmin
 			{
 				if ($joinIds[$i] == $oOldJoin->id)
 				{
-					$existingJoin = true;
+					$existingJoin   = true;
 					$joinsToIndex[] = $oOldJoin;
 					break;
 				}
@@ -985,17 +1037,17 @@ class FabrikAdminModelList extends FabModelAdmin
 				else
 				{
 					// The table_join has stayed the same so we simply update the join info
-					$join->table_key = str_replace('`', '', $tableKey[$i]);
+					$join->table_key      = str_replace('`', '', $tableKey[$i]);
 					$join->table_join_key = $joinTableKey[$i];
-					$join->join_type = $joinTypes[$i];
+					$join->join_type      = $joinTypes[$i];
 					$join->store();
 
 					// Update group
 					$group = $this->getTable('Group');
 					$group->load($join->group_id);
-					$gparams = json_decode($group->params);
+					$gparams                      = json_decode($group->params);
 					$gparams->repeat_group_button = $repeats[$i][0] == 1 ? 1 : 0;
-					$group->params = json_encode($gparams);
+					$group->params                = json_encode($gparams);
 					$group->store();
 					$aOldJoinsToKeep[] = $joinIds[$i];
 				}
@@ -1021,7 +1073,7 @@ class FabrikAdminModelList extends FabModelAdmin
 		// And finally, Esther ... index the join FK's
 		foreach ($joinsToIndex as $thisJoin)
 		{
-			$fields = $this->getDBFields($thisJoin->table_join, 'Field');
+			$fields  = $this->getDBFields($thisJoin->table_join, 'Field');
 			$fkField = FArrayHelper::getValue($fields, $thisJoin->table_join_key, false);
 
 			switch ($fkField->BaseType)
@@ -1044,49 +1096,45 @@ class FabrikAdminModelList extends FabModelAdmin
 	/**
 	 * New join make the group, group elements and formgroup entries for the join data
 	 *
-	 * @param   string  $tableKey       table key
-	 * @param   string  $joinTableKey   join to table key
-	 * @param   string  $joinType       join type
-	 * @param   string  $joinTable      join to table
-	 * @param   string  $joinTableFrom  join table
-	 * @param   bool    $isRepeat       is the group a repeat
+	 * @param   string $tableKey      table key
+	 * @param   string $joinTableKey  join to table key
+	 * @param   string $joinType      join type
+	 * @param   string $joinTable     join to table
+	 * @param   string $joinTableFrom join table
+	 * @param   bool   $isRepeat      is the group a repeat
 	 *
 	 * @return  object  $join           returns new join object
 	 */
 	protected function makeNewJoin($tableKey, $joinTableKey, $joinType, $joinTable, $joinTableFrom, $isRepeat)
 	{
-		$input = $this->app->input;
-		$formModel = $this->getFormModel();
-		$groupData = FabrikWorker::formDefaults('group');
-		$groupData['name'] = $this->getTable()->label . '- [' . $joinTable . ']';
+		$input              = $this->app->input;
+		$formModel          = $this->getFormModel();
+		$groupData          = FabrikWorker::formDefaults('group');
+		$groupData['name']  = $this->getTable()->label . '- [' . $joinTable . ']';
 		$groupData['label'] = $joinTable;
-		$groupId = $this->createLinkedGroup($groupData, true, $isRepeat);
+		$groupId            = $this->createLinkedGroup($groupData, true, $isRepeat);
 
 		$origTable = FArrayHelper::getValue($input->get('jform', array(), 'array'), 'db_table_name');
-		$join = $this->getTable('Join');
-		$join->id = null;
-		$join->list_id = $this->getState('list.id');
-		$join->join_from_table = $joinTableFrom;
-		$join->table_join = $joinTable;
-		$join->table_join_key = $joinTableKey;
-		$join->table_key = str_replace('`', '', $tableKey);
-		$join->join_type = $joinType;
-		$join->group_id = $groupId;
+		$join      = $this->getTable('Join');
+		$join->set('id', null);
+		$join->set('list_id', $this->getState('list.id'));
+		$join->set('join_from_table', $joinTableFrom);
+		$join->set('table_join', $joinTable);
+		$join->set('table_join_key', $joinTableKey);
+		$join->set('table_key', str_replace('`', '', $tableKey));
+		$join->set('join_type', $joinType);
+		$join->set('group_id', $groupId);
 		/**
 		 * Create the 'pk' param.  Can't just call front end setJoinPk() for gory
 		 * reasons, so do this by steam.
-		 *
-		 * Probably don't really need to create a registry object here, we could just
-		 * JSON-up the pk param, but might as well make the point here that it's a
-		 * params object, and it may come in useful for adding other params one day.
 		 */
-		$join->params = new JRegistry;
+		$joinParams = new Registry;
 		/**
 		 * This is kind of expensive, as getPrimaryKeyAndExtra() method does a table lookup,
 		 * but I don't think we know what the PK of the joined table is any other
 		 * way at this point.
 		 */
-		$pk = $this->getFEModel()->getPrimaryKeyAndExtra($join->table_join);
+		$pk = $this->getFEModel()->getPrimaryKeyAndExtra($join->get('table_join'));
 
 		if ($pk !== false)
 		{
@@ -1095,13 +1143,13 @@ class FabrikAdminModelList extends FabModelAdmin
 
 			if (!empty($pk_col))
 			{
-				$db = FabrikWorker::getDbo(true);
+				$db     = FabrikWorker::getDbo(true);
 				$pk_col = $join->table_join . '.' . $pk_col;
-				$join->params->set('pk', $db->quoteName($pk_col));
-				$join->params = (string) $join->params;
+				$joinParams->set('pk', $db->qn($pk_col));
 			}
 		}
 
+		$join->set('params', (string) $joinParams);
 		$join->store();
 
 		$this->createLinkedElements($groupId, $joinTable);
@@ -1114,24 +1162,24 @@ class FabrikAdminModelList extends FabModelAdmin
 	 * need to create all the elements based on the database table fields and their
 	 * column type
 	 *
-	 * @param   int     $groupId    group id
-	 * @param   string  $tableName  table name - if not set then use jform's db_table_name (@since 3.1)
+	 * @param   int    $groupId   group id
+	 * @param   string $tableName table name - if not set then use jform's db_table_name (@since 3.1)
 	 *
 	 * @return  void
 	 */
 	private function createLinkedElements($groupId, $tableName = '')
 	{
-		$db = FabrikWorker::getDbo(true);
+		$db    = FabrikWorker::getDbo(true);
 		$input = $this->app->input;
 
 		if ($tableName === '')
 		{
-			$jForm = $input->get('jform', array(), 'array');
+			$jForm     = $input->get('jform', array(), 'array');
 			$tableName = FArrayHelper::getValue($jForm, 'db_table_name');
 		}
 
 		$pluginManager = FabrikWorker::getPluginManager();
-		$groupTable = FabTable::getInstance('Group', 'FabrikTable');
+		$groupTable    = FabTable::getInstance('Group', 'FabrikTable');
 		$groupTable->load($groupId);
 
 		// Here we're importing directly from the database schema
@@ -1146,8 +1194,8 @@ class FabrikAdminModelList extends FabModelAdmin
 			$groupListModel = JModelLegacy::getInstance('list', 'FabrikFEModel');
 			$groupListModel->setId($id);
 			$groupListModel->getTable();
-			$groups = $groupListModel->getFormGroupElementData();
-			$newElements = array();
+			$groups       = $groupListModel->getFormGroupElementData();
+			$newElements  = array();
 			$elementCount = 0;
 
 			foreach ($groups as $groupModel)
@@ -1174,8 +1222,8 @@ class FabrikAdminModelList extends FabModelAdmin
 				foreach ($elementModels as $elementModel)
 				{
 					$elementCount++;
-					$element = $elementModel->getElement();
-					$copy = $elementModel->copyRow($element->id, $element->label, $groupId);
+					$element                   = $elementModel->getElement();
+					$copy                      = $elementModel->copyRow($element->id, $element->label, $groupId);
 					$newElements[$element->id] = $copy->id;
 				}
 			}
@@ -1201,24 +1249,24 @@ class FabrikAdminModelList extends FabModelAdmin
 	/**
 	 * Take a table name and make elements for all of its fields
 	 *
-	 * @param   int     $groupId    group id
-	 * @param   string  $tableName  table name
+	 * @param   int    $groupId   group id
+	 * @param   string $tableName table name
 	 *
 	 * @return  void
 	 */
 	protected function makeElementsFromFields($groupId, $tableName)
 	{
-		$fabrikDb = $this->getFEModel()->getDb();
-		$dispatcher = JDispatcher::getInstance();
-		$input = $this->app->input;
-		$elementModel = new PlgFabrik_Element($dispatcher);
+		$fabrikDb      = $this->getFEModel()->getDb();
+		$dispatcher    = JEventDispatcher::getInstance();
+		$input         = $this->app->input;
+		$elementModel  = new PlgFabrik_Element($dispatcher);
 		$pluginManager = FabrikWorker::getPluginManager();
-		$fbConfig = JComponentHelper::getParams('com_fabrik');
-		$elementTypes = $input->get('elementtype', array(), 'array');
-		$fields = $fabrikDb->getTableColumns($tableName, false);
-		$createDate = JFactory::getDate()->toSQL();
-		$key = $this->getFEModel()->getPrimaryKeyAndExtra($tableName);
-		$ordering = 0;
+		$fbConfig      = JComponentHelper::getParams('com_fabrik');
+		$elementTypes  = $input->get('elementtype', array(), 'array');
+		$fields        = $fabrikDb->getTableColumns($tableName, false);
+		$createDate    = JFactory::getDate()->toSQL();
+		$key           = $this->getFEModel()->getPrimaryKeyAndExtra($tableName);
+		$ordering      = 0;
 		/**
 		 * no existing fabrik table so we take a guess at the most
 		 * relavent element types to  create
@@ -1227,9 +1275,9 @@ class FabrikAdminModelList extends FabModelAdmin
 
 		foreach ($fields as $label => $properties)
 		{
-			$plugin = 'field';
-			$type = $properties->Type;
-			$maxLength = 255;
+			$plugin     = 'field';
+			$type       = $properties->Type;
+			$maxLength  = 255;
 			$maxLength2 = 0;
 
 			if (preg_match("/\((.*)\)/i", $type, $matches))
@@ -1240,19 +1288,19 @@ class FabrikAdminModelList extends FabModelAdmin
 				if (count($maxLength) > 1)
 				{
 					$maxLength2 = $maxLength[1];
-					$maxLength = $maxLength[0];
+					$maxLength  = $maxLength[0];
 				}
 				else
 				{
-					$maxLength = $maxLength[0];
+					$maxLength  = $maxLength[0];
 					$maxLength2 = 0;
 				}
 			}
 
 			// Get the basic type
-			$type = explode(" ", $type);
-			$type = FArrayHelper::getValue($type, 0, '');
-			$type = preg_replace("/\((.*)\)/i", '', $type);
+			$type    = explode(" ", $type);
+			$type    = FArrayHelper::getValue($type, 0, '');
+			$type    = preg_replace("/\((.*)\)/i", '', $type);
 			$element = FabTable::getInstance('Element', 'FabrikTable');
 
 			if (array_key_exists($ordering, $elementTypes))
@@ -1263,7 +1311,7 @@ class FabrikAdminModelList extends FabModelAdmin
 			else
 			{
 				// If the field is the primary key and it's an INT type set the plugin to be the fabrik internal id
-				if ($key[0]['colname'] == $label && JString::strtolower(substr($key[0]['type'], 0, 3)) === 'int')
+				if ($key[0]['colname'] == $label && String::strtolower(substr($key[0]['type'], 0, 3)) === 'int')
 				{
 					$plugin = 'internalid';
 				}
@@ -1300,18 +1348,18 @@ class FabrikAdminModelList extends FabModelAdmin
 				}
 				// Then alter if defined in Fabrik global config
 				// Jaanus: but first check if there are any pk field and if yes then create as internalid
-				$defType = JString::strtolower(substr($key[0]['type'], 0, 3));
-				$plugin = ($key[0]['colname'] == $label && $defType === 'int') ? 'internalid' : $fbConfig->get($type, $plugin);
+				$defType = String::strtolower(substr($key[0]['type'], 0, 3));
+				$plugin  = ($key[0]['colname'] == $label && $defType === 'int') ? 'internalid' : $fbConfig->get($type, $plugin);
 			}
 
-			$element->plugin = $plugin;
-			$element->hidden = $element->label == 'id' ? '1' : '0';
-			$element->group_id = $groupId;
-			$element->name = $label;
-			$element->created = $createDate;
-			$element->created_by = $this->user->get('id');
-			$element->created_by_alias = $this->user->get('username');
-			$element->published = '1';
+			$element->plugin               = $plugin;
+			$element->hidden               = $element->label == 'id' ? '1' : '0';
+			$element->group_id             = $groupId;
+			$element->name                 = $label;
+			$element->created              = $createDate;
+			$element->created_by           = $this->user->get('id');
+			$element->created_by_alias     = $this->user->get('username');
+			$element->published            = '1';
 			$element->show_in_list_summary = '1';
 
 			switch ($plugin)
@@ -1332,24 +1380,24 @@ class FabrikAdminModelList extends FabModelAdmin
 				$element->width = $maxLength;
 			}
 
-			$element->height = '6';
+			$element->height   = '6';
 			$element->ordering = $ordering;
-			$p = json_decode($elementModel->getDefaultAttribs());
+			$p                 = json_decode($elementModel->getDefaultAttribs());
 
 			if (in_array($type, array('int', 'tinyint', 'smallint', 'mediumint', 'bigint')) && $plugin == 'field')
 			{
 				$p->integer_length = $maxLength;
-				$p->text_format = 'integer';
-				$p->maxlength = '255';
-				$element->width = '30';
+				$p->text_format    = 'integer';
+				$p->maxlength      = '255';
+				$element->width    = '30';
 			}
 			elseif ($type == 'decimal' && $plugin == 'field')
 			{
-				$p->text_format = 'decimal';
+				$p->text_format    = 'decimal';
 				$p->decimal_length = $maxLength2;
 				$p->integer_length = $maxLength - $maxLength2;
-				$p->maxlength = '255';
-				$element->width = '30';
+				$p->maxlength      = '255';
+				$element->width    = '30';
 			}
 			else
 			{
@@ -1357,27 +1405,27 @@ class FabrikAdminModelList extends FabModelAdmin
 			}
 
 			$element->params = json_encode($p);
-			$element->label = FArrayHelper::getValue($elementLabels, $ordering, str_replace("_", " ", $label));
+			$element->label  = FArrayHelper::getValue($elementLabels, $ordering, str_replace("_", " ", $label));
 
-            		//Format Label
-            		$labelConfig = $fbConfig->get('format_labels','0');
-            		switch($labelConfig)
-            		{
-                		case '1':
-                    			$element->label = strtolower($element->label);
-	                    		break;
-                		case '2':
-	                    		$element->label = ucwords($element->label);
-                    			break;
-                		case '3':
-                    			$element->label = ucfirst($element->label);
-                    			break;
-                		case '4':
-                    			$element->label = strtoupper($element->label);
-                    			break;
-                		default:
-                    			break;
-            		}
+			//Format Label
+			$labelConfig = $fbConfig->get('format_labels', '0');
+			switch ($labelConfig)
+			{
+				case '1':
+					$element->label = strtolower($element->label);
+					break;
+				case '2':
+					$element->label = ucwords($element->label);
+					break;
+				case '3':
+					$element->label = ucfirst($element->label);
+					break;
+				case '4':
+					$element->label = strtoupper($element->label);
+					break;
+				default:
+					break;
+			}
 
 			$element->store();
 			$elementModel = $pluginManager->getPlugIn($element->plugin, 'element');
@@ -1397,7 +1445,7 @@ class FabrikAdminModelList extends FabModelAdmin
 	 * automatically create a form to allow the update/creation of that tables
 	 * records
 	 *
-	 * @param   int  $formId  to copy from. If = 0 then create a default form. If not 0 then copy the form id passed in
+	 * @param   int $formId to copy from. If = 0 then create a default form. If not 0 then copy the form id passed in
 	 *
 	 * @return  object  form model
 	 */
@@ -1417,28 +1465,28 @@ class FabrikAdminModelList extends FabModelAdmin
 			jimport('joomla.utilities.date');
 			$createDate = JFactory::getDate();
 			$createDate = $createDate->toSql();
-			$form = $this->getTable('Form');
-			$item = $this->getTable('List');
+			$form       = $this->getTable('Form');
+			$item       = $this->getTable('List');
 
 			$defaults = FabrikWorker::formDefaults('form');
 			$form->bind($defaults);
 
-			$form->label = $item->label;
-			$form->record_in_database = 1;
-			$form->created = $createDate;
-			$form->created_by = $this->user->get('id');
-			$form->created_by_alias = $this->user->get('username');
-			$form->error = FText::_('COM_FABRIK_FORM_ERROR_MSG_TEXT');
-			$form->submit_button_label = FText::_('COM_FABRIK_SAVE');
-			$form->published = $item->published;
+			$form->set('label', $item->get('label'));
+			$form->set('record_in_database', 1);
+			$form->set('created', $createDate);
+			$form->set('created_by', $this->user->get('id'));
+			$form->set('created_by_alias', $this->user->get('username'));
+			$form->set('error', FText::_('COM_FABRIK_FORM_ERROR_MSG_TEXT'));
+			$form->set('submit_button_label', FText::_('COM_FABRIK_SAVE'));
+			$form->set('published', $item->get('published'));
 
 			$version = new JVersion;
-			$form->form_template = version_compare($version->RELEASE, '3.0') >= 0 ? 'bootstrap' : 'default';
-			$form->view_only_template = version_compare($version->RELEASE, '3.0') >= 0 ? 'bootstrap' : 'default';
+			$form->set('form_template', version_compare($version->RELEASE, '3.0') >= 0 ? 'bootstrap' : 'default');
+			$form->set('view_only_template', version_compare($version->RELEASE, '3.0') >= 0 ? 'bootstrap' : 'default');
 
 			$form->store();
-			$this->setState('list.form_id', $form->id);
-			$this->formModel->setId($form->id);
+			$this->setState('list.form_id', $form->get('id'));
+			$this->formModel->setId($form->get('id'));
 		}
 		else
 		{
@@ -1457,40 +1505,39 @@ class FabrikAdminModelList extends FabModelAdmin
 	 * Create a group
 	 * used when creating a fabrik table from an existing db table
 	 *
-	 * NEW also creates the formgroup
+	 * NEW also creates the form group
 	 *
-	 * @param   array  $data      group data
-	 * @param   bool   $isJoin    is the group a join default false
-	 * @param   bool   $isRepeat  is the group repeating
+	 * @param   array $data     group data
+	 * @param   bool  $isJoin   is the group a join default false
+	 * @param   bool  $isRepeat is the group repeating
 	 *
 	 * @return  int  group id
 	 */
-	private function createLinkedGroup($data, $isJoin = false, $isRepeat = false)
+	public function createLinkedGroup($data, $isJoin = false, $isRepeat = false)
 	{
 		$createDate = JFactory::getDate();
-		$group = $this->getTable('Group');
+		$group      = $this->getTable('Group');
 		$group->bind($data);
-		$group->id = null;
-		$group->created = $createDate->toSql();
-		$group->created_by = $this->user->get('id');
-		$group->created_by_alias = $this->user->get('username');
-		$group->published = 1;
-		$opts = new stdClass;
-		$opts->repeat_group_button = $isRepeat ? 1 : 0;
+		$group->set('id', null);
+		$group->set('created', $createDate->toSql());
+		$group->set('created_by', $this->user->get('id'));
+		$group->set('created_by_alias', $this->user->get('username'));
+		$group->set('published', ArrayHelper::getValue($data, 'published', 1));
+		$opts                          = ArrayHelper::getValue($data, 'params', new stdClass);
+		$opts->repeat_group_button     = $isRepeat ? 1 : 0;
 		$opts->repeat_group_show_first = 1;
-		$group->params = json_encode($opts);
-		$group->is_join = ($isJoin == true) ? 1 : 0;
-		$group->store();
+		$group->set('params', json_encode($opts));
+		$group->set('is_join', ($isJoin == true) ? 1 : 0);
 		$group->store();
 
 		// Create form group
-		$formId = $this->getState('list.form_id');
+		$formId    = $this->getState('list.form_id');
 		$formGroup = $this->getTable('FormGroup');
 
-		$formGroup->id = null;
-		$formGroup->form_id = $formId;
-		$formGroup->group_id = $group->id;
-		$formGroup->ordering = 999999;
+		$formGroup->set('id', null);
+		$formGroup->set('form_id', $formId);
+		$formGroup->set('group_id', $group->get('id'));
+		$formGroup->set('ordering', 999999);
 		$formGroup->store();
 		$formGroup->reorder(" form_id = '$formId'");
 
@@ -1526,22 +1573,22 @@ class FabrikAdminModelList extends FabModelAdmin
 	/**
 	 * Method to copy one or more records.
 	 *
-	 * @return  boolean	True if successful, false if an error occurs.
+	 * @return  boolean    True if successful, false if an error occurs.
 	 *
-	 * @since	1.6
+	 * @since    1.6
 	 */
 	public function copy()
 	{
-		$db = FabrikWorker::getDbo(true);
+		$db    = FabrikWorker::getDbo(true);
 		$input = $this->app->input;
-		$pks = $input->get('cid', array(), 'array');
+		$pks   = $input->get('cid', array(), 'array');
 		$names = $input->get('names', array(), 'array');
 
 		foreach ($pks as $i => $pk)
 		{
 			$item = $this->getTable();
 			$item->load($pk);
-			$item->id = null;
+			$item->set('id', null);
 			$input->set('newFormLabel', $names[$pk]['formLabel']);
 			$input->set('newGroupNames', $names[$pk]['groupNames']);
 			$formModel = $this->createLinkedForm($item->form_id);
@@ -1553,42 +1600,40 @@ class FabrikAdminModelList extends FabModelAdmin
 			// $$$ rob 20/12/2011 - any element id stored in the list needs to get mapped to the new element ids
 
 			$elementMap = $formModel->newElements;
-			$params = json_decode($item->params);
-			$toMaps = array(array('list_search_elements', 'search_elements'), array('csv_elements', 'show_in_csv'));
+			$params     = json_decode($item->params);
+			$toMaps     = array(array('list_search_elements', 'search_elements'), array('csv_elements', 'show_in_csv'));
 
 			foreach ($toMaps as $toMap)
 			{
-				$key = $toMap[0];
+				$key  = $toMap[0];
 				$key2 = $toMap[1];
 				$orig = json_decode($params->$key);
-				$new = array();
+				$new  = array();
 
 				foreach ($orig->$key2 as $elementId)
 				{
 					$new[] = $elementMap[$elementId];
 				}
 
-				$c = new stdClass;
-				$c->$key2 = $new;
+				$c            = new stdClass;
+				$c->$key2     = $new;
 				$params->$key = json_encode($c);
 			}
 
-			$item->form_id = $formModel->getTable()->id;
+			$item->set('form_id', $formModel->getTable()->get('id'));
 			$createDate = JFactory::getDate();
 			$createDate = $createDate->toSql();
-			$item->label = $names[$pk]['listLabel'];
-			$item->created = $createDate;
-			$item->modified = $db->getNullDate();
-			$item->modified_by = $this->user->get('id');
-			$item->hits = 0;
-			$item->checked_out = 0;
-			$item->checked_out_time = $db->getNullDate();
-			$item->params = json_encode($params);
+			$item->set('label', $names[$pk]['listLabel']);
+			$item->set('created', $createDate);
+			$item->set('modified', $db->getNullDate());
+			$item->set('modified_by', $this->user->get('id'));
+			$item->set('hits', 0);
+			$item->set('checked_out', 0);
+			$item->set('checked_out_time', $db->getNullDate());
+			$item->set('params', json_encode($params));
 
 			if (!$item->store())
 			{
-				$this->setError($item->getError());
-
 				return false;
 			}
 
@@ -1605,25 +1650,25 @@ class FabrikAdminModelList extends FabModelAdmin
 	 * When copying a table we need to copy its joins as well
 	 * note that the group and elements already exists - just the join needs to be saved
 	 *
-	 * @param   int    $fromid      table id to copy from
-	 * @param   int    $toid        table id to copy to
-	 * @param   array  $groupidmap  saying which groups got copied to which new group id (key = old id, value = new id)
+	 * @param   int   $fromId     table id to copy from
+	 * @param   int   $toId       table id to copy to
+	 * @param   array $groupIdMap saying which groups got copied to which new group id (key = old id, value = new id)
 	 *
 	 * @return null
 	 */
-	protected function copyJoins($fromid, $toid, $groupidmap)
+	protected function copyJoins($fromId, $toId, $groupIdMap)
 	{
-		$db = FabrikWorker::getDbo(true);
+		$db    = FabrikWorker::getDbo(true);
 		$query = $db->getQuery(true);
-		$query->select('*')->from('#__{package}_joins')->where('list_id = ' . (int) $fromid);
+		$query->select('*')->from('#__{package}_joins')->where('list_id = ' . (int) $fromId);
 		$db->setQuery($query);
-		$joins = $db->loadObjectList();
+		$joins   = $db->loadObjectList();
 		$feModel = $this->getFEModel();
 
 		foreach ($joins as $join)
 		{
 			$size = 10;
-			$els = &$feModel->getElements();
+			$els  = &$feModel->getElements();
 
 			// $$$ FIXME hugh - joined els are missing tablename
 			foreach ($els as $el)
@@ -1632,41 +1677,33 @@ class FabrikAdminModelList extends FabModelAdmin
 				// not any similarly named elements from joined tables (like 'id')
 				if ($el->getElement()->name == $join->table_key)
 				{
-					$size = JString::stristr($el->getFieldDescription(), 'int') ? '' : '10';
+					$size = String::stristr($el->getFieldDescription(), 'int') ? '' : '10';
 				}
 			}
 
 			$feModel->addIndex($join->table_key, 'join', 'INDEX', $size);
 			$joinTable = $this->getTable('Join');
 			$joinTable->load($join->id);
-			$joinTable->id = 0;
-			$joinTable->group_id = $groupidmap[$joinTable->group_id];
-			$joinTable->list_id = $toid;
-
-			try
-			{
-				$joinTable->store();
-			}
-			catch (Exception $e)
-			{
-				return JError::raiseWarning(500, $e->getMessage());
-			}
+			$joinTable->set('id', 0);
+			$joinTable->set('group_id', $groupIdMap[$joinTable->group_id]);
+			$joinTable->set('list_id', $toId);
+			$joinTable->store();
 		}
 	}
 
 	/**
 	 * Adds a primary key to the database table
 	 *
-	 * @param   string  $fieldName      the column name to make into the primary key
-	 * @param   bool    $autoIncrement  is the column an auto incrementing number
-	 * @param   string  $type           column type definition (eg varchar(255))
+	 * @param   string $fieldName     the column name to make into the primary key
+	 * @param   bool   $autoIncrement is the column an auto incrementing number
+	 * @param   string $type          column type definition (eg varchar(255))
 	 *
 	 * @return  void
 	 */
 	protected function updatePrimaryKey($fieldName, $autoIncrement, $type = 'int(11)')
 	{
 		$feModel = $this->getFEModel();
-		$input = $this->app->input;
+		$input   = $this->app->input;
 
 		if (!$feModel->canAlterFields())
 		{
@@ -1674,10 +1711,10 @@ class FabrikAdminModelList extends FabModelAdmin
 		}
 
 		$fabrikDatabase = $feModel->getDb();
-		$jForm = $input->get('jform', array(), 'array');
-		$tableName = ($jForm['db_table_name'] != '') ? $jForm['db_table_name'] : $jForm['_database_name'];
-		$tableName = preg_replace('#[^0-9a-zA-Z_]#', '_', $tableName);
-		$aPriKey = $feModel->getPrimaryKeyAndExtra($tableName);
+		$jForm          = $input->get('jform', array(), 'array');
+		$tableName      = ($jForm['db_table_name'] != '') ? $jForm['db_table_name'] : $jForm['_database_name'];
+		$tableName      = preg_replace('#[^0-9a-zA-Z_]#', '_', $tableName);
+		$aPriKey        = $feModel->getPrimaryKeyAndExtra($tableName);
 
 		if (!$aPriKey)
 		{
@@ -1693,7 +1730,7 @@ class FabrikAdminModelList extends FabModelAdmin
 				return;
 			}
 
-			$aPriKey = $aPriKey[0];
+			$aPriKey  = $aPriKey[0];
 			$shortKey = FabrikString::shortColName($fieldName);
 
 			// $shortKey = $feModel->_shortKey($fieldName, true); // added true for second arg so it strips quotes, as was never matching colname with quotes
@@ -1719,30 +1756,31 @@ class FabrikAdminModelList extends FabModelAdmin
 	/**
 	 * Internal function: add a key to the table
 	 *
-	 * @param   string  $fieldName      primary key column name
-	 * @param   bool    $autoIncrement  is the column auto incrementing
-	 * @param   string  $type           the primary keys column type (if autoincrement true then int(6) is always used as the type)
+	 * @param   string $fieldName     primary key column name
+	 * @param   bool   $autoIncrement is the column auto incrementing
+	 * @param   string $type          the primary keys column type (if autoincrement true then int(6) is always used as
+	 *                                the type)
 	 *
 	 * @return  mixed  false / JError
 	 */
 	private function addKey($fieldName, $autoIncrement, $type = "INT(6)")
 	{
-		$db = $this->getFEModel()->getDb();
-		$input = $this->app->input;
-		$type = $autoIncrement != true ? $type : 'INT(6)';
-		$jForm = $input->get('jform', array(), 'array');
+		$db        = $this->getFEModel()->getDb();
+		$input     = $this->app->input;
+		$type      = $autoIncrement != true ? $type : 'INT(6)';
+		$jForm     = $input->get('jform', array(), 'array');
 		$tableName = ($jForm['db_table_name'] != '') ? $jForm['db_table_name'] : $jForm['_database_name'];
 		$tableName = preg_replace('#[^0-9a-zA-Z_]#', '_', $tableName);
 		$tableName = FabrikString::safeColName($tableName);
 		$fieldName = FabrikString::shortColName($fieldName);
 
-		if ($fieldName === "")
+		if ($fieldName === '')
 		{
 			return false;
 		}
 
-		$fieldName = $db->quoteName($fieldName);
-		$sql = 'ALTER TABLE ' . $tableName . ' ADD PRIMARY KEY (' . $fieldName . ')';
+		$fieldName = $db->qn($fieldName);
+		$sql       = 'ALTER TABLE ' . $tableName . ' ADD PRIMARY KEY (' . $fieldName . ')';
 
 		// Add a primary key
 		$db->setQuery($sql);
@@ -1762,59 +1800,47 @@ class FabrikAdminModelList extends FabModelAdmin
 	/**
 	 * Internal function: drop the table's key
 	 *
-	 * @param   array  $aPriKey  existing key data
+	 * @param   array $aPriKey existing key data
 	 *
-	 * @return  bool true if key droped
+	 * @return  bool true if key dropped
 	 */
 	private function dropKey($aPriKey)
 	{
-		$db = $this->getFEModel()->getDb();
-		$input = $this->app->input;
-		$jForm = $input->get('jform', array(), 'array');
+		$db        = $this->getFEModel()->getDb();
+		$input     = $this->app->input;
+		$jForm     = $input->get('jform', array(), 'array');
 		$tableName = FabrikString::safeColName($jForm['db_table_name']);
-		$sql = 'ALTER TABLE ' . $tableName . ' CHANGE ' . FabrikString::safeColName($aPriKey['colname']) . ' '
+		$sql       = 'ALTER TABLE ' . $tableName . ' CHANGE ' . FabrikString::safeColName($aPriKey['colname']) . ' '
 			. FabrikString::safeColName($aPriKey['colname']) . ' ' . $aPriKey['type'] . ' NOT NULL';
 
-		// Remove the autoinc
+		// Remove the auto-increment
 		$db->setQuery($sql);
-
-		if (!$db->execute())
-		{
-			JError::raiseWarning(500, $db->getErrorMsg());
-
-			return false;
-		}
+		$db->execute();
 
 		$sql = 'ALTER TABLE ' . $tableName . ' DROP PRIMARY KEY';
 
 		// Drop the primary key
 		$db->setQuery($sql);
-
-		if (!$db->execute())
-		{
-			JError::raiseWarning(500, 'alter table: ' . $db->getErrorMsg());
-
-			return false;
-		}
+		$db->execute();
 
 		return true;
 	}
 
 	/**
-	 * Internal function: update an exisitng key in the table
+	 * Internal function: update an existing key in the table
 	 *
-	 * @param   string  $fieldName      primary key column name
-	 * @param   bool    $autoIncrement  is the column auto incrementing
-	 * @param   string  $type           the primary keys column type
+	 * @param   string $fieldName     primary key column name
+	 * @param   bool   $autoIncrement is the column auto incrementing
+	 * @param   string $type          the primary keys column type
 	 *
 	 * @return  void
 	 */
 	protected function updateKey($fieldName, $autoIncrement, $type = "INT(11)")
 	{
-		$input = $this->app->input;
-		$jForm = $input->get('jform', array(), 'array');
+		$input     = $this->app->input;
+		$jForm     = $input->get('jform', array(), 'array');
 		$tableName = FabrikString::safeColName($jForm['db_table_name']);
-		$db = $this->getFEModel()->getDb();
+		$db        = $this->getFEModel()->getDb();
 
 		if (strstr($fieldName, '.'))
 		{
@@ -1833,11 +1859,7 @@ class FabrikAdminModelList extends FabModelAdmin
 		}
 
 		$db->setQuery($sql);
-
-		if (!$db->execute())
-		{
-			$this->setError('update key:' . $db->getErrorMsg());
-		}
+		$db->execute();
 	}
 
 	/**
@@ -1863,15 +1885,15 @@ class FabrikAdminModelList extends FabModelAdmin
 	 */
 	private function makeJoomfishXML()
 	{
-		$db = FabrikWorker::getDbo(true);
+		$db       = FabrikWorker::getDbo(true);
 		$elements = $this->getElements();
 
 		// Get all database join elements and check if we need to create xml files for them
-		$table = $this->getTable();
-		$tableName = str_replace($this->config->get('dbprefix'), '', $table->db_table_name);
-		$params = $this->getParams();
+		$table        = $this->getTable();
+		$tableName    = str_replace($this->config->get('dbprefix'), '', $table->db_table_name);
+		$params       = $this->getParams();
 		$titleElement = $params->get('joomfish-title');
-		$str = '<?xml version="1.0" ?>
+		$str          = '<?xml version="1.0" ?>
 <joomfish type="contentelement">
   <name>Fabrik - ' . $table->label
 			. '</name>
@@ -1880,28 +1902,28 @@ class FabrikAdminModelList extends FabModelAdmin
   <description>Definition for Fabrik Table data - ' . $table->label . '</description>
   <reference type="content">
   	<table name="' . $tableName . '">';
-		$titleSet = false;
+		$titleSet     = false;
 
 		foreach ($elements as $element)
 		{
-			if ($table->db_primary_key == FabrikString::safeColName($element->getFullName(false, false)))
+			if ($table->get('db_primary_key') == FabrikString::safeColName($element->getFullName(false, false)))
 			{
 				// Primary key element
 				$type = 'referenceid';
-				$t = 0;
+				$t    = 0;
 			}
 			else
 			{
 				if (!$titleSet && $titleElement == '')
 				{
-					$type = 'titletext';
+					$type     = 'titletext';
 					$titleSet = true;
 				}
 				else
 				{
 					if ($titleElement == $element->getFullName(false, false))
 					{
-						$type = 'titletext';
+						$type     = 'titletext';
 						$titleSet = true;
 					}
 					else
@@ -1914,7 +1936,7 @@ class FabrikAdminModelList extends FabModelAdmin
 			}
 
 			$opts = $element->getJoomfishOptions();
-			$el = $element->getElement();
+			$el   = $element->getElement();
 			$str .= "\n\t\t" . '<field type="' . $type . '" name="' . $el->name . '" translate="' . $t . '"';
 
 			foreach ($opts as $k => $v)
@@ -1937,30 +1959,30 @@ class FabrikAdminModelList extends FabModelAdmin
 	/**
 	 * Method to delete one or more records.
 	 *
-	 * @param   array  &$pks  An array of record primary keys.
+	 * @param   array &$pks An array of record primary keys.
 	 *
-	 * @return  boolean	True if successful, false if an error occurs.
+	 * @return  boolean    True if successful, false if an error occurs.
 	 *
-	 * @since	1.6
+	 * @since    1.6
 	 */
 	public function delete(&$pks)
 	{
 		// Initialise variables.
-		$dispatcher = JDispatcher::getInstance();
-		$pks = (array) $pks;
-		$table = $this->getTable();
+		$dispatcher = JEventDispatcher::getInstance();
+		$pks        = (array) $pks;
+		$table      = $this->getTable();
 
 		// Include the content plugins for the on delete events.
 		JPluginHelper::importPlugin('content');
 
-		$input = $this->app->input;
-		$jForm = $input->get('jform', array(), 'array');
+		$input       = $this->app->input;
+		$jForm       = $input->get('jform', array(), 'array');
 		$deleteDepth = $jForm['recordsDeleteDepth'];
-		$drop = $jForm['dropTablesFromDB'];
+		$drop        = $jForm['dropTablesFromDB'];
 
-		$feModel = $this->getFEModel();
+		$feModel        = $this->getFEModel();
 		$fabrikDatabase = $feModel->getDb();
-		$dbconfigprefix = $this->app->get('dbprefix');
+		$dbConfigPrefix = $this->app->get('dbprefix');
 
 		// Iterate the items to delete each one.
 		foreach ($pks as $i => $pk)
@@ -1973,9 +1995,9 @@ class FabrikAdminModelList extends FabModelAdmin
 
 				if ($drop)
 				{
-					if (strncasecmp($table->db_table_name, $dbconfigprefix, JString::strlen($dbconfigprefix)) == 0)
+					if (strncasecmp($table->db_table_name, $dbConfigPrefix, String::strlen($dbConfigPrefix)) == 0)
 					{
-						$this->app->enqueueMessage(JText::sprintf('COM_FABRIK_TABLE_NOT_DROPPED_PREFIX', $table->db_table_name, $dbconfigprefix), 'notice');
+						$this->app->enqueueMessage(JText::sprintf('COM_FABRIK_TABLE_NOT_DROPPED_PREFIX', $table->db_table_name, $dbConfigPrefix), 'notice');
 					}
 					else
 					{
@@ -2024,19 +2046,19 @@ class FabrikAdminModelList extends FabModelAdmin
 				{
 					case 0:
 					default:
-					// List only
+						// List only
 						break;
 					case 1:
-					// List and form
+						// List and form
 						$form = $this->deleteAssociatedForm($table);
 						break;
 					case 2:
-					// List form and groups
+						// List form and groups
 						$form = $this->deleteAssociatedForm($table);
 						$this->deleteAssociatedGroups($form, false);
 						break;
 					case 3:
-					// List form groups and elements
+						// List form groups and elements
 						$form = $this->deleteAssociatedForm($table);
 						$this->deleteAssociatedGroups($form, true);
 						break;
@@ -2056,15 +2078,15 @@ class FabrikAdminModelList extends FabModelAdmin
 	/**
 	 * Remove the associated form
 	 *
-	 * @param   object  &$item  list item
+	 * @param   object &$item list item
 	 *
 	 * @return boolean|form object
 	 */
 	private function deleteAssociatedForm(&$item)
 	{
-		$db = FabrikWorker::getDbo(true);
+		$db    = FabrikWorker::getDbo(true);
 		$query = $db->getQuery(true);
-		$form = $this->getTable('form');
+		$form  = $this->getTable('form');
 		$form->load($item->form_id);
 
 		if ((int) $form->id === 0)
@@ -2082,14 +2104,14 @@ class FabrikAdminModelList extends FabModelAdmin
 	/**
 	 * Delete associated fabrik groups
 	 *
-	 * @param   object  &$form           item
-	 * @param   bool    $deleteElements  delete group items as well
+	 * @param   object &$form          item
+	 * @param   bool   $deleteElements delete group items as well
 	 *
 	 * @return boolean|form id
 	 */
 	private function deleteAssociatedGroups(&$form, $deleteElements = false)
 	{
-		$db = FabrikWorker::getDbo(true);
+		$db    = FabrikWorker::getDbo(true);
 		$query = $db->getQuery(true);
 
 		// Get group ids
@@ -2112,26 +2134,26 @@ class FabrikAdminModelList extends FabModelAdmin
 	/**
 	 * Make a database table from  XML definition
 	 *
-	 * @param   string  $key   primary key
-	 * @param   string   $name  table name
-	 * @param   string  $xml   xml table definition
+	 * @param   string $key  primary key
+	 * @param   string $name table name
+	 * @param   string $xml  xml table definition
 	 *
 	 * @return bool
 	 */
 	public function dbTableFromXML($key, $name, $xml)
 	{
-		$row = $xml[0];
+		$row  = $xml[0];
 		$data = array();
 
 		// Get which field types to use
 		foreach ($row->children() as $child)
 		{
-			$value = sprintf("%s", $child);
-			$type = $child->attributes()->type;
+			$value = sprintf('%s', $child);
+			$type  = $child->attributes()->type;
 
 			if ($type == '')
 			{
-				$objType = strtotime($value) == false ? "VARCHAR(255)" : "DATETIME";
+				$objType = strtotime($value) == false ? 'VARCHAR(255)' : 'DATETIME';
 
 				if (strstr($value, "\n"))
 				{
@@ -2140,19 +2162,19 @@ class FabrikAdminModelList extends FabModelAdmin
 			}
 			else
 			{
-				switch (JString::strtolower($type))
+				switch (String::strtolower($type))
 				{
 					case 'integer':
 						$objType = 'INT';
 						break;
 					case 'datetime':
-						$objType = "DATETIME";
+						$objType = 'DATETIME';
 						break;
 					case 'float':
-						$objType = "DECIMAL(10,2)";
+						$objType = 'DECIMAL(10,2)';
 						break;
 					default:
-						$objType = "VARCHAR(255)";
+						$objType = 'VARCHAR(255)';
 						break;
 				}
 			}
@@ -2165,12 +2187,12 @@ class FabrikAdminModelList extends FabModelAdmin
 			return false;
 		}
 
-		$db = $this->_db;
-		$query = 'CREATE TABLE IF NOT EXISTS ' . $db->quoteName($name) . ' (';
+		$db    = $this->_db;
+		$query = 'CREATE TABLE IF NOT EXISTS ' . $db->qn($name) . ' (';
 
 		foreach ($data as $fname => $objType)
 		{
-			$query .= $db->quoteName($fname) . " $objType, \n";
+			$query .= $db->qn($fname) . " $objType, \n";
 		}
 
 		$query .= ' primary key (' . $key . '))';
@@ -2191,7 +2213,7 @@ class FabrikAdminModelList extends FabModelAdmin
 
 			foreach ($row->children() as $child)
 			{
-				$k = $child->getName();
+				$k     = $child->getName();
 				$o->$k = sprintf("%s", $child);
 			}
 
@@ -2212,9 +2234,9 @@ class FabrikAdminModelList extends FabModelAdmin
 	/**
 	 * Load list from form id
 	 *
-	 * @param   int  $formId  form id
+	 * @param   int $formId form id
 	 *
-	 * @return  object  JTable
+	 * @return  JTable
 	 */
 	public function loadFromFormId($formId)
 	{
@@ -2228,7 +2250,7 @@ class FabrikAdminModelList extends FabModelAdmin
 		$this->__state_set = true;
 		$item->load(array('form_id' => $formId));
 		$this->table = $item;
-		$this->setState('list.id', $item->id);
+		$this->setState('list.id', $item->get('id'));
 
 		return $item;
 	}
@@ -2243,7 +2265,7 @@ class FabrikAdminModelList extends FabModelAdmin
 	public function &getDb()
 	{
 		$listId = $this->getState('list.id');
-		$item = $this->getItem($listId);
+		$item   = $this->getItem($listId);
 
 		return FabrikWorker::getConnection($item)->getDb();
 	}
@@ -2251,16 +2273,17 @@ class FabrikAdminModelList extends FabModelAdmin
 	/**
 	 * Create a table to store the forms' data depending upon what groups are assigned to the form
 	 *
-	 * @param   string  $dbTableName  Taken from the table oject linked to the form
-	 * @param   array   $fields       List of default elements to add. (key = element name, value = plugin
-	 * @param   array   $opts         Additional options, e.g. collation
+	 * @param   string $dbTableName Taken from the table object linked to the form
+	 * @param   array  $fields      List of default elements to add. (key = element name, value = plugin
+	 * @param   array  $opts        Additional options, e.g. collation
 	 *
 	 * @return mixed false if fail otherwise array of primary keys
 	 */
-	public function createDBTable($dbTableName = null, $fields = array('id' => 'internalid', 'date_time' => 'date'), $opts = array())
+	public function createDBTable($dbTableName = null, $fields = array('id' => 'internalid', 'date_time' => 'date'),
+		$opts = array())
 	{
-		$db = FabrikWorker::getDbo(true);
-		$fabrikDb = $this->getDb();
+		$db        = FabrikWorker::getDbo(true);
+		$fabrikDb  = $this->getDb();
 		$formModel = $this->getFormModel();
 
 		if (is_null($dbTableName))
@@ -2268,7 +2291,7 @@ class FabrikAdminModelList extends FabModelAdmin
 			$dbTableName = $this->getTable()->db_table_name;
 		}
 
-		$sql = 'CREATE TABLE IF NOT EXISTS ' . $db->quoteName($dbTableName) . ' (';
+		$sql   = 'CREATE TABLE IF NOT EXISTS ' . $db->qn($dbTableName) . ' (';
 		$input = $this->app->input;
 		$jForm = $input->get('jform', array(), 'array');
 
@@ -2279,7 +2302,7 @@ class FabrikAdminModelList extends FabModelAdmin
 		}
 		else
 		{
-			$query = $db->getQuery(true);
+			$query  = $db->getQuery(true);
 			$formId = (int) $this->get('form.id', $this->getFormModel()->id);
 			$query->select('group_id')->from('#__{package}_formgroup')->where('form_id = ' . $formId);
 			$db->setQuery($query);
@@ -2296,14 +2319,14 @@ class FabrikAdminModelList extends FabModelAdmin
 
 			if ($element === false)
 			{
-				// Installation demo data sets 2 groud ids
+				// Installation demo data sets 2 group ids
 				if (is_string($plugin))
 				{
 					$plugin = array('plugin' => $plugin, 'group_id' => $groupIds[0]);
 				}
 
 				$plugin['ordering'] = $i;
-				$element = $this->makeElement($name, $plugin);
+				$element            = $this->makeElement($name, $plugin);
 
 				if (!$element)
 				{
@@ -2316,8 +2339,8 @@ class FabrikAdminModelList extends FabModelAdmin
 		}
 
 		$arAddedObj = array();
-		$keys = array();
-		$lines = array();
+		$keys       = array();
+		$lines      = array();
 
 		foreach ($elementModels as $elementModel)
 		{
@@ -2334,23 +2357,23 @@ class FabrikAdminModelList extends FabModelAdmin
 			if (!in_array($objName, $arAddedObj))
 			{
 				$arAddedObj[] = $objName;
-				$objType = $elementModel->getFieldDescription();
+				$objType      = $elementModel->getFieldDescription();
 
-				if ($objName != "" && !is_null($objType))
+				if ($objName != '' && !is_null($objType))
 				{
-					if (JString::stristr($objType, 'not null'))
+					if (String::stristr($objType, 'not null'))
 					{
-						$lines[] = $fabrikDb->quoteName($objName) . " $objType";
+						$lines[] = $fabrikDb->qn($objName) . ' ' . $objType;
 					}
 					else
 					{
-						$lines[] = $fabrikDb->quoteName($objName) . " $objType null";
+						$lines[] = $fabrikDb->qn($objName) . ' ' . $objType . ' null';
 					}
 				}
 			}
 		}
 
-		$func = create_function('$value', '$db = FabrikWorker::getDbo(true);;return $db->quoteName($value);');
+		$func = create_function('$value', '$db = FabrikWorker::getDbo(true);;return $db->qn($value);');
 		$sql .= implode(', ', $lines);
 
 		if (!empty($keys))
@@ -2380,27 +2403,21 @@ class FabrikAdminModelList extends FabModelAdmin
 	/**
 	 * Create an element
 	 *
-	 * @param   string  $name  Element name
-	 * @param   array   $data  Properties
+	 * @param   string $name Element name
+	 * @param   array  $data Properties
 	 *
 	 * @return mixed false if failed, otherwise element plugin
 	 */
 	public function makeElement($name, $data)
 	{
 		$pluginManager = FabrikWorker::getPluginManager();
-		$element = $pluginManager->loadPlugIn($data['plugin'], 'element');
-		$item = $element->getDefaultProperties();
-		$item->id = null;
-		$item->name = $name;
-		$item->label = str_replace('_', ' ', $name);
+		$element       = $pluginManager->loadPlugIn($data['plugin'], 'element');
+		$item          = $element->getDefaultProperties($data);
+		$item->id      = null;
+		$item->name    = $name;
+		$item->label   = str_replace('_', ' ', $name);
 		$item->bind($data);
-
-		if (!$item->store())
-		{
-			JError::raiseWarning(500, $item->getError());
-
-			return false;
-		}
+		$item->store();
 
 		return $element;
 	}
@@ -2409,32 +2426,32 @@ class FabrikAdminModelList extends FabModelAdmin
 	 * Return the default set of attributes when creating a new
 	 * fabrik list
 	 *
-	 * @return string json enocoded Params
+	 * @return string json encoded Params
 	 */
 	public function getDefaultParams()
 	{
-		$a = array('advanced-filter' => 0, 'show-table-nav' => 1, 'show-table-filters' => 1, 'show-table-add' => 1, 'require-filter' => 0);
-		$o = (object) $a;
-		$o->admin_template = 'admin';
-		$o->detaillink = 0;
-		$o->empty_data_msg = 'No data found';
-		$o->pdf = '';
-		$o->rss = 0;
-		$o->feed_title = '';
-		$o->feed_date = '';
-		$o->rsslimit = 150;
-		$o->rsslimitmax = 2500;
+		$a                      = array('advanced-filter' => 0, 'show-table-nav' => 1, 'show-table-filters' => 1, 'show-table-add' => 1, 'require-filter' => 0);
+		$o                      = (object) $a;
+		$o->admin_template      = 'admin';
+		$o->detaillink          = 0;
+		$o->empty_data_msg      = 'No data found';
+		$o->pdf                 = '';
+		$o->rss                 = 0;
+		$o->feed_title          = '';
+		$o->feed_date           = '';
+		$o->rsslimit            = 150;
+		$o->rsslimitmax         = 2500;
 		$o->csv_import_frontend = 3;
 		$o->csv_export_frontend = 3;
-		$o->csvfullname = 0;
-		$o->access = 1;
-		$o->allow_view_details = 1;
-		$o->allow_edit_details = 1;
-		$o->allow_add = 1;
-		$o->allow_delete = 1;
-		$o->group_by_order = '';
-		$o->group_by_order_dir = 'ASC';
-		$o->prefilter_query = '';
+		$o->csvfullname         = 0;
+		$o->access              = 1;
+		$o->allow_view_details  = 1;
+		$o->allow_edit_details  = 1;
+		$o->allow_add           = 1;
+		$o->allow_delete        = 1;
+		$o->group_by_order      = '';
+		$o->group_by_order_dir  = 'ASC';
+		$o->prefilter_query     = '';
 
 		return json_encode($o);
 	}
@@ -2447,22 +2464,22 @@ class FabrikAdminModelList extends FabModelAdmin
 	 */
 	public function ammendTable()
 	{
-		$db = FabrikWorker::getDbo(true);
-		$input = $this->app->input;
-		$query = $db->getQuery(true);
-		$table = $this->table;
-		$amend = false;
-		$tableName = $table->db_table_name;
-		$fabrikDb = $this->getDb();
-		$columns = $fabrikDb->getTableColumns($tableName);
+		$db             = FabrikWorker::getDbo(true);
+		$input          = $this->app->input;
+		$query          = $db->getQuery(true);
+		$table          = $this->table;
+		$amend          = false;
+		$tableName      = $table->db_table_name;
+		$fabrikDb       = $this->getDb();
+		$columns        = $fabrikDb->getTableColumns($tableName);
 		$existingFields = array_keys($columns);
 		$existingFields = array_map('strtolower', $existingFields);
-		$lastField = empty($existingFields) ? '' : $existingFields[count($existingFields) - 1];
-		$sql = 'ALTER TABLE ' . $db->quoteName($tableName) . ' ';
-		$sqlAdd = array();
+		$lastField      = empty($existingFields) ? '' : $existingFields[count($existingFields) - 1];
+		$sql            = 'ALTER TABLE ' . $db->qn($tableName) . ' ';
+		$sqlAdd         = array();
 
 		// $$$ hugh - looks like this is now an array in jform
-		$jForm = $input->get('jform', array(), 'array');
+		$jForm    = $input->get('jform', array(), 'array');
 		$arGroups = FArrayHelper::getValue($jForm, 'current_groups', array(), 'array');
 
 		if (empty($arGroups))
@@ -2470,7 +2487,7 @@ class FabrikAdminModelList extends FabModelAdmin
 			// Get a list of groups used by the form
 			$query->select('group_id')->from('#__{package}_formgroup')->where('form_id = ' . (int) $this->getFormModel()->getId());
 			$db->setQuery($query);
-			$groups = $db->loadObjectList();
+			$groups   = $db->loadObjectList();
 			$arGroups = array();
 
 			foreach ($groups as $g)
@@ -2515,9 +2532,9 @@ class FabrikAdminModelList extends FabModelAdmin
 						if (!in_array($objName, $arAddedObj))
 						{
 							// Any elements that are names the same (eg radio buttons) can not be entered twice into the database
-							$arAddedObj[] = $objName;
+							$arAddedObj[]    = $objName;
 							$pluginClassName = $obj->plugin;
-							$plugin = $this->pluginManager->getPlugIn($pluginClassName, 'element');
+							$plugin          = $this->pluginManager->getPlugIn($pluginClassName, 'element');
 
 							if (is_object($plugin))
 							{
@@ -2529,14 +2546,14 @@ class FabrikAdminModelList extends FabModelAdmin
 								$objType = 'VARCHAR(255)';
 							}
 
-							if ($objName != "" && !is_null($objType))
+							if ($objName != '' && !is_null($objType))
 							{
 								$amend = true;
-								$add = "ADD COLUMN " . $db->quoteName($objName) . " $objType null";
+								$add   = 'ADD COLUMN ' . $db->qn($objName) . ' ' . $objType . ' null';
 
 								if ($lastField !== '')
 								{
-									$add .= " AFTER " . $db->quoteName($lastField);
+									$add .= ' AFTER ' . $db->qn($lastField);
 								}
 
 								$sqlAdd[] = $add;
@@ -2555,8 +2572,7 @@ class FabrikAdminModelList extends FabModelAdmin
 			try
 			{
 				$fabrikDb->execute();
-			}
-			catch (Exception $e)
+			} catch (Exception $e)
 			{
 				JError::raiseWarning(500, 'amend table: ' . $e->getMessage());
 			}
@@ -2568,18 +2584,17 @@ class FabrikAdminModelList extends FabModelAdmin
 	 * $$$ hugh - added this to backend, as I need it in some places where we have
 	 * a backend list model, and until now only existed in the FE model.
 	 *
-	 * @param   string  $tbl       Table name
-	 * @param   string  $key       Field to key return array on
-	 * @param   bool    $basetype  Deprecated - not used
+	 * @param   string $tbl Table name
+	 * @param   string $key Field to key return array on
 	 *
 	 * @return  array  table fields
 	 */
-	public function getDBFields($tbl = null, $key = null, $basetype = false)
+	public function getDBFields($tbl = null, $key = null)
 	{
 		if (is_null($tbl))
 		{
 			$table = $this->getTable();
-			$tbl = $table->db_table_name;
+			$tbl   = $table->db_table_name;
 		}
 
 		if ($tbl == '')
@@ -2592,7 +2607,7 @@ class FabrikAdminModelList extends FabModelAdmin
 
 		if (!isset($this->dbFields[$sig]))
 		{
-			$db = $this->getDb();
+			$db  = $this->getDb();
 			$tbl = FabrikString::safeColName($tbl);
 			$db->setQuery("DESCRIBE " . $tbl);
 			$this->dbFields[$sig] = $db->loadObjectList($key);
@@ -2616,7 +2631,7 @@ class FabrikAdminModelList extends FabModelAdmin
 				 * Grab the size part ...
 				 */
 				$matches = array();
-				if (preg_match('#\((\d+)\)$#', $row->Type,$matches))
+				if (preg_match('#\((\d+)\)$#', $row->Type, $matches))
 				{
 					$row->BaseLength = $matches[1];
 				}

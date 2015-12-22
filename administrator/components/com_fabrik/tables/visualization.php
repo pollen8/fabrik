@@ -11,6 +11,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use \Joomla\Registry\Registry;
+
 /**
  * Visualization Fabrik Table
  *
@@ -44,7 +46,7 @@ class FabrikTableVisualization extends JTable
 	{
 		if (isset($src['params']) && is_array($src['params']))
 		{
-			$registry = new JRegistry;
+			$registry = new Registry;
 			$registry->loadArray($src['params']);
 			$src['params'] = (string) $registry;
 		}

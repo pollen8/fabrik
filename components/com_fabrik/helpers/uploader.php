@@ -11,6 +11,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\String\String;
+
 /**
  * Fabrik upload helper
  *
@@ -176,8 +178,8 @@ class FabrikUploader extends JObject
 		}
 
 		jimport('joomla.filesystem.file');
-		$format = JString::strtolower(JFile::getExt($file['name']));
-		$allowable = explode(',', JString::strtolower($params->get('ul_file_types')));
+		$format = String::strtolower(JFile::getExt($file['name']));
+		$allowable = explode(',', String::strtolower($params->get('ul_file_types')));
 		$format = FabrikString::ltrimword($format, '.');
 		$format2 = ".$format";
 
@@ -234,7 +236,7 @@ class FabrikUploader extends JObject
 		foreach ($html_tags as $tag)
 		{
 			// A tag is '<tagname ', so we need to add < and a space or '<tagname>'
-			if (JString::stristr($xss_check, '<' . $tag . ' ') || JString::stristr($xss_check, '<' . $tag . '>'))
+			if (String::stristr($xss_check, '<' . $tag . ' ') || String::stristr($xss_check, '<' . $tag . '>'))
 			{
 				$err = 'WARNIEXSS';
 
@@ -263,7 +265,7 @@ class FabrikUploader extends JObject
 			$bits = explode('.', $newFileName);
 			$ext = array_pop($bits);
 			$f = implode('.', $bits);
-			$f = JString::rtrim($f, $version - 1);
+			$f = String::rtrim($f, $version - 1);
 			$newFileName = $f . $version . "." . $ext;
 			$version++;
 			$newFileName = self::incrementFileName($origFileName, $newFileName, $version);

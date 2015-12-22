@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<form addfieldpath="/administrator/components/com_fabrik/models/fields">
+	<name>Select content types for new form/list</name>
+
+	<fieldset name="details">
+
+		<field name="contenttype"
+		       default="default.xml"
+		       description="COM_FABRIK_FIELD_CONTENT_TYPE_DESC"
+		       label="COM_FABRIK_FIELD_CONTENT_TYPE_LABEL"
+		       type="fabrikcontenttypelist"/>
+
+	</fieldset>
+</form>

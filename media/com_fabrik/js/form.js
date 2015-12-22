@@ -29,6 +29,7 @@ var FbForm = new Class({
 		'ajaxmethod': 'post',
 		'inlineMessage': true,
 		'print': false,
+		'toggleSubmit': false,
 		'images': {
 			'alert': '',
 			'action_check': '',
@@ -49,6 +50,7 @@ var FbForm = new Class({
 		this.subGroups = $H({});
 		this.currentPage = this.options.start_page;
 		this.formElements = $H({});
+		this.hasErrors = $H({});
 		this.elements = this.formElements;
 		this.duplicatedGroups = $H({});
 
@@ -970,6 +972,21 @@ var FbForm = new Class({
 		} else {
 			this._showElementError([], id);
 		}
+		
+		if (this.options.toggleSubmit)
+		{
+			var submit = this._getButton('Submit');
+			if (typeOf(submit) !== 'null') {
+				if (this.hasErrors.getKeys().length === 0) {
+					submit.disabled = "";
+					submit.setStyle('opacity', 1);
+				}
+				else {
+					submit.disabled = "disabled";
+					submit.setStyle('opacity', 0.5);				
+				}
+			}
+		}
 	},
 
 	_prepareRepeatsForAjax : function (d) {
@@ -1039,7 +1056,11 @@ var FbForm = new Class({
 		}
 		var classname = (msg === '') ? 'fabrikSuccess' : 'fabrikError';
 		if (msg === '') {
+			delete this.hasErrors[id];
 			msg = Joomla.JText._('COM_FABRIK_SUCCESS');
+		}
+		else {
+			this.hasErrors.set(id, true);
 		}
 		msg = '<span> ' + msg + '</span>';
 		this.formElements.get(id).setErrorMessage(msg, classname);
@@ -1753,8 +1774,8 @@ var FbForm = new Class({
 				var testid = (hasSubElements && container) ? container.id : input.id;
 				var cloneName = el.getCloneName();
 
-				// Looser test that previous === to catch db join rendered as checkbox
-				if (testid.contains(cloneName)) {
+				// Test ===, plus special case for join rendered as auto-complete
+				if (testid === cloneName || testid === cloneName + '-auto-complete') {
 					lastinput = input;
 					formElementFound = true;
 

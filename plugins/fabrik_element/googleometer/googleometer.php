@@ -11,6 +11,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\Utilities\ArrayHelper;
+
 require_once JPATH_SITE . '/components/com_fabrik/models/element.php';
 
 /**
@@ -52,7 +54,7 @@ class PlgFabrik_ElementGoogleometer extends PlgFabrik_Element
 
 		if (is_array($data))
 		{
-			$data = JArrayHelper::getValue($data, $repeatCounter);
+			$data = ArrayHelper::getValue($data, $repeatCounter);
 		}
 
 		return $this->_renderListData($data, $range, $repeatCounter);

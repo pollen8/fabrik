@@ -100,13 +100,13 @@ class PlgFabrik_ElementYesno extends PlgFabrik_ElementRadiobutton
 		{
 			$icon = $j3 ? 'checkmark.png' : '1_8bit.png';
 
-			return FabrikHelperHTML::image($icon, 'list', $this->tmpl, array('alt' => FText::_('JYES')));
+			return FabrikHelperHTML::image($icon, 'list', @$this->tmpl, array('alt' => FText::_('JYES')));
 		}
 		else
 		{
 			$icon = $j3 ? 'remove.png' : '0_8bit.png';
 
-			return FabrikHelperHTML::image($icon, 'list', $this->tmpl, array('alt' => FText::_('JNO')));
+			return FabrikHelperHTML::image($icon, 'list', @$this->tmpl, array('alt' => FText::_('JNO')));
 		}
 	}
 
@@ -287,23 +287,23 @@ class PlgFabrik_ElementYesno extends PlgFabrik_ElementRadiobutton
 	{
 		$listModel = $this->getlistModel();
 		$elName = $this->getFullName(true, false);
-		$htmlId = $this->getHTMLId() . 'value';
 		$elName = FabrikString::safeColName($elName);
 		$v = 'fabrik___filter[list_' . $listModel->getRenderContext() . '][value]';
 		$v .= ($normal) ? '[' . $counter . ']' : '[]';
 		$default = $this->getDefaultFilterVal($normal, $counter);
 		$rows = $this->filterValueList($normal);
+		$this->getFilterDisplayValues($default, $rows);
+
 		$return = array();
 		$element = $this->getElement();
-		$class = $this->filterClass();
 
 		if ($element->filter_type == 'hidden')
 		{
-			$return[] = '<input type="text" name="' . $v . '" class="' . $class . '" value="' . $default . '" id="' . $htmlId . '" />';
+			$return[] = $this->singleFilter($default, $v, 'hidden');
 		}
 		else
 		{
-			$return[] = JHTML::_('select.genericlist', $rows, $v, 'class="' . $class . '" size="1" ', 'value', 'text', $default, $htmlId);
+			$return[] = $this->selectFilter($rows, $default, $v);
 		}
 
 		if ($normal)

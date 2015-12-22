@@ -11,6 +11,10 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\String\String;
+use \Joomla\Registry\Registry;
+use Joomla\Utilities\ArrayHelper;
+
 jimport('joomla.application.component.model');
 require_once 'fabrikmodelform.php';
 require_once COM_FABRIK_FRONTEND . '/helpers/element.php';
@@ -96,7 +100,7 @@ class FabrikFEModelForm extends FabModelForm
 	/**
 	 * Parameters
 	 *
-	 * @var JRegistry
+	 * @var Registry
 	 */
 	protected $params = null;
 
@@ -396,7 +400,7 @@ class FabrikFEModelForm extends FabModelForm
 	/**
 	 * Get form table (alias to getTable())
 	 *
-	 * @return  object  form table
+	 * @return  FabTable  form table
 	 */
 	public function getForm()
 	{
@@ -413,7 +417,7 @@ class FabrikFEModelForm extends FabModelForm
 		if (!isset($this->params))
 		{
 			$form = $this->getForm();
-			$this->params = new JRegistry($form->params);
+			$this->params = new Registry($form->params);
 		}
 
 		return $this->params;
@@ -2441,7 +2445,7 @@ class FabrikFEModelForm extends FabModelForm
 	 * @param   string  $prefix   table name prefix
 	 * @param   array   $options  initial state options
 	 *
-	 * @return object form row
+	 * @return FabTable form row
 	 */
 	public function getTable($name = '', $prefix = 'Table', $options = array())
 	{
@@ -3060,7 +3064,7 @@ class FabrikFEModelForm extends FabModelForm
 
 					// $$$rob ensure "<tags>text</tags>" that are entered into plain text areas are shown correctly
 					JFilterOutput::objectHTMLSafe($data);
-					$data = JArrayHelper::fromObject($data);
+					$data = ArrayHelper::fromObject($data);
 					FabrikHelperHTML::debug($data, 'form:getData from POST (form not in Mambot and errors)');
 				}
 			}
@@ -3153,7 +3157,7 @@ class FabrikFEModelForm extends FabModelForm
 									$this->rowId = isset($row->__pk_val) ? $row->__pk_val : $this->rowId;
 								}
 
-								$row = empty($row) ? array() : JArrayHelper::fromObject($row);
+								$row = empty($row) ? array() : ArrayHelper::fromObject($row);
 								$request = $clean_request;
 								$request = array_merge($row, $request);
 								$data[] = FArrayHelper::toObject($request);
@@ -3402,7 +3406,7 @@ class FabrikFEModelForm extends FabModelForm
 		}
 
 		// Remove the additional rows - they should have been merged into [0] above. if no [0] then use main array
-		$data = JArrayHelper::fromObject(FArrayHelper::getValue($data, 0, $data));
+		$data = ArrayHelper::fromObject(FArrayHelper::getValue($data, 0, $data));
 	}
 
 	/**
@@ -3556,11 +3560,11 @@ class FabrikFEModelForm extends FabModelForm
 		if (strstr($sql, 'WHERE'))
 		{
 			// Do it this way as queries may contain sub-queries which we want to keep the where
-			$firstWord = JString::substr($where, 0, 5);
+			$firstWord = String::substr($where, 0, 5);
 
 			if ($firstWord == 'WHERE')
 			{
-				$where = JString::substr_replace($where, 'AND', 0, 5);
+				$where = String::substr_replace($where, 'AND', 0, 5);
 			}
 		}
 		// Set rowId to -2 to indicate random record
@@ -4071,7 +4075,7 @@ class FabrikFEModelForm extends FabModelForm
 			return str_replace("{Add/Edit}", '', $label);
 		}
 
-		if (JString::stristr($label, "{Add/Edit}"))
+		if (String::stristr($label, "{Add/Edit}"))
 		{
 			$replace = $this->isNewRecord() ? FText::_('COM_FABRIK_ADD') : FText::_('COM_FABRIK_EDIT');
 			$label = str_replace("{Add/Edit}", $replace, $label);
@@ -4512,7 +4516,6 @@ class FabrikFEModelForm extends FabModelForm
 			return $this->groupView;
 		}
 
-		$params = $this->getParams();
 		$input = $this->app->input;
 
 		// $$$rob - do regardless of whether form is editable as $data is required for hidden encrypted fields

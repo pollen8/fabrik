@@ -11,6 +11,9 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\String\String;
+use Joomla\Utilities\ArrayHelper;
+
 jimport('joomla.application.component.model');
 
 require_once JPATH_SITE . '/components/com_fabrik/models/visualization.php';
@@ -223,7 +226,7 @@ class FabrikModelTimeline extends FabrikFEModelVisualization
 					foreach ($group as $row)
 					{
 						$event = new stdClass;
-						$html = $w->parseMessageForPlaceHolder($template, JArrayHelper::fromObject($row), false, true);
+						$html = $w->parseMessageForPlaceHolder($template, ArrayHelper::fromObject($row), false, true);
 
 						if ($eval)
 						{
@@ -406,11 +409,11 @@ class FabrikModelTimeline extends FabrikFEModelVisualization
 		$input = preg_replace('#^[\d\.]*#', '', $input);
 
 		// Lowercase the first character.
-		$first = JString::substr($input, 0, 1);
-		$first = JString::strtolower($first);
+		$first = String::substr($input, 0, 1);
+		$first = String::strtolower($first);
 
 		// Replace the first character with the lowercase character.
-		$input = JString::substr_replace($input, $first, 0, 1);
+		$input = String::substr_replace($input, $first, 0, 1);
 
 		return $input;
 	}
@@ -433,7 +436,7 @@ class FabrikModelTimeline extends FabrikFEModelVisualization
 
 		if ($customLink !== '')
 		{
-			$url = @ $w->parseMessageForPlaceHolder($customLink, JArrayHelper::fromObject($row), false, true);
+			$url = @ $w->parseMessageForPlaceHolder($customLink, ArrayHelper::fromObject($row), false, true);
 			$url = str_replace('{rowid}', $row->__pk_val, $url);
 		}
 		else

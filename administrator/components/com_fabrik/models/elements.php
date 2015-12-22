@@ -12,6 +12,9 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\Registry\Registry;
+use Joomla\Utilities\ArrayHelper;
+
 require_once 'fabmodellist.php';
 
 /**
@@ -199,7 +202,7 @@ class FabrikAdminModelElements extends FabModelList
 			}
 
 			// Add a tip containing the access level information
-			$params = new JRegistry($item->params);
+			$params = new Registry($item->params);
 
 			$addAccessTitle = FArrayHelper::getValue($viewLevels, $item->access);
 			$addAccessTitle = is_object($addAccessTitle) ? $addAccessTitle->title : 'n/a';
@@ -370,7 +373,7 @@ class FabrikAdminModelElements extends FabModelList
 
 	public function batch($ids, $batch)
 	{
-		JArrayHelper::toInteger($ids);
+		ArrayHelper::toInteger($ids);
 
 		foreach ($ids as $id)
 		{
@@ -389,7 +392,7 @@ class FabrikAdminModelElements extends FabModelList
 	 */
 	public function canUnpublish($ids)
 	{
-		JArrayHelper::toInteger($ids);
+		ArrayHelper::toInteger($ids);
 		$blocked = array();
 		$allowed = array();
 

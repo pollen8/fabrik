@@ -11,6 +11,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\Utilities\ArrayHelper;
+
 // Require the abstract plugin class
 require_once COM_FABRIK_FRONTEND . '/models/plugin-list.php';
 
@@ -80,7 +82,7 @@ class PlgFabrik_ListRadius_Lookup extends PlgFabrik_List
 		$lookUps = $input->get('radius_lookup' . $this->renderOrder, array(), 'array');
 		$lookUps = array_filter($lookUps, function ($v) { return (string) $v === '1'; });
 		$ids = array_keys($lookUps);
-		JArrayHelper::toInteger($ids);
+		ArrayHelper::toInteger($ids);
 
 		$listModel = new FabrikFEModelList();
 		$listModel->setId($params->get('radius_lookup_list'));

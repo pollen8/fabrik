@@ -11,6 +11,9 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\Registry\Registry;
+use Joomla\Utilities\ArrayHelper;
+
 jimport('joomla.application.component.model');
 
 /**
@@ -528,7 +531,7 @@ class FabrikFEModelOai extends FabModel
 	{
 		if (is_array($row))
 		{
-			$row = JArrayHelper::toObject($row);
+			$row = ArrayHelper::toObject($row);
 		}
 
 		$elements  = $this->getOAIElements();
@@ -601,7 +604,7 @@ class FabrikFEModelOai extends FabModel
 
 		foreach ($lists as $list)
 		{
-			$params = new JRegistry($list->params);
+			$params = new Registry($list->params);
 
 			if ((bool) $params->get('open_archive_active', 0))
 			{

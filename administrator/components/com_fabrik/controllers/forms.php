@@ -41,12 +41,13 @@ class FabrikAdminControllerForms extends FabControllerAdmin
 	 *
 	 * @param   string  $name    Model name
 	 * @param   string  $prefix  Model prefix
+	 * @param   array   $config  Configuration array for model. Optional.
 	 *
 	 * @since	1.6
 	 *
-	 * @return  model
+	 * @return  JModel
 	 */
-	public function &getModel($name = 'Form', $prefix = 'FabrikAdminModel')
+	public function &getModel($name = 'Form', $prefix = 'FabrikAdminModel', $config = array())
 	{
 		$model = parent::getModel($name, $prefix, array('ignore_request' => true));
 
@@ -74,11 +75,10 @@ class FabrikAdminControllerForms extends FabControllerAdmin
 	 */
 	public function listview()
 	{
-		$app = JFactory::getApplication();
-		$input = $app->input;
+		$input = $this->input;
 		$cid = $input->get('cid', array(0), 'array');
 		$cid = $cid[0];
-		$db = JFactory::getDbo(true);
+		$db = JFactory::getDbo();
 		$query = $db->getQuery(true);
 		$query->select('id')->from('#__fabrik_lists')->where('form_id = ' . (int) $cid);
 		$db->setQuery($query);

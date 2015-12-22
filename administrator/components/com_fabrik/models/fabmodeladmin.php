@@ -14,6 +14,8 @@ defined('_JEXEC') or die('Restricted access');
 
 jimport('joomla.application.component.modeladmin');
 
+use Joomla\Utilities\ArrayHelper;
+
 /**
  * Abstract Fabrik Admin model
  *
@@ -70,12 +72,13 @@ abstract class FabModelAdmin extends JModelAdmin
 	 */
 	public function __construct($config = array())
 	{
-		$this->app     = JArrayHelper::getValue($config, 'app', JFactory::getApplication());
-		$this->user    = JArrayHelper::getValue($config, 'user', JFactory::getUser());
-		$this->config  = JArrayHelper::getValue($config, 'config', JFactory::getConfig());
-		$this->session = JArrayHelper::getValue($config, 'session', JFactory::getSession());
-		$this->db      = JArrayHelper::getValue($config, 'db', JFactory::getDbo());
-		$this->pluginManager = JArrayHelper::getValue($config, 'pluginManager',  JModelLegacy::getInstance('Pluginmanager', 'FabrikFEModel'));
+		$this->app           = ArrayHelper::getValue($config, 'app', JFactory::getApplication());
+		$this->user          = ArrayHelper::getValue($config, 'user', JFactory::getUser());
+		$this->config        = ArrayHelper::getValue($config, 'config', JFactory::getConfig());
+		$this->session       = ArrayHelper::getValue($config, 'session', JFactory::getSession());
+		$this->db            = ArrayHelper::getValue($config, 'db', JFactory::getDbo());
+		$this->pluginManager = ArrayHelper::getValue($config, 'pluginManager',
+			JModelLegacy::getInstance('Pluginmanager', 'FabrikFEModel'));
 		parent::__construct($config);
 	}
 

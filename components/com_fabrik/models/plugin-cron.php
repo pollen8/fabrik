@@ -38,6 +38,13 @@ class PlgFabrik_Cron extends FabrikPlugin
 	protected $log = null;
 
 	/**
+	 * Allow plugin to stop rescheduling
+	 *
+	 * @var bool
+	 */
+	public $reschedule = true;
+
+	/**
 	 * Get the db row
 	 *
 	 * @param   bool  $force  force reload
@@ -121,4 +128,23 @@ class PlgFabrik_Cron extends FabrikPlugin
 
 		return $params->get('cron_rungate', '0') === '1';
 	}
+
+	/**
+	 * Allow plugin to decide if it wants to be rescheduled
+	 *
+	 * @param   int  $c  plugin render order
+	 *
+	 * @return  bool
+	 */
+
+	public function shouldReschedule($reschedule = true)
+	{
+		if ($reschedule === false)
+		{
+			$this->reschedule = false;
+		}
+
+		return $this->reschedule;
+	}
+
 }

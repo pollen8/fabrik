@@ -12,6 +12,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use \Joomla\Registry\Registry;
+
 JHtml::addIncludePath(JPATH_COMPONENT . '/helpers/html');
 JHtml::_('behavior.tooltip');
 JHTML::_('script', 'system/multiselect.js', false, true);
@@ -128,7 +130,7 @@ window.addEvent('domready', function () {
 		<tbody>
 		<?php foreach ($this->items as $i => $item) :
 			$ordering	= ($listOrder == 'e.ordering');
-			$params = new JRegistry($item->params);
+			$params = new Registry($item->params);
 			$link = JRoute::_('index.php?option=com_fabrik&task=element.edit&id='.(int) $item->id);
 			$canCreate	= $user->authorise('core.create',		'com_fabrik.element.'.$item->group_id);
 			$canEdit	= $user->authorise('core.edit',			'com_fabrik.element.'.$item->group_id);

@@ -334,6 +334,7 @@
 				<option value="2">COM_FABRIK_FILTER_ABOVE_TOGGLE</option>
 				<option value="3">COM_FABRIK_FILTER_UNDER_HEADINGS</option>
 				<option value="4">COM_FABRIK_FILTER_UNDER_HEADINGS_TOGGLE</option>
+				<option value="5">COM_FABRIK_FILTER_POPUP</option>
 			</field>
 
 			<field name="advanced-filter"
@@ -531,7 +532,7 @@
 				label="COM_FABRIK_FIELD_SEF_SLUG_LABEL"
 				description="COM_FABRIK_FIELD_SEF_SLUG_DESC"
 			/>
-			
+
 			<field name="show-table-picker"
 				type="radio"
 				class="btn-group"
@@ -542,7 +543,7 @@
 				<option value="0">JNO</option>
 				<option value="1">JYES</option>
 			</field>
-			
+
 
 		</fieldset>
 

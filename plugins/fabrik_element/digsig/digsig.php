@@ -11,7 +11,7 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use \Joomla\Utilities\ArrayHelper;
+use Joomla\Utilities\ArrayHelper;
 
 jimport('joomla.application.component.model');
 
@@ -170,7 +170,7 @@ class PlgFabrik_ElementDigsig extends PlgFabrik_Element
 	 */
 	protected function getIndEmailValue($value, $data = array(), $repeatCounter = 0)
 	{
-		$rowId = JArrayHelper::getValue($data, '__pk_val');
+		$rowId = ArrayHelper::getValue($data, '__pk_val');
 
 		return $this->toImage($rowId);
 	}

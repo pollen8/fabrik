@@ -9,6 +9,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\Utilities\ArrayHelper;
+
 // Require the abstract plugin class
 require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
 
@@ -207,7 +209,7 @@ class PlgFabrik_FormNotification extends PlgFabrik_Form
 			$trigger = $triggerEl->getFullName();
 			$data = $formModel->getData();
 
-			return JArrayHelper::getValue($data, $trigger) == $params->get('trigger_value') ? true : false;
+			return ArrayHelper::getValue($data, $trigger) == $params->get('trigger_value') ? true : false;
 		}
 	}
 

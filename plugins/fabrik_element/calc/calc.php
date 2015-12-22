@@ -11,6 +11,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\Utilities\ArrayHelper;
+
 /**
  * Plugin element to render field with PHP calculated value
  *
@@ -350,7 +352,7 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 			$cal = $params->get('calc_calculation', '');
 			$listModel = $this->getlistModel();
 			$formModel = $this->getFormModel();
-			$data = JArrayHelper::fromObject($row);
+			$data = ArrayHelper::fromObject($row);
 			$data['rowid'] = $data['__pk_val'];
 			$data['fabrik'] = $formModel->getId();
 
@@ -737,7 +739,7 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 				$key = $listRef . $row->__pk_val;
 				$row->rowid = $row->__pk_val;
 
-				$return->$key = $this->_getV(JArrayHelper::fromObject($row), 0);
+				$return->$key = $this->_getV(ArrayHelper::fromObject($row), 0);
 			}
 		}
 

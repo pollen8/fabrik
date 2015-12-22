@@ -10,6 +10,7 @@
 			       type="listfields"
 			       repeat="true"
 			       mode="gui"
+			       placeholder="E.g. {my_products___product_name}"
 			       at="true"
 			       valueformat="tableelement"
 			       usestep="true"
@@ -22,6 +23,7 @@
 			       type="listfields"
 			       repeat="true"
 			       mode="gui"
+			       placeholder="E.g. {my_products___product_type}"
 			       at="true"
 			       valueformat="tableelement"
 			       usestep="true"
@@ -34,6 +36,7 @@
 			       type="listfields"
 			       repeat="true"
 			       mode="gui"
+			       placeholder="E.g. {my_products___enabled}"
 			       at="true"
 			       valueformat="tableelement"
 			       usestep="true"
@@ -46,6 +49,7 @@
 			       type="listfields"
 			       repeat="true"
 			       mode="gui"
+			       placeholder="E.g. {my_products___visible}"
 			       at="true"
 			       valueformat="tableelement"
 			       usestep="true"
@@ -58,6 +62,7 @@
 			       type="listfields"
 			       repeat="true"
 			       mode="gui"
+			       placeholder="E.g. {my_products___visible}"
 			       at="true"
 			       valueformat="tableelement"
 			       usestep="true"
@@ -70,6 +75,7 @@
 			       type="listfields"
 			       repeat="true"
 			       mode="gui"
+			       placeholder="E.g. {my_products___upc}"
 			       at="true"
 			       valueformat="tableelement"
 			       usestep="true"
@@ -83,6 +89,7 @@
 			       repeat="true"
 			       type="listfields"
 			       mode="gui"
+			       placeholder="E.g. {my_products___manufacturer}"
 			       at="true"
 			       valueformat="tableelement"
 			       usestep="true"
@@ -99,12 +106,14 @@
 			       label="PLG_FORM_J2STORE_FIELD_ADD_TO_CART_TEXT_LABEL"/>
 		</fieldset>
 
-		<fieldset name="plg-j2store-price" label="PLG_FORM_J2STORE_PRICE">
+		<fieldset name="plg-j2store-price"
+		          label="PLG_FORM_J2STORE_PRICE">
 
 			<field name="j2store_price"
 			       type="listfields"
 			       repeat="true"
 			       mode="gui"
+			       placeholder="E.g. {my_products___price}"
 			       at="true"
 			       valueformat="tableelement"
 			       usestep="true"
@@ -117,6 +126,7 @@
 			       repeat="true"
 			       type="listfields"
 			       mode="gui"
+			       placeholder="E.g. {my_products___tax_profile}"
 			       at="true"
 			       valueformat="tableelement"
 			       usestep="true"
@@ -126,12 +136,14 @@
 			       label="PLG_FORM_J2STORE_FIELD_TAX_PROFILE_ID_LABEL"/>
 
 		</fieldset>
-		<fieldset name="plg-j2store-images" label="PLG_FORM_J2STORE_IMAGES">
+		<fieldset name="plg-j2store-images"
+		          label="PLG_FORM_J2STORE_IMAGES">
 
 			<field name="j2store_thumb_image"
 			       repeat="true"
 			       type="listfields"
 			       mode="gui"
+			       placeholder="E.g. {my_products___thumb_img}"
 			       at="true"
 			       valueformat="tableelement"
 			       usestep="true"
@@ -144,6 +156,7 @@
 			       repeat="true"
 			       type="listfields"
 			       mode="gui"
+			       placeholder="E.g. {my_products___main_img}"
 			       at="true"
 			       valueformat="tableelement"
 			       usestep="true"
@@ -153,12 +166,14 @@
 			       label="PLG_FORM_J2STORE_FIELD_MAIN_IMG_LABEL"/>
 		</fieldset>
 
-		<fieldset name="plg-j2store-shipping" label="PLG_FORM_J2STORE_SHIPPING">
+		<fieldset name="plg-j2store-shipping"
+		          label="PLG_FORM_J2STORE_SHIPPING">
 
 			<field name="j2store_shipping"
 			       repeat="true"
 			       type="listfields"
 			       mode="gui"
+			       placeholder="E.g. {my_products___enable_shipping}"
 			       at="true"
 			       valueformat="tableelement"
 			       usestep="true"
@@ -171,6 +186,7 @@
 			       repeat="true"
 			       type="listfields"
 			       mode="gui"
+			       placeholder="E.g. {my_products___length}"
 			       at="true"
 			       valueformat="tableelement"
 			       usestep="true"
@@ -183,6 +199,7 @@
 			       repeat="true"
 			       type="listfields"
 			       mode="gui"
+			       placeholder="E.g. {my_products___width}"
 			       at="true"
 			       valueformat="tableelement"
 			       usestep="true"
@@ -191,10 +208,11 @@
 			       description="PLG_FORM_J2STORE_FIELD_WIDTH_DESC"
 			       label="PLG_FORM_J2STORE_FIELD_WIDTH_LABEL"/>
 
-				<field name="j2store_height"
+			<field name="j2store_height"
 			       repeat="true"
 			       type="listfields"
 			       mode="gui"
+			       placeholder="E.g. {my_products___height}"
 			       at="true"
 			       valueformat="tableelement"
 			       usestep="true"
@@ -207,6 +225,7 @@
 			       repeat="true"
 			       type="listfields"
 			       mode="gui"
+			       placeholder="E.g. {my_products___weight}"
 			       at="true"
 			       valueformat="tableelement"
 			       usestep="true"
@@ -219,6 +238,7 @@
 			       repeat="true"
 			       type="listfields"
 			       mode="gui"
+			       placeholder="E.g. {my_products___length_class}"
 			       at="true"
 			       valueformat="tableelement"
 			       usestep="true"
@@ -231,6 +251,7 @@
 			       repeat="true"
 			       type="listfields"
 			       mode="gui"
+			       placeholder="E.g. {my_products___weight_class}"
 			       at="true"
 			       valueformat="tableelement"
 			       usestep="true"
@@ -241,12 +262,14 @@
 
 		</fieldset>
 
-		<fieldset name="plg-j2store-downloads" label="PLG_J2STORE_DOWNLOADS">
+		<fieldset name="plg-j2store-downloads"
+		          label="PLG_J2STORE_DOWNLOADS">
 
 			<field name="j2store_download_limit"
 			       repeat="true"
 			       type="listfields"
 			       mode="gui"
+			       placeholder="E.g. {my_products___download_limit}"
 			       at="true"
 			       valueformat="tableelement"
 			       usestep="true"
@@ -259,6 +282,7 @@
 			       repeat="true"
 			       type="listfields"
 			       mode="gui"
+			       placeholder="E.g. {my_products___download_expiry}"
 			       at="true"
 			       valueformat="tableelement"
 			       usestep="true"
@@ -271,6 +295,7 @@
 			       repeat="true"
 			       type="listfields"
 			       mode="gui"
+			       placeholder="E.g. {my_products___product_file_display_name}"
 			       at="true"
 			       valueformat="tableelement"
 			       usestep="true"
@@ -283,6 +308,7 @@
 			       repeat="true"
 			       type="listfields"
 			       mode="gui"
+			       placeholder="E.g. {my_products___product_file_save_name}"
 			       at="true"
 			       valueformat="tableelement"
 			       usestep="true"

@@ -11,6 +11,10 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\String\String;
+use \Joomla\Registry\Registry;
+use Joomla\Utilities\ArrayHelper;
+
 jimport('joomla.application.component.model');
 
 /**
@@ -24,7 +28,7 @@ class FabrikFEModelGroup extends FabModel
 	/**
 	 * Parameters
 	 *
-	 * @var JRegistry
+	 * @var Registry
 	 */
 	protected $params = null;
 
@@ -584,11 +588,14 @@ class FabrikFEModelGroup extends FabModel
 
 		$ids = (array) $this->app->input->get('elementid', array(), 'array');
 		$sig = implode('.', $ids);
-
+		if ($sig === '')
+		{
+			$sig = 'default';
+		}
 		if (!array_key_exists($sig, $this->publishedElements))
 		{
 			$this->publishedElements[$sig] = array();
-			$elements = $this->getMyElements();
+			$elements = (array) $this->getMyElements();
 
 			foreach ($elements as $elementModel)
 			{
@@ -940,7 +947,7 @@ class FabrikFEModelGroup extends FabModel
 	{
 		if (!$this->params)
 		{
-			$this->params = new JRegistry($this->getGroup()->params);
+			$this->params = new Registry($this->getGroup()->params);
 		}
 
 		return $this->params;
@@ -1010,7 +1017,7 @@ class FabrikFEModelGroup extends FabModel
 
 		$label = $input->getString('group' . $group->id . '_label', $groupTable->label);
 
-		if (JString::stristr($label, "{Add/Edit}"))
+		if (String::stristr($label, "{Add/Edit}"))
 		{
 			$replace = $formModel->isNewRecord() ? FText::_('COM_FABRIK_ADD') : FText::_('COM_FABRIK_EDIT');
 			$label = str_replace("{Add/Edit}", $replace, $label);
@@ -1556,7 +1563,7 @@ class FabrikFEModelGroup extends FabModel
 
 			if (is_object($d))
 			{
-				$d = JArrayHelper::fromObject($d);
+				$d = ArrayHelper::fromObject($d);
 			}
 
 			$repeatGroup = count($d);
@@ -1581,11 +1588,13 @@ class FabrikFEModelGroup extends FabModel
 	{
 		$allHidden = true;
 
-		foreach ($this->elements as $elementModel)
+		foreach ((array) $this->elements as $elementModel)
 		{
 			$allHidden &= $elementModel->isHidden();
 		}
-		if ((!$allHidden || !empty($group->intro)) && trim($group->title) !== '') {
+
+		if ((!$allHidden || !empty($group->intro)) && trim($group->title) !== '')
+		{
 			return true;
 		}
 

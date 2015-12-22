@@ -147,10 +147,14 @@ class JDocumentRendererrss extends JDocumentRenderer
 
 		for ($i = 0; $i < count($data->items); $i++)
 		{
+			/**
+			 * Run text through html_entity_decode before htmlspecialchars, in case it contains non XML entities like &eacute
+			 */
+
 			$feed.= "		<item>\n";
-			$feed.= "			<title>" . htmlspecialchars(strip_tags($data->items[$i]->title), ENT_COMPAT, 'UTF-8') . "</title>\n";
+			$feed.= "			<title><![CDATA[" .  htmlspecialchars(strip_tags(html_entity_decode($data->items[$i]->title, ENT_COMPAT, 'UTF-8')), ENT_COMPAT, 'UTF-8') . "]]></title>\n";
 			$feed.= "			<link>" . $url . $data->items[$i]->link . "</link>\n";
-			$feed.= "			<description><![CDATA[" . $this->_relToAbs($data->items[$i]->description) . "]]></description>\n";
+			$feed.= "			<description><![CDATA[" . htmlspecialchars(html_entity_decode($this->_relToAbs($data->items[$i]->description), ENT_COMPAT, 'UTF-8'), ENT_COMPAT, 'UTF-8') . "]]></description>\n";
 
 			if ($data->items[$i]->author != "")
 			{

@@ -11,6 +11,9 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\String\String;
+use Joomla\Utilities\ArrayHelper;
+
 jimport('joomla.filesystem.file');
 
 if (!defined('COM_FABRIK_FRONTEND'))
@@ -848,7 +851,7 @@ EOD;
 			if ($fbConfig->get('advanced_behavior', '0') == '1')
 			{
 				$chosenOptions = $fbConfig->get('advanced_behavior_options', '{}');
-				$chosenOptions = empty($chosenOptions) ? array() : JArrayHelper::fromObject(json_decode($chosenOptions));
+				$chosenOptions = empty($chosenOptions) ? array() : ArrayHelper::fromObject(json_decode($chosenOptions));
 				JHtml::_('formbehavior.chosen', 'select.advancedSelect', null, $chosenOptions);
 			}
 
@@ -884,7 +887,7 @@ EOD;
 				$liveSiteSrc[] = "\tFabrik.liveSite = '" . COM_FABRIK_LIVESITE . "';";
 				$liveSiteSrc[] = "\tFabrik.package = '" . $app->getUserState('com_fabrik.package', 'fabrik') . "';";
 				$liveSiteSrc[] = "\tFabrik.debug = " . (self::isDebug() ? 'true;' : 'false;');
-				$liveSiteSrc[] = "\tFabrik.jLayouts = " . json_encode(JArrayHelper::toObject(self::$jLayoutsJs)) . ";";
+				$liveSiteSrc[] = "\tFabrik.jLayouts = " . json_encode(ArrayHelper::toObject(self::$jLayoutsJs)) . ";";
 
 				if ($bootstrapped)
 				{
@@ -1335,7 +1338,7 @@ EOD;
 		// Replace with minified files if found
 		foreach ($files as &$file)
 		{
-			if (!(JString::stristr($file, 'http://') || JString::stristr($file, 'https://')))
+			if (!(String::stristr($file, 'http://') || String::stristr($file, 'https://')))
 			{
 				if (JFile::exists(COM_FABRIK_BASE . $file))
 				{
@@ -1364,7 +1367,7 @@ EOD;
 
 			if (!$pathMatched)
 			{
-				if (!(JString::stristr($file, 'http://') || JString::stristr($file, 'https://')))
+				if (!(String::stristr($file, 'http://') || String::stristr($file, 'https://')))
 				{
 					$file = COM_FABRIK_LIVESITE . $file;
 				}
@@ -1933,7 +1936,7 @@ EOD;
 	 */
 	public static function getImagePath($file, $type = 'form', $tmpl = '')
 	{
-		$file  = JString::ltrim($file, DIRECTORY_SEPARATOR);
+		$file  = String::ltrim($file, DIRECTORY_SEPARATOR);
 		$paths = self::addPath('', 'image', $type, true);
 
 		foreach ($paths as $path)
@@ -2052,21 +2055,24 @@ EOD;
 	/**
 	 * Build array of items for use in grid()
 	 *
-	 * @param   array  $values             Option values
-	 * @param   array  $labels             Option labels
-	 * @param   array  $selected           Selected options
-	 * @param   string $name               Input name
-	 * @param   string $type               Checkbox/radio etc
-	 * @param   bool   $elementBeforeLabel Element before or after the label - deprecated - not used in Joomla 3
-	 * @param   array  $classes            Label classes
-	 * @param   bool   $buttonGroup        Should it be rendered as a bootstrap button group (radio only)
+	 * @param   array  $values               Option values
+	 * @param   array  $labels               Option labels
+	 * @param   array  $selected             Selected options
+	 * @param   string $name                 Input name
+	 * @param   string $type                 Checkbox/radio etc
+	 * @param   bool   $elementBeforeLabel   Element before or after the label - deprecated - not used in Joomla 3
+	 * @param   array  $classes              Label classes
+	 * @param   bool   $buttonGroup          Should it be rendered as a bootstrap button group (radio only)
+	 * @param   array  $inputDataAttributes  Input data attributes e.g. array('data-foo="bar")
+
 	 *
 	 * @return  array  Grid items
 	 */
 	public static function gridItems($values, $labels, $selected, $name, $type = 'checkbox',
-		$elementBeforeLabel = true, $classes = array(), $buttonGroup = false)
+		$elementBeforeLabel = true, $classes = array(), $buttonGroup = false, $inputDataAttributes = array())
 	{
 		$items = array();
+		$inputDataAttributes = implode(' ', $inputDataAttributes);
 
 		for ($i = 0; $i < count($values); $i++)
 		{
@@ -2083,10 +2089,12 @@ EOD;
 				$inputClass .= ' ' . implode(' ', $classes['input']);
 			}
 
-			$chx = '<input type="' . $type . '" class="fabrikinput ' . $inputClass . '" name="' . $thisName . '" value="' . $value . '" ';
+			$chx = '<input type="' . $type . '" class="fabrikinput ' . $inputClass . '" ' . $inputDataAttributes .
+					' name="' . $thisName . '" value="' . $value . '" ';
 			$sel = in_array($values[$i], $selected);
 			$chx .= $sel ? ' checked="checked" />' : ' />';
 			$labelClass = FabrikWorker::j3() && !$buttonGroup ? $type : '';
+
 			if (array_key_exists('label', $classes))
 			{
 				$labelClass .= ' ' . implode(' ', $classes['label']);
@@ -2104,21 +2112,23 @@ EOD;
 	/**
 	 * Make a grid of items
 	 *
-	 * @param   array  $values             Option values
-	 * @param   array  $labels             Option labels
-	 * @param   array  $selected           Selected options
-	 * @param   string $name               Input name
-	 * @param   string $type               Checkbox/radio etc.
-	 * @param   bool   $elementBeforeLabel Element before or after the label - deprecated - not used in Joomla 3
-	 * @param   int    $optionsPerRow      Number of suboptions to show per row
-	 * @param   array  $classes            Array of arrays, for 'label' and 'container' classes
-	 * @param   bool   $buttonGroup        Should it be rendered as a bootstrap button group (radio only)
-	 * @param   array  $dataAttributes     Additional data-foo="bar", like YesNo needs data-toogle="button"
+	 * @param   array  $values               Option values
+	 * @param   array  $labels               Option labels
+	 * @param   array  $selected             Selected options
+	 * @param   string $name                 Input name
+	 * @param   string $type                 Checkbox/radio etc.
+	 * @param   bool   $elementBeforeLabel   Element before or after the label - deprecated - not used in Joomla 3
+	 * @param   int    $optionsPerRow        Number of suboptions to show per row
+	 * @param   array  $classes              Array of arrays, for 'label' and 'container' classes
+	 * @param   bool   $buttonGroup          Should it be rendered as a bootstrap button group (radio only)
+	 * @param   array  $dataAttributes       Additional array('data-foo="bar"), like YesNo needs data-toggle="button"
+	 * @param   array  $inputDataAttributes  Input data attributes e.g. array('data-foo="bar")
 	 *
 	 * @return  string  grid
 	 */
 	public static function grid($values, $labels, $selected, $name, $type = 'checkbox',
-		$elementBeforeLabel = true, $optionsPerRow = 4, $classes = array(), $buttonGroup = false, $dataAttributes = array())
+		$elementBeforeLabel = true, $optionsPerRow = 4, $classes = array(), $buttonGroup = false, $dataAttributes = array(),
+$inputDataAttributes = array())
 	{
 		if (FabrikWorker::j3())
 		{
@@ -2128,7 +2138,7 @@ EOD;
 		$containerClasses = array_key_exists('container', $classes) ? implode(' ', $classes['container']) : '';
 		$dataAttributes   = implode(' ', $dataAttributes);
 
-		$items = self::gridItems($values, $labels, $selected, $name, $type, $elementBeforeLabel, $classes, $buttonGroup);
+		$items = self::gridItems($values, $labels, $selected, $name, $type, $elementBeforeLabel, $classes, $buttonGroup, $inputDataAttributes);
 
 		$grid          = array();
 		$optionsPerRow = empty($optionsPerRow) ? 4 : $optionsPerRow;
@@ -2227,9 +2237,9 @@ EOD;
 		/**
 		 * J!'s email cloaking will cloak email addresses in form inputs, which is a Bad Thing<tm>.
 		 * What we really need to do is work out a way to prevent ONLY cloaking of emails in form inputs,
-		 * but that's not going to be trivial.  So bandaid is to turn it off in form and list views, so
+		 * but that's not going to be trivial.  So band-aid is to turn it off in form and list views, so
 		 * addresses only get cloaked in details view.
-		 * In addition, if we are in a details PDF view we should not run the eamil cloak plugin.
+		 * In addition, if we are in a details PDF view we should not run the email cloak plugin.
 		 */
 
 		if ($view !== 'details' || $input->get('format') === 'pdf')
@@ -2495,7 +2505,7 @@ EOD;
 	 */
 	public static function a($href, $lbl = '', $opts = array())
 	{
-		if (empty($href) || JString::strtolower($href) == 'http://' || JString::strtolower($href) == 'https://')
+		if (empty($href) || String::strtolower($href) == 'http://' || String::strtolower($href) == 'https://')
 		{
 			// Don't return empty links
 			return '';
@@ -2627,7 +2637,7 @@ EOD;
 
 			if ($ret['type'] == 'mediabox')
 			{
-				$ext = JString::strtolower(JFile::getExt($link));
+				$ext = String::strtolower(JFile::getExt($link));
 
 				switch ($ext)
 				{

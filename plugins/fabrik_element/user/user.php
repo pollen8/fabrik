@@ -710,11 +710,11 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 		$element = $this->getElement();
 
 		$elName = $this->getFullName(true, false);
-		$htmlId = $this->getHTMLId() . 'value';
 		$v = $this->filterName($counter, $normal);
 
 		// Correct default got
 		$default = $this->getDefaultFilterVal($normal, $counter);
+		$this->filterDisplayValues = array($default);
 		$return = array();
 		$tableType = $this->getLabelOrConcatVal();
 		$join = $this->getJoin();
@@ -726,6 +726,7 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 		{
 			$rows = $this->filterValueList($normal, '', $joinTableName . '.' . $tableType, '', false);
 			$rows = (array) $rows;
+			$this->getFilterDisplayValues($default, $rows);
 
 			if ($element->filter_type !== 'checkbox')
 			{
@@ -733,47 +734,26 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 			}
 		}
 
-		$class = $this->filterClass();
-
 		switch ($element->filter_type)
 		{
 			case 'checkbox':
 				$return[] = $this->checkboxFilter($rows, $default, $v);
 				break;
-			case "range":
-				$attribs = 'class="' . $class . '" size="1" ';
-				$default1 = is_array($default) ? $default[0] : '';
-				$return[] = JHTML::_('select.genericlist', $rows, $v . '[]', $attribs, 'value', 'text', $default1, $element->name . "_filter_range_0");
-				$default1 = is_array($default) ? $default[1] : '';
-				$return[] = JHTML::_('select.genericlist', $rows, $v . '[]', $attribs, 'value', 'text', $default1, $element->name . "_filter_range_1");
+			case 'range':
+				$this->rangedFilterFields($default, $return, $rows, $v, 'list');
 				break;
 			case 'dropdown':
 			case 'multiselect':
 			default:
-				$max = count($rows) < 7 ? count($rows) : 7;
-				$size = $element->filter_type === 'multiselect' ? 'multiple="multiple" size="' . $max . '"' : 'size="1"';
-				$v = $element->filter_type === 'multiselect' ? $v . '[]' : $v;
-				$return[] = JHTML::_('select.genericlist', $rows, $v, 'class="' . $class . '" ' . $size, 'value', 'text', $default, $htmlId);
+				$return[] = $this->selectFilter($rows, $default, $v);
 				break;
 
 			case 'field':
-				if (get_magic_quotes_gpc())
-				{
-					$default = stripslashes($default);
-				}
-
-				$default = htmlspecialchars($default);
-				$return[] = '<input type="text" name="' . $v . '" class="' . $class . '" value="' . $default . '" id="' . $htmlId . '" />';
+				$return[] = $this->singleFilter($default, $v);
 				break;
 
 			case 'hidden':
-				if (get_magic_quotes_gpc())
-				{
-					$default = stripslashes($default);
-				}
-
-				$default = htmlspecialchars($default);
-				$return[] = '<input type="hidden" name="' . $v . '" class="' . $class . '" value="' . $default . '" id="' . $htmlId . '" />';
+				$return[] = $this->singleFilter($default, $v, 'hidden');
 				break;
 
 			case 'auto-complete':

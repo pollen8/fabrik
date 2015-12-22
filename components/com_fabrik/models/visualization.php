@@ -11,6 +11,9 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\String\String;
+use \Joomla\Registry\Registry;
+use Joomla\Utilities\ArrayHelper;
 jimport('joomla.application.component.model');
 
 require_once JPATH_SITE . '/components/com_fabrik/models/plugin.php';
@@ -98,7 +101,7 @@ class FabrikFEModelVisualization extends FabModel
 	 *
 	 * @deprecated  since 3.1b
 	 *
-	 * @return  JRegistry
+	 * @return  Registry
 	 */
 	public function getPluginParams()
 	{
@@ -206,7 +209,7 @@ class FabrikFEModelVisualization extends FabModel
 	public function getFilters()
 	{
 		$params = $this->getParams();
-		$name = JString::strtolower(str_replace('fabrikModel', '', get_class($this)));
+		$name = String::strtolower(str_replace('fabrikModel', '', get_class($this)));
 		$filters = array();
 		$showFilters = $params->get($name . '_show_filters', array());
 		$listModels = $this->getlistModels();
@@ -434,7 +437,7 @@ class FabrikFEModelVisualization extends FabModel
 			// Set pre-filter params
 			$listParams = $listModel->getParams();
 			$preFilter = FArrayHelper::getValue($preFilters, $c);
-			$preFilter = JArrayHelper::fromObject(json_decode($preFilter));
+			$preFilter = ArrayHelper::fromObject(json_decode($preFilter));
 			$conditions = (array) $preFilter['filter-conditions'];
 
 			if (!empty($conditions))
@@ -565,7 +568,7 @@ class FabrikFEModelVisualization extends FabModel
 		{
 			$v = $this->getVisualization();
 			$input = $this->app->input;
-			$this->params = new JRegistry($v->params);
+			$this->params = new Registry($v->params);
 			$this->params->set('show-title', $input->getInt('show-title', $this->params->get('show-title', 1)));
 		}
 

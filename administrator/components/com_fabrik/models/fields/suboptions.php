@@ -11,6 +11,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\Utilities\ArrayHelper;
+
 require_once JPATH_ADMINISTRATOR . '/components/com_fabrik/helpers/element.php';
 
 jimport('joomla.html.html');
@@ -49,7 +51,7 @@ class JFormFieldSuboptions extends JFormField
 		$default->sub_values = array();
 		$default->sub_labels = array();
 		$default->sub_initial_selection = array();
-		$opts = $this->value == '' ? $default : JArrayHelper::toObject($this->value);
+		$opts = $this->value == '' ? $default : ArrayHelper::toObject($this->value);
 		$j3 = FabrikWorker::j3();
 
 		if ($j3)

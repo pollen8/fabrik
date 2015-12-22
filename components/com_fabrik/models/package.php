@@ -11,6 +11,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use \Joomla\Registry\Registry;
+
 jimport('joomla.application.component.modelitem');
 
 /**
@@ -147,7 +149,7 @@ class FabrikFEModelPackage extends FabModel
 				}
 
 				// Convert parameter fields to objects.
-				$registry = new JRegistry;
+				$registry = new Registry;
 				$registry->loadJSON($data->params);
 				$data->params = clone $this->getState('params');
 				$data->params->merge($registry);

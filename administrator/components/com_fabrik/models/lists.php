@@ -12,6 +12,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\Utilities\ArrayHelper;
+
 require_once 'fabmodellist.php';
 
 /**
@@ -211,7 +213,7 @@ class FabrikAdminModelLists extends FabModelList
 		$app = JFactory::getApplication();
 		$input = $app->input;
 		$cid = $input->get('cid', array(), 'array');
-		JArrayHelper::toInteger($cid);
+		ArrayHelper::toInteger($cid);
 		$db = FabrikWorker::getDbo(true);
 		$query = $db->getQuery(true);
 		$query->select('db_table_name')->from('#__{package}_lists')->where('id IN(' . implode(',', $cid) . ')');

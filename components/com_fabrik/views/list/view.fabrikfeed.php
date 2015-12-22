@@ -11,6 +11,9 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\String\String;
+use \Joomla\Registry\Registry;
+
 require_once JPATH_SITE . '/components/com_fabrik/views/list/view.base.php';
 
 /**
@@ -71,9 +74,9 @@ class FabrikViewList extends FabrikViewListBase
 		//$imageEl = $formModel->getElement($imageEl, true);
 		$titleEl = $formModel->getElement($titleEl, true);
 		$dateEl = $formModel->getElement($dateEl, true);
-		$title = $titleEl === false ? '' : $titleEl->getFullName(true, false);
-		$date = $dateEl === false ? '' : $dateEl->getFullName(true, false);
-		$dateRaw = $date . '_raw';
+		$titleElName = $titleEl === false ? '' : $titleEl->getFullName(true, false);
+		$dateElName = $dateEl === false ? '' : $dateEl->getFullName(true, false);
+		$dateElNameRaw = $dateElName . '_raw';
 
 		foreach ($groupModels as $groupModel)
 		{
@@ -116,7 +119,7 @@ class FabrikViewList extends FabrikViewListBase
 		foreach ($aJoinsToThisKey as $element)
 		{
 			$element = $elementModel->getElement();
-			$elParams = new JRegistry($element->attribs);
+			$elParams = new Registry($element->attribs);
 
 			if ($elParams->get('show_in_rss_feed') == '1')
 			{
@@ -149,7 +152,7 @@ class FabrikViewList extends FabrikViewListBase
 		$w = new FabrikWorker;
 		$rows = $model->getData();
 
-		$this->doc->title = htmlentities($w->parseMessageForPlaceHolder($table->label, $_REQUEST), ENT_COMPAT, 'UTF-8');
+		$this->doc->title = htmlspecialchars($w->parseMessageForPlaceHolder($table->label, $_REQUEST), ENT_COMPAT, 'UTF-8');
 		$this->doc->description = htmlspecialchars(trim(strip_tags($w->parseMessageForPlaceHolder($table->introduction, $_REQUEST))));
 		$this->doc->link = JRoute::_('index.php?option=com_' . $this->package . '&view=list&listid=' . $table->id . '&Itemid=' . $itemId);
 
@@ -254,7 +257,7 @@ class FabrikViewList extends FabrikViewListBase
 						if (strstr($rssContent, $rssTag))
 						{
 							$found = true;
-							$rssTag = JString::substr($rssTag, 1, JString::strlen($rssTag) - 2);
+							$rssTag = String::substr($rssTag, 1, String::strlen($rssTag) - 2);
 
 							if (!strstr($this->doc->_namespace, $namespace))
 							{
@@ -283,9 +286,9 @@ class FabrikViewList extends FabrikViewListBase
 					}
 				}
 
-				if (isset($row->$title))
+				if (isset($row->$titleElName))
 				{
-					$title = $row->$title;
+					$title = $row->$titleElName;
 				}
 
 
@@ -308,10 +311,7 @@ class FabrikViewList extends FabrikViewListBase
 				// Strip html from feed item description text
 				$author = @$row->created_by_alias ? @$row->created_by_alias : @$row->author;
 
-				if ($date != '')
-				{
-					$item->date = $row->$date ? date('r', strtotime(@$row->$dateRaw)) : '';
-				}
+				$item->date = isset($row->$dateElName) && $row->$dateElName ? date('r', strtotime(@$row->$dateElNameRaw)) : '';
 
 				// Load individual item creator class
 
@@ -337,7 +337,7 @@ class FabrikViewList extends FabrikViewListBase
 	/**
 	 * Add <image> to document
 	 *
-	 * @param   object  $params    JRegistry list parameters
+	 * @param   object  $params    Registry list parameters
 	 *
 	 * @return  document
 	 */

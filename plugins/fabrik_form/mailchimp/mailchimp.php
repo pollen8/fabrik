@@ -11,6 +11,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\Utilities\ArrayHelper;
+
 // Require the abstract plugin class
 require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
 require_once 'MCAPI.class.php';
@@ -54,7 +56,7 @@ class PlgFabrik_FormMailchimp extends PlgFabrik_Form
 	/**
 	 * Get Mailchimp email groups
 	 *
-	 * @param   JRegistry  $params  Params
+	 * @param   \Joomla\Registry\Registry  $params  Params
 	 *
 	 * @throws RuntimeException
 	 *
@@ -159,7 +161,7 @@ class PlgFabrik_FormMailchimp extends PlgFabrik_Form
 					$groupOpt->groups = $w->parseMessageForPlaceHolder($groupOpt->groups, $emailData);
 
 					// An array of additional options: array('name'=>'Your Interests:', 'groups'=>'Bananas,Apples')
-					$groups[] = JArrayHelper::fromObject($groupOpt);
+					$groups[] = ArrayHelper::fromObject($groupOpt);
 				}
 				else
 				{

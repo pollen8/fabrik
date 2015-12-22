@@ -11,6 +11,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\Utilities\ArrayHelper;
+
 jimport('joomla.application.component.model');
 
 /**
@@ -64,12 +66,12 @@ class FabModel extends JModelLegacy
 	 */
 	public function __construct($config = array())
 	{
-		$this->app = JArrayHelper::getValue($config, 'app', JFactory::getApplication());
-		$this->user = JArrayHelper::getValue($config, 'user', JFactory::getUser());
-		$this->config = JArrayHelper::getValue($config, 'config', JFactory::getConfig());
-		$this->session = JArrayHelper::getValue($config, 'session', JFactory::getSession());
-		$this->date = JArrayHelper::getValue($config, 'date', JFactory::getDate());
-		$this->lang = JArrayHelper::getValue($config, 'lang', JFactory::getLanguage());
+		$this->app = ArrayHelper::getValue($config, 'app', JFactory::getApplication());
+		$this->user = ArrayHelper::getValue($config, 'user', JFactory::getUser());
+		$this->config = ArrayHelper::getValue($config, 'config', JFactory::getConfig());
+		$this->session = ArrayHelper::getValue($config, 'session', JFactory::getSession());
+		$this->date = ArrayHelper::getValue($config, 'date', JFactory::getDate());
+		$this->lang = ArrayHelper::getValue($config, 'lang', JFactory::getLanguage());
 		$this->package = $this->app->getUserState('com_fabrik.package', 'fabrik');
 
 		parent::__construct($config);
@@ -82,7 +84,7 @@ class FabModel extends JModelLegacy
 	 * @param   string  $prefix  The class prefix. Optional.
 	 * @param   array   $config  configuration
 	 *
-	 * @return	mixed	Model object or boolean false if failed
+	 * @return	FabTable|false	Model object or boolean false if failed
 	 */
 	protected function _createTable($name, $prefix = 'Table', $config = array())
 	{

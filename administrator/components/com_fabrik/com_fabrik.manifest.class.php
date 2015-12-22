@@ -18,27 +18,26 @@ defined('_JEXEC') or die('Restricted access');
  * @subpackage  Fabrik
  * @since       3.0
  */
-
 class Com_FabrikInstallerScript
 {
 	/**
-	 * Dirvers
+	 * Drivers
 	 *
 	 * @var array
 	 */
-	protected $drivers = array('mysql_fab.php', 'mysqli_fab.php');
+	protected $drivers = array('mysql_fab.php', 'mysqli_fab.php', 'pdomysql_fab.php');
 
 	/**
 	 * Run when the component is installed
 	 *
-	 * @param   object  $parent  installer object
+	 * @param   object $parent installer object
 	 *
 	 * @return bool
 	 */
-
 	public function install($parent)
 	{
 		$parent->getParent()->setRedirectURL('index.php?option=com_fabrik');
+
 		return true;
 	}
 
@@ -48,20 +47,19 @@ class Com_FabrikInstallerScript
 	 *
 	 * @return  bool
 	 */
-
 	protected function setConnection()
 	{
-		$db = JFactory::getDbo();
-		$app = JFactory::getApplication();
-		$row = new stdClass;
-		$row->host = $app->getCfg('host');
-		$row->user = $app->getCfg('user');
-		$row->password = $app->getCfg('password');
-		$row->database = $app->getCfg('db');
+		$db               = JFactory::getDbo();
+		$app              = JFactory::getApplication();
+		$row              = new stdClass;
+		$row->host        = $app->get('host');
+		$row->user        = $app->get('user');
+		$row->password    = $app->get('password');
+		$row->database    = $app->get('db');
 		$row->description = 'site database';
-		$row->published = 1;
-		$row->default = 1;
-		$res = $db->insertObject('#__fabrik_connections', $row, 'id');
+		$row->published   = 1;
+		$row->default     = 1;
+		$res              = $db->insertObject('#__fabrik_connections', $row, 'id');
 
 		return $res;
 	}
@@ -71,25 +69,26 @@ class Com_FabrikInstallerScript
 	 *
 	 * @return  bool
 	 */
-
 	protected function setDefaultProperties()
 	{
-		$db = JFactory::getDbo();
+		$db    = JFactory::getDbo();
 		$query = $db->getQuery(true);
-		$query->select('extension_id, params')->from('#__extensions')->where('name = ' . $db->quote('fabrik'))
-			->where('type = ' . $db->quote('component'));
+		$query->select('extension_id, params')->from('#__extensions')
+			->where('name = ' . $db->q('fabrik'))
+			->where('type = ' . $db->q('component'));
 		$db->setQuery($query);
-		$row = $db->loadObject();
-		$opts = new stdClass;
-		$opts->fbConf_wysiwyg_label = 0;
+		$row                                 = $db->loadObject();
+		$opts                                = new stdClass;
+		$opts->fbConf_wysiwyg_label          = 0;
 		$opts->fbConf_alter_existing_db_cols = 0;
-		$opts->spoofcheck_on_formsubmission = 0;
+		$opts->spoofcheck_on_formsubmission  = 0;
 
 		if ($row && ($row->params == '{}' || $row->params == ''))
 		{
-			$json = $row->params;
+			$json  = $row->params;
 			$query = $db->getQuery(true);
-			$query->update('#__extensions')->set('params = ' . $db->quote($json))->where('extension_id = ' . (int) $row->extension_id);
+			$query->update('#__extensions')->set('params = ' . $db->quote($json))
+				->where('extension_id = ' . (int) $row->extension_id);
 			$db->setQuery($query);
 
 			if (!$db->execute())
@@ -104,17 +103,16 @@ class Com_FabrikInstallerScript
 	/**
 	 * Move over files into Joomla libraries folder
 	 *
-	 * @param   object  &$installer  installer
-	 * @param   bool    $upgrade     upgrade
+	 * @param   object &$installer installer
+	 * @param   bool   $upgrade    upgrade
 	 *
 	 * @return  bool
 	 */
-
 	protected function moveFiles(&$installer, $upgrade = false)
 	{
 		jimport('joomla.filesystem.file');
 		$componentFrontend = 'components/com_fabrik';
-		$docTypes = array('fabrikfeed', 'pdf');
+		$docTypes          = array('fabrikfeed', 'pdf');
 
 		foreach ($docTypes as $docType)
 		{
@@ -136,9 +134,9 @@ class Com_FabrikInstallerScript
 			}
 		}
 
-		$dest = 'libraries/joomla/database/database';
+		$dest             = 'libraries/joomla/database/database';
 		$driverInstallLoc = $componentFrontend . '/dbdriver/';
-		$moveRes = JFolder::copy($driverInstallLoc, $dest, JPATH_SITE, true, false);
+		$moveRes          = JFolder::copy($driverInstallLoc, $dest, JPATH_SITE, true, false);
 
 		if ($moveRes !== true)
 		{
@@ -148,7 +146,7 @@ class Com_FabrikInstallerScript
 		}
 
 		// Joomla 3.0 db drivers and queries
-		$dest = 'libraries/joomla/database/driver';
+		$dest             = 'libraries/joomla/database/driver';
 		$driverInstallLoc = $componentFrontend . '/driver/';
 
 		$moveRes = JFolder::copy($driverInstallLoc, $dest, JPATH_SITE, true, false);
@@ -160,9 +158,9 @@ class Com_FabrikInstallerScript
 			return false;
 		}
 
-		$dest = 'libraries/joomla/database/query';
+		$dest             = 'libraries/joomla/database/query';
 		$driverInstallLoc = $componentFrontend . '/query/';
-		$moveRes = JFolder::copy($driverInstallLoc, $dest, JPATH_SITE, true, false);
+		$moveRes          = JFolder::copy($driverInstallLoc, $dest, JPATH_SITE, true, false);
 
 		if ($moveRes !== true)
 		{
@@ -175,13 +173,12 @@ class Com_FabrikInstallerScript
 	}
 
 	/**
-	 * Run when the component is unistalled.
+	 * Run when the component is uninstalled.
 	 *
-	 * @param   object  $parent  installer object
+	 * @param   object $parent installer object
 	 *
 	 * @return  void
 	 */
-
 	public function uninstall($parent)
 	{
 		jimport('joomla.filesystem.folder');
@@ -192,7 +189,7 @@ class Com_FabrikInstallerScript
 		{
 			if (!JFolder::delete($dest))
 			{
-				return false;
+				return;
 			}
 		}
 
@@ -205,22 +202,34 @@ class Com_FabrikInstallerScript
 				JFile::delete($dest . '/' . $driver);
 			}
 		}
+
+		$this->disableFabrikPlugins();
+	}
+
+	protected function disableFabrikPlugins()
+	{
+		$db    = JFactory::getDbo();
+		$query = $db->getQuery(true);
+		$query
+			->update('#__extensions')
+			->set('enabled = 0')
+			->where('folder LIKE "%fabrik%" OR element LIKE "%fabrik%"');
+		$db->setQuery($query)->execute();
 	}
 
 	/**
 	 * God knows why but install component, uninstall component and install
-	 * again and component_id is set to 0 for the menu items grrrrr
+	 * again and component_id is set to 0 for the menu items
 	 *
 	 * @return  void
 	 */
-
 	protected function fixmMenuComponentId()
 	{
-		$db = JFactory::getDbo();
+		$db    = JFactory::getDbo();
 		$query = $db->getQuery(true);
 		$query->select('extension_id')->from('#__extensions')->where('element =  "com_fabrik"');
 		$db->setQuery($query);
-		$id = $db->loadResult();
+		$id = (int) $db->loadResult();
 		$query->clear();
 		$query->update('#__menu')->set('component_id = ' . $id)->where('path LIKE "fabrik%"');
 		$db->setQuery($query)->execute();
@@ -229,17 +238,16 @@ class Com_FabrikInstallerScript
 	/**
 	 * Run when the component is updated
 	 *
-	 * @param   object  $parent  installer object
+	 * @param   object $parent installer object
 	 *
 	 * @return  bool
 	 */
-
 	public function update($parent)
 	{
 		/*if (!$this->moveFiles($parent, true)) {
 		    return false;
 		} else {
-		    echo "<p style=\"color:green\">Libray files moved</p>";
+		    echo "<p style=\"color:green\">Library files moved</p>";
 		}*/
 
 		return true;
@@ -248,14 +256,13 @@ class Com_FabrikInstallerScript
 	/**
 	 * Run before installation or upgrade run
 	 *
-	 * @param   string  $type    discover_install (Install unregistered extensions that have been discovered.)
-	 *  or install (standard install)
-	 *  or update (update)
-	 * @param   object  $parent  installer object
+	 * @param   string $type   discover_install (Install unregistered extensions that have been discovered.)
+	 *                         or install (standard install)
+	 *                         or update (update)
+	 * @param   object $parent installer object
 	 *
 	 * @return  void
 	 */
-
 	public function preflight($type, $parent)
 	{
 	}
@@ -263,17 +270,16 @@ class Com_FabrikInstallerScript
 	/**
 	 * Run after installation or upgrade run
 	 *
-	 * @param   string  $type    discover_install (Install unregistered extensions that have been discovered.)
-	 *  or install (standard install)
-	 *  or update (update)
-	 * @param   object  $parent  installer object
+	 * @param   string $type   discover_install (Install unregistered extensions that have been discovered.)
+	 *                         or install (standard install)
+	 *                         or update (update)
+	 * @param   object $parent installer object
 	 *
 	 * @return  bool
 	 */
-
 	public function postflight($type, $parent)
 	{
-		$db = JFactory::getDbo();
+		$db    = JFactory::getDbo();
 		$query = $db->getQuery(true);
 
 		// Remove old update site & Fabrik 3.0.x update site
@@ -290,10 +296,10 @@ class Com_FabrikInstallerScript
 			echo "<p style=\"color:green\">removed old update site</p>";
 		}
 
-		$db
-			->setQuery(
-				"UPDATE #__extensions SET enabled = 1 WHERE type = 'plugin' AND (folder LIKE 'fabrik_%' OR (folder='system' AND element = 'fabrik')  OR (folder='content' AND element = 'fabrik'))");
-		$db->execute();
+		$query->clear();
+		$query->update('#__extensions')->set('enabled = 1')->where('type = \'plugin\' AND (folder LIKE \'fabrik_%\' OR (folder=\'system\' AND element = \'fabrik\')')
+			->where('(folder=\'content\' AND element = \'fabrik\')', 'OR');
+		$db->setQuery($query)->execute();
 		$this->fixmMenuComponentId();
 
 		if ($type !== 'update')

@@ -11,6 +11,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\String\String;
+
 jimport('joomla.application.component.model');
 
 /**
@@ -80,7 +82,7 @@ class FabrikFEModelElementValidator extends FabModel
 		$pluginManager->getPlugInGroup('validationrule');
 		$c = 0;
 		$this->validations = array();
-		$dispatcher = JDispatcher::getInstance();
+		$dispatcher = JEventDispatcher::getInstance();
 		JPluginHelper::importPlugin('fabrik_validationrule');
 		$i = 0;
 
@@ -92,10 +94,10 @@ class FabrikFEModelElementValidator extends FabModel
 
 				if ($isPublished)
 				{
-					$class = 'PlgFabrik_Validationrule' . JString::ucfirst($usedPlugin);
+					$class = 'PlgFabrik_Validationrule' . String::ucfirst($usedPlugin);
 					$conf = array();
-					$conf['name'] = JString::strtolower($usedPlugin);
-					$conf['type'] = JString::strtolower('fabrik_Validationrule');
+					$conf['name'] = String::strtolower($usedPlugin);
+					$conf['type'] = String::strtolower('fabrik_Validationrule');
 
 					/** @var PlgFabrik_Validationrule $plugIn */
 					$plugIn = new $class($dispatcher, $conf);

@@ -108,9 +108,15 @@ class PlgSystemFabrikcron extends JPlugin
 		$this->query->update('#__{package}_cron');
 		$this->query->set('lastrun = ' . $this->db->quote($nextrun->toSql()));
 
-		if ($this->pluginModel->doRunGating())
+		if ($this->pluginModel->shouldReschedule() && $this->pluginModel->doRunGating())
 		{
 			$this->query->set("published = '1'");
+		}
+
+		if (!$this->pluginModel->shouldReschedule())
+		{
+			$this->query->set("published = '0'");
+			$this->log->message .= "\nPlugin has unpublished itself";
 		}
 
 		$this->query->where('id = ' . $this->row->id);

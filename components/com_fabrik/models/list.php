@@ -13,6 +13,10 @@ defined('_JEXEC') or die('Restricted access');
 
 jimport('joomla.application.component.modelform');
 
+use Joomla\String\String;
+use \Joomla\Registry\Registry;
+use Joomla\Utilities\ArrayHelper;
+
 require_once COM_FABRIK_FRONTEND . '/helpers/pagination.php';
 require_once COM_FABRIK_FRONTEND . '/helpers/list.php';
 require_once COM_FABRIK_FRONTEND . '/models/list-advanced-search.php';
@@ -517,11 +521,11 @@ class FabrikFEModelList extends JModelForm
 	{
 		parent::__construct();
 		$usersConfig = JComponentHelper::getParams('com_fabrik');
-		$this->app = JArrayHelper::getValue($config, 'app', JFactory::getApplication());
-		$this->session = JArrayHelper::getValue($config, 'session', JFactory::getSession());
-		$this->user = JArrayHelper::getValue($config, 'user', JFactory::getUser());
-		$this->config = JArrayHelper::getValue($config, 'config', JFactory::getConfig());
-		$this->lang = JArrayHelper::getValue($config, 'lang', JFactory::getLanguage());
+		$this->app = ArrayHelper::getValue($config, 'app', JFactory::getApplication());
+		$this->session = ArrayHelper::getValue($config, 'session', JFactory::getSession());
+		$this->user = ArrayHelper::getValue($config, 'user', JFactory::getUser());
+		$this->config = ArrayHelper::getValue($config, 'config', JFactory::getConfig());
+		$this->lang = ArrayHelper::getValue($config, 'lang', JFactory::getLanguage());
 
 		$input = $this->app->input;
 		$id = $input->getInt('listid', $usersConfig->get('listid'));
@@ -1224,8 +1228,14 @@ class FabrikFEModelList extends JModelForm
 							$data[$i]->$col = $elementModel->renderListData($colData, $thisRow);
 							$rawCol = $col . '_raw';
 
-							// Rendering of accented characters in DomPDF
-							$data[$i]->$col = htmlspecialchars_decode(htmlentities($data[$i]->$col, ENT_NOQUOTES, 'UTF-8'), ENT_NOQUOTES);
+							/**
+							 * Rendering of accented characters in DomPDF
+							 * Don't do this on feeds, as it produces non XMLS entities like &eacute that blow XML parsers up
+							 */
+							if ($this->app->input->get('format', '') !== 'fabrikfeed')
+							{
+								$data[$i]->$col = htmlspecialchars_decode(htmlentities($data[$i]->$col, ENT_NOQUOTES, 'UTF-8'), ENT_NOQUOTES);
+							}
 
 							/* Not sure if this works, as far as I can tell _raw will always exist, even if
 							 * the element model hasn't explicitly done anything with it (except maybe unsetting it?)
@@ -1298,7 +1308,7 @@ class FabrikFEModelList extends JModelForm
 				if (!in_array($sData, $aGroupTitles))
 				{
 					$aGroupTitles[] = $sData;
-					$tmpGroupTemplate = ($w->parseMessageForPlaceHolder($groupTemplate, JArrayHelper::fromObject($data[$i])));
+					$tmpGroupTemplate = ($w->parseMessageForPlaceHolder($groupTemplate, ArrayHelper::fromObject($data[$i])));
 					$this->groupTemplates[$sData] = nl2br($tmpGroupTemplate);
 					$groupedData[$sData] = array();
 				}
@@ -1415,7 +1425,7 @@ class FabrikFEModelList extends JModelForm
 
 							if (is_object($fKeyVal))
 							{
-								$fKeyVal = JArrayHelper::fromObject($fKeyVal);
+								$fKeyVal = ArrayHelper::fromObject($fKeyVal);
 							}
 
 							if (is_array($fKeyVal))
@@ -1634,7 +1644,7 @@ class FabrikFEModelList extends JModelForm
 							// $$$rob moved these two lines here as there were giving warnings since Hugh commented out the if ($element != '') {
 							$linkKey = @$join->db_table_name . '___' . @$join->name;
 							$gKey = $linkKey . '_form_heading';
-							$row2 = JArrayHelper::fromObject($row);
+							$row2 = ArrayHelper::fromObject($row);
 							$linkLabel = $this->parseMessageForRowHolder($faceted->linkedformtext->$f, $row2);
 							$group[$i]->$gKey = $this->viewFormLink($popupLink, $join, $row, $linkKey, $val, false, $f);
 						}
@@ -1953,9 +1963,9 @@ class FabrikFEModelList extends JModelForm
 		$listId = $element->list_id;
 		$formId = $element->form_id;
 		$faceted = $params->get('facetedlinks');
-		$linkedFormText = JArrayHelper::fromObject($faceted->linkedformtext);
+		$linkedFormText = ArrayHelper::fromObject($faceted->linkedformtext);
 		$msg = FArrayHelper::getValue($linkedFormText, $elKey);
-		$row2 = JArrayHelper::fromObject($row);
+		$row2 = ArrayHelper::fromObject($row);
 		$label = $this->parseMessageForRowHolder($msg, $row2);
 		$package = $this->app->getUserState('com_fabrik.package', 'fabrik');
 		$itemId = FabrikWorker::itemId();
@@ -2078,7 +2088,7 @@ class FabrikFEModelList extends JModelForm
 		* why though!  I just needed to make this error go away NAO!
 		*/
 		$linkedListText = isset($faceted->linkedlisttext->$elKey) ? $faceted->linkedlisttext->$elKey : '';
-		$row2 = JArrayHelper::fromObject($row);
+		$row2 = ArrayHelper::fromObject($row);
 		$label = $this->parseMessageForRowHolder($linkedListText, $row2);
 
 		if (is_null($listId))
@@ -2284,7 +2294,7 @@ class FabrikFEModelList extends JModelForm
 		}
 		else
 		{
-			$array = JArrayHelper::fromObject($row);
+			$array = ArrayHelper::fromObject($row);
 
 			foreach ($array as $k => &$v)
 			{
@@ -2489,7 +2499,7 @@ class FabrikFEModelList extends JModelForm
 			*/
 			while (count($ids) < $maxPossibleIds && $lookupC >= 0)
 			{
-				$ids = JArrayHelper::getColumn($idRows, '__pk_val' . $lookupC);
+				$ids = ArrayHelper::getColumn($idRows, '__pk_val' . $lookupC);
 
 				for ($idx = count($ids) - 1; $idx >= 0; $idx--)
 				{
@@ -2609,7 +2619,7 @@ class FabrikFEModelList extends JModelForm
 		if (in_array($this->outputFormat, array('raw', 'html', 'feed', 'pdf', 'phocapdf')))
 		{
 			$slug = $params->get('sef-slug');
-			$raw = JString::substr($slug, JString::strlen($slug) - 4, 4) == '_raw' ? true : false;
+			$raw = String::substr($slug, String::strlen($slug) - 4, 4) == '_raw' ? true : false;
 			$slug = FabrikString::rtrimword($slug, '_raw');
 			$slugElement = $formModel->getElement($slug);
 
@@ -2887,7 +2897,7 @@ class FabrikFEModelList extends JModelForm
 						 * which get converted form names to ids above have already been run through
 						 * getOrderByName().  So first check here ...
 						 */
-						if (!JString::stristr($orderByRaw, 'CONCAT(') && !JString::stristr($orderByRaw, 'CONCAT_WS('))
+						if (!String::stristr($orderByRaw, 'CONCAT(') && !String::stristr($orderByRaw, 'CONCAT_WS('))
 						{
 							$orderByRaw = FabrikString::safeColName($orderByRaw);
 
@@ -2899,7 +2909,7 @@ class FabrikFEModelList extends JModelForm
 								 * $$$ @TODO why don't we just embed this logic in safeColName(), so
 								 * it recognizes a CONCAT and treats it accordingly?
 								 */
-								if (!JString::stristr($field, 'CONCAT(') && !JString::stristr($field, 'CONCAT_WS('))
+								if (!String::stristr($field, 'CONCAT(') && !String::stristr($field, 'CONCAT_WS('))
 								{
 									$field = FabrikString::safeColName($field);
 								}
@@ -3059,7 +3069,7 @@ class FabrikFEModelList extends JModelForm
 				$join->join_type = 'LEFT';
 			}
 
-			$sql = JString::strtoupper($join->join_type) . ' JOIN ' . $db->qn($join->table_join);
+			$sql = String::strtoupper($join->join_type) . ' JOIN ' . $db->qn($join->table_join);
 			$k = FabrikString::safeColName($join->keytable . '.' . $join->table_key);
 
 			// Check we only get the field name
@@ -3440,7 +3450,7 @@ class FabrikFEModelList extends JModelForm
 		while (list($vkey, $i) = each($valueKeys))
 		{
 			// $$$rob - prefilter with element that is not published so ignore
-			$condition = JString::strtoupper(FArrayHelper::getValue($filters['condition'], $i, ''));
+			$condition = String::strtoupper(FArrayHelper::getValue($filters['condition'], $i, ''));
 
 			if (FArrayHelper::getValue($filters['sqlCond'], $i, '') == '' && !in_array($condition, $nullElementConditions))
 			{
@@ -3765,7 +3775,7 @@ class FabrikFEModelList extends JModelForm
 
 		if (!isset($this->params))
 		{
-			$this->params = new JRegistry($item->params);
+			$this->params = new Registry($item->params);
 		}
 
 		return $this->params;
@@ -4273,7 +4283,7 @@ class FabrikFEModelList extends JModelForm
 			{
 				if (is_string($join->params))
 				{
-					$join->params = new JRegistry($join->params);
+					$join->params = new Registry($join->params);
 					$this->setJoinPk($join);
 				}
 			}
@@ -4315,13 +4325,33 @@ class FabrikFEModelList extends JModelForm
 			{
 			}
 
-			$join->params = new JRegistry($join->params);
+			$join->params = new Registry($join->params);
 		}
 	}
 
 	/**
+	 * Rebuild the join aliases
+	 *
+	 * @param   object $newJoin
+	 *
+	 * @return array
+	 */
+	public function makeJoinAliases($newJoin = null)
+	{
+		if (!is_null($newJoin))
+		{
+			$this->joins[] = $newJoin;
+		}
+
+
+		$this->_makeJoinAliases($this->joins);
+
+		return $this->joins;
+	}
+
+	/**
 	 * As you may be joining to multiple versions of the same db table we need
-	 * to set the various database name alaises that our SQL query will use
+	 * to set the various database name aliases that our SQL query will use
 	 *
 	 * @param   array  &$joins  joins
 	 *
@@ -4634,12 +4664,12 @@ class FabrikFEModelList extends JModelForm
 		* we would do something like $base_existingDef = $elementModel->baseFieldDescription($existingDef), and (say) the
 		* field element, if passed "TINYINT(3) UNSIGNED" would return "INT(3)".  But for now, just tweak it here.
 		*/
-		$objTypeUpper = ' ' . JString::strtoupper(trim($objType)) . ' ';
+		$objTypeUpper = ' ' . String::strtoupper(trim($objType)) . ' ';
 		$objTypeUpper = str_replace(' NOT NULL ', ' ', $objTypeUpper);
 		$objTypeUpper = str_replace(' UNSIGNED ', ' ', $objTypeUpper);
 		$objTypeUpper = str_replace(array(' INTEGER', ' TINYINT', ' SMALLINT', ' MEDIUMINT', ' BIGINT'), ' INT', $objTypeUpper);
 		$objTypeUpper = trim($objTypeUpper);
-		$existingDef = ' ' . JString::strtoupper(trim($existingDef)) . ' ';
+		$existingDef = ' ' . String::strtoupper(trim($existingDef)) . ' ';
 		$existingDef = str_replace(' UNSIGNED ', ' ', $existingDef);
 		$existingDef = str_replace(array(' INTEGER', ' TINYINT', ' SMALLINT', ' MEDIUMINT', ' BIGINT'), ' INT', $existingDef);
 		$existingDef = trim($existingDef);
@@ -4680,7 +4710,7 @@ class FabrikFEModelList extends JModelForm
 						// Don't throw error for attempting to re-add an existing db column
 						if (!array_key_exists($element->name, $dbDescriptions))
 						{
-							throw new ErrorException('alter structure: ' . $fabrikDb->getErrorMsg(), 500);
+							throw new ErrorException('alter structure: ' . $e->getMessage(), 500);
 						}
 					}
 				}
@@ -4694,13 +4724,12 @@ class FabrikFEModelList extends JModelForm
 			{
 				$origColName = $origColName == null ? $fabrikDb->qn($element->name) : $fabrikDb->qn($origColName);
 
-				if (JString::strtolower($objType) == 'blob')
+				if (String::strtolower($objType) == 'blob')
 				{
 					$dropKey = true;
 				}
 
 				$q = 'ALTER TABLE ' . $tableName . ' CHANGE ' . $origColName . ' ' . FabrikString::safeColName($element->name) . ' ' . $objType . ' ';
-				$testColName = $tableName . '.' . FabrikString::safeColName($element->name);
 
 				if (FabrikString::safeColName($primaryKey) == $tableName . '.' . FabrikString::safeColName($element->name) && $table->auto_inc)
 				{
@@ -4766,11 +4795,11 @@ class FabrikFEModelList extends JModelForm
 		{
 			foreach ($dbDescriptions as $dbDescription)
 			{
-				$fieldName = JString::strtolower($dbDescription->Field);
+				$fieldName = String::strtolower($dbDescription->Field);
 
-				if (JString::strtolower($element->name) == $fieldName && JString::strtolower($dbDescription->Type) == JString::strtolower($objType))
+				if (String::strtolower($element->name) == $fieldName && String::strtolower($dbDescription->Type) == String::strtolower($objType))
 				{
-					return;
+					return true;
 				}
 
 				$existingFields[] = $fieldName;
@@ -4781,7 +4810,7 @@ class FabrikFEModelList extends JModelForm
 			$tableName = FabrikString::safeColName($tableName);
 			$lastField = FabrikString::safeColName($lastField);
 
-			if (empty($origColName) || !in_array(JString::strtolower($origColName), $existingFields))
+			if (empty($origColName) || !in_array(String::strtolower($origColName), $existingFields))
 			{
 				$fabrikDb->setQuery("ALTER TABLE $tableName ADD COLUMN $element->name $objType AFTER $lastField");
 
@@ -5074,7 +5103,7 @@ class FabrikFEModelList extends JModelForm
 		foreach ($this->filters['key'] as $i => $keyval)
 		{
 			$value = $this->filters['value'][$i];
-			$condition = JString::strtoupper($this->filters['condition'][$i]);
+			$condition = String::strtoupper($this->filters['condition'][$i]);
 			$key = $this->filters['key'][$i];
 			$filterEval = $this->filters['eval'][$i];
 			$elid = FArrayHelper::getValue($elementIds, $i);
@@ -5086,9 +5115,9 @@ class FabrikFEModelList extends JModelForm
 			*/
 			$raw = FArrayHelper::getValue($raws, $i, false);
 
-			if (JString::substr($key, -5, 5) == '_raw`')
+			if (String::substr($key, -5, 5) == '_raw`')
 			{
-				$key = JString::substr($key, 0, JString::strlen($key) - 5) . '`';
+				$key = String::substr($key, 0, String::strlen($key) - 5) . '`';
 				$raw = true;
 			}
 
@@ -5372,7 +5401,7 @@ class FabrikFEModelList extends JModelForm
 
 		if (isset($properties))
 		{
-			$prefilters = JArrayHelper::fromObject(json_decode($properties));
+			$prefilters = ArrayHelper::fromObject(json_decode($properties));
 			$conditions = (array) $prefilters['filter-conditions'];
 
 			if (!empty($conditions))
@@ -5414,7 +5443,7 @@ class FabrikFEModelList extends JModelForm
 
 				$join = FArrayHelper::getValue($afilterJoins, $i, 'AND');
 
-				if (trim(JString::strtolower($join)) == 'where')
+				if (trim(String::strtolower($join)) == 'where')
 				{
 					$join = 'AND';
 				}
@@ -6086,6 +6115,8 @@ class FabrikFEModelList extends JModelForm
 					$f->label = $filter->label;
 					$f->element = $filter->filter;
 					$f->required = array_key_exists('required', $filter) ? $filter->required : '';
+					$f->displayValue = is_array($filter->displayValue) ? implode(', ', $filter->displayValue) :
+							$filter->displayValue;
 					$this->viewfilters[$filter->name] = $f;
 				}
 			}
@@ -6151,6 +6182,7 @@ class FabrikFEModelList extends JModelForm
 
 			$o->name = 'all';
 			$o->label = $searchLabel;
+			$o->displayValue = '';
 			$aFilters[] = $o;
 		}
 
@@ -6194,6 +6226,7 @@ class FabrikFEModelList extends JModelForm
 						$fScript .= $elementModel->filterJS(true, $container);
 						$o->required = $elementModel->getParams()->get('filter_required');
 						$o->label = $elementModel->getListHeading();
+						$o->displayValue = $elementModel->filterDisplayValues;
 						$aFilters[] = $o;
 						$counter++;
 					}
@@ -6227,6 +6260,7 @@ class FabrikFEModelList extends JModelForm
 
 				$o->name = FabrikString::safeColNameToArrayKey($filters['key'][$i]);
 				$o->label = $filters['label'][$i];
+				$o->displayValue = $elementModel->filterDisplayValues;
 				$aFilters[] = $o;
 				$counter++;
 			}
@@ -6334,7 +6368,7 @@ class FabrikFEModelList extends JModelForm
 	{
 		$package = $this->app->getUserState('com_fabrik.package', 'fabrik');
 		$item = $this->getTable();
-		$item->order_dir = JString::strtolower($item->order_dir);
+		$item->order_dir = String::strtolower($item->order_dir);
 		$aTableHeadings = array();
 		$headingClass = array();
 		$cellClass = array();
@@ -6521,13 +6555,13 @@ class FabrikFEModelList extends JModelForm
 			if (is_null($listOrder))
 			{
 				// Not yet saved with order
-				$listOrder = is_object($faceted) && is_object($faceted->linkedlist) ? array_keys(JArrayHelper::fromObject($faceted->linkedlist)) : array();
+				$listOrder = is_object($faceted) && is_object($faceted->linkedlist) ? array_keys(ArrayHelper::fromObject($faceted->linkedlist)) : array();
 			}
 
 			if (is_null($formOrder))
 			{
 				// Not yet saved with order
-				$formOrder = is_object($faceted) && is_object($faceted->linkedform) ? array_keys(JArrayHelper::fromObject($faceted->linkedform)) : array();
+				$formOrder = is_object($faceted) && is_object($faceted->linkedform) ? array_keys(ArrayHelper::fromObject($faceted->linkedform)) : array();
 			}
 
 			foreach ($listOrder as $key)
@@ -6547,7 +6581,7 @@ class FabrikFEModelList extends JModelForm
 					if ($linkedTable != '0')
 					{
 						$prefix = $join->element_id . '___' . $linkedTable . '_list_heading';
-						$aTableHeadings[$prefix] = empty($heading) ? $join->listlabel . ' ' . FText::_('COM_FABRIK_LIST') : $heading;
+						$aTableHeadings[$prefix] = empty($heading) ? $join->listlabel . ' ' . FText::_('COM_FABRIK_LIST') : FText::_($heading);
 						$headingClass[$prefix] = array('class' => 'fabrik_ordercell related ' . $prefix,
 								'style' => '');
 						$cellClass[$prefix] = array('class' => $prefix . ' fabrik_element related');
@@ -6570,7 +6604,7 @@ class FabrikFEModelList extends JModelForm
 				{
 					$heading = $faceted->linkedformheader->$key;
 					$prefix = $join->db_table_name . '___' . $join->name . '_form_heading';
-					$aTableHeadings[$prefix] = empty($heading) ? $join->listlabel . ' ' . FText::_('COM_FABRIK_FORM') : $heading;
+					$aTableHeadings[$prefix] = empty($heading) ? $join->listlabel . ' ' . FText::_('COM_FABRIK_FORM') : FText::_($heading);
 					$headingClass[$prefix] = array('class' => 'fabrik_ordercell related ' . $prefix,
 							'style' => '');
 					$cellClass[$prefix] = array('class' => $prefix . ' fabrik_element related');
@@ -7451,7 +7485,7 @@ class FabrikFEModelList extends JModelForm
 				$db = $this->getDb();
 				$db->setQuery($sql);
 				$origData = $db->loadObject();
-				$origData = JArrayHelper::fromObject($origData);
+				$origData = ArrayHelper::fromObject($origData);
 				$origData = is_array($origData) ? $origData : array();
 				$this->origData = $origData;
 			}
@@ -8039,7 +8073,7 @@ class FabrikFEModelList extends JModelForm
 
 				foreach ($matches as $match)
 				{
-					$matchX = JString::substr($match, 1, JString::strlen($match) - 2);
+					$matchX = String::substr($match, 1, String::strlen($match) - 2);
 
 					// A default option was set so lets use that
 					if (strstr($matchX, '|'))
@@ -8584,7 +8618,7 @@ class FabrikFEModelList extends JModelForm
 	 */
 	public function fieldExists($field, $ignore = array())
 	{
-		$field = JString::strtolower($field);
+		$field = String::strtolower($field);
 		$groupModels = $this->getFormGroupElementData();
 
 		foreach ($groupModels as $groupModel)
@@ -8597,9 +8631,9 @@ class FabrikFEModelList extends JModelForm
 				foreach ($elementModels as $elementModel)
 				{
 					$element = $elementModel->getElement();
-					$n = JString::strtolower($element->name);
+					$n = String::strtolower($element->name);
 
-					if (JString::strtolower($element->name) == $field && !in_array($element->id, $ignore))
+					if (String::strtolower($element->name) == $field && !in_array($element->id, $ignore))
 					{
 						return true;
 					}
@@ -8750,7 +8784,7 @@ class FabrikFEModelList extends JModelForm
 		}
 
 		/* strip the {} */
-		$match = JString::substr($match, 1, JString::strlen($match) - 2);
+		$match = String::substr($match, 1, String::strlen($match) - 2);
 
 		// $$$ hugh - in case any {$my->foo} or {$_SERVER->FOO} paterns are left over, avoid 'undefined index' warnings
 		if (preg_match('#^\$#', $match))
@@ -8854,7 +8888,7 @@ class FabrikFEModelList extends JModelForm
 	{
 		$link = htmlspecialchars($link);
 		$keyIdentifier = $this->getKeyIndetifier($row);
-		$row = JArrayHelper::fromObject($row);
+		$row = ArrayHelper::fromObject($row);
 		$link = $this->parseMessageForRowHolder($link, $row);
 
 		if (preg_match('/([\?&]rowid=)/', htmlspecialchars_decode($link)))
@@ -9086,7 +9120,7 @@ class FabrikFEModelList extends JModelForm
 
 				$sql .= sprintf($fmtSql, implode(",", $fields), implode(",", $values));
 				$sql .= "\n";
-				$dump_buffer_len += JString::strlen($sql);
+				$dump_buffer_len += String::strlen($sql);
 
 				if ($dump_buffer_len > $memoryLimit)
 				{
@@ -9161,7 +9195,7 @@ class FabrikFEModelList extends JModelForm
 
 			if ($format == true)
 			{
-				$rows = array(JArrayHelper::toObject($rows));
+				$rows = array(ArrayHelper::toObject($rows));
 				$this->formatData($rows);
 				$rows = $rows[0];
 				/* $$$ hugh - if list is grouped, formatData will have re-index as assoc array,
@@ -9178,7 +9212,7 @@ class FabrikFEModelList extends JModelForm
 
 		if (is_array($this->rows[$sig]))
 		{
-			$this->rows[$sig] = JArrayHelper::toObject($this->rows[$sig]);
+			$this->rows[$sig] = ArrayHelper::toObject($this->rows[$sig]);
 		}
 
 		return $this->rows[$sig];
@@ -9650,7 +9684,8 @@ class FabrikFEModelList extends JModelForm
 	public function viewLabel($row)
 	{
 		$params = $this->getParams();
-		$row = JArrayHelper::fromObject($row);
+		$row = ArrayHelper::fromObject($row);
+
 		return FText::_($this->parseMessageForRowHolder($params->get('detaillabel', FText::_('COM_FABRIK_VIEW')), $row));
 	}
 
@@ -9666,7 +9701,8 @@ class FabrikFEModelList extends JModelForm
 	public function editLabel($row)
 	{
 		$params = $this->getParams();
-		$row = JArrayHelper::fromObject($row);
+		$row = ArrayHelper::fromObject($row);
+
 		return FText::_($this->parseMessageForRowHolder($params->get('editlabel', FText::_('COM_FABRIK_EDIT')), $row));
 	}
 
@@ -10493,7 +10529,7 @@ class FabrikFEModelList extends JModelForm
 		$tbl = array_shift($colBits);
 
 		$joinFound = false;
-		JArrayHelper::toInteger($ids);
+		ArrayHelper::toInteger($ids);
 		$ids = implode(',', $ids);
 		$dbk = $k = $table->db_primary_key;
 		// $joins = $this->getJoins();
@@ -10864,7 +10900,7 @@ class FabrikFEModelList extends JModelForm
 		else
 		{
 			$task = $input->getString('task');
-			if ((($task == 'list.view' || $task == 'list.delete' || $task === 'view') && $input->get('format') == 'raw')
+			if ((($task == 'list.view' || $task == 'list.delete' || $task === 'view' || $task == 'list.doPlugin') && $input->get('format') == 'raw')
 				|| $input->get('layout') == '_advancedsearch' || $task === 'list.elementFilter'
 				|| $input->get('setListRefFromRequest') == 1)
 			{
@@ -10921,7 +10957,7 @@ class FabrikFEModelList extends JModelForm
 		$base = $base->toString(array('scheme', 'user', 'pass', 'host', 'port', 'path'));
 		$qs = $input->server->get('QUERY_STRING', '', 'string');
 
-		if (JString::stristr($qs, 'group_by'))
+		if (String::stristr($qs, 'group_by'))
 		{
 			$qs = FabrikString::removeQSVar($qs, 'group_by');
 			$qs = FabrikString::ltrimword($qs, '?');
@@ -10932,11 +10968,11 @@ class FabrikFEModelList extends JModelForm
 
 		if (!empty($qs))
 		{
-			$url .= JString::strpos($url, '?') !== false ? '&amp;' : '?';
+			$url .= String::strpos($url, '?') !== false ? '&amp;' : '?';
 			$url .= $qs;
 		}
 
-		$url .= JString::strpos($url, '?') !== false ? '&amp;' : '?';
+		$url .= String::strpos($url, '?') !== false ? '&amp;' : '?';
 		$a = array();
 		list($h, $x, $b, $c) = $this->getHeadings();
 		$o = new stdClass;

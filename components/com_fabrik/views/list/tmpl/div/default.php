@@ -44,7 +44,7 @@ if ($this->hasButtons):
 endif;
 
 if ($this->showFilters) {
-	echo $this->loadTemplate('filter');
+	echo $this->layoutFilters();
 }
 ?>
 

@@ -12,6 +12,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\String\String;
+
 $app = JFactory::getApplication();
 $input = $app->input;
 $jform = $input->get('jform', array(), 'array');
@@ -43,7 +45,7 @@ $jform = $input->get('jform', array(), 'array');
 				$heading = trim($this->newHeadings[$i]);
 				$sample = '';
 				foreach ($this->headings as $sKey => $sVal) :
-					if(JString::strtolower($heading) == JString::strtolower($sVal)) :
+					if(String::strtolower($heading) == String::strtolower($sVal)) :
 						$sample = $this->sample[$sKey];
 					endif;
 				endforeach;

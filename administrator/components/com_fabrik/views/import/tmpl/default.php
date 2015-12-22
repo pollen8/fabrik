@@ -12,6 +12,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\Utilities\ArrayHelper;
+
 JHtml::_('behavior.tooltip');
 FabrikHelperHTML::formvalidation();
 $app = JFactory::getApplication();
@@ -24,7 +26,7 @@ $input->set('hidemainmenu', true);
 	<?php
 $id = $input->getInt('listid', 0); // from list data view in admin
 $cid = $input->get('cid', array(0), 'array');// from list of lists checkbox selection
-JArrayHelper::toInteger($cid);
+ArrayHelper::toInteger($cid);
 if ($id === 0)
 {
 	$id = $cid[0];

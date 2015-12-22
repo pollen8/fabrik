@@ -11,6 +11,9 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\String\String;
+use \Joomla\Registry\Registry;
+
 jimport('joomla.application.component.view');
 
 /**
@@ -20,7 +23,7 @@ jimport('joomla.application.component.view');
  * @subpackage  Fabrik
  * @since       3.0
  */
-class FabrikViewList extends JViewLegacy
+class FabrikViewList extends FabrikView
 {
 	/**
 	 * Display the Feed
@@ -86,7 +89,7 @@ class FabrikViewList extends JViewLegacy
 		foreach ($aJoinsToThisKey as $element)
 		{
 			$element  = $elementModel->getElement();
-			$elParams = new JRegistry($element->attribs);
+			$elParams = new Registry($element->attribs);
 
 			if ($elParams->get('show_in_rss_feed') == '1')
 			{
@@ -164,7 +167,7 @@ class FabrikViewList extends JViewLegacy
 
 							if (!strstr($this->doc->_namespace, $namespace))
 							{
-								$rssTag                 = JString::substr($rssTag, 1, JString::strlen($rssTag) - 2);
+								$rssTag                 = String::substr($rssTag, 1, String::strlen($rssTag) - 2);
 								$this->doc->_itemTags[] = $rssTag;
 								$this->doc->_namespace .= $namespace . "\n";
 							}

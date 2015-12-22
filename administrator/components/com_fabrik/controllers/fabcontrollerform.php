@@ -12,6 +12,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\Utilities\ArrayHelper;
+
 jimport('joomla.application.component.controllerform');
 
 /**
@@ -24,6 +26,13 @@ jimport('joomla.application.component.controllerform');
 class FabControllerForm extends JControllerForm
 {
 	/**
+	 * JApplication
+	 *
+	 * @var JApplicationCms
+	 */
+	protected $app;
+
+	/**
 	 * Option
 	 *
 	 * @var string
@@ -31,20 +40,35 @@ class FabControllerForm extends JControllerForm
 	protected $option = 'com_fabrik';
 
 	/**
+	 * Constructor.
+	 *
+	 * @param   array  $config  An optional associative array of configuration settings.
+	 *
+	 * @see     JControllerLegacy
+	 * @since   12.2
+	 * @throws  Exception
+	 */
+	public function __construct($config = array())
+	{
+		$this->app = ArrayHelper::getValue($config, 'app', JFactory::getApplication());
+		parent::__construct($config);
+	}
+	/**
 	 * Copy items
+	 *
+	 * @throws Exception
 	 *
 	 * @return  null
 	 */
 	public function copy()
 	{
 		$model = $this->getModel();
-		$app = JFactory::getApplication();
-		$input = $app->input;
+		$input = $this->input;
 		$cid = $input->get('cid', array(), 'array');
 
 		if (empty($cid))
 		{
-			JError::raiseWarning(500, FText::_($this->text_prefix . '_NO_ITEM_SELECTED'));
+			throw new Exception(FText::_($this->text_prefix . '_NO_ITEM_SELECTED'));
 		}
 		else
 		{

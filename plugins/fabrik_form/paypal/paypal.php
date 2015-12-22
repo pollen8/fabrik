@@ -11,6 +11,9 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\String\String;
+use Joomla\Utilities\ArrayHelper;
+
 // Require the abstract plugin class
 require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
 
@@ -186,7 +189,7 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 
 				$filter = JFilterInput::getInstance();
 				$post = $filter->clean($_POST, 'array');
-				$tmp = array_merge($post, JArrayHelper::fromObject($sub));
+				$tmp = array_merge($post, ArrayHelper::fromObject($sub));
 
 				// 'http://fabrikar.com/ '.$sub->item_name.' - User: subtest26012010 (subtest26012010)';
 				$opts['item_name'] = $w->parseMessageForPlaceHolder($name, $tmp);
@@ -565,7 +568,7 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 			$row = $listModel->getRow($rowId);
 			$retMsg = $w->parseMessageForPlaceHolder($retMsg, $row);
 
-			if (JString::stristr($retMsg, '[show_all]'))
+			if (String::stristr($retMsg, '[show_all]'))
 			{
 				$all_data = array();
 
@@ -681,7 +684,7 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 		$header .= "Connection: close\r\n";
 		$header .= "User-Agent: Fabrik Joomla Plugin\r\n";
 		$header .= "Content-Type: application/x-www-form-urlencoded\r\n";
-		$header .= "Content-Length: " . JString::strlen($req) . "\r\n\r\n";
+		$header .= "Content-Length: " . String::strlen($req) . "\r\n\r\n";
 
 
 		// Assign posted variables to local variables
@@ -734,7 +737,7 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 					 * check that payment_amount/payment_currency are correct
 					 * process payment
 					 */
-					if (JString::strcmp($tres, "VERIFIED") === 0)
+					if (String::strcmp($tres, "VERIFIED") === 0)
 					{
 						$status = 'ok';
 
@@ -897,7 +900,7 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 							}
 						}
 					}
-					elseif (JString::strcmp($tres, "INVALID") === 0)
+					elseif (String::strcmp($tres, "INVALID") === 0)
 					{
 						$status = 'form.paypal.ipnfailure.invalid';
 						$errMsg = 'paypal postback failed with INVALID';

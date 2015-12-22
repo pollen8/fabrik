@@ -12,6 +12,9 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\String\String;
+use Joomla\Utilities\ArrayHelper;
+
 jimport('joomla.application.component.modeladmin');
 
 require_once 'fabmodeladmin.php';
@@ -148,7 +151,7 @@ class FabrikAdminModelElement extends FabModelAdmin
 	public function addToListView(&$pks, $value = 1)
 	{
 		// Initialise variables.
-		$dispatcher = JDispatcher::getInstance();
+		$dispatcher = JEventDispatcher::getInstance();
 		$item       = $this->getTable();
 		$pks        = (array) $pks;
 
@@ -309,7 +312,7 @@ class FabrikAdminModelElement extends FabModelAdmin
 		{
 			$plugin = $this->pluginManager->getPlugIn($plugin, 'Element');
 			$mode   = FabrikWorker::j3() ? 'nav-tabs' : '';
-			$str    = $plugin->onRenderAdminSettings(JArrayHelper::fromObject($item), null, $mode);
+			$str    = $plugin->onRenderAdminSettings(ArrayHelper::fromObject($item), null, $mode);
 		}
 
 		return $str;
@@ -416,6 +419,7 @@ class FabrikAdminModelElement extends FabModelAdmin
 			}
 			else
 			{
+				/** @var FabrikFEModelList $joinListModel */
 				$joinListModel = JModelLegacy::getInstance('list', 'FabrikFEModel');
 				$joinListModel->setId($joinTblId);
 				$joinEls = $joinListModel->getElements();
@@ -435,7 +439,7 @@ class FabrikAdminModelElement extends FabModelAdmin
 			}
 		}
 		// Strip <p> tag from label
-		$data['label'] = JString::str_ireplace(array('<p>', '</p>'), '', $data['label']);
+		$data['label'] = String::str_ireplace(array('<p>', '</p>'), '', $data['label']);
 
 		return count($this->getErrors()) == 0 ? $data : false;
 	}
@@ -897,7 +901,7 @@ class FabrikAdminModelElement extends FabModelAdmin
 		$fieldType = $elementModel->getFieldDescription();
 
 		// Int elements can't have a index size attribute
-		$size = JString::stristr($fieldType, 'int') || $fieldType == 'DATETIME' ? '' : '10';
+		$size = String::stristr($fieldType, 'int') || $fieldType == 'DATETIME' ? '' : '10';
 
 		if ($elementModel->getParams()->get('can_order'))
 		{
@@ -996,7 +1000,7 @@ class FabrikAdminModelElement extends FabModelAdmin
 			return array();
 		}
 
-		JArrayHelper::toInteger($ids);
+		ArrayHelper::toInteger($ids);
 		$db    = FabrikWorker::getDbo(true);
 		$query = $db->getQuery(true);
 		$query->select('id')->from('#__{package}_elements')->where('group_id IN (' . implode(',', $ids) . ')');
@@ -1072,7 +1076,7 @@ class FabrikAdminModelElement extends FabModelAdmin
 	{
 		$input = $this->app->input;
 		$cid   = $input->get('cid', array(), 'array');
-		JArrayHelper::toInteger($cid);
+		ArrayHelper::toInteger($cid);
 		$names = $input->get('name', array(), 'array');
 		$rule  = $this->getTable('element');
 
@@ -1081,7 +1085,7 @@ class FabrikAdminModelElement extends FabModelAdmin
 			if ($rule->load((int) $id))
 			{
 				$name         = FArrayHelper::getValue($names, $id, $rule->name);
-				$data         = JArrayHelper::fromObject($rule);
+				$data         = ArrayHelper::fromObject($rule);
 				$elementModel = $this->getElementPluginModel($data);
 				$elementModel->getElement()->bind($data);
 				$newRule      = $elementModel->copyRow($id, $rule->label, $groupid, $name);
@@ -1091,7 +1095,7 @@ class FabrikAdminModelElement extends FabModelAdmin
 					return false;
 				}
 
-				$data         = JArrayHelper::fromObject($newRule);
+				$data         = ArrayHelper::fromObject($newRule);
 				$elementModel = $this->getElementPluginModel($data);
 				$elementModel->getElement()->bind($data);
 				$listModel = $elementModel->getListModel();
@@ -1318,17 +1322,17 @@ class FabrikAdminModelElement extends FabModelAdmin
 		$pluginManager->getPlugInGroup('validationrule');
 		$this->aValidations = array();
 
-		$dispatcher = JDispatcher::getInstance();
+		$dispatcher = JEventDispatcher::getInstance();
 		$ok         = JPluginHelper::importPlugin('fabrik_validationrule');
 
 		foreach ($usedPlugins as $usedPlugin)
 		{
 			if ($usedPlugin !== '')
 			{
-				$class                = 'plgFabrik_Validationrule' . JString::ucfirst($usedPlugin);
+				$class                = 'plgFabrik_Validationrule' . String::ucfirst($usedPlugin);
 				$conf                 = array();
-				$conf['name']         = JString::strtolower($usedPlugin);
-				$conf['type']         = JString::strtolower('fabrik_Validationrule');
+				$conf['name']         = String::strtolower($usedPlugin);
+				$conf['type']         = String::strtolower('fabrik_Validationrule');
 				$plugIn               = new $class($dispatcher, $conf);
 				$oPlugin              = JPluginHelper::getPlugin('fabrik_validationrule', $usedPlugin);
 				$plugIn->elementModel = $elementModel;
