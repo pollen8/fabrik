@@ -292,8 +292,11 @@ var FbDatabasejoin = new Class({
 
 		// $$$ hugh - don't think we need to fetch values if auto-complete
 		// and v is empty, otherwise we'll just fetch every row in the target table,
-		// and do thing with it in onComplete?
+		// and do nothing with it in onComplete?  So just set it blank now.
 		if (this.options.displayType === 'auto-complete' && v === '') {
+			this.addOption('', '', true);
+			this.element.fireEvent('change', new Event.Mock(this.element, 'change'));
+			this.element.fireEvent('blur', new Event.Mock(this.element, 'blur'));
 			return;
 		}
 		if (v) {
@@ -607,6 +610,10 @@ var FbDatabasejoin = new Class({
 			}
 		}
 		this.options.value = val;
+		if (this.options.advanced)
+		{
+			jQuery("#" + this.element.id).trigger("liszt:updated");
+		}
 	},
 
 	/**
