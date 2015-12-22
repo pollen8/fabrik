@@ -173,9 +173,23 @@ class FabrikAdminControllerImport extends FabControllerForm
 
 			// Create db
 			$listModel = $this->getModel('list', 'FabrikAdminModel');
-			$data = array('id' => 0, '_database_name' => $dbName, 'connection_id' => $input->getInt('connection_id'), 'access' => 0,
-				'rows_per_page' => 10, 'template' => 'default', 'published' => 1, 'access' => 1, 'label' => $input->getString('label'),
-				'jform' => array('id' => 0, '_database_name' => $dbName, 'db_table_name' => ''));
+			$data = array(
+				'id' => 0,
+				'_database_name' => $dbName,
+				'connection_id' => $input->getInt('connection_id'),
+				'access' => 0,
+				'rows_per_page' => 10,
+				'template' => 'default',
+				'published' => 1,
+				'access' => 1,
+				'label' => $input->getString('label'),
+				'jform' => array(
+					'id' => 0,
+					'_database_name' => $dbName,
+					'db_table_name' => '',
+					'contenttype' => null
+				)
+			);
 			$input->set('jform', $data['jform']);
 			$listModel->save($data);
 			$model->listModel = null;

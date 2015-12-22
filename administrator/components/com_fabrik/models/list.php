@@ -660,7 +660,7 @@ class FabrikAdminModelList extends FabModelAdmin
 
 		// Get original collation
 		$db            = $feModel->getDb();
-		$origCollation = $this->getOriginalCollation($params, $db, $data['db_table_name']);
+		$origCollation = $this->getOriginalCollation($params, $db, FArrayHelper::getValue($data, 'db_table_name', ''));
 		$row->bind($data);
 
 		$row->set('order_by', json_encode($input->get('order_by', array(), 'array')));
@@ -668,11 +668,11 @@ class FabrikAdminModelList extends FabModelAdmin
 
 		$row->check();
 
-		$this->collation($feModel, $origCollation, $row);
 		$isNew = true;
 
 		if ($row->id != 0)
 		{
+			$this->collation($feModel, $origCollation, $row);
 			$dateNow = JFactory::getDate();
 			$row->set('modified', $dateNow->toSql());
 			$row->set('modified_by', $this->user->get('id'));

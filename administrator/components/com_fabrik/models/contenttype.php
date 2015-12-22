@@ -645,7 +645,7 @@ class FabrikAdminModelContentType extends FabModelAdmin
 	{
 		$input = $this->app->input;
 
-		if (!is_null($contentType))
+		if (!empty($contentType))
 		{
 			$fields = $this->loadContentType($contentType)
 				->createGroupsFromContentType();
@@ -653,7 +653,7 @@ class FabrikAdminModelContentType extends FabModelAdmin
 		else
 		{
 			// Could be importing from a CSV in which case default fields are set.
-			$fields = $input->get('defaultfields', array('id' => 'internalid', 'date_time' => 'date'));
+			$fields = $input->get('defaultfields', array('id' => 'internalid', 'date_time' => 'date'), 'array');
 		}
 
 		return $fields;
