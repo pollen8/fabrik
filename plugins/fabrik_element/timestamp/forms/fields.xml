@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<form>
+	<fields name="params">
+
+		<fieldset name="plg-element-timestamp">
+		
+			<field type="helplink"
+				url="PLG_ELEMENT_TIMESTAMP_HELP_SERVER" />
+
+			<field default="0" description="PLG_ELEMENT_TIMESTAMP_GMT_OR_LOCAL_DESC" label="PLG_ELEMENT_TIMESTAMP_GMT_OR_LOCAL_LABEL" name="gmt_or_local" type="list">
+				<option value="0">GMT</option>
+				<option value="1">Local Server Time</option>
+			</field>
+
+			<field default="0"
+				class="btn-group"
+				descripton="PLG_ELEMENT_TIMESTAMP_UPDATE_ON_EDIT_DESC" label="PLG_ELEMENT_TIMESTAMP_UPDATE_ON_EDIT_LABEL" name="timestamp_update_on_edit" type="radio">
+				<option value="0">JNO</option>
+				<option value="1">JYES</option>
+			</field>
+
+			<field default="Y-m-d H:i:s" description="PLG_ELEMENT_TIMESTAMP_FORMAT_DESC" label="PLG_ELEMENT_TIMESTAMP_FORMAT_LABEL" length="20" name="timestamp_format" type="text"/>
+		</fieldset>
+	</fields>
+</form>
