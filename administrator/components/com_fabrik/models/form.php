@@ -42,7 +42,7 @@ class FabrikAdminModelForm extends FabModelAdmin
 	protected $pluginType = 'Form';
 
 	/**
-	 * @var FabrikAdminModelContentType
+	 * @var FabrikAdminModelContentTypeImport
 	 */
 	protected $contentTypeModel;
 
@@ -253,7 +253,7 @@ class FabrikAdminModelForm extends FabModelAdmin
 		$createGroup      = $data['_createGroup'];
 		$recordInDatabase = $data['record_in_database'];
 		$jForm            = $this->app->input->get('jform', array(), 'array');
-		$this->contentTypeModel = JModelLegacy::getInstance('ContentType', 'FabrikAdminModel', array('listModel' => $listModel));
+		$this->contentTypeModel = JModelLegacy::getInstance('ContentTypeImport', 'FabrikAdminModel', array('listModel' => $listModel));
 		$groups           = FArrayHelper::getValue($data, 'current_groups');
 		$contentType      = ArrayHelper::getValue($jForm, 'contenttype');
 
