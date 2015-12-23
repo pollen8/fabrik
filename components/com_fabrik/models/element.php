@@ -1698,7 +1698,7 @@ class PlgFabrik_Element extends FabrikPlugin
 	 *
 	 * @return  string  Label with tip
 	 */
-	protected function rollover($txt, $data = array(), $mode = 'form')
+	protected function rollover_old($txt, $data = array(), $mode = 'form')
 	{
 		if (is_object($data))
 		{
@@ -1708,6 +1708,42 @@ class PlgFabrik_Element extends FabrikPlugin
 		$rollOver = $this->tipHtml($data, $mode);
 
 		return $rollOver !== '' ? '<span class="fabrikTip" ' . $rollOver . '>' . $txt . '</span>' : $txt;
+	}
+
+	/**
+	 * Add tips on element labels
+	 * does ACL check on element's label in details setting
+	 *
+	 * @param   string  $txt   Label
+	 * @param   array   $data  Row data
+	 * @param   string  $mode  Form/list render context
+	 *
+	 * @return  string  Label with tip
+	 */
+	protected function rollover($txt, $data = array(), $mode = 'form')
+	{
+		if (is_object($data))
+		{
+			$data = ArrayHelper::fromObject($data);
+		}
+
+		//$title = $this->tipTextAndValidations($mode, $data);
+		//$opts = $this->tipOpts();
+		//$opts = json_encode($opts);
+
+		//return $title !== '' ? 'title="' . $title . '" opts=\'' . $opts . '\'' : '';
+
+		$layout = FabrikHelperHTML::getLayout('element.fabrik-element-tip');
+		$displayData = new stdClass;
+		$displayData->tipTitle = $this->tipTextAndValidations($mode, $data);
+		$displayData->tipText = $txt;
+		$displayData->rollOver = $this->isTipped();
+		$displayData->isEditable = $this->isEditable();
+		$displayData->tipOpts = $this->tipOpts();
+
+		$rollOver = $layout->render($displayData);
+
+		return $rollOver;
 	}
 
 	/**
