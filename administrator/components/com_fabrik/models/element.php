@@ -1136,11 +1136,11 @@ class FabrikAdminModelElement extends FabModelAdmin
 		$formModel = $elementModel->getForm();
 		$db        = $listModel->getDb();
 		$desc      = $elementModel->getFieldDescription();
-		$name      = $db->quoteName($row->name);
+		$name      = $db->qn($row->name);
 		$db
 			->setQuery(
-				'CREATE TABLE IF NOT EXISTS ' . $db->quoteName($tableName) . ' ( id INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY, parent_id INT(11), '
-				. $name . ' ' . $desc . ', ' . $db->quoteName('params') . ' TEXT );');
+				'CREATE TABLE IF NOT EXISTS ' . $db->qn($tableName) . ' ( id INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY, parent_id INT(11), '
+				. $name . ' ' . $desc . ', ' . $db->qn('params') . ' TEXT );');
 		$db->execute();
 
 		// Remove previous join records if found

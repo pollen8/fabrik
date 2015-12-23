@@ -485,118 +485,127 @@ class FabrikAdminModelContentTypeImport extends FabModelAdmin
 			}
 
 			$joinTable->store();
-	}
+		}
 
-	// Update element params with source => target table name conversion
-foreach ($this->elementIds as $elementId)
-{
-	/** @var FabrikTableElement $element */
-$element = FabTable::getInstance('Element', 'FabrikTable');
-$element->load($elementId);
-$elementParams = new Registry($element->params);
-
-if ($elementParams->get('join_db_name') === $source)
-{
-$elementParams->set('join_db_name', $targetTable);
-$element->set('params', $elementParams->toString());
-$element->store();
-}
-}
-}
-
-/**
- * Add a filesystem path where content type XML files should be searched for.
- * You may either pass a string or an array of paths.
- *
- * @param   mixed $path A filesystem path or array of filesystem paths to add.
- *
- * @return  array  An array of filesystem paths to find Content type XML files.
- */
-public static function addContentTypeIncludePath($path = null)
-{
-	// If the internal paths have not been initialised, do so with the base table path.
-	if (empty(self::$_contentTypeIncludePaths))
-	{
-		self::$_contentTypeIncludePaths = JPATH_COMPONENT_ADMINISTRATOR . '/models/content_types';
-	}
-
-	// Convert the passed path(s) to add to an array.
-	settype($path, 'array');
-
-	// If we have new paths to add, do so.
-	if (!empty($path))
-	{
-		// Check and add each individual new path.
-		foreach ($path as $dir)
+		// Update element params with source => target table name conversion
+		foreach ($this->elementIds as $elementId)
 		{
-			// Sanitize path.
-			$dir = trim($dir);
+			/** @var FabrikTableElement $element */
+			$element = FabTable::getInstance('Element', 'FabrikTable');
+			$element->load($elementId);
+			$elementParams = new Registry($element->params);
 
-			// Add to the front of the list so that custom paths are searched first.
-			if (!in_array($dir, self::$_contentTypeIncludePaths))
+			if ($elementParams->get('join_db_name') === $source)
 			{
-				array_unshift(self::$_contentTypeIncludePaths, $dir);
+				$elementParams->set('join_db_name', $targetTable);
+				$element->set('params', $elementParams->toString());
+				$element->store();
 			}
 		}
 	}
 
-	return self::$_contentTypeIncludePaths;
-}
-
-/**
- * Prepare the group and element models for form view preview
- *
- * @return array
- */
-public function preview()
-{
-	$pluginManager = FabrikWorker::getPluginManager();
-	$xpath         = new DOMXpath($this->doc);
-	$groups        = $xpath->query('/contenttype/group');
-	$return        = array();
-	$i             = 1;
-
-	foreach ($groups as $group)
+	/**
+	 * Add a filesystem path where content type XML files should be searched for.
+	 * You may either pass a string or an array of paths.
+	 *
+	 * @param   mixed $path A filesystem path or array of filesystem paths to add.
+	 *
+	 * @return  array  An array of filesystem paths to find Content type XML files.
+	 */
+	public static function addContentTypeIncludePath($path = null)
 	{
-		$groupData           = array();
-		$groupData           = FabrikContentTypHelper::domNodeAttributesToArray($group, $groupData);
-		$groupData['params'] = FabrikContentTypHelper::nodeParams($group);
-		$groupModel          = JModelLegacy::getInstance('Group', 'FabrikFEModel');
-		$groupTable          = FabTable::getInstance('Group', 'FabrikTable');
-		$groupTable->bind($groupData);
-		$groupModel->setGroup($groupTable);
-
-		$elements      = $xpath->query('/contenttype/group[' . $i . ']/element');
-		$elementModels = array();
-
-		foreach ($elements as $element)
+		// If the internal paths have not been initialised, do so with the base table path.
+		if (empty(self::$_contentTypeIncludePaths))
 		{
-			$elementData            = FabrikContentTypHelper::domNodeAttributesToArray($element);
-			$elementData['params']  = FabrikContentTypHelper::nodeParams($element);
-			$elementModel           = clone($pluginManager->getPlugIn($elementData['plugin'], 'element'));
-			$elementModel->element  = $elementModel->getDefaultProperties($elementData);
-			$elementModel->editable = true;
-			$elementModels[]        = $elementModel;
+			self::$_contentTypeIncludePaths = JPATH_COMPONENT_ADMINISTRATOR . '/models/content_types';
 		}
 
-		$groupModel->elements = $elementModels;
-		$return[]             = $groupModel;
-		$i++;
+		// Convert the passed path(s) to add to an array.
+		settype($path, 'array');
+
+		// If we have new paths to add, do so.
+		if (!empty($path))
+		{
+			// Check and add each individual new path.
+			foreach ($path as $dir)
+			{
+				// Sanitize path.
+				$dir = trim($dir);
+
+				// Add to the front of the list so that custom paths are searched first.
+				if (!in_array($dir, self::$_contentTypeIncludePaths))
+				{
+					array_unshift(self::$_contentTypeIncludePaths, $dir);
+				}
+			}
+		}
+
+		return self::$_contentTypeIncludePaths;
 	}
 
-	return $return;
-}
+	/**
+	 * Prepare the group and element models for form view preview
+	 *
+	 * @return array
+	 */
+	public function preview()
+	{
+		$pluginManager = FabrikWorker::getPluginManager();
+		$xpath         = new DOMXpath($this->doc);
+		$groups        = $xpath->query('/contenttype/group');
+		$return        = array();
+		$i             = 1;
 
-/**
- * Get default insert fields - either from content type or defaultfields input value
- *
- * @param string|null $contentType
- * @param array       $groupData Group info
- *
- * @return array
- */
-public function import($contentType = null, $groupData = array())
-{
+		foreach ($groups as $group)
+		{
+			$groupData           = array();
+			$groupData           = FabrikContentTypHelper::domNodeAttributesToArray($group, $groupData);
+			$groupData['params'] = FabrikContentTypHelper::nodeParams($group);
+			$groupModel          = JModelLegacy::getInstance('Group', 'FabrikFEModel');
+			$groupTable          = FabTable::getInstance('Group', 'FabrikTable');
+			$groupTable->bind($groupData);
+			$groupModel->setGroup($groupTable);
+
+			$elements      = $xpath->query('/contenttype/group[' . $i . ']/element');
+			$elementModels = array();
+
+			foreach ($elements as $element)
+			{
+				$elementData                  = FabrikContentTypHelper::domNodeAttributesToArray($element);
+				$elementData['params']        = FabrikContentTypHelper::nodeParams($element);
+				$elementModel                 = clone($pluginManager->loadPlugIn($elementData['plugin'], 'element'));
+				$elementModel->element        = $elementModel->getDefaultProperties($elementData);
+				$elementModel->element->name  = $elementData['name'];
+				$elementModel->element->label = $elementData['label'];
+
+				if ($elementModel->element->hidden)
+				{
+					$elementModel->element->hidden = false;
+					$elementModel->getparams()->set('containerclass', 'faux-shown');
+				}
+
+				$elementModel->editable       = true;
+				$elementModels[]              = $elementModel;
+			}
+
+			$groupModel->elements = $elementModels;
+			$return[]             = $groupModel;
+			$i++;
+		}
+
+		return $return;
+	}
+
+	/**
+	 * Get default insert fields - either from content type or defaultfields input value
+	 *
+	 * @param string|null $contentType
+	 * @param array       $groupData Group info
+	 *
+	 * @return array
+	 */
+	public function import($contentType = null, $groupData = array())
+	{
 		$input = $this->app->input;
 
 		if (!empty($contentType))
