@@ -8365,11 +8365,21 @@ class FabrikFEModelList extends JModelForm
 
 		$val = implode(',', $val);
 
-		// $$$ rob - if we are not deleting joined rows then onloy load in the first row
-		// otherwise load in all rows so we can apply onDeleteRows() to all the data
+		/**
+		 *
+		 * $$$ rob - if we are not deleting joined rows then onloy load in the first row
+		 * otherwise load in all rows so we can apply onDeleteRows() to all the data
+		 *
+		 * $$$ hugh - added setLimits, otherwise session limits from AJAX nav will override us
+		 */
 		if ($this->getParams()->get('delete-joined-rows', false) == false)
 		{
 			$nav = $this->getPagination($c, 0, $c);
+			$this->setLimits(0, $c);
+		}
+		else
+		{
+			$this->setLimits(0, -1);
 		}
 
 		$this->setPluginQueryWhere('list.deleteRows', $key . ' IN (' . $val . ')');
