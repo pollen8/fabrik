@@ -222,8 +222,8 @@ class FabrikAdminModelContentTypeImport extends FabModelAdmin
 		}
 
 		$this->mapElementIdParams($elementMap);
+		$this->importJoins($elementMap);
 		$this->importTables();
-		$this->importJoins($this->groupMap, $elementMap);
 
 		return $fields;
 	}
@@ -352,6 +352,15 @@ class FabrikAdminModelContentTypeImport extends FabModelAdmin
 
 		foreach ($tables as $table)
 		{
+
+			// Internally generated repeat groups tables should have their name updated to contain the new group id
+			if (preg_match('/(.*)_([0-9]*)_repeat/', $table->getAttribute('name'), $matches))
+			{
+				$oldGroupId = ArrayHelper::getValue($matches, 2);
+				$new        = $this->groupMap[$oldGroupId];
+				$table->setAttribute('name', preg_replace('/(.*)_([0-9]*)_repeat/', '$1_' . $new . '_repeat', $table->getAttribute('name')));
+			}
+
 			$xmlDoc     = new DOMDocument;
 			$database   = $xmlDoc->createElement('database');
 			$root       = $xmlDoc->createElement('root');
@@ -377,12 +386,11 @@ class FabrikAdminModelContentTypeImport extends FabModelAdmin
 	 * For group joins, the list id is not available. The join is thus finalised in
 	 * finaliseImport()
 	 *
-	 * @param   array $groupMap   array(oldGroupId => newGroupId)
 	 * @param   array $elementMap array(oldElementId => newElementId)
 	 *
 	 * @return  void
 	 */
-	private function importJoins($groupMap, $elementMap)
+	private function importJoins($elementMap)
 	{
 		$xpath    = new DOMXpath($this->doc);
 		$joins    = $xpath->query('/contenttype/group[join]/join');
@@ -390,11 +398,20 @@ class FabrikAdminModelContentTypeImport extends FabModelAdmin
 
 		foreach ($joins as $join)
 		{
-			$newGroupId = $groupMap[(string) $join->getAttribute('group_id')];
+			$newGroupId = $this->groupMap[(string) $join->getAttribute('group_id')];
 			$join->setAttribute('group_id', $newGroupId);
 			$joinData           = FabrikContentTypHelper::domNodeAttributesToArray($join);
 			$joinData['params'] = json_encode(FabrikContentTypHelper::nodeParams($join));
 			unset($joinData['list_id']);
+
+			// Internally generated repeat groups should have their join table name updated
+			if (preg_match('/(.*)_([0-9]*)_repeat/', $joinData['table_join'], $matches))
+			{
+				$oldGroupId             = ArrayHelper::getValue($matches, 2);
+				$new                    = $this->groupMap[$oldGroupId];
+				$joinData['table_join'] = preg_replace('/(.*)_([0-9]*)_repeat/', '$1_' . $new . '_repeat', $joinData['table_join']);
+			}
+
 			$joinTable = FabTable::getInstance('Join', 'FabrikTable');
 			$joinTable->save($joinData);
 			$this->joinIds[] = $joinTable->get('id');
@@ -404,7 +421,7 @@ class FabrikAdminModelContentTypeImport extends FabModelAdmin
 		{
 			$oldElementId = (string) $join->getAttribute('element_id');
 			$newId        = $elementMap[$oldElementId];
-			$newGroupId   = $groupMap[(string) $join->getAttribute('group_id')];
+			$newGroupId   = $this->groupMap[(string) $join->getAttribute('group_id')];
 			$join->setAttribute('group_id', $newGroupId);
 			$join->setAttribute('element_id', $newId);
 			$joinData           = FabrikContentTypHelper::domNodeAttributesToArray($join);
@@ -442,10 +459,6 @@ class FabrikAdminModelContentTypeImport extends FabModelAdmin
 		$source      = $this->getSourceTableName();
 		$targetTable = $row->get('db_table_name');
 
-		echo "<pre>";
-		echo "group map";print_r($this->groupMap);
-		echo "joins = ";print_r($this->joinIds);
-		exit;
 		foreach ($this->joinIds as $joinId)
 		{
 			$joinTable = FabTable::getInstance('Join', 'FabrikTable');
@@ -472,9 +485,6 @@ class FabrikAdminModelContentTypeImport extends FabModelAdmin
 			}
 
 			$joinTable->store();
-			echo "<pre>";
-			print_r($joinTable);
-
 		}
 
 		// Update element params with source => target table name conversion
