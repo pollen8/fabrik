@@ -471,7 +471,7 @@ class PlgFabrik_Element extends FabrikPlugin
 	 */
 	public function setGroupModel($group)
 	{
-		$this->_group = $group;
+		$this->group = $group;
 	}
 
 	/**
