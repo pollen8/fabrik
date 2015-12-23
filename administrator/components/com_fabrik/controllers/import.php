@@ -182,7 +182,12 @@ class FabrikAdminControllerImport extends FabControllerForm
 			/** @var FabrikAdminModelList $listModel */
 			$listModel = $this->getModel('list', 'FabrikAdminModel');
 
-			// Create db
+			/**
+			 * Create db
+			 *
+			 * @TODO should probably add an ACL option to the import options, as we now have to set 'access'
+			 * to something for the elementtype import.  Defaulting to 1 for now.
+			 */
 			$data      = array(
 				'id' => 0,
 				'_database_name' => $dbName,
