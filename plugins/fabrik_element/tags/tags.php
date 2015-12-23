@@ -326,8 +326,6 @@ class PlgFabrik_ElementTags extends PlgFabrik_ElementDatabasejoin
 		$query->select('DISTINCT(t.id) AS value,' . $db->qn('title') . ' AS text')
 		->from($db->qn($join->table_join) . ' AS ' . $db->qn($join->table_join_alias))
 		->join('LEFT', $this->getDbName() . ' AS t ON t.id = ' . $db->qn($join->table_join_alias . '.' . $join->table_key));
-		$db->setQuery($query);
-		$query->opts = $db->loadObjectList();
 
 		return $query;
 	}
