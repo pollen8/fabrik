@@ -227,7 +227,7 @@ class FabrikAdminModelForm extends FabModelAdmin
 			$item->set('params', $listModel->getDefaultParams());
 			$item->store();
 
-			$this->contentTypeModel->finaliseImport($item);
+			$this->contentTypeModel->finalise($item);
 		}
 		else
 		{
@@ -289,7 +289,7 @@ class FabrikAdminModelForm extends FabModelAdmin
 
 		if ($createGroup)
 		{
-			$fields = $this->contentTypeModel->getDefaultInsertFields($contentType);
+			$fields = $this->contentTypeModel->import($contentType);
 		}
 
 		return $fields;

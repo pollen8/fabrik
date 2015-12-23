@@ -730,7 +730,7 @@ class FabrikAdminModelList extends FabModelAdmin
 				$dbOpts            = array();
 				$params            = new Registry($row->get('params'));
 				$dbOpts['COLLATE'] = $params->get('collation', '');
-				$fields            = $contentTypeModel->getDefaultInsertFields($contentType, $groupData);
+				$fields            = $contentTypeModel->import($contentType, $groupData);
 				$res               = $this->createDBTable($newTable, $fields, $dbOpts);
 
 				if (is_array($res))
@@ -787,7 +787,7 @@ class FabrikAdminModelList extends FabModelAdmin
 
 		if ($id == 0)
 		{
-			$contentTypeModel->finaliseImport($row);
+			$contentTypeModel->finalise($row);
 		}
 
 		return true;
