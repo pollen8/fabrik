@@ -1908,8 +1908,11 @@ class FabrikAdminModelList extends FabModelAdmin
 					}
 					else
 					{
-						$feModel->drop();
-						$this->app->enqueueMessage(JText::sprintf('COM_FABRIK_TABLE_DROPPED', $table->db_table_name));
+						if (!empty($table->db_table_name))
+						{
+							$feModel->drop();
+							$this->app->enqueueMessage(JText::sprintf('COM_FABRIK_TABLE_DROPPED', $table->db_table_name));
+						}
 					}
 				}
 				else
