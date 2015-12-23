@@ -740,9 +740,9 @@ class FabrikAdminModelList extends FabModelAdmin
 			}
 		}
 
-		FabrikAdminHelper::prepareSaveDate($row->get('publish_down'));
-		FabrikAdminHelper::prepareSaveDate($row->get('created'));
-		FabrikAdminHelper::prepareSaveDate($row->get('publish_up'));
+		$row->set('publish_down', FabrikAdminHelper::prepareSaveDate($row->get('publish_down')));
+		$row->set('created', FabrikAdminHelper::prepareSaveDate($row->get('created')));
+		$row->set('publish_up', FabrikAdminHelper::prepareSaveDate($row->get('publish_up')));
 		$pk = FArrayHelper::getValue($data, 'db_primary_key');
 
 		if ($pk == '')

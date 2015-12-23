@@ -190,15 +190,25 @@ class FabrikAdminModelContentTypeImport extends FabModelAdmin
 			foreach ($elements as $element)
 			{
 				$elementData = FabrikContentTypHelper::domNodeAttributesToArray($element);
-				$oldId       = $elementData['id'];
-				unset($elementData['id']);
+
+				if (array_key_exists('id', $elementData))
+				{
+					$oldId       = $elementData['id'];
+					unset($elementData['id']);
+				}
+
 				$elementData['params']   = json_encode(FabrikContentTypHelper::nodeParams($element));
 				$elementData['group_id'] = $groupId;
 				$this->mapElementACL($elementData);
 				$name               = (string) $element->getAttribute('name');
 				$fields[$name]      = $this->listModel->makeElement($name, $elementData);
-				$elementMap[$oldId] = $fields[$name]->element->id;
-				$this->elementIds[] = $elementMap[$oldId];
+
+				if (!empty($oldId))
+				{
+					$elementMap[$oldId] = $fields[$name]->element->id;
+				}
+
+				$this->elementIds[] = $fields[$name]->element->id;
 			}
 
 			$groupIds[] = $groupId;
@@ -222,14 +232,22 @@ class FabrikAdminModelContentTypeImport extends FabModelAdmin
 		$map            = $this->app->input->get('aclMap', array(), 'array');
 		$params         = array('edit_access', 'view_access', 'list_view_access', 'filter_access', 'sum_access', 'avg_access',
 			'median_access', 'count_access', 'custom_calc_access');
-		$data['access'] = ArrayHelper::getValue($map, $data['access']);
+		$data['access'] = ArrayHelper::getValue($map, $data['access'], $data['access']);
 		$origParams     = json_decode($data['params']);
 
 		foreach ($params as $param)
 		{
-			if (isset($origParams->$param) && array_key_exists($origParams->$param, $map))
+			if (isset($origParams->$param))
 			{
-				$origParams->$param = $map[$origParams->$param];
+				if  (array_key_exists($origParams->$param, $map))
+				{
+					$origParams->$param = $map[$origParams->$param];
+				}
+			}
+			else
+			{
+				// default them to main access level
+				$origParams->$param = $data['access'];
 			}
 		}
 
@@ -577,7 +595,13 @@ class FabrikAdminModelContentTypeImport extends FabModelAdmin
 			foreach ($fields as $name => $plugin)
 			{
 				$pk         = $name === $primaryKey ? 1 : 0;
-				$elements[] = array('plugin' => $plugin, 'label' => $name, 'name' => $name, 'primary_key' => $pk);
+				$elements[] = array(
+					'plugin' => $plugin,
+					'label' => $name,
+					'name' => $name,
+					'primary_key' => $pk,
+					'access' => '1'
+				);
 			}
 
 			/** @var FabrikAdminModelContentTypeExport $exporter */

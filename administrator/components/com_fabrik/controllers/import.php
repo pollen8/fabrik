@@ -212,6 +212,7 @@ class FabrikAdminControllerImport extends FabControllerForm
 			$input->set('listid', $listId);
 		}
 
+		$model->readCSV($model->getCSVFileName());
 		$model->insertData();
 		$msg = $model->updateMessage();
 		$this->setRedirect('index.php?option=com_fabrik&view=lists', $msg);

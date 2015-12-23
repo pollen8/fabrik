@@ -113,7 +113,7 @@ class FabrikContentTypHelper
 			}
 			if ($key === 'params')
 			{
-				$params = json_decode($value);
+				$params = FabrikWorker::JSONtoData($value);
 				$p      = $doc->createElement('params');
 				foreach ($params as $pKey => $pValue)
 				{

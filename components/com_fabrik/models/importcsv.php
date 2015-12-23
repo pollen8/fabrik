@@ -114,7 +114,7 @@ class FabrikFEModelImportcsv extends JModelForm
 	 *
 	 * @return string csv file name
 	 */
-	protected function getCSVFileName()
+	public function getCSVFileName()
 	{
 		if (is_null($this->csvFile))
 		{
