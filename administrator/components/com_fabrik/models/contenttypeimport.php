@@ -580,37 +580,15 @@ class FabrikAdminModelContentTypeImport extends FabModelAdmin
 				$elements[] = array('plugin' => $plugin, 'label' => $name, 'name' => $name, 'primary_key' => $pk);
 			}
 
-			$xml = $this->createXMLFromArray($groupData, $elements);
+			/** @var FabrikAdminModelContentTypeExport $exporter */
+			$exporter = JModelLegacy::getInstance('ContentTypeExport', 'FabrikAdminModel',
+					array('listModel' => $this->listModel));
+			$xml = $exporter->createXMLFromArray($groupData, $elements);
 			$this->doc->loadXML($xml);
 			$fields = $this->createGroupsFromContentType();
 		}
 
 		return $fields;
-	}
-
-	/**
-	 * Create content type XML from an array of group/element data
-	 * Used in CSV import
-	 *
-	 * @param   array $groupData
-	 * @param   array $elements
-	 *
-	 * @return string
-	 */
-	private function createXMLFromArray($groupData, $elements)
-	{
-		$contentType = $this->doc->createElement('contenttype');
-		$mainTable   = $this->listModel->getTable()->get('db_table_name');
-		$tables      = FabrikContentTypHelper::iniTableXML($this->doc, $mainTable);
-		$name        = $this->doc->createElement('name', 'tmp');
-		$contentType->appendChild($name);
-		$contentType->appendChild($this->createFabrikGroupXML($groupData, $elements, $tables));
-		$contentType->appendChild($tables);
-		$contentType->appendChild($this->createViewLevelXML());
-		$contentType->appendChild($this->createGroupXML());
-		$this->doc->appendChild($contentType);
-
-		return $this->doc->saveXML();
 	}
 
 	/**

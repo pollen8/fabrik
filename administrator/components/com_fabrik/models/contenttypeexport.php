@@ -15,7 +15,6 @@ defined('_JEXEC') or die('Restricted access');
 require_once 'fabmodeladmin.php';
 
 // Tmp fix until https://issues.joomla.org/tracker/joomla-cms/7378 is merged
-require JPATH_COMPONENT_ADMINISTRATOR . '/models/databaseimporter.php';
 require JPATH_COMPONENT_ADMINISTRATOR . '/models/databaseexporter.php';
 require_once JPATH_COMPONENT_ADMINISTRATOR . '/helpers/contenttype.php';
 
@@ -487,6 +486,31 @@ class FabrikAdminModelContentTypeExport extends FabModelAdmin
 
 		// Must exit to produce valid Zip download
 		exit;
+	}
+
+	/**
+	 * Create content type XML from an array of group/element data
+	 * Used in CSV import
+	 *
+	 * @param   array $groupData
+	 * @param   array $elements
+	 *
+	 * @return string
+	 */
+	public function createXMLFromArray($groupData, $elements)
+	{
+		$contentType = $this->doc->createElement('contenttype');
+		$mainTable   = $this->listModel->getTable()->get('db_table_name');
+		$tables      = FabrikContentTypHelper::iniTableXML($this->doc, $mainTable);
+		$name        = $this->doc->createElement('name', 'tmp');
+		$contentType->appendChild($name);
+		$contentType->appendChild($this->createFabrikGroupXML($groupData, $elements, $tables));
+		$contentType->appendChild($tables);
+		$contentType->appendChild($this->createViewLevelXML());
+		$contentType->appendChild($this->createGroupXML());
+		$this->doc->appendChild($contentType);
+
+		return $this->doc->saveXML();
 	}
 
 }
