@@ -2,6 +2,7 @@
 <contenttype
 	ignoreacl="true">
 	<name>Default</name>
+	<fabrikversion>3.4</fabrikversion>
 
 	<group name="details"
 	       published="1"

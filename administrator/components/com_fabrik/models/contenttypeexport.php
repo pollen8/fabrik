@@ -220,6 +220,7 @@ class FabrikAdminModelContentTypeExport extends FabModelAdmin
 		$label = JFile::makeSafe($formModel->getForm()->get('label'));
 		$name  = $this->doc->createElement('name', $label);
 		$contentType->appendChild($name);
+		$contentType->appendChild($this->version());
 		$groups = $formModel->getGroupsHiarachy();
 
 		foreach ($groups as $groupModel)
@@ -254,6 +255,19 @@ class FabrikAdminModelContentTypeExport extends FabModelAdmin
 		}
 
 		return false;
+	}
+
+	/**
+	 * Get the current Fabrik version in a DOMElement
+	 *
+	 * @return DOMElement
+	 */
+	private function version()
+	{
+		$xml     = simplexml_load_file(JPATH_COMPONENT_ADMINISTRATOR . '/fabrik.xml');
+		$version = $this->doc->createElement('fabrikversion', (string) $xml->version);
+
+		return $version;
 	}
 
 	/**
