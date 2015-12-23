@@ -193,15 +193,15 @@ class FabrikAdminModelContentTypeImport extends FabModelAdmin
 
 				if (array_key_exists('id', $elementData))
 				{
-					$oldId       = $elementData['id'];
+					$oldId = $elementData['id'];
 					unset($elementData['id']);
 				}
 
 				$elementData['params']   = json_encode(FabrikContentTypHelper::nodeParams($element));
 				$elementData['group_id'] = $groupId;
 				$this->mapElementACL($elementData);
-				$name               = (string) $element->getAttribute('name');
-				$fields[$name]      = $this->listModel->makeElement($name, $elementData);
+				$name          = (string) $element->getAttribute('name');
+				$fields[$name] = $this->listModel->makeElement($name, $elementData);
 
 				if (!empty($oldId))
 				{
@@ -239,7 +239,7 @@ class FabrikAdminModelContentTypeImport extends FabModelAdmin
 		{
 			if (isset($origParams->$param))
 			{
-				if  (array_key_exists($origParams->$param, $map))
+				if (array_key_exists($origParams->$param, $map))
 				{
 					$origParams->$param = $map[$origParams->$param];
 				}
@@ -606,8 +606,8 @@ class FabrikAdminModelContentTypeImport extends FabModelAdmin
 
 			/** @var FabrikAdminModelContentTypeExport $exporter */
 			$exporter = JModelLegacy::getInstance('ContentTypeExport', 'FabrikAdminModel',
-					array('listModel' => $this->listModel));
-			$xml = $exporter->createXMLFromArray($groupData, $elements);
+				array('listModel' => $this->listModel));
+			$xml      = $exporter->createXMLFromArray($groupData, $elements);
 			$this->doc->loadXML($xml);
 			$fields = $this->createGroupsFromContentType();
 		}
@@ -809,8 +809,29 @@ class FabrikAdminModelContentTypeImport extends FabModelAdmin
 			}
 		}
 
+		$this->checkVersion($xpath, $layoutData);
+
 		$layout = FabrikHelperHTML::getLayout('fabrik-content-type-compare');
 
 		return $layout->render($layoutData);
+	}
+
+	private function checkVersion($xpath, &$layoutData)
+	{
+		$xml                     = simplexml_load_file(JPATH_COMPONENT_ADMINISTRATOR . '/fabrik.xml');
+		$layoutData->siteVersion = (string) $xml->version;
+
+		$contentTypeVersion = $xpath->query('/contenttype/fabrikversion');
+		$contentTypeVersion = iterator_to_array($contentTypeVersion);
+		if (empty($contentTypeVersion))
+		{
+			$layoutData->contentTypeVersion = 0;
+		}
+		else
+		{
+			$layoutData->contentTypeVersion = (string) $contentTypeVersion[0]->nodeValue;
+		}
+
+		$layoutData->versionMismatch = $layoutData->siteVersion !== $layoutData->contentTypeVersion;
 	}
 }

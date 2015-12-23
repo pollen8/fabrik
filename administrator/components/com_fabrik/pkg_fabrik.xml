@@ -2,7 +2,7 @@
 <extension type="package" version="3" method="upgrade">
 	<name>Fabrik Package</name>
 	<packagename>fabrik</packagename>
-	<version>3.53.5</version>
+	<version>3.4</version>
 	<url>http://www.fabrikar.com</url>
 	<creationDate>December 2015</creationDate>
 	<copyright>Copyright (C) 2005-2015 fabrikar.com - All rights reserved.</copyright>
