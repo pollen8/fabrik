@@ -97,7 +97,7 @@ class PlgSystemFabrik extends JPlugin
 		 *  For now leave the code in, just short circuit it.  Rip it out after making sure this doesn't have
 		 *  any unforeseen side effects.
 		 */
-		return self::buildJs();;
+		return self::buildJs();
 	}
 
 	/**
