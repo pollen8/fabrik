@@ -114,7 +114,7 @@ class FabrikWorker
 
 		if (array_key_exists('extension', $path_parts))
 		{
-			$image_extensions_eregi = 'bmp|gif|jpg|jpeg|png';
+			$image_extensions_eregi = 'bmp|gif|jpg|jpeg|png|pdf';
 
 			return preg_match('/' . $image_extensions_eregi . '/i', $path_parts['extension']) > 0;
 		}
