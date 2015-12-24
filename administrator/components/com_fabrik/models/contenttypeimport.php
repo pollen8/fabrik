@@ -14,7 +14,7 @@ defined('_JEXEC') or die('Restricted access');
 
 require_once 'fabmodeladmin.php';
 
-// Tmp fix until https://issues.joomla.org/tracker/joomla-cms/7378 is merged
+// Tmp fix until https://issues.joomla.org/tracker/joomla-cms/7378 is available (should be Joomla 3.5.0)
 require JPATH_COMPONENT_ADMINISTRATOR . '/models/databaseimporter.php';
 require_once JPATH_COMPONENT_ADMINISTRATOR . '/helpers/contenttype.php';
 
@@ -59,7 +59,7 @@ class FabrikAdminModelContentTypeImport extends FabModelAdmin
 	private $viewLevels;
 
 	/**
-	 * This site's groups
+	 * This site's user groups
 	 *
 	 * @var array
 	 */
@@ -71,6 +71,13 @@ class FabrikAdminModelContentTypeImport extends FabModelAdmin
 	 * @var array
 	 */
 	private $joinIds = array();
+
+	/**
+	 * Array of created group ids
+	 *
+	 * @var array
+	 */
+	private $groupMap = array();
 
 	/**
 	 * Array of created element ids
@@ -169,7 +176,6 @@ class FabrikAdminModelContentTypeImport extends FabModelAdmin
 		$xpath      = new DOMXpath($this->doc);
 		$groups     = $xpath->query('/contenttype/group');
 		$i          = 1;
-		$groupMap   = array();
 		$elementMap = array();
 
 		foreach ($groups as $group)
@@ -183,9 +189,9 @@ class FabrikAdminModelContentTypeImport extends FabModelAdmin
 			$isJoin   = ArrayHelper::getValue($groupData, 'is_join', false);
 			$isRepeat = isset($groupData['params']->repeat_group_button) ? $groupData['params']->repeat_group_button : false;
 
-			$groupId                    = $this->listModel->createLinkedGroup($groupData, $isJoin, $isRepeat);
-			$groupMap[$groupData['id']] = $groupId;
-			$elements                   = $xpath->query('/contenttype/group[' . $i . ']/element');
+			$groupId                          = $this->listModel->createLinkedGroup($groupData, $isJoin, $isRepeat);
+			$this->groupMap[$groupData['id']] = $groupId;
+			$elements                         = $xpath->query('/contenttype/group[' . $i . ']/element');
 
 			foreach ($elements as $element)
 			{
@@ -193,15 +199,15 @@ class FabrikAdminModelContentTypeImport extends FabModelAdmin
 
 				if (array_key_exists('id', $elementData))
 				{
-					$oldId       = $elementData['id'];
+					$oldId = $elementData['id'];
 					unset($elementData['id']);
 				}
 
 				$elementData['params']   = json_encode(FabrikContentTypHelper::nodeParams($element));
 				$elementData['group_id'] = $groupId;
 				$this->mapElementACL($elementData);
-				$name               = (string) $element->getAttribute('name');
-				$fields[$name]      = $this->listModel->makeElement($name, $elementData);
+				$name          = (string) $element->getAttribute('name');
+				$fields[$name] = $this->listModel->makeElement($name, $elementData);
 
 				if (!empty($oldId))
 				{
@@ -216,8 +222,8 @@ class FabrikAdminModelContentTypeImport extends FabModelAdmin
 		}
 
 		$this->mapElementIdParams($elementMap);
+		$this->importJoins($elementMap);
 		$this->importTables();
-		$this->importJoins($groupMap, $elementMap);
 
 		return $fields;
 	}
@@ -239,7 +245,7 @@ class FabrikAdminModelContentTypeImport extends FabModelAdmin
 		{
 			if (isset($origParams->$param))
 			{
-				if  (array_key_exists($origParams->$param, $map))
+				if (array_key_exists($origParams->$param, $map))
 				{
 					$origParams->$param = $map[$origParams->$param];
 				}
@@ -346,6 +352,15 @@ class FabrikAdminModelContentTypeImport extends FabModelAdmin
 
 		foreach ($tables as $table)
 		{
+
+			// Internally generated repeat groups tables should have their name updated to contain the new group id
+			if (preg_match('/(.*)_([0-9]*)_repeat/', $table->getAttribute('name'), $matches))
+			{
+				$oldGroupId = ArrayHelper::getValue($matches, 2);
+				$new        = $this->groupMap[$oldGroupId];
+				$table->setAttribute('name', preg_replace('/(.*)_([0-9]*)_repeat/', '$1_' . $new . '_repeat', $table->getAttribute('name')));
+			}
+
 			$xmlDoc     = new DOMDocument;
 			$database   = $xmlDoc->createElement('database');
 			$root       = $xmlDoc->createElement('root');
@@ -371,12 +386,11 @@ class FabrikAdminModelContentTypeImport extends FabModelAdmin
 	 * For group joins, the list id is not available. The join is thus finalised in
 	 * finaliseImport()
 	 *
-	 * @param   array $groupMap   array(oldGroupId => newGroupId)
 	 * @param   array $elementMap array(oldElementId => newElementId)
 	 *
 	 * @return  void
 	 */
-	private function importJoins($groupMap, $elementMap)
+	private function importJoins($elementMap)
 	{
 		$xpath    = new DOMXpath($this->doc);
 		$joins    = $xpath->query('/contenttype/group[join]/join');
@@ -384,11 +398,20 @@ class FabrikAdminModelContentTypeImport extends FabModelAdmin
 
 		foreach ($joins as $join)
 		{
-			$newGroupId = $groupMap[(string) $join->getAttribute('group_id')];
+			$newGroupId = $this->groupMap[(string) $join->getAttribute('group_id')];
 			$join->setAttribute('group_id', $newGroupId);
-			$joinData           = FabrikContentTypHelper::omNodeAttributesToArray($join);
+			$joinData           = FabrikContentTypHelper::domNodeAttributesToArray($join);
 			$joinData['params'] = json_encode(FabrikContentTypHelper::nodeParams($join));
 			unset($joinData['list_id']);
+
+			// Internally generated repeat groups should have their join table name updated
+			if (preg_match('/(.*)_([0-9]*)_repeat/', $joinData['table_join'], $matches))
+			{
+				$oldGroupId             = ArrayHelper::getValue($matches, 2);
+				$new                    = $this->groupMap[$oldGroupId];
+				$joinData['table_join'] = preg_replace('/(.*)_([0-9]*)_repeat/', '$1_' . $new . '_repeat', $joinData['table_join']);
+			}
+
 			$joinTable = FabTable::getInstance('Join', 'FabrikTable');
 			$joinTable->save($joinData);
 			$this->joinIds[] = $joinTable->get('id');
@@ -398,7 +421,7 @@ class FabrikAdminModelContentTypeImport extends FabModelAdmin
 		{
 			$oldElementId = (string) $join->getAttribute('element_id');
 			$newId        = $elementMap[$oldElementId];
-			$newGroupId   = $groupMap[(string) $join->getAttribute('group_id')];
+			$newGroupId   = $this->groupMap[(string) $join->getAttribute('group_id')];
 			$join->setAttribute('group_id', $newGroupId);
 			$join->setAttribute('element_id', $newId);
 			$joinData           = FabrikContentTypHelper::domNodeAttributesToArray($join);
@@ -431,7 +454,7 @@ class FabrikAdminModelContentTypeImport extends FabModelAdmin
 	 *
 	 * @return  void
 	 */
-	public function finaliseImport($row)
+	public function finalise($row)
 	{
 		$source      = $this->getSourceTableName();
 		$targetTable = $row->get('db_table_name');
@@ -462,9 +485,6 @@ class FabrikAdminModelContentTypeImport extends FabModelAdmin
 			}
 
 			$joinTable->store();
-			echo "<pre>";
-			print_r($joinTable);
-
 		}
 
 		// Update element params with source => target table name conversion
@@ -551,12 +571,21 @@ class FabrikAdminModelContentTypeImport extends FabModelAdmin
 
 			foreach ($elements as $element)
 			{
-				$elementData            = FabrikContentTypHelper::domNodeAttributesToArray($element);
-				$elementData['params']  = FabrikContentTypHelper::nodeParams($element);
-				$elementModel           = clone($pluginManager->getPlugIn($elementData['plugin'], 'element'));
-				$elementModel->element  = $elementModel->getDefaultProperties($elementData);
-				$elementModel->editable = true;
-				$elementModels[]        = $elementModel;
+				$elementData                  = FabrikContentTypHelper::domNodeAttributesToArray($element);
+				$elementData['params']        = FabrikContentTypHelper::nodeParams($element);
+				$elementModel                 = clone($pluginManager->loadPlugIn($elementData['plugin'], 'element'));
+				$elementModel->element        = $elementModel->getDefaultProperties($elementData);
+				$elementModel->element->name  = $elementData['name'];
+				$elementModel->element->label = $elementData['label'];
+
+				if ($elementModel->element->hidden)
+				{
+					$elementModel->element->hidden = false;
+					$elementModel->getparams()->set('containerclass', 'faux-shown');
+				}
+
+				$elementModel->editable       = true;
+				$elementModels[]              = $elementModel;
 			}
 
 			$groupModel->elements = $elementModels;
@@ -575,7 +604,7 @@ class FabrikAdminModelContentTypeImport extends FabModelAdmin
 	 *
 	 * @return array
 	 */
-	public function getDefaultInsertFields($contentType = null, $groupData = array())
+	public function import($contentType = null, $groupData = array())
 	{
 		$input = $this->app->input;
 
@@ -587,6 +616,7 @@ class FabrikAdminModelContentTypeImport extends FabModelAdmin
 		else
 		{
 			// Could be importing from a CSV in which case default fields are set.
+			// TODO refactor this $input get into class constructor
 			$fields     = $input->get('defaultfields', array('id' => 'internalid', 'date_time' => 'date'), 'array');
 			$primaryKey = array_keys($input->get('key', array(), 'array'));
 			$primaryKey = array_pop($primaryKey);
@@ -606,8 +636,8 @@ class FabrikAdminModelContentTypeImport extends FabModelAdmin
 
 			/** @var FabrikAdminModelContentTypeExport $exporter */
 			$exporter = JModelLegacy::getInstance('ContentTypeExport', 'FabrikAdminModel',
-					array('listModel' => $this->listModel));
-			$xml = $exporter->createXMLFromArray($groupData, $elements);
+				array('listModel' => $this->listModel));
+			$xml      = $exporter->createXMLFromArray($groupData, $elements);
 			$this->doc->loadXML($xml);
 			$fields = $this->createGroupsFromContentType();
 		}
@@ -809,8 +839,30 @@ class FabrikAdminModelContentTypeImport extends FabModelAdmin
 			}
 		}
 
+		$this->checkVersion($xpath, $layoutData);
+
 		$layout = FabrikHelperHTML::getLayout('fabrik-content-type-compare');
 
 		return $layout->render($layoutData);
+	}
+
+	/**
+	 * Check the Fabrik version against the content type version
+	 *
+	 * @param   DOMXpath $xpath
+	 * @param   object   $layoutData
+	 *
+	 * @return void
+	 */
+	private function checkVersion($xpath, &$layoutData)
+	{
+		$xml                     = simplexml_load_file(JPATH_COMPONENT_ADMINISTRATOR . '/fabrik.xml');
+		$layoutData->siteVersion = (string) $xml->version;
+
+		$contentTypeVersion             = $xpath->query('/contenttype/fabrikversion');
+		$contentTypeVersion             = iterator_to_array($contentTypeVersion);
+		$layoutData->contentTypeVersion = empty($contentTypeVersion) ? 0 : (string) $contentTypeVersion[0]->nodeValue;
+
+		$layoutData->versionMismatch = $layoutData->siteVersion !== $layoutData->contentTypeVersion;
 	}
 }

@@ -227,7 +227,7 @@ class FabrikAdminModelForm extends FabModelAdmin
 			$item->set('params', $listModel->getDefaultParams());
 			$item->store();
 
-			$this->contentTypeModel->finaliseImport($item);
+			$this->contentTypeModel->finalise($item);
 		}
 		else
 		{
@@ -248,14 +248,14 @@ class FabrikAdminModelForm extends FabModelAdmin
 	 */
 	private function getInsertFields($isNew, $data, $listModel)
 	{
-		$db               = FabrikWorker::getDbo(true);
-		$fields           = array('id' => 'internalid', 'date_time' => 'date');
-		$createGroup      = $data['_createGroup'];
-		$recordInDatabase = $data['record_in_database'];
-		$jForm            = $this->app->input->get('jform', array(), 'array');
+		$db                     = FabrikWorker::getDbo(true);
+		$fields                 = array('id' => 'internalid', 'date_time' => 'date');
+		$createGroup            = $data['_createGroup'];
+		$recordInDatabase       = $data['record_in_database'];
+		$jForm                  = $this->app->input->get('jform', array(), 'array');
 		$this->contentTypeModel = JModelLegacy::getInstance('ContentTypeImport', 'FabrikAdminModel', array('listModel' => $listModel));
-		$groups           = FArrayHelper::getValue($data, 'current_groups');
-		$contentType      = ArrayHelper::getValue($jForm, 'contenttype');
+		$groups                 = FArrayHelper::getValue($data, 'current_groups');
+		$contentType            = ArrayHelper::getValue($jForm, 'contenttype');
 
 		if ($createGroup)
 		{
@@ -289,7 +289,7 @@ class FabrikAdminModelForm extends FabModelAdmin
 
 		if ($createGroup)
 		{
-			$fields = $this->contentTypeModel->getDefaultInsertFields($contentType);
+			$fields = $this->contentTypeModel->import($contentType);
 		}
 
 		return $fields;

@@ -716,7 +716,7 @@ class FabrikAdminModelList extends FabModelAdmin
 			if ($newTable == '')
 			{
 				// Create fabrik group
-				$input->set('_createGroup', 1, 'post');
+				$input->set('_createGroup', 1);
 				$groupId = $this->createLinkedGroup($groupData, false);
 
 				// New fabrik list but existing db table
@@ -730,7 +730,7 @@ class FabrikAdminModelList extends FabModelAdmin
 				$dbOpts            = array();
 				$params            = new Registry($row->get('params'));
 				$dbOpts['COLLATE'] = $params->get('collation', '');
-				$fields            = $contentTypeModel->getDefaultInsertFields($contentType, $groupData);
+				$fields            = $contentTypeModel->import($contentType, $groupData);
 				$res               = $this->createDBTable($newTable, $fields, $dbOpts);
 
 				if (is_array($res))
@@ -787,7 +787,7 @@ class FabrikAdminModelList extends FabModelAdmin
 
 		if ($id == 0)
 		{
-			$contentTypeModel->finaliseImport($row);
+			$contentTypeModel->finalise($row);
 		}
 
 		return true;
@@ -845,7 +845,7 @@ class FabrikAdminModelList extends FabModelAdmin
 				}
 			}
 		}
-		if ($row->group_by !== '' && array_key_exists($row->get('group_by'), $map))
+		if ($row->get('group_by') !== '' && array_key_exists($row->get('group_by'), $map))
 		{
 			$feListModel->addIndex($row->get('group_by'), 'groupby', 'INDEX', $map[$row->get('group_by')]);
 		}
@@ -896,7 +896,7 @@ class FabrikAdminModelList extends FabModelAdmin
 	 *
 	 * @param   FabrikFEModelList $feModel       Front end list model
 	 * @param   string            $origCollation Original collection name
-	 * @param   string            $row           New collation
+	 * @param   JTable            $row           New collation
 	 *
 	 * @since   3.0.7
 	 *
@@ -905,12 +905,12 @@ class FabrikAdminModelList extends FabModelAdmin
 	protected function collation($feModel, $origCollation, $row)
 	{
 		// Don't attempt to alter new table, or a view, or if we shouldn't alter the table
-		if ($row->id == 0 || $feModel->isView() || !$feModel->canAlterFields())
+		if ($row->get('id') == 0 || $feModel->isView() || !$feModel->canAlterFields())
 		{
-			return;
+			return false;
 		}
 
-		$params       = new Registry($row->params);
+		$params       = new Registry($row->get('params'));
 		$newCollation = $params->get('collation');
 
 		if ($newCollation !== $origCollation)
@@ -927,7 +927,7 @@ class FabrikAdminModelList extends FabModelAdmin
 	/**
 	 * Check to see if a table exists
 	 *
-	 * @param   string $tableName name of table (ovewrites form_id val to test)
+	 * @param   string $tableName name of table (overwrites form_id val to test)
 	 *
 	 * @return  bool    false if no table found true if table found
 	 */
@@ -1108,15 +1108,12 @@ class FabrikAdminModelList extends FabModelAdmin
 	 */
 	protected function makeNewJoin($tableKey, $joinTableKey, $joinType, $joinTable, $joinTableFrom, $isRepeat)
 	{
-		$input              = $this->app->input;
-		$formModel          = $this->getFormModel();
 		$groupData          = FabrikWorker::formDefaults('group');
 		$groupData['name']  = $this->getTable()->label . '- [' . $joinTable . ']';
 		$groupData['label'] = $joinTable;
 		$groupId            = $this->createLinkedGroup($groupData, true, $isRepeat);
 
-		$origTable = FArrayHelper::getValue($input->get('jform', array(), 'array'), 'db_table_name');
-		$join      = $this->getTable('Join');
+		$join = $this->getTable('Join');
 		$join->set('id', null);
 		$join->set('list_id', $this->getState('list.id'));
 		$join->set('join_from_table', $joinTableFrom);
@@ -1192,6 +1189,7 @@ class FabrikAdminModelList extends FabModelAdmin
 		if ($id)
 		{
 			// A fabrik table already exists - so we can copy the formatting of its elements
+			/** @var FabrikFEModelList $groupListModel */
 			$groupListModel = JModelLegacy::getInstance('list', 'FabrikFEModel');
 			$groupListModel->setId($id);
 			$groupListModel->getTable();
@@ -2259,7 +2257,7 @@ class FabrikAdminModelList extends FabModelAdmin
 			// Replace all non alphanumeric characters with _
 			$objName = FabrikString::dbFieldName($element->name);
 
-			if ($element->primary_key)
+			if ($element->get('primary_key') || $element->get('plugin') === 'internalid')
 			{
 				$keys[] = $objName;
 			}
