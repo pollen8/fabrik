@@ -2257,7 +2257,7 @@ class FabrikAdminModelList extends FabModelAdmin
 			// Replace all non alphanumeric characters with _
 			$objName = FabrikString::dbFieldName($element->name);
 
-			if ($element->primary_key)
+			if ($element->get('primary_key') || $element->get('plugin') === 'internalid')
 			{
 				$keys[] = $objName;
 			}
