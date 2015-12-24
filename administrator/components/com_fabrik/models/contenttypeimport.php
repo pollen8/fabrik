@@ -177,12 +177,14 @@ class FabrikAdminModelContentTypeImport extends FabModelAdmin
 		$groups     = $xpath->query('/contenttype/group');
 		$i          = 1;
 		$elementMap = array();
+		$w          = new FabrikWorker;
+		$jForm      = $this->app->input->get('jform', array(), 'array');
 
 		foreach ($groups as $group)
 		{
-			$groupData = array();
-			$groupData = FabrikContentTypHelper::domNodeAttributesToArray($group, $groupData);
-
+			$groupData           = array();
+			$groupData           = FabrikContentTypHelper::domNodeAttributesToArray($group, $groupData);
+			$groupData           = $w->parseMessageForPlaceHolder($groupData, $jForm);
 			$groupData['params'] = FabrikContentTypHelper::nodeParams($group);
 			$this->mapGroupACL($groupData);
 
@@ -584,8 +586,8 @@ class FabrikAdminModelContentTypeImport extends FabModelAdmin
 					$elementModel->getparams()->set('containerclass', 'faux-shown');
 				}
 
-				$elementModel->editable       = true;
-				$elementModels[]              = $elementModel;
+				$elementModel->editable = true;
+				$elementModels[]        = $elementModel;
 			}
 
 			$groupModel->elements = $elementModels;
