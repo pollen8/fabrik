@@ -70,6 +70,7 @@ else:
 			$viewRules            = ArrayHelper::getValue($viewLevel, 'rules', '');
 			$contentTypeViewRules = ArrayHelper::getValue($contentTypeViewLevel, 'rules', 'N/A');
 			$matched              = $viewRules === $contentTypeViewRules;
+			$aclId                = ArrayHelper::getValue($contentTypeViewLevel . 'id', '');
 			if (!$matched) :
 				?>
 				<tr>
@@ -80,7 +81,7 @@ else:
 						<?php echo ArrayHelper::getValue($contentTypeViewLevel, 'rules_labels', 'N/A'); ?>
 					</td>
 					<td>
-						<?php echo JHtml::_('access.level', 'aclMap[' . $contentTypeViewLevel['id'] . ']', '', '', array()); ?>
+						<?php echo JHtml::_('access.level', 'aclMap[' . $aclId . ']', '', '', array()); ?>
 					</td>
 				</tr>
 				<?php
