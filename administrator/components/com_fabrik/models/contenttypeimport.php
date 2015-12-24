@@ -162,9 +162,11 @@ class FabrikAdminModelContentTypeImport extends FabModelAdmin
 	/**
 	 * Create Fabrik groups & elements from loaded content type
 	 *
+	 * @param string $dbTableName New main table name
+	 *
 	 * @return array  Created Group Ids
 	 */
-	public function createGroupsFromContentType()
+	public function createGroupsFromContentType($dbTableName)
 	{
 		if (!$this->doc)
 		{
@@ -224,8 +226,8 @@ class FabrikAdminModelContentTypeImport extends FabModelAdmin
 		}
 
 		$this->mapElementIdParams($elementMap);
-		$this->importJoins($elementMap);
-		$this->importTables();
+		$this->importJoins($elementMap, $dbTableName);
+		$this->importTables($dbTableName);
 
 		return $fields;
 	}
@@ -341,8 +343,12 @@ class FabrikAdminModelContentTypeImport extends FabModelAdmin
 	/**
 	 * Import any database table's defined in the XML's files '/contenttype/database/table_structure section
 	 * These are table's needed for database join element's to work.
+	 *
+	 * @param string $dbTableName New db table name
+	 *
+	 * @return void
 	 */
-	private function importTables()
+	private function importTables($dbTableName)
 	{
 		$xpath  = new DOMXpath($this->doc);
 		$tables = $xpath->query('/contenttype/database/table_structure');
@@ -354,13 +360,19 @@ class FabrikAdminModelContentTypeImport extends FabModelAdmin
 
 		foreach ($tables as $table)
 		{
-
 			// Internally generated repeat groups tables should have their name updated to contain the new group id
 			if (preg_match('/(.*)_([0-9]*)_repeat/', $table->getAttribute('name'), $matches))
 			{
+				if ($matches[1] === $this->getSourceTableName())
+				{
+					$matches[1] = $dbTableName;
+				}
+
 				$oldGroupId = ArrayHelper::getValue($matches, 2);
 				$new        = $this->groupMap[$oldGroupId];
-				$table->setAttribute('name', preg_replace('/(.*)_([0-9]*)_repeat/', '$1_' . $new . '_repeat', $table->getAttribute('name')));
+				$newName    = preg_replace('/(.*)_([0-9]*)_repeat/', $matches[1] . '_' . $new . '_repeat', $table->getAttribute('name'));
+				$table->setAttribute('name', $newName);
+
 			}
 
 			$xmlDoc     = new DOMDocument;
@@ -378,7 +390,6 @@ class FabrikAdminModelContentTypeImport extends FabModelAdmin
 			{
 				echo "error: " . $e->getMessage();
 			}
-
 		}
 	}
 
@@ -389,10 +400,11 @@ class FabrikAdminModelContentTypeImport extends FabModelAdmin
 	 * finaliseImport()
 	 *
 	 * @param   array $elementMap array(oldElementId => newElementId)
+	 * @param string  $dbTableName
 	 *
 	 * @return  void
 	 */
-	private function importJoins($elementMap)
+	private function importJoins($elementMap, $dbTableName)
 	{
 		$xpath    = new DOMXpath($this->doc);
 		$joins    = $xpath->query('/contenttype/group[join]/join');
@@ -409,9 +421,14 @@ class FabrikAdminModelContentTypeImport extends FabModelAdmin
 			// Internally generated repeat groups should have their join table name updated
 			if (preg_match('/(.*)_([0-9]*)_repeat/', $joinData['table_join'], $matches))
 			{
+				if ($matches[1] === $this->getSourceTableName())
+				{
+					$matches[1] = $dbTableName;
+				}
+
 				$oldGroupId             = ArrayHelper::getValue($matches, 2);
 				$new                    = $this->groupMap[$oldGroupId];
-				$joinData['table_join'] = preg_replace('/(.*)_([0-9]*)_repeat/', '$1_' . $new . '_repeat', $joinData['table_join']);
+				$joinData['table_join'] = preg_replace('/(.*)_([0-9]*)_repeat/', $matches[1] . '_' . $new . '_repeat', $joinData['table_join']);
 			}
 
 			$joinTable = FabTable::getInstance('Join', 'FabrikTable');
@@ -602,18 +619,19 @@ class FabrikAdminModelContentTypeImport extends FabModelAdmin
 	 * Get default insert fields - either from content type or defaultfields input value
 	 *
 	 * @param string|null $contentType
+	 * @param string      $dbTableName
 	 * @param array       $groupData Group info
 	 *
 	 * @return array
 	 */
-	public function import($contentType = null, $groupData = array())
+	public function import($contentType = null, $dbTableName, $groupData = array())
 	{
 		$input = $this->app->input;
 
 		if (!empty($contentType))
 		{
 			$fields = $this->loadContentType($contentType)
-				->createGroupsFromContentType();
+				->createGroupsFromContentType($dbTableName);
 		}
 		else
 		{
@@ -641,7 +659,7 @@ class FabrikAdminModelContentTypeImport extends FabModelAdmin
 				array('listModel' => $this->listModel));
 			$xml      = $exporter->createXMLFromArray($groupData, $elements);
 			$this->doc->loadXML($xml);
-			$fields = $this->createGroupsFromContentType();
+			$fields = $this->createGroupsFromContentType($dbTableName);
 		}
 
 		return $fields;
