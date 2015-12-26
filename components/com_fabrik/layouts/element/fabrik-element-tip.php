@@ -5,7 +5,7 @@ $d = $displayData;
 
 if ($d->tipTitle !== '') {
 ?>
-	<span class="fabrikTip" title="<?php echo $d->tipTitle; ?>" opts="<?php echo json_encode($d->tipOpts);?>"><?php echo $d->tipText; ?></span>
+	<span class="fabrikTip" title="<?php echo $d->tipTitle; ?>" opts='<?php echo json_encode($d->tipOpts);?>'><?php echo $d->tipText; ?></span>
 <?php
 }
 else {
