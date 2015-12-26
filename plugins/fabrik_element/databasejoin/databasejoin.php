@@ -289,7 +289,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 			{
 				$val = $this->parseThisTable($params->get($this->concatLabelParam), $join);
 				$w = new FabrikWorker;
-				$val = $w->parseMessageForPlaceHolder($val, array(), false);
+				$val = $w->parseMessageForPlaceHolder($val, array(), false, false, null, false);
 				$this->joinLabelCols[(int) $useStep] = 'CONCAT_WS(\'\', ' . $val . ')';
 
 				return 'CONCAT_WS(\'\', ' . $val . ')';

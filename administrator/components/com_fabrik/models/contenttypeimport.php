@@ -162,9 +162,11 @@ class FabrikAdminModelContentTypeImport extends FabModelAdmin
 	/**
 	 * Create Fabrik groups & elements from loaded content type
 	 *
+	 * @param string $dbTableName New main table name
+	 *
 	 * @return array  Created Group Ids
 	 */
-	public function createGroupsFromContentType()
+	public function createGroupsFromContentType($dbTableName)
 	{
 		if (!$this->doc)
 		{
@@ -177,12 +179,14 @@ class FabrikAdminModelContentTypeImport extends FabModelAdmin
 		$groups     = $xpath->query('/contenttype/group');
 		$i          = 1;
 		$elementMap = array();
+		$w          = new FabrikWorker;
+		$jForm      = $this->app->input->get('jform', array(), 'array');
 
 		foreach ($groups as $group)
 		{
-			$groupData = array();
-			$groupData = FabrikContentTypHelper::domNodeAttributesToArray($group, $groupData);
-
+			$groupData           = array();
+			$groupData           = FabrikContentTypHelper::domNodeAttributesToArray($group, $groupData);
+			$groupData           = $w->parseMessageForPlaceHolder($groupData, $jForm);
 			$groupData['params'] = FabrikContentTypHelper::nodeParams($group);
 			$this->mapGroupACL($groupData);
 
@@ -222,8 +226,8 @@ class FabrikAdminModelContentTypeImport extends FabModelAdmin
 		}
 
 		$this->mapElementIdParams($elementMap);
-		$this->importJoins($elementMap);
-		$this->importTables();
+		$this->importJoins($elementMap, $dbTableName);
+		$this->importTables($dbTableName);
 
 		return $fields;
 	}
@@ -339,8 +343,12 @@ class FabrikAdminModelContentTypeImport extends FabModelAdmin
 	/**
 	 * Import any database table's defined in the XML's files '/contenttype/database/table_structure section
 	 * These are table's needed for database join element's to work.
+	 *
+	 * @param string $dbTableName New db table name
+	 *
+	 * @return void
 	 */
-	private function importTables()
+	private function importTables($dbTableName)
 	{
 		$xpath  = new DOMXpath($this->doc);
 		$tables = $xpath->query('/contenttype/database/table_structure');
@@ -352,13 +360,19 @@ class FabrikAdminModelContentTypeImport extends FabModelAdmin
 
 		foreach ($tables as $table)
 		{
-
 			// Internally generated repeat groups tables should have their name updated to contain the new group id
 			if (preg_match('/(.*)_([0-9]*)_repeat/', $table->getAttribute('name'), $matches))
 			{
+				if ($matches[1] === $this->getSourceTableName())
+				{
+					$matches[1] = $dbTableName;
+				}
+
 				$oldGroupId = ArrayHelper::getValue($matches, 2);
 				$new        = $this->groupMap[$oldGroupId];
-				$table->setAttribute('name', preg_replace('/(.*)_([0-9]*)_repeat/', '$1_' . $new . '_repeat', $table->getAttribute('name')));
+				$newName    = preg_replace('/(.*)_([0-9]*)_repeat/', $matches[1] . '_' . $new . '_repeat', $table->getAttribute('name'));
+				$table->setAttribute('name', $newName);
+
 			}
 
 			$xmlDoc     = new DOMDocument;
@@ -376,7 +390,6 @@ class FabrikAdminModelContentTypeImport extends FabModelAdmin
 			{
 				echo "error: " . $e->getMessage();
 			}
-
 		}
 	}
 
@@ -387,10 +400,11 @@ class FabrikAdminModelContentTypeImport extends FabModelAdmin
 	 * finaliseImport()
 	 *
 	 * @param   array $elementMap array(oldElementId => newElementId)
+	 * @param string  $dbTableName
 	 *
 	 * @return  void
 	 */
-	private function importJoins($elementMap)
+	private function importJoins($elementMap, $dbTableName)
 	{
 		$xpath    = new DOMXpath($this->doc);
 		$joins    = $xpath->query('/contenttype/group[join]/join');
@@ -407,9 +421,14 @@ class FabrikAdminModelContentTypeImport extends FabModelAdmin
 			// Internally generated repeat groups should have their join table name updated
 			if (preg_match('/(.*)_([0-9]*)_repeat/', $joinData['table_join'], $matches))
 			{
+				if ($matches[1] === $this->getSourceTableName())
+				{
+					$matches[1] = $dbTableName;
+				}
+
 				$oldGroupId             = ArrayHelper::getValue($matches, 2);
 				$new                    = $this->groupMap[$oldGroupId];
-				$joinData['table_join'] = preg_replace('/(.*)_([0-9]*)_repeat/', '$1_' . $new . '_repeat', $joinData['table_join']);
+				$joinData['table_join'] = preg_replace('/(.*)_([0-9]*)_repeat/', $matches[1] . '_' . $new . '_repeat', $joinData['table_join']);
 			}
 
 			$joinTable = FabTable::getInstance('Join', 'FabrikTable');
@@ -485,124 +504,134 @@ class FabrikAdminModelContentTypeImport extends FabModelAdmin
 			}
 
 			$joinTable->store();
-	}
+		}
 
-	// Update element params with source => target table name conversion
-foreach ($this->elementIds as $elementId)
-{
-	/** @var FabrikTableElement $element */
-$element = FabTable::getInstance('Element', 'FabrikTable');
-$element->load($elementId);
-$elementParams = new Registry($element->params);
-
-if ($elementParams->get('join_db_name') === $source)
-{
-$elementParams->set('join_db_name', $targetTable);
-$element->set('params', $elementParams->toString());
-$element->store();
-}
-}
-}
-
-/**
- * Add a filesystem path where content type XML files should be searched for.
- * You may either pass a string or an array of paths.
- *
- * @param   mixed $path A filesystem path or array of filesystem paths to add.
- *
- * @return  array  An array of filesystem paths to find Content type XML files.
- */
-public static function addContentTypeIncludePath($path = null)
-{
-	// If the internal paths have not been initialised, do so with the base table path.
-	if (empty(self::$_contentTypeIncludePaths))
-	{
-		self::$_contentTypeIncludePaths = JPATH_COMPONENT_ADMINISTRATOR . '/models/content_types';
-	}
-
-	// Convert the passed path(s) to add to an array.
-	settype($path, 'array');
-
-	// If we have new paths to add, do so.
-	if (!empty($path))
-	{
-		// Check and add each individual new path.
-		foreach ($path as $dir)
+		// Update element params with source => target table name conversion
+		foreach ($this->elementIds as $elementId)
 		{
-			// Sanitize path.
-			$dir = trim($dir);
+			/** @var FabrikTableElement $element */
+			$element = FabTable::getInstance('Element', 'FabrikTable');
+			$element->load($elementId);
+			$elementParams = new Registry($element->params);
 
-			// Add to the front of the list so that custom paths are searched first.
-			if (!in_array($dir, self::$_contentTypeIncludePaths))
+			if ($elementParams->get('join_db_name') === $source)
 			{
-				array_unshift(self::$_contentTypeIncludePaths, $dir);
+				$elementParams->set('join_db_name', $targetTable);
+				$element->set('params', $elementParams->toString());
+				$element->store();
 			}
 		}
 	}
 
-	return self::$_contentTypeIncludePaths;
-}
-
-/**
- * Prepare the group and element models for form view preview
- *
- * @return array
- */
-public function preview()
-{
-	$pluginManager = FabrikWorker::getPluginManager();
-	$xpath         = new DOMXpath($this->doc);
-	$groups        = $xpath->query('/contenttype/group');
-	$return        = array();
-	$i             = 1;
-
-	foreach ($groups as $group)
+	/**
+	 * Add a filesystem path where content type XML files should be searched for.
+	 * You may either pass a string or an array of paths.
+	 *
+	 * @param   mixed $path A filesystem path or array of filesystem paths to add.
+	 *
+	 * @return  array  An array of filesystem paths to find Content type XML files.
+	 */
+	public static function addContentTypeIncludePath($path = null)
 	{
-		$groupData           = array();
-		$groupData           = FabrikContentTypHelper::domNodeAttributesToArray($group, $groupData);
-		$groupData['params'] = FabrikContentTypHelper::nodeParams($group);
-		$groupModel          = JModelLegacy::getInstance('Group', 'FabrikFEModel');
-		$groupTable          = FabTable::getInstance('Group', 'FabrikTable');
-		$groupTable->bind($groupData);
-		$groupModel->setGroup($groupTable);
-
-		$elements      = $xpath->query('/contenttype/group[' . $i . ']/element');
-		$elementModels = array();
-
-		foreach ($elements as $element)
+		// If the internal paths have not been initialised, do so with the base table path.
+		if (empty(self::$_contentTypeIncludePaths))
 		{
-			$elementData            = FabrikContentTypHelper::domNodeAttributesToArray($element);
-			$elementData['params']  = FabrikContentTypHelper::nodeParams($element);
-			$elementModel           = clone($pluginManager->getPlugIn($elementData['plugin'], 'element'));
-			$elementModel->element  = $elementModel->getDefaultProperties($elementData);
-			$elementModel->editable = true;
-			$elementModels[]        = $elementModel;
+			self::$_contentTypeIncludePaths = JPATH_COMPONENT_ADMINISTRATOR . '/models/content_types';
 		}
 
-		$groupModel->elements = $elementModels;
-		$return[]             = $groupModel;
-		$i++;
+		// Convert the passed path(s) to add to an array.
+		settype($path, 'array');
+
+		// If we have new paths to add, do so.
+		if (!empty($path))
+		{
+			// Check and add each individual new path.
+			foreach ($path as $dir)
+			{
+				// Sanitize path.
+				$dir = trim($dir);
+
+				// Add to the front of the list so that custom paths are searched first.
+				if (!in_array($dir, self::$_contentTypeIncludePaths))
+				{
+					array_unshift(self::$_contentTypeIncludePaths, $dir);
+				}
+			}
+		}
+
+		return self::$_contentTypeIncludePaths;
 	}
 
-	return $return;
-}
+	/**
+	 * Prepare the group and element models for form view preview
+	 *
+	 * @return array
+	 */
+	public function preview()
+	{
+		$pluginManager = FabrikWorker::getPluginManager();
+		$xpath         = new DOMXpath($this->doc);
+		$groups        = $xpath->query('/contenttype/group');
+		$return        = array();
+		$i             = 1;
 
-/**
- * Get default insert fields - either from content type or defaultfields input value
- *
- * @param string|null $contentType
- * @param array       $groupData Group info
- *
- * @return array
- */
-public function import($contentType = null, $groupData = array())
-{
+		foreach ($groups as $group)
+		{
+			$groupData           = array();
+			$groupData           = FabrikContentTypHelper::domNodeAttributesToArray($group, $groupData);
+			$groupData['params'] = FabrikContentTypHelper::nodeParams($group);
+			$groupModel          = JModelLegacy::getInstance('Group', 'FabrikFEModel');
+			$groupTable          = FabTable::getInstance('Group', 'FabrikTable');
+			$groupTable->bind($groupData);
+			$groupModel->setGroup($groupTable);
+
+			$elements      = $xpath->query('/contenttype/group[' . $i . ']/element');
+			$elementModels = array();
+
+			foreach ($elements as $element)
+			{
+				$elementData                  = FabrikContentTypHelper::domNodeAttributesToArray($element);
+				$elementData['params']        = FabrikContentTypHelper::nodeParams($element);
+				$elementModel                 = clone($pluginManager->loadPlugIn($elementData['plugin'], 'element'));
+				$elementModel->element        = $elementModel->getDefaultProperties($elementData);
+				$elementModel->element->name  = $elementData['name'];
+				$elementModel->element->label = $elementData['label'];
+
+				if ($elementModel->element->hidden)
+				{
+					$elementModel->element->hidden = false;
+					$elementModel->getparams()->set('containerclass', 'faux-shown');
+				}
+
+				$elementModel->editable = true;
+				$elementModels[]        = $elementModel;
+			}
+
+			$groupModel->elements = $elementModels;
+			$return[]             = $groupModel;
+			$i++;
+		}
+
+		return $return;
+	}
+
+	/**
+	 * Get default insert fields - either from content type or defaultfields input value
+	 *
+	 * @param string|null $contentType
+	 * @param string      $dbTableName
+	 * @param array       $groupData Group info
+	 *
+	 * @return array
+	 */
+	public function import($contentType = null, $dbTableName, $groupData = array())
+	{
 		$input = $this->app->input;
 
 		if (!empty($contentType))
 		{
 			$fields = $this->loadContentType($contentType)
-				->createGroupsFromContentType();
+				->createGroupsFromContentType($dbTableName);
 		}
 		else
 		{
@@ -630,7 +659,7 @@ public function import($contentType = null, $groupData = array())
 				array('listModel' => $this->listModel));
 			$xml      = $exporter->createXMLFromArray($groupData, $elements);
 			$this->doc->loadXML($xml);
-			$fields = $this->createGroupsFromContentType();
+			$fields = $this->createGroupsFromContentType($dbTableName);
 		}
 
 		return $fields;

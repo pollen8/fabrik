@@ -150,7 +150,7 @@ class PlgFabrik_Cronimportcsv extends PlgFabrik_Cron
 			}
 			else
 			{
-				$table = &$listModel->getTable();
+				$table = $listModel->getTable();
 				$listId = $table->id;
 			}
 

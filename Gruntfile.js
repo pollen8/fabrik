@@ -250,7 +250,7 @@ var uploadPHPDocs = function (grunt) {
 };
 
 var changelog = function (latest) {
-    var result = shell.exec("git log --pretty=format:\"* %s (%an)\" " + latest + "..HEAD");
+    var result = shell.exec("git log --pretty=format:\"* %s (%an)\" 3.3.3..HEAD");
     fs.writeFileSync('fabrik_build/changelog.txt', result.stdout);
 };
 

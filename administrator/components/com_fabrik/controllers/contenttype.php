@@ -42,6 +42,7 @@ class FabrikAdminControllerContentType extends FabControllerForm
 		$view = $this->getView('Form', $viewType, '');
 		$view->setLayout($viewLayout);
 
+		/** @var FabrikFEModelForm  $formModel */
 		$formModel = JModelLegacy::getInstance('Form', 'FabrikFEModel');
 		$formModel->groups = $model->loadContentType($contentType)->preview();
 		$view->setModel($formModel, true);

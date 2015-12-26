@@ -730,7 +730,7 @@ class FabrikAdminModelList extends FabModelAdmin
 				$dbOpts            = array();
 				$params            = new Registry($row->get('params'));
 				$dbOpts['COLLATE'] = $params->get('collation', '');
-				$fields            = $contentTypeModel->import($contentType, $groupData);
+				$fields            = $contentTypeModel->import($contentType, $row->get('db_table_name'), $groupData);
 				$res               = $this->createDBTable($newTable, $fields, $dbOpts);
 
 				if (is_array($res))
@@ -2257,7 +2257,7 @@ class FabrikAdminModelList extends FabModelAdmin
 			// Replace all non alphanumeric characters with _
 			$objName = FabrikString::dbFieldName($element->name);
 
-			if ($element->primary_key)
+			if ($element->get('primary_key') || $element->get('plugin') === 'internalid')
 			{
 				$keys[] = $objName;
 			}
