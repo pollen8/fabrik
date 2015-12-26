@@ -70,6 +70,7 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 		$opts->displayType = $params->get('cdd_display_type', 'dropdown');
 		$opts->id = $this->getId();
 		$opts->listName = $this->getListModel()->getTable()->db_table_name;
+		$opts->lang           = FabrikWorker::getMultiLangURLCode();
 
 		// This bizarre chunk of code handles the case of setting a CDD value on the QS on a new form
 		$rowId = $input->get('rowid', '', 'string');
@@ -1084,6 +1085,7 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 			$opts->advanced = $this->getAdvancedSelectClass();
 			$opts->noselectionvalue = $params->get('cascadingdropdown_noselectionvalue', '');
 			$opts->filterobj = 'Fabrik.filter_' . $container;
+			$opts->lang           = FabrikWorker::getMultiLangURLCode();
 			$opts = json_encode($opts);
 
 			return "Fabrik.filter_{$container}.addFilter('$element->plugin', new CascadeFilter('$observerId', $opts));\n";
