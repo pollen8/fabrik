@@ -623,7 +623,11 @@ class PlgFabrik_Element extends FabrikPlugin
 						 * any HTML entities which may be in the data.  So use a negative lookahead regex, which finds & followed
 						 * by anything except non-space the ;.  Then after doing the loadXML, we have to turn the &amp;s back in
 						 * to &, to avoid double encoding 'cos we're going to do an htmpsepecialchars() on $data in a few lines.
+						 *
+						 * It also chokes if the data already contains any HTML entities which XML doesn't like, like &eacute;,
+						 * so first we need to do an html_entity_decode() to get rid of those!
 						 */
+						$data = html_entity_decode($data);
 						$data = preg_replace('/&(?!\S+;)/', '&amp;', $data);
 						$html->loadXML($data);
 						$data = str_replace('&amp;', '&', $data);
