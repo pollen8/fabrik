@@ -843,6 +843,7 @@ EOD;
 			if ($version->RELEASE > 2.5)
 			{
 				JHtml::_('bootstrap.framework');
+				self::loadBootstrapCSS();
 			}
 
 			// Require js test - list with no cal loading ajax form with cal
@@ -1145,6 +1146,21 @@ EOD;
 	public static function mootools()
 	{
 		self::framework();
+	}
+
+	/**
+	 * Load J!'s bootstrap CSS if requested.  Special case for iframes in non J! pages loading us.
+	 *
+	 * @return  void
+	 */
+	public static function loadBootstrapCSS()
+	{
+		$app = JFactory::getApplication();
+		if ($app->input->get('loadbootstrapcss', '') !== '')
+		{
+			$doc = JFactory::getDocument();
+			JHtmlBootstrap::loadCss(true, $doc->direction);
+		}
 	}
 
 	/**
