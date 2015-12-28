@@ -175,6 +175,13 @@ class FabrikViewFullcalendar extends JViewLegacy
 			array(JPATH_PLUGINS."/fabrik_visualization/fullcalendar/layouts/")
 		);
 
+		FabrikHelperHTML::jLayoutJs(
+			'fabrik-visualization-fullcalendar-viewevent',
+			'fabrik-visualization-fullcalendar-viewevent',
+			(object) array(),
+			array(JPATH_PLUGINS."/fabrik_visualization/fullcalendar/layouts/")
+		);
+
 		$ref = $model->getJSRenderContext();
 
 		$js = array();
@@ -193,6 +200,9 @@ class FabrikViewFullcalendar extends JViewLegacy
 
 		FabrikHelperHTML::iniRequireJs($model->getShim());
 		FabrikHelperHTML::script($srcs, $js);
+
+		// Add our css
+		FabrikHelperHTML::stylesheetFromPath('plugins/fabrik_visualization/fullcalendar/fullcalendar.css');
 
 		$viewName = $this->getName();
 		$this->params = $model->getParams();
