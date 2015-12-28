@@ -434,7 +434,7 @@ class PlgFabrik_ElementRating extends PlgFabrik_Element
 	 */
 	private function getCookieName($listId, $rowId)
 	{
-		$cookieName = "rating-table_{$listId}_row_{$rowId}" . $_SERVER['REMOTE_ADDR'];
+		$cookieName = "rating-table_{$listId}_row_{$rowId}" . FabrikString::filteredIp();
 		jimport('joomla.utilities.utility');
 
 		return JApplication::getHash($cookieName);

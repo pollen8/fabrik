@@ -251,7 +251,7 @@ class FabrikHelperHTML
 		$input  = $app->input;
 		$script = '';
 
-		// Don't include in an Request.JSON call - for autofill form plugin
+		// Don't include in an Request.JSON call - for auto-fill form plugin
 		$headers = self::parseRequestHeaders();
 
 		if (FArrayHelper::getValue($headers, 'X-Request') === 'JSON')
@@ -1101,6 +1101,7 @@ EOD;
 		$config[]   = "\twaitSeconds: 30,";
 		$config[]   = "});";
 		$config[]   = "\n";
+
 
 		// Store in session - included in fabrik system plugin
 		$session->set('fabrik.js.shim', $newShim);
@@ -2380,7 +2381,7 @@ $inputDataAttributes = array())
 	 */
 	public static function tagBaseUrl($fullName, $rootUrl = null)
 	{
-		$url  = $_SERVER['REQUEST_URI'];
+		$url  = filter_var(ArrayHelper::getValue($_SERVER, 'REQUEST_URI', 'index.php'), FILTER_SANITIZE_URL);
 		$bits = explode('?', $url);
 		$root = isset($rootUrl) ? $rootUrl : FArrayHelper::getValue($bits, 0, '', 'string');
 		$bits = FArrayHelper::getValue($bits, 1, '', 'string');

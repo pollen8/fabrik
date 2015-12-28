@@ -1073,4 +1073,14 @@ class FText extends JText
 		return parent::_($string, $jsSafe, $interpretBackSlashes, $script);
 	}
 
+	/**
+	 * Get a validated server remote address (I.P.). If not valid return ''
+	 *
+	 * @return string
+	 */
+	public static function filteredIp()
+	{
+		return filter_var($_SERVER['REMOTE_ADDR'], FILTER_VALIDATE_IP) !== false ? $_SERVER['REMOTE_ADDR'] : '';
+	}
+
 }

@@ -1841,14 +1841,15 @@ class FabrikWorker
 		jimport('joomla.environment.browser');
 		$uri = JUri::getInstance();
 
+		$url = filter_var(ArrayHelper::getValue($_SERVER, 'HTTP_REFERER'), FILTER_SANITIZE_URL);
+
 		if ($uri->getScheme() === 'https')
 		{
-			$goBackAction = 'onclick="parent.location=\'' . FArrayHelper::getValue($_SERVER, 'HTTP_REFERER') . '\'"';
+			$goBackAction = 'onclick="parent.location=\'' . $url . '\'"';
 		}
 		else
 		{
-			//$goBackAction = 'onclick=\'history.back();\'';
-			$goBackAction = 'onclick="parent.location=\'' . FArrayHelper::getValue($_SERVER, 'HTTP_REFERER') . '\'"';
+			$goBackAction = 'onclick="parent.location=\'' . $url . '\'"';
 		}
 
 		return $goBackAction;
