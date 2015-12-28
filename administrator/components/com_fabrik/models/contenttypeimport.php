@@ -145,6 +145,7 @@ class FabrikAdminModelContentTypeImport extends FabModelAdmin
 		{
 			throw new UnexpectedValueException('no content type supplied');
 		}
+
 		$paths = self::addContentTypeIncludePath();
 		$path  = JPath::find($paths, $name);
 
@@ -722,6 +723,11 @@ class FabrikAdminModelContentTypeImport extends FabModelAdmin
 		return $this->viewLevels;
 	}
 
+	/**
+	 * Get ACL Groups
+	 *
+	 * @return array
+	 */
 	private function getGroups()
 	{
 		if (isset($this->groups))
@@ -799,10 +805,12 @@ class FabrikAdminModelContentTypeImport extends FabModelAdmin
 		{
 			$viewLevel = FabrikContentTypHelper::domNodeAttributesToArray($importViewLevel);
 			$rules     = json_decode($viewLevel['rules']);
+
 			foreach ($rules as &$rule)
 			{
 				$rule = array_key_exists($rule, $contentTypeGroups) ? $contentTypeGroups[$rule]['title'] : $rule;
 			}
+
 			$viewLevel['rules_labels'] = implode(', ', $rules);
 			$contentTypeViewLevels[]   = $viewLevel;
 		}
@@ -860,7 +868,6 @@ class FabrikAdminModelContentTypeImport extends FabModelAdmin
 		}
 
 		$this->checkVersion($xpath, $layoutData);
-
 		$layout = FabrikHelperHTML::getLayout('fabrik-content-type-compare');
 
 		return $layout->render($layoutData);
