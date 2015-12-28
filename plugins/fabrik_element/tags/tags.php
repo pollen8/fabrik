@@ -60,7 +60,8 @@ class PlgFabrik_ElementTags extends PlgFabrik_ElementDatabasejoin
 		$opts = $this->getElementJSOptions($repeatCounter);
 		$opts->rowid = $this->getFormModel()->getRowId();
 		$opts->id = $this->id;
-
+		$opts->listid = $this->getListModel()->getId();
+		
 		return array('FbTags', $id, $opts);
 	}
 
@@ -120,7 +121,6 @@ class PlgFabrik_ElementTags extends PlgFabrik_ElementDatabasejoin
 			$baseUrl = $this->tagUrl();
 			$icon = $this->tagIcon();
 			$data = FabrikHelperHTML::tagify($d, $baseUrl, $name, $icon);
-
 			return implode("\n", $data);
 		}
 	}
@@ -328,6 +328,28 @@ class PlgFabrik_ElementTags extends PlgFabrik_ElementDatabasejoin
 		->join('LEFT', $this->getDbName() . ' AS t ON t.id = ' . $db->qn($join->table_join_alias . '.' . $join->table_key));
 
 		return $query;
+	}
+
+	/**
+	 * Get all available tags by querying them directly from currently defined or default tagtable. 
+	 * Used by views/list/view.tags.php (prefiltering and jsonifying) and finally by 
+	 * tags.js to populate the autocompleted tags selection menu 
+	 *
+	 * @tagtable: returned in function getDbName() (default #__tags)
+	 *
+	 * @return  $query->opts ($n->value, $n->text)
+	 */
+	public function allTagsJSON()
+	{
+		$db = $this->getDb();
+		$query = $db->getQuery(true);
+		$query->select($db->qn('id') . ' AS value, ' . $db->qn('title') . ' AS text')
+		->from($db->qn($this->getDbName()))
+		->where($db->qn('parent_id') . ' > 0');
+		$db->setQuery($query);
+		$query->opts = $db->loadObjectList();
+
+		return $query->opts;
 	}
 
 	/**
