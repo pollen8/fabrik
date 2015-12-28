@@ -133,9 +133,8 @@ var fabrikFullcalendar = new Class({
 			defaultTimedEventDuration: this.options.minDuration,
 			minTime: this.options.open, // a start time (10am in this example)
 			maxTime : this.options.close, // an end time (6pm in this example)
-
 	        eventClick: function (calEvent, jsEvent, view) {
-	        	self.viewEntry(calEvent);
+	        	self.clickEntry(calEvent);
 	        	return false;
 	        },
 			dayClick: dayClickCallback,
@@ -144,22 +143,59 @@ var fabrikFullcalendar = new Class({
 					jQuery("td.fc-sat").css('background',"#f2f2f2");
 					jQuery("td.fc-sun").css('background',"#f2f2f2");
 				}
+			},
+			eventRender: function (event, element) {
+			    element.find('.fc-title').html(event.title);
+			},
+			loading: function(start) {
+				if (!start){
+					jQuery('.fc-view-container').delegate('.popover button.jclose', 'click', function() {
+						var popover = jQuery(this).data('popover');
+						jQuery('#'+popover).popover('hide');
+					});
+				}
 			}
-
 		};
 		/* Now merge any calendar overrides/additions from the visualixation */
 		jQuery.extend(true, calOptions, JSON.parse(self.options.calOptions));
 	    jQuery('#calendar').fullCalendar(calOptions);
 		
+		document.addEvent('click:relay(button[data-task=viewCalEvent], a[data-task=viewCalEvent])', function (event, target) {
+			event.preventDefault();
+			var id = event.target.findClassUp('calEventButtons').id;
+			id = id.replace(/_buttons/, '');
+			var calEvent = jQuery('#calendar').fullCalendar('clientEvents', id)[0];
+			jQuery('#' + id).popover('hide');
+			this.viewEntry(calEvent);
+		}.bind(this));
+		
+		document.addEvent('click:relay(button[data-task=viewCalEvent], a[data-task=viewCalEvent])', function (event, target) {
+			event.preventDefault();
+			var id = event.target.findClassUp('calEventButtons').id;
+			id = id.replace(/_buttons/, '');
+			var calEvent = jQuery('#calendar').fullCalendar('clientEvents', id)[0];
+			jQuery('#' + id).popover('hide');
+			this.viewEntry(calEvent);
+		}.bind(this));
 	},
 	
 	processEvents: function (json, callback) {
 		json = $H(JSON.decode(json));
 		var events = [];
 		json.each(function (e) {
+			var id = e._listid + "_" + e.id;
+			var buttons = jQuery(Fabrik.jLayouts['fabrik-visualization-fullcalendar-viewbuttons'])[0];
+			jQuery(buttons)[0].id = "fabrikevent_buttons_" + id;
+			var popup = jQuery(Fabrik.jLayouts['fabrik-visualization-fullcalendar-event-popup'])[0];
+			popup.id = "fabrikevent_" + id;
+			jQuery(popup).attr('data-content', jQuery(buttons).prop('outerHTML'));
+			jQuery(popup).attr('data-title', '<button class="jclose" data-popover="' + popup.id + '">&times;</button>');
+			jQuery(popup).append(e.label);
+			
 			events.push(
 				{
-					title: e.label,
+					id: popup.id,
+					title: jQuery(popup).prop('outerHTML'),
 					start: e.startdate_locale,
 					end: e.enddate_locale,
 					url: e.link,
@@ -169,6 +205,7 @@ var fabrikFullcalendar = new Class({
 				}
 			)
 		}.bind(events));
+
 		callback(events);
 	},
 	
@@ -233,6 +270,11 @@ var fabrikFullcalendar = new Class({
 		o.listid = calEvent.listid;
 		o.nextView = 'details';
 		this.addEvForm(o);
+	},
+	
+	clickEntry: function (calEvent) {
+		var popoverId = 'fabrikevent_' + calEvent.listid + '_' + calEvent.rowid;
+		jQuery('#' + popoverId).popover('show');
 	},
 	
 	/**
