@@ -169,27 +169,66 @@ var fabrikFullcalendar = new Class({
 			this.viewEntry(calEvent);
 		}.bind(this));
 		
-		document.addEvent('click:relay(button[data-task=viewCalEvent], a[data-task=viewCalEvent])', function (event, target) {
+		document.addEvent('click:relay(button[data-task=editCalEvent], a[data-task=editCalEvent])', function (event, target) {
 			event.preventDefault();
 			var id = event.target.findClassUp('calEventButtons').id;
 			id = id.replace(/_buttons/, '');
 			var calEvent = jQuery('#calendar').fullCalendar('clientEvents', id)[0];
 			jQuery('#' + id).popover('hide');
-			this.viewEntry(calEvent);
+			this.editEntry(calEvent);
 		}.bind(this));
+		
+		document.addEvent('click:relay(button[data-task=deleteCalEvent], a[data-task=deleteCalEvent])', function (event, target) {
+			event.preventDefault();
+			var id = event.target.findClassUp('calEventButtons').id;
+			id = id.replace(/_buttons/, '');
+			var calEvent = jQuery('#calendar').fullCalendar('clientEvents', id)[0];
+			jQuery('#' + id).popover('hide');
+			this.deleteEntry(calEvent);
+		}.bind(this));
+		
+		jQuery(document).on('click', '.popover .jclose', function (event, target) {
+			event.preventDefault();
+			var id = jQuery(event.target).attr("data-popover");
+			jQuery('#' + id).popover('hide');
+		}.bind(this));
+
 	},
 	
 	processEvents: function (json, callback) {
 		json = $H(JSON.decode(json));
 		var events = [];
 		json.each(function (e) {
+			var popup = jQuery(Fabrik.jLayouts['fabrik-visualization-fullcalendar-event-popup'])[0];
 			var id = e._listid + "_" + e.id;
+			popup.id = "fabrikevent_" + id;
+			
+			var body = jQuery(Fabrik.jLayouts['fabrik-visualization-fullcalendar-viewevent'])[0];
+			var mStartDate = moment.utc(e.startdate_locale); 
+			var mEndDate = moment.utc(e.enddate_locale);
+			var dispStartDate = dispEndDate = "";
+			if (moment(mEndDate.format("YYYY-MM-DD")) > moment(mStartDate.format("YYYY-MM-DD"))) {
+				dispStartDate = mStartDate.format("MMM DD") + " ";
+				dispEndDate = mEndDate.format("MMM DD") + " ";
+			}
+			body.getElement("#viewstart").innerHTML = dispStartDate + mStartDate.format("hh.mm A");
+			body.getElement("#viewend").innerHTML = dispEndDate + mEndDate.format("hh.mm A");
+
 			var buttons = jQuery(Fabrik.jLayouts['fabrik-visualization-fullcalendar-viewbuttons'])[0];
 			jQuery(buttons)[0].id = "fabrikevent_buttons_" + id;
-			var popup = jQuery(Fabrik.jLayouts['fabrik-visualization-fullcalendar-event-popup'])[0];
-			popup.id = "fabrikevent_" + id;
-			jQuery(popup).attr('data-content', jQuery(buttons).prop('outerHTML'));
-			jQuery(popup).attr('data-title', '<button class="jclose" data-popover="' + popup.id + '">&times;</button>');
+			// Hide the buttons the user cannot see
+			if ( e._canDelete === false )
+				buttons.getElement(".popupDelete").destroy();
+			if ( e._canEdit === false )
+				buttons.getElement(".popupEdit").destroy();
+			if ( e._canView === false )
+				buttons.getElement(".popupView").destroy();
+			jQuery(popup).attr('data-content', jQuery(body).prop('outerHTML')+jQuery(buttons).prop('outerHTML'));
+			
+			var width = (dispStartDate == "" ? "auto" : "200px");
+			jQuery(popup).attr('data-title',  
+			'<div style="width:' + width + '"><div style="float:left;"><button class="jclose" data-popover="' + popup.id + '">&times;</button></div>'
+					+ '<div style="text-align:center;">' + e.label + '</div></div>');
 			jQuery(popup).append(e.label);
 			
 			events.push(
