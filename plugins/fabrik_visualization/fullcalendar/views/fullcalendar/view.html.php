@@ -85,7 +85,7 @@ class FabrikViewFullcalendar extends JViewLegacy
 		. '&controller=visualization.fullcalendar&view=visualization&task=deleteEvent&format=raw&Itemid=' . $Itemid . '&id=' . $id;
 		$urls->add = 'index.php?option=com_' . $package . '&view=visualization&format=raw&Itemid=' . $Itemid . '&id=' . $id;
 		$user = JFactory::getUser();
-		
+
 		$tpl = $j3 ? 'bootstrap' : 'default';
 		$tpl = $params->get('fullcalendar_layout', $j3);
 		$options = new stdClass;
@@ -112,14 +112,14 @@ class FabrikViewFullcalendar extends JViewLegacy
 		$options->Itemid = $Itemid;
 		$options->show_day = (bool) $params->get('show_day', true);
 		$options->show_week = (bool) $params->get('show_week', true);
-		$options->default_view = $params->get('fullcalendar_default_view', 'month'); 
-		$options->add_type = $params->get('add_type', 'both'); 
-		$options->time_format = $params->get('time_format', 'H(:mm)'); 
+		$options->default_view = $params->get('fullcalendar_default_view', 'month');
+		$options->add_type = $params->get('add_type', 'both');
+		$options->time_format = $params->get('time_format', 'H(:mm)');
 		$options->first_week_day = (int) $params->get('first_week_day', 0);
 		$options->minDuration = $params->get('minimum_duration', "00:30:00");
 		$options->open =  $params->get('open-hour', "00:00:00");
 		$options->close =  $params->get('close-hour', "24:00:00");
-		
+
 		$options->showweekends = (bool) $params->get('calendar-show-weekends', true);
 		$options->readonly = (bool) $params->get('calendar-read-only', false);
 		$options->timeFormat = $params->get('time_format', '%X');
@@ -161,6 +161,20 @@ class FabrikViewFullcalendar extends JViewLegacy
 		JText::script('PLG_VISUALIZATION_FULLCALENDAR_DATE_ADD_TOO_LATE');
 		JText::script('PLG_VISUALIZATION_FULLCALENDAR_DATE_ADD_TOO_EARLY');
 
+		FabrikHelperHTML::jLayoutJs(
+			'fabrik-visualization-fullcalendar-viewbuttons',
+			'fabrik-visualization-fullcalendar-viewbuttons',
+			(object) array(),
+			array(JPATH_PLUGINS."/fabrik_visualization/fullcalendar/layouts/")
+		);
+
+		FabrikHelperHTML::jLayoutJs(
+			'fabrik-visualization-fullcalendar-event-popup',
+			'fabrik-visualization-fullcalendar-event-popup',
+			(object) array(),
+			array(JPATH_PLUGINS."/fabrik_visualization/fullcalendar/layouts/")
+		);
+
 		$ref = $model->getJSRenderContext();
 
 		$js = array();
@@ -173,7 +187,7 @@ class FabrikViewFullcalendar extends JViewLegacy
 
 		$srcs = FabrikHelperHTML::framework();
 		FabrikHelperHTML::styleSheet('plugins/fabrik_visualization/fullcalendar/libs/fullcalendar/fullcalendar.css');
-		
+
 		$srcs[] = 'media/com_fabrik/js/listfilter.js';
 		$srcs[] = 'plugins/fabrik_visualization/fullcalendar/fullcalendar.js';
 
@@ -195,7 +209,7 @@ class FabrikViewFullcalendar extends JViewLegacy
 		$document->addScript($lib . 'lib/moment.min.js');
 //		$document->addScript('//cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.6/moment.js');
 		$document->addScript($lib . 'fullcalendar.js');
-		
+
 		return parent::display();
 	}
 
