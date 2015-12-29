@@ -16,14 +16,14 @@
 		<folder>forms</folder>
 		<folder>language</folder>
 	</files>
-	
+
 	<config>
 		<fields name="params">
 			<fieldset label="PLG_FABRIK_OPTIONS" name="params">
-			
+
 				<field name="icon" type="text" default="star" description="PLG_FABRIK_VALIDATION_ICON_DESC" label="PLG_FABRIK_VALIDATION_ICON_LABEL"/>
 			</fieldset>
 		</fields>
 	</config>
-	
+
 </extension>

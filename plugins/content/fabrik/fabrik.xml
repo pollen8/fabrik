@@ -13,7 +13,7 @@
 		<filename plugin="fabrik">fabrik.php</filename>
 		<folder>language</folder>
 	</files>
-	
+
 	<config>
 		<fields name="params">
 			<fieldset label="PLG_FABRIK_OPTIONS" name="params">

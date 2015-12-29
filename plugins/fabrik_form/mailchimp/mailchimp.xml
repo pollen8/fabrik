@@ -10,7 +10,7 @@
 	<version>3.4</version>
 	<help url="PLG_FORM_MAILCHIMP_HELP_SERVER"/>
 	<description>PLG_FORM_MAILCHIMP_DESCRIPTION</description>
-	
+
 	<files>
 		<filename plugin="mailchimp">mailchimp.php</filename>
 		<folder>examples</folder>

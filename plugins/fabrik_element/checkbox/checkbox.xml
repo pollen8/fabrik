@@ -19,7 +19,7 @@
 		<folder>language</folder>
 		<folder>layouts</folder>
 	</files>
-	
+
 	<config>
 		<fields name="params">
 			<fieldset label="PLG_ELEMENT_FABRIK_OPTIONS" name="params">

@@ -10,7 +10,7 @@
 	<version>3.4</version>
 	<help url="PLG_FORM_NOTIFICATION_HELP_SERVER"/>
 	<description>PLG_FORM_NOTIFICATION_DESCRIPTION</description>
-	
+
 	<install>
 		<sql>
 			<file charset="utf8" driver="mysql">sql/install.mysql.uft8.sql</file>
@@ -23,7 +23,7 @@
 			<file charset="utf8" driver="mysqli">sql/uninstall.mysql.uft8.sql</file>
 		</sql>
 	</uninstall>
-	
+
 	<files>
 		<filename plugin="notification">notification.php</filename>
 		<filename>index.html</filename>

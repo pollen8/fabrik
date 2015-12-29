@@ -19,12 +19,12 @@
 	<config>
 		<fields name="params">
 			<fieldset addfieldpath="/administrator/components/com_fabrik/models/fields" name="advanced">
-			
+
 				<field name="layout" type="list" default="menu" label="JFIELD_ALT_LAYOUT_LABEL" description="JFIELD_ALT_MODULE_LAYOUT_DESC">
 				<option value="menu">menu</option>
-				<option value="default">default</option>					
+				<option value="default">default</option>
 				</field>
-			
+
 			</fieldset>
 		</fields>
 	</config>
