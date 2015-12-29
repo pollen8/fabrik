@@ -10,7 +10,7 @@
 	<version>3.4</version>
 	<help url="PLG_FORM_PHP_HELP_SERVER"/>
 	<description>PLG_FORM_PHP_DESCRIPTION</description>
-	
+
 	<files>
 		<filename plugin="php">php.php</filename>
 		<filename>index.html</filename>

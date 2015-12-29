@@ -16,16 +16,16 @@
 	<config>
 		<fields name="params">
 			<fieldset name="basic">
-				
+
 				<field name="search_limit" type="text" default="50" description="Number of Search items to return" label="Search Limit" size="5"/>
-					
+
 				<field name="search_section_heading" default="Fabrik/record" type="text" description="Appears in search results, under the title." label="Section heading" size="15"/>
-					
+
 				<field name="include_list_title" type="radio" class="btn-group" default="1" label="Include list title in heading">
 						<option value="0">JNO</option>
 						<option value="1">JYES</option>
 				</field>
-				
+
 			</fieldset>
 		</fields>
 	</config>

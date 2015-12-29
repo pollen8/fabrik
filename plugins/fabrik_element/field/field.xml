@@ -10,7 +10,7 @@
 	<version>3.4</version>
 	<help url="PLG_ELEMENT_FIELD_HELP_SERVER"/>
 	<description>PLG_ELEMENT_FIELD_DESCRIPTION</description>
-	
+
 	<files>
 		<filename plugin="field">field.php</filename>
 		<filename>field.js</filename>
@@ -20,5 +20,5 @@
 		<folder>language</folder>
 		<folder>layouts</folder>
 	</files>
-	
+
 </extension>

@@ -20,7 +20,7 @@
 		<folder>sql</folder>
 		<folder>views</folder>
 	</files>
-	
+
 	<install>
 		<sql>
 			<file charset="utf8" driver="mysql">sql/install.mysql.uft8.sql</file>
