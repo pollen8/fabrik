@@ -336,10 +336,12 @@ class PlgFabrik_ElementRating extends PlgFabrik_Element
 
 		$rowId = $this->getFormModel()->getRowId();
 
+		/*
 		if (empty($rowId))
 		{
 			return FText::_('PLG_ELEMENT_RATING_NO_RATING_TILL_CREATED');
 		}
+		*/
 
 		$css = $this->canRate($rowId) ? 'cursor:pointer;' : '';
 		$value = $this->getValue($data, $repeatCounter);
@@ -386,20 +388,21 @@ class PlgFabrik_ElementRating extends PlgFabrik_Element
 	 */
 	public function storeDatabaseFormat($val, $data)
 	{
-		$input = $this->app->input;
 		$params = $this->getParams();
-		$listId = $input->getInt('listid');
-		$formId = $input->getInt('formid');
-		$rowId = $input->get('rowid', '', 'string');
-
-		if (empty($listId))
-		{
-			$formModel = $this->getFormModel();
-			$listId = $formModel->getListModel()->getId();
-		}
 
 		if ($params->get('rating-mode') == 'user-rating')
 		{
+			$input = $this->app->input;
+			$listId = $input->getInt('listid');
+			$formId = $input->getInt('formid');
+			$rowId = $input->get('rowid', '', 'string');
+
+			if (empty($listId))
+			{
+				$formModel = $this->getFormModel();
+				$listId = $formModel->getListModel()->getId();
+			}
+
 			list($val, $total) = $this->getRatingAverage($val, $listId, $formId, $rowId);
 		}
 
@@ -426,6 +429,7 @@ class PlgFabrik_ElementRating extends PlgFabrik_Element
 
 		$this->doRating($listId, $formId, $rowId, $rating);
 
+		/*
 		if ($params->get('rating-mode') == 'creator-rating')
 		{
 			// @todo FIX for joins as well
@@ -439,6 +443,8 @@ class PlgFabrik_ElementRating extends PlgFabrik_Element
 			$db->setQuery($query);
 			$db->execute();
 		}
+		*/
+
 
 		$this->getRatingAverage('', $listId, $formId, $rowId);
 		echo $this->avg;
@@ -590,6 +596,7 @@ class PlgFabrik_ElementRating extends PlgFabrik_Element
 		$opts->formid = $formId;
 		$opts->canRate = (bool) $this->canRate();
 		$opts->mode = $params->get('rating-mode');
+		$opts->doAjax = $params->get('rating-mode') != 'creator-rating';
 		$opts->view = $input->get('view');
 		$opts->rating = $value;
 		$opts->listid = $listId;
@@ -624,6 +631,7 @@ class PlgFabrik_ElementRating extends PlgFabrik_Element
 		}
 
 		$opts->canRate = $params->get('rating-mode') == 'creator-rating' ? true : $this->canRate();
+		$opts->doAjax = $params->get('rating-mode') != 'creator-rating';
 		$opts->ajaxloader = FabrikHelperHTML::image("ajax-loader.gif", 'list', @$this->tmpl, array(), true);
 		$opts->listRef = $listModel->getRenderContext();
 		$opts->formid = $listModel->getFormModel()->getId();
