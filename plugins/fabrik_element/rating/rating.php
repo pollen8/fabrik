@@ -199,8 +199,18 @@ class PlgFabrik_ElementRating extends PlgFabrik_Element
 
 			$query = $db->getQuery(true);
 			$query->select('row_id, AVG(rating) AS r, COUNT(rating) AS total')->from(' #__{package}_ratings')
-				->where(array('rating <> -1', 'listid = ' . (int) $listId, 'formid = ' . (int) $formId, 'element_id = ' . (int) $elementId))
-				->where('row_id IN (' . implode(',', $ids) . ')')->group('row_id');
+				->where(array('rating <> -1', 'listid = ' . (int) $listId, 'formid = ' . (int) $formId, 'element_id = ' . (int) $elementId));
+
+			if (FArrayHelper::emptyIsh($ids))
+			{
+				$query->where('6 = -6');
+			}
+			else
+			{
+				$query->where('row_id IN (' . implode(',', $ids) . ')');
+			}
+
+			$query->group('row_id');
 
 			// Do this  query so that list view only needs one query to load up all ratings
 			$db->setQuery($query);
@@ -241,8 +251,18 @@ class PlgFabrik_ElementRating extends PlgFabrik_Element
 			$elementId = $this->getElement()->id;
 			$query = $db->getQuery(true);
 			$query->select('row_id, user_id')->from('#__{package}_ratings')
-				->where(array('rating <> -1', 'listid = ' . (int) $listId, 'formid = ' . (int) $formId, 'element_id = ' . (int) $elementId))
-				->where('row_id IN (' . implode(',', $ids) . ')')->group('row_id');
+				->where(array('rating <> -1', 'listid = ' . (int) $listId, 'formid = ' . (int) $formId, 'element_id = ' . (int) $elementId));
+
+			if (FArrayHelper::emptyIsh($ids))
+			{
+				$query->where('6 = -6');
+			}
+			else
+			{
+				$query->where('row_id IN (' . implode(',', $ids) . ')');
+			}
+
+			$query->group('row_id');
 
 			// Do this  query so that table view only needs one query to load up all ratings
 			$db->setQuery($query);
