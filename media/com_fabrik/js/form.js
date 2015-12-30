@@ -162,8 +162,8 @@ var FbForm = new Class({
 	watchPdfButton: function () {
 		document.getElements('*[data-role="open-form-pdf"]').addEvent('click', function (e) {
 			e.stop();
-			// Build URL as we could have changed the rowid via ajax pagination
-			var url = 'index.php?option=com_' + Fabrik.package + '&view=details&formid=' + this.id + '&rowid=' + this.options.rowid + '&format=pdf';
+			// Build URL as we could have changed the rowid via ajax pagination.
+			var url = e.event.currentTarget.href.replace(/(rowid=\d*)/, 'rowid=' + this.options.rowid);
 			if (this.options.lang !== false)
 			{
 				url += '&lang=' + this.options.lang;
