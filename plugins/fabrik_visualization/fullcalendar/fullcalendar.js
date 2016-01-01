@@ -337,7 +337,6 @@ var fabrikFullcalendar = new Class({
 	deleteEntry: function (calEvent) {
 		if (confirm(Joomla.JText._('PLG_VISUALIZATION_FULLCALENDAR_CONF_DELETE'))) {
 			this.ajax.deleteEvent.options.data = {'id': calEvent.rowid, 'listid': calEvent.listid};
-			console.log(this.ajax.deleteEvent);
 			this.ajax.deleteEvent.send();
 		}
 	},
