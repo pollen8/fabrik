@@ -217,15 +217,21 @@ var fabrikFullcalendar = new Class({
 			popup.id = "fabrikevent_" + id;
 
 			var body = jQuery(Fabrik.jLayouts['fabrik-visualization-fullcalendar-viewevent'])[0];
-			var mStartDate = moment.utc(e.startdate_locale); 
-			var mEndDate = moment.utc(e.enddate_locale);
+			var mStartDate = moment(e.startdate_locale); 
+			var mEndDate = moment(e.enddate_locale);
 			var dispStartDate = dispEndDate = "";
-			if (moment(mEndDate.format("YYYY-MM-DD")) > moment(mStartDate.format("YYYY-MM-DD"))) {
+			if (moment(mEndDate.format("YYYY-MM-DD")) > moment(mStartDate.format("YYYY-MM-DD"))
+				|| (e.startShowTime === false && e.endShowTime === false) ) {
 				dispStartDate = mStartDate.format("MMM DD") + " ";
 				dispEndDate = mEndDate.format("MMM DD") + " ";
 			}
-			body.getElement("#viewstart").innerHTML = dispStartDate + mStartDate.format("hh.mm A");
-			body.getElement("#viewend").innerHTML = dispEndDate + mEndDate.format("hh.mm A");
+			var dispStartTime = dispEndTime = "";
+			if (e.startShowTime === true && e.endShowTime === true) {
+				dispStartTime = mStartDate.format("hh.mm A");
+				dispEndTime = mEndDate.format("hh.mm A");
+			}
+			body.getElement("#viewstart").innerHTML = dispStartDate + dispStartTime;
+			body.getElement("#viewend").innerHTML = dispEndDate + dispEndTime;
 
 			var buttons = jQuery(Fabrik.jLayouts['fabrik-visualization-fullcalendar-viewbuttons'])[0];
 			jQuery(buttons)[0].id = "fabrikevent_buttons_" + id;

@@ -57,7 +57,7 @@ class FabrikControllerVisualizationfullcalendar extends FabrikControllerVisualiz
 
 	public function deleteEvent()
 	{
-		$model = $this->getModel('calendar');
+		$model = $this->getModel('fullcalendar');
 		$model->deleteEvent();
 		$this->getEvents();
 	}
