@@ -106,6 +106,7 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 
 		// Was otherwise using the none-raw value.
 		$opts->value = $this->getValue($data, $repeatCounter, array('raw' => true));
+		$opts->optsPerRow = (int) $params->get('dbjoin_options_per_row', 1);
 
 		if (is_array($opts->value) && count($opts->value) > 0)
 		{

@@ -209,6 +209,7 @@ var FbCascadingdropdown = new Class({
 			/* falls through */
 		case 'checkbox':
 			this.getContainer().getElements('*[data-role="suboption"]').destroy();
+			this.getContainer().getElements('*[data-role="fabrik-rowopts"]').destroy();
 			break;
 		case 'dropdown':
 			/* falls through */

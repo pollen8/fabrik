@@ -1760,6 +1760,8 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		$html[] = '<div class="fabrikSubElementContainer" id="' . $id . '">';
 		$singleLayout = 'fabrik-element-' . $this->getPluginName() . '-form-checkbox';
 		FabrikHelperHTML::jLayoutJs($singleLayout, $singleLayout, $displayData, array($this->layoutBasePath()));
+		$rowOptsLayout = 'fabrik-element-' . $this->getPluginName() . '-form-rowopts';
+		FabrikHelperHTML::jLayoutJs($rowOptsLayout, $rowOptsLayout, $displayData, array($this->layoutBasePath()));
 
 		if (FabrikWorker::j3())
 		{
