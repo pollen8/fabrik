@@ -8,6 +8,9 @@
 var fabrikFullcalendar = new Class({
 	Implements: [Options],
 	options: {
+		url: {
+			'del': 'index.php?option=com_fabrik&controller=visualization.fullcalendar&view=visualization&task=deleteEvent&format=raw'
+		},
 	},
 
 	initialize: function (ref, options) {
@@ -15,6 +18,7 @@ var fabrikFullcalendar = new Class({
 		this.setOptions(options);
 		this.date = new Date();
 		this.clickdate = null;
+		this.ajax = {};
 		
 		this.windowopts = {
 				'id': 'addeventwin',
@@ -193,6 +197,15 @@ var fabrikFullcalendar = new Class({
 			jQuery('#' + id).popover('hide');
 		}.bind(this));
 
+		this.ajax.deleteEvent = new Request({
+			url: this.options.url.del,
+			'data': {
+				'visualizationid': this.options.calendarId
+			},
+			'onComplete': function () {
+				jQuery('#calendar').fullCalendar( 'refetchEvents' );
+			}.bind(this)
+		});
 	},
 	
 	processEvents: function (json, callback) {
@@ -202,17 +215,23 @@ var fabrikFullcalendar = new Class({
 			var popup = jQuery(Fabrik.jLayouts['fabrik-visualization-fullcalendar-event-popup'])[0];
 			var id = e._listid + "_" + e.id;
 			popup.id = "fabrikevent_" + id;
-			
+
 			var body = jQuery(Fabrik.jLayouts['fabrik-visualization-fullcalendar-viewevent'])[0];
-			var mStartDate = moment.utc(e.startdate_locale); 
-			var mEndDate = moment.utc(e.enddate_locale);
+			var mStartDate = moment(e.startdate_locale); 
+			var mEndDate = moment(e.enddate_locale);
 			var dispStartDate = dispEndDate = "";
-			if (moment(mEndDate.format("YYYY-MM-DD")) > moment(mStartDate.format("YYYY-MM-DD"))) {
+			if (moment(mEndDate.format("YYYY-MM-DD")) > moment(mStartDate.format("YYYY-MM-DD"))
+				|| (e.startShowTime === false && e.endShowTime === false) ) {
 				dispStartDate = mStartDate.format("MMM DD") + " ";
 				dispEndDate = mEndDate.format("MMM DD") + " ";
 			}
-			body.getElement("#viewstart").innerHTML = dispStartDate + mStartDate.format("hh.mm A");
-			body.getElement("#viewend").innerHTML = dispEndDate + mEndDate.format("hh.mm A");
+			var dispStartTime = dispEndTime = "";
+			if (e.startShowTime === true && e.endShowTime === true) {
+				dispStartTime = mStartDate.format("hh.mm A");
+				dispEndTime = mEndDate.format("hh.mm A");
+			}
+			body.getElement("#viewstart").innerHTML = dispStartDate + dispStartTime;
+			body.getElement("#viewend").innerHTML = dispEndDate + dispEndTime;
 
 			var buttons = jQuery(Fabrik.jLayouts['fabrik-visualization-fullcalendar-viewbuttons'])[0];
 			jQuery(buttons)[0].id = "fabrikevent_buttons_" + id;
@@ -226,9 +245,9 @@ var fabrikFullcalendar = new Class({
 			jQuery(popup).attr('data-content', jQuery(body).prop('outerHTML')+jQuery(buttons).prop('outerHTML'));
 			
 			var width = (dispStartDate == "" ? "auto" : "200px");
-			jQuery(popup).attr('data-title',  
-			'<div style="width:' + width + '"><div style="float:left;"><button class="jclose" data-popover="' + popup.id + '">&times;</button></div>'
-					+ '<div style="text-align:center;">' + e.label + '</div></div>');
+			jQuery(popup).attr('data-title',  '<div style="width:' + width + 
+				'"><div style="float:left;"><button class="btn jclose" data-popover="' + popup.id + 
+				'"><i class="icon-delete"></i></button></div><div style="text-align:center;">' + e.label + '</div></div>');
 			jQuery(popup).append(e.label);
 			
 			events.push(
@@ -311,9 +330,30 @@ var fabrikFullcalendar = new Class({
 		this.addEvForm(o);
 	},
 	
+	editEntry: function (calEvent) {
+		this.clickdate = null;
+		var o = {};
+		o.id = calEvent.formid;
+		o.rowid = calEvent.rowid;
+		o.listid = calEvent.listid;
+		o.nextView = 'form';
+		this.addEvForm(o);
+	},
+	
+	deleteEntry: function (calEvent) {
+		if (confirm(Joomla.JText._('PLG_VISUALIZATION_FULLCALENDAR_CONF_DELETE'))) {
+			this.ajax.deleteEvent.options.data = {'id': calEvent.rowid, 'listid': calEvent.listid};
+			this.ajax.deleteEvent.send();
+		}
+	},
+
 	clickEntry: function (calEvent) {
-		var popoverId = 'fabrikevent_' + calEvent.listid + '_' + calEvent.rowid;
-		jQuery('#' + popoverId).popover('show');
+		if (this.options.showFullDetails === false) {
+			var popoverId = 'fabrikevent_' + calEvent.listid + '_' + calEvent.rowid;
+			jQuery('#' + popoverId).popover('show');
+		} else {
+			this.viewEntry(calEvent);
+		}
 	},
 	
 	/**

@@ -495,6 +495,9 @@ class FabrikModelFullcalendar extends FabrikFEModelVisualization
 							$row->startdate_locale = $mydate->format(DateTime::RFC3339);
 							$mydate = new DateTime($row->enddate);
 							$row->enddate_locale = $mydate->format(DateTime::RFC3339);
+							
+							$row->startShowTime = (bool)$data['startShowTime'];
+							$row->endShowTime = (bool)$data['endShowTime'];
 
 							// Added timezone offset
 							if ($row->startdate !== $db->getNullDate() && $data['startShowTime'] == true)
