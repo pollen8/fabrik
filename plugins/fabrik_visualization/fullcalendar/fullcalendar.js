@@ -22,7 +22,7 @@ var fabrikFullcalendar = new Class({
 		
 		this.windowopts = {
 				'id': 'addeventwin',
-				title: 'add/edit event',
+				title: '',
 				loadMethod: 'xhr',
 				minimizable: false,
 				evalScripts: true,
@@ -235,18 +235,24 @@ var fabrikFullcalendar = new Class({
 
 			var buttons = jQuery(Fabrik.jLayouts['fabrik-visualization-fullcalendar-viewbuttons'])[0];
 			jQuery(buttons)[0].id = "fabrikevent_buttons_" + id;
-			// Hide the buttons the user cannot see
-			if ( e._canDelete === false )
-				buttons.getElement(".popupDelete").destroy();
-			if ( e._canEdit === false )
-				buttons.getElement(".popupEdit").destroy();
-			if ( e._canView === false )
-				buttons.getElement(".popupView").destroy();
+
+			// Hide the buttons the user cannot see or add the tooltip text if button is visible
+			var bDelete = buttons.getElement(".popupDelete");
+			e._canDelete === false ? bDelete.destroy() 
+				: bDelete.setProperty('title', Joomla.JText._('PLG_VISUALIZATION_FULLCALENDAR_DELETE'));
+			var bEdit = buttons.getElement(".popupEdit");
+			e._canEdit === false ? bEdit.destroy() 
+				: bEdit.setProperty('title', Joomla.JText._('PLG_VISUALIZATION_FULLCALENDAR_EDIT'));
+			var bView = buttons.getElement(".popupView");
+			e._canView === false ? bView.destroy()
+				: bView.setProperty('title', Joomla.JText._('PLG_VISUALIZATION_FULLCALENDAR_VIEW'));
+				
 			jQuery(popup).attr('data-content', jQuery(body).prop('outerHTML')+jQuery(buttons).prop('outerHTML'));
 			
 			var width = (dispStartDate == "" ? "auto" : "200px");
 			jQuery(popup).attr('data-title',  '<div style="width:' + width + 
 				'"><div style="float:left;"><button class="btn jclose" data-popover="' + popup.id + 
+				'" data-toggle="tooltip" title="' + Joomla.JText._('PLG_VISUALIZATION_FULLCALENDAR_CLOSE') +
 				'"><i class="icon-delete"></i></button></div><div style="text-align:center;">' + e.label + '</div></div>');
 			jQuery(popup).append(e.label);
 			
@@ -261,7 +267,7 @@ var fabrikFullcalendar = new Class({
 					rowid: e.__pk_val,
 					formid: e._formid
 				}
-			)
+			);
 		}.bind(events));
 
 		callback(events);
@@ -296,6 +302,7 @@ var fabrikFullcalendar = new Class({
 		}
 		this.windowopts.type = 'window';
 		this.windowopts.contentURL = url;
+		this.windowopts.title = o.title;
 		var f = this.options.filters;
 	
 		this.windowopts.onContentLoaded = function (win)
@@ -327,6 +334,7 @@ var fabrikFullcalendar = new Class({
 		o.rowid = calEvent.rowid;
 		o.listid = calEvent.listid;
 		o.nextView = 'details';
+		o.title = Joomla.JText._('PLG_VISUALIZATION_FULLCALENDAR_VIEW_EVENT');
 		this.addEvForm(o);
 	},
 	
@@ -337,6 +345,7 @@ var fabrikFullcalendar = new Class({
 		o.rowid = calEvent.rowid;
 		o.listid = calEvent.listid;
 		o.nextView = 'form';
+		o.title = Joomla.JText._('PLG_VISUALIZATION_FULLCALENDAR_EDIT_EVENT');
 		this.addEvForm(o);
 	},
 	
@@ -409,8 +418,8 @@ var fabrikFullcalendar = new Class({
 			o = {};
 			o.rowid = '';
 			o.id = '';
-//			d = '&' + this.options.eventLists[0].startdate_element + '=' + this.clickdate;
 			o.listid = this.options.eventLists[0].value;
+			o.title = Joomla.JText._('PLG_VISUALIZATION_FULLCALENDAR_ADD_EVENT');
 			this.clickdate = null;
 			this.addEvForm(o);
 		}
