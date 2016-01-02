@@ -1,7 +1,7 @@
 <?php
 defined('JPATH_BASE') or die;
 ?>
-<div style="text-align:center;display:block; margin-top:10px;" class="btn-group calEventButtons">
+<div style="text-align:center;display:inline; margin:10px auto;" class="btn-group calEventButtons">
 	<button data-task="deleteCalEvent" class="btn popupDelete" data-toggle="tooltip" title="">
 		<i class="icon-delete" data-isicon="true"></i>
 	</button>
