@@ -1034,7 +1034,7 @@ EOD;
 				}
 			}
 
-			if (array_key_exists($k, $newShim))
+			if (is_array($newShim) && array_key_exists($k, $newShim))
 			{
 				$s->deps = array_merge($s->deps, $newShim[$k]->deps);
 			}

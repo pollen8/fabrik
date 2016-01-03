@@ -15,8 +15,8 @@ var FbCascadingdropdown = new Class({
 	Extends: FbDatabasejoin,
 	initialize: function (element, options) {
 		this.ignoreAjax = false;
+		this.setPlugin('cascadingdropdown');
 		this.parent(element, options);
-		this.plugin = 'cascadingdropdown';
 		if (document.id(this.options.watch)) {
 			/**
 			 * In order to be able to remove specific change event functions when we clone

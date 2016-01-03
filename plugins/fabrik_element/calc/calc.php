@@ -483,8 +483,6 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 			$obs = array_merge($obs, $matches);
 		}
 
-		$obs = array_unique($obs);
-
 		foreach ($obs as $key => &$m)
 		{
 
@@ -501,7 +499,7 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 		}
 
 		$opts->ajax = $params->get('calc_ajax', 0) == 0 ? false : true;
-		$opts->observe = array_values($obs);
+		$opts->observe = array_values(array_unique($obs));
 		$opts->calcOnLoad = (bool) $params->get('calc_on_load', false);
 		$opts->id = $this->id;
 
