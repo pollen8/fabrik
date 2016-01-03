@@ -1605,7 +1605,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		$displayData->editable = $this->isEditable();
 		$displayData->optionLayout =  $this->getLayout('form-radio');
 		$singleLayout = 'fabrik-element-' . $this->getPluginName() . '-form-radio';
-		FabrikHelperHTML::jLayoutJs($singleLayout, $singleLayout, $displayData, array($this->layoutBasePath()));
+		FabrikHelperHTML::jLayoutJs($singleLayout . '_' . $id, $singleLayout, $displayData, array($this->layoutBasePath()));
 
 		$html[] = '<div class="fabrikSubElementContainer" id="' . $id . '">';
 
@@ -1759,7 +1759,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 
 		$html[] = '<div class="fabrikSubElementContainer" id="' . $id . '">';
 		$singleLayout = 'fabrik-element-' . $this->getPluginName() . '-form-checkbox';
-		FabrikHelperHTML::jLayoutJs($singleLayout, $singleLayout, $displayData, array($this->layoutBasePath()));
+		FabrikHelperHTML::jLayoutJs($singleLayout . '_' . $id, $singleLayout, $displayData, array($this->layoutBasePath()));
 		$rowOptsLayout = 'fabrik-element-' . $this->getPluginName() . '-form-rowopts';
 		FabrikHelperHTML::jLayoutJs($rowOptsLayout, $rowOptsLayout, $displayData, array($this->layoutBasePath()));
 
