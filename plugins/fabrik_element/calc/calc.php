@@ -60,7 +60,7 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 	/**
 	 * Get value
 	 *
-	 * @param   string  $data           Value
+	 * @param   array  $data           Value
 	 * @param   int     $repeatCounter  Repeat group counter
 	 *
 	 * @return  string
@@ -68,7 +68,6 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 	private function _getV($data, $repeatCounter)
 	{
 		$w = new FabrikWorker;
-		$formModel = $this->getFormModel();
 		$groupModel = $this->getGroup();
 		$name = $this->getFullName(true, false);
 		$params = $this->getParams();
@@ -309,7 +308,7 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 					foreach (array_keys($v) as $x)
 					{
 						$origVal = FArrayHelper::getValue($origData, $x);
-						$d[$elKey][$x] = $elementModel->getLabelForValue($v[$x], $origVal, true, $x);
+						$d[$elKey][$x] = $elementModel->getLabelForValue($v[$x], $origVal, true);
 					}
 				}
 				else
