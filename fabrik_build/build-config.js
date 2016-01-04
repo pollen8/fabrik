@@ -4,6 +4,7 @@ module.exports = {
         'mod_fabrik_form_{version}.zip',
         'mod_fabrik_list_{version}.zip',
         'plg_fabrik_system_{version}.zip',
+        'plg_fabrik_schedule_{version}.zip',
         'plg_fabrik_content_{version}.zip',
         'plg_fabrik_cron_email_{version}.zip',
         'plg_fabrik_cron_php_{version}.zip',

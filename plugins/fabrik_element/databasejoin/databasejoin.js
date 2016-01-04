@@ -31,7 +31,7 @@ var FbDatabasejoin = new Class({
 	initialize: function (element, options) {
 		this.activePopUp = false;
 		this.activeSelect = false;
-		this.plugin = 'databasejoin';
+		this.setPlugin('databasejoin');
 		this.parent(element, options);
 		this.init();
 	},
@@ -201,14 +201,14 @@ var FbDatabasejoin = new Class({
 			break;
 		case 'checkbox':
 			opt = this.getCheckboxTmplNode().clone();
-			var rowOpt = jQuery(Fabrik.jLayouts['fabrik-element-' + this.plugin + '-form-rowopts'])[0];
+			var rowOpt = jQuery(Fabrik.jLayouts['fabrik-element-' + this.getPlugin() + '-form-rowopts'])[0];
 			this._addOption(opt, l, v, rowOpt);
 			break;
 		case 'radio':
 		/* falls through */
 		default:
-			var opt = jQuery(Fabrik.jLayouts['fabrik-element-' + this.plugin + '-form-radio'])[0];
-			var rowOpt = jQuery(Fabrik.jLayouts['fabrik-element-' + this.plugin + '-form-rowopts'])[0];
+			var opt = jQuery(Fabrik.jLayouts['fabrik-element-' + this.getPlugin() + '-form-radio' + '_' + this.strElement])[0];
+			var rowOpt = jQuery(Fabrik.jLayouts['fabrik-element-' + this.getPlugin() + '-form-rowopts'])[0];
 			this._addOption(opt, l, v, rowOpt, null);
 			break;
 		}
@@ -281,8 +281,7 @@ var FbDatabasejoin = new Class({
 	 */
 	getCheckboxTmplNode: function () {
 		if (Fabrik.bootstrapped) {
-			this.chxTmplNode = jQuery(Fabrik.jLayouts['fabrik-element-' + this.plugin + '-form-checkbox'])[0];
-		} else {
+			this.chxTmplNode = jQuery(Fabrik.jLayouts['fabrik-element-' + this.getPlugin() + '-form-checkbox' + '_' + this.strElement])[0];
 			if (!this.chxTmplNode && this.options.displayType === 'checkbox')
 			{
 				var chxs = this.element.getElements('> .fabrik_subelement');
@@ -307,7 +306,7 @@ var FbDatabasejoin = new Class({
 	 */
 	getCheckboxRowOptsNode: function () {
 		if (Fabrik.bootstrapped) {
-			this.chxTmplNode = jQuery(Fabrik.jLayouts['fabrik-element-' + this.plugin + '-form-rowopts'])[0];
+			this.chxTmplNode = jQuery(Fabrik.jLayouts['fabrik-element-' + this.getPlugin() + '-form-rowopts'])[0];
 		} else {
 			if (!this.chxTmplNode && this.options.displayType === 'checkbox')
 			{

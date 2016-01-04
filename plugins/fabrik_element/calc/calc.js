@@ -8,7 +8,7 @@
 var FbCalc = new Class({
 	Extends: FbElement,
 	initialize: function (element, options) {
-		this.plugin = 'calc';
+		this.setPlugin('calc');
 		this.parent(element, options);
 	},
 
@@ -17,7 +17,7 @@ var FbCalc = new Class({
 			this.options.observe.each(function (o) {
 				this.addObserveEvent(o);
 			}.bind(this));
-
+			
 			if (this.options.calcOnLoad) {
 				this.calc();
 			}
@@ -35,7 +35,7 @@ var FbCalc = new Class({
 			}.bind(this));
 		}
 	},
-
+	
 	addObserveEvent: function (o) {
 		var o2;
 		if (o === '') {

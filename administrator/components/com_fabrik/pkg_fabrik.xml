@@ -4,8 +4,8 @@
 	<packagename>fabrik</packagename>
 	<version>3.4</version>
 	<url>http://www.fabrikar.com</url>
-	<creationDate>December 2015</creationDate>
-	<copyright>Copyright (C) 2005-2015 fabrikar.com - All rights reserved.</copyright>
+	<creationDate>January 2016</creationDate>
+	<copyright>Copyright (C) 2005-2016 fabrikar.com - All rights reserved.</copyright>
 	<author>Fabrik</author>
 	<packager>Rob Clayburn</packager>
 	<packagerurl>http://www.fabrikar.com</packagerurl>
@@ -21,6 +21,7 @@
 		<file client="site" id="mod_fabrik_list" type="module">mod_fabrik_list_{version}.zip</file>
 
 		<file group="system" id="fabrik" type="plugin">plg_fabrik_system_{version}.zip</file>
+		<file group="system" id="fabrikcron" type="plugin">plg_fabrik_schedule_{version}.zip</file>
 
 		<file group="content" id="fabrik" type="plugin">plg_fabrik_content_{version}.zip</file>
 
