@@ -72,7 +72,7 @@ class FabrikModelFullcalendar extends FabrikFEModelVisualization
 	{
 		if (!isset($this->listids))
 		{
-			$this->listids = (array) $this->getParams()->get('calendar_table');
+			$this->listids = (array) $this->getParams()->get('fullcalendar_table');
 			ArrayHelper::toInteger($this->listids);
 		}
 	}
@@ -324,7 +324,7 @@ class FabrikModelFullcalendar extends FabrikFEModelVisualization
 		if (!isset($this->canAdd))
 		{
 			$params = $this->getParams();
-			$lists = (array) $params->get('calendar_table');
+			$lists = (array) $params->get('fullcalendar_table');
 
 			foreach ($lists as $id)
 			{
@@ -355,7 +355,7 @@ class FabrikModelFullcalendar extends FabrikFEModelVisualization
 	{
 		$deleteables = array();
 		$params = $this->getParams();
-		$lists = (array) $params->get('calendar_table');
+		$lists = (array) $params->get('fullcalendar_table');
 
 		foreach ($lists as $id)
 		{
