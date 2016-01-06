@@ -318,7 +318,9 @@ class FPagination extends JPagination
 	{
 		$displayData = new stdClass;
 		$displayData->list = $list;
-		$layout = FabrikHelperHTML::getLayout('pagination.fabrik-pagination-links');
+		$paths[] = JPATH_THEMES . '/' . JFactory::getApplication()->getTemplate() . '/html/layouts/com_fabrik/list_' . $this->id;
+
+		$layout = FabrikHelperHTML::getLayout('pagination.fabrik-pagination-links', $paths);
 
 		return $layout->render($displayData);
 	}
