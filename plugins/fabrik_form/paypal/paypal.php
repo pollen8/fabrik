@@ -155,6 +155,11 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 			{
 				$item = array_shift($item);
 			}
+
+			if (is_array($itemRaw))
+			{
+				$itemRaw = array_shift($itemRaw);
+			}
 		}
 
 		// $$$ hugh - strip any HTML tags from the item name, as PayPal doesn't like them.
@@ -651,6 +656,10 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 		$ipnAddressField = (array) $params->get('paypal_ipn_address_element', array());
 		$ipnAddressField = FabrikString::shortColName($ipnAddressField[$renderOrder]);
 
+		$ipnSubscriberIDField = (array) $params->get('paypal_ipn_subscr_id_element', array());
+		$ipnSubscriberIDField = FabrikString::shortColName($ipnSubscriberIDField[$renderOrder]);
+
+
 		$w = new FabrikWorker;
 		$ipnValue = str_replace('[', '{', $ipnValue);
 		$ipnValue = str_replace(']', '}', $ipnValue);
@@ -697,6 +706,7 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 		$txn_type = $input->get('txn_type', '', 'string');
 		$receiver_email = $input->get('receiver_email', '', 'string');
 		$payer_email = $input->get('payer_email', '', 'string');
+		$subscr_id = $input->get('subscr_id', '', 'string');
 		$buyer_address = $input->get('address_status', '', 'string') . ' - ' . $input->get('address_street', '', 'string')
 			. ' ' . $input->get('address_zip', '', 'string')
 			. ' ' . $input->get('address_state', '', 'string') . ' '
@@ -743,30 +753,40 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 
 						// $$tom This block Paypal from updating the IPN field if the payment status evolves (e.g. from Pending to Completed)
 						// $$$ hugh - added check of status, so only barf if there is a status field, and it is Completed for this txn_id
+						// $$$ hugh - added check for empty $txn_id, which happens on subscr_foo transaction types
 						if (!empty($ipnTxnField) && !empty($ipnStatusField))
 						{
-							$query->clear();
-							$query->select($ipnStatusField)->from($table->db_table_name)
-							->where($db->qn($ipnTxnField) . ' = ' . $db->q($txn_id));
-							$db->setQuery($query);
-							$txn_result = $db->loadResult();
-
-							if (!empty($txn_result))
+							if (!empty($txn_id))
 							{
-								if ($txn_result == 'Completed')
+								$query->clear();
+								$query->select($ipnStatusField)->from($table->db_table_name)
+								->where($db->qn($ipnTxnField) . ' = ' . $db->q($txn_id));
+								$db->setQuery($query);
+								$txn_result = $db->loadResult();
+
+								if (!empty($txn_result))
 								{
-									if ($payment_status != 'Reversed' && $payment_status != 'Refunded')
+									if ($txn_result == 'Completed')
 									{
-										$status = 'form.paypal.ipnfailure.txn_seen';
-										$errMsg = "transaction id already seen as Completed, new payment status makes no sense: $txn_id, $payment_status";
+										if ($payment_status != 'Reversed' && $payment_status != 'Refunded')
+										{
+											$status = 'form.paypal.ipnfailure.txn_seen';
+											$errMsg = "transaction id already seen as Completed, new payment status makes no sense: $txn_id, $payment_status";
+											$log->message_type = $status;
+											$log->message = "$errMsg";
+											$log->store();
+										}
 									}
-								}
-								elseif ($txn_result == 'Reversed')
-								{
-									if ($payment_status != 'Canceled_Reversal')
+									elseif ($txn_result == 'Reversed')
 									{
-										$status = 'form.paypal.ipnfailure.txn_seen';
-										$errMsg = "transaction id already seen as Reversed, new payment status makes no sense: $txn_id, $payment_status";
+										if ($payment_status != 'Canceled_Reversal')
+										{
+											$status = 'form.paypal.ipnfailure.txn_seen';
+											$errMsg = "transaction id already seen as Reversed, new payment status makes no sense: $txn_id, $payment_status";
+											$log->message_type = $status;
+											$log->message = "$errMsg";
+											$log->store();
+										}
 									}
 								}
 							}
@@ -813,6 +833,11 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 								$set_list[$ipnAddressField] = $buyer_address;
 							}
 
+							if (!empty($ipnSubscriberIDField))
+							{
+								$set_list[$ipnSubscriberIDField] = $subscr_id;
+							}
+
 							$ipn = $this->getIPNHandler($params, $renderOrder);
 
 							if ($ipn !== false)
@@ -857,36 +882,43 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 
 							if (!empty($set_list))
 							{
-								$setArray = array();
-
-								foreach ($set_list as $setField => $setValue)
+								/**
+								 * The txn_id can be empty if this is a subscription update,  in which case
+								 * don't do any automagic updating, user has to deal with it in custom IPN handler
+								 */
+								if (!empty($txn_id))
 								{
-									$setValue = $db->q($setValue);
-									$setField = $db->qn($setField);
-									$setArray[] = "$setField = $setValue";
-								}
+									$setArray = array();
 
-								$query->clear();
-								$query->update($table->db_table_name)
-								->set(implode(',', $setArray))
-								->where($table->db_primary_key . ' = ' . $db->q($rowId));
-								$db->setQuery($query);
-
-								if (!$db->execute())
-								{
-									$status = 'form.paypal.ipnfailure.query_error';
-									$errMsg = 'sql query error: ' . $db->getErrorMsg();
-									$log->message_type = 'form.paypal.ipnfailure.query_error';
-									$log->message = $errMsg;
-									$log->store();
-								}
-								else
-								{
-									if ($testMode == 1)
+									foreach ($set_list as $setField => $setValue)
 									{
-										$log->message_type = 'form.paypal.ipndebug.ipn_query';
-										$log->message = "IPN query: " . $query;
+										$setValue = $db->q($setValue);
+										$setField = $db->qn($setField);
+										$setArray[] = "$setField = $setValue";
+									}
+
+									$query->clear();
+									$query->update($table->db_table_name)
+									->set(implode(',', $setArray))
+									->where($table->db_primary_key . ' = ' . $db->q($rowId));
+									$db->setQuery($query);
+
+									if (!$db->execute())
+									{
+										$status = 'form.paypal.ipnfailure.query_error';
+										$errMsg = 'sql query error: ' . $db->getErrorMsg();
+										$log->message_type = 'form.paypal.ipnfailure.query_error';
+										$log->message = $errMsg;
 										$log->store();
+									}
+									else
+									{
+										if ($testMode == 1)
+										{
+											$log->message_type = 'form.paypal.ipndebug.ipn_query';
+											$log->message = "IPN query: " . $query;
+											$log->store();
+										}
 									}
 								}
 							}
@@ -922,51 +954,54 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 		$send_default_email = $send_default_email[$renderOrder];
 		$emailText = '';
 
-		if ($status != 'ok')
+		if (!strstr($status, 'silent'))
 		{
-			if ($receive_debug_emails == '1')
+			if ($status !== 'ok')
 			{
-				foreach ($_POST as $key => $value)
+				if ($receive_debug_emails == '1')
 				{
-					$emailText .= $key . " = " . $value . "\n\n";
+					foreach ($_POST as $key => $value)
+					{
+						$emailText .= $key . " = " . $value . "\n\n";
+					}
+
+					$subject = $this->config->get('sitename') . ": Error with PayPal IPN from Fabrik";
+					$mail->sendMail($emailFrom, $emailFrom, $admin_email, $subject, $emailText, false);
 				}
 
-				$subject = $this->config->get('sitename') . ": Error with PayPal IPN from Fabrik";
-				$mail->sendMail($emailFrom, $emailFrom, $admin_email, $subject, $emailText, false);
-			}
+				$log->message_type = $status;
+				$log->message = $emailText . "\n//////////////\n" . implode("",$fullResponse) . "\n//////////////\n" . $req . "\n//////////////\n" . $errMsg;
 
-			$log->message_type = $status;
-			$log->message = $emailText . "\n//////////////\n" . implode("",$fullResponse) . "\n//////////////\n" . $req . "\n//////////////\n" . $errMsg;
-
-			if ($send_default_email == '1')
-			{
-				$subject = $this->config->get('sitename') . ": Error with PayPal IPN from Fabrik";
-				$payerEmailText = FText::_('PLG_FORM_PAYPAL_ERR_PROCESSING_PAYMENT');
-				$mail->sendMail($emailFrom, $emailFrom, $payer_email, $subject, $payerEmailText, false);
-			}
-		}
-		else
-		{
-			if ($receive_debug_emails == '1')
-			{
-				foreach ($_POST as $key => $value)
+				if ($send_default_email == '1')
 				{
-					$emailText .= $key . " = " . $value . "\n\n";
+					$subject = $this->config->get('sitename') . ": Error with PayPal IPN from Fabrik";
+					$payerEmailText = FText::_('PLG_FORM_PAYPAL_ERR_PROCESSING_PAYMENT');
+					$mail->sendMail($emailFrom, $emailFrom, $payer_email, $subject, $payerEmailText, false);
+				}
+			}
+			else
+			{
+				if ($receive_debug_emails == '1')
+				{
+					foreach ($_POST as $key => $value)
+					{
+						$emailText .= $key . " = " . $value . "\n\n";
+					}
+
+					$subject = $this->config->get('sitename') . ': IPN ' . $payment_status;
+					$mail->sendMail($emailFrom, $emailFrom, $admin_email, $subject, $emailText, false);
 				}
 
-				$subject = $this->config->get('sitename') . ': IPN ' . $payment_status;
-				$mail->sendMail($emailFrom, $emailFrom, $admin_email, $subject, $emailText, false);
-			}
+				$log->message_type = 'form.paypal.ipn.' . $payment_status;
+				$query = $db->getQuery();
+				$log->message = $emailText . "\n//////////////\n" . $res . "\n//////////////\n" . $req . "\n//////////////\n" . $query;
 
-			$log->message_type = 'form.paypal.ipn.' . $payment_status;
-			$query = $db->getQuery();
-			$log->message = $emailText . "\n//////////////\n" . $res . "\n//////////////\n" . $req . "\n//////////////\n" . $query;
-
-			if ($send_default_email == '1')
-			{
-				$payer_subject = "PayPal success";
-				$payerEmailText = "Your PayPal payment was succesfully processed.  The PayPal transaction id was $txn_id";
-				$mail->sendMail($emailFrom, $emailFrom, $payer_email, $payer_subject, $payerEmailText, false);
+				if ($send_default_email == '1')
+				{
+					$payer_subject = "PayPal success";
+					$payerEmailText = "Your PayPal payment was succesfully processed.  The PayPal transaction id was $txn_id";
+					$mail->sendMail($emailFrom, $emailFrom, $payer_email, $payer_subject, $payerEmailText, false);
+				}
 			}
 		}
 
