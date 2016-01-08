@@ -252,11 +252,10 @@ var FbAutocomplete = new Class({
 	closeMenu: function () {
 		if (this.shown) {
 			this.shown = false;
-			this.menu.hide();
+			// some templates seem to need a jQuery hide, something to do with webkit
+			jQuery(this.menu).hide();
 			this.selected = -1;
-			document.removeEvent('click', function (e) {
-				this.doTestMenuClose(e);
-			}.bind(this));
+			document.removeEvent('click', this.doCloseEvent);
 		}
 	},
 
@@ -265,9 +264,8 @@ var FbAutocomplete = new Class({
 			if (this.isMinTriggerlength()) {
 				this.menu.show();
 				this.shown = true;
-				document.addEvent('click', function (e) {
-					this.doTestMenuClose(e);
-				}.bind(this));
+				this.doCloseEvent = this.doTestMenuClose.bind(this);
+				document.addEvent('click', this.doCloseEvent);
 				this.selected = 0;
 				this.highlight();
 			}

@@ -269,9 +269,6 @@ var refreshFiles = function () {
             if (f.indexOf('.zip') !== -1) {
                 return false;
             }
-            if (f.indexOf('\\js\\') !== -1) {
-                return false;
-            }
             return true;
         }
     });

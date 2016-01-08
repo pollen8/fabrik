@@ -26,6 +26,13 @@ require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
  */
 class PlgFabrik_FormPaypal extends PlgFabrik_Form
 {
+	/*
+	 * J! Log
+	 *
+	 * @var  object
+	 */
+	private $log = null;
+
 	/**
 	 * Run right at the end of the form processing
 	 * form needs to be set to record in database for this to hook to be called
@@ -39,7 +46,6 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 		$input = $this->app->input;
 		$this->data = $this->getProcessData();
 		JTable::addIncludePath(JPATH_ADMINISTRATOR . '/components/com_fabrik/tables');
-		$log = FabTable::getInstance('log', 'FabrikTable');
 
 		if (!$this->shouldProcess('paypal_conditon', null, $params))
 		{
@@ -92,13 +98,13 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 
 			if ($amount === false)
 			{
-				$log->message_type = 'fabrik.paypal.onAfterProcess';
+				$msgType = 'fabrik.paypal.onAfterProcess';
 				$msg = new stdClass;
 				$msg->opt = $opts;
 				$msg->data = $this->data;
 				$msg->msg = "Eval amount code returned false.";
-				$log->message = json_encode($msg);
-				$log->store();
+				$msg = json_encode($msg);
+				$this->doLog($msgType, $msg);
 				throw new RuntimeException(FText::_('PLG_FORM_PAYPAL_COST_ELEMENT_ERROR'), 500);
 			}
 		}
@@ -430,13 +436,13 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 				if ($ipn->checkOpts($opts, $formModel) === false)
 				{
 					// Log the info
-					$log->message_type = 'fabrik.paypal.onAfterProcess';
+					$msgType = 'fabrik.paypal.onAfterProcess';
 					$msg = new stdClass;
 					$msg->opt = $opts;
 					$msg->data = $this->data;
 					$msg->msg = "Submission cancelled by checkOpts!";
-					$log->message = json_encode($msg);
-					$log->store();
+					$msg = json_encode($msg);
+					$this->doLog($msgType, $msg);
 
 					return true;
 				}
@@ -470,12 +476,12 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 		$this->session->set($context . 'redirect_content_how', 'samepage');
 
 		// Log the info
-		$log->message_type = 'fabrik.paypal.onAfterProcess';
+		$msgType = 'fabrik.paypal.onAfterProcess';
 		$msg = new stdClass;
 		$msg->opt = $opts;
 		$msg->data = $this->data;
-		$log->message = json_encode($msg);
-		$log->store();
+		$msg = json_encode($msg);
+		$this->doLog($msgType, $msg);
 
 		return true;
 	}
@@ -612,11 +618,7 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 		$input = $this->app->input;
 		$mail = JFactory::getMailer();
 		JTable::addIncludePath(JPATH_ADMINISTRATOR . '/components/com_fabrik/tables');
-		$log = FabTable::getInstance('log', 'FabrikTable');
-		$log->referring_url = $input->server->getString('REQUEST_URI');
-		$log->message_type = 'fabrik.ipn.start';
-		$log->message = json_encode($_REQUEST);
-		$log->store();
+		$this->doLog('fabrik.ipn.start', json_encode($_REQUEST));
 
 		// Lets try to load in the custom returned value so we can load up the form and its parameters
 		$custom = $input->get('custom', '', 'string');
@@ -772,9 +774,7 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 										{
 											$status = 'form.paypal.ipnfailure.txn_seen';
 											$errMsg = "transaction id already seen as Completed, new payment status makes no sense: $txn_id, $payment_status";
-											$log->message_type = $status;
-											$log->message = "$errMsg";
-											$log->store();
+											$this->doLog($status, $errMsg);
 										}
 									}
 									elseif ($txn_result == 'Reversed')
@@ -783,9 +783,7 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 										{
 											$status = 'form.paypal.ipnfailure.txn_seen';
 											$errMsg = "transaction id already seen as Reversed, new payment status makes no sense: $txn_id, $payment_status";
-											$log->message_type = $status;
-											$log->message = "$errMsg";
-											$log->store();
+											$this->doLog($status, $errMsg);
 										}
 									}
 								}
@@ -793,9 +791,7 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 						}
 						else
 						{
-							$log->message_type = 'form.paypal.ipndebug.ipn_no_txn_fields';
-							$log->message = "No IPN txn or status fields specified, can't test for reversed, refunded or cancelled";
-							$log->store();
+							$this->doLog('form.paypal.ipndebug.ipn_no_txn_fields', "No IPN txn or status fields specified, can't test for reversed, refunded or cancelled");
 						}
 
 
@@ -851,9 +847,7 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 
 									if ($status != 'ok')
 									{
-										$log->message_type = 'form.paypal.ipndebug.ipn_function_not_ok';
-										$log->message = "The IPN function $ipnFunction did not return ok";
-										$log->store();
+										$this->doLog('form.paypal.ipndebug.ipn_function_not_ok', "The IPN function $ipnFunction did not return ok");
 										break;
 									}
 								}
@@ -866,18 +860,14 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 
 									if ($status != 'ok')
 									{
-										$log->message_type = 'form.paypal.ipndebug.ipn_txn_type_function_not_ok';
-										$log->message = "The IPN txn type function $txnTypeFunction did not return ok";
-										$log->store();
+										$this->doLog('form.paypal.ipndebug.ipn_txn_type_function_not_ok', "The IPN txn type function $txnTypeFunction did not return ok");
 										break;
 									}
 								}
 							}
 							else
 							{
-								$log->message_type = 'form.paypal.ipndebug.ipn_cannot_load';
-								$log->message = "Can't load the custom IPN handler class";
-								$log->store();
+								$this->doLog('form.paypal.ipndebug.ipn_cannot_load', "Can't load the custom IPN handler class");
 							}
 
 							if (!empty($set_list))
@@ -905,19 +895,13 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 
 									if (!$db->execute())
 									{
-										$status = 'form.paypal.ipnfailure.query_error';
-										$errMsg = 'sql query error: ' . $db->getErrorMsg();
-										$log->message_type = 'form.paypal.ipnfailure.query_error';
-										$log->message = $errMsg;
-										$log->store();
+										$this->doLog($status, $errMsg);
 									}
 									else
 									{
 										if ($testMode == 1)
 										{
-											$log->message_type = 'form.paypal.ipndebug.ipn_query';
-											$log->message = "IPN query: " . $query;
-											$log->store();
+											$this->doLog('form.paypal.ipndebug.ipn_query', "IPN query: " . $query);
 										}
 									}
 								}
@@ -926,9 +910,7 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 							{
 								$status = 'form.paypal.ipnfailure.set_list_empty';
 								$errMsg = 'no IPN status fields found on form for rowid: ' . $rowId;
-								$log->message_type = 'form.paypal.ipnfailure.set_list_empty';
-								$log->message = $errMsg;
-								$log->store();
+								$this->doLog($status, $errMsg);
 							}
 						}
 					}
@@ -936,9 +918,7 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 					{
 						$status = 'form.paypal.ipnfailure.invalid';
 						$errMsg = 'paypal postback failed with INVALID';
-						$log->message_type = 'form.paypal.ipnfailure.invalid';
-						$log->message = $errMsg;
-						$log->store();
+						$this->doLog($status, $errMsg);
 					}
 
 					$fullResponse[] = $res;
@@ -953,6 +933,9 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 		$send_default_email = (array) $params->get('paypal_send_default_email');
 		$send_default_email = $send_default_email[$renderOrder];
 		$emailText = '';
+
+		$logMsgType = '';
+		$logMsg = '';
 
 		if (!strstr($status, 'silent'))
 		{
@@ -969,8 +952,8 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 					$mail->sendMail($emailFrom, $emailFrom, $admin_email, $subject, $emailText, false);
 				}
 
-				$log->message_type = $status;
-				$log->message = $emailText . "\n//////////////\n" . implode("",$fullResponse) . "\n//////////////\n" . $req . "\n//////////////\n" . $errMsg;
+				$logMsgType = $status;
+				$logMsg = $emailText . "\n//////////////\n" . implode("",$fullResponse) . "\n//////////////\n" . $req . "\n//////////////\n" . $errMsg;
 
 				if ($send_default_email == '1')
 				{
@@ -992,9 +975,10 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 					$mail->sendMail($emailFrom, $emailFrom, $admin_email, $subject, $emailText, false);
 				}
 
-				$log->message_type = 'form.paypal.ipn.' . $payment_status;
+				$logMsgType = 'form.paypal.ipn.';
+				$logMsgType .= empty($payment_status) ? $txn_type : $payment_status;
 				$query = $db->getQuery();
-				$log->message = $emailText . "\n//////////////\n" . $res . "\n//////////////\n" . $req . "\n//////////////\n" . $query;
+				$logMsg = $emailText . "\n//////////////\n" . $res . "\n//////////////\n" . $req . "\n//////////////\n" . $query;
 
 				if ($send_default_email == '1')
 				{
@@ -1005,9 +989,9 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 			}
 		}
 
-		$log->message .= "\n IPN custom function = $ipnFunction";
-		$log->message .= "\n IPN custom transaction function = $txnTypeFunction";
-		$log->store();
+		$logMsg .= "\n IPN custom function = $ipnFunction";
+		$logMsg .= "\n IPN custom transaction function = $txnTypeFunction";
+		$this->doLog($logMsgType, $logMsg);
 		jexit();
 	}
 
@@ -1038,5 +1022,24 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 		{
 			return false;
 		}
+	}
+
+	/**
+	 * Log a message
+	 *
+	 * @param  string  $msgType  The dotted message type
+	 * @param  string  $msg      The log message
+	 */
+	private function doLog($msgType, $msg)
+	{
+		if ($this->log === null)
+		{
+			$this->log = FabTable::getInstance('log', 'FabrikTable');
+			$this->log->referring_url = $this->app->input->server->getString('REQUEST_URI');
+		}
+		$this->log->message_type = $msgType;
+		$this->log->message = $msg;
+		$this->log->id = '';
+		$this->log->store();
 	}
 }
