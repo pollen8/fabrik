@@ -1094,14 +1094,13 @@ EOD;
 			return jQuery;
 		});";
 
-		$config[]   = "requirejs.config({";
-		$config[]   = "\tbaseUrl: '" . $requirejsBaseURI . "',";
-		$config[]   = "\tpaths: " . $pathString . ",";
-		$config[]   = "\tshim: " . $shim . ',';
-		$config[]   = "\twaitSeconds: 30,";
-		$config[]   = "});";
-		$config[]   = "\n";
-
+		$config[] = "requirejs.config({";
+		$config[] = "\tbaseUrl: '" . $requirejsBaseURI . "',";
+		$config[] = "\tpaths: " . $pathString . ",";
+		$config[] = "\tshim: " . $shim . ',';
+		$config[] = "\twaitSeconds: 30,";
+		$config[] = "});";
+		$config[] = "\n";
 
 		// Store in session - included in fabrik system plugin
 		$session->set('fabrik.js.shim', $newShim);
@@ -1818,7 +1817,7 @@ EOD;
 				 limit: 5,
             });";
 			self::$atWho[$key] = true;
-			$css = self::isDebug() ? 'jquery.atwho.css' : 'jquery.atwho.min.css';
+			$css               = self::isDebug() ? 'jquery.atwho.css' : 'jquery.atwho.min.css';
 			FabrikHelperHTML::stylesheet('media/com_fabrik/js/lib/at/' . $css);
 
 			$needed[] = self::isDebug() ? '\'fab/lib/caret/caret\'' : '\'fab/lib/caret/caret-min\'';
@@ -2076,55 +2075,40 @@ EOD;
 	/**
 	 * Build array of items for use in grid()
 	 *
-	 * @param   array  $values               Option values
-	 * @param   array  $labels               Option labels
-	 * @param   array  $selected             Selected options
-	 * @param   string $name                 Input name
-	 * @param   string $type                 Checkbox/radio etc
-	 * @param   bool   $elementBeforeLabel   Element before or after the label - deprecated - not used in Joomla 3
-	 * @param   array  $classes              Label classes
-	 * @param   bool   $buttonGroup          Should it be rendered as a bootstrap button group (radio only)
-	 * @param   array  $inputDataAttributes  Input data attributes e.g. array('data-foo="bar")
-
+	 * @param   array  $values              Option values
+	 * @param   array  $labels              Option labels
+	 * @param   array  $selected            Selected options
+	 * @param   string $name                Input name
+	 * @param   string $type                Checkbox/radio etc
+	 * @param   bool   $elementBeforeLabel  Element before or after the label - deprecated - not used in Joomla 3
+	 * @param   array  $classes             Label classes
+	 * @param   bool   $buttonGroup         Should it be rendered as a bootstrap button group (radio only)
+	 * @param   array  $inputDataAttributes Input data attributes e.g. array('data-foo="bar")
 	 *
 	 * @return  array  Grid items
 	 */
 	public static function gridItems($values, $labels, $selected, $name, $type = 'checkbox',
 		$elementBeforeLabel = true, $classes = array(), $buttonGroup = false, $inputDataAttributes = array())
 	{
-		$items = array();
-		$inputDataAttributes = implode(' ', $inputDataAttributes);
+		$items                            = array();
+		$layout                           = self::getLayout('fabrik-grid-item');
+		$displayData                      = new stdClass;
+		$displayData->type                = $type;
+		$displayData->name                = $name;
+		$displayData->classes             = $classes;
+		$displayData->inputDataAttributes = implode(' ', $inputDataAttributes);
+		$displayData->selected            = $selected;
+		$displayData->elementBeforeLabel  = $elementBeforeLabel;
+		$displayData->buttonGroup         = $buttonGroup;
 
 		for ($i = 0; $i < count($values); $i++)
 		{
-			$item     = array();
-			$thisName = $type === 'checkbox' ? FabrikString::rtrimword($name, '[]') . '[' . $i . ']' : $name;
-			$label    = '<span>' . $labels[$i] . '</span>';
+			$displayData->i    = $i;
+			$displayData->label = $labels[$i];
 
 			// For values like '1"'
-			$value      = htmlspecialchars($values[$i], ENT_QUOTES);
-			$inputClass = FabrikWorker::j3() ? '' : $type;
-
-			if (array_key_exists('input', $classes))
-			{
-				$inputClass .= ' ' . implode(' ', $classes['input']);
-			}
-
-			$chx = '<input type="' . $type . '" class="fabrikinput ' . $inputClass . '" ' . $inputDataAttributes .
-					' name="' . $thisName . '" value="' . $value . '" ';
-			$sel = in_array($values[$i], $selected);
-			$chx .= $sel ? ' checked="checked" />' : ' />';
-			$labelClass = FabrikWorker::j3() && !$buttonGroup ? $type : '';
-
-			if (array_key_exists('label', $classes))
-			{
-				$labelClass .= ' ' . implode(' ', $classes['label']);
-			}
-
-			$item[]  = '<label class="fabrikgrid_' . $value . ' ' . $labelClass . '">';
-			$item[]  = $elementBeforeLabel == '1' ? $chx . $label : $label . $chx;
-			$item[]  = '</label>';
-			$items[] = implode("\n", $item);
+			$displayData->value = htmlspecialchars($values[$i], ENT_QUOTES);
+			$items[]            = $layout->render($displayData);
 		}
 
 		return $items;
@@ -2133,23 +2117,23 @@ EOD;
 	/**
 	 * Make a grid of items
 	 *
-	 * @param   array  $values               Option values
-	 * @param   array  $labels               Option labels
-	 * @param   array  $selected             Selected options
-	 * @param   string $name                 Input name
-	 * @param   string $type                 Checkbox/radio etc.
-	 * @param   bool   $elementBeforeLabel   Element before or after the label - deprecated - not used in Joomla 3
-	 * @param   int    $optionsPerRow        Number of suboptions to show per row
-	 * @param   array  $classes              Array of arrays, for 'label' and 'container' classes
-	 * @param   bool   $buttonGroup          Should it be rendered as a bootstrap button group (radio only)
-	 * @param   array  $dataAttributes       Additional array('data-foo="bar"), like YesNo needs data-toggle="button"
-	 * @param   array  $inputDataAttributes  Input data attributes e.g. array('data-foo="bar")
+	 * @param   array  $values              Option values
+	 * @param   array  $labels              Option labels
+	 * @param   array  $selected            Selected options
+	 * @param   string $name                Input name
+	 * @param   string $type                Checkbox/radio etc.
+	 * @param   bool   $elementBeforeLabel  Element before or after the label - deprecated - not used in Joomla 3
+	 * @param   int    $optionsPerRow       Number of suboptions to show per row
+	 * @param   array  $classes             Array of arrays, for 'label' and 'container' classes
+	 * @param   bool   $buttonGroup         Should it be rendered as a bootstrap button group (radio only)
+	 * @param   array  $dataAttributes      Additional array('data-foo="bar"), like YesNo needs data-toggle="button"
+	 * @param   array  $inputDataAttributes Input data attributes e.g. array('data-foo="bar")
 	 *
 	 * @return  string  grid
 	 */
 	public static function grid($values, $labels, $selected, $name, $type = 'checkbox',
 		$elementBeforeLabel = true, $optionsPerRow = 4, $classes = array(), $buttonGroup = false, $dataAttributes = array(),
-$inputDataAttributes = array())
+		$inputDataAttributes = array())
 	{
 		if (FabrikWorker::j3())
 		{
@@ -2211,14 +2195,15 @@ $inputDataAttributes = array())
 	 */
 	public static function bootstrapGrid($items, $columns, $spanClass = '', $explode = false)
 	{
-		$layout      = self::getLayout('fabrik-bootstrap-grid');
-		$displayData = new stdClass;
-		$displayData->items = $items;
-		$displayData->columns = $columns;
+		$layout                 = self::getLayout('fabrik-bootstrap-grid');
+		$displayData            = new stdClass;
+		$displayData->items     = $items;
+		$displayData->columns   = $columns;
 		$displayData->spanClass = $spanClass;
-		$displayData->explode = $explode;
+		$displayData->explode   = $explode;
 
 		$grid = $layout->render($displayData);
+
 		return $explode ? $grid : explode("\n", $grid);
 	}
 
