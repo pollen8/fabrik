@@ -1190,6 +1190,14 @@ var FbForm = new Class({
 		}.bind(this));
 	},
 
+	mockSubmit: function() {
+		var btn = this._getButton('Submit');
+		if (!btn) {
+			btn = new Element('button', {'name':'Submit','type':'submit'});
+		}
+		this.doSubmit(new Event.Mock(btn, 'click'), btn);
+	},
+	
 	doSubmit: function (e, btn) {
 		if (this.submitBroker.enabled()) {
 			e.stop();
