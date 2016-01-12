@@ -358,6 +358,18 @@ var FbGoogleMapViz = new Class({
 
 	geoCenterErr: function (p) {
 		fconsole('geo location error=' + p.message);
+		if (this.noData()) {
+			c = new google.maps.LatLng(this.options.lat, this.options.lon);
+		}
+		else {
+			var lasticon = this.options.icons.getLast();
+			if (lasticon) {
+				c = new google.maps.LatLng(lasticon[0], lasticon[1]);
+			} else {
+				c = this.bounds.getCenter();
+			}
+		}
+		this.map.setCenter(c);
 	},
 
 	addIcon: function (lat, lon, html, img, w, h, groupkey, title, radius, c) {
