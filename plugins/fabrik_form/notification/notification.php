@@ -222,7 +222,7 @@ class PlgFabrik_FormNotification extends PlgFabrik_Form
 	public function onAfterProcess()
 	{
 		$params = $this->getParams();
-		$input = $this->_app->input;
+		$input = $this->app->input;
 
 		if ($params->get('notification_ajax', 0) == 1)
 		{
