@@ -302,7 +302,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 
 		if ($placeholder = $params->get('placeholder'))
 		{
-			$calOpts['placeholder'] = $placeholder;
+			$calOpts['placeholder'] = FText::_($placeholder);
 		}
 
 		$str[] = '<div class="fabrikSubElementContainer" id="' . $id . '">';
