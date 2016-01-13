@@ -973,7 +973,8 @@ class FabrikAdminModelElement extends FabModelAdmin
 			$params->js_e_event     = $eEvent[$c];
 			$params->js_e_trigger   = $eTrigger[$c];
 			$params->js_e_condition = $eCond[$c];
-			$params->js_e_value     = htmlspecialchars($eVal[$c]);
+			$foo = str_replace('\\', '\\\\', ($eVal[$c]));
+			$params->js_e_value     = htmlspecialchars($foo);
 			$params->js_published   = $ePublished[$c];
 			$params                 = json_encode($params);
 			$code                   = $jForm['code'][$c];
