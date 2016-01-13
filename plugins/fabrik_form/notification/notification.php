@@ -179,11 +179,19 @@ class PlgFabrik_FormNotification extends PlgFabrik_Form
 
 			foreach ($userIds as $userId)
 			{
+				$ok = true;
 				$query->clear('set');
 				$fields2 = array_merge($fields, array('user_id = ' . $userId));
 				$query->insert('#__{package}_notification')->set($fields2);
 				$db->setQuery($query);
-				$db->execute();
+				try
+				{
+					$db->execute();
+				}
+				catch (Exception $e)
+				{
+					$ok = false;
+				}
 			}
 		}
 	}
