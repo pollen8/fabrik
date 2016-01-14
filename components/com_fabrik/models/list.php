@@ -6117,6 +6117,7 @@ class FabrikFEModelList extends JModelForm
 				{
 					$f = new stdClass;
 					$f->label = $filter->label;
+					$f->id = $filter->id;
 					$f->element = $filter->filter;
 					$f->required = array_key_exists('required', $filter) ? $filter->required : '';
 					$f->displayValue = is_array($filter->displayValue) ? implode(', ', $filter->displayValue) :
@@ -6169,8 +6170,10 @@ class FabrikFEModelList extends JModelForm
 			$o = new stdClass;
 			$searchLabel = $params->get('search-all-label', FText::_('COM_FABRIK_SEARCH'));
 			$class = FabrikWorker::j3() ? 'fabrik_filter search-query input-medium' : 'fabrik_filter';
+			$o->id = 'searchall_' . $this->getRenderContext();
+			$o->displayValue = '';
 			$o->filter = '<input type="search" size="20" placeholder="' . $searchLabel . '" value="' . $v
-			. '" class="' . $class . '" name="' . $requestKey . '" />';
+			. '" class="' . $class . '" name="' . $requestKey . '" id="' . $id . '" />';
 
 			if ($params->get('search-mode-advanced') == 1)
 			{
@@ -6226,6 +6229,7 @@ class FabrikFEModelList extends JModelForm
 						$elementModel->setGroupModel($groupModel);
 						$o = new stdClass;
 						$o->name = $elementModel->getFullName(true, false);
+						$o->id = $elementModel->getHTMLId() . 'value';
 						$o->filter = $elementModel->getFilter($counter, true);
 						$fScript .= $elementModel->filterJS(true, $container);
 						$o->required = $elementModel->getParams()->get('filter_required');

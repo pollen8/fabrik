@@ -517,6 +517,7 @@ class PlgFabrik_Form extends FabrikPlugin
 		$basePath = COM_FABRIK_BASE . '/plugins/fabrik_form/' . $name . '/layouts';
 		$layout = new FabrikLayoutFile('fabrik-form-' . $name. '-' . $type, $basePath, array('debug' => false, 'component' => 'com_fabrik', 'client' => 'site'));
 		$layout->addIncludePaths(JPATH_THEMES . '/' . $this->app->getTemplate() . '/html/layouts');
+		$layout->addIncludePaths(JPATH_THEMES . '/' . $this->app->getTemplate() . '/html/layouts/com_fabrik');
 
 		return $layout;
 	}

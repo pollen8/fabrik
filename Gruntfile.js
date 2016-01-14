@@ -159,19 +159,6 @@ module.exports = function (grunt) {
         }
         console.log('-- Fabrik Plugin folders created');
 
-     /*   zipPromises.push(zipPlugin('plugins/content/fabrik',
-            'fabrik_build/output/pkg_fabrik_sink/packages/plg_fabrik_content_' + version + '.zip'));
-        zipPromises.push(zipPlugin('plugins/search/fabrik',
-            'fabrik_build/output/pkg_fabrik_sink/packages/plg_fabrik_search_' + version + '.zip'));
-        zipPromises.push(zipPlugin('plugins/system/fabrikcron',
-            'fabrik_build/output/pkg_fabrik_sink/packages/plg_fabrik_schedule_' + version + '.zip'));
-        zipPromises.push(zipPlugin('plugins/system/fabrikj2store',
-            'fabrik_build/output/pkg_fabrik_sink/packages/plg_system_fabrikj2store_' + version + '.zip'));
-        zipPromises.push(zipPlugin('plugins/system/fabrik',
-            'fabrik_build/output/pkg_fabrik_sink/packages/plg_fabrik_system_' + version + '.zip'));
-        zipPromises.push(zipPlugin('components/com_comprofiler/plugin/user/plug_fabrik',
-            'fabrik_build/output/pkg_fabrik_sink/packages/plg_community_builder_fabrik_user_' + version + '.zip'));*/
-
         for (p in buildConfig.plugins) {
             for (i = 0; i < buildConfig.plugins[p].length; i++) {
                 config = buildConfig.plugins[p][i];

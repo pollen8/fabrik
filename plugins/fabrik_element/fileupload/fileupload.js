@@ -138,12 +138,12 @@ var FbFileUpload = new Class({
 			}
 		}
 	},
-	
+
 	watchBrowseButton: function () {
 		if (this.options.useWIP && !this.options.ajax_upload && this.options.editable !== false) {
 			document.id(this.element.id).removeEvent('change', this.doBrowseEvent);
 			this.doBrowseEvent = this.doBrowse.bind(this);
-			document.id(this.element.id).addEvent('change', this.doBrowseEvent);			
+			document.id(this.element.id).addEvent('change', this.doBrowseEvent);
 		}
 	},
 
@@ -183,9 +183,9 @@ var FbFileUpload = new Class({
 			}
 
 			b.destroy();
-		}		
+		}
 	},
-	
+
 	/**
 	 * Single file uploads can allow the user to delee the reference and/or file
 	 */
@@ -480,6 +480,7 @@ var FbFileUpload = new Class({
 		});
 
 		this.uploader.bind('FileUploaded', function (up, file, response) {
+			var name;
 			response = JSON.decode(response.response);
 			if (response.error) {
 				window.alert(response.error);
@@ -502,18 +503,24 @@ var FbFileUpload = new Class({
 				this.widget.setImage(response.uri, response.filepath, file.params);
 			}
 
+			if (this.options.inRepeatGroup) {
+				name = this.options.elementName.replace(/\[\d*\]/, '[' + this.getRepeatNum() + ']');
+			} else {
+				name = this.options.elementName;
+			}
 			// Stores the cropparams which we need to reload the crop widget in the correct state (rotation, zoom, loc etc)
 			new Element('input', {
 				'type': 'hidden',
-				name: this.options.elementName + '[crop][' + response.filepath + ']',
+				name: name + '[crop][' + response.filepath + ']',
 				'id': 'coords_' + file.id,
 				'value': JSON.encode(file.params)
 			}).inject(this.pluploadContainer, 'after');
 
+
 			// Stores the actual crop image data retrieved from the canvas
 			new Element('input', {
 				type: 'hidden',
-				name: this.options.elementName + '[cropdata][' + response.filepath + ']',
+				name: name + '[cropdata][' + response.filepath + ']',
 				'id': 'data_' + file.id
 			}).inject(this.pluploadContainer, 'after');
 
@@ -521,7 +528,7 @@ var FbFileUpload = new Class({
 			var idvalue = [file.recordid, '0'].pick();
 			new Element('input', {
 				'type': 'hidden',
-				name: this.options.elementName + '[id][' + response.filepath + ']',
+				name: name + '[id][' + response.filepath + ']',
 				'id': 'id_' + file.id,
 				'value': idvalue
 			}).inject(this.pluploadContainer, 'after');
