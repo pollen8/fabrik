@@ -1704,12 +1704,14 @@ EOD;
 	 */
 	public static function autoComplete($htmlId, $elementId, $formId, $plugin = 'field', $opts = array())
 	{
+		/*
 		$input = JFactory::getApplication()->input;
 
 		if ($input->get('format') === 'raw')
 		{
 			return;
 		}
+		*/
 
 		$json = self::autoCompleteOptions($htmlId, $elementId, $formId, $plugin, $opts);
 		$str  = json_encode($json);
