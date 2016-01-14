@@ -43,6 +43,10 @@ label.fabrikLabel.fabrikTip, span.fabrikTip {
 	display:inline!important
 }
 
+/** bootstrap 3 fix */
+.fabrikButtonsContainer  li.dropdown {
+	display:inline!important
+}
 
 /*** stoopid beez20 fixes */
 #main .fabrikForm  a:hover {
