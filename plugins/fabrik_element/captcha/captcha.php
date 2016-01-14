@@ -378,7 +378,22 @@ class PlgFabrik_ElementCaptcha extends PlgFabrik_Element
 				$server     = $input->server->get('REMOTE_ADDR');
 				$resp       = $noCaptcha->verify($response, $server);
 
-				return $resp->isSuccess();
+				if ($resp->isSuccess())
+				{
+					return true;
+				}
+				else
+				{
+					if (FabrikHelperHTML::isDebug())
+					{
+						$msg = "noCaptcha error: ";
+						foreach ($resp->getErrorCodes() as $code) {
+							$msg .= '<tt>' . $code . '</tt> ';
+						}
+						$this->app->enqueueMessage($msg);
+					}
+					return false;
+				}
 			}
 
 			return false;
