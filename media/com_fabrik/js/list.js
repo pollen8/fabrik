@@ -1412,7 +1412,7 @@ var FbGroupedToggler = new Class({
 	},
 
 	collapse: function () {
-		this.container.getElements('.fabrik_groupdata').hide();
+		jQuery(this.container.getElements('.fabrik_groupdata')).hide();
 		var selector = this.options.bootstrap ? 'i' : 'img';
 		var i = this.container.getElements('.fabrik_groupheading a ' + selector);
 		if (i.length === 0) {
@@ -1425,7 +1425,7 @@ var FbGroupedToggler = new Class({
 	},
 
 	expand: function () {
-		this.container.getElements('.fabrik_groupdata').show();
+		jQuery(this.container.getElements('.fabrik_groupdata')).show();
 		var i = this.container.getElements('.fabrik_groupheading a img');
 		if (i.length === 0) {
 			i = this.container.getElements('.fabrik_groupheading img');

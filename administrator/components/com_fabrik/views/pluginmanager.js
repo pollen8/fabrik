@@ -111,10 +111,11 @@ var PluginManager = new Class({
 	},
 
 	addTop: function (plugin) {
-		var published, show_icon, validate_in, validation_on;
+		var published, show_icon, validate_in, validation_on, must_validate;
 		if (typeOf(plugin) === 'string') {
 			published = 1;
 			show_icon = false;
+			must_validate = false;
 			plugin = plugin ? plugin : '';
 			validate_in = '';
 			validation_on = '';
@@ -122,6 +123,7 @@ var PluginManager = new Class({
 			// Validation plugins
 			published = plugin ? plugin.published : 1;
 			show_icon = plugin ? plugin.show_icon : 1;
+			must_validate = plugin ? plugin.must_validate : 0;
 			validate_in = plugin ? plugin.validate_in : 'both';
 			validation_on = plugin ? plugin.validation_on : 'both';
 			plugin = plugin ? plugin.plugin : '';
@@ -153,6 +155,7 @@ var PluginManager = new Class({
 				'plugin': plugin,
 				'plugin_published': published,
 				'show_icon': show_icon,
+				'must_validate': must_validate,
 				'validate_in': validate_in,
 				'validation_on': validation_on,
 				'c': this.topTotal,

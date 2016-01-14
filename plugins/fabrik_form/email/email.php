@@ -400,6 +400,7 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 
 			foreach ($document->_styleSheets as $url => $ss)
 			{
+				$url = htmlspecialchars_decode($url);
 				$formCss[] = file_get_contents($url);
 			}
 
@@ -438,7 +439,13 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 			$domPdf->render();
 
 			// Store the file in the tmp folder so it can be attached
-			$file = $this->config->get('tmp_path') . '/' . JStringNormalise::toDashSeparated($model->getForm()->label . '-' . $input->getString('rowid')) . '.pdf';
+			$layout                 = FabrikHelperHTML::getLayout('form.fabrik-pdf-title');
+			$displayData         = new stdClass;
+			$displayData->doc	= $document;
+			$displayData->model	= $model;
+			$fileName = $layout->render($displayData);
+			$file = $this->config->get('tmp_path') . '/' . JStringNormalise::toDashSeparated($fileName) . '.pdf';
+
 			$pdf = $domPdf->output();
 
 			if (JFile::write($file, $pdf))

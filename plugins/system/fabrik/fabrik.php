@@ -352,7 +352,8 @@ class PlgSystemFabrik extends JPlugin
 
 				if ($diff + $usage[count($usage) - 1] > $memory - $memSafety)
 				{
-					$app->enqueueMessage('Some records were not searched due to memory limitations');
+					$msg = FText::_('PLG_FABRIK_SYSTEM_SEARCH_MEMORY_LIMIT');
+					$app->enqueueMessage($msg);
 					break;
 				}
 			}

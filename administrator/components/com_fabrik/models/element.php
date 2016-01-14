@@ -225,12 +225,13 @@ class FabrikAdminModelElement extends FabModelAdmin
 	 */
 	public function getPlugins()
 	{
-		$item      = $this->getItem();
-		$plugins   = (array) FArrayHelper::getNestedValue($item->params, 'validations.plugin', array());
-		$published = (array) FArrayHelper::getNestedValue($item->params, 'validations.plugin_published', array());
-		$icons     = (array) FArrayHelper::getNestedValue($item->params, 'validations.show_icon', array());
-		$in        = (array) FArrayHelper::getNestedValue($item->params, 'validations.validate_in', array());
-		$on        = (array) FArrayHelper::getNestedValue($item->params, 'validations.validation_on', array());
+		$item          = $this->getItem();
+		$plugins       = (array) FArrayHelper::getNestedValue($item->params, 'validations.plugin', array());
+		$published     = (array) FArrayHelper::getNestedValue($item->params, 'validations.plugin_published', array());
+		$icons         = (array) FArrayHelper::getNestedValue($item->params, 'validations.show_icon', array());
+		$must_validate = (array) FArrayHelper::getNestedValue($item->params, 'validations.must_validate', array());
+		$in            = (array) FArrayHelper::getNestedValue($item->params, 'validations.validate_in', array());
+		$on            = (array) FArrayHelper::getNestedValue($item->params, 'validations.validation_on', array());
 
 		$return = array();
 
@@ -240,6 +241,7 @@ class FabrikAdminModelElement extends FabModelAdmin
 			$o->plugin        = $plugins[$i];
 			$o->published     = FArrayHelper::getValue($published, $i, 1);
 			$o->show_icon     = FArrayHelper::getValue($icons, $i, 1);
+			$o->must_validate = FArrayHelper::getValue($must_validate, $i, 1);
 			$o->validate_in   = FArrayHelper::getValue($in, $i, 'both');
 			$o->validation_on = FArrayHelper::getValue($on, $i, 'both');
 			$return[]         = $o;
@@ -971,7 +973,8 @@ class FabrikAdminModelElement extends FabModelAdmin
 			$params->js_e_event     = $eEvent[$c];
 			$params->js_e_trigger   = $eTrigger[$c];
 			$params->js_e_condition = $eCond[$c];
-			$params->js_e_value     = htmlspecialchars($eVal[$c]);
+			$foo = str_replace('\\', '\\\\', ($eVal[$c]));
+			$params->js_e_value     = htmlspecialchars($foo);
 			$params->js_published   = $ePublished[$c];
 			$params                 = json_encode($params);
 			$code                   = $jForm['code'][$c];
