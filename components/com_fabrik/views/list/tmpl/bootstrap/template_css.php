@@ -51,4 +51,12 @@ list-style: none;
 	vertical-align: top;
 }
 
+.fabrikListFilterCheckbox {
+	text-align: left;
+}
+
+.fabrikDateListFilterRange {
+	text-align: left;
+	display: inline-block;
+}
 ";?>
