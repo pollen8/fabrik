@@ -885,11 +885,22 @@ class FabrikAdminModelContentTypeImport extends FabModelAdmin
 	{
 		$xml                     = simplexml_load_file(JPATH_COMPONENT_ADMINISTRATOR . '/fabrik.xml');
 		$layoutData->siteVersion = (string) $xml->version;
+		if (!strstr($layoutData->siteVersion, '.'))
+		{
+			$layoutData->siteVersion .= '.0';
+		}
 
 		$contentTypeVersion             = $xpath->query('/contenttype/fabrikversion');
 		$contentTypeVersion             = iterator_to_array($contentTypeVersion);
-		$layoutData->contentTypeVersion = empty($contentTypeVersion) ? 0 : (string) $contentTypeVersion[0]->nodeValue;
+		$layoutData->contentTypeVersion = empty($contentTypeVersion) ? '0.0' : (string) $contentTypeVersion[0]->nodeValue;
+		if (!strstr($layoutData->contentTypeVersion, '.'))
+		{
+			$layoutData->contentTypeVersion .= '.0';
+		}
 
-		$layoutData->versionMismatch = $layoutData->siteVersion !== $layoutData->contentTypeVersion;
+		// Only check for major.minor, ignore point release
+		$minorSite = preg_replace('#^(\d+\.\d+)(.*)#', '${1}', $layoutData->siteVersion);
+		$minorContentType = preg_replace('#^(\d+\.\d+)(.*)#', '${1}', $layoutData->contentTypeVersion);
+		$layoutData->versionMismatch = version_compare($minorSite, $minorContentType, 'ne');
 	}
 }

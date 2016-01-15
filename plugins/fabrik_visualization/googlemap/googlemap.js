@@ -494,7 +494,11 @@ var FbGoogleMapViz = new Class({
 
 				linkText = i.groupkey;
 
-				var lookup = i.groupkey.replace(/[^0-9a-zA-Z_]/g, '');
+				var lookup = i.groupkey;
+				
+				if (typeOf(lookup) === 'string') {
+					lookup = lookup.replace(/[^0-9a-zA-Z_]/g, '');
+				}
 
 				// Allow for images as group by text, (Can't have nested <a>'s so parse the label for content inside possible <a>)
 				if (typeOf(this.options.groupTemplates[i.listid]) !== 'null') {
@@ -507,7 +511,7 @@ var FbGoogleMapViz = new Class({
 				linkText = d.get('html');
 
 				this.grouped[i.groupkey] = [];
-				var k = i.listid + i.groupkey.replace(/[^0-9a-zA-Z_]/g, '');
+				var k = i.listid + lookup;
 				k += ' ' + i.groupClass;
 
 				// Build the group by toggle link
