@@ -44,7 +44,7 @@ if ($rowid !== '')
 {
 	$form .= '_' . $rowid;
 }
-echo "
+echo <<<EOT
 
 /* BEGIN - Your CSS styling starts here */
 
@@ -54,5 +54,5 @@ echo "
 
 /* END - Your CSS styling ends here */
 
-";
-?>
+EOT;
+
