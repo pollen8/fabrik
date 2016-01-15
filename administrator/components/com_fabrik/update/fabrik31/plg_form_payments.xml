@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<updates>
+	<update>
+		<name>Fabrik form: payments</name>
+		<description>Fabrik form: payments</description>
+		<element>plg_form_payments</element>
+		<type>plugin</type>
+		<folder>Fabrik_form</folder>
+		<version>3.3
+.2</version>
+		<downloads>
+			<downloadurl format="zip" type="full">http://fabrikar.com/media/downloads/plg_Fabrik_form_payments_3.3
+.2.zip</downloadurl>
+		</downloads>
+		<maintainer>Rob Clayburn</maintainer>
+		<maintainerurl>http://fabrikar.com</maintainerurl>
+		<targetplatform name="joomla" version="3.2"/>
+	</update>
+<update>
+		<name>Fabrik form: payments</name>
+		<description>Fabrik form: payments</description>
+		<element>plg_form_payments</element>
+		<type>plugin</type>
+		<folder>Fabrik_form</folder>
+		<version>3.3
+.2</version>
+		<downloads>
+			<downloadurl format="zip" type="full">http://fabrikar.com/media/downloads/plg_Fabrik_form_payments_3.3
+.2.zip</downloadurl>
+		</downloads>
+		<maintainer>Rob Clayburn</maintainer>
+		<maintainerurl>http://fabrikar.com</maintainerurl>
+		<targetplatform name="joomla" version="3.2"/>
+	</update>
+<update>
+		<name>Fabrik form: payments</name>
+		<description>Fabrik form: payments</description>
+		<element>plg_form_payments</element>
+		<type>plugin</type>
+		<folder>Fabrik_form</folder>
+		<version>3.3.2
+</version>
+		<downloads>
+			<downloadurl format="zip" type="full">http://fabrikar.com/media/downloads/plg_Fabrik_form_payments_3.3.2
+.zip</downloadurl>
+		</downloads>
+		<maintainer>Rob Clayburn</maintainer>
+		<maintainerurl>http://fabrikar.com</maintainerurl>
+		<targetplatform name="joomla" version="3.2"/>
+	</update>
+<update>
+		<name>Fabrik form: payments</name>
+		<description>Fabrik form: payments</description>
+		<element>plg_form_payments</element>
+		<type>plugin</type>
+		<folder>Fabrik_form</folder>
+		<version>3.3.2</version>
+		<downloads>
+			<downloadurl format="zip" type="full">http://fabrikar.com/media/downloads/plg_Fabrik_form_payments_3.3.2.zip</downloadurl>
+		</downloads>
+		<maintainer>Rob Clayburn</maintainer>
+		<maintainerurl>http://fabrikar.com</maintainerurl>
+		<targetplatform name="joomla" version="3.2"/>
+	</update>
+</updates>

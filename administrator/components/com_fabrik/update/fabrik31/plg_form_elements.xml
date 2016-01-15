@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<updates>
+  <update>
+    <name>Fabrik form: elements</name>
+    <description>Fabrik form: elements</description>
+    <element>plg_form_elements</element>
+    <type>plugin</type>
+    <folder>Fabrik_form</folder>
+    <version>3.3.4</version>
+    <downloads>
+      <downloadurl type="full" format="zip">http://fabrikar.com/media/downloads/plg_fabrik_form_elements_3.3.4.zip</downloadurl>
+    </downloads>
+    <maintainer>Fabrikar.com</maintainer>
+    <maintainerurl>http://fabrikar.com</maintainerurl>
+    <targetplatform name="joomla" version="3"/>
+  </update>
+</updates>

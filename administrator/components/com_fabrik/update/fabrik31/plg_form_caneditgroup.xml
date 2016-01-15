@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<updates>
+	
+
+
+
+<update>
+		<name>Fabrik form: caneditgroup</name>
+		<description>Fabrik form: caneditgroup</description>
+		<element>plg_form_caneditgroup</element>
+		<type>plugin</type>
+		<folder>fabrik_form</folder>
+		<version>3.0.7</version>
+		<downloads>
+			<downloadurl format="zip" type="full">http://fabrikar.com/media/downloads/plg_fabrik_form_caneditgroup_3.0.7.zip</downloadurl>
+		</downloads>
+		<maintainer>Rob Clayburn</maintainer>
+		<maintainerurl>http::/fabrikar.com</maintainerurl>
+		<targetplatform name="joomla" version="2.5"/>
+	</update>
+
+
+<update>
+		<name>Fabrik form: caneditgroup</name>
+		<description>Fabrik form: caneditgroup</description>
+		<element>plg_form_caneditgroup</element>
+		<type>plugin</type>
+		<folder>fabrik_form</folder>
+		<version>3.0.8</version>
+		<downloads>
+			<downloadurl format="zip" type="full">http://fabrikar.com/media/downloads/plg_fabrik_form_caneditgroup_3.0.8.zip</downloadurl>
+		</downloads>
+		<maintainer>Rob Clayburn</maintainer>
+		<maintainerurl>http::/fabrikar.com</maintainerurl>
+		<targetplatform name="joomla" version="2.5"/>
+	</update>
+
+<update>
+		<name>Fabrik form: caneditgroup</name>
+		<description>Fabrik form: caneditgroup</description>
+		<element>plg_form_caneditgroup</element>
+		<type>plugin</type>
+		<folder>fabrik_form</folder>
+		<version>3.0a</version>
+		<downloads>
+			<downloadurl format="zip" type="full">http://fabrikar.com/media/downloads/plg_fabrik_form_caneditgroup_3.0a.zip</downloadurl>
+		</downloads>
+		<maintainer>Rob Clayburn</maintainer>
+		<maintainerurl>http::/fabrikar.com</maintainerurl>
+		<targetplatform name="joomla" version="2.5"/>
+	</update>
+
+<update>
+		<name>Fabrik form: caneditgroup</name>
+		<description>Fabrik form: caneditgroup</description>
+		<element>plg_form_caneditgroup</element>
+		<type>plugin</type>
+		<folder>fabrik_form</folder>
+		<version>3.0.9</version>
+		<downloads>
+			<downloadurl format="zip" type="full">http://fabrikar.com/media/downloads/plg_fabrik_form_caneditgroup_3.0.9.zip</downloadurl>
+		</downloads>
+		<maintainer>Rob Clayburn</maintainer>
+		<maintainerurl>http::/fabrikar.com</maintainerurl>
+		<targetplatform name="joomla" version="2.5"/>
+	</update>
+
+
+
+<update>
+		<name>Fabrik form: caneditgroup</name>
+		<description>Fabrik form: caneditgroup</description>
+		<element>plg_form_caneditgroup</element>
+		<type>plugin</type>
+		<folder>fabrik_form</folder>
+		<version>3.1rc1</version>
+		<downloads>
+			<downloadurl format="zip" type="full">http://fabrikar.com/media/downloads/plg_fabrik_form_caneditgroup_3.1rc1.zip</downloadurl>
+		</downloads>
+		<maintainer>Rob Clayburn</maintainer>
+		<maintainerurl>http::/fabrikar.com</maintainerurl>
+		<targetplatform name="joomla" version="3.1"/>
+	</update>
+
+
+
+
+
+<update>
+		<name>Fabrik form: caneditgroup</name>
+		<description>Fabrik form: caneditgroup</description>
+		<element>plg_form_caneditgroup</element>
+		<type>plugin</type>
+		<folder>fabrik_form</folder>
+		<version>3.1a</version>
+		<downloads>
+			<downloadurl format="zip" type="full">http://fabrikar.com/media/downloads/plg_fabrik_form_caneditgroup_3.1a.zip</downloadurl>
+		</downloads>
+		<maintainer>Rob Clayburn</maintainer>
+		<maintainerurl>http://fabrikar.com</maintainerurl>
+		<targetplatform name="joomla" version="3.0"/>
+	</update>
+
+
+
+
+
+
+
+
+
+
+
+<update>
+		<name>Fabrik form: caneditgroup</name>
+		<description>Fabrik form: caneditgroup</description>
+		<element>plg_form_caneditgroup</element>
+		<type>plugin</type>
+		<folder>fabrik_form</folder>
+		<version>3.1rc2</version>
+		<downloads>
+			<downloadurl format="zip" type="full">http://fabrikar.com/media/downloads/plg_fabrik_form_caneditgroup_3.1rc2.zip</downloadurl>
+		</downloads>
+		<maintainer>Rob Clayburn</maintainer>
+		<maintainerurl>http://fabrikar.com</maintainerurl>
+		<targetplatform name="joomla" version="3.0"/>
+	</update>
+
+<update>
+		<name>Fabrik form: caneditgroup</name>
+		<description>Fabrik form: caneditgroup</description>
+		<element>plg_form_caneditgroup</element>
+		<type>plugin</type>
+		<folder>fabrik_form</folder>
+		<version>3.1b</version>
+		<downloads>
+			<downloadurl format="zip" type="full">http://fabrikar.com/media/downloads/plg_fabrik_form_caneditgroup_3.1b.zip</downloadurl>
+		</downloads>
+		<maintainer>Rob Clayburn</maintainer>
+		<maintainerurl>http://fabrikar.com</maintainerurl>
+		<targetplatform name="joomla" version="3.0"/>
+	</update>
+</updates>

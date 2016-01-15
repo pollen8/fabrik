@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<updates>
+	<update>
+		<name>Fabrik System Plugin</name>
+		<description>Fabrik System Plugin</description>
+		<type>plugin</type>
+		<element>fabrik</element>
+		<folder>system</folder>
+		<version>3.0.9</version>
+		<downloads>
+			<downloadurl format="zip" type="full">http://fabrikar.com/media/downloads/plg_system_fabrik_3.0.9.zip
+			</downloadurl>
+		</downloads>
+		<maintainer>Rob Clayburn</maintainer>
+		<maintainerurl>http::/fabrikar.com</maintainerurl>
+		<targetplatform name="joomla" version="2.5"/>
+	</update>
+
+	<update>
+		<name>Fabrik System Plugin</name>
+		<description>Fabrik System Plugin</description>
+		<type>plugin</type>
+		<element>fabrik</element>
+		<folder>system</folder>
+		<version>3.1rc1</version>
+		<downloads>
+			<downloadurl format="zip" type="full">http://fabrikar.com/media/downloads/plg_system_fabrik_3.1rc1.zip
+			</downloadurl>
+		</downloads>
+		<maintainer>Rob Clayburn</maintainer>
+		<maintainerurl>http://fabrikar.com</maintainerurl>
+		<targetplatform name="joomla" version="3.1"/>
+	</update>
+	<update>
+		<name>Fabrik System Plugin</name>
+		<description>Fabrik System Plugin</description>
+		<type>plugin</type>
+		<element>fabrik</element>
+		<folder>system</folder>
+		<version>3.1</version>
+		<downloads>
+			<downloadurl format="zip" type="full">http://fabrikar.com/media/downloads/plg_system_fabrik_3.1.zip
+			</downloadurl>
+		</downloads>
+		<maintainer>Rob Clayburn</maintainer>
+		<maintainerurl>http://fabrikar.com</maintainerurl>
+		<targetplatform name="joomla" version="3"/>
+	</update>
+
+
+	<update>
+		<name>Fabrik System Plugin</name>
+		<description>Fabrik System Plugin</description>
+		<type>plugin</type>
+		<element>fabrik</element>
+		<folder>system</folder>
+		<version>3.2</version>
+		<downloads>
+			<downloadurl format="zip" type="full">http://fabrikar.com/media/downloads/plg_system_fabrik_3.2.zip
+			</downloadurl>
+		</downloads>
+		<maintainer>Rob Clayburn</maintainer>
+		<maintainerurl>http://fabrikar.com</maintainerurl>
+		<targetplatform name="joomla" version="3"/>
+	</update>
+
+
+	<update>
+		<name>Fabrik system: fabrik</name>
+		<description>Fabrik system: fabrik</description>
+		<element>plg_system_fabrik</element>
+		<type>plugin</type>
+		<folder>Fabrik_system</folder>
+		<version>3.3</version>
+		<downloads>
+			<downloadurl format="zip" type="full">http://fabrikar.com/media/downloads//plg_fabrik_system_fabrik_3.3.zip
+			</downloadurl>
+		</downloads>
+		<maintainer>Rob Clayburn</maintainer>
+		<maintainerurl>http://fabrikar.com</maintainerurl>
+		<targetplatform name="joomla" version="3"/>
+	</update>
+
+
+	<update>
+		<name>Fabrik System Plugin</name>
+		<description>Fabrik System Plugin</description>
+		<type>plugin</type>
+		<element>fabrik</element>
+		<folder>system</folder>
+		<version>3.3.1</version>
+		<downloads>
+			<downloadurl format="zip" type="full">http://fabrikar.com/media/downloads/plg_system_fabrik_3.3.1.zip
+			</downloadurl>
+		</downloads>
+		<maintainer>Rob Clayburn</maintainer>
+		<maintainerurl>http://fabrikar.com</maintainerurl>
+		<targetplatform name="joomla" version="3"/>
+	</update>
+
+	<update>
+		<name>Fabrik System Plugin</name>
+		<description>Fabrik System Plugin</description>
+		<type>plugin</type>
+		<element>fabrik</element>
+		<folder>system</folder>
+		<version>3.3.2</version>
+		<downloads>
+			<downloadurl format="zip" type="full">http://fabrikar.com/media/downloads/plg_system_fabrik_3.3.2.zip
+			</downloadurl>
+		</downloads>
+		<maintainer>Rob Clayburn</maintainer>
+		<maintainerurl>http://fabrikar.com</maintainerurl>
+		<targetplatform name="joomla" version="3"/>
+	</update>
+
+
+	<update>
+		<name>Fabrik System Plugin</name>
+		<description>Fabrik System Plugin</description>
+		<element>fabrik</element>
+		<type>plugin</type>
+		<folder>system</folder>
+		<version>3.3.3</version>
+		<downloads>
+			<downloadurl type="full" format="zip">http://fabrikar.com/media/downloads/plg_fabrik_system_3.3.3.zip
+			</downloadurl>
+		</downloads>
+		<maintainer>Fabrikar.com</maintainer>
+		<maintainerurl>http://fabrikar.com</maintainerurl>
+		<targetplatform name="joomla" version="3"/>
+	</update>
+	<update>
+		<name>Fabrik System Plugin</name>
+		<description>Fabrik System Plugin</description>
+		<element>fabrik</element>
+		<type>plugin</type>
+		<folder>system</folder>
+		<version>3.3.4</version>
+		<downloads>
+			<downloadurl type="full" format="zip">http://fabrikar.com/media/downloads/plg_fabrik_system_3.3.4.zip
+			</downloadurl>
+		</downloads>
+		<maintainer>Fabrikar.com</maintainer>
+		<maintainerurl>http://fabrikar.com</maintainerurl>
+		<targetplatform name="joomla" version="3"/>
+	</update>
+	
+<update><name>Fabrik System Plugin</name><description>Fabrik System Plugin</description><element>fabrik</element><type>plugin</type><folder>system</folder><version>3.4</version><downloads><downloadurl type="full" format="zip">http://fabrikar.com/media/downloads/plg_fabrik_system_3.4.zip</downloadurl></downloads><maintainer>Fabrikar.com</maintainer><maintainerurl>http://fabrikar.com</maintainerurl><targetplatform name="joomla" version="3"/></update></updates>
