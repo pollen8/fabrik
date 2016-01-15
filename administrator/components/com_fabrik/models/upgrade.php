@@ -178,7 +178,7 @@ class FabrikModelUpgrade extends FabModelAdmin
 			}
 		}
 		// Get the upgrade script
-		$sql    = file_get_contents(JPATH_SITE . '/administrator/components/com_fabrik/sql/updates/mysql/2.x-3.0.sql');
+		$sql    = file_get_contents(JPATH_SITE . '/administrator/components/com_fabrik/sql/2.x-3.0.sql');
 		$prefix = JFactory::getApplication()->getCfg('dbprefix');
 		$sql    = str_replace('#__', $prefix, $sql);
 		$sql    = explode("\n", $sql);
