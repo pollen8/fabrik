@@ -35,10 +35,10 @@
 
 header('Content-type: text/css');
 $c = $_REQUEST['c'];
-echo "
+echo <<<EOT
 
 #listform_$c .fabrikForm {
 	margin-top: 25px !important;
 }
 
-";?>
+EOT;
