@@ -114,6 +114,9 @@ class FabrikFEModelCSVExport extends FabModel
 		$config             = JComponentHelper::getParams('com_fabrik');
 		$this->delimiter    = $this->outPutFormat == 'excel' ? COM_FABRIK_EXCEL_CSV_DELIMITER : COM_FABRIK_CSV_DELIMITER;
 		$this->delimiter    = $config->get('csv_delimiter', $this->delimiter);
+		if ($this->delimiter === '\t') {
+			$this->delimiter = "\t";
+		}
 
 		if ($start === 0)
 		{
