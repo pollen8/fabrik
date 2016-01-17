@@ -23,7 +23,11 @@ $imgProps = array('alt' => FText::_('COM_FABRIK_TOGGLE'), 'data-role' => 'toggle
 		<?php endif; ?>
 		<?php echo FabrikHelperHTML::image('arrow-down.png', 'list', $d->tmpl, $imgProps); ?>
 		<span class="groupTitle">
-			<?php echo $d->title; ?> <span class="groupCount">( <?php echo $d->count ?> )</span>
+			<?php echo $d->title; ?> 
+			<?php $d->group_by_show_count = isset($d->group_by_show_count) ? $d->group_by_show_count : '1'; 
+			if ($d->group_by_show_count) : ?>
+				<span class="groupCount">( <?php echo $d->count ?> )</span>
+			<?php endif; ?>			
 		</span>
 	</a>
 
