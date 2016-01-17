@@ -265,6 +265,17 @@
 				<option value="0">JNO</option>
 				<option value="1">JYES</option>
 			</field>
+			
+			<field name="group_by_show_count"
+				type="radio"
+				class="btn-group"
+				default="1"
+				label="COM_FABRIK_FIELD_GROUP_BY_SHOW_COUNT_LABEL"
+				description="COM_FABRIK_FIELD_GROUP_BY_SHOW_COUNT_DESC"
+			>
+				<option value="0">JNO</option>
+				<option value="1">JYES</option>
+			</field>			
 
 		</fieldset>
 
