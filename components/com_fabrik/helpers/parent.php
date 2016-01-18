@@ -1725,6 +1725,12 @@ class FabrikWorker
 			}
 		}
 
+		// If $data was an empty string, make sure we don't return an "emptyish" array with a single empty entry
+		if ($toArray && empty($data))
+		{
+			$data = array();
+		}
+
 		$data = $toArray ? (array) $data : $data;
 
 		return $data;
