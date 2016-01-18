@@ -391,8 +391,15 @@ class PlgFabrik_ElementGooglemap extends PlgFabrik_Element
 
 		if ($opts->reverse_geocode)
 		{
-			foreach (array('route' => 'addr1', 'neighborhood' => 'addr2', 'locality' => 'city', 'administrative_area_level_1' => 'state',
-				'postal_code' => 'zip', 'country' => 'country') as $google_field => $which_field)
+			foreach (array(
+				         'route' => 'addr1',
+				         'neighborhood' => 'addr2',
+				         'locality' => 'city',
+				         'administrative_area_level_1' => 'state',
+				         'postal_code' => 'zip',
+				         'country' => 'country',
+				         'formatted_address' => 'formatted_address'
+			         ) as $google_field => $which_field)
 			{
 				$field_id = '';
 

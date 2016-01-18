@@ -632,15 +632,9 @@ var FbGoogleMap = new Class({
 		this.geocoder.geocode({'latLng': this.marker.getPosition()}, function (results, status) {
 			if (status === google.maps.GeocoderStatus.OK) {
 				if (results[0]) {
-					//infowindow.setContent(results[1].formatted_address);
-					//infowindow.open(map, marker);
-					//alert(results[0].formatted_address);
-					/**
-					 * @TODO - simplify this, as we now index the reverse_geocode_fields with the same keys that
-					 * Google do.  So no need to go through each possibility and map to our key name.  In other words,
-					 * don't need to map "administrative_area_1" on to "state".  However, we do need to fix the handling
-					 * of street_number, route and street_address, as it seems that the Goog
-					 */
+					if (this.options.reverse_geocode_fields.formatted_address) {
+						this.form.formElements.get(this.options.reverse_geocode_fields.formatted_address).update(results[0].formatted_address);
+					}
 					results[0].address_components.each(function (component) {
 						component.types.each(function (type) {
 							if (type === 'street_number') {
