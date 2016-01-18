@@ -85,6 +85,7 @@ class FabrikViewList extends FabrikViewListBase
 		$displayData->tmpl = $this->tmpl;
 		$displayData->title = $this->grouptemplates[$groupedBy];
 		$displayData->count = count($group);
+		$displayData->group_by_show_count = $this->params->get('group_by_show_count','1');		
 		$layout = FabrikHelperHTML::getLayout('list.fabrik-group-by-heading');
 
 		return $layout->render($displayData);
