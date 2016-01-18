@@ -217,6 +217,17 @@
 
 		<fieldset addfieldpath="/administrator/components/com_fabrik/models/fields" name="grouping2">
 
+			<field name="group_by_raw"
+				   type="radio"
+				   class="btn-group"
+				   default="1"
+				   label="COM_FABRIK_FIELD_GROUP_BY_RAW_LABEL"
+				   description="COM_FABRIK_FIELD_GROUP_BY_RAW_DESC"
+			>
+				<option value="0">JNO</option>
+				<option value="1">JYES</option>
+			</field>
+
 			<field name="group_by_access"
 				type="accesslevel"
 				default="1"

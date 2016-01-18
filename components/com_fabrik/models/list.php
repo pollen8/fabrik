@@ -1284,7 +1284,12 @@ class FabrikFEModelList extends JModelForm
 
 			$groupedData = array();
 			$groupBy = FabrikString::safeColNameToArrayKey($groupBy);
-			$groupBy .= '_raw';
+
+			if ($tableParams->get('group_by_raw', '1') === '1')
+			{
+				$groupBy .= '_raw';
+			}
+
 			$groupTitle = null;
 			$aGroupTitles = array();
 
