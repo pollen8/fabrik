@@ -195,6 +195,7 @@ class FabrikModelFullcalendar extends FabrikFEModelVisualization
 			$colour = (array) $params->get('colour');
 			$legend = (array) $params->get('legendtext');
 			$stati = (array) $params->get('status_element');
+			$allDayEl = (array) $params->get('allday_element');
 
 			$this->events = array();
 
@@ -246,9 +247,10 @@ class FabrikModelFullcalendar extends FabrikFEModelVisualization
 
 					$customUrl = FArrayHelper::getValue($customUrls, $i, '');
 					$status = FArrayHelper::getValue($stati, $i, '');
+					$allday = FArrayHelper::getValue($allDayEl, $i, '');
 					$this->events[$tables[$i]][] = array('startdate' => $startDate, 'enddate' => $endDate, 'startShowTime' => $startShowTime,
 						'endShowTime' => $endShowTime, 'label' => $table_label[$i], 'colour' => $colour[$i], 'legendtext' => $legend[$i],
-						'formid' => $table->form_id, 'listid' => $tables[$i], 'customUrl' => $customUrl, 'status' => $status);
+						'formid' => $table->form_id, 'listid' => $tables[$i], 'customUrl' => $customUrl, 'status' => $status, 'allday' => $allday);
 				}
 			}
 		}
@@ -459,9 +461,11 @@ class FabrikModelFullcalendar extends FabrikFEModelVisualization
 				$query = $db->getQuery(true);
 				$query = $listModel->buildQuerySelect('list', $query);
 				$status = trim($data['status']) !== '' ? FabrikString::safeColName($data['status']) : "''";
+				$allday = trim($data['allday']) !== '' ? FabrikString::safeColName($data['allday']) : "''";
 				$query->select($pk . ' AS id, ' . $pk . ' AS rowid, ' . $startdate . ' AS startdate, ' . $enddate . ' AS enddate')
 					->select('"" AS link, ' . $label . ' AS label, ' . $db->quote($data['colour']) . ' AS colour, 0 AS formid')
 				->select($status . ' AS status')
+				->select($allday . ' AS allday')
 				->order($startdate . ' ASC');
 				$query = $listModel->buildQueryJoin($query);
 				//$this_where = trim(str_replace('WHERE', '', $this_where));
@@ -489,8 +493,24 @@ class FabrikModelFullcalendar extends FabrikFEModelVisualization
 							$row->_canDelete = (bool) $listModel->canDelete($row);
 							$row->_canEdit = (bool) $listModel->canEdit($row);
 							$row->_canView = (bool) $listModel->canViewDetails($row);
+							$row->allday = is_string($row->allday) ? filter_var($row->allday, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE) : (bool) $row->allday;
 
-							//Format local dates toISO8601
+							//Format local dates 
+							$date = JFactory::getDate($row->startdate);
+							$row->startdate = $date->format('Y-m-d H:i:s', true);
+							if (!$startLocal) {
+								$date->setTimezone($tz);
+								$row->startdate = $date->format('Y-m-d H:i:s', true);
+							}
+							$date = JFactory::getDate($row->enddate);
+							$row->enddate = $date->format('Y-m-d H:i:s', true);
+							if (!$endLocal) {
+								$date->setTimezone($tz);
+								$row->enddate = $date->format('Y-m-d H:i:s', true);
+							}
+							$row->startShowTime = (bool)$data['startShowTime'];
+							$row->endShowTime = (bool)$data['endShowTime'];
+/*							
 							$mydate = new DateTime($row->startdate);
 							$row->startdate_locale = $mydate->format(DateTime::RFC3339);
 							$mydate = new DateTime($row->enddate);
@@ -544,7 +564,7 @@ class FabrikModelFullcalendar extends FabrikFEModelVisualization
 								$row->enddate_locale = isset($row->startdate_locale) ? $row->startdate_locale : '';
 							}
 
-
+*/
 							$jsevents[$table->id . '_' . $row->id . '_' . $row->startdate] = clone ($row);
 						}
 					}

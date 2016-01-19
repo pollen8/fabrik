@@ -119,7 +119,7 @@ class FabrikViewFullcalendar extends JViewLegacy
 		$options->first_week_day = (int) $params->get('first_week_day', 0);
 		$options->minDuration = $params->get('minimum_duration', "00:30:00");
 		$options->open =  $params->get('open-hour', "00:00:00");
-		$options->close =  $params->get('close-hour', "24:00:00");
+		$options->close =  $params->get('close-hour', "23:59:59");
 
 		$options->showweekends = (bool) $params->get('calendar-show-weekends', true);
 		$options->readonly = (bool) $params->get('calendar-read-only', false);
