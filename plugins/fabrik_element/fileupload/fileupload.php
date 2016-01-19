@@ -1853,7 +1853,6 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		if (!$storage->upload($tmpFile, $filePath))
 		{
 			$uploader->moveError = true;
-			$this->setError(100, JText::sprintf('PLG_ELEMENT_FILEUPLOAD_UPLOAD_ERR', $tmpFile, $filePath));
 
 			return;
 		}
@@ -2481,7 +2480,6 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 	public function onAjax_upload()
 	{
 		$input = $this->app->input;
-		$this->loadMeForAjax();
 
 		/*
 		 * Got this warning on fabrikar.com - not sure why set testing with errors off:
@@ -2527,6 +2525,15 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 				'size' => $_FILES['file']['size']
 			);
 			$filePath = $this->_processIndUpload($file, '', 0);
+
+			if (empty($filePath))
+			{
+				$o->error = FText::_('PLG_ELEMENT_FILEUPLOAD_UPLOAD_ERR');
+				echo json_encode($o);
+
+				return;
+			}
+
 			$uri = $this->getStorage()->pathToURL($filePath);
 			$o->filepath = $filePath;
 			$o->uri = $uri;

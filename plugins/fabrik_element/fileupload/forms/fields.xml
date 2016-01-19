@@ -109,6 +109,17 @@
 				<option value="1">JYES</option>
 			</field>
 
+
+			<field name="allow_unsafe"
+			       type="radio"
+			       class="btn-group"
+			       default="0"
+			       description="PLG_ELEMENT_FILEUPLOAD_ALLOW_UNSAFE_DESC"
+			       label="PLG_ELEMENT_FILEUPLOAD_ALLOW_UNSAFE_LABEL">
+				<option value="0">JNO</option>
+				<option value="1">JYES</option>
+			</field>
+
 		</fieldset>
 
 		<fieldset name="plg-fileupload-display"

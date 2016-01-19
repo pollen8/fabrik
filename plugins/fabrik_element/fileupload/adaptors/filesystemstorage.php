@@ -221,7 +221,10 @@ class Filesystemstorage extends FabrikStorageAdaptor
 	{
 		$this->uploadedFilePath = $filepath;
 
-		if (JFile::upload($tmpFile, $filepath))
+		$params = $this->getParams();
+		$allowUnsafe = $params->get('allow_unsafe', '0') === '1';
+
+		if (JFile::upload($tmpFile, $filepath, false, $allowUnsafe))
 		{
 			return $this->createIndexFile(dirname($filepath));
 		}
