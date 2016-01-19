@@ -217,8 +217,8 @@ var fabrikFullcalendar = new Class({
 			popup.id = "fabrikevent_" + id;
 
 			var body = jQuery(Fabrik.jLayouts['fabrik-visualization-fullcalendar-viewevent'])[0];
-			var mStartDate = moment(e.startdate_locale); 
-			var mEndDate = moment(e.enddate_locale);
+			var mStartDate = moment(e.startdate); 
+			var mEndDate = moment(e.enddate);
 			var dispStartDate = dispEndDate = "";
 			if (moment(mEndDate.format("YYYY-MM-DD")) > moment(mStartDate.format("YYYY-MM-DD"))
 				|| (e.startShowTime === false && e.endShowTime === false) ) {
@@ -260,10 +260,11 @@ var fabrikFullcalendar = new Class({
 				{
 					id: popup.id,
 					title: jQuery(popup).prop('outerHTML'),
-					start: e.startdate_locale,
-					end: e.enddate_locale,
+					start: e.startdate,
+					end: e.enddate,
 					url: e.link,
 					className: e.status,
+					allDay: e.allday,
 					listid: e._listid,
 					rowid: e.__pk_val,
 					formid: e._formid
@@ -287,7 +288,7 @@ var fabrikFullcalendar = new Class({
 		
 		this.windowopts.id = 'addeventwin';
 		var url = 'index.php?option=com_fabrik&controller=visualization.fullcalendar&view=visualization&task=addEvForm&format=raw&listid=' + o.listid + '&rowid=' + o.rowid;
-		url += '&jos_fabrik_calendar_events___visualization_id=' + this.options.calendarId;
+	//	url += '&jos_fabrik_calendar_events___visualization_id=' + this.options.calendarId;
 		url += '&visualizationid=' + this.options.calendarId;
 		
 		if (o.nextView) {
