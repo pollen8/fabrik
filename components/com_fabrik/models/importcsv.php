@@ -11,6 +11,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\String\String;
+
 jimport('joomla.application.component.model');
 jimport('joomla.application.component.modelform');
 
@@ -108,11 +110,11 @@ class FabrikFEModelImportcsv extends JModelForm
 	}
 
 	/**
-	 * Gets the name of the csv file from the uploaded jform
+	 * Gets the name of the csv file from the uploaded jForm
 	 *
 	 * @return string csv file name
 	 */
-	protected function getCSVFileName()
+	public function getCSVFileName()
 	{
 		if (is_null($this->csvFile))
 		{
@@ -159,13 +161,15 @@ class FabrikFEModelImportcsv extends JModelForm
 	/**
 	 * Checks uploaded file, and uploads it
 	 *
+	 * @throws Exception
+	 *
 	 * @return  true  csv file uploaded ok, false error (JError warning raised)
 	 */
 	public function checkUpload()
 	{
 		if (!(bool) ini_get('file_uploads'))
 		{
-			JError::raiseWarning(500, FText::_('COM_FABRIK_ERR_UPLOADS_DISABLED'));
+			throw new Exception(FText::_('COM_FABRIK_ERR_UPLOADS_DISABLED'));
 
 			return false;
 		}
@@ -176,7 +180,7 @@ class FabrikFEModelImportcsv extends JModelForm
 
 		if (!$userFile)
 		{
-			JError::raiseWarning(500, FText::_('COM_FABRIK_IMPORT_CSV_NO_FILE_SELECTED'));
+			throw new Exception(FText::_('COM_FABRIK_IMPORT_CSV_NO_FILE_SELECTED'));
 
 			return false;
 		}
@@ -186,7 +190,7 @@ class FabrikFEModelImportcsv extends JModelForm
 
 		if (!in_array(JFile::getExt($userFile['userfile']['name']), $allowed))
 		{
-			throw new RuntimeException('File must be a csv file', 500);
+			throw new Exception('File must be a csv file', 500);
 		}
 
 		$tmp_name  = $this->getCSVFileName();
@@ -196,9 +200,7 @@ class FabrikFEModelImportcsv extends JModelForm
 
 		if ($resultDir == false && !JFile::exists($to))
 		{
-			JError::raiseWarning(500, FText::_('Upload Error'));
-
-			return false;
+			throw new Exception(FText::_('Upload Error'));
 		}
 
 		return true;
@@ -261,6 +263,12 @@ class FabrikFEModelImportcsv extends JModelForm
 		$data             = $this->getFormData();
 		$field_delimiter  = $this->getFieldDelimiter();
 		$text_delimiter   = stripslashes(FArrayHelper::getValue($data, 'text_delimiter', '"'));
+
+		if (!JFile::exists($baseDir . '/' . $file))
+		{
+			throw new UnexpectedValueException('Csv file : ' . $baseDir . '/' . $file . ' not found');
+		}
+
 		$csv              = new Csv_Bv($baseDir . '/' . $file, $field_delimiter, $text_delimiter, '\\');
 		$csv->inPutFormat = FArrayHelper::getValue($data, 'inPutFormat', 'csv');
 
@@ -281,9 +289,18 @@ class FabrikFEModelImportcsv extends JModelForm
 				foreach ($arr_data as &$heading)
 				{
 					// Remove UFT8 Byte-Order-Mark if present
-					if (substr($heading, 0, 3) == pack("CCC", 0xef, 0xbb, 0xbf))
+
+					/*
+					 * $$$ hugh - for some bizarre reason, this code was stripping the first two characters of the heading
+					 * on one of my client sites, so "Foo Bar" was becoming "o_Bar" if the CSV had a BOM.  So I'm experimenting with just using a str_replace,
+					 * which works on the CSV I'm having issues with.  I've left the original code in place as belt-and-braces.
+					 */
+					$heading = str_replace("\xEF\xBB\xBF",'',$heading);
+
+					$bom = pack("CCC", 0xef, 0xbb, 0xbf);
+					if (0 === strncmp($heading, $bom, 3))
 					{
-						$heading = JString::substr($heading, 3);
+						$heading = String::substr($heading, 3);
 					}
 
 					if ($mode != 2)
@@ -412,6 +429,7 @@ class FabrikFEModelImportcsv extends JModelForm
 	public function removeCSVFile($clearSession = true)
 	{
 		$baseDir       = $this->getBaseDir();
+		echo "remove csv <br>";
 		$userFile_path = $baseDir . '/' . $this->getCSVFileName();
 
 		if (JFile::exists($userFile_path))
@@ -466,7 +484,6 @@ class FabrikFEModelImportcsv extends JModelForm
 		$model->getFormGroupElementData();
 		$pluginManager = JModelLegacy::getInstance('Pluginmanager', 'FabrikFEModel');
 		$pluginManager->getPlugInGroup('list');
-		$aUsedElements = array();
 		$formModel     = $model->getFormModel();
 		$tableParams   = $model->getParams();
 		$mode          = $tableParams->get('csvfullname');
@@ -504,7 +521,7 @@ class FabrikFEModelImportcsv extends JModelForm
 
 					$paramsKey = $elementModel->getFullName(false, false);
 
-					if (JString::strtolower(trim($heading)) == JString::strtolower(trim($name)))
+					if (String::strtolower(trim($heading)) == String::strtolower(trim($name)))
 					{
 						if (!array_key_exists($paramsKey, $this->matchedHeadings))
 						{
@@ -522,7 +539,7 @@ class FabrikFEModelImportcsv extends JModelForm
 
 					$paramsKey .= '_raw';
 
-					if (JString::strtolower(trim($heading)) == JString::strtolower(trim($name)) . '_raw')
+					if (String::strtolower(trim($heading)) == String::strtolower(trim($name)) . '_raw')
 					{
 						if (!array_key_exists($paramsKey, $this->matchedHeadings))
 						{
@@ -641,7 +658,7 @@ class FabrikFEModelImportcsv extends JModelForm
 
 		$key = FabrikString::shortColName($item->db_primary_key);
 
-		// Get a list of exisitng primary key vals
+		// Get a list of existing primary key vals
 		$db    = $model->getDb();
 		$query = $db->getQuery(true);
 		$query->select($item->db_primary_key)->from($item->db_table_name);
@@ -679,9 +696,9 @@ class FabrikFEModelImportcsv extends JModelForm
 				}
 
 				// Test _raw key and use that
-				if (JString::substr($heading, JString::strlen($heading) - 4, JString::strlen($heading)) == '_raw')
+				if (String::substr($heading, String::strlen($heading) - 4, String::strlen($heading)) == '_raw')
 				{
-					$pktestHeading = JString::substr($heading, 0, JString::strlen($heading) - 4);
+					$pktestHeading = String::substr($heading, 0, String::strlen($heading) - 4);
 				}
 				else
 				{
@@ -729,9 +746,9 @@ class FabrikFEModelImportcsv extends JModelForm
 			// into the none raw key. Otherwise if just importing raw data no data stored
 			foreach ($aRow as $k => $val)
 			{
-				if (JString::substr($k, JString::strlen($k) - 4, JString::strlen($k)) == '_raw')
+				if (String::substr($k, String::strlen($k) - 4, String::strlen($k)) == '_raw')
 				{
-					$noneraw        = JString::substr($k, 0, strlen($k) - 4);
+					$noneraw        = String::substr($k, 0, strlen($k) - 4);
 					$aRow[$noneraw] = $val;
 				}
 			}
@@ -797,9 +814,9 @@ class FabrikFEModelImportcsv extends JModelForm
 	{
 		foreach ($aRow as $k => $val)
 		{
-			if (JString::substr($k, JString::strlen($k) - 4, JString::strlen($k)) == '_raw')
+			if (String::substr($k, String::strlen($k) - 4, String::strlen($k)) == '_raw')
 			{
-				$noneraw = JString::substr($k, 0, JString::strlen($k) - 4);
+				$noneraw = String::substr($k, 0, String::strlen($k) - 4);
 
 				if (array_key_exists($noneraw, $aRow))
 				{
@@ -1379,11 +1396,23 @@ class Csv_Bv
 		}
 
 		// Decode three byte unicode characters
-		$pattern = "/([\340-\357])([\200-\277])([\200-\277])/e";
-		$string  = preg_replace($pattern, "'&#'.((ord('\\1')-224)*4096 + (ord('\\2')-128)*64 + (ord('\\3')-128)).';'", $string);
+		$pattern = "/([\340-\357])([\200-\277])([\200-\277])/";
+		$string  = preg_replace_callback(
+			$pattern,
+			function($m) {
+				return '&#' . ((ord($m[1])-224)*4096 + (ord($m[2])-128)*64 + (ord($m[3])-128));
+			},
+			$string
+		);
 
 		// Decode two byte unicode characters
-		$string = preg_replace("/([\300-\337])([\200-\277])/e", "'&#'.((ord('\\1')-192)*64+(ord('\\2')-128)).';'", $string);
+		$string = preg_replace_callback(
+			"/([\300-\337])([\200-\277])/",
+			function ($m) {
+				return '&#' . ((ord($m[1])-192)*64+(ord($m[2])-128));
+			},
+			$string
+		);
 
 		return $string;
 	}

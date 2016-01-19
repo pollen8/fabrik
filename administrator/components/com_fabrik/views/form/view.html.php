@@ -45,6 +45,7 @@ class FabrikAdminViewForm extends JViewLegacy
 
 	/**
 	 * Js code for controlling plugins
+	 *
 	 * @var string
 	 */
 	protected $js;
@@ -52,7 +53,7 @@ class FabrikAdminViewForm extends JViewLegacy
 	/**
 	 * Display the view
 	 *
-	 * @param   string  $tpl  template
+	 * @param   string $tpl template
 	 *
 	 * @return  void
 	 */
@@ -60,10 +61,10 @@ class FabrikAdminViewForm extends JViewLegacy
 	public function display($tpl = null)
 	{
 		// Initialise variables.
-		$this->form = $this->get('Form');
-		$this->item = $this->get('Item');
+		$this->form  = $this->get('Form');
+		$this->item  = $this->get('Item');
 		$this->state = $this->get('State');
-		$this->js = $this->get('Js');
+		$this->js    = $this->get('Js');
 
 		// Check for errors.
 		if (count($errors = $this->get('Errors')))
@@ -75,13 +76,13 @@ class FabrikAdminViewForm extends JViewLegacy
 		FabrikAdminHelper::setViewLayout($this);
 
 		// Set up the script shim
-		$shim = array();
-		$dep = new stdClass;
-		$dep->deps = array('fab/fabrik');
+		$shim                        = array();
+		$dep                         = new stdClass;
+		$dep->deps                   = array('fab/fabrik');
 		$shim['admin/pluginmanager'] = $dep;
 		FabrikHelperHTML::iniRequireJS($shim);
 
-		$srcs = FabrikHelperHTML::framework();
+		$srcs   = FabrikHelperHTML::framework();
 		$srcs[] = 'administrator/components/com_fabrik/views/namespace.js';
 		$srcs[] = 'administrator/components/com_fabrik/views/pluginmanager.js';
 
@@ -92,7 +93,7 @@ class FabrikAdminViewForm extends JViewLegacy
 	/**
 	 * Alias to display
 	 *
-	 * @param   string  $tpl  Template
+	 * @param   string $tpl Template
 	 *
 	 * @return  void
 	 */
@@ -110,16 +111,16 @@ class FabrikAdminViewForm extends JViewLegacy
 
 	protected function addToolbar()
 	{
-		$app = JFactory::getApplication();
+		$app   = JFactory::getApplication();
 		$input = $app->input;
 		$input->set('hidemainmenu', true);
-		$user = JFactory::getUser();
-		$userId = $user->get('id');
-		$isNew = ($this->item->id == 0);
+		$user       = JFactory::getUser();
+		$userId     = $user->get('id');
+		$isNew      = ($this->item->id == 0);
 		$checkedOut = !($this->item->checked_out == 0 || $this->item->checked_out == $user->get('id'));
-		$canDo = FabrikAdminHelper::getActions($this->state->get('filter.category_id'));
-		$title = $isNew ? FText::_('COM_FABRIK_MANAGER_FORM_NEW') : FText::_('COM_FABRIK_MANAGER_FORM_EDIT') . ' "' . $this->item->label . '"';
-		JToolBarHelper::title($title, 'form.png');
+		$canDo      = FabrikAdminHelper::getActions($this->state->get('filter.category_id'));
+		$title      = $isNew ? FText::_('COM_FABRIK_MANAGER_FORM_NEW') : FText::_('COM_FABRIK_MANAGER_FORM_EDIT') . ' "' . $this->item->label . '"';
+		JToolBarHelper::title($title, 'file-2');
 
 		if ($isNew)
 		{
@@ -157,5 +158,49 @@ class FabrikAdminViewForm extends JViewLegacy
 
 		JToolBarHelper::divider();
 		JToolBarHelper::help('JHELP_COMPONENTS_FABRIK_FORMS_EDIT', false, FText::_('JHELP_COMPONENTS_FABRIK_FORMS_EDIT'));
+	}
+
+	/**
+	 * Once a form is saved - we need to display the select content type form.
+	 *
+	 * @param null $tpl
+	 *
+	 * @return void
+	 */
+	public function selectContentType($tpl = null)
+	{
+		$model      = $this->getModel();
+		$this->form = $model->getContentTypeForm();
+		$input      = JFactory::getApplication()->input;
+		$this->data = $input->post->get('jform', array(), 'array');
+		$this->addSelectSaveToolBar();
+		FabrikHelperHTML::framework();
+		FabrikHelperHTML::iniRequireJS();
+
+		parent::display($tpl);
+	}
+
+	/**
+	 * Add select content type tool bar
+	 *
+	 * @throws Exception
+	 *
+	 * @return void
+	 */
+	protected function addSelectSaveToolBar()
+	{
+		$app         = JFactory::getApplication();
+		$this->state = $this->get('State');
+		$input       = $app->input;
+		$input->set('hidemainmenu', true);
+		$canDo = FabrikAdminHelper::getActions($this->state->get('filter.category_id'));
+		JToolBarHelper::title(FText::_('COM_FABRIK_MANAGER_SELECT_CONTENT_TYPE'), 'puzzle');
+
+		// For new records, check the create permission.
+		if ($canDo->get('core.create'))
+		{
+			JToolBarHelper::apply('form.doSave', 'JTOOLBAR_SAVE');
+			JToolBarHelper::cancel('form.cancel', 'JTOOLBAR_CANCEL');
+		}
 	}
 }

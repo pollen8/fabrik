@@ -68,7 +68,7 @@ class FabrikViewForm extends FabrikViewFormBase
 				$name = $this->getModel()->getTable()->label;
 				$name = JStringNormalise::toDashSeparated($name);
 				$this->app->setHeader('Content-Disposition', "attachment;filename=\"" . $name . ".doc\"");
-				$this->document->setMimeEncoding('text/html; charset=Windows-1252', false);
+				$this->doc->setMimeEncoding('text/html; charset=Windows-1252', false);
 			}
 		}
 	}

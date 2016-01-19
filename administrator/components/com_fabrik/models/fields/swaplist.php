@@ -11,6 +11,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\Utilities\ArrayHelper;
+
 require_once JPATH_ADMINISTRATOR . '/components/com_fabrik/helpers/element.php';
 
 /**
@@ -118,7 +120,7 @@ class JFormFieldSwapList extends JFormFieldList
 		$query->select('DISTINCT(group_id)')->from('#__{package}_formgroup');
 		$db->setQuery($query);
 		$usedgroups = $db->loadColumn();
-		JArrayHelper::toInteger($usedgroups);
+		ArrayHelper::toInteger($usedgroups);
 		$query = $db->getQuery(true);
 		$query->select('id AS value, name AS text')->from('#__{package}_groups');
 

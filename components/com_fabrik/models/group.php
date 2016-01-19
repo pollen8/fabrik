@@ -11,6 +11,10 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\String\String;
+use \Joomla\Registry\Registry;
+use Joomla\Utilities\ArrayHelper;
+
 jimport('joomla.application.component.model');
 
 /**
@@ -24,7 +28,7 @@ class FabrikFEModelGroup extends FabModel
 	/**
 	 * Parameters
 	 *
-	 * @var JRegistry
+	 * @var Registry
 	 */
 	protected $params = null;
 
@@ -541,7 +545,7 @@ class FabrikFEModelGroup extends FabModel
 	/**
 	 * Get the groups form model
 	 *
-	 * @return object form model
+	 * @return FabrikFEModelForm form model
 	 */
 	public function getFormModel()
 	{
@@ -584,11 +588,14 @@ class FabrikFEModelGroup extends FabModel
 
 		$ids = (array) $this->app->input->get('elementid', array(), 'array');
 		$sig = implode('.', $ids);
-
+		if ($sig === '')
+		{
+			$sig = 'default';
+		}
 		if (!array_key_exists($sig, $this->publishedElements))
 		{
 			$this->publishedElements[$sig] = array();
-			$elements = $this->getMyElements();
+			$elements = (array) $this->getMyElements();
 
 			foreach ($elements as $elementModel)
 			{
@@ -940,7 +947,7 @@ class FabrikFEModelGroup extends FabModel
 	{
 		if (!$this->params)
 		{
-			$this->params = new JRegistry($this->getGroup()->params);
+			$this->params = new Registry($this->getGroup()->params);
 		}
 
 		return $this->params;
@@ -1010,7 +1017,7 @@ class FabrikFEModelGroup extends FabModel
 
 		$label = $input->getString('group' . $group->id . '_label', $groupTable->label);
 
-		if (JString::stristr($label, "{Add/Edit}"))
+		if (String::stristr($label, "{Add/Edit}"))
 		{
 			$replace = $formModel->isNewRecord() ? FText::_('COM_FABRIK_ADD') : FText::_('COM_FABRIK_EDIT');
 			$label = str_replace("{Add/Edit}", $replace, $label);
@@ -1046,6 +1053,29 @@ class FabrikFEModelGroup extends FabModel
 		}
 
 		return $group;
+	}
+
+	/**
+	 * Get the label positions, if set to global then return form's label positions
+	 *
+	 * @param string $view   form|details
+	 *
+	 * @return int
+	 */
+	public function labelPosition($view = 'form')
+	{
+		$property = $view === 'form' ? 'labels_above' : 'labels_above_details';
+		$params = $this->getParams();
+
+		$position = (int) $params->get($property, -1);
+
+		if ($position === -1)
+		{
+			$formParams = $this->getFormModel()->getParams();
+			$position = (int) $formParams->get($property, 0);
+		}
+
+		return $position;
 	}
 
 	/**
@@ -1167,9 +1197,12 @@ class FabrikFEModelGroup extends FabModel
 		 * has already called the element model's getValue(), the change we just made to formdata won't get picked up
 		 * during the row store processing, as getValue() will return the cached default.
 		 */
-
 		$elementModel = $formModel->getElement($fk_name);
-		$elementModel->clearDefaults();
+
+		if ($elementModel)
+		{
+			$elementModel->clearDefaults();
+		}
 	}
 
 	/**
@@ -1235,10 +1268,7 @@ class FabrikFEModelGroup extends FabModel
 		$repeats = $this->repeatTotals();
 		$joinModel = $this->getJoinModel();
 		$pkField = $joinModel->getForeignID();
-		$fk = $joinModel->getForeignKey();
-
 		$fkOnParent = $this->fkOnParent();
-
 		$listModel = $this->getListModel();
 		$item = $this->getGroup();
 		$formModel = $this->getFormModel();
@@ -1377,7 +1407,6 @@ class FabrikFEModelGroup extends FabModel
 				$listModel->updateRow($parentId, $fkField, $insertId);
 			}
 		}
-
 	}
 
 	/**
@@ -1423,18 +1452,8 @@ class FabrikFEModelGroup extends FabModel
 		 * Get the original row ids. We can ONLY delete from within this set. This
 		 * allows us to respect and prefilter that was applied to the list's data.
 		 */
-		$groupId = $this->getId();
 
-		/**
-		 * $$$ hugh - nooooo, on AJAX submit, request array hasn't been urldecoded, but formData has.
-		 * So in the request it's still hex-ified JSON.  Leaving this line and comment in here as a
-		 * reminder to self we may have other places this happens.
-		 * $origGroupRowsIds = $input->get('fabrik_group_rowids', array(), 'array');
-		 */
-
-		$origGroupRowsIds = FArrayHelper::getValue($formModel->formData, 'fabrik_group_rowids', array());
-		$origGroupRowsIds = FArrayHelper::getValue($origGroupRowsIds, $groupId, array());
-		$origGroupRowsIds = json_decode($origGroupRowsIds);
+		$origGroupRowsIds = $this->getOrigGroupRowsIds();
 
 		/*
 		 * Find out which keys were origionally in the form, but were not submitted
@@ -1475,6 +1494,20 @@ class FabrikFEModelGroup extends FabModel
 		$db->setQuery($query);
 
 		return $db->execute();
+	}
+
+	/**
+	 * Get original group Ids from form metadata
+	 */
+	public function getOrigGroupRowsIds()
+	{
+		$groupId = $this->getId();
+		$formModel = $this->getFormModel();
+		$origGroupRowsIds = FArrayHelper::getValue($formModel->formData, 'fabrik_group_rowids', array());
+		$origGroupRowsIds = FArrayHelper::getValue($origGroupRowsIds, $groupId, array());
+		$origGroupRowsIds = json_decode($origGroupRowsIds);
+
+		return $origGroupRowsIds;
 	}
 
 	/**
@@ -1525,11 +1558,11 @@ class FabrikFEModelGroup extends FabModel
 		if (!empty($elementModels))
 		{
 			$smallerElHTMLName = $tmpElement->getFullName(true, false);
-			$d = FArrayHelper::getValue($data, $smallerElHTMLName, 1);
+			$d = FArrayHelper::getValue($data, $smallerElHTMLName, array());
 
 			if (is_object($d))
 			{
-				$d = JArrayHelper::fromObject($d);
+				$d = ArrayHelper::fromObject($d);
 			}
 
 			$repeatGroup = count($d);
@@ -1554,11 +1587,13 @@ class FabrikFEModelGroup extends FabModel
 	{
 		$allHidden = true;
 
-		foreach ($this->elements as $elementModel)
+		foreach ((array) $this->elements as $elementModel)
 		{
 			$allHidden &= $elementModel->isHidden();
 		}
-		if ((!$allHidden || !empty($group->intro)) && trim($group->title) !== '') {
+
+		if ((!$allHidden || !empty($group->intro)) && trim($group->title) !== '')
+		{
 			return true;
 		}
 

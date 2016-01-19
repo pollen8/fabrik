@@ -33,11 +33,9 @@ endif;
 
 echo $form->intro;
 
-if ($model->editable) :
-		echo '<form method="post" action="' . $form->action . '" ' . $form->attribs . '>';
-	else:
-		echo '<div class="fabrikForm fabrikDetails" id="' . $form->formid . '">';
-endif;
+?>
+	<div class="fabrikForm fabrikDetails" id="<?php echo $form->formid; ?>">
+<?php
 echo $this->plugintop;
 ?>
 
@@ -58,47 +56,43 @@ echo $this->plugintop;
 		?>
 	</div>
 </div>
-<ul class="nav nav-tabs">
 	<?php
+	$tabs = array();
 	$i = 0;
+
 	foreach ($this->groups as $group) :
-		// If this ismultipage then groups are consolidated until a group with a page break
+		$tabId = $this->form->id . '_' . (int)$this->rowid . '_' . $i;
+		// If this is multi-page then groups are consolidated until a group with a page break
 		// So we should only show a tab if: it is first tab, or if it is a page break
-		if (!$model->isMultiPage() || $i == 0 || $group->splitPage) :
-			?>
-				<li <?php if ($i == 0) echo 'class="active"'?>>
-					<a href="#group-tab<?php echo $i;?>" data-toggle="tab">
-						<?php
-							if (!empty($group->title))
-							{
-								echo $group->title;
-							}
-							else
-							{
-								echo $group->name;
-							}
-						?>
-					</a>
-				</li>
-			<?php
+		if (!$model->isMultiPage() || $i === 0 || $group->splitPage) :
+			$tab = new stdClass;
+			$tab->class = $i === 0 ? 'active' : '';
+			$tab->css = $group->css;
+			$tab->href = 'group-tab' . $tabId;
+			$tab->id = 'group' . $group->id . '_tab';
+			$tab->label = !empty($group->title) ? $group->title : $group->name;;
+			$tabs[] = $tab;
 			$i ++;
 		endif;
 	endforeach;
 	?>
-</ul>
+<?php
+echo FabrikHelperHTML::getLayout('fabrik-tabs')->render((object) array('tabs' => $tabs));
+?>
 <div class="tab-content">
 	<?php
 
 	$i = 0;
 	foreach ($this->groups as $group) :
 		$this->group = $group;
+		$tabId = $this->form->id . '_' . (int)$this->rowid . '_' . $i;
+
 		if ($i == 0 || !$model->isMultiPage() || $group->splitPage) :
-			if ($i != 0)
-			{
+			if ($i != 0) :
 				echo '</div>';
-			}
+			endif;
 			?>
-			<div class="tab-pane<?php if ($i == 0) echo " active"?>" id="group-tab<?php echo $i;?>">
+			<div role="tabpanel" class="tab-pane<?php if ($i == 0) echo " active"?>" id="group-tab<?php echo $tabId;?>">
 			<?php
 			$i++;
 		endif; ?>
@@ -145,12 +139,8 @@ echo $this->pluginbottom;
 echo $this->loadTemplate('actions');
 ?>
 
+</div>
 <?php
-if ($model->editable) :
-		echo '</form>';
-	else:
-		echo '</div>';
-endif;
 echo $form->outro;
 echo $this->pluginend;
 echo FabrikHelperHTML::keepalive();

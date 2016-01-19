@@ -1,0 +1,84 @@
+.viewContainer table{
+	width: 100%;
+}
+.fabrikEvent{
+	overflow:hidden !important;
+}
+
+.fabrikEvent a,
+.fabrikEvent a:hover {
+	color:#fff;
+}
+
+.popWin{
+	padding:5px;
+	background-color:#ffffff;
+	border:1px solid #666 !important;
+}
+
+.calendar-message{
+	border-bottom:1px solid #cccccc;
+	border-top:1px solid #cccccc;
+	background-color:#c6e9ff;
+	padding:4px;
+	color:#369aff;
+}
+
+.otherMonth{
+	background-color:#f6f6f6 !important;
+	color:#999999 !important;
+}
+
+.selectedDay{
+	background-color:#FFFFFF !important;
+}
+
+/**** legend *****/
+.calendar-legend{
+	margin:10px;padding:5px;
+	border:1px solid #dddddd;
+}
+
+.calendar-legend ul{
+	list-style:none !important;
+	padding:0;
+	margin:0;
+}
+
+.calendar-legend li{
+	clear:left;
+	padding:3px;
+	background-image:none !important;
+}
+
+.calendar-legend li div{
+	float:left;
+	width:15px;
+	height:15px;
+	border:1px solid #dddddd;
+}
+
+.calendar-legend li span{
+	padding-left:5px;
+}
+
+/*** end legend ***/
+	
+
+/** hack?? for forms **/
+
+.fabrikForm ul{
+list-style:none;
+}
+
+.today{
+	background-color:#dddddd !important;
+}
+
+/*
+.fc-day-grid-event .fc-content {
+	overflow: visible !important;
+	overflow-x: visible !important;
+    overflow-y: visible !important;
+}
+*/

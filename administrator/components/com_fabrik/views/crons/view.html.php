@@ -93,7 +93,7 @@ class FabrikAdminViewCrons extends JViewLegacy
 	{
 		require_once JPATH_COMPONENT . '/helpers/fabrik.php';
 		$canDo = FabrikAdminHelper::getActions($this->state->get('filter.category_id'));
-		JToolBarHelper::title(FText::_('COM_FABRIK_MANAGER_CRONS'), 'crons.png');
+		JToolBarHelper::title(FText::_('COM_FABRIK_MANAGER_CRONS'), 'clock');
 		JToolBarHelper::custom('crons.run', 'upload.png', 'upload_f2.png', 'Run');
 
 		if ($canDo->get('core.create'))

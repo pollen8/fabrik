@@ -170,6 +170,17 @@ class PlgFabrik_FormComment extends PlgFabrik_Form
 	}
 
 	/**
+	 * Is the WYWIWYG option enabled for local commenting
+	 *
+	 * @return boolean
+	 */
+	protected function isWYSIWYG()
+	{
+		$params = $this->getParams();
+		return $params->get('comment_internal_wysiwyg', '0') === '1';
+	}
+
+	/**
 	 * Prepare local comment system
 	 *
 	 * @return  void
@@ -182,7 +193,7 @@ class PlgFabrik_FormComment extends PlgFabrik_Form
 		$this->inJDb = $formModel->getListModel()->inJDb();
 		$this->formModel = $formModel;
 		$jsFiles = array();
-		JHTML::stylesheet('/plugins/fabrik_form/comment/comments.css');
+		JHTML::stylesheet('plugins/fabrik_form/comment/comments.css');
 		$jsFiles[] = 'media/com_fabrik/js/fabrik.js';
 		$jsFiles[] = 'plugins/fabrik_form/comment/comments.js';
 		$jsFiles[] = 'plugins/fabrik_form/comment/inlineedit.js';
@@ -205,7 +216,7 @@ class PlgFabrik_FormComment extends PlgFabrik_Form
 		$layoutData->commnents = $this->writeComments($params, $comments);
 		$layoutData->commentsLocked = $this->commentsLocked;
 		$layoutData->anonymous = $params->get('comment-internal-anonymous');
-		$layoutData->userLoggedIn = $this->user->get('id') == 0;
+		$layoutData->userLoggedIn = $this->user->get('id') != 0;
 		$layoutData->form = $this->getAddCommentForm(0, true);
 
 		if ($this->doThumbs())
@@ -219,6 +230,7 @@ class PlgFabrik_FormComment extends PlgFabrik_Form
 		$opts->rowid = $rowId;
 		$opts->admin = $this->user->authorise('core.delete', 'com_fabrik');
 		$opts->label = '';
+		$opts->wysiwyg = $this->isWYSIWYG();
 
 		foreach ($formModel->data as $k => $v)
 		{
@@ -288,6 +300,18 @@ class PlgFabrik_FormComment extends PlgFabrik_Form
 		$layoutData->name = trim($input->get('ide_people___voornaam', '', 'cookie') . ' ' . $input->get('ide_people___achternaam', '', 'cookie'));
 		$layoutData->email = $input->get('ide_people___email', '', 'cookie');
 		$layoutData->renderOrder = $this->renderOrder;
+		$layoutData->wysiwyg = $this->isWYSIWYG();
+
+		if ($layoutData->wysiwyg)
+		{
+			$cols = $params->get('comment_internal_wysiwyg_cols', '100');
+			$rows = $params->get('comment_internal_wysiwyg_rows', '5');
+			$layoutData->id = 'fabrik_form_comment_' . $layoutData->renderOrder . '_' . $reply_to;
+			$editor = JEditor::getInstance($this->config->get('editor'));
+			$buttons = (bool) $params->get('comment_internal_wysiwyg_extra_buttons', false);
+			$layoutData->editor = $editor->display($layoutData->id, '', '100%', '100%', $cols, $rows, $buttons, $layoutData->id);
+		}
+
 		$layoutData->userLoggedIn = $this->user->get('id') != 0;
 
 		return $layout->render($layoutData);
@@ -540,7 +564,7 @@ class PlgFabrik_FormComment extends PlgFabrik_Form
 		$filter = JFilterInput::getInstance();
 		$request = $filter->clean($_REQUEST, 'array');
 		$row->bind($request);
-		$row->ipaddress = $_SERVER['REMOTE_ADDR'];
+		$row->ipaddress = FabrikString::filteredIp();
 		$row->user_id = $this->user->get('id');
 		$row->approved = 1;
 
@@ -770,8 +794,13 @@ class PlgFabrik_FormComment extends PlgFabrik_Form
 		$params = $this->getParams();
 		$sentTo = array();
 		$title = FText::_('PLG_FORM_COMMENT_NEW_COMMENT_ADDED_TITLE');
-		$message = FText::_('PLG_FORM_COMMENT_NEW_COMMENT_ADDED');
-		$message .= "<br /><a href=\"{$row->url}\">" . FText::_('PLG_FORM_COMMENT_VIEW_COMMENT') . "</a>";
+
+		$layoutData = new stdClass;
+		$layoutData->row = $row;
+		$layoutData->comments = $comments;
+		$layout = $this->getLayout('emailnotification');
+		$message = $layout->render($layoutData);
+
 		$mail = JFactory::getMailer();
 
 		if ((int) $params->get('comment-internal-notify') == 1)

@@ -517,7 +517,7 @@ function SignaturePad (selector, options) {
    */
   function type (val) {
     var typed = $(settings.typed, context)
-      , cleanedVal = val.replace(/>/g, '&gt;').replace(/</g, '&lt;').trim()
+      , cleanedVal = $.trim(val.replace(/>/g, '&gt;').replace(/</g, '&lt;'))
       , oldLength = typeItNumChars
       , edgeOffset = typeItCurrentFontSize * 0.5
 
@@ -719,9 +719,14 @@ function SignaturePad (selector, options) {
 
   $.extend(self, {
     /**
+     * A property to store the current version of Signature Pad
+     */
+    signaturePad : '{{version}}'
+
+    /**
      * Initializes SignaturePad
      */
-    init : function () { init() }
+    , init : function () { init() }
 
     /**
      * Allows options to be updated after initialization
@@ -883,4 +888,4 @@ $.fn.signaturePad.defaults = {
   , onDrawEnd : null // Pass a callback to be exectued after the drawing process
 }
 
-}(jQuery))
+}(jQuery));

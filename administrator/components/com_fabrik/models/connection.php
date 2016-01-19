@@ -12,6 +12,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\Utilities\ArrayHelper;
+
 require_once 'fabmodeladmin.php';
 
 /**
@@ -175,7 +177,7 @@ class FabrikAdminModelConnection extends FabModelAdmin
 		// $$$ Felikat - Not sure what you were testing but it broke stuff!
 		// unset($data['password']);
 
-		$options = $model->getConnectionOptions(JArrayHelper::toObject($data));
+		$options = $model->getConnectionOptions(ArrayHelper::toObject($data));
 		$db = $model->getDriverInstance($options);
 		$key = 'fabrik.connection.' . $data['id'];
 		/**

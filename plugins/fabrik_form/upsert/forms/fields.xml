@@ -16,6 +16,17 @@
 				observe="params_connection_id"
 				repeat="true"/>
 
+			<field name="upsert_insert_only"
+				type="list"
+				default="0"
+				description="PLG_FORM_UPSERT_INSERT_ONLY_DESC"
+				label="PLG_FORM_UPSERT_INSERT_ONLY_LABEL"
+				repeat="true">"plugins/fabrik_form/upsert/language/en-GB/en-GB.plg_fabrik_form_upsert.ini"
+					<option value="0">PLG_FORM_UPSERT_INSERT_ONLY_BOTH</option>
+					<option value="1">PLG_FORM_UPSERT_INSERT_ONLY_INSERT</option>
+					<option value="1">PLG_FORM_UPSERT_INSERT_ONLY_UPDATE</option>
+			</field>
+						
 			<field name="upsert_pk_or_fk"
 				type="radio"
 				default="pk"
@@ -55,15 +66,18 @@
 							connection="params_connection_id"
 							table="params_table"
 							valueformat="tableelement"
+							repeat="true"
 							label="PLG_FORM_UPSERT_KEY_LABEL" />
 							
 						<field name="upsert_value"
 							type="text"
 							size="40"
+							repeat="true"
 							label="PLG_FORM_UPSERT_VALUE_LABEL"/>
 							
 						<field name="upsert_default"
 							type="text"
+							repeat="true"
 							label="PLG_FORM_UPSERT_DEFAULT_LABEL" />
 					
 					</fieldset>

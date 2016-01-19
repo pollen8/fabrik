@@ -11,7 +11,7 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use \Joomla\Utilities\ArrayHelper;
+use Joomla\Utilities\ArrayHelper;
 
 jimport('joomla.application.component.model');
 
@@ -59,6 +59,12 @@ class PlgFabrik_ElementDigsig extends PlgFabrik_Element
 		$digsig_width  = $params->get('digsig_form_width', '400');
 		$digsig_height = $params->get('digsig_form_height', '150');
 		$val           = $this->getValue($data, $repeatCounter);
+
+		if (is_array($val))
+		{
+			$val = json_encode($val);
+		}
+
 		$basePath      = COM_FABRIK_BASE . '/plugins/fabrik_element/digsig/layouts/';
 		$layoutData    = new stdClass;
 		$input         = $this->app->input;
@@ -164,7 +170,7 @@ class PlgFabrik_ElementDigsig extends PlgFabrik_Element
 	 */
 	protected function getIndEmailValue($value, $data = array(), $repeatCounter = 0)
 	{
-		$rowId = JArrayHelper::getValue($data, '__pk_val');
+		$rowId = ArrayHelper::getValue($data, '__pk_val');
 
 		return $this->toImage($rowId);
 	}
@@ -283,7 +289,14 @@ class PlgFabrik_ElementDigsig extends PlgFabrik_Element
 		$sig_id      = $id . '_sig';
 		$opts        = $this->getElementJSOptions($repeatCounter);
 		$data        = $this->getFormModel()->data;
-		$opts->value = htmlspecialchars_decode($this->getValue($data, $repeatCounter));
+		$opts->value = $this->getValue($data, $repeatCounter);
+
+		if (is_array($opts->value))
+		{
+			$opts->value = json_encode($opts->value);
+		}
+
+		$opts->value = htmlspecialchars_decode($opts->value);
 
 		if (empty($opts->value))
 		{

@@ -9,4 +9,4 @@ defined('JPATH_BASE') or die;
 $d = $displayData;
 $props = isset($d->properties) ? $d->properties : '';
 ?>
-<i class="<?php echo $d->icon;?>" <?php echo $props;?>></i>
+<i data-isicon="true" class="<?php echo $d->icon;?>" <?php echo $props;?>></i>

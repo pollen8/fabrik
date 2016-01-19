@@ -50,8 +50,10 @@ class FabTable extends JTable
 		 * https://github.com/Fabrik/fabrik/commit/d98ad7dfa48fefc8b2db55dd5c7a8de16f9fbab4
 		 * ... but the FormGroup table doesn't have a params column.  For now, zap the params for FormGroup,
 		 * until we do another release and can add an SQL update to add it.
+		 *
+		 * $$$ hugh - neither does the comments table ...
 		 */
-		if ($type === 'FormGroup')
+		if ($type === 'FormGroup' || $type === 'comment')
 		{
 			unset($instance->params);
 		}

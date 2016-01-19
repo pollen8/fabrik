@@ -30,11 +30,10 @@ class FabGoogleMapHelper
 	 *
 	 * @return  array  Styles
 	 */
-
 	public static function styleJs($params)
 	{
-		$optStyles = array();
-		$styles = json_decode($params->get('gmap_styles'));
+		$styles = $params->get('gmap_styles');
+		$styles = is_string($styles) ? json_decode($styles) : $styles;
 
 		if (!$styles)
 		{

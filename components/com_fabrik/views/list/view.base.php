@@ -11,6 +11,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use \Joomla\Registry\Registry;
+
 jimport('joomla.application.component.view');
 
 /**
@@ -23,7 +25,7 @@ jimport('joomla.application.component.view');
 class FabrikViewListBase extends FabrikView
 {
 	/**
-	 * @var JRegistry
+	 * @var Registry
 	 */
 	public $params;
 
@@ -104,6 +106,7 @@ class FabrikViewListBase extends FabrikView
 		$opts->links           = array('detail' => $params->get('detailurl', ''), 'edit' => $params->get('editurl', ''), 'add' => $params->get('addurl', ''));
 		$opts->filterMethod    = $this->filter_action;
 		$opts->advancedFilters = $model->getAdvancedFilterValues();
+		$opts->resetFilters    = (bool) FabrikWorker::getMenuOrRequestVar('resetfilters', 0, false, 'request');
 		$opts->form            = 'listform_' . $listRef;
 		$this->listref         = $listRef;
 		$opts->headings        = $model->jsonHeadings();
@@ -489,7 +492,7 @@ class FabrikViewListBase extends FabrikView
 		$this->clearFliterLink = $model->getClearButton();
 		JDEBUG ? $profiler->mark('fabrik getfilters end') : null;
 		$this->filterMode       = (int) $params->get('show-table-filters');
-		$this->toggleFilters    = $this->filterMode == 2 || $this->filterMode == 4;
+		$this->toggleFilters    = in_array($this->filterMode, array(2, 4, 5));
 		$this->showFilters      = $model->getShowFilters();
 		$this->filterCols       = (int) $params->get('list_filter_cols', '1');
 		$this->showClearFilters = ($this->showFilters || $params->get('advanced-filter')) ? true : false;
@@ -542,9 +545,9 @@ class FabrikViewListBase extends FabrikView
 	/**
 	 * Set page title
 	 *
-	 * @param   object $w       Fabrikworker
-	 * @param   object &$params List params
-	 * @param   object $model   List model
+	 * @param   FabrikWorker $w       Fabrik worker
+	 * @param   object       &$params List params
+	 * @param   object       $model   List model
 	 *
 	 * @return  void
 	 */
@@ -561,16 +564,16 @@ class FabrikViewListBase extends FabrikView
 		 */
 		if (is_object($menu) && !$this->isMambot)
 		{
-			$menu_params = new JRegistry((string) $menu->params);
-			$params->set('page_heading', $menu_params->get('page_heading'));
+			$menu_params = new Registry((string) $menu->params);
+			$params->set('page_heading', FText::_($menu_params->get('page_heading')));
 			$params->set('show_page_heading', $menu_params->get('show_page_heading'));
 			$params->set('pageclass_sfx', $menu_params->get('pageclass_sfx'));
-			$params->set('page_title', $menu_params->get('page_title', $menu->title));
+			$params->set('page_title', FText::_($menu_params->get('page_title', $menu->title)));
 		}
 		else
 		{
 			$params->set('show_page_heading', $input->getInt('show_page_heading', 0));
-			$params->set('page_heading', $input->get('title', '', 'string'));
+			$params->set('page_heading', FText::_($input->get('title', '', 'string')));
 		}
 
 		$params->set('show-title', $input->getInt('show-title', $params->get('show-title')));

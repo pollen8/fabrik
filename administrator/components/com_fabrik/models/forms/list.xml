@@ -217,6 +217,17 @@
 
 		<fieldset addfieldpath="/administrator/components/com_fabrik/models/fields" name="grouping2">
 
+			<field name="group_by_raw"
+				   type="radio"
+				   class="btn-group"
+				   default="1"
+				   label="COM_FABRIK_FIELD_GROUP_BY_RAW_LABEL"
+				   description="COM_FABRIK_FIELD_GROUP_BY_RAW_DESC"
+			>
+				<option value="0">JNO</option>
+				<option value="1">JYES</option>
+			</field>
+
 			<field name="group_by_access"
 				type="accesslevel"
 				default="1"
@@ -265,6 +276,17 @@
 				<option value="0">JNO</option>
 				<option value="1">JYES</option>
 			</field>
+			
+			<field name="group_by_show_count"
+				type="radio"
+				class="btn-group"
+				default="1"
+				label="COM_FABRIK_FIELD_GROUP_BY_SHOW_COUNT_LABEL"
+				description="COM_FABRIK_FIELD_GROUP_BY_SHOW_COUNT_DESC"
+			>
+				<option value="0">JNO</option>
+				<option value="1">JYES</option>
+			</field>			
 
 		</fieldset>
 
@@ -334,6 +356,7 @@
 				<option value="2">COM_FABRIK_FILTER_ABOVE_TOGGLE</option>
 				<option value="3">COM_FABRIK_FILTER_UNDER_HEADINGS</option>
 				<option value="4">COM_FABRIK_FILTER_UNDER_HEADINGS_TOGGLE</option>
+				<option value="5">COM_FABRIK_FILTER_POPUP</option>
 			</field>
 
 			<field name="advanced-filter"
@@ -434,7 +457,7 @@
 				<option value="1">COM_FABRIK_FIELD_SHOW_DATA_RECORDED_IN_LIST</option>
 				<option value="2">COM_FABRIK_FIELD_SHOW_ALL_OPTIONS</option>
 			</field>
-			
+
 			<field name="toggle_cols"
 				type="radio"
 				class="btn-group"
@@ -453,7 +476,7 @@
 	 			label="COM_FABRIK_FIELD_LIST_FILTER_COLS_LABEL"
 	 			description="COM_FABRIK_FIELD_LIST_FILTER_COLS_DESC"
 			/>
-			
+
 		</fieldset>
 
 		<fieldset name="navigation">
@@ -531,6 +554,18 @@
 				label="COM_FABRIK_FIELD_SEF_SLUG_LABEL"
 				description="COM_FABRIK_FIELD_SEF_SLUG_DESC"
 			/>
+
+			<field name="show-table-picker"
+				type="radio"
+				class="btn-group"
+				default="1"
+				description="COM_FABRIK_FIELD_SHOW_TABLE_PICKER_DESC"
+				label="COM_FABRIK_FIELD_SHOW_TABLE_PICKER_LABEL"
+			>
+				<option value="0">JNO</option>
+				<option value="1">JYES</option>
+			</field>
+
 
 		</fieldset>
 
@@ -783,7 +818,7 @@
 				label="COM_FABRIK_FIELD_SEARCH_DATE_FIELD_LABEL"
 				description="COM_FABRIK_FIELD_SEARCH_DATE_FIELD_DESC"
 			/>
-						
+
 			<field name="search_link_type"
 				type="radio"
 				class="btn-group"
@@ -791,7 +826,7 @@
 				label="COM_FABRIK_FIELD_SEARCH_LINK_TYPE_LABEL"
 				description="COM_FABRIK_FIELD_SEARCH_LINK_TYPE_DESC">
 					<option value="details">COM_FABRIK_DETAILS</option>
-					<option value="form">COM_FABRIK_FORM</option>	
+					<option value="form">COM_FABRIK_FORM</option>
 			</field>
 
 		</fieldset>
@@ -1038,7 +1073,7 @@
 					<option value="_parent">COM_FABRIK_FIELD_LIST_DETAIL_LINK_TARGET_PARENT</option>
 					<option value="_top">COM_FABRIK_FIELD_LIST_DETAIL_LINK_TARGET_TOP</option>
 			</field>
-			
+
 			<field name="editurl"
 				type="text"
 				class="input-xlarge"
@@ -1131,7 +1166,7 @@
 				label="COM_FABRIK_FIELD_ADD_BUTTON_LABEL_LABEL"
 				description="COM_FABRIK_FIELD_ADD_BUTTON_LABEL_DESC"
 			/>
-			
+
 			<field name="actionMethod"
 				type="list"
 				default="default"
@@ -1259,7 +1294,7 @@
 				description="COM_FABRIK_FIELD_COLLATION_DESC"
 				label="COM_FABRIK_FIELD_COLLATION_LABEL"
 			/>
-			
+
 			<field name="force_collate"
 				type="collation"
 				show_none="true"
@@ -1278,7 +1313,7 @@
 				<option value="0">JNO</option>
 				<option value="1">JYES</option>
 			</field>
-			
+
 			<field name="distinct"
 				type="radio"
 				default="1"
@@ -1286,9 +1321,121 @@
 				description="COM_FABRIK_LIST_DISTINCT_DESC"
 				class="btn-group">
 					<option value="0">JNO</option>
-					<option value="1">JYES</option>	
+					<option value="1">JYES</option>
 			</field>
 
+		</fieldset>
+
+		<fieldset name="open_archive_initiative">
+
+			<field name="open_archive_active"
+			       type="radio"
+			       class="btn-group"
+			       default="0"
+			       label="COM_FABRIK_FIELD_OAI_ACTIVE_LABEL"
+			       description="COM_FABRIK_FIELD_OAI_ACTIVE_DESC">
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+			</field>
+			<field name="open_archive_set_spec"
+			       type="text"
+			       label="COM_FABRIK_OAI_SET_SPEC_LABEL"
+			       description="COM_FABRIK_OAI_SET_SPEC_DESC" />
+
+			<field name="open_archive_timestamp"
+			       type="listfields"
+			       label="COM_FABRIK_FIELD_OAI_TIMESTAMP_LABEL"
+			       description="COM_FABRIK_FIELD_OAI_TIMESTAMP_DESC" />
+
+			<field name="open_archive_license"
+			       type="text"
+			       default="http://creativecommons.org/licenses/by-nd/2.0/rdf"
+			       label="COM_FABRIK_FIELD_OAI_LICENSE_LABEL"
+			       description="COM_FABRIK_FIELD_OAI_LICENSE_DESC" />
+
+			<field name="open_archive_elements"
+			       type="fabrikmodalrepeat"
+			       icon="list"
+			       label="COM_FABRIK_FIELD_OAI_FIELDS_LABEL"
+			       description="COM_FABRIK_FIELD_OAI_FIELDS_DESC"
+			>
+				<fields name="params">
+					<fieldset modal="true" name="open_archive_elements_modal" repeat="true">
+						<field name="dublin_core_element"
+						       label="COM_FABRIK_ELEMENT"
+						       type="listfields"
+						/>
+						<field name="dublin_core_type"
+						       label="COM_FABRIK_DUBLIN_CORE_TYPE_LABEL"
+						       type="list">
+							<option value="dc:description.abstract">abstract</option>
+
+							<option value="dc:contributor">contributor</option>
+							<option value="dc:coverage">coverage</option>
+							<option value="dc:creator">creator</option>
+							<option value="dc:date">date</option>
+							<option value="dc:description">description</option>
+							<option value="dc:format">format</option>
+							<option value="dc:identifier">identifier</option>
+							<option value="dc:language">language</option>
+							<option value="dc:publisher">publisher</option>
+							<option value="dc:relation">relation</option>
+							<option value="dc:rights">rights</option>
+							<option value="dc:source">source</option>
+							<option value="dc:subject">subject</option>
+							<option value="dc:title">title</option>
+							<option value="dc:type">type</option>
+
+							<option value="dcterms:accrualMethod">dcterms:accrualMethod</option>
+							<option value="dcterms:accrualPeriodicity">dcterms:accrualPeriodicity</option>
+							<option value="dcterms:accrualPeriodicity">dcterms:accrualPeriodicity</option>
+							<option value="dcterms:accessRights">dcterms:accessRights</option>
+							<option value="dcterms:audience">dcterms:audience</option>
+							<option value="dcterms:conformsTo">dcterms:conformsTo</option>
+							<option value="dcterms:contributor">dcterms:contributor</option>
+							<option value="dcterms:coverage">dcterms:coverage</option>
+							<option value="dcterms:creator">dcterms:creator</option>
+							<option value="dcterms:educationLevel">dcterms:educationLevel</option>
+							<option value="dcterms:extent">dcterms:extent</option>
+							<option value="dcterms:format">dcterms:format</option>
+							<option value="dcterms:hasFormat">dcterms:hasFormat</option>
+							<option value="dcterms:hasPart">dcterms:hasPart</option>
+							<option value="dcterms:hasVersion">dcterms:hasVersion</option>
+							<option value="dcterms:instructionalMethod">dcterms:instructionalMethod</option>
+							<option value="dcterms:isFormatOf">dcterms:isFormatOf</option>
+							<option value="dcterms:isPartOf">dcterms:isPartOf</option>
+							<option value="dcterms:isReferencedBy">dcterms:isReferencedBy</option>
+							<option value="dcterms:isReplacedBy">dcterms:isReplacedBy</option>
+							<option value="dcterms:isRequiredBy">dcterms:isRequiredBy</option>
+							<option value="dcterms:isVersionOf">dcterms:isVersionOf</option>
+							<option value="dcterms:language">dcterms:language</option>
+							<option value="dcterms:license">dcterms:license</option>
+							<option value="dcterms:mediator">dcterms:mediator</option>
+							<option value="dcterms:medium">dcterms:medium</option>
+							<option value="dcterms:provenance">dcterms:provenance</option>
+							<option value="dcterms:publisher">dcterms:publisher</option>
+							<option value="dcterms:references">dcterms:references</option>
+							<option value="dcterms:relation">dcterms:relation</option>
+							<option value="dcterms:replaces">dcterms:replaces</option>
+							<option value="dcterms:requires">dcterms:requires</option>
+							<option value="dcterms:rights">dcterms:rights</option>
+							<option value="dcterms:rightsHolder">dcterms:rightsHolder</option>
+							<option value="dcterms:source">dcterms:source</option>
+							<option value="dcterms:spatial">dcterms:spatial</option>
+							<option value="dcterms:subject">dcterms:subject</option>
+							<option value="dcterms:temporal">dcterms:temporal</option>
+							<option value="dcterms:type">dcterms:type</option>
+						</field>
+						<field name="raw"
+						       label="COM_FABRIK_FIELD_RAW_LABEL"
+						       type="radio"
+						       default="0">
+							<option value="1">JYES</option>
+							<option value="0">JNO</option>
+						</field>
+					</fieldset>
+				</fields>
+			</field>
 		</fieldset>
 
 		<fieldset name="joins">

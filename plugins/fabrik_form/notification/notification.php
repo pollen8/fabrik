@@ -9,6 +9,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\Utilities\ArrayHelper;
+
 // Require the abstract plugin class
 require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
 
@@ -127,7 +129,8 @@ class PlgFabrik_FormNotification extends PlgFabrik_Form
 		$user = JFactory::getUser();
 		$userId = (int) $user->get('id');
 		$ref = $this->getRef();
-		$query = $this->_db->getQuery(true);
+		$db = FabrikWorker::getDbo();
+		$query = $db->getQuery(true);
 		$fields = array('reference = ' . $ref);
 
 		if ($params->get('send_mode', 0) == '0')
@@ -136,14 +139,14 @@ class PlgFabrik_FormNotification extends PlgFabrik_Form
 
 			if ($add)
 			{
-				$fields[] = 'reason = ' . $this->_db->q($why);
+				$fields[] = 'reason = ' . $db->q($why);
 				$query->insert('#__{package}_notification')->set($fields);
-				$this->_db->setQuery($query);
+				$db->setQuery($query);
 				$ok = true;
 
 				try
 				{
-					$this->_db->execute();
+					$db->execute();
 				}
 				catch (Exception $e)
 				{
@@ -157,7 +160,7 @@ class PlgFabrik_FormNotification extends PlgFabrik_Form
 				}
 				else
 				{
-					echo "oho" . $this->_db->getQuery();
+					echo "oho" . $db->getQuery();
 					exit;
 				}
 			}
@@ -165,8 +168,8 @@ class PlgFabrik_FormNotification extends PlgFabrik_Form
 			{
 				$query->delete('#__{package}_notification')->where($fields);
 				echo FText::_('PLG_CRON_NOTIFICATION_REMOVED');
-				$this->_db->setQuery($query);
-				$this->_db->execute();
+				$db->setQuery($query);
+				$db->execute();
 			}
 		}
 		else
@@ -176,11 +179,19 @@ class PlgFabrik_FormNotification extends PlgFabrik_Form
 
 			foreach ($userIds as $userId)
 			{
+				$ok = true;
 				$query->clear('set');
 				$fields2 = array_merge($fields, array('user_id = ' . $userId));
 				$query->insert('#__{package}_notification')->set($fields2);
-				$this->_db->setQuery($query);
-				$this->_db->execute();
+				$db->setQuery($query);
+				try
+				{
+					$db->execute();
+				}
+				catch (Exception $e)
+				{
+					$ok = false;
+				}
 			}
 		}
 	}
@@ -207,7 +218,7 @@ class PlgFabrik_FormNotification extends PlgFabrik_Form
 			$trigger = $triggerEl->getFullName();
 			$data = $formModel->getData();
 
-			return JArrayHelper::getValue($data, $trigger) == $params->get('trigger_value') ? true : false;
+			return ArrayHelper::getValue($data, $trigger) == $params->get('trigger_value') ? true : false;
 		}
 	}
 
@@ -220,7 +231,7 @@ class PlgFabrik_FormNotification extends PlgFabrik_Form
 	public function onAfterProcess()
 	{
 		$params = $this->getParams();
-		$input = $this->_app->input;
+		$input = $this->app->input;
 
 		if ($params->get('notification_ajax', 0) == 1)
 		{

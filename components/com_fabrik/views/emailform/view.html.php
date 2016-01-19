@@ -11,6 +11,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\String\String;
+
 jimport('joomla.application.component.view');
 
 /**
@@ -81,14 +83,14 @@ class FabrikViewEmailform extends FabrikView
 		 * For basic web-forms, we don't care about anything
 		 * other than requests from a browser:
 		 */
-		if (!isset($_SERVER['HTTP_USER_AGENT']))
+		if (is_null($input->server->get('HTTP_USER_AGENT')))
 		{
 			throw new RuntimeException(FText::_('JERROR_ALERTNOAUTHOR'), 500);
 		}
 
 		// Make sure the form was indeed POST'ed:
 		//  (requires your html form to use: action="post")
-		if (!$_SERVER['REQUEST_METHOD'] == 'POST')
+		if (!$input->server->get('REQUEST_METHOD') == 'POST')
 		{
 			throw new RuntimeException(FText::_('JERROR_ALERTNOAUTHOR'), 500);
 		}
@@ -102,7 +104,7 @@ class FabrikViewEmailform extends FabrikView
 		{
 			foreach ($badStrings as $v2)
 			{
-				if (JString::strpos($v, $v2) !== false)
+				if (String::strpos($v, $v2) !== false)
 				{
 					throw new RuntimeException(FText::_('JERROR_ALERTNOAUTHOR'), 500);
 				}

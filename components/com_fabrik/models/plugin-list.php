@@ -11,6 +11,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\String\String;
+
 jimport('joomla.application.component.model');
 
 /**
@@ -81,13 +83,23 @@ class PlgFabrik_List extends FabrikPlugin
 	}
 
 	/**
+	 * Can the plug-in use AJAX
+	 *
+	 * @return  bool
+	 */
+	public function canAJAX()
+	{
+		return true;
+	}
+
+	/**
 	 * Get the button label
 	 *
 	 * @return  string
 	 */
 	protected function buttonLabel()
 	{
-		$s = JString::strtoupper($this->buttonPrefix);
+		$s = String::strtoupper($this->buttonPrefix);
 
 		return FText::_('PLG_LIST_' . $s . '_' . $s);
 	}
@@ -146,7 +158,7 @@ class PlgFabrik_List extends FabrikPlugin
 				$layoutData = (object) array(
 					'tag' => 'a',
 					'attributes' => 'data-list="' . $this->context . '" title="' . $label . '"',
-					'class' => $name . ' listplugin',
+					'class' => $name . ' listplugin btn-default',
 					'label' => $img . ' ' . $text
 				);
 
@@ -187,6 +199,7 @@ class PlgFabrik_List extends FabrikPlugin
 		$opts->ref = $model->getRenderContext();
 		$opts->name = $this->_getButtonName();
 		$opts->listid = $model->getId();
+		$opts->canAJAX = $this->canAJAX();
 
 		return $opts;
 	}
@@ -281,7 +294,7 @@ class PlgFabrik_List extends FabrikPlugin
 	 */
 	public function onGetFilterKey()
 	{
-		$this->filterKey = JString::strtolower(str_ireplace('PlgFabrik_List', '', get_class($this)));
+		$this->filterKey = String::strtolower(str_ireplace('PlgFabrik_List', '', get_class($this)));
 
 		return $this->filterKey;
 	}
@@ -425,7 +438,7 @@ class PlgFabrik_List extends FabrikPlugin
 	public function getLayout($type)
 	{
 		$name = get_class($this);
-		$name = strtolower(JString::str_ireplace('PlgFabrik_List', '', $name));
+		$name = strtolower(String::str_ireplace('PlgFabrik_List', '', $name));
 		$basePath = COM_FABRIK_BASE . '/plugins/fabrik_list/' . $name . '/layouts';
 		$layout = new FabrikLayoutFile('fabrik-list-' . $name. '-' . $type, $basePath, array('debug' => false, 'component' => 'com_fabrik', 'client' => 'site'));
 		$layout->addIncludePaths(JPATH_THEMES . '/' . $this->app->getTemplate() . '/html/layouts');

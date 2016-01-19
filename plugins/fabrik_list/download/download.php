@@ -44,7 +44,6 @@ class PlgFabrik_ListDownload extends PlgFabrik_List
 	 *
 	 * @return  bool;
 	 */
-
 	public function button(&$args)
 	{
 		parent::button($args);
@@ -92,6 +91,16 @@ class PlgFabrik_ListDownload extends PlgFabrik_List
 	public function canSelectRows()
 	{
 		return $this->canUse();
+	}
+
+	/**
+	 * Can the plug-in use AJAX
+	 *
+	 * @return  bool
+	 */
+	public function canAJAX()
+	{
+		return false;
 	}
 
 	/**
@@ -160,7 +169,7 @@ class PlgFabrik_ListDownload extends PlgFabrik_List
 			$query = $db->getQuery(true);
 			$query->select($db->qn($downloadFile))
 				->from($db->qn($downloadTable))
-				->where($db->qn($downloadFk) . ' IN (' . implode(',', $db->quote($ids)) . ')');
+				->where($db->qn($downloadFk) . ' IN (' . implode(',', $db->q($ids)) . ')');
 			$db->setQuery($query);
 			$results = $db->loadObjectList();
 
@@ -254,9 +263,9 @@ class PlgFabrik_ListDownload extends PlgFabrik_List
 
 					if ($fileSize > 0)
 					{
-						header("Content-Type: application/zip");
-						header("Content-Length: " . filesize($zipFile));
-						header("Content-Disposition: attachment; filename=\"$zipFileBasename.zip\"");
+						header('Content-Type: application/zip');
+						header('Content-Length: ' . filesize($zipFile));
+						header('Content-Disposition: attachment; filename="' . $zipFileBasename . '.zip"');
 						echo file_get_contents($zipFile);
 						JFile::delete($zipFile);
 						exit;

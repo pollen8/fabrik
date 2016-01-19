@@ -81,6 +81,33 @@ class FabrikViewList extends FabrikViewListBase
 		parent::setTitle($w, $params, $model);
 
 		// Set the download file name based on the document title
-		$this->doc->setName($this->document->getTitle());
+		$this->doc->setName($this->doc->getTitle());
+	}
+		/**
+	 * Render the group by heading as a JLayout list.fabrik-group-by-heading
+
+	 *
+	 * @param   string  $groupedBy  Group by key for $this->grouptemplates
+	 * @param   array   $group      Group data
+
+
+
+	 *
+	 * @return string
+	 */
+	public function layoutGroupHeading($groupedBy, $group)
+
+	{
+		$displayData = new stdClass;
+		$displayData->emptyDataMessage = $this->emptyDataMessage;
+		$displayData->tmpl = $this->tmpl;
+		$displayData->title = $this->grouptemplates[$groupedBy];
+		$displayData->count = count($group);
+		$layout = FabrikHelperHTML::getLayout('list.fabrik-group-by-heading');
+
+
+		return $layout->render($displayData);
+
+
 	}
 }

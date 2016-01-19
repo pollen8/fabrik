@@ -6,11 +6,9 @@ defined('_JEXEC') or die('Restricted access');
 if (!empty($this->tabs)) :
 ?>
 <div>
-	<ul class="nav nav-tabs">
-	<?php foreach ($this->tabs as $tab) :
+	<?php
+	echo FabrikHelperHTML::getLayout('fabrik-tabs')->render((object) array('tabs' => $this->tabs));
 	?>
-    <li <?php echo $tab->class ?>><a href="<?php echo $tab->url?>"><?php echo $tab->label?></a></li>
-	<?php endforeach; ?>
-	</ul>
 </div>
-<?php endif; ?>
+<?php
+endif; ?>

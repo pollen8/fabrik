@@ -24,13 +24,14 @@ var FbDatabasejoin = new Class({
 		'fullName': '',
 		'show_please_select': false,
 		'allowadd': false,
-		'autoCompleteOpts': null
+		'autoCompleteOpts': null,
+		'observe': null
 	},
 
 	initialize: function (element, options) {
 		this.activePopUp = false;
 		this.activeSelect = false;
-		this.plugin = 'databasejoin';
+		this.setPlugin('databasejoin');
 		this.parent(element, options);
 		this.init();
 	},
@@ -40,14 +41,12 @@ var FbDatabasejoin = new Class({
 			var b = c.getElement('.toggle-addoption');
 
 			// If duplicated remove old events
+						
+			b.removeEvent('click', this.watchAddEvent);
 
-			b.removeEvent('click', function (e) {
-				this.start(e);
-			}.bind(this));
+			this.watchAddEvent = this.start.bind(this);
 
-			b.addEvent('click', function (e) {
-				this.start(e);
-			}.bind(this));
+			b.addEvent('click', this.watchAddEvent);
 		}
 	},
 
@@ -128,6 +127,39 @@ var FbDatabasejoin = new Class({
 		}
 		return this.parent();
 	},
+	
+	/**
+	 * Removes an option from the db join element
+	 * 
+	 * @param {string} v Option value
+	 * @return  void
+	 */
+	removeOption: function (v, sel)
+	{
+		var el = document.id(this.element.id);
+		switch (this.options.displayType) {
+		case 'dropdown':
+		/* falls through */
+		case 'multilist':
+			var sel = typeOf(this.options.value) === 'array' ? this.options.value : Array.from(this.options.value);
+			options = el.options;
+			for (i=0; i < options.length; i++) {
+				if (options[i].value === v) {
+					el.remove(i);
+					if (sel) {
+						el.selectedIndex = 0;
+					}
+					if (this.options.advanced)
+					{
+						jQuery("#" + this.element.id).trigger("liszt:updated");
+					}
+					break;
+				}
+			}
+			break;
+		}
+	},
+
 
 	/**
 	 * Adds an option to the db join element, for drop-downs and radio buttons
@@ -169,39 +201,66 @@ var FbDatabasejoin = new Class({
 			break;
 		case 'checkbox':
 			opt = this.getCheckboxTmplNode().clone();
-			this._addOption(opt, l, v);
+			var rowOpt = jQuery(Fabrik.jLayouts['fabrik-element-' + this.getPlugin() + '-form-rowopts'])[0];
+			this._addOption(opt, l, v, rowOpt);
 			break;
 		case 'radio':
 		/* falls through */
 		default:
-			var opt = jQuery(Fabrik.jLayouts['fabrik-element-' + this.plugin + '-form-radio'])[0];
-			this._addOption(opt, l, v);
+			var opt = jQuery(Fabrik.jLayouts['fabrik-element-' + this.getPlugin() + '-form-radio' + '_' + this.strElement])[0];
+			var rowOpt = jQuery(Fabrik.jLayouts['fabrik-element-' + this.getPlugin() + '-form-rowopts'])[0];
+			this._addOption(opt, l, v, rowOpt, null);
 			break;
 		}
 	},
 
-	_addOption: function (opt, l, v) {
+	/**
+	 * Adds an option to radio or checkbox
+	 *
+	 * @param {object}  opt    DOM object layout for the option 
+	 * @param {string}  v      Option value
+	 * @param {string}  l      Option label
+	 * @param {object}  rowOpt DOM object layout for the option row container 
+	 *
+	 * @return  void
+	 */
+	_addOption: function (opt, l, v, rowOpt) {
 		var sel = typeOf(this.options.value) === 'array' ? this.options.value : Array.from(this.options.value),
 			i = opt.getElement('input'),
-			last, injectWhere,
 			subOpts = this.getSubOptions(),
+			subOptsRows = this.getSubOptsRow(),
 			checked = sel.contains(v) ? true : false,
-			nameInterator = this.options.displayType === 'radio' ? '' : subOpts.length;
-
+			nameIterator = this.options.displayType === 'radio' ? '' : subOpts.length;
 
 		if (this.options.canRepeat) {
-			i.name = this.options.fullName + '[' + this.options.repeatCounter + '][' + nameInterator + ']';
+			i.name = this.options.fullName + '[' + this.options.repeatCounter + '][' + nameIterator + ']';
 		} else {
-			i.name = this.options.fullName + '[' + nameInterator + ']';
+			i.name = this.options.fullName + '[' + nameIterator + ']';
 		}
 
+		// stuff the value and label into the opt
 		opt.getElement('span').set('html', l);
 		opt.getElement('input').set('value', v);
-		last = subOpts.length === 0 ? this.element : subOpts.getLast();
-		injectWhere = subOpts.length === 0 ? 'bottom' : 'after';
-		var subOption = subOpts.length === 0 ? last : jQuery(last).closest('div[data-role=suboption]')[0];
+		
+		// if no row containers yet, inject one
+		if (subOptsRows.length === 0) {
+			rowOpt.inject(this.element, 'bottom')
+		}
 
-		opt.inject(subOption, injectWhere);
+		// get the last row container
+		var lastRow = jQuery(this.element).children('div[data-role=fabrik-rowopts]').last()[0];
+		// get the opts in the last container
+		var lastRowOpts = jQuery(lastRow).children('div[data-role=suboption]');
+		
+		// if last row is full, inject another one
+		if (lastRowOpts.length >= this.options.optsPerRow) {
+			rowOpt.inject(this.element, 'bottom');
+			lastRow = jQuery(this.element).children('div[data-role=fabrik-rowopts]').last()[0];
+		}
+
+		// inject the new opt into the last row
+		opt.inject(lastRow, 'bottom');
+		// check it
 		opt.getElement('input').checked = checked;
 	},
 
@@ -222,7 +281,32 @@ var FbDatabasejoin = new Class({
 	 */
 	getCheckboxTmplNode: function () {
 		if (Fabrik.bootstrapped) {
-			this.chxTmplNode = jQuery(Fabrik.jLayouts['fabrik-element-' + this.plugin + '-form-checkbox'])[0];
+			this.chxTmplNode = jQuery(Fabrik.jLayouts['fabrik-element-' + this.getPlugin() + '-form-checkbox' + '_' + this.strElement])[0];
+			if (!this.chxTmplNode && this.options.displayType === 'checkbox')
+			{
+				var chxs = this.element.getElements('> .fabrik_subelement');
+				if (chxs.length === 0) {
+					this.chxTmplNode = this.element.getElement('.chxTmplNode').getChildren()[0].clone();
+					this.element.getElement('.chxTmplNode').destroy();
+				} else {
+					this.chxTmplNode = chxs.getLast().clone();
+				}
+			}
+		}
+
+		return this.chxTmplNode;
+	},
+	
+	/**
+	 * As cdd elements clear out the sub options before repopulating we need
+	 * to grab a copy of one of the checkboxes to use as a template node when recreating
+	 * the list
+	 *
+	 * @return  dom node(visible checkbox)
+	 */
+	getCheckboxRowOptsNode: function () {
+		if (Fabrik.bootstrapped) {
+			this.chxTmplNode = jQuery(Fabrik.jLayouts['fabrik-element-' + this.getPlugin() + '-form-rowopts'])[0];
 		} else {
 			if (!this.chxTmplNode && this.options.displayType === 'checkbox')
 			{
@@ -246,6 +330,7 @@ var FbDatabasejoin = new Class({
 	 */
 	updateFromServer: function (v)
 	{
+		var formdata = this.form.getFormElementData();
 		var data = {
 				'option': 'com_fabrik',
 				'format': 'raw',
@@ -255,10 +340,15 @@ var FbDatabasejoin = new Class({
 				'element_id': this.options.id,
 				'formid': this.options.formid
 			};
+		data = Object.append(formdata, data);
+
 		// $$$ hugh - don't think we need to fetch values if auto-complete
 		// and v is empty, otherwise we'll just fetch every row in the target table,
-		// and do thing with it in onComplete?
+		// and do nothing with it in onComplete?  So just set it blank now.
 		if (this.options.displayType === 'auto-complete' && v === '') {
+			this.addOption('', '', true);
+			this.element.fireEvent('change', new Event.Mock(this.element, 'change'));
+			this.element.fireEvent('blur', new Event.Mock(this.element, 'blur'));
 			return;
 		}
 		if (v) {
@@ -267,24 +357,44 @@ var FbDatabasejoin = new Class({
 			// Joined elements strElement isnt right so use fullName as well
 			data[this.options.fullName + '_raw'] = v;
 		}
+		
+		Fabrik.loader.start(this.element.getParent(), Joomla.JText._('COM_FABRIK_LOADING'));
+
 		new Request.JSON({url: '',
 			method: 'post',
 			'data': data,
 			onSuccess: function (json) {
-				var sel, existingValues = this.getOptionValues();
+				Fabrik.loader.stop(this.element.getParent());
+				var sel, changed = false, existingValues = this.getOptionValues();
 
 				// If duplicating an element in a repeat group when its auto-complete we dont want to update its value
 				if (this.options.displayType === 'auto-complete' && v === '' && existingValues.length === 0) {
 					return;
 				}
+				
+				jsonValues = [];
 				json.each(function (o) {
+					jsonValues.push(o.value);
 					if (!existingValues.contains(o.value) && typeOf(o.value) !== 'null') {
 						sel = this.options.value === o.value;
 						this.addOption(o.value, o.text, sel);
-						this.element.fireEvent('change', new Event.Mock(this.element, 'change'));
-						this.element.fireEvent('blur', new Event.Mock(this.element, 'blur'));
+						changed = true;
 					}
 				}.bind(this));
+				
+				existingValues.each(function (ev) {
+					if (!jsonValues.contains(ev)) {
+						sel = this.options.value === ev;
+						this.removeOption(ev, sel);
+						changed = true;
+					}
+				}.bind(this));
+				
+				if (changed) {
+					this.element.fireEvent('change', new Event.Mock(this.element, 'change'));
+					this.element.fireEvent('blur', new Event.Mock(this.element, 'blur'));
+				}
+				
 				this.activePopUp = false;
 			}.bind(this)
 		}).post();
@@ -308,6 +418,22 @@ var FbDatabasejoin = new Class({
 				break;
 		}
 		return o;
+	},
+	
+	getSubOptsRow: function () {
+		var o;
+		switch (this.options.displayType) {
+			case 'dropdown':
+			case 'multilist':
+			default:
+				break;
+			case 'checkbox':
+			case 'radio':
+				o = this.element.getElements('[data-role=fabrik-rowopts]');
+				break;
+		}
+		return o;
+		
 	},
 
 	getOptionValues: function () {
@@ -552,6 +678,10 @@ var FbDatabasejoin = new Class({
 			}
 		}
 		this.options.value = val;
+		if (this.options.advanced)
+		{
+			jQuery("#" + this.element.id).trigger("liszt:updated");
+		}
 	},
 
 	/**
@@ -712,6 +842,50 @@ var FbDatabasejoin = new Class({
 		document.id(f.id).value = '';
 		new FbAutocomplete(this.element.id, this.options.autoCompleteOpts);
 	},
+	
+	watchObserve: function () {
+		this.options.observe.each(function (o) {
+			if (o === '') {
+				return;
+			}
+			if (this.form.formElements[o]) {
+				this.form.formElements[o].addNewEventAux(this.form.formElements[o].getChangeEvent(), function (e) {
+					this.updateFromServer();
+				}.bind(this));
+			}
+			else {
+				var o2;
+				if (this.options.canRepeat) {
+					o2 = o + '_' + this.options.repeatCounter;
+					if (this.form.formElements[o2]) {
+						this.form.formElements[o2].addNewEventAux(this.form.formElements[o2].getChangeEvent(), function (e) {
+							this.updateFromServer();
+						}.bind(this));
+					}
+				}
+				else {
+					this.form.repeatGroupMarkers.each(function (v, k) {
+						o2 = '';
+						for (v2 = 0; v2 < v; v2++) {
+							o2 = 'join___' + this.form.options.group_join_ids[k] + '___' + o + '_' + v2;
+							if (this.form.formElements[o2]) {
+								// $$$ hugh - think we can add this one as sticky ...
+								this.form.formElements[o2].addNewEvent(this.form.formElements[o2].getChangeEvent(), function (e) {
+									this.updateFromServer();
+								}.bind(this));
+							}
+						}
+					}.bind(this));
+				}
+			}
+		}.bind(this));
+	},
+	
+	attachedToForm : function () {
+		if (this.options.editable) {
+			this.watchObserve();
+		}
+	},
 
 	init: function () {
 		// Could be in a popup add record form, in which case we don't want to ini on a main page load
@@ -721,9 +895,10 @@ var FbDatabasejoin = new Class({
 		if (this.options.editable) {
 			this.getCheckboxTmplNode();
 		}
-
+		
 		// If users can add records to the database join drop down
 		if (this.options.allowadd === true && this.options.editable !== false) {
+			this.watchAddEvent = this.start.bind(this);
 			this.watchAdd();
 			Fabrik.addEvent('fabrik.form.submitted', function (form, json) {
 

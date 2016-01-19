@@ -61,49 +61,44 @@ echo $this->plugintop;
 		?>
 	</div>
 </div>
-<ul class="nav nav-tabs">
-	<?php
-	$i = 0;
-	foreach ($this->groups as $group) :
-		$tab_id = $this->form->id . '_' . (int)$this->rowid . '_' . $i;
-		// If this ismultipage then groups are consolidated until a group with a page break
-		// So we should only show a tab if: it is first tab, or if it is a page break
-		if (!$model->isMultiPage() || $i == 0 || $group->splitPage) :
-			?>
-				<li <?php if ($i == 0) echo 'class="active"'?> style="<?php echo $group->css;?>">
-					<a href="#group-tab<?php echo $tab_id;?>" data-toggle="tab" id="group<?php echo $group->id;?>_tab">
-						<?php
-							if (!empty($group->title))
-							{
-								echo $group->title;
-							}
-							else
-							{
-								echo $group->name;
-							}
-						?>
-					</a>
-				</li>
-			<?php
-			$i ++;
-		endif;
-	endforeach;
-	?>
-</ul>
+
+
+<?php
+$i = 0;
+$tabs = array();
+
+foreach ($this->groups as $group) :
+	$tabId = $this->form->id . '_' . (int)$this->rowid . '_' . $i;
+	// If this is multi-page then groups are consolidated until a group with a page break
+	// So we should only show a tab if: it is first tab, or if it is a page break
+	if (!$model->isMultiPage() || $i === 0 || $group->splitPage) :
+		$tab = new stdClass;
+		$tab->class = $i === 0 ? 'active' : '';
+		$tab->css = $group->css;
+		$tab->href = 'group-tab' . $tabId;
+		$tab->id = 'group' . $group->id . '_tab';
+		$tab->label = !empty($group->title) ? $group->title : $group->name;;
+		$tabs[] = $tab;
+		$i ++;
+	endif;
+endforeach;
+
+echo FabrikHelperHTML::getLayout('fabrik-tabs')->render((object) array('tabs' => $tabs));
+?>
+
 <div class="tab-content">
 	<?php
 
 	$i = 0;
 	foreach ($this->groups as $group) :
 		$this->group = $group;
-		$tab_id = $this->form->id . '_' . (int)$this->rowid . '_' . $i;
+		$tabId = $this->form->id . '_' . (int)$this->rowid . '_' . $i;
 		if ($i == 0 || !$model->isMultiPage() || $group->splitPage) :
-			if ($i != 0)
-			{
+			if ($i != 0) :
 				echo '</div>';
-			}
+			endif;
 			?>
-			<div class="tab-pane<?php if ($i == 0) echo " active"?>" id="group-tab<?php echo $tab_id;?>">
+			<div role="tabpanel" class="tab-pane<?php if ($i == 0) echo " active"?>" id="group-tab<?php echo $tabId;?>">
 			<?php
 			$i++;
 		endif; ?>

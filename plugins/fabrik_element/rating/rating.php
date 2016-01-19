@@ -11,6 +11,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\Utilities\ArrayHelper;
+
 jimport('joomla.application.component.model');
 
 require_once JPATH_SITE . '/components/com_fabrik/models/element.php';
@@ -86,14 +88,14 @@ class PlgFabrik_ElementRating extends PlgFabrik_Element
 		if ($params->get('rating-mode') !== 'creator-rating')
 		{
 			$d = $this->getListModel()->getData();
-			$ids = JArrayHelper::getColumn($d, '__pk_val');
+			$ids = ArrayHelper::getColumn($d, '__pk_val');
 			list($data, $total) = $this->getRatingAverage($data, $listId, $formId, $rowId, $ids);
 		}
 
 		$data = FabrikWorker::JSONtoData($data, true);
 		FabrikHelperHTML::addPath(COM_FABRIK_BASE . 'plugins/fabrik_element/rating/images/', 'image', 'list', false);
 		$colData = $this->getListModel()->getData();
-		$ids = JArrayHelper::getColumn($colData, '__pk_val');
+		$ids = ArrayHelper::getColumn($colData, '__pk_val');
 		$canRate = $this->canRate($rowId, $ids);
 
 		for ($i = 0; $i < count($data); $i++)
@@ -162,7 +164,7 @@ class PlgFabrik_ElementRating extends PlgFabrik_Element
 			$listId = $list->id;
 			$formId = $list->form_id;
 			$d = $this->getListModel()->getData();
-			$ids = JArrayHelper::getColumn($d, '__pk_val');
+			$ids = ArrayHelper::getColumn($d, '__pk_val');
 			$rowId = isset($thisRow->__pk_val) ? $thisRow->__pk_val : $thisRow->id;
 			list($avg, $total) = $this->getRatingAverage($data, $listId, $formId, $rowId, $ids);
 
@@ -191,14 +193,24 @@ class PlgFabrik_ElementRating extends PlgFabrik_Element
 
 		if (!isset($this->avgs))
 		{
-			JArrayHelper::toInteger($ids);
+			ArrayHelper::toInteger($ids);
 			$db = FabrikWorker::getDbo(true);
 			$elementId = $this->getElement()->id;
 
 			$query = $db->getQuery(true);
 			$query->select('row_id, AVG(rating) AS r, COUNT(rating) AS total')->from(' #__{package}_ratings')
-				->where(array('rating <> -1', 'listid = ' . (int) $listId, 'formid = ' . (int) $formId, 'element_id = ' . (int) $elementId))
-				->where('row_id IN (' . implode(',', $ids) . ')')->group('row_id');
+				->where(array('rating <> -1', 'listid = ' . (int) $listId, 'formid = ' . (int) $formId, 'element_id = ' . (int) $elementId));
+
+			if (FArrayHelper::emptyIsh($ids))
+			{
+				$query->where('6 = -6');
+			}
+			else
+			{
+				$query->where('row_id IN (' . implode(',', $ids) . ')');
+			}
+
+			$query->group('row_id');
 
 			// Do this  query so that list view only needs one query to load up all ratings
 			$db->setQuery($query);
@@ -234,13 +246,23 @@ class PlgFabrik_ElementRating extends PlgFabrik_Element
 				$ids[] = $rowId;
 			}
 
-			JArrayHelper::toInteger($ids);
+			ArrayHelper::toInteger($ids);
 			$db = FabrikWorker::getDbo(true);
 			$elementId = $this->getElement()->id;
 			$query = $db->getQuery(true);
 			$query->select('row_id, user_id')->from('#__{package}_ratings')
-				->where(array('rating <> -1', 'listid = ' . (int) $listId, 'formid = ' . (int) $formId, 'element_id = ' . (int) $elementId))
-				->where('row_id IN (' . implode(',', $ids) . ')')->group('row_id');
+				->where(array('rating <> -1', 'listid = ' . (int) $listId, 'formid = ' . (int) $formId, 'element_id = ' . (int) $elementId));
+
+			if (FArrayHelper::emptyIsh($ids))
+			{
+				$query->where('6 = -6');
+			}
+			else
+			{
+				$query->where('row_id IN (' . implode(',', $ids) . ')');
+			}
+
+			$query->group('row_id');
 
 			// Do this  query so that table view only needs one query to load up all ratings
 			$db->setQuery($query);
@@ -314,10 +336,12 @@ class PlgFabrik_ElementRating extends PlgFabrik_Element
 
 		$rowId = $this->getFormModel()->getRowId();
 
+		/*
 		if (empty($rowId))
 		{
 			return FText::_('PLG_ELEMENT_RATING_NO_RATING_TILL_CREATED');
 		}
+		*/
 
 		$css = $this->canRate($rowId) ? 'cursor:pointer;' : '';
 		$value = $this->getValue($data, $repeatCounter);
@@ -364,20 +388,21 @@ class PlgFabrik_ElementRating extends PlgFabrik_Element
 	 */
 	public function storeDatabaseFormat($val, $data)
 	{
-		$input = $this->app->input;
 		$params = $this->getParams();
-		$listId = $input->getInt('listid');
-		$formId = $input->getInt('formid');
-		$rowId = $input->get('rowid', '', 'string');
-
-		if (empty($listId))
-		{
-			$formModel = $this->getFormModel();
-			$listId = $formModel->getListModel()->getId();
-		}
 
 		if ($params->get('rating-mode') == 'user-rating')
 		{
+			$input = $this->app->input;
+			$listId = $input->getInt('listid');
+			$formId = $input->getInt('formid');
+			$rowId = $input->get('rowid', '', 'string');
+
+			if (empty($listId))
+			{
+				$formModel = $this->getFormModel();
+				$listId = $formModel->getListModel()->getId();
+			}
+
 			list($val, $total) = $this->getRatingAverage($val, $listId, $formId, $rowId);
 		}
 
@@ -404,6 +429,7 @@ class PlgFabrik_ElementRating extends PlgFabrik_Element
 
 		$this->doRating($listId, $formId, $rowId, $rating);
 
+		/*
 		if ($params->get('rating-mode') == 'creator-rating')
 		{
 			// @todo FIX for joins as well
@@ -417,6 +443,8 @@ class PlgFabrik_ElementRating extends PlgFabrik_Element
 			$db->setQuery($query);
 			$db->execute();
 		}
+		*/
+
 
 		$this->getRatingAverage('', $listId, $formId, $rowId);
 		echo $this->avg;
@@ -432,7 +460,7 @@ class PlgFabrik_ElementRating extends PlgFabrik_Element
 	 */
 	private function getCookieName($listId, $rowId)
 	{
-		$cookieName = "rating-table_{$listId}_row_{$rowId}" . $_SERVER['REMOTE_ADDR'];
+		$cookieName = "rating-table_{$listId}_row_{$rowId}" . FabrikString::filteredIp();
 		jimport('joomla.utilities.utility');
 
 		return JApplication::getHash($cookieName);
@@ -568,6 +596,7 @@ class PlgFabrik_ElementRating extends PlgFabrik_Element
 		$opts->formid = $formId;
 		$opts->canRate = (bool) $this->canRate();
 		$opts->mode = $params->get('rating-mode');
+		$opts->doAjax = $params->get('rating-mode') != 'creator-rating';
 		$opts->view = $input->get('view');
 		$opts->rating = $value;
 		$opts->listid = $listId;
@@ -602,6 +631,7 @@ class PlgFabrik_ElementRating extends PlgFabrik_Element
 		}
 
 		$opts->canRate = $params->get('rating-mode') == 'creator-rating' ? true : $this->canRate();
+		$opts->doAjax = $params->get('rating-mode') != 'creator-rating';
 		$opts->ajaxloader = FabrikHelperHTML::image("ajax-loader.gif", 'list', @$this->tmpl, array(), true);
 		$opts->listRef = $listModel->getRenderContext();
 		$opts->formid = $listModel->getFormModel()->getId();

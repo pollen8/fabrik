@@ -20,7 +20,6 @@ jimport('joomla.application.component.view');
  * @subpackage  Fabrik
  * @since       1.5
  */
-
 class FabrikAdminViewList extends JViewLegacy
 {
 	/**
@@ -46,6 +45,7 @@ class FabrikAdminViewList extends JViewLegacy
 
 	/**
 	 * JS code
+	 *
 	 * @var string
 	 */
 	protected $js;
@@ -53,21 +53,20 @@ class FabrikAdminViewList extends JViewLegacy
 	/**
 	 * Display the list
 	 *
-	 * @param   string  $tpl  template
+	 * @param   string $tpl template
 	 *
 	 * @return  void
 	 */
-
 	public function display($tpl = null)
 	{
 		// Initialise variables.
-		$model = $this->getModel();
+		$model      = $this->getModel();
 		$this->form = $this->get('Form');
 		$this->item = $this->get('Item');
-		$formModel = $this->get('FormModel');
+		$formModel  = $this->get('FormModel');
 		$formModel->setId($this->item->form_id);
 		$this->state = $this->get('State');
-		$this->js = $model->getJs();
+		$this->js    = $model->getJs();
 		$this->addToolbar();
 
 		if ($this->item->id == 0)
@@ -78,12 +77,12 @@ class FabrikAdminViewList extends JViewLegacy
 		else
 		{
 			$this->order_by = array();
-			$feListModel = $formModel->getListModel();
-			$orderbys = $feListModel->getOrderBys();
+			$feListModel    = $formModel->getListModel();
+			$orderBys       = $feListModel->getOrderBys();
 
-			foreach ($orderbys as $orderby)
+			foreach ($orderBys as $orderBy)
 			{
-				$this->order_by[] = $formModel->getElementList('order_by[]', $orderby, true, false, false, 'id');
+				$this->order_by[] = $formModel->getElementList('order_by[]', $orderBy, true, false, false, 'id');
 			}
 
 			if (empty($this->order_by))
@@ -94,9 +93,9 @@ class FabrikAdminViewList extends JViewLegacy
 			$orderDir[] = JHTML::_('select.option', 'ASC', FText::_('COM_FABRIK_ASCENDING'));
 			$orderDir[] = JHTML::_('select.option', 'DESC', FText::_('COM_FABRIK_DESCENDING'));
 
-			$orderdirs = FabrikWorker::JSONtoData($this->item->order_dir, true);
+			$orderdirs       = FabrikWorker::JSONtoData($this->item->order_dir, true);
 			$this->order_dir = array();
-			$attribs = 'class="inputbox" size="1" ';
+			$attribs         = 'class="inputbox" size="1" ';
 
 			foreach ($orderdirs as $orderdir)
 			{
@@ -113,17 +112,17 @@ class FabrikAdminViewList extends JViewLegacy
 
 		FabrikAdminHelper::setViewLayout($this);
 
-		$srcs = FabrikHelperHTML::framework();
+		$srcs   = FabrikHelperHTML::framework();
 		$srcs[] = 'media/com_fabrik/js/fabrik.js';
 		$srcs[] = 'administrator/components/com_fabrik/views/namespace.js';
 		$srcs[] = 'administrator/components/com_fabrik/views/pluginmanager.js';
 		$srcs[] = 'administrator/components/com_fabrik/views/list/tmpl/adminlist.js';
 
-		$shim = array();
-		$dep = new stdClass;
-		$dep->deps = array('admin/pluginmanager');
+		$shim                              = array();
+		$dep                               = new stdClass;
+		$dep->deps                         = array('admin/pluginmanager');
 		$shim['admin/list/tmpl/adminlist'] = $dep;
-		$shim['adminfields/tables'] = $dep;
+		$shim['adminfields/tables']        = $dep;
 		FabrikHelperHTML::iniRequireJS($shim);
 		FabrikHelperHTML::script($srcs, $this->js);
 		parent::display($tpl);
@@ -132,17 +131,16 @@ class FabrikAdminViewList extends JViewLegacy
 	/**
 	 * Show the list's linked forms etc
 	 *
-	 * @param   string  $tpl  template
+	 * @param   string $tpl template
 	 *
 	 * @return  void
 	 */
-
 	public function showLinkedElements($tpl = null)
 	{
 		$model = $this->getModel('Form');
 		$this->addLinkedElementsToolbar();
 		$this->formGroupEls = $model->getFormGroups(false);
-		$this->formTable = $model->getForm();
+		$this->formTable    = $model->getForm();
 		FabrikHelperHTML::iniRequireJS();
 		parent::display($tpl);
 	}
@@ -150,39 +148,38 @@ class FabrikAdminViewList extends JViewLegacy
 	/**
 	 * See if the user wants to rename the list/form/groups
 	 *
-	 * @param   string  $tpl  template
+	 * @param   string $tpl template
 	 *
 	 * @return  void
 	 */
-
 	public function confirmCopy($tpl = null)
 	{
-		$app = JFactory::getApplication();
+		$app   = JFactory::getApplication();
 		$input = $app->input;
-		$cid = $input->get('cid', array(0), 'array');
+		$cid   = $input->get('cid', array(0), 'array');
 		$lists = array();
 		$model = $this->getModel();
 
 		foreach ($cid as $id)
 		{
 			$model->setId($id);
-			$table = $model->getTable();
-			$formModel = $model->getFormModel();
-			$row = new stdClass;
-			$row->id = $id;
-			$row->formid = $table->form_id;
-			$row->label = $table->label;
+			$table          = $model->getTable();
+			$formModel      = $model->getFormModel();
+			$row            = new stdClass;
+			$row->id        = $id;
+			$row->formid    = $table->form_id;
+			$row->label     = $table->label;
 			$row->formlabel = $formModel->getForm()->label;
-			$groups = $formModel->getGroupsHiarachy();
-			$row->groups = array();
+			$groups         = $formModel->getGroupsHiarachy();
+			$row->groups    = array();
 
 			foreach ($groups as $group)
 			{
-				$grouprow = new stdClass;
-				$g = $group->getGroup();
-				$grouprow->id = $g->id;
+				$grouprow       = new stdClass;
+				$g              = $group->getGroup();
+				$grouprow->id   = $g->id;
 				$grouprow->name = $g->name;
-				$row->groups[] = $grouprow;
+				$row->groups[]  = $grouprow;
 			}
 
 			$lists[] = $row;
@@ -195,23 +192,66 @@ class FabrikAdminViewList extends JViewLegacy
 	}
 
 	/**
+	 * Once a list is saved - we need to display the select content type form.
+	 *
+	 * @param null $tpl
+	 *
+	 * @return void
+	 */
+	public function selectContentType($tpl = null)
+	{
+		$model      = $this->getModel();
+		$this->form = $model->getContentTypeForm();
+		$input      = JFactory::getApplication()->input;
+		$this->data = $input->post->get('jform', array(), 'array');
+		$this->addSelectSaveToolBar();
+		FabrikHelperHTML::framework();
+		FabrikHelperHTML::iniRequireJS();
+
+		parent::display($tpl);
+	}
+
+	/**
+	 * Add select content type tool bar
+	 *
+	 * @throws Exception
+	 *
+	 * @return void
+	 */
+	protected function addSelectSaveToolBar()
+	{
+		$app         = JFactory::getApplication();
+		$this->state = $this->get('State');
+		$input       = $app->input;
+		$input->set('hidemainmenu', true);
+		$canDo = FabrikAdminHelper::getActions($this->state->get('filter.category_id'));
+		JToolBarHelper::title(FText::_('COM_FABRIK_MANAGER_SELECT_CONTENT_TYPE'), 'puzzle');
+
+		// For new records, check the create permission.
+		if ($canDo->get('core.create'))
+		{
+			JToolBarHelper::apply('list.doSave', 'JTOOLBAR_SAVE');
+			JToolBarHelper::cancel('list.cancel', 'JTOOLBAR_CANCEL');
+		}
+	}
+
+	/**
 	 * Add the page title and toolbar.
 	 *
 	 * @return  void
 	 */
-
 	protected function addToolbar()
 	{
-		$app = JFactory::getApplication();
+		$app   = JFactory::getApplication();
 		$input = $app->input;
 		$input->set('hidemainmenu', true);
-		$user = JFactory::getUser();
-		$userId = $user->get('id');
-		$isNew = ($this->item->id == 0);
+		$user       = JFactory::getUser();
+		$userId     = $user->get('id');
+		$isNew      = ($this->item->id == 0);
 		$checkedOut = !($this->item->checked_out == 0 || $this->item->checked_out == $user->get('id'));
-		$canDo = FabrikAdminHelper::getActions($this->state->get('filter.category_id'));
-		$title = $isNew ? FText::_('COM_FABRIK_MANAGER_LIST_NEW') : FText::_('COM_FABRIK_MANAGER_LIST_EDIT') . ' "' . $this->item->label . '"';
-		JToolBarHelper::title($title, 'list.png');
+		$canDo      = FabrikAdminHelper::getActions($this->state->get('filter.category_id'));
+		$title      = $isNew ? FText::_('COM_FABRIK_MANAGER_LIST_NEW') : FText::_('COM_FABRIK_MANAGER_LIST_EDIT') . ' "' . $this->item->label . '"';
+		JToolBarHelper::title($title, 'list');
 
 		if ($isNew)
 		{
@@ -261,13 +301,12 @@ class FabrikAdminViewList extends JViewLegacy
 	 *
 	 * @return  void
 	 */
-
 	protected function addLinkedElementsToolbar()
 	{
-		$app = JFactory::getApplication();
+		$app   = JFactory::getApplication();
 		$input = $app->input;
 		$input->set('hidemainmenu', true);
-		JToolBarHelper::title(FText::_('COM_FABRIK_MANAGER_LIST_LINKED_ELEMENTS'), 'list.png');
+		JToolBarHelper::title(FText::_('COM_FABRIK_MANAGER_LIST_LINKED_ELEMENTS'), 'list');
 		JToolBarHelper::cancel('list.cancel', 'JTOOLBAR_CLOSE');
 		JToolBarHelper::divider();
 		JToolBarHelper::help('JHELP_COMPONENTS_FABRIK_LISTS_EDIT');
@@ -278,13 +317,12 @@ class FabrikAdminViewList extends JViewLegacy
 	 *
 	 * @return  void
 	 */
-
 	protected function addConfirmCopyToolbar()
 	{
-		$app = JFactory::getApplication();
+		$app   = JFactory::getApplication();
 		$input = $app->input;
 		$input->set('hidemainmenu', true);
-		JToolBarHelper::title(FText::_('COM_FABRIK_MANAGER_LIST_COPY'), 'list.png');
+		JToolBarHelper::title(FText::_('COM_FABRIK_MANAGER_LIST_COPY'), 'list');
 		JToolBarHelper::cancel('list.cancel', 'JTOOLBAR_CLOSE');
 		JToolBarHelper::save('list.doCopy', 'JTOOLBAR_SAVE');
 		JToolBarHelper::divider();

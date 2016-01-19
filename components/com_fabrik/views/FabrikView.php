@@ -11,6 +11,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\Utilities\ArrayHelper;
+
 jimport('joomla.application.component.view');
 
 /**
@@ -61,13 +63,13 @@ class FabrikView extends JViewLegacy
 	 */
 	public function __construct($config = array())
 	{
-		$this->app     = JArrayHelper::getValue($config, 'app', JFactory::getApplication());
-		$this->user    = JArrayHelper::getValue($config, 'user', JFactory::getUser());
+		$this->app     = ArrayHelper::getValue($config, 'app', JFactory::getApplication());
+		$this->user    = ArrayHelper::getValue($config, 'user', JFactory::getUser());
 		$this->package = $this->app->getUserState('com_fabrik.package', 'fabrik');
-		$this->session = JArrayHelper::getValue($config, 'session', JFactory::getSession());
-		$this->doc     = JArrayHelper::getValue($config, 'doc', JFactory::getDocument());
-		$this->db      = JArrayHelper::getValue($config, 'db', JFactory::getDbo());
-		$this->config  = JArrayHelper::getValue($config, 'config', JFactory::getConfig());
+		$this->session = ArrayHelper::getValue($config, 'session', JFactory::getSession());
+		$this->doc     = ArrayHelper::getValue($config, 'doc', JFactory::getDocument());
+		$this->db      = ArrayHelper::getValue($config, 'db', JFactory::getDbo());
+		$this->config  = ArrayHelper::getValue($config, 'config', JFactory::getConfig());
 		parent::__construct($config);
 	}
 }

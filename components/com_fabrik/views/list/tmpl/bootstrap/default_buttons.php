@@ -53,10 +53,21 @@ if (($this->showClearFilters && (($this->filterMode === 3 || $this->filterMode =
 <?php endif;
 if ($this->showFilters && $this->toggleFilters) :?>
 	<li>
-		<a href="#" class="toggleFilters">
+		<?php if ($this->filterMode === 5) :
+		?>
+			<a href="#filter_modal" data-toggle="modal">
+				<?php echo $this->buttons->filter;?>
+				<span><?php echo FText::_('COM_FABRIK_FILTER');?></span>
+			</a>
+				<?php
+		else:
+		?>
+		<a href="#" class="toggleFilters" data-filter-mode="<?php echo $this->filterMode;?>">
 			<?php echo $this->buttons->filter;?>
 			<span><?php echo FText::_('COM_FABRIK_FILTER');?></span>
 		</a>
+			<?php endif;
+		?>
 	</li>
 <?php endif;
 if ($this->advancedSearch !== '') : ?>

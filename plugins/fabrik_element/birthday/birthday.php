@@ -11,6 +11,8 @@
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
 
+use Joomla\String\String;
+
 /**
  * Plugin element to render day/month/year drop-downs
  *
@@ -117,7 +119,7 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 
 				// $$$ rob - all this below is nice but ... you still need to set a default
 				$detailValue = '';
-				$year = JString::ltrim($year, '0');
+				$year = String::ltrim($year, '0');
 
 				if (FabrikWorker::isDate($value))
 				{
@@ -144,12 +146,12 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 					{
 						$detailValue = $month . '.' . $day . '.' . $year;
 					}
-					
+
 					if ($fd == 'd/m/Y')
 					{
 						$detailValue = $day . '/' . $month . '/' . $year;
 					}
-					
+
 					if ($fd == 'D. month YYYY')
 					{
 						$detailValue = $dayDisplay . '. ' . $monthDisplay . ' ' . $year;
@@ -536,7 +538,7 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 		$nextYear = date('Y') + 1;
 		$lastYear = date('Y') - 1;
 		$thisYear = date('Y');
-		$year = JString::ltrim($year, '0');
+		$year = String::ltrim($year, '0');
 		$dmy = $day . '.' . $month . '.' . $year;
 		$mdy = $month . '.' . $day . '.' . $year;
 		$dmy_slash = $day . '/' . $month . '/' . $year;
@@ -556,7 +558,7 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 					$dateDisplay = $mdy;
 					break;
 				case 'd/m/Y':
-					$dateDisplay = $dmy_salsh;
+					$dateDisplay = $dmy_slash;
 					break;
 				case 'D. month YYYY':
 					$dateDisplay = $dMonthYear;
@@ -720,6 +722,8 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 			$layoutData->months = $this->_monthOptions();
 			$layoutData->years =  $this->_yearOptions();
 			$layoutData->default = (array) $this->getDefaultFilterVal($normal, $counter);
+			$layoutData->elementName = $this->getFullName(true, false);
+			$this->filterDisplayValues = array($layoutData->default);
 
 			$return = array();
 			$return[] = $layout->render($layoutData);

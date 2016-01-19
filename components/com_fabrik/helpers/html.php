@@ -11,6 +11,9 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\String\String;
+use Joomla\Utilities\ArrayHelper;
+
 jimport('joomla.filesystem.file');
 
 if (!defined('COM_FABRIK_FRONTEND'))
@@ -85,19 +88,18 @@ class FabrikHelperHTML
 	protected static $debug = null;
 
 	/**
-	 * Has the auto-complete JavaScript js file been loaded
-	 *
-	 * @var bool
-	 */
-	protected static $autocomplete = null;
-
-	/**
 	 * Has the Facebook API JavaScript file been loaded
 	 *
 	 * @var  bool
 	 */
 	protected static $facebookgraphapi = null;
 
+	/**
+	 * Has the at who js file been loaded
+	 *
+	 * @var array
+	 */
+	protected static $atWho = array();
 	/**
 	 * Folders to search for media
 	 *
@@ -249,7 +251,7 @@ class FabrikHelperHTML
 		$input  = $app->input;
 		$script = '';
 
-		// Don't include in an Request.JSON call - for autofill form plugin
+		// Don't include in an Request.JSON call - for auto-fill form plugin
 		$headers = self::parseRequestHeaders();
 
 		if (FArrayHelper::getValue($headers, 'X-Request') === 'JSON')
@@ -841,6 +843,7 @@ EOD;
 			if ($version->RELEASE > 2.5)
 			{
 				JHtml::_('bootstrap.framework');
+				self::loadBootstrapCSS();
 			}
 
 			// Require js test - list with no cal loading ajax form with cal
@@ -849,7 +852,7 @@ EOD;
 			if ($fbConfig->get('advanced_behavior', '0') == '1')
 			{
 				$chosenOptions = $fbConfig->get('advanced_behavior_options', '{}');
-				$chosenOptions = empty($chosenOptions) ? array() : JArrayHelper::fromObject(json_decode($chosenOptions));
+				$chosenOptions = empty($chosenOptions) ? array() : ArrayHelper::fromObject(json_decode($chosenOptions));
 				JHtml::_('formbehavior.chosen', 'select.advancedSelect', null, $chosenOptions);
 			}
 
@@ -885,7 +888,7 @@ EOD;
 				$liveSiteSrc[] = "\tFabrik.liveSite = '" . COM_FABRIK_LIVESITE . "';";
 				$liveSiteSrc[] = "\tFabrik.package = '" . $app->getUserState('com_fabrik.package', 'fabrik') . "';";
 				$liveSiteSrc[] = "\tFabrik.debug = " . (self::isDebug() ? 'true;' : 'false;');
-				$liveSiteSrc[] = "\tFabrik.jLayouts = " . json_encode(JArrayHelper::toObject(self::$jLayoutsJs)) . ";";
+				$liveSiteSrc[] = "\tFabrik.jLayouts = " . json_encode(ArrayHelper::toObject(self::$jLayoutsJs)) . ";";
 
 				if ($bootstrapped)
 				{
@@ -903,6 +906,16 @@ EOD;
 			}
 			else
 			{
+				if ($bootstrapped)
+				{
+					$liveSiteSrc[] = "\tFabrik.bootstrapped = true;";
+				}
+				else
+				{
+					$liveSiteSrc[] = "\tFabrik.iconGen = new IconGenerator({scale: 0.5});";
+					$liveSiteSrc[] = "\tFabrik.bootstrapped = false;";
+				}
+
 				$liveSiteSrc[] = "\tif (!Fabrik.jLayouts) {
 				Fabrik.jLayouts = {};
 				}
@@ -945,6 +958,9 @@ EOD;
 		$tipJs[] = "\tFabrik.addEvent('fabrik.form.loaded', function () {";
 		$tipJs[] = "\t\tFabrik.tips.attach('.fabrikTip');";
 		$tipJs[] = "\t});";
+
+		// Load tips
+		$tipJs[] = "\tFabrik.tips.attach('.fabrikTip');";
 
 		return implode("\n", $tipJs);
 	}
@@ -1018,7 +1034,7 @@ EOD;
 				}
 			}
 
-			if (array_key_exists($k, $newShim))
+			if (is_array($newShim) && array_key_exists($k, $newShim))
 			{
 				$s->deps = array_merge($s->deps, $newShim[$k]->deps);
 			}
@@ -1032,6 +1048,8 @@ EOD;
 		{
 			$deps->deps[] = 'fab/lib/flexiejs/flexie' . $ext;
 		}
+
+		$deps->deps[] = 'jquery';
 
 		$deps->deps[] = 'fab/mootools-ext' . $ext;
 		$deps->deps[] = 'fab/lib/Event.mock';
@@ -1065,15 +1083,24 @@ EOD;
 			$pathBits[] = "\n\t\t$reqK : '$repPath'";
 		}
 
+		//$pathBits[] = "\n\t\tjquery: 'media/com_fabrik/js/dummy-jquery'";
+		//$pathBits[] = "\n\t\tjquery: 'media/jui/js/jquery'";
+
 		$pathString = '{' . implode(',', $pathBits) . '}';
 		$config     = array();
-		$config[]   = "requirejs.config({";
-		$config[]   = "\tbaseUrl: '" . $requirejsBaseURI . "',";
-		$config[]   = "\tpaths: " . $pathString . ",";
-		$config[]   = "\tshim: " . $shim . ',';
-		$config[]   = "\twaitSeconds: 30,";
-		$config[]   = "});";
-		$config[]   = "\n";
+
+		$config[] = "define('jquery', [], function() {
+		console.log('require js define jquery as ', jQuery);
+			return jQuery;
+		});";
+
+		$config[] = "requirejs.config({";
+		$config[] = "\tbaseUrl: '" . $requirejsBaseURI . "',";
+		$config[] = "\tpaths: " . $pathString . ",";
+		$config[] = "\tshim: " . $shim . ',';
+		$config[] = "\twaitSeconds: 30,";
+		$config[] = "});";
+		$config[] = "\n";
 
 		// Store in session - included in fabrik system plugin
 		$session->set('fabrik.js.shim', $newShim);
@@ -1119,6 +1146,21 @@ EOD;
 	public static function mootools()
 	{
 		self::framework();
+	}
+
+	/**
+	 * Load J!'s bootstrap CSS if requested.  Special case for iframes in non J! pages loading us.
+	 *
+	 * @return  void
+	 */
+	public static function loadBootstrapCSS()
+	{
+		$app = JFactory::getApplication();
+		if ($app->input->get('loadbootstrapcss', '') !== '')
+		{
+			$doc = JFactory::getDocument();
+			JHtmlBootstrap::loadCss(true, $doc->direction);
+		}
 	}
 
 	/**
@@ -1292,10 +1334,11 @@ EOD;
 	 * @param   mixed  $file       String or array of files to load, relative path to root for local files
 	 *                             e.g. 'administrator/components/com_fabrik/models/fields/tables.js'
 	 * @param   string $onLoad     Optional js to run once the Js file has been loaded
+	 * @param   string $minSuffix  The minimised file suffix to use, replaces '.js'
 	 *
 	 * @return  void
 	 */
-	public static function script($file, $onLoad = '')
+	public static function script($file, $onLoad = '', $minSuffix = '-min.js')
 	{
 		if (empty($file))
 		{
@@ -1307,14 +1350,14 @@ EOD;
 			$onLoad = implode("\n", $onLoad);
 		}
 
-		$ext   = self::isDebug() ? '.js' : '-min.js';
+		$ext   = self::isDebug() ? '.js' : $minSuffix;
 		$paths = self::requirePaths();
 		$files = (array) $file;
 
 		// Replace with minified files if found
 		foreach ($files as &$file)
 		{
-			if (!(JString::stristr($file, 'http://') || JString::stristr($file, 'https://')))
+			if (!(String::stristr($file, 'http://') || String::stristr($file, 'https://')))
 			{
 				if (JFile::exists(COM_FABRIK_BASE . $file))
 				{
@@ -1343,7 +1386,7 @@ EOD;
 
 			if (!$pathMatched)
 			{
-				if (!(JString::stristr($file, 'http://') || JString::stristr($file, 'https://')))
+				if (!(String::stristr($file, 'http://') || String::stristr($file, 'https://')))
 				{
 					$file = COM_FABRIK_LIVESITE . $file;
 				}
@@ -1649,25 +1692,27 @@ EOD;
 	/**
 	 * Add auto-complete JS code to head
 	 *
-	 * @param   string $htmlid      Of element to turn into autocomplete
-	 * @param   int    $elementid   Element id
-	 * @param   int    $formid      Form id
+	 * @param   string $htmlId      Of element to turn into autocomplete
+	 * @param   int    $elementId   Element id
+	 * @param   int    $formId      Form id
 	 * @param   string $plugin      Plugin name
 	 * @param   array  $opts        * onSelection - function to run when option selected
 	 *                              * max - max number of items to show in selection list
 	 *
 	 * @return  void
 	 */
-	public static function autoComplete($htmlid, $elementid, $formid, $plugin = 'field', $opts = array())
+	public static function autoComplete($htmlId, $elementId, $formId, $plugin = 'field', $opts = array())
 	{
+		/*
 		$input = JFactory::getApplication()->input;
 
 		if ($input->get('format') === 'raw')
 		{
 			return;
 		}
+		*/
 
-		$json = self::autoCompleteOptions($htmlid, $elementid, $formid, $plugin, $opts);
+		$json = self::autoCompleteOptions($htmlId, $elementId, $formId, $plugin, $opts);
 		$str  = json_encode($json);
 		JText::script('COM_FABRIK_NO_RECORDS');
 		JText::script('COM_FABRIK_AUTOCOMPLETE_AJAX_ERROR');
@@ -1676,12 +1721,13 @@ EOD;
 		$needed   = array();
 		$needed[] = self::isDebug() ? 'fab/fabrik' : 'fab/fabrik-min';
 		$needed[] = self::isDebug() ? 'fab/' . $jsFile : 'fab/' . $jsFile . '-min';
+		$needed[] = self::isDebug() ? 'fab/lib/debounce/jquery.ba-throttle-debounce' : 'fab/lib/debounce/jquery.ba-throttle-debounce-min';
 		$needed[] = self::isDebug() ? 'fab/encoder' : 'fab/encoder-min';
 		$needed[] = 'fab/lib/Event.mock';
 		$needed   = implode("', '", $needed);
 		self::addScriptDeclaration(
 			"requirejs(['$needed'], function () {
-	new $class('$htmlid', $str);
+	new $class('$htmlId', $str);
 });"
 		);
 	}
@@ -1690,9 +1736,9 @@ EOD;
 	 * Gets auto complete js options (needed separate from autoComplete as db js class needs these values for repeat
 	 * group duplication)
 	 *
-	 * @param   string $htmlid      Element to turn into autocomplete
-	 * @param   int    $elementid   Element id
-	 * @param   int    $formid      Form id
+	 * @param   string $htmlId      Element to turn into autocomplete
+	 * @param   int    $elementId   Element id
+	 * @param   int    $formId      Form id
 	 * @param   string $plugin      Plugin type
 	 * @param   array  $opts        * onSelection - function to run when option selected
 	 *                              * max - max number of items to show in selection list
@@ -1700,7 +1746,7 @@ EOD;
 	 * @return  array    Autocomplete options (needed for elements so when duplicated we can create a new
 	 *                   FabAutocomplete object
 	 */
-	public static function autoCompleteOptions($htmlid, $elementid, $formid, $plugin = 'field', $opts = array())
+	public static function autoCompleteOptions($htmlId, $elementId, $formId, $plugin = 'field', $opts = array())
 	{
 		$json = new stdClass;
 
@@ -1714,8 +1760,8 @@ EOD;
 		$package   = $app->getUserState('com_fabrik.package', 'fabrik');
 		$json->url = 'index.php?option=com_' . $package . '&format=raw';
 		$json->url .= $app->isAdmin() ? '&task=plugin.pluginAjax' : '&view=plugin&task=pluginAjax';
-		$json->url .= '&g=element&element_id=' . $elementid
-			. '&formid=' . $formid . '&plugin=' . $plugin . '&method=autocomplete_options&package=' . $package;
+		$json->url .= '&g=element&element_id=' . $elementId
+			. '&formid=' . $formId . '&plugin=' . $plugin . '&method=autocomplete_options&package=' . $package;
 		$c = FArrayHelper::getValue($opts, 'onSelection');
 
 		if ($c != '')
@@ -1728,7 +1774,7 @@ EOD;
 			$json->$k = $v;
 		}
 
-		$json->formRef   = FArrayHelper::getValue($opts, 'formRef', 'form_' . $formid);
+		$json->formRef   = FArrayHelper::getValue($opts, 'formRef', 'form_' . $formId);
 		$json->container = FArrayHelper::getValue($opts, 'container', 'fabrikElementContainer');
 		$json->menuclass = FArrayHelper::getValue($opts, 'menuclass', 'auto-complete-container');
 
@@ -1744,6 +1790,48 @@ EOD;
 	 */
 	public static function autoCompleteScript()
 	{
+	}
+
+	public static function atWho($selector, $placeHolders = array())
+	{
+		array_filter($placeHolders);
+		$key = $selector . implode('.', $placeHolders);
+
+		if (!array_key_exists($key, self::$atWho))
+		{
+			$replacements = FabrikWorker::globalReplacements();
+			$replacements = array_keys($replacements);
+
+			$replacements = array_map(function ($v)
+			{
+				$v = str_replace(array('{', '}'), array('', ''), $v);
+
+				return $v;
+			}, $replacements);
+
+			$placeHolders = array_merge($placeHolders, $replacements);
+
+			$placeHolders      = json_encode($placeHolders);
+			$script[]          = "jQuery('$selector').atwho({
+				'at': '{',
+				'insertTpl' : '\${atwho-at}\${name}}',
+				data: $placeHolders,
+				 limit: 5,
+            });";
+			self::$atWho[$key] = true;
+			$css               = self::isDebug() ? 'jquery.atwho.css' : 'jquery.atwho.min.css';
+			FabrikHelperHTML::stylesheet('media/com_fabrik/js/lib/at/' . $css);
+
+			$needed[] = self::isDebug() ? '\'fab/lib/caret/caret\'' : '\'fab/lib/caret/caret-min\'';
+			$needed[] = self::isDebug() ? '\'fab/lib/at/atwho\'' : '\'fab/lib/at/atwho-min\'';
+			$needed   = implode(", ", $needed);
+			$script   = implode("\n", $script);
+			self::addScriptDeclaration(
+				"requirejs([$needed], function (j, f) {
+	$script
+});"
+			);
+		}
 	}
 
 	/**
@@ -1870,7 +1958,7 @@ EOD;
 	 */
 	public static function getImagePath($file, $type = 'form', $tmpl = '')
 	{
-		$file  = JString::ltrim($file, DIRECTORY_SEPARATOR);
+		$file  = String::ltrim($file, DIRECTORY_SEPARATOR);
 		$paths = self::addPath('', 'image', $type, true);
 
 		foreach ($paths as $path)
@@ -1962,7 +2050,7 @@ EOD;
 	 *
 	 * @return string
 	 */
-	protected static function propertiesFromArray($properties)
+	public static function propertiesFromArray($properties)
 	{
 		$bits = array();
 		$p    = '';
@@ -1989,50 +2077,40 @@ EOD;
 	/**
 	 * Build array of items for use in grid()
 	 *
-	 * @param   array  $values             Option values
-	 * @param   array  $labels             Option labels
-	 * @param   array  $selected           Selected options
-	 * @param   string $name               Input name
-	 * @param   string $type               Checkbox/radio etc
-	 * @param   bool   $elementBeforeLabel Element before or after the label - deprecated - not used in Joomla 3
-	 * @param   array  $classes            Label classes
-	 * @param   bool   $buttonGroup        Should it be rendered as a bootstrap button group (radio only)
+	 * @param   array  $values              Option values
+	 * @param   array  $labels              Option labels
+	 * @param   array  $selected            Selected options
+	 * @param   string $name                Input name
+	 * @param   string $type                Checkbox/radio etc
+	 * @param   bool   $elementBeforeLabel  Element before or after the label - deprecated - not used in Joomla 3
+	 * @param   array  $classes             Label classes
+	 * @param   bool   $buttonGroup         Should it be rendered as a bootstrap button group (radio only)
+	 * @param   array  $inputDataAttributes Input data attributes e.g. array('data-foo="bar")
 	 *
 	 * @return  array  Grid items
 	 */
 	public static function gridItems($values, $labels, $selected, $name, $type = 'checkbox',
-		$elementBeforeLabel = true, $classes = array(), $buttonGroup = false)
+		$elementBeforeLabel = true, $classes = array(), $buttonGroup = false, $inputDataAttributes = array())
 	{
-		$items = array();
+		$items                            = array();
+		$layout                           = self::getLayout('fabrik-grid-item');
+		$displayData                      = new stdClass;
+		$displayData->type                = $type;
+		$displayData->name                = $name;
+		$displayData->classes             = $classes;
+		$displayData->inputDataAttributes = implode(' ', $inputDataAttributes);
+		$displayData->selected            = $selected;
+		$displayData->elementBeforeLabel  = $elementBeforeLabel;
+		$displayData->buttonGroup         = $buttonGroup;
 
 		for ($i = 0; $i < count($values); $i++)
 		{
-			$item     = array();
-			$thisName = $type === 'checkbox' ? FabrikString::rtrimword($name, '[]') . '[' . $i . ']' : $name;
-			$label    = '<span>' . $labels[$i] . '</span>';
+			$displayData->i    = $i;
+			$displayData->label = $labels[$i];
 
 			// For values like '1"'
-			$value      = htmlspecialchars($values[$i], ENT_QUOTES);
-			$inputClass = FabrikWorker::j3() ? '' : $type;
-
-			if (array_key_exists('input', $classes))
-			{
-				$inputClass .= ' ' . implode(' ', $classes['input']);
-			}
-
-			$chx = '<input type="' . $type . '" class="fabrikinput ' . $inputClass . '" name="' . $thisName . '" value="' . $value . '" ';
-			$sel = in_array($values[$i], $selected);
-			$chx .= $sel ? ' checked="checked" />' : ' />';
-			$labelClass = FabrikWorker::j3() && !$buttonGroup ? $type : '';
-			if (array_key_exists('label', $classes))
-			{
-				$labelClass .= ' ' . implode(' ', $classes['label']);
-			}
-
-			$item[]  = '<label class="fabrikgrid_' . $value . ' ' . $labelClass . '">';
-			$item[]  = $elementBeforeLabel == '1' ? $chx . $label : $label . $chx;
-			$item[]  = '</label>';
-			$items[] = implode("\n", $item);
+			$displayData->value = htmlspecialchars($values[$i], ENT_QUOTES);
+			$items[]            = $layout->render($displayData);
 		}
 
 		return $items;
@@ -2041,21 +2119,23 @@ EOD;
 	/**
 	 * Make a grid of items
 	 *
-	 * @param   array  $values             Option values
-	 * @param   array  $labels             Option labels
-	 * @param   array  $selected           Selected options
-	 * @param   string $name               Input name
-	 * @param   string $type               Checkbox/radio etc.
-	 * @param   bool   $elementBeforeLabel Element before or after the label - deprecated - not used in Joomla 3
-	 * @param   int    $optionsPerRow      Number of suboptions to show per row
-	 * @param   array  $classes            Array of arrays, for 'label' and 'container' classes
-	 * @param   bool   $buttonGroup        Should it be rendered as a bootstrap button group (radio only)
-	 * @param   array  $dataAttributes     Additional data-foo="bar", like YesNo needs data-toogle="button"
+	 * @param   array  $values              Option values
+	 * @param   array  $labels              Option labels
+	 * @param   array  $selected            Selected options
+	 * @param   string $name                Input name
+	 * @param   string $type                Checkbox/radio etc.
+	 * @param   bool   $elementBeforeLabel  Element before or after the label - deprecated - not used in Joomla 3
+	 * @param   int    $optionsPerRow       Number of suboptions to show per row
+	 * @param   array  $classes             Array of arrays, for 'label' and 'container' classes
+	 * @param   bool   $buttonGroup         Should it be rendered as a bootstrap button group (radio only)
+	 * @param   array  $dataAttributes      Additional array('data-foo="bar"), like YesNo needs data-toggle="button"
+	 * @param   array  $inputDataAttributes Input data attributes e.g. array('data-foo="bar")
 	 *
 	 * @return  string  grid
 	 */
 	public static function grid($values, $labels, $selected, $name, $type = 'checkbox',
-		$elementBeforeLabel = true, $optionsPerRow = 4, $classes = array(), $buttonGroup = false, $dataAttributes = array())
+		$elementBeforeLabel = true, $optionsPerRow = 4, $classes = array(), $buttonGroup = false, $dataAttributes = array(),
+		$inputDataAttributes = array())
 	{
 		if (FabrikWorker::j3())
 		{
@@ -2065,7 +2145,7 @@ EOD;
 		$containerClasses = array_key_exists('container', $classes) ? implode(' ', $classes['container']) : '';
 		$dataAttributes   = implode(' ', $dataAttributes);
 
-		$items = self::gridItems($values, $labels, $selected, $name, $type, $elementBeforeLabel, $classes, $buttonGroup);
+		$items = self::gridItems($values, $labels, $selected, $name, $type, $elementBeforeLabel, $classes, $buttonGroup, $inputDataAttributes);
 
 		$grid          = array();
 		$optionsPerRow = empty($optionsPerRow) ? 4 : $optionsPerRow;
@@ -2117,36 +2197,16 @@ EOD;
 	 */
 	public static function bootstrapGrid($items, $columns, $spanClass = '', $explode = false)
 	{
-		// @TODO jLayout this
-		$span = floor(12 / $columns);
-		$i    = 0;
-		$grid = array();
+		$layout                 = self::getLayout('fabrik-bootstrap-grid');
+		$displayData            = new stdClass;
+		$displayData->items     = $items;
+		$displayData->columns   = $columns;
+		$displayData->spanClass = $spanClass;
+		$displayData->explode   = $explode;
 
-		foreach ($items as $i => $s)
-		{
-			$endLine = ($i !== 0 && (($i) % $columns == 0));
-			$newLine = ($i % $columns == 0);
+		$grid = $layout->render($displayData);
 
-			if ($endLine)
-			{
-				$grid[] = '</div><!-- grid close row -->';
-			}
-
-			if ($newLine)
-			{
-				$grid[] = '<div class="row-fluid">';
-			}
-
-			$grid[] = '<div class="' . $spanClass . ' span' . $span . '">' . $s . '</div>';
-		}
-
-		if (!empty($items))
-		{
-			// Close opened row, last row-fluid is always open if there's data
-			$grid[] = '</div><!-- grid close end row -->';
-		}
-
-		return $explode ? implode('', $grid) : $grid;
+		return $explode ? $grid : explode("\n", $grid);
 	}
 
 	/**
@@ -2185,9 +2245,9 @@ EOD;
 		/**
 		 * J!'s email cloaking will cloak email addresses in form inputs, which is a Bad Thing<tm>.
 		 * What we really need to do is work out a way to prevent ONLY cloaking of emails in form inputs,
-		 * but that's not going to be trivial.  So bandaid is to turn it off in form and list views, so
+		 * but that's not going to be trivial.  So band-aid is to turn it off in form and list views, so
 		 * addresses only get cloaked in details view.
-		 * In addition, if we are in a details PDF view we should not run the eamil cloak plugin.
+		 * In addition, if we are in a details PDF view we should not run the email cloak plugin.
 		 */
 
 		if ($view !== 'details' || $input->get('format') === 'pdf')
@@ -2309,7 +2369,7 @@ EOD;
 	 */
 	public static function tagBaseUrl($fullName, $rootUrl = null)
 	{
-		$url  = $_SERVER['REQUEST_URI'];
+		$url  = filter_var(ArrayHelper::getValue($_SERVER, 'REQUEST_URI', 'index.php'), FILTER_SANITIZE_URL);
 		$bits = explode('?', $url);
 		$root = isset($rootUrl) ? $rootUrl : FArrayHelper::getValue($bits, 0, '', 'string');
 		$bits = FArrayHelper::getValue($bits, 1, '', 'string');
@@ -2453,7 +2513,7 @@ EOD;
 	 */
 	public static function a($href, $lbl = '', $opts = array())
 	{
-		if (empty($href) || JString::strtolower($href) == 'http://' || JString::strtolower($href) == 'https://')
+		if (empty($href) || String::strtolower($href) == 'http://' || String::strtolower($href) == 'https://')
 		{
 			// Don't return empty links
 			return '';
@@ -2585,7 +2645,7 @@ EOD;
 
 			if ($ret['type'] == 'mediabox')
 			{
-				$ext = JString::strtolower(JFile::getExt($link));
+				$ext = String::strtolower(JFile::getExt($link));
 
 				switch ($ext)
 				{

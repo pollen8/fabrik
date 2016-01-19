@@ -11,6 +11,9 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\String\String;
+use Joomla\Utilities\ArrayHelper;
+
 jimport('joomla.application.component.model');
 
 require_once JPATH_SITE . '/components/com_fabrik/models/visualization.php';
@@ -214,7 +217,8 @@ class FabrikModelGooglemap extends FabrikFEModelVisualization
 	 */
 	private function getCordsFromData($d)
 	{
-		$v = trim($d);
+		$v = str_replace(' ', '', $d);
+		$v = trim($v);
 		$v = FabrikString::ltrimword($v, "(");
 
 		if (strstr($v, ","))
@@ -344,14 +348,14 @@ class FabrikModelGooglemap extends FabrikFEModelVisualization
 						continue;
 					}
 
-					$rowData = JArrayHelper::fromObject($row);
+					$rowData = ArrayHelper::fromObject($row);
 					$rowData['rowid'] = $rowData['__pk_val'];
 					$rowData['coords'] = $v[0] . ',' . $v[1];
 					$rowData['nav_url'] = "http://maps.google.com/maps?q=loc:" . $rowData['coords'] . "&navigate=yes";
 					$html = $w->parseMessageForPlaceHolder($template, $rowData);
 
 					$titleElement = FArrayHelper::getValue($titleElements, $c, '');
-					$title = $titleElement == '' ? '' : strip_tags($row->$titleElement);
+					$title = $titleElement == '' ? '' : html_entity_decode(strip_tags($row->$titleElement),ENT_COMPAT, 'UTF-8');
 					/* $$$ hugh - if they provided a template, lets assume they will handle the link themselves.
 					 * http://fabrikar.com/forums/showthread.php?p=41550#post41550
 					 * $$$ hugh - at some point the fabrik_view / fabrik_edit links became optional
@@ -513,7 +517,7 @@ class FabrikModelGooglemap extends FabrikFEModelVisualization
 						// Default icon - lets see if we need to use a letter icon instead
 						if (FArrayHelper::getValue($letters, $c, '') != '')
 						{
-							$iconImg = $uri->getScheme() . '://www.google.com/mapfiles/marker' . JString::strtoupper($letters[$c]) . '.png';
+							$iconImg = $uri->getScheme() . '://www.google.com/mapfiles/marker' . String::strtoupper($letters[$c]) . '.png';
 						}
 
 						$icons[$v[0] . $v[1]] = array($v[0], $v[1], $html, $iconImg, $width, $height, 'groupkey' => $groupKey, 'listid' => $listId,
@@ -534,7 +538,7 @@ class FabrikModelGooglemap extends FabrikFEModelVisualization
 						}
 						else
 						{
-							$default = (float) JArrayHelper::getvalue($radiusDefaults, $c, 50);
+							$default = (float) ArrayHelper::getvalue($radiusDefaults, $c, 50);
 							$default *= $radiusMeters;
 							$icons[$v[0] . $v[1]]['radius'] = $default;
 						}

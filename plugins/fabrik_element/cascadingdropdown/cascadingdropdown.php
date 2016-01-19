@@ -11,6 +11,9 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\String\String;
+use Joomla\Utilities\ArrayHelper;
+
 require_once JPATH_SITE . '/plugins/fabrik_element/databasejoin/databasejoin.php';
 
 /**
@@ -67,6 +70,7 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 		$opts->displayType = $params->get('cdd_display_type', 'dropdown');
 		$opts->id = $this->getId();
 		$opts->listName = $this->getListModel()->getTable()->db_table_name;
+		$opts->lang           = FabrikWorker::getMultiLangURLCode();
 
 		// This bizarre chunk of code handles the case of setting a CDD value on the QS on a new form
 		$rowId = $input->get('rowid', '', 'string');
@@ -102,10 +106,11 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 
 		// Was otherwise using the none-raw value.
 		$opts->value = $this->getValue($data, $repeatCounter, array('raw' => true));
+		$opts->optsPerRow = (int) $params->get('dbjoin_options_per_row', 1);
 
 		if (is_array($opts->value) && count($opts->value) > 0)
 		{
-			$opts->value = JArrayHelper::getValue($opts->value, 0);
+			$opts->value = ArrayHelper::getValue($opts->value, 0);
 		}
 
 		return array('FbCascadingdropdown', $id, $opts);
@@ -134,7 +139,7 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 			}
 
 			$w = new FabrikWorker;
-			$val = $w->parseMessageForPlaceHolder($val, array());
+			$val = $w->parseMessageForPlaceHolder($val, array(), false, false, null, false);
 
 			return 'CONCAT_WS(\'\', ' . $val . ')';
 		}
@@ -282,7 +287,6 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 			}
 
 			$html[] = $this->loadingImg;
-			$html[] = ($displayType == 'radio') ? '</div>' : '';
 		}
 
 		if (!$this->isEditable())
@@ -562,7 +566,7 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 
 		if ($filterView == 'table')
 		{
-			array_unshift($this->optionVals[$sqlKey], JHTML::_('select.option', '', $this->filterSelectLabel()));
+			array_unshift($this->optionVals[$sqlKey], JHTML::_('select.option', $params->get('cascadingdropdown_noselectionvalue', ''), $this->filterSelectLabel()));
 		}
 		else
 		{
@@ -936,7 +940,7 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 			$query->where($where);
 		}
 
-		if (!JString::stristr($where, 'order by'))
+		if (!String::stristr($where, 'order by'))
 		{
 			$query->order($orderBy . ' ASC');
 		}
@@ -1064,7 +1068,14 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 		// 3.1 Cdd filter set up elsewhere
 		if ($element->filter_type == 'dropdown')
 		{
+			$params = $this->getParams();
 			$default = $this->getDefaultFilterVal($normal);
+
+			if ($default === '')
+			{
+				$default = $params->get('cascadingdropdown_noselectionvalue', '');
+			}
+
 			$filterId = $this->getHTMLId() . 'value';
 			FabrikHelperHTML::script('plugins/fabrik_element/cascadingdropdown/filter.js');
 			$opts = new stdClass;
@@ -1072,7 +1083,10 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 			$opts->filterid = $filterId;
 			$opts->elid = $this->getId();
 			$opts->def = $default;
+			$opts->advanced = $this->getAdvancedSelectClass();
+			$opts->noselectionvalue = $params->get('cascadingdropdown_noselectionvalue', '');
 			$opts->filterobj = 'Fabrik.filter_' . $container;
+			$opts->lang           = FabrikWorker::getMultiLangURLCode();
 			$opts = json_encode($opts);
 
 			return "Fabrik.filter_{$container}.addFilter('$element->plugin', new CascadeFilter('$observerId', $opts));\n";
@@ -1320,4 +1334,46 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 
 		return $label;
 	}
+
+	/**
+	 * Create an array of label/values which will be used to populate the elements filter dropdown
+	 * returns all possible options
+	 *
+	 * @param   bool    $normal     do we render as a normal filter or as an advanced search filter
+	 * @param   string  $tableName  table name to use - defaults to element's current table
+	 * @param   string  $label      field to use, defaults to element name
+	 * @param   string  $id         field to use, defaults to element name
+	 * @param   bool    $incjoin    include join
+	 *
+	 * @return  array	filter value and labels
+	 */
+	protected function filterValueList_All($normal, $tableName = '', $label = '', $id = '', $incjoin = true)
+	{
+		/**
+		 * Don't build filter options on page build, it gets done via AJAX from the page.
+		 */
+		return array();
+	}
+
+	/**
+	 * Create an array of label/values which will be used to populate the elements filter dropdown
+	 * returns only data found in the table you are filtering on
+	 *
+	 * @param   bool    $normal     do we render as a normal filter or as an advanced search filter
+	 * @param   string  $tableName  table name to use - defaults to element's current table
+	 * @param   string  $label      field to use, defaults to element name
+	 * @param   string  $id         field to use, defaults to element name
+	 * @param   bool    $incjoin    include join
+	 *
+	 * @return  array	filter value and labels
+	 */
+	protected function filterValueList_Exact($normal, $tableName = '', $label = '', $id = '', $incjoin = true)
+	{
+		/**
+		 * Don't bother building a filter list on page load, that'll get done via AJAX from the page
+		 */
+		return array();
+	}
+
+
 }

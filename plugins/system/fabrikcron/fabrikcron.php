@@ -1,4 +1,5 @@
 <?php
+use Zend\Form\Annotation\Object;
 /**
  * Joomla! Fabrik cron job plugin
  *
@@ -26,6 +27,27 @@ class PlgSystemFabrikcron extends JPlugin
 {
 
 	/**
+	 * Row for the currently running plugin, used by the shutdown handler
+	 *
+	 * @var string
+	 */
+	protected $row = null;
+
+	/**
+	 * Log object
+	 *
+	 * @var Object
+	 */
+	protected $log = null;
+
+	/*
+	 * Plugin model
+	 *
+	 * @var PlgFabrik_Cron
+	 */
+	protected $pluginModel = null;
+
+	/**
 	 * Constructor
 	 *
 	 * For php4 compatibility we must not use the __constructor as a constructor for plugins
@@ -44,6 +66,85 @@ class PlgSystemFabrikcron extends JPlugin
 	{
 		parent::__construct($subject, $config);
 	}
+
+	/**
+	 * Reschedule the plugin for next run, and republish
+	 *
+	 *
+	 * @return void
+	 */
+	protected function reschedule()
+	{
+		$now = JFactory::getDate();
+		$now = $now->toUnix();
+		$new = JFactory::getDate($this->row->nextrun);
+		$tmp = $new->toUnix();
+
+		switch ($this->row->unit)
+		{
+			case 'second':
+				$inc = 1;
+				break;
+			case 'minute':
+				$inc = 60;
+				break;
+			case 'hour':
+				$inc = 60 * 60;
+				break;
+			default:
+			case 'day':
+				$inc = 60 * 60 * 24;
+				break;
+		}
+
+		while ($tmp + ($inc * $this->row->frequency) < $now)
+		{
+			$tmp = $tmp + ($inc * $this->row->frequency);
+		}
+
+		// Mark them as being run
+		$nextrun = JFactory::getDate($tmp);
+		$this->query->clear();
+		$this->query->update('#__{package}_cron');
+		$this->query->set('lastrun = ' . $this->db->quote($nextrun->toSql()));
+
+		if ($this->pluginModel->shouldReschedule() && $this->pluginModel->doRunGating())
+		{
+			$this->query->set("published = '1'");
+		}
+
+		if (!$this->pluginModel->shouldReschedule())
+		{
+			$this->query->set("published = '0'");
+			$this->log->message .= "\nPlugin has unpublished itself";
+		}
+
+		$this->query->where('id = ' . $this->row->id);
+		$this->db->setQuery($this->query);
+		$this->db->execute();
+	}
+
+	/**
+	 * Catch any fatal errors and log them
+	 */
+	public function shutdownHandler()
+	{
+		if (@is_array($e = @error_get_last())) {
+			$code = isset($e['type']) ? $e['type'] : 0;
+			$msg = isset($e['message']) ? $e['message'] : '';
+			$file = isset($e['file']) ? $e['file'] : '';
+			$line = isset($e['line']) ? $e['line'] : '';
+
+			if ($code > 0) {
+				$this->log->message = "$code,$msg,$file,$line";
+				$this->log->store();
+			}
+
+			$this->reschedule();
+
+		}
+	}
+
 
 	/**
 	 * Run all active cron jobs
@@ -68,10 +169,12 @@ class PlgSystemFabrikcron extends JPlugin
 		}
 
 		// Get all active tasks
-		$db = FabrikWorker::getDbo(true);
+		$this->db = FabrikWorker::getDbo(true);
+		$this->query = $this->db->getQuery(true);
+
 		$now = $input->get('fabrikcron_run', false);
 
-		$log = FabTable::getInstance('Log', 'FabrikTable');
+		$this->log = FabTable::getInstance('Log', 'FabrikTable');
 
 		if (!$now)
 		{
@@ -80,7 +183,8 @@ class PlgSystemFabrikcron extends JPlugin
 			 * .. which seems reasonable, as we use getDate() to set 'lastrun' to at the end of this func
 			 */
 
-			$nextrun = "CASE " . "WHEN unit = 'second' THEN DATE_ADD( lastrun, INTERVAL frequency SECOND )\n"
+			$nextrun = "CASE "
+				. "WHEN unit = 'second' THEN DATE_ADD( lastrun, INTERVAL frequency SECOND )\n"
 				. "WHEN unit = 'minute' THEN DATE_ADD( lastrun, INTERVAL frequency MINUTE )\n"
 				. "WHEN unit = 'hour' THEN DATE_ADD( lastrun, INTERVAL frequency HOUR )\n"
 				. "WHEN unit = 'day' THEN DATE_ADD( lastrun, INTERVAL frequency DAY )\n"
@@ -88,126 +192,99 @@ class PlgSystemFabrikcron extends JPlugin
 				. "WHEN unit = 'month' THEN DATE_ADD( lastrun, INTERVAL frequency MONTH )\n"
 				. "WHEN unit = 'year' THEN DATE_ADD( lastrun, INTERVAL frequency YEAR ) END";
 
-			$query = "SELECT id, plugin, lastrun, unit, frequency, $nextrun AS nextrun FROM #__{package}_cron\n";
-			$query .= "WHERE published = '1' ";
-			$query .= "AND $nextrun < '" . JFactory::getDate()->toSql() . "'";
+			$this->query
+				->select("id, plugin, lastrun, unit, frequency, " . $nextrun . " AS nextrun")
+				->from('#__{package}_cron')
+				->where("published = '1'")
+				->where("$nextrun < '" . JFactory::getDate()->toSql() . "'");
 		}
 		else
 		{
-			$query = "SELECT id, plugin FROM #__{package}_cron WHERE published = '1'";
+			$this->query
+				->select('id, plugin')
+				->from("#__{package}_cron WHERE published = '1'");
 		}
 
-		$db->setQuery($query);
-		$rows = $db->loadObjectList();
+		$this->db->setQuery($this->query);
+		$rows = $this->db->loadObjectList();
 		if (empty($rows))
 		{
 			return;
 		}
 
-		$log->message = '';
+		// register our shutdownHandler(), so we can re-publish and reschedule the event if the script errors out
+		register_shutdown_function(array($this, 'shutdownHandler'));
 
-		$ids = array();
-		foreach ($rows as $row)
-		{
-			$ids[] = (int) $row->id;
-		}
-		$query = $db->getQuery(true);
+		$this->log->message = '';
 		JModelLegacy::addIncludePath(JPATH_SITE . '/components/com_fabrik/models');
 		$pluginManager = JModelLegacy::getInstance('Pluginmanager', 'FabrikFEModel');
 		$listModel = JModelLegacy::getInstance('list', 'FabrikFEModel');
 
 		foreach ($rows as $row)
 		{
+			// assign $row to $this->row, as we may need it in shutdown handling
+			$this->row = $row;
+
 			// Load in the plugin
-			$plugin = $pluginManager->getPluginFromId($row->id, 'Cron');
+			$this->pluginModel = $pluginManager->getPluginFromId($this->row->id, 'Cron');
 
-			$params = $plugin->getParams();
-			$log->message = '';
-			$log->id = null;
-			$log->referring_url = '';
+			$params = $this->pluginModel->getParams();
+			$this->log->message = '';
+			$this->log->id = null;
+			$this->log->referring_url = '';
 
-			$log->message_type = 'plg.cron.' . $row->plugin;
-			if (!$plugin->queryStringActivated())
+			$this->log->message_type = 'plg.cron.' . $this->row->plugin;
+			if (!$this->pluginModel->queryStringActivated())
 			{
-				// $$$ hugh - don't forget to make it runnable again before continuing
-				$query->clear();
-				$query->update('#__{package}_cron')->set('published = 1')->where('id = ' . $row->id);
-				$db->setQuery($query);
-				$db->execute();
 				continue;
 			}
+
+			if ($this->pluginModel->doRunGating())
+			{
+				$this->query->clear()->update('#__{package}_cron')->set('published = 0')->where('id = ' . $this->db->quote($this->row->id));
+				$this->db->setQuery($this->query);
+				$this->db->execute();
+			}
+
+
+
 			$tid = (int) $params->get('table');
 			$thisListModel = clone ($listModel);
 			if ($tid !== 0)
 			{
 				$thisListModel->setId($tid);
-				$log->message .= "\n\n$row->plugin\n listid = " . $thisListModel->getId();
-				if ($plugin->requiresTableData())
+				$this->log->message .= "\n\n" . $this->row->plugin . "\n listid = " . $thisListModel->getId();
+				if ($this->pluginModel->requiresTableData())
 				{
 					$table = $thisListModel->getTable();
 					$total = $thisListModel->getTotalRecords();
 					$nav = $thisListModel->getPagination($total, 0, $total);
 					$data = $thisListModel->getData();
-					$log->message .= "\n" . $thisListModel->buildQuery();
+					$this->log->message .= "\n" . $thisListModel->buildQuery();
 				}
 			}
 			else
 			{
 				$data = array();
 			}
-			$res = $plugin->process($data, $thisListModel);
-			$log->message = $plugin->getLog() . "\n\n" . $log->message;
-			$now = JFactory::getDate();
-			$now = $now->toUnix();
-			$new = JFactory::getDate($row->nextrun);
-			$tmp = $new->toUnix();
 
-			switch ($row->unit)
-			{
-				case 'second':
-					$inc = 1;
-					break;
-				case 'minute':
-					$inc = 60;
-					break;
-				case 'hour':
-					$inc = 60 * 60;
-					break;
-				default:
-				case 'day':
-					$inc = 60 * 60 * 24;
-					break;
-			}
-			/* Don't use NOW() as the last run date as this could mean that the cron
-			 * jobs aren't run as frequently as specified
-			 * if the lastrun date was set in admin to ages ago, then incrementally increase the
-			 * last run date until it is less than now
-			 */
-			while ($tmp + ($inc * $row->frequency) < $now)
-			{
-				$tmp = $tmp + ($inc * $row->frequency);
-			}
+			$res = $this->pluginModel->process($data, $thisListModel);
+			$this->log->message = $this->pluginModel->getLog() . "\n\n" . $this->log->message;
 
-			// Mark them as being run
-			$nextrun = JFactory::getDate($tmp);
-			$query->clear();
-			//$query->update('#__{package}_cron')->set('published = 1, lastrun = ' . $db->quote($nextrun->toSql()))->where('id = ' . $row->id);
-			$query->update('#__{package}_cron')->set('lastrun = ' . $db->quote($nextrun->toSql()))->where('id = ' . $row->id);
-			$db->setQuery($query);
-			$db->execute();
+			$this->reschedule();
 
 			// Log if asked for
 			if ($params->get('log', 0) == 1)
 			{
-				$log->store();
+				$this->log->store();
 			}
 
 			// Email log message
 			$recipient = explode(',', $params->get('log_email', ''));
 			if (!FArrayHelper::emptyish($recipient))
 			{
-				$subject = $config->get('sitename') . ': ' . $row->plugin . ' scheduled task';
-				$mailer->sendMail($config->get('mailfrom'), $config->get('fromname'), $recipient, $subject, $log->message, true);
+				$subject = $config->get('sitename') . ': ' . $this->row->plugin . ' scheduled task';
+				$mailer->sendMail($config->get('mailfrom'), $config->get('fromname'), $recipient, $subject, $this->log->message, true);
 			}
 		}
 	}

@@ -11,6 +11,9 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\String\String;
+use \Joomla\Utilities\ArrayHelper;
+
 jimport('joomla.application.component.model');
 
 /**
@@ -100,7 +103,8 @@ class FabrikFEModelCSVExport extends FabModel
 				exit;
 			}
 
-			$str = '';
+			// with UTF8 Excel needs BOM
+			$str = ( $input->get('excel') == 1 && $this->getEncoding() == 'UTF-8' ) ? "\xEF\xBB\xBF" : '';
 		}
 
 		$table = $this->model->getTable();
@@ -110,6 +114,9 @@ class FabrikFEModelCSVExport extends FabModel
 		$config             = JComponentHelper::getParams('com_fabrik');
 		$this->delimiter    = $this->outPutFormat == 'excel' ? COM_FABRIK_EXCEL_CSV_DELIMITER : COM_FABRIK_CSV_DELIMITER;
 		$this->delimiter    = $config->get('csv_delimiter', $this->delimiter);
+		if ($this->delimiter === '\t') {
+			$this->delimiter = "\t";
+		}
 
 		if ($start === 0)
 		{
@@ -138,7 +145,7 @@ class FabrikFEModelCSVExport extends FabModel
 		{
 			foreach ($group as $row)
 			{
-				$a = JArrayHelper::fromObject($row);
+				$a = ArrayHelper::fromObject($row);
 
 				if ($exportFormat == 1)
 				{
@@ -149,7 +156,7 @@ class FabrikFEModelCSVExport extends FabModel
 				{
 					foreach ($a as $key => $val)
 					{
-						if (substr($key, JString::strlen($key) - 4, JString::strlen($key)) == '_raw')
+						if (substr($key, String::strlen($key) - 4, String::strlen($key)) == '_raw')
 						{
 							unset($a[$key]);
 						}
@@ -160,7 +167,7 @@ class FabrikFEModelCSVExport extends FabModel
 				{
 					foreach ($a as $key => $val)
 					{
-						if (substr($key, JString::strlen($key) - 4, JString::strlen($key)) != '_raw')
+						if (substr($key, String::strlen($key) - 4, String::strlen($key)) != '_raw')
 						{
 							unset($a[$key]);
 						}
@@ -436,7 +443,7 @@ class FabrikFEModelCSVExport extends FabModel
 
 					foreach ($a as $aKey => $aVal)
 					{
-						if ($aKey == JString::substr($key, 0, JString::strlen($key) - 4) && $x != 0)
+						if ($aKey == String::substr($key, 0, String::strlen($key) - 4) && $x != 0)
 						{
 							$found = true;
 							break;
@@ -601,7 +608,7 @@ class FabrikFEModelCSVExport extends FabModel
 							$n .= '_raw';
 						}
 
-						if ($incData && JString::substr($n, JString::strlen($n) - 4, JString::strlen($n)) !== '_raw')
+						if ($incData && String::substr($n, String::strlen($n) - 4, String::strlen($n)) !== '_raw')
 						{
 							if (!in_array($n, $h))
 							{
@@ -614,7 +621,7 @@ class FabrikFEModelCSVExport extends FabModel
 							}
 						}
 
-						if ($incRaw && JString::substr($n, JString::strlen($n) - 4, strlen($n)) == '_raw')
+						if ($incRaw && String::substr($n, String::strlen($n) - 4, strlen($n)) == '_raw')
 						{
 							if (!in_array($n, $h))
 							{
@@ -632,7 +639,7 @@ class FabrikFEModelCSVExport extends FabModel
 
 			if (!$found)
 			{
-				if (!(JString::substr($heading, JString::strlen($heading) - 4, JString::strlen($heading)) == '_raw' && !$incRaw))
+				if (!(String::substr($heading, String::strlen($heading) - 4, String::strlen($heading)) == '_raw' && !$incRaw))
 				{
 					// Stop id getting added to tables when exported with full element name key
 					if ($headingFormat != 1 && $heading != $shortKey)

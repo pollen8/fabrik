@@ -403,7 +403,7 @@ class PlgFabrik_ElementThumbs extends PlgFabrik_Element
 	 */
 	private function getCookieName($listId, $rowId)
 	{
-		$cookieName = 'thumb-table_' . $listId . '_row_' . $rowId . '_ip_' . $_SERVER['REMOTE_ADDR'];
+		$cookieName = 'thumb-table_' . $listId . '_row_' . $rowId . '_ip_' . FabrikString::filteredIp();
 		jimport('joomla.utilities.utility');
 		$version = new JVersion;
 
@@ -751,8 +751,20 @@ class PlgFabrik_ElementThumbs extends PlgFabrik_Element
 		$db->setQuery($query);
 		$db->execute();
 
-		// Update for comments plugin needs special column adding
+		/**
+		 * Check if we need to update the table ...
+		 *
+		 * Update for comments plugin needs 'special' column adding,,
+		 * Check for older versions of the table needing tableid chenged to listid
+		 */
+
 		$cols = $db->getTableColumns('#__{package}_thumbs');
+
+		if (array_key_exists('tableid', $cols))
+		{
+			$db->setQuery('ALTER TABLE #__{package}_thumbs CHANGE ' . $db->qn('tableid') . ' ' . $db->qn('listid') . ' INT(6)');
+			$db->execute();
+		}
 
 		if (!array_key_exists('special', $cols))
 		{

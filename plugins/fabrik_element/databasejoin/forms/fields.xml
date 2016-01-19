@@ -128,6 +128,17 @@
 				<option value="2">PLG_ELEMENT_DBJOIN_EDIT</option>
 				<option value="3">PLG_ELEMENT_DBJOIN_BOTH</option>
 			</field>
+			
+			<field name="databasejoin_where_ajax"
+			       type="radio"
+			       default="0"
+			       class="btn-group"
+			       label="PLG_ELEMENT_DBJOIN_JOIN_WHERE_AJAX_LABEL"
+			       description="PLG_ELEMENT_DBJOIN_JOIN_WHERE_AJAX_DESC">
+				<option value="0">JNO</option>
+				<option value="1">JYES</option>
+			</field>
+			
 
 			<!--
 						<field name="database_join_join_sql"

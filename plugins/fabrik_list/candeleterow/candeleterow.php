@@ -11,6 +11,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\Utilities\ArrayHelper;
+
 // Require the abstract plugin class
 require_once COM_FABRIK_FRONTEND . '/models/plugin-list.php';
 
@@ -21,7 +23,6 @@ require_once COM_FABRIK_FRONTEND . '/models/plugin-list.php';
  * @subpackage  Fabrik.list.candeleterow
  * @since       3.0
  */
-
 class PlgFabrik_ListCandeleterow extends PlgFabrik_List
 {
 	/**
@@ -29,7 +30,6 @@ class PlgFabrik_ListCandeleterow extends PlgFabrik_List
 	 *
 	 * @return  bool
 	 */
-
 	public function canSelectRows()
 	{
 		return false;
@@ -42,7 +42,6 @@ class PlgFabrik_ListCandeleterow extends PlgFabrik_List
 	 *
 	 * @return boolean
 	 */
-
 	public function onCanDelete($row)
 	{
 		$params = $this->getParams();
@@ -56,7 +55,7 @@ class PlgFabrik_ListCandeleterow extends PlgFabrik_List
 
 		if (is_array($row[0]))
 		{
-			$data = JArrayHelper::toObject($row[0]);
+			$data = ArrayHelper::toObject($row[0]);
 		}
 		else
 		{
@@ -66,24 +65,24 @@ class PlgFabrik_ListCandeleterow extends PlgFabrik_List
 		$field = str_replace('.', '___', $params->get('candeleterow_field'));
 
 		// If they provided some PHP to eval, we ignore the other settings and just run their code
-		$candeleterow_eval = $params->get('candeleterow_eval', '');
+		$canDeleteRowEval = $params->get('candeleterow_eval', '');
 
 		// $$$ rob if no can delete field selected in admin return true
-		if (trim($field) == '' && trim($candeleterow_eval) == '')
+		if (trim($field) == '' && trim($canDeleteRowEval) == '')
 		{
 			return true;
 		}
 
-		if (!empty($candeleterow_eval))
+		if (!empty($canDeleteRowEval))
 		{
 			$w = new FabrikWorker;
-			$data = JArrayHelper::fromObject($data);
-			$candeleterow_eval = $w->parseMessageForPlaceHolder($candeleterow_eval, $data);
+			$data = ArrayHelper::fromObject($data);
+			$canDeleteRowEval = $w->parseMessageForPlaceHolder($canDeleteRowEval, $data);
 			FabrikWorker::clearEval();
-			$candeleterow_eval = @eval($candeleterow_eval);
-			FabrikWorker::logEval($candeleterow_eval, 'Caught exception on eval in can delete row : %s');
+			$canDeleteRowEval = @eval($canDeleteRowEval);
+			FabrikWorker::logEval($canDeleteRowEval, 'Caught exception on eval in can delete row : %s');
 
-			return $candeleterow_eval;
+			return $canDeleteRowEval;
 		}
 		else
 		{
@@ -121,7 +120,6 @@ class PlgFabrik_ListCandeleterow extends PlgFabrik_List
 	 *
 	 * @return  string
 	 */
-
 	protected function getAclParam()
 	{
 		return 'candeleterow_access';

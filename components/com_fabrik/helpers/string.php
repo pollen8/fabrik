@@ -11,6 +11,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\Utilities\ArrayHelper;
+
 /**
  * String helpers
  *
@@ -511,7 +513,7 @@ class FabrikString extends JString
 		$title = FArrayHelper::getValue($opts, 'title', '');
 		$strippedText = htmlspecialchars(strip_tags($text), ENT_QUOTES);;
 
-		if (JArrayHelper::getValue($opts, 'html_format', false))
+		if (ArrayHelper::getValue($opts, 'html_format', false))
 		{
 			$summary = FabrikString::truncateHtml($text, $wordCount);
 		}
@@ -1011,6 +1013,16 @@ class FabrikString extends JString
 		}
 	}
 
+	/**
+	 * Get a validated server remote address (I.P.). If not valid return ''
+	 *
+	 * @return string
+	 */
+	public static function filteredIp()
+	{
+		return filter_var($_SERVER['REMOTE_ADDR'], FILTER_VALIDATE_IP) !== false ? $_SERVER['REMOTE_ADDR'] : '';
+	}
+
 }
 
 /**
@@ -1070,5 +1082,6 @@ class FText extends JText
 		// if we got this far, hand it to JText::_() as normal
 		return parent::_($string, $jsSafe, $interpretBackSlashes, $script);
 	}
+
 
 }

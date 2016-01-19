@@ -24,7 +24,7 @@ $pw2Attributes = implode("\n", $pw2Attributes);
 
 
 ?>
-<input type="password" <?php echo $pw1Attributes; ?>"  />
+<input <?php echo $pw1Attributes; ?>  />
 
 <?php
 if ($d->showStrengthMeter) :
@@ -40,4 +40,4 @@ if ($d->showStrengthMeter) :
 endif;
 ?>
 
-<input type="password" <?php echo $pw2Attributes; ?>"  />
+<input <?php echo $pw2Attributes; ?>"  />

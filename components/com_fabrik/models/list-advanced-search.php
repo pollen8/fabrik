@@ -11,6 +11,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\String\String;
+
 jimport('joomla.application.component.model');
 
 /**
@@ -195,8 +197,8 @@ class FabrikFEModelAdvancedSearch extends FabModel
 						$jsSel = '>';
 						break;
 					default:
-						$firstChar = JString::substr($v2, 1, 1);
-						$lastChar = JString::substr($v2, -2, 1);
+						$firstChar = String::substr($v2, 1, 1);
+						$lastChar = String::substr($v2, -2, 1);
 
 						switch ($firstChar)
 						{

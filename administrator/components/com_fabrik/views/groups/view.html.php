@@ -94,7 +94,7 @@ class FabrikAdminViewGroups extends JViewLegacy
 	{
 		require_once JPATH_COMPONENT . '/helpers/fabrik.php';
 		$canDo = FabrikAdminHelper::getActions($this->state->get('filter.category_id'));
-		JToolBarHelper::title(FText::_('COM_FABRIK_MANAGER_GROUPS'), 'groups.png');
+		JToolBarHelper::title(FText::_('COM_FABRIK_MANAGER_GROUPS'), 'stack');
 
 		if ($canDo->get('core.create'))
 		{

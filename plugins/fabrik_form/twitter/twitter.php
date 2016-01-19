@@ -11,6 +11,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\String\String;
+
 // Require the abstract plugin class
 require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
 
@@ -375,7 +377,7 @@ class PlgFabrik_FormTwitter extends PlgFabrik_Form
 		$msg = $this->bitlifyMessage($msg);
 
 		// $$$ hugh - I thought the twitter class chopped the msg to 140, but apparently it doesn't ..
-		$msg = JString::substr($msg, 0, $this->max_msg_length);
+		$msg = String::substr($msg, 0, $this->max_msg_length);
 
 		return $msg;
 	}

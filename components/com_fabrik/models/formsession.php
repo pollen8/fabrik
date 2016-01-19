@@ -115,6 +115,12 @@ class FabrikFEModelFormsession extends FabModel
 		$formModel->copyToRaw($post);
 		$formModel->addEncrytedVarsToArray($post);
 
+		$pluginManager = FabrikWorker::getPluginManager();
+		if (in_array(false, $pluginManager->runPlugins('onSavePage', $formModel)))
+		{
+			return false;
+		}
+
 		if (array_key_exists('fabrik_vars', $post))
 		{
 			unset($post['fabrik_vars']);
@@ -192,7 +198,8 @@ class FabrikFEModelFormsession extends FabModel
 			jimport('joomla.utilities.utility');
 
 			// Create the encryption key, apply extra hardening using the user agent string
-			$key = JApplication::getHash(@$_SERVER['HTTP_USER_AGENT']);
+
+			$key = JApplication::getHash($this->app->input->server->get('HTTP_USER_AGENT'));
 			$key = new JCryptKey('simple', $key, $key);
 			$this->crypt = new JCrypt(new JCryptCipherSimple, $key);
 		}

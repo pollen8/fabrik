@@ -11,6 +11,9 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\Registry\Registry;
+use Joomla\Utilities\ArrayHelper;
+
 require_once JPATH_ADMINISTRATOR . '/components/com_fabrik/tables/fabtable.php';
 
 /**
@@ -90,7 +93,7 @@ class FabrikTableElement extends FabTable
 
 		if (isset($array['params']) && is_array($array['params']))
 		{
-			$registry = new JRegistry;
+			$registry = new Registry;
 			$registry->loadArray($array['params']);
 			$array['params'] = (string) $registry;
 		}
@@ -101,12 +104,14 @@ class FabrikTableElement extends FabTable
 	/**
 	 * Method to set the show_in_list_view state for a row or list of rows in the database
 	 * table.  The method respects checked out rows by other users and will attempt
-	 * to checkin rows that it can after adjustments are made.
+	 * to check-in rows that it can after adjustments are made.
 	 *
 	 * @param   mixed    $pks     An optional array of primary key values to update.
 	 * If not set the instance property value is used.
 	 * @param   integer  $state   The publishing state. e.g. [0 = unpublished, 1 = published]
 	 * @param   integer  $userId  The user id of the user performing the operation.
+	 *
+	 * @throws Exception
 	 *
 	 * @return  boolean	True on success.
 	 */
@@ -116,7 +121,7 @@ class FabrikTableElement extends FabTable
 		$k = $this->getKeyName();
 
 		// Sanitize input.
-		JArrayHelper::toInteger($pks);
+		ArrayHelper::toInteger($pks);
 		$userId = (int) $userId;
 		$state = (int) $state;
 
@@ -130,10 +135,7 @@ class FabrikTableElement extends FabTable
 			// Nothing to set publishing state on, return false.
 			else
 			{
-				$e = new JException(FText::_('JLIB_DATABASE_ERROR_NO_ROWS_SELECTED'));
-				$this->setError($e);
-
-				return false;
+				throw new Exception(FText::_('JLIB_DATABASE_ERROR_NO_ROWS_SELECTED'));
 			}
 		}
 
@@ -161,16 +163,13 @@ class FabrikTableElement extends FabTable
 		// Check for a database error.
 		if (!$this->_db->execute())
 		{
-			$e = new JException(JText::sprintf('JLIB_DATABASE_ERROR_PUBLISH_FAILED', get_class($this), $this->_db->getErrorMsg()));
-			$this->setError($e);
-
-			return false;
+			throw new Exception(JText::sprintf('JLIB_DATABASE_ERROR_PUBLISH_FAILED', get_class($this)));
 		}
 
-		// If checkin is supported and all rows were adjusted, check them in.
+		// If check-in is supported and all rows were adjusted, check them in.
 		if ($checkIn && (count($pks) == $this->_db->getAffectedRows()))
 		{
-			// Checkin the rows.
+			// Check-in the rows.
 			foreach ($pks as $pk)
 			{
 				$this->checkin($pk);
@@ -182,8 +181,6 @@ class FabrikTableElement extends FabTable
 		{
 			$this->published = $state;
 		}
-
-		$this->setError('');
 
 		return true;
 	}

@@ -12,6 +12,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use \Joomla\Registry\Registry;
+
 require_once 'fabcontrollerform.php';
 
 /**
@@ -169,7 +171,7 @@ class FabrikAdminControllerList extends FabControllerForm
 		$query->select('params')->from('#__modules')->where('id = ' . (int) $moduleId);
 		$db->setQuery($query);
 		$params = $db->loadResult();
-		$params = new JRegistry($params);
+		$params = new Registry($params);
 
 		ModFabrikListHelper::applyParams($params, $model);
 		$model->setRenderContext($moduleId);

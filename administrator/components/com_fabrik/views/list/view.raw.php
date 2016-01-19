@@ -11,6 +11,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\Utilities\ArrayHelper;
+
 jimport('joomla.application.component.view');
 
 /**
@@ -54,7 +56,7 @@ class FabrikAdminViewList extends JViewLegacy
 
 				if (is_object($data[$groupk]))
 				{
-					$o->data = JArrayHelper::fromObject($data[$groupk]);
+					$o->data = ArrayHelper::fromObject($data[$groupk]);
 				}
 				else
 				{

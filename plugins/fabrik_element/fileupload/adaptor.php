@@ -11,6 +11,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\String\String;
+
 /**
  * Abstract Storage adaptor for Fabrik file upload element
  *
@@ -30,7 +32,7 @@ abstract class FabrikStorageAdaptor
 	/**
 	 * Constructor
 	 *
-	 * @param   JRegistry  &$params  Options
+	 * @param   Registry  &$params  Options
 	 */
 	public function __construct(&$params)
 	{
@@ -40,7 +42,7 @@ abstract class FabrikStorageAdaptor
 	/**
 	 * Get params
 	 *
-	 * @return  JRegistry
+	 * @return  Registry
 	 */
 	public function &getParams()
 	{
@@ -61,10 +63,11 @@ abstract class FabrikStorageAdaptor
 	 * Does a file exist
 	 *
 	 * @param   string  $filepath  File path to test
+	 * @param   bool    $prependRoot  also test with root prepended
 	 *
 	 * @return bool
 	 */
-	public abstract function exists($filepath);
+	public abstract function exists($filepath, $prependRoot = true);
 
 	/**
 	 * Does a folder exist
@@ -275,7 +278,7 @@ abstract class FabrikStorageAdaptor
 
 			while ($i < $length)
 			{
-				$char = JString::substr($possible, mt_rand(0, JString::strlen($possible) - 1), 1);
+				$char = String::substr($possible, mt_rand(0, String::strlen($possible) - 1), 1);
 				$key .= $char;
 				$i++;
 			}

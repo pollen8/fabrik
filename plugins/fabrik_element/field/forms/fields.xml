@@ -190,6 +190,12 @@
 				label="PLG_ELEMENT_FIELD_INPUT_MASK_LABEL"
 				size="60" />
 
+			<field name="text_input_mask_definitions"
+				type="text"
+				description="PLG_ELEMENT_FIELD_INPUT_MASK_DEFINITIONS_DESC"
+				label="PLG_ELEMENT_FIELD_INPUT_MASK_DEFINITIONS_LABEL"
+				size="60" />
+
 			<field name="render_as_qrcode"
 				type="radio"
 				default="0"

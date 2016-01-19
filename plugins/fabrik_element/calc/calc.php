@@ -11,6 +11,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\Utilities\ArrayHelper;
+
 /**
  * Plugin element to render field with PHP calculated value
  *
@@ -58,7 +60,7 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 	/**
 	 * Get value
 	 *
-	 * @param   string  $data           Value
+	 * @param   array  $data           Value
 	 * @param   int     $repeatCounter  Repeat group counter
 	 *
 	 * @return  string
@@ -306,7 +308,7 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 					foreach (array_keys($v) as $x)
 					{
 						$origVal = FArrayHelper::getValue($origData, $x);
-						$d[$elKey][$x] = $elementModel->getLabelForValue($v[$x], $origVal, true, $x);
+						$d[$elKey][$x] = $elementModel->getLabelForValue($v[$x], $origVal, true);
 					}
 				}
 				else
@@ -349,7 +351,7 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 			$cal = $params->get('calc_calculation', '');
 			$listModel = $this->getlistModel();
 			$formModel = $this->getFormModel();
-			$data = JArrayHelper::fromObject($row);
+			$data = ArrayHelper::fromObject($row);
 			$data['rowid'] = $data['__pk_val'];
 			$data['fabrik'] = $formModel->getId();
 
@@ -480,8 +482,6 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 			$obs = array_merge($obs, $matches);
 		}
 
-		$obs = array_unique($obs);
-
 		foreach ($obs as $key => &$m)
 		{
 
@@ -498,7 +498,7 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 		}
 
 		$opts->ajax = $params->get('calc_ajax', 0) == 0 ? false : true;
-		$opts->observe = array_values($obs);
+		$opts->observe = array_values(array_unique($obs));
 		$opts->calcOnLoad = (bool) $params->get('calc_on_load', false);
 		$opts->id = $this->id;
 
@@ -736,7 +736,7 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 				$key = $listRef . $row->__pk_val;
 				$row->rowid = $row->__pk_val;
 
-				$return->$key = $this->_getV(JArrayHelper::fromObject($row), 0);
+				$return->$key = $this->_getV(ArrayHelper::fromObject($row), 0);
 			}
 		}
 

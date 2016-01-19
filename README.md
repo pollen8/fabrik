@@ -3,6 +3,8 @@ Fabrik is the Joomla application builder
 Installation
 ================
 
+[![Join the chat at https://gitter.im/Fabrik/fabrik](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/Fabrik/fabrik?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 - Check out the files into your Joomla installations root directory
 - Log into your Joomla administration control panel
 - Go to Extensions > Extension Manager
@@ -40,6 +42,22 @@ Upgrading
 ================
 
 At the time of an official release, please follow the steps here - [http://fabrikar.com/forums/index.php?wiki/upgrade-instructions/](http://fabrikar.com/forums/index.php?wiki/upgrade-instructions/)
+
+Building
+========
+
+We have a Grunt build file which will create the Fabrik package for you, and place it in a folder /fabrik_build
+The build relies on node-gpy, which depending on your operating system may require additional installations beyond node itself.
+Please follow the instructions @ https://github.com/nodejs/node-gyp
+ 
+Once done you should be able open a command prompt (best to run as administrator in Windows) and then do
+
+> npm install
+> Grunt
+
+An additional tasks is available for minimising the javascript:
+
+> Grunt js
 
 Further Information
 ================

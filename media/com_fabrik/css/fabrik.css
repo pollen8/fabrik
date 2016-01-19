@@ -37,6 +37,17 @@ a.fabrikTip {
 	display: inline-block;
 }
 
+/** bootstrap 3 (possibly just t3 framework templates) remove the label if it has a tip on it
+when you move the mouse out of the label */
+label.fabrikLabel.fabrikTip, span.fabrikTip {
+	display:inline!important
+}
+
+/** bootstrap 3 fix */
+.fabrikButtonsContainer  li.dropdown {
+	display:inline!important
+}
+
 /*** stoopid beez20 fixes */
 #main .fabrikForm  a:hover {
 	color: #000 !important;
@@ -659,36 +670,52 @@ form.fabrikForm label.radio {
 
 @media only screen and (max-device-width: 499px)
 {
-.fabrikWindow.modal {
-	max-width:100% !important;
-	left:0 !important;
-}
-
-.fabrikWindow.modal .contentWrapper {
-	max-width:100% !important;
-}
-
-.fabrikWindow .radius_search table.radius_table {
-	table-layout:fixed;
-	max-width:100%;
-}
-
-.fabrikWindow .radius_search table.radius_table td:first-child {
-	width:70px;
-}
-
-.radius_search_geocode_map {
-	width:300px;
-	height:275px;
-	margin-top:15px;
-}
+	.fabrikWindow.modal {
+		max-width:100% !important;
+		left:0 !important;
+	}
+	
+	.fabrikWindow.modal .contentWrapper {
+		max-width:100% !important;
+	}
+	
+	.fabrikWindow .radius_search table.radius_table {
+		table-layout:fixed;
+		max-width:100%;
+	}
+	
+	.fabrikWindow .radius_search table.radius_table td:first-child {
+		width:70px;
+	}
+	
+	.radius_search_geocode_map {
+		width:300px;
+		height:275px;
+		margin-top:15px;
+	}
 }
 
 @media only screen and (min-device-width: 500px)
 {
-.radius_search_geocode_map {
-	width:400px;
-	height:275px;
-	margin-top:15px;
+	.radius_search_geocode_map {
+		width:400px;
+		height:275px;
+		margin-top:15px;
+	}
 }
+
+/** Fix for some templates without input-append, like Purity III */
+
+.input-append input, .input-append select {
+	display: inline-block;
+}
+
+/** Prevent line breaks between sort icon and heading label in lists */
+
+.heading.fabrik_ordercell, .fabrikTag {
+	white-space: nowrap;
+}
+
+.chzn-container {
+	text-align: start;
 }

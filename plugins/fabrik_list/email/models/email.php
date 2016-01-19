@@ -11,6 +11,9 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\String\String;
+use Joomla\Utilities\ArrayHelper;
+
 require_once COM_FABRIK_FRONTEND . '/models/plugin-list.php';
 
 /**
@@ -27,7 +30,7 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 	 *
 	 * @var string
 	 */
-	protected $buttonPrefix = 'envelope';
+	protected $buttonPrefix = 'email';
 
 	/**
 	 * SMS gateway instance
@@ -290,7 +293,7 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 				$ids = (array) $input->get($key, array(), 'array');
 			}
 
-			JArrayHelper::toInteger($ids);
+			ArrayHelper::toInteger($ids);
 
 			if (empty($ids))
 			{
@@ -810,10 +813,9 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 		$input  = $this->app->input;
 		list($replyEmail, $replyEmailName) = $this->_replyEmailName($firstRow);
 		list($emailFrom, $fromName) = $this->_fromEmailName($firstRow);
-		$w      = new FabrikWorker;
-		$toType = $toType = $this->_toType();
-		// Arbitrarily use first row for placeholders
-		$to           = $this->_emailTo();
+		$w            = new FabrikWorker;
+		$toType       = $this->_toType();
+		$to           = $this->_to();
 		$oldStyle     = $this->_oldStyle();
 		$toHow        = $this->_toHow();
 		$mailTo       = $toType == 'list' ? $firstRow->$to : $to;
@@ -1051,7 +1053,7 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 			$gateway = $params->get('emailtable_sms_gateway', 'kapow.php');
 			$input = new JFilterInput;
 			$gateway = $input->clean($gateway, 'CMD');
-			require_once JPATH_ROOT . '/components/com_fabrik/helpers/sms_gateways/' . JString::strtolower($gateway);
+			require_once JPATH_ROOT . '/components/com_fabrik/helpers/sms_gateways/' . String::strtolower($gateway);
 			$gateway = JFile::stripExt($gateway);
 			$this->gateway = new $gateway;
 			$this->gateway->params = $params;

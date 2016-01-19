@@ -11,6 +11,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\Utilities\ArrayHelper;
+
 jimport('joomla.application.component.model');
 
 require_once JPATH_SITE . '/components/com_fabrik/models/visualization.php';
@@ -316,7 +318,8 @@ class FabrikModelNvd3_Chart extends FabrikFEModelVisualization
 		if ($split !== '')
 		{
 			// Split the data out into one line per group of data
-			$rows = JArrayHelper::pivot($rows, 'key');
+			$rows = ArrayHelper::pivot($rows, 'key');
+
 			foreach ($rows as $key => $row)
 			{
 				// Single item after pivot is an object - wrap inside an array

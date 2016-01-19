@@ -1,5 +1,4 @@
 <?php
-use Zend\Db\Sql\Ddl\Column\Boolean;
 /**
  * Plugin element to render fields
  *
@@ -11,6 +10,9 @@ use Zend\Db\Sql\Ddl\Column\Boolean;
 
 // No direct access
 defined('_JEXEC') or die('Restricted access');
+
+use Joomla\String\String;
+use Joomla\Utilities\ArrayHelper;
 
 jimport('joomla.application.component.model');
 
@@ -59,8 +61,8 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 	/**
 	 * Format the string for use in list view, email data
 	 *
-	 * @param  $d             data
-	 * @param  $doNumberFormat  run numberFormat()
+	 * @param   mixed $d               data
+	 * @param   bool  $doNumberFormat  run numberFormat()
 	 *
 	 * @return string
 	 */
@@ -82,7 +84,7 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 
 		if ($params->get('password') == '1')
 		{
-			$d = str_pad('', JString::strlen($d), '*');
+			$d = str_pad('', String::strlen($d), '*');
 		}
 
 		return $d;
@@ -180,7 +182,7 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 
 		if ($params->get('speech', 0))
 		{
-			$bits['x-webkit-speech'] = "x-webkit-speech";
+			$bits['x-webkit-speech'] = 'x-webkit-speech';
 		}
 
 		$layout = $this->getLayout('form');
@@ -229,10 +231,10 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 			$opts = $this->linkOpts();
 			$title = $params->get('link_title', '');
 
-			if (FabrikWorker::isEmail($value) || JString::stristr($value, 'http'))
+			if (FabrikWorker::isEmail($value) || String::stristr($value, 'http'))
 			{
 			}
-			elseif (JString::stristr($value, 'www.'))
+			elseif (String::stristr($value, 'www.'))
 			{
 				$value = 'http://' . $value;
 			}
@@ -242,7 +244,9 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 				$opts['title'] = strip_tags($w->parseMessageForPlaceHolder($title, $data));
 			}
 
-			$value = FabrikHelperHTML::a($value, $value, $opts);
+			$label = FArrayHelper::getValue($opts, 'title', '') !== '' ? $opts['title'] : $value;
+
+			$value = FabrikHelperHTML::a($value, $label, $opts);
 		}
 	}
 
@@ -300,6 +304,7 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 		{
 			$opts->use_input_mask = true;
 			$opts->input_mask = $inputMask;
+			$opts->input_mask_definitions = $params->get('text_input_mask_definitions', '{}');
 		}
 		else
 		{
@@ -597,7 +602,7 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 	{
 		if (is_object($thisRow))
 		{
-			$thisRow = JArrayHelper::fromObject($thisRow);
+			$thisRow = ArrayHelper::fromObject($thisRow);
 		}
 
 		$formModel = $this->getFormModel();

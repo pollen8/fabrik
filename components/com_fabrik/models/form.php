@@ -11,6 +11,10 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\String\String;
+use \Joomla\Registry\Registry;
+use Joomla\Utilities\ArrayHelper;
+
 jimport('joomla.application.component.model');
 require_once 'fabrikmodelform.php';
 require_once COM_FABRIK_FRONTEND . '/helpers/element.php';
@@ -96,7 +100,7 @@ class FabrikFEModelForm extends FabModelForm
 	/**
 	 * Parameters
 	 *
-	 * @var JRegistry
+	 * @var Registry
 	 */
 	protected $params = null;
 
@@ -396,7 +400,7 @@ class FabrikFEModelForm extends FabModelForm
 	/**
 	 * Get form table (alias to getTable())
 	 *
-	 * @return  object  form table
+	 * @return  FabTable  form table
 	 */
 	public function getForm()
 	{
@@ -413,7 +417,7 @@ class FabrikFEModelForm extends FabModelForm
 		if (!isset($this->params))
 		{
 			$form = $this->getForm();
-			$this->params = new JRegistry($form->params);
+			$this->params = new Registry($form->params);
 		}
 
 		return $this->params;
@@ -2441,7 +2445,7 @@ class FabrikFEModelForm extends FabModelForm
 	 * @param   string  $prefix   table name prefix
 	 * @param   array   $options  initial state options
 	 *
-	 * @return object form row
+	 * @return FabTable form row
 	 */
 	public function getTable($name = '', $prefix = 'Table', $options = array())
 	{
@@ -3060,7 +3064,7 @@ class FabrikFEModelForm extends FabModelForm
 
 					// $$$rob ensure "<tags>text</tags>" that are entered into plain text areas are shown correctly
 					JFilterOutput::objectHTMLSafe($data);
-					$data = JArrayHelper::fromObject($data);
+					$data = ArrayHelper::fromObject($data);
 					FabrikHelperHTML::debug($data, 'form:getData from POST (form not in Mambot and errors)');
 				}
 			}
@@ -3118,7 +3122,15 @@ class FabrikFEModelForm extends FabModelForm
 						$listModel->setBigSelects();
 
 						// Otherwise lets get the table record
-						$opts = $input->get('task') == 'form.inlineedit' ? array('ignoreOrder' => true) : array();
+
+						/**
+						 * $$$ hugh - 11/14/2015 - ran into issue with the order by from a list being added to the form query, when
+						 * rendering a form with a content plugin in a list intro.  And I don't think we ever need to
+						 * apply ordering to a form's select, by definition it's only one row.  Leaving this here for
+						 * now just as a reminder in case there's any unforeseen side effects.
+						 */
+						// $opts = $input->get('task') == 'form.inlineedit' ? array('ignoreOrder' => true) : array();
+						$opts = array('ignoreOrder' => true);
 						$sql = $this->buildQuery($opts);
 						$fabrikDb->setQuery($sql);
 						FabrikHelperHTML::debug((string) $fabrikDb->getQuery(), 'form:render');
@@ -3145,7 +3157,7 @@ class FabrikFEModelForm extends FabModelForm
 									$this->rowId = isset($row->__pk_val) ? $row->__pk_val : $this->rowId;
 								}
 
-								$row = empty($row) ? array() : JArrayHelper::fromObject($row);
+								$row = empty($row) ? array() : ArrayHelper::fromObject($row);
 								$request = $clean_request;
 								$request = array_merge($row, $request);
 								$data[] = FArrayHelper::toObject($request);
@@ -3394,7 +3406,7 @@ class FabrikFEModelForm extends FabModelForm
 		}
 
 		// Remove the additional rows - they should have been merged into [0] above. if no [0] then use main array
-		$data = JArrayHelper::fromObject(FArrayHelper::getValue($data, 0, $data));
+		$data = ArrayHelper::fromObject(FArrayHelper::getValue($data, 0, $data));
 	}
 
 	/**
@@ -3548,11 +3560,11 @@ class FabrikFEModelForm extends FabModelForm
 		if (strstr($sql, 'WHERE'))
 		{
 			// Do it this way as queries may contain sub-queries which we want to keep the where
-			$firstWord = JString::substr($where, 0, 5);
+			$firstWord = String::substr($where, 0, 5);
 
 			if ($firstWord == 'WHERE')
 			{
-				$where = JString::substr_replace($where, 'AND', 0, 5);
+				$where = String::substr_replace($where, 'AND', 0, 5);
 			}
 		}
 		// Set rowId to -2 to indicate random record
@@ -4063,7 +4075,7 @@ class FabrikFEModelForm extends FabModelForm
 			return str_replace("{Add/Edit}", '', $label);
 		}
 
-		if (JString::stristr($label, "{Add/Edit}"))
+		if (String::stristr($label, "{Add/Edit}"))
 		{
 			$replace = $this->isNewRecord() ? FText::_('COM_FABRIK_ADD') : FText::_('COM_FABRIK_EDIT');
 			$label = str_replace("{Add/Edit}", $replace, $label);
@@ -4270,31 +4282,7 @@ class FabrikFEModelForm extends FabModelForm
 	 */
 	public function getFormClass()
 	{
-		$class = array('fabrikForm');
-
-		/*
-		$horiz = true;
-		$groups = $this->getGroupsHiarachy();
-
-		foreach ($groups as $gkey => $groupModel)
-		{
-			$groupParams = $groupModel->getParams();
-
-			if ($groupParams->get('group_columns', 1) > 1)
-			{
-				$horiz = false;
-			}
-		}
-
-		if ($horiz
-			&& (($this->isEditable() && $params->get('labels_above', 0) != 1)
-			|| (!$this->isEditable() && $params->get('labels_above_details', 0) != 1)))
-		{
-			$class[] = 'form-horizontal';
-		}
-		*/
-
-		return implode(' ', $class);
+		return 'fabrikForm';
 	}
 
 	/**
@@ -4345,7 +4333,7 @@ class FabrikFEModelForm extends FabModelForm
 
 		if ($this->app->isAdmin())
 		{
-			$action = FArrayHelper::getValue($_SERVER, 'REQUEST_URI', 'index.php');
+			$action = filter_var(ArrayHelper::getValue($_SERVER, 'REQUEST_URI', 'index.php'), FILTER_SANITIZE_URL);
 			$action = $this->stripElementsFromUrl($action);
 			$action = str_replace("&", "&amp;", $action);
 
@@ -4413,7 +4401,7 @@ class FabrikFEModelForm extends FabModelForm
 			{
 				// $$$ rob if embedding a form in a form, then the embedded form's url will contain
 				// the id of the main form - not sure if its an issue for now
-				$action = FArrayHelper::getValue($_SERVER, 'REQUEST_URI', 'index.php');
+				$action = filter_var(ArrayHelper::getValue($_SERVER, 'REQUEST_URI', 'index.php'), FILTER_SANITIZE_URL);
 			}
 			else
 			{
@@ -4528,7 +4516,6 @@ class FabrikFEModelForm extends FabModelForm
 			return $this->groupView;
 		}
 
-		$params = $this->getParams();
 		$input = $this->app->input;
 
 		// $$$rob - do regardless of whether form is editable as $data is required for hidden encrypted fields
@@ -4578,6 +4565,7 @@ class FabrikFEModelForm extends FabModelForm
 			$repeatGroup = 1;
 			$foreignKey = null;
 			$startHidden = false;
+			$newGroup = false;
 
 			if ($groupModel->canRepeat())
 			{
@@ -4587,6 +4575,12 @@ class FabrikFEModelForm extends FabModelForm
 				if (is_object($joinTable))
 				{
 					$repeatGroup = $groupModel->repeatCount();
+
+					if ($repeatGroup === 0)
+					{
+						$newGroup = true;
+						$repeatGroup = 1;
+					}
 
 					if (!$groupModel->fkPublished())
 					{
@@ -4606,6 +4600,8 @@ class FabrikFEModelForm extends FabModelForm
 					$repeatGroup = 1;
 					$startHidden = true;
 				}
+
+				$newGroup = false;
 			}
 
 			$groupModel->repeatTotal = $startHidden ? 0 : $repeatGroup;
@@ -4624,6 +4620,7 @@ class FabrikFEModelForm extends FabModelForm
 					 */
 					$elementModel->setFormModel($this);
 					$elementModel->tmpl = $tmpl;
+					$elementModel->newGroup = $newGroup;
 
 					/* $$$rob test don't include the element in the form is we can't use and edit it
 					 * test for captcha element when user logged in
@@ -4716,8 +4713,8 @@ class FabrikFEModelForm extends FabModelForm
 
 			if ((int) $groupParams->get('group_columns', 1) == 1)
 			{
-				if (($this->isEditable() && $params->get('labels_above', 0) != 1)
-					|| (!$this->isEditable() && $params->get('labels_above_details', 0) != 1))
+				if (($this->isEditable() && $groupModel->labelPosition('form') !== 1)
+					|| (!$this->isEditable() && $groupModel->labelPosition('details') !== 1))
 				{
 					$group->class[] = 'form-horizontal';
 				}
@@ -4954,7 +4951,7 @@ class FabrikFEModelForm extends FabModelForm
 				if ($isMambot)
 				{
 					// Return to the same page
-					$url = FArrayHelper::getValue($_SERVER, 'HTTP_REFERER', 'index.php');
+					$url = filter_var(ArrayHelper::getValue($_SERVER, 'HTTP_REFERER', 'index.php'), FILTER_SANITIZE_URL);
 				}
 				else
 				{

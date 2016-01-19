@@ -12,6 +12,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\Utilities\ArrayHelper;
+
 jimport('joomla.html.html');
 jimport('joomla.form.formfield');
 jimport('joomla.form.helper');
@@ -356,6 +358,13 @@ class JFormFieldListfields extends JFormFieldList
 	 */
 	private function js($res = array())
 	{
+		$at = (string) $this->getAttribute('at', 'false');
+
+		if ($at === 'true')
+		{
+			FabrikHelperHTML::atWHo('textarea[data-at]', ArrayHelper::getColumn($res, 'value'));
+		}
+
 		$connection        = $this->getAttribute('connection');
 		$repeat            = FabrikWorker::toBoolean($this->getAttribute('repeat', false), false);
 		$repeat            = FabrikAdminElementHelper::getRepeat($this) || $repeat;
@@ -397,21 +406,27 @@ class JFormFieldListfields extends JFormFieldList
 	 */
 	private function gui()
 	{
-		$str       = array();
-		$modeField = (string) $this->getAttribute('modefield', 'textarea');
-		$class = $this->element['class'] ? ' class="' . (string) $this->element['class'] . '"' : '';
+		$str         = array();
+		$modeField   = (string) $this->getAttribute('modefield', 'textarea');
+		$class       = $this->element['class'] ? ' class="' . (string) $this->element['class'] . '"' : '';
+		$placeholder = $this->element['placeholder'] ? ' placeholder="' . (string) $this->element['placeholder'] . '"' : '';
+		$at          = (string) $this->getAttribute('at', 'false');
+
+		$rows = $this->element['rows'] ? $this->element['rows'] : 3;
 
 		if ($modeField === 'textarea')
 		{
-			$str[] = '<textarea ' . $class. ' cols="20" row="30" id="' . $this->id . '" name="' . $this->name . '">' . $this->value . '</textarea>';
+			$str[] = '<textarea ' . $class . $placeholder . ' data-at cols="20" rows="' . $rows . '" id="' . $this->id . '" name="' . $this->name . '">' . $this->value . '</textarea>';
 		}
 		else
 		{
-			$str[] = '<input class="input" id="' . $this->id . '" name="' . $this->name . '" value="' . $this->value . '" />';
+			$str[] = '<input ' . $class . $placeholder . ' id="' . $this->id . '" name="' . $this->name . '" value="' . $this->value . '" />';
 		}
 
+		$str[] = $at === 'true' ? '<div style="display:none">' : '';
 		$str[] = '<button class="button btn"><span class="icon-arrow-left"></span> ' . FText::_('COM_FABRIK_ADD') . '</button>';
 		$str[] = '<select class="elements"></select>';
+		$str[] = $at === 'true' ? '</div>' : '';
 
 		return implode("\n", $str);
 	}

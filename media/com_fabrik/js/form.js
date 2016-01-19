@@ -29,6 +29,9 @@ var FbForm = new Class({
 		'ajaxmethod': 'post',
 		'inlineMessage': true,
 		'print': false,
+		'toggleSubmit': false,
+		'mustValidate': false,
+		'lang': false,
 		'images': {
 			'alert': '',
 			'action_check': '',
@@ -49,6 +52,8 @@ var FbForm = new Class({
 		this.subGroups = $H({});
 		this.currentPage = this.options.start_page;
 		this.formElements = $H({});
+		this.hasErrors = $H({});
+		this.mustValidateEls = $H({});
 		this.elements = this.formElements;
 		this.duplicatedGroups = $H({});
 
@@ -144,6 +149,10 @@ var FbForm = new Class({
 			} else {
 				// Build URL as we could have changed the rowid via ajax pagination
 				var url = 'index.php?option=com_' + Fabrik.package + '&view=details&tmpl=component&formid=' + this.id + '&listid=' + this.options.listid + '&rowid=' + this.options.rowid + '&iframe=1&print=1';
+				if (this.options.lang !== false)
+				{
+					url += '&lang=' + this.options.lang;
+				}
 				window.open(url, 'win2', 'status=no,toolbar=no,scrollbars=yes,titlebar=no,menubar=no,resizable=yes,width=400,height=350,directories=no,location=no;');
 			}
 		}.bind(this));
@@ -155,8 +164,13 @@ var FbForm = new Class({
 	watchPdfButton: function () {
 		document.getElements('*[data-role="open-form-pdf"]').addEvent('click', function (e) {
 			e.stop();
-			// Build URL as we could have changed the rowid via ajax pagination
-			window.location = 'index.php?option=com_' + Fabrik.package + '&view=details&formid=' + this.id + '&rowid=' + this.options.rowid + '&format=pdf'
+			// Build URL as we could have changed the rowid via ajax pagination.
+			var url = e.event.currentTarget.href.replace(/(rowid=\d*)/, 'rowid=' + this.options.rowid);
+			if (this.options.lang !== false)
+			{
+				url += '&lang=' + this.options.lang;
+			}
+			window.location = url;
 		}.bind(this))
 	},
 
@@ -404,6 +418,88 @@ var FbForm = new Class({
 		fx.lastMethod = method;
 		Fabrik.fireEvent('fabrik.form.doelementfx', [this]);
 	},
+	
+	/**
+	 * Get a group's tab, if it exists
+	 * 
+	 * These tab funcions are currently just helpers for user scripts
+	 * 
+	 * @param groupId
+	 * 
+	 * @return tab | false
+	 */
+	getGroupTab: function(groupid) {
+		if (document.id('group' + groupid).getParent().hasClass('tab-pane')) {
+			var tabid = document.id('group' + groupid).getParent().id;
+			var tab_anchor = this.form.getElement('a[href=#' + tabid + ']');
+			return tab_anchor.getParent();
+		}
+		return false;
+	},
+	
+	/**
+	 * Get a group's tab, if it exists
+	 * 
+	 * These tab funcions are currently just helpers for user scripts
+	 * 
+	 * @param groupId
+	 * 
+	 * @return tab | false
+	 */
+	getGroupTab: function(groupid) {
+		if (document.id('group' + groupid).getParent().hasClass('tab-pane')) {
+			var tabid = document.id('group' + groupid).getParent().id;
+			var tab_anchor = this.form.getElement('a[href=#' + tabid + ']');
+			return tab_anchor.getParent();
+		}
+		return false;
+	},
+	
+	/**
+	 * Hide a group's tab, if it exists
+	 * 
+	 * @param groupId
+	 */
+	hideGroupTab: function(groupid) {
+		var tab = this.getGroupTab(groupid);
+		if (tab !== false) {
+			tab.hide();
+			if (tab.hasClass('active')) {
+				if (tab.getPrevious()) {
+					jQuery(tab.getPrevious().getFirst()).tab('show');
+				}
+				else if (tab.getNext()) {
+					jQuery(tab.getNext().getFirst()).tab('show');
+				}
+			}
+		}
+	},
+
+	/**
+	 * Hide a group's tab, if it exists
+	 * 
+	 * @param groupId
+	 */
+	selectGroupTab: function(groupid) {
+		var tab = this.getGroupTab(groupid);
+		if (tab !== false) {
+			if (!tab.hasClass('active')) {
+				jQuery(tab.getFirst()).tab('show');
+			}
+		}	
+	},
+	
+	/**
+	 * Hide a group's tab, if it exists
+	 * 
+	 * @param groupId
+	 */
+	showGroupTab: function(groupid) {
+		var tab = this.getGroupTab(groupid);
+		if (tab !== false) {
+			tab.show();
+		}
+	},
 
 	watchClearSession: function () {
 		if (this.form && this.form.getElement('.clearSession')) {
@@ -482,6 +578,10 @@ var FbForm = new Class({
 			}
 			// Don't prepend with Fabrik.liveSite, as it can create cross origin browser errors if you are on www and livesite is not on www.
 			var url = 'index.php?option=com_fabrik&format=raw&task=form.ajax_validate&form_id=' + this.id;
+			if (this.options.lang !== false)
+			{
+				url += '&lang=' + this.options.lang;
+			}
 
 			Fabrik.loader.start(this.getBlock(), Joomla.JText._('COM_FABRIK_VALIDATING'));
 
@@ -535,6 +635,10 @@ var FbForm = new Class({
 		this.form.getElement('input[name=task]').value = 'form.savepage';
 
 		var url = 'index.php?option=com_fabrik&format=raw&page=' + this.currentPage;
+		if (this.options.lang !== false)
+		{
+			url += '&lang=' + this.options.lang;
+		}
 		Fabrik.loader.start(this.getBlock(), 'saving page');
 		var data = this.getFormData();
 		data.fabrik_ajax = 1;
@@ -854,6 +958,10 @@ var FbForm = new Class({
 		//var origid = el.origId ? el.origId : id;
 		el.options.repeatCounter = el.options.repeatCounter ? el.options.repeatCounter : 0;
 		var url = 'index.php?option=com_fabrik&form_id=' + this.id;
+		if (this.options.lang !== false)
+		{
+			url += '&lang=' + this.options.lang;
+		}
 		var myAjax = new Request({
 			url: url,
 			method: this.options.ajaxmethod,
@@ -887,6 +995,23 @@ var FbForm = new Class({
 			this._showElementError(r.errors[origid][el.options.repeatCounter], id);
 		} else {
 			this._showElementError([], id);
+		}
+		
+		if (this.options.toggleSubmit)
+		{
+			if (this.options.mustValidate)
+			{
+				if (!this.hasErrors.has(id) || !this.hasErrors.get(id)) {
+					this.mustValidateEls[id] = false;
+				}
+				if (!this.mustValidateEls.hasValue(true)) {
+					this.toggleSubmit(true);
+				}
+			}
+			else
+			{
+				this.toggleSubmit(this.hasErrors.getKeys().length === 0);
+			}
 		}
 	},
 
@@ -957,7 +1082,11 @@ var FbForm = new Class({
 		}
 		var classname = (msg === '') ? 'fabrikSuccess' : 'fabrikError';
 		if (msg === '') {
+			delete this.hasErrors[id];
 			msg = Joomla.JText._('COM_FABRIK_SUCCESS');
+		}
+		else {
+			this.hasErrors.set(id, true);
 		}
 		msg = '<span> ' + msg + '</span>';
 		this.formElements.get(id).setErrorMessage(msg, classname);
@@ -1061,6 +1190,14 @@ var FbForm = new Class({
 		}.bind(this));
 	},
 
+	mockSubmit: function() {
+		var btn = this._getButton('Submit');
+		if (!btn) {
+			btn = new Element('button', {'name':'Submit','type':'submit'});
+		}
+		this.doSubmit(new Event.Mock(btn, 'click'), btn);
+	},
+	
 	doSubmit: function (e, btn) {
 		if (this.submitBroker.enabled()) {
 			e.stop();
@@ -1638,8 +1775,13 @@ var FbForm = new Class({
 		var clone = this.getSubGroupToClone(i);
 		var tocheck = this.repeatGetChecked(group);
 
-		if (group.getElement('table.repeatGroupTable')) {
-			group.getElement('table.repeatGroupTable').appendChild(clone);
+		// Check for table style group, which may or may not have a tbody in it
+		var groupTable = group.getElement('table.repeatGroupTable');
+		if (groupTable) {
+			if (groupTable.getElement('tbody')) {
+				groupTable = groupTable.getElement('tbody');
+			}
+			groupTable.appendChild(clone);
 		} else {
 			group.appendChild(clone);
 		}
@@ -1666,8 +1808,8 @@ var FbForm = new Class({
 				var testid = (hasSubElements && container) ? container.id : input.id;
 				var cloneName = el.getCloneName();
 
-				// Looser test that previous === to catch db join rendered as checkbox
-				if (testid.contains(cloneName)) {
+				// Test ===, plus special case for join rendered as auto-complete
+				if (testid === cloneName || testid === cloneName + '-auto-complete') {
 					lastinput = input;
 					formElementFound = true;
 
@@ -1801,8 +1943,16 @@ var FbForm = new Class({
 
 		targets.each(function (target, i) {
 			tmpIntro = intro.replace('{i}', i + 1);
+			// poor man's parseMsgForPlaceholder ... ignore elements in joined groups.
+			this.formElements.each(function (el) {
+				if (!el.options.inRepeatGroup) {
+					var re = new RegExp('\{' + el.element.id + '\}');
+					// might should do a match first, to avoid always calling getValue(), just not sure which is more overhead!
+					tmpIntro = tmpIntro.replace(re, el.getValue());
+				}
+			});
 			target.set('html', tmpIntro);
-		});
+		}.bind(this));
 	},
 
 	update: function (o) {
@@ -1936,5 +2086,31 @@ var FbForm = new Class({
 	getSubGroupCounter: function (group_id)
 	{
 
+	},
+	
+	addMustValidate: function (el)
+	{
+		if (this.options.ajaxValidation && this.options.toggleSubmit) {
+			this.mustValidateEls.set(el.element.id, el.options.mustValidate);
+			if (el.options.mustValidate) {
+				this.options.mustValidate = true;
+				this.toggleSubmit(false);
+			}
+		}
+	},
+	
+	toggleSubmit: function (on)
+	{
+		var submit = this._getButton('Submit');
+		if (typeOf(submit) !== 'null') {
+			if (on === true) {
+				submit.disabled = "";
+				submit.setStyle('opacity', 1);
+			}
+			else {
+				submit.disabled = "disabled";
+				submit.setStyle('opacity', 0.5);				
+			}
+		}
 	}
 });

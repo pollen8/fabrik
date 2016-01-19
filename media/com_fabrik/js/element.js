@@ -29,7 +29,7 @@ var FbElement =  new Class({
 	 */
 
 	initialize: function (element, options) {
-		this.plugin = '';
+		this.setPlugin('');
 		options.element = element;
 		this.strElement = element;
 		this.loadEvents = []; // need to store these for use if the form is reset
@@ -39,7 +39,7 @@ var FbElement =  new Class({
 		if (document.id(this.options.element + '_chzn')) {
 			var changeEvent = this.getChangeEvent();
 			jQuery('#' + this.options.element).on('change', {changeEvent: changeEvent}, function (event) {
-				document.id(this.id).fireEvent(event.data.changeEvent, new Event.Mock(event.data.changeEvent, document.id(this.id)));
+				document.id(this.id).fireEvent(event.data.changeEvent, new Event.Mock(document.id(this.id), event.data.changeEvent));
 			});
 		}
 		return this.setElement();
@@ -53,6 +53,16 @@ var FbElement =  new Class({
 
 	},
 
+	setPlugin: function(plugin) {
+		if (typeOf(this.plugin) === 'null' || this.plugin === '') {
+			this.plugin = plugin;
+		}
+	},
+	
+	getPlugin: function() {
+		return this.plugin;
+	},
+	
 	setElement: function () {
 		if (document.id(this.options.element)) {
 			this.element = document.id(this.options.element);
@@ -93,11 +103,13 @@ var FbElement =  new Class({
 			this.successImage = new Asset.image(this.form.options.images.action_check);
 		}
 
-		if (this.form.options.images.ajax_loader.contains('<i')) {
+		if (jQuery(this.form.options.images.ajax_loader).data('isicon')) {
 			this.loadingImage = new Element('span').set('html', this.form.options.images.ajax_loader);
 		} else {
 			this.loadingImage = new Asset.image(this.form.options.images.ajax_loader);
 		}
+		
+		this.form.addMustValidate(this);
 		//put ini code in here that can't be put in initialize()
 		// generally any code that needs to refer to  this.form, which
 		//is only set when the element is assigned to the form.

@@ -14,25 +14,30 @@ if ($d->optsPerRow > 12)
 
 $colSize    = floor(floatval(12) / $d->optsPerRow);
 $colCounter = 0;
-
+$rowStarted = false;
 foreach ($d->options as $option) :
-	$checked = in_array($option->value, $d->default) ? 'checked="checked"' : '';
-	if (($colSize * $colCounter) % 12 === 0  || $colCounter == 0) : ?>
-		<div class="row-fluid">
+	$d->checked = in_array($option->value, $d->default) ? 'checked="checked"' : '';
+	if (($colSize * $colCounter) % 12 === 0  || $colCounter == 0) :
+		$rowStarted = true; ?>
+		<div class="row-fluid " data-role="fabrik-rowopts" data-optsperrow="<?php echo $d->optsPerRow; ?>">
 	<?php endif;
 	$d->option = $option;
 	$d->colCounter = $colCounter;
 	if ($d->editable) :
 		echo $d->optionLayout->render($d);
-	elseif ($checked) : ?>
+	elseif ($d->checked) : ?>
 		<span><?php echo $d->option->text;?></span>
 	<?php endif;
 	$colCounter++;
 	if (($colSize * $colCounter) % 12 === 0 || $colCounter == 0) :
-		?>
-		</div>
-	<?php endif; ?>
-	<?php
+		$rowStarted = false; ?>
+		</div><!--end radiolist rowfluid-->
+	<?php endif;
+
 endforeach;
-?>
-</div>
+
+// If the last element was not closing the row add an additional div
+if ($rowStarted === true) :?>
+	</div><!-- end radiolist row-fluid for open row -->
+<?php endif;?>
+

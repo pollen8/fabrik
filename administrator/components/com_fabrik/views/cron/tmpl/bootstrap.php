@@ -22,11 +22,11 @@ JHtml::_('behavior.keepalive');
 <script type="text/javascript">
 
 	Joomla.submitbutton = function(task) {
-		if (task !== 'element.cancel'  && !Fabrik.controller.canSaveForm()) {
+		if (task !== 'cron.cancel'  && !Fabrik.controller.canSaveForm()) {
 			alert('Please wait - still loading');
 			return false;
 		}
-		if (task == 'element.cancel' || document.formvalidator.isValid(document.id('adminForm'))) {
+		if (task == 'cron.cancel' || document.formvalidator.isValid(document.id('adminForm'))) {
 			window.fireEvent('form.save');
 			Joomla.submitform(task, document.getElementById('adminForm'));
 		} else {

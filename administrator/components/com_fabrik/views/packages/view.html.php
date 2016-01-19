@@ -93,7 +93,7 @@ class FabrikAdminViewPackages extends JViewLegacy
 	{
 		require_once JPATH_COMPONENT . '/helpers/fabrik.php';
 		$canDo = FabrikAdminHelper::getActions($this->state->get('filter.category_id'));
-		JToolBarHelper::title(FText::_('COM_FABRIK_MANAGER_PACKAGES'), 'packages.png');
+		JToolBarHelper::title(FText::_('COM_FABRIK_MANAGER_PACKAGES'), 'box-add');
 
 		if ($canDo->get('core.create'))
 		{

@@ -11,6 +11,10 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\String\String;
+use \Joomla\Registry\Registry;
+use Joomla\Utilities\ArrayHelper;
+
 jimport('joomla.application.component.model');
 
 require_once JPATH_SITE . '/components/com_fabrik/models/plugin.php';
@@ -115,8 +119,10 @@ class PlgFabrik_Validationrule extends FabrikPlugin
 			foreach ($groupElements as $element)
 			{
 				$name = $element->getFullName(true, false);
-				$post[$name] = $post[$name][$repeatCounter];
-				$post[$name . '_raw'] = $post[$name . '_raw'][$repeatCounter];
+				$elementData = ArrayHelper::getValue($post, $name, array());
+				$post[$name] = ArrayHelper::getValue($elementData, $repeatCounter, '');
+				$rawData = ArrayHelper::getValue($post, $name . '_raw', array());
+				$post[$name . '_raw'] = ArrayHelper::getValue($rawData, $repeatCounter, '');
 			}
 		}
 		else
@@ -279,7 +285,7 @@ class PlgFabrik_Validationrule extends FabrikPlugin
 		}
 		*/
 
-		$params = new JRegistry($plugin->params);
+		$params = new Registry($plugin->params);
 
 		return $params->get('icon', 'star');
 	}
@@ -317,11 +323,11 @@ class PlgFabrik_Validationrule extends FabrikPlugin
 
 		if ($this->allowEmpty())
 		{
-			return FText::_('PLG_VALIDATIONRULE_' . JString::strtoupper($this->pluginName) . '_ALLOWEMPTY_LABEL');
+			return FText::_('PLG_VALIDATIONRULE_' . String::strtoupper($this->pluginName) . '_ALLOWEMPTY_LABEL');
 		}
 		else
 		{
-			return FText::_('PLG_VALIDATIONRULE_' . JString::strtoupper($this->pluginName) . '_LABEL');
+			return FText::_('PLG_VALIDATIONRULE_' . String::strtoupper($this->pluginName) . '_LABEL');
 		}
 	}
 

@@ -64,6 +64,7 @@ class FabrikAdminViewPlugin extends JViewLegacy
 		$model->setState('id', $input->getInt('id', 0));
 		$model->setState('plugin_published', $input->get('plugin_published'));
 		$model->setState('show_icon', $input->get('show_icon'));
+		$model->setState('must_validate', $input->get('must_validate'));
 		$model->setState('validate_in', $input->get('validate_in'));
 		$model->setState('validation_on', $input->get('validation_on'));
 	}

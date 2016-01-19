@@ -11,6 +11,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use \Joomla\Registry\Registry;
+
 jimport('joomla.application.component.model');
 
 /**
@@ -50,6 +52,12 @@ class FabrikFEModelJoin extends FabModel
 	 */
 	protected $isView = null;
 
+	/**
+	 * Params
+	 *
+	 * @var string
+	 */
+	public $params = null;
 	/**
 	 * Set the join id
 	 *
@@ -122,7 +130,7 @@ class FabrikFEModelJoin extends FabModel
 		if (is_string($join->params))
 		{
 			$join->params = trim($join->params) == '' ? '{"type": ""}' : $join->params;
-			$join->params = new JRegistry($join->params);
+			$join->params = new Registry($join->params);
 		}
 
 		// Set a default join alias - normally overwritten in listModel::_makeJoinAliases();

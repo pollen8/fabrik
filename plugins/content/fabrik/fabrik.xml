@@ -2,18 +2,18 @@
 <extension group="content" method="upgrade" type="plugin" version="3">
 	<name>plg_fabrik</name>
 	<author>Pollen 8 Design Ltd</author>
-	<creationDate>September 2015</creationDate>
-	<copyright>Copyright (C) 2005-2015 fabrikar.com - All rights reserved.</copyright>
+	<creationDate>January 2016</creationDate>
+	<copyright>Copyright (C) 2005-2016 fabrikar.com - All rights reserved.</copyright>
 	<license>GNU/GPL http://www.gnu.org/copyleft/gpl.html</license>
 	<authorEmail>rob@pollen-8.co.uk</authorEmail>
 	<authorUrl>www.fabrikar.com</authorUrl>
-	<version>3.3.3</version>
+	<version>3.4.2</version>
 	<description>PLG_FABRIK_DESCRIPTION</description>
 	<files>
 		<filename plugin="fabrik">fabrik.php</filename>
 		<folder>language</folder>
 	</files>
-	
+
 	<config>
 		<fields name="params">
 			<fieldset label="PLG_FABRIK_OPTIONS" name="params">

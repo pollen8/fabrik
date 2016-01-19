@@ -90,7 +90,7 @@ class FabrikAdminViewVisualizations extends JViewLegacy
 	{
 		require_once JPATH_COMPONENT . '/helpers/fabrik.php';
 		$canDo = FabrikAdminHelper::getActions($this->state->get('filter.category_id'));
-		JToolBarHelper::title(FText::_('COM_FABRIK_MANAGER_VISUALIZATIONS'), 'visualizations.png');
+		JToolBarHelper::title(FText::_('COM_FABRIK_MANAGER_VISUALIZATIONS'), 'chart');
 
 		if ($canDo->get('core.create'))
 		{

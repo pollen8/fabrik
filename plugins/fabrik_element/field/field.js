@@ -16,13 +16,19 @@ function geolocateLoad () {
 var FbField = new Class({
 	Extends: FbElement,
 	initialize: function (element, options) {
-		this.plugin = 'fabrikfield';
+		this.setPlugin('fabrikfield');
 		this.parent(element, options);
 		/*
 		 * $$$ hugh - testing new masking feature, uses this jQuery widget:
 		 * http://digitalbush.com/projects/masked-input-plugin/
 		 */
 		if (this.options.use_input_mask) {
+			if (this.options.input_mask_definitions !== '') {
+				var definitions = JSON.parse(this.options.input_mask_definitions);
+				$H(definitions).each(function (v, k) {
+					jQuery.mask.definitions[k] = v;
+				});
+			}
 			jQuery('#' + element).mask(this.options.input_mask);
 		}
 		if (this.options.geocomplete) {
@@ -56,6 +62,12 @@ var FbField = new Class({
 		if (this.options.use_input_mask) {
 			var element = this.getElement();
 			if (element) {
+				if (this.options.input_mask_definitions !== '') {
+					var definitions = JSON.parse(this.options.input_mask_definitions);
+					$H(definitions).each(function (v, k) {
+						jQuery.mask.definitions[k] = v;
+					});
+				}
 				jQuery('#' + element.id).mask(this.options.input_mask);
 			}
 		}

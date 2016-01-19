@@ -58,8 +58,12 @@ var fabrikAdminElement = new Class({
 			this.jsPeriodical = this.iniJsAccordion.periodical(250, this);
 
 			document.id('jform_plugin').addEvent('change', function (e) {
-				this.changePlugin(e);
+				this.changePlugin(e.target.get('value'));
 			}.bind(this));
+
+			if (document.getElement('input[name=name_orig]').value === '') {
+				this.changePlugin('field');
+			}
 
 			document.id('javascriptActions').addEvent('click:relay(a[data-button=removeButton])', function (e, target) {
 				e.stop();
@@ -151,7 +155,7 @@ var fabrikAdminElement = new Class({
 				'id': this.options.id,
 				'task': 'element.getPluginHTML',
 				'format': 'raw',
-				'plugin': e.target.get('value')
+				'plugin': e
 			},
 			'update': document.id('plugin-container'),
 			'onComplete': function (r) {

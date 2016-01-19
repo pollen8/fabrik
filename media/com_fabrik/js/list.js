@@ -102,8 +102,8 @@ var FbList = new Class({
 			delete Fabrik.blocks['form_' + form.id];
 		});*/
 
-		// Reload state
-		if (!!(window.history && history.pushState) && history.state && this.options.ajax) {
+		// Reload state only if reset filters is not on
+		if (!this.options.resetFilters && ((window.history && history.pushState) && history.state && this.options.ajax)) {
 			this._updateRows(history.state);
 		}
 	},
@@ -540,29 +540,43 @@ var FbList = new Class({
 				var img = 'ordernone.png',
 				orderdir = '',
 				newOrderClass = '',
-				bsClass;
+				bsClassAdd = '',
+				bsClassRemove = '';
 				// $$$ rob in pageadaycalendar.com h was null so reset to e.target
 				h = document.id(e.target);
 				var td = h.getParent('.fabrik_ordercell');
 				if (h.tagName !== 'a') {
 					h = td.getElement('a');
 				}
+
+				/**
+				 * Figure out what we need to change the icon from / to.  We don't know in advance for
+				 * bootstrapped templates what icons will be used, so the fabrik-order-header layout
+				 * will have set data-sort-foo properties of each of the three states.  Another wrinkle
+				 * is that we can't just set the new icon class blindly, because there may be other classes
+				 * on the icon.  For instancee BS3 using Font Awesome will have "fa fa-sort-foo".  So we have
+				 * to specifically remove the current class and add the new one.
+				 */
+
 				switch (h.className) {
 				case 'fabrikorder-asc':
 					newOrderClass = 'fabrikorder-desc';
-					bsClass = 'icon-arrow-up';
+					bsClassAdd = h.get('data-sort-desc-icon');
+					bsClassRemove = h.get('data-sort-asc-icon');
 					orderdir = 'desc';
 					img = 'orderdesc.png';
 					break;
 				case 'fabrikorder-desc':
 					newOrderClass = 'fabrikorder';
-					bsClass = 'icon-menu-2';
+					bsClassAdd = h.get('data-sort-icon');
+					bsClassRemove = h.get('data-sort-desc-icon');
 					orderdir = '-';
 					img = 'ordernone.png';
 					break;
 				case 'fabrikorder':
 					newOrderClass = 'fabrikorder-asc';
-					bsClass = 'icon-arrow-down';
+					bsClassAdd = h.get('data-sort-asc-icon');
+					bsClassRemove = h.get('data-sort-icon');
 					orderdir = 'asc';
 					img = 'orderasc.png';
 					break;
@@ -578,14 +592,25 @@ var FbList = new Class({
 				}
 				h.className = newOrderClass;
 				var i = h.getElement('img');
-				var icon = h.getElement('*[class^="icon"]');
+				var icon = h.firstElementChild;
 
 				// Swap images - if list doing ajax nav then we need to do this
 				if (this.options.singleOrdering) {
 					document.id(this.options.form).getElements('.fabrikorder, .fabrikorder-asc, .fabrikorder-desc').each(function (otherH) {
 						if (Fabrik.bootstrapped) {
-							var otherIcon = otherH.getElement('*[class^="icon"]');
-							otherIcon.className = 'icon-menu-2';
+							var otherIcon = otherH.firstElementChild;
+							switch (otherH.className) {
+							case 'fabrikorder-asc':
+								otherIcon.removeClass(otherH.get('data-sort-asc-icon'));
+								otherIcon.addClass(otherH.get('data-sort-icon'));
+								break;
+							case 'fabrikorder-desc':
+								otherIcon.removeClass(otherH.get('data-sort-desc-icon'));
+								otherIcon.addClass(otherH.get('data-sort-icon'));
+								break;
+							case 'fabrikorder':
+								break;
+							}
 						} else {
 							var i = otherH.getElement('img');
 							if (i) {
@@ -597,7 +622,8 @@ var FbList = new Class({
 				}
 
 				if (Fabrik.bootstrapped) {
-					icon.className = bsClass;
+					icon.removeClass(bsClassRemove);
+					icon.addClass(bsClassAdd);
 				} else {
 					if (i) {
 						i.src = i.src.replace('ordernone.png', '').replace('orderasc.png', '').replace('orderdesc.png', '');
@@ -708,6 +734,11 @@ var FbList = new Class({
 
 	submit: function (task) {
 		this.getForm();
+		var doAJAX = this.options.ajax;
+		if (task === 'list.doPlugin.noAJAX') {
+			task = 'list.doPlugin';
+			doAJAX = false;
+		}
 		if (task === 'list.delete') {
 			var ok = false;
 			var delCount = 0;
@@ -742,7 +773,7 @@ var FbList = new Class({
 				this.form.task.value = task;
 			}
 		}
-		if (this.options.ajax) {
+		if (doAJAX) {
 			Fabrik.loader.start('listform_' + this.options.listRef);
 			// For module & mambot
 			// $$$ rob with modules only set view/option if ajax on
@@ -751,6 +782,12 @@ var FbList = new Class({
 			this.form.getElement('input[name=format]').value = 'raw';
 
 			var data = this.form.toQueryString();
+			
+			if (task === 'list.doPlugin') {
+				data += '&setListRefFromRequest=1';	
+				data += '&listref=' + this.options.listRef;
+			}
+			
 			if (task === 'list.filter' && this.advancedSearch !== false) {
 				var advSearchForm = document.getElement('form.advancedSeach_' + this.options.listRef);
 				if (typeOf(advSearchForm) !== 'null') {
@@ -889,7 +926,7 @@ var FbList = new Class({
 		});
 	},
 
-	updateRows: function () {
+	updateRows: function (extraData) {
 		var data = {
 				'option': 'com_fabrik',
 				'view': 'list',
@@ -901,10 +938,18 @@ var FbList = new Class({
 			};
 		var url = '';
 		data['limit' + this.id] = this.options.limitLength;
-		new Request.JSON({
+
+		if (extraData) {
+			Object.append(data, extraData);
+		}
+
+		new Request({
 			'url': url,
 			'data': data,
+			'evalScripts': false,
 			onSuccess: function (json) {
+				json = json.stripScripts();
+				json = JSON.decode(json);
 				this._updateRows(json);
 				// Fabrik.fireEvent('fabrik.list.update', [this, json]);
 			}.bind(this),
@@ -1367,7 +1412,7 @@ var FbGroupedToggler = new Class({
 	},
 
 	collapse: function () {
-		this.container.getElements('.fabrik_groupdata').hide();
+		jQuery(this.container.getElements('.fabrik_groupdata')).hide();
 		var selector = this.options.bootstrap ? 'i' : 'img';
 		var i = this.container.getElements('.fabrik_groupheading a ' + selector);
 		if (i.length === 0) {
@@ -1380,7 +1425,7 @@ var FbGroupedToggler = new Class({
 	},
 
 	expand: function () {
-		this.container.getElements('.fabrik_groupdata').show();
+		jQuery(this.container.getElements('.fabrik_groupdata')).show();
 		var i = this.container.getElements('.fabrik_groupheading a img');
 		if (i.length === 0) {
 			i = this.container.getElements('.fabrik_groupheading img');

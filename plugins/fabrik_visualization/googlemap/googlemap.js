@@ -129,7 +129,7 @@ var FbGoogleMapViz = new Class({
 		case 'G_HYBRID_MAP':
 			this.options.maptype = google.maps.MapTypeId.HYBRID;
 			break;
-		case 'TERRAIN':
+		case 'G_TERRAIN_MAP':
 			this.options.maptype = google.maps.MapTypeId.TERRAIN;
 			break;
 		}
@@ -358,6 +358,18 @@ var FbGoogleMapViz = new Class({
 
 	geoCenterErr: function (p) {
 		fconsole('geo location error=' + p.message);
+		if (this.noData()) {
+			c = new google.maps.LatLng(this.options.lat, this.options.lon);
+		}
+		else {
+			var lasticon = this.options.icons.getLast();
+			if (lasticon) {
+				c = new google.maps.LatLng(lasticon[0], lasticon[1]);
+			} else {
+				c = this.bounds.getCenter();
+			}
+		}
+		this.map.setCenter(c);
 	},
 
 	addIcon: function (lat, lon, html, img, w, h, groupkey, title, radius, c) {
@@ -482,7 +494,11 @@ var FbGoogleMapViz = new Class({
 
 				linkText = i.groupkey;
 
-				var lookup = i.groupkey.replace(/[^0-9a-zA-Z_]/g, '');
+				var lookup = i.groupkey;
+				
+				if (typeOf(lookup) === 'string') {
+					lookup = lookup.replace(/[^0-9a-zA-Z_]/g, '');
+				}
 
 				// Allow for images as group by text, (Can't have nested <a>'s so parse the label for content inside possible <a>)
 				if (typeOf(this.options.groupTemplates[i.listid]) !== 'null') {
@@ -495,7 +511,7 @@ var FbGoogleMapViz = new Class({
 				linkText = d.get('html');
 
 				this.grouped[i.groupkey] = [];
-				var k = i.listid + i.groupkey.replace(/[^0-9a-zA-Z_]/g, '');
+				var k = i.listid + lookup;
 				k += ' ' + i.groupClass;
 
 				// Build the group by toggle link

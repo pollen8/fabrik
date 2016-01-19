@@ -11,6 +11,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\String\String;
+
 /**
  * Plugin element to render series of checkboxes
  *
@@ -147,7 +149,7 @@ class PlgFabrik_ElementCheckbox extends PlgFabrik_ElementList
 
 		for ($i = 0; $i < count($labels); $i++)
 		{
-			if (JString::strtolower($labels[$i]) == JString::strtolower($value))
+			if (String::strtolower($labels[$i]) == String::strtolower($value))
 			{
 				return $values[$i];
 			}

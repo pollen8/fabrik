@@ -7,7 +7,7 @@ $img    = '<img class="fabrikLightBoxImage" ' . $height . 'src="' . $d->file . '
 
 if ($d->showImage == 0 && !$d->inListView) :
 	?>
-	<a href="<?php echo $d->fullSize; ?>"><?php echo basename($d->file);?></a>';
+	<a href="<?php echo $d->fullSize; ?>"><?php echo basename($d->file);?></a>
 <?php
 else :
 	if ($d->isSlideShow) :

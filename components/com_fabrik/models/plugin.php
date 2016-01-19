@@ -11,6 +11,9 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\Registry\Registry;
+use Joomla\Utilities\ArrayHelper;
+
 jimport('joomla.application.component.model');
 
 /**
@@ -32,7 +35,7 @@ class FabrikPlugin extends JPlugin
 	/**
 	 * Params (must be public)
 	 *
-	 * @var JRegistry
+	 * @var Registry
 	 */
 	public $params = null;
 
@@ -176,13 +179,13 @@ class FabrikPlugin extends JPlugin
 	public function __construct(&$subject, $config = array())
 	{
 		parent::__construct($subject, $config);
-		$this->_db     = JArrayHelper::getValue($config, 'db', JFactory::getDbo());
-		$this->config  = JArrayHelper::getValue($config, 'config', JFactory::getConfig());
-		$this->user    = JArrayHelper::getValue($config, 'user', JFactory::getUser());
-		$this->app     = JArrayHelper::getValue($config, 'app', JFactory::getApplication());
-		$this->lang    = JArrayHelper::getValue($config, 'lang', JFactory::getLanguage());
-		$this->date    = JArrayHelper::getValue($config, 'date', JFactory::getDate());
-		$this->session = JArrayHelper::getValue($config, 'session', JFactory::getSession());
+		$this->_db     = ArrayHelper::getValue($config, 'db', JFactory::getDbo());
+		$this->config  = ArrayHelper::getValue($config, 'config', JFactory::getConfig());
+		$this->user    = ArrayHelper::getValue($config, 'user', JFactory::getUser());
+		$this->app     = ArrayHelper::getValue($config, 'app', JFactory::getApplication());
+		$this->lang    = ArrayHelper::getValue($config, 'lang', JFactory::getLanguage());
+		$this->date    = ArrayHelper::getValue($config, 'date', JFactory::getDate());
+		$this->session = ArrayHelper::getValue($config, 'session', JFactory::getSession());
 		$this->package = $this->app->getUserState('com_fabrik.package', 'fabrik');
 		$this->loadLanguage();
 	}
@@ -227,9 +230,8 @@ class FabrikPlugin extends JPlugin
 			return;
 		}
 
-		$output[] = '<div class="row-fluid">';
-		$output[] = '<ul class="nav nav-tabs">';
-		$i        = 0;
+		$tabs = array();
+		$i    = 0;
 
 		foreach ($fieldsets as $fieldset)
 		{
@@ -238,19 +240,42 @@ class FabrikPlugin extends JPlugin
 				continue;
 			}
 
-			$class = $i === 0 ? ' class="active"' : '';
-			$id    = 'tab-' . $fieldset->name;
-			$id .= '-' . $repeatCounter;
-			$output[] = '<li' . $class . '>
-				<a data-toggle="tab" href="#' . $id . '">
-					' . FText::_($fieldset->label) . '
-						</a>
-		    </li>';
+			$tab        = new stdClass;
+			$tab->href  = 'tab-' . $fieldset->name . '-' . $repeatCounter;
+			$tab->id    = 'tab-' . $fieldset->name;
+			$tab->class = $i === 0 ? 'active' : '';
+			$tab->label = $fieldset->label;
+			$tabs[]     = $tab;
 			$i++;
 		}
 
-		$output[] = '</ul>';
-		$output[] = '</div>';
+		$displayData       = new stdClass;
+		$displayData->tabs = $tabs;
+		$layout            = FabrikHelperHTML::getLayout('fabrik-tabs');
+		$output[]          = $layout->render($displayData);
+	}
+
+	/**
+	 * Get the plugin's jForm
+	 *
+	 * @param null $repeatCounter
+	 *
+	 * @return JForm
+	 */
+	public function getPluginForm($repeatCounter = null)
+	{
+		$path = JPATH_SITE . '/plugins/' . $this->_type . '/' . $this->_name;
+		JForm::addFormPath($path);
+		$xmlFile = $path . '/forms/fields.xml';
+		$form    = $this->getJForm();
+		// Used by fields when rendering the [x] part of their repeat name
+		// see administrator/components/com_fabrik/classes/formfield.php getName()
+		$form->repeatCounter = $repeatCounter;
+
+		// Add the plugin specific fields to the form.
+		$form->loadFile($xmlFile, false);
+
+		return $form;
 	}
 
 	/**
@@ -268,17 +293,9 @@ class FabrikPlugin extends JPlugin
 		$version = new JVersion;
 		$j3      = version_compare($version->RELEASE, '3.0') >= 0 ? true : false;
 		$type    = str_replace('fabrik_', '', $this->_type);
-		JForm::addFormPath(JPATH_SITE . '/plugins/' . $this->_type . '/' . $this->_name);
-		$xmlFile      = JPATH_SITE . '/plugins/' . $this->_type . '/' . $this->_name . '/forms/fields.xml';
-		$form         = $this->getJForm();
+
+		$form         = $this->getPluginForm($repeatCounter);
 		$repeatScript = '';
-
-		// Used by fields when rendering the [x] part of their repeat name
-		// see administrator/components/com_fabrik/classes/formfield.php getName()
-		$form->repeatCounter = $repeatCounter;
-
-		// Add the plugin specific fields to the form.
-		$form->loadFile($xmlFile, false);
 
 		// Copy over the data into the params array - plugin fields can have data in either
 		// jform[params][name] or jform[name]
@@ -398,7 +415,7 @@ class FabrikPlugin extends JPlugin
 			if ($mode === 'nav-tabs')
 			{
 				$tabClass = $c === 0 ? ' active' : '';
-				$str[]    = '<div class="tab-pane' . $tabClass . '" id="tab-' . $fieldset->name . '-' . $repeatCounter . '">';
+				$str[]    = '<div role="tabpanel" class="tab-pane' . $tabClass . '" id="tab-' . $fieldset->name . '-' . $repeatCounter . '">';
 			}
 
 			$class = $j3 ? 'form-horizontal ' : 'adminform ';
@@ -561,7 +578,7 @@ class FabrikPlugin extends JPlugin
 			}
 		}
 
-		$this->params = new JRegistry(json_encode($data));
+		$this->params = new Registry(json_encode($data));
 
 		return $this->params;
 	}
@@ -569,14 +586,14 @@ class FabrikPlugin extends JPlugin
 	/**
 	 * Load params
 	 *
-	 * @return  JRegistry  params
+	 * @return  Registry  params
 	 */
 	public function getParams()
 	{
 		if (!isset($this->params))
 		{
 			$row          = $this->getRow();
-			$this->params = new JRegistry($row->params);
+			$this->params = new Registry($row->params);
 		}
 
 		return $this->params;
@@ -613,7 +630,7 @@ class FabrikPlugin extends JPlugin
 	/**
 	 *  Get db row/item loaded
 	 *
-	 * @return  FabTable
+	 * @return  FabTableExtension
 	 */
 	public function getTable()
 	{
@@ -657,7 +674,7 @@ class FabrikPlugin extends JPlugin
 		{
 			// $$$ hugh @FIXME - added copyingRow() stuff to form model, need to do it
 			// for list model as well.
-			$k = array_key_exists('origRowId', $model) ? 'origRowId' : 'rowId';
+			$k = array_key_exists('origRowId', $model) && isset($model->origRowId) ? 'origRowId' : 'rowId';
 
 			switch ($event)
 			{
@@ -729,7 +746,7 @@ class FabrikPlugin extends JPlugin
 			if ($cid !== 0)
 			{
 				$query = $db->getQuery(true);
-				$query->select('id, label')->from('#__{package}_lists')->where('connection_id = ' . $cid)->order('label ASC');
+				$query->select('id, label')->from('#__{package}_lists')->where('connection_id = ' . $cid)->where('published <> -2')->order('label ASC');
 				$db->setQuery($query);
 				$rows = $db->loadObjectList();
 			}
@@ -1026,9 +1043,9 @@ class FabrikPlugin extends JPlugin
 	/**
 	 * Process the plugin, called when form is submitted
 	 *
-	 * @param   string    $paramName   Param name which contains the PHP code to eval
-	 * @param   array     $data        Data
-	 * @param   JRegistry $params      Plugin parameters - hacky fix ini email plugin where in
+	 * @param   string   $paramName    Param name which contains the PHP code to eval
+	 * @param   array    $data         Data
+	 * @param   Registry $params       Plugin parameters - hacky fix ini email plugin where in
 	 *                                 php 5.3.29 email params were getting confused between multiple plugin instances
 	 *
 	 * @return  bool
@@ -1057,7 +1074,7 @@ class FabrikPlugin extends JPlugin
 		if (!is_null($formModel))
 		{
 			$origData = $formModel->getOrigData();
-			$origData = JArrayHelper::fromObject($origData[0]);
+			$origData = ArrayHelper::fromObject($origData[0]);
 		}
 		else
 		{
@@ -1205,7 +1222,7 @@ class FabrikPlugin extends JPlugin
 		if (JFile::exists($file))
 		{
 			$sql  = file_get_contents($file);
-			$sqls = explode(";", $sql);
+			$sqls = explode(';', $sql);
 
 			if (!empty($sqls))
 			{

@@ -11,6 +11,9 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\Registry\Registry;
+use Joomla\Utilities\ArrayHelper;
+
 require_once JPATH_SITE . '/plugins/fabrik_element/databasejoin/databasejoin.php';
 
 /**
@@ -37,8 +40,8 @@ class PlgFabrik_ElementTags extends PlgFabrik_ElementDatabasejoin
 	{
 		if (!isset($this->params))
 		{
-			$this->params = new JRegistry($this->getElement()->params);
-			$this->params->set('table_join', '#__tags');
+			$this->params = new Registry($this->getElement()->params);
+			$this->params->set('table_join', $this->getDbName());
 		}
 
 		return $this->params;
@@ -57,7 +60,8 @@ class PlgFabrik_ElementTags extends PlgFabrik_ElementDatabasejoin
 		$opts = $this->getElementJSOptions($repeatCounter);
 		$opts->rowid = $this->getFormModel()->getRowId();
 		$opts->id = $this->id;
-
+		$opts->listid = $this->getListModel()->getId();
+		
 		return array('FbTags', $id, $opts);
 	}
 
@@ -117,7 +121,6 @@ class PlgFabrik_ElementTags extends PlgFabrik_ElementDatabasejoin
 			$baseUrl = $this->tagUrl();
 			$icon = $this->tagIcon();
 			$data = FabrikHelperHTML::tagify($d, $baseUrl, $name, $icon);
-
 			return implode("\n", $data);
 		}
 	}
@@ -150,8 +153,8 @@ class PlgFabrik_ElementTags extends PlgFabrik_ElementDatabasejoin
 			$pk = $db->qn($join->table_join_alias . '.' . $join->table_key);
 			$name = $this->getFullName(true, false) . '_raw';
 			$tagIds = FArrayHelper::getValue($data, $name, array());
-			JArrayHelper::toInteger($tagIds);
-			$where = empty($tagIds) ? '6 = -6' : $pk . ' IN (' . implode(', ', $tagIds) . ')';
+			ArrayHelper::toInteger($tagIds);
+			$where = FArrayHelper::emptyIsh($tagIds) ? '6 = -6' : $pk . ' IN (' . implode(', ', $tagIds) . ')';
 		}
 		else
 		{
@@ -166,7 +169,14 @@ class PlgFabrik_ElementTags extends PlgFabrik_ElementDatabasejoin
 				$where = '';
 			}
 			*/
-			$where = $fk . ' = ' . $db->quote($rowId);
+			if (FArrayHelper::getValue($opts, 'mode', '') !== 'filter')
+			{
+				$where = $fk . ' = ' . $db->quote($rowId);
+			}
+			else
+			{
+				$where = '';
+			}
 		}
 
 		$params->set('database_join_where_sql',  $where);
@@ -192,7 +202,7 @@ class PlgFabrik_ElementTags extends PlgFabrik_ElementDatabasejoin
 
 		if ($query !== false)
 		{
-			$query->join('LEFT', '#__tags AS t ON t.id = ' . $f);
+			$query->join('LEFT', $this->getDbName() . ' AS t ON t.id = ' . $f);
 
 			return $query;
 		}
@@ -237,7 +247,8 @@ class PlgFabrik_ElementTags extends PlgFabrik_ElementDatabasejoin
 	 */
 	protected function getDbName()
 	{
-		$this->dbname = '#__tags';
+		$params = $this->getParams();
+		$this->dbname = $params->get('tags_dbname', '#__tags');
 
 		return $this->dbname;
 	}
@@ -314,9 +325,31 @@ class PlgFabrik_ElementTags extends PlgFabrik_ElementDatabasejoin
 		$query = $this->buildQueryWhere($data, $incWhere, null, $opts, $query);
 		$query->select('DISTINCT(t.id) AS value,' . $db->qn('title') . ' AS text')
 		->from($db->qn($join->table_join) . ' AS ' . $db->qn($join->table_join_alias))
-		->join('LEFT', '#__tags AS t ON t.id = ' . $db->qn($join->table_join_alias . '.' . $join->table_key));
+		->join('LEFT', $this->getDbName() . ' AS t ON t.id = ' . $db->qn($join->table_join_alias . '.' . $join->table_key));
 
 		return $query;
+	}
+
+	/**
+	 * Get all available tags by querying them directly from currently defined or default tagtable. 
+	 * Used by views/list/view.tags.php (prefiltering and jsonifying) and finally by 
+	 * tags.js to populate the autocompleted tags selection menu 
+	 *
+	 * @tagtable: returned in function getDbName() (default #__tags)
+	 *
+	 * @return  $query->opts ($n->value, $n->text)
+	 */
+	public function allTagsJSON()
+	{
+		$db = $this->getDb();
+		$query = $db->getQuery(true);
+		$query->select($db->qn('id') . ' AS value, ' . $db->qn('title') . ' AS text')
+		->from($db->qn($this->getDbName()))
+		->where($db->qn('parent_id') . ' > 0');
+		$db->setQuery($query);
+		$query->opts = $db->loadObjectList();
+
+		return $query->opts;
 	}
 
 	/**
@@ -349,7 +382,7 @@ class PlgFabrik_ElementTags extends PlgFabrik_ElementDatabasejoin
 			{
 				$tagId = $db->quote(str_replace('#fabrik#', '', $tagId));
 				$query = $db->getQuery(true);
-				$query->insert('#__tags')->set('level = 1, published = 1, parent_id = 1, created_user_id = ' . (int) $this->user->get('id'))
+				$query->insert($this->getDbName())->set('level = 1, published = 1, parent_id = 1, created_user_id = ' . (int) $this->user->get('id'))
 				->set('created_time = ' . $db->q($this->date->toSql()), ', language = "*", version = 1')
 				->set('path = ' . $tagId . ', title = ' . $tagId . ', alias = ' . $tagId);
 				$db->setQuery($query);
@@ -386,7 +419,7 @@ class PlgFabrik_ElementTags extends PlgFabrik_ElementDatabasejoin
 		{
 			if (is_object($thisRow->$idName))
 			{
-				$ids = JArrayHelper::fromObject($thisRow->$idName);
+				$ids = ArrayHelper::fromObject($thisRow->$idName);
 			}
 			else
 			{

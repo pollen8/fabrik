@@ -13,7 +13,7 @@
  */
 
 function fconsole() {
-	if (typeof (window.console) !== "undefined") {
+	if (typeof (window.console) !== 'undefined') {
 		var str = '', i;
 		for (i = 0; i < arguments.length; i++) {
 			str += arguments[i] + ' ';
@@ -32,7 +32,7 @@ function fconsole() {
  *
  */
 
-RequestQueue = new Class({
+var RequestQueue = new Class({
 
 	queue: {}, // object of xhr objects
 
@@ -58,6 +58,12 @@ RequestQueue = new Class({
 			if (xhr.isSuccess()) {
 				delete (this.queue[k]);
 				running = false;
+			} else {
+				if (xhr.status === 500) {
+					console.log('Fabrik Request Queue: 500 ' + xhr.xhr.statusText);
+					delete (this.queue[k]);
+					running = false;
+				}
 			}
 		}.bind(this));
 
@@ -130,34 +136,6 @@ Request.HTML = new Class({
 
 		this.onSuccess(response.tree, response.elements, response.html, response.javascript);
 	}
-
-/*
- * success: function (text) { var options = this.options, response =
- * this.response; var srcs = text.match(/<script[^>]*>([\s\S]*?)<\/script>/gi);
- * console.log(srcs); var urls = []; if (typeOf(srcs) !== 'null') { for (var x =
- * 0; x < srcs.length; x++) { if (srcs[x].contains('src="')) { var m =
- * srcs[x].match(/src=\"([\s\S]*?)\"/); if (m[1]) { urls.push(m[1]); } } } var
- * scriptadd = "requirejs(['" + urls.join("','") + "'], function () {})";
- * Browser.exec(scriptadd); } response.html = text.stripScripts(function
- * (script) { response.javascript = script; });
- *
- * var match = response.html.match(/<body[^>]*>([\s\S]*?)<\/body>/i); if
- * (match) { response.html = match[1]; } var temp = new
- * Element('div').set('html', response.html);
- *
- * response.tree = temp.childNodes; response.elements = temp.getElements('*');
- *
- * if (options.filter) { response.tree =
- * response.elements.filter(options.filter); } if (options.update) {
- * document.id(options.update).empty().set('html', response.html); } else if
- * (options.append) { document.id(options.append).adopt(temp.getChildren()); }
- * if (options.evalScripts) { // response.javascript = "(function ()
- * {"+response.javascript+"}).delay(6000)"; console.log(response.javascript);
- * //Browser.exec(response.javascript); eval(response.javascript); }
- *
- * this.onSuccess(response.tree, response.elements, response.html,
- * response.javascript); }
- */
 });
 
 /**
@@ -273,7 +251,7 @@ var Loader = new Class({
  * Create the Fabrik name space
  */
 
-if (typeof (Fabrik) === "undefined") {
+if (typeof (Fabrik) === 'undefined') {
 
 	if (typeof (jQuery) !== 'undefined') {
 		document.addEvent('click:relay(.popover button.close)', function (event, target) {
@@ -288,6 +266,26 @@ if (typeof (Fabrik) === "undefined") {
 	}
 	Fabrik = {};
 	Fabrik.events = {};
+
+	/**
+	 * Get the bootstrap version. Returns either 2.x of 3.x
+	 * @param {string} pluginName Optional plugin name to search fof VERSION property
+	 * @returns {*}
+	 */
+	Fabrik.bootstrapVersion = function (pluginName) {
+		pluginName = pluginName || 'modal';
+		var pluginFn = jQuery.fn[pluginName];
+		if (pluginFn) {
+			if (pluginFn.VERSION) {
+				return pluginFn.VERSION;
+			}
+			if (pluginName === 'modal') {
+				// Bootstrap 2 doesn't use namespace on modal data (at least for now...)
+				return pluginFn.toString().indexOf('bs.modal') === -1 ? '2.x' : '3.x';
+			}
+		}
+	};
+
 	Fabrik.Windows = {};
 	Fabrik.loader = new Loader();
 	Fabrik.blocks = {};
@@ -336,6 +334,7 @@ if (typeof (Fabrik) === "undefined") {
 	 * @return mixed false if not found | Fabrik block
 	 */
 	Fabrik._getBlock = function (blockid, exact, cb) {
+		var foundBlockId;
 		exact = exact ? exact : false;
 		if (Fabrik.blocks[blockid] !== undefined) {
 
@@ -492,8 +491,8 @@ if (typeof (Fabrik) === "undefined") {
 		if (gmapScripts.length === 0) {
 			// Not yet loaded so create a script dom node and inject it into the
 			// page.
-			var script = document.createElement("script");
-			script.type = "text/javascript";
+			var script = document.createElement('script');
+			script.type = 'text/javascript';
 			script.src = src;
 			document.body.appendChild(script);
 

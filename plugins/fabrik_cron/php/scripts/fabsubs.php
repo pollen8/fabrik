@@ -3,7 +3,7 @@
 defined('_JEXEC') or die();
 
 error_reporting(E_ALL);
-echo "here";exit;
+
 jimport('joomla.mail.helper');
 //JTable::addIncludePath(JPATH_ADMINISTRATOR . '/components/com_fabsubs/tables');
 //require_once JPATH_ROOT . '/fabrik_plugins/form/paypal/scripts/fabrikar_subs.php';

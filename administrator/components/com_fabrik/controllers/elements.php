@@ -12,6 +12,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\Utilities\ArrayHelper;
+
 require_once 'fabcontrolleradmin.php';
 
 /**
@@ -98,7 +100,7 @@ class FabrikAdminControllerElements extends FabControllerAdmin
 			$model = $this->getModel();
 
 			// Make sure the item ids are integers
-			JArrayHelper::toInteger($cid);
+			ArrayHelper::toInteger($cid);
 
 			// Publish the items.
 			if (!$model->addToListView($cid, $value))
@@ -211,8 +213,8 @@ class FabrikAdminControllerElements extends FabControllerAdmin
 		$order = $this->input->post->get('order', array(), 'array');
 
 		// Sanitize the input
-		JArrayHelper::toInteger($pks);
-		JArrayHelper::toInteger($order);
+		ArrayHelper::toInteger($pks);
+		ArrayHelper::toInteger($order);
 
 		// Get the model
 		$model = $this->getModel();

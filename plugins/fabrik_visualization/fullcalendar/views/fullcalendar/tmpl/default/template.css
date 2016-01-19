@@ -1,0 +1,105 @@
+.addEventButton{
+	display:block;
+	background:transparent url(images/plus-sign.png) no-repeat top left;
+	margin:5px;
+	padding:0px 5px 5px 20px;
+}
+
+ul.viewMode{
+	text-align:right;
+	padding:0 !important;
+	margin:0 !important;
+	list-style:none !important;
+}
+
+.viewMode li{
+	display:inline-block;
+	background-image:none !important;
+	border:1px solid #999999;
+	background-color:#f7f7f7;
+	margin:0 3px !important;
+	padding:3px !important;
+	cursor:pointer;
+}
+
+.viewMode li:hover{
+	background-color:#FFFFFF;
+}
+
+.fabrikEvent{
+	overflow:hidden !important;
+}
+
+.viewContainer {
+	background-color: '#EFEFEF';
+	padding: 5px;
+}
+.popWin{
+	padding:5px;
+	background-color:#ffffff;
+	border:1px solid #666 !important;
+}
+
+.calendar-message{
+	border-bottom:1px solid #cccccc;
+	border-top:1px solid #cccccc;
+	background-color:#c6e9ff;
+	padding:4px;
+	color:#369aff;
+}
+
+.otherMonth{
+	background-color:#f6f6f6 !important;
+	color:#999999 !important;
+}
+
+.selectedDay{
+	background-color:#FFFFFF !important;
+}
+
+/**** legend *****/
+.calendar-legend{
+	margin:10px;padding:5px;
+	border:1px solid #dddddd;
+}
+
+.calendar-legend ul{
+	list-style:none !important;
+	padding:0;
+	margin:0;
+}
+
+.calendar-legend li{
+	clear:left;
+	padding:3px;
+	background-image:none !important;
+}
+
+.calendar-legend li div{
+	float:left;
+	width:15px;
+	height:15px;
+	border:1px solid #dddddd;
+}
+
+.calendar-legend li span{
+	padding-left:5px;
+}
+
+/*** end legend ***/
+	
+/**** calendarNav ****/
+
+.calendarNav{
+	background-color:rgb(247, 247, 247);
+}
+
+/** hack?? for forms **/
+
+.fabrikForm ul{
+list-style:none;
+}
+
+.today{
+	background-color:#dddddd !important;
+}

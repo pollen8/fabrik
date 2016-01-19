@@ -11,6 +11,9 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\Registry\Registry;
+use Joomla\Utilities\ArrayHelper;
+
 require_once JPATH_ADMINISTRATOR . '/components/com_fabrik/tables/fabtable.php';
 
 /**
@@ -20,7 +23,6 @@ require_once JPATH_ADMINISTRATOR . '/components/com_fabrik/tables/fabtable.php';
  * @subpackage  Fabrik
  * @since       3.0
  */
-
 class FabrikTableList extends FabTable
 {
 	/**
@@ -55,7 +57,7 @@ class FabrikTableList extends FabTable
 		// Covert the params to a json object if its set as an array
 		if (isset($src['params']) && is_array($src['params']))
 		{
-			$registry = new JRegistry;
+			$registry = new Registry;
 			$registry->loadArray($src['params']);
 			$src['params'] = (string) $registry;
 		}
@@ -172,7 +174,7 @@ class FabrikTableList extends FabTable
 		}
 
 		$pk = (array) $pk;
-		JArrayHelper::toInteger($pk);
+		ArrayHelper::toInteger($pk);
 
 		if (empty($pk))
 		{

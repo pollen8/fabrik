@@ -69,6 +69,7 @@ var FbGoogleMap = new Class({
 		'use_radius': false,
 		'geocode_on_load': false,
 		'traffic': false,
+		'debounceDelay': 500,
 		'styles': []
 	},
 
@@ -240,6 +241,9 @@ var FbGoogleMap = new Class({
 				if (this.options.latlng_dms === true) {
 					this.element.getElement('.latdms').value = this.latDecToDMS();
 					this.element.getElement('.lngdms').value = this.lngDecToDMS();
+				}
+				if (this.options.latlng_osref === true) {
+					this.element.getElement('.osref').value = this.latLonToOSRef();
 				}
 				if (this.options.reverse_geocode) {
 					this.reverseGeocode();
@@ -466,6 +470,12 @@ var FbGoogleMap = new Class({
 		return dmslng_dir + dmslng_d + '°' + dmslng_m + '\'' + dmslng_s + '"';
 
 	},
+	
+	latLonToOSRef: function () {
+		var ll2 = new LatLng(this.marker.getPosition().lng(), this.marker.getPosition().lng());
+		var OSRef = ll2.toOSRef();
+		return OSRef.toSixFigureString();
+	},
 
 	geoCode: function (e) {
 		var address = '';
@@ -502,10 +512,10 @@ var FbGoogleMap = new Class({
 				this.options.geocode_fields.each(function (field) {
 					var f = document.id(field);
 					if (typeOf(f) !== 'null') {
-						f.addEvent('keyup', function (e) {
-							this.geoCode();
-						}.bind(this));
-
+						var that = this;
+						jQuery(f).on('keyup', jQuery.debounce(this.options.debounceDelay, function(e) {
+							that.geoCode(e);
+						}))
 						// Select lists, radios whatnots
 						f.addEvent('change', function (e) {
 							this.geoCode();
@@ -534,10 +544,16 @@ var FbGoogleMap = new Class({
 					}
 				}.bind(this));
 			} else {
+				/*
 				this.element.getElement('.geocode_input').addEvent('keyup', function (e) {
 					e.stop();
 					this.geoCode(e);
 				}.bind(this));
+				*/
+				var that = this;
+				jQuery(this.element.getElement('.geocode_input')).on('keyup', jQuery.debounce(this.options.debounceDelay, function(e) {
+					that.geoCode(e);
+				}))
 			}
 		}
 	},
@@ -616,15 +632,9 @@ var FbGoogleMap = new Class({
 		this.geocoder.geocode({'latLng': this.marker.getPosition()}, function (results, status) {
 			if (status === google.maps.GeocoderStatus.OK) {
 				if (results[0]) {
-					//infowindow.setContent(results[1].formatted_address);
-					//infowindow.open(map, marker);
-					//alert(results[0].formatted_address);
-					/**
-					 * @TODO - simplify this, as we now index the reverse_geocode_fields with the same keys that
-					 * Google do.  So no need to go through each possibility and map to our key name.  In other words,
-					 * don't need to map "administrative_area_1" on to "state".  However, we do need to fix the handling
-					 * of street_number, route and street_address, as it seems that the Goog
-					 */
+					if (this.options.reverse_geocode_fields.formatted_address) {
+						this.form.formElements.get(this.options.reverse_geocode_fields.formatted_address).update(results[0].formatted_address);
+					}
 					results[0].address_components.each(function (component) {
 						component.types.each(function (type) {
 							if (type === 'street_number') {
