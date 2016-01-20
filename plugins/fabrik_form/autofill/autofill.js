@@ -66,7 +66,7 @@ var Autofill = new Class({
 	 *
 	 * @return element object
 	 */
-	getElements: function (repeatNum) {
+	getElement: function (repeatNum) {
 		var testE = false;
 		var e = this.form.formElements.get(this.options.observe);
 
