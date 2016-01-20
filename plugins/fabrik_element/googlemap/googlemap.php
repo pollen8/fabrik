@@ -292,7 +292,7 @@ class PlgFabrik_ElementGooglemap extends PlgFabrik_Element
 
 		if ($geocode !== '0' && $geocode_event === 'change')
 		{
-			$folder = 'media/com_fabrik/js/lib/debounce/';
+			$folder = 'fab/lib/debounce/';
 			$s->deps[] = $folder . 'jquery.ba-throttle-debounce';
 		}
 
