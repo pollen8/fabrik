@@ -3988,11 +3988,11 @@ class FabrikFEModelForm extends FabModelForm
 
 		if (!$this->isEditable())
 		{
-			$remove = "/{new:\s*.*?}/i";
+			$remove = "/{new:\s*.*?}/is";
 			$text = preg_replace($remove, '', $text);
-			$remove = "/{edit:\s*.*?}/i";
+			$remove = "/{edit:\s*.*?}/is";
 			$text = preg_replace($remove, '', $text);
-			$match = "/{details:\s*.*?}/i";
+			$match = "/{details:\s*.*?}/is";
 
 			$text = preg_replace_callback($match, array($this, '_getIntroOutro'), $text);
 
@@ -4004,15 +4004,15 @@ class FabrikFEModelForm extends FabModelForm
 		{
 			$match = $this->isNewRecord() ? 'new' : 'edit';
 			$remove = $this->isNewRecord()  ? 'edit' : 'new';
-			$match = "/{" . $match . ":\s*.*?}/i";
-			$remove = "/{" . $remove . ":\s*.*?}/i";
+			$match = "/{" . $match . ":\s*.*?}/is";
+			$remove = "/{" . $remove . ":\s*.*?}/is";
 			$text = preg_replace_callback($match, array($this, '_getIntroOutro'), $text);
 			$text = preg_replace($remove, '', $text);
 
 			// Was removing [rowid] from  {fabrik view=list id=2 countries___id=[rowid]} in form intro
 			//$text = str_replace('[', '{', $text);
 			//$text = str_replace(']', '}', $text);
-			$text = preg_replace("/{details:\s*.*?}/i", '', $text);
+			$text = preg_replace("/{details:\s*.*?}/is", '', $text);
 		}
 
 		$w = new FabrikWorker;
