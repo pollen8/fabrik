@@ -1383,7 +1383,7 @@ var FbGroupedToggler = new Class({
 			} else {
 				rows = h.getParent().getNext();
 			}
-			state ? rows.hide() : rows.show();
+			state ? jQuery(rows).hide() : jQuery(rows).show();
 			this.setIcon(img, state);
 			state = state ? false : true;
 			img.store('showgroup', state);
