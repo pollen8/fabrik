@@ -2830,21 +2830,6 @@ class FabrikFEModelList extends JModelForm
 			}
 		}
 		$userHasOrdered = ($strOrder == '') ? false : true;
-		$groupBy = $this->getGroupBy();
-
-		if ($groupBy !== '')
-		{
-			$groupByEl = $this->getGroupByElement();
-			$strOrder == '' ? $strOrder = "\n ORDER BY " : $strOrder .= ',';
-			$strOrder .= FabrikString::safeColName($groupBy) . ' ASC';
-			$this->orderEls[] = $groupBy;
-			$this->orderDirs[] = 'ASC';
-
-			if ($query !== false && is_object($query))
-			{
-				$query->order(FabrikString::safeColName($groupBy) . ' ASC');
-			}
-		}
 
 		// If nothing found in session use default ordering (or that set by querystring)
 		if (!$userHasOrdered)
@@ -2961,6 +2946,27 @@ class FabrikFEModelList extends JModelForm
 				}
 			}
 		}
+
+		$groupBy = $this->getGroupBy();
+
+		if ($groupBy !== '')
+		{
+			$groupByColName = FabrikString::safeColName($groupBy);
+
+			if (!in_array($groupByColName, $this->orderEls))
+			{
+				$strOrder == '' ? $strOrder = "\n ORDER BY " : $strOrder .= ',';
+				$strOrder .= $groupByColName . ' ASC';
+				$this->orderEls[]  = $groupBy;
+				$this->orderDirs[] = 'ASC';
+
+				if ($query !== false && is_object($query))
+				{
+					$query->order(FabrikString::safeColName($groupBy) . ' ASC');
+				}
+			}
+		}
+
 		/* apply group ordering
 		 * @TODO - explain something to hugh!  Why is this "group ordering"?  AFAICT, it's just a secondary
 		* order by, isn't specific to the Group By feature in any way?  So why not just put this option in
