@@ -327,8 +327,6 @@ class PlgFabrik_ElementTags extends PlgFabrik_ElementDatabasejoin
 		->from($db->qn($join->table_join) . ' AS ' . $db->qn($join->table_join_alias))
 		->join('LEFT', $this->getDbName() . ' AS t ON t.id = ' . $db->qn($join->table_join_alias . '.' . $join->table_key));
 
-		array_walk(debug_backtrace(),create_function('$a,$b','print "{$a[\'function\']}()(".basename($a[\'file\']).":{$a[\'line\']});<br> ";'));
-		echo $query;exit;
 		return $query;
 	}
 
@@ -370,7 +368,7 @@ class PlgFabrik_ElementTags extends PlgFabrik_ElementDatabasejoin
 		$db = FabrikWorker::getDbo(true);
 		$formData =& $this->getFormModel()->formDataWithTableName;
 		$tagIds = (array) $formData[$rawName];
-echo "<pre>";print_r($tagIds);exit;
+
 		foreach ($tagIds as $tagKey => &$tagId)
 		{
 			if (empty($tagId))
