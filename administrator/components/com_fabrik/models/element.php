@@ -379,7 +379,7 @@ class FabrikAdminModelElement extends FabModelAdmin
 				$this->setError(FText::_('COM_FABRIK_ERR_CANT_ADD_FIELDS'));
 			}
 
-			if (FabrikWorker::isReserved($data['name']))
+			if (!FabrikWorker::validElementName($data['name']))
 			{
 				$this->setError(FText::_('COM_FABRIK_RESERVED_NAME_USED'));
 			}
@@ -391,7 +391,7 @@ class FabrikAdminModelElement extends FabModelAdmin
 				$this->setError(FText::_('COM_FABRIK_ERR_CANT_ALTER_EXISTING_FIELDS'));
 			}
 
-			if ($nameChanged && FabrikWorker::isReserved($data['name'], false))
+			if ($nameChanged && !FabrikWorker::validElementName($data['name'], false))
 			{
 				$this->setError(FText::_('COM_FABRIK_RESERVED_NAME_USED'));
 			}

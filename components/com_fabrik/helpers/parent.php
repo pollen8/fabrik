@@ -609,6 +609,35 @@ class FabrikWorker
 	}
 
 	/**
+	 * Check a string is valid to use as an element name
+	 *
+	 * @param   string $str    To check
+	 * @param   bool   $strict Include things like rowid, listid in the reserved words, defaults to true
+	 *
+	 * @return bool
+	 */
+	public static function validElementName($str, $strict = true)
+	{
+		// check if it's a Fabrik reserved word
+		if (self::isReserved($str, $strict))
+		{
+			return false;
+		}
+
+		// check valid MySQL - start with letter or _, then only alphanumeric or underscore
+		if (!preg_match('/^[a-zA-Z_][a-zA-Z0-9_]*$/', $str))
+		{
+			return false;
+		}
+
+		// check for various other gotchas, like ending in _raw, starting with more than one _, etc.
+		if (preg_match('/^submit|^__|_raw$/', $str))
+		{
+			return false;
+		}
+	}
+
+	/**
 	 * Get the crypt object
 	 *
 	 * @since  3.1
