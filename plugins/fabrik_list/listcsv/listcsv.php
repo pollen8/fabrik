@@ -65,13 +65,17 @@ class PlgFabrik_ListListcsv extends PlgFabrik_List
 
 		if ($file == -1 || $file == '')
 		{
-			$code = $params->get('listcsv_import_php_code', '');
-			$ret = @eval($code);
-			FabrikWorker::logEval($ret, 'Caught exception on eval in onImportCSVRow : %s');
+			$code = trim($params->get('listcsv_import_php_code', ''));
 
-			if ($ret === false)
+			if (!empty($code))
 			{
-				return false;
+				$ret = @eval($code);
+				FabrikWorker::logEval($ret, 'Caught exception on eval in onImportCSVRow : %s');
+
+				if ($ret === false)
+				{
+					return false;
+				}
 			}
 		}
 		else
@@ -97,13 +101,53 @@ class PlgFabrik_ListListcsv extends PlgFabrik_List
 
 		if ($file == -1 || $file == '')
 		{
-			$code = $params->get('listcsv_after_import_php_code', '');
-			$ret = @eval($code);
-			FabrikWorker::logEval($ret, 'Caught exception on eval in onAfterImportCSVRow : %s');
+			$code = trim($params->get('listcsv_after_import_php_code', ''));
 
-			if ($ret === false)
+			if (!empty($code))
 			{
-				return false;
+				$ret = @eval($code);
+				FabrikWorker::logEval($ret, 'Caught exception on eval in onAfterImportCSVRow : %s');
+
+				if ($ret === false)
+				{
+					return false;
+				}
+			}
+		}
+		else
+		{
+			require JPATH_ROOT . '/plugins/fabrik_list/listcsv/scripts/' . $file;
+		}
+
+		return true;
+	}
+
+	/**
+	 * Called when import is complete
+	 *
+	 * @return boolean
+	 */
+
+	public function onCompleteImportCSV()
+	{
+		$params = $this->getParams();
+		$filter = JFilterInput::getInstance();
+		$file = $params->get('listcsv_import_complete_php_file');
+		$file = $filter->clean($file, 'CMD');
+
+		if ($file == -1 || $file == '')
+		{
+			$code = trim($params->get('listcsv_import_complete_php_code', ''));
+
+			if (!empty($code))
+			{
+				$ret = @eval($code);
+				FabrikWorker::logEval($ret, 'Caught exception on eval in onCompleteImportCSV : %s');
+
+				if ($ret === false)
+				{
+					return false;
+				}
 			}
 		}
 		else
