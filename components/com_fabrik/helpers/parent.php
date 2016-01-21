@@ -635,6 +635,8 @@ class FabrikWorker
 		{
 			return false;
 		}
+
+		return true;
 	}
 
 	/**
