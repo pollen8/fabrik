@@ -207,7 +207,7 @@ class PlgFabrik_ListUpdate_Col extends PlgFabrik_List
 
 		// Array_unique for left joined table data
 		$ids = array_unique($input->get('ids', array(), 'array'));
-		ArrayHelper::toInteger($ids);
+		$ids = ArrayHelper::toInteger($ids);
 		$this->row_count = count($ids);
 		$ids = implode(',', $ids);
 		$model->reset();
@@ -444,7 +444,7 @@ class PlgFabrik_ListUpdate_Col extends PlgFabrik_List
 			$emailFieldRaw = $emailField . '_raw';
 			$userId = (int) $row->$emailFieldRaw;
 			$ids = array_unique($input->get('ids', array(), 'array'));
-			ArrayHelper::toInteger($ids);
+			$ids = ArrayHelper::toInteger($ids);
 			$ids = implode(',', $ids);
 			$userIdsEmails = $this->getEmailUserIds($ids);
 			$to = FArrayHelper::getValue($userIdsEmails, $userId);

@@ -7287,6 +7287,7 @@ class PlgFabrik_Element extends FabrikPlugin
 
 		// I set this to raw for cdd.
 		$name = $this->getFullName(true, false);
+		echo "name = $name";
 		$ajaxSubmit = $this->app->input->get('fabrik_ajax');
 		$rawName = $name . '_raw';
 		$shortName = $this->getElement()->name;
@@ -7294,9 +7295,10 @@ class PlgFabrik_Element extends FabrikPlugin
 		$join = $this->getJoin();
 
 		// The submitted element's values
+		echo "<pre>";print_r($formData);
 		$d = FArrayHelper::getValue($formData, $rawName, FArrayHelper::getValue($formData, $name));
 		$allJoinValues = FabrikWorker::JSONtoData($d, true);
-
+print_r($allJoinValues);
 		if ($groupModel->isJoin())
 		{
 			$groupJoinModel = $groupModel->getJoinModel();

@@ -193,7 +193,7 @@ $states	= array(
 				?>
 				</td>
 				<td>
-					<?php echo str_replace(' ', '&nbsp;', $item->label); ?>
+					<?php echo str_replace(' ', '&nbsp;', FText::_($item->label)); ?>
 				</td>
 				<td>
 					<span class="hasTooltip" title="<?php echo '<strong>' . $item->name . "</strong><br />" . $item->tip; ?>">

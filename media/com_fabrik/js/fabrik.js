@@ -628,7 +628,7 @@ if (typeof (Fabrik) === 'undefined') {
 	 */
 	Fabrik.openSingleView = function (view, e, target) {
 		var url, loadMethod = 'xhr', a;
-		var listRef = target.get('data-list');
+		var listRef = jQuery(target).get('data-list');
 		var list = Fabrik.blocks[listRef];
 		if (!list.options.ajax_links) {
 			return;

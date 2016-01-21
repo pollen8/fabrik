@@ -335,10 +335,10 @@ class FabrikAdminModelForm extends FabModelAdmin
 	 */
 	protected function _makeFormGroups($currentGroups)
 	{
-		$formId = $this->getState($this->getName() . '.id');
-		$db     = FabrikWorker::getDbo(true);
-		$query  = $db->getQuery(true);
-		ArrayHelper::toInteger($currentGroups);
+		$formId        = $this->getState($this->getName() . '.id');
+		$db            = FabrikWorker::getDbo(true);
+		$query         = $db->getQuery(true);
+		$currentGroups = ArrayHelper::toInteger($currentGroups);
 		$query->delete('#__{package}_formgroup')->where('form_id = ' . (int) $formId);
 
 		if (!empty($currentGroups))
@@ -398,7 +398,7 @@ class FabrikAdminModelForm extends FabModelAdmin
 			return array();
 		}
 
-		ArrayHelper::toInteger($ids);
+		$ids   = ArrayHelper::toInteger($ids);
 		$db    = FabrikWorker::getDbo(true);
 		$query = $db->getQuery(true);
 		$query->select('form_id')->from('#__{package}_lists')->where('id IN (' . implode(',', $ids) . ')');

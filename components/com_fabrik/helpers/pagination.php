@@ -373,8 +373,9 @@ class FPagination extends JPagination
 		$this->url = FabrikString::rtrimword($this->url, "&");
 
 		// $$$ hugh - need to work out if we need & or ?
-		$sepchar   = strstr($this->url, '?') ? '&amp;' : '?';
-		$data->all = new JPaginationObject(FText::_('COM_FABRIK_VIEW_ALL'));
+		$sepchar        = strstr($this->url, '?') ? '&amp;' : '?';
+		$data->all      = new JPaginationObject(FText::_('COM_FABRIK_VIEW_ALL'));
+		$data->all->key = 'all';
 
 		if (!$this->viewAll)
 		{
@@ -383,8 +384,10 @@ class FPagination extends JPagination
 		}
 
 		// Set the start and previous data objects
-		$data->start    = new JPaginationObject(FText::_('COM_FABRIK_START'));
-		$data->previous = new JPaginationObject(FText::_('COM_FABRIK_PREV'));
+		$data->start         = new JPaginationObject(FText::_('COM_FABRIK_START'));
+		$data->start->key    = 'start';
+		$data->previous      = new JPaginationObject(FText::_('COM_FABRIK_PREV'));
+		$data->previous->key = 'previous';
 
 		if ($this->get('pages.current') > 1)
 		{
@@ -400,8 +403,10 @@ class FPagination extends JPagination
 		}
 
 		// Set the next and end data objects
-		$data->next = new JPaginationObject(FText::_('COM_FABRIK_NEXT'));
-		$data->end  = new JPaginationObject(FText::_('COM_FABRIK_END'));
+		$data->next      = new JPaginationObject(FText::_('COM_FABRIK_NEXT'));
+		$data->next->key = 'next';
+		$data->end       = new JPaginationObject(FText::_('COM_FABRIK_END'));
+		$data->end->key  = 'end';
 
 		if ($this->get('pages.current') < $this->get('pages.total'))
 		{
@@ -422,8 +427,9 @@ class FPagination extends JPagination
 
 		for ($i = $this->get('pages.start'); $i <= $stop; $i++)
 		{
-			$offset          = ($i - 1) * $this->limit;
-			$data->pages[$i] = new JPaginationObject($i);
+			$offset               = ($i - 1) * $this->limit;
+			$data->pages[$i]      = new JPaginationObject($i);
+			$data->pages[$i]->key = $i;
 
 			if ($i != $this->get('pages.current') || $this->viewAll)
 			{

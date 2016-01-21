@@ -61,7 +61,7 @@ class PlgFabrik_ElementTags extends PlgFabrik_ElementDatabasejoin
 		$opts->rowid = $this->getFormModel()->getRowId();
 		$opts->id = $this->id;
 		$opts->listid = $this->getListModel()->getId();
-		
+
 		return array('FbTags', $id, $opts);
 	}
 
@@ -153,7 +153,7 @@ class PlgFabrik_ElementTags extends PlgFabrik_ElementDatabasejoin
 			$pk = $db->qn($join->table_join_alias . '.' . $join->table_key);
 			$name = $this->getFullName(true, false) . '_raw';
 			$tagIds = FArrayHelper::getValue($data, $name, array());
-			ArrayHelper::toInteger($tagIds);
+			$tagIds = ArrayHelper::toInteger($tagIds);
 			$where = FArrayHelper::emptyIsh($tagIds) ? '6 = -6' : $pk . ' IN (' . implode(', ', $tagIds) . ')';
 		}
 		else
@@ -327,13 +327,15 @@ class PlgFabrik_ElementTags extends PlgFabrik_ElementDatabasejoin
 		->from($db->qn($join->table_join) . ' AS ' . $db->qn($join->table_join_alias))
 		->join('LEFT', $this->getDbName() . ' AS t ON t.id = ' . $db->qn($join->table_join_alias . '.' . $join->table_key));
 
+		array_walk(debug_backtrace(),create_function('$a,$b','print "{$a[\'function\']}()(".basename($a[\'file\']).":{$a[\'line\']});<br> ";'));
+		echo $query;exit;
 		return $query;
 	}
 
 	/**
-	 * Get all available tags by querying them directly from currently defined or default tagtable. 
-	 * Used by views/list/view.tags.php (prefiltering and jsonifying) and finally by 
-	 * tags.js to populate the autocompleted tags selection menu 
+	 * Get all available tags by querying them directly from currently defined or default tagtable.
+	 * Used by views/list/view.tags.php (prefiltering and jsonifying) and finally by
+	 * tags.js to populate the autocompleted tags selection menu
 	 *
 	 * @tagtable: returned in function getDbName() (default #__tags)
 	 *
@@ -368,7 +370,7 @@ class PlgFabrik_ElementTags extends PlgFabrik_ElementDatabasejoin
 		$db = FabrikWorker::getDbo(true);
 		$formData =& $this->getFormModel()->formDataWithTableName;
 		$tagIds = (array) $formData[$rawName];
-
+echo "<pre>";print_r($tagIds);exit;
 		foreach ($tagIds as $tagKey => &$tagId)
 		{
 			if (empty($tagId))

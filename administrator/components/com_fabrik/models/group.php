@@ -102,7 +102,7 @@ class FabrikAdminModelGroup extends FabModelAdmin
 			return array();
 		}
 
-		ArrayHelper::toInteger($ids);
+		$ids   = ArrayHelper::toInteger($ids);
 		$db    = FabrikWorker::getDbo(true);
 		$query = $db->getQuery(true);
 		$query->select('group_id')->from('#__{package}_formgroup')->where('form_id IN (' . implode(',', $ids) . ')');
@@ -300,9 +300,9 @@ class FabrikAdminModelGroup extends FabModelAdmin
 		$item->load($data['id']);
 		$join = $this->getTable('join');
 		$join->load(array('id' => $item->join_id));
-		$fkFieldName    = $join->get('table_join') . '___' . $join->get('table_join_key');
-		$fields         = $listModel->getDBFields($join->get('join_from_table'), 'Field');
-		$pkField        = FArrayHelper::getValue($fields, $join->get('table_key'), false);
+		$fkFieldName = $join->get('table_join') . '___' . $join->get('table_join_key');
+		$fields      = $listModel->getDBFields($join->get('join_from_table'), 'Field');
+		$pkField     = FArrayHelper::getValue($fields, $join->get('table_key'), false);
 
 		switch ($pkField->BaseType)
 		{
@@ -462,7 +462,7 @@ class FabrikAdminModelGroup extends FabModelAdmin
 
 		$query = $db->getQuery(true);
 		$query->select('id')->from('#__{package}_elements')
-				->where('group_id  = ' . $data['id'] . ' AND name IN ("id", "parent_id")');
+			->where('group_id  = ' . $data['id'] . ' AND name IN ("id", "parent_id")');
 		$db->setQuery($query);
 		$elementIds   = $db->loadColumn();
 		$elementModel = JModelLegacy::getInstance('Element', 'FabrikModel');
@@ -513,8 +513,8 @@ class FabrikAdminModelGroup extends FabModelAdmin
 	 */
 	public function deleteElements($pks)
 	{
-		$db = FabrikWorker::getDbo(true);
-		ArrayHelper::toInteger($pks);
+		$db    = FabrikWorker::getDbo(true);
+		$pks   = ArrayHelper::toInteger($pks);
 		$query = $db->getQuery(true);
 		$query->select('id')->from('#__{package}_elements')->where('group_id IN (' . implode(',', $pks) . ')');
 		$db->setQuery($query);
@@ -533,8 +533,8 @@ class FabrikAdminModelGroup extends FabModelAdmin
 	 */
 	public function deleteFormGroups($pks)
 	{
-		$db = FabrikWorker::getDbo(true);
-		ArrayHelper::toInteger($pks);
+		$db    = FabrikWorker::getDbo(true);
+		$pks   = ArrayHelper::toInteger($pks);
 		$query = $db->getQuery(true);
 		$query->delete('#__{package}_formgroup')->where('group_id IN (' . implode(',', $pks) . ')');
 		$db->setQuery($query);

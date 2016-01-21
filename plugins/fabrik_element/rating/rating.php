@@ -193,7 +193,7 @@ class PlgFabrik_ElementRating extends PlgFabrik_Element
 
 		if (!isset($this->avgs))
 		{
-			ArrayHelper::toInteger($ids);
+			$ids = ArrayHelper::toInteger($ids);
 			$db = FabrikWorker::getDbo(true);
 			$elementId = $this->getElement()->id;
 
@@ -246,7 +246,7 @@ class PlgFabrik_ElementRating extends PlgFabrik_Element
 				$ids[] = $rowId;
 			}
 
-			ArrayHelper::toInteger($ids);
+			$ids = ArrayHelper::toInteger($ids);
 			$db = FabrikWorker::getDbo(true);
 			$elementId = $this->getElement()->id;
 			$query = $db->getQuery(true);

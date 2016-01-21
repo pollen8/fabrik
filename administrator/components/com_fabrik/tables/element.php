@@ -121,7 +121,7 @@ class FabrikTableElement extends FabTable
 		$k = $this->getKeyName();
 
 		// Sanitize input.
-		ArrayHelper::toInteger($pks);
+		$pks = ArrayHelper::toInteger($pks);
 		$userId = (int) $userId;
 		$state = (int) $state;
 

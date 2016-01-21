@@ -86,7 +86,7 @@ class FabrikAdminControllerCrons extends FabControllerAdmin
 		$app = JFactory::getApplication();
 		$input = $app->input;
 		$cid = $input->get('cid', array(), 'array');
-		ArrayHelper::toInteger($cid);
+		$cid = ArrayHelper::toInteger($cid);
 		$cid = implode(',', $cid);
 		$query = $db->getQuery(true);
 		$query->select('*')->from('#__{package}_cron')->where('id IN (' . $cid . ')');

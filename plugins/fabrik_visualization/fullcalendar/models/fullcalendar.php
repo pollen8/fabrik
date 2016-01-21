@@ -73,7 +73,7 @@ class FabrikModelFullcalendar extends FabrikFEModelVisualization
 		if (!isset($this->listids))
 		{
 			$this->listids = (array) $this->getParams()->get('fullcalendar_table');
-			ArrayHelper::toInteger($this->listids);
+			$this->listids = ArrayHelper::toInteger($this->listids);
 		}
 	}
 
@@ -91,7 +91,7 @@ class FabrikModelFullcalendar extends FabrikFEModelVisualization
 			$db = FabrikWorker::getDbo(true);
 			$params = $this->getParams();
 			$lists = (array) $params->get('fullcalendar_table');
-			ArrayHelper::toInteger($lists);
+			$lists = ArrayHelper::toInteger($lists);
 			$dateFields = (array) $params->get('fullcalendar_startdate_element');
 			$dateFields2 = (array) $params->get('fullcalendar_enddate_element');
 			$labels = (array) $params->get('fullcalendar_label_element');
@@ -495,7 +495,7 @@ class FabrikModelFullcalendar extends FabrikFEModelVisualization
 							$row->_canView = (bool) $listModel->canViewDetails($row);
 							$row->allday = is_string($row->allday) ? filter_var($row->allday, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE) : (bool) $row->allday;
 
-							//Format local dates 
+							//Format local dates
 							$date = JFactory::getDate($row->startdate);
 							$row->startdate = $date->format('Y-m-d H:i:s', true);
 							if (!$startLocal) {
@@ -510,12 +510,12 @@ class FabrikModelFullcalendar extends FabrikFEModelVisualization
 							}
 							$row->startShowTime = (bool)$data['startShowTime'];
 							$row->endShowTime = (bool)$data['endShowTime'];
-/*							
+/*
 							$mydate = new DateTime($row->startdate);
 							$row->startdate_locale = $mydate->format(DateTime::RFC3339);
 							$mydate = new DateTime($row->enddate);
 							$row->enddate_locale = $mydate->format(DateTime::RFC3339);
-							
+
 							$row->startShowTime = (bool)$data['startShowTime'];
 							$row->endShowTime = (bool)$data['endShowTime'];
 
