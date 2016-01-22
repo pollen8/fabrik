@@ -2504,7 +2504,8 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		$modalOpts = array(
 			'content' => $modalContent,
 			'id' => $modalId,
-			'title' => JText::_($modalTitle)
+			'title' => JText::_($modalTitle),
+			'modal' => true
 		);
 		FabrikHelperHTML::jLayoutJs($modalId, 'fabrik-modal', (object) $modalOpts);
 	}

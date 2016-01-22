@@ -627,10 +627,10 @@ if (typeof (Fabrik) === 'undefined') {
 	 *            target <a> link
 	 */
 	Fabrik.openSingleView = function (view, e, target) {
-		debugger;
-		var url, loadMethod, a;
-		var listRef = jQuery(target).data('list');
-		var list = Fabrik.blocks[listRef];
+		var url, loadMethod, a, title,
+			listRef = jQuery(target).data('list'),
+			list = Fabrik.blocks[listRef];
+
 		if (!list.options.ajax_links) {
 			return;
 		}
@@ -649,6 +649,7 @@ if (typeof (Fabrik) === 'undefined') {
 		}
 		url = a.prop('href');
 		url += url.contains('?') ? '&tmpl=component&ajax=1' : '?tmpl=component&ajax=1';
+		title = a.prop('title');
 		loadMethod = a.data('loadmethod');
 		if (loadMethod === undefined) {
 			loadMethod = 'xhr';
@@ -662,12 +663,12 @@ if (typeof (Fabrik) === 'undefined') {
 		var winOpts = {
 			modalId: 'ajax_links',
 			'id': listRef + '.' + rowid,
-			'title': list.options.popup_view_label,
+			'title': title,
 			'loadMethod': loadMethod,
 			'contentURL': url,
 			'width': list.options.popup_width,
 			'height': list.options.popup_height,
-			'onClose': function (win) {
+			'onClose': function () {
 				var k = view +  '_' + list.options.formid + '_' + rowid;
 				try {
 					Fabrik.blocks[k].destroyElements();

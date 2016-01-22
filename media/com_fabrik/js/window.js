@@ -115,9 +115,9 @@ Fabrik.Window = new Class({
      */
     center: function () {
         var pxWidth = this.windowDimensionInPx('width'),
-            w = this.window.css('width'),
-            h = this.contentHeight();
-        w = (w === null || w === 'auto') ? pxWidth : this.window.css('width');
+            w = this.window.width(),
+            h = this.window.height();
+        w = (w === null || w === 'auto') ? pxWidth : this.window.width();
         w = parseInt(w, 10);
 
         var d = {'width': w + 'px', 'height': h + 'px'};
@@ -125,10 +125,10 @@ Fabrik.Window = new Class({
 
         if (!(this.modal)) {
             var yy = window.getSize().y / 2 + window.getScroll().y - (h / 2);
-            d.top = this.options.offset_y !== undefined ? window.getScroll().y + this.options.offset_y : yy;
+            d.top = this.options.offset_y !== null ? window.getScroll().y + this.options.offset_y : yy;
 
             var xx = window.getSize().x / 2 + window.getScroll().x - w / 2;
-            d.left = this.options.offset_x !== undefined ? window.getScroll().x + this.options.offset_x : xx;
+            d.left = this.options.offset_x !== null ? window.getScroll().x + this.options.offset_x : xx;
 
         } else {
             // File-upload crop uses this
@@ -153,6 +153,7 @@ Fabrik.Window = new Class({
         var coord = dir === 'height' ? 'y' : 'x',
             dim = this.options[dir] + '';
         if (dim.indexOf('%') !== -1) {
+            // @TODO fix
             return Math.floor(window.getSize()[coord] * (dim.toFloat() / 100));
         }
         return parseInt(dim, 10);
@@ -165,7 +166,7 @@ Fabrik.Window = new Class({
         var self = this, cw, ch;
         if (Fabrik.jLayouts[this.options.modalId]) {
             this.window = this.buildWinFromLayout();
-
+            this.window.find('*[data-role="title"]').text(this.options.title);
         } else {
             this.window = this.buildWinViaJS();
         }
@@ -177,25 +178,60 @@ Fabrik.Window = new Class({
             this.window.fade('hide');
         }
 
-        jQuery(this.window).find('.closeFabWin').on('click', function (e) {
+        jQuery(this.window).find('*[data-role="close"]').on('click', function (e) {
             e.preventDefault();
             self.close();
         });
 
+        this.window.find('*[data-role="expand"]').on('click', function (e) {
+            e.stopPropagation();
+            self.expand();
+        });
+debugger;
         cw = this.windowDimensionInPx('width');
         ch = this.windowDimensionInPx('height');
         this.contentWrapperEl.css({'height': ch, 'width': cw + 'px'});
+        var handle = this.window.find('*[data-role="title"]');
 
+        if (!this.modal) {
+            this.window.draggable(
+                {
+                    'handle': handle,
+                    drag    : function () {
+                        Fabrik.fireEvent('fabrik.window.resized', this.window);
+                        self.drawWindow();
+                    }
+                }
+            );
+
+            this.window.resizable({
+                containment: this.options.container ? jQuery('#' + this.options.container) : null,
+                handles: {
+                    'n' : '.ui-resizable-n',
+                    'e' : '.ui-resizable-e',
+                    's' : '.ui-resizable-s',
+                    'w' : '.ui-resizable-w',
+                    'ne': '.ui-resizable-ne',
+                    'se': '.ui-resizable-se',
+                    'sw': '.ui-resizable-sw',
+                    'nw': '.ui-resizable-nw'
+                },
+
+                resize: function () {
+                    self.drawWindow();
+                }
+            });
+        }
         // Set window dimensions before center - needed for fileupload crop
-        this.window.css('width', this.options.width);
-        this.window.css('height', this.options.height);
+
+    this.window.css('width', this.options.width);
+         this.window.css('height', this.options.height + this.window.find('*[data-role="title"]').height());
         jQuery(document.body).append(this.window);
 
+    /*    if (this.modal) {
+            this.fitToContent(false);
+        }*/
         this.center();
-        //bad idea - means opening windows are hidden if other code calls another window to hide
-        /*Fabrik.addEvent('fabrik.overlay.hide', function () {
-         this.window.hide();
-         }.bind(this));*/
     },
 
     /**
@@ -223,7 +259,6 @@ Fabrik.Window = new Class({
             'id'   : this.options.id,
             'class': 'fabrikWindow ' + this.classSuffix + ' modal'
         });
-        //this.center();
         var del = this.deleteButton();
 
         var hclass = 'handlelabel';
@@ -243,8 +278,6 @@ Fabrik.Window = new Class({
         if (this.options.expandable && this.modal === false) {
             expandButton = jQuery('<a />').addClass('expand').attr({
                 'href': '#'
-            }).on('click', function (e) {
-                self.expand(e);
             }).append(expandIcon);
             handleParts.push(expandButton);
         }
@@ -270,43 +303,29 @@ Fabrik.Window = new Class({
             this.window.append([this.handle, this.contentWrapperEl]);
         } else {
             this.window.append([this.handle, this.contentWrapperEl, draggerC]);
-            this.window.draggable(
-                {
-                    'handle': dragger,
-                    drag    : function () {
-                        Fabrik.fireEvent('fabrik.window.resized', this.window);
-                        this.drawWindow();
-                    }.bind(this)
-                }
-            ).resizable();
-            var dragOpts = {'handle': this.handle};
-            dragOpts.onComplete = function () {
-                Fabrik.fireEvent('fabrik.window.moved', this.window);
-                this.drawWindow();
-            }.bind(this);
-            dragOpts.container = this.options.container ? jQuery('#' + this.options.container) : null;
-            this.window.makeDraggable(dragOpts);
         }
 
         return this.window;
     },
 
     /**
-     * toggle the window full screen
+     * Toggle the window full screen
      */
-    expand: function (e) {
-        e.stopPropagation();
+    expand: function () {
         if (!this.expanded) {
             this.expanded = true;
             var w = window.getSize();
-            this.unexpanded = this.window.getCoordinates();
+            this.unexpanded = jQuery.extend({}, this.window.position(),
+                {'width': this.window.width(), 'height': this.window.height()});//this.window.getCoordinates();
             var scroll = window.getScroll();
-            this.window.setPosition({'x': scroll.x, 'y': scroll.y}).css({'width': w.x, 'height': w.y});
+            this.window.css({'left': scroll.x + 'px', 'top': scroll.y + 'px'});
+            this.window.css({'width': w.x, 'height': w.y});
         } else {
-            this.window.setPosition({
-                'x': this.unexpanded.left,
-                'y': this.unexpanded.top
-            }).css({'width': this.unexpanded.width, 'height': this.unexpanded.height});
+            this.window.css({
+                'left': this.unexpanded.left + 'px',
+                'top': this.unexpanded.top+ 'px'
+            });
+            this.window.css({'width': this.unexpanded.width, 'height': this.unexpanded.height});
             this.expanded = false;
         }
         this.drawWindow();
@@ -347,16 +366,16 @@ Fabrik.Window = new Class({
                     'data'  : {'fabrik_window_id': this.options.id},
                     'method': 'post',
                 }).success(function (r) {
-                        self.contentEl.append(r);
-                        Fabrik.loader.stop(self.contentEl);
-                        self.options.onContentLoaded.apply(self);
-                        self.watchTabs();
+                    self.contentEl.append(r);
+                    Fabrik.loader.stop(self.contentEl);
+                    self.options.onContentLoaded.apply(self);
+                    self.watchTabs();
 
-                        // Needed for IE11
-                        self.center();
-                        // Ini any Fabrik JS code that was loaded with the ajax request
-                        // window.trigger('fabrik.loaded');
-                    });
+                    // Needed for IE11
+                    self.center();
+                    // Ini any Fabrik JS code that was loaded with the ajax request
+                    // window.trigger('fabrik.loaded');
+                });
                 break;
             case 'iframe':
                 var h = this.options.height - 40,
@@ -394,8 +413,8 @@ Fabrik.Window = new Class({
 
     drawWindow: function () {
         var titleHeight = this.window.find('.' + this.handleClass());
-        titleHeight = titleHeight.length > 0 ? titleHeight.height() : 25;
-        var footer = this.window.find('.bottomBar').height();
+        titleHeight = titleHeight.length > 0 ? titleHeight.outerHeight() : 25;
+        var footer = this.window.find('.bottomBar').outerHeight();
         this.contentWrapperEl.css('height', this.window.height() - (titleHeight + footer));
         this.contentWrapperEl.css('width', this.window.width() - 2);
 
@@ -421,7 +440,8 @@ Fabrik.Window = new Class({
             this.center();
         }
         if (!this.options.offset_y && scroll) {
-            new Fx.Scroll(window).toElement(this.window);
+            //new Fx.Scroll(window).toElement(this.window);
+            jQuery('body').scrollTop(this.window);
         }
     },
 
@@ -448,18 +468,13 @@ Fabrik.Window = new Class({
 
     /**
      * Close the window
-     * @param {event} e
      */
-    close: function (e) {
-
-        if (e) {
-            e.stopPropagation();
-        }
+    close: function () {
         // By default cant destroy as we want to be able to reuse them (see crop in fileupload element)
         if (this.options.destroy) {
 
             // However db join add (in repeating group) has a fit if we don't remove its content
-            this.window.destroy();
+            this.window.remove();
             delete(Fabrik.Windows[this.options.id]);
         } else {
             this.window.fadeOut({duration: 0});
@@ -489,7 +504,7 @@ Fabrik.Modal = new Class({
     classSuffix: 'fabrikWindow-modal',
 
     getHandle: function () {
-        return jQUery('<div />').addClass(this.handleClass());
+        return jQuery('<div />').addClass(this.handleClass());
     }
 });
 

@@ -844,6 +844,7 @@ EOD;
 			{
 				JHtml::_('bootstrap.framework');
 				self::loadBootstrapCSS();
+				JHtml::_('script', 'media/com_fabrik/js/lib/jquery-ui/jquery-ui.min.js');
 			}
 
 			// Require js test - list with no cal loading ajax form with cal

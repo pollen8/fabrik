@@ -60,7 +60,9 @@ class FabrikViewListBase extends FabrikView
 			$modalOpts = array(
 				'content' => '',
 				'id' => 'ajax_links',
-				'title' => JText::_($modalTitle)
+				'title' => JText::_($modalTitle),
+				'modal' => false,
+				'expandable' => true
 			);
 			FabrikHelperHTML::jLayoutJs('ajax_links', 'fabrik-modal', (object) $modalOpts);
 		}
