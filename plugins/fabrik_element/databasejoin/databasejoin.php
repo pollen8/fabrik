@@ -1606,6 +1606,8 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		$displayData->optionLayout =  $this->getLayout('form-radio');
 		$singleLayout = 'fabrik-element-' . $this->getPluginName() . '-form-radio';
 		FabrikHelperHTML::jLayoutJs($singleLayout . '_' . $id, $singleLayout, $displayData, array($this->layoutBasePath()));
+		$rowOptsLayout = 'fabrik-element-' . $this->getPluginName() . '-form-rowopts';
+		FabrikHelperHTML::jLayoutJs($rowOptsLayout, $rowOptsLayout, $displayData, array($this->layoutBasePath()));
 
 		$html[] = '<div class="fabrikSubElementContainer" id="' . $id . '">';
 

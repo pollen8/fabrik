@@ -271,9 +271,6 @@ var FbGoogleMap = new Class({
 		Fabrik.addEvent('fabrik.form.page.change.end', function (form) {
 			this.redraw();
 		}.bind(this));
-		if (this.options.geocode && this.options.geocode_on_load) {
-			this.geoCode();
-		}
 	},
 
 	radiusUpdatePosition: function () {
@@ -710,6 +707,12 @@ var FbGoogleMap = new Class({
 		}
 		if (doReverseGeocode && this.options.reverse_geocode) {
 			this.reverseGeocode();
+		}
+	},
+
+	attachedToForm : function () {
+		if (this.options.geocode && this.options.geocode_on_load) {
+			this.geoCode();
 		}
 	}
 

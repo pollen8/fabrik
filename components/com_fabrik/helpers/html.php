@@ -2257,7 +2257,8 @@ EOD;
 
 		$text = JHTML::_('content.prepare', $text);
 
-		if ($view !== 'details')
+		if ($view !== 'details' || $input->get('format') === 'pdf')
+
 		{
 			$text = FabrikString::rtrimword($text, '{emailcloak=off}');
 		}
