@@ -13,37 +13,7 @@ $field = $d->field;
 ?>
 
 <span id="<?php echo $id; ?>"></span>
-<div id="<?php echo $id; ?>-widgetcontainer">
-	<canvas id="<?php echo $id; ?>-widget" width="<?php echo $winWidth?>" height="<?php echo $winHeight; ?>"></canvas>
 
-<?php
-if ($canCrop) :
-?>
-	<div class="zoom" style="float:left;margin-top:10px;padding-right:10px;width:180px">
-		zoom:
-		<div class="fabrikslider-line" style="width: 100px;float:left;">
-			<div class="knob"></div>
-		</div>
-		<input name="zoom-val" value="" size="3"  class="input-mini"/>
-	</div>
-	<div class="rotate" style="float:left;margin-top:10px;width:180px"><?php echo FText::_('PLG_ELEMENT_FILEUPLOAD_ROTATE'); ?>:
-		<div class="fabrikslider-line" style="width: 100px;float:left;">
-			<div class="knob"></div>
-		</div>
-		<input name="rotate-val" value="" size="3"  class="input-mini"/>
-	</div>
-<?php
-endif;
-
-if ($canvasSupport) :
-?>
-	<div style="text-align: right;float:right;margin:10px 0; width: 205px">
-		<input type="button" class="button btn btn-primary" name="close-crop" value="<?php echo FText::_('CLOSE'); ?>" />
-	</div>
-<?php
-endif;
-?>
-</div>
 
 <div class="plupload_container fabrikHide" id="<?php echo $id; ?>_container" style="<?php echo $dropBoxStyle; ?>">
 	<div class="plupload" id="<?php echo $id; ?>_dropList_container">

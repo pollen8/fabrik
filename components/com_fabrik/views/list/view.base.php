@@ -50,6 +50,20 @@ class FabrikViewListBase extends FabrikView
 		$formModel          = $model->getFormModel();
 		$elementsNotInTable = $formModel->getElementsNotInTable();
 		$toggleCols         = (bool) $params->get('toggle_cols', false);
+		$ajax               = (int) $model->isAjax();
+		$ajaxLinks          = (bool) $params->get('list_ajax_links', $ajax);
+
+		if ($ajaxLinks)
+		{
+			$modalTitle = 'test';
+
+			$modalOpts = array(
+				'content' => '',
+				'id' => 'ajax_links',
+				'title' => JText::_($modalTitle)
+			);
+			FabrikHelperHTML::jLayoutJs('ajax_links', 'fabrik-modal', (object) $modalOpts);
+		}
 
 		if ($model->requiresSlimbox())
 		{
@@ -100,8 +114,8 @@ class FabrikViewListBase extends FabrikView
 		$params           = $model->getParams();
 		$opts             = new stdClass;
 		$opts->admin      = $this->app->isAdmin();
-		$opts->ajax       = (int) $model->isAjax();
-		$opts->ajax_links = (bool) $params->get('list_ajax_links', $opts->ajax);
+		$opts->ajax       = $ajax;
+		$opts->ajax_links = $ajaxLinks;
 
 		$opts->links           = array('detail' => $params->get('detailurl', ''), 'edit' => $params->get('editurl', ''), 'add' => $params->get('addurl', ''));
 		$opts->filterMethod    = $this->filter_action;
@@ -129,6 +143,9 @@ class FabrikViewListBase extends FabrikView
 		$opts->toggleCols     = $toggleCols;
 		$opts->j3             = FabrikWorker::j3();
 		$opts->singleOrdering = (bool) $model->singleOrdering();
+
+		// Reset data back to original settings
+		$this->rows = $origRows;
 
 		$formEls = array();
 
@@ -212,7 +229,6 @@ class FabrikViewListBase extends FabrikView
 		// $$$rob if you are loading a table in a window from a form db join select record option
 		// then we want to know the id of the window so we can set its showSpinner() method
 		$opts->winid = $input->get('winid', '');
-		$opts        = json_encode($opts);
 
 		JText::script('COM_FABRIK_PREV');
 		JText::script('COM_FABRIK_SELECT_ROWS_FOR_DELETION');
@@ -252,7 +268,7 @@ class FabrikViewListBase extends FabrikView
 
 		$script[] = "window.addEvent('domready', function () {";
 		$script[] = "\tvar list = new FbList('$listId',";
-		$script[] = "\t" . $opts;
+		$script[] = "\t" . json_encode($opts);
 		$script[] = "\t);";
 		$script[] = "\tFabrik.addBlock('list_{$listRef}', list);";
 
@@ -286,8 +302,6 @@ class FabrikViewListBase extends FabrikView
 		FabrikHelperHTML::iniRequireJS($shim);
 		FabrikHelperHTML::script($src, $script);
 
-		// Reset data back to original settings
-		$this->rows = $origRows;
 	}
 
 	/**

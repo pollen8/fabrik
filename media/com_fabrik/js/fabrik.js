@@ -153,8 +153,8 @@ Element.implement({
 		}.bind(this));
 	},
 	makeCenter: function () {
-		var l = window.getWidth() / 2 - this.getWidth() / 2;
-		var t = window.getScrollTop() + (window.getHeight() / 2 - this.getHeight() / 2);
+		var l = jQuery(window).width() / 2 - this.getWidth() / 2;
+		var t = window.getScrollTop() + (jQuery(window).height() / 2 - this.getHeight() / 2);
 		this.setStyles({
 			left: l,
 			top: t
@@ -627,8 +627,9 @@ if (typeof (Fabrik) === 'undefined') {
 	 *            target <a> link
 	 */
 	Fabrik.openSingleView = function (view, e, target) {
-		var url, loadMethod = 'xhr', a;
-		var listRef = jQuery(target).get('data-list');
+		debugger;
+		var url, loadMethod, a;
+		var listRef = jQuery(target).data('list');
 		var list = Fabrik.blocks[listRef];
 		if (!list.options.ajax_links) {
 			return;
@@ -639,26 +640,27 @@ if (typeof (Fabrik) === 'undefined') {
 			return;
 		}
 		list.setActive(row);
-		var rowid = row.id.split('_').getLast();
+		var rowid = row.id.split('_').pop();
 
-		if (e.target.get('tag') === 'a') {
-			a = e.target;
+		if (jQuery(e.target).prop('tagName') === 'A') {
+			a = jQuery(e.target);
 		} else {
-			a = typeOf(e.target.getElement('a')) !== 'null' ? e.target.getElement('a') : e.target.getParent('a');
+			a = jQuery(e.target).find('a').length > 0 ? jQuery(e.target).find('a') : jQuery(e.target).closest('a');
 		}
-		url = a.get('href');
+		url = a.prop('href');
 		url += url.contains('?') ? '&tmpl=component&ajax=1' : '?tmpl=component&ajax=1';
-		loadMethod = a.get('data-loadmethod');
-		if (typeOf(loadMethod) === 'null') {
+		loadMethod = a.data('loadmethod');
+		if (loadMethod === undefined) {
 			loadMethod = 'xhr';
 		}
 
 		// Only one edit window open at the same time.
-		$H(Fabrik.Windows).each(function (win, key) {
+		jQuery(Fabrik.Windows, function (key, win) {
 			win.close();
 		});
 
 		var winOpts = {
+			modalId: 'ajax_links',
 			'id': listRef + '.' + rowid,
 			'title': list.options.popup_view_label,
 			'loadMethod': loadMethod,
@@ -680,10 +682,10 @@ if (typeof (Fabrik) === 'undefined') {
 			}
 		};
 		winOpts.id = view === 'details' ? 'view.' + winOpts.id : 'add.' + winOpts.id;
-		if (typeOf(list.options.popup_offset_x) !== 'null') {
+		if (list.options.popup_offset_x !== null) {
 			winOpts.offset_x = list.options.popup_offset_x;
 		}
-		if (typeOf(list.options.popup_offset_y) !== 'null') {
+		if (list.options.popup_offset_y !== null) {
 			winOpts.offset_y = list.options.popup_offset_y;
 		}
 		Fabrik.getWindow(winOpts);

@@ -418,14 +418,14 @@ var FbForm = new Class({
 		fx.lastMethod = method;
 		Fabrik.fireEvent('fabrik.form.doelementfx', [this]);
 	},
-	
+
 	/**
 	 * Get a group's tab, if it exists
-	 * 
+	 *
 	 * These tab funcions are currently just helpers for user scripts
-	 * 
+	 *
 	 * @param groupId
-	 * 
+	 *
 	 * @return tab | false
 	 */
 	getGroupTab: function(groupid) {
@@ -436,14 +436,14 @@ var FbForm = new Class({
 		}
 		return false;
 	},
-	
+
 	/**
 	 * Get a group's tab, if it exists
-	 * 
+	 *
 	 * These tab funcions are currently just helpers for user scripts
-	 * 
+	 *
 	 * @param groupId
-	 * 
+	 *
 	 * @return tab | false
 	 */
 	getGroupTab: function(groupid) {
@@ -454,10 +454,10 @@ var FbForm = new Class({
 		}
 		return false;
 	},
-	
+
 	/**
 	 * Hide a group's tab, if it exists
-	 * 
+	 *
 	 * @param groupId
 	 */
 	hideGroupTab: function(groupid) {
@@ -477,7 +477,7 @@ var FbForm = new Class({
 
 	/**
 	 * Hide a group's tab, if it exists
-	 * 
+	 *
 	 * @param groupId
 	 */
 	selectGroupTab: function(groupid) {
@@ -486,12 +486,12 @@ var FbForm = new Class({
 			if (!tab.hasClass('active')) {
 				jQuery(tab.getFirst()).tab('show');
 			}
-		}	
+		}
 	},
-	
+
 	/**
 	 * Hide a group's tab, if it exists
-	 * 
+	 *
 	 * @param groupId
 	 */
 	showGroupTab: function(groupid) {
@@ -996,7 +996,7 @@ var FbForm = new Class({
 		} else {
 			this._showElementError([], id);
 		}
-		
+
 		if (this.options.toggleSubmit)
 		{
 			if (this.options.mustValidate)
@@ -1197,7 +1197,7 @@ var FbForm = new Class({
 		}
 		this.doSubmit(new Event.Mock(btn, 'click'), btn);
 	},
-	
+
 	doSubmit: function (e, btn) {
 		if (this.submitBroker.enabled()) {
 			e.stop();
@@ -1907,7 +1907,7 @@ var FbForm = new Class({
 		this.addElements(o);
 
 		// Only scroll the window if the new element is not visible
-		var win_size = window.getHeight(),
+		var win_size = jQuery(window).height(),
 			win_scroll = document.id(window).getScroll().y,
 			obj = clone.getCoordinates();
 		// If the bottom of the new repeat goes below the bottom of the visible
@@ -2087,7 +2087,7 @@ var FbForm = new Class({
 	{
 
 	},
-	
+
 	addMustValidate: function (el)
 	{
 		if (this.options.ajaxValidation && this.options.toggleSubmit) {
@@ -2098,7 +2098,7 @@ var FbForm = new Class({
 			}
 		}
 	},
-	
+
 	toggleSubmit: function (on)
 	{
 		var submit = this._getButton('Submit');
@@ -2109,7 +2109,7 @@ var FbForm = new Class({
 			}
 			else {
 				submit.disabled = "disabled";
-				submit.setStyle('opacity', 0.5);				
+				submit.setStyle('opacity', 0.5);
 			}
 		}
 	}
