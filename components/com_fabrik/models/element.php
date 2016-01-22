@@ -7295,10 +7295,9 @@ class PlgFabrik_Element extends FabrikPlugin
 		$join = $this->getJoin();
 
 		// The submitted element's values
-		echo "<pre>";print_r($formData);
 		$d = FArrayHelper::getValue($formData, $rawName, FArrayHelper::getValue($formData, $name));
 		$allJoinValues = FabrikWorker::JSONtoData($d, true);
-print_r($allJoinValues);
+
 		if ($groupModel->isJoin())
 		{
 			$groupJoinModel = $groupModel->getJoinModel();
