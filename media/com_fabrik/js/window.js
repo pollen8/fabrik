@@ -187,7 +187,7 @@ Fabrik.Window = new Class({
             e.stopPropagation();
             self.expand();
         });
-debugger;
+
         cw = this.windowDimensionInPx('width');
         ch = this.windowDimensionInPx('height');
         this.contentWrapperEl.css({'height': ch, 'width': cw + 'px'});
@@ -206,7 +206,7 @@ debugger;
 
             this.window.resizable({
                 containment: this.options.container ? jQuery('#' + this.options.container) : null,
-                handles: {
+                handles    : {
                     'n' : '.ui-resizable-n',
                     'e' : '.ui-resizable-e',
                     's' : '.ui-resizable-s',
@@ -224,13 +224,13 @@ debugger;
         }
         // Set window dimensions before center - needed for fileupload crop
 
-    this.window.css('width', this.options.width);
-         this.window.css('height', this.options.height + this.window.find('*[data-role="title"]').height());
+        this.window.css('width', this.options.width);
+        this.window.css('height', this.options.height + this.window.find('*[data-role="title"]').height());
         jQuery(document.body).append(this.window);
 
-    /*    if (this.modal) {
+        if (this.modal) {
             this.fitToContent(false);
-        }*/
+        }
         this.center();
     },
 
@@ -323,7 +323,7 @@ debugger;
         } else {
             this.window.css({
                 'left': this.unexpanded.left + 'px',
-                'top': this.unexpanded.top+ 'px'
+                'top' : this.unexpanded.top + 'px'
             });
             this.window.css({'width': this.unexpanded.width, 'height': this.unexpanded.height});
             this.expanded = false;

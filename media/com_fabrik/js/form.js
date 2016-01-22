@@ -1160,7 +1160,7 @@ var FbForm = new Class({
 		copy = this._getButton('Copy');
 		if (del) {
 			del.addEvent('click', function (e) {
-				if (confirm(Joomla.JText._('COM_FABRIK_CONFIRM_DELETE_1'))) {
+				if (window.confirm(Joomla.JText._('COM_FABRIK_CONFIRM_DELETE_1'))) {
 					var res = Fabrik.fireEvent('fabrik.form.delete', [this, this.options.rowid]).eventResults;
 					if (typeOf(res) === 'null' || res.length === 0 || !res.contains(false)) {
 						// Task value is the same for front and admin
