@@ -173,6 +173,21 @@ class FabrikViewFullcalendar extends JViewLegacy
 			array(JPATH_PLUGINS."/fabrik_visualization/fullcalendar/layouts/")
 		);
 
+		$modalOpts = array(
+			'content' => '',
+			'id' => 'fullcalendar_addeventwin',
+			'title' => FText::_('PLG_VISUALIZATION_FULLCALENDAR_ADD_EVENT'),
+			'modal' => false,
+			'expandable' => true
+		);
+
+		FabrikHelperHTML::jLayoutJs(
+			'fullcalendar_addeventwin',
+			'fabrik-modal',
+			(object) $modalOpts
+		);
+
+
 		$ref = $model->getJSRenderContext();
 
 		$js = array();

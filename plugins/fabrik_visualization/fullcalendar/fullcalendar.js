@@ -305,6 +305,7 @@ var fabrikFullcalendar = new Class({
 		this.windowopts.type = 'window';
 		this.windowopts.contentURL = url;
 		this.windowopts.title = o.title;
+		this.windowopts.modalId = 'fullcalendar_addeventwin'
 		var f = this.options.filters;
 	
 		this.windowopts.onContentLoaded = function (win)
