@@ -7691,4 +7691,13 @@ class PlgFabrik_Element extends FabrikPlugin
 	{
 		return $this->getElement()->published === '1';
 	}
+
+	/**
+	 * Add any jsJLayout templates to Fabrik.jLayouts js object.
+	 *
+	 * @return void
+	 */
+	public function jsJLayouts()
+	{
+	}
 }

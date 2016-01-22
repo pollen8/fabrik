@@ -495,8 +495,10 @@ class FabrikViewFormBase extends FabrikView
 	{
 		$pluginManager = FabrikWorker::getPluginManager();
 
+
 		/** @var FabrikFEModelForm $model */
 		$model                 = $this->getModel();
+		$model->elementJsJLayouts();
 		$aLoadedElementPlugins = array();
 		$jsActions             = array();
 		$bKey                  = $model->jsKey();

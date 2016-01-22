@@ -1084,14 +1084,10 @@ EOD;
 			$pathBits[] = "\n\t\t$reqK : '$repPath'";
 		}
 
-		//$pathBits[] = "\n\t\tjquery: 'media/com_fabrik/js/dummy-jquery'";
-		//$pathBits[] = "\n\t\tjquery: 'media/jui/js/jquery'";
-
 		$pathString = '{' . implode(',', $pathBits) . '}';
 		$config     = array();
 
 		$config[] = "define('jquery', [], function() {
-		console.log('require js define jquery as ', jQuery);
 			return jQuery;
 		});";
 

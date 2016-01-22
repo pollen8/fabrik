@@ -14,13 +14,13 @@ $d = $displayData;
 				<?php echo FText::_('PLG_ELEMENT_FILEUPLOAD_ZOOM'); ?>:
 				<div class="fabrikslider-line" style="width: 100px;float:left;">
 					<div class="knob"></div>
-				</div>
+				</div><br />
 				<input type="number" name="zoom-val" value="" size="3" class="input-mini">
 			</div>
 			<div class="rotate span5"><?php echo FText::_('PLG_ELEMENT_FILEUPLOAD_ROTATE'); ?>:
 				<div class="fabrikslider-line" style="width: 100px;float:left;">
 					<div class="knob"></div>
-				</div>
+				</div><br />
 				<input type="number" name="rotate-val" value="" size="3" class="input-mini">
 			</div>
 		</div>

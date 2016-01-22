@@ -5219,6 +5219,27 @@ class FabrikFEModelForm extends FabModelForm
 	}
 
 	/**
+	 * Ask all elements to add their js Fabrik.jLayouts to the framework
+	 * This has to be done before we call FabrikHelperHTML::framework();
+	 *
+	 * @return void;
+	 */
+	public function elementJsJLayouts()
+	{
+		$groups = $this->getGroupsHiarachy();
+
+		foreach ($groups as $groupModel)
+		{
+			$elementModels = $groupModel->getPublishedElements();
+
+			foreach ($elementModels as $elementModel)
+			{
+				$elementModel->jsJLayouts();
+			}
+		}
+	}
+
+	/**
 	 * Get a subset of the model's data with non accessible values removed
 	 *
 	 * @param   string  $view  View
