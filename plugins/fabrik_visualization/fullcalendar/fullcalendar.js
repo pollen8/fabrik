@@ -307,7 +307,7 @@ var fabrikFullcalendar = new Class({
 		this.windowopts.title = o.title;
 		this.windowopts.modalId = 'fullcalendar_addeventwin'
 		var f = this.options.filters;
-	
+
 		this.windowopts.onContentLoaded = function (win)
 		{
 			f.each(function (o) {
@@ -324,8 +324,8 @@ var fabrikFullcalendar = new Class({
 					}
 				}
 			});
-			win.fitToContent(false);
-		}.bind(this);
+			this.fitToContent(false);
+		};
 		
 		Fabrik.getWindow(this.windowopts);
 	},
@@ -458,6 +458,7 @@ var fabrikFullcalendar = new Class({
 		url += '&renderContext=' + this.el.id.replace(/visualization_/, '');
 		this.windowopts.contentURL = url;
 		this.windowopts.id = 'chooseeventwin';
+		this.windowopts.modalId = 'fullcalendar_chooseeventwin';
 		this.windowopts.onContentLoaded = function ()
 		{
 			var myfx = new Fx.Scroll(window).toElement('chooseeventwin');
