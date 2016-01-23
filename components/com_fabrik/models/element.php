@@ -5530,8 +5530,11 @@ class PlgFabrik_Element extends FabrikPlugin
 			$validationParams = $validation->getParams();
 			if ($validationParams->get('must_validate', '0') === '1')
 			{
-				$opts->mustValidate = true;
-				break;
+				if ($validation->canValidate())
+				{
+					$opts->mustValidate = true;
+					break;
+				}
 			}
 		}
 
