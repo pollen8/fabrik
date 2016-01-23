@@ -11684,22 +11684,10 @@ class FabrikFEModelList extends JModelForm
 	 */
 	public function getLayout($name, $paths = array(), $options = array())
 	{
-		$defaultOptions = array('debug' => false, 'component' => 'com_fabrik', 'client' => 'site');
-		$options = array_merge($defaultOptions, $options);
-		$basePath = COM_FABRIK_FRONTEND . '/layouts';
-		$layout         = new FabrikLayoutFile($name, $basePath, $options);
-
-		foreach ($paths as $path)
-		{
-			$layout->addIncludePath($path);
-		}
-
-		// Custom per template layouts ...
-		$layout->addIncludePaths(COM_FABRIK_FRONTEND . '/views/list/tmpl/' . $this->getTmpl() . '/layouts');
+		$paths[] = COM_FABRIK_FRONTEND . '/views/list/tmpl/' . $this->getTmpl() . '/layouts';
+		$layout  = FabrikHelperHTML::getLayout($name, $paths, $options);
 
 		return $layout;
 	}
-
-
 
 }
