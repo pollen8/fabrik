@@ -414,6 +414,17 @@ var FbForm = new Class({
 		case 'clear':
 			this.formElements.get(id).clear();
 			break;
+		case 'disable':
+			if (!groupfx) {
+				jQuery('#' + id).prop('disabled', true);
+			}
+			break;
+		case 'enable':
+			if (!groupfx) {
+				jQuery('#' + id).prop('disabled', false);
+			}
+			break;
+
 		}
 		fx.lastMethod = method;
 		Fabrik.fireEvent('fabrik.form.doelementfx', [this]);
