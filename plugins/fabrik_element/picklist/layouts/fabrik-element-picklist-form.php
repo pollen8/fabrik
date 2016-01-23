@@ -3,7 +3,6 @@
 defined('JPATH_BASE') or die;
 
 $d = $displayData;
-FabrikHelperHTML::stylesheet(COM_FABRIK_LIVESITE . 'plugins/fabrik_element/picklist/picklist.css');
 ?>
 <div class="<?php echo $d->name; ?>_container" id="<?php echo $d->id; ?>_container">
 	<div class="row">
