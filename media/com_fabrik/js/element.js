@@ -372,6 +372,7 @@ var FbElement =  new Class({
 	 */
 	cloned: function (c) {
 		this.renewEvents();
+		this.resetEvents();
 		if (this.element.hasClass('chzn-done')) {
 			this.element.removeClass('chzn-done');
 			this.element.addClass('chzn-select');
