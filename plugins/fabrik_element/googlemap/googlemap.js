@@ -714,6 +714,7 @@ var FbGoogleMap = new Class({
 		if (this.options.geocode && this.options.geocode_on_load) {
 			this.geoCode();
 		}
+		parent.attachedToForm();
 	}
 
 });

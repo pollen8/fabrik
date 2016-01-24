@@ -46,6 +46,7 @@ var FbCascadingdropdown = new Class({
 			var v = this.form.formElements.get(this.options.watch).getValue();
 			this.change(v, document.id(this.options.watch).id);
 		}
+		parent.attachedToForm();
 	},
 
 	dowatch: function (e)

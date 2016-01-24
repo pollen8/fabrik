@@ -34,6 +34,7 @@ var FbCalc = new Class({
 				}
 			}.bind(this));
 		}
+		parent.attachedToForm();
 	},
 	
 	addObserveEvent: function (o) {
