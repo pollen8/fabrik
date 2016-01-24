@@ -1714,12 +1714,13 @@ class FabrikWorker
 	 * Takes a string which may or may not be json and returns either string/array/object
 	 * will also turn valGROUPSPLITTERval2 to array
 	 *
-	 * @param   string $data    Json encoded string
-	 * @param   bool   $toArray Force data to be an array
+	 * @param   string $data       Json encoded string
+	 * @param   bool   $toArray    Force data to be an array
+	 * @param   bool   $emptyish   Set to false to return an empty array if $data is an empty string, instead of an emptyish (one empty string entry) array
 	 *
 	 * @return  mixed data
 	 */
-	public static function JSONtoData($data, $toArray = false)
+	public static function JSONtoData($data, $toArray = false, $emptyish = true)
 	{
 		if (is_string($data))
 		{
@@ -1754,12 +1755,12 @@ class FabrikWorker
 
 				$data = is_null($json) ? $data : $json;
 			}
-		}
 
-		// If $data was an empty string, make sure we don't return an "emptyish" array with a single empty entry
-		if ($toArray && empty($data))
-		{
-			$data = array();
+			// If $data was an empty string and "emptyish" is not set, we want an empty array, not an array with one empty string
+			if ($toArray && !$emptyish && $data === '')
+			{
+				$data = array();
+			}
 		}
 
 		$data = $toArray ? (array) $data : $data;
