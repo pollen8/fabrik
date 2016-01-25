@@ -885,7 +885,7 @@ var FbDatabasejoin = new Class({
 		if (this.options.editable) {
 			this.watchObserve();
 		}
-		parent.attachedToForm();
+		this.parent();
 	},
 
 	init: function () {

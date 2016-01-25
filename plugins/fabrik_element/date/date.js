@@ -120,7 +120,7 @@ var FbDateTime = new Class({
 	attachedToForm: function () {
 		this.parent();
 		this.watchAjaxTrigger();
-		parent.attachedToForm();
+		this.parent();
 	},
 	
 	/**
