@@ -6128,7 +6128,7 @@ class FabrikFEModelList extends JModelForm
 				{
 					$f = new stdClass;
 					$f->label = $filter->label;
-					$f->id = $filter->id;
+					$f->id = isset($filter->id) ? $filter->id : '';
 					$f->element = $filter->filter;
 					$f->required = array_key_exists('required', $filter) ? $filter->required : '';
 					$f->displayValue = is_array($filter->displayValue) ? implode(', ', $filter->displayValue) :
@@ -6280,6 +6280,7 @@ class FabrikFEModelList extends JModelForm
 				$o->name = FabrikString::safeColNameToArrayKey($filters['key'][$i]);
 				$o->label = $filters['label'][$i];
 				$o->displayValue = $elementModel->filterDisplayValues;
+				$o->id = $elementModel->getHTMLId() . 'value';
 				$aFilters[] = $o;
 				$counter++;
 			}
