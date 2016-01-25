@@ -84,7 +84,7 @@ class FabrikControllerVisualizationfullcalendar extends FabrikControllerVisualiz
 	 *
 	 * @return  void
 	 */
-	public function chooseaddevent()
+	public function chooseAddEvent()
 	{
 		$document = JFactory::getDocument();
 		$viewName = 'fullcalendar';
@@ -100,7 +100,7 @@ class FabrikControllerVisualizationfullcalendar extends FabrikControllerVisualiz
 		// Push a model into the view
 		$model = $this->getModel($viewName);
 		$view->setModel($model, true);
-		$view->chooseaddevent();
+		$view->chooseAddEvent();
 	}
 
 	/**
@@ -110,7 +110,7 @@ class FabrikControllerVisualizationfullcalendar extends FabrikControllerVisualiz
 	 */
 
 	public function addEvForm()
-	{ 
+	{
 		$app = JFactory::getApplication();
 		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$input = $app->input;
@@ -125,7 +125,7 @@ class FabrikControllerVisualizationfullcalendar extends FabrikControllerVisualiz
 		$prefix = $config->get('dbprefix');
 
 		if (array_key_exists($listid, $model->events))
-		{ 
+		{
 			$startDateField = $model->events[$listid][0]['startdate'];
 			$endDateField = $model->events[$listid][0]['enddate'];
 		}
