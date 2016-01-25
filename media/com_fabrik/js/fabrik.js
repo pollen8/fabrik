@@ -106,7 +106,7 @@ Request.HTML = new Class({
 		if (match) {
 			response.html = match[1];
 		}
-		var temp = $('<div />').html(response.html);
+		var temp = new Element('div').set('html', response.html);
 
 		response.tree = temp.childNodes;
 		response.elements = temp.getElements(options.filter || '*');
