@@ -1091,6 +1091,11 @@ EOD;
 			return jQuery;
 		});";
 
+		// Required for full calendar
+		$config[] = "define('moment', [], function() {
+			return moment;
+		});";
+
 		$config[] = "requirejs.config({";
 		$config[] = "\tbaseUrl: '" . $requirejsBaseURI . "',";
 		$config[] = "\tpaths: " . $pathString . ",";

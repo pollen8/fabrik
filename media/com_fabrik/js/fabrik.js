@@ -106,7 +106,7 @@ Request.HTML = new Class({
 		if (match) {
 			response.html = match[1];
 		}
-		var temp = new Element('div').set('html', response.html);
+		var temp = $('<div />').html(response.html);
 
 		response.tree = temp.childNodes;
 		response.elements = temp.getElements(options.filter || '*');
@@ -186,16 +186,32 @@ Array.prototype.searchFor = function (candid) {
  */
 var Loader = new Class({
 
-	initialize: function (options) {
+	initialize: function () {
 		this.spinners = {};
 		this.spinnerCount = {};
 	},
 
-	start: function (inline, msg) {
-		if (typeOf(document.id(inline)) === 'null') {
-			inline = false;
-		}
+	sanitizeInline: function (inline) {
+
 		inline = inline ? inline : document.body;
+
+		if (inline instanceof jQuery) {
+			if (inline.length === 0) {
+				inline = false;
+			} else {
+				inline = inline[0];
+			}
+		} else {
+			if (typeOf(document.id(inline)) === 'null') {
+				inline = false;
+			}
+		}
+		return inline;
+	},
+
+	start: function (inline, msg) {
+		inline = this.sanitizeInline(inline);
+
 		msg = msg ? msg : Joomla.JText._('COM_FABRIK_LOADING');
 		if (!this.spinners[inline]) {
 			this.spinners[inline] = new Spinner(inline, {
@@ -218,10 +234,7 @@ var Loader = new Class({
 	},
 
 	stop: function (inline) {
-		if (typeOf(document.id(inline)) === 'null') {
-			inline = false;
-		}
-		inline = inline ? inline : document.body;
+		inline = this.sanitizeInline(inline);
 		if (!this.spinners[inline] || !this.spinnerCount[inline]) {
 			return;
 		}
@@ -425,7 +438,7 @@ if (typeof (Fabrik) === 'undefined') {
 	// mootools in ajax window.
 	// need to load mootools in ajax window otherwise Fabrik classes don't
 	// correctly load
-	Fabrik.addEvent = function (type, fn) {
+	Fabrik.addEvent = Fabrik.on = function (type, fn) {
 		if (!Fabrik.events[type]) {
 			Fabrik.events[type] = [];
 		}
@@ -442,7 +455,7 @@ if (typeof (Fabrik) === 'undefined') {
 		return this;
 	};
 
-	Fabrik.fireEvent = function (type, args, delay) {
+	Fabrik.fireEvent = Fabrik.trigger = function (type, args, delay) {
 		var events = Fabrik.events;
 
 		// An array of returned values from all events.

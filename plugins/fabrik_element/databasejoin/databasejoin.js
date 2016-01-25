@@ -507,7 +507,6 @@ var FbDatabasejoin = new Class({
     watchSelect: function () {
         var c, winId,
             self = this;
-        debugger;
         if (c = this.getContainer()) {
             var sel = c.getElement('.toggle-selectoption');
             if (typeOf(sel) !== 'null') {
@@ -515,7 +514,6 @@ var FbDatabasejoin = new Class({
                     self.selectRecord(e);
                 });
                 Fabrik.addEvent('fabrik.list.row.selected', function (json) {
-                    debugger;
                     if (self.options.listid.toInt() === json.listid.toInt() && self.activeSelect) {
                         self.update(json.rowid);
                         winId = self.element.id + '-popupwin-select';

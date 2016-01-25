@@ -347,7 +347,12 @@ class FabrikViewFormBase extends FabrikView
 
 			// Set a flag so that the system plugin can clear out any other canonical links.
 			$this->session->set('fabrik.clearCanonical', true);
-			$this->doc->addCustomTag('<link rel="canonical" href="' . htmlspecialchars($url) . '" />');
+			try {
+				$this->doc->addCustomTag('<link rel="canonical" href="' . htmlspecialchars($url) . '" />');
+			} catch (Exception $err) {
+
+			}
+
 		}
 	}
 

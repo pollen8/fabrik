@@ -3469,7 +3469,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		}
 		else
 		{
-			$selector = '.advancedSeach_' . $listModel->getRenderContext() . ' .' . $id;
+			$selector = '.advancedSearch_' . $listModel->getRenderContext() . ' .' . $id;
 			$opts['menuclass'] = 'auto-complete-container advanced';
 		}
 

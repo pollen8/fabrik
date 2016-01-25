@@ -72,7 +72,8 @@ var FloatingTips = new Class({
 		var self = this;
 		this.elements.each(function () {
 			try {
-				thisOpts = JSON.parse(jQuery(this).attr('opts', '{}')).opts;
+				var o = JSON.parse(jQuery(this).attr('opts'));
+				thisOpts = jQuery.type(o) === 'object' ? o.opts : {};
 			} catch (e) {
 				thisOpts = {};
 			}

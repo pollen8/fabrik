@@ -14,11 +14,15 @@ defined('_JEXEC') or die('Restricted access');
 jimport('joomla.application.component.view');
 
 /**
- * Viz HTML view class
+ * HTML Partial Fabrik Visualization view class. Renders HTML without <head> or wrapped in <body>
+ * Any Ajax request requiring HTML should add "&foramt=partial" to the URL. This avoids us
+ * potentially reloading jQuery in the <head> which is problematic as that replaces the main page's
+ * jQuery object and removes any additional functions that had previously been assigned
+ * such as JQuery UI, or fullcalendar
  *
  * @package     Joomla
  * @subpackage  Fabrik
- * @since       3.0.6
+ * @since       3.4.3
  */
 class FabrikViewVisualization extends FabrikView
 {

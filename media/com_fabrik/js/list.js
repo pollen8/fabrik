@@ -466,7 +466,7 @@ var FbList = new Class({
 	 */
 	csvExportFilterOpts: function (opts) {
 		var ii = 0,
-		aa, bits,
+		aa, bits, aName,
 		advancedPointer = 0,
 		testii,
 		usedAdvancedKeys = ['value', 'condition', 'join', 'key', 'search_type', 'match', 'full_words_only', 'eval', 'grouped_to_previous', 'hidden', 'elementid'];
@@ -782,14 +782,14 @@ var FbList = new Class({
 			this.form.getElement('input[name=format]').value = 'raw';
 
 			var data = this.form.toQueryString();
-			
+
 			if (task === 'list.doPlugin') {
-				data += '&setListRefFromRequest=1';	
+				data += '&setListRefFromRequest=1';
 				data += '&listref=' + this.options.listRef;
 			}
-			
+
 			if (task === 'list.filter' && this.advancedSearch !== false) {
-				var advSearchForm = document.getElement('form.advancedSeach_' + this.options.listRef);
+				var advSearchForm = document.getElement('form.advancedSearch_' + this.options.listRef);
 				if (typeOf(advSearchForm) !== 'null') {
 					data += '&' + advSearchForm.toQueryString();
 					data += '&replacefilters=1';

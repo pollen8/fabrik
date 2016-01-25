@@ -67,6 +67,20 @@ class FabrikViewListBase extends FabrikView
 			FabrikHelperHTML::jLayoutJs('ajax_links', 'fabrik-modal', (object) $modalOpts);
 		}
 
+		// Advanced search
+
+		if ($params->get('advanced-filter'))
+		{
+			$modalOpts = array(
+				'content' => '',
+				'id' => 'advanced-filter',
+				'modal' => false,
+				'expandable' => true
+			);
+			FabrikHelperHTML::jLayoutJs('advanced-filter', 'fabrik-modal', (object) $modalOpts);
+		}
+
+
 		if ($model->requiresSlimbox())
 		{
 			FabrikHelperHTML::slimbox();

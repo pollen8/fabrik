@@ -1,6 +1,6 @@
 <?php
 /**
- * HTML Fabrik List view class
+ * HTML Partial Fabrik List view class
  *
  * @package     Joomla
  * @subpackage  Fabrik
@@ -14,11 +14,15 @@ defined('_JEXEC') or die('Restricted access');
 require_once JPATH_SITE . '/components/com_fabrik/views/list/view.base.php';
 
 /**
- * HTML Fabrik List view class
+ * HTML Partial Fabrik List view class. Renders HTML without <head> or wrapped in <body>
+ * Any Ajax request requiring HTML should add "&foramt=partial" to the URL. This avoids us
+ * potentially reloading jQuery in the <head> which is problematic as that replaces the main page's
+ * jQuery object and removes any additional functions that had previously been assigned
+ * such as JQuery UI, or fullcalendar
  *
  * @package     Joomla
  * @subpackage  Fabrik
- * @since       3.0
+ * @since       3.4.3
  */
 class FabrikViewList extends FabrikViewListBase
 {
@@ -85,7 +89,7 @@ class FabrikViewList extends FabrikViewListBase
 		$displayData->tmpl = $this->tmpl;
 		$displayData->title = $this->grouptemplates[$groupedBy];
 		$displayData->count = count($group);
-		$displayData->group_by_show_count = $this->params->get('group_by_show_count','1');		
+		$displayData->group_by_show_count = $this->params->get('group_by_show_count','1');
 		$layout = FabrikHelperHTML::getLayout('list.fabrik-group-by-heading');
 
 		return $layout->render($displayData);
