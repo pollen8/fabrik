@@ -239,7 +239,7 @@ class FabrikViewListBase extends FabrikView
 		$this->_row->id    = '';
 		$this->_row->class = 'fabrik_row';
 		echo $this->loadTemplate('row');
-		$opts->rowtemplate = ob_get_contents();
+		$opts->itemTemplate = ob_get_contents();
 		ob_end_clean();
 
 		// $$$rob if you are loading a table in a window from a form db join select record option

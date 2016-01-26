@@ -36,9 +36,6 @@ if ($j3) :
 					<td colspan="4">
 								<a id="<?php echo $id; ?>_browseButton" class="btn btn-mini" href="#"><?php echo FabrikHelperHTML::icon('icon-plus-sign icon-plus'); ?>
 						<?php echo FText::_('PLG_ELEMENT_FILEUPLOAD_ADD_FILES'); ?></a>
-								<a id="<?php echo $id; ?>_startButton" class="btn btn-mini disabled plupload_start" data-action="plupload_start" href="#">
-								<?php echo FabrikHelperHTML::icon('icon-upload'); ?>
-						<?php echo FText::_('PLG_ELEMENT_FILEUPLOAD_START_UPLOAD'); ?></a>
 							<span class="plupload_upload_status"></span>
 					</td>
 				</tr>

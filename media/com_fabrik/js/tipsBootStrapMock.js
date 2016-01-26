@@ -73,7 +73,7 @@ var FloatingTips = new Class({
 		this.elements.each(function () {
 			try {
 				var o = JSON.parse(jQuery(this).attr('opts'));
-				thisOpts = jQuery.type(o) === 'object' ? o.opts : {};
+				thisOpts = jQuery.type(o) === 'object' ? o : {};
 			} catch (e) {
 				thisOpts = {};
 			}
@@ -151,6 +151,12 @@ var FloatingTips = new Class({
 	var PopoverEx = function (element, options) {
 		this.init('popover', element, options);
 	};
+
+	if ($.fn.popover === undefined) {
+		console.log('Fabrik: cant load PopoverEx as jQuery popover not found ' +
+			'- could be the J template has overwritten jQuery (and yes Im looking at your Warp themes!)');
+		return;
+	}
 	PopoverEx.prototype = $.extend({}, $.fn.popover.Constructor.prototype, {
 
 		constructor: PopoverEx,

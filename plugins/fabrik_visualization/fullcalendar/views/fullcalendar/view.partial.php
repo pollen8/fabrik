@@ -20,7 +20,6 @@ jimport('joomla.application.component.view');
  * @subpackage  Fabrik.visualization.calendar
  * @since       3.0
  */
-
 class FabrikViewFullcalendar extends JViewLegacy
 {
 	/**
@@ -30,20 +29,20 @@ class FabrikViewFullcalendar extends JViewLegacy
 	 */
 	public function chooseAddEvent()
 	{
-		$app = JFactory::getApplication();
+		$app   = JFactory::getApplication();
 		$input = $app->input;
 		$this->setLayout('chooseAddEvent');
-		$model = $this->getModel();
+		$model       = $this->getModel();
 		$usersConfig = JComponentHelper::getParams('com_fabrik');
 		$model->setId($input->getInt('id', $usersConfig->get('visualizationid', $input->getInt('visualizationid', 0))));
 		$rows = $model->getEventLists();
 		$model->getVisualization();
-		$options = array();
+		$options   = array();
 		$options[] = JHTML::_('select.option', '', FText::_('PLG_VISUALIZATION_FULLCALENDAR_PLEASE_SELECT'));
 
 		$model->getEvents();
-		$attribs = 'class="inputbox" size="1" ';
-		$options = array_merge($options, $rows);
+		$attribs            = 'class="inputbox" size="1" ';
+		$options            = array_merge($options, $rows);
 		$this->_eventTypeDd = JHTML::_('select.genericlist', $options, 'event_type', $attribs, 'value', 'text', '', 'fabrik_event_type');
 
 		/*
@@ -51,9 +50,8 @@ class FabrikViewFullcalendar extends JViewLegacy
 		 * in the end decided to set a call back to the main calendar object (via the package manager)
 		 * to load up the new add event form
 		 */
-		$ref = $model->getJSRenderContext();
-		$script = array();
-		//$script[] = "window.addEvent('fabrik.loaded', function() {";
+		$ref      = $model->getJSRenderContext();
+		$script   = array();
 		$script[] = "document.id('fabrik_event_type').addEvent('change', function(e) {";
 		$script[] = "var fid = e.target.get('value');";
 		$script[] = "var o = ({'id':'','listid':fid,'rowid':0});";

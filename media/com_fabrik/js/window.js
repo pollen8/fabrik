@@ -115,12 +115,14 @@ Fabrik.Window = new Class({
      */
     center: function () {
         var pxWidth = this.windowDimensionInPx('width'),
+            pxHeight = this.windowDimensionInPx('height'),
             w = this.window.width(),
             h = this.window.height();
         w = (w === null || w === 'auto') ? pxWidth : this.window.width();
         w = parseInt(w, 10);
 
-        var d = {'width': w + 'px', 'height': h + 'px'};
+       // var d = {'width': w + 'px', 'height': h + 'px'};
+        var d = {'width': pxWidth + 'px', 'height': pxHeight + 'px'};
         this.window.css(d);
 
         if (!(this.modal)) {
@@ -190,6 +192,7 @@ Fabrik.Window = new Class({
 
         cw = this.windowDimensionInPx('width');
         ch = this.windowDimensionInPx('height');
+
         this.contentWrapperEl.css({'height': ch, 'width': cw + 'px'});
         var handle = this.window.find('*[data-role="title"]');
 
@@ -414,9 +417,16 @@ Fabrik.Window = new Class({
     drawWindow: function () {
         var titleHeight = this.window.find('.' + this.handleClass());
         titleHeight = titleHeight.length > 0 ? titleHeight.outerHeight() : 25;
-        var footer = this.window.find('.bottomBar').outerHeight();
-        this.contentWrapperEl.css('height', this.window.height() - (titleHeight + footer));
-        this.contentWrapperEl.css('width', this.window.width() - 2);
+        var footer = parseInt(this.window.find('.bottomBar').outerHeight(), 10);
+
+        // Not ok for UIKit file upload
+        /*var w = this.window.width(),
+            h = this.window.height();*/
+
+        var w = this.windowDimensionInPx('width'),
+            h = this.windowDimensionInPx('height');
+        this.contentWrapperEl.css('height', h - (titleHeight + footer));
+        this.contentWrapperEl.css('width', w - 2);
 
         // Resize iframe when window is resized
         if (this.options.loadMethod === 'iframe') {

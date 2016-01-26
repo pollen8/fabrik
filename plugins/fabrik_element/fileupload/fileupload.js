@@ -24,7 +24,6 @@ var FbFileUpload = new Class({
             this.options.files = $H(this.options.files);
             if (this.options.files.getLength() !== 0) {
                 this.uploader.trigger('FilesAdded', this.options.files);
-                this.startbutton.addClass('plupload_disabled');
                 this.options.files.each(function (file) {
                     var response = {
                         'filepath': file.path,
@@ -352,11 +351,7 @@ var FbFileUpload = new Class({
         this.pluploadContainer = c.getElement('.plupload_container');
         this.pluploadFallback = c.getElement('.plupload_fallback');
         this.droplist = c.getElement('.plupload_filelist');
-        if (Fabrik.bootstrapped) {
-            this.startbutton = c.getElement('*[data-action=plupload_start]');
-        } else {
-            this.startbutton = c.getElement('.plupload_start');
-        }
+
         var plupopts = {
             runtimes           : this.options.ajax_runtime,
             browse_button      : this.element.id + '_browseButton',
@@ -403,7 +398,6 @@ var FbFileUpload = new Class({
                 this.container.getElement('thead').style.display = '';
             }
             var count = this.droplist.getElements(rElement).length;
-            this.startbutton.removeClass('disabled');
             files.each(function (file, idx) {
                 if (file.size > this.options.max_file_size * 1000) {
                     window.alert(Joomla.JText._('PLG_ELEMENT_FILEUPLOAD_FILE_TOO_LARGE_SHORT'));
@@ -437,6 +431,11 @@ var FbFileUpload = new Class({
                     }
                 }
             }.bind(this));
+
+            // Automatically start the upload - need delay to ensure up.files is populated
+            setTimeout(function () {
+                up.start();
+            }, 100);
         }.bind(this));
 
         // (3) ON FILE UPLOAD PROGRESS ACTION
@@ -535,11 +534,6 @@ var FbFileUpload = new Class({
             this.isSumbitDone();
         }.bind(this));
 
-        // (4) UPLOAD FILES FIRE STARTER
-        this.startbutton.addEvent('click', function (e) {
-            e.stop();
-            this.uploader.start();
-        }.bind(this));
         // (5) KICK-START PLUPLOAD
         this.uploader.init();
     },
@@ -584,7 +578,6 @@ var FbFileUpload = new Class({
     /**
      * Create edit image button
      */
-
     editImgButton: function () {
         if (Fabrik.bootstrapped) {
             return new Element('a.editImage', {
@@ -942,7 +935,7 @@ var ImageWidget = new Class({
             var img = Asset.image(uri, {
                 onLoad: function () {
 
-                    var params = this.storeImageDimensions(filepath, img, tmpParams);
+                    var params = this.storeImageDimensions(filepath, jQuery(img), tmpParams);
                     this.img = params.img;
                     this.setInterfaceDimensions(params);
                     this.showWin();
@@ -988,17 +981,18 @@ var ImageWidget = new Class({
     /**
      * One time call to store initial image crop info in this.images
      *
-     * @param string filepath Path to image
-     * @param DOMnode img Image - just created
-     * @param params object Image parameters
+     * @param {string} filepath Path to image
+     * @param {jQuery} img Image - just created
+     * @param {object} params object Image parameters
      *
      * @return object Update image parameters
      */
 
     storeImageDimensions: function (filepath, img, params) {
-        img.inject(document.body).hide();
+        // .hide() not working in UIKit
+        img.appendTo(document.body).css({'display': 'none'});
         params = params ? params : new CloneObject(this.imageDefault, true, []);
-        var s = img.getDimensions(true);
+        var s = img[0].getDimensions(true);
         if (!params.imagedim) {
             params.mainimagedim = {};
         } else {
@@ -1006,7 +1000,7 @@ var ImageWidget = new Class({
         }
         params.mainimagedim.w = s.width;
         params.mainimagedim.h = s.height;
-        params.img = img;
+        params.img = img[0];
         this.images.set(filepath, params);
         return params;
     },
