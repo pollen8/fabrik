@@ -23,7 +23,6 @@ var fabrikFullcalendar = new Class({
     },
 
     initialize: function (ref, options) {
-        debugger;
         var script, self = this,
             rightButtons = '',
             eventSources = [];
