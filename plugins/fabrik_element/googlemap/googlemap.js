@@ -512,7 +512,7 @@ var FbGoogleMap = new Class({
 						var that = this;
 						jQuery(f).on('keyup', jQuery.debounce(this.options.debounceDelay, function(e) {
 							that.geoCode(e);
-						}))
+						}));
 						// Select lists, radios whatnots
 						f.addEvent('change', function (e) {
 							this.geoCode();
@@ -550,7 +550,7 @@ var FbGoogleMap = new Class({
 				var that = this;
 				jQuery(this.element.getElement('.geocode_input')).on('keyup', jQuery.debounce(this.options.debounceDelay, function(e) {
 					that.geoCode(e);
-				}))
+				}));
 			}
 		}
 	},

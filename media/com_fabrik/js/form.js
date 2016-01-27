@@ -33,6 +33,7 @@ FbForm = new Class({
 		'toggleSubmit'  : false,
 		'mustValidate'  : false,
 		'lang'          : false,
+		'debounceDelay' : 500,
 		'images'        : {
 			'alert'       : '',
 			'action_check': '',
@@ -1470,25 +1471,27 @@ FbForm = new Class({
 
 	watchGroupButtons: function () {
 
-		this.form.addEvent('click:relay(.deleteGroup)', function (e, target) {
+		var self = this;
+
+		jQuery(this.form).on('click', '.deleteGroup', jQuery.debounce(this.options.debounceDelay, true, function(e, target) {
 			e.preventDefault();
-			if (!this.addingOrDeletingGroup) {
-				this.addingOrDeletingGroup = true;
+			if (!self.addingOrDeletingGroup) {
+				self.addingOrDeletingGroup = true;
 				var group = e.target.getParent('.fabrikGroup'),
 					subGroup = e.target.getParent('.fabrikSubGroup');
-				this.deleteGroup(e, group, subGroup);
-				this.addingOrDeletingGroup = false;
+				self.deleteGroup(e, group, subGroup);
+				self.addingOrDeletingGroup = false;
 			}
-		}.bind(this));
+		}));
 
-		this.form.addEvent('click:relay(.addGroup)', function (e, target) {
-			if (!this.addingOrDeletingGroup) {
-				this.addingOrDeletingGroup = true;
-				e.preventDefault();
-				this.duplicateGroup(e);
-				this.addingOrDeletingGroup = false;
+		jQuery(this.form).on('click', '.addGroup', jQuery.debounce(this.options.debounceDelay, true, function(e, target) {
+			e.preventDefault();
+			if (!self.addingOrDeletingGroup) {
+				self.addingOrDeletingGroup = true;
+				self.duplicateGroup(e);
+				self.addingOrDeletingGroup = false;
 			}
-		}.bind(this));
+		}));
 
 		this.form.addEvent('click:relay(.fabrikSubGroup)', function (e, subGroup) {
 			var r = subGroup.getElement('.fabrikGroupRepeater');
@@ -1590,7 +1593,7 @@ FbForm = new Class({
 			return;
 		}
 		if (e) {
-			e.stop();
+			e.preventDefault();
 		}
 
 		// Find which repeat group was deleted
@@ -1754,7 +1757,7 @@ FbForm = new Class({
 			return;
 		}
 		if (e) {
-			e.stop();
+			e.preventDefault();
 		}
 		var i = e.target.getParent('.fabrikGroup').id.replace('group', '');
 		var group_id = i.toInt();
