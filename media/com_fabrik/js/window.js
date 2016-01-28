@@ -103,11 +103,12 @@ Fabrik.Window = new Class({
      * @returns {number}
      */
     contentHeight: function () {
-        var h = 0;
-        this.window.children().each(function () {
-            h = h + jQuery(this).outerHeight(true);
-        });
-        return h;
+        var w = this.window.find('.contentWrapper');
+        // Reset height so we calculate it rather than taking the css value
+        w.css('height', 'auto');
+
+        // The mootools getDimensions actually works (jQuery height() is incorrect)
+        return w[0].getDimensions(true).height;
     },
 
     /**
@@ -191,7 +192,7 @@ Fabrik.Window = new Class({
         });
 
         cw = this.windowDimensionInPx('width');
-        ch = this.windowDimensionInPx('height');
+        ch = this.contentHeight();//this.windowDimensionInPx('height');
 
         this.contentWrapperEl.css({'height': ch, 'width': cw + 'px'});
         var handle = this.window.find('*[data-role="title"]');
@@ -302,6 +303,7 @@ Fabrik.Window = new Class({
         itemContent.append(this.contentEl);
         this.contentWrapperEl.append(itemContent);
 
+        this.window = jQuery(this.window);
         if (this.modal) {
             this.window.append([this.handle, this.contentWrapperEl]);
         } else {
@@ -424,7 +426,7 @@ Fabrik.Window = new Class({
             h = this.window.height();*/
 
         var w = this.windowDimensionInPx('width'),
-            h = this.windowDimensionInPx('height');
+            h = this.contentHeight();//this.windowDimensionInPx('height');
         this.contentWrapperEl.css('height', h - (titleHeight + footer));
         this.contentWrapperEl.css('width', w - 2);
 
