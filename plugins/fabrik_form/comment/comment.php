@@ -931,6 +931,14 @@ class PlgFabrik_FormComment extends PlgFabrik_Form
 	{
 		$formModel = $this->getModel();
 		$input = $this->app->input;
+
+		/*
+		 * 'Fix' for jcomments not loading languages? Means you have to copy:
+		 * components/com_jcomments/languages/yourfile.ini to
+		 * components/com_jcomments/language/xx-XX/yourfile.ini
+		 */
+		$lang = JFactory::getLanguage();
+		$lang->load('com_jcomments', JPATH_BASE . '/components/com_jcomments');
 		$jComments = JPATH_SITE . '/components/com_jcomments/jcomments.php';
 
 		if (JFile::exists($jComments))
