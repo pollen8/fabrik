@@ -248,9 +248,20 @@ class FabrikModelFullcalendar extends FabrikFEModelVisualization
 					$customUrl = FArrayHelper::getValue($customUrls, $i, '');
 					$status = FArrayHelper::getValue($stati, $i, '');
 					$allday = FArrayHelper::getValue($allDayEl, $i, '');
-					$this->events[$tables[$i]][] = array('startdate' => $startDate, 'enddate' => $endDate, 'startShowTime' => $startShowTime,
-						'endShowTime' => $endShowTime, 'label' => $table_label[$i], 'colour' => $colour[$i], 'legendtext' => $legend[$i],
-						'formid' => $table->form_id, 'listid' => $tables[$i], 'customUrl' => $customUrl, 'status' => $status, 'allday' => $allday);
+					$this->events[$tables[$i]][] = array(
+						'startdate' => $startDate,
+						'enddate' => $endDate,
+						'startShowTime' => $startShowTime,
+						'endShowTime' => $endShowTime,
+						'label' => $table_label[$i],
+						'colour' => $colour[$i],
+						'legendtext' => $legend[$i],
+						'formid' => $table->form_id,
+						'listid' => $tables[$i],
+						'customUrl' => $customUrl,
+						'status' => $status,
+						'allday' => $allday
+					);
 				}
 			}
 		}
