@@ -31,6 +31,7 @@ if (JDEBUG)
 
 require_once JPATH_COMPONENT . '/controller.php';
 $app = JFactory::getApplication();
+$app->set('jquery', true);
 $input = $app->input;
 
 /**
