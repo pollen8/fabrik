@@ -496,7 +496,7 @@ var FbFileUpload = new Class({
                 resizebutton.store('filepath', response.filepath);
             }
             if (this.widget) {
-                this.widget.setImage(response.uri, response.filepath, file.params);
+                this.widget.setImage(response.uri, response.filepath, file.params, true);
             }
 
             if (this.options.inRepeatGroup) {
@@ -588,7 +588,9 @@ var FbFileUpload = new Class({
                 alt   : Joomla.JText._('PLG_ELEMENT_FILEUPLOAD_RESIZE'),
                 events: {
                     'click': function (e) {
-                        this.pluploadResize(e);
+                        e.stop();
+                        var a = e.target.getParent();
+                        this.pluploadResize(a);
                     }.bind(this)
                 }
             });
@@ -598,7 +600,9 @@ var FbFileUpload = new Class({
                 alt   : Joomla.JText._('PLG_ELEMENT_FILEUPLOAD_RESIZE'),
                 events: {
                     'click': function (e) {
-                        this.pluploadResize(e);
+                        e.stop();
+                        var a = e.target.getParent();
+                        this.pluploadResize(a);
                     }.bind(this)
                 }
             });
@@ -697,9 +701,7 @@ var FbFileUpload = new Class({
         }
     },
 
-    pluploadResize: function (e) {
-        e.stop();
-        var a = e.target.getParent();
+    pluploadResize: function (a) {
         if (this.widget) {
             this.widget.setImage(a.href, a.retrieve('filepath'));
         }
@@ -919,12 +921,12 @@ var ImageWidget = new Class({
     /**
      * Add or make active an image in the editor
      *
-     * @param string uri Image URI
-     * @param string filepath Path to file
-     * @param object params Initial parameters
+     * @param {string} uri Image URI
+     * @param {string} filepath Path to file
+     * @param {object} params Initial parameters
      */
-
-    setImage: function (uri, filepath, params) {
+    setImage: function (uri, filepath, params, showWin) {
+        showWin = showWin ? showWin : false;
         this.activeFilePath = filepath;
         if (!this.images.has(filepath)) {
 
@@ -940,7 +942,9 @@ var ImageWidget = new Class({
                     this.setInterfaceDimensions(params);
                     this.showWin();
                     this.storeActiveImageData(filepath);
-                    this.win.close();
+                    if (!showWin) {
+                        this.win.close();
+                    }
                 }.bind(this)
             });
         } else {
@@ -949,7 +953,10 @@ var ImageWidget = new Class({
             params = this.images.get(filepath);
             this.img = params.img;
             this.setInterfaceDimensions(params);
-            this.showWin();
+            if (!showWin) {
+                this.showWin();
+            }
+
         }
     },
 
@@ -1325,6 +1332,7 @@ var ImageWidget = new Class({
                 this.CANVAS.threads.get('myThread').start();
             }
         }
+        this.win.drawWindow();
         this.win.center();
     }
 });

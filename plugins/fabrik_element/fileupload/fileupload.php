@@ -2909,6 +2909,13 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 
 			foreach ($value as $v)
 			{
+				// From ajax upload
+				if (is_array($v))
+				{
+					$v = array_keys($v);
+					$v = ArrayHelper::getValue($v, 0);
+				}
+
 				$render = $this->loadElement($v);
 
 				if ($v != '' && $storage->exists(COM_FABRIK_BASE . $v))
