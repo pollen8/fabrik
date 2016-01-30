@@ -433,7 +433,16 @@ FbForm = new Class({
 					jQuery('#' + id).prop('disabled', false);
 				}
 				break;
-
+			case 'readonly':
+				if (!groupfx) {
+					jQuery('#' + id).prop('readonly', true);
+				}
+				break;
+			case 'notreadonly':
+				if (!groupfx) {
+					jQuery('#' + id).prop('readonly', false);
+				}
+				break;
 		}
 		fx.lastMethod = method;
 		Fabrik.fireEvent('fabrik.form.doelementfx', [this]);

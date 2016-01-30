@@ -106,6 +106,8 @@
 					<option value="clear">COM_FABRIK_JS_CLEAR</option>
 					<option value="disable">COM_FABRIK_JS_DISABLE</option>
 					<option value="enable">COM_FABRIK_JS_ENABLE</option>
+					<option value="readonly">COM_FABRIK_JS_READONLY</option>
+					<option value="notreadonly">COM_FABRIK_JS_NOTREADONLY</option>
 			</field>
 
 			<field name="js_e_trigger"
