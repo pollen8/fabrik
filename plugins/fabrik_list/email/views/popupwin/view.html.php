@@ -63,6 +63,7 @@ class FabrikViewPopupwin extends JViewLegacy
 		$this->editor = $model->getEditor();
 
 		$srcs = FabrikHelperHTML::framework();
+		FabrikHelperHTML::iniRequireJs();
 		FabrikHelperHTML::script($srcs);
 
 		return parent::display();
