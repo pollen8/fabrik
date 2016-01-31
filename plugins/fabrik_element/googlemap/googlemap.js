@@ -70,7 +70,10 @@ var FbGoogleMap = new Class({
 		'geocode_on_load': false,
 		'traffic': false,
 		'debounceDelay': 500,
-		'styles': []
+		'styles': [],
+		'directionsFrom': false,
+		'directionsFromLat': 0,
+		'directionsFromLon':0
 	},
 
 	loadScript: function () {
@@ -151,9 +154,11 @@ var FbGoogleMap = new Class({
 		if (typeOf(this.element) === 'null') {
 			return;
 		}
+
 		if (this.options.geocode || this.options.reverse_geocode) {
 			this.geocoder = new google.maps.Geocoder();
 		}
+
 		// Need to use this.options.element as if loading from ajax popup win in list view for some reason
 		// this.element refers to the first loaded row, which should have been removed from the dom
 		this.element = document.id(this.options.element);
@@ -232,6 +237,17 @@ var FbGoogleMap = new Class({
 				this.element.getElement('.lngdms').value = this.lngDecToDMS();
 			}
 
+			if (this.options.directionsFrom) {
+				this.directionsService = new google.maps.DirectionsService();
+				this.directionsDisplay = new google.maps.DirectionsRenderer();
+				this.directionsDisplay.setMap(this.map);
+				this.directionsFromPoint = new google.maps.LatLng(
+					this.options.directionsFromLat,
+					this.options.directionsFromLon
+				);
+				this.calcRoute();
+			}
+
 			google.maps.event.addListener(this.marker, "dragend", function () {
 				this.field.value = this.marker.getPosition() + ":" + this.map.getZoom();
 				if (this.options.latlng === true) {
@@ -248,10 +264,15 @@ var FbGoogleMap = new Class({
 				if (this.options.reverse_geocode) {
 					this.reverseGeocode();
 				}
+				if (this.options.directionsFrom) {
+					this.calcRoute();
+				}
 			}.bind(this));
+
 			google.maps.event.addListener(this.map, "zoom_changed", function (oldLevel, newLevel) {
 				this.field.value = this.marker.getPosition() + ":" + this.map.getZoom();
 			}.bind(this));
+
 			if (this.options.auto_center && this.options.editable) {
 				google.maps.event.addListener(this.map, "dragend", function () {
 					this.marker.setPosition(this.map.getCenter());
@@ -270,6 +291,19 @@ var FbGoogleMap = new Class({
 		this.watchTab();
 		Fabrik.addEvent('fabrik.form.page.change.end', function (form) {
 			this.redraw();
+		}.bind(this));
+	},
+
+	calcRoute: function () {
+		var request = {
+			origin: this.directionsFromPoint,
+			destination: this.marker.getPosition(),
+			travelMode: google.maps.TravelMode.DRIVING
+		};
+		this.directionsService.route(request, function(result, status) {
+			if (status == google.maps.DirectionsStatus.OK) {
+				this.directionsDisplay.setDirections(result);
+			}
 		}.bind(this));
 	},
 

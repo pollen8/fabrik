@@ -353,6 +353,11 @@
 					<option value="3">PLG_ELEMENT_GOOGLE_MAP_GEOCODE_ON_LOAD_ALWAYS</option>
 			</field>
 
+			<field name="fb_gm_directions_from"
+			       type="listfields"
+			       description="PLG_ELEMENT_GOOGLE_MAP_DIRECTIONS_FROM_DESC"
+			       label="PLG_ELEMENT_GOOGLE_MAP_DIRECTIONS_FROM_LABEL" />
+
 		</fieldset>
 
 		<fieldset label="Radius Widget" name="plg-element-googlemap-radius">
