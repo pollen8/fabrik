@@ -5337,7 +5337,8 @@ class FabrikFEModelList extends JModelForm
 	{
 		$input = $this->app->input;
 		$showInList = array();
-		$listElements = json_decode(FabrikWorker::getMenuOrRequestVar('list_elements', '', $this->isMambot, 'menu'));
+		$opts = array('listid' => $this->getId());
+		$listElements = json_decode(FabrikWorker::getMenuOrRequestVar('list_elements', '', $this->isMambot, 'menu', $opts));
 
 		if (isset($listElements->show_in_list))
 		{
