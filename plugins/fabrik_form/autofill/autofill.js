@@ -62,7 +62,7 @@ var Autofill = new Class({
 	/**
 	 * get the observable element
 	 *
-	 * @param   int  repeatNum  if element to observe is in a repeat group which index'd element should be returned
+	 * @param   {int}  repeatNum  if element to observe is in a repeat group which index'd element should be returned
 	 *
 	 * @return element object
 	 */
@@ -74,7 +74,7 @@ var Autofill = new Class({
 		if (!e) {
 			var repeatCount = 0;
 			var k = Object.keys(this.form.formElements);
-			var ii = k.each(function (i) {
+			k.each(function (i) {
 				if (i.contains(this.options.observe)) {
 					testE = this.form.formElements.get(i);
 					if (!this.attached.contains(testE.options.element)) {
@@ -129,7 +129,7 @@ var Autofill = new Class({
 		if (!e) {
 			var repeatCount = 0;
 			var k = Object.keys(this.form.formElements);
-			var ii = k.each(function (i) {
+			k.each(function (i) {
 				if (i.contains(this.options.observe)) {
 					testE = this.form.formElements.get(i);
 					if (!this.attached.contains(testE.options.element)) {
@@ -138,7 +138,7 @@ var Autofill = new Class({
 						this.attached.push(testE.options.element);
 						//e = testE;
 					}
-					repeatNum = testE.getRepeatNum();
+					var repeatNum = testE.getRepeatNum().toInt();
 					if (typeOf(repeatNum) === 'null' || repeatNum === repeatCount) {
 						e = testE;
 					}
