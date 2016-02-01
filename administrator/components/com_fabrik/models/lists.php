@@ -205,7 +205,7 @@ class FabrikAdminModelLists extends FabModelList
 		$app   = JFactory::getApplication();
 		$input = $app->input;
 		$cid   = $input->get('cid', array(), 'array');
-		ArrayHelper::toInteger($cid);
+		$cid   = ArrayHelper::toInteger($cid);
 		$db    = FabrikWorker::getDbo(true);
 		$query = $db->getQuery(true);
 		$query->select('db_table_name')->from('#__{package}_lists')->where('id IN(' . implode(',', $cid) . ')');

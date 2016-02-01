@@ -293,7 +293,7 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 				$ids = (array) $input->get($key, array(), 'array');
 			}
 
-			ArrayHelper::toInteger($ids);
+			$ids = ArrayHelper::toInteger($ids);
 
 			if (empty($ids))
 			{

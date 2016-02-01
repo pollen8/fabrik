@@ -61,7 +61,7 @@ class PlgFabrik_ElementTags extends PlgFabrik_ElementDatabasejoin
 		$opts->rowid = $this->getFormModel()->getRowId();
 		$opts->id = $this->id;
 		$opts->listid = $this->getListModel()->getId();
-		
+
 		return array('FbTags', $id, $opts);
 	}
 
@@ -153,7 +153,7 @@ class PlgFabrik_ElementTags extends PlgFabrik_ElementDatabasejoin
 			$pk = $db->qn($join->table_join_alias . '.' . $join->table_key);
 			$name = $this->getFullName(true, false) . '_raw';
 			$tagIds = FArrayHelper::getValue($data, $name, array());
-			ArrayHelper::toInteger($tagIds);
+			$tagIds = ArrayHelper::toInteger($tagIds);
 			$where = FArrayHelper::emptyIsh($tagIds) ? '6 = -6' : $pk . ' IN (' . implode(', ', $tagIds) . ')';
 		}
 		else
@@ -331,9 +331,9 @@ class PlgFabrik_ElementTags extends PlgFabrik_ElementDatabasejoin
 	}
 
 	/**
-	 * Get all available tags by querying them directly from currently defined or default tagtable. 
-	 * Used by views/list/view.tags.php (prefiltering and jsonifying) and finally by 
-	 * tags.js to populate the autocompleted tags selection menu 
+	 * Get all available tags by querying them directly from currently defined or default tagtable.
+	 * Used by views/list/view.tags.php (prefiltering and jsonifying) and finally by
+	 * tags.js to populate the autocompleted tags selection menu
 	 *
 	 * @tagtable: returned in function getDbName() (default #__tags)
 	 *

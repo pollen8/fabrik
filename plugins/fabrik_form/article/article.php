@@ -235,7 +235,7 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 	{
 		// Sanitize the ids.
 		$pks = (array) $pks;
-		ArrayHelper::toInteger($pks);
+		$pks = ArrayHelper::toInteger($pks);
 		$db = $this->_db;
 
 		if (empty($pks))

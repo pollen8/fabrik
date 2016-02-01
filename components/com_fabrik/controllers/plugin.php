@@ -108,7 +108,7 @@ class FabrikControllerPlugin extends JControllerLegacy
 		$app = JFactory::getApplication();
 		$input = $app->input;
 		$cid = $input->get('element_id', array(), 'array');
-		ArrayHelper::toInteger($cid);
+		$cid = ArrayHelper::toInteger($cid);
 
 		if (empty($cid))
 		{
