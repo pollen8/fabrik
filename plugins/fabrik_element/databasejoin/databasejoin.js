@@ -836,61 +836,62 @@ var FbDatabasejoin = new Class({
         }
     },
 
-    /**
-     * Update auto-complete fields id and create new autocompleter object for duplicated element
-     */
-    cloneAutoComplete: function () {
-        var f = this.getAutoCompleteLabelField();
-        f.id = this.element.id + '-auto-complete';
-        f.name = this.element.name.replace('[]', '') + '-auto-complete';
-        document.id(f.id).value = '';
-        new FbAutocomplete(this.element.id, this.options.autoCompleteOpts);
-    },
+	/**
+	 * Update auto-complete fields id and create new autocompleter object for duplicated element
+	 */
+	cloneAutoComplete: function () {
+		var f = this.getAutoCompleteLabelField();
+		f.id = this.element.id + '-auto-complete';
+		f.name = this.element.name.replace('[]', '') + '-auto-complete';
+		document.id(f.id).value = '';
+		new FbAutocomplete(this.element.id, this.options.autoCompleteOpts);
+	},
 
-    watchObserve: function () {
+	watchObserve: function () {
         var v2;
-        this.options.observe.each(function (o) {
-            if (o === '') {
-                return;
-            }
-            if (this.form.formElements[o]) {
-                this.form.formElements[o].addNewEventAux(this.form.formElements[o].getChangeEvent(), function (e) {
-                    this.updateFromServer();
-                }.bind(this));
-            }
-            else {
-                var o2;
-                if (this.options.canRepeat) {
-                    o2 = o + '_' + this.options.repeatCounter;
-                    if (this.form.formElements[o2]) {
-                        this.form.formElements[o2].addNewEventAux(this.form.formElements[o2].getChangeEvent(), function (e) {
-                            this.updateFromServer();
-                        }.bind(this));
-                    }
-                }
-                else {
-                    this.form.repeatGroupMarkers.each(function (v, k) {
-                        o2 = '';
-                        for (v2 = 0; v2 < v; v2++) {
-                            o2 = 'join___' + this.form.options.group_join_ids[k] + '___' + o + '_' + v2;
-                            if (this.form.formElements[o2]) {
-                                // $$$ hugh - think we can add this one as sticky ...
-                                this.form.formElements[o2].addNewEvent(this.form.formElements[o2].getChangeEvent(), function (e) {
-                                    this.updateFromServer();
-                                }.bind(this));
-                            }
-                        }
-                    }.bind(this));
-                }
-            }
-        }.bind(this));
-    },
+		this.options.observe.each(function (o) {
+			if (o === '') {
+				return;
+			}
+			if (this.form.formElements[o]) {
+				this.form.formElements[o].addNewEventAux(this.form.formElements[o].getChangeEvent(), function (e) {
+					this.updateFromServer();
+				}.bind(this));
+			}
+			else {
+				var o2;
+				if (this.options.canRepeat) {
+					o2 = o + '_' + this.options.repeatCounter;
+					if (this.form.formElements[o2]) {
+						this.form.formElements[o2].addNewEventAux(this.form.formElements[o2].getChangeEvent(), function (e) {
+							this.updateFromServer();
+						}.bind(this));
+					}
+				}
+				else {
+					this.form.repeatGroupMarkers.each(function (v, k) {
+						o2 = '';
+						for (v2 = 0; v2 < v; v2++) {
+							o2 = 'join___' + this.form.options.group_join_ids[k] + '___' + o + '_' + v2;
+							if (this.form.formElements[o2]) {
+								// $$$ hugh - think we can add this one as sticky ...
+								this.form.formElements[o2].addNewEvent(this.form.formElements[o2].getChangeEvent(), function (e) {
+									this.updateFromServer();
+								}.bind(this));
+							}
+						}
+					}.bind(this));
+				}
+			}
+		}.bind(this));
+	},
 
-    attachedToForm: function () {
-        if (this.options.editable) {
-            this.watchObserve();
-        }
-    },
+	attachedToForm : function () {
+		if (this.options.editable) {
+			this.watchObserve();
+		}
+		this.parent();
+	},
 
     init: function () {
         // Could be in a popup add record form, in which case we don't want to ini on a main page load

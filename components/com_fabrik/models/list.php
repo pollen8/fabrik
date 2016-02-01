@@ -1480,7 +1480,7 @@ class FabrikFEModelList extends JModelForm
 					$displayData->editLink = $edit_link;
 					$displayData->editLabel = $editLabel;
 					$displayData->editText = $editText;
-					$layout = FabrikHelperHTML::getLayout('listactions.fabrik-edit-button');
+					$layout = $this->getLayout('listactions.fabrik-edit-button');
 					$editLink = $layout->render($displayData);
 				}
 				else
@@ -1509,7 +1509,7 @@ class FabrikFEModelList extends JModelForm
 					$displayData->viewText = $viewText;
 					$displayData->dataList = $dataList;
 
-					$layout = FabrikHelperHTML::getLayout('listactions.fabrik-view-button');
+					$layout = $this->getLayout('listactions.fabrik-view-button');
 					$viewLink = $layout->render($displayData);
 				}
 				else
@@ -1665,7 +1665,7 @@ class FabrikFEModelList extends JModelForm
 		$tpl = $this->getTmpl();
 		$align = $params->get('checkboxLocation', 'end') == 'end' ? 'right' : 'left';
 		$displayData = array('align' => $align);
-		$layout = FabrikHelperHTML::getLayout('listactions.' . $buttonAction);
+		$layout = $this->getLayout('listactions.' . $buttonAction);
 
 		foreach ($data as $groupKey => $group)
 		{
@@ -1820,7 +1820,7 @@ class FabrikFEModelList extends JModelForm
 		$displayData->label = $j3 ? ' ' . FText::_('COM_FABRIK_DELETE') : '<span>' . FText::_('COM_FABRIK_DELETE') . '</span>';
 		$displayData->renderContext = $this->getRenderContext();
 
-		$layout = FabrikHelperHTML::getLayout('listactions.fabrik-delete-button');
+		$layout = $this->getLayout('listactions.fabrik-delete-button');
 
 		if ($j3)
 		{
@@ -2038,7 +2038,7 @@ class FabrikFEModelList extends JModelForm
 		$displayData->popUp = $popUp;
 		$displayData->canAdd = $facetTable->canAdd();
 		$displayData->tmpl = $this->getTmpl();
-		$layout = FabrikHelperHTML::getLayout('list.fabrik-related-data-add-button');
+		$layout = $this->getLayout('list.fabrik-related-data-add-button');
 
 		return $layout->render($displayData);
 	}
@@ -2132,7 +2132,7 @@ class FabrikFEModelList extends JModelForm
 		$displayData->popUp = $popUp;
 		$displayData->canView = $facetTable->canView();
 		$displayData->tmpl = $this->getTmpl();
-		$layout = FabrikHelperHTML::getLayout('list.fabrik-related-data-view-button');
+		$layout = $this->getLayout('list.fabrik-related-data-view-button');
 
 		return $layout->render($displayData);
 	}
@@ -6128,7 +6128,7 @@ class FabrikFEModelList extends JModelForm
 				{
 					$f = new stdClass;
 					$f->label = $filter->label;
-					$f->id = $filter->id;
+					$f->id = isset($filter->id) ? $filter->id : '';
 					$f->element = $filter->filter;
 					$f->required = array_key_exists('required', $filter) ? $filter->required : '';
 					$f->displayValue = is_array($filter->displayValue) ? implode(', ', $filter->displayValue) :
@@ -6280,6 +6280,7 @@ class FabrikFEModelList extends JModelForm
 				$o->name = FabrikString::safeColNameToArrayKey($filters['key'][$i]);
 				$o->label = $filters['label'][$i];
 				$o->displayValue = $elementModel->filterDisplayValues;
+				$o->id = $elementModel->getHTMLId() . 'value';
 				$aFilters[] = $o;
 				$counter++;
 			}
@@ -6503,7 +6504,7 @@ class FabrikFEModelList extends JModelForm
 					$displayData->item = $item;
 					$displayData->elementParams = $elementParams;
 					$displayData->label = $label;
-					$layout = FabrikHelperHTML::getLayout('list.fabrik-order-heading');
+					$layout = $this->getLayout('list.fabrik-order-heading');
 					$heading = $layout->render($displayData);
 				}
 				else
@@ -10058,7 +10059,7 @@ class FabrikFEModelList extends JModelForm
 		{
 			$displayData = new stdClass;
 			$displayData->tmpl = $this->getTmpl();
-			$layout = FabrikHelperHTML::getLayout('list.fabrik-clear-button');
+			$layout = $this->getLayout('list.fabrik-clear-button');
 
 			return $layout->render($displayData);
 		}
@@ -11672,6 +11673,22 @@ class FabrikFEModelList extends JModelForm
 	public function setLabel($label)
 	{
 		$this->getTable()->label = $label;
+	}
+
+	/**
+	 * Get a list JLayout file
+	 *
+	 * @param   string  $type  form/details/list
+	 * @param   array   $paths  Optional paths to add as includes
+	 *
+	 * @return FabrikLayoutFile
+	 */
+	public function getLayout($name, $paths = array(), $options = array())
+	{
+		$paths[] = COM_FABRIK_FRONTEND . '/views/list/tmpl/' . $this->getTmpl() . '/layouts';
+		$layout  = FabrikHelperHTML::getLayout($name, $paths, $options);
+
+		return $layout;
 	}
 
 }

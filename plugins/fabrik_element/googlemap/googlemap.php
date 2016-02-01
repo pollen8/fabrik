@@ -427,6 +427,23 @@ class PlgFabrik_ElementGooglemap extends PlgFabrik_Element
 		$opts->radius_resize_icon = COM_FABRIK_LIVESITE . 'media/com_fabrik/images/radius_resize.png';
 		$opts->radius_resize_off_icon = COM_FABRIK_LIVESITE . 'media/com_fabrik/images/radius_resize.png';
 
+		if ($this->app->input->get('view', '') === 'details')
+		{
+			$opts->directionsFromElement = $this->_getFieldId('fb_gm_directions_from', $repeatCounter);
+			if ($opts->directionsFromElement !== false)
+			{
+				$directionsFromCoords    = $this->_getFieldValue('fb_gm_directions_from', $data, $repeatCounter);
+				$o                       = $this->_strToCoords($directionsFromCoords, 14);
+				$opts->directionsFromLat = trim($o->coords[0]);
+				$opts->directionsFromLon = trim($o->coords[1]);
+				$opts->directionsFrom    = true;
+			}
+		}
+		else
+		{
+			$opts->directionsFrom = false;
+		}
+
 		return array('FbGoogleMap', $id, $opts);
 	}
 

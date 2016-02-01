@@ -30,6 +30,26 @@
 				<option value="1">JYES</option>
 			</field>
 
+			<field default="1"
+			       class="btn-group"
+			       description="PLG_ELEMENT_YOUTUBE_AUTOPLAY_DESC"
+			       label="PLG_ELEMENT_YOUTUBE_AUTOPLAY_LABEL"
+			       name="youtube_autoplay"
+			       type="radio">
+				<option value="0">JNO</option>
+				<option value="1">JYES</option>
+			</field>
+
+			<field default="1"
+			       class="btn-group"
+			       description="PLG_ELEMENT_YOUTUBE_FULLSCREEN_DESC"
+			       label="PLG_ELEMENT_YOUTUBE_FULLSCREEN_DESC"
+			       name="youtube_fullscreen"
+			       type="radio">
+				<option value="0">JNO</option>
+				<option value="1">JYES</option>
+			</field>
+
 			<field name="enable_delayed_cookies"
 			       type="radio"
 			       default="0"

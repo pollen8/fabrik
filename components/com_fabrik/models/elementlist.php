@@ -316,7 +316,7 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 	{
 		$element = $this->getElement();
 
-		if ($element->filter_type === 'checkbox')
+		if ($element->filter_type === 'checkbox' || $element->filter_type == 'range')
 		{
 			$listModel = $this->getListModel();
 			$v = 'fabrik___filter[list_' . $listModel->getRenderContext() . '][value]';

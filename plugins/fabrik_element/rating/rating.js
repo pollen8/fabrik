@@ -65,6 +65,7 @@ var FbRating = new Class({
 						ii.src = this.options.outsrc;
 					}
 				}.bind(this));
+				this.ratingMessage.innerHTML = this.field.value;
 			}.bind(this));
 		}.bind(this));
 
@@ -197,5 +198,12 @@ var FbRating = new Class({
 			s.set('text', val);
 		}
 		this.setStars();
+	},
+
+	cloned : function(c) {
+		this.element.getParent('.fabrikElementContainer').getElement('.fabrikSubElementContainer').id = this.options.element + '_div';
+		this.field = document.id(this.options.element);
+		this.setup();
+		this.parent();
 	}
 });

@@ -429,7 +429,6 @@ class FabrikFEModelImportcsv extends JModelForm
 	public function removeCSVFile($clearSession = true)
 	{
 		$baseDir       = $this->getBaseDir();
-		echo "remove csv <br>";
 		$userFile_path = $baseDir . '/' . $this->getCSVFileName();
 
 		if (JFile::exists($userFile_path))

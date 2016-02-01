@@ -516,7 +516,13 @@ class FabrikViewFormBase extends FabrikView
 			FabrikHelperHTML::slimbox();
 
 			$dep                 = new stdClass;
-			$dep->deps           = array('fab/element', 'lib/form_placeholder/Form.Placeholder', 'fab/encoder');
+			$dep->deps           = array(
+				'fab/element',
+				'lib/form_placeholder/Form.Placeholder',
+				'fab/encoder',
+				'fab/lib/debounce/jquery.ba-throttle-debounce'
+			);
+
 			$shim['fabrik/form'] = $dep;
 
 			$deps                         = new stdClass;
@@ -524,6 +530,8 @@ class FabrikViewFormBase extends FabrikView
 			$framework['fab/elementlist'] = $deps;
 
 			$srcs[] = 'media/com_fabrik/js/lib/form_placeholder/Form.Placeholder.js';
+			$srcs[] = 'media/com_fabrik/js/lib/debounce/jquery.ba-throttle-debounce.js';
+
 			FabrikHelperHTML::addToFrameWork($srcs, 'media/com_fabrik/js/form');
 			FabrikHelperHTML::addToFrameWork($srcs, 'media/com_fabrik/js/form-submit');
 			FabrikHelperHTML::addToFrameWork($srcs, 'media/com_fabrik/js/element');

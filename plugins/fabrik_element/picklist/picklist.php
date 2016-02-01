@@ -97,6 +97,8 @@ class PlgFabrik_ElementPicklist extends PlgFabrik_ElementList
 			return implode(', ', $to);
 		}
 
+		FabrikHelperHTML::stylesheet(COM_FABRIK_LIVESITE . 'plugins/fabrik_element/picklist/picklist.css');
+
 		$layout                   = $this->getLayout('form');
 		$layoutData               = new stdClass;
 		$layoutData->id           = $this->getHTMLId($repeatCounter);
