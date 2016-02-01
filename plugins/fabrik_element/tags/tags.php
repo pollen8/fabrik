@@ -101,6 +101,7 @@ class PlgFabrik_ElementTags extends PlgFabrik_ElementDatabasejoin
 
 			$bootstrapClass = $params->get('bootstrap_class', 'span12');
 			$attr = 'multiple="multiple" class="inputbox ' . $bootstrapClass. ' small"';
+			$attr .= ' data-placeholder="' . JText::_('JGLOBAL_SELECT_SOME_OPTIONS') . '"';
 			$selected = $tmp;
 			$str[] = JHtml::_('select.genericlist', $tmp, $name, trim($attr), 'value', 'text', $selected, $id);
 
