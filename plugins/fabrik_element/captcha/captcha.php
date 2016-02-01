@@ -396,6 +396,11 @@ class PlgFabrik_ElementCaptcha extends PlgFabrik_Element
 				}
 			}
 
+			if (FabrikHelperHTML::isDebug())
+			{
+				$this->app->enqueueMessage("No g-recaptcha-response!");
+			}
+
 			return false;
 		}
 		elseif ($params->get('captcha-method') == 'playthru')

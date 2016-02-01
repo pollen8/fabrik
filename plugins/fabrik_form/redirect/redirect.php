@@ -339,7 +339,7 @@ class PlgFabrik_FormRedirect extends PlgFabrik_Form
 		}
 		else
 		{
-			if ($appendEmpty || (!appendEmpty && !empty($val)))
+			if ($appendEmpty || ($appendEmpty && !empty($val)))
 			{
 				$val = urlencode(stripslashes($val));
 				$queryvars[] = $key . '=' . $val;

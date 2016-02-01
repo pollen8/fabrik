@@ -37,6 +37,22 @@
 				description="PLG_FABRIK_LIST_LISTCSV_AFTER_IMPORT_CODE_DESC"
 				label="PLG_FABRIK_LIST_LISTCSV_AFTER_IMPORT_CODE_LABEL"
 				repeat="true" />
+
+			<field name="listcsv_import_complete_php_file"
+			       type="filelist"
+			       description="PLG_FABRIK_LIST_LISTCSV_IMPORT_COMPLETE_FILE_DESC"
+			       directory="plugins/fabrik_list/listcsv/scripts/"
+			       hide_default="1"
+			       label="PLG_FABRIK_LIST_LISTCSV_IMPORT_COMPLETE_FILE_LABEL"
+			       repeat="true" />
+
+			<field name="listcsv_import_complete_php_code"
+			       type="fabrikeditor"
+			       mode="php"
+			       default=""
+			       description="PLG_FABRIK_LIST_LISTCSV_IMPORT_COMPLETE_CODE_DESC"
+			       label="PLG_FABRIK_LIST_LISTCSV_IMPORT_COMPLETE_CODE_LABEL"
+			       repeat="true" />
 			
 		</fieldset>
 	</fields>

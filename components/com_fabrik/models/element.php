@@ -5530,8 +5530,11 @@ class PlgFabrik_Element extends FabrikPlugin
 			$validationParams = $validation->getParams();
 			if ($validationParams->get('must_validate', '0') === '1')
 			{
-				$opts->mustValidate = true;
-				break;
+				if ($validation->canValidate())
+				{
+					$opts->mustValidate = true;
+					break;
+				}
 			}
 		}
 
@@ -7296,7 +7299,8 @@ class PlgFabrik_Element extends FabrikPlugin
 
 		// The submitted element's values
 		$d = FArrayHelper::getValue($formData, $rawName, FArrayHelper::getValue($formData, $name));
-		$allJoinValues = FabrikWorker::JSONtoData($d, true);
+		// set $emptyish to false so if no selection, we don't save a bogus empty row
+		$allJoinValues = FabrikWorker::JSONtoData($d, true, false);
 
 		if ($groupModel->isJoin())
 		{

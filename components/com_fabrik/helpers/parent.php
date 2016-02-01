@@ -609,6 +609,37 @@ class FabrikWorker
 	}
 
 	/**
+	 * Check a string is valid to use as an element name
+	 *
+	 * @param   string $str    To check
+	 * @param   bool   $strict Include things like rowid, listid in the reserved words, defaults to true
+	 *
+	 * @return bool
+	 */
+	public static function validElementName($str, $strict = true)
+	{
+		// check if it's a Fabrik reserved word
+		if (self::isReserved($str, $strict))
+		{
+			return false;
+		}
+
+		// check valid MySQL - start with letter or _, then only alphanumeric or underscore
+		if (!preg_match('/^[a-zA-Z_][a-zA-Z0-9_]*$/', $str))
+		{
+			return false;
+		}
+
+		// check for various other gotchas, like ending in _raw, starting with more than one _, etc.
+		if (preg_match('/^submit|^__|_raw$/', $str))
+		{
+			return false;
+		}
+
+		return true;
+	}
+
+	/**
 	 * Get the crypt object
 	 *
 	 * @since  3.1
@@ -1683,12 +1714,13 @@ class FabrikWorker
 	 * Takes a string which may or may not be json and returns either string/array/object
 	 * will also turn valGROUPSPLITTERval2 to array
 	 *
-	 * @param   string $data    Json encoded string
-	 * @param   bool   $toArray Force data to be an array
+	 * @param   string $data       Json encoded string
+	 * @param   bool   $toArray    Force data to be an array
+	 * @param   bool   $emptyish   Set to false to return an empty array if $data is an empty string, instead of an emptyish (one empty string entry) array
 	 *
 	 * @return  mixed data
 	 */
-	public static function JSONtoData($data, $toArray = false)
+	public static function JSONtoData($data, $toArray = false, $emptyish = true)
 	{
 		if (is_string($data))
 		{
@@ -1723,12 +1755,12 @@ class FabrikWorker
 
 				$data = is_null($json) ? $data : $json;
 			}
-		}
 
-		// If $data was an empty string, make sure we don't return an "emptyish" array with a single empty entry
-		if ($toArray && empty($data))
-		{
-			$data = array();
+			// If $data was an empty string and "emptyish" is not set, we want an empty array, not an array with one empty string
+			if ($toArray && !$emptyish && $data === '')
+			{
+				$data = array();
+			}
 		}
 
 		$data = $toArray ? (array) $data : $data;

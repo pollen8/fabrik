@@ -372,6 +372,7 @@ var FbElement =  new Class({
 	 */
 	cloned: function (c) {
 		this.renewEvents();
+		this.resetEvents();
 		if (this.element.hasClass('chzn-done')) {
 			this.element.removeClass('chzn-done');
 			this.element.addClass('chzn-select');
@@ -619,6 +620,9 @@ var FbElement =  new Class({
 		}
 		if (typeOf(this.element.id) !== 'null') {
 			this.element.id = this._decreaseId(this.element.id, delIndex);
+		}
+		if (this.options.repeatCounter > delIndex) {
+			this.options.repeatCounter--;
 		}
 		return this.element.id;
 	},

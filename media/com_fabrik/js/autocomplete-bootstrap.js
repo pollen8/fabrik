@@ -57,10 +57,10 @@ var FbAutocomplete = new Class({
 			 * Using a 3rd party jQuery lib to 'debounce' the input, so the search doesn't fire until
 			 * the user has stopped typing for more than X ms
 			 */
-			var that = this;
+			var self = this;
 			jQuery(document).on('keyup', jQuery.debounce(this.options.debounceDelay, function(e) {
-				that.search(e);
-			}))
+				self.search(e);
+			}));
 
 			this.getInputElement().addEvent('blur', function (e) {
 				if (this.options.storeMatchedResultsOnly) {

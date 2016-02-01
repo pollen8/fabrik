@@ -142,6 +142,26 @@ class PlgFabrik_Validationrule extends FabrikPlugin
 	}
 
 	/**
+	 * Checks in/on to see if this validation is applicable
+	 *
+	 * @return  bool	apply validation
+	 */
+	public function canValidate()
+	{
+		if (!$this->shouldValidateIn())
+		{
+			return false;
+		}
+
+		if (!$this->shouldValidateOn())
+		{
+			return false;
+		}
+
+		return true;
+	}
+
+	/**
 	 * Should the validation be run - based on whether in admin/front end
 	 *
 	 * @return boolean
