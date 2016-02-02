@@ -1976,14 +1976,21 @@ class FabrikWorker
 
 			if (!$app->isAdmin())
 			{
-				$menus       = $app->getMenu();
-				$menu        = $menus->getActive();
-				$checkListId = ArrayHelper::getValue($opts, 'listid', $menu->query['listid']);
-
-				// If there is a menu item available AND the view is not rendered in a content plugin AND
-				if (is_object($menu) && !$mambot && (int) $menu->query['listid'] === (int) $checkListId)
+				if (!$mambot)
 				{
-					$val = $menu->params->get($name, $val);
+					$menus = $app->getMenu();
+					$menu  = $menus->getActive();
+
+					if (is_object($menu))
+					{
+						$menuListId  = ArrayHelper::getValue($menu->query, 'listid', '');
+						$checkListId = ArrayHelper::getValue($opts, 'listid', $menuListId);
+
+						if ((int) $menuListId === (int) $checkListId)
+						{
+							$val = $menu->params->get($name, $val);
+						}
+					}
 				}
 			}
 		}

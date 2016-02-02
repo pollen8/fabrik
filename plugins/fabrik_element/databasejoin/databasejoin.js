@@ -37,6 +37,7 @@ var FbDatabasejoin = new Class({
 	},
 
 	watchAdd: function () {
+		var c;
 		if (c = this.getContainer()) {
 			var b = c.getElement('.toggle-addoption');
 
@@ -141,8 +142,9 @@ var FbDatabasejoin = new Class({
 		case 'dropdown':
 		/* falls through */
 		case 'multilist':
-			var sel = typeOf(this.options.value) === 'array' ? this.options.value : Array.from(this.options.value);
-			options = el.options;
+			sel = typeOf(this.options.value) === 'array' ? this.options.value : Array.from(this.options.value);
+			var options = el.options;
+			var i;
 			for (i=0; i < options.length; i++) {
 				if (options[i].value === v) {
 					el.remove(i);
@@ -151,7 +153,7 @@ var FbDatabasejoin = new Class({
 					}
 					if (this.options.advanced)
 					{
-						jQuery("#" + this.element.id).trigger("liszt:updated");
+						jQuery('#' + this.element.id).trigger('liszt:updated');
 					}
 					break;
 				}
@@ -177,7 +179,7 @@ var FbDatabasejoin = new Class({
 	{
 		l = Encoder.htmlDecode(l);
 		autoCompleteUpdate = typeof(autoCompleteUpdate) !== 'undefined' ? autoCompleteUpdate : true;
-		var opt, selected, labelField;
+		var opt, rowOpt, selected, labelField;
 
 		switch (this.options.displayType) {
 		case 'dropdown':
@@ -189,7 +191,7 @@ var FbDatabasejoin = new Class({
 			document.id(this.element.id).adopt(opt);
 			if (this.options.advanced)
 			{
-				jQuery("#" + this.element.id).trigger("liszt:updated");
+				jQuery('#' + this.element.id).trigger('liszt:updated');
 			}
 			break;
 		case 'auto-complete':
@@ -201,14 +203,14 @@ var FbDatabasejoin = new Class({
 			break;
 		case 'checkbox':
 			opt = this.getCheckboxTmplNode().clone();
-			var rowOpt = jQuery(Fabrik.jLayouts['fabrik-element-' + this.getPlugin() + '-form-rowopts'])[0];
+			rowOpt = jQuery(Fabrik.jLayouts['fabrik-element-' + this.getPlugin() + '-form-rowopts'])[0];
 			this._addOption(opt, l, v, rowOpt);
 			break;
 		case 'radio':
 		/* falls through */
 		default:
-			var opt = jQuery(Fabrik.jLayouts['fabrik-element-' + this.getPlugin() + '-form-radio' + '_' + this.strElement])[0];
-			var rowOpt = jQuery(Fabrik.jLayouts['fabrik-element-' + this.getPlugin() + '-form-rowopts'])[0];
+			opt = jQuery(Fabrik.jLayouts['fabrik-element-' + this.getPlugin() + '-form-radio' + '_' + this.strElement])[0];
+			rowOpt = jQuery(Fabrik.jLayouts['fabrik-element-' + this.getPlugin() + '-form-rowopts'])[0];
 			this._addOption(opt, l, v, rowOpt, null);
 			break;
 		}
@@ -244,7 +246,7 @@ var FbDatabasejoin = new Class({
 		
 		// if no row containers yet, inject one
 		if (subOptsRows.length === 0) {
-			rowOpt.inject(this.element, 'bottom')
+			rowOpt.inject(this.element, 'bottom');
 		}
 
 		// get the last row container
@@ -281,7 +283,9 @@ var FbDatabasejoin = new Class({
 	 */
 	getCheckboxTmplNode: function () {
 		if (Fabrik.bootstrapped) {
-			this.chxTmplNode = jQuery(Fabrik.jLayouts['fabrik-element-' + this.getPlugin() + '-form-checkbox' + '_' + this.strElement])[0];
+			this.chxTmplNode = jQuery(
+				Fabrik.jLayouts['fabrik-element-' + this.getPlugin() + '-form-checkbox' + '_' + this.strElement]
+			)[0];
 			if (!this.chxTmplNode && this.options.displayType === 'checkbox')
 			{
 				var chxs = this.element.getElements('> .fabrik_subelement');
@@ -372,7 +376,7 @@ var FbDatabasejoin = new Class({
 					return;
 				}
 				
-				jsonValues = [];
+				var jsonValues = [];
 				json.each(function (o) {
 					jsonValues.push(o.value);
 					if (!existingValues.contains(o.value) && typeOf(o.value) !== 'null') {
@@ -423,13 +427,13 @@ var FbDatabasejoin = new Class({
 	getSubOptsRow: function () {
 		var o;
 		switch (this.options.displayType) {
-			case 'dropdown':
-			case 'multilist':
-			default:
-				break;
 			case 'checkbox':
 			case 'radio':
 				o = this.element.getElements('[data-role=fabrik-rowopts]');
+				break;
+			case 'dropdown':
+			case 'multilist':
+			default:
 				break;
 		}
 		return o;
@@ -565,8 +569,8 @@ var FbDatabasejoin = new Class({
 		e.stop();
 		var id = this.selectRecordWindowId();
 		var url = this.getContainer().getElement('a.toggle-selectoption').href;
-		url += "&triggerElement=" + this.element.id;
-		url += "&resetfilters=1";
+		url += '&triggerElement=' + this.element.id;
+		url += '&resetfilters=1';
 		url += '&c=' + this.options.listRef;
 
 		this.windowopts = {
@@ -601,7 +605,7 @@ var FbDatabasejoin = new Class({
 			return null;
 		}
 		return this._getSubElements().filter(function (c) {
-			return c.value !== "0" ? c.checked : false;
+			return c.value !== '0' ? c.checked : false;
 		}).length;
 	},
 
@@ -624,12 +628,12 @@ var FbDatabasejoin = new Class({
 			}
 			val.each(function (v) {
 				if (typeOf(h.get(v)) !== 'null') {
-					this.element.innerHTML += h.get(v) + "<br />";
+					this.element.innerHTML += h.get(v) + '<br />';
 				} else {
 					//for detailed view prev/next pagination v is set via elements
 					//getROValue() method and is thus in the correct format - not sure that
 					// h.get(v) is right at all but leaving in incase i've missed another scenario
-					this.element.innerHTML += v + "<br />";
+					this.element.innerHTML += v + '<br />';
 				}
 			}.bind(this));
 			return;
@@ -680,7 +684,7 @@ var FbDatabasejoin = new Class({
 		this.options.value = val;
 		if (this.options.advanced)
 		{
-			jQuery("#" + this.element.id).trigger("liszt:updated");
+			jQuery('#' + this.element.id).trigger('liszt:updated');
 		}
 	},
 
@@ -805,7 +809,8 @@ var FbDatabasejoin = new Class({
 	 * and not id.
 	 */
 	getCloneName: function () {
-		// Testing for issues with cdd rendered as chx in repeat group when observing autocomplete db join element in main group
+		// Testing for issues with cdd rendered as chx in repeat group when observing
+		// autocomplete db join element in main group
 		/*if (this.options.isGroupJoin && this.options.isJoin) {
 			return this.options.elementName;
 		}*/
@@ -866,6 +871,7 @@ var FbDatabasejoin = new Class({
 				else {
 					this.form.repeatGroupMarkers.each(function (v, k) {
 						o2 = '';
+						var v2;
 						for (v2 = 0; v2 < v; v2++) {
 							o2 = 'join___' + this.form.options.group_join_ids[k] + '___' + o + '_' + v2;
 							if (this.form.formElements[o2]) {
@@ -909,24 +915,25 @@ var FbDatabasejoin = new Class({
 					// Only set the value if this element has triggered the pop up (ie could not be if in a repeat group)
 					if (this.activePopUp) {
 						this.options.value = json.rowid;
-					}
-					// rob previously we we doing appendInfo() but that didnt get the concat labels for the database join
-					if (this.options.displayType === 'auto-complete') {
 
-						// Need to get v if auto-complete and updating from posted popup form as we only want to get ONE
-						// option back inside update();
-						new Request.JSON({
-							'url': 'index.php?option=com_fabrik&view=form&format=raw',
-							'data': {
-								'formid': this.options.popupform,
-								'rowid': json.rowid
-							},
-							'onSuccess': function (json) {
-								this.update(json.data[this.options.key]);
-							}.bind(this)
-						}).send();
-					} else {
-						this.updateFromServer();
+						// rob previously we we doing appendInfo() but that didnt get the concat labels for the database join
+						if (this.options.displayType === 'auto-complete') {
+
+							// Need to get v if auto-complete and updating from posted popup form as we only want to get ONE
+							// option back inside update();
+							new Request.JSON({
+								'url'      : 'index.php?option=com_fabrik&view=form&format=raw',
+								'data'     : {
+									'formid': this.options.popupform,
+									'rowid' : json.rowid
+								},
+								'onSuccess': function (json) {
+									this.update(json.data[this.options.key]);
+								}.bind(this)
+							}).send();
+						} else {
+							this.updateFromServer();
+						}
 					}
 				}
 			}.bind(this));

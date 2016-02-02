@@ -47,6 +47,9 @@
     "$H": true,
     "AdvancedSearch": true,
     "Options": true,
-    "Events": true
+    "Events": true,
+    "Request": true,
+    "FbElement": true,
+    "FbAutocomplete": true
   }
 }
