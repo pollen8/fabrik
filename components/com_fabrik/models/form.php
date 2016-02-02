@@ -4104,7 +4104,7 @@ class FabrikFEModelForm extends FabModelForm
 		// $$$ rob newFormLabel set in table copy
 		if ($input->get('newFormLabel', '') !== '')
 		{
-			$form->label = $input->get('newFormLabel', '', '', 'string');
+			$form->label = $input->get('newFormLabel', '', 'string');
 		}
 
 		$res = $form->store();
