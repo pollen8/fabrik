@@ -7290,7 +7290,6 @@ class PlgFabrik_Element extends FabrikPlugin
 
 		// I set this to raw for cdd.
 		$name = $this->getFullName(true, false);
-		echo "name = $name";
 		$ajaxSubmit = $this->app->input->get('fabrik_ajax');
 		$rawName = $name . '_raw';
 		$shortName = $this->getElement()->name;
