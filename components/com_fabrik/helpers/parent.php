@@ -1986,12 +1986,9 @@ class FabrikWorker
 						$menuListId  = ArrayHelper::getValue($menu->query, 'listid', '');
 						$checkListId = ArrayHelper::getValue($opts, 'listid', $menuListId);
 
-						if (!empty($menuListId))
+						if ((int) $menuListId === (int) $checkListId)
 						{
-							if ((int) $menuListId === (int) $checkListId)
-							{
-								$val = $menu->params->get($name, $val);
-							}
+							$val = $menu->params->get($name, $val);
 						}
 					}
 				}
