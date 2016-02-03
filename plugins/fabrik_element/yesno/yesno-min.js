@@ -1,2 +1,2 @@
 /*! Fabrik */
-FbYesno=new Class({Extends:FbRadio,initialize:function(a,b){this.setPlugin("fabrikyesno"),this.parent(a,b)},getChangeEvent:function(){return this.options.changeEvent}});
+FbYesno=new Class({Extends:FbRadio,initialize:function(a,b){this.setPlugin("fabrikyesno"),this.parent(a,b)},eventDelegate:function(){var a="input[type="+this.type+"][name^="+this.options.fullName+"]";return a+=", div.fb_el_school___private label"},getChangeEvent:function(){return this.options.changeEvent}});
