@@ -50,6 +50,7 @@
     "Events": true,
     "Request": true,
     "FbElement": true,
-    "FbAutocomplete": true
+    "FbAutocomplete": true,
+    "FbRadio": true
   }
 }
