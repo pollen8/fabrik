@@ -253,6 +253,7 @@ class PlgFabrik_Element extends FabrikPlugin
 	 */
 	public $calcSelectModifier = null;
 
+	public static $fxAdded = array();
 	/**
 	 * @var FabrikFEModelElementValidator
 	 */
@@ -2859,6 +2860,7 @@ class PlgFabrik_Element extends FabrikPlugin
 	 */
 	public function getFormattedJSActions($jsControllerKey, $repeatCount)
 	{
+		echo 'getFormattedJSActions<br>';
 		$jsStr = '';
 		$allJsActions = $this->getFormModel()->getJsActions();
 		/**
@@ -2873,7 +2875,6 @@ class PlgFabrik_Element extends FabrikPlugin
 
 		if (array_key_exists($element->id, $allJsActions))
 		{
-			$fxAdded = array();
 			$elId = $this->getHTMLId($repeatCount);
 
 			foreach ($allJsActions[$element->id] as $jsAct)
@@ -2902,11 +2903,15 @@ class PlgFabrik_Element extends FabrikPlugin
 						$triggerEl = $this->getFormModel()->getElement(str_replace('fabrik_trigger_element_', '', $jsAct->js_e_trigger));
 						$triggerid = is_object($triggerEl) ? 'element_' . $triggerEl->getHTMLId($repeatCount) : $jsAct->js_e_trigger;
 
-						if (!array_key_exists($jsAct->js_e_trigger, $fxAdded))
+
+						if (array_key_exists($jsAct->js_e_trigger, self::$fxAdded))
 						{
-							$jsStr .= $jsControllerKey . ".addElementFX('$triggerid', '$jsAct->js_e_event');\n";
-							$fxAdded[$jsAct->js_e_trigger] = true;
+							// Avoid du
+							continue;
 						}
+
+						$jsStr .= $jsControllerKey . ".addElementFX('$triggerid', '$jsAct->js_e_event');\n";
+						self::$fxAdded[$jsAct->js_e_trigger] = true;
 
 						$f = JFilterInput::getInstance();
 						$post = $f->clean($_POST, 'array');

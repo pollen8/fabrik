@@ -249,10 +249,10 @@ FbForm = new Class({
 	/**
 	 * Attach an effect to an elements
 	 *
-	 * @param   string  id      Element or group to apply the fx TO, triggered from another element
-	 * @param   string  method  JS event which triggers the effect (click,change etc.)
+	 * @param {string}  id      Element or group to apply the fx TO, triggered from another element
+	 * @param {string}  method  JS event which triggers the effect (click,change etc.)
 	 *
-	 * @return false if no element found or element fx
+	 * @return {*} false if no element found or element fx
 	 */
 	addElementFX: function (id, method) {
 		var c, k, fxdiv;
