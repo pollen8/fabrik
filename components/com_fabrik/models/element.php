@@ -2860,7 +2860,6 @@ class PlgFabrik_Element extends FabrikPlugin
 	 */
 	public function getFormattedJSActions($jsControllerKey, $repeatCount)
 	{
-		echo 'getFormattedJSActions<br>';
 		$jsStr = '';
 		$allJsActions = $this->getFormModel()->getJsActions();
 		/**
