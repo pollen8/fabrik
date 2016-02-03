@@ -18,7 +18,7 @@ FbYesno = new Class({
      */
     eventDelegate: function () {
         var str = 'input[type=' + this.type + '][name^=' + this.options.fullName + ']';
-        str += ', div[class*=fb_el_' + this.options.fullName + '] label';
+        str += ', [class*=fb_el_' + this.options.fullName + '] .fabrikElement label';
 
         return str;
     },
@@ -33,6 +33,7 @@ FbYesno = new Class({
         if (action === 'change') {
             action = 'click';
         }
+
         return action;
     },
 
