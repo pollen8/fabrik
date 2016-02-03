@@ -146,6 +146,9 @@ var Autofill = new Class({
 				}
 			}.bind(this));
 		}
+		else {
+			this.attached.push(e.options.element);
+		}
 
 		this.element = e;
 		if (this.options.trigger === '') {
@@ -153,11 +156,11 @@ var Autofill = new Class({
 				fconsole('autofill - couldnt find element to observe');
 			} else {
 				var elEvnt = this.element.getBlurEvent();
-				this.form.dispatchEvent('', this.element.options.element, elEvnt, function (e) {
-
-					// Fabrik element object that triggered the event
-					// this.element = e;
-					this.lookUp(e);
+				this.attached.each(function (el) {
+					var e = this.form.formElements.get(el);
+					this.form.dispatchEvent('', el, elEvnt, function (e) {
+						this.lookUp(e);
+					}.bind(this));
 				}.bind(this));
 			}
 		} else {

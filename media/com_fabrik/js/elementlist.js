@@ -84,6 +84,23 @@ FbElementList = new Class({
 						}
 					}
 				}.bind(this));
+
+				var self = this;
+				jQuery("input[type='"+this.type+"'][name^='"+this.options.fullName+"']").on(action, function (event, target) {
+					var elid = target.getParent('.fabrikSubElementContainer').id;
+					var that = self.form.formElements[elid];
+					var subEls = that._getSubElements();
+					if (subEls.contains(target)) {
+
+						// Replace this with that so that the js code runs on the correct element
+						if (typeof(js) !== 'function') {
+							js = js.replace(/this/g, 'that');
+							eval(js);
+						} else {
+							js.delay(0);
+						}
+					}
+				});
 			}
 		}
 	},
