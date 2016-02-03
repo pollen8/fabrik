@@ -23,6 +23,19 @@ FbYesno = new Class({
         return str;
     },
 
+    /**
+     * Convert event actions on a per element basis.
+     * @param {string} action
+     * @returns {string}
+     */
+    checkEventAction: function (action) {
+        // Change events wont fire on labels.
+        if (action === 'change') {
+            action = 'click';
+        }
+        return action;
+    },
+
     getChangeEvent: function () {
         return this.options.changeEvent;
     }

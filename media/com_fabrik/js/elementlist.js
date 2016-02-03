@@ -52,12 +52,22 @@ FbElementList = new Class({
 	},
 
 	/**
+	 * Convert event actions on a per element basis.
+	 * @param {string} action
+	 * @returns {string}
+	 */
+	checkEventAction: function (action) {
+		return action;
+	},
+
+	/**
 	 * Add an event
 	 * @param {string} action
 	 * @param {string|function} js
      */
 	addNewEvent: function (action, js) {
 		var r, delegate, uid, c;
+		action = this.checkEventAction(action);
 		if (action === 'load') {
 			this.loadEvents.push(js);
 			this.runLoadEvent(js);
