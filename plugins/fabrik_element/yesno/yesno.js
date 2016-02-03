@@ -5,7 +5,7 @@
  * @license:   GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
-FbYesno = new Class({
+var FbYesno = new Class({
     Extends   : FbRadio,
     initialize: function (element, options) {
         this.setPlugin('fabrikyesno');
