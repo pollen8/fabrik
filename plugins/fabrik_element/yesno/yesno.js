@@ -18,7 +18,7 @@ FbYesno = new Class({
      */
     eventDelegate: function () {
         var str = 'input[type=' + this.type + '][name^=' + this.options.fullName + ']';
-        str += ', div.fb_el_school___private label';
+        str += ', div.fb_el_' + this.options.fullName + ' label';
 
         return str;
     },
