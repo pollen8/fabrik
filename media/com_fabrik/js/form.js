@@ -1608,7 +1608,7 @@ FbForm = new Class({
 		// Find which repeat group was deleted
 		var delIndex = 0;
 		group.getElements('.deleteGroup').each(function (b, x) {
-			if (b.getElement('img') === e.target || b.getElement('i') === e.target || b.getElement('span') === e.target || b === e.target) {
+			if (jQuery(b).find('[data-role=fabrik_delete_group]')[0] === e.target) {
 				delIndex = x;
 			}
 		}.bind(this));
