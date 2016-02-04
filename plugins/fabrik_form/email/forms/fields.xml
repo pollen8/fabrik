@@ -89,6 +89,14 @@
 				description="PLG_FABRIK_FORM_EMAIL_CONDITION_DESC"
 				label="PLG_FABRIK_FORM_EMAIL_CONDITION_LABEL"
 				repeat="true" />
+
+			<field name="email_update_field"
+			       description="PLG_FABRIK_FORM_EMAIL_UPDATE_FIELD_DESC"
+			       label="PLG_FABRIK_FORM_EMAIL_UPDATE_FIELD_LABEL"
+			       repeat="true"
+			       type="listfields"
+			       valueformat="tableelement"
+			/>
 				
 		</fieldset>
 		

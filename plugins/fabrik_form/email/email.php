@@ -79,7 +79,7 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 		/* $$$ hugh - moved this to here from above the previous line, 'cos it needs $this->data
 		 * check if condition exists and is met
 		 */
-		if (!$this->shouldProcess('email_conditon', null, $params))
+		if ($this->alreadySent() || !$this->shouldProcess('email_conditon', null, $params))
 		{
 			return;
 		}
@@ -353,7 +353,29 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 			}
 		}
 
+		$this->updateRow();
+
 		return true;
+	}
+
+	/**
+	 * Check to see if there is an "update field" specified, and if it is already non-zero
+	 *
+	 * @return  bool
+	 */
+	protected function alreadySent()
+	{
+		$params      = $this->getParams();
+		$updateField = $params->get('email_update_field');
+		if (!empty($updateField))
+		{
+			$updateField .= '_raw';
+			$updateEl = FabrikString::safeColNameToArrayKey($updateField);
+			$updateVal = FArrayHelper::getValue($this->data, $updateEl, '');
+			$updateVal = is_array($updateVal) ? $updateVal[0] : $updateVal;
+			return !empty($updateVal);
+		}
+		return false;
 	}
 
 	/**
@@ -722,4 +744,20 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 
 		return $message;
 	}
+
+	/**
+	 * Update row
+	 */
+	private function updateRow()
+	{
+		$params      = $this->getParams();
+		$updateField = $params->get('email_update_field');
+		$rowid = $this->data['rowid'];
+
+		if (!empty($updateField) && !empty($rowid))
+		{
+			$this->getModel()->getListModel()->updateRow($rowid, $updateField, '1');
+		}
+	}
+
 }
