@@ -2902,15 +2902,16 @@ class PlgFabrik_Element extends FabrikPlugin
 						$triggerEl = $this->getFormModel()->getElement(str_replace('fabrik_trigger_element_', '', $jsAct->js_e_trigger));
 						$triggerid = is_object($triggerEl) ? 'element_' . $triggerEl->getHTMLId($repeatCount) : $jsAct->js_e_trigger;
 
+						$key = serialize($jsAct->js_e_condition);
 
-						if (array_key_exists($jsAct->js_e_trigger, self::$fxAdded))
+						if (array_key_exists($key, self::$fxAdded))
 						{
-							// Avoid du
+							// Avoid duplicate events
 							continue;
 						}
 
 						$jsStr .= $jsControllerKey . ".addElementFX('$triggerid', '$jsAct->js_e_event');\n";
-						self::$fxAdded[$jsAct->js_e_trigger] = true;
+						self::$fxAdded[$key] = true;
 
 						$f = JFilterInput::getInstance();
 						$post = $f->clean($_POST, 'array');
