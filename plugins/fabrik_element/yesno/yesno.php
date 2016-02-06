@@ -120,11 +120,26 @@ class PlgFabrik_ElementYesno extends PlgFabrik_ElementRadiobutton
 	 */
 	public function renderListData_csv($data, &$thisRow)
 	{
-	    $raw = $this->getFullName(true, false) . '_raw';
-	    $rawData = $thisRow->$raw;
-	    $data = (bool) $rawData ? FText::_('JYES') : FText::_('JNO');
+		$ret     = array();
+		$raw     = $this->getFullName(true, false) . '_raw';
+		$rawData = $thisRow->$raw;
+		$rawData = FabrikWorker::JSONtoData($rawData, true);
 
-	    return $data;
+		foreach ($rawData as $d)
+		{
+			$ret[]    = (bool) $d ? FText::_('JYES') : FText::_('JNO');
+		}
+
+		if (count($ret) > 1)
+		{
+			$ret = json_encode($ret);
+		}
+		else
+		{
+			$ret = implode('', $ret);
+		}
+
+	    return $ret;
 	}
 
 	/**

@@ -71,6 +71,7 @@ class FabrikFEModelCSVExport extends FabModel
 	 */
 	public function writeFile($total, $canDownload = false)
 	{
+		$params = $this->model->getParams();
 		$input = $this->app->input;
 
 		// F3 turn off error reporting as this is an ajax call
@@ -197,6 +198,12 @@ class FabrikFEModelCSVExport extends FabModel
 				}
 
 				$this->carriageReturnFix($a);
+
+				if ($params->get('csv_format_json', '1') === '1')
+				{
+					array_walk($a, array($this, 'implodeJSON'), "\n");
+				}
+
 				$str .= implode($this->delimiter, array_map(array($this, 'quote'), array_values($a)));
 				$str .= "\n";
 			}
@@ -228,6 +235,18 @@ class FabrikFEModelCSVExport extends FabModel
 			{
 				echo json_encode($res);
 			}
+		}
+	}
+
+	/**
+	 * Format JSON data
+	 */
+	protected function implodeJSON(&$v, $k, $sepchar)
+	{
+		if (!FabrikString::isRawName($k) && FabrikWorker::isJSON($v))
+		{
+			$v = FabrikWorker::JSONtoData($v, true);
+			$v = implode($sepchar, $v);
 		}
 	}
 
