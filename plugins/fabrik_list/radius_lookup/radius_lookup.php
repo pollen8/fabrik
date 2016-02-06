@@ -82,7 +82,7 @@ class PlgFabrik_ListRadius_Lookup extends PlgFabrik_List
 		$lookUps = $input->get('radius_lookup' . $this->renderOrder, array(), 'array');
 		$lookUps = array_filter($lookUps, function ($v) { return (string) $v === '1'; });
 		$ids = array_keys($lookUps);
-		ArrayHelper::toInteger($ids);
+		$ids = ArrayHelper::toInteger($ids);
 
 		$listModel = new FabrikFEModelList();
 		$listModel->setId($params->get('radius_lookup_list'));

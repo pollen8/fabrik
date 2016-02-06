@@ -466,10 +466,22 @@ var FbList = new Class({
 	 */
 	csvExportFilterOpts: function (opts) {
 		var ii = 0,
-		aa, bits,
+		aa, bits, aName,
 		advancedPointer = 0,
 		testii,
-		usedAdvancedKeys = ['value', 'condition', 'join', 'key', 'search_type', 'match', 'full_words_only', 'eval', 'grouped_to_previous', 'hidden', 'elementid'];
+		usedAdvancedKeys = [
+			'value',
+			'condition',
+			'join',
+			'key',
+			'search_type',
+			'match',
+			'full_words_only',
+			'eval',
+			'grouped_to_previous',
+			'hidden',
+			'elementid'
+		];
 
 		this.getFilters().each(function (f) {
 			bits = f.name.split('[');
@@ -495,7 +507,15 @@ var FbList = new Class({
 				for (aa = 0; aa < values.length; aa ++) {
 					advancedPointer = aa + ii;
 					aName = 'fabrik___filter[list_' + this.options.listRef + '][' + key + '][' + advancedPointer + ']';
-					opts[aName] = values[aa];
+					if (key === 'value') {
+						opts[aName] = this.options.advancedFilters.origvalue[aa];
+					}
+					else if (key === 'condition') {
+						opts[aName] = this.options.advancedFilters.orig_condition[aa];
+					}
+					else {
+						opts[aName] = values[aa];
+					}
 				}
 			}
 		}.bind(this));

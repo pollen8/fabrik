@@ -158,6 +158,10 @@ class PlgFabrik_ElementYoutube extends PlgFabrik_Element
 		// Enable delayed cookies
 		$url = $params->get('enable_delayed_cookies') == 1 ? 'http://www.youtube-nocookie.com/v/' : 'http://www.youtube.com/v/';
 
+		// autoplay & fullscreen
+		$autoplay = $params->get('youtube_autoplay', '1');
+		$fullscreen = $params->get('youtube_fullscreen', '1');
+
 		$vid_array = explode("/", $value);
 		$vid = array_pop($vid_array);
 
@@ -217,6 +221,9 @@ class PlgFabrik_ElementYoutube extends PlgFabrik_Element
 				$layoutData->width = $width;
 				$layoutData->height = $height;
 				$layoutData->value = $url . $vid . '&hl=en&fs=1' . $rel;
+				$layoutData->vid = $vid;
+				$layoutData->fs = $fullscreen;
+				$layoutData->autoplay = $autoplay;
 
 				return $layout->render($layoutData);
 			}

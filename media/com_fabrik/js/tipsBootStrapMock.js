@@ -46,7 +46,7 @@ var FloatingTips = new Class({
 	},
 
 	initialize: function (elements, options) {
-		if (Fabrik.bootstrapVersion('modal') === '3.x') {
+		if (Fabrik.bootstrapVersion('modal') === '3.x' || typeof(Materialize) === 'object') {
 			// We should override any Fabrik3 custom tip settings with bootstrap3 data-foo attributes in JLayouts
 			return;
 		}
@@ -63,6 +63,10 @@ var FloatingTips = new Class({
 	},
 
 	attach: function (elements) {
+		if (Fabrik.bootstrapVersion('modal') === '3.x' || typeof(Materialize) === 'object') {
+			// We should override any Fabrik3 custom tip settings with bootstrap3 data-foo attributes in JLayouts
+			return;
+		}
 		this.elements = document.getElements(elements);
 		this.elements.each(function (trigger) {
 			var thisOpts = JSON.decode(trigger.get('opts', '{}').opts);

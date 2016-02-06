@@ -154,10 +154,40 @@ class FabrikControllerVisualizationfullcalendar extends FabrikControllerVisualiz
 
 		if (!empty($start_date))
 		{
+			// check to see if we need to convert to UTC
+			$startDateEl = $listModel->getFormModel()->getElement($startDateField);
+
+			if ($startDateEl !== false)
+			{
+				$startStoreAsLocal = $startDateEl->getParams()->get('date_store_as_local', '0') === '1';
+
+				if (!$startStoreAsLocal)
+				{
+					$localTimeZone = new DateTimeZone($config->get('offset'));
+					$start_date = new DateTime($start_date, $localTimeZone);
+					$start_date->setTimeZone(new DateTimeZone('UTC'));
+					$start_date = $start_date->format('Y-m-d H:i:s');
+				}
+			}
 			$link .= "&$startDateField=" . $start_date;
 		}
 		if (!empty($end_date))
 		{
+			// check to see if we need to convert to UTC
+			$endDateEl = $listModel->getFormModel()->getElement($endDateField);
+
+			if ($endDateEl !== false)
+			{
+				$endStoreAsLocal = $endDateEl->getParams()->get('date_store_as_local', '0') === '1';
+
+				if (!$endStoreAsLocal)
+				{
+					$localTimeZone = new DateTimeZone($config->get('offset'));
+					$end_date = new DateTime($end_date, $localTimeZone);
+					$end_date->setTimeZone(new DateTimeZone('UTC'));
+					$end_date = $end_date->format('Y-m-d H:i:s');
+				}
+			}
 			$link .= "&$endDateField=" . $end_date;
 		}
 

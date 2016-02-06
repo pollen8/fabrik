@@ -839,7 +839,7 @@ class FabrikAdminModelPackage extends FabModelAdmin
 
 		$lookups = $this->getInstallItems($row);
 		$lids    = $lookups->list;
-		ArrayHelper::toInteger($lids);
+		$lids    = ArrayHelper::toInteger($lids);
 		$plugins = array();
 
 		foreach ($lids as $lid)

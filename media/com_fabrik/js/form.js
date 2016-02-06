@@ -33,6 +33,7 @@ FbForm = new Class({
 		'toggleSubmit'  : false,
 		'mustValidate'  : false,
 		'lang'          : false,
+		'debounceDelay' : 500,
 		'images'        : {
 			'alert'       : '',
 			'action_check': '',
@@ -248,10 +249,10 @@ FbForm = new Class({
 	/**
 	 * Attach an effect to an elements
 	 *
-	 * @param   string  id      Element or group to apply the fx TO, triggered from another element
-	 * @param   string  method  JS event which triggers the effect (click,change etc.)
+	 * @param {string}  id      Element or group to apply the fx TO, triggered from another element
+	 * @param {string}  method  JS event which triggers the effect (click,change etc.)
 	 *
-	 * @return false if no element found or element fx
+	 * @return {*} false if no element found or element fx
 	 */
 	addElementFX: function (id, method) {
 		var c, k, fxdiv;
@@ -432,7 +433,16 @@ FbForm = new Class({
 					jQuery('#' + id).prop('disabled', false);
 				}
 				break;
-
+			case 'readonly':
+				if (!groupfx) {
+					jQuery('#' + id).prop('readonly', true);
+				}
+				break;
+			case 'notreadonly':
+				if (!groupfx) {
+					jQuery('#' + id).prop('readonly', false);
+				}
+				break;
 		}
 		fx.lastMethod = method;
 		Fabrik.fireEvent('fabrik.form.doelementfx', [this]);
@@ -1470,25 +1480,27 @@ FbForm = new Class({
 
 	watchGroupButtons: function () {
 
-		this.form.addEvent('click:relay(.deleteGroup)', function (e, target) {
+		var self = this;
+
+		jQuery(this.form).on('click', '.deleteGroup', jQuery.debounce(this.options.debounceDelay, true, function(e, target) {
 			e.preventDefault();
-			if (!this.addingOrDeletingGroup) {
-				this.addingOrDeletingGroup = true;
+			if (!self.addingOrDeletingGroup) {
+				self.addingOrDeletingGroup = true;
 				var group = e.target.getParent('.fabrikGroup'),
 					subGroup = e.target.getParent('.fabrikSubGroup');
-				this.deleteGroup(e, group, subGroup);
-				this.addingOrDeletingGroup = false;
+				self.deleteGroup(e, group, subGroup);
+				self.addingOrDeletingGroup = false;
 			}
-		}.bind(this));
+		}));
 
-		this.form.addEvent('click:relay(.addGroup)', function (e, target) {
-			if (!this.addingOrDeletingGroup) {
-				this.addingOrDeletingGroup = true;
-				e.preventDefault();
-				this.duplicateGroup(e);
-				this.addingOrDeletingGroup = false;
+		jQuery(this.form).on('click', '.addGroup', jQuery.debounce(this.options.debounceDelay, true, function(e, target) {
+			e.preventDefault();
+			if (!self.addingOrDeletingGroup) {
+				self.addingOrDeletingGroup = true;
+				self.duplicateGroup(e);
+				self.addingOrDeletingGroup = false;
 			}
-		}.bind(this));
+		}));
 
 		this.form.addEvent('click:relay(.fabrikSubGroup)', function (e, subGroup) {
 			var r = subGroup.getElement('.fabrikGroupRepeater');
@@ -1590,13 +1602,13 @@ FbForm = new Class({
 			return;
 		}
 		if (e) {
-			e.stop();
+			e.preventDefault();
 		}
 
 		// Find which repeat group was deleted
 		var delIndex = 0;
 		group.getElements('.deleteGroup').each(function (b, x) {
-			if (b.getElement('img') === e.target || b.getElement('i') === e.target || b === e.target) {
+			if (jQuery(b).find('[data-role=fabrik_delete_group]')[0] === e.target) {
 				delIndex = x;
 			}
 		}.bind(this));
@@ -1754,7 +1766,7 @@ FbForm = new Class({
 			return;
 		}
 		if (e) {
-			e.stop();
+			e.preventDefault();
 		}
 		var i = e.target.getParent('.fabrikGroup').id.replace('group', '');
 		var group_id = i.toInt();

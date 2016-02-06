@@ -819,7 +819,7 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 			$groupIds = ArrayHelper::fromObject($groupIds[0]);
 		}
 
-		ArrayHelper::toInteger($groupIds);
+		$groupIds = ArrayHelper::toInteger($groupIds);
 		$data = array();
 		$authLevels = $me->getAuthorisedGroups();
 

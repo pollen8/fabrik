@@ -77,7 +77,7 @@ class FabrikAdminControllerLists extends FabControllerAdmin
 		else
 		{
 			// Make sure the item ids are integers
-			ArrayHelper::toInteger($cid);
+			$cid = ArrayHelper::toInteger($cid);
 			$model = $this->getModel('Form', 'FabrikAdminModel');
 			$formIds = $model->swapListToFormIds($cid);
 

@@ -4104,7 +4104,7 @@ class FabrikFEModelForm extends FabModelForm
 		// $$$ rob newFormLabel set in table copy
 		if ($input->get('newFormLabel', '') !== '')
 		{
-			$form->label = $input->get('newFormLabel', '', '', 'string');
+			$form->label = $input->get('newFormLabel', '', 'string');
 		}
 
 		$res = $form->store();
@@ -4429,6 +4429,7 @@ class FabrikFEModelForm extends FabModelForm
 
 		// Add in row id for join data
 		$element->label = '';
+		$element->labels = '';
 		$element->error = '';
 		$element->value = '';
 		$element->id = '';
@@ -4557,10 +4558,12 @@ class FabrikFEModelForm extends FabModelForm
 			$aElements = array();
 
 			// Check if group is actually a table join
+			/*
 			if (array_key_exists($groupTable->id, $this->aJoinGroupIds))
 			{
 				$aElements[] = $this->_makeJoinIdElement($groupTable);
 			}
+			*/
 
 			$repeatGroup = 1;
 			$foreignKey = null;

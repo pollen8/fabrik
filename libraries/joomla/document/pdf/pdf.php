@@ -137,6 +137,13 @@ class JDocumentpdf extends JDocumentHTML
 		$pdf = $this->engine;
 		$data = parent::render();
 		FabrikPDFHelper::fullPaths($data);
+
+		/**
+		 * I think we need this to handle some HTML entities when rendering otherlanguages (like Polish),
+		 * but haven't tested it much
+		 */
+		$data = mb_convert_encoding($data,'HTML-ENTITIES','UTF-8');
+
 		$pdf->load_html($data);
 		$config = JComponentHelper::getParams('com_fabrik');
 

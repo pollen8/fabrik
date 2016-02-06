@@ -16,6 +16,12 @@
 				label="PLG_FABRIK_CRON_PHP_PARAMS_LABEL"
 				/>
 
+			<field name="cronphp_code"
+			       type="fabrikeditor"
+			       description="PLG_FABRIK_CRON_PHP_CODE_DESC"
+			       label="PLG_FABRIK_CRON_PHP_CODE_LABEL"
+			/>
+
 		</fieldset>
 	</fields>
 </form>

@@ -43,8 +43,31 @@ FbElementList = new Class({
 		});
 	},
 
+	/**
+	 * Get the dom selector that events should be attached to
+	 * @returns {string}
+     */
+	eventDelegate: function () {
+		return 'input[type=' + this.type + '][name^=' + this.options.fullName + ']';
+	},
+
+	/**
+	 * Convert event actions on a per element basis.
+	 * @param {string} action
+	 * @returns {string}
+	 */
+	checkEventAction: function (action) {
+		return action;
+	},
+
+	/**
+	 * Add an event
+	 * @param {string} action
+	 * @param {string|function} js
+     */
 	addNewEvent: function (action, js) {
-		var r, delegate, uid;
+		var r, delegate, uid, c;
+		action = this.checkEventAction(action);
 		if (action === 'load') {
 			this.loadEvents.push(js);
 			this.runLoadEvent(js);
@@ -52,7 +75,7 @@ FbElementList = new Class({
 			c = this.form.form;
 
 			// Added name^= for http://fabrikar.com/forums/showthread.php?t=30563 (js events to show hide multiple groups)
-			delegate = action + ':relay(input[type=' + this.type + '][name^=' + this.options.fullName + '])';
+			delegate = this.eventDelegate();
 			if (typeOf(this.form.events[action]) === 'null') {
 				this.form.events[action] = {};
 			}
@@ -66,15 +89,21 @@ FbElementList = new Class({
 			}
 			if (typeOf(this.form.events[action][uid]) === 'null') {
 				this.form.events[action][uid] = true;
-				
-				c.addEvent(delegate, function (event, target) {
+
+				jQuery(c).on(action, delegate, function (event) {
+					event.preventDefault();
+					// Don't use the usual jQuery this, as we need to bind the plugin as 'this' to the event.
+					var target = jQuery(event.currentTarget), elid, that, subEls;
+					if (target.prop('tagName') === 'LABEL') {
+						target = target.find('input');
+					}
 					// As we are delegating the event, and reference to 'this' in the js will refer to the first element
 					// When in a repeat group we want to replace that with a reference to the current element.
-					var elid = target.getParent('.fabrikSubElementContainer').id;
-					var that = this.form.formElements[elid];
-					var subEls = that._getSubElements();
-					if (subEls.contains(target)) {
-						
+					elid = target.closest('.fabrikSubElementContainer').prop('id');
+					that = this.form.formElements[elid];
+					subEls = that._getSubElements();
+					if (target.length > 0 && subEls.contains(target[0])) {
+
 						// Replace this with that so that the js code runs on the correct element
 						if (typeof(js) !== 'function') {
 							js = js.replace(/this/g, 'that');
@@ -96,7 +125,7 @@ FbElementList = new Class({
 	},
 
 	startAddNewOption: function () {
-		var c = this.getContainer();
+		var c = this.getContainer(), val;
 		var l = c.getElement('input[name=addPicklistLabel]');
 		var v = c.getElement('input[name=addPicklistValue]');
 		var label = l.value;
@@ -106,7 +135,7 @@ FbElementList = new Class({
 			val = label;
 		}
 		if (val === '' || label === '') {
-			alert(Joomla.JText._('PLG_ELEMENT_CHECKBOX_ENTER_VALUE_LABEL'));
+			window.alert(Joomla.JText._('PLG_ELEMENT_CHECKBOX_ENTER_VALUE_LABEL'));
 		}
 		else {
 			var r = this.subElements.getLast().findClassUp('fabrikgrid_' + this.type).clone();
@@ -127,7 +156,7 @@ FbElementList = new Class({
 				index = this.subElements.length;
 			}
 			var is = $$('input[name=' + i.name + ']');
-			document.id(this.form.form).fireEvent("change", {target: is[index]});
+			document.id(this.form.form).fireEvent('change', {target: is[index]});
 
 			this._getSubElements();
 			if (v) {
@@ -142,7 +171,6 @@ FbElementList = new Class({
 	},
 
 	watchAdd: function () {
-		var val;
 		if (this.options.allowadd === true && this.options.editable !== false) {
 			var c = this.getContainer();
 			c.getElements('input[name=addPicklistLabel], input[name=addPicklistValue]').addEvent('keypress', function (e) {
@@ -159,5 +187,5 @@ FbElementList = new Class({
 			}.bind(this));
 		}
 	}
-	
+
 });

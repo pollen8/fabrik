@@ -973,7 +973,7 @@ class FabrikAdminModelElement extends FabModelAdmin
 			$params->js_e_event     = $eEvent[$c];
 			$params->js_e_trigger   = $eTrigger[$c];
 			$params->js_e_condition = $eCond[$c];
-			$foo = str_replace('\\', '\\\\', ($eVal[$c]));
+			$foo                    = str_replace('\\', '\\\\', ($eVal[$c]));
 			$params->js_e_value     = htmlspecialchars($foo);
 			$params->js_published   = $ePublished[$c];
 			$params                 = json_encode($params);
@@ -1009,7 +1009,7 @@ class FabrikAdminModelElement extends FabModelAdmin
 			return array();
 		}
 
-		ArrayHelper::toInteger($ids);
+		$ids   = ArrayHelper::toInteger($ids);
 		$db    = FabrikWorker::getDbo(true);
 		$query = $db->getQuery(true);
 		$query->select('id')->from('#__{package}_elements')->where('group_id IN (' . implode(',', $ids) . ')');
@@ -1085,7 +1085,7 @@ class FabrikAdminModelElement extends FabModelAdmin
 	{
 		$input = $this->app->input;
 		$cid   = $input->get('cid', array(), 'array');
-		ArrayHelper::toInteger($cid);
+		$cid   = ArrayHelper::toInteger($cid);
 		$names = $input->get('name', array(), 'array');
 		$rule  = $this->getTable('element');
 

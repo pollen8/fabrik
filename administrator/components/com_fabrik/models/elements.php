@@ -372,7 +372,7 @@ class FabrikAdminModelElements extends FabModelList
 
 	public function batch($ids, $batch)
 	{
-		ArrayHelper::toInteger($ids);
+		$ids = ArrayHelper::toInteger($ids);
 
 		foreach ($ids as $id)
 		{
@@ -391,7 +391,7 @@ class FabrikAdminModelElements extends FabModelList
 	 */
 	public function canUnpublish($ids)
 	{
-		ArrayHelper::toInteger($ids);
+		$ids = ArrayHelper::toInteger($ids);
 		$blocked = array();
 
 		foreach ($ids as $id)

@@ -70,6 +70,17 @@ function fabrikBuildRoute(&$query)
 		{
 			unset($query['listid']);
 		}
+
+		if (isset($query['rowid']))
+		{
+			unset($query['rowid']);
+		}
+
+		if (isset($query['formid']))
+		{
+			unset($query['formid']);
+		}
+
 		return $segments;
 	}
 
@@ -209,6 +220,15 @@ function _fabrikRouteMatchesMenuItem($query, $menuItem)
 			{
 				$query['listid'] = $query['id'];
 				unset($query['id']);
+			}
+
+			break;
+
+		case 'details':
+		case 'form':
+			if (!isset($menuItem->query['rowid']))
+			{
+				$menuItem->query['rowid'] = $query['rowid'];
 			}
 
 			break;

@@ -95,7 +95,7 @@ class FabrikModelNotification extends FabModel
 		// Check for request forgeries
 		JSessoin::checkToken() or die('Invalid Token');
 		$ids = $this->app->input->get('cid', array());
-		ArrayHelper::toInteger($ids);
+		$ids = ArrayHelper::toInteger($ids);
 
 		if (empty($ids))
 		{

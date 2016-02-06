@@ -400,6 +400,10 @@ class PlgContentFabrik extends JPlugin
 				$origRowId = $input->get('rowid');
 				$input->set('rowid', $rowId);
 
+				// Set detail view for things like youtube element
+				$origView = $input->get('view');
+				$input->set('view', 'details');
+
 				$defaultData = (array) $defaultData;
 				unset($activeEl->defaults);
 
@@ -422,6 +426,7 @@ class PlgContentFabrik extends JPlugin
 				}
 
 				$input->set('rowid', $origRowId);
+				$input->set('view', $origView);
 				$this->resetRequest();
 			}
 

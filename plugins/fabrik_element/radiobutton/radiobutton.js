@@ -21,7 +21,7 @@ FbRadio = new Class({
 	},
 
 	btnGroup: function () {
-		// Seems slighly skewy in admin as the j template does the same code
+		// Seems slightly screwy in admin as the j template does the same code
 		if (!this.options.btnGroup) {
 			return;
 		}
@@ -36,7 +36,7 @@ FbRadio = new Class({
 
 
 		c.getElements(".btn-group input[checked=checked]").each(function (input) {
-			var label = input.getParent('label');
+			var label = input.getParent('label'), v;
 			if (typeOf(label) === 'null') {
 				// J3.2 button group markup - label is after input (no longer the case)
 				label = input.getNext();
@@ -80,11 +80,13 @@ FbRadio = new Class({
 		}
 		var v = input.get('value');
 		var fabchecked = parseInt(input.get('fabchecked'), 10);
-		
-		// Protostar in J3.2 adds its own btn-group js code - need to thus apply this section even after input has been unchecked
+
+		// Protostar in J3.2 adds its own btn-group js code -
+		// need to thus apply this section even after input has been unchecked
 		if (!input.get('checked') || fabchecked === 1) {
 			if (label) {
-				label.getParent('.btn-group').getElements('label').removeClass('active').removeClass('btn-success').removeClass('btn-danger').removeClass('btn-primary');
+				label.getParent('.btn-group').getElements('label').removeClass('active').removeClass('btn-success')
+					.removeClass('btn-danger').removeClass('btn-primary');
 				if (v === '') {
 					label.addClass('active btn-primary');
 				} else if (v.toInt() === 0) {
@@ -94,7 +96,7 @@ FbRadio = new Class({
 				}
 			}
 			input.set('checked', true);
-			
+
 			if (typeOf(fabchecked) === 'null') {
 				input.set('fabchecked', 1);
 			}
@@ -184,9 +186,9 @@ FbRadio = new Class({
 		this.parent(c);
 		this.btnGroup();
 	},
-	
+
 	getChangeEvent: function () {
 		return this.options.changeEvent;
 	}
-	
+
 });

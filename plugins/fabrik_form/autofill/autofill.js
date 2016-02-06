@@ -62,7 +62,7 @@ var Autofill = new Class({
 	/**
 	 * get the observable element
 	 *
-	 * @param   int  repeatNum  if element to observe is in a repeat group which index'd element should be returned
+	 * @param   {int}  repeatNum  if element to observe is in a repeat group which index'd element should be returned
 	 *
 	 * @return element object
 	 */
@@ -74,7 +74,7 @@ var Autofill = new Class({
 		if (!e) {
 			var repeatCount = 0;
 			var k = Object.keys(this.form.formElements);
-			var ii = k.each(function (i) {
+			k.each(function (i) {
 				if (i.contains(this.options.observe)) {
 					testE = this.form.formElements.get(i);
 					if (!this.attached.contains(testE.options.element)) {
@@ -129,7 +129,7 @@ var Autofill = new Class({
 		if (!e) {
 			var repeatCount = 0;
 			var k = Object.keys(this.form.formElements);
-			var ii = k.each(function (i) {
+			k.each(function (i) {
 				if (i.contains(this.options.observe)) {
 					testE = this.form.formElements.get(i);
 					if (!this.attached.contains(testE.options.element)) {
@@ -138,13 +138,16 @@ var Autofill = new Class({
 						this.attached.push(testE.options.element);
 						//e = testE;
 					}
-					repeatNum = testE.getRepeatNum();
+					var repeatNum = testE.getRepeatNum().toInt();
 					if (typeOf(repeatNum) === 'null' || repeatNum === repeatCount) {
 						e = testE;
 					}
 					repeatCount ++;
 				}
 			}.bind(this));
+		}
+		else {
+			this.attached.push(e.options.element);
 		}
 
 		this.element = e;
@@ -153,11 +156,11 @@ var Autofill = new Class({
 				fconsole('autofill - couldnt find element to observe');
 			} else {
 				var elEvnt = this.element.getBlurEvent();
-				this.form.dispatchEvent('', this.element.options.element, elEvnt, function (e) {
-
-					// Fabrik element object that triggered the event
-					// this.element = e;
-					this.lookUp(e);
+				this.attached.each(function (el) {
+					var e = this.form.formElements.get(el);
+					this.form.dispatchEvent('', el, elEvnt, function (e) {
+						this.lookUp(e);
+					}.bind(this));
 				}.bind(this));
 			}
 		} else {
@@ -307,9 +310,11 @@ var Autofill = new Class({
 					el.activePopUp = true;
 				}
 				el.update(val);
-				
-				// Trigger change events to automatcially fire any other chained auto-fill form plugins
-				el.element.fireEvent(el.getBlurEvent(), new Event.Mock(el.element, el.getBlurEvent()));
+
+				if (el.baseElementId !== this.element.baseElementId) {
+					// Trigger change events to automatcially fire any other chained auto-fill form plugins
+					el.element.fireEvent(el.getBlurEvent(), new Event.Mock(el.element, el.getBlurEvent()));
+				}
 				return true;
 			}
 		} else {
@@ -320,9 +325,11 @@ var Autofill = new Class({
 				m.each(function (key) {
 					var el = this.form.formElements.get(key);
 					el.update(val);
-					
-					// Trigger change events to automatcially fire any other chained auto-fill form plugins
-					el.element.fireEvent(el.getBlurEvent(), new Event.Mock(el.element, el.getBlurEvent()));
+
+					if (el.baseElementId !== this.element.baseElementId) {
+						// Trigger change events to automatcially fire any other chained auto-fill form plugins
+						el.element.fireEvent(el.getBlurEvent(), new Event.Mock(el.element, el.getBlurEvent()));
+					}
 				}.bind(this));
 				return true;
 			}

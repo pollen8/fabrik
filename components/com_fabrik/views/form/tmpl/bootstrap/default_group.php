@@ -12,7 +12,11 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-$rowStarted = false;
+$rowStarted      = false;
+$layout          = FabrikHelperHTML::getLayout('form.fabrik-control-group');
+$gridStartLayout = FabrikHelperHTML::getLayout('grid.fabrik-grid-start');
+$gridEndLayout   = FabrikHelperHTML::getLayout('grid.fabrik-grid-end');
+
 foreach ($this->elements as $element) :
 	$this->element = $element;
 	$this->class = 'fabrikErrorMessage';
@@ -24,44 +28,50 @@ foreach ($this->elements as $element) :
 		$this->class .= ' help-inline';
 	endif;
 
-	if ($element->startRow) : ?>
-		<div class="row-fluid">
-	<?php
+	if ($element->startRow) :
+		echo $gridStartLayout->render(new stdClass);
 		$rowStarted = true;
 	endif;
+
 	$style = $element->hidden ? 'style="display:none"' : '';
-	$span = $element->hidden ? '' : ' ' . $element->span;
-	?>
-			<div class="control-group <?php echo $element->containerClass . $span; ?>" <?php echo $style?>>
-	<?php
+	$span  = $element->hidden ? '' : ' ' . $element->span;
+
+	$displayData = array(
+		'class' => $element->containerClass,
+		'style' => $style,
+		'span' => $span
+	);
+
 	$labelsAbove = $element->labels;
 
 	if ($labelsAbove == 1)
 	{
-		echo $this->loadTemplate('group_labels_above');
+		$displayData['row'] = $this->loadTemplate('group_labels_above');
 	}
 	elseif ($labelsAbove == 2)
 	{
-		echo $this->loadTemplate('group_labels_none');
+		$displayData['row'] = $this->loadTemplate('group_labels_none');
 	}
 	elseif ($element->span == 'span12' || $element->span == '' || $labelsAbove == 0)
 	{
-		echo $this->loadTemplate('group_labels_side');
+		$displayData['row'] = $this->loadTemplate('group_labels_side');
 	}
 	else
 	{
 		// Multi columns - best to use simplified layout with labels above field
-		echo $this->loadTemplate('group_labels_above');
+		$displayData['row'] = $this->loadTemplate('group_labels_above');
 	}
-	?></div><!-- end control-group --><?php
-	if ($element->endRow) :?>
-		</div><!-- end row-fluid -->
-	<?php
+
+	echo $layout->render((object) $displayData);
+
+	?><?php
+	if ($element->endRow) :
+		echo $gridEndLayout->render(new stdClass);
 		$rowStarted = false;
 	endif;
 endforeach;
 
 // If the last element was not closing the row add an additional div
-if ($rowStarted === true) :?>
-	</div><!-- end row-fluid for open row -->
-<?php endif;?>
+if ($rowStarted === true) :
+	echo $gridEndLayout->render(new stdClass);
+endif;

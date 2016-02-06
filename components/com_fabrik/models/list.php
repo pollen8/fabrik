@@ -5356,7 +5356,8 @@ class FabrikFEModelList extends JModelForm
 	{
 		$input = $this->app->input;
 		$showInList = array();
-		$listElements = json_decode(FabrikWorker::getMenuOrRequestVar('list_elements', '', $this->isMambot, 'menu'));
+		$opts = array('listid' => $this->getId());
+		$listElements = json_decode(FabrikWorker::getMenuOrRequestVar('list_elements', '', $this->isMambot, 'menu', $opts));
 
 		if (isset($listElements->show_in_list))
 		{
@@ -10582,7 +10583,7 @@ class FabrikFEModelList extends JModelForm
 		$tbl = array_shift($colBits);
 
 		$joinFound = false;
-		ArrayHelper::toInteger($ids);
+		$ids = ArrayHelper::toInteger($ids);
 		$ids = implode(',', $ids);
 		$dbk = $k = $table->db_primary_key;
 		// $joins = $this->getJoins();
