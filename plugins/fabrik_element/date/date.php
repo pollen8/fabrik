@@ -1377,7 +1377,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 
 		// Correct default got
 		$default = $this->getDefaultFilterVal($normal, $counter);
-		$this->filterDisplayValues = array($default);
+		$this->filterDisplayValues = (array) $default;
 
 		// $$$ hugh - in advanced search, _aJoins wasn't getting set
 		$joins = $listModel->getJoins();
