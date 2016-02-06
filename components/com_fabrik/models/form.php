@@ -621,7 +621,16 @@ class FabrikFEModelForm extends FabModelForm
 
 			if (!FabrikHelperHTML::stylesheetFromPath($path))
 			{
-				FabrikHelperHTML::stylesheetFromPath('components/com_fabrik/views/' . $view . '/' . $jTmplFolder . '/' . $tmpl . '/custom_css.php' . $qs);
+				$displayData              = new stdClass;
+				$displayData->view        = $view;
+				$displayData->tmpl        = $tmpl;
+				$displayData->qs          = $qs;
+				$displayData->jTmplFolder = $jTmplFolder;
+				$displayData->formModel   = $this;
+				$layout = $this->getLayout('form.fabrik-custom-css-qs');
+				$path = $layout->render($displayData);
+
+				FabrikHelperHTML::stylesheetFromPath($path);
 			}
 		}
 
@@ -5264,5 +5273,24 @@ class FabrikFEModelForm extends FabModelForm
 		}
 
 		return $accessibleData;
+	}
+
+
+	/**
+	 * Get a form JLayout file
+	 *
+	 * @param   string  $name     layout name
+	 * @param   array   $paths    Optional paths to add as includes
+	 * @param   array   $options  Options
+	 *
+	 * @return FabrikLayoutFile
+	 */
+	public function getLayout($name, $paths = array(), $options = array())
+	{
+		$view = $this->isEditable() ? 'form' : 'details';
+		$paths[] = COM_FABRIK_FRONTEND . '/views/'. $view . '/tmpl/' . $this->getTmpl() . '/layouts';
+		$layout  = FabrikHelperHTML::getLayout($name, $paths, $options);
+
+		return $layout;
 	}
 }
