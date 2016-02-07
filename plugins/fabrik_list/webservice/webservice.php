@@ -21,7 +21,6 @@ require_once COM_FABRIK_FRONTEND . '/models/plugin-list.php';
  * @subpackage  Fabrik.list.webservice
  * @since       3.0
  */
-
 class PlgFabrik_ListWebservice extends PlgFabrik_List
 {
 	/**
@@ -121,7 +120,6 @@ class PlgFabrik_ListWebservice extends PlgFabrik_List
 	 *
 	 * @return  bool
 	 */
-
 	public function process($opts = array())
 	{
 		JLoader::import('webservice', JPATH_SITE . '/components/com_fabrik/models/');

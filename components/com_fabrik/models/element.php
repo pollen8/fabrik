@@ -2648,6 +2648,9 @@ class PlgFabrik_Element extends FabrikPlugin
 			}
 		}
 
+		// Bootstrap 3
+		$class[] = 'form-control';
+
 		if ($this->elementError != '')
 		{
 			$class[] = ' elementErrorHighlight';

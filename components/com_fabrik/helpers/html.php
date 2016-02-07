@@ -960,7 +960,7 @@ EOD;
 		$tipJs[] = "\t});";
 
 		// Load tips
-		$tipJs[] = "\tFabrik.tips.attach('.fabrikTip');";
+		//$tipJs[] = "\tFabrik.tips.attach('.fabrikTip');";
 
 		return implode("\n", $tipJs);
 	}
