@@ -11677,6 +11677,18 @@ class FabrikFEModelList extends JModelForm
 	}
 
 	/**
+	 * Set the table label (title), overwrites table->label
+	 *
+	 * @since 3.4
+	 *
+	 * @param  string  $label  label to use for list
+	 */
+	public function getLabel()
+	{
+		return $this->getTable()->label;
+	}
+
+	/**
 	 * Get a list JLayout file
 	 *
 	 * @param   string  $type  form/details/list

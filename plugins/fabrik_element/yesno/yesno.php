@@ -70,14 +70,24 @@ class PlgFabrik_ElementYesno extends PlgFabrik_ElementRadiobutton
 
 		// Check if the data is in csv format, if so then the element is a multi drop down
 		$raw = $this->getFullName(true, false) . '_raw';
-		$displayData = new stdClass;
-		$displayData->value = $thisRow->$raw;
-		$displayData->tmpl = @$this->tmpl;
-		$basePath = JPATH_ROOT . '/plugins/fabrik_element/yesno/layouts';
-		$layout = new FabrikLayoutFile('fabrik_element_yesno_list', $basePath);
+		$rawData = $thisRow->$raw;
+		$rawData = FabrikWorker::JSONtoData($rawData, true);
+		$displayData        = new stdClass;
+		$displayData->tmpl  = @$this->tmpl;
+		$basePath           = JPATH_ROOT . '/plugins/fabrik_element/yesno/layouts';
+		$layout             = new FabrikLayoutFile('fabrik_element_yesno_list', $basePath);
 		$layout->addIncludePaths(JPATH_THEMES . '/' . $this->app->getTemplate() . '/html/layouts');
+		$labelData = array();
 
-		return $layout->render($displayData);
+		foreach ($rawData as $d)
+		{
+			$displayData->value = $d;
+			$labelData[] = $layout->render($displayData);
+		}
+
+		$data = json_encode($labelData);
+
+		return parent::renderListData($data, $thisRow, $opts);
 	}
 
 	/**
