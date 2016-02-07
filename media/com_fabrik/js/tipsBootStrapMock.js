@@ -67,7 +67,7 @@ var FloatingTips = new Class({
 			// We should override any Fabrik3 custom tip settings with bootstrap3 data-foo attributes in JLayouts
 			this.elements = document.getElements(elements);
 			this.elements.each(function (trigger) {
-				jQuery(trigger).popover();
+				jQuery(trigger).popover({html: true});
 			});
 			return;
 		}
