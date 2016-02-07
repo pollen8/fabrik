@@ -130,9 +130,9 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 				FabrikHelperHTML::runContentPlugins($messageText);
 			}
 
-			$messageText = $w->parseMessageForPlaceholder($messageText, $this->data, false);
 			$messageText = str_replace('{content}', $content, $messageText);
 			$messageText = str_replace('{template}', $messageTemplate, $messageText);
+			$messageText = $w->parseMessageForPlaceholder($messageText, $this->data, false);
 		}
 
 		$message = '';
