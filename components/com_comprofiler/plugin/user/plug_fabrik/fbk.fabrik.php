@@ -2,8 +2,17 @@
 /**
 */
 
-// ensure this file is being included by a parent file
+use CB\Database\Table\PluginTable;
+use CB\Database\Table\TabTable;
+use CB\Database\Table\UserTable;
+use CBLib\Language\CBTxt;
+
 if ( ! ( defined( '_VALID_CB' ) || defined( '_JEXEC' ) || defined( '_VALID_MOS' ) ) ) { die( 'Direct Access to this location is not allowed.' ); }
+
+global $_PLUGINS;
+
+// TODO: This should be in a function: We should have no code in files outside of classes:
+$_PLUGINS->loadPluginGroup( 'user' );
 
 class getFabrikTab extends cbTabHandler {
 
