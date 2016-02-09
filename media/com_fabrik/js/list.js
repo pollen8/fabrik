@@ -242,23 +242,32 @@ var FbList = new Class({
 		var c = new Element('form', {
 			'action': url,
 			'method': 'post'
-		}).adopt([new Element('div', divopts).set('text', Joomla.JText._('COM_FABRIK_FILE_TYPE')), new Element('label').set('html', rad5), new Element('label').adopt([new Element('input', {
+		}).adopt([new Element('div', divopts).set('text', Joomla.JText._('COM_FABRIK_FILE_TYPE')),
+			new Element('label').set('html', rad5), new Element('label').adopt([new Element('input', {
 			'type': 'radio',
 			'name': 'excel',
 			'value': '0'
-		}), new Element('span').set('text', 'CSV')]), new Element('br'), new Element('br'), new Element('div', divopts).appendText(Joomla.JText._('COM_FABRIK_INCLUDE_FILTERS')), new Element('label').set('html', rad), new Element('label').adopt([new Element('input', {
+		}), new Element('span').set('text', 'CSV')]), new Element('br'), new Element('br'),
+			new Element('div', divopts).appendText(Joomla.JText._('COM_FABRIK_INCLUDE_FILTERS')),
+			new Element('label').set('html', rad), new Element('label').adopt([new Element('input', {
 			'type': 'radio',
 			'name': 'incfilters',
 			'value': '0'
-		}), new Element('span').set('text', Joomla.JText._('JNO'))]), new Element('br'), new Element('div', divopts).appendText(Joomla.JText._('COM_FABRIK_INCLUDE_DATA')), new Element('label').set('html', rad4), new Element('label').adopt([new Element('input', {
+		}), new Element('span').set('text', Joomla.JText._('JNO'))]), new Element('br'),
+			new Element('div', divopts).appendText(Joomla.JText._('COM_FABRIK_INCLUDE_DATA')),
+			new Element('label').set('html', rad4), new Element('label').adopt([new Element('input', {
 			'type': 'radio',
 			'name': 'inctabledata',
 			'value': '0'
-		}), new Element('span').set('text', Joomla.JText._('JNO'))]), new Element('br'), new Element('div', divopts).appendText(Joomla.JText._('COM_FABRIK_INCLUDE_RAW_DATA')), new Element('label').set('html', rad2), new Element('label').adopt([new Element('input', {
+		}), new Element('span').set('text', Joomla.JText._('JNO'))]), new Element('br'),
+			new Element('div', divopts).appendText(Joomla.JText._('COM_FABRIK_INCLUDE_RAW_DATA')),
+			new Element('label').set('html', rad2), new Element('label').adopt([new Element('input', {
 			'type': 'radio',
 			'name': 'incraw',
 			'value': '0'
-		}), new Element('span').set('text', Joomla.JText._('JNO'))]), new Element('br'), new Element('div', divopts).appendText(Joomla.JText._('COM_FABRIK_INCLUDE_CALCULATIONS')), new Element('label').set('html', rad3), new Element('label').adopt([new Element('input', {
+		}), new Element('span').set('text', Joomla.JText._('JNO'))]), new Element('br'),
+			new Element('div', divopts).appendText(Joomla.JText._('COM_FABRIK_INCLUDE_CALCULATIONS')),
+			new Element('label').set('html', rad3), new Element('label').adopt([new Element('input', {
 			'type': 'radio',
 			'name': 'inccalcs',
 			'value': '0'
@@ -292,7 +301,8 @@ var FbList = new Class({
 		if (this.options.formels.length > 0) {
 			new Element('h5').set('text', Joomla.JText._('COM_FABRIK_FORM_FIELDS')).inject(c);
 			this.options.formels.each(function (el) {
-				var rad = "<input type='radio' value='1' name='fields[" + el.name + "]' checked='checked' />" + Joomla.JText._('JYES');
+				var rad = "<input type='radio' value='1' name='fields[" + el.name + "]' checked='checked' />" +
+					Joomla.JText._('JYES');
 				var r = new Element('div', divopts).appendText(el.label);
 				r.inject(c);
 				new Element('label').set('html', rad).inject(c);
@@ -427,7 +437,7 @@ var FbList = new Class({
 			},
 			onComplete: function (res) {
 				if (res.err) {
-					alert(res.err);
+					window.alert(res.err);
 					Fabrik.Windows.exportcsv.close();
 				} else {
 					if (typeOf(document.id('csvcount')) !== 'null') {
@@ -769,12 +779,12 @@ var FbList = new Class({
 				}
 			});
 			if (!ok) {
-				alert(Joomla.JText._('COM_FABRIK_SELECT_ROWS_FOR_DELETION'));
+				window.alert(Joomla.JText._('COM_FABRIK_SELECT_ROWS_FOR_DELETION'));
 				Fabrik.loader.stop('listform_' + this.options.listRef);
 				return false;
 			}
 			var delMsg = delCount === 1 ? Joomla.JText._('COM_FABRIK_CONFIRM_DELETE_1') : Joomla.JText._('COM_FABRIK_CONFIRM_DELETE').replace('%s', delCount);
-			if (!confirm(delMsg)) {
+			if (!window.confirm(delMsg)) {
 				Fabrik.loader.stop('listform_' + this.options.listRef);
 				this.uncheckAll();
 				return false;
@@ -802,12 +812,12 @@ var FbList = new Class({
 			this.form.getElement('input[name=format]').value = 'raw';
 
 			var data = this.form.toQueryString();
-			
+
 			if (task === 'list.doPlugin') {
-				data += '&setListRefFromRequest=1';	
+				data += '&setListRefFromRequest=1';
 				data += '&listref=' + this.options.listRef;
 			}
-			
+
 			if (task === 'list.filter' && this.advancedSearch !== false) {
 				var advSearchForm = document.getElement('form.advancedSeach_' + this.options.listRef);
 				if (typeOf(advSearchForm) !== 'null') {
@@ -919,6 +929,7 @@ var FbList = new Class({
 
 	removeRows: function (rowids) {
 		// @TODO: try to do this with FX.Elements
+		var i;
 		for (i = 0; i < rowids.length; i++) {
 			var row = document.id('list_' + this.id + '_row_' + rowids[i]);
 			var highlight = new Fx.Morph(row, {
