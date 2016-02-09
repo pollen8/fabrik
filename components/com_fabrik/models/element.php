@@ -1680,22 +1680,14 @@ class PlgFabrik_Element extends FabrikPlugin
 	 */
 	protected function addErrorHTML($repeatCounter, $tmpl = '')
 	{
-		$err = $this->getErrorMsg($repeatCounter);
-		$err = htmlspecialchars($err, ENT_QUOTES);
-		$str = '<span class="fabrikErrorMessage">';
+		$err               = $this->getErrorMsg($repeatCounter);
+		$err               = htmlspecialchars($err, ENT_QUOTES);
+		$layout            = FabrikHelperHTML::getLayout('element.fabrik-element-error');
+		$displayData       = new stdClass;
+		$displayData->err  = $err;
+		$displayData->tmpl = $tmpl;
 
-		if ($err !== '')
-		{
-			$err         = '<span>' . $err . '</span>';
-			$usersConfig = JComponentHelper::getParams('com_fabrik');
-			$icon        = FabrikWorker::j3() ? $usersConfig->get('error_icon', 'exclamation-sign') . '.png' : 'alert.png';
-			$str .= '<a href="#" class="fabrikTip" title="' . $err . '" opts="{notice:true}">' . FabrikHelperHTML::image($icon, 'form', $tmpl)
-				. '</a>';
-		}
-
-		$str .= '</span>';
-
-		return $str;
+		return $layout->render($displayData);
 	}
 
 	/**
