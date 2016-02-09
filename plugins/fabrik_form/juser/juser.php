@@ -91,30 +91,6 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 	}
 
 	/**
-	 * Get the fields value regardless of whether its in joined data or no
-	 *
-	 * @param   string  $pname    Params property name to get the value for
-	 * @param   array   $data     Posted form data
-	 * @param   mixed   $default  Default value
-	 *
-	 * @return  mixed  value
-	 */
-	private function getFieldValue($pname, $data, $default = '')
-	{
-		$params = $this->getParams();
-
-		if ($params->get($pname) == '')
-		{
-			return $default;
-		}
-
-		$elementModel = FabrikWorker::getPluginManager()->getElementPlugin($params->get($pname));
-		$name = $elementModel->getFullName(true, false);
-
-		return FArrayHelper::getValue($data, $name, $default);
-	}
-
-	/**
 	 * Synchronize J! users with F! table if empty
 	 *
 	 * @return  void

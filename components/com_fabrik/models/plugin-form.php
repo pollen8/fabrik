@@ -12,6 +12,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 use Joomla\String\String;
+use Joomla\Utilities\ArrayHelper;
 
 jimport('joomla.application.component.model');
 
@@ -520,5 +521,29 @@ class PlgFabrik_Form extends FabrikPlugin
 		$layout->addIncludePaths(JPATH_THEMES . '/' . $this->app->getTemplate() . '/html/layouts/com_fabrik');
 
 		return $layout;
+	}
+
+	/**
+	 * Get the fields value regardless of whether its in joined data or no
+	 *
+	 * @param   string  $pName    Params property name to get the value for
+	 * @param   array   $data     Posted form data
+	 * @param   mixed   $default  Default value
+	 *
+	 * @return  mixed  value
+	 */
+	protected function getFieldValue($pName, $data, $default = '')
+	{
+		$params = $this->getParams();
+
+		if ($params->get($pName, '') === '')
+		{
+			return $default;
+		}
+
+		$elementModel = FabrikWorker::getPluginManager()->getElementPlugin($params->get($pName));
+		$name = $elementModel->getFullName(true, false);
+
+		return ArrayHelper::getValue($data, $name, $default);
 	}
 }
