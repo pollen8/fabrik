@@ -2788,7 +2788,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 			// Check if it's an array because we are a multiselect join
 			if ($this->isJoin())
 			{
-				return empty($data);
+				return FArrayHelper::emptyIsh($data);
 			}
 			else
 			{
