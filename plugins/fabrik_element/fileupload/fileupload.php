@@ -843,6 +843,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 			$displayData = new stdClass;
 			$displayData->canDownload = $canDownload;
 			$displayData->title = $title;
+			$displayData->file = $data;
 			$displayData->noAccessImage = COM_FABRIK_LIVESITE . 'media/com_fabrik/images/' . $params->get('fu_download_noaccess_image');
 			$displayData->downloadImg = ($downloadImg && JFile::exists('media/com_fabrik/images/' . $downloadImg)) ? COM_FABRIK_LIVESITE . 'media/com_fabrik/images/' . $downloadImg : '';
 			$displayData->href =  COM_FABRIK_LIVESITE
@@ -2401,6 +2402,8 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 			$title_name = str_replace('.', '___', $params->get('fu_title_element'));
 		}
 
+		$fileName = '';
+
 		if (is_array($formModel->data))
 		{
 			if (array_key_exists($title_name, $formModel->data))
@@ -2412,6 +2415,8 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 					$title = FArrayHelper::getValue($titles, $repeatCounter, $title);
 				}
 			}
+
+			$fileName = FArrayHelper::getValue($formModel->data, $this->getFullName(true, false), '');
 		}
 
 		$downloadImg = $params->get('fu_download_access_image');
@@ -2420,6 +2425,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		$displayData = new stdClass;
 		$displayData->canDownload = $canDownload;
 		$displayData->title = $title;
+		$displayData->file = $fileName;
 		$displayData->noAccessImage = COM_FABRIK_LIVESITE . 'media/com_fabrik/images/' . $params->get('fu_download_noaccess_image');
 		$displayData->downloadImg = ($downloadImg && JFile::exists('media/com_fabrik/images/' . $downloadImg)) ? COM_FABRIK_LIVESITE . 'media/com_fabrik/images/' . $downloadImg : '';
 		$displayData->href = COM_FABRIK_LIVESITE . 'index.php?option=com_' . $this->package
