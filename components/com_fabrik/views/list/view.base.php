@@ -919,6 +919,25 @@ class FabrikViewListBase extends FabrikView
 	}
 
 	/**
+	 * Get the canonical link
+	 *
+	 * @return  string
+	 */
+	public function getCanonicalLink()
+	{
+		$url = '';
+
+		if (!$this->app->isAdmin() && !$this->isMambot)
+		{
+			$model = $this->getModel();
+			$id    = $model->getId();
+			$url   = JRoute::_('index.php?option=com_' . $this->package . '&view=list&listid=' . $id);
+		}
+
+		return $url;
+	}
+
+	/**
 	 * Set the canonical link - this is the definitive URL that Google et all, will use
 	 * to determine if duplicate URLs are the same content
 	 *
@@ -928,9 +947,7 @@ class FabrikViewListBase extends FabrikView
 	{
 		if (!$this->app->isAdmin() && !$this->isMambot)
 		{
-			$model = $this->getModel();
-			$id    = $model->getId();
-			$url   = JRoute::_('index.php?option=com_' . $this->package . '&view=list&listid=' . $id);
+			$url   = $this->getCanonicalLink();
 
 			// Set a flag so that the system plugin can clear out any other canonical links.
 			$this->session->set('fabrik.clearCanonical', true);
