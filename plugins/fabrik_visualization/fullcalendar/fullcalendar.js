@@ -158,6 +158,9 @@ var fabrikFullcalendar = new Class({
 						jQuery('#'+popover).popover('hide');
 					});
 				}
+			},
+			eventAfterAllRender: function(view) {
+				var foo = 1;
 			}
 		};
 		/* Now merge any calendar overrides/additions from the visualixation */
@@ -181,7 +184,7 @@ var fabrikFullcalendar = new Class({
 			jQuery('#' + id).popover('hide');
 			this.editEntry(calEvent);
 		}.bind(this));
-		
+
 		document.addEvent('click:relay(button[data-task=deleteCalEvent], a[data-task=deleteCalEvent])', function (event, target) {
 			event.preventDefault();
 			var id = event.target.findClassUp('calEventButtons').id;
@@ -206,6 +209,8 @@ var fabrikFullcalendar = new Class({
 				jQuery('#calendar').fullCalendar( 'refetchEvents' );
 			}.bind(this)
 		});
+
+
 	},
 	
 	processEvents: function (json, callback) {
