@@ -1964,7 +1964,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 				}
 			}
 
-			$val = $this->renderListData($value, new stdClass);
+			$val = $this->renderListData($value,  FArrayHelper::toObject($data));
 		}
 		else
 		{
@@ -1982,7 +1982,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 					}
 				}
 
-				$val = $this->renderListData($value, new stdClass);
+				$val = $this->renderListData($value, FArrayHelper::toObject($data));
 			}
 			else
 			{
