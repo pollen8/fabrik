@@ -119,7 +119,7 @@ class PlgFabrik_FormTwitter extends PlgFabrik_Form
 
 		/* Request access tokens from twitter */
 		//$access_token = $connection->getAccessToken($_REQUEST['oauth_verifier']);
-		$access_token = $connection->oauth("oauth/access_token", ["oauth_verifier" => $_REQUEST['oauth_verifier']]);
+		$access_token = $connection->oauth("oauth/access_token", array("oauth_verifier" => $_REQUEST['oauth_verifier']));
 
 		$connection = new TwitterOAuth($consumerKey, $consumerSecret, $access_token['oauth_token'], $access_token['oauth_token_secret']);
 
@@ -480,7 +480,7 @@ class PlgFabrik_FormTwitter extends PlgFabrik_Form
 		$connection = new TwitterOAuth($consumerKey, $consumerSecret, $_SESSION['oauth_token'], $_SESSION['oauth_token_secret']);
 
 		/* Request access tokens from twitter */
-		$access_token = $connection->oauth("oauth/access_token", ["oauth_verifier" => $_REQUEST['oauth_verifier']]);
+		$access_token = $connection->oauth("oauth/access_token", array("oauth_verifier" => $_REQUEST['oauth_verifier']));
 
 		// Save the access token to the element params
 		$formModel = JModelLegacy::getInstance('Form', 'FabrikFEModel');
