@@ -16,7 +16,7 @@ $i = 0;
 		$style[] = isset($tab->css) && $tab->css !== '' ? 'style="' . $tab->css . '"': '';
 		$href = isset($tab->href) ? $tab->href : $tab->id;
 		?>
-		<li role="presentation" <?php echo implode(' ', $style); ?>>
+		<li role="presentation" data-role="fabrik_tab" <?php echo implode(' ', $style); ?>>
 
 			<?php if (isset($tab->js) && $tab->js === false) : ?>
 
