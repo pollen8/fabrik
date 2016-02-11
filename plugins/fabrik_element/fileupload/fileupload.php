@@ -848,7 +848,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 			$displayData->downloadImg = ($downloadImg && JFile::exists('media/com_fabrik/images/' . $downloadImg)) ? COM_FABRIK_LIVESITE . 'media/com_fabrik/images/' . $downloadImg : '';
 			$displayData->href =  COM_FABRIK_LIVESITE
 				. 'index.php?option=com_' . $this->package . '&amp;task=plugin.pluginAjax&amp;plugin=fileupload&amp;method=ajax_download&amp;format=raw&amp;element_id='
-				. $elementId . '&amp;formid=' . $formId . '&amp;rowid=' . $rowId . '&amp;repeatcount=' . $i;;
+				. $elementId . '&amp;formid=' . $formId . '&amp;rowid=' . $rowId . '&amp;repeatcount=0&ajaxIndex=' . $i;
 
 			return $layout->render($displayData);
 		}
@@ -2135,9 +2135,9 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		{
 			$links = array();
 
-			foreach ($values as $v)
+			foreach ($values as $k => $v)
 			{
-				$links[] = $this->downloadLink($v, $data, $repeatCounter);
+				$links[] = $this->downloadLink($v, $data, $repeatCounter, $k);
 			}
 
 			return count($links) < 2 ? implode("\n", $links) : '<ul class="fabrikRepeatData"><li>' . implode('</li><li>', $links) . '</li></ul>';
@@ -2364,10 +2364,11 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 	 * @param   string  $value          File path
 	 * @param   array   $data           Row
 	 * @param   int     $repeatCounter  Repeat counter
+	 * @param   int     $ajaxIndex          Index of AJAX
 	 *
 	 * @return	string	Download link
 	 */
-	protected function downloadLink($value, $data, $repeatCounter = 0)
+	protected function downloadLink($value, $data, $repeatCounter = 0, $ajaxIndex)
 	{
 		$input = $this->app->input;
 		$params = $this->getParams();
@@ -2426,11 +2427,12 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		$displayData->canDownload = $canDownload;
 		$displayData->title = $title;
 		$displayData->file = $fileName;
+		$displayData->ajaxIndex = $ajaxIndex;
 		$displayData->noAccessImage = COM_FABRIK_LIVESITE . 'media/com_fabrik/images/' . $params->get('fu_download_noaccess_image');
 		$displayData->downloadImg = ($downloadImg && JFile::exists('media/com_fabrik/images/' . $downloadImg)) ? COM_FABRIK_LIVESITE . 'media/com_fabrik/images/' . $downloadImg : '';
 		$displayData->href = COM_FABRIK_LIVESITE . 'index.php?option=com_' . $this->package
 			. '&task=plugin.pluginAjax&plugin=fileupload&method=ajax_download&format=raw&element_id='
-			. $elementId . '&formid=' . $formId . '&rowid=' . $rowId . '&repeatcount=' . $repeatCounter;
+			. $elementId . '&formid=' . $formId . '&rowid=' . $rowId . '&repeatcount=' . $repeatCounter . '&ajaxIndex=' . $ajaxIndex;
 
 
 		return $layout->render($displayData);
@@ -2929,6 +2931,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		$this->lang->load('com_fabrik.plg.element.fabrikfileupload', JPATH_ADMINISTRATOR);
 		$rowId = $input->get('rowid', '', 'string');
 		$repeatCount = $input->getInt('repeatcount', 0);
+		$ajaxIndex = $input->getInt('ajaxIndex', 0);
 		$listModel = $this->getListModel();
 		$row = $listModel->getRow($rowId, false, true);
 
@@ -2978,7 +2981,13 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		$filePath = $row->$elName;
 		$filePath = FabrikWorker::JSONtoData($filePath, false);
 		$filePath = is_object($filePath) ? FArrayHelper::fromObject($filePath) : (array)$filePath;
-		$filePath = FArrayHelper::getValue($filePath, $repeatCount);
+
+		if ($this->getGroupModel()->canRepeat())
+		{
+			$filePath = FArrayHelper::getValue($filePath, $repeatCount);
+		}
+
+		$filePath = FArrayHelper::getValue($filePath, $ajaxIndex);
 		$filePath = $storage->getFullPath($filePath);
 		$fileContent = $storage->read($filePath);
 

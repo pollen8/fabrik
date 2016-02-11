@@ -10888,7 +10888,15 @@ class FabrikFEModelList extends JModelForm
 
 			if (!FabrikHelperHTML::stylesheetFromPath('templates/' . $this->app->getTemplate() . '/html/com_fabrik/list/' . $tmpl . '/custom_css.php' . $qs))
 			{
-				FabrikHelperHTML::stylesheetFromPath('components/com_fabrik/views/list/' . $jTmplFolder . '/' . $tmpl . '/custom_css.php' . $qs);
+				$displayData              = new stdClass;
+				$displayData->tmpl        = $tmpl;
+				$displayData->qs          = $qs;
+				$displayData->jTmplFolder = $jTmplFolder;
+				$displayData->listModel   = $this;
+				$layout = $this->getLayout('list.fabrik-custom-css-qs');
+				$path = $layout->render($displayData);
+
+				FabrikHelperHTML::stylesheetFromPath($path);
 			}
 		}
 	}
