@@ -495,6 +495,8 @@ class PlgFabrik_FormTwitter extends PlgFabrik_Form
 
 		$js = array();
 
+		$jsValues = array();
+
 		foreach ($pairs as $paramname => $requestname)
 		{
 			$tokens = (array) FArrayHelper::getValue($opts, $paramname);
@@ -504,11 +506,15 @@ class PlgFabrik_FormTwitter extends PlgFabrik_Form
 			{
 				$newtokens[$i] = ($i == $counter) ? $access_token[$requestname] : '';
 				$jsid = '#jform_params_' . $paramname . '-' . $i;
-				$js[] = "window.opener.document.getElement('$jsid').value = '$newtokens[$i]';";
+				//$js[] = "window.opener.document.getElement('$jsid').value = '$newtokens[$i]';";
+				$jsValues[]= array($jsid, $newtokens[$i]);
 			}
 
 			$opts[$paramname] = $newtokens;
 		}
+
+		$json = json_encode($jsValues);
+
 
 		$row->params = json_encode($opts);
 		$row->store();
@@ -519,9 +525,11 @@ class PlgFabrik_FormTwitter extends PlgFabrik_Form
 		// If we had already authorized the app then we will still be in the admin page - so update the fields:
 		echo FText::_('PLG_FORM_TWITTER_CREDENTIALS_SAVED');
 		$document = JFactory::getDocument();
-		$script = implode("\n", $js) . "
-		(function() {window.close()}).delay(4000);
-		";
+		//$script = implode("\n", $js) . "
+		$script = <<<EOT
+window.opener.postMessage($json, '*');
+(function() {window.close()}).delay(4000);
+EOT;
 		$document->addScriptDeclaration($script);
 	}
 }
