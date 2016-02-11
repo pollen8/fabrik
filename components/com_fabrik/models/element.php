@@ -4380,13 +4380,19 @@ class PlgFabrik_Element extends FabrikPlugin
 					break;
 				case 'in':
 					$condition = 'IN';
-					$value     = FabrikString::safeQuote($value, true);
-					$value     = ($eval == FABRIKFILTER_QUERY) ? '(' . $value . ')' : '(' . $value . ')';
+					if ($eval != FABRIKFILTER_QUERY)
+					{
+						$value     = FabrikString::safeQuote($value, true);
+					}
+					$value     = '(' . $value . ')';
 					break;
 				case 'not_in':
 					$condition = 'NOT IN';
-					$value     = FabrikString::safeQuote($value, true);
-					$value     = ($eval == FABRIKFILTER_QUERY) ? '(' . $value . ')' : '(' . $value . ')';
+					if ($eval != FABRIKFILTER_QUERY)
+					{
+						$value     = FabrikString::safeQuote($value, true);
+					}
+					$value     = '(' . $value . ')';
 					break;
 			}
 
