@@ -1250,15 +1250,18 @@ class FabrikWorker
 	 * so for ajax calls that need to use jf translated text we need to get the current lang and
 	 * send it to the js code which will then append the lang=XX to the ajax querystring
 	 *
+	 * Renamed to getShortLang as we don't support Joomfish any more
+	 *
 	 * @since 2.0.5
 	 *
 	 * @return    string    first two letters of lang code - e.g. nl from 'nl-NL'
 	 */
-	public static function getJoomfishLang()
+	public static function getShortLang()
 	{
 		$lang = JFactory::getLanguage();
+		$lang = explode('-', $lang->getTag());
 
-		return array_shift(explode('-', $lang->getTag()));
+		return array_shift($lang);
 	}
 
 	/**

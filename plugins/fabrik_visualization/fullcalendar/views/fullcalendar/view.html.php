@@ -120,7 +120,7 @@ class FabrikViewFullcalendar extends JViewLegacy
 		$options->minDuration = $params->get('minimum_duration', "00:30:00");
 		$options->open =  $params->get('open-hour', "00:00:00");
 		$options->close =  $params->get('close-hour', "23:59:59");
-
+		$options->lang = FabrikWorker::getShortLang();
 		$options->showweekends = (bool) $params->get('calendar-show-weekends', true);
 		$options->readonly = (bool) $params->get('calendar-read-only', false);
 		$options->timeFormat = $params->get('time_format', '%X');
@@ -210,6 +210,7 @@ class FabrikViewFullcalendar extends JViewLegacy
 		$document->addScript($lib . 'lib/moment.min.js');
 //		$document->addScript('//cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.6/moment.js');
 		$document->addScript($lib . 'fullcalendar.js');
+		$document->addScript($lib . 'lang/' . FabrikWorker::getShortLang() . '.js');
 
 		return parent::display();
 	}
