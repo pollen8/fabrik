@@ -646,6 +646,8 @@ class FabrikFEModelImportcsv extends JModelForm
 		// $$$ rob 27/17/212 we need to reset the form as it was first generated before its elements were created.
 		$formModel->reset();
 
+		FabrikWorker::getPluginManager()->runPlugins('onStartImportCSV', $model, 'list');
+
 		if ($dropData && $model->canEmpty())
 		{
 			$model->truncate();
