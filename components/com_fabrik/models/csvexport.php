@@ -115,6 +115,10 @@ class FabrikFEModelCSVExport extends FabModel
 		$config             = JComponentHelper::getParams('com_fabrik');
 		$this->delimiter    = $this->outPutFormat == 'excel' ? COM_FABRIK_EXCEL_CSV_DELIMITER : COM_FABRIK_CSV_DELIMITER;
 		$this->delimiter    = $config->get('csv_delimiter', $this->delimiter);
+		$local_delimiter    = $this->model->getParams()->get('csv_local_delimiter');
+		if ($local_delimiter != '') {
+			$this->delimiter = $local_delimiter;
+		}
 		if ($this->delimiter === '\t') {
 			$this->delimiter = "\t";
 		}
@@ -322,8 +326,15 @@ class FabrikFEModelCSVExport extends FabModel
 	{
 		$this->model->setId($this->app->input->getInt('listid'));
 		$table    = $this->model->getTable();
-		$filename = $table->db_table_name . '-export.csv';
-
+		$filename = $this->model->getParams()->get('csv_filename');
+		if ($filename == '')
+		{
+			$filename = $table->db_table_name . '-export.csv';
+		}
+		else
+		{
+			$filename = sprintf($filename, date('Y-m-d'));
+		}
 		return $filename;
 	}
 
@@ -509,7 +520,11 @@ class FabrikFEModelCSVExport extends FabModel
 	 */
 	protected function quote($n)
 	{
-		$n = '"' . str_replace('"', '""', $n) . '"';
+		$doubleQuote  = $this->model->getParams()->get('csv_double_quote', '1') === '1';
+		if ($doubleQuote == true)
+		{
+			$n = '"' . str_replace('"', '""', $n) . '"';
+		}
 
 		$csvEncoding = $this->getEncoding();
 
@@ -519,15 +534,11 @@ class FabrikFEModelCSVExport extends FabModel
 			return $n;
 		}
 
-		if ($this->outPutFormat == 'excel')
+		if (function_exists('iconv'))
 		{
-			// Possible fix for Excel import of accents in csv file?
-			return mb_convert_encoding($n, $csvEncoding, 'UTF-8');
+			return iconv('UTF-8', $csvEncoding, $n);
 		}
-		else
-		{
-			return $n;
-		}
+		return mb_convert_encoding($n, $csvEncoding, 'UTF-8');
 	}
 
 	/**
