@@ -181,6 +181,9 @@ class FabrikFEModelAdvancedSearch extends FabModel
 
 				switch ($condition)
 				{
+					case 'NOTEMPTY':
+						$jsSel = 'NOTEMPTY';
+						break;
 					case 'EMPTY':
 						$jsSel = 'EMPTY';
 						break;
@@ -384,6 +387,7 @@ class FabrikFEModelAdvancedSearch extends FabModel
 		$statements[] = JHTML::_('select.option', '>', FText::_('COM_FABRIK_GREATER_THAN'));
 		$statements[] = JHTML::_('select.option', '<', FText::_('COM_FABRIK_LESS_THAN'));
 		$statements[] = JHTML::_('select.option', 'EMPTY', FText::_('COM_FABRIK_IS_EMPTY'));
+		$statements[] = JHTML::_('select.option', 'NOTEMPTY', FText::_('COM_FABRIK_IS_NOT_EMPTY'));
 
 		return $statements;
 	}

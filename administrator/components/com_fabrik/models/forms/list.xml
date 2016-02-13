@@ -384,6 +384,7 @@
 				<option value="&gt;">COM_FABRIK_GREATER_THAN</option>
 				<option value="&lt;">COM_FABRIK_LESS_THAN</option>
 				<option value="EMPTY">COM_FABRIK_IS_EMPTY</option>
+				<option value="NOTEMPTY">COM_FABRIK_IS_NOT_EMPTY</option>
 			</field>
 
 			<field name="search-mode"

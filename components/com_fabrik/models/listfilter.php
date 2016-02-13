@@ -1210,7 +1210,12 @@ class FabrikFEModelListfilter extends FabModel
 				 */
 
 				// $$$ rob set a var for empty value - regardless of whether its an array or string
-				$emptyValue = ((is_string($value) && trim($value) == '') || (is_array($value) && trim(implode('', $value)) == '')) && $condition !== 'EMPTY';
+				$emptyValue =
+					(
+						(is_string($value) && trim($value) == '')
+						|| (is_array($value) && trim(implode('', $value)) == '')
+					)
+					&& ($condition !== 'EMPTY' && $condition !== 'NOTEMPTY');
 
 				/**
 				 * $$rob ok the above meant that require filters stopped working as soon as you submitted
@@ -1249,6 +1254,13 @@ class FabrikFEModelListfilter extends FabModel
 					$value = '';
 				}
 
+				if ($condition === 'NOTEMPTY')
+				{
+					$condition = '<>';
+					$value = '';
+				}
+
+
 				$elementModel = $elements[$elid];
 
 				if (!is_a($elementModel, 'PlgFabrik_Element'))
@@ -1257,7 +1269,7 @@ class FabrikFEModelListfilter extends FabModel
 				}
 
 				// Date element's have specific empty values
-				if ($origCondition === 'EMPTY')
+				if ($origCondition === 'EMPTY' || $origCondition === 'NOTEMPTY')
 				{
 					$value = $elementModel->emptyFilterValue();
 				}
