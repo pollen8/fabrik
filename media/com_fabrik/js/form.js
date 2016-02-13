@@ -1178,11 +1178,12 @@ FbForm = new Class({
 
 	watchSubmit: function () {
 		var submit = this._getButton('Submit');
-		if (!submit) {
+		var apply = this._getButton('apply');
+
+		if (!submit && !apply) {
 			return;
 		}
-		var apply = this._getButton('apply'),
-			del = this._getButton('delete'),
+		var del = this._getButton('delete'),
 			copy = this._getButton('Copy');
 		if (del) {
 			del.addEvent('click', function (e) {
