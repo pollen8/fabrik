@@ -781,8 +781,8 @@
 				class="input-xlarge"
 				size="20"
 				default=""
-				label="COM_FABRIK_FIELD_CSV_FILENAME"
-				description="COM_FABRIK_FIELD_FILENAME_DESC"
+				label="COM_FABRIK_FIELD_CSV_FILENAME_LABEL"
+				description="COM_FABRIK_FIELD_CSV_FILENAME_DESC"
 			/>
 			
 			<field name="csv_encoding"
@@ -802,7 +802,7 @@
 				type="radio"
 				class="btn-group"
 				default="1"
-				label="COM_FABRIK_FIELD_CSV_DOUBLE_QUOTE"
+				label="COM_FABRIK_FIELD_CSV_DOUBLE_QUOTE_LABEL"
 				description="COM_FABRIK_FIELD_CSV_DOUBLE_QUOTE_DESC"
 			>
 				<option value="0">JNO</option>
