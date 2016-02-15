@@ -12,6 +12,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\Utilities\ArrayHelper;
+
 jimport('joomla.plugin.plugin');
 jimport('joomla.filesystem.file');
 
@@ -112,6 +114,7 @@ class PlgSystemFabrik extends JPlugin
 		$session->clear('fabrik.js.head.scripts');
 		$session->clear('fabrik.js.config');
 		$session->clear('fabrik.js.shim');
+		$session->clear('fabrik.js.jlayouts');
 	}
 
 	/**
@@ -127,6 +130,10 @@ class PlgSystemFabrik extends JPlugin
 
 		$js = (array) $session->get('fabrik.js.scripts', array());
 		$js = implode("\n", $js);
+
+		$jLayouts = (array) $session->get('fabrik.js.jlayouts', array());
+		$jLayouts = json_encode(ArrayHelper::toObject($jLayouts));
+		$js = str_replace('%%jLayouts%%', $jLayouts, $js);
 
 		if ($config . $js !== '')
 		{

@@ -888,7 +888,10 @@ EOD;
 				$liveSiteSrc[] = "\tFabrik.liveSite = '" . COM_FABRIK_LIVESITE . "';";
 				$liveSiteSrc[] = "\tFabrik.package = '" . $app->getUserState('com_fabrik.package', 'fabrik') . "';";
 				$liveSiteSrc[] = "\tFabrik.debug = " . (self::isDebug() ? 'true;' : 'false;');
-				$liveSiteSrc[] = "\tFabrik.jLayouts = " . json_encode(ArrayHelper::toObject(self::$jLayoutsJs)) . ";";
+
+				// need to put jLayouts in session data, and add it in the system plugin buildjs(), so just add %%jLayouts%% placeholder
+				//$liveSiteSrc[] = "\tFabrik.jLayouts = " . json_encode(ArrayHelper::toObject(self::$jLayoutsJs)) . ";";
+				$liveSiteSrc[] = "\tFabrik.jLayouts = %%jLayouts%%\n";
 
 				if ($bootstrapped)
 				{
@@ -919,7 +922,7 @@ EOD;
 				$liveSiteSrc[] = "\tif (!Fabrik.jLayouts) {
 				Fabrik.jLayouts = {};
 				}
-				Fabrik.jLayouts = jQuery.extend(Fabrik.jLayouts, " . json_encode(self::$jLayoutsJs) . ");";
+				Fabrik.jLayouts = jQuery.extend(Fabrik.jLayouts, %%jLayouts%%);";
 				$liveSiteReq[] = 'media/com_fabrik/js/fabrik' . $ext;
 				self::script($liveSiteReq, $liveSiteSrc);
 
@@ -927,6 +930,8 @@ EOD;
 
 			self::$framework = $src;
 		}
+
+		self::addToSessionJLayouts();
 
 		return self::$framework;
 	}
@@ -1419,6 +1424,25 @@ EOD;
 		$require   = implode("\n", $require);
 		self::addToSessionScripts($require);
 	}
+
+	/**
+	 * Add jLayouts to session - will then be added via Fabrik System plugin
+	 *
+	 * @return  void
+	 */
+	protected static function addToSessionJLayouts()
+	{
+		$key     = 'fabrik.js.jlayouts';
+		$session = JFactory::getSession();
+
+		/*
+		 * No need to figure out what's already there, unlike addToSessionScripts,
+		 * we're just updating the whole thing each time framework is added.
+		 */
+
+		$session->set($key, self::$jLayoutsJs);
+	}
+
 
 	/**
 	 * Add script to session - will then be added via Fabrik System plugin
