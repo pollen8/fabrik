@@ -1508,7 +1508,7 @@ class FabrikFEModelList extends JModelForm
 					$displayData->viewLinkTarget = $viewLinkTarget;
 					$displayData->viewText = $viewText;
 					$displayData->dataList = $dataList;
-
+					$displayData->list_detail_link_icon = $params->get('list_detail_link_icon', 'search.png');
 					$layout = $this->getLayout('listactions.fabrik-view-button');
 					$viewLink = $layout->render($displayData);
 				}

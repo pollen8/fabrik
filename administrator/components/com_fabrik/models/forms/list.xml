@@ -1095,6 +1095,15 @@
 				description="COM_FABRIK_DETAIL_DESC"
 			/>
 
+			<field name="list_detail_link_icon"
+			       type="text"
+			       default="search.png"
+			       class="input-large"
+			       size="30"
+			       label="COM_FABRIK_DETAIL_LINK_ICON_LABEL"
+			       description="COM_FABRIK_DETAIL_LINK_ICON_DESC"
+			/>
+
 			<field name="list_detail_link_target"
 				type="list"
 				default="0" description="COM_FABRIK_FIELD_LIST_DETAIL_LINK_TARGET_DESC"
