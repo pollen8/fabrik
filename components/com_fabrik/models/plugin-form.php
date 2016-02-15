@@ -11,7 +11,6 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Joomla\String\String;
 use Joomla\Utilities\ArrayHelper;
 
 jimport('joomla.application.component.model');
@@ -514,7 +513,7 @@ class PlgFabrik_Form extends FabrikPlugin
 	public function getLayout($type)
 	{
 		$name = get_class($this);
-		$name = strtolower(String::str_ireplace('PlgFabrik_Form', '', $name));
+		$name = strtolower(JString::str_ireplace('PlgFabrik_Form', '', $name));
 		$basePath = COM_FABRIK_BASE . '/plugins/fabrik_form/' . $name . '/layouts';
 		$layout = new FabrikLayoutFile('fabrik-form-' . $name. '-' . $type, $basePath, array('debug' => false, 'component' => 'com_fabrik', 'client' => 'site'));
 		$layout->addIncludePaths(JPATH_THEMES . '/' . $this->app->getTemplate() . '/html/layouts');

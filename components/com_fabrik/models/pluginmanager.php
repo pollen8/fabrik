@@ -11,8 +11,6 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Joomla\String\String;
-
 jimport('joomla.application.component.model');
 jimport('joomla.filesystem.file');
 
@@ -294,7 +292,7 @@ class FabrikFEModelPluginmanager extends FabModel
 			$group = 'list';
 		}
 
-		$group = String::strtolower($group);
+		$group = JString::strtolower($group);
 		/* $$$ rob ONLY import the actual plugin you need otherwise ALL $group plugins are loaded regardless of whether they
 		* are used or not memory changes:
 		* Application 0.322 seconds (+0.081); 22.92 MB (+3.054) - pluginmanager: form email imported
@@ -326,10 +324,10 @@ class FabrikFEModelPluginmanager extends FabModel
 			}
 		}
 
-		$class = 'plgFabrik_' . String::ucfirst($group) . String::ucfirst($className);
+		$class = 'plgFabrik_' . JString::ucfirst($group) . JString::ucfirst($className);
 		$conf = array();
-		$conf['name'] = String::strtolower($className);
-		$conf['type'] = String::strtolower('fabrik_' . $group);
+		$conf['name'] = JString::strtolower($className);
+		$conf['type'] = JString::strtolower('fabrik_' . $group);
 		$plugIn = new $class($dispatcher, $conf);
 
 		// Needed for viz

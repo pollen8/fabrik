@@ -11,8 +11,6 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Joomla\String\String;
-
 // Require the abstract plugin class
 require_once COM_FABRIK_FRONTEND . '/models/plugin-cron.php';
 
@@ -296,9 +294,9 @@ class PlgFabrik_Crongmail extends PlgFabrik_Cron
 		$title = $overview->subject;
 
 		// Remove 'RE: ' from title
-		if (String::strtoupper(substr($title, 0, 3)) == 'RE:')
+		if (JString::strtoupper(substr($title, 0, 3)) == 'RE:')
 		{
-			$title = String::substr($title, 3, String::strlen($title));
+			$title = JString::substr($title, 3, JString::strlen($title));
 		}
 
 		return $title;

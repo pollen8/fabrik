@@ -12,7 +12,6 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Joomla\String\String;
 use Joomla\Utilities\ArrayHelper;
 
 jimport('joomla.application.component.controller');
@@ -60,7 +59,7 @@ class FabrikAdminControllerPlugin extends FabControllerForm
 
 		if (substr($method, 0, 2) !== 'on')
 		{
-			$method = 'on' . String::ucfirst($method);
+			$method = 'on' . JString::ucfirst($method);
 		}
 
 		$dispatcher = JEventDispatcher::getInstance();

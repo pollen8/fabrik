@@ -11,7 +11,6 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Joomla\String\String;
 use \Joomla\Registry\Registry;
 use \Joomla\Utilities\ArrayHelper;
 
@@ -3964,10 +3963,10 @@ class PlgFabrik_Element extends FabrikPlugin
 		// Apply element where/order by statements to the filter (e.g. dbjoins 'Joins where and/or order by statement')
 		$elementWhere = $this->buildQueryWhere(array(), true, null, array('mode' => 'filter'));
 
-		if (String::stristr($sql, 'WHERE ') && String::stristr($elementWhere, 'WHERE '))
+		if (JString::stristr($sql, 'WHERE ') && JString::stristr($elementWhere, 'WHERE '))
 		{
 			// $$$ hugh - only replace the WHERE with AND if it's the first word, so we don't munge sub-queries
-			// $elementWhere = String::str_ireplace('WHERE ', 'AND ', $elementWhere);
+			// $elementWhere = JString::str_ireplace('WHERE ', 'AND ', $elementWhere);
 			$elementWhere = preg_replace("#^(\s*)(WHERE)(.*)#i", "$1AND$3", $elementWhere);
 		}
 
@@ -4316,7 +4315,7 @@ class PlgFabrik_Element extends FabrikPlugin
 	 */
 	public function getFilterValue($value, $condition, $eval)
 	{
-		$condition = String::strtolower($condition);
+		$condition = JString::strtolower($condition);
 		$this->escapeQueryValue($condition, $value);
 		$db = FabrikWorker::getDbo();
 
@@ -4419,8 +4418,8 @@ class PlgFabrik_Element extends FabrikPlugin
 			if ($eval == FABRKFILTER_NOQUOTES)
 			{
 				// $$$ hugh - darn, this is stripping the ' of the end of things like "select & from foo where bar = '123'"
-				$value = String::ltrim($value, "'");
-				$value = String::rtrim($value, "'");
+				$value = JString::ltrim($value, "'");
+				$value = JString::rtrim($value, "'");
 			}
 
 			if ($condition == '=' && $value == "'_null_'")
@@ -4533,7 +4532,7 @@ class PlgFabrik_Element extends FabrikPlugin
 	{
 		$fieldDesc = $this->getFieldDescription();
 
-		if (String::stristr($fieldDesc, 'INT') || $this->getElement()->filter_exact_match == 1)
+		if (JString::stristr($fieldDesc, 'INT') || $this->getElement()->filter_exact_match == 1)
 		{
 			return '=';
 		}
@@ -6626,7 +6625,7 @@ class PlgFabrik_Element extends FabrikPlugin
 
 				if ($where != '')
 				{
-					$where = String::substr($where, 5, String::strlen($where) - 5);
+					$where = JString::substr($where, 5, JString::strlen($where) - 5);
 
 					if (!in_array($where, $whereArray))
 					{
@@ -7635,7 +7634,7 @@ class PlgFabrik_Element extends FabrikPlugin
 	{
 		$name = get_class($this);
 
-		return strtolower(String::str_ireplace('PlgFabrik_Element', '', $name));
+		return strtolower(JString::str_ireplace('PlgFabrik_Element', '', $name));
 	}
 
 	/**

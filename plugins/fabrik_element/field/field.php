@@ -11,7 +11,6 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Joomla\String\String;
 use Joomla\Utilities\ArrayHelper;
 
 jimport('joomla.application.component.model');
@@ -84,7 +83,7 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 
 		if ($params->get('password') == '1')
 		{
-			$d = str_pad('', String::strlen($d), '*');
+			$d = str_pad('', JString::strlen($d), '*');
 		}
 
 		return $d;
@@ -231,10 +230,10 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 			$opts = $this->linkOpts();
 			$title = $params->get('link_title', '');
 
-			if (FabrikWorker::isEmail($value) || String::stristr($value, 'http'))
+			if (FabrikWorker::isEmail($value) || JString::stristr($value, 'http'))
 			{
 			}
-			elseif (String::stristr($value, 'www.'))
+			elseif (JString::stristr($value, 'www.'))
 			{
 				$value = 'http://' . $value;
 			}

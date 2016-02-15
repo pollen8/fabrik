@@ -11,7 +11,6 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Joomla\String\String;
 use Joomla\Utilities\ArrayHelper;
 
 jimport('joomla.filesystem.file');
@@ -1362,7 +1361,7 @@ EOD;
 		// Replace with minified files if found
 		foreach ($files as &$file)
 		{
-			if (!(String::stristr($file, 'http://') || String::stristr($file, 'https://')))
+			if (!(JString::stristr($file, 'http://') || JString::stristr($file, 'https://')))
 			{
 				if (JFile::exists(COM_FABRIK_BASE . $file))
 				{
@@ -1391,7 +1390,7 @@ EOD;
 
 			if (!$pathMatched)
 			{
-				if (!(String::stristr($file, 'http://') || String::stristr($file, 'https://')))
+				if (!(JString::stristr($file, 'http://') || JString::stristr($file, 'https://')))
 				{
 					$file = COM_FABRIK_LIVESITE . $file;
 				}
@@ -1982,7 +1981,7 @@ EOD;
 	 */
 	public static function getImagePath($file, $type = 'form', $tmpl = '')
 	{
-		$file  = String::ltrim($file, DIRECTORY_SEPARATOR);
+		$file  = JString::ltrim($file, DIRECTORY_SEPARATOR);
 		$paths = self::addPath('', 'image', $type, true);
 
 		foreach ($paths as $path)
@@ -2538,7 +2537,7 @@ EOD;
 	 */
 	public static function a($href, $lbl = '', $opts = array())
 	{
-		if (empty($href) || String::strtolower($href) == 'http://' || String::strtolower($href) == 'https://')
+		if (empty($href) || JString::strtolower($href) == 'http://' || JString::strtolower($href) == 'https://')
 		{
 			// Don't return empty links
 			return '';
@@ -2670,7 +2669,7 @@ EOD;
 
 			if ($ret['type'] == 'mediabox')
 			{
-				$ext = String::strtolower(JFile::getExt($link));
+				$ext = JString::strtolower(JFile::getExt($link));
 
 				switch ($ext)
 				{

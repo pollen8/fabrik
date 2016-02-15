@@ -12,8 +12,6 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Joomla\String\String;
-
 $db = JFactory::getDbo();
 
 // Load front end language file as well
@@ -25,7 +23,7 @@ $query = $db->getQuery(true);
 $app = JFactory::getApplication();
 $input = $app->input;
 $option = $input->get('option');
-$shortName = String::substr($option, 4);
+$shortName = JString::substr($option, 4);
 $query->select('id')->from('#__fabrik_packages')
 ->where('(component_name = ' . $db->quote($option) . ' OR component_name = ' . $db->quote($shortName) . ') AND external_ref <> ""')
 ->order('version DESC');
@@ -64,7 +62,7 @@ else
 	$controller = '';
 }
 
-$classname = 'FabrikController' . String::ucfirst($controller);
+$classname = 'FabrikController' . JString::ucfirst($controller);
 
 $config = array();
 $config['base_path'] = JPATH_SITE . '/components/com_fabrik/';
@@ -79,7 +77,7 @@ if (strpos($input->getCmd('task'), '.') !== false)
 {
 	$controller = explode('.', $input->getCmd('task'));
 	$controller = array_shift($controller);
-	$classname = 'FabrikController' . String::ucfirst($controller);
+	$classname = 'FabrikController' . JString::ucfirst($controller);
 	$path = JPATH_SITE . '/components/com_fabrik/controllers/' . $controller . '.php';
 
 	if (JFile::exists($path))
@@ -99,7 +97,7 @@ if (strpos($input->getCmd('task'), '.') !== false)
 }
 else
 {
-	$classname = 'FabrikController' . String::ucfirst($controller);
+	$classname = 'FabrikController' . JString::ucfirst($controller);
 	$controller = new $classname($config);
 	$task = $input->getCmd('task');
 }

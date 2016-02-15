@@ -11,7 +11,6 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Joomla\String\String;
 use Joomla\Utilities\ArrayHelper;
 
 require_once JPATH_SITE . '/plugins/fabrik_element/databasejoin/databasejoin.php';

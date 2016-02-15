@@ -11,7 +11,6 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Joomla\String\String;
 use \Joomla\Registry\Registry;
 use Joomla\Utilities\ArrayHelper;
 
@@ -343,11 +342,11 @@ class PlgFabrik_Validationrule extends FabrikPlugin
 
 		if ($this->allowEmpty())
 		{
-			return FText::_('PLG_VALIDATIONRULE_' . String::strtoupper($this->pluginName) . '_ALLOWEMPTY_LABEL');
+			return FText::_('PLG_VALIDATIONRULE_' . JString::strtoupper($this->pluginName) . '_ALLOWEMPTY_LABEL');
 		}
 		else
 		{
-			return FText::_('PLG_VALIDATIONRULE_' . String::strtoupper($this->pluginName) . '_LABEL');
+			return FText::_('PLG_VALIDATIONRULE_' . JString::strtoupper($this->pluginName) . '_LABEL');
 		}
 	}
 

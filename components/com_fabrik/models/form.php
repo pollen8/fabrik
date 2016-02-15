@@ -11,7 +11,6 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Joomla\String\String;
 use \Joomla\Registry\Registry;
 use Joomla\Utilities\ArrayHelper;
 
@@ -3569,11 +3568,11 @@ class FabrikFEModelForm extends FabModelForm
 		if (strstr($sql, 'WHERE'))
 		{
 			// Do it this way as queries may contain sub-queries which we want to keep the where
-			$firstWord = String::substr($where, 0, 5);
+			$firstWord = JString::substr($where, 0, 5);
 
 			if ($firstWord == 'WHERE')
 			{
-				$where = String::substr_replace($where, 'AND', 0, 5);
+				$where = JString::substr_replace($where, 'AND', 0, 5);
 			}
 		}
 		// Set rowId to -2 to indicate random record
@@ -4084,7 +4083,7 @@ class FabrikFEModelForm extends FabModelForm
 			return str_replace("{Add/Edit}", '', $label);
 		}
 
-		if (String::stristr($label, "{Add/Edit}"))
+		if (JString::stristr($label, "{Add/Edit}"))
 		{
 			$replace = $this->isNewRecord() ? FText::_('COM_FABRIK_ADD') : FText::_('COM_FABRIK_EDIT');
 			$label = str_replace("{Add/Edit}", $replace, $label);
