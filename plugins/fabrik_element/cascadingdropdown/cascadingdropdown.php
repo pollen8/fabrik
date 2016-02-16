@@ -939,7 +939,7 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 			$query->where($where);
 		}
 
-		if (!String::stristr($where, 'order by'))
+		if (!JString::stristr($where, 'order by'))
 		{
 			$query->order($orderBy . ' ASC');
 		}

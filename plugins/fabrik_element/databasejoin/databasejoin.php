@@ -2327,7 +2327,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		$where .= $preFilterWhere;
 		$sql .= $where;
 
-		if (!String::stristr($where, 'order by'))
+		if (!JString::stristr($where, 'order by'))
 		{
 			$sql .= $this->getOrderBy('filter');
 		}

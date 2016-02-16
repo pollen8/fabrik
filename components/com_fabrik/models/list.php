@@ -2887,7 +2887,7 @@ class FabrikFEModelList extends JModelForm
 						 * which get converted form names to ids above have already been run through
 						 * getOrderByName().  So first check here ...
 						 */
-						if (!String::stristr($orderByRaw, 'CONCAT(') && !String::stristr($orderByRaw, 'CONCAT_WS('))
+						if (!JString::stristr($orderByRaw, 'CONCAT(') && !JString::stristr($orderByRaw, 'CONCAT_WS('))
 						{
 							$orderByRaw = FabrikString::safeColName($orderByRaw);
 
@@ -2899,7 +2899,7 @@ class FabrikFEModelList extends JModelForm
 								 * $$$ @TODO why don't we just embed this logic in safeColName(), so
 								 * it recognizes a CONCAT and treats it accordingly?
 								 */
-								if (!String::stristr($field, 'CONCAT(') && !String::stristr($field, 'CONCAT_WS('))
+								if (!JString::stristr($field, 'CONCAT(') && !JString::stristr($field, 'CONCAT_WS('))
 								{
 									$field = FabrikString::safeColName($field);
 								}

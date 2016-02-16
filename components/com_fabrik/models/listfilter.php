@@ -398,7 +398,7 @@ class FabrikFEModelListfilter extends FabModel
 		$this->_db->setQuery('SHOW VARIABLES LIKE \'ft_min_word_len\'');
 		$res = $this->_db->loadObject();
 
-		if (!String::strlen($s) >= $res->Value)
+		if (!JString::strlen($s) >= $res->Value)
 		{
 			throw new UnexpectedValueException(FText::_('COM_FABRIK_NOTICE_SEARCH_STRING_TOO_SHORT'));
 		}
