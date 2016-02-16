@@ -179,6 +179,8 @@
 			class="input-medium"
 			label="JGLOBAL_FIELD_PUBLISH_UP_LABEL"
 			description="JGLOBAL_FIELD_PUBLISH_UP_DESC"
+			   format="%Y-%m-%d %H:%M:%S" size="22"
+			   filter="user_utc"
 		/>
 
 		<field name="publish_down"
@@ -186,6 +188,8 @@
 			class="input-medium"
 			label="JGLOBAL_FIELD_PUBLISH_DOWN_LABEL"
 			description="JGLOBAL_FIELD_PUBLISH_DOWN_DESC"
+		   format="%Y-%m-%d %H:%M:%S" size="22"
+		   filter="user_utc"
 		/>
 
 	</fieldset>
