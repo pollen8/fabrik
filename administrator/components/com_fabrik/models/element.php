@@ -494,7 +494,7 @@ class FabrikAdminModelElement extends FabModelAdmin
 		$input                 = $this->app->input;
 		$new                   = $data['id'] == 0 ? true : false;
 		$params                = $data['params'];
-		$data['name']          = JString::iclean($data['name']);
+		$data['name']          = FabrikString::iclean($data['name']);
 		$name                  = $data['name'];
 		$params['validations'] = FArrayHelper::getValue($data, 'validationrule', array());
 		$elementModel          = $this->getElementPluginModel($data);
