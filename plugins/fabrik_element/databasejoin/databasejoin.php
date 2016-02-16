@@ -1378,7 +1378,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 						break;
 				}
 
-				$html[] = $this->renderFrontEndSelect($html);
+				$html[] = $this->renderFrontEndSelect($data);
 			}
 			elseif ($this->canView())
 			{
@@ -1394,12 +1394,15 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 	/**
 	 * Render the front end select / add buttons in a JLayout file
 	 *
+	 * @param   array   $data   row data in case template override wants it
+	 *
 	 * @return  string
 	 */
-	protected function renderFrontEndSelect()
+	protected function renderFrontEndSelect($data)
 	{
-		$params = $this->getParams();
+		$params = $this->getParams($data);
 		$displayData = new stdClass;
+		$displayData->rowData = $data;
 		$displayData->frontEndSelect = $params->get('fabrikdatabasejoin_frontend_select');
 		$displayData->frontEndAdd = $params->get('fabrikdatabasejoin_frontend_add');
 		$forms = $this->getLinkedForms();
