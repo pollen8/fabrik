@@ -11,8 +11,6 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Joomla\String\String;
-
 jimport('joomla.application.component.view');
 
 /**
@@ -104,7 +102,7 @@ class FabrikViewEmailform extends FabrikView
 		{
 			foreach ($badStrings as $v2)
 			{
-				if (String::strpos($v, $v2) !== false)
+				if (JString::strpos($v, $v2) !== false)
 				{
 					throw new RuntimeException(FText::_('JERROR_ALERTNOAUTHOR'), 500);
 				}

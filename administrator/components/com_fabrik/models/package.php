@@ -12,7 +12,6 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Joomla\String\String;
 use Joomla\Utilities\ArrayHelper;
 
 require_once 'fabmodeladmin.php';
@@ -233,7 +232,7 @@ class FabrikAdminModelPackage extends FabModelAdmin
 
 		foreach ($blocks as $type => $values)
 		{
-			$tbl = String::ucfirst($type);
+			$tbl = JString::ucfirst($type);
 
 			foreach ($values as $id)
 			{

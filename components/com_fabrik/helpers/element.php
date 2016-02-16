@@ -11,7 +11,6 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Joomla\String\String;
 use Joomla\Utilities\ArrayHelper;
 
 /**
@@ -129,7 +128,7 @@ class FabrikHelperElement
 	public static function findElementFromJoinKeys($model, $key)
 	{
 		// Search on fullname fullname_id and fullname___params
-		$lookUps = array($key, substr($key, 0, String::strlen($key) - 3), substr($key, 0, String::strlen($key) - 9));
+		$lookUps = array($key, substr($key, 0, JString::strlen($key) - 3), substr($key, 0, JString::strlen($key) - 9));
 
 		foreach ($lookUps as $lookup)
 		{

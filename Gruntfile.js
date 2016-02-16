@@ -9,7 +9,7 @@ var fs = require('fs-extra'),
     replace = require('replace'),
     buildConfig = require('./fabrik_build/build-config.js'),
     zipPromises = [],
-    done;
+    done; 
 fs = Promise.promisifyAll(fs);
 
 
