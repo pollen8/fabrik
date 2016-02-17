@@ -31,14 +31,14 @@ defined('_JEXEC') or die('Restricted access');
 				?>
 			<li>
 				<a class="menu-lists" href="index.php?option=com_fabrik&task=list.view&listid=<?php echo $list->id; ?>">
-					<span class="<?php echo $list->icon;?>"></span> <?php echo $list->label;?>
-				</a>
-				</li>
-			<?php
-			endforeach;?>
-		</ul>
+	<span class="<?php echo $list->icon;?>"></span> <?php echo $list->label;?>
+	</a>
 	</li>
-</ul>
+	<?php
+endforeach;?>
+	</ul>
+	</li>
+	</ul>
 
 <?php endif;?>
 
