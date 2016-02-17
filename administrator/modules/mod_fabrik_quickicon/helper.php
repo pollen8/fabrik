@@ -28,6 +28,28 @@ abstract class ModFabrik_QuickIconHelper
 	protected static $buttons = array();
 
 	/**
+	 * Get selected lists to add to dashboard
+	 * @return mixed
+	 */
+	public static function listIcons()
+	{
+		$db = JFactory::getDbo();
+		$query = $db->getQuery(true);
+		$query->select('id, label, params')->from('#__fabrik_lists')
+			->where('params LIKE \'%"dashboard":"1"%\'');
+		$db->setQuery($query);
+		$lists = $db->loadObjectList();
+
+		foreach ($lists as $list)
+		{
+			$params = new Joomla\Registry\Registry($list->params);
+			$list->icon = $params->get('dashboard_icon', 'icon-list');
+		}
+
+		return $lists;
+	}
+
+	/**
 	 * Helper method to return button list.
 	 *
 	 * This method returns the array by reference so it can be

@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<extension type="module" version="3" client="administrator">
+<extension client="administrator"
+           method="upgrade"
+           type="module"
+           version="3">
 	<name>mod_fabrik_quickicon</name>
 	<author>Fabrik</author>
 	<creationDate>January 2016</creationDate>
@@ -18,13 +21,26 @@
 	</files>
 	<config>
 		<fields name="params">
-			<fieldset addfieldpath="/administrator/components/com_fabrik/models/fields" name="advanced">
+			<fieldset addfieldpath="/administrator/components/com_fabrik/models/fields"
+			          name="advanced">
 
-				<field name="layout" type="list" default="menu" label="JFIELD_ALT_LAYOUT_LABEL" description="JFIELD_ALT_MODULE_LAYOUT_DESC">
-				<option value="menu">menu</option>
-				<option value="default">default</option>
+				<field name="layout"
+				       type="list"
+				       default="menu"
+				       label="JFIELD_ALT_LAYOUT_LABEL"
+				       description="JFIELD_ALT_MODULE_LAYOUT_DESC">
+					<option value="menu">menu</option>
+					<option value="default">default</option>
 				</field>
 
+				<field name="show_menu_links"
+				       type="list"
+				       default="1"
+				       description="MOD_FABRIK_QUICKICON_SHOW_MENU_LINKS_DESC"
+				       label="MOD_FABRIK_QUICKICON_SHOW_MENU_LINKS">
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+				</field>
 			</fieldset>
 		</fields>
 	</config>
