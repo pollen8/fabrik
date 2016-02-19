@@ -1479,6 +1479,7 @@ class FabrikFEModelList extends JModelForm
 					$displayData->editLink = $edit_link;
 					$displayData->editLabel = $editLabel;
 					$displayData->editText = $editText;
+					$displayData->rowData = $row;
 					$layout = $this->getLayout('listactions.fabrik-edit-button');
 					$editLink = $layout->render($displayData);
 				}
@@ -1507,6 +1508,7 @@ class FabrikFEModelList extends JModelForm
 					$displayData->viewLinkTarget = $viewLinkTarget;
 					$displayData->viewText = $viewText;
 					$displayData->dataList = $dataList;
+					$displayData->rowData = $row;
 					$displayData->list_detail_link_icon = $params->get('list_detail_link_icon', 'search.png');
 					$layout = $this->getLayout('listactions.fabrik-view-button');
 					$viewLink = $layout->render($displayData);
