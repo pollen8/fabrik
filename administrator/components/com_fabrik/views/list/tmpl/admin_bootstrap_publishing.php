@@ -41,6 +41,12 @@ defined('_JEXEC') or die('Restricted access');
 	    		<?php echo FText::_('COM_FABRIK_GROUP_LABEL_SEARCH')?>
 	    	</a>
 	    </li>
+		<li>
+			<a data-toggle="tab" href="#publishing-dashboard">
+				<?php echo FText::_('COM_FABRIK_ADMIN_DASHBOARD')?>
+			</a>
+		</li>
+
 	</ul>
 
 	<div class="tab-content">
@@ -89,6 +95,15 @@ defined('_JEXEC') or die('Restricted access');
 			<fieldset class="form-horizontal">
 				<div class="alert"><?php echo FText::_('COM_FABRIK_SPECIFY_ELEMENTS_IN_DETAILS_FILTERS'); ?></div>
 				<?php foreach ($this->form->getFieldset('search') as $this->field) :
+					echo $this->loadTemplate('control_group');
+				endforeach;
+				?>
+			</fieldset>
+		</div>
+
+		<div class="tab-pane" id="publishing-dashboard">
+			<fieldset class="form-horizontal">
+				<?php foreach ($this->form->getFieldset('dashboard') as $this->field) :
 					echo $this->loadTemplate('control_group');
 				endforeach;
 				?>
