@@ -732,15 +732,13 @@ FbForm = new Class({
 	 * Hide all groups except those in the active page
 	 */
 	hideOtherPages: function () {
-		var page;
+		var page, currentPage = parseInt(this.currentPage, 10);
 		this.options.pages.each(function (gids, i) {
-			if (i.toInt() !== this.currentPage.toInt()) {
-				page = document.id('page_' + i);
-				if (typeOf(page) !== 'null') {
-					page.hide();
-				}
+			if (parseInt(i, 10) !== currentPage) {
+				page = jQuery('#page_' + i);
+				page.hide();
 			}
-		}.bind(this));
+		});
 	},
 
 	setPageButtons: function () {
@@ -1795,7 +1793,7 @@ FbForm = new Class({
 				var errorMessage = this.options.minMaxErrMsg[i];
 				errorMessage = errorMessage.replace(/\{min\}/, this.options.minRepeat[i]);
 				errorMessage = errorMessage.replace(/\{max\}/, this.options.maxRepeat[i]);
-				alert(errorMessage);
+				window.alert(errorMessage);
 			}
 			return;
 		}
