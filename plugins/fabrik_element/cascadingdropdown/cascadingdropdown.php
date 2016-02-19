@@ -340,23 +340,6 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 	}
 
 	/**
-	 * Does the element store its data in a join table (1:n)
-	 *
-	 * @return	bool
-	 */
-	public function isJoin()
-	{
-		if (in_array($this->getDisplayType(), array('checkbox', 'multilist')))
-		{
-			return true;
-		}
-		else
-		{
-			return parent::isJoin();
-		}
-	}
-
-	/**
 	 * Get the display type (list,checkbox,multiselect etc.)
 	 *
 	 * @since  3.0.7

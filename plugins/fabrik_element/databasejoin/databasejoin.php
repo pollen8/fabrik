@@ -3471,13 +3471,11 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 	/**
 	 * Does the element store its data in a join table (1:n)
 	 *
-	 * @return    bool
+	 * @return	bool
 	 */
 	public function isJoin()
 	{
-		$params = $this->getParams();
-
-		if (in_array($params->get('database_join_display_type', 'dropdown'), array('checkbox', 'multilist')))
+		if (in_array($this->getDisplayType(), array('checkbox', 'multilist')))
 		{
 			return true;
 		}
@@ -3792,5 +3790,44 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		{
 			parent::getValuesToEncrypt($values, $data, $c);
 		}
+	}
+
+	/**
+	 * Trigger called when a row is deleted, if a join (multiselect/checbox) then remove
+	 * rows from _repeat_foo table.
+	 *
+	 * @param   array $groups grouped data of rows to delete
+	 *
+	 * @return  mixed
+	 */
+	public function onDeleteRows($groups)
+	{
+		if (!$this->isJoin())
+		{
+			return;
+		}
+
+		$join  = $this->getJoin();
+		$keys = array();
+		$fulName = $this->getFullName(true, false) . '_raw';
+
+		foreach ($groups as $group)
+		{
+			foreach ($group as $row)
+			{
+				$keys = array_merge($keys, explode(GROUPSPLITTER, $row->$fulName));
+			}
+		}
+
+		$db = $this->getDb();
+		array_walk($keys, function (&$key) {
+			$db = $this->getDb();
+			$key = $db->q($key);
+		});
+
+		$query = $db->getQuery(true);
+		$query->delete($db->qn($join->table_join))->where('id IN (' . implode(',', $keys) .')');
+
+		return $db->setQuery($query)->execute();
 	}
 }

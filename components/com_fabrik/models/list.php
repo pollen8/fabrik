@@ -8433,7 +8433,7 @@ class FabrikFEModelList extends JModelForm
 
 			if ($key == '')
 			{
-				throw new Exception(FText::_("COM_FABRIK_NO_KEY_FOUND_FOR_THIS_TABLE"));
+				throw new Exception(FText::_('COM_FABRIK_NO_KEY_FOUND_FOR_THIS_TABLE'));
 			}
 		}
 
@@ -8448,7 +8448,7 @@ class FabrikFEModelList extends JModelForm
 
 		/**
 		 *
-		 * $$$ rob - if we are not deleting joined rows then onloy load in the first row
+		 * $$$ rob - if we are not deleting joined rows then only load in the first row
 		 * otherwise load in all rows so we can apply onDeleteRows() to all the data
 		 *
 		 * $$$ hugh - added setLimits, otherwise session limits from AJAX nav will override us
@@ -8560,11 +8560,7 @@ class FabrikFEModelList extends JModelForm
 		$query = $db->getQuery(true);
 		$query->delete($db->qn($table->db_table_name))->where($key . ' IN (' . $val . ')');
 		$db->setQuery($query);
-
-		if (!$db->execute())
-		{
-			throw new Exception($db->getErrorMsg());
-		}
+		$db->execute();
 
 		$this->deleteJoinedRows($val);
 

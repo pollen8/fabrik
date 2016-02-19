@@ -188,7 +188,7 @@
 				<option value="0">JNO</option>
 				<option value="1">JYES</option>
 			</field>
-			
+
 			<!-- Yes, it's called dbjoin_, don't ask, don't change -->
 			<field name="dbjoin_options_per_row"
 			       type="width"
