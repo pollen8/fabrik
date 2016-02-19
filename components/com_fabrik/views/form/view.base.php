@@ -86,11 +86,12 @@ class FabrikViewFormBase extends FabrikView
 	 */
 	private function _repeatGroupButtons($tmpl)
 	{
+		$formModel                        = $this->getModel();
 		$btnData                          = (object) array('tmpl' => $tmpl);
-		$this->removeRepeatGroupButton    = FabrikHelperHTML::getLayout('form.fabrik-repeat-group-delete')->render($btnData);
-		$this->addRepeatGroupButton       = FabrikHelperHTML::getLayout('form.fabrik-repeat-group-add')->render($btnData);
-		$this->removeRepeatGroupButtonRow = FabrikHelperHTML::getLayout('form.fabrik-repeat-group-row-delete')->render($btnData);
-		$this->addRepeatGroupButtonRow    = FabrikHelperHTML::getLayout('form.fabrik-repeat-group-row-add')->render($btnData);
+		$this->removeRepeatGroupButton    = $formModel->getLayout('form.fabrik-repeat-group-delete')->render($btnData);
+		$this->addRepeatGroupButton       = $formModel->getLayout('form.fabrik-repeat-group-add')->render($btnData);
+		$this->removeRepeatGroupButtonRow = $formModel->getLayout('form.fabrik-repeat-group-row-delete')->render($btnData);
+		$this->addRepeatGroupButtonRow    = $formModel->getLayout('form.fabrik-repeat-group-row-add')->render($btnData);
 	}
 
 	/**
