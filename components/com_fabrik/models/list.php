@@ -3396,7 +3396,17 @@ class FabrikFEModelList extends JModelForm
 	private function _filtersToSQL(&$filters, $startWithWhere = true)
 	{
 		$prefilters = $this->groupFilterSQL($filters, 'prefilter');
+		$menuFilters = $this->groupFilterSQL($filters, 'menuPrefilter');
 		$postFilers = $this->groupFilterSQL($filters);
+
+		// Combine menu and prefilters
+		if (!empty($prefilters) && !empty($menuFilters))
+		{
+			array_unshift($menuFilters, 'AND');
+		}
+
+		$prefilters = array_merge($prefilters, $menuFilters);
+
 
 		if (!empty($prefilters) && !empty($postFilers))
 		{
@@ -3462,18 +3472,18 @@ class FabrikFEModelList extends JModelForm
 		{
 			// $$$rob - prefilter with element that is not published so ignore
 			$condition = JString::strtoupper(FArrayHelper::getValue($filters['condition'], $i, ''));
-
+			$searchType = $filters['search_type'][$i];
 			if (FArrayHelper::getValue($filters['sqlCond'], $i, '') == '' && !in_array($condition, $nullElementConditions))
 			{
 				continue;
 			}
 
-			if ($filters['search_type'][$i] == 'prefilter' && $type == '*')
+			if (in_array($searchType, array('prefilter', 'menuPrefilter')) && $type == '*')
 			{
 				continue;
 			}
 
-			if ($filters['search_type'][$i] != 'prefilter' && $type == 'prefilter')
+			if ($searchType !== $type && $type !== '*')
 			{
 				continue;
 			}
@@ -5075,7 +5085,7 @@ class FabrikFEModelList extends JModelForm
 		*/
 		$this->getPrefilterArray($this->filters);
 
-		// These are filters created from a search form or normal search
+		// These are filters created from a search form or normal search, assign them to the filters array
 		$keys = array_keys($request);
 		$indexStep = count(FArrayHelper::getValue($this->filters, 'key', array()));
 		FabrikHelperHTML::debug($keys, 'filter:request keys');
@@ -5353,19 +5363,16 @@ class FabrikFEModelList extends JModelForm
 	}
 
 	/**
-	 * Get the prefilter settings from list/module/menu options
-	 * Use in listModel::getPrefilterArray() and formModel::getElementIds()
+	 * Get the module or then menu pre-filter settings
 	 *
-	 * @return multitype:array
+	 * @return string
 	 */
-	public function prefilterSetting()
+	private function menuModulePrefilters()
 	{
 		$input = $this->app->input;
 		$package = $this->app->getUserState('com_fabrik.package', 'fabrik');
-		$params = $this->getParams();
-
-		// Are we coming from a post request via a module?
 		$moduleId = 0;
+		// Are we coming from a post request via a module?
 		$requestRef = $input->get('listref', '', 'string');
 
 		if ($requestRef !== '' && !strstr($requestRef, 'com_' . $package))
@@ -5393,18 +5400,6 @@ class FabrikFEModelList extends JModelForm
 			}
 		}
 
-		// List pre-filter properties
-		$afilterFields = (array) $params->get('filter-fields');
-		$afilterConditions = (array) $params->get('filter-conditions');
-		$afilterValues = (array) $params->get('filter-value');
-		$afilterAccess = (array) $params->get('filter-access');
-		$afilterEval = (array) $params->get('filter-eval');
-		$afilterJoins = (array) $params->get('filter-join');
-		$afilterGrouped = (array) $params->get('filter-grouped');
-
-		/* If we are rendering as a module don't pick up the menu item options (params already set in list module)
-		 * so first statement when rendering a module, 2nd when posting to the component from a module.
-		*/
 		if (!strstr($this->getRenderContext(), 'mod_fabrik_list') && $moduleId === 0)
 		{
 			$spoof_check = array(
@@ -5414,6 +5409,35 @@ class FabrikFEModelList extends JModelForm
 			$properties = FabrikWorker::getMenuOrRequestVar('prefilters', '', $this->isMambot, 'menu', $spoof_check);
 		}
 
+		return $properties;
+	}
+
+	/**
+	 * Get the prefilter settings from list/module/menu options
+	 * Use in listModel::getPrefilterArray() and formModel::getElementIds()
+	 *
+	 * @return multitype:array
+	 */
+	public function prefilterSetting()
+	{
+		$params = $this->getParams();
+		$properties = $this->menuModulePrefilters();
+
+		// List pre-filter properties
+		$listFields = (array) $params->get('filter-fields');
+		$listConditions = (array) $params->get('filter-conditions');
+		$listValue = (array) $params->get('filter-value');
+		$listAccess = (array) $params->get('filter-access');
+		$listEval = (array) $params->get('filter-eval');
+		$listJoins = (array) $params->get('filter-join');
+		$listGrouped = (array) $params->get('filter-grouped');
+		$listSearchType = array_fill(0, count($listJoins), 'prefilter');
+
+		/* If we are rendering as a module don't pick up the menu item options (params already set in list module)
+		 * so first statement when rendering a module, 2nd when posting to the component from a module.
+		*/
+
+
 		if (isset($properties))
 		{
 			$prefilters = ArrayHelper::fromObject(json_decode($properties));
@@ -5421,16 +5445,49 @@ class FabrikFEModelList extends JModelForm
 
 			if (!empty($conditions))
 			{
-				$afilterFields = FArrayHelper::getValue($prefilters, 'filter-fields', array());
-				$afilterConditions = FArrayHelper::getValue($prefilters, 'filter-conditions', array());
-				$afilterValues = FArrayHelper::getValue($prefilters, 'filter-value', array());
-				$afilterAccess = FArrayHelper::getValue($prefilters, 'filter-access', array());
-				$afilterEval = FArrayHelper::getValue($prefilters, 'filter-eval', array());
-				$afilterJoins = FArrayHelper::getValue($prefilters, 'filter-join', array());
+				$fields = FArrayHelper::getValue($prefilters, 'filter-fields', array());
+				$conditions = FArrayHelper::getValue($prefilters, 'filter-conditions', array());
+				$values = FArrayHelper::getValue($prefilters, 'filter-value', array());
+				$access = FArrayHelper::getValue($prefilters, 'filter-access', array());
+				$eval = FArrayHelper::getValue($prefilters, 'filter-eval', array());
+				$joins = FArrayHelper::getValue($prefilters, 'filter-join', array());
+				$searchType = array_fill(0, count($joins), 'menuPrefilter');
+
+				$overrideListPrefilters = $params->get('menu_module_prefilters_override', true);
+
+				if ($overrideListPrefilters)
+				{
+					// Original behavior
+					$listFields = $fields;
+					$listConditions = $conditions;
+					$listValue = $values;
+					$listAccess = $access;
+					$listEval = $eval;
+					$listJoins = $joins;
+					$listSearchType = $searchType;
+				}
+				else
+				{
+					// Preferred behavior but for backwards compat we need to ask users to
+					// set this option in the menu/module settings
+					$joins[0] = 'AND';
+					$listFields = array_merge($listFields, $fields);
+					$listConditions = array_merge($listConditions, $conditions);
+					$listValue = array_merge($listValue, $values);
+					$listAccess  = array_merge($listAccess, $access);
+					$listEval = array_merge($listEval, $eval);
+
+					$listSearchType = array_merge($listSearchType, $searchType);
+					//$listGrouped[count($listGrouped) -1] = '1';
+					$listJoins = array_merge($listJoins, $joins);
+
+					$listGrouped = array_merge($listGrouped, array_fill(0, count($joins), 0));
+				}
 			}
 		}
 
-		return array($afilterFields, $afilterConditions, $afilterValues, $afilterAccess, $afilterEval, $afilterJoins, $afilterGrouped);
+		return array($listFields, $listConditions, $listValue, $listAccess,
+			$listEval, $listJoins, $listGrouped, $listSearchType);
 	}
 
 	/**
@@ -5439,36 +5496,38 @@ class FabrikFEModelList extends JModelForm
 	 *
 	 * @param   array  &$filters  filters
 	 *
-	 * @return  array	prefilters combinde with filters
+	 * @return  array	prefilters combined with filters
 	 */
 	public function getPrefilterArray(&$filters)
 	{
 		if (!isset($this->prefilters))
 		{
 			$elements = $this->getElements('filtername', false, false);
-			list($afilterFields, $afilterConditions, $afilterValues, $afilterAccess, $afilterEval, $afilterJoins, $afilterGrouped) = $this->prefilterSetting();
-			$join = 'WHERE';
+			list($filterFields, $filterConditions, $filterValues, $filterAccess,
+				$filterEval, $filterJoins, $filterGrouped, $listSearchType) = $this->prefilterSetting();
 
-			for ($i = 0; $i < count($afilterFields); $i++)
+
+			for ($i = 0; $i < count($filterFields); $i++)
 			{
-				if (!array_key_exists(0, $afilterJoins) || $afilterJoins[0] == '')
+				if (!array_key_exists(0, $filterJoins) || $filterJoins[0] == '')
 				{
-					$afilterJoins[0] = 'AND';
+					$filterJoins[0] = 'AND';
 				}
 
-				$join = FArrayHelper::getValue($afilterJoins, $i, 'AND');
+				$join = FArrayHelper::getValue($filterJoins, $i, 'AND');
 
 				if (trim(JString::strtolower($join)) == 'where')
 				{
 					$join = 'AND';
 				}
 
-				$filter = $afilterFields[$i];
-				$condition = $afilterConditions[$i];
-				$selValue = FArrayHelper::getValue($afilterValues, $i, '');
-				$filterEval = FArrayHelper::getValue($afilterEval, $i, false);
-				$filterGrouped = FArrayHelper::getValue($afilterGrouped, $i, false);
-				$selAccess = $afilterAccess[$i];
+				$filter = $filterFields[$i];
+				$condition = $filterConditions[$i];
+				$searchType = ArrayHelper::getValue($listSearchType, $i, 'prefilter');
+				$selValue = FArrayHelper::getValue($filterValues, $i, '');
+				$filterEval = FArrayHelper::getValue($filterEval, $i, false);
+				$filterGrouped = FArrayHelper::getValue($filterGrouped, $i, false);
+				$selAccess = $filterAccess[$i];
 
 				if (!$this->mustApplyFilter($selAccess))
 				{
@@ -5508,7 +5567,7 @@ class FabrikFEModelList extends JModelForm
 				}
 
 				$filters['join'][] = $join;
-				$filters['search_type'][] = 'prefilter';
+				$filters['search_type'][] = $searchType;
 				$filters['key'][] = $tmpFilter;
 				$filters['value'][] = $selValue;
 				$filters['origvalue'][] = $selValue;

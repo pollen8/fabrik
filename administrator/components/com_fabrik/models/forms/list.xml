@@ -1301,6 +1301,16 @@
 
 		<fieldset name="prefilter">
 
+			<field name="menu_module_prefilters_override"
+			       type="radio"
+			       class="btn-group"
+			       default="1"
+			       description="COM_FABRIK_FIELD_LIST_MENU_MODULE_PREFILTERS_OVERRIDE_LIST_DESC"
+			       label="COM_FABRIK_FIELD_LIST_MENU_MODULE_PREFILTERS_OVERRIDE_LIST_LABEL">
+				<option value="0">JNO</option>
+				<option value="1">JYES</option>
+			</field>
+
 			<field name="prefilter_query"
 			       type="text"
 			       class="input-xxlarge"
