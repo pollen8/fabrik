@@ -401,7 +401,7 @@ class FArrayHelper extends JArrayHelper
 	{
 		if ($num > 0)
 		{
-			array_fill($start_index, $num, $value);
+			return array_fill($start_index, $num, $value);
 		}
 		else
 		{
