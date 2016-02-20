@@ -7327,7 +7327,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		else
 		{
 			$k         = 'rowid';
-			$parentIds = empty($allJoinValues) ? array() : array_fill(0, count($allJoinValues), $formData[$k]);
+			$parentIds = empty($allJoinValues) ? array() : FArrayHelper::array_fill(0, count($allJoinValues), $formData[$k]);
 		}
 
 		$paramsKey = $this->getJoinParamsKey();
