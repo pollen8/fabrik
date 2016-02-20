@@ -6829,13 +6829,15 @@ class FabrikFEModelList extends JModelForm
 	 */
 	protected function addCheckBox(&$aTableHeadings, &$headingClass, &$cellClass)
 	{
+		$params = $this->getParams();
+		$hidecheckbox = $params->get('hidecheckbox', '0');
+		$hidestyle = ($hidecheckbox == '1') ? 'display:none;' : '';
 		$id = 'list_' . $this->getId() . '_checkAll';
 		$select = '<input type="checkbox" name="checkAll" class="' . $id . '" id="' . $id . '" />';
 		$aTableHeadings['fabrik_select'] = $select;
-		$headingClass['fabrik_select'] = array('class' => 'fabrik_ordercell fabrik_select', 'style' => '');
-
+		$headingClass['fabrik_select'] = array('class' => 'fabrik_ordercell fabrik_select', 'style' => $hidestyle);
 		// Needed for ajax filter/nav
-		$cellClass['fabrik_select'] = array('class' => 'fabrik_select fabrik_element');
+		$cellClass['fabrik_select'] = array('class' => 'fabrik_select fabrik_element', 'style' => $hidestyle);
 	}
 
 	/**
