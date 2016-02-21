@@ -387,11 +387,25 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 				$data[$element->name]          = $this->user->get('id');
 				$data[$element->name . '_raw'] = $data[$element->name];
 
+				// Set the formDataWithTableName so any plugins (like email) pick it up with getProcessData()
+				$thisFullName = $this->getFullName(true, false);
+				$formModel    = $this->getFormModel();
+				$groupModel   = $this->getGroupModel();
+
+				if ($groupModel->canRepeat())
+				{
+					$formModel->formDataWithTableName[$thisFullName][$repeatCounter] = array($data[$element->name]);
+					$formModel->formDataWithTableName[$thisFullName . '_raw'][$repeatCounter] = array($data[$element->name]);
+				}
+				else{
+					$formModel->formDataWithTableName[$thisFullName] = array($data[$element->name]);
+					$formModel->formDataWithTableName[$thisFullName . '_raw'] = array($data[$element->name]);
+				}
+
 				// $$$ hugh - need to add to updatedByPlugin() in order to override write access settings.
 				// This allows us to still 'update on edit' when element is write access controlled.
 				if (!$this->canUse())
 				{
-					$thisFullName = $this->getFullName(true, false);
 					$this->getFormModel()->updatedByPlugin($thisFullName, $this->user->get('id'));
 				}
 			}
