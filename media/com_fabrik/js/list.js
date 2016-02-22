@@ -106,6 +106,8 @@ var FbList = new Class({
 		if (!this.options.resetFilters && ((window.history && history.pushState) && history.state && this.options.ajax)) {
 			this._updateRows(history.state);
 		}
+
+		Fabrik.fireEvent('fabrik.list.loaded', [this]);
 	},
 
 	setRowTemplate: function () {
