@@ -5433,7 +5433,7 @@ class FabrikFEModelList extends JModelForm
 		$listEval = (array) $params->get('filter-eval');
 		$listJoins = (array) $params->get('filter-join');
 		$listGrouped = (array) $params->get('filter-grouped');
-		$listSearchType = array_fill(0, count($listJoins), 'prefilter');
+		$listSearchType = FArrayHelper::array_fill(0, count($listJoins), 'prefilter');
 
 		/* If we are rendering as a module don't pick up the menu item options (params already set in list module)
 		 * so first statement when rendering a module, 2nd when posting to the component from a module.
@@ -5453,7 +5453,7 @@ class FabrikFEModelList extends JModelForm
 				$access = FArrayHelper::getValue($prefilters, 'filter-access', array());
 				$eval = FArrayHelper::getValue($prefilters, 'filter-eval', array());
 				$joins = FArrayHelper::getValue($prefilters, 'filter-join', array());
-				$searchType = array_fill(0, count($joins), 'menuPrefilter');
+				$searchType = FArrayHelper::array_fill(0, count($joins), 'menuPrefilter');
 
 				$overrideListPrefilters = $params->get('menu_module_prefilters_override', true);
 
@@ -5483,7 +5483,7 @@ class FabrikFEModelList extends JModelForm
 					//$listGrouped[count($listGrouped) -1] = '1';
 					$listJoins = array_merge($listJoins, $joins);
 
-					$listGrouped = array_merge($listGrouped, array_fill(0, count($joins), 0));
+					$listGrouped = array_merge($listGrouped, FArrayHelper::array_fill(0, count($joins), 0));
 				}
 			}
 		}

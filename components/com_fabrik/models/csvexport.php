@@ -438,7 +438,7 @@ class FabrikFEModelCSVExport extends FabModel
 
 			foreach ($calKeys as $calKey)
 			{
-				$calculations[$calKey]    = array_fill(0, count($a) + 1, ' ');
+				$calculations[$calKey]    = FArrayHelper::array_fill(0, count($a) + 1, ' ');
 				$calculations[$calKey][0] = $calKey;
 				$calcs                    = $this->model->getCalculations();
 

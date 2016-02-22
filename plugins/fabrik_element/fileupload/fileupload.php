@@ -260,7 +260,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		$value = $this->checkForSingleCropValue($value);
 
 		// Repeat_image_repeat_image___params
-		$rawValues = count($value) == 0 ? array() : array_fill(0, count($value), 0);
+		$rawValues = count($value) == 0 ? array() : FArrayHelper::array_fill(0, count($value), 0);
 		$fileData = $this->getFormModel()->data;
 		$rawKey = $this->getFullName(true, false) . '_raw';
 		$rawValues = FArrayHelper::getValue($fileData, $rawKey, $rawValues);
