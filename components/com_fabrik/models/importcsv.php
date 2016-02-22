@@ -790,7 +790,7 @@ class FabrikFEModelImportcsv extends JModelForm
 
 		$this->removeCSVFile();
 		$this->updatedCount = $updatedCount;
-exit;
+
 		FabrikWorker::getPluginManager()->runPlugins('onCompleteImportCSV', $model, 'list');
 	}
 
