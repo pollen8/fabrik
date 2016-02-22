@@ -7247,9 +7247,8 @@ class FabrikFEModelList extends JModelForm
 					{
 						$element = $elementModel->getElement();
 						$key = $element->name;
-						$fullkey = $elementModel->getFullName(true, false);
 
-						// For radio buttons and dropdowns otherwise nothing is stored for them??
+						// For radio buttons and drop-downs otherwise nothing is stored for them??
 						$postKey = array_key_exists($key . '_raw', $data) ? $key . '_raw' : $key;
 
 						if ($elementModel->recordInDatabase($data))
@@ -7348,19 +7347,12 @@ class FabrikFEModelList extends JModelForm
 			 * set in the CSV import model.
 			 */
 			$task = strtolower($input->get('task'));
+
 			if (
-				(
-						$this->importingCSV
-						&&
-						!$this->csvOverwriting
-				)
+				($this->importingCSV && !$this->csvOverwriting)
 				||
 				(
-					(
-						$primaryKey !== ''
-						&&
-						$this->getTable()->auto_inc == true
-					)
+					($primaryKey !== '' && $table->auto_inc == true)
 					&&
 					$task !== 'doimport'
 				)
@@ -7506,13 +7498,7 @@ class FabrikFEModelList extends JModelForm
 		}
 
 		$db->setQuery(sprintf($fmtSql, implode(",", $fields), implode(",", $values)));
-
-		if (!$db->execute())
-		{
-			throw new Exception($db->getErrorMsg());
-
-			return false;
-		}
+		$db->execute();
 
 		$id = $db->insertid();
 

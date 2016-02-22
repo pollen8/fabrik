@@ -730,15 +730,29 @@ class FabrikFEModelImportcsv extends JModelForm
 			}
 			else
 			{
-				// If not overwriting ensusre the any existing PK's are removed and the form rowId set to ''
-				$pk    = FabrikString::safeColNameToArrayKey($item->db_primary_key);
-				$rawPk = $pk . '_raw';
-				unset($aRow[$pk]);
-				unset($aRow[$rawPk]);
-				$formModel->rowId = '';
-				$formModel->setInsertId('');
+				if ($item->auto_inc)
+				{
+					// If not overwriting ensure the any existing PK's are removed and the form rowId set to ''
+					$pk    = FabrikString::safeColNameToArrayKey($item->db_primary_key);
+					$rawPk = $pk . '_raw';
+					unset($aRow[$pk]);
+					unset($aRow[$rawPk]);
+					$formModel->rowId = '';
+					$formModel->setInsertId('');
+					$model->csvOverwriting = false;
+				}
+				else
+				{
+					// If not auto-inc then we should keep the rowid value
+					// but set the form model rowId to '' to enable inserts
+					$formModel->rowId = '';
+
+					// Set to true to avoid list model unsetting pk value
+					$model->csvOverwriting = true;
+				}
+
 				$this->addedCount++;
-				$model->csvOverwriting = false;
+
 			}
 
 			// $$$ rob - if raw and none raw or just raw found then insert the raw data
@@ -776,7 +790,7 @@ class FabrikFEModelImportcsv extends JModelForm
 
 		$this->removeCSVFile();
 		$this->updatedCount = $updatedCount;
-
+exit;
 		FabrikWorker::getPluginManager()->runPlugins('onCompleteImportCSV', $model, 'list');
 	}
 
