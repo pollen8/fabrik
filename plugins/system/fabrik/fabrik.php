@@ -133,7 +133,7 @@ class PlgSystemFabrik extends JPlugin
 
 		$jLayouts = (array) $session->get('fabrik.js.jlayouts', array());
 		$jLayouts = json_encode(ArrayHelper::toObject($jLayouts));
-		$js = str_replace('%%jLayouts%%', $jLayouts, $js);
+		$js       = str_replace('%%jLayouts%%', $jLayouts, $js);
 
 		if ($config . $js !== '')
 		{
@@ -232,22 +232,8 @@ class PlgSystemFabrik extends JPlugin
 	 */
 	protected function setBigSelects()
 	{
-		$fbConfig   = JComponentHelper::getParams('com_fabrik');
-		$bigSelects = $fbConfig->get('enable_big_selects', 0);
-		$db         = JFactory::getDbo();
-
-		if ($bigSelects)
-		{
-			if (version_compare($db->getVersion(), '5.1.0', '>='))
-			{
-				$db->setQuery("SET SQL_BIG_SELECTS=1, GROUP_CONCAT_MAX_LEN=10240");
-			}
-			else
-			{
-				$db->setQuery("SET OPTION SQL_BIG_SELECTS=1, GROUP_CONCAT_MAX_LEN=10240");
-			}
-			$db->execute();
-		}
+		$db = JFactory::getDbo();
+		FabrikWorker::bigSelects($db);
 	}
 
 	/**
