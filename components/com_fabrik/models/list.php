@@ -847,29 +847,8 @@ class FabrikFEModelList extends JModelForm
 	 */
 	public function setBigSelects()
 	{
-		$fbConfig = JComponentHelper::getParams('com_fabrik');
-		$bigSelects = $fbConfig->get('enable_big_selects', 0);
-		/*
-		 $fabrikDb = $this->getDb();
-		$params = $this->getParams();
-		if ($params->get('enable_big_selects', $bigSelects))
-		 */
-		if ($bigSelects)
-		{
-			$fabrikDb = $this->getDb();
-
-			// $$$ hugh - added bumping up GROUP_CONCAT_MAX_LEN here, rather than adding YAFO for it
-			//$fabrikDb->setQuery("SET OPTION SQL_BIG_SELECTS=1, GROUP_CONCAT_MAX_LEN=10240");
-			if (version_compare($fabrikDb->getVersion(), '5.1.0', '>='))
-			{
-			      $fabrikDb->setQuery("SET SQL_BIG_SELECTS=1, GROUP_CONCAT_MAX_LEN=10240");
-			}
-			else
-			{
-			      $fabrikDb->setQuery("SET OPTION SQL_BIG_SELECTS=1, GROUP_CONCAT_MAX_LEN=10240");
-			}
-			$fabrikDb->execute();
-		}
+		$fabrikDb = $this->getDb();
+		FabrikWorker::bigSelects($fabrikDb);
 	}
 
 	/**

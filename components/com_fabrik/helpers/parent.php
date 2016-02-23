@@ -1614,40 +1614,54 @@ class FabrikWorker
 			$version              = new JVersion;
 			self::$database[$sig] = $version->RELEASE > 2.5 ? JDatabaseDriver::getInstance($options) : JDatabase::getInstance($options);
 
-			/*
-			 *  $$$ hugh - testing doing bigSelects stuff here
-			 *  Reason being, some folk on shared hosting plans with very restrictive MySQL
-			 *  setups are hitting the 'big selects' problem on Fabrik internal queries, not
-			 *  just on their List specific queries.  So we need to apply 'big selects' to our
-			 *  default connection as well, essentially enabling it for ALL queries we do.
-			 */
-			$fbConfig = JComponentHelper::getParams('com_fabrik');
+			FabrikWorker::bigSelects(self::$database[$sig]);
 
-			if ($fbConfig->get('enable_big_selects', 0) == '1')
-			{
-				$fabrikDb = self::$database[$sig];
-
-				/**
-				 * Use of OPTION in SET deprecated from MySQL 5.1. onward
-				 * http://www.fabrikar.com/forums/index.php?threads/enable-big-selects-error.39463/#post-198293
-				 * NOTE - technically, using verison_compare on MySQL version could fail, if it's a "gamma"
-				 * release, which PHP desn't grok!
-				 */
-
-				if (version_compare($fabrikDb->getVersion(), '5.1.0', '>='))
-				{
-					$fabrikDb->setQuery("SET SQL_BIG_SELECTS=1, GROUP_CONCAT_MAX_LEN=10240");
-				}
-				else
-				{
-					$fabrikDb->setQuery("SET OPTION SQL_BIG_SELECTS=1, GROUP_CONCAT_MAX_LEN=10240");
-				}
-
-				$fabrikDb->execute();
-			}
 		}
 
 		return self::$database[$sig];
+	}
+
+	/**
+	 *  $$$ hugh - testing doing bigSelects stuff here
+	 *  Reason being, some folk on shared hosting plans with very restrictive MySQL
+	 *  setups are hitting the 'big selects' problem on Fabrik internal queries, not
+	 *  just on their List specific queries.  So we need to apply 'big selects' to our
+	 *  default connection as well, essentially enabling it for ALL queries we do.
+	 *
+	 * @param  JDatabaseDriver $fabrikDb
+	 *
+	 * @return void
+	 */
+	public static function bigSelects($fabrikDb)
+	{
+		$fbConfig = JComponentHelper::getParams('com_fabrik');
+
+		if ($fbConfig->get('enable_big_selects', 0) == '1')
+		{
+			/**
+			 * Use of OPTION in SET deprecated from MySQL 5.1. onward
+			 * http://www.fabrikar.com/forums/index.php?threads/enable-big-selects-error.39463/#post-198293
+			 * NOTE - technically, using verison_compare on MySQL version could fail, if it's a "gamma"
+			 * release, which PHP desn't grok!
+			 */
+
+			if (version_compare($fabrikDb->getVersion(), '5.1.0', '>='))
+			{
+				$fabrikDb->setQuery("SET SQL_BIG_SELECTS=1, GROUP_CONCAT_MAX_LEN=10240");
+			}
+			else
+			{
+				$fabrikDb->setQuery("SET OPTION SQL_BIG_SELECTS=1, GROUP_CONCAT_MAX_LEN=10240");
+			}
+
+			try
+			{
+				$fabrikDb->execute();
+			} catch (Exception $e)
+			{
+				// Fail silently
+			}
+		}
 	}
 
 	/**
@@ -1956,13 +1970,13 @@ class FabrikWorker
 	/**
 	 * Attempt to get a variable first from the menu params (if they exists) if not from request
 	 *
-	 * @param   string $name     Param name
-	 * @param   mixed  $val      Default
-	 * @param   bool   $mambot   If set to true menu params ignored
-	 * @param   string $priority Defaults that menu priorities override request - set to 'request' to inverse this
-	 *                           priority
-	 * @param   array  $opts     Options 'listid' -> if priority = menu then the menu list id must match this value to
-	 *                                               use the menu param.
+	 * @param   string $name                         Param name
+	 * @param   mixed  $val                          Default
+	 * @param   bool   $mambot                       If set to true menu params ignored
+	 * @param   string $priority                     Defaults that menu priorities override request - set to 'request'
+	 *                                               to inverse this priority
+	 * @param   array  $opts                         Options 'listid' -> if priority = menu then the menu list id must
+	 *                                               match this value to use the menu param.
 	 *
 	 * @return  string
 	 */
