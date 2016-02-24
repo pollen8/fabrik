@@ -436,12 +436,23 @@ FbForm = new Class({
 				break;
 			case 'readonly':
 				if (!groupfx) {
-					jQuery('#' + id).prop('readonly', true);
+					// can't "readonly" a select, so disable all but selected option instead
+					if (jQuery('#' + id).prop('tagName') === 'SELECT') {
+						jQuery('#' + id + ' option:not(:selected)').attr('disabled', true);
+					}
+					else {
+						jQuery('#' + id).prop('readonly', true);
+					}
 				}
 				break;
 			case 'notreadonly':
 				if (!groupfx) {
-					jQuery('#' + id).prop('readonly', false);
+					if (jQuery('#' + id).prop('tagName') === 'SELECT') {
+						jQuery('#' + id + ' option').attr('disabled', false);
+					}
+					else {
+						jQuery('#' + id).prop('readonly', false);
+					}
 				}
 				break;
 		}
