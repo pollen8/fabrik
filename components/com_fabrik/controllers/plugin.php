@@ -39,30 +39,30 @@ class FabrikControllerPlugin extends JControllerLegacy
 	 *
 	 * @return  null
 	 */
-
 	public function pluginAjax()
 	{
-		$app = JFactory::getApplication();
-		$input = $app->input;
+		$app    = JFactory::getApplication();
+		$input  = $app->input;
 		$plugin = $input->get('plugin', '');
 		$method = $input->get('method', '');
-		$group = $input->get('g', 'element');
-		/**
-		 * $$$ hugh - playing around trying to fix a viz AJAX issue, figured we might need
-		 * to set up the dispatcher first and pass it to importPlugin, which doesn't hurt, but
-		 * didn't fix the issue.  But leaving these two lines, as I think this might be necessary
-		 * at some point, to get the methods into the dispatcher?
-		 *
-		 * $dispatcher = JDispatcher::getInstance();
-		 * if (!JPluginHelper::importPlugin('fabrik_'.$group, $plugin, true, $dispatcher))
-		 */
-		if (!JPluginHelper::importPlugin('fabrik_' . $group, $plugin))
-		{
-			$o = new stdClass;
-			$o->err = 'unable to import plugin fabrik_' . $group . ' ' . $plugin;
-			echo json_encode($o);
+		$group  = $input->get('g', 'element');
 
-			return;
+		$pluginManager = FabrikWorker::getPluginManager();
+
+		try
+		{
+			// First lets try the fabrik plugin manager - needed when loading namespaced plugins
+			$pluginManager->loadPlugIn($plugin, $group);
+		} catch (Exception $e)
+		{
+			if (!JPluginHelper::importPlugin('fabrik_' . $group, $plugin))
+			{
+				$o      = new stdClass;
+				$o->err = 'unable to import plugin fabrik_' . $group . ' ' . $plugin;
+				echo json_encode($o);
+
+				return;
+			}
 		}
 
 		if (substr($method, 0, 2) !== 'on')
@@ -83,9 +83,9 @@ class FabrikControllerPlugin extends JControllerLegacy
 	{
 		$db = FabrikWorker::getDbo();
 		require_once COM_FABRIK_FRONTEND . '/user_ajax.php';
-		$app = JFactory::getApplication();
-		$input = $app->input;
-		$method = $input->get('method', '');
+		$app      = JFactory::getApplication();
+		$input    = $app->input;
+		$method   = $input->get('method', '');
 		$userAjax = new userAjax($db);
 
 		if (method_exists($userAjax, $method))
@@ -97,17 +97,17 @@ class FabrikControllerPlugin extends JControllerLegacy
 	/**
 	 * Run the cron job
 	 *
-	 * @param   object  &$pluginManager  Fabrik plugin manager
+	 * @param   object &$pluginManager Fabrik plugin manager
 	 *
 	 * @return  null
 	 */
 	public function doCron(&$pluginManager)
 	{
-		$db = FabrikWorker::getDbo();
-		$app = JFactory::getApplication();
+		$db    = FabrikWorker::getDbo();
+		$app   = JFactory::getApplication();
 		$input = $app->input;
-		$cid = $input->get('element_id', array(), 'array');
-		$cid = ArrayHelper::toInteger($cid);
+		$cid   = $input->get('element_id', array(), 'array');
+		$cid   = ArrayHelper::toInteger($cid);
 
 		if (empty($cid))
 		{
@@ -123,9 +123,9 @@ class FabrikControllerPlugin extends JControllerLegacy
 		}
 
 		$db->setQuery($query);
-		$rows = $db->loadObjectList();
+		$rows      = $db->loadObjectList();
 		$listModel = JModelLegacy::getInstance('list', 'FabrikFEModel');
-		$c = 0;
+		$c         = 0;
 
 		foreach ($rows as $row)
 		{
@@ -133,7 +133,7 @@ class FabrikControllerPlugin extends JControllerLegacy
 			/** @var PlgFabrik_Cron $plugin */
 			$plugin = $pluginManager->getPlugIn($row->plugin, 'cron');
 			$plugin->setId($row->id);
-			$params = $plugin->getParams();
+			$params        = $plugin->getParams();
 			$thisListModel = clone ($listModel);
 			$thisListModel->setId($params->get('table'));
 			$table = $listModel->getTable();
@@ -146,8 +146,8 @@ class FabrikControllerPlugin extends JControllerLegacy
 			 * the cron was due to run, so it's pot luck as to what pre-filters get applied.
 			 */
 			$total = $thisListModel->getTotalRecords();
-			$nav = $thisListModel->getPagination($total, 0, $total);
-			$data = $thisListModel->getData();
+			$nav   = $thisListModel->getPagination($total, 0, $total);
+			$data  = $thisListModel->getData();
 
 			// $$$ hugh - added table model param, in case plugin wants to do further table processing
 			$c = $c + $plugin->process($data, $thisListModel);

@@ -385,7 +385,7 @@ var FbElement = new Class({
     },
 
     /**
-     * Run when the element is decloled from the form as part of a deleted repeat group
+     * Run when the element is de-cloned from the form as part of a deleted repeat group
      */
     decloned: function (groupid) {
     },

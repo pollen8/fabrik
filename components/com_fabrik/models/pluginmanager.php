@@ -328,7 +328,17 @@ class FabrikFEModelPluginmanager extends FabModel
 		$conf = array();
 		$conf['name'] = JString::strtolower($className);
 		$conf['type'] = JString::strtolower('fabrik_' . $group);
-		$plugIn = new $class($dispatcher, $conf);
+
+		if (class_exists($class))
+		{
+			$plugIn = new $class($dispatcher, $conf);
+		}
+		else
+		{
+			// Allow for namespaced plugins
+			$class = 'Fabrik\\Plugins\\' . JString::ucfirst($group) . '\\' . JString::ucfirst($className);
+			$plugIn = new $class($dispatcher, $conf);
+		}
 
 		// Needed for viz
 		$client = JApplicationHelper::getClientInfo(0);
@@ -427,7 +437,17 @@ class FabrikFEModelPluginmanager extends FabModel
 				JDEBUG ? $profiler->mark('pluginmanager:getFormPlugins:' . $element->id . '' . $element->plugin) : null;
 				require_once JPATH_PLUGINS . '/fabrik_element/' . $element->plugin . '/' . $element->plugin . '.php';
 				$class = 'PlgFabrik_Element' . $element->plugin;
-				$pluginModel = new $class($dispatcher, array());
+
+				if (class_exists($class))
+				{
+					$pluginModel = new $class($dispatcher, array());
+				}
+				else
+				{
+					// Allow for namespaced plugins
+					$class = 'Fabrik\\Plugins\\' . JString::ucfirst($group) . '\\' . JString::ucfirst($element->plugin);
+					$pluginModel = new $class($dispatcher, array());
+				}
 
 				if (!is_object($pluginModel))
 				{

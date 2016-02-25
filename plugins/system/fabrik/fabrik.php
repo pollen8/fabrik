@@ -82,6 +82,7 @@ class PlgSystemFabrik extends JPlugin
 
 		require_once JPATH_SITE . '/components/com_fabrik/helpers/file.php';
 
+		require_once JPATH_LIBRARIES . '/fabrik/include.php';
 		parent::__construct($subject, $config);
 	}
 

@@ -6524,7 +6524,7 @@ class PlgFabrik_Element extends FabrikPlugin
 	}
 
 	/**
-	 * Cache method to populate autocomplete options
+	 * Cache method to populate auto-complete options
 	 *
 	 * @param   plgFabrik_Element $elementModel element model
 	 * @param   string            $search       search string
@@ -7633,6 +7633,12 @@ class PlgFabrik_Element extends FabrikPlugin
 	protected function getPluginName()
 	{
 		$name = get_class($this);
+
+		if (strstr($name, '\\'))
+		{
+			$name = explode('\\', $name);
+			$name = array_pop($name);
+		}
 
 		return strtolower(JString::str_ireplace('PlgFabrik_Element', '', $name));
 	}

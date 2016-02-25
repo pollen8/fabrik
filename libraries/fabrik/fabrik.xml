@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension type="library" method="upgrade" version="3">
+	<name>Fabrik library</name>
+	<libraryname>fabrik</libraryname>
+	<author>Fabrikar</author>
+	<creationDate>Feb 2016</creationDate>
+	<copyright>Copyright (C) 2016</copyright>
+	<license>http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL</license>
+	<authorEmail>fabrikar@gmail.com</authorEmail>
+	<authorUrl>www.fabrikar.com</authorUrl>
+	<version>3.5</version>
+	<description>Fabrik - Library files</description>
+
+	<files>
+		<folder>vendor</folder>
+		<file>composer.json</file>
+		<file>include.php</file>
+	</files>
+</extension>

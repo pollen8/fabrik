@@ -9,7 +9,7 @@ var fs = require('fs-extra'),
     replace = require('replace'),
     buildConfig = require('./fabrik_build/build-config.js'),
     zipPromises = [],
-    done; 
+    done;
 fs = Promise.promisifyAll(fs);
 
 
@@ -160,11 +160,14 @@ module.exports = function (grunt) {
         console.log('-- Fabrik Plugin folders created');
 
         for (p in buildConfig.plugins) {
-            for (i = 0; i < buildConfig.plugins[p].length; i++) {
-                config = buildConfig.plugins[p][i];
-                dest = 'fabrik_build/output/pkg_fabrik_sink/packages/' +  config.fileName.replace('{version}', version);
-                zipPromises.push(zipPlugin(config.path, dest));
+            if (buildConfig.plugins.hasOwnProperty(p)) {
+                for (i = 0; i < buildConfig.plugins[p].length; i++) {
+                    config = buildConfig.plugins[p][i];
+                    dest = 'fabrik_build/output/pkg_fabrik_sink/packages/' +  config.fileName.replace('{version}', version);
+                    zipPromises.push(zipPlugin(config.path, dest));
+                }
             }
+
         }
         for (i = 0; i < buildConfig.modules.length; i++) {
             config = buildConfig.modules[i];
@@ -189,7 +192,7 @@ module.exports = function (grunt) {
             if (grunt.config.get('live')) {
                 // Add the new tag
                 simpleGit.addTag(version, function (err, res) {
-                    console.log(err, res);
+                //    console.log(err, res);
                 });
             }
         });
@@ -254,11 +257,14 @@ var refreshFiles = function () {
     fs.mkdirsSync('./fabrik_build/output/component/site/fabrikfeed');
     fs.mkdirsSync('./fabrik_build/output/component/site/pdf');
     fs.mkdirsSync('./fabrik_build/output/component/media');
+    fs.mkdirsSync('./fabrik_build/library/fabrik');
 
 
     fs.copySync('libraries/joomla/document/fabrikfeed', './fabrik_build/output/component/site/fabrikfeed');
     fs.copySync('libraries/joomla/document/pdf', './fabrik_build/output/component/site/pdf');
 
+    // Library folder
+    fs.copySync('libraries/fabrik', './fabrik_build/library/fabrik');
 
     fs.copySync('administrator/components/com_fabrik/', './fabrik_build/output/component/admin', {
         'filter': function (f) {
@@ -379,6 +385,14 @@ var refreshFiles = function () {
         './fabrik_build/output/component/site/query/pdomysql_fab.php');
 };
 
+var  library = function (version, grunt) {
+    console.log('-- Creating library zip');
+    zipPromises.push(zipPlugin('fabrik_build/library/',
+        'fabrik_build/output/pkg_fabrik_sink/packages/lib_fabrik_' + version + '.zip'));
+    zipPromises.push(zipPlugin('fabrik_build/library/',
+        'fabrik_build/output/pkg_fabrik/packages/lib_fabrik_' + version + '.zip'));
+};
+
 var component = function (version, grunt) {
     // Need to move the package.xml file out of the component to avoid nasties
     fs.move('./fabrik_build/output/component/admin/fabrik.xml',
@@ -393,7 +407,8 @@ var component = function (version, grunt) {
                                         './fabrik_build/output/pkg_fabrik_sink/pkg_fabrik_sink.xml', function () {
                                             zipPromises.push(zipPlugin('fabrik_build/output/component/',
                                                 'fabrik_build/output/pkg_fabrik_sink/packages/com_fabrik_' + version + '.zip'));
-                                            packages(version, grunt);
+                                            library(version, grunt)
+;                                            packages(version, grunt);
                                         });
                                 });
                         });
@@ -444,7 +459,7 @@ var ftp = function (grunt, version) {
     var c = new Client();
     var config = grunt.file.readJSON('private.json').ftp;
     var promises = [], i;
-    console.log('ftp config', config);
+
     c.on('ready', function () {
         console.log('connected');
         if (grunt.config.get('upload.zips')) {
