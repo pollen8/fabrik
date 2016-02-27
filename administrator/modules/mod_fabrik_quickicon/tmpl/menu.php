@@ -12,7 +12,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 ?>
-<?php if (!empty($buttons) && !empty($lists)): ?>
+<?php if (!empty($buttons) || !empty($lists)): ?>
 
 <ul class="nav">
 	<li class="dropdown">
