@@ -960,7 +960,12 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 			}
 		}
 
-		$user = $userId === 0 ? JFactory::getUser() : JFactory::getUser($userId);
+		if ($userId === 0)
+		{
+			return '';
+		}
+
+		$user = JFactory::getUser($userId);
 
 		return $this->getUserDisplayProperty($user);
 	}
