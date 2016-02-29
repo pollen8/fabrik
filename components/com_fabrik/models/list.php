@@ -2311,8 +2311,20 @@ class FabrikFEModelList extends JModelForm
 
 			$array['rowid'] = $this->getSlug($row);
 			$array['listid'] = $table->id;
+
 			$link = JRoute::_($this->parseMessageForRowHolder($customLink, $array));
 		}
+
+		// Allow creating custom links, default layout will just return $link unaltered
+		$layout                     = FabrikHelperHTML::getLayout('element.fabrik-element-details-link');
+		$displayData                = new stdClass;
+		$displayData->row           = $row;
+		$displayData->listModel     = $this;
+		$displayData->elementModel  = $elementModel;
+		$displayData->customLink    = $customLink;
+		$displayData->repeatCounter = $repeatCounter;
+		$displayData->link          = $link;
+		$link                       = $layout->render($displayData);
 
 		return $link;
 	}
