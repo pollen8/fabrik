@@ -147,7 +147,7 @@ FbForm = new Class({
 	 * Print button action - either open up the print preview window - or print if already opened
 	 */
 	watchPrintButton: function () {
-		document.getElements('a[data-fabrik-print]').addEvent('click', function (e) {
+		this.form.getElements('a[data-fabrik-print]').addEvent('click', function (e) {
 			e.stop();
 			if (this.options.print) {
 				window.print();
@@ -171,7 +171,7 @@ FbForm = new Class({
 	 * PDF button action.
 	 */
 	watchPdfButton: function () {
-		document.getElements('*[data-role="open-form-pdf"]').addEvent('click', function (e) {
+		this.form.getElements('*[data-role="open-form-pdf"]').addEvent('click', function (e) {
 			e.stop();
 			// Build URL as we could have changed the rowid via ajax pagination.
 			var url = e.event.currentTarget.href.replace(/(rowid=\d*)/, 'rowid=' + this.options.rowid);
