@@ -140,13 +140,14 @@ FbForm = new Class({
 
 		this.watchPrintButton();
 		this.watchPdfButton();
+		this.watchTabs();
 	},
 
 	/**
 	 * Print button action - either open up the print preview window - or print if already opened
 	 */
 	watchPrintButton: function () {
-		document.getElements('a[data-fabrik-print]').addEvent('click', function (e) {
+		this.form.getElements('a[data-fabrik-print]').addEvent('click', function (e) {
 			e.stop();
 			if (this.options.print) {
 				window.print();
@@ -170,7 +171,7 @@ FbForm = new Class({
 	 * PDF button action.
 	 */
 	watchPdfButton: function () {
-		document.getElements('*[data-role="open-form-pdf"]').addEvent('click', function (e) {
+		this.form.getElements('*[data-role="open-form-pdf"]').addEvent('click', function (e) {
 			e.stop();
 			// Build URL as we could have changed the rowid via ajax pagination.
 			var url = e.event.currentTarget.href.replace(/(rowid=\d*)/, 'rowid=' + this.options.rowid);
@@ -435,12 +436,23 @@ FbForm = new Class({
 				break;
 			case 'readonly':
 				if (!groupfx) {
-					jQuery('#' + id).prop('readonly', true);
+					// can't "readonly" a select, so disable all but selected option instead
+					if (jQuery('#' + id).prop('tagName') === 'SELECT') {
+						jQuery('#' + id + ' option:not(:selected)').attr('disabled', true);
+					}
+					else {
+						jQuery('#' + id).prop('readonly', true);
+					}
 				}
 				break;
 			case 'notreadonly':
 				if (!groupfx) {
-					jQuery('#' + id).prop('readonly', false);
+					if (jQuery('#' + id).prop('tagName') === 'SELECT') {
+						jQuery('#' + id + ' option').attr('disabled', false);
+					}
+					else {
+						jQuery('#' + id).prop('readonly', false);
+					}
 				}
 				break;
 		}
@@ -510,6 +522,21 @@ FbForm = new Class({
 		if (tab !== false) {
 			tab.show();
 		}
+	},
+
+	/**
+	 * Convenience for custom code that needs to fire when a tab is changed
+	 */
+	watchTabs: function () {
+		var self = this;
+
+		jQuery(this.form).on('click', '*[data-role=fabrik_tab]', function(event) {
+			var groupId = event.target.id.match(/group(\d+)_tab/);
+			if (groupId.length > 1) {
+				groupId = groupId[1];
+			}
+			Fabrik.fireEvent('fabrik.form.tab.click', [self, groupId, event], 500);
+		});
 	},
 
 	watchClearSession: function () {
@@ -716,15 +743,13 @@ FbForm = new Class({
 	 * Hide all groups except those in the active page
 	 */
 	hideOtherPages: function () {
-		var page;
+		var page, currentPage = parseInt(this.currentPage, 10);
 		this.options.pages.each(function (gids, i) {
-			if (i.toInt() !== this.currentPage.toInt()) {
-				page = document.id('page_' + i);
-				if (typeOf(page) !== 'null') {
-					page.hide();
-				}
+			if (parseInt(i, 10) !== currentPage) {
+				page = jQuery('#page_' + i);
+				page.hide();
 			}
-		}.bind(this));
+		});
 	},
 
 	setPageButtons: function () {
@@ -1162,11 +1187,12 @@ FbForm = new Class({
 
 	watchSubmit: function () {
 		var submit = this._getButton('Submit');
-		if (!submit) {
+		var apply = this._getButton('apply');
+
+		if (!submit && !apply) {
 			return;
 		}
-		var apply = this._getButton('apply'),
-			del = this._getButton('delete'),
+		var del = this._getButton('delete'),
 			copy = this._getButton('Copy');
 		if (del) {
 			del.addEvent('click', function (e) {
@@ -1778,7 +1804,7 @@ FbForm = new Class({
 				var errorMessage = this.options.minMaxErrMsg[i];
 				errorMessage = errorMessage.replace(/\{min\}/, this.options.minRepeat[i]);
 				errorMessage = errorMessage.replace(/\{max\}/, this.options.maxRepeat[i]);
-				alert(errorMessage);
+				window.alert(errorMessage);
 			}
 			return;
 		}

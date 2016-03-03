@@ -11,7 +11,6 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Joomla\String\String;
 use Joomla\Utilities\ArrayHelper;
 
 jimport('joomla.filesystem.file');
@@ -888,7 +887,10 @@ EOD;
 				$liveSiteSrc[] = "\tFabrik.liveSite = '" . COM_FABRIK_LIVESITE . "';";
 				$liveSiteSrc[] = "\tFabrik.package = '" . $app->getUserState('com_fabrik.package', 'fabrik') . "';";
 				$liveSiteSrc[] = "\tFabrik.debug = " . (self::isDebug() ? 'true;' : 'false;');
-				$liveSiteSrc[] = "\tFabrik.jLayouts = " . json_encode(ArrayHelper::toObject(self::$jLayoutsJs)) . ";";
+
+				// need to put jLayouts in session data, and add it in the system plugin buildjs(), so just add %%jLayouts%% placeholder
+				//$liveSiteSrc[] = "\tFabrik.jLayouts = " . json_encode(ArrayHelper::toObject(self::$jLayoutsJs)) . ";";
+				$liveSiteSrc[] = "\tFabrik.jLayouts = %%jLayouts%%\n";
 
 				if ($bootstrapped)
 				{
@@ -919,7 +921,7 @@ EOD;
 				$liveSiteSrc[] = "\tif (!Fabrik.jLayouts) {
 				Fabrik.jLayouts = {};
 				}
-				Fabrik.jLayouts = jQuery.extend(Fabrik.jLayouts, " . json_encode(self::$jLayoutsJs) . ");";
+				Fabrik.jLayouts = jQuery.extend(Fabrik.jLayouts, %%jLayouts%%);";
 				$liveSiteReq[] = 'media/com_fabrik/js/fabrik' . $ext;
 				self::script($liveSiteReq, $liveSiteSrc);
 
@@ -927,6 +929,8 @@ EOD;
 
 			self::$framework = $src;
 		}
+
+		self::addToSessionJLayouts();
 
 		return self::$framework;
 	}
@@ -960,7 +964,7 @@ EOD;
 		$tipJs[] = "\t});";
 
 		// Load tips
-		$tipJs[] = "\tFabrik.tips.attach('.fabrikTip');";
+		//$tipJs[] = "\tFabrik.tips.attach('.fabrikTip');";
 
 		return implode("\n", $tipJs);
 	}
@@ -1357,7 +1361,7 @@ EOD;
 		// Replace with minified files if found
 		foreach ($files as &$file)
 		{
-			if (!(String::stristr($file, 'http://') || String::stristr($file, 'https://')))
+			if (!(JString::stristr($file, 'http://') || JString::stristr($file, 'https://')))
 			{
 				if (JFile::exists(COM_FABRIK_BASE . $file))
 				{
@@ -1386,7 +1390,7 @@ EOD;
 
 			if (!$pathMatched)
 			{
-				if (!(String::stristr($file, 'http://') || String::stristr($file, 'https://')))
+				if (!(JString::stristr($file, 'http://') || JString::stristr($file, 'https://')))
 				{
 					$file = COM_FABRIK_LIVESITE . $file;
 				}
@@ -1419,6 +1423,25 @@ EOD;
 		$require   = implode("\n", $require);
 		self::addToSessionScripts($require);
 	}
+
+	/**
+	 * Add jLayouts to session - will then be added via Fabrik System plugin
+	 *
+	 * @return  void
+	 */
+	protected static function addToSessionJLayouts()
+	{
+		$key     = 'fabrik.js.jlayouts';
+		$session = JFactory::getSession();
+
+		/*
+		 * No need to figure out what's already there, unlike addToSessionScripts,
+		 * we're just updating the whole thing each time framework is added.
+		 */
+
+		$session->set($key, self::$jLayoutsJs);
+	}
+
 
 	/**
 	 * Add script to session - will then be added via Fabrik System plugin
@@ -1958,7 +1981,7 @@ EOD;
 	 */
 	public static function getImagePath($file, $type = 'form', $tmpl = '')
 	{
-		$file  = String::ltrim($file, DIRECTORY_SEPARATOR);
+		$file  = JString::ltrim($file, DIRECTORY_SEPARATOR);
 		$paths = self::addPath('', 'image', $type, true);
 
 		foreach ($paths as $path)
@@ -2514,7 +2537,7 @@ EOD;
 	 */
 	public static function a($href, $lbl = '', $opts = array())
 	{
-		if (empty($href) || String::strtolower($href) == 'http://' || String::strtolower($href) == 'https://')
+		if (empty($href) || JString::strtolower($href) == 'http://' || JString::strtolower($href) == 'https://')
 		{
 			// Don't return empty links
 			return '';
@@ -2646,7 +2669,7 @@ EOD;
 
 			if ($ret['type'] == 'mediabox')
 			{
-				$ext = String::strtolower(JFile::getExt($link));
+				$ext = JString::strtolower(JFile::getExt($link));
 
 				switch ($ext)
 				{

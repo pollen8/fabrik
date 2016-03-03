@@ -11,7 +11,6 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Joomla\String\String;
 use Joomla\Utilities\ArrayHelper;
 
 /**
@@ -600,7 +599,7 @@ class FabrikWorker
 			$reservedWords = array_merge($reservedWords, $strictWords);
 		}
 
-		if (in_array(String::strtolower($str), $reservedWords))
+		if (in_array(JString::strtolower($str), $reservedWords))
 		{
 			return true;
 		}
@@ -739,7 +738,7 @@ class FabrikWorker
 		{
 			$this->parseAddSlashes = $addSlashes;
 
-			if (!($msg == '' || is_array($msg) || String::strpos($msg, '{') === false))
+			if (!($msg == '' || is_array($msg) || JString::strpos($msg, '{') === false))
 			{
 				$msg = str_replace(array('%7B', '%7D'), array('{', '}'), $msg);
 
@@ -1012,7 +1011,7 @@ class FabrikWorker
 		$orig  = $match;
 
 		// Strip the {}
-		$match = String::substr($match, 1, JString::strlen($match) - 2);
+		$match = JString::substr($match, 1, JString::strlen($match) - 2);
 
 		/* $$$ hugh - added dbprefix substitution
 		 * Not 100% if we should do this on $match before copying to $orig, but for now doing it
@@ -1091,7 +1090,7 @@ class FabrikWorker
 						}
 					}
 
-					$match = String::ltrim($newMatch, ',');
+					$match = JString::ltrim($newMatch, ',');
 				}
 			}
 			else
@@ -1164,7 +1163,7 @@ class FabrikWorker
 			elseif (preg_match('/bmp|gif|jpg|png/i', $file) && is_file($i_f))
 			{
 				// Leading / we don't need
-				$imageFile             = String::substr($ff, 1);
+				$imageFile             = JString::substr($ff, 1);
 				$images[$folderPath][] = $makeOptions ? JHTML::_('select.option', $imageFile, $file) : $file;
 			}
 		}
@@ -1250,15 +1249,18 @@ class FabrikWorker
 	 * so for ajax calls that need to use jf translated text we need to get the current lang and
 	 * send it to the js code which will then append the lang=XX to the ajax querystring
 	 *
+	 * Renamed to getShortLang as we don't support Joomfish any more
+	 *
 	 * @since 2.0.5
 	 *
 	 * @return    string    first two letters of lang code - e.g. nl from 'nl-NL'
 	 */
-	public static function getJoomfishLang()
+	public static function getShortLang()
 	{
 		$lang = JFactory::getLanguage();
+		$lang = explode('-', $lang->getTag());
 
-		return array_shift(explode('-', $lang->getTag()));
+		return array_shift($lang);
 	}
 
 	/**
@@ -1337,7 +1339,7 @@ class FabrikWorker
 
 			// Each group the user is in could have different filtering properties.
 			$filterData = $filters->$groupId;
-			$filterType = String::strtoupper($filterData->filter_type);
+			$filterType = JString::strtoupper($filterData->filter_type);
 
 			if ($filterType == 'NH')
 			{
@@ -1612,40 +1614,54 @@ class FabrikWorker
 			$version              = new JVersion;
 			self::$database[$sig] = $version->RELEASE > 2.5 ? JDatabaseDriver::getInstance($options) : JDatabase::getInstance($options);
 
-			/*
-			 *  $$$ hugh - testing doing bigSelects stuff here
-			 *  Reason being, some folk on shared hosting plans with very restrictive MySQL
-			 *  setups are hitting the 'big selects' problem on Fabrik internal queries, not
-			 *  just on their List specific queries.  So we need to apply 'big selects' to our
-			 *  default connection as well, essentially enabling it for ALL queries we do.
-			 */
-			$fbConfig = JComponentHelper::getParams('com_fabrik');
+			FabrikWorker::bigSelects(self::$database[$sig]);
 
-			if ($fbConfig->get('enable_big_selects', 0) == '1')
-			{
-				$fabrikDb = self::$database[$sig];
-
-				/**
-				 * Use of OPTION in SET deprecated from MySQL 5.1. onward
-				 * http://www.fabrikar.com/forums/index.php?threads/enable-big-selects-error.39463/#post-198293
-				 * NOTE - technically, using verison_compare on MySQL version could fail, if it's a "gamma"
-				 * release, which PHP desn't grok!
-				 */
-
-				if (version_compare($fabrikDb->getVersion(), '5.1.0', '>='))
-				{
-					$fabrikDb->setQuery("SET SQL_BIG_SELECTS=1, GROUP_CONCAT_MAX_LEN=10240");
-				}
-				else
-				{
-					$fabrikDb->setQuery("SET OPTION SQL_BIG_SELECTS=1, GROUP_CONCAT_MAX_LEN=10240");
-				}
-
-				$fabrikDb->execute();
-			}
 		}
 
 		return self::$database[$sig];
+	}
+
+	/**
+	 *  $$$ hugh - testing doing bigSelects stuff here
+	 *  Reason being, some folk on shared hosting plans with very restrictive MySQL
+	 *  setups are hitting the 'big selects' problem on Fabrik internal queries, not
+	 *  just on their List specific queries.  So we need to apply 'big selects' to our
+	 *  default connection as well, essentially enabling it for ALL queries we do.
+	 *
+	 * @param  JDatabaseDriver $fabrikDb
+	 *
+	 * @return void
+	 */
+	public static function bigSelects($fabrikDb)
+	{
+		$fbConfig = JComponentHelper::getParams('com_fabrik');
+
+		if ($fbConfig->get('enable_big_selects', 0) == '1')
+		{
+			/**
+			 * Use of OPTION in SET deprecated from MySQL 5.1. onward
+			 * http://www.fabrikar.com/forums/index.php?threads/enable-big-selects-error.39463/#post-198293
+			 * NOTE - technically, using verison_compare on MySQL version could fail, if it's a "gamma"
+			 * release, which PHP desn't grok!
+			 */
+
+			if (version_compare($fabrikDb->getVersion(), '5.1.0', '>='))
+			{
+				$fabrikDb->setQuery("SET SQL_BIG_SELECTS=1, GROUP_CONCAT_MAX_LEN=10240");
+			}
+			else
+			{
+				$fabrikDb->setQuery("SET OPTION SQL_BIG_SELECTS=1, GROUP_CONCAT_MAX_LEN=10240");
+			}
+
+			try
+			{
+				$fabrikDb->execute();
+			} catch (Exception $e)
+			{
+				// Fail silently
+			}
+		}
 	}
 
 	/**
@@ -1954,13 +1970,13 @@ class FabrikWorker
 	/**
 	 * Attempt to get a variable first from the menu params (if they exists) if not from request
 	 *
-	 * @param   string $name     Param name
-	 * @param   mixed  $val      Default
-	 * @param   bool   $mambot   If set to true menu params ignored
-	 * @param   string $priority Defaults that menu priorities override request - set to 'request' to inverse this
-	 *                           priority
-	 * @param   array  $opts     Options 'listid' -> if priority = menu then the menu list id must match this value to
-	 *                                               use the menu param.
+	 * @param   string $name                         Param name
+	 * @param   mixed  $val                          Default
+	 * @param   bool   $mambot                       If set to true menu params ignored
+	 * @param   string $priority                     Defaults that menu priorities override request - set to 'request'
+	 *                                               to inverse this priority
+	 * @param   array  $opts                         Options 'listid' -> if priority = menu then the menu list id must
+	 *                                               match this value to use the menu param.
 	 *
 	 * @return  string
 	 */

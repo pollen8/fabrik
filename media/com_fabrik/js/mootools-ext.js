@@ -21,7 +21,7 @@ function CloneObject(what, recursive, asreference) {
 }
 
 String.implement({
-	
+
 	toObject: function ()
 	{
 		var o = {};
@@ -38,7 +38,7 @@ var mShow = Element.prototype.show;
 var mSlide = Element.prototype.slide;
 
 Element.implement({
-	
+
 	findClassUp: function (classname) {
 		if (this.hasClass(classname)) {
 			return this;
@@ -52,7 +52,7 @@ Element.implement({
 		}
 		return el;
 	},
-	
+
 	up: function (index) {
 		index = index ? index : 0;
 		var el = this;
@@ -61,7 +61,7 @@ Element.implement({
 		}
 		return el;
 	},
-	
+
 	within: function (p) {
 		var parenttest = this;
 		while (parenttest.parentNode !== null) {
@@ -72,11 +72,11 @@ Element.implement({
 		}
 		return false;
 	},
-	
+
 	cloneWithIds: function (c) {
 		return this.clone(c, true);
 	},
-	
+
 	down: function (expression, index) {
 		var descendants = this.getChildren();
 		if (arguments.length === 0) {
@@ -84,7 +84,7 @@ Element.implement({
 		}
 		return descendants[index];
 	},
-	
+
 	findUp: function (tag) {
 		if (this.get('tag') === tag) {
 			return this;
@@ -95,7 +95,7 @@ Element.implement({
 		}
 		return el;
 	},
-	
+
 	//x, y = mouse location
 	mouseInside: function (x, y) {
 		var coords = this.getCoordinates();
@@ -110,32 +110,35 @@ Element.implement({
 		}
 		return false;
 	},
-	
+
 	getValue: function () {
 		return this.get('value');
 	},
-	
+
 	/*
 	 * These are needed to get some of the JQuery bootstrap built in effects working,
 	 * like the carousel, and require you to add the 'mootools-noconflict' class to
 	 * containers you want to use those effect with, like ...
 	 * <div class="carousel slide mootools-noconflict'>
 	 */
-	
+
 	hide: function () {
+		if (Fabrik.bootstrapVersion('modal') === '3.x') {
+			return;
+		}
 		if (this.hasClass("mootools-noconflict")) {
 			return this;
 		}
 		mHide.apply(this, arguments);
 	},
-	
+
 	show: function (v) {
 		if (this.hasClass("mootools-noconflict")) {
 			return this;
 		}
 		mShow.apply(this, v);
 	},
-	
+
 	slide: function (v) {
 		if (this.hasClass("mootools-noconflict")) {
 			return this;

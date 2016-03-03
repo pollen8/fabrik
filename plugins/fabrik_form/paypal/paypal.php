@@ -11,7 +11,6 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Joomla\String\String;
 use Joomla\Utilities\ArrayHelper;
 
 // Require the abstract plugin class
@@ -579,7 +578,7 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 			$row = $listModel->getRow($rowId);
 			$retMsg = $w->parseMessageForPlaceHolder($retMsg, $row);
 
-			if (String::stristr($retMsg, '[show_all]'))
+			if (JString::stristr($retMsg, '[show_all]'))
 			{
 				$all_data = array();
 
@@ -695,7 +694,7 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 		$header .= "Connection: close\r\n";
 		$header .= "User-Agent: Fabrik Joomla Plugin\r\n";
 		$header .= "Content-Type: application/x-www-form-urlencoded\r\n";
-		$header .= "Content-Length: " . String::strlen($req) . "\r\n\r\n";
+		$header .= "Content-Length: " . JString::strlen($req) . "\r\n\r\n";
 
 
 		// Assign posted variables to local variables
@@ -749,7 +748,7 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 					 * check that payment_amount/payment_currency are correct
 					 * process payment
 					 */
-					if (String::strcmp($tres, "VERIFIED") === 0)
+					if (JString::strcmp($tres, "VERIFIED") === 0)
 					{
 						$status = 'ok';
 
@@ -914,7 +913,7 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 							}
 						}
 					}
-					elseif (String::strcmp($tres, "INVALID") === 0)
+					elseif (JString::strcmp($tres, "INVALID") === 0)
 					{
 						$status = 'form.paypal.ipnfailure.invalid';
 						$errMsg = 'paypal postback failed with INVALID';

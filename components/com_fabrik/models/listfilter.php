@@ -11,7 +11,6 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Joomla\String\String;
 use Joomla\Utilities\ArrayHelper;
 
 /**
@@ -399,7 +398,7 @@ class FabrikFEModelListfilter extends FabModel
 		$this->_db->setQuery('SHOW VARIABLES LIKE \'ft_min_word_len\'');
 		$res = $this->_db->loadObject();
 
-		if (!String::strlen($s) >= $res->Value)
+		if (!JString::strlen($s) >= $res->Value)
 		{
 			throw new UnexpectedValueException(FText::_('COM_FABRIK_NOTICE_SEARCH_STRING_TOO_SHORT'));
 		}
@@ -644,7 +643,7 @@ class FabrikFEModelListfilter extends FabModel
 			{
 				$fieldDesc = $elementModel->getFieldDescription();
 
-				if (String::stristr($fieldDesc, 'INT'))
+				if (JString::stristr($fieldDesc, 'INT'))
 				{
 					if (is_numeric($search) && $condition == '=')
 					{
@@ -837,100 +836,104 @@ class FabrikFEModelListfilter extends FabModel
 				$tableName = $db->qn($this->listModel->getTable()->db_table_name);
 				$searchFilters = $this->app->getUserState('com_' . $this->package . '.searchform.form' . $fromFormId . '.filters');
 
-				for ($i = 0; $i < count($searchFilters['key']); $i++)
+				// check if key set, might not be if (say) checkbox filters on search form with no selection
+				if (array_key_exists('key', $searchFilters))
 				{
-					$eval = FABRIKFILTER_TEXT;
-					$found = false;
-					$key = $searchFilters['key'][$i];
-					$elid = $searchFilters['elementid'][$i];
-
-					if (array_key_exists($elid, $elements))
+					for ($i = 0; $i < count($searchFilters['key']); $i++)
 					{
-						$found = true;
-						$elementModel = $elements[$elid];
-					}
-					else
-					{
-						// If sent from a search form - the table name will be blank
-						$key = explode('.', $key);
-						$key = $tableName . '.' . array_pop($key);
+						$eval  = FABRIKFILTER_TEXT;
+						$found = false;
+						$key   = $searchFilters['key'][$i];
+						$elid  = $searchFilters['elementid'][$i];
 
-						if (array_key_exists($key, $filter_elements))
+						if (array_key_exists($elid, $elements))
 						{
-							$found = true;
-							$elementModel = $filter_elements["$key"];
+							$found        = true;
+							$elementModel = $elements[$elid];
 						}
 						else
 						{
-							// $$$ rob - I've not actually tested this code
-							$joins = $this->listModel->getJoins();
+							// If sent from a search form - the table name will be blank
+							$key = explode('.', $key);
+							$key = $tableName . '.' . array_pop($key);
 
-							foreach ($joins as $join)
+							if (array_key_exists($key, $filter_elements))
 							{
-								$key = $db->qn($join->table_join) . '.' . array_pop(explode('.', $key));
+								$found        = true;
+								$elementModel = $filter_elements["$key"];
+							}
+							else
+							{
+								// $$$ rob - I've not actually tested this code
+								$joins = $this->listModel->getJoins();
 
-								if (array_key_exists($key, $filter_elements))
+								foreach ($joins as $join)
 								{
-									$found = true;
-									$elementModel = $filter_elements[$key];
-									break;
+									$key = $db->qn($join->table_join) . '.' . array_pop(explode('.', $key));
+
+									if (array_key_exists($key, $filter_elements))
+									{
+										$found        = true;
+										$elementModel = $filter_elements[$key];
+										break;
+									}
 								}
 							}
 						}
+
+						if (!isset($elementModel) || !is_a($elementModel, 'plgFabrik_Element') || $found === false)
+						{
+							// Could be looking for an element which exists in a join
+							continue;
+						}
+
+						$index    = array_key_exists('key', $filters) ? array_search($key, $lookupKeys) : false;
+						$element  = $elementModel->getElement();
+						$elParams = $elementModel->getParams();
+						$grouped  = array_key_exists($i, $searchFilters['grouped_to_previous']) ? $searchFilters['grouped_to_previous'][$i] : 0;
+
+						$join = $searchFilters['join'][$i];
+
+						if ($index === false)
+						{
+							$filters['value'][]               = $searchFilters['value'][$i];
+							$filters['condition'][]           = $elementModel->getDefaultFilterCondition();
+							$filters['join'][]                = $join;
+							$filters['no-filter-setup'][]     = ($element->filter_type == '') ? 1 : 0;
+							$filters['hidden'][]              = ($element->filter_type == '') ? 1 : 0;
+							$filters['key'][]                 = $key;
+							$filters['search_type'][]         = 'search';
+							$filters['match'][]               = $element->filter_exact_match;
+							$filters['full_words_only'][]     = $elParams->get('full_words_only');
+							$filters['eval'][]                = $eval;
+							$filters['required'][]            = $elParams->get('filter_required');
+							$filters['access'][]              = $elParams->get('filter_access');
+							$filters['grouped_to_previous'][] = $grouped;
+							$filters['label'][]               = $elementModel->getListHeading();
+							$filters['raw'][]                 = false;
+						}
+						else
+						{
+							unset($lookupKeys[$index]);
+							$filters['value'][$index]               = $searchFilters['value'][$i];
+							$filters['condition'][$index]           = $elementModel->getDefaultFilterCondition();
+							$filters['join'][$index]                = $join;
+							$filters['no-filter-setup'][$index]     = ($element->filter_type == '') ? 1 : 0;
+							$filters['hidden'][$index]              = ($element->filter_type == '') ? 1 : 0;
+							$filters['key'][$index]                 = $key;
+							$filters['search_type'][$index]         = 'search';
+							$filters['match'][$index]               = $element->filter_exact_match;
+							$filters['full_words_only'][$index]     = $elParams->get('full_words_only');
+							$filters['eval'][$index]                = $eval;
+							$filters['required'][$index]            = $elParams->get('filter_required');
+							$filters['access'][$index]              = $elParams->get('filter_access');
+							$filters['grouped_to_previous'][$index] = $grouped;
+							$filters['label'][$index]               = $elementModel->getListHeading();
+							$filters['raw'][$index]                 = false;
+						}
+
+						$filters['elementid'][] = $element->id;
 					}
-
-					if (!isset($elementModel) || !is_a($elementModel, 'plgFabrik_Element') || $found === false)
-					{
-						// Could be looking for an element which exists in a join
-						continue;
-					}
-
-					$index = array_key_exists('key', $filters) ? array_search($key, $lookupKeys) : false;
-					$element = $elementModel->getElement();
-					$elParams = $elementModel->getParams();
-					$grouped = array_key_exists($i, $searchFilters['grouped_to_previous']) ? $searchFilters['grouped_to_previous'][$i] : 0;
-
-					$join = $searchFilters['join'][$i];
-
-					if ($index === false)
-					{
-						$filters['value'][] = $searchFilters['value'][$i];
-						$filters['condition'][] = $elementModel->getDefaultFilterCondition();
-						$filters['join'][] = $join;
-						$filters['no-filter-setup'][] = ($element->filter_type == '') ? 1 : 0;
-						$filters['hidden'][] = ($element->filter_type == '') ? 1 : 0;
-						$filters['key'][] = $key;
-						$filters['search_type'][] = 'search';
-						$filters['match'][] = $element->filter_exact_match;
-						$filters['full_words_only'][] = $elParams->get('full_words_only');
-						$filters['eval'][] = $eval;
-						$filters['required'][] = $elParams->get('filter_required');
-						$filters['access'][] = $elParams->get('filter_access');
-						$filters['grouped_to_previous'][] = $grouped;
-						$filters['label'][] = $elementModel->getListHeading();
-						$filters['raw'][] = false;
-					}
-					else
-					{
-						unset($lookupKeys[$index]);
-						$filters['value'][$index] = $searchFilters['value'][$i];
-						$filters['condition'][$index] = $elementModel->getDefaultFilterCondition();
-						$filters['join'][$index] = $join;
-						$filters['no-filter-setup'][$index] = ($element->filter_type == '') ? 1 : 0;
-						$filters['hidden'][$index] = ($element->filter_type == '') ? 1 : 0;
-						$filters['key'][$index] = $key;
-						$filters['search_type'][$index] = 'search';
-						$filters['match'][$index] = $element->filter_exact_match;
-						$filters['full_words_only'][$index] = $elParams->get('full_words_only');
-						$filters['eval'][$index] = $eval;
-						$filters['required'][$index] = $elParams->get('filter_required');
-						$filters['access'][$index] = $elParams->get('filter_access');
-						$filters['grouped_to_previous'][$index] = $grouped;
-						$filters['label'][$index] = $elementModel->getListHeading();
-						$filters['raw'][$index] = false;
-					}
-
-					$filters['elementid'][] = $element->id;
 				}
 			}
 
@@ -1005,7 +1008,7 @@ class FabrikFEModelListfilter extends FabModel
 			{
 				$fieldDesc = $elementModel->getFieldDescription();
 
-				if (String::stristr($fieldDesc, 'INT'))
+				if (JString::stristr($fieldDesc, 'INT'))
 				{
 					if (is_numeric($val) && $condition == '=')
 					{
@@ -1169,7 +1172,7 @@ class FabrikFEModelListfilter extends FabModel
 		if (!empty($request) && array_key_exists('key', $request))
 		{
 			$keyInts = array_keys($request['key']);
-			$ajaxPost = String::strtolower($input->server->get('HTTP_X_REQUESTED_WITH'));
+			$ajaxPost = JString::strtolower($input->server->get('HTTP_X_REQUESTED_WITH'));
 			$this->listModel->ajaxPost = $ajaxPost;
 			$this->listModel->postValues = $values;
 
@@ -1210,7 +1213,12 @@ class FabrikFEModelListfilter extends FabModel
 				 */
 
 				// $$$ rob set a var for empty value - regardless of whether its an array or string
-				$emptyValue = ((is_string($value) && trim($value) == '') || (is_array($value) && trim(implode('', $value)) == '')) && $condition !== 'EMPTY';
+				$emptyValue =
+					(
+						(is_string($value) && trim($value) == '')
+						|| (is_array($value) && trim(implode('', $value)) == '')
+					)
+					&& ($condition !== 'EMPTY' && $condition !== 'NOTEMPTY');
 
 				/**
 				 * $$rob ok the above meant that require filters stopped working as soon as you submitted
@@ -1249,6 +1257,13 @@ class FabrikFEModelListfilter extends FabModel
 					$value = '';
 				}
 
+				if ($condition === 'NOTEMPTY')
+				{
+					$condition = '<>';
+					$value = '';
+				}
+
+
 				$elementModel = $elements[$elid];
 
 				if (!is_a($elementModel, 'PlgFabrik_Element'))
@@ -1257,7 +1272,7 @@ class FabrikFEModelListfilter extends FabModel
 				}
 
 				// Date element's have specific empty values
-				if ($origCondition === 'EMPTY')
+				if ($origCondition === 'EMPTY' || $origCondition === 'NOTEMPTY')
 				{
 					$value = $elementModel->emptyFilterValue();
 				}
@@ -1299,7 +1314,7 @@ class FabrikFEModelListfilter extends FabModel
 				{
 					$fieldDesc = $elementModel->getFieldDescription();
 
-					if (String::stristr($fieldDesc, 'INT'))
+					if (JString::stristr($fieldDesc, 'INT'))
 					{
 						if (is_numeric($value) && $request['condition'][$i] == '=')
 						{
@@ -1313,7 +1328,7 @@ class FabrikFEModelListfilter extends FabModel
 				 * post filter query overwrites search all query, but uses add so = where id REGEX 'USA' AND country LIKE '%USA'
 				 * this code swaps the first
 				 */
-				$joinMode = String::strtolower($request['join'][$i]) != 'where' ? $request['join'][$i] : 'AND';
+				$joinMode = JString::strtolower($request['join'][$i]) != 'where' ? $request['join'][$i] : 'AND';
 
 				if (!empty($filters))
 				{
@@ -1516,7 +1531,7 @@ class FabrikFEModelListfilter extends FabModel
 					{
 						$fieldDesc = $elementModel->getFieldDescription();
 
-						if (String::stristr($fieldDesc, 'INT'))
+						if (JString::stristr($fieldDesc, 'INT'))
 						{
 							if (is_numeric($search) && $condition == '=')
 							{

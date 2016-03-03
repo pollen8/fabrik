@@ -13,6 +13,8 @@ defined('_JEXEC') or die('Restricted access');
 
 require_once dirname(__FILE__) . '/helper.php';
 
-$buttons = modFabrik_QuickIconHelper::getButtons($params);
+$buttons   = modFabrik_QuickIconHelper::getButtons($params);
+$lists     = modFabrik_QuickIconHelper::listIcons();
+$menuLinks = $params->get('show_menu_links', 1);
 
 require JModuleHelper::getLayoutPath('mod_fabrik_quickicon', $params->get('layout', 'default'));

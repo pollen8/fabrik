@@ -7,7 +7,7 @@ defined('JPATH_BASE') or die;
 
 $d          = $displayData;
 $attributes = isset($d->attributes) ? $d->attributes : '';
-$type       = isset($d->type) ? 'type="' . $d->type . '"' : '';
+$type       = isset($d->type) ? 'type="' . $d->type . '"' : 'type="button"';
 $tag        = isset($d->tag) ? $d->tag : 'button'; // button or a
 $name       = isset($d->name) ? 'name="' . $d->name . '"' : '';
 $id = isset($d->id) ? 'id="' . $d->id .'"' : '';

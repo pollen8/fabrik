@@ -25,7 +25,7 @@ foreach ($this->elements as $element) :
 	if (trim($element->error) !== '') :
 		$element->error = $this->errorIcon . ' ' . $element->error;
 		$element->containerClass .= ' error';
-		$this->class .= ' help-inline';
+		$this->class .= ' help-inline text-danger';
 	endif;
 
 	if ($element->startRow) :

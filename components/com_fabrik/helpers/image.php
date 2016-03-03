@@ -11,8 +11,6 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Joomla\String\String;
-
 /**
  * Image manipulation class
  *
@@ -350,7 +348,7 @@ class Fabimage
 	 */
 	public static function exifToNumber($value, $format)
 	{
-		$pos = String::strpos($value, '/');
+		$pos = JString::strpos($value, '/');
 
 		if ($pos === false)
 		{
@@ -454,7 +452,7 @@ class FabimageGD extends Fabimage
 	public function imageFromFile($file)
 	{
 		$img = false;
-		$ext = String::strtolower(end(explode('.', $file)));
+		$ext = JString::strtolower(end(explode('.', $file)));
 
 		if ($ext == 'jpg' || $ext == 'jpeg')
 		{
@@ -493,7 +491,7 @@ class FabimageGD extends Fabimage
 	 */
 	protected function imageCreateFrom($source)
 	{
-		$ext = String::strtolower(JFile::getExt($source));
+		$ext = JString::strtolower(JFile::getExt($source));
 
 		switch ($ext)
 		{
@@ -522,7 +520,7 @@ class FabimageGD extends Fabimage
 	 */
 	public function imageToFile($destCropFile, $image)
 	{
-		$ext = String::strtolower(JFile::getExt($destCropFile));
+		$ext = JString::strtolower(JFile::getExt($destCropFile));
 		ob_start();
 
 		switch ($ext)
@@ -675,7 +673,7 @@ class FabimageGD extends Fabimage
 			return $img;
 		}
 
-		$ext = String::strtolower(end(explode('.', $origFile)));
+		$ext = JString::strtolower(end(explode('.', $origFile)));
 
 		// If an image was successfully loaded, test the image for size
 		if ($img)
@@ -1017,7 +1015,7 @@ class FabimageIM extends Fabimage
 			// $$$ hugh - testing making thumbs for PDF's, so need a little tweak here
 			$origInfo = pathinfo($origFile);
 
-			if (String::strtolower($origInfo['extension']) != 'pdf')
+			if (JString::strtolower($origInfo['extension']) != 'pdf')
 			{
 				return;
 			}
@@ -1035,7 +1033,7 @@ class FabimageIM extends Fabimage
 
 			$origInfo = pathinfo($origFile);
 
-			if (String::strtolower($origInfo['extension']) == 'pdf')
+			if (JString::strtolower($origInfo['extension']) == 'pdf')
 			{
 				$pdfThumbType = 'png';
 
@@ -1057,7 +1055,7 @@ class FabimageIM extends Fabimage
 					$im->thumbnailImage($maxWidth, $maxHeight, true);
 					$im->writeImage($destFile);
 					// as destroy() is deprecated
-					$im->clear();	
+					$im->clear();
 				}
 			}
 			else

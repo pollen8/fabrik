@@ -52,16 +52,6 @@
 				<option value="multilist">PLG_ELEMENT_DBJOIN_MULTILIST</option>
 			</field>
 
-			<field name="advanced_behavior"
-			       type="radio"
-			       default="0"
-			       class="btn-group"
-			       label="PLG_ELEMENT_DROPDOWN_JQUERY_CHOSEN_LABEL"
-			       description="PLG_ELEMENT_DROPDOWN_JQUERY_CHOSEN_DESC">
-				<option value="0">JNO</option>
-				<option value="1">JYES</option>
-			</field>
-
 		</fieldset>
 
 		<fieldset label="COM_FABRIK_DATA"
@@ -128,7 +118,7 @@
 				<option value="2">PLG_ELEMENT_DBJOIN_EDIT</option>
 				<option value="3">PLG_ELEMENT_DBJOIN_BOTH</option>
 			</field>
-			
+
 			<field name="databasejoin_where_ajax"
 			       type="radio"
 			       default="0"
@@ -138,7 +128,7 @@
 				<option value="0">JNO</option>
 				<option value="1">JYES</option>
 			</field>
-			
+
 
 			<!--
 						<field name="database_join_join_sql"
@@ -244,6 +234,16 @@
 
 			<field type="helplink"
 			       url="PLG_ELEMENT_DATABASEJOIN_HELP_SERVER"/>
+
+			<field name="advanced_behavior"
+			       type="radio"
+			       default="0"
+			       class="btn-group"
+			       label="PLG_ELEMENT_DROPDOWN_JQUERY_CHOSEN_LABEL"
+			       description="PLG_ELEMENT_DROPDOWN_JQUERY_CHOSEN_DESC">
+				<option value="0">JNO</option>
+				<option value="1">JYES</option>
+			</field>
 
 			<field name="dbjoin_options_per_row"
 			       type="width"

@@ -11,8 +11,6 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Joomla\String\String;
-
 // Require the abstract plugin class
 require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
 
@@ -183,7 +181,7 @@ class PlgFabrik_FormConfirmation extends PlgFabrik_Form
 			// $$$ 24/10/2011 testing removing this as data is retrieved via the session not through posted data
 			foreach ($post as $key => $val)
 			{
-				$noneRaw = String::substr($key, 0, String::strlen($key) - 4);
+				$noneRaw = JString::substr($key, 0, JString::strlen($key) - 4);
 
 				if ($key == 'fabrik_vars')
 				{

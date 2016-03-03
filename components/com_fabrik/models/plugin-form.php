@@ -11,7 +11,7 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Joomla\String\String;
+use Joomla\Utilities\ArrayHelper;
 
 jimport('joomla.application.component.model');
 
@@ -55,7 +55,7 @@ class PlgFabrik_Form extends FabrikPlugin
 	/**
 	 * Run from form model when deleting record
 	 *
-	 * @param   array  &$groups  Form data for deletion
+	 * @param   array &$groups Form data for deletion
 	 *
 	 * @return  bool
 	 */
@@ -67,7 +67,7 @@ class PlgFabrik_Form extends FabrikPlugin
 	/**
 	 * Run from list model when deleting rows
 	 *
-	 * @param   array  &$groups  List data for deletion
+	 * @param   array &$groups List data for deletion
 	 *
 	 * @return  bool
 	 */
@@ -79,7 +79,7 @@ class PlgFabrik_Form extends FabrikPlugin
 	/**
 	 * Run right at the beginning of the form processing
 	 *
-	 * @return	bool
+	 * @return    bool
 	 */
 	public function onBeforeProcess()
 	{
@@ -89,7 +89,7 @@ class PlgFabrik_Form extends FabrikPlugin
 	/**
 	 * Run if form validation fails
 	 *
-	 * @return	bool
+	 * @return    bool
 	 */
 	public function onError()
 	{
@@ -98,7 +98,7 @@ class PlgFabrik_Form extends FabrikPlugin
 	/**
 	 * Run before table calculations are applied
 	 *
-	 * @return	bool
+	 * @return    bool
 	 */
 	public function onBeforeCalculations()
 	{
@@ -109,7 +109,7 @@ class PlgFabrik_Form extends FabrikPlugin
 	 * Run right at the end of the form processing
 	 * form needs to be set to record in database for this to hook to be called
 	 *
-	 * @return	bool
+	 * @return    bool
 	 */
 	public function onAfterProcess()
 	{
@@ -119,7 +119,7 @@ class PlgFabrik_Form extends FabrikPlugin
 	/**
 	 * Alter the returned plugin manager's result
 	 *
-	 * @param   string  $method  Method
+	 * @param   string $method Method
 	 *
 	 * @return bool
 	 */
@@ -141,7 +141,7 @@ class PlgFabrik_Form extends FabrikPlugin
 	/**
 	 * Inject custom html into the bottom of the form
 	 *
-	 * @param   int  $c  plugin counter
+	 * @param   int $c plugin counter
 	 *
 	 * @return  string  html
 	 */
@@ -183,7 +183,7 @@ class PlgFabrik_Form extends FabrikPlugin
 	/**
 	 * Get any html that needs to be written after the form close tag
 	 *
-	 * @return	string	html
+	 * @return    string    html
 	 */
 	public function getEndContent_result()
 	{
@@ -209,7 +209,7 @@ class PlgFabrik_Form extends FabrikPlugin
 		// See comments in getEmailData() about caching in $this vs $model
 		unset($this->emailData);
 		unset($model->emailData);
-		$d = isset($model->formDataWithTableName) ? $model->formDataWithTableName : array();
+		$d          = isset($model->formDataWithTableName) ? $model->formDataWithTableName : array();
 		$this->data = array_merge($d, $this->getEmailData());
 		JDEBUG ? $profiler->mark("getProcessData: end") : null;
 
@@ -248,10 +248,11 @@ class PlgFabrik_Form extends FabrikPlugin
 		if (isset($model->emailData))
 		{
 			JDEBUG ? $profiler->mark("getEmailData: cached") : null;
+
 			return $model->emailData;
 		}
 
-		/** @var FabrikFEModelForm  $model */
+		/** @var FabrikFEModelForm $model */
 		$model = $this->getModel();
 
 		if (is_null($model->formDataWithTableName))
@@ -274,7 +275,7 @@ class PlgFabrik_Form extends FabrikPlugin
 		 */
 
 		$listModel = $model->getListModel();
-		$editable = $model->isEditable();
+		$editable  = $model->isEditable();
 		$model->setEditable(false);
 
 		if (is_object($listModel))
@@ -283,7 +284,7 @@ class PlgFabrik_Form extends FabrikPlugin
 			$model->getJoinGroupIds($joins);
 		}
 
-		$this->emailData = array();
+		$this->emailData  = array();
 		$model->emailData = array();
 
 		// $$$ hugh - temp foreach fix
@@ -318,10 +319,10 @@ class PlgFabrik_Form extends FabrikPlugin
 
 						if (!empty($elementModels))
 						{
-							$tmpElement = current($elementModels);
+							$tmpElement        = current($elementModels);
 							$smallerElHTMLName = $tmpElement->getFullName(true, false);
-							$tmpEl = FArrayHelper::getValue($model->formDataWithTableName, $smallerElHTMLName, array(), 'array');
-							$repeatGroup = count($tmpEl);
+							$tmpEl             = FArrayHelper::getValue($model->formDataWithTableName, $smallerElHTMLName, array(), 'array');
+							$repeatGroup       = count($tmpEl);
 						}
 					}
 				}
@@ -336,25 +337,25 @@ class PlgFabrik_Form extends FabrikPlugin
 				foreach ($elementModels as $elementModel)
 				{
 					// Force reload?
-					$elementModel->defaults = null;
+					$elementModel->defaults          = null;
 					$elementModel->_repeatGroupTotal = $repeatGroup - 1;
 
-					$k = $elementModel->getFullName(true, false);
+					$k   = $elementModel->getFullName(true, false);
 					$key = $elementModel->getFullName(true, false);
 
 					// Used for working out if the element should behave as if it was
 					// in a new form (joined grouped) even when editing a record
 					$elementModel->inRepeatGroup = $groupModel->canRepeat();
-					$elementModel->_inJoin = $groupModel->isJoin();
+					$elementModel->_inJoin       = $groupModel->isJoin();
 					$elementModel->setEditable(false);
 
 					if ($groupModel->isJoin())
 					{
 						if ($groupModel->canRepeat())
 						{
-							$raw = FArrayHelper::getValue($model->formDataWithTableName[$k], $c, '');
+							$raw                              = FArrayHelper::getValue($model->formDataWithTableName[$k], $c, '');
 							$this->emailData[$k . '_raw'][$c] = $raw;
-							$this->emailData[$k][$c] = $elementModel->getEmailValue($raw, $model->formDataWithTableName, $c);
+							$this->emailData[$k][$c]          = $elementModel->getEmailValue($raw, $model->formDataWithTableName, $c);
 							continue;
 						}
 						else
@@ -365,7 +366,7 @@ class PlgFabrik_Form extends FabrikPlugin
 								foreach ($model->formDataWithTableName[$k] as $multiKey => $multiData)
 								{
 									$this->emailData[$k . '_raw'][$multiKey] = $multiData;
-									$this->emailData[$k][$multiKey] = $elementModel->getEmailValue($multiData, $model->formDataWithTableName, $multiData);
+									$this->emailData[$k][$multiKey]          = $elementModel->getEmailValue($multiData, $model->formDataWithTableName, $multiData);
 								}
 								continue;
 							}
@@ -407,7 +408,7 @@ class PlgFabrik_Form extends FabrikPlugin
 					 */
 					//if (!$elementModel->isJoin())
 					//{
-						$this->emailData[$k] = $elementModel->getEmailValue($emailValue, $model->formDataWithTableName, $c);
+					$this->emailData[$k] = $elementModel->getEmailValue($emailValue, $model->formDataWithTableName, $c);
 					//}
 				}
 			}
@@ -418,7 +419,7 @@ class PlgFabrik_Form extends FabrikPlugin
 		// If form contained joins then this was altering the exiting pk data to be the joined table's id - not good!
 		if (is_object($listModel) && empty($this->emailData[$pk]))
 		{
-			$this->emailData[$pk] = $listModel->lastInsertId;
+			$this->emailData[$pk]          = $listModel->lastInsertId;
 			$this->emailData[$pk . '_raw'] = $listModel->lastInsertId;
 		}
 
@@ -441,8 +442,8 @@ class PlgFabrik_Form extends FabrikPlugin
 	public function formJavascriptClass()
 	{
 		$formModel = $this->getModel();
-		$ext = FabrikHelperHTML::isDebug() ? '.js' : '-min.js';
-		$name = $this->get('_name');
+		$ext       = FabrikHelperHTML::isDebug() ? '.js' : '-min.js';
+		$name      = $this->get('_name');
 		static $jsClasses;
 
 		if (!isset($jsClasses))
@@ -457,7 +458,7 @@ class PlgFabrik_Form extends FabrikPlugin
 		if (empty($jsClasses[$script]))
 		{
 			$formModel->formPluginShim[] = $script;
-			$jsClasses[$script] = 1;
+			$jsClasses[$script]          = 1;
 		}
 	}
 
@@ -493,7 +494,7 @@ class PlgFabrik_Form extends FabrikPlugin
 	 *
 	 * @since  3.0.8
 	 *
-	 * @return	bool  session.on
+	 * @return    bool  session.on
 	 */
 
 	public function usesSession_result()
@@ -506,19 +507,57 @@ class PlgFabrik_Form extends FabrikPlugin
 	 * Its actually an instance of FabrikLayoutFile which inverses the ordering added include paths.
 	 * In FabrikLayoutFile the addedPath takes precedence over the default paths, which makes more sense!
 	 *
-	 * @param   string  $type  form/details/list
+	 * @param   string $type form/details/list
 	 *
 	 * @return FabrikLayoutFile
 	 */
 	public function getLayout($type)
 	{
-		$name = get_class($this);
-		$name = strtolower(String::str_ireplace('PlgFabrik_Form', '', $name));
+		$name     = get_class($this);
+		$name     = strtolower(JString::str_ireplace('PlgFabrik_Form', '', $name));
 		$basePath = COM_FABRIK_BASE . '/plugins/fabrik_form/' . $name . '/layouts';
-		$layout = new FabrikLayoutFile('fabrik-form-' . $name. '-' . $type, $basePath, array('debug' => false, 'component' => 'com_fabrik', 'client' => 'site'));
+		$layout   = new FabrikLayoutFile('fabrik-form-' . $name . '-' . $type, $basePath, array('debug' => false, 'component' => 'com_fabrik', 'client' => 'site'));
 		$layout->addIncludePaths(JPATH_THEMES . '/' . $this->app->getTemplate() . '/html/layouts');
 		$layout->addIncludePaths(JPATH_THEMES . '/' . $this->app->getTemplate() . '/html/layouts/com_fabrik');
 
 		return $layout;
+	}
+
+	/**
+	 * Get the fields value regardless of whether its in joined data or no
+	 *
+	 * @param   string $pName   Params property name to get the value for
+	 * @param   array  $data    Posted form data
+	 * @param   mixed  $default Default value
+	 *
+	 * @return  mixed  value
+	 */
+	public function getFieldValue($pName, $data, $default = '')
+	{
+		$params = $this->getParams();
+
+		if ($params->get($pName, '') === '')
+		{
+			return $default;
+		}
+
+		$elementModel = FabrikWorker::getPluginManager()->getElementPlugin($params->get($pName));
+		$name         = $elementModel->getFullName(true, false);
+
+		return ArrayHelper::getValue($data, $name, $default);
+	}
+
+	/**
+	 * Replace a plugin parameter value with data parsed via parseMessageForPlaceholder
+	 * @param string $pName  Parameter name
+	 *
+	 * @return string
+	 */
+	public function placeholer($pName)
+	{
+		$params = $this->getParams();
+		$w      = new FabrikWorker;
+
+		return $w->parseMessageForPlaceHolder($params->get($pName), $this->data);
 	}
 }

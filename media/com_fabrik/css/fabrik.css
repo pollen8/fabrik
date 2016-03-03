@@ -712,7 +712,7 @@ form.fabrikForm label.radio {
 
 /** Prevent line breaks between sort icon and heading label in lists */
 
-.heading.fabrik_ordercell, .fabrikTag {
+.fabrikTag {
 	white-space: nowrap;
 }
 

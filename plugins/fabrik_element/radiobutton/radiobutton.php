@@ -11,8 +11,6 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Joomla\String\String;
-
 /**
  * Plugin element to a series of radio buttons
  *
@@ -132,7 +130,7 @@ class PlgFabrik_ElementRadiobutton extends PlgFabrik_ElementList
 		{
 			if (is_string($value))
 			{
-				if (String::strtolower($labels[$i]) == String::strtolower($value))
+				if (JString::strtolower($labels[$i]) == JString::strtolower($value))
 				{
 					$val = $values[$i];
 
@@ -141,11 +139,11 @@ class PlgFabrik_ElementRadiobutton extends PlgFabrik_ElementList
 			}
 			else
 			{
-				if (in_array(String::strtolower($labels[$i]), $value))
+				if (in_array(JString::strtolower($labels[$i]), $value))
 				{
 					foreach ($value as &$v)
 					{
-						if (String::strtolower($labels[$i]) == String::strtolower($v))
+						if (JString::strtolower($labels[$i]) == JString::strtolower($v))
 						{
 							$v = $values[$i];
 						}

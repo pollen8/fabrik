@@ -29,7 +29,6 @@
 				<option value="standard">Standard</option>
 				<option value="recaptcha">Recaptcha</option>
 				<option value="nocaptcha">Nocaptcha</option>
-				<option value="playthru">PlayThru</option>
 			</field>
 		</fieldset>
 
@@ -65,10 +64,10 @@
 				label="PLG_ELEMENT_CAPTCHA_PADDING_LABEL"
 				size="3" />
 
-			<!-- <field default="120" description="" label="PLG_ELEMENT_CAPTCHA_WIDTH_LABEL" 
+			<!-- <field default="120" description="" label="PLG_ELEMENT_CAPTCHA_WIDTH_LABEL"
 				name="captcha-width" size="3" class="input-mini" type="text"/> -->
 
-			<!-- <field default="40" description="" label="PLG_ELEMENT_CAPTCHA_HEIGHT_LABEL" 
+			<!-- <field default="40" description="" label="PLG_ELEMENT_CAPTCHA_HEIGHT_LABEL"
 				name="captcha-height" size="3" class="input-mini" type="text"/> -->
 
 			<field name="captcha-chars"

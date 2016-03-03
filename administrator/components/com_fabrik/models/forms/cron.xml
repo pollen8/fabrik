@@ -20,7 +20,11 @@
 		<field name="lastrun"
 			type="calendar"
 			class="input-medium"
-			label="COM_FABRIK_CRON_FIELD_LAST_RUN_LABEL" />
+			label="COM_FABRIK_CRON_FIELD_LAST_RUN_LABEL"
+			   format="%Y-%m-%d %H:%M:%S"
+			   size="22"
+			   filter="user_utc"
+		/>
 
 		<field name="published"
 			type="radio"

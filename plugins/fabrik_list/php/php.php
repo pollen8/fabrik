@@ -180,6 +180,7 @@ class PlgFabrik_ListPhp extends plgFabrik_List
 		$opts = $this->getElementJSOptions();
 		$params = $this->getParams();
 		$opts->js_code = $params->get('table_php_js_code', '');
+		$opts->requireChecked = (bool) $params->get('table_php_require_checked', '1');
 		$opts = json_encode($opts);
 		$this->jsInstance = "new FbListPHP($opts)";
 

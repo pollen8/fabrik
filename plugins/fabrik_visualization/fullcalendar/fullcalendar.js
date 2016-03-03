@@ -123,6 +123,7 @@ var fabrikFullcalendar = new Class({
 		 * the calendar override option of the visualization 
 		 */
 		var calOptions = {
+			lang: this.options.lang,
 			header: {
 				left: 'prev,next today',
 				center: 'title',
@@ -158,6 +159,9 @@ var fabrikFullcalendar = new Class({
 						jQuery('#'+popover).popover('hide');
 					});
 				}
+			},
+			eventAfterAllRender: function(view) {
+				var foo = 1;
 			}
 		};
 		/* Now merge any calendar overrides/additions from the visualixation */
@@ -181,7 +185,7 @@ var fabrikFullcalendar = new Class({
 			jQuery('#' + id).popover('hide');
 			this.editEntry(calEvent);
 		}.bind(this));
-		
+
 		document.addEvent('click:relay(button[data-task=deleteCalEvent], a[data-task=deleteCalEvent])', function (event, target) {
 			event.preventDefault();
 			var id = event.target.findClassUp('calEventButtons').id;
@@ -206,6 +210,8 @@ var fabrikFullcalendar = new Class({
 				jQuery('#calendar').fullCalendar( 'refetchEvents' );
 			}.bind(this)
 		});
+
+
 	},
 	
 	processEvents: function (json, callback) {
@@ -220,21 +226,21 @@ var fabrikFullcalendar = new Class({
 			var mStartDate = moment(e.startdate); 
 			var mEndDate = moment(e.enddate);
 			var dispStartDate = dispEndDate = "";
-			if (moment(mEndDate.format("YYYY-MM-DD")) > moment(mStartDate.format("YYYY-MM-DD"))
-				|| (e.startShowTime === false && e.endShowTime === false) ) {
-				dispStartDate = mStartDate.format("MMM DD") + " ";
-				dispEndDate = mEndDate.format("MMM DD") + " ";
+			if (moment(mEndDate.format('YYYY-MM-DD')) > moment(mStartDate.format("YYYY-MM-DD")) ||
+				(e.startShowTime === false && e.endShowTime === false) ) {
+				dispStartDate = mStartDate.format('MMM DD') + ' ';
+				dispEndDate = mEndDate.format('MMM DD') + ' ';
 			}
 			var dispStartTime = dispEndTime = "";
 			if (e.startShowTime === true && e.endShowTime === true) {
-				dispStartTime = mStartDate.format("hh.mm A");
-				dispEndTime = mEndDate.format("hh.mm A");
+				dispStartTime = mStartDate.format('hh.mm A');
+				dispEndTime = mEndDate.format('hh.mm A');
 			}
 			body.getElement("#viewstart").innerHTML = dispStartDate + dispStartTime;
 			body.getElement("#viewend").innerHTML = dispEndDate + dispEndTime;
 
 			var buttons = jQuery(Fabrik.jLayouts['fabrik-visualization-fullcalendar-viewbuttons'])[0];
-			jQuery(buttons)[0].id = "fabrikevent_buttons_" + id;
+			jQuery(buttons)[0].id = 'fabrikevent_buttons_' + id;
 
 			// Hide the buttons the user cannot see or add the tooltip text if button is visible
 			var bDelete = buttons.getElement(".popupDelete");

@@ -11,8 +11,6 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Joomla\String\String;
-
 jimport('joomla.application.component.model');
 
 /**
@@ -99,7 +97,7 @@ class PlgFabrik_List extends FabrikPlugin
 	 */
 	protected function buttonLabel()
 	{
-		$s = String::strtoupper($this->buttonPrefix);
+		$s = JString::strtoupper($this->buttonPrefix);
 
 		return FText::_('PLG_LIST_' . $s . '_' . $s);
 	}
@@ -294,7 +292,7 @@ class PlgFabrik_List extends FabrikPlugin
 	 */
 	public function onGetFilterKey()
 	{
-		$this->filterKey = String::strtolower(str_ireplace('PlgFabrik_List', '', get_class($this)));
+		$this->filterKey = JString::strtolower(str_ireplace('PlgFabrik_List', '', get_class($this)));
 
 		return $this->filterKey;
 	}
@@ -438,7 +436,7 @@ class PlgFabrik_List extends FabrikPlugin
 	public function getLayout($type)
 	{
 		$name = get_class($this);
-		$name = strtolower(String::str_ireplace('PlgFabrik_List', '', $name));
+		$name = strtolower(JString::str_ireplace('PlgFabrik_List', '', $name));
 		$basePath = COM_FABRIK_BASE . '/plugins/fabrik_list/' . $name . '/layouts';
 		$layout = new FabrikLayoutFile('fabrik-list-' . $name. '-' . $type, $basePath, array('debug' => false, 'component' => 'com_fabrik', 'client' => 'site'));
 		$layout->addIncludePaths(JPATH_THEMES . '/' . $this->app->getTemplate() . '/html/layouts');

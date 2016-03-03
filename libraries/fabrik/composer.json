@@ -1,0 +1,5 @@
+{
+    "require": {
+        "popphp/pop-shipping": "^2.0"
+    }
+}

@@ -86,11 +86,12 @@ class FabrikViewFormBase extends FabrikView
 	 */
 	private function _repeatGroupButtons($tmpl)
 	{
+		$formModel                        = $this->getModel();
 		$btnData                          = (object) array('tmpl' => $tmpl);
-		$this->removeRepeatGroupButton    = FabrikHelperHTML::getLayout('form.fabrik-repeat-group-delete')->render($btnData);
-		$this->addRepeatGroupButton       = FabrikHelperHTML::getLayout('form.fabrik-repeat-group-add')->render($btnData);
-		$this->removeRepeatGroupButtonRow = FabrikHelperHTML::getLayout('form.fabrik-repeat-group-row-delete')->render($btnData);
-		$this->addRepeatGroupButtonRow    = FabrikHelperHTML::getLayout('form.fabrik-repeat-group-row-add')->render($btnData);
+		$this->removeRepeatGroupButton    = $formModel->getLayout('form.fabrik-repeat-group-delete')->render($btnData);
+		$this->addRepeatGroupButton       = $formModel->getLayout('form.fabrik-repeat-group-add')->render($btnData);
+		$this->removeRepeatGroupButtonRow = $formModel->getLayout('form.fabrik-repeat-group-row-delete')->render($btnData);
+		$this->addRepeatGroupButtonRow    = $formModel->getLayout('form.fabrik-repeat-group-row-add')->render($btnData);
 	}
 
 	/**
@@ -330,10 +331,11 @@ class FabrikViewFormBase extends FabrikView
 	 * Set the canonical link - this is the definitive URL that Google et all, will use
 	 * to determine if duplicate URLs are the same content
 	 *
-	 * @throws Exception
+	 * @return  string
 	 */
-	public function setCanonicalLink()
+	public function getCanonicalLink()
 	{
+		$url = '';
 		if (!$this->app->isAdmin() && !$this->isMambot)
 		{
 			/** @var FabrikFEModelForm $model */
@@ -344,6 +346,22 @@ class FabrikViewFormBase extends FabrikView
 			$rowId  = $slug === '' ? $model->getRowId() : $slug;
 			$view   = $model->isEditable() ? 'form' : 'details';
 			$url    = JRoute::_('index.php?option=com_' . $this->package . '&view=' . $view . '&formid=' . $formId . '&rowid=' . $rowId);
+		}
+
+		return $url;
+	}
+
+	/**
+	 * Set the canonical link - this is the definitive URL that Google et all, will use
+	 * to determine if duplicate URLs are the same content
+	 *
+	 * @throws Exception
+	 */
+	public function setCanonicalLink()
+	{
+		if (!$this->app->isAdmin() && !$this->isMambot)
+		{
+			$url = $this->getCanonicalLink();
 
 			// Set a flag so that the system plugin can clear out any other canonical links.
 			$this->session->set('fabrik.clearCanonical', true);

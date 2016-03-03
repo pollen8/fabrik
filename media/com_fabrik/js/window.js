@@ -420,9 +420,19 @@ Fabrik.Window = new Class({
 	 * Fit the window width to the min of either its content width or the window width
 	 */
 	fitToWidth: function () {
+		var widthPad = 25;
 		var contentEl = this.window.getElement('.itemContent');
-		var w = contentEl.getScrollSize().x + 25 < window.getWidth() ? contentEl.getScrollSize().x + 25 : window.getWidth();
-		this.window.setStyle('width', w);
+		// nasty hack to work round Gantry 5 wrapping content in a div with id g-page-surround,
+		// that sets overflow=hidden, thus rendering getScrollSize() useless.
+		var g = contentEl.getElement('#g-page-surround');
+		if (g) {
+			widthPad += 50;
+			g.setStyle('overflow', 'visible');
+		}
+		var w = contentEl.getScrollSize().x + widthPad < window.getWidth() ? contentEl.getScrollSize().x + widthPad : window.getWidth();
+		if (g) {
+			g.setStyle('overflow', '');
+		}		this.window.setStyle('width', w);
 	},
 
 	close: function (e)

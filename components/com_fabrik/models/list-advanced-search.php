@@ -11,8 +11,6 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Joomla\String\String;
-
 jimport('joomla.application.component.model');
 
 /**
@@ -181,6 +179,9 @@ class FabrikFEModelAdvancedSearch extends FabModel
 
 				switch ($condition)
 				{
+					case 'NOTEMPTY':
+						$jsSel = 'NOTEMPTY';
+						break;
 					case 'EMPTY':
 						$jsSel = 'EMPTY';
 						break;
@@ -197,8 +198,8 @@ class FabrikFEModelAdvancedSearch extends FabModel
 						$jsSel = '>';
 						break;
 					default:
-						$firstChar = String::substr($v2, 1, 1);
-						$lastChar = String::substr($v2, -2, 1);
+						$firstChar = JString::substr($v2, 1, 1);
+						$lastChar = JString::substr($v2, -2, 1);
 
 						switch ($firstChar)
 						{
@@ -384,6 +385,7 @@ class FabrikFEModelAdvancedSearch extends FabModel
 		$statements[] = JHTML::_('select.option', '>', FText::_('COM_FABRIK_GREATER_THAN'));
 		$statements[] = JHTML::_('select.option', '<', FText::_('COM_FABRIK_LESS_THAN'));
 		$statements[] = JHTML::_('select.option', 'EMPTY', FText::_('COM_FABRIK_IS_EMPTY'));
+		$statements[] = JHTML::_('select.option', 'NOTEMPTY', FText::_('COM_FABRIK_IS_NOT_EMPTY'));
 
 		return $statements;
 	}

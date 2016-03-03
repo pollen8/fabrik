@@ -207,10 +207,12 @@ var Suboptions = new Class({
 		}
 		if (!evalAdded) {
 			$$('.sub_values').each(function (dd) {
+				/*
 				if (dd.value === '') {
 					alert(Joomla.JText._('COM_FABRIK_SUBOPTS_VALUES_ERROR'));
 					ret = false;
 				}
+				*/
 				values.push(dd.value);
 			});
 		}

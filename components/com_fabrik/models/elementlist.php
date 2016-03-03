@@ -11,7 +11,6 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Joomla\String\String;
 use Joomla\Utilities\ArrayHelper;
 
 jimport('joomla.application.component.model');
@@ -200,7 +199,7 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 	public function getFilterQuery($key, $condition, $value, $originalValue, $type = 'normal')
 	{
 		$element = $this->getElement();
-		$condition = String::strtoupper($condition);
+		$condition = JString::strtoupper($condition);
 		$this->encryptFieldName($key);
 		$glue = 'OR';
 

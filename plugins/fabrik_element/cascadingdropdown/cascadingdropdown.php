@@ -11,7 +11,6 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Joomla\String\String;
 use Joomla\Utilities\ArrayHelper;
 
 require_once JPATH_SITE . '/plugins/fabrik_element/databasejoin/databasejoin.php';
@@ -338,23 +337,6 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 		}
 
 		return '';
-	}
-
-	/**
-	 * Does the element store its data in a join table (1:n)
-	 *
-	 * @return	bool
-	 */
-	public function isJoin()
-	{
-		if (in_array($this->getDisplayType(), array('checkbox', 'multilist')))
-		{
-			return true;
-		}
-		else
-		{
-			return parent::isJoin();
-		}
 	}
 
 	/**
@@ -940,7 +922,7 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 			$query->where($where);
 		}
 
-		if (!String::stristr($where, 'order by'))
+		if (!JString::stristr($where, 'order by'))
 		{
 			$query->order($orderBy . ' ASC');
 		}

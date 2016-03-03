@@ -12,6 +12,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\Utilities\ArrayHelper;
+
 jimport('joomla.plugin.plugin');
 jimport('joomla.filesystem.file');
 
@@ -80,6 +82,7 @@ class PlgSystemFabrik extends JPlugin
 
 		require_once JPATH_SITE . '/components/com_fabrik/helpers/file.php';
 
+		require_once JPATH_LIBRARIES . '/fabrik/include.php';
 		parent::__construct($subject, $config);
 	}
 
@@ -112,6 +115,7 @@ class PlgSystemFabrik extends JPlugin
 		$session->clear('fabrik.js.head.scripts');
 		$session->clear('fabrik.js.config');
 		$session->clear('fabrik.js.shim');
+		$session->clear('fabrik.js.jlayouts');
 	}
 
 	/**
@@ -127,6 +131,10 @@ class PlgSystemFabrik extends JPlugin
 
 		$js = (array) $session->get('fabrik.js.scripts', array());
 		$js = implode("\n", $js);
+
+		$jLayouts = (array) $session->get('fabrik.js.jlayouts', array());
+		$jLayouts = json_encode(ArrayHelper::toObject($jLayouts));
+		$js       = str_replace('%%jLayouts%%', $jLayouts, $js);
 
 		if ($config . $js !== '')
 		{
@@ -225,22 +233,8 @@ class PlgSystemFabrik extends JPlugin
 	 */
 	protected function setBigSelects()
 	{
-		$fbConfig   = JComponentHelper::getParams('com_fabrik');
-		$bigSelects = $fbConfig->get('enable_big_selects', 0);
-		$db         = JFactory::getDbo();
-
-		if ($bigSelects)
-		{
-			if (version_compare($db->getVersion(), '5.1.0', '>='))
-			{
-				$db->setQuery("SET SQL_BIG_SELECTS=1, GROUP_CONCAT_MAX_LEN=10240");
-			}
-			else
-			{
-				$db->setQuery("SET OPTION SQL_BIG_SELECTS=1, GROUP_CONCAT_MAX_LEN=10240");
-			}
-			$db->execute();
-		}
+		$db = JFactory::getDbo();
+		FabrikWorker::bigSelects($db);
 	}
 
 	/**

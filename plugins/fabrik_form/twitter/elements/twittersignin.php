@@ -66,7 +66,25 @@ class JFormFieldTwittersignin extends JFormField
 		$src = COM_FABRIK_LIVESITE . 'components/com_fabrik/libs/abraham-twitteroauth/images/lighter.png';
 		$winOpts = 'width=800,height=460,toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=yes,resizable=yes';
 		$js = "window.open('$href', 'twitterwins', '" . $winOpts . "');return false;";
-		$str = '<a href="#" onclick="' . $js . '">';
+
+		$parsedUrl = parse_url(JUri::root());
+		$origin = $parsedUrl['scheme'] . '://' . $parsedUrl['host'];
+
+		$str = "
+<script type='text/javascript'>
+window.addEventListener('message', function(event) {
+	if (~event.origin.indexOf('" . $origin . "')) {
+		jQuery(event.data).each(function (i, k) {
+			jQuery(k[0]).val(k[1]);
+		});
+	} else {
+		return;
+	}
+});
+</script>
+";
+
+		$str .= '<a href="#" onclick="' . $js . '">';
 		$str .= '<img src="' . $src . '" alt="Sign in with Twitter"/></a>';
 		$str .= " | <button class=\"button btn\" href=\"#\" onclick=\"$clearjs\">";
 		$str .= FText::_('PLG_FORM_TWITTER_CLEAR_CREDENTIALS') . "</button><br/>";

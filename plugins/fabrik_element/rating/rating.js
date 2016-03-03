@@ -159,7 +159,7 @@ var FbRating = new Class({
 	},
 
 	_getRating : function (i) {
-		r = i.get('data-rating');
+		var r = i.get('data-rating');
 		return r.toInt();
 	},
 

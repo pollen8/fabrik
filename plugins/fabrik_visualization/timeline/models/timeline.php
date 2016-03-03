@@ -11,7 +11,6 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Joomla\String\String;
 use Joomla\Utilities\ArrayHelper;
 
 jimport('joomla.application.component.model');
@@ -409,11 +408,11 @@ class FabrikModelTimeline extends FabrikFEModelVisualization
 		$input = preg_replace('#^[\d\.]*#', '', $input);
 
 		// Lowercase the first character.
-		$first = String::substr($input, 0, 1);
-		$first = String::strtolower($first);
+		$first = JString::substr($input, 0, 1);
+		$first = JString::strtolower($first);
 
 		// Replace the first character with the lowercase character.
-		$input = String::substr_replace($input, $first, 0, 1);
+		$input = JString::substr_replace($input, $first, 0, 1);
 
 		return $input;
 	}
