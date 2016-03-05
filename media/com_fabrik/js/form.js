@@ -579,17 +579,13 @@ FbForm = new Class({
 				submit.disabled = 'disabled';
 				submit.setStyle('opacity', 0.5);
 			}
-			if (typeOf(document.getElement('.fabrikPagePrevious')) !== 'null') {
-				this.form.getElement('.fabrikPagePrevious').disabled = 'disabled';
-				this.form.getElement('.fabrikPagePrevious').addEvent('click', function (e) {
-					this._doPageNav(e, -1);
-				}.bind(this));
-			}
-			if (typeOf(document.getElement('.fabrikPagePrevious')) !== 'null') {
-				this.form.getElement('.fabrikPageNext').addEvent('click', function (e) {
-					this._doPageNav(e, 1);
-				}.bind(this));
-			}
+			var self = this;
+			jQuery(this.form).on('click', '.fabrikPagePrevious', function(e) {
+				self._doPageNav(e, -1);
+			});
+			jQuery(this.form).on('click', '.fabrikPageNext', function(e) {
+				self._doPageNav(e, 1);
+			});
 			this.setPageButtons();
 			this.hideOtherPages();
 		}
@@ -754,9 +750,9 @@ FbForm = new Class({
 
 	setPageButtons: function () {
 		var submit = this._getButton('Submit');
-		var prev = this.form.getElement('.fabrikPagePrevious');
-		var next = this.form.getElement('.fabrikPageNext');
-		if (typeOf(next) !== 'null') {
+		var prevs = this.form.getElements('.fabrikPagePrevious');
+		var nexts = this.form.getElements('.fabrikPageNext');
+		nexts.each(function (next) {
 			if (this.currentPage === this.options.pages.getKeys().length - 1) {
 				if (typeOf(submit) !== 'null') {
 					submit.disabled = '';
@@ -772,8 +768,8 @@ FbForm = new Class({
 				next.disabled = '';
 				next.setStyle('opacity', 1);
 			}
-		}
-		if (typeOf(prev) !== 'null') {
+		}.bind(this));
+		prevs.each(function (prev) {
 			if (this.currentPage === 0) {
 				prev.disabled = 'disabled';
 				prev.setStyle('opacity', 0.5);
@@ -781,7 +777,7 @@ FbForm = new Class({
 				prev.disabled = '';
 				prev.setStyle('opacity', 1);
 			}
-		}
+		}.bind(this));
 	},
 
 	destroyElements: function () {
