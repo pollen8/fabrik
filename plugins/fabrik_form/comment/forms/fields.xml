@@ -2,7 +2,7 @@
 <form>
 	<fields addfieldpath="/administrator/components/com_fabrik/models/fields" name="params">
 		<fieldset name="plg-form-comment" label="COM_FABRIK_OPTIONS">
-		
+
 			<field name="comment_method"
 				type="list"
 				default="internal"
@@ -18,26 +18,50 @@
 
 		<fieldset name="plg-form-comment-disqus" label="PLG_FORM_COMMENT_DISQUS">
 
-			<field name="comment-disqus-subdomain" 
+			<field name="comment-disqus-subdomain"
 				type="text"
 				description="PLG_FORM_COMMENT_DISQUS_DOMAIN_DESC"
 				label="PLG_FORM_COMMENT_DISQUS_DOMAIN_LABEL"
 				repeat="true"
 				size="30"/>
-				
+
 		</fieldset>
-		
+
 		<fieldset name="plg-form-comment-intensedebate" label="PLG_FORM_COMMENT_INTENSE_DEBATE">
-				
+
 			<field name="comment-intesedebate-code"
 				type="text"
 				description="PLG_FORM_COMMENT_INTENSE_DEBATE_CODE_DESC"
 				label="PLG_FORM_COMMENT_INTENSE_DEBATE_CODE_LABEL"
 				repeat="true"
 				size="30"/>
-				
+
+
 		</fieldset>
-		
+
+		<fieldset name="plg-form-comment-jcomments" label="PLG_FORM_COMMENT_JCOMMENTS">
+
+			<field name="comment_jcomment_notify"
+			       type="radio"
+			       class="btn-group"
+			       default="0"
+			       label="PLG_FORM_COMMENT_JCOMMENT_NOTIFY_LABEL">
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+			</field>
+
+			<field name="comment_jcomment_title"
+			       type="listfields"
+			       repeat="true"
+			       mode="gui"
+			       at="true"
+			       valueformat="tableelement"
+			       usestep="true"
+			       addbrackets="true"
+			       label="PLG_FORM_COMMENT_JCOMMENT_THREAD_TITLE_LABEL"/>
+
+		</fieldset>
+
 		<fieldset name="plg-form-comment-local" label="PLG_FORM_COMMENT_LOCAL_COMMENTING_SETTINGS">
 
 			<field name="comment_internal_wysiwyg"
@@ -50,14 +74,14 @@
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
-			
+
 			<field name="comment_lock_element"
 				type="listfields"
 				description="PLG_FORM_COMMENT_LOCK_COMMENTS_DESC"
 				label="PLG_FORM_COMMENT_LOCK_COMMENTS_LABEL"
 				repeat="true"
 				valueformat="tableelement"/>
-			
+
 			<field name="comment-date-format"
 				type="text"
 				default=""
@@ -66,7 +90,7 @@
 				label="PLG_FORM_COMMENT_DATE_FORMAT_LABEL"
 				>
 			</field>
-			
+
 			<field name="comment-internal-rating"
 				type="radio"
 				default="0"
@@ -77,7 +101,7 @@
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
-			
+
 			<field name="comment-internal-anonymous"
 				type="radio"
 				default="0"
@@ -99,7 +123,7 @@
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
-			
+
 			<field name="comment-thumb"
 				default="0"
 				type="radio"
