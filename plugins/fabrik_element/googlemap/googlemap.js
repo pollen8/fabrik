@@ -86,21 +86,31 @@ var FbGoogleMap = new Class({
 		this.parent(element, options);
 
 		this.loadFn = function () {
+			// experimental support for OSM rendering
+			this.mapTypeIds = [];
+			for (var type in google.maps.MapTypeId) {
+				this.mapTypeIds.push(google.maps.MapTypeId[type]);
+			}
+			this.mapTypeIds.push('OSM');
+
 			switch (this.options.maptype) {
-			case 'G_SATELLITE_MAP':
-				this.options.maptype = google.maps.MapTypeId.SATELLITE;
-				break;
-			case 'G_HYBRID_MAP':
-				this.options.maptype = google.maps.MapTypeId.HYBRID;
-				break;
-			case 'TERRAIN':
-				this.options.maptype = google.maps.MapTypeId.TERRAIN;
-				break;
-			default:
-			/* falls through */
-			case 'G_NORMAL_MAP':
-				this.options.maptype = google.maps.MapTypeId.ROADMAP;
-				break;
+				case 'OSM':
+					this.options.maptype = 'OSM';
+					break;
+				case 'G_SATELLITE_MAP':
+					this.options.maptype = google.maps.MapTypeId.SATELLITE;
+					break;
+				case 'G_HYBRID_MAP':
+					this.options.maptype = google.maps.MapTypeId.HYBRID;
+					break;
+				case 'TERRAIN':
+					this.options.maptype = google.maps.MapTypeId.TERRAIN;
+					break;
+				default:
+				/* falls through */
+				case 'G_NORMAL_MAP':
+					this.options.maptype = google.maps.MapTypeId.ROADMAP;
+					break;
 			}
 			this.makeMap();
 
@@ -190,10 +200,29 @@ var FbGoogleMap = new Class({
 					zoomControl: true,
 					zoomControlOptions: {
 						style: zoomControlStyle
+					},
+					mapTypeControlOptions: {
+						mapTypeIds: this.mapTypeIds
 					}
 				};
 			this.map = new google.maps.Map(document.id(this.element).getElement('.map'), mapOpts);
 			this.map.setOptions({'styles': this.options.styles});
+
+			/**
+			 * Experimental support for OSM tile rendering, see ...
+			 * http://wiki.openstreetmap.org/wiki/Google_Maps_Example
+			 */
+			if (this.options.maptype === 'OSM') {
+				this.map.mapTypes.set('OSM', new google.maps.ImageMapType({
+					getTileUrl: function (coord, zoom) {
+						// See above example if you need smooth wrapping at 180th meridian
+						return 'http://tile.openstreetmap.org/' + zoom + '/' + coord.x + '/' + coord.y + '.png';
+					},
+					tileSize  : new google.maps.Size(256, 256),
+					name      : 'OpenStreetMap',
+					maxZoom   : 18
+				}));
+			}
 			
 			if (this.options.traffic) {
 				  var trafficLayer = new google.maps.TrafficLayer();
