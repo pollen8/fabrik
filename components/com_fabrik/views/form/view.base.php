@@ -170,7 +170,7 @@ class FabrikViewFormBase extends FabrikView
 		if ($model->isMambot)
 		{
 			$this->package = $this->app->getUserState('com_fabrik.package', 'fabrik');
-			$context       = 'com_' . $this->package . '.form.' . $form->id . '.' . $this->rowid . '.';
+			$context       = $model->getSessionContext();
 			$model->errors = $this->session->get($context . 'errors', array());
 			$clearErrors   = true;
 		}

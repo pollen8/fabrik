@@ -2331,6 +2331,25 @@ class FabrikFEModelForm extends FabModelForm
 	}
 
 	/**
+	 * Helper method to get the session context - apply row id only if not '' as
+	 * accessing session data with a path '..' appears not to be possible
+	 *
+	 * @return string
+	 */
+	public function getSessionContext()
+	{
+		$context = 'com_' . $this->package . '.form.' . $this->getId() . '.';
+		$rowId = $this->getRowId();
+
+		if ($rowId !== '')
+		{
+			$context .= $rowId . '.';
+		}
+
+		return $context;
+	}
+
+	/**
 	 * Get form validation errors - if empty test session for errors
 	 * 31/01/13 - no longer restoring from session errors - see http://fabrikar.com/forums/showthread.php?t=31377
 	 * 19/02/13 - Changed from http_referer test to this->isMambot to restore session errors when redirecting from a non-ajax form
@@ -2340,8 +2359,6 @@ class FabrikFEModelForm extends FabModelForm
 	 */
 	public function getErrors()
 	{
-		$context = 'com_' . $this->package . '.form.' . $this->getId() . '.' . $this->getRowId() . '.';
-
 		// Store errors in local array as clearErrors() removes $this->errors
 		$errors = array();
 
@@ -2349,7 +2366,7 @@ class FabrikFEModelForm extends FabModelForm
 		{
 			if ($this->isMambot)
 			{
-				$errors = $this->session->get($context . 'errors', array());
+				$errors = $this->session->get($this->getSessionContext() . 'errors', array());
 			}
 		}
 		else
@@ -2370,7 +2387,7 @@ class FabrikFEModelForm extends FabModelForm
 	public function clearErrors()
 	{
 		$this->errors = array();
-		$context = 'com_' . $this->package . '.form.' . $this->getId() . '.' . $this->getRowId() . '.';
+		$context = $this->getSessionContext();
 		$this->session->clear($context . 'errors');
 		/* $$$ rob this was commented out, but putting back in to test issue that if we have ajax validations on
 		 * and a field is validated, then we don't submit the form, and go back to add the form, the previously validated
@@ -2388,7 +2405,7 @@ class FabrikFEModelForm extends FabModelForm
 	 */
 	public function setErrors($errors)
 	{
-		$context = 'com_' . $this->package . '.form.' . $this->getId() . '.' . $this->getRowId() . '.';
+		$context = $this->getSessionContext();
 		$this->session->set($context . 'errors', $errors);
 		$this->session->set($context . 'session.on', true);
 	}
@@ -2936,7 +2953,9 @@ class FabrikFEModelForm extends FabModelForm
 			$errorsFound = true;
 		}
 
-		foreach ($this->errors as $field => $errors)
+		$errors = $this->isMambot ? $this->session->get($this->getSessionContext() . 'errors', array()) : $this->errors;
+
+		foreach ($errors as $field => $errors)
 		{
 			if (!empty($errors))
 			{
@@ -3057,7 +3076,8 @@ class FabrikFEModelForm extends FabModelForm
 
 					if ($sessionRow->data != '')
 					{
-						$data = FArrayHelper::toObject(unserialize($sessionRow->data), 'stdClass', false);
+						$sData = unserialize($sessionRow->data);
+						$data = FArrayHelper::toObject($sData, 'stdClass', false);
 						JFilterOutput::objectHTMLSafe($data);
 						$data = array($data);
 						FabrikHelperHTML::debug($data, 'form:getData from session (form in Mambot and errors)');
@@ -3244,7 +3264,7 @@ class FabrikFEModelForm extends FabModelForm
 
 		if (in_array(true, $pluginManager->data))
 		{
-			if ($this->session->get('com_' . $this->package . '.form.' . $this->getId() . '.' . $this->getRowId() . '.session.on') == true && $useSessionOn)
+			if ($this->session->get($this->getSessionContext() . '.session.on') == true && $useSessionOn)
 			{
 				return true;
 			}
