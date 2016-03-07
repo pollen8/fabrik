@@ -1384,7 +1384,8 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 			}
 			elseif ($this->canView())
 			{
-				$html[] = $this->renderListData($default, ArrayHelper::toObject($data));
+				$oData = ArrayHelper::toObject($data);
+				$html[] = $this->renderListData($default, $oData);
 			}
 		}
 
@@ -1972,7 +1973,8 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 				}
 			}
 
-			$val = $this->renderListData($value, FArrayHelper::toObject($data));
+			$oData = FArrayHelper::toObject($data);
+			$val = $this->renderListData($value, $oData);
 		}
 		else
 		{
