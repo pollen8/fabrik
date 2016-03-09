@@ -478,7 +478,7 @@ FbForm = new Class({
 		return false;
 	},
 
-	/**
+    /**
 	 * Hide a group's tab, if it exists
 	 *
 	 * @param  {string}  groupId
@@ -1192,7 +1192,7 @@ FbForm = new Class({
 			copy = this._getButton('Copy');
 		if (del) {
 			del.addEvent('click', function (e) {
-				if (confirm(Joomla.JText._('COM_FABRIK_CONFIRM_DELETE_1'))) {
+				if (window.confirm(Joomla.JText._('COM_FABRIK_CONFIRM_DELETE_1'))) {
 					var res = Fabrik.fireEvent('fabrik.form.delete', [this, this.options.rowid]).eventResults;
 					if (typeOf(res) === 'null' || res.length === 0 || !res.contains(false)) {
 						// Task value is the same for front and admin
@@ -1966,7 +1966,7 @@ FbForm = new Class({
 		this.addElements(o);
 
 		// Only scroll the window if the new element is not visible
-		var win_size = window.getHeight(),
+		var win_size = jQuery(window).height(),
 			win_scroll = document.id(window).getScroll().y,
 			obj = clone.getCoordinates();
 		// If the bottom of the new repeat goes below the bottom of the visible

@@ -9,7 +9,7 @@
  * Enable us to use the same class interface for tips.js but use Bootstrap popovers (Joomla 3)
  */
 var FloatingTips = new Class({
-	Implements: [Options, Events],
+	Implements: [Events],
 
 	options: {
 		fxProperties: {transition: Fx.Transitions.linear, duration: 500},
@@ -50,7 +50,7 @@ var FloatingTips = new Class({
 			// We should override any Fabrik3 custom tip settings with bootstrap3 data-foo attributes in JLayouts
 			return;
 		}
-		this.setOptions(options);
+		this.options = jQuery.extend(this.options, options);
 		this.options.fxProperties = {transition: eval(this.options.tipfx), duration: this.options.duration};
 
 		// Any tip (not necessarily in this instance has asked for all other tips to be hidden.
@@ -71,38 +71,50 @@ var FloatingTips = new Class({
 			});
 			return;
 		}
-		this.elements = document.getElements(elements);
-		this.elements.each(function (trigger) {
-			var thisOpts = JSON.decode(trigger.get('opts', '{}').opts);
-			thisOpts = thisOpts ? thisOpts : {};
+		var thisOpts;
+		this.elements = jQuery(elements);
+		var self = this;
+		this.elements.each(function () {
+			try {
+				var o = JSON.parse(jQuery(this).attr('opts'));
+				thisOpts = jQuery.type(o) === 'object' ? o : {};
+			} catch (e) {
+				thisOpts = {};
+			}
 			if (thisOpts.position) {
 				thisOpts.defaultPos = thisOpts.position;
 				delete(thisOpts.position);
 			}
-			var opts = Object.merge(Object.clone(this.options), thisOpts);
+			var opts = jQuery.extend({}, self.options, thisOpts);
 			if (opts.content === 'title') {
-				opts.content = trigger.get('title');
-				trigger.erase('title');
-			} else if (typeOf(opts.content) === 'function') {
-				var c = opts.content(trigger);
-				opts.content = typeOf(c) === 'null' ? '' : c.innerHTML;
+				opts.content = jQuery(this).prop('title');
+				jQuery(this).removeProp('title');
+			} else if (jQuery.type(opts.content) === 'function') {
+				var c = opts.content(this);
+				opts.content = c === null ? '' : c.innerHTML;
 			}
 			// Should always use the default placement function which can then via the
 			// Fabrik event allow for custom tip placement
-			opts.placement = this.options.placement;
+			opts.placement = self.options.placement;
 			opts.title = opts.heading;
 
-			if (trigger.hasClass('tip-small')) {
+			if (jQuery(this).hasClass('tip-small')) {
 				opts.title = opts.content;
-				jQuery(trigger).tooltip(opts);
+				jQuery(this).tooltip(opts);
 			} else {
 				if (!opts.notice) {
-					opts.title += '<button class="close" data-popover="' + trigger.id + '">&times;</button>';
+					opts.title += '<button class="close" data-popover="' + this.id + '">&times;</button>';
 				}
-				jQuery(trigger).popoverex(opts);
+				try {
+					jQuery(this).popoverex(opts);
+				} catch (err) {
+					// Issues loading tips in pop up wins
+					console.log('failed to apply popoverex tips');
+				}
+
 			}
 
-		}.bind(this));
+		});
 
 	},
 
@@ -143,6 +155,12 @@ var FloatingTips = new Class({
 	var PopoverEx = function (element, options) {
 		this.init('popover', element, options);
 	};
+
+	if ($.fn.popover === undefined) {
+		console.log('Fabrik: cant load PopoverEx as jQuery popover not found ' +
+			'- could be the J template has overwritten jQuery (and yes Im looking at your Warp themes!)');
+		return;
+	}
 	PopoverEx.prototype = $.extend({}, $.fn.popover.Constructor.prototype, {
 
 		constructor: PopoverEx,

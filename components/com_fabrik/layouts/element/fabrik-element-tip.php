@@ -9,5 +9,8 @@ if ($d->tipTitle !== '') {
 <?php
 }
 else {
-	echo $d->tipText;
+	if (is_string($d->tipText)) :
+		// Fileupload was showing object here.
+		echo $d->tipText;
+	endif;
 }

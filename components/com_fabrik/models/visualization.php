@@ -23,7 +23,6 @@ require_once JPATH_SITE . '/components/com_fabrik/models/plugin.php';
  * @package  Fabrik
  * @since    3.0
  */
-
 class FabrikFEModelVisualization extends FabModel
 {
 	protected $pluginParams = null;
@@ -291,7 +290,8 @@ class FabrikFEModelVisualization extends FabModel
 			if ($params->get('advanced-filter', '0'))
 			{
 				$table = $listModel->getTable();
-				$url = COM_FABRIK_LIVESITE . 'index.php?option=com_' . $this->package . '&amp;view=list&amp;layout=_advancedsearch&amp;tmpl=component&amp;listid='
+				$url = COM_FABRIK_LIVESITE . 'index.php?option=com_' . $this->package .
+					'&amp;format=partial&amp;view=list&amp;layout=_advancedsearch&amp;tmpl=component&amp;listid='
 					. $table->id . '&amp;nextview=' . $this->app->input->get('view', 'list')
 					. '&scope&amp;=' . $this->app->scope;
 

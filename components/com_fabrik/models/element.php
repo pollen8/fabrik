@@ -3480,7 +3480,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		}
 		else
 		{
-			$selector          = '.advancedSeach_' . $listModel->getRenderContext() . ' .' . $id;
+			$selector          = '.advancedSearch_' . $listModel->getRenderContext() . ' .' . $id;
 			$opts['menuclass'] = 'auto-complete-container advanced';
 		}
 
@@ -7718,5 +7718,14 @@ class PlgFabrik_Element extends FabrikPlugin
 	public function isPublished()
 	{
 		return $this->getElement()->published === '1';
+	}
+
+	/**
+	 * Add any jsJLayout templates to Fabrik.jLayouts js object.
+	 *
+	 * @return void
+	 */
+	public function jsJLayouts()
+	{
 	}
 }

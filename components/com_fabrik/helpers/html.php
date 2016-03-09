@@ -843,6 +843,7 @@ EOD;
 			{
 				JHtml::_('bootstrap.framework');
 				self::loadBootstrapCSS();
+				JHtml::_('script', 'media/com_fabrik/js/lib/jquery-ui/jquery-ui.min.js');
 			}
 
 			// Require js test - list with no cal loading ajax form with cal
@@ -1087,15 +1088,16 @@ EOD;
 			$pathBits[] = "\n\t\t$reqK : '$repPath'";
 		}
 
-		//$pathBits[] = "\n\t\tjquery: 'media/com_fabrik/js/dummy-jquery'";
-		//$pathBits[] = "\n\t\tjquery: 'media/jui/js/jquery'";
-
 		$pathString = '{' . implode(',', $pathBits) . '}';
 		$config     = array();
 
 		$config[] = "define('jquery', [], function() {
-		console.log('require js define jquery as ', jQuery);
 			return jQuery;
+		});";
+
+		// Required for full calendar
+		$config[] = "define('moment', [], function() {
+			return moment;
 		});";
 
 		$config[] = "requirejs.config({";

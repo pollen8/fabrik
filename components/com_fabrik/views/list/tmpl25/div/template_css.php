@@ -124,13 +124,13 @@ echo "
 	position:relative;
 }
 
-.advancedSeach_$c table {
+.advancedSearch_$c table {
 	border-collapse: collapse;
 	margin-top: 10px;
 }
 
 #listform_$c table.fabrikList td,table.fabrikList th,
-.advancedSeach_$c td, .advancedSeach_$c th {
+.advancedSearch_$c td, .advancedSearch_$c th {
 	padding: 5px;
 	border: 1px solid #cccccc;
 }
@@ -174,7 +174,7 @@ div.calendar{
 
 #listform_$c .fabrik_groupheading,
 #listform_$c .fabrik___heading,
-.advancedSeach_$c .fabrik___heading{
+.advancedSearch_$c .fabrik___heading{
 	background-color: #c0c0c0;
 	-moz-user-select: none;
 	border-bottom: 1px solid #B7B7B7;
@@ -217,7 +217,7 @@ div.calendar{
 }
 
 #listform_$c .oddRow1,
-.advancedSeach_$c .oddRow1 {
+.advancedSearch_$c .oddRow1 {
 	background-color: #Efefef;
 }
 
@@ -275,7 +275,7 @@ div.calendar{
 	margin: 0;
 }
 
-.advancedSeach_$c {
+.advancedSearch_$c {
 	padding:10px;
 }
 
@@ -312,7 +312,7 @@ div.calendar{
 }
 
 #listform_$c .fabrik_action li,
-.advancedSeach_$c .fabrik_action li{
+.advancedSearch_$c .fabrik_action li{
 	float:left;
 	border-left:1px solid #999;
 	min-height:17px;
@@ -322,7 +322,7 @@ div.calendar{
 
 
 #listform_$c .fabrik_action li:first-child,
-.advancedSeach_$c .fabrik_action li:first-child{
+.advancedSearch_$c .fabrik_action li:first-child{
 	-moz-border-radius: 6px 0 0 6px;
 	-webkit-border-radius: 6px 0 0 6px;
 	border-radius: 6px 0 0 6px;

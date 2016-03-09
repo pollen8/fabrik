@@ -125,6 +125,8 @@ class FabrikControllerForm extends JControllerLegacy
 				$url = 'index.php?option=com_' . $package . '&view=details&formid=' . $input->getInt('formid') . '&rowid=' . $input->get('rowid', '', 'string');
 			}
 
+			// So we can determine in form PHP plugin's that the original request was for a form.
+			$url .= '&fromForm=1';
 			$msg = $model->aclMessage();
 			$this->setRedirect(JRoute::_($url), $msg, 'notice');
 
