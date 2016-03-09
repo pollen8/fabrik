@@ -427,7 +427,7 @@ var FbElement = new Class({
      * @return array of tips
      */
     tips: function () {
-        return Fabrik.tips.elements.filter(function (t) {
+        return Fabrik.tips.elements.filter(function (index, t) {
             if (t === this.getContainer() || t.getParent() === this.getContainer()) {
                 return true;
             }

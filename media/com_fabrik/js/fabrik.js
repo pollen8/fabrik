@@ -210,7 +210,6 @@ var Loader = new Class({
     },
 
     start: function (inline, msg) {
-        debugger;
         inline = this.sanitizeInline(inline);
 
         msg = msg ? msg : Joomla.JText._('COM_FABRIK_LOADING');
