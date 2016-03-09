@@ -268,80 +268,10 @@ class FabrikViewFullcalendar extends JViewLegacy
 			'expandable' => true
 		);
 
-		$srcs[] = 'media/com_fabrik/js/listfilter.js';
-		$srcs[] = 'plugins/fabrik_visualization/fullcalendar/fullcalendar.js';
-
-		FabrikHelperHTML::iniRequireJs($model->getShim());
-		FabrikHelperHTML::script($srcs, $js);
-
-		// Add our css
-		FabrikHelperHTML::stylesheetFromPath('plugins/fabrik_visualization/fullcalendar/fullcalendar.css');
-
-		$viewName = $this->getName();
-		$this->params = $model->getParams();
-		$tpl = $params->get('calendar_layout', $tpl);
-		$tmplpath = JPATH_ROOT . '/plugins/fabrik_visualization/fullcalendar/views/fullcalendar/tmpl/' . $tpl;
-		$this->_setPath('template', $tmplpath);
-		FabrikHelperHTML::stylesheetFromPath('plugins/fabrik_visualization/fullcalendar/views/fullcalendar/tmpl/' . $tpl . '/template.css');
-
-		// Adding custom.css, just for the heck of it
-		FabrikHelperHTML::stylesheetFromPath('plugins/fabrik_visualization/fullcalendar/views/fullcalendar/tmpl/' . $tpl . '/custom.css');
-
-		$document = JFactory::getDocument();
-		$lib = COM_FABRIK_LIVESITE . 'plugins/fabrik_visualization/fullcalendar/libs/fullcalendar/';
-		$document->addScript($lib . 'lib/moment.min.js');
-//		$document->addScript('//cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.6/moment.js');
-		$document->addScript($lib . 'fullcalendar.js');
-		$document->addScript($lib . 'lang/' . FabrikWorker::getShortLang() . '.js');
-
-		return parent::display();
-	}
-
-	/**
-	 * Choose which list to add an event to
-	 *
-	 * @return  void
-	 */
-
-	public function chooseaddevent()
-	{
-		$app = JFactory::getApplication();
-		$input = $app->input;
-		$this->setLayout('chooseaddevent');
-		$model = $this->getModel();
-		$usersConfig = JComponentHelper::getParams('com_fabrik');
-		$model->setId($input->getInt('id', $usersConfig->get('visualizationid', $input->getInt('visualizationid', 0))));
-		$rows = $model->getEventLists();
-		$calendar = $model->getVisualization();
-		$options = array();
-		$options[] = JHTML::_('select.option', '', FText::_('PLG_VISUALIZATION_FULLCALENDAR_PLEASE_SELECT'));
-
-		$model->getEvents();
-		$config = JFactory::getConfig();
-		$prefix = $config->get('dbprefix');
-		$attribs = 'class="inputbox" size="1" ';
-		$options = array_merge($options, $rows);
-		$this->_eventTypeDd = JHTML::_('select.genericlist', $options, 'event_type', $attribs, 'value', 'text', '', 'fabrik_event_type');
-
-		/*
-		 * Tried loading in iframe and as an ajax request directly - however
-		 * in the end decided to set a call back to the main calendar object (via the package manager)
-		 * to load up the new add event form
-		 */
-		$ref = $model->getJSRenderContext();
-		$script = array();
-		//$script[] = "window.addEvent('fabrik.loaded', function() {";
-		$script[] = "document.id('fabrik_event_type').addEvent('change', function(e) {";
-		$script[] = "var fid = e.target.get('value');";
-		$script[] = "var o = ({'id':'','listid':fid,'rowid':0});";
-		$script[] = "o.title = Joomla.JText._('PLG_VISUALIZATION_FULLCALENDAR_ADD_EVENT');";
-
-		$script[] = "Fabrik.blocks['" . $ref . "'].addEvForm(o);";
-		$script[] = "Fabrik.Windows.chooseeventwin.close();";
-		$script[] = "});";
-
-		echo '<h2>' . FText::_('PLG_VISUALIZATION_FULLCALENDAR_PLEASE_CHOOSE_AN_EVENT_TYPE') . ':</h2>';
-		echo $this->_eventTypeDd;
-		FabrikHelperHTML::addScriptDeclaration(implode("\n", $script));
+		FabrikHelperHTML::jLayoutJs(
+			'fullcalendar_chooseeventwin',
+			'fabrik-modal',
+			(object) $modalOpts
+		);
 	}
 }

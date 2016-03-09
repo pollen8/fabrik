@@ -246,18 +246,9 @@ span.handlelabel {
 }
 
 .bottomBar {
-	border-radius: 0px 0px 7px 7px;
-	-moz-border-radius: 0px 0px 7px 7px;
-	height: 15px;
-	background: #ccc;
-	filter: progid:    DXImageTransform.Microsoft.gradient(    startColorstr=
-		'#cccccc', endColorstr=    '#666666' ); /* for IE */
-	background: -webkit-gradient(linear, left top, left bottom, from(#eee),
-		to(#ccc) ); /* for webkit browsers */
-	background: -moz-linear-gradient(top, #eee, #ccc);
-	background-image: -ms-linear-gradient(top, #eee, #ccc);
-	padding: 4px 11px;
-	position: relative;
+	position: absolute;
+	bottom: 0;
+	width: 100%;
 }
 
 

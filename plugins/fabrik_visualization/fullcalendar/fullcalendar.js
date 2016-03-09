@@ -38,15 +38,11 @@ var fabrikFullcalendar = new Class({
             title          : '',
             loadMethod     : 'xhr',
             minimizable    : false,
-            evalScripts    : true,
-            width          : 380,
-            height         : 320,
-            onContentLoaded: function (win) {
-                win.fitToContent();
-            }.bind(this)
+            evalScripts    : true
         };
 
         this.el.find('.addEventButton').on('click', function (e) {
+            e.preventDefault();
             self.openAddEvent(e);
         });
 
@@ -128,128 +124,124 @@ var fabrikFullcalendar = new Class({
             }
         });
 
-		/* below are the standard options we support, any extras or overrides should be in
-		 * the calendar override option of the visualization
-		 */
-		var calOptions = {
-			lang: this.options.lang,
-			header: {
-				left: 'prev,next today',
-				center: 'title',
-				right: rightbuttons
-			},
-			fixedWeekCount: false,
-			timeFormat: this.options.time_format,
-			defaultView: dView,
-			nextDayThreshold: "00:00:00",
-			firstDay: this.options.first_week_day,
-	    	eventSources: eventSources,
-			defaultTimedEventDuration: this.options.minDuration,
-			minTime: this.options.open, // a start time (10am in this example)
-			maxTime : this.options.close, // an end time (6pm in this example)
-	        eventClick: function (calEvent, jsEvent, view) {
-	        	self.clickEntry(calEvent);
-	        	return false;
-	        },
-			dayClick: dayClickCallback,
-			viewRender:function(view, e) {
-				if (view.name == 'month' && self.options.greyscaledweekend === true) {
-					jQuery("td.fc-sat").css('background',"#f2f2f2");
-					jQuery("td.fc-sun").css('background',"#f2f2f2");
-				}
-			},
-			eventRender: function (event, element) {
-			    element.find('.fc-title').html(event.title);
-			},
-			loading: function(start) {
-				if (!start){
-					jQuery('.fc-view-container').delegate('.popover button.jclose', 'click', function() {
-						var popover = jQuery(this).data('popover');
-						jQuery('#'+popover).popover('hide');
-					});
-				}
-			},
-			eventAfterAllRender: function(view) {
-				var foo = 1;
-			}
-		};
-		/* Now merge any calendar overrides/additions from the visualixation */
-		jQuery.extend(true, calOptions, JSON.parse(self.options.calOptions));
-	    jQuery('#calendar').fullCalendar(calOptions);
+        /* below are the standard options we support, any extras or overrides should be in
+         * the calendar override option of the visualization
+         */
+        this.calOptions = {
+            header                   : {
+                left  : 'prev,next today',
+                center: 'title',
+                right : rightButtons
+            },
+            fixedWeekCount           : false,
+            timeFormat               : this.options.time_format,
+            defaultView              : dView,
+            nextDayThreshold         : '00:00:00',
+            firstDay                 : this.options.first_week_day,
+            eventSources             : eventSources,
+            defaultTimedEventDuration: this.options.minDuration,
+            minTime                  : this.options.open, // a start time (10am in this example)
+            maxTime                  : this.options.close, // an end time (6pm in this example)
+            eventClick               : function (calEvent, jsEvent, view) {
+                self.clickEntry(calEvent);
+                return false;
+            },
+            dayClick                 : dayClickCallback,
+            viewRender               : function (view, e) {
+                if (view.name === 'month' && self.options.greyscaledweekend === true) {
+                    jQuery('td.fc-sat').css('background', '#f2f2f2');
+                    jQuery('td.fc-sun').css('background', '#f2f2f2');
+                }
+            },
+            eventRender              : function (event, element) {
+                element.find('.fc-title').html(event.title);
+            },
+            loading                  : function (start) {
+                if (!start) {
+                    jQuery('.fc-view-container').delegate('.popover button.jclose', 'click', function () {
+                        var popover = jQuery(this).data('popover');
+                        jQuery('#' + popover).popover('hide');
+                    });
+                }
+            }
+        };
+        /* Now merge any calendar overrides/additions from the visualisation */
+        jQuery.extend(true, this.calOptions, JSON.parse(self.options.calOptions));
+        self.calendar.fullCalendar(this.calOptions);
 
-		document.addEvent('click:relay(button[data-task=viewCalEvent], a[data-task=viewCalEvent])', function (event, target) {
-			event.preventDefault();
-			var id = event.target.findClassUp('calEventButtons').id;
-			id = id.replace(/_buttons/, '');
-			var calEvent = jQuery('#calendar').fullCalendar('clientEvents', id)[0];
-			jQuery('#' + id).popover('hide');
-			this.viewEntry(calEvent);
-		}.bind(this));
+        document.addEvent('click:relay(button[data-task=viewCalEvent], a[data-task=viewCalEvent])', function (event) {
+            event.preventDefault();
+            var id = event.target.findClassUp('calEventButtons').id;
+            id = id.replace(/_buttons/, '');
+            var calEvent = self.calendar.fullCalendar('clientEvents', id)[0];
+            jQuery('#' + id).popover('hide');
+            self.viewEntry(calEvent);
+        });
 
-		document.addEvent('click:relay(button[data-task=editCalEvent], a[data-task=editCalEvent])', function (event, target) {
-			event.preventDefault();
-			var id = event.target.findClassUp('calEventButtons').id;
-			id = id.replace(/_buttons/, '');
-			var calEvent = jQuery('#calendar').fullCalendar('clientEvents', id)[0];
-			jQuery('#' + id).popover('hide');
-			this.editEntry(calEvent);
-		}.bind(this));
+        document.addEvent('click:relay(button[data-task=editCalEvent], a[data-task=editCalEvent])', function (event) {
+            event.preventDefault();
+            var id = event.target.findClassUp('calEventButtons').id;
+            id = id.replace(/_buttons/, '');
+            var calEvent = self.calendar.fullCalendar('clientEvents', id)[0];
+            jQuery('#' + id).popover('hide');
+            self.editEntry(calEvent);
+        });
 
-		document.addEvent('click:relay(button[data-task=deleteCalEvent], a[data-task=deleteCalEvent])', function (event, target) {
-			event.preventDefault();
-			var id = event.target.findClassUp('calEventButtons').id;
-			id = id.replace(/_buttons/, '');
-			var calEvent = jQuery('#calendar').fullCalendar('clientEvents', id)[0];
-			jQuery('#' + id).popover('hide');
-			this.deleteEntry(calEvent);
-		}.bind(this));
+        document.addEvent('click:relay(button[data-task=deleteCalEvent], a[data-task=deleteCalEvent])',
+            function (event) {
+                event.preventDefault();
+                var id = event.target.findClassUp('calEventButtons').id;
+                id = id.replace(/_buttons/, '');
+                var calEvent = self.calendar.fullCalendar('clientEvents', id)[0];
+                jQuery('#' + id).popover('hide');
+                self.deleteEntry(calEvent);
+            });
 
-		jQuery(document).on('click', '.popover .jclose', function (event, target) {
-			event.preventDefault();
-			var id = jQuery(event.target).attr("data-popover");
-			jQuery('#' + id).popover('hide');
-		}.bind(this));
+        jQuery(document).on('click', '.popover .jclose', function (event, target) {
+            event.preventDefault();
+            var id = jQuery(event.target).attr('data-popover');
+            jQuery('#' + id).popover('hide');
+        });
 
-		this.ajax.deleteEvent = new Request({
-			url: this.options.url.del,
-			'data': {
-				'visualizationid': this.options.calendarId
-			},
-			'onComplete': function () {
-				jQuery('#calendar').fullCalendar( 'refetchEvents' );
-			}.bind(this)
-		});
+        this.ajax.deleteEvent = new Request({
+            url         : this.options.url.del,
+            'data'      : {
+                'visualizationid': this.options.calendarId
+            },
+            'onComplete': function () {
+                self.calendar.fullCalendar('refetchEvents');
+            }
+        });
+    },
 
+    processEvents: function (json, callback) {
+        json = $H(JSON.decode(json));
+        var events = [], dispStartTime, dispEndTime, buttons, width, bDelete, bEdit, bView,
+            dispStartDate, dispEndDate, popup, id, body, mStartDate, mEndDate;
+        json.each(function (e) {
+            popup = jQuery(Fabrik.jLayouts['fabrik-visualization-fullcalendar-event-popup'])[0];
+            id = e._listid + '_' + e.id;
+            popup.id = 'fabrikevent_' + id;
 
-	},
+            body = jQuery(Fabrik.jLayouts['fabrik-visualization-fullcalendar-viewevent'])[0];
+            mStartDate = moment(e.startdate);
+            mEndDate = moment(e.enddate);
+            dispStartDate = dispEndDate = '';
+            if (moment(mEndDate.format('YYYY-MM-DD')) > moment(mStartDate.format('YYYY-MM-DD')) ||
+                (e.startShowTime === false && e.endShowTime === false)) {
+                dispStartDate = mStartDate.format('MMM DD') + ' ';
+                dispEndDate = mEndDate.format('MMM DD') + ' ';
+            }
+            dispStartTime = dispEndTime = '';
+            if (e.startShowTime === true && e.endShowTime === true) {
+                dispStartTime = mStartDate.format('hh.mm A');
+                dispEndTime = mEndDate.format('hh.mm A');
+            }
+            body.getElement('#viewstart').innerHTML = dispStartDate + dispStartTime;
+            body.getElement('#viewend').innerHTML = dispEndDate + dispEndTime;
 
-	processEvents: function (json, callback) {
-		json = $H(JSON.decode(json));
-		var events = [];
-		json.each(function (e) {
-			var popup = jQuery(Fabrik.jLayouts['fabrik-visualization-fullcalendar-event-popup'])[0];
-			var id = e._listid + "_" + e.id;
-			popup.id = "fabrikevent_" + id;
-
-			var body = jQuery(Fabrik.jLayouts['fabrik-visualization-fullcalendar-viewevent'])[0];
-			var mStartDate = moment(e.startdate);
-			var mEndDate = moment(e.enddate);
-			var dispStartDate = dispEndDate = "";
-			if (moment(mEndDate.format('YYYY-MM-DD')) > moment(mStartDate.format("YYYY-MM-DD")) ||
-				(e.startShowTime === false && e.endShowTime === false) ) {
-				dispStartDate = mStartDate.format('MMM DD') + ' ';
-				dispEndDate = mEndDate.format('MMM DD') + ' ';
-			}
-			var dispStartTime = dispEndTime = "";
-			if (e.startShowTime === true && e.endShowTime === true) {
-				dispStartTime = mStartDate.format('hh.mm A');
-				dispEndTime = mEndDate.format('hh.mm A');
-			}
-			body.getElement("#viewstart").innerHTML = dispStartDate + dispStartTime;
-			body.getElement("#viewend").innerHTML = dispEndDate + dispEndTime;
-
-			var buttons = jQuery(Fabrik.jLayouts['fabrik-visualization-fullcalendar-viewbuttons'])[0];
-			jQuery(buttons)[0].id = 'fabrikevent_buttons_' + id;
+            buttons = jQuery(Fabrik.jLayouts['fabrik-visualization-fullcalendar-viewbuttons']);
+            buttons[0].id = 'fabrikevent_buttons_' + id;
 
             // Hide the buttons the user cannot see or add the tooltip text if button is visible
             bDelete = buttons.find('.popupDelete');
@@ -390,8 +382,9 @@ var fabrikFullcalendar = new Class({
     /**
      * Open the add event form.
      *
-     * @param e    Event
-     * @param view The view which triggered the opening
+     * @param {event} e    JQuery Event
+     * @param {string} view The view which triggered the opening
+     * @param {moment} theMoment
      */
     openAddEvent: function (e, view, theMoment) {
         var rawd, day, hour, min, m, y, o, now, theDay;
@@ -409,7 +402,6 @@ var fabrikFullcalendar = new Class({
                 theDay = theMoment;
                 break;
             case 'click':
-                e.stop();
                 theDay = moment();
                 break;
             default:
@@ -478,9 +470,6 @@ var fabrikFullcalendar = new Class({
         this.windowopts.contentURL = url;
         this.windowopts.id = 'chooseeventwin';
         this.windowopts.modalId = 'fullcalendar_chooseeventwin';
-        this.windowopts.onContentLoaded = function () {
-            var myfx = new Fx.Scroll(window).toElement('chooseeventwin');
-        };
         Fabrik.getWindow(this.windowopts);
     }
 

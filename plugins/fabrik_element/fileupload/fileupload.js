@@ -810,7 +810,7 @@ var ImageWidget = new Class({
             'type'           : 'modal',
             loadMethod       : 'html',
             width            : this.imageDefault.imagedim.w.toInt() + 40,
-            height           : this.imageDefault.imagedim.h.toInt() + 150,
+            height           : this.imageDefault.imagedim.h.toInt() + 170,
             storeOnClose     : true,
             createShowOverLay: false,
             crop             : opts.crop,
