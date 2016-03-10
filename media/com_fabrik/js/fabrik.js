@@ -189,6 +189,7 @@ var Loader = new Class({
     initialize: function () {
         this.spinners = {};
         this.spinnerCount = {};
+        this.watchResize();
     },
 
     sanitizeInline: function (inline) {
@@ -257,6 +258,28 @@ var Loader = new Class({
             delete this.spinnerCount[inline];
             delete this.spinners[inline];
         }
+    },
+
+    watchResize: function () {
+        var self = this;
+        setInterval(function () {
+            jQuery.each(self.spinners, function (index, spinner) {
+                try {
+
+                    var h = Math.max(40, jQuery(spinner.target).height()),
+                        w = jQuery(spinner.target).width();
+                    jQuery(spinner.element).height(h);
+                    if (w !== 0) {
+                        jQuery(spinner.element).width(w);
+                        jQuery(spinner.element).find('.spinner-content').css('left', w/2);
+                    }
+
+                    spinner.position();
+                } catch (err) {
+                    // Do nothing
+                }
+            });
+        }, 300);
     }
 });
 
