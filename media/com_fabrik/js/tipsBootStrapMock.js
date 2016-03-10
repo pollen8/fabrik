@@ -88,7 +88,7 @@ var FloatingTips = new Class({
 			var opts = jQuery.extend({}, self.options, thisOpts);
 			if (opts.content === 'title') {
 				opts.content = jQuery(this).prop('title');
-				jQuery(this).removeProp('title');
+				jQuery(this).removeAttr('title');
 			} else if (jQuery.type(opts.content) === 'function') {
 				var c = opts.content(this);
 				opts.content = c === null ? '' : c.innerHTML;
