@@ -6,12 +6,11 @@
  */
 
 /*jshint mootools: true */
-/*global Fabrik:true, fconsole:true, Joomla:true, $H:true, FbForm:true */
+/*global Fabrik:true, fconsole:true, Joomla:true, $H:true, FbForm:true , define:true */
 
 /**
  * Console.log wrapper
  */
-
 function fconsole() {
     if (typeof (window.console) !== 'undefined') {
         var str = '', i;
@@ -484,7 +483,9 @@ if (typeof (Fabrik) === 'undefined') {
     Fabrik.addEvents = function (events) {
         var event;
         for (event in events) {
-            Fabrik.addEvent(event, events[event]);
+            if (event.hasOwnProperty(event)) {
+                Fabrik.addEvent(event, events[event]);
+            }
         }
         return this;
     };
@@ -764,3 +765,10 @@ if (typeof (Fabrik) === 'undefined') {
 
     window.fireEvent('fabrik.loaded');
 }
+
+// Allow fabrik to be loaded with :
+// require(['fab/fabrik'], function (Fabrik) {.....});
+define('fab/fabrik', [], function() {
+        return Fabrik;
+    }
+);

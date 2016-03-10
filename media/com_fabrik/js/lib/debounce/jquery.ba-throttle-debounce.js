@@ -1,3 +1,5 @@
+require(['fab/fabrik'], function (Fabrik) {
+
 /*!
  * Fabrik/jQuery throttle / debounce - v1.1 - 3/7/2010
  * http://benalman.com/projects/jquery-throttle-debounce-plugin/
@@ -181,7 +183,7 @@
         // execute after `delay` ms.
         timeout_id = setTimeout( debounce_mode ? clear : exec, debounce_mode === undefined ? delay - elapsed : delay );
       }
-    };
+    }
 
     // Set the guid of `wrapper` function to the same of original callback, so
     // it can be removed in jQuery 1.4+ .unbind or .die by using the original
@@ -249,3 +251,4 @@
   };
 
 })(this);
+});
