@@ -35,8 +35,10 @@ var FbListFilter = new Class({
             self.filtersInHeadings.toggle();
         });
 
-        this.filterContainer.hide();
-        this.filtersInHeadings.toggle();
+        if (b.length > 0) {
+            this.filterContainer.hide();
+            this.filtersInHeadings.toggle();
+        }
 
         if (this.container.length === 0) {
             return;
@@ -45,7 +47,6 @@ var FbListFilter = new Class({
         var c = this.container.find('.clearFilters');
         c.off();
         c.on('click', function (e) {
-            var plugins;
             e.stopPropagation();
 
             // Reset the filter fields that contain previously selected values
