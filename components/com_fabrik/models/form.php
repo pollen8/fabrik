@@ -2953,11 +2953,11 @@ class FabrikFEModelForm extends FabModelForm
 			$errorsFound = true;
 		}
 
-		$errors = $this->isMambot ? $this->session->get($this->getSessionContext() . 'errors', array()) : $this->errors;
+		$allErrors = $this->isMambot ? $this->session->get($this->getSessionContext() . 'errors', array()) : $this->errors;
 
-		foreach ($errors as $field => $errors)
+		foreach ($allErrors as $field => $errors)
 		{
-			if (!empty($errors))
+			if (!empty($errors) & is_array($errors))
 			{
 				foreach ($errors as $error)
 				{
