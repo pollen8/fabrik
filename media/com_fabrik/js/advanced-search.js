@@ -59,7 +59,6 @@ AdvancedSearch = new Class({
     watchApply: function () {
         var self = this;
         this.form.find('.advanced-search-apply').on('click', function (e) {
-            e.preventDefault();
             Fabrik.fireEvent('fabrik.advancedSearch.submit', this);
             var filterManager = Fabrik['filter_' + self.options.parentView];
 
@@ -83,6 +82,7 @@ AdvancedSearch = new Class({
                 return;
             }
 
+            e.preventDefault();
             list.submit(self.options.controller + '.filter');
         });
     },
