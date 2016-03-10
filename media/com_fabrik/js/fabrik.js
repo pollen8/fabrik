@@ -183,8 +183,8 @@ Array.prototype.searchFor = function (candid) {
  * Object.keys polyfill for IE8
  */
 if (!Object.keys) {
-    Object.keys = function(obj) {
-        return jQuery.map(obj, function(v, k) {
+    Object.keys = function (obj) {
+        return jQuery.map(obj, function (v, k) {
             return k;
         });
     };
@@ -282,7 +282,7 @@ var Loader = new Class({
                     jQuery(spinner.element).height(h);
                     if (w !== 0) {
                         jQuery(spinner.element).width(w);
-                        jQuery(spinner.element).find('.spinner-content').css('left', w/2);
+                        jQuery(spinner.element).find('.spinner-content').css('left', w / 2);
                     }
 
                     spinner.position();
@@ -708,14 +708,12 @@ if (typeof (Fabrik) === 'undefined') {
         });
 
         var winOpts = {
-            modalId     : 'ajax_links',
-            'id'        : listRef + '.' + rowid,
-            'title'     : title,
-            'loadMethod': loadMethod,
-            'contentURL': url,
-            'width'     : list.options.popup_width,
-            'height'    : list.options.popup_height,
-            'onClose'   : function () {
+            modalId   : 'ajax_links',
+            id        : listRef + '.' + rowid,
+            title     : title,
+            loadMethod: loadMethod,
+            contentURL: url,
+            onClose   : function () {
                 var k = view + '_' + list.options.formid + '_' + rowid;
                 try {
                     Fabrik.blocks[k].destroyElements();
@@ -729,6 +727,14 @@ if (typeof (Fabrik) === 'undefined') {
                 }
             }
         };
+
+        // Only set width/height if specified, otherwise default to window defaults
+        if (list.options.popup_width !== '') {
+            winOpts.width = list.options.popup_width;
+        }
+        if (list.options.popup_height !== '') {
+            winOpts.width = list.options.popup_height;
+        }
         winOpts.id = view === 'details' ? 'view.' + winOpts.id : 'add.' + winOpts.id;
         if (list.options.popup_offset_x !== null) {
             winOpts.offset_x = list.options.popup_offset_x;

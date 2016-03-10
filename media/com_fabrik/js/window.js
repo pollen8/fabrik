@@ -365,6 +365,8 @@ Fabrik.Window = new Class({
                 this.watchTabs();
                 break;
             case 'xhr':
+                self.window.width(self.options.width);
+                self.window.height(self.options.height);
                 Fabrik.loader.start(self.contentEl);
                 new jQuery.ajax({
                     'url'   : this.options.contentURL,
@@ -373,15 +375,9 @@ Fabrik.Window = new Class({
                 }).success(function (r) {
                     Fabrik.loader.stop(self.contentEl);
                     self.contentEl.append(r);
-
-
                     self.watchTabs();
-
-                    // Needed for IE11
                     self.center();
                     self.options.onContentLoaded.apply(self);
-                    // Ini any Fabrik JS code that was loaded with the ajax request
-                    // window.trigger('fabrik.loaded');
                 });
                 break;
             case 'iframe':
