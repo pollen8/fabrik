@@ -511,7 +511,7 @@ var FbFileUpload = new Class({
 
             f.removeClass('plupload_file_action').addClass('plupload_done');
 
-            self.isSumbitDone();
+            self.isSubmitDone();
         });
 
         // (5) KICK-START PLUPLOAD
@@ -700,7 +700,7 @@ var FbFileUpload = new Class({
      * uploaded If they have then we save the
      * crop widget state and fire the callback - which is handled by FbFormSubmit()
      */
-    isSumbitDone: function () {
+    isSubmitDone: function () {
         if (this.allUploaded() && typeof (this.submitCallBack) === 'function') {
             this.saveWidgetState();
             this.submitCallBack(true);
@@ -969,8 +969,8 @@ var ImageWidget = new Class({
         }
         this.imgCanvas.w = params.mainimagedim.w;
         this.imgCanvas.h = params.mainimagedim.h;
-        this.imgCanvas.x = typeof(params.imagedim) !== null ? params.imagedim.x : 0;
-        this.imgCanvas.y = typeof(params.imagedim) !== null ? params.imagedim.y : 0;
+        this.imgCanvas.x = params.imagedim !== undefined ? params.imagedim.x : 0;
+        this.imgCanvas.y = params.imagedim !== undefined ? params.imagedim.y : 0;
     },
 
     /**
@@ -1024,7 +1024,7 @@ var ImageWidget = new Class({
                 },
                 onDraw     : function (ctx) {
                     ctx = parent.CANVAS.ctx;
-                    if (typeof(parent.img) === null) {
+                    if (parent.img === undefined) {
                         // console.log('no parent img', parent);
                         return;
                     }
@@ -1041,7 +1041,7 @@ var ImageWidget = new Class({
 
                     this.hover ? ctx.strokeStyle = '#f00' : ctx.strokeStyle = '#000';
                     ctx.strokeRect(w * -0.5, h * -0.5, w, h);
-                    if (typeof(parent.img) !== null) {
+                    if (parent.img !== undefined) {
                         try {
                             ctx.drawImage(parent.img, w * -0.5, h * -0.5, w, h);
                         } catch (err) {
@@ -1101,7 +1101,7 @@ var ImageWidget = new Class({
             events     : {
                 onDraw: function (ctx) {
                     ctx = parent.CANVAS.ctx;
-                    if (typeof(ctx) === null) {
+                    if (ctx === undefined) {
                         return;
                     }
                     /*
