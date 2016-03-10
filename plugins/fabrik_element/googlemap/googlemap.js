@@ -8,7 +8,7 @@
 /** call back method when maps api is loaded*/
 function googlemapload() {
 	if (typeOf(Fabrik.googleMapRadius) === 'null') {
-		var script2 = document.createElement("script"),
+		var script2 = document.createElement('script'),
 		l = document.location,
 		path = l.pathname.split('/'),
 		index = path.indexOf('index.php');
@@ -19,7 +19,7 @@ function googlemapload() {
 		}
 		path.shift();
 		path = path.join('/');
-		script2.type = "text/javascript";
+		script2.type = 'text/javascript';
 		//script2.src = l.protocol + '//' + l.host + '/' + path + '/components/com_fabrik/libs/googlemaps/distancewidget.js';
 		script2.src = Fabrik.liveSite + '/components/com_fabrik/libs/googlemaps/distancewidget.js';
 		document.body.appendChild(script2);
@@ -223,12 +223,12 @@ var FbGoogleMap = new Class({
 					maxZoom   : 18
 				}));
 			}
-			
+
 			if (this.options.traffic) {
 				  var trafficLayer = new google.maps.TrafficLayer();
-				  trafficLayer.setMap(this.map);	
+				  trafficLayer.setMap(this.map);
 			}
-			
+
 			var point = new google.maps.LatLng(this.options.lat, this.options.lon);
 			var opts = {
 				map: this.map,
@@ -530,7 +530,7 @@ var FbGoogleMap = new Class({
 		return dmslng_dir + dmslng_d + '°' + dmslng_m + '\'' + dmslng_s + '"';
 
 	},
-	
+
 	latLonToOSRef: function () {
 		var ll2 = new LatLng(this.marker.getPosition().lng(), this.marker.getPosition().lng());
 		var OSRef = ll2.toOSRef();
@@ -573,7 +573,7 @@ var FbGoogleMap = new Class({
 					var f = document.id(field);
 					if (typeOf(f) !== 'null') {
 						var that = this;
-						jQuery(f).on('keyup', jQuery.debounce(this.options.debounceDelay, function(e) {
+						jQuery(f).on('keyup', Fabrik.debounce(this.options.debounceDelay, function(e) {
 							that.geoCode(e);
 						}));
 						// Select lists, radios whatnots
@@ -611,7 +611,7 @@ var FbGoogleMap = new Class({
 				}.bind(this));
 				*/
 				var that = this;
-				jQuery(this.element.getElement('.geocode_input')).on('keyup', jQuery.debounce(this.options.debounceDelay, function(e) {
+				jQuery(this.element.getElement('.geocode_input')).on('keyup', Fabrik.debounce(this.options.debounceDelay, function(e) {
 					that.geoCode(e);
 				}));
 			}
@@ -687,7 +687,7 @@ var FbGoogleMap = new Class({
 		this.map.setCenter(center);
 		this.map.setZoom(this.map.getZoom());
 	},
-	
+
 	reverseGeocode: function () {
 		this.geocoder.geocode({'latLng': this.marker.getPosition()}, function (results, status) {
 			if (status === google.maps.GeocoderStatus.OK) {
@@ -756,7 +756,7 @@ var FbGoogleMap = new Class({
 			}
 		}.bind(this));
 	},
-	
+
 	doSetCenter: function (pnt, zoom, doReverseGeocode) {
 		this.map.setCenter(pnt, zoom);
 		this.field.value = this.marker.getPosition() + ":" + this.map.getZoom();

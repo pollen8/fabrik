@@ -4,7 +4,7 @@
  * @copyright: Copyright (C) 2005-2013, fabrikar.com - All rights reserved.
  * @license:   GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
-
+console.log('load form js');
 /*jshint mootools: true */
 /*global Fabrik:true, fconsole:true, Joomla:true, CloneObject:true, $H:true,unescape:true */
 
@@ -1504,7 +1504,7 @@ FbForm = new Class({
 
 		var self = this;
 
-		jQuery(this.form).on('click', '.deleteGroup', jQuery.debounce(this.options.debounceDelay, true, function(e, target) {
+		jQuery(this.form).on('click', '.deleteGroup', Fabrik.debounce(this.options.debounceDelay, true, function(e, target) {
 			e.preventDefault();
 			if (!self.addingOrDeletingGroup) {
 				self.addingOrDeletingGroup = true;
@@ -1515,7 +1515,7 @@ FbForm = new Class({
 			}
 		}));
 
-		jQuery(this.form).on('click', '.addGroup', jQuery.debounce(this.options.debounceDelay, true, function(e, target) {
+		jQuery(this.form).on('click', '.addGroup', Fabrik.debounce(this.options.debounceDelay, true, function(e, target) {
 			e.preventDefault();
 			if (!self.addingOrDeletingGroup) {
 				self.addingOrDeletingGroup = true;
