@@ -483,7 +483,7 @@ if (typeof (Fabrik) === 'undefined') {
     Fabrik.addEvents = function (events) {
         var event;
         for (event in events) {
-            if (event.hasOwnProperty(event)) {
+            if (events.hasOwnProperty(event)) {
                 Fabrik.addEvent(event, events[event]);
             }
         }
