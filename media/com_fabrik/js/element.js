@@ -394,7 +394,13 @@ var FbElement = new Class({
      * get the wrapper dom element that contains all of the elements dom objects
      */
     getContainer: function () {
-        return typeOf(this.element) === 'null' ? false : this.element.getParent('.fabrikElementContainer');
+        var c = jQuery(this.element).closest('.fabrikElementContainer');
+        if (c.length === 0) {
+            c = false;
+        } else {
+            c = c[0];
+        }
+        return typeOf(this.element) === 'null' ? false : c;
     },
 
     /**

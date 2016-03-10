@@ -8,8 +8,10 @@
 var FbFileUpload = new Class({
     Extends   : FbFileElement,
     initialize: function (element, options) {
+        var self = this;
         this.setPlugin('fileupload');
         this.parent(element, options);
+        this.container = jQuery(this.container);
         this.toppath = this.options.dir;
         if (this.options.folderSelect === '1' && this.options.editable === true) {
             this.ajaxFolder();
@@ -21,22 +23,23 @@ var FbFileUpload = new Class({
         if (this.options.ajax_upload && this.options.editable !== false) {
             Fabrik.fireEvent('fabrik.fileupload.plupload.build.start', this);
             this.watchAjax();
-            this.options.files = $H(this.options.files);
-            if (this.options.files.getLength() !== 0) {
+            if (Object.keys(this.options.files).length !== 0) {
                 this.uploader.trigger('FilesAdded', this.options.files);
-                this.options.files.each(function (file) {
+                jQuery.each(this.options.files, function (key, file) {
                     var response = {
-                        'filepath': file.path,
-                        uri       : file.url
-                    };
-                    this.uploader.trigger('UploadProgress', file);
-                    this.uploader.trigger('FileUploaded', file, {
+                            filepath  : file.path,
+                            uri       : file.url,
+                            showWidget: false
+                        },
+                        newBar = jQuery(Fabrik.jLayouts['fabrik-progress-bar-success'])[0],
+                        bar = jQuery('#' + file.id).find('.bar')[0];
+                    self.uploader.trigger('UploadProgress', file);
+                    self.uploader.trigger('FileUploaded', file, {
                         response: JSON.encode(response)
                     });
-                    var newBar = jQuery(Fabrik.jLayouts['fabrik-progress-bar-success'])[0];
-                    var bar = document.id(file.id).getElement('.bar');
+
                     newBar.replaces(bar);
-                }.bind(this));
+                });
             }
             this.redraw();
         }
@@ -51,29 +54,29 @@ var FbFileUpload = new Class({
      * and the tab is activated. Triggered from element.watchTab()
      */
     redraw: function () {
+        var el = jQuery(this.element);
         if (this.options.ajax_upload) {
-            var browseButton = document.id(this.element.id + '_browseButton');
-            var c = document.id(this.options.element + '_container');
-            var diff = browseButton.getPosition().y - c.getPosition().y;
+            var browseButton = jQuery('#' + el.prop('id') + '_browseButton'),
+                c = jQuery('#' + this.options.element + '_container'),
+                diff = browseButton.position().left - c.position().left;
             // $$$ hugh - working on some IE issues
-            var file_element = c.getParent('.fabrikElement').getElement('input[type=file]');
-            if (file_element) {
-                var fileContainer = file_element.getParent();
-                var size = browseButton.getSize();
-                fileContainer.setStyles({
-                    'width' : size.x,
-                    'height': size.y
+            var file_element = c.closest('.fabrikElement').find('input[type=file]');
+            if (file_element.length > 0) {
+                var fileContainer = file_element.parent();
+                fileContainer.css({
+                    'width' : browseButton.width(),
+                    'height': browseButton.height()
                 });
-                fileContainer.setStyle('top', diff);
+                fileContainer.css('top', diff);
             }
         }
     },
 
     doBrowse: function (evt) {
         if (window.File && window.FileReader && window.FileList && window.Blob) {
-            var reader;
-            var files = evt.target.files;
-            var f = files[0];
+            var reader, self = this,
+                files = evt.target.files,
+                f = files[0];
 
             // Only process image files.
             if (f.type.match('image.*')) {
@@ -81,35 +84,24 @@ var FbFileUpload = new Class({
                 // Closure to capture the file information.
                 reader.onload = (function (theFile) {
                     return function (e) {
-                        var c = this.getContainer();
-                        if (!c) {
-                            return;
-                        }
-                        var b = c.getElement('img');
-                        b.src = e.target.result;
-                        var d = b.findClassUp('fabrikHide');
-                        if (d) {
-                            d.removeClass('fabrikHide');
-                        }
-                        var db = c.getElement('[data-file]');
-                        if (db) {
-                            db.addClass('fabrikHide');
-                        }
-                    }.bind(this);
+                        var c = jQuery(self.getContainer()),
+                            b = c.find('img');
+                        b.attr('src', e.target.result);
+                        var d = b.closest('.fabrikHide');
+                        d.removeClass('fabrikHide');
+                        var db = c.find('[data-file]');
+                        db.addClass('fabrikHide');
+                    };
                 }.bind(this))(f);
                 // Read in the image file as a data URL.
                 reader.readAsDataURL(f);
             }
             else if (f.type.match('video.*')) {
-                var c = this.getContainer();
-                if (!c) {
-                    return;
-                }
-
-                var video = c.getElement('video');
-                if (!video) {
+                var c = jQuery(this.getContainer()),
+                    video = c.find('video');
+                if (video.length > 0) {
                     video = this.makeVideoPreview();
-                    video.inject(c, 'inside');
+                    video.appendTo(c);
                 }
 
                 reader = new window.FileReader();
@@ -119,7 +111,7 @@ var FbFileUpload = new Class({
 
                 if (reader && reader.createObjectURL) {
                     url = reader.createObjectURL(f);
-                    video.src = url;
+                    video.attr('src', url);
                     return;
                 }
 
@@ -130,7 +122,7 @@ var FbFileUpload = new Class({
 
                 reader = new window.FileReader();
                 reader.onload = function (eo) {
-                    video.src = eo.target.result;
+                    video.attr('src', eo.target.result);
                 };
                 reader.readAsDataURL(f);
             }
@@ -138,28 +130,29 @@ var FbFileUpload = new Class({
     },
 
     watchBrowseButton: function () {
+        var el = jQuery(this.element);
         if (this.options.useWIP && !this.options.ajax_upload && this.options.editable !== false) {
-            document.id(this.element.id).removeEvent('change', this.doBrowseEvent);
+            el.off('change', this.doBrowseEvent);
             this.doBrowseEvent = this.doBrowse.bind(this);
-            document.id(this.element.id).addEvent('change', this.doBrowseEvent);
+            el.on('change', this.doBrowseEvent);
         }
     },
 
     /**
      * Called from watchDeleteButton
+     *
+     * @param {Event} e
      */
     doDelete: function (e) {
         e.stop();
-        var c = this.getContainer();
-        if (!c) {
-            return;
-        }
-        var b = c.getElement('[data-file]');
+        var c = jQuery(this.getContainer()),
+            self = this,
+            b = c.find('[data-file]');
         if (window.confirm(Joomla.JText._('PLG_ELEMENT_FILEUPLOAD_CONFIRM_SOFT_DELETE'))) {
-            var joinPkVal = b.get('data-join-pk-val');
-            new Request({
-                url       : '',
-                data      : {
+            var joinPkVal = b.data('data-join-pk-val');
+            new jQuery.ajax({
+                url : '',
+                data: {
                     'option'    : 'com_fabrik',
                     'format'    : 'raw',
                     'task'      : 'plugin.pluginAjax',
@@ -169,18 +162,17 @@ var FbFileUpload = new Class({
                     'formid'    : this.form.id,
                     'rowid'     : this.form.options.rowid,
                     'joinPkVal' : joinPkVal
-                },
-                onComplete: function () {
-                    Fabrik.fireEvent('fabrik.fileupload.clearfileref.complete', this);
-                }.bind(this)
-            }).send();
+                }
+            }).done(function () {
+                Fabrik.trigger('fabrik.fileupload.clearfileref.complete', self);
+            });
 
             if (window.confirm(Joomla.JText._('PLG_ELEMENT_FILEUPLOAD_CONFIRM_HARD_DELETE'))) {
-                this.makeDeletedImageField(this.groupid, b.get('data-file')).inject(this.getContainer(), 'inside');
+                this.makeDeletedImageField(this.groupid, b.get('data-file')).appendTo(c);
                 Fabrik.fireEvent('fabrik.fileupload.delete.complete', this);
             }
 
-            b.destroy();
+            b.remove();
         }
     },
 
@@ -188,16 +180,11 @@ var FbFileUpload = new Class({
      * Single file uploads can allow the user to delete the reference and/or file
      */
     watchDeleteButton: function () {
-        var c = this.getContainer();
-        if (!c) {
-            return;
-        }
-        var b = c.getElement('[data-file]');
-        if (typeOf(b) !== 'null') {
-            b.removeEvent('click', this.doDeleteEvent);
-            this.doDeleteEvent = this.doDelete.bind(this);
-            b.addEvent('click', this.doDeleteEvent);
-        }
+        var c = jQuery(this.getContainer()),
+            b = c.find('[data-file]');
+        b.off('click', this.doDeleteEvent);
+        this.doDeleteEvent = this.doDelete.bind(this);
+        b.on('click', this.doDeleteEvent);
     },
 
     /**
@@ -207,7 +194,6 @@ var FbFileUpload = new Class({
      *
      * @return string
      */
-
     getFormElementsKey: function (elId) {
         this.baseElementId = elId;
         if (this.options.ajax_upload && this.options.ajax_max > 1) {
@@ -218,7 +204,7 @@ var FbFileUpload = new Class({
     },
 
     /**
-     * when in ajax form, on submit the list will call this, so we can remove the submit event if we dont do that, upon a second form submission the
+     * When in ajax form, on submit the list will call this, so we can remove the submit event if we dont do that, upon a second form submission the
      * original submitEvent is used causing a js error as it still references the files uploaded in the first form
      */
     removeCustomEvents: function () {
@@ -226,28 +212,21 @@ var FbFileUpload = new Class({
     },
 
     cloned: function (c) {
+        var el = jQuery(this.element);
         // replaced cloned image with default image
-        if (typeOf(this.element.getParent('.fabrikElement')) === 'null') {
+        if (el.closest('.fabrikElement').length === 0) {
             return;
         }
-        var i = this.element.getParent('.fabrikElement').getElement('img');
-        if (i) {
-            i.src = this.options.defaultImage !== '' ? Fabrik.liveSite + this.options.defaultImage : '';
-        }
-        var c = this.getContainer();
-        if (c) {
-            var b = c.getElement('[data-file]');
-            if (b) {
-                b.destroy();
-            }
-        }
+        var i = el.closest('.fabrikElement').find('img');
+        i.attr('src', this.options.defaultImage !== '' ? Fabrik.liveSite + this.options.defaultImage : '');
+        jQuery(this.getContainer()).find('[data-file]').remove();
         this.watchBrowseButton();
         this.parent(c);
     },
 
     decloned: function (groupid) {
-        var i = this.form.form.getElement('input[name=fabrik_deletedimages[' + groupid + ']');
-        if (typeOf(i) === 'null') {
+        var i = jQuery('#form_' + this.form.id).find('input[name=fabrik_deletedimages[' + groupid + ']');
+        if (i.length > 0) {
             this.makeDeletedImageField(groupid, this.options.value).inject(this.form.form);
         }
     },
@@ -255,40 +234,39 @@ var FbFileUpload = new Class({
     /**
      * Create a hidden input which will tell fabrik, upon form submission, to delete the file
      *
-     * @param int groupid group id
-     * @param string value file to delete
+     * @param {int} groupId group id
+     * @param {string} value file to delete
      *
      * @return Element DOM Node - hidden input
      */
-    makeDeletedImageField: function (groupid, value) {
-        return new Element('input', {
+    makeDeletedImageField: function (groupId, value) {
+        return jQuery(document.createElement('input')).attr({
             'type' : 'hidden',
-            'name' : 'fabrik_fileupload_deletedfile[' + groupid + '][]',
+            'name' : 'fabrik_fileupload_deletedfile[' + groupId + '][]',
             'value': value
         });
     },
 
     makeVideoPreview: function () {
-        return new Element('video', {
-            'id'      : this.element.id + '_video_preview',
+        var el = jQuery(this.element);
+        return jQuery(document.createElement('video')).attr({
+            'id'      : el.prop('id') + '_video_preview',
             'controls': true
         });
     },
 
     update: function (val) {
         if (this.element) {
+            var el = jQuery(this.element);
             if (val === '') {
                 if (this.options.ajax_upload) {
                     this.uploader.files = [];
-                    this.element.getParent().getElements('[id$=_dropList] tr').destroy();
+                    el.parent().find('[id$=_dropList] tr').remove();
                 } else {
-                    this.element.set('value', '');
+                    el.val('');
                 }
             } else {
-                var i = this.element.getElement('img');
-                if (typeOf(i) !== 'null') {
-                    i.src = val;
-                }
+                el.find('img').prop('src', val);
             }
         }
     },
@@ -297,34 +275,32 @@ var FbFileUpload = new Class({
         if (!Fabrik.bootstraped) {
             return;
         }
-        var dropTxt = this.container.getElement('tr.plupload_droptext'), tr;
-        if (typeOf(dropTxt) !== 'null') {
+        var dropTxt = this.container.find('tr.plupload_droptext'), tr;
+        if (dropTxt.length > 0) {
             dropTxt.show();
         } else {
-            tr = new Element('tr.plupload_droptext').set('html', '<td colspan="4"><i class="icon-move"></i> ' + Joomla.JText
+            tr = jQuery(document.createElementget('tr')).addClass('plupload_droptext').html('<td colspan="4"><i class="icon-move"></i> ' + Joomla.JText
                     ._('PLG_ELEMENT_FILEUPLOAD_DRAG_FILES_HERE') + ' </td>');
-            this.container.getElement('tbody').adopt(tr);
+            this.container.find('tbody').append(tr);
         }
-        this.container.getElement('thead').hide();
+        this.container.find('thead').hide();
     },
 
     removeDropArea: function () {
-        var dropTxt = this.container.getElement('tr.plupload_droptext');
-        if (typeOf(dropTxt) !== 'null') {
-            dropTxt.hide();
-        }
+        this.container.find('tr.plupload_droptext').hide();
     },
 
     watchAjax: function () {
         if (this.options.editable === false) {
             return;
         }
-        var a, title;
-        var el = this.getElement();
-        if (typeOf(el) === 'null') {
+        var a, self = this,
+            elementId = jQuery(this.element).prop('id'),
+            el = jQuery(this.getElement());
+        if (el.length === 0) {
             return;
         }
-        var c = el.getParent('.fabrikSubElementContainer');
+        var c = el.closest('.fabrikSubElementContainer');
         this.container = c;
 
         if (this.options.canvasSupport !== false) {
@@ -348,15 +324,15 @@ var FbFileUpload = new Class({
                 quality  : this.options.quality
             });
         }
-        this.pluploadContainer = c.getElement('.plupload_container');
-        this.pluploadFallback = c.getElement('.plupload_fallback');
-        this.droplist = c.getElement('.plupload_filelist');
+        this.pluploadContainer = c.find('.plupload_container');
+        this.pluploadFallback = c.find('.plupload_fallback');
+        this.droplist = c.find('.plupload_filelist');
 
         var plupopts = {
             runtimes           : this.options.ajax_runtime,
-            browse_button      : this.element.id + '_browseButton',
-            container          : this.element.id + '_container',
-            drop_element       : this.element.id + '_dropList_container',
+            browse_button      : elementId + '_browseButton',
+            container          : elementId + '_container',
+            drop_element       : elementId + '_dropList_container',
             url                : 'index.php?option=com_fabrik&format=raw&task=plugin.pluginAjax&plugin=fileupload&method=ajax_upload&element_id=' + this.options.elid,
             max_file_size      : this.options.max_file_size + 'kb',
             unique_names       : false,
@@ -373,102 +349,102 @@ var FbFileUpload = new Class({
         // (1) INIT ACTIONS
         this.uploader.bind('Init', function (up, params) {
             // FORCEFULLY NUKE GRACEFUL DEGRADING FALLBACK ON INIT
-            this.pluploadFallback.destroy();
-            this.pluploadContainer.removeClass("fabrikHide");
+            self.pluploadFallback.remove();
+            self.pluploadContainer.removeClass('fabrikHide');
 
             if (up.features.dragdrop && up.settings.dragdrop) {
-                this.addDropArea();
+                self.addDropArea();
             }
 
-        }.bind(this));
+        });
 
         /*
-         * this.uploader.bind('PostInit', function (up, params) { debugger; this.pluploadContainer.getElement('input').setStyle('width', '1px');
-         * }.bind(this));
          */
         this.uploader.bind('FilesRemoved', function (up, files) {
         });
 
         // (2) ON FILES ADDED ACTION
         this.uploader.bind('FilesAdded', function (up, files) {
-            this.removeDropArea();
-            var rElement = Fabrik.bootstrapped ? 'tr' : 'li';
-            this.lastAddedFiles = files;
+            self.removeDropArea();
+            var rElement = Fabrik.bootstrapped ? 'tr' : 'li', count;
+            self.lastAddedFiles = files;
             if (Fabrik.bootstrapped) {
-                this.container.getElement('thead').style.display = '';
+                self.container.find('thead').css('display', '');
             }
-            var count = this.droplist.getElements(rElement).length;
-            files.each(function (file, idx) {
-                if (file.size > this.options.max_file_size * 1000) {
+            count = self.droplist.find(rElement).length;
+            jQuery.each(files, function (key, file) {
+                //files.each(function (file, idx) {
+                if (file.size > self.options.max_file_size * 1000) {
                     window.alert(Joomla.JText._('PLG_ELEMENT_FILEUPLOAD_FILE_TOO_LARGE_SHORT'));
                 } else {
-                    if (count >= this.options.ajax_max) {
+                    if (count >= self.options.ajax_max) {
                         window.alert(Joomla.JText._('PLG_ELEMENT_FILEUPLOAD_MAX_UPLOAD_REACHED'));
                     } else {
                         count++;
                         var a, title, innerLi;
-                        if (this.isImage(file)) {
-                            a = this.editImgButton();
-                            if (this.options.crop) {
-                                a.set('html', this.options.resizeButton);
+                        if (self.isImage(file)) {
+                            a = self.editImgButton();
+                            if (self.options.crop) {
+                                a.html(self.options.resizeButton);
                             } else {
-                                a.set('html', this.options.previewButton);
+                                a.html(self.options.previewButton);
                             }
-                            title = new Element('span').set('text', file.name);
+                            title = jQuery(document.createElement('span')).text(file.name);
                         } else {
-                            a = new Element('span');
-                            title = new Element('a', {
+                            a = jQuery(document.createElement('span'));
+                            title = jQuery(document.createElement('a')).attr({
                                 'href': file.url
-                            }).set('text', file.name);
+                            }).text(file.name);
                         }
 
-                        innerLi = this.imageCells(file, title, a);
+                        innerLi = self.imageCells(file, title, a);
 
-                        this.droplist.adopt(new Element(rElement, {
+                        self.droplist.append(jQuery(document.createElement(rElement)).attr({
                             id     : file.id,
                             'class': 'plupload_delete'
-                        }).adopt(innerLi));
+                        }).append(innerLi));
                     }
                 }
-            }.bind(this));
+            });
 
             // Automatically start the upload - need delay to ensure up.files is populated
             setTimeout(function () {
                 up.start();
             }, 100);
-        }.bind(this));
+        });
 
         // (3) ON FILE UPLOAD PROGRESS ACTION
         this.uploader.bind('UploadProgress', function (up, file) {
-            var f = document.id(file.id);
-            if (typeOf(f) !== 'null') {
+            var f = jQuery('#' + file.id);
+            if (f.length > 0) {
                 if (Fabrik.bootstrapped) {
-                    var bar = document.id(file.id).getElement('.plupload_file_status .bar');
-                    bar.setStyle('width', file.percent + '%');
+                    var bar = f.find('.plupload_file_status .bar');
+                    bar.css('width', file.percent + '%');
                     if (file.percent === 100) {
-                        var newBar = jQuery(Fabrik.jLayouts['fabrik-progress-bar-success'])[0];
-                        newBar.replaces(bar);
+                        var newBar = jQuery(Fabrik.jLayouts['fabrik-progress-bar-success']);
+                        bar.replaceWith(newBar);
                     }
                 } else {
-                    document.id(file.id).getElement('.plupload_file_status').set('text', file.percent + '%');
+                    f.find('.plupload_file_status').text(file.percent + '%');
                 }
             }
         });
 
         this.uploader.bind('Error', function (up, err) {
-            this.lastAddedFiles.each(function (file) {
-                var row = document.id(file.id);
-                if (typeOf(row) !== 'null') {
-                    row.destroy();
+            var self = this;
+            self.lastAddedFiles.each(function (file) {
+                var row = jQuery('#' + file.id);
+                if (row.length > 0) {
+                    row.remove();
                     window.alert(err.message);
                 }
-                this.addDropArea();
-            }.bind(this));
-        }.bind(this));
+                self.addDropArea();
+            });
+        });
 
         this.uploader.bind('ChunkUploaded', function (up, file, response) {
-            response = JSON.decode(response.response);
-            if (typeOf(response) !== 'null') {
+            response = JSON.parse(response.response);
+            if (typeof(response) === 'object') {
                 if (response.error) {
                     fconsole(response.error.message);
                 }
@@ -476,63 +452,67 @@ var FbFileUpload = new Class({
         });
 
         this.uploader.bind('FileUploaded', function (up, file, response) {
-            var name;
-            response = JSON.decode(response.response);
+            var name, showWidget, f, resizeButton, idValue,
+                f = jQuery('#' + file.id)
+            response = JSON.parse(response.response);
             if (response.error) {
                 window.alert(response.error);
-                document.id(file.id).destroy();
+                f.remove();
                 return;
             }
-            var f = document.id(file.id);
-            if (typeOf(f) === 'null') {
+
+            if (f.length === 0) {
                 fconsole('Filuploaded didnt find: ' + file.id);
                 return;
             }
-            var resizebutton = document.id(file.id).getElement('.plupload_resize').getElement('a');
-            if (resizebutton) {
-                resizebutton.show();
-                resizebutton.href = response.uri;
-                resizebutton.id = 'resizebutton_' + file.id;
-                resizebutton.store('filepath', response.filepath);
-            }
-            if (this.widget) {
-                this.widget.setImage(response.uri, response.filepath, file.params, true);
+            resizeButton = f.find('.plupload_resize a');
+            resizeButton.show();
+            resizeButton.attr({
+                href: response.uri,
+                id  : 'resizebutton_' + file.id
+            });
+
+            resizeButton.data('filepath', response.filepath);
+
+            if (self.widget) {
+                showWidget = response.showWidget === false ? false : true;
+                self.widget.setImage(response.uri, response.filepath, file.params, showWidget);
             }
 
-            if (this.options.inRepeatGroup) {
-                name = this.options.elementName.replace(/\[\d*\]/, '[' + this.getRepeatNum() + ']');
+            if (self.options.inRepeatGroup) {
+                name = self.options.elementName.replace(/\[\d*\]/, '[' + self.getRepeatNum() + ']');
             } else {
-                name = this.options.elementName;
+                name = self.options.elementName;
             }
-            // Stores the cropparams which we need to reload the crop widget in the correct state (rotation, zoom, loc etc)
-            new Element('input', {
+            // Stores the cropparams which we need to reload the crop widget in the correct state (rotation, zoom, etc)
+            jQuery(document.createElement('input')).attr({
                 'type' : 'hidden',
                 name   : name + '[crop][' + response.filepath + ']',
                 'id'   : 'coords_' + file.id,
                 'value': JSON.encode(file.params)
-            }).inject(this.pluploadContainer, 'after');
+            }).insertAfter(self.pluploadContainer);
 
 
             // Stores the actual crop image data retrieved from the canvas
-            new Element('input', {
+            jQuery(document.createElement('input')).attr({
                 type: 'hidden',
                 name: name + '[cropdata][' + response.filepath + ']',
                 'id': 'data_' + file.id
-            }).inject(this.pluploadContainer, 'after');
+            }).insertAfter(self.pluploadContainer);
 
             // Stores the image id if > 1 fileupload
-            var idvalue = [file.recordid, '0'].pick();
-            new Element('input', {
+            idValue = [file.recordid, '0'].pick();
+            jQuery(document.createElement('input')).attr({
                 'type' : 'hidden',
                 name   : name + '[id][' + response.filepath + ']',
                 'id'   : 'id_' + file.id,
-                'value': idvalue
-            }).inject(this.pluploadContainer, 'after');
+                'value': idValue
+            }).insertAfter(self.pluploadContainer);
 
-            document.id(file.id).removeClass('plupload_file_action').addClass('plupload_done');
+            f.removeClass('plupload_file_action').addClass('plupload_done');
 
-            this.isSumbitDone();
-        }.bind(this));
+            self.isSumbitDone();
+        });
 
         // (5) KICK-START PLUPLOAD
         this.uploader.init();
@@ -541,18 +521,15 @@ var FbFileUpload = new Class({
     /**
      * Create an array of the dom elements to inject into a row representing an uploaded file
      *
-     * @return array
+     * @return {array}
      */
     imageCells: function (file, title, a) {
-        var del = this.deleteImgButton(), filename, status;
+        var del = this.deleteImgButton(), filename, status, progress, icon;
         if (Fabrik.bootstrapped) {
-            var icon = new Element('td.span1.plupload_resize').adopt(a);
-
-            var progress = Fabrik.jLayouts['fabrik-progress-bar'];
-
-            status = new Element('td.span5.plupload_file_status', {}).set('html', progress);
-
-            filename = new Element('td.span6.plupload_file_name', {}).adopt(title);
+            icon = jQuery(document.createElement('td')).addClass('span1 plupload_resize').append(a);
+            progress = Fabrik.jLayouts['fabrik-progress-bar'];
+            status = jQuery(document.createElement('td')).addClass('span5 plupload_file_status').html(progress);
+            filename = jQuery(document.createElement('td')).addClass('span6 plupload_file_name').append(title);
 
             return [filename, icon, status, del];
         } else {
@@ -577,23 +554,23 @@ var FbFileUpload = new Class({
 
     /**
      * Create edit image button
+     *
+     * @return {jQuery}
      */
     editImgButton: function () {
+        var self = this;
         if (Fabrik.bootstrapped) {
-            return new Element('a.editImage', {
+            return jQuery(document.createElement('a')).addClass('editImage').attr({
                 'href': '#',
-                styles: {
-                    'display': 'none'
-                },
-                alt   : Joomla.JText._('PLG_ELEMENT_FILEUPLOAD_RESIZE'),
-                events: {
-                    'click': function (e) {
-                        e.stop();
-                        var a = e.target.getParent();
-                        this.pluploadResize(a);
-                    }.bind(this)
-                }
+                alt   : Joomla.JText._('PLG_ELEMENT_FILEUPLOAD_RESIZE')
+            }).css({
+                'display': 'none'
+            }).on('click', function (e) {
+                e.preventDefault();
+                //var a = e.target.getParent();
+                self.pluploadResize(jQuery(this));
             });
+
         } else {
             return new Element('a', {
                 'href': '#',
@@ -602,7 +579,7 @@ var FbFileUpload = new Class({
                     'click': function (e) {
                         e.stop();
                         var a = e.target.getParent();
-                        this.pluploadResize(a);
+                        this.pluploadResize(jQuery(a));
                     }.bind(this)
                 }
             });
@@ -611,21 +588,27 @@ var FbFileUpload = new Class({
 
     /**
      * Create delete image button
+     *
+     * @return {jQuery}
      */
     deleteImgButton: function () {
         if (Fabrik.bootstrapped) {
 
-            var icon = Fabrik.jLayouts['fabrik-icon-delete'];
-            return new Element('td.span1.plupload_file_action', {}).adopt(new Element('a', {
-                'href' : '#',
-                'class': 'icon-delete',
-                events : {
-                    'click': function (e) {
-                        e.stop();
-                        this.pluploadRemoveFile(e);
-                    }.bind(this)
-                }
-            }).set('html', icon));
+            var icon = Fabrik.jLayouts['fabrik-icon-delete'],
+                self = this;
+            return jQuery(document.createElement('td')).addClass('span1 plupload_file_action').append(
+                jQuery(document.createElement('a'))
+                    .html(icon)
+                    .attr({
+                        'href' : '#',
+                        'class': 'icon-delete'
+                    })
+                    .on('click', function (e) {
+                        e.stopPropagation();
+                        self.pluploadRemoveFile(e);
+                    })
+            );
+
         } else {
             return new Element('div', {
                 'class': 'plupload_file_action'
@@ -641,23 +624,28 @@ var FbFileUpload = new Class({
         }
     },
 
+    /**
+     * Test if the plupload file object contains an image.
+     * @param {object} file
+     * @returns {*}
+     */
     isImage: function (file) {
-        if (typeOf(file.type) !== 'null') {
+        if (file.type !== undefined) {
             return file.type === 'image';
         }
-        var ext = file.name.split('.').getLast().toLowerCase();
+        var ext = file.name.split('.').pop().toLowerCase();
         return ['jpg', 'jpeg', 'png', 'gif'].contains(ext);
     },
 
     pluploadRemoveFile: function (e) {
-        e.stop();
+        e.stopPropagation();
         if (!window.confirm(Joomla.JText._('PLG_ELEMENT_FILEUPLOAD_CONFIRM_HARD_DELETE'))) {
             return;
         }
 
-        var id = e.target.getParent('tr').id.split('_').getLast();// alreadyuploaded_8_13
-        // $$$ hugh - removed ' span' from the getElement(), as this blows up on some templates
-        var f = e.target.getParent('tr').getElement('.plupload_file_name').get('text');
+        var id = jQuery(e.target).closest('tr').prop('id').split('_').pop();// alreadyuploaded_8_13
+        // $$$ hugh - removed ' span' from the find(), as this blows up on some templates
+        var f = jQuery(e.target).closest('tr').find('.plupload_file_name').text();
 
         // Get a list of all of the uploaders files except the one to be deleted
         var newFiles = [];
@@ -671,7 +659,7 @@ var FbFileUpload = new Class({
         this.uploader.files = newFiles;
 
         // Send a request to delete the file from the server.
-        new Request({
+        jQuery.ajax({
             url : '',
             data: {
                 'option'       : 'com_fabrik',
@@ -684,31 +672,32 @@ var FbFileUpload = new Class({
                 'recordid'     : id,
                 'repeatCounter': this.options.repeatCounter
             }
-        }).send();
-        var li = e.target.getParent('.plupload_delete');
-        li.destroy();
+        });
+        var li = e.target.closest('.plupload_delete');
+        li.remove();
 
         // Remove hidden fields as well
-        if (document.id('id_alreadyuploaded_' + this.options.id + '_' + id)) {
-            document.id('id_alreadyuploaded_' + this.options.id + '_' + id).destroy();
-        }
-        if (document.id('coords_alreadyuploaded_' + this.options.id + '_' + id)) {
-            document.id('coords_alreadyuploaded_' + this.options.id + '_' + id).destroy();
-        }
+        jQuery('#id_alreadyuploaded_' + this.options.id + '_' + id).remove();
+        jQuery('#coords_alreadyuploaded_' + this.options.id + '_' + id).remove();
 
-        if (this.getContainer().getElements('table tbody tr.plupload_delete').length === 0) {
+        if (jQuery(this.getContainer()).find('table tbody tr.plupload_delete').length === 0) {
             this.addDropArea();
         }
     },
 
+    /**
+     *
+     * @param {jQuery} a
+     */
     pluploadResize: function (a) {
         if (this.widget) {
-            this.widget.setImage(a.href, a.retrieve('filepath'));
+            this.widget.setImage(a.attr('href'), a.data('filepath'), {}, true);
         }
     },
 
     /**
-     * Once the upload fires a FileUploaded bound function we test if all images for this element have been uploaded If they have then we save the
+     * Once the upload fires a FileUploaded bound function we test if all images for this element have been
+     * uploaded If they have then we save the
      * crop widget state and fire the callback - which is handled by FbFormSubmit()
      */
     isSumbitDone: function () {
@@ -720,14 +709,14 @@ var FbFileUpload = new Class({
     },
 
     /**
-     * Called from FbFormSubmit.submit() handles testing. If not yet uploaded, triggers the upload and defers the callback until the upload is
+     * Called from FbFormSubmit.submit() handles testing. If not yet uploaded, triggers the
+     * upload and defers the callback until the upload is
      * complete. If complete then saves widget state and calls parent onsubmit().
      */
     onsubmit: function (cb) {
         this.submitCallBack = cb;
         if (!this.allUploaded()) {
             this.uploader.start();
-            // alert(Joomla.JText._('PLG_ELEMENT_FILEUPLOAD_UPLOAD_ALL_FILES'));
         } else {
             this.saveWidgetState();
             this.parent(cb);
@@ -738,22 +727,22 @@ var FbFileUpload = new Class({
      * Save the crop widget state as a json object
      */
     saveWidgetState: function () {
-        if (typeOf(this.widget) !== 'null') {
-            this.widget.images.each(function (image, key) {
-                key = key.split('\\').getLast();
-                var f = document.getElements('input[name*=' + key + ']').filter(function (fld) {
+        if (this.widget !== undefined) {
+            jQuery.each(this.widget.images, function (key, image) {
+                key = key.split('\\').pop();
+                var f = jQuery('input[name*="' + key + '"]').filter(function (i, fld) {
                     return fld.name.contains('[crop]');
                 });
-                f = f.getLast();
+                f = f.last();
 
                 // $$$ rob - seems reloading ajax fileupload element in ajax form (e.g. from db join add record)
-                // is producing odd effects where old fileupload object constains info to previously uploaded image?
-                if (typeOf(f) !== 'null') {
+                // is producing odd effects where old fileupload object contains info to previously uploaded image?
+                if (f.length > 0) {
 
                     // Avoid circular reference in chrome when saving in ajax form
                     var i = image.img;
                     delete (image.img);
-                    f.value = JSON.encode(image);
+                    f.val(JSON.encode(image));
                     image.img = i;
                 }
             });
@@ -767,7 +756,7 @@ var FbFileUpload = new Class({
                 if (file.loaded === 0) {
                     uploaded = false;
                 }
-            }.bind(this));
+            });
         }
         return uploaded;
     }
@@ -803,14 +792,14 @@ var ImageWidget = new Class({
             }
         };
 
-        Object.append(this.imageDefault, opts);
+        jQuery.extend(this.imageDefault, opts);
 
         this.windowopts = {
             'id'             : this.modalId,
             'type'           : 'modal',
             loadMethod       : 'html',
-            width            : this.imageDefault.imagedim.w.toInt() + 40,
-            height           : this.imageDefault.imagedim.h.toInt() + 170,
+            width            : parseInt(this.imageDefault.imagedim.w, 10) + 40,
+            height           : parseInt(this.imageDefault.imagedim.h, 10) + 150,
             storeOnClose     : true,
             createShowOverLay: false,
             crop             : opts.crop,
@@ -833,7 +822,7 @@ var ImageWidget = new Class({
 
         this.canvas = jQuery(this.window).find('canvas')[0];
 
-        this.images = $H({});
+        this.images = {};
         this.CANVAS = new FbCanvas({
             canvasElement: this.canvas,
             enableMouse  : true,
@@ -859,11 +848,10 @@ var ImageWidget = new Class({
             scale : 1,
             events: {
                 onDraw: function (ctx) {
-                    if (typeOf(ctx) === 'null') {
-                        // return;
+                    if (ctx === undefined) {
                         ctx = this.CANVAS.ctx;
                     }
-                    ctx.fillStyle = "#DFDFDF";
+                    ctx.fillStyle = '#DFDFDF';
                     ctx.fillRect(0, 0, this.imageDefault.imagedim.w / this.scale, this.imageDefault.imagedim.h / this.scale);
                 }.bind(this)
             }
@@ -875,7 +863,7 @@ var ImageWidget = new Class({
                 id    : 'overlay',
                 events: {
                     onDraw: function (ctx) {
-                        if (typeOf(ctx) === 'null') {
+                        if (ctx === undefined) {
                             ctx = this.CANVAS.ctx;
                         }
                         this.withinCrop = true;
@@ -924,11 +912,12 @@ var ImageWidget = new Class({
      * @param {string} uri Image URI
      * @param {string} filepath Path to file
      * @param {object} params Initial parameters
+     * @param {Boolean} showWin
      */
     setImage: function (uri, filepath, params, showWin) {
         showWin = showWin ? showWin : false;
         this.activeFilePath = filepath;
-        if (!this.images.has(filepath)) {
+        if (!this.images.hasOwnProperty(filepath)) {
 
             // Needed to ensure they are available in onLoad
             var tmpParams = params;
@@ -950,13 +939,12 @@ var ImageWidget = new Class({
         } else {
 
             // Previously set up image
-            params = this.images.get(filepath);
+            params = this.images[filepath];
             this.img = params.img;
             this.setInterfaceDimensions(params);
-            if (!showWin) {
+            if (showWin) {
                 this.showWin();
             }
-
         }
     },
 
@@ -981,8 +969,8 @@ var ImageWidget = new Class({
         }
         this.imgCanvas.w = params.mainimagedim.w;
         this.imgCanvas.h = params.mainimagedim.h;
-        this.imgCanvas.x = typeOf(params.imagedim) !== 'null' ? params.imagedim.x : 0;
-        this.imgCanvas.y = typeOf(params.imagedim) !== 'null' ? params.imagedim.y : 0;
+        this.imgCanvas.x = typeof(params.imagedim) !== null ? params.imagedim.x : 0;
+        this.imgCanvas.y = typeof(params.imagedim) !== null ? params.imagedim.y : 0;
     },
 
     /**
@@ -1008,7 +996,8 @@ var ImageWidget = new Class({
         params.mainimagedim.w = s.width;
         params.mainimagedim.h = s.height;
         params.img = img[0];
-        this.images.set(filepath, params);
+        this.images[filepath] = params;
+
         return params;
     },
 
@@ -1035,7 +1024,7 @@ var ImageWidget = new Class({
                 },
                 onDraw     : function (ctx) {
                     ctx = parent.CANVAS.ctx;
-                    if (typeOf(parent.img) === 'null') {
+                    if (typeof(parent.img) === null) {
                         // console.log('no parent img', parent);
                         return;
                     }
@@ -1052,7 +1041,7 @@ var ImageWidget = new Class({
 
                     this.hover ? ctx.strokeStyle = '#f00' : ctx.strokeStyle = '#000';
                     ctx.strokeRect(w * -0.5, h * -0.5, w, h);
-                    if (typeOf(parent.img) !== 'null') {
+                    if (typeof(parent.img) !== null) {
                         try {
                             ctx.drawImage(parent.img, w * -0.5, h * -0.5, w, h);
                         } catch (err) {
@@ -1061,8 +1050,8 @@ var ImageWidget = new Class({
                         }
                     }
                     ctx.restore();
-                    if (typeOf(parent.img) !== 'null' && parent.images.get(parent.activeFilePath)) {
-                        parent.images.get(parent.activeFilePath).imagedim = {
+                    if (parent.img !== undefined && parent.images.hasOwnProperty(parent.activeFilePath)) {
+                        parent.images[parent.activeFilePath].imagedim = {
                             x: this.x,
                             y: this.y,
                             w: w,
@@ -1112,7 +1101,7 @@ var ImageWidget = new Class({
             events     : {
                 onDraw: function (ctx) {
                     ctx = parent.CANVAS.ctx;
-                    if (typeOf(ctx) === 'null') {
+                    if (typeof(ctx) === null) {
                         return;
                     }
                     /*
@@ -1138,8 +1127,8 @@ var ImageWidget = new Class({
                      * used to determine the whether the mouse is over an item or not.
                      */
 
-                    if (typeOf(parent.img) !== 'null' && parent.images.get(parent.activeFilePath)) {
-                        parent.images.get(parent.activeFilePath).cropdim = {
+                    if (parent.img !== undefined && parent.images.hasOwnProperty(parent.activeFilePath)) {
+                        parent.images[parent.activeFilePath].cropdim = {
                             x: this.x,
                             y: this.y,
                             w: w,
@@ -1180,7 +1169,7 @@ var ImageWidget = new Class({
 
                 onMouseout: function () {
                     if (!parent.overImg) {
-                        document.body.style.cursor = "default";
+                        document.body.style.cursor = 'default';
                     }
                     parent.overCrop = false;
                     this.hover = false;
@@ -1190,15 +1179,16 @@ var ImageWidget = new Class({
     },
 
     makeThread: function () {
+        var self = this;
         this.CANVAS.addThread(new Thread({
             id    : 'myThread',
             onExec: function () {
-                if (typeOf(this.CANVAS) !== 'null') {
-                    if (typeOf(this.CANVAS.ctxEl) !== 'null') {
-                        this.CANVAS.clear().draw();
+                if (self.CANVAS !== undefined) {
+                    if (self.CANVAS.ctxEl !== undefined) {
+                        self.CANVAS.clear().draw();
                     }
                 }
-            }.bind(this)
+            }
         }));
     },
 
@@ -1220,7 +1210,7 @@ var ImageWidget = new Class({
      */
     storeActiveImageData: function (filepath) {
         filepath = filepath ? filepath : this.activeFilePath;
-        if (typeOf(filepath) === 'null') {
+        if (filepath === undefined) {
             return;
         }
         var x = this.cropperCanvas.x;
@@ -1230,27 +1220,27 @@ var ImageWidget = new Class({
         x = x - (w / 2);
         y = y - (h / 2);
 
-        var win = document.id(this.windowopts.id);
-        if (typeOf(win) === 'null') {
+        var win = jQuery('#' + this.windowopts.id);
+        if (win.length === 0) {
             fconsole('storeActiveImageData no window found for ' + this.windowopts.id);
             return;
         }
-        var canvas = win.getElement('canvas');
+        var canvas = win.find('canvas');
 
-        var target = new Element('canvas', {
+        var target = jQuery(document.createElement('canvas')).attr({
             'width' : w + 'px',
             'height': h + 'px'
-        }).inject(document.body);
-        var ctx = target.getContext('2d');
+        }).appendTo(document.body);
+        var ctx = target[0].getContext('2d');
 
-        var file = filepath.split('\\').getLast();
-        var f = document.getElements('input[name*=' + file + ']').filter(function (fld) {
+        var file = filepath.split('\\').pop();
+        var f = jQuery('input[name*="' + file + '"]').filter(function (index, fld) {
             return fld.name.contains('cropdata');
         });
 
-        ctx.drawImage(canvas, x, y, w, h, 0, 0, w, h);
-        f.set('value', target.toDataURL({quality: this.windowopts.quality}));
-        target.destroy();
+        ctx.drawImage(canvas[0], x, y, w, h, 0, 0, w, h);
+        f.val(target[0].toDataURL({quality: this.windowopts.quality}));
+        target.remove();
     },
 
     /**
@@ -1267,9 +1257,9 @@ var ImageWidget = new Class({
             range   : [20, 300],
             onChange: function (pos) {
                 self.imgCanvas.scale = pos / 100;
-                if (typeOf(self.img) !== 'null') {
+                if (self.img !== undefined) {
                     try {
-                        self.images.get(self.activeFilePath).scale = pos;
+                        self.images[self.activeFilePath].scale = pos;
                     } catch (err) {
                         fconsole('didnt get active file path:' + self.activeFilePath);
                     }
@@ -1296,9 +1286,9 @@ var ImageWidget = new Class({
         this.rotateSlide = new Slider(r.find('.fabrikslider-line')[0], r.find('.knob')[0], {
             onChange: function (pos) {
                 self.imgCanvas.rotation = pos;
-                if (typeOf(self.img) !== 'null') {
+                if (self.img !== undefined) {
                     try {
-                        self.images.get(self.activeFilePath).rotation = pos;
+                        self.images[self.activeFilePath].rotation = pos;
                     } catch (err) {
                         fconsole('rorate err' + self.activeFilePath);
                     }
@@ -1318,15 +1308,15 @@ var ImageWidget = new Class({
     showWin: function () {
         this.win = Fabrik.getWindow(this.windowopts);
         this.window = jQuery('#' + this.modalId);
-        if (typeOf(this.CANVAS) === 'null') {
+        if (this.CANVAS === undefined) {
             return;
         }
-        if (typeOf(this.CANVAS.ctxEl) !== 'null') {
+        if (this.CANVAS.ctxEl !== undefined) {
             this.CANVAS.ctxPos = document.id(this.CANVAS.ctxEl).getPosition();
         }
 
-        if (typeOf(this.CANVAS.threads) !== 'null') {
-            if (typeOf(this.CANVAS.threads.get('myThread')) !== 'null') {
+        if (this.CANVAS.threads !== undefined) {
+            if (this.CANVAS.threads.get('myThread') !== undefined) {
 
                 // Fixes issue where sometime canvas thread is not started/running so nothing is drawn
                 this.CANVAS.threads.get('myThread').start();

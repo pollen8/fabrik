@@ -180,6 +180,17 @@ Array.prototype.searchFor = function (candid) {
 };
 
 /**
+ * Object.keys polyfill for IE8
+ */
+if (!Object.keys) {
+    Object.keys = function(obj) {
+        return jQuery.map(obj, function(v, k) {
+            return k;
+        });
+    };
+}
+
+/**
  * Loading animation class, either inline next to an element or full screen
  * Paul 20130809 Adding functionality to handle multiple simultaneous spinners
  * on same field.
