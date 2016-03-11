@@ -387,7 +387,9 @@ class PlgFabrik_ElementTags extends PlgFabrik_ElementDatabasejoin
 				/**
 				 * We need to use the J! com_tags model to save, so it can handle the nested set stuff
 				 */
-				if ($params->get('tags_dbname', '') === '')
+				$tagsTableName = $params->get('tags_dbname', '');
+				$jTagsTableName = $db->getPrefix() . 'tags';
+				if ($tagsTableName === '' || $tagsTableName === $jTagsTableName)
 				{
 					JTable::addIncludePath(COM_FABRIK_BASE . '/administrator/components/com_tags/tables');
 					require(JPATH_ADMINISTRATOR . '/components/com_tags/models/tag.php');
