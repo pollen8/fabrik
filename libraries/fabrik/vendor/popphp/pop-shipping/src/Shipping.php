@@ -117,6 +117,15 @@ class Shipping
     }
 
     /**
+     * @param bool $verifyPeer
+     * @return string label
+     */
+    public function sendConfirm($verifyPeer = true)
+    {
+        return $this->adapter()->sendConfirm($verifyPeer);
+    }
+
+    /**
      * Return whether the transaction is success
      *
      * @return boolean

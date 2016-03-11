@@ -140,6 +140,18 @@ class Gso extends AbstractAdapter
     }
 
     /**
+     * Confirm a shipment
+     *
+     * @param bool $verifyPeer
+     *
+     * @return string Label
+     */
+    public function sendConfirm($verifyPeer = true)
+    {
+        return '';
+    }
+
+    /**
      * Send transaction
      *
      * @return void
@@ -153,7 +165,6 @@ class Gso extends AbstractAdapter
 
         $this->response = $this->client->GetShippingRate($this->request);
 
-        print_r($this->response);exit;
         $this->responseCode = (int)$this->response->Notifications->Code;
         $this->responseMessage = (string)$this->response->Notifications->Message;
 

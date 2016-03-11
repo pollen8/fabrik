@@ -281,6 +281,18 @@ class Fedex extends AbstractAdapter
     }
 
     /**
+     * Confirm a shipment
+     *
+     * @param bool $verifyPeer
+     *
+     * @return string Label
+     */
+    public function sendConfirm($verifyPeer = true)
+    {
+        return '';
+    }
+
+    /**
      * Send transaction
      *
      * @return void

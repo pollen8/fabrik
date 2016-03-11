@@ -52,6 +52,15 @@ abstract class AbstractAdapter implements AdapterInterface
     protected $rates = [];
 
     /**
+     * Confirm a shipment
+     *
+     * @param bool $verifyPeer
+     *
+     * @return string Label
+     */
+    abstract public function sendConfirm($verifyPeer = true);
+
+    /**
      * Send transaction
      *
      * @return void
