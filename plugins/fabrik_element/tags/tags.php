@@ -364,6 +364,7 @@ class PlgFabrik_ElementTags extends PlgFabrik_ElementDatabasejoin
 	 */
 	public function onFinalStoreRow(&$data)
 	{
+		$params = $this->getParams();
 		$name = $this->getFullName(true, false);
 		$rawName = $name . '_raw';
 		$db = FabrikWorker::getDbo(true);
@@ -383,78 +384,89 @@ class PlgFabrik_ElementTags extends PlgFabrik_ElementDatabasejoin
 			{
 				$tagId = str_replace('#fabrik#', '', $tagId);
 
-				JTable::addIncludePath(COM_FABRIK_BASE . '/administrator/components/com_tags/tables');
-				require(JPATH_ADMINISTRATOR . '/components/com_tags/models/tag.php');
-				$tagModel = new TagsModelTag;
-
-				/*
-				 * JSONified list of form data from built in backed tag creation, from xdebug session
-				 *
-				 * {"id":0,
-				 * "hits":"0",
-				 * "parent_id":"1",
-				 * "title":"test102",
-				 * "note":"",
-				 * "description":"",
-				 * "published":"1",
-				 * "access":"1",
-				 * "metadesc":"",
-				 * "metakey":"",
-				 * "alias":"",
-				 * "created_user_id":"",
-				 * "created_by_alias":"",
-				 * "created_time":null,
-				 * "modified_user_id":null,
-				 * "modified_time":null,
-				 * "language":"*",
-				 * "version_note":"",
-				 * "params":
-				 *  {"tag_layout":"",
-				 *      "tag_link_class":"label label-info"
-				 * },
-				 * "images":{
-				 *  "image_intro":"",
-				 *  "float_intro":"",
-				 *  "image_intro_alt":"",
-				 *  "image_intro_caption":"",
-				 *  "image_fulltext":"",
-				 *  "float_fulltext":"",
-				 *  "image_fulltext_alt":"",
-				 *  "image_fulltext_caption":""
-				 * },
-				 * "metadata":{
-				 *  "author":"",
-				 *  "robots":""
-				 * },
-				 * "tags":null}
+				/**
+				 * We need to use the J! com_tags model to save, so it can handle the nested set stuff
 				 */
+				if ($params->get('tags_dbname', '') === '')
+				{
+					JTable::addIncludePath(COM_FABRIK_BASE . '/administrator/components/com_tags/tables');
+					require(JPATH_ADMINISTRATOR . '/components/com_tags/models/tag.php');
+					$tagModel = new TagsModelTag;
 
-				$data = array(
-					'id' => '',
-					'level' => 1,
-					'published' => 1,
-					'parent_id' => 1,
-					'created_user_id' => (int) $this->user->get('id'),
-					'created_time' => $this->date->toSql(),
-					'language' => "*",
-					'version' => 1,
-					'path' => $tagId,
-					'title' => $tagId,
-					'alias' => $tagId
-				);
+					/*
+					 * JSONified list of form data from built in backed tag creation, from xdebug session
+					 *
+					 * Can get rid of this comment once we're sure the $data we set up has the required fields
+					 *
+					 * {"id":0,
+					 * "hits":"0",
+					 * "parent_id":"1",
+					 * "title":"test102",
+					 * "note":"",
+					 * "description":"",
+					 * "published":"1",
+					 * "access":"1",
+					 * "metadesc":"",
+					 * "metakey":"",
+					 * "alias":"",
+					 * "created_user_id":"",
+					 * "created_by_alias":"",
+					 * "created_time":null,
+					 * "modified_user_id":null,
+					 * "modified_time":null,
+					 * "language":"*",
+					 * "version_note":"",
+					 * "params":
+					 *  {"tag_layout":"",
+					 *      "tag_link_class":"label label-info"
+					 * },
+					 * "images":{
+					 *  "image_intro":"",
+					 *  "float_intro":"",
+					 *  "image_intro_alt":"",
+					 *  "image_intro_caption":"",
+					 *  "image_fulltext":"",
+					 *  "float_fulltext":"",
+					 *  "image_fulltext_alt":"",
+					 *  "image_fulltext_caption":""
+					 * },
+					 * "metadata":{
+					 *  "author":"",
+					 *  "robots":""
+					 * },
+					 * "tags":null}
+					 */
 
-				$tagModel->save($data);
-				$tagId = $tagModel->getState($tagModel->getName() . '.id');
+					$data = array(
+						'id'              => '',
+						'level'           => 1,
+						'published'       => 1,
+						'parent_id'       => 1,
+						'created_user_id' => (int) $this->user->get('id'),
+						'created_time'    => $this->date->toSql(),
+						'language'        => "*",
+						'version'         => 1,
+						'path'            => $tagId,
+						'title'           => $tagId,
+						'alias'           => $tagId
+					);
 
-				/*
-				$query = $db->getQuery(true);
-				$query->insert($this->getDbName())->set('level = 1, published = 1, parent_id = 1, created_user_id = ' . (int) $this->user->get('id'))
-				->set('created_time = ' . $db->q($this->date->toSql()), ', language = "*", version = 1')
-				->set('path = ' . $tagId . ', title = ' . $tagId . ', alias = ' . $tagId);
-				$db->setQuery($query);
-				$db->execute();
-				$tagId = $db->insertid();
-				*/
+					$tagModel->save($data);
+					$tagId = $tagModel->getState($tagModel->getName() . '.id');
+				}
+				else
+				{
+					/*
+					 * For Jaanus's non J! tables, do it the "old" way
+					 */
+					$query = $db->getQuery(true);
+					$query->insert($this->getDbName())->set('level = 1, published = 1, parent_id = 1, created_user_id = ' . (int) $this->user->get('id'))
+					->set('created_time = ' . $db->q($this->date->toSql()), ', language = "*", version = 1')
+					->set('path = ' . $tagId . ', title = ' . $tagId . ', alias = ' . $tagId);
+					$db->setQuery($query);
+					$db->execute();
+					$tagId = $db->insertid();
+				}
 			}
 		}
 
