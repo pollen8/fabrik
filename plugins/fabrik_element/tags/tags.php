@@ -459,6 +459,7 @@ class PlgFabrik_ElementTags extends PlgFabrik_ElementDatabasejoin
 					/*
 					 * For Jaanus's non J! tables, do it the "old" way
 					 */
+					$tagId = $db->quote($tagId);
 					$query = $db->getQuery(true);
 					$query->insert($this->getDbName())->set('level = 1, published = 1, parent_id = 1, created_user_id = ' . (int) $this->user->get('id'))
 					->set('created_time = ' . $db->q($this->date->toSql()), ', language = "*", version = 1')
