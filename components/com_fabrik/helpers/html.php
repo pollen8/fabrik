@@ -1247,7 +1247,7 @@ EOD;
 
 		if ($app->input->get('format') == 'raw')
 		{
-			echo '<style type="text/css">' . $style . '</script>';
+			echo '<style type="text/css">' . $style . '</style>';
 		}
 		else
 		{
