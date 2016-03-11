@@ -381,7 +381,72 @@ class PlgFabrik_ElementTags extends PlgFabrik_ElementDatabasejoin
 			// New tag added
 			if (strstr($tagId, '#fabrik#'))
 			{
-				$tagId = $db->quote(str_replace('#fabrik#', '', $tagId));
+				$tagId = str_replace('#fabrik#', '', $tagId);
+
+				JTable::addIncludePath(COM_FABRIK_BASE . '/administrator/components/com_tags/tables');
+				require(JPATH_ADMINISTRATOR . '/components/com_tags/models/tag.php');
+				$tagModel = new TagsModelTag;
+
+				/*
+				 * JSONified list of form data from built in backed tag creation, from xdebug session
+				 *
+				 * {"id":0,
+				 * "hits":"0",
+				 * "parent_id":"1",
+				 * "title":"test102",
+				 * "note":"",
+				 * "description":"",
+				 * "published":"1",
+				 * "access":"1",
+				 * "metadesc":"",
+				 * "metakey":"",
+				 * "alias":"",
+				 * "created_user_id":"",
+				 * "created_by_alias":"",
+				 * "created_time":null,
+				 * "modified_user_id":null,
+				 * "modified_time":null,
+				 * "language":"*",
+				 * "version_note":"",
+				 * "params":
+				 *  {"tag_layout":"",
+				 *      "tag_link_class":"label label-info"
+				 * },
+				 * "images":{
+				 *  "image_intro":"",
+				 *  "float_intro":"",
+				 *  "image_intro_alt":"",
+				 *  "image_intro_caption":"",
+				 *  "image_fulltext":"",
+				 *  "float_fulltext":"",
+				 *  "image_fulltext_alt":"",
+				 *  "image_fulltext_caption":""
+				 * },
+				 * "metadata":{
+				 *  "author":"",
+				 *  "robots":""
+				 * },
+				 * "tags":null}
+				 */
+
+				$data = array(
+					'id' => '',
+					'level' => 1,
+					'published' => 1,
+					'parent_id' => 1,
+					'created_user_id' => (int) $this->user->get('id'),
+					'created_time' => $this->date->toSql(),
+					'language' => "*",
+					'version' => 1,
+					'path' => $tagId,
+					'title' => $tagId,
+					'alias' => $tagId
+				);
+
+				$tagModel->save($data);
+				$tagId = $tagModel->getState($tagModel->getName() . '.id');
+
+				/*
 				$query = $db->getQuery(true);
 				$query->insert($this->getDbName())->set('level = 1, published = 1, parent_id = 1, created_user_id = ' . (int) $this->user->get('id'))
 				->set('created_time = ' . $db->q($this->date->toSql()), ', language = "*", version = 1')
@@ -389,6 +454,7 @@ class PlgFabrik_ElementTags extends PlgFabrik_ElementDatabasejoin
 				$db->setQuery($query);
 				$db->execute();
 				$tagId = $db->insertid();
+				*/
 			}
 		}
 
