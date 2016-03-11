@@ -1070,8 +1070,7 @@ EOD;
 			$deps[] = 'fab/icongen' . $ext;
 		}
 
-		$deps[]                         = 'fab/encoder' . $ext;
-		$framework['fab/fabrik' . $ext] = $deps;
+		$deps[] = 'fab/encoder' . $ext;
 
 		self::addRequireJsShim($framework, 'fab/fabrik', $deps);
 		self::addRequireJsShim($framework, 'fab/window', array('fab/fabrik' . $ext));
@@ -1114,9 +1113,9 @@ EOD;
 	/**
 	 * Helper for create RequireJS shim dependencies
 	 *
-	 * @param array $framework    Array to append the dependency to
-	 * @param string $key         RequireJs key - the file to load
-	 * @param array $dependencies The dependencies to load before the $key file
+	 * @param array  $framework    Array to append the dependency to
+	 * @param string $key          RequireJs key - the file to load
+	 * @param array  $dependencies The dependencies to load before the $key file
 	 */
 	protected static function addRequireJsShim(&$framework, $key, $dependencies)
 	{
