@@ -178,6 +178,7 @@ var FbList = new Class({
             width      : 360,
             height     : 120,
             content    : '',
+	        modal      : true,
             bootstrap  : this.options.j3
         };
         if (this.options.view === 'csv') {
