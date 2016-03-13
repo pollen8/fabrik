@@ -651,7 +651,7 @@ FbForm = new Class({
 		else {
 			this.changePage(dir);
 		}
-		e.stop();
+		e.preventDefault();
 	},
 
 	saveGroupsToDb: function () {
