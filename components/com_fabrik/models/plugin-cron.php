@@ -95,6 +95,16 @@ class PlgFabrik_Cron extends FabrikPlugin
 	public function queryStringActivated()
 	{
 		$params = $this->getParams();
+		
+		// Felixkat
+		$session = JFactory::getSession();
+		$fabrikCron = new stdClass();
+		$fabrikCron->dropData = $params->get('cron_importcsv_dropdata');
+		$fabrikCron->requireJS = $params->get('require_qs');
+		$secret = $params->get('require_qs_secret', '');
+		$fabrikCron->secret = $this->app->input->getString('fabrik_cron', '') === $secret;
+		$session->set('fabrikCron', $fabrikCron);
+		// Felixkat
 
 		if (!$params->get('require_qs', false))
 		{
