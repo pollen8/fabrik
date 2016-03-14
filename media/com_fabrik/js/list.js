@@ -1029,12 +1029,12 @@ var FbList = new Class({
     _updateGroupByTables: function () {
         var tbodys = jQuery(this.list).find('tbody'), groupTbody;
         tbodys.css('display', '');
-        tbodys.each(function (tbody) {
+        tbodys.each(function (tkey, tbody) {
             if (!tbody.hasClass('fabrik_groupdata')) {
-                groupTbody = tbody.next();
-                if (groupTbody.find('.fabrik_row').length === 0) {
-                    tbody.hide();
-                    groupTbody.hide();
+                groupTbody = jQuery(tbody).next();
+                if (jQuery(groupTbody).find('.fabrik_row').length === 0) {
+                    jQuery(tbody).hide();
+                    jQuery(groupTbody).hide();
                 }
             }
         });

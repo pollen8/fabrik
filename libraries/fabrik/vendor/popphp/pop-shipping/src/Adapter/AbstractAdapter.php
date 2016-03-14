@@ -57,6 +57,12 @@ abstract class AbstractAdapter implements AdapterInterface
     protected $ratesExtended = [];
 
     /**
+     * Shipping info
+     * @var \stdClass
+     */
+    protected $shippingInfo;
+
+    /**
      * Confirm a shipment
      *
      * @param bool $verifyPeer
@@ -161,6 +167,17 @@ abstract class AbstractAdapter implements AdapterInterface
     {
         $this->shippingOptions['alcohol']              = $alcohol;
         $this->shippingOptions['alcoholRecipientType'] = $recipientType;
+    }
+
+    /**
+     * Set the shipping info such as the transportation type
+     * @param $info
+     *
+     * @return void
+     */
+    public function shipmentInfo($info)
+    {
+        $this->shippingInfo = $info;
     }
 
 }

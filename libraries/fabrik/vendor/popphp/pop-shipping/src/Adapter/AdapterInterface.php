@@ -123,4 +123,12 @@ interface AdapterInterface
      * @param   string $recipientType LICENSEE|CONSUMER
      */
     public function setAlcohol($alcohol, $recipientType = 'LICENSEE');
+
+    /**
+     * Set the shipping info such as the transportation type
+     * @param $info
+     *
+     * @return mixed
+     */
+    public function shipmentInfo($info);
 }
