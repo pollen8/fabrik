@@ -5356,7 +5356,7 @@ class FabrikFEModelList extends JModelForm
 	}
 
 	/**
-	 * Get the module or then menu pre-filter settings
+	 * Get the module or the menu pre-filter settings
 	 *
 	 * @return string
 	 */
@@ -5365,6 +5365,7 @@ class FabrikFEModelList extends JModelForm
 		$input = $this->app->input;
 		$package = $this->app->getUserState('com_fabrik.package', 'fabrik');
 		$moduleId = 0;
+		$properties= '';
 		// Are we coming from a post request via a module?
 		$requestRef = $input->get('listref', '', 'string');
 
@@ -5430,7 +5431,7 @@ class FabrikFEModelList extends JModelForm
 		 * so first statement when rendering a module, 2nd when posting to the component from a module.
 		*/
 
-		if (isset($properties))
+		if ($properties !== '')
 		{
 			$prefilters = ArrayHelper::fromObject(json_decode($properties));
 			$conditions = (array) $prefilters['filter-conditions'];

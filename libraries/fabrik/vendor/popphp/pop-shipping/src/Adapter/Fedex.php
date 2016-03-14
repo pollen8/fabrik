@@ -12,7 +12,6 @@
  * @namespace
  */
 namespace Pop\Shipping\Adapter;
-use Imagine\Exception\Exception;
 
 /**
  * FedEx shipping adapter class
@@ -182,10 +181,6 @@ class Fedex extends AbstractAdapter
         $this->requestHeader['TransactionDetail'] = [
             'CustomerTransactionId' => ' *** Rate Request v18 using PHP ***'
         ];
-
-        /*$this->requestHeader['RequestedShipment']['RateRequestTypes'] = 'ACCOUNT';
-        $this->requestHeader['RequestedShipment']['RateRequestTypes'] = 'LIST';
-        $this->requestHeader['RequestedShipment']['PackageCount']     = '1';*/
     }
 
     /**
@@ -304,6 +299,11 @@ class Fedex extends AbstractAdapter
         $this->weight['Value'] = $weight;
     }
 
+    /**
+     * Add Info on who pays the shipping charges.
+     *
+     * @return array
+     */
     protected function addShippingChargesPayment()
     {
         $shippingChargesPayment = array('PaymentType' => 'SENDER',
@@ -320,6 +320,10 @@ class Fedex extends AbstractAdapter
         return $shippingChargesPayment;
     }
 
+    /**
+     * Add label specification to shipping.
+     * @return array
+     */
     protected function addLabelSpecification()
     {
         $labelSpecification = array(
@@ -336,11 +340,16 @@ class Fedex extends AbstractAdapter
         return $labelSpecification;
     }
 
+    /**
+     * Add a shipping package line item
+     * @return array
+     */
     protected function addPackageLineItem1()
     {
+        // @TODO - insured value & amount & customer reference
         $packageLineItem = array(
-            'SequenceNumber'=>1,
-            'GroupPackageCount'=>1,
+            'SequenceNumber'=> 1,
+            'GroupPackageCount'=> 1,
             'InsuredValue' => array(
                 'Amount' => 400.00,
                 'Currency' => 'USD'
@@ -376,6 +385,10 @@ class Fedex extends AbstractAdapter
         return $packageLineItem;
     }
 
+    /**
+     * Set the drop off type
+     * @param $type
+     */
 	protected function setDropOfType($type)
 	{
 		if (in_array($this->dropOfTypes, $type))
@@ -408,12 +421,14 @@ class Fedex extends AbstractAdapter
             'Minor' => '0'
         );
 
-        // @TODO - un-hardwire DropoffType, ServiceType & PackagingType
+        $serviceType = isset($this->shippingInfo->serviceType) ? $this->shippingInfo->serviceType : 'STANDARD_OVERNIGHT';
+        $packageType = isset($this->shippingInfo->PackagingType) ? $this->shippingInfo->PackagingType : 'YOUR_PACKAGING';
+
         $request['RequestedShipment'] = array(
             'ShipTimestamp' => date('c'),
             'DropoffType' => $this->dropOfType,
-            'ServiceType' => 'FEDEX_GROUND', // valid values STANDARD_OVERNIGHT, PRIORITY_OVERNIGHT, FEDEX_GROUND, ...
-            'PackagingType' => 'YOUR_PACKAGING', // valid values FEDEX_BOX, FEDEX_PAK, FEDEX_TUBE, YOUR_PACKAGING, ...
+            'ServiceType' => $serviceType, // valid values STANDARD_OVERNIGHT, PRIORITY_OVERNIGHT, FEDEX_GROUND, ...
+            'PackagingType' => $packageType, // valid values FEDEX_BOX, FEDEX_PAK, FEDEX_TUBE, YOUR_PACKAGING, ...
             'Shipper' => $this->shipFrom,
             'Recipient' => $this->shipTo,
             'ShippingChargesPayment' => $this->addShippingChargesPayment(),
@@ -426,7 +441,6 @@ class Fedex extends AbstractAdapter
             )
         );
 
-
         $request = array_merge($this->requestHeader, $request);
         $this->client = new \SoapClient($this->wsdl['shipping'], ['trace' => 1]);
         $this->response = $this->client->processShipment($request);
@@ -434,8 +448,17 @@ class Fedex extends AbstractAdapter
 
         if ($this->response->HighestSeverity === 'ERROR')
         {
-            $error = $this->response->Notifications;
-            throw new \Exception($error->Message, $error->Code);
+            $errors = $this->response->Notifications;
+
+            foreach ($errors as $error)
+            {
+                if ($error->Severity === 'ERROR')
+                {
+                    $errorMsg[] = $error->Message;
+                }
+            }
+
+            throw new \Exception(implode("\n", $errorMsg), $errors[0]->Code);
         }
         \JFile::write(JPATH_SITE . '/fedex-label.png', $label);
 
