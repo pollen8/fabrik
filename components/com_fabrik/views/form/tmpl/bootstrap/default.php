@@ -38,6 +38,14 @@ echo $form->intro;
 echo $this->plugintop;
 ?>
 
+	<?php if ( $form->prevButton || $form->nextButton ): ?>
+		<div class="offset1 span2">
+			<div class="btn-group">
+				<?php echo $form->prevButton . ' ' . $form->nextButton; ?>
+			</div>
+		</div>
+	<?php endif; ?>
+
 <div class="fabrikMainError alert alert-error fabrikError<?php echo $active?>">
 	<button class="close" data-dismiss="alert">×</button>
 	<?php echo $form->error; ?>
