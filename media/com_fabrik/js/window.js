@@ -125,7 +125,7 @@ Fabrik.Window = new Class({
         w = parseInt(w, 10);
         h = parseInt(h, 10);
 
-        if (!(this.modal)) {
+        if (!(this.options.modal)) {
             var yy = window.getSize().y / 2 + window.getScroll().y - (h / 2);
             d.top = this.options.offset_y !== null ? window.getScroll().y + this.options.offset_y : yy;
 
@@ -197,7 +197,7 @@ Fabrik.Window = new Class({
         this.contentWrapperEl.css({'height': ch, 'width': cw + 'px'});
         var handle = this.window.find('*[data-role="title"]');
 
-        if (!this.modal) {
+        if (!this.options.modal) {
             this.window.draggable(
                 {
                     'handle': handle,
@@ -231,7 +231,7 @@ Fabrik.Window = new Class({
         this.window.css('width', this.options.width);
         this.window.css('height', this.options.height + this.window.find('*[data-role="title"]').height());
 
-        if (this.modal) {
+        if (this.options.modal) {
             this.fitToContent(false);
         } else {
             this.center();
@@ -266,7 +266,7 @@ Fabrik.Window = new Class({
         var del = this.deleteButton();
 
         var hclass = 'handlelabel';
-        if (!this.modal) {
+        if (!this.options.modal) {
             hclass += ' draggable';
             draggerC = jQuery('<div />').addClass('bottomBar modal-footer');
             dragger = jQuery('<div />').addClass('dragger');
@@ -279,7 +279,7 @@ Fabrik.Window = new Class({
         label = jQuery('<h3 />').addClass(hclass).text(this.options.title);
 
         handleParts.push(label);
-        if (this.options.expandable && this.modal === false) {
+        if (this.options.expandable && this.options.modal === false) {
             expandButton = jQuery('<a />').addClass('expand').attr({
                 'href': '#'
             }).append(expandIcon);
@@ -304,7 +304,7 @@ Fabrik.Window = new Class({
         this.contentWrapperEl.append(itemContent);
 
         this.window = jQuery(this.window);
-        if (this.modal) {
+        if (this.options.modal) {
             this.window.append([this.handle, this.contentWrapperEl]);
         } else {
             this.window.append([this.handle, this.contentWrapperEl, draggerC]);
@@ -357,7 +357,8 @@ Fabrik.Window = new Class({
                     return;
                 }
                 if (typeOf(this.options.content) === 'element') {
-                    this.options.content.inject(this.contentEl.empty());
+                    //this.options.content.inject(this.contentEl.empty());
+                    jQuery(this.options.content).appendTo(this.contentEl);
                 } else {
                     this.contentEl.html(this.options.content);
                 }
