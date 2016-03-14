@@ -488,6 +488,7 @@ class Fedex extends AbstractAdapter
 	            $total = number_format((string) $rate->RatedShipmentDetails[0]->ShipmentRateDetail->TotalNetCharge->Amount, 2);
 
 	            $this->ratesExtended[$serviceType] = (object) [
+                    'shipper' => 'fedex',
 		            'total' => $total,
 		            'PackagingType' => (string) $rate->PackagingType,
 		            'SignatureOption' => (string) $rate->SignatureOption,

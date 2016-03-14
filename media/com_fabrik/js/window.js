@@ -503,10 +503,12 @@ Fabrik.Window = new Class({
 
     /**
      * Close the window
+     * @param {boolean} destroy window.
      */
-    close: function () {
+    close: function (destroy) {
+        destroy = destroy ? destroy : false;
         // By default cant destroy as we want to be able to reuse them (see crop in fileupload element)
-        if (this.options.destroy) {
+        if (this.options.destroy || destroy) {
 
             // However db join add (in repeating group) has a fit if we don't remove its content
             this.window.remove();

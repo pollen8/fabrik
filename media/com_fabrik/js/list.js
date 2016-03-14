@@ -37,7 +37,14 @@ var FbList = new Class({
         'itemTemplate'       : '',
         'floatPos'           : 'left', // deprecated in 3.1
         'csvChoose'          : false,
-        'csvOpts'            : {},
+        'csvOpts'            : {
+            excel       : false,
+            incfilters  : false,
+            inctabledata: false,
+            incraw      : false,
+            inccalcs    : false
+
+        },
         'popup_width'        : 300,
         'popup_height'       : 300,
         'popup_offset_x'     : null,
@@ -248,68 +255,75 @@ var FbList = new Class({
     },
 
     /**
+     * Create a csv yes/no radio div.
+     * @param {string} name
+     * @param {boolean} yesValue
+     * @param {string} yesLabel
+     * @param {string} noLabel
+     * @param {string} title
+     * @returns {*}
+     * @private
+     */
+    _csvYesNo: function (name, yesValue, yesLabel, noLabel, title) {
+        var label = jQuery('<label />').css('float', 'left');
+
+        var yes = label.clone().append(
+            [jQuery('<input />').attr({
+                'type' : 'radio',
+                'name' : name,
+                'value': '1',
+                checked: yesValue
+            }),
+                jQuery('<span />').text(yesLabel)
+            ]),
+
+            no = label.clone().append(
+                [jQuery('<input />').attr({
+                    'type' : 'radio',
+                    'name' : name,
+                    'value': '0',
+                    checked: !yesValue
+                }),
+                    jQuery('<span />').text(noLabel)
+                ]),
+            titleLabel = jQuery('<div>').css({
+                'width': '200px',
+                'float': 'left'
+            }).text(title);
+
+        return jQuery('<div>').append([titleLabel, yes, no]);
+
+    },
+
+    /**
      * Build the export csv form
      * @returns {*}
      * @private
      */
     _csvExportForm: function () {
         var yes = Joomla.JText._('JYES'),
-            self = this;
-        // Can't build via dom as ie7 doesn't accept checked status
-        var rad = '<input type="radio" value="1" name="incfilters" checked="checked" />' + yes;
-        var rad2 = '<input type="radio" value="1" name="incraw" checked="checked" />' + yes;
-        var rad3 = '<input type="radio" value="1" name="inccalcs" checked="checked" />' + yes;
-        var rad4 = '<input type="radio" value="1" name="inctabledata" checked="checked" />' + yes;
-        var rad5 = '<input type="radio" value="1" name="excel" checked="checked" />Excel CSV';
-        var url = 'index.php?option=com_fabrik&view=list&listid=' +
+            no = Joomla.JText._('JNO'),
+            self = this,
+            url = 'index.php?option=com_fabrik&view=list&listid=' +
                 this.id + '&format=csv&Itemid=' + this.options.Itemid,
             label = jQuery('<label />').css('float', 'left');
 
-        var styles = {
-            'width': '200px',
-            'float': 'left'
-        }, no = Joomla.JText._('JNO');
         var c = jQuery('<form />').attr({
             'action': url,
             'method': 'post'
         }).append([
-            jQuery('<div />').css(styles).text(Joomla.JText._('COM_FABRIK_FILE_TYPE')),
-            label.clone().html(rad5),
-            label.clone().append(
-                [jQuery('<input />').attr({
-                    'type' : 'radio',
-                    'name' : 'excel',
-                    'value': '0'
-                }),
-                    jQuery('<span />').text('CSV')
-                ]),
-            jQuery('<br />'), jQuery('<br />'),
-            jQuery('<div />').css(styles).text(Joomla.JText._('COM_FABRIK_INCLUDE_FILTERS')),
-            label.clone().html(rad),
-            label.clone().append([jQuery('<input />').attr({
-                'type' : 'radio',
-                'name' : 'incfilters',
-                'value': '0'
-            }), jQuery('<span />').text(no)]), jQuery('<br />'),
-            jQuery('<div />').css(styles).text(Joomla.JText._('COM_FABRIK_INCLUDE_DATA')),
-            label.clone().html(rad4),
-            label.clone().append([jQuery('<input />').attr({
-                'type' : 'radio',
-                'name' : 'inctabledata',
-                'value': '0'
-            }), jQuery('<span />').text(no)]), jQuery('<br />'),
-            jQuery('<div />').css(styles).text(Joomla.JText._('COM_FABRIK_INCLUDE_RAW_DATA')),
-            label.clone().html(rad2), label.clone().append([jQuery('<input />').attr({
-                'type' : 'radio',
-                'name' : 'incraw',
-                'value': '0'
-            }), jQuery('<span />').text(no)]), jQuery('<br />'),
-            jQuery('<div />').css(styles).text(Joomla.JText._('COM_FABRIK_INCLUDE_CALCULATIONS')),
-            label.clone().html(rad3), label.clone().append([jQuery('<input />').attr({
-                'type' : 'radio',
-                'name' : 'inccalcs',
-                'value': '0'
-            }), jQuery('<span />').text(no)])]);
+            this._csvYesNo('excel', this.options.csvOpts.excel,
+                'Excel CSV', 'CSV', Joomla.JText._('COM_FABRIK_FILE_TYPE')),
+            this._csvYesNo('incfilters', this.options.csvOpts.incfilters,
+                yes, no, Joomla.JText._('COM_FABRIK_INCLUDE_FILTERS')),
+            this._csvYesNo('inctabledata', this.options.csvOpts.inctabledata,
+                yes, no, Joomla.JText._('COM_FABRIK_INCLUDE_DATA')),
+            this._csvYesNo('incraw', this.options.csvOpts.incraw,
+                yes, no, Joomla.JText._('COM_FABRIK_INCLUDE_RAW_DATA')),
+            this._csvYesNo('inccalcs', this.options.csvOpts.inccalcs,
+                yes, no, Joomla.JText._('COM_FABRIK_INCLUDE_CALCULATIONS')),
+
+        ]);
         jQuery('<h4 />').css('clear', 'left').text(Joomla.JText._('COM_FABRIK_SELECT_COLUMNS_TO_EXPORT')).appendTo(c);
         var g = '';
         var i = 0;
@@ -320,18 +334,11 @@ var FbList = new Class({
                     g = newg;
                     jQuery('<h5 />').text(g).appendTo(c);
                 }
-                var rad = '<input type="radio" value="1" name="fields[' + k + ']" checked="checked" />' +
-                    yes;
+
                 labelText = labelText.replace(/<\/?[^>]+(>|jQuery)/g, '');
-                var r = jQuery('<div />').css(styles).text(labelText);
-                r.appendTo(c);
-                label.clone().html(rad).appendTo(c);
-                label.clone().append([jQuery('<input />').attr({
-                    'type' : 'radio',
-                    'name' : 'fields[' + k + ']',
-                    'value': '0'
-                }), jQuery('<span />').text(no)]).appendTo(c);
-                jQuery('<br />').appendTo(c);
+
+                self._csvYesNo('fields[' + k + ']', true,
+                    yes, no, labelText).appendTo(c);
             }
             i++;
         });
@@ -340,17 +347,8 @@ var FbList = new Class({
         if (this.options.formels.length > 0) {
             jQuery('<h5 />').css('clear', 'left').text(Joomla.JText._('COM_FABRIK_FORM_FIELDS')).appendTo(c);
             this.options.formels.each(function (el) {
-                var rad = '<input type="radio" value="1" name="fields[' + el.name + ']" checked="checked" />' +
-                    yes;
-                var r = jQuery('<div />').css(styles).text(el.label);
-                r.appendTo(c);
-                label.clone().html(rad).appendTo(c);
-                label.clone().append([jQuery('<input />').attr({
-                    'type' : 'radio',
-                    'name' : 'fields[' + el.name + ']',
-                    'value': '0'
-                }), jQuery('<span />').text(no)]).appendTo(c);
-                jQuery('<br />').appendTo(c);
+                self._csvYesNo('fields[' + el.name + ']', false,
+                    yes, no, el.label).appendTo(c);
             });
         }
 
@@ -398,14 +396,14 @@ var FbList = new Class({
         } else {
             if (!opts) {
                 opts = {};
-                    ['incfilters', 'inctabledata', 'incraw', 'inccalcs', 'excel'].each(function (v) {
-                        var inputs = self.csvExportForm.find('input[name=' + v + ']');
-                        if (inputs.length > 0) {
-                            opts[v] = inputs.filter(function () {
-                                return this.checked;
-                            })[0].value;
-                        }
-                    });
+                ['incfilters', 'inctabledata', 'incraw', 'inccalcs', 'excel'].each(function (v) {
+                    var inputs = self.csvExportForm.find('input[name=' + v + ']');
+                    if (inputs.length > 0) {
+                        opts[v] = inputs.filter(function () {
+                            return this.checked;
+                        })[0].value;
+                    }
+                });
             }
             // Selected fields
             if (!fields) {
@@ -468,6 +466,10 @@ var FbList = new Class({
                         this.csvWindow.fitToContent(false);
                         this.csvWindow.center();
                         document.getElements('input.exportCSVButton').removeProperty('disabled');
+
+                        jQuery('#csvmsg a.btn-success').focusout(function () {
+                            Fabrik.Windows.exportcsv.close(true);
+                        });
                     }
                 }
             }.bind(this)
