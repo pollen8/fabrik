@@ -228,9 +228,9 @@ class Usps extends AbstractAdapter
      *
      * @param bool $verifyPeer
      *
-     * @return string Label
+     * @return string Sihipping lbel
      */
-    public function sendConfirm($verifyPeer = true)
+    public function ship($verifyPeer = true)
     {
         return '';
     }

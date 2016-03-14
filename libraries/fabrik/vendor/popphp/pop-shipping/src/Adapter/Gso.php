@@ -144,9 +144,9 @@ class Gso extends AbstractAdapter
      *
      * @param bool $verifyPeer
      *
-     * @return string Label
+     * @return string Shipping label
      */
-    public function sendConfirm($verifyPeer = true)
+    public function ship($verifyPeer = true)
     {
         return '';
     }

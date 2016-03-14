@@ -25,20 +25,27 @@ namespace Pop\Shipping\Adapter;
  */
 class Ups extends AbstractAdapter
 {
+	/**
+	 * Live API URLs
+	 *
+	 * @var array
+	 */
+	protected $liveUrl = [
+		'rates' => 'https://onlinetools.ups.com/ups.app/xml/Rate',
+		'shipping' => 'https://onlinetools.ups.com/ups.app/xml/ShipConfirm',
+		'shipAccept' => 'https://onlinetools.ups.com/ups.app/xml/ShipAccept'
+	];
 
 	/**
-	 * Live API URL
+	 * Test API URLs
 	 *
-	 * @var string
+	 * @var array
 	 */
-	protected $liveUrl = 'https://onlinetools.ups.com/ups.app/xml/Rate';
-
-	/**
-	 * Test API URL
-	 *
-	 * @var string
-	 */
-	protected $testUrl = 'https://wwwcie.ups.com/ups.app/xml/Rate';
+	protected $testUrl = [
+		'rates' => 'https://wwwcie.ups.com/ups.app/xml/Rate',
+		'shipping' => 'https://wwwcie.ups.com/ups.app/xml/ShipConfirm',
+		'shipAccept' => 'https://wwwcie.ups.com/ups.app/xml/ShipAccept'
+	];
 
 	/**
 	 * Test mode flag
@@ -63,6 +70,7 @@ class Ups extends AbstractAdapter
 
 	/**
 	 * Selected Packaging code, see packagingTypes
+	 *
 	 * @var string
 	 */
 	protected $packageCode = '02';
@@ -71,10 +79,12 @@ class Ups extends AbstractAdapter
 	 * Selected shipment charge type
 	 *  01 =Transportation • 02 = Duties and Taxes not required
 	 * see page 43 of API docs
+	 *
 	 * @var string
 	 */
 	protected $shipmentChargeType = '01';
 
+	// @TODO replace this with parameter
 	protected $shipperNumber = 'XF3464';
 
 	/**
@@ -144,6 +154,16 @@ class Ups extends AbstractAdapter
 	];
 
 	/**
+	 * @TODO replce with parameter
+	 * Shipping options
+	 * @var array
+	 */
+	protected $shippingOptions = [
+		'alcohol' => false,
+		'alcoholRecipientType' => 'LICENSEE'
+	];
+
+	/**
 	 * Ship to fields
 	 *
 	 * @var array
@@ -154,7 +174,7 @@ class Ups extends AbstractAdapter
 		'AddressLine2' => null,
 		'AddressLine3' => null,
 		'City' => null,
-		'StateProvinceCode' => 'CA',
+		'StateProvinceCode' => '',
 		'PostalCode' => null,
 		'CountryCode' => null
 	];
@@ -170,7 +190,7 @@ class Ups extends AbstractAdapter
 		'AddressLine2' => null,
 		'AddressLine3' => null,
 		'City' => null,
-		'StateProvinceCode' => 'CA',
+		'StateProvinceCode' => '',
 		'PostalCode' => null,
 		'CountryCode' => null
 	];
@@ -505,18 +525,17 @@ class Ups extends AbstractAdapter
 	 *
 	 * @param bool $verifyPeer
 	 *
-	 * @return string Label
+	 * @return string Shipping label
 	 */
-	public function sendConfirm($verifyPeer = true)
+	public function ship($verifyPeer = true)
 	{
-		echo "ups sendConfirm";
 		$xml = $this->buildConfirmRequest();
 
 		$options = [
 			CURLOPT_HEADER => false,
 			CURLOPT_POST => true,
 			CURLOPT_POSTFIELDS => $this->accessRequest . $xml,
-			CURLOPT_URL => 'https://wwwcie.ups.com/ups.app/xml/ShipConfirm',
+			CURLOPT_URL => $this->testMode ? $this->testUrl['shipping'] : $this->liveUrl['shipping'],
 			CURLOPT_RETURNTRANSFER => true
 		];
 
@@ -557,7 +576,7 @@ class Ups extends AbstractAdapter
 	 * Second part of accepting the confirmed shipment
 	 *
 	 * @param string $digest
-	 * @param bool $verifyPeer
+	 * @param bool   $verifyPeer
 	 *
 	 * @return bool|string
 	 */
@@ -580,7 +599,7 @@ class Ups extends AbstractAdapter
 			CURLOPT_HEADER => false,
 			CURLOPT_POST => true,
 			CURLOPT_POSTFIELDS => $this->accessRequest . $xml,
-			CURLOPT_URL => 'https://wwwcie.ups.com/ups.app/xml/ShipAccept',
+			CURLOPT_URL => $this->testMode ? $this->testUrl['shipAccept'] : $this->liveUrl['shipAccept'],
 			CURLOPT_RETURNTRANSFER => true
 		];
 
@@ -601,7 +620,7 @@ class Ups extends AbstractAdapter
 			return false;
 		}
 
-		$this->response     = simplexml_load_string($xml);
+		$this->response = simplexml_load_string($xml);
 
 		return (string) $this->response->ShipmentResults->PackageResults->LabelImage->GraphicImage;
 	}
@@ -621,7 +640,7 @@ class Ups extends AbstractAdapter
 			CURLOPT_HEADER => false,
 			CURLOPT_POST => true,
 			CURLOPT_POSTFIELDS => $this->accessRequest . $this->rateRequest,
-			CURLOPT_URL => $this->testMode ? $this->testUrl : $this->liveUrl,
+			CURLOPT_URL => $this->testMode ? $this->testUrl['rates'] : $this->liveUrl['rates'],
 			CURLOPT_RETURNTRANSFER => true
 		];
 
@@ -700,7 +719,7 @@ class Ups extends AbstractAdapter
 		$xml .= PHP_EOL . '        <Shipper>';
 		$xml .= PHP_EOL . '            <Name>' . $this->shipFrom['CompanyName'] . '</Name>';
 		$xml .= PHP_EOL . '            <ShipperNumber>' . $this->shipperNumber . '</ShipperNumber>';
-        $xml .= PHP_EOL . '            <Address>';
+		$xml .= PHP_EOL . '            <Address>';
 
 		foreach ($this->shipFrom as $key => $value)
 		{
@@ -721,7 +740,7 @@ class Ups extends AbstractAdapter
 		$xml .= PHP_EOL . '        </Shipper>';
 
 		$xml .= PHP_EOL . '        <ShipTo>';
-		$xml .= PHP_EOL . '            <CompanyName>foo - ' . $this->shipTo['CompanyName']. '</CompanyName>';
+		$xml .= PHP_EOL . '            <CompanyName>foo - ' . $this->shipTo['CompanyName'] . '</CompanyName>';
 		$xml .= PHP_EOL . '            <Address>';
 
 		foreach ($this->shipTo as $key => $value)
@@ -740,7 +759,6 @@ class Ups extends AbstractAdapter
 		}
 		$xml .= PHP_EOL . '            </Address>';
 		$xml .= PHP_EOL . '        </ShipTo>';
-
 
 		$xml .= PHP_EOL . '        <ShipFrom>';
 		$xml .= PHP_EOL . '            <CompanyName>' . $this->shipFrom['CompanyName'] . '</CompanyName>';
@@ -769,7 +787,7 @@ class Ups extends AbstractAdapter
 		$xml .= PHP_EOL . '                    <AccountNumber>' . $this->shipperNumber . '</AccountNumber>';
 		$xml .= PHP_EOL . '                </BillShipper>';
 		$xml .= PHP_EOL . '            </Prepaid>';
-        $xml .= PHP_EOL . '        </PaymentInformation>';
+		$xml .= PHP_EOL . '        </PaymentInformation>';
 		$xml .= PHP_EOL . '        <Service>';
 		$xml .= PHP_EOL . '            <Code>' . $this->service . '</Code>';
 		$xml .= PHP_EOL . '            <Description>' . self::$services[$this->service] . '</Description>';
@@ -793,6 +811,20 @@ class Ups extends AbstractAdapter
 		$xml .= PHP_EOL . '                </UnitOfMeasurement>';
 		$xml .= PHP_EOL . '                <Weight>' . $this->weight['Weight'] . '</Weight>';
 		$xml .= PHP_EOL . '            	</PackageWeight>';
+
+		if ($this->shippingOptions['alcohol'])
+		{
+			$xml .= PHP_EOL . '            	<PackageServiceOptions>';
+			$xml .= PHP_EOL . '                	<DeliveryConfirmation>';
+			// 3 = DeliveryConfirmation AdultSignature Required
+			$xml .= PHP_EOL . '                    	<DCISType>3</DCISType>';
+			$xml .= PHP_EOL . '                	</DeliveryConfirmation>';
+			$xml .= PHP_EOL . '            	</PackageServiceOptions>';
+
+		}
+
+		// Insurance....
+
 		$xml .= PHP_EOL . '        </Package>';
 		$xml .= PHP_EOL . '    </Shipment>';
 		$xml .= PHP_EOL . '    <LabelSpecification>';

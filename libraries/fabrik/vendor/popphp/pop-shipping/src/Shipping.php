@@ -106,6 +106,20 @@ class Shipping
     }
 
     /**
+     * Set whether the package contains alcohol
+     *
+     * @param   string $alcohol
+     * @param   string $recipientType LICENSEE|CONSUMER
+     *
+     * @return self
+     */
+    public function setAlcohol($alcohol, $recipientType = 'LICENSEE')
+    {
+        $this->adapter->setAlcohol($alcohol, $recipientType);
+        return $this;
+    }
+
+    /**
      * Send transaction data
      *
      * @param  boolean $verifyPeer
@@ -117,12 +131,14 @@ class Shipping
     }
 
     /**
+     * Send a shipping request
+     *
      * @param bool $verifyPeer
-     * @return string label
+     * @return string Shipping label
      */
-    public function sendConfirm($verifyPeer = true)
+    public function ship($verifyPeer = true)
     {
-        return $this->adapter()->sendConfirm($verifyPeer);
+        return $this->adapter()->ship($verifyPeer);
     }
 
     /**
@@ -183,6 +199,16 @@ class Shipping
     public function getRates()
     {
         return $this->adapter->getRates();
+    }
+
+    /**
+     * Get extended service rates
+     *
+     * @return array
+     */
+    public function getExtendedRates()
+    {
+        return $this->adapter->getExtendedRates();
     }
 
 }
