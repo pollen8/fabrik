@@ -843,6 +843,7 @@ EOD;
 			{
 				JHtml::_('bootstrap.framework');
 				self::loadBootstrapCSS();
+				JHtml::_('script', 'media/com_fabrik/js/lib/jquery-ui/jquery-ui.min.js');
 			}
 
 			// Require js test - list with no cal loading ajax form with cal
@@ -1012,8 +1013,7 @@ EOD;
 		$requirePaths = self::requirePaths();
 		$pathBits     = array();
 		$framework    = array();
-		$deps         = new stdClass;
-		$deps->deps   = array();
+		$deps         = array();
 		$j3           = FabrikWorker::j3();
 		$ext          = self::isDebug() ? '' : '-min';
 
@@ -1050,52 +1050,51 @@ EOD;
 
 		if ($navigator->getBrowser() == 'msie' && !$j3)
 		{
-			$deps->deps[] = 'fab/lib/flexiejs/flexie' . $ext;
+			$deps[] = 'fab/lib/flexiejs/flexie' . $ext;
 		}
 
-		$deps->deps[] = 'jquery';
+		$deps[] = 'jquery';
 
-		$deps->deps[] = 'fab/mootools-ext' . $ext;
-		$deps->deps[] = 'fab/lib/Event.mock';
+		$deps[] = 'fab/mootools-ext' . $ext;
+		$deps[] = 'fab/lib/Event.mock';
 
 		if ($j3)
 		{
-			$deps->deps[] = 'fab/tipsBootStrapMock' . $ext;
+			$deps[] = 'fab/tipsBootStrapMock' . $ext;
 		}
 		else
 		{
-			$deps->deps[] = 'fab/lib/art';
-			$deps->deps[] = 'fab/tips' . $ext;
-			$deps->deps[] = 'fab/icons' . $ext;
-			$deps->deps[] = 'fab/icongen' . $ext;
+			$deps[] = 'fab/lib/art';
+			$deps[] = 'fab/tips' . $ext;
+			$deps[] = 'fab/icons' . $ext;
+			$deps[] = 'fab/icongen' . $ext;
 		}
 
-		$deps->deps[]                   = 'fab/encoder' . $ext;
-		$framework['fab/fabrik' . $ext] = $deps;
-		$deps                           = new stdClass;
-		$deps->deps                     = array('fab/fabrik' . $ext);
-		$framework['fab/window' . $ext] = $deps;
+		$deps[] = 'fab/encoder' . $ext;
 
-		$deps                                = new stdClass;
-		$deps->deps                          = array('fab/fabrik' . $ext, 'fab/element' . $ext);
-		$framework['fab/elementlist' . $ext] = $deps;
-		$newShim                             = array_merge($framework, $newShim);
-		$shim                                = json_encode($newShim);
+		self::addRequireJsShim($framework, 'fab/fabrik', $deps);
+		self::addRequireJsShim($framework, 'fab/window', array('fab/fabrik' . $ext));
+		self::addRequireJsShim($framework, 'fab/elementlist', array('fab/fabrik' . $ext, 'fab/element' . $ext));
+		self::addRequireJsShim($framework, 'fab/autocomplete-bootstrap', array('fab/fabrik' . $ext));
+
+		$newShim = array_merge($framework, $newShim);
+		$shim    = json_encode($newShim);
 
 		foreach ($requirePaths as $reqK => $repPath)
 		{
 			$pathBits[] = "\n\t\t$reqK : '$repPath'";
 		}
 
-		//$pathBits[] = "\n\t\tjquery: 'media/com_fabrik/js/dummy-jquery'";
-		//$pathBits[] = "\n\t\tjquery: 'media/jui/js/jquery'";
-
 		$pathString = '{' . implode(',', $pathBits) . '}';
 		$config     = array();
 
 		$config[] = "define('jquery', [], function() {
-		console.log('require js define jquery as ', jQuery);
 			return jQuery;
+		});";
+
+		// Required for full calendar
+		$config[] = "define('moment', [], function() {
+			return moment;
 		});";
 
 		$config[] = "requirejs.config({";
@@ -1109,6 +1108,21 @@ EOD;
 		// Store in session - included in fabrik system plugin
 		$session->set('fabrik.js.shim', $newShim);
 		$session->set('fabrik.js.config', $config);
+	}
+
+	/**
+	 * Helper for create RequireJS shim dependencies
+	 *
+	 * @param array  $framework    Array to append the dependency to
+	 * @param string $key          RequireJs key - the file to load
+	 * @param array  $dependencies The dependencies to load before the $key file
+	 */
+	protected static function addRequireJsShim(&$framework, $key, $dependencies)
+	{
+		$ext                    = self::isDebug() ? '' : '-min';
+		$info                   = new stdClass;
+		$info->deps             = $dependencies;
+		$framework[$key . $ext] = $info;
 	}
 
 	/**
@@ -1233,7 +1247,7 @@ EOD;
 
 		if ($app->input->get('format') == 'raw')
 		{
-			echo '<style type="text/css">' . $style . '</script>';
+			echo '<style type="text/css">' . $style . '</style>';
 		}
 		else
 		{
@@ -1441,7 +1455,6 @@ EOD;
 
 		$session->set($key, self::$jLayoutsJs);
 	}
-
 
 	/**
 	 * Add script to session - will then be added via Fabrik System plugin
@@ -2128,7 +2141,7 @@ EOD;
 
 		for ($i = 0; $i < count($values); $i++)
 		{
-			$displayData->i    = $i;
+			$displayData->i     = $i;
 			$displayData->label = $labels[$i];
 
 			// For values like '1"'

@@ -224,6 +224,18 @@ class Usps extends AbstractAdapter
     }
 
     /**
+     * Confirm a shipment
+     *
+     * @param bool $verifyPeer
+     *
+     * @return string Sihipping lbel
+     */
+    public function ship($verifyPeer = true)
+    {
+        return '';
+    }
+
+    /**
      * Send transaction
      *
      * @param  boolean $verifyPeer

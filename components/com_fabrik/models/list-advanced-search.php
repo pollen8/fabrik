@@ -328,7 +328,8 @@ class FabrikFEModelAdvancedSearch extends FabModel
 	{
 		$model = $this->model;
 		$table = $model->getTable();
-		$url = COM_FABRIK_LIVESITE . 'index.php?option=com_' . $this->package . '&amp;view=list&amp;layout=_advancedsearch&amp;tmpl=component&amp;listid='
+		$url = COM_FABRIK_LIVESITE . 'index.php?option=com_' . $this->package .
+			'&amp;format=partial&amp;view=list&amp;layout=_advancedsearch&amp;tmpl=component&amp;listid='
 			. $table->id . '&amp;nextview=' . $this->app->input->get('view', 'list');
 
 		// Defines if we are in a module or in the component.

@@ -931,6 +931,14 @@ class PlgFabrik_FormComment extends PlgFabrik_Form
 	{
 		$formModel = $this->getModel();
 		$input = $this->app->input;
+
+		/*
+		 * 'Fix' for jcomments not loading languages? Means you have to copy:
+		 * components/com_jcomments/languages/yourfile.ini to
+		 * components/com_jcomments/language/xx-XX/yourfile.ini
+		 */
+		$lang = JFactory::getLanguage();
+		$lang->load('com_jcomments', JPATH_BASE . '/components/com_jcomments');
 		$jComments = JPATH_SITE . '/components/com_jcomments/jcomments.php';
 
 		if (JFile::exists($jComments))
@@ -951,5 +959,26 @@ class PlgFabrik_FormComment extends PlgFabrik_Form
 		{
 			throw new RuntimeException('JComment is not installed on your system');
 		}
+	}
+
+	/**
+	 * Run right at the end of the form processing
+	 * form needs to be set to record in database for this to hook to be called
+	 *
+	 * @return    bool
+	 */
+	public function onAfterProcess()
+	{
+		$params = $this->getParams();
+		$method = $params->get('comment_method', 'disqus');
+		$notification = (bool) $params->get('comment_jcomment_notify', false);
+
+		if ($method !== 'jcomment' || $notification === false)
+		{
+			return;
+		}
+
+		require_once JPATH_PLUGINS . '/fabrik_form/comment/helpers/jcomments.php';
+		FabrikJCommentHelper::subscribe($this);
 	}
 }

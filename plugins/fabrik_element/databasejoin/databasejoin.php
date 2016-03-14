@@ -1384,7 +1384,8 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 			}
 			elseif ($this->canView())
 			{
-				$html[] = $this->renderListData($default, ArrayHelper::toObject($data));
+				$oData = ArrayHelper::toObject($data);
+				$html[] = $this->renderListData($default, $oData);
 			}
 		}
 
@@ -1972,7 +1973,8 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 				}
 			}
 
-			$val = $this->renderListData($value, FArrayHelper::toObject($data));
+			$oData = FArrayHelper::toObject($data);
+			$val = $this->renderListData($value, $oData);
 		}
 		else
 		{
@@ -2858,16 +2860,49 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 	}
 
 	/**
+	 * Add any jsJLayout templates to Fabrik.jLayouts js object.
+	 *
+	 * @return void
+	 */
+	public function jsJLayouts()
+	{
+		$opts = $this->elementJavascriptOpts();
+		$params = $this->getParams();
+
+		if ($opts->allowadd)
+		{
+			$modalOpts = array(
+				'content' => '',
+				'id' => $opts->modalId,
+				'modal' => false,
+				'expandable' => true
+			);
+			FabrikHelperHTML::jLayoutJs($opts->modalId, 'fabrik-modal', (object) $modalOpts);
+		}
+
+		if ($params->get('fabrikdatabasejoin_frontend_select'))
+		{
+			$modalOpts = array(
+				'content' => '',
+				'id' => 'db_join_select',
+				'modal' => false,
+				'expandable' => true
+			);
+			FabrikHelperHTML::jLayoutJs('db_join_select', 'fabrik-modal', (object) $modalOpts);
+		}
+	}
+
+	/**
 	 * Get element JS options
 	 *
 	 * @param   int $repeatCounter Group repeat counter
 	 *
 	 * @return  array  Options
 	 */
-
-	protected function elementJavascriptOpts($repeatCounter)
+	protected function elementJavascriptOpts($repeatCounter = 0)
 	{
 		$params                   = $this->getParams();
+		$modalId                  = 'dbjoin_popupform';
 		$opts                     = $this->_getOptionVals();
 		$data                     = $this->getFormModel()->data;
 		$arSelected               = $this->getValue($data, $repeatCounter);
@@ -2877,6 +2912,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		$popupForm                = (int) $params->get('databasejoin_popupform');
 		$popupListId              = (empty($popupForm) || !isset($forms[$popupForm])) ? '' : $forms[$popupForm]->listid;
 		$opts->id                 = $this->id;
+		$opts->modalId            = $modalId;
 		$opts->fullName           = $this->getFullName(true, false);
 		$opts->key                = $table . '___' . $params->get('join_key_column');
 		$opts->label              = $table . '___' . $this->getLabelParamVal();
@@ -2897,6 +2933,8 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		$this->elementJavascriptJoinOpts($opts);
 		$opts->isJoin   = $this->isJoin();
 		$opts->advanced = $this->getAdvancedSelectClass() != '';
+
+
 
 		/*
 		 * Testing watching placeholders used in the where, and AJAX reloading the join when changed

@@ -150,6 +150,9 @@ class PlgSystemFabrik extends JPlugin
 			$rjs            = $jsAssetBaseURI . 'media/com_fabrik/js/lib/require/require.js';
 			$script         = '<script>
             setTimeout(function(){
+            jQuery.ajaxSetup({
+  cache: true
+});
 				 jQuery.getScript( "' . $rjs . '", function() {
 				' . "\n" . $config . "\n" . $js . "\n" . '
 			});

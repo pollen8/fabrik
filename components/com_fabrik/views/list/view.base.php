@@ -32,6 +32,49 @@ class FabrikViewListBase extends FabrikView
 	public $isMambot = null;
 
 	/**
+	 * Build CSV export options and JS code
+	 * @param $opts
+	 * @param $model
+	 */
+	protected function csvJS(&$opts, $model)
+	{
+		$params                = $model->getParams();
+		$opts->csvChoose       = (bool) $params->get('csv_frontend_selection');
+		$csvOpts               = new stdClass;
+		$csvOpts->excel        = (int) $params->get('csv_format');
+		$csvOpts->inctabledata = (int) $params->get('csv_include_data');
+		$csvOpts->incraw       = (int) $params->get('csv_include_raw_data');
+		$csvOpts->inccalcs     = (int) $params->get('csv_include_calculations');
+		$csvOpts->custom_qs    = $params->get('csv_custom_qs', '');
+		$csvOpts->incfilters   = (int) $params->get('incfilters');
+		$opts->csvOpts         = $csvOpts;
+
+		$opts->csvFields = $model->getCsvFields();
+		$modalOpts       = array(
+			'content' => '',
+			'id' => 'ajax_links',
+			'title' => 'Export csv jlayout',
+			'modal' => true,
+			'expandable' => false
+		);
+
+		if ($opts->csvChoose)
+		{
+			$modalOpts['footer'] = 'export';
+			$layout = FabrikHelperHTML::getLayout('fabrik-button');
+			$layoutData = (object) array(
+				'name' => 'submit',
+				'class' =>  'exportCSVButton btn-primary',
+				'label' => JText::_('COM_FABRIK_EXPORT')
+			);
+
+			$modalOpts['footer'] = $layout->render($layoutData);
+		}
+
+		FabrikHelperHTML::jLayoutJs('exportcsv', 'fabrik-modal', (object) $modalOpts);
+	}
+
+	/**
 	 * Get JS objects
 	 *
 	 * @param   array $data list data
@@ -50,6 +93,38 @@ class FabrikViewListBase extends FabrikView
 		$formModel          = $model->getFormModel();
 		$elementsNotInTable = $formModel->getElementsNotInTable();
 		$toggleCols         = (bool) $params->get('toggle_cols', false);
+		$ajax               = (int) $model->isAjax();
+		$ajaxLinks          = (bool) $params->get('list_ajax_links', $ajax);
+		$opts               = new stdClass;
+
+		if ($ajaxLinks)
+		{
+			$modalTitle = 'test';
+
+			$modalOpts = array(
+				'content' => '',
+				'id' => 'ajax_links',
+				'title' => JText::_($modalTitle),
+				'modal' => false,
+				'expandable' => true
+			);
+			FabrikHelperHTML::jLayoutJs('ajax_links', 'fabrik-modal', (object) $modalOpts);
+		}
+
+		// Advanced search
+
+		if ($params->get('advanced-filter'))
+		{
+			$modalOpts = array(
+				'content' => '',
+				'id' => 'advanced-filter',
+				'modal' => false,
+				'expandable' => true
+			);
+			FabrikHelperHTML::jLayoutJs('advanced-filter', 'fabrik-modal', (object) $modalOpts);
+		}
+
+		$this->csvJS($opts, $model);
 
 		if ($model->requiresSlimbox())
 		{
@@ -98,10 +173,9 @@ class FabrikViewListBase extends FabrikView
 		$this->_row       = new stdClass;
 		$script           = array();
 		$params           = $model->getParams();
-		$opts             = new stdClass;
 		$opts->admin      = $this->app->isAdmin();
-		$opts->ajax       = (int) $model->isAjax();
-		$opts->ajax_links = (bool) $params->get('list_ajax_links', $opts->ajax);
+		$opts->ajax       = $ajax;
+		$opts->ajax_links = $ajaxLinks;
 
 		$opts->links           = array('detail' => $params->get('detailurl', ''), 'edit' => $params->get('editurl', ''), 'add' => $params->get('addurl', ''));
 		$opts->filterMethod    = $this->filter_action;
@@ -122,13 +196,16 @@ class FabrikViewListBase extends FabrikView
 		$opts->Itemid         = $tmpItemid;
 		$opts->listRef        = $listRef;
 		$opts->formid         = $model->getFormModel()->getId();
-		$opts->canEdit        = $model->canEdit() ? "1" : "0";
-		$opts->canView        = $model->canView() ? "1" : "0";
+		$opts->canEdit        = $model->canEdit() ? '1' : '0';
+		$opts->canView        = $model->canView() ? '1' : '0';
 		$opts->page           = JRoute::_('index.php');
 		$opts->isGrouped      = $this->isGrouped;
 		$opts->toggleCols     = $toggleCols;
 		$opts->j3             = FabrikWorker::j3();
 		$opts->singleOrdering = (bool) $model->singleOrdering();
+
+		// Reset data back to original settings
+		$this->rows = $origRows;
 
 		$formEls = array();
 
@@ -142,13 +219,10 @@ class FabrikViewListBase extends FabrikView
 
 		$opts->formels             = $formEls;
 		$opts->fabrik_show_in_list = $input->get('fabrik_show_in_list', array(), 'array');
-		$opts->csvChoose           = (bool) $params->get('csv_frontend_selection');
 		$opts->popup_width         = $params->get('popup_width', '');
-
-		$opts->popup_height = $params->get('popup_height', '');
-
-		$xOffset = $params->get('popup_offset_x', '');
-		$yOffset = $params->get('popup_offset_y', '');
+		$opts->popup_height        = $params->get('popup_height', '');
+		$xOffset                   = $params->get('popup_offset_x', '');
+		$yOffset                   = $params->get('popup_offset_y', '');
 
 		if ($xOffset !== '')
 		{
@@ -173,26 +247,14 @@ class FabrikViewListBase extends FabrikView
 		 *
 		 * But for now, it's too corner case to worry about!
 		 */
-		$nodata                 = new stdClass();
-		$opts->popup_edit_label = $model->editLabel($nodata);
-		$opts->popup_view_label = $model->viewLabel($nodata);
-		$opts->popup_add_label  = $model->addLabel();
-		$opts->limitLength      = $model->limitLength;
-		$opts->limitStart       = $model->limitStart;
-		$opts->tmpl             = $tmpl;
-		$csvOpts                = new stdClass;
-		$csvOpts->excel         = (int) $params->get('csv_format');
-		$csvOpts->inctabledata  = (int) $params->get('csv_include_data');
-		$csvOpts->incraw        = (int) $params->get('csv_include_raw_data');
-		$csvOpts->inccalcs      = (int) $params->get('csv_include_calculations');
-		$csvOpts->custom_qs     = $params->get('csv_custom_qs', '');
-		$opts->csvOpts          = $csvOpts;
-
-		$opts->csvFields     = $model->getCsvFields();
-		$csvOpts->incfilters = (int) $params->get('incfilters');
-
-		$opts->data = $data;
-
+		$nodata                            = new stdClass();
+		$opts->popup_edit_label            = $model->editLabel($nodata);
+		$opts->popup_view_label            = $model->viewLabel($nodata);
+		$opts->popup_add_label             = $model->addLabel();
+		$opts->limitLength                 = $model->limitLength;
+		$opts->limitStart                  = $model->limitStart;
+		$opts->tmpl                        = $tmpl;
+		$opts->data                        = $data;
 		$opts->groupByOpts                 = new stdClass;
 		$opts->groupByOpts->isGrouped      = (bool) $this->isGrouped;
 		$opts->groupByOpts->collapseOthers = (bool) $params->get('group_by_collapse_others', false);
@@ -206,13 +268,12 @@ class FabrikViewListBase extends FabrikView
 		$this->_row->id    = '';
 		$this->_row->class = 'fabrik_row';
 		echo $this->loadTemplate('row');
-		$opts->rowtemplate = ob_get_contents();
+		$opts->itemTemplate = ob_get_contents();
 		ob_end_clean();
 
 		// $$$rob if you are loading a table in a window from a form db join select record option
 		// then we want to know the id of the window so we can set its showSpinner() method
 		$opts->winid = $input->get('winid', '');
-		$opts        = json_encode($opts);
 
 		JText::script('COM_FABRIK_PREV');
 		JText::script('COM_FABRIK_SELECT_ROWS_FOR_DELETION');
@@ -252,7 +313,7 @@ class FabrikViewListBase extends FabrikView
 
 		$script[] = "window.addEvent('domready', function () {";
 		$script[] = "\tvar list = new FbList('$listId',";
-		$script[] = "\t" . $opts;
+		$script[] = "\t" . json_encode($opts);
 		$script[] = "\t);";
 		$script[] = "\tFabrik.addBlock('list_{$listRef}', list);";
 
@@ -286,8 +347,6 @@ class FabrikViewListBase extends FabrikView
 		FabrikHelperHTML::iniRequireJS($shim);
 		FabrikHelperHTML::script($src, $script);
 
-		// Reset data back to original settings
-		$this->rows = $origRows;
 	}
 
 	/**
@@ -947,7 +1006,7 @@ class FabrikViewListBase extends FabrikView
 	{
 		if (!$this->app->isAdmin() && !$this->isMambot)
 		{
-			$url   = $this->getCanonicalLink();
+			$url = $this->getCanonicalLink();
 
 			// Set a flag so that the system plugin can clear out any other canonical links.
 			$this->session->set('fabrik.clearCanonical', true);

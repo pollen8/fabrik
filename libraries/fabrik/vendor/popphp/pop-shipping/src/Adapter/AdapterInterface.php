@@ -109,4 +109,18 @@ interface AdapterInterface
      */
     public function getRates();
 
+    /**
+     * Get service extended rates
+     *
+     * @return array
+     */
+    public function getExtendedRates();
+
+    /**
+     * Set whether the package contains alcohol
+     *
+     * @param   string $alcohol
+     * @param   string $recipientType LICENSEE|CONSUMER
+     */
+    public function setAlcohol($alcohol, $recipientType = 'LICENSEE');
 }

@@ -17,6 +17,7 @@
 					<option value="G_SATELLITE_MAP">PLG_ELEMENT_GOOGLE_MAP_SATELITE</option>
 					<option value="G_HYBRID_MAP">PLG_ELEMENT_GOOGLE_MAP_HYBRID</option>
 					<option value="TERRAIN">PLG_ELEMENT_GOOGLE_MAP_TERRAIN</option>
+					<option value="OSM">PLG_ELEMENT_GOOGLE_MAP_OSM</option>
 			</field>
 
 			<field name="fb_gm_zoomlevel"

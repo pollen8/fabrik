@@ -1,6 +1,6 @@
 /**
  * Button Element
- * 
+ *
  * @copyright: Copyright (C) 2005-2015, fabrikar.com - All rights reserved.
  * @license: GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
@@ -13,13 +13,14 @@ var FbButton = new Class({
 	},
 
 	addNewEventAux: function (action, js) {
-		this.element.addEvent(action, function (e) {
-			
+		var self = this;
+		jQuery(this.element).on(action, function (e) {
+
 			// Unlike element addNewEventAux we need to stop the event otherwise the form is submitted
 			if (e) {
-				e.stop();
+				e.stopPropagation();
 			}
-			typeOf(js) === 'function' ? js.delay(0, this, this) : eval(js);
-		}.bind(this));
+			jQuery.type(js) === 'function' ? js.delay(0, self, self) : eval(js);
+		});
 	}
 });

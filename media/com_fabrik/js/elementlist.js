@@ -91,7 +91,8 @@ FbElementList = new Class({
 				this.form.events[action][uid] = true;
 
 				jQuery(c).on(action, delegate, function (event) {
-					event.preventDefault();
+					// Changed from preventDefault() to stopPropagation() as the former prevents radios from selecting
+					event.stopPropagation();
 					// Don't use the usual jQuery this, as we need to bind the plugin as 'this' to the event.
 					var target = jQuery(event.currentTarget), elid, that, subEls;
 					if (target.prop('tagName') === 'LABEL') {

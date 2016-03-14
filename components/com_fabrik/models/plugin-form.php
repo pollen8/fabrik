@@ -553,7 +553,7 @@ class PlgFabrik_Form extends FabrikPlugin
 	 *
 	 * @return string
 	 */
-	public function placeholer($pName)
+	public function placeholder($pName)
 	{
 		$params = $this->getParams();
 		$w      = new FabrikWorker;

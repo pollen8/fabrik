@@ -6,211 +6,254 @@
  */
 
 /*jshint mootools: true */
-/*global Fabrik:true, fconsole:true, Joomla:true, CloneObject:true, $H:true,unescape:true */
+/*global Fabrik:true*/
 
 AdvancedSearch = new Class({
 
-	Implements: [Options, Events],
+    options: {
+        ajax            : false,
+        controller      : 'list',
+        parentView      : '',
+        defaultStatement: '=',
+        conditionList   : '',
+        elementList     : '',
+        elementMap      : {},
+        statementList   : ''
+    },
 
-	options: {
-		'ajax': false,
-		'controller': 'list',
-		'parentView': '',
-		'defaultStatement': '='
-	},
+    /**
+     * Initialize
+     * @param {object} options
+     */
+    initialize: function (options) {
+        this.options = jQuery.extend(this.options, options);
+        this.form = jQuery('form.advancedSearch_' + this.options.listref);
+        var add = this.form.find('.advanced-search-add'),
+            clearAll = this.form.find('.advanced-search-clearall'),
+            self = this;
+        if (add.length > 0) {
+            add.off('click');
+            add.on('click', function (e) {
+                e.preventDefault();
+                self.addRow();
+            });
+            clearAll.off('click');
+            clearAll.on('click', function (e) {
+                self.resetForm(e);
+            });
+        }
 
-	initialize: function (options) {
-		this.setOptions(options);
-		this.form = document.id('advanced-search-win' + this.options.listref).getElement('form');
-		this.trs = Array.from([]);
-		if (this.form.getElement('.advanced-search-add')) {
-			this.form.getElement('.advanced-search-add').removeEvents('click');
-			this.form.getElement('.advanced-search-add').addEvent('click', function (e) {
-				this.addRow(e);
-			}.bind(this));
-			this.form.getElement('.advanced-search-clearall').removeEvents('click');
-			this.form.getElement('.advanced-search-clearall').addEvent('click', function (e) {
-				this.resetForm(e);
-			}.bind(this));
-			this.trs.each(function (tr) {
-				tr.inject(this.form.getElement('.advanced-search-list').getElements('tr').getLast(), 'after');
-			}.bind(this));
-		}
+        this.form.on('click', 'tr', function () {
+            self.form.find('tr').removeClass('fabrikRowClick');
+            jQuery(this).addClass('fabrikRowClick');
+        });
+        this.watchDelete();
+        this.watchApply();
+        this.watchElementList();
+        Fabrik.trigger('fabrik.advancedSearch.ready', this);
+    },
 
-		this.form.addEvent('click:relay(tr)', function (e, target) {
-			this.form.getElements('tr').removeClass('fabrikRowClick');
-			target.addClass('fabrikRowClick');
-		}.bind(this));
-		this.watchDelete();
-		this.watchApply();
-		this.watchElementList();
-		Fabrik.fireEvent('fabrik.advancedSearch.ready', this);
-	},
+    /**
+     * Watch the apply filters button
+     */
+    watchApply: function () {
+        var self = this;
+        this.form.find('.advanced-search-apply').on('click', function (e) {
+            Fabrik.fireEvent('fabrik.advancedSearch.submit', this);
+            var filterManager = Fabrik['filter_' + self.options.parentView];
 
-	watchApply: function () {
+            // Format date advanced search fields to db format before posting
+            if (filterManager !== undefined) {
+                filterManager.onSubmit();
+            }
+            /* Ensure that we clear down other advanced searches from the session.
+             * Otherwise, filter on one element and submit works, but changing the filter element and value
+             * will result in 2 filters applied (not one)
+             * @see http://fabrikar.com/forums/index.php?threads/advanced-search-remembers-value-of-last-dropdown-after-element-change.34734/#post-175693
+             */
+            var list = self.getList();
+            jQuery(document.createElement('input')).attr({
+                'name' : 'resetfilters',
+                'value': 1,
+                'type' : 'hidden'
+            }).appendTo(self.form);
 
-		this.form.getElement('.advanced-search-apply').addEvent('click', function (e) {
-			Fabrik.fireEvent('fabrik.advancedSearch.submit', this);
-			var filterManager = Fabrik['filter_' + this.options.parentView];
+            if (!self.options.ajax) {
+                return;
+            }
 
-			// Format date advanced search fields to db format before posting
-			if (typeOf(filterManager) !== 'null') {
-				filterManager.onSubmit();
-			}
-			/* Ensure that we clear down other advanced searches from the session.
-			 * Otherwise, filter on one element and submit works, but changing the filter element and value
-			 * will result in 2 filters applied (not one)
-			 * @see http://fabrikar.com/forums/index.php?threads/advanced-search-remembers-value-of-last-dropdown-after-element-change.34734/#post-175693
-			 */
-			var list = this.getList();
-			new Element('input', {
-				'name': 'resetfilters',
-				'value': 1,
-				'type': 'hidden'
-			}).inject(this.form);
+            e.preventDefault();
+            list.submit(self.options.controller + '.filter');
+        });
+    },
 
-			if (!this.options.ajax) {
-				return;
-			}
-			e.stop();
+    /**
+     * Get the Fabrik list js model that relates to this advanced search instance
+     * @returns {*}
+     */
+    getList: function () {
+        var list = Fabrik.blocks['list_' + this.options.listref];
+        if (list === undefined) {
+            list = Fabrik.blocks[this.options.parentView];
+        }
+        return list;
+    },
 
-			list.submit(this.options.controller + '.filter');
-		}.bind(this));
-	},
+    /**
+     * Create a delegated event to watch the delete row button and trigger the
+     * removeRow() method
+     */
+    watchDelete: function () {
+        var self = this;
+        this.form.on('click', '.advanced-search-remove-row', function (e) {
+            e.preventDefault();
+            self.removeRow(jQuery(this).closest('tr'));
+        });
+    },
 
-	getList: function () {
-		var list = Fabrik.blocks['list_' + this.options.listref];
-		if (typeOf(list) === 'null') {
-			list = Fabrik.blocks[this.options.parentView];
-		}
-		return list;
-	},
+    /**
+     * Create a delegated event to watch the select list and trigger the
+     * updateValueInput() method
+     */
+    watchElementList: function () {
+        var self = this;
+        this.form.on('change', 'select.key', function (e) {
+            e.preventDefault();
+            var row = jQuery(this).closest('tr'),
+                v = jQuery(this).val();
+            self.updateValueInput(row, v);
+        });
+    },
 
-	watchDelete: function () {
-		//should really just delegate these events from the adv search table
-		this.form.getElements('.advanced-search-remove-row').removeEvents();
-		this.form.getElements('.advanced-search-remove-row').addEvent('click', function (e) {
-			this.removeRow(e);
-		}.bind(this));
-	},
+    /**
+     * Called when you choose an element from the filter drop-down list
+     * should run ajax query that updates value field to correspond with selected
+     * element
+     * @param {jQuery} row TR
+     * @param {string} v   Selected value
+     */
+    updateValueInput: function (row, v) {
+        var url = 'index.php?option=com_fabrik&task=list.elementFilter&format=raw',
+            elData;
+        Fabrik.loader.start(row[0]);
+        var update = jQuery(row.find('td')[3]);
+        if (v === '') {
+            update.html('');
+            return;
+        }
+        elData = this.options.elementMap[v];
+        jQuery.ajax({
+            'url'   : url,
+            'data'  : {
+                'element'   : v,
+                'id'        : this.options.listid,
+                'elid'      : elData.id,
+                'plugin'    : elData.plugin,
+                'counter'   : this.options.counter,
+                'listref'   : this.options.listref,
+                'context'   : this.options.controller,
+                'parentView': this.options.parentView
+            }
+        }).done(function (r) {
+            update.html(r);
+            Fabrik.loader.stop(row[0]);
+        });
+    },
 
-	watchElementList: function () {
-		this.form.getElements('select.key').removeEvents();
-		this.form.getElements('select.key').addEvent('change', function (e) {
-			this.updateValueInput(e);
-		}.bind(this));
-	},
+    /**
+     * Add a row to the filter table
+     */
+    addRow: function () {
+        this.options.counter++;
+        var tr = this.form.find('.advanced-search-list').find('tbody').find('tr').last();
+        var clone = tr.clone();
+        clone.removeClass('oddRow1').removeClass('oddRow0').addClass('oddRow' + this.options.counter % 2);
+        tr.after(clone);
+        clone.find('td').first().empty().html(this.options.conditionList);
+        var tds = clone.find('td'),
+            firstTd = jQuery(tds[1]);
+        firstTd.empty().html(this.options.elementList);
+        firstTd.append([
+            jQuery(document.createElement('input')).attr({
+                'type' : 'hidden',
+                'name' : 'fabrik___filter[list_' + this.options.listref + '][search_type][]',
+                'value': 'advanced'
+            }),
+            jQuery(document.createElement('input')).attr({
+                'type' : 'hidden',
+                'name' : 'fabrik___filter[list_' + this.options.listref + '][grouped_to_previous][]',
+                'value': '0'
+            })
+        ]);
+        jQuery(tds[2]).empty().html(this.options.statementList);
+        jQuery(tds[3]).empty();
+        Fabrik.trigger('fabrik.advancedSearch.row.added', this);
+    },
 
-	/**
-	 * called when you choose an element from the filter dropdown list
-	 * should run ajax query that updates value field to correspond with selected
-	 * element
-	 * @param {Object} e event
-	 */
+    /**
+     * Remove a row
+     * @param {jQuery} tr
+     */
+    removeRow: function (tr) {
+        if (this.form.find('.advanced-search-remove-row').length > 1) {
+            this.options.counter--;
 
-	updateValueInput: function (e) {
-		var row = e.target.getParent('tr');
-		Fabrik.loader.start(row);
-		var v = e.target.get('value');
-		var update = e.target.getParent().getParent().getElements('td')[3];
-		if (v === '') {
-			update.set('html', '');
-			return;
-		}
-		var url = 'index.php?option=com_fabrik&task=list.elementFilter&format=raw';
-		var eldata = this.options.elementMap[v];
-		new Request.HTML({'url': url,
-			'update': update,
-			'data': {'element': v, 'id': this.options.listid, 'elid': eldata.id, 'plugin': eldata.plugin, 'counter': this.options.counter,
-				'listref':  this.options.listref, 'context': this.options.controller,
-				'parentView': this.options.parentView},
-			'onComplete': function () {
-				Fabrik.loader.stop(row);
-			}}).send();
-	},
+            tr.animate({
+                    'height' : 0,
+                    'opacity': 0
+                }, 800,
+                function () {
+                    tr.remove();
+                }
+            );
+        }
+        Fabrik.trigger('fabrik.advancedSearch.row.removed', this);
+    },
 
-	addRow: function (e) {
-		this.options.counter ++;
-		e.stop();
-		var tr = this.form.getElement('.advanced-search-list').getElement('tbody').getElements('tr').getLast();
-		var clone = tr.clone();
-		clone.removeClass('oddRow1').removeClass('oddRow0').addClass('oddRow' + this.options.counter % 2);
-		clone.inject(tr, 'after');
-		clone.getElement('td').empty().set('html', this.options.conditionList);
-		var tds = clone.getElements('td');
-		tds[1].empty().set('html', this.options.elementList);
-		tds[1].adopt([
-			new Element('input', {'type': 'hidden', 'name': 'fabrik___filter[list_' + this.options.listref + '][search_type][]', 'value': 'advanced'}),
-			new Element('input', {'type': 'hidden', 'name': 'fabrik___filter[list_' + this.options.listref + '][grouped_to_previous][]', 'value': '0'})
-		]);
-		tds[2].empty().set('html', this.options.statementList);
-		tds[3].empty();
-		this.watchDelete();
-		this.watchElementList();
-		Fabrik.fireEvent('fabrik.advancedSearch.row.added', this);
-	},
+    /**
+     * Removes all rows except for the first one, whose values are reset to empty
+     */
+    resetForm: function () {
+        var table = this.form.find('.advanced-search-list'),
+            self = this;
+        if (!table) {
+            return;
+        }
+        table.find('tbody tr').each(function (i) {
+            if (i >= 1) {
+                jQuery(this).remove();
+            }
+            if (i === 0) {
+                jQuery(this).find('.inputbox').each(function () {
+                    if (this.id.test(/condition$/)) {
+                        this.value = self.options.defaultStatement;
+                    }
+                    else {
+                        this.selectedIndex = 0;
+                    }
+                });
+                jQuery(this).find('input').each(function () {
+                    jQuery(this).val('');
+                });
+            }
+        });
+        Fabrik.trigger('fabrik.advancedSearch.reset', this);
+    },
 
-	removeRow: function (e) {
-		e.stop();
-		if (this.form.getElements('.advanced-search-remove-row').length > 1) {
-			this.options.counter --;
-			var tr = e.target.findUp('tr');
-			var fx = new Fx.Morph(tr, {
-				duration: 800,
-				transition: Fx.Transitions.Quart.easeOut,
-				onComplete: function () {
-					tr.dispose();
-				}
-			});
-			fx.start({
-				'height': 0,
-				'opacity': 0
-			});
-		}
-		Fabrik.fireEvent('fabrik.advancedSearch.row.removed', this);
-	},
-
-	/**
-	 * removes all rows except for the first one, whose values are reset to empty
-	 */
-	resetForm: function () {
-		var table = this.form.getElement('.advanced-search-list');
-		if (!table) {
-			return;
-		}
-		table.getElements('tbody tr').each(function (tr, i) {
-			if (i >= 1) {
-				tr.dispose();
-			}
-			if (i === 0) {
-				tr.getElements('.inputbox').each(function (dd) {
-					if (dd.id.test(/condition$/))
-					{
-						dd.value = this.options.defaultStatement;
-					}
-					else
-					{
-						dd.selectedIndex = 0;
-					}
-				}.bind(this));
-				tr.getElements('input').each(function (i) {
-					i.value = '';
-				});
-			}
-		}.bind(this));
-		this.watchDelete();
-		this.watchElementList();
-		Fabrik.fireEvent('fabrik.advancedSearch.reset', this);
-	},
-
-	deleteFilterOption: function (e) {
-		event.target.removeEvent('click', function (e) {
-			this.deleteFilterOption(e);
-		}.bind(this));
-		var tr = event.target.parentNode.parentNode;
-		var table = tr.parentNode;
-		table.removeChild(tr);
-		e.stop();
-	}
+    /**
+     * Delete filter option
+     * @deprecated - not used?
+     * @param {object} event
+     */
+    deleteFilterOption: function (event) {
+        var self = this;
+        jQuery(event.target).off('click', function (e) {
+            self.deleteFilterOption(e);
+        });
+        var tr = jQuery(event.target).parent().parent();
+        var table = tr.parent();
+        table.removeChild(tr);
+        event.preventDefault();
+    }
 
 });

@@ -3538,12 +3538,12 @@ class FabrikFEModelList extends JModelForm
 			}
 
 		}
-		// $$$rob ensure opening and closing parathethis for prefilters are equal
+		// $$$rob ensure opening and closing parenthesis for prefilters are equal
 		// Seems to occur if you have 3 prefilters with 2nd = grouped/AND and 3rd grouped/OR
 
 		if ($groupedCount > 0)
 		{
-			$sql[] = str_pad('', (int) $groupedCount, ")");
+			$sql[] = str_pad('', (int) $groupedCount, ')');
 		}
 		// Wrap in brackets
 		if (!empty($sql))
@@ -5449,7 +5449,6 @@ class FabrikFEModelList extends JModelForm
 		 * so first statement when rendering a module, 2nd when posting to the component from a module.
 		*/
 
-
 		if (isset($properties))
 		{
 			$prefilters = ArrayHelper::fromObject(json_decode($properties));
@@ -5516,7 +5515,7 @@ class FabrikFEModelList extends JModelForm
 		{
 			$elements = $this->getElements('filtername', false, false);
 			list($filterFields, $filterConditions, $filterValues, $filterAccess,
-				$filterEval, $filterJoins, $filterGrouped, $listSearchType) = $this->prefilterSetting();
+				$filterEvals, $filterJoins, $filterGrouped, $listSearchType) = $this->prefilterSetting();
 
 
 			for ($i = 0; $i < count($filterFields); $i++)
@@ -5537,7 +5536,7 @@ class FabrikFEModelList extends JModelForm
 				$condition = $filterConditions[$i];
 				$searchType = ArrayHelper::getValue($listSearchType, $i, 'prefilter');
 				$selValue = FArrayHelper::getValue($filterValues, $i, '');
-				$filterEval = FArrayHelper::getValue($filterEval, $i, false);
+				$filterEval = FArrayHelper::getValue($filterEvals, $i, false);
 				$filterGrouped = FArrayHelper::getValue($filterGrouped, $i, false);
 				$selAccess = $filterAccess[$i];
 

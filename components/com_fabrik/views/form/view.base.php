@@ -170,7 +170,7 @@ class FabrikViewFormBase extends FabrikView
 		if ($model->isMambot)
 		{
 			$this->package = $this->app->getUserState('com_fabrik.package', 'fabrik');
-			$context       = 'com_' . $this->package . '.form.' . $form->id . '.' . $this->rowid . '.';
+			$context       = $model->getSessionContext();
 			$model->errors = $this->session->get($context . 'errors', array());
 			$clearErrors   = true;
 		}
@@ -365,7 +365,12 @@ class FabrikViewFormBase extends FabrikView
 
 			// Set a flag so that the system plugin can clear out any other canonical links.
 			$this->session->set('fabrik.clearCanonical', true);
-			$this->doc->addCustomTag('<link rel="canonical" href="' . htmlspecialchars($url) . '" />');
+			try {
+				$this->doc->addCustomTag('<link rel="canonical" href="' . htmlspecialchars($url) . '" />');
+			} catch (Exception $err) {
+
+			}
+
 		}
 	}
 
@@ -513,8 +518,10 @@ class FabrikViewFormBase extends FabrikView
 	{
 		$pluginManager = FabrikWorker::getPluginManager();
 
+
 		/** @var FabrikFEModelForm $model */
 		$model                 = $this->getModel();
+		$model->elementJsJLayouts();
 		$aLoadedElementPlugins = array();
 		$jsActions             = array();
 		$bKey                  = $model->jsKey();

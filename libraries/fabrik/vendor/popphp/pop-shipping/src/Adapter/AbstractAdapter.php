@@ -26,7 +26,6 @@ namespace Pop\Shipping\Adapter;
 
 abstract class AbstractAdapter implements AdapterInterface
 {
-
     /**
      * Response object
      * @var object
@@ -50,6 +49,21 @@ abstract class AbstractAdapter implements AdapterInterface
      * @var array
      */
     protected $rates = [];
+
+    /**
+     * Extended rate info - useful if later on you want to ship using rate request info
+     * @var array
+     */
+    protected $ratesExtended = [];
+
+    /**
+     * Confirm a shipment
+     *
+     * @param bool $verifyPeer
+     *
+     * @return string Label
+     */
+    abstract public function ship($verifyPeer = true);
 
     /**
      * Send transaction
@@ -112,6 +126,11 @@ abstract class AbstractAdapter implements AdapterInterface
         return $this->rates;
     }
 
+    public function getExtendedRates()
+    {
+        return $this->ratesExtended;
+    }
+
     /**
      * Parse the curl response
      *
@@ -130,6 +149,18 @@ abstract class AbstractAdapter implements AdapterInterface
         }
 
         return $body;
+    }
+
+    /**
+     * Set whether the package contains alcohol
+     *
+     * @param   string $alcohol
+     * @param   string $recipientType LICENSEE|CONSUMER
+     */
+    public function setAlcohol($alcohol, $recipientType = 'LICENSEE')
+    {
+        $this->shippingOptions['alcohol']              = $alcohol;
+        $this->shippingOptions['alcoholRecipientType'] = $recipientType;
     }
 
 }
