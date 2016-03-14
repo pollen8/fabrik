@@ -264,7 +264,9 @@ Fabrik.Window = new Class({
             'class': 'fabrikWindow ' + this.classSuffix + ' modal'
         });
         var del = this.deleteButton();
-
+        jQuery(del).on('click', function () {
+            self.close();
+        });
         var hclass = 'handlelabel';
         if (!this.options.modal) {
             hclass += ' draggable';
@@ -289,7 +291,7 @@ Fabrik.Window = new Class({
         handleParts.push(del);
         this.handle = this.getHandle().append(handleParts);
 
-        var bottomBarHeight = 15;
+        var bottomBarHeight = 0;
         var topBarHeight = 15;
         var contentHeight = this.options.height - bottomBarHeight - topBarHeight;
         if (contentHeight < this.options.loadHeight) {
@@ -357,7 +359,6 @@ Fabrik.Window = new Class({
                     return;
                 }
                 if (typeOf(this.options.content) === 'element') {
-                    //this.options.content.inject(this.contentEl.empty());
                     jQuery(this.options.content).appendTo(this.contentEl);
                 } else {
                     this.contentEl.html(this.options.content);
@@ -415,20 +416,39 @@ Fabrik.Window = new Class({
         }
     },
 
+    /**
+     * Calculate the window title height
+     * @returns {number}
+     */
     titleHeight: function () {
         var titleHeight = this.window.find('.' + this.handleClass());
-        return titleHeight.length > 0 ? titleHeight.outerHeight() : 25;
+        titleHeight = titleHeight.length > 0 ? titleHeight.outerHeight() : 25;
+        if (isNaN(titleHeight)) {
+            titleHeight = 0;
+        }
+
+        return titleHeight;
     },
 
+    /**
+     * Calculate the window footer height
+     * @returns {Number}
+     */
     footerHeight: function () {
-        return parseInt(this.window.find('.bottomBar').outerHeight(), 10);
+        var h = parseInt(this.window.find('.bottomBar').outerHeight(), 10);
+        if (isNaN(h)) {
+            h = 0;
+        }
+        return h;
     },
 
+    /**
+     * Draw the window
+     */
     drawWindow: function () {
-        var titleHeight = this.titleHeight();
-        var footer = this.footerHeight();
-
-        var h = this.contentHeight(),
+        var titleHeight = this.titleHeight(),
+            footer = this.footerHeight(),
+            h = this.contentHeight(),
             w = this.window.width();
 
         // If content larger than window - set it to the window (minus footer/title)
@@ -529,10 +549,9 @@ Fabrik.Modal = new Class({
     },
 
     drawWindow: function () {
-        var titleHeight = this.titleHeight();
-        var footer = this.footerHeight();
-
-        var h = this.options.height,
+        var titleHeight = this.titleHeight(),
+            footer = this.footerHeight(),
+            h = this.options.height,
             w = this.options.width;
 
         // If content larger than window - set it to the window (minus footer/title)

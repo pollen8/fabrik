@@ -143,7 +143,11 @@ var FbElement = new Class({
         return this.element;
     },
 
-    //used for elements like checkboxes or radio buttons
+    /**
+     * Used for elements like checkboxes or radio buttons
+     * @returns [DomNodes]
+     * @private
+     */
     _getSubElements: function () {
         var element = this.getElement();
         if (typeOf(element) === 'null') {

@@ -171,6 +171,7 @@ var FbList = new Class({
 
     watchButtons: function () {
         this.exportWindowOpts = {
+            modalId    : 'exportcsv',
             id         : 'exportcsv',
             title      : 'Export CSV',
             loadMethod : 'html',
@@ -200,12 +201,25 @@ var FbList = new Class({
     },
 
     openCSVWindow: function () {
-        var thisc = this.makeCSVExportForm();
-        this.exportWindowOpts.content = thisc;
-        this.exportWindowOpts.onContentLoaded = function () {
-            this.fitToContent(false);
-        };
+        var self = this;
+        this.exportWindowOpts.content = this.makeCSVExportForm();
         this.csvWindow = Fabrik.getWindow(this.exportWindowOpts);
+
+        jQuery('.exportCSVButton').on('click', function (e) {
+            e.stopPropagation();
+            this.disabled = true;
+            var csvMsg = jQuery('#csvmsg');
+            if (csvMsg.length === 0) {
+                csvMsg = jQuery('<div />').attr({
+                    'id': 'csvmsg'
+                }).insertBefore(jQuery(this));
+            }
+            csvMsg.html(Joomla.JText._('COM_FABRIK_LOADING') +
+                ' <br /><span id="csvcount">0</span> / <span id="csvtotal"></span> ' +
+                Joomla.JText._('COM_FABRIK_RECORDS') + '.<br/>' + Joomla.JText._('COM_FABRIK_SAVING_TO') +
+                '<span id="csvfile"></span>');
+            self.triggerCSVExport(0);
+        });
     },
 
     makeCSVExportForm: function () {
@@ -217,9 +231,12 @@ var FbList = new Class({
     },
 
     _csvAutoStart: function () {
-        var c = new Element('div', {
+        var c = jQuery('<div />').attr({
             'id': 'csvmsg'
-        }).set('html', Joomla.JText._('COM_FABRIK_LOADING') + ' <br /><span id="csvcount">0</span> / <span id="csvtotal"></span> ' + Joomla.JText._('COM_FABRIK_RECORDS') + '.<br/>' + Joomla.JText._('COM_FABRIK_SAVING_TO') + '<span id="csvfile"></span>');
+        }).html(Joomla.JText._('COM_FABRIK_LOADING') +
+            ' <br /><span id="csvcount">0</span> / <span id="csvtotal"></span> ' +
+            Joomla.JText._('COM_FABRIK_RECORDS') + '.<br/>' + Joomla.JText._('COM_FABRIK_SAVING_TO') +
+            '<span id="csvfile"></span>');
 
         this.csvopts = this.options.csvOpts;
         this.csvfields = this.options.csvFields;
@@ -228,147 +245,144 @@ var FbList = new Class({
         return c;
     },
 
+    /**
+     * Build the export csv form
+     * @returns {*}
+     * @private
+     */
     _csvExportForm: function () {
+        var yes = Joomla.JText._('JYES'),
+            self = this;
         // Can't build via dom as ie7 doesn't accept checked status
-        var rad = "<input type='radio' value='1' name='incfilters' checked='checked' />" + Joomla.JText._('JYES');
-        var rad2 = "<input type='radio' value='1' name='incraw' checked='checked' />" + Joomla.JText._('JYES');
-        var rad3 = "<input type='radio' value='1' name='inccalcs' checked='checked' />" + Joomla.JText._('JYES');
-        var rad4 = "<input type='radio' value='1' name='inctabledata' checked='checked' />" + Joomla.JText._('JYES');
-        var rad5 = "<input type='radio' value='1' name='excel' checked='checked' />Excel CSV";
-        var url = 'index.php?option=com_fabrik&view=list&listid=' + this.id + '&format=csv&Itemid=' + this.options.Itemid;
+        var rad = '<input type="radio" value="1" name="incfilters" checked="checked" />' + yes;
+        var rad2 = '<input type="radio" value="1" name="incraw" checked="checked" />' + yes;
+        var rad3 = '<input type="radio" value="1" name="inccalcs" checked="checked" />' + yes;
+        var rad4 = '<input type="radio" value="1" name="inctabledata" checked="checked" />' + yes;
+        var rad5 = '<input type="radio" value="1" name="excel" checked="checked" />Excel CSV';
+        var url = 'index.php?option=com_fabrik&view=list&listid=' +
+            this.id + '&format=csv&Itemid=' + this.options.Itemid,
+            label = jQuery('<label />').css('float', 'left');
 
-		var divopts = {
-			'styles': {
-				'width': '200px',
-				'float': 'left'
-			}
-		};
-		var c = new Element('form', {
-			'action': url,
-			'method': 'post'
-		}).adopt([new Element('div', divopts).set('text', Joomla.JText._('COM_FABRIK_FILE_TYPE')),
-			new Element('label').set('html', rad5), new Element('label').adopt([new Element('input', {
-			'type': 'radio',
-			'name': 'excel',
-			'value': '0'
-		}), new Element('span').set('text', 'CSV')]), new Element('br'), new Element('br'),
-			new Element('div', divopts).appendText(Joomla.JText._('COM_FABRIK_INCLUDE_FILTERS')),
-			new Element('label').set('html', rad), new Element('label').adopt([new Element('input', {
-			'type': 'radio',
-			'name': 'incfilters',
-			'value': '0'
-		}), new Element('span').set('text', Joomla.JText._('JNO'))]), new Element('br'),
-			new Element('div', divopts).appendText(Joomla.JText._('COM_FABRIK_INCLUDE_DATA')),
-			new Element('label').set('html', rad4), new Element('label').adopt([new Element('input', {
-			'type': 'radio',
-			'name': 'inctabledata',
-			'value': '0'
-		}), new Element('span').set('text', Joomla.JText._('JNO'))]), new Element('br'),
-			new Element('div', divopts).appendText(Joomla.JText._('COM_FABRIK_INCLUDE_RAW_DATA')),
-			new Element('label').set('html', rad2), new Element('label').adopt([new Element('input', {
-			'type': 'radio',
-			'name': 'incraw',
-			'value': '0'
-		}), new Element('span').set('text', Joomla.JText._('JNO'))]), new Element('br'),
-			new Element('div', divopts).appendText(Joomla.JText._('COM_FABRIK_INCLUDE_CALCULATIONS')),
-			new Element('label').set('html', rad3), new Element('label').adopt([new Element('input', {
-			'type': 'radio',
-			'name': 'inccalcs',
-			'value': '0'
-		}), new Element('span').set('text', Joomla.JText._('JNO'))])]);
-		new Element('h4').set('text', Joomla.JText._('COM_FABRIK_SELECT_COLUMNS_TO_EXPORT')).inject(c);
-		var g = '';
-		var i = 0;
-		$H(this.options.labels).each(function (label, k) {
-			if (k.substr(0, 7) !== 'fabrik_' && k !== '____form_heading') {
-				var newg = k.split('___')[0];
-				if (newg !== g) {
-					g = newg;
-					new Element('h5').set('text', g).inject(c);
-				}
-				var rad = "<input type='radio' value='1' name='fields[" + k + "]' checked='checked' />" + Joomla.JText._('JYES');
-				label = label.replace(/<\/?[^>]+(>|$)/g, "");
-				var r = new Element('div', divopts).appendText(label);
-				r.inject(c);
-				new Element('label').set('html', rad).inject(c);
-				new Element('label').adopt([new Element('input', {
-					'type': 'radio',
-					'name': 'fields[' + k + ']',
-					'value': '0'
-				}), new Element('span').appendText(Joomla.JText._('JNO'))]).inject(c);
-				new Element('br').inject(c);
-			}
-			i++;
-		}.bind(this));
-
-		// elements not shown in table
-		if (this.options.formels.length > 0) {
-			new Element('h5').set('text', Joomla.JText._('COM_FABRIK_FORM_FIELDS')).inject(c);
-			this.options.formels.each(function (el) {
-				var rad = "<input type='radio' value='1' name='fields[" + el.name + "]' checked='checked' />" +
-					Joomla.JText._('JYES');
-				var r = new Element('div', divopts).appendText(el.label);
-				r.inject(c);
-				new Element('label').set('html', rad).inject(c);
-				new Element('label').adopt([new Element('input', {
-					'type': 'radio',
-					'name': 'fields[' + el.name + ']',
-					'value': '0'
-				}), new Element('span').set('text', Joomla.JText._('JNO'))]).inject(c);
-				new Element('br').inject(c);
-			}.bind(this));
-		}
-
-        new Element('div', {
-            'styles': {
-                'text-align': 'right'
+        var styles = {
+            'width': '200px',
+            'float': 'left'
+        }, no = Joomla.JText._('JNO');
+        var c = jQuery('<form />').attr({
+            'action': url,
+            'method': 'post'
+        }).append([
+            jQuery('<div />').css(styles).text(Joomla.JText._('COM_FABRIK_FILE_TYPE')),
+            label.clone().html(rad5),
+            label.clone().append(
+                [jQuery('<input />').attr({
+                    'type' : 'radio',
+                    'name' : 'excel',
+                    'value': '0'
+                }),
+                    jQuery('<span />').text('CSV')
+                ]),
+            jQuery('<br />'), jQuery('<br />'),
+            jQuery('<div />').css(styles).text(Joomla.JText._('COM_FABRIK_INCLUDE_FILTERS')),
+            label.clone().html(rad),
+            label.clone().append([jQuery('<input />').attr({
+                'type' : 'radio',
+                'name' : 'incfilters',
+                'value': '0'
+            }), jQuery('<span />').text(no)]), jQuery('<br />'),
+            jQuery('<div />').css(styles).text(Joomla.JText._('COM_FABRIK_INCLUDE_DATA')),
+            label.clone().html(rad4),
+            label.clone().append([jQuery('<input />').attr({
+                'type' : 'radio',
+                'name' : 'inctabledata',
+                'value': '0'
+            }), jQuery('<span />').text(no)]), jQuery('<br />'),
+            jQuery('<div />').css(styles).text(Joomla.JText._('COM_FABRIK_INCLUDE_RAW_DATA')),
+            label.clone().html(rad2), label.clone().append([jQuery('<input />').attr({
+                'type' : 'radio',
+                'name' : 'incraw',
+                'value': '0'
+            }), jQuery('<span />').text(no)]), jQuery('<br />'),
+            jQuery('<div />').css(styles).text(Joomla.JText._('COM_FABRIK_INCLUDE_CALCULATIONS')),
+            label.clone().html(rad3), label.clone().append([jQuery('<input />').attr({
+                'type' : 'radio',
+                'name' : 'inccalcs',
+                'value': '0'
+            }), jQuery('<span />').text(no)])]);
+        jQuery('<h4 />').css('clear', 'left').text(Joomla.JText._('COM_FABRIK_SELECT_COLUMNS_TO_EXPORT')).appendTo(c);
+        var g = '';
+        var i = 0;
+        jQuery.each(this.options.labels, function (k, labelText) {
+            if (k.substr(0, 7) !== 'fabrik_' && k !== '____form_heading') {
+                var newg = k.split('___')[0];
+                if (newg !== g) {
+                    g = newg;
+                    jQuery('<h5 />').text(g).appendTo(c);
+                }
+                var rad = '<input type="radio" value="1" name="fields[' + k + ']" checked="checked" />' +
+                    yes;
+                labelText = labelText.replace(/<\/?[^>]+(>|jQuery)/g, '');
+                var r = jQuery('<div />').css(styles).text(labelText);
+                r.appendTo(c);
+                label.clone().html(rad).appendTo(c);
+                label.clone().append([jQuery('<input />').attr({
+                    'type' : 'radio',
+                    'name' : 'fields[' + k + ']',
+                    'value': '0'
+                }), jQuery('<span />').text(no)]).appendTo(c);
+                jQuery('<br />').appendTo(c);
             }
-        }).adopt(new Element('input', {
-            'type' : 'button',
-            'name' : 'submit',
-            'value': Joomla.JText._('COM_FABRIK_EXPORT'),
-            'class': 'button exportCSVButton',
-            events : {
-                'click': function (e) {
-                    e.stop();
-                    e.target.disabled = true;
-                    var csvMsg = document.id('csvmsg');
-                    if (typeOf(csvMsg) === 'null') {
-                        csvMsg = new Element('div', {
-                            'id': 'csvmsg'
-                        }).inject(e.target, 'before');
-                    }
-                    csvMsg.set('html', Joomla.JText._('COM_FABRIK_LOADING') + ' <br /><span id="csvcount">0</span> / <span id="csvtotal"></span> ' + Joomla.JText._('COM_FABRIK_RECORDS') + '.<br/>' + Joomla.JText._('COM_FABRIK_SAVING_TO') + '<span id="csvfile"></span>');
-                    this.triggerCSVExport(0);
-                }.bind(this)
+            i++;
+        });
 
-            }
-        })).inject(c);
-        new Element('input', {
+        // elements not shown in table
+        if (this.options.formels.length > 0) {
+            jQuery('<h5 />').css('clear', 'left').text(Joomla.JText._('COM_FABRIK_FORM_FIELDS')).appendTo(c);
+            this.options.formels.each(function (el) {
+                var rad = '<input type="radio" value="1" name="fields[' + el.name + ']" checked="checked" />' +
+                    yes;
+                var r = jQuery('<div />').css(styles).text(el.label);
+                r.appendTo(c);
+                label.clone().html(rad).appendTo(c);
+                label.clone().append([jQuery('<input />').attr({
+                    'type' : 'radio',
+                    'name' : 'fields[' + el.name + ']',
+                    'value': '0'
+                }), jQuery('<span />').text(no)]).appendTo(c);
+                jQuery('<br />').appendTo(c);
+            });
+        }
+
+       jQuery('<input />').attr({
             'type' : 'hidden',
             'name' : 'view',
             'value': 'table'
-        }).inject(c);
-        new Element('input', {
+        }).appendTo(c);
+        jQuery('<input />').attr({
             'type' : 'hidden',
             'name' : 'option',
             'value': 'com_fabrik'
-        }).inject(c);
-        new Element('input', {
+        }).appendTo(c);
+        jQuery('<input />').attr({
             'type' : 'hidden',
             'name' : 'listid',
-            'value': this.id
-        }).inject(c);
-        new Element('input', {
+            'value': self.id
+        }).appendTo(c);
+        jQuery('<input />').attr({
             'type' : 'hidden',
             'name' : 'format',
             'value': 'csv'
-        }).inject(c);
-        new Element('input', {
+        }).appendTo(c);
+        jQuery('<input />').attr({
             'type' : 'hidden',
             'name' : 'c',
             'value': 'table'
-        }).inject(c);
+        }).appendTo(c);
+
+
+
+   /*     var d = jQuery('<div>').append(c,  jQuery('<div />').css({
+            'text-align': 'right'
+        }).append(this._exportCVSButton()));*/
         return c;
     },
 
@@ -444,24 +458,19 @@ var FbList = new Class({
 					window.alert(res.err);
 					Fabrik.Windows.exportcsv.close();
 				} else {
-					if (typeOf(document.id('csvcount')) !== 'null') {
-						document.id('csvcount').set('text', res.count);
-					}
-					if (typeOf(document.id('csvtotal')) !== 'null') {
-						document.id('csvtotal').set('text', res.total);
-					}
-					if (typeOf(document.id('csvfile')) !== 'null') {
-						document.id('csvfile').set('text', res.file);
-					}
+                    jQuery('#csvcount').text(res.count);
+                    jQuery('#csvtotal').text(res.total);
+                    jQuery('#csvfile').text(res.file);
 					if (res.count < res.total) {
 						this.triggerCSVExport(res.count);
 					} else {
-						var finalurl = 'index.php?option=com_fabrik&view=list&format=csv&listid=' + this.id + '&start=' + res.count + '&Itemid=' + this.options.Itemid;
+						var finalurl = 'index.php?option=com_fabrik&view=list&format=csv&listid=' + this.id +
+                            '&start=' + res.count + '&Itemid=' + this.options.Itemid;
 						var msg = '<div class="alert alert-success"><h3>' + Joomla.JText._('COM_FABRIK_CSV_COMPLETE');
-						msg += '</h3><p><a class="btn btn-success" href="' + finalurl + '"><i class="icon-download"></i> ' + Joomla.JText._('COM_FABRIK_CSV_DOWNLOAD_HERE') + '</a></p></div>';
-						if (typeOf(document.id('csvmsg')) !== 'null') {
-							document.id('csvmsg').set('html', msg);
-						}
+						msg += '</h3><p><a class="btn btn-success" href="' + finalurl + '">' +
+                            '<i class="icon-download"></i> ' +
+                            Joomla.JText._('COM_FABRIK_CSV_DOWNLOAD_HERE') + '</a></p></div>';
+                        jQuery('#csvmsg').html(msg);
 						this.csvWindow.fitToContent(false);
 						document.getElements('input.exportCSVButton').removeProperty('disabled');
 					}
@@ -847,7 +856,7 @@ var FbList = new Class({
                         Fabrik['filter_listform_' + this.options.listRef].onUpdateData();
                         Fabrik.fireEvent('fabrik.list.submit.ajax.complete', [this, json]);
                         if (json.msg) {
-                            alert(json.msg);
+                            window.alert(json.msg);
                         }
                     }.bind(this)
                 });
@@ -1182,9 +1191,6 @@ var FbList = new Class({
         var r = new Element('tr', {
             'class': 'oddRow1'
         });
-        var x = {
-            test: 'hi'
-        };
         for (var i in obj) {
             if (this.options.headings.indexOf(i) !== -1) {
                 var td = new Element('td', {}).appendText(obj[i]);
@@ -1225,14 +1231,14 @@ var FbList = new Class({
     },
 
     watchCheckAll: function (e) {
-        var checkAll = this.form.getElement('input[name=checkAll]');
+        var checkAll = this.form.getElement('input[name=checkAll]'), c, i;
         if (typeOf(checkAll) !== 'null') {
             // IE wont fire an event on change until the checkbxo is blurred!
             checkAll.addEvent('click', function (e) {
                 var p = this.list.getParent('.fabrikList') ? this.list.getParent('.fabrikList') : this.list;
                 var chkBoxes = p.getElements('input[name^=ids]');
                 c = !e.target.checked ? '' : 'checked';
-                for (var i = 0; i < chkBoxes.length; i++) {
+                for (i = 0; i < chkBoxes.length; i++) {
                     chkBoxes[i].checked = c;
                     this.toggleJoinKeysChx(chkBoxes[i]);
                 }
@@ -1254,9 +1260,10 @@ var FbList = new Class({
     },
 
     watchNav: function (e) {
+        var limitBox, addRecord;
         if (this.form !== null) {
-            var limitBox = this.form.getElement('select[name*=limit]'),
-                addRecord = this.form.getElement('.addRecord');
+            limitBox = this.form.getElement('select[name*=limit]');
+            addRecord = this.form.getElement('.addRecord');
         } else {
             limitBox = null;
             addRecord = null;

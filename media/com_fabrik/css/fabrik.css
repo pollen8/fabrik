@@ -244,13 +244,6 @@ span.handlelabel {
 	height: 13px;
 }
 
-.bottomBar {
-	position: absolute;
-	bottom: 0;
-	width: 100%;
-}
-
-
 .ui-resizable { position: relative;}
 .ui-resizable-handle { position: absolute;font-size: 0.1px; display: block; }
 .ui-resizable-disabled .ui-resizable-handle, .ui-resizable-autohide .ui-resizable-handle { display: none; }
