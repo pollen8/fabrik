@@ -27,6 +27,9 @@ Fabrik.getWindow = function (opts) {
                 break;
             case 'modal':
                 Fabrik.Windows[opts.id] = new Fabrik.Modal(opts);
+                jQuery(window).on('resize', function () {
+                    Fabrik.Windows[opts.id].fitToContent(false);
+                });
                 break;
             case '':
             /* falls through */
@@ -119,26 +122,18 @@ Fabrik.Window = new Class({
             pxHeight = this.windowDimensionInPx('height'),
             w = this.window.width(),
             h = this.window.height(),
-            d = {};
+            d = {}, yy, xx;
         w = (w === null || w === 'auto') ? pxWidth : w;
         h = (h === null || h === 'auto') ? pxHeight : h;
         w = parseInt(w, 10);
         h = parseInt(h, 10);
 
-        if (!(this.options.modal)) {
-            var yy = window.getSize().y / 2 + window.getScroll().y - (h / 2);
-            d.top = this.options.offset_y !== null ? window.getScroll().y + this.options.offset_y : yy;
+        yy = window.getSize().y / 2 + window.getScroll().y - (h / 2);
+        d.top = this.options.offset_y !== null ? window.getScroll().y + this.options.offset_y : yy;
 
-            var xx = window.getSize().x / 2 + window.getScroll().x - w / 2;
-            d.left = this.options.offset_x !== null ? window.getScroll().x + this.options.offset_x : xx;
+        xx = window.getSize().x / 2 + window.getScroll().x - w / 2;
+        d.left = this.options.offset_x !== null ? window.getScroll().x + this.options.offset_x : xx;
 
-        } else {
-            // File-upload crop uses this
-            var offset = (window.getSize().y - h) / 2;
-            var xoffset = (window.getSize().x - w) / 2;
-            d.top = offset < 0 ? window.getScroll().y : window.getScroll().y + offset;
-            d.left = xoffset < 0 ? window.getScroll().x : window.getScroll().x + xoffset;
-        }
         // Prototype J template css puts margin left on .modals
         d['margin-left'] = 0;
         this.window.css(d);
@@ -174,7 +169,6 @@ Fabrik.Window = new Class({
         }
 
         jQuery(document.body).append(this.window);
-        // @todo check that this works with fileupload (which loads its content via a jLayout.
         this.loadContent();
 
         if (!this.options.visible) {
@@ -548,29 +542,12 @@ Fabrik.Modal = new Class({
         return jQuery('<div />').addClass(this.handleClass());
     },
 
-    drawWindow: function () {
-        var titleHeight = this.titleHeight(),
-            footer = this.footerHeight(),
-            h = this.options.height,
-            w = this.options.width;
-
-        // If content larger than window - set it to the window (minus footer/title)
-        if (h > this.window.height()) {
-            h = this.window.height() - titleHeight - footer;
-        }
-
-        this.contentWrapperEl.css('height', h);
-        this.contentWrapperEl.css('width', w - 2);
-
-        // Resize iframe when window is resized
-        if (this.options.loadMethod === 'iframe') {
-            this.iframeEl.css('height', this.contentWrapperEl[0].offsetHeight - 40);
-            this.iframeEl.css('width', this.contentWrapperEl[0].offsetWidth - 10);
-        }
-    },
-
     fitToHeight: function () {
-        this.window.css('height', this.options.height);
+
+        var testH = this.contentHeight() + this.footerHeight() + this.titleHeight(),
+            winHeight = jQuery(window).height(),
+            h = testH < winHeight ? testH : winHeight;
+        this.window.css('height', Math.max(this.options.height, h));
     },
 
     /**

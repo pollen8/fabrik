@@ -103,13 +103,13 @@ var FbList = new Class({
          delete Fabrik.blocks['form_' + form.id];
          });*/
 
-		// Reload state only if reset filters is not on
-		if (!this.options.resetFilters && ((window.history && history.pushState) && history.state && this.options.ajax)) {
-			this._updateRows(history.state);
-		}
+        // Reload state only if reset filters is not on
+        if (!this.options.resetFilters && ((window.history && history.pushState) && history.state && this.options.ajax)) {
+            this._updateRows(history.state);
+        }
 
-		Fabrik.fireEvent('fabrik.list.loaded', [this]);
-	},
+        Fabrik.fireEvent('fabrik.list.loaded', [this]);
+    },
 
     setItemTemplate: function () {
         // $$$ rob mootools 1.2 has bug where we cant setHTML on table
@@ -172,14 +172,15 @@ var FbList = new Class({
     watchButtons: function () {
         this.exportWindowOpts = {
             modalId    : 'exportcsv',
+            type       : 'modal',
             id         : 'exportcsv',
             title      : 'Export CSV',
             loadMethod : 'html',
             minimizable: false,
             width      : 360,
-            height     : 120,
+            height     : 240,
             content    : '',
-	        modal      : true,
+            modal      : true,
             bootstrap  : this.options.j3
         };
         if (this.options.view === 'csv') {
@@ -224,7 +225,8 @@ var FbList = new Class({
 
     makeCSVExportForm: function () {
         if (this.options.csvChoose) {
-            return this._csvExportForm();
+            this.csvExportForm = this._csvExportForm();
+            return this.csvExportForm;
         } else {
             return this._csvAutoStart();
         }
@@ -260,7 +262,7 @@ var FbList = new Class({
         var rad4 = '<input type="radio" value="1" name="inctabledata" checked="checked" />' + yes;
         var rad5 = '<input type="radio" value="1" name="excel" checked="checked" />Excel CSV';
         var url = 'index.php?option=com_fabrik&view=list&listid=' +
-            this.id + '&format=csv&Itemid=' + this.options.Itemid,
+                this.id + '&format=csv&Itemid=' + this.options.Itemid,
             label = jQuery('<label />').css('float', 'left');
 
         var styles = {
@@ -352,7 +354,7 @@ var FbList = new Class({
             });
         }
 
-       jQuery('<input />').attr({
+        jQuery('<input />').attr({
             'type' : 'hidden',
             'name' : 'view',
             'value': 'table'
@@ -378,54 +380,46 @@ var FbList = new Class({
             'value': 'table'
         }).appendTo(c);
 
-
-
-   /*     var d = jQuery('<div>').append(c,  jQuery('<div />').css({
-            'text-align': 'right'
-        }).append(this._exportCVSButton()));*/
         return c;
     },
 
     triggerCSVExport: function (start, opts, fields) {
+        var self = this;
         if (start !== 0) {
             if (start === -1) {
                 // not triggered from front end selections
                 start = 0;
-                opts = this.csvopts;
-                opts.fields = this.csvfields;
+                opts = self.csvopts;
+                opts.fields = self.csvfields;
             } else {
-                opts = this.csvopts;
-                fields = this.csvfields;
+                opts = self.csvopts;
+                fields = self.csvfields;
             }
         } else {
             if (!opts) {
                 opts = {};
-                if (typeOf(document.id('exportcsv')) !== 'null') {
                     ['incfilters', 'inctabledata', 'incraw', 'inccalcs', 'excel'].each(function (v) {
-                        var inputs = document.id('exportcsv').getElements('input[name=' + v + ']');
+                        var inputs = self.csvExportForm.find('input[name=' + v + ']');
                         if (inputs.length > 0) {
-                            opts[v] = inputs.filter(function (i) {
-                                return i.checked;
+                            opts[v] = inputs.filter(function () {
+                                return this.checked;
                             })[0].value;
                         }
                     });
-                }
             }
-            // selected fields
+            // Selected fields
             if (!fields) {
                 fields = {};
-                if (typeOf(document.id('exportcsv')) !== 'null') {
-                    document.id('exportcsv').getElements('input[name^=field]').each(function (i) {
-                        if (i.checked) {
-                            var k = i.name.replace('fields[', '').replace(']', '');
-                            fields[k] = i.get('value');
-                        }
-                    });
-                }
+                self.csvExportForm.find('input[name^=field]').each(function () {
+                    if (this.checked) {
+                        var k = this.name.replace('fields[', '').replace(']', '');
+                        fields[k] = jQuery(this).val();
+                    }
+                });
             }
             opts.fields = fields;
-            this.csvopts = opts;
-            this.csvfields = fields;
+            self.csvopts = opts;
+            self.csvfields = fields;
         }
 
         opts = this.csvExportFilterOpts(opts);
@@ -445,66 +439,67 @@ var FbList = new Class({
             opts[key[0]] = key[1];
         });
 
-		// Append the custom_qs to the URL to enable querystring filtering of the list data
-		var myAjax = new Request.JSON({
-			url: '?' + this.options.csvOpts.custom_qs,
-			method: 'post',
-			data: opts,
-			onError: function (text, error) {
-				fconsole(text, error);
-			},
-			onComplete: function (res) {
-				if (res.err) {
-					window.alert(res.err);
-					Fabrik.Windows.exportcsv.close();
-				} else {
+        // Append the custom_qs to the URL to enable querystring filtering of the list data
+        var myAjax = new Request.JSON({
+            url       : '?' + this.options.csvOpts.custom_qs,
+            method    : 'post',
+            data      : opts,
+            onError   : function (text, error) {
+                fconsole(text, error);
+            },
+            onComplete: function (res) {
+                if (res.err) {
+                    window.alert(res.err);
+                    Fabrik.Windows.exportcsv.close();
+                } else {
                     jQuery('#csvcount').text(res.count);
                     jQuery('#csvtotal').text(res.total);
                     jQuery('#csvfile').text(res.file);
-					if (res.count < res.total) {
-						this.triggerCSVExport(res.count);
-					} else {
-						var finalurl = 'index.php?option=com_fabrik&view=list&format=csv&listid=' + this.id +
+                    if (res.count < res.total) {
+                        this.triggerCSVExport(res.count);
+                    } else {
+                        var finalurl = 'index.php?option=com_fabrik&view=list&format=csv&listid=' + this.id +
                             '&start=' + res.count + '&Itemid=' + this.options.Itemid;
-						var msg = '<div class="alert alert-success"><h3>' + Joomla.JText._('COM_FABRIK_CSV_COMPLETE');
-						msg += '</h3><p><a class="btn btn-success" href="' + finalurl + '">' +
+                        var msg = '<div class="alert alert-success"><h3>' + Joomla.JText._('COM_FABRIK_CSV_COMPLETE');
+                        msg += '</h3><p><a class="btn btn-success" href="' + finalurl + '">' +
                             '<i class="icon-download"></i> ' +
                             Joomla.JText._('COM_FABRIK_CSV_DOWNLOAD_HERE') + '</a></p></div>';
                         jQuery('#csvmsg').html(msg);
-						this.csvWindow.fitToContent(false);
-						document.getElements('input.exportCSVButton').removeProperty('disabled');
-					}
-				}
-			}.bind(this)
-		});
-		myAjax.send();
-	},
+                        this.csvWindow.fitToContent(false);
+                        this.csvWindow.center();
+                        document.getElements('input.exportCSVButton').removeProperty('disabled');
+                    }
+                }
+            }.bind(this)
+        });
+        myAjax.send();
+    },
 
-	/**
-	 * Add filter options to CSV export info
-	 *
-	 * @param   objet  opts
-	 *
-	 * @return  opts
-	 */
-	csvExportFilterOpts: function (opts) {
-		var ii = 0,
-		aa, bits, aName,
-		advancedPointer = 0,
-		testii,
-		usedAdvancedKeys = [
-			'value',
-			'condition',
-			'join',
-			'key',
-			'search_type',
-			'match',
-			'full_words_only',
-			'eval',
-			'grouped_to_previous',
-			'hidden',
-			'elementid'
-		];
+    /**
+     * Add filter options to CSV export info
+     *
+     * @param   objet  opts
+     *
+     * @return  opts
+     */
+    csvExportFilterOpts: function (opts) {
+        var ii = 0,
+            aa, bits, aName,
+            advancedPointer = 0,
+            testii,
+            usedAdvancedKeys = [
+                'value',
+                'condition',
+                'join',
+                'key',
+                'search_type',
+                'match',
+                'full_words_only',
+                'eval',
+                'grouped_to_previous',
+                'hidden',
+                'elementid'
+            ];
 
         this.getFilters().each(function (f) {
             bits = f.name.split('[');
@@ -524,24 +519,24 @@ var FbList = new Class({
 
         ii++;
 
-		Object.each(this.options.advancedFilters, function (values, key) {
-			if (usedAdvancedKeys.contains(key)) {
-				advancedPointer = 0;
-				for (aa = 0; aa < values.length; aa ++) {
-					advancedPointer = aa + ii;
-					aName = 'fabrik___filter[list_' + this.options.listRef + '][' + key + '][' + advancedPointer + ']';
-					if (key === 'value') {
-						opts[aName] = this.options.advancedFilters.origvalue[aa];
-					}
-					else if (key === 'condition') {
-						opts[aName] = this.options.advancedFilters.orig_condition[aa];
-					}
-					else {
-						opts[aName] = values[aa];
-					}
-				}
-			}
-		}.bind(this));
+        Object.each(this.options.advancedFilters, function (values, key) {
+            if (usedAdvancedKeys.contains(key)) {
+                advancedPointer = 0;
+                for (aa = 0; aa < values.length; aa++) {
+                    advancedPointer = aa + ii;
+                    aName = 'fabrik___filter[list_' + this.options.listRef + '][' + key + '][' + advancedPointer + ']';
+                    if (key === 'value') {
+                        opts[aName] = this.options.advancedFilters.origvalue[aa];
+                    }
+                    else if (key === 'condition') {
+                        opts[aName] = this.options.advancedFilters.orig_condition[aa];
+                    }
+                    else {
+                        opts[aName] = values[aa];
+                    }
+                }
+            }
+        }.bind(this));
 
         return opts;
     },
@@ -775,73 +770,73 @@ var FbList = new Class({
         });
     },
 
-	submit: function (task) {
-		this.getForm();
-		var doAJAX = this.options.ajax;
-		if (task === 'list.doPlugin.noAJAX') {
-			task = 'list.doPlugin';
-			doAJAX = false;
-		}
-		if (task === 'list.delete') {
-			var ok = false;
-			var delCount = 0;
-			this.form.getElements('input[name^=ids]').each(function (c) {
-				if (c.checked) {
-					delCount ++;
-					ok = true;
-				}
-			});
-			if (!ok) {
-				window.alert(Joomla.JText._('COM_FABRIK_SELECT_ROWS_FOR_DELETION'));
-				Fabrik.loader.stop('listform_' + this.options.listRef);
-				return false;
-			}
-			var delMsg = delCount === 1 ? Joomla.JText._('COM_FABRIK_CONFIRM_DELETE_1') : Joomla.JText._('COM_FABRIK_CONFIRM_DELETE').replace('%s', delCount);
-			if (!window.confirm(delMsg)) {
-				Fabrik.loader.stop('listform_' + this.options.listRef);
-				this.uncheckAll();
-				return false;
-			}
-		}
-		// We may want to set this as an option - if long page loads feedback that list is doing something might be useful
-		// Fabrik.loader.start('listform_' + this.options.listRef);
-		if (task === 'list.filter') {
-			Fabrik['filter_listform_' + this.options.listRef].onSubmit();
-			this.form.task.value = task;
-			if (this.form['limitstart' + this.id]) {
-				this.form.getElement('#limitstart' + this.id).value = 0;
-			}
-		} else {
-			if (task !== '') {
-				this.form.task.value = task;
-			}
-		}
-		if (doAJAX) {
-			Fabrik.loader.start('listform_' + this.options.listRef);
-			// For module & mambot
-			// $$$ rob with modules only set view/option if ajax on
-			this.form.getElement('input[name=option]').value = 'com_fabrik';
-			this.form.getElement('input[name=view]').value = 'list';
-			this.form.getElement('input[name=format]').value = 'raw';
+    submit: function (task) {
+        this.getForm();
+        var doAJAX = this.options.ajax;
+        if (task === 'list.doPlugin.noAJAX') {
+            task = 'list.doPlugin';
+            doAJAX = false;
+        }
+        if (task === 'list.delete') {
+            var ok = false;
+            var delCount = 0;
+            this.form.getElements('input[name^=ids]').each(function (c) {
+                if (c.checked) {
+                    delCount++;
+                    ok = true;
+                }
+            });
+            if (!ok) {
+                window.alert(Joomla.JText._('COM_FABRIK_SELECT_ROWS_FOR_DELETION'));
+                Fabrik.loader.stop('listform_' + this.options.listRef);
+                return false;
+            }
+            var delMsg = delCount === 1 ? Joomla.JText._('COM_FABRIK_CONFIRM_DELETE_1') : Joomla.JText._('COM_FABRIK_CONFIRM_DELETE').replace('%s', delCount);
+            if (!window.confirm(delMsg)) {
+                Fabrik.loader.stop('listform_' + this.options.listRef);
+                this.uncheckAll();
+                return false;
+            }
+        }
+        // We may want to set this as an option - if long page loads feedback that list is doing something might be useful
+        // Fabrik.loader.start('listform_' + this.options.listRef);
+        if (task === 'list.filter') {
+            Fabrik['filter_listform_' + this.options.listRef].onSubmit();
+            this.form.task.value = task;
+            if (this.form['limitstart' + this.id]) {
+                this.form.getElement('#limitstart' + this.id).value = 0;
+            }
+        } else {
+            if (task !== '') {
+                this.form.task.value = task;
+            }
+        }
+        if (doAJAX) {
+            Fabrik.loader.start('listform_' + this.options.listRef);
+            // For module & mambot
+            // $$$ rob with modules only set view/option if ajax on
+            this.form.getElement('input[name=option]').value = 'com_fabrik';
+            this.form.getElement('input[name=view]').value = 'list';
+            this.form.getElement('input[name=format]').value = 'raw';
 
-			var data = this.form.toQueryString();
+            var data = this.form.toQueryString();
 
-			if (task === 'list.doPlugin') {
-				data += '&setListRefFromRequest=1';
-				data += '&listref=' + this.options.listRef;
-			}
+            if (task === 'list.doPlugin') {
+                data += '&setListRefFromRequest=1';
+                data += '&listref=' + this.options.listRef;
+            }
 
-			if (task === 'list.filter' && this.advancedSearch !== false) {
-				var advSearchForm = document.getElement('form.advancedSeach_' + this.options.listRef);
-				if (typeOf(advSearchForm) !== 'null') {
-					data += '&' + advSearchForm.toQueryString();
-					data += '&replacefilters=1';
-				}
-			}
-			// Pass the elements that are shown in the list - to ensure they are formatted
-			for (var i = 0; i < this.options.fabrik_show_in_list.length; i ++) {
-				data += '&fabrik_show_in_list[]=' + this.options.fabrik_show_in_list[i];
-			}
+            if (task === 'list.filter' && this.advancedSearch !== false) {
+                var advSearchForm = document.getElement('form.advancedSeach_' + this.options.listRef);
+                if (typeOf(advSearchForm) !== 'null') {
+                    data += '&' + advSearchForm.toQueryString();
+                    data += '&replacefilters=1';
+                }
+            }
+            // Pass the elements that are shown in the list - to ensure they are formatted
+            for (var i = 0; i < this.options.fabrik_show_in_list.length; i++) {
+                data += '&fabrik_show_in_list[]=' + this.options.fabrik_show_in_list[i];
+            }
 
             // Add in tmpl for custom nav in admin
             data += '&tmpl=' + this.options.tmpl;
@@ -940,26 +935,26 @@ var FbList = new Class({
         this.submit('list.order');
     },
 
-	removeRows: function (rowids) {
-		// @TODO: try to do this with FX.Elements
-		var i;
-		for (i = 0; i < rowids.length; i++) {
-			var row = document.id('list_' + this.id + '_row_' + rowids[i]);
-			var highlight = new Fx.Morph(row, {
-				duration: 1000
-			});
-			highlight.start({
-				'backgroundColor': this.options.hightLight
-			}).chain(function () {
-				this.start({
-					'opacity': 0
-				});
-			}).chain(function () {
-				row.dispose();
-				this.checkEmpty();
-			}.bind(this));
-		}
-	},
+    removeRows: function (rowids) {
+        // @TODO: try to do this with FX.Elements
+        var i;
+        for (i = 0; i < rowids.length; i++) {
+            var row = document.id('list_' + this.id + '_row_' + rowids[i]);
+            var highlight = new Fx.Morph(row, {
+                duration: 1000
+            });
+            highlight.start({
+                'backgroundColor': this.options.hightLight
+            }).chain(function () {
+                this.start({
+                    'opacity': 0
+                });
+            }).chain(function () {
+                row.dispose();
+                this.checkEmpty();
+            }.bind(this));
+        }
+    },
 
     editRow: function () {
     },
@@ -1013,7 +1008,7 @@ var FbList = new Class({
      */
     _updateHeadings: function (data) {
         var header = jQuery('#' + this.options.form).find('.fabrik___heading').last(),
-        headings = new Hash(data.headings);
+            headings = new Hash(data.headings);
         headings.each(function (data, key) {
             key = '.' + key;
             try {
@@ -1050,7 +1045,7 @@ var FbList = new Class({
      */
     _updateRows: function (data) {
         var tbody, itemTemplate, i, groupHeading, columnCount, parent, items = [], item,
-           rowTemplate, cell, form = jQuery(this.form);
+            rowTemplate, cell, form = jQuery(this.form);
         if (typeOf(data) !== 'object') {
             return;
         }
@@ -1075,7 +1070,7 @@ var FbList = new Class({
         if (data.calculations) {
             this.updateCals(data.calculations);
         }
-       form.find('.fabrikNav').html(data.htmlnav);
+        form.find('.fabrikNav').html(data.htmlnav);
         // $$$ rob was $H(data.data) but that wasnt working ????
         // testing with $H back in again for grouped by data? Yeah works for
         // grouped data!!
@@ -1100,7 +1095,7 @@ var FbList = new Class({
             }
 
             items = Fabrik.Array.chunk(items, columnCount);
-            for (i = 0; i < items.length; i ++) {
+            for (i = 0; i < items.length; i++) {
                 var fullRow = rowTemplate.clone().append(items[i]);
                 tbody.append(fullRow);
             }
