@@ -13,7 +13,9 @@ require(['fab/fabrik'], function (Fabrik) {
     if (!Fabrik.buildChosen) {
         Fabrik.buildChosen = function (selector, options)
         {
-            $(selector).chosen(options);
+            if ($(selector).chosen !== undefined) {
+                $(selector).chosen(options);
+            }
         };
     }
 });
