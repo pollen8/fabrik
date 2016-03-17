@@ -1,2 +1,2 @@
 /*! Fabrik */
-require(["fab/fabrik"],function(a){$=window.jQuery,a.buildChosen||(a.buildChosen=function(a,b){void 0!==$(a).chosen&&$(a).chosen(b)})});
+require(["fab/fabrik","jquery"],function(a,b){a.buildChosen||(a.buildChosen=function(a,c){void 0!==b(a).chosen&&b(a).chosen(c)})});

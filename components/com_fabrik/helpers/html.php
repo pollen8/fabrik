@@ -855,6 +855,7 @@ EOD;
 				$chosenOptions = $fbConfig->get('advanced_behavior_options', '{}');
 				$chosenOptions = empty($chosenOptions) ? new stdClass : ArrayHelper::fromObject(json_decode($chosenOptions));
 				JHtml::_('stylesheet', 'jui/chosen.css', false, true);
+				JHtml::_('script', 'jui/chosen.jquery.min.js', false, true, false, false, self::isDebug());
 				$liveSiteReq[] = 'media/com_fabrik/js/chosen-loader.js';
 			}
 

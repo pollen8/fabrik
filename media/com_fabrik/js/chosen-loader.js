@@ -8,8 +8,7 @@
  * an interval timer function to call Fabrik.buildChosen (kinda odd but works!)
  * And in ajax loaded forms we re-call Fabrik.buildChosen function
  */
-require(['fab/fabrik'], function (Fabrik) {
-    $ = window.jQuery;
+require(['fab/fabrik', 'jquery'], function (Fabrik, $) {
     if (!Fabrik.buildChosen) {
         Fabrik.buildChosen = function (selector, options)
         {
