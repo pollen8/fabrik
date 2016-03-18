@@ -886,12 +886,15 @@ EOD;
 					$liveSiteReq[] = 'media/com_fabrik/js/tips' . $ext;
 				}
 
-				$liveSiteSrc[] = "var chosenInterval = window.setInterval(function () {
-					if (Fabrik.buildChosen) {
-						window.clearInterval(chosenInterval);
-                        Fabrik.buildChosen('select.advancedSelect', " . json_encode($chosenOptions) . ");
-					}
-				}, 100);";
+				if ($fbConfig->get('advanced_behavior', '0') == '1')
+				{
+						$liveSiteSrc[] = "var chosenInterval = window.setInterval(function () {
+						if (Fabrik.buildChosen) {
+							window.clearInterval(chosenInterval);
+	                        Fabrik.buildChosen('select.advancedSelect', " . json_encode($chosenOptions) . ");
+						}
+					}, 100);";
+				}
 
 				$liveSiteSrc[] = "\tFabrik.liveSite = '" . COM_FABRIK_LIVESITE . "';";
 				$liveSiteSrc[] = "\tFabrik.package = '" . $app->getUserState('com_fabrik.package', 'fabrik') . "';";
