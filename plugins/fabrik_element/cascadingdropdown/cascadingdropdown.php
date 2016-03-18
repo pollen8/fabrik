@@ -827,6 +827,11 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 
 		$filter = $params->get('cascadingdropdown_filter');
 
+		if (!empty($this->autocomplete_where))
+		{
+			$where .= $where !== '' ? ' AND ' . $this->autocomplete_where : $this->autocomplete_where;
+		}
+
 		/* $$$ hugh - temporary hack to work around this issue:
 		 * http://fabrikar.com/forums/showthread.php?p=71288#post71288
 		 * ... which is basically that if they are using {placeholders} in their
@@ -849,11 +854,6 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 		$placeholders = is_null($whereVal) ? array() : array('whereval' => $whereVal, 'wherekey' => $whereKey);
 		$join = $this->getJoin();
 		$where = $this->parseThisTable($where, $join);
-
-		if (!empty($this->autocomplete_where))
-		{
-			$where .= $where !== '' ? ' AND ' . $this->autocomplete_where : $this->autocomplete_where;
-		}
 
 		$data = array_merge($data, $placeholders);
 		$where = $w->parseMessageForRepeats($where, $data, $this, $repeatCounter);

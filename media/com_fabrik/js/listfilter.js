@@ -135,13 +135,13 @@ var FbListFilter = new Class({
     // daisy chained CDD's.
     getFilterData: function () {
         var h = {};
-        this.container.find('.fabrik_filter').each(function (f) {
-            if (jQuery(this).prop('id').test(/value$/)) {
-                var key = $(this).prop('id').match(/(\S+)value$/)[1];
+        this.container.find('.fabrik_filter').each(function (k, f) {
+            if (typeof jQuery(this).prop('id') !== 'undefined' && jQuery(this).prop('id').test(/value$/)) {
+                var key = jQuery(this).prop('id').match(/(\S+)value$/)[1];
                 // $$$ rob added check that something is select - possibly causes js
                 // error in ie
                 if (jQuery(this).prop('tagName') === 'SELECT' && this.selectedIndex !== -1) {
-                    h[key] = jQuery('#' + this.options[this.selectedIndex]).text();
+                    h[key] = jQuery(this.options[this.selectedIndex]).text();
                 } else {
                     h[key] = jQuery(this).val();
                 }

@@ -266,7 +266,7 @@ var FbCascadingdropdown = new Class({
 			this.element.empty();
 			// Set ingoreAjax so that the ajax event that is fired when the element is added to the form manager
 			// does not update the newly cloned drop-down
-			this.ignoreAjax = true;
+			//this.ignoreAjax = true;
 		}
 		if (this.options.showDesc === true) {
 			this.element.addEvent('change', function () {
