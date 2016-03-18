@@ -870,12 +870,12 @@ EOD;
 			{
 				// Require.js now added in fabrik system plugin onAfterRender()
 				JText::script('COM_FABRIK_LOADING');
-				$src[] = 'media/com_fabrik/js/fabrik' . $ext;
+				$src[] = 'media/com_fabrik/js/fabrik';
 				$src[] = 'media/com_fabrik/js/window' . $ext;
 
 				self::styleSheet(COM_FABRIK_LIVESITE . 'media/com_fabrik/css/fabrik.css');
 
-				$liveSiteReq[] = 'media/com_fabrik/js/fabrik' . $ext;
+				$liveSiteReq[] = 'media/com_fabrik/js/fabrik';
 
 				if ($bootstrapped)
 				{
@@ -940,7 +940,7 @@ EOD;
 				$liveSiteReq[] = 'media/com_fabrik/js/fabrik' . $ext;
 			}
 
-			self::script($liveSiteReq, $liveSiteSrc);
+			self::script($liveSiteReq, $liveSiteSrc, '-min.js', array('Chosen', 'Fabrik'));
 			self::$framework = $src;
 		}
 
@@ -1359,10 +1359,11 @@ EOD;
 	 *                             e.g. 'administrator/components/com_fabrik/models/fields/tables.js'
 	 * @param   string $onLoad     Optional js to run once the Js file has been loaded
 	 * @param   string $minSuffix  The minimised file suffix to use, replaces '.js'
+	 * @param   array  $names
 	 *
 	 * @return  void
 	 */
-	public static function script($file, $onLoad = '', $minSuffix = '-min.js')
+	public static function script($file, $onLoad = '', $minSuffix = '-min.js', $names = array())
 	{
 		if (empty($file))
 		{
@@ -1436,7 +1437,7 @@ EOD;
 
 		$files     = array_unique($files);
 		$files     = "['" . implode("', '", $files) . "']";
-		$require[] = 'requirejs(' . ($files) . ', function () {';
+		$require[] = 'requirejs(' . ($files) . ', function (' . implode(", ", $names) . ') {';
 		$require[] = $onLoad;
 		$require[] = '});';
 		$require[] = "\n";

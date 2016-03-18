@@ -8,7 +8,8 @@
 /*jshint mootools: true */
 /*global fconsole:true, Joomla:true,  */
 
-define(['jquery', 'fab/encoder', 'fab/fabrik'], function (jQuery, Encoder, Fabrik) {
+define(['jquery', 'fab/encoder', 'fab/fabrik', 'fab/lib/debounce/jquery.ba-throttle-debounce'],
+    function (jQuery, Encoder, Fabrik, debounce) {
     var AutoComplete = new Class({
 
         Implements: [Options, Events],
@@ -61,7 +62,7 @@ define(['jquery', 'fab/encoder', 'fab/fabrik'], function (jQuery, Encoder, Fabri
                  * the user has stopped typing for more than X ms
                  */
                 var self = this;
-                jQuery(document).on('keyup', Fabrik.debounce(this.options.debounceDelay, function (e) {
+                jQuery(document).on('keyup', debounce(this.options.debounceDelay, function (e) {
                     self.search(e);
                 }));
 
