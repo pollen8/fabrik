@@ -3954,8 +3954,10 @@ class FabrikFEModelList extends JModelForm
 			$groups = $this->user->getAuthorisedViewLevels();
 			$this->access->allow_drop = in_array($this->getParams()->get('allow_drop'), $groups);
 		}
+/*		
 		
-		// Felixkat
+		// Felixkat - Commenting out as this shouldn't have got here. 
+		
 		// Retrieve session set in plugin-cron
 		$session = JFactory::getSession();
 		$fabrikCron = $session->get('fabrikCron', '');
@@ -3973,7 +3975,7 @@ class FabrikFEModelList extends JModelForm
 			}
 		// Felixkat
 		}
-		
+*/		
 		return $this->access->allow_drop;
 	}
 
