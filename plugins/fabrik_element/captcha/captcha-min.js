@@ -1,2 +1,2 @@
 /*! Fabrik */
-var FbCaptcha=new Class({Extends:FbElement,initialize:function(a,b){this.parent(a,b)}});
+define(["jquery","fab/element"],function(a,b){return window.FbCaptcha=new Class({Extends:b,initialize:function(a,b){this.parent(a,b)}}),window.FbCaptcha});

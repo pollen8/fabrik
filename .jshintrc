@@ -39,8 +39,13 @@
     "tinymce": true,
     "Calendar": true,
     "WFEditor": true,
+    "Color": true,
+    "Drag": true,
     "google": true,
+    "CanvasItem": true,
+    "define": true,
     "FB": true,
+    "Layer": true,
     "Encoder": true,
     "Class": true,
     "typeOf": true,
@@ -48,9 +53,8 @@
     "AdvancedSearch": true,
     "Options": true,
     "Events": true,
+    "Spinner": true,
     "Request": true,
-    "FbElement": true,
-    "FbAutocomplete": true,
-    "FbRadio": true
+    "requirejs": true
   }
 }

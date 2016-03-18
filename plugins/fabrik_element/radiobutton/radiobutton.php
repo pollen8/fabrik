@@ -93,25 +93,6 @@ class PlgFabrik_ElementRadiobutton extends PlgFabrik_ElementList
 	}
 
 	/**
-	 * Get the class to manage the form element
-	 * to ensure that the file is loaded only once
-	 *
-	 * @param   array   &$srcs   Scripts previously loaded
-	 * @param   string  $script  Script to load once class has loaded
-	 * @param   array   &$shim   Dependant class names to load before loading the class - put in requirejs.config shim
-	 *
-	 * @return void
-	 */
-
-	public function formJavascriptClass(&$srcs, $script = '', &$shim = array())
-	{
-		$s = new stdClass;
-		$s->deps = array('fab/element', 'fab/elementlist');
-		$shim['element/radiobutton/radiobutton'] = $s;
-		parent::formJavascriptClass($srcs, $script, $shim);
-	}
-
-	/**
 	 * if the search value isn't what is stored in the database, but rather what the user
 	 * sees then switch from the search string to the db value here
 	 * overwritten in things like checkbox and radio plugins

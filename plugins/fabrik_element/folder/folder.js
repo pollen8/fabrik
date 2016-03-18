@@ -5,10 +5,14 @@
  * @license:   GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
-var FbFolder = new Class({
-	Extends: FbElement,
-	initialize: function (element, options) {
-		this.setPlugin('fabrikfolder');
-		this.parent(element, options);
-	}
+define(['jquery', 'fab/element'], function (jQuery, FbElement) {
+    window.FbFolder = new Class({
+        Extends   : FbElement,
+        initialize: function (element, options) {
+            this.setPlugin('fabrikfolder');
+            this.parent(element, options);
+        }
+    });
+
+    return window.FbFolder;
 });

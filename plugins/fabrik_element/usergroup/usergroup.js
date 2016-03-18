@@ -5,12 +5,16 @@
  * @license:   GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
-var FbUsergroup = new Class({
+define(['jquery', 'fab/element'], function (jQuery, FbElement) {
+    window.FbUsergroup = new Class({
 
-	Extends: FbElement,
+        Extends: FbElement,
 
-	initialize: function (element, options) {
-		this.setPlugin('fabrikusergroup');
-		this.parent(element, options);
-	}
+        initialize: function (element, options) {
+            this.setPlugin('fabrikusergroup');
+            this.parent(element, options);
+        }
+    });
+
+    return window.FbUsergroup;
 });

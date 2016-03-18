@@ -2934,8 +2934,6 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		$opts->isJoin   = $this->isJoin();
 		$opts->advanced = $this->getAdvancedSelectClass() != '';
 
-
-
 		/*
 		 * Testing watching placeholders used in the where, and AJAX reloading the join when changed
 		 */
@@ -2954,7 +2952,6 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 
 			foreach ($obs as $key => &$m)
 			{
-
 				if (empty($m))
 				{
 					unset($obs[$key]);

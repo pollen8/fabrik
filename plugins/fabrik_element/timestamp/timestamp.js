@@ -5,10 +5,14 @@
  * @license:   GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
-FbTimestamp = new Class({
-	Extends: FbElement,
-	initialize: function (element, options) {
-		this.setPlugin('fabriktimestamp');
-		this.parent(element, options);
-	}
+define(['jquery', 'fab/element'], function (jQuery, FbElement) {
+    window.FbTimestamp = new Class({
+        Extends   : FbElement,
+        initialize: function (element, options) {
+            this.setPlugin('fabriktimestamp');
+            this.parent(element, options);
+        }
+    });
+
+    return window.FbTimestamp;
 });

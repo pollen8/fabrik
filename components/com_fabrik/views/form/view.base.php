@@ -537,7 +537,6 @@ class FabrikViewFormBase extends FabrikView
 			$dep->deps           = array(
 				'fab/element',
 				'lib/form_placeholder/Form.Placeholder',
-				'fab/encoder',
 				'fab/lib/debounce/jquery.ba-throttle-debounce'
 			);
 

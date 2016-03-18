@@ -338,9 +338,12 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 	{
 		$params = $this->getParams();
 		$inputMask = trim($params->get('text_input_mask', ''));
-		$geocomplete = $params->get('autocomplete', '0') === '3';
+		$geoComplete = $params->get('autocomplete', '0') === '3';
 
 		$s = new stdClass;
+
+		// Even though fab/element is now an AMD defined module we should still keep it in here
+		// otherwise (not sure of the reason) jQuery.mask is not defined in field.js
 		$s->deps = array('fab/element');
 
 		if (!empty($inputMask))
@@ -349,7 +352,7 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 			$s->deps[] = $folder . 'jquery.maskedinput';
 		}
 
-		if ($geocomplete)
+		if ($geoComplete)
 		{
 			$folder = 'components/com_fabrik/libs/googlemaps/geocomplete/';
 			$s->deps[] = $folder . 'jquery.geocomplete';

@@ -5,12 +5,16 @@
  * @license:   GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
-var FbViewlevel = new Class({
+define(['jquery', 'fab/element'], function (jQuery, FbElement) {
+    FbViewlevel = new Class({
 
-	Extends: FbElement,
+        Extends: FbElement,
 
-	initialize: function (element, options) {
-		this.setPlugin('fabrikviewlevel');
-		this.parent(element, options);
-	}
+        initialize: function (element, options) {
+            this.setPlugin('fabrikviewlevel');
+            this.parent(element, options);
+        }
+    });
+
+    return window.FbViewlevel;
 });

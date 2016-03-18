@@ -5,6 +5,9 @@
  * @license:   GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
-FbUser = new Class({
-	Extends: FbDatabasejoin
+define(['jquery', 'element/databasejoin/databasejoin'], function (jQuery, FbDatabasejoin) {
+    window.FbUser = new Class({
+        Extends: FbDatabasejoin
+    });
+    return window.FbUser;
 });

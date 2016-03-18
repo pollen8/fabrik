@@ -5602,15 +5602,6 @@ class PlgFabrik_Element extends FabrikPlugin
 	{
 		$name    = $this->getElement()->plugin;
 		$ext     = FabrikHelperHTML::isDebug() ? '.js' : '-min.js';
-		$shimKey = 'element/' . $name . '/' . $name;
-
-		if (!array_key_exists($shimKey, $shim))
-		{
-			$s                                      = new stdClass;
-			$s->deps                                = array('fab/element');
-			$shim['element/' . $name . '/' . $name] = $s;
-		}
-
 		$formId = $this->getFormModel()->getId();
 		static $elementClasses;
 

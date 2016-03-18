@@ -828,9 +828,9 @@ EOD;
 			$app     = JFactory::getApplication();
 			$version = new JVersion;
 			FabrikHelperHTML::modalJLayouts();
-			$liveSiteSrc    = array();
-			$liveSiteReq    = array();
-			$fbConfig       = JComponentHelper::getParams('com_fabrik');
+			$liveSiteSrc = array();
+			$liveSiteReq = array();
+			$fbConfig    = JComponentHelper::getParams('com_fabrik');
 
 			// Only use template test for testing in 2.5 with my temp J bootstrap template.
 			$bootstrapped = in_array($app->getTemplate(), array('bootstrap', 'fabrik4')) || $version->RELEASE > 2.5;
@@ -888,7 +888,7 @@ EOD;
 
 				if ($fbConfig->get('advanced_behavior', '0') == '1')
 				{
-						$liveSiteSrc[] = "var chosenInterval = window.setInterval(function () {
+					$liveSiteSrc[] = "var chosenInterval = window.setInterval(function () {
 						if (Fabrik.buildChosen) {
 							window.clearInterval(chosenInterval);
 	                        Fabrik.buildChosen('select.advancedSelect', " . json_encode($chosenOptions) . ");
@@ -1082,11 +1082,10 @@ EOD;
 			$deps[] = 'fab/icongen' . $ext;
 		}
 
-		$deps[] = 'fab/encoder' . $ext;
+		//$deps[] = 'fab/encoder' . $ext;
 
 		self::addRequireJsShim($framework, 'fab/fabrik', $deps);
 		self::addRequireJsShim($framework, 'fab/window', array('fab/fabrik' . $ext));
-		self::addRequireJsShim($framework, 'fab/elementlist', array('fab/fabrik' . $ext, 'fab/element' . $ext));
 		self::addRequireJsShim($framework, 'fab/autocomplete-bootstrap', array('fab/fabrik' . $ext));
 
 		$newShim = array_merge($framework, $newShim);
@@ -1759,18 +1758,21 @@ EOD;
 		$str  = json_encode($json);
 		JText::script('COM_FABRIK_NO_RECORDS');
 		JText::script('COM_FABRIK_AUTOCOMPLETE_AJAX_ERROR');
-		$class    = $plugin === 'cascadingdropdown' ? 'FabCddAutocomplete' : 'FbAutocomplete';
-		$jsFile   = FabrikWorker::j3() ? 'autocomplete-bootstrap' : 'autocomplete';
+		$jsFile = 'autocomplete';
+
+		if (FabrikWorker::j3())
+		{
+			$jsFile = $plugin === 'cascadingdropdown' ? 'autocomplete-bootstrap-cdd' : 'autocomplete-bootstrap';
+		}
+
 		$needed   = array();
-		$needed[] = self::isDebug() ? 'fab/fabrik' : 'fab/fabrik-min';
 		$needed[] = self::isDebug() ? 'fab/' . $jsFile : 'fab/' . $jsFile . '-min';
 		$needed[] = self::isDebug() ? 'fab/lib/debounce/jquery.ba-throttle-debounce' : 'fab/lib/debounce/jquery.ba-throttle-debounce-min';
-		$needed[] = self::isDebug() ? 'fab/encoder' : 'fab/encoder-min';
 		$needed[] = 'fab/lib/Event.mock';
 		$needed   = implode("', '", $needed);
 		self::addScriptDeclaration(
-			"requirejs(['$needed'], function () {
-	new $class('$htmlId', $str);
+			"require(['$needed'], function (AutoComplete) {
+	new AutoComplete('$htmlId', $str);
 });"
 		);
 	}

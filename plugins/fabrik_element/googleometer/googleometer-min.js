@@ -1,2 +1,2 @@
 /*! Fabrik */
-var FbGoogleometer=new Class({Extends:FbElement,initialize:function(a,b){this.parent(a,b)}});
+define(["jquery","fab/element"],function(a,b){return window.FbGoogleometer=new Class({Extends:b,initialize:function(a,b){this.parent(a,b)}}),window.FbGoogleometer});

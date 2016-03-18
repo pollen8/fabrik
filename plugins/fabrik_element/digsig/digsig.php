@@ -321,7 +321,7 @@ class PlgFabrik_ElementDigsig extends PlgFabrik_Element
 	public function formJavascriptClass(&$srcs, $script = '', &$shim = array())
 	{
 		$s       = new stdClass;
-		$s->deps = array('fab/element');
+		$s->deps = array();
 
 		$folder           = 'element/digsig/libs/signature-pad/';
 		$digsigShim       = new stdClass;

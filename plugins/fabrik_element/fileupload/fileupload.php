@@ -165,7 +165,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 	public function formJavascriptClass(&$srcs, $script = '', &$shim = array())
 	{
 		$s       = new stdClass;
-		$s->deps = array('fab/element');
+		$s->deps = array();
 		$params  = $this->getParams();
 
 		if ($params->get('ajax_upload'))

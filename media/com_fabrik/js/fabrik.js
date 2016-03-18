@@ -296,20 +296,17 @@ var Loader = new Class({
 /**
  * Create the Fabrik name space
  */
+define('fab/fabrik', ['jquery', 'fab/form', 'fab/encoder'], function (jQuery, FbForm, Encoder) {
 
-if (typeof (Fabrik) === 'undefined') {
+    document.addEvent('click:relay(.popover button.close)', function (event, target) {
+        var popover = '#' + target.get('data-popover'),
+            pEl = document.getElement(popover);
+        jQuery(popover).popover('hide');
 
-    if (typeof (jQuery) !== 'undefined') {
-        document.addEvent('click:relay(.popover button.close)', function (event, target) {
-            var popover = '#' + target.get('data-popover');
-            var pEl = document.getElement(popover);
-            jQuery(popover).popover('hide');
-
-            if (typeOf(pEl) !== 'null' && pEl.get('tag') === 'input') {
-                pEl.checked = false;
-            }
-        });
-    }
+        if (typeOf(pEl) !== 'null' && pEl.get('tag') === 'input') {
+            pEl.checked = false;
+        }
+    });
     Fabrik = {};
     Fabrik.events = {};
 
@@ -764,12 +761,17 @@ if (typeof (Fabrik) === 'undefined') {
     };
 
     window.fireEvent('fabrik.loaded');
+    window.Fabrik = Fabrik;
+    return Fabrik;
+    //}
+})
 
-}
+;
 
-// Allow fabrik to be loaded with :
-// require(['fab/fabrik'], function (Fabrik) {.....});
-define('fab/fabrik', [], function() {
-        return Fabrik;
-    }
-);
+/*
+ // Allow fabrik to be loaded with :
+ // require(['fab/fabrik'], function (Fabrik) {.....});
+ define('fab/fabrik', [], function() {
+ return Fabrik;
+ }
+ );*/

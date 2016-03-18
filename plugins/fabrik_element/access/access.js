@@ -5,12 +5,16 @@
  * @license:   GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
-var FbAccess = new Class({
+define(['jquery', 'fab/element'], function (jQuery, FbElement) {
+    window.FbAccess = new Class({
 
-	Extends: FbElement,
+        Extends: FbElement,
 
-	initialize: function (element, options) {
-		this.setPlugin('fabrikaccess');
-		this.parent(element, options);
-	}
+        initialize: function (element, options) {
+            this.setPlugin('fabrikaccess');
+            this.parent(element, options);
+        }
+    });
+
+    return window.FbAccess;
 });
