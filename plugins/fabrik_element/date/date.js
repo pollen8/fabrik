@@ -81,6 +81,9 @@ var FbDateTime = new Class({
 						}
 						this.setTimeFromField(d);
 						this.update(d);
+
+						// need to fire this to cook off anything observing this element
+						Fabrik.fireEvent('fabrik.date.select', this);
 					}
 					else {
 						this.options.value = '';
@@ -120,6 +123,7 @@ var FbDateTime = new Class({
 	attachedToForm: function () {
 		this.parent();
 		this.watchAjaxTrigger();
+		this.parent();
 	},
 	
 	/**

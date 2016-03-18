@@ -120,7 +120,7 @@ class JFormFieldSwapList extends JFormFieldList
 		$query->select('DISTINCT(group_id)')->from('#__{package}_formgroup');
 		$db->setQuery($query);
 		$usedgroups = $db->loadColumn();
-		ArrayHelper::toInteger($usedgroups);
+		$usedgroups = ArrayHelper::toInteger($usedgroups);
 		$query = $db->getQuery(true);
 		$query->select('id AS value, name AS text')->from('#__{package}_groups');
 

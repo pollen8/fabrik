@@ -9,7 +9,6 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Joomla\String\String;
 use Joomla\Utilities\ArrayHelper;
 
 // Require the abstract plugin class
@@ -235,7 +234,7 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 	{
 		// Sanitize the ids.
 		$pks = (array) $pks;
-		ArrayHelper::toInteger($pks);
+		$pks = ArrayHelper::toInteger($pks);
 		$db = $this->_db;
 
 		if (empty($pks))
@@ -530,9 +529,9 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 		// should increment the Joomla article title.
 		while ($table->load(array('alias' => $alias, 'catid' => $catId)))
 		{
-			$title                      = String::increment($title);
+			$title                      = JString::increment($title);
 			$titles[$table->get('id')]  = $title;
-			$alias                      = String::increment($alias, 'dash');
+			$alias                      = JString::increment($alias, 'dash');
 			$aliases[$table->get('id')] = $alias;
 		}
 

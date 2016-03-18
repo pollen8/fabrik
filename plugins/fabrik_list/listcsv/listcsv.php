@@ -24,6 +24,16 @@ require_once COM_FABRIK_FRONTEND . '/models/plugin-list.php';
 
 class PlgFabrik_ListListcsv extends PlgFabrik_List
 {
+	/*
+	 * for use by user code
+	 */
+	public $userClass = null;
+
+	/*
+	 * for use by user code
+	 */
+	public $userData = null;
+
 	/**
 	 * determine if the table plugin is a button and can be activated only when rows are selected
 	 *
@@ -63,9 +73,16 @@ class PlgFabrik_ListListcsv extends PlgFabrik_List
 		$file = $params->get('listcsv_import_php_file');
 		$file = $filter->clean($file, 'CMD');
 
-		if ($file == -1 || $file == '')
+		if ($file != -1 && $file != '')
 		{
-			$code = $params->get('listcsv_import_php_code', '');
+
+			require JPATH_ROOT . '/plugins/fabrik_list/listcsv/scripts/' . $file;
+		}
+
+		$code = trim($params->get('listcsv_import_php_code', ''));
+
+		if (!empty($code))
+		{
 			$ret = @eval($code);
 			FabrikWorker::logEval($ret, 'Caught exception on eval in onImportCSVRow : %s');
 
@@ -73,10 +90,6 @@ class PlgFabrik_ListListcsv extends PlgFabrik_List
 			{
 				return false;
 			}
-		}
-		else
-		{
-			require JPATH_ROOT . '/plugins/fabrik_list/listcsv/scripts/' . $file;
 		}
 
 		return true;
@@ -95,9 +108,16 @@ class PlgFabrik_ListListcsv extends PlgFabrik_List
 		$file = $params->get('listcsv_after_import_php_file');
 		$file = $filter->clean($file, 'CMD');
 
-		if ($file == -1 || $file == '')
+		if ($file != -1 && $file != '')
 		{
-			$code = $params->get('listcsv_after_import_php_code', '');
+
+			require JPATH_ROOT . '/plugins/fabrik_list/listcsv/scripts/' . $file;
+		}
+
+		$code = trim($params->get('listcsv_after_import_php_code', ''));
+
+		if (!empty($code))
+		{
 			$ret = @eval($code);
 			FabrikWorker::logEval($ret, 'Caught exception on eval in onAfterImportCSVRow : %s');
 
@@ -106,9 +126,75 @@ class PlgFabrik_ListListcsv extends PlgFabrik_List
 				return false;
 			}
 		}
-		else
+
+		return true;
+	}
+
+	/**
+	 * Called when import is complete
+	 *
+	 * @return boolean
+	 */
+
+	public function onCompleteImportCSV()
+	{
+		$params = $this->getParams();
+		$filter = JFilterInput::getInstance();
+		$file = $params->get('listcsv_import_complete_php_file');
+		$file = $filter->clean($file, 'CMD');
+
+		if ($file != -1 && $file != '')
 		{
+
 			require JPATH_ROOT . '/plugins/fabrik_list/listcsv/scripts/' . $file;
+		}
+
+		$code = trim($params->get('listcsv_import_complete_php_code', ''));
+
+		if (!empty($code))
+		{
+			$ret = @eval($code);
+			FabrikWorker::logEval($ret, 'Caught exception on eval in onCompleteImportCSV : %s');
+
+			if ($ret === false)
+			{
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	/**
+	 * Called before import is started
+	 *
+	 * @return boolean
+	 */
+
+	public function onStartImportCSV()
+	{
+		$params = $this->getParams();
+		$filter = JFilterInput::getInstance();
+		$file = $params->get('listcsv_import_start_php_file');
+		$file = $filter->clean($file, 'CMD');
+
+		if ($file != -1 && $file != '')
+		{
+
+			require JPATH_ROOT . '/plugins/fabrik_list/listcsv/scripts/' . $file;
+		}
+
+		$code = trim($params->get('listcsv_import_start_php_code', ''));
+
+		if (!empty($code))
+		{
+			$ret = @eval($code);
+			FabrikWorker::logEval($ret, 'Caught exception on eval in onStartImportCSV : %s');
+
+			if ($ret === false)
+			{
+				return false;
+			}
 		}
 
 		return true;

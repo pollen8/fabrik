@@ -86,11 +86,12 @@ class FabrikViewFormBase extends FabrikView
 	 */
 	private function _repeatGroupButtons($tmpl)
 	{
+		$formModel                        = $this->getModel();
 		$btnData                          = (object) array('tmpl' => $tmpl);
-		$this->removeRepeatGroupButton    = FabrikHelperHTML::getLayout('form.fabrik-repeat-group-delete')->render($btnData);
-		$this->addRepeatGroupButton       = FabrikHelperHTML::getLayout('form.fabrik-repeat-group-add')->render($btnData);
-		$this->removeRepeatGroupButtonRow = FabrikHelperHTML::getLayout('form.fabrik-repeat-group-row-delete')->render($btnData);
-		$this->addRepeatGroupButtonRow    = FabrikHelperHTML::getLayout('form.fabrik-repeat-group-row-add')->render($btnData);
+		$this->removeRepeatGroupButton    = $formModel->getLayout('form.fabrik-repeat-group-delete')->render($btnData);
+		$this->addRepeatGroupButton       = $formModel->getLayout('form.fabrik-repeat-group-add')->render($btnData);
+		$this->removeRepeatGroupButtonRow = $formModel->getLayout('form.fabrik-repeat-group-row-delete')->render($btnData);
+		$this->addRepeatGroupButtonRow    = $formModel->getLayout('form.fabrik-repeat-group-row-add')->render($btnData);
 	}
 
 	/**
@@ -169,7 +170,7 @@ class FabrikViewFormBase extends FabrikView
 		if ($model->isMambot)
 		{
 			$this->package = $this->app->getUserState('com_fabrik.package', 'fabrik');
-			$context       = 'com_' . $this->package . '.form.' . $form->id . '.' . $this->rowid . '.';
+			$context       = $model->getSessionContext();
 			$model->errors = $this->session->get($context . 'errors', array());
 			$clearErrors   = true;
 		}
@@ -330,10 +331,11 @@ class FabrikViewFormBase extends FabrikView
 	 * Set the canonical link - this is the definitive URL that Google et all, will use
 	 * to determine if duplicate URLs are the same content
 	 *
-	 * @throws Exception
+	 * @return  string
 	 */
-	public function setCanonicalLink()
+	public function getCanonicalLink()
 	{
+		$url = '';
 		if (!$this->app->isAdmin() && !$this->isMambot)
 		{
 			/** @var FabrikFEModelForm $model */
@@ -344,10 +346,31 @@ class FabrikViewFormBase extends FabrikView
 			$rowId  = $slug === '' ? $model->getRowId() : $slug;
 			$view   = $model->isEditable() ? 'form' : 'details';
 			$url    = JRoute::_('index.php?option=com_' . $this->package . '&view=' . $view . '&formid=' . $formId . '&rowid=' . $rowId);
+		}
+
+		return $url;
+	}
+
+	/**
+	 * Set the canonical link - this is the definitive URL that Google et all, will use
+	 * to determine if duplicate URLs are the same content
+	 *
+	 * @throws Exception
+	 */
+	public function setCanonicalLink()
+	{
+		if (!$this->app->isAdmin() && !$this->isMambot)
+		{
+			$url = $this->getCanonicalLink();
 
 			// Set a flag so that the system plugin can clear out any other canonical links.
 			$this->session->set('fabrik.clearCanonical', true);
-			$this->doc->addCustomTag('<link rel="canonical" href="' . htmlspecialchars($url) . '" />');
+			try {
+				$this->doc->addCustomTag('<link rel="canonical" href="' . htmlspecialchars($url) . '" />');
+			} catch (Exception $err) {
+
+			}
+
 		}
 	}
 
@@ -495,8 +518,10 @@ class FabrikViewFormBase extends FabrikView
 	{
 		$pluginManager = FabrikWorker::getPluginManager();
 
+
 		/** @var FabrikFEModelForm $model */
 		$model                 = $this->getModel();
+		$model->elementJsJLayouts();
 		$aLoadedElementPlugins = array();
 		$jsActions             = array();
 		$bKey                  = $model->jsKey();
@@ -509,7 +534,13 @@ class FabrikViewFormBase extends FabrikView
 			FabrikHelperHTML::slimbox();
 
 			$dep                 = new stdClass;
-			$dep->deps           = array('fab/element', 'lib/form_placeholder/Form.Placeholder', 'fab/encoder');
+			$dep->deps           = array(
+				'fab/element',
+				'lib/form_placeholder/Form.Placeholder',
+				'fab/encoder',
+				'fab/lib/debounce/jquery.ba-throttle-debounce'
+			);
+
 			$shim['fabrik/form'] = $dep;
 
 			$deps                         = new stdClass;
@@ -517,6 +548,8 @@ class FabrikViewFormBase extends FabrikView
 			$framework['fab/elementlist'] = $deps;
 
 			$srcs[] = 'media/com_fabrik/js/lib/form_placeholder/Form.Placeholder.js';
+			$srcs[] = 'media/com_fabrik/js/lib/debounce/jquery.ba-throttle-debounce.js';
+
 			FabrikHelperHTML::addToFrameWork($srcs, 'media/com_fabrik/js/form');
 			FabrikHelperHTML::addToFrameWork($srcs, 'media/com_fabrik/js/form-submit');
 			FabrikHelperHTML::addToFrameWork($srcs, 'media/com_fabrik/js/element');

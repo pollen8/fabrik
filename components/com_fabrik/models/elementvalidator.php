@@ -11,8 +11,6 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Joomla\String\String;
-
 jimport('joomla.application.component.model');
 
 /**
@@ -96,10 +94,10 @@ class FabrikFEModelElementValidator extends FabModel
 
 				if ($isPublished)
 				{
-					$class = 'PlgFabrik_Validationrule' . String::ucfirst($usedPlugin);
+					$class = 'PlgFabrik_Validationrule' . JString::ucfirst($usedPlugin);
 					$conf = array();
-					$conf['name'] = String::strtolower($usedPlugin);
-					$conf['type'] = String::strtolower('fabrik_Validationrule');
+					$conf['name'] = JString::strtolower($usedPlugin);
+					$conf['type'] = JString::strtolower('fabrik_Validationrule');
 
 					/** @var PlgFabrik_Validationrule $plugIn */
 					$plugIn = new $class($dispatcher, $conf);
@@ -111,7 +109,6 @@ class FabrikFEModelElementValidator extends FabModel
 					$plugIn->setParams($params, $i);
 
 					$plugIn->getParams()->set('show_icon', FArrayHelper::getValue($showIcon, $i, true));
-					$plugIn->getParams()->set('show_icon', FArrayHelper::getValue($mustValidate, $i, true));
 					$plugIn->getParams()->set('validate_in', FArrayHelper::getValue($validateIn, $i, 'both'));
 					$plugIn->getParams()->set('validation_on', FArrayHelper::getValue($validationOn, $i, 'both'));
 					$plugIn->getParams()->set('must_validate', FArrayHelper::getValue($mustValidate, $i, '0'));

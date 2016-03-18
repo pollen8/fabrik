@@ -8,8 +8,6 @@
  * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
-use Joomla\String\String;
-
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
@@ -132,7 +130,7 @@ class FabrikModelChart extends FabrikFEModelVisualization
 
 			if ($calcfound)
 			{
-				$column = String::substr($column, 6);
+				$column = JString::substr($column, 6);
 			}
 
 			$elements = $listModel->getElements('filtername');
@@ -518,7 +516,7 @@ class FabrikModelChart extends FabrikFEModelVisualization
 
 			if ($calcfound)
 			{
-				$column = String::substr($column, 6);
+				$column = JString::substr($column, 6);
 			}
 
 			if ($calcfound)

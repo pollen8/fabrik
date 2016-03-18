@@ -11,8 +11,6 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Joomla\String\String;
-
 jimport('joomla.application.component.model');
 jimport('joomla.filesystem.file');
 
@@ -294,7 +292,7 @@ class FabrikFEModelPluginmanager extends FabModel
 			$group = 'list';
 		}
 
-		$group = String::strtolower($group);
+		$group = JString::strtolower($group);
 		/* $$$ rob ONLY import the actual plugin you need otherwise ALL $group plugins are loaded regardless of whether they
 		* are used or not memory changes:
 		* Application 0.322 seconds (+0.081); 22.92 MB (+3.054) - pluginmanager: form email imported
@@ -326,11 +324,21 @@ class FabrikFEModelPluginmanager extends FabModel
 			}
 		}
 
-		$class = 'plgFabrik_' . String::ucfirst($group) . String::ucfirst($className);
+		$class = 'plgFabrik_' . JString::ucfirst($group) . JString::ucfirst($className);
 		$conf = array();
-		$conf['name'] = String::strtolower($className);
-		$conf['type'] = String::strtolower('fabrik_' . $group);
-		$plugIn = new $class($dispatcher, $conf);
+		$conf['name'] = JString::strtolower($className);
+		$conf['type'] = JString::strtolower('fabrik_' . $group);
+
+		if (class_exists($class))
+		{
+			$plugIn = new $class($dispatcher, $conf);
+		}
+		else
+		{
+			// Allow for namespaced plugins
+			$class = 'Fabrik\\Plugins\\' . JString::ucfirst($group) . '\\' . JString::ucfirst($className);
+			$plugIn = new $class($dispatcher, $conf);
+		}
 
 		// Needed for viz
 		$client = JApplicationHelper::getClientInfo(0);
@@ -429,7 +437,17 @@ class FabrikFEModelPluginmanager extends FabModel
 				JDEBUG ? $profiler->mark('pluginmanager:getFormPlugins:' . $element->id . '' . $element->plugin) : null;
 				require_once JPATH_PLUGINS . '/fabrik_element/' . $element->plugin . '/' . $element->plugin . '.php';
 				$class = 'PlgFabrik_Element' . $element->plugin;
-				$pluginModel = new $class($dispatcher, array());
+
+				if (class_exists($class))
+				{
+					$pluginModel = new $class($dispatcher, array());
+				}
+				else
+				{
+					// Allow for namespaced plugins
+					$class = 'Fabrik\\Plugins\\' . JString::ucfirst($group) . '\\' . JString::ucfirst($element->plugin);
+					$pluginModel = new $class($dispatcher, array());
+				}
 
 				if (!is_object($pluginModel))
 				{

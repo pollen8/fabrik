@@ -17,6 +17,7 @@
 					<option value="G_SATELLITE_MAP">PLG_ELEMENT_GOOGLE_MAP_SATELITE</option>
 					<option value="G_HYBRID_MAP">PLG_ELEMENT_GOOGLE_MAP_HYBRID</option>
 					<option value="TERRAIN">PLG_ELEMENT_GOOGLE_MAP_TERRAIN</option>
+					<option value="OSM">PLG_ELEMENT_GOOGLE_MAP_OSM</option>
 			</field>
 
 			<field name="fb_gm_zoomlevel"
@@ -352,6 +353,11 @@
 					<option value="2">PLG_ELEMENT_GOOGLE_MAP_GEOCODE_ON_LOAD_EDIT_ONLY</option>
 					<option value="3">PLG_ELEMENT_GOOGLE_MAP_GEOCODE_ON_LOAD_ALWAYS</option>
 			</field>
+
+			<field name="fb_gm_directions_from"
+			       type="listfields"
+			       description="PLG_ELEMENT_GOOGLE_MAP_DIRECTIONS_FROM_DESC"
+			       label="PLG_ELEMENT_GOOGLE_MAP_DIRECTIONS_FROM_LABEL" />
 
 		</fieldset>
 

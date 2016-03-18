@@ -7,7 +7,7 @@
 
 var FbListFilter = new Class({
 
-    Implements: [Options, Events],
+    Implements: [Events],
 
     options: {
         'container'     : '',
@@ -20,106 +20,102 @@ var FbListFilter = new Class({
     },
 
     initialize: function (options) {
-        this.filters = $H({});
-        this.setOptions(options);
-        this.advancedSearch = false;
-        this.container = document.id(this.options.container);
-        this.filterContainer = this.container.getElements('.fabrikFilterContainer');
-        this.filtersInHeadings = this.container.getElements('.listfilter');
-        var b = this.container.getElement('.toggleFilters'),
+        var self = this,
             advancedSearchButton;
-        if (typeOf(b) !== 'null') {
-            b.addEvent('click', function (e) {
-                e.stop();
-                this.filterContainer.toggle();
-                this.filtersInHeadings.toggle();
-            }.bind(this));
+        this.filters = {};
+        this.options = jQuery.extend(this.options, options);
+        this.advancedSearch = false;
+        this.container = jQuery('#' + this.options.container);
+        this.filterContainer = this.container.find('.fabrikFilterContainer');
+        this.filtersInHeadings = this.container.find('.listfilter');
+        var b = this.container.find('.toggleFilters');
+        b.on('click', function (e) {
+            e.stopPropagation();
+            self.filterContainer.toggle();
+            self.filtersInHeadings.toggle();
+        });
 
-            if (typeOf(this.filterContainer) !== 'null') {
-                this.filterContainer.hide();
-                this.filtersInHeadings.toggle();
-            }
+        if (b.length > 0) {
+            this.filterContainer.hide();
+            this.filtersInHeadings.toggle();
         }
 
-        if (typeOf(this.container) === 'null') {
+        if (this.container.length === 0) {
             return;
         }
         this.getList();
-        var c = this.container.getElement('.clearFilters');
-        if (typeOf(c) !== 'null') {
-            c.removeEvents();
-            c.addEvent('click', function (e) {
-                e.stop();
+        var c = this.container.find('.clearFilters');
+        c.off();
+        c.on('click', function (e) {
+            e.preventDefault();
 
-                // Reset the filter fields that contain previously selected values
-                this.container.getElements('.fabrik_filter').each(function (f) {
-                    this.clearAFilter(f);
-                }.bind(this));
-                this.clearPlugins();
-                this.submitClearForm();
-            }.bind(this));
-        }
-        if (advancedSearchButton = this.container.getElement('.advanced-search-link')) {
-            advancedSearchButton.addEvent('click', function (e) {
-                e.stop();
-                var a = e.target;
-                if (a.get('tag') !== 'a') {
-                    a = a.getParent('a');
+            // Reset the filter fields that contain previously selected values
+            self.container.find('.fabrik_filter').each(function (i, f) {
+                self.clearAFilter(jQuery(f));
+            });
+            self.clearPlugins();
+            self.submitClearForm();
+        });
+        if (advancedSearchButton = this.container.find('.advanced-search-link')) {
+            advancedSearchButton.on('click', function (e) {
+                e.preventDefault();
+                var a = jQuery(e.target), windowopts;
+                if (a.prop('tagName') !== 'A') {
+                    a = a.closest('a');
                 }
-                var url = a.href;
-                url += '&listref=' + this.options.ref;
-                this.windowopts = {
-                    'id'           : 'advanced-search-win' + this.options.ref,
+                var url = a.prop('href');
+                url += '&listref=' + self.options.ref;
+                windowopts = {
+                    id             : 'advanced-search-win' + self.options.ref,
+                    modalId        : 'advanced-filter',
                     title          : Joomla.JText._('COM_FABRIK_ADVANCED_SEARCH'),
                     loadMethod     : 'xhr',
                     evalScripts    : true,
                     contentURL     : url,
                     width          : 710,
                     height         : 340,
-                    y              : this.options.popwiny,
+                    y              : self.options.popwiny,
                     onContentLoaded: function () {
-                        var list = Fabrik.blocks['list_' + this.options.ref];
-                        if (typeOf(list) === 'null') {
-                            list = Fabrik.blocks[this.options.container];
-                            this.options.advancedSearch.parentView = this.options.container;
+                        var list = Fabrik.blocks['list_' + self.options.ref];
+                        if (list === undefined) {
+                            list = Fabrik.blocks[self.options.container];
+                            self.options.advancedSearch.parentView = self.options.container;
                         }
-                        list.advancedSearch = new AdvancedSearch(this.options.advancedSearch);
+                        list.advancedSearch = new AdvancedSearch(self.options.advancedSearch);
                         mywin.fitToContent(false);
-                    }.bind(this)
+                    }
                 };
-                var mywin = Fabrik.getWindow(this.windowopts);
-            }.bind(this));
-        }
-
-        if (this.filterContainer[0]) {
-            this.filterContainer[0].getElements('.advancedSelect').each(function (f) {
-                jQuery('#' + f.id).on('change', {changeEvent: 'change'}, function (event) {
-                    document.id(this.id).fireEvent(event.data.changeEvent,
-                        new Event.Mock(document.id(this.id), event.data.changeEvent));
-                });
+                var mywin = Fabrik.getWindow(windowopts);
             });
         }
+
+        this.filterContainer.find('.advancedSelect').each(function () {
+            jQuery('#' + this.id).on('change', {changeEvent: 'change'}, function (event) {
+                jQuery(this).fireEvent(event.data.changeEvent,
+                    new Event.Mock(document.getElementById(this.id), event.data.changeEvent));
+            });
+        });
         this.watchClearOne();
     },
 
     getList: function () {
         this.list = Fabrik.blocks[this.options.type + '_' + this.options.ref];
-        if (typeOf(this.list) === 'null') {
+        if (this.list === undefined) {
             this.list = Fabrik.blocks[this.options.container];
         }
         return this.list;
     },
 
     addFilter: function (plugin, f) {
-        if (this.filters.has(plugin) === false) {
-            this.filters.set(plugin, []);
+        if (this.filters.hasOwnProperty(plugin) === false) {
+            this.filters[plugin] = [];
         }
-        this.filters.get(plugin).push(f);
+        this.filters[plugin].push(f);
     },
 
     onSubmit: function () {
         if (this.filters.date) {
-            this.filters.date.each(function (f) {
+            jQuery.each(this.filters.date, function (key, f) {
                 f.onSubmit();
             });
         }
@@ -127,7 +123,7 @@ var FbListFilter = new Class({
 
     onUpdateData: function () {
         if (this.filters.date) {
-            this.filters.date.each(function (f) {
+            jQuery.each(this.filters.date, function (key, f) {
                 f.onUpdateData();
             });
         }
@@ -139,19 +135,19 @@ var FbListFilter = new Class({
     // daisy chained CDD's.
     getFilterData: function () {
         var h = {};
-        this.container.getElements('.fabrik_filter').each(function (f) {
-            if (f.id.test(/value$/)) {
-                var key = f.id.match(/(\S+)value$/)[1];
+        this.container.find('.fabrik_filter').each(function (k, f) {
+            if (typeof jQuery(this).prop('id') !== 'undefined' && jQuery(this).prop('id').test(/value$/)) {
+                var key = jQuery(this).prop('id').match(/(\S+)value$/)[1];
                 // $$$ rob added check that something is select - possibly causes js
                 // error in ie
-                if (f.get('tag') === 'select' && f.selectedIndex !== -1) {
-                    h[key] = document.id(f.options[f.selectedIndex]).get('text');
+                if (jQuery(this).prop('tagName') === 'SELECT' && this.selectedIndex !== -1) {
+                    h[key] = jQuery(this.options[this.selectedIndex]).text();
                 } else {
-                    h[key] = f.get('value');
+                    h[key] = jQuery(this).val();
                 }
-                h[key + '_raw'] = f.get('value');
+                h[key + '_raw'] = jQuery(this).val();
             }
-        }.bind(this));
+        });
         return h;
     },
 
@@ -159,27 +155,29 @@ var FbListFilter = new Class({
      * Ask all filters to update themselves
      */
     update: function () {
-        this.filters.each(function (fs, plugin) {
+        jQuery.each(this.filters, function (plugin, fs) {
             fs.each(function (f) {
                 f.update();
-            }.bind(this));
-        }.bind(this));
+            });
+        });
     },
 
     /**
      * Clear a single filter
-     * @param {node} f
+     * @param {jQuery} f
      */
     clearAFilter: function (f) {
-        if ((f.name && (f.name.contains('[value]') || f.name.contains('fabrik_list_filter_all'))) ||
+        var sel;
+        if (((f.prop('name').contains('[value]') || f.prop('name').contains('fabrik_list_filter_all'))) ||
             f.hasClass('autocomplete-trigger')) {
-            if (f.get('tag') === 'select') {
-                f.selectedIndex = f.get('multiple') ? -1 : 0;
+            if (f.prop('tagName') === 'SELECT') {
+                sel = f.prop('multiple') ? -1 : 0;
+                f.prop('selectedIndex', sel);
             } else {
-                if (f.get('type') === 'checkbox') {
-                    f.checked = false;
+                if (f.prop('type') === 'checkbox') {
+                    f.prop('checked', false);
                 } else {
-                    f.value = '';
+                    f.val('');
                 }
             }
         }
@@ -189,8 +187,8 @@ var FbListFilter = new Class({
      * Trigger a "clear filter" for any list plugin
      */
     clearPlugins: function () {
-       var plugins = this.getList().plugins;
-        if (typeOf(plugins) !== 'null') {
+        var plugins = this.getList().plugins;
+        if (plugins !== null) {
             plugins.each(function (p) {
                 p.clearFilter();
             });
@@ -201,17 +199,17 @@ var FbListFilter = new Class({
      * Submit the form as part of clearing filter(s)
      */
     submitClearForm: function () {
-        var injectForm = this.container.get('tag') === 'form' ? this.container :
-            this.container.getElement('form');
-        new Element('input', {
+        var injectForm = this.container.prop('tagName') === 'FORM' ? this.container :
+            this.container.find('form');
+        jQuery('<input />').attr({
             'name' : 'resetfilters',
             'value': 1,
             'type' : 'hidden'
-        }).inject(injectForm);
+        }).appendTo(injectForm);
         if (this.options.type === 'list') {
             this.list.submit('list.clearfilter');
         } else {
-            this.container.getElement('form[name=filter]').submit();
+            this.container.find('form[name=filter]').submit();
         }
     },
 
@@ -219,16 +217,17 @@ var FbListFilter = new Class({
      * Watch any dom node which have been set up to clear a single filter
      */
     watchClearOne: function () {
-        this.container.getElements('*[data-filter-clear]').addEvent('click', function (e) {
-            e.stop();
+        var self = this;
+        this.container.find('*[data-filter-clear]').on('click', function (e) {
+            e.stopPropagation();
             var key = jQuery(e.event.currentTarget).data('filter-clear'),
-                filters = document.getElements('*[data-filter-name="' + key + '"]');
+                filters = jQuery('*[data-filter-name="' + key + '"]');
 
-            filters.each(function (filter) {
-                this.clearAFilter(filter);
-            }.bind(this));
+            filters.each(function (i, filter) {
+                self.clearAFilter(jQuery(filter));
+            });
 
-            this.submitClearForm();
-        }.bind(this));
+            self.submitClearForm();
+        });
     }
 });

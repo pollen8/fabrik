@@ -12,7 +12,6 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Joomla\String\String;
 use Joomla\Utilities\ArrayHelper;
 
 jimport('joomla.application.component.modeladmin');
@@ -379,7 +378,7 @@ class FabrikAdminModelElement extends FabModelAdmin
 				$this->setError(FText::_('COM_FABRIK_ERR_CANT_ADD_FIELDS'));
 			}
 
-			if (FabrikWorker::isReserved($data['name']))
+			if (!FabrikWorker::validElementName($data['name']))
 			{
 				$this->setError(FText::_('COM_FABRIK_RESERVED_NAME_USED'));
 			}
@@ -391,7 +390,7 @@ class FabrikAdminModelElement extends FabModelAdmin
 				$this->setError(FText::_('COM_FABRIK_ERR_CANT_ALTER_EXISTING_FIELDS'));
 			}
 
-			if ($nameChanged && FabrikWorker::isReserved($data['name'], false))
+			if ($nameChanged && !FabrikWorker::validElementName($data['name'], false))
 			{
 				$this->setError(FText::_('COM_FABRIK_RESERVED_NAME_USED'));
 			}
@@ -447,7 +446,7 @@ class FabrikAdminModelElement extends FabModelAdmin
 			}
 		}
 		// Strip <p> tag from label
-		$data['label'] = String::str_ireplace(array('<p>', '</p>'), '', $data['label']);
+		$data['label'] = JString::str_ireplace(array('<p>', '</p>'), '', $data['label']);
 
 		return count($this->getErrors()) == 0 ? $data : false;
 	}
@@ -909,7 +908,7 @@ class FabrikAdminModelElement extends FabModelAdmin
 		$fieldType = $elementModel->getFieldDescription();
 
 		// Int elements can't have a index size attribute
-		$size = String::stristr($fieldType, 'int') || $fieldType == 'DATETIME' ? '' : '10';
+		$size = JString::stristr($fieldType, 'int') || $fieldType == 'DATETIME' ? '' : '10';
 
 		if ($elementModel->getParams()->get('can_order'))
 		{
@@ -973,7 +972,7 @@ class FabrikAdminModelElement extends FabModelAdmin
 			$params->js_e_event     = $eEvent[$c];
 			$params->js_e_trigger   = $eTrigger[$c];
 			$params->js_e_condition = $eCond[$c];
-			$foo = str_replace('\\', '\\\\', ($eVal[$c]));
+			$foo                    = str_replace('\\', '\\\\', ($eVal[$c]));
 			$params->js_e_value     = htmlspecialchars($foo);
 			$params->js_published   = $ePublished[$c];
 			$params                 = json_encode($params);
@@ -1009,7 +1008,7 @@ class FabrikAdminModelElement extends FabModelAdmin
 			return array();
 		}
 
-		ArrayHelper::toInteger($ids);
+		$ids   = ArrayHelper::toInteger($ids);
 		$db    = FabrikWorker::getDbo(true);
 		$query = $db->getQuery(true);
 		$query->select('id')->from('#__{package}_elements')->where('group_id IN (' . implode(',', $ids) . ')');
@@ -1085,7 +1084,7 @@ class FabrikAdminModelElement extends FabModelAdmin
 	{
 		$input = $this->app->input;
 		$cid   = $input->get('cid', array(), 'array');
-		ArrayHelper::toInteger($cid);
+		$cid   = ArrayHelper::toInteger($cid);
 		$names = $input->get('name', array(), 'array');
 		$rule  = $this->getTable('element');
 
@@ -1333,10 +1332,10 @@ class FabrikAdminModelElement extends FabModelAdmin
 		{
 			if ($usedPlugin !== '')
 			{
-				$class                = 'plgFabrik_Validationrule' . String::ucfirst($usedPlugin);
+				$class                = 'plgFabrik_Validationrule' . JString::ucfirst($usedPlugin);
 				$conf                 = array();
-				$conf['name']         = String::strtolower($usedPlugin);
-				$conf['type']         = String::strtolower('fabrik_Validationrule');
+				$conf['name']         = JString::strtolower($usedPlugin);
+				$conf['type']         = JString::strtolower('fabrik_Validationrule');
 				$plugIn               = new $class($dispatcher, $conf);
 				$oPlugin              = JPluginHelper::getPlugin('fabrik_validationrule', $usedPlugin);
 				$plugIn->elementModel = $elementModel;

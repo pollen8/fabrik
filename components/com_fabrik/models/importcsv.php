@@ -11,8 +11,6 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Joomla\String\String;
-
 jimport('joomla.application.component.model');
 jimport('joomla.application.component.modelform');
 
@@ -300,7 +298,7 @@ class FabrikFEModelImportcsv extends JModelForm
 					$bom = pack("CCC", 0xef, 0xbb, 0xbf);
 					if (0 === strncmp($heading, $bom, 3))
 					{
-						$heading = String::substr($heading, 3);
+						$heading = JString::substr($heading, 3);
 					}
 
 					if ($mode != 2)
@@ -429,7 +427,6 @@ class FabrikFEModelImportcsv extends JModelForm
 	public function removeCSVFile($clearSession = true)
 	{
 		$baseDir       = $this->getBaseDir();
-		echo "remove csv <br>";
 		$userFile_path = $baseDir . '/' . $this->getCSVFileName();
 
 		if (JFile::exists($userFile_path))
@@ -521,7 +518,7 @@ class FabrikFEModelImportcsv extends JModelForm
 
 					$paramsKey = $elementModel->getFullName(false, false);
 
-					if (String::strtolower(trim($heading)) == String::strtolower(trim($name)))
+					if (JString::strtolower(trim($heading)) == JString::strtolower(trim($name)))
 					{
 						if (!array_key_exists($paramsKey, $this->matchedHeadings))
 						{
@@ -539,7 +536,7 @@ class FabrikFEModelImportcsv extends JModelForm
 
 					$paramsKey .= '_raw';
 
-					if (String::strtolower(trim($heading)) == String::strtolower(trim($name)) . '_raw')
+					if (JString::strtolower(trim($heading)) == JString::strtolower(trim($name)) . '_raw')
 					{
 						if (!array_key_exists($paramsKey, $this->matchedHeadings))
 						{
@@ -647,6 +644,8 @@ class FabrikFEModelImportcsv extends JModelForm
 		// $$$ rob 27/17/212 we need to reset the form as it was first generated before its elements were created.
 		$formModel->reset();
 
+		FabrikWorker::getPluginManager()->runPlugins('onStartImportCSV', $model, 'list');
+
 		if ($dropData && $model->canEmpty())
 		{
 			$model->truncate();
@@ -696,9 +695,9 @@ class FabrikFEModelImportcsv extends JModelForm
 				}
 
 				// Test _raw key and use that
-				if (String::substr($heading, String::strlen($heading) - 4, String::strlen($heading)) == '_raw')
+				if (JString::substr($heading, JString::strlen($heading) - 4, JString::strlen($heading)) == '_raw')
 				{
-					$pktestHeading = String::substr($heading, 0, String::strlen($heading) - 4);
+					$pktestHeading = JString::substr($heading, 0, JString::strlen($heading) - 4);
 				}
 				else
 				{
@@ -731,24 +730,38 @@ class FabrikFEModelImportcsv extends JModelForm
 			}
 			else
 			{
-				// If not overwriting ensusre the any existing PK's are removed and the form rowId set to ''
-				$pk    = FabrikString::safeColNameToArrayKey($item->db_primary_key);
-				$rawPk = $pk . '_raw';
-				unset($aRow[$pk]);
-				unset($aRow[$rawPk]);
-				$formModel->rowId = '';
-				$formModel->setInsertId('');
+				if ($item->auto_inc)
+				{
+					// If not overwriting ensure the any existing PK's are removed and the form rowId set to ''
+					$pk    = FabrikString::safeColNameToArrayKey($item->db_primary_key);
+					$rawPk = $pk . '_raw';
+					unset($aRow[$pk]);
+					unset($aRow[$rawPk]);
+					$formModel->rowId = '';
+					$formModel->setInsertId('');
+					$model->csvOverwriting = false;
+				}
+				else
+				{
+					// If not auto-inc then we should keep the rowid value
+					// but set the form model rowId to '' to enable inserts
+					$formModel->rowId = '';
+
+					// Set to true to avoid list model unsetting pk value
+					$model->csvOverwriting = true;
+				}
+
 				$this->addedCount++;
-				$model->csvOverwriting = false;
+
 			}
 
 			// $$$ rob - if raw and none raw or just raw found then insert the raw data
 			// into the none raw key. Otherwise if just importing raw data no data stored
 			foreach ($aRow as $k => $val)
 			{
-				if (String::substr($k, String::strlen($k) - 4, String::strlen($k)) == '_raw')
+				if (JString::substr($k, JString::strlen($k) - 4, JString::strlen($k)) == '_raw')
 				{
-					$noneraw        = String::substr($k, 0, strlen($k) - 4);
+					$noneraw        = JString::substr($k, 0, strlen($k) - 4);
 					$aRow[$noneraw] = $val;
 				}
 			}
@@ -777,6 +790,8 @@ class FabrikFEModelImportcsv extends JModelForm
 
 		$this->removeCSVFile();
 		$this->updatedCount = $updatedCount;
+
+		FabrikWorker::getPluginManager()->runPlugins('onCompleteImportCSV', $model, 'list');
 	}
 
 	/**
@@ -814,9 +829,9 @@ class FabrikFEModelImportcsv extends JModelForm
 	{
 		foreach ($aRow as $k => $val)
 		{
-			if (String::substr($k, String::strlen($k) - 4, String::strlen($k)) == '_raw')
+			if (JString::substr($k, JString::strlen($k) - 4, JString::strlen($k)) == '_raw')
 			{
-				$noneraw = String::substr($k, 0, String::strlen($k) - 4);
+				$noneraw = JString::substr($k, 0, JString::strlen($k) - 4);
 
 				if (array_key_exists($noneraw, $aRow))
 				{

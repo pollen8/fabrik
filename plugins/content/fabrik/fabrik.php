@@ -192,6 +192,7 @@ class PlgContentFabrik extends JPlugin
 		$rowId                 = '';
 		$useKey                = '';
 		$limit                 = false;
+		$ajax                  = true;
 		$session               = JFactory::getSession();
 		$usersConfig->set('rowid', 0);
 		$viewName = '';
@@ -258,7 +259,9 @@ class PlgContentFabrik extends JPlugin
 				case 'showfilters':
 					$showFilters = $m[1];
 					break;
-
+				case 'ajax':
+					$ajax = (bool) $m[1];
+					break;
 				// $$$ rob for these 2 grab the qs var in priority over the plugin settings
 				case 'clearfilters':
 					$clearFilters = $input->get('clearfilters', $m[1]);
@@ -400,6 +403,10 @@ class PlgContentFabrik extends JPlugin
 				$origRowId = $input->get('rowid');
 				$input->set('rowid', $rowId);
 
+				// Set detail view for things like youtube element
+				$origView = $input->get('view');
+				$input->set('view', 'details');
+
 				$defaultData = (array) $defaultData;
 				unset($activeEl->defaults);
 
@@ -422,6 +429,7 @@ class PlgContentFabrik extends JPlugin
 				}
 
 				$input->set('rowid', $origRowId);
+				$input->set('view', $origView);
 				$this->resetRequest();
 			}
 
@@ -486,7 +494,7 @@ class PlgContentFabrik extends JPlugin
 					return;
 				}
 
-				$model->ajax = true;
+				$model->ajax = $ajax;
 				$model->setId($id);
 
 				unset($model->groups);
@@ -555,7 +563,7 @@ class PlgContentFabrik extends JPlugin
 				}
 
 				$input->set('fabrik_show_in_list', $show_in_list);
-				$model->ajax = 1;
+				$model->ajax = $ajax;
 				$task        = $input->get('task');
 
 				if (method_exists($controller, $task) && $input->getInt('activetableid') == $id)

@@ -11,7 +11,6 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Joomla\String\String;
 use Joomla\Utilities\ArrayHelper;
 
 /**
@@ -360,7 +359,7 @@ class PlgFabrik_ElementTextarea extends PlgFabrik_Element
 			if ($params->get('textarea_limit_type', 'char') === 'char')
 			{
 				$label = FText::_('PLG_ELEMENT_TEXTAREA_CHARACTERS_LEFT');
-				$charsLeft = $params->get('textarea-maxlength') - String::strlen($value);
+				$charsLeft = $params->get('textarea-maxlength') - JString::strlen($value);
 			}
 			else
 			{
@@ -518,7 +517,7 @@ class PlgFabrik_ElementTextarea extends PlgFabrik_Element
 			return true;
 		}
 
-		if (String::strlen($data) > (int) $params->get('textarea-maxlength'))
+		if (JString::strlen($data) > (int) $params->get('textarea-maxlength'))
 		{
 			return false;
 		}

@@ -8,7 +8,7 @@
 /** call back method when maps api is loaded*/
 function googlemapload() {
 	if (typeOf(Fabrik.googleMapRadius) === 'null') {
-		var script2 = document.createElement("script"),
+		var script2 = document.createElement('script'),
 		l = document.location,
 		path = l.pathname.split('/'),
 		index = path.indexOf('index.php');
@@ -19,7 +19,7 @@ function googlemapload() {
 		}
 		path.shift();
 		path = path.join('/');
-		script2.type = "text/javascript";
+		script2.type = 'text/javascript';
 		//script2.src = l.protocol + '//' + l.host + '/' + path + '/components/com_fabrik/libs/googlemaps/distancewidget.js';
 		script2.src = Fabrik.liveSite + '/components/com_fabrik/libs/googlemaps/distancewidget.js';
 		document.body.appendChild(script2);
@@ -70,7 +70,10 @@ var FbGoogleMap = new Class({
 		'geocode_on_load': false,
 		'traffic': false,
 		'debounceDelay': 500,
-		'styles': []
+		'styles': [],
+		'directionsFrom': false,
+		'directionsFromLat': 0,
+		'directionsFromLon':0
 	},
 
 	loadScript: function () {
@@ -83,21 +86,31 @@ var FbGoogleMap = new Class({
 		this.parent(element, options);
 
 		this.loadFn = function () {
+			// experimental support for OSM rendering
+			this.mapTypeIds = [];
+			for (var type in google.maps.MapTypeId) {
+				this.mapTypeIds.push(google.maps.MapTypeId[type]);
+			}
+			this.mapTypeIds.push('OSM');
+
 			switch (this.options.maptype) {
-			case 'G_SATELLITE_MAP':
-				this.options.maptype = google.maps.MapTypeId.SATELLITE;
-				break;
-			case 'G_HYBRID_MAP':
-				this.options.maptype = google.maps.MapTypeId.HYBRID;
-				break;
-			case 'TERRAIN':
-				this.options.maptype = google.maps.MapTypeId.TERRAIN;
-				break;
-			default:
-			/* falls through */
-			case 'G_NORMAL_MAP':
-				this.options.maptype = google.maps.MapTypeId.ROADMAP;
-				break;
+				case 'OSM':
+					this.options.maptype = 'OSM';
+					break;
+				case 'G_SATELLITE_MAP':
+					this.options.maptype = google.maps.MapTypeId.SATELLITE;
+					break;
+				case 'G_HYBRID_MAP':
+					this.options.maptype = google.maps.MapTypeId.HYBRID;
+					break;
+				case 'TERRAIN':
+					this.options.maptype = google.maps.MapTypeId.TERRAIN;
+					break;
+				default:
+				/* falls through */
+				case 'G_NORMAL_MAP':
+					this.options.maptype = google.maps.MapTypeId.ROADMAP;
+					break;
 			}
 			this.makeMap();
 
@@ -151,9 +164,11 @@ var FbGoogleMap = new Class({
 		if (typeOf(this.element) === 'null') {
 			return;
 		}
+
 		if (this.options.geocode || this.options.reverse_geocode) {
 			this.geocoder = new google.maps.Geocoder();
 		}
+
 		// Need to use this.options.element as if loading from ajax popup win in list view for some reason
 		// this.element refers to the first loaded row, which should have been removed from the dom
 		this.element = document.id(this.options.element);
@@ -185,16 +200,35 @@ var FbGoogleMap = new Class({
 					zoomControl: true,
 					zoomControlOptions: {
 						style: zoomControlStyle
+					},
+					mapTypeControlOptions: {
+						mapTypeIds: this.mapTypeIds
 					}
 				};
 			this.map = new google.maps.Map(document.id(this.element).getElement('.map'), mapOpts);
 			this.map.setOptions({'styles': this.options.styles});
-			
+
+			/**
+			 * Experimental support for OSM tile rendering, see ...
+			 * http://wiki.openstreetmap.org/wiki/Google_Maps_Example
+			 */
+			if (this.options.maptype === 'OSM') {
+				this.map.mapTypes.set('OSM', new google.maps.ImageMapType({
+					getTileUrl: function (coord, zoom) {
+						// See above example if you need smooth wrapping at 180th meridian
+						return 'http://tile.openstreetmap.org/' + zoom + '/' + coord.x + '/' + coord.y + '.png';
+					},
+					tileSize  : new google.maps.Size(256, 256),
+					name      : 'OpenStreetMap',
+					maxZoom   : 18
+				}));
+			}
+
 			if (this.options.traffic) {
 				  var trafficLayer = new google.maps.TrafficLayer();
-				  trafficLayer.setMap(this.map);	
+				  trafficLayer.setMap(this.map);
 			}
-			
+
 			var point = new google.maps.LatLng(this.options.lat, this.options.lon);
 			var opts = {
 				map: this.map,
@@ -232,6 +266,17 @@ var FbGoogleMap = new Class({
 				this.element.getElement('.lngdms').value = this.lngDecToDMS();
 			}
 
+			if (this.options.directionsFrom) {
+				this.directionsService = new google.maps.DirectionsService();
+				this.directionsDisplay = new google.maps.DirectionsRenderer();
+				this.directionsDisplay.setMap(this.map);
+				this.directionsFromPoint = new google.maps.LatLng(
+					this.options.directionsFromLat,
+					this.options.directionsFromLon
+				);
+				this.calcRoute();
+			}
+
 			google.maps.event.addListener(this.marker, "dragend", function () {
 				this.field.value = this.marker.getPosition() + ":" + this.map.getZoom();
 				if (this.options.latlng === true) {
@@ -248,10 +293,15 @@ var FbGoogleMap = new Class({
 				if (this.options.reverse_geocode) {
 					this.reverseGeocode();
 				}
+				if (this.options.directionsFrom) {
+					this.calcRoute();
+				}
 			}.bind(this));
+
 			google.maps.event.addListener(this.map, "zoom_changed", function (oldLevel, newLevel) {
 				this.field.value = this.marker.getPosition() + ":" + this.map.getZoom();
 			}.bind(this));
+
 			if (this.options.auto_center && this.options.editable) {
 				google.maps.event.addListener(this.map, "dragend", function () {
 					this.marker.setPosition(this.map.getCenter());
@@ -271,9 +321,19 @@ var FbGoogleMap = new Class({
 		Fabrik.addEvent('fabrik.form.page.change.end', function (form) {
 			this.redraw();
 		}.bind(this));
-		if (this.options.geocode && this.options.geocode_on_load) {
-			this.geoCode();
-		}
+	},
+
+	calcRoute: function () {
+		var request = {
+			origin: this.directionsFromPoint,
+			destination: this.marker.getPosition(),
+			travelMode: google.maps.TravelMode.DRIVING
+		};
+		this.directionsService.route(request, function(result, status) {
+			if (status == google.maps.DirectionsStatus.OK) {
+				this.directionsDisplay.setDirections(result);
+			}
+		}.bind(this));
 	},
 
 	radiusUpdatePosition: function () {
@@ -470,7 +530,7 @@ var FbGoogleMap = new Class({
 		return dmslng_dir + dmslng_d + '°' + dmslng_m + '\'' + dmslng_s + '"';
 
 	},
-	
+
 	latLonToOSRef: function () {
 		var ll2 = new LatLng(this.marker.getPosition().lng(), this.marker.getPosition().lng());
 		var OSRef = ll2.toOSRef();
@@ -513,9 +573,9 @@ var FbGoogleMap = new Class({
 					var f = document.id(field);
 					if (typeOf(f) !== 'null') {
 						var that = this;
-						jQuery(f).on('keyup', jQuery.debounce(this.options.debounceDelay, function(e) {
+						jQuery(f).on('keyup', Fabrik.debounce(this.options.debounceDelay, function(e) {
 							that.geoCode(e);
-						}))
+						}));
 						// Select lists, radios whatnots
 						f.addEvent('change', function (e) {
 							this.geoCode();
@@ -551,9 +611,9 @@ var FbGoogleMap = new Class({
 				}.bind(this));
 				*/
 				var that = this;
-				jQuery(this.element.getElement('.geocode_input')).on('keyup', jQuery.debounce(this.options.debounceDelay, function(e) {
+				jQuery(this.element.getElement('.geocode_input')).on('keyup', Fabrik.debounce(this.options.debounceDelay, function(e) {
 					that.geoCode(e);
-				}))
+				}));
 			}
 		}
 	},
@@ -627,7 +687,7 @@ var FbGoogleMap = new Class({
 		this.map.setCenter(center);
 		this.map.setZoom(this.map.getZoom());
 	},
-	
+
 	reverseGeocode: function () {
 		this.geocoder.geocode({'latLng': this.marker.getPosition()}, function (results, status) {
 			if (status === google.maps.GeocoderStatus.OK) {
@@ -696,7 +756,7 @@ var FbGoogleMap = new Class({
 			}
 		}.bind(this));
 	},
-	
+
 	doSetCenter: function (pnt, zoom, doReverseGeocode) {
 		this.map.setCenter(pnt, zoom);
 		this.field.value = this.marker.getPosition() + ":" + this.map.getZoom();
@@ -711,6 +771,13 @@ var FbGoogleMap = new Class({
 		if (doReverseGeocode && this.options.reverse_geocode) {
 			this.reverseGeocode();
 		}
+	},
+
+	attachedToForm : function () {
+		if (this.options.geocode && this.options.geocode_on_load) {
+			this.geoCode();
+		}
+		this.parent();
 	}
 
 });

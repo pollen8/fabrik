@@ -11,7 +11,6 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Joomla\String\String;
 use \Joomla\Registry\Registry;
 use Joomla\Utilities\ArrayHelper;
 
@@ -1017,7 +1016,7 @@ class FabrikFEModelGroup extends FabModel
 
 		$label = $input->getString('group' . $group->id . '_label', $groupTable->label);
 
-		if (String::stristr($label, "{Add/Edit}"))
+		if (JString::stristr($label, "{Add/Edit}"))
 		{
 			$replace = $formModel->isNewRecord() ? FText::_('COM_FABRIK_ADD') : FText::_('COM_FABRIK_EDIT');
 			$label = str_replace("{Add/Edit}", $replace, $label);

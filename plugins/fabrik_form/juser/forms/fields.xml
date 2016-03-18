@@ -3,7 +3,7 @@
 	<fields
 		addfieldpath="/administrator/components/com_fabrik/models/fields"
 		name="params">
-		
+
 		<fieldset name="plg-form-juser" label="PLG_FABRIK_FORM_JUSER_FIELDS">
 
 			<field name="juser_field_name"
@@ -61,7 +61,7 @@
 				repeat="true" />
 
 		</fieldset>
-		
+
 		<fieldset name="plg-form-juser-bypass" label="PLG_FABRIK_FORM_JUSER_BYPASS" description="text">
 
 			<field name="juser_bypass_activation"
@@ -96,7 +96,7 @@
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
-			
+
 			<field name="juser_use_email_plugin"
 				type="radio"
 				default="0"
@@ -107,9 +107,9 @@
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
-			
+
 		</fieldset>
-		
+
 		<fieldset name="plg-form-juser-options" label="COM_FABRIK_OPTIONS">
 
 			<field name="juser_field_default_group"
@@ -119,6 +119,13 @@
 				label="PLG_FABRIK_FORM_JUSER_DEFAULT_USERTYPE_FIELD_LABEL"
 				repeat="true" />
 
+			<field name="juser_group_whitelist"
+			       type="usergrouplist"
+			       repeat="true"
+			       multiple="true"
+			       description="PLG_FABRIK_FORM_JUSER_GROUP_WHITELIST_DESC"
+			       label="PLG_FABRIK_FORM_JUSER_GROUP_WHITELIST_LABEL" />
+
 			<field name="juser_conditon"
 				type="fabrikeditor"
 				mode="php"
@@ -126,7 +133,7 @@
 				label="PLG_FABRIK_FORM_JUSER_CONDITION_LABEL"
 				repeat="true" />
 		</fieldset>
-		
+
 		<fieldset name="plg-form-juser-sycn" label="PLG_FABRIK_FORM_JUSER_SYNC">
 
 			<field name="juser_delete_user"

@@ -28,8 +28,8 @@ class PlgFabrik_Cronemail extends PlgFabrik_Cron
 	/**
 	 * Check if the user can use the plugin
 	 *
-	 * @param   string  $location  To trigger plugin on
-	 * @param   string  $event     To trigger plugin on
+	 * @param   string $location To trigger plugin on
+	 * @param   string $event    To trigger plugin on
 	 *
 	 * @return  bool can use or not
 	 */
@@ -41,7 +41,7 @@ class PlgFabrik_Cronemail extends PlgFabrik_Cron
 	/**
 	 * Do the plugin action
 	 *
-	 * @param   array  &$data  data
+	 * @param   array &$data data
 	 *
 	 * @return  int  number of records updated
 	 */
@@ -49,17 +49,17 @@ class PlgFabrik_Cronemail extends PlgFabrik_Cron
 	{
 		jimport('joomla.mail.helper');
 		$params = $this->getParams();
-		$msg = $params->get('message');
+		$msg    = $params->get('message');
 		FabrikHelperHTML::runContentPlugins($msg);
 		$to = explode(',', $params->get('to'));
 
 		$w = new FabrikWorker;
 		($params->get('cronemail_return', '') != '') ? $MailFrom = $params->get('cronemail_return') : $MailFrom = $this->app->get('mailfrom');
 		($params->get('cronemail_from', '') != '') ? $FromName = $params->get('cronemail_from') : $FromName = $this->app->get('fromname');
-		$subject = $params->get('subject', 'Fabrik cron job');
-		$eval = $params->get('cronemail-eval');
+		$subject   = $params->get('subject', 'Fabrik cron job');
+		$eval      = $params->get('cronemail-eval');
 		$condition = $params->get('cronemail_condition', '');
-		$updates = array();
+		$updates   = array();
 		$this->log = '';
 
 		foreach ($data as $group)
@@ -82,7 +82,7 @@ class PlgFabrik_Cronemail extends PlgFabrik_Cron
 
 					foreach ($to as $thisTo)
 					{
-						$thisTo = $w->parseMessageForPlaceHolder($thisTo, $row);
+						$thisTo = trim($w->parseMessageForPlaceHolder($thisTo, $row));
 
 						if (FabrikWorker::isEmail($thisTo))
 						{
@@ -94,8 +94,8 @@ class PlgFabrik_Cronemail extends PlgFabrik_Cron
 							}
 
 							$thisSubject = $w->parseMessageForPlaceHolder($subject, $row);
-							$mail = JFactory::getMailer();
-							$res = $mail->sendMail($MailFrom, $FromName, $thisTo, $thisSubject, $thisMsg, true);
+							$mail        = JFactory::getMailer();
+							$res         = $mail->sendMail($MailFrom, $FromName, $thisTo, $thisSubject, $thisMsg, true);
 
 							if (!$res)
 							{
@@ -134,9 +134,9 @@ class PlgFabrik_Cronemail extends PlgFabrik_Cron
 				$value = @eval($value);
 			}
 
-			$field = str_replace('___', '.', $field);
+			$field    = str_replace('___', '.', $field);
 			$fabrikDb = $listModel->getDb();
-			$query = $fabrikDb->getQuery(true);
+			$query    = $fabrikDb->getQuery(true);
 			$query->update($table->db_table_name)->set($field . ' = ' . $fabrikDb->quote($value))
 				->where($table->db_primary_key . ' IN (' . implode(',', $updates) . ')');
 			$this->log .= "\n update query: $query";

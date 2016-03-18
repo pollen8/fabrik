@@ -14,7 +14,6 @@ defined('_JEXEC') or die('Restricted access');
 
 require_once 'fabmodeladmin.php';
 
-use \Joomla\String\String;
 use \Joomla\Utilities\ArrayHelper;
 use \Joomla\Registry\Registry;
 
@@ -645,6 +644,9 @@ class FabrikAdminModelList extends FabModelAdmin
 
 		$params = new Registry($row->get('params'));
 
+		$isView = $this->setIsView($params);
+		$data['params']['isView'] = (string) $isView;
+
 		$this->setState('list.id', $id);
 		$this->setState('list.form_id', $row->get('form_id'));
 		$feModel = $this->getFEModel();
@@ -754,7 +756,7 @@ class FabrikAdminModelList extends FabModelAdmin
 			// Store without qns as that's db specific
 			$row->set('db_primary_key', $row->get('db_primary_key', '') == '' ? $row->get('db_table_name') . '.' . $key
 				: $row->get('db_primary_key'));
-			$row->set('auto_inc', String::stristr($extra, 'auto_increment') ? true : false);
+			$row->set('auto_inc', JString::stristr($extra, 'auto_increment') ? true : false);
 		}
 
 		$row->store();
@@ -794,6 +796,47 @@ class FabrikAdminModelList extends FabModelAdmin
 	}
 
 	/**
+	 * Tests if the table is in fact a view
+	 *
+	 * @return  bool	true if table is a view
+	 */
+	public function setIsView($params)
+	{
+		$isView = $params->get('isview', null);
+
+		if (!is_null($isView) && (int) $isView >= 0)
+		{
+			return $isView;
+		}
+
+		$feModel = $this->getFEModel();
+
+		$db = FabrikWorker::getDbo();
+		$table = $this->getTable();
+		$cn = $feModel->getConnection();
+		$c = $cn->getConnection();
+		$dbName = $c->database;
+
+		if ($table->db_table_name == '')
+		{
+			return;
+		}
+
+		// @todo JQueryBuilder this?
+		$sql = " SELECT table_name, table_type, engine FROM INFORMATION_SCHEMA.tables " . "WHERE table_name = " . $db->q($table->db_table_name)
+			. " AND table_type = 'view' AND table_schema = " . $db->q($dbName);
+		$db->setQuery($sql);
+		$row = $db->loadObjectList();
+		$isView = empty($row) ? "0" : "1";
+		$feModel->setIsView($isView);
+
+		// Store and save param for following tests
+		$params->set('isview', $isView);
+
+		return $isView;
+	}
+
+	/**
 	 * Make an array of elements and a presumed index size, map is then used in creating indexes
 	 *
 	 * @param   Registry $params
@@ -817,11 +860,11 @@ class FabrikAdminModelList extends FabModelAdmin
 				// Int and DATETIME elements cant have a index size attribute
 				$colType = $element->getFieldDescription();
 
-				if (String::stristr($colType, 'int'))
+				if (JString::stristr($colType, 'int'))
 				{
 					$size = '';
 				}
-				elseif (String::stristr($colType, 'datetime'))
+				elseif (JString::stristr($colType, 'datetime'))
 				{
 					$size = '';
 				}
@@ -1310,7 +1353,7 @@ class FabrikAdminModelList extends FabModelAdmin
 			else
 			{
 				// If the field is the primary key and it's an INT type set the plugin to be the fabrik internal id
-				if ($key[0]['colname'] == $label && String::strtolower(substr($key[0]['type'], 0, 3)) === 'int')
+				if ($key[0]['colname'] == $label && JString::strtolower(substr($key[0]['type'], 0, 3)) === 'int')
 				{
 					$plugin = 'internalid';
 				}
@@ -1347,7 +1390,7 @@ class FabrikAdminModelList extends FabModelAdmin
 				}
 				// Then alter if defined in Fabrik global config
 				// Jaanus: but first check if there are any pk field and if yes then create as internalid
-				$defType = String::strtolower(substr($key[0]['type'], 0, 3));
+				$defType = JString::strtolower(substr($key[0]['type'], 0, 3));
 				$plugin  = ($key[0]['colname'] == $label && $defType === 'int') ? 'internalid' : $fbConfig->get($type, $plugin);
 			}
 
@@ -1676,7 +1719,7 @@ class FabrikAdminModelList extends FabModelAdmin
 				// not any similarly named elements from joined tables (like 'id')
 				if ($el->getElement()->name == $join->table_key)
 				{
-					$size = String::stristr($el->getFieldDescription(), 'int') ? '' : '10';
+					$size = JString::stristr($el->getFieldDescription(), 'int') ? '' : '10';
 				}
 			}
 
@@ -1900,7 +1943,7 @@ class FabrikAdminModelList extends FabModelAdmin
 
 				if ($drop)
 				{
-					if (strncasecmp($table->db_table_name, $dbConfigPrefix, String::strlen($dbConfigPrefix)) == 0)
+					if (strncasecmp($table->db_table_name, $dbConfigPrefix, JString::strlen($dbConfigPrefix)) == 0)
 					{
 						$this->app->enqueueMessage(JText::sprintf('COM_FABRIK_TABLE_NOT_DROPPED_PREFIX', $table->db_table_name, $dbConfigPrefix), 'notice');
 					}
@@ -2070,7 +2113,7 @@ class FabrikAdminModelList extends FabModelAdmin
 			}
 			else
 			{
-				switch (String::strtolower($type))
+				switch (JString::strtolower($type))
 				{
 					case 'integer':
 						$objType = 'INT';
@@ -2269,7 +2312,7 @@ class FabrikAdminModelList extends FabModelAdmin
 
 				if ($objName != '' && !is_null($objType))
 				{
-					if (String::stristr($objType, 'not null'))
+					if (JString::stristr($objType, 'not null'))
 					{
 						$lines[] = $fabrikDb->qn($objName) . ' ' . $objType;
 					}

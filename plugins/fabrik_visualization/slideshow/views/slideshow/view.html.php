@@ -88,6 +88,7 @@ class FabrikViewSlideshow extends JViewLegacy
 			$srcs[] = 'plugins/fabrik_visualization/slideshow/slideshow.js';
 		}
 
+		FabrikHelperHTML::slimbox();
 		FabrikHelperHTML::iniRequireJs($model->getShim());
 		FabrikHelperHTML::script($srcs, $this->js);
 

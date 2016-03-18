@@ -46,21 +46,21 @@ var FbAutocomplete = new Class({
 				return;
 			}
 			this.getInputElement().setProperty('autocomplete', 'off');
-			
+
 			/*
 			this.getInputElement().addEvent('keyup', function (e) {
 				this.search(e);
 			}.bind(this));
 			*/
-			
+
 			/**
 			 * Using a 3rd party jQuery lib to 'debounce' the input, so the search doesn't fire until
 			 * the user has stopped typing for more than X ms
 			 */
-			var that = this;
-			jQuery(document).on('keyup', jQuery.debounce(this.options.debounceDelay, function(e) {
-				that.search(e);
-			}))
+			var self = this;
+			jQuery(document).on('keyup', Fabrik.debounce(this.options.debounceDelay, function(e) {
+				self.search(e);
+			}));
 
 			this.getInputElement().addEvent('blur', function (e) {
 				if (this.options.storeMatchedResultsOnly) {
@@ -78,7 +78,7 @@ var FbAutocomplete = new Class({
 		/**
 		 * NOTE that because we use a jQuery event to trigger this, e is a jQuery event, so keyCode
 		 * instead of code, and e.preventDefault() instead of e.stop()
-		 */ 
+		 */
 		if (!this.isMinTriggerlength()) {
 			return;
 		}

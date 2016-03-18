@@ -11,8 +11,6 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Joomla\String\String;
-
 require_once JPATH_ADMINISTRATOR . '/components/com_fabrik/helpers/element.php';
 
 /**
@@ -40,11 +38,10 @@ class JFormFieldUploadsize extends JFormField
 	 *
 	 * @return  int  bytes
 	 */
-
 	protected function _return_bytes($val)
 	{
 		$val = trim($val);
-		$last = String::strtolower(String::substr($val, -1));
+		$last = JString::strtolower(JString::substr($val, -1));
 
 		if ($last == 'g')
 		{
@@ -67,7 +64,6 @@ class JFormFieldUploadsize extends JFormField
 	 *
 	 * @return  string  HTML markup
 	 */
-
 	protected function getInput()
 	{
 		$size = $this->element['size'] ? 'size="' . $this->element['size'] . '"' : '';
@@ -87,7 +83,6 @@ class JFormFieldUploadsize extends JFormField
 	 *
 	 * @return  string  The field label markup.
 	 */
-
 	protected function getLabel()
 	{
 		// Get the label text from the XML element, defaulting to the element name.
@@ -105,7 +100,6 @@ class JFormFieldUploadsize extends JFormField
 	 *
 	 * @return	int	kilobyte upload size
 	 */
-
 	protected function getMax()
 	{
 		$post_value = $this->_return_bytes(ini_get('post_max_size'));

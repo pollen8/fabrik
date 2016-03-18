@@ -386,4 +386,27 @@ class FArrayHelper extends JArrayHelper
 		return $result;
 	}
 
+	/**
+	 *
+	 * Wrapper for srray_fill, 'cos PHP <5.6 tosses a warning if $num is not positive,
+	 * and we often call it with 0 length
+	 *
+	 * @param   int    $start_index
+	 * @param   int    $num
+	 * @param   mixed  $value
+	 *
+	 * @return  array
+	 */
+	public static function array_fill($start_index, $num, $value)
+	{
+		if ($num > 0)
+		{
+			return array_fill($start_index, $num, $value);
+		}
+		else
+		{
+			return array();
+		}
+	}
+
 }

@@ -100,7 +100,7 @@ class FabrikAdminControllerElements extends FabControllerAdmin
 			$model = $this->getModel();
 
 			// Make sure the item ids are integers
-			ArrayHelper::toInteger($cid);
+			$cid = ArrayHelper::toInteger($cid);
 
 			// Publish the items.
 			if (!$model->addToListView($cid, $value))
@@ -213,8 +213,8 @@ class FabrikAdminControllerElements extends FabControllerAdmin
 		$order = $this->input->post->get('order', array(), 'array');
 
 		// Sanitize the input
-		ArrayHelper::toInteger($pks);
-		ArrayHelper::toInteger($order);
+		$pks = ArrayHelper::toInteger($pks);
+		$order = ArrayHelper::toInteger($order);
 
 		// Get the model
 		$model = $this->getModel();

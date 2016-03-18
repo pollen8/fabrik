@@ -256,9 +256,12 @@ class PlgSystemFabrikcron extends JPlugin
 				$this->log->message .= "\n\n" . $this->row->plugin . "\n listid = " . $thisListModel->getId();
 				if ($this->pluginModel->requiresTableData())
 				{
-					$table = $thisListModel->getTable();
-					$total = $thisListModel->getTotalRecords();
-					$nav = $thisListModel->getPagination($total, 0, $total);
+					//$table = $thisListModel->getTable();
+					//$total = $thisListModel->getTotalRecords();
+					//$nav = $thisListModel->getPagination($total, 0, $total);
+					$cron_row_limit = (int)$params->get('cron_row_limit', 100);
+					$thisListModel->setLimits(0, $cron_row_limit);
+					$thisListModel->getPagination(0, 0, $cron_row_limit);
 					$data = $thisListModel->getData();
 					$this->log->message .= "\n" . $thisListModel->buildQuery();
 				}

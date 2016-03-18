@@ -11,8 +11,6 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Joomla\String\String;
-
 require_once JPATH_SITE . '/components/com_fabrik/models/element.php';
 
 /**
@@ -97,6 +95,8 @@ class PlgFabrik_ElementPicklist extends PlgFabrik_ElementList
 			return implode(', ', $to);
 		}
 
+		FabrikHelperHTML::stylesheet(COM_FABRIK_LIVESITE . 'plugins/fabrik_element/picklist/picklist.css');
+
 		$layout                   = $this->getLayout('form');
 		$layoutData               = new stdClass;
 		$layoutData->id           = $this->getHTMLId($repeatCounter);
@@ -151,7 +151,7 @@ class PlgFabrik_ElementPicklist extends PlgFabrik_ElementList
 
 		for ($i = 0; $i < count($labels); $i++)
 		{
-			if (String::strtolower($labels[$i]) == String::strtolower($value))
+			if (JString::strtolower($labels[$i]) == JString::strtolower($value))
 			{
 				$val = $values[$i];
 

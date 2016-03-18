@@ -11,7 +11,6 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Joomla\String\String;
 use \Joomla\Registry\Registry;
 use Joomla\Utilities\ArrayHelper;
 
@@ -621,7 +620,16 @@ class FabrikFEModelForm extends FabModelForm
 
 			if (!FabrikHelperHTML::stylesheetFromPath($path))
 			{
-				FabrikHelperHTML::stylesheetFromPath('components/com_fabrik/views/' . $view . '/' . $jTmplFolder . '/' . $tmpl . '/custom_css.php' . $qs);
+				$displayData              = new stdClass;
+				$displayData->view        = $view;
+				$displayData->tmpl        = $tmpl;
+				$displayData->qs          = $qs;
+				$displayData->jTmplFolder = $jTmplFolder;
+				$displayData->formModel   = $this;
+				$layout = $this->getLayout('form.fabrik-custom-css-qs');
+				$path = $layout->render($displayData);
+
+				FabrikHelperHTML::stylesheetFromPath($path);
 			}
 		}
 
@@ -2323,6 +2331,25 @@ class FabrikFEModelForm extends FabModelForm
 	}
 
 	/**
+	 * Helper method to get the session context - apply row id only if not '' as
+	 * accessing session data with a path '..' appears not to be possible
+	 *
+	 * @return string
+	 */
+	public function getSessionContext()
+	{
+		$context = 'com_' . $this->package . '.form.' . $this->getId() . '.';
+		$rowId = $this->getRowId();
+
+		if ($rowId !== '')
+		{
+			$context .= $rowId . '.';
+		}
+
+		return $context;
+	}
+
+	/**
 	 * Get form validation errors - if empty test session for errors
 	 * 31/01/13 - no longer restoring from session errors - see http://fabrikar.com/forums/showthread.php?t=31377
 	 * 19/02/13 - Changed from http_referer test to this->isMambot to restore session errors when redirecting from a non-ajax form
@@ -2332,8 +2359,6 @@ class FabrikFEModelForm extends FabModelForm
 	 */
 	public function getErrors()
 	{
-		$context = 'com_' . $this->package . '.form.' . $this->getId() . '.' . $this->getRowId() . '.';
-
 		// Store errors in local array as clearErrors() removes $this->errors
 		$errors = array();
 
@@ -2341,7 +2366,7 @@ class FabrikFEModelForm extends FabModelForm
 		{
 			if ($this->isMambot)
 			{
-				$errors = $this->session->get($context . 'errors', array());
+				$errors = $this->session->get($this->getSessionContext() . 'errors', array());
 			}
 		}
 		else
@@ -2362,7 +2387,7 @@ class FabrikFEModelForm extends FabModelForm
 	public function clearErrors()
 	{
 		$this->errors = array();
-		$context = 'com_' . $this->package . '.form.' . $this->getId() . '.' . $this->getRowId() . '.';
+		$context = $this->getSessionContext();
 		$this->session->clear($context . 'errors');
 		/* $$$ rob this was commented out, but putting back in to test issue that if we have ajax validations on
 		 * and a field is validated, then we don't submit the form, and go back to add the form, the previously validated
@@ -2380,7 +2405,7 @@ class FabrikFEModelForm extends FabModelForm
 	 */
 	public function setErrors($errors)
 	{
-		$context = 'com_' . $this->package . '.form.' . $this->getId() . '.' . $this->getRowId() . '.';
+		$context = $this->getSessionContext();
 		$this->session->set($context . 'errors', $errors);
 		$this->session->set($context . 'session.on', true);
 	}
@@ -2928,9 +2953,11 @@ class FabrikFEModelForm extends FabModelForm
 			$errorsFound = true;
 		}
 
-		foreach ($this->errors as $field => $errors)
+		$allErrors = $this->isMambot ? $this->session->get($this->getSessionContext() . 'errors', array()) : $this->errors;
+
+		foreach ($allErrors as $field => $errors)
 		{
-			if (!empty($errors))
+			if (!empty($errors) & is_array($errors))
 			{
 				foreach ($errors as $error)
 				{
@@ -3049,7 +3076,8 @@ class FabrikFEModelForm extends FabModelForm
 
 					if ($sessionRow->data != '')
 					{
-						$data = FArrayHelper::toObject(unserialize($sessionRow->data), 'stdClass', false);
+						$sData = unserialize($sessionRow->data);
+						$data = FArrayHelper::toObject($sData, 'stdClass', false);
 						JFilterOutput::objectHTMLSafe($data);
 						$data = array($data);
 						FabrikHelperHTML::debug($data, 'form:getData from session (form in Mambot and errors)');
@@ -3236,7 +3264,7 @@ class FabrikFEModelForm extends FabModelForm
 
 		if (in_array(true, $pluginManager->data))
 		{
-			if ($this->session->get('com_' . $this->package . '.form.' . $this->getId() . '.' . $this->getRowId() . '.session.on') == true && $useSessionOn)
+			if ($this->session->get($this->getSessionContext() . '.session.on') == true && $useSessionOn)
 			{
 				return true;
 			}
@@ -3560,11 +3588,11 @@ class FabrikFEModelForm extends FabModelForm
 		if (strstr($sql, 'WHERE'))
 		{
 			// Do it this way as queries may contain sub-queries which we want to keep the where
-			$firstWord = String::substr($where, 0, 5);
+			$firstWord = JString::substr($where, 0, 5);
 
 			if ($firstWord == 'WHERE')
 			{
-				$where = String::substr_replace($where, 'AND', 0, 5);
+				$where = JString::substr_replace($where, 'AND', 0, 5);
 			}
 		}
 		// Set rowId to -2 to indicate random record
@@ -3988,11 +4016,11 @@ class FabrikFEModelForm extends FabModelForm
 
 		if (!$this->isEditable())
 		{
-			$remove = "/{new:\s*.*?}/i";
+			$remove = "/{new:\s*.*?}/is";
 			$text = preg_replace($remove, '', $text);
-			$remove = "/{edit:\s*.*?}/i";
+			$remove = "/{edit:\s*.*?}/is";
 			$text = preg_replace($remove, '', $text);
-			$match = "/{details:\s*.*?}/i";
+			$match = "/{details:\s*.*?}/is";
 
 			$text = preg_replace_callback($match, array($this, '_getIntroOutro'), $text);
 
@@ -4004,15 +4032,15 @@ class FabrikFEModelForm extends FabModelForm
 		{
 			$match = $this->isNewRecord() ? 'new' : 'edit';
 			$remove = $this->isNewRecord()  ? 'edit' : 'new';
-			$match = "/{" . $match . ":\s*.*?}/i";
-			$remove = "/{" . $remove . ":\s*.*?}/i";
+			$match = "/{" . $match . ":\s*.*?}/is";
+			$remove = "/{" . $remove . ":\s*.*?}/is";
 			$text = preg_replace_callback($match, array($this, '_getIntroOutro'), $text);
 			$text = preg_replace($remove, '', $text);
 
 			// Was removing [rowid] from  {fabrik view=list id=2 countries___id=[rowid]} in form intro
 			//$text = str_replace('[', '{', $text);
 			//$text = str_replace(']', '}', $text);
-			$text = preg_replace("/{details:\s*.*?}/i", '', $text);
+			$text = preg_replace("/{details:\s*.*?}/is", '', $text);
 		}
 
 		$w = new FabrikWorker;
@@ -4075,7 +4103,7 @@ class FabrikFEModelForm extends FabModelForm
 			return str_replace("{Add/Edit}", '', $label);
 		}
 
-		if (String::stristr($label, "{Add/Edit}"))
+		if (JString::stristr($label, "{Add/Edit}"))
 		{
 			$replace = $this->isNewRecord() ? FText::_('COM_FABRIK_ADD') : FText::_('COM_FABRIK_EDIT');
 			$label = str_replace("{Add/Edit}", $replace, $label);
@@ -4104,7 +4132,7 @@ class FabrikFEModelForm extends FabModelForm
 		// $$$ rob newFormLabel set in table copy
 		if ($input->get('newFormLabel', '') !== '')
 		{
-			$form->label = $input->get('newFormLabel', '', '', 'string');
+			$form->label = $input->get('newFormLabel', '', 'string');
 		}
 
 		$res = $form->store();
@@ -4429,6 +4457,7 @@ class FabrikFEModelForm extends FabModelForm
 
 		// Add in row id for join data
 		$element->label = '';
+		$element->labels = '';
 		$element->error = '';
 		$element->value = '';
 		$element->id = '';
@@ -4557,10 +4586,12 @@ class FabrikFEModelForm extends FabModelForm
 			$aElements = array();
 
 			// Check if group is actually a table join
+			/*
 			if (array_key_exists($groupTable->id, $this->aJoinGroupIds))
 			{
 				$aElements[] = $this->_makeJoinIdElement($groupTable);
 			}
+			*/
 
 			$repeatGroup = 1;
 			$foreignKey = null;
@@ -5219,6 +5250,27 @@ class FabrikFEModelForm extends FabModelForm
 	}
 
 	/**
+	 * Ask all elements to add their js Fabrik.jLayouts to the framework
+	 * This has to be done before we call FabrikHelperHTML::framework();
+	 *
+	 * @return void;
+	 */
+	public function elementJsJLayouts()
+	{
+		$groups = $this->getGroupsHiarachy();
+
+		foreach ($groups as $groupModel)
+		{
+			$elementModels = $groupModel->getPublishedElements();
+
+			foreach ($elementModels as $elementModel)
+			{
+				$elementModel->jsJLayouts();
+			}
+		}
+	}
+
+	/**
 	 * Get a subset of the model's data with non accessible values removed
 	 *
 	 * @param   string  $view  View
@@ -5261,5 +5313,24 @@ class FabrikFEModelForm extends FabModelForm
 		}
 
 		return $accessibleData;
+	}
+
+
+	/**
+	 * Get a form JLayout file
+	 *
+	 * @param   string  $name     layout name
+	 * @param   array   $paths    Optional paths to add as includes
+	 * @param   array   $options  Options
+	 *
+	 * @return FabrikLayoutFile
+	 */
+	public function getLayout($name, $paths = array(), $options = array())
+	{
+		$view = $this->isEditable() ? 'form' : 'details';
+		$paths[] = COM_FABRIK_FRONTEND . '/views/'. $view . '/tmpl/' . $this->getTmpl() . '/layouts';
+		$layout  = FabrikHelperHTML::getLayout($name, $paths, $options);
+
+		return $layout;
 	}
 }

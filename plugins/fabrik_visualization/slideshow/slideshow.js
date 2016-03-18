@@ -43,5 +43,19 @@ var FbSlideshowViz = new Class({
 			this.slideshow = new Slideshow.Fold(this.options.html_id, this.options.slideshow_data, opts);
 			break;
 		}
+
+		this.mediaScan();
+	},
+
+	mediaScan: function () {
+		if (typeof(Slimbox) !== 'undefined') {
+			Slimbox.scanPage();
+		}
+		if (typeof(Lightbox) !== 'undefined') {
+			Lightbox.init();
+		}
+		if (typeof(Mediabox) !== 'undefined') {
+			Mediabox.scanPage();
+		}
 	}
 });

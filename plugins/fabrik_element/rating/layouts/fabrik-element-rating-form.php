@@ -37,5 +37,5 @@ $d = $displayData;
 		<span class="ratingScore badge badge-info"><?php echo $d->avg; ?></span>
 		<div class="ratingMessage">
 		</div>
-		<input type="hidden" name="<?php echo $d->name;?>" id="<?php echo $d->id; ?>" value="<?php echo $d->value; ?>" />
+		<input class="fabrikinput input" type="hidden" name="<?php echo $d->name;?>" id="<?php echo $d->id; ?>" value="<?php echo $d->value; ?>" />
 	</div>

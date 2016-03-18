@@ -11,8 +11,6 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Joomla\String\String;
-
 jimport('joomla.application.component.model');
 
 /**
@@ -57,7 +55,7 @@ abstract class FabrikWebService
 		if (empty(self::$instances[$signature]))
 		{
 			// Derive the class name from the driver.
-			$class = 'FabrikWebService' . String::ucfirst($options['driver']);
+			$class = 'FabrikWebService' . JString::ucfirst($options['driver']);
 
 			// If the class doesn't exist, let's look for it and register it.
 			if (!class_exists($class))

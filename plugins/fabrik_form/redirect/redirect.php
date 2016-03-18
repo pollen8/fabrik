@@ -21,7 +21,6 @@ require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
  * @subpackage  Fabrik.form.redirect
  * @since       3.0
  */
-
 class PlgFabrik_FormRedirect extends PlgFabrik_Form
 {
 	/*
@@ -340,7 +339,7 @@ class PlgFabrik_FormRedirect extends PlgFabrik_Form
 		}
 		else
 		{
-			if ($appendEmpty || (!appendEmpty && !empty($val)))
+			if ($appendEmpty || ($appendEmpty && !empty($val)))
 			{
 				$val = urlencode(stripslashes($val));
 				$queryvars[] = $key . '=' . $val;

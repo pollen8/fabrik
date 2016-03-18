@@ -115,7 +115,6 @@ ul.slider-labels {
 	-ms-filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=90 );
 	z-index: 999;
 	background: #fff;
-	border: 1px solid #ccc;
 	border-radius: 2px;
 }
 
@@ -166,7 +165,7 @@ div.popover {
 }
 
 .fabrikWindow.modal {
-	display: block !important;
+	display: block;
 	z-index: 1050 !important;
 	overflow: hidden !important;
 }
@@ -226,7 +225,6 @@ div.popover {
 	top: 14px;
 }
 
-
 .close {
 	position: absolute;
 	right: 0;
@@ -246,43 +244,20 @@ span.handlelabel {
 	height: 13px;
 }
 
-.bottomBar {
-	border-radius: 0px 0px 7px 7px;
-	-moz-border-radius: 0px 0px 7px 7px;
-	height: 15px;
-	background: #ccc;
-	filter: progid:    DXImageTransform.Microsoft.gradient(    startColorstr=
-		'#cccccc', endColorstr=    '#666666' ); /* for IE */
-	background: -webkit-gradient(linear, left top, left bottom, from(#eee),
-		to(#ccc) ); /* for webkit browsers */
-	background: -moz-linear-gradient(top, #eee, #ccc);
-	background-image: -ms-linear-gradient(top, #eee, #ccc);
-	padding: 4px 11px;
-	position: relative;
-}
-
-.fabrikWindow.modal .bottomBar .dragger{
-	right: 15px;
-	bottom: 10px;
-}
-
-.dragger {
-	cursor: nwse-resize;
-	height: 25px;
-	width: 25px;
-	right: 0;
-	bottom: 0;
-	position: absolute;
-	border-radius: 0px 0px 7px 0px;
-	-moz-border-radius: 0px 0px 7px 0px;
-}
-
-.dragger svg {
-	opacity: 0.8em;
-}
+.ui-resizable { position: relative;}
+.ui-resizable-handle { position: absolute;font-size: 0.1px; display: block; }
+.ui-resizable-disabled .ui-resizable-handle, .ui-resizable-autohide .ui-resizable-handle { display: none; }
+.ui-resizable-n { cursor: n-resize; height: 7px; width: 100%; top: -5px; left: 0; }
+.ui-resizable-s { cursor: s-resize; height: 7px; width: 100%; bottom: -5px; left: 0; }
+.ui-resizable-e { cursor: e-resize; width: 7px; right: -5px; top: 0; height: 100%; }
+.ui-resizable-w { cursor: w-resize; width: 7px; left: -5px; top: 0; height: 100%; }
+.ui-resizable-se { cursor: se-resize; width: 12px; height: 12px; right: 1px; bottom: 1px; }
+.ui-resizable-sw { cursor: sw-resize; width: 9px; height: 9px; left: -5px; bottom: -5px; }
+.ui-resizable-nw { cursor: nw-resize; width: 9px; height: 9px; left: -5px; top: -5px; }
+.ui-resizable-ne { cursor: ne-resize; width: 9px; height: 9px; right: -5px; top: -5px;}
 
 /* ensure overlays go above windows */
-.calendar-eightysix.default,.floating-tip,#fbPackageLoader {
+.floating-tip,#fbPackageLoader {
 	z-index: 10001;
 }
 
@@ -674,20 +649,20 @@ form.fabrikForm label.radio {
 		max-width:100% !important;
 		left:0 !important;
 	}
-	
+
 	.fabrikWindow.modal .contentWrapper {
 		max-width:100% !important;
 	}
-	
+
 	.fabrikWindow .radius_search table.radius_table {
 		table-layout:fixed;
 		max-width:100%;
 	}
-	
+
 	.fabrikWindow .radius_search table.radius_table td:first-child {
 		width:70px;
 	}
-	
+
 	.radius_search_geocode_map {
 		width:300px;
 		height:275px;
@@ -712,7 +687,7 @@ form.fabrikForm label.radio {
 
 /** Prevent line breaks between sort icon and heading label in lists */
 
-.heading.fabrik_ordercell, .fabrikTag {
+.fabrikTag {
 	white-space: nowrap;
 }
 

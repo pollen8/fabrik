@@ -11,7 +11,6 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Joomla\String\String;
 use Joomla\Utilities\ArrayHelper;
 
 /**
@@ -600,12 +599,43 @@ class FabrikWorker
 			$reservedWords = array_merge($reservedWords, $strictWords);
 		}
 
-		if (in_array(String::strtolower($str), $reservedWords))
+		if (in_array(JString::strtolower($str), $reservedWords))
 		{
 			return true;
 		}
 
 		return false;
+	}
+
+	/**
+	 * Check a string is valid to use as an element name
+	 *
+	 * @param   string $str    To check
+	 * @param   bool   $strict Include things like rowid, listid in the reserved words, defaults to true
+	 *
+	 * @return bool
+	 */
+	public static function validElementName($str, $strict = true)
+	{
+		// check if it's a Fabrik reserved word
+		if (self::isReserved($str, $strict))
+		{
+			return false;
+		}
+
+		// check valid MySQL - start with letter or _, then only alphanumeric or underscore
+		if (!preg_match('/^[a-zA-Z_][a-zA-Z0-9_]*$/', $str))
+		{
+			return false;
+		}
+
+		// check for various other gotchas, like ending in _raw, starting with more than one _, etc.
+		if (preg_match('/^submit|^__|_raw$/', $str))
+		{
+			return false;
+		}
+
+		return true;
 	}
 
 	/**
@@ -694,7 +724,8 @@ class FabrikWorker
 	 *                                   message
 	 * @param   bool   $addSlashes       Add slashed to the text?
 	 * @param   object $theirUser        User to use in replaceWithUserData (defaults to logged in user)
-	 * @param   bool   $unsafe           If true (default) will not replace certain placeholders like $jConfig_secret must not be shown to users
+	 * @param   bool   $unsafe           If true (default) will not replace certain placeholders like $jConfig_secret
+	 *                                   must not be shown to users
 	 *
 	 * @return  string  parsed message
 	 */
@@ -707,7 +738,7 @@ class FabrikWorker
 		{
 			$this->parseAddSlashes = $addSlashes;
 
-			if (!($msg == '' || is_array($msg) || String::strpos($msg, '{') === false))
+			if (!($msg == '' || is_array($msg) || JString::strpos($msg, '{') === false))
 			{
 				$msg = str_replace(array('%7B', '%7D'), array('{', '}'), $msg);
 
@@ -891,11 +922,11 @@ class FabrikWorker
 	 */
 	public static function unsafeReplacements()
 	{
-		$config  = JFactory::getConfig();
+		$config = JFactory::getConfig();
 
 		$replacements = array(
-				'{$jConfig_absolute_path}' => JPATH_SITE,
-				'{$jConfig_secret}' => $config->get('secret')
+			'{$jConfig_absolute_path}' => JPATH_SITE,
+			'{$jConfig_secret}' => $config->get('secret')
 		);
 
 		return $replacements;
@@ -909,13 +940,13 @@ class FabrikWorker
 	 */
 	public static function globalReplacements()
 	{
-		$app     = JFactory::getApplication();
-		$itemId  = self::itemId();
-		$config  = JFactory::getConfig();
-		$session = JFactory::getSession();
-		$token   = $session->get('session.token');
-		$lang    = JFactory::getLanguage()->getTag();
-		$lang    = str_replace('-', '_', $lang);
+		$app       = JFactory::getApplication();
+		$itemId    = self::itemId();
+		$config    = JFactory::getConfig();
+		$session   = JFactory::getSession();
+		$token     = $session->get('session.token');
+		$lang      = JFactory::getLanguage()->getTag();
+		$lang      = str_replace('-', '_', $lang);
 		$shortlang = explode('_', $lang);
 		$shortlang = $shortlang[0];
 		$multilang = FabrikWorker::getMultiLangURLCode();
@@ -980,7 +1011,7 @@ class FabrikWorker
 		$orig  = $match;
 
 		// Strip the {}
-		$match = String::substr($match, 1, JString::strlen($match) - 2);
+		$match = JString::substr($match, 1, JString::strlen($match) - 2);
 
 		/* $$$ hugh - added dbprefix substitution
 		 * Not 100% if we should do this on $match before copying to $orig, but for now doing it
@@ -1059,7 +1090,7 @@ class FabrikWorker
 						}
 					}
 
-					$match = String::ltrim($newMatch, ',');
+					$match = JString::ltrim($newMatch, ',');
 				}
 			}
 			else
@@ -1132,7 +1163,7 @@ class FabrikWorker
 			elseif (preg_match('/bmp|gif|jpg|png/i', $file) && is_file($i_f))
 			{
 				// Leading / we don't need
-				$imageFile             = String::substr($ff, 1);
+				$imageFile             = JString::substr($ff, 1);
 				$images[$folderPath][] = $makeOptions ? JHTML::_('select.option', $imageFile, $file) : $file;
 			}
 		}
@@ -1218,15 +1249,18 @@ class FabrikWorker
 	 * so for ajax calls that need to use jf translated text we need to get the current lang and
 	 * send it to the js code which will then append the lang=XX to the ajax querystring
 	 *
+	 * Renamed to getShortLang as we don't support Joomfish any more
+	 *
 	 * @since 2.0.5
 	 *
 	 * @return    string    first two letters of lang code - e.g. nl from 'nl-NL'
 	 */
-	public static function getJoomfishLang()
+	public static function getShortLang()
 	{
 		$lang = JFactory::getLanguage();
+		$lang = explode('-', $lang->getTag());
 
-		return array_shift(explode('-', $lang->getTag()));
+		return array_shift($lang);
 	}
 
 	/**
@@ -1305,7 +1339,7 @@ class FabrikWorker
 
 			// Each group the user is in could have different filtering properties.
 			$filterData = $filters->$groupId;
-			$filterType = String::strtoupper($filterData->filter_type);
+			$filterType = JString::strtoupper($filterData->filter_type);
 
 			if ($filterType == 'NH')
 			{
@@ -1580,40 +1614,54 @@ class FabrikWorker
 			$version              = new JVersion;
 			self::$database[$sig] = $version->RELEASE > 2.5 ? JDatabaseDriver::getInstance($options) : JDatabase::getInstance($options);
 
-			/*
-			 *  $$$ hugh - testing doing bigSelects stuff here
-			 *  Reason being, some folk on shared hosting plans with very restrictive MySQL
-			 *  setups are hitting the 'big selects' problem on Fabrik internal queries, not
-			 *  just on their List specific queries.  So we need to apply 'big selects' to our
-			 *  default connection as well, essentially enabling it for ALL queries we do.
-			 */
-			$fbConfig = JComponentHelper::getParams('com_fabrik');
+			FabrikWorker::bigSelects(self::$database[$sig]);
 
-			if ($fbConfig->get('enable_big_selects', 0) == '1')
-			{
-				$fabrikDb = self::$database[$sig];
-
-				/**
-				 * Use of OPTION in SET deprecated from MySQL 5.1. onward
-				 * http://www.fabrikar.com/forums/index.php?threads/enable-big-selects-error.39463/#post-198293
-				 * NOTE - technically, using verison_compare on MySQL version could fail, if it's a "gamma"
-				 * release, which PHP desn't grok!
-				 */
-
-				if (version_compare($fabrikDb->getVersion(), '5.1.0', '>='))
-				{
-					$fabrikDb->setQuery("SET SQL_BIG_SELECTS=1, GROUP_CONCAT_MAX_LEN=10240");
-				}
-				else
-				{
-					$fabrikDb->setQuery("SET OPTION SQL_BIG_SELECTS=1, GROUP_CONCAT_MAX_LEN=10240");
-				}
-
-				$fabrikDb->execute();
-			}
 		}
 
 		return self::$database[$sig];
+	}
+
+	/**
+	 *  $$$ hugh - testing doing bigSelects stuff here
+	 *  Reason being, some folk on shared hosting plans with very restrictive MySQL
+	 *  setups are hitting the 'big selects' problem on Fabrik internal queries, not
+	 *  just on their List specific queries.  So we need to apply 'big selects' to our
+	 *  default connection as well, essentially enabling it for ALL queries we do.
+	 *
+	 * @param  JDatabaseDriver $fabrikDb
+	 *
+	 * @return void
+	 */
+	public static function bigSelects($fabrikDb)
+	{
+		$fbConfig = JComponentHelper::getParams('com_fabrik');
+
+		if ($fbConfig->get('enable_big_selects', 0) == '1')
+		{
+			/**
+			 * Use of OPTION in SET deprecated from MySQL 5.1. onward
+			 * http://www.fabrikar.com/forums/index.php?threads/enable-big-selects-error.39463/#post-198293
+			 * NOTE - technically, using verison_compare on MySQL version could fail, if it's a "gamma"
+			 * release, which PHP desn't grok!
+			 */
+
+			if (version_compare($fabrikDb->getVersion(), '5.1.0', '>='))
+			{
+				$fabrikDb->setQuery("SET SQL_BIG_SELECTS=1, GROUP_CONCAT_MAX_LEN=10240");
+			}
+			else
+			{
+				$fabrikDb->setQuery("SET OPTION SQL_BIG_SELECTS=1, GROUP_CONCAT_MAX_LEN=10240");
+			}
+
+			try
+			{
+				$fabrikDb->execute();
+			} catch (Exception $e)
+			{
+				// Fail silently
+			}
+		}
 	}
 
 	/**
@@ -1683,12 +1731,14 @@ class FabrikWorker
 	 * Takes a string which may or may not be json and returns either string/array/object
 	 * will also turn valGROUPSPLITTERval2 to array
 	 *
-	 * @param   string $data    Json encoded string
-	 * @param   bool   $toArray Force data to be an array
+	 * @param   string $data     Json encoded string
+	 * @param   bool   $toArray  Force data to be an array
+	 * @param   bool   $emptyish Set to false to return an empty array if $data is an empty string, instead of an
+	 *                           emptyish (one empty string entry) array
 	 *
 	 * @return  mixed data
 	 */
-	public static function JSONtoData($data, $toArray = false)
+	public static function JSONtoData($data, $toArray = false, $emptyish = true)
 	{
 		if (is_string($data))
 		{
@@ -1723,12 +1773,12 @@ class FabrikWorker
 
 				$data = is_null($json) ? $data : $json;
 			}
-		}
 
-		// If $data was an empty string, make sure we don't return an "emptyish" array with a single empty entry
-		if ($toArray && empty($data))
-		{
-			$data = array();
+			// If $data was an empty string and "emptyish" is not set, we want an empty array, not an array with one empty string
+			if ($toArray && !$emptyish && $data === '')
+			{
+				$data = array();
+			}
 		}
 
 		$data = $toArray ? (array) $data : $data;
@@ -1920,32 +1970,43 @@ class FabrikWorker
 	/**
 	 * Attempt to get a variable first from the menu params (if they exists) if not from request
 	 *
-	 * @param   string $name     Param name
-	 * @param   mixed  $val      Default
-	 * @param   bool   $mambot   If set to true menu params ignored
-	 * @param   string $priority Defaults that menu priorities override request - set to 'request' to inverse this
-	 *                           priority
+	 * @param   string $name                         Param name
+	 * @param   mixed  $val                          Default
+	 * @param   bool   $mambot                       If set to true menu params ignored
+	 * @param   string $priority                     Defaults that menu priorities override request - set to 'request'
+	 *                                               to inverse this priority
+	 * @param   array  $opts                         Options 'listid' -> if priority = menu then the menu list id must
+	 *                                               match this value to use the menu param.
 	 *
 	 * @return  string
 	 */
-	public static function getMenuOrRequestVar($name, $val = '', $mambot = false, $priority = 'menu')
+	public static function getMenuOrRequestVar($name, $val = '', $mambot = false, $priority = 'menu', $opts = array())
 	{
 		$app   = JFactory::getApplication();
 		$input = $app->input;
 
 		if ($priority === 'menu')
 		{
+
 			$val = $input->get($name, $val, 'string');
 
 			if (!$app->isAdmin())
 			{
-				$menus = $app->getMenu();
-				$menu  = $menus->getActive();
-
-				// If there is a menu item available AND the view is not rendered in a content plugin
-				if (is_object($menu) && !$mambot)
+				if (!$mambot)
 				{
-					$val = $menu->params->get($name, $val);
+					$menus = $app->getMenu();
+					$menu  = $menus->getActive();
+
+					if (is_object($menu))
+					{
+						$menuListId  = ArrayHelper::getValue($menu->query, 'listid', '');
+						$checkListId = ArrayHelper::getValue($opts, 'listid', $menuListId);
+
+						if ((int) $menuListId === (int) $checkListId)
+						{
+							$val = $menu->params->get($name, $val);
+						}
+					}
 				}
 			}
 		}

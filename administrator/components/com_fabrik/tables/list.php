@@ -174,7 +174,7 @@ class FabrikTableList extends FabTable
 		}
 
 		$pk = (array) $pk;
-		ArrayHelper::toInteger($pk);
+		$pk = ArrayHelper::toInteger($pk);
 
 		if (empty($pk))
 		{

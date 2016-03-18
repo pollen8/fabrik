@@ -9,8 +9,6 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Joomla\String\String;
-
 // Require the abstract plugin class
 require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
 
@@ -79,7 +77,7 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 		/* $$$ hugh - moved this to here from above the previous line, 'cos it needs $this->data
 		 * check if condition exists and is met
 		 */
-		if (!$this->shouldProcess('email_conditon', null, $params))
+		if ($this->alreadySent() || !$this->shouldProcess('email_conditon', null, $params))
 		{
 			return;
 		}
@@ -130,9 +128,9 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 				FabrikHelperHTML::runContentPlugins($messageText);
 			}
 
-			$messageText = $w->parseMessageForPlaceholder($messageText, $this->data, false);
 			$messageText = str_replace('{content}', $content, $messageText);
 			$messageText = str_replace('{template}', $messageTemplate, $messageText);
+			$messageText = $w->parseMessageForPlaceholder($messageText, $this->data, false);
 		}
 
 		$message = '';
@@ -353,7 +351,29 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 			}
 		}
 
+		$this->updateRow();
+
 		return true;
+	}
+
+	/**
+	 * Check to see if there is an "update field" specified, and if it is already non-zero
+	 *
+	 * @return  bool
+	 */
+	protected function alreadySent()
+	{
+		$params      = $this->getParams();
+		$updateField = $params->get('email_update_field');
+		if (!empty($updateField))
+		{
+			$updateField .= '_raw';
+			$updateEl = FabrikString::safeColNameToArrayKey($updateField);
+			$updateVal = FArrayHelper::getValue($this->data, $updateEl, '');
+			$updateVal = is_array($updateVal) ? $updateVal[0] : $updateVal;
+			return !empty($updateVal);
+		}
+		return false;
 	}
 
 	/**
@@ -707,7 +727,7 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 					$label = trim(strip_tags($element->label));
 					$message .= $label;
 
-					if (strlen($label) != 0 && String::strpos($label, ':', String::strlen($label) - 1) === false)
+					if (strlen($label) != 0 && JString::strpos($label, ':', JString::strlen($label) - 1) === false)
 					{
 						$message .= ':';
 					}
@@ -722,4 +742,20 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 
 		return $message;
 	}
+
+	/**
+	 * Update row
+	 */
+	private function updateRow()
+	{
+		$params      = $this->getParams();
+		$updateField = $params->get('email_update_field');
+		$rowid = $this->data['rowid'];
+
+		if (!empty($updateField) && !empty($rowid))
+		{
+			$this->getModel()->getListModel()->updateRow($rowid, $updateField, '1');
+		}
+	}
+
 }

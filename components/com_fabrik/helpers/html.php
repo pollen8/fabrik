@@ -11,7 +11,6 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Joomla\String\String;
 use Joomla\Utilities\ArrayHelper;
 
 jimport('joomla.filesystem.file');
@@ -829,7 +828,8 @@ EOD;
 			$app     = JFactory::getApplication();
 			$version = new JVersion;
 			FabrikHelperHTML::modalJLayouts();
-			$jsAssetBaseURI = self::getJSAssetBaseURI();
+			$liveSiteSrc    = array();
+			$liveSiteReq    = array();
 			$fbConfig       = JComponentHelper::getParams('com_fabrik');
 
 			// Only use template test for testing in 2.5 with my temp J bootstrap template.
@@ -844,6 +844,7 @@ EOD;
 			{
 				JHtml::_('bootstrap.framework');
 				self::loadBootstrapCSS();
+				JHtml::_('script', 'media/com_fabrik/js/lib/jquery-ui/jquery-ui.min.js');
 			}
 
 			// Require js test - list with no cal loading ajax form with cal
@@ -852,8 +853,10 @@ EOD;
 			if ($fbConfig->get('advanced_behavior', '0') == '1')
 			{
 				$chosenOptions = $fbConfig->get('advanced_behavior_options', '{}');
-				$chosenOptions = empty($chosenOptions) ? array() : ArrayHelper::fromObject(json_decode($chosenOptions));
-				JHtml::_('formbehavior.chosen', 'select.advancedSelect', null, $chosenOptions);
+				$chosenOptions = empty($chosenOptions) ? new stdClass : ArrayHelper::fromObject(json_decode($chosenOptions));
+				JHtml::_('stylesheet', 'jui/chosen.css', false, true);
+				JHtml::_('script', 'jui/chosen.jquery.min.js', false, true, false, false, self::isDebug());
+				$liveSiteReq[] = 'media/com_fabrik/js/chosen-loader.js';
 			}
 
 			if (self::inAjaxLoadedPage() && !$bootstrapped)
@@ -872,7 +875,6 @@ EOD;
 
 				self::styleSheet(COM_FABRIK_LIVESITE . 'media/com_fabrik/css/fabrik.css');
 
-				$liveSiteReq   = array();
 				$liveSiteReq[] = 'media/com_fabrik/js/fabrik' . $ext;
 
 				if ($bootstrapped)
@@ -884,11 +886,20 @@ EOD;
 					$liveSiteReq[] = 'media/com_fabrik/js/tips' . $ext;
 				}
 
-				$liveSiteSrc   = array();
+				$liveSiteSrc[] = "var chosenInterval = window.setInterval(function () {
+					if (Fabrik.buildChosen) {
+						window.clearInterval(chosenInterval);
+                        Fabrik.buildChosen('select.advancedSelect', " . json_encode($chosenOptions) . ");
+					}
+				}, 100);";
+
 				$liveSiteSrc[] = "\tFabrik.liveSite = '" . COM_FABRIK_LIVESITE . "';";
 				$liveSiteSrc[] = "\tFabrik.package = '" . $app->getUserState('com_fabrik.package', 'fabrik') . "';";
 				$liveSiteSrc[] = "\tFabrik.debug = " . (self::isDebug() ? 'true;' : 'false;');
-				$liveSiteSrc[] = "\tFabrik.jLayouts = " . json_encode(ArrayHelper::toObject(self::$jLayoutsJs)) . ";";
+
+				// need to put jLayouts in session data, and add it in the system plugin buildjs(), so just add %%jLayouts%% placeholder
+				//$liveSiteSrc[] = "\tFabrik.jLayouts = " . json_encode(ArrayHelper::toObject(self::$jLayoutsJs)) . ";";
+				$liveSiteSrc[] = "\tFabrik.jLayouts = %%jLayouts%%\n";
 
 				if ($bootstrapped)
 				{
@@ -902,7 +913,6 @@ EOD;
 
 				$liveSiteSrc[] = self::tipInt();
 				$liveSiteSrc   = implode("\n", $liveSiteSrc);
-				self::script($liveSiteReq, $liveSiteSrc);
 			}
 			else
 			{
@@ -916,17 +926,22 @@ EOD;
 					$liveSiteSrc[] = "\tFabrik.bootstrapped = false;";
 				}
 
+				if ($fbConfig->get('advanced_behavior', '0') == '1')
+				{
+					$liveSiteSrc[] = "\tFabrik.buildChosen('select.advancedSelect', " . json_encode($chosenOptions) . ');';
+				}
 				$liveSiteSrc[] = "\tif (!Fabrik.jLayouts) {
 				Fabrik.jLayouts = {};
 				}
-				Fabrik.jLayouts = jQuery.extend(Fabrik.jLayouts, " . json_encode(self::$jLayoutsJs) . ");";
+				Fabrik.jLayouts = jQuery.extend(Fabrik.jLayouts, %%jLayouts%%);";
 				$liveSiteReq[] = 'media/com_fabrik/js/fabrik' . $ext;
-				self::script($liveSiteReq, $liveSiteSrc);
-
 			}
 
+			self::script($liveSiteReq, $liveSiteSrc);
 			self::$framework = $src;
 		}
+
+		self::addToSessionJLayouts();
 
 		return self::$framework;
 	}
@@ -960,7 +975,7 @@ EOD;
 		$tipJs[] = "\t});";
 
 		// Load tips
-		$tipJs[] = "\tFabrik.tips.attach('.fabrikTip');";
+		//$tipJs[] = "\tFabrik.tips.attach('.fabrikTip');";
 
 		return implode("\n", $tipJs);
 	}
@@ -1006,10 +1021,8 @@ EOD;
 	{
 		$session      = JFactory::getSession();
 		$requirePaths = self::requirePaths();
-		$pathBits     = array();
 		$framework    = array();
-		$deps         = new stdClass;
-		$deps->deps   = array();
+		$deps         = array();
 		$j3           = FabrikWorker::j3();
 		$ext          = self::isDebug() ? '' : '-min';
 
@@ -1046,65 +1059,74 @@ EOD;
 
 		if ($navigator->getBrowser() == 'msie' && !$j3)
 		{
-			$deps->deps[] = 'fab/lib/flexiejs/flexie' . $ext;
+			$deps[] = 'fab/lib/flexiejs/flexie' . $ext;
 		}
 
-		$deps->deps[] = 'jquery';
+		$deps[] = 'jquery';
 
-		$deps->deps[] = 'fab/mootools-ext' . $ext;
-		$deps->deps[] = 'fab/lib/Event.mock';
+		$deps[] = 'fab/mootools-ext' . $ext;
+		$deps[] = 'fab/lib/Event.mock';
 
 		if ($j3)
 		{
-			$deps->deps[] = 'fab/tipsBootStrapMock' . $ext;
+			$deps[] = 'fab/tipsBootStrapMock' . $ext;
 		}
 		else
 		{
-			$deps->deps[] = 'fab/lib/art';
-			$deps->deps[] = 'fab/tips' . $ext;
-			$deps->deps[] = 'fab/icons' . $ext;
-			$deps->deps[] = 'fab/icongen' . $ext;
+			$deps[] = 'fab/lib/art';
+			$deps[] = 'fab/tips' . $ext;
+			$deps[] = 'fab/icons' . $ext;
+			$deps[] = 'fab/icongen' . $ext;
 		}
 
-		$deps->deps[]                   = 'fab/encoder' . $ext;
-		$framework['fab/fabrik' . $ext] = $deps;
-		$deps                           = new stdClass;
-		$deps->deps                     = array('fab/fabrik' . $ext);
-		$framework['fab/window' . $ext] = $deps;
+		$deps[] = 'fab/encoder' . $ext;
 
-		$deps                                = new stdClass;
-		$deps->deps                          = array('fab/fabrik' . $ext, 'fab/element' . $ext);
-		$framework['fab/elementlist' . $ext] = $deps;
-		$newShim                             = array_merge($framework, $newShim);
-		$shim                                = json_encode($newShim);
+		self::addRequireJsShim($framework, 'fab/fabrik', $deps);
+		self::addRequireJsShim($framework, 'fab/window', array('fab/fabrik' . $ext));
+		self::addRequireJsShim($framework, 'fab/elementlist', array('fab/fabrik' . $ext, 'fab/element' . $ext));
+		self::addRequireJsShim($framework, 'fab/autocomplete-bootstrap', array('fab/fabrik' . $ext));
 
-		foreach ($requirePaths as $reqK => $repPath)
-		{
-			$pathBits[] = "\n\t\t$reqK : '$repPath'";
-		}
-
-		//$pathBits[] = "\n\t\tjquery: 'media/com_fabrik/js/dummy-jquery'";
-		//$pathBits[] = "\n\t\tjquery: 'media/jui/js/jquery'";
-
-		$pathString = '{' . implode(',', $pathBits) . '}';
-		$config     = array();
+		$newShim = array_merge($framework, $newShim);
+		$config  = array();
 
 		$config[] = "define('jquery', [], function() {
-		console.log('require js define jquery as ', jQuery);
 			return jQuery;
 		});";
 
-		$config[] = "requirejs.config({";
-		$config[] = "\tbaseUrl: '" . $requirejsBaseURI . "',";
-		$config[] = "\tpaths: " . $pathString . ",";
-		$config[] = "\tshim: " . $shim . ',';
-		$config[] = "\twaitSeconds: 30,";
-		$config[] = "});";
+		// Required for full calendar
+		$config[] = "define('moment', [], function() {
+			return moment;
+		});";
+
+		$opts     = array(
+			'baseUrl' => $requirejsBaseURI,
+			'paths' => $requirePaths,
+			'shim' => $newShim,
+			'waitSeconds' => 30
+		);
+		$config[] = "requirejs.config(";
+		$config[] = json_encode($opts, self::isDebug() && defined('JSON_PRETTY_PRINT') ? JSON_PRETTY_PRINT : false);
+		$config[] = ");";
 		$config[] = "\n";
 
 		// Store in session - included in fabrik system plugin
 		$session->set('fabrik.js.shim', $newShim);
 		$session->set('fabrik.js.config', $config);
+	}
+
+	/**
+	 * Helper for create RequireJS shim dependencies
+	 *
+	 * @param array  $framework    Array to append the dependency to
+	 * @param string $key          RequireJs key - the file to load
+	 * @param array  $dependencies The dependencies to load before the $key file
+	 */
+	protected static function addRequireJsShim(&$framework, $key, $dependencies)
+	{
+		$ext                    = self::isDebug() ? '' : '-min';
+		$info                   = new stdClass;
+		$info->deps             = $dependencies;
+		$framework[$key . $ext] = $info;
 	}
 
 	/**
@@ -1229,7 +1251,7 @@ EOD;
 
 		if ($app->input->get('format') == 'raw')
 		{
-			echo '<style type="text/css">' . $style . '</script>';
+			echo '<style type="text/css">' . $style . '</style>';
 		}
 		else
 		{
@@ -1357,7 +1379,7 @@ EOD;
 		// Replace with minified files if found
 		foreach ($files as &$file)
 		{
-			if (!(String::stristr($file, 'http://') || String::stristr($file, 'https://')))
+			if (!(JString::stristr($file, 'http://') || JString::stristr($file, 'https://')))
 			{
 				if (JFile::exists(COM_FABRIK_BASE . $file))
 				{
@@ -1386,7 +1408,7 @@ EOD;
 
 			if (!$pathMatched)
 			{
-				if (!(String::stristr($file, 'http://') || String::stristr($file, 'https://')))
+				if (!(JString::stristr($file, 'http://') || JString::stristr($file, 'https://')))
 				{
 					$file = COM_FABRIK_LIVESITE . $file;
 				}
@@ -1418,6 +1440,24 @@ EOD;
 		$require[] = "\n";
 		$require   = implode("\n", $require);
 		self::addToSessionScripts($require);
+	}
+
+	/**
+	 * Add jLayouts to session - will then be added via Fabrik System plugin
+	 *
+	 * @return  void
+	 */
+	protected static function addToSessionJLayouts()
+	{
+		$key     = 'fabrik.js.jlayouts';
+		$session = JFactory::getSession();
+
+		/*
+		 * No need to figure out what's already there, unlike addToSessionScripts,
+		 * we're just updating the whole thing each time framework is added.
+		 */
+
+		$session->set($key, self::$jLayoutsJs);
 	}
 
 	/**
@@ -1958,7 +1998,7 @@ EOD;
 	 */
 	public static function getImagePath($file, $type = 'form', $tmpl = '')
 	{
-		$file  = String::ltrim($file, DIRECTORY_SEPARATOR);
+		$file  = JString::ltrim($file, DIRECTORY_SEPARATOR);
 		$paths = self::addPath('', 'image', $type, true);
 
 		foreach ($paths as $path)
@@ -2105,7 +2145,7 @@ EOD;
 
 		for ($i = 0; $i < count($values); $i++)
 		{
-			$displayData->i    = $i;
+			$displayData->i     = $i;
 			$displayData->label = $labels[$i];
 
 			// For values like '1"'
@@ -2195,13 +2235,14 @@ EOD;
 	 *
 	 * @return mixed  string/array based on $explode parameter
 	 */
-	public static function bootstrapGrid($items, $columns, $spanClass = '', $explode = false)
+	public static function bootstrapGrid($items, $columns, $spanClass = '', $explode = false, $spanId = null)
 	{
 		$layout                 = self::getLayout('fabrik-bootstrap-grid');
 		$displayData            = new stdClass;
 		$displayData->items     = $items;
 		$displayData->columns   = $columns;
 		$displayData->spanClass = $spanClass;
+		$displayData->spanId    = $spanId;
 		$displayData->explode   = $explode;
 
 		$grid = $layout->render($displayData);
@@ -2257,7 +2298,8 @@ EOD;
 
 		$text = JHTML::_('content.prepare', $text);
 
-		if ($view !== 'details')
+		if ($view !== 'details' || $input->get('format') === 'pdf')
+
 		{
 			$text = FabrikString::rtrimword($text, '{emailcloak=off}');
 		}
@@ -2341,7 +2383,7 @@ EOD;
 	 *
 	 * @return   mixed  email message or false
 	 */
-	public function getPHPTemplate($tmpl, $data = array(), $model = null)
+	public static function getPHPTemplate($tmpl, $data = array(), $model = null)
 	{
 		// Start capturing output into a buffer
 		ob_start();
@@ -2513,7 +2555,7 @@ EOD;
 	 */
 	public static function a($href, $lbl = '', $opts = array())
 	{
-		if (empty($href) || String::strtolower($href) == 'http://' || String::strtolower($href) == 'https://')
+		if (empty($href) || JString::strtolower($href) == 'http://' || JString::strtolower($href) == 'https://')
 		{
 			// Don't return empty links
 			return '';
@@ -2645,7 +2687,7 @@ EOD;
 
 			if ($ret['type'] == 'mediabox')
 			{
-				$ext = String::strtolower(JFile::getExt($link));
+				$ext = JString::strtolower(JFile::getExt($link));
 
 				switch ($ext)
 				{

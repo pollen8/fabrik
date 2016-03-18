@@ -46,6 +46,7 @@ var FbCascadingdropdown = new Class({
 			var v = this.form.formElements.get(this.options.watch).getValue();
 			this.change(v, document.id(this.options.watch).id);
 		}
+		this.parent();
 	},
 
 	dowatch: function (e)
@@ -265,7 +266,7 @@ var FbCascadingdropdown = new Class({
 			this.element.empty();
 			// Set ingoreAjax so that the ajax event that is fired when the element is added to the form manager
 			// does not update the newly cloned drop-down
-			this.ignoreAjax = true;
+			//this.ignoreAjax = true;
 		}
 		if (this.options.showDesc === true) {
 			this.element.addEvent('change', function () {

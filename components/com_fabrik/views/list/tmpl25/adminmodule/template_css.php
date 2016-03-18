@@ -59,13 +59,13 @@ height:2.5em;
 }
 
 #listform_$c table.fabrikList,
-.advancedSeach_$c table {
+.advancedSearch_$c table {
 	border-collapse: collapse;
 	margin-top: 10px;
 }
 
 #listform_$c table.fabrikList td,table.fabrikList th,
-.advancedSeach_$c td, .advancedSeach_$c th {
+.advancedSearch_$c td, .advancedSearch_$c th {
 	padding: 5px;
 	border-bottom: 2px solid #e6e8e9;
 	vertical-align:top;
@@ -199,7 +199,7 @@ div.calendar{
 
 #listform_$c .fabrik_row ul.fabrik_action,
 #listform_$c ul.fabrik_action,
-.advancedSeach_$c ul.fabrik_action{
+.advancedSearch_$c ul.fabrik_action{
 	list-style:none !important;
 	border:1px solid #999;
 	padding:0;
@@ -235,7 +235,7 @@ div.calendar{
 
 #listform_$c .fabrik_row .fabrik_action li,
 #listform_$c .fabrik_action li,
-.advancedSeach_$c .fabrik_action li{
+.advancedSearch_$c .fabrik_action li{
 	float:left;
 	padding:2px 6px 0 6px;
 	border-left:1px solid #999;
@@ -248,7 +248,7 @@ div.calendar{
 
 #listform_$c .fabrik_row .fabrik_action li:first-child,
 #listform_$c .fabrik_action li:first-child,
-.advancedSeach_$c .fabrik_action li:first-child{
+.advancedSearch_$c .fabrik_action li:first-child{
 -moz-border-radius: 6px 0 0 6px;
 	-webkit-border-radius: 6px 0 0 6px;
 	border-radius: 6px 0 0 6px;
@@ -257,7 +257,7 @@ div.calendar{
 
 #listform_$c .fabrik_row .fabrik_action li:last-child,
 #listform_$c .fabrik_action li:last-child,
-.advancedSeach_$c .fabrik_action li:last-child{
+.advancedSearch_$c .fabrik_action li:last-child{
 -moz-border-radius: 0 6px 6px 0;
 	-webkit-border-radius: 0 6px 6px 0;
 	border-radius: 0 6px 6px 0;
