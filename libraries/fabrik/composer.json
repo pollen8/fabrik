@@ -1,5 +1,6 @@
 {
     "require": {
-        "popphp/pop-shipping": "^2.0"
+        "popphp/pop-shipping": "^2.0",
+        "omnipay/omnipay": "~2.3"
     }
 }

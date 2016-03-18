@@ -114,26 +114,6 @@ class Ups extends AbstractAdapter
 	];
 
 	/**
-	 * Pickup Types
-	 *
-	 * @var array
-	 */
-	protected static $packagingTypes = [
-		'00' => 'UNKNOWN',
-		'01' => 'UPS Letter',
-		'02' => 'Package',
-		'03' => 'Tube',
-		'04' => 'Pak',
-		'21' => 'Express Box',
-		'24' => '25KG Box',
-		'25' => '10KG Box',
-		'30' => 'Pallet',
-		'2a' => 'Small Express Box',
-		'2b' => 'Medium Express Box',
-		'2c' => 'Large Express Box'
-	];
-
-	/**
 	 * Services
 	 *
 	 * @var array
@@ -201,13 +181,6 @@ class Ups extends AbstractAdapter
 	 * @var string
 	 */
 	protected $pickupType = '01';
-
-	/**
-	 * Package type
-	 *
-	 * @var string
-	 */
-	protected $packageType = '02';
 
 	/**
 	 * Service
@@ -306,24 +279,6 @@ class Ups extends AbstractAdapter
 		}
 
 		$this->pickupType = $code;
-	}
-
-	/**
-	 * Set package type
-	 *
-	 * @param  string $code
-	 *
-	 * @throws Exception
-	 * @return void
-	 */
-	public function setPackage($code)
-	{
-		if (!array_key_exists($code, self::$packagingTypes))
-		{
-			throw new Exception('Error: That package code does not exist.');
-		}
-
-		$this->packageType = $code;
 	}
 
 	/**
@@ -465,62 +420,6 @@ class Ups extends AbstractAdapter
 	}
 
 	/**
-	 * Set dimensions
-	 *
-	 * @param  array  $dimensions
-	 * @param  string $unit
-	 *
-	 * @return void
-	 */
-	public function setDimensions(array $dimensions, $unit = null)
-	{
-		if ((null !== $unit) && (($unit == 'IN') || ($unit == 'CM')))
-		{
-			$this->dimensions['UnitOfMeasurement'] = $unit;
-		}
-
-		foreach ($dimensions as $key => $value)
-		{
-			if (strtolower($key) == 'length')
-			{
-				$this->dimensions['Length'] = $value;
-			}
-			else
-			{
-				if (strtolower($key) == 'width')
-				{
-					$this->dimensions['Width'] = $value;
-				}
-				else
-				{
-					if (strtolower($key) == 'height')
-					{
-						$this->dimensions['Height'] = $value;
-					}
-				}
-			}
-		}
-	}
-
-	/**
-	 * Set dimensions
-	 *
-	 * @param  string $weight
-	 * @param  string $unit
-	 *
-	 * @return void
-	 */
-	public function setWeight($weight, $unit = null)
-	{
-		if ((null !== $unit) && (($unit == 'LBS') || ($unit == 'KGS')))
-		{
-			$this->weight['UnitOfMeasurement'] = $unit;
-		}
-
-		$this->weight['Weight'] = $weight;
-	}
-
-	/**
 	 * Confirm a shipment
 	 *
 	 * @param bool $verifyPeer
@@ -599,6 +498,7 @@ class Ups extends AbstractAdapter
 			CURLOPT_HEADER => false,
 			CURLOPT_POST => true,
 			CURLOPT_POSTFIELDS => $this->accessRequest . $xml,
+
 			CURLOPT_URL => $this->testMode ? $this->testUrl['shipAccept'] : $this->liveUrl['shipAccept'],
 			CURLOPT_RETURNTRANSFER => true
 		];
@@ -670,7 +570,13 @@ class Ups extends AbstractAdapter
 
 			foreach ($this->response->RatedShipment as $rate)
 			{
-				$this->rates[self::$services[(string) $rate->Service->Code]] = (string) $rate->TotalCharges->MonetaryValue;
+				$serviceType = self::$services[(string) $rate->Service->Code];
+				$this->rates[$serviceType] = (string) $rate->TotalCharges->MonetaryValue;
+				$this->ratesExtended[$serviceType] = (object) [
+					'shipper' => 'ups',
+					'total' => $this->rates[$serviceType],
+					'title' =>  $serviceType
+				];
 			}
 		}
 		else
@@ -792,40 +698,16 @@ class Ups extends AbstractAdapter
 		$xml .= PHP_EOL . '            <Code>' . $this->service . '</Code>';
 		$xml .= PHP_EOL . '            <Description>' . self::$services[$this->service] . '</Description>';
 		$xml .= PHP_EOL . '        </Service>';
-		$xml .= PHP_EOL . '        <Package>';
-		$xml .= PHP_EOL . '            <PackagingType>';
-		$xml .= PHP_EOL . '                <Code>' . $this->packageCode . '</Code>';
-		$xml .= PHP_EOL . '                <Description>' . self::$packagingTypes[$this->packageCode] . '</Description>';
-		$xml .= PHP_EOL . '            </PackagingType>';
-		$xml .= PHP_EOL . '            <Dimensions>';
-		$xml .= PHP_EOL . '                <UnitOfMeasurement>';
-		$xml .= PHP_EOL . '                    <Code>' . $this->dimensions['UnitOfMeasurement'] . '</Code>';
-		$xml .= PHP_EOL . '                </UnitOfMeasurement>';
-		$xml .= PHP_EOL . '                <Length>' . $this->dimensions['Length'] . '</Length>';
-		$xml .= PHP_EOL . '                <Width>' . $this->dimensions['Width'] . '</Width>';
-		$xml .= PHP_EOL . '                <Height>' . $this->dimensions['Height'] . '</Height>';
-		$xml .= PHP_EOL . '            </Dimensions>';
-		$xml .= PHP_EOL . '            <PackageWeight>';
-		$xml .= PHP_EOL . '                <UnitOfMeasurement>';
-		$xml .= PHP_EOL . '                    <Code>' . $this->weight['UnitOfMeasurement'] . '</Code>';
-		$xml .= PHP_EOL . '                </UnitOfMeasurement>';
-		$xml .= PHP_EOL . '                <Weight>' . $this->weight['Weight'] . '</Weight>';
-		$xml .= PHP_EOL . '            	</PackageWeight>';
 
-		if ($this->shippingOptions['alcohol'])
-		{
-			$xml .= PHP_EOL . '            	<PackageServiceOptions>';
-			$xml .= PHP_EOL . '                	<DeliveryConfirmation>';
-			// 3 = DeliveryConfirmation AdultSignature Required
-			$xml .= PHP_EOL . '                    	<DCISType>3</DCISType>';
-			$xml .= PHP_EOL . '                	</DeliveryConfirmation>';
-			$xml .= PHP_EOL . '            	</PackageServiceOptions>';
-
-		}
+		$alcohol = $this->shippingOptions['alcohol'];
 
 		// Insurance....
 
-		$xml .= PHP_EOL . '        </Package>';
+		foreach ($this->packages as $package)
+		{
+			$this->rateRequest .= $package->rateRequest($alcohol);
+		}
+
 		$xml .= PHP_EOL . '    </Shipment>';
 		$xml .= PHP_EOL . '    <LabelSpecification>';
 		$xml .= PHP_EOL . '        <LabelPrintMethod>';
@@ -940,38 +822,24 @@ class Ups extends AbstractAdapter
 		$this->rateRequest .= PHP_EOL . '            <Code>' . $this->service . '</Code>';
 		$this->rateRequest .= PHP_EOL . '            <Description>' . self::$services[$this->service] . '</Description>';
 		$this->rateRequest .= PHP_EOL . '        </Service>';
-		$this->rateRequest .= PHP_EOL . '        <Package>';
-		$this->rateRequest .= PHP_EOL . '            <PackagingType>';
-		$this->rateRequest .= PHP_EOL . '                <Code>' . $this->packageType . '</Code>';
-		$this->rateRequest .= PHP_EOL . '                <Description>' . self::$packagingTypes[$this->packageType] . '</Description>';
-		$this->rateRequest .= PHP_EOL . '            </PackagingType>';
-		$this->rateRequest .= PHP_EOL . '            <Description>Rate</Description>';
+		$alcohol = $this->shippingOptions['alcohol'];
 
-		if ((null !== $this->dimensions['Length']) &&
-			(null !== $this->dimensions['Width']) &&
-			(null !== $this->dimensions['Height'])
-		)
+		foreach ($this->packages as $package)
 		{
-			$this->rateRequest .= PHP_EOL . '            <Dimensions>';
-			$this->rateRequest .= PHP_EOL . '                <UnitOfMeasurement>';
-			$this->rateRequest .= PHP_EOL . '                    <Code>' . $this->dimensions['UnitOfMeasurement'] . '</Code>';
-			$this->rateRequest .= PHP_EOL . '                </UnitOfMeasurement>';
-			$this->rateRequest .= PHP_EOL . '                <Length>' . $this->dimensions['Length'] . '</Length>';
-			$this->rateRequest .= PHP_EOL . '                <Width>' . $this->dimensions['Width'] . '</Width>';
-			$this->rateRequest .= PHP_EOL . '                <Height>' . $this->dimensions['Height'] . '</Height>';
-			$this->rateRequest .= PHP_EOL . '            </Dimensions>';
+			$this->rateRequest .= $package->rateRequest($alcohol);
 		}
-
-		$this->rateRequest .= PHP_EOL . '            <PackageWeight>';
-		$this->rateRequest .= PHP_EOL . '                <UnitOfMeasurement>';
-		$this->rateRequest .= PHP_EOL . '                    <Code>' . $this->weight['UnitOfMeasurement'] . '</Code>';
-		$this->rateRequest .= PHP_EOL . '                </UnitOfMeasurement>';
-		$this->rateRequest .= PHP_EOL . '                <Weight>' . $this->weight['Weight'] . '</Weight>';
-		$this->rateRequest .= PHP_EOL . '            </PackageWeight>';
-		$this->rateRequest .= PHP_EOL . '        </Package>';
 
 		$this->rateRequest .= PHP_EOL . '    </Shipment>';
 		$this->rateRequest .= PHP_EOL . '</RatingServiceSelectionRequest>' . PHP_EOL;
+	}
+
+	/**
+	 * Get Package
+	 * @return \Pop\Shipping\PackageAdapter\Ups
+	 */
+	public function getPackage()
+	{
+		return new \Pop\Shipping\PackageAdapter\Ups();
 	}
 
 }

@@ -66,43 +66,13 @@ class Usps extends AbstractAdapter
         'ZipOrigination' => null
     ];
 
-    /**
-     * Container type
-     * @var string
-     */
-    protected $container = 'RECTANGULAR';
 
-    /**
-     * Container size
-     * @var string
-     */
-    protected $containerSize = 'REGULAR';
 
     /**
      * Machinable flag
      * @var string
      */
     protected $machinable = 'false';
-
-    /**
-     * Package dimensions
-     * @var array
-     */
-    protected $dimensions = [
-        'Width'  => null,
-        'Length' => null,
-        'Height' => null,
-        'Girth'  => null
-    ];
-
-    /**
-     * Package weight
-     * @var array
-     */
-    protected $weight = [
-        'Pounds' => 0,
-        'Ounces' => 0
-    ];
 
     /**
      * Constructor
@@ -159,10 +129,9 @@ class Usps extends AbstractAdapter
      */
     public function setContainer($container = 'RECTANGULAR')
     {
-        if (($container == 'RECTANGULAR') || ($container == 'NONRECTANGULAR')) {
-            $this->container = $container;
-        } else {
-            throw new Exception('Error: The container type must be RECTANGULAR or NONRECTANGULAR.');
+        foreach ($this->packages as $package)
+        {
+            $package->setContainer($container);
         }
     }
 
@@ -178,59 +147,13 @@ class Usps extends AbstractAdapter
     }
 
     /**
-     * Set dimensions
-     *
-     * @param  array  $dimensions
-     * @param  string $unit
-     * @return void
-     */
-    public function setDimensions(array $dimensions, $unit = null)
-    {
-        foreach ($dimensions as $key => $value) {
-            if (strtolower($key) == 'length') {
-                $this->dimensions['Length'] = $value;
-            } else if (strtolower($key) == 'width') {
-                $this->dimensions['Width'] = $value;
-            } else if (strtolower($key) == 'height') {
-                $this->dimensions['Height'] = $value;
-            } else if (strtolower($key) == 'girth') {
-                $this->dimensions['Girth'] = $value;
-            }
-        }
-
-        if (max($this->dimensions) >= 12) {
-            $this->containerSize = 'LARGE';
-        }
-    }
-
-    /**
-     * Set dimensions
-     *
-     * @param  string $weight
-     * @param  string $unit
-     * @return void
-     */
-    public function setWeight($weight, $unit = null)
-    {
-        if (is_float($weight)) {
-            $lbs = (floor($weight));
-            $ozs = round(16 * ($weight - floor($weight)), 2);
-        } else {
-            $lbs = $weight;
-            $ozs = 0;
-        }
-        $this->weight['Pounds'] = $lbs;
-        $this->weight['Ounces'] = $ozs;
-    }
-
-    /**
      * Confirm a shipment
      *
      * @param bool $verifyPeer
      *
-     * @return string Sihipping lbel
+     * @return string Label
      */
-    public function ship($verifyPeer = true)
+    public function sendConfirm($verifyPeer = true)
     {
         return '';
     }
@@ -257,15 +180,33 @@ class Usps extends AbstractAdapter
 
         $curl = curl_init();
         curl_setopt_array($curl, $options);
-
         $this->response = simplexml_load_string($this->parseResponse($curl));
+        $this->ratesExtended = [];
 
         if (isset($this->response->Package)) {
-            $this->responseCode = 1;
-            foreach ($this->response->Package->Postage as $rate) {
-                $this->rates[str_replace(['&lt;', '&gt;'], ['<', '>'], (string)$rate->MailService)] = (string)$rate->Rate;
+
+            if (isset($this->response->Package->Error)) {
+                $this->responseCode    = (string) $this->response->Package->Error->Number;
+                $this->responseMessage = (string)$this->response->Package->Error->Description;
+            } else {
+                $this->responseCode = 1;
+
+                foreach ($this->response->Package->Postage as $rate) {
+                    $serviceType = str_replace(['&lt;', '&gt;'], ['<', '>'], (string)$rate->MailService);
+                    $this->rates[$serviceType] = (string)$rate->Rate;
+
+                    $this->ratesExtended[$serviceType] = (object) [
+                        'shipper' => 'usps',
+                        'total' => (string)$rate->Rate,
+                        'PackagingType' => (string) $rate->PackagingType,
+                        'SignatureOption' => (string) $rate->SignatureOption,
+                        'ActualRateType' => (string) $rate->ActualRateType,
+                        'title' =>  $serviceType
+                    ];
+                }
+
+                $this->rates = array_reverse($this->rates, true);
             }
-            $this->rates = array_reverse($this->rates, true);
         } else {
             if (isset($this->response->Number)) {
                 $this->responseCode    = (string)$this->response->Number;
@@ -303,35 +244,46 @@ class Usps extends AbstractAdapter
      */
     protected function buildRequest()
     {
-        $this->request .= PHP_EOL . '    <Package ID="1ST">';
-
-        $this->request .= PHP_EOL . '        <Service>ALL</Service>';
-        $this->request .= PHP_EOL . '        <ZipOrigination>' . $this->shipFrom['ZipOrigination'] . '</ZipOrigination>';
-        $this->request .= PHP_EOL . '        <ZipDestination>' . $this->shipTo['ZipDestination'] . '</ZipDestination>';
-        $this->request .= PHP_EOL . '        <Pounds>' . $this->weight['Pounds'] . '</Pounds>';
-        $this->request .= PHP_EOL . '        <Ounces>' . $this->weight['Ounces'] . '</Ounces>';
-        $this->request .= PHP_EOL . '        <Container>' . $this->container . '</Container>';
-        $this->request .= PHP_EOL . '        <Size>' . $this->containerSize . '</Size>';
-
-        if ((null !== $this->dimensions['Length']) &&
-            (null !== $this->dimensions['Width']) &&
-            (null !== $this->dimensions['Height'])) {
-            $this->request .= PHP_EOL . '        <Width>' . $this->dimensions['Width'] . '</Width>';
-            $this->request .= PHP_EOL . '        <Length>' . $this->dimensions['Length'] . '</Length>';
-            $this->request .= PHP_EOL . '        <Height>' . $this->dimensions['Height'] . '</Height>';
-
-            if (null == $this->dimensions['Girth']) {
-                $this->dimensions['Girth'] = (2 * $this->dimensions['Width']) + (2 * $this->dimensions['Height']);
-            }
-            $this->request .= PHP_EOL . '        <Girth>' . $this->dimensions['Girth'] . '</Girth>';
-
+        foreach ($this->packages as $id => $package)
+        {
+            $id  = $id + 1;
+            $this->request .= PHP_EOL . '    <Package ID="' . $id . '">';
+            $this->request .= PHP_EOL . '        <Service>ALL</Service>';
+            $this->request .= PHP_EOL . '        <ZipOrigination>' . $this->shipFrom['ZipOrigination'] . '</ZipOrigination>';
+            $this->request .= PHP_EOL . '        <ZipDestination>' . $this->shipTo['ZipDestination'] . '</ZipDestination>';
+            $this->request .= $package->rateRequest();
+            $this->request .= PHP_EOL . '        <Machinable>' . $this->machinable . '</Machinable>';
+            $this->request .= PHP_EOL . '        <DropOffTime>12:00</DropOffTime>';
+            $this->request .= PHP_EOL . '        <ShipDate>' . date('Y-m-d') . '</ShipDate>';
+            $this->request .= PHP_EOL . '    </Package>';
         }
 
-        $this->request .= PHP_EOL . '        <Machinable>' . $this->machinable . '</Machinable>';
-        $this->request .= PHP_EOL . '        <DropOffTime>12:00</DropOffTime>';
-        $this->request .= PHP_EOL . '        <ShipDate>' . date('Y-m-d') . '</ShipDate>';
-
-        $this->request .= PHP_EOL . '    </Package>';
         $this->request .= PHP_EOL . '</RateV4Request>';
     }
+
+    /**
+     * Confirm a shipment
+     *
+     * @param bool $verifyPeer
+     *
+     * @throws \Exception
+     *
+     * @return string Shipping label
+     */
+    public function ship($verifyPeer = true)
+    {
+        //@TODO usps shipping
+        return '';
+    }
+
+
+    /**
+     * Get Package
+     * @return \Pop\Shipping\PackageAdapter\Usps
+     */
+    public function getPackage()
+    {
+        return new \Pop\Shipping\PackageAdapter\Usps();
+    }
+
 }

@@ -260,46 +260,6 @@ class Fedex extends AbstractAdapter
     }
 
     /**
-     * Set dimensions
-     *
-     * @param  array  $dimensions
-     * @param  string $unit
-     * @return mixed
-     */
-    public function setDimensions(array $dimensions, $unit = null)
-    {
-        if ((null !== $unit) && (($unit == 'IN') || ($unit == 'CM'))) {
-            $this->dimensions['Units'] = $unit;
-        }
-
-        foreach ($dimensions as $key => $value) {
-            if (strtolower($key) == 'length') {
-                $this->dimensions['Length'] = $value;
-            } else if (strtolower($key) == 'width') {
-                $this->dimensions['Width'] = $value;
-            } else if (strtolower($key) == 'height') {
-                $this->dimensions['Height'] = $value;
-            }
-        }
-    }
-
-    /**
-     * Set dimensions
-     *
-     * @param  string $weight
-     * @param  string $unit
-     * @return mixed
-     */
-    public function setWeight($weight, $unit = null)
-    {
-        if ((null !== $unit) && (($unit == 'LB') || ($unit == 'KG'))) {
-            $this->weight['Units'] = $unit;
-        }
-
-        $this->weight['Value'] = $weight;
-    }
-
-    /**
      * Add Info on who pays the shipping charges.
      *
      * @return array
@@ -351,7 +311,7 @@ class Fedex extends AbstractAdapter
             'SequenceNumber'=> 1,
             'GroupPackageCount'=> 1,
             'InsuredValue' => array(
-                'Amount' => 400.00,
+                'Amount' => floatval($this->insuranceValue),
                 'Currency' => 'USD'
             ),
             'Weight' => $this->weight,
@@ -444,29 +404,34 @@ class Fedex extends AbstractAdapter
         $request = array_merge($this->requestHeader, $request);
         $this->client = new \SoapClient($this->wsdl['shipping'], ['trace' => 1]);
         $this->response = $this->client->processShipment($request);
-        $label = $this->response->CompletedShipmentDetail->CompletedPackageDetails->Label->Parts->Image;
 
         if ($this->response->HighestSeverity === 'ERROR')
         {
             $errors = $this->response->Notifications;
 
+            if (is_object($errors))
+            {
+                $errors = [$errors];
+            }
             foreach ($errors as $error)
             {
                 if ($error->Severity === 'ERROR')
                 {
                     $errorMsg[] = $error->Message;
                 }
+
             }
 
             throw new \Exception(implode("\n", $errorMsg), $errors[0]->Code);
         }
-        \JFile::write(JPATH_SITE . '/fedex-label.png', $label);
+
+        $label = $this->response->CompletedShipmentDetail->CompletedPackageDetails->Label->Parts->Image;
 
        return $label;
     }
 
     /**
-     * Send transaction
+     * Request shipping rates
      *
      * @return void
      */
@@ -482,27 +447,22 @@ class Fedex extends AbstractAdapter
 	    $request['RequestedShipment'] = [
 		    'RateRequestTypes' => 'ACCOUNT',
 		    'RateRequestTypes' => 'LIST',
-		    'PackageCount' => '1',
+		    'PackageCount' => count($this->packages),
 		    'Shipper' => $this->shipFrom,
 		    'Recipient' => $this->shipTo,
-		    'RequestedPackageLineItems' => [
-			    'SequenceNumber'    => 1,
-			    'GroupPackageCount' => 1,
-			    'Weight'            => $this->weight
-		    ]
+		    'RequestedPackageLineItems' => []
 	    ];
 
-        if ((null !== $this->dimensions['Length']) &&
-            (null !== $this->dimensions['Width']) &&
-            (null !== $this->dimensions['Height'])) {
-            $request['RequestedShipment']['RequestedPackageLineItems']['Dimensions'] = $this->dimensions;
+        foreach ($this->packages as $package)
+        {
+            $request['RequestedShipment']['RequestedPackageLineItems'][] = $package->rateRequest();
         }
 
         $request = array_merge($this->requestHeader, $request);
         $this->client = new \SoapClient($this->wsdl['rates'], ['trace' => 1]);
         $this->response = $this->client->getRates($request);
-        $this->responseCode = (int)$this->response->Notifications->Code;
-        $this->responseMessage = (string)$this->response->Notifications->Message;
+        $this->responseCode = (int) $this->response->Notifications->Code;
+        $this->responseMessage = (string) $this->response->Notifications->Message;
 	    $this->ratesExtended = [];
 
         if ($this->responseCode == 0) {
@@ -544,4 +504,14 @@ class Fedex extends AbstractAdapter
     {
         return ($this->responseCode != 0);
     }
+
+    /**
+     * Get Package
+     * @return \Pop\Shipping\PackageAdapter\Fedex
+     */
+    public function getPackage()
+    {
+        return new \Pop\Shipping\PackageAdapter\Fedex();
+    }
+
 }

@@ -224,9 +224,32 @@ class Shipping
 		return $this->adapter->getExtendedRates();
 	}
 
+	/**
+	 * @param $info
+	 *
+	 * @return mixed
+	 */
 	public function shipmentInfo($info)
 	{
 		return $this->adapter->shipmentInfo($info);
+	}
+
+	/**
+	 * @param $value
+	 */
+	public function setInsurance($value)
+	{
+		$this->adapter->setInsurance($value);
+	}
+
+	/**
+	 * Add a package
+	 *
+	 * @param PackageAdapter\AbstractAdapter $package
+	 */
+	public function addPackage(PackageAdapter\AbstractAdapter $package)
+	{
+		$this->adapter->addPackage($package);
 	}
 
 }
