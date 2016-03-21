@@ -383,7 +383,7 @@ define(['jquery', 'fab/fabrik'], function (jQuery, Fabrik) {
                     var h = this.options.height - 40,
                         scrollX = this.contentEl[0].scrollWidth,
                         w = scrollX + 40 < jQuery(window).width() ? scrollX + 40 : jQuery(window).width();
-                    u = this.window.getElement('.itemContent');
+                    u = this.window.find('.itemContent');
                     Fabrik.loader.start(u);
 
                     if (this.iframeEl) {
@@ -401,12 +401,12 @@ define(['jquery', 'fab/fabrik'], function (jQuery, Fabrik) {
                     }).css({
                         'height': h + 'px',
                         'width' : w
-                    }).inject(this.window.find('.itemContent'));
+                    }).appendTo(u);
                     this.iframeEl.hide();
                     this.iframeEl.on('load', function () {
                         Fabrik.loader.stop(self.window.find('.itemContent'));
                         self.iframeEl.show();
-                        self.trigger('onContentLoaded', [self]);
+                        jQuery(self).trigger('onContentLoaded', [self]);
                         self.watchTabs();
                     });
                     break;
