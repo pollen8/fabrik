@@ -7,9 +7,8 @@
 /*jshint mootools: true */
 /*global Fabrik:true, fconsole:true, Joomla:true, CloneObject:true, $H:true,unescape:true */
 
-define(['jquery', 'fab/encoder', 'fab/fabrik', 'fab/lib/debounce/jquery.ba-throttle-debounce'],
+define(['jquery', 'fab/encoder', 'fab/fabrik', 'lib/debounce/jquery.ba-throttle-debounce'],
     function (jQuery, Encoder, Fabrik, Debounce) {
-
     var FbForm = new Class({
 
         Implements: [Options, Events],

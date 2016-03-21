@@ -58,7 +58,7 @@ define(['jquery', 'fab/fabrik'], function (jQuery, Fabrik) {
         watchApply: function () {
             var self = this;
             this.form.find('.advanced-search-apply').on('click', function (e) {
-                Fabrik.fireEvent('fabrik.advancedSearch.submit', this);
+                Fabrik.fireEvent('fabrik.advancedSearch.submit', self);
                 var filterManager = Fabrik['filter_' + self.options.parentView];
 
                 // Format date advanced search fields to db format before posting

@@ -541,8 +541,7 @@ class FabrikViewFormBase extends FabrikView
 			$dep       = new stdClass;
 			$dep->deps = array(
 				'fab/element',
-				'lib/form_placeholder/Form.Placeholder',
-				'fab/lib/debounce/jquery.ba-throttle-debounce'
+				'lib/form_placeholder/Form.Placeholder'
 			);
 
 			$shim['fabrik/form'] = $dep;
@@ -552,11 +551,9 @@ class FabrikViewFormBase extends FabrikView
 			$framework['fab/elementlist'] = $deps;
 
 			$srcs[] = 'media/com_fabrik/js/lib/form_placeholder/Form.Placeholder.js';
-			$srcs[] = 'media/com_fabrik/js/lib/debounce/jquery.ba-throttle-debounce.js';
-
-			FabrikHelperHTML::addToFrameWork($srcs, 'media/com_fabrik/js/form');
-			FabrikHelperHTML::addToFrameWork($srcs, 'media/com_fabrik/js/form-submit');
-			FabrikHelperHTML::addToFrameWork($srcs, 'media/com_fabrik/js/element');
+			$srcs[] =  'media/com_fabrik/js/form.js';
+			$srcs[] =  'media/com_fabrik/js/form-submit.js';
+			$srcs[] ='media/com_fabrik/js/element.js';
 		}
 
 		$aWYSIWYGNames = array();

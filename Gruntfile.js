@@ -33,8 +33,18 @@ module.exports = function (grunt) {
                         '!./administrator/components/com_fabrik/views/**/*-min.js'],
                     './plugins/fabrik_*/*/*.js', {
                         rename: function (destBase, destPath) {
-                            console.log('making ' + destPath.replace('.js', '-min.js'));
-                            return destPath.replace('.js', '-min.js');
+                          //  console.log(destBase, destPath);
+                            if (destPath.indexOf('media/com_fabrik/js') !== -1) {
+
+                                destPath = destPath.replace('/js/', '/js/dist/');
+                                return destPath;
+                                console.log(destBase + ': making ' + destPath.replace('.js', '-min.js'));
+                                return destPath.replace('.js', '-min.js');
+                            } else {
+
+                                return destPath.replace('.js', '-min.js');
+                            }
+
                         }
                     })
             }

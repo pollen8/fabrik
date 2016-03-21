@@ -90,7 +90,7 @@ class FabrikViewChart extends JViewLegacy
 		$js .= $model->getFilterJs();
 
 		FabrikHelperHTML::iniRequireJs($model->getShim());
-		FabrikHelperHTML::script($srcs, $js);
+		FabrikHelperHTML::script($srcs, $js, '-min.js', array('Window', 'FbListFilter'));
 		echo parent::display();
 	}
 }

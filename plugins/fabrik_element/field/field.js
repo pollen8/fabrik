@@ -10,7 +10,8 @@
 // Wrap in require js to ensure we always load the same version of jQuery
 // Multiple instances can be loaded an ajax pages are added and removed. However we always want
 // to get the same version as plugins are only assigned to this jQuery instance
-define(['jquery', 'fab/element'], function (jQuery, FbElement) {
+define(['jquery', 'fab/element', 'components/com_fabrik/libs/masked_input/jquery.maskedinput'],
+    function (jQuery, FbElement, Mask) {
     function geolocateLoad() {
         if (document.body) {
             window.fireEvent('google.geolocate.loaded');

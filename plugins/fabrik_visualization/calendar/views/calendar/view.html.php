@@ -193,7 +193,7 @@ class FabrikViewCalendar extends JViewLegacy
 		$srcs[] = 'plugins/fabrik_visualization/calendar/calendar.js';
 
 		FabrikHelperHTML::iniRequireJs($model->getShim());
-		FabrikHelperHTML::script($srcs, $js);
+		FabrikHelperHTML::script($srcs, $js, '-min.js', array('Window', 'FbListFilter'));
 
 		$viewName = $this->getName();
 		$this->params = $model->getParams();

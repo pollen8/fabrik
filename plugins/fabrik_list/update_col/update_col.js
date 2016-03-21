@@ -43,7 +43,8 @@ var FbListUpdateCol = new Class({
 	initialize: function (options) {
 		this.parent(options);
 		if (this.options.userSelect) {
-			Fabrik['filter_update_col' + this.options.ref + '_' + this.options.renderOrder] = new UpdateColSelect();
+			var k = 'filter_update_col' + this.options.ref + '_' + this.options.renderOrder;
+			Fabrik[k] = new UpdateColSelect();
 			this.makeUpdateColWindow();
 		}
 	},
@@ -57,11 +58,12 @@ var FbListUpdateCol = new Class({
 	},
 
 	makeUpdateColWindow: function () {
-		this.windowopts = {
-			'id': 'update_col_win_' + this.options.ref + '_' + this.options.renderOrder,
+		var tds, tr_clone, i, self = this;
+		self.windowopts = {
+			'id': 'update_col_win_' + self.options.ref + '_' + self.options.renderOrder,
 			title: Joomla.JText._('PLG_LIST_UPDATE_COL_UPDATE'),
 			loadMethod: 'html',
-			content: this.options.form,
+			content: self.options.form,
 			width: 400,
 			destroy: false,
 			height: 300,
@@ -69,7 +71,7 @@ var FbListUpdateCol = new Class({
 				this.fitToContent(false);
 			},
 			onContentLoaded: function (win) {
-				var form = document.id('update_col' + this.options.ref + '_' + this.options.renderOrder);
+				var form = document.id('update_col' + self.options.ref + '_' + self.options.renderOrder);
 
 				// Add a row
 				form.addEvent('click:relay(a.add)', function (e, target) {
@@ -116,7 +118,7 @@ var FbListUpdateCol = new Class({
 						}
 						if (els[i].selectedIndex === target.selectedIndex) {
 							// @TODO language
-							alert('This element has already been selected!');
+							window.alert('This element has already been selected!');
 							return;
 						}
 					}
@@ -130,46 +132,49 @@ var FbListUpdateCol = new Class({
 					var counter = 0;
 
 					// Piggy backing on the list advanced search code to get an element and its js
-					var url = "index.php?option=com_fabrik&task=list.elementFilter&format=raw";
+					var url = 'index.php?option=com_fabrik&task=list.elementFilter&format=raw';
 
-					// It looks odd - but to get the element js code to load in correct we need to set the context to a visualization
+					// It looks odd - but to get the element js code to load in correct we need to set the context
+					// to a visualization
 					new Request.HTML({'url': url,
 						'update': update,
 						'data': {
 							'element': v,
-							'id': this.options.listid,
+							'id': self.options.listid,
 							'elid': id,
 							'plugin': plugin,
 							'counter': counter,
-							'listref':  this.options.ref,
+							'listref':  self.options.ref,
 							'context': 'visualization',
-							'parentView': 'update_col' + this.options.ref + '_' + this.options.renderOrder,
+							'parentView': 'update_col' + self.options.ref + '_' + self.options.renderOrder,
 							'fabrikIngoreDefaultFilterVal': 1
 						},
 						'onComplete': function () {
 							Fabrik.loader.stop(row);
-							win.fitToContent(false);
+							self.win.fitToContent(false);
 						}
 					}).send();
-				}.bind(this));
+				});
 
 				// Submit the update
 				form.getElement('input[type=button]').addEvent('click', function (e) {
 					e.stop();
 					var i;
-					Fabrik['filter_update_col'  + this.options.ref + '_' + this.options.renderOrder].onSumbit();
+					Fabrik['filter_update_col'  + self.options.ref + '_' + self.options.renderOrder].onSumbit();
 
-					var listForm = document.id('listform_' + this.options.ref);
+					var listForm = document.id('listform_' + self.options.ref);
 
-					// Grab all the update settings and put them in a hidden field for later extraction within the update_col php code.
-					i = new Element('input', {'type': 'hidden', 'value': form.toQueryString(), 'name': 'fabrik_update_col'});
+					// Grab all the update settings and put them in a hidden field for
+					// later extraction within the update_col php code.
+					i = new Element('input', {'type': 'hidden', 'value': form.toQueryString(),
+						'name': 'fabrik_update_col'});
 					i.inject(listForm, 'bottom');
-					this.list.submit('list.doPlugin');
+					self.list.submit('list.doPlugin');
 
-				}.bind(this));
-			}.bind(this)
+				});
+			}
 		};
-		this.win = Fabrik.getWindow(this.windowopts);
-		this.win.close();
+		self.win = Fabrik.getWindow(self.windowopts);
+		self.win.close();
 	}
 });

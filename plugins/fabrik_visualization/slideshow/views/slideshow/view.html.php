@@ -90,7 +90,7 @@ class FabrikViewSlideshow extends JViewLegacy
 
 		FabrikHelperHTML::slimbox();
 		FabrikHelperHTML::iniRequireJs($model->getShim());
-		FabrikHelperHTML::script($srcs, $this->js);
+		FabrikHelperHTML::script($srcs, $this->js, '-min.js', array('Window', 'FbListFilter'));
 
 		//FabrikHelperHTML::slimbox();
 

@@ -143,8 +143,9 @@ class FabrikViewListBase extends FabrikView
 		$dep              = new stdClass;
 		$dep->deps        = array();
 		$shim['fab/list'] = $dep;
+		$src[]            = 'media/com_fabrik/js/list.js';
+		$src[]            = 'media/com_fabrik/js/listfilter.js';
 		$src              = $model->getPluginJsClasses($src, $shim);
-		FabrikHelperHTML::addToFrameWork($src, 'media/com_fabrik/js/list');
 		$model->getCustomJsAction($src);
 
 		$tmpl       = $model->getTmpl();
@@ -313,9 +314,7 @@ class FabrikViewListBase extends FabrikView
 		$script[] = "\tFabrik.addBlock('list_{$listRef}', list);";
 
 		// Add in plugin objects
-		$params        = $model->getParams();
 		$pluginManager = FabrikWorker::getPluginManager();
-		$c             = 0;
 
 		$pluginManager->runPlugins('onLoadJavascriptInstance', $model, 'list');
 		$aObjs = $pluginManager->data;
@@ -334,7 +333,6 @@ class FabrikViewListBase extends FabrikView
 
 		// Was separate but should now load in with the rest of the require js code
 		$model    = $this->getModel();
-		$src[]    = 'media/com_fabrik/js/listfilter.js';
 		$script[] = $model->getElementJs($src);
 
 		// End domready wrapper

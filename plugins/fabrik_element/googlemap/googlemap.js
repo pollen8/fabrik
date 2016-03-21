@@ -41,7 +41,8 @@ function googleradiusloaded() {
 }
 
 
-define(['jquery', 'fab/element'], function (jQuery, FbElement) {
+define(['jquery', 'fab/element', 'lib/debounce/jquery.ba-throttle-debounce', 'fab/fabrik'],
+    function (jQuery, FbElement, Debounce, Fabrik) {
     window.FbGoogleMap = new Class({
         Extends: FbElement,
 
@@ -575,7 +576,7 @@ define(['jquery', 'fab/element'], function (jQuery, FbElement) {
                         var f = document.id(field);
                         if (typeOf(f) !== 'null') {
                             var that = this;
-                            jQuery(f).on('keyup', Fabrik.debounce(this.options.debounceDelay, function (e) {
+                            jQuery(f).on('keyup', Debounce(this.options.debounceDelay, function (e) {
                                 that.geoCode(e);
                             }));
                             // Select lists, radios whatnots
@@ -614,7 +615,7 @@ define(['jquery', 'fab/element'], function (jQuery, FbElement) {
                      */
                     var that = this;
                     jQuery(this.element.getElement('.geocode_input')).on('keyup',
-                        Fabrik.debounce(this.options.debounceDelay, function (e) {
+                        Debounce(this.options.debounceDelay, function (e) {
                             that.geoCode(e);
                         }));
                 }

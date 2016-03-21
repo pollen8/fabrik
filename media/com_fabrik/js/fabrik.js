@@ -8,7 +8,7 @@
 /**
  * Create the Fabrik name space
  */
-define(['jquery'], function (jQuery) {
+define(['jquery', 'fab/loader', 'fab/requestqueue'], function (jQuery, Loader, RequestQueue) {
     document.addEvent('click:relay(.popover button.close)', function (event, target) {
         var popover = '#' + target.get('data-popover'),
             pEl = document.getElement(popover);

@@ -82,7 +82,6 @@ define(['jquery', 'fab/fabrik', 'fab/advanced-search'], function (jQuery, Fabrik
                                 list = Fabrik.blocks[self.options.container];
                                 self.options.advancedSearch.parentView = self.options.container;
                             }
-                            debugger;
                             list.advancedSearch = new AdvancedSearch(self.options.advancedSearch);
                             this.fitToContent(false);
                         }

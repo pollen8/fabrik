@@ -290,11 +290,11 @@ class PlgFabrik_ElementGooglemap extends PlgFabrik_Element
 		$s = new stdClass;
 		$s->deps = array('fab/element');
 
-		if ($geocode !== '0' && $geocode_event === 'change')
+		/*if ($geocode !== '0' && $geocode_event === 'change')
 		{
-			$folder = 'fab/lib/debounce/';
+			$folder = 'lib/debounce/';
 			$s->deps[] = $folder . 'jquery.ba-throttle-debounce';
-		}
+		}*/
 
 		if (count($s->deps) > 1)
 		{

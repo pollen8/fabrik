@@ -8,7 +8,7 @@
 /*jshint mootools: true */
 /*global fconsole:true, Joomla:true,  */
 
-define(['jquery', 'fab/encoder', 'fab/fabrik', 'fab/lib/debounce/jquery.ba-throttle-debounce'],
+define(['jquery', 'fab/encoder', 'fab/fabrik', 'lib/debounce/jquery.ba-throttle-debounce'],
     function (jQuery, Encoder, Fabrik, debounce) {
     var AutoComplete = new Class({
 

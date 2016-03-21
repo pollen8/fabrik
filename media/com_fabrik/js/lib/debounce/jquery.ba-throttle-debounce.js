@@ -1,5 +1,4 @@
 define(['jquery', 'fab/fabrik'], function (jQuery, Fabrik) {
-
     /*!
      * Fabrik/jQuery throttle / debounce - v1.1 - 3/7/2010
      * http://benalman.com/projects/jquery-throttle-debounce-plugin/

@@ -13,8 +13,7 @@
  * @return  Fabrik.Window
  */
 
-define(['jquery', 'fab/fabrik'], function (jQuery, Fabrik) {
-
+define(['jquery', 'fab/fabrik', 'jQueryUI', 'fab/utils'], function (jQuery, Fabrik, draggable) {
     Fabrik.getWindow = function (opts) {
         if (Fabrik.Windows[opts.id]) {
             if (opts.visible !== false) {
