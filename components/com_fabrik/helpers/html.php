@@ -849,6 +849,8 @@ EOD;
 
 			// Require js test - list with no cal loading ajax form with cal
 			JHTML::_('behavior.calendar');
+			$liveSiteReq[] = 'media/com_fabrik/js/chosen-loader.js';
+			$liveSiteReq[] = 'media/com_fabrik/js/fabrik';// . $ext;
 
 			if ($fbConfig->get('advanced_behavior', '0') == '1')
 			{
@@ -856,7 +858,6 @@ EOD;
 				$chosenOptions = empty($chosenOptions) ? new stdClass : ArrayHelper::fromObject(json_decode($chosenOptions));
 				JHtml::_('stylesheet', 'jui/chosen.css', false, true);
 				JHtml::_('script', 'jui/chosen.jquery.min.js', false, true, false, false, self::isDebug());
-				$liveSiteReq[] = 'media/com_fabrik/js/chosen-loader.js';
 			}
 
 			if (self::inAjaxLoadedPage() && !$bootstrapped)
@@ -870,7 +871,6 @@ EOD;
 			{
 				// Require.js now added in fabrik system plugin onAfterRender()
 				JText::script('COM_FABRIK_LOADING');
-				$src[] = 'media/com_fabrik/js/fabrik';
 				$src[] = 'media/com_fabrik/js/window' . $ext;
 
 				self::styleSheet(COM_FABRIK_LIVESITE . 'media/com_fabrik/css/fabrik.css');
@@ -937,7 +937,6 @@ EOD;
 				Fabrik.jLayouts = {};
 				}
 				Fabrik.jLayouts = jQuery.extend(Fabrik.jLayouts, %%jLayouts%%);";
-				$liveSiteReq[] = 'media/com_fabrik/js/fabrik' . $ext;
 			}
 
 			self::script($liveSiteReq, $liveSiteSrc, '-min.js', array('Chosen', 'Fabrik'));
