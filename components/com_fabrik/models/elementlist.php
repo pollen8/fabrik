@@ -674,33 +674,16 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 			}
 		}
 
-		$condensed = array();
+		$layout = FabrikHelperHTML::getLayout('fabrik-element-elementlist-details',
+			array(JPATH_COMPONENT . '/layouts/element'));
 
-		if ($condense)
-		{
-			foreach ($uls as $ul)
-			{
-				$condensed[] = $ul[0];
-			}
+		$displayData = array(
+			'uls' => $uls,
+			'condense' => $condense,
+			'addHtml' => $addHtml
+		);
 
-			return $addHtml ? '<ul class="fabrikRepeatData"><li>' . implode('</li><li>', $condensed) . '</li></ul>' : implode(' ', $condensed);
-		}
-		else
-		{
-			$html = array();
-			$html[] = $addHtml ? '<ul class="fabrikRepeatData"><li>' : '';
-
-			foreach ($uls as $ul)
-			{
-				$html[] = $addHtml ? '<ul class="fabrikRepeatData"><li>' : '';
-				$html[] = $addHtml ? implode('</li><li>', $ul) : implode(' ', $ul);
-				$html[] = $addHtml ? '</li></ul>' : '';
-			}
-
-			$html[] = $addHtml ? '</li></ul>' : '';
-
-			return $addHtml ? implode('', $html) : implode(' ', $html);
-		}
+		return $layout->render((object) $displayData);
 	}
 
 	/**
