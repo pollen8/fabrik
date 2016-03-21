@@ -1,7 +1,6 @@
 /**
  * Created by rob on 18/03/2016.
  */
-console.log('cdd autocomplete loaded');
 define(['jquery', 'fab/autocomplete-bootstrap', 'fab/fabrik'],
     function (jQuery, AutoComplete, Fabrik) {
     var FabCddAutocomplete = new Class({

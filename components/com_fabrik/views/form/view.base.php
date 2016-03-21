@@ -365,9 +365,11 @@ class FabrikViewFormBase extends FabrikView
 
 			// Set a flag so that the system plugin can clear out any other canonical links.
 			$this->session->set('fabrik.clearCanonical', true);
-			try {
+			try
+			{
 				$this->doc->addCustomTag('<link rel="canonical" href="' . htmlspecialchars($url) . '" />');
-			} catch (Exception $err) {
+			} catch (Exception $err)
+			{
 
 			}
 
@@ -518,23 +520,26 @@ class FabrikViewFormBase extends FabrikView
 	{
 		$pluginManager = FabrikWorker::getPluginManager();
 
-
 		/** @var FabrikFEModelForm $model */
-		$model                 = $this->getModel();
+		$model = $this->getModel();
 		$model->elementJsJLayouts();
 		$aLoadedElementPlugins = array();
 		$jsActions             = array();
 		$bKey                  = $model->jsKey();
-		$srcs                  = FabrikHelperHTML::framework();
+		$srcs                  = array_merge(array('media/com_fabrik/js/tipsBootStrapMock.js'),
+			FabrikHelperHTML::framework());
 		$shim                  = array();
+		$names                 = array();
+
+		$liveSiteReq[] = 'media/com_fabrik/js/tipsBootStrapMock.js';
 
 		if (!defined('_JOS_FABRIK_FORMJS_INCLUDED'))
 		{
 			define('_JOS_FABRIK_FORMJS_INCLUDED', 1);
 			FabrikHelperHTML::slimbox();
 
-			$dep                 = new stdClass;
-			$dep->deps           = array(
+			$dep       = new stdClass;
+			$dep->deps = array(
 				'fab/element',
 				'lib/form_placeholder/Form.Placeholder',
 				'fab/lib/debounce/jquery.ba-throttle-debounce'
@@ -706,6 +711,7 @@ class FabrikViewFormBase extends FabrikView
 		{
 			$tipOpts  = FabrikHelperHTML::tipOpts();
 			$script[] = "new FloatingTips('#" . $bKey . " .fabrikTip', " . json_encode($tipOpts) . ");";
+			$names[]  = 'FloatingTips';
 		}
 
 		$res = $pluginManager->runPlugins('onJSReady', $model);
@@ -723,7 +729,7 @@ class FabrikViewFormBase extends FabrikView
 		// 3.1 call form js plugin code within main require method
 		$srcs = array_merge($srcs, $model->formPluginShim);
 		$str .= $model->formPluginJS;
-		FabrikHelperHTML::script($srcs, $str);
+		FabrikHelperHTML::script($srcs, $str, '-min.js', $names);
 	}
 
 	/**

@@ -852,6 +852,15 @@ EOD;
 			$liveSiteReq[] = 'media/com_fabrik/js/chosen-loader.js';
 			$liveSiteReq[] = 'media/com_fabrik/js/fabrik';// . $ext;
 
+			if ($bootstrapped)
+			{
+				$liveSiteReq[] = 'media/com_fabrik/js/tipsBootStrapMock' . $ext;
+			}
+			else
+			{
+				$liveSiteReq[] = 'media/com_fabrik/js/tips' . $ext;
+			}
+
 			if ($fbConfig->get('advanced_behavior', '0') == '1')
 			{
 				$chosenOptions = $fbConfig->get('advanced_behavior_options', '{}');
@@ -874,17 +883,6 @@ EOD;
 				$src[] = 'media/com_fabrik/js/window' . $ext;
 
 				self::styleSheet(COM_FABRIK_LIVESITE . 'media/com_fabrik/css/fabrik.css');
-
-				$liveSiteReq[] = 'media/com_fabrik/js/fabrik';
-
-				if ($bootstrapped)
-				{
-					$liveSiteReq[] = 'media/com_fabrik/js/tipsBootStrapMock' . $ext;
-				}
-				else
-				{
-					$liveSiteReq[] = 'media/com_fabrik/js/tips' . $ext;
-				}
 
 				if ($fbConfig->get('advanced_behavior', '0') == '1')
 				{
@@ -939,7 +937,7 @@ EOD;
 				Fabrik.jLayouts = jQuery.extend(Fabrik.jLayouts, %%jLayouts%%);";
 			}
 
-			self::script($liveSiteReq, $liveSiteSrc, '-min.js', array('Chosen', 'Fabrik'));
+			self::script($liveSiteReq, $liveSiteSrc, '-min.js', array('Chosen', 'Fabrik', 'FloatingTips'));
 			self::$framework = $src;
 		}
 
@@ -1071,7 +1069,7 @@ EOD;
 
 		if ($j3)
 		{
-			$deps[] = 'fab/tipsBootStrapMock' . $ext;
+			//$deps[] = 'fab/tipsBootStrapMock' . $ext;
 		}
 		else
 		{
