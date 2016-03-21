@@ -157,7 +157,7 @@ window.addEvent(\'domready\', function () {
 		';
 
 		$src = array('media/com_fabrik/js/lib/ace/src-min-noconflict/ace.js', 'media/com_fabrik/js/fabrik.js');
-		FabrikHelperHTML::script($src, $script);
+		FabrikHelperHTML::script($src, $script, '-min.js', array('Ace', 'Fabrik'));
 
 		echo '<style type="text/css" media="screen">
 	#' . $aceId . '-ace {

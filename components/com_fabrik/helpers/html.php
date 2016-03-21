@@ -1062,6 +1062,7 @@ EOD;
 			$deps[] = 'fab/lib/flexiejs/flexie' . $ext;
 		}
 
+		$deps[] = 'fab/utils';
 		$deps[] = 'jquery';
 
 		$deps[] = 'fab/mootools-ext' . $ext;
@@ -1082,7 +1083,7 @@ EOD;
 		//$deps[] = 'fab/encoder' . $ext;
 
 		self::addRequireJsShim($framework, 'fab/fabrik', $deps);
-		self::addRequireJsShim($framework, 'fab/window', array('fab/fabrik' . $ext));
+		//self::addRequireJsShim($framework, 'fab/window', array('fab/fabrik' . $ext));
 		self::addRequireJsShim($framework, 'fab/autocomplete-bootstrap', array('fab/fabrik' . $ext));
 
 		$newShim = array_merge($framework, $newShim);
@@ -1100,9 +1101,9 @@ EOD;
 		$opts     = array(
 			'baseUrl' => $requirejsBaseURI,
 			'paths' => $requirePaths,
-			'shim' => $newShim,
-			'waitSeconds' => 30
+			'shim' => $newShim
 		);
+		//,		'waitSeconds' => 30
 		$config[] = "requirejs.config(";
 		$config[] = json_encode($opts, self::isDebug() && defined('JSON_PRETTY_PRINT') ? JSON_PRETTY_PRINT : false);
 		$config[] = ");";
@@ -1385,7 +1386,9 @@ EOD;
 				{
 					$compressedFile = str_replace('.js', $ext, $file);
 
-					if (JFile::exists(COM_FABRIK_BASE . $compressedFile) || JFile::exists($compressedFile))
+					// Tmp fix for fabrik-min untill we load min js files from a sep folder in the requirejs conf
+					if ($compressedFile !== 'media/com_fabrik/js/fabrik-min.js'
+						&& JFile::exists(COM_FABRIK_BASE . $compressedFile) || JFile::exists($compressedFile))
 					{
 						$file = $compressedFile;
 					}

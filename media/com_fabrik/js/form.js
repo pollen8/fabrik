@@ -7,8 +7,8 @@
 /*jshint mootools: true */
 /*global Fabrik:true, fconsole:true, Joomla:true, CloneObject:true, $H:true,unescape:true */
 
-var FbForm;
-define(['jquery', 'fab/encoder'], function (jQuery, Encoder) {
+define(['jquery', 'fab/encoder', 'fab/fabrik', 'fab/lib/debounce/jquery.ba-throttle-debounce'],
+    function (jQuery, Encoder, Fabrik, Debounce) {
 
     var FbForm = new Class({
 
@@ -1507,7 +1507,7 @@ define(['jquery', 'fab/encoder'], function (jQuery, Encoder) {
 
             var self = this;
 
-            jQuery(this.form).on('click', '.deleteGroup', Fabrik.debounce(this.options.debounceDelay, true, function (e, target) {
+            jQuery(this.form).on('click', '.deleteGroup', Debounce(this.options.debounceDelay, true, function (e, target) {
                 e.preventDefault();
                 if (!self.addingOrDeletingGroup) {
                     self.addingOrDeletingGroup = true;
@@ -1518,7 +1518,7 @@ define(['jquery', 'fab/encoder'], function (jQuery, Encoder) {
                 }
             }));
 
-            jQuery(this.form).on('click', '.addGroup', Fabrik.debounce(this.options.debounceDelay, true, function (e, target) {
+            jQuery(this.form).on('click', '.addGroup', Debounce(this.options.debounceDelay, true, function (e, target) {
                 e.preventDefault();
                 if (!self.addingOrDeletingGroup) {
                     self.addingOrDeletingGroup = true;
@@ -2175,5 +2175,11 @@ define(['jquery', 'fab/encoder'], function (jQuery, Encoder) {
             }
         }
     });
+
+    Fabrik.form = function (ref, id, opts) {
+        var form = new FbForm(id, opts);
+        Fabrik.addBlock(ref, form);
+        return form;
+    };
     return FbForm;
-})
+});

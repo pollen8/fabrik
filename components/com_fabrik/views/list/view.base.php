@@ -33,6 +33,7 @@ class FabrikViewListBase extends FabrikView
 
 	/**
 	 * Build CSV export options and JS code
+	 *
 	 * @param $opts
 	 * @param $model
 	 */
@@ -61,10 +62,10 @@ class FabrikViewListBase extends FabrikView
 		if ($opts->csvChoose)
 		{
 			$modalOpts['footer'] = 'export';
-			$layout = FabrikHelperHTML::getLayout('fabrik-button');
-			$layoutData = (object) array(
+			$layout              = FabrikHelperHTML::getLayout('fabrik-button');
+			$layoutData          = (object) array(
 				'name' => 'submit',
-				'class' =>  'exportCSVButton btn-primary',
+				'class' => 'exportCSVButton btn-primary',
 				'label' => JText::_('COM_FABRIK_EXPORT')
 			);
 
@@ -139,14 +140,8 @@ class FabrikViewListBase extends FabrikView
 		$src  = FabrikHelperHTML::framework();
 		$shim = array();
 
-		$dep       = new stdClass;
-		$dep->deps = array('fab/fabrik', 'fab/listfilter', 'fab/advanced-search', 'fab/encoder');
-
-		if ($toggleCols)
-		{
-			$dep->deps[] = 'fab/list-toggle';
-		}
-
+		$dep              = new stdClass;
+		$dep->deps        = array();
 		$shim['fab/list'] = $dep;
 		$src              = $model->getPluginJsClasses($src, $shim);
 		FabrikHelperHTML::addToFrameWork($src, 'media/com_fabrik/js/list');
@@ -339,14 +334,15 @@ class FabrikViewListBase extends FabrikView
 
 		// Was separate but should now load in with the rest of the require js code
 		$model    = $this->getModel();
+		$src[]    = 'media/com_fabrik/js/listfilter.js';
 		$script[] = $model->getElementJs($src);
 
 		// End domready wrapper
 		$script[] = '})';
 		$script   = implode("\n", $script);
-		FabrikHelperHTML::iniRequireJS($shim);
-		FabrikHelperHTML::script($src, $script);
 
+		FabrikHelperHTML::iniRequireJS($shim);
+		FabrikHelperHTML::script($src, $script, '-min.js', array('Window', 'FbList', 'FbListFilter'));
 	}
 
 	/**
