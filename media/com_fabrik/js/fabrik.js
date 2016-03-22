@@ -332,10 +332,11 @@ define(['jquery', 'fab/loader', 'fab/requestqueue'], function (jQuery, Loader, R
 
                 l = Fabrik.blocks[ref];
                 // Deprecated in 3.1 // should only check all for floating tips
-                if (l.options.actionMethod === 'floating' && !this.bootstrapped) {
-                    l.form.getElements('input[type=checkbox][name*=id], input[type=checkbox][name=checkAll]').each(function (c) {
-                        c.checked = true;
-                    });
+                if (l !== undefined && l.options.actionMethod === 'floating' && !this.bootstrapped) {
+                    l.form.getElements('input[type=checkbox][name*=id], input[type=checkbox][name=checkAll]')
+                        .each(function (c) {
+                            c.checked = true;
+                        });
                 }
             }
         }
