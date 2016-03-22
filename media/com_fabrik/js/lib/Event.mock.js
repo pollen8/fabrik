@@ -33,37 +33,40 @@ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
 AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE 
+THE SOFTWARE
 */
-(function($,window,undef){
+define([], function () {
+    (function ($, window, undef) {
 
-/**
- * creates a Mock event to be used with fire event
- * @param Element target an element to set as the target of the event - not required
- *  @param string type the type of the event to be fired. Will not be used by IE - not required.
- *
- */
-Event.Mock = function(target,type){
-        var e = window.event;
-        
-        type = type || 'click';
-        
-        if (document.createEvent){
-            e = document.createEvent('HTMLEvents');
-            e.initEvent(
-                type //event type
-                , false //bubbles - set to false because the event should like normal fireEvent
-                , true //cancelable
-            );
-        } else if( document.createEventObject) {
-        	// Internet explorer 8?
-        	e = document.createEventObject();
-        }
-        // No longer works in 1.4.5
-        //e = new Event(e);
-        e = new DOMEvent(e, self.getWindow())
-        e.target = target;
-        return e;
-}
+        /**
+         * creates a Mock event to be used with fire event
+         * @param Element target an element to set as the target of the event - not required
+         *  @param string type the type of the event to be fired. Will not be used by IE - not required.
+         *
+         */
+        Event.Mock = function (target, type) {
+            var e = window.event;
 
-})(document.id,window);
+            type = type || 'click';
+
+            if (document.createEvent) {
+                e = document.createEvent('HTMLEvents');
+                e.initEvent(
+                    type, //event type
+                    false, //bubbles - set to false because the event should like normal fireEvent
+                    true //cancelable
+                );
+            } else if (document.createEventObject) {
+                // Internet explorer 8?
+                e = document.createEventObject();
+            }
+            // No longer works in 1.4.5
+            //e = new Event(e);
+            e = new DOMEvent(e, self.getWindow());
+            e.target = target;
+            return e;
+        };
+
+    })(document.id, window);
+    return Event.Mock;
+});

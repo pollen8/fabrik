@@ -526,10 +526,13 @@ class FabrikViewFormBase extends FabrikView
 		$aLoadedElementPlugins = array();
 		$jsActions             = array();
 		$bKey                  = $model->jsKey();
-		$srcs                  = array_merge(array('media/com_fabrik/js/tipsBootStrapMock.js'),
+		$srcs                  = array_merge(
+			array('media/com_fabrik/js/tipsBootStrapMock.js',
+				'media/com_fabrik/js/form.js',
+				'media/com_fabrik/js/fabrik.js'),
 			FabrikHelperHTML::framework());
 		$shim                  = array();
-		$names                 = array();
+		$names                 = array('FloatingTips', 'FbForm', 'Fabrik');
 
 		$liveSiteReq[] = 'media/com_fabrik/js/tipsBootStrapMock.js';
 
@@ -551,9 +554,9 @@ class FabrikViewFormBase extends FabrikView
 			$framework['fab/elementlist'] = $deps;
 
 			$srcs[] = 'media/com_fabrik/js/lib/form_placeholder/Form.Placeholder.js';
-			$srcs[] =  'media/com_fabrik/js/form.js';
-			$srcs[] =  'media/com_fabrik/js/form-submit.js';
-			$srcs[] ='media/com_fabrik/js/element.js';
+			$srcs[] = 'media/com_fabrik/js/form.js';
+			$srcs[] = 'media/com_fabrik/js/form-submit.js';
+			$srcs[] = 'media/com_fabrik/js/element.js';
 		}
 
 		$aWYSIWYGNames = array();
@@ -631,12 +634,12 @@ class FabrikViewFormBase extends FabrikView
 		// $$$ rob don't declare as var $bKey, but rather assign to window, as if loaded via ajax window the function is wrapped
 		// inside an anonymous function, and therefore $bKey wont be available as a global var in window
 		$script   = array();
-		$script[] = "\t\tvar $bKey = Fabrik.form('$bKey', " . $model->getId() . ", $opts);";
-
+		$script[] = "\t\tvar $bKey = new FbForm(" . $model->getId() . ", $opts);";
+		$script[] = "\t\tFabrik.addBlock('$bKey', $bKey);";
 		// Instantiate js objects for each element
 		$vstr      = "\n";
 		$groups    = $model->getGroupsHiarachy();
-		$script[]  = "\tFabrik.blocks['{$bKey}'].addElements(";
+		$script[]  = "\t{$bKey}.addElements(";
 		$groupedJs = new stdClass;
 
 		foreach ($groups as $groupModel)
@@ -685,7 +688,7 @@ class FabrikViewFormBase extends FabrikView
 
 							foreach ($watchElements as $watchElement)
 							{
-								$vstr .= "\tFabrik.blocks['$bKey'].watchValidation('" . $watchElement['id'] . "', '" . $watchElement['triggerEvent'] . "');\n";
+								$vstr .= "\t$bKey.watchValidation('" . $watchElement['id'] . "', '" . $watchElement['triggerEvent'] . "');\n";
 							}
 						}
 					}
@@ -708,7 +711,6 @@ class FabrikViewFormBase extends FabrikView
 		{
 			$tipOpts  = FabrikHelperHTML::tipOpts();
 			$script[] = "new FloatingTips('#" . $bKey . " .fabrikTip', " . json_encode($tipOpts) . ");";
-			$names[]  = 'FloatingTips';
 		}
 
 		$res = $pluginManager->runPlugins('onJSReady', $model);

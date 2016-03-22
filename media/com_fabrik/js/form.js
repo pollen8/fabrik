@@ -4,8 +4,6 @@
  * @copyright: Copyright (C) 2005-2013, fabrikar.com - All rights reserved.
  * @license:   GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
-/*jshint mootools: true */
-/*global Fabrik:true, fconsole:true, Joomla:true, CloneObject:true, $H:true,unescape:true */
 
 define(['jquery', 'fab/encoder', 'fab/fabrik', 'lib/debounce/jquery.ba-throttle-debounce'],
     function (jQuery, Encoder, Fabrik, Debounce) {
@@ -761,7 +759,8 @@ define(['jquery', 'fab/encoder', 'fab/fabrik', 'lib/debounce/jquery.ba-throttle-
                     next.disabled = 'disabled';
                     next.setStyle('opacity', 0.5);
                 } else {
-                    if (typeOf(submit) !== 'null' && (this.options.rowid === '' || this.options.rowid.toString() === '0')) {
+                    if (typeOf(submit) !== 'null' && (this.options.rowid === '' ||
+                        this.options.rowid.toString() === '0')) {
                         submit.disabled = 'disabled';
                         submit.setStyle('opacity', 0.5);
                     }
@@ -956,7 +955,8 @@ define(['jquery', 'fab/encoder', 'fab/fabrik', 'lib/debounce/jquery.ba-throttle-
             if (typeOf(document.id(id)) === 'null') {
                 return;
             }
-            if (document.id(id).getProperty('readonly') === true || document.id(id).getProperty('readonly') === 'readonly') {
+            if (document.id(id).getProperty('readonly') === true ||
+                document.id(id).getProperty('readonly') === 'readonly') {
                 // stops date element being validated
                 // return;
             }
@@ -2175,6 +2175,7 @@ define(['jquery', 'fab/encoder', 'fab/fabrik', 'lib/debounce/jquery.ba-throttle-
         }
     });
 
+        // Deprecated - think its no longer used.
     Fabrik.form = function (ref, id, opts) {
         var form = new FbForm(id, opts);
         Fabrik.addBlock(ref, form);

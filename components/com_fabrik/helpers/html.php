@@ -874,7 +874,6 @@ EOD;
 			{
 				// $$$ rob 06/02/2012 recall ant so that Color.detach is available (needed for opening a window from within a window)
 				JHtml::_('script', 'media/com_fabrik/js/lib/art.js');
-				JHtml::_('script', 'media/com_fabrik/js/lib/Event.mock.js');
 			}
 
 			if (!self::inAjaxLoadedPage())
@@ -1091,7 +1090,7 @@ EOD;
 			$opts['urlArgs'] = 'bust=' . time();
 		}
 		$opts['urlArgs'] = 'bust=' . time();
-		
+
 		$config[] = "requirejs.config(";
 		$config[] = json_encode($opts, self::isDebug() && defined('JSON_PRETTY_PRINT') ? JSON_PRETTY_PRINT : false);
 		$config[] = ");";

@@ -10,7 +10,7 @@
  this elements values
  */
 
-define(['jquery', 'element/databasejoin/databasejoin'], function (jQuery, FbDatabasejoin) {
+define(['jquery', 'element/databasejoin/databasejoin', 'lib/Event.Mock'], function (jQuery, FbDatabasejoin) {
     window.FbCascadingdropdown = new Class({
 
         options : {
