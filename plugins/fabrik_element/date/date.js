@@ -84,6 +84,7 @@ define(['jquery', 'fab/element'], function (jQuery, FbElement) {
 
                             // need to fire this to cook off anything observing this element
                             Fabrik.fireEvent('fabrik.date.select', this);
+                            this.element.fireEvent('change', new Event.Mock(this.element, 'change'));
                         }
                         else {
                             this.options.value = '';
