@@ -386,4 +386,14 @@ class PlgFabrik_ListDownload extends PlgFabrik_List
 
 		return $pdfFiles;
 	}
+
+	/**
+	 * Load the AMD module class name
+	 *
+	 * @return string
+	 */
+	public function loadJavascriptClassName_result()
+	{
+		return 'FbListDownload';
+	}
 }

@@ -1063,4 +1063,14 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 		return $this->gateway;
 	}
 
+	/**
+	 * Load the AMD module class name
+	 *
+	 * @return string
+	 */
+	public function loadJavascriptClassName_result()
+	{
+		return 'FbListEmail';
+	}
+
 }

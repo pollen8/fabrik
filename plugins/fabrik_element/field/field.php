@@ -336,6 +336,7 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 	 */
 	public function formJavascriptClass(&$srcs, $script = '', &$shim = array())
 	{
+		$key = FabrikHelperHTML::isDebug() ? 'element/field/field' : 'element/field/field-min';
 		$params = $this->getParams();
 		$inputMask = trim($params->get('text_input_mask', ''));
 		$geoComplete = $params->get('autocomplete', '0') === '3';
@@ -344,7 +345,9 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 
 		// Even though fab/element is now an AMD defined module we should still keep it in here
 		// otherwise (not sure of the reason) jQuery.mask is not defined in field.js
-		$s->deps = array('fab/element');
+
+		// Seems OK now - reverting to empty array
+		$s->deps = array();
 
 		if (!empty($inputMask))
 		{
@@ -360,13 +363,13 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 
 		if (count($s->deps) > 1)
 		{
-			if (array_key_exists('element/field/field', $shim))
+			if (array_key_exists($key, $shim))
 			{
-				$shim['element/field/field']->deps = array_merge($shim['element/field/field']->deps, $s->deps);
+				$shim[$key]->deps = array_merge($shim[$key]->deps, $s->deps);
 			}
 			else
 			{
-				$shim['element/field/field'] = $s;
+				$shim[$key] = $s;
 			}
 		}
 

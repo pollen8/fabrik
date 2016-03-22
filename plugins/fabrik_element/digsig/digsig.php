@@ -65,10 +65,10 @@ class PlgFabrik_ElementDigsig extends PlgFabrik_Element
 			$val = json_encode($val);
 		}
 
-		$basePath      = COM_FABRIK_BASE . '/plugins/fabrik_element/digsig/layouts/';
-		$layoutData    = new stdClass;
-		$input         = $this->app->input;
-		$format        = $input->get('format');
+		$basePath   = COM_FABRIK_BASE . '/plugins/fabrik_element/digsig/layouts/';
+		$layoutData = new stdClass;
+		$input      = $this->app->input;
+		$format     = $input->get('format');
 
 		$layoutData->id            = $id;
 		$layoutData->digsig_width  = $digsig_width;
@@ -111,11 +111,11 @@ class PlgFabrik_ElementDigsig extends PlgFabrik_Element
 	/**
 	 * Shows the data formatted for the list view
 	 *
-	 * @param   string    $data      Elements data
-	 * @param   stdClass  &$thisRow  All the data in the lists current row
-	 * @param   array     $opts      Rendering options
+	 * @param   string   $data     Elements data
+	 * @param   stdClass &$thisRow All the data in the lists current row
+	 * @param   array    $opts     Rendering options
 	 *
-	 * @return  string	formatted value
+	 * @return  string    formatted value
 	 */
 	public function renderListData($data, stdClass &$thisRow, $opts = array())
 	{
@@ -320,6 +320,7 @@ class PlgFabrik_ElementDigsig extends PlgFabrik_Element
 	 */
 	public function formJavascriptClass(&$srcs, $script = '', &$shim = array())
 	{
+		$key     = FabrikHelperHTML::isDebug() ? 'element/digsig/digsig' : 'element/digsig/digsig-min';
 		$s       = new stdClass;
 		$s->deps = array();
 
@@ -334,7 +335,7 @@ class PlgFabrik_ElementDigsig extends PlgFabrik_Element
 		$s->deps[]               = $folder . 'json2';
 		$shim[$folder . 'json2'] = $digsigShim;
 
-		$shim['element/digsig/digsig'] = $s;
+		$shim[$key] = $s;
 
 		FabrikHelperHTML::stylesheet(COM_FABRIK_LIVESITE . 'plugins/fabrik_element/digsig/libs/signature-pad/jquery.signaturepad.css');
 
@@ -348,8 +349,8 @@ class PlgFabrik_ElementDigsig extends PlgFabrik_Element
 	 * Is the element consider to be empty for purposes of rendering on the form,
 	 * i.e. for assigning classes, etc.  Can be overridden by individual elements.
 	 *
-	 * @param   array  $data           Data to test against
-	 * @param   int    $repeatCounter  Repeat group #
+	 * @param   array $data          Data to test against
+	 * @param   int   $repeatCounter Repeat group #
 	 *
 	 * @return  bool
 	 */

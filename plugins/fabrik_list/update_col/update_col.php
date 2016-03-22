@@ -586,4 +586,15 @@ class PlgFabrik_ListUpdate_Col extends PlgFabrik_List
 
 		return $col . '-' . $this->renderOrder;
 	}
+
+	/**
+	 * Load the AMD module class name
+	 * 
+	 * @return string
+	 */
+	public function loadJavascriptClassName_result()
+	{
+		return 'FbListUpdateCol';
+	}
+
 }

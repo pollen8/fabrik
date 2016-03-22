@@ -1,2 +1,2 @@
 /*! Fabrik */
-var FbListArticle=new Class({Extends:FbListPlugin});
+define(["jquery","fab/list-plugin"],function(a,b){var c=new Class({Extends:b});return c});

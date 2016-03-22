@@ -35,12 +35,12 @@ JHtml::_('behavior.keepalive');
 
 			if (task !== 'form.cancel') {
 				if (!Fabrik.controller.canSaveForm()) {
-					alert('<?php echo FText::_('COM_FABRIK_ERR_ONE_GROUP_MUST_BE_SELECTED'); ?>');
+					window.alert('<?php echo FText::_('COM_FABRIK_ERR_ONE_GROUP_MUST_BE_SELECTED'); ?>');
 					return false;
 				}
 
 				if (typeOf(currentGroups) !== 'null' && currentGroups.options.length === 0 && createNew === false) {
-					alert('Please select at least one group');
+					window.alert('Please select at least one group');
 					return false;
 				}
 			}

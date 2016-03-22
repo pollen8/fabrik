@@ -2464,8 +2464,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 	 */
 	public function formJavascriptClass(&$srcs, $script = '', &$shim = array())
 	{
-		$key = 'element/date/date';
-
+		$key = FabrikHelperHTML::isDebug() ? 'element/date/date' : 'element/date/date-min';
 		// Ensure that we keep advanced dependencies from previous date elements regardless of current elements settings.
 		$deps   = array_key_exists($key, $shim) ? $shim[$key]->deps : array();
 		$params = $this->getParams();
@@ -2478,9 +2477,13 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 			$deps[] = 'lib/datejs/extras';
 		}
 
-		$s          = new stdClass;
-		$s->deps    = $deps;
-		$shim[$key] = $s;
+		if (count($deps) > 0)
+		{
+			$s          = new stdClass;
+			$s->deps    = $deps;
+			$shim[$key] = $s;
+		}
+
 		parent::formJavascriptClass($srcs, $script, $shim);
 
 		// Return false, as we need to be called on per-element (not per-plugin) basis

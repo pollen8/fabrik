@@ -1091,6 +1091,7 @@ EOD;
 			$opts['urlArgs'] = 'bust=' . time();
 		}
 		$opts['urlArgs'] = 'bust=' . time();
+		
 		$config[] = "requirejs.config(";
 		$config[] = json_encode($opts, self::isDebug() && defined('JSON_PRETTY_PRINT') ? JSON_PRETTY_PRINT : false);
 		$config[] = ");";
@@ -1115,6 +1116,11 @@ EOD;
 		$info                   = new stdClass;
 		$info->deps             = $dependencies;
 		$framework[$key . $ext] = $info;
+	}
+
+	public static function mediaFile($file)
+	{
+		return self::isDebug() ? 'media/com_fabrik/js/' . $file : 'media/com_fabrik/js/dist/' . $file;
 	}
 
 	/**
