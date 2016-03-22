@@ -567,6 +567,11 @@ abstract class JFormField
 		// Set the group of the field.
 		$this->group = $group;
 
+		// Allow for repeatable elements
+		$repeat = (string) $element['repeat'];
+		$this->repeat = ($repeat == 'true' || $repeat == 'multiple' || (!empty($this->form->repeat) && $this->form->repeat == 1));
+
+
 		$attributes = array(
 			'multiple', 'name', 'id', 'hint', 'class', 'description', 'labelclass', 'onchange',
 			'onclick', 'validate', 'pattern', 'default', 'required',

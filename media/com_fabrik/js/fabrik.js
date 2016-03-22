@@ -52,13 +52,10 @@ define(['jquery', 'fab/loader', 'fab/requestqueue'], function (jQuery, Loader, R
     /**
      * Search for a block
      *
-     * @param string
-     *            blockid Block id
-     * @param bool
-     *            exact Exact match - default false. When false, form_8 will
+     * @param {string}  blockid Block id
+     * @param {boolean} exact Exact match - default false. When false, form_8 will
      *            match form_8 & form_8_1
-     * @param function
-     *            cb Call back function - if supplied a periodical check is set
+     * @param {function} cb Call back function - if supplied a periodical check is set
      *            to find the block and once found then the cb() is run, passing
      *            the block back as an parameter
      *
@@ -75,17 +72,14 @@ define(['jquery', 'fab/loader', 'fab/requestqueue'], function (jQuery, Loader, R
     /**
      * Private Search for a block
      *
-     * @param string
-     *            blockid Block id
-     * @param bool
-     *            exact Exact match - default false. When false, form_8 will
+     * @param {string} blockid Block id
+     * @param {boolean} exact Exact match - default false. When false, form_8 will
      *            match form_8 & form_8_1
-     * @param function
-     *            cb Call back function - if supplied a periodical check is set
+     * @param {function} cb Call back function - if supplied a periodical check is set
      *            to find the block and once found then the cb() is run, passing
      *            the block back as an parameter
      *
-     * @return mixed false if not found | Fabrik block
+     * @return {boolean|object} false if not found | Fabrik block
      */
     Fabrik._getBlock = function (blockid, exact, cb) {
         var foundBlockId;
@@ -226,14 +220,9 @@ define(['jquery', 'fab/loader', 'fab/requestqueue'], function (jQuery, Loader, R
     /**
      * Load the google maps API once
      *
-     * @param bool
-     *            s Sensor
-     * @param mixed
-     *            cb Callback method function or function name (assinged to
-     *            window)
-     *
+     * @param {boolean} s Sensor
+     * @param {function|string} cb Callback method function or function name (assigned to window)
      */
-
     Fabrik.loadGoogleMap = function (s, cb) {
 
         var prefix = document.location.protocol === 'https:' ? 'https:' : 'http:';
@@ -297,8 +286,11 @@ define(['jquery', 'fab/loader', 'fab/requestqueue'], function (jQuery, Loader, R
         Fabrik.cbQueue.google = [];
     };
 
-    /** Globally observe delete links * */
-
+    /**
+     * Globally observe delete links
+     * @param {event} e
+     * @param {Dom} target
+     */
     Fabrik.watchDelete = function (e, target) {
         var l, ref, r;
         r = e.target.getParent('.fabrik_row');
@@ -349,10 +341,8 @@ define(['jquery', 'fab/loader', 'fab/requestqueue'], function (jQuery, Loader, R
     /**
      * Globally watch list edit links
      *
-     * @param event
-     *            e relayed click event
-     * @param domnode
-     *            target <a> link
+     * @param {event}  e relayed click event
+     * @param {Node} target <a> link
      *
      * @since 3.0.7
      */
@@ -363,10 +353,8 @@ define(['jquery', 'fab/loader', 'fab/requestqueue'], function (jQuery, Loader, R
     /**
      * Globally watch list view links
      *
-     * @param event
-     *            e relayed click event
-     * @param domnode
-     *            target <a> link
+     * @param {event} e relayed click event
+     * @param {Node} target <a> link
      *
      * @since 3.0.7
      */
@@ -377,11 +365,9 @@ define(['jquery', 'fab/loader', 'fab/requestqueue'], function (jQuery, Loader, R
 
     /**
      * Open a single details/form view
-     * @param view - details or form
-     * @param event
-     *            e relayed click event
-     * @param domnode
-     *            target <a> link
+     * @param {string} view - details or form
+     * @param {event} e relayed click event
+     * @param {Node} target <a> link
      */
     Fabrik.openSingleView = function (view, e, target) {
         var url, loadMethod, a, title,
