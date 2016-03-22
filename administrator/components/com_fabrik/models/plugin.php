@@ -29,8 +29,8 @@ class FabrikAdminModelPlugin extends JModelLegacy
 	 */
 	public function render()
 	{
-		$app                       = JFactory::getApplication();
-		$input                     = $app->input;
+		$app   = JFactory::getApplication();
+		$input = $app->input;
 
 		/** @var FabrikFEModelPluginmanager $pluginManager */
 		$pluginManager             = JModelLegacy::getInstance('Pluginmanager', 'FabrikFEModel');
@@ -100,6 +100,9 @@ class FabrikAdminModelPlugin extends JModelLegacy
 		$data['plugin_events']          = FArrayHelper::getValue($events, $c);
 		$data['plugin_description']     = FArrayHelper::getValue($descriptions, $c);
 
+		// For list plugins view
+		$data['params']['plugin_description'] = FArrayHelper::getValue($descriptions, $c);
+
 		return $data;
 	}
 
@@ -129,7 +132,8 @@ class FabrikAdminModelPlugin extends JModelLegacy
 	}
 
 	/**
-	 * Render the initial plugin options, such as the plugin selector, and whether its rendered in front/back/both etc
+	 * Render the initial plugin options, such as the plugin selector,
+	 * and whether its rendered in front/back/both etc
 	 *
 	 * @return  string
 	 */
@@ -147,10 +151,9 @@ class FabrikAdminModelPlugin extends JModelLegacy
 		$topForm                = new JForm($formName, array('control' => 'jform'));
 		$topForm->repeatCounter = $c;
 		$xmlFile                = JPATH_SITE . '/administrator/components/com_fabrik/models/forms/' . $this->getState('type') . '-plugin.xml';
-
+		
 		// Add the plugin specific fields to the form.
 		$topForm->loadFile($xmlFile, false);
-
 		$topForm->bind($data);
 
 		// Filter the forms fieldsets for those starting with the correct $searchName prefix

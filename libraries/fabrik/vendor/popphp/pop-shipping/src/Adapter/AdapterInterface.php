@@ -128,4 +128,11 @@ interface AdapterInterface
      * @return \Pop\Shipping\PackageAdapter\AbstractAdapter
      */
     public function getPackage();
+
+    /**
+     * Set the declared shipment value
+     * @param  float $value
+     * @return void
+     */
+    public function declaredValue($value);
 }

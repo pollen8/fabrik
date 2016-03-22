@@ -1002,14 +1002,14 @@ class FabrikPlugin extends JPlugin
 	 *
 	 * @return  string  JS code to ini adminplugin class
 	 */
-	public function onGetAdminJs($name, $label, $html)
+/*	public function onGetAdminJs($name, $label, $html)
 	{
 		$opts   = $this->getAdminJsOpts($html);
 		$opts   = json_encode($opts);
 		$script = "new fabrikAdminPlugin('$name', '$label', $opts)";
 
 		return $script;
-	}
+	}*/
 
 	/**
 	 * Get the options to ini the J Admin js plugin controller class

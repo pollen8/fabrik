@@ -237,7 +237,7 @@ class Shipping
 	/**
 	 * @param $value
 	 */
-	public function setInsurance($value)
+	public function setInsurance($value = 0)
 	{
 		$this->adapter->setInsurance($value);
 	}
@@ -250,6 +250,15 @@ class Shipping
 	public function addPackage(PackageAdapter\AbstractAdapter $package)
 	{
 		$this->adapter->addPackage($package);
+	}
+
+	/**
+	 * Set the total declared shipment value
+	 * @param float $value
+	 */
+	public function declaredValue($value)
+	{
+		$this->adapter->declaredValue($value);
 	}
 
 }

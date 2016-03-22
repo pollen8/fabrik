@@ -1090,7 +1090,7 @@ EOD;
 		{
 			$opts['urlArgs'] = 'bust=' . time();
 		}
-
+		$opts['urlArgs'] = 'bust=' . time();
 		$config[] = "requirejs.config(";
 		$config[] = json_encode($opts, self::isDebug() && defined('JSON_PRETTY_PRINT') ? JSON_PRETTY_PRINT : false);
 		$config[] = ");";
@@ -1384,9 +1384,7 @@ EOD;
 				{
 					$compressedFile = str_replace('.js', $ext, $file);
 
-					// Tmp fix for fabrik-min untill we load min js files from a sep folder in the requirejs conf
-					if ($compressedFile !== 'media/com_fabrik/js/fabrik-min.js'
-						&& JFile::exists(COM_FABRIK_BASE . $compressedFile) || JFile::exists($compressedFile))
+					if (JFile::exists(COM_FABRIK_BASE . $compressedFile) || JFile::exists($compressedFile))
 					{
 						$file = $compressedFile;
 					}

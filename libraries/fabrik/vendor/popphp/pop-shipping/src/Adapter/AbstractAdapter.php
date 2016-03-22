@@ -63,6 +63,18 @@ abstract class AbstractAdapter implements AdapterInterface
     protected $ratesExtended = [];
 
     /**
+     * Total declared shipping value
+     * @var float
+     */
+    protected $declaredValue;
+
+    /**
+     * Charge on delivery value - how much the recipient needs to pay
+     * @var float
+     */
+    protected $CODValue = 0;
+
+    /**
      * Insurance value
      * @var float
      */
@@ -183,7 +195,7 @@ abstract class AbstractAdapter implements AdapterInterface
 
     /**
      * Set the shipping info such as the transportation type
-     * @param $info
+     * @param stdClass $info
      *
      * @return mixed
      */
@@ -217,6 +229,11 @@ abstract class AbstractAdapter implements AdapterInterface
         }
 
         return $weight;
+    }
+
+    public function declaredValue($value)
+    {
+        $this->declaredValue = $value;
     }
 
 }

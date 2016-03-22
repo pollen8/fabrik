@@ -124,20 +124,6 @@ class Usps extends AbstractAdapter
 		}
 	}
 
-	private function ordinal($number)
-	{
-		$ends = ['th', 'st', 'nd', 'rd', 'th', 'th', 'th', 'th', 'th', 'th'];
-
-		if ((($number % 100) >= 11) && (($number % 100) <= 13))
-		{
-			return $number . 'th';
-		}
-		else
-		{
-			return $number . $ends[$number % 10];
-		}
-	}
-
 	/**
 	 * @param bool   $alcohol Package contains alcohol
 	 *

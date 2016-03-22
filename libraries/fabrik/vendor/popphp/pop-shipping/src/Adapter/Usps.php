@@ -183,28 +183,39 @@ class Usps extends AbstractAdapter
         $this->response = simplexml_load_string($this->parseResponse($curl));
         $this->ratesExtended = [];
 
-        if (isset($this->response->Package)) {
 
+        if (isset($this->response->Package)) {
             if (isset($this->response->Package->Error)) {
                 $this->responseCode    = (string) $this->response->Package->Error->Number;
                 $this->responseMessage = (string)$this->response->Package->Error->Description;
             } else {
                 $this->responseCode = 1;
 
-                foreach ($this->response->Package->Postage as $rate) {
-                    $serviceType = str_replace(['&lt;', '&gt;'], ['<', '>'], (string)$rate->MailService);
-                    $this->rates[$serviceType] = (string)$rate->Rate;
+                foreach ($this->response->Package as $package) {
 
-                    $this->ratesExtended[$serviceType] = (object) [
-                        'shipper' => 'usps',
-                        'total' => (string)$rate->Rate,
-                        'PackagingType' => (string) $rate->PackagingType,
-                        'SignatureOption' => (string) $rate->SignatureOption,
-                        'ActualRateType' => (string) $rate->ActualRateType,
-                        'title' =>  $serviceType
-                    ];
+                    foreach ($package->Postage as $rate) {
+
+                        $serviceType = str_replace(['&lt;', '&gt;'], ['<', '>'], (string)$rate->MailService);
+
+                        if (!array_key_exists($serviceType, $this->rates)) {
+                            $this->rates[$serviceType] = (float) $rate->Rate;
+
+                            $this->ratesExtended[$serviceType] = (object) [
+                                'shipper' => 'usps',
+                                'total' => (float)$rate->Rate,
+                                'PackagingType' => (string) $rate->PackagingType,
+                                'SignatureOption' => (string) $rate->SignatureOption,
+                                'ActualRateType' => (string) $rate->ActualRateType,
+                                'title' =>  $serviceType
+                            ];
+                        } else {
+                            $this->rates[$serviceType] += (float) $rate->Rate;
+                            $this->ratesExtended[$serviceType]->total += (float) $rate->Rate;
+                        }
+
+                    }
                 }
-
+                
                 $this->rates = array_reverse($this->rates, true);
             }
         } else {
@@ -237,6 +248,21 @@ class Usps extends AbstractAdapter
         return ($this->responseCode != 1);
     }
 
+
+    private function ordinal($number)
+    {
+        $ends = ['th', 'st', 'nd', 'rd', 'th', 'th', 'th', 'th', 'th', 'th'];
+
+        if ((($number % 100) >= 11) && (($number % 100) <= 13))
+        {
+            return $number . 'th';
+        }
+        else
+        {
+            return $number . $ends[$number % 10];
+        }
+    }
+
     /**
      * Build rate request
      *
@@ -247,7 +273,7 @@ class Usps extends AbstractAdapter
         foreach ($this->packages as $id => $package)
         {
             $id  = $id + 1;
-            $this->request .= PHP_EOL . '    <Package ID="' . $id . '">';
+            $this->request .= PHP_EOL . '    <Package ID="' . $this->ordinal($id) . '">';
             $this->request .= PHP_EOL . '        <Service>ALL</Service>';
             $this->request .= PHP_EOL . '        <ZipOrigination>' . $this->shipFrom['ZipOrigination'] . '</ZipOrigination>';
             $this->request .= PHP_EOL . '        <ZipDestination>' . $this->shipTo['ZipDestination'] . '</ZipDestination>';
@@ -259,6 +285,7 @@ class Usps extends AbstractAdapter
         }
 
         $this->request .= PHP_EOL . '</RateV4Request>';
+        //echo $this->request;//exit;
     }
 
     /**

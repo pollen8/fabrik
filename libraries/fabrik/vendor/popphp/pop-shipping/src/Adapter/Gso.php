@@ -66,7 +66,7 @@ class Gso extends AbstractAdapter
 			'PhoneNumber' => ''
 		],
 		'Address' => [
-			'StreetLines' => [],
+			'StreetLines' => ['', ''],
 			'City' => '',
 			'StateOrProvinceCode' => '',
 			'PostalCode' => '',
@@ -162,7 +162,7 @@ class Gso extends AbstractAdapter
 	{
 		if (!is_array($wsdl))
 		{
-			$wsdl = ['rates' => $wsdl];
+			$wsdl = ['rates' => $wsdl, 'shipping' => $wsdl];
 		}
 		$this->wsdl          = $wsdl;
 		$this->accountNumber = $accountNumber;
@@ -216,7 +216,11 @@ class Gso extends AbstractAdapter
 					{
 						if (stripos($key, 'address') !== false)
 						{
-							$this->shipTo['Address']['StreetLines'][] = $value;
+							$v = (array) $value;
+							foreach ($v as $k => $s)
+							{
+								$this->shipTo['Address']['StreetLines'][$k] = $s;
+							}
 						}
 						else
 						{
@@ -376,47 +380,48 @@ class Gso extends AbstractAdapter
 	/**
 	 * Add a shipping package line item
 	 *
+	 * @param Pop\Shipping\PackageAdapter\AbstractAdapter
+	 *
 	 * @return array
 	 */
-	protected function addPackageLineItem1()
+	protected function addPackageLineItem($package)
 	{
-		// @TODO - insured value & amount & customer reference
-		$packageLineItem = array(
-			'SequenceNumber' => 1,
-			'GroupPackageCount' => 1,
-			'InsuredValue' => array(
-				'Amount' => floatval($this->insuranceValue),
-				'Currency' => 'USD'
-			),
-			'Weight' => $this->weight,
-			'Dimensions' => $this->dimensions,
-			'CustomerReferences' => array(
-				'0' => array(
-					'CustomerReferenceType' => 'CUSTOMER_REFERENCE', // valid values CUSTOMER_REFERENCE, INVOICE_NUMBER, P_O_NUMBER and SHIPMENT_INTEGRITY
-					'Value' => 'GR4567892'
-				),
-				'1' => array(
-					'CustomerReferenceType' => 'INVOICE_NUMBER',
-					'Value' => 'INV4567892'
-				),
-				'2' => array(
-					'CustomerReferenceType' => 'P_O_NUMBER',
-					'Value' => 'PO4567892'
-				)
-			)
-		);
+		// TODO unhardwire:
+		$this->trackingNumber = '012312312';
+		$this->shipmentReference = 'aadfasdfasdf';
+		$this->CODValue = '0.00';
+		$this->signatureRequired = 'ADULT_SIG_REQD'; // >SIG_REQD or SIG_NOT_REQD or ADULT_SIG_REQD
 
-		if ($this->shippingOptions['alcohol'])
-		{
-			$packageLineItem['SpecialServicesRequested'] = [
-				'SpecialServiceTypes' => 'ALCOHOL',
-				'AlcoholDetail' => [
-					'RecipientType' => $this->shippingOptions['alcoholRecipientType']
-				]
-			];
-		}
-
-		return $packageLineItem;
+		echo "shipoing info = ";print_r($this->shippingInfo);
+		$serviceType = isset($this->shippingInfo->serviceType) ? $this->shippingInfo->serviceType : 'STANDARD_OVERNIGHT';
+		echo "serice type = $serviceType";
+		// TODO - not sure if $this->declaredValue should be per package or as total?
+		return [
+			'AccountNumber' => $this->accountNumber,
+			'TrackingNumber' => $this->trackingNumber,
+			'ShipperCompany' => $this->shipFrom['Contact']['CompanyName'],
+			'ShipperContact' => $this->shipFrom['Contact']['PersonName'],
+			'ShipperPhone' => $this->shipFrom['Contact']['PhoneNumber'],
+			'PickupAddress1' => $this->shipFrom['Address']['StreetLines'][0],
+			'PickupAddress2' => $this->shipFrom['Address']['StreetLines'][1],
+			'PickupCity' => $this->shipFrom['Address']['City'],
+			'PickupState' => $this->shipFrom['Address']['StateOrProvinceCode'],
+			'PickupZip' => $this->shipFrom['Address']['PostalCode'],
+			'ShipToCompany' => $this->shipTo['Contact']['CompanyName'],
+			'ShipToAttention' => $this->shipTo['Contact']['PersonName'],
+			'ShipToPhone' => $this->shipTo['Contact']['PhoneNumber'],
+			'DeliveryAddress1' => $this->shipTo['Address']['StreetLines'][0],
+			'DeliveryAddress2' => $this->shipTo['Address']['StreetLines'][1],
+			'DeliveryCity' => $this->shipTo['Address']['City'],
+			'DeliveryState' => $this->shipTo['Address']['StateOrProvinceCode'],
+			'DeliveryZip' => $this->shipTo['Address']['PostalCode'],
+			'ServiceCode' => $serviceType,
+			'ShipmentReference' => $this->shipmentReference,
+			'DeclaredValue' => $this->declaredValue,
+			'CODValue' => $this->CODValue,
+			'Weight' => $package->getWeight(),
+			'SignatureCode' => $this->signatureRequired
+		];
 	}
 
 	/**
@@ -447,100 +452,48 @@ class Gso extends AbstractAdapter
 	 */
 	public function ship($verifyPeer = true)
 	{
-		$request = [];
+		$request = [
+		];
 
+		$request['Shipment']['Package'] = [];
 
-		$this->trackingNumber = '012312312';
-		$this->shipmentReference = 'aadfasdfasdf';
-		$this->declaredValue = '33.33';
-		$this->CODValue = '0.00';
-		$this->signatureRequired = 'ADULT_SIG_REQD'; // >SIG_REQD or SIG_NOT_REQD or ADULT_SIG_REQD
-
-		$serviceType = isset($this->shippingInfo->serviceType) ? $this->shippingInfo->serviceType : 'STANDARD_OVERNIGHT';
-
-		//ShipperEmail, ShipToEmail
 		$request['Shipment'] =
 			[
-				'Package' => [
-					'AccountNumber' => $this->accountNumber,
-					'TrackingNumber' => $this->trackingNumber,
-					'ShipperCompany' => $this->shipFrom['Contact']['CompanyName'],
-					'ShipperContact' => $this->shipFrom['Contact']['PersonName'],
-					'ShipperPhone' => $this->shipFrom['Contact']['PhoneNumber'],
-					'PickupAddress1' => $this->shipFrom['Address']['StreetLines'][0],
-					'PickupAddress2' => $this->shipFrom['Address']['StreetLines'][1],
-					'PickupCity' => $this->shipFrom['Address']['City'],
-					'PickupState' => $this->shipFrom['Address']['StateOrProvinceCode'],
-					'PickupZip' => $this->shipFrom['Address']['PostalCode'],
-					'ShipToCompany' => $this->shipTo['Contact']['CompanyName'],
-					'ShipToAttention' => $this->shipTo['Contact']['PersonName'],
-					'ShipToPhone' => $this->shipTo['Contact']['PhoneNumber'],
-					'DeliveryAddress1' => $this->shipTo['Address']['StreetLines'][0],
-					'DeliveryAddress2' => $this->shipTo['Address']['StreetLines'][1],
-					'DeliveryCity' => $this->shipTo['Address']['City'],
-					'DeliveryState' => $this->shipTo['Address']['StateOrProvinceCode'],
-					'DeliveryZip' => $this->shipTo['Address']['PostalCode'],
-					'ServiceCode' => $serviceType,
-					'ShipmentReference' => $this->shipmentReference,
-					'DeclaredValue' => $this->declaredValue,
-					'CODValue' => $this->CODValue,
-					'Weight' => $this->weight['Value'],
-					'SignatureCode' => $this->signatureRequired
-				],
 				'Notification' => [
 					'ShipmentNotification' => '',
 					'ExceptionNotification' => '',
 					'DeliveryNotification' => '',
 					'ReceiptNotification' => ''
-				]
-
-
+				],
+				'ShipmentLabel' => [
+					'Type' => 'PAPER_LABEL'
+					]
 		];
-		/*	'ShipTimestamp' => date('c'),
-			'DropoffType' => $this->dropOfType,
-			'ServiceType' => $serviceType, // valid values STANDARD_OVERNIGHT, PRIORITY_OVERNIGHT, FEDEX_GROUND, ...
-			'PackagingType' => $packageType, // valid values FEDEX_BOX, FEDEX_PAK, FEDEX_TUBE, YOUR_PACKAGING, ...
-			'Shipper' => $this->shipFrom,
-			'Recipient' => $this->shipTo,
-			'ShippingChargesPayment' => $this->addShippingChargesPayment(),
-			'LabelSpecification' => $this->addLabelSpecification(),
 
-			'CustomerSpecifiedDetail' => array('MaskedData' => 'SHIPPER_ACCOUNT_NUMBER'),
-			'PackageCount' => 1,
-			'RequestedPackageLineItems' => array(
-				'0' => $this->addPackageLineItem1()
-			)
-		);*/
-
-		$request        = array_merge($this->requestHeader, $request);
-		$this->client   = new \SoapClient($this->wsdl['shipping'], ['trace' => 1]);
-		$this->response = $this->client->processShipment($request);
-
-		if ($this->response->HighestSeverity === 'ERROR')
+		// TODO - we can only add in one package - ask G what to do here....
+		foreach ($this->packages as $package)
 		{
-			$errors = $this->response->Notifications;
-
-			if (is_object($errors))
-			{
-				$errors = [$errors];
-			}
-			foreach ($errors as $error)
-			{
-				if ($error->Severity === 'ERROR')
-				{
-					$errorMsg[] = $error->Message;
-				}
-
-			}
-
-			throw new \Exception(implode("\n", $errorMsg), $errors[0]->Code);
+			$request['Shipment']['Package'] = $this->addPackageLineItem($package);
 		}
 
-		$label = $this->response->CompletedShipmentDetail->CompletedPackageDetails->Label->Parts->Image;
+		$this->client   = new \SoapClient($this->wsdl['shipping'], ['trace' => 1]);
+		$this->client->__setSoapHeaders($this->requestHeader);
+		$this->response = $this->client->SubmitShipment($request);
+
+		if ($this->response->SubmitShipmentResult->Result->Code == '1')
+		{
+			throw new \Exception(implode("\n", $this->response->Result->Message));
+		}
+
+		$label = $this->response->SubmitShipmentResult->Label->Paper;
 
 		return $label;
 	}
 
+	/**
+	 * Get the SOAP client
+	 * @return \SoapClient
+	 */
 	private function getClient()
 	{
 		if (!isset($this->client))
@@ -587,14 +540,13 @@ class Gso extends AbstractAdapter
 	 */
 	public function send()
 	{
-		// TODO grab DeclaredValue
 		$request['GetShippingRateRequest'] = [
 			'AccountNumber' => $this->accountNumber,
 			'OriginZip' => $this->shipFrom['Address']['PostalCode'],
 			'DestinationZip' => $this->shipTo['Address']['PostalCode'],
 			'PackageWeight' => $this->totalWeight(),
-			'DeclaredValue' => 155.55,
-			'CODValue' => 0
+			'DeclaredValue' => floatval($this->declaredValue),
+			'CODValue' => $this->CODValue
 		];
 
 		$client = $this->getClient();
