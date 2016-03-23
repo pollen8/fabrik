@@ -42,7 +42,7 @@ define(['jquery', 'fab/list-plugin', 'fab/fabrik'], function (jQuery, FbListPlug
 	};
 
 
-	function geoCode() {
+	window.geoCode = function () {
 		// Tell fabrik that the google map script has loaded and the callback has run
 		Fabrik.googleMap = true;
 

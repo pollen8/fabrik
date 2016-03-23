@@ -174,7 +174,7 @@ define(['jquery', 'fab/fabrik', 'jQueryUI', 'fab/utils'], function (jQuery, Fabr
             this.loadContent();
 
             if (!this.options.visible) {
-                this.window.fade('hide');
+                this.window.fadeOut();
             }
 
             jQuery(this.window).find('*[data-role="close"]').on('click', function (e) {
