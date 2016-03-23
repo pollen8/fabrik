@@ -416,15 +416,23 @@ class FabrikFEModelPluginmanager extends FabModel
 			. 'e.plugin, e.params AS params, e.access AS access, e.ordering AS ordering';
 			$query->select($select);
 			$query->from('#__{package}_elements AS e');
-			$query->join('INNER', '#__extensions AS p ON p.element = e.plugin');
+
+			/**
+			 * Commenting out the #__extenions join, as it blows up with 3.5 on some sites because of
+			 * the change of collation of J! tables.  And we don't seem to do anything with the join.  As
+			 * far as I can see, all it would do would be to exclude any rows from fabrik_elements for this
+			 * form which don't have a folder name of fabrik_element ... which by definition they all will.
+			 */
+			//$query->join('INNER', '#__extensions AS p ON p.element = e.plugin');
 			$query->where('group_id IN (' . implode(',', $groupIds) . ')');
-			$query->where('p.folder = "fabrik_element"');
+			//$query->where('p.folder = "fabrik_element"');
 
 			// Ignore trashed elements
 			$query->where('e.published != -2');
 			$query->order("group_id, e.ordering");
 			$db->setQuery($query);
 
+			$sql = (string)$query;
 			$elements = $db->loadObjectList();
 
 			// Don't assign the elements into Joomla's main dispatcher as this causes out of memory errors in J1.6rc1
