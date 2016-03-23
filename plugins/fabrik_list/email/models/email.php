@@ -603,7 +603,8 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 		$params        = $this->getParams();
 		$sendSMS       = $params->get('emailtable_email_or_sms', 'email') == 'sms';
 		$input         = $this->app->input;
-		$coverMessage  = nl2br($input->get('message', '', 'html'));
+		$coverMessage  = $input->get('message', '', 'html');
+		$coverMessage  = nl2br($coverMessage);
 		$oldStyle      = $this->_oldStyle();
 		$emailTemplate = $this->_emailTemplate();
 		$w             = new FabrikWorker;
