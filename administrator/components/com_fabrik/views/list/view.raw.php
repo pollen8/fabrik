@@ -28,10 +28,12 @@ class FabrikAdminViewList extends JViewLegacy
 	/**
 	 * Display a json object representing the table data.
 	 *
+	 * @param   string  $tpl  The name of the template file to parse; automatically searches through the template paths.
+	 *
 	 * @return  void
 	 */
 
-	public function display()
+	public function display($tpl = null)
 	{
 		$app = JFactory::getApplication();
 		$input = $app->input;
