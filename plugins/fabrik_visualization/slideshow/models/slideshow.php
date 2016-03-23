@@ -241,6 +241,8 @@ class FabrikModelSlideshow extends FabrikFEModelVisualization
 			}
 		}
 
+		$this->totalPics = count($js_opts);
+
 		return $js_opts;
 	}
 
