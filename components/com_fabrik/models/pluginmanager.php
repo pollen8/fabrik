@@ -418,22 +418,32 @@ class FabrikFEModelPluginmanager extends FabModel
 			$query->from('#__{package}_elements AS e');
 
 			/**
-			 * Commenting out the #__extenions join, as it blows up with 3.5 on some sites because of
-			 * the change of collation of J! tables.  And we don't seem to do anything with the join.  As
-			 * far as I can see, all it would do would be to exclude any rows from fabrik_elements for this
-			 * form which don't have a folder name of fabrik_element ... which by definition they all will.
+			 * Changed this code to use two separate queries, rather than joining #__extensions on the
+			 * plugin name, as the J! 3.5 release changed collation of J! table, and this breaks the
+			 * for some sites with older MySQL or non-standard collation
 			 */
-			//$query->join('INNER', '#__extensions AS p ON p.element = e.plugin');
+
+			// build list of plugins used on this form ...
+			$query->select($select);
+			$query->from('#__{package}_elements AS e');
 			$query->where('group_id IN (' . implode(',', $groupIds) . ')');
-			//$query->where('p.folder = "fabrik_element"');
 
 			// Ignore trashed elements
 			$query->where('e.published != -2');
 			$query->order("group_id, e.ordering");
 			$db->setQuery($query);
 
-			$sql = (string)$query;
 			$elements = $db->loadObjectList();
+
+			// now build list of all available Fabrik plugins ...
+			$query->clear();
+			$query
+				->select('element')
+				->from('#__extensions')
+				->where('folder = "fabrik_element"')
+				->where('enabled = "1"', 'AND');
+			$db->setQuery($query);
+			$extensions = $db->loadObjectList('element');
 
 			// Don't assign the elements into Joomla's main dispatcher as this causes out of memory errors in J1.6rc1
 			$dispatcher = new JDispatcher;
@@ -442,6 +452,12 @@ class FabrikFEModelPluginmanager extends FabModel
 
 			foreach ($elements as $element)
 			{
+				// see if this plugin has been uninstalled or unpubished in J!
+				if (!array_key_exists($element->plugin, $extensions))
+				{
+					continue;
+				}
+
 				JDEBUG ? $profiler->mark('pluginmanager:getFormPlugins:' . $element->id . '' . $element->plugin) : null;
 				require_once JPATH_PLUGINS . '/fabrik_element/' . $element->plugin . '/' . $element->plugin . '.php';
 				$class = 'PlgFabrik_Element' . $element->plugin;
