@@ -152,6 +152,10 @@ class FabrikViewListBase extends FabrikView
 		$src              = $model->getPluginJsClasses($src, $shim);
 		$pluginManager->runPlugins('loadJavascriptClassName', $model, 'list');
 
+		$pluginManager->data = array_filter($pluginManager->data, function($v) {
+			return $v !== '';
+		});
+
 		$names            = array_merge(
 			array('Window', 'FbList', 'FbListFilter', 'ListPlugin'),
 			$pluginManager->data
