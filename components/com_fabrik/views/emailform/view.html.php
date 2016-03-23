@@ -40,6 +40,7 @@ class FabrikViewEmailform extends FabrikView
 	public function display($tpl = null)
 	{
 		FabrikHelperHTML::framework();
+		FabrikHelperHTML::iniRequireJS();
 		$input  = $this->app->input;
 		$model  = $this->getModel('form');
 		$filter = JFilterInput::getInstance();

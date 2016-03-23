@@ -108,6 +108,9 @@ define(['jquery', 'fab/fabrik', 'jQueryUI', 'fab/utils'], function (jQuery, Fabr
          * @returns {number}
          */
         contentHeight: function () {
+            if (this.options.loadMethod === 'iframe') {
+                return this.contentWrapperEl.find('iframe').height();
+            }
             var w = this.window.find('.contentWrapper');
             // Reset height so we calculate it rather than taking the css value
             w.css('height', 'auto');
@@ -361,6 +364,7 @@ define(['jquery', 'fab/fabrik', 'jQueryUI', 'fab/utils'], function (jQuery, Fabr
                     }
                     this.options.onContentLoaded.apply(this);
                     this.watchTabs();
+
                     break;
                 case 'xhr':
                     self.window.width(self.options.width);
@@ -379,7 +383,7 @@ define(['jquery', 'fab/fabrik', 'jQueryUI', 'fab/utils'], function (jQuery, Fabr
                     });
                     break;
                 case 'iframe':
-                    var h = this.options.height - 40,
+                    var h = parseInt(this.options.height, 10) - 40,
                         scrollX = this.contentEl[0].scrollWidth,
                         w = scrollX + 40 < jQuery(window).width() ? scrollX + 40 : jQuery(window).width();
                     u = this.window.find('.itemContent');

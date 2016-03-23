@@ -254,9 +254,6 @@ define(['jquery', 'fab/list-plugin', 'fab/fabrik'], function (jQuery, FbListPlug
 				'offset_y'       : offset_y,
 				'visible'        : false,
 				'destroy'        : false,
-				'onContentLoaded': function () {
-					this.center();
-				},
 				'onClose'        : function (e, x) {
 					var active;
 					if (!this.active && window.confirm(Joomla.JText._('PLG_LIST_RADIUS_SEARCH_CLEAR_CONFIRM'))) {
@@ -276,6 +273,7 @@ define(['jquery', 'fab/list-plugin', 'fab/fabrik'], function (jQuery, FbListPlug
 				c.setStyles({'position': 'relative', 'left': 0});
 				var w = b.retrieve('win');
 				w.center();
+				//w.fitToContent();
 				w.open();
 			}.bind(this));
 
@@ -369,6 +367,7 @@ define(['jquery', 'fab/list-plugin', 'fab/fabrik'], function (jQuery, FbListPlug
 					c.getElement('.radius_search_geocode').setStyles({'position': 'relative', 'left': 0});
 					break;
 			}
+			this.win.fitToContent(false);
 		},
 
 		clearFilter: function () {

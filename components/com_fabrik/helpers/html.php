@@ -876,6 +876,16 @@ EOD;
 				JHtml::_('script', 'media/com_fabrik/js/lib/art.js');
 			}
 
+			if ($fbConfig->get('advanced_behavior', '0') == '1')
+			{
+				$liveSiteSrc[] = "var chosenInterval = window.setInterval(function () {
+						if (Fabrik.buildChosen) {
+							window.clearInterval(chosenInterval);
+	                        Fabrik.buildChosen('select.advancedSelect', " . json_encode($chosenOptions) . ");
+						}
+					}, 100);";
+			}
+
 			if (!self::inAjaxLoadedPage())
 			{
 				// Require.js now added in fabrik system plugin onAfterRender()
@@ -883,16 +893,6 @@ EOD;
 				$src[] = $mediaFolder . '/window.js';
 
 				self::styleSheet(COM_FABRIK_LIVESITE . 'media/com_fabrik/css/fabrik.css');
-
-				if ($fbConfig->get('advanced_behavior', '0') == '1')
-				{
-					$liveSiteSrc[] = "var chosenInterval = window.setInterval(function () {
-						if (Fabrik.buildChosen) {
-							window.clearInterval(chosenInterval);
-	                        Fabrik.buildChosen('select.advancedSelect', " . json_encode($chosenOptions) . ");
-						}
-					}, 100);";
-				}
 
 				$liveSiteSrc[] = "\tFabrik.liveSite = '" . COM_FABRIK_LIVESITE . "';";
 				$liveSiteSrc[] = "\tFabrik.package = '" . $app->getUserState('com_fabrik.package', 'fabrik') . "';";
@@ -927,10 +927,6 @@ EOD;
 					$liveSiteSrc[] = "\tFabrik.bootstrapped = false;";
 				}
 
-				if ($fbConfig->get('advanced_behavior', '0') == '1')
-				{
-					$liveSiteSrc[] = "\tFabrik.buildChosen('select.advancedSelect', " . json_encode($chosenOptions) . ');';
-				}
 				$liveSiteSrc[] = "\tif (!Fabrik.jLayouts) {
 				Fabrik.jLayouts = {};
 				}
