@@ -317,11 +317,34 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 				$this->pdfAttachment($thisAttachments);
 
 				// Get a JMail instance (have to get a new instance otherwise the recipients are appended to previously added recipients)
-				$mail = JFactory::getMailer();
-				$res = $mail->sendMail(
+				$mailer = JFactory::getMailer();
+
+				/*
+				$res = $mailer->sendMail(
 					$emailFrom, $emailFromName, $email, $thisSubject, $thisMessage,
 					$htmlEmail, $cc, $bcc, $thisAttachments, $returnPath, $returnPathName
 				);
+				*/
+
+				$mailer->setSender(array($emailFrom, $emailFromName));
+				$mailer->addReplyTo($returnPath, $returnPathName);
+				$mailer->addRecipient($email);
+				$mailer->addCc($cc);
+				$mailer->AddBcc($bcc);
+				$mailer->addAttachment($thisAttachments);
+				$mailer->setSubject($thisSubject);
+				$mailer->isHTML(true);
+				$mailer->Encoding = 'base64';
+				$mailer->setBody($thisMessage);
+
+				/**
+				 * Set the plain text AltBody, which forces the PHP mailer class to make this
+				 * a multipart MIME type, with an alt body for plain text.  If we don't do this,
+				 * the default behavior is to send it as just text/html, which causes spam filters
+				 * to downgrade it.
+				 */
+				$mailer->AltBody = JMailHelper::cleanText(strip_tags($thisMessage));
+				$res = $mailer->send();
 
 				/*
 				 * $$$ hugh - added some error reporting, but not sure if 'invalid address' is the appropriate message,
