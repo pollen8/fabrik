@@ -2973,11 +2973,11 @@ class PlgFabrik_Element extends FabrikPlugin
 						// Need to use corrected triggerid here as well
 						if (preg_match('#^fabrik_trigger#', $triggerid))
 						{
-							$js .= $jsControllerKey . ".doElementFX('" . $triggerid . "', '$jsAct->js_e_event', this)";
+							$js .= "Fabrik.getBlock('" . $jsControllerKey . "').doElementFX('" . $triggerid . "', '$jsAct->js_e_event', this)";
 						}
 						else
 						{
-							$js .= $jsControllerKey . ".doElementFX('fabrik_trigger_" . $triggerid . "', '$jsAct->js_e_event', this)";
+							$js .= "Fabrik.getBlock('" . $jsControllerKey . "').doElementFX('fabrik_trigger_" . $triggerid . "', '$jsAct->js_e_event', this)";
 						}
 
 						$js .= "}";
