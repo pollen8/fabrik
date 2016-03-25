@@ -1910,6 +1910,24 @@ class FabrikWorker
 	public static function sendMail($from, $fromName, $recipient, $subject, $body, $mode = false,
 		$cc = null, $bcc = null, $attachment = null, $replyTo = null, $replyToName = null)
 	{
+		// do a couple of tweaks to improve spam scores
+
+		// If html, make sure there's an <html> tag
+		if ($mode)
+		{
+			if (!stristr($body, '<html>'))
+			{
+				$body = '<html>' . $body . '</html>';
+			}
+		}
+
+		// if simple single email recipient with no name part, fake out name part to avoid TO_NO_BKRT hit in spam filters
+		$recipientName = '';
+		if (is_string($recipient) && !strstr($recipient, '<'))
+		{
+			$recipientName = $recipient;
+		}
+
 		// Get a JMail instance
 		$mailer = JFactory::getMailer();
 
@@ -1920,7 +1938,7 @@ class FabrikWorker
 		// Are we sending the email as HTML?
 		$mailer->isHtml($mode);
 
-		$mailer->addRecipient($recipient);
+		$mailer->addRecipient($recipient, $recipientName);
 		$mailer->addCc($cc);
 		$mailer->addBcc($bcc);
 		$mailer->addAttachment($attachment);
