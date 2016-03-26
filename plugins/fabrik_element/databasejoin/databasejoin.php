@@ -2547,9 +2547,9 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 
 		$this->encryptFieldName($key);
 
-		if (!$this->_rawFilter && ($type == 'searchall' || $type == 'prefilter'))
+		if (!$this->_rawFilter && ($type === 'searchall' || ($type === 'prefilter') || $type === 'menuPrefilter'))
 		{
-			if ($type !== 'prefilter')
+			if ($type !== 'prefilter' && $type !== 'menuPrefilter')
 			{
 				if (!$this->isJoin())
 				{

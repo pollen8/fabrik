@@ -851,7 +851,7 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 			return $key . ' ' . $condition . ' ' . $value;
 		}
 
-		if ($type != 'prefilter')
+		if ($type !== 'prefilter' && $type !== 'menuPrefilter')
 		{
 			switch ($element->filter_type)
 			{
