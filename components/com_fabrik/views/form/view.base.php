@@ -365,9 +365,11 @@ class FabrikViewFormBase extends FabrikView
 
 			// Set a flag so that the system plugin can clear out any other canonical links.
 			$this->session->set('fabrik.clearCanonical', true);
-			try {
+			try
+			{
 				$this->doc->addCustomTag('<link rel="canonical" href="' . htmlspecialchars($url) . '" />');
-			} catch (Exception $err) {
+			} catch (Exception $err)
+			{
 
 			}
 
@@ -518,27 +520,31 @@ class FabrikViewFormBase extends FabrikView
 	{
 		$pluginManager = FabrikWorker::getPluginManager();
 
-
 		/** @var FabrikFEModelForm $model */
-		$model                 = $this->getModel();
+		$model = $this->getModel();
 		$model->elementJsJLayouts();
 		$aLoadedElementPlugins = array();
 		$jsActions             = array();
 		$bKey                  = $model->jsKey();
-		$srcs                  = FabrikHelperHTML::framework();
+		$srcs                  = array_merge(
+			array('media/com_fabrik/js/tipsBootStrapMock.js',
+				'media/com_fabrik/js/form.js',
+				'media/com_fabrik/js/fabrik.js'),
+			FabrikHelperHTML::framework());
 		$shim                  = array();
+		$names                 = array('FloatingTips', 'FbForm', 'Fabrik');
+
+		$liveSiteReq[] = 'media/com_fabrik/js/tipsBootStrapMock.js';
 
 		if (!defined('_JOS_FABRIK_FORMJS_INCLUDED'))
 		{
 			define('_JOS_FABRIK_FORMJS_INCLUDED', 1);
 			FabrikHelperHTML::slimbox();
 
-			$dep                 = new stdClass;
-			$dep->deps           = array(
+			$dep       = new stdClass;
+			$dep->deps = array(
 				'fab/element',
-				'lib/form_placeholder/Form.Placeholder',
-				'fab/encoder',
-				'fab/lib/debounce/jquery.ba-throttle-debounce'
+				'lib/form_placeholder/Form.Placeholder'
 			);
 
 			$shim['fabrik/form'] = $dep;
@@ -548,11 +554,9 @@ class FabrikViewFormBase extends FabrikView
 			$framework['fab/elementlist'] = $deps;
 
 			$srcs[] = 'media/com_fabrik/js/lib/form_placeholder/Form.Placeholder.js';
-			$srcs[] = 'media/com_fabrik/js/lib/debounce/jquery.ba-throttle-debounce.js';
-
-			FabrikHelperHTML::addToFrameWork($srcs, 'media/com_fabrik/js/form');
-			FabrikHelperHTML::addToFrameWork($srcs, 'media/com_fabrik/js/form-submit');
-			FabrikHelperHTML::addToFrameWork($srcs, 'media/com_fabrik/js/element');
+			$srcs[] = 'media/com_fabrik/js/form.js';
+			$srcs[] = 'media/com_fabrik/js/form-submit.js';
+			$srcs[] = 'media/com_fabrik/js/element.js';
 		}
 
 		$aWYSIWYGNames = array();
@@ -630,12 +634,12 @@ class FabrikViewFormBase extends FabrikView
 		// $$$ rob don't declare as var $bKey, but rather assign to window, as if loaded via ajax window the function is wrapped
 		// inside an anonymous function, and therefore $bKey wont be available as a global var in window
 		$script   = array();
-		$script[] = "\t\tvar $bKey = Fabrik.form('$bKey', " . $model->getId() . ", $opts);";
-
+		$script[] = "\t\tvar $bKey = new FbForm(" . $model->getId() . ", $opts);";
+		$script[] = "\t\tFabrik.addBlock('$bKey', $bKey);";
 		// Instantiate js objects for each element
 		$vstr      = "\n";
 		$groups    = $model->getGroupsHiarachy();
-		$script[]  = "\tFabrik.blocks['{$bKey}'].addElements(";
+		$script[]  = "\t{$bKey}.addElements(";
 		$groupedJs = new stdClass;
 
 		foreach ($groups as $groupModel)
@@ -684,7 +688,7 @@ class FabrikViewFormBase extends FabrikView
 
 							foreach ($watchElements as $watchElement)
 							{
-								$vstr .= "\tFabrik.blocks['$bKey'].watchValidation('" . $watchElement['id'] . "', '" . $watchElement['triggerEvent'] . "');\n";
+								$vstr .= "\t$bKey.watchValidation('" . $watchElement['id'] . "', '" . $watchElement['triggerEvent'] . "');\n";
 							}
 						}
 					}
@@ -724,7 +728,7 @@ class FabrikViewFormBase extends FabrikView
 		// 3.1 call form js plugin code within main require method
 		$srcs = array_merge($srcs, $model->formPluginShim);
 		$str .= $model->formPluginJS;
-		FabrikHelperHTML::script($srcs, $str);
+		FabrikHelperHTML::script($srcs, $str, '-min.js', $names);
 	}
 
 	/**

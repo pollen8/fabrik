@@ -316,9 +316,7 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 
 				$this->pdfAttachment($thisAttachments);
 
-				// Get a JMail instance (have to get a new instance otherwise the recipients are appended to previously added recipients)
-				$mail = JFactory::getMailer();
-				$res = $mail->sendMail(
+				$res = FabrikWorker::sendMail(
 					$emailFrom, $emailFromName, $email, $thisSubject, $thisMessage,
 					$htmlEmail, $cc, $bcc, $thisAttachments, $returnPath, $returnPathName
 				);

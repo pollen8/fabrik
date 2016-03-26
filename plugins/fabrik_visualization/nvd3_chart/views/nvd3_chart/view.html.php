@@ -98,7 +98,7 @@ class FabrikViewNvd3_Chart extends JViewLegacy
 		$js .= $model->getFilterJs();
 
 		FabrikHelperHTML::iniRequireJs($model->getShim());
-		FabrikHelperHTML::script($srcs, $js);
+		FabrikHelperHTML::script($srcs, $js, '-min.js', array('Window', 'FbListFilter'));
 
 		$text = $this->loadTemplate();
 		FabrikHelperHTML::runContentPlugins($text);

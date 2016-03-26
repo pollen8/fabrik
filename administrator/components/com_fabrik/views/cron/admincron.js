@@ -4,51 +4,54 @@
  * @copyright: Copyright (C) 2005-2015, fabrikar.com - All rights reserved.
  * @license:   GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
+define(['jquery', 'admin/pluginmanager'], function (jQuery, PluginManager) {
+	var CronAdmin = new Class({
 
-var CronAdmin = new Class({
+		Extends: PluginManager,
 
-	Extends: PluginManager,
+		Implements: [Options, Events],
 
-	Implements: [Options, Events],
+		options: {
+			plugin: ''
+		},
 
-	options: {
-		plugin: ''
-	},
+		initialize: function (options) {
+			var plugins = [];
+			this.parent(plugins);
+			this.setOptions(options);
+			this.watchSelector();
+		},
 
-	initialize: function (options) {
-		plugins = [];
-		this.parent(plugins);
-		this.setOptions(options);
-		this.watchSelector();
-	},
+		watchSelector: function () {
+			if (typeof(jQuery) !== 'undefined') {
+				jQuery('#jform_plugin').bind('change', function (e) {
+					this.changePlugin(e);
+				}.bind(this));
+			}
 
-	watchSelector: function () {
-		if (typeof(jQuery) !== 'undefined') {
-			jQuery('#jform_plugin').bind('change', function (e) {
+			document.id('jform_plugin').addEvent('change', function (e) {
+				e.stop();
 				this.changePlugin(e);
 			}.bind(this));
+		},
+
+		changePlugin: function (e) {
+			var myAjax = new Request.HTML({
+				url         : 'index.php',
+				'data'      : {
+					'option': 'com_fabrik',
+					'task'  : 'cron.getPluginHTML',
+					'format': 'raw',
+					'plugin': e.target.get('value')
+				},
+				'update'    : document.id('plugin-container'),
+				'onComplete': function () {
+					this.updateBootStrap();
+				}.bind(this)
+
+			}).send();
 		}
+	});
 
-		document.id('jform_plugin').addEvent('change', function (e) {
-			e.stop();
-			this.changePlugin(e);
-		}.bind(this));
-	},
-
-	changePlugin: function (e) {
-		var myAjax = new Request.HTML({
-			url: 'index.php',
-			'data': {
-				'option': 'com_fabrik',
-				'task': 'cron.getPluginHTML',
-				'format': 'raw',
-				'plugin': e.target.get('value')
-			},
-			'update': document.id('plugin-container'),
-			'onComplete': function () {
-				this.updateBootStrap();
-			}.bind(this)
-
-		}).send();
-	}
+	return CronAdmin;
 });

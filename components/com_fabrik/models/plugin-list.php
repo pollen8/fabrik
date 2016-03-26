@@ -373,6 +373,16 @@ class PlgFabrik_List extends FabrikPlugin
 		return JFile::exists(JPATH_SITE . '/' . $file) ? $file : null;
 	}
 
+	public function loadJavascriptClassName()
+	{
+		return true;
+	}
+
+	public function loadJavascriptClassName_result()
+	{
+		return '';
+	}
+
 	/**
 	 * Shouldn't do anything here - but needed for the result return
 	 *

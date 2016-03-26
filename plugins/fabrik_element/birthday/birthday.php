@@ -822,7 +822,7 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 		$params = $this->getParams();
 		$element = $this->getElement();
 
-		if ($type === 'prefilter')
+		if ($type === 'prefilter' || $type === 'menuPrefilter')
 		{
 			switch ($condition)
 			{

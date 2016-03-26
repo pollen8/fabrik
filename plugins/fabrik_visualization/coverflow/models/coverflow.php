@@ -103,7 +103,7 @@ class FabrikModelCoverflow extends FabrikFEModelVisualization
 		$str = "var coverflow = new FbVisCoverflow($json);";
 		$srcs = FabrikHelperHTML::framework();
 		$srcs[] = $this->srcBase . 'coverflow/coverflow.js';
-		FabrikHelperHTML::script($srcs, $str);
+		FabrikHelperHTML::script($srcs, $str, '-min.js', array('Window'));
 	}
 
 	/**

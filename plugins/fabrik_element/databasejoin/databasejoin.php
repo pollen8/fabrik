@@ -2547,9 +2547,9 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 
 		$this->encryptFieldName($key);
 
-		if (!$this->_rawFilter && ($type == 'searchall' || $type == 'prefilter'))
+		if (!$this->_rawFilter && ($type === 'searchall' || ($type === 'prefilter') || $type === 'menuPrefilter'))
 		{
-			if ($type !== 'prefilter')
+			if ($type !== 'prefilter' && $type !== 'menuPrefilter')
 			{
 				if (!$this->isJoin())
 				{
@@ -2934,8 +2934,6 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		$opts->isJoin   = $this->isJoin();
 		$opts->advanced = $this->getAdvancedSelectClass() != '';
 
-
-
 		/*
 		 * Testing watching placeholders used in the where, and AJAX reloading the join when changed
 		 */
@@ -2954,7 +2952,6 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 
 			foreach ($obs as $key => &$m)
 			{
-
 				if (empty($m))
 				{
 					unset($obs[$key]);

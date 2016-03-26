@@ -1,2 +1,2 @@
 /*! Fabrik */
-FbUser=new Class({Extends:FbDatabasejoin});
+define(["jquery","element/databasejoin/databasejoin"],function(a,b){return window.FbUser=new Class({Extends:b}),window.FbUser});

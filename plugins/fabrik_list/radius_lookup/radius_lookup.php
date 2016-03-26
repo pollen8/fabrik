@@ -298,6 +298,16 @@ class PlgFabrik_ListRadius_Lookup extends PlgFabrik_List
 	}
 
 	/**
+	 * Load the AMD module class name
+	 *
+	 * @return string
+	 */
+	public function loadJavascriptClassName_result()
+	{
+		return 'FbListRadiusLookup';
+	}
+
+	/**
 	 * Overridden by plugins if necessary.
 	 * If the plugin is a filter plugin, return true if it needs the 'form submit'
 	 * method, i.e. the Go button.  Implemented specifically for radius search plugin.

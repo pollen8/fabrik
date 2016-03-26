@@ -5,10 +5,14 @@
  * @license:   GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
-var FbIp = new Class({
-	Extends: FbElement,
-	initialize: function (element, options) {
-		this.setPlugin('FbIp');
-		this.parent(element, options);
-	}
+define(['jquery', 'fab/element'], function (jQuery, FbElement) {
+    window.FbIp = new Class({
+        Extends   : FbElement,
+        initialize: function (element, options) {
+            this.setPlugin('FbIp');
+            this.parent(element, options);
+        }
+    });
+
+    return window.FbIp;
 });

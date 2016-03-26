@@ -5,10 +5,14 @@
  * @license:   GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
-var FbYouTube = new Class({
-	Extends: FbElement,
-	initialize: function (element, options) {
-		this.setPlugin('fabrikyoutube');
-		this.parent(element, options);
-	}
+var FbYouTube;
+
+requirejs(['jquery'], function (jQuery) {
+    FbYouTube = new Class({
+        Extends   : FbElement,
+        initialize: function (element, options) {
+            this.setPlugin('fabrikyoutube');
+            this.parent(element, options);
+        }
+    });
 });

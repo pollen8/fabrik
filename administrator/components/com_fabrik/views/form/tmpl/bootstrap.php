@@ -22,32 +22,35 @@ JHtml::_('behavior.keepalive');
 <script type="text/javascript">
 
 	Joomla.submitbutton = function(task) {
-		var currentGroups = document.id('jform_current_groups');
-		var createNew = document.id('jform__createGroup1').checked;
 
-		if (typeOf(currentGroups) !== 'null') {
-			Object.each(currentGroups.options, function (opt) {
-				opt.selected = true;
-			});
-		}
+		requirejs(['fab/fabrik'], function (Fabrik) {
+			var currentGroups = document.id('jform_current_groups');
+			var createNew = document.id('jform__createGroup1').checked;
 
-		if (task !== 'form.cancel') {
-			if (!Fabrik.controller.canSaveForm()) {
-				alert('<?php echo FText::_('COM_FABRIK_ERR_ONE_GROUP_MUST_BE_SELECTED'); ?>');
-				return false;
+			if (typeOf(currentGroups) !== 'null') {
+				Object.each(currentGroups.options, function (opt) {
+					opt.selected = true;
+				});
 			}
 
-			if (typeOf(currentGroups) !== 'null' && currentGroups.options.length === 0 && createNew === false) {
-				alert('Please select at least one group');
-				return false;
+			if (task !== 'form.cancel') {
+				if (!Fabrik.controller.canSaveForm()) {
+					window.alert('<?php echo FText::_('COM_FABRIK_ERR_ONE_GROUP_MUST_BE_SELECTED'); ?>');
+					return false;
+				}
+
+				if (typeOf(currentGroups) !== 'null' && currentGroups.options.length === 0 && createNew === false) {
+					window.alert('Please select at least one group');
+					return false;
+				}
 			}
-		}
-		if (task == 'form.cancel' || document.formvalidator.isValid(document.id('adminForm'))) {
-			window.fireEvent('form.save');
-			Joomla.submitform(task, document.getElementById('adminForm'));
-		} else {
-			alert('<?php echo $this->escape(FText::_('JGLOBAL_VALIDATION_FORM_FAILED'));?>');
-		}
+			if (task == 'form.cancel' || document.formvalidator.isValid(document.id('adminForm'))) {
+				window.fireEvent('form.save');
+				Joomla.submitform(task, document.getElementById('adminForm'));
+			} else {
+				alert('<?php echo $this->escape(FText::_('JGLOBAL_VALIDATION_FORM_FAILED'));?>');
+			}
+		});
 	}
 </script>
 

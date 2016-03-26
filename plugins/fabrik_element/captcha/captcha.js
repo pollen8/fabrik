@@ -5,9 +5,13 @@
  * @license:   GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
-var FbCaptcha = new Class({
-	Extends: FbElement,
-	initialize: function (element, options) {
-		this.parent(element, options);
-	}
+define(['jquery', 'fab/element'], function (jQuery, FbElement) {
+    window.FbCaptcha = new Class({
+        Extends   : FbElement,
+        initialize: function (element, options) {
+            this.parent(element, options);
+        }
+    });
+
+    return window.FbCaptcha;
 });

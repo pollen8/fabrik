@@ -13,7 +13,6 @@ defined('_JEXEC') or die('Restricted access');
 use Fabble\Helpers\Factory;
 use Joomla\String\Normalise;
 use Joomla\String\Inflector;
-use Joomla\String\String;
 
 
 /**'
@@ -90,7 +89,7 @@ class FabrikAutoloader
 					$part = $plural->toSingular($part);
 				}
 
-				$part = String::ucfirst(strtolower($part));
+				$part = JString::ucfirst(strtolower($part));
 			}
 
 			$path .= implode('/', $parts) . '.php';
@@ -102,7 +101,7 @@ class FabrikAutoloader
 
 				if (!$isFabble)
 				{
-					class_alias('\\Fabble\\Model\\FabbleModel' . String::ucfirst($type), $class);
+					class_alias('\\Fabble\\Model\\FabbleModel' . JString::ucfirst($type), $class);
 				}
 
 				return;
@@ -116,7 +115,7 @@ class FabrikAutoloader
 			{
 				require_once $defaultPath;
 				$type = array_pop($parts);
-				class_alias("\\Fabble\\Model\\FabbleModel" . String::ucfirst($type), $class);
+				class_alias("\\Fabble\\Model\\FabbleModel" . JString::ucfirst($type), $class);
 
 				return;
 			}
@@ -142,7 +141,7 @@ class FabrikAutoloader
 		{
 			$parts    = Normalise::fromCamelCase($class, true);
 			$type     = array_pop($parts);
-			$path     = JPATH_SITE . '/libraries/fabble/Views/' . String::ucfirst($type) . '.php';
+			$path     = JPATH_SITE . '/libraries/fabble/Views/' . JString::ucfirst($type) . '.php';
 			$original = $type;
 
 			if (file_exists($path))
@@ -191,7 +190,7 @@ class FabrikAutoloader
 					$part = strtolower($plural->toSingular($part));
 				}
 
-				$part = String::ucfirst($part);
+				$part = JString::ucfirst($part);
 			}
 
 			// Check custom controller
@@ -207,17 +206,17 @@ class FabrikAutoloader
 
 			foreach ($parts as &$part)
 			{
-				$part = String::ucfirst($part);
+				$part = JString::ucfirst($part);
 			}
 
 			// Load Fabble default controllers
 			$path = JPATH_SITE . '/libraries/fabble/';
-			$path .= implode('/', $parts) . '/' . String::ucfirst($name) . '.php';
+			$path .= implode('/', $parts) . '/' . JString::ucfirst($name) . '.php';
 
 			if (file_exists($path))
 			{
 				require_once $path;
-				class_alias('\\Fabble\\Controller\\' . String::ucfirst($name), $class);
+				class_alias('\\Fabble\\Controller\\' . JString::ucfirst($name), $class);
 
 				return;
 			}

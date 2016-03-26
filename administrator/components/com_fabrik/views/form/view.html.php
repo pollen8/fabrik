@@ -83,10 +83,11 @@ class FabrikAdminViewForm extends JViewLegacy
 		FabrikHelperHTML::iniRequireJS($shim);
 
 		$srcs   = FabrikHelperHTML::framework();
+		$srcs[] = FabrikHelperHTML::mediaFile('fabrik.js');
 		$srcs[] = 'administrator/components/com_fabrik/views/namespace.js';
 		$srcs[] = 'administrator/components/com_fabrik/views/pluginmanager.js';
 
-		FabrikHelperHTML::script($srcs, $this->js);
+		FabrikHelperHTML::script($srcs, $this->js, '-min.js', array('Window', 'Fabrik', 'Namespace', 'PluginManager'));
 		parent::display($tpl);
 	}
 

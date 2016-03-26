@@ -828,14 +828,15 @@ EOD;
 			$app     = JFactory::getApplication();
 			$version = new JVersion;
 			FabrikHelperHTML::modalJLayouts();
-			$liveSiteSrc    = array();
-			$liveSiteReq    = array();
-			$fbConfig       = JComponentHelper::getParams('com_fabrik');
+			$liveSiteSrc = array();
+			$liveSiteReq = array();
+			$fbConfig    = JComponentHelper::getParams('com_fabrik');
 
 			// Only use template test for testing in 2.5 with my temp J bootstrap template.
 			$bootstrapped = in_array($app->getTemplate(), array('bootstrap', 'fabrik4')) || $version->RELEASE > 2.5;
 
-			$ext = self::isDebug() ? '.js' : '-min.js';
+			//$ext = self::isDebug() ? '.js' : '-min.js';
+			$mediaFolder = self::isDebug() ? 'media/com_fabrik/js' : 'media/com_fabrik/js/dist';
 			$src = array();
 			JHtml::_('behavior.framework', true);
 
@@ -844,11 +845,22 @@ EOD;
 			{
 				JHtml::_('bootstrap.framework');
 				self::loadBootstrapCSS();
-				JHtml::_('script', 'media/com_fabrik/js/lib/jquery-ui/jquery-ui.min.js');
+				JHtml::_('script', $mediaFolder . '/lib/jquery-ui/jquery-ui.min.js');
 			}
 
 			// Require js test - list with no cal loading ajax form with cal
 			JHTML::_('behavior.calendar');
+			$liveSiteReq[] = $mediaFolder . '/chosen-loader';
+			$liveSiteReq[] = $mediaFolder . '/fabrik';
+
+			if ($bootstrapped)
+			{
+				$liveSiteReq[] = $mediaFolder . '/tipsBootStrapMock';
+			}
+			else
+			{
+				$liveSiteReq[] = $mediaFolder . '/tips';
+			}
 
 			if ($fbConfig->get('advanced_behavior', '0') == '1')
 			{
@@ -856,45 +868,31 @@ EOD;
 				$chosenOptions = empty($chosenOptions) ? new stdClass : ArrayHelper::fromObject(json_decode($chosenOptions));
 				JHtml::_('stylesheet', 'jui/chosen.css', false, true);
 				JHtml::_('script', 'jui/chosen.jquery.min.js', false, true, false, false, self::isDebug());
-				$liveSiteReq[] = 'media/com_fabrik/js/chosen-loader.js';
 			}
 
 			if (self::inAjaxLoadedPage() && !$bootstrapped)
 			{
 				// $$$ rob 06/02/2012 recall ant so that Color.detach is available (needed for opening a window from within a window)
 				JHtml::_('script', 'media/com_fabrik/js/lib/art.js');
-				JHtml::_('script', 'media/com_fabrik/js/lib/Event.mock.js');
+			}
+
+			if ($fbConfig->get('advanced_behavior', '0') == '1')
+			{
+				$liveSiteSrc[] = "var chosenInterval = window.setInterval(function () {
+						if (Fabrik.buildChosen) {
+							window.clearInterval(chosenInterval);
+	                        Fabrik.buildChosen('select.advancedSelect', " . json_encode($chosenOptions) . ");
+						}
+					}, 100);";
 			}
 
 			if (!self::inAjaxLoadedPage())
 			{
 				// Require.js now added in fabrik system plugin onAfterRender()
 				JText::script('COM_FABRIK_LOADING');
-				$src[] = 'media/com_fabrik/js/fabrik' . $ext;
-				$src[] = 'media/com_fabrik/js/window' . $ext;
+				$src[] = $mediaFolder . '/window.js';
 
 				self::styleSheet(COM_FABRIK_LIVESITE . 'media/com_fabrik/css/fabrik.css');
-
-				$liveSiteReq[] = 'media/com_fabrik/js/fabrik' . $ext;
-
-				if ($bootstrapped)
-				{
-					$liveSiteReq[] = 'media/com_fabrik/js/tipsBootStrapMock' . $ext;
-				}
-				else
-				{
-					$liveSiteReq[] = 'media/com_fabrik/js/tips' . $ext;
-				}
-
-				if ($fbConfig->get('advanced_behavior', '0') == '1')
-				{
-						$liveSiteSrc[] = "var chosenInterval = window.setInterval(function () {
-						if (Fabrik.buildChosen) {
-							window.clearInterval(chosenInterval);
-	                        Fabrik.buildChosen('select.advancedSelect', " . json_encode($chosenOptions) . ");
-						}
-					}, 100);";
-				}
 
 				$liveSiteSrc[] = "\tFabrik.liveSite = '" . COM_FABRIK_LIVESITE . "';";
 				$liveSiteSrc[] = "\tFabrik.package = '" . $app->getUserState('com_fabrik.package', 'fabrik') . "';";
@@ -929,18 +927,13 @@ EOD;
 					$liveSiteSrc[] = "\tFabrik.bootstrapped = false;";
 				}
 
-				if ($fbConfig->get('advanced_behavior', '0') == '1')
-				{
-					$liveSiteSrc[] = "\tFabrik.buildChosen('select.advancedSelect', " . json_encode($chosenOptions) . ');';
-				}
 				$liveSiteSrc[] = "\tif (!Fabrik.jLayouts) {
 				Fabrik.jLayouts = {};
 				}
 				Fabrik.jLayouts = jQuery.extend(Fabrik.jLayouts, %%jLayouts%%);";
-				$liveSiteReq[] = 'media/com_fabrik/js/fabrik' . $ext;
 			}
 
-			self::script($liveSiteReq, $liveSiteSrc);
+			self::script($liveSiteReq, $liveSiteSrc, '-min.js', array('Chosen', 'Fabrik', 'FloatingTips'));
 			self::$framework = $src;
 		}
 
@@ -1027,7 +1020,6 @@ EOD;
 		$framework    = array();
 		$deps         = array();
 		$j3           = FabrikWorker::j3();
-		$ext          = self::isDebug() ? '' : '-min';
 
 		$requirejsBaseURI = self::getJSAssetBaseURI();
 
@@ -1036,20 +1028,6 @@ EOD;
 
 		foreach ($shim as $k => &$s)
 		{
-			$k .= $ext;
-
-			if (isset($s->deps))
-			{
-				foreach ($s->deps as &$f)
-				{
-					// Library files are not compressed by default.
-					if (substr($f, 0, 4) !== 'lib/' && substr($f, -4) !== '-min')
-					{
-						$f .= $ext;
-					}
-				}
-			}
-
 			if (is_array($newShim) && array_key_exists($k, $newShim))
 			{
 				$s->deps = array_merge($s->deps, $newShim[$k]->deps);
@@ -1062,32 +1040,26 @@ EOD;
 
 		if ($navigator->getBrowser() == 'msie' && !$j3)
 		{
-			$deps[] = 'fab/lib/flexiejs/flexie' . $ext;
+			$deps[] = 'lib/flexiejs/flexie';
 		}
 
+		$deps[] = 'fab/utils';
 		$deps[] = 'jquery';
 
-		$deps[] = 'fab/mootools-ext' . $ext;
-		$deps[] = 'fab/lib/Event.mock';
+		$deps[] = 'fab/mootools-ext';
+		$deps[] = 'lib/Event.mock';
 
-		if ($j3)
+		if (!$j3)
 		{
-			$deps[] = 'fab/tipsBootStrapMock' . $ext;
-		}
-		else
-		{
-			$deps[] = 'fab/lib/art';
-			$deps[] = 'fab/tips' . $ext;
-			$deps[] = 'fab/icons' . $ext;
-			$deps[] = 'fab/icongen' . $ext;
+			$deps[] = 'lib/art';
+			$deps[] = 'fab/tips';
+			$deps[] = 'fab/icons';
+			$deps[] = 'fab/icongen';
 		}
 
-		$deps[] = 'fab/encoder' . $ext;
-
-		self::addRequireJsShim($framework, 'fab/fabrik', $deps);
-		self::addRequireJsShim($framework, 'fab/window', array('fab/fabrik' . $ext));
-		self::addRequireJsShim($framework, 'fab/elementlist', array('fab/fabrik' . $ext, 'fab/element' . $ext));
-		self::addRequireJsShim($framework, 'fab/autocomplete-bootstrap', array('fab/fabrik' . $ext));
+		self::addRequireJsShim($framework, 'fab/fabrik', $deps, false);
+		self::addRequireJsShim($framework, 'fab/autocomplete-bootstrap', array('fab/fabrik'), false);
+		self::addRequireJsShim($framework, 'jQueryUI', array('jquery'), false);
 
 		$newShim = array_merge($framework, $newShim);
 		$config  = array();
@@ -1107,6 +1079,14 @@ EOD;
 			'shim' => $newShim,
 			'waitSeconds' => 30
 		);
+
+		// Force script reloads if in debug.
+		if (self::isDebug())
+		{
+			$opts['urlArgs'] = 'bust=' . time();
+		}
+		$opts['urlArgs'] = 'bust=' . time();
+
 		$config[] = "requirejs.config(";
 		$config[] = json_encode($opts, self::isDebug() && defined('JSON_PRETTY_PRINT') ? JSON_PRETTY_PRINT : false);
 		$config[] = ");";
@@ -1123,13 +1103,19 @@ EOD;
 	 * @param array  $framework    Array to append the dependency to
 	 * @param string $key          RequireJs key - the file to load
 	 * @param array  $dependencies The dependencies to load before the $key file
+	 * @param bool   $useMin       Should we append -min to the $key if we are not in debug mode
 	 */
-	protected static function addRequireJsShim(&$framework, $key, $dependencies)
+	protected static function addRequireJsShim(&$framework, $key, $dependencies, $useMin = true)
 	{
-		$ext                    = self::isDebug() ? '' : '-min';
+		$ext                    = self::isDebug() || !$useMin ? '' : '-min';
 		$info                   = new stdClass;
 		$info->deps             = $dependencies;
 		$framework[$key . $ext] = $info;
+	}
+
+	public static function mediaFile($file)
+	{
+		return self::isDebug() ? 'media/com_fabrik/js/' . $file : 'media/com_fabrik/js/dist/' . $file;
 	}
 
 	/**
@@ -1143,6 +1129,7 @@ EOD;
 	{
 		$r              = new stdClass;
 		$r->fab         = 'media/com_fabrik/js';
+		$r->lib         = 'media/com_fabrik/js/lib';
 		$r->element     = 'plugins/fabrik_element';
 		$r->list        = 'plugins/fabrik_list';
 		$r->form        = 'plugins/fabrik_form';
@@ -1150,6 +1137,15 @@ EOD;
 		$r->viz         = 'plugins/fabrik_visualization';
 		$r->admin       = 'administrator/components/com_fabrik/views';
 		$r->adminfields = 'administrator/components/com_fabrik/models/fields';
+
+		$r->jQueryUI = 'media/com_fabrik/js/lib/jquery-ui/jquery-ui';
+
+		// We are now loading compressed js fabrik files from the media/com_fabrik/js/dist folder
+		// This avoids AMD issues where we were loading fab/form or fab/form-min.
+		if (!self::isDebug())
+		{
+			$r->fab .= '/dist';
+		}
 
 		$version = new JVersion;
 
@@ -1360,10 +1356,11 @@ EOD;
 	 *                             e.g. 'administrator/components/com_fabrik/models/fields/tables.js'
 	 * @param   string $onLoad     Optional js to run once the Js file has been loaded
 	 * @param   string $minSuffix  The minimised file suffix to use, replaces '.js'
+	 * @param   array  $names
 	 *
 	 * @return  void
 	 */
-	public static function script($file, $onLoad = '', $minSuffix = '-min.js')
+	public static function script($file, $onLoad = '', $minSuffix = '-min.js', $names = array())
 	{
 		if (empty($file))
 		{
@@ -1437,7 +1434,7 @@ EOD;
 
 		$files     = array_unique($files);
 		$files     = "['" . implode("', '", $files) . "']";
-		$require[] = 'requirejs(' . ($files) . ', function () {';
+		$require[] = 'requirejs(' . ($files) . ', function (' . implode(", ", $names) . ') {';
 		$require[] = $onLoad;
 		$require[] = '});';
 		$require[] = "\n";
@@ -1759,18 +1756,20 @@ EOD;
 		$str  = json_encode($json);
 		JText::script('COM_FABRIK_NO_RECORDS');
 		JText::script('COM_FABRIK_AUTOCOMPLETE_AJAX_ERROR');
-		$class    = $plugin === 'cascadingdropdown' ? 'FabCddAutocomplete' : 'FbAutocomplete';
-		$jsFile   = FabrikWorker::j3() ? 'autocomplete-bootstrap' : 'autocomplete';
+		$jsFile = 'autocomplete';
+
+		if (FabrikWorker::j3())
+		{
+			$jsFile = $plugin === 'cascadingdropdown' ? 'autocomplete-bootstrap-cdd' : 'autocomplete-bootstrap';
+		}
+
 		$needed   = array();
-		$needed[] = self::isDebug() ? 'fab/fabrik' : 'fab/fabrik-min';
-		$needed[] = self::isDebug() ? 'fab/' . $jsFile : 'fab/' . $jsFile . '-min';
-		$needed[] = self::isDebug() ? 'fab/lib/debounce/jquery.ba-throttle-debounce' : 'fab/lib/debounce/jquery.ba-throttle-debounce-min';
-		$needed[] = self::isDebug() ? 'fab/encoder' : 'fab/encoder-min';
-		$needed[] = 'fab/lib/Event.mock';
+		$needed[] = 'fab/' . $jsFile ;
+		$needed[] = 'lib/Event.mock';
 		$needed   = implode("', '", $needed);
 		self::addScriptDeclaration(
-			"requirejs(['$needed'], function () {
-	new $class('$htmlId', $str);
+			"require(['$needed'], function (AutoComplete) {
+	new AutoComplete('$htmlId', $str);
 });"
 		);
 	}
@@ -1865,8 +1864,8 @@ EOD;
 			$css               = self::isDebug() ? 'jquery.atwho.css' : 'jquery.atwho.min.css';
 			FabrikHelperHTML::stylesheet('media/com_fabrik/js/lib/at/' . $css);
 
-			$needed[] = self::isDebug() ? '\'fab/lib/caret/caret\'' : '\'fab/lib/caret/caret-min\'';
-			$needed[] = self::isDebug() ? '\'fab/lib/at/atwho\'' : '\'fab/lib/at/atwho-min\'';
+			$needed[] = self::isDebug() ? '\'lib/caret/caret\'' : '\'lib/caret/caret-min\'';
+			$needed[] = self::isDebug() ? '\'lib/at/atwho\'' : '\'lib/at/atwho-min\'';
 			$needed   = implode(", ", $needed);
 			$script   = implode("\n", $script);
 			self::addScriptDeclaration(

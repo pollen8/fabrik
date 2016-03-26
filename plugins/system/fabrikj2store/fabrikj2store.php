@@ -86,7 +86,7 @@ class plgSystemFabrikj2store extends JPlugin
 			$row = $formModel->getData();
 
 			$params = $formModel->getParams();
-			$index  = array_search('j2store', $params->get('plugins'));
+			$index  = array_search('j2store', (array) $params->get('plugins', array(), 'array'));
 
 			$w      = new FabrikWorker;
 			$plugIn = FabrikWorker::getPluginManager()->loadPlugIn('j2store', 'form');
@@ -103,7 +103,7 @@ class plgSystemFabrikj2store extends JPlugin
 			$context->id        = $objectRow->__pk_val;
 			$sets[$key]         = $context;
 		}
-
+echo "<pre>";print_r($sets);echo "</pre>";
 		return $sets [$key];
 	}
 }

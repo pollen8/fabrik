@@ -2869,7 +2869,6 @@ class PlgFabrik_Element extends FabrikPlugin
 		 * element on the form.
 		 * $element = $this->getParent();
 		 */
-		$jsControllerKey = "\tFabrik.blocks['" . $jsControllerKey . "']";
 		$element         = $this->getElement();
 		$w               = new FabrikWorker;
 
@@ -2974,11 +2973,11 @@ class PlgFabrik_Element extends FabrikPlugin
 						// Need to use corrected triggerid here as well
 						if (preg_match('#^fabrik_trigger#', $triggerid))
 						{
-							$js .= $jsControllerKey . ".doElementFX('" . $triggerid . "', '$jsAct->js_e_event', this)";
+							$js .= "Fabrik.getBlock('" . $jsControllerKey . "').doElementFX('" . $triggerid . "', '$jsAct->js_e_event', this)";
 						}
 						else
 						{
-							$js .= $jsControllerKey . ".doElementFX('fabrik_trigger_" . $triggerid . "', '$jsAct->js_e_event', this)";
+							$js .= "Fabrik.getBlock('" . $jsControllerKey . "').doElementFX('fabrik_trigger_" . $triggerid . "', '$jsAct->js_e_event', this)";
 						}
 
 						$js .= "}";
@@ -5602,15 +5601,6 @@ class PlgFabrik_Element extends FabrikPlugin
 	{
 		$name    = $this->getElement()->plugin;
 		$ext     = FabrikHelperHTML::isDebug() ? '.js' : '-min.js';
-		$shimKey = 'element/' . $name . '/' . $name;
-
-		if (!array_key_exists($shimKey, $shim))
-		{
-			$s                                      = new stdClass;
-			$s->deps                                = array('fab/element');
-			$shim['element/' . $name . '/' . $name] = $s;
-		}
-
 		$formId = $this->getFormModel()->getId();
 		static $elementClasses;
 

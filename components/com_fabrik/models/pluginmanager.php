@@ -410,15 +410,20 @@ class FabrikFEModelPluginmanager extends FabModel
 				return array();
 			}
 
+			/**
+			 * Changed this code to use two separate queries, rather than joining #__extensions on the
+			 * plugin name, as the J! 3.5 release changed collation of J! table, and this breaks the
+			 * for some sites with older MySQL or non-standard collation
+			 */
+
+			// build list of plugins used on this form ...
 			$db = FabrikWorker::getDbo(true);
 			$query = $db->getQuery(true);
 			$select = '*, e.name AS name, e.id AS id, e.published AS published, e.label AS label,'
-			. 'e.plugin, e.params AS params, e.access AS access, e.ordering AS ordering';
+				. 'e.plugin, e.params AS params, e.access AS access, e.ordering AS ordering';
 			$query->select($select);
 			$query->from('#__{package}_elements AS e');
-			$query->join('INNER', '#__extensions AS p ON p.element = e.plugin');
 			$query->where('group_id IN (' . implode(',', $groupIds) . ')');
-			$query->where('p.folder = "fabrik_element"');
 
 			// Ignore trashed elements
 			$query->where('e.published != -2');
@@ -427,6 +432,16 @@ class FabrikFEModelPluginmanager extends FabModel
 
 			$elements = $db->loadObjectList();
 
+			// now build list of all available Fabrik plugins ...
+			$query->clear();
+			$query
+				->select('element')
+				->from('#__extensions')
+				->where('folder = "fabrik_element"')
+				->where('enabled = "1"', 'AND');
+			$db->setQuery($query);
+			$extensions = $db->loadObjectList('element');
+
 			// Don't assign the elements into Joomla's main dispatcher as this causes out of memory errors in J1.6rc1
 			$dispatcher = new JDispatcher;
 			$groupModels = $form->getGroups();
@@ -434,6 +449,12 @@ class FabrikFEModelPluginmanager extends FabModel
 
 			foreach ($elements as $element)
 			{
+				// see if this plugin has been uninstalled or unpubished in J!
+				if (!array_key_exists($element->plugin, $extensions))
+				{
+					continue;
+				}
+
 				JDEBUG ? $profiler->mark('pluginmanager:getFormPlugins:' . $element->id . '' . $element->plugin) : null;
 				require_once JPATH_PLUGINS . '/fabrik_element/' . $element->plugin . '/' . $element->plugin . '.php';
 				$class = 'PlgFabrik_Element' . $element->plugin;

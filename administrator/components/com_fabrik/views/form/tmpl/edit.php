@@ -22,24 +22,25 @@ JHtml::_('behavior.keepalive');
 <script type="text/javascript">
 
 	Joomla.submitbutton = function(task) {
+		requirejs(['fab/fabrik'], function (Fabrik) {
+			var currentGroups = document.id('jform_current_groups');
+			if (typeOf(currentGroups) !== 'null') {
+				Object.each(currentGroups.options, function (opt) {
+					opt.selected = true;
+				});
+			}
 
-		var currentGroups = document.id('jform_current_groups');
-		if (typeOf(currentGroups) !== 'null') {
-			Object.each(currentGroups.options, function (opt) {
-				opt.selected = true;
-			});
-		}
-
-		if (task !== 'form.cancel'  && !Fabrik.controller.canSaveForm()) {
-			alert('Please wait - still loading');
-			return false;
-		}
-		if (task == 'form.cancel' || document.formvalidator.isValid(document.id('adminForm'))) {
-			window.fireEvent('form.save');
-			Joomla.submitform(task, document.getElementById('adminForm'));
-		} else {
-			alert('<?php echo $this->escape(FText::_('JGLOBAL_VALIDATION_FORM_FAILED'));?>');
-		}
+			if (task !== 'form.cancel' && !Fabrik.controller.canSaveForm()) {
+				alert('Please wait - still loading');
+				return false;
+			}
+			if (task == 'form.cancel' || document.formvalidator.isValid(document.id('adminForm'))) {
+				window.fireEvent('form.save');
+				Joomla.submitform(task, document.getElementById('adminForm'));
+			} else {
+				alert('<?php echo $this->escape(FText::_('JGLOBAL_VALIDATION_FORM_FAILED'));?>');
+			}
+		});
 	}
 </script>
 

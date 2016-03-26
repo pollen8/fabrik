@@ -511,28 +511,7 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 		return array('FbUser', $id, $opts);
 	}
 
-	/**
-	 * Get the class to manage the form element
-	 * to ensure that the file is loaded only once
-	 *
-	 * @param   array  &$srcs  Scripts previously loaded
-	 * @param   string $script Script to load once class has loaded
-	 * @param   array  &$shim  Dependant class names to load before loading the class - put in requirejs.config shim
-	 *
-	 * @return void
-	 */
-	public function formJavascriptClass(&$srcs, $script = '', &$shim = array())
-	{
-		$s                                         = new stdClass;
-		$s->deps                                   = array('fab/element');
-		$shim['element/databasejoin/databasejoin'] = $s;
 
-		$s                         = new stdClass;
-		$s->deps                   = array('element/databasejoin/databasejoin');
-		$shim['element/user/user'] = $s;
-
-		parent::formJavascriptClass($srcs, $script, $shim);
-	}
 
 	/**
 	 * Get select option label
@@ -872,7 +851,7 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 			return $key . ' ' . $condition . ' ' . $value;
 		}
 
-		if ($type != 'prefilter')
+		if ($type !== 'prefilter' && $type !== 'menuPrefilter')
 		{
 			switch ($element->filter_type)
 			{

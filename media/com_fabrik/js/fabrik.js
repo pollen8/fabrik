@@ -5,312 +5,20 @@
  * @license:   GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
-/*jshint mootools: true */
-/*global Fabrik:true, fconsole:true, Joomla:true, $H:true, FbForm:true , define:true */
-
-/**
- * Console.log wrapper
- */
-function fconsole() {
-    if (typeof (window.console) !== 'undefined') {
-        var str = '', i;
-        for (i = 0; i < arguments.length; i++) {
-            str += arguments[i] + ' ';
-        }
-        console.log(str);
-    }
-}
-
-/**
- * This class is temporarily required until this patch makes it into the CMS
- * code: https://github.com/joomla/joomla-platform/pull/1209/files Its purpose
- * is to queue ajax requests so they are not all fired at the same time - which
- * result in db session errors.
- *
- * Currently this is called from: fabriktables.js
- *
- */
-
-var RequestQueue = new Class({
-
-    queue: {}, // object of xhr objects
-
-    initialize: function () {
-        this.periodical = this.processQueue.periodical(500, this);
-    },
-
-    add: function (xhr) {
-        var k = xhr.options.url + Object.toQueryString(xhr.options.data) + Math.random();
-        if (!this.queue[k]) {
-            this.queue[k] = xhr;
-        }
-    },
-
-    processQueue: function () {
-        if (Object.keys(this.queue).length === 0) {
-            return;
-        }
-        var running = false;
-
-        // Remove successfully completed xhr
-        $H(this.queue).each(function (xhr, k) {
-            if (xhr.isSuccess()) {
-                delete (this.queue[k]);
-                running = false;
-            } else {
-                if (xhr.status === 500) {
-                    console.log('Fabrik Request Queue: 500 ' + xhr.xhr.statusText);
-                    delete (this.queue[k]);
-                    running = false;
-                }
-            }
-        }.bind(this));
-
-        // Find first xhr not run and completed to run
-        $H(this.queue).each(function (xhr, k) {
-            if (!xhr.isRunning() && !xhr.isSuccess() && !running) {
-                xhr.send();
-                running = true;
-            }
-        });
-    },
-
-    empty: function () {
-        return Object.keys(this.queue).length === 0;
-    }
-});
-
-Request.HTML = new Class({
-
-    Extends: Request,
-
-    options: {
-        update     : false,
-        append     : false,
-        evalScripts: true,
-        filter     : false,
-        headers    : {
-            Accept: 'text/html, application/xml, text/xml, */*'
-        }
-    },
-
-    success: function (text) {
-        var options = this.options, response = this.response;
-
-        response.html = text.stripScripts(function (script) {
-            response.javascript = script;
-        });
-
-        var match = response.html.match(/<body[^>]*>([\s\S]*?)<\/body>/i);
-        if (match) {
-            response.html = match[1];
-        }
-        var temp = new Element('div').set('html', response.html);
-
-        response.tree = temp.childNodes;
-        response.elements = temp.getElements(options.filter || '*');
-
-        if (options.filter) {
-            response.tree = response.elements;
-        }
-        if (options.update) {
-            var update = document.id(options.update).empty();
-            if (options.filter) {
-                update.adopt(response.elements);
-            } else {
-
-                update.set('html', response.html);
-            }
-        } else if (options.append) {
-            var append = document.id(options.append);
-            if (options.filter) {
-                response.elements.reverse().inject(append);
-            } else {
-                append.adopt(temp.getChildren());
-            }
-        }
-        if (options.evalScripts) {
-            Browser.exec(response.javascript);
-        }
-
-        this.onSuccess(response.tree, response.elements, response.html, response.javascript);
-    }
-});
-
-/**
- * Keeps the element position in the centre even when scroll/resizing
- */
-
-Element.implement({
-    keepCenter: function () {
-        this.makeCenter();
-        window.addEvent('scroll', function () {
-            this.makeCenter();
-        }.bind(this));
-        window.addEvent('resize', function () {
-            this.makeCenter();
-        }.bind(this));
-    },
-    makeCenter: function () {
-        var l = jQuery(window).width() / 2 - this.getWidth() / 2;
-        var t = window.getScrollTop() + (jQuery(window).height() / 2 - this.getHeight() / 2);
-        this.setStyles({
-            left: l,
-            top : t
-        });
-    }
-});
-
-/**
- * Extend the Array object
- *
- * @param candid
- *            The string to search for
- * @returns Returns the index of the first match or -1 if not found
- */
-Array.prototype.searchFor = function (candid) {
-    var i;
-    for (i = 0; i < this.length; i++) {
-        if (this[i].indexOf(candid) === 0) {
-            return i;
-        }
-    }
-    return -1;
-};
-
-/**
- * Object.keys polyfill for IE8
- */
-if (!Object.keys) {
-    Object.keys = function (obj) {
-        return jQuery.map(obj, function (v, k) {
-            return k;
-        });
-    };
-}
-
-/**
- * Loading animation class, either inline next to an element or full screen
- * Paul 20130809 Adding functionality to handle multiple simultaneous spinners
- * on same field.
- */
-var Loader = new Class({
-
-    initialize: function () {
-        this.spinners = {};
-        this.spinnerCount = {};
-        this.watchResize();
-    },
-
-    sanitizeInline: function (inline) {
-
-        inline = inline ? inline : document.body;
-
-        if (inline instanceof jQuery) {
-            if (inline.length === 0) {
-                inline = false;
-            } else {
-                inline = inline[0];
-            }
-        } else {
-            if (typeOf(document.id(inline)) === 'null') {
-                inline = false;
-            }
-        }
-        return inline;
-    },
-
-    start: function (inline, msg) {
-        inline = this.sanitizeInline(inline);
-
-        msg = msg ? msg : Joomla.JText._('COM_FABRIK_LOADING');
-        if (!this.spinners[inline]) {
-            this.spinners[inline] = new Spinner(inline, {
-                'message': msg
-            });
-        }
-        if (!this.spinnerCount[inline]) {
-            this.spinnerCount[inline] = 1;
-        } else {
-            this.spinnerCount[inline]++;
-        }
-        // If field is hidden we will get a TypeError
-        if (this.spinnerCount[inline] === 1) {
-            try {
-                this.spinners[inline].position().show();
-            } catch (err) {
-                // Do nothing
-            }
-        }
-    },
-
-    stop: function (inline) {
-        inline = this.sanitizeInline(inline);
-        if (!this.spinners[inline] || !this.spinnerCount[inline]) {
-            return;
-        }
-        if (this.spinnerCount[inline] > 1) {
-            this.spinnerCount[inline]--;
-            return;
-        }
-
-        var s = this.spinners[inline];
-
-        // Don't keep the spinner once stop is called - causes issue when loading
-        // ajax form for 2nd time
-        if (Browser.ie && Browser.version < 9) {
-
-            // Well ok we have to in ie8 ;( otherwise it give a js error
-            // somewhere in FX
-            s.hide();
-        } else {
-            s.destroy();
-            delete this.spinnerCount[inline];
-            delete this.spinners[inline];
-        }
-    },
-
-    watchResize: function () {
-        var self = this;
-        setInterval(function () {
-            jQuery.each(self.spinners, function (index, spinner) {
-                try {
-
-                    var h = Math.max(40, jQuery(spinner.target).height()),
-                        w = jQuery(spinner.target).width();
-                    jQuery(spinner.element).height(h);
-                    if (w !== 0) {
-                        jQuery(spinner.element).width(w);
-                        jQuery(spinner.element).find('.spinner-content').css('left', w / 2);
-                    }
-
-                    spinner.position();
-                } catch (err) {
-                    // Do nothing
-                }
-            });
-        }, 300);
-    }
-});
-
 /**
  * Create the Fabrik name space
  */
+define(['jquery', 'fab/loader', 'fab/requestqueue'], function (jQuery, Loader, RequestQueue) {
+    document.addEvent('click:relay(.popover button.close)', function (event, target) {
+        var popover = '#' + target.get('data-popover'),
+            pEl = document.getElement(popover);
+        jQuery(popover).popover('hide');
 
-if (typeof (Fabrik) === 'undefined') {
-
-    if (typeof (jQuery) !== 'undefined') {
-        document.addEvent('click:relay(.popover button.close)', function (event, target) {
-            var popover = '#' + target.get('data-popover');
-            var pEl = document.getElement(popover);
-            jQuery(popover).popover('hide');
-
-            if (typeOf(pEl) !== 'null' && pEl.get('tag') === 'input') {
-                pEl.checked = false;
-            }
-        });
-    }
-    Fabrik = {};
+        if (typeOf(pEl) !== 'null' && pEl.get('tag') === 'input') {
+            pEl.checked = false;
+        }
+    });
+    var Fabrik = {};
     Fabrik.events = {};
 
     /**
@@ -344,13 +52,10 @@ if (typeof (Fabrik) === 'undefined') {
     /**
      * Search for a block
      *
-     * @param string
-     *            blockid Block id
-     * @param bool
-     *            exact Exact match - default false. When false, form_8 will
+     * @param {string}  blockid Block id
+     * @param {boolean} exact Exact match - default false. When false, form_8 will
      *            match form_8 & form_8_1
-     * @param function
-     *            cb Call back function - if supplied a periodical check is set
+     * @param {function} cb Call back function - if supplied a periodical check is set
      *            to find the block and once found then the cb() is run, passing
      *            the block back as an parameter
      *
@@ -367,17 +72,14 @@ if (typeof (Fabrik) === 'undefined') {
     /**
      * Private Search for a block
      *
-     * @param string
-     *            blockid Block id
-     * @param bool
-     *            exact Exact match - default false. When false, form_8 will
+     * @param {string} blockid Block id
+     * @param {boolean} exact Exact match - default false. When false, form_8 will
      *            match form_8 & form_8_1
-     * @param function
-     *            cb Call back function - if supplied a periodical check is set
+     * @param {function} cb Call back function - if supplied a periodical check is set
      *            to find the block and once found then the cb() is run, passing
      *            the block back as an parameter
      *
-     * @return mixed false if not found | Fabrik block
+     * @return {boolean|object} false if not found | Fabrik block
      */
     Fabrik._getBlock = function (blockid, exact, cb) {
         var foundBlockId;
@@ -518,14 +220,9 @@ if (typeof (Fabrik) === 'undefined') {
     /**
      * Load the google maps API once
      *
-     * @param bool
-     *            s Sensor
-     * @param mixed
-     *            cb Callback method function or function name (assinged to
-     *            window)
-     *
+     * @param {boolean} s Sensor
+     * @param {function|string} cb Callback method function or function name (assigned to window)
      */
-
     Fabrik.loadGoogleMap = function (s, cb) {
 
         var prefix = document.location.protocol === 'https:' ? 'https:' : 'http:';
@@ -589,8 +286,11 @@ if (typeof (Fabrik) === 'undefined') {
         Fabrik.cbQueue.google = [];
     };
 
-    /** Globally observe delete links * */
-
+    /**
+     * Globally observe delete links
+     * @param {event} e
+     * @param {Dom} target
+     */
     Fabrik.watchDelete = function (e, target) {
         var l, ref, r;
         r = e.target.getParent('.fabrik_row');
@@ -624,10 +324,11 @@ if (typeof (Fabrik) === 'undefined') {
 
                 l = Fabrik.blocks[ref];
                 // Deprecated in 3.1 // should only check all for floating tips
-                if (l.options.actionMethod === 'floating' && !this.bootstrapped) {
-                    l.form.getElements('input[type=checkbox][name*=id], input[type=checkbox][name=checkAll]').each(function (c) {
-                        c.checked = true;
-                    });
+                if (l !== undefined && l.options.actionMethod === 'floating' && !this.bootstrapped) {
+                    l.form.getElements('input[type=checkbox][name*=id], input[type=checkbox][name=checkAll]')
+                        .each(function (c) {
+                            c.checked = true;
+                        });
                 }
             }
         }
@@ -640,10 +341,8 @@ if (typeof (Fabrik) === 'undefined') {
     /**
      * Globally watch list edit links
      *
-     * @param event
-     *            e relayed click event
-     * @param domnode
-     *            target <a> link
+     * @param {event}  e relayed click event
+     * @param {Node} target <a> link
      *
      * @since 3.0.7
      */
@@ -654,10 +353,8 @@ if (typeof (Fabrik) === 'undefined') {
     /**
      * Globally watch list view links
      *
-     * @param event
-     *            e relayed click event
-     * @param domnode
-     *            target <a> link
+     * @param {event} e relayed click event
+     * @param {Node} target <a> link
      *
      * @since 3.0.7
      */
@@ -668,11 +365,9 @@ if (typeof (Fabrik) === 'undefined') {
 
     /**
      * Open a single details/form view
-     * @param view - details or form
-     * @param event
-     *            e relayed click event
-     * @param domnode
-     *            target <a> link
+     * @param {string} view - details or form
+     * @param {event} e relayed click event
+     * @param {Node} target <a> link
      */
     Fabrik.openSingleView = function (view, e, target) {
         var url, loadMethod, a, title,
@@ -746,11 +441,6 @@ if (typeof (Fabrik) === 'undefined') {
         Fabrik.getWindow(winOpts);
     };
 
-    Fabrik.form = function (ref, id, opts) {
-        var form = new FbForm(id, opts);
-        Fabrik.addBlock(ref, form);
-        return form;
-    };
 
     Fabrik.Array = {
         chunk: function (array, chunk) {
@@ -764,12 +454,6 @@ if (typeof (Fabrik) === 'undefined') {
     };
 
     window.fireEvent('fabrik.loaded');
-
-}
-
-// Allow fabrik to be loaded with :
-// require(['fab/fabrik'], function (Fabrik) {.....});
-define('fab/fabrik', [], function() {
-        return Fabrik;
-    }
-);
+    window.Fabrik = Fabrik;
+    return Fabrik;
+});

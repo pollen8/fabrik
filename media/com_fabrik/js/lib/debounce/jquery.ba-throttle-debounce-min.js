@@ -1,9 +1,11 @@
 /*
  * jQuery throttle / debounce - v1.1 - 3/7/2010
  * http://benalman.com/projects/jquery-throttle-debounce-plugin/
- * 
+ *
  * Copyright (c) 2010 "Cowboy" Ben Alman
  * Dual licensed under the MIT and GPL licenses.
  * http://benalman.com/about/license/
+ *
+ * ALTERED FOR FABRIK!!!
  */
-(function(b,c){var $=b.jQuery||b.Cowboy||(b.Cowboy={}),a;$.throttle=a=function(e,f,j,i){var h,d=0;if(typeof f!=="boolean"){i=j;j=f;f=c}function g(){var o=this,m=+new Date()-d,n=arguments;function l(){d=+new Date();j.apply(o,n)}function k(){h=c}if(i&&!h){l()}h&&clearTimeout(h);if(i===c&&m>e){l()}else{if(f!==true){h=setTimeout(i?k:l,i===c?e-m:e)}}}if($.guid){g.guid=j.guid=j.guid||$.guid++}return g};$.debounce=function(d,e,f){return f===c?a(d,e,false):a(d,f,e!==false)}})(this);
+require(["fab/fabrik"],function(n){!function(t,u){"$:nomunge";var e,o=t.jQuery||t.Cowboy||(t.Cowboy={});n.throttle=e=function(n,t,e,i){function r(){function o(){f=+new Date,e.apply(c,b)}function r(){a=u}var c=this,g=+new Date-f,b=arguments;i&&!a&&o(),a&&clearTimeout(a),i===u&&g>n?o():t!==!0&&(a=setTimeout(i?r:o,i===u?n-g:n))}var a,f=0;return"boolean"!=typeof t&&(i=e,e=t,t=u),o.guid&&(r.guid=e.guid=e.guid||o.guid++),r},n.debounce=function(n,t,o){return o===u?e(n,t,!1):e(n,o,t!==!1)}}(this)});

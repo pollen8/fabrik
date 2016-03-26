@@ -33,6 +33,7 @@ class FabrikViewListBase extends FabrikView
 
 	/**
 	 * Build CSV export options and JS code
+	 *
 	 * @param $opts
 	 * @param $model
 	 */
@@ -61,10 +62,10 @@ class FabrikViewListBase extends FabrikView
 		if ($opts->csvChoose)
 		{
 			$modalOpts['footer'] = 'export';
-			$layout = FabrikHelperHTML::getLayout('fabrik-button');
-			$layoutData = (object) array(
+			$layout              = FabrikHelperHTML::getLayout('fabrik-button');
+			$layoutData          = (object) array(
 				'name' => 'submit',
-				'class' =>  'exportCSVButton btn-primary',
+				'class' => 'exportCSVButton btn-primary',
 				'label' => JText::_('COM_FABRIK_EXPORT')
 			);
 
@@ -83,8 +84,10 @@ class FabrikViewListBase extends FabrikView
 	 */
 	protected function getManagementJS($data = array())
 	{
-		$input              = $this->app->input;
-		$itemId             = FabrikWorker::itemId();
+		$input  = $this->app->input;
+		$itemId = FabrikWorker::itemId();
+
+		/** @var FabrikFEModelList $model */
 		$model              = $this->getModel();
 		$params             = $model->getParams();
 		$item               = $model->getTable();
@@ -96,6 +99,7 @@ class FabrikViewListBase extends FabrikView
 		$ajax               = (int) $model->isAjax();
 		$ajaxLinks          = (bool) $params->get('list_ajax_links', $ajax);
 		$opts               = new stdClass;
+		$pluginManager      = FabrikWorker::getPluginManager();
 
 		if ($ajaxLinks)
 		{
@@ -139,17 +143,24 @@ class FabrikViewListBase extends FabrikView
 		$src  = FabrikHelperHTML::framework();
 		$shim = array();
 
-		$dep       = new stdClass;
-		$dep->deps = array('fab/fabrik', 'fab/listfilter', 'fab/advanced-search', 'fab/encoder');
-
-		if ($toggleCols)
-		{
-			$dep->deps[] = 'fab/list-toggle';
-		}
-
+		$dep              = new stdClass;
+		$dep->deps        = array();
 		$shim['fab/list'] = $dep;
+		$src[]            = FabrikHelperHTML::mediaFile('list.js');
+		$src[]            = FabrikHelperHTML::mediaFile('listfilter.js');
+		$src[]            = FabrikHelperHTML::mediaFile('list-plugin.js');
 		$src              = $model->getPluginJsClasses($src, $shim);
-		FabrikHelperHTML::addToFrameWork($src, 'media/com_fabrik/js/list');
+		$pluginManager->runPlugins('loadJavascriptClassName', $model, 'list');
+
+		$pluginManager->data = array_filter($pluginManager->data, function($v) {
+			return $v !== '';
+		});
+
+		$names            = array_merge(
+			array('Window', 'FbList', 'FbListFilter', 'ListPlugin'),
+			$pluginManager->data
+		);
+
 		$model->getCustomJsAction($src);
 
 		$tmpl       = $model->getTmpl();
@@ -275,6 +286,45 @@ class FabrikViewListBase extends FabrikView
 		// then we want to know the id of the window so we can set its showSpinner() method
 		$opts->winid = $input->get('winid', '');
 
+		$this->jsText();
+
+		$script[] = "window.addEvent('domready', function () {";
+		$script[] = "\tvar list = new FbList('$listId',";
+		$script[] = "\t" . json_encode($opts);
+		$script[] = "\t);";
+		$script[] = "\tFabrik.addBlock('list_{$listRef}', list);";
+
+		// Add in plugin objects
+		$pluginManager->runPlugins('onLoadJavascriptInstance', $model, 'list');
+		$aObjs = $pluginManager->data;
+
+		if (!empty($aObjs))
+		{
+			$script[] = "list.addPlugins([\n";
+			$script[] = "\t" . implode(",\n  ", $aObjs);
+			$script[] = "]);";
+		}
+
+		// @since 3.0 inserts content before the start of the list render (currently on f3 tmpl only)
+		$pluginManager->runPlugins('onGetContentBeforeList', $model, 'list');
+		$this->pluginBeforeList = $pluginManager->data;
+		$script[]               = $model->filterJs;
+
+		// Was separate but should now load in with the rest of the require js code
+		$model    = $this->getModel();
+		$script[] = $model->getElementJs($src);
+
+		// End domready wrapper
+		$script[] = '})';
+		$script   = implode("\n", $script);
+
+		FabrikHelperHTML::iniRequireJS($shim);
+		FabrikHelperHTML::script($src, $script, '-min.js',
+			$names);
+	}
+
+	private function jsText()
+	{
 		JText::script('COM_FABRIK_PREV');
 		JText::script('COM_FABRIK_SELECT_ROWS_FOR_DELETION');
 		JText::script('JYES');
@@ -310,43 +360,6 @@ class FabrikViewListBase extends FabrikView
 		JText::script('COM_FABRIK_LIST_SHORTCUTS_EDIT');
 		JText::script('COM_FABRIK_LIST_SHORTCUTS_DELETE');
 		JText::script('COM_FABRIK_LIST_SHORTCUTS_FILTER');
-
-		$script[] = "window.addEvent('domready', function () {";
-		$script[] = "\tvar list = new FbList('$listId',";
-		$script[] = "\t" . json_encode($opts);
-		$script[] = "\t);";
-		$script[] = "\tFabrik.addBlock('list_{$listRef}', list);";
-
-		// Add in plugin objects
-		$params        = $model->getParams();
-		$pluginManager = FabrikWorker::getPluginManager();
-		$c             = 0;
-
-		$pluginManager->runPlugins('onLoadJavascriptInstance', $model, 'list');
-		$aObjs = $pluginManager->data;
-
-		if (!empty($aObjs))
-		{
-			$script[] = "list.addPlugins([\n";
-			$script[] = "\t" . implode(",\n  ", $aObjs);
-			$script[] = "]);";
-		}
-
-		// @since 3.0 inserts content before the start of the list render (currently on f3 tmpl only)
-		$pluginManager->runPlugins('onGetContentBeforeList', $model, 'list');
-		$this->pluginBeforeList = $pluginManager->data;
-		$script[]               = $model->filterJs;
-
-		// Was separate but should now load in with the rest of the require js code
-		$model    = $this->getModel();
-		$script[] = $model->getElementJs($src);
-
-		// End domready wrapper
-		$script[] = '})';
-		$script   = implode("\n", $script);
-		FabrikHelperHTML::iniRequireJS($shim);
-		FabrikHelperHTML::script($src, $script);
-
 	}
 
 	/**

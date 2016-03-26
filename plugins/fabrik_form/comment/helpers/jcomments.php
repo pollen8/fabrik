@@ -114,7 +114,7 @@ class jc_com_fabrik_1 extends JCommentsPlugin
 
 		$user      = JFactory::getUser();
 		$info      = self::jcObjectInfo($objectId, $objectGroup, $language);
-		$jObjectId = $info->id;
+		$jObjectId = isset($info->id) ? $info->id : null;
 		$row       = JTable::getInstance('Objects', 'JCommentsTable');
 		$data      = array(
 			'access' => 1,

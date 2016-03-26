@@ -153,24 +153,4 @@ class PlgFabrik_ElementAttending extends PlgFabrik_Element
 
 		return array('FbAttending', $id, $opts);
 	}
-
-	/**
-	 * Get the class to manage the form element
-	 * to ensure that the file is loaded only once
-	 *
-	 * @param   array  &$srcs  Scripts previously loaded
-	 * @param   string $script Script to load once class has loaded
-	 * @param   array  &$shim  Dependant class names to load before loading the class - put in requirejs.config shim
-	 *
-	 * @return void
-	 */
-
-	public function formJavascriptClass(&$srcs, $script = '', &$shim = array())
-	{
-		$s                                   = new stdClass;
-		$s->deps                             = array('fab/elementlist');
-		$shim['element/attending/attending'] = $s;
-
-		parent::formJavascriptClass($srcs, $script, $shim);
-	}
 }

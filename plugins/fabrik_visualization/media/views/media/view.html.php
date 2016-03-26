@@ -52,7 +52,7 @@ class FabrikViewMedia extends JViewLegacy
 		}
 
 		FabrikHelperHTML::iniRequireJs($model->getShim());
-		FabrikHelperHTML::script($srcs, $js);
+		FabrikHelperHTML::script($srcs, $js, '-min.js', array('Window', 'FbListFilter'));
 
 		if (!$model->canView())
 		{

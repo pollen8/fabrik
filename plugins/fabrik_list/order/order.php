@@ -94,6 +94,16 @@ class PlgFabrik_ListOrder extends PlgFabrik_List
 	}
 
 	/**
+	 * Load the AMD module class name
+	 *
+	 * @return string
+	 */
+	public function loadJavascriptClassName_result()
+	{
+		return 'FbListOrder';
+	}
+
+	/**
 	 * Called via ajax when dragged row is dropped. Reorders records
 	 *
 	 * @return  void

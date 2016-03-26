@@ -14,7 +14,7 @@
 // Check to ensure this file is within the rest of the framework
 defined('JPATH_BASE') or die();
 
-require_once JPATH_LIBRARIES . '/joomla/document/html/html.php';
+file_exists(JPATH_LIBRARIES . '/joomla/document/html/html.php') && require_once JPATH_LIBRARIES . '/joomla/document/html/html.php';
 require_once JPATH_SITE . '/components/com_fabrik/helpers/pdf.php';
 
 /**

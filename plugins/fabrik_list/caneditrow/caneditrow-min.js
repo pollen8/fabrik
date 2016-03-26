@@ -1,2 +1,2 @@
 /*! Fabrik */
-var FbListCanEditRow=new Class({Extends:FbListPlugin,initialize:function(a){this.parent(a),Fabrik.addEvent("onCanEditRow",function(a,b){this.onCanEditRow(a,b)}.bind(this))},onCanEditRow:function(a,b){b=b[0],a.result=this.options.acl[b]}});
+define(["jquery","fab/list-plugin","fab/fabrik"],function(a,b,c){var d=new Class({Extends:b,initialize:function(a){this.parent(a),c.addEvent("onCanEditRow",function(a,b){this.onCanEditRow(a,b)}.bind(this))},onCanEditRow:function(a,b){b=b[0],a.result=this.options.acl[b]}});return d});

@@ -27,6 +27,12 @@ namespace Pop\Shipping\Adapter;
 abstract class AbstractAdapter implements AdapterInterface
 {
     /**
+     * Packages to ship
+     * @var \Pop\Shipping\PackageAdapter\AbstractAdapter[]
+     */
+    protected $packages = [];
+
+    /**
      * Response object
      * @var object
      */
@@ -55,6 +61,24 @@ abstract class AbstractAdapter implements AdapterInterface
      * @var array
      */
     protected $ratesExtended = [];
+
+    /**
+     * Total declared shipping value
+     * @var float
+     */
+    protected $declaredValue;
+
+    /**
+     * Charge on delivery value - how much the recipient needs to pay
+     * @var float
+     */
+    protected $CODValue = 0;
+
+    /**
+     * Insurance value
+     * @var float
+     */
+    protected $insuranceValue = 0;
 
     /**
      * Shipping info
@@ -171,13 +195,45 @@ abstract class AbstractAdapter implements AdapterInterface
 
     /**
      * Set the shipping info such as the transportation type
-     * @param $info
+     * @param stdClass $info
      *
-     * @return void
+     * @return mixed
      */
     public function shipmentInfo($info)
     {
         $this->shippingInfo = $info;
+    }
+
+    public function setInsurance($value)
+    {
+        $this->insuranceValue = $value;
+    }
+
+    /**
+     * Add a package
+     *
+     * @param \Pop\Shipping\PackageAdapter\AbstractAdapter $package
+     */
+    public function addPackage(\Pop\Shipping\PackageAdapter\AbstractAdapter $package)
+    {
+        $this->packages[] = $package;
+    }
+
+    public function totalWeight()
+    {
+        $weight = 0;
+
+        foreach ($this->packages as $package)
+        {
+            $weight += $package->getWeight();
+        }
+
+        return $weight;
+    }
+
+    public function declaredValue($value)
+    {
+        $this->declaredValue = $value;
     }
 
 }

@@ -153,4 +153,14 @@ class PlgFabrik_ListArticle extends PlgFabrik_List
 
 		return true;
 	}
+
+	/**
+	 * Load the AMD module class name
+	 *
+	 * @return string
+	 */
+	public function loadJavascriptClassName_result()
+	{
+		return 'FbListArticle';
+	}
 }
