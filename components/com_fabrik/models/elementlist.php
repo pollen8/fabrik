@@ -994,7 +994,11 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 	 */
 	public function formJavascriptClass(&$srcs, $script = '', &$shim = array())
 	{
-		$files = array('media/com_fabrik/js/element.js', 'media/com_fabrik/js/elementlist.js');
+		$mediaFolder = FabrikHelperHTML::getMediaFolder();
+		$files = array(
+			$mediaFolder . '/element.js',
+			$mediaFolder . '/elementlist.js'
+		);
 
 		foreach ($files as $file)
 		{

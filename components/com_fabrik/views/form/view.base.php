@@ -526,15 +526,18 @@ class FabrikViewFormBase extends FabrikView
 		$aLoadedElementPlugins = array();
 		$jsActions             = array();
 		$bKey                  = $model->jsKey();
+		$mediaFolder = FabrikHelperHTML::getMediaFolder();
 		$srcs                  = array_merge(
-			array('media/com_fabrik/js/tipsBootStrapMock.js',
-				'media/com_fabrik/js/form.js',
-				'media/com_fabrik/js/fabrik.js'),
+			array(
+				$mediaFolder . '/tipsBootStrapMock.js',
+				$mediaFolder . '/form.js',
+				$mediaFolder . '/fabrik.js'
+			),
 			FabrikHelperHTML::framework());
 		$shim                  = array();
 		$names                 = array('FloatingTips', 'FbForm', 'Fabrik');
 
-		$liveSiteReq[] = 'media/com_fabrik/js/tipsBootStrapMock.js';
+		$liveSiteReq[] = $mediaFolder . '/tipsBootStrapMock.js';
 
 		if (!defined('_JOS_FABRIK_FORMJS_INCLUDED'))
 		{
@@ -554,9 +557,9 @@ class FabrikViewFormBase extends FabrikView
 			$framework['fab/elementlist'] = $deps;
 
 			$srcs[] = 'media/com_fabrik/js/lib/form_placeholder/Form.Placeholder.js';
-			$srcs[] = 'media/com_fabrik/js/form.js';
-			$srcs[] = 'media/com_fabrik/js/form-submit.js';
-			$srcs[] = 'media/com_fabrik/js/element.js';
+			$srcs[] = $mediaFolder . '/form.js';
+			$srcs[] = $mediaFolder . '/form-submit.js';
+			$srcs[] = $mediaFolder . '/element.js';
 		}
 
 		$aWYSIWYGNames = array();
