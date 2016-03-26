@@ -675,7 +675,7 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 		}
 
 		$layout = FabrikHelperHTML::getLayout('fabrik-element-elementlist-details',
-			array(JPATH_COMPONENT . '/layouts/element'));
+			array(COM_FABRIK_FRONTEND . '/layouts/element'));
 
 		$displayData = array(
 			'uls' => $uls,
