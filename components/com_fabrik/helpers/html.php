@@ -980,6 +980,10 @@ EOD;
 		$tipJs[] = "\t\tFabrik.tips.attach('.fabrikTip');";
 		$tipJs[] = "\t});";
 
+		$tipJs[] = "\tFabrik.addEvent('fabrik.list.loaded', function () {";
+		$tipJs[] = "\t\tFabrik.tips.attach('.fabrikTip');";
+		$tipJs[] = "\t});";
+
 		// Load tips
 		//$tipJs[] = "\tFabrik.tips.attach('.fabrikTip');";
 
