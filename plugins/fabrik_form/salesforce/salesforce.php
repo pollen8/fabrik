@@ -81,6 +81,20 @@ class PlgFabrik_FormSalesforce extends PlgFabrik_Form
 		$userName = $params->get('salesforce_username');
 		$password = $params->get('salesforce_password');
 		$token = $params->get('salesforce_token');
+
+		if (empty($userName))
+		{
+			$config = JComponentHelper::getParams('com_fabrik');
+			$userName = $config->get('fabrik_salesforce_username', '');
+			$password = $config->get('fabrik_salesforce_password', '');
+			$token = $config->get('fabrik_salesforce_token', '');
+
+			if (empty($userName))
+			{
+				throw new Exception('No SalesForce credentials supplied!');
+			}
+		}
+
 		$updateObject = $params->get('salesforce_updateobject', 'Lead');
 		$loginResult = $client->login($userName, $password . $token);
 

@@ -43,12 +43,12 @@ plugins/search/*
 !plugins/search/fabrik
 plugins/system/*
 plugins/fabrik_list/sphera_php_events
+plugins/fabrik_list/download/libs
 !plugins/system/fabrik/
 !plugins/fabrik_element/
 plugins/fabrik_element/mytristate/
 !plugins/fabrik_form/
 plugins/fabrik_form/payments/
-
 plugins/fabrik_form/php/scripts/
 plugins/fabrik_form/caneditgroup/
 !plugins/fabrik_list/

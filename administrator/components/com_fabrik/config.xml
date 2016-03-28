@@ -32,6 +32,21 @@
 			label="COM_FABRIK_GOOGLE_BUSINESS_SIGNATURE_LABEL"
 			description="COM_FABRIK_GOOGLE_BUSINESS_SIGNATURE_DESC" />
 
+		<field name="fabrik_salesforce_username"
+		       type="text"
+		       label="COM_FABRIK_SALESFORCE_USERNAME_LABEL"
+		       description="COM_FABRIK_SALESFORCE_USERNAME_DESC" />
+
+		<field name="fabrik_salesforce_password"
+		       type="text"
+		       label="COM_FABRIK_SALESFORCE_PASSWORD_LABEL"
+		       description="COM_FABRIK_SALESFORCE_PASSWORD_DESC" />
+
+		<field name="fabrik_salesforce_token"
+		       type="text"
+		       label="COM_FABRIK_SALESFORCE_TOKEN_LABEL"
+		       description="COM_FABRIK_SALESFORCE_TOKEN_DESC" />
+
 		<field name="unpublish_clones"
 			type="radio"
 			default="0"
