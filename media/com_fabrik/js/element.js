@@ -474,12 +474,11 @@ define(['jquery'], function (jQuery) {
                 }
 
                 this._recreateTip(t, html);
-                try {
-                    t.data('popover').show();
-                } catch (e) {
-                    t.popover('show');
-                }
-
+            }
+            try {
+                t.data('popover').show();
+            } catch (e) {
+                t.popover('show');
             }
         },
 
