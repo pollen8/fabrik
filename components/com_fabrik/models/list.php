@@ -5532,7 +5532,7 @@ class FabrikFEModelList extends JModelForm
 		{
 			$elements = $this->getElements('filtername', false, false);
 			list($filterFields, $filterConditions, $filterValues, $filterAccess,
-				$filterEvals, $filterJoins, $filterGrouped, $listSearchType) = $this->prefilterSetting();
+				$filterEvals, $filterJoins, $filterGroupeds, $listSearchType) = $this->prefilterSetting();
 
 
 			for ($i = 0; $i < count($filterFields); $i++)
@@ -5554,7 +5554,7 @@ class FabrikFEModelList extends JModelForm
 				$searchType = ArrayHelper::getValue($listSearchType, $i, 'prefilter');
 				$selValue = FArrayHelper::getValue($filterValues, $i, '');
 				$filterEval = FArrayHelper::getValue($filterEvals, $i, false);
-				$filterGrouped = FArrayHelper::getValue($filterGrouped, $i, false);
+				$filterGrouped = FArrayHelper::getValue($filterGroupeds, $i, false);
 				$selAccess = $filterAccess[$i];
 
 				if (!$this->mustApplyFilter($selAccess))
