@@ -475,17 +475,21 @@ class FabrikFEModelForm extends FabModelForm
 		}
 
 		$isUserRowId = $this->isUserRowId();
+		$rowid = $this->getRowId();
 
 		// New form can we add?
-		if ($this->getRowId() === '' || $isUserRowId)
+		if ($rowid === '' || $isUserRowId)
 		{
-			// If they can edit can they also add
-			if ($listModel->canAdd())
+			if ($isUserRowId && !empty($rowid) && !$listModel->canEdit($data))
+			{
+				$ret = 1;
+			}
+			else if ($listModel->canAdd())
 			{
 				$ret = 3;
 			}
 			// $$$ hugh - corner case for rowid=-1, where they DON'T have add perms, but DO have edit perms
-			elseif ($isUserRowId && $listModel->canEdit($data))
+			else if ($isUserRowId && $listModel->canEdit($data))
 			{
 				$ret = 2;
 			}
