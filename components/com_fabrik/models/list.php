@@ -10448,7 +10448,7 @@ class FabrikFEModelList extends JModelForm
 							&& !isset($canRepeatsPkValues[$canRepeatsKeys[$shortKey]][$i])
 							&& isset($data[$i]->$canRepeatsKeys[$shortKey]))
 						{
-							$canRepeatsPkValues[$canRepeatsKeys[$shortKey]][$i] = $data[$i]->$canRepeatsKeys[$shortKey];
+							$canRepeatsPkValues[$canRepeatsKeys[$shortKey]][$i] = $data[$i]->{$canRepeatsKeys[$shortKey]};
 						}
 					}
 				}
