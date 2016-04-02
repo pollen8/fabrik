@@ -65,7 +65,7 @@ class FabrikViewCoverflow extends JViewLegacy
 		$tpl = $j3 ? 'bootstrap' : 'default';
 		$tmplpath = JPATH_ROOT . '/plugins/fabrik_visualization/coverflow/views/coverflow/tmpl/' . $tpl;
 		$this->_setPath('template', $tmplpath);
-		$srcs[] = 'media/com_fabrik/js/listfilter.js';
+		$srcs['FbListFilter'] = 'media/com_fabrik/js/listfilter.js';
 
 		// Assign something to Fabrik.blocks to ensure we can clear filters
 		$ref = $model->getJSRenderContext();
@@ -73,7 +73,7 @@ class FabrikViewCoverflow extends JViewLegacy
 		$js .= "\n" . "Fabrik.addBlock('$ref', $ref);";
 		$js .= $model->getFilterJs();
 		FabrikHelperHTML::iniRequireJs($model->getShim());
-		FabrikHelperHTML::script($srcs, $js, '-min.js', array('Window', 'FbListFilter'));
+		FabrikHelperHTML::script($srcs, $js);
 		echo parent::display();
 	}
 }

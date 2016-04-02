@@ -201,8 +201,8 @@ class FabrikViewFullcalendar extends JViewLegacy
 		$js    = implode("\n", $js);
 
 		$srcs   = FabrikHelperHTML::framework();
-		$srcs[] = 'media/com_fabrik/js/listfilter.js';
-		$srcs[] = 'plugins/fabrik_visualization/fullcalendar/fullcalendar.js';
+		$srcs['FbListFilter'] = 'media/com_fabrik/js/listfilter.js';
+		$srcs['fabrikFullcalendar'] = 'plugins/fabrik_visualization/fullcalendar/fullcalendar.js';
 
 		$shim = $model->getShim();
 
@@ -215,7 +215,7 @@ class FabrikViewFullcalendar extends JViewLegacy
 		);
 
 		FabrikHelperHTML::iniRequireJs($shim);
-		FabrikHelperHTML::script($srcs, $js, '-min.js', array('Window', 'FbListFilter'));
+		FabrikHelperHTML::script($srcs, $js);
 	}
 
 	/**

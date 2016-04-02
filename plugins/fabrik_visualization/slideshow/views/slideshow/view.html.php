@@ -60,11 +60,11 @@ class FabrikViewSlideshow extends JViewLegacy
 		$this->filterFormURL = $this->get('FilterFormURL');
 		$this->params = $model->getParams();
 		$this->containerId = $this->get('ContainerId');
-		$srcs[] = 'media/com_fabrik/js/listfilter.js';
+		$srcs['FbListFilter'] = 'media/com_fabrik/js/listfilter.js';
 
 		if ($this->get('RequiredFiltersFound'))
 		{
-			$srcs[] = 'components/com_fabrik/libs/slideshow2/js/slideshow.js';
+			$srcs['Slideshow2'] = 'components/com_fabrik/libs/slideshow2/js/slideshow.js';
 			$mode = $params->get('slideshow_viz_type', 1);
 
 			switch ($mode)
@@ -72,25 +72,25 @@ class FabrikViewSlideshow extends JViewLegacy
 				case 1:
 					break;
 				case 2:
-					$srcs[] = 'components/com_fabrik/libs/slideshow2/js/slideshow.kenburns.js';
+					$srcs['Kenburns'] = 'components/com_fabrik/libs/slideshow2/js/slideshow.kenburns.js';
 					break;
 				case 3:
-					$srcs[] = 'components/com_fabrik/libs/slideshow2/js/slideshow.push.js';
+					$srcs['Push'] = 'components/com_fabrik/libs/slideshow2/js/slideshow.push.js';
 					break;
 				case 4:
-					$srcs[] = 'components/com_fabrik/libs/slideshow2/js/slideshow.fold.js';
+					$srcs['Fold'] = 'components/com_fabrik/libs/slideshow2/js/slideshow.fold.js';
 					break;
 				default:
 					break;
 			}
 
 			JHTML::stylesheet('components/com_fabrik/libs/slideshow2/css/slideshow.css');
-			$srcs[] = 'plugins/fabrik_visualization/slideshow/slideshow.js';
+			$srcs['SlideShow'] = 'plugins/fabrik_visualization/slideshow/slideshow.js';
 		}
 
 		FabrikHelperHTML::slimbox();
 		FabrikHelperHTML::iniRequireJs($model->getShim());
-		FabrikHelperHTML::script($srcs, $this->js, '-min.js', array('Window', 'FbListFilter'));
+		FabrikHelperHTML::script($srcs, $this->js);
 
 		//FabrikHelperHTML::slimbox();
 

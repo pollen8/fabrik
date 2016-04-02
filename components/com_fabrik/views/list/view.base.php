@@ -143,23 +143,19 @@ class FabrikViewListBase extends FabrikView
 		$src  = FabrikHelperHTML::framework();
 		$shim = array();
 
-		$dep              = new stdClass;
-		$dep->deps        = array();
-		$shim['fab/list'] = $dep;
-		$src[]            = FabrikHelperHTML::mediaFile('list.js');
-		$src[]            = FabrikHelperHTML::mediaFile('listfilter.js');
-		$src[]            = FabrikHelperHTML::mediaFile('list-plugin.js');
-		$src              = $model->getPluginJsClasses($src, $shim);
+		$dep                 = new stdClass;
+		$dep->deps           = array();
+		$shim['fab/list']    = $dep;
+		$src['FbList']       = FabrikHelperHTML::mediaFile('list.js');
+		$src['FbListFilter'] = FabrikHelperHTML::mediaFile('listfilter.js');
+		$src['ListPlugin']   = FabrikHelperHTML::mediaFile('list-plugin.js');
+		$src                 = $model->getPluginJsClasses($src, $shim);
 		$pluginManager->runPlugins('loadJavascriptClassName', $model, 'list');
 
-		$pluginManager->data = array_filter($pluginManager->data, function($v) {
+		$pluginManager->data = array_filter($pluginManager->data, function ($v)
+		{
 			return $v !== '';
 		});
-
-		$names            = array_merge(
-			array('Window', 'FbList', 'FbListFilter', 'ListPlugin'),
-			$pluginManager->data
-		);
 
 		$model->getCustomJsAction($src);
 
@@ -173,7 +169,7 @@ class FabrikViewListBase extends FabrikView
 
 		if (JFile::exists($aJsPath))
 		{
-			$src[] = 'components/com_fabrik/views/list/tmpl/' . $tmpl . '/javascript.js';
+			$src['CustomJs'] = 'components/com_fabrik/views/list/tmpl/' . $tmpl . '/javascript.js';
 		}
 
 		$origRows   = $this->rows;
@@ -319,8 +315,7 @@ class FabrikViewListBase extends FabrikView
 		$script   = implode("\n", $script);
 
 		FabrikHelperHTML::iniRequireJS($shim);
-		FabrikHelperHTML::script($src, $script, '-min.js',
-			$names);
+		FabrikHelperHTML::script($src, $script);
 	}
 
 	private function jsText()

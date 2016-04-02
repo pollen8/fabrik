@@ -65,11 +65,11 @@ class FabrikViewApprovals extends JViewLegacy
 		$js .= $model->getFilterJs();
 
 		$srcs = FabrikHelperHTML::framework();
-		$srcs[] = 'media/com_fabrik/js/listfilter.js';
-		$srcs[] = 'plugins/fabrik_visualization/approvals/approvals.js';
+		$srcs['FbListFilter'] = 'media/com_fabrik/js/listfilter.js';
+		$srcs['Approvals'] = 'plugins/fabrik_visualization/approvals/approvals.js';
 
 		FabrikHelperHTML::iniRequireJs($model->getShim());
-		FabrikHelperHTML::script($srcs, $js, '-min.js', array('Window', 'FbListFilter'));
+		FabrikHelperHTML::script($srcs, $js);
 
 		$text = $this->loadTemplate();
 		FabrikHelperHTML::runContentPlugins($text);

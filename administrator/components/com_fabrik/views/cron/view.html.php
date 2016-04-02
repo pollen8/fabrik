@@ -75,10 +75,10 @@ class FabrikAdminViewCron extends JViewLegacy
 		FabrikAdminHelper::setViewLayout($this);
 
 		$srcs = FabrikHelperHTML::framework();
-		$srcs[] = FabrikHelperHTML::mediaFile('fabrik.js');
-		$srcs[] = 'administrator/components/com_fabrik/views/namespace.js';
-		$srcs[] = 'administrator/components/com_fabrik/views/pluginmanager.js';
-		$srcs[] = 'administrator/components/com_fabrik/views/cron/admincron.js';
+		$srcs['Fabrik'] = FabrikHelperHTML::mediaFile('fabrik.js');
+		$srcs['Namespace'] = 'administrator/components/com_fabrik/views/namespace.js';
+		$srcs['PluginManager'] = 'administrator/components/com_fabrik/views/pluginmanager.js';
+		$srcs['CronAdmin'] = 'administrator/components/com_fabrik/views/cron/admincron.js';
 
 		$shim = array();
 		$dep = new stdClass;
@@ -93,8 +93,7 @@ class FabrikAdminViewCron extends JViewLegacy
 		$js[] = "\t\tFabrik.controller = new CronAdmin(" . json_encode($opts) . ");";
 		$js[] = "\t})";
 		FabrikHelperHTML::iniRequireJS($shim);
-		FabrikHelperHTML::script($srcs, implode("\n", $js), '-min.js',
-			array('Window', 'Fabrik', 'Namespace', 'PluginManager', 'CronAdmin'));
+		FabrikHelperHTML::script($srcs, implode("\n", $js));
 
 		parent::display($tpl);
 	}
