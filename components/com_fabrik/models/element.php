@@ -2869,8 +2869,8 @@ class PlgFabrik_Element extends FabrikPlugin
 		 * element on the form.
 		 * $element = $this->getParent();
 		 */
-		$element         = $this->getElement();
-		$w               = new FabrikWorker;
+		$element = $this->getElement();
+		$w       = new FabrikWorker;
 
 		if (array_key_exists($element->id, $allJsActions))
 		{
@@ -4380,17 +4380,17 @@ class PlgFabrik_Element extends FabrikPlugin
 					$condition = 'IN';
 					if ($eval != FABRIKFILTER_QUERY)
 					{
-						$value     = FabrikString::safeQuote($value, true);
+						$value = FabrikString::safeQuote($value, true);
 					}
-					$value     = '(' . $value . ')';
+					$value = '(' . $value . ')';
 					break;
 				case 'not_in':
 					$condition = 'NOT IN';
 					if ($eval != FABRIKFILTER_QUERY)
 					{
-						$value     = FabrikString::safeQuote($value, true);
+						$value = FabrikString::safeQuote($value, true);
 					}
-					$value     = '(' . $value . ')';
+					$value = '(' . $value . ')';
 					break;
 			}
 
@@ -5599,8 +5599,8 @@ class PlgFabrik_Element extends FabrikPlugin
 	 */
 	public function formJavascriptClass(&$srcs, $script = '', &$shim = array())
 	{
-		$name    = $this->getElement()->plugin;
-		$ext     = FabrikHelperHTML::isDebug() ? '.js' : '-min.js';
+		$name   = $this->getElement()->plugin;
+		$ext    = FabrikHelperHTML::isDebug() ? '.js' : '-min.js';
 		$formId = $this->getFormModel()->getId();
 		static $elementClasses;
 
@@ -5621,7 +5621,7 @@ class PlgFabrik_Element extends FabrikPlugin
 
 		if (empty($elementClasses[$formId][$script]))
 		{
-			$srcs[]                           = $script;
+			$srcs['Element' . ucfirst($name)] = $script;
 			$elementClasses[$formId][$script] = 1;
 		}
 	}

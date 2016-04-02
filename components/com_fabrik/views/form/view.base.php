@@ -529,13 +529,12 @@ class FabrikViewFormBase extends FabrikView
 		$mediaFolder = FabrikHelperHTML::getMediaFolder();
 		$srcs                  = array_merge(
 			array(
-				$mediaFolder . '/tipsBootStrapMock.js',
-				$mediaFolder . '/form.js',
-				$mediaFolder . '/fabrik.js'
+				'FloatingTips' => $mediaFolder . '/tipsBootStrapMock.js',
+				'FbForm' => $mediaFolder . '/form.js',
+				'Fabrik' => $mediaFolder . '/fabrik.js'
 			),
 			FabrikHelperHTML::framework());
 		$shim                  = array();
-		$names                 = array('FloatingTips', 'FbForm', 'Fabrik');
 
 		$liveSiteReq[] = $mediaFolder . '/tipsBootStrapMock.js';
 
@@ -556,10 +555,9 @@ class FabrikViewFormBase extends FabrikView
 			$deps->deps                   = array('fab/fabrik', 'fab/element', 'fab/form-submit');
 			$framework['fab/elementlist'] = $deps;
 
-			$srcs[] = 'media/com_fabrik/js/lib/form_placeholder/Form.Placeholder.js';
-			$srcs[] = $mediaFolder . '/form.js';
-			$srcs[] = $mediaFolder . '/form-submit.js';
-			$srcs[] = $mediaFolder . '/element.js';
+			$srcs['Placeholder'] = 'media/com_fabrik/js/lib/form_placeholder/Form.Placeholder.js';
+			$srcs['FormSubmit'] = $mediaFolder . '/form-submit.js';
+			$srcs['Element'] = $mediaFolder . '/element.js';
 		}
 
 		$aWYSIWYGNames = array();
@@ -730,8 +728,8 @@ class FabrikViewFormBase extends FabrikView
 
 		// 3.1 call form js plugin code within main require method
 		$srcs = array_merge($srcs, $model->formPluginShim);
-		$str .= $model->formPluginJS;
-		FabrikHelperHTML::script($srcs, $str, '-min.js', $names);
+		$str .= implode("\n", $model->formPluginJS);
+		FabrikHelperHTML::script($srcs, $str, '-min.js');
 	}
 
 	/**

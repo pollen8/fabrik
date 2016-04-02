@@ -457,8 +457,8 @@ class PlgFabrik_Form extends FabrikPlugin
 
 		if (empty($jsClasses[$script]))
 		{
-			$formModel->formPluginShim[] = $script;
-			$jsClasses[$script]          = 1;
+			$formModel->formPluginShim[ucfirst($name)] = $script;
+			$jsClasses[$script]                        = 1;
 		}
 	}
 
@@ -549,7 +549,8 @@ class PlgFabrik_Form extends FabrikPlugin
 
 	/**
 	 * Replace a plugin parameter value with data parsed via parseMessageForPlaceholder
-	 * @param string $pName  Parameter name
+	 *
+	 * @param string $pName Parameter name
 	 *
 	 * @return string
 	 */

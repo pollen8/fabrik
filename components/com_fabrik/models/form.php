@@ -269,9 +269,9 @@ class FabrikFEModelForm extends FabModelForm
 	 *
 	 * @since 3.1b
 	 *
-	 * @var string
+	 * @var array
 	 */
-	public $formPluginJS = '';
+	public $formPluginJS = array();
 
 	/**
 	 * Form plugin files to load
