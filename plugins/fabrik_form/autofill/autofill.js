@@ -199,7 +199,7 @@ define(['jquery', 'fab/fabrik'], function (jQuery, Fabrik) {
 				url     : 'index.php',
 				method  : 'post',
 				dataType: 'json',
-				'data'       : {
+				'data'  : {
 					'option'               : 'com_fabrik',
 					'format'               : 'raw',
 					'task'                 : 'plugin.pluginAjax',
@@ -217,24 +217,22 @@ define(['jquery', 'fab/fabrik'], function (jQuery, Fabrik) {
 
 			}).always(function () {
 					Fabrik.loader.stop('form_' + self.options.formid);
-			})
-			.fail(function(jqXHR, textStatus, errorThrown) {
-				window.alert(textStatus);
-			})
-			.done(function(json) {
-				debugger;
-				self.updateForm(json);
-			});
+				})
+				.fail(function (jqXHR, textStatus, errorThrown) {
+					window.alert(textStatus);
+				})
+				.done(function (json) {
+					self.updateForm(json);
+				});
 		},
 
 		// Update the form from the ajax request returned data
 		updateForm: function (json) {
-			debugger;
 			this.json = json;
 			Fabrik.fireEvent('fabrik.form.autofill.update.start', [this, json]);
 
 			var repeatNum = this.element.getRepeatNum(),
-				self = this, key, val, k, k2, origKey;
+				key, val, k2, origKey;
 
 			if (this.json.length === 0) {
 				window.alert(Joomla.JText._('PLG_FORM_AUTOFILL_NORECORDS_FOUND'));
@@ -248,37 +246,7 @@ define(['jquery', 'fab/fabrik'], function (jQuery, Fabrik) {
 						key = key.replace('_raw', '');
 						origKey = key;
 						if (!this.tryUpdate(key, val)) {
-							/**
-							 * If the val is an object, then the target element is intended to be a repeat.
-							 * So whip round the val's, seeing if we have a matching _X repeat of the target.
-							 * For now, this is just a simple minded attempt to fill out existing repeats, we're
-							 * not going to create new groups.  Implementing this for a specific client setup.  Maybe
-							 * come back later and make this smarter.
-							 */
-							if (typeof val === 'object') {
-								for (k in val) {
-									if (val.hasOwnProperty(k)) {
-										k2 = key + '_' + k;
-										this.tryUpdate(k2, val[k]);
-									}
-								}
-							}
-							else {
-								if (repeatNum) {
-									key += '_' + repeatNum;
-								} else {
-									key += '_0';
-								}
-								if (!this.tryUpdate(key, val)) {
-									// See if the user has used simply the full element name rather than the full element name with
-									// the join string
-									key = 'join___' + this.element.options.joinid + '___' + key;
-
-									// Perhaps element is in main group and update element in repeat group :S
-									if (!this.tryUpdate(origKey, val, true)) {
-									}
-								}
-							}
+							key = this.updateRepeats(key, val, repeatNum, origKey);
 						}
 					}
 				}
@@ -290,6 +258,41 @@ define(['jquery', 'fab/fabrik'], function (jQuery, Fabrik) {
 		},
 
 		/**
+		 * If the val is an object, then the target element is intended to be a repeat.
+		 * So whip round the val's, seeing if we have a matching _X repeat of the target.
+		 * For now, this is just a simple minded attempt to fill out existing repeats, we're
+		 * not going to create new groups.  Implementing this for a specific client setup.  Maybe
+		 * come back later and make this smarter.
+		 * @param {string} key
+		 * @param {object} val
+		 * @param {number} repeatNum
+		 * @param {string} origKey
+		 * @returns {string}
+		 */
+		updateRepeats: function (key, val, repeatNum, origKey) {
+			var k, k2;
+			if (typeof val === 'object') {
+				for (k in val) {
+					if (val.hasOwnProperty(k)) {
+						k2 = key + '_' + k;
+						this.tryUpdate(k2, val[k]);
+					}
+				}
+			} else {
+				key += repeatNum ? '_' + repeatNum : '_0';
+				if (!this.tryUpdate(key, val)) {
+					// See if the user has used simply the full element name rather than the full element name with
+					// the join string
+					key = 'join___' + this.element.options.joinid + '___' + key;
+
+					// Perhaps element is in main group and update element in repeat group :S
+					this.tryUpdate(origKey, val, true);
+				}
+			}
+
+			return key;
+		},
+		/**
 		 * Try to update an element
 		 *
 		 * @param   {string}  key         Form.formElements key to update
@@ -298,14 +301,15 @@ define(['jquery', 'fab/fabrik'], function (jQuery, Fabrik) {
 		 *
 		 * @return  {boolean}  True if update occurred
 		 */
-		tryUpdate: function (key, val, looseMatch) {
+		tryUpdate    : function (key, val, looseMatch) {
+			var m, self = this, el;
 			looseMatch = looseMatch ? true : false;
 			if (!looseMatch) {
-				var el = this.form.formElements.get(key);
-				if (typeOf(el) !== 'null') {
+				el = this.form.elements[key];
+				if (el !== undefined) {
 					// $$$ hugh - nasty little hack to get auto-complete joins to properly update, if we don't set
 					// el.activePopUp, the displayed label value won't get updated properly in the join's update() processing
-					if (typeOf(el.options.displayType !== 'null') && el.options.displayType === 'auto-complete') {
+					if (el.options.displayType === 'auto-complete') {
 						el.activePopUp = true;
 					}
 					el.update(val);
@@ -317,25 +321,25 @@ define(['jquery', 'fab/fabrik'], function (jQuery, Fabrik) {
 					return true;
 				}
 			} else {
-				var m = Object.keys(this.form.formElements).filter(function (k, v) {
+				m = Object.keys(this.form.formElements).filter(function (k, v) {
 					return k.contains(key);
 				});
 				if (m.length > 0) {
 					m.each(function (key) {
-						var el = this.form.formElements.get(key);
+						el = self.form.elements[key];
 						el.update(val);
 
-						if (el.baseElementId !== this.element.baseElementId) {
-							// Trigger change events to automatcially fire any other chained auto-fill form plugins
+						if (el.baseElementId !== self.element.baseElementId) {
+							// Trigger change events to automatically fire any other chained auto-fill form plugins
 							el.element.fireEvent(el.getBlurEvent(), new Event.Mock(el.element, el.getBlurEvent()));
 						}
-					}.bind(this));
+					});
 					return true;
 				}
 			}
 			return false;
 		}
-
 	});
+
 	return Autofill;
 });
