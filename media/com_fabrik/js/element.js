@@ -438,7 +438,7 @@ define(['jquery'], function (jQuery) {
          * @return array of tips
          */
         tips: function () {
-            return Fabrik.tips.elements.filter(function (index, t) {
+            return jQuery(Fabrik.tips.elements).filter(function (index, t) {
                 if (t === this.getContainer() || t.getParent() === this.getContainer()) {
                     return true;
                 }
@@ -474,12 +474,11 @@ define(['jquery'], function (jQuery) {
                 }
 
                 this._recreateTip(t, html);
-                try {
-                    t.data('popover').show();
-                } catch (e) {
-                    t.popover('show');
-                }
-
+            }
+            try {
+                t.data('popover').show();
+            } catch (e) {
+                t.popover('show');
             }
         },
 

@@ -2562,6 +2562,13 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 					}
 				}
 			}
+			else
+			{
+				if (!$this->_rawFilter)
+				{
+					$key = $this->_db->qn($params->get('join_db_name')) . '.' . $this->_db->qn($this->getLabelParamVal());
+				}
+			}
 
 			$key = 'LOWER(' . $key . ')';
 			$str = "$key $condition $value";

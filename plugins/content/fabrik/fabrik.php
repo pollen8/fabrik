@@ -391,7 +391,8 @@ class PlgContentFabrik extends JPlugin
 					$element = $element . '_raw';
 				}
 				// $$$ hugh - need to pass all row data, or calc elements that use {placeholders} won't work
-				$defaultData = is_object($row) ? get_object_vars($row) : $row;
+				//$defaultData = is_object($row) ? get_object_vars($row) : $row;
+				$defaultData = is_object($row) ? FArrayHelper::fromObject($row, true) : $row;
 
 				/* $$$ hugh - if we don't do this, our passed data gets blown away when render() merges the form data
 				 * not sure why, but apparently if you do $foo =& $bar and $bar is NULL ... $foo ends up NULL

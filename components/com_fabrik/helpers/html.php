@@ -817,6 +817,16 @@ EOD;
 	}
 
 	/**
+	 * Get the media folder
+	 *
+	 * @return  string  media folder
+	 */
+	public static function getMediaFolder()
+	{
+		return self::isDebug() ? 'media/com_fabrik/js' : 'media/com_fabrik/js/dist';
+	}
+
+	/**
 	 * Load Fabrik's framework (js and base css file)
 	 *
 	 * @return  array  Framework js files
@@ -836,7 +846,7 @@ EOD;
 			$bootstrapped = in_array($app->getTemplate(), array('bootstrap', 'fabrik4')) || $version->RELEASE > 2.5;
 
 			//$ext = self::isDebug() ? '.js' : '-min.js';
-			$mediaFolder = self::isDebug() ? 'media/com_fabrik/js' : 'media/com_fabrik/js/dist';
+			$mediaFolder = self::getMediaFolder();
 			$src = array();
 			JHtml::_('behavior.framework', true);
 
@@ -967,6 +977,10 @@ EOD;
 		// Reload tips if a form is loaded (e.g. a list view with ajax links on which loads a form in a popup)
 		// see: https://github.com/Fabrik/fabrik/issues/1394
 		$tipJs[] = "\tFabrik.addEvent('fabrik.form.loaded', function () {";
+		$tipJs[] = "\t\tFabrik.tips.attach('.fabrikTip');";
+		$tipJs[] = "\t});";
+
+		$tipJs[] = "\tFabrik.addEvent('fabrik.list.loaded', function () {";
 		$tipJs[] = "\t\tFabrik.tips.attach('.fabrikTip');";
 		$tipJs[] = "\t});";
 

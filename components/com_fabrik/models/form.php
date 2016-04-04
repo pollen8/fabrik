@@ -339,6 +339,13 @@ class FabrikFEModelForm extends FabModelForm
 	public $formErrorMsg = null;
 
 	/**
+	 * Form sessionData
+	 *
+	 * @var array
+	 */
+	public $sessionData = null;
+
+	/**
 	 * Constructor
 	 *
 	 * @param   array  $config  An array of configuration options (name, state, dbo, table_path, ignore_request).
@@ -467,18 +474,20 @@ class FabrikFEModelForm extends FabModelForm
 			$ret = 1;
 		}
 
-		$isUserRowId = $this->isUserRowId();
+		//$isUserRowId = $this->isUserRowId();
 
-		// New form can we add?
-		if ($this->getRowId() === '' || $isUserRowId)
+		/* New form can we add?
+		 *
+		 * NOTE - testing to see if $data exists rather than looking at rowid to decide if editing, as when using
+		 * rowid=-1, things get funky, as rowid is never empty, even for new form, as it's set to user id
+		 */
+		if (empty($data) || !array_key_exists('__pk_val', $data))
 		{
-			// If they can edit can they also add
 			if ($listModel->canAdd())
 			{
 				$ret = 3;
 			}
-			// $$$ hugh - corner case for rowid=-1, where they DON'T have add perms, but DO have edit perms
-			elseif ($isUserRowId && $listModel->canEdit($data))
+			else if ($listModel->canEdit($data))
 			{
 				$ret = 2;
 			}
@@ -3130,7 +3139,8 @@ class FabrikFEModelForm extends FabModelForm
 
 						$bits = $data;
 						$bits = array_merge($tmp_data, $bits);
-						$data = array(FArrayHelper::toObject($bits));
+						//$data = array(FArrayHelper::toObject($bits));
+						$data = $bits;
 						FabrikHelperHTML::debug($data, 'form:getData from session (form not in Mambot and no errors');
 					}
 				}
@@ -3444,6 +3454,11 @@ class FabrikFEModelForm extends FabModelForm
 	 */
 	protected function getSessionData()
 	{
+		if (isset($this->sessionData))
+		{
+			return $this->sessionData;
+		}
+
 		$params = $this->getParams();
 		$this->sessionModel = JModelLegacy::getInstance('Formsession', 'FabrikFEModel');
 		$this->sessionModel->setFormId($this->getId());
@@ -3458,7 +3473,9 @@ class FabrikFEModelForm extends FabModelForm
 
 		$this->sessionModel->useCookie($useCookie);
 
-		return $this->sessionModel->load();
+		$this->sessionData = $this->sessionModel->load();
+
+		return $this->sessionData;
 	}
 
 	/**
