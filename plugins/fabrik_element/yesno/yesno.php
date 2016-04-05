@@ -8,11 +8,19 @@
  * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
+namespace Fabrik\Plugins\Element;
+
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-require_once JPATH_SITE . '/components/com_fabrik/models/element.php';
-require_once JPATH_SITE . '/plugins/fabrik_element/radiobutton/radiobutton.php';
+use Fabrik\Helpers\Html;
+use \FArrayHelper;
+use \JHtml;
+use \stdClass;
+use \FabrikWorker;
+use \FabrikString;
+use \FabrikLayoutFile;
+use \FText;
 
 /**
  * Plugin element to yes/no radio options - render as tick/cross in list view
@@ -21,7 +29,7 @@ require_once JPATH_SITE . '/plugins/fabrik_element/radiobutton/radiobutton.php';
  * @subpackage  Fabrik.element.yesno
  * @since       3.0
  */
-class PlgFabrik_ElementYesno extends PlgFabrik_ElementRadiobutton
+class Yesno extends Radiobutton
 {
 	/**
 	 * Db table field type
@@ -66,7 +74,7 @@ class PlgFabrik_ElementYesno extends PlgFabrik_ElementRadiobutton
 	 */
 	public function renderListData($data, stdClass &$thisRow, $opts = array())
 	{
-		FabrikHelperHTML::addPath(COM_FABRIK_BASE . 'plugins/fabrik_element/yesno/images/', 'image', 'list', false);
+		Html::addPath(COM_FABRIK_BASE . 'plugins/fabrik_element/yesno/images/', 'image', 'list', false);
 
 		// Check if the data is in csv format, if so then the element is a multi drop down
 		$raw = $this->getFullName(true, false) . '_raw';
@@ -101,7 +109,7 @@ class PlgFabrik_ElementYesno extends PlgFabrik_ElementRadiobutton
 	 */
 	public function renderListData_pdf($data, $thisRow)
 	{
-		FabrikHelperHTML::addPath(COM_FABRIK_BASE . 'plugins/fabrik_element/yesno/images/', 'image', 'list', false);
+		Html::addPath(COM_FABRIK_BASE . 'plugins/fabrik_element/yesno/images/', 'image', 'list', false);
 		$raw = $this->getFullName() . '_raw';
 		$data = $thisRow->$raw;
 		$j3 = FabrikWorker::j3();
@@ -110,13 +118,13 @@ class PlgFabrik_ElementYesno extends PlgFabrik_ElementRadiobutton
 		{
 			$icon = $j3 ? 'checkmark.png' : '1_8bit.png';
 
-			return FabrikHelperHTML::image($icon, 'list', @$this->tmpl, array('alt' => FText::_('JYES')));
+			return Html::image($icon, 'list', @$this->tmpl, array('alt' => FText::_('JYES')));
 		}
 		else
 		{
 			$icon = $j3 ? 'remove.png' : '0_8bit.png';
 
-			return FabrikHelperHTML::image($icon, 'list', @$this->tmpl, array('alt' => FText::_('JNO')));
+			return Html::image($icon, 'list', @$this->tmpl, array('alt' => FText::_('JNO')));
 		}
 	}
 
@@ -401,7 +409,7 @@ class PlgFabrik_ElementYesno extends PlgFabrik_ElementRadiobutton
 	{
 		if (!parent::onStoreRow($data, $repeatCounter))
 		{
-			return false;
+			return;
 		}
 
 		$value = $this->getValue($data, $repeatCounter);

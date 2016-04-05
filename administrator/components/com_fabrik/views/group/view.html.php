@@ -11,6 +11,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Fabrik\Helpers\Html;
+
 jimport('joomla.application.component.view');
 
 /**
@@ -68,9 +70,9 @@ class FabrikAdminViewGroup extends JViewLegacy
 		$this->addToolbar();
 		FabrikAdminHelper::setViewLayout($this);
 
-		$srcs = FabrikHelperHTML::framework();
-		FabrikHelperHTML::iniRequireJS();
-		FabrikHelperHTML::script($srcs);
+		$srcs = Html::framework();
+		Html::iniRequireJS();
+		Html::script($srcs);
 
 		parent::display($tpl);
 	}

@@ -11,6 +11,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Fabrik\Helpers\Html;
+
 //@TODO if we ever get calendars inside packages then the ids will need to be
 // Replaced with classes contained within a distinct id
 
@@ -50,7 +52,7 @@ foreach ($this->rows as $row)
 					<a href="<?php echo $row->view ?>">
 					<a class="fabrikTip" opts="{position:'right'}" title="<?php echo FabrikString::truncate($row->content,
 		array('tip' => false, 'wordcount' => 200)) ?>" >
-						<?php echo FabrikHelperHTML::icon('icon-search'); ?>
+						<?php echo Html::icon('icon-search'); ?>
 					</a></td>
 					<td>
 						<div class="btn-group">
@@ -60,12 +62,12 @@ foreach ($this->rows as $row)
 							<ul class="dropdown-menu">
 								<li>
 									<a class="approve" href="<?php echo $url . 'approve'?>">
-										<?php echo FabrikHelperHTML::icon('icon-ok'); ?> <span>approve</span>
+										<?php echo Html::icon('icon-ok'); ?> <span>approve</span>
 									</a>
 								</li>
 								<li>
 									<a class="disapprove"  href="i<?php echo $url . 'disapprove'?>">
-										<?php echo FabrikHelperHTML::icon('icon-remove'); ?> <span>disapprove</span>
+										<?php echo Html::icon('icon-remove'); ?> <span>disapprove</span>
 									</a>
 								</li>
 							</ul>

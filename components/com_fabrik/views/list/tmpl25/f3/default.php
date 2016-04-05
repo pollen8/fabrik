@@ -11,9 +11,11 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-FabrikHelperHTML::script('media/com_fabrik/js/lib/art.js');
-FabrikHelperHTML::script('media/com_fabrik/js/icons.js');
-FabrikHelperHTML::script('media/com_fabrik/js/icongen.js');
+use Fabrik\Helpers\Html;
+
+Html::script('media/com_fabrik/js/lib/art.js');
+Html::script('media/com_fabrik/js/icons.js');
+Html::script('media/com_fabrik/js/icongen.js');
 
 $pageClass = $this->params->get('pageclass_sfx', '');
 $filter = JFilterInput::getInstance(array('p'), array(), 1);
@@ -24,7 +26,7 @@ $script = "
 window.addEvent('fabrik.loaded', function() {
 	new FabrikGrid($opts);
 });";
-FabrikHelperHTML::addScriptDeclaration($script)
+Html::addScriptDeclaration($script)
 ?>
 
 <div class="emptyDataMessage" style="<?php echo $this->emptyStyle?>"><?php echo $this->emptyDataMessage; ?></div>

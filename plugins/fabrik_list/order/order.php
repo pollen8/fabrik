@@ -11,6 +11,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Fabrik\Helpers\Html;
+
 // Require the abstract plugin class
 require_once COM_FABRIK_FRONTEND . '/models/plugin-list.php';
 
@@ -50,7 +52,7 @@ class PlgFabrik_ListOrder extends PlgFabrik_List
 	 */
 	public function loadJavascriptClass_result()
 	{
-		$ext = FabrikHelperHTML::isDebug() ? '.js' : '-min.js';
+		$ext = Html::isDebug() ? '.js' : '-min.js';
 		$src = parent::loadJavascriptClass_result();
 
 		return array($src, 'media/com_fabrik/js/element' . $ext);

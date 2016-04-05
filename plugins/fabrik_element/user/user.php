@@ -8,19 +8,28 @@
  * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
+namespace Fabrik\Plugins\Element;
+
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-require_once JPATH_SITE . '/plugins/fabrik_element/databasejoin/databasejoin.php';
+use \FArrayHelper;
+use \JHtml;
+use \stdClass;
+use \FabrikWorker;
+use \FabrikString;
+use \JFilterInput;
+use \JFactory;
+use \FText;
 
 /**
- * Plugin element to render dropdown list to select user
+ * Plugin element to render drop-down list to select user
  *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.element.user
  * @since       3.0
  */
-class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
+class User extends Databasejoin
 {
 	/**
 	 * Db table field type
@@ -218,7 +227,7 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 		 */
 		if ((int) $params->get('user_use_social_plugin_profile', 0))
 		{
-			if ($input->getString('rowid', '', 'string') == '' && $input->get('task') !== 'doimport')
+			if ($input->getString('rowid', '') == '' && $input->get('task') !== 'doimport')
 			{
 				$context = 'fabrik.plugin.profile_id';
 
@@ -356,7 +365,7 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 
 		// $$$ rob also check we aren't importing from CSV - if we are ignore
 		//if ($input->getString('rowid', '', 'string') == '' && $input->get('task') !== 'doimport')
-		if ($input->getString('rowid', '', 'string') == '' && !$this->getListModel()->importingCSV)
+		if ($input->getString('rowid', '') == '' && !$this->getListModel()->importingCSV)
 		{
 			// $$$ rob if we cant use the element or its hidden force the use of current logged in user
 			if (!$this->canUse() || $this->getElement()->hidden == 1)
@@ -432,7 +441,7 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 							$query = $db->getQuery(true)
 								->select($db->qn('id'))
 								->from($db->qn('#__users'))
-								->where($db->qn('email') . ' = ' . $db-- > q($userId));
+								->where($db->qn('email') . ' = ' . $db->q($userId));
 							$db->setQuery($query, 0, 1);
 
 							$newUserId = (int) $db->loadResult();
@@ -590,7 +599,7 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 
 		if (!$this->canEncrypt() && !empty($params->encrypt))
 		{
-			throw new InvalidArgumentException('The encryption option is only available for field and text area plugins');
+			throw new \InvalidArgumentException('The encryption option is only available for field and text area plugins');
 		}
 
 		$label = (isset($params->my_table_data) && $params->my_table_data !== '') ? $params->my_table_data : 'username';
@@ -694,6 +703,7 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 	 */
 	public function getFilter($counter = 0, $normal = true)
 	{
+		$rows = array();
 		$listModel = $this->getlistModel();
 		$formModel = $listModel->getFormModel();
 		$elName2   = $this->getFullName(false, false);

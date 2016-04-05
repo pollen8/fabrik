@@ -8,12 +8,22 @@
  * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
+namespace Fabrik\Plugins\Element;
+
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-jimport('joomla.application.component.model');
-
-require_once JPATH_SITE . '/components/com_fabrik/models/element.php';
+use \FArrayHelper;
+use \JHtml;
+use \stdClass;
+use \FabrikWorker;
+use \FabrikString;
+use \JComponentHelper;
+use \FText;
+use \RuntimeException;
+use \JApplication;
+use \JApplicationHelper;
+use \JVersion;
 
 /**
  * Plugin element to render thumbs-up/down widget
@@ -22,7 +32,7 @@ require_once JPATH_SITE . '/components/com_fabrik/models/element.php';
  * @subpackage  Fabrik.element.thumbs
  * @since       3.0
  */
-class PlgFabrik_ElementThumbs extends PlgFabrik_Element
+class Thumbs extends Element
 {
 	/**
 	 * States the element should be ignored from advanced search all queries.

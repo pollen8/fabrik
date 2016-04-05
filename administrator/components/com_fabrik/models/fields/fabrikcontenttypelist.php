@@ -10,6 +10,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Fabrik\Helpers\Html;
+
 require_once JPATH_ADMINISTRATOR . '/components/com_fabrik/helpers/element.php';
 
 jimport('joomla.html.html');
@@ -81,7 +83,7 @@ class JFormFieldFabrikContentTypeList extends JFormFieldList
 			'Fabrik' => 'media/com_fabrik/js/fabrik.js',
 			'ContentTypeList' => 'administrator/components/com_fabrik/models/fields/fabrikcontenttypelist.js'
 		);
-		FabrikHelperHTML::script($src, $script);
+		Html::script($src, $script);
 
 		return $str;
 	}

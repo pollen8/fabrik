@@ -11,6 +11,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Fabrik\Helpers\Html;
+
 $pageClass = $this->params->get('pageclass_sfx', '');
 
 if ($pageClass !== '') :
@@ -51,7 +53,7 @@ if ($this->showFilters) {
 			?>
 			<div class="fabrik_groupheading">
 				<a href="#" class="toggle">
-					<?php echo FabrikHelperHTML::image('orderasc.png', 'list', $this->tmpl, FText::_('COM_FABRIK_TOGGLE'));?>
+					<?php echo Html::image('orderasc.png', 'list', $this->tmpl, FText::_('COM_FABRIK_TOGGLE'));?>
 					<span class="groupTitle">
 						<?php echo $this->grouptemplates[$groupedby]; ?> ( <?php echo count($group)?> )
 					</span>

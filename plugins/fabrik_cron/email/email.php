@@ -12,6 +12,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 use Joomla\Utilities\ArrayHelper;
+use Fabrik\Helpers\Html;
 
 // Require the abstract plugin class
 require_once COM_FABRIK_FRONTEND . '/models/plugin-cron.php';
@@ -50,7 +51,7 @@ class PlgFabrik_Cronemail extends PlgFabrik_Cron
 		jimport('joomla.mail.helper');
 		$params = $this->getParams();
 		$msg    = $params->get('message');
-		FabrikHelperHTML::runContentPlugins($msg);
+		Html::runContentPlugins($msg);
 		$to = explode(',', $params->get('to'));
 
 		$w = new FabrikWorker;

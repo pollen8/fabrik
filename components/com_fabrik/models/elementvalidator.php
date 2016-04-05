@@ -11,6 +11,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Fabrik\Helpers\Html;
+
 jimport('joomla.application.component.model');
 
 /**
@@ -33,7 +35,7 @@ class FabrikFEModelElementValidator extends FabModel
 	/**
 	 * Element model
 	 *
-	 * @var PlgFabrik_Element
+	 * @var Fabrik\Plugins\Element\Element
 	 */
 	protected $elementModel = null;
 
@@ -233,7 +235,7 @@ class FabrikFEModelElementValidator extends FabModel
 		$tmpl = $this->elementModel->getFormModel()->getTmpl();
 		$validations = array_unique($this->findAll());
 		$emptyIcon = $this->getIcon();
-		$icon = empty($emptyIcon) && empty($validations) ? "" : FabrikHelperHTML::image($emptyIcon, 'form', $tmpl, $this->iconOpts) . ' ';
+		$icon = empty($emptyIcon) && empty($validations) ? "" : Html::image($emptyIcon, 'form', $tmpl, $this->iconOpts) . ' ';
 
 		return $icon;
 	}
@@ -279,7 +281,7 @@ class FabrikFEModelElementValidator extends FabModel
 			if ($internal !== '')
 			{
 				$i = $this->elementModel->internalValidationIcon();
-				$icon = FabrikHelperHTML::image($i, 'form', $tmpl, $this->iconOpts);
+				$icon = Html::image($i, 'form', $tmpl, $this->iconOpts);
 				$texts[] = $icon . ' ' . $internal;
 			}
 		}

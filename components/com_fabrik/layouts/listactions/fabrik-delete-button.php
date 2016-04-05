@@ -11,10 +11,11 @@
 
 // No direct access
 defined('_JEXEC') or die('Restricted access');
+
+use Fabrik\Helpers\Html;
+
 $d = $displayData;
-
-
 ?>
 <a href="#" class="<?php echo $d->btnClass;?>delete" data-listRef="list_<?php echo $d->renderContext;?>"
 	title="<?php echo FText::_('COM_FABRIK_DELETE'); ?>">
-	<?php echo FabrikHelperHTML::image('delete.png', 'list', $d->tpl, array('alt' => $d->label, 'icon-class' => $d->iconClass))?> <?php echo $d->text;?></a>
+	<?php echo Html::image('delete.png', 'list', $d->tpl, array('alt' => $d->label, 'icon-class' => $d->iconClass))?> <?php echo $d->text;?></a>

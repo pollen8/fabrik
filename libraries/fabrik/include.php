@@ -30,7 +30,9 @@ class FabrikAutoloader
 		spl_autoload_register(array($this, 'model'));
 		spl_autoload_register(array($this, 'view'));
 		spl_autoload_register(array($this, 'library'));
-		spl_autoload_register(array($this, 'plugin'));*/
+		*/
+		spl_autoload_register(array($this, 'plugin'));
+		spl_autoload_register(array($this, 'helper'));
 	}
 
 	/**
@@ -41,15 +43,31 @@ class FabrikAutoloader
 	private function plugin($class)
 	{
 
-		if (!strstr(strtolower($class), 'fabble\form\plugin\\') && !strstr(strtolower($class), 'fabble\lizt\plugin\\'))
+		if (!strstr(($class), 'Fabrik\Plugins\Element'))
 		{
 			return;
 		}
 
-		$class = str_replace('\\', '/', str_replace('Fabble\\', '', $class));
+		//echo $class . "\n";
+		$class = str_replace('\\', '/', $class);
 		$file  = explode('/', $class);
-		$file  = array_pop($file);
-		$path  = JPATH_SITE . '/libraries/fabble/' . $class . '/' . $file . '.php';
+		$file  = strtolower(array_pop($file));
+		$path  = JPATH_SITE . '/plugins/fabrik_element/' . $file . '/' . $file . '.php';
+
+		require_once $path;
+	}
+
+	private function helper($class)
+	{
+		if (!strstr(($class), 'Fabrik\Helpers'))
+		{
+			return;
+		}
+
+		$class = str_replace('\\', '/', $class);
+		$file  = explode('/', $class);
+		$file  = strtolower(array_pop($file));
+		$path  = JPATH_SITE . '/components/com_fabrik/helpers/' . $file . '.php';
 
 		require_once $path;
 	}

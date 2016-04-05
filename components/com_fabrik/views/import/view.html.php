@@ -12,6 +12,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 use Joomla\Utilities\ArrayHelper;
+use Fabrik\Helpers\Html;
 
 jimport('joomla.application.component.view');
 
@@ -33,8 +34,8 @@ class FabrikViewImport extends FabrikView
 	 */
 	public function display($tpl = null)
 	{
-		$srcs = FabrikHelperHTML::framework();
-		FabrikHelperHTML::script($srcs);
+		$srcs = Html::framework();
+		Html::script($srcs);
 		$input        = $this->app->input;
 		$this->listid = $input->getInt('listid', 0);
 		$this->model  = JModelLegacy::getInstance('List', 'FabrikFEModel');

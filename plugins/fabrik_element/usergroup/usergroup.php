@@ -8,8 +8,16 @@
  * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
+namespace Fabrik\Plugins\Element;
+
 // No direct access
 defined('_JEXEC') or die('Restricted access');
+
+use \FArrayHelper;
+use \JHtml;
+use \stdClass;
+use \FabrikWorker;
+use \JFactory;
 
 /**
  * Plugin element to render multi select user group list
@@ -18,7 +26,7 @@ defined('_JEXEC') or die('Restricted access');
  * @subpackage  Fabrik.element.usergroup
  * @since       3.0.6
  */
-class PlgFabrik_ElementUsergroup extends PlgFabrik_ElementList
+class Usergroup extends ElementList
 {
 	/**
 	 * Db table field type

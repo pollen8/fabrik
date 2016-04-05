@@ -207,7 +207,7 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 							$groupElementClass = get_class($groupElement);
 							$gid               = $user->groups;
 
-							if ($groupElementClass !== 'PlgFabrik_ElementUsergroup')
+							if ($groupElementClass !== 'Fabrik\Plugins\Element\Usergroup')
 							{
 								$gid = array_shift($gid);
 							}

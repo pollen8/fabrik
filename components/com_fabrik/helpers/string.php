@@ -12,6 +12,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 use Joomla\Utilities\ArrayHelper;
+use Fabrik\Helpers\Html;
 
 /**
  * String helpers
@@ -533,7 +534,7 @@ class FabrikString extends JString
 
 		if ($showTip && $origText != $summary)
 		{
-			FabrikHelperHTML::tips();
+			Html::tips();
 
 			if ($title !== '')
 			{

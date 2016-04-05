@@ -11,6 +11,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Fabrik\Helpers\Html;
+
 jimport('joomla.application.component.model');
 
 require_once JPATH_SITE . '/components/com_fabrik/models/visualization.php';
@@ -113,7 +115,7 @@ class FabrikModelApprovals extends FabrikFEModelVisualization
 	public function disapprove()
 	{
 		$this->decide(0);
-		echo FabrikWorker::j3() ? FabrikHelperHTML::icon('icon-remove') : FabrikHelperHTML::image('delete.png', 'list', '');
+		echo FabrikWorker::j3() ? Html::icon('icon-remove') : Html::image('delete.png', 'list', '');
 	}
 
 	/**
@@ -124,7 +126,7 @@ class FabrikModelApprovals extends FabrikFEModelVisualization
 	public function approve()
 	{
 		$this->decide(1);
-		echo FabrikWorker::j3() ? FabrikHelperHTML::icon('icon-ok') : FabrikHelperHTML::image('ok.png', 'list', '');
+		echo FabrikWorker::j3() ? Html::icon('icon-ok') : Html::image('ok.png', 'list', '');
 	}
 
 	/**

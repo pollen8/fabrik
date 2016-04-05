@@ -11,6 +11,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Fabrik\Helpers\Html;
+
 jimport('joomla.application.component.model');
 
 /**
@@ -68,7 +70,7 @@ class FabrikFEModelAdvancedSearch extends FabModel
 
 		$list = $model->getTable();
 		$listRef = $model->getRenderContext();
-		$opts->conditionList = FabrikHelperHTML::conditionList($listRef, '');
+		$opts->conditionList = Html::conditionList($listRef, '');
 		list($fieldNames, $firstFilter) = $this->getAdvancedSearchElementList();
 		$statements = $this->getStatementsOpts();
 		$opts->elementList = JHTML::_('select.genericlist', $fieldNames, 'fabrik___filter[list_' . $listRef . '][key][]',
@@ -227,7 +229,7 @@ class FabrikFEModelAdvancedSearch extends FabModel
 				}
 				else
 				{
-					$join = FabrikHelperHTML::conditionList($model->getRenderContext(), $join);
+					$join = Html::conditionList($model->getRenderContext(), $join);
 				}
 
 				$lineElName = FabrikString::safeColName($elementModel->getFullName(true, false));
@@ -309,7 +311,7 @@ class FabrikFEModelAdvancedSearch extends FabModel
 			$displayData = new stdClass;
 			$displayData->url = $this->url();
 			$displayData->tmpl = $model->getTmpl();
-			$layout = FabrikHelperHTML::getLayout('list.fabrik-advanced-search-button');
+			$layout = Html::getLayout('list.fabrik-advanced-search-button');
 
 			return $layout->render($displayData);
 		}
@@ -365,7 +367,7 @@ class FabrikFEModelAdvancedSearch extends FabModel
 		}
 
 		$script = $plugin->filterJS(false, $container);
-		FabrikHelperHTML::addScriptDeclaration($script);
+		Html::addScriptDeclaration($script);
 
 		echo $plugin->getFilter($input->getInt('counter', 0), false);
 	}

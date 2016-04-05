@@ -12,6 +12,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 use Joomla\Utilities\ArrayHelper;
+use Fabrik\Helpers\Html;
 
 // Require the abstract plugin class
 require_once COM_FABRIK_FRONTEND . '/models/plugin-list.php';
@@ -253,8 +254,8 @@ class PlgFabrik_ListRadius_Lookup extends PlgFabrik_List
 
 		if ($params->get('myloc', 1) == 1)
 		{
-			$ext = FabrikHelperHTML::isDebug() ? '.js' : '-min.js';
-			FabrikHelperHTML::script('media/com_fabrik/js/lib/geo-location/geo' . $ext);
+			$ext = Html::isDebug() ? '.js' : '-min.js';
+			Html::script('media/com_fabrik/js/lib/geo-location/geo' . $ext);
 		}
 
 		parent::loadJavascriptClass();

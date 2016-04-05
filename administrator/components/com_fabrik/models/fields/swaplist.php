@@ -12,6 +12,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 use Joomla\Utilities\ArrayHelper;
+use Fabrik\Helpers\Html;
 
 require_once JPATH_ADMINISTRATOR . '/components/com_fabrik/helpers/element.php';
 
@@ -48,9 +49,9 @@ class JFormFieldSwapList extends JFormFieldList
 		$script[] = "\tswaplist = new SwapList('$from', '$this->id','$add', '$remove', '$up', '$down');";
 		$script[] = "});";
 
-		FabrikHelperHTML::framework();
-		FabrikHelperHTML::iniRequireJS();
-		FabrikHelperHTML::script('administrator/components/com_fabrik/models/fields/swaplist.js', implode("\n", $script));
+		Html::framework();
+		Html::iniRequireJS();
+		Html::script('administrator/components/com_fabrik/models/fields/swaplist.js', implode("\n", $script));
 
 		list($this->currentGroups, $this->currentGroupList) = $this->getCurrentGroupList();
 		list($this->groups, $this->groupList) = $this->getGroupList();

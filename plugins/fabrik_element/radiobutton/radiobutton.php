@@ -8,8 +8,14 @@
  * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
+namespace Fabrik\Plugins\Element;
+
 // No direct access
 defined('_JEXEC') or die('Restricted access');
+
+use \FArrayHelper;
+use \JString;
+use \JText;
 
 /**
  * Plugin element to a series of radio buttons
@@ -19,7 +25,7 @@ defined('_JEXEC') or die('Restricted access');
  * @since       3.0
  */
 
-class PlgFabrik_ElementRadiobutton extends PlgFabrik_ElementList
+class Radiobutton extends ElementList
 {
 	/**
 	 * Method to set the element id
@@ -147,7 +153,6 @@ class PlgFabrik_ElementRadiobutton extends PlgFabrik_ElementList
 
 	public function getEmptyDataValue(&$data)
 	{
-		$params = $this->getParams();
 		$element = $this->getElement();
 
 		if (!array_key_exists($element->name, $data))

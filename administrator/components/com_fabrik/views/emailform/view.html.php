@@ -11,6 +11,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Fabrik\Helpers\Html;
+
 jimport('joomla.application.component.view');
 
 /**
@@ -33,21 +35,21 @@ class FabrikAdminViewemailform extends JViewLegacy
 
 	public function display($tpl = null)
 	{
-		$srcs = FabrikHelperHTML::framework();
-		FabrikHelperHTML::script($srcs);
+		$srcs = Html::framework();
+		Html::script($srcs);
 		$model = JModelLegacy::getInstance('form', 'FabrikFEModel');
 		$app = JFactory::getApplication();
 		$input = $app->input;
 
 		if (!$input->get('youremail', false))
 		{
-			FabrikHelperHTML::emailForm($model);
+			Html::emailForm($model);
 		}
 		else
 		{
 			$to = $template = '';
 			$ok = $this->sendMail($to);
-			FabrikHelperHTML::emailSent($to, $ok);
+			Html::emailSent($to, $ok);
 		}
 	}
 

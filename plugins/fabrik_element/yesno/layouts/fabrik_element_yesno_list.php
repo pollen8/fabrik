@@ -11,6 +11,9 @@
 
 // No direct access
 defined('_JEXEC') or die('Restricted access');
+
+use Fabrik\Helpers\Html;
+
 $d = $displayData;
 $data = $d->value;
 $tmpl = $d->tmpl;
@@ -20,9 +23,9 @@ if ($data == '1') :
 	$icon = $j3 ? 'checkmark.png' : '1.png';
 	$opts = array('alt' => FText::_('JYES'));
 
-	echo FabrikHelperHTML::image($icon, 'list', $tmpl, $opts);
+	echo Html::image($icon, 'list', $tmpl, $opts);
 else :
 	$icon = $j3 ? 'remove.png' : '0.png';
 
-	echo FabrikHelperHTML::image($icon, 'list', $tmpl, array('alt' => FText::_('JNO')));
+	echo Html::image($icon, 'list', $tmpl, array('alt' => FText::_('JNO')));
 endif;

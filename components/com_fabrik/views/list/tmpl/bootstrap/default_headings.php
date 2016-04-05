@@ -11,11 +11,14 @@
 
 // No direct access
 defined('_JEXEC') or die('Restricted access');
-$btnLayout  = FabrikHelperHTML::getLayout('fabrik-button');
+
+use Fabrik\Helpers\Html;
+
+$btnLayout  = Html::getLayout('fabrik-button');
 $layoutData = (object) array(
 	'class' => 'btn-info fabrik_filter_submit button',
 	'name' => 'filter',
-	'label' => FabrikHelperHTML::icon('icon-filter', FText::_('COM_FABRIK_GO'))
+	'label' => Html::icon('icon-filter', FText::_('COM_FABRIK_GO'))
 );
 ?>
 <tr class="fabrik___heading">

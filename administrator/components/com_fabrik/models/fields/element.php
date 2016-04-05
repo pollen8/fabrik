@@ -18,6 +18,8 @@ jimport('joomla.form.formfield');
 jimport('joomla.form.helper');
 JFormHelper::loadFieldClass('list');
 
+use Fabrik\Helpers\Html;
+
 /**
  * Renders a fabrik element drop down
  *
@@ -112,7 +114,7 @@ class JFormFieldElement extends JFormFieldList
 		$script                     = implode("\n", $script);
 		$fabrikElements[$this->id]  = true;
 		$src['AdmininElelent']      = 'administrator/components/com_fabrik/models/fields/element.js';
-		FabrikHelperHTML::script($src, $script);
+		Html::script($src, $script);
 
 		if ($mode === 'gui')
 		{
@@ -125,8 +127,8 @@ class JFormFieldElement extends JFormFieldList
 				. '_loader" src="components/com_fabrik/images/ajax-loader.gif" alt="' . FText::_('COM_FABRIK_LOADING') . '" />';
 		}
 
-		FabrikHelperHTML::framework();
-		FabrikHelperHTML::iniRequireJS();
+		Html::framework();
+		Html::iniRequireJS();
 
 		return $return;
 	}

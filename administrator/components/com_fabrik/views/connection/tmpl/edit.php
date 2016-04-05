@@ -12,9 +12,11 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Fabrik\Helpers\Html;
+
 JHtml::addIncludePath(JPATH_COMPONENT . '/helpers/html');
 JHtml::_('behavior.tooltip');
-FabrikHelperHTML::formvalidation();
+Html::formvalidation();
 JHtml::_('behavior.keepalive');
 ?>
 

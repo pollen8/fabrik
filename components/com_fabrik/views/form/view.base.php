@@ -13,6 +13,7 @@ defined('_JEXEC') or die('Restricted access');
 
 use Joomla\Registry\Registry;
 use Joomla\Utilities\ArrayHelper;
+use Fabrik\Helpers\Html;
 
 jimport('joomla.application.component.view');
 
@@ -158,7 +159,7 @@ class FabrikViewFormBase extends FabrikView
 		$params = $model->getParams();
 		$this->setTitle($w, $params);
 		$this->setCanonicalLink($model);
-		FabrikHelperHTML::debug($params->get('note'), 'note');
+		Html::debug($params->get('note'), 'note');
 		$params->def('icons', $this->app->get('icons'));
 		$params->set('popup', ($input->get('tmpl') == 'component') ? 1 : 0);
 
@@ -191,7 +192,7 @@ class FabrikViewFormBase extends FabrikView
 		$this->params      = $params;
 		$this->tipLocation = $params->get('tiplocation');
 
-		FabrikHelperHTML::debug($this->groups, 'form:view:groups');
+		Html::debug($this->groups, 'form:view:groups');
 
 		$this->setTmplFolders($tmpl);
 		$this->_addJavascript($listModel->getId());
@@ -286,7 +287,7 @@ class FabrikViewFormBase extends FabrikView
 
 		if ($params->get('process-jplugins', 2) == 1 || ($params->get('process-jplugins', 2) == 2 && $model->isEditable() === false))
 		{
-			FabrikHelperHTML::runContentPlugins($text);
+			Html::runContentPlugins($text);
 		}
 
 		// Allows you to use {placeholders} in form template Only replacing data accessible to the users acl.
@@ -461,7 +462,7 @@ class FabrikViewFormBase extends FabrikView
 
 		if ($this->showPrint)
 		{
-			$text            = FabrikHelperHTML::image('print.png');
+			$text            = Html::image('print.png');
 			$this->printLink = '<a href="#" class="btn btn-default" class="printlink" onclick="window.print();return false;">' . $text . '</a>';
 		}
 
@@ -469,8 +470,8 @@ class FabrikViewFormBase extends FabrikView
 		{
 			if ($this->showEmail)
 			{
-				$this->emailLink = FabrikHelperHTML::emailIcon($model, $params);
-				$this->emailURL  = FabrikHelperHTML::emailURL($model);
+				$this->emailLink = Html::emailIcon($model, $params);
+				$this->emailURL  = Html::emailURL($model);
 			}
 		}
 		//Also in popup window create first a printURL ..&tmpl=component&iframe=1&print=1...
@@ -479,8 +480,8 @@ class FabrikViewFormBase extends FabrikView
 
 			if ($this->showPrint)
 			{
-				$this->printLink = FabrikHelperHTML::printIcon($model, $params);
-				$this->printURL  = FabrikHelperHTML::printURL($model);
+				$this->printLink = Html::printIcon($model, $params);
+				$this->printURL  = Html::printURL($model);
 			}
 		}
 
@@ -500,7 +501,7 @@ class FabrikViewFormBase extends FabrikView
 			}
 
 			$this->pdfURL           = JRoute::_($this->pdfURL);
-			$layout                 = FabrikHelperHTML::getLayout('form.fabrik-pdf-icon');
+			$layout                 = Html::getLayout('form.fabrik-pdf-icon');
 			$pdfDisplayData         = new stdClass;
 			$pdfDisplayData->pdfURL = $this->pdfURL;
 			$pdfDisplayData->tmpl   = $this->tmpl;
@@ -526,14 +527,14 @@ class FabrikViewFormBase extends FabrikView
 		$aLoadedElementPlugins = array();
 		$jsActions             = array();
 		$bKey                  = $model->jsKey();
-		$mediaFolder = FabrikHelperHTML::getMediaFolder();
+		$mediaFolder = Html::getMediaFolder();
 		$srcs                  = array_merge(
 			array(
 				'FloatingTips' => $mediaFolder . '/tipsBootStrapMock.js',
 				'FbForm' => $mediaFolder . '/form.js',
 				'Fabrik' => $mediaFolder . '/fabrik.js'
 			),
-			FabrikHelperHTML::framework());
+			Html::framework());
 		$shim                  = array();
 
 		$liveSiteReq[] = $mediaFolder . '/tipsBootStrapMock.js';
@@ -541,7 +542,7 @@ class FabrikViewFormBase extends FabrikView
 		if (!defined('_JOS_FABRIK_FORMJS_INCLUDED'))
 		{
 			define('_JOS_FABRIK_FORMJS_INCLUDED', 1);
-			FabrikHelperHTML::slimbox();
+			Html::slimbox();
 
 			$dep       = new stdClass;
 			$dep->deps = array(
@@ -609,10 +610,10 @@ class FabrikViewFormBase extends FabrikView
 			}
 		}
 
-		FabrikHelperHTML::iniRequireJS($shim);
+		Html::iniRequireJS($shim);
 		$actions = trim(implode("\n", $jsActions));
-		FabrikHelperHTML::windows('a.fabrikWin');
-		FabrikHelperHTML::tips('.hasTip', array(), "$('$bKey')");
+		Html::windows('a.fabrikWin');
+		Html::tips('.hasTip', array(), "$('$bKey')");
 		$model->getFormCss();
 		$opts = $this->jsOpts();
 
@@ -621,7 +622,7 @@ class FabrikViewFormBase extends FabrikView
 
 		$opts = json_encode($model->jsOpts);
 
-		if (!FabrikHelperHTML::inAjaxLoadedPage())
+		if (!Html::inAjaxLoadedPage())
 		{
 			JText::script('COM_FABRIK_VALIDATING');
 			JText::script('COM_FABRIK_SUCCESS');
@@ -708,9 +709,9 @@ class FabrikViewFormBase extends FabrikView
 		$script[] = "\tnew Form.Placeholder('.fabrikForm input');";
 		$this->_addJavascriptSumbit($script, $listId, $aWYSIWYGNames);
 
-		if (FabrikHelperHTML::inAjaxLoadedPage())
+		if (Html::inAjaxLoadedPage())
 		{
-			$tipOpts  = FabrikHelperHTML::tipOpts();
+			$tipOpts  = Html::tipOpts();
 			$script[] = "new FloatingTips('#" . $bKey . " .fabrikTip', " . json_encode($tipOpts) . ");";
 		}
 
@@ -729,7 +730,7 @@ class FabrikViewFormBase extends FabrikView
 		// 3.1 call form js plugin code within main require method
 		$srcs = array_merge($srcs, $model->formPluginShim);
 		$str .= implode("\n", (array) $model->formPluginJS);
-		FabrikHelperHTML::script($srcs, $str);
+		Html::script($srcs, $str);
 	}
 
 	/**
@@ -787,14 +788,14 @@ class FabrikViewFormBase extends FabrikView
 		$opts->listid = (int) $this->get('ListModel')->getId();
 
 		$errorIcon       = FabrikWorker::j3() ? $fbConfig->get('error_icon', 'exclamation-sign') . '.png' : 'alert.png';
-		$this->errorIcon = FabrikHelperHTML::image($errorIcon, 'form', $this->tmpl);
+		$this->errorIcon = Html::image($errorIcon, 'form', $this->tmpl);
 
 		$imgs               = new stdClass;
-		$imgs->alert        = FabrikHelperHTML::image($errorIcon, 'form', $this->tmpl, '', true);
-		$imgs->action_check = FabrikHelperHTML::image('action_check.png', 'form', $this->tmpl, '', true);
+		$imgs->alert        = Html::image($errorIcon, 'form', $this->tmpl, '', true);
+		$imgs->action_check = Html::image('action_check.png', 'form', $this->tmpl, '', true);
 
-		//$imgs->ajax_loader = FabrikHelperHTML::image('ajax-loader.gif', 'form', $this->tmpl, '', false);
-		$imgs->ajax_loader = FabrikHelperHTML::icon('icon-spinner icon-spin');
+		//$imgs->ajax_loader = Html::image('ajax-loader.gif', 'form', $this->tmpl, '', false);
+		$imgs->ajax_loader = Html::icon('icon-spinner icon-spin');
 		$opts->images      = $imgs;
 
 		// $$$rob if you are loading a list in a window from a form db join select record option
@@ -985,11 +986,11 @@ class FabrikViewFormBase extends FabrikView
 		$deleteIcon  = $params->get('delete_icon', '');
 		$goBackLabel = FText::_($params->get('goback_button_label'));
 		$goBackIcon  = $params->get('goback_icon', '');
-		$btnLayout   = FabrikHelperHTML::getLayout('fabrik-button');
+		$btnLayout   = Html::getLayout('fabrik-button');
 
 		if ($resetIcon !== '')
 		{
-			$resetIcon  = FabrikHelperHTML::icon($resetIcon);
+			$resetIcon  = Html::icon($resetIcon);
 			$before     = $params->get('reset_icon_location', 'before') == 'before';
 			$resetLabel = $before ? $resetIcon . '&nbsp;' . $resetLabel : $resetLabel . '&nbsp;' . $resetIcon;
 		}
@@ -1005,7 +1006,7 @@ class FabrikViewFormBase extends FabrikView
 
 		if ($copyIcon !== '')
 		{
-			$copyIcon  = FabrikHelperHTML::icon($copyIcon);
+			$copyIcon  = Html::icon($copyIcon);
 			$copyLabel = $params->get('copy_icon_location', 'before') == 'before' ? $copyIcon . '&nbsp;' . $copyLabel : $copyLabel . '&nbsp;' . $copyIcon;
 		}
 
@@ -1020,7 +1021,7 @@ class FabrikViewFormBase extends FabrikView
 
 		if ($applyIcon !== '')
 		{
-			$applyIcon  = FabrikHelperHTML::icon($applyIcon);
+			$applyIcon  = Html::icon($applyIcon);
 			$before     = $params->get('apply_icon_location', 'before') == 'before';
 			$applyLabel = $before ? $applyIcon . '&nbsp;' . $applyLabel : $applyLabel . '&nbsp;' . $applyIcon;
 		}
@@ -1037,7 +1038,7 @@ class FabrikViewFormBase extends FabrikView
 
 		if ($deleteIcon !== '')
 		{
-			$deleteIcon  = FabrikHelperHTML::icon($deleteIcon);
+			$deleteIcon  = Html::icon($deleteIcon);
 			$before      = $params->get('delete_icon_location', 'before') == 'before';
 			$deleteLabel = $before ? $deleteIcon . '&nbsp;' . $deleteLabel : $deleteLabel . '&nbsp;' . $deleteIcon;
 		}
@@ -1054,7 +1055,7 @@ class FabrikViewFormBase extends FabrikView
 
 		if ($goBackIcon !== '')
 		{
-			$goBackIcon  = FabrikHelperHTML::icon($goBackIcon);
+			$goBackIcon  = Html::icon($goBackIcon);
 			$before      = $params->get('goback_icon_location', 'before') == 'before';
 			$goBackLabel = $before ? $goBackIcon . '&nbsp;' . $goBackLabel : $goBackLabel . '&nbsp;' . $goBackIcon;
 		}
@@ -1077,7 +1078,7 @@ class FabrikViewFormBase extends FabrikView
 
 			if ($submitIcon !== '')
 			{
-				$submitIcon  = FabrikHelperHTML::icon($submitIcon);
+				$submitIcon  = Html::icon($submitIcon);
 				$before      = $params->get('save_icon_location', 'before') == 'before';
 				$submitLabel = $before ? $submitIcon . '&nbsp;' . $submitLabel : $submitLabel . '&nbsp;' . $submitIcon;
 			}
@@ -1102,7 +1103,7 @@ class FabrikViewFormBase extends FabrikView
 				'type' => 'button',
 				'class' => 'fabrikPagePrevious button',
 				'name' => 'fabrikPagePrevious',
-				'label' => FabrikHelperHTML::icon('icon-previous', FText::_('COM_FABRIK_PREV'))
+				'label' => Html::icon('icon-previous', FText::_('COM_FABRIK_PREV'))
 			);
 			$form->prevButton = $btnLayout->render($layoutData);
 
@@ -1110,7 +1111,7 @@ class FabrikViewFormBase extends FabrikView
 				'type' => 'button',
 				'class' => 'fabrikPageNext button',
 				'name' => 'fabrikPageNext',
-				'label' => FText::_('COM_FABRIK_NEXT') . '&nbsp;' . FabrikHelperHTML::icon('icon-next')
+				'label' => FText::_('COM_FABRIK_NEXT') . '&nbsp;' . Html::icon('icon-next')
 			);
 
 			$form->nextButton = $btnLayout->render($layoutData);

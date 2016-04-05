@@ -8,12 +8,12 @@
  * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
+namespace Fabrik\Plugins\Element;
+
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-jimport('joomla.application.component.model');
-
-require_once JPATH_SITE . '/components/com_fabrik/models/element.php';
+use \stdClass;
 
 /**
  * Render a spotify player in an iframe
@@ -22,7 +22,7 @@ require_once JPATH_SITE . '/components/com_fabrik/models/element.php';
  * @subpackage  Fabrik.element.spotify
  * @since       3.0
  */
-class PlgFabrik_ElementSpotify extends PlgFabrik_Element
+class Spotify extends Element
 {
 	protected $pluginName = 'spotify';
 

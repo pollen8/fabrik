@@ -12,6 +12,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Fabrik\Helpers\Html;
+
 ?>
 <?php if ($this->params->get('show_page_heading', 1)) { ?>
 	<div class="componentheading<?php echo $this->params->get('pageclass_sfx')?>"><?php echo $this->escape($this->params->get('page_heading')); ?></div>
@@ -57,11 +59,11 @@ echo "<div class='fabrikMainError fabrikError$active'>" . $form->error . "</div>
 						<div class="fabrikGroupRepeater">
 							<?php if ($group->canAddRepeat) {?>
 							<a class="addGroup" href="#">
-								<?php echo FabrikHelperHTML::image('plus-sign.png', 'form', $this->tmpl, FText::_('COM_FABRIK_ADD_GROUP'));?>
+								<?php echo Html::image('plus-sign.png', 'form', $this->tmpl, FText::_('COM_FABRIK_ADD_GROUP'));?>
 							</a>
 							<?php }?>
 							<a class="deleteGroup" href="#">
-								<?php echo FabrikHelperHTML::image('minus-sign.png', 'form', $this->tmpl, FText::_('COM_FABRIK_DELETE_GROUP'));?>
+								<?php echo Html::image('minus-sign.png', 'form', $this->tmpl, FText::_('COM_FABRIK_DELETE_GROUP'));?>
 							</a>
 						</div>
 					<?php } ?>
@@ -81,7 +83,7 @@ echo "<div class='fabrikMainError fabrikError$active'>" . $form->error . "</div>
 	<div class="fabrikActions"><?php echo $form->resetButton;?> <?php echo $form->submitButton;?>
 	<?php echo $form->copyButton  . " " . $form->gobackButton . ' ' . $this->message?>
 	</div>
-</form>
+</div>
 <?php
-echo FabrikHelperHTML::keepalive();
+echo Html::keepalive();
 ?>

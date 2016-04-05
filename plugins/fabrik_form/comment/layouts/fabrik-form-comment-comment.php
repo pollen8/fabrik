@@ -1,13 +1,16 @@
 <?php
 defined('JPATH_BASE') or die;
+
+use Fabrik\Helpers\Html;
+
 $d = $displayData;
 ?>
 
 <div class="metadata muted">
-	<small><?php echo FabrikHelperHTML::icon('icon-user'); ?>
+	<small><?php echo Html::icon('icon-user'); ?>
 		<?php echo $d->name; ?>, <?php echo FText::_('PLG_FORM_COMMENT_WROTE_ON'); ?> 
 	</small>
-	<?php echo FabrikHelperHTML::icon('icon-calendar'); ?>
+	<?php echo Html::icon('icon-calendar'); ?>
 	<small><?php echo JHTML::date($d->comment->time_date, $d->dateFormat, 'UTC'); ?></small>
 	<?php
 	if ($d->internalRating) :
@@ -18,7 +21,7 @@ $d = $displayData;
 	for ($i = 0; $i < $r; $i++) :
 		if ($d->j3) :
 			?>
-			<?php echo FabrikHelperHTML::icon('icon-star'); ?>
+			<?php echo Html::icon('icon-star'); ?>
 		<?php
 		else :
 			?><img src="' . $d->insrc . '" alt="star" />

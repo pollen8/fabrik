@@ -8,14 +8,17 @@
  * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
+namespace Fabrik\Plugins\Element;
+
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
 use Joomla\Utilities\ArrayHelper;
-
-jimport('joomla.application.component.model');
-
-require_once JPATH_SITE . '/components/com_fabrik/models/element.php';
+use \stdClass;
+use \JLayoutFile;
+use \Exception;
+use \FText;
+use Fabrik\Helpers\Html;
 
 /**
  * Plugin element to render digital signature pad
@@ -24,7 +27,7 @@ require_once JPATH_SITE . '/components/com_fabrik/models/element.php';
  * @subpackage  Fabrik.element.digsig
  * @since       3.0
  */
-class PlgFabrik_ElementDigsig extends PlgFabrik_Element
+class Digsig extends Element
 {
 	/**
 	 * If the element 'Include in search all' option is set to 'default' then this states if the
@@ -320,7 +323,7 @@ class PlgFabrik_ElementDigsig extends PlgFabrik_Element
 	 */
 	public function formJavascriptClass(&$srcs, $script = '', &$shim = array())
 	{
-		$key     = FabrikHelperHTML::isDebug() ? 'element/digsig/digsig' : 'element/digsig/digsig-min';
+		$key     = Html::isDebug() ? 'element/digsig/digsig' : 'element/digsig/digsig-min';
 		$s       = new stdClass;
 		$s->deps = array();
 
@@ -337,7 +340,7 @@ class PlgFabrik_ElementDigsig extends PlgFabrik_Element
 
 		$shim[$key] = $s;
 
-		FabrikHelperHTML::stylesheet(COM_FABRIK_LIVESITE . 'plugins/fabrik_element/digsig/libs/signature-pad/jquery.signaturepad.css');
+		Html::stylesheet(COM_FABRIK_LIVESITE . 'plugins/fabrik_element/digsig/libs/signature-pad/jquery.signaturepad.css');
 
 		parent::formJavascriptClass($srcs, $script, $shim);
 

@@ -9,18 +9,26 @@
  * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
+namespace Fabrik\Plugins\Element;
+
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use \FArrayHelper;
+use \JHtml;
+use \stdClass;
+use \FabrikWorker;
+use \FabrikString;
+use \FText;
+
 /**
- * Plugin element to render time dropdowns - derived from birthday element
+ * Plugin element to render time drop-downs - derived from birthday element
  *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.element.time
  * @since       3.0
  */
-
-class PlgFabrik_ElementTime extends PlgFabrik_Element
+class Time extends Element
 {
 	/**
 	 * Does the element contain sub elements e.g checkboxes radiobuttons
@@ -235,20 +243,19 @@ class PlgFabrik_ElementTime extends PlgFabrik_Element
 	/**
 	 * Get sum query
 	 *
-	 * @param   object  &$listModel  List model
+	 * @param   \FabrikFEModelList  &$listModel  List model
 	 * @param   array   $labels      Label
 	 *
 	 * @return string
 	 */
-
 	protected function getSumQuery(&$listModel, $labels = array())
 	{
 		$label = count($labels) == 0 ? "'calc' AS label" : 'CONCAT(' . implode(', " & " , ', $labels) . ')  AS label';
 		$table = $listModel->getTable();
 		$db = $listModel->getDb();
-		$joinSQL = $listModel->_buildQueryJoin();
-		$whereSQL = $listModel->_buildQueryWhere();
-		$name = $this->getFullName(false, false, false);
+		$joinSQL = $listModel->buildQueryJoin();
+		$whereSQL = $listModel->buildQueryWhere();
+		$name = $this->getFullName(false, false);
 
 		return 'SELECT SUM(substr(' . $name . ' FROM 1 FOR 2) * 60 * 60 + substr(' . $name . ' FROM 4 FOR 2) * 60
 			+ substr(' . $name . ' FROM 7 FOR 2))  AS value, ' . $label . ' FROM '
@@ -258,8 +265,8 @@ class PlgFabrik_ElementTime extends PlgFabrik_Element
 	/**
 	 * Build the query for the avg calculation
 	 *
-	 * @param   model  &$listModel  list model
-	 * @param   array  $labels      Labels
+	 * @param   \FabrikFEModelList  &$listModel  list model
+	 * @param   array               $labels      Labels
 	 *
 	 * @return  string	sql statement
 	 */
@@ -268,10 +275,9 @@ class PlgFabrik_ElementTime extends PlgFabrik_Element
 	{
 		$label = count($labels) == 0 ? "'calc' AS label" : 'CONCAT(' . implode(', " & " , ', $labels) . ')  AS label';
 		$item = $listModel->getTable();
-		$joinSQL = $listModel->_buildQueryJoin();
-		$whereSQL = $listModel->_buildQueryWhere();
-		$name = $this->getFullName(false, false, false);
-		$groupModel = $this->getGroup();
+		$joinSQL = $listModel->buildQueryJoin();
+		$whereSQL = $listModel->buildQueryWhere();
+		$name = $this->getFullName(false, false);
 		$roundTo = (int) $this->getParams()->get('avg_round');
 
 		$valueSelect = 'substr(' . $name . ' FROM 1 FOR 2) * 60 * 60 + substr(' . $name . ' FROM 4 FOR 2) * 60 + substr(' . $name . ' FROM 7 FOR 2)';

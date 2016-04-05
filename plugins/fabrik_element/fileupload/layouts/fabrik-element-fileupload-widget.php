@@ -1,6 +1,8 @@
 <?php
 defined('JPATH_BASE') or die;
 
+use Fabrik\Helpers\Html;
+
 $d = $displayData;
 $id = $d->id;
 $winWidth = $d->winWidth;
@@ -34,7 +36,7 @@ if ($j3) :
 			<tfoot>
 				<tr>
 					<td colspan="4">
-								<a id="<?php echo $id; ?>_browseButton" class="btn btn-mini" href="#"><?php echo FabrikHelperHTML::icon('icon-plus-sign icon-plus'); ?>
+								<a id="<?php echo $id; ?>_browseButton" class="btn btn-mini" href="#"><?php echo Html::icon('icon-plus-sign icon-plus'); ?>
 						<?php echo FText::_('PLG_ELEMENT_FILEUPLOAD_ADD_FILES'); ?></a>
 							<span class="plupload_upload_status"></span>
 					</td>
@@ -43,7 +45,7 @@ if ($j3) :
 		</table>
 <?php
 else :
-	FabrikHelperHTML::stylesheet(COM_FABRIK_LIVESITE . 'plugins/fabrik_element/fileupload/lib/plupload/css/plupload.queue.css');
+	Html::stylesheet(COM_FABRIK_LIVESITE . 'plugins/fabrik_element/fileupload/lib/plupload/css/plupload.queue.css');
 ?>
 		<div class="plupload_header">
 			<div class="plupload_header_content">

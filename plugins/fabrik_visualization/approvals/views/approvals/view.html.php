@@ -11,6 +11,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Fabrik\Helpers\Html;
+
 jimport('joomla.application.component.view');
 
 /**
@@ -57,22 +59,22 @@ class FabrikViewApprovals extends JViewLegacy
 		$tpl = $j3 ? 'bootstrap' : $tpl;
 		$this->_setPath('template', JPATH_SITE . '/plugins/fabrik_visualization/approvals/views/approvals/tmpl/' . $tpl);
 
-		FabrikHelperHTML::stylesheetFromPath('plugins/fabrik_visualization/approvals/views/approvals/tmpl/' . $tpl . '/template.css');
+		Html::stylesheetFromPath('plugins/fabrik_visualization/approvals/views/approvals/tmpl/' . $tpl . '/template.css');
 
 		$ref = $model->getJSRenderContext();
 		$js = "var $ref = new fbVisApprovals('approvals_" . $id . "');\n";
 		$js .= "Fabrik.addBlock('" . $ref . "', $ref);\n";
 		$js .= $model->getFilterJs();
 
-		$srcs = FabrikHelperHTML::framework();
+		$srcs = Html::framework();
 		$srcs['FbListFilter'] = 'media/com_fabrik/js/listfilter.js';
 		$srcs['Approvals'] = 'plugins/fabrik_visualization/approvals/approvals.js';
 
-		FabrikHelperHTML::iniRequireJs($model->getShim());
-		FabrikHelperHTML::script($srcs, $js);
+		Html::iniRequireJs($model->getShim());
+		Html::script($srcs, $js);
 
 		$text = $this->loadTemplate();
-		FabrikHelperHTML::runContentPlugins($text);
+		Html::runContentPlugins($text);
 		echo $text;
 	}
 }

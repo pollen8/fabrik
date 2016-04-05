@@ -8,11 +8,35 @@
  * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
+namespace Fabrik\Plugins\Element;
+
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
 use \Joomla\Registry\Registry;
 use \Joomla\Utilities\ArrayHelper;
+use Fabrik\Helpers\Html;
+use \FArrayHelper;
+use \JHtml;
+use \stdClass;
+use \JPluginHelper;
+use \JString;
+use \FabrikWorker;
+use \JFolder;
+use \FabrikString;
+use \JModelLegacy;
+use \FabrikFEModelList;
+use \JFormHelper;
+use \FabrikFEModelForm;
+use \FabrikFEModelGroup;
+use \FabrikLayoutFile;
+use \JTable;
+use \FabTable;
+use \JLayoutFile;
+use \FText;
+use \JFilterInput;
+use \JComponentHelper;
+use \JFile;
 
 jimport('joomla.application.component.model');
 jimport('joomla.filesystem.file');
@@ -23,7 +47,7 @@ jimport('joomla.filesystem.file');
  * @package  Fabrik
  * @since    3.0
  */
-class PlgFabrik_Element extends FabrikPlugin
+class Element extends \FabrikPlugin
 {
 	/**
 	 * Element id
@@ -38,6 +62,11 @@ class PlgFabrik_Element extends FabrikPlugin
 	 * @var array
 	 */
 	protected $jsActions = null;
+
+	/**
+	 * @var string
+	 */
+	public $tmpl = '';
 
 	/**
 	 * Editable
@@ -318,7 +347,7 @@ class PlgFabrik_Element extends FabrikPlugin
 	 *
 	 * @param   bool $force default false - force load the element
 	 *
-	 * @return  FabrikTableElement  element table
+	 * @return  \FabrikTableElement  element table
 	 */
 	public function &getElement($force = false)
 	{
@@ -607,7 +636,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		{
 			foreach ($this->imageExtensions as $ex)
 			{
-				$img = FabrikHelperHTML::image($cleanData . '.' . $ex, $view, $tmpl, array(), false, $opts);
+				$img = Html::image($cleanData . '.' . $ex, $view, $tmpl, array(), false, $opts);
 
 				if ($img !== '')
 				{
@@ -666,7 +695,7 @@ class PlgFabrik_Element extends FabrikPlugin
 						if (class_exists('DOMDocument') && $as->length)
 						{
 							$img = $html->createElement('img');
-							$src = FabrikHelperHTML::image($cleanData . '.' . $ex, $view, $tmpl, array(), true, array('forceImage' => true));
+							$src = Html::image($cleanData . '.' . $ex, $view, $tmpl, array(), true, array('forceImage' => true));
 							$img->setAttribute('src', $src);
 							$as->item(0)->nodeValue = '';
 							$as->item(0)->appendChild($img);
@@ -1284,7 +1313,7 @@ class PlgFabrik_Element extends FabrikPlugin
 				}
 				else
 				{
-					FabrikHelperHTML::debug($default, 'element eval default:' . $element->label);
+					Html::debug($default, 'element eval default:' . $element->label);
 					$default = stripslashes($default);
 					$default = @eval($default);
 					FabrikWorker::logEval($default, 'Caught exception on eval of ' . $element->name . ': %s');
@@ -1638,7 +1667,7 @@ class PlgFabrik_Element extends FabrikPlugin
 
 		if ($displayData->rollOver)
 		{
-			$displayData->icons .= FabrikHelperHTML::image('question-sign.png', 'form', $tmpl, $iconOpts) . ' ';
+			$displayData->icons .= Html::image('question-sign.png', 'form', $tmpl, $iconOpts) . ' ';
 		}
 
 		if ($displayData->isEditable)
@@ -1647,7 +1676,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		}
 
 		$displayData->labelClass = $labelClass;
-		$layout                  = FabrikHelperHTML::getLayout('fabrik-element-label', $this->labelPaths());
+		$layout                  = Html::getLayout('fabrik-element-label', $this->labelPaths());
 
 		$str = $layout->render($displayData);
 
@@ -1681,7 +1710,7 @@ class PlgFabrik_Element extends FabrikPlugin
 	{
 		$err               = $this->getErrorMsg($repeatCounter);
 		$err               = htmlspecialchars($err, ENT_QUOTES);
-		$layout            = FabrikHelperHTML::getLayout('element.fabrik-element-error');
+		$layout            = Html::getLayout('element.fabrik-element-error');
 		$displayData       = new stdClass;
 		$displayData->err  = $err;
 		$displayData->tmpl = $tmpl;
@@ -1734,7 +1763,7 @@ class PlgFabrik_Element extends FabrikPlugin
 
 		//return $title !== '' ? 'title="' . $title . '" opts=\'' . $opts . '\'' : '';
 
-		$layout                  = FabrikHelperHTML::getLayout('element.fabrik-element-tip');
+		$layout                  = Html::getLayout('element.fabrik-element-tip');
 		$displayData             = new stdClass;
 		$displayData->tipTitle   = $this->tipTextAndValidations($mode, $data);
 		$displayData->tipText    = $txt;
@@ -1795,7 +1824,7 @@ class PlgFabrik_Element extends FabrikPlugin
 
 		if ($this->isTipped($mode))
 		{
-			$lines[] = '<li>' . FabrikHelperHTML::image('question-sign.png', 'form', $tmpl) . ' ' . $this->getTipText($data) . '</li>';
+			$lines[] = '<li>' . Html::image('question-sign.png', 'form', $tmpl) . ' ' . $this->getTipText($data) . '</li>';
 		}
 
 		if ($mode === 'form')
@@ -1851,7 +1880,7 @@ class PlgFabrik_Element extends FabrikPlugin
 
 		if ($params->get('tipseval'))
 		{
-			if (FabrikHelperHTML::isDebug())
+			if (Html::isDebug())
 			{
 				$res = eval($tip);
 			}
@@ -2053,7 +2082,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		 * I thought we did this in an overridden element model method, like onCopy?
 		 * if its a database join then add in a new join record
 		 */
-		if (is_a($this, 'PlgFabrik_ElementDatabasejoin'))
+		if (is_a($this, '\Fabrik\Plugins\Element\Databasejoin'))
 		{
 			$join = FabTable::getInstance('Join', 'FabrikTable');
 			$join->load(array('element_id' => $id));
@@ -2188,7 +2217,7 @@ class PlgFabrik_Element extends FabrikPlugin
 
 		if ($tip !== '')
 		{
-			$tip = FabrikHelperHTML::image('question-sign.png', 'form', $tmpl) . ' ' . $tip;
+			$tip = Html::image('question-sign.png', 'form', $tmpl) . ' ' . $tip;
 		}
 
 		$element->labels  = $groupModel->labelPosition('form');
@@ -3485,7 +3514,7 @@ class PlgFabrik_Element extends FabrikPlugin
 
 		$element = $this->getElement();
 		$formId  = $this->getFormModel()->getId();
-		FabrikHelperHTML::autoComplete($selector, $element->id, $formId, $element->plugin, $opts);
+		Html::autoComplete($selector, $element->id, $formId, $element->plugin, $opts);
 
 		return $return;
 	}
@@ -3748,7 +3777,7 @@ class PlgFabrik_Element extends FabrikPlugin
 				return $this->phpOptions[$key];
 			}
 
-			if (FabrikHelperHTML::isDebug())
+			if (Html::isDebug())
 			{
 				$res = eval($pop);
 			}
@@ -3973,7 +4002,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		$sql .= "\n" . $groupBy;
 		$sql = $listModel->pluginQuery($sql);
 		$fabrikDb->setQuery($sql, 0, $fbConfig->get('filter_list_max', 100));
-		FabrikHelperHTML::debug((string) $fabrikDb->getQuery(), 'element filterValueList_Exact:');
+		Html::debug((string) $fabrikDb->getQuery(), 'element filterValueList_Exact:');
 
 		try
 		{
@@ -5600,7 +5629,7 @@ class PlgFabrik_Element extends FabrikPlugin
 	public function formJavascriptClass(&$srcs, $script = '', &$shim = array())
 	{
 		$name   = $this->getElement()->plugin;
-		$ext    = FabrikHelperHTML::isDebug() ? '.js' : '-min.js';
+		$ext    = Html::isDebug() ? '.js' : '-min.js';
 		$formId = $this->getFormModel()->getId();
 		static $elementClasses;
 
@@ -5658,7 +5687,8 @@ class PlgFabrik_Element extends FabrikPlugin
 		$safeHtmlFilter = JFilterInput::getInstance(null, null, 1, 1);
 		$post           = $safeHtmlFilter->clean($_POST, 'array');
 		$post           = $post['jform'];
-		$dbjoinEl       = (is_subclass_of($this, 'PlgFabrik_ElementDatabasejoin') || get_class($this) == 'PlgFabrik_ElementDatabasejoin');
+		$dbjoinEl       = is_subclass_of($this, '\Fabrik\Plugins\Element\Databasejoin') ||
+			get_class($this) == '\Fabrik\Plugins\Element\Databasejoin';
 		/**
 		 * $$$ hugh - added test for empty id, i.e. new element, otherwise we try and delete a crap load of join table rows
 		 * we shouldn't be deleting!  Also adding defensive code to deleteJoins() to test for empty ID.
@@ -6085,7 +6115,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		$layout                          = new JLayoutFile('fabrik-element-addoptions', $basePath, array('debug' => false, 'component' => 'com_fabrik', 'client' => 'site'));
 		$displayData                     = new stdClass;
 		$displayData->id                 = $this->getHTMLId($repeatCounter);
-		$displayData->add_image          = FabrikHelperHTML::image('plus.png', 'form', @$this->tmpl, array('alt' => FText::_('COM_FABRIK_ADD')));
+		$displayData->add_image          = Html::image('plus.png', 'form', @$this->tmpl, array('alt' => FText::_('COM_FABRIK_ADD')));
 		$displayData->allowadd_onlylabel = $params->get('allowadd-onlylabel');
 		$displayData->savenewadditions   = $params->get('savenewadditions');
 		$displayData->onlylabel          = $onlylabel;
@@ -6516,7 +6546,7 @@ class PlgFabrik_Element extends FabrikPlugin
 	/**
 	 * Cache method to populate auto-complete options
 	 *
-	 * @param   plgFabrik_Element $elementModel element model
+	 * @param   \Fabrik\Plugins\Element\Element $elementModel element model
 	 * @param   string            $search       search string
 	 * @param   array             $opts         options, 'label' => field to use for label (db join)
 	 *
@@ -7358,7 +7388,7 @@ class PlgFabrik_Element extends FabrikPlugin
 			}
 
 			// If doing an ajax form submit and the element is an ajax file upload then its data is different.
-			if (get_class($this) === 'PlgFabrik_ElementFileupload' && $ajaxSubmit)
+			if (get_class($this) === 'Fabrik\Plugins\Element\Fileupload' && $ajaxSubmit)
 			{
 				$allParams  = array_key_exists('crop', $joinValues) ? array_values($joinValues['crop']) : array();
 				$joinValues = array_key_exists('id', $joinValues) ? array_keys($joinValues['id']) : $joinValues;
@@ -7616,7 +7646,7 @@ class PlgFabrik_Element extends FabrikPlugin
 
 	/**
 	 * Get lower case plugin name based off class name:
-	 * E.g. PlgFabrik_ElementDatabasejoin => databasejoin
+	 * E.g. '\Fabrik\Plugins\Element\Databasejoin' => databasejoin
 	 *
 	 * @return string
 	 */
@@ -7630,7 +7660,7 @@ class PlgFabrik_Element extends FabrikPlugin
 			$name = array_pop($name);
 		}
 
-		return strtolower(JString::str_ireplace('PlgFabrik_Element', '', $name));
+		return strtolower($name);
 	}
 
 	/**
@@ -7640,7 +7670,7 @@ class PlgFabrik_Element extends FabrikPlugin
 	 * @param   mixed  $value Value to validate
 	 * @param   mixed  $path  Optional path to load teh rule from
 	 *
-	 * @throws Exception
+	 * @throws \Exception
 	 *
 	 * @return bool
 	 */
@@ -7652,7 +7682,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		}
 
 		$rule = JFormHelper::loadRuleType($type, true);
-		$xml  = new SimpleXMLElement('<xml></xml>');
+		$xml  = new \SimpleXMLElement('<xml></xml>');
 		$this->lang->load('com_users');
 
 		if (!$rule->test($xml, $value))

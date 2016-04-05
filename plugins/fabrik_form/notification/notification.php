@@ -10,6 +10,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 use Joomla\Utilities\ArrayHelper;
+use Fabrik\Helpers\Html;
 
 // Require the abstract plugin class
 require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
@@ -72,7 +73,7 @@ class PlgFabrik_FormNotification extends PlgFabrik_Form
 		{
 			$src['Fabrik'] = 'media/com_fabrik/js/fabrik.js';
 			$src['Notify'] = '/plugins/fabrik_form/notification/notify.js';
-			FabrikHelperHTML::script($src, "var notify = new Notify('$id', $opts);");
+			Html::script($src, "var notify = new Notify('$id', $opts);");
 		}
 
 		// See if the checkbox should be checked

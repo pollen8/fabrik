@@ -12,6 +12,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 use Joomla\Utilities\ArrayHelper;
+use Fabrik\Helpers\Html;
 
 jimport('joomla.application.component.model');
 
@@ -577,7 +578,7 @@ class FabrikModelGooglemap extends FabrikFEModelVisualization
 			$this->app->enqueueMessage($limitMessage);
 		}
 
-		FabrikHelperHTML::debug($icons, 'map');
+		Html::debug($icons, 'map');
 
 		return $icons;
 	}

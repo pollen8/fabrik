@@ -342,7 +342,7 @@ class FabrikAdminModelContentTypeExport extends FabModelAdmin
 		$pluginManager = FabrikWorker::getPluginManager();
 		$elementModel  = clone($pluginManager->getPlugIn($data['plugin'], 'element'));
 
-		if (is_a($elementModel, 'PlgFabrik_ElementDatabasejoin'))
+		if (is_a($elementModel, '\Fabrik\Plugins\Element\Databasejoin'))
 		{
 			$join = FabTable::getInstance('Join', 'FabrikTable');
 			$join->load(array('element_id' => $data['id']));

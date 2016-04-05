@@ -7,10 +7,12 @@
  * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
+namespace Fabrik\Plugins\Element;
+
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-require_once JPATH_SITE . '/components/com_fabrik/models/element.php';
+use \stdClass;
 
 /**
  * Plugin element: js periodical will fire a JavaScript function at a definable interval
@@ -19,8 +21,7 @@ require_once JPATH_SITE . '/components/com_fabrik/models/element.php';
  * @subpackage  Fabrik.element.jsperiodical
  * @since       3.0
  */
-
-class PlgFabrik_ElementJSPeriodical extends PlgFabrik_Element
+class JSPeriodical extends Element
 {
 	/**
 	 * Shows the data formatted for the list view
@@ -37,7 +38,7 @@ class PlgFabrik_ElementJSPeriodical extends PlgFabrik_Element
 		$format = $params->get('text_format_string');
 		$format_blank = $params->get('field_format_string_blank', true);
 
-		if ($format != '' && ($format_blank || $d != ''))
+		if ($format != '' && ($format_blank))
 		{
 			$str = sprintf($format, $data);
 			// ToDo - No idea why eval is here but not in similar code in field.php (Sophist)

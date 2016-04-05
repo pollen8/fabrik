@@ -8,8 +8,17 @@
  * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
+namespace Fabrik\Plugins\Element;
+
 // No direct access
 defined('_JEXEC') or die('Restricted access');
+
+use \FabrikWorker;
+use \FArrayHelper;
+use \stdClass;
+use \FText;
+use \JUserHelper;
+use \JText;
 
 /**
  * Plugin element to render 2 fields to capture and confirm a password
@@ -18,7 +27,7 @@ defined('_JEXEC') or die('Restricted access');
  * @subpackage  Fabrik.element.password
  * @since       3.0
  */
-class PlgFabrik_ElementPassword extends PlgFabrik_Element
+class Password extends Element
 {
 	/**
 	 * States if the element contains data which is recorded in the database

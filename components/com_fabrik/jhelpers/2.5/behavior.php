@@ -11,6 +11,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Fabrik\Helpers\Html;
+
 /**
  * Utility class for javascript behaviors
  *
@@ -42,7 +44,7 @@ abstract class JHtmlBehavior
 		// $$$ rob this is to stop mootools from being re-loaded when in an ajax loaded page, as that
 		// resets the window events, stopping Fabriks mediator js system from working (e.g. fabrik.form.submitted will not
 		// fire the events added when the url initially loads.)
-		if (FabrikHelperHTML::inAjaxLoadedPage()) {
+		if (Html::inAjaxLoadedPage()) {
 			return;
 		}
 		$type = $extras ? 'more' : 'core';

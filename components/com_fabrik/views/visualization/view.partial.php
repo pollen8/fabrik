@@ -11,6 +11,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Fabrik\Helpers\Html;
+
 jimport('joomla.application.component.view');
 
 /**
@@ -35,9 +37,9 @@ class FabrikViewVisualization extends FabrikView
 	 */
 	public function display($tmpl = 'default')
 	{
-		$srcs = FabrikHelperHTML::framework();
+		$srcs = Html::framework();
 		$input = $this->app->input;
-		FabrikHelperHTML::script($srcs);
+		Html::script($srcs);
 		$model = $this->getModel();
 		$usersConfig = JComponentHelper::getParams('com_fabrik');
 		$model->setId($input->get('id', $usersConfig->get('visualizationid', $input->getInt('visualizationid', 0))));

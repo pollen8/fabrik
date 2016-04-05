@@ -8,10 +8,15 @@
  * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
+namespace Fabrik\Plugins\Element;
+
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-require_once JPATH_SITE . '/components/com_fabrik/models/element.php';
+use \JHtml;
+use \FText;
+use \JFolder;
+use \stdClass;
 
 /**
  * Plugin element to render folder list
@@ -21,7 +26,7 @@ require_once JPATH_SITE . '/components/com_fabrik/models/element.php';
  * @since       3.0
  */
 
-class PlgFabrik_ElementFolder extends PlgFabrik_Element
+class Folder extends Element
 {
 	/**
 	 * Draws the html form element
@@ -45,7 +50,7 @@ class PlgFabrik_ElementFolder extends PlgFabrik_Element
 
 		if ($params->get('folder_allownone', true))
 		{
-			$opts[] = JHTML::_('select.option', '', FText::_('NONE'));
+			$opts[] = JHtml::_('select.option', '', FText::_('NONE'));
 		}
 
 		if ($params->get('folder_listfolders', true))
@@ -54,7 +59,7 @@ class PlgFabrik_ElementFolder extends PlgFabrik_Element
 
 			foreach ($folders as $folder)
 			{
-				$opts[] = JHTML::_('select.option', $folder, $folder);
+				$opts[] = JHtml::_('select.option', $folder, $folder);
 
 				if (is_array($selected) and in_array($folder, $selected))
 				{
@@ -69,7 +74,7 @@ class PlgFabrik_ElementFolder extends PlgFabrik_Element
 
 			foreach ($files as $file)
 			{
-				$opts[] = JHTML::_('select.option', $file, $file);
+				$opts[] = JHtml::_('select.option', $file, $file);
 
 				if (is_array($selected) and in_array($file, $selected))
 				{

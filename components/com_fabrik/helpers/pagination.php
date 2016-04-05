@@ -11,6 +11,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Fabrik\Helpers\Html;
+
 /**
  * Makes the list navigation html to traverse the list data
  *
@@ -188,7 +190,7 @@ class FPagination extends JPagination
 		$displayData->item = $item;
 		$paths[]           = JPATH_THEMES . '/' . JFactory::getApplication()->getTemplate() . '/html/layouts/com_fabrik/list_' . $this->id;
 
-		$layout = FabrikHelperHTML::getLayout('pagination.fabrik-pagination-item-active', $paths);
+		$layout = Html::getLayout('pagination.fabrik-pagination-item-active', $paths);
 
 		return $layout->render($displayData);
 	}
@@ -208,7 +210,7 @@ class FPagination extends JPagination
 		$displayData->item = $item;
 		$paths[]           = JPATH_THEMES . '/' . JFactory::getApplication()->getTemplate() . '/html/layouts/com_fabrik/list_' . $this->id;
 
-		$layout = FabrikHelperHTML::getLayout('pagination.fabrik-pagination-item-inactive', $paths);
+		$layout = Html::getLayout('pagination.fabrik-pagination-item-inactive', $paths);
 
 		return $layout->render($displayData);
 	}
@@ -347,7 +349,7 @@ class FPagination extends JPagination
 		$displayData->list = $list;
 		$paths[]           = JPATH_THEMES . '/' . JFactory::getApplication()->getTemplate() . '/html/layouts/com_fabrik/list_' . $this->id;
 
-		$layout = FabrikHelperHTML::getLayout('pagination.fabrik-pagination-links', $paths);
+		$layout = Html::getLayout('pagination.fabrik-pagination-links', $paths);
 
 		return $layout->render($displayData);
 	}
@@ -467,7 +469,7 @@ class FPagination extends JPagination
 
 		$paths[] = JPATH_THEMES . '/' . JFactory::getApplication()->getTemplate() . '/html/layouts/com_fabrik/list_' . $this->id;
 
-		$layout = FabrikHelperHTML::getLayout('pagination.fabrik-pagination-footer', $paths);
+		$layout = Html::getLayout('pagination.fabrik-pagination-footer', $paths);
 
 		return $layout->render($displayData);
 	}

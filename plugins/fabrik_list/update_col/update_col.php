@@ -12,6 +12,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 use Joomla\Utilities\ArrayHelper;
+use Fabrik\Helpers\Html;
 
 // Require the abstract plugin class
 require_once COM_FABRIK_FRONTEND . '/models/plugin-list.php';
@@ -63,7 +64,7 @@ class PlgFabrik_ListUpdate_Col extends PlgFabrik_List
 	/**
 	 * Element containing email notification addresses
 	 *
-	 * @var  PlgFabrik_Element
+	 * @var  Fabrik\Plugins\Element\Element
 	 */
 	protected $emailElement = null;
 
@@ -409,7 +410,7 @@ class PlgFabrik_ListUpdate_Col extends PlgFabrik_List
 	/**
 	 * Get Email Element
 	 *
-	 * @return PlgFabrik_Element
+	 * @return Fabrik\Plugins\Element\Element
 	 */
 	private function getEmailElement()
 	{
@@ -566,8 +567,8 @@ class PlgFabrik_ListUpdate_Col extends PlgFabrik_List
 		$layoutData->listRef = $listRef;
 		$layoutData->renderOrder = $this->renderOrder;
 		$layoutData->j3 = $j3;
-		$layoutData->addImg = FabrikHelperHTML::image($addImg, 'list', $model->getTmpl());
-		$layoutData->delImg = FabrikHelperHTML::image($removeImg, 'list', $model->getTmpl());
+		$layoutData->addImg = Html::image($addImg, 'list', $model->getTmpl());
+		$layoutData->delImg = Html::image($removeImg, 'list', $model->getTmpl());
 		$layoutData->elements = $elements;
 		$layoutData->user_select_message = $params->get('update_user_select_message', '');
 

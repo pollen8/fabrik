@@ -11,6 +11,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Fabrik\Helpers\Html;
+
 jimport('joomla.application.component.view');
 
 /**
@@ -112,8 +114,8 @@ class FabrikAdminViewList extends JViewLegacy
 
 		FabrikAdminHelper::setViewLayout($this);
 
-		$srcs                  = FabrikHelperHTML::framework();
-		$srcs['Fabrik']        = FabrikHelperHTML::mediaFile('fabrik.js');
+		$srcs                  = Html::framework();
+		$srcs['Fabrik']        = Html::mediaFile('fabrik.js');
 		$srcs['NameSpace']     = 'administrator/components/com_fabrik/views/namespace.js';
 		$srcs['PluginManager'] = 'administrator/components/com_fabrik/views/pluginmanager.js';
 		$srcs['AdminList']     = 'administrator/components/com_fabrik/views/list/tmpl/adminlist.js';
@@ -125,8 +127,8 @@ class FabrikAdminViewList extends JViewLegacy
 		$dep->deps                         = array('admin/pluginmanager');
 		$shim['admin/list/tmpl/adminlist'] = $dep;
 		$shim['adminfields/tables']        = $dep;
-		FabrikHelperHTML::iniRequireJS($shim);
-		FabrikHelperHTML::script($srcs, $this->js);
+		Html::iniRequireJS($shim);
+		Html::script($srcs, $this->js);
 		parent::display($tpl);
 	}
 
@@ -143,7 +145,7 @@ class FabrikAdminViewList extends JViewLegacy
 		$this->addLinkedElementsToolbar();
 		$this->formGroupEls = $model->getFormGroups(false);
 		$this->formTable    = $model->getForm();
-		FabrikHelperHTML::iniRequireJS();
+		Html::iniRequireJS();
 		parent::display($tpl);
 	}
 
@@ -189,7 +191,7 @@ class FabrikAdminViewList extends JViewLegacy
 
 		$this->lists = $lists;
 		$this->addConfirmCopyToolbar();
-		FabrikHelperHTML::iniRequireJS();
+		Html::iniRequireJS();
 		parent::display($tpl);
 	}
 
@@ -207,8 +209,8 @@ class FabrikAdminViewList extends JViewLegacy
 		$input      = JFactory::getApplication()->input;
 		$this->data = $input->post->get('jform', array(), 'array');
 		$this->addSelectSaveToolBar();
-		FabrikHelperHTML::framework();
-		FabrikHelperHTML::iniRequireJS();
+		Html::framework();
+		Html::iniRequireJS();
 
 		parent::display($tpl);
 	}

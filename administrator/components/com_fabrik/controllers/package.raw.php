@@ -14,6 +14,8 @@ defined('_JEXEC') or die('Restricted access');
 
 jimport('joomla.application.component.controllerform');
 
+use Fabrik\Helpers\Html;
+
 /**
  * Raw Package controller class.
  *
@@ -71,6 +73,6 @@ class FabrikAdminControllerPackage extends JControllerForm
 		$script = "$('$list-additems').getElements('a').addEvent('click', function(e){
 			Fabrik.fireEvent('fabrik.package.item.selected', [e]);
 		});";
-		FabrikHelperHTML::addScriptDeclaration($script);
+		Html::addScriptDeclaration($script);
 	}
 }

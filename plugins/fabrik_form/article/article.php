@@ -341,7 +341,7 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 			}
 
 			// Dates need to have date element tz options applied
-			if (is_a($elementModel, 'PlgFabrik_ElementDate'))
+			if (is_a($elementModel, 'Fabrik\Plugins\Element\Date'))
 			{
 				if (is_array($value) && array_key_exists('date', $value))
 				{
@@ -390,7 +390,7 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 
 				$elementModel = $formModel->getElement($introImg, true);
 
-				if (get_class($elementModel) === 'PlgFabrik_ElementFileupload')
+				if (get_class($elementModel) === 'Fabrik\Plugins\Element\Fileupload')
 				{
 					$name       = $elementModel->getFullName(true, false);
 					$img->$name = $placeholder;
@@ -413,7 +413,7 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 
 				$elementModel = $formModel->getElement($fullImg, true);
 
-				if (get_class($elementModel) === 'PlgFabrik_ElementFileupload')
+				if (get_class($elementModel) === 'Fabrik\Plugins\Element\Fileupload')
 				{
 					$name       = $elementModel->getFullName(true, false);
 					$img->$name = $placeholder;
@@ -469,10 +469,10 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 		/** @var FabrikFEModelForm $formModel */
 		$formModel    = $this->getModel();
 
-		/** @var PlgFabrik_ElementFileupload $elementModel */
+		/** @var Fabrik\Plugins\Element\Fileupload $elementModel */
 		$elementModel = $formModel->getElement($elementId, true);
 
-		if (get_class($elementModel) === 'PlgFabrik_ElementFileupload')
+		if (get_class($elementModel) === 'Fabrik\Plugins\Element\Fileupload')
 		{
 			$name        = $elementModel->getHTMLName();
 			$data[$name] = $file;

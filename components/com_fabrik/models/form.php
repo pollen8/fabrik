@@ -13,6 +13,7 @@ defined('_JEXEC') or die('Restricted access');
 
 use \Joomla\Registry\Registry;
 use Joomla\Utilities\ArrayHelper;
+use Fabrik\Helpers\Html;
 
 jimport('joomla.application.component.model');
 require_once 'fabrikmodelform.php';
@@ -593,11 +594,11 @@ class FabrikFEModelForm extends FabModelForm
 			$qs .= '&amp;rowid=' . $this->getRowId();
 
 			/* $$$ need &amp; for pdf output which is parsed through xml parser otherwise fails
-			 * If FabrikHelperHTML::styleSheetajax loaded then don't do &amp;
+			 * If Html::styleSheetajax loaded then don't do &amp;
 			 */
 			$view = $this->isEditable() ? 'form' : 'details';
 
-			if (FabrikHelperHTML::cssAsAsset())
+			if (Html::cssAsAsset())
 			{
 				$qs .= '&view=' . $v;
 				$qs .= '&rowid=' . $this->getRowId();
@@ -610,9 +611,9 @@ class FabrikFEModelForm extends FabModelForm
 
 			$tmplPath = 'templates/' . $this->app->getTemplate() . '/html/com_fabrik/' . $view . '/' . $tmpl . '/template_css.php' . $qs;
 
-			if (!FabrikHelperHTML::stylesheetFromPath($tmplPath))
+			if (!Html::stylesheetFromPath($tmplPath))
 			{
-				FabrikHelperHTML::stylesheetFromPath('components/com_fabrik/views/' . $view . '/' . $jTmplFolder . '/' . $tmpl . '/template_css.php' . $qs);
+				Html::stylesheetFromPath('components/com_fabrik/views/' . $view . '/' . $jTmplFolder . '/' . $tmpl . '/template_css.php' . $qs);
 			}
 
 			/* $$$ hugh - as per Skype convos with Rob, decided to re-instate the custom.css convention.  So I'm adding two files:
@@ -620,14 +621,14 @@ class FabrikFEModelForm extends FabModelForm
 			 * custom_css.php - what we'll recommend people use for custom css moving forward.
 			 */
 
-			if (!FabrikHelperHTML::stylesheetFromPath('templates/' . $this->app->getTemplate() . '/html/com_fabrik/' . $view . '/' . $tmpl . '/custom.css' . $qs))
+			if (!Html::stylesheetFromPath('templates/' . $this->app->getTemplate() . '/html/com_fabrik/' . $view . '/' . $tmpl . '/custom.css' . $qs))
 			{
-				FabrikHelperHTML::stylesheetFromPath('components/com_fabrik/views/' . $view . '/' . $jTmplFolder . '/' . $tmpl . '/custom.css' . $qs);
+				Html::stylesheetFromPath('components/com_fabrik/views/' . $view . '/' . $jTmplFolder . '/' . $tmpl . '/custom.css' . $qs);
 			}
 
 			$path = 'templates/' . $this->app->getTemplate() . '/html/com_fabrik/' . $view . '/' . $tmpl . '/custom_css.php' . $qs;
 
-			if (!FabrikHelperHTML::stylesheetFromPath($path))
+			if (!Html::stylesheetFromPath($path))
 			{
 				$displayData              = new stdClass;
 				$displayData->view        = $view;
@@ -638,13 +639,13 @@ class FabrikFEModelForm extends FabModelForm
 				$layout = $this->getLayout('form.fabrik-custom-css-qs');
 				$path = $layout->render($displayData);
 
-				FabrikHelperHTML::stylesheetFromPath($path);
+				Html::stylesheetFromPath($path);
 			}
 		}
 
 		if ($this->app->isAdmin() && $input->get('tmpl') === 'components')
 		{
-			FabrikHelperHTML::stylesheet('administrator/templates/system/css/system.css');
+			Html::stylesheet('administrator/templates/system/css/system.css');
 		}
 	}
 
@@ -2003,7 +2004,7 @@ class FabrikFEModelForm extends FabModelForm
 								 * their JSON data for encrypted read only values, need to decode.
 								 */
 
-								if (is_subclass_of($elementModel, 'PlgFabrik_ElementList'))
+								if (is_subclass_of($elementModel, 'Fabrik\Plugins\Element\ElementList'))
 								{
 									$v = FabrikWorker::JSONtoData($v, true);
 								}
@@ -2332,7 +2333,7 @@ class FabrikFEModelForm extends FabModelForm
 			FabrikWorker::getPluginManager()->runPlugins('onError', $this);
 		}
 
-		FabrikHelperHTML::debug($this->errors, 'form:errors');
+		Html::debug($this->errors, 'form:errors');
 		//echo "<pre>";print_r($this->errors);exit;
 		$this->setErrors($this->errors);
 
@@ -2594,10 +2595,10 @@ class FabrikFEModelForm extends FabModelForm
 	/**
 	 * Helper function for getElementIds(), test if the element should be added
 	 *
-	 * @param   plgFabrik_Element  $elementModel  Element model
-	 * @param   array              $ignore        ClassNames to ignore e.g. array('FabrikModelFabrikCascadingdropdown')
-	 * @param   array              $opts          Filter options
-	 * @param   array              &$aEls         Array of element ids to load
+	 * @param   Fabrik\Plugins\Element\Element  $elementModel  Element model
+	 * @param   array                           $ignore        ClassNames to ignore e.g. array('FabrikModelFabrikCascadingdropdown')
+	 * @param   array                           $opts          Filter options
+	 * @param   array                           &$aEls         Array of element ids to load
 	 *
 	 * @return  void
 	 */
@@ -2678,7 +2679,7 @@ class FabrikFEModelForm extends FabModelForm
 						$val = FabrikString::safeColName($val);
 					}
 
-					if ($incRaw && is_a($elementModel, 'PlgFabrik_ElementDatabasejoin'))
+					if ($incRaw && is_a($elementModel, '\Fabrik\Plugins\Element\Databasejoin'))
 					{
 						/* @FIXME - next line had been commented out, causing undefined warning for $rawVal
 						 * on following line.  Not sure if getrawColumn is right thing to use here though,
@@ -3059,7 +3060,7 @@ class FabrikFEModelForm extends FabModelForm
 
 		if (!$form->record_in_database)
 		{
-			FabrikHelperHTML::debug($data, 'form:getData from $_REQUEST');
+			Html::debug($data, 'form:getData from $_REQUEST');
 			$data = $f->clean($_REQUEST, 'array');
 		}
 		else
@@ -3089,7 +3090,7 @@ class FabrikFEModelForm extends FabModelForm
 						$data = FArrayHelper::toObject($sData, 'stdClass', false);
 						JFilterOutput::objectHTMLSafe($data);
 						$data = array($data);
-						FabrikHelperHTML::debug($data, 'form:getData from session (form in Mambot and errors)');
+						Html::debug($data, 'form:getData from session (form in Mambot and errors)');
 					}
 				}
 				else
@@ -3102,7 +3103,7 @@ class FabrikFEModelForm extends FabModelForm
 					// $$$rob ensure "<tags>text</tags>" that are entered into plain text areas are shown correctly
 					JFilterOutput::objectHTMLSafe($data);
 					$data = ArrayHelper::fromObject($data);
-					FabrikHelperHTML::debug($data, 'form:getData from POST (form not in Mambot and errors)');
+					Html::debug($data, 'form:getData from POST (form not in Mambot and errors)');
 				}
 			}
 			else
@@ -3141,7 +3142,7 @@ class FabrikFEModelForm extends FabModelForm
 						$bits = array_merge($tmp_data, $bits);
 						//$data = array(FArrayHelper::toObject($bits));
 						$data = $bits;
-						FabrikHelperHTML::debug($data, 'form:getData from session (form not in Mambot and no errors');
+						Html::debug($data, 'form:getData from session (form not in Mambot and no errors');
 					}
 				}
 
@@ -3171,7 +3172,7 @@ class FabrikFEModelForm extends FabModelForm
 						$opts = array('ignoreOrder' => true);
 						$sql = $this->buildQuery($opts);
 						$fabrikDb->setQuery($sql);
-						FabrikHelperHTML::debug((string) $fabrikDb->getQuery(), 'form:render');
+						Html::debug((string) $fabrikDb->getQuery(), 'form:render');
 						$rows = $fabrikDb->loadObjectList();
 
 						if (is_null($rows))
@@ -3202,7 +3203,7 @@ class FabrikFEModelForm extends FabModelForm
 							}
 						}
 
-						FabrikHelperHTML::debug($data, 'form:getData from querying rowid= ' . $this->rowId . ' (form not in Mambot and no errors)');
+						Html::debug($data, 'form:getData from querying rowid= ' . $this->rowId . ' (form not in Mambot and no errors)');
 
 						// If empty data return and trying to edit a record then show error
 						JDEBUG ? $profiler->mark('formmodel getData: empty test') : null;
@@ -3248,7 +3249,7 @@ class FabrikFEModelForm extends FabModelForm
 		}
 
 		$this->data = $data;
-		FabrikHelperHTML::debug($data, 'form:data');
+		Html::debug($data, 'form:data');
 		JDEBUG ? $profiler->mark('queryselect: getData() end') : null;
 
 		return $this->data;
@@ -3707,7 +3708,7 @@ class FabrikFEModelForm extends FabModelForm
 	 * @param   bool    $checkInt    Check search name against element id
 	 * @param   bool    $checkShort  Check short element name
 	 *
-	 * @return  PlgFabrik_Element  ok: element model not ok: false
+	 * @return  Fabrik\Plugins\Element\Element  ok: element model not ok: false
 	 */
 	public function getElement($searchName, $checkInt = false, $checkShort = true)
 	{
@@ -5268,7 +5269,7 @@ class FabrikFEModelForm extends FabModelForm
 
 	/**
 	 * Ask all elements to add their js Fabrik.jLayouts to the framework
-	 * This has to be done before we call FabrikHelperHTML::framework();
+	 * This has to be done before we call Html::framework();
 	 *
 	 * @return void;
 	 */
@@ -5346,7 +5347,7 @@ class FabrikFEModelForm extends FabModelForm
 	{
 		$view = $this->isEditable() ? 'form' : 'details';
 		$paths[] = COM_FABRIK_FRONTEND . '/views/'. $view . '/tmpl/' . $this->getTmpl() . '/layouts';
-		$layout  = FabrikHelperHTML::getLayout($name, $paths, $options);
+		$layout  = Html::getLayout($name, $paths, $options);
 
 		return $layout;
 	}

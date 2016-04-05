@@ -11,7 +11,9 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-FabrikHelperHTML::formvalidation();
+use Fabrik\Helpers\Html;
+
+Html::formvalidation();
 $db = FabrikWorker::getDbo(true);
 ?>
 

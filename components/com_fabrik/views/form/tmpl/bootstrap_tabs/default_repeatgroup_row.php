@@ -12,6 +12,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Fabrik\Helpers\Html;
+
 $group = $this->group;
 ?>
 <tr class="fabrikSubGroupElements fabrikSubGroup">
@@ -45,14 +47,14 @@ $group = $this->group;
 		<td class="fabrikGroupRepeater">
 			<div class="pull-right">
 			<?php if ($group->canAddRepeat) :
-				$add = FabrikHelperHTML::image('plus.png', 'form', $this->tmpl, array('class' => 'fabrikTip tip-small', 'title' => FText::_('COM_FABRIK_ADD_GROUP')));
+				$add = Html::image('plus.png', 'form', $this->tmpl, array('class' => 'fabrikTip tip-small', 'title' => FText::_('COM_FABRIK_ADD_GROUP')));
 				?>
 				<a class="addGroup" href="#"><?php echo $add?></a>
 			<?php
 			endif;
 			if ($group->canDeleteRepeat) :?>
 			<a class="deleteGroup" href="#">
-				<?php echo FabrikHelperHTML::image('minus.png', 'form', $this->tmpl, array('class' => 'fabrikTip tip-small', 'title' => FText::_('COM_FABRIK_DELETE_GROUP')));?>
+				<?php echo Html::image('minus.png', 'form', $this->tmpl, array('class' => 'fabrikTip tip-small', 'title' => FText::_('COM_FABRIK_DELETE_GROUP')));?>
 			</a>
 			<?php endif;?>
 			</div>

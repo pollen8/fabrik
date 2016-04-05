@@ -15,6 +15,7 @@ jimport('joomla.application.component.modelform');
 
 use \Joomla\Registry\Registry;
 use Joomla\Utilities\ArrayHelper;
+use Fabrik\Helpers\Html;
 
 require_once COM_FABRIK_FRONTEND . '/helpers/pagination.php';
 require_once COM_FABRIK_FRONTEND . '/helpers/list.php';
@@ -650,7 +651,7 @@ class FabrikFEModelList extends JModelForm
 	{
 		$pluginManager = FabrikWorker::getPluginManager();
 		$pluginManager->runPlugins('onBeforeListRender', $this, 'list');
-		FabrikHelperHTML::debug($_POST, 'render:post');
+		Html::debug($_POST, 'render:post');
 		$input = $this->app->input;
 		$profiler = JProfiler::getInstance('Application');
 		$id = $this->getId();
@@ -943,7 +944,7 @@ class FabrikFEModelList extends JModelForm
 			$fabrikDb->setQuery($query, $this->limitStart, $this->limitLength);
 		}
 
-		FabrikHelperHTML::debug((string) $fabrikDb->getQuery(), 'list GetData:' . $this->getTable()->label);
+		Html::debug((string) $fabrikDb->getQuery(), 'list GetData:' . $this->getTable()->label);
 		JDEBUG ? $profiler->mark('before query run') : null;
 
 		/* set 2nd param to false in attempt to stop joomfish db adaptor from translating the original query
@@ -1322,7 +1323,7 @@ class FabrikFEModelList extends JModelForm
 		if ($this->outputFormat != 'pdf' && $this->outputFormat != 'csv' && $this->outputFormat != 'feed')
 		{
 			$this->addSelectBoxAndLinks($data);
-			FabrikHelperHTML::debug($data, 'table:data');
+			Html::debug($data, 'table:data');
 		}
 
 		JDEBUG ? $profiler->mark('end format data') : null;
@@ -1464,7 +1465,7 @@ class FabrikFEModelList extends JModelForm
 				}
 				else
 				{
-					$img = FabrikHelperHTML::image('edit.png', 'list', '', array('alt' => $editLabel));
+					$img = Html::image('edit.png', 'list', '', array('alt' => $editLabel));
 					$editLink = '<a data-loadmethod="' . $loadMethod . '" class="' . $class . '" ' . $editAttribs
 						. 'data-list="' . $dataList . '" href="' . $edit_link . '" title="' . $editLabel . '">' . $img
 						. ' ' . $editText . '</a>';
@@ -1494,7 +1495,7 @@ class FabrikFEModelList extends JModelForm
 				}
 				else
 				{
-					$img = FabrikHelperHTML::image('search.png', 'list', '', array('alt' => $viewLabel));
+					$img = Html::image('search.png', 'list', '', array('alt' => $viewLabel));
 					$viewLink = '<a data-loadmethod="' . $loadMethod . '" class="' . $class . '" ' . $detailsAttribs
 						. 'data-list="' . $dataList . '" href="' . $link . '" title="' . $viewLabel . '" target="' . $viewLinkTarget . '">' . $img
 						. ' ' . $viewText . '</a>';
@@ -1810,7 +1811,7 @@ class FabrikFEModelList extends JModelForm
 		{
 			$btn = '<a href="#" class="' . $displayData->btnClass . 'delete" data-listRef="list_' . $displayData->renderContext
 				. '" title="' . FText::_('COM_FABRIK_DELETE') . '">'
-				. FabrikHelperHTML::image('delete.png', 'list', $displayData->tpl, array('alt' => $displayData->label, 'icon-class' => $displayData->iconClass)) . ' ' . $displayData->text . '</a>';
+				. Html::image('delete.png', 'list', $displayData->tpl, array('alt' => $displayData->label, 'icon-class' => $displayData->iconClass)) . ' ' . $displayData->text . '</a>';
 
 			return '<li class="fabrik_delete">' . $btn . '</li>';
 		}
@@ -1920,8 +1921,8 @@ class FabrikFEModelList extends JModelForm
 		$db->setQuery($query);
 		$this->recordCounts[$k] = $db->loadObjectList('id');
 		$this->recordCounts[$k]['linkKey'] = FabrikString::safeColNameToArrayKey($key);
-		FabrikHelperHTML::debug($query->dump(), 'getRecordCounts query: ' . $linkKey);
-		FabrikHelperHTML::debug($this->recordCounts[$k], 'getRecordCounts data: ' . $linkKey);
+		Html::debug($query->dump(), 'getRecordCounts query: ' . $linkKey);
+		Html::debug($this->recordCounts[$k], 'getRecordCounts data: ' . $linkKey);
 		$input->set('fabrik_incsessionfilters', $origIncSesssionFilters);
 
 		return $this->recordCounts[$k];
@@ -2186,10 +2187,10 @@ class FabrikFEModelList extends JModelForm
 	/**
 	 * Add a normal/custom link to the element data
 	 *
-	 * @param   string             $data           Element data
-	 * @param   PlgFabrik_Element  &$elementModel  Element model
-	 * @param   object             $row            All row data
-	 * @param   int                $repeatCounter  Repeat group counter
+	 * @param   string                           $data           Element data
+	 * @param   \Fabrik\Plugins\Element\Element  &$elementModel  Element model
+	 * @param   object                           $row            All row data
+	 * @param   int                              $repeatCounter  Repeat group counter
 	 *
 	 * @return  string	element data with link added if specified
 	 */
@@ -2316,7 +2317,7 @@ class FabrikFEModelList extends JModelForm
 		}
 
 		// Allow creating custom links, default layout will just return $link unaltered
-		$layout                     = FabrikHelperHTML::getLayout('element.fabrik-element-details-link');
+		$layout                     = Html::getLayout('element.fabrik-element-details-link');
 		$displayData                = new stdClass;
 		$displayData->row           = $row;
 		$displayData->listModel     = $this;
@@ -2469,7 +2470,7 @@ class FabrikFEModelList extends JModelForm
 			// Can't limit the query here as this gives incorrect _data array.
 			// $db->setQuery($query, $this->limitStart, $this->limitLength);
 			$db->setQuery($query);
-			FabrikHelperHTML::debug((string) $query, 'table:mergeJoinedData get ids');
+			Html::debug((string) $query, 'table:mergeJoinedData get ids');
 			$ids = array();
 			$idRows = $db->loadObjectList();
 			$maxPossibleIds = count($idRows);
@@ -3177,7 +3178,7 @@ class FabrikFEModelList extends JModelForm
 	/**
 	 * Build query prefilter where part
 	 *
-	 * @param   PlgFabrik_Element  $element  Element model
+	 * @param   Fabrik\Plugins\Element\Element  $element  Element model
 	 *
 	 * @return  string
 	 */
@@ -3748,7 +3749,7 @@ class FabrikFEModelList extends JModelForm
 	 *
 	 * @since 3.0.7
 	 *
-	 * @return  plgFabrik_Element
+	 * @return  Fabrik\Plugins\Element\Element
 	 */
 	protected function getGroupByElement()
 	{
@@ -4263,7 +4264,7 @@ class FabrikFEModelList extends JModelForm
 		{
 			$form = $this->getFormModel();
 			$form->getGroupsHiarachy();
-			$ignore = array('PlgFabrik_ElementCascadingdropdown');
+			$ignore = array('Fabrik\Plugins\Element\Cascadingdropdown');
 			$ids = $form->getElementIds($ignore);
 			$db = FabrikWorker::getDbo(true);
 			$id = (int) $this->getId();
@@ -4493,7 +4494,7 @@ class FabrikFEModelList extends JModelForm
 			}
 		}
 
-		FabrikHelperHTML::debug($joins, 'joins');
+		Html::debug($joins, 'joins');
 	}
 
 	/**
@@ -4573,8 +4574,8 @@ class FabrikFEModelList extends JModelForm
 	 * if a new element it will run the sql to add to field,
 	 * if existing element and name changed will create query to be used later
 	 *
-	 * @param   PlgFabrik_Element  &$elementModel  element model
-	 * @param   string             $origColName    original column name
+	 * @param   Fabrik\Plugins\Element\Element  &$elementModel  element model
+	 * @param   string                          $origColName    original column name
 	 *
 	 * @throws ErrorException
 	 *
@@ -5102,7 +5103,7 @@ class FabrikFEModelList extends JModelForm
 		$this->filters = array();
 		$request = $this->getRequestData();
 		$this->storeRequestData($request);
-		FabrikHelperHTML::debug($request, 'filter:request');
+		Html::debug($request, 'filter:request');
 		$elements = $this->getElements('id');
 
 		/* $$$ rob prefilters loaded before anything to avoid issues where you filter on something and
@@ -5116,7 +5117,7 @@ class FabrikFEModelList extends JModelForm
 		// These are filters created from a search form or normal search, assign them to the filters array
 		$keys = array_keys($request);
 		$indexStep = count(FArrayHelper::getValue($this->filters, 'key', array()));
-		FabrikHelperHTML::debug($keys, 'filter:request keys');
+		Html::debug($keys, 'filter:request keys');
 
 		foreach ($keys as $key)
 		{
@@ -5134,7 +5135,7 @@ class FabrikFEModelList extends JModelForm
 			}
 		}
 
-		FabrikHelperHTML::debug($this->filters, 'listmodel::getFilterArray middle');
+		Html::debug($this->filters, 'listmodel::getFilterArray middle');
 		$readOnlyValues = array();
 		$w = new FabrikWorker;
 		$noFiltersSetup = FArrayHelper::getValue($this->filters, 'no-filter-setup', array());
@@ -5206,7 +5207,7 @@ class FabrikFEModelList extends JModelForm
 			$value = $this->prefilterParse($value);
 			$value = $w->parseMessageForPlaceHolder($value);
 
-			if (!is_a($elementModel, 'PlgFabrik_Element'))
+			if (!is_a($elementModel, 'Fabrik\Plugins\Element\Element'))
 			{
 				if ($this->filters['condition'][$i] == 'exists')
 				{
@@ -5344,7 +5345,7 @@ class FabrikFEModelList extends JModelForm
 			}
 		}
 
-		FabrikHelperHTML::debug($this->filters, 'end filters');
+		Html::debug($this->filters, 'end filters');
 
 		foreach ($readOnlyValues as $key => $val)
 		{
@@ -5358,7 +5359,7 @@ class FabrikFEModelList extends JModelForm
 		}
 
 		FabrikWorker::getPluginManager()->runPlugins('onFiltersGot', $this, 'list');
-		FabrikHelperHTML::debug($this->filters, 'after plugins:onFiltersGot');
+		Html::debug($this->filters, 'after plugins:onFiltersGot');
 
 		return $this->filters;
 	}
@@ -5617,7 +5618,7 @@ class FabrikFEModelList extends JModelForm
 			}
 		}
 
-		FabrikHelperHTML::debug($filters, 'prefilters');
+		Html::debug($filters, 'prefilters');
 	}
 
 	/**
@@ -5677,7 +5678,7 @@ class FabrikFEModelList extends JModelForm
 		$totalSql = (string) $query;
 		$totalSql = $this->pluginQuery($totalSql);
 		$db->setQuery($totalSql);
-		FabrikHelperHTML::debug($totalSql, 'table getJoinMergeTotalRecords');
+		Html::debug($totalSql, 'table getJoinMergeTotalRecords');
 		$total = $db->loadResult();
 
 		return $total;
@@ -6818,11 +6819,11 @@ class FabrikFEModelList extends JModelForm
 					if ($this->actionMethod() == 'dropdown')
 					{
 						$align = $params->get('checkboxLocation', 'end') == 'end' ? 'right' : 'left';
-						$aTableHeadings['fabrik_actions'] = FabrikHelperHTML::bootStrapDropDown($headingButtons, $align);
+						$aTableHeadings['fabrik_actions'] = Html::bootStrapDropDown($headingButtons, $align);
 					}
 					else
 					{
-						$aTableHeadings['fabrik_actions'] = FabrikHelperHTML::bootStrapButtonGroup($headingButtons);
+						$aTableHeadings['fabrik_actions'] = Html::bootStrapButtonGroup($headingButtons);
 					}
 				}
 			}
@@ -7474,7 +7475,7 @@ class FabrikFEModelList extends JModelForm
 		$db->setQuery(sprintf($fmtSql, implode(",", $tmp), $where));
 		$db->execute();
 
-		FabrikHelperHTML::debug((string) $db->getQuery(), 'list model updateObject:');
+		Html::debug((string) $db->getQuery(), 'list model updateObject:');
 
 		return true;
 	}
@@ -7533,7 +7534,7 @@ class FabrikFEModelList extends JModelForm
 			$object->$keyName = $id;
 		}
 
-		FabrikHelperHTML::debug((string) $db->getQuery(), 'list model insertObject:');
+		Html::debug((string) $db->getQuery(), 'list model insertObject:');
 
 		return true;
 	}
@@ -9578,7 +9579,7 @@ class FabrikFEModelList extends JModelForm
 	 *
 	 * @param   string  $plugin  name
 	 *
-	 * @return  PlgFabrik_Element[]	matched element models
+	 * @return  Fabrik\Plugins\Element\Element[]	matched element models
 	 */
 	public function getElementsOfType($plugin)
 	{
@@ -9610,7 +9611,7 @@ class FabrikFEModelList extends JModelForm
 	 * @param   bool   $showInTable    Show in table default true
 	 * @param   bool   $onlyPublished  Return only published elements
 	 *
-	 * @return  PlgFabrik_Element[]	table element models
+	 * @return  Fabrik\Plugins\Element\Element[]	table element models
 	 */
 	public function getElements($key = 0, $showInTable = true, $onlyPublished = true)
 	{
@@ -9653,7 +9654,7 @@ class FabrikFEModelList extends JModelForm
 							$elementModel->getParams()->set('join_val_column_concat', '');
 
 							// $$$ rob if prefilter was using _raw field then we need to assign the model twice to both possible keys
-							if (is_a($elementModel, 'PlgFabrik_ElementDatabasejoin'))
+							if (is_a($elementModel, '\Fabrik\Plugins\Element\Databasejoin'))
 							{
 								$dbKey2 = FabrikString::safeColName($elementModel->getFullName(false, false));
 								$this->elements[$sig][$dbKey2] = $elementModel;
@@ -10252,7 +10253,7 @@ class FabrikFEModelList extends JModelForm
 		$dbPrimaryKey = $this->getPrimaryKey(true);
 		$formModel = $this->getFormModel();
 		$db = $this->getDb();
-		FabrikHelperHTML::debug($data, 'render:before formatForJoins');
+		Html::debug($data, 'render:before formatForJoins');
 
 		$last_pk = '';
 		$last_i = 0;
@@ -10941,20 +10942,20 @@ class FabrikFEModelList extends JModelForm
 
 			$overRide = 'templates/' . $this->app->getTemplate() . '/html/com_fabrik/list/' . $tmpl . '/template_css.php' . $qs;
 
-			if (!FabrikHelperHTML::stylesheetFromPath($overRide))
+			if (!Html::stylesheetFromPath($overRide))
 			{
-				FabrikHelperHTML::stylesheetFromPath('components/com_fabrik/views/list/' . $jTmplFolder . '/' . $tmpl . '/template_css.php' . $qs);
+				Html::stylesheetFromPath('components/com_fabrik/views/list/' . $jTmplFolder . '/' . $tmpl . '/template_css.php' . $qs);
 			}
 			/* $$$ hugh - as per Skype conversation with Rob, decided to re-instate the custom.css convention.  So I'm adding two files:
 			 * custom.css - for backward compatibility with existing 2.x custom.css
 			* custom_css.php - what we'll recommend people use for custom css moving forward.
 			*/
-			if (!FabrikHelperHTML::stylesheetFromPath('templates/' . $this->app->getTemplate() . '/html/com_fabrik/list/' . $tmpl . '/custom.css' . $qs))
+			if (!Html::stylesheetFromPath('templates/' . $this->app->getTemplate() . '/html/com_fabrik/list/' . $tmpl . '/custom.css' . $qs))
 			{
-				FabrikHelperHTML::stylesheetFromPath('components/com_fabrik/views/list/' . $jTmplFolder . '/' . $tmpl . '/custom.css');
+				Html::stylesheetFromPath('components/com_fabrik/views/list/' . $jTmplFolder . '/' . $tmpl . '/custom.css');
 			}
 
-			if (!FabrikHelperHTML::stylesheetFromPath('templates/' . $this->app->getTemplate() . '/html/com_fabrik/list/' . $tmpl . '/custom_css.php' . $qs))
+			if (!Html::stylesheetFromPath('templates/' . $this->app->getTemplate() . '/html/com_fabrik/list/' . $tmpl . '/custom_css.php' . $qs))
 			{
 				$displayData              = new stdClass;
 				$displayData->tmpl        = $tmpl;
@@ -10964,7 +10965,7 @@ class FabrikFEModelList extends JModelForm
 				$layout = $this->getLayout('list.fabrik-custom-css-qs');
 				$path = $layout->render($displayData);
 
-				FabrikHelperHTML::stylesheetFromPath($path);
+				Html::stylesheetFromPath($path);
 			}
 		}
 	}
@@ -11479,7 +11480,8 @@ class FabrikFEModelList extends JModelForm
 
 		$formModel = $this->getFormModel();
 		$elementModel = $formModel->getElement($tabsElName);
-		$is_join = (is_subclass_of($elementModel, 'PlgFabrik_ElementDatabasejoin') || get_class($elementModel) == 'PlgFabrik_ElementDatabasejoin');
+		$is_join = (is_subclass_of($elementModel, '\Fabrik\Plugins\Element\Databasejoin') ||
+			get_class($elementModel) == '\Fabrik\Plugins\Element\Databasejoin');
 		if (!$is_join)
 		{
 			// Get values and count in the tab field
@@ -11504,13 +11506,13 @@ class FabrikFEModelList extends JModelForm
 		 $this->buildQueryWhere($this->app->input->getInt('incfilters', 1), $query, false);
 		 **/
 		$db->setQuery($query);
-		FabrikHelperHTML::debug($query->dump(), 'list getTabCategories query:' . $table->label);
+		Html::debug($query->dump(), 'list getTabCategories query:' . $table->label);
 		$profiler = JProfiler::getInstance('Application');
 		JDEBUG ? $profiler->mark('before fabrik list tabs query run') : null;
 		$db->execute();
 		$counts = $db->loadRowList();
 		JDEBUG ? $profiler->mark('after fabrik list tabs query run') : null;
-		FabrikHelperHTML::debug($counts, 'list getTabCategories counts: ' . $table->label);
+		Html::debug($counts, 'list getTabCategories counts: ' . $table->label);
 
 		/**
 		 * We consolidate by finding the two consecutive rows with the smallest total and merging them.
@@ -11571,7 +11573,7 @@ class FabrikFEModelList extends JModelForm
 		}
 
 		JDEBUG ? $profiler->mark('after fabrik list tabs counts merge') : null;
-		FabrikHelperHTML::debug($counts, 'list getTabCategories merged counts: ' . $table->label);
+		Html::debug($counts, 'list getTabCategories merged counts: ' . $table->label);
 
 		for ($i = 0; $i < count($counts); $i++)
 		{
@@ -11775,7 +11777,7 @@ class FabrikFEModelList extends JModelForm
 	public function getLayout($name, $paths = array(), $options = array())
 	{
 		$paths[] = COM_FABRIK_FRONTEND . '/views/list/tmpl/' . $this->getTmpl() . '/layouts';
-		$layout  = FabrikHelperHTML::getLayout($name, $paths, $options);
+		$layout  = Html::getLayout($name, $paths, $options);
 
 		return $layout;
 	}

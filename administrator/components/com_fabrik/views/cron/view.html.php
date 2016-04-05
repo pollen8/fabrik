@@ -11,6 +11,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Fabrik\Helpers\Html;
+
 jimport('joomla.application.component.view');
 
 /**
@@ -74,8 +76,8 @@ class FabrikAdminViewCron extends JViewLegacy
 		$this->addToolbar();
 		FabrikAdminHelper::setViewLayout($this);
 
-		$srcs = FabrikHelperHTML::framework();
-		$srcs['Fabrik'] = FabrikHelperHTML::mediaFile('fabrik.js');
+		$srcs = Html::framework();
+		$srcs['Fabrik'] = Html::mediaFile('fabrik.js');
 		$srcs['Namespace'] = 'administrator/components/com_fabrik/views/namespace.js';
 		$srcs['PluginManager'] = 'administrator/components/com_fabrik/views/pluginmanager.js';
 		$srcs['CronAdmin'] = 'administrator/components/com_fabrik/views/cron/admincron.js';
@@ -92,8 +94,8 @@ class FabrikAdminViewCron extends JViewLegacy
 		$js[] = "\twindow.addEvent('domready', function () {";
 		$js[] = "\t\tFabrik.controller = new CronAdmin(" . json_encode($opts) . ");";
 		$js[] = "\t})";
-		FabrikHelperHTML::iniRequireJS($shim);
-		FabrikHelperHTML::script($srcs, implode("\n", $js));
+		Html::iniRequireJS($shim);
+		Html::script($srcs, implode("\n", $js));
 
 		parent::display($tpl);
 	}

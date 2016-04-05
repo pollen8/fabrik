@@ -5,6 +5,8 @@
 
 defined('JPATH_BASE') or die;
 
+use Fabrik\Helpers\Html;
+
 $d = $displayData;
 $trigger = $d->popUp ? 'data-fabrik-view="form"' : '';
 ?>
@@ -12,7 +14,7 @@ $trigger = $d->popUp ? 'data-fabrik-view="form"' : '';
 <?php if ($d->canAdd) :?>
 <span class="addbutton">
 	<a <?php echo $trigger; ?> href="<?php echo $d->url ;?>" title="<?php echo $d->label; ?>">
-	<?php echo FabrikHelperHTML::icon('icon-plus', $d->label); ?>
+	<?php echo Html::icon('icon-plus', $d->label); ?>
 	</a>
 </span></a>
 <?php else :?>

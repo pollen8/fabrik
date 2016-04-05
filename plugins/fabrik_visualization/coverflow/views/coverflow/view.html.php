@@ -11,6 +11,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Fabrik\Helpers\Html;
+
 jimport('joomla.application.component.view');
 
 /**
@@ -36,7 +38,7 @@ class FabrikViewCoverflow extends JViewLegacy
 		$app = JFactory::getApplication();
 		$input = $app->input;
 		$j3 = FabrikWorker::j3();
-		$srcs = FabrikHelperHTML::framework();
+		$srcs = Html::framework();
 		$usersConfig = JComponentHelper::getParams('com_fabrik');
 		$model = $this->getModel();
 		$id = $input->getInt('id', $usersConfig->get('visualizationid', $input->getInt('visualizationid', 0)));
@@ -72,8 +74,8 @@ class FabrikViewCoverflow extends JViewLegacy
 		$js = "$ref = {};";
 		$js .= "\n" . "Fabrik.addBlock('$ref', $ref);";
 		$js .= $model->getFilterJs();
-		FabrikHelperHTML::iniRequireJs($model->getShim());
-		FabrikHelperHTML::script($srcs, $js);
+		Html::iniRequireJs($model->getShim());
+		Html::script($srcs, $js);
 		echo parent::display();
 	}
 }

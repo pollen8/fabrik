@@ -11,6 +11,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Fabrik\Helpers\Html;
+
 jimport('joomla.application.component.controller');
 
 /**
@@ -156,7 +158,7 @@ class FabrikControllerList extends JControllerLegacy
 		$modelName = $input->get('view', 'list');
 		$model = $this->getModel($modelName, 'FabrikFEModel');
 		$model->setId($input->getInt('listid'));
-		FabrikHelperHTML::debug('', 'list model: getRequestData');
+		Html::debug('', 'list model: getRequestData');
 		$request = $model->getRequestData();
 		$model->storeRequestData($request);
 

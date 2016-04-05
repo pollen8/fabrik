@@ -5,8 +5,10 @@
 
 defined('JPATH_BASE') or die;
 
+use Fabrik\Helpers\Html;
+
 $d = $displayData;
 ?>
 <a href="<?php echo $d->pdfURL; ?>" data-role="open-form-pdf" class="btn btn-default">
-	<?php echo FabrikHelperHTML::icon('icon-file', FText::_('COM_FABRIK_PDF'));?>
+	<?php echo Html::icon('icon-file', FText::_('COM_FABRIK_PDF'));?>
 </a>&nbsp;

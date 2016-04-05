@@ -11,6 +11,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Fabrik\Helpers\Html;
+
 jimport('joomla.html.html');
 jimport('joomla.form.formfield');
 jimport('joomla.form.helper');
@@ -111,7 +113,7 @@ class JFormFieldTables extends JFormFieldList
 				'Namespace' => 'administrator/components/com_fabrik/views/namespace.js',
 				'Tables' => 'administrator/components/com_fabrik/models/fields/tables.js'
 			);
-			FabrikHelperHTML::script($src, implode("\n", $script));
+			Html::script($src, implode("\n", $script));
 
 			$this->value = '';
 		}
@@ -119,8 +121,8 @@ class JFormFieldTables extends JFormFieldList
 		$html = parent::getInput();
 		$html .= "<img style='margin-left:10px;display:none' id='" . $this->id . "_loader' src='components/com_fabrik/images/ajax-loader.gif' alt='"
 			. FText::_('LOADING') . "' />";
-		FabrikHelperHTML::framework();
-		FabrikHelperHTML::iniRequireJS();
+		Html::framework();
+		Html::iniRequireJS();
 
 		return $html;
 	}

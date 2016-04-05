@@ -11,6 +11,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Fabrik\Helpers\Html;
+
 jimport('joomla.application.component.model');
 
 /**
@@ -131,7 +133,7 @@ class PlgFabrik_List extends FabrikPlugin
 		{
 			$p = $this->onGetFilterKey_result();
 			$j3 = FabrikWorker::j3();
-			FabrikHelperHTML::addPath('plugins/fabrik_list/' . $p . '/images/', 'image', 'list');
+			Html::addPath('plugins/fabrik_list/' . $p . '/images/', 'image', 'list');
 			$name = $this->_getButtonName();
 			$label = $this->buttonLabel();
 			$imageName = $this->getImageName();
@@ -147,12 +149,12 @@ class PlgFabrik_List extends FabrikPlugin
 			}
 
 
-			$img = FabrikHelperHTML::image($imageName, 'list', $tmpl, $properties, false, $opts);
+			$img = Html::image($imageName, 'list', $tmpl, $properties, false, $opts);
 			$text = $this->buttonAction == 'dropdown' ? $label : '<span class="hidden">' . $label . '</span>';
 
 			if ($j3 && $this->buttonAction != 'dropdown')
 			{
-				$layout = FabrikHelperHTML::getLayout('fabrik-button');
+				$layout = Html::getLayout('fabrik-button');
 				$layoutData = (object) array(
 					'tag' => 'a',
 					'attributes' => 'data-list="' . $this->context . '" title="' . $label . '"',
@@ -367,7 +369,7 @@ class PlgFabrik_List extends FabrikPlugin
 	{
 		$this->onGetFilterKey();
 		$p = $this->onGetFilterKey_result();
-		$ext = FabrikHelperHTML::isDebug() ? '.js' : '-min.js';
+		$ext = Html::isDebug() ? '.js' : '-min.js';
 		$file = 'plugins/fabrik_list/' . $p . '/' . $p . $ext;
 
 		return JFile::exists(JPATH_SITE . '/' . $file) ? $file : null;

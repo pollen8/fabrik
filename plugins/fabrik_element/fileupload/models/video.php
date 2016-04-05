@@ -11,6 +11,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Fabrik\Helpers\Html;
+
 /**
  * Fileupload adaptor to render uploaded videos
  *
@@ -158,7 +160,7 @@ class VideoRenderModel extends FabModel
 				$js .= ']
 				});
 				';
-				FabrikHelperHTML::script('plugins/fabrik_element/fileupload/lib/jwplayer/jwplayer.js', $js);
+				Html::script('plugins/fabrik_element/fileupload/lib/jwplayer/jwplayer.js', $js);
 			}
 		}
 

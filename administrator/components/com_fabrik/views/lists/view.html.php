@@ -11,6 +11,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Fabrik\Helpers\Html;
+
 jimport('joomla.application.component.view');
 
 /**
@@ -92,7 +94,7 @@ class FabrikAdminViewLists extends JViewLegacy
 			$this->sidebar = JHtmlSidebar::render();
 		}
 
-		FabrikHelperHTML::iniRequireJS();
+		Html::iniRequireJS();
 		parent::display($tpl);
 	}
 

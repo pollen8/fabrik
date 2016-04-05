@@ -343,7 +343,7 @@ class FabrikFEModelGroup extends FabModel
 	 * NOTE: pretty sure that ->elements will already be loaded
 	 * within $formModel->getGroupsHiarachy()
 	 *
-	 * @return  PlgFabrik_Element[]	Element objects (bound to element plugin)
+	 * @return  Fabrik\Plugins\Element\Element[]	Element objects (bound to element plugin)
 	 */
 	public function getMyElements()
 	{
@@ -576,7 +576,7 @@ class FabrikFEModelGroup extends FabModel
 	 *
 	 * @since 120/10/2011 - can override with elementid request data (used in inline edit to limit which elements are shown)
 	 *
-	 * @return  PlgFabrik_Element[]	published element objects
+	 * @return  Fabrik\Plugins\Element\Element[]	published element objects
 	 */
 	public function getPublishedElements()
 	{
@@ -762,7 +762,7 @@ class FabrikFEModelGroup extends FabModel
 	/**
 	 * Get published elements to show in list
 	 *
-	 * @return  PlgFabrik_Element[]
+	 * @return  Fabrik\Plugins\Element\Element[]
 	 */
 	public function getPublishedListElements()
 	{

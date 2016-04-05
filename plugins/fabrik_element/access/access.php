@@ -8,8 +8,15 @@
  * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
+namespace Fabrik\Plugins\Element;
+
 // No direct access
 defined('_JEXEC') or die('Restricted access');
+
+use \stdClass;
+use \JString;
+use \FText;
+use \JHtml;
 
 /**
  * Access element
@@ -18,7 +25,7 @@ defined('_JEXEC') or die('Restricted access');
  * @subpackage  Fabrik.element.access
  * @since       3.0
  */
-class PlgFabrik_ElementAccess extends PlgFabrik_Element
+class Access extends Element
 {
 	/**
 	 * If the element 'Include in search all' option is set to 'default' then this states if the

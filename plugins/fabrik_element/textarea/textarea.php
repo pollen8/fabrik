@@ -8,10 +8,20 @@
  * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
+namespace Fabrik\Plugins\Element;
+
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
 use Joomla\Utilities\ArrayHelper;
+use Fabrik\Helpers\Html;
+use \JHtml;
+use \stdClass;
+use \JString;
+use \FText;
+use \FabrikWorker;
+use \FabrikString;
+use \JEditor;
 
 /**
  * Plugin element to render text area or wysiwyg editor
@@ -20,7 +30,7 @@ use Joomla\Utilities\ArrayHelper;
  * @subpackage  Fabrik.element.textarea
  * @since       3.0
  */
-class PlgFabrik_ElementTextarea extends PlgFabrik_Element
+class Textarea extends Element
 {
 	/**
 	 * Db table field type
@@ -61,7 +71,7 @@ class PlgFabrik_ElementTextarea extends PlgFabrik_Element
 		$data = array_map('trim', $data);
 		$data = array_unique($data);
 		$img = FabrikWorker::j3() ? 'bookmark.png' : 'tag.png';
-		$icon = FabrikHelperHTML::image($img, 'form', @$this->tmpl, array('alt' => 'tag'));
+		$icon = Html::image($img, 'form', @$this->tmpl, array('alt' => 'tag'));
 		$tmplData = new stdClass;
 		$tmplData->tags = array();
 

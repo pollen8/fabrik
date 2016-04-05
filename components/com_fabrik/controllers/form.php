@@ -11,6 +11,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Fabrik\Helpers\Html;
+
 jimport('joomla.application.component.controller');
 
 /**
@@ -268,7 +270,7 @@ class FabrikControllerForm extends JControllerLegacy
 		 * bypass any and all redirects, so we can see the profile for the submit
 		 */
 
-		if (FabrikHelperHTML::isDebugSubmit())
+		if (Html::isDebugSubmit())
 		{
 			return;
 		}

@@ -5,6 +5,8 @@
 
 defined('JPATH_BASE') or die;
 
+use Fabrik\Helpers\Html;
+
 $d = $displayData;
 
 if (!$d->popup):
@@ -12,7 +14,7 @@ if (!$d->popup):
 ?>
 
 	<a class="btn btn-default fabrikWin" rel='{"title":"<?php echo FText::_('JGLOBAL_EMAIL'); ?>", "loadMethod":"iframe", "height":"300px"}' href="<?php echo $d->link;?>">
-		<?php echo FabrikHelperHTML::icon('icon-envelope', FText::_('JGLOBAL_EMAIL'));?>
+		<?php echo Html::icon('icon-envelope', FText::_('JGLOBAL_EMAIL'));?>
 	</a>
 
 	<?php

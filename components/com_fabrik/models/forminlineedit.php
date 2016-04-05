@@ -11,6 +11,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Fabrik\Helpers\Html;
+
 jimport('joomla.application.component.model');
 require_once 'fabrikmodelform.php';
 require_once COM_FABRIK_FRONTEND . '/helpers/element.php';
@@ -84,7 +86,7 @@ class FabrikFEModelFormInlineEdit extends FabModelForm
 		}
 
 		$onLoad[] = "Fabrik.fireEvent('fabrik.list.inlineedit.setData');";
-		FabrikHelperHTML::script($srcs, implode("\n", $onLoad));
+		Html::script($srcs, implode("\n", $onLoad));
 	}
 
 	/**
@@ -128,14 +130,14 @@ class FabrikFEModelFormInlineEdit extends FabModelForm
 			if ($input->getBool('inlinecancel') == true)
 			{
 				$html[] = '<a href="#" class="btn inline-cancel">';
-				$html[] = FabrikHelperHTML::image('delete.png', 'list', $thisTmpl, array('alt' => FText::_('COM_FABRIK_CANCEL')));
+				$html[] = Html::image('delete.png', 'list', $thisTmpl, array('alt' => FText::_('COM_FABRIK_CANCEL')));
 				$html[] = '<span>' . FText::_('COM_FABRIK_CANCEL') . '</span></a>';
 			}
 
 			if ($input->getBool('inlinesave') == true)
 			{
 				$html[] = '<a href="#" class="btn btn-primary inline-save">';
-				$html[] = FabrikHelperHTML::image('save.png', 'list', $thisTmpl, array('alt' => FText::_('COM_FABRIK_SAVE')));
+				$html[] = Html::image('save.png', 'list', $thisTmpl, array('alt' => FText::_('COM_FABRIK_SAVE')));
 				$html[] = '<span>' . FText::_('COM_FABRIK_SAVE') . '</span></a>';
 			}
 
@@ -185,7 +187,7 @@ class FabrikFEModelFormInlineEdit extends FabModelForm
 			{
 				$html[] = '<li class="ajax-controls inline-cancel">';
 				$html[] = '<a href="#" class="">';
-				$html[] = FabrikHelperHTML::image('delete.png', 'list', $thisTmpl, array('alt' => FText::_('COM_FABRIK_CANCEL')));
+				$html[] = Html::image('delete.png', 'list', $thisTmpl, array('alt' => FText::_('COM_FABRIK_CANCEL')));
 				$html[] = '<span>' . FText::_('COM_FABRIK_CANCEL') . '</span></a>';
 				$html[] = '</li>';
 			}
@@ -194,7 +196,7 @@ class FabrikFEModelFormInlineEdit extends FabModelForm
 			{
 				$html[] = '<li class="ajax-controls inline-save">';
 				$html[] = '<a href="#" class="">';
-				$html[] = FabrikHelperHTML::image('save.png', 'list', $thisTmpl, array('alt' => FText::_('COM_FABRIK_SAVE')));
+				$html[] = Html::image('save.png', 'list', $thisTmpl, array('alt' => FText::_('COM_FABRIK_SAVE')));
 				$html[] = '<span>' . FText::_('COM_FABRIK_SAVE') . '</span></a>';
 				$html[] = '</li>';
 			}

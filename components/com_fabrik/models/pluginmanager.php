@@ -11,6 +11,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Fabrik\Helpers\Html;
+
 jimport('joomla.application.component.model');
 jimport('joomla.filesystem.file');
 
@@ -204,7 +206,7 @@ class FabrikFEModelPluginmanager extends FabModel
 			$file = basename($f);
 			$folder = dirname($f);
 			$folder = FabrikString::ltrimword($folder, '/') . '/';
-			FabrikHelperHTML::script($folder . $file);
+			Html::script($folder . $file);
 		}
 	}
 
@@ -457,7 +459,7 @@ class FabrikFEModelPluginmanager extends FabModel
 
 				JDEBUG ? $profiler->mark('pluginmanager:getFormPlugins:' . $element->id . '' . $element->plugin) : null;
 				require_once JPATH_PLUGINS . '/fabrik_element/' . $element->plugin . '/' . $element->plugin . '.php';
-				$class = 'PlgFabrik_Element' . $element->plugin;
+				$class = 'Fabrik\Plugins\Element\\' . ucfirst($element->plugin);
 
 				if (class_exists($class))
 				{
@@ -503,7 +505,7 @@ class FabrikFEModelPluginmanager extends FabModel
 	 *
 	 * @param   int  $id  Element id
 	 *
-	 * @return PlgFabrik_Element  Element plugin
+	 * @return Fabrik\Plugins\Element\Element  Element plugin
 	 */
 	public function getElementPlugin($id)
 	{
@@ -516,7 +518,7 @@ class FabrikFEModelPluginmanager extends FabModel
 	 * @param   int     $id    Plugin id
 	 * @param   string  $type  Plugin type
 	 *
-	 * @return PlgFabrik_Element|?  plugin
+	 * @return Fabrik\Plugins\Element\Element|?  plugin
 	 */
 	public function getPluginFromId($id, $type = 'Element')
 	{

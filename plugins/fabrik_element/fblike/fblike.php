@@ -8,12 +8,17 @@
  * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
+namespace Fabrik\Plugins\Element;
+
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-jimport('joomla.application.component.model');
-
-require_once JPATH_SITE . '/components/com_fabrik/models/element.php';
+use \FArrayHelper;
+use Joomla\Utilities\ArrayHelper;
+use \stdClass;
+use \FabrikWorker;
+use Fabrik\Helpers\Html;
+use \JModelLegacy;
 
 /**
  * Plugin element to render facebook open graph like button
@@ -23,7 +28,7 @@ require_once JPATH_SITE . '/components/com_fabrik/models/element.php';
  * @since       3.0
  */
 
-class PlgFabrik_ElementFblike extends PlgFabrik_Element
+class Fblike extends Element
 {
 	/**
 	 * Does the element have a label
@@ -80,7 +85,7 @@ class PlgFabrik_ElementFblike extends PlgFabrik_Element
 		$meta['og:url'] = $ex . $input->server->getString('SERVER_NAME') . $input->server->getString('REQUEST_URI');
 		$meta['og:site_name'] = $this->config->get('sitename');
 		$meta['fb:admins'] = $params->get('fblike_opengraph_applicationid');
-		$str = FabrikHelperHTML::facebookGraphAPI($params->get('opengraph_applicationid'), $params->get('fblike_locale', 'en_US'), $meta);
+		$str = Html::facebookGraphAPI($params->get('opengraph_applicationid'), $params->get('fblike_locale', 'en_US'), $meta);
 
 		// In list view we link to the detailed record not the list view itself
 		// means form or details view must be viewable by the user
@@ -136,6 +141,10 @@ class PlgFabrik_ElementFblike extends PlgFabrik_Element
 
 					if ($k == 'og:image')
 					{
+						if (is_array($v))
+						{
+							$v = ArrayHelper::getValue($v, 0, '');
+						}
 						$v = $ex . $input->server->getString('SERVER_NAME') . $v;
 					}
 
@@ -165,7 +174,7 @@ class PlgFabrik_ElementFblike extends PlgFabrik_Element
 		$meta['og:url'] = $ex . $input->server->getString('SERVER_NAME') . $input->server->getString('REQUEST_URI');
 		$meta['og:site_name'] = $this->config->get('sitename');
 		$meta['fb:app_id'] = $params->get('fblike_opengraph_applicationid');
-		$str = FabrikHelperHTML::facebookGraphAPI($params->get('fblike_opengraph_applicationid'), $params->get('fblike_locale', 'en_US'), $meta);
+		$str = Html::facebookGraphAPI($params->get('fblike_opengraph_applicationid'), $params->get('fblike_locale', 'en_US'), $meta);
 		$url = $params->get('fblike_url');
 		$w = new FabrikWorker;
 		$url = $w->parseMessageForPlaceHolder($url, $data);
@@ -248,7 +257,7 @@ class PlgFabrik_ElementFblike extends PlgFabrik_Element
 		$list->setId($listId);
 		$rowId = $input->get('row_id');
 		$direction = $input->get('direction', '+');
-		$field = $this->getFullName(false, false, false);
+		$field = $this->getFullName(false, false);
 		$update = $field . ' = ' . $field . ' ' . $direction . ' 1';
 		$list->updateRows(array($rowId), $field, null, $update);
 	}

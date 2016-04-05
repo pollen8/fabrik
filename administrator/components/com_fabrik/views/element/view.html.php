@@ -11,6 +11,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Fabrik\Helpers\Html;
+
 jimport('joomla.application.component.view');
 
 /**
@@ -93,8 +95,8 @@ class FabrikAdminViewElement extends JViewLegacy
 		FabrikAdminHelper::setViewLayout($this);
 		JText::script('COM_FABRIK_ERR_ELEMENT_JS_ACTION_NOT_DEFINED');
 
-		$srcs = FabrikHelperHTML::framework();
-		$srcs['Fabrik'] = FabrikHelperHTML::mediaFile('fabrik.js');
+		$srcs = Html::framework();
+		$srcs['Fabrik'] = Html::mediaFile('fabrik.js');
 		$srcs['NameSpace'] = 'administrator/components/com_fabrik/views/namespace.js';
 		$srcs['fabrikAdminElement'] = 'administrator/components/com_fabrik/views/element/tmpl/adminelement.js';
 
@@ -107,8 +109,8 @@ class FabrikAdminViewElement extends JViewLegacy
 		$plugManagerDeps = new stdClass;
 		$plugManagerDeps->deps = array('admin/namespace');
 		$shim['admin/pluginmanager'] = $plugManagerDeps;
-		FabrikHelperHTML::iniRequireJS($shim);
-		FabrikHelperHTML::script($srcs, $this->js);
+		Html::iniRequireJS($shim);
+		Html::script($srcs, $this->js);
 		parent::display($tpl);
 	}
 

@@ -11,6 +11,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Fabrik\Helpers\Html;
+
 jimport('joomla.application.component.view');
 
 /**
@@ -39,8 +41,8 @@ class FabrikViewEmailform extends FabrikView
 	 */
 	public function display($tpl = null)
 	{
-		FabrikHelperHTML::framework();
-		FabrikHelperHTML::iniRequireJS();
+		Html::framework();
+		Html::iniRequireJS();
 		$input  = $this->app->input;
 		$model  = $this->getModel('form');
 		$filter = JFilterInput::getInstance();
@@ -48,7 +50,7 @@ class FabrikViewEmailform extends FabrikView
 
 		if (!array_key_exists('youremail', $post))
 		{
-			FabrikHelperHTML::emailForm($model);
+			Html::emailForm($model);
 		}
 		else
 		{
@@ -59,7 +61,7 @@ class FabrikViewEmailform extends FabrikView
 				$this->app->enqueueMessage(FText::_('COM_FABRIK_THIS_ITEM_HAS_BEEN_SENT_TO') . ' ' . $to, 'success');
 			}
 
-			FabrikHelperHTML::emailSent();
+			Html::emailSent();
 		}
 	}
 

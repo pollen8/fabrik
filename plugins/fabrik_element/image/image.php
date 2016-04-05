@@ -8,6 +8,8 @@
  * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
+namespace Fabrik\Plugins\Element;
+
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
@@ -16,6 +18,16 @@ if (!defined('DS'))
 	define('DS', DIRECTORY_SEPARATOR);
 }
 
+use \FArrayHelper;
+use \JHtml;
+use \stdClass;
+use \JString;
+use \FabrikWorker;
+use \JFolder;
+use \JPath;
+use \FabrikString;
+use Fabrik\Helpers\Html;
+
 /**
  * Plugin element to render an image already located on the server
  *
@@ -23,8 +35,7 @@ if (!defined('DS'))
  * @subpackage  Fabrik.element.image
  * @since       3.0
  */
-
-class PlgFabrik_ElementImage extends PlgFabrik_Element
+class Image extends Element
 {
 	/**
 	 * Ignored folders
@@ -135,7 +146,7 @@ class PlgFabrik_ElementImage extends PlgFabrik_Element
 			if (!strstr($iPath, '/'))
 			{
 				// Single file specified so find it in tmpl folder
-				$data = (array) FabrikHelperHTML::image($iPath, 'list', @$this->tmpl, array(), true);
+				$data = (array) Html::image($iPath, 'list', @$this->tmpl, array(), true);
 			}
 			else
 			{

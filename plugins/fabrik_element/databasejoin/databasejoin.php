@@ -8,11 +8,27 @@
  * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
+namespace Fabrik\Plugins\Element;
+
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
 use \Joomla\Registry\Registry;
 use \Joomla\Utilities\ArrayHelper;
+use \FabrikWorker;
+use \FArrayHelper;
+use \FabrikString;
+use \stdClass;
+use \JHtml;
+use \FText;
+use \JTable;
+use \JModelLegacy;
+use \RuntimeException;
+use \FabTable;
+use \JString;
+use Fabrik\Helpers\Html;
+use \JError;
+use \JComponentHelper;
 
 /**
  *  Plugin element to render list of data looked up from a database table
@@ -22,7 +38,7 @@ use \Joomla\Utilities\ArrayHelper;
  * @subpackage  Fabrik.element.databasejoin
  * @since       3.0
  */
-class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
+class Databasejoin extends ElementList
 {
 	/**
 	 * connection
@@ -231,7 +247,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		}
 		else
 		{
-			// Autocomplete with concat label was not working if we called the parent method
+			// Auto-complete with concat label was not working if we called the parent method
 			if ($this->app->input->get('method') === 'autocomplete_options')
 			{
 				$data = array();
@@ -314,7 +330,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 
 	/**
 	 * @param   string          $string Search string
-	 * @param   FabrikTableJoin $join   Join table
+	 * @param   \FabrikTableJoin $join   Join table
 	 * @param   string          $alias  Table alias - defaults to the join->table_join_alias
 	 *
 	 * @return mixed
@@ -383,7 +399,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 	/**
 	 * Get join row
 	 *
-	 * @return  FabrikTableJoin  Join table or false if not loaded
+	 * @return  \FabrikTableJoin  Join table or false if not loaded
 	 */
 	protected function getJoin()
 	{
@@ -484,7 +500,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		if (!isset($this->_aJoins))
 		{
 			$query = $db->getQuery(true);
-			$query->select('*')->from('#__{package}_joins')->where('element_id = ' . (int) $this->id)->orderby('id');
+			$query->select('*')->from('#__{package}_joins')->where('element_id = ' . (int) $this->id)->order('id');
 			$db->setQuery($query);
 			$this->_aJoins = $db->LoadObjectList();
 		}
@@ -595,9 +611,9 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		}
 
 		$db->setQuery($sql);
-		FabrikHelperHTML::debug((string) $db->getQuery(), $this->getElement()->name . 'databasejoin element: get options query');
+		Html::debug((string) $db->getQuery(), $this->getElement()->name . 'databasejoin element: get options query');
 		$this->optionVals[$sqlKey] = $db->loadObjectList();
-		FabrikHelperHTML::debug($this->optionVals, 'databasejoin elements');
+		Html::debug($this->optionVals, 'databasejoin elements');
 
 		if (!is_array($this->optionVals[$sqlKey]))
 		{
@@ -735,7 +751,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 
 		if ($this->showPleaseSelect())
 		{
-			array_unshift($tmp, JHTML::_('select.option', $params->get('database_join_noselectionvalue', ''), $this->_getSelectLabel()));
+			array_unshift($tmp, JHtml::_('select.option', $params->get('database_join_noselectionvalue', ''), $this->_getSelectLabel()));
 			if ($params->get('join_desc_column', '') !== '')
 			{
 				$tmp[0]->description = '';
@@ -893,7 +909,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 	/**
 	 * Add the description field to the buildQuery select statement
 	 *
-	 * @param   JQuery &$query BuildQuery
+	 * @param   \JDatabaseQuery &$query BuildQuery
 	 * @param   array  $data   BuildQuery data
 	 *
 	 * @return  void
@@ -937,7 +953,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 	 *
 	 * @since 3.0rc1
 	 *
-	 * @return string|JQueryerBuilder join statement to add
+	 * @return string|\JDatabaseQuery join statement to add
 	 */
 	protected function buildQueryJoin($query = false)
 	{
@@ -1031,9 +1047,9 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 	 * @param   bool                $incWhere       Should the additional user defined WHERE statement be included
 	 * @param   string              $thisTableAlias Db table alias
 	 * @param   array               $opts           Options
-	 * @param   bool|JDatabaseQuery $query          Append where to JDatabaseQuery object or return string (false)
+	 * @param   bool|\JDatabaseQuery $query          Append where to JDatabaseQuery object or return string (false)
 	 *
-	 * @return string|JDatabaseQuery
+	 * @return string|\JDatabaseQuery
 	 */
 	protected function buildQueryWhere($data = array(), $incWhere = true, $thisTableAlias = null, $opts = array(), $query = false)
 	{
@@ -1056,7 +1072,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		{
 			$mode        = FArrayHelper::getValue($opts, 'mode', 'form');
 			$displayType = $params->get('database_join_display_type', 'dropdown');
-			$filterType  = $element->filter_type;
+			$filterType  = $element->get('filter_type');
 
 			if (($mode == 'filter' && $filterType == 'auto-complete')
 				|| ($mode == 'form' && $displayType == 'auto-complete')
@@ -1155,7 +1171,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 	/**
 	 * Get the database object
 	 *
-	 * @return  JDatabaseDriver    Database
+	 * @return  \JDatabaseDriver    Database
 	 */
 	public function getDb()
 	{
@@ -1571,7 +1587,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		{
 			$advancedClass = $this->getAdvancedSelectClass();
 			$attributes    = 'class="fabrikinput inputbox input ' . $advancedClass . ' ' . $params->get('bootstrap_class', 'input-large') . '" size="1"';
-			$html[]        = JHTML::_('select.genericlist', $tmp, $name, $attributes, 'value', 'text', $default, $id);
+			$html[]        = JHtml::_('select.genericlist', $tmp, $name, $attributes, 'value', 'text', $default, $id);
 		}
 	}
 
@@ -1611,9 +1627,9 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		$displayData->editable     = $this->isEditable();
 		$displayData->optionLayout = $this->getLayout('form-radio');
 		$singleLayout              = 'fabrik-element-' . $this->getPluginName() . '-form-radio';
-		FabrikHelperHTML::jLayoutJs($singleLayout . '_' . $id, $singleLayout, $displayData, array($this->layoutBasePath()));
+		Html::jLayoutJs($singleLayout . '_' . $id, $singleLayout, $displayData, array($this->layoutBasePath()));
 		$rowOptsLayout = 'fabrik-element-' . $this->getPluginName() . '-form-rowopts';
-		FabrikHelperHTML::jLayoutJs($rowOptsLayout, $rowOptsLayout, $displayData, array($this->layoutBasePath()));
+		Html::jLayoutJs($rowOptsLayout, $rowOptsLayout, $displayData, array($this->layoutBasePath()));
 
 		$html[] = '<div class="fabrikSubElementContainer" id="' . $id . '">';
 
@@ -1623,7 +1639,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		}
 		else
 		{
-			$html[] = FabrikHelperHTML::aList('radio', $tmp, $thisElName, $attributes, $defaultValue, 'value', 'text', $displayData->optsPerRow, $displayData->editable);
+			$html[] = Html::aList('radio', $tmp, $thisElName, $attributes, $defaultValue, 'value', 'text', $displayData->optsPerRow, $displayData->editable);
 		}
 
 		$html[] = '</div>';
@@ -1714,12 +1730,12 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 			$multiSize     = (int) $params->get('dbjoin_multilist_size', 6);
 			$advancedClass = $this->getAdvancedSelectClass();
 			$attributes    = 'class="' . $class . ' ' . $advancedClass . '" size="' . $multiSize . '" multiple="true"';
-			$html[]        = JHTML::_('select.genericlist', $tmp, $elName, $attributes, 'value', 'text', $default, $id);
+			$html[]        = JHtml::_('select.genericlist', $tmp, $elName, $attributes, 'value', 'text', $default, $id);
 		}
 		else
 		{
 			$attributes = 'class="' . $class . '" size="1" id="' . $id . '"';
-			$html[]     = FabrikHelperHTML::aList('multilist', $tmp, $elName, $attributes, $default, 'value', 'text', $optsPerRow, $this->isEditable());
+			$html[]     = Html::aList('multilist', $tmp, $elName, $attributes, $default, 'value', 'text', $optsPerRow, $this->isEditable());
 		}
 	}
 
@@ -1769,9 +1785,9 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 
 		$html[]       = '<div class="fabrikSubElementContainer" id="' . $id . '">';
 		$singleLayout = 'fabrik-element-' . $this->getPluginName() . '-form-checkbox';
-		FabrikHelperHTML::jLayoutJs($singleLayout . '_' . $id, $singleLayout, $displayData, array($this->layoutBasePath()));
+		Html::jLayoutJs($singleLayout . '_' . $id, $singleLayout, $displayData, array($this->layoutBasePath()));
 		$rowOptsLayout = 'fabrik-element-' . $this->getPluginName() . '-form-rowopts';
-		FabrikHelperHTML::jLayoutJs($rowOptsLayout, $rowOptsLayout, $displayData, array($this->layoutBasePath()));
+		Html::jLayoutJs($rowOptsLayout, $rowOptsLayout, $displayData, array($this->layoutBasePath()));
 
 		if (FabrikWorker::j3())
 		{
@@ -1779,7 +1795,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		}
 		else
 		{
-			$html[] = FabrikHelperHTML::aList('checkbox', $tmp, $name, $attributes, $default, 'value', 'text', $displayData->optsPerRow, $displayData->editable);
+			$html[] = Html::aList('checkbox', $tmp, $name, $attributes, $default, 'value', 'text', $displayData->optsPerRow, $displayData->editable);
 		}
 
 		if (empty($tmp) && !FabrikWorker::j3())
@@ -1790,7 +1806,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 			$o->value = 'dummy';
 			$tmpIds[] = $o;
 			$tmp      = $tmpIds;
-			$dummy    = FabrikHelperHTML::aList('checkbox', $tmp, $name, $attributes, $default, 'value', 'text', 1, true);
+			$dummy    = Html::aList('checkbox', $tmp, $name, $attributes, $default, 'value', 'text', 1, true);
 			$html[]   = '<div class="chxTmplNode">' . $dummy . '</div>';
 		}
 
@@ -1926,7 +1942,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 					}
 				}
 			}
-		} catch (Exception $e)
+		} catch (\Exception $e)
 		{
 			// If importing from a content type then the db table my not yet exist
 		}
@@ -2137,7 +2153,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		$element = $this->getElement();
 
 		// Related data will pass a raw value in the query string but if the element filter is a field we need to change that to its label
-		if ($element->filter_type == 'field')
+		if ($element->get('filter_type') == 'field')
 		{
 			$default = $this->getLabelForValue($default, $default);
 		}
@@ -2183,7 +2199,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 
 			if (!in_array($element->filter_type, array('checkbox', 'multiselect')))
 			{
-				array_unshift($rows, JHTML::_('select.option', '', $this->filterSelectLabel()));
+				array_unshift($rows, JHtml::_('select.option', '', $this->filterSelectLabel()));
 			}
 		}
 
@@ -2345,7 +2361,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 
 		$sql = $listModel->pluginQuery($sql);
 		$fabrikDb->setQuery($sql);
-		FabrikHelperHTML::debug((string) $fabrikDb->getQuery(), 'fabrikdatabasejoin getFilter');
+		Html::debug((string) $fabrikDb->getQuery(), 'fabrikdatabasejoin getFilter');
 
 		return $fabrikDb->loadObjectList();
 	}
@@ -2354,7 +2370,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 	 * Get options order by
 	 *
 	 * @param   string              $view  View mode '' or 'filter'
-	 * @param   bool|JDatabaseQuery $query Set to false to return a string
+	 * @param   bool|\JDatabaseQuery $query Set to false to return a string
 	 *
 	 * @return  string  order by statement
 	 */
@@ -2841,7 +2857,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 			$autoOpts                            = array();
 			$autoOpts['max']                     = $this->getParams()->get('autocomplete_rows', '10');
 			$autoOpts['storeMatchedResultsOnly'] = true;
-			FabrikHelperHTML::autoComplete($id, $this->getElement()->get('id'), $this->getFormModel()->getId(), 'databasejoin', $autoOpts);
+			Html::autoComplete($id, $this->getElement()->get('id'), $this->getFormModel()->getId(), 'databasejoin', $autoOpts);
 		}
 
 		$opts = $this->elementJavascriptOpts($repeatCounter);
@@ -2884,7 +2900,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 				'modal' => false,
 				'expandable' => true
 			);
-			FabrikHelperHTML::jLayoutJs($opts->modalId, 'fabrik-modal', (object) $modalOpts);
+			Html::jLayoutJs($opts->modalId, 'fabrik-modal', (object) $modalOpts);
 		}
 
 		if ($params->get('fabrikdatabasejoin_frontend_select'))
@@ -2895,7 +2911,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 				'modal' => false,
 				'expandable' => true
 			);
-			FabrikHelperHTML::jLayoutJs('db_join_select', 'fabrik-modal', (object) $modalOpts);
+			Html::jLayoutJs('db_join_select', 'fabrik-modal', (object) $modalOpts);
 		}
 	}
 
@@ -2934,7 +2950,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		$opts->show_please_select = $params->get('database_join_show_please_select') === '1';
 		$opts->showDesc           = $params->get('join_desc_column', '') === '' ? false : true;
 		$opts->autoCompleteOpts   = $opts->displayType == 'auto-complete'
-			? FabrikHelperHTML::autoCompleteOptions($opts->id, $this->getElement()->get('id'), $this->getFormModel()->getId(), 'databasejoin') : null;
+			? Html::autoCompleteOptions($opts->id, $this->getElement()->get('id'), $this->getFormModel()->getId(), 'databasejoin') : null;
 		$opts->allowadd           = $params->get('fabrikdatabasejoin_frontend_add', 0) == 0 ? false : true;
 		$opts->listName           = $this->getListModel()->getTable()->db_table_name;
 		$this->elementJavascriptJoinOpts($opts);
@@ -3362,9 +3378,9 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 	/**
 	 * Cache method to populate auto-complete options
 	 *
-	 * @param   PlgFabrik_ElementDatabasejoin $elementModel element model
-	 * @param   string                        $search       search string
-	 * @param   array                         $opts         options, 'label' => field to use for label (db join)
+	 * @param   Databasejoin  $elementModel element model
+	 * @param   string        $search       search string
+	 * @param   array         $opts         options, 'label' => field to use for label (db join)
 	 *
 	 * @since   3.0.7
 	 *

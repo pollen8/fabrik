@@ -11,6 +11,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Fabrik\Helpers\Html;
+
 jimport('joomla.application.component.view');
 
 /**
@@ -63,6 +65,6 @@ class FabrikViewFullcalendar extends JViewLegacy
 
 		echo '<h2>' . FText::_('PLG_VISUALIZATION_FULLCALENDAR_PLEASE_CHOOSE_AN_EVENT_TYPE') . ':</h2>';
 		echo $this->_eventTypeDd;
-		FabrikHelperHTML::addScriptDeclaration(implode("\n", $script));
+		Html::addScriptDeclaration(implode("\n", $script));
 	}
 }

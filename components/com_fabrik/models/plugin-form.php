@@ -12,6 +12,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 use Joomla\Utilities\ArrayHelper;
+use Fabrik\Helpers\Html;
 
 jimport('joomla.application.component.model');
 
@@ -442,7 +443,7 @@ class PlgFabrik_Form extends FabrikPlugin
 	public function formJavascriptClass()
 	{
 		$formModel = $this->getModel();
-		$ext       = FabrikHelperHTML::isDebug() ? '.js' : '-min.js';
+		$ext       = Html::isDebug() ? '.js' : '-min.js';
 		$name      = $this->get('_name');
 		static $jsClasses;
 

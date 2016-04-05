@@ -11,6 +11,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Fabrik\Helpers\Html;
+
 jimport('joomla.application.component.view');
 
 /**
@@ -148,9 +150,9 @@ class FabrikViewCalendar extends JViewLegacy
 		if (FabrikWorker::j3())
 		{
 			$options->buttons = new stdClass;
-			$options->buttons->del = '<button class="btn popupDelete" data-task="deleteCalEvent">' . FabrikHelperHTML::icon('icon-delete') . '</button>';
-			$options->buttons->edit = '<button class="btn popupEdit" data-task="editCalEvent">' . FabrikHelperHTML::icon('icon-edit') . '</button>';
-			$options->buttons->view = '<button class="btn popupView" data-task="viewCalEvent">' . FabrikHelperHTML::icon('icon-eye') . '</button>';
+			$options->buttons->del = '<button class="btn popupDelete" data-task="deleteCalEvent">' . Html::icon('icon-delete') . '</button>';
+			$options->buttons->edit = '<button class="btn popupEdit" data-task="editCalEvent">' . Html::icon('icon-edit') . '</button>';
+			$options->buttons->view = '<button class="btn popupView" data-task="viewCalEvent">' . Html::icon('icon-eye') . '</button>';
 		}
 		else
 		{
@@ -188,22 +190,22 @@ class FabrikViewCalendar extends JViewLegacy
 		$js[] = "" . $model->getFilterJs();
 		$js = implode("\n", $js);
 
-		$srcs = FabrikHelperHTML::framework();
+		$srcs = Html::framework();
 		$srcs['FbListFilter'] = 'media/com_fabrik/js/listfilter.js';
 		$srcs['Calendar'] = 'plugins/fabrik_visualization/calendar/calendar.js';
 
-		FabrikHelperHTML::iniRequireJs($model->getShim());
-		FabrikHelperHTML::script($srcs, $js);
+		Html::iniRequireJs($model->getShim());
+		Html::script($srcs, $js);
 
 		$viewName = $this->getName();
 		$this->params = $model->getParams();
 		$tpl = $params->get('calendar_layout', $tpl);
 		$tmplpath = JPATH_ROOT . '/plugins/fabrik_visualization/calendar/views/calendar/tmpl/' . $tpl;
 		$this->_setPath('template', $tmplpath);
-		FabrikHelperHTML::stylesheetFromPath('plugins/fabrik_visualization/calendar/views/calendar/tmpl/' . $tpl . '/template.css');
+		Html::stylesheetFromPath('plugins/fabrik_visualization/calendar/views/calendar/tmpl/' . $tpl . '/template.css');
 
 		// Adding custom.css, just for the heck of it
-		FabrikHelperHTML::stylesheetFromPath('plugins/fabrik_visualization/calendar/views/calendar/tmpl/' . $tpl . '/custom.css');
+		Html::stylesheetFromPath('plugins/fabrik_visualization/calendar/views/calendar/tmpl/' . $tpl . '/custom.css');
 
 		return parent::display();
 	}
@@ -275,6 +277,6 @@ class FabrikViewCalendar extends JViewLegacy
 
 		echo '<h2>' . FText::_('PLG_VISUALIZATION_CALENDAR_PLEASE_CHOOSE_AN_EVENT_TYPE') . ':</h2>';
 		echo $this->_eventTypeDd;
-		FabrikHelperHTML::addScriptDeclaration(implode("\n", $script));
+		Html::addScriptDeclaration(implode("\n", $script));
 	}
 }

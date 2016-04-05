@@ -3,6 +3,9 @@
 defined('JPATH_BASE') or die;
 
 $d = $displayData;
+
+use Fabrik\Helpers\Html;
+
 ?>
 <div class="<?php echo $d->name; ?>_container" id="<?php echo $d->id; ?>_container">
 	<div class="row">
@@ -21,7 +24,7 @@ $d = $displayData;
 				endforeach;
 				?>
 
-				<li class="emptypicklist" style="display:none"><?php echo FabrikHelperHTML::icon('icon-move'); ?>
+				<li class="emptypicklist" style="display:none"><?php echo Html::icon('icon-move'); ?>
 					<?php echo FText::_('PLG_ELEMENT_PICKLIST_DRAG_OPTIONS_HERE'); ?>
 				</li>
 			</ul>
@@ -40,7 +43,7 @@ $d = $displayData;
 				endforeach;
 				?>
 
-				<li class="emptypicklist" style="display:none"><?php echo FabrikHelperHTML::icon('icon-move'); ?>
+				<li class="emptypicklist" style="display:none"><?php echo Html::icon('icon-move'); ?>
 					<?php echo FText::_('PLG_ELEMENT_PICKLIST_DRAG_OPTIONS_HERE'); ?>
 				</li>
 			</ul>

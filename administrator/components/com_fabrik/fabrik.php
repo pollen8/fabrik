@@ -11,6 +11,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Fabrik\Helpers\Html;
+
 // Access check.
 if (!JFactory::getUser()->authorise('core.manage', 'com_fabrik'))
 {
@@ -87,7 +89,7 @@ $controller->execute($input->get('task', 'home.display'));
 
 if ($input->get('format', 'html') === 'html')
 {
-	FabrikHelperHTML::framework();
+	Html::framework();
 }
 
 $controller->redirect();

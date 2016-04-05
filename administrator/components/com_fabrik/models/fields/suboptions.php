@@ -12,6 +12,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 use Joomla\Utilities\ArrayHelper;
+use Fabrik\Helpers\Html;
 
 require_once JPATH_ADMINISTRATOR . '/components/com_fabrik/helpers/element.php';
 
@@ -82,7 +83,7 @@ class JFormFieldSuboptions extends JFormField
 		$script[] = "window.addEvent('domready', function () {";
 		$script[] = "\tnew Suboptions('$this->name', $opts);";
 		$script[] = "});";
-		FabrikHelperHTML::script('administrator/components/com_fabrik/models/fields/suboptions.js', implode("\n", $script));
+		Html::script('administrator/components/com_fabrik/models/fields/suboptions.js', implode("\n", $script));
 		$html = array();
 
 		if (!$j3)
@@ -116,8 +117,8 @@ class JFormFieldSuboptions extends JFormField
 			$html[] = '<a class="addButton" href="#" id="addSuboption"><i class="icon-plus"></i> ' . FText::_('COM_FABRIK_ADD') . '</a></div>';
 		}
 
-		FabrikHelperHTML::framework();
-		FabrikHelperHTML::iniRequireJS();
+		Html::framework();
+		Html::iniRequireJS();
 
 		return implode("\n", $html);
 	}

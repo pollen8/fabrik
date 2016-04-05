@@ -8,10 +8,16 @@
  * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
+namespace Fabrik\Plugins\Element;
+
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
 use Joomla\Utilities\ArrayHelper;
+use \stdClass;
+use \JLayoutFile;
+use \FArrayHelper;
+use \FabrikWorker;
 
 /**
  * Plugin element to render plain text/HTML
@@ -21,7 +27,7 @@ use Joomla\Utilities\ArrayHelper;
  * @since       3.0
  */
 
-class PlgFabrik_ElementDisplay extends PlgFabrik_Element
+class Display extends Element
 {
 	/**
 	 * Db table field type
@@ -82,7 +88,7 @@ class PlgFabrik_ElementDisplay extends PlgFabrik_Element
 	{
 		if (!$this->getParams()->get('display_showlabel', true))
 		{
-			return $this->getValue(array());;
+			return $this->getValue(array());
 		}
 
 		return parent::getRawLabel();

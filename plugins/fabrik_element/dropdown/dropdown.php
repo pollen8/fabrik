@@ -8,8 +8,17 @@
  * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
+namespace Fabrik\Plugins\Element;
+
 // No direct access
 defined('_JEXEC') or die('Restricted access');
+
+use \FArrayHelper;
+use \JHtml;
+use \stdClass;
+use \JString;
+use \JText;
+use \FabrikWorker;
 
 /**
  * Plugin element to render dropdown
@@ -19,7 +28,7 @@ defined('_JEXEC') or die('Restricted access');
  * @since       3.0
  */
 
-class PlgFabrik_ElementDropdown extends PlgFabrik_ElementList
+class Dropdown extends ElementList
 {
 	/**
 	 * Method to set the element id
@@ -88,7 +97,7 @@ class PlgFabrik_ElementDropdown extends PlgFabrik_ElementList
 
 			// For values like '1"'
 			$tmpVal = htmlspecialchars($tmpVal, ENT_QUOTES);
-			$opt = JHTML::_('select.option', $tmpVal, $tmpLabel);
+			$opt = JHtml::_('select.option', $tmpVal, $tmpLabel);
 			$opt->disable = $disable;
 			$opts[] = $opt;
 
@@ -109,7 +118,7 @@ class PlgFabrik_ElementDropdown extends PlgFabrik_ElementList
 			{
 				if (!in_array($sel, $values) && $sel !== '')
 				{
-					$opts[] = JHTML::_('select.option', $sel, $sel);
+					$opts[] = JHtml::_('select.option', $sel, $sel);
 					$aRoValues[] = $this->getReadOnlyOutput($sel, $sel);
 				}
 			}
@@ -144,7 +153,7 @@ class PlgFabrik_ElementDropdown extends PlgFabrik_ElementList
 			}
 
 			// @todo JLayout list
-			$str = JHTML::_('select.groupedlist', $groupedOpts, $name, $settings);
+			$str = JHtml::_('select.groupedlist', $groupedOpts, $name, $settings);
 		}
 		else
 		{

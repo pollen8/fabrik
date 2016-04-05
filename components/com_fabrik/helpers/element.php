@@ -27,9 +27,9 @@ class FabrikHelperElement
 	 * For processing repeat elements we need to make its
 	 * ID element during the form process
 	 *
-	 * @param   plgFabrik_Element  $baseElement  repeat element (e.g. db join rendered as checkbox)
+	 * @param   \Fabrik\Plugins\Element\Element  $baseElement  repeat element (e.g. db join rendered as checkbox)
 	 *
-	 * @return  plgFabrik_ElementInternalid
+	 * @return  \Fabrik\Plugins\Element\Internalid
 	 */
 
 	public static function makeIdElement($baseElement)
@@ -50,9 +50,9 @@ class FabrikHelperElement
 	 * For processing repeat elements we need to make its
 	 * parent id element during the form process
 	 *
-	 * @param   plgFabrik_Element  $baseElement  repeat element (e.g. db join rendered as checkbox)
+	 * @param   \Fabrik\Plugins\Element\Element  $baseElement  repeat element (e.g. db join rendered as checkbox)
 	 *
-	 * @return  plgFabrik_ElementField
+	 * @return  Fabrik\Plugins\Element\Field;
 	 */
 
 	public static function makeParentElement($baseElement)
@@ -123,7 +123,7 @@ class FabrikHelperElement
 	 * @param   FabrikFEModelForm  $model  Form model
 	 * @param   string             $key    Key - full element name or full element name with _id / ___params appended
 	 *
-	 * @return  PlgFabrik_Element|boolean
+	 * @return  \Fabrik\Plugins\Element\Element|boolean
 	 */
 	public static function findElementFromJoinKeys($model, $key)
 	{

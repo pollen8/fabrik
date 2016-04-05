@@ -9,6 +9,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Fabrik\Helpers\Html;
+
 // Require the abstract plugin class
 require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
 
@@ -92,7 +94,7 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 		$runContentPlugins = $params->get('email_run_content_plugins', '0') === '1';
 
 		$contentTemplate = $params->get('email_template_content');
-		$content = $contentTemplate != '' ? FabrikHelperHTML::getContentTemplate($contentTemplate, 'both', $runContentPlugins) : '';
+		$content = $contentTemplate != '' ? Html::getContentTemplate($contentTemplate, 'both', $runContentPlugins) : '';
 
 		// Always send as html as even text email can contain html from wysiwyg editors
 		$htmlEmail = true;
@@ -112,7 +114,7 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 
 			if ($runContentPlugins === true)
 			{
-				FabrikHelperHTML::runContentPlugins($messageTemplate);
+				Html::runContentPlugins($messageTemplate);
 			}
 
 			$messageTemplate = str_replace('{content}', $content, $messageTemplate);
@@ -125,7 +127,7 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 
 			if ($runContentPlugins === true)
 			{
-				FabrikHelperHTML::runContentPlugins($messageText);
+				Html::runContentPlugins($messageText);
 			}
 
 			$messageText = str_replace('{content}', $content, $messageText);
@@ -457,7 +459,7 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 			$domPdf->render();
 
 			// Store the file in the tmp folder so it can be attached
-			$layout                 = FabrikHelperHTML::getLayout('form.fabrik-pdf-title');
+			$layout                 = Html::getLayout('form.fabrik-pdf-title');
 			$displayData         = new stdClass;
 			$displayData->doc	= $document;
 			$displayData->model	= $model;
@@ -546,7 +548,7 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 
 				if (array_key_exists($elName, $this->data))
 				{
-					if (method_exists($elementModel, 'addEmailAttachement'))
+					if (method_exists($elementModel, 'addEmailAttachment'))
 					{
 						if (array_key_exists($elName . '_raw', $data))
 						{
@@ -573,7 +575,7 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 
 						foreach ($val as $v)
 						{
-							$file = $elementModel->addEmailAttachement($v);
+							$file = $elementModel->addEmailAttachment($v);
 
 							if ($file !== false)
 							{
@@ -640,7 +642,7 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 
 	/**
 	 * Get content item template
-	 * DEPRECATED use FabrikHelperHTML::getContentTemplate() instead
+	 * DEPRECATED use Html::getContentTemplate() instead
 	 *
 	 * @param   int  $contentTemplate  Joomla article ID to load
 	 *

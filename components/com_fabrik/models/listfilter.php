@@ -12,6 +12,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 use Joomla\Utilities\ArrayHelper;
+use Fabrik\Helpers\Html;
 
 /**
  * List filter model
@@ -141,7 +142,7 @@ class FabrikFEModelListfilter extends FabModel
 		// Overwrite filters with querystring filter
 		$this->getQuerystringFilters($filters);
 		JDEBUG ? $profiler->mark('listfilter:querystring filters got') : null;
-		FabrikHelperHTML::debug($filters, 'filter array: after querystring filters');
+		Html::debug($filters, 'filter array: after querystring filters');
 		$request = $this->getPostFilterArray();
 		JDEBUG ? $profiler->mark('listfilter:request got') : null;
 		$this->counter = count(FArrayHelper::getValue($request, 'key', array()));
@@ -152,7 +153,7 @@ class FabrikFEModelListfilter extends FabModel
 			$this->getSessionFilters($filters);
 		}
 
-		FabrikHelperHTML::debug($filters, 'filter array: after session filters');
+		Html::debug($filters, 'filter array: after session filters');
 		JDEBUG ? $profiler->mark('listfilter:session filters got') : null;
 
 		// The search form search all has lower priority than the filter search all and search form filters
@@ -160,7 +161,7 @@ class FabrikFEModelListfilter extends FabModel
 
 		// Overwrite session filters with search form filters
 		$this->getSearchFormFilters($filters);
-		FabrikHelperHTML::debug($filters, 'filter array: search form');
+		Html::debug($filters, 'filter array: search form');
 
 		// Overwrite filters with 'search all' filter
 		$this->getSearchAllFilters($filters);
@@ -169,9 +170,9 @@ class FabrikFEModelListfilter extends FabModel
 		// Finally overwrite filters with post filters
 		$this->getPostFilters($filters);
 		JDEBUG ? $profiler->mark('listfilter:post filters got') : null;
-		FabrikHelperHTML::debug($filters, 'filter array: after getpostfilters');
+		Html::debug($filters, 'filter array: after getpostfilters');
 		$this->request = $filters;
-		FabrikHelperHTML::debug($this->request, 'filter array');
+		Html::debug($this->request, 'filter array');
 		$this->checkAccess($filters);
 		$this->normalizeKeys($filters);
 
@@ -235,7 +236,7 @@ class FabrikFEModelListfilter extends FabModel
 			}
 		}
 
-		FabrikHelperHTML::debug($filters, 'filter array: after access taken into account');
+		Html::debug($filters, 'filter array: after access taken into account');
 	}
 
 	/**
@@ -639,7 +640,7 @@ class FabrikFEModelListfilter extends FabModel
 			// $eval = array_key_exists('eval', $filters) ? array_search($k, $filters['eval']) : FABRIKFILTER_TEXT;
 			$eval = array_key_exists('eval', $filters) ? FArrayHelper::getValue($filters['eval'], $key, FABRIKFILTER_TEXT) : FABRIKFILTER_TEXT;
 
-			if (!is_a($elementModel, 'PlgFabrik_ElementDatabasejoin'))
+			if (!is_a($elementModel, '\Fabrik\Plugins\Element\Databasejoin'))
 			{
 				$fieldDesc = $elementModel->getFieldDescription();
 
@@ -881,7 +882,7 @@ class FabrikFEModelListfilter extends FabModel
 							}
 						}
 
-						if (!isset($elementModel) || !is_a($elementModel, 'plgFabrik_Element') || $found === false)
+						if (!isset($elementModel) || !is_a($elementModel, 'Fabrik\Plugins\Element\Element') || $found === false)
 						{
 							// Could be looking for an element which exists in a join
 							continue;
@@ -996,7 +997,7 @@ class FabrikFEModelListfilter extends FabModel
 
 			$elementModel = $formModel->getElement(FabrikString::rtrimword($oldKey, '_raw'), false, false);
 
-			if (!is_a($elementModel, 'PlgFabrik_Element'))
+			if (!is_a($elementModel, 'Fabrik\Plugins\Element\Element'))
 			{
 				continue;
 			}
@@ -1167,7 +1168,7 @@ class FabrikFEModelListfilter extends FabModel
 
 		$usedMerges = array();
 
-		FabrikHelperHTML::debug($filters, 'filter array: start getPostFilters');
+		Html::debug($filters, 'filter array: start getPostFilters');
 
 		if (!empty($request) && array_key_exists('key', $request))
 		{
@@ -1266,7 +1267,7 @@ class FabrikFEModelListfilter extends FabModel
 
 				$elementModel = $elements[$elid];
 
-				if (!is_a($elementModel, 'PlgFabrik_Element'))
+				if (!is_a($elementModel, 'Fabrik\Plugins\Element\Element'))
 				{
 					continue;
 				}
@@ -1310,7 +1311,7 @@ class FabrikFEModelListfilter extends FabModel
 
 				$eval = is_array($value) ? FArrayHelper::getValue($value, 'eval', FABRIKFILTER_TEXT) : FABRIKFILTER_TEXT;
 
-				if (!is_a($elementModel, 'PlgFabrik_ElementDatabasejoin'))
+				if (!is_a($elementModel, '\Fabrik\Plugins\Element\Databasejoin'))
 				{
 					$fieldDesc = $elementModel->getFieldDescription();
 
@@ -1384,9 +1385,9 @@ class FabrikFEModelListfilter extends FabModel
 		}
 
 		$this->listModel->tmpFilters = $filters;
-		FabrikHelperHTML::debug($filters, 'filter array: before onGetPostFilter');
+		Html::debug($filters, 'filter array: before onGetPostFilter');
 		FabrikWorker::getPluginManager()->runPlugins('onGetPostFilter', $this->listModel, 'list', $filters);
-		FabrikHelperHTML::debug($filters, 'filter array: after onGetPostFilter');
+		Html::debug($filters, 'filter array: after onGetPostFilter');
 		$filters = $this->listModel->tmpFilters;
 	}
 
@@ -1492,7 +1493,7 @@ class FabrikFEModelListfilter extends FabModel
 			{
 				$elementModel = FArrayHelper::getValue($elements, $elid);
 
-				if (!is_a($elementModel, 'plgFabrik_Element') && !in_array($elid, $pluginKeys))
+				if (!is_a($elementModel, 'Fabrik\Plugins\Element\Element') && !in_array($elid, $pluginKeys))
 				{
 					continue;
 				}
@@ -1527,7 +1528,7 @@ class FabrikFEModelListfilter extends FabModel
 					$raw = array_key_exists($i, $sessionFilters['raw']) ? $sessionFilters['raw'][$i] : 0;
 					$eval = array_key_exists($i, $sessionFilters['eval']) ? $sessionFilters['eval'][$i] : FABRIKFILTER_TEXT;
 
-					if (!is_a($elementModel, 'PlgFabrik_ElementDatabasejoin'))
+					if (!is_a($elementModel, '\Fabrik\Plugins\Element\Databasejoin'))
 					{
 						$fieldDesc = $elementModel->getFieldDescription();
 

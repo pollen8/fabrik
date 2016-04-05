@@ -15,6 +15,8 @@ defined('_JEXEC') or die('Restricted access');
 jimport('joomla.form.formfield');
 JFormHelper::loadFieldClass('textarea');
 
+use Fabrik\Helpers\Html;
+
 /**
  * Form Field class for the Joomla Platform.
  * An ace.js code editor field
@@ -83,8 +85,8 @@ class JFormFieldFabrikeditor extends JFormFieldTextArea
 			return $editor;
 		}
 
-		FabrikHelperHTML::framework();
-		FabrikHelperHTML::iniRequireJS();
+		Html::framework();
+		Html::iniRequireJS();
 
 		if ($mode === 'php')
 		{
@@ -156,7 +158,7 @@ window.addEvent(\'domready\', function () {
 		$src = array(
 			'Ace' => 'media/com_fabrik/js/lib/ace/src-min-noconflict/ace.js',
 			'Fabrik' => 'media/com_fabrik/js/fabrik.js');
-		FabrikHelperHTML::script($src, $script);
+		Html::script($src, $script);
 
 		echo '<style type="text/css" media="screen">
 	#' . $aceId . '-ace {

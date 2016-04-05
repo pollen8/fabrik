@@ -9,6 +9,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Fabrik\Helpers\Html;
+
 jimport('joomla.application.component.view');
 
 /**
@@ -29,16 +31,16 @@ class FabrikViewPackage extends FabrikView
 	 */
 	public function display($tpl = null)
 	{
-		FabrikHelperHTML::framework();
+		Html::framework();
 		$input = $this->app->input;
 		$item  = $this->get('Item');
 		$srcs  = array('media/com_fabrik/js/icons.js', 'media/com_fabrik/js/icongen.js', 'media/com_fabrik/js/canvas.js',
 			'media/com_fabrik/js/history.js', 'media/com_fabrik/js/keynav.js', 'media/com_fabrik/js/tabs.js',
 			'media/com_fabrik/js/pages.js', 'media/com_fabrik/js/frontpackage.js');
 
-		FabrikHelperHTML::script($srcs);
+		Html::script($srcs);
 
-		FabrikHelperHTML::stylesheet('media/com_fabrik/css/package.css');
+		Html::stylesheet('media/com_fabrik/css/package.css');
 		$canvas = $item->params->get('canvas');
 
 		// $$$ rob 08/11/2011 test if component name set but still rendering
@@ -64,14 +66,14 @@ class FabrikViewPackage extends FabrikView
 		'package':'$item->component_name'
 	});
 		});";
-		FabrikHelperHTML::addScriptDeclaration($script);
+		Html::addScriptDeclaration($script);
 
 		// Force front end templates
 		$this->_basePath = COM_FABRIK_FRONTEND . '/views';
 		$tmpl            = !isset($item->template) ? 'default' : $item->template;
 		$this->addTemplatePath($this->_basePath . '/' . $this->_name . '/tmpl/' . $tmpl);
 		$text = $this->loadTemplate();
-		FabrikHelperHTML::runContentPlugins($text);
+		Html::runContentPlugins($text);
 		echo $text;
 	}
 }

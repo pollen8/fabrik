@@ -11,6 +11,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Fabrik\Helpers\Html;
+
 ?>
 <div class="fabrikFilterContainer">
 <?php if ($this->filterMode === 3 || $this->filterMode === 4) {
@@ -24,7 +26,7 @@ defined('_JEXEC') or die('Restricted access');
 	<li>
 	<button class="fabrik_filter_submit button" value="<?php echo FText::_('COM_FABRIK_GO');?>"
 				name="filter" >
-	<?php echo FabrikHelperHTML::image('search.png', 'list', $this->tmpl);?>
+	<?php echo Html::image('search.png', 'list', $this->tmpl);?>
 	</button>
 <!-- 	<input type="button" class="fabrik_filter_submit button" value="<?php echo FText::_('COM_FABRIK_GO');?>"
 				name="filter" /> -->

@@ -41,6 +41,37 @@ class FabrikTableElement extends FabTable
 	public $name = '';
 
 	/**
+	 * @var int
+	 */
+	public $width;
+
+	/**
+	 * @var int
+	 */
+	public $height;
+
+	/**
+	 * @var bool
+	 */
+	public $hidden = false;
+
+	/**
+	 * @var string
+	 */
+	public $filter_type = '';
+	/**
+	 * @var mixed
+	 */
+	public $default;
+
+	/**
+	 * @var bool
+	 */
+	public $eval = false;
+
+	public $id;
+
+	/**
 	 * Construct
 	 *
 	 * @param   JDatabaseDriver  &$db  database object

@@ -8,10 +8,20 @@
  * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
+namespace Fabrik\Plugins\Element;
+
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
 use Joomla\Utilities\ArrayHelper;
+use \FabrikWorker;
+use \FArrayHelper;
+use \JFilterInput;
+use \FabrikFEModelList;
+use \stdClass;
+use \JModelLegacy;
+use \FText;
+use Fabrik\Helpers\Html;
 
 /**
  * Plugin element to render field with PHP calculated value
@@ -20,7 +30,7 @@ use Joomla\Utilities\ArrayHelper;
  * @subpackage  Fabrik.element.calc
  * @since       3.0
  */
-class PlgFabrik_ElementCalc extends PlgFabrik_Element
+class Calc extends Element
 {
 	/**
 	 * This really does get just the default value (as defined in the element's settings)
@@ -35,11 +45,11 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 		{
 			$w = new FabrikWorker;
 			$element = $this->getElement();
-			$default = $w->parseMessageForPlaceHolder($element->default, $data, true, true);
+			$default = $w->parseMessageForPlaceHolder($element->get('default'), $data, true, true);
 			/* calc in fabrik3.0/3.1 doesn't have eval, issues if F2.0 calc elements are migrated*/
 			/*if ($element->eval == '1')
 			{
-				if (FabrikHelperHTML::isDebug())
+				if (Html::isDebug())
 				{
 					$res = eval($default);
 				}
@@ -120,7 +130,7 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 			//  $$$ hugh - standardizing on $data but need need $d here for backward compat
 			$d = $data;
 
-			$res = FabrikHelperHTML::isDebug() ? eval($default) : @eval($default);
+			$res = Html::isDebug() ? eval($default) : @eval($default);
 			FabrikWorker::logEval($res, 'Eval exception : ' . $this->getElement()->name . '::_getV() : ' . $default . ' : %s');
 
 			return $res;
@@ -208,7 +218,7 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 		if (!array_key_exists($repeatCounter, $this->defaults))
 		{
 			$element = $this->getElement();
-			$element->default = $this->_getV($data, $repeatCounter);
+			$element->set('default', $this->_getV($data, $repeatCounter));
 			$formModel = $this->getFormModel();
 
 			// Stops this getting called from form validation code as it messes up repeated/join group validations
@@ -217,12 +227,12 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 				FabrikWorker::getPluginManager()->runPlugins('onGetElementDefault', $formModel, 'form', $this);
 			}
 
-			if (is_array($element->default))
+			if (is_array($element->get('default')))
 			{
-				$element->default = implode(',', $element->default);
+				$element->set('default', implode(',', $element->get('default')));
 			}
 
-			$this->defaults[$repeatCounter] = $element->default;
+			$this->defaults[$repeatCounter] = $element->get('default');
 		}
 
 		return $this->defaults[$repeatCounter];
@@ -360,7 +370,7 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 			$d = $data;
 			$cal = $listModel->parseMessageForRowHolder($cal, $data, true);
 
-			if (FabrikHelperHTML::isDebug())
+			if (Html::isDebug())
 			{
 				$res = eval($cal);
 			}
@@ -438,13 +448,14 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 			else
 			{
 				$layout = $this->getLayout('form');
-				$layoutData = new stdClass;
-				$layoutData->id = $id;
-				$layoutData->name = $name;
-				$layoutData->height = $element->height;
-				$layoutData->value = $value;
-				$layoutData->cols = $element->width;
-				$layoutData->rows = $element->height;
+				$layoutData = (object) array(
+					'id' => $id,
+					'name' => $name,
+					'height' => $element->get('height'),
+					'value' => $value,
+					'cols' => $element->get('width'),
+					'rows' => $element->get('height')
+				);
 				$str[] = $layout->render($layoutData);
 			}
 		}
@@ -455,7 +466,7 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 		}
 
 		$opts = array('alt' => FText::_('PLG_ELEMENT_CALC_LOADING'), 'style' => 'display:none;padding-left:10px;', 'class' => 'loader');
-		$str[] = FabrikHelperHTML::image('ajax-loader.gif', 'form', @$this->tmpl, $opts);
+		$str[] = Html::image('ajax-loader.gif', 'form', @$this->tmpl, $opts);
 
 		return implode("\n", $str);
 	}
@@ -530,7 +541,7 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 		// $$$ hugh - trying to standardize on $data so scripts know where data is
 		$data = $d;
 		$calc = $w->parseMessageForPlaceHolder($calc, $d);
-		$c = FabrikHelperHTML::isDebug() ? eval($calc): @eval($calc);
+		$c = Html::isDebug() ? eval($calc): @eval($calc);
 		$c = preg_replace('#(\/\*.*?\*\/)#', '', $c);
 		echo $c;
 	}
@@ -695,7 +706,7 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 		$opts->listid = $list->id;
 		$opts->listRef = 'list_' . $this->getlistModel()->getRenderContext();
 		$opts->formid = $this->getFormModel()->getId();
-		$opts->elid = $this->getElement()->id;
+		$opts->elid = $this->getElement()->get('id');
 		$opts->doListUpdate = $params->get('calc_on_save_only', '1') == '0' && $params->get('calc_ajax', '0') == '1';
 		$opts = json_encode($opts);
 

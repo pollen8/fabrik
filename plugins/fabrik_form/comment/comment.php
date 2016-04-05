@@ -11,6 +11,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Fabrik\Helpers\Html;
+
 // Require the abstract plugin class
 require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
 
@@ -160,7 +162,7 @@ class PlgFabrik_FormComment extends PlgFabrik_Form
 		$opts->row_id = $input->getString('rowid', '', 'string');
 		$opts->voteType = 'comment';
 
-		FabrikHelperHTML::addPath(COM_FABRIK_BASE . 'plugins/fabrik_element/thumbs/images/', 'image', 'form', false);
+		Html::addPath(COM_FABRIK_BASE . 'plugins/fabrik_element/thumbs/images/', 'image', 'form', false);
 		$opts->formid = $this->formModel->getId();
 		$opts->j3 = FabrikWorker::j3();
 		$opts->listid = $this->formModel->getListModel()->getTable()->id;
@@ -254,7 +256,7 @@ class PlgFabrik_FormComment extends PlgFabrik_Form
 			$script .= "\n comments.thumbs = new FbThumbsList(" . $this->formModel->getId() . ", $thumbOpts);";
 		}
 
-		FabrikHelperHTML::script($jsFiles, $script);
+		Html::script($jsFiles, $script);
 
 		$this->data = $layout->render($layoutData);
 	}
@@ -441,10 +443,10 @@ class PlgFabrik_FormComment extends PlgFabrik_Form
 	 */
 	private function writeComment($params, $comment)
 	{
-		FabrikHelperHTML::addPath(COM_FABRIK_BASE . 'plugins/fabrik_form/comment/images/', 'image', 'form', false);
+		Html::addPath(COM_FABRIK_BASE . 'plugins/fabrik_form/comment/images/', 'image', 'form', false);
 		$input = $this->app->input;
 		$layoutData = new stdClass;
-		$layoutData->insrc = FabrikHelperHTML::image("star_in.png", 'form', @$this->tmpl, array(), true);
+		$layoutData->insrc = Html::image("star_in.png", 'form', @$this->tmpl, array(), true);
 		$layoutData->name = (int) $comment->annonymous == 0 ? $comment->name : FText::_('PLG_FORM_COMMENT_ANONYMOUS_SHORT');
 		$layoutData->comment = $comment;
 		$layoutData->dateFormat = $params->get('comment-date-format');
@@ -875,7 +877,7 @@ class PlgFabrik_FormComment extends PlgFabrik_Form
 	protected function _intensedebate()
 	{
 		$params = $this->getParams();
-		FabrikHelperHTML::addScriptDeclaration(
+		Html::addScriptDeclaration(
 			"
 				var idcomments_acct = '" . $params->get('comment-intesedebate-code') . "';
 						var idcomments_post_id;
@@ -902,7 +904,7 @@ class PlgFabrik_FormComment extends PlgFabrik_Form
 			return;
 		}
 
-		FabrikHelperHTML::addScriptDeclaration(
+		Html::addScriptDeclaration(
 			"
 				(function() {
 				var links = document.getElementsByTagName('a');

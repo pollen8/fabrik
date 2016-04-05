@@ -8,10 +8,19 @@
  * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
+namespace Fabrik\Plugins\Element;
+
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
 use Joomla\Utilities\ArrayHelper;
+use Fabrik\Helpers\Html;
+use \FArrayHelper;
+use \stdClass;
+use \JString;
+use \FabrikWorker;
+use \FText;
+use \FabrikString;
 
 /**
  * Plugin element to render two fields to capture a link (url/label)
@@ -20,8 +29,7 @@ use Joomla\Utilities\ArrayHelper;
  * @subpackage  Fabrik.element.link
  * @since       3.0
  */
-
-class PlgFabrik_ElementLink extends PlgFabrik_Element
+class Link extends Element
 {
 	/**
 	 * Does the element contain sub elements e.g checkboxes radiobuttons
@@ -55,7 +63,7 @@ class PlgFabrik_ElementLink extends PlgFabrik_Element
 
 		if ($listModel->getOutPutFormat() != 'rss' && ($smart_link || $target == 'mediabox'))
 		{
-			FabrikHelperHTML::slimbox();
+			Html::slimbox();
 		}
 
 		$data = FabrikWorker::JSONtoData($data, true);
@@ -145,14 +153,13 @@ class PlgFabrik_ElementLink extends PlgFabrik_Element
 					$opts['title'] = strip_tags($w->parseMessageForPlaceHolder($title, $data));
 				}
 
-				return FabrikHelperHTML::a($href, $lbl, $opts);
+				return Html::a($href, $lbl, $opts);
 			}
 			else
 			{
 				$link = $href;
 			}
 
-			$w = new FabrikWorker;
 			$aRow = ArrayHelper::fromObject($thisRow);
 			$link = $listModel->parseMessageForRowHolder($link, $aRow);
 
@@ -249,7 +256,7 @@ class PlgFabrik_ElementLink extends PlgFabrik_Element
 				$opts['title'] = strip_tags($w->parseMessageForPlaceHolder($title, $data));
 			}
 
-			return FabrikHelperHTML::a($href, $lbl, $opts);
+			return Html::a($href, $lbl, $opts);
 		}
 
 		$labelname = FabrikString::rtrimword($name, '[]') . '[label]';
@@ -334,7 +341,7 @@ class PlgFabrik_ElementLink extends PlgFabrik_Element
 				require_once JPATH_SITE . '/components/com_fabrik/libs/bitly/bitly.php';
 				$login = $params->get('bitly_login');
 				$key = $params->get('bitly_apikey');
-				$bitly = new bitly($login, $key);
+				$bitly = new \bitly($login, $key);
 			}
 
 			foreach ($val as $key => &$v)
@@ -399,7 +406,7 @@ class PlgFabrik_ElementLink extends PlgFabrik_Element
 
 		if ($listModel->getOutPutFormat() != 'rss' && ($smart_link || $target == 'mediabox'))
 		{
-			FabrikHelperHTML::slimbox();
+			Html::slimbox();
 		}
 
 		$id = $this->getHTMLId($repeatCounter);

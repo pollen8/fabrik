@@ -11,6 +11,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Fabrik\Helpers\Html;
+
 jimport('joomla.application.component.view');
 
 /**
@@ -74,8 +76,8 @@ class FabrikAdminViewVisualization extends JViewLegacy
 		$this->addToolbar();
 		FabrikAdminHelper::setViewLayout($this);
 
-		$source                       = FabrikHelperHTML::framework();
-		$source['Fabrik']             = FabrikHelperHTML::mediaFile('fabrik.js');
+		$source                       = Html::framework();
+		$source['Fabrik']             = Html::mediaFile('fabrik.js');
 		$source['Namespace']          = 'administrator/components/com_fabrik/views/namespace.js';
 		$source['PluginManager']      = 'administrator/components/com_fabrik/views/pluginmanager.js';
 		$source['AdminVisualization'] = 'administrator/components/com_fabrik/views/visualization/adminvisualization.js';
@@ -85,7 +87,7 @@ class FabrikAdminViewVisualization extends JViewLegacy
 		$dep->deps                                      = array('admin/pluginmanager');
 		$shim['admin/visualization/adminvisualization'] = $dep;
 
-		FabrikHelperHTML::iniRequireJS($shim);
+		Html::iniRequireJS($shim);
 
 		$opts         = new stdClass;
 		$opts->plugin = $this->item->plugin;
@@ -95,7 +97,7 @@ class FabrikAdminViewVisualization extends JViewLegacy
 		Fabrik.controller = new AdminVisualization(options);
 ";
 
-		FabrikHelperHTML::script($source, $js, '-min.js');
+		Html::script($source, $js, '-min.js');
 		parent::display($tpl);
 	}
 

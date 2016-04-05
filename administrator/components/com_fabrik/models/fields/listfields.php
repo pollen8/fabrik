@@ -13,6 +13,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 use Joomla\Utilities\ArrayHelper;
+use Fabrik\Helpers\Html;
 
 jimport('joomla.html.html');
 jimport('joomla.form.formfield');
@@ -135,8 +136,8 @@ class JFormFieldListfields extends JFormFieldList
 			}
 		}
 
-		FabrikHelperHTML::framework();
-		FabrikHelperHTML::iniRequireJS();
+		Html::framework();
+		Html::iniRequireJS();
 
 		return $return;
 	}
@@ -362,7 +363,7 @@ class JFormFieldListfields extends JFormFieldList
 
 		if ($at === 'true')
 		{
-			FabrikHelperHTML::atWHo('textarea[data-at]', ArrayHelper::getColumn($res, 'value'));
+			Html::atWHo('textarea[data-at]', ArrayHelper::getColumn($res, 'value'));
 		}
 
 		$connection        = $this->getAttribute('connection');
@@ -397,7 +398,7 @@ class JFormFieldListfields extends JFormFieldList
 			'Fabrik' => 'media/com_fabrik/js/fabrik.js',
 			'ListFields' => 'administrator/components/com_fabrik/models/fields/listfields.js'
 		);
-		FabrikHelperHTML::script($srcs, $script);
+		Html::script($srcs, $script);
 	}
 
 	/**

@@ -20,6 +20,7 @@ require_once JPATH_COMPONENT_ADMINISTRATOR . '/helpers/contenttype.php';
 
 use Joomla\Utilities\ArrayHelper;
 use \Joomla\Registry\Registry;
+use Fabrik\Helpers\Html;
 
 /**
  * Fabrik Admin Content Type Import Model
@@ -868,7 +869,7 @@ class FabrikAdminModelContentTypeImport extends FabModelAdmin
 		}
 
 		$this->checkVersion($xpath, $layoutData);
-		$layout = FabrikHelperHTML::getLayout('fabrik-content-type-compare');
+		$layout = Html::getLayout('fabrik-content-type-compare');
 
 		return $layout->render($layoutData);
 	}

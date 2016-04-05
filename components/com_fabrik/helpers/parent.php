@@ -12,6 +12,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 use Joomla\Utilities\ArrayHelper;
+use Fabrik\Helpers\Html;
 
 /**
  * Generic tools that all models use
@@ -1510,7 +1511,7 @@ class FabrikWorker
 	 */
 	public static function logError($errString, $msgType)
 	{
-		if (FabrikHelperHTML::isDebug())
+		if (Html::isDebug())
 		{
 			$app = JFactory::getApplication();
 			$app->enqueueMessage($errString, $msgType);

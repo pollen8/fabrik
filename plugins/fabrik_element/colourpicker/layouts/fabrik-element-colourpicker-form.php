@@ -1,6 +1,8 @@
 <?php
 defined('JPATH_BASE') or die;
 
+use Fabrik\Helpers\Html;
+
 $d = $displayData;
 ?>
 
@@ -19,13 +21,13 @@ $d = $displayData;
 			<?php if ($d->j3)
 			{?>
 			<a class="pull-right" href="#">
-				<?php echo FabrikHelperHTML::icon('icon-cancel icon-remove-sign'); ?></a>
+				<?php echo Html::icon('icon-cancel icon-remove-sign'); ?></a>
 			<?php
 			}
 			else
 			{
 
-			echo  FabrikHelperHTML::image("close.gif", 'form', @$this->tmpl, array());
+			echo  Html::image("close.gif", 'form', @$this->tmpl, array());
 			}
 
 			if ($d->showPicker) :?>

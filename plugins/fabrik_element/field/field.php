@@ -8,10 +8,19 @@
  * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
+namespace Fabrik\Plugins\Element;
+
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
 use Joomla\Utilities\ArrayHelper;
+use \FabrikWorker;
+use \FArrayHelper;
+use \QRCode;
+use \JString;
+use Fabrik\Helpers\Html;
+use \stdClass;
+use \JComponentHelper;
 
 jimport('joomla.application.component.model');
 
@@ -22,7 +31,7 @@ jimport('joomla.application.component.model');
  * @subpackage  Fabrik.element.field
  * @since       3.0
  */
-class PlgFabrik_ElementField extends PlgFabrik_Element
+class Field extends Element
 {
 
 	/**
@@ -245,7 +254,7 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 
 			$label = FArrayHelper::getValue($opts, 'title', '') !== '' ? $opts['title'] : $value;
 
-			$value = FabrikHelperHTML::a($value, $label, $opts);
+			$value = Html::a($value, $label, $opts);
 		}
 	}
 
@@ -270,7 +279,7 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 			case 'default':
 				break;
 			case 'lightbox':
-				FabrikHelperHTML::slimbox();
+				Html::slimbox();
 				$opts['rel'] = 'lightbox[]';
 
 				if ($fbConfig->get('use_mediabox', false))
@@ -318,7 +327,7 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 			$autoOpts = array();
 			$autoOpts['max'] = $this->getParams()->get('autocomplete_rows', '10');
 			$autoOpts['storeMatchedResultsOnly'] = false;
-			FabrikHelperHTML::autoComplete($id, $this->getElement()->id, $this->getFormModel()->getId(), 'field', $autoOpts);
+			Html::autoComplete($id, $this->getElement()->id, $this->getFormModel()->getId(), 'field', $autoOpts);
 		}
 
 		return array('FbField', $id, $opts);
@@ -336,7 +345,7 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 	 */
 	public function formJavascriptClass(&$srcs, $script = '', &$shim = array())
 	{
-		$key = FabrikHelperHTML::isDebug() ? 'element/field/field' : 'element/field/field-min';
+		$key = Html::isDebug() ? 'element/field/field' : 'element/field/field-min';
 		$params = $this->getParams();
 		$inputMask = trim($params->get('text_input_mask', ''));
 		$geoComplete = $params->get('autocomplete', '0') === '3';

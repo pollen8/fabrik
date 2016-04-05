@@ -12,6 +12,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 use Joomla\Utilities\ArrayHelper;
+use Fabrik\Helpers\Html;
 
 jimport('joomla.application.component.view');
 
@@ -54,8 +55,8 @@ class FabrikAdminViewPackage extends JViewLegacy
 
 	public function listform()
 	{
-		$srcs = FabrikHelperHTML::framework();
-		FabrikHelperHTML::script($srcs);
+		$srcs = Html::framework();
+		Html::script($srcs);
 		$this->listform	= $this->get('PackageListForm');
 		JHtml::_('behavior.modal', 'a.modal');
 		parent::display('list');
@@ -106,8 +107,8 @@ class FabrikAdminViewPackage extends JViewLegacy
 		$this->js = "PackageCanvas = new AdminPackage($opts);";
 		$srcs[] = 'administrator/components/com_fabrik/views/package/adminpackage.js';
 
-		FabrikHelperHTML::iniRequireJS();
-		FabrikHelperHTML::script($srcs, $this->js);
+		Html::iniRequireJS();
+		Html::script($srcs, $this->js);
 
 		// Simple layout
 		$this->listOpts = $model->getListOpts();

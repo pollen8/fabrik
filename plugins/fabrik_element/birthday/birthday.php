@@ -8,8 +8,20 @@
  * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
+namespace Fabrik\Plugins\Element;
+
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
+
+use \FabrikWorker;
+use \FArrayHelper;
+use \JString;
+use \stdClass;
+use \JFactory;
+use \FText;
+use \JHtml;
+use \DateTime;
+use \DateInterval;
 
 /**
  * Plugin element to render day/month/year drop-downs
@@ -18,8 +30,7 @@ defined('_JEXEC') or die();
  * @subpackage  Fabrik.element.birthday
  * @since       3.0
  */
-
-class PlgFabrik_ElementBirthday extends PlgFabrik_Element
+class Birthday extends Element
 {
 	/**
 	 * Does the element contain sub elements e.g checkboxes radio-buttons
@@ -102,6 +113,7 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 		$value = $this->getValue($data, $repeatCounter);
 		$fd = $params->get('details_date_format', 'd.m.Y');
 		$dateAndAge = (int) $params->get('details_dateandage', '0');
+		$monthDayValue = '';
 
 		if (!$this->isEditable())
 		{
@@ -226,7 +238,7 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 				$layout = $this->getLayout('detail');
 				$layoutData = new stdClass;
 				$layoutData->text =  $this->replaceWithIcons($detailValue);
-				$layoutData->hidden = $element->hidden;
+				$layoutData->hidden = $element->get('hidden');
 
 				return $layout->render($layoutData);
 			}
@@ -710,7 +722,7 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 		$params = $this->getParams();
 		$element = $this->getElement();
 
-		if ($element->filter_type === 'dropdown' && $params->get('list_filter_layout', 'individual') === 'day_mont_year')
+		if ($element->get('filter_type') === 'dropdown' && $params->get('list_filter_layout', 'individual') === 'day_mont_year')
 		{
 			$layout = $this->getLayout('filter-select-day-month-year');
 			$elName = $this->getFullName(true, false);
@@ -750,7 +762,7 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 		$db = FabrikWorker::getDbo();
 		$element = $this->getElement();
 
-		if ($element->filter_type === 'range' || strtoupper($condition) === 'BETWEEN')
+		if ($element->get('filter_type') === 'range' || strtoupper($condition) === 'BETWEEN')
 		{
 			if (strtotime($value[0]) > strtotime($value[1]))
 			{
@@ -816,7 +828,6 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 	 *
 	 * @return  string	sql query part e,g, "key = value"
 	 */
-
 	public function getFilterQuery($key, $condition, $value, $originalValue, $type = 'normal')
 	{
 		$params = $this->getParams();
@@ -827,10 +838,10 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 			switch ($condition)
 			{
 				case 'earlierthisyear':
-					throw new UnexpectedValueException('The birthday element can not deal with "Earlier This Year" prefilters');
+					throw new \UnexpectedValueException('The birthday element can not deal with "Earlier This Year" prefilters');
 					break;
 				case 'laterthisyear':
-					throw new UnexpectedValueException('The birthday element can not deal with "Later This Year" prefilters');
+					throw new \UnexpectedValueException('The birthday element can not deal with "Later This Year" prefilters');
 					break;
 				case 'today':
 					$search = array(date('Y'), date('n'), date('j'));
@@ -868,7 +879,7 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 			}
 		}
 
-		if ($element->filter_type === 'dropdown' && $params->get('list_filter_layout', 'individual') === 'day_mont_year')
+		if ($element->get('filter_type') === 'dropdown' && $params->get('list_filter_layout', 'individual') === 'day_mont_year')
 		{
 			return $this->_dayMonthYearFilterQuery($key, $originalValue);
 		}

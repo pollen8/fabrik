@@ -8,8 +8,15 @@
  * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
+namespace Fabrik\Plugins\Element;
+
 // No direct access
 defined('_JEXEC') or die('Restricted access');
+
+use \JText;
+use \FArrayHelper;
+use \JString;
+use \FabrikWorker;
 
 /**
  * Plugin element to render series of checkboxes
@@ -18,7 +25,7 @@ defined('_JEXEC') or die('Restricted access');
  * @subpackage  Fabrik.element.checkbox
  * @since       3.0
  */
-class PlgFabrik_ElementCheckbox extends PlgFabrik_ElementList
+class Checkbox extends ElementList
 {
 	protected $inputType = 'checkbox';
 

@@ -11,6 +11,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Fabrik\Helpers\Html;
+
 jimport('joomla.application.component.view');
 
 /**
@@ -42,7 +44,7 @@ class FabrikViewMedia extends JViewLegacy
 		$this->row = $model->getVisualization();
 		$params = $model->getParams();
 		$js = $model->getJs();
-		$srcs = FabrikHelperHTML::framework();
+		$srcs = Html::framework();
 		$srcs['FbListFilter'] = 'media/com_fabrik/js/listfilter.js';
 		$srcs['Media'] = 'plugins/fabrik_visualization/media/media.js';
 
@@ -51,8 +53,8 @@ class FabrikViewMedia extends JViewLegacy
 			$srcs['JWPlayer'] = 'plugins/fabrik_visualization/media/libs/jw/jwplayer.js';
 		}
 
-		FabrikHelperHTML::iniRequireJs($model->getShim());
-		FabrikHelperHTML::script($srcs, $js);
+		Html::iniRequireJs($model->getShim());
+		Html::script($srcs, $js);
 
 		if (!$model->canView())
 		{
@@ -74,7 +76,7 @@ class FabrikViewMedia extends JViewLegacy
 		$tpl = $params->get('media_layout', $tpl);
 		$tplpath = JPATH_ROOT . '/plugins/fabrik_visualization/media/views/media/tmpl/' . $tpl;
 		$this->_setPath('template', $tplpath);
-		FabrikHelperHTML::stylesheetFromPath('plugins/fabrik_visualization/media/views/media/tmpl/' . $tpl . '/template.css');
+		Html::stylesheetFromPath('plugins/fabrik_visualization/media/views/media/tmpl/' . $tpl . '/template.css');
 		echo parent::display();
 	}
 }

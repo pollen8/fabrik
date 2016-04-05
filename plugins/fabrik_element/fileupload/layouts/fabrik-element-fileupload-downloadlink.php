@@ -1,6 +1,8 @@
 <?php
 defined('JPATH_BASE') or die;
 
+use Fabrik\Helpers\Html;
+
 $d = $displayData;
 
 $class = $d->downloadImg !== '' ? '' : 'class="btn btn-primary button"';
@@ -15,7 +17,7 @@ $class = $d->downloadImg !== '' ? '' : 'class="btn btn-primary button"';
 	<?php if ($d->downloadImg !== '') : ?>
 		<img src="<?php echo $d->downloadImg;?>" alt="<?php echo $d->title;?>" />
 	<?php else :?>
-		<?php echo FabrikHelperHTML::icon('icon-download icon-white') . ' ' . FText::_('PLG_ELEMENT_FILEUPLOAD_DOWNLOAD');?>
+		<?php echo Html::icon('icon-download icon-white') . ' ' . FText::_('PLG_ELEMENT_FILEUPLOAD_DOWNLOAD');?>
 	<?php endif; ?>
 </a>
 <?php endif; ?>

@@ -5,10 +5,12 @@
 
 defined('JPATH_BASE') or die;
 
+use Fabrik\Helpers\Html;
+
 $d       = $displayData;
 $trigger = $d->popUp ? 'data-fabrik-view="list"' : '';
 $label   = '<span class="fabrik_related_data_count">(' . $d->count . ')</span> ' . $d->label;
-$icon    = FabrikHelperHTML::icon('icon-list-view', $label);
+$icon    = Html::icon('icon-list-view', $label);
 ?>
 
 <?php if ($d->canView) :

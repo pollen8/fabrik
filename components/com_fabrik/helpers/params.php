@@ -11,6 +11,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Fabrik\Helpers\Html;
+
 /*
  * DEPRECIATED?
 could well be that we don't use this now???????????
@@ -366,14 +368,14 @@ class FabrikParams extends JForm
 
 		if ($repeat && $repeatControls && ($repeatSingleVal == null || $repeatSingleVal == 0))
 		{
-			FabrikHelperHTML::script('components/com_fabrik/libs/params.js');
+			Html::script('components/com_fabrik/libs/params.js');
 
 			// Watch add and remove buttons
 			$document = JFactory::getDocument();
 			$script = "window.addEvent('fabrik.loaded', function() {
 			 new RepeatParams('container{$this->_identifier}', {repeatMin:$repeatMin});
 	});";
-			FabrikHelperHTML::addScriptDeclaration($script);
+			Html::addScriptDeclaration($script);
 		}
 
 		if ($write)

@@ -151,9 +151,9 @@ class FabrikUploader extends JObject
 	/**
 	 * Checks if the file can be uploaded
 	 *
-	 * @param   array    $file     File information
-	 * @param   string   &$err     An error message to be returned
-	 * @param   JParams  &$params  Params
+	 * @param   array    $file            File information
+	 * @param   string   &$err            An error message to be returned
+	 * @param   Joomla\Registry\Registry  &$params  Params
 	 *
 	 * @return  bool
 	 */

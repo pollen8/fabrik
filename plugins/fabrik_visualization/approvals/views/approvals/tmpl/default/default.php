@@ -11,6 +11,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Fabrik\Helpers\Html;
+
 //@TODO if we ever get calendars inside packages then the ids will need to be
 // Replaced with classes contained within a distinct id
 
@@ -48,24 +50,24 @@ foreach ($this->rows as $row)
 					<a href="<?php echo $row->view ?>">
 					<a class="fabrikTip" opts="{position:'right'}" title="<?php echo FabrikString::truncate($row->content,
 		array('tip' => false, 'wordcount' => 200)) ?>" >
-						<?php echo FabrikHelperHTML::image('view.png', 'list', ''); ?>
+						<?php echo Html::image('view.png', 'list', ''); ?>
 					</a></td>
 					<td style="text-align:center">
 						<a href="#" class="approvalTip">
-							<?php echo FabrikHelperHTML::image('attention2.png', 'list', ''); ?>
+							<?php echo Html::image('attention2.png', 'list', ''); ?>
 						</a>
 						<div class="floating-tip" style="display:none">
 						<ul class="view approvals">
 							<li>
 								<a class="approve" href="index.php?option=com_<?php echo $package?>&format=raw&task=visualization.display&visualizationid=<?php echo $this
 		->id ?>&plugintask=approve&listid=<?php echo $row->listid ?>&rowid=<?php echo $row->rowid ?>">
-									<?php echo FabrikHelperHTML::image('approve.png', 'visualization', ''); ?><span>approve</span>
+									<?php echo Html::image('approve.png', 'visualization', ''); ?><span>approve</span>
 								</a>
 							</li>
 							<li>
 								<a class="disapprove"  href="index.php?option=com_<?php echo $package?>&format=raw&task=visualization.display&visualizationid=<?php echo $this
 		->id ?>&plugintask=disapprove&listid=<?php echo $row->listid ?>&rowid=<?php echo $row->rowid ?>">
-									<?php echo FabrikHelperHTML::image('disapprove.png', 'visualization', ''); ?><span>disapprove</span>
+									<?php echo Html::image('disapprove.png', 'visualization', ''); ?><span>disapprove</span>
 									</a>
 							</li>
 						</ul>

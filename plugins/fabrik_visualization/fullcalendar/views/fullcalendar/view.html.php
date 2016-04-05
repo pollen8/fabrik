@@ -11,6 +11,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Fabrik\Helpers\Html;
+
 jimport('joomla.application.component.view');
 
 /**
@@ -87,15 +89,15 @@ class FabrikViewFullcalendar extends JViewLegacy
 	private function css($tpl)
 	{
 		$lib = COM_FABRIK_LIVESITE . 'plugins/fabrik_visualization/fullcalendar/libs/fullcalendar/';
-		FabrikHelperHTML::styleSheet($lib . 'fullcalendar.css');
+		Html::styleSheet($lib . 'fullcalendar.css');
 
 		// Add our css
-		FabrikHelperHTML::stylesheetFromPath('plugins/fabrik_visualization/fullcalendar/fullcalendar.css');
+		Html::stylesheetFromPath('plugins/fabrik_visualization/fullcalendar/fullcalendar.css');
 		JHTML::stylesheet('media/com_fabrik/css/list.css');
-		FabrikHelperHTML::stylesheetFromPath('plugins/fabrik_visualization/fullcalendar/views/fullcalendar/tmpl/' . $tpl . '/template.css');
+		Html::stylesheetFromPath('plugins/fabrik_visualization/fullcalendar/views/fullcalendar/tmpl/' . $tpl . '/template.css');
 
 		// Adding custom.css, just for the heck of it
-		FabrikHelperHTML::stylesheetFromPath('plugins/fabrik_visualization/fullcalendar/views/fullcalendar/tmpl/' . $tpl . '/custom.css');
+		Html::stylesheetFromPath('plugins/fabrik_visualization/fullcalendar/views/fullcalendar/tmpl/' . $tpl . '/custom.css');
 	}
 
 	/**
@@ -200,7 +202,7 @@ class FabrikViewFullcalendar extends JViewLegacy
 		$js[]  = "" . $model->getFilterJs();
 		$js    = implode("\n", $js);
 
-		$srcs   = FabrikHelperHTML::framework();
+		$srcs   = Html::framework();
 		$srcs['FbListFilter'] = 'media/com_fabrik/js/listfilter.js';
 		$srcs['fabrikFullcalendar'] = 'plugins/fabrik_visualization/fullcalendar/fullcalendar.js';
 
@@ -214,8 +216,8 @@ class FabrikViewFullcalendar extends JViewLegacy
 			array('viz/fullcalendar/libs/fullcalendar/fullcalendar')
 		);
 
-		FabrikHelperHTML::iniRequireJs($shim);
-		FabrikHelperHTML::script($srcs, $js);
+		Html::iniRequireJs($shim);
+		Html::script($srcs, $js);
 	}
 
 	/**
@@ -225,21 +227,21 @@ class FabrikViewFullcalendar extends JViewLegacy
 	 */
 	private function jLayouts()
 	{
-		FabrikHelperHTML::jLayoutJs(
+		Html::jLayoutJs(
 			'fabrik-visualization-fullcalendar-viewbuttons',
 			'fabrik-visualization-fullcalendar-viewbuttons',
 			(object) array(),
 			array(JPATH_PLUGINS . '/fabrik_visualization/fullcalendar/layouts/')
 		);
 
-		FabrikHelperHTML::jLayoutJs(
+		Html::jLayoutJs(
 			'fabrik-visualization-fullcalendar-event-popup',
 			'fabrik-visualization-fullcalendar-event-popup',
 			(object) array(),
 			array(JPATH_PLUGINS . '/fabrik_visualization/fullcalendar/layouts/')
 		);
 
-		FabrikHelperHTML::jLayoutJs(
+		Html::jLayoutJs(
 			'fabrik-visualization-fullcalendar-viewevent',
 			'fabrik-visualization-fullcalendar-viewevent',
 			(object) array(),
@@ -254,7 +256,7 @@ class FabrikViewFullcalendar extends JViewLegacy
 			'expandable' => true
 		);
 
-		FabrikHelperHTML::jLayoutJs(
+		Html::jLayoutJs(
 			'fullcalendar_addeventwin',
 			'fabrik-modal',
 			(object) $modalOpts
@@ -268,7 +270,7 @@ class FabrikViewFullcalendar extends JViewLegacy
 			'expandable' => true
 		);
 
-		FabrikHelperHTML::jLayoutJs(
+		Html::jLayoutJs(
 			'fullcalendar_chooseeventwin',
 			'fabrik-modal',
 			(object) $modalOpts

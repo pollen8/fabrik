@@ -8,8 +8,15 @@
  * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
+namespace Fabrik\Plugins\Element;
+
 // No direct access
 defined('_JEXEC') or die('Restricted access');
+
+use \FabrikWorker;
+use \stdClass;
+use Fabrik\Helpers\Html;
+use \FabrikString;
 
 /**
  * Plugin element to render colour picker
@@ -18,7 +25,7 @@ defined('_JEXEC') or die('Restricted access');
  * @subpackage  Fabrik.element.colourpicker
  * @since       3.0
  */
-class PlgFabrik_ElementColourpicker extends PlgFabrik_Element
+class Colourpicker extends Element
 {
 	/**
 	 * Db table field type
@@ -82,7 +89,7 @@ class PlgFabrik_ElementColourpicker extends PlgFabrik_Element
 			return array();
 		}
 
-		FabrikHelperHTML::addPath(COM_FABRIK_BASE . 'plugins/fabrik_element/colourpicker/images/', 'image', 'form', false);
+		Html::addPath(COM_FABRIK_BASE . 'plugins/fabrik_element/colourpicker/images/', 'image', 'form', false);
 		$params = $this->getParams();
 		$id     = $this->getHTMLId($repeatCounter);
 		$data   = $this->getFormModel()->data;

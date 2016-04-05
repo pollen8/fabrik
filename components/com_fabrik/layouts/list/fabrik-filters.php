@@ -12,6 +12,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Fabrik\Helpers\Html;
+
 $d             = $displayData;
 $underHeadings = $d->filterMode === 3 || $d->filterMode === 4;
 
@@ -35,7 +37,7 @@ $style = $d->toggleFilters ? 'style="display:none"' : ''; ?>
 					<th style="text-align:right">
 						<?php if ($d->showClearFilters) : ?>
 							<a class="clearFilters" href="#">
-								<?php echo FabrikHelperHTML::icon('icon-refresh', FText::_('COM_FABRIK_CLEAR')); ?>
+								<?php echo Html::icon('icon-refresh', FText::_('COM_FABRIK_CLEAR')); ?>
 							</a>
 						<?php endif ?>
 					</th>

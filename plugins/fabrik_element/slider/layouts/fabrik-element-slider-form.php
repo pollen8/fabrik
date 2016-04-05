@@ -2,13 +2,15 @@
 
 defined('JPATH_BASE') or die;
 
+use Fabrik\Helpers\Html;
+
 $d = $displayData;
 ?>
 <div id="<?php echo $d->id; ?>" class="fabrikSubElementContainer">
 <?php
 	if ($d->showNone) :
 		if ($d->j3) :?>
-		<button class="btn btn-mini clearslider pull-left" style="margin-right:10px"><?php echo FabrikHelperHTML::icon('icon-remove'); ?></button>
+		<button class="btn btn-mini clearslider pull-left" style="margin-right:10px"><?php echo Html::icon('icon-remove'); ?></button>
 		<?php
 		else:
 			?>

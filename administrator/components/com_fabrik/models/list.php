@@ -1301,7 +1301,7 @@ class FabrikAdminModelList extends FabModelAdmin
 		$fabrikDb      = $this->getFEModel()->getDb();
 		$dispatcher    = JEventDispatcher::getInstance();
 		$input         = $this->app->input;
-		$elementModel  = new PlgFabrik_Element($dispatcher);
+		$elementModel  = new \Fabrik\Plugins\Element\Element($dispatcher);
 		$pluginManager = FabrikWorker::getPluginManager();
 		$fbConfig      = JComponentHelper::getParams('com_fabrik');
 		$elementTypes  = $input->get('elementtype', array(), 'array');

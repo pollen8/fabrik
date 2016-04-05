@@ -8,10 +8,16 @@
  * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
+namespace Fabrik\Plugins\Element;
+
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-require_once JPATH_SITE . '/components/com_fabrik/models/element.php';
+use \FArrayHelper;
+use \stdClass;
+use \JString;
+use Fabrik\Helpers\Html;
+use \JText;
 
 /**
  * Plugin element to two lists - one to select from the other to select into
@@ -20,7 +26,7 @@ require_once JPATH_SITE . '/components/com_fabrik/models/element.php';
  * @subpackage  Fabrik.element.picklist
  * @since       3.0
  */
-class PlgFabrik_ElementPicklist extends PlgFabrik_ElementList
+class Picklist extends ElementList
 {
 	/**
 	 * Does the element have sub elements
@@ -95,7 +101,7 @@ class PlgFabrik_ElementPicklist extends PlgFabrik_ElementList
 			return implode(', ', $to);
 		}
 
-		FabrikHelperHTML::stylesheet(COM_FABRIK_LIVESITE . 'plugins/fabrik_element/picklist/picklist.css');
+		Html::stylesheet(COM_FABRIK_LIVESITE . 'plugins/fabrik_element/picklist/picklist.css');
 
 		$layout                   = $this->getLayout('form');
 		$layoutData               = new stdClass;

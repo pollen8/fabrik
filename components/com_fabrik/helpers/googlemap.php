@@ -8,8 +8,13 @@
  * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
+namespace Fabrik\Helpers;
+
 // No direct access
 defined('_JEXEC') or die('Restricted access');
+
+use \FArrayHelper;
+use \stdClass;
 
 /**
  * Google Map class
@@ -18,8 +23,7 @@ defined('_JEXEC') or die('Restricted access');
  * @subpackage  Fabrik.helpers
  * @since       3.0
  */
-
-class FabGoogleMapHelper
+class Googlemap
 {
 	/**
 	 * Set the google map style

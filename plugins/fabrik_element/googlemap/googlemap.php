@@ -8,13 +8,23 @@
  * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
+namespace Fabrik\Plugins\Element;
+
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
 use Joomla\Utilities\ArrayHelper;
-
-require_once JPATH_SITE . '/components/com_fabrik/models/element.php';
-require_once JPATH_SITE . '/components/com_fabrik/helpers/googlemap.php';
+use \FabrikWorker;
+use \stdClass;
+use \FabrikString;
+use \JUri;
+use Fabrik\Helpers\Googlemap as FabGoogleMapHelper;
+use \FArrayHelper;
+use Fabrik\Helpers\Html;
+use \JComponentHelper;
+use \FText;
+use \Fabimage;
+use \Exception;
 
 /**
  * Plugin element to render a Google map
@@ -23,7 +33,7 @@ require_once JPATH_SITE . '/components/com_fabrik/helpers/googlemap.php';
  * @subpackage  Fabrik.element.googlemap
  * @since       3.0
  */
-class PlgFabrik_ElementGooglemap extends PlgFabrik_Element
+class Googlemap extends Element
 {
 	/**
 	 * Has the geoJS been loaded
@@ -218,8 +228,8 @@ class PlgFabrik_ElementGooglemap extends PlgFabrik_Element
 
 			if ($params->get('fb_gm_defaultloc'))
 			{
-				$ext = FabrikHelperHTML::isDebug() ? '.js' : '-min.js';
-				FabrikHelperHTML::script('media/com_fabrik/js/lib/geo-location/geo' . $ext);
+				$ext = Html::isDebug() ? '.js' : '-min.js';
+				Html::script('media/com_fabrik/js/lib/geo-location/geo' . $ext);
 				self::$geoJs = true;
 			}
 		}
@@ -242,8 +252,8 @@ class PlgFabrik_ElementGooglemap extends PlgFabrik_Element
 
 			if ($params->get('fb_gm_latlng_osref'))
 			{
-				$ext = FabrikHelperHTML::isDebug() ? '.js' : '-min.js';
-				FabrikHelperHTML::script('media/com_fabrik/js/lib/jscoord-1.1.1/jscoord-1.1.1' . $ext);
+				$ext = Html::isDebug() ? '.js' : '-min.js';
+				Html::script('media/com_fabrik/js/lib/jscoord-1.1.1/jscoord-1.1.1' . $ext);
 				self::$OSRefJs = true;
 			}
 		}
@@ -265,7 +275,7 @@ class PlgFabrik_ElementGooglemap extends PlgFabrik_Element
 
 			if ((int) $params->get('fb_gm_radius', '0'))
 			{
-				FabrikHelperHTML::script('components/com_fabrik/libs/googlemaps/distancewidget.js');
+				Html::script('components/com_fabrik/libs/googlemaps/distancewidget.js');
 				self::$radiusJs = true;
 			}
 		}
@@ -283,7 +293,6 @@ class PlgFabrik_ElementGooglemap extends PlgFabrik_Element
 	{
 		$params = $this->getParams();
 		$id = $this->getHTMLId($repeatCounter);
-		$element = $this->getElement();
 		$formModel = $this->getFormModel();
 		$data = $formModel->data;
 		$v = $this->getValue($data, $repeatCounter);
@@ -335,8 +344,6 @@ class PlgFabrik_ElementGooglemap extends PlgFabrik_Element
 		{
 			foreach (array('addr1', 'addr2', 'city', 'state', 'zip', 'country') as $which_field)
 			{
-				$field_id = '';
-
 				if ($field_id = $this->_getGeocodeFieldId($which_field, $repeatCounter))
 				{
 					$opts->geocode_fields[] = $field_id;
@@ -358,8 +365,6 @@ class PlgFabrik_ElementGooglemap extends PlgFabrik_Element
 				         'formatted_address' => 'formatted_address'
 			         ) as $google_field => $which_field)
 			{
-				$field_id = '';
-
 				if ($field_id = $this->_getGeocodeFieldId($which_field, $repeatCounter))
 				{
 					$opts->reverse_geocode_fields[$google_field] = $field_id;
@@ -445,7 +450,6 @@ class PlgFabrik_ElementGooglemap extends PlgFabrik_Element
 
 	protected function _getFieldId($which_field, $repeatCounter = 0)
 	{
-		$listModel = $this->getlistModel();
 		$params = $this->getParams();
 		$field = $params->get($which_field, false);
 
@@ -703,7 +707,7 @@ class PlgFabrik_ElementGooglemap extends PlgFabrik_Element
 		}
 
 		$markers .= $lat . ',' . $lon;
-		$uri = JURI::getInstance();
+		$uri = JUri::getInstance();
 		$src = $uri->getScheme() . '://maps.google.com/maps/api/staticmap?';
 		$attribs = array();
 		$attribs[] = 'center=' . $lat . ',' . $lon;
@@ -743,7 +747,7 @@ class PlgFabrik_ElementGooglemap extends PlgFabrik_Element
 		if ((int) $params->get('fb_gm_radius', '0') == 1)
 		{
 			require_once COM_FABRIK_FRONTEND . '/libs/googlemaps/polyline_encoder/class.polylineEncoder.php';
-			$polyEnc = new PolylineEncoder;
+			$polyEnc = new \PolylineEncoder;
 			$radius = $this->_getFieldValue('fb_gm_radius_read_element', $data, $repeatCounter);
 
 			if ($radius === false || !isset($radius))

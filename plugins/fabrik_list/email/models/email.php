@@ -12,6 +12,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 use Joomla\Utilities\ArrayHelper;
+use Fabrik\Helpers\Html;
 
 require_once COM_FABRIK_FRONTEND . '/models/plugin-list.php';
 
@@ -91,7 +92,7 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 	 */
 	public function onLoadJavascriptInstance($args)
 	{
-		FabrikHelperHTML::slimbox();
+		Html::slimbox();
 		parent::onLoadJavascriptInstance($args);
 		$opts              = $this->getElementJSOptions();
 		$opts->renderOrder = $this->renderOrder;
@@ -180,12 +181,12 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 			{
 				$html = '<div class="pull-left" style="margin:0 20px 20px 0">';
 				$html .= JHTML::_('select.genericlist', $results, 'email_to_selectfrom[]', $attribs, 'email', 'name', '', 'email_to_selectfrom');
-				$html .= '<br /><a href="#" class="btn btn-small" id="email_add">' . FabrikHelperHTML::icon('icon-plus') . ' ' . FText::_('COM_FABRIK_ADD') . ' &gt;&gt;</a>';
+				$html .= '<br /><a href="#" class="btn btn-small" id="email_add">' . Html::icon('icon-plus') . ' ' . FText::_('COM_FABRIK_ADD') . ' &gt;&gt;</a>';
 				$html .= '</div>';
 				$html .= '<div class="span6">';
 				$html .= JHTML::_('select.genericlist', $empty, 'list_email_to[]', $attribs, 'email', 'name', '', 'list_email_to');
 				$html .= '<br /><a href="#" class="btn btn-small" id="email_remove">&lt;&lt; '
-					. FText::_('COM_FABRIK_DELETE') . ' ' . FabrikHelperHTML::icon('icon-delete') . '</a>';
+					. FText::_('COM_FABRIK_DELETE') . ' ' . Html::icon('icon-delete') . '</a>';
 				$html .= '</div>';
 				$html .= '<div style="clear:both"></div>';
 			}
@@ -615,7 +616,7 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 		{
 			if ($phpMsg)
 			{
-				$thisMsg .= FabrikHelperHTML::getPHPTemplate($emailTemplate, $row, $this->listModel);
+				$thisMsg .= Html::getPHPTemplate($emailTemplate, $row, $this->listModel);
 			}
 			else
 			{
@@ -719,7 +720,7 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 		$phpMsg          = false;
 		$params          = $this->getParams();
 		$contentTemplate = $params->get('emailtable_template_content', '');
-		$content         = empty($contentTemplate) ? '' : FabrikHelperHTML::getContentTemplate($contentTemplate);
+		$content         = empty($contentTemplate) ? '' : Html::getContentTemplate($contentTemplate);
 		$emailTemplate   = $this->_emailTemplate();
 
 		if (JFile::exists($emailTemplate))
@@ -731,7 +732,7 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 			}
 			else
 			{
-				$message = FabrikHelperHTML::getTemplateFile($emailTemplate);
+				$message = Html::getTemplateFile($emailTemplate);
 			}
 
 			$message = str_replace('{content}', $content, $message);
@@ -787,7 +788,7 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 		{
 			if ($phpMsg)
 			{
-				$thisMsg = FabrikHelperHTML::getPHPTemplate($emailTemplate, $row, $this->listModel);
+				$thisMsg = Html::getPHPTemplate($emailTemplate, $row, $this->listModel);
 			}
 			else
 			{

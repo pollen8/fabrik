@@ -8,10 +8,21 @@
  * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
+namespace Fabrik\Plugins\Element;
+
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
 use Joomla\Utilities\ArrayHelper;
+use Fabrik\Helpers\Html;
+use \JString;
+use \FabrikWorker;
+use \stdClass;
+use \FArrayHelper;
+use \FabrikString;
+use \JHtml;
+use \JFactory;
+
 
 jimport('joomla.application.component.model');
 jimport('joomla.filesystem.file');
@@ -22,7 +33,7 @@ jimport('joomla.filesystem.file');
  * @package  Fabrik
  * @since    3.0
  */
-class PlgFabrik_ElementList extends PlgFabrik_Element
+class ElementList extends Element
 {
 	/**
 	 * Does the element have sub elements
@@ -340,6 +351,7 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 	 */
 	public function getFilter($counter = 0, $normal = true)
 	{
+		$rows = array();
 		$element = $this->getElement();
 		$values = $this->getSubOptionValues();
 		$default = $this->getDefaultFilterVal($normal, $counter);
@@ -361,7 +373,7 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 
 			if (!in_array('', $values) && !in_array($element->filter_type, array('checkbox', 'multiselect')))
 			{
-				array_unshift($rows, JHTML::_('select.option', '', $this->filterSelectLabel()));
+				array_unshift($rows, JHtml::_('select.option', '', $this->filterSelectLabel()));
 			}
 		}
 
@@ -510,9 +522,9 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 	/**
 	 * Cache method to populate auto-complete options
 	 *
-	 * @param   plgFabrik_Element  $elementModel  Element model
-	 * @param   string             $search        Search string
-	 * @param   array              $opts          Options, 'label' => field to use for label (db join)
+	 * @param   \Fabrik\Plugins\Element\Element  $elementModel  Element model
+	 * @param   string                          $search        Search string
+	 * @param   array                           $opts          Options, 'label' => field to use for label (db join)
 	 *
 	 * @since   3.0.7
 	 *
@@ -627,7 +639,7 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 
 				if (!$this->iconsSet == true)
 				{
-					if (!is_a($this, 'PlgFabrik_ElementDatabasejoin'))
+					if (!is_a($this, '\Fabrik\Plugins\Element\Databasejoin'))
 					{
 						$l = $this->getLabelForValue($tmpVal);
 					}
@@ -674,7 +686,7 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 			}
 		}
 
-		$layout = FabrikHelperHTML::getLayout('fabrik-element-elementlist-details',
+		$layout = Html::getLayout('fabrik-element-elementlist-details',
 			array(COM_FABRIK_FRONTEND . '/layouts/element'));
 
 		$displayData = array(
@@ -820,7 +832,7 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 		$classes = $this->gridClasses();
 		$dataAttributes = $this->dataAttributes();
 		$buttonGroup = $this->buttonGroup();
-		$grid = FabrikHelperHTML::grid($values, $labels, $selected, $name, $this->inputType, $elBeforeLabel, $optionsPerRow, $classes, $buttonGroup, $dataAttributes);
+		$grid = Html::grid($values, $labels, $selected, $name, $this->inputType, $elBeforeLabel, $optionsPerRow, $classes, $buttonGroup, $dataAttributes);
 		array_unshift($grid, '<div class="fabrikSubElementContainer" id="' . $id . '">');
 		$grid[] = '</div><!-- close subElementContainer -->';
 
@@ -994,7 +1006,7 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 	 */
 	public function formJavascriptClass(&$srcs, $script = '', &$shim = array())
 	{
-		$mediaFolder = FabrikHelperHTML::getMediaFolder();
+		$mediaFolder = Html::getMediaFolder();
 		$files = array(
 			'Element' => $mediaFolder . '/element.js',
 			'ElementList' => $mediaFolder . '/elementlist.js'

@@ -11,6 +11,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Fabrik\Helpers\Html;
+
 // Require the abstract plugin class
 require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
 
@@ -235,7 +237,7 @@ class PlgFabrik_FormConfirmation extends PlgFabrik_Form
 				. "\" />";
 
 			// Unset the task otherwise we will submit the form to be processed.
-			FabrikHelperHTML::addScriptDeclaration("
+			Html::addScriptDeclaration("
 				window.addEvent('fabrik.loaded', function() {
 					$('fabrik_redoconfirmation').addEvent('click', function(e) {;
 						this.form.task.value = '';

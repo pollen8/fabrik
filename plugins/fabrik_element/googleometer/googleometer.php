@@ -8,12 +8,15 @@
  * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
+namespace Fabrik\Plugins\Element;
+
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
 use Joomla\Utilities\ArrayHelper;
-
-require_once JPATH_SITE . '/components/com_fabrik/models/element.php';
+use \FArrayHelper;
+use \stdClass;
+use \FabrikWorker;
 
 /**
  * Plugin element to render a google o meter chart
@@ -22,7 +25,7 @@ require_once JPATH_SITE . '/components/com_fabrik/models/element.php';
  * @subpackage  Fabrik.element.googleometer
  * @since       3.0
  */
-class PlgFabrik_ElementGoogleometer extends PlgFabrik_Element
+class Googleometer extends Element
 {
 	/**
 	 * Db table field type
@@ -57,7 +60,7 @@ class PlgFabrik_ElementGoogleometer extends PlgFabrik_Element
 			$data = ArrayHelper::getValue($data, $repeatCounter);
 		}
 
-		return $this->_renderListData($data, $range, $repeatCounter);
+		return $this->_renderListData($data, $range);
 	}
 
 	/**
@@ -76,13 +79,21 @@ class PlgFabrik_ElementGoogleometer extends PlgFabrik_Element
 	/**
 	 * Get the data element
 	 *
-	 * @return  PlgFabrik_Element
+	 * @throws \Exception
+	 *
+	 * @return  \Fabrik\Plugins\Element\Element
 	 */
 	private function getDataElement()
 	{
 		$params    = $this->getParams();
 		$elementId = (int) $params->get('googleometer_element');
-		$element   = FabrikWorker::getPluginManager()->getPlugIn('', 'element');
+
+		if ($elementId === 0)
+		{
+			throw new \Exception('Google o meter fabrik field requires an "Element" to be selected');
+		}
+
+		$element   = FabrikWorker::getPluginManager()->getPlugIn('field', 'element');
 		$element->setId($elementId);
 
 		return $element;

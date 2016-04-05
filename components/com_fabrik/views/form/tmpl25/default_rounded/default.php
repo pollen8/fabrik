@@ -12,6 +12,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Fabrik\Helpers\Html;
+
 /* The default template includes the following folder and files:
 
 images - this is the folder for the form template's images
@@ -72,7 +74,7 @@ echo $form->intro;
 	echo $this->plugintop;
 	$active = ($form->error != '') ? '' : ' fabrikHide';
 	echo "<div class=\"fabrikMainError fabrikError$active\">";
-	echo FabrikHelperHTML::image('alert.png', 'form', $this->tmpl);
+	echo Html::image('alert.png', 'form', $this->tmpl);
 	echo "$form->error</div>";
 	if ($this->showEmail) {
 		echo $this->emailLink;
@@ -110,12 +112,12 @@ echo $form->intro;
 							<div class="fabrikGroupRepeater">
 								<?php if ($group->canAddRepeat) {?>
 									<a class="addGroup" href="#">
-										<?php echo FabrikHelperHTML::image('plus-sign.png', 'form', $this->tmpl, array('class' => 'fabrikTip','opts' => "{notice:true}", 'title' => FText::_('COM_FABRIK_ADD_GROUP')));?>
+										<?php echo Html::image('plus-sign.png', 'form', $this->tmpl, array('class' => 'fabrikTip','opts' => "{notice:true}", 'title' => FText::_('COM_FABRIK_ADD_GROUP')));?>
 									</a>
 								<?php }?>
 								<?php if ($group->canDeleteRepeat) {?>
 									<a class="deleteGroup" href="#">
-										<?php echo FabrikHelperHTML::image('minus-sign.png', 'form', $this->tmpl, array('class' => 'fabrikTip','opts' => "{notice:true}", 'title' => FText::_('COM_FABRIK_DELETE_GROUP')));?>
+										<?php echo Html::image('minus-sign.png', 'form', $this->tmpl, array('class' => 'fabrikTip','opts' => "{notice:true}", 'title' => FText::_('COM_FABRIK_DELETE_GROUP')));?>
 									</a>
 								<?php }?>
 							</div>
@@ -144,5 +146,5 @@ echo $form->intro;
 <?php
 echo $form->outro;
 echo $this->pluginend;
-echo FabrikHelperHTML::keepalive();
+echo Html::keepalive();
 ?>

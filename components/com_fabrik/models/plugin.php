@@ -13,6 +13,7 @@ defined('_JEXEC') or die('Restricted access');
 
 use Joomla\Registry\Registry;
 use Joomla\Utilities\ArrayHelper;
+use Fabrik\Helpers\Html;
 
 jimport('joomla.application.component.model');
 
@@ -251,7 +252,7 @@ class FabrikPlugin extends JPlugin
 
 		$displayData       = new stdClass;
 		$displayData->tabs = $tabs;
-		$layout            = FabrikHelperHTML::getLayout('fabrik-tabs');
+		$layout            = Html::getLayout('fabrik-tabs');
 		$output[]          = $layout->render($displayData);
 	}
 
@@ -459,12 +460,12 @@ class FabrikPlugin extends JPlugin
 			{
 				if ($j3)
 				{
-					$str[] = '<a class="btn" href="#" data-button="addButton">' . FabrikHelperHTML::icon('icon-plus', FText::_('COM_FABRIK_ADD')) . '</a>';
-					$str[] = '<a class="btn" href="#" data-button="deleteButton">' . FabrikHelperHTML::icon('icon-minus', FText::_('COM_FABRIK_REMOVE')) . '</a>';
+					$str[] = '<a class="btn" href="#" data-button="addButton">' . Html::icon('icon-plus', FText::_('COM_FABRIK_ADD')) . '</a>';
+					$str[] = '<a class="btn" href="#" data-button="deleteButton">' . Html::icon('icon-minus', FText::_('COM_FABRIK_REMOVE')) . '</a>';
 				}
 				else
 				{
-					$str[] = '<a class="addButton" href="#" data-button="addButton">' . FabrikHelperHTML::icon('icon-plus', FText::_('COM_FABRIK_ADD')) . '</a>';
+					$str[] = '<a class="addButton" href="#" data-button="addButton">' . Html::icon('icon-plus', FText::_('COM_FABRIK_ADD')) . '</a>';
 				}
 			}
 
@@ -513,7 +514,7 @@ class FabrikPlugin extends JPlugin
 
 				if ($repeat && !$j3)
 				{
-					$str[] = '<li><a class="removeButton delete btn" href="#">' . FabrikHelperHTML::icon('icon-minus-sign', FText::_('COM_FABRIK_REMOVE'))
+					$str[] = '<li><a class="removeButton delete btn" href="#">' . Html::icon('icon-minus-sign', FText::_('COM_FABRIK_REMOVE'))
 						. '</a></li>';
 				}
 
@@ -546,7 +547,7 @@ class FabrikPlugin extends JPlugin
 		if (!empty($repeatScript))
 		{
 			$repeatScript = "window.addEvent('domready', function () {\n" . implode("\n", $repeatScript) . "\n})\n";
-			FabrikHelperHTML::script('administrator/components/com_fabrik/models/fields/repeatgroup.js', $repeatScript);
+			Html::script('administrator/components/com_fabrik/models/fields/repeatgroup.js', $repeatScript);
 		}
 
 		return implode("\n", $str);

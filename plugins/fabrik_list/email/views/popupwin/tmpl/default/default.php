@@ -11,10 +11,12 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Fabrik\Helpers\Html;
+
 ?>
 <form method="post" enctype="multipart/form-data" action="<?php echo JURI::base();?>index.php" name="emailtable" id="emailtable">
 	<div class="alert alert-info">
-		<?php echo FabrikHelperHTML::icon('icon-envelope'); ?> <?php echo JText::plural('PLG_LIST_EMAIL_N_RECORDS', $this->recordcount) ?>
+		<?php echo Html::icon('icon-envelope'); ?> <?php echo JText::plural('PLG_LIST_EMAIL_N_RECORDS', $this->recordcount) ?>
 	</div>
 	<?php
 	if ($this->showToField)
@@ -52,10 +54,10 @@ defined('_JEXEC') or die('Restricted access');
 			<input class="inputbox fabrikinput" name="attachment[]" type="file" id="attachment" />
 		</label>
 		<a href="#" class="addattachment">
-		<?php echo FabrikHelperHTML::image('plus.png', 'form', @$this->tmpl, FText::_('COM_FABRIK_ADD'));?>
+		<?php echo Html::image('plus.png', 'form', @$this->tmpl, FText::_('COM_FABRIK_ADD'));?>
 		</a>
 		<a href="#" class="delattachment">
-			<?php echo FabrikHelperHTML::image('minus-sign.png', 'form', @$this->tmpl, FText::_('COM_FABRIK_DELETE'));?>
+			<?php echo Html::image('minus-sign.png', 'form', @$this->tmpl, FText::_('COM_FABRIK_DELETE'));?>
 		</a>
 	</div>
 	<?php

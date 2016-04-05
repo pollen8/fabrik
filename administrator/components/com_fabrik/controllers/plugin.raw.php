@@ -39,7 +39,23 @@ class FabrikAdminControllerPlugin extends FabControllerForm
 		$method = $input->get('method', '');
 		$group = $input->get('g', 'element');
 
-		if (!JPluginHelper::importPlugin('fabrik_' . $group, $plugin))
+		$dispatcher = JEventDispatcher::getInstance();
+
+		if ($group === 'element')
+		{
+			// As elements are namespaced the default importPlugin wont work in registering the
+			// plugin with the dispatcher
+			$className = '\\Fabrik\\Plugins\\Element\\' . ucfirst($plugin);
+			$plg = JPluginHelper::getPlugin($group, $plugin);
+			new $className($dispatcher, (array) ($plg));
+			$res = 1;
+		}
+		else
+		{
+			$res = JPluginHelper::importPlugin('fabrik_' . $group, $plugin);
+		}
+
+		if (!$res)
 		{
 			$o = new stdClass;
 			$o->err = 'unable to import plugin fabrik_' . $group . ' ' . $plugin;

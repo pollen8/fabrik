@@ -13,6 +13,7 @@ defined('_JEXEC') or die('Restricted access');
 
 use \Joomla\Registry\Registry;
 use Joomla\Utilities\ArrayHelper;
+use Fabrik\Helpers\Html;
 
 jimport('joomla.application.component.model');
 
@@ -36,7 +37,7 @@ class PlgFabrik_Validationrule extends FabrikPlugin
 	/**
 	 * Validation rule's element model
 	 *
-	 * @var PlgFabrik_Element
+	 * @var Fabrik\Plugins\Element\Element
 	 */
 	public $elementModel = null;
 
@@ -272,7 +273,7 @@ class PlgFabrik_Validationrule extends FabrikPlugin
 	public function getIcon($c = 0, $tmpl = '')
 	{
 		$name = $this->elementModel->validator->getIcon($c);
-		FabrikHelperHTML::image($name, 'form', $tmpl, array('class' => $this->pluginName));
+		Html::image($name, 'form', $tmpl, array('class' => $this->pluginName));
 	}
 
 	/**
@@ -320,7 +321,7 @@ class PlgFabrik_Validationrule extends FabrikPlugin
 	public function getHoverText($c = null, $tmpl = '')
 	{
 		$name = $this->elementModel->validator->getIcon($c);
-		$i = FabrikHelperHTML::image($name, 'form', $tmpl, array('class' => $this->pluginName));
+		$i = Html::image($name, 'form', $tmpl, array('class' => $this->pluginName));
 
 		return $i . ' ' . $this->getLabel();
 	}
