@@ -2292,11 +2292,13 @@ EOD;
 	public static function runContentPlugins(&$text)
 	{
 		$app   = JFactory::getApplication();
-		$input = $app->input;
-		$opt   = $input->get('option');
-		$view  = $input->get('view');
+		$input  = $app->input;
+		$opt    = $input->get('option');
+		$view   = $input->get('view');
+		$format = $input->get('format');
 		$input->set('option', 'com_content');
 		$input->set('view', 'article');
+		$input->set('format', 'html');
 		jimport('joomla.html.html.content');
 
 		/**
@@ -2322,6 +2324,7 @@ EOD;
 
 		$input->set('option', $opt);
 		$input->set('view', $view);
+		$input->set('format', $format);
 	}
 
 	/**
