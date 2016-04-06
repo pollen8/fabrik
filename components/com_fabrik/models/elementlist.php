@@ -655,6 +655,10 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 				{
 					$lis[] = $l;
 				}
+				else
+				{
+					$lis[] = '&nbsp;';
+				}
 			}
 
 			if (!empty($lis))
