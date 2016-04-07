@@ -33,6 +33,13 @@ class PlgFabrik_Form extends FabrikPlugin
 	protected $emailData = null;
 
 	/**
+	 * Use in image rendering
+	 *
+	 * @var string
+	 */
+	protected $tmpl;
+
+	/**
 	 * HTML to return from plugin rendering
 	 *
 	 * @var string

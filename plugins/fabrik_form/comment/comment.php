@@ -8,13 +8,20 @@
  * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
+namespace Fabrik\Plugins\Form;
+
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
 use Fabrik\Helpers\Html;
-
-// Require the abstract plugin class
-require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
+use \stdClass;
+use \FabTable;
+use \FabrikWorker;
+use \JText;
+use \FText;
+use \JEditor;
+use \RuntimeException;
+use \JHtml;
 
 /**
  * Comment J Table
@@ -23,12 +30,12 @@ require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
  * @subpackage  Fabrik
  * @since       3.0
  */
-class FabrikTableComment extends FabTable
+class FabrikTableComment extends \FabTable
 {
 	/**
 	 * Object constructor to set table and key fields.
 	 *
-	 * @param   JDatabase  &$db  JDatabase connector object.
+	 * @param   \JDatabaseDriver  &$db  JDatabase connector object.
 	 */
 
 	public function __construct(&$db)
@@ -49,7 +56,7 @@ class FabrikTableComment extends FabTable
  * @subpackage  Fabrik.form.comment
  * @since       3.0
  */
-class PlgFabrik_FormComment extends PlgFabrik_Form
+class Comment extends \PlgFabrik_Form
 {
 	/**
 	 * HTML comment form
@@ -159,7 +166,7 @@ class PlgFabrik_FormComment extends PlgFabrik_Form
 		$opts = new stdClass;
 		$thumb = $this->getThumb();
 		$opts->livesite = COM_FABRIK_LIVESITE;
-		$opts->row_id = $input->getString('rowid', '', 'string');
+		$opts->row_id = $input->getString('rowid', '');
 		$opts->voteType = 'comment';
 
 		Html::addPath(COM_FABRIK_BASE . 'plugins/fabrik_element/thumbs/images/', 'image', 'form', false);
@@ -299,7 +306,8 @@ class PlgFabrik_FormComment extends PlgFabrik_Form
 		$layoutData->anonymous = $params->get('comment-internal-anonymous');
 		$layoutData->replyTo = $reply_to;
 		$layoutData->notify = $params->get('comment_allow_user_subscriptions_to_notifications') == 1;
-		$layoutData->name = trim($input->get('ide_people___voornaam', '', 'cookie') . ' ' . $input->get('ide_people___achternaam', '', 'cookie'));
+		$layoutData->name = trim($input->get('ide_people___voornaam', '', 'cookie') . ' '
+			. $input->get('ide_people___achternaam', '', 'cookie'));
 		$layoutData->email = $input->get('ide_people___email', '', 'cookie');
 		$layoutData->renderOrder = $this->renderOrder;
 		$layoutData->wysiwyg = $this->isWYSIWYG();

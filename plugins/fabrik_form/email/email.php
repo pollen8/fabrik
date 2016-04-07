@@ -6,13 +6,28 @@
  * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
+namespace Fabrik\Plugins\Form;
+
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
 use Fabrik\Helpers\Html;
-
-// Require the abstract plugin class
-require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
+use \stdClass;
+use \FText;
+use \FabrikWorker;
+use \JString;
+use \JModelLegacy;
+use \FabrikString;
+use \JFile;
+use \DOMPDF;
+use \FabrikControllerDetails;
+use \RuntimeException;
+use \JFactory;
+use \JText;
+use \FArrayHelper;
+use \JProfiler;
+use \FabrikPDFHelper;
+use \JPath;
 
 /**
  * Send email upon form submission
@@ -21,7 +36,7 @@ require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
  * @subpackage  Fabrik.form.email
  * @since       3.0
  */
-class PlgFabrik_FormEmail extends PlgFabrik_Form
+class Email extends \PlgFabrik_Form
 {
 	/**
 	 * Attachment files
@@ -81,7 +96,7 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 		 */
 		if ($this->alreadySent() || !$this->shouldProcess('email_conditon', null, $params))
 		{
-			return;
+			return true;
 		}
 
 		/**
@@ -109,7 +124,7 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 			// $$$ hugh - added ability for PHP template to return false to abort, same as if 'condition' was was false
 			if ($messageTemplate === false)
 			{
-				return;
+				return true;
 			}
 
 			if ($runContentPlugins === true)
@@ -134,8 +149,6 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 			$messageText = str_replace('{template}', $messageTemplate, $messageText);
 			$messageText = $w->parseMessageForPlaceholder($messageText, $this->data, false);
 		}
-
-		$message = '';
 
 		if (!empty($messageText))
 		{
@@ -394,7 +407,7 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 			return;
 		}
 
-		/** @var FabrikFEModelForm $model */
+		/** @var \FabrikFEModelForm $model */
 		$model = $this->getModel();
 		$document = JFactory::getDocument();
 		$docType = $document->getType();
@@ -464,7 +477,7 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 			$displayData->doc	= $document;
 			$displayData->model	= $model;
 			$fileName = $layout->render($displayData);
-			$file = $this->config->get('tmp_path') . '/' . JStringNormalise::toDashSeparated($fileName) . '.pdf';
+			$file = $this->config->get('tmp_path') . '/' . \JStringNormalise::toDashSeparated($fileName) . '.pdf';
 
 			$pdf = $domPdf->output();
 
@@ -477,7 +490,7 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 				throw new RuntimeException('Could not write PDF file to tmp folder');
 			}
 		}
-		catch (Exception $e)
+		catch (\Exception $e)
 		{
 			$this->app->enqueueMessage($e->getMessage(), 'error');
 		}
@@ -534,7 +547,7 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 		$params = $this->getParams();
 		$data = $this->getProcessData();
 
-		/** @var FabrikFEModelForm $formModel */
+		/** @var \FabrikFEModelForm $formModel */
 		$formModel = $this->getModel();
 		$groups = $formModel->getGroupsHiarachy();
 
@@ -678,7 +691,7 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 		$ignore = $this->getDontEmailKeys();
 		$message = '';
 
-		/** @var FabrikFEModelForm $formModel */
+		/** @var \FabrikFEModelForm $formModel */
 		$formModel = $this->getModel();
 		$groupModels = $formModel->getGroupsHiarachy();
 

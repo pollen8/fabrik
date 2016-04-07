@@ -8,13 +8,17 @@
  * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
+namespace Fabrik\Plugins\Form;
+
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
 use Fabrik\Helpers\Html;
-
-// Require the abstract plugin class
-require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
+use \FText;
+use \FabrikWorker;
+use \JString;
+use \JFilterInput;
+use \JModelLegacy;
 
 /**
  * After submission, shows a page where the user can confirm the data they are posting
@@ -23,7 +27,7 @@ require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
  * @subpackage  Fabrik.form.confirmation
  * @since       3.0
  */
-class PlgFabrik_FormConfirmation extends PlgFabrik_Form
+class Confirmation extends \PlgFabrik_Form
 {
 	protected $runAway = false;
 
@@ -69,7 +73,7 @@ class PlgFabrik_FormConfirmation extends PlgFabrik_Form
 	 */
 	public function onBeforeStore()
 	{
-		/** @var FabrikFEModelForm $formModel */
+		/** @var \FabrikFEModelForm $formModel */
 		$formModel = $this->getModel();
 		$params = $this->getParams();
 		$input = $this->app->input;
@@ -148,7 +152,7 @@ class PlgFabrik_FormConfirmation extends PlgFabrik_Form
 			{
 				// $$$ rob 20/04/2012 unset the element access otherwise previously cached acl is used.
 				$elementModel->clearAccess();
-				$elementModel->getElement()->access = -1;
+				$elementModel->getElement()->set('access', -1);
 			}
 		}
 
