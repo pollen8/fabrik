@@ -98,9 +98,11 @@ abstract class AbstractAdapter implements AdapterInterface
     /**
      * Send transaction
      *
+     * @param  boolean $verifyPeer
+     *
      * @return void
      */
-    abstract public function send();
+    abstract public function send($verifyPeer = true);
 
     /**
      * Return whether the transaction is a success

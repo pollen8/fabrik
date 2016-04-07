@@ -8,8 +8,17 @@
  * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
+namespace Fabrik\Plugins\Form;
+
 // No direct access
 defined('_JEXEC') or die('Restricted access');
+
+use \stdClass;
+use \JText;
+use \FabrikFEModelList;
+use \JModelLegacy;
+use \FabrikWorker;
+use \FabrikFEModelForm;
 
 /**
  * other records in the table to auto fill in the rest of the form with that records data
@@ -23,9 +32,6 @@ defined('_JEXEC') or die('Restricted access');
  * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
-// Require the abstract plugin class
-require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
-
 /**
  * Allows you to observe an element, and when it its blurred asks if you want to lookup related data to fill
  * into additional fields
@@ -34,7 +40,7 @@ require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
  * @subpackage  Fabrik.form.autofill
  * @since       3.0
  */
-class PlgFabrik_FormAutofill extends PlgFabrik_Form
+class Autofill extends \PlgFabrik_Form
 {
 	/**
 	 * Need to do this rather than on onLoad as otherwise in chrome form.js addevents is fired
@@ -87,7 +93,7 @@ class PlgFabrik_FormAutofill extends PlgFabrik_Form
 			$formModel->formPluginJS = array();
 		}
 
-		$this->formJavascriptClass($params, $formModel);
+		$this->formJavascriptClass();
 		$formModel->formPluginJS['Autofill'] = 'var autofill = new Autofill(' . $opts . ');';
 	}
 

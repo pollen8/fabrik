@@ -564,6 +564,7 @@ class Ups extends AbstractAdapter
 		$this->response     = simplexml_load_string($xml);
 		$this->responseCode = (int) $this->response->Response->ResponseStatusCode;
 
+		//print_r($this->response);
 		if ($this->responseCode == 1)
 		{
 			$this->responseMessage = (string) $this->response->Response->ResponseStatusDescription;
@@ -831,6 +832,8 @@ class Ups extends AbstractAdapter
 
 		$this->rateRequest .= PHP_EOL . '    </Shipment>';
 		$this->rateRequest .= PHP_EOL . '</RatingServiceSelectionRequest>' . PHP_EOL;
+
+		//echo $this->rateRequest;
 	}
 
 	/**

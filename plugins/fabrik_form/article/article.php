@@ -6,13 +6,31 @@
  * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
+namespace Fabrik\Plugins\Form;
+
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
 use Joomla\Utilities\ArrayHelper;
-
-// Require the abstract plugin class
-require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
+use \stdClass;
+use \Exception;
+use \RuntimeException;
+use \JApplication;
+use \JPath;
+use \JStringNormalise;
+use \JFactory;
+use \JTable;
+use \JPluginHelper;
+use \JFile;
+use \JEventDispatcher;
+use \JText;
+use \JModelLegacy;
+use \FArrayHelper;
+use \JString;
+use \FabrikFEModelForm;
+use \FabrikString;
+use \FText;
+use \FabrikWorker;
 
 /**
  * Create Joomla article(s) upon form submission
@@ -21,7 +39,7 @@ require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
  * @subpackage  Fabrik.form.article
  * @since       3.0
  */
-class PlgFabrik_FormArticle extends PlgFabrik_Form
+class Article extends \PlgFabrik_Form
 {
 	/**
 	 * Images
@@ -47,7 +65,7 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 
 		if (!$this->shouldProcess('article_conditon', $this->data, $params))
 		{
-			return;
+			return true;
 		}
 
 		$store = $this->metaStore();
@@ -67,7 +85,7 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 		{
 			$id               = isset($store->$category) ? $store->$category : null;
 			$item             = $this->saveArticle($id, $category);
-			$store->$category = $item->id;
+			$store->$category = $item->get('id');
 		}
 
 		$this->setMetaStore($store);
@@ -193,11 +211,11 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 		{
 			JModelLegacy::addIncludePath(COM_FABRIK_BASE . 'administrator/components/com_content/models');
 			$articleModel = JModelLegacy::getInstance('Article', 'ContentModel');
-			$articleModel->featured($item->id, $item->featured);
+			$articleModel->featured($item->get('id'), $item->get('featured'));
 		}
 		else
 		{
-			$this->featured($item->id, $item->featured);
+			$this->featured($item->get('id'), $item->get('featured'));
 		}
 
 		// Trigger the onContentAfterSave event.
@@ -206,7 +224,7 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 		// New record - need to re-save with {readmore} replacement
 		if ($isNew && strstr($data['articletext'], '{readmore}'))
 		{
-			$readMore            = 'index.php?option=com_content&view=article&id=' . $item->id;
+			$readMore            = 'index.php?option=com_content&view=article&id=' . $item->get('id');
 			$data['articletext'] = str_replace('{readmore}', $readMore, $data['articletext']);
 			$item->bind($data);
 			$item->store();
@@ -225,8 +243,8 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 	 * Copied from admin content model
 	 * Method to toggle the featured setting of articles.
 	 *
-	 * @param   array    The ids of the items to toggle.
-	 * @param   integer  The value to toggle to.
+	 * @param   array    $pks    The ids of the items to toggle.
+	 * @param   integer  $value  The value to toggle to.
 	 *
 	 * @return  boolean  True on success.
 	 */
@@ -469,7 +487,7 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 		/** @var FabrikFEModelForm $formModel */
 		$formModel    = $this->getModel();
 
-		/** @var Fabrik\Plugins\Element\Fileupload $elementModel */
+		/** @var \Fabrik\Plugins\Element\Fileupload $elementModel */
 		$elementModel = $formModel->getElement($elementId, true);
 
 		if (get_class($elementModel) === 'Fabrik\Plugins\Element\Fileupload')
@@ -598,7 +616,6 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 		/** @var FabrikFEModelForm $formModel */
 		$formModel = $this->getModel();
 		$params    = $this->getParams();
-		$metaStore = new stdClass;
 
 		if ($elementModel = $formModel->getElement($params->get('meta_store'), true))
 		{
@@ -685,6 +702,7 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 	protected function buildContent()
 	{
 		$images          = $this->images();
+		/* @var FabrikFEModelForm */
 		$formModel       = $this->getModel();
 		$input           = $this->app->input;
 		$params          = $this->getParams();
