@@ -151,6 +151,7 @@ class FabrikViewListBase extends FabrikView
 		$src['FbListFilter'] = Html::mediaFile('listfilter.js');
 		$src['ListPlugin']   = Html::mediaFile('list-plugin.js');
 		$src                 = $model->getPluginJsClasses($src, $shim);
+
 		$pluginManager->runPlugins('loadJavascriptClassName', $model, 'list');
 
 		$pluginManager->data = array_filter($pluginManager->data, function ($v)
@@ -306,10 +307,7 @@ class FabrikViewListBase extends FabrikView
 		$pluginManager->runPlugins('onGetContentBeforeList', $model, 'list');
 		$this->pluginBeforeList = $pluginManager->data;
 		$script[]               = $model->filterJs;
-
-		// Was separate but should now load in with the rest of the require js code
-		$model    = $this->getModel();
-		$script[] = $model->getElementJs($src);
+		$script[]               = $this->getModel()->getElementJs($src);
 
 		// End domready wrapper
 		$script[] = '})';

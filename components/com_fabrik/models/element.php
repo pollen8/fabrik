@@ -5669,7 +5669,8 @@ class Element extends \FabrikPlugin
 
 		if (JFile::exists(JPATH_SITE . '/' . $src))
 		{
-			$srcs[] = $src;
+			$className = 'Fb' . ucfirst($p) .'List';
+			$srcs[$className] = $src;
 		}
 	}
 
