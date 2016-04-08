@@ -99,6 +99,12 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 		$params    = $this->getParams();
 		$formModel = $this->getModel();
 
+		// don't do anything if this is a details view
+		if ($this->app->input->get('view') === 'details')
+		{
+			return;
+		}
+
 		if ($params->get('synchro_users') == 1)
 		{
 			$listModel = $formModel->getlistModel();

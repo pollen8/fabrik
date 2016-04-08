@@ -5982,6 +5982,11 @@ class Element extends \FabrikPlugin
 
 		foreach ($data as $i => &$d)
 		{
+			if (empty($d))
+			{
+				$d = '&nbsp;';
+			}
+
 			if ($params->get('icon_folder') == '1' && ArrayHelper::getValue($opts, 'icon', 1))
 			{
 				// $$$ rob was returning here but that stopped us being able to use links and icons together

@@ -667,6 +667,10 @@ class ElementList extends Element
 				{
 					$lis[] = $l;
 				}
+				else
+				{
+					$lis[] = '&nbsp;';
+				}
 			}
 
 			if (!empty($lis))

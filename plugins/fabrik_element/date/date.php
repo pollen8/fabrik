@@ -85,7 +85,7 @@ class Date extends ElementList
 	{
 		if ($data == '')
 		{
-			return '';
+			return parent::renderListData($data, $thisRow, $opts);
 		}
 
 		// @TODO: deal with time options (currently can be defined in date_table_format param).
