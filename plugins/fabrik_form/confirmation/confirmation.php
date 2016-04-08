@@ -127,7 +127,7 @@ class Confirmation extends \PlgFabrik_Form
 
 		// Set an error so we can reshow the same form for confirmation purposes
 		$formModel->errors['confirmation_required'] = array(FText::_('PLG_FORM_CONFIRMATION_PLEASE_CONFIRM_YOUR_DETAILS'));
-		$form->error = FText::_('PLG_FORM_CONFIRMATION_PLEASE_CONFIRM_YOUR_DETAILS');
+		$form->set('error', FText::_('PLG_FORM_CONFIRMATION_PLEASE_CONFIRM_YOUR_DETAILS'));
 		$formModel->setEditable(false);
 
 		// Clear out unwanted buttons
@@ -166,6 +166,7 @@ class Confirmation extends \PlgFabrik_Form
 	 */
 	public function getBottomContent()
 	{
+		/** @var \FabrikFEModelForm $formModel */
 		$formModel = $this->getModel();
 		$input = $this->app->input;
 

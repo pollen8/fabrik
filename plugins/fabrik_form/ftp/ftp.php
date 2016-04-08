@@ -8,11 +8,21 @@
  * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
+namespace Fabrik\Plugins\Form;
+
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-// Require the abstract plugin class
-require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
+use \FText;
+use \FabrikWorker;
+use \JString;
+use \JModelLegacy;
+use \FabrikString;
+use \FArrayHelper;
+use \RuntimeException;
+use \JFile;
+use JFolder;
+use JPath;
 
 /**
  * FTP Form results to a given location
@@ -21,7 +31,7 @@ require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
  * @subpackage  Fabrik.form.ftp
  * @since       3.0.7
  */
-class PlgFabrik_FormFtp extends PlgFabrik_Form
+class Ftp extends \PlgFabrik_Form
 {
 	/**
 	 * Posted form keys that we don't want to include in the message
@@ -47,7 +57,7 @@ class PlgFabrik_FormFtp extends PlgFabrik_Form
 
 		if (!$this->shouldProcess('ftp_conditon', null, $params))
 		{
-			return;
+			return true;
 		}
 
 		$contentTemplate = $params->get('ftp_template_content');
@@ -61,7 +71,7 @@ class PlgFabrik_FormFtp extends PlgFabrik_Form
 
 				if ($message === false)
 				{
-					return;
+					return true;
 				}
 			}
 			else
@@ -161,18 +171,14 @@ class PlgFabrik_FormFtp extends PlgFabrik_Form
 			}
 			else
 			{
-				throw new RuntimeException('PLG_FORM_FTP_COULD_NOT_CONNECT', 500);
 				JFile::delete($tmpFile);
-
-				return false;
+				throw new RuntimeException('PLG_FORM_FTP_COULD_NOT_CONNECT', 500);
 			}
 		}
 		else
 		{
-			throw new RuntimeException('PLG_FORM_FTP_COULD_NOT_WRITE_TEMP_FILE', 500);
 			JFile::delete($tmpFile);
-
-			return false;
+			throw new RuntimeException('PLG_FORM_FTP_COULD_NOT_WRITE_TEMP_FILE', 500);
 		}
 
 		JFile::delete($tmpFile);
@@ -254,7 +260,7 @@ class PlgFabrik_FormFtp extends PlgFabrik_Form
 		}
 		else
 		{
-			JModel::addIncludePath(COM_FABRIK_BASE . 'components/com_content/models');
+			JModelLegacy::addIncludePath(COM_FABRIK_BASE . 'components/com_content/models');
 			$articleModel = JModelLegacy::getInstance('Article', 'ContentModel');
 			$res = $articleModel->getItem($contentTemplate);
 		}
@@ -273,7 +279,7 @@ class PlgFabrik_FormFtp extends PlgFabrik_Form
 		$ignore = $this->getDontEmailKeys();
 		$message = '';
 
-		/** @var FabrikFEModelForm $formModel */
+		/** @var \FabrikFEModelForm $formModel */
 		$formModel = $this->getModel();
 		$groupModels = $formModel->getGroupsHiarachy();
 

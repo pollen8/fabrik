@@ -86,6 +86,8 @@ class Email extends \PlgFabrik_Form
 		$input = $this->app->input;
 		jimport('joomla.mail.helper');
 		$w = new FabrikWorker;
+
+		/** @var \FabrikFEModelForm $formModel */
 		$formModel = $this->getModel();
 		$emailTemplate = JPath::clean(JPATH_SITE . '/plugins/fabrik_form/email/tmpl/' . $params->get('email_template', ''));
 
