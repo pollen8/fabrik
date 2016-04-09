@@ -1377,7 +1377,7 @@ class Csv_Bv
 	 * @param   string $escape    Only one character is allowed (optional)
 	 */
 
-	public function Csv_Bv($file, $seperator = ',', $enclose = '"', $escape = '')
+	public function __construct($file, $seperator = ',', $enclose = '"', $escape = '')
 	{
 		$this->mFldSeperator    = $seperator;
 		$this->mFldEnclosure    = $enclose;
