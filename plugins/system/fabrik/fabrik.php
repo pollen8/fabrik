@@ -29,16 +29,12 @@ class PlgSystemFabrik extends JPlugin
 	/**
 	 * Constructor
 	 *
-	 * For php4 compatibility we must not use the __constructor as a constructor for plugins
-	 * because func_get_args ( void ) returns a copy of all passed arguments NOT references.
-	 * This causes problems with cross-referencing necessary for the observer design pattern.
-	 *
 	 * @param   object &$subject The object to observe
 	 * @param   array  $config   An array that holds the plugin configuration
 	 *
 	 * @since    1.0
 	 */
-	public function plgSystemFabrik(&$subject, $config)
+	public function __construct(&$subject, $config)
 	{
 		// Could be component was uninstalled but not the plugin
 		if (!JFile::exists(JPATH_SITE . '/components/com_fabrik/helpers/file.php'))
