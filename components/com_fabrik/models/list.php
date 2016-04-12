@@ -607,7 +607,7 @@ class FabrikFEModelList extends JModelForm
 			}
 			else
 			{
-				$r[] = $f;
+				$r[$f] = $f;
 			}
 		}
 
