@@ -458,21 +458,7 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 
 		$url .= implode('&', $qs);
 
-		/* $$$ rob 04/02/2011 no longer doing redirect from ANY plugin EXCEPT the redirect plugin
-		 * - instead a session var is set (com_fabrik.form.X.redirect.url)
-		 * as the preferred redirect url
-		 */
-
-		$context = $formModel->getRedirectContext();
-
-		/* $$$ hugh - fixing issue with new redirect, which now needs to be an array.
-		 * Not sure if we need to preserve existing session data, or just create a new surl array,
-		 * to force ONLY redirect to PayPal?
-		 */
-		$surl = (array) $this->session->get($context . 'url', array());
-		$surl[$this->renderOrder] = $url;
-		$this->session->set($context . 'url', $surl);
-		$this->session->set($context . 'redirect_content_how', 'samepage');
+		$this->setDelayedRedirect($url);
 
 		// Log the info
 		$msgType = 'fabrik.paypal.onAfterProcess';
