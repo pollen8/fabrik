@@ -11,7 +11,7 @@ namespace Fabrik\Plugins\Form;
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use \FabrikWorker;
+use Fabrik\Helpers\Worker;
 use \JString;
 use \FArrayHelper;
 
@@ -140,7 +140,7 @@ class Exif extends \PlgFabrik_Form
 		$formModel = $this->getModel();
 		$data = $formModel->formData;
 		$params = $this->getParams();
-		$plugin = FabrikWorker::getPluginManager()->getElementPlugin($params->get('exif_map_field'));
+		$plugin = Worker::getPluginManager()->getElementPlugin($params->get('exif_map_field'));
 		$this->map_field = $plugin->getFullName();
 		$plugin->setId($params->get('exif_upload_field'));
 		$this->upload_field = $plugin->getFullName();

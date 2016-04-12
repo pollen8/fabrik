@@ -12,9 +12,10 @@
 defined('_JEXEC') or die('Restricted access');
 
 use Fabrik\Helpers\Html;
+use Fabrik\Helpers\Worker;
 
 Html::formvalidation();
-$db = FabrikWorker::getDbo(true);
+$db = Worker::getDbo(true);
 ?>
 
 <form action="<?php JRoute::_('index.php?option=com_fabrik'); ?>" method="post" name="adminForm" id="adminForm" class="form-validate">

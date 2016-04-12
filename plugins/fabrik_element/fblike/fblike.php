@@ -16,7 +16,7 @@ defined('_JEXEC') or die('Restricted access');
 use \FArrayHelper;
 use Joomla\Utilities\ArrayHelper;
 use \stdClass;
-use \FabrikWorker;
+use Fabrik\Helpers\Worker;
 use Fabrik\Helpers\Html;
 use \JModelLegacy;
 
@@ -176,7 +176,7 @@ class Fblike extends Element
 		$meta['fb:app_id'] = $params->get('fblike_opengraph_applicationid');
 		$str = Html::facebookGraphAPI($params->get('fblike_opengraph_applicationid'), $params->get('fblike_locale', 'en_US'), $meta);
 		$url = $params->get('fblike_url');
-		$w = new FabrikWorker;
+		$w = new Worker;
 		$url = $w->parseMessageForPlaceHolder($url, $data);
 		$this->getElement()->hidden = true;
 

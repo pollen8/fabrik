@@ -12,6 +12,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 use Fabrik\Helpers\Html;
+use Fabrik\Helpers\Worker;
 
 jimport('joomla.application.component.model');
 
@@ -80,7 +81,7 @@ class FabrikFEModelElementValidator extends FabModel
 		$validationOn = FArrayHelper::getValue($validations, 'validation_on', array());
 		$mustValidate = FArrayHelper::getValue($validations, 'must_validate', array());
 
-		$pluginManager = FabrikWorker::getPluginManager();
+		$pluginManager = Worker::getPluginManager();
 		$pluginManager->getPlugInGroup('validationrule');
 		$c = 0;
 		$this->validations = array();
@@ -164,7 +165,7 @@ class FabrikFEModelElementValidator extends FabModel
 	 */
 	public function getIcon($c = null)
 	{
-		$j3 = FabrikWorker::j3();
+		$j3 = Worker::j3();
 		$validations = $this->findAll();
 
 		if (!$this->showIcon())

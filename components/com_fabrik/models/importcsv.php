@@ -11,6 +11,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Fabrik\Helpers\Worker;
+
 jimport('joomla.application.component.model');
 jimport('joomla.application.component.modelform');
 
@@ -644,7 +646,7 @@ class FabrikFEModelImportcsv extends JModelForm
 		// $$$ rob 27/17/212 we need to reset the form as it was first generated before its elements were created.
 		$formModel->reset();
 
-		FabrikWorker::getPluginManager()->runPlugins('onStartImportCSV', $model, 'list');
+		Worker::getPluginManager()->runPlugins('onStartImportCSV', $model, 'list');
 
 		if ($dropData && $model->canEmpty())
 		{
@@ -770,10 +772,10 @@ class FabrikFEModelImportcsv extends JModelForm
 			{
 				$formModel->formData = $formModel->formDataWithTableName = $aRow;
 
-				if (!in_array(false, FabrikWorker::getPluginManager()->runPlugins('onImportCSVRow', $model, 'list')))
+				if (!in_array(false, Worker::getPluginManager()->runPlugins('onImportCSVRow', $model, 'list')))
 				{
 					$rowid = $formModel->processToDB();
-					FabrikWorker::getPluginManager()->runPlugins('onAfterImportCSVRow', $model, 'list');
+					Worker::getPluginManager()->runPlugins('onAfterImportCSVRow', $model, 'list');
 				}
 			}
 			else
@@ -791,7 +793,7 @@ class FabrikFEModelImportcsv extends JModelForm
 		$this->removeCSVFile();
 		$this->updatedCount = $updatedCount;
 
-		FabrikWorker::getPluginManager()->runPlugins('onCompleteImportCSV', $model, 'list');
+		Worker::getPluginManager()->runPlugins('onCompleteImportCSV', $model, 'list');
 	}
 
 	/**
@@ -997,7 +999,7 @@ class FabrikFEModelImportcsv extends JModelForm
 			$app->input->set('fabrik_repeat_group', $fabrik_repeat_group);
 			$formModel->formData = $data;
 
-			if (!in_array(false, FabrikWorker::getPluginManager()->runPlugins('onImportCSVRow', $model, 'list')))
+			if (!in_array(false, Worker::getPluginManager()->runPlugins('onImportCSVRow', $model, 'list')))
 			{
 				$formModel->processToDB();
 			}

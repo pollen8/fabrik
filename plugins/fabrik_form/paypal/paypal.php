@@ -12,6 +12,8 @@
 defined('_JEXEC') or die('Restricted access');
 
 use Joomla\Utilities\ArrayHelper;
+use Fabrik\Helpers\Worker;
+
 
 // Require the abstract plugin class
 require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
@@ -51,7 +53,7 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 			return true;
 		}
 
-		$w = new FabrikWorker;
+		$w = new Worker;
 		$userId = $this->user->get('id');
 		$ipn = $this->getIPNHandler($params);
 
@@ -254,7 +256,7 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 			{
 				$shippingSelect = array();
 
-				$db = FabrikWorker::getDbo();
+				$db = Worker::getDbo();
 				$query = $db->getQuery(true);
 
 				if ($params->get('paypal_shippingdata_firstname'))
@@ -494,7 +496,7 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 
 		if (trim($subSwitch) !== '')
 		{
-			$w = new FabrikWorker;
+			$w = new Worker;
 			$subSwitch = $w->parseMessageForPlaceHolder($subSwitch, $data);
 
 			return @eval($subSwitch);
@@ -520,7 +522,7 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 			return false;
 		}
 
-		$db = FabrikWorker::getDbo();
+		$db = Worker::getDbo();
 		$query = $db->getQuery(true);
 		$query->select('db_table_name')->from('#__{package}_lists')->where('id = ' . (int) $params->get('paypal_shippingdata_table'));
 		$db->setQuery($query);
@@ -559,7 +561,7 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 
 		if ($retMsg)
 		{
-			$w = new FabrikWorker;
+			$w = new Worker;
 			$listModel = $formModel->getlistModel();
 			$row = $listModel->getRow($rowId);
 			$retMsg = $w->parseMessageForPlaceHolder($retMsg, $row);
@@ -647,7 +649,7 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 		$ipnSubscriberIDField = FabrikString::shortColName($ipnSubscriberIDField[$renderOrder]);
 
 
-		$w = new FabrikWorker;
+		$w = new Worker;
 		$ipnValue = str_replace('[', '{', $ipnValue);
 		$ipnValue = str_replace(']', '}', $ipnValue);
 		$ipnValue = $w->parseMessageForPlaceHolder($ipnValue, $_POST);

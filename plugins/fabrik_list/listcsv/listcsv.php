@@ -11,6 +11,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Fabrik\Helpers\Worker;
+
 // Require the abstract plugin class
 require_once COM_FABRIK_FRONTEND . '/models/plugin-list.php';
 
@@ -84,7 +86,7 @@ class PlgFabrik_ListListcsv extends PlgFabrik_List
 		if (!empty($code))
 		{
 			$ret = @eval($code);
-			FabrikWorker::logEval($ret, 'Caught exception on eval in onImportCSVRow : %s');
+			Worker::logEval($ret, 'Caught exception on eval in onImportCSVRow : %s');
 
 			if ($ret === false)
 			{
@@ -119,7 +121,7 @@ class PlgFabrik_ListListcsv extends PlgFabrik_List
 		if (!empty($code))
 		{
 			$ret = @eval($code);
-			FabrikWorker::logEval($ret, 'Caught exception on eval in onAfterImportCSVRow : %s');
+			Worker::logEval($ret, 'Caught exception on eval in onAfterImportCSVRow : %s');
 
 			if ($ret === false)
 			{
@@ -154,7 +156,7 @@ class PlgFabrik_ListListcsv extends PlgFabrik_List
 		if (!empty($code))
 		{
 			$ret = @eval($code);
-			FabrikWorker::logEval($ret, 'Caught exception on eval in onCompleteImportCSV : %s');
+			Worker::logEval($ret, 'Caught exception on eval in onCompleteImportCSV : %s');
 
 			if ($ret === false)
 			{
@@ -189,7 +191,7 @@ class PlgFabrik_ListListcsv extends PlgFabrik_List
 		if (!empty($code))
 		{
 			$ret = @eval($code);
-			FabrikWorker::logEval($ret, 'Caught exception on eval in onStartImportCSV : %s');
+			Worker::logEval($ret, 'Caught exception on eval in onStartImportCSV : %s');
 
 			if ($ret === false)
 			{

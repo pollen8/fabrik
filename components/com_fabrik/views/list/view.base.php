@@ -13,6 +13,7 @@ defined('_JEXEC') or die('Restricted access');
 
 use \Joomla\Registry\Registry;
 use Fabrik\Helpers\Html;
+use Fabrik\Helpers\Worker;
 
 jimport('joomla.application.component.view');
 
@@ -86,7 +87,7 @@ class FabrikViewListBase extends FabrikView
 	protected function getManagementJS($data = array())
 	{
 		$input  = $this->app->input;
-		$itemId = FabrikWorker::itemId();
+		$itemId = Worker::itemId();
 
 		/** @var FabrikFEModelList $model */
 		$model              = $this->getModel();
@@ -100,7 +101,7 @@ class FabrikViewListBase extends FabrikView
 		$ajax               = (int) $model->isAjax();
 		$ajaxLinks          = (bool) $params->get('list_ajax_links', $ajax);
 		$opts               = new stdClass;
-		$pluginManager      = FabrikWorker::getPluginManager();
+		$pluginManager      = Worker::getPluginManager();
 
 		if ($ajaxLinks)
 		{
@@ -189,7 +190,7 @@ class FabrikViewListBase extends FabrikView
 		$opts->links           = array('detail' => $params->get('detailurl', ''), 'edit' => $params->get('editurl', ''), 'add' => $params->get('addurl', ''));
 		$opts->filterMethod    = $this->filter_action;
 		$opts->advancedFilters = $model->getAdvancedFilterValues();
-		$opts->resetFilters    = (bool) FabrikWorker::getMenuOrRequestVar('resetfilters', 0, false, 'request');
+		$opts->resetFilters    = (bool) Worker::getMenuOrRequestVar('resetfilters', 0, false, 'request');
 		$opts->form            = 'listform_' . $listRef;
 		$this->listref         = $listRef;
 		$opts->headings        = $model->jsonHeadings();
@@ -210,7 +211,7 @@ class FabrikViewListBase extends FabrikView
 		$opts->page           = JRoute::_('index.php');
 		$opts->isGrouped      = $this->isGrouped;
 		$opts->toggleCols     = $toggleCols;
-		$opts->j3             = FabrikWorker::j3();
+		$opts->j3             = Worker::j3();
 		$opts->singleOrdering = (bool) $model->singleOrdering();
 
 		// Reset data back to original settings
@@ -268,7 +269,7 @@ class FabrikViewListBase extends FabrikView
 		$opts->groupByOpts->isGrouped      = (bool) $this->isGrouped;
 		$opts->groupByOpts->collapseOthers = (bool) $params->get('group_by_collapse_others', false);
 		$opts->groupByOpts->startCollapsed = (bool) $params->get('group_by_start_collapsed', false);
-		$opts->groupByOpts->bootstrap      = FabrikWorker::j3();
+		$opts->groupByOpts->bootstrap      = Worker::j3();
 
 		// If table data starts as empty then we need the html from the row
 		// template otherwise we can't add a row to the table
@@ -382,14 +383,14 @@ class FabrikViewListBase extends FabrikView
 		// Force front end templates
 		$tmpl            = $model->getTmpl();
 		$this->_basePath = COM_FABRIK_FRONTEND . '/views';
-		$jTmplFolder     = FabrikWorker::j3() ? 'tmpl' : 'tmpl25';
+		$jTmplFolder     = Worker::j3() ? 'tmpl' : 'tmpl25';
 		$this->addTemplatePath($this->_basePath . '/' . $this->_name . '/' . $jTmplFolder . '/' . $tmpl);
 
 		$root = $this->app->isAdmin() ? JPATH_ADMINISTRATOR : JPATH_SITE;
 		$this->addTemplatePath($root . '/templates/' . $this->app->getTemplate() . '/html/com_fabrik/list/' . $tmpl);
 		$item = $model->getTable();
 		$data = $model->render();
-		$w    = new FabrikWorker;
+		$w    = new Worker;
 
 		// Add in some styling short cuts
 		$c    = 0;
@@ -487,14 +488,14 @@ class FabrikViewListBase extends FabrikView
 		$this->canDelete      = $model->deletePossible() ? true : false;
 		$this->limitLength    = $model->limitLength;
 		$this->ajax           = $model->isAjax();
-		$this->showTitle      = FabrikWorker::getMenuOrRequestVar('show-title', $params->get('show-title', 1), $this->isMambot, 'request');
+		$this->showTitle      = Worker::getMenuOrRequestVar('show-title', $params->get('show-title', 1), $this->isMambot, 'request');
 
 		// 3.0 observed in list.js & html moved into fabrik_actions rollover
 		$this->showPDF = $params->get('pdf', $fbConfig->get('list_pdf', false));
 
 		if ($this->showPDF)
 		{
-			FabrikWorker::canPdf();
+			Worker::canPdf();
 		}
 
 		$this->emptyLink     = $model->canEmpty() ? '#' : '';
@@ -611,7 +612,7 @@ class FabrikViewListBase extends FabrikView
 	/**
 	 * Set page title
 	 *
-	 * @param   FabrikWorker $w       Fabrik worker
+	 * @param   Worker $w       Fabrik worker
 	 * @param   object       &$params List params
 	 * @param   object       $model   List model
 	 *
@@ -901,7 +902,7 @@ class FabrikViewListBase extends FabrikView
 	protected function loadTemplateBottom()
 	{
 		$input  = $this->app->input;
-		$itemId = FabrikWorker::itemId();
+		$itemId = Worker::itemId();
 		$model  = $this->getModel();
 		$item   = $model->getTable();
 

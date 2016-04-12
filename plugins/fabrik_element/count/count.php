@@ -13,7 +13,7 @@ namespace Fabrik\Plugins\Element;
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use \FabrikWorker;
+use Fabrik\Helpers\Worker;
 use \FArrayHelper;
 
 /**
@@ -53,7 +53,7 @@ class Count extends Element
 	public function getAsField_html(&$aFields, &$aAsFields, $opts = array())
 	{
 		$dbTable = $this->actualTableName();
-		$db = FabrikWorker::getDbo();
+		$db = Worker::getDbo();
 
 		if ($this->app->input->get('c') != 'form')
 		{

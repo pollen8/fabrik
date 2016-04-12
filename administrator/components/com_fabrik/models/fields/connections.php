@@ -11,6 +11,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Fabrik\Helpers\Worker;
+
 require_once JPATH_ADMINISTRATOR . '/components/com_fabrik/helpers/element.php';
 
 jimport('joomla.html.html');
@@ -42,7 +44,7 @@ class JFormFieldConnections extends JFormFieldList
 	protected function getOptions()
 	{
 		// Initialize variables.
-		$db    = FabrikWorker::getDbo(true);
+		$db    = Worker::getDbo(true);
 		$query = $db->getQuery(true);
 
 		$query->select('id AS value, description AS text, ' . $db->quoteName('default'));

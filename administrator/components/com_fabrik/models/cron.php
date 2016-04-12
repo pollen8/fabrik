@@ -13,6 +13,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 use Joomla\Utilities\ArrayHelper;
+use Fabrik\Helpers\Worker;
 
 require_once 'fabmodeladmin.php';
 
@@ -43,7 +44,7 @@ class FabrikAdminModelCron extends FabModelAdmin
 	 */
 	public function getTable($type = 'Cron', $prefix = 'FabrikTable', $config = array())
 	{
-		$config['dbo'] = FabrikWorker::getDbo(true);
+		$config['dbo'] = Worker::getDbo(true);
 
 		return FabTable::getInstance($type, $prefix, $config);
 	}
@@ -116,7 +117,7 @@ class FabrikAdminModelCron extends FabModelAdmin
 		else
 		{
 			$plugin = $this->pluginManager->getPlugIn($plugin, 'Cron');
-			$mode   = FabrikWorker::j3() ? 'nav-tabs' : '';
+			$mode   = Worker::j3() ? 'nav-tabs' : '';
 			$str    = $plugin->onRenderAdminSettings(ArrayHelper::fromObject($item), null, $mode);
 		}
 

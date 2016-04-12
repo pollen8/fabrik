@@ -11,6 +11,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Fabrik\Helpers\Worker;
+
 // Require the abstract plugin class
 require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
 
@@ -80,7 +82,7 @@ class PlgFabrik_FormReceipt extends PlgFabrik_Form
 
 		$rowId = $input->get('rowid');
 		$config = JFactory::getConfig();
-		$w = new FabrikWorker;
+		$w = new Worker;
 		$data = $this->getProcessData();
 		$message = $params->get('receipt_message');
 		$editURL = COM_FABRIK_LIVESITE . "index.php?option=com_" . $this->package . "&amp;view=form&amp;fabrik=" . $formModel->get('id') . "&amp;rowid="

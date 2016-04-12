@@ -13,7 +13,7 @@ namespace Fabrik\Plugins\Element;
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use \FabrikWorker;
+use Fabrik\Helpers\Worker;
 use \stdClass;
 use Fabrik\Helpers\Html;
 use \FabrikString;
@@ -52,7 +52,7 @@ class Colourpicker extends Element
 	 */
 	public function renderListData($data, stdClass &$thisRow, $opts = array())
 	{
-		$data              = FabrikWorker::JSONtoData($data, true);
+		$data              = Worker::JSONtoData($data, true);
 		$layout            = $this->getLayout('list');
 		$displayData       = new stdClass;
 		$displayData->data = $data;
@@ -159,7 +159,7 @@ class Colourpicker extends Element
 		$displayData->name = $this->getHTMLName($repeatCounter);;
 		$displayData->value      = $value;
 		$displayData->editable   = $this->isEditable();
-		$displayData->j3         = FabrikWorker::j3();
+		$displayData->j3         = Worker::j3();
 		$displayData->showPicker = (bool) $params->get('show_picker', 1);
 
 		return $layout->render($displayData);

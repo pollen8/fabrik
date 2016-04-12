@@ -12,6 +12,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 use Fabrik\Helpers\Html;
+use Fabrik\Helpers\Worker;
 
 jimport('joomla.application.component.view');
 
@@ -112,10 +113,10 @@ class FabrikViewFullcalendar extends JViewLegacy
 		$app      = JFactory::getApplication();
 		$package  = $app->getUserState('com_fabrik.package', 'fabrik');
 		$params   = $model->getParams();
-		$Itemid   = FabrikWorker::itemId();
+		$Itemid   = Worker::itemId();
 		$urls     = new stdClass;
 		$calendar = $this->row;
-		$j3       = FabrikWorker::j3();
+		$j3       = Worker::j3();
 		$tpl      = $params->get('fullcalendar_layout', $j3);
 
 		// Get all list where statements - which are then included in the ajax call to ensure we get the correct data set loaded
@@ -139,7 +140,7 @@ class FabrikViewFullcalendar extends JViewLegacy
 		$options->urlfilters      = $urlFilters;
 		$options->canAdd          = $this->canAdd;
 		$options->showFullDetails = (bool) $params->get('show_full_details', false);
-		$options->restFilterStart = FabrikWorker::getMenuOrRequestVar('resetfilters', 0, false, 'request');
+		$options->restFilterStart = Worker::getMenuOrRequestVar('resetfilters', 0, false, 'request');
 		$options->tmpl            = $tpl;
 
 		// $$$rob @TODO not sure this is need - it isn't in the timeline viz
@@ -157,12 +158,12 @@ class FabrikViewFullcalendar extends JViewLegacy
 		$options->minDuration    = $params->get('minimum_duration', "00:30:00");
 		$options->open           = $params->get('open-hour', "00:00:00");
 		$options->close          = $params->get('close-hour', "23:59:59");
-		$options->lang           = FabrikWorker::getShortLang();
+		$options->lang           = Worker::getShortLang();
 		$options->showweekends   = (bool) $params->get('calendar-show-weekends', true);
 		$options->readonly       = (bool) $params->get('calendar-read-only', false);
 		$options->timeFormat     = $params->get('time_format', '%X');
 		$options->readonlyMonth  = (bool) $params->get('readonly_monthview', false);
-		$options->j3             = FabrikWorker::j3();
+		$options->j3             = Worker::j3();
 		$options->calOptions     = $params->get('calOptions', '{}');
 
 		return $options;

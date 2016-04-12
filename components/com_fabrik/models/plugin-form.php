@@ -13,6 +13,7 @@ defined('_JEXEC') or die('Restricted access');
 
 use Joomla\Utilities\ArrayHelper;
 use Fabrik\Helpers\Html;
+use Fabrik\Helpers\Worker;
 
 jimport('joomla.application.component.model');
 
@@ -570,7 +571,7 @@ class PlgFabrik_Form extends FabrikPlugin
 			return $default;
 		}
 
-		$elementModel = FabrikWorker::getPluginManager()->getElementPlugin($params->get($pName));
+		$elementModel = Worker::getPluginManager()->getElementPlugin($params->get($pName));
 		$name         = $elementModel->getFullName(true, false);
 
 		return ArrayHelper::getValue($data, $name, $default);
@@ -586,7 +587,7 @@ class PlgFabrik_Form extends FabrikPlugin
 	public function placeholder($pName)
 	{
 		$params = $this->getParams();
-		$w      = new FabrikWorker;
+		$w      = new Worker;
 
 		return $w->parseMessageForPlaceHolder($params->get($pName), $this->data);
 	}

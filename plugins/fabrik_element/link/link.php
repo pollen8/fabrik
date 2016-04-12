@@ -18,7 +18,7 @@ use Fabrik\Helpers\Html;
 use \FArrayHelper;
 use \stdClass;
 use \JString;
-use \FabrikWorker;
+use Fabrik\Helpers\Worker;
 use \FText;
 use \FabrikString;
 
@@ -66,7 +66,7 @@ class Link extends Element
 			Html::slimbox();
 		}
 
-		$data = FabrikWorker::JSONtoData($data, true);
+		$data = Worker::JSONtoData($data, true);
 
 		if (!empty($data))
 		{
@@ -101,11 +101,11 @@ class Link extends Element
 
 	protected function _renderListData($data, $thisRow)
 	{
-		$w = new FabrikWorker;
+		$w = new Worker;
 
 		if (is_string($data))
 		{
-			$data = FabrikWorker::JSONtoData($data, true);
+			$data = Worker::JSONtoData($data, true);
 		}
 
 		$listModel = $this->getlistModel();
@@ -211,7 +211,7 @@ class Link extends Element
 		{
 			if (!is_array($value))
 			{
-				$value = FabrikWorker::JSONtoData($value, true);
+				$value = Worker::JSONtoData($value, true);
 				/**
 				 * In some legacy case, data is like ...
 				 * [{"label":"foo","link":"bar"}]
@@ -234,7 +234,7 @@ class Link extends Element
 			$value = array('label' => '', 'link' => '');
 		}
 
-		if (FabrikWorker::getMenuOrRequestVar('rowid') == 0 && FArrayHelper::getValue($value, 'link', '') === '')
+		if (Worker::getMenuOrRequestVar('rowid') == 0 && FArrayHelper::getValue($value, 'link', '') === '')
 		{
 			$value['link'] = $params->get('link_default_url');
 		}
@@ -243,7 +243,7 @@ class Link extends Element
 		{
 			$lbl = trim(FArrayHelper::getValue($value, 'label'));
 			$href = trim(FArrayHelper::getValue($value, 'link'));
-			$w = new FabrikWorker;
+			$w = new Worker;
 			$href = is_array($data) ? $w->parseMessageForPlaceHolder($href, $data) : $w->parseMessageForPlaceHolder($href);
 
 			$opts['target'] = trim($params->get('link_target', ''));
@@ -302,14 +302,14 @@ class Link extends Element
 	{
 		if (is_string($value))
 		{
-			$value = FabrikWorker::JSONtoData($value, true);
+			$value = Worker::JSONtoData($value, true);
 			$value['label'] = FArrayHelper::getValue($value, 0);
 			$value['link'] = FArrayHelper::getValue($value, 1);
 		}
 
 		if (is_array($value))
 		{
-			$w = new FabrikWorker;
+			$w = new Worker;
 			$link = $w->parseMessageForPlaceHolder($value['link']);
 			$value = '<a href="' . $link . '" >' . $value['label'] . '</a>';
 		}
@@ -461,7 +461,7 @@ class Link extends Element
 	{
 		if (!isset($this->default))
 		{
-			$w = new FabrikWorker;
+			$w = new Worker;
 			$params = $this->getParams();
 			$link = $params->get('link_default_url');
 			/* $$$ hugh - no idea what this was here for, but it was causing some BIZARRE bugs!

@@ -11,6 +11,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Fabrik\Helpers\Worker;
+
 jimport('joomla.application.component.model');
 
 /**
@@ -139,7 +141,7 @@ abstract class FabrikWebService
 	public function map($datas, $fk)
 	{
 		$return = array();
-		$w = new FabrikWorker;
+		$w = new Worker;
 
 		foreach ($datas as $data)
 		{

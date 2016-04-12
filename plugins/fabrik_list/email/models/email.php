@@ -13,6 +13,7 @@ defined('_JEXEC') or die('Restricted access');
 
 use Joomla\Utilities\ArrayHelper;
 use Fabrik\Helpers\Html;
+use Fabrik\Helpers\Worker;
 
 require_once COM_FABRIK_FRONTEND . '/models/plugin-list.php';
 
@@ -426,7 +427,7 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 		}
 
 		$listModel->setId($input->getInt('id', 0));
-		$w           = new FabrikWorker;
+		$w           = new Worker;
 		$this->_type = 'table';
 		$mergeEmails = $params->get('emailtable_mergemessages', 0);
 		$sendSMS     = $params->get('emailtable_email_or_sms', 'email') == 'sms';
@@ -493,7 +494,7 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 							{
 								$mailTo = trim($w->parseMessageForPlaceholder($mailTo, $row));
 
-								if (FabrikWorker::isEmail($mailTo, $sendSMS))
+								if (Worker::isEmail($mailTo, $sendSMS))
 								{
 									$res = $this->_send($row, $mailTo);
 									$res ? $sent++ : $notSent++;
@@ -547,13 +548,13 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 	{
 		$params  = $this->getParams();
 		$sendSMS = $params->get('emailtable_email_or_sms', 'email') == 'sms';
-		$w       = new FabrikWorker;
+		$w       = new Worker;
 
 		foreach ($mailTos as $toKey => $thisTo)
 		{
 			$thisTo = $w->parseMessageForPlaceholder($thisTo, $row);
 
-			if (!FabrikWorker::isEmail($thisTo, $sendSMS))
+			if (!Worker::isEmail($thisTo, $sendSMS))
 			{
 				unset($mailTos[$toKey]);
 				$notSent++;
@@ -608,7 +609,7 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 		$coverMessage  = nl2br($coverMessage);
 		$oldStyle      = $this->_oldStyle();
 		$emailTemplate = $this->_emailTemplate();
-		$w             = new FabrikWorker;
+		$w             = new Worker;
 		$thisMsg       = $coverMessage;
 		list($phpMsg, $message) = $this->_message();
 
@@ -774,7 +775,7 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 	private function _thisMsg($row)
 	{
 		list($phpMsg, $message) = $this->_message();
-		$w             = new FabrikWorker;
+		$w             = new Worker;
 		$input         = $this->app->input;
 		$coverMessage  = nl2br($input->get('message', '', 'html'));
 		$emailTemplate = $this->_emailTemplate();
@@ -816,7 +817,7 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 		$input  = $this->app->input;
 		list($replyEmail, $replyEmailName) = $this->_replyEmailName($firstRow);
 		list($emailFrom, $fromName) = $this->_fromEmailName($firstRow);
-		$w            = new FabrikWorker;
+		$w            = new Worker;
 		$toType       = $this->_toType();
 		$to           = $this->_to();
 		$oldStyle     = $this->_oldStyle();
@@ -843,7 +844,7 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 			{
 				$thisTo = $w->parseMessageForPlaceholder($thisTo, $firstRow);
 
-				if (!FabrikWorker::isEmail($thisTo))
+				if (!Worker::isEmail($thisTo))
 				{
 					unset($thisTos[$toKey]);
 					$notSent++;
@@ -872,7 +873,7 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 		{
 			foreach ($thisTos as $thisTo)
 			{
-				if (FabrikWorker::isEmail($thisTo))
+				if (Worker::isEmail($thisTo))
 				{
 					$mail = JFactory::getMailer();
 					$res  = $mail->sendMail($emailFrom, $fromName, $thisTo, $thisSubject, $mergedMsg, true, $cc, $bcc, $this->filepath,
@@ -950,7 +951,7 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 	 */
 	private function _replyEmailName($data = array())
 	{
-		$w      = new FabrikWorker;
+		$w      = new Worker;
 		$params = $this->getParams();
 		$reply  = $w->parseMessageForPlaceholder($params->get('email_reply_to'), $data, false);
 		@list($replyEmail, $replyEmailName) = explode(':', $reply, 2);
@@ -979,7 +980,7 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 	 */
 	private function _fromEmailName($data = array())
 	{
-		$w        = new FabrikWorker;
+		$w        = new Worker;
 		$params   = $this->getParams();
 		$fromUser = $params->get('emailtable_from_user');
 
@@ -1028,7 +1029,7 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 	protected function sendSMS($to, $message, $data)
 	{
 		$params               = $this->getParams();
-		$w                    = new FabrikWorker;
+		$w                    = new Worker;
 		$opts                 = array();
 		$userName             = $params->get('emailtable_sms_username');
 		$password             = $params->get('emailtable_sms_password');

@@ -12,8 +12,9 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Fabrik\Helpers\Worker;
+
 require_once JPATH_ADMINISTRATOR . '/components/com_fabrik/helpers/element.php';
-require_once JPATH_SITE . '/components/com_fabrik/helpers/parent.php';
 
 jimport('joomla.form.helper');
 JFormHelper::loadFieldClass('list');
@@ -45,7 +46,7 @@ class JFormFieldVisualizationlist extends JFormFieldList
 	protected function getOptions()
 	{
 		$a = array(JHTML::_('select.option', '', FText::_('COM_FABRIK_PLEASE_SELECT')));
-		$db = FabrikWorker::getDbo(true);
+		$db = Worker::getDbo(true);
 		$query = $db->getQuery(true);
 		$query->select('id AS value, label AS text')->from('#__{package}_visualizations')->where('published = 1')->order('text');
 		$db->setQuery($query);

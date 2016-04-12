@@ -15,7 +15,7 @@ defined('_JEXEC') or die('Restricted access');
 
 use Fabrik\Helpers\Html;
 use \FText;
-use \FabrikWorker;
+use Fabrik\Helpers\Worker;
 use \JString;
 use \JFilterInput;
 use \JModelLegacy;
@@ -209,7 +209,7 @@ class Confirmation extends \PlgFabrik_Form
 					{
 						foreach ($val as $val2)
 						{
-							if (!FabrikWorker::isReserved($key))
+							if (!Worker::isReserved($key))
 							{
 								if (!strstr($key, '[]'))
 								{
@@ -223,7 +223,7 @@ class Confirmation extends \PlgFabrik_Form
 					}
 					else
 					{
-						if (!FabrikWorker::isReserved($key))
+						if (!Worker::isReserved($key))
 						{
 							// $fields[] = '<input type="hidden" name="'.str_replace('_raw','',$key).'" value="'.urlencode($val).'" />';
 							// $fields[] = '<input type="hidden" name="'.$key.'" value="'.urlencode($val).'" />';

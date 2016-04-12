@@ -12,6 +12,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 use Joomla\Utilities\ArrayHelper;
+use Fabrik\Helpers\Worker;
 
 // Require the abstract plugin class
 require_once COM_FABRIK_FRONTEND . '/models/plugin-list.php';
@@ -75,12 +76,12 @@ class PlgFabrik_ListCandeleterow extends PlgFabrik_List
 
 		if (!empty($canDeleteRowEval))
 		{
-			$w = new FabrikWorker;
+			$w = new Worker;
 			$data = ArrayHelper::fromObject($data);
 			$canDeleteRowEval = $w->parseMessageForPlaceHolder($canDeleteRowEval, $data);
-			FabrikWorker::clearEval();
+			Worker::clearEval();
 			$canDeleteRowEval = @eval($canDeleteRowEval);
-			FabrikWorker::logEval($canDeleteRowEval, 'Caught exception on eval in can delete row : %s');
+			Worker::logEval($canDeleteRowEval, 'Caught exception on eval in can delete row : %s');
 
 			return $canDeleteRowEval;
 		}

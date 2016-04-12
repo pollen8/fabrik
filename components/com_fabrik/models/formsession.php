@@ -11,6 +11,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Fabrik\Helpers\Worker;
+
 jimport('joomla.application.component.model');
 
 /**
@@ -115,7 +117,7 @@ class FabrikFEModelFormsession extends FabModel
 		$formModel->copyToRaw($post);
 		$formModel->addEncrytedVarsToArray($post);
 
-		$pluginManager = FabrikWorker::getPluginManager();
+		$pluginManager = Worker::getPluginManager();
 		if (in_array(false, $pluginManager->runPlugins('onSavePage', $formModel)))
 		{
 			return false;
@@ -189,7 +191,7 @@ class FabrikFEModelFormsession extends FabModel
 	protected function getCrypt()
 	{
 		/**
-		 * $$$ hugh - might want to alter this to use FabrikWorker::getCrypt()
+		 * $$$ hugh - might want to alter this to use Worker::getCrypt()
 		 * as we now use that everywhere else.
 		 */
 		if (!isset($this->crypt))

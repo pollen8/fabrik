@@ -12,6 +12,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 use Joomla\Utilities\ArrayHelper;
+use Fabrik\Helpers\Worker;
 
 // Require the abstract plugin class
 require_once COM_FABRIK_FRONTEND . '/models/plugin-list.php';
@@ -214,7 +215,7 @@ class PlgFabrik_ListPivot extends PlgFabrik_List
 			return;
 		}
 
-		$cache = FabrikWorker::getCache();
+		$cache = Worker::getCache();
 		$cache->setCaching(1);
 		$res = $cache->call(array(get_class($this), 'cacheResults'), $this->model->getId());
 

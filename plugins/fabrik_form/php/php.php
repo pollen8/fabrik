@@ -11,6 +11,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Fabrik\Helpers\Worker;
+
 // Require the abstract plugin class
 require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
 
@@ -416,7 +418,7 @@ class PlgFabrik_FormPHP extends PlgFabrik_Form
 			$this->html = $formModel->data;
 		}
 
-		$w = new FabrikWorker;
+		$w = new Worker;
 
 		if ($params->get('form_php_file') == -1)
 		{

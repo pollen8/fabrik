@@ -12,6 +12,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Fabrik\Helpers\Worker;
+
 /**
  * Fabrik Admin Plugin Model
  * Used for loading via ajax form plugins
@@ -41,7 +43,7 @@ class FabrikAdminModelPlugin extends JModelLegacy
 		$data = $this->getData();
 		$input->set('view', $this->getState('type'));
 
-		$mode = FabrikWorker::j3() ? 'nav-tabs' : '';
+		$mode = Worker::j3() ? 'nav-tabs' : '';
 		$str  = $plugin->onRenderAdminSettings($data, $this->getState('c'), $mode);
 		$input->set('view', 'plugin');
 

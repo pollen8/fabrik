@@ -20,6 +20,7 @@ require_once JPATH_COMPONENT_ADMINISTRATOR . '/helpers/contenttype.php';
 
 use Joomla\Utilities\ArrayHelper;
 use \Joomla\Registry\Registry;
+use Fabrik\Helpers\Worker;
 
 /**
  * Fabrik Admin Content Type Export Model
@@ -339,7 +340,7 @@ class FabrikAdminModelContentTypeExport extends FabModelAdmin
 		};
 
 		$element       = FabrikContentTypHelper::buildExportNode($this->doc, 'element', $data);
-		$pluginManager = FabrikWorker::getPluginManager();
+		$pluginManager = Worker::getPluginManager();
 		$elementModel  = clone($pluginManager->getPlugIn($data['plugin'], 'element'));
 
 		if (is_a($elementModel, '\Fabrik\Plugins\Element\Databasejoin'))

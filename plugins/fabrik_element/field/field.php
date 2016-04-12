@@ -14,7 +14,7 @@ namespace Fabrik\Plugins\Element;
 defined('_JEXEC') or die('Restricted access');
 
 use Joomla\Utilities\ArrayHelper;
-use \FabrikWorker;
+use Fabrik\Helpers\Worker;
 use \FArrayHelper;
 use \QRCode;
 use \JString;
@@ -45,7 +45,7 @@ class Field extends Element
 	 */
 	public function renderListData($data, stdClass &$thisRow, $opts = array())
 	{
-		$data = FabrikWorker::JSONtoData($data, true);
+		$data = Worker::JSONtoData($data, true);
 		$params = $this->getParams();
 
 		foreach ($data as &$d)
@@ -235,11 +235,11 @@ class Field extends Element
 
 		if ($params->get('guess_linktype') == '1')
 		{
-			$w = new FabrikWorker;
+			$w = new Worker;
 			$opts = $this->linkOpts();
 			$title = $params->get('link_title', '');
 
-			if (FabrikWorker::isEmail($value) || JString::stristr($value, 'http'))
+			if (Worker::isEmail($value) || JString::stristr($value, 'http'))
 			{
 			}
 			elseif (JString::stristr($value, 'www.'))

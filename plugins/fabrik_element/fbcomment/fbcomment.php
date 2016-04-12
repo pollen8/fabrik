@@ -14,7 +14,7 @@ namespace Fabrik\Plugins\Element;
 defined('_JEXEC') or die('Restricted access');
 
 use \stdClass;
-use \FabrikWorker;
+use Fabrik\Helpers\Worker;
 use \JRoute;
 use Fabrik\Helpers\Html;
 
@@ -82,7 +82,7 @@ class Fbcomment extends Element
 
 		if (!empty($displayData->href))
 		{
-			$w = new FabrikWorker;
+			$w = new Worker;
 			$displayData->href = $w->parseMessageForPlaceHolder($displayData->href, $data);
 			$locale = $params->get('fbcomment_locale', 'en_US');
 

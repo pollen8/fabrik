@@ -13,6 +13,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 use Joomla\Utilities\ArrayHelper;
+use Fabrik\Helpers\Worker;
 
 require_once 'fabmodeladmin.php';
 
@@ -43,7 +44,7 @@ class FabrikAdminModelGroup extends FabModelAdmin
 	 */
 	public function getTable($type = 'Group', $prefix = 'FabrikTable', $config = array())
 	{
-		$config['dbo'] = FabrikWorker::getDbo(true);
+		$config['dbo'] = Worker::getDbo(true);
 
 		return FabTable::getInstance($type, $prefix, $config);
 	}
@@ -103,7 +104,7 @@ class FabrikAdminModelGroup extends FabModelAdmin
 		}
 
 		$ids   = ArrayHelper::toInteger($ids);
-		$db    = FabrikWorker::getDbo(true);
+		$db    = Worker::getDbo(true);
 		$query = $db->getQuery(true);
 		$query->select('group_id')->from('#__{package}_formgroup')->where('form_id IN (' . implode(',', $ids) . ')');
 		$db->setQuery($query);
@@ -272,7 +273,7 @@ class FabrikAdminModelGroup extends FabModelAdmin
 		if ($item->id == '')
 		{
 			// Get max group order
-			$db    = FabrikWorker::getDbo(true);
+			$db    = Worker::getDbo(true);
 			$query = $db->getQuery(true);
 			$query->select('MAX(ordering)')->from('#__{package}_formgroup')->where('form_id = ' . $formId);
 			$db->setQuery($query);
@@ -454,7 +455,7 @@ class FabrikAdminModelGroup extends FabModelAdmin
 			return false;
 		}
 
-		$db    = FabrikWorker::getDbo(true);
+		$db    = Worker::getDbo(true);
 		$query = $db->getQuery(true);
 		$query->delete('#__{package}_joins')->where('group_id = ' . $data['id']);
 		$db->setQuery($query);
@@ -513,7 +514,7 @@ class FabrikAdminModelGroup extends FabModelAdmin
 	 */
 	public function deleteElements($pks)
 	{
-		$db    = FabrikWorker::getDbo(true);
+		$db    = Worker::getDbo(true);
 		$pks   = ArrayHelper::toInteger($pks);
 		$query = $db->getQuery(true);
 		$query->select('id')->from('#__{package}_elements')->where('group_id IN (' . implode(',', $pks) . ')');
@@ -533,7 +534,7 @@ class FabrikAdminModelGroup extends FabModelAdmin
 	 */
 	public function deleteFormGroups($pks)
 	{
-		$db    = FabrikWorker::getDbo(true);
+		$db    = Worker::getDbo(true);
 		$pks   = ArrayHelper::toInteger($pks);
 		$query = $db->getQuery(true);
 		$query->delete('#__{package}_formgroup')->where('group_id IN (' . implode(',', $pks) . ')');

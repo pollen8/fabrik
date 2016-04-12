@@ -13,6 +13,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 use Joomla\Utilities\ArrayHelper;
+use Fabrik\Helpers\Worker;
 
 require_once 'fabmodeladmin.php';
 
@@ -43,7 +44,7 @@ class FabrikAdminModelVisualization extends FabModelAdmin
 	 */
 	public function getTable($type = 'Visualization', $prefix = 'FabrikTable', $config = array())
 	{
-		$config['dbo'] = FabrikWorker::getDbo(true);
+		$config['dbo'] = Worker::getDbo(true);
 
 		return FabTable::getInstance($type, $prefix, $config);
 	}
@@ -121,7 +122,7 @@ class FabrikAdminModelVisualization extends FabModelAdmin
 		else
 		{
 			$plugin = $this->pluginManager->getPlugIn($plugin, 'Visualization');
-			$mode = FabrikWorker::j3() ? 'nav-tabs' : '';
+			$mode = Worker::j3() ? 'nav-tabs' : '';
 			$str = $plugin->onRenderAdminSettings(ArrayHelper::fromObject($item), null, $mode);
 		}
 

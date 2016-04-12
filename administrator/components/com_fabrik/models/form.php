@@ -15,6 +15,7 @@ defined('_JEXEC') or die('Restricted access');
 require_once 'fabmodeladmin.php';
 
 use Joomla\Utilities\ArrayHelper;
+use Fabrik\Helpers\Worker;
 
 /**
  * Fabrik Admin Form Model
@@ -59,7 +60,7 @@ class FabrikAdminModelForm extends FabModelAdmin
 	 */
 	public function getTable($type = 'Form', $prefix = 'FabrikTable', $config = array())
 	{
-		$config['dbo'] = FabrikWorker::getDbo(true);
+		$config['dbo'] = Worker::getDbo(true);
 
 		return FabTable::getInstance($type, $prefix, $config);
 	}
@@ -210,7 +211,7 @@ class FabrikAdminModelForm extends FabModelAdmin
 
 		if (!$dbTableExists || $isNew)
 		{
-			$connection = FabrikWorker::getConnection(-1);
+			$connection = Worker::getConnection(-1);
 			$item->set('id', null);
 			$item->set('label', $data['label']);
 			$item->set('form_id', $formId);
@@ -250,7 +251,7 @@ class FabrikAdminModelForm extends FabModelAdmin
 	 */
 	private function getInsertFields($isNew, $data, $listModel, $dbTableName)
 	{
-		$db                     = FabrikWorker::getDbo(true);
+		$db                     = Worker::getDbo(true);
 		$fields                 = array('id' => 'internalid', 'date_time' => 'date');
 		$createGroup            = $data['_createGroup'];
 		$recordInDatabase       = $data['record_in_database'];
@@ -336,7 +337,7 @@ class FabrikAdminModelForm extends FabModelAdmin
 	protected function _makeFormGroups($currentGroups)
 	{
 		$formId        = $this->getState($this->getName() . '.id');
-		$db            = FabrikWorker::getDbo(true);
+		$db            = Worker::getDbo(true);
 		$query         = $db->getQuery(true);
 		$currentGroups = ArrayHelper::toInteger($currentGroups);
 		$query->delete('#__{package}_formgroup')->where('form_id = ' . (int) $formId);
@@ -399,7 +400,7 @@ class FabrikAdminModelForm extends FabModelAdmin
 		}
 
 		$ids   = ArrayHelper::toInteger($ids);
-		$db    = FabrikWorker::getDbo(true);
+		$db    = Worker::getDbo(true);
 		$query = $db->getQuery(true);
 		$query->select('form_id')->from('#__{package}_lists')->where('id IN (' . implode(',', $ids) . ')');
 
@@ -439,7 +440,7 @@ class FabrikAdminModelForm extends FabModelAdmin
 				 * NOTE 1 - this code ignores joined groups, so only recreates the original table
 				 * NOTE 2 - this code ignores any 'alter existing fields' settings.
 				 */
-				$db    = FabrikWorker::getDbo(true);
+				$db    = Worker::getDbo(true);
 				$query = $db->getQuery(true);
 				$query->select('group_id')->from('#__{package}_formgroup AS fg')->join('LEFT', '#__{package}_groups AS g ON g.id = fg.group_id')
 					->where('fg.form_id = ' . $formId . ' AND g.is_join != 1');

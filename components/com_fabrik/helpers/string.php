@@ -13,6 +13,7 @@ defined('_JEXEC') or die('Restricted access');
 
 use Joomla\Utilities\ArrayHelper;
 use Fabrik\Helpers\Html;
+use Fabrik\Helpers\Worker;
 
 /**
  * String helpers
@@ -113,7 +114,7 @@ class FabrikString extends JString
 	 */
 	public static function safeColName($col)
 	{
-		$db = FabrikWorker::getDbo();
+		$db = Worker::getDbo();
 		$col = str_replace('`', '', $col);
 		$splitter = '';
 

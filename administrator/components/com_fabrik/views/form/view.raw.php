@@ -55,9 +55,6 @@ class FabrikAdminViewForm extends JViewLegacy
 	public function display($tpl = null)
 	{
 		$app = JFactory::getApplication();
-		$input = $app->input;
-		$w = new FabrikWorker;
-		$config = JFactory::getConfig();
 		$model = JModelLegacy::getInstance('Form', 'FabrikFEModel');
 		$model->render();
 

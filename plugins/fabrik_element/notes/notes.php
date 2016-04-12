@@ -14,7 +14,7 @@ namespace Fabrik\Plugins\Element;
 defined('_JEXEC') or die('Restricted access');
 
 use \stdClass;
-use \FabrikWorker;
+use Fabrik\Helpers\Worker;
 use \FabrikString;
 
 /**
@@ -46,7 +46,7 @@ class Notes extends Databasejoin
 		$opts = $this->getElementJSOptions($repeatCounter);
 		$opts->rowid = (int) $this->getFormModel()->getRowId();
 		$opts->id = $this->id;
-		$opts->j3 = FabrikWorker::j3();
+		$opts->j3 = Worker::j3();
 
 		return array('FbNotes', $id, $opts);
 	}
@@ -63,7 +63,7 @@ class Notes extends Databasejoin
 	{
 		$params = $this->getParams();
 		$tmp = $this->_getOptions($data, $repeatCounter, true);
-		$layoutName = FabrikWorker::j3() ? 'form' : 'form-25';
+		$layoutName = Worker::j3() ? 'form' : 'form-25';
 		$layout = $this->getLayout($layoutName);
 		$layoutData = new stdClass;
 		$layoutData->id = $this->getHTMLId($repeatCounter);

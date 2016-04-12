@@ -12,6 +12,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 use Fabrik\Helpers\Html;
+use Fabrik\Helpers\Worker;
 
 jimport('joomla.application.component.model');
 jimport('joomla.filesystem.file');
@@ -149,7 +150,7 @@ class FabrikFEModelPluginmanager extends FabModel
 	 */
 	protected function _getList($query = null, $limitstart = 0, $limit = 0)
 	{
-		$db = FabrikWorker::getDbo(true);
+		$db = Worker::getDbo(true);
 
 		if (is_null($this->group))
 		{
@@ -419,7 +420,7 @@ class FabrikFEModelPluginmanager extends FabModel
 			 */
 
 			// build list of plugins used on this form ...
-			$db = FabrikWorker::getDbo(true);
+			$db = Worker::getDbo(true);
 			$query = $db->getQuery(true);
 			$select = '*, e.name AS name, e.id AS id, e.published AS published, e.label AS label,'
 				. 'e.plugin, e.params AS params, e.access AS access, e.ordering AS ordering';

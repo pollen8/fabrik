@@ -12,6 +12,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 use Fabrik\Helpers\Html;
+use Fabrik\Helpers\Worker;
 
 jimport('joomla.application.component.view');
 
@@ -38,8 +39,8 @@ class FabrikViewCalendar extends JViewLegacy
 		$app = JFactory::getApplication();
 		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$input = $app->input;
-		$j3 = FabrikWorker::j3();
-		$Itemid = FabrikWorker::itemId();
+		$j3 = Worker::j3();
+		$Itemid = Worker::itemId();
 		$model = $this->getModel();
 		$usersConfig = JComponentHelper::getParams('com_fabrik');
 		$id = $input->get('id', $usersConfig->get('visualizationid', $input->get('visualizationid', 0)));
@@ -101,7 +102,7 @@ class FabrikViewCalendar extends JViewLegacy
 		$options->canAdd = $this->canAdd;
 		$options->showFullDetails = (bool) $params->get('show_full_details', false);
 
-		$options->restFilterStart = FabrikWorker::getMenuOrRequestVar('resetfilters', 0, false, 'request');
+		$options->restFilterStart = Worker::getMenuOrRequestVar('resetfilters', 0, false, 'request');
 		$options->tmpl = $tpl;
 
 		$o = $model->getAddStandardEventFormInfo();
@@ -145,9 +146,9 @@ class FabrikViewCalendar extends JViewLegacy
 		$options->readonly = (bool) $params->get('calendar-read-only', false);
 		$options->timeFormat = $params->get('time_format', '%X');
 		$options->readonlyMonth = (bool) $params->get('readonly_monthview', false);
-		$options->j3 = FabrikWorker::j3();
+		$options->j3 = Worker::j3();
 
-		if (FabrikWorker::j3())
+		if (Worker::j3())
 		{
 			$options->buttons = new stdClass;
 			$options->buttons->del = '<button class="btn popupDelete" data-task="deleteCalEvent">' . Html::icon('icon-delete') . '</button>';

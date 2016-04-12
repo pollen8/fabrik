@@ -11,6 +11,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Fabrik\Helpers\Worker;
+
 jimport('joomla.plugin.plugin');
 
 /**
@@ -122,7 +124,7 @@ class PlgContentFabrik extends JPlugin
 
 		// $$$ hugh - see if we can remove formatting added by WYSIWYG editors
 		$match = strip_tags($match);
-		$w     = new FabrikWorker;
+		$w     = new Worker;
 		$match = preg_replace('/\s+/', ' ', $match);
 		/* $$$ hugh - only replace []'s in value, not key, so we handle
 		 * ranged filters and 'complex' filters
@@ -794,7 +796,7 @@ class PlgContentFabrik extends JPlugin
 
 		if (!array_key_exists($id, $this->pluginVizName))
 		{
-			$db    = FabrikWorker::getDbo(true);
+			$db    = Worker::getDbo(true);
 			$query = $db->getQuery(true);
 			$query->select('plugin')->from('#__{package}_visualizations')->where('id = ' . (int) $id);
 			$db->setQuery($query);
@@ -874,7 +876,7 @@ class PlgContentFabrik extends JPlugin
 			$view = 'form';
 		}
 
-		if (!FabrikWorker::isViewType($view))
+		if (!Worker::isViewType($view))
 		{
 			throw new RuntimeException('Please specify a valid view type in your fabrik {} code: ' . $view, 500);
 		}

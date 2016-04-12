@@ -17,7 +17,7 @@ use \stdClass;
 use \JText;
 use \FabrikFEModelList;
 use \JModelLegacy;
-use \FabrikWorker;
+use Fabrik\Helpers\Worker;
 use \FabrikFEModelForm;
 
 /**
@@ -224,7 +224,7 @@ class Autofill extends \PlgFabrik_Form
 
 		if (!$matched)
 		{
-			$w               = new FabrikWorker;
+			$w               = new Worker;
 			$newData->$toRaw = $newData->$to = $w->parseMessageForPlaceHolder($from, $data);
 		}
 		else

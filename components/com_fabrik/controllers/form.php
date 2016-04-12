@@ -12,6 +12,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 use Fabrik\Helpers\Html;
+use Fabrik\Helpers\Worker;
 
 jimport('joomla.application.component.controller');
 
@@ -259,7 +260,7 @@ class FabrikControllerForm extends JControllerLegacy
 		// Check if any plugin has created a new validation error
 		if ($model->hasErrors())
 		{
-			FabrikWorker::getPluginManager()->runPlugins('onError', $model);
+			Worker::getPluginManager()->runPlugins('onError', $model);
 			$this->handleError($view, $model);
 
 			return;

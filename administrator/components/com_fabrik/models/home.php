@@ -12,6 +12,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Fabrik\Helpers\Worker;
+
 require_once 'fabmodeladmin.php';
 
 /**
@@ -41,7 +43,7 @@ class FabrikAdminModelHome extends FabModelAdmin
 	 */
 	public function getTable($type = 'Cron', $prefix = 'FabrikTable', $config = array())
 	{
-		$config['dbo'] = FabrikWorker::getDbo(true);
+		$config['dbo'] = Worker::getDbo(true);
 
 		return parent::getTable($type, $prefix, $config);
 	}
@@ -142,9 +144,9 @@ class FabrikAdminModelHome extends FabModelAdmin
 	 */
 	public function installSampleData()
 	{
-		$cnn       = FabrikWorker::getConnection();
+		$cnn       = Worker::getConnection();
 		$defaultDb = $cnn->getDb();
-		$db        = FabrikWorker::getDbo(true);
+		$db        = Worker::getDbo(true);
 		$group     = $this->getTable('Group');
 		$config    = $this->config;
 
@@ -250,7 +252,7 @@ class FabrikAdminModelHome extends FabModelAdmin
 	 */
 	public function reset()
 	{
-		$db     = FabrikWorker::getDbo(true);
+		$db     = Worker::getDbo(true);
 		$prefix = '#__{package}_';
 		$tables = array('cron', 'elements', 'formgroup', 'forms', 'form_sessions', 'groups', 'joins', 'jsactions', 'packages', 'lists',
 			'validations', 'visualizations');
@@ -271,7 +273,7 @@ class FabrikAdminModelHome extends FabModelAdmin
 	{
 		$connModel = JModelLegacy::getInstance('Connection', 'FabrikFEModel');
 		$connModel->setId($item->connection_id);
-		$db    = FabrikWorker::getDbo(true);
+		$db    = Worker::getDbo(true);
 		$query = $db->getQuery(true);
 		$query->select("connection_id, db_table_name")->from('#__{package}_lists');
 		$db->setQuery($query);

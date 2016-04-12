@@ -72,9 +72,9 @@ class FabrikViewList extends FabrikViewListBase
 	/**
 	 * Set page title
 	 *
-	 * @param   object  $w        Fabrikworker
-	 * @param   object  &$params  list params
-	 * @param   object  $model    list model
+	 * @param   Fabrik\Helpers\Worker  $w
+	 * @param   object                 &$params  list params
+	 * @param   object                 $model    list model
 	 *
 	 * @return  void
 	 */

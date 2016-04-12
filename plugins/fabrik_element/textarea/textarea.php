@@ -19,7 +19,7 @@ use \JHtml;
 use \stdClass;
 use \JString;
 use \FText;
-use \FabrikWorker;
+use Fabrik\Helpers\Worker;
 use \FabrikString;
 use \JEditor;
 
@@ -70,7 +70,7 @@ class Textarea extends Element
 		// $$$ hugh - strip spaces first, account for "foo,bar, baz, foo"
 		$data = array_map('trim', $data);
 		$data = array_unique($data);
-		$img = FabrikWorker::j3() ? 'bookmark.png' : 'tag.png';
+		$img = Worker::j3() ? 'bookmark.png' : 'tag.png';
 		$icon = Html::image($img, 'form', @$this->tmpl, array('alt' => 'tag'));
 		$tmplData = new stdClass;
 		$tmplData->tags = array();

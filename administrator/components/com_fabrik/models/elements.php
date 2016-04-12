@@ -14,6 +14,7 @@ defined('_JEXEC') or die('Restricted access');
 
 use Joomla\Registry\Registry;
 use Joomla\Utilities\ArrayHelper;
+use Fabrik\Helpers\Worker;
 
 require_once 'fabmodellist.php';
 
@@ -275,7 +276,7 @@ class FabrikAdminModelElements extends FabModelList
 
 	public function getTable($type = 'Element', $prefix = 'FabrikTable', $config = array())
 	{
-		$config['dbo'] = FabrikWorker::getDbo();
+		$config['dbo'] = Worker::getDbo();
 
 		return FabTable::getInstance($type, $prefix, $config);
 	}
@@ -347,7 +348,7 @@ class FabrikAdminModelElements extends FabModelList
 
 	public function getPluginOptions()
 	{
-		$db     = FabrikWorker::getDbo(true);
+		$db     = Worker::getDbo(true);
 		$user   = JFactory::getUser();
 		$levels = implode(',', $user->getAuthorisedViewLevels());
 		$query  = $db->getQuery(true);

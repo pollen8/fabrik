@@ -11,6 +11,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Fabrik\Helpers\Worker;
+
 // Require the abstract plugin class
 require_once COM_FABRIK_FRONTEND . '/models/validation_rule.php';
 
@@ -114,7 +116,7 @@ class PlgFabrik_ValidationruleAreUniqueValues extends PlgFabrik_Validationrule
 		$params = $this->getParams();
 		$otherField = $params->get('areuniquevalues-otherfield');
 
-		return FabrikWorker::getPluginManager()->getElementPlugin($otherField);
+		return Worker::getPluginManager()->getElementPlugin($otherField);
 	}
 
 	/**

@@ -11,6 +11,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Fabrik\Helpers\Worker;
+
 // Require the abstract plugin class
 require_once COM_FABRIK_FRONTEND . '/models/plugin-list.php';
 
@@ -165,7 +167,7 @@ class PlgFabrik_ListDownload extends PlgFabrik_List
 		}
 		else
 		{
-			$db = FabrikWorker::getDbo();
+			$db = Worker::getDbo();
 			$query = $db->getQuery(true);
 			$query->select($db->qn($downloadFile))
 				->from($db->qn($downloadTable))

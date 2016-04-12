@@ -11,6 +11,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Fabrik\Helpers\Worker;
+
 // Require the abstract plugin class
 require_once COM_FABRIK_FRONTEND . '/models/validation_rule.php';
 
@@ -83,7 +85,7 @@ class PlgFabrik_ValidationruleUserExists extends PlgFabrik_Validationrule
 
 				if ((int) $userField !== 0)
 				{
-					$userElementModel = FabrikWorker::getPluginManager()->getElementPlugin($userField);
+					$userElementModel = Worker::getPluginManager()->getElementPlugin($userField);
 					$userFullName = $userElementModel->getFullName(true, false);
 					$userField = $userElementModel->getFullName(false, false);
 				}

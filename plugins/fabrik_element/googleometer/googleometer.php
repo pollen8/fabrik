@@ -16,7 +16,7 @@ defined('_JEXEC') or die('Restricted access');
 use Joomla\Utilities\ArrayHelper;
 use \FArrayHelper;
 use \stdClass;
-use \FabrikWorker;
+use Fabrik\Helpers\Worker;
 
 /**
  * Plugin element to render a google o meter chart
@@ -93,7 +93,7 @@ class Googleometer extends Element
 			throw new \Exception('Google o meter fabrik field requires an "Element" to be selected');
 		}
 
-		$element   = FabrikWorker::getPluginManager()->getPlugIn('field', 'element');
+		$element   = Worker::getPluginManager()->getPlugIn('field', 'element');
 		$element->setId($elementId);
 
 		return $element;
@@ -145,7 +145,7 @@ class Googleometer extends Element
 
 		if ($dataElement->getGroupModel()->canRepeat())
 		{
-			$data = FabrikWorker::JSONtoData($data, true);
+			$data = Worker::JSONtoData($data, true);
 
 			foreach ($data as $i => &$d)
 			{

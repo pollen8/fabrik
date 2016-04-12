@@ -11,6 +11,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Fabrik\Helpers\Worker;
+
 /**
  * Base Fabrik Table
  *
@@ -41,7 +43,7 @@ class FabTable extends JTable
 	 */
 	public static function getInstance($type, $prefix = 'JTable', $config = array())
 	{
-		$config['dbo'] = FabrikWorker::getDbo(true);
+		$config['dbo'] = Worker::getDbo(true);
 
 		$instance = parent::getInstance($type, $prefix, $config);
 

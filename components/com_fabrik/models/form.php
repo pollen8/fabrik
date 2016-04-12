@@ -14,6 +14,7 @@ defined('_JEXEC') or die('Restricted access');
 use \Joomla\Registry\Registry;
 use Joomla\Utilities\ArrayHelper;
 use Fabrik\Helpers\Html;
+use Fabrik\Helpers\Worker;
 
 jimport('joomla.application.component.model');
 require_once 'fabrikmodelform.php';
@@ -439,7 +440,7 @@ class FabrikFEModelForm extends FabModelForm
 	 */
 	protected function isUserRowId($priority = 'menu')
 	{
-		$rowId = FabrikWorker::getMenuOrRequestVar('rowid', '', $this->isMambot, $priority);
+		$rowId = Worker::getMenuOrRequestVar('rowid', '', $this->isMambot, $priority);
 
 		return $rowId === '-1' || $rowId === ':1';
 	}
@@ -526,8 +527,8 @@ class FabrikFEModelForm extends FabModelForm
 		$params = $this->getParams();
 		$item = $this->getForm();
 		$tmpl = '';
-		$default = FabrikWorker::j3() ? 'bootstrap' : 'default';
-		$jTmplFolder = FabrikWorker::j3() ? 'tmpl' : 'tmpl25';
+		$default = Worker::j3() ? 'bootstrap' : 'default';
+		$jTmplFolder = Worker::j3() ? 'tmpl' : 'tmpl25';
 		$document = JFactory::getDocument();
 
 		if ($document->getType() === 'pdf')
@@ -555,7 +556,7 @@ class FabrikFEModelForm extends FabModelForm
 			}
 		}
 
-		$tmpl = FabrikWorker::getMenuOrRequestVar('fabriklayout', $tmpl, $this->isMambot);
+		$tmpl = Worker::getMenuOrRequestVar('fabriklayout', $tmpl, $this->isMambot);
 
 		// Finally see if the options are overridden by a querystring var
 		$baseTmpl = $tmpl;
@@ -583,7 +584,7 @@ class FabrikFEModelForm extends FabModelForm
 	public function getFormCss()
 	{
 		$input = $this->app->input;
-		$jTmplFolder = FabrikWorker::j3() ? 'tmpl' : 'tmpl25';
+		$jTmplFolder = Worker::j3() ? 'tmpl' : 'tmpl25';
 		$tmpl = $this->getTmpl();
 		$v = $this->isEditable() ? 'form' : 'details';
 
@@ -749,7 +750,7 @@ class FabrikFEModelForm extends FabModelForm
 		}
 
 		$this->jsActions = array();
-		$db = FabrikWorker::getDbo(true);
+		$db = Worker::getDbo(true);
 		$aJsActions = array();
 		$aElIds = array();
 		$groups = $this->getGroupsHiarachy();
@@ -813,7 +814,7 @@ class FabrikFEModelForm extends FabModelForm
 	 */
 	public function getPublishedGroups()
 	{
-		$db = FabrikWorker::getDbo(true);
+		$db = Worker::getDbo(true);
 
 		if (!isset($this->_publishedformGroups) || empty($this->_publishedformGroups))
 		{
@@ -863,7 +864,7 @@ class FabrikFEModelForm extends FabModelForm
 	 */
 	private function mergeGroupsWithJoins($groups)
 	{
-		$db = FabrikWorker::getDbo(true);
+		$db = Worker::getDbo(true);
 		$form = $this->getForm();
 
 		if ($form->record_in_database)
@@ -941,7 +942,7 @@ class FabrikFEModelForm extends FabModelForm
 	public function getFormGroups($excludeUnpublished = true)
 	{
 		$params = $this->getParams();
-		$db = FabrikWorker::getDbo(true);
+		$db = Worker::getDbo(true);
 		$query = $db->getQuery(true);
 		$query
 			->select(
@@ -988,7 +989,7 @@ class FabrikFEModelForm extends FabModelForm
 		if (!isset($this->groups))
 		{
 			$this->getGroups();
-			$this->groups = FabrikWorker::getPluginManager()->getFormPlugins($this);
+			$this->groups = Worker::getPluginManager()->getFormPlugins($this);
 		}
 
 		return $this->groups;
@@ -1057,14 +1058,14 @@ class FabrikFEModelForm extends FabModelForm
 	/**
 	 * Get the plugin manager
 	 *
-	 * @deprecated use return FabrikWorker::getPluginManager(); instead since 3.0b
+	 * @deprecated use return Worker::getPluginManager(); instead since 3.0b
 	 *
 	 * @return  object  plugin manager
 	 */
 
 	public function getPluginManager()
 	{
-		return FabrikWorker::getPluginManager();
+		return Worker::getPluginManager();
 	}
 
 	/**
@@ -1177,7 +1178,7 @@ class FabrikFEModelForm extends FabModelForm
 		@set_time_limit(300);
 		require_once COM_FABRIK_FRONTEND . '/helpers/uploader.php';
 		$form = $this->getForm();
-		$pluginManager = FabrikWorker::getPluginManager();
+		$pluginManager = Worker::getPluginManager();
 
 		$sessionModel = JModelLegacy::getInstance('Formsession', 'FabrikFEModel');
 		$sessionModel->setFormId($this->getId());
@@ -1443,7 +1444,7 @@ class FabrikFEModelForm extends FabModelForm
 			 if (array_key_exists('fabrik_vars', $_REQUEST)
 			&& array_key_exists('querystring', $_REQUEST['fabrik_vars'])
 			&& array_key_exists($key, $_REQUEST['fabrik_vars']['querystring'])) {
-			$crypt = FabrikWorker::getCrypt();
+			$crypt = Worker::getCrypt();
 			// turns out it isn't this simple, of course!  see above
 			$_REQUEST['fabrik_vars']['querystring'][$key] = $crypt->encrypt($val);
 			}
@@ -1541,7 +1542,7 @@ class FabrikFEModelForm extends FabModelForm
 			return $this->formData;
 		}
 
-		list($this->dofilter, $this->filter) = FabrikWorker::getContentFilter();
+		list($this->dofilter, $this->filter) = Worker::getContentFilter();
 
 		$this->ajaxPost = $this->app->input->getBool('fabrik_ajax');
 
@@ -1813,7 +1814,7 @@ class FabrikFEModelForm extends FabModelForm
 		$profiler = JProfiler::getInstance('Application');
 		JDEBUG ? $profiler->mark('processToDb: start') : null;
 
-		$pluginManager = FabrikWorker::getPluginManager();
+		$pluginManager = Worker::getPluginManager();
 		$listModel = $this->getListModel();
 		$origId = $this->prepareForCopy();
 		$this->formData = $listModel->removeTableNameFromSaveData($this->formData, '___');
@@ -1931,7 +1932,7 @@ class FabrikFEModelForm extends FabModelForm
 	{
 		if (is_null($this->validationRuleClasses))
 		{
-			$validationRules = FabrikWorker::getPluginManager()->getPlugInGroup('validationrule');
+			$validationRules = Worker::getPluginManager()->getPlugInGroup('validationrule');
 			$classes = array();
 
 			foreach ($validationRules as $rule)
@@ -1959,8 +1960,8 @@ class FabrikFEModelForm extends FabModelForm
 		if (array_key_exists('fabrik_vars', $_REQUEST) && array_key_exists('querystring', $_REQUEST['fabrik_vars']))
 		{
 			$groups = $this->getGroupsHiarachy();
-			$crypt = FabrikWorker::getCrypt();
-			$w = new FabrikWorker;
+			$crypt = Worker::getCrypt();
+			$w = new Worker;
 
 			foreach ($groups as $g => $groupModel)
 			{
@@ -1989,7 +1990,7 @@ class FabrikFEModelForm extends FabModelForm
 									// $$$ rob urldecode when posting from ajax form
 									$e = urldecode($e);
 									$e = empty($e) ? '' : $crypt->decrypt($e);
-									$e = FabrikWorker::JSONtoData($e);
+									$e = Worker::JSONtoData($e);
 									$v[] = $w->parseMessageForPlaceHolder($e, $post);
 								}
 							}
@@ -2006,7 +2007,7 @@ class FabrikFEModelForm extends FabModelForm
 
 								if (is_subclass_of($elementModel, 'Fabrik\Plugins\Element\ElementList'))
 								{
-									$v = FabrikWorker::JSONtoData($v, true);
+									$v = Worker::JSONtoData($v, true);
 								}
 
 								$v = $w->parseMessageForPlaceHolder($v, $post);
@@ -2130,7 +2131,7 @@ class FabrikFEModelForm extends FabModelForm
 
 		// Contains any data modified by the validations
 		$this->modifiedValidationData = array();
-		$w = new FabrikWorker;
+		$w = new Worker;
 		$ok = true;
 
 		// $$$ rob 01/07/2011 fileupload needs to examine records previous data for validations on editing records
@@ -2330,7 +2331,7 @@ class FabrikFEModelForm extends FabModelForm
 
 		if (!empty($this->errors))
 		{
-			FabrikWorker::getPluginManager()->runPlugins('onError', $this);
+			Worker::getPluginManager()->runPlugins('onError', $this);
 		}
 
 		Html::debug($this->errors, 'form:errors');
@@ -2506,7 +2507,7 @@ class FabrikFEModelForm extends FabModelForm
 	 */
 	public function canPublish()
 	{
-		$db = FabrikWorker::getDbo();
+		$db = Worker::getDbo();
 		$form = $this->getForm();
 		$nullDate = $db->getNullDate();
 		$publishUp = JFactory::getDate($form->publish_up)->toUnix();
@@ -2717,7 +2718,7 @@ class FabrikFEModelForm extends FabModelForm
 	 */
 	public function paginateRowId($dir)
 	{
-		$db = FabrikWorker::getDbo();
+		$db = Worker::getDbo();
 		$input = $this->app->input;
 		$c = $dir == 1 ? '>=' : '<=';
 		$intLimit = $dir == 1 ? 2 : 0;
@@ -2807,12 +2808,12 @@ class FabrikFEModelForm extends FabModelForm
 		}
 		else
 		{
-			$this->rowId = FabrikWorker::getMenuOrRequestVar('rowid', $usersConfig->get('rowid'), $this->isMambot);
+			$this->rowId = Worker::getMenuOrRequestVar('rowid', $usersConfig->get('rowid'), $this->isMambot);
 
 			if ($this->rowId == -2)
 			{
 				// If the default was set to -2 (load last row) then a pagination form plugin's row id should override menu settings
-				$this->rowId = FabrikWorker::getMenuOrRequestVar('rowid', $usersConfig->get('rowid'), $this->isMambot, 'request');
+				$this->rowId = Worker::getMenuOrRequestVar('rowid', $usersConfig->get('rowid'), $this->isMambot, 'request');
 			}
 		}
 
@@ -2861,7 +2862,7 @@ class FabrikFEModelForm extends FabModelForm
 			$this->rowId = '';
 		}
 
-		FabrikWorker::getPluginManager()->runPlugins('onSetRowId', $this);
+		Worker::getPluginManager()->runPlugins('onSetRowId', $this);
 
 		return $this->rowId;
 	}
@@ -2888,7 +2889,7 @@ class FabrikFEModelForm extends FabModelForm
 		 * when a custom PHP onBeforeLoad plugin I'd written for a client suddenly broke.
 		 */
 		$this->checkAccessFromListSettings();
-		$pluginManager = FabrikWorker::getPluginManager();
+		$pluginManager = Worker::getPluginManager();
 		$res = $pluginManager->runPlugins('onBeforeLoad', $this);
 
 		if (in_array(false, $res))
@@ -3152,7 +3153,7 @@ class FabrikFEModelForm extends FabModelForm
 					 * use !== '' as rowid may be alphanumeric.
 					 * Unlike 3.0 rowId does equal '' if using rowid=-1 and user not logged in
 					 */
-					$useKey = FabrikWorker::getMenuOrRequestVar('usekey', '', $this->isMambot);
+					$useKey = Worker::getMenuOrRequestVar('usekey', '', $this->isMambot);
 
 					if (!empty($useKey) || $this->rowId !== '')
 					{
@@ -3270,7 +3271,7 @@ class FabrikFEModelForm extends FabModelForm
 		$params = $this->getParams();
 
 		// Set in plugins such as confirmation plugin
-		$pluginManager = FabrikWorker::getPluginManager();
+		$pluginManager = Worker::getPluginManager();
 		$pluginManager->runPlugins('usesSession', $this, 'form');
 
 		if (in_array(true, $pluginManager->data))
@@ -3403,7 +3404,7 @@ class FabrikFEModelForm extends FabModelForm
 							if (array_key_exists($name, $row))
 							{
 								$v = $row->$name;
-								$v = FabrikWorker::JSONtoData($v, $elementModel->isJoin());
+								$v = Worker::JSONtoData($v, $elementModel->isJoin());
 
 								// New record or csv export
 								if (!isset($data[0]->$name))
@@ -3509,7 +3510,7 @@ class FabrikFEModelForm extends FabModelForm
 			return $this->query;
 		}
 
-		$db = FabrikWorker::getDbo();
+		$db = Worker::getDbo();
 		$input = $this->app->input;
 		$form = $this->getForm();
 
@@ -3524,7 +3525,7 @@ class FabrikFEModelForm extends FabModelForm
 		$sql .= $listModel->buildQueryJoin();
 		$emptyRowId = $this->rowId === '' ? true : false;
 		$random = $input->get('random');
-		$useKey = FabrikWorker::getMenuOrRequestVar('usekey', '', $this->isMambot, 'var');
+		$useKey = Worker::getMenuOrRequestVar('usekey', '', $this->isMambot, 'var');
 
 		if ($useKey != '')
 		{
@@ -3977,7 +3978,7 @@ class FabrikFEModelForm extends FabModelForm
 
 	public function getFormPluginHTML()
 	{
-		$pluginManager = FabrikWorker::getPluginManager();
+		$pluginManager = Worker::getPluginManager();
 		$pluginManager->getPlugInGroup('form');
 		$form = $this->getForm();
 
@@ -4061,7 +4062,7 @@ class FabrikFEModelForm extends FabModelForm
 			$text = preg_replace("/{details:\s*.*?}/is", '', $text);
 		}
 
-		$w = new FabrikWorker;
+		$w = new Worker;
 		$text = $w->parseMessageForPlaceHolder($text, $this->data, true);
 
 		// Jaanus: to remove content plugin code from intro and/or outro when plugins are not processed
@@ -4166,7 +4167,7 @@ class FabrikFEModelForm extends FabModelForm
 			$this->groupidmap[$oldId] = $groupModel->getGroup()->id;
 		}
 		// Need to do finalCopyCheck() on form elements
-		$pluginManager = FabrikWorker::getPluginManager();
+		$pluginManager = Worker::getPluginManager();
 
 		// @TODO something not right here when copying a cascading dropdown element in a join group
 		foreach ($newElements as $origId => $newId)
@@ -4809,7 +4810,7 @@ class FabrikFEModelForm extends FabModelForm
 
 		if (!array_key_exists($table, $this->linkedFabrikLists))
 		{
-			$db = FabrikWorker::getDbo(true);
+			$db = Worker::getDbo(true);
 
 			if (trim($table == ''))
 			{
@@ -4946,7 +4947,7 @@ class FabrikFEModelForm extends FabModelForm
 			}
 
 			unset($this->groups);
-			$pluginManager = FabrikWorker::getPluginManager();
+			$pluginManager = Worker::getPluginManager();
 			$pluginManager->clearFormPlugins($this);
 		}
 	}
@@ -5008,7 +5009,7 @@ class FabrikFEModelForm extends FabModelForm
 					$url = urldecode($input->post->get('fabrik_referrer', 'index.php', 'string'));
 				}
 
-				$itemId = (int) FabrikWorker::itemId();
+				$itemId = (int) Worker::itemId();
 
 				if ($url == '')
 				{
@@ -5242,7 +5243,7 @@ class FabrikFEModelForm extends FabModelForm
 		$msg = $showMsg == 1 ? $msg : '';
 
 		// $$$ hugh - testing allowing placeholders in success msg
-		$w = new FabrikWorker;
+		$w = new Worker;
 		$msg = $w->parseMessageForPlaceHolder($msg, $this->data);
 
 		return $msg;

@@ -12,6 +12,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 use \Joomla\Registry\Registry;
+use Fabrik\Helpers\Worker;
 
 jimport('joomla.application.component.modelitem');
 
@@ -112,7 +113,7 @@ class FabrikFEModelPackage extends FabModel
 		{
 			try
 			{
-				$db = FabrikWorker::getDbo();
+				$db = Worker::getDbo();
 				$query = $db->getQuery(true);
 
 				$query->select('label, params, published, component_name');

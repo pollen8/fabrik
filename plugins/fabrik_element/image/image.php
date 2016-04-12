@@ -22,7 +22,7 @@ use \FArrayHelper;
 use \JHtml;
 use \stdClass;
 use \JString;
-use \FabrikWorker;
+use Fabrik\Helpers\Worker;
 use \JFolder;
 use \JPath;
 use \FabrikString;
@@ -65,7 +65,7 @@ class Image extends Element
 		{
 			$params = $this->getParams();
 			$element = $this->getElement();
-			$w = new FabrikWorker;
+			$w = new Worker;
 			$this->default = $params->get('imagepath');
 
 			// $$$ hugh - this gets us the default image, with the root folder prepended.
@@ -79,7 +79,7 @@ class Image extends Element
 			if ($element->eval == "1")
 			{
 				$this->default = @eval((string) stripslashes($this->default));
-				FabrikWorker::logEval($this->default, 'Caught exception on eval in ' . $element->name . '::getDefaultValue() : %s');
+				Worker::logEval($this->default, 'Caught exception on eval in ' . $element->name . '::getDefaultValue() : %s');
 			}
 		}
 
@@ -124,8 +124,8 @@ class Image extends Element
 	 */
 	public function renderListData($data, stdClass &$thisRow, $opts = array())
 	{
-		$w = new FabrikWorker;
-		$data = FabrikWorker::JSONtoData($data, true);
+		$w = new Worker;
+		$data = Worker::JSONtoData($data, true);
 		$params = $this->getParams();
 		$pathset = false;
 
@@ -314,7 +314,7 @@ class Image extends Element
 
 		$float = $params->get('image_float');
 		$float = $float != '' ? "style='float:$float;'" : '';
-		$w     = new FabrikWorker;
+		$w     = new Worker;
 		$rootFolder = str_replace('/', DS, $rootFolder);
 
 		$layout = $this->getLayout('form');
@@ -413,7 +413,7 @@ class Image extends Element
 		$folder = array();
 		$files = array();
 		$images = array();
-		FabrikWorker::readImages($pathA, "/", $folders, $images, $this->ignoreFolders);
+		Worker::readImages($pathA, "/", $folders, $images, $this->ignoreFolders);
 
 		if (!array_key_exists('/', $images))
 		{

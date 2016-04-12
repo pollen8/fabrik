@@ -11,6 +11,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Fabrik\Helpers\Worker;
+
 require_once JPATH_ADMINISTRATOR . '/components/com_fabrik/helpers/element.php';
 
 jimport('joomla.html.html');
@@ -74,10 +76,10 @@ class JFormFieldElement extends JFormFieldList
 		$includeCalculations = (int) $this->getAttribute('include_calculations');
 		$published           = (int) $this->getAttribute('published');
 		$showInTable         = (int) $this->getAttribute('showintable');
-		$highlightPk         = FabrikWorker::toBoolean($this->getAttribute('highlightpk', false), false);
+		$highlightPk         = Worker::toBoolean($this->getAttribute('highlightpk', false), false);
 		$mode                = $this->getAttribute('mode');
 		$connection          = $this->getAttribute('connection');
-		$connectionInRepeat  = FabrikWorker::toBoolean($this->getAttribute('connection_in_repeat', true), true);
+		$connectionInRepeat  = Worker::toBoolean($this->getAttribute('connection_in_repeat', true), true);
 		$excludeJoined       = (int) $this->getAttribute('excludejoined');
 
 		if ($includeCalculations != 1)

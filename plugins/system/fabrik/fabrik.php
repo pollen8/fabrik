@@ -14,6 +14,7 @@ defined('_JEXEC') or die('Restricted access');
 
 use Joomla\Utilities\ArrayHelper;
 use Fabrik\Helpers\Html;
+use Fabrik\Helpers\Worker;
 
 jimport('joomla.plugin.plugin');
 jimport('joomla.filesystem.file');
@@ -234,7 +235,7 @@ class PlgSystemFabrik extends JPlugin
 	protected function setBigSelects()
 	{
 		$db = JFactory::getDbo();
-		FabrikWorker::bigSelects($db);
+		Worker::bigSelects($db);
 	}
 
 	/**
@@ -266,7 +267,7 @@ class PlgSystemFabrik extends JPlugin
 		define('COM_FABRIK_SEARCH_RUN', true);
 		JModelLegacy::addIncludePath(COM_FABRIK_FRONTEND . '/models', 'FabrikFEModel');
 
-		$db = FabrikWorker::getDbo(true);
+		$db = Worker::getDbo(true);
 
 		require_once JPATH_SITE . '/components/com_content/helpers/route.php';
 

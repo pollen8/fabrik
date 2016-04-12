@@ -12,6 +12,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 use \Joomla\Registry\Registry;
+use Fabrik\Helpers\Worker;
 
 jimport('joomla.application.component.view');
 
@@ -34,7 +35,7 @@ class FabrikViewList extends FabrikView
 	public function display($tpl = null)
 	{
 		$input  = $this->app->input;
-		$itemId = FabrikWorker::itemId();
+		$itemId = Worker::itemId();
 		$model  = $this->getModel();
 		$model->setOutPutFormat('feed');
 		$this->doc->_itemTags = array();
@@ -109,7 +110,7 @@ class FabrikViewList extends FabrikView
 			}
 		}
 
-		$w                      = new FabrikWorker;
+		$w                      = new Worker;
 		$rows                   = $model->getData();
 		$this->doc->title       = $w->parseMessageForPlaceHolder($table->label, $_REQUEST);
 		$this->doc->description = htmlspecialchars(trim(strip_tags($w->parseMessageForPlaceHolder($table->introduction, $_REQUEST))));

@@ -12,6 +12,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 use Fabrik\Helpers\Html;
+use Fabrik\Helpers\Worker;
 
 $app = JFactory::getApplication();
 $input = $app->input;
@@ -32,7 +33,7 @@ $input = $app->input;
 				<td><?php echo $row['condition'];?></td>
 				<td class='filtervalue'><?php echo $row['filter'];?></td>
 				<td>
-				<?php if (FabrikWorker::j3()) : ?>
+				<?php if (Worker::j3()) : ?>
 					<div class="button-group">
 						<a class="advanced-search-remove-row btn btn-danger" href="#">
 							<?php echo Html::image('minus.png', 'list', $this->tmpl);?>

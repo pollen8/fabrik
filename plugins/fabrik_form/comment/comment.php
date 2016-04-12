@@ -16,12 +16,12 @@ defined('_JEXEC') or die('Restricted access');
 use Fabrik\Helpers\Html;
 use \stdClass;
 use \FabTable;
-use \FabrikWorker;
 use \JText;
 use \FText;
 use \JEditor;
 use \RuntimeException;
 use \JHtml;
+use Fabrik\Helpers\Worker;
 
 /**
  * Comment J Table
@@ -171,7 +171,7 @@ class Comment extends \PlgFabrik_Form
 
 		Html::addPath(COM_FABRIK_BASE . 'plugins/fabrik_element/thumbs/images/', 'image', 'form', false);
 		$opts->formid = $this->formModel->getId();
-		$opts->j3 = FabrikWorker::j3();
+		$opts->j3 = Worker::j3();
 		$opts->listid = $this->formModel->getListModel()->getTable()->id;
 		$opts = json_encode($opts);
 
@@ -340,7 +340,7 @@ class Comment extends \PlgFabrik_Form
 	protected function getComments($formId, $rowId)
 	{
 		$formId = (int) $formId;
-		$db = FabrikWorker::getDbo();
+		$db = Worker::getDbo();
 		$formModel = $this->setFormModel();
 		$query = $db->getQuery(true);
 		$query->select('c.*');
@@ -463,7 +463,7 @@ class Comment extends \PlgFabrik_Form
 		$layoutData->canAdd = !$this->commentsLocked && $this->canAddComment();
 		$layoutData->commentsLocked = $this->commentsLocked;
 		$layoutData->form = $this->getAddCommentForm($comment->id);
-		$layoutData->j3 = FabrikWorker::j3();
+		$layoutData->j3 = Worker::j3();
 
 		if ($this->doThumbs())
 		{
@@ -503,7 +503,7 @@ class Comment extends \PlgFabrik_Form
 	{
 		if (!isset($this->thumb))
 		{
-			$this->thumb = FabrikWorker::getPluginManager()->getPlugIn('thumbs', 'element');
+			$this->thumb = Worker::getPluginManager()->getPlugIn('thumbs', 'element');
 			$this->thumb->setEditable(true);
 			$this->thumb->commentThumb = true;
 			$this->thumb->formid = $this->getModel()->getId();
@@ -521,7 +521,7 @@ class Comment extends \PlgFabrik_Form
 	 */
 	public function onDeleteComment()
 	{
-		$db = FabrikWorker::getDbo();
+		$db = Worker::getDbo();
 		$id = $this->app->input->getInt('comment_id');
 		$query = $db->getQuery(true);
 		$query->delete('#__{package}_comments')->where('id =' . $id);
@@ -537,7 +537,7 @@ class Comment extends \PlgFabrik_Form
 	 */
 	public function onUpdateComment()
 	{
-		$db = FabrikWorker::getDbo();
+		$db = Worker::getDbo();
 		$input = $this->app->input;
 		$id = $input->getInt('comment_id');
 		$comment = $db->q($input->get('comment', '', 'string'));
@@ -662,7 +662,7 @@ class Comment extends \PlgFabrik_Form
 	{
 		$formModel = $this->getModel();
 		$input = $this->app->input;
-		$db = FabrikWorker::getDbo();
+		$db = Worker::getDbo();
 		$event = $db->q('COMMENT_ADDED');
 		$userId = (int) $this->user->get('id');
 		$rowId = $input->get('rowid', '', 'string');
@@ -700,7 +700,7 @@ class Comment extends \PlgFabrik_Form
 		$params = $this->getParams();
 		$formModel = $this->getModel();
 		$input = $this->app->input;
-		$db = FabrikWorker::getDbo();
+		$db = Worker::getDbo();
 		$userId = (int) $this->user->get('id');
 		$rowId = $input->get('rowid', '', 'string');
 		$label = $db->quote($input->get('label', '', 'string'));
@@ -762,7 +762,7 @@ class Comment extends \PlgFabrik_Form
 	 */
 	protected function notificationPluginInstalled()
 	{
-		return FabrikWorker::getPluginManager()->pluginExists('cron', 'notification');
+		return Worker::getPluginManager()->pluginExists('cron', 'notification');
 	}
 
 	/**
@@ -787,7 +787,7 @@ class Comment extends \PlgFabrik_Form
 	{
 		$params = $this->getParams();
 
-		return $params->get('comment-thumb') && FabrikWorker::getPluginManager()->pluginExists('element', 'thumbs');
+		return $params->get('comment-thumb') && Worker::getPluginManager()->pluginExists('element', 'thumbs');
 	}
 
 	/**

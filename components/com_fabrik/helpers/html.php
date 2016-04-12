@@ -30,7 +30,7 @@ use \JString;
 use \JRoute;
 use \JHtml;
 use \JFactory;
-use \FabrikWorker;
+use Fabrik\Helpers\Worker;
 use \JFile;
 
 jimport('joomla.filesystem.file');
@@ -360,7 +360,7 @@ EOD;
 		$input                 = $app->input;
 		$layout                = self::getLayout('form.fabrik-email-form');
 		$displayData           = new stdClass;
-		$displayData->j3       = FabrikWorker::j3();
+		$displayData->j3       = Worker::j3();
 		$displayData->package  = $app->getUserState('com_fabrik.package', 'fabrik');
 		$displayData->referrer = $input->get('referrer', '', 'string');
 		$document              = JFactory::getDocument();
@@ -379,7 +379,7 @@ EOD;
 	{
 		$config   = JFactory::getConfig();
 		$document = JFactory::getDocument();
-		$j3       = FabrikWorker::j3();
+		$j3       = Worker::j3();
 		$document->setTitle($config->get('sitename'));
 
 		if (!$j3)
@@ -441,7 +441,7 @@ EOD;
 		$url = COM_FABRIK_LIVESITE . 'index.php?option=com_' . $package . '&view=details&tmpl=component&formid=' . $form->id . '&listid=' . $table->id
 			. '&rowid=' . $formModel->getRowId() . '&iframe=1&print=1';
 
-		$url .= '&Itemid=' . FabrikWorker::itemId();
+		$url .= '&Itemid=' . Worker::itemId();
 
 		/* $$$ hugh - @TODO - FIXME - if they were using rowid=-1, we don't need this, as rowid has already been transmogrified
 		 * to the correct (PK based) rowid.  but how to tell if original rowid was -1???
@@ -543,7 +543,7 @@ EOD;
 	 */
 	public static function tableList($sel = '')
 	{
-		$db    = FabrikWorker::getDbo(true);
+		$db    = Worker::getDbo(true);
 		$query = $db->getQuery(true);
 		$query->select('id, label')->from('#__{package}_lists')->where('published = 1')->order('label');
 		$db->setQuery($query);
@@ -1053,7 +1053,7 @@ EOD;
 		$requirePaths = self::requirePaths();
 		$framework    = array();
 		$deps         = array();
-		$j3           = FabrikWorker::j3();
+		$j3           = Worker::j3();
 
 		$requirejsBaseURI = self::getJSAssetBaseURI();
 
@@ -1451,7 +1451,7 @@ EOD;
 		// Need to load element for ajax popup forms in IE.
 		$needed = array();
 
-		if (!FabrikWorker::j3())
+		if (!Worker::j3())
 		{
 			$needed[] = self::isDebug() ? 'fab/icongen' : 'fab/icongen-min';
 			$needed[] = self::isDebug() ? 'fab/icons' : 'fab/icons-min';
@@ -1579,7 +1579,7 @@ EOD;
 			}
 			else
 			{
-				if (FabrikWorker::j3())
+				if (Worker::j3())
 				{
 					JHtml::stylesheet('components/com_fabrik/libs/slimbox2/css/slimbox2.css');
 					self::script('components/com_fabrik/libs/slimbox2/js/slimbox2.js');
@@ -1795,7 +1795,7 @@ EOD;
 		JText::script('COM_FABRIK_AUTOCOMPLETE_AJAX_ERROR');
 		$jsFile = 'autocomplete';
 
-		if (FabrikWorker::j3())
+		if (Worker::j3())
 		{
 			$jsFile = $plugin === 'cascadingdropdown' ? 'autocomplete-bootstrap-cdd' : 'autocomplete-bootstrap';
 		}
@@ -1878,7 +1878,7 @@ EOD;
 
 		if (!array_key_exists($key, self::$atWho))
 		{
-			$replacements = FabrikWorker::globalReplacements();
+			$replacements = Worker::globalReplacements();
 			$replacements = array_keys($replacements);
 
 			$replacements = array_map(function ($v)
@@ -2079,7 +2079,7 @@ EOD;
 
 		$forceImage = FArrayHelper::getValue($opts, 'forceImage', false);
 
-		if (FabrikWorker::j3() && $forceImage !== true)
+		if (Worker::j3() && $forceImage !== true)
 		{
 			unset($properties['alt']);
 			$class = FArrayHelper::getValue($properties, 'icon-class', '');
@@ -2216,7 +2216,7 @@ EOD;
 		$elementBeforeLabel = true, $optionsPerRow = 4, $classes = array(), $buttonGroup = false, $dataAttributes = array(),
 		$inputDataAttributes = array())
 	{
-		if (FabrikWorker::j3())
+		if (Worker::j3())
 		{
 			$elementBeforeLabel = true;
 		}
@@ -2243,7 +2243,7 @@ EOD;
 		}
 		else
 		{
-			if (FabrikWorker::j3())
+			if (Worker::j3())
 			{
 				$grid = self::bootstrapGrid($items, $optionsPerRow, 'fabrikgrid_' . $type);
 			}
@@ -2603,7 +2603,7 @@ EOD;
 			return '';
 		}
 
-		if (FabrikWorker::isEmail($href))
+		if (Worker::isEmail($href))
 		{
 			jimport('joomla.mail.helper');
 

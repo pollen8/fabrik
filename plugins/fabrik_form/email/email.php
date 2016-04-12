@@ -14,7 +14,7 @@ defined('_JEXEC') or die('Restricted access');
 use Fabrik\Helpers\Html;
 use \stdClass;
 use \FText;
-use \FabrikWorker;
+use Fabrik\Helpers\Worker;
 use \JString;
 use \JModelLegacy;
 use \FabrikString;
@@ -85,7 +85,7 @@ class Email extends \PlgFabrik_Form
 		$params = $this->getParams();
 		$input = $this->app->input;
 		jimport('joomla.mail.helper');
-		$w = new FabrikWorker;
+		$w = new Worker;
 
 		/** @var \FabrikFEModelForm $formModel */
 		$formModel = $this->getModel();
@@ -202,7 +202,7 @@ class Email extends \PlgFabrik_Form
 			foreach ($emailKey as &$key)
 			{
 				// $$$ rob added strstr test as no point trying to add raw suffix if not placeholder in $emailKey
-				if (!FabrikWorker::isEmail($key) && trim($key) !== '' && strstr($key, '}'))
+				if (!Worker::isEmail($key) && trim($key) !== '' && strstr($key, '}'))
 				{
 					$key = explode('}', $key);
 
@@ -237,7 +237,7 @@ class Email extends \PlgFabrik_Form
 		{
 			$emailToEval = $w->parseMessageForPlaceholder($emailToEval, $this->data, false);
 			$emailToEval = @eval($emailToEval);
-			FabrikWorker::logEval($emailToEval, 'Caught exception on eval in email emailto : %s');
+			Worker::logEval($emailToEval, 'Caught exception on eval in email emailto : %s');
 			$emailToEval = explode(',', $emailToEval);
 			$emailTo = array_merge($emailTo, $emailToEval);
 		}
@@ -309,7 +309,7 @@ class Email extends \PlgFabrik_Form
 		{
 			$email = strip_tags($email);
 
-			if (FabrikWorker::isEmail($email))
+			if (Worker::isEmail($email))
 			{
 				$thisAttachments = $this->attachments;
 				$this->data['emailto'] = $email;
@@ -333,7 +333,7 @@ class Email extends \PlgFabrik_Form
 
 				$this->pdfAttachment($thisAttachments);
 
-				$res = FabrikWorker::sendMail(
+				$res = Worker::sendMail(
 					$emailFrom, $emailFromName, $email, $thisSubject, $thisMessage,
 					$htmlEmail, $cc, $bcc, $thisAttachments, $returnPath, $returnPathName
 				);
@@ -580,7 +580,7 @@ class Email extends \PlgFabrik_Form
 							{
 								// Can't implode multi dimensional arrays
 								$val = json_encode($val);
-								$val = FabrikWorker::JSONtoData($val, true);
+								$val = Worker::JSONtoData($val, true);
 							}
 						}
 						else
@@ -608,13 +608,13 @@ class Email extends \PlgFabrik_Form
 		}
 		// $$$ hugh - added an optional eval for adding attachments.
 		// Eval'd code should just return an array of file paths which we merge with $this->attachments[]
-		$w = new FabrikWorker;
+		$w = new Worker;
 		$emailAttachEval = $w->parseMessageForPlaceholder($params->get('email_attach_eval', ''), $this->data, false);
 
 		if (!empty($emailAttachEval))
 		{
 			$email_attach_array = @eval($emailAttachEval);
-			FabrikWorker::logEval($email_attach_array, 'Caught exception on eval in email email_attach_eval : %s');
+			Worker::logEval($email_attach_array, 'Caught exception on eval in email email_attach_eval : %s');
 
 			if (!empty($email_attach_array))
 			{

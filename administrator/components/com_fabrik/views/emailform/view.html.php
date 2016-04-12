@@ -12,6 +12,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 use Fabrik\Helpers\Html;
+use Fabrik\Helpers\Worker;
 
 jimport('joomla.application.component.view');
 
@@ -110,7 +111,7 @@ class FabrikAdminViewemailform extends JViewLegacy
 		$subject = $input->getString('subject', $subject_default);
 		jimport('joomla.mail.helper');
 
-		if (!$email || !$youremail || (FabrikWorker::isEmail($email) == false) || (FabrikWorker::isEmail($youremail) == false))
+		if (!$email || !$youremail || (Worker::isEmail($email) == false) || (Worker::isEmail($youremail) == false))
 		{
 			$app->enqueueMessage(FText::_('PHPMAILER_INVALID_ADDRESS'));
 		}

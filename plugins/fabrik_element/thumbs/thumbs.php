@@ -16,7 +16,7 @@ defined('_JEXEC') or die('Restricted access');
 use \FArrayHelper;
 use \JHtml;
 use \stdClass;
-use \FabrikWorker;
+use Fabrik\Helpers\Worker;
 use \FabrikString;
 use \JComponentHelper;
 use \FText;
@@ -81,10 +81,10 @@ class Thumbs extends Element
 	public function renderListData($data, stdClass &$thisRow, $opts = array())
 	{
 		$input = $this->app->input;
-		$j3 = FabrikWorker::j3();
+		$j3 = Worker::j3();
 		$params = $this->getParams();
 		$imagePath = COM_FABRIK_LIVESITE . 'plugins/fabrik_element/thumbs/images/';
-		$data = FabrikWorker::JSONtoData($data, true);
+		$data = Worker::JSONtoData($data, true);
 		$listId = $this->getlistModel()->getTable()->id;
 		$formModel = $this->getFormModel();
 		$formId = $formModel->getId();
@@ -115,7 +115,7 @@ class Thumbs extends Element
 			}
 
 			$count = $this->_renderListData($data[$i], $thisRow);
-			$count = FabrikWorker::JSONtoData($count, true);
+			$count = Worker::JSONtoData($count, true);
 			$countUp = $count[0];
 			$countDown = $count[1];
 			$str = array();
@@ -188,7 +188,7 @@ class Thumbs extends Element
 	 */
 	protected function getThumbsCount($data, $listId, $formId, $rowId)
 	{
-		$db = FabrikWorker::getDbo();
+		$db = Worker::getDbo();
 		$elementId = $this->getElement()->id;
 
 		$sql = isset($this->special) ? " AND special = " . $db->q($this->special) : '';
@@ -218,7 +218,7 @@ class Thumbs extends Element
 	{
 		$listId = isset($this->listid) ? $this->listid : $this->getListModel()->getId();
 		$formId = isset($this->formid) ? $this->formid : $this->getFormModel()->getId();
-		$db = FabrikWorker::getDbo();
+		$db = Worker::getDbo();
 		$return = array();
 
 		foreach (array('up', 'down') as $dir)
@@ -255,7 +255,7 @@ class Thumbs extends Element
 		$input = $this->app->input;
 		$id = $this->getHTMLId($repeatCounter);
 		$params = $this->getParams();
-		$j3 = FabrikWorker::j3();
+		$j3 = Worker::j3();
 
 		if ($input->get('view') == 'form' && ((bool) $params->get('rate_in_from', false) === false || $this->getFormModel()->isNewRecord()))
 		{
@@ -295,7 +295,7 @@ class Thumbs extends Element
 
 		$id2 = FabrikString::rtrimword($id, '_ro');
 		$count = $this->_renderListData(FArrayHelper::getValue($data, $id2), $thisRow);
-		$count = FabrikWorker::JSONtoData($count, true);
+		$count = Worker::JSONtoData($count, true);
 
 
 		$layout = $this->getLayout('form');
@@ -353,7 +353,7 @@ class Thumbs extends Element
 	 */
 	protected function getMyThumb($listId, $formId, $rowId)
 	{
-		$db = FabrikWorker::getDbo();
+		$db = Worker::getDbo();
 		$elementId = $this->getElement()->id;
 		$userId = $this->user->get('id');
 		$query = $db->getQuery(true);
@@ -440,7 +440,7 @@ class Thumbs extends Element
 	private function deleteThumb($listId, $formId, $rowId, $thumb)
 	{
 		$userId = $this->getUserId($listId, $rowId);
-		$db = FabrikWorker::getDbo();
+		$db = Worker::getDbo();
 		$query = $db->getQuery(true);
 		$query->delete('#__{package}_thumbs')->where('user_id = ' . $db->q($userId))
 		->where('listid = ' . $listId . ' AND row_id = ' . $rowId . ' AND thumb = ' . $db->q($thumb));
@@ -492,7 +492,7 @@ class Thumbs extends Element
 			return;
 		}
 
-		$db = FabrikWorker::getDbo();
+		$db = Worker::getDbo();
 		$date = $this->date->toSql();
 		$userId = $this->getUserId($listId, $rowId);
 		$elementId = $this->getElement()->id;
@@ -542,7 +542,7 @@ class Thumbs extends Element
 	 */
 	private function updateDB($listId, $formId, $rowId, $elementId)
 	{
-		$db = FabrikWorker::getDbo();
+		$db = Worker::getDbo();
 		$name = $this->getElement()->name;
 
 		// Name can be blank for comments
@@ -746,7 +746,7 @@ class Thumbs extends Element
 	 */
 	public function install()
 	{
-		$db = FabrikWorker::getDbo();
+		$db = Worker::getDbo();
 		$query = "CREATE TABLE IF NOT EXISTS  `#__{package}_thumbs` (
 	`user_id` VARCHAR( 255 ) NOT NULL ,
 	`listid` INT( 6 ) NOT NULL ,

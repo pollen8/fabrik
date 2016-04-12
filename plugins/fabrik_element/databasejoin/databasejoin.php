@@ -15,7 +15,7 @@ defined('_JEXEC') or die('Restricted access');
 
 use \Joomla\Registry\Registry;
 use \Joomla\Utilities\ArrayHelper;
-use \FabrikWorker;
+use Fabrik\Helpers\Worker;
 use \FArrayHelper;
 use \FabrikString;
 use \stdClass;
@@ -138,7 +138,7 @@ class Databasejoin extends ElementList
 
 		$table      = $this->actualTableName();
 		$params     = $this->getParams();
-		$db         = FabrikWorker::getDbo();
+		$db         = Worker::getDbo();
 		$listModel  = $this->getlistModel();
 		$element    = $this->getElement();
 		$connection = $listModel->getConnection();
@@ -303,7 +303,7 @@ class Databasejoin extends ElementList
 			if ($this->app->input->get('override_join_val_column_concat') != 1)
 			{
 				$val                                 = $this->parseThisTable($params->get($this->concatLabelParam), $join);
-				$w                                   = new FabrikWorker;
+				$w                                   = new Worker;
 				$val                                 = $w->parseMessageForPlaceHolder($val, array(), false, false, null, false);
 				$this->joinLabelCols[(int) $useStep] = 'CONCAT_WS(\'\', ' . $val . ')';
 
@@ -446,7 +446,7 @@ class Databasejoin extends ElementList
 			}
 
 			$config        = array();
-			$config['dbo'] = FabrikWorker::getDbo(true);
+			$config['dbo'] = Worker::getDbo(true);
 			$this->join    = JTable::getInstance('Join', 'FabrikTable', $config);
 
 			if ($this->join->load(array('element_id' => $element->get('id'))))
@@ -495,7 +495,7 @@ class Databasejoin extends ElementList
 	 */
 	public function getJoins()
 	{
-		$db = FabrikWorker::getDbo(true);
+		$db = Worker::getDbo(true);
 
 		if (!isset($this->_aJoins))
 		{
@@ -519,7 +519,7 @@ class Databasejoin extends ElementList
 	 */
 	public function getJoinsToThisKey(&$table)
 	{
-		$db    = FabrikWorker::getDbo(true);
+		$db    = Worker::getDbo(true);
 		$query = $db->getQuery(true);
 		$query->select('*, t.label AS tablelabel')->from('#__{package}_elements AS el')
 			->join('LEFT', '#__{package}_formgroup AS fg ON fg.group_id = el.group_id')
@@ -849,7 +849,7 @@ class Databasejoin extends ElementList
 	{
 		$sig = isset($this->autocomplete_where) ? $this->autocomplete_where . '.' . $incWhere : $incWhere;
 		$sig .= '.' . serialize($opts);
-		$db    = FabrikWorker::getDbo();
+		$db    = Worker::getDbo();
 		$query = $db->getQuery(true);
 
 		if (isset($this->sql[$sig]))
@@ -921,8 +921,8 @@ class Databasejoin extends ElementList
 
 		if ($desc !== '')
 		{
-			$db   = FabrikWorker::getDbo();
-			$w    = new FabrikWorker;
+			$db   = Worker::getDbo();
+			$w    = new Worker;
 			$data = is_array($data) ? $data : array();
 			$desc = $w->parseMessageForPlaceHolder($desc, $data, false);
 			$desc = FabrikString::isConcat($desc) ? $desc : $db->qn($desc);
@@ -1100,7 +1100,7 @@ class Databasejoin extends ElementList
 		}
 
 		$where = $this->parseThisTable($where, $join, $thisTableAlias);
-		$w     = new FabrikWorker;
+		$w     = new Worker;
 		$data  = is_array($data) ? $data : array();
 
 		if (!isset($data['lang']))
@@ -1161,7 +1161,7 @@ class Databasejoin extends ElementList
 		else
 		{
 			$val = $this->parseThisTable($params->get($this->concatLabelParam), $join);
-			$w   = new FabrikWorker;
+			$w   = new Worker;
 			$val = $w->parseMessageForPlaceHolder($val, array(), false);
 
 			return 'CONCAT_WS(\'\', ' . $val . ')';
@@ -1275,7 +1275,7 @@ class Databasejoin extends ElementList
 		$defaultLabels = array_values($defaultLabels);
 
 		$tmp     = $this->_getOptions($data, $repeatCounter);
-		$w       = new FabrikWorker;
+		$w       = new Worker;
 		$default = $w->parseMessageForPlaceHolder($default);
 		$id      = $this->getHTMLId($repeatCounter);
 		$html    = array();
@@ -1521,7 +1521,7 @@ class Databasejoin extends ElementList
 		$db->setQuery($query);
 		$listId = $db->loadResult();
 
-		$itemId = FabrikWorker::itemId($listId);
+		$itemId = Worker::itemId($listId);
 		$task   = $this->app->isAdmin() ? 'task=details.view' : 'view=details';
 		$url    = 'index.php?option=com_' . $this->package . '&' . $task . '&formid=' . $popupFormId . '&listid=' . $listId;
 
@@ -1571,7 +1571,7 @@ class Databasejoin extends ElementList
 		$params  = $this->getParams();
 		$default = (array) $defaultValue;
 
-		if (FabrikWorker::j3())
+		if (Worker::j3())
 		{
 			$layout                  = $this->getLayout('form-dropdownlist');
 			$displayData             = new stdClass;
@@ -1633,7 +1633,7 @@ class Databasejoin extends ElementList
 
 		$html[] = '<div class="fabrikSubElementContainer" id="' . $id . '">';
 
-		if (FabrikWorker::j3())
+		if (Worker::j3())
 		{
 			$html[] = $layout->render($displayData);
 		}
@@ -1789,7 +1789,7 @@ class Databasejoin extends ElementList
 		$rowOptsLayout = 'fabrik-element-' . $this->getPluginName() . '-form-rowopts';
 		Html::jLayoutJs($rowOptsLayout, $rowOptsLayout, $displayData, array($this->layoutBasePath()));
 
-		if (FabrikWorker::j3())
+		if (Worker::j3())
 		{
 			$html[] = $layout->render($displayData);
 		}
@@ -1798,7 +1798,7 @@ class Databasejoin extends ElementList
 			$html[] = Html::aList('checkbox', $tmp, $name, $attributes, $default, 'value', 'text', $displayData->optsPerRow, $displayData->editable);
 		}
 
-		if (empty($tmp) && !FabrikWorker::j3())
+		if (empty($tmp) && !Worker::j3())
 		{
 			$tmpIds   = array();
 			$o        = new stdClass;
@@ -1868,7 +1868,7 @@ class Databasejoin extends ElementList
 	{
 		if (!isset($this->linkedForms))
 		{
-			$db     = FabrikWorker::getDbo(true);
+			$db     = Worker::getDbo(true);
 			$params = $this->getParams();
 
 			// Forms for potential add record pop up form
@@ -2096,7 +2096,7 @@ class Databasejoin extends ElementList
 		$raw         = $this->getFullName(true, false);
 		$displayType = $this->getDisplayType();
 		$raw .= ($displayType == 'checkbox' || $displayType == 'multilist') ? '_id' : '_raw';
-		$values = isset($thisRow->$raw) ? FabrikWorker::JSONtoData($thisRow->$raw, true) : array();
+		$values = isset($thisRow->$raw) ? Worker::JSONtoData($thisRow->$raw, true) : array();
 
 		foreach ($data as $key => $value)
 		{
@@ -2463,7 +2463,7 @@ class Databasejoin extends ElementList
 	protected function getJoinValueColumn()
 	{
 		$join = $this->getJoin();
-		$db   = FabrikWorker::getDbo();
+		$db   = Worker::getDbo();
 
 		if ((string) $join->table_join_alias === '')
 		{
@@ -3084,7 +3084,7 @@ class Databasejoin extends ElementList
 					return false;
 				}
 
-				$db    = FabrikWorker::getDbo(true);
+				$db    = Worker::getDbo(true);
 				$query = $db->getQuery(true);
 				$query->select('db_table_name')->from('#__{package}_lists')->where('id = ' . (int) $id);
 				$db->setQuery($query);
@@ -3119,7 +3119,7 @@ class Databasejoin extends ElementList
 
 		foreach ($children as $id)
 		{
-			$elementModel     = FabrikWorker::getPluginManager()->getElementPlugin($id);
+			$elementModel     = Worker::getPluginManager()->getElementPlugin($id);
 			$data['group_id'] = $elementModel->getElement()->get('group_id');
 			$data['id']       = $id;
 			$this->updateFabrikJoin($data, $id, $tableJoin, $keyCol, $label);
@@ -3181,7 +3181,7 @@ class Databasejoin extends ElementList
 		$pk      = $this->getListModel()->getPrimaryKeyAndExtra($join->table_join);
 		$join_pk = $join->table_join;
 		$join_pk .= '.' . $pk[0]['colname'];
-		$db      = FabrikWorker::getDbo(true);
+		$db      = Worker::getDbo(true);
 		$join_pk = $db->qn($join_pk);
 
 		$o            = new stdClass;
@@ -3435,7 +3435,7 @@ class Databasejoin extends ElementList
 	 */
 	private function _autocompleteWhere($how, $field, $search)
 	{
-		$db     = FabrikWorker::getDbo();
+		$db     = Worker::getDbo();
 		$search = strtolower($search);
 		$field  = 'LOWER(' . $field . ')';
 

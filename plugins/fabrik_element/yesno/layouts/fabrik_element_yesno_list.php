@@ -13,11 +13,12 @@
 defined('_JEXEC') or die('Restricted access');
 
 use Fabrik\Helpers\Html;
+use Fabrik\Helpers\Worker;
 
 $d = $displayData;
 $data = $d->value;
 $tmpl = $d->tmpl;
-$j3 = FabrikWorker::j3();
+$j3 = Worker::j3();
 
 if ($data == '1') :
 	$icon = $j3 ? 'checkmark.png' : '1.png';

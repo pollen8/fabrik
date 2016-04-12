@@ -12,6 +12,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Fabrik\Helpers\Worker;
+
 require_once JPATH_ADMINISTRATOR . '/components/com_fabrik/helpers/element.php';
 
 JFormHelper::loadFieldClass('list');
@@ -41,7 +43,7 @@ class JFormFieldSQL2 extends JFormFieldList
 
 	protected function getOptions()
 	{
-		$db = FabrikWorker::getDbo(true);
+		$db = Worker::getDbo(true);
 		$check = $this->element['checkexists'] ? (bool) $this->element['checkexists'] : false;
 
 		if ($check)

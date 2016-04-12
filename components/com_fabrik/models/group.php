@@ -13,6 +13,7 @@ defined('_JEXEC') or die('Restricted access');
 
 use \Joomla\Registry\Registry;
 use Joomla\Utilities\ArrayHelper;
+use Fabrik\Helpers\Worker;
 
 jimport('joomla.application.component.model');
 
@@ -204,7 +205,7 @@ class FabrikFEModelGroup extends FabModel
 		}
 
 		$formModel = $this->getFormModel();
-		$pluginCanEdit = FabrikWorker::getPluginManager()->runPlugins('onCanEditGroup', $formModel, 'form', $this);
+		$pluginCanEdit = Worker::getPluginManager()->runPlugins('onCanEditGroup', $formModel, 'form', $this);
 
 		if (empty($pluginCanEdit))
 		{
@@ -326,7 +327,7 @@ class FabrikFEModelGroup extends FabModel
 	{
 		if (!isset($this->formsIamIn))
 		{
-			$db = FabrikWorker::getDbo(true);
+			$db = Worker::getDbo(true);
 			$query = $db->getQuery(true);
 			$query->select('form_id')->from('#__{package}_formgroup')->where('group_id = ' . (int) $this->getId());
 			$db->setQuery($query);
@@ -352,7 +353,7 @@ class FabrikFEModelGroup extends FabModel
 		{
 			$this->getGroup();
 			$this->elements = array();
-			$pluginManager = FabrikWorker::getPluginManager();
+			$pluginManager = Worker::getPluginManager();
 			$formModel = $this->getFormModel();
 			$allGroups = $pluginManager->getFormPlugins($formModel);
 
@@ -507,7 +508,7 @@ class FabrikFEModelGroup extends FabModel
 
 		$widths = explode(',', $widths);
 
-		if (FabrikWorker::j3())
+		if (Worker::j3())
 		{
 			foreach ($widths as &$w)
 			{
@@ -857,7 +858,7 @@ class FabrikFEModelGroup extends FabModel
 		{
 			$params = $this->getParams();
 			$row = $this->getFormModel()->getData();
-			$ok = FabrikWorker::canUserDo($params, $row, 'repeat_delete_access_user');
+			$ok = Worker::canUserDo($params, $row, 'repeat_delete_access_user');
 
 			if ($ok === -1)
 			{
@@ -962,7 +963,7 @@ class FabrikFEModelGroup extends FabModel
 	 */
 	public function getGroupProperties(&$formModel)
 	{
-		$w = new FabrikWorker;
+		$w = new Worker;
 		$input = $this->app->input;
 		$group = new stdClass;
 		$groupTable = $this->getGroup();

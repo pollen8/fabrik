@@ -11,6 +11,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Fabrik\Helpers\Worker;
+
 jimport('joomla.filesystem.file');
 
 // Load front end language file as well
@@ -55,7 +57,7 @@ $id = intval($params->get('id', 1));
 $moduleclass_sfx = $params->get('moduleclass_sfx', '');
 
 $viewName = 'visualization';
-$db = FabrikWorker::getDbo();
+$db = Worker::getDbo();
 $query = $db->getQuery(true);
 $query->select('plugin')->from('#__{package}_visualizations')->where('id = ' . (int) $id);
 $db->setQuery($query);

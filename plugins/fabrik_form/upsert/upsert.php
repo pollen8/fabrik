@@ -11,6 +11,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Fabrik\Helpers\Worker;
+
 // Require the abstract plugin class
 require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
 
@@ -38,7 +40,7 @@ class PlgFabrik_FormUpsert extends PlgFabrik_Form
 	public function onAfterProcess()
 	{
 		$params = $this->getParams();
-		$w = new FabrikWorker;
+		$w = new Worker;
 		$formModel = $this->getModel();
 		// @FIXME to use selected connection
 		$upsertDb = $this->getDb();
@@ -133,7 +135,7 @@ class PlgFabrik_FormUpsert extends PlgFabrik_Form
 	protected function upsertData($upsertRowExists = false)
 	{
 		$params = $this->getParams();
-		$w = new FabrikWorker;
+		$w = new Worker;
 		$upsertDb = $this->getDb();
 		$upsert = json_decode($params->get('upsert_fields'));
 		$fields = array();

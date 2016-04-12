@@ -10,6 +10,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 use Joomla\Utilities\ArrayHelper;
+use Fabrik\Helpers\Worker;
 
 // Require the abstract plugin class
 require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
@@ -137,7 +138,7 @@ class PlgFabrik_FormLogs extends PlgFabrik_Form
 		$params        = $this->getParams();
 		$formModel     = $this->getModel();
 		$input         = $this->app->input;
-		$db            = FabrikWorker::getDBO();
+		$db            = Worker::getDBO();
 		$rowId         = $input->get('rowid', '', 'string');
 		$loading       = strstr($messageType, 'form.load');
 		$http_referrer = $input->server->get('HTTP_REFERER', 'no HTTP_REFERER', 'string');
@@ -154,7 +155,7 @@ class PlgFabrik_FormLogs extends PlgFabrik_Form
 			$randomFileName = '';
 		}
 
-		$w        = new FabrikWorker;
+		$w        = new Worker;
 		$logsPath = $w->parseMessageForPlaceHolder($params->get('logs_path'));
 
 		if (strpos($logsPath, '/') !== 0)
@@ -176,7 +177,7 @@ class PlgFabrik_FormLogs extends PlgFabrik_Form
 		$sep = $params->get('logs_separator');
 
 		// Making complete path + filename + extension
-		$w            = new FabrikWorker;
+		$w            = new Worker;
 		$logsFile     = $logsPath . '/' . $w->parseMessageForPlaceHolder($params->get('logs_file')) . $randomFileName . '.' . $ext;
 		$logsMode     = $params->get('logs_append_or_overwrite');
 		$date_element = $params->get('logs_date_field');
@@ -303,7 +304,7 @@ class PlgFabrik_FormLogs extends PlgFabrik_Form
 			$ctypes        = preg_replace('/[a-zA-Z0-9_-]*[={2}]/', '', $split_clabels);
 			$labtyp        = array_combine($clabels, $ctypes);
 
-			$w          = new FabrikWorker;
+			$w          = new Worker;
 			$custom_msg = $w->parseMessageForPlaceHolder($custom_msg);
 			$regex      = '/((?!("[^"]*))([ |\w|+|.])+(?=[^"]*"\b)|(?!\b"[^"]*)( +)+(?=([^"]*)$)|(?=\b"[^"]*)( +)+(?=[^"]*"\b))/';
 			$excl_cdata = preg_replace($regex, '', $custom_msg);
@@ -726,7 +727,7 @@ class PlgFabrik_FormLogs extends PlgFabrik_Form
 					continue;
 				}
 
-				if (FabrikWorker::isEmail($email))
+				if (Worker::isEmail($email))
 				{
 					$mail = JFactory::getMailer();
 					$res  = $mail->sendMail($emailFrom, $emailFrom, $email, $subject, $email_msg, true);

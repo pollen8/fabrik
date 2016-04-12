@@ -1,5 +1,7 @@
 <?php
 use Zend\Form\Annotation\Object;
+use Fabrik\Helpers\Worker;
+
 /**
  * Joomla! Fabrik cron job plugin
  *
@@ -169,7 +171,7 @@ class PlgSystemFabrikcron extends JPlugin
 		}
 
 		// Get all active tasks
-		$this->db = FabrikWorker::getDbo(true);
+		$this->db = Worker::getDbo(true);
 		$this->query = $this->db->getQuery(true);
 
 		$now = $input->get('fabrikcron_run', false);

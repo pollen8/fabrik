@@ -12,6 +12,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 use Fabrik\Helpers\Html;
+use Fabrik\Helpers\Worker;
 
 jimport('joomla.application.component.model');
 
@@ -351,7 +352,7 @@ class FabrikFEModelAdvancedSearch extends FabModel
 		$model = $this->model;
 		$input = $this->app->input;
 		$elementId = $input->getId('elid');
-		$pluginManager = FabrikWorker::getPluginManager();
+		$pluginManager = Worker::getPluginManager();
 		$className = $input->get('plugin');
 		$plugin = $pluginManager->getPlugIn($className, 'element');
 		$plugin->setId($elementId);

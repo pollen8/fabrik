@@ -12,6 +12,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 use Fabrik\Helpers\Html;
+use Fabrik\Helpers\Worker;
 
 jimport('joomla.application.component.view');
 
@@ -36,7 +37,7 @@ class FabrikViewApprovals extends JViewLegacy
 	public function display($tpl = 'default')
 	{
 		$model = $this->getModel();
-		$j3 = FabrikWorker::j3();
+		$j3 = Worker::j3();
 		$app = JFactory::getApplication();
 		$input = $app->input;
 		$usersConfig = JComponentHelper::getParams('com_fabrik');

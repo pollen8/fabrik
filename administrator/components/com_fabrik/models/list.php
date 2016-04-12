@@ -16,6 +16,8 @@ require_once 'fabmodeladmin.php';
 
 use \Joomla\Utilities\ArrayHelper;
 use \Joomla\Registry\Registry;
+use Fabrik\Helpers\Worker;
+
 
 /**
  * Fabrik Admin List Model
@@ -86,7 +88,7 @@ class FabrikAdminModelList extends FabModelAdmin
 
 		if (!array_key_exists($sig, $this->tables))
 		{
-			$config['dbo']      = FabrikWorker::getDbo(true);
+			$config['dbo']      = Worker::getDbo(true);
 			$this->tables[$sig] = FabTable::getInstance($type, $prefix, $config);
 		}
 
@@ -393,7 +395,7 @@ class FabrikAdminModelList extends FabModelAdmin
 		$opts->joinOpts        = $joinTypeOpts;
 		$opts->tableOpts       = $connModel->getThisTables(true);
 		$opts->activetableOpts = $activeTableOpts;
-		$opts->j3              = FabrikWorker::j3();
+		$opts->j3              = Worker::j3();
 		$opts                  = json_encode($opts);
 
 		$filterOpts               = new stdClass;
@@ -401,7 +403,7 @@ class FabrikAdminModelList extends FabModelAdmin
 		$filterOpts->filterCondDd = $this->getFilterConditionDd(false, 'jform[params][filter-conditions][]', 2);
 		$filterOpts->filterAccess = JHtml::_('access.level', 'jform[params][filter-access][]', $item->access, 'class="input-small"');
 		$filterOpts->filterAccess = str_replace(array("\n", "\r"), '', $filterOpts->filterAccess);
-		$filterOpts->j3           = FabrikWorker::j3();
+		$filterOpts->j3           = Worker::j3();
 		$filterOpts               = json_encode($filterOpts);
 
 		$formModel    = $this->getFormModel();
@@ -491,7 +493,7 @@ class FabrikAdminModelList extends FabModelAdmin
 			return array();
 		}
 
-		$db    = FabrikWorker::getDbo(true);
+		$db    = Worker::getDbo(true);
 		$query = $db->getQuery(true);
 		$query->select('*, j.id AS id, j.params as jparams')->from('#__{package}_joins AS j')
 			->join('INNER', '#__{package}_groups AS g ON g.id = j.group_id')->where('j.list_id = ' . (int) $item->id);
@@ -537,7 +539,7 @@ class FabrikAdminModelList extends FabModelAdmin
 		if (is_null($this->formModel))
 		{
 			$config          = array();
-			$config['dbo']   = FabrikWorker::getDbo(true);
+			$config['dbo']   = Worker::getDbo(true);
 			$this->formModel = JModelLegacy::getInstance('Form', 'FabrikFEModel', $config);
 			$this->formModel->setDbo($config['dbo']);
 
@@ -711,7 +713,7 @@ class FabrikAdminModelList extends FabModelAdmin
 			// Create fabrik form
 			$this->createLinkedForm();
 			$row->set('form_id', $this->getState('list.form_id'));
-			$groupData          = FabrikWorker::formDefaults('group');
+			$groupData          = Worker::formDefaults('group');
 			$groupData['name']  = $row->label;
 			$groupData['label'] = $row->label;
 
@@ -811,7 +813,7 @@ class FabrikAdminModelList extends FabModelAdmin
 
 		$feModel = $this->getFEModel();
 
-		$db = FabrikWorker::getDbo();
+		$db = Worker::getDbo();
 		$table = $this->getTable();
 		$cn = $feModel->getConnection();
 		$c = $cn->getConnection();
@@ -1006,7 +1008,7 @@ class FabrikAdminModelList extends FabModelAdmin
 	 */
 	private function updateJoins($data)
 	{
-		$db    = FabrikWorker::getDbo(true);
+		$db    = Worker::getDbo(true);
 		$query = $db->getQuery(true);
 
 		// If we are creating a new list then don't update any joins - can result in groups and elements being removed.
@@ -1151,7 +1153,7 @@ class FabrikAdminModelList extends FabModelAdmin
 	 */
 	protected function makeNewJoin($tableKey, $joinTableKey, $joinType, $joinTable, $joinTableFrom, $isRepeat)
 	{
-		$groupData          = FabrikWorker::formDefaults('group');
+		$groupData          = Worker::formDefaults('group');
 		$groupData['name']  = $this->getTable()->label . '- [' . $joinTable . ']';
 		$groupData['label'] = $joinTable;
 		$groupId            = $this->createLinkedGroup($groupData, true, $isRepeat);
@@ -1184,7 +1186,7 @@ class FabrikAdminModelList extends FabModelAdmin
 
 			if (!empty($pk_col))
 			{
-				$db     = FabrikWorker::getDbo(true);
+				$db     = Worker::getDbo(true);
 				$pk_col = $join->table_join . '.' . $pk_col;
 				$joinParams->set('pk', $db->qn($pk_col));
 			}
@@ -1210,7 +1212,7 @@ class FabrikAdminModelList extends FabModelAdmin
 	 */
 	private function createLinkedElements($groupId, $tableName = '')
 	{
-		$db    = FabrikWorker::getDbo(true);
+		$db    = Worker::getDbo(true);
 		$input = $this->app->input;
 
 		if ($tableName === '')
@@ -1219,7 +1221,7 @@ class FabrikAdminModelList extends FabModelAdmin
 			$tableName = FArrayHelper::getValue($jForm, 'db_table_name');
 		}
 
-		$pluginManager = FabrikWorker::getPluginManager();
+		$pluginManager = Worker::getPluginManager();
 		$groupTable    = FabTable::getInstance('Group', 'FabrikTable');
 		$groupTable->load($groupId);
 
@@ -1302,7 +1304,7 @@ class FabrikAdminModelList extends FabModelAdmin
 		$dispatcher    = JEventDispatcher::getInstance();
 		$input         = $this->app->input;
 		$elementModel  = new \Fabrik\Plugins\Element\Element($dispatcher);
-		$pluginManager = FabrikWorker::getPluginManager();
+		$pluginManager = Worker::getPluginManager();
 		$fbConfig      = JComponentHelper::getParams('com_fabrik');
 		$elementTypes  = $input->get('elementtype', array(), 'array');
 		$fields        = $fabrikDb->getTableColumns($tableName, false);
@@ -1510,7 +1512,7 @@ class FabrikAdminModelList extends FabModelAdmin
 			$form       = $this->getTable('Form');
 			$item       = $this->getTable('List');
 
-			$defaults = FabrikWorker::formDefaults('form');
+			$defaults = Worker::formDefaults('form');
 			$form->bind($defaults);
 
 			$form->set('label', $item->get('label'));
@@ -1599,7 +1601,7 @@ class FabrikAdminModelList extends FabModelAdmin
 		 * dont use method below but simply try to create a table and if you cant give error
 		 * if you can remove tmp created table
 		 */
-		/*$db 		=& FabrikWorker::getDbo();
+		/*$db 		=& Worker::getDbo();
 		$conf =& JFactory::getConfig();
 		$host 		= $conf->getValue('config.host');
 		$user 		= $conf->getValue('config.user');
@@ -1621,7 +1623,7 @@ class FabrikAdminModelList extends FabModelAdmin
 	 */
 	public function copy()
 	{
-		$db    = FabrikWorker::getDbo(true);
+		$db    = Worker::getDbo(true);
 		$input = $this->app->input;
 		$pks   = $input->get('cid', array(), 'array');
 		$names = $input->get('names', array(), 'array');
@@ -1700,7 +1702,7 @@ class FabrikAdminModelList extends FabModelAdmin
 	 */
 	protected function copyJoins($fromId, $toId, $groupIdMap)
 	{
-		$db    = FabrikWorker::getDbo(true);
+		$db    = Worker::getDbo(true);
 		$query = $db->getQuery(true);
 		$query->select('*')->from('#__{package}_joins')->where('list_id = ' . (int) $fromId);
 		$db->setQuery($query);
@@ -2035,7 +2037,7 @@ class FabrikAdminModelList extends FabModelAdmin
 	 */
 	private function deleteAssociatedForm(&$item)
 	{
-		$db    = FabrikWorker::getDbo(true);
+		$db    = Worker::getDbo(true);
 		$query = $db->getQuery(true);
 		$form  = $this->getTable('form');
 		$form->load($item->form_id);
@@ -2062,7 +2064,7 @@ class FabrikAdminModelList extends FabModelAdmin
 	 */
 	private function deleteAssociatedGroups(&$form, $deleteElements = false)
 	{
-		$db    = FabrikWorker::getDbo(true);
+		$db    = Worker::getDbo(true);
 		$query = $db->getQuery(true);
 
 		// Get group ids
@@ -2218,7 +2220,7 @@ class FabrikAdminModelList extends FabModelAdmin
 		$listId = $this->getState('list.id');
 		$item   = $this->getItem($listId);
 
-		return FabrikWorker::getConnection($item)->getDb();
+		return Worker::getConnection($item)->getDb();
 	}
 
 	/**
@@ -2233,7 +2235,7 @@ class FabrikAdminModelList extends FabModelAdmin
 	public function createDBTable($dbTableName = null, $fields = array('id' => 'internalid', 'date_time' => 'date'),
 		$opts = array())
 	{
-		$db        = FabrikWorker::getDbo(true);
+		$db        = Worker::getDbo(true);
 		$fabrikDb  = $this->getDb();
 		$formModel = $this->getFormModel();
 
@@ -2324,7 +2326,7 @@ class FabrikAdminModelList extends FabModelAdmin
 			}
 		}
 
-		$func = create_function('$value', '$db = FabrikWorker::getDbo(true);;return $db->qn($value);');
+		$func = create_function('$value', '$db = Worker::getDbo(true);;return $db->qn($value);');
 		$sql .= implode(', ', $lines);
 
 		if (!empty($keys))
@@ -2361,7 +2363,7 @@ class FabrikAdminModelList extends FabModelAdmin
 	 */
 	public function makeElement($name, $data)
 	{
-		$pluginManager = FabrikWorker::getPluginManager();
+		$pluginManager = Worker::getPluginManager();
 		$element       = $pluginManager->loadPlugIn($data['plugin'], 'element');
 		$item          = $element->getDefaultProperties($data);
 		$item->id      = null;
@@ -2415,7 +2417,7 @@ class FabrikAdminModelList extends FabModelAdmin
 	 */
 	public function ammendTable()
 	{
-		$db             = FabrikWorker::getDbo(true);
+		$db             = Worker::getDbo(true);
 		$input          = $this->app->input;
 		$query          = $db->getQuery(true);
 		$table          = $this->table;

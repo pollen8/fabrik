@@ -11,6 +11,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Fabrik\Helpers\Worker;
+
 jimport('joomla.application.component.model');
 
 require_once JPATH_SITE . '/components/com_fabrik/models/visualization.php';
@@ -32,7 +34,7 @@ class FabrikModelFusionchart extends FabrikFEModelVisualization
 	protected function getChartParams()
 	{
 		$params = $this->getParams();
-		$w = new FabrikWorker;
+		$w = new Worker;
 		$caption = $w->parseMessageForPlaceHolder($params->get('fusionchart_caption', ''));
 		$strParam = 'caption=' . $caption;
 
@@ -412,7 +414,7 @@ class FabrikModelFusionchart extends FabrikFEModelVisualization
 	 */
 	protected function setAxisLabels()
 	{
-		$worker = new FabrikWorker;
+		$worker = new Worker;
 		$params = $this->getParams();
 		$this->axisLabels = (array) $params->get('fusionchart_axis_labels');
 
@@ -432,7 +434,7 @@ class FabrikModelFusionchart extends FabrikFEModelVisualization
 		$this->cantTrendLine = array();
 		$document = JFactory::getDocument();
 		$params = $this->getParams();
-		$worker = new FabrikWorker;
+		$worker = new Worker;
 		$fc_version = $params->get('fusionchart_version', 'free_old');
 		$free22 = $this->pathBase . 'fusionchart/libs/FusionChartsFree/Code/PHPClass/Includes/FusionCharts_Gen.php';
 		$pro30 = $this->pathBase . 'fusionchart/libs/FusionCharts/Code/PHPClass/Includes/FusionCharts_Gen.php';

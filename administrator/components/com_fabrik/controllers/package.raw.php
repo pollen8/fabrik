@@ -15,6 +15,7 @@ defined('_JEXEC') or die('Restricted access');
 jimport('joomla.application.component.controllerform');
 
 use Fabrik\Helpers\Html;
+use Fabrik\Helpers\Worker;
 
 /**
  * Raw Package controller class.
@@ -42,7 +43,7 @@ class FabrikAdminControllerPackage extends JControllerForm
 	{
 		$app = JFactory::getApplication();
 		$input = $app->input;
-		$db = FabrikWorker::getDbo(true);
+		$db = Worker::getDbo(true);
 		$query = $db->getQuery(true);
 		$list = $input->get('list', 'form');
 		$selected = $input->get('selected');

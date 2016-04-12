@@ -13,6 +13,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 use Joomla\Utilities\ArrayHelper;
+use Fabrik\Helpers\Worker;
 
 require_once 'fabcontrolleradmin.php';
 
@@ -82,7 +83,7 @@ class FabrikAdminControllerCrons extends FabControllerAdmin
 	{
 		$mailer = JFactory::getMailer();
 		$config = JFactory::getConfig();
-		$db = FabrikWorker::getDbo(true);
+		$db = Worker::getDbo(true);
 		$app = JFactory::getApplication();
 		$input = $app->input;
 		$cid = $input->get('cid', array(), 'array');

@@ -12,6 +12,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Fabrik\Helpers\Worker;
+
 /**
  * Fabrik Component Helper
  *
@@ -34,7 +36,7 @@ class FabrikAdminHelper
 	{
 		$config = JFactory::getConfig();
 		$tzoffset = $config->get('offset');
-		$db = FabrikWorker::getDbo(true);
+		$db = Worker::getDbo(true);
 
 		// Handle never unpublish date
 		if (trim($strdate) == FText::_('Never') || trim($strdate) == '' || trim($strdate) == $db->getNullDate())
@@ -103,7 +105,7 @@ class FabrikAdminHelper
 	{
 		$vizUrl = 'index.php?option=com_fabrik&view=visualizations';
 
-		if (FabrikWorker::j3())
+		if (Worker::j3())
 		{
 			JHtmlSidebar::addEntry(FText::_('COM_FABRIK_SUBMENU_HOME'), 'index.php?option=com_fabrik', $vName == 'home');
 			JHtmlSidebar::addEntry(FText::_('COM_FABRIK_SUBMENU_LISTS'), 'index.php?option=com_fabrik&view=lists', $vName == 'lists');

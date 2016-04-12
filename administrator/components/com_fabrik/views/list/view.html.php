@@ -12,6 +12,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 use Fabrik\Helpers\Html;
+use Fabrik\Helpers\Worker;
 
 jimport('joomla.application.component.view');
 
@@ -95,7 +96,7 @@ class FabrikAdminViewList extends JViewLegacy
 			$orderDir[] = JHTML::_('select.option', 'ASC', FText::_('COM_FABRIK_ASCENDING'));
 			$orderDir[] = JHTML::_('select.option', 'DESC', FText::_('COM_FABRIK_DESCENDING'));
 
-			$orderdirs       = FabrikWorker::JSONtoData($this->item->order_dir, true);
+			$orderdirs       = Worker::JSONtoData($this->item->order_dir, true);
 			$this->order_dir = array();
 			$attribs         = 'class="inputbox" size="1" ';
 

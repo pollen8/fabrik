@@ -17,7 +17,7 @@ use Fabrik\Helpers\Html;
 use \FArrayHelper;
 use \JHtml;
 use \stdClass;
-use \FabrikWorker;
+use Fabrik\Helpers\Worker;
 use \FabrikString;
 use \FabrikLayoutFile;
 use \FText;
@@ -79,7 +79,7 @@ class Yesno extends Radiobutton
 		// Check if the data is in csv format, if so then the element is a multi drop down
 		$raw = $this->getFullName(true, false) . '_raw';
 		$rawData = $thisRow->$raw;
-		$rawData = FabrikWorker::JSONtoData($rawData, true);
+		$rawData = Worker::JSONtoData($rawData, true);
 		$displayData        = new stdClass;
 		$displayData->tmpl  = @$this->tmpl;
 		$basePath           = JPATH_ROOT . '/plugins/fabrik_element/yesno/layouts';
@@ -112,7 +112,7 @@ class Yesno extends Radiobutton
 		Html::addPath(COM_FABRIK_BASE . 'plugins/fabrik_element/yesno/images/', 'image', 'list', false);
 		$raw = $this->getFullName() . '_raw';
 		$data = $thisRow->$raw;
-		$j3 = FabrikWorker::j3();
+		$j3 = Worker::j3();
 
 		if ($data == '1')
 		{
@@ -141,7 +141,7 @@ class Yesno extends Radiobutton
 		$ret     = array();
 		$raw     = $this->getFullName(true, false) . '_raw';
 		$rawData = $thisRow->$raw;
-		$rawData = FabrikWorker::JSONtoData($rawData, true);
+		$rawData = Worker::JSONtoData($rawData, true);
 
 		foreach ($rawData as $d)
 		{
@@ -263,7 +263,7 @@ class Yesno extends Radiobutton
 	protected function buttonGroup()
 	{
 		$params = $this->getParams();
-		$ok = FabrikWorker::j3() && $params->get('btnGroup', true);
+		$ok = Worker::j3() && $params->get('btnGroup', true);
 
 		return $ok;
 	}
@@ -455,7 +455,7 @@ class Yesno extends Radiobutton
 
 			if (!empty($toggle_where))
 			{
-				$w = new FabrikWorker;
+				$w = new Worker;
 				$toggle_where = $w->parseMessageForPlaceHolder($toggle_where);
 				$query->where($toggle_where);
 			}

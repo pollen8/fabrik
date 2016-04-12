@@ -11,6 +11,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Fabrik\Helpers\Worker;
+
 jimport('joomla.application.component.controller');
 
 /**
@@ -173,7 +175,7 @@ class FabrikControllerForm extends JControllerLegacy
 		// Check if any plugin has created a new validation error
 		if (!empty($model->errors))
 		{
-			$pluginManager = FabrikWorker::getPluginManager();
+			$pluginManager = Worker::getPluginManager();
 			$pluginManager->runPlugins('onError', $model);
 			echo $view->display();
 
@@ -265,7 +267,7 @@ class FabrikControllerForm extends JControllerLegacy
 					$url = $input->get('fabrik_referrer', 'index.php', 'string');
 				}
 
-				$itemId = FabrikWorker::itemId();
+				$itemId = Worker::itemId();
 
 				if ($url == '')
 				{

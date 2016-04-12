@@ -13,6 +13,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 use Joomla\Utilities\ArrayHelper;
+use Fabrik\Helpers\Worker;
 
 require_once 'fabmodeladmin.php';
 
@@ -48,7 +49,7 @@ class FabrikAdminModelConnection extends FabModelAdmin
 		 * issue with using Fabtable is that it will always load the cached version of the cnn
 		 * which might cause issues when migrating from test to live sites???
 		 */
-		$config['dbo'] = FabrikWorker::getDbo(true);
+		$config['dbo'] = Worker::getDbo(true);
 
 		return FabTable::getInstance($type, $prefix, $config);
 	}
@@ -101,7 +102,7 @@ class FabrikAdminModelConnection extends FabModelAdmin
 	 */
 	public function setDefault($id)
 	{
-		$db = FabrikWorker::getDbo(true);
+		$db = Worker::getDbo(true);
 		$query = $db->getQuery(true);
 		$query->update('#__fabrik_connections')->set($db->quoteName('default') . ' = 0');
 		$db->setQuery($query);
@@ -148,7 +149,7 @@ class FabrikAdminModelConnection extends FabModelAdmin
 	protected function matchesDefault($item)
 	{
 		$config = $this->config;
-		$crypt = FabrikWorker::getCrypt();
+		$crypt = Worker::getCrypt();
 		$pwMatch = $config->get('password') == $item->password || $crypt->encrypt($config->get('password')) == $item->password;
 
 		return $config->get('host') == $item->host && $config->get('user') == $item->user && $pwMatch
@@ -167,7 +168,7 @@ class FabrikAdminModelConnection extends FabModelAdmin
 	{
 		$model = JModelLegacy::getInstance('Connection', 'FabrikFEModel');
 		$model->setId($data['id']);
-		$crypt = FabrikWorker::getCrypt();
+		$crypt = Worker::getCrypt();
 
 		$params = new stdClass;
 		$params->encryptedPw = true;

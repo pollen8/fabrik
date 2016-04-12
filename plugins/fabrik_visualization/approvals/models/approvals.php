@@ -12,6 +12,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 use Fabrik\Helpers\Html;
+use Fabrik\Helpers\Worker;
 
 jimport('joomla.application.component.model');
 
@@ -115,7 +116,7 @@ class FabrikModelApprovals extends FabrikFEModelVisualization
 	public function disapprove()
 	{
 		$this->decide(0);
-		echo FabrikWorker::j3() ? Html::icon('icon-remove') : Html::image('delete.png', 'list', '');
+		echo Worker::j3() ? Html::icon('icon-remove') : Html::image('delete.png', 'list', '');
 	}
 
 	/**
@@ -126,7 +127,7 @@ class FabrikModelApprovals extends FabrikFEModelVisualization
 	public function approve()
 	{
 		$this->decide(1);
-		echo FabrikWorker::j3() ? Html::icon('icon-ok') : Html::image('ok.png', 'list', '');
+		echo Worker::j3() ? Html::icon('icon-ok') : Html::image('ok.png', 'list', '');
 	}
 
 	/**

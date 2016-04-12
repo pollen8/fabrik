@@ -21,6 +21,7 @@ require_once JPATH_COMPONENT_ADMINISTRATOR . '/helpers/contenttype.php';
 use Joomla\Utilities\ArrayHelper;
 use \Joomla\Registry\Registry;
 use Fabrik\Helpers\Html;
+use Fabrik\Helpers\Worker;
 
 /**
  * Fabrik Admin Content Type Import Model
@@ -181,7 +182,7 @@ class FabrikAdminModelContentTypeImport extends FabModelAdmin
 		$groups     = $xpath->query('/contenttype/group');
 		$i          = 1;
 		$elementMap = array();
-		$w          = new FabrikWorker;
+		$w          = new Worker;
 		$jForm      = $this->app->input->get('jform', array(), 'array');
 
 		foreach ($groups as $group)
@@ -299,7 +300,7 @@ class FabrikAdminModelContentTypeImport extends FabModelAdmin
 	{
 		$return        = true;
 		$formModel     = $this->listModel->getFormModel();
-		$pluginManager = FabrikWorker::getPluginManager();
+		$pluginManager = Worker::getPluginManager();
 
 		foreach ($elementMap as $origId => $newId)
 		{
@@ -571,7 +572,7 @@ class FabrikAdminModelContentTypeImport extends FabModelAdmin
 	 */
 	public function preview()
 	{
-		$pluginManager = FabrikWorker::getPluginManager();
+		$pluginManager = Worker::getPluginManager();
 		$xpath         = new DOMXpath($this->doc);
 		$groups        = $xpath->query('/contenttype/group');
 		$return        = array();

@@ -12,6 +12,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 use Fabrik\Helpers\Html;
+use Fabrik\Helpers\Worker;
 
 jimport('joomla.application.component.view');
 
@@ -73,7 +74,7 @@ class FabrikViewChart extends JViewLegacy
 		$params = $model->getParams();
 		$this->params = $params;
 		$viewName = $this->getName();
-		$pluginManager = FabrikWorker::getPluginManager();
+		$pluginManager = kWorker::getPluginManager();
 		$plugin = $pluginManager->getPlugIn('chart', 'visualization');
 		$this->containerId = $this->get('ContainerId');
 		$this->filters = $this->get('Filters');

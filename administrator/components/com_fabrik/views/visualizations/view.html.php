@@ -12,6 +12,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 use Fabrik\Helpers\Html;
+use Fabrik\Helpers\Worker;
 
 jimport('joomla.application.component.view');
 
@@ -73,7 +74,7 @@ class FabrikAdminViewVisualizations extends JViewLegacy
 		$this->addToolbar();
 		FabrikAdminHelper::addSubmenu($input->getWord('view', 'lists'));
 
-		if (FabrikWorker::j3())
+		if (Worker::j3())
 		{
 			$this->sidebar = JHtmlSidebar::render();
 		}
@@ -137,7 +138,7 @@ class FabrikAdminViewVisualizations extends JViewLegacy
 		JToolBarHelper::divider();
 		JToolBarHelper::help('JHELP_COMPONENTS_FABRIK_VISUALIZATIONS', false, FText::_('JHELP_COMPONENTS_FABRIK_VISUALIZATIONS'));
 
-		if (FabrikWorker::j3())
+		if (Worker::j3())
 		{
 			JHtmlSidebar::setAction('index.php?option=com_fabrik&view=visualizations');
 

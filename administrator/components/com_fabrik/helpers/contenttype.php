@@ -12,6 +12,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Fabrik\Helpers\Worker;
+
 /**
  * Fabrik Content Type Helper
  *
@@ -71,7 +73,7 @@ class FabrikContentTypHelper
 					$name  = $attr->nodeName;
 					$value = (string) $attr->nodeValue;
 
-					if (FabrikWorker::isJSON($value))
+					if (Worker::isJSON($value))
 					{
 						$value = json_decode($value);
 					}
@@ -113,7 +115,7 @@ class FabrikContentTypHelper
 			}
 			if ($key === 'params')
 			{
-				$params = FabrikWorker::JSONtoData($value);
+				$params = Worker::JSONtoData($value);
 				$p      = $doc->createElement('params');
 				foreach ($params as $pKey => $pValue)
 				{

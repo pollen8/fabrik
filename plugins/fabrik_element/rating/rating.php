@@ -17,7 +17,7 @@ use Joomla\Utilities\ArrayHelper;
 use \FArrayHelper;
 use \JHtml;
 use \stdClass;
-use \FabrikWorker;
+use Fabrik\Helpers\Worker;
 use \FabrikString;
 use \JComponentHelper;
 use \JApplication;
@@ -106,7 +106,7 @@ class Rating extends Element
 			list($data, $total) = $this->getRatingAverage($data, $listId, $formId, $rowId, $ids);
 		}
 
-		$data = FabrikWorker::JSONtoData($data, true);
+		$data = Worker::JSONtoData($data, true);
 		Html::addPath(COM_FABRIK_BASE . 'plugins/fabrik_element/rating/images/', 'image', 'list', false);
 		$colData = $this->getListModel()->getData();
 		$ids = ArrayHelper::getColumn($colData, '__pk_val');
@@ -208,7 +208,7 @@ class Rating extends Element
 		if (!isset($this->avgs))
 		{
 			$ids = ArrayHelper::toInteger($ids);
-			$db = FabrikWorker::getDbo(true);
+			$db = Worker::getDbo(true);
 			$elementId = $this->getElement()->id;
 
 			$query = $db->getQuery(true);
@@ -261,7 +261,7 @@ class Rating extends Element
 			}
 
 			$ids = ArrayHelper::toInteger($ids);
-			$db = FabrikWorker::getDbo(true);
+			$db = Worker::getDbo(true);
 			$elementId = $this->getElement()->id;
 			$query = $db->getQuery(true);
 			$query->select('row_id, user_id')->from('#__{package}_ratings')
@@ -486,7 +486,7 @@ class Rating extends Element
 	 */
 	private function createRatingTable()
 	{
-		$db = FabrikWorker::getDbo(true);
+		$db = Worker::getDbo(true);
 		$db
 			->setQuery(
 				"
@@ -518,7 +518,7 @@ class Rating extends Element
 	private function doRating($listId, $formId, $rowId, $rating)
 	{
 		$this->createRatingTable();
-		$db = FabrikWorker::getDbo(true);
+		$db = Worker::getDbo(true);
 		$tzOffset = $this->config->get('offset');
 		$date = JFactory::getDate('now', $tzOffset);
 		$strDate = $db->q($date->toSql());
@@ -595,7 +595,7 @@ class Rating extends Element
 
 		$opts = new stdClass;
 
-		if (!FabrikWorker::j3())
+		if (!Worker::j3())
 		{
 			$opts->insrc = Html::image("star.png", 'form', $this->tmpl, array(), true);
 			$opts->outsrc = Html::image("star-empty.png", 'form', $this->tmpl, array(), true);
@@ -637,7 +637,7 @@ class Rating extends Element
 		$opts->imagepath = $imagePath;
 		$opts->elid = $this->getElement()->id;
 
-		if (!FabrikWorker::j3())
+		if (!Worker::j3())
 		{
 			$opts->insrc = Html::image("star.png", 'list', $this->tmpl, array(), true);
 			$opts->outsrc = Html::image("star-empty.png", 'list', $this->tmpl, array(), true);

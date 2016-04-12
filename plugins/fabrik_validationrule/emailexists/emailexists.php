@@ -11,6 +11,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Fabrik\Helpers\Worker;
+
 // Require the abstract plugin class
 require_once COM_FABRIK_FRONTEND . '/models/validation_rule.php';
 
@@ -58,7 +60,7 @@ class PlgFabrik_ValidationruleEmailExists extends PlgFabrik_Validationrule
 
 		if ((int) $userField !== 0)
 		{
-			$user_elementModel = FabrikWorker::getPluginManager()->getElementPlugin($userField);
+			$user_elementModel = Worker::getPluginManager()->getElementPlugin($userField);
 			$user_fullName = $user_elementModel->getFullName(true, false);
 			$userField = $user_elementModel->getFullName(false, false);
 		}
@@ -76,7 +78,7 @@ class PlgFabrik_ValidationruleEmailExists extends PlgFabrik_Validationrule
 		}
 
 		jimport('joomla.user.helper');
-		$db = FabrikWorker::getDbo(true);
+		$db = Worker::getDbo(true);
 		$query = $db->getQuery(true);
 		$query->select('id')->from('#__users')->where('email = ' . $db->quote($data));
 		$db->setQuery($query);

@@ -13,6 +13,7 @@ defined('_JEXEC') or die('Restricted access');
 
 use Joomla\Utilities\ArrayHelper;
 use Fabrik\Helpers\Html;
+use Fabrik\Helpers\Worker;
 
 /**
  * List filter model
@@ -131,7 +132,7 @@ class FabrikFEModelListfilter extends FabModel
 		 */
 
 		// $$$ rob 20/03/2011 - request resetfilters should overwrite menu option - otherwise filter then nav will remove filter.
-		if (($input->get('filterclear') == 1 || FabrikWorker::getMenuOrRequestVar('resetfilters', 0, false, 'request') == 1)
+		if (($input->get('filterclear') == 1 || Worker::getMenuOrRequestVar('resetfilters', 0, false, 'request') == 1)
 			&& $this->activeTable())
 		{
 			$this->clearFilters();
@@ -820,7 +821,7 @@ class FabrikFEModelListfilter extends FabModel
 		if (!empty($fromFormId))
 		{
 			$formModel = $this->listModel->getFormModel();
-			$db = FabrikWorker::getDbo();
+			$db = Worker::getDbo();
 			$lookupKeys = FArrayHelper::getValue($filters, 'key', array());
 
 			if ($fromFormId != $formModel->get('id'))
@@ -1386,7 +1387,7 @@ class FabrikFEModelListfilter extends FabModel
 
 		$this->listModel->tmpFilters = $filters;
 		Html::debug($filters, 'filter array: before onGetPostFilter');
-		FabrikWorker::getPluginManager()->runPlugins('onGetPostFilter', $this->listModel, 'list', $filters);
+		Worker::getPluginManager()->runPlugins('onGetPostFilter', $this->listModel, 'list', $filters);
 		Html::debug($filters, 'filter array: after onGetPostFilter');
 		$filters = $this->listModel->tmpFilters;
 	}
@@ -1614,7 +1615,7 @@ class FabrikFEModelListfilter extends FabModel
 	 */
 	public function getPluginFilterKeys()
 	{
-		$pluginManager = FabrikWorker::getPluginManager();
+		$pluginManager = Worker::getPluginManager();
 		$pluginManager->runPlugins('onGetFilterKey', $this->listModel, 'list');
 
 		return $pluginManager->data;

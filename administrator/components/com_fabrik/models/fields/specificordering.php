@@ -12,6 +12,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Fabrik\Helpers\Worker;
+
 jimport('joomla.html.html');
 jimport('joomla.form.formfield');
 jimport('joomla.form.helper');
@@ -45,7 +47,7 @@ class JFormFieldSpecificordering extends JFormFieldList
 	protected function getOptions()
 	{
 		// ONLY WORKS INSIDE ELEMENT :(
-		$db = FabrikWorker::getDbo();
+		$db = Worker::getDbo();
 		$group_id = $this->form->getValue('group_id');
 		$query = "SELECT ordering AS value, name AS text" . "\n FROM #__{package}_elements " . "\n WHERE group_id = " . (int) $group_id
 			. "\n AND published >= 0" . "\n ORDER BY ordering";
@@ -53,7 +55,7 @@ class JFormFieldSpecificordering extends JFormFieldList
 		 * $$$ rob - rather than trying to override the JHTML class lets
 		 * just swap {package} for the current package.
 		 */
-		$query = FabrikWorker::getDbo(true)->replacePrefix($query);
+		$query = Worker::getDbo(true)->replacePrefix($query);
 
 		return JHTML::_('list.genericordering', $query);
 	}

@@ -14,7 +14,7 @@ namespace Fabrik\Plugins\Element;
 defined('_JEXEC') or die('Restricted access');
 
 use \stdClass;
-use \FabrikWorker;
+use Fabrik\Helpers\Worker;
 use Fabrik\Helpers\Html;
 
 /**
@@ -78,7 +78,7 @@ class Slider extends Element
 		$layoutData->name = $this->getHTMLName($repeatCounter);;
 		$layoutData->value = $val;
 		$layoutData->width = $width;
-		$layoutData->j3 = FabrikWorker::j3();
+		$layoutData->j3 = Worker::j3();
 		$layoutData->showNone = $params->get('slider-shownone');
 		$layoutData->outSrc = Html::image('clear_rating_out.png', 'form', $this->tmpl, array(), true);
 		$layoutData->labels = $labels;

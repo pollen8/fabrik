@@ -12,6 +12,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 use Joomla\Utilities\ArrayHelper;
+use Fabrik\Helpers\Worker;
 
 jimport('joomla.application.component.model');
 
@@ -88,7 +89,7 @@ class FabrikModelFullcalendar extends FabrikFEModelVisualization
 		if (is_null($this->eventLists))
 		{
 			$this->eventLists = array();
-			$db = FabrikWorker::getDbo(true);
+			$db = Worker::getDbo(true);
 			$params = $this->getParams();
 			$lists = (array) $params->get('fullcalendar_table');
 			$lists = ArrayHelper::toInteger($lists);
@@ -396,11 +397,11 @@ class FabrikModelFullcalendar extends FabrikFEModelVisualization
 	{
 		$app = JFactory::getApplication();
 		$package = $app->getUserState('com_fabrik.package', 'fabrik');
-		$Itemid = FabrikWorker::itemId();
+		$Itemid = Worker::itemId();
 		$config = JFactory::getConfig();
 		$tzoffset = $config->get('offset');
 		$tz = new DateTimeZone($tzoffset);
-		$w = new FabrikWorker;
+		$w = new Worker;
 		$this->setupEvents();
 		$calendar = $this->getRow();
 		$aLegend = "$this->calName.addLegend([";
@@ -597,7 +598,7 @@ class FabrikModelFullcalendar extends FabrikFEModelVisualization
 
 	public function getLegend()
 	{
-		$db = FabrikWorker::getDbo();
+		$db = Worker::getDbo();
 		$params = $this->getParams();
 		$this->setupEvents();
 		$tables = (array) $params->get('fullcalendar_table');
@@ -656,7 +657,7 @@ class FabrikModelFullcalendar extends FabrikFEModelVisualization
 
 	public function updateevent()
 	{
-		$oPluginManager = FabrikWorker::getPluginManager();
+		$oPluginManager = Worker::getPluginManager();
 	}
 
 	/**
@@ -675,7 +676,7 @@ class FabrikModelFullcalendar extends FabrikFEModelVisualization
 		$listModel->setId($listid);
 		$list = $listModel->getTable();
 		$tableDb = $listModel->getDb();
-		$db = FabrikWorker::getDbo(true);
+		$db = Worker::getDbo(true);
 		$query = $db->getQuery(true);
 		$query->select('db_table_name')->from('#__{package}_lists')->where('id = ' . $listid);
 		$db->setQuery($query);

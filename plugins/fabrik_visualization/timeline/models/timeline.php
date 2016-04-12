@@ -12,6 +12,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 use Joomla\Utilities\ArrayHelper;
+use Fabrik\Helpers\Worker;
 
 jimport('joomla.application.component.model');
 
@@ -160,7 +161,7 @@ class FabrikModelTimeline extends FabrikFEModelVisualization
 		$input = $this->app->input;
 		$params = $this->getParams();
 		$timeZone = new DateTimeZone($this->config->get('offset'));
-		$w = new FabrikWorker;
+		$w = new Worker;
 		jimport('string.normalise');
 		$templates = (array) $params->get('timeline_detailtemplate', array());
 		$startdates = (array) $params->get('timeline_startdate', array());
@@ -429,7 +430,7 @@ class FabrikModelTimeline extends FabrikFEModelVisualization
 	 */
 	protected function getLinkURL($listModel, $row, $c)
 	{
-		$w = new FabrikWorker;
+		$w = new Worker;
 		$params = $this->getParams();
 		$customLink = (array) $params->get('timeline_customlink');
 		$customLink = FArrayHelper::getValue($customLink, $c, '');
@@ -467,7 +468,7 @@ class FabrikModelTimeline extends FabrikFEModelVisualization
 	{
 		$params = $this->getParams();
 		$bands = $params->get('timeline_bands');
-		$bands = FabrikWorker::JSONtoData($bands, true);
+		$bands = Worker::JSONtoData($bands, true);
 		$intervals = FArrayHelper::getValue($bands, 'timelne_band_interval_unit', array());
 		$widths = FArrayHelper::getValue($bands, 'timeline_band_width', array());
 		$overviews = FArrayHelper::getValue($bands, 'timeline_band_as_overview', array());

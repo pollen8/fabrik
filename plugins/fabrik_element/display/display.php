@@ -17,7 +17,7 @@ use Joomla\Utilities\ArrayHelper;
 use \stdClass;
 use \JLayoutFile;
 use \FArrayHelper;
-use \FabrikWorker;
+use Fabrik\Helpers\Worker;
 
 /**
  * Plugin element to render plain text/HTML
@@ -175,7 +175,7 @@ class Display extends Element
 
 		if (array_key_exists('runplugins', $opts) && $opts['runplugins'] == 1)
 		{
-			FabrikWorker::getPluginManager()->runPlugins('onGetElementDefault', $formModel, 'form', $this);
+			Worker::getPluginManager()->runPlugins('onGetElementDefault', $formModel, 'form', $this);
 		}
 
 		return $value;

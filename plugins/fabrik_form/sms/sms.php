@@ -11,9 +11,10 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Fabrik\Helpers\Worker;
+
 // Require the abstract plugin class
 require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
-
 require_once COM_FABRIK_FRONTEND . '/helpers/sms.php';
 
 /**
@@ -46,7 +47,7 @@ class PlgFabrik_FormSMS extends PlgFabrik_Form
 		$formModel = $this->getModel();
 		$params = $this->getParams();
 		$data = $formModel->formData;
-		$w = new FabrikWorker;
+		$w = new Worker;
 		$opts = array();
 		$userName = $params->get('sms-username');
 		$password = $params->get('sms-password');
@@ -98,7 +99,7 @@ class PlgFabrik_FormSMS extends PlgFabrik_Form
 
 		if ($msg !== '')
 		{
-			$w = new FabrikWorker;
+			$w = new Worker;
 			return $w->parseMessageForPlaceHolder($msg, $data);
 		}
 		else

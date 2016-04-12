@@ -14,7 +14,7 @@ namespace Fabrik\Plugins\Element;
 defined('_JEXEC') or die('Restricted access');
 
 use Joomla\Utilities\ArrayHelper;
-use \FabrikWorker;
+use Fabrik\Helpers\Worker;
 use \FArrayHelper;
 use \JFilterInput;
 use \FabrikFEModelList;
@@ -43,7 +43,7 @@ class Calc extends Element
 	{
 		if (!isset($this->default))
 		{
-			$w = new FabrikWorker;
+			$w = new Worker;
 			$element = $this->getElement();
 			$default = $w->parseMessageForPlaceHolder($element->get('default'), $data, true, true);
 			/* calc in fabrik3.0/3.1 doesn't have eval, issues if F2.0 calc elements are migrated*/
@@ -57,7 +57,7 @@ class Calc extends Element
 				{
 					$res = @eval($default);
 				}
-				FabrikWorker::logEval($res, 'Eval exception : ' . $element->name . '::getDefaultValue() : ' . $default . ' : %s');
+				Worker::logEval($res, 'Eval exception : ' . $element->name . '::getDefaultValue() : ' . $default . ' : %s');
 				$default = $res;
 			}
 			*/
@@ -77,7 +77,7 @@ class Calc extends Element
 	 */
 	private function _getV($data, $repeatCounter)
 	{
-		$w = new FabrikWorker;
+		$w = new Worker;
 		$groupModel = $this->getGroup();
 		$name = $this->getFullName(true, false);
 		$params = $this->getParams();
@@ -131,7 +131,7 @@ class Calc extends Element
 			$d = $data;
 
 			$res = Html::isDebug() ? eval($default) : @eval($default);
-			FabrikWorker::logEval($res, 'Eval exception : ' . $this->getElement()->name . '::_getV() : ' . $default . ' : %s');
+			Worker::logEval($res, 'Eval exception : ' . $this->getElement()->name . '::_getV() : ' . $default . ' : %s');
 
 			return $res;
 		}
@@ -224,7 +224,7 @@ class Calc extends Element
 			// Stops this getting called from form validation code as it messes up repeated/join group validations
 			if (array_key_exists('runplugins', $opts) && $opts['runplugins'] == 1)
 			{
-				FabrikWorker::getPluginManager()->runPlugins('onGetElementDefault', $formModel, 'form', $this);
+				Worker::getPluginManager()->runPlugins('onGetElementDefault', $formModel, 'form', $this);
 			}
 
 			if (is_array($element->get('default')))
@@ -379,7 +379,7 @@ class Calc extends Element
 				$res = @eval($cal);
 			}
 
-			FabrikWorker::logEval($res, 'Eval exception : ' . $element->name . '::preFormatFormJoins() : ' . $cal . ' : %s');
+			Worker::logEval($res, 'Eval exception : ' . $element->name . '::preFormatFormJoins() : ' . $cal . ' : %s');
 
 			if ($format != '')
 			{
@@ -528,7 +528,7 @@ class Calc extends Element
 		$this->setId($input->getInt('element_id'));
 		$this->loadMeForAjax();
 		$params = $this->getParams();
-		$w = new FabrikWorker;
+		$w = new Worker;
 		$filter = JFilterInput::getInstance();
 		$d = $filter->clean($_REQUEST, 'array');
 		$formModel = $this->getFormModel();

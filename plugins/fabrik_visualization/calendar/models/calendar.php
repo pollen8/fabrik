@@ -12,6 +12,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 use Joomla\Utilities\ArrayHelper;
+use Fabrik\Helpers\Worker;
 
 jimport('joomla.application.component.model');
 
@@ -86,7 +87,7 @@ class FabrikModelCalendar extends FabrikFEModelVisualization
 		if (is_null($this->eventLists))
 		{
 			$this->eventLists = array();
-			$db = FabrikWorker::getDbo(true);
+			$db = Worker::getDbo(true);
 			$params = $this->getParams();
 			$lists = (array) $params->get('calendar_table');
 			$lists = ArrayHelper::toInteger($lists);
@@ -134,7 +135,7 @@ class FabrikModelCalendar extends FabrikFEModelVisualization
 	public function getAddStandardEventFormInfo()
 	{
 		$prefix = $this->config->get('dbprefix');
-		$db = FabrikWorker::getDbo();
+		$db = Worker::getDbo();
 		$query = $db->getQuery(true);
 		$query->select('form_id, id')->from('#__{package}_lists')
 			->where('db_table_name = ' . $db->q($prefix . 'fabrik_calendar_events') . ' AND private = 1');
@@ -390,10 +391,10 @@ class FabrikModelCalendar extends FabrikFEModelVisualization
 
 	public function getEvents()
 	{
-		$itemId = FabrikWorker::itemId();
+		$itemId = Worker::itemId();
 		$tzOffset = $this->config->get('offset');
 		$tz = new DateTimeZone($tzOffset);
-		$w = new FabrikWorker;
+		$w = new Worker;
 		$this->setupEvents();
 		$jsEvents = array();
 		$input = $this->app->input;
@@ -616,7 +617,7 @@ class FabrikModelCalendar extends FabrikFEModelVisualization
 		$listModel->setId($listId);
 		$list = $listModel->getTable();
 		$tableDb = $listModel->getDb();
-		$db = FabrikWorker::getDbo(true);
+		$db = Worker::getDbo(true);
 		$query = $db->getQuery(true);
 		$query->select('db_table_name')->from('#__{package}_lists')->where('id = ' . $listId);
 		$db->setQuery($query);

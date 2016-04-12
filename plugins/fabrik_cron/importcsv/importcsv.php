@@ -11,6 +11,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Fabrik\Helpers\Worker;
+
 // Require the abstract plugin class
 require_once COM_FABRIK_FRONTEND . '/models/plugin-cron.php';
 require_once COM_FABRIK_FRONTEND . '/models/importcsv.php';
@@ -65,7 +67,7 @@ class PlgFabrik_Cronimportcsv extends PlgFabrik_Cron
 	protected function getListIdFromFileName($tableName)
 	{
 		// Get site's database
-		$db = FabrikWorker::getDbo(true);
+		$db = Worker::getDbo(true);
 		$query = $db->getQuery(true);
 		$query->select('id')->from('#__{package}_lists')->where('db_table_name = ' . $db->quote($tableName));
 		$db->setQuery($query);
@@ -142,7 +144,7 @@ class PlgFabrik_Cronimportcsv extends PlgFabrik_Cron
 				break;
 			}
 
-			FabrikWorker::log('plg.cron.cronimportcsv.information', "Starting import: $fullCsvFile:  ");
+			Worker::log('plg.cron.cronimportcsv.information', "Starting import: $fullCsvFile:  ");
 			$clsImportCSV = JModelLegacy::getInstance('Importcsv', 'FabrikFEModel');
 
 			if ($useTableName)
@@ -157,7 +159,7 @@ class PlgFabrik_Cronimportcsv extends PlgFabrik_Cron
 
 			if (empty($listId))
 			{
-				FabrikWorker::log('plg.cron.cronimportcsv.warning', "List for $fullCsvFile does not exist");
+				Worker::log('plg.cron.cronimportcsv.warning', "List for $fullCsvFile does not exist");
 				continue;
 			}
 
@@ -204,7 +206,7 @@ class PlgFabrik_Cronimportcsv extends PlgFabrik_Cron
 				}
 			}
 
-			FabrikWorker::log('plg.cron.cronimportcsv.information', $msg);
+			Worker::log('plg.cron.cronimportcsv.information', $msg);
 		}
 
 		// Leave the request array how we found it

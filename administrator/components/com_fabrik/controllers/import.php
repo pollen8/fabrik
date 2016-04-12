@@ -11,6 +11,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Fabrik\Helpers\Worker;
+
 require_once 'fabcontrollerform.php';
 
 /**
@@ -54,7 +56,7 @@ class FabrikAdminControllerImport extends FabControllerForm
 		$adminListModel->setFormModel($formModel);
 		$groupId       = current(array_keys($formModel->getGroupsHiarachy()));
 		$plugins       = $input->get('plugin', array(), 'array');
-		$pluginManager = FabrikWorker::getPluginManager();
+		$pluginManager = Worker::getPluginManager();
 		$elementModel  = $pluginManager->getPlugIn('field', 'element');
 		$element       = FabTable::getInstance('Element', 'FabrikTable');
 		$newElements   = $input->get('createElements', array(), 'array');

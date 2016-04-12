@@ -13,6 +13,7 @@ defined('_JEXEC') or die('Restricted access');
 
 use Joomla\Utilities\ArrayHelper;
 use Fabrik\Helpers\Html;
+use Fabrik\Helpers\Worker;
 
 require_once JPATH_ADMINISTRATOR . '/components/com_fabrik/helpers/element.php';
 
@@ -39,7 +40,7 @@ class JFormFieldSwapList extends JFormFieldList
 	 */
 	protected function getInput()
 	{
-		$j3 = FabrikWorker::j3();
+		$j3 = Worker::j3();
 		$from = $this->id . '-from';
 		$add = $this->id . '-add';
 		$remove = $this->id . '-remove';
@@ -116,7 +117,7 @@ class JFormFieldSwapList extends JFormFieldList
 	 */
 	public function getGroupList()
 	{
-		$db = FabrikWorker::getDbo(true);
+		$db = Worker::getDbo(true);
 		$query = $db->getQuery(true);
 		$query->select('DISTINCT(group_id)')->from('#__{package}_formgroup');
 		$db->setQuery($query);
@@ -134,7 +135,7 @@ class JFormFieldSwapList extends JFormFieldList
 		$query->order(FabrikString::safeColName('text'));
 		$db->setQuery($query);
 		$groups = $db->loadObjectList();
-		$style = FabrikWorker::j3() ? '' : 'style="width:100%;"';
+		$style = Worker::j3() ? '' : 'style="width:100%;"';
 		$list = JHTML::_('select.genericlist', $groups, 'jform[groups]', 'class="inputbox input-xxlarge" size="10" ' . $style, 'value', 'text', null,
 			$this->id . '-from');
 
@@ -148,7 +149,7 @@ class JFormFieldSwapList extends JFormFieldList
 	 */
 	public function getCurrentGroupList()
 	{
-		$db = FabrikWorker::getDbo(true);
+		$db = Worker::getDbo(true);
 		$query = $db->getQuery(true);
 		$query->select('fg.group_id AS value, g.name AS text');
 		$query->from('#__{package}_formgroup AS fg');
@@ -158,7 +159,7 @@ class JFormFieldSwapList extends JFormFieldList
 		$query->order('fg.ordering');
 		$db->setQuery($query);
 		$currentGroups = $db->loadObjectList();
-		$style = FabrikWorker::j3() ? '' : 'style="width:100%;"';
+		$style = Worker::j3() ? '' : 'style="width:100%;"';
 		$attribs = 'class="inputbox input-xxlarge" multiple="multiple" ' . $style . ' size="10" ';
 		$list = JHTML::_('select.genericlist', $currentGroups, $this->name, $attribs, 'value', 'text', '/', $this->id);
 

@@ -12,6 +12,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Fabrik\Helpers\Worker;
+
 jimport('joomla.application.component.controller');
 
 require_once 'fabcontrollerform.php';
@@ -82,7 +84,7 @@ class FabrikAdminControllerPlugin extends FabControllerForm
 	 */
 	public function userAjax()
 	{
-		$db = FabrikWorker::getDbo();
+		$db = Worker::getDbo();
 		require_once COM_FABRIK_FRONTEND . '/user_ajax.php';
 		$app = JFactory::getApplication();
 		$input = $app->input;

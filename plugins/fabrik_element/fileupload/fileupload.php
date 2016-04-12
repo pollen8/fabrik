@@ -22,7 +22,7 @@ use \JText;
 use \JFolder;
 use \FabimageHelper;
 use \FText;
-use \FabrikWorker;
+use Fabrik\Helpers\Worker;
 use \FabrikUploader;
 use \RuntimeException;
 use \JFile;
@@ -271,7 +271,7 @@ class Fileupload extends Element
 		$params = $this->getParams();
 		$id     = $this->getHTMLId($repeatCounter);
 		Html::mcl();
-		$j3 = FabrikWorker::j3();
+		$j3 = Worker::j3();
 
 		$element   = $this->getElement();
 		$paramsKey = $this->getFullName(true, false);
@@ -288,7 +288,7 @@ class Fileupload extends Element
 		}
 
 		$value = $this->getValue(array(), $repeatCounter);
-		$value = is_array($value) ? $value : FabrikWorker::JSONtoData($value, true);
+		$value = is_array($value) ? $value : Worker::JSONtoData($value, true);
 		$value = $this->checkForSingleCropValue($value);
 
 		// Repeat_image_repeat_image___params
@@ -520,7 +520,7 @@ class Fileupload extends Element
 	 */
 	public function renderListData($data, stdClass &$thisRow, $opts = array())
 	{
-		$data     = FabrikWorker::JSONtoData($data, true);
+		$data     = Worker::JSONtoData($data, true);
 		$name     = $this->getFullName(true, false); // used for debugging, please leave
 		$params   = $this->getParams();
 		$rendered = '';
@@ -572,7 +572,7 @@ class Fileupload extends Element
 	 */
 	public function renderListData_csv($data, &$thisRow)
 	{
-		$data   = FabrikWorker::JSONtoData($data, true);
+		$data   = Worker::JSONtoData($data, true);
 		$params = $this->getParams();
 		$format = $params->get('ul_export_encode_csv', 'base64');
 		$raw    = $this->getFullName(true, false) . '_raw';
@@ -695,7 +695,7 @@ class Fileupload extends Element
 	{
 		if ($this->isJoin())
 		{
-			$data = FabrikWorker::JSONtoData($data, true);
+			$data = Worker::JSONtoData($data, true);
 		}
 
 		parent::setValuesFromEncryt($post, $key, $data);
@@ -815,7 +815,7 @@ class Fileupload extends Element
 			}
 		}
 
-		$data = FabrikWorker::JSONtoData($data);
+		$data = Worker::JSONtoData($data);
 
 		if (is_array($data) && !empty($data))
 		{
@@ -864,7 +864,7 @@ class Fileupload extends Element
 				if (!empty($thisRow->$title_name))
 				{
 					$title = $thisRow->$title_name;
-					$title = FabrikWorker::JSONtoData($title, true);
+					$title = Worker::JSONtoData($title, true);
 					$title = $title[$i];
 				}
 			}
@@ -1284,7 +1284,7 @@ class Fileupload extends Element
 				// @todo allow uploading into front end designated folders?
 				$myFileDir = '';
 				$cropPath  = $storage->clean(JPATH_SITE . '/' . $params->get('fileupload_crop_dir') . '/' . $myFileDir . '/', false);
-				$w         = new FabrikWorker;
+				$w         = new Worker;
 				$cropPath  = $w->parseMessageForPlaceHolder($cropPath);
 
 				if ($cropPath != '')
@@ -1899,7 +1899,7 @@ class Fileupload extends Element
 		jimport('joomla.filesystem.path');
 		$storage->setPermissions($filePath);
 
-		if (FabrikWorker::isImageExtension($filePath))
+		if (Worker::isImageExtension($filePath))
 		{
 			$oImage = FabimageHelper::loadLib($params->get('image_library'));
 			$oImage->setStorage($storage);
@@ -1960,7 +1960,7 @@ class Fileupload extends Element
 		}
 
 		// $$$ trob - oImage->rezise is only set if isImageExtension
-		if (!FabrikWorker::isImageExtension($filePath))
+		if (!Worker::isImageExtension($filePath))
 		{
 			$make_thumbnail = false;
 		}
@@ -1968,7 +1968,7 @@ class Fileupload extends Element
 		if ($make_thumbnail)
 		{
 			$thumbPath = $storage->clean(JPATH_SITE . '/' . $params->get('thumb_dir') . '/' . $myFileDir . '/', false);
-			$w         = new FabrikWorker;
+			$w         = new Worker;
 			$formModel = $this->getFormModel();
 			$thumbPath = $w->parseMessageForRepeats($thumbPath, $formModel->formData, $this, $repeatGroupCounter);
 			$thumbPath = $w->parseMessageForPlaceHolder($thumbPath);
@@ -2100,7 +2100,7 @@ class Fileupload extends Element
 		}
 
 		$folder = JPath::clean($folder);
-		$w      = new FabrikWorker;
+		$w      = new Worker;
 
 		$formModel = $this->getFormModel();
 		$folder    = $w->parseMessageForRepeats($folder, $formModel->formData, $this, $repeatCounter);
@@ -2145,7 +2145,7 @@ class Fileupload extends Element
 
 		$str   = array();
 		$value = $this->getValue($data, $repeatCounter);
-		$value = is_array($value) ? $value : FabrikWorker::JSONtoData($value, true);
+		$value = is_array($value) ? $value : Worker::JSONtoData($value, true);
 		$value = $this->checkForSingleCropValue($value);
 
 		if ($params->get('ajax_upload'))
@@ -2160,7 +2160,7 @@ class Fileupload extends Element
 		$use_download_script = $params->get('fu_use_download_script', '0');
 
 		// $$$ rob - explode as it may be grouped data (if element is a repeating upload)
-		$values = is_array($value) ? $value : FabrikWorker::JSONtoData($value, true);
+		$values = is_array($value) ? $value : Worker::JSONtoData($value, true);
 
 		// Failed validations - format different!
 		if (array_key_exists('id', $values))
@@ -2451,7 +2451,7 @@ class Fileupload extends Element
 				if (!empty($formModel->data[$title_name]))
 				{
 					$title  = $formModel->data[$title_name];
-					$titles = FabrikWorker::JSONtoData($title, true);
+					$titles = Worker::JSONtoData($title, true);
 					$title  = FArrayHelper::getValue($titles, $repeatCounter, $title);
 				}
 			}
@@ -2507,7 +2507,7 @@ class Fileupload extends Element
 		$displayData->canvasSupport = Html::canvasSupport();
 		$displayData->dropBoxStyle  = $dropBoxStyle;
 		$displayData->field         = implode("\n", $str);
-		$displayData->j3            = FabrikWorker::j3();
+		$displayData->j3            = Worker::j3();
 		$str                        = (array) $layout->render($displayData);
 
 		Html::jLayoutJs('fabrik-progress-bar', 'fabrik-progress-bar', (object) array('context' => '', 'animated' => true));
@@ -2769,11 +2769,11 @@ class Fileupload extends Element
 			$ulDir    = JPath::clean($params->get('ul_directory')) . '/';
 			$ulDir    = str_replace("\\", "\\\\", $ulDir);
 			$thumbDir = JPath::clean($params->get('thumb_dir')) . '/';
-			$w        = new FabrikWorker;
+			$w        = new Worker;
 			$thumbDir = $w->parseMessageForPlaceHolder($thumbDir);
 			$thumbDir = str_replace("\\", "\\\\", $thumbDir);
 
-			$w        = new FabrikWorker;
+			$w        = new Worker;
 			$thumbDir = $w->parseMessageForPlaceHolder($thumbDir);
 			$thumbDir .= $params->get('thumb_prefix');
 
@@ -2849,9 +2849,9 @@ class Fileupload extends Element
 						{
 							$files = $row->{$elName . '_raw'};
 
-							if (FabrikWorker::isJSON($files))
+							if (Worker::isJSON($files))
 							{
-								$files = FabrikWorker::JSONtoData($files, true);
+								$files = Worker::JSONtoData($files, true);
 							}
 							else
 							{
@@ -3072,7 +3072,7 @@ class Fileupload extends Element
 		$storage  = $this->getStorage();
 		$elName   = $this->getFullName(true, false);
 		$filePath = $row->$elName;
-		$filePath = FabrikWorker::JSONtoData($filePath, false);
+		$filePath = Worker::JSONtoData($filePath, false);
 		$filePath = is_object($filePath) ? FArrayHelper::fromObject($filePath) : (array) $filePath;
 
 		if ($this->getGroupModel()->canRepeat())

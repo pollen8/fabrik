@@ -12,6 +12,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 use Fabrik\Helpers\Html;
+use Fabrik\Helpers\Worker;
 
 jimport('joomla.application.component.model');
 
@@ -132,7 +133,7 @@ class PlgFabrik_List extends FabrikPlugin
 		if ($this->canUse())
 		{
 			$p  = $this->onGetFilterKey_result();
-			$j3 = FabrikWorker::j3();
+			$j3 = Worker::j3();
 			Html::addPath('plugins/fabrik_list/' . $p . '/images/', 'image', 'list');
 			$name       = $this->_getButtonName();
 			$label      = $this->buttonLabel();
@@ -143,7 +144,7 @@ class PlgFabrik_List extends FabrikPlugin
 				'forceImage' => false
 			);
 
-			if (FabrikWorker::isImageExtension($imageName))
+			if (Worker::isImageExtension($imageName))
 			{
 				$opts['forceImage'] = true;
 			}

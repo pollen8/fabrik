@@ -21,7 +21,6 @@ use \JHtml;
 use \stdClass;
 use \JPluginHelper;
 use \JString;
-use \FabrikWorker;
 use \JFolder;
 use \FabrikString;
 use \JModelLegacy;
@@ -37,6 +36,8 @@ use \FText;
 use \JFilterInput;
 use \JComponentHelper;
 use \JFile;
+use Fabrik\Helpers\Worker;
+
 
 jimport('joomla.application.component.model');
 jimport('joomla.filesystem.file');
@@ -790,7 +791,7 @@ class Element extends \FabrikPlugin
 	public function getAsField_html(&$aFields, &$aAsFields, $opts = array())
 	{
 		$dbTable    = $this->actualTableName();
-		$db         = FabrikWorker::getDbo();
+		$db         = Worker::getDbo();
 		$table      = $this->getListModel()->getTable();
 		$fullElName = FArrayHelper::getValue($opts, 'alias', $db->qn($dbTable . '___' . $this->element->name));
 		$fName      = $dbTable . '.' . $this->element->name;
@@ -979,7 +980,7 @@ class Element extends \FabrikPlugin
 				// Could be  a linked parent element in which case the form doesn't contain the element whose id is $lookUpId
 				if (!$lookUp)
 				{
-					$lookUp = FabrikWorker::getPluginManager()->getElementPlugin($lookUpId);
+					$lookUp = Worker::getPluginManager()->getElementPlugin($lookUpId);
 				}
 
 				if ($lookUp)
@@ -990,7 +991,7 @@ class Element extends \FabrikPlugin
 				}
 				else
 				{
-					FabrikWorker::logError('Did not load element ' . $lookUpId . ' for element::canView()', 'error');
+					Worker::logError('Did not load element ' . $lookUpId . ' for element::canView()', 'error');
 				}
 			}
 		}
@@ -1059,7 +1060,7 @@ class Element extends \FabrikPlugin
 						// Could be  a linked parent element in which case the form doesn't contain the element whose id is $lookUpId
 						if (!$lookUp)
 						{
-							$lookUp = FabrikWorker::getPluginManager()->getElementPlugin($lookUpId);
+							$lookUp = Worker::getPluginManager()->getElementPlugin($lookUpId);
 						}
 
 						if ($lookUp)
@@ -1070,7 +1071,7 @@ class Element extends \FabrikPlugin
 						}
 						else
 						{
-							FabrikWorker::logError('Did not load element ' . $lookUpId . ' for element::canUse()', 'error');
+							Worker::logError('Did not load element ' . $lookUpId . ' for element::canUse()', 'error');
 						}
 					}
 				}
@@ -1296,7 +1297,7 @@ class Element extends \FabrikPlugin
 	{
 		if (!isset($this->default))
 		{
-			$w       = new FabrikWorker;
+			$w       = new Worker;
 			$element = $this->getElement();
 			$default = $w->parseMessageForPlaceHolder($element->default, $data);
 
@@ -1316,7 +1317,7 @@ class Element extends \FabrikPlugin
 					Html::debug($default, 'element eval default:' . $element->label);
 					$default = stripslashes($default);
 					$default = @eval($default);
-					FabrikWorker::logEval($default, 'Caught exception on eval of ' . $element->name . ': %s');
+					Worker::logEval($default, 'Caught exception on eval of ' . $element->name . ': %s');
 
 					// Test this does stop error
 					$this->_default = $default === false ? '' : $default;
@@ -1522,7 +1523,7 @@ class Element extends \FabrikPlugin
 			if (FArrayHelper::getValue($opts, 'runplugins', false))
 			{
 				$formModel = $this->getFormModel();
-				FabrikWorker::getPluginManager()->runPlugins('onGetElementDefault', $formModel, 'form', $this);
+				Worker::getPluginManager()->runPlugins('onGetElementDefault', $formModel, 'form', $this);
 			}
 
 			$this->defaults[$key] = $values;
@@ -1626,7 +1627,7 @@ class Element extends \FabrikPlugin
 		$displayData->canView    = $this->canView();
 		$displayData->id         = $this->getHTMLId($repeatCounter);
 		$displayData->canUse     = $this->canUse();
-		$displayData->j3         = FabrikWorker::j3();
+		$displayData->j3         = Worker::j3();
 		$displayData->hidden     = $this->isHidden();
 		$displayData->label      = FText::_($element->label);
 		$displayData->hasLabel   = $this->get('hasLabel');
@@ -1875,7 +1876,7 @@ class Element extends \FabrikPlugin
 			return '';
 		}
 
-		$w   = new FabrikWorker;
+		$w   = new Worker;
 		$tip = $w->parseMessageForPlaceHolder($params->get('rollover'), $data);
 
 		if ($params->get('tipseval'))
@@ -1889,7 +1890,7 @@ class Element extends \FabrikPlugin
 				$res = @eval($tip);
 			}
 
-			FabrikWorker::logEval($res, 'Caught exception (%s) on eval of ' . $this->getElement()->name . ' tip: ' . $tip);
+			Worker::logEval($res, 'Caught exception (%s) on eval of ' . $this->getElement()->name . ' tip: ' . $tip);
 			$tip = $res;
 		}
 
@@ -2093,7 +2094,7 @@ class Element extends \FabrikPlugin
 		}
 
 		// Copy js events
-		$db    = FabrikWorker::getDbo(true);
+		$db    = Worker::getDbo(true);
 		$query = $db->getQuery(true);
 		$query->select('id')->from('#__{package}_jsactions')->where('element_id = ' . (int) $id);
 		$db->setQuery($query);
@@ -2188,7 +2189,7 @@ class Element extends \FabrikPlugin
 		if ($elementTable->name != $this->_foreignKey)
 		{
 			$l              = $this->getLabel($c, $tmpl);
-			$w              = new FabrikWorker;
+			$w              = new Worker;
 			$element->label = $w->parseMessageForPlaceHolder($l, $model->data);
 		}
 
@@ -2428,7 +2429,7 @@ class Element extends \FabrikPlugin
 
 		if ($customLink !== '' && $this->getElement()->link_to_detail == '1' && $params->get('custom_link_indetails', true))
 		{
-			$w = new FabrikWorker;
+			$w = new Worker;
 
 			/**
 			 * $$$ hugh - this should really happen elsewhere, but I needed a quick fix for handling
@@ -2899,7 +2900,7 @@ class Element extends \FabrikPlugin
 		 * $element = $this->getParent();
 		 */
 		$element = $this->getElement();
-		$w       = new FabrikWorker;
+		$w       = new Worker;
 
 		if (array_key_exists($element->id, $allJsActions))
 		{
@@ -3571,15 +3572,15 @@ class Element extends \FabrikPlugin
 
 		for ($j = $c; $j >= 0; $j--)
 		{
-			$vals = FabrikWorker::JSONtoData($rows[$j]->value, true);
-			$txt  = FabrikWorker::JSONtoData($rows[$j]->text, true);
+			$vals = Worker::JSONtoData($rows[$j]->value, true);
+			$txt  = Worker::JSONtoData($rows[$j]->text, true);
 
 			if (is_array($vals))
 			{
 				for ($i = 0; $i < count($vals); $i++)
 				{
-					$vals2 = FabrikWorker::JSONtoData($vals[$i], true);
-					$txt2  = FabrikWorker::JSONtoData(FArrayHelper::getValue($txt, $i), true);
+					$vals2 = Worker::JSONtoData($vals[$i], true);
+					$txt2  = Worker::JSONtoData(FArrayHelper::getValue($txt, $i), true);
 
 					for ($jj = 0; $jj < count($vals2); $jj++)
 					{
@@ -3591,7 +3592,7 @@ class Element extends \FabrikPlugin
 					}
 				}
 
-				if (FabrikWorker::isJSON($rows[$j]->value))
+				if (Worker::isJSON($rows[$j]->value))
 				{
 					// $$$ rob 01/10/2012 - if not unset then you could get json values in standard dd filter (checkbox)
 					unset($rows[$j]);
@@ -3660,7 +3661,7 @@ class Element extends \FabrikPlugin
 			 **/
 			if (!is_array($phpOpts) || !$phpOpts[0] || !is_object($phpOpts[0]) || !isset($phpOpts[0]->value) || !isset($phpOpts[0]->text))
 			{
-				FabrikWorker::logError(sprintf(FText::_('COM_FABRIK_ELEMENT_SUBOPTION_ERROR'), $this->element->name, var_export($phpOpts, true)), 'error');
+				Worker::logError(sprintf(FText::_('COM_FABRIK_ELEMENT_SUBOPTION_ERROR'), $this->element->name, var_export($phpOpts, true)), 'error');
 
 				return array();
 			}
@@ -3706,7 +3707,7 @@ class Element extends \FabrikPlugin
 			 **/
 			if (!is_array($phpOpts) || !$phpOpts[0] || !is_object($phpOpts[0]) || !isset($phpOpts[0]->value) || !isset($phpOpts[0]->text))
 			{
-				FabrikWorker::logError(sprintf(FText::_('COM_FABRIK_ELEMENT_SUBOPTION_ERROR'), $this->element->name, var_export($phpOpts, true)), 'error');
+				Worker::logError(sprintf(FText::_('COM_FABRIK_ELEMENT_SUBOPTION_ERROR'), $this->element->name, var_export($phpOpts, true)), 'error');
 
 				return array();
 			}
@@ -3766,7 +3767,7 @@ class Element extends \FabrikPlugin
 
 		if ($pop !== '')
 		{
-			$w    = new FabrikWorker;
+			$w    = new Worker;
 			$data = empty($data) ? $this->getFormModel()->getData() : $data;
 			$pop  = $w->parseMessageForPlaceHolder($pop, $data);
 
@@ -3786,7 +3787,7 @@ class Element extends \FabrikPlugin
 				$res = @eval($pop);
 			}
 
-			FabrikWorker::logEval($res, 'Eval exception : ' . $this->element->name . '::getPhpOptions() : ' . $pop . ' : %s');
+			Worker::logEval($res, 'Eval exception : ' . $this->element->name . '::getPhpOptions() : ' . $pop . ' : %s');
 
 			$this->phpOptions[$key] = $res;
 
@@ -4234,7 +4235,7 @@ class Element extends \FabrikPlugin
 	 */
 	protected function getRangedFilterValue($value, $condition = '')
 	{
-		$db      = FabrikWorker::getDbo();
+		$db      = Worker::getDbo();
 		$element = $this->getElement();
 
 		if ($element->filter_type === 'range' || strtoupper($condition) === 'BETWEEN')
@@ -4345,7 +4346,7 @@ class Element extends \FabrikPlugin
 	{
 		$condition = JString::strtolower($condition);
 		$this->escapeQueryValue($condition, $value);
-		$db = FabrikWorker::getDbo();
+		$db = Worker::getDbo();
 
 		if (is_array($value))
 		{
@@ -4544,7 +4545,7 @@ class Element extends \FabrikPlugin
 	{
 		if ($this->encryptMe())
 		{
-			$db     = FabrikWorker::getDbo();
+			$db     = Worker::getDbo();
 			$secret = $this->config->get('secret');
 			$key    = 'AES_DECRYPT(' . $key . ', ' . $db->q($secret) . ')';
 		}
@@ -4614,7 +4615,7 @@ class Element extends \FabrikPlugin
 	public function onRemove()
 	{
 		// Delete js actions
-		$db    = FabrikWorker::getDbo(true);
+		$db    = Worker::getDbo(true);
 		$query = $db->getQuery(true);
 		$id    = (int) $this->getElement()->id;
 		$query->delete()->from('#__{package}_jsactions')->where('element_id =' . $id);
@@ -4769,7 +4770,7 @@ class Element extends \FabrikPlugin
 
 		if (!is_null($elementId))
 		{
-			$pluginManager = FabrikWorker::getPluginManager();
+			$pluginManager = Worker::getPluginManager();
 			$plugin        = $pluginManager->getElementPlugin($elementId);
 
 			/**
@@ -4857,7 +4858,7 @@ class Element extends \FabrikPlugin
 	protected function getCountQuery(&$listModel, $labels = array())
 	{
 		$label    = count($labels) == 0 ? "'calc' AS label" : 'CONCAT(' . implode(', " & " , ', $labels) . ')  AS label';
-		$db       = FabrikWorker::getDbo();
+		$db       = Worker::getDbo();
 		$item     = $listModel->getTable();
 		$joinSQL  = $listModel->buildQueryJoin();
 		$whereSQL = $listModel->buildQueryWhere();
@@ -4912,7 +4913,7 @@ class Element extends \FabrikPlugin
 	 */
 	protected function calcGroupBys($splitParam, $listModel)
 	{
-		$pluginManager  = FabrikWorker::getPluginManager();
+		$pluginManager  = Worker::getPluginManager();
 		$requestGroupBy = $this->app->input->get('group_by', '');
 		$groupByLabels  = array();
 
@@ -5024,7 +5025,7 @@ class Element extends \FabrikPlugin
 
 		if ($split)
 		{
-			$pluginManager = FabrikWorker::getPluginManager();
+			$pluginManager = Worker::getPluginManager();
 			$plugin        = $pluginManager->getElementPlugin($splitSum);
 			$sql           = $this->getSumQuery($listModel, $groupBys) . ' GROUP BY label';
 			$sql           = $listModel->pluginQuery($sql);
@@ -5082,7 +5083,7 @@ class Element extends \FabrikPlugin
 
 		if ($split)
 		{
-			$pluginManager = FabrikWorker::getPluginManager();
+			$pluginManager = Worker::getPluginManager();
 			$plugin        = $pluginManager->getElementPlugin($splitAvg);
 			$sql           = $this->getAvgQuery($listModel, $groupBys) . " GROUP BY label";
 			$sql           = $listModel->pluginQuery($sql);
@@ -5160,7 +5161,7 @@ class Element extends \FabrikPlugin
 
 		if ($split)
 		{
-			$pluginManager = FabrikWorker::getPluginManager();
+			$pluginManager = Worker::getPluginManager();
 			$plugin        = $pluginManager->getElementPlugin($splitMedian);
 			$sql           = $this->getMedianQuery($listModel, $groupBys) . ' GROUP BY label ';
 			$sql           = $listModel->pluginQuery($sql);
@@ -5217,7 +5218,7 @@ class Element extends \FabrikPlugin
 
 		if ($split)
 		{
-			$pluginManager = FabrikWorker::getPluginManager();
+			$pluginManager = Worker::getPluginManager();
 			$plugin        = $pluginManager->getElementPlugin($splitCount);
 			$sql           = $this->getCountQuery($listModel, $groupBys) . " GROUP BY label ";
 			$sql           = $listModel->pluginQuery($sql);
@@ -5281,7 +5282,7 @@ class Element extends \FabrikPlugin
 
 		if ($split)
 		{
-			$pluginManager = FabrikWorker::getPluginManager();
+			$pluginManager = Worker::getPluginManager();
 			$plugin        = $pluginManager->getElementPlugin($splitCustom);
 			$splitName     = method_exists($plugin, 'getJoinLabelColumn') ? $plugin->getJoinLabelColumn() : $plugin->getFullName(false, false);
 			$splitName     = FabrikString::safeColName($splitName);
@@ -5392,7 +5393,7 @@ class Element extends \FabrikPlugin
 					if (!empty($custom_calc_php))
 					{
 						$o->value = @eval((string) stripslashes($custom_calc_php));
-						FabrikWorker::logEval($custom_calc_php, 'Caught exception on eval of ' . $name . ': %s');
+						Worker::logEval($custom_calc_php, 'Caught exception on eval of ' . $name . ': %s');
 					}
 					else
 					{
@@ -5716,7 +5717,7 @@ class Element extends \FabrikPlugin
 			return;
 		}
 
-		$db    = FabrikWorker::getDbo(true);
+		$db    = Worker::getDbo(true);
 		$query = $db->getQuery(true);
 		$query->delete('#__{package}_joins')->where('element_id = ' . $id);
 		$db->setQuery($query);
@@ -5828,7 +5829,7 @@ class Element extends \FabrikPlugin
 	 */
 	public function ajax_loadTableFields()
 	{
-		$db             = FabrikWorker::getDbo();
+		$db             = Worker::getDbo();
 		$listModel      = JModelLegacy::getInstance('List', 'FabrikFEModel');
 		$input          = $this->app->input;
 		$this->_cnnId   = $input->getInt('cid', 0);
@@ -5978,7 +5979,7 @@ class Element extends \FabrikPlugin
 	{
 		$params    = $this->getParams();
 		$listModel = $this->getListModel();
-		$data      = FabrikWorker::JSONtoData($data, true);
+		$data      = Worker::JSONtoData($data, true);
 
 		foreach ($data as $i => &$d)
 		{
@@ -6191,7 +6192,7 @@ class Element extends \FabrikPlugin
 			return false;
 		}
 
-		$db              = FabrikWorker::getDbo(true);
+		$db              = Worker::getDbo(true);
 		$element->params = $this->getParams()->toString();
 		$query           = $db->getQuery(true);
 		$query->update('#__{package}_elements')->set('params = ' . $db->q($element->params))->where('id = ' . (int) $element->id);
@@ -6544,7 +6545,7 @@ class Element extends \FabrikPlugin
 		$input = $this->app->input;
 		$this->setId($input->getInt('element_id'));
 		$this->loadMeForAjax();
-		$cache  = FabrikWorker::getCache();
+		$cache  = Worker::getCache();
 		$search = $input->get('value', '', 'string');
 		echo $cache->call(array(get_class($this), 'cacheAutoCompleteOptions'), $this, $search);
 	}
@@ -6796,7 +6797,7 @@ class Element extends \FabrikPlugin
 			$id = $this->id;
 		}
 
-		$db    = FabrikWorker::getDbo(true);
+		$db    = Worker::getDbo(true);
 		$query = $db->getQuery(true);
 		$query->select('id')->from('#__{package}_elements')->where('parent_id = ' . (int) $id);
 		$db->setQuery($query);
@@ -6919,7 +6920,7 @@ class Element extends \FabrikPlugin
 	 */
 	public function updateJoinedPks($oldName, $newName)
 	{
-		$db    = FabrikWorker::getDbo(true);
+		$db    = Worker::getDbo(true);
 		$item  = $this->getListModel()->getTable();
 		$query = $db->getQuery(true);
 
@@ -7054,7 +7055,7 @@ class Element extends \FabrikPlugin
 	 */
 	public function getPluginManager()
 	{
-		return FabrikWorker::getPluginManager();
+		return Worker::getPluginManager();
 	}
 
 	/**
@@ -7342,7 +7343,7 @@ class Element extends \FabrikPlugin
 		// The submitted element's values
 		$d = FArrayHelper::getValue($formData, $rawName, FArrayHelper::getValue($formData, $name));
 		// set $emptyish to false so if no selection, we don't save a bogus empty row
-		$allJoinValues = FabrikWorker::JSONtoData($d, true, false);
+		$allJoinValues = Worker::JSONtoData($d, true, false);
 
 		if ($groupModel->isJoin())
 		{
@@ -7702,7 +7703,7 @@ class Element extends \FabrikPlugin
 					$this->validationError .= $msg['message'] . '<br />';
 				}
 			}
-			FabrikWorker::killMessage($this->app, 'warning');
+			Worker::killMessage($this->app, 'warning');
 
 			return false;
 		}

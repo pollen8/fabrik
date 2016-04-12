@@ -12,6 +12,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 use Fabrik\Helpers\Html;
+use Fabrik\Helpers\Worker;
 
 jimport('joomla.html.html');
 jimport('joomla.form.formfield');
@@ -49,7 +50,7 @@ class JFormFieldTables extends JFormFieldList
 		$connectionName = 'connection_id';
 		$connId         = (int) $this->form->getValue($connectionName);
 		$options        = array();
-		$db             = FabrikWorker::getDbo(true);
+		$db             = Worker::getDbo(true);
 
 		// DB join element observes 'params___join_conn_id'
 		if (strstr($connectionDd, 'params_') && $connId === 0)

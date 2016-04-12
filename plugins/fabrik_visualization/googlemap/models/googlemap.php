@@ -14,6 +14,8 @@ defined('_JEXEC') or die('Restricted access');
 use Joomla\Utilities\ArrayHelper;
 use Fabrik\Helpers\Html;
 use Fabrik\Helpers\Googlemap;
+use Fabrik\Helpers\Worker;
+
 
 jimport('joomla.application.component.model');
 
@@ -253,7 +255,7 @@ class FabrikModelGooglemap extends FabrikFEModelVisualization
 	{
 		$input = $this->app->input;
 		$icons = array();
-		$w = new FabrikWorker;
+		$w = new Worker;
 		$uri = JURI::getInstance();
 		$params = $this->getParams();
 		$templates = (array) $params->get('fb_gm_detailtemplate');

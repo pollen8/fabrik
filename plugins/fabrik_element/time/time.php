@@ -17,7 +17,7 @@ defined('_JEXEC') or die('Restricted access');
 use \FArrayHelper;
 use \JHtml;
 use \stdClass;
-use \FabrikWorker;
+use Fabrik\Helpers\Worker;
 use \FabrikString;
 use \FText;
 
@@ -353,7 +353,7 @@ class Time extends Element
 		 * Jaanus: removed condition canrepeat() from renderListData:
 		 * weird result such as ["00:03:45","00 when not repeating but still join and merged. Using isJoin() instead
 		 */
-		$data = $groupModel->isJoin() ? FabrikWorker::JSONtoData($data, true) : array($data);
+		$data = $groupModel->isJoin() ? Worker::JSONtoData($data, true) : array($data);
 		$data = (array) $data;
 		$ft = $params->get('list_time_format', 'H:i:s');
 		$sep = $params->get('time_separatorlabel', FText::_(':'));

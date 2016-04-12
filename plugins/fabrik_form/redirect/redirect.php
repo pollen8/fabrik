@@ -11,6 +11,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Fabrik\Helpers\Worker;
+
 // Require the abstract plugin class
 require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
 
@@ -48,7 +50,7 @@ class PlgFabrik_FormRedirect extends PlgFabrik_Form
 		$sshowsystemmsg = (array) $this->session->get($context . 'showsystemmsg', array());
 
 		$this->formModel = $formModel;
-		$w = new FabrikWorker;
+		$w = new Worker;
 
 		$form = $formModel->getForm();
 		$this->data = $this->getProcessData();
@@ -83,7 +85,7 @@ class PlgFabrik_FormRedirect extends PlgFabrik_Form
 		{
 			$navIds = $this->getNavIds();
 			$next_rowid = $navIds->next == $navIds->last ? '' : '&rowid=' . $navIds->next;
-			$itemId = FabrikWorker::itemId();
+			$itemId = Worker::itemId();
 
 			if ($this->app->isAdmin())
 			{

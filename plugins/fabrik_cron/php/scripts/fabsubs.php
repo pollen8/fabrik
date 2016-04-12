@@ -2,13 +2,15 @@
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
 
+use Fabrik\Helpers\Worker;
+
 error_reporting(E_ALL);
 
 jimport('joomla.mail.helper');
 //JTable::addIncludePath(JPATH_ADMINISTRATOR . '/components/com_fabsubs/tables');
 //require_once JPATH_ROOT . '/fabrik_plugins/form/paypal/scripts/fabrikar_subs.php';
 
-$db = FabrikWorker::getDbo();
+$db = Worker::getDbo();
 
 $db->setQuery("SELECT *,
 CASE

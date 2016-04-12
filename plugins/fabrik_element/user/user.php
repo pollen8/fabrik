@@ -16,7 +16,7 @@ defined('_JEXEC') or die('Restricted access');
 use \FArrayHelper;
 use \JHtml;
 use \stdClass;
-use \FabrikWorker;
+use Fabrik\Helpers\Worker;
 use \FabrikString;
 use \JFilterInput;
 use \JFactory;
@@ -152,9 +152,9 @@ class User extends Databasejoin
 				$id = is_array($id) ? $id[0] : $id;
 
 				$id = html_entity_decode($id);
-				if (FabrikWorker::isJSON($id))
+				if (Worker::isJSON($id))
 				{
-					$id = FabrikWorker::JSONtoData($id, true);
+					$id = Worker::JSONtoData($id, true);
 				}
 
 				$id = is_array($id) ? $id[0] : $id;
@@ -330,9 +330,9 @@ class User extends Databasejoin
 
 		$data[$element->name] = html_entity_decode($data[$element->name]);
 
-		if (FabrikWorker::isJSON($data[$element->name]))
+		if (Worker::isJSON($data[$element->name]))
 		{
-			$data[$element->name] = FabrikWorker::JSONtoData($data[$element->name], true);
+			$data[$element->name] = Worker::JSONtoData($data[$element->name], true);
 		}
 
 		$data[$element->name] = is_array($data[$element->name]) ? $data[$element->name][0] : $data[$element->name];
@@ -435,7 +435,7 @@ class User extends Databasejoin
 						$user      = JFactory::getUser($userId);
 						$newUserId = $user->get('id');
 
-						if (empty($newUserId) && FabrikWorker::isEmail($userId))
+						if (empty($newUserId) && Worker::isEmail($userId))
 						{
 							$db    = $this->_db;
 							$query = $db->getQuery(true)
@@ -547,7 +547,7 @@ class User extends Databasejoin
 	{
 		$table      = $this->actualTableName();
 		$element    = $this->getElement();
-		$db         = FabrikWorker::getDbo();
+		$db         = Worker::getDbo();
 		$fullElName = FArrayHelper::getValue($opts, 'alias', $table . '___' . $element->name);
 
 		// Check if main database is the same as the elements database
@@ -903,7 +903,7 @@ class User extends Databasejoin
 	 */
 	public function getDb()
 	{
-		return FabrikWorker::getDbo(true);
+		return Worker::getDbo(true);
 	}
 
 	/**
@@ -944,7 +944,7 @@ class User extends Databasejoin
 			// Test json string e.g. ["350"] - fixes JUser: :_load: User does not exist notices
 			if (!is_int($userId))
 			{
-				$userId = FabrikWorker::JSONtoData($userId, true);
+				$userId = Worker::JSONtoData($userId, true);
 				$userId = (int) FArrayHelper::getValue($userId, 0, 0);
 			}
 		}
@@ -983,7 +983,7 @@ class User extends Databasejoin
 	protected function getJoinValueColumn()
 	{
 		$join = $this->getJoin();
-		$db   = FabrikWorker::getDbo();
+		$db   = Worker::getDbo();
 
 		if ((string) $join->table_join_alias === '')
 		{

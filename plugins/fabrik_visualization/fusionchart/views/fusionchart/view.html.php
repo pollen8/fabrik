@@ -12,6 +12,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 use Fabrik\Helpers\Html;
+use Fabrik\Helpers\Worker;
 
 jimport('joomla.application.component.view');
 
@@ -37,7 +38,7 @@ class FabrikViewFusionchart extends JViewLegacy
 	{
 		$app = JFactory::getApplication();
 		$input = $app->input;
-		$j3 = FabrikWorker::j3();
+		$j3 = Worker::j3();
 		$srcs = Html::framework();
 		$srcs['FbListFilter'] = 'media/com_fabrik/js/listfilter.js';
 		$srcs['AdvancedSearch'] = 'media/com_fabrik/js/advanced-search.js';

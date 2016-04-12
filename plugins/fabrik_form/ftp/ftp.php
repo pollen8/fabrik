@@ -14,7 +14,7 @@ namespace Fabrik\Plugins\Form;
 defined('_JEXEC') or die('Restricted access');
 
 use \FText;
-use \FabrikWorker;
+use Fabrik\Helpers\Worker;
 use \JString;
 use \JModelLegacy;
 use \FabrikString;
@@ -88,7 +88,7 @@ class Ftp extends \PlgFabrik_Form
 
 		$cc = null;
 		$bcc = null;
-		$w = new FabrikWorker;
+		$w = new Worker;
 
 		// $$$ hugh - test stripslashes(), should be safe enough.
 		$message = stripslashes($message);
@@ -110,7 +110,7 @@ class Ftp extends \PlgFabrik_Form
 		if ($ftpEvalFileName)
 		{
 			$ftpFileName = @eval($ftpFileName);
-			FabrikWorker::logEval($ftpEvalFileName, 'Caught exception on eval in ftp filename eval : %s');
+			Worker::logEval($ftpEvalFileName, 'Caught exception on eval in ftp filename eval : %s');
 		}
 
 		if (empty($ftpFileName))

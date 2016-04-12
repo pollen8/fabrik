@@ -16,7 +16,7 @@ defined('_JEXEC') or die('Restricted access');
 use \FArrayHelper;
 use \JHtml;
 use \stdClass;
-use \FabrikWorker;
+use Fabrik\Helpers\Worker;
 use \JFactory;
 
 /**
@@ -179,7 +179,7 @@ class Usergroup extends ElementList
 
 		foreach ($tmpIds as $tmpId)
 		{
-			$tmpId = FabrikWorker::JSONtoData($tmpId, true);
+			$tmpId = Worker::JSONtoData($tmpId, true);
 			$ids = array_merge($ids, $tmpId);
 		}
 
@@ -249,7 +249,7 @@ class Usergroup extends ElementList
 	public function getValue($data, $repeatCounter = 0, $opts = array())
 	{
 		$value = parent::getValue($data, $repeatCounter, $opts);
-		$value = FabrikWorker::JSONtoData($value);
+		$value = Worker::JSONtoData($value);
 
 		if (is_string($value))
 		{

@@ -16,13 +16,12 @@ defined('_JEXEC') or die('Restricted access');
 use Joomla\Utilities\ArrayHelper;
 use Fabrik\Helpers\Html;
 use \JString;
-use \FabrikWorker;
 use \stdClass;
 use \FArrayHelper;
 use \FabrikString;
 use \JHtml;
 use \JFactory;
-
+use Fabrik\Helpers\Worker;
 
 jimport('joomla.application.component.model');
 jimport('joomla.filesystem.file');
@@ -240,7 +239,7 @@ class ElementList extends Element
 
 					$condition2 = $condition == '=' ? 'LIKE' : 'NOT LIKE';
 					$glue = $condition == '=' ? 'OR' : 'AND';
-					$db = FabrikWorker::getDbo();
+					$db = Worker::getDbo();
 					$str = "($key $condition $value " . " $glue $key $condition2 " . $db->q('["' . $originalValue . '"%') . " $glue $key $condition2 "
 					. $db->q('%"' . $originalValue . '"%') . " $glue $key $condition2 " . $db->q('%"' . $originalValue . '"]') . ")";
 					break;
@@ -607,7 +606,7 @@ class ElementList extends Element
 
 		if (isset($thisRow->$raw))
 		{
-			$rawData = FabrikWorker::JSONtoData($thisRow->$raw, true);
+			$rawData = Worker::JSONtoData($thisRow->$raw, true);
 
 			foreach ($rawData as &$val)
 			{
@@ -623,7 +622,7 @@ class ElementList extends Element
 		}
 
 		// Repeat group data
-		$gdata = FabrikWorker::JSONtoData($data, true);
+		$gdata = Worker::JSONtoData($data, true);
 		$this->listPreformat($gdata, $thisRow);
 		$addHtml = (count($gdata) !== 1 || $multiple || $mergeGroupRepeat) && $this->renderWithHTML;
 		$uls = array();
@@ -631,7 +630,7 @@ class ElementList extends Element
 		foreach ($gdata as $i => $d)
 		{
 			$lis = array();
-			$values = is_array($d) ? $d : FabrikWorker::JSONtoData($d, true);
+			$values = is_array($d) ? $d : Worker::JSONtoData($d, true);
 
 			foreach ($values as $tmpVal)
 			{
@@ -722,7 +721,7 @@ class ElementList extends Element
 			$id = $this->getFullName(true, false) . '_id';
 			$data = $thisRow->$id;
 
-			$rawData = FabrikWorker::JSONtoData($data, true);
+			$rawData = Worker::JSONtoData($data, true);
 			$thisRow->$raw = json_encode($rawData);
 		}
 
@@ -860,7 +859,7 @@ class ElementList extends Element
 	{
 		$params = $this->getParams();
 
-		return FabrikWorker::j3() && $params->get('btnGroup', false);
+		return Worker::j3() && $params->get('btnGroup', false);
 	}
 
 	/**
@@ -922,7 +921,7 @@ class ElementList extends Element
 
 		if (is_string($v))
 		{
-			$v = FabrikWorker::JSONtoData($v, true);
+			$v = Worker::JSONtoData($v, true);
 		}
 
 		return $v;
@@ -1038,7 +1037,7 @@ class ElementList extends Element
 	{
 		$labels = $this->getSubOptionLabels();
 		$multiple = $this->isMultiple();
-		$vals = is_array($v) ? $v : FabrikWorker::JSONtoData($v, true);
+		$vals = is_array($v) ? $v : Worker::JSONtoData($v, true);
 
 		foreach ($vals as $val)
 		{

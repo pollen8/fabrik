@@ -12,6 +12,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 use Joomla\Utilities\ArrayHelper;
+use Fabrik\Helpers\Worker;
 
 /**
  * Element Helper class
@@ -34,7 +35,7 @@ class FabrikHelperElement
 
 	public static function makeIdElement($baseElement)
 	{
-		$pluginManager = FabrikWorker::getPluginManager();
+		$pluginManager = Worker::getPluginManager();
 		$groupModel = $baseElement->getGroupModel();
 		$elementModel = $pluginManager->getPlugIn('internalid', 'element');
 		$elementModel->getElement()->name = 'id';
@@ -57,7 +58,7 @@ class FabrikHelperElement
 
 	public static function makeParentElement($baseElement)
 	{
-		$pluginManager = FabrikWorker::getPluginManager();
+		$pluginManager = Worker::getPluginManager();
 		$groupModel = $baseElement->getGroupModel();
 		$elementModel = $pluginManager->getPlugIn('field', 'element');
 		$elementModel->getElement()->name = 'parent_id';
@@ -82,7 +83,7 @@ class FabrikHelperElement
 	public static function filterValue($elementId)
 	{
 		$app = JFactory::getApplication();
-		$pluginManager = FabrikWorker::getPluginManager();
+		$pluginManager = Worker::getPluginManager();
 		$model = $pluginManager->getElementPlugin($elementId);
 		$listModel = $model->getListModel();
 		$listId = $listModel->getId();

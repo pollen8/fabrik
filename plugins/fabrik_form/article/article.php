@@ -30,7 +30,7 @@ use \JString;
 use \FabrikFEModelForm;
 use \FabrikString;
 use \FText;
-use \FabrikWorker;
+use Fabrik\Helpers\Worker;
 
 /**
  * Create Joomla article(s) upon form submission
@@ -752,7 +752,7 @@ class Article extends \PlgFabrik_Form
 			$this->data[$key] = $val;
 		}
 
-		$w      = new FabrikWorker;
+		$w      = new Worker;
 		$output = $w->parseMessageForPlaceholder($message, $this->data, true);
 
 		return $output;

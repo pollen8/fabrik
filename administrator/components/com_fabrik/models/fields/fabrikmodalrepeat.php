@@ -12,6 +12,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 use Fabrik\Helpers\Html;
+use Fabrik\Helpers\Worker;
 
 jimport('joomla.form.formfield');
 
@@ -50,7 +51,7 @@ class JFormFieldFabrikModalrepeat extends JFormField
 		$subForm = new JForm($this->name, array('control' => 'jform'));
 		$xml = $this->element->children()->asXML();
 		$subForm->load($xml);
-		$j3 = FabrikWorker::j3();
+		$j3 = Worker::j3();
 
 		// Needed for repeating modals in gmaps viz
 		$subForm->repeatCounter = (int) @$this->form->repeatCounter;
@@ -79,7 +80,7 @@ class JFormFieldFabrikModalrepeat extends JFormField
 
 		if ($view === 'element')
 		{
-			$pluginManager = FabrikWorker::getPluginManager();
+			$pluginManager = Worker::getPluginManager();
 			$feModel = $pluginManager->getPluginFromId($id);
 		}
 		else

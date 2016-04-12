@@ -14,6 +14,7 @@ defined('_JEXEC') or die('Restricted access');
 use \Joomla\Registry\Registry;
 use Joomla\Utilities\ArrayHelper;
 use Fabrik\Helpers\Html;
+use Fabrik\Helpers\Worker;
 
 jimport('joomla.application.component.model');
 
@@ -104,7 +105,7 @@ class PlgFabrik_Validationrule extends FabrikPlugin
 			return true;
 		}
 
-		$w = new FabrikWorker;
+		$w = new Worker;
 		$groupModel = $this->elementModel->getGroupModel();
 		$inRepeat = $groupModel->canRepeat();
 

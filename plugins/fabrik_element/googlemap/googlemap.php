@@ -14,7 +14,7 @@ namespace Fabrik\Plugins\Element;
 defined('_JEXEC') or die('Restricted access');
 
 use Joomla\Utilities\ArrayHelper;
-use \FabrikWorker;
+use Fabrik\Helpers\Worker;
 use \stdClass;
 use \FabrikString;
 use \JUri;
@@ -79,7 +79,7 @@ class Googlemap extends Element
 		$w = (int) $params->get('fb_gm_table_mapwidth');
 		$h = (int) $params->get('fb_gm_table_mapheight');
 		$z = (int) $params->get('fb_gm_table_zoomlevel');
-		$data = FabrikWorker::JSONtoData($data, true);
+		$data = Worker::JSONtoData($data, true);
 
 		foreach ($data as $i => &$d)
 		{
@@ -126,7 +126,7 @@ class Googlemap extends Element
 	public function renderListData_feed($data, &$thisRow)
 	{
 		$str = '';
-		$data = FabrikWorker::JSONtoData($data, true);
+		$data = Worker::JSONtoData($data, true);
 
 		foreach ($data as $d)
 		{
@@ -426,7 +426,7 @@ class Googlemap extends Element
 
 		if ($field)
 		{
-			$elementModel = FabrikWorker::getPluginManager()->getElementPlugin($field);
+			$elementModel = Worker::getPluginManager()->getElementPlugin($field);
 
 			if (!$this->getFormModel()->isEditable())
 			{
@@ -455,7 +455,7 @@ class Googlemap extends Element
 
 		if ($field)
 		{
-			$elementModel = FabrikWorker::getPluginManager()->getElementPlugin($field);
+			$elementModel = Worker::getPluginManager()->getElementPlugin($field);
 
 			if (!$this->getFormModel()->isEditable())
 			{
@@ -875,7 +875,7 @@ class Googlemap extends Element
 	public function getAsField_html(&$aFields, &$aAsFields, $opts = array())
 	{
 		$dbtable = $this->actualTableName();
-		$db = FabrikWorker::getDbo();
+		$db = Worker::getDbo();
 		$listModel = $this->getlistModel();
 		$table = $listModel->getTable();
 		$fullElName = FArrayHelper::getValue($opts, 'alias', $dbtable . '___' . $this->element->name);

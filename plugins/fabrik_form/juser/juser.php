@@ -12,6 +12,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 use Joomla\Utilities\ArrayHelper;
+use Fabrik\Helpers\Worker;
 
 // Require the abstract plugin class
 require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
@@ -84,7 +85,7 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 			return '';
 		}
 
-		$elementModel = FabrikWorker::getPluginManager()->getElementPlugin($params->get($pname));
+		$elementModel = Worker::getPluginManager()->getElementPlugin($params->get($pname));
 
 		return $short ? $elementModel->getElement()->name : $elementModel->getFullName();
 	}
@@ -142,7 +143,7 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 							$this->getFieldName('juser_field_name', true) => $o_user->name,
 							$this->getFieldName('juser_field_username', true) => $o_user->username);
 
-						if (!FabrikWorker::j3())
+						if (!Worker::j3())
 						{
 							$fields[$this->getFieldName('juser_field_usertype', true)] = $o_user->group_id;
 						}
@@ -168,7 +169,7 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 		}
 
 		// If we are editing a user, we need to make sure the password field is cleared
-		if (FabrikWorker::getMenuOrRequestVar('rowid'))
+		if (Worker::getMenuOrRequestVar('rowid'))
 		{
 			$this->passwordfield                            = $this->getFieldName('juser_field_password');
 			$formModel->data[$this->passwordfield]          = '';
@@ -209,7 +210,7 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 						// @FIXME this is out of date for J1.7 - no gid field
 						if ($params->get('juser_field_usertype') != '')
 						{
-							$groupElement      = FabrikWorker::getPluginManager()->getElementPlugin($params->get('juser_field_usertype'));
+							$groupElement      = Worker::getPluginManager()->getElementPlugin($params->get('juser_field_usertype'));
 							$groupElementClass = get_class($groupElement);
 							$gid               = $user->groups;
 
@@ -1030,7 +1031,7 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 		$userElement = $formModel->getElement($params->get('juser_field_userid'), true);
 		$userElName  = $userElement === false ? false : $userElement->getFullName();
 		$userId      = (int) $post['id'];
-		$db          = FabrikWorker::getDbo(true);
+		$db          = Worker::getDbo(true);
 		$ok          = true;
 		jimport('joomla.mail.helper');
 
@@ -1053,7 +1054,7 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 			$ok = false;
 		}
 
-		if ((trim($post['email']) == "") || !FabrikWorker::isEmail($post['email']))
+		if ((trim($post['email']) == "") || !Worker::isEmail($post['email']))
 		{
 			$this->raiseError($formModel->errors, $this->emailfield, FText::_('JLIB_DATABASE_ERROR_VALID_MAIL'));
 			$ok = false;

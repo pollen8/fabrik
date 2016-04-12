@@ -11,6 +11,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Fabrik\Helpers\Worker;
+
 // Require the abstract plugin class
 require_once COM_FABRIK_FRONTEND . '/models/plugin-list.php';
 
@@ -68,7 +70,7 @@ class PlgFabrik_ListPhp extends plgFabrik_List
 	{
 		$img = parent::getImageName();
 
-		if (FabrikWorker::j3() && $img === 'php.png')
+		if (Worker::j3() && $img === 'php.png')
 		{
 			$img = 'lightning';
 		}

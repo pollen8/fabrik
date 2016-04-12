@@ -11,6 +11,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Fabrik\Helpers\Worker;
+
 // Require the abstract plugin class
 require_once COM_FABRIK_FRONTEND . '/models/validation_rule.php';
 
@@ -60,7 +62,7 @@ class PlgFabrik_ValidationruleIsEmail extends PlgFabrik_Validationrule
 		}
 
 		// $$$ hugh - let's try using new helper func instead of rolling our own.
-		return FabrikWorker::isEmail($email);
+		return Worker::isEmail($email);
 	}
 
 	/**

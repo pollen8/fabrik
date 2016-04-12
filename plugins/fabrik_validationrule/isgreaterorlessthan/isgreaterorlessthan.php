@@ -11,6 +11,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Fabrik\Helpers\Worker;
+
 // Require the abstract plugin classes
 require_once COM_FABRIK_FRONTEND . '/models/validation_rule.php';
 
@@ -121,6 +123,6 @@ class PlgFabrik_ValidationruleIsgreaterorlessthan extends PlgFabrik_Validationru
 		$params = $this->getParams();
 		$otherField = $params->get('isgreaterorlessthan-comparewith');
 
-		return FabrikWorker::getPluginManager()->getElementPlugin($otherField);
+		return Worker::getPluginManager()->getElementPlugin($otherField);
 	}
 }

@@ -14,7 +14,7 @@ namespace Fabrik\Plugins\Element;
 defined('_JEXEC') or die('Restricted access');
 
 use Joomla\Utilities\ArrayHelper;
-use \FabrikWorker;
+use Fabrik\Helpers\Worker;
 use \stdClass;
 use Fabrik\Helpers\Html;
 use \FabrikString;
@@ -91,7 +91,7 @@ class Date extends ElementList
 		// @TODO: deal with time options (currently can be defined in date_table_format param).
 		$timeZone = new DateTimeZone($this->config->get('offset'));
 		$params   = $this->getParams();
-		$data     = FabrikWorker::JSONtoData($data, true);
+		$data     = Worker::JSONtoData($data, true);
 		$f        = $params->get('date_table_format', 'Y-m-d');
 		$format   = array();
 
@@ -102,7 +102,7 @@ class Date extends ElementList
 
 		foreach ($data as $d)
 		{
-			if (FabrikWorker::isDate($d))
+			if (Worker::isDate($d))
 			{
 				$date = JFactory::getDate($d);
 
@@ -146,7 +146,7 @@ class Date extends ElementList
 		$params   = $this->getParams();
 
 		$this->getGroup();
-		$data = FabrikWorker::JSONtoData($data, true);
+		$data = Worker::JSONtoData($data, true);
 		$f    = $params->get('date_table_format', 'Y-m-d');
 		/* $$$ hugh - see http://fabrikar.com/forums/showthread.php?p=87507
 		 * Really don't think we need to worry about $app->input 'incraw' here. The raw, GMT/MySQL data will get
@@ -158,7 +158,7 @@ class Date extends ElementList
 
 		foreach ($data as $d)
 		{
-			if (FabrikWorker::isDate($d))
+			if (Worker::isDate($d))
 			{
 				if ($incRaw)
 				{
@@ -238,13 +238,13 @@ class Date extends ElementList
 
 			$gmt                       = $this->getValue($data, $c);
 			$localDate                 = $this->displayDate($gmt);
-			$values[$name]['data'][$c] = FabrikWorker::isDate($gmt) ? $localDate->toSql(true) : '';
+			$values[$name]['data'][$c] = Worker::isDate($gmt) ? $localDate->toSql(true) : '';
 		}
 		else
 		{
 			$gmt                   = $this->getValue($data, $c);
 			$localDate             = $this->displayDate($gmt);
-			$values[$name]['data'] = FabrikWorker::isDate($gmt) ? $localDate->toSql(true) : '';
+			$values[$name]['data'] = Worker::isDate($gmt) ? $localDate->toSql(true) : '';
 		}
 	}
 
@@ -275,7 +275,7 @@ class Date extends ElementList
 		// Value is in mySQL format GMT
 		$gmt = $this->getValue($data, $repeatCounter);
 
-		if (!FabrikWorker::isDate($gmt))
+		if (!Worker::isDate($gmt))
 		{
 			$date = '';
 			$time = '';
@@ -345,7 +345,7 @@ class Date extends ElementList
 	 */
 	protected function timeButton($timeElName, $time, &$str)
 	{
-		$j3         = FabrikWorker::j3();
+		$j3         = Worker::j3();
 		$params     = $this->getParams();
 		$timeFormat = $params->get('date_time_format', 'H:i');
 		$class      = 'inputbox fabrikinput timeField input ' . $params->get('bootstrap_time_class', 'input-mini');
@@ -361,7 +361,7 @@ class Date extends ElementList
 		$str[] = '<input type="text" class="' . $class . '" ' . $readOnly . ' size="' . $timeLength . '" value="' . $time . '" name="'
 			. $timeElName . '" />';
 		$opts  = array('alt' => FText::_('PLG_ELEMENT_DATE_TIME'), 'class' => 'timeButton');
-		$file  = FabrikWorker::j3() ? 'clock.png' : 'time.png';
+		$file  = Worker::j3() ? 'clock.png' : 'time.png';
 
 		$btnLayout  = Html::getLayout('fabrik-button');
 		$layoutData = (object) array(
@@ -495,7 +495,7 @@ class Date extends ElementList
 			$val = urldecode($val);
 		}
 
-		if (!FabrikWorker::isDate($val))
+		if (!Worker::isDate($val))
 		{
 			return '';
 		}
@@ -679,7 +679,7 @@ class Date extends ElementList
 		$f            = $params->get('date_table_format', 'Y-m-d');
 		$tz_date      = '';
 
-		if (FabrikWorker::isDate($gmt_date))
+		if (Worker::isDate($gmt_date))
 		{
 			$date = JFactory::getDate($gmt_date);
 
@@ -714,7 +714,7 @@ class Date extends ElementList
 		$f        = $params->get('date_table_format', 'Y-m-d');
 		$timeZone = new DateTimeZone($this->config->get('offset'));
 
-		if (FabrikWorker::isDate($v))
+		if (Worker::isDate($v))
 		{
 			$date = JFactory::getDate($v);
 			/**
@@ -761,7 +761,7 @@ class Date extends ElementList
 	 */
 	public function calendar($value, $name, $id, $format = '%Y-%m-%d', $attribs = null, $repeatCounter = 0)
 	{
-		$j3 = FabrikWorker::j3();
+		$j3 = Worker::j3();
 
 		if (is_array($attribs))
 		{
@@ -887,7 +887,7 @@ class Date extends ElementList
 			if (!$this->watchElement)
 			{
 				// This element is a child element, so $watch is in the parent element (in another form)
-				$pluginManager = FabrikWorker::getPluginManager();
+				$pluginManager = Worker::getPluginManager();
 				$parent        = $pluginManager->getElementPlugin($watch);
 
 				// These are the possible watch elements
@@ -935,7 +935,7 @@ class Date extends ElementList
 		}
 
 		$dates = Html::isDebug() ? eval($php) : @eval($php);
-		FabrikWorker::logEval($dates, 'Eval exception : ' . $this->getElement()->name . '::getAllowedPHPDates() : %s');
+		Worker::logEval($dates, 'Eval exception : ' . $this->getElement()->name . '::getAllowedPHPDates() : %s');
 
 		return (array) $dates;
 	}
@@ -986,7 +986,7 @@ class Date extends ElementList
 	{
 		$date = $data[0];
 
-		if (FabrikWorker::isDate($date))
+		if (Worker::isDate($date))
 		{
 			// Only apply date logic to actual date data, if blank for example we should leave blank
 			$date = JFactory::getDate($date);
@@ -1021,7 +1021,7 @@ class Date extends ElementList
 		$defaultToday = $params->get('date_defaulttotoday', false);
 		$formModel    = $this->getFormModel();
 		$value        = parent::getValue($data, $repeatCounter, $opts);
-		$db           = FabrikWorker::getDbo();
+		$db           = Worker::getDbo();
 
 		if (is_array($value))
 		{
@@ -1033,7 +1033,7 @@ class Date extends ElementList
 		$value = trim($value, "'");
 
 		//if ($input->get('task') == 'form.process' || ($app->isAdmin() && $input->get('task') == 'process'))
-		if (FabrikWorker::inFormProcess())
+		if (Worker::inFormProcess())
 		{
 			// Don't mess with posted value - can cause double offsets - instead do in _indStoareDBFormat();
 			return $value;
@@ -1107,7 +1107,7 @@ class Date extends ElementList
 	 */
 	public function includeInSearchAll($advancedMode = false, $search = '')
 	{
-		if (!FabrikWorker::isDate($search))
+		if (!Worker::isDate($search))
 		{
 			return false;
 		}
@@ -1129,7 +1129,7 @@ class Date extends ElementList
 		/* if its a search all value it may not be a date - so use parent method.
 		 * see http://fabrikar.com/forums/showthread.php?t=25255
 		 */
-		if (!is_array($value) && !FabrikWorker::isDate($value))
+		if (!is_array($value) && !Worker::isDate($value))
 		{
 			if (($this->rangeFilterSet))
 			{
@@ -1657,7 +1657,7 @@ class Date extends ElementList
 
 		$layout          = $this->getLayout('list-filter-field');
 		$displayData     = new stdClass;
-		$displayData->j3 = FabrikWorker::j3();
+		$displayData->j3 = Worker::j3();
 		$from            = new stdClass;
 		$from->id        = $this->getFilterHtmlId(0);
 		$from->value     = $default;
@@ -1705,7 +1705,7 @@ class Date extends ElementList
 		$displayData         = new stdClass;
 		$displayData->htmlId = $this->getHTMLId();
 		$displayData->class  = $this->filterClass();
-		$displayData->j3     = FabrikWorker::j3();
+		$displayData->j3     = Worker::j3();
 		$from                = new stdClass;
 		$from->id            = $this->getFilterHtmlId(0);
 		$from->value         = $default[0];
@@ -1862,7 +1862,7 @@ class Date extends ElementList
 	 */
 	protected function getRangedFilterValue($value, $condition = '')
 	{
-		$db     = FabrikWorker::getDbo();
+		$db     = Worker::getDbo();
 		$params = $this->getParams();
 		/* $$$ hugh - need to convert dates to MySQL format for the query
 		 * $$$ hugh - not any more, since we changed to always submit in MySQL format
@@ -1873,8 +1873,8 @@ class Date extends ElementList
 		 * This lets us do ranged query string and content plugin filters like ...
 		 * table___date[value][]=midnight%20yesterday&table___date[value][]=midnight%20today&table___date[condition]=BETWEEN
 		 */
-		$value[0] = FabrikWorker::specialStrToMySQL(FArrayHelper::getValue($value, 0));
-		$value[1] = FabrikWorker::specialStrToMySQL(FArrayHelper::getValue($value, 1));
+		$value[0] = Worker::specialStrToMySQL(FArrayHelper::getValue($value, 0));
+		$value[1] = Worker::specialStrToMySQL(FArrayHelper::getValue($value, 1));
 
 		// $$$ hugh - if the first date is later than the second, swap 'em round  to keep 'BETWEEN' in the query happy
 		if (strtotime($value[0]) > strtotime($value[1]))
@@ -2192,7 +2192,7 @@ class Date extends ElementList
 	 */
 	public function onCopyRow($val)
 	{
-		if (!FabrikWorker::isDate($val))
+		if (!Worker::isDate($val))
 		{
 			return $val;
 		}

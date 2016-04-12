@@ -12,6 +12,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Fabrik\Helpers\Worker;
+
 // Require the abstract plugin class
 require_once COM_FABRIK_FRONTEND . '/models/plugin-cron.php';
 
@@ -108,7 +110,7 @@ class PlgFabrik_CronGcalsync extends PlgFabrik_Cron
 
 			/*
 			$mydata = array();
-			$db = FabrikWorker::getDbo();
+			$db = Worker::getDbo();
 			$query = $db->getQuery(true);
 			$query->select('*')->from($table_name);
 			$db->setQuery($query);
@@ -118,7 +120,7 @@ class PlgFabrik_CronGcalsync extends PlgFabrik_Cron
 			/*
 			 * So as per above comment, now just use the $data we got given
 			 */
-			$db = FabrikWorker::getDbo();
+			$db = Worker::getDbo();
 			$mydata = $data;
 
 			// Grab all the field names to use

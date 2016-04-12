@@ -14,6 +14,8 @@ defined('_JEXEC') or die('Restricted access');
 use \Joomla\Registry\Registry;
 use Joomla\Utilities\ArrayHelper;
 use Fabrik\Helpers\Html;
+use Fabrik\Helpers\Worker;
+
 jimport('joomla.application.component.model');
 
 require_once JPATH_SITE . '/components/com_fabrik/models/plugin.php';
@@ -133,7 +135,7 @@ class FabrikFEModelVisualization extends FabModel
 			$this->setListIds();
 
 			// Needed to load the language file!
-			$pluginManager = FabrikWorker::getPluginManager();
+			$pluginManager = Worker::getPluginManager();
 			$pluginManager->getPlugIn($this->_row->plugin, 'visualization');
 		}
 

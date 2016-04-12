@@ -13,7 +13,7 @@ namespace Fabrik\Plugins\Element;
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
 
-use \FabrikWorker;
+use Fabrik\Helpers\Worker;
 use \FArrayHelper;
 use \JString;
 use \stdClass;
@@ -131,7 +131,7 @@ class Birthday extends Element
 				$detailValue = '';
 				$year = JString::ltrim($year, '0');
 
-				if (FabrikWorker::isDate($value))
+				if (Worker::isDate($value))
 				{
 					$date = JFactory::getDate($value);
 					$detailValue = $date->format($fd);
@@ -485,12 +485,12 @@ class Birthday extends Element
 	{
 		$groupModel = $this->getGroup();
 		/**
-		 * Jaanus: json_decode replaced with FabrikWorker::JSONtoData that made visible also single data in repeated group
+		 * Jaanus: json_decode replaced with Worker::JSONtoData that made visible also single data in repeated group
 		 *
 		 * Jaanus: removed condition canrepeat() from renderListData: weird result such as 05",null,
 		 * "1940.07.["1940 (2011) when not repeating but still join and merged. Using isJoin() instead
 		*/
-		$data = $groupModel->isJoin() ? FabrikWorker::JSONtoData($data, true) : array($data);
+		$data = $groupModel->isJoin() ? Worker::JSONtoData($data, true) : array($data);
 		$data = (array) $data;
 		$format = array();
 
@@ -516,7 +516,7 @@ class Birthday extends Element
 
 	private function listFormat($d)
 	{
-		if (!FabrikWorker::isDate($d))
+		if (!Worker::isDate($d))
 		{
 			return '';
 		}
@@ -759,7 +759,7 @@ class Birthday extends Element
 
 	protected function getRangedFilterValue($value, $condition = '')
 	{
-		$db = FabrikWorker::getDbo();
+		$db = Worker::getDbo();
 		$element = $this->getElement();
 
 		if ($element->get('filter_type') === 'range' || strtoupper($condition) === 'BETWEEN')

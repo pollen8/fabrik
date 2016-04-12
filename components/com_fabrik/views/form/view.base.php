@@ -14,6 +14,7 @@ defined('_JEXEC') or die('Restricted access');
 use Joomla\Registry\Registry;
 use Joomla\Utilities\ArrayHelper;
 use Fabrik\Helpers\Html;
+use Fabrik\Helpers\Worker;
 
 jimport('joomla.application.component.view');
 
@@ -106,7 +107,7 @@ class FabrikViewFormBase extends FabrikView
 	{
 		$profiler = JProfiler::getInstance('Application');
 		$input    = $this->app->input;
-		$w        = new FabrikWorker;
+		$w        = new Worker;
 
 		/** @var FabrikFEModelForm $model */
 		$model = $this->getModel('form');
@@ -265,7 +266,7 @@ class FabrikViewFormBase extends FabrikView
 		// Force front end templates
 		$this->_basePath = COM_FABRIK_FRONTEND . '/views';
 		$model           = $this->getModel();
-		$jTmplFolder     = FabrikWorker::j3() ? 'tmpl' : 'tmpl25';
+		$jTmplFolder     = Worker::j3() ? 'tmpl' : 'tmpl25';
 		$folder          = $model->isEditable() ? 'form' : 'details';
 		$this->addTemplatePath($this->_basePath . '/' . $folder . '/' . $jTmplFolder . '/' . $tmpl);
 
@@ -280,7 +281,7 @@ class FabrikViewFormBase extends FabrikView
 	 */
 	public function output()
 	{
-		$w      = new FabrikWorker;
+		$w      = new Worker;
 		$text   = $this->loadTemplate();
 		$model  = $this->getModel();
 		$params = $model->getParams();
@@ -489,7 +490,7 @@ class FabrikViewFormBase extends FabrikView
 
 		if ($this->showPDF)
 		{
-			FabrikWorker::canPdf();
+			Worker::canPdf();
 
 			if ($this->app->isAdmin())
 			{
@@ -519,7 +520,7 @@ class FabrikViewFormBase extends FabrikView
 	 */
 	protected function _addJavascript($listId)
 	{
-		$pluginManager = FabrikWorker::getPluginManager();
+		$pluginManager = Worker::getPluginManager();
 
 		/** @var FabrikFEModelForm $model */
 		$model = $this->getModel();
@@ -755,7 +756,7 @@ class FabrikViewFormBase extends FabrikView
 		$opts->admin          = $this->app->isAdmin();
 		$opts->ajax           = $model->isAjax();
 		$opts->ajaxValidation = (bool) $params->get('ajax_validations');
-		$opts->lang           = FabrikWorker::getMultiLangURLCode();
+		$opts->lang           = Worker::getMultiLangURLCode();
 		$opts->toggleSubmit   = (bool) $params->get('ajax_validations_toggle_submit');
 		$opts->showLoader     = (bool) $params->get('show_loader_on_submit', '0');
 		$key                  = FabrikString::safeColNameToArrayKey($table->db_primary_key);
@@ -787,7 +788,7 @@ class FabrikViewFormBase extends FabrikView
 		// 3.0 needed for ajax requests
 		$opts->listid = (int) $this->get('ListModel')->getId();
 
-		$errorIcon       = FabrikWorker::j3() ? $fbConfig->get('error_icon', 'exclamation-sign') . '.png' : 'alert.png';
+		$errorIcon       = Worker::j3() ? $fbConfig->get('error_icon', 'exclamation-sign') . '.png' : 'alert.png';
 		$this->errorIcon = Html::image($errorIcon, 'form', $this->tmpl);
 
 		$imgs               = new stdClass;
@@ -906,7 +907,7 @@ class FabrikViewFormBase extends FabrikView
 	protected function _loadTmplBottom(&$form)
 	{
 		$input  = $this->app->input;
-		$itemId = FabrikWorker::itemId();
+		$itemId = Worker::itemId();
 
 		/** @var FabrikFEModelForm $model */
 		$model     = $this->getModel();
@@ -942,7 +943,7 @@ class FabrikViewFormBase extends FabrikView
 			$fields[] = '<input type="hidden" name="noredirect" value="1" />';
 		}
 
-		if ($useKey = FabrikWorker::getMenuOrRequestVar('usekey', ''))
+		if ($useKey = Worker::getMenuOrRequestVar('usekey', ''))
 		{
 			// $$$rob v's been set from -1 to the actual row id - so ignore usekey not sure if we should comment this out
 			// see http://fabrikar.com/forums/showthread.php?t=10297&page=5
@@ -1065,7 +1066,7 @@ class FabrikViewFormBase extends FabrikView
 			'class' => 'button',
 			'name' => 'Goback',
 			'label' => $goBackLabel,
-			'attributes' => $model->isAjax() ? '' : FabrikWorker::goBackAction()
+			'attributes' => $model->isAjax() ? '' : Worker::goBackAction()
 		);
 
 		$form->gobackButton = $params->get('goback_button', 0) ? $btnLayout->render($layoutData) : '';
@@ -1179,7 +1180,7 @@ class FabrikViewFormBase extends FabrikView
 	 */
 	protected function _cryptQueryString(&$fields)
 	{
-		$crypt = FabrikWorker::getCrypt();
+		$crypt = Worker::getCrypt();
 
 		/** @var FabrikFEModelForm $formModel */
 		$formModel = $this->getModel();
@@ -1239,7 +1240,7 @@ class FabrikViewFormBase extends FabrikView
 	{
 		/** @var FabrikFEModelForm $model */
 		$model  = $this->getModel();
-		$crypt  = FabrikWorker::getCrypt();
+		$crypt  = Worker::getCrypt();
 		$fields = array();
 		$ro     = $model->getReadOnlyVals();
 

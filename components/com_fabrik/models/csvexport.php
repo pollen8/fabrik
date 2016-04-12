@@ -12,6 +12,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 use \Joomla\Utilities\ArrayHelper;
+use Fabrik\Helpers\Worker;
 
 jimport('joomla.application.component.model');
 
@@ -246,9 +247,9 @@ class FabrikFEModelCSVExport extends FabModel
 	 */
 	protected function implodeJSON(&$v, $k, $sepchar)
 	{
-		if (!FabrikString::isRawName($k) && FabrikWorker::isJSON($v))
+		if (!FabrikString::isRawName($k) && Worker::isJSON($v))
 		{
-			$v = FabrikWorker::JSONtoData($v, true);
+			$v = Worker::JSONtoData($v, true);
 			$v = implode($sepchar, $v);
 		}
 	}
@@ -568,7 +569,7 @@ class FabrikFEModelCSVExport extends FabModel
 	public function getHeadings()
 	{
 		$input         = $this->app->input;
-		$w             = new FabrikWorker;
+		$w             = new Worker;
 		$table         = $this->model->getTable();
 		$params        = $this->model->getParams();
 		$headingFormat = $params->get('csvfullname');

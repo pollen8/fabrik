@@ -14,6 +14,7 @@ defined('_JEXEC') or die('Restricted access');
 
 use Joomla\Utilities\ArrayHelper;
 use Fabrik\Helpers\Html;
+use Fabrik\Helpers\Worker;
 
 JHtml::_('behavior.tooltip');
 Html::formvalidation();
@@ -51,7 +52,7 @@ window.addEvent('domready', function () {
 		$id = $cid[0];
 	endif;
 	if (($id !== 0)) :
-		$db = FabrikWorker::getDbo(true);
+		$db = Worker::getDbo(true);
 		$query = $db->getQuery(true);
 		$query->select('label')->from('#__{package}_lists')->where('id = ' . $id);
 		$db->setQuery($query);

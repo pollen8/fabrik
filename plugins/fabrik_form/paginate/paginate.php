@@ -12,6 +12,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 use Fabrik\Helpers\Html;
+use Fabrik\Helpers\Worker;
 
 // Require the abstract plugin class
 require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
@@ -66,7 +67,7 @@ class PlgFabrik_FormPaginate extends PlgFabrik_Form
 			return;
 		}
 
-		$j3 = FabrikWorker::j3();
+		$j3 = Worker::j3();
 		$input = $this->app->input;
 		$formId = $formModel->getForm()->id;
 		$mode = JString::strtolower($input->get('view', 'form'));

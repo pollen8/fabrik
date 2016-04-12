@@ -11,6 +11,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Fabrik\Helpers\Worker;
+
 require_once JPATH_ROOT . '/plugins/fabrik_element/fileupload/adaptor.php';
 
 /**
@@ -312,7 +314,7 @@ class Filesystemstorage extends FabrikStorageAdaptor
 	protected function _getSmallerFile($file, $type)
 	{
 		$params = $this->getParams();
-		$w = new FabrikWorker;
+		$w = new Worker;
 
 		// $$$ rob wasn't working when getting thumb path on upload
 		$ulDir = JPath::clean($params->get('ul_directory'));

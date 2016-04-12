@@ -12,6 +12,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 use Fabrik\Helpers\Html;
+use Fabrik\Helpers\Worker;
 
 jimport('joomla.application.component.view');
 
@@ -59,7 +60,7 @@ class FabrikViewVisualization extends FabrikView
 		$tmpl = $plugin->getParams()->get('calendar_layout', $tmpl);
 		$plugin->$pluginTask($this);
 		$this->plugin = $plugin;
-		$jTmplFolder = FabrikWorker::j3() ? 'tmpl' : 'tmpl25';
+		$jTmplFolder = Worker::j3() ? 'tmpl' : 'tmpl25';
 		$this->addTemplatePath($this->_basePath . '/plugins/' . $this->_name . '/' . $plugin->_name . '/' . $jTmplFolder . '/' . $tmpl);
 
 		$root = $this->app->isAdmin() ? JPATH_ADMINISTRATOR : JPATH_SITE;

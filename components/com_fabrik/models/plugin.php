@@ -14,6 +14,7 @@ defined('_JEXEC') or die('Restricted access');
 use Joomla\Registry\Registry;
 use Joomla\Utilities\ArrayHelper;
 use Fabrik\Helpers\Html;
+use Fabrik\Helpers\Worker;
 
 jimport('joomla.application.component.model');
 
@@ -454,7 +455,7 @@ class FabrikPlugin extends JPlugin
 			}
 
 			$form->repeat = $repeat;
-			$j3           = FabrikWorker::j3();
+			$j3           = Worker::j3();
 
 			if ($repeat)
 			{
@@ -742,7 +743,7 @@ class FabrikPlugin extends JPlugin
 
 		if ($showFabrikLists)
 		{
-			$db = FabrikWorker::getDbo(true);
+			$db = Worker::getDbo(true);
 
 			if ($cid !== 0)
 			{
@@ -820,7 +821,7 @@ class FabrikPlugin extends JPlugin
 					if (is_numeric($tid))
 					{
 						// If loading on a numeric list id get the list db table name
-						$jDb   = FabrikWorker::getDbo(true);
+						$jDb   = Worker::getDbo(true);
 						$query = $jDb->getQuery(true);
 						$query->select('db_table_name')->from('#__{package}_lists')->where('id = ' . (int) $tid);
 						$jDb->setQuery($query);
@@ -1065,7 +1066,7 @@ class FabrikPlugin extends JPlugin
 
 		$condition = $params->get($paramName);
 		$formModel = $this->getModel();
-		$w         = new FabrikWorker;
+		$w         = new Worker;
 
 		if (trim($condition) == '')
 		{
@@ -1171,13 +1172,13 @@ class FabrikPlugin extends JPlugin
 	 *
 	 * @since      3.0
 	 *
-	 * @deprecated use FabrikWorker::getPluginManager()
+	 * @deprecated use Worker::getPluginManager()
 	 *
 	 * @return  FabrikFEModelPluginmanager
 	 */
 	protected function getPluginManager()
 	{
-		return FabrikWorker::getPluginManager();
+		return Worker::getPluginManager();
 	}
 
 	/**
@@ -1197,7 +1198,7 @@ class FabrikPlugin extends JPlugin
 			return array();
 		}
 
-		$db    = FabrikWorker::getDbo();
+		$db    = Worker::getDbo();
 		$query = $db->getQuery(true);
 		$query->select('DISTINCT(' . $field . ')')->from('#__users AS u')->join('LEFT', '#__user_usergroup_map AS m ON u.id = m.user_id')
 			->where('m.group_id IN (' . implode(', ', $sendTo) . ')');
@@ -1215,7 +1216,7 @@ class FabrikPlugin extends JPlugin
 	 */
 	protected function makeDbTable()
 	{
-		$db = FabrikWorker::getDbo();
+		$db = Worker::getDbo();
 
 		// Attempt to create the db table?
 		$file = COM_FABRIK_BASE . '/plugins/' . $this->_type . '/' . $this->_name . '/sql/install.mysql.uft8.sql';

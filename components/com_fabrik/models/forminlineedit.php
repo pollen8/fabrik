@@ -12,6 +12,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 use Fabrik\Helpers\Html;
+use Fabrik\Helpers\Worker;
 
 jimport('joomla.application.component.model');
 require_once 'fabrikmodelform.php';
@@ -40,7 +41,7 @@ class FabrikFEModelFormInlineEdit extends FabModelForm
 	{
 		$this->formModel = JModelLegacy::getInstance('Form', 'FabrikFEModel');
 		$input = $this->app->input;
-		$j3 = FabrikWorker::j3();
+		$j3 = Worker::j3();
 
 		// Need to render() with all element ids in case canEditRow plugins etc. use the row data.
 		$elids = $input->get('elementid', array(), 'array');

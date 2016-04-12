@@ -18,7 +18,7 @@ use \JHtml;
 use \stdClass;
 use \JString;
 use \JText;
-use \FabrikWorker;
+use Fabrik\Helpers\Worker;
 
 /**
  * Plugin element to render dropdown
@@ -236,13 +236,13 @@ class Dropdown extends ElementList
 				}
 				else
 				{
-					$w = new FabrikWorker;
+					$w = new Worker;
 					$default = $w->parseMessageForPlaceHolder($default, $data);
 
 					if ($element->eval == "1")
 					{
 						$v = @eval((string) stripslashes($default));
-						FabrikWorker::logEval($default, 'Caught exception on eval in ' . $element->name . '::getDefaultValue() : %s');
+						Worker::logEval($default, 'Caught exception on eval in ' . $element->name . '::getDefaultValue() : %s');
 					}
 					else
 					{

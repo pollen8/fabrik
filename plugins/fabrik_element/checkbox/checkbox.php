@@ -16,7 +16,7 @@ defined('_JEXEC') or die('Restricted access');
 use \JText;
 use \FArrayHelper;
 use \JString;
-use \FabrikWorker;
+use Fabrik\Helpers\Worker;
 
 /**
  * Plugin element to render series of checkboxes
@@ -194,7 +194,7 @@ class Checkbox extends ElementList
 					// produces valid JSON
 					$json_val = '["' . $val . '"]';
 
-					if (FabrikWorker::isJSON($json_val))
+					if (Worker::isJSON($json_val))
 					{
 						// Looks like we we have a valid JSON array, so return that
 						return $json_val;

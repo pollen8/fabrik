@@ -17,7 +17,7 @@ use Joomla\Registry\Registry;
 use Joomla\Utilities\ArrayHelper;
 use \FArrayHelper;
 use \JHtml;
-use \FabrikWorker;
+use Fabrik\Helpers\Worker;
 use \FabrikString;
 use Fabrik\Helpers\Html;
 use \JText;
@@ -375,7 +375,7 @@ class Tags extends Databasejoin
 		$params = $this->getParams();
 		$name = $this->getFullName(true, false);
 		$rawName = $name . '_raw';
-		$db = FabrikWorker::getDbo(true);
+		$db = Worker::getDbo(true);
 		$formData =& $this->getFormModel()->formDataWithTableName;
 		$tagIds = (array) $formData[$rawName];
 

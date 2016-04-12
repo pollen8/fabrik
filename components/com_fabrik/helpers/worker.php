@@ -8,11 +8,42 @@
  * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
+namespace Fabrik\Helpers;
+
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
 use Joomla\Utilities\ArrayHelper;
-use Fabrik\Helpers\Html;
+use \JSession;
+use \FabTable;
+use \JCryptCipherSimple;
+use \JCrypt;
+use \JCryptKey;
+use \JModelLegacy;
+use \DateTime;
+use \JTable;
+use \JAccess;
+use \JFilterInput;
+use \JString;
+use \FArrayHelper;
+use \JLanguageHelper;
+use \JHtml;
+use \JLanguageMultilang;
+use \JPath;
+use \Exception;
+use \JFactory;
+use \JMail;
+use \JVersion;
+use \JForm;
+use \JCache;
+use \RuntimeException;
+use \JDatabaseDriver;
+use \JComponentHelper;
+use \JFile;
+use \FText;
+use \FabrikString;
+use \JUri;
+use \JMailHelper;
 
 /**
  * Generic tools that all models use
@@ -22,7 +53,7 @@ use Fabrik\Helpers\Html;
  * @subpackage  Fabrik.helpers
  * @since       3.0
  */
-class FabrikWorker
+class Worker
 {
 	/**
 	 * Fabrik database objects
@@ -593,7 +624,7 @@ class FabrikWorker
 		 * log files, which include field names like rowid and itemid.  So when saving an element, we now set strict mode
 		 * to false if it's not a new element.
 		 */
-		$strictWords = array("listid", 'rowid', 'itemid');
+		$strictWords = array('listid', 'rowid', 'itemid');
 
 		if ($strict)
 		{
@@ -677,10 +708,10 @@ class FabrikWorker
 	 * which just handles this one very specific data replacement.  Will look at merging it in with the main
 	 * parsing once we have a better understanding of where / when / how to do it.
 	 *
-	 * @param  string $msg           Text to parse
-	 * @param  array  $searchData    Data to search for placeholders
-	 * @param  object $el            Element model of the element which is doing the replacing
-	 * @param  int    $repeatCounter Repeat instance
+	 * @param  string                          $msg           Text to parse
+	 * @param  array                           $searchData    Data to search for placeholders
+	 * @param  \Fabrik\Plugins\Element\Element $el            Element model of the element which is doing the replacing
+	 * @param  int                             $repeatCounter Repeat instance
 	 *
 	 * @return  string  parsed message
 	 */
@@ -689,10 +720,10 @@ class FabrikWorker
 		if (strstr($msg, '{') && !empty($searchData))
 		{
 			$groupModel = $el->getGroupModel();
+
 			if ($groupModel->canRepeat())
 			{
 				$elementModels = $groupModel->getPublishedElements();
-				$formModel     = $el->getFormModel();
 
 				foreach ($elementModels as $elementModel)
 				{
@@ -719,14 +750,14 @@ class FabrikWorker
 	 * Iterates through string to replace every
 	 * {placeholder} with posted data
 	 *
-	 * @param   mixed  $msg              Text|Array to parse
-	 * @param   array  $searchData       Data to search for placeholders (default $_REQUEST)
-	 * @param   bool   $keepPlaceholders If no data found for the place holder do we keep the {...} string in the
-	 *                                   message
-	 * @param   bool   $addSlashes       Add slashed to the text?
-	 * @param   object $theirUser        User to use in replaceWithUserData (defaults to logged in user)
-	 * @param   bool   $unsafe           If true (default) will not replace certain placeholders like $jConfig_secret
-	 *                                   must not be shown to users
+	 * @param   mixed         $msg              Text|Array to parse
+	 * @param   array|object  $searchData       Data to search for placeholders (default $_REQUEST)
+	 * @param   bool          $keepPlaceholders If no data found for the place holder do we keep the {...} string in the
+	 *                                          message
+	 * @param   bool          $addSlashes       Add slashed to the text?
+	 * @param   object        $theirUser        User to use in replaceWithUserData (defaults to logged in user)
+	 * @param   bool          $unsafe           If true (default) will not replace certain placeholders like $jConfig_secret
+	 *                                          must not be shown to users
 	 *
 	 * @return  string  parsed message
 	 */
@@ -916,7 +947,7 @@ class FabrikWorker
 
 	/**
 	 * Get an associative array of replacements for 'unsafe' value, like $jConfig_secret, which we
-	 * only want to use for stricty internal use that won't ever get shown to the user
+	 * only want to use for strictly internal use that won't ever get shown to the user
 	 *
 	 * @return array
 	 * @throws Exception
@@ -948,9 +979,9 @@ class FabrikWorker
 		$token     = $session->get('session.token');
 		$lang      = JFactory::getLanguage()->getTag();
 		$lang      = str_replace('-', '_', $lang);
-		$shortlang = explode('_', $lang);
-		$shortlang = $shortlang[0];
-		$multilang = FabrikWorker::getMultiLangURLCode();
+		$shortLang = explode('_', $lang);
+		$shortLang = $shortLang[0];
+		$multiLang = Worker::getMultiLangURLCode();
 
 		$replacements = array(
 			'{$jConfig_live_site}' => COM_FABRIK_LIVESITE,
@@ -962,8 +993,8 @@ class FabrikWorker
 			'{date}' => date('Ymd'),
 			'{mysql_date}' => date('Y-m-d H:i:s'),
 			'{lang}' => $lang,
-			'{multilang}' => $multilang,
-			'{shortlang}' => $shortlang,
+			'{multilang}' => $multiLang,
+			'{shortlang}' => $shortLang,
 			'{session.token}' => $token,
 		);
 
@@ -992,7 +1023,7 @@ class FabrikWorker
 		// Merge any join data key val pairs down into the main data array
 		$joins = FArrayHelper::getValue($this->_searchData, 'join', array());
 
-		foreach ($joins as $k => $data)
+		foreach ($joins as $jk => $data)
 		{
 			foreach ($data as $k => $v)
 			{
@@ -1157,7 +1188,7 @@ class FabrikWorker
 			{
 				if (!in_array($file, $aFolderFilter))
 				{
-					$folders[] = JHTML::_('select.option', $ff_);
+					$folders[] = JHtml::_('select.option', $ff_);
 					self::readImages($i_f, $ff_, $folders, $images, $aFolderFilter);
 				}
 			}
@@ -1165,7 +1196,7 @@ class FabrikWorker
 			{
 				// Leading / we don't need
 				$imageFile             = JString::substr($ff, 1);
-				$images[$folderPath][] = $makeOptions ? JHTML::_('select.option', $imageFile, $file) : $file;
+				$images[$folderPath][] = $makeOptions ? JHtml::_('select.option', $imageFile, $file) : $file;
 			}
 		}
 	}
@@ -1571,7 +1602,7 @@ class FabrikWorker
 	 * @param   mixed $cnnId        If null then loads the fabrik default connection, if an int then loads the
 	 *                              specified connection by its id
 	 *
-	 * @return  JDatabaseDriver object
+	 * @return  \JDatabaseDriver object
 	 */
 	public static function getDbo($loadJoomlaDb = false, $cnnId = null)
 	{
@@ -1613,9 +1644,9 @@ class FabrikWorker
 				'prefix' => $dbPrefix);
 
 			$version              = new JVersion;
-			self::$database[$sig] = $version->RELEASE > 2.5 ? JDatabaseDriver::getInstance($options) : JDatabase::getInstance($options);
+			self::$database[$sig] = $version->RELEASE > 2.5 ? JDatabaseDriver::getInstance($options) : \JDatabase::getInstance($options);
 
-			FabrikWorker::bigSelects(self::$database[$sig]);
+			Worker::bigSelects(self::$database[$sig]);
 
 		}
 
@@ -1629,7 +1660,7 @@ class FabrikWorker
 	 *  just on their List specific queries.  So we need to apply 'big selects' to our
 	 *  default connection as well, essentially enabling it for ALL queries we do.
 	 *
-	 * @param  JDatabaseDriver $fabrikDb
+	 * @param  \JDatabaseDriver $fabrikDb
 	 *
 	 * @return void
 	 */
@@ -1643,7 +1674,7 @@ class FabrikWorker
 			 * Use of OPTION in SET deprecated from MySQL 5.1. onward
 			 * http://www.fabrikar.com/forums/index.php?threads/enable-big-selects-error.39463/#post-198293
 			 * NOTE - technically, using verison_compare on MySQL version could fail, if it's a "gamma"
-			 * release, which PHP desn't grok!
+			 * release, which PHP doesn't grok!
 			 */
 
 			if (version_compare($fabrikDb->getVersion(), '5.1.0', '>='))
@@ -1672,7 +1703,7 @@ class FabrikWorker
 	 *
 	 * @since 3.0b
 	 *
-	 * @return FabrikFEModelConnection  connection
+	 * @return \FabrikFEModelConnection  connection
 	 */
 	public static function getConnection($item = null)
 	{
@@ -1716,7 +1747,7 @@ class FabrikWorker
 	 *
 	 * @since    3.0b
 	 *
-	 * @return    FabrikFEModelPluginmanager    Plugin manager
+	 * @return    \FabrikFEModelPluginmanager    Plugin manager
 	 */
 	public static function getPluginManager()
 	{
@@ -1813,7 +1844,7 @@ class FabrikWorker
 		try
 		{
 			$dt = new DateTime($d);
-		} catch (Exception $e)
+		} catch (\Exception $e)
 		{
 			return false;
 		}
@@ -2309,14 +2340,14 @@ class FabrikWorker
 	/**
 	 * Remove messages from JApplicationCMS
 	 *
-	 * @param   JApplicationCMS $app  Application to kill messages from
-	 * @param   string          $type Message type e.g. 'warning', 'error'
+	 * @param   \JApplicationCMS $app  Application to kill messages from
+	 * @param   string           $type Message type e.g. 'warning', 'error'
 	 *
 	 * @return  array  Remaining messages.
 	 */
-	public static function killMessage(JApplicationCMS $app, $type)
+	public static function killMessage(\JApplicationCMS $app, $type)
 	{
-		$appReflection = new ReflectionClass(get_class($app));
+		$appReflection = new \ReflectionClass(get_class($app));
 		$_messageQueue = $appReflection->getProperty('_messageQueue');
 		$_messageQueue->setAccessible(true);
 		$messages = $_messageQueue->getValue($app);

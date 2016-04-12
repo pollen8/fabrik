@@ -11,6 +11,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Fabrik\Helpers\Worker;
+
 // Require the abstract plugin class
 require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
 
@@ -72,7 +74,7 @@ class PlgFabrik_FormKunena extends PlgFabrik_Form
 		$app = $this->app;
 		$formModel = $this->getModel();
 		$input = $app->input;
-		$w = new FabrikWorker;
+		$w = new Worker;
 
 		$catid = $params->get('kunena_category', 0);
 
@@ -139,7 +141,7 @@ class PlgFabrik_FormKunena extends PlgFabrik_Form
 
 		$user = $this->user;
 		$now = $this->date;
-		$w = new FabrikWorker;
+		$w = new Worker;
 
 		$catid = $params->get('kunena_category', 0);
 

@@ -12,6 +12,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 use Fabrik\Helpers\Html;
+use Fabrik\Helpers\Worker;
 
 jimport('joomla.application.component.view');
 
@@ -37,7 +38,7 @@ class FabrikViewMedia extends JViewLegacy
 	{
 		$app = JFactory::getApplication();
 		$input = $app->input;
-		$j3 = FabrikWorker::j3();
+		$j3 = Worker::j3();
 		$model = $this->getModel();
 		$usersConfig = JComponentHelper::getParams('com_fabrik');
 		$model->setId($input->getInt('id', $usersConfig->get('visualizationid', $input->getInt('visualizationid', 0))));

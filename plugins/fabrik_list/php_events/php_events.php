@@ -11,6 +11,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Fabrik\Helpers\Worker;
+
 // Require the abstract plugin class
 require_once COM_FABRIK_FRONTEND . '/models/plugin-list.php';
 
@@ -207,7 +209,7 @@ class PlgFabrik_ListPhp_Events extends PlgFabrik_List
 	protected function doEvaluate($code)
 	{
 		$model = $this->getModel();
-		$w = new FabrikWorker;
+		$w = new Worker;
 		$code = $w->parseMessageForPlaceHolder($code);
 
 		if ($code != '')

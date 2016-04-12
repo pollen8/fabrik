@@ -12,6 +12,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Fabrik\Helpers\Worker;
+
 jimport('joomla.application.component.controllerform');
 
 /**
@@ -156,7 +158,7 @@ class FabrikAdminControllerForm extends JControllerForm
 		// Check if any plugin has created a new validation error
 		if ($model->hasErrors())
 		{
-			FabrikWorker::getPluginManager()->runPlugins('onError', $model);
+			Worker::getPluginManager()->runPlugins('onError', $model);
 			$view->display();
 
 			return;

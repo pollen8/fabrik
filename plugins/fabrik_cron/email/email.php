@@ -13,6 +13,7 @@ defined('_JEXEC') or die('Restricted access');
 
 use Joomla\Utilities\ArrayHelper;
 use Fabrik\Helpers\Html;
+use Fabrik\Helpers\Worker;
 
 // Require the abstract plugin class
 require_once COM_FABRIK_FRONTEND . '/models/plugin-cron.php';
@@ -54,7 +55,7 @@ class PlgFabrik_Cronemail extends PlgFabrik_Cron
 		Html::runContentPlugins($msg);
 		$to = explode(',', $params->get('to'));
 
-		$w = new FabrikWorker;
+		$w = new Worker;
 		($params->get('cronemail_return', '') != '') ? $MailFrom = $params->get('cronemail_return') : $MailFrom = $this->app->get('mailfrom');
 		($params->get('cronemail_from', '') != '') ? $FromName = $params->get('cronemail_from') : $FromName = $this->app->get('fromname');
 		$subject   = $params->get('subject', 'Fabrik cron job');
@@ -85,7 +86,7 @@ class PlgFabrik_Cronemail extends PlgFabrik_Cron
 					{
 						$thisTo = trim($w->parseMessageForPlaceHolder($thisTo, $row));
 
-						if (FabrikWorker::isEmail($thisTo))
+						if (Worker::isEmail($thisTo))
 						{
 							$thisMsg = $w->parseMessageForPlaceHolder($msg, $row);
 

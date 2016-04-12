@@ -14,6 +14,7 @@ defined('_JEXEC') or die('Restricted access');
 
 use Joomla\Utilities\ArrayHelper;
 use Fabrik\Helpers\Html;
+use Fabrik\Helpers\Worker;
 
 jimport('joomla.html.html');
 jimport('joomla.form.formfield');
@@ -71,11 +72,11 @@ class JFormFieldListfields extends JFormFieldList
 		 */
 		$valueFormat    = (string) $this->getAttribute('valueformat', 'id');
 		$onlyListFields = (int) $this->getAttribute('onlylistfields', 0);
-		$showRaw        = FabrikWorker::toBoolean($this->getAttribute('raw', false), false);
+		$showRaw        = Worker::toBoolean($this->getAttribute('raw', false), false);
 		$labelMethod    = (string) $this->getAttribute('label_method');
-		$noJoins        = FabrikWorker::toBoolean($this->getAttribute('nojoins', false), false);
+		$noJoins        = Worker::toBoolean($this->getAttribute('nojoins', false), false);
 		$mode           = (string) $this->getAttribute('mode', false);
-		$useStep        = FabrikWorker::toBoolean($this->getAttribute('usestep', false), false);
+		$useStep        = Worker::toBoolean($this->getAttribute('usestep', false), false);
 
 		switch ($controller)
 		{
@@ -203,7 +204,7 @@ class JFormFieldListfields extends JFormFieldList
 	{
 		$input         = JFactory::getApplication()->input;
 		$id            = $input->getInt('id');
-		$pluginManager = FabrikWorker::getPluginManager();
+		$pluginManager = Worker::getPluginManager();
 		$elementModel  = $pluginManager->getElementPlugin($id);
 		$element       = $elementModel->getElement();
 
@@ -367,12 +368,12 @@ class JFormFieldListfields extends JFormFieldList
 		}
 
 		$connection        = $this->getAttribute('connection');
-		$repeat            = FabrikWorker::toBoolean($this->getAttribute('repeat', false), false);
+		$repeat            = Worker::toBoolean($this->getAttribute('repeat', false), false);
 		$repeat            = FabrikAdminElementHelper::getRepeat($this) || $repeat;
 		$c                 = (int) FabrikAdminElementHelper::getRepeatCounter($this);
 		$mode              = $this->getAttribute('mode');
 		$connectionDd      = $repeat ? $connection . '-' . $c : $connection;
-		$highlightPk       = FabrikWorker::toBoolean($this->getAttribute('highlightpk', false), false);
+		$highlightPk       = Worker::toBoolean($this->getAttribute('highlightpk', false), false);
 		$tableDd           = $this->getAttribute('table');
 		$opts              = new stdClass;
 		$opts->table       = ($repeat) ? 'jform_' . $tableDd . '-' . $c : 'jform_' . $tableDd;
@@ -383,7 +384,7 @@ class JFormFieldListfields extends JFormFieldList
 		$opts->highlightpk = (int) $highlightPk;
 		$opts->mode        = $mode;
 		$opts->defaultOpts = $res;
-		$opts->addBrackets = FabrikWorker::toBoolean($this->getAttribute('addbrackets', false), false);
+		$opts->addBrackets = Worker::toBoolean($this->getAttribute('addbrackets', false), false);
 		$opts              = json_encode($opts);
 		$script            = array();
 		$script[]          = "if (typeOf(FabrikAdmin.model.fields.listfields) === 'null') {";
@@ -452,14 +453,14 @@ class JFormFieldListfields extends JFormFieldList
 		$filter         = (string) $this->getAttribute('filter', '');
 		$pluginFilters  = trim($filter) == '' ? array() : explode('|', $filter);
 		$labelMethod    = (string) $this->getAttribute('label_method');
-		$noJoins        = FabrikWorker::toBoolean($this->getAttribute('nojoins', false), false);
+		$noJoins        = Worker::toBoolean($this->getAttribute('nojoins', false), false);
 
 		$bits       = array();
-		$showRaw    = FabrikWorker::toBoolean($this->getAttribute('raw', false), false);
+		$showRaw    = Worker::toBoolean($this->getAttribute('raw', false), false);
 		$groupModel = JModelLegacy::getInstance('Group', 'FabrikFEModel');
 		$groupModel->setId($groupId);
 		$optsKey = $valueFormat == 'tableelement' ? 'name' : 'id';
-		$useStep = FabrikWorker::toBoolean($this->getAttribute('usestep', false), false);
+		$useStep = Worker::toBoolean($this->getAttribute('usestep', false), false);
 		$res     = $groupModel->getForm()->getElementOptions($useStep, $optsKey, $onlyListFields, $showRaw, $pluginFilters, $labelMethod, $noJoins);
 		$hash    = $controller . '.' . implode('.', $bits);
 

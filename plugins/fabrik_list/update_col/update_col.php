@@ -13,6 +13,7 @@ defined('_JEXEC') or die('Restricted access');
 
 use Joomla\Utilities\ArrayHelper;
 use Fabrik\Helpers\Html;
+use Fabrik\Helpers\Worker;
 
 // Require the abstract plugin class
 require_once COM_FABRIK_FRONTEND . '/models/plugin-list.php';
@@ -252,7 +253,7 @@ class PlgFabrik_ListUpdate_Col extends PlgFabrik_List
 		if (!empty($postEval))
 		{
 			$err = @eval($postEval);
-			FabrikWorker::logEval($err, 'Caught exception on eval in updatecol::process() : %s');
+			Worker::logEval($err, 'Caught exception on eval in updatecol::process() : %s');
 		}
 
 		// Clean the cache.
@@ -281,7 +282,7 @@ class PlgFabrik_ListUpdate_Col extends PlgFabrik_List
 
 		if (!empty($emailColID) || !empty($emailTo))
 		{
-			$w = new FabrikWorker;
+			$w = new Worker;
 			jimport('joomla.mail.helper');
 			$aids = explode(',', $ids);
 			$message = $params->get('update_email_msg');
@@ -310,7 +311,7 @@ class PlgFabrik_ListUpdate_Col extends PlgFabrik_List
 				{
 					$email = trim($email);
 
-					if (!(JMailHelper::cleanAddress($email) && FabrikWorker::isEmail($email)))
+					if (!(JMailHelper::cleanAddress($email) && Worker::isEmail($email)))
 					{
 						$cleanTo = false;
 					}
@@ -329,7 +330,7 @@ class PlgFabrik_ListUpdate_Col extends PlgFabrik_List
 					if ($eval)
 					{
 						$thisMessage = @eval($thisMessage);
-						FabrikWorker::logEval($thisMessage, 'Caught exception on eval in updatecol::process() : %s');
+						Worker::logEval($thisMessage, 'Caught exception on eval in updatecol::process() : %s');
 					}
 
 					$mail = JFactory::getMailer();
@@ -422,7 +423,7 @@ class PlgFabrik_ListUpdate_Col extends PlgFabrik_List
 		$params = $this->getParams();
 		$emailColID = $params->get('update_email_element', '');
 
-		return FabrikWorker::getPluginManager()->getElementPlugin($emailColID);
+		return Worker::getPluginManager()->getElementPlugin($emailColID);
 	}
 
 	/**
@@ -490,7 +491,7 @@ class PlgFabrik_ListUpdate_Col extends PlgFabrik_List
 		if ($eval)
 		{
 			$val = @eval($val);
-			FabrikWorker::logEval($val, 'Caught exception on eval in updatecol::_process() : %s');
+			Worker::logEval($val, 'Caught exception on eval in updatecol::_process() : %s');
 		}
 
 		$model->updateRows($ids, $col, $val);
@@ -557,7 +558,7 @@ class PlgFabrik_ListUpdate_Col extends PlgFabrik_List
 		$listRef = $model->getRenderContext();
 		$prefix = 'fabrik___update_col[list_' . $listRef . '][';
 		$elements = '<select class="inputbox key update_col_elements" size="1" name="' . $prefix . 'key][]">' . implode("\n", $options) . '</select>';
-		$j3 = FabrikWorker::j3();
+		$j3 = Worker::j3();
 		$addImg = $j3 ? 'plus.png' : 'add.png';
 		$removeImg = $j3 ? 'remove.png' : 'del.png';
 

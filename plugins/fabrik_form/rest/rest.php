@@ -12,6 +12,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 use Joomla\Utilities\ArrayHelper;
+use Fabrik\Helpers\Worker;
 
 // Require the abstract plugin class
 require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
@@ -164,7 +165,7 @@ class PlgFabrik_FormRest extends PlgFabrik_Form
 		$formModel = $this->getModel();
 		$params    = $this->getParams();
 		$fkElement = $this->fkElement();
-		$w         = new FabrikWorker;
+		$w         = new Worker;
 
 		// POST new records, PUT existing records
 		$method = $this->requestMethod();
@@ -191,7 +192,7 @@ class PlgFabrik_FormRest extends PlgFabrik_Form
 			$output = $this->processOAuth($endpoint, $data);
 		}
 
-		$jsonOutPut = FabrikWorker::isJSON($output) ? true : false;
+		$jsonOutPut = Worker::isJSON($output) ? true : false;
 
 		// Set FK value in Fabrik form data
 		if ($this->shouldUpdateFk())
@@ -310,11 +311,11 @@ class PlgFabrik_FormRest extends PlgFabrik_Form
 
 		/** @var FabrikFEModelForm $formModel */
 		$formModel = $this->getModel();
-		$w         = new FabrikWorker;
+		$w         = new Worker;
 		$fkElement = $this->fkElement();
 		$fkData    = $this->fkData();
 
-		if (FabrikWorker::isJSON($include))
+		if (Worker::isJSON($include))
 		{
 			$include = json_decode($include);
 			$keys    = $include->put_key;
@@ -463,7 +464,7 @@ class PlgFabrik_FormRest extends PlgFabrik_Form
 	{
 		$formModel = $this->getModel();
 
-		if (FabrikWorker::isJSON($output))
+		if (Worker::isJSON($output))
 		{
 			$output = json_decode($output);
 
@@ -583,12 +584,12 @@ class PlgFabrik_FormRest extends PlgFabrik_Form
 	 */
 	protected function updateFormModelData($params, $responseBody, $data)
 	{
-		$w         = new FabrikWorker;
+		$w         = new Worker;
 		$dataMap   = $params->get('put_include_list', '');
 		$include   = $w->parseMessageForPlaceholder($dataMap, $responseBody, true);
 		$formModel = $this->getModel();
 
-		if (FabrikWorker::isJSON($include))
+		if (Worker::isJSON($include))
 		{
 			$include = json_decode($include);
 

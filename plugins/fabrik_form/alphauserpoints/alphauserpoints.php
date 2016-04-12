@@ -15,7 +15,7 @@ defined('_JEXEC') or die('Restricted access');
 
 use \Exception;
 use \JFile;
-use \FabrikWorker;
+use Fabrik\Helpers\Worker;
 
 /**
  * Insert points into the Alpha User Points http://www.alphaplug.com component
@@ -43,7 +43,7 @@ class AlphaUserPoints extends \PlgFabrik_Form
 
 		if (JFile::exists($api_AUP))
 		{
-			$w = new FabrikWorker;
+			$w = new Worker;
 			$this->data = $this->getProcessData();
 			require_once $api_AUP;
 			$aup = new \AlphaUserPointsHelper;
@@ -70,7 +70,7 @@ class AlphaUserPoints extends \PlgFabrik_Form
 				{
 					$randomPoints = $w->parseMessageForPlaceholder($randomPoints, $this->data, false);
 					$randomPoints = @eval($randomPoints);
-					FabrikWorker::logEval($randomPoints, 'Caught exception on eval in aup plugin : %s');
+					Worker::logEval($randomPoints, 'Caught exception on eval in aup plugin : %s');
 				}
 
 				$randomPoints = (float) $randomPoints;
