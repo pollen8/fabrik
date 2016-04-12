@@ -295,12 +295,13 @@ class Usps extends AbstractAdapter
      *
      * @throws \Exception
      *
-     * @return string Shipping label
+     * @return array label file format, label image data
      */
     public function ship($verifyPeer = true)
     {
         //@TODO usps shipping
-        return '';
+		// @todo test this is the right format and label is not base64 enoded
+		return ['gif', ''];
     }
 
 
