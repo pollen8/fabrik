@@ -362,6 +362,7 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 
 		$usersConfig    = JComponentHelper::getParams('com_users');
 		$userActivation = $usersConfig->get('useractivation');
+		$sendpassword   = $usersConfig->get('sendpassword', 1);
 
 		// Initialize some variables
 		$me = $this->user;
@@ -538,38 +539,126 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 					// Set the link to confirm the user email.
 					$data['activate'] = $base . JRoute::_('index.php?option=com_users&task=registration.activate&token=' . $data['activation'], false);
 
-					$emailSubject = JText::sprintf('COM_USERS_EMAIL_ACCOUNT_DETAILS', $data['name'], $data['sitename']);
-
-					$emailBody = JText::sprintf('COM_USERS_EMAIL_REGISTERED_WITH_ADMIN_ACTIVATION_BODY', $data['name'], $data['sitename'],
-						$data['siteurl'] . 'index.php?option=com_users&task=registration.activate&token=' . $data['activation'], $data['siteurl'],
-						$data['username'], $data['password_clear']
+					$emailSubject = JText::sprintf(
+						'COM_USERS_EMAIL_ACCOUNT_DETAILS',
+						$data['name'],
+						$data['sitename']
 					);
+
+					if ($sendpassword)
+					{
+						$emailBody = JText::sprintf(
+							'COM_USERS_EMAIL_REGISTERED_WITH_ADMIN_ACTIVATION_BODY',
+							$data['name'],
+							$data['sitename'],
+							$data['siteurl'] . 'index.php?option=com_users&task=registration.activate&token=' . $data['activation'],
+							$data['siteurl'],
+							$data['username'],
+							$data['password_clear']
+						);
+					}
+					else
+					{
+						$emailBody = JText::sprintf(
+							'COM_USERS_EMAIL_REGISTERED_WITH_ADMIN_ACTIVATION_BODY_NOPW',
+							$data['name'],
+							$data['sitename'],
+							$data['siteurl'] . 'index.php?option=com_users&task=registration.activate&token=' . $data['activation'],
+							$data['siteurl'],
+							$data['username']
+						);
+					}
 				}
 				elseif ($userActivation == 1 && !$bypassActivation && !$autoLogin)
 				{
 					// Set the link to activate the user account.
 					$data['activate'] = $base . JRoute::_('index.php?option=com_users&task=registration.activate&token=' . $data['activation'], false);
 
-					$emailSubject = JText::sprintf('COM_USERS_EMAIL_ACCOUNT_DETAILS', $data['name'], $data['sitename']);
-
-					$emailBody = JText::sprintf('COM_USERS_EMAIL_REGISTERED_WITH_ACTIVATION_BODY', $data['name'], $data['sitename'],
-						$data['siteurl'] . 'index.php?option=com_users&task=registration.activate&token=' . $data['activation'], $data['siteurl'],
-						$data['username'], $data['password_clear']
+					$emailSubject = JText::sprintf(
+						'COM_USERS_EMAIL_ACCOUNT_DETAILS',
+						$data['name'],
+						$data['sitename']
 					);
+
+					if ($sendpassword)
+					{
+						$emailBody = JText::sprintf(
+							'COM_USERS_EMAIL_REGISTERED_WITH_ACTIVATION_BODY',
+							$data['name'],
+							$data['sitename'],
+							$data['siteurl'] . 'index.php?option=com_users&task=registration.activate&token=' . $data['activation'],
+							$data['siteurl'],
+							$data['username'],
+							$data['password_clear']
+						);
+					}
+					else
+					{
+						$emailBody = JText::sprintf(
+							'COM_USERS_EMAIL_REGISTERED_WITH_ACTIVATION_BODY_NOPW',
+							$data['name'],
+							$data['sitename'],
+							$data['siteurl'] . 'index.php?option=com_users&task=registration.activate&token=' . $data['activation'],
+							$data['siteurl'],
+							$data['username']
+						);
+					}
 				}
 				elseif ($autoLogin)
 				{
 					$emailSubject = JText::sprintf('COM_USERS_EMAIL_ACCOUNT_DETAILS', $data['name'], $data['sitename']);
 
-					$emailBody = JText::sprintf('PLG_FABRIK_FORM_JUSER_AUTO_LOGIN_BODY', $data['name'], $data['sitename'],
-						$data['siteurl'],
-						$data['username'], $data['password_clear']
-					);
+					if ($sendpassword)
+					{
+						$emailBody = JText::sprintf(
+							'PLG_FABRIK_FORM_JUSER_AUTO_LOGIN_BODY',
+							$data['name'],
+							$data['sitename'],
+							$data['siteurl'],
+							$data['username'],
+							$data['password_clear']
+						);
+					}
+					else
+					{
+						$emailBody = JText::sprintf(
+							'PLG_FABRIK_FORM_JUSER_AUTO_LOGIN_BODY',
+							$data['name'],
+							$data['sitename'],
+							$data['siteurl'],
+							$data['username'],
+							'xxxxxxxxxxxx'
+						);
+					}
 				}
 				elseif ($params->get('juser_bypass_accountdetails') != 1)
 				{
-					$emailSubject = JText::sprintf('COM_USERS_EMAIL_ACCOUNT_DETAILS', $data['name'], $data['sitename']);
-					$emailBody    = JText::sprintf('COM_USERS_EMAIL_REGISTERED_BODY', $data['name'], $data['sitename'], $data['siteurl']);
+					$emailSubject = JText::sprintf(
+						'COM_USERS_EMAIL_ACCOUNT_DETAILS',
+						$data['name'],
+						$data['sitename']
+					);
+
+					if ($sendpassword)
+					{
+						$emailBody = JText::sprintf(
+							'COM_USERS_EMAIL_REGISTERED_BODY',
+							$data['name'],
+							$data['sitename'],
+							$data['siteurl'],
+							$data['username'],
+							$data['password_clear']
+						);
+					}
+					else
+					{
+						$emailBody = JText::sprintf(
+							'COM_USERS_EMAIL_REGISTERED_BODY_NOPW',
+							$data['name'],
+							$data['sitename'],
+							$data['siteurl']
+						);
+					}
 				}
 
 				// Send the registration email.

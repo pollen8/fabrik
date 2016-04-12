@@ -724,6 +724,7 @@
 				label="PLG_VISUALIZATION_GOOGLEMAP_OVERLAYS_URL_LABEL"
 				name="fb_gm_overlay_urls"
 				size="100"
+				class="input-xxlarge"
 				type="text" />
 
 			<field
