@@ -14,7 +14,6 @@ use Fabble\Helpers\Factory;
 use Joomla\String\Normalise;
 use Joomla\String\Inflector;
 
-
 /**'
  * Autoloader Class
  *
@@ -31,7 +30,8 @@ class FabrikAutoloader
 		spl_autoload_register(array($this, 'view'));
 		spl_autoload_register(array($this, 'library'));
 		*/
-		spl_autoload_register(array($this, 'plugin'));
+		spl_autoload_register(array($this, 'formPlugin'));
+		spl_autoload_register(array($this, 'element'));
 		spl_autoload_register(array($this, 'helper'));
 	}
 
@@ -40,21 +40,45 @@ class FabrikAutoloader
 	 *
 	 * @param   string $class Class name
 	 */
-	private function plugin($class)
+	private function formPlugin($class)
 	{
+		if (!strstr(($class), 'Fabrik\Plugins\Form'))
+		{
+			return;
+		}
 
+		$class = str_replace('\\', '/', $class);
+		$file  = explode('/', $class);
+		$file  = strtolower(array_pop($file));
+		$path  = JPATH_SITE . '/plugins/fabrik_form/' . $file . '/' . $file . '.php';
+
+		if (file_exists($path))
+		{
+			require_once $path;
+		}
+	}
+
+	/**
+	 * Load element plugin class
+	 *
+	 * @param   string $class Class name
+	 */
+	private function element($class)
+	{
 		if (!strstr(($class), 'Fabrik\Plugins\Element'))
 		{
 			return;
 		}
 
-		//echo $class . "\n";
 		$class = str_replace('\\', '/', $class);
 		$file  = explode('/', $class);
 		$file  = strtolower(array_pop($file));
 		$path  = JPATH_SITE . '/plugins/fabrik_element/' . $file . '/' . $file . '.php';
 
-		require_once $path;
+		if (file_exists($path))
+		{
+			require_once $path;
+		}
 	}
 
 	private function helper($class)

@@ -4641,7 +4641,7 @@ class Element extends \FabrikPlugin
 	 */
 	public function recordInDatabase($data = null)
 	{
-		return $this->recordInDatabase;
+		return $this->getParams()->get('store_in_db', $this->recordInDatabase);
 	}
 
 	/**
