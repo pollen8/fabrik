@@ -18,7 +18,7 @@ require_once 'fabmodeladmin.php';
 require JPATH_COMPONENT_ADMINISTRATOR . '/models/databaseimporter.php';
 require_once JPATH_COMPONENT_ADMINISTRATOR . '/helpers/contenttype.php';
 
-use Joomla\Utilities\ArrayHelper;
+use Fabrik\Helpers\ArrayHelper;
 use \Joomla\Registry\Registry;
 use Fabrik\Helpers\Html;
 use Fabrik\Helpers\Worker;

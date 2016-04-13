@@ -13,6 +13,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 use Fabrik\Helpers\Html;
+use Fabrik\Helpers\Text;
 
 JHtml::addIncludePath(JPATH_COMPONENT . '/helpers/html');
 JHTML::stylesheet('administrator/components/com_fabrik/views/fabrikadmin.css');
@@ -33,7 +34,7 @@ JHtml::_('behavior.keepalive');
 				window.fireEvent('form.save');
 				Joomla.submitform(task, document.getElementById('adminForm'));
 			} else {
-				window.alert('<?php echo $this->escape(FText::_('JGLOBAL_VALIDATION_FORM_FAILED'));?>');
+				window.alert('<?php echo $this->escape(Text::_('JGLOBAL_VALIDATION_FORM_FAILED'));?>');
 			}
 		});
 	}
@@ -57,7 +58,7 @@ JHtml::_('behavior.keepalive');
 		</fieldset>
 <?php }?>
 <fieldset class="adminform">
-			<legend><?php echo FText::_('COM_FABRIK_OPTIONS');?></legend>
+			<legend><?php echo Text::_('COM_FABRIK_OPTIONS');?></legend>
 			<div id="plugin-container">
 				<?php echo $this->pluginFields;?>
 			</div>

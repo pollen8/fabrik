@@ -13,14 +13,14 @@ namespace Fabrik\Plugins\Element;
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Joomla\Utilities\ArrayHelper;
-use Fabrik\Helpers\Worker;
-use \FArrayHelper;
 use \QRCode;
-use \JString;
-use Fabrik\Helpers\Html;
 use \stdClass;
 use \JComponentHelper;
+use Fabrik\Helpers\ArrayHelper;
+use Fabrik\Helpers\Html;
+use Fabrik\Helpers\StringHelper;
+use Fabrik\Helpers\Text;
+use Fabrik\Helpers\Worker;
 
 jimport('joomla.application.component.model');
 
@@ -92,7 +92,7 @@ class Field extends Element
 
 		if ($params->get('password') == '1')
 		{
-			$d = str_pad('', JString::strlen($d), '*');
+			$d = str_pad('', StringHelper::strlen($d), '*');
 		}
 
 		return $d;
@@ -239,10 +239,10 @@ class Field extends Element
 			$opts = $this->linkOpts();
 			$title = $params->get('link_title', '');
 
-			if (Worker::isEmail($value) || JString::stristr($value, 'http'))
+			if (Worker::isEmail($value) || StringHelper::stristr($value, 'http'))
 			{
 			}
-			elseif (JString::stristr($value, 'www.'))
+			elseif (StringHelper::stristr($value, 'www.'))
 			{
 				$value = 'http://' . $value;
 			}
@@ -252,7 +252,7 @@ class Field extends Element
 				$opts['title'] = strip_tags($w->parseMessageForPlaceHolder($title, $data));
 			}
 
-			$label = FArrayHelper::getValue($opts, 'title', '') !== '' ? $opts['title'] : $value;
+			$label = ArrayHelper::getValue($opts, 'title', '') !== '' ? $opts['title'] : $value;
 
 			$value = Html::a($value, $label, $opts);
 		}
@@ -538,7 +538,7 @@ class Field extends Element
 
 		if (!$this->canView())
 		{
-			$this->app->enqueueMessage(FText::_('PLG_ELEMENT_FIELD_NO_PERMISSION'));
+			$this->app->enqueueMessage(Text::_('PLG_ELEMENT_FIELD_NO_PERMISSION'));
 			$this->app->redirect($url);
 			exit;
 		}
@@ -631,7 +631,7 @@ class Field extends Element
 			 * But check __pk_val first anyway, what the heck.
 			 */
 
-			$rowId = FArrayHelper::getValue($thisRow, '__pk_val', '');
+			$rowId = ArrayHelper::getValue($thisRow, '__pk_val', '');
 
 			if (empty($rowId))
 			{

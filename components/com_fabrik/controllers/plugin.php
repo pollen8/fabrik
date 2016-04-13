@@ -12,6 +12,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 use \Joomla\Utilities\ArrayHelper;
+use Fabrik\Helpers\StringHelper;
 use Fabrik\Helpers\Worker;
 
 jimport('joomla.application.component.controller');
@@ -68,7 +69,7 @@ class FabrikControllerPlugin extends JControllerLegacy
 
 		if (substr($method, 0, 2) !== 'on')
 		{
-			$method = 'on' . JString::ucfirst($method);
+			$method = 'on' . StringHelper::ucfirst($method);
 		}
 
 		$dispatcher = JEventDispatcher::getInstance();

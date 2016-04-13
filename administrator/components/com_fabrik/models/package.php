@@ -12,8 +12,9 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Joomla\Utilities\ArrayHelper;
+use Fabrik\Helpers\ArrayHelper;
 use Fabrik\Helpers\Worker;
+use Fabrik\Helpers\StringHelper;
 
 require_once 'fabmodeladmin.php';
 
@@ -139,9 +140,9 @@ class FabrikAdminModelPackage extends FabModelAdmin
 	protected function selectedBlocks($type = 'form')
 	{
 		$item   = $this->getItem();
-		$canvas = FArrayHelper::getValue($item->params, 'canvas', array());
-		$b      = FArrayHelper::getValue($canvas, 'blocks', array());
-		$ids    = FArrayHelper::getValue($b, $type, array());
+		$canvas = ArrayHelper::getValue($item->params, 'canvas', array());
+		$b      = ArrayHelper::getValue($canvas, 'blocks', array());
+		$ids    = ArrayHelper::getValue($b, $type, array());
 
 		return $ids;
 	}
@@ -233,7 +234,7 @@ class FabrikAdminModelPackage extends FabModelAdmin
 
 		foreach ($blocks as $type => $values)
 		{
-			$tbl = JString::ucfirst($type);
+			$tbl = StringHelper::ucfirst($type);
 
 			foreach ($values as $id)
 			{
@@ -355,7 +356,7 @@ class FabrikAdminModelPackage extends FabModelAdmin
 
 			$plugins = $this->findPlugins($row);
 			$this->zipPlugins($row, $plugins);
-			$filenames = FArrayHelper::extract($plugins, 'fullfile');
+			$filenames = ArrayHelper::extract($plugins, 'fullfile');
 
 			$filenames[] = $componentZipPath;
 
@@ -831,7 +832,7 @@ class FabrikAdminModelPackage extends FabModelAdmin
 
 		foreach ($row->blocks as $block => $ids)
 		{
-			$key = FabrikString::rtrimword($block, 's');
+			$key = StringHelper::rtrimword($block, 's');
 		}
 
 		// Create the sql to build the db tables that store the data.

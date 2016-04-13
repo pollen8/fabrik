@@ -14,6 +14,7 @@ defined('_JEXEC') or die('Restricted access');
 
 use Fabrik\Helpers\Html;
 use Fabrik\Helpers\Worker;
+use Fabrik\Helpers\Text;
 
 $d = $displayData;
 $data = $d->value;
@@ -32,12 +33,12 @@ endif;
 
 if ($data == '1') :
 	$icon = $j3 && $format != 'pdf' ? 'checkmark.png' : '1.png';
-	$properties['alt'] = FText::_('JYES');
+	$properties['alt'] = Text::_('JYES');
 
 	echo Html::image($icon, 'list', $tmpl, $properties, false, $opts);
 else :
 	$icon = $j3 && $format != 'pdf' ? 'remove.png' : '0.png';
-	$properties['alt'] = FText::_('JNO');
+	$properties['alt'] = Text::_('JNO');
 
 	echo Html::image($icon, 'list', $tmpl, $properties, false, $opts);
 endif;

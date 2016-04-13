@@ -13,8 +13,7 @@ namespace Fabrik\Plugins\Element;
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use \FArrayHelper;
-use Joomla\Utilities\ArrayHelper;
+use Fabrik\Helpers\ArrayHelper;
 use \stdClass;
 use Fabrik\Helpers\Worker;
 use Fabrik\Helpers\Html;
@@ -137,7 +136,7 @@ class Fblike extends Element
 				if (is_object($el))
 				{
 					$name = $el->getFullName(true, false);
-					$v = FArrayHelper::getValue($data, $name);
+					$v = ArrayHelper::getValue($data, $name);
 
 					if ($k == 'og:image')
 					{
@@ -160,7 +159,7 @@ class Fblike extends Element
 
 		if ($locEl != '')
 		{
-			$loc = FArrayHelper::getValue($data, $locEl->getFullName(true, false));
+			$loc = ArrayHelper::getValue($data, $locEl->getFullName(true, false));
 			$loc = array_shift(explode(':', $loc));
 			$loc = explode(",", $loc);
 

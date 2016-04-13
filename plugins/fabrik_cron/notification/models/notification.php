@@ -10,7 +10,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Joomla\Utilities\ArrayHelper;
+use Fabrik\Helpers\ArrayHelper;
+use Fabrik\Helpers\StringHelper;
 use Fabrik\Helpers\Worker;
 
 jimport('joomla.application.component.model');
@@ -58,7 +59,7 @@ class FabrikModelNotification extends FabModel
 			{
 				$key = explode('___', $key);
 				$key = array_pop($key);
-				$k = JString::strtolower($key);
+				$k = StringHelper::strtolower($key);
 
 				if ($k == 'title')
 				{

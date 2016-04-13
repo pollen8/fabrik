@@ -11,7 +11,6 @@ namespace Fabrik\Plugins\Form;
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Joomla\Utilities\ArrayHelper;
 use \stdClass;
 use \Exception;
 use \RuntimeException;
@@ -23,13 +22,11 @@ use \JTable;
 use \JPluginHelper;
 use \JFile;
 use \JEventDispatcher;
-use \JText;
 use \JModelLegacy;
-use \FArrayHelper;
-use \JString;
 use \FabrikFEModelForm;
-use \FabrikString;
-use \FText;
+use Fabrik\Helpers\ArrayHelper;
+use Fabrik\Helpers\StringHelper;
+use Fabrik\Helpers\Text;
 use Fabrik\Helpers\Worker;
 
 /**
@@ -73,7 +70,7 @@ class Article extends \PlgFabrik_Form
 		if ($catElement = $formModel->getElement($params->get('categories_element'), true))
 		{
 			$cat        = $catElement->getFullName() . '_raw';
-			$categories = (array) FArrayHelper::getValue($this->data, $cat);
+			$categories = (array) ArrayHelper::getValue($this->data, $cat);
 			$this->mapCategoryChanges($categories, $store);
 		}
 		else
@@ -257,7 +254,7 @@ class Article extends \PlgFabrik_Form
 
 		if (empty($pks))
 		{
-			$this->setError(JText::_('COM_CONTENT_NO_ITEM_SELECTED'));
+			$this->setError(Text::_('COM_CONTENT_NO_ITEM_SELECTED'));
 
 			return false;
 		}
@@ -401,7 +398,7 @@ class Article extends \PlgFabrik_Form
 			if ($file !== '')
 			{
 				$img->image_intro         = str_replace('\\', '/', $file);
-				$img->image_intro         = FabrikString::ltrimword($img->image_intro, '/');
+				$img->image_intro         = StringHelper::ltrimword($img->image_intro, '/');
 				$img->float_intro         = '';
 				$img->image_intro_alt     = '';
 				$img->image_intro_caption = '';
@@ -424,7 +421,7 @@ class Article extends \PlgFabrik_Form
 			if ($file !== '')
 			{
 				$img->image_fulltext         = str_replace('\\', '/', $file);
-				$img->image_fulltext         = FabrikString::ltrimword($img->image_fulltext, '/');
+				$img->image_fulltext         = StringHelper::ltrimword($img->image_fulltext, '/');
 				$img->float_fulltext         = '';
 				$img->image_fulltext_alt     = '';
 				$img->image_fulltext_caption = '';
@@ -517,7 +514,7 @@ class Article extends \PlgFabrik_Form
 
 			if ($first === '\\' || $first == '/')
 			{
-				$file = FabrikString::ltrimiword($file, $first);
+				$file = StringHelper::ltrimiword($file, $first);
 			}
 		}
 
@@ -547,9 +544,9 @@ class Article extends \PlgFabrik_Form
 		// should increment the Joomla article title.
 		while ($table->load(array('alias' => $alias, 'catid' => $catId)))
 		{
-			$title                      = JString::increment($title);
+			$title                      = StringHelper::increment($title);
 			$titles[$table->get('id')]  = $title;
-			$alias                      = JString::increment($alias, 'dash');
+			$alias                      = StringHelper::increment($alias, 'dash');
 			$aliases[$table->get('id')] = $alias;
 		}
 
@@ -740,8 +737,8 @@ class Article extends \PlgFabrik_Form
 			. $input->get('rowid', '', 'string');
 		$viewURL  = COM_FABRIK_LIVESITE . 'index.php?option=com_' . $this->package . '&amp;view=details&amp;formid=' . $formModel->get('id') . '&amp;rowid='
 			. $input->get('rowid', '', 'string');
-		$editLink = '<a href="' . $editURL . '">' . FText::_('EDIT') . '</a>';
-		$viewLink = '<a href="' . $viewURL . '">' . FText::_('VIEW') . '</a>';
+		$editLink = '<a href="' . $editURL . '">' . Text::_('EDIT') . '</a>';
+		$viewLink = '<a href="' . $viewURL . '">' . Text::_('VIEW') . '</a>';
 		$message  = str_replace('{fabrik_editlink}', $editLink, $message);
 		$message  = str_replace('{fabrik_viewlink}', $viewLink, $message);
 		$message  = str_replace('{fabrik_editurl}', $editURL, $message);
@@ -844,11 +841,11 @@ class Article extends \PlgFabrik_Form
 		{
 			$catName    = $catElement->getFullName();
 			$cat        = $catName . '_raw';
-			$categories = (array) FArrayHelper::getValue($this->data, $cat);
+			$categories = (array) ArrayHelper::getValue($this->data, $cat);
 
 			if (empty($categories) || is_array($categories) && $categories[0] === '')
 			{
-				$this->raiseError($formModel->errors, $catName, FText::_('PLG_FABRIK_FORM_ARTICLE_ERR_NO_CATEGORY'));
+				$this->raiseError($formModel->errors, $catName, Text::_('PLG_FABRIK_FORM_ARTICLE_ERR_NO_CATEGORY'));
 
 				return false;
 			}

@@ -13,20 +13,18 @@ defined('_JEXEC') or die('Restricted access');
 
 use Fabrik\Helpers\Html;
 use \stdClass;
-use \FText;
+use Fabrik\Helpers\Text;
 use Fabrik\Helpers\Worker;
-use \JString;
 use \JModelLegacy;
-use \FabrikString;
+use Fabrik\Helpers\StringHelper;
 use \JFile;
 use \DOMPDF;
 use \FabrikControllerDetails;
 use \RuntimeException;
 use \JFactory;
-use \JText;
-use \FArrayHelper;
 use \JProfiler;
-use \FabrikPDFHelper;
+use Fabrik\Helpers\ArrayHelper;
+use \Fabrik\Helpers\Pdf;
 use \JPath;
 
 /**
@@ -181,8 +179,8 @@ class Email extends \PlgFabrik_Form
 			. $input->get('rowid', '', 'string');
 		$viewURL = COM_FABRIK_LIVESITE . 'index.php?option=com_' . $this->package . '&amp;view=details&amp;fabrik=' . $formModel->get('id') . '&amp;rowid='
 			. $input->get('rowid', '', 'string');
-		$editLink = '<a href="' . $editURL . '">' . FText::_('EDIT') . '</a>';
-		$viewLink = '<a href="' . $viewURL . '">' . FText::_('VIEW') . '</a>';
+		$editLink = '<a href="' . $editURL . '">' . Text::_('EDIT') . '</a>';
+		$viewLink = '<a href="' . $viewURL . '">' . Text::_('VIEW') . '</a>';
 		$message = str_replace('{fabrik_editlink}', $editLink, $message);
 		$message = str_replace('{fabrik_viewlink}', $viewLink, $message);
 		$message = str_replace('{fabrik_editurl}', $editURL, $message);
@@ -344,7 +342,7 @@ class Email extends \PlgFabrik_Form
 				 */
 				if ($res !== true)
 				{
-					$this->app->enqueueMessage(JText::sprintf('PLG_FORM_EMAIL_DID_NOT_SEND_EMAIL', $email), 'notice');
+					$this->app->enqueueMessage(Text::sprintf('PLG_FORM_EMAIL_DID_NOT_SEND_EMAIL', $email), 'notice');
 				}
 
 				if (JFile::exists($attachFileName))
@@ -354,7 +352,7 @@ class Email extends \PlgFabrik_Form
 			}
 			else
 			{
-				$this->app->enqueueMessage(JText::sprintf('PLG_FORM_EMAIL_DID_NOT_SEND_EMAIL_INVALID_ADDRESS', $email), 'notice');
+				$this->app->enqueueMessage(Text::sprintf('PLG_FORM_EMAIL_DID_NOT_SEND_EMAIL_INVALID_ADDRESS', $email), 'notice');
 			}
 		}
 
@@ -383,8 +381,8 @@ class Email extends \PlgFabrik_Form
 		if (!empty($updateField))
 		{
 			$updateField .= '_raw';
-			$updateEl = FabrikString::safeColNameToArrayKey($updateField);
-			$updateVal = FArrayHelper::getValue($this->data, $updateEl, '');
+			$updateEl = StringHelper::safeColNameToArrayKey($updateField);
+			$updateVal = ArrayHelper::getValue($this->data, $updateEl, '');
 			$updateVal = is_array($updateVal) ? $updateVal[0] : $updateVal;
 			return !empty($updateVal);
 		}
@@ -440,9 +438,8 @@ class Email extends \PlgFabrik_Form
 			}
 
 			// Require files and set up DOM pdf
-			require_once JPATH_SITE . '/components/com_fabrik/helpers/pdf.php';
 			require_once JPATH_SITE . '/components/com_fabrik/controllers/details.php';
-			FabrikPDFHelper::iniDomPdf();
+			Pdf::iniDomPdf();
 			$domPdf = new DOMPDF;
 			$size = strtoupper($params->get('pdf_size', 'A4'));
 			$orientation = $params->get('pdf_orientation', 'portrait');
@@ -712,7 +709,7 @@ class Email extends \PlgFabrik_Form
 				{
 					$val = '';
 
-					if (is_array(FArrayHelper::getValue($data, $key)))
+					if (is_array(ArrayHelper::getValue($data, $key)))
 					{
 						// Repeat group data
 						foreach ($data[$key] as $k => $v)
@@ -727,10 +724,10 @@ class Email extends \PlgFabrik_Form
 					}
 					else
 					{
-						$val = FArrayHelper::getValue($data, $key);
+						$val = ArrayHelper::getValue($data, $key);
 					}
 
-					$val = FabrikString::rtrimword($val, "<br />");
+					$val = StringHelper::rtrimword($val, "<br />");
 					$val = stripslashes($val);
 
 					// Set $val to default value if empty
@@ -742,7 +739,7 @@ class Email extends \PlgFabrik_Form
 					$label = trim(strip_tags($element->label));
 					$message .= $label;
 
-					if (strlen($label) != 0 && JString::strpos($label, ':', JString::strlen($label) - 1) === false)
+					if (strlen($label) != 0 && StringHelper::strpos($label, ':', StringHelper::strlen($label) - 1) === false)
 					{
 						$message .= ':';
 					}
@@ -752,7 +749,7 @@ class Email extends \PlgFabrik_Form
 			}
 		}
 
-		$message = FText::_('Email from') . ' ' . $this->config->get('sitename') . '<br />' . FText::_('Message') . ':'
+		$message = Text::_('Email from') . ' ' . $this->config->get('sitename') . '<br />' . Text::_('Message') . ':'
 			. "<br />===================================<br />" . "<br />" . stripslashes($message);
 
 		return $message;

@@ -1,5 +1,8 @@
 <?php
 defined('JPATH_BASE') or die;
+
+use Fabrik\Helpers\Text;
+
 $d     = $displayData;
 ?>
 
@@ -8,7 +11,7 @@ if (!empty($d->user_select_message))
 {
 ?>
 <div class="update_col_user_select_message">
-<?php echo FText::_($d->user_select_message); ?>
+<?php echo Text::_($d->user_select_message); ?>
 </div>
 <?php 
 }
@@ -18,8 +21,8 @@ if (!empty($d->user_select_message))
 	<table class="table table-striped" style="width:100%">
 		<thead>
 		<tr>
-			<th><?php echo FText::_('COM_FABRIK_ELEMENT'); ?></th>
-			<th><?php echo FText::_('COM_FABRIK_VALUE'); ?></th>
+			<th><?php echo Text::_('COM_FABRIK_ELEMENT'); ?></th>
+			<th><?php echo Text::_('COM_FABRIK_VALUE'); ?></th>
 			<th>
 				<a class="btn add button btn-primary" href="#">
 					<?php echo $d->addImg; ?>
@@ -45,5 +48,5 @@ if (!empty($d->user_select_message))
 		</tr>
 		</tbody>
 	</table>
-	<input class="button btn button-primary" value="<?php echo FText::_('COM_FABRIK_APPLY'); ?>" type="button">
+	<input class="button btn button-primary" value="<?php echo Text::_('COM_FABRIK_APPLY'); ?>" type="button">
 </form>

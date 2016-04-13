@@ -12,11 +12,13 @@
 defined('_JEXEC') or die('Restricted access');
 
 use Fabrik\Helpers\Html;
+use Fabrik\Helpers\Text;
+use Fabrik\Helpers\StringHelper;
 
 // Access check.
 if (!JFactory::getUser()->authorise('core.manage', 'com_fabrik'))
 {
-	throw new Exception(JText::_('JERROR_ALERTNOAUTHOR'), 404);
+	throw new Exception(Text::_('JERROR_ALERTNOAUTHOR'), 404);
 }
 
 // Load front end language file as well
@@ -26,7 +28,7 @@ $lang->load('com_fabrik', JPATH_SITE . '/components/com_fabrik');
 // Test if the system plugin is installed and published
 if (!defined('COM_FABRIK_FRONTEND'))
 {
-	throw new RuntimeException(JText::_('COM_FABRIK_SYSTEM_PLUGIN_NOT_ACTIVE'), 400);
+	throw new RuntimeException(Text::_('COM_FABRIK_SYSTEM_PLUGIN_NOT_ACTIVE'), 400);
 }
 
 $app = JFactory::getApplication();
@@ -41,7 +43,7 @@ JHTML::stylesheet('administrator/components/com_fabrik/headings.css');
 // Check for plugin views (e.g. list email plugin's "email form"
 $cName = $input->getCmd('controller');
 
-if (JString::strpos($cName, '.') != false)
+if (StringHelper::strpos($cName, '.') != false)
 {
 	list($type, $name) = explode('.', $cName);
 
@@ -57,7 +59,7 @@ if (JString::strpos($cName, '.') != false)
 		require_once $path;
 		$controller = $type . $name;
 
-		$className = 'FabrikController' . JString::ucfirst($controller);
+		$className = 'FabrikController' . StringHelper::ucfirst($controller);
 		$controller = new $className;
 
 		// Add in plugin view
@@ -81,7 +83,7 @@ $db->setQuery($query);
 
 if (count($db->loadResult()) === 0)
 {
-	$app->enqueueMessage(JText::_('COM_FABRIK_PUBLISH_AT_LEAST_ONE_ELEMENT_PLUGIN'), 'notice');
+	$app->enqueueMessage(Text::_('COM_FABRIK_PUBLISH_AT_LEAST_ONE_ELEMENT_PLUGIN'), 'notice');
 }
 
 // Execute the task.

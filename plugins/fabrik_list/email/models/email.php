@@ -11,9 +11,11 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Joomla\Utilities\ArrayHelper;
+use Fabrik\Helpers\ArrayHelper;
 use Fabrik\Helpers\Html;
 use Fabrik\Helpers\Worker;
+use Fabrik\Helpers\StringHelper;
+use Fabrik\Helpers\Text;
 
 require_once COM_FABRIK_FRONTEND . '/models/plugin-list.php';
 
@@ -160,8 +162,8 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 			$toTableModel->setId($table);
 			$toDb = $toTableModel->getDb();
 
-			$tableName          = FabrikString::safeColName($tableName);
-			$tableEmail         = FabrikString::safeColName($tableEmail);
+			$tableName          = StringHelper::safeColName($tableName);
+			$tableEmail         = StringHelper::safeColName($tableEmail);
 			$emailTableTo_table = $toDb->qn($toTableModel->getTable()->db_table_name);
 
 			$query = $toDb->getQuery(true);
@@ -172,7 +174,7 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 
 			if (empty($results))
 			{
-				return FText::_('PLG_LIST_EMAIL_TO_TABLE_NO_DATA');
+				return Text::_('PLG_LIST_EMAIL_TO_TABLE_NO_DATA');
 			}
 
 			$empty   = new stdClass;
@@ -182,12 +184,12 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 			{
 				$html = '<div class="pull-left" style="margin:0 20px 20px 0">';
 				$html .= JHTML::_('select.genericlist', $results, 'email_to_selectfrom[]', $attribs, 'email', 'name', '', 'email_to_selectfrom');
-				$html .= '<br /><a href="#" class="btn btn-small" id="email_add">' . Html::icon('icon-plus') . ' ' . FText::_('COM_FABRIK_ADD') . ' &gt;&gt;</a>';
+				$html .= '<br /><a href="#" class="btn btn-small" id="email_add">' . Html::icon('icon-plus') . ' ' . Text::_('COM_FABRIK_ADD') . ' &gt;&gt;</a>';
 				$html .= '</div>';
 				$html .= '<div class="span6">';
 				$html .= JHTML::_('select.genericlist', $empty, 'list_email_to[]', $attribs, 'email', 'name', '', 'list_email_to');
 				$html .= '<br /><a href="#" class="btn btn-small" id="email_remove">&lt;&lt; '
-					. FText::_('COM_FABRIK_DELETE') . ' ' . Html::icon('icon-delete') . '</a>';
+					. Text::_('COM_FABRIK_DELETE') . ' ' . Html::icon('icon-delete') . '</a>';
 				$html .= '</div>';
 				$html .= '<div style="clear:both"></div>';
 			}
@@ -271,7 +273,7 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 		$input  = $this->app->input;
 
 		$pk  = $model->getPrimaryKey();
-		$pk2 = FabrikString::safeColNameToArrayKey($pk) . '_raw';
+		$pk2 = StringHelper::safeColNameToArrayKey($pk) . '_raw';
 
 		/**
 		 * If the 'checkall' param is set, and the checkAll checkbox was used, ignore pagination and selected
@@ -298,7 +300,7 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 
 			if (empty($ids))
 			{
-				throw new RuntimeException(FText::_('PLG_LIST_EMAIL_ERR_NO_RECORDS_SELECTED'), 400);
+				throw new RuntimeException(Text::_('PLG_LIST_EMAIL_ERR_NO_RECORDS_SELECTED'), 400);
 			}
 
 			$whereClause = '(' . $pk . ' IN (' . implode(',', $ids) . '))';
@@ -365,7 +367,7 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 
 			if (!JFile::upload($file['tmp_name'], $path))
 			{
-				JError::raiseWarning(100, FText::_('PLG_LIST_EMAIL_ERR_CANT_UPLOAD_FILE'));
+				JError::raiseWarning(100, Text::_('PLG_LIST_EMAIL_ERR_CANT_UPLOAD_FILE'));
 
 				return false;
 			}
@@ -527,11 +529,11 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 		$this->_updateRows($updated);
 
 		// T3 blank tmpl doesn't seem to render messages when tmpl=component
-		$this->app->enqueueMessage(JText::sprintf('%s emails sent', $sent));
+		$this->app->enqueueMessage(Text::sprintf('%s emails sent', $sent));
 
 		if ($notSent != 0)
 		{
-			$this->app->enqueueMessage(JText::sprintf('%s emails not sent', $notSent), 'notice');
+			$this->app->enqueueMessage(Text::sprintf('%s emails not sent', $notSent), 'notice');
 		}
 
 		return true;
@@ -1057,7 +1059,8 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 			$gateway = $params->get('emailtable_sms_gateway', 'kapow.php');
 			$input   = new JFilterInput;
 			$gateway = $input->clean($gateway, 'CMD');
-			require_once JPATH_ROOT . '/components/com_fabrik/helpers/sms_gateways/' . JString::strtolower($gateway);
+			require_once JPATH_ROOT . '/components/com_fabrik/helpers/sms_gateways/'
+				. StringHelper::strtolower($gateway);
 			$gateway               = JFile::stripExt($gateway);
 			$this->gateway         = new $gateway;
 			$this->gateway->params = $params;

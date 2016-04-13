@@ -12,13 +12,15 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Fabrik\Helpers\Text;
+
 ?>
 <div class="tab-pane" id="tab-buttons">
 
 	<div class="row-fluid">
 		<div class="span6">
 			<fieldset class="form-horizontal">
-				<legend><?php echo FText::_('COM_FABRIK_COPY');?></legend>
+				<legend><?php echo Text::_('COM_FABRIK_COPY');?></legend>
 				<?php foreach ($this->form->getFieldset('buttons-copy') as $this->field) :
 					echo $this->loadTemplate('control_group');
 				endforeach;
@@ -28,7 +30,7 @@ defined('_JEXEC') or die('Restricted access');
 
 		<div class="span6">
 			<fieldset class="form-horizontal">
-				<legend><?php echo FText::_('COM_FABRIK_RESET');?></legend>
+				<legend><?php echo Text::_('COM_FABRIK_RESET');?></legend>
 				<?php foreach ($this->form->getFieldset('buttons-reset') as $this->field) :
 					echo $this->loadTemplate('control_group');
 				endforeach;
@@ -41,7 +43,7 @@ defined('_JEXEC') or die('Restricted access');
 	<div class="row-fluid">
 		<div class="span6">
 			<fieldset class="form-horizontal">
-				<legend><?php echo FText::_('COM_FABRIK_APPLY');?></legend>
+				<legend><?php echo Text::_('COM_FABRIK_APPLY');?></legend>
 				<?php foreach ($this->form->getFieldset('buttons-apply') as $this->field) :
 					echo $this->loadTemplate('control_group');
 				endforeach;
@@ -51,7 +53,7 @@ defined('_JEXEC') or die('Restricted access');
 
 		<div class="span6">
 			<fieldset class="form-horizontal">
-				<legend><?php echo FText::_('COM_FABRIK_BACK');?></legend>
+				<legend><?php echo Text::_('COM_FABRIK_BACK');?></legend>
 				<?php foreach ($this->form->getFieldset('buttons-goback') as $this->field) :
 					echo $this->loadTemplate('control_group');
 				endforeach;
@@ -64,7 +66,7 @@ defined('_JEXEC') or die('Restricted access');
 	<div class="row-fluid">
 		<div class="span6">
 			<fieldset class="form-horizontal">
-				<legend><?php echo FText::_('COM_FABRIK_SAVE');?></legend>
+				<legend><?php echo Text::_('COM_FABRIK_SAVE');?></legend>
 				<?php foreach ($this->form->getFieldset('buttons-save') as $this->field) :
 					echo $this->loadTemplate('control_group');
 				endforeach;
@@ -73,7 +75,7 @@ defined('_JEXEC') or die('Restricted access');
 		</div>
 		<div class="span6">
 			<fieldset class="form-horizontal">
-				<legend><?php echo FText::_('COM_FABRIK_DELETE');?></legend>
+				<legend><?php echo Text::_('COM_FABRIK_DELETE');?></legend>
 				<?php foreach ($this->form->getFieldset('buttons-delete') as $this->field) :
 					echo $this->loadTemplate('control_group');
 				endforeach;

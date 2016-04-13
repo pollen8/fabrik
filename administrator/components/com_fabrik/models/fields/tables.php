@@ -13,13 +13,12 @@ defined('_JEXEC') or die('Restricted access');
 
 use Fabrik\Helpers\Html;
 use Fabrik\Helpers\Worker;
+use Fabrik\Helpers\Text;
 
 jimport('joomla.html.html');
 jimport('joomla.form.formfield');
 jimport('joomla.form.helper');
 JFormHelper::loadFieldClass('list');
-
-require_once JPATH_ADMINISTRATOR . '/components/com_fabrik/helpers/element.php';
 
 /**
  * Renders a list of tables, either fabrik lists, or db tables
@@ -121,7 +120,7 @@ class JFormFieldTables extends JFormFieldList
 
 		$html = parent::getInput();
 		$html .= "<img style='margin-left:10px;display:none' id='" . $this->id . "_loader' src='components/com_fabrik/images/ajax-loader.gif' alt='"
-			. FText::_('LOADING') . "' />";
+			. Text::_('LOADING') . "' />";
 		Html::framework();
 		Html::iniRequireJS();
 

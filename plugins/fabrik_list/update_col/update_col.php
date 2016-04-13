@@ -11,8 +11,9 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Joomla\Utilities\ArrayHelper;
+use Fabrik\Helpers\ArrayHelper;
 use Fabrik\Helpers\Html;
+use Fabrik\Helpers\Text;
 use Fabrik\Helpers\Worker;
 
 // Require the abstract plugin class
@@ -90,7 +91,7 @@ class PlgFabrik_ListUpdate_Col extends PlgFabrik_List
 	 */
 	protected function buttonLabel()
 	{
-		return FText::_($this->getParams()->get('button_label', parent::buttonLabel()));
+		return Text::_($this->getParams()->get('button_label', parent::buttonLabel()));
 	}
 
 	/**
@@ -144,8 +145,8 @@ class PlgFabrik_ListUpdate_Col extends PlgFabrik_List
 			parse_str($qs, $output);
 			$key = 'list_' . $model->getRenderContext();
 
-			$values = FArrayHelper::getValue($output, 'fabrik___filter', array());
-			$values = FArrayHelper::getValue($values, $key, array());
+			$values = ArrayHelper::getValue($output, 'fabrik___filter', array());
+			$values = ArrayHelper::getValue($values, $key, array());
 
 			for ($i = 0; $i < count($values['elementid']); $i ++)
 			{
@@ -243,11 +244,11 @@ class PlgFabrik_ListUpdate_Col extends PlgFabrik_List
 
 		if (empty($this->msg))
 		{
-			$this->msg = JText::sprintf('PLG_LIST_UPDATE_COL_UPDATE_MESSAGE', $this->row_count, $this->sent);
+			$this->msg = Text::sprintf('PLG_LIST_UPDATE_COL_UPDATE_MESSAGE', $this->row_count, $this->sent);
 		}
 		else
 		{
-			$this->msg = JText::sprintf($this->msg, $this->row_count, $this->sent);
+			$this->msg = Text::sprintf($this->msg, $this->row_count, $this->sent);
 		}
 
 		if (!empty($postEval))
@@ -449,7 +450,7 @@ class PlgFabrik_ListUpdate_Col extends PlgFabrik_List
 			$ids = ArrayHelper::toInteger($ids);
 			$ids = implode(',', $ids);
 			$userIdsEmails = $this->getEmailUserIds($ids);
-			$to = FArrayHelper::getValue($userIdsEmails, $userId);
+			$to = ArrayHelper::getValue($userIdsEmails, $userId);
 		}
 		elseif ($emailWhich == 'field')
 		{
@@ -530,8 +531,8 @@ class PlgFabrik_ListUpdate_Col extends PlgFabrik_List
 
 		/** @var FabrikFEModelList $model */
 		$model = $this->getModel();
-		JText::script('PLG_LIST_UPDATE_COL_UPDATE');
-		$options[] = '<option value="">' . FText::_('COM_FABRIK_PLEASE_SELECT') . '</option>';
+		Text::script('PLG_LIST_UPDATE_COL_UPDATE');
+		$options[] = '<option value="">' . Text::_('COM_FABRIK_PLEASE_SELECT') . '</option>';
 		$elementModels = $model->getElements(0, false, true);
 
 		foreach ($elementModels as $elementModel)

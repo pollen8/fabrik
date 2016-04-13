@@ -1,6 +1,6 @@
 <?php
-use Zend\Form\Annotation\Object;
 use Fabrik\Helpers\Worker;
+use Fabrik\Helpers\ArrayHelper;
 
 /**
  * Joomla! Fabrik cron job plugin
@@ -286,7 +286,7 @@ class PlgSystemFabrikcron extends JPlugin
 
 			// Email log message
 			$recipient = explode(',', $params->get('log_email', ''));
-			if (!FArrayHelper::emptyish($recipient))
+			if (!ArrayHelper::emptyish($recipient))
 			{
 				$subject = $config->get('sitename') . ': ' . $this->row->plugin . ' scheduled task';
 				$mailer->sendMail($config->get('mailfrom'), $config->get('fromname'), $recipient, $subject, $this->log->message, true);

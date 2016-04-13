@@ -13,6 +13,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 use Fabrik\Helpers\Worker;
+use Fabrik\Helpers\StringHelper;
 
 // Require the abstract plugin class
 require_once COM_FABRIK_FRONTEND . '/models/plugin-cron.php';
@@ -125,17 +126,17 @@ class PlgFabrik_CronGcalsync extends PlgFabrik_Cron
 
 			// Grab all the field names to use
 			$gcal_label_element_long = $params->get('gcal_sync_label_element');
-			$gcal_label_element = FabrikString::shortColName($gcal_label_element_long);
+			$gcal_label_element = StringHelper::shortColName($gcal_label_element_long);
 			$gcal_desc_element_long = $params->get('gcal_sync_desc_element');
-			$gcal_desc_element = FabrikString::shortColName($gcal_desc_element_long);
+			$gcal_desc_element = StringHelper::shortColName($gcal_desc_element_long);
 			$gcal_start_date_element_long = $params->get('gcal_sync_startdate_element');
-			$gcal_start_date_element = FabrikString::shortColName($gcal_start_date_element_long);
+			$gcal_start_date_element = StringHelper::shortColName($gcal_start_date_element_long);
 			$gcal_end_date_element_long = $params->get('gcal_sync_enddate_element');
-			$gcal_end_date_element = FabrikString::shortColName($gcal_end_date_element_long);
+			$gcal_end_date_element = StringHelper::shortColName($gcal_end_date_element_long);
 			$gcal_id_element_long = $params->get('gcal_sync_id_element');
-			$gcal_id_element = FabrikString::shortColName($gcal_id_element_long);
+			$gcal_id_element = StringHelper::shortColName($gcal_id_element_long);
 			$gcal_userid_element_long = $params->get('gcal_sync_userid_element');
-			$gcal_userid_element = FabrikString::shortColName($gcal_userid_element_long);
+			$gcal_userid_element = StringHelper::shortColName($gcal_userid_element_long);
 
 			// Sanity check, make sure required elements have been specified
 			if (empty($gcal_label_element_long) || empty($gcal_start_date_element_long) || empty($gcal_end_date_element_long)

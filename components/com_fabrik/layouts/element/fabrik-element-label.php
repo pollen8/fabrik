@@ -1,8 +1,10 @@
 <?php
 defined('JPATH_BASE') or die;
 
+use Fabrik\Helpers\Text;
+
 $d = $displayData;
-$labelText = FText::_($d->label);
+$labelText = Text::_($d->label);
 $labelText = $labelText == '' ? '&nbsp;' : $labelText;
 $l = $d->j3 ? '' : $labelText;
 $l .= $d->icons;

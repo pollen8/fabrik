@@ -14,7 +14,7 @@ namespace Fabrik\Plugins\Element;
 defined('_JEXEC') or die('Restricted access');
 
 use Fabrik\Helpers\Worker;
-use \FArrayHelper;
+use Fabrik\Helpers\ArrayHelper;
 
 /**
  * Plugin element to:
@@ -58,7 +58,7 @@ class Count extends Element
 		if ($this->app->input->get('c') != 'form')
 		{
 			$params = $this->getParams();
-			$fullElName = FArrayHelper::getValue($opts, 'alias', $db->qn($dbTable . '___' . $this->getElement()->name));
+			$fullElName = ArrayHelper::getValue($opts, 'alias', $db->qn($dbTable . '___' . $this->getElement()->name));
 			$r = 'COUNT(' . $params->get('count_field', '*') . ')';
 			$aFields[] = $r . ' AS ' . $fullElName;
 			$aAsFields[] = $fullElName;

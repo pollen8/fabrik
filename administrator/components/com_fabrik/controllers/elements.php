@@ -12,7 +12,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Joomla\Utilities\ArrayHelper;
+use Fabrik\Helpers\ArrayHelper;
+use Fabrik\Helpers\Text;
 
 require_once 'fabcontrolleradmin.php';
 
@@ -80,7 +81,7 @@ class FabrikAdminControllerElements extends FabControllerAdmin
 	public function toggleInList()
 	{
 		// Check for request forgeries
-		JSession::checkToken() or die(FText::_('JINVALID_TOKEN'));
+		JSession::checkToken() or die(Text::_('JINVALID_TOKEN'));
 
 		// Get items to publish from the request.
 		$app = JFactory::getApplication();
@@ -88,11 +89,11 @@ class FabrikAdminControllerElements extends FabControllerAdmin
 		$cid = $input->get('cid', array(), 'array');
 		$data = array('showInListView' => 1, 'hideFromListView' => 0);
 		$task = $this->getTask();
-		$value = FArrayHelper::getValue($data, $task, 0, 'int');
+		$value = ArrayHelper::getValue($data, $task, 0, 'int');
 
 		if (empty($cid))
 		{
-			JError::raiseWarning(500, FText::_($this->text_prefix . '_NO_ITEM_SELECTED'));
+			JError::raiseWarning(500, Text::_($this->text_prefix . '_NO_ITEM_SELECTED'));
 		}
 		else
 		{
@@ -118,7 +119,7 @@ class FabrikAdminControllerElements extends FabControllerAdmin
 					$nText = $this->text_prefix . '_N_ITEMS_REMOVED_FROM_LIST_VIEW';
 				}
 
-				$this->setMessage(JText::plural($nText, count($cid)));
+				$this->setMessage(Text::plural($nText, count($cid)));
 			}
 		}
 
@@ -197,7 +198,7 @@ class FabrikAdminControllerElements extends FabControllerAdmin
 		$cid = $input->get('cid', array(), 'array');
 		$opts = $input->get('batch', array(), 'array');
 		$model->batch($cid, $opts);
-		$this->setRedirect('index.php?option=com_fabrik&view=elements', FText::_('COM_FABRIK_MSG_BATCH_DONE'));
+		$this->setRedirect('index.php?option=com_fabrik&view=elements', Text::_('COM_FABRIK_MSG_BATCH_DONE'));
 	}
 
 	/**

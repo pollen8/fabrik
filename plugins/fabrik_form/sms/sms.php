@@ -12,10 +12,11 @@
 defined('_JEXEC') or die('Restricted access');
 
 use Fabrik\Helpers\Worker;
+use Fabrik\Helpers\StringHelper;
+use Fabrik\Helpers\Text;
 
 // Require the abstract plugin class
 require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
-require_once COM_FABRIK_FRONTEND . '/helpers/sms.php';
 
 /**
  * Send an SMS
@@ -76,7 +77,7 @@ class PlgFabrik_FormSMS extends PlgFabrik_Form
 			$gateway = $params->get('sms-gateway', 'kapow.php');
 			$input = new JFilterInput;
 			$gateway = $input->clean($gateway, 'CMD');
-			require_once JPATH_ROOT . '/components/com_fabrik/helpers/sms_gateways/' . JString::strtolower($gateway);
+			require_once JPATH_ROOT . '/components/com_fabrik/helpers/sms_gateways/' . StringHelper::strtolower($gateway);
 			$gateway = JFile::stripExt($gateway);
 			$this->gateway = new $gateway;
 			$this->gateway->params = $params;
@@ -165,14 +166,14 @@ class PlgFabrik_FormSMS extends PlgFabrik_Form
 							}
 						}
 
-						$val = FabrikString::rtrimword($val, '<br />');
+						$val = StringHelper::rtrimword($val, '<br />');
 						$message .= $element->label . ': ' . $val . "\r\n";
 					}
 				}
 			}
 		}
 
-		$message = FText::_('PLG_FORM_SMS_FROM') . $this->config->get('sitename') . "\r \n \r \nMessage:\r \n" . stripslashes($message);
+		$message = Text::_('PLG_FORM_SMS_FROM') . $this->config->get('sitename') . "\r \n \r \nMessage:\r \n" . stripslashes($message);
 
 		return $message;
 	}

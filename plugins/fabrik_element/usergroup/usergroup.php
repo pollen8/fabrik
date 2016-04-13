@@ -13,9 +13,9 @@ namespace Fabrik\Plugins\Element;
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use \FArrayHelper;
 use \JHtml;
 use \stdClass;
+use Fabrik\Helpers\ArrayHelper;
 use Fabrik\Helpers\Worker;
 use \JFactory;
 
@@ -68,12 +68,12 @@ class Usergroup extends ElementList
 		if ($userEl)
 		{
 			$data = $formModel->getData();
-			$userId = FArrayHelper::getValue($data, $userEl->getFullName(true, false) . '_raw', 0);
+			$userId = ArrayHelper::getValue($data, $userEl->getFullName(true, false) . '_raw', 0);
 
 			// Failed validation
 			if (is_array($userId))
 			{
-				$userId = FArrayHelper::getValue($userId, 0);
+				$userId = ArrayHelper::getValue($userId, 0);
 			}
 
 			$thisUser = !empty($userId) ? JFactory::getUser($userId) : false;
@@ -94,7 +94,7 @@ class Usergroup extends ElementList
 			}
 			// Get the titles for the user groups.
 			//if (count($selected) > 0)
-			if (!FArrayHelper::emptyish($selected))
+			if (!ArrayHelper::emptyish($selected))
 			{
 				$query = $this->_db->getQuery(true);
 				$query->select($this->_db->qn('title'));

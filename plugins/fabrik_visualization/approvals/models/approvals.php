@@ -13,6 +13,7 @@ defined('_JEXEC') or die('Restricted access');
 
 use Fabrik\Helpers\Html;
 use Fabrik\Helpers\Worker;
+use Fabrik\Helpers\StringHelper;
 
 jimport('joomla.application.component.model');
 
@@ -153,7 +154,7 @@ class FabrikModelApprovals extends FabrikFEModelVisualization
 				$item = $listModel->getTable();
 				$db = $listModel->getDbo();
 				$query = $db->getQuery(true);
-				$el = FabrikString::safeColName($approveEls[$key]);
+				$el = StringHelper::safeColName($approveEls[$key]);
 				$query->update($db->quoteName($item->db_table_name))->set($el . ' = ' . $db->quote($v))
 					->where($item->db_primary_key . ' = ' . $db->quote($input->get('rowid')));
 				$db->setQuery($query);

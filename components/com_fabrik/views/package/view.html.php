@@ -9,6 +9,7 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Fabrik\Helpers\ArrayHelper;
 use Fabrik\Helpers\Html;
 
 jimport('joomla.application.component.view');
@@ -50,11 +51,11 @@ class FabrikViewPackage extends FabrikView
 			$item->component_name = 'fabrik';
 		}
 
-		$tabs = FArrayHelper::getValue($canvas, 'tabs', array('Page 1'));
+		$tabs = ArrayHelper::getValue($canvas, 'tabs', array('Page 1'));
 		$tabs = json_encode($tabs);
 		$d    = new stdClass;
 
-		$layout = json_encode(FArrayHelper::getValue($canvas, 'layout', $d));
+		$layout = json_encode(ArrayHelper::getValue($canvas, 'layout', $d));
 		$id     = $this->get('State')->get('package.id');
 		$script = "window.addEvent('fabrik.loaded', function() {
 			new FrontPackage({

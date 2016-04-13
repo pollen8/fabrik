@@ -14,9 +14,9 @@ namespace Fabrik\Plugins\Form;
 defined('_JEXEC') or die('Restricted access');
 
 use Fabrik\Helpers\Html;
-use \FText;
+use Fabrik\Helpers\StringHelper;
+use Fabrik\Helpers\Text;
 use Fabrik\Helpers\Worker;
-use \JString;
 use \JFilterInput;
 use \JModelLegacy;
 
@@ -126,8 +126,8 @@ class Confirmation extends \PlgFabrik_Form
 		$session->set('com_' . $this->package . '.form.' . $formModel->getId() . '.session.hash', $sessionModel->getHash());
 
 		// Set an error so we can reshow the same form for confirmation purposes
-		$formModel->errors['confirmation_required'] = array(FText::_('PLG_FORM_CONFIRMATION_PLEASE_CONFIRM_YOUR_DETAILS'));
-		$form->set('error', FText::_('PLG_FORM_CONFIRMATION_PLEASE_CONFIRM_YOUR_DETAILS'));
+		$formModel->errors['confirmation_required'] = array(Text::_('PLG_FORM_CONFIRMATION_PLEASE_CONFIRM_YOUR_DETAILS'));
+		$form->set('error', Text::_('PLG_FORM_CONFIRMATION_PLEASE_CONFIRM_YOUR_DETAILS'));
 		$formModel->setEditable(false);
 
 		// Clear out unwanted buttons
@@ -188,7 +188,7 @@ class Confirmation extends \PlgFabrik_Form
 			// $$$ 24/10/2011 testing removing this as data is retrieved via the session not through posted data
 			foreach ($post as $key => $val)
 			{
-				$noneRaw = JString::substr($key, 0, JString::strlen($key) - 4);
+				$noneRaw = StringHelper::substr($key, 0, StringHelper::strlen($key) - 4);
 
 				if ($key == 'fabrik_vars')
 				{
@@ -238,7 +238,7 @@ class Confirmation extends \PlgFabrik_Form
 			$fields[] = '<input type="hidden" name="fabrik_confirmation" value="2" />';
 
 			// Add in a button to allow you to go back to the form and edit your data
-			$fields[] = "<input type=\"button\" id=\"fabrik_redoconfirmation\" class=\"button btn\" value=\"" . FText::_('PLG_FORM_CONFIRMATION_RE_EDIT')
+			$fields[] = "<input type=\"button\" id=\"fabrik_redoconfirmation\" class=\"button btn\" value=\"" . Text::_('PLG_FORM_CONFIRMATION_RE_EDIT')
 				. "\" />";
 
 			// Unset the task otherwise we will submit the form to be processed.

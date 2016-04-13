@@ -12,6 +12,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 use Fabrik\Helpers\Html;
+use Fabrik\Helpers\Text;
 
 jimport('joomla.application.component.view');
 
@@ -40,7 +41,7 @@ class FabrikViewFullcalendar extends JViewLegacy
 		$rows = $model->getEventLists();
 		$model->getVisualization();
 		$options   = array();
-		$options[] = JHTML::_('select.option', '', FText::_('PLG_VISUALIZATION_FULLCALENDAR_PLEASE_SELECT'));
+		$options[] = JHTML::_('select.option', '', Text::_('PLG_VISUALIZATION_FULLCALENDAR_PLEASE_SELECT'));
 
 		$model->getEvents();
 		$attribs            = 'class="inputbox" size="1" ';
@@ -63,7 +64,7 @@ class FabrikViewFullcalendar extends JViewLegacy
 		$script[] = "Fabrik.Windows.chooseeventwin.close();";
 		$script[] = "});";
 
-		echo '<h2>' . FText::_('PLG_VISUALIZATION_FULLCALENDAR_PLEASE_CHOOSE_AN_EVENT_TYPE') . ':</h2>';
+		echo '<h2>' . Text::_('PLG_VISUALIZATION_FULLCALENDAR_PLEASE_CHOOSE_AN_EVENT_TYPE') . ':</h2>';
 		echo $this->_eventTypeDd;
 		Html::addScriptDeclaration(implode("\n", $script));
 	}

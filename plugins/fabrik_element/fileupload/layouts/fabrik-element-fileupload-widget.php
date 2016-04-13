@@ -2,6 +2,7 @@
 defined('JPATH_BASE') or die;
 
 use Fabrik\Helpers\Html;
+use Fabrik\Helpers\Text;
 
 $d = $displayData;
 $id = $d->id;
@@ -25,7 +26,7 @@ if ($j3) :
 		<table class="table table-striped table-condensed">
 			<thead style="display:none">
 				<tr>
-					<th class="span4"><?php echo FText::_('PLG_ELEMENT_FILEUPLOAD_FILENAME'); ?></th>
+					<th class="span4"><?php echo Text::_('PLG_ELEMENT_FILEUPLOAD_FILENAME'); ?></th>
 					<th class="span1 plupload_crop">&nbsp;</th>
 					<th class="span5 plupload_file_status"></th>
 					<th class="span1 plupload_file_action">&nbsp;</th>
@@ -37,7 +38,7 @@ if ($j3) :
 				<tr>
 					<td colspan="4">
 								<a id="<?php echo $id; ?>_browseButton" class="btn btn-mini" href="#"><?php echo Html::icon('icon-plus-sign icon-plus'); ?>
-						<?php echo FText::_('PLG_ELEMENT_FILEUPLOAD_ADD_FILES'); ?></a>
+						<?php echo Text::_('PLG_ELEMENT_FILEUPLOAD_ADD_FILES'); ?></a>
 							<span class="plupload_upload_status"></span>
 					</td>
 				</tr>
@@ -49,16 +50,16 @@ else :
 ?>
 		<div class="plupload_header">
 			<div class="plupload_header_content">
-				<div class="plupload_header_title"><?php echo FText::_('PLG_ELEMENT_FILEUPLOAD_PLUP_HEADING'); ?></div>
-				<div class="plupload_header_text"><?php echo FText::_('PLG_ELEMENT_FILEUPLOAD_PLUP_SUB_HEADING'); ?></div>
+				<div class="plupload_header_title"><?php echo Text::_('PLG_ELEMENT_FILEUPLOAD_PLUP_HEADING'); ?></div>
+				<div class="plupload_header_text"><?php echo Text::_('PLG_ELEMENT_FILEUPLOAD_PLUP_SUB_HEADING'); ?></div>
 			</div>
 		</div>
 		<div class="plupload_content">
 			<div class="plupload_filelist_header">
-				<div class="plupload_file_name"><?php echo FText::_('PLG_ELEMENT_FILEUPLOAD_FILENAME'); ?></div>
+				<div class="plupload_file_name"><?php echo Text::_('PLG_ELEMENT_FILEUPLOAD_FILENAME'); ?></div>
 				<div class="plupload_file_action">&nbsp;</div>
-				<div class="plupload_file_status"><span><?php echo FText::_('PLG_ELEMENT_FILEUPLOAD_STATUS'); ?></span></div>
-				<div class="plupload_file_size"><?php echo FText::_('PLG_ELEMENT_FILEUPLOAD_SIZE'); ?></div>
+				<div class="plupload_file_status"><span><?php echo Text::_('PLG_ELEMENT_FILEUPLOAD_STATUS'); ?></span></div>
+				<div class="plupload_file_size"><?php echo Text::_('PLG_ELEMENT_FILEUPLOAD_SIZE'); ?></div>
 				<div class="plupload_clearer">&nbsp;</div>
 			</div>
 			<ul class="plupload_filelist" id="<?php echo $id; ?>_dropList">
@@ -67,9 +68,9 @@ else :
 				<div class="plupload_file_name">
 					<div class="plupload_buttons">
 						<a id="<?php echo $id; ?>_browseButton" class="plupload_button plupload_add" href="#">'
-				<?php echo FText::_('PLG_ELEMENT_FILEUPLOAD_ADD_FILES'); ?></a>
+				<?php echo Text::_('PLG_ELEMENT_FILEUPLOAD_ADD_FILES'); ?></a>
 						<a id="<?php echo $id; ?>_startButton" class="plupload_button plupload_start plupload_disabled" href="#">'
-				<?php echo FText::_('PLG_ELEMENT_FILEUPLOAD_START_UPLOAD'); ?></a>
+				<?php echo Text::_('PLG_ELEMENT_FILEUPLOAD_START_UPLOAD'); ?></a>
 					</div>
 					<span class="plupload_upload_status"></span>
 				</div>
@@ -93,7 +94,7 @@ endif;
 ?>
 	</div>
 	<!-- FALLBACK; SHOULD LOADING OF PLUPLOAD FAIL -->
-	<div class="plupload_fallback"><?php echo FText::_('PLG_ELEMENT_FILEUPLOAD_FALLBACK_MESSAGE'); ?>
+	<div class="plupload_fallback"><?php echo Text::_('PLG_ELEMENT_FILEUPLOAD_FALLBACK_MESSAGE'); ?>
 	<br />
 	<?php
 	echo $field;

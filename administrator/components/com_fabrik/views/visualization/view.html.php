@@ -12,6 +12,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 use Fabrik\Helpers\Html;
+use Fabrik\Helpers\Text;
 
 jimport('joomla.application.component.view');
 
@@ -118,7 +119,7 @@ class FabrikAdminViewVisualization extends JViewLegacy
 		$checkedOutBy = $this->item->get('checked_out');
 		$checkedOut   = !($checkedOutBy == 0 || $checkedOutBy == $user->get('id'));
 		$canDo        = FabrikAdminHelper::getActions($this->state->get('filter.category_id'));
-		$title        = $isNew ? FText::_('COM_FABRIK_MANAGER_VISUALIZATION_NEW') : FText::_('COM_FABRIK_MANAGER_VISUALIZATION_EDIT');
+		$title        = $isNew ? Text::_('COM_FABRIK_MANAGER_VISUALIZATION_NEW') : Text::_('COM_FABRIK_MANAGER_VISUALIZATION_EDIT');
 		$title .= $isNew ? '' : ' "' . $this->item->get('label') . '"';
 		JToolBarHelper::title($title, 'chart');
 
@@ -162,6 +163,6 @@ class FabrikAdminViewVisualization extends JViewLegacy
 		}
 
 		JToolBarHelper::divider();
-		JToolBarHelper::help('JHELP_COMPONENTS_FABRIK_VISUALIZATIONS_EDIT', false, FText::_('JHELP_COMPONENTS_FABRIK_VISUALIZATIONS_EDIT'));
+		JToolBarHelper::help('JHELP_COMPONENTS_FABRIK_VISUALIZATIONS_EDIT', false, Text::_('JHELP_COMPONENTS_FABRIK_VISUALIZATIONS_EDIT'));
 	}
 }

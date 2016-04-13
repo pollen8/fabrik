@@ -13,9 +13,9 @@ namespace Fabrik\Plugins\Element;
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use \FArrayHelper;
-use \JString;
-use \JText;
+use Fabrik\Helpers\ArrayHelper;
+use Fabrik\Helpers\Text;
+use Fabrik\Helpers\StringHelper;
 
 /**
  * Plugin element to a series of radio buttons
@@ -93,7 +93,7 @@ class Radiobutton extends ElementList
 		$opts->data = empty($arVals) ? array() : array_combine($arVals, $arTxt);
 		$opts->allowadd = $params->get('allow_frontend_addtoradio', false) ? true : false;
 		$opts->changeEvent = $this->getChangeEvent();
-		JText::script('PLG_ELEMENT_RADIO_ENTER_VALUE_LABEL');
+		Text::script('PLG_ELEMENT_RADIO_ENTER_VALUE_LABEL');
 
 		return array('FbRadio', $id, $opts);
 	}
@@ -117,7 +117,7 @@ class Radiobutton extends ElementList
 		{
 			if (is_string($value))
 			{
-				if (JString::strtolower($labels[$i]) == JString::strtolower($value))
+				if (StringHelper::strtolower($labels[$i]) == StringHelper::strtolower($value))
 				{
 					$val = $values[$i];
 
@@ -126,11 +126,11 @@ class Radiobutton extends ElementList
 			}
 			else
 			{
-				if (in_array(JString::strtolower($labels[$i]), $value))
+				if (in_array(StringHelper::strtolower($labels[$i]), $value))
 				{
 					foreach ($value as &$v)
 					{
-						if (JString::strtolower($labels[$i]) == JString::strtolower($v))
+						if (StringHelper::strtolower($labels[$i]) == StringHelper::strtolower($v))
 						{
 							$v = $values[$i];
 						}
@@ -158,9 +158,9 @@ class Radiobutton extends ElementList
 		if (!array_key_exists($element->name, $data))
 		{
 			$sel = $this->getSubInitialSelection();
-			$sel = FArrayHelper::getValue($sel, 0, '');
+			$sel = ArrayHelper::getValue($sel, 0, '');
 			$arVals = $this->getSubOptionValues();
-			$data[$element->name] = array(FArrayHelper::getValue($arVals, $sel, ''));
+			$data[$element->name] = array(ArrayHelper::getValue($arVals, $sel, ''));
 		}
 	}
 

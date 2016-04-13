@@ -13,6 +13,7 @@ defined('_JEXEC') or die('Restricted access');
 
 use Fabrik\Helpers\Html;
 use Fabrik\Helpers\Worker;
+use Fabrik\Helpers\Text;
 
 jimport('joomla.application.component.view');
 
@@ -48,7 +49,7 @@ class FabrikViewTimeline extends JViewLegacy
 
 		if (!$model->canView())
 		{
-			echo FText::_('JERROR_ALERTNOAUTHOR');
+			echo Text::_('JERROR_ALERTNOAUTHOR');
 
 			return false;
 		}
@@ -80,8 +81,8 @@ class FabrikViewTimeline extends JViewLegacy
 		Html::iniRequireJs($model->getShim());
 		Html::script($srcs, $js);
 
-		JText::script('COM_FABRIK_ADVANCED_SEARCH');
-		JText::script('COM_FABRIK_LOADING');
+		Text::script('COM_FABRIK_ADVANCED_SEARCH');
+		Text::script('COM_FABRIK_LOADING');
 		$opts             = array('alt' => 'calendar', 'class' => 'calendarbutton', 'id' => 'timelineDatePicker_cal_img');
 		$img              = Html::image('calendar.png', 'form', @$this->tmpl, $opts);
 		$this->datePicker = '<input type="text" name="timelineDatePicker" id="timelineDatePicker" value="" />' . $img;

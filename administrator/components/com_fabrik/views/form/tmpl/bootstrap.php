@@ -13,6 +13,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 use Fabrik\Helpers\Html;
+use Fabrik\Helpers\Text;
 
 JHtml::addIncludePath(JPATH_COMPONENT . '/helpers/html');
 JHTML::stylesheet('administrator/components/com_fabrik/views/fabrikadmin.css');
@@ -37,7 +38,7 @@ JHtml::_('behavior.keepalive');
 
 			if (task !== 'form.cancel') {
 				if (!Fabrik.controller.canSaveForm()) {
-					window.alert('<?php echo FText::_('COM_FABRIK_ERR_ONE_GROUP_MUST_BE_SELECTED'); ?>');
+					window.alert('<?php echo Text::_('COM_FABRIK_ERR_ONE_GROUP_MUST_BE_SELECTED'); ?>');
 					return false;
 				}
 
@@ -50,7 +51,7 @@ JHtml::_('behavior.keepalive');
 				window.fireEvent('form.save');
 				Joomla.submitform(task, document.getElementById('adminForm'));
 			} else {
-				alert('<?php echo $this->escape(FText::_('JGLOBAL_VALIDATION_FORM_FAILED'));?>');
+				alert('<?php echo $this->escape(Text::_('JGLOBAL_VALIDATION_FORM_FAILED'));?>');
 			}
 		});
 	}
@@ -61,42 +62,42 @@ JHtml::_('behavior.keepalive');
 		<ul class="nav nav-tabs">
 			<li class="active">
 		    	<a data-toggle="tab" href="#tab-details">
-		    		<?php echo FText::_('COM_FABRIK_DETAILS'); ?>
+		    		<?php echo Text::_('COM_FABRIK_DETAILS'); ?>
 		    	</a>
 		    </li>
 		    <li>
 		    	<a data-toggle="tab" href="#tab-buttons">
-		    		<?php echo FText::_('COM_FABRIK_BUTTONS'); ?>
+		    		<?php echo Text::_('COM_FABRIK_BUTTONS'); ?>
 		    	</a>
 		    </li>
 		    <li>
 		    	<a data-toggle="tab" href="#tab-process">
-		    		<?php echo FText::_('COM_FABRIK_FORM_PROCESSING'); ?>
+		    		<?php echo Text::_('COM_FABRIK_FORM_PROCESSING'); ?>
 		    	</a>
 		    </li>
 		    <li>
 		    	<a data-toggle="tab" href="#tab-publishing">
-		    		<?php echo FText::_('COM_FABRIK_GROUP_LABEL_PUBLISHING_DETAILS')?>
+		    		<?php echo Text::_('COM_FABRIK_GROUP_LABEL_PUBLISHING_DETAILS')?>
 		    	</a>
 		    </li>
 		    <li>
 		    	<a data-toggle="tab" href="#tab-groups">
-		    		<?php echo FText::_('COM_FABRIK_GROUPS')?>
+		    		<?php echo Text::_('COM_FABRIK_GROUPS')?>
 		    	</a>
 		    </li>
 		    <li>
 		    	<a data-toggle="tab" href="#tab-layout">
-		    		<?php echo FText::_('COM_FABRIK_LAYOUT')?>
+		    		<?php echo Text::_('COM_FABRIK_LAYOUT')?>
 		    	</a>
 		    </li>
 		    <li>
 		    	<a data-toggle="tab" href="#tab-options">
-		    		<?php echo FText::_('COM_FABRIK_OPTIONS')?>
+		    		<?php echo Text::_('COM_FABRIK_OPTIONS')?>
 		    	</a>
 		    </li>
 		    <li>
 		    	<a data-toggle="tab" href="#tab-plugins">
-		    		<?php echo FText::_('COM_FABRIK_PLUGINS')?>
+		    		<?php echo Text::_('COM_FABRIK_PLUGINS')?>
 		    	</a>
 		    </li>
 		</ul>

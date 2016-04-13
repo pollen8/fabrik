@@ -8,6 +8,7 @@
  * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
+use Fabrik\Helpers\Text;
 use Fabrik\Helpers\Worker;
 
 /**
@@ -187,7 +188,7 @@ class ImportCSVCreateUser
 		{
 			if ($app->isAdmin())
 			{
-				$app->enqueueMessage(FText::_('CANNOT SAVE THE USER INFORMATION'), 'message');
+				$app->enqueueMessage(Text::_('CANNOT SAVE THE USER INFORMATION'), 'message');
 				$app->enqueueMessage($user->getError(), 'error');
 			}
 
@@ -200,7 +201,7 @@ class ImportCSVCreateUser
 		{
 			if ($app->isAdmin())
 			{
-				$app->enqueueMessage(FText::_('CANNOT SAVE THE USER INFORMATION'), 'message');
+				$app->enqueueMessage(Text::_('CANNOT SAVE THE USER INFORMATION'), 'message');
 				$app->enqueueMessage($user->getError(), 'error');
 			}
 

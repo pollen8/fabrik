@@ -13,13 +13,13 @@ namespace Fabrik\Plugins\Element;
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use \FArrayHelper;
 use \JHtml;
 use \stdClass;
+use Fabrik\Helpers\ArrayHelper;
 use Fabrik\Helpers\Worker;
-use \FabrikString;
+use Fabrik\Helpers\StringHelper;
 use \JComponentHelper;
-use \FText;
+use Fabrik\Helpers\Text;
 use \RuntimeException;
 use \JApplication;
 use \JApplicationHelper;
@@ -293,8 +293,8 @@ class Thumbs extends Element
 		}
 
 
-		$id2 = FabrikString::rtrimword($id, '_ro');
-		$count = $this->_renderListData(FArrayHelper::getValue($data, $id2), $thisRow);
+		$id2 = StringHelper::rtrimword($id, '_ro');
+		$count = $this->_renderListData(ArrayHelper::getValue($data, $id2), $thisRow);
 		$count = Worker::JSONtoData($count, true);
 
 
@@ -413,7 +413,7 @@ class Thumbs extends Element
 	 */
 	private function getCookieName($listId, $rowId)
 	{
-		$cookieName = 'thumb-table_' . $listId . '_row_' . $rowId . '_ip_' . FabrikString::filteredIp();
+		$cookieName = 'thumb-table_' . $listId . '_row_' . $rowId . '_ip_' . StringHelper::filteredIp();
 		jimport('joomla.utilities.utility');
 		$version = new JVersion;
 
@@ -600,7 +600,7 @@ class Thumbs extends Element
 		$this->lang->load('plg_fabrik_element_thumbs', JPATH_BASE . '/plugns/fabrik_element/thumbs');
 		$opts = new stdClass;
 		$opts->canUse = $this->canUse();
-		$opts->noAccessMsg = trim(FText::_($params->get('thumbs_no_access_msg', FText::_('PLG_ELEMENT_THUMBS_NO_ACCESS_MSG_DEFAULT'))));
+		$opts->noAccessMsg = trim(Text::_($params->get('thumbs_no_access_msg', Text::_('PLG_ELEMENT_THUMBS_NO_ACCESS_MSG_DEFAULT'))));
 		$opts->row_id = $rowId;
 		$opts->myThumb = $this->getMyThumb($listId, $formId, $rowId);
 		$opts->elid = $this->getElement()->id;
@@ -655,7 +655,7 @@ class Thumbs extends Element
 
 		$opts = new stdClass;
 		$opts->canUse = $this->canUse();
-		$opts->noAccessMsg = FText::_($params->get('thumbs_no_access_msg', FText::_('PLG_ELEMENT_THUMBS_NO_ACCESS_MSG_DEFAULT')));
+		$opts->noAccessMsg = Text::_($params->get('thumbs_no_access_msg', Text::_('PLG_ELEMENT_THUMBS_NO_ACCESS_MSG_DEFAULT')));
 		$opts->listid = $list->id;
 		$opts->formid = $this->getFormModel()->getId();
 		$opts->imagepath = COM_FABRIK_LIVESITE . 'plugins/fabrik_element/thumbs/images/';

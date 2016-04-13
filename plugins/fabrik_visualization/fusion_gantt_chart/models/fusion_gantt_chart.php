@@ -11,6 +11,9 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Fabrik\Helpers\StringHelper;
+use Fabrik\Helpers\Text;
+
 jimport('joomla.application.component.model');
 
 require_once JPATH_SITE . '/components/com_fabrik/models/visualization.php';
@@ -65,23 +68,23 @@ class FabrikModelFusion_Gantt_Chart extends FabrikFEModelVisualization
 		$formModel = $listModel->getFormModel();
 		$db = $listModel->getDB();
 		$process = (string) $params->get('fusion_gantt_chart_process');
-		$process = FabrikString::safeColNameToArrayKey($process);
+		$process = StringHelper::safeColNameToArrayKey($process);
 		$processRaw = $process . '_raw';
 		$start = $params->get('fusion_gantt_chart_startdate');
-		$start = FabrikString::safeColNameToArrayKey($start);
+		$start = StringHelper::safeColNameToArrayKey($start);
 		$startRaw = $start . '_raw';
 		$end = $params->get('fusion_gantt_chart_enddate');
-		$end = FabrikString::safeColNameToArrayKey($end);
+		$end = StringHelper::safeColNameToArrayKey($end);
 		$endRaw = $end . '_raw';
 		$label = $params->get('fusion_gantt_chart_label');
-		$label = FabrikString::safeColNameToArrayKey($label);
+		$label = StringHelper::safeColNameToArrayKey($label);
 		$hover = $params->get('fusion_gantt_chart_hover');
-		$hover = FabrikString::safeColNameToArrayKey($hover);
+		$hover = StringHelper::safeColNameToArrayKey($hover);
 		$milestone = $params->get('fusion_gantt_chart_milestone');
-		$milestone = FabrikString::safeColNameToArrayKey($milestone);
+		$milestone = StringHelper::safeColNameToArrayKey($milestone);
 		$milestoneRaw = $milestone . '_raw';
 		$connector = $params->get('fusion_gantt_chart_connector');
-		$connector = FabrikString::safeColNameToArrayKey($connector);
+		$connector = StringHelper::safeColNameToArrayKey($connector);
 		$connectorRaw = $connector . '_raw';
 		$fields = array();
 		$names = array();
@@ -216,7 +219,7 @@ class FabrikModelFusion_Gantt_Chart extends FabrikFEModelVisualization
 
 				// Use day = 0 to load last day of next month
 				$end = date('Y/m/d', mktime(0, 0, 0, $m + 1, 0, $y));
-				$m2 = $monthDisplay == 'str' ? FText::_(date('M', $startTime)) : $m;
+				$m2 = $monthDisplay == 'str' ? Text::_(date('M', $startTime)) : $m;
 				$this->fc->addGanttCategory($m2, "start=" . $start . ";end=" . $end . ";");
 			}
 		}

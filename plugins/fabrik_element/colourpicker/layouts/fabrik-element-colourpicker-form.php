@@ -2,6 +2,7 @@
 defined('JPATH_BASE') or die;
 
 use Fabrik\Helpers\Html;
+use Fabrik\Helpers\Text;
 
 $d = $displayData;
 ?>
@@ -16,7 +17,7 @@ $d = $displayData;
 	<div class="colourPickerBackground colourpicker-widget fabrikWindow" style="display:none;min-width:350px;min-height:250px;">
 		<div class="draggable modal-header">
 			<div class="colourpicker_output img-rounded" style="width:15px;height:15px;float:left;margin-right:10px;"></div> 
-			<?php echo FText::_('PLG_FABRIK_COLOURPICKER_COLOUR');?>
+			<?php echo Text::_('PLG_FABRIK_COLOURPICKER_COLOUR');?>
 
 			<?php if ($d->j3)
 			{?>
@@ -36,8 +37,8 @@ $d = $displayData;
 			<div class="row-fluid">
 				  <div class="span7">
 					    <ul class="nav nav-tabs">
-						      <li class="active"><a href="#<?php echo $d->id; ?>-picker" data-toggle="tab"><?php echo FText::_('PLG_FABRIK_COLOURPICKER_PICKER');?></a></li>
-						      <li><a href="#<?php echo $d->id; ?>-swatch" data-toggle="tab"><?php echo FText::_('PLG_FABRIK_COLOURPICKER_SWATCH'); ?></a></li>
+						      <li class="active"><a href="#<?php echo $d->id; ?>-picker" data-toggle="tab"><?php echo Text::_('PLG_FABRIK_COLOURPICKER_PICKER');?></a></li>
+						      <li><a href="#<?php echo $d->id; ?>-swatch" data-toggle="tab"><?php echo Text::_('PLG_FABRIK_COLOURPICKER_SWATCH'); ?></a></li>
 						    </ul>
 					    <div class="tab-content">
 						      <div class="tab-pane active" id="<?php echo $d->id; ?>-picker"></div>

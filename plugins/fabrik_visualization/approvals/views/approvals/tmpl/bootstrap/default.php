@@ -12,6 +12,8 @@
 defined('_JEXEC') or die('Restricted access');
 
 use Fabrik\Helpers\Html;
+use Fabrik\Helpers\StringHelper;
+use Fabrik\Helpers\Text;
 
 //@TODO if we ever get calendars inside packages then the ids will need to be
 // Replaced with classes contained within a distinct id
@@ -29,11 +31,11 @@ $row = $this->row;
 	<table class="table table-stripped">
 		<thead>
 			<tr class="">
-				<th><?php echo 'Type';//FText::_('PLG_VIZ_APPROVALS_TYPE') ?></th>
-				<th><?php echo 'Title';//FText::_('PLG_VIZ_APPROVALS_TITLE') ?></th>
-				<th><?php echo 'User';//FText::_('PLG_VIZ_APPROVALS_USER') ?></th>
-				<th style="width:15%;text-align:center"><?php echo 'View';//FText::_('PLG_VIZ_APPROVALS_VIEW') ?></th>
-				<th style="width:15%;text-align:center"><?php echo 'Approve';//FText::_('PLG_VIZ_APPROVALS_APPROVE') ?></th>
+				<th><?php echo 'Type';//Text::_('PLG_VIZ_APPROVALS_TYPE') ?></th>
+				<th><?php echo 'Title';//Text::_('PLG_VIZ_APPROVALS_TITLE') ?></th>
+				<th><?php echo 'User';//Text::_('PLG_VIZ_APPROVALS_USER') ?></th>
+				<th style="width:15%;text-align:center"><?php echo 'View';//Text::_('PLG_VIZ_APPROVALS_VIEW') ?></th>
+				<th style="width:15%;text-align:center"><?php echo 'Approve';//Text::_('PLG_VIZ_APPROVALS_APPROVE') ?></th>
 			</tr>
 		</thead>
 		<tbody>
@@ -50,7 +52,7 @@ foreach ($this->rows as $row)
 					<td><?php echo $row->user ?></td>
 					<td  style="text-align:center">
 					<a href="<?php echo $row->view ?>">
-					<a class="fabrikTip" opts="{position:'right'}" title="<?php echo FabrikString::truncate($row->content,
+					<a class="fabrikTip" opts="{position:'right'}" title="<?php echo StringHelper::truncate($row->content,
 		array('tip' => false, 'wordcount' => 200)) ?>" >
 						<?php echo Html::icon('icon-search'); ?>
 					</a></td>

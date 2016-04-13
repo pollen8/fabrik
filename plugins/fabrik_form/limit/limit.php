@@ -9,7 +9,10 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Fabrik\Helpers\ArrayHelper;
 use Fabrik\Helpers\Worker;
+use Fabrik\Helpers\StringHelper;
+use Fabrik\Helpers\Text;
 
 // Require the abstract plugin class
 require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
@@ -64,7 +67,7 @@ class PlgFabrik_FormLimit extends PlgFabrik_Form
 
 		if ($c === false)
 		{
-			$this->app->enqueueMessage(FText::_("PLG_FORM_LIMIT_NOT_SETUP"));
+			$this->app->enqueueMessage(Text::_("PLG_FORM_LIMIT_NOT_SETUP"));
 
 			return false;
 		}
@@ -77,9 +80,9 @@ class PlgFabrik_FormLimit extends PlgFabrik_Form
 
 		if ($c >= $limit)
 		{
-			$msg = $params->get('limit_reached_message', JText::sprintf('PLG_FORM_LIMIT_LIMIT_REACHED', $limit));
+			$msg = $params->get('limit_reached_message', Text::sprintf('PLG_FORM_LIMIT_LIMIT_REACHED', $limit));
 			$msg = str_replace('{limit}', $limit, $msg);
-			$this->app->enqueueMessage(FText::_($msg), 'notice');
+			$this->app->enqueueMessage(Text::_($msg), 'notice');
 
 			return false;
 		}
@@ -87,7 +90,7 @@ class PlgFabrik_FormLimit extends PlgFabrik_Form
 		{
 			if ($params->get('show_limit_message', true))
 			{
-				$this->app->enqueueMessage(JText::sprintf('PLG_FORM_LIMIT_ENTRIES_LEFT_MESSAGE', $limit - $c, $limit));
+				$this->app->enqueueMessage(Text::sprintf('PLG_FORM_LIMIT_ENTRIES_LEFT_MESSAGE', $limit - $c, $limit));
 			}
 		}
 
@@ -114,12 +117,12 @@ class PlgFabrik_FormLimit extends PlgFabrik_Form
 
 		if (!empty($fk))
 		{
-			$fkVal = FArrayHelper::getValue(
+			$fkVal = ArrayHelper::getValue(
 					$formModel->data,
-					FabrikString::safeColNameToArrayKey($fk),
-					FArrayHelper::getValue(
+					StringHelper::safeColNameToArrayKey($fk),
+					ArrayHelper::getValue(
 							$formModel->data,
-							FabrikString::safeColNameToArrayKey($fk) . '_raw',
+							StringHelper::safeColNameToArrayKey($fk) . '_raw',
 							''
 					)
 			);
@@ -181,8 +184,8 @@ class PlgFabrik_FormLimit extends PlgFabrik_Form
 		$dbTable = $listModel->getTable()->db_table_name;
 		$db = $listModel->getDb();
 		$query = $db->getQuery(true);
-		$lookup = FabrikString::safeColName($params->get('limit_user'));
-		$max = FabrikString::safeColName($params->get('limit_max'));
+		$lookup = StringHelper::safeColName($params->get('limit_user'));
+		$max = StringHelper::safeColName($params->get('limit_max'));
 		$query->select('MAX(' . $max . ')')->from($dbTable);
 		$type = $params->get('lookup_type', '');
 

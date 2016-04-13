@@ -13,11 +13,11 @@ namespace Fabrik\Plugins\Element;
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use \FArrayHelper;
 use \stdClass;
-use \JString;
+use Fabrik\Helpers\ArrayHelper;
 use Fabrik\Helpers\Html;
-use \JText;
+use Fabrik\Helpers\StringHelper;
+use Fabrik\Helpers\Text;
 
 /**
  * Plugin element to two lists - one to select from the other to select into
@@ -90,8 +90,8 @@ class Picklist extends ElementList
 				continue;
 			}
 
-			$k      = FArrayHelper::getValue($lookup, $v);
-			$tmpTxt = addslashes(htmlspecialchars(FArrayHelper::getValue($labels, $k)));
+			$k      = ArrayHelper::getValue($lookup, $v);
+			$tmpTxt = addslashes(htmlspecialchars(ArrayHelper::getValue($labels, $k)));
 			$to[$v] = $tmpTxt;
 			$i++;
 		}
@@ -135,7 +135,7 @@ class Picklist extends ElementList
 
 		$opts->hovercolour   = $params->get('picklist-hovercolour', '#AFFFFD');
 		$opts->bghovercolour = $params->get('picklist-bghovercolour', '#FFFFDF');
-		JText::script('PLG_ELEMENT_PICKLIST_ENTER_VALUE_LABEL');
+		Text::script('PLG_ELEMENT_PICKLIST_ENTER_VALUE_LABEL');
 
 		return array('FbPicklist', $id, $opts);
 	}
@@ -157,7 +157,7 @@ class Picklist extends ElementList
 
 		for ($i = 0; $i < count($labels); $i++)
 		{
-			if (JString::strtolower($labels[$i]) == JString::strtolower($value))
+			if (StringHelper::strtolower($labels[$i]) == StringHelper::strtolower($value))
 			{
 				$val = $values[$i];
 

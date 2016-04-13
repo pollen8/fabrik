@@ -13,14 +13,13 @@ namespace Fabrik\Plugins\Element;
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Joomla\Utilities\ArrayHelper;
 use Fabrik\Helpers\Worker;
-use \FArrayHelper;
+use Fabrik\Helpers\ArrayHelper;
 use \JFilterInput;
 use \FabrikFEModelList;
 use \stdClass;
 use \JModelLegacy;
-use \FText;
+use Fabrik\Helpers\Text;
 use Fabrik\Helpers\Html;
 
 /**
@@ -309,21 +308,21 @@ class Calc extends Element
 			{
 				$elementModel = $elementModels[$j];
 				$elKey = $elementModel->getFullName(true, false);
-				$v = FArrayHelper::getValue($d, $elKey);
+				$v = ArrayHelper::getValue($d, $elKey);
 
 				if (is_array($v))
 				{
-					$origData = FArrayHelper::getValue($d, $elKey, array());
+					$origData = ArrayHelper::getValue($d, $elKey, array());
 
 					foreach (array_keys($v) as $x)
 					{
-						$origVal = FArrayHelper::getValue($origData, $x);
+						$origVal = ArrayHelper::getValue($origData, $x);
 						$d[$elKey][$x] = $elementModel->getLabelForValue($v[$x], $origVal, true);
 					}
 				}
 				else
 				{
-					$d[$elKey] = $elementModel->getLabelForValue($v, FArrayHelper::getValue($d, $elKey), true);
+					$d[$elKey] = $elementModel->getLabelForValue($v, ArrayHelper::getValue($d, $elKey), true);
 				}
 			}
 		}
@@ -465,7 +464,7 @@ class Calc extends Element
 			$str[] = '<input type="hidden" class="fabrikinput" name="' . $name . '" id="' . $id . '" value="' . $value . '" />';
 		}
 
-		$opts = array('alt' => FText::_('PLG_ELEMENT_CALC_LOADING'), 'style' => 'display:none;padding-left:10px;', 'class' => 'loader');
+		$opts = array('alt' => Text::_('PLG_ELEMENT_CALC_LOADING'), 'style' => 'display:none;padding-left:10px;', 'class' => 'loader');
 		$str[] = Html::image('ajax-loader.gif', 'form', @$this->tmpl, $opts);
 
 		return implode("\n", $str);
@@ -571,7 +570,7 @@ class Calc extends Element
 
 				if ($this->getGroupModel()->canRepeat() && is_array($value))
 				{
-					$value = FArrayHelper::getValue($value, $repeatCounter);
+					$value = ArrayHelper::getValue($value, $repeatCounter);
 				}
 
 				// For radio buttons and dropdowns otherwise nothing is stored for them??
@@ -592,7 +591,7 @@ class Calc extends Element
 	{
 		$fields = $listModel->getDBFields($this->getTableName(), 'Field');
 		$name = $this->getElement()->name;
-		$field = FArrayHelper::getValue($fields, $name, false);
+		$field = ArrayHelper::getValue($fields, $name, false);
 
 		if ($field !== false && $field->Type == 'time')
 		{
@@ -624,7 +623,7 @@ class Calc extends Element
 	{
 		$fields = $listModel->getDBFields($this->getTableName(), 'Field');
 		$name = $this->getElement()->name;
-		$field = FArrayHelper::getValue($fields, $name, false);
+		$field = ArrayHelper::getValue($fields, $name, false);
 
 		if ($field !== false && $field->Type == 'time')
 		{
@@ -656,7 +655,7 @@ class Calc extends Element
 	{
 		$fields = $listModel->getDBFields($this->getTableName(), 'Field');
 		$name = $this->getElement()->name;
-		$field = FArrayHelper::getValue($fields, $name, false);
+		$field = ArrayHelper::getValue($fields, $name, false);
 
 		if ($field !== false && $field->Type == 'time')
 		{

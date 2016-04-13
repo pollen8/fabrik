@@ -12,8 +12,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 use Fabrik\Helpers\Worker;
-
-require_once JPATH_ADMINISTRATOR . '/components/com_fabrik/helpers/element.php';
+use Fabrik\Helpers\Text;
 
 jimport('joomla.html.html');
 jimport('joomla.form.formfield');
@@ -73,7 +72,7 @@ class JFormFieldGroupList extends JFormFieldGroupedList
 		$sel = new stdClass;
 		$sel->value = '';
 		$sel->form = '';
-		$sel->text = FText::_('COM_FABRIK_PLEASE_SELECT');
+		$sel->text = Text::_('COM_FABRIK_PLEASE_SELECT');
 		array_unshift($options, $sel);
 
 		foreach ($options as $option)

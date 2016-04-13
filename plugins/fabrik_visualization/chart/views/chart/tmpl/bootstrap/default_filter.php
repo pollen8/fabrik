@@ -12,6 +12,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 use Fabrik\Helpers\Html;
+use Fabrik\Helpers\Text;
 
 if ($this->showFilters) : ?>
 <form method="post" name="filter">
@@ -42,7 +43,7 @@ if ($this->showFilters) : ?>
 			<th colspan="2" style="text-align:right;">
 				<?php echo Html::icon('icon-filter'); ?>
   				<button type="submit" class="btn btn-primary">
-  					<?php echo FText::_('GO') ?>
+  					<?php echo Text::_('GO') ?>
   				</button>
 			</th>
 		</tr>

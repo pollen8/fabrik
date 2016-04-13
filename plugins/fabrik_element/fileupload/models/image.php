@@ -11,6 +11,7 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Fabrik\Helpers\ArrayHelper;
 use Fabrik\Helpers\Html;
 use Fabrik\Helpers\Worker;
 
@@ -97,13 +98,13 @@ class ImageRenderModel
 			{
 				if (is_array($formModel->data))
 				{
-					$title = FArrayHelper::getValue($formModel->data, $title_name, '');
+					$title = ArrayHelper::getValue($formModel->data, $title_name, '');
 				}
 			}
 		}
 
 		$bits  = Worker::JSONtoData($title, true);
-		$title = FArrayHelper::getValue($bits, $model->_repeatGroupCounter, $title);
+		$title = ArrayHelper::getValue($bits, $model->_repeatGroupCounter, $title);
 		$title = htmlspecialchars(strip_tags($title, ENT_NOQUOTES));
 		$file  = $model->getStorage()->getFileUrl($file);
 

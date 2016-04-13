@@ -11,7 +11,9 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Fabrik\Helpers\ArrayHelper;
 use Fabrik\Helpers\Html;
+use Fabrik\Helpers\Text;
 
 // Require the abstract plugin class
 require_once COM_FABRIK_FRONTEND . '/models/plugin-list.php';
@@ -73,11 +75,11 @@ class PlgFabrik_ListWebservice extends PlgFabrik_List
 
 	public function button(&$args)
 	{
-		$opts = FArrayHelper::getValue($args, 0, array());
+		$opts = ArrayHelper::getValue($args, 0, array());
 		$model = $this->getModel();
 		$this->buttonAction = $model->actionMethod();
 		$this->context = $model->getRenderContext();
-		$heading = (bool) FArrayHelper::getValue($opts, 'heading', false);
+		$heading = (bool) ArrayHelper::getValue($opts, 'heading', false);
 
 		return $heading;
 	}
@@ -150,7 +152,7 @@ class PlgFabrik_ListWebservice extends PlgFabrik_List
 		$serviceData = $service->get($method, $filters, $startPoint, null);
 		$update = (bool) $params->get('webservice_update_existing', false);
 		$service->storeLocally($model, $serviceData, $fk, $update);
-		$this->msg = JText::sprintf($params->get('webservice_msg'), $service->addedCount, $service->updateCount);
+		$this->msg = Text::sprintf($params->get('webservice_msg'), $service->addedCount, $service->updateCount);
 
 		return true;
 	}

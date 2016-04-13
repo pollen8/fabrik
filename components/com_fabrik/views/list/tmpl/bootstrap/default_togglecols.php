@@ -13,11 +13,12 @@
 defined('_JEXEC') or die('Restricted access');
 
 use Fabrik\Helpers\Html;
+use Fabrik\Helpers\Text;
 
 ?>
 <li class="dropdown togglecols">
 	<a href="#" class="dropdown-toggle" data-toggle="dropdown">
-		<?php echo Html::icon('icon-eye-open', FText::_('COM_FABRIK_TOGGLE')); ?>
+		<?php echo Html::icon('icon-eye-open', Text::_('COM_FABRIK_TOGGLE')); ?>
 		<b class="caret"></b>
 	</a>
 	<ul class="dropdown-menu">

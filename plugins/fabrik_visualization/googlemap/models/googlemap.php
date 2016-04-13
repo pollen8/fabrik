@@ -11,11 +11,12 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Joomla\Utilities\ArrayHelper;
+use Fabrik\Helpers\ArrayHelper;
 use Fabrik\Helpers\Html;
 use Fabrik\Helpers\Googlemap;
 use Fabrik\Helpers\Worker;
-
+use Fabrik\Helpers\Lizt;
+use Fabrik\Helpers\StringHelper;
 
 jimport('joomla.application.component.model');
 
@@ -115,7 +116,7 @@ class FabrikModelGooglemap extends FabrikFEModelVisualization
 		$opts->polylinewidth = (array) $params->get('fb_gm_polyline_width');
 		$opts->polylinecolour = (array) $params->get('fb_gm_polyline_colour');
 		$usePolygon = (array) $params->get('fb_gm_use_polygon');
-		$opts->use_polygon = (bool) FArrayHelper::getValue($usePolygon, 0, true);
+		$opts->use_polygon = (bool) ArrayHelper::getValue($usePolygon, 0, true);
 		$opts->polygonopacity = $params->get('fb_gm_polygon_fillOpacity', 0.35);
 		$opts->polygonfillcolour = (array) $params->get('fb_gm_polygon_fillColor');
 		$opts->overlay_urls = (array) $params->get('fb_gm_overlay_urls');
@@ -169,7 +170,7 @@ class FabrikModelGooglemap extends FabrikFEModelVisualization
 
 		foreach ($listModels as $listModel)
 		{
-			$k = FabrikString::safeColName(FabrikString::rtrimword($polyElements[$c], '[]'));
+			$k = StringHelper::safeColName(StringHelper::rtrimword($polyElements[$c], '[]'));
 
 			if ($k == '``')
 			{
@@ -177,7 +178,7 @@ class FabrikModelGooglemap extends FabrikFEModelVisualization
 				continue;
 			}
 
-			$mapsElements = FabrikHelperList::getElements($listModel, array('plugin' => 'googlemap', 'published' => 1));
+			$mapsElements = Lizt::getElements($listModel, array('plugin' => 'googlemap', 'published' => 1));
 			$coordColumn = $mapsElements[0]->getFullName(false, false);
 			$table = $listModel->getTable();
 
@@ -221,7 +222,7 @@ class FabrikModelGooglemap extends FabrikFEModelVisualization
 	{
 		$v = str_replace(' ', '', $d);
 		$v = trim($v);
-		$v = FabrikString::ltrimword($v, "(");
+		$v = StringHelper::ltrimword($v, "(");
 
 		if (strstr($v, ","))
 		{
@@ -236,7 +237,7 @@ class FabrikModelGooglemap extends FabrikFEModelVisualization
 				$v = explode(",", $v);
 			}
 
-			$v[1] = FabrikString::rtrimword($v[1], ")");
+			$v[1] = StringHelper::rtrimword($v[1], ")");
 		}
 		else
 		{
@@ -293,20 +294,20 @@ class FabrikModelGooglemap extends FabrikFEModelVisualization
 		{
 			$listModel = $this->getlistModel($listId);
 
-			$template = FArrayHelper::getValue($templates, $c, '');
+			$template = ArrayHelper::getValue($templates, $c, '');
 			/**
 			* One day we should get smarter about how we decide which elements to render
 			* but for now all we can do is set formatAll(), in case they use an element
 			* which isn't set for list display, which then wouldn't get rendered unless we do this.
 			*/
 
-			if (FabrikString::usesElementPlaceholders($template))
+			if (StringHelper::usesElementPlaceholders($template))
 			{
 				$listModel->formatAll(true);
 			}
 
-			$template_nl2br = FArrayHelper::getValue($templates_nl2br, $c, '1') == '1';
-			$mapsElements = FabrikHelperList::getElements($listModel, array('plugin' => 'googlemap', 'published' => 1));
+			$template_nl2br = ArrayHelper::getValue($templates_nl2br, $c, '1') == '1';
+			$mapsElements = Lizt::getElements($listModel, array('plugin' => 'googlemap', 'published' => 1));
 			$coordColumn = $mapsElements[0]->getFullName(true, false) . "_raw";
 
 			// Are we using random start location for icons?
@@ -325,11 +326,11 @@ class FabrikModelGooglemap extends FabrikFEModelVisualization
 				foreach ($group as $row)
 				{
 					$customImageFound = false;
-					$iconImg = FArrayHelper::getValue($aIconImgs, $c, '');
+					$iconImg = ArrayHelper::getValue($aIconImgs, $c, '');
 
 					if ($k == 0)
 					{
-						$firstIcon = FArrayHelper::getValue($aFirstIcons, $c, $iconImg);
+						$firstIcon = ArrayHelper::getValue($aFirstIcons, $c, $iconImg);
 
 						if ($firstIcon !== '')
 						{
@@ -356,7 +357,7 @@ class FabrikModelGooglemap extends FabrikFEModelVisualization
 					$rowData['nav_url'] = "http://maps.google.com/maps?q=loc:" . $rowData['coords'] . "&navigate=yes";
 					$html = $w->parseMessageForPlaceHolder($template, $rowData);
 
-					$titleElement = FArrayHelper::getValue($titleElements, $c, '');
+					$titleElement = ArrayHelper::getValue($titleElements, $c, '');
 					$title = $titleElement == '' ? '' : html_entity_decode(strip_tags($row->$titleElement),ENT_COMPAT, 'UTF-8');
 					/* $$$ hugh - if they provided a template, lets assume they will handle the link themselves.
 					 * http://fabrikar.com/forums/showthread.php?p=41550#post41550
@@ -407,7 +408,7 @@ class FabrikModelGooglemap extends FabrikFEModelVisualization
 
 					if ($iconImg == '')
 					{
-						$iconImg = FArrayHelper::getValue($markerImages, $c, '');
+						$iconImg = ArrayHelper::getValue($markerImages, $c, '');
 
 						if ($iconImg != '')
 						{
@@ -422,9 +423,9 @@ class FabrikModelGooglemap extends FabrikFEModelVisualization
 							 * url - url (surprise surprise)
 							 * img - img tag (so we extract src=)
 							 */
-							$iconImgPath = FArrayHelper::getValue($markerImagesPath, $c, 'media');
+							$iconImgPath = ArrayHelper::getValue($markerImagesPath, $c, 'media');
 
-							$iconImg = FArrayHelper::getValue($rowData, $iconImg, '');
+							$iconImg = ArrayHelper::getValue($rowData, $iconImg, '');
 
 							// Normalize the $iconimg so it is either a file path relative to J! root, or a non-local URL
 							switch ($iconImgPath) {
@@ -477,7 +478,7 @@ class FabrikModelGooglemap extends FabrikFEModelVisualization
 						list($width, $height) = $this->markerSize(JPATH_BASE . $iconImg);
 					}
 
-					$gClass = FArrayHelper::getValue($groupClass, 0, '');
+					$gClass = ArrayHelper::getValue($groupClass, 0, '');
 
 					if (!empty($gClass))
 					{
@@ -517,9 +518,10 @@ class FabrikModelGooglemap extends FabrikFEModelVisualization
 					else
 					{
 						// Default icon - lets see if we need to use a letter icon instead
-						if (FArrayHelper::getValue($letters, $c, '') != '')
+						if (ArrayHelper::getValue($letters, $c, '') != '')
 						{
-							$iconImg = $uri->getScheme() . '://www.google.com/mapfiles/marker' . JString::strtoupper($letters[$c]) . '.png';
+							$iconImg = $uri->getScheme() . '://www.google.com/mapfiles/marker'
+								. StringHelper::strtoupper($letters[$c]) . '.png';
 						}
 
 						$icons[$v[0] . $v[1]] = array($v[0], $v[1], $html, $iconImg, $width, $height, 'groupkey' => $groupKey, 'listid' => $listId,
@@ -528,8 +530,8 @@ class FabrikModelGooglemap extends FabrikFEModelVisualization
 
 					if ($params->get('fb_gm_use_radius', '0') == '1')
 					{
-						$radiusElement = FArrayHelper::getValue($radiusElements, $c, '');
-						$radiusUnits = FArrayHelper::getValue($radiusUnits, $c, 'k');
+						$radiusElement = ArrayHelper::getValue($radiusElements, $c, '');
+						$radiusUnits = ArrayHelper::getValue($radiusUnits, $c, 'k');
 						$radiusMeters = $radiusUnits == 'k' ? 1000 : 1609.34;
 
 						if (!empty($radiusElement))
@@ -552,7 +554,7 @@ class FabrikModelGooglemap extends FabrikFEModelVisualization
 				}
 			}
 			// Replace last icon?
-			$iconImg = FArrayHelper::getValue($aLastIcons, $c, '');
+			$iconImg = ArrayHelper::getValue($aLastIcons, $c, '');
 
 			if ($iconImg != '' && !empty($icons))
 			{

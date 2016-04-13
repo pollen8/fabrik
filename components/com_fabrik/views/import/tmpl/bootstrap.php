@@ -12,6 +12,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 use Fabrik\Helpers\Html;
+use Fabrik\Helpers\Text;
 
 $url = JRoute::_('index.php');
 JHtml::_('behavior.tooltip');
@@ -23,7 +24,7 @@ $listId = $app->input->getInt('listid');
 <form enctype="multipart/form-data" action="<?php echo $action ?>" method="post" name="adminForm" id="fabrik-form" class="form-validate">
 	<input type="hidden" name="listid" value="<?php echo $listId; ?>" />
 
-	<h2><?php echo JText::sprintf('COM_FABRIK_CSV_IMPORT_HEADING', $this->listName); ?></h2>
+	<h2><?php echo Text::sprintf('COM_FABRIK_CSV_IMPORT_HEADING', $this->listName); ?></h2>
 	<?php foreach ($this->fieldsets as $fieldset) :
 	?>
 	<fieldset>
@@ -45,7 +46,7 @@ $listId = $app->input->getInt('listid');
 	<input type="hidden" name="task" value="import.doimport" />
   	<?php echo JHTML::_('form.token');
 	echo JHTML::_('behavior.keepalive'); ?>
-	<input type="submit" class="btn btn-primary" value="<?php echo FText::_('COM_FABRIK_IMPORT_CSV')?>" />
+	<input type="submit" class="btn btn-primary" value="<?php echo Text::_('COM_FABRIK_IMPORT_CSV')?>" />
 </form>
 
 <script type="text/javascript">

@@ -9,6 +9,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Fabrik\Helpers\Text;
+
 jimport('joomla.filesystem.file');
 
 // Load front end language file as well
@@ -17,7 +19,7 @@ $lang->load('com_fabrik', JPATH_SITE . '/components/com_fabrik');
 
 if (!defined('COM_FABRIK_FRONTEND'))
 {
-	throw RuntimeException(FText::_('COM_FABRIK_SYSTEM_PLUGIN_NOT_ACTIVE'), 400);
+	throw RuntimeException(Text::_('COM_FABRIK_SYSTEM_PLUGIN_NOT_ACTIVE'), 400);
 }
 
 jimport('joomla.application.component.model');
@@ -98,7 +100,7 @@ else
 	$cache->get($view, 'display', $cacheid);
 }
 
-JText::script('COM_FABRIK_FORM_SAVED');
+Text::script('COM_FABRIK_FORM_SAVED');
 
 // Reset altered input parameters
 $input->set('layout', $origLayout);

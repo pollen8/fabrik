@@ -12,6 +12,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 use Fabrik\Helpers\Worker;
+use Fabrik\Helpers\StringHelper;
 
 require_once JPATH_ROOT . '/plugins/fabrik_element/fileupload/adaptor.php';
 
@@ -141,9 +142,9 @@ class Amazons3storage extends FabrikStorageAdaptor
 
 	private function removePrependedURL($filepath)
 	{
-		if (substr($filepath, 0, JString::strlen(COM_FABRIK_BASE)) == COM_FABRIK_BASE)
+		if (substr($filepath, 0, StringHelper::strlen(COM_FABRIK_BASE)) == COM_FABRIK_BASE)
 		{
-			$filepath = Fabrikstring::ltrimword($filepath, COM_FABRIK_BASE);
+			$filepath = StringHelper::ltrimword($filepath, COM_FABRIK_BASE);
 		}
 
 		return $filepath;
@@ -194,7 +195,7 @@ class Amazons3storage extends FabrikStorageAdaptor
 		}
 
 		// $$$ rob avoid urls like http://bucket.s3.amazonaws.com//home/users/path/to/file/Chrysanthemum.jpg
-		$filepath = JString::ltrim($filepath, '/');
+		$filepath = StringHelper::ltrim($filepath, '/');
 
 		// Move the file
 		if ($this->s3->putObjectFile($tmpFile, $bucket, $filepath, $acl))
@@ -359,7 +360,7 @@ class Amazons3storage extends FabrikStorageAdaptor
 		{
 			// If we are cleaning up a full url then check that fabrik hasn't unwittingly prepended the JPATH_SITE to the start of the url
 			$path = $this->removePrependedURL($path);
-			$part = Fabrikstring::ltrimword($path, $prefix);
+			$part = StringHelper::ltrimword($path, $prefix);
 			$path = $prefix . JPath::clean($part);
 		}
 		else

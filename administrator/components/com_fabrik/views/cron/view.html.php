@@ -12,6 +12,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 use Fabrik\Helpers\Html;
+use Fabrik\Helpers\Text;
 
 jimport('joomla.application.component.view');
 
@@ -116,7 +117,7 @@ class FabrikAdminViewCron extends JViewLegacy
 		$isNew = ($this->item->id == 0);
 		$checkedOut	= !($this->item->checked_out == 0 || $this->item->checked_out == $user->get('id'));
 		$canDo = FabrikAdminHelper::getActions($this->state->get('filter.category_id'));
-		$title = $isNew ? FText::_('COM_FABRIK_MANAGER_CRON_NEW') : FText::_('COM_FABRIK_MANAGER_CRON_EDIT') . ' "' . $this->item->label . '"';
+		$title = $isNew ? Text::_('COM_FABRIK_MANAGER_CRON_NEW') : Text::_('COM_FABRIK_MANAGER_CRON_EDIT') . ' "' . $this->item->label . '"';
 		JToolBarHelper::title($title, 'clock');
 
 		if ($isNew)
@@ -159,6 +160,6 @@ class FabrikAdminViewCron extends JViewLegacy
 		}
 
 		JToolBarHelper::divider();
-		JToolBarHelper::help('JHELP_COMPONENTS_FABRIK_CRONS_EDIT', false, FText::_('JHELP_COMPONENTS_FABRIK_CRONS_EDIT'));
+		JToolBarHelper::help('JHELP_COMPONENTS_FABRIK_CRONS_EDIT', false, Text::_('JHELP_COMPONENTS_FABRIK_CRONS_EDIT'));
 	}
 }

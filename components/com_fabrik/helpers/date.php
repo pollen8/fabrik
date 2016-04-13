@@ -8,6 +8,10 @@
 
 namespace Fabrik\Helpers;
 
+use \DateTime;
+use \DateTimeZone;
+use \JFactory;
+
 /**
  * very small override to JDate to stop 500 errors occurring (when Jdebug is on) if $date is not a valid date string
  *
@@ -49,7 +53,7 @@ class Date extends \JDate
 		try
 		{
 			$dt = new DateTime($date);
-		} catch (Exception $e)
+		} catch (\Exception $e)
 		{
 			JDEBUG ? $app->enqueueMessage('date format unknown for ' . $orig . ' replacing with today\'s date', 'notice') : '';
 			$date = 'now';
@@ -77,7 +81,7 @@ class Date extends \JDate
 	 */
 	protected function removeDashes($str)
 	{
-		$str = FabrikString::ltrimword($str, '-');
+		$str = StringHelper::ltrimword($str, '-');
 
 		return $str;
 	}
@@ -99,10 +103,10 @@ class Date extends \JDate
 			{
 				$month = $this->monthToString($i, $abbrs[$a]);
 
-				if (JString::stristr($str, $month))
+				if (StringHelper::stristr($str, $month))
 				{
-					$monthNum = JString::strlen($i) === 1 ? '0' . $i : $i;
-					$str      = JString::str_ireplace($month, $monthNum, $str);
+					$monthNum = StringHelper::strlen($i) === 1 ? '0' . $i : $i;
+					$str      = StringHelper::str_ireplace($month, $monthNum, $str);
 				}
 			}
 		}
@@ -177,9 +181,9 @@ class Date extends \JDate
 			{
 				$day = $this->dayToString($i, $abbrs[$a]);
 
-				if (JString::stristr($str, $day))
+				if (StringHelper::stristr($str, $day))
 				{
-					$str = JString::str_ireplace($day, '', $str);
+					$str = StringHelper::str_ireplace($day, '', $str);
 				}
 			}
 		}

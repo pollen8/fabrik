@@ -13,6 +13,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 use Fabrik\Helpers\Html;
+use Fabrik\Helpers\Text;
 
 $group = $this->group;
 ?>
@@ -48,13 +49,13 @@ $group = $this->group;
 		<td class="fabrikGroupRepeater">
 			<?php if ($group->canAddRepeat) : ?>
 			<a class="addGroup" href="#">
-				<?php echo Html::image('add.png', 'form', $this->tmpl, array('class' => 'fabrikTip', 'title' => FText::_('COM_FABRIK_ADD_GROUP')));?>
+				<?php echo Html::image('add.png', 'form', $this->tmpl, array('class' => 'fabrikTip', 'title' => Text::_('COM_FABRIK_ADD_GROUP')));?>
 			</a>
 			<?php
 			endif;
 			if ($group->canDeleteRepeat) : ?>
 			<a class="deleteGroup" href="#">
-				<?php echo Html::image('del.png', 'form', $this->tmpl, array('class' => 'fabrikTip', 'title' => FText::_('COM_FABRIK_DELETE_GROUP')));?>
+				<?php echo Html::image('del.png', 'form', $this->tmpl, array('class' => 'fabrikTip', 'title' => Text::_('COM_FABRIK_DELETE_GROUP')));?>
 			</a>
 			<?php
 			endif;

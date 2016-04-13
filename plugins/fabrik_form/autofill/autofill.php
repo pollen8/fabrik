@@ -14,9 +14,9 @@ namespace Fabrik\Plugins\Form;
 defined('_JEXEC') or die('Restricted access');
 
 use \stdClass;
-use \JText;
 use \FabrikFEModelList;
 use \JModelLegacy;
+use Fabrik\Helpers\Text;
 use Fabrik\Helpers\Worker;
 use \FabrikFEModelForm;
 
@@ -84,9 +84,9 @@ class Autofill extends \PlgFabrik_Form
 		}
 
 		$opts = json_encode($opts);
-		JText::script('PLG_FORM_AUTOFILL_DO_UPDATE');
-		JText::script('PLG_FORM_AUTOFILL_SEARCHING');
-		JText::script('PLG_FORM_AUTOFILL_NORECORDS_FOUND');
+		Text::script('PLG_FORM_AUTOFILL_DO_UPDATE');
+		Text::script('PLG_FORM_AUTOFILL_SEARCHING');
+		Text::script('PLG_FORM_AUTOFILL_NORECORDS_FOUND');
 
 		if (!isset($formModel->formPluginJS))
 		{

@@ -12,13 +12,15 @@
 defined('_JEXEC') or die('Restricted access');
 
 use \Joomla\Registry\Registry;
-use Joomla\Utilities\ArrayHelper;
+use Fabrik\Helpers\ArrayHelper;
 use Fabrik\Helpers\Html;
 use Fabrik\Helpers\Worker;
+use Fabrik\Helpers\StringHelper;
+use Fabrik\Helpers\Text;
+use Fabrik\Helpers\Uploader;
 
 jimport('joomla.application.component.model');
 require_once 'fabrikmodelform.php';
-require_once COM_FABRIK_FRONTEND . '/helpers/element.php';
 
 /**
  * Fabrik Form Model
@@ -163,7 +165,7 @@ class FabrikFEModelForm extends FabModelForm
 	/**
 	 * Uploader helper
 	 *
-	 * @var FabrikUploader
+	 * @var Uploader
 	 */
 	protected $uploader = null;
 
@@ -1516,7 +1518,7 @@ class FabrikFEModelForm extends FabModelForm
 
 		if (isset($value) && isset($repeatCount) && is_array($value))
 		{
-			$value = FArrayHelper::getValue($value, $repeatCount, $default);
+			$value = ArrayHelper::getValue($value, $repeatCount, $default);
 		}
 
 		// If we didn't find it, set to default
@@ -1561,7 +1563,7 @@ class FabrikFEModelForm extends FabModelForm
 			 * which is a horribly expensive operation.
 			 */
 			$primaryKey = $this->getListModel()->getPrimaryKey(true);
-			$data['__pk_val'] = FArrayHelper::getValue($data, $primaryKey . '_raw', FArrayHelper::getValue($data, $primaryKey, ''));
+			$data['__pk_val'] = ArrayHelper::getValue($data, $primaryKey . '_raw', ArrayHelper::getValue($data, $primaryKey, ''));
 		}
 
 		// Apply querystring values if not already in post (so qs values doesn't overwrite the submitted values for dbjoin elements)
@@ -1631,7 +1633,7 @@ class FabrikFEModelForm extends FabModelForm
 		foreach ($groups as $groupModel)
 		{
 			$group = $groupModel->getGroup();
-			$repeatedGroupCount = FArrayHelper::getValue($repeatTotals, $group->id, 0, 'int');
+			$repeatedGroupCount = ArrayHelper::getValue($repeatTotals, $group->id, 0, 'int');
 			$elementModels = $groupModel->getPublishedElements();
 
 			for ($c = 0; $c < $repeatedGroupCount; $c++)
@@ -1654,7 +1656,7 @@ class FabrikFEModelForm extends FabModelForm
 	 */
 	protected function removeEmptyNoneJoinedGroupData(&$data)
 	{
-		$repeats = FArrayHelper::getValue($data, 'fabrik_repeat_group', array());
+		$repeats = ArrayHelper::getValue($data, 'fabrik_repeat_group', array());
 		$groups = $this->getGroups();
 
 		foreach ($repeats as $groupId => $c)
@@ -1690,8 +1692,8 @@ class FabrikFEModelForm extends FabModelForm
 		$listModel = $this->getListModel();
 		$item = $listModel->getTable();
 		$k = $item->db_primary_key;
-		$k = FabrikString::safeColNameToArrayKey($k);
-		$origId = FArrayHelper::getValue($this->formData, $k, '');
+		$k = StringHelper::safeColNameToArrayKey($k);
+		$origId = ArrayHelper::getValue($this->formData, $k, '');
 
 		// COPY function should create new records
 		if (array_key_exists('Copy', $this->formData))
@@ -1740,8 +1742,8 @@ class FabrikFEModelForm extends FabModelForm
 		$tmpKey = str_replace('.', '___', $tmpKey);
 		$this->formData[$tmpKey] = $insertId;
 		$this->formData[$tmpKey . '_raw'] = $insertId;
-		$this->formData[FabrikString::shortColName($item->db_primary_key)] = $insertId;
-		$this->formData[FabrikString::shortColName($item->db_primary_key) . '_raw'] = $insertId;
+		$this->formData[StringHelper::shortColName($item->db_primary_key)] = $insertId;
+		$this->formData[StringHelper::shortColName($item->db_primary_key) . '_raw'] = $insertId;
 
 		$this->fullFormData[$tmpKey] = $insertId;
 		$this->fullFormData[$tmpKey . '_raw'] = $insertId;
@@ -2080,8 +2082,8 @@ class FabrikFEModelForm extends FabModelForm
 					if (!array_key_exists($elName2Raw, $post) || $override)
 					{
 						// Post required getValue() later on
-						$input->set($elName2Raw, FArrayHelper::getValue($post, $elName2, ''));
-						$post[$elName2Raw] = FArrayHelper::getValue($post, $elName2, '');
+						$input->set($elName2Raw, ArrayHelper::getValue($post, $elName2, ''));
+						$post[$elName2Raw] = ArrayHelper::getValue($post, $elName2, '');
 					}
 				}
 				else
@@ -2089,8 +2091,8 @@ class FabrikFEModelForm extends FabModelForm
 					if (!array_key_exists($elName2 . '_raw', $post) || $override)
 					{
 						// Post required getValue() later on
-						$input->set($elName2, FArrayHelper::getValue($post, $elName2Raw, ''));
-						$post[$elName2] = FArrayHelper::getValue($post, $elName2Raw, '');
+						$input->set($elName2, ArrayHelper::getValue($post, $elName2Raw, ''));
+						$post[$elName2] = ArrayHelper::getValue($post, $elName2Raw, '');
 					}
 				}
 			}
@@ -2454,7 +2456,7 @@ class FabrikFEModelForm extends FabModelForm
 	{
 		if (is_null($this->uploader))
 		{
-			$this->uploader = new FabrikUploader($this);
+			$this->uploader = new Uploader($this);
 		}
 
 		return $this->uploader;
@@ -2577,7 +2579,7 @@ class FabrikFEModelForm extends FabModelForm
 			}
 		}
 
-		if (FArrayHelper::getValue($opts, 'loadPrefilters', false))
+		if (ArrayHelper::getValue($opts, 'loadPrefilters', false))
 		{
 			$listModel = $this->getListModel();
 			list($afilterFields, $afilterConditions, $afilterValues, $afilterAccess, $afilterEval, $afilterJoins) = $listModel->prefilterSetting();
@@ -2585,7 +2587,7 @@ class FabrikFEModelForm extends FabModelForm
 			foreach ($afilterFields as $name)
 			{
 				$raw = preg_match("/_raw$/", $name) > 0;
-				$name = $name ? FabrikString::rtrimword($name, '_raw') : $name;
+				$name = $name ? StringHelper::rtrimword($name, '_raw') : $name;
 				$elementModel = $this->getElement($name);
 			}
 		}
@@ -2611,7 +2613,7 @@ class FabrikFEModelForm extends FabModelForm
 		{
 			$element = $elementModel->getElement();
 
-			if (!(FArrayHelper::getValue($opts, 'includePublised', true) && $element->published == 0))
+			if (!(ArrayHelper::getValue($opts, 'includePublised', true) && $element->published == 0))
 			{
 				$aEls[] = (int) $element->id;
 			}
@@ -2677,7 +2679,7 @@ class FabrikFEModelForm extends FabModelForm
 
 					if ($this->addDbQuote)
 					{
-						$val = FabrikString::safeColName($val);
+						$val = StringHelper::safeColName($val);
 					}
 
 					if ($incRaw && is_a($elementModel, '\Fabrik\Plugins\Element\Databasejoin'))
@@ -2726,7 +2728,7 @@ class FabrikFEModelForm extends FabModelForm
 		$item = $listModel->getTable();
 		$rowId = $input->getString('rowid', '', 'string');
 		$query = $db->getQuery(true);
-		$query->select($item->db_primary_key . ' AS ' . FabrikString::safeColNameToArrayKey($item->db_primary_key))->from($item->db_table_name)
+		$query->select($item->db_primary_key . ' AS ' . StringHelper::safeColNameToArrayKey($item->db_primary_key))->from($item->db_table_name)
 			->where($item->db_primary_key . ' ' . $c . ' ' . $db->q($rowId));
 		$query = $listModel->buildQueryOrder($query);
 		$db->setQuery($query, 0, $intLimit);
@@ -2932,10 +2934,10 @@ class FabrikFEModelForm extends FabModelForm
 		$listModel = $this->getListModel();
 		$fabrikDb = $listModel->getDb();
 		$item = $listModel->getTable();
-		$k = FabrikString::safeNameQuote($item->db_primary_key);
+		$k = StringHelper::safeNameQuote($item->db_primary_key);
 
 		// @TODO JQuery this
-		$fabrikDb->setQuery("SELECT MAX($k) FROM " . FabrikString::safeColName($item->db_table_name) . $listModel->buildQueryWhere());
+		$fabrikDb->setQuery("SELECT MAX($k) FROM " . StringHelper::safeColName($item->db_table_name) . $listModel->buildQueryWhere());
 
 		return $fabrikDb->loadResult();
 	}
@@ -3042,7 +3044,7 @@ class FabrikFEModelForm extends FabModelForm
 
 		foreach ($clean_request as $key => $value)
 		{
-			$test_key = FabrikString::rtrimword($key, '_raw');
+			$test_key = StringHelper::rtrimword($key, '_raw');
 			$elementModel = $this->getElement($test_key, false, false);
 
 			if ($elementModel !== false)
@@ -3088,7 +3090,7 @@ class FabrikFEModelForm extends FabModelForm
 					if ($sessionRow->data != '')
 					{
 						$sData = unserialize($sessionRow->data);
-						$data = FArrayHelper::toObject($sData, 'stdClass', false);
+						$data = ArrayHelper::toObject($sData, 'stdClass', false);
 						JFilterOutput::objectHTMLSafe($data);
 						$data = array($data);
 						Html::debug($data, 'form:getData from session (form in Mambot and errors)');
@@ -3099,7 +3101,7 @@ class FabrikFEModelForm extends FabModelForm
 					// $$$ rob - use setFormData rather than $_GET
 					// as it applies correct input filtering to data as defined in article manager parameters
 					$data = $this->setFormData();
-					$data = FArrayHelper::toObject($data, 'stdClass', false);
+					$data = ArrayHelper::toObject($data, 'stdClass', false);
 
 					// $$$rob ensure "<tags>text</tags>" that are entered into plain text areas are shown correctly
 					JFilterOutput::objectHTMLSafe($data);
@@ -3141,7 +3143,7 @@ class FabrikFEModelForm extends FabModelForm
 
 						$bits = $data;
 						$bits = array_merge($tmp_data, $bits);
-						//$data = array(FArrayHelper::toObject($bits));
+						//$data = array(ArrayHelper::toObject($bits));
 						$data = $bits;
 						Html::debug($data, 'form:getData from session (form not in Mambot and no errors');
 					}
@@ -3200,7 +3202,7 @@ class FabrikFEModelForm extends FabModelForm
 								$row = empty($row) ? array() : ArrayHelper::fromObject($row);
 								$request = $clean_request;
 								$request = array_merge($row, $request);
-								$data[] = FArrayHelper::toObject($request);
+								$data[] = ArrayHelper::toObject($request);
 							}
 						}
 
@@ -3228,8 +3230,8 @@ class FabrikFEModelForm extends FabModelForm
 									 * like from an email, but aren't logged in so run afoul of a pre-filter, etc
 									 * So do the 3.0 thing, and raise a warning
 									 */
-									//throw new RuntimeException(FText::_('COM_FABRIK_COULD_NOT_FIND_RECORD_IN_DATABASE'));
-									JError::raiseWarning(500, FText::_('COM_FABRIK_COULD_NOT_FIND_RECORD_IN_DATABASE'));
+									//throw new RuntimeException(Text::_('COM_FABRIK_COULD_NOT_FIND_RECORD_IN_DATABASE'));
+									JError::raiseWarning(500, Text::_('COM_FABRIK_COULD_NOT_FIND_RECORD_IN_DATABASE'));
 								}
 								else
 								{
@@ -3446,7 +3448,7 @@ class FabrikFEModelForm extends FabModelForm
 		}
 
 		// Remove the additional rows - they should have been merged into [0] above. if no [0] then use main array
-		$data = ArrayHelper::fromObject(FArrayHelper::getValue($data, 0, $data));
+		$data = ArrayHelper::fromObject(ArrayHelper::getValue($data, 0, $data));
 	}
 
 	/**
@@ -3534,7 +3536,7 @@ class FabrikFEModelForm extends FabModelForm
 			foreach ($useKey as &$tmpK)
 			{
 				$tmpK = !strstr($tmpK, '.') ? $item->db_table_name . '.' . $tmpK : $tmpK;
-				$tmpK = FabrikString::safeColName($tmpK);
+				$tmpK = StringHelper::safeColName($tmpK);
 			}
 
 			if (!is_array($this->rowId))
@@ -3607,11 +3609,11 @@ class FabrikFEModelForm extends FabModelForm
 		if (strstr($sql, 'WHERE'))
 		{
 			// Do it this way as queries may contain sub-queries which we want to keep the where
-			$firstWord = JString::substr($where, 0, 5);
+			$firstWord = StringHelper::substr($where, 0, 5);
 
 			if ($firstWord == 'WHERE')
 			{
-				$where = JString::substr_replace($where, 'AND', 0, 5);
+				$where = StringHelper::substr_replace($where, 'AND', 0, 5);
 			}
 		}
 		// Set rowId to -2 to indicate random record
@@ -3629,7 +3631,7 @@ class FabrikFEModelForm extends FabModelForm
 			$sql .= $word . ' (' . implode(' ', $where) . ')';
 		}
 
-		if (!$random && FArrayHelper::getValue($opts, 'ignoreOrder', false) === false)
+		if (!$random && ArrayHelper::getValue($opts, 'ignoreOrder', false) === false)
 		{
 			// $$$ rob if showing joined repeat groups we want to be able to order them as defined in the table
 			$sql .= $listModel->buildQueryOrder();
@@ -3962,7 +3964,7 @@ class FabrikFEModelForm extends FabModelForm
 					{
 						// $$$ hugh - if it's a one-to-one, it should be a single value
 						$aVals = array_values($array);
-						$jData[$key] = FArrayHelper::getValue($aVals, 0, '');
+						$jData[$key] = ArrayHelper::getValue($aVals, 0, '');
 					}
 				}
 			}
@@ -4074,7 +4076,7 @@ class FabrikFEModelForm extends FabModelForm
 			$text = preg_replace("/{\s*.*?}/i", '', $text);
 		}
 
-		$text = FabrikString::translate($text);
+		$text = StringHelper::translate($text);
 
 		return $text;
 	}
@@ -4092,7 +4094,7 @@ class FabrikFEModelForm extends FabModelForm
 		$m = explode(":", $match[0]);
 		array_shift($m);
 		$m = implode(":", $m);
-		return FabrikString::rtrimword($m, "}");
+		return StringHelper::rtrimword($m, "}");
 	}
 
 	/**
@@ -4122,13 +4124,13 @@ class FabrikFEModelForm extends FabModelForm
 			return str_replace("{Add/Edit}", '', $label);
 		}
 
-		if (JString::stristr($label, "{Add/Edit}"))
+		if (StringHelper::stristr($label, "{Add/Edit}"))
 		{
-			$replace = $this->isNewRecord() ? FText::_('COM_FABRIK_ADD') : FText::_('COM_FABRIK_EDIT');
+			$replace = $this->isNewRecord() ? Text::_('COM_FABRIK_ADD') : Text::_('COM_FABRIK_EDIT');
 			$label = str_replace("{Add/Edit}", $replace, $label);
 		}
 
-		return FText::_($label);
+		return Text::_($label);
 	}
 
 	/**
@@ -4241,7 +4243,7 @@ class FabrikFEModelForm extends FabModelForm
 					if (empty($val))
 					{
 						$thisKey = $this->getListModel()->getTable()->db_table_name . '___' . $element->join_key_column . '_raw';
-						$val = FArrayHelper::getValue($this->data, $thisKey, $val);
+						$val = ArrayHelper::getValue($this->data, $thisKey, $val);
 
 						if (empty($val))
 						{
@@ -4271,7 +4273,7 @@ class FabrikFEModelForm extends FabModelForm
 				 */
 
 				$linkKeyRaw = $linkKey . '_raw';
-				$popUpLink = FArrayHelper::getValue($linkedtable_linktype->$key, $f, false);
+				$popUpLink = ArrayHelper::getValue($linkedtable_linktype->$key, $f, false);
 				$count = is_array($recordCounts) && array_key_exists($val, $recordCounts) ? $recordCounts[$val]->total : 0;
 				$label = $facetedLinks->linkedlistheader->$key == '' ? $element->listlabel : $facetedLinks->linkedlistheader->$key;
 				$links[$element->list_id][] = $label . ': ' . $referringTable->viewDataLink($popUpLink, $element, null, $linkKey, $val, $count, $f);
@@ -4355,7 +4357,7 @@ class FabrikFEModelForm extends FabModelForm
 		{
 			$parts = explode('=', $bit);
 			$key = $parts[0];
-			$key = FabrikString::rtrimword($key, '_raw');
+			$key = StringHelper::rtrimword($key, '_raw');
 
 			if (!$this->hasElement($key))
 			{
@@ -4643,7 +4645,7 @@ class FabrikFEModelForm extends FabModelForm
 
 			if (!empty($repeatGroups))
 			{
-				$repeatGroup = FArrayHelper::getValue($repeatGroups, $gkey, $repeatGroup);
+				$repeatGroup = ArrayHelper::getValue($repeatGroups, $gkey, $repeatGroup);
 
 				if ($repeatGroup == 0)
 				{
@@ -5101,7 +5103,7 @@ class FabrikFEModelForm extends FabModelForm
 
 			$params = $this->getParams();
 
-			return FText::_($params->get('submit-success-msg', 'COM_FABRIK_RECORD_ADDED_UPDATED'));
+			return Text::_($params->get('submit-success-msg', 'COM_FABRIK_RECORD_ADDED_UPDATED'));
 		}
 		else
 		{
@@ -5141,7 +5143,7 @@ class FabrikFEModelForm extends FabModelForm
 		$input = $this->app->input;
 		$msg = $input->get('rowid', '', 'string') == 0 ? 'COM_FABRIK_NOTICE_CANT_ADD_RECORDS' : 'COM_FABRIK_NOTICE_CANT_EDIT_RECORDS';
 
-		return FText::_($msg);
+		return Text::_($msg);
 	}
 
 	/**
@@ -5164,7 +5166,7 @@ class FabrikFEModelForm extends FabModelForm
 
 		if (!empty($msg))
 		{
-			$msg = FArrayHelper::getValue($msg, 0);
+			$msg = ArrayHelper::getValue($msg, 0);
 			$this->app->enqueueMessage($msg);
 		}
 		// Ensure its only shown once even if page is refreshed with isMambot in querystring
@@ -5206,7 +5208,7 @@ class FabrikFEModelForm extends FabModelForm
 		 */
 		$customMsg = array_keys($sMsg);
 		$customMsg = array_shift($customMsg);
-		$customMsg = FArrayHelper::getValue($sMsg, $customMsg);
+		$customMsg = ArrayHelper::getValue($sMsg, $customMsg);
 
 		if ($customMsg != '')
 		{
@@ -5342,7 +5344,7 @@ class FabrikFEModelForm extends FabModelForm
 	 * @param   array   $paths    Optional paths to add as includes
 	 * @param   array   $options  Options
 	 *
-	 * @return FabrikLayoutFile
+	 * @return Fabrik\Helpers\LayoutFile
 	 */
 	public function getLayout($name, $paths = array(), $options = array())
 	{

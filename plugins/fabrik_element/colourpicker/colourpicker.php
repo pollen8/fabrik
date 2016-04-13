@@ -16,7 +16,7 @@ defined('_JEXEC') or die('Restricted access');
 use Fabrik\Helpers\Worker;
 use \stdClass;
 use Fabrik\Helpers\Html;
-use \FabrikString;
+use Fabrik\Helpers\StringHelper;
 
 /**
  * Plugin element to render colour picker
@@ -135,7 +135,7 @@ class Colourpicker extends Element
 	public function getValue($data, $repeatCounter = 0, $opts = array())
 	{
 		$value = parent::getValue($data, $repeatCounter, $opts);
-		$value = strstr($value, '#') ? FabrikString::hex2rgb($value) : $value;
+		$value = strstr($value, '#') ? StringHelper::hex2rgb($value) : $value;
 
 		return $value;
 	}

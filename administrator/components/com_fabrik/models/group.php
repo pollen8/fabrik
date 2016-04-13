@@ -12,8 +12,10 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Joomla\Utilities\ArrayHelper;
+use Fabrik\Helpers\ArrayHelper;
 use Fabrik\Helpers\Worker;
+use Fabrik\Helpers\StringHelper;
+use Fabrik\Helpers\Text;
 
 require_once 'fabmodeladmin.php';
 
@@ -126,12 +128,12 @@ class FabrikAdminModelGroup extends FabModelAdmin
 		$groupModel = JModelLegacy::getInstance('Group', 'FabrikFEModel');
 		$groupModel->setId($data['id']);
 		$listModel     = $groupModel->getListModel();
-		$pk            = FabrikString::safeColName($listModel->getPrimaryKey());
+		$pk            = StringHelper::safeColName($listModel->getPrimaryKey());
 		$elementModels = $groupModel->getMyElements();
 
 		foreach ($elementModels as $elementModel)
 		{
-			if (FabrikString::safeColName($elementModel->getFullName(false, false)) == $pk)
+			if (StringHelper::safeColName($elementModel->getFullName(false, false)) == $pk)
 			{
 				return false;
 			}
@@ -303,7 +305,7 @@ class FabrikAdminModelGroup extends FabModelAdmin
 		$join->load(array('id' => $item->join_id));
 		$fkFieldName = $join->get('table_join') . '___' . $join->get('table_join_key');
 		$fields      = $listModel->getDBFields($join->get('join_from_table'), 'Field');
-		$pkField     = FArrayHelper::getValue($fields, $join->get('table_key'), false);
+		$pkField     = ArrayHelper::getValue($fields, $join->get('table_key'), false);
 
 		switch ($pkField->BaseType)
 		{
@@ -354,8 +356,8 @@ class FabrikAdminModelGroup extends FabModelAdmin
 			 */
 			if (!array_key_exists($fName, $names))
 			{
-				$str   = FabrikString::safeColName($fName);
-				$field = FArrayHelper::getValue($fields, $fName);
+				$str   = StringHelper::safeColName($fName);
+				$field = ArrayHelper::getValue($fields, $fName);
 
 				if (is_object($field))
 				{
@@ -395,7 +397,7 @@ class FabrikAdminModelGroup extends FabModelAdmin
 			if (trim($list->db_table_name) == '')
 			{
 				// New group not attached to a form
-				throw new Exception(FText::_('COM_FABRIK_GROUP_CANT_MAKE_JOIN_NO_DB_TABLE'));
+				throw new Exception(Text::_('COM_FABRIK_GROUP_CANT_MAKE_JOIN_NO_DB_TABLE'));
 			}
 
 			// Repeat table already created - lets check its structure matches the group elements
@@ -419,7 +421,7 @@ class FabrikAdminModelGroup extends FabModelAdmin
 		// Create the join as well
 
 		$jData = array('list_id' => $list->id, 'element_id' => 0, 'join_from_table' => $list->db_table_name, 'table_join' => $newTableName,
-			'table_key' => FabrikString::shortColName($list->db_primary_key), 'table_join_key' => 'parent_id', 'join_type' => 'left',
+			'table_key' => StringHelper::shortColName($list->db_primary_key), 'table_join_key' => 'parent_id', 'join_type' => 'left',
 			'group_id' => $data['id']);
 
 		// Load the matching join if found.

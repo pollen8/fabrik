@@ -12,6 +12,8 @@
 defined('_JEXEC') or die('Restricted access');
 
 use \Joomla\Registry\Registry;
+use Fabrik\Helpers\ArrayHelper;
+use Fabrik\Helpers\StringHelper;
 use Fabrik\Helpers\Worker;
 
 require_once JPATH_SITE . '/components/com_fabrik/views/list/view.base.php';
@@ -257,7 +259,7 @@ class FabrikViewList extends FabrikViewListBase
 						if (strstr($rssContent, $rssTag))
 						{
 							$found = true;
-							$rssTag = JString::substr($rssTag, 1, JString::strlen($rssTag) - 2);
+							$rssTag = StringHelper::substr($rssTag, 1, StringHelper::strlen($rssTag) - 2);
 
 							if (!strstr($this->doc->_namespace, $namespace))
 							{
@@ -292,7 +294,7 @@ class FabrikViewList extends FabrikViewListBase
 				}
 
 
-				if (FArrayHelper::getValue($dbColName, 'label') != '')
+				if (ArrayHelper::getValue($dbColName, 'label') != '')
 				{
 					$str = $tStart . $str . "</table>";
 				}

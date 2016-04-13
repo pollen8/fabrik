@@ -13,10 +13,9 @@ namespace Fabrik\Plugins\Element;
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Joomla\Utilities\ArrayHelper;
 use \stdClass;
 use \JLayoutFile;
-use \FArrayHelper;
+use Fabrik\Helpers\ArrayHelper;
 use Fabrik\Helpers\Worker;
 
 /**
@@ -146,7 +145,7 @@ class Display extends Element
 
 	protected function getDefaultOnACL($data, $opts)
 	{
-		return FArrayHelper::getValue($opts, 'use_default', true) == false ? '' : $this->getDefaultValue($data);
+		return ArrayHelper::getValue($opts, 'use_default', true) == false ? '' : $this->getDefaultValue($data);
 	}
 
 	/**
@@ -166,7 +165,7 @@ class Display extends Element
 		if ($value === '')
 		{
 			// Query string for joined data
-			$value = FArrayHelper::getValue($data, $value);
+			$value = ArrayHelper::getValue($data, $value);
 		}
 
 		$formModel = $this->getFormModel();

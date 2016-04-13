@@ -8,11 +8,12 @@
  * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
+namespace Fabrik\Helpers;
+
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Joomla\Utilities\ArrayHelper;
-use Fabrik\Helpers\Worker;
+use \JFactory;
 
 /**
  * Element Helper class
@@ -21,8 +22,7 @@ use Fabrik\Helpers\Worker;
  * @subpackage  Fabrik.helpers
  * @since       3.0.6
  */
-
-class FabrikHelperElement
+class Element
 {
 	/**
 	 * For processing repeat elements we need to make its
@@ -53,7 +53,7 @@ class FabrikHelperElement
 	 *
 	 * @param   \Fabrik\Plugins\Element\Element  $baseElement  repeat element (e.g. db join rendered as checkbox)
 	 *
-	 * @return  Fabrik\Plugins\Element\Field;
+	 * @return  \Fabrik\Plugins\Element\Field;
 	 */
 
 	public static function makeParentElement($baseElement)
@@ -89,9 +89,9 @@ class FabrikHelperElement
 		$listId = $listModel->getId();
 		$key = 'com_fabrik.list' . $listId . '_com_fabrik_' . $listId . '.filter';
 		$filters = ArrayHelper::fromObject($app->getUserState($key));
-		$elementIds = (array) FArrayHelper::getValue($filters, 'elementid', array());
+		$elementIds = (array) ArrayHelper::getValue($filters, 'elementid', array());
 		$index = array_search($elementId, $elementIds);
-		$value = $index === false ? false : FArrayHelper::getValue($filters['value'], $index, false);
+		$value = $index === false ? false : ArrayHelper::getValue($filters['value'], $index, false);
 
 		return $value;
 	}
@@ -99,8 +99,8 @@ class FabrikHelperElement
 	/**
 	 * Is the key part of an element join's data. Used in csv import/export
 	 *
-	 * @param   FabrikFEModelForm  $model  Form model
-	 * @param   string             $key  Key - full element name or full element name with _id / ___params appended
+	 * @param   \FabrikFEModelForm  $model  Form model
+	 * @param   string              $key  Key - full element name or full element name with _id / ___params appended
 	 *
 	 * @return boolean
 	 */
@@ -121,15 +121,16 @@ class FabrikHelperElement
 	 * Loose lookup to find join element from any key related to the join (e.g. _id & __params).
 	 * Used in csv import/export
 	 *
-	 * @param   FabrikFEModelForm  $model  Form model
-	 * @param   string             $key    Key - full element name or full element name with _id / ___params appended
+	 * @param   \FabrikFEModelForm  $model  Form model
+	 * @param   string              $key    Key - full element name or full element name with _id / ___params appended
 	 *
 	 * @return  \Fabrik\Plugins\Element\Element|boolean
 	 */
 	public static function findElementFromJoinKeys($model, $key)
 	{
 		// Search on fullname fullname_id and fullname___params
-		$lookUps = array($key, substr($key, 0, JString::strlen($key) - 3), substr($key, 0, JString::strlen($key) - 9));
+		$lookUps = array($key, substr($key, 0, StringHelper::strlen($key) - 3),
+			substr($key, 0, StringHelper::strlen($key) - 9));
 
 		foreach ($lookUps as $lookup)
 		{

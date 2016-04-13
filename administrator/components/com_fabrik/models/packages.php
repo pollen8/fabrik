@@ -13,6 +13,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 use Fabrik\Helpers\Worker;
+use Fabrik\Helpers\Text;
 
 require_once 'fabmodellist.php';
 
@@ -176,7 +177,7 @@ class FabrikAdminModelPackages extends FabModelList
 			}
 			else
 			{
-				$i->file = FText::_('COM_FABRIK_EXPORT_PACKAGE_TO_CREATE_ZIP');
+				$i->file = Text::_('COM_FABRIK_EXPORT_PACKAGE_TO_CREATE_ZIP');
 			}
 		}
 

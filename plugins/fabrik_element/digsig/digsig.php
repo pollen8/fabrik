@@ -13,12 +13,12 @@ namespace Fabrik\Plugins\Element;
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Joomla\Utilities\ArrayHelper;
 use \stdClass;
 use \JLayoutFile;
 use \Exception;
-use \FText;
+use Fabrik\Helpers\ArrayHelper;
 use Fabrik\Helpers\Html;
+use Fabrik\Helpers\Text;
 
 /**
  * Plugin element to render digital signature pad
@@ -197,7 +197,7 @@ class Digsig extends Element
 
 		if (!$this->canView())
 		{
-			$this->app->enqueueMessage(FText::_('PLG_ELEMENT_DIGSIG_NO_PERMISSION'));
+			$this->app->enqueueMessage(Text::_('PLG_ELEMENT_DIGSIG_NO_PERMISSION'));
 			$this->app->redirect($url);
 			exit;
 		}
@@ -206,7 +206,7 @@ class Digsig extends Element
 
 		if (empty($rowId))
 		{
-			$this->app->enqueueMessage(FText::_('PLG_ELEMENT_FDIGSIG_NO_SUCH_FILE'));
+			$this->app->enqueueMessage(Text::_('PLG_ELEMENT_FDIGSIG_NO_SUCH_FILE'));
 			$this->app->redirect($url);
 			exit;
 		}
@@ -216,7 +216,7 @@ class Digsig extends Element
 
 		if (empty($row))
 		{
-			$this->app->enqueueMessage(FText::_('PLG_ELEMENT_DIGSIG_NO_SUCH_FILE'));
+			$this->app->enqueueMessage(Text::_('PLG_ELEMENT_DIGSIG_NO_SUCH_FILE'));
 			$this->app->redirect($url);
 			exit;
 		}
@@ -254,7 +254,7 @@ class Digsig extends Element
 		}
 		else
 		{
-			$this->app->enqueueMessage(FText::_('PLG_ELEMENT_DIGSIG_NO_SUCH_FILE'));
+			$this->app->enqueueMessage(Text::_('PLG_ELEMENT_DIGSIG_NO_SUCH_FILE'));
 			$this->app->redirect($url);
 			exit;
 		}

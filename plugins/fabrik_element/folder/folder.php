@@ -14,7 +14,7 @@ namespace Fabrik\Plugins\Element;
 defined('_JEXEC') or die('Restricted access');
 
 use \JHtml;
-use \FText;
+use Fabrik\Helpers\Text;
 use \JFolder;
 use \stdClass;
 
@@ -50,7 +50,7 @@ class Folder extends Element
 
 		if ($params->get('folder_allownone', true))
 		{
-			$opts[] = JHtml::_('select.option', '', FText::_('NONE'));
+			$opts[] = JHtml::_('select.option', '', Text::_('NONE'));
 		}
 
 		if ($params->get('folder_listfolders', true))

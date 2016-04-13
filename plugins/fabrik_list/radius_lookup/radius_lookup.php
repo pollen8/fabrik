@@ -11,8 +11,9 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Joomla\Utilities\ArrayHelper;
+use Fabrik\Helpers\ArrayHelper;
 use Fabrik\Helpers\Html;
+use Fabrik\Helpers\StringHelper;
 
 // Require the abstract plugin class
 require_once COM_FABRIK_FRONTEND . '/models/plugin-list.php';
@@ -105,7 +106,7 @@ class PlgFabrik_ListRadius_Lookup extends PlgFabrik_List
 		// Need to unset for multiple radius searches to work
 		unset($this->mapElement);
 		$el = $this->getMapElement();
-		$el = FabrikString::safeColName($el->getFullName(false, false));
+		$el = StringHelper::safeColName($el->getFullName(false, false));
 
 		// Crazy sql to get the lat/lon from google map element
 		$latField = "SUBSTRING_INDEX(TRIM(LEADING '(' FROM $el), ',', 1)";
@@ -232,7 +233,7 @@ class PlgFabrik_ListRadius_Lookup extends PlgFabrik_List
 		$params = $this->getParams();
 		$model = $this->getModel();
 		$elements = $model->getElements('id');
-		$this->mapElement = FArrayHelper::getValue($elements, $params->get('radius_lookup_mapelement'), false);
+		$this->mapElement = ArrayHelper::getValue($elements, $params->get('radius_lookup_mapelement'), false);
 
 		return $this->mapElement;
 	}
@@ -280,7 +281,7 @@ class PlgFabrik_ListRadius_Lookup extends PlgFabrik_List
 		$params = $this->getParams();
 		list($latitude, $longitude) = $this->getSearchLatLon();
 		$opts = $this->getElementJSOptions();
-		$containerOverride = FArrayHelper::getValue($args, 0, '');
+		$containerOverride = ArrayHelper::getValue($args, 0, '');
 
 		if (strstr($containerOverride, 'visualization'))
 		{

@@ -9,6 +9,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Fabrik\Helpers\Text;
+
 jimport('joomla.filesystem.file');
 
 // Load front end language file as well
@@ -17,7 +19,7 @@ $lang->load('com_fabrik', JPATH_BASE . '/components/com_fabrik');
 
 if (!defined('COM_FABRIK_FRONTEND'))
 {
-	JError::raiseError(400, JText::_('COM_FABRIK_SYSTEM_PLUGIN_NOT_ACTIVE'));
+	JError::raiseError(400, Text::_('COM_FABRIK_SYSTEM_PLUGIN_NOT_ACTIVE'));
 }
 
 $app = JFactory::getApplication();

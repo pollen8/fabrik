@@ -12,8 +12,10 @@
 defined('_JEXEC') or die('Restricted access');
 
 use \Joomla\Registry\Registry;
-use Joomla\Utilities\ArrayHelper;
+use Fabrik\Helpers\ArrayHelper;
 use Fabrik\Helpers\Worker;
+use Fabrik\Helpers\StringHelper;
+use Fabrik\Helpers\Text;
 
 jimport('joomla.application.component.model');
 
@@ -436,7 +438,7 @@ class FabrikFEModelGroup extends FabModel
 		if ($widths !== '')
 		{
 			$widths = explode(',', $widths);
-			$w = FArrayHelper::getValue($widths, ($rowIx) % $colCount, $w);
+			$w = ArrayHelper::getValue($widths, ($rowIx) % $colCount, $w);
 		}
 
 		$element->column = ' style="float:left;width:' . $w . ';';
@@ -466,7 +468,7 @@ class FabrikFEModelGroup extends FabModel
 		$element->column .= '" ';
 		$spans = $this->columnSpans();
 		$spanKey = $rowIx % $colCount;
-		$element->span = $element->hidden ? '' : FArrayHelper::getValue($spans, $spanKey, 'span' . floor(12 / $colCount));
+		$element->span = $element->hidden ? '' : ArrayHelper::getValue($spans, $spanKey, 'span' . floor(12 / $colCount));
 
 		if (!$element->hidden)
 		{
@@ -1017,26 +1019,26 @@ class FabrikFEModelGroup extends FabModel
 
 		$label = $input->getString('group' . $group->id . '_label', $groupTable->label);
 
-		if (JString::stristr($label, "{Add/Edit}"))
+		if (StringHelper::stristr($label, "{Add/Edit}"))
 		{
-			$replace = $formModel->isNewRecord() ? FText::_('COM_FABRIK_ADD') : FText::_('COM_FABRIK_EDIT');
+			$replace = $formModel->isNewRecord() ? Text::_('COM_FABRIK_ADD') : Text::_('COM_FABRIK_EDIT');
 			$label = str_replace("{Add/Edit}", $replace, $label);
 		}
 
 		$groupTable->label = $label;
 		$group->title = $w->parseMessageForPlaceHolder($groupTable->label, $formModel->data, false);
-		$group->title = FText::_($group->title);
+		$group->title = Text::_($group->title);
 		$group->name = $groupTable->name;
 		$group->displaystate = ($group->canRepeat == 1 && $formModel->isEditable()) ? 1 : 0;
 		$group->maxRepeat = (int) $params->get('repeat_max');
 		$group->minRepeat = $params->get('repeat_min', '') === '' ? 1 : (int) $params->get('repeat_min', '');
 		$group->showMaxRepeats  = $params->get('show_repeat_max', '0') == '1';
 		$group->minMaxErrMsg = $params->get('repeat_error_message', '');
-		$group->minMaxErrMsg = FText::_($group->minMaxErrMsg);
+		$group->minMaxErrMsg = Text::_($group->minMaxErrMsg);
 		$group->canAddRepeat = $this->canAddRepeat();
 		$group->canDeleteRepeat = $this->canDeleteRepeat();
-		$group->intro = $text = FabrikString::translate($params->get('intro'));
-		$group->outro = FText::_($params->get('outro'));
+		$group->intro = $text = StringHelper::translate($params->get('intro'));
+		$group->outro = Text::_($params->get('outro'));
 		$group->columns = $params->get('group_columns', 1);
 		$group->splitPage = $params->get('split_page', 0);
 		$group->showLegend = $this->showLegend($group);
@@ -1247,7 +1249,7 @@ class FabrikFEModelGroup extends FabModel
 		$input = $this->app->input;
 		$repeatTotals = $input->get('fabrik_repeat_group', array(0), 'post', 'array');
 
-		return (int) FArrayHelper::getValue($repeatTotals, $this->getGroup()->id, 0);
+		return (int) ArrayHelper::getValue($repeatTotals, $this->getGroup()->id, 0);
 	}
 
 	/**
@@ -1322,7 +1324,7 @@ class FabrikFEModelGroup extends FabModel
 				}
 				else
 				{
-					$pk = $canRepeat ? FArrayHelper::getValue($formData[$pkField], $i, '') : $formData[$pkField];
+					$pk = $canRepeat ? ArrayHelper::getValue($formData[$pkField], $i, '') : $formData[$pkField];
 
 					// Say for some reason the pk was set as a dbjoin!
 					if (is_array($pk))
@@ -1367,7 +1369,7 @@ class FabrikFEModelGroup extends FabModel
 			 * when we're in $fkOnParent mode!  So it's actually the FK field on the parent table.
 			 */
 			$fkField = $joinModel->getPrimaryKey('___');
-			$pk = FArrayHelper::getValue($formData, $fkField . '_raw', FArrayHelper::getValue($formData, $fkField, ''));
+			$pk = ArrayHelper::getValue($formData, $fkField . '_raw', ArrayHelper::getValue($formData, $fkField, ''));
 
 			if (is_array($pk))
 			{
@@ -1503,8 +1505,8 @@ class FabrikFEModelGroup extends FabModel
 	{
 		$groupId = $this->getId();
 		$formModel = $this->getFormModel();
-		$origGroupRowsIds = FArrayHelper::getValue($formModel->formData, 'fabrik_group_rowids', array());
-		$origGroupRowsIds = FArrayHelper::getValue($origGroupRowsIds, $groupId, array());
+		$origGroupRowsIds = ArrayHelper::getValue($formModel->formData, 'fabrik_group_rowids', array());
+		$origGroupRowsIds = ArrayHelper::getValue($origGroupRowsIds, $groupId, array());
 		$origGroupRowsIds = json_decode($origGroupRowsIds);
 
 		return $origGroupRowsIds;
@@ -1536,7 +1538,7 @@ class FabrikFEModelGroup extends FabModel
 			}
 		}
 
-		JError::raiseWarning(E_ERROR, JText::sprintf('COM_FABRIK_JOINED_DATA_BUT_FK_NOT_PUBLISHED', $fullFk));
+		JError::raiseWarning(E_ERROR, Text::sprintf('COM_FABRIK_JOINED_DATA_BUT_FK_NOT_PUBLISHED', $fullFk));
 
 		return false;
 	}
@@ -1558,7 +1560,7 @@ class FabrikFEModelGroup extends FabModel
 		if (!empty($elementModels))
 		{
 			$smallerElHTMLName = $tmpElement->getFullName(true, false);
-			$d = FArrayHelper::getValue($data, $smallerElHTMLName, array());
+			$d = ArrayHelper::getValue($data, $smallerElHTMLName, array());
 
 			if (is_object($d))
 			{

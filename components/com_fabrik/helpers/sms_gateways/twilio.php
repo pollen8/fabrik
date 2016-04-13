@@ -11,6 +11,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Fabrik\Helpers\ArrayHelper;
+
 /**
  * Twilio SMS gateway class
  *
@@ -33,12 +35,12 @@ class Twilio extends JObject
 	public function process($message = '', $opts)
 	{
 		jimport('vendor.twilio.sdk.Services.Twilio');
-		$username = FArrayHelper::getValue($opts, 'sms-username');
-		$token = FArrayHelper::getValue($opts, 'sms-password');
-		$smsto = FArrayHelper::getValue($opts, 'sms-to');
+		$username = ArrayHelper::getValue($opts, 'sms-username');
+		$token = ArrayHelper::getValue($opts, 'sms-password');
+		$smsto = ArrayHelper::getValue($opts, 'sms-to');
 
 		// From a valid Twilio number
-		$smsfrom = FArrayHelper::getValue($opts, 'sms-from');
+		$smsfrom = ArrayHelper::getValue($opts, 'sms-from');
 		$smstos = explode(",", $smsto);
 
 		$client = new Services_Twilio($username, $token);

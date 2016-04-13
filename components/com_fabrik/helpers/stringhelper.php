@@ -8,12 +8,15 @@
  * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
+namespace Fabrik\Helpers;
+
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Joomla\Utilities\ArrayHelper;
-use Fabrik\Helpers\Html;
-use Fabrik\Helpers\Worker;
+use \JString;
+use \JFilterInput;
+use \JFactory;
+use \stdClass;
 
 /**
  * String helpers
@@ -22,7 +25,7 @@ use Fabrik\Helpers\Worker;
  * @subpackage  Fabrik.helpers
  * @since       3.0
  */
-class FabrikString extends JString
+class StringHelper extends JString
 {
 	/**
 	 * UTF-8 aware - replace the first word
@@ -48,11 +51,11 @@ class FabrikString extends JString
 		}
 		else
 		{
-			$pos = JString::strpos($str, $word);
+			$pos = StringHelper::strpos($str, $word);
 
 			if ($pos === 0)
 			{
-				$str = JString::substr($str, JString::strlen($word));
+				$str = StringHelper::substr($str, StringHelper::strlen($word));
 			}
 		}
 
@@ -69,12 +72,12 @@ class FabrikString extends JString
 	 */
 	public static function rtrimword(&$str, $word = false)
 	{
-		$l = JString::strlen($word);
-		$end = JString::substr($str, -$l);
+		$l = StringHelper::strlen($word);
+		$end = StringHelper::substr($str, -$l);
 
 		if ($end === $word)
 		{
-			return JString::substr($str, 0, JString::strlen($str) - $l);
+			return StringHelper::substr($str, 0, StringHelper::strlen($str) - $l);
 		}
 		else
 		{
@@ -97,7 +100,7 @@ class FabrikString extends JString
 
 		if ($pos === 0)
 		{
-			$str = JString::substr($str, JString::strlen($word));
+			$str = StringHelper::substr($str, StringHelper::strlen($word));
 		}
 
 		return $str;
@@ -203,9 +206,9 @@ class FabrikString extends JString
 		$label = strip_tags($label);
 		preg_replace('/<[a-z][a-z0-9]*[^<>]*>/', '', $label);
 
-		if (JString::strlen($label) > 50)
+		if (StringHelper::strlen($label) > 50)
 		{
-			$label = JString::substr($label, 0, 47) . '...';
+			$label = StringHelper::substr($label, 0, 47) . '...';
 		}
 
 		$label = trim($label);
@@ -259,7 +262,7 @@ class FabrikString extends JString
 	 */
 	public static function stripRawName($str)
 	{
-		return FabrikString::rtrimword($str, '_raw');
+		return StringHelper::rtrimword($str, '_raw');
 	}
 
 	/**
@@ -281,7 +284,7 @@ class FabrikString extends JString
 		// Replace umlauts
 		$out = '';
 
-		for ($i = 0; $i < JString::strlen($str); $i++)
+		for ($i = 0; $i < StringHelper::strlen($str); $i++)
 		{
 			$ch = ord($str{$i});
 
@@ -354,7 +357,7 @@ class FabrikString extends JString
 	 */
 	public static function clean($str, $fromEnc = "UTF-8", $toEnc = "ASCII//IGNORE//TRANSLIT")
 	{
-		return JString::strtolower(self::iclean($str, $fromEnc, $toEnc));
+		return StringHelper::strtolower(self::iclean($str, $fromEnc, $toEnc));
 	}
 
 	/**
@@ -510,14 +513,14 @@ class FabrikString extends JString
 	public static function truncate($text, $opts = array())
 	{
 		$origText = $text;
-		$wordCount = FArrayHelper::getValue($opts, 'wordcount', 10);
-		$showTip = FArrayHelper::getValue($opts, 'tip', true);
-		$title = FArrayHelper::getValue($opts, 'title', '');
+		$wordCount = ArrayHelper::getValue($opts, 'wordcount', 10);
+		$showTip = ArrayHelper::getValue($opts, 'tip', true);
+		$title = ArrayHelper::getValue($opts, 'title', '');
 		$strippedText = htmlspecialchars(strip_tags($text), ENT_QUOTES);;
 
 		if (ArrayHelper::getValue($opts, 'html_format', false))
 		{
-			$summary = FabrikString::truncateHtml($text, $wordCount);
+			$summary = StringHelper::truncateHtml($text, $wordCount);
 		}
 		else
 		{
@@ -545,7 +548,7 @@ class FabrikString extends JString
 			$tip = htmlspecialchars('<div class="truncate_text">' . $title . $strippedText . '</div>');
 			$jOpts = new stdClass;
 			$jOpts->notice = true;
-			$jOpts->position = FArrayHelper::getValue($opts, 'position', 'top');
+			$jOpts->position = ArrayHelper::getValue($opts, 'position', 'top');
 			$jOpts = json_encode($jOpts);
 			$summary = '<span class="fabrikTip" opts=\'' . $jOpts . '\' title="' . $tip . '">' . $summary . '</span>';
 		}
@@ -568,12 +571,12 @@ class FabrikString extends JString
 		if (count($pair) === 2)
 		{
 			$url = $pair[0];
-			$bits = FArrayHelper::getValue($pair, 1);
+			$bits = ArrayHelper::getValue($pair, 1);
 		}
 		else
 		{
 			$url = '';
-			$bits = FArrayHelper::getValue($pair, 0);
+			$bits = ArrayHelper::getValue($pair, 0);
 		}
 
 		$glue = strstr($bits, '&amp;') ? '&amp;' : '&';
@@ -621,8 +624,8 @@ class FabrikString extends JString
 				foreach (explode('&', $qs) as $arg)
 				{
 					$bits = explode('=', $arg);
-					$key = FArrayHelper::getValue($bits, 0, '');
-					$val = FArrayHelper::getValue($bits, 1, '');
+					$key = ArrayHelper::getValue($bits, 0, '');
+					$val = ArrayHelper::getValue($bits, 1, '');
 					$new_qs[] = $key . '=' . urlencode($val);
 				}
 
@@ -755,7 +758,7 @@ class FabrikString extends JString
 	public static function translate($text)
 	{
 		$plain = strip_tags($text);
-		$translated = FText::_($plain);
+		$translated = Text::_($plain);
 
 		if ($translated !== $plain)
 		{
@@ -1024,66 +1027,5 @@ class FabrikString extends JString
 	{
 		return filter_var($_SERVER['REMOTE_ADDR'], FILTER_VALIDATE_IP) !== false ? $_SERVER['REMOTE_ADDR'] : '';
 	}
-
-}
-
-/**
- *
- * $$$ hugh JText::_() does funky stuff to strings with commas in them, like
- * truncating everything after the first comma, if what follows the first comma
- * is all "upper case".  But it tests for that using non MB safe code, so any non
- * ASCII strings (like Greek text) with a comma in them get truncated at the comma.
- * Corner case or what!  But we need to work round this behavior.
- *
- * So ... here's a wrapper for JText::_().
- */
-
-class FText extends JText
-{
-	/**
-	 * Translates a string into the current language.
-	 *
-	 * Examples:
-	 * <script>alert(Joomla.JText._('<?php echo FText::_("JDEFAULT", array("script"=>true));?>'));</script>
-	 * will generate an alert message containing 'Default'
-	 * <?php echo FText::_("JDEFAULT");?> it will generate a 'Default' string
-	 *
-	 * @param   string   $string                The string to translate.
-	 * @param   mixed    $jsSafe                Boolean: Make the result javascript safe.
-	 * @param   boolean  $interpretBackSlashes  To interpret backslashes (\\=\, \n=carriage return, \t=tabulation)
-	 * @param   boolean  $script                To indicate that the string will be push in the javascript language store
-	 *
-	 * @return  string  The translated string or the key is $script is true
-	 *
-	 * @since   11.1
-	 */
-	public static function _($string, $jsSafe = false, $interpretBackSlashes = true, $script = false)
-	{
-		/**
-		 * In JText::_(), it does the following tests to see if everything following a comma is all upp
-		 * case, and if it is, it does Funky Stuff to it.  We ned to avoid that behavior.  So us this
-		 * logic, and if it's true, return the string untouched.  We could just check for a comma and not
-		 * process anything with commas (unikely to be a translatable phrase), but unless this test adds
-		 * too much overhead, might as well do the whole J! test sequence.
-		 */
-
-		if (!(strpos($string, ',') === false))
-		{
-			$test = substr($string, strpos($string, ','));
-
-			if (strtoupper($test) === $test)
-			{
-				/**
-				 * This is where JText::_() would do Funky Stuff, chopping off everything after
-				 * the first comma.  So we'll just return the input string untouched.
-				 */
-				return $string;
-			}
-		}
-
-		// if we got this far, hand it to JText::_() as normal
-		return parent::_($string, $jsSafe, $interpretBackSlashes, $script);
-	}
-
 
 }

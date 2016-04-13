@@ -11,8 +11,10 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use \Joomla\Utilities\ArrayHelper;
+use Fabrik\Helpers\ArrayHelper;
 use Fabrik\Helpers\Worker;
+use Fabrik\Helpers\StringHelper;
+use Fabrik\Helpers\Text;
 
 jimport('joomla.application.component.model');
 
@@ -130,7 +132,7 @@ class FabrikFEModelCSVExport extends FabModel
 			if (empty($headings))
 			{
 				$url = $input->server->get('HTTP_REFERER', '');
-				$this->app->enqueueMessage(FText::_('No data to export'));
+				$this->app->enqueueMessage(Text::_('No data to export'));
 				$this->app->redirect($url);
 
 				return;
@@ -143,7 +145,7 @@ class FabrikFEModelCSVExport extends FabModel
 		$incData      = $input->get('inctabledata', true);
 		$data         = $this->model->getData();
 		$exportFormat = $this->model->getParams()->get('csvfullname');
-		$shortKey     = FabrikString::shortColName($table->db_primary_key);
+		$shortKey     = StringHelper::shortColName($table->db_primary_key);
 		$a            = array();
 
 		foreach ($data as $group)
@@ -161,7 +163,7 @@ class FabrikFEModelCSVExport extends FabModel
 				{
 					foreach ($a as $key => $val)
 					{
-						if (substr($key, JString::strlen($key) - 4, JString::strlen($key)) == '_raw')
+						if (substr($key, StringHelper::strlen($key) - 4, StringHelper::strlen($key)) == '_raw')
 						{
 							unset($a[$key]);
 						}
@@ -172,7 +174,7 @@ class FabrikFEModelCSVExport extends FabModel
 				{
 					foreach ($a as $key => $val)
 					{
-						if (substr($key, JString::strlen($key) - 4, JString::strlen($key)) != '_raw')
+						if (substr($key, StringHelper::strlen($key) - 4, StringHelper::strlen($key)) != '_raw')
 						{
 							unset($a[$key]);
 						}
@@ -247,7 +249,7 @@ class FabrikFEModelCSVExport extends FabModel
 	 */
 	protected function implodeJSON(&$v, $k, $sepchar)
 	{
-		if (!FabrikString::isRawName($k) && Worker::isJSON($v))
+		if (!StringHelper::isRawName($k) && Worker::isJSON($v))
 		{
 			$v = Worker::JSONtoData($v, true);
 			$v = implode($sepchar, $v);
@@ -439,7 +441,7 @@ class FabrikFEModelCSVExport extends FabModel
 
 			foreach ($calKeys as $calKey)
 			{
-				$calculations[$calKey]    = FArrayHelper::array_fill(0, count($a) + 1, ' ');
+				$calculations[$calKey]    = ArrayHelper::array_fill(0, count($a) + 1, ' ');
 				$calculations[$calKey][0] = $calKey;
 				$calcs                    = $this->model->getCalculations();
 
@@ -473,7 +475,7 @@ class FabrikFEModelCSVExport extends FabModel
 
 					foreach ($a as $aKey => $aVal)
 					{
-						if ($aKey == JString::substr($key, 0, JString::strlen($key) - 4) && $x != 0)
+						if ($aKey == StringHelper::substr($key, 0, StringHelper::strlen($key) - 4) && $x != 0)
 						{
 							$found = true;
 							break;
@@ -594,7 +596,7 @@ class FabrikFEModelCSVExport extends FabModel
 		$incRaw  = $input->get('incraw', true);
 		$incData = $input->get('inctabledata', true);
 
-		$shortKey = FabrikString::shortColName($table->db_primary_key);
+		$shortKey = StringHelper::shortColName($table->db_primary_key);
 
 		foreach ($r as $heading => $value)
 		{
@@ -638,7 +640,7 @@ class FabrikFEModelCSVExport extends FabModel
 							$n .= '_raw';
 						}
 
-						if ($incData && JString::substr($n, JString::strlen($n) - 4, JString::strlen($n)) !== '_raw')
+						if ($incData && StringHelper::substr($n, StringHelper::strlen($n) - 4, StringHelper::strlen($n)) !== '_raw')
 						{
 							if (!in_array($n, $h))
 							{
@@ -651,7 +653,7 @@ class FabrikFEModelCSVExport extends FabModel
 							}
 						}
 
-						if ($incRaw && JString::substr($n, JString::strlen($n) - 4, strlen($n)) == '_raw')
+						if ($incRaw && StringHelper::substr($n, StringHelper::strlen($n) - 4, strlen($n)) == '_raw')
 						{
 							if (!in_array($n, $h))
 							{
@@ -669,7 +671,7 @@ class FabrikFEModelCSVExport extends FabModel
 
 			if (!$found)
 			{
-				if (!(JString::substr($heading, JString::strlen($heading) - 4, JString::strlen($heading)) == '_raw' && !$incRaw))
+				if (!(StringHelper::substr($heading, StringHelper::strlen($heading) - 4, StringHelper::strlen($heading)) == '_raw' && !$incRaw))
 				{
 					// Stop id getting added to tables when exported with full element name key
 					if ($headingFormat != 1 && $heading != $shortKey)
@@ -682,7 +684,7 @@ class FabrikFEModelCSVExport extends FabModel
 
 		if ($input->get('inccalcs') == 1)
 		{
-			array_unshift($h, FText::_('Calculation'));
+			array_unshift($h, Text::_('Calculation'));
 		}
 
 		$h = array_map(array($this, "quote"), $h);

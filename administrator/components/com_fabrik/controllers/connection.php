@@ -11,6 +11,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Fabrik\Helpers\Text;
+
 jimport('joomla.application.component.controllerform');
 
 require_once 'fabcontrollerform.php';
@@ -52,13 +54,13 @@ class FabrikAdminControllerConnection extends FabControllerForm
 
 			if ($model->testConnection() == false)
 			{
-				JError::raiseWarning(500, FText::_('COM_FABRIK_UNABLE_TO_CONNECT'));
+				JError::raiseWarning(500, Text::_('COM_FABRIK_UNABLE_TO_CONNECT'));
 				$this->setRedirect($link);
 
 				return;
 			}
 		}
 
-		$this->setRedirect($link, FText::_('COM_FABRIK_CONNECTION_SUCESSFUL'));
+		$this->setRedirect($link, Text::_('COM_FABRIK_CONNECTION_SUCESSFUL'));
 	}
 }

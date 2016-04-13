@@ -14,19 +14,17 @@ namespace Fabrik\Plugins\Element;
 defined('_JEXEC') or die('Restricted access');
 
 use \Joomla\Registry\Registry;
-use \Joomla\Utilities\ArrayHelper;
+use Fabrik\Helpers\ArrayHelper;
 use Fabrik\Helpers\Worker;
-use \FArrayHelper;
-use \FabrikString;
+use Fabrik\Helpers\StringHelper;
 use \stdClass;
 use \JHtml;
-use \FText;
 use \JTable;
 use \JModelLegacy;
 use \RuntimeException;
 use \FabTable;
-use \JString;
 use Fabrik\Helpers\Html;
+use Fabrik\Helpers\Text;
 use \JError;
 use \JComponentHelper;
 
@@ -144,7 +142,7 @@ class Databasejoin extends ElementList
 		$connection = $listModel->getConnection();
 
 		// Make sure same connection as this table
-		$fullElName = FArrayHelper::getValue($opts, 'alias', $table . '___' . $element->name);
+		$fullElName = ArrayHelper::getValue($opts, 'alias', $table . '___' . $element->name);
 
 		if ($params->get('join_conn_id') == $connection->get('id') || $element->plugin != 'databasejoin')
 		{
@@ -166,13 +164,13 @@ class Databasejoin extends ElementList
 			* Trying to debug issue with linked join elements, which don't get detected by
 			* getJoins or getJoin 'cos element ID doesn't match element_id in fabrik_joins
 			*$k = isset($join->keytable) ? $join->keytable : $join->join_from_table;
-			*$k = FabrikString::safeColName("`$join->keytable`.`$element->name`");
+			*$k = StringHelper::safeColName("`$join->keytable`.`$element->name`");
 			*/
 			$keyTable = isset($join->keytable) ? $join->keytable : $join->join_from_table;
-			$k        = FabrikString::safeColName($keyTable . '.' . $element->name);
+			$k        = StringHelper::safeColName($keyTable . '.' . $element->name);
 			$k2       = $this->getJoinLabelColumn();
 
-			if (FArrayHelper::getValue($opts, 'inc_raw', true))
+			if (ArrayHelper::getValue($opts, 'inc_raw', true))
 			{
 				$aFields[]   = $k . ' AS ' . $db->qn($fullElName . '_raw');
 				$aAsFields[] = $db->qn($fullElName . '_raw');
@@ -222,7 +220,7 @@ class Databasejoin extends ElementList
 		$k       = isset($join->keytable) ? $join->keytable : $join->join_from_table;
 		$name    = $element->name . '_raw';
 
-		return $useStep ? $k . '___' . $name : FabrikString::safeColName($k . '.' . $name);
+		return $useStep ? $k . '___' . $name : StringHelper::safeColName($k . '.' . $name);
 	}
 
 	/**
@@ -347,7 +345,7 @@ class Databasejoin extends ElementList
 			$alias = $join->table_join_alias;
 		}
 
-		return str_replace('{thistable}', FabrikString::safeNameQuote($alias), $string);
+		return str_replace('{thistable}', StringHelper::safeNameQuote($alias), $string);
 	}
 
 	/**
@@ -364,7 +362,7 @@ class Databasejoin extends ElementList
 			return false;
 		}
 
-		$label = FabrikString::shortColName($join->params->get('join-label'));
+		$label = StringHelper::shortColName($join->params->get('join-label'));
 
 		if ($label == '')
 		{
@@ -683,8 +681,8 @@ class Databasejoin extends ElementList
 			}
 			else
 			{
-				$bits[$i] = FabrikString::ltrimword($bits[$i], "'");
-				$bits[$i] = FabrikString::rtrimword($bits[$i], "'");
+				$bits[$i] = StringHelper::ltrimword($bits[$i], "'");
+				$bits[$i] = StringHelper::rtrimword($bits[$i], "'");
 			}
 		}
 
@@ -784,7 +782,7 @@ class Databasejoin extends ElementList
 			$label = 'COM_FABRIK_PLEASE_SELECT';
 		}
 
-		return FText::_($label);
+		return Text::_($label);
 	}
 
 	/**
@@ -925,7 +923,7 @@ class Databasejoin extends ElementList
 			$w    = new Worker;
 			$data = is_array($data) ? $data : array();
 			$desc = $w->parseMessageForPlaceHolder($desc, $data, false);
-			$desc = FabrikString::isConcat($desc) ? $desc : $db->qn($desc);
+			$desc = StringHelper::isConcat($desc) ? $desc : $db->qn($desc);
 			$desc = "REPLACE(" . $desc . ", '\n', '<br />')";
 			$query->select($desc . ' AS description');
 		}
@@ -1070,7 +1068,7 @@ class Databasejoin extends ElementList
 
 		if (!empty($this->autocomplete_where))
 		{
-			$mode        = FArrayHelper::getValue($opts, 'mode', 'form');
+			$mode        = ArrayHelper::getValue($opts, 'mode', 'form');
 			$displayType = $params->get('database_join_display_type', 'dropdown');
 			$filterType  = $element->get('filter_type');
 
@@ -1079,7 +1077,7 @@ class Databasejoin extends ElementList
 				|| ($mode == 'filter' && $displayType == 'auto-complete')
 			)
 			{
-				$where .= JString::stristr($where, 'WHERE') ? ' AND ' . $this->autocomplete_where : ' WHERE ' . $this->autocomplete_where;
+				$where .= StringHelper::stristr($where, 'WHERE') ? ' AND ' . $this->autocomplete_where : ' WHERE ' . $this->autocomplete_where;
 			}
 		}
 
@@ -1089,9 +1087,9 @@ class Databasejoin extends ElementList
 		 */
 
 		$filterWhere = trim($params->get('database_join_filter_where_sql', ''));
-		if (FArrayHelper::getValue($opts, 'mode', '') === 'filter' && !empty($filterWhere))
+		if (ArrayHelper::getValue($opts, 'mode', '') === 'filter' && !empty($filterWhere))
 		{
-			$where .= JString::stristr($where, 'WHERE') ? ' AND ' . $filterWhere : ' WHERE ' . $filterWhere;
+			$where .= StringHelper::stristr($where, 'WHERE') ? ' AND ' . $filterWhere : ' WHERE ' . $filterWhere;
 		}
 
 		if ($where == '')
@@ -1116,7 +1114,7 @@ class Databasejoin extends ElementList
 		}
 		else
 		{
-			$where = FabrikString::ltrimword($where, 'WHERE', true);
+			$where = StringHelper::ltrimword($where, 'WHERE', true);
 			$query->where($where);
 
 			return $query;
@@ -1283,7 +1281,7 @@ class Databasejoin extends ElementList
 		if (!$formModel->isEditable() || !$this->isEditable())
 		{
 			// Read only element formatting...
-			if (FArrayHelper::getValue($defaultLabels, 0) === $params->get('database_join_noselectionlabel', FText::_('COM_FABRIK_PLEASE_SELECT')))
+			if (ArrayHelper::getValue($defaultLabels, 0) === $params->get('database_join_noselectionlabel', Text::_('COM_FABRIK_PLEASE_SELECT')))
 			{
 				// No point showing 'please select' for read only
 				unset($defaultLabels[0]);
@@ -1338,7 +1336,7 @@ class Databasejoin extends ElementList
 			$targetIds = $this->multiOptionTargetIds($data, $repeatCounter);
 
 			// $$$ hugh - no selection, and not new row, so Nothing To See Here, Move Along.
-			if ($this->isJoin() && FArrayHelper::emptyIsh($targetIds, true) && $formModel->getRowId() != '')
+			if ($this->isJoin() && ArrayHelper::emptyIsh($targetIds, true) && $formModel->getRowId() != '')
 			{
 				return '';
 			}
@@ -1355,7 +1353,7 @@ class Databasejoin extends ElementList
 			$i = 0;
 			foreach ($targetIds as $tkey => $targetId)
 			{
-				$tmpLabel = FArrayHelper::getValue($defaultLabels, $i, 'unknown label');
+				$tmpLabel = ArrayHelper::getValue($defaultLabels, $i, 'unknown label');
 
 				if ($this->emptyConcatString($tmpLabel))
 				{
@@ -1383,7 +1381,7 @@ class Databasejoin extends ElementList
 						$this->renderDropdownList($data, $repeatCounter, $html, $tmp, $default);
 						break;
 					case 'radio':
-						$this->renderRadioList($data, $repeatCounter, $html, $tmp, FArrayHelper::getValue($default, 0));
+						$this->renderRadioList($data, $repeatCounter, $html, $tmp, ArrayHelper::getValue($default, 0));
 						break;
 					case 'checkbox':
 						$this->renderCheckBoxList($data, $repeatCounter, $html, $tmp, $default);
@@ -1465,7 +1463,7 @@ class Databasejoin extends ElementList
 			$layout                        = $this->getLayout('form-description');
 			$displayData                   = new stdClass;
 			$displayData->opts             = $options;
-			$displayData->default          = FArrayHelper::getValue($default, 0);
+			$displayData->default          = ArrayHelper::getValue($default, 0);
 			$displayData->showPleaseSelect = $this->showPleaseSelect();
 
 			return $layout->render($displayData);
@@ -1493,8 +1491,8 @@ class Databasejoin extends ElementList
 			{
 				for ($i = 0; $i < count($defaultLabels); $i++)
 				{
-					$url               = $popUrl . FArrayHelper::getValue($defaultValues, $i, '');
-					$defaultLabels[$i] = '<a href="' . JRoute::_($url) . '">' . FArrayHelper::getValue($defaultLabels, $i) . '</a>';
+					$url               = $popUrl . ArrayHelper::getValue($defaultValues, $i, '');
+					$defaultLabels[$i] = '<a href="' . JRoute::_($url) . '">' . ArrayHelper::getValue($defaultLabels, $i) . '</a>';
 				}
 			}
 		}
@@ -1691,11 +1689,11 @@ class Databasejoin extends ElementList
 		$placeholder      = ' placeholder="' . htmlspecialchars($params->get('placeholder', ''), ENT_COMPAT) . '"';
 		$autoCompleteName = str_replace('[]', '', $thisElName) . '-auto-complete';
 		$html[]           = '<input type="text" size="' . $params->get('dbjoin_autocomplete_size', '20') . '" name="' . $autoCompleteName . '" id="' . $id
-			. '-auto-complete" value="' . FArrayHelper::getValue($label, 0) . '"' . $class . $placeholder . '/>';
+			. '-auto-complete" value="' . ArrayHelper::getValue($label, 0) . '"' . $class . $placeholder . '/>';
 
 		// $$$ rob - class property required when cloning repeat groups - don't remove
 		$html[] = '<input type="hidden" tabindex="-1" class="fabrikinput" name="' . $thisElName . '" id="' . $id . '" value="'
-			. FArrayHelper::getValue($default, 0, '') . '"/>';
+			. ArrayHelper::getValue($default, 0, '') . '"/>';
 	}
 
 	/**
@@ -1760,7 +1758,7 @@ class Databasejoin extends ElementList
 
 		$attributes = 'class="fabrikinput inputbox" id="' . $id . '"';
 
-		$name = FabrikString::rtrimword($name, '[]');
+		$name = StringHelper::rtrimword($name, '[]');
 
 		if (!$this->getFormModel()->isNewRecord())
 		{
@@ -1825,7 +1823,7 @@ class Databasejoin extends ElementList
 	{
 		$name = $this->getFullName(true, false);
 
-		if (!$this->isJoin() && FArrayHelper::getValue($opts, 'valueFormat', 'raw') == 'raw')
+		if (!$this->isJoin() && ArrayHelper::getValue($opts, 'valueFormat', 'raw') == 'raw')
 		{
 			$name .= '_raw';
 		}
@@ -1989,7 +1987,7 @@ class Databasejoin extends ElementList
 				}
 			}
 
-			$oData = FArrayHelper::toObject($data);
+			$oData = ArrayHelper::toObject($data);
 			$val = $this->renderListData($value, $oData);
 		}
 		else
@@ -2008,7 +2006,7 @@ class Databasejoin extends ElementList
 					}
 				}
 
-				$oData = FArrayHelper::toObject($data);
+				$oData = ArrayHelper::toObject($data);
 				$val   = $this->renderListData($value, $oData);
 			}
 			else
@@ -2252,7 +2250,7 @@ class Databasejoin extends ElementList
 	protected function filterHiddenFields()
 	{
 		$params   = $this->getParams();
-		$elName   = FabrikString::safeColNameToArrayKey($this->getFilterFullName());
+		$elName   = StringHelper::safeColNameToArrayKey($this->getFilterFullName());
 		$return   = array();
 		$return[] = '<input type="hidden" name="' . $elName . '[join_db_name]" value="' . $params->get('join_db_name') . '" />';
 		$return[] = '<input type="hidden" name="' . $elName . '[join_key_column]" value="' . $params->get('join_key_column') . '" />';
@@ -2274,7 +2272,7 @@ class Databasejoin extends ElementList
 
 		if ($label == '')
 		{
-			$label = $params->get('filter_required') == 1 ? FText::_('COM_FABRIK_PLEASE_SELECT') : FText::_('COM_FABRIK_FILTER_PLEASE_SELECT');
+			$label = $params->get('filter_required') == 1 ? Text::_('COM_FABRIK_PLEASE_SELECT') : Text::_('COM_FABRIK_FILTER_PLEASE_SELECT');
 		}
 
 		return $label;
@@ -2289,11 +2287,11 @@ class Databasejoin extends ElementList
 	 */
 	protected function buildFilterJoin()
 	{
-		$joinTable     = FabrikString::safeColName($this->getDbName());
+		$joinTable     = StringHelper::safeColName($this->getDbName());
 		$join          = $this->getJoin();
-		$joinTableName = FabrikString::safeColName($join->table_join_alias);
+		$joinTableName = StringHelper::safeColName($join->table_join_alias);
 		$joinKey       = $this->getJoinValueColumn();
-		$elName        = FabrikString::safeColName($this->getFullName(true, false));
+		$elName        = StringHelper::safeColName($this->getFullName(true, false));
 
 		return 'INNER JOIN ' . $joinTable . ' AS ' . $joinTableName . ' ON ' . $joinKey . ' = ' . $elName;
 	}
@@ -2342,7 +2340,7 @@ class Databasejoin extends ElementList
 
 		// Ensure table pre-filter is applied to query
 		$preFilterWhere = $listModel->buildQueryPrefilterWhere($this);
-		$elementName    = FabrikString::safeColName($this->getFullName(false, false));
+		$elementName    = StringHelper::safeColName($this->getFullName(false, false));
 		$preFilterWhere = str_replace($elementName, $joinKey, $preFilterWhere);
 
 		if (trim($where) == '')
@@ -2354,7 +2352,7 @@ class Databasejoin extends ElementList
 		$where .= $preFilterWhere;
 		$sql .= $where;
 
-		if (!JString::stristr($where, 'order by'))
+		if (!StringHelper::stristr($where, 'order by'))
 		{
 			$sql .= $this->getOrderBy('filter');
 		}
@@ -2396,7 +2394,7 @@ class Databasejoin extends ElementList
 					// Check if the 'Joins where and/or order by statement' has an order by
 					$joinWhere = $params->get('database_join_where_sql');
 
-					if (JString::stristr($joinWhere, 'ORDER BY'))
+					if (StringHelper::stristr($joinWhere, 'ORDER BY'))
 					{
 						$joinWhere = str_replace('order by', 'ORDER BY', $joinWhere);
 						$joinWhere = explode('ORDER BY', $joinWhere);
@@ -2433,7 +2431,7 @@ class Databasejoin extends ElementList
 				}
 				else
 				{
-					$order = JString::str_ireplace('ORDER BY', '', $this->orderBy);
+					$order = StringHelper::str_ireplace('ORDER BY', '', $this->orderBy);
 					$query->order($order);
 
 					return $query;
@@ -2484,7 +2482,7 @@ class Databasejoin extends ElementList
 	{
 		$params = $this->getParams();
 
-		return FabrikString::shortColName($params->get('join_key_column'));
+		return StringHelper::shortColName($params->get('join_key_column'));
 	}
 
 	/**
@@ -2574,7 +2572,7 @@ class Databasejoin extends ElementList
 
 					if (!strstr($key, 'CONCAT'))
 					{
-						$key = FabrikString::safeColName($join->table_join_alias) . '.' . $this->_db->qn($key);
+						$key = StringHelper::safeColName($join->table_join_alias) . '.' . $this->_db->qn($key);
 					}
 				}
 			}
@@ -2707,7 +2705,7 @@ class Databasejoin extends ElementList
 
 		$db->setQuery($query, $offset, $limit);
 		$sql     = (string) $query;
-		$groupBy = FabrikString::shortColName($groupBy);
+		$groupBy = StringHelper::shortColName($groupBy);
 		$rows    = $db->loadObjectList($groupBy);
 		ksort($rows);
 
@@ -2754,7 +2752,7 @@ class Databasejoin extends ElementList
 			}
 		}
 
-		return FabrikString::safeColName($elName);
+		return StringHelper::safeColName($elName);
 	}
 
 	/**
@@ -2771,7 +2769,7 @@ class Databasejoin extends ElementList
 
 		$params              = $this->getParams();
 		$label               = $params->get($this->labelParam);
-		$label               = FabrikString::shortColName($label);
+		$label               = StringHelper::shortColName($label);
 		$this->labelParamVal = $label;
 
 		return $this->labelParamVal;
@@ -2825,7 +2823,7 @@ class Databasejoin extends ElementList
 			// Check if it's an array because we are a multiselect join
 			if ($this->isJoin())
 			{
-				return FArrayHelper::emptyIsh($data);
+				return ArrayHelper::emptyIsh($data);
 			}
 			else
 			{
@@ -3295,7 +3293,7 @@ class Databasejoin extends ElementList
 				// In a repeat group
 				if (is_array($v))
 				{
-					$v = FArrayHelper::getValue($v, 0);
+					$v = ArrayHelper::getValue($v, 0);
 				}
 			}
 
@@ -3393,7 +3391,7 @@ class Databasejoin extends ElementList
 
 		if (!strstr($c, 'CONCAT'))
 		{
-			$c = FabrikString::safeColName($c);
+			$c = StringHelper::safeColName($c);
 		}
 
 		$filterMethod = $elementModel->getFilterBuildMethod();
@@ -3477,7 +3475,7 @@ class Databasejoin extends ElementList
 
 		if (!strstr($joinVal, 'CONCAT'))
 		{
-			$return = strstr($joinVal, '___') ? FabrikString::safeColName($joinVal) : $joinTable . '.' . $joinVal;
+			$return = strstr($joinVal, '___') ? StringHelper::safeColName($joinVal) : $joinTable . '.' . $joinVal;
 		}
 		else
 		{
@@ -3561,7 +3559,7 @@ class Databasejoin extends ElementList
 		$params    = $this->getParams();
 		$jKey      = $this->getLabelOrConcatVal();
 		$where     = $this->buildQueryWhere(array(), true, $params->get('join_db_name'));
-		$where     = JString::stristr($where, 'order by') ? $where : '';
+		$where     = StringHelper::stristr($where, 'order by') ? $where : '';
 		$dbName    = $this->getDbName();
 		/**
 		 * Use lookup alias rather than directly referencing $dbName
@@ -3684,7 +3682,7 @@ class Databasejoin extends ElementList
 			$join       = $this->getJoinModel()->getJoin();
 			$repeatName = $join->table_join . '___' . $this->getElement()->name;
 
-			return count(FArrayHelper::getValue($data, $repeatName, array()));
+			return count(ArrayHelper::getValue($data, $repeatName, array()));
 		}
 		else
 		{
@@ -3736,8 +3734,8 @@ class Databasejoin extends ElementList
 		{
 			$join       = $this->getJoinModel();
 			$fields     = $join->getJoin()->getFields();
-			$field      = ArrayHelper::fromObject(FArrayHelper::getValue($fields, $this->getLabelParamVal(), array()));
-			$type       = FArrayHelper::getValue($field, 'Type', '');
+			$field      = ArrayHelper::fromObject(ArrayHelper::getValue($fields, $this->getLabelParamVal(), array()));
+			$type       = ArrayHelper::getValue($field, 'Type', '');
 			$notAllowed = array('int', 'double', 'decimal', 'date', 'serial', 'bit', 'boolean', 'real');
 
 			foreach ($notAllowed as $test)
@@ -3803,7 +3801,7 @@ class Databasejoin extends ElementList
 					$idName .= '.' . $repeatCounter;
 				}
 
-				$default = (array) FArrayHelper::getNestedValue($data, $idName, 'not found');
+				$default = (array) ArrayHelper::getNestedValue($data, $idName, 'not found');
 
 				return $default;
 			}

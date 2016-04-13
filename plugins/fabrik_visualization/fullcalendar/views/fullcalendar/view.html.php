@@ -12,6 +12,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 use Fabrik\Helpers\Html;
+use Fabrik\Helpers\Text;
 use Fabrik\Helpers\Worker;
 
 jimport('joomla.application.component.view');
@@ -44,7 +45,7 @@ class FabrikViewFullcalendar extends JViewLegacy
 
 		if (!$model->canView())
 		{
-			echo FText::_('JERROR_ALERTNOAUTHOR');
+			echo Text::_('JERROR_ALERTNOAUTHOR');
 
 			return false;
 		}
@@ -63,7 +64,7 @@ class FabrikViewFullcalendar extends JViewLegacy
 
 		if ($params->get('fullcalendar_show_messages', '1') == '1' && $this->canAdd && $this->requiredFiltersFound)
 		{
-			$msg = FText::_('PLG_VISUALIZATION_FULLCALENDAR_DOUBLE_CLICK_TO_ADD');
+			$msg = Text::_('PLG_VISUALIZATION_FULLCALENDAR_DOUBLE_CLICK_TO_ADD');
 			$msg .= $model->getDateLimitsMsg();
 			$app->enqueueMessage($msg);
 		}
@@ -174,17 +175,17 @@ class FabrikViewFullcalendar extends JViewLegacy
 	 */
 	private function jsText()
 	{
-		JText::script('PLG_VISUALIZATION_FULLCALENDAR_CONF_DELETE');
-		JText::script('PLG_VISUALIZATION_FULLCALENDAR_DELETE');
-		JText::script('PLG_VISUALIZATION_FULLCALENDAR_VIEW');
-		JText::script('PLG_VISUALIZATION_FULLCALENDAR_EDIT');
-		JText::script('PLG_VISUALIZATION_FULLCALENDAR_ADD_EVENT');
-		JText::script('PLG_VISUALIZATION_FULLCALENDAR_EDIT_EVENT');
-		JText::script('PLG_VISUALIZATION_FULLCALENDAR_VIEW_EVENT');
-		JText::script('PLG_VISUALIZATION_FULLCALENDAR_EVENT_START_END');
-		JText::script('PLG_VISUALIZATION_FULLCALENDAR_DATE_ADD_TOO_LATE');
-		JText::script('PLG_VISUALIZATION_FULLCALENDAR_DATE_ADD_TOO_EARLY');
-		JText::script('PLG_VISUALIZATION_FULLCALENDAR_CLOSE');
+		Text::script('PLG_VISUALIZATION_FULLCALENDAR_CONF_DELETE');
+		Text::script('PLG_VISUALIZATION_FULLCALENDAR_DELETE');
+		Text::script('PLG_VISUALIZATION_FULLCALENDAR_VIEW');
+		Text::script('PLG_VISUALIZATION_FULLCALENDAR_EDIT');
+		Text::script('PLG_VISUALIZATION_FULLCALENDAR_ADD_EVENT');
+		Text::script('PLG_VISUALIZATION_FULLCALENDAR_EDIT_EVENT');
+		Text::script('PLG_VISUALIZATION_FULLCALENDAR_VIEW_EVENT');
+		Text::script('PLG_VISUALIZATION_FULLCALENDAR_EVENT_START_END');
+		Text::script('PLG_VISUALIZATION_FULLCALENDAR_DATE_ADD_TOO_LATE');
+		Text::script('PLG_VISUALIZATION_FULLCALENDAR_DATE_ADD_TOO_EARLY');
+		Text::script('PLG_VISUALIZATION_FULLCALENDAR_CLOSE');
 	}
 
 	/**
@@ -252,7 +253,7 @@ class FabrikViewFullcalendar extends JViewLegacy
 		$modalOpts = array(
 			'content' => '',
 			'id' => 'fullcalendar_addeventwin',
-			'title' => FText::_('PLG_VISUALIZATION_FULLCALENDAR_ADD_EVENT'),
+			'title' => Text::_('PLG_VISUALIZATION_FULLCALENDAR_ADD_EVENT'),
 			'modal' => false,
 			'expandable' => true
 		);
@@ -266,7 +267,7 @@ class FabrikViewFullcalendar extends JViewLegacy
 		$modalOpts = array(
 			'content' => '',
 			'id' => 'fullcalendar_chooseeventwin',
-			'title' => FText::_('PLG_VISUALIZATION_FULLCALENDAR_PLEASE_SELECT'),
+			'title' => Text::_('PLG_VISUALIZATION_FULLCALENDAR_PLEASE_SELECT'),
 			'modal' => false,
 			'expandable' => true
 		);

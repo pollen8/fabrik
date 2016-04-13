@@ -12,12 +12,14 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Fabrik\Helpers\Text;
+
 ?>
 <fieldset class="adminform">
 	<ul class="adminformlist">
 		<li>
 			<div id="plugins" class="pane-sliders"></div>
-			<a href="#" class="addButton" id="addPlugin"><?php echo FText::_('COM_FABRIK_ADD'); ?></a>
+			<a href="#" class="addButton" id="addPlugin"><?php echo Text::_('COM_FABRIK_ADD'); ?></a>
 		</li>
 	</ul>
 </fieldset>

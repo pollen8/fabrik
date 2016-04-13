@@ -14,13 +14,12 @@ namespace Fabrik\Plugins\Element;
 defined('_JEXEC') or die('Restricted access');
 
 use Joomla\Registry\Registry;
-use Joomla\Utilities\ArrayHelper;
-use \FArrayHelper;
+use Fabrik\Helpers\ArrayHelper;
 use \JHtml;
 use Fabrik\Helpers\Worker;
-use \FabrikString;
+use Fabrik\Helpers\StringHelper;
+use Fabrik\Helpers\Text;
 use Fabrik\Helpers\Html;
-use \JText;
 use \TagsModelTag;
 use \JTable;
 
@@ -96,11 +95,11 @@ class Tags extends Databasejoin
 			JHtml::_('jquery.framework');
 
 			// Requires chosen to work
-			JText::script('JGLOBAL_KEEP_TYPING');
-			JText::script('JGLOBAL_LOOKING_FOR');
-			JText::script('JGLOBAL_SELECT_SOME_OPTIONS');
-			JText::script('JGLOBAL_SELECT_AN_OPTION');
-			JText::script('JGLOBAL_SELECT_NO_RESULTS_MATCH');
+			Text::script('JGLOBAL_KEEP_TYPING');
+			Text::script('JGLOBAL_LOOKING_FOR');
+			Text::script('JGLOBAL_SELECT_SOME_OPTIONS');
+			Text::script('JGLOBAL_SELECT_AN_OPTION');
+			Text::script('JGLOBAL_SELECT_NO_RESULTS_MATCH');
 
 			$ext = Html::isDebug() ? '.min.js' : '.js';
 			JHtml::_('script', 'jui/chosen.jquery' . $ext, false, true, false, false);
@@ -109,7 +108,7 @@ class Tags extends Databasejoin
 
 			$bootstrapClass = $params->get('bootstrap_class', 'span12');
 			$attr = 'multiple="multiple" class="inputbox ' . $bootstrapClass. ' small"';
-			$attr .= ' data-placeholder="' . JText::_('JGLOBAL_SELECT_SOME_OPTIONS') . '"';
+			$attr .= ' data-placeholder="' . Text::_('JGLOBAL_SELECT_SOME_OPTIONS') . '"';
 			$selected = $tmp;
 			$str[] = JHtml::_('select.genericlist', $tmp, $name, trim($attr), 'value', 'text', $selected, $id);
 
@@ -161,9 +160,9 @@ class Tags extends Databasejoin
 		{
 			$pk = $db->qn($join->table_join_alias . '.' . $join->table_key);
 			$name = $this->getFullName(true, false) . '_raw';
-			$tagIds = FArrayHelper::getValue($data, $name, array());
+			$tagIds = ArrayHelper::getValue($data, $name, array());
 			$tagIds = ArrayHelper::toInteger($tagIds);
-			$where = FArrayHelper::emptyIsh($tagIds) ? '6 = -6' : $pk . ' IN (' . implode(', ', $tagIds) . ')';
+			$where = ArrayHelper::emptyIsh($tagIds) ? '6 = -6' : $pk . ' IN (' . implode(', ', $tagIds) . ')';
 		}
 		else
 		{
@@ -178,7 +177,7 @@ class Tags extends Databasejoin
 				$where = '';
 			}
 			*/
-			if (FArrayHelper::getValue($opts, 'mode', '') !== 'filter')
+			if (ArrayHelper::getValue($opts, 'mode', '') !== 'filter')
 			{
 				$where = $fk . ' = ' . $db->quote($rowId);
 			}
@@ -533,7 +532,7 @@ class Tags extends Databasejoin
 		$name = $this->getFullName(true, false);
 		$rawName = $name . '_raw';
 		$baseUrl = Html::tagBaseUrl($rawName, $this->tagListURL());
-		$baseUrl .= FabrikString::qsSepChar($baseUrl);
+		$baseUrl .= StringHelper::qsSepChar($baseUrl);
 		$baseUrl .= $rawName . '={key}';
 
 		return $baseUrl;

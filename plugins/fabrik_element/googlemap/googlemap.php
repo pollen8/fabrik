@@ -13,16 +13,15 @@ namespace Fabrik\Plugins\Element;
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Joomla\Utilities\ArrayHelper;
+use Fabrik\Helpers\ArrayHelper;
 use Fabrik\Helpers\Worker;
 use \stdClass;
-use \FabrikString;
+use Fabrik\Helpers\StringHelper;
 use \JUri;
 use Fabrik\Helpers\Googlemap as FabGoogleMapHelper;
-use \FArrayHelper;
 use Fabrik\Helpers\Html;
 use \JComponentHelper;
-use \FText;
+use Fabrik\Helpers\Text;
 use \Fabimage;
 use \Exception;
 
@@ -309,7 +308,7 @@ class Googlemap extends Element
 		$opts->lat = (float) $o->coords[0];
 		$opts->lon = (float) $o->coords[1];
 		$opts->lat_dms = (float) $dms->coords[0];
-		$opts->rowid = (int) FArrayHelper::getValue($data, 'rowid');
+		$opts->rowid = (int) ArrayHelper::getValue($data, 'rowid');
 		$opts->lon_dms = (float) $dms->coords[1];
 		$opts->zoomlevel = (int) $o->zoomlevel;
 		$opts->control = $params->get('fb_gm_mapcontrol');
@@ -529,7 +528,7 @@ class Googlemap extends Element
 		{
 			$ar = explode(":", $v);
 			$o->zoomlevel = count($ar) == 2 ? array_pop($ar) : $o->zoomlevel;
-			$v = FabrikString::ltrimword($ar[0], "(");
+			$v = StringHelper::ltrimword($ar[0], "(");
 			$v = rtrim($v, ")");
 			$o->coords = explode(",", $v);
 		}
@@ -557,7 +556,7 @@ class Googlemap extends Element
 		if (strstr($v, ","))
 		{
 			$ar = explode(":", $v);
-			$v = FabrikString::ltrimword($ar[0], "(");
+			$v = StringHelper::ltrimword($ar[0], "(");
 			$v = rtrim($v, ")");
 			$dms->coords = explode(",", $v);
 
@@ -827,7 +826,7 @@ class Googlemap extends Element
 				$layoutData = new stdClass;
 				$layoutData->id = $id;
 
-				$coords = FabrikString::mapStrToCoords($val);
+				$coords = StringHelper::mapStrToCoords($val);
 				$layoutData->coords = $coords->coords;
 				$layoutData->geoCodeEvent = $params->get('fb_gm_geocode_event', 'button');
 				$layoutData->geocode = $params->get('fb_gm_geocode');
@@ -848,7 +847,7 @@ class Googlemap extends Element
 			}
 			else
 			{
-				$str .= FText::_('PLG_ELEMENT_GOOGLEMAP_NO_LOCATION_SELECTED');
+				$str .= Text::_('PLG_ELEMENT_GOOGLEMAP_NO_LOCATION_SELECTED');
 			}
 
 			/*
@@ -878,7 +877,7 @@ class Googlemap extends Element
 		$db = Worker::getDbo();
 		$listModel = $this->getlistModel();
 		$table = $listModel->getTable();
-		$fullElName = FArrayHelper::getValue($opts, 'alias', $dbtable . '___' . $this->element->name);
+		$fullElName = ArrayHelper::getValue($opts, 'alias', $dbtable . '___' . $this->element->name);
 		$dbtable = $db->qn($dbtable);
 		$str = $dbtable . '.' . $db->qn($this->element->name) . ' AS ' . $db->qn($fullElName);
 

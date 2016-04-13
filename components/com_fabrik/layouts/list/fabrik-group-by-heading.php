@@ -13,9 +13,10 @@
 defined('_JEXEC') or die('Restricted access');
 
 use Fabrik\Helpers\Html;
+use Fabrik\Helpers\Text;
 
 $d = $displayData;
-$imgProps = array('alt' => FText::_('COM_FABRIK_TOGGLE'), 'data-role' => 'toggle', 'data-expand-icon' => 'icon-arrow-down', 'data-collapse-icon' => 'icon-arrow-right');
+$imgProps = array('alt' => Text::_('COM_FABRIK_TOGGLE'), 'data-role' => 'toggle', 'data-expand-icon' => 'icon-arrow-down', 'data-collapse-icon' => 'icon-arrow-right');
 ?>
 
 <?php if ($d->emptyDataMessage != '') : ?>

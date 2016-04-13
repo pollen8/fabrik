@@ -15,7 +15,7 @@ defined('_JEXEC') or die('Restricted access');
 
 use \stdClass;
 use Fabrik\Helpers\Worker;
-use \FabrikString;
+use Fabrik\Helpers\StringHelper;
 
 /**
  * Plugin element to enable users to make notes on a give record
@@ -298,7 +298,7 @@ class Notes extends Databasejoin
 		}
 		else
 		{
-			$order = FabrikString::safeQuoteName($params->get('join_db_name') . '.' . $orderBy) . ' ' . $params->get('notes_order_dir', 'ASC');
+			$order = StringHelper::safeQuoteName($params->get('join_db_name') . '.' . $orderBy) . ' ' . $params->get('notes_order_dir', 'ASC');
 
 			if ($query)
 			{

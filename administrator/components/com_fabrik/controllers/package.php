@@ -12,6 +12,7 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Fabrik\Helpers\Text;
 use Fabrik\Helpers\Worker;
 
 jimport('joomla.application.component.controllerform');
@@ -46,7 +47,7 @@ class FabrikAdminControllerPackage extends FabControllerForm
 		$model = $this->getModel();
 		$model->export($cid);
 		$nText = $this->text_prefix . '_N_ITEMS_EXPORTED';
-		$this->setMessage(JText::plural($nText, count($cid)));
+		$this->setMessage(Text::plural($nText, count($cid)));
 		$this->setRedirect('index.php?option=com_fabrik&view=packages');
 	}
 

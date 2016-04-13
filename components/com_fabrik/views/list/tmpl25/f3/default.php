@@ -12,6 +12,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 use Fabrik\Helpers\Html;
+use Fabrik\Helpers\Text;
 
 Html::script('media/com_fabrik/js/lib/art.js');
 Html::script('media/com_fabrik/js/icons.js');
@@ -41,7 +42,7 @@ if ($this->params->get('show_page_heading', 1)) { ?>
 		<div class="componentheading<?php echo $this->params->get('pageclass_sfx')?>"><?php echo $this->escape($this->params->get('page_heading')); ?></div>
 	<?php } ?>
 	<?php if ($this->tablePicker != '') { ?>
-		<div style="text-align:right"><?php echo FText::_('COM_FABRIK_LIST') ?>: <?php echo $this->tablePicker; ?></div>
+		<div style="text-align:right"><?php echo Text::_('COM_FABRIK_LIST') ?>: <?php echo $this->tablePicker; ?></div>
 	<?php } ?>
 	<?php if ($this->getModel()->getParams()->get('show-title', 1)) {?>
 		<h1><?php echo $this->table->label;?></h1>

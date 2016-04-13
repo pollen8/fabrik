@@ -13,6 +13,7 @@ defined('_JEXEC') or die('Restricted access');
 
 use Fabrik\Helpers\Html;
 use Fabrik\Helpers\Worker;
+use Fabrik\Helpers\Text;
 
 jimport('joomla.form.formfield');
 
@@ -140,7 +141,7 @@ class JFormFieldFabrikModalrepeat extends JFormField
 		{
 			$names[] = (string) $field->element->attributes()->name;
 			$str[] = '<th>' . strip_tags($field->getLabel($field->name));
-			$str[] = '<br /><small style="font-weight:normal">' . FText::_($field->description) . '</small>';
+			$str[] = '<br /><small style="font-weight:normal">' . Text::_($field->description) . '</small>';
 			$str[] = '</th>';
 		}
 
@@ -150,7 +151,7 @@ class JFormFieldFabrikModalrepeat extends JFormField
 		}
 		else
 		{
-			$str[] = '<th><a href="#" class="add"><img src="' . $path . '/icon-16-new.png" alt="' . FText::_('ADD') . '" /></a></th>';
+			$str[] = '<th><a href="#" class="add"><img src="' . $path . '/icon-16-new.png" alt="' . Text::_('ADD') . '" /></a></th>';
 		}
 
 		$str[] = '</tr></thead>';
@@ -171,8 +172,8 @@ class JFormFieldFabrikModalrepeat extends JFormField
 		}
 		else
 		{
-			$str[] = '<a href="#" class="add"><img src="' . $path . '/icon-16-new.png" alt="' . FText::_('ADD') . '" /></a>';
-			$str[] = '<a href="#" class="remove"><img src="' . $path . '/icon-16-delete.png" alt="' . FText::_('REMOVE') . '" /></a>';
+			$str[] = '<a href="#" class="add"><img src="' . $path . '/icon-16-new.png" alt="' . Text::_('ADD') . '" /></a>';
+			$str[] = '<a href="#" class="remove"><img src="' . $path . '/icon-16-delete.png" alt="' . Text::_('REMOVE') . '" /></a>';
 		}
 
 		$str[] = '</td>';
@@ -285,7 +286,7 @@ class JFormFieldFabrikModalrepeat extends JFormField
 		if ($j3)
 		{
 			$icon = $this->element['icon'] ? '<i class="icon-' . $this->element['icon'] . '"></i> ' : '';
-			$icon .= FText::_('JLIB_FORM_BUTTON_SELECT');
+			$icon .= Text::_('JLIB_FORM_BUTTON_SELECT');
 			$str[] = '<button class="btn" id="' . $modalId . '_button" data-modal="' . $modalId . '">' . $icon . '</button>';
 			$str[] = '<input type="hidden" name="' . $this->name . '" id="' . $this->id . '" value="' . $value . '" />';
 		}
@@ -293,7 +294,7 @@ class JFormFieldFabrikModalrepeat extends JFormField
 		{
 			$str[] = '<div class="button2-left">';
 			$str[] = '	<div class="blank">';
-			$str[] = '		<a id="' . $modalId . '_button" data-modal="' . $modalId . '">' . FText::_('JLIB_FORM_BUTTON_SELECT') . '</a>';
+			$str[] = '		<a id="' . $modalId . '_button" data-modal="' . $modalId . '">' . Text::_('JLIB_FORM_BUTTON_SELECT') . '</a>';
 			$str[] = '		<input type="hidden" name="' . $this->name . '" id="' . $this->id . '" value="' . $value . '" />';
 			$str[] = '	</div>';
 			$str[] = '</div>';

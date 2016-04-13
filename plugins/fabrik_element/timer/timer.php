@@ -14,8 +14,8 @@ namespace Fabrik\Plugins\Element;
 defined('_JEXEC') or die('Restricted access');
 
 use \stdClass;
-use \JText;
 use \JFactory;
+use Fabrik\Helpers\Text;
 
 /**
  * Plugin element to render a user controllable stopwatch timer
@@ -102,8 +102,8 @@ class Timer extends Element
 		$id = $this->getHTMLId($repeatCounter);
 		$opts = $this->getElementJSOptions($repeatCounter);
 		$opts->autostart = (bool) $params->get('timer_autostart', false);
-		JText::script('PLG_ELEMENT_TIMER_START');
-		JText::script('PLG_ELEMENT_TIMER_STOP');
+		Text::script('PLG_ELEMENT_TIMER_START');
+		Text::script('PLG_ELEMENT_TIMER_STOP');
 
 		return array('FbTimer', $id, $opts);
 	}

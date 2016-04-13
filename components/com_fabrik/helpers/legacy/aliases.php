@@ -14,3 +14,10 @@ use Fabrik\Helpers\Html;
 defined('_JEXEC') or die('Restricted access');
 
 class_alias('Fabrik\Helpers\Html', 'FabrikHelperHTML');
+class_alias('Fabrik\Helpers\Text', 'FText');
+class_alias('Fabrik\Helpers\Googlemap', 'FabGoogleMapHelper');
+class_alias('Fabrik\Helpers\Worker', 'FabrikWorker');
+class_alias('Fabrik\Helpers\StringHelper', 'FabrikString');
+class_alias('Fabrik\Helpers\ArrayHelper', 'FArrayHelper');
+class_alias('Fabrik\Helpers\Uploader', 'FabrikUploader');
+class_alias('Fabrik\Helpers\Image', 'FabimageHelper');

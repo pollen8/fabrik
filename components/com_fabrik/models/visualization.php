@@ -12,9 +12,11 @@
 defined('_JEXEC') or die('Restricted access');
 
 use \Joomla\Registry\Registry;
-use Joomla\Utilities\ArrayHelper;
+use Fabrik\Helpers\ArrayHelper;
 use Fabrik\Helpers\Html;
 use Fabrik\Helpers\Worker;
+use Fabrik\Helpers\StringHelper;
+use Fabrik\Helpers\Text;
 
 jimport('joomla.application.component.model');
 
@@ -210,7 +212,7 @@ class FabrikFEModelVisualization extends FabModel
 	public function getFilters()
 	{
 		$params = $this->getParams();
-		$name = JString::strtolower(str_replace('fabrikModel', '', get_class($this)));
+		$name = StringHelper::strtolower(str_replace('fabrikModel', '', get_class($this)));
 		$filters = array();
 		$showFilters = $params->get($name . '_show_filters', array());
 		$listModels = $this->getlistModels();
@@ -219,7 +221,7 @@ class FabrikFEModelVisualization extends FabModel
 
 		foreach ($listModels as $listModel)
 		{
-			$show = (bool) FArrayHelper::getValue($showFilters, $i, true);
+			$show = (bool) ArrayHelper::getValue($showFilters, $i, true);
 
 			if ($show)
 			{
@@ -303,8 +305,8 @@ class FabrikFEModelVisualization extends FabModel
 			}
 		}
 
-		$title = '<span>' . FText::_('COM_FABRIK_ADVANCED_SEARCH') . '</span>';
-		$opts = array('alt' => FText::_('COM_FABRIK_ADVANCED_SEARCH'), 'class' => 'fabrikTip', 'opts' => "{notice:true}", 'title' => $title);
+		$title = '<span>' . Text::_('COM_FABRIK_ADVANCED_SEARCH') . '</span>';
+		$opts = array('alt' => Text::_('COM_FABRIK_ADVANCED_SEARCH'), 'class' => 'fabrikTip', 'opts' => "{notice:true}", 'title' => $title);
 		$img = Html::image('find.png', 'list', '', $opts);
 
 		if (count($links) === 1)
@@ -398,7 +400,7 @@ class FabrikFEModelVisualization extends FabModel
 
 		// Limitstart gets added in the pagination model
 		$action = preg_replace("/limitstart" . $this->getState('id') . "}=(.*)?(&|)/", '', $action);
-		$action = FabrikString::rtrimword($action, "&");
+		$action = StringHelper::rtrimword($action, "&");
 		$this->getFilterFormURL = JRoute::_($action);
 
 		return $this->getFilterFormURL;
@@ -438,7 +440,7 @@ class FabrikFEModelVisualization extends FabModel
 		{
 			// Set pre-filter params
 			$listParams = $listModel->getParams();
-			$preFilter = FArrayHelper::getValue($preFilters, $c);
+			$preFilter = ArrayHelper::getValue($preFilters, $c);
 			$preFilter = ArrayHelper::fromObject(json_decode($preFilter));
 			$conditions = (array) $preFilter['filter-conditions'];
 
@@ -448,7 +450,7 @@ class FabrikFEModelVisualization extends FabModel
 
 				foreach ($fields as &$f)
 				{
-					$f = FabrikString::safeColName($f);
+					$f = StringHelper::safeColName($f);
 				}
 
 				$listParams->set('filter-fields', $fields);

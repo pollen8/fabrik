@@ -12,15 +12,16 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Joomla\Utilities\ArrayHelper;
+use Fabrik\Helpers\ArrayHelper;
 use Fabrik\Helpers\Html;
 use Fabrik\Helpers\Worker;
+use Fabrik\Helpers\StringHelper;
+use Fabrik\Helpers\Text;
 
 jimport('joomla.html.html');
 jimport('joomla.form.formfield');
 jimport('joomla.form.helper');
 JFormHelper::loadFieldClass('list');
-require_once JPATH_ADMINISTRATOR . '/components/com_fabrik/helpers/element.php';
 
 /**
  * Renders a list of elements found in a fabrik list
@@ -101,7 +102,7 @@ class JFormFieldListfields extends JFormFieldList
 				$res = $this->_groupOptions($useStep, $valueFormat, $onlyListFields, $showRaw, $pluginFilters, $labelMethod, $noJoins);
 				break;
 			default:
-				return FText::_('The ListFields element is only usable by lists and elements');
+				return Text::_('The ListFields element is only usable by lists and elements');
 				break;
 		}
 
@@ -133,7 +134,7 @@ class JFormFieldListfields extends JFormFieldList
 			{
 				$return = JHTML::_('select.genericlist', $aEls, $this->name, 'class="inputbox" size="1" ', 'value', 'text', $this->value, $this->id);
 				$return .= '<img style="margin-left:10px;display:none" id="' . $this->id
-					. '_loader" src="components/com_fabrik/images/ajax-loader.gif" alt="' . FText::_('LOADING') . '" />';
+					. '_loader" src="components/com_fabrik/images/ajax-loader.gif" alt="' . Text::_('LOADING') . '" />';
 			}
 		}
 
@@ -174,7 +175,7 @@ class JFormFieldListfields extends JFormFieldList
 					$s->value = $o->value;
 				}
 
-				$s->text = FabrikString::getShortDdLabel($o->text);
+				$s->text = StringHelper::getShortDdLabel($o->text);
 				$aEls[]  = $s;
 			}
 		}
@@ -182,7 +183,7 @@ class JFormFieldListfields extends JFormFieldList
 		{
 			foreach ($res as &$o)
 			{
-				$o->text = FabrikString::getShortDdLabel($o->text);
+				$o->text = StringHelper::getShortDdLabel($o->text);
 			}
 
 			$aEls = $res;
@@ -222,7 +223,7 @@ class JFormFieldListfields extends JFormFieldList
 	{
 		if ($connection == '')
 		{
-			$groupId = isset($this->form->rawData) ? FArrayHelper::getValue($this->form->rawData, 'group_id', 0)
+			$groupId = isset($this->form->rawData) ? ArrayHelper::getValue($this->form->rawData, 'group_id', 0)
 				: $this->form->getValue('group_id');
 			$res     = $this->loadFromGroupId($groupId);
 		}
@@ -233,7 +234,7 @@ class JFormFieldListfields extends JFormFieldList
 			$o->table_name = '';
 			$o->name       = '';
 			$o->value      = '';
-			$o->text       = FText::_('COM_FABRIK_SELECT_A_TABLE_FIRST');
+			$o->text       = Text::_('COM_FABRIK_SELECT_A_TABLE_FIRST');
 			$res[]         = $o;
 		}
 
@@ -323,7 +324,7 @@ class JFormFieldListfields extends JFormFieldList
 		$res       = $formModel->getElementOptions($useStep, $valField, $onlyListFields, $showRaw, $pluginFilters, $labelMethod, $noJoins);
 
 		$jsRes = $formModel->getElementOptions($useStep, $valField, $onlyListFields, $showRaw, $pluginFilters, $labelMethod, $noJoins);
-		array_unshift($jsRes, JHTML::_('select.option', '', FText::_('COM_FABRIK_PLEASE_SELECT')));
+		array_unshift($jsRes, JHTML::_('select.option', '', Text::_('COM_FABRIK_PLEASE_SELECT')));
 		$this->js($jsRes);
 
 		return $res;
@@ -427,7 +428,7 @@ class JFormFieldListfields extends JFormFieldList
 		}
 
 		$str[] = $at === 'true' ? '<div style="display:none">' : '';
-		$str[] = '<button class="button btn"><span class="icon-arrow-left"></span> ' . FText::_('COM_FABRIK_ADD') . '</button>';
+		$str[] = '<button class="button btn"><span class="icon-arrow-left"></span> ' . Text::_('COM_FABRIK_ADD') . '</button>';
 		$str[] = '<select class="elements"></select>';
 		$str[] = $at === 'true' ? '</div>' : '';
 

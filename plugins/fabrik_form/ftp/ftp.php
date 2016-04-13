@@ -13,12 +13,12 @@ namespace Fabrik\Plugins\Form;
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use \FText;
+use Fabrik\Helpers\ArrayHelper;
+use Fabrik\Helpers\StringHelper;
+use Fabrik\Helpers\Text;
 use Fabrik\Helpers\Worker;
-use \JString;
 use \JModelLegacy;
-use \FabrikString;
-use \FArrayHelper;
+use Fabrik\Helpers\StringHelper;
 use \RuntimeException;
 use \JFile;
 use JFolder;
@@ -96,8 +96,8 @@ class Ftp extends \PlgFabrik_Form
 			. $formModel->get('id') . "&amp;rowid=" . $input->get('rowid', '', 'string');
 		$viewURL = COM_FABRIK_LIVESITE . "index.php?option=com_fabrik&amp;view=details&amp;fabrik=" . $formModel->get('id')
 		. "&amp;rowid=" . $input->get('rowid', '', 'string');
-		$editLink = "<a href=\"$editURL\">" . FText::_('EDIT') . "</a>";
-		$viewLink = "<a href=\"$viewURL\">" . FText::_('VIEW') . "</a>";
+		$editLink = "<a href=\"$editURL\">" . Text::_('EDIT') . "</a>";
+		$viewLink = "<a href=\"$viewURL\">" . Text::_('VIEW') . "</a>";
 		$message = str_replace('{fabrik_editlink}', $editLink, $message);
 		$message = str_replace('{fabrik_viewlink}', $viewLink, $message);
 		$message = str_replace('{fabrik_editurl}', $editURL, $message);
@@ -146,7 +146,7 @@ class Ftp extends \PlgFabrik_Form
 					{
 						if (!ftp_chdir($conn_id, $ftpChDir))
 						{
-							$this->app->enqueueMessage(FText::_('PLG_FORM_FTP_COULD_NOT_CHDIR'), 'notice');
+							$this->app->enqueueMessage(Text::_('PLG_FORM_FTP_COULD_NOT_CHDIR'), 'notice');
 							JFile::delete($tmpFile);
 
 							return false;
@@ -155,7 +155,7 @@ class Ftp extends \PlgFabrik_Form
 
 					if (!ftp_put($conn_id, $ftpFileName, $tmpFile, FTP_ASCII))
 					{
-						$this->app->enqueueMessage(FText::_('PLG_FORM_FTP_COULD_NOT_SEND_FILE'), 'notice');
+						$this->app->enqueueMessage(Text::_('PLG_FORM_FTP_COULD_NOT_SEND_FILE'), 'notice');
 						JFile::delete($tmpFile);
 
 						return false;
@@ -163,7 +163,7 @@ class Ftp extends \PlgFabrik_Form
 				}
 				else
 				{
-					$this->app->enqueueMessage(FText::_('PLG_FORM_FTP_COULD_NOT_LOGIN'), 'notice');
+					$this->app->enqueueMessage(Text::_('PLG_FORM_FTP_COULD_NOT_LOGIN'), 'notice');
 					JFile::delete($tmpFile);
 
 					return false;
@@ -298,7 +298,7 @@ class Ftp extends \PlgFabrik_Form
 				{
 					$val = '';
 
-					if (is_array(FArrayHelper::getValue($data, $key)))
+					if (is_array(ArrayHelper::getValue($data, $key)))
 					{
 						// Repeat group data
 						foreach ($data[$key] as $k => $v)
@@ -313,10 +313,10 @@ class Ftp extends \PlgFabrik_Form
 					}
 					else
 					{
-						$val = FArrayHelper::getValue($data, $key);
+						$val = ArrayHelper::getValue($data, $key);
 					}
 
-					$val = FabrikString::rtrimword($val, "<br />");
+					$val = StringHelper::rtrimword($val, "<br />");
 					$val = stripslashes($val);
 
 					// Set $val to default value if empty
@@ -329,7 +329,7 @@ class Ftp extends \PlgFabrik_Form
 					$label = trim(strip_tags($element->label));
 					$message .= $label;
 
-					if (strlen($label) != 0 && JString::strpos($label, ':', JString::strlen($label) - 1) === false)
+					if (strlen($label) != 0 && StringHelper::strpos($label, ':', StringHelper::strlen($label) - 1) === false)
 					{
 						$message .= ':';
 					}
@@ -339,7 +339,7 @@ class Ftp extends \PlgFabrik_Form
 			}
 		}
 
-		$message = FText::_('Email from') . ' ' . $this->config->get('sitename') . '<br />' . FText::_('Message') . ':'
+		$message = Text::_('Email from') . ' ' . $this->config->get('sitename') . '<br />' . Text::_('Message') . ':'
 			. "<br />===================================<br />" . "<br />" . stripslashes($message);
 
 		return $message;

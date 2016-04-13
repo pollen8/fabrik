@@ -13,14 +13,12 @@ namespace Fabrik\Plugins\Element;
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Joomla\Utilities\ArrayHelper;
 use Fabrik\Helpers\Html;
-use \FArrayHelper;
+use Fabrik\Helpers\ArrayHelper;
 use \stdClass;
-use \JString;
 use Fabrik\Helpers\Worker;
-use \FText;
-use \FabrikString;
+use Fabrik\Helpers\StringHelper;
+use Fabrik\Helpers\Text;
 
 /**
  * Plugin element to render two fields to capture a link (url/label)
@@ -115,22 +113,22 @@ class Link extends Element
 		{
 			if (count($data) == 1)
 			{
-				$data['label'] = FArrayHelper::getValue($data, 'link');
+				$data['label'] = ArrayHelper::getValue($data, 'link');
 			}
 
 			$href = trim($data['link']);
 			$lbl = trim($data['label']);
 			$href = $w->parseMessageForPlaceHolder(urldecode($href), ArrayHelper::fromObject($thisRow));
 
-			if (JString::strtolower($href) == 'http://' || JString::strtolower($href) == 'https://')
+			if (StringHelper::strtolower($href) == 'http://' || StringHelper::strtolower($href) == 'https://')
 			{
 				// Treat some default values as empty
 				$href = '';
 			}
 			else if (strlen($href) > 0 && substr($href, 0, 1) != "/"
-				&& substr(JString::strtolower($href), 0, 7) != 'http://'
-				&& substr(JString::strtolower($href), 0, 8) != 'https://'
-				&& substr(JString::strtolower($href), 0, 6) != 'ftp://'
+				&& substr(StringHelper::strtolower($href), 0, 7) != 'http://'
+				&& substr(StringHelper::strtolower($href), 0, 8) != 'https://'
+				&& substr(StringHelper::strtolower($href), 0, 6) != 'ftp://'
 				)
 			{
 					$href = 'http://' . $href;
@@ -234,15 +232,15 @@ class Link extends Element
 			$value = array('label' => '', 'link' => '');
 		}
 
-		if (Worker::getMenuOrRequestVar('rowid') == 0 && FArrayHelper::getValue($value, 'link', '') === '')
+		if (Worker::getMenuOrRequestVar('rowid') == 0 && ArrayHelper::getValue($value, 'link', '') === '')
 		{
 			$value['link'] = $params->get('link_default_url');
 		}
 
 		if (!$this->isEditable())
 		{
-			$lbl = trim(FArrayHelper::getValue($value, 'label'));
-			$href = trim(FArrayHelper::getValue($value, 'link'));
+			$lbl = trim(ArrayHelper::getValue($value, 'label'));
+			$href = trim(ArrayHelper::getValue($value, 'link'));
 			$w = new Worker;
 			$href = is_array($data) ? $w->parseMessageForPlaceHolder($href, $data) : $w->parseMessageForPlaceHolder($href);
 
@@ -259,11 +257,11 @@ class Link extends Element
 			return Html::a($href, $lbl, $opts);
 		}
 
-		$labelname = FabrikString::rtrimword($name, '[]') . '[label]';
-		$linkname = FabrikString::rtrimword($name, '[]') . '[link]';
+		$labelname = StringHelper::rtrimword($name, '[]') . '[label]';
+		$linkname = StringHelper::rtrimword($name, '[]') . '[link]';
 
 		$bits['name'] = $labelname;
-		$bits['placeholder'] = FText::_('PLG_ELEMENT_LINK_LABEL');
+		$bits['placeholder'] = Text::_('PLG_ELEMENT_LINK_LABEL');
 		$bits['value'] = $value['label'];
 		$bits['class'] .= ' fabrikSubElement';
 		unset($bits['id']);
@@ -274,9 +272,9 @@ class Link extends Element
 		$layoutData->name = $name;
 		$layoutData->linkAttributes = $bits;
 
-		$bits['placeholder'] = FText::_('PLG_ELEMENT_LINK_URL');
+		$bits['placeholder'] = Text::_('PLG_ELEMENT_LINK_URL');
 		$bits['name'] = $linkname;
-		$bits['value'] = FArrayHelper::getValue($value, 'link');
+		$bits['value'] = ArrayHelper::getValue($value, 'link');
 
 		if (is_a($bits['value'], 'stdClass'))
 		{
@@ -303,8 +301,8 @@ class Link extends Element
 		if (is_string($value))
 		{
 			$value = Worker::JSONtoData($value, true);
-			$value['label'] = FArrayHelper::getValue($value, 0);
-			$value['link'] = FArrayHelper::getValue($value, 1);
+			$value['label'] = ArrayHelper::getValue($value, 0);
+			$value['link'] = ArrayHelper::getValue($value, 1);
 		}
 
 		if (is_array($value))
@@ -363,7 +361,7 @@ class Link extends Element
 				{
 					if ($key == 'link')
 					{
-						$v = FabrikString::encodeurl($v);
+						$v = StringHelper::encodeurl($v);
 					}
 					// Not in repeat group
 					if ($key == 'link' && $params->get('use_bitly'))
@@ -439,13 +437,13 @@ class Link extends Element
 				$values[$name]['data']['link'] = array();
 			}
 
-			$values[$name]['data']['label'][$c] = FArrayHelper::getValue($data, 'label');
-			$values[$name]['data']['link'][$c] = FArrayHelper::getValue($data, 'link');
+			$values[$name]['data']['label'][$c] = ArrayHelper::getValue($data, 'label');
+			$values[$name]['data']['link'][$c] = ArrayHelper::getValue($data, 'link');
 		}
 		else
 		{
-			$values[$name]['data']['label'] = FArrayHelper::getValue($data, 'label');
-			$values[$name]['data']['link'] = FArrayHelper::getValue($data, 'link');
+			$values[$name]['data']['label'] = ArrayHelper::getValue($data, 'label');
+			$values[$name]['data']['link'] = ArrayHelper::getValue($data, 'link');
 		}
 	}
 
@@ -508,7 +506,7 @@ class Link extends Element
 				$d = strip_tags($d);
 			}
 
-			$link = FArrayHelper::getValue($data, 'link', '');
+			$link = ArrayHelper::getValue($data, 'link', '');
 
 			return $link === '' || $link === 'http://';
 		}

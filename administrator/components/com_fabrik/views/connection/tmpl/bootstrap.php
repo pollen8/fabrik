@@ -13,6 +13,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 use Fabrik\Helpers\Html;
+use Fabrik\Helpers\Text;
 
 JHtml::addIncludePath(JPATH_COMPONENT . '/helpers/html');
 JHtml::_('behavior.tooltip');
@@ -25,12 +26,12 @@ JHtml::_('behavior.keepalive');
 	<div class="row-fluid">
 		<?php if ($this->item->host != "") :?>
 			<li>
-				<label><?php echo FText::_('COM_FABRIK_ENTER_PASSWORD_OR_LEAVE_AS_IS'); ?></label>
+				<label><?php echo Text::_('COM_FABRIK_ENTER_PASSWORD_OR_LEAVE_AS_IS'); ?></label>
 			</li>
 		<?php endif; ?>
 		<fieldset class="form-horizontal">
 	    	<legend>
-	    		<?php echo FText::_('COM_FABRIK_DETAILS');?>
+	    		<?php echo Text::_('COM_FABRIK_DETAILS');?>
 	    	</legend>
 			<?php foreach ($this->form->getFieldset('details') as $this->field) :
 				echo $this->loadTemplate('control_group');

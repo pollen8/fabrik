@@ -12,11 +12,13 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Fabrik\Helpers\Text;
+
 ?>
 <form action="<?php JRoute::_('index.php?option=com_fabrik'); ?>" method="post" name="adminForm" id="adminForm" class="form-validate">
 
 	<div class="alert alert-info">
-		<span class="icon-puzzle"></span> <?php echo JText::_('COM_FABRIK_FIELD_CONTENT_TYPE_INTRO_LABEL'); ?>
+		<span class="icon-puzzle"></span> <?php echo Text::_('COM_FABRIK_FIELD_CONTENT_TYPE_INTRO_LABEL'); ?>
 	</div>
 	<hr />
 

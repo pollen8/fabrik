@@ -13,9 +13,8 @@ namespace Fabrik\Plugins\Element;
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Joomla\Utilities\ArrayHelper;
-use \FArrayHelper;
 use \stdClass;
+use Fabrik\Helpers\ArrayHelper;
 use Fabrik\Helpers\Worker;
 
 /**
@@ -53,7 +52,7 @@ class Googleometer extends Element
 	{
 		$range    = $this->getRange();
 		$fullName = $this->getDataElementFullName();
-		$data     = FArrayHelper::getValue($data, $fullName);
+		$data     = ArrayHelper::getValue($data, $fullName);
 
 		if (is_array($data))
 		{

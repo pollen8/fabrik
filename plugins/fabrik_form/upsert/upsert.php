@@ -11,7 +11,9 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Fabrik\Helpers\ArrayHelper;
 use Fabrik\Helpers\Worker;
+use Fabrik\Helpers\StringHelper;
 
 // Require the abstract plugin class
 require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
@@ -53,13 +55,13 @@ class PlgFabrik_FormUpsert extends PlgFabrik_Form
 		}
 
 		$table = $this->getTableName();
-		$pk = FabrikString::safeColName($params->get('primary_key'));
+		$pk = StringHelper::safeColName($params->get('primary_key'));
 
 		$rowId = $params->get('row_value', '');
 
 		// Used for updating previously added records. Need previous pk val to ensure new records are still created.
 		$origData = $formModel->getOrigData();
-		$origData = FArrayHelper::getValue($origData, 0, new stdClass);
+		$origData = ArrayHelper::getValue($origData, 0, new stdClass);
 
 		if (isset($origData->__pk_val))
 		{
@@ -150,7 +152,7 @@ class PlgFabrik_FormUpsert extends PlgFabrik_Form
 				$row_value = $params->get('row_value', '');
 				if ($row_value == '{origid}')
 				{
-					$fk = FabrikString::safeColName($params->get('primary_key'));
+					$fk = StringHelper::safeColName($params->get('primary_key'));
 					$rowId = $formModel->getInsertId();
 					$fields[] = $fk . ' = ' . $upsertDb->q($rowId);
 				}
@@ -159,7 +161,7 @@ class PlgFabrik_FormUpsert extends PlgFabrik_Form
 
 		for ($i = 0; $i < count($upsert->upsert_key); $i++)
 		{
-			$k = FabrikString::shortColName($upsert->upsert_key[$i]);
+			$k = StringHelper::shortColName($upsert->upsert_key[$i]);
 			$k = $upsertDb->qn($k);
 			$v = $upsert->upsert_value[$i];
 			$v = $w->parseMessageForPlaceholder($v, $this->data);

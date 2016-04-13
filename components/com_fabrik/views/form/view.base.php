@@ -12,9 +12,11 @@
 defined('_JEXEC') or die('Restricted access');
 
 use Joomla\Registry\Registry;
-use Joomla\Utilities\ArrayHelper;
+use Fabrik\Helpers\ArrayHelper;
 use Fabrik\Helpers\Html;
 use Fabrik\Helpers\Worker;
+use Fabrik\Helpers\StringHelper;
+use Fabrik\Helpers\Text;
 
 jimport('joomla.application.component.view');
 
@@ -133,7 +135,7 @@ class FabrikViewFormBase extends FabrikView
 		{
 			if (!$this->app->isAdmin())
 			{
-				echo FText::_('COM_FABRIK_FORM_NOT_PUBLISHED');
+				echo Text::_('COM_FABRIK_FORM_NOT_PUBLISHED');
 
 				return false;
 			}
@@ -144,7 +146,7 @@ class FabrikViewFormBase extends FabrikView
 
 		if ($this->access == 0)
 		{
-			$this->app->enqueueMessage(FText::_('JERROR_ALERTNOAUTHOR'), 'error');
+			$this->app->enqueueMessage(Text::_('JERROR_ALERTNOAUTHOR'), 'error');
 
 			return false;
 		}
@@ -228,9 +230,9 @@ class FabrikViewFormBase extends FabrikView
 	{
 		$model        = $this->getModel();
 		$form         = $model->getForm();
-		$form->label  = FText::_($model->getLabel());
-		$form->intro  = FText::_($model->getIntro());
-		$form->outro  = FText::_($model->getOutro());
+		$form->label  = Text::_($model->getLabel());
+		$form->intro  = Text::_($model->getIntro());
+		$form->outro  = Text::_($model->getOutro());
 		$form->action = $model->getAction();
 		$form->class  = $model->getFormClass();
 		$form->formid = $model->isEditable() ? 'form_' . $model->getId() : 'details_' . $model->getId();
@@ -241,7 +243,7 @@ class FabrikViewFormBase extends FabrikView
 			$form->formid .= '_' . $this->rowid;
 		}
 
-		$form->error = $form->error === '' ? FText::_('COM_FABRIK_FAILED_VALIDATION') : FText::_($form->error);
+		$form->error = $form->error === '' ? Text::_('COM_FABRIK_FAILED_VALIDATION') : Text::_($form->error);
 
 		if (!empty($model->formErrorMsg))
 		{
@@ -322,7 +324,7 @@ class FabrikViewFormBase extends FabrikView
 			// if ($model->sessionModel->statusid == _FABRIKFORMSESSION_LOADED_FROM_COOKIE) {
 			if ($model->sessionModel->last_page > 0)
 			{
-				$message .= ' <a href="#" class="clearSession">' . FText::_('COM_FABRIK_CLEAR') . '</a>';
+				$message .= ' <a href="#" class="clearSession">' . Text::_('COM_FABRIK_CLEAR') . '</a>';
 			}
 		}
 
@@ -402,28 +404,28 @@ class FabrikViewFormBase extends FabrikView
 			if (is_object($menu) && !$this->isMambot)
 			{
 				$menuParams = is_a($menu->params, 'Registry') || is_a($menu->params, 'JRegistry') ? $menu->params : new Registry($menu->params);
-				$params->set('page_heading', FText::_($menuParams->get('page_heading', '')));
+				$params->set('page_heading', Text::_($menuParams->get('page_heading', '')));
 				$params->set('show_page_heading', $menuParams->get('show_page_heading', 0));
-				$browserTitle = $model->getPageTitle(FText::_($menuParams->get('page_title')));
+				$browserTitle = $model->getPageTitle(Text::_($menuParams->get('page_title')));
 				$this->doc->setTitle($w->parseMessageForPlaceHolder($browserTitle, $_REQUEST));
 			}
 			else
 			{
 				$params->set('show_page_heading', $input->getInt('show_page_heading', 0));
-				$params->set('page_heading', FText::_($input->get('title', $title, 'string')));
+				$params->set('page_heading', Text::_($input->get('title', $title, 'string')));
 				$params->set('show-title', $input->getInt('show-title', $params->get('show-title')));
 			}
 
 			if (!$this->isMambot)
 			{
 				$titleData = array_merge($_REQUEST, $model->data);
-				$title     = $w->parseMessageForPlaceHolder(FText::_($params->get('page_heading')), $titleData, false);
+				$title     = $w->parseMessageForPlaceHolder(Text::_($params->get('page_heading')), $titleData, false);
 				$params->set('page_heading', $title);
 			}
 		}
 		else
 		{
-			$params->set('page_heading', FText::_($title));
+			$params->set('page_heading', Text::_($title));
 			$params->set('show_page_heading', 0);
 		}
 	}
@@ -625,14 +627,14 @@ class FabrikViewFormBase extends FabrikView
 
 		if (!Html::inAjaxLoadedPage())
 		{
-			JText::script('COM_FABRIK_VALIDATING');
-			JText::script('COM_FABRIK_SUCCESS');
-			JText::script('COM_FABRIK_NO_REPEAT_GROUP_DATA');
-			JText::script('COM_FABRIK_VALIDATION_ERROR');
-			JText::script('COM_FABRIK_CONFIRM_DELETE_1');
+			Text::script('COM_FABRIK_VALIDATING');
+			Text::script('COM_FABRIK_SUCCESS');
+			Text::script('COM_FABRIK_NO_REPEAT_GROUP_DATA');
+			Text::script('COM_FABRIK_VALIDATION_ERROR');
+			Text::script('COM_FABRIK_CONFIRM_DELETE_1');
 		}
 
-		JText::script('COM_FABRIK_FORM_SAVED');
+		Text::script('COM_FABRIK_FORM_SAVED');
 
 		// $$$ rob don't declare as var $bKey, but rather assign to window, as if loaded via ajax window the function is wrapped
 		// inside an anonymous function, and therefore $bKey wont be available as a global var in window
@@ -759,7 +761,7 @@ class FabrikViewFormBase extends FabrikView
 		$opts->lang           = Worker::getMultiLangURLCode();
 		$opts->toggleSubmit   = (bool) $params->get('ajax_validations_toggle_submit');
 		$opts->showLoader     = (bool) $params->get('show_loader_on_submit', '0');
-		$key                  = FabrikString::safeColNameToArrayKey($table->db_primary_key);
+		$key                  = StringHelper::safeColNameToArrayKey($table->db_primary_key);
 		$opts->primaryKey     = $key;
 		$opts->error          = @$form->origerror;
 		$opts->pages          = $model->getPages();
@@ -771,7 +773,7 @@ class FabrikViewFormBase extends FabrikView
 
 		if ($startPage !== 0)
 		{
-			$this->app->enqueueMessage(FText::_('COM_FABRIK_RESTARTING_MULTIPAGE_FORM'));
+			$this->app->enqueueMessage(Text::_('COM_FABRIK_RESTARTING_MULTIPAGE_FORM'));
 		}
 		else
 		{
@@ -847,7 +849,7 @@ class FabrikViewFormBase extends FabrikView
 				}
 
 				$groupId                                                = $groupModel->getGroup()->id;
-				$opts->group_pk_ids[$groupId]                           = FabrikString::safeColNameToArrayKey($joinParams->get('pk'));
+				$opts->group_pk_ids[$groupId]                           = StringHelper::safeColNameToArrayKey($joinParams->get('pk'));
 				$opts->join_group_ids[$groupModel->getGroup()->join_id] = (int) $groupModel->getGroup()->id;
 				$opts->group_join_ids[$groupId]                         = (int) $groupModel->getGroup()->join_id;
 				$opts->group_repeats[$groupId]                          = $groupModel->canRepeat();
@@ -949,7 +951,7 @@ class FabrikViewFormBase extends FabrikView
 			// see http://fabrikar.com/forums/showthread.php?t=10297&page=5
 
 			$fields[] = '<input type="hidden" name="usekey" value="' . $useKey . '" />';
-			$pk_val   = FArrayHelper::getValue($model->data, $listModel->getPrimaryKey(true));
+			$pk_val   = ArrayHelper::getValue($model->data, $listModel->getPrimaryKey(true));
 
 			if (empty($pk_val))
 			{
@@ -977,15 +979,15 @@ class FabrikViewFormBase extends FabrikView
 		}
 
 		$fields[]    = JHTML::_('form.token');
-		$resetLabel  = FText::_($params->get('reset_button_label'));
+		$resetLabel  = Text::_($params->get('reset_button_label'));
 		$resetIcon   = $params->get('reset_icon', '');
-		$copyLabel   = FText::_($params->get('copy_button_label'));
+		$copyLabel   = Text::_($params->get('copy_button_label'));
 		$copyIcon    = $params->get('copy_icon', '');
-		$applyLabel  = FText::_($params->get('apply_button_label'));
+		$applyLabel  = Text::_($params->get('apply_button_label'));
 		$applyIcon   = $params->get('apply_icon', '');
-		$deleteLabel = FText::_($params->get('delete_button_label', 'Delete'));
+		$deleteLabel = Text::_($params->get('delete_button_label', 'Delete'));
 		$deleteIcon  = $params->get('delete_icon', '');
-		$goBackLabel = FText::_($params->get('goback_button_label'));
+		$goBackLabel = Text::_($params->get('goback_button_label'));
 		$goBackIcon  = $params->get('goback_icon', '');
 		$btnLayout   = Html::getLayout('fabrik-button');
 
@@ -1073,9 +1075,9 @@ class FabrikViewFormBase extends FabrikView
 
 		if ($model->isEditable() && $params->get('submit_button', 1))
 		{
-			$submitClass = FabrikString::clean($form->submit_button_label);
+			$submitClass = StringHelper::clean($form->submit_button_label);
 			$submitIcon  = $params->get('save_icon', '');
-			$submitLabel = FText::_($form->submit_button_label);
+			$submitLabel = Text::_($form->submit_button_label);
 
 			if ($submitIcon !== '')
 			{
@@ -1104,7 +1106,7 @@ class FabrikViewFormBase extends FabrikView
 				'type' => 'button',
 				'class' => 'fabrikPagePrevious button',
 				'name' => 'fabrikPagePrevious',
-				'label' => Html::icon('icon-previous', FText::_('COM_FABRIK_PREV'))
+				'label' => Html::icon('icon-previous', Text::_('COM_FABRIK_PREV'))
 			);
 			$form->prevButton = $btnLayout->render($layoutData);
 
@@ -1112,7 +1114,7 @@ class FabrikViewFormBase extends FabrikView
 				'type' => 'button',
 				'class' => 'fabrikPageNext button',
 				'name' => 'fabrikPageNext',
-				'label' => FText::_('COM_FABRIK_NEXT') . '&nbsp;' . Html::icon('icon-next')
+				'label' => Text::_('COM_FABRIK_NEXT') . '&nbsp;' . Html::icon('icon-next')
 			);
 
 			$form->nextButton = $btnLayout->render($layoutData);
@@ -1141,7 +1143,7 @@ class FabrikViewFormBase extends FabrikView
 
 				// Use raw otherwise we inject the actual <input> into the hidden field's value
 				$groupPk .= '_raw';
-				$groupRowIds = (array) FArrayHelper::getValue($this->data, $groupPk, array());
+				$groupRowIds = (array) ArrayHelper::getValue($this->data, $groupPk, array());
 				$groupRowIds = htmlentities(json_encode($groupRowIds));
 
 				// Used to check against in group process(), when deleting removed repeat groups
@@ -1192,7 +1194,7 @@ class FabrikViewFormBase extends FabrikView
 			// 	$$$ rob test if passing in _raw value via qs -used in fabsubs
 			if (!$formModel->hasElement($key))
 			{
-				$key = FabrikString::rtrimword($key, '_raw');
+				$key = StringHelper::rtrimword($key, '_raw');
 			}
 
 			if ($formModel->hasElement($key))
@@ -1209,7 +1211,7 @@ class FabrikViewFormBase extends FabrikView
 
 					if (is_array($input))
 					{
-						$input = FArrayHelper::getValue($input, 'raw', $input);
+						$input = ArrayHelper::getValue($input, 'raw', $input);
 					}
 
 					// $$$ hugh - the aptly named SimpleCrypt encrypt is going to barf and toss a warning if we try
@@ -1299,7 +1301,7 @@ class FabrikViewFormBase extends FabrikView
 				}
 			}
 
-			$safeKey = FabrikString::rtrimword($key, '[]');
+			$safeKey = StringHelper::rtrimword($key, '[]');
 
 			// $$$ rob - no don't do below as it will strip out join names join[x][fullname] => join
 			// $key = preg_replace("/\[(.*)\]/", '', $key);

@@ -12,6 +12,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 use Fabrik\Helpers\Html;
+use Fabrik\Helpers\StringHelper;
 
 // Require the abstract plugin class
 require_once COM_FABRIK_FRONTEND . '/models/plugin-list.php';
@@ -116,7 +117,7 @@ class PlgFabrik_ListInlineedit extends PlgFabrik_List
 		$listModel = JModelLegacy::getInstance('list', 'FabrikFEModel');
 		$listModel->setId($input->getInt('listid'));
 		$elements = $listModel->getElements('safecolname');
-		$pels = FabrikString::stripSpace($params->get('inline_editable_elements', ''));
+		$pels = StringHelper::stripSpace($params->get('inline_editable_elements', ''));
 
 		$use = json_decode($pels);
 
@@ -168,7 +169,7 @@ class PlgFabrik_ListInlineedit extends PlgFabrik_List
 				// Stop elements such as the password element from incorrectly updating themselves
 				if ($val->recordInDatabase(array()))
 				{
-					$key = FabrikString::safeColNameToArrayKey($key);
+					$key = StringHelper::safeColNameToArrayKey($key);
 					$els[$key] = new stdClass;
 					$els[$key]->elid = $val->getId();
 					$els[$key]->plugins = array();

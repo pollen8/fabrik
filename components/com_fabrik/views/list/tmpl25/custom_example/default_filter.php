@@ -11,6 +11,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Fabrik\Helpers\Text;
+
 ?>
 <!-- replace this in component code -->
 <?php $use = array('downloads___acl','downloads___type', 'downloads___version');?>
@@ -39,7 +41,7 @@ defined('_JEXEC') or die('Restricted access');
 	<?php if ($this->filter_action != 'onchange') {?>
 	<button class="pull-right fabrik_filter_submit button btn btn-info" name="filter">
 	<i class="icon-filter icon-white"></i>
-	<?php echo FText::_('GO');?></button>
+	<?php echo Text::_('GO');?></button>
 	<?php }?>
 	</div>
 </div>

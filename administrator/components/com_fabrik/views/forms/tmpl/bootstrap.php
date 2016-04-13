@@ -12,6 +12,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Fabrik\Helpers\Text;
+
 JHtml::addIncludePath(JPATH_COMPONENT . '/helpers/html');
 JHtml::_('behavior.tooltip');
 JHTML::_('script', 'system/multiselect.js', false, true);
@@ -37,18 +39,18 @@ $listDirn  = $this->state->get('list.direction');
 			<div id="filter-bar" class="btn-toolbar">
 				<div class="row-fluid">
 					<div class="filter-search btn-group pull-left">
-						<label class="element-invisible" for="filter_search"><?php echo FText::_('JSEARCH_FILTER_LABEL'); ?></label>
-						<input type="text" name="filter_search" placeholder="<?php echo FText::_('JSEARCH_FILTER_LABEL'); ?>" id="filter_search" value="<?php echo $this->state->get('filter.search'); ?>"
-							title="<?php echo FText::_('COM_FABRIK_SEARCH_IN_TITLE'); ?>" />&nbsp;
+						<label class="element-invisible" for="filter_search"><?php echo Text::_('JSEARCH_FILTER_LABEL'); ?></label>
+						<input type="text" name="filter_search" placeholder="<?php echo Text::_('JSEARCH_FILTER_LABEL'); ?>" id="filter_search" value="<?php echo $this->state->get('filter.search'); ?>"
+							title="<?php echo Text::_('COM_FABRIK_SEARCH_IN_TITLE'); ?>" />&nbsp;
 					</div>
 					<div class="btn-group pull-left hidden-phone">
-						<button class="btn tip" type="submit" rel="tooltip" title="<?php echo FText::_('JSEARCH_FILTER_SUBMIT'); ?>">
+						<button class="btn tip" type="submit" rel="tooltip" title="<?php echo Text::_('JSEARCH_FILTER_SUBMIT'); ?>">
 							<i class="icon-search"></i></button>
-						<button class="btn tip" type="button" onclick="document.id('filter_search').value='';this.form.submit();" rel="tooltip" title="<?php echo FText::_('JSEARCH_FILTER_CLEAR'); ?>">
+						<button class="btn tip" type="button" onclick="document.id('filter_search').value='';this.form.submit();" rel="tooltip" title="<?php echo Text::_('JSEARCH_FILTER_CLEAR'); ?>">
 							<i class="icon-remove"></i></button>
 					</div>
 					<div class="btn-group pull-right hidden-phone">
-						<label for="limit" class="element-invisible"><?php echo FText::_('JFIELD_PLG_SEARCH_SEARCHLIMIT_DESC'); ?></label>
+						<label for="limit" class="element-invisible"><?php echo Text::_('JFIELD_PLG_SEARCH_SEARCHLIMIT_DESC'); ?></label>
 						<?php echo $this->pagination->getLimitBox(); ?>
 					</div>
 				</div>
@@ -67,16 +69,16 @@ $listDirn  = $this->state->get('list.direction');
 						<?php echo JHTML::_('grid.sort', 'COM_FABRIK_LABEL', 'f.label', $listDirn, $listOrder); ?>
 					</th>
 					<th width="10%">
-						<?php echo FText::_('COM_FABRIK_ELEMENT'); ?>
+						<?php echo Text::_('COM_FABRIK_ELEMENT'); ?>
 					</th>
 					<th width="5%">
-						<?php echo FText::_('COM_FABRIK_CONTENT_TYPE'); ?>
+						<?php echo Text::_('COM_FABRIK_CONTENT_TYPE'); ?>
 					</th>
 					<th width="10%">
-						<?php echo FText::_('COM_FABRIK_UPDATE_DATABASE'); ?>
+						<?php echo Text::_('COM_FABRIK_UPDATE_DATABASE'); ?>
 					</th>
 					<th width="12%">
-						<?php echo FText::_('COM_FABRIK_VIEW_DATA'); ?>
+						<?php echo Text::_('COM_FABRIK_VIEW_DATA'); ?>
 					</th>
 					<th width="5%">
 						<?php echo JHTML::_('grid.sort', 'JPUBLISHED', 'f.published', $listDirn, $listOrder); ?>
@@ -118,13 +120,13 @@ $listDirn  = $this->state->get('list.direction');
 							{
 								?>
 								<a href="<?php echo $link; ?>">
-									<?php echo FText::_($item->label); ?>
+									<?php echo Text::_($item->label); ?>
 								</a>
 							<?php } ?>
 						</td>
 						<td>
 							<a href="<?php echo $elementLink ?>">
-								<i class="icon-plus"></i> <?php echo FText::_('COM_FABRIK_ADD'); ?>
+								<i class="icon-plus"></i> <?php echo Text::_('COM_FABRIK_ADD'); ?>
 							</a>
 						</td>
 						<td>
@@ -137,14 +139,14 @@ $listDirn  = $this->state->get('list.direction');
 								<ul class="dropdown-menu">
 									<li>
 										<a href="javascript://" onclick="listItemTask('cb<?php echo $i; ?>', 'form.createContentType')">
-											<span class="icon-upload"></span> <?php echo JText::_('COM_FABRIK_CONTENT_TYPE_EXPORT'); ?>
+											<span class="icon-upload"></span> <?php echo Text::_('COM_FABRIK_CONTENT_TYPE_EXPORT'); ?>
 										</a>
 									</li>
 									<?php
 									if ($params->get('content_type_path', '') !== '') :?>
 										<li>
 											<a href="index.php?option=com_fabrik&task=form.downloadContentType&cid=<?php echo $item->id; ?>">
-												<span class="icon-download"></span> <?php echo JText::_('COM_FABRIK_CONTENT_TYPE_DOWNLOAD'); ?>
+												<span class="icon-download"></span> <?php echo Text::_('COM_FABRIK_CONTENT_TYPE_DOWNLOAD'); ?>
 											</a>
 										</li>
 										<?php
@@ -156,12 +158,12 @@ $listDirn  = $this->state->get('list.direction');
 						</td>
 						<td>
 							<a href="#edit" onclick="return listItemTask('cb<?php echo $i; ?>','forms.updateDatabase')">
-								<i class="icon-refresh"></i> <?php echo FText::_('COM_FABRIK_UPDATE_DATABASE'); ?>
+								<i class="icon-refresh"></i> <?php echo Text::_('COM_FABRIK_UPDATE_DATABASE'); ?>
 							</a>
 						</td>
 						<td>
 							<a href="index.php?option=com_fabrik&task=list.view&listid=<?php echo $item->list_id ?>">
-								<i class="icon-list-view"></i> <?php echo FText::_('COM_FABRIK_VIEW_DATA'); ?>
+								<i class="icon-list-view"></i> <?php echo Text::_('COM_FABRIK_VIEW_DATA'); ?>
 							</a>
 						</td>
 						<td class="center">

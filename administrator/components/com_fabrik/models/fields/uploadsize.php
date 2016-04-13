@@ -11,7 +11,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-require_once JPATH_ADMINISTRATOR . '/components/com_fabrik/helpers/element.php';
+use Fabrik\Helpers\StringHelper;
+use Fabrik\Helpers\Text;
 
 /**
  * Renders a upload size field
@@ -41,7 +42,7 @@ class JFormFieldUploadsize extends JFormField
 	protected function _return_bytes($val)
 	{
 		$val = trim($val);
-		$last = JString::strtolower(JString::substr($val, -1));
+		$last = StringHelper::strtolower(StringHelper::substr($val, -1));
 
 		if ($last == 'g')
 		{
@@ -87,10 +88,10 @@ class JFormFieldUploadsize extends JFormField
 	{
 		// Get the label text from the XML element, defaulting to the element name.
 		$text = $this->element['label'] ? (string) $this->element['label'] : (string) $this->element['name'];
-		$text = $this->translateLabel ? FText::_($text) : $text;
+		$text = $this->translateLabel ? Text::_($text) : $text;
 		$max = $this->getMax();
 		$mb = $max / 1024;
-		$this->description = FText::_($this->description) . $max . 'Kb / ' . $mb . 'Mb';
+		$this->description = Text::_($this->description) . $max . 'Kb / ' . $mb . 'Mb';
 
 		return parent::getLabel();
 	}

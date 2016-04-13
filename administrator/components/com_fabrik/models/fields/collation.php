@@ -11,7 +11,7 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-require_once JPATH_ADMINISTRATOR . '/components/com_fabrik/helpers/element.php';
+use Fabrik\Helpers\Text;
 
 /**
  * Renders a list of installed image libraries
@@ -95,7 +95,7 @@ class JFormFieldCollation extends JFormFieldList
 
 		if ($this->element->attributes()->show_none && (bool) $this->element->attributes()->show_none[0])
 		{
-			$opts[] = JHTML::_('select.option', '', JText::_('COM_FABRIK_NONE'));
+			$opts[] = JHTML::_('select.option', '', Text::_('COM_FABRIK_NONE'));
 		}
 
 		foreach ($rows as $row)

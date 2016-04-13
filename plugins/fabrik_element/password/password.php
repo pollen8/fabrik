@@ -14,11 +14,10 @@ namespace Fabrik\Plugins\Element;
 defined('_JEXEC') or die('Restricted access');
 
 use Fabrik\Helpers\Worker;
-use \FArrayHelper;
+use Fabrik\Helpers\ArrayHelper;
 use \stdClass;
-use \FText;
+use Fabrik\Helpers\Text;
 use \JUserHelper;
-use \JText;
 
 /**
  * Plugin element to render 2 fields to capture and confirm a password
@@ -98,14 +97,14 @@ class Password extends Element
 
 		$bits                = $this->inputProperties($repeatCounter, 'password');
 		$bits['value']       = $value;
-		$bits['placeholder'] = FText::_('PLG_ELEMENT_PASSWORD_TYPE_PASSWORD');
+		$bits['placeholder'] = Text::_('PLG_ELEMENT_PASSWORD_TYPE_PASSWORD');
 
 		$layoutData->pw1Attributes = $bits;
 
 		$origName            = $element->name;
 		$element->name       = $element->name . '_check';
 		$name                = $this->getHTMLName($repeatCounter);
-		$bits['placeholder'] = FText::_('PLG_ELEMENT_PASSWORD_CONFIRM_PASSWORD');
+		$bits['placeholder'] = Text::_('PLG_ELEMENT_PASSWORD_CONFIRM_PASSWORD');
 		$bits['class'] .= ' fabrikSubElement';
 		$bits['name'] = $name;
 		$bits['id']   = $name;
@@ -176,18 +175,18 @@ class Password extends Element
 
 		if ($checkValue != $value)
 		{
-			$this->validationError = FText::_('PLG_ELEMENT_PASSWORD_PASSWORD_CONFIRMATION_DOES_NOT_MATCH');
+			$this->validationError = Text::_('PLG_ELEMENT_PASSWORD_PASSWORD_CONFIRMATION_DOES_NOT_MATCH');
 
 			return false;
 		}
 		else
 		{
 			// If its coming from an ajax form submit then the key is possibly an array.
-			$keyVal = FArrayHelper::getValue($_REQUEST, $k);
+			$keyVal = ArrayHelper::getValue($_REQUEST, $k);
 
 			if (is_array($keyVal))
 			{
-				$keyVal = FArrayHelper::getValue($keyVal, 0);
+				$keyVal = ArrayHelper::getValue($keyVal, 0);
 			}
 
 			// $$$ rob add rowid test as well as if using row=-1 and usekey=field $k may have a value
@@ -196,7 +195,7 @@ class Password extends Element
 				/**
 				 * Why are we using .= here, but nowhere else?
 				 */
-				$this->validationError .= FText::_('PLG_ELEMENT_PASSWORD_PASSWORD_CONFIRMATION_EMPTY_NOT_ALLOWED');
+				$this->validationError .= Text::_('PLG_ELEMENT_PASSWORD_PASSWORD_CONFIRMATION_EMPTY_NOT_ALLOWED');
 
 				return false;
 			}
@@ -220,11 +219,11 @@ class Password extends Element
 		$opts->ajax_validation = $formParams->get('ajax_validations') === '1';
 		$opts->progressbar     = Worker::j3() ? true : false;
 
-		JText::script('PLG_ELEMENT_PASSWORD_STRONG');
-		JText::script('PLG_ELEMENT_PASSWORD_MEDIUM');
-		JText::script('PLG_ELEMENT_PASSWORD_WEAK');
-		JText::script('PLG_ELEMENT_PASSWORD_TYPE_PASSWORD');
-		JText::script('PLG_ELEMENT_PASSWORD_MORE_CHARACTERS');
+		Text::script('PLG_ELEMENT_PASSWORD_STRONG');
+		Text::script('PLG_ELEMENT_PASSWORD_MEDIUM');
+		Text::script('PLG_ELEMENT_PASSWORD_WEAK');
+		Text::script('PLG_ELEMENT_PASSWORD_TYPE_PASSWORD');
+		Text::script('PLG_ELEMENT_PASSWORD_MORE_CHARACTERS');
 
 		return array('FbPassword', $id, $opts);
 	}
@@ -263,6 +262,6 @@ class Password extends Element
 	 */
 	public function internalValidataionText()
 	{
-		return FText::_('PLG_ELEMENT_PASSWORD_VALIDATION_TIP');
+		return Text::_('PLG_ELEMENT_PASSWORD_VALIDATION_TIP');
 	}
 }

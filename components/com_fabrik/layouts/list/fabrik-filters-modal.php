@@ -13,6 +13,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 use Fabrik\Helpers\Html;
+use Fabrik\Helpers\Text;
 
 $d = $displayData;
 
@@ -37,7 +38,7 @@ endforeach;
 ?>
 <?php if ($showClearFilters) : ?>
 	<div>
-		<?php echo JText::_('COM_FABRIK_FILTERS_ACTIVE') ?>
+		<?php echo Text::_('COM_FABRIK_FILTERS_ACTIVE') ?>
 		<?php
 		foreach ($d->filters as $key => $filter) :
 			if ($filter->displayValue !== '') :
@@ -60,7 +61,7 @@ endif;
 
 	<div class="modal-header">
 		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-		<h3><?php echo Html::icon('icon-filter', FText::_('COM_FABRIK_FILTER')); ?></h3>
+		<h3><?php echo Html::icon('icon-filter', Text::_('COM_FABRIK_FILTER')); ?></h3>
 	</div>
 	<div class="modal-body">
 		<table class="table table-stripped">
@@ -74,14 +75,14 @@ endif;
 		<?php
 		if ($d->showClearFilters) : ?>
 			<a class="btn clearFilters" href="#">
-				<?php echo Html::icon('icon-refresh', FText::_('COM_FABRIK_CLEAR')); ?>
+				<?php echo Html::icon('icon-refresh', Text::_('COM_FABRIK_CLEAR')); ?>
 			</a>
 		<?php endif ?>
 		<?php
 		if ($d->filter_action != 'onchange') :
 			?>
 			<input type="button" class="btn btn-primary fabrik_filter_submit"
-				value="<?php echo FText::_('COM_FABRIK_GO'); ?>" name="filter">
+				value="<?php echo Text::_('COM_FABRIK_GO'); ?>" name="filter">
 			<?php
 		endif;
 		?>

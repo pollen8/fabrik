@@ -14,8 +14,10 @@
 // Check to ensure this file is within the rest of the framework
 defined('JPATH_BASE') or die();
 
+use Fabrik\Helpers\Pdf;
+use Fabrik\Helpers\Text;
+
 file_exists(JPATH_LIBRARIES . '/joomla/document/html/html.php') && require_once JPATH_LIBRARIES . '/joomla/document/html/html.php';
-require_once JPATH_SITE . '/components/com_fabrik/helpers/pdf.php';
 
 /**
  * DocumentPDF class, provides an easy interface to parse and display a pdf document
@@ -55,7 +57,7 @@ class JDocumentpdf extends JDocumentHTML
 		}
 		if (!$this->iniDomPdf())
 		{
-			throw new RuntimeException(FText::_('COM_FABRIK_ERR_NO_PDF_LIB_FOUND'), 500);
+			throw new RuntimeException(Text::_('COM_FABRIK_ERR_NO_PDF_LIB_FOUND'), 500);
 		}
 	}
 
@@ -66,7 +68,7 @@ class JDocumentpdf extends JDocumentHTML
 	 */
 	protected function iniDomPdf()
 	{
-		if (FabrikPDFHelper::iniDomPdf())
+		if (Pdf::iniDomPdf())
 		{
 			// Default settings are a portrait layout with an A4 configuration using millimeters as units
 			$this->engine = new DOMPDF;
@@ -136,7 +138,7 @@ class JDocumentpdf extends JDocumentHTML
  		// $this->addStyleDeclaration('body: { font-family: futural !important; }');
 		$pdf = $this->engine;
 		$data = parent::render();
-		FabrikPDFHelper::fullPaths($data);
+		Pdf::fullPaths($data);
 
 		/**
 		 * I think we need this to handle some HTML entities when rendering otherlanguages (like Polish),

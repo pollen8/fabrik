@@ -12,6 +12,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Fabrik\Helpers\Text;
+
 $d           = $displayData;
 $baseContext = $d->baseContext;
 $app         = JFactory::getApplication();
@@ -29,7 +31,7 @@ $app         = JFactory::getApplication();
 
 		<div class="row-fluid">
 			<div class="span4">
-				<?php echo FText::_('PLG_VIEW_RADIUS_DISTANCE'); ?>
+				<?php echo Text::_('PLG_VIEW_RADIUS_DISTANCE'); ?>
 			</div>
 			<div class="span8">
 				<div class="slider_cont" style="width:200px;">
@@ -44,7 +46,7 @@ $app         = JFactory::getApplication();
 		</div>
 		<div class="row-fluid">
 			<div class="span4">
-				<label for="radius_search_type0"><?php echo FText::_('PLG_VIEW_RADIUS_FROM'); ?></label>
+				<label for="radius_search_type0"><?php echo Text::_('PLG_VIEW_RADIUS_FROM'); ?></label>
 			</div>
 			<div class="span8">
 				<?php echo $d->select; ?>
@@ -74,7 +76,7 @@ $app         = JFactory::getApplication();
 
 				<div class="row-fluid">
 					<div class="span4">
-						<label for="radius_search_lat_<?php echo $d->renderOrder; ?>"><?php echo FText::_('PLG_VIEW_RADIUS_LATITUDE'); ?>
+						<label for="radius_search_lat_<?php echo $d->renderOrder; ?>"><?php echo Text::_('PLG_VIEW_RADIUS_LATITUDE'); ?>
 						</label>
 					</div>
 					<div class="span8">
@@ -83,7 +85,7 @@ $app         = JFactory::getApplication();
 				</div>
 				<div class="row-fluid">
 					<div class="span4">
-						<label for="radius_search_lon_<?php echo $d->renderOrder; ?>"><?php echo FText::_('PLG_VIEW_RADIUS_LONGITUDE'); ?>
+						<label for="radius_search_lon_<?php echo $d->renderOrder; ?>"><?php echo Text::_('PLG_VIEW_RADIUS_LONGITUDE'); ?>
 						</label>
 					</div>
 					<div class="span8">
@@ -104,7 +106,7 @@ $app         = JFactory::getApplication();
 				<?php
 				if (!$d->geocodeAsYouType) :
 					?>
-					<button class="btn button"><?php echo FText::_('COM_FABRIK_SEARCH'); ?></button>
+					<button class="btn button"><?php echo Text::_('COM_FABRIK_SEARCH'); ?></button>
 					<?php
 				endif;
 				?>
@@ -114,7 +116,7 @@ $app         = JFactory::getApplication();
 				<input type="hidden" name="radius_search_geocode_lon<?php echo $d->renderOrder; ?>" value="<?php echo $d->searchLongitude; ?>" />
 			</div>
 			<div class="radius_search_buttons" id="radius_search_buttons<?php echo $d->renderOrder; ?>">
-				<input type="button" class="btn btn-link cancel" value="<?php echo FText::_('COM_FABRIK_CANCEL'); ?>" />
+				<input type="button" class="btn btn-link cancel" value="<?php echo Text::_('COM_FABRIK_CANCEL'); ?>" />
 				<input type="button" name="filter" value="Go" class="fabrik_filter_submit button btn btn-primary"></div>
 		</div>
 	</div>

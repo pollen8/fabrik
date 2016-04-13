@@ -2,5 +2,8 @@
     "require": {
         "popphp/pop-shipping": "^2.0",
         "omnipay/omnipay": "~2.3"
+    },
+    "autoload": {
+        "psr-4": {"Fabrik\\": "fabrik"}
     }
 }

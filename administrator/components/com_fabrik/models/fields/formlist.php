@@ -12,11 +12,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 use Fabrik\Helpers\Worker;
-
-require_once JPATH_ADMINISTRATOR . '/components/com_fabrik/helpers/element.php';
-
-// Needed for when you make a menu item link to a form.
-require_once JPATH_SITE . '/components/com_fabrik/helpers/string.php';
+use Fabrik\Helpers\Text;
 
 jimport('joomla.html.html');
 jimport('joomla.form.formfield');
@@ -75,10 +71,10 @@ class JFormFieldFormList extends JFormFieldList
 			switch ($row->published)
 			{
 				case '0':
-					$row->text .= ' [' . FText::_('JUNPUBLISHED') . ']';
+					$row->text .= ' [' . Text::_('JUNPUBLISHED') . ']';
 					break;
 				case '-2':
-					$row->text .= ' [' . FText::_('JTRASHED') . ']';
+					$row->text .= ' [' . Text::_('JTRASHED') . ']';
 					break;
 			}
 		}

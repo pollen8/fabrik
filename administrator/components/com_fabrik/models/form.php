@@ -14,8 +14,10 @@ defined('_JEXEC') or die('Restricted access');
 
 require_once 'fabmodeladmin.php';
 
-use Joomla\Utilities\ArrayHelper;
+use Fabrik\Helpers\ArrayHelper;
 use Fabrik\Helpers\Worker;
+use Fabrik\Helpers\StringHelper;
+use Fabrik\Helpers\Text;
 
 /**
  * Fabrik Admin Form Model
@@ -136,10 +138,10 @@ class FabrikAdminModelForm extends FabModelAdmin
 	{
 		$input                                = $this->app->input;
 		$jForm                                = $input->get('jform', array(), 'array');
-		$data['params']['plugins']            = (array) FArrayHelper::getValue($jForm, 'plugin');
-		$data['params']['plugin_locations']   = (array) FArrayHelper::getValue($jForm, 'plugin_locations');
-		$data['params']['plugin_events']      = (array) FArrayHelper::getValue($jForm, 'plugin_events');
-		$data['params']['plugin_description'] = (array) FArrayHelper::getValue($jForm, 'plugin_description');
+		$data['params']['plugins']            = (array) ArrayHelper::getValue($jForm, 'plugin');
+		$data['params']['plugin_locations']   = (array) ArrayHelper::getValue($jForm, 'plugin_locations');
+		$data['params']['plugin_events']      = (array) ArrayHelper::getValue($jForm, 'plugin_events');
+		$data['params']['plugin_description'] = (array) ArrayHelper::getValue($jForm, 'plugin_description');
 
 		/**
 		 * Move back into the main data array some values we are rendering as
@@ -152,7 +154,7 @@ class FabrikAdminModelForm extends FabModelAdmin
 			$data[$opt] = $data['params'][$opt];
 		}
 
-		$tmpName = FArrayHelper::getValue($data, 'db_table_name');
+		$tmpName = ArrayHelper::getValue($data, 'db_table_name');
 		unset($data['db_table_name']);
 		$return = parent::save($data);
 
@@ -235,7 +237,7 @@ class FabrikAdminModelForm extends FabModelAdmin
 			// Update existing table (seems to need to reload here to ensure that _table is set)
 			$listModel->loadFromFormId($formId);
 			$listModel->ammendTable();
-			$currentGroups = (array) FArrayHelper::getValue($data, 'current_groups');
+			$currentGroups = (array) ArrayHelper::getValue($data, 'current_groups');
 			$this->_makeFormGroups($currentGroups);
 		}
 	}
@@ -257,7 +259,7 @@ class FabrikAdminModelForm extends FabModelAdmin
 		$recordInDatabase       = $data['record_in_database'];
 		$jForm                  = $this->app->input->get('jform', array(), 'array');
 		$this->contentTypeModel = JModelLegacy::getInstance('ContentTypeImport', 'FabrikAdminModel', array('listModel' => $listModel));
-		$groups                 = FArrayHelper::getValue($data, 'current_groups');
+		$groups                 = ArrayHelper::getValue($data, 'current_groups');
 		$contentType            = ArrayHelper::getValue($jForm, 'contenttype');
 
 		if ($createGroup)
@@ -267,7 +269,7 @@ class FabrikAdminModelForm extends FabModelAdmin
 
 		if (empty($groups) && !$isNew)
 		{
-			throw new Exception(FText::_('COM_FABRIK_ERR_ONE_GROUP_MUST_BE_SELECTED'));
+			throw new Exception(Text::_('COM_FABRIK_ERR_ONE_GROUP_MUST_BE_SELECTED'));
 		}
 
 		// If new and record in db and group selected then we want to get those groups elements to create fields for in the db table
@@ -314,7 +316,7 @@ class FabrikAdminModelForm extends FabModelAdmin
 			$dbTableName = $data['db_table_name'] !== '' ? $data['db_table_name'] : $data['label'];
 
 			// Mysql will force db table names to lower case even if you set the db name to upper case - so use clean()
-			$dbTableName = FabrikString::clean($dbTableName);
+			$dbTableName = StringHelper::clean($dbTableName);
 
 			// Otherwise part of the table name is taken for element names
 			$dbTableName = str_replace('___', '_', $dbTableName);

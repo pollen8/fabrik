@@ -17,7 +17,7 @@ use \JHtml;
 use \stdClass;
 use \JFactory;
 use \DateTimeZone;
-use \FText;
+use Fabrik\Helpers\Text;
 
 /**
  * Plugin element to render a timestamp
@@ -94,7 +94,7 @@ class Timestamp extends Element
 	{
 		$params = $this->getParams();
 		$tz_offset = $params->get('gmt_or_local', '0') == '0';
-		$data = JHTML::_('date', $data, FText::_($params->get('timestamp_format', 'DATE_FORMAT_LC2')), $tz_offset);
+		$data = JHTML::_('date', $data, Text::_($params->get('timestamp_format', 'DATE_FORMAT_LC2')), $tz_offset);
 
 		return parent::renderListData($data, $thisRow, $opts);
 	}

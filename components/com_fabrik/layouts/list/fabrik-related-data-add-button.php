@@ -6,6 +6,7 @@
 defined('JPATH_BASE') or die;
 
 use Fabrik\Helpers\Html;
+use Fabrik\Helpers\Text;
 
 $d = $displayData;
 $trigger = $d->popUp ? 'data-fabrik-view="form"' : '';
@@ -19,9 +20,9 @@ $trigger = $d->popUp ? 'data-fabrik-view="form"' : '';
 </span></a>
 <?php else :?>
 	<div style="text-align:center">
-		<a title="<?php echo FText::_('JERROR_ALERTNOAUTHOR'); ?>">
+		<a title="<?php echo Text::_('JERROR_ALERTNOAUTHOR'); ?>">
 			<img src="<?php echo COM_FABRIK_LIVESITE; ?>media/com_fabrik/images/login.png"
-				alt="<?php echo FText::_('JERROR_ALERTNOAUTHOR'); ?>" />
+				alt="<?php echo Text::_('JERROR_ALERTNOAUTHOR'); ?>" />
 		</a>
 	</div>
 <?php endif; ?>

@@ -11,7 +11,9 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Fabrik\Helpers\ArrayHelper;
 use Fabrik\Helpers\Html;
+use Fabrik\Helpers\StringHelper;
 
 jimport('joomla.application.component.model');
 
@@ -60,7 +62,7 @@ class FabrikModelCoverflow extends FabrikFEModelVisualization
 			if ($listModel->canView() || $listModel->canEdit())
 			{
 				$elements = $listModel->getElements();
-				$imageElement = FArrayHelper::getValue($elements, FabrikString::safeColName($image));
+				$imageElement = ArrayHelper::getValue($elements, StringHelper::safeColName($image));
 
 				foreach ($data as $group)
 				{
@@ -76,8 +78,8 @@ class FabrikModelCoverflow extends FabrikFEModelVisualization
 								{
 									case 'FabrikModelFabrikImage':
 										$rootFolder = $imageElement->getParams()->get('selectImage_root_folder');
-										$rootFolder = JString::ltrim($rootFolder, '/');
-										$rootFolder = JString::rtrim($rootFolder, '/');
+										$rootFolder = StringHelper::ltrim($rootFolder, '/');
+										$rootFolder = StringHelper::rtrim($rootFolder, '/');
 										$event->image = COM_FABRIK_LIVESITE . 'images/stories/' . $rootFolder . '/' . $row->{$image . '_raw'};
 										break;
 									default:

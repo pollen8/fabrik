@@ -11,6 +11,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Fabrik\Helpers\ArrayHelper;
+use Fabrik\Helpers\Text;
 use Fabrik\Helpers\Worker;
 
 // Require the abstract plugin class
@@ -68,12 +70,12 @@ class PlgFabrik_ValidationruleEmailExists extends PlgFabrik_Validationrule
 		if (!empty($userField))
 		{
 			// $$$ the array thing needs fixing, for now just grab 0
-			$formData = $elementModel->getForm()->formData;
-			$userId = FArrayHelper::getValue($formData, $user_fullName . '_raw', FArrayHelper::getValue($formData, $user_fullName, ''));
+			$formData = $elementModel->getFormModel()->formData;
+			$userId = ArrayHelper::getValue($formData, $user_fullName . '_raw', ArrayHelper::getValue($formData, $user_fullName, ''));
 
 			if (is_array($userId))
 			{
-				$userId = FArrayHelper::getValue($userId, 0, '');
+				$userId = ArrayHelper::getValue($userId, 0, '');
 			}
 		}
 
@@ -147,7 +149,7 @@ class PlgFabrik_ValidationruleEmailExists extends PlgFabrik_Validationrule
 
 		if ($cond == 'fail_if_not_exists')
 		{
-			return FText::_('PLG_VALIDATIONRULE_EMAILEXISTS_LABEL_NOT');
+			return Text::_('PLG_VALIDATIONRULE_EMAILEXISTS_LABEL_NOT');
 		}
 		else
 		{

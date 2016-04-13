@@ -13,18 +13,16 @@ namespace Fabrik\Plugins\Element;
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Joomla\Utilities\ArrayHelper;
-use \FArrayHelper;
 use \JHtml;
 use \stdClass;
+use Fabrik\Helpers\ArrayHelper;
 use Fabrik\Helpers\Worker;
-use \FabrikString;
+use Fabrik\Helpers\StringHelper;
+use Fabrik\Helpers\Text;
 use \JComponentHelper;
 use \JApplication;
 use \JFactory;
 use \JUri;
-use \JText;
-use \FText;
 use Fabrik\Helpers\Html;
 
 /**
@@ -215,7 +213,7 @@ class Rating extends Element
 			$query->select('row_id, AVG(rating) AS r, COUNT(rating) AS total')->from(' #__{package}_ratings')
 				->where(array('rating <> -1', 'listid = ' . (int) $listId, 'formid = ' . (int) $formId, 'element_id = ' . (int) $elementId));
 
-			if (FArrayHelper::emptyIsh($ids))
+			if (ArrayHelper::emptyIsh($ids))
 			{
 				$query->where('6 = -6');
 			}
@@ -267,7 +265,7 @@ class Rating extends Element
 			$query->select('row_id, user_id')->from('#__{package}_ratings')
 				->where(array('rating <> -1', 'listid = ' . (int) $listId, 'formid = ' . (int) $formId, 'element_id = ' . (int) $elementId));
 
-			if (FArrayHelper::emptyIsh($ids))
+			if (ArrayHelper::emptyIsh($ids))
 			{
 				$query->where('6 = -6');
 			}
@@ -345,7 +343,7 @@ class Rating extends Element
 
 		if ($input->get('view') == 'form' && $params->get('rating-rate-in-form', true) == 0)
 		{
-			return FText::_('PLG_ELEMENT_RATING_ONLY_ACCESSIBLE_IN_DETAILS_VIEW');
+			return Text::_('PLG_ELEMENT_RATING_ONLY_ACCESSIBLE_IN_DETAILS_VIEW');
 		}
 
 		$rowId = $this->getFormModel()->getRowId();
@@ -353,7 +351,7 @@ class Rating extends Element
 		/*
 		if (empty($rowId))
 		{
-			return FText::_('PLG_ELEMENT_RATING_NO_RATING_TILL_CREATED');
+			return Text::_('PLG_ELEMENT_RATING_NO_RATING_TILL_CREATED');
 		}
 		*/
 
@@ -473,7 +471,7 @@ class Rating extends Element
 	 */
 	private function getCookieName($listId, $rowId)
 	{
-		$cookieName = "rating-table_{$listId}_row_{$rowId}" . FabrikString::filteredIp();
+		$cookieName = "rating-table_{$listId}_row_{$rowId}" . StringHelper::filteredIp();
 		jimport('joomla.utilities.utility');
 
 		return JApplication::getHash($cookieName);
@@ -614,7 +612,7 @@ class Rating extends Element
 		$opts->rating = $value;
 		$opts->listid = $listId;
 
-		JText::script('PLG_ELEMENT_RATING_NO_RATING');
+		Text::script('PLG_ELEMENT_RATING_NO_RATING');
 
 		return array('FbRating', $id, $opts);
 	}

@@ -11,7 +11,9 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Fabrik\Helpers\ArrayHelper;
 use Fabrik\Helpers\Html;
+use Fabrik\Helpers\StringHelper;
 use Fabrik\Helpers\Worker;
 
 jimport('joomla.application.component.model');
@@ -73,13 +75,13 @@ class FabrikFEModelElementValidator extends FabModel
 
 		$params = $this->elementModel->getParams();
 		$validations = (array) $params->get('validations', 'array');
-		$usedPlugins = (array) FArrayHelper::getValue($validations, 'plugin', array());
-		$published = FArrayHelper::getValue($validations, 'plugin_published', array());
-		$showIcon = FArrayHelper::getValue($validations, 'show_icon', array());
-		$mustValidate = FArrayHelper::getValue($validations, 'must_validate', array());
-		$validateIn = FArrayHelper::getValue($validations, 'validate_in', array());
-		$validationOn = FArrayHelper::getValue($validations, 'validation_on', array());
-		$mustValidate = FArrayHelper::getValue($validations, 'must_validate', array());
+		$usedPlugins = (array) ArrayHelper::getValue($validations, 'plugin', array());
+		$published = ArrayHelper::getValue($validations, 'plugin_published', array());
+		$showIcon = ArrayHelper::getValue($validations, 'show_icon', array());
+		$mustValidate = ArrayHelper::getValue($validations, 'must_validate', array());
+		$validateIn = ArrayHelper::getValue($validations, 'validate_in', array());
+		$validationOn = ArrayHelper::getValue($validations, 'validation_on', array());
+		$mustValidate = ArrayHelper::getValue($validations, 'must_validate', array());
 
 		$pluginManager = Worker::getPluginManager();
 		$pluginManager->getPlugInGroup('validationrule');
@@ -93,14 +95,14 @@ class FabrikFEModelElementValidator extends FabModel
 		{
 			if ($usedPlugin !== '')
 			{
-				$isPublished = FArrayHelper::getValue($published, $i, true);
+				$isPublished = ArrayHelper::getValue($published, $i, true);
 
 				if ($isPublished)
 				{
-					$class = 'PlgFabrik_Validationrule' . JString::ucfirst($usedPlugin);
+					$class = 'PlgFabrik_Validationrule' . StringHelper::ucfirst($usedPlugin);
 					$conf = array();
-					$conf['name'] = JString::strtolower($usedPlugin);
-					$conf['type'] = JString::strtolower('fabrik_Validationrule');
+					$conf['name'] = StringHelper::strtolower($usedPlugin);
+					$conf['type'] = StringHelper::strtolower('fabrik_Validationrule');
 
 					/** @var PlgFabrik_Validationrule $plugIn */
 					$plugIn = new $class($dispatcher, $conf);
@@ -111,10 +113,10 @@ class FabrikFEModelElementValidator extends FabModel
 					// Set params relative to plugin render order
 					$plugIn->setParams($params, $i);
 
-					$plugIn->getParams()->set('show_icon', FArrayHelper::getValue($showIcon, $i, true));
-					$plugIn->getParams()->set('validate_in', FArrayHelper::getValue($validateIn, $i, 'both'));
-					$plugIn->getParams()->set('validation_on', FArrayHelper::getValue($validationOn, $i, 'both'));
-					$plugIn->getParams()->set('must_validate', FArrayHelper::getValue($mustValidate, $i, '0'));
+					$plugIn->getParams()->set('show_icon', ArrayHelper::getValue($showIcon, $i, true));
+					$plugIn->getParams()->set('validate_in', ArrayHelper::getValue($validateIn, $i, 'both'));
+					$plugIn->getParams()->set('validation_on', ArrayHelper::getValue($validationOn, $i, 'both'));
+					$plugIn->getParams()->set('must_validate', ArrayHelper::getValue($mustValidate, $i, '0'));
 					$plugIn->js();
 					$c++;
 				}

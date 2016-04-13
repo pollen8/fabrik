@@ -21,6 +21,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 use \Joomla\Registry\Registry;
+use Fabrik\Helpers\Text;
 
 if (!function_exists('shFetchFormName'))
 {
@@ -46,7 +47,7 @@ if (!function_exists('shFetchFormName'))
 		$db->setQuery($query);
 		$formName = $db->loadResult();
 
-		return isset($formName) ? FText::_($formName) : '';
+		return isset($formName) ? Text::_($formName) : '';
 	}
 }
 
@@ -74,7 +75,7 @@ if (!function_exists('shFetchListName'))
 		$db->setQuery($query);
 		$listName = $db->loadResult();
 
-		return isset($listName) ? FText::_($listName) : '';
+		return isset($listName) ? Text::_($listName) : '';
 	}
 }
 
@@ -198,7 +199,7 @@ if (!function_exists('shFetchVizName'))
 		$db->setQuery($query);
 		$vizName = $db->loadResult();
 
-		return isset($vizName) ? FText::_($vizName) : '';
+		return isset($vizName) ? Text::_($vizName) : '';
 	}
 }
 
@@ -238,12 +239,12 @@ switch ($view)
 		if (isset($formId) && $rowId != '')
 		{
 			$config->get('fabrik_sef_customtxt_edit') == '' ? $edit = 'edit' : $edit = $config->get('fabrik_sef_customtxt_edit');
-			$title[] = shFetchFormName($formId) . '-' . $rowId . '-' . FText::_($edit);
+			$title[] = shFetchFormName($formId) . '-' . $rowId . '-' . Text::_($edit);
 		}
 		else
 		{
 			$config->get('fabrik_sef_customtxt_new') == '' ? $new = 'new' : $new = $config->get('fabrik_sef_customtxt_new');
-			$title[] = shFetchFormName($formId) . '-' . FText::_($new);
+			$title[] = shFetchFormName($formId) . '-' . Text::_($new);
 		}
 		break;
 

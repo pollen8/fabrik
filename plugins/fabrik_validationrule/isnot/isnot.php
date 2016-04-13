@@ -11,6 +11,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Fabrik\Helpers\Text;
+
 // Require the abstract plugin class
 require_once COM_FABRIK_FRONTEND . '/models/validation_rule.php';
 
@@ -72,11 +74,11 @@ class PlgFabrik_ValidationruleIsNot extends PlgFabrik_Validationrule
 
 		if ($tipText !== '')
 		{
-			return FText::_($tipText);
+			return Text::_($tipText);
 		}
 
 		$isNot = $params->get('isnot-isnot');
 
-		return JText::sprintf('PLG_VALIDATIONRULE_ISNOT_LABEL', $isNot);
+		return Text::sprintf('PLG_VALIDATIONRULE_ISNOT_LABEL', $isNot);
 	}
 }

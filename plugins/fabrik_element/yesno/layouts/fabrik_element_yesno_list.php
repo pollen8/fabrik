@@ -14,6 +14,7 @@ defined('_JEXEC') or die('Restricted access');
 
 use Fabrik\Helpers\Html;
 use Fabrik\Helpers\Worker;
+use Fabrik\Helpers\Text;
 
 $d = $displayData;
 $data = $d->value;
@@ -22,11 +23,11 @@ $j3 = Worker::j3();
 
 if ($data == '1') :
 	$icon = $j3 ? 'checkmark.png' : '1.png';
-	$opts = array('alt' => FText::_('JYES'));
+	$opts = array('alt' => Text::_('JYES'));
 
 	echo Html::image($icon, 'list', $tmpl, $opts);
 else :
 	$icon = $j3 ? 'remove.png' : '0.png';
 
-	echo Html::image($icon, 'list', $tmpl, array('alt' => FText::_('JNO')));
+	echo Html::image($icon, 'list', $tmpl, array('alt' => Text::_('JNO')));
 endif;

@@ -12,6 +12,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 use Fabrik\Helpers\Worker;
+use Fabrik\Helpers\Text;
 
 // Require the abstract plugin class
 require_once COM_FABRIK_FRONTEND . '/models/plugin-cron.php';
@@ -80,11 +81,11 @@ class PlgFabrik_Cronnotification extends PlgFabrik_Cron
 			 * {observer_name, creator_name, event, record url
 			 * dear %s, %s has %s on %s
 			 */
-			$event = FText::_($row->event);
+			$event = Text::_($row->event);
 			list($listId, $formId, $rowId) = explode('.', $row->reference);
 
 			$url = JRoute::_('index.php?option=com_fabrik&view=details&listid=' . $listId . '&formid=' . $formId . '&rowid=' . $rowId);
-			$msg = JText::sprintf('FABRIK_NOTIFICATION_EMAIL_PART', $row->creator_name, $url, $event);
+			$msg = Text::sprintf('FABRIK_NOTIFICATION_EMAIL_PART', $row->creator_name, $url, $event);
 
 			if (!array_key_exists($row->observer_id, $usermsgs))
 			{
@@ -98,7 +99,7 @@ class PlgFabrik_Cronnotification extends PlgFabrik_Cron
 			$sent[] = (string) $query;
 		}
 
-		$subject = $siteName . ": " . FText::_('FABRIK_NOTIFICATION_EMAIL_SUBJECT');
+		$subject = $siteName . ": " . Text::_('FABRIK_NOTIFICATION_EMAIL_SUBJECT');
 
 		foreach ($usermsgs as $email => $messages)
 		{

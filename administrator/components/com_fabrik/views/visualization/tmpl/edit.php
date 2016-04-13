@@ -13,6 +13,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 use Fabrik\Helpers\Html;
+use Fabrik\Helpers\Text;
 
 JHtml::addIncludePath(JPATH_COMPONENT . '/helpers/html');
 JHTML::stylesheet('administrator/components/com_fabrik/views/fabrikadmin.css');
@@ -24,7 +25,7 @@ JHtml::_('behavior.keepalive');
 <form action="<?php JRoute::_('index.php?option=com_fabik'); ?>" method="post" name="adminForm" id="adminForm" class="form-validate">
 	<div class="width-50 fltlft">
 		<fieldset class="adminform">
-			<legend><?php echo FText::_('COM_FABRIK_DETAILS');?></legend>
+			<legend><?php echo Text::_('COM_FABRIK_DETAILS');?></legend>
 			<ul class="adminformlist">
 			<?php foreach($this->form->getFieldset('details') as $field): ?>
 				<li>
@@ -39,7 +40,7 @@ JHtml::_('behavior.keepalive');
 		</fieldset>
 
 		<fieldset class="adminform">
-			<legend><?php echo FText::_('COM_FABRIK_OPTIONS');?></legend>
+			<legend><?php echo Text::_('COM_FABRIK_OPTIONS');?></legend>
 			<div id="plugin-container">
 				<?php echo $this->pluginFields;?>
 			</div>
@@ -49,7 +50,7 @@ JHtml::_('behavior.keepalive');
 <div class="width-50 fltrt">
 
 	<?php echo JHtml::_('sliders.start','list-sliders-'.$this->item->id, array('useCookie'=>1)); ?>
-	<?php echo JHtml::_('sliders.panel', FText::_('COM_FABRIK_GROUP_LABEL_PUBLISHING_DETAILS'), 'details');?>
+	<?php echo JHtml::_('sliders.panel', Text::_('COM_FABRIK_GROUP_LABEL_PUBLISHING_DETAILS'), 'details');?>
 
 		<fieldset class="adminform">
 		<ul class="adminformlist">
@@ -64,7 +65,7 @@ JHtml::_('behavior.keepalive');
 			</ul>
 		</fieldset>
 
-		<?php echo JHtml::_('sliders.panel', FText::_('COM_FABRIK_VISUALIZATION_LABEL_VISUALIZATION_DETAILS'), 'more');  ?>
+		<?php echo JHtml::_('sliders.panel', Text::_('COM_FABRIK_VISUALIZATION_LABEL_VISUALIZATION_DETAILS'), 'more');  ?>
 		<fieldset class="adminform">
 		<ul class="adminformlist">
 			<?php foreach($this->form->getFieldset('more') as $field): ?>

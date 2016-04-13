@@ -12,6 +12,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 use Fabrik\Helpers\Html;
+use Fabrik\Helpers\Text;
 
 jimport('joomla.application.component.view');
 
@@ -112,21 +113,21 @@ class FabrikViewCsv extends FabrikView
 		$opts->winid = $this->app->input->get('winid', '');
 		$opts        = json_encode($opts);
 
-		JText::script('COM_FABRIK_CSV_COMPLETE');
-		JText::script('COM_FABRIK_CSV_DOWNLOAD_HERE');
-		JText::script('COM_FABRIK_CONFIRM_DELETE');
-		JText::script('COM_FABRIK_CSV_DOWNLOADING');
-		JText::script('COM_FABRIK_FILE_TYPE');
-		JText::script('COM_FABRIK_INCLUDE_FILTERS');
-		JText::script('COM_FABRIK_INCLUDE_RAW_DATA');
-		JText::script('COM_FABRIK_INCLUDE_DATA');
-		JText::script('COM_FABRIK_INCLUDE_CALCULATIONS');
-		JText::script('COM_FABRIK_EXPORT');
-		JText::script('COM_FABRIK_LOADING');
-		JText::script('COM_FABRIK_RECORDS');
-		JText::script('JNO');
-		JText::script('JYES');
-		JText::script('COM_FABRIK_SAVING_TO');
+		Text::script('COM_FABRIK_CSV_COMPLETE');
+		Text::script('COM_FABRIK_CSV_DOWNLOAD_HERE');
+		Text::script('COM_FABRIK_CONFIRM_DELETE');
+		Text::script('COM_FABRIK_CSV_DOWNLOADING');
+		Text::script('COM_FABRIK_FILE_TYPE');
+		Text::script('COM_FABRIK_INCLUDE_FILTERS');
+		Text::script('COM_FABRIK_INCLUDE_RAW_DATA');
+		Text::script('COM_FABRIK_INCLUDE_DATA');
+		Text::script('COM_FABRIK_INCLUDE_CALCULATIONS');
+		Text::script('COM_FABRIK_EXPORT');
+		Text::script('COM_FABRIK_LOADING');
+		Text::script('COM_FABRIK_RECORDS');
+		Text::script('JNO');
+		Text::script('JYES');
+		Text::script('COM_FABRIK_SAVING_TO');
 
 		$srcs   = Html::framework();
 		$srcs['ListPlugin'] = 'media/com_fabrik/js/list-plugin.js';

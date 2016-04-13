@@ -12,6 +12,8 @@
 defined('_JEXEC') or die('Restricted access');
 
 use Fabrik\Helpers\Worker;
+use Fabrik\Helpers\StringHelper;
+use Fabrik\Helpers\Text;
 
 jimport('joomla.application.component.model');
 
@@ -274,7 +276,7 @@ class FabrikFEModelConnection extends FabModel
 	 */
 	private function getBaseDriverName($driverName = '')
 	{
-		return FabrikString::rtrimword($driverName, '_fab');
+		return StringHelper::rtrimword($driverName, '_fab');
 	}
 
 	/**
@@ -359,7 +361,7 @@ class FabrikFEModelConnection extends FabModel
 	{
 		$connectionTables = array();
 		$connectionTables[-1] = array();
-		$connectionTables[-1][] = JHTML::_('select.option', '-1', FText::_('COM_FABRIK_PLEASE_SELECT'));
+		$connectionTables[-1][] = JHTML::_('select.option', '-1', Text::_('COM_FABRIK_PLEASE_SELECT'));
 
 		foreach ($connections as $cn)
 		{

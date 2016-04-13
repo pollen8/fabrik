@@ -14,13 +14,13 @@ namespace Fabrik\Plugins\Element;
 defined('_JEXEC') or die('Restricted access');
 
 use Fabrik\Helpers\Html;
-use \FArrayHelper;
 use \JHtml;
 use \stdClass;
+use Fabrik\Helpers\ArrayHelper;
 use Fabrik\Helpers\Worker;
-use \FabrikString;
-use \FabrikLayoutFile;
-use \FText;
+use Fabrik\Helpers\StringHelper;
+use Fabrik\Helpers\LayoutFile;
+use Fabrik\Helpers\Text;
 
 /**
  * Plugin element to yes/no radio options - render as tick/cross in list view
@@ -83,7 +83,7 @@ class Yesno extends Radiobutton
 		$displayData        = new stdClass;
 		$displayData->tmpl  = @$this->tmpl;
 		$basePath           = JPATH_ROOT . '/plugins/fabrik_element/yesno/layouts';
-		$layout             = new FabrikLayoutFile('fabrik_element_yesno_list', $basePath);
+		$layout             = new LayoutFile('fabrik_element_yesno_list', $basePath);
 		$layout->addIncludePaths(JPATH_THEMES . '/' . $this->app->getTemplate() . '/html/layouts');
 		$labelData = array();
 
@@ -118,13 +118,13 @@ class Yesno extends Radiobutton
 		{
 			$icon = $j3 ? 'checkmark.png' : '1_8bit.png';
 
-			return Html::image($icon, 'list', @$this->tmpl, array('alt' => FText::_('JYES')));
+			return Html::image($icon, 'list', @$this->tmpl, array('alt' => Text::_('JYES')));
 		}
 		else
 		{
 			$icon = $j3 ? 'remove.png' : '0_8bit.png';
 
-			return Html::image($icon, 'list', @$this->tmpl, array('alt' => FText::_('JNO')));
+			return Html::image($icon, 'list', @$this->tmpl, array('alt' => Text::_('JNO')));
 		}
 	}
 
@@ -145,7 +145,7 @@ class Yesno extends Radiobutton
 
 		foreach ($rawData as $d)
 		{
-			$ret[]    = (bool) $d ? FText::_('JYES') : FText::_('JNO');
+			$ret[]    = (bool) $d ? Text::_('JYES') : Text::_('JNO');
 		}
 
 		if (count($ret) > 1)
@@ -185,7 +185,7 @@ class Yesno extends Radiobutton
 	 */
 	protected function getSubOptionLabels($data = array())
 	{
-		return array(FText::_('JNO'), FText::_('JYES'));
+		return array(Text::_('JNO'), Text::_('JYES'));
 	}
 
 	/**
@@ -231,7 +231,7 @@ class Yesno extends Radiobutton
 		$displayData->tmpl = @$this->tmpl;
 		$displayData->format = $this->app->input->get('format', '');;
 		$basePath = JPATH_ROOT . '/plugins/fabrik_element/yesno/layouts';
-		$layout = new FabrikLayoutFile('fabrik_element_yesno_details', $basePath);
+		$layout = new LayoutFile('fabrik_element_yesno_details', $basePath);
 		$layout->addIncludePaths(JPATH_THEMES . '/' . $this->app->getTemplate() . '/html/layouts');
 
 		return $layout->render($displayData);
@@ -297,7 +297,7 @@ class Yesno extends Radiobutton
 	{
 		$listModel = $this->getlistModel();
 		$elName = $this->getFullName(true, false);
-		$elName = FabrikString::safeColName($elName);
+		$elName = StringHelper::safeColName($elName);
 		$v = 'fabrik___filter[list_' . $listModel->getRenderContext() . '][value]';
 		$v .= ($normal) ? '[' . $counter . ']' : '[]';
 		$default = $this->getDefaultFilterVal($normal, $counter);
@@ -352,12 +352,12 @@ class Yesno extends Radiobutton
 		{
 			if ($row->value == 1)
 			{
-				$row->text = FText::_('JYES');
+				$row->text = Text::_('JYES');
 			}
 
 			if ($row->value == 0)
 			{
-				$row->text = FText::_('JNO');
+				$row->text = Text::_('JNO');
 			}
 		}
 
@@ -380,8 +380,8 @@ class Yesno extends Radiobutton
 	 */
 	protected function filterValueList_All($normal, $tableName = '', $label = '', $id = '', $incjoin = true)
 	{
-		$rows = array(JHTML::_('select.option', '', $this->filterSelectLabel()), JHTML::_('select.option', '0', FText::_('JNO')),
-			JHTML::_('select.option', '1', FText::_('JYES')));
+		$rows = array(JHTML::_('select.option', '', $this->filterSelectLabel()), JHTML::_('select.option', '0', Text::_('JNO')),
+			JHTML::_('select.option', '1', Text::_('JYES')));
 
 		return $rows;
 	}
@@ -440,8 +440,8 @@ class Yesno extends Radiobutton
 				$pk = $listModel->getPrimaryKey();
 			}
 
-			$shortPk = FabrikString::shortColName($pk);
-			$rowId = FArrayHelper::getValue($data, $shortPk, null);
+			$shortPk = StringHelper::shortColName($pk);
+			$rowId = ArrayHelper::getValue($data, $shortPk, null);
 
 			$query->update($this->actualTableName())->set($name . ' = 0');
 
@@ -451,7 +451,7 @@ class Yesno extends Radiobutton
 			}
 
 			$toggle_where = $params->get('toggle_where', '');
-			FabrikString::ltrimiword($toggle_where, 'where');
+			StringHelper::ltrimiword($toggle_where, 'where');
 
 			if (!empty($toggle_where))
 			{

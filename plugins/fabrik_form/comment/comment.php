@@ -16,12 +16,12 @@ defined('_JEXEC') or die('Restricted access');
 use Fabrik\Helpers\Html;
 use \stdClass;
 use \FabTable;
-use \JText;
-use \FText;
+use Fabrik\Helpers\Text;
 use \JEditor;
 use \RuntimeException;
 use \JHtml;
 use Fabrik\Helpers\Worker;
+use Fabrik\Helpers\StringHelper;
 
 /**
  * Comment J Table
@@ -251,10 +251,10 @@ class Comment extends \PlgFabrik_Form
 		}
 
 		$opts = json_encode($opts);
-		JText::script('PLG_FORM_COMMENT_TYPE_A_COMMENT_HERE');
-		JText::script('PLG_FORM_COMMENT_PLEASE_ENTER_A_COMMENT_BEFORE_POSTING');
-		JText::script('PLG_FORM_COMMENT_PLEASE_ENTER_A_NAME_BEFORE_POSTING');
-		JText::script('PLG_FORM_COMMENT_ENTER_EMAIL_BEFORE_POSTNG');
+		Text::script('PLG_FORM_COMMENT_TYPE_A_COMMENT_HERE');
+		Text::script('PLG_FORM_COMMENT_PLEASE_ENTER_A_COMMENT_BEFORE_POSTING');
+		Text::script('PLG_FORM_COMMENT_PLEASE_ENTER_A_NAME_BEFORE_POSTING');
+		Text::script('PLG_FORM_COMMENT_ENTER_EMAIL_BEFORE_POSTNG');
 		$script = "var comments = new FabrikComment('fabrik-comments', $opts);";
 
 		if ($this->doThumbs())
@@ -455,7 +455,7 @@ class Comment extends \PlgFabrik_Form
 		$input = $this->app->input;
 		$layoutData = new stdClass;
 		$layoutData->insrc = Html::image("star_in.png", 'form', @$this->tmpl, array(), true);
-		$layoutData->name = (int) $comment->annonymous == 0 ? $comment->name : FText::_('PLG_FORM_COMMENT_ANONYMOUS_SHORT');
+		$layoutData->name = (int) $comment->annonymous == 0 ? $comment->name : Text::_('PLG_FORM_COMMENT_ANONYMOUS_SHORT');
 		$layoutData->comment = $comment;
 		$layoutData->dateFormat = $params->get('comment-date-format');
 		$layoutData->internalRating = $params->get('comment-internal-rating') == 1;
@@ -574,7 +574,7 @@ class Comment extends \PlgFabrik_Form
 		$filter = JFilterInput::getInstance();
 		$request = $filter->clean($_REQUEST, 'array');
 		$row->bind($request);
-		$row->ipaddress = FabrikString::filteredIp();
+		$row->ipaddress = StringHelper::filteredIp();
 		$row->user_id = $this->user->get('id');
 		$row->approved = 1;
 
@@ -803,7 +803,7 @@ class Comment extends \PlgFabrik_Form
 		$formModel = $this->getModel();
 		$params = $this->getParams();
 		$sentTo = array();
-		$title = FText::_('PLG_FORM_COMMENT_NEW_COMMENT_ADDED_TITLE');
+		$title = Text::_('PLG_FORM_COMMENT_NEW_COMMENT_ADDED_TITLE');
 
 		$layoutData = new stdClass;
 		$layoutData->row = $row;

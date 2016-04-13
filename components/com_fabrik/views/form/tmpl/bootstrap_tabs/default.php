@@ -10,6 +10,7 @@
  */
 
 use Fabrik\Helpers\Html;
+use Fabrik\Helpers\Text;
 
 // No direct access
 defined('_JEXEC') or die('Restricted access');
@@ -22,7 +23,7 @@ $active = ($form->error != '') ? '' : ' fabrikHide';
 if ($model->isMultiPage() && Html::isDebug())
 {
 	$app = JFactory::getApplication();
-	$app->enqueueMessage(FText::_('COM_FABRIK_ERR_TAB_FORM_TEMPLATE_INCOMPATIBLE_WITH_MULTIPAGE_FORMS'), 'error');
+	$app->enqueueMessage(Text::_('COM_FABRIK_ERR_TAB_FORM_TEMPLATE_INCOMPATIBLE_WITH_MULTIPAGE_FORMS'), 'error');
 }
 
 if ($this->params->get('show_page_heading', 1)) : ?>

@@ -13,11 +13,11 @@ namespace Fabrik\Plugins\Element;
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use \FArrayHelper;
+use Fabrik\Helpers\ArrayHelper;
 use \JHtml;
 use \stdClass;
-use \JString;
-use \JText;
+use Fabrik\Helpers\StringHelper;
+use Fabrik\Helpers\Text;
 use Fabrik\Helpers\Worker;
 
 /**
@@ -92,8 +92,8 @@ class Dropdown extends ElementList
 				$optGroup = true;
 			}
 
-			$tmpLabel = FArrayHelper::getValue($labels, $i);
-			$disable = FArrayHelper::getValue($endIs, $i);
+			$tmpLabel = ArrayHelper::getValue($labels, $i);
+			$disable = ArrayHelper::getValue($endIs, $i);
 
 			// For values like '1"'
 			$tmpVal = htmlspecialchars($tmpVal, ENT_QUOTES);
@@ -204,7 +204,7 @@ class Dropdown extends ElementList
 		$opts->data = (empty($values) && empty($labels)) ? array() : array_combine($values, $labels);
 		$opts->multiple = (bool) $params->get('multiple', '0') == '1';
 		$opts->advanced = $this->getAdvancedSelectClass() != '';
-		JText::script('PLG_ELEMENT_DROPDOWN_ENTER_VALUE_LABEL');
+		Text::script('PLG_ELEMENT_DROPDOWN_ENTER_VALUE_LABEL');
 
 		return array('FbDropdown', $id, $opts);
 	}
@@ -378,7 +378,7 @@ class Dropdown extends ElementList
 
 		for ($i = 0; $i < count($labels); $i++)
 		{
-			if (JString::strtolower($labels[$i]) == JString::strtolower($value))
+			if (StringHelper::strtolower($labels[$i]) == StringHelper::strtolower($value))
 			{
 				return $values[$i];
 			}
@@ -419,7 +419,7 @@ class Dropdown extends ElementList
 	public function getFilterQuery($key, $condition, $value, $originalValue, $type = 'normal')
 	{
 		$params = $this->getParams();
-		$condition = JString::strtoupper($condition);
+		$condition = StringHelper::strtoupper($condition);
 		$this->encryptFieldName($key);
 
 		if ((bool) $params->get('multiple', false))

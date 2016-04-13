@@ -3,6 +3,7 @@
 defined('JPATH_BASE') or die;
 
 use Fabrik\Helpers\Html;
+use Fabrik\Helpers\Text;
 
 $d = $displayData;
 ?>
@@ -16,7 +17,7 @@ $d = $displayData;
 			?>
 		<div class="clearslider_cont">
 			<img src="<?php echo $d->outSrc; ?>" style="cursor:pointer;padding:3px;"
-				alt="<?php echo FText::_('PLG_ELEMENT_SLIDER_CLEAR'); ?>" class="clearslider" />
+				alt="<?php echo Text::_('PLG_ELEMENT_SLIDER_CLEAR'); ?>" class="clearslider" />
 		</div>
 		<?php
 		endif;

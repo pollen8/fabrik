@@ -13,9 +13,9 @@ namespace Fabrik\Plugins\Element;
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use \FArrayHelper;
+use Fabrik\Helpers\ArrayHelper;
 use \stdClass;
-use \FabrikString;
+use Fabrik\Helpers\StringHelper;
 
 /**
  * Plugin element to store the user's IP address
@@ -48,14 +48,14 @@ class Ip extends Element
 
 		if ($params->get('ip_update_on_edit') || !$rowId || ($this->inRepeatGroup && $this->_inJoin && $this->_repeatGroupTotal == $repeatCounter))
 		{
-			$ip = FabrikString::filteredIp();
+			$ip = StringHelper::filteredIp();
 		}
 		else
 		{
 			if (empty($data) || empty($data[$name]))
 			{
 				// If $data is empty, we must (?) be a new row, so just grab the IP
-				$ip = FabrikString::filteredIp();
+				$ip = StringHelper::filteredIp();
 			}
 			else
 			{
@@ -111,7 +111,7 @@ class Ip extends Element
 		$formModel = $this->getFormModel();
 		$formData = $formModel->formData;
 
-		if (FArrayHelper::getValue($formData, 'rowid', 0) == 0 && !in_array($element->name, $data))
+		if (ArrayHelper::getValue($formData, 'rowid', 0) == 0 && !in_array($element->name, $data))
 		{
 			$data[$element->name] = $_SERVER['REMOTE_ADDR'];
 		}
@@ -121,8 +121,8 @@ class Ip extends Element
 
 			if ($params->get('ip_update_on_edit', 0))
 			{
-				$data[$element->name] = FabrikString::filteredIp();
-				$data[$element->name . '_raw'] = FabrikString::filteredIp();
+				$data[$element->name] = StringHelper::filteredIp();
+				$data[$element->name . '_raw'] = StringHelper::filteredIp();
 			}
 		}
 
@@ -140,7 +140,7 @@ class Ip extends Element
 	{
 		if (!isset($this->default))
 		{
-			$this->default = FabrikString::filteredIp();
+			$this->default = StringHelper::filteredIp();
 		}
 
 		return $this->default;

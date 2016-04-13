@@ -11,9 +11,9 @@ namespace Fabrik\Plugins\Form;
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Fabrik\Helpers\ArrayHelper;
+use Fabrik\Helpers\StringHelper;
 use Fabrik\Helpers\Worker;
-use \JString;
-use \FArrayHelper;
 
 /**
  * Process exif info from images, allowing you to insert the exif data into selected fields
@@ -48,7 +48,7 @@ class Exif extends \PlgFabrik_Form
 	 */
 	protected function exifToNumber($value, $format)
 	{
-		$spos = JString::strpos($value, '/');
+		$spos = StringHelper::strpos($value, '/');
 
 		if ($spos === false)
 		{
@@ -57,8 +57,8 @@ class Exif extends \PlgFabrik_Form
 		else
 		{
 			$bits = explode('/', $value, 2);
-			$base = FArrayHelper::getValue($bits, 0);
-			$divider = FArrayHelper::getValue($bits, 1);
+			$base = ArrayHelper::getValue($bits, 0);
+			$divider = ArrayHelper::getValue($bits, 1);
 
 			return ($divider == 0) ? sprintf($format, 0) : sprintf($format, ($base / $divider));
 		}

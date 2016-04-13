@@ -15,6 +15,7 @@ defined('_JEXEC') or die('Restricted access');
 jimport('joomla.application.component.controllerform');
 
 use Fabrik\Helpers\Html;
+use Fabrik\Helpers\Text;
 use Fabrik\Helpers\Worker;
 
 /**
@@ -60,7 +61,7 @@ class FabrikAdminControllerPackage extends JControllerForm
 
 		if (empty($rows))
 		{
-			echo "<li>" . JText::sprintf('COM_FABRIK_NO_FREE_ITEMS_FOUND') . "</li>";
+			echo "<li>" . Text::sprintf('COM_FABRIK_NO_FREE_ITEMS_FOUND') . "</li>";
 		}
 		else
 		{

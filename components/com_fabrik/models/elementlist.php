@@ -13,12 +13,10 @@ namespace Fabrik\Plugins\Element;
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Joomla\Utilities\ArrayHelper;
 use Fabrik\Helpers\Html;
-use \JString;
 use \stdClass;
-use \FArrayHelper;
-use \FabrikString;
+use Fabrik\Helpers\ArrayHelper;
+use Fabrik\Helpers\StringHelper;
 use \JHtml;
 use \JFactory;
 use Fabrik\Helpers\Worker;
@@ -209,7 +207,7 @@ class ElementList extends Element
 	public function getFilterQuery($key, $condition, $value, $originalValue, $type = 'normal')
 	{
 		$element = $this->getElement();
-		$condition = JString::strtoupper($condition);
+		$condition = StringHelper::strtoupper($condition);
 		$this->encryptFieldName($key);
 		$glue = 'OR';
 
@@ -292,10 +290,10 @@ class ElementList extends Element
 				foreach ($originalValue as &$v)
 				{
 					$v = trim($v);
-					$v = FabrikString::ltrimword($v, '"');
-					$v = FabrikString::ltrimword($v, "'");
-					$v = FabrikString::rtrimword($v, '"');
-					$v = FabrikString::rtrimword($v, "'");
+					$v = StringHelper::ltrimword($v, '"');
+					$v = StringHelper::ltrimword($v, "'");
+					$v = StringHelper::rtrimword($v, '"');
+					$v = StringHelper::rtrimword($v, "'");
 				}
 				break;
 			default:
@@ -532,7 +530,7 @@ class ElementList extends Element
 	public static function cacheAutoCompleteOptions($elementModel, $search, $opts = array())
 	{
 		$app = JFactory::getApplication();
-		$label = FArrayHelper::getValue($opts, 'label', '');
+		$label = ArrayHelper::getValue($opts, 'label', '');
 		$rows = $elementModel->filterValueList(true, '', $label);
 		$v = $app->input->get('value', '', 'string');
 
@@ -758,7 +756,7 @@ class ElementList extends Element
 		*/
 		$selected = (array) $this->getValue($data, $repeatCounter);
 
-		if (FArrayHelper::emptyIsh($selected))
+		if (ArrayHelper::emptyIsh($selected))
 		{
 			$selected = array();
 
@@ -1041,7 +1039,7 @@ class ElementList extends Element
 
 		foreach ($vals as $val)
 		{
-			$l = FArrayHelper::getValue($labels, $val, $defaultLabel);
+			$l = ArrayHelper::getValue($labels, $val, $defaultLabel);
 
 			if (trim($l) !== '')
 			{
@@ -1072,7 +1070,7 @@ class ElementList extends Element
 		{
 		$v = $params->get('sub_default_label');
 		}
-		return ($key === false) ? $v : FArrayHelper::getValue($labels, $key, $defaultLabel);
+		return ($key === false) ? $v : ArrayHelper::getValue($labels, $key, $defaultLabel);
 		*/
 		return $return;
 	}

@@ -13,16 +13,15 @@ namespace Fabrik\Plugins\Element;
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use \JString;
-use\JFactory;
 use \AYAH;
-use \stdClass;
-use \RuntimeException;
-use \JBrowser;
-use \FText;
-use \JRoute;
-use \FabrikString;
+use Fabrik\Helpers\StringHelper;
+use Fabrik\Helpers\Text;
 use Fabrik\Helpers\Html;
+use \JBrowser;
+use \JFactory;
+use \JRoute;
+use \RuntimeException;
+use \stdClass;
 
 /**
  * Plugin element to captcha
@@ -51,7 +50,7 @@ class Captcha extends Element
 
 		while ($i < $characters)
 		{
-			$code .= JString::substr($possible, mt_rand(0, JString::strlen($possible) - 1), 1);
+			$code .= StringHelper::substr($possible, mt_rand(0, StringHelper::strlen($possible) - 1), 1);
 			$i++;
 		}
 
@@ -226,7 +225,7 @@ class Captcha extends Element
 
 			// $$$tom added lang & theme options
 			$theme = $params->get('recaptcha_theme', 'red');
-			$lang  = JString::strtolower($params->get('recaptcha_lang', 'en'));
+			$lang  = StringHelper::strtolower($params->get('recaptcha_lang', 'en'));
 			$error = null;
 
 			if ($this->user->get('id') != 0 && $params->get('captcha-showloggedin', 0) == false)
@@ -273,7 +272,7 @@ class Captcha extends Element
 		{
 			if (!function_exists('imagettfbbox'))
 			{
-				throw new RuntimeException(FText::_('PLG_FABRIK_ELEMENT_CAPTCHA_STANDARD_TTF_ERROR'));
+				throw new RuntimeException(Text::_('PLG_FABRIK_ELEMENT_CAPTCHA_STANDARD_TTF_ERROR'));
 			}
 
 			$size       = $element->get('width');
@@ -370,7 +369,7 @@ class Captcha extends Element
 			{
 				$challenge = $input->get('recaptcha_challenge_field');
 				$response  = $input->get('recaptcha_response_field');
-				$resp      = recaptcha_check_answer($privateKey, FabrikString::filteredIp(), $challenge, $response);
+				$resp      = recaptcha_check_answer($privateKey, StringHelper::filteredIp(), $challenge, $response);
 
 				return ($resp->is_valid) ? true : false;
 			}
@@ -451,7 +450,7 @@ class Captcha extends Element
 	 */
 	public function getValidationErr()
 	{
-		return FText::_('PLG_ELEMENT_CAPTCHA_FAILED');
+		return Text::_('PLG_ELEMENT_CAPTCHA_FAILED');
 	}
 
 	/**
@@ -536,7 +535,7 @@ class Captcha extends Element
 
 		for ($i = 0; $i < 3; $i++)
 		{
-			if (JString::strlen($rgb[$i]) == 1)
+			if (StringHelper::strlen($rgb[$i]) == 1)
 			{
 				$rgb[$i] .= $rgb[$i];
 			}

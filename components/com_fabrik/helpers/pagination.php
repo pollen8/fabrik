@@ -8,10 +8,18 @@
  * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
+namespace Fabrik\Helpers;
+
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Fabrik\Helpers\Html;
+use \JVersion;
+use \JRoute;
+use \JFactory;
+use \stdClass;
+use \JPaginationObject;
+use \JFile;
+use \JHtml;
 
 /**
  * Makes the list navigation html to traverse the list data
@@ -30,7 +38,7 @@ jimport('joomla.html.pagination');
  * @package  Fabrik
  * @since    3.0
  */
-class FPagination extends JPagination
+class Pagination extends \JPagination
 {
 	/**
 	 * Action url
@@ -96,7 +104,7 @@ class FPagination extends JPagination
 	/**
 	 * Return the pagination footer
 	 *
-	 * @param   int    $listRef List reference
+	 * @param   string $listRef List reference
 	 * @param   string $tmpl    List template
 	 *
 	 * @return    string    Pagination footer
@@ -114,7 +122,7 @@ class FPagination extends JPagination
 
 		if ($this->showTotal)
 		{
-			$list['pagescounter'] .= ' ' . FText::_('COM_FABRIK_TOTAL') . ': ' . $list['total'];
+			$list['pagescounter'] .= ' ' . Text::_('COM_FABRIK_TOTAL') . ': ' . $list['total'];
 		}
 
 		$list['pageslinks'] = $this->getPagesLinks($listRef, $tmpl);
@@ -161,18 +169,18 @@ class FPagination extends JPagination
 
 		foreach ($values as $v)
 		{
-			$limits[] = JHTML::_('select.option', $v);
+			$limits[] = JHtml::_('select.option', $v);
 		}
 
 		if ($this->showAllOption == true)
 		{
-			$limits[] = JHTML::_('select.option', '-1', FText::_('COM_FABRIK_ALL'));
+			$limits[] = JHtml::_('select.option', '-1', Text::_('COM_FABRIK_ALL'));
 		}
 
 		$selected   = $this->viewAll ? '-1' : $this->limit;
 		$js         = '';
 		$attributes = 'class="inputbox input-mini" size="1" onchange="' . $js . '"';
-		$html       = JHTML::_('select.genericlist', $limits, 'limit' . $this->id, $attributes, 'value', 'text', $selected);
+		$html       = JHtml::_('select.genericlist', $limits, 'limit' . $this->id, $attributes, 'value', 'text', $selected);
 
 		return $html;
 	}
@@ -372,11 +380,11 @@ class FPagination extends JPagination
 		// Initialize variables
 		$data      = new stdClass;
 		$this->url = preg_replace("/limitstart{$this->id}=(.*)?(&|)/", '', $this->url);
-		$this->url = FabrikString::rtrimword($this->url, "&");
+		$this->url = StringHelper::rtrimword($this->url, "&");
 
 		// $$$ hugh - need to work out if we need & or ?
 		$sepchar        = strstr($this->url, '?') ? '&amp;' : '?';
-		$data->all      = new JPaginationObject(FText::_('COM_FABRIK_VIEW_ALL'));
+		$data->all      = new JPaginationObject(Text::_('COM_FABRIK_VIEW_ALL'));
 		$data->all->key = 'all';
 
 		if (!$this->viewAll)
@@ -386,9 +394,9 @@ class FPagination extends JPagination
 		}
 
 		// Set the start and previous data objects
-		$data->start         = new JPaginationObject(FText::_('COM_FABRIK_START'));
+		$data->start         = new JPaginationObject(Text::_('COM_FABRIK_START'));
 		$data->start->key    = 'start';
-		$data->previous      = new JPaginationObject(FText::_('COM_FABRIK_PREV'));
+		$data->previous      = new JPaginationObject(Text::_('COM_FABRIK_PREV'));
 		$data->previous->key = 'previous';
 
 		if ($this->get('pages.current') > 1)
@@ -405,9 +413,9 @@ class FPagination extends JPagination
 		}
 
 		// Set the next and end data objects
-		$data->next      = new JPaginationObject(FText::_('COM_FABRIK_NEXT'));
+		$data->next      = new JPaginationObject(Text::_('COM_FABRIK_NEXT'));
 		$data->next->key = 'next';
-		$data->end       = new JPaginationObject(FText::_('COM_FABRIK_END'));
+		$data->end       = new JPaginationObject(Text::_('COM_FABRIK_END'));
 		$data->end->key  = 'end';
 
 		if ($this->get('pages.current') < $this->get('pages.total'))
@@ -454,7 +462,7 @@ class FPagination extends JPagination
 	 */
 	protected function _list_footer($list)
 	{
-		$limitLabel = $this->showDisplayNum ? FText::_('COM_FABRIK_DISPLAY_NUM') : '';
+		$limitLabel = $this->showDisplayNum ? Text::_('COM_FABRIK_DISPLAY_NUM') : '';
 
 		// Initialize variables
 		$paths                     = array();
@@ -476,7 +484,7 @@ class FPagination extends JPagination
 
 	/**
 	 * Returns a property of the object or the default value if the property is not set.
-	 * Avoids deprecated notices in 3.1 whilst maintaining backwards compat
+	 * Avoids deprecated notices in 3.1 whilst maintaining backwards compatibility
 	 *
 	 * @param   string $property The name of the property.
 	 * @param   mixed  $default  The default value.

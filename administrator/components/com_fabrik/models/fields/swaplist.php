@@ -11,11 +11,11 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Joomla\Utilities\ArrayHelper;
+use Fabrik\Helpers\ArrayHelper;
 use Fabrik\Helpers\Html;
 use Fabrik\Helpers\Worker;
-
-require_once JPATH_ADMINISTRATOR . '/components/com_fabrik/helpers/element.php';
+use Fabrik\Helpers\StringHelper;
+use Fabrik\Helpers\Text;
 
 /**
  * Renders widget for (de)selecting available groups when editing a from
@@ -62,38 +62,38 @@ class JFormFieldSwapList extends JFormFieldList
 
 		if (empty($this->groups) && empty($this->currentGroups))
 		{
-			return FText::_('COM_FABRIK_NO_GROUPS_AVAILABLE');
+			return Text::_('COM_FABRIK_NO_GROUPS_AVAILABLE');
 		}
 		else
 		{
 			if ($j3)
 			{
-				$str =	FText::_('COM_FABRIK_AVAILABLE_GROUPS');
+				$str =	Text::_('COM_FABRIK_AVAILABLE_GROUPS');
 				$str .= '<br />' . $this->groupList;
 				$str .= '<button class="button btn btn-success btn-small" type="button" id="' . $this->id . '-add">';
-				$str .= '<i class="icon-new"></i>' . FText::_('COM_FABRIK_ADD') . '</button>';
-				$str .= '<br />' . FText::_('COM_FABRIK_CURRENT_GROUPS');
+				$str .= '<i class="icon-new"></i>' . Text::_('COM_FABRIK_ADD') . '</button>';
+				$str .= '<br />' . Text::_('COM_FABRIK_CURRENT_GROUPS');
 				$str .= '<br />' . $this->currentGroupList;
 				$str .= '<button class="button btn btn-small" type="button" id="' . $this->id . '-up" >';
-				$str .= '<i class="icon-arrow-up"></i> ' . FText::_('COM_FABRIK_UP') . '</button> ';
+				$str .= '<i class="icon-arrow-up"></i> ' . Text::_('COM_FABRIK_UP') . '</button> ';
 				$str .= '<button class="button btn btn-small" type="button" id="' . $this->id . '-down" >';
-				$str .= '<i class="icon-arrow-down"></i> ' . FText::_('COM_FABRIK_DOWN') . '</button> ';
+				$str .= '<i class="icon-arrow-down"></i> ' . Text::_('COM_FABRIK_DOWN') . '</button> ';
 				$str .= '<button class="button btn btn-danger btn-small" type="button" id="' . $this->id . '-remove">';
-				$str .= '<i class="icon-delete"></i> ' . FText::_('COM_FABRIK_REMOVE');
+				$str .= '<i class="icon-delete"></i> ' . Text::_('COM_FABRIK_REMOVE');
 				$str .= '</button>';
 			}
 			else
 			{
 				$str .= '<input type="text" readonly="readonly" class="readonly" style="clear:left" size="44" value="'
-					. FText::_('COM_FABRIK_AVAILABLE_GROUPS') . ':" />';
+					. Text::_('COM_FABRIK_AVAILABLE_GROUPS') . ':" />';
 				$str .= $this->groupList;
-				$str .= '<input class="button btn" type="button" id="' . $this->id . '-add" value="' . FText::_('COM_FABRIK_ADD') . '" />';
+				$str .= '<input class="button btn" type="button" id="' . $this->id . '-add" value="' . Text::_('COM_FABRIK_ADD') . '" />';
 				$str .= '<input type="text" readonly="readonly" class="readonly" style="clear:left" size="44" value="'
-					. FText::_('COM_FABRIK_CURRENT_GROUPS') . ':" />';
+					. Text::_('COM_FABRIK_CURRENT_GROUPS') . ':" />';
 				$str .= $this->currentGroupList;
-				$str .= '<input class="button" type="button" value="' . FText::_('COM_FABRIK_UP') . '" id="' . $this->id . '-up" />';
-				$str .= '<input class="button" type="button" value="' . FText::_('COM_FABRIK_DOWN') . '" id="' . $this->id . '-down" />';
-				$str .= '<input class="button" type="button" value="' . FText::_('COM_FABRIK_REMOVE') . '" id="' . $this->id . '-remove"/>';
+				$str .= '<input class="button" type="button" value="' . Text::_('COM_FABRIK_UP') . '" id="' . $this->id . '-up" />';
+				$str .= '<input class="button" type="button" value="' . Text::_('COM_FABRIK_DOWN') . '" id="' . $this->id . '-down" />';
+				$str .= '<input class="button" type="button" value="' . Text::_('COM_FABRIK_REMOVE') . '" id="' . $this->id . '-remove"/>';
 			}
 
 			return $str;
@@ -132,7 +132,7 @@ class JFormFieldSwapList extends JFormFieldList
 		}
 
 		$query->where('published <> -2');
-		$query->order(FabrikString::safeColName('text'));
+		$query->order(StringHelper::safeColName('text'));
 		$db->setQuery($query);
 		$groups = $db->loadObjectList();
 		$style = Worker::j3() ? '' : 'style="width:100%;"';
