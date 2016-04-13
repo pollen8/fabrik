@@ -72,7 +72,7 @@ class PlgFabrik_ValidationruleIsUniqueValue extends PlgFabrik_Validationrule
 		 * true if we use:
 		 * $rowId = $input->get('rowid','');    or
 		 * $rowId = $input->get($pk,'');
-			$pk = FabrikString::safeColNameToArrayKey($table->db_primary_key);
+			$pk = use Fabrik\Helpers\StringHelper::safeColNameToArrayKey($table->db_primary_key);
 		 */
 		$rowId = $input->get('rowid', '');
 

@@ -12,7 +12,11 @@
 defined('_JEXEC') or die('Restricted access');
 
 use \Joomla\Registry\Registry;
-use Joomla\Utilities\ArrayHelper;
+use Fabrik\Helpers\ArrayHelper;
+use Fabrik\Helpers\Html;
+use Fabrik\Helpers\Worker;
+use Fabrik\Helpers\Text;
+use Fabrik\Helpers\StringHelper;
 
 jimport('joomla.application.component.model');
 
@@ -36,7 +40,7 @@ class PlgFabrik_Validationrule extends FabrikPlugin
 	/**
 	 * Validation rule's element model
 	 *
-	 * @var PlgFabrik_Element
+	 * @var Fabrik\Plugins\Element\Element
 	 */
 	public $elementModel = null;
 
@@ -103,7 +107,7 @@ class PlgFabrik_Validationrule extends FabrikPlugin
 			return true;
 		}
 
-		$w = new FabrikWorker;
+		$w = new Worker;
 		$groupModel = $this->elementModel->getGroupModel();
 		$inRepeat = $groupModel->canRepeat();
 
@@ -239,7 +243,7 @@ class PlgFabrik_Validationrule extends FabrikPlugin
 			$v = 'COM_FABRIK_FAILED_VALIDATION';
 		}
 
-		$this->errorMsg = FText::_($v);
+		$this->errorMsg = Text::_($v);
 
 		return $this->errorMsg;
 	}
@@ -272,7 +276,7 @@ class PlgFabrik_Validationrule extends FabrikPlugin
 	public function getIcon($c = 0, $tmpl = '')
 	{
 		$name = $this->elementModel->validator->getIcon($c);
-		FabrikHelperHTML::image($name, 'form', $tmpl, array('class' => $this->pluginName));
+		Html::image($name, 'form', $tmpl, array('class' => $this->pluginName));
 	}
 
 	/**
@@ -320,7 +324,7 @@ class PlgFabrik_Validationrule extends FabrikPlugin
 	public function getHoverText($c = null, $tmpl = '')
 	{
 		$name = $this->elementModel->validator->getIcon($c);
-		$i = FabrikHelperHTML::image($name, 'form', $tmpl, array('class' => $this->pluginName));
+		$i = Html::image($name, 'form', $tmpl, array('class' => $this->pluginName));
 
 		return $i . ' ' . $this->getLabel();
 	}
@@ -337,16 +341,16 @@ class PlgFabrik_Validationrule extends FabrikPlugin
 
 		if ($tipText !== '')
 		{
-			return FText::_($tipText);
+			return Text::_($tipText);
 		}
 
 		if ($this->allowEmpty())
 		{
-			return FText::_('PLG_VALIDATIONRULE_' . JString::strtoupper($this->pluginName) . '_ALLOWEMPTY_LABEL');
+			return Text::_('PLG_VALIDATIONRULE_' . StringHelper::strtoupper($this->pluginName) . '_ALLOWEMPTY_LABEL');
 		}
 		else
 		{
-			return FText::_('PLG_VALIDATIONRULE_' . JString::strtoupper($this->pluginName) . '_LABEL');
+			return Text::_('PLG_VALIDATIONRULE_' . StringHelper::strtoupper($this->pluginName) . '_LABEL');
 		}
 	}
 

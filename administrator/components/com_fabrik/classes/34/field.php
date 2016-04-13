@@ -9,6 +9,9 @@
 
 defined('JPATH_PLATFORM') or die;
 
+use Fabrik\Helpers\Text;
+use Fabrik\Helpers\StringHelper;
+
 /**
  * Abstract Form Field class for the Joomla Platform.
  *
@@ -339,11 +342,11 @@ abstract class JFormField
 
 			if ($parts[0] == 'J')
 			{
-				$this->type = JString::ucfirst($parts[count($parts) - 1], '_');
+				$this->type = StringHelper::ucfirst($parts[count($parts) - 1], '_');
 			}
 			else
 			{
-				$this->type = JString::ucfirst($parts[0], '_') . JString::ucfirst($parts[count($parts) - 1], '_');
+				$this->type = StringHelper::ucfirst($parts[0], '_') . StringHelper::ucfirst($parts[count($parts) - 1], '_');
 			}
 		}
 	}
@@ -698,7 +701,7 @@ abstract class JFormField
 
 		// Get the label text from the XML element, defaulting to the element name.
 		$title = $this->element['label'] ? (string) $this->element['label'] : (string) $this->element['name'];
-		$title = $this->translateLabel ? JText::_($title) : $title;
+		$title = $this->translateLabel ? Text::_($title) : $title;
 
 		return $title;
 	}
@@ -719,12 +722,12 @@ abstract class JFormField
 
 		// Get the label text from the XML element, defaulting to the element name.
 		$text = $this->element['label'] ? (string) $this->element['label'] : (string) $this->element['name'];
-		$text = $this->translateLabel ? JText::_($text) : $text;
+		$text = $this->translateLabel ? Text::_($text) : $text;
 
 		// Forcing the Alias field to display the tip below
 		$position = $this->element['name'] == 'alias' ? ' data-placement="bottom" ' : '';
 
-		$description = ($this->translateDescription && !empty($this->description)) ? JText::_($this->description) : $this->description;
+		$description = ($this->translateDescription && !empty($this->description)) ? Text::_($this->description) : $this->description;
 
 		$displayData = array(
 				'text'        => $text,

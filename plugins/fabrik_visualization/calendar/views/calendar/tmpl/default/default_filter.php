@@ -11,6 +11,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Fabrik\Helpers\Text;
+
 if ($this->showFilters) :
 ?>
 <form method="post" name="filter" action="">
@@ -21,8 +23,8 @@ if ($this->showFilters) :
 	<table class="filtertable fabrikList">
 		<tbody>
 			<tr>
-				<th style="text-align:left"><?php echo FText::_('PLG_VISUALIZATION_CALENDAR_SEARCH'); ?>:</th>
-				<th style="text-align:right"><a href="#" class="clearFilters"><?php echo FText::_('PLG_VISUALIZATION_CALENDAR_CLEAR'); ?></a></th>
+				<th style="text-align:left"><?php echo Text::_('PLG_VISUALIZATION_CALENDAR_SEARCH'); ?>:</th>
+				<th style="text-align:right"><a href="#" class="clearFilters"><?php echo Text::_('PLG_VISUALIZATION_CALENDAR_CLEAR'); ?></a></th>
 			</tr>
 	  	<?php
 			$c = 0;
@@ -43,7 +45,7 @@ if ($this->showFilters) :
 		<tfoot>
 			<tr>
 				<th colspan="2" style="text-align:right;">
-					<input type="submit" class="button" value="<?php echo FText::_('PLG_VISUALIZATION_CALENDAR_GO') ?>" />
+					<input type="submit" class="button" value="<?php echo Text::_('PLG_VISUALIZATION_CALENDAR_GO') ?>" />
 				</th>
 			</tr>
 		</tfoot>

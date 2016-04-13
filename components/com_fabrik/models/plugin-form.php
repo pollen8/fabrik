@@ -11,7 +11,11 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Joomla\Utilities\ArrayHelper;
+use Fabrik\Helpers\ArrayHelper;
+use Fabrik\Helpers\Html;
+use Fabrik\Helpers\StringHelper;
+use Fabrik\Helpers\Worker;
+use Fabrik\Helpers\LayoutFile;
 
 jimport('joomla.application.component.model');
 
@@ -30,6 +34,13 @@ class PlgFabrik_Form extends FabrikPlugin
 	 * @var array
 	 */
 	protected $emailData = null;
+
+	/**
+	 * Use in image rendering
+	 *
+	 * @var string
+	 */
+	protected $tmpl;
 
 	/**
 	 * HTML to return from plugin rendering
@@ -321,7 +332,7 @@ class PlgFabrik_Form extends FabrikPlugin
 						{
 							$tmpElement        = current($elementModels);
 							$smallerElHTMLName = $tmpElement->getFullName(true, false);
-							$tmpEl             = FArrayHelper::getValue($model->formDataWithTableName, $smallerElHTMLName, array(), 'array');
+							$tmpEl             = ArrayHelper::getValue($model->formDataWithTableName, $smallerElHTMLName, array(), 'array');
 							$repeatGroup       = count($tmpEl);
 						}
 					}
@@ -353,7 +364,7 @@ class PlgFabrik_Form extends FabrikPlugin
 					{
 						if ($groupModel->canRepeat())
 						{
-							$raw                              = FArrayHelper::getValue($model->formDataWithTableName[$k], $c, '');
+							$raw                              = ArrayHelper::getValue($model->formDataWithTableName[$k], $c, '');
 							$this->emailData[$k . '_raw'][$c] = $raw;
 							$this->emailData[$k][$c]          = $elementModel->getEmailValue($raw, $model->formDataWithTableName, $c);
 							continue;
@@ -374,7 +385,7 @@ class PlgFabrik_Form extends FabrikPlugin
 					}
 					elseif (array_key_exists($key, $model->formDataWithTableName))
 					{
-						$rawValue = FArrayHelper::getValue($model->formDataWithTableName, $k . '_raw', '');
+						$rawValue = ArrayHelper::getValue($model->formDataWithTableName, $k . '_raw', '');
 
 						if ($rawValue == '')
 						{
@@ -432,6 +443,27 @@ class PlgFabrik_Form extends FabrikPlugin
 	}
 
 	/**
+	 * Set redirect URL for process plugins that navigate to a 3rd party site
+	 * and then return to the site E.g Paypal.
+	 *
+	 * @param string $url
+	 */
+	protected function setDelayedRedirect($url)
+	{
+		$formModel = $this->model;
+		$context = $formModel->getRedirectContext();
+
+		/* $$$ hugh - fixing issue with new redirect, which now needs to be an array.
+		 * Not sure if we need to preserve existing session data, or just create a new surl array,
+		 * to force ONLY redirect to PayPal?
+		 */
+		$urls = (array) $this->session->get($context . 'url', array());
+		$urls[$this->renderOrder] = $url;
+		$this->session->set($context . 'url', $urls);
+		$this->session->set($context . 'redirect_content_how', 'samepage');
+	}
+
+	/**
 	 * Get the class to manage the plugin
 	 * to ensure that the file is loaded only once
 	 *
@@ -442,7 +474,7 @@ class PlgFabrik_Form extends FabrikPlugin
 	public function formJavascriptClass()
 	{
 		$formModel = $this->getModel();
-		$ext       = FabrikHelperHTML::isDebug() ? '.js' : '-min.js';
+		$ext       = Html::isDebug() ? '.js' : '-min.js';
 		$name      = $this->get('_name');
 		static $jsClasses;
 
@@ -457,8 +489,8 @@ class PlgFabrik_Form extends FabrikPlugin
 
 		if (empty($jsClasses[$script]))
 		{
-			$formModel->formPluginShim[] = $script;
-			$jsClasses[$script]          = 1;
+			$formModel->formPluginShim[ucfirst($name)] = $script;
+			$jsClasses[$script]                        = 1;
 		}
 	}
 
@@ -504,19 +536,19 @@ class PlgFabrik_Form extends FabrikPlugin
 
 	/**
 	 * Get the element's JLayout file
-	 * Its actually an instance of FabrikLayoutFile which inverses the ordering added include paths.
-	 * In FabrikLayoutFile the addedPath takes precedence over the default paths, which makes more sense!
+	 * Its actually an instance of LayoutFile which inverses the ordering added include paths.
+	 * In LayoutFile the addedPath takes precedence over the default paths, which makes more sense!
 	 *
 	 * @param   string $type form/details/list
 	 *
-	 * @return FabrikLayoutFile
+	 * @return LayoutFile
 	 */
 	public function getLayout($type)
 	{
 		$name     = get_class($this);
-		$name     = strtolower(JString::str_ireplace('PlgFabrik_Form', '', $name));
+		$name     = strtolower(StringHelper::str_ireplace('PlgFabrik_Form', '', $name));
 		$basePath = COM_FABRIK_BASE . '/plugins/fabrik_form/' . $name . '/layouts';
-		$layout   = new FabrikLayoutFile('fabrik-form-' . $name . '-' . $type, $basePath, array('debug' => false, 'component' => 'com_fabrik', 'client' => 'site'));
+		$layout   = new LayoutFile('fabrik-form-' . $name . '-' . $type, $basePath, array('debug' => false, 'component' => 'com_fabrik', 'client' => 'site'));
 		$layout->addIncludePaths(JPATH_THEMES . '/' . $this->app->getTemplate() . '/html/layouts');
 		$layout->addIncludePaths(JPATH_THEMES . '/' . $this->app->getTemplate() . '/html/layouts/com_fabrik');
 
@@ -541,7 +573,7 @@ class PlgFabrik_Form extends FabrikPlugin
 			return $default;
 		}
 
-		$elementModel = FabrikWorker::getPluginManager()->getElementPlugin($params->get($pName));
+		$elementModel = Worker::getPluginManager()->getElementPlugin($params->get($pName));
 		$name         = $elementModel->getFullName(true, false);
 
 		return ArrayHelper::getValue($data, $name, $default);
@@ -549,14 +581,15 @@ class PlgFabrik_Form extends FabrikPlugin
 
 	/**
 	 * Replace a plugin parameter value with data parsed via parseMessageForPlaceholder
-	 * @param string $pName  Parameter name
+	 *
+	 * @param string $pName Parameter name
 	 *
 	 * @return string
 	 */
 	public function placeholder($pName)
 	{
 		$params = $this->getParams();
-		$w      = new FabrikWorker;
+		$w      = new Worker;
 
 		return $w->parseMessageForPlaceHolder($params->get($pName), $this->data);
 	}

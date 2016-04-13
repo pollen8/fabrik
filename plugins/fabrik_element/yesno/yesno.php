@@ -8,11 +8,19 @@
  * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
+namespace Fabrik\Plugins\Element;
+
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-require_once JPATH_SITE . '/components/com_fabrik/models/element.php';
-require_once JPATH_SITE . '/plugins/fabrik_element/radiobutton/radiobutton.php';
+use Fabrik\Helpers\Html;
+use \JHtml;
+use \stdClass;
+use Fabrik\Helpers\ArrayHelper;
+use Fabrik\Helpers\Worker;
+use Fabrik\Helpers\StringHelper;
+use Fabrik\Helpers\LayoutFile;
+use Fabrik\Helpers\Text;
 
 /**
  * Plugin element to yes/no radio options - render as tick/cross in list view
@@ -21,7 +29,7 @@ require_once JPATH_SITE . '/plugins/fabrik_element/radiobutton/radiobutton.php';
  * @subpackage  Fabrik.element.yesno
  * @since       3.0
  */
-class PlgFabrik_ElementYesno extends PlgFabrik_ElementRadiobutton
+class Yesno extends Radiobutton
 {
 	/**
 	 * Db table field type
@@ -66,16 +74,16 @@ class PlgFabrik_ElementYesno extends PlgFabrik_ElementRadiobutton
 	 */
 	public function renderListData($data, stdClass &$thisRow, $opts = array())
 	{
-		FabrikHelperHTML::addPath(COM_FABRIK_BASE . 'plugins/fabrik_element/yesno/images/', 'image', 'list', false);
+		Html::addPath(COM_FABRIK_BASE . 'plugins/fabrik_element/yesno/images/', 'image', 'list', false);
 
 		// Check if the data is in csv format, if so then the element is a multi drop down
 		$raw = $this->getFullName(true, false) . '_raw';
 		$rawData = $thisRow->$raw;
-		$rawData = FabrikWorker::JSONtoData($rawData, true);
+		$rawData = Worker::JSONtoData($rawData, true);
 		$displayData        = new stdClass;
 		$displayData->tmpl  = @$this->tmpl;
 		$basePath           = JPATH_ROOT . '/plugins/fabrik_element/yesno/layouts';
-		$layout             = new FabrikLayoutFile('fabrik_element_yesno_list', $basePath);
+		$layout             = new LayoutFile('fabrik_element_yesno_list', $basePath);
 		$layout->addIncludePaths(JPATH_THEMES . '/' . $this->app->getTemplate() . '/html/layouts');
 		$labelData = array();
 
@@ -101,22 +109,22 @@ class PlgFabrik_ElementYesno extends PlgFabrik_ElementRadiobutton
 	 */
 	public function renderListData_pdf($data, $thisRow)
 	{
-		FabrikHelperHTML::addPath(COM_FABRIK_BASE . 'plugins/fabrik_element/yesno/images/', 'image', 'list', false);
+		Html::addPath(COM_FABRIK_BASE . 'plugins/fabrik_element/yesno/images/', 'image', 'list', false);
 		$raw = $this->getFullName() . '_raw';
 		$data = $thisRow->$raw;
-		$j3 = FabrikWorker::j3();
+		$j3 = Worker::j3();
 
 		if ($data == '1')
 		{
 			$icon = $j3 ? 'checkmark.png' : '1_8bit.png';
 
-			return FabrikHelperHTML::image($icon, 'list', @$this->tmpl, array('alt' => FText::_('JYES')));
+			return Html::image($icon, 'list', @$this->tmpl, array('alt' => Text::_('JYES')));
 		}
 		else
 		{
 			$icon = $j3 ? 'remove.png' : '0_8bit.png';
 
-			return FabrikHelperHTML::image($icon, 'list', @$this->tmpl, array('alt' => FText::_('JNO')));
+			return Html::image($icon, 'list', @$this->tmpl, array('alt' => Text::_('JNO')));
 		}
 	}
 
@@ -133,11 +141,11 @@ class PlgFabrik_ElementYesno extends PlgFabrik_ElementRadiobutton
 		$ret     = array();
 		$raw     = $this->getFullName(true, false) . '_raw';
 		$rawData = $thisRow->$raw;
-		$rawData = FabrikWorker::JSONtoData($rawData, true);
+		$rawData = Worker::JSONtoData($rawData, true);
 
 		foreach ($rawData as $d)
 		{
-			$ret[]    = (bool) $d ? FText::_('JYES') : FText::_('JNO');
+			$ret[]    = (bool) $d ? Text::_('JYES') : Text::_('JNO');
 		}
 
 		if (count($ret) > 1)
@@ -177,7 +185,7 @@ class PlgFabrik_ElementYesno extends PlgFabrik_ElementRadiobutton
 	 */
 	protected function getSubOptionLabels($data = array())
 	{
-		return array(FText::_('JNO'), FText::_('JYES'));
+		return array(Text::_('JNO'), Text::_('JYES'));
 	}
 
 	/**
@@ -223,7 +231,7 @@ class PlgFabrik_ElementYesno extends PlgFabrik_ElementRadiobutton
 		$displayData->tmpl = @$this->tmpl;
 		$displayData->format = $this->app->input->get('format', '');;
 		$basePath = JPATH_ROOT . '/plugins/fabrik_element/yesno/layouts';
-		$layout = new FabrikLayoutFile('fabrik_element_yesno_details', $basePath);
+		$layout = new LayoutFile('fabrik_element_yesno_details', $basePath);
 		$layout->addIncludePaths(JPATH_THEMES . '/' . $this->app->getTemplate() . '/html/layouts');
 
 		return $layout->render($displayData);
@@ -255,7 +263,7 @@ class PlgFabrik_ElementYesno extends PlgFabrik_ElementRadiobutton
 	protected function buttonGroup()
 	{
 		$params = $this->getParams();
-		$ok = FabrikWorker::j3() && $params->get('btnGroup', true);
+		$ok = Worker::j3() && $params->get('btnGroup', true);
 
 		return $ok;
 	}
@@ -289,7 +297,7 @@ class PlgFabrik_ElementYesno extends PlgFabrik_ElementRadiobutton
 	{
 		$listModel = $this->getlistModel();
 		$elName = $this->getFullName(true, false);
-		$elName = FabrikString::safeColName($elName);
+		$elName = StringHelper::safeColName($elName);
 		$v = 'fabrik___filter[list_' . $listModel->getRenderContext() . '][value]';
 		$v .= ($normal) ? '[' . $counter . ']' : '[]';
 		$default = $this->getDefaultFilterVal($normal, $counter);
@@ -344,12 +352,12 @@ class PlgFabrik_ElementYesno extends PlgFabrik_ElementRadiobutton
 		{
 			if ($row->value == 1)
 			{
-				$row->text = FText::_('JYES');
+				$row->text = Text::_('JYES');
 			}
 
 			if ($row->value == 0)
 			{
-				$row->text = FText::_('JNO');
+				$row->text = Text::_('JNO');
 			}
 		}
 
@@ -372,8 +380,8 @@ class PlgFabrik_ElementYesno extends PlgFabrik_ElementRadiobutton
 	 */
 	protected function filterValueList_All($normal, $tableName = '', $label = '', $id = '', $incjoin = true)
 	{
-		$rows = array(JHTML::_('select.option', '', $this->filterSelectLabel()), JHTML::_('select.option', '0', FText::_('JNO')),
-			JHTML::_('select.option', '1', FText::_('JYES')));
+		$rows = array(JHTML::_('select.option', '', $this->filterSelectLabel()), JHTML::_('select.option', '0', Text::_('JNO')),
+			JHTML::_('select.option', '1', Text::_('JYES')));
 
 		return $rows;
 	}
@@ -401,7 +409,7 @@ class PlgFabrik_ElementYesno extends PlgFabrik_ElementRadiobutton
 	{
 		if (!parent::onStoreRow($data, $repeatCounter))
 		{
-			return false;
+			return;
 		}
 
 		$value = $this->getValue($data, $repeatCounter);
@@ -432,8 +440,8 @@ class PlgFabrik_ElementYesno extends PlgFabrik_ElementRadiobutton
 				$pk = $listModel->getPrimaryKey();
 			}
 
-			$shortPk = FabrikString::shortColName($pk);
-			$rowId = FArrayHelper::getValue($data, $shortPk, null);
+			$shortPk = StringHelper::shortColName($pk);
+			$rowId = ArrayHelper::getValue($data, $shortPk, null);
 
 			$query->update($this->actualTableName())->set($name . ' = 0');
 
@@ -443,11 +451,11 @@ class PlgFabrik_ElementYesno extends PlgFabrik_ElementRadiobutton
 			}
 
 			$toggle_where = $params->get('toggle_where', '');
-			FabrikString::ltrimiword($toggle_where, 'where');
+			StringHelper::ltrimiword($toggle_where, 'where');
 
 			if (!empty($toggle_where))
 			{
-				$w = new FabrikWorker;
+				$w = new Worker;
 				$toggle_where = $w->parseMessageForPlaceHolder($toggle_where);
 				$query->where($toggle_where);
 			}

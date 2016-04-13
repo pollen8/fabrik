@@ -8,8 +8,14 @@
  * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
+namespace Fabrik\Plugins\Element;
+
 // No direct access
 defined('_JEXEC') or die('Restricted access');
+
+use Fabrik\Helpers\ArrayHelper;
+use \stdClass;
+use Fabrik\Helpers\StringHelper;
 
 /**
  * Plugin element to store the user's IP address
@@ -18,7 +24,7 @@ defined('_JEXEC') or die('Restricted access');
  * @subpackage  Fabrik.element.ip
  * @since       3.0
  */
-class PlgFabrik_ElementIp extends PlgFabrik_Element
+class Ip extends Element
 {
 	/**
 	 * Draws the html form element
@@ -42,14 +48,14 @@ class PlgFabrik_ElementIp extends PlgFabrik_Element
 
 		if ($params->get('ip_update_on_edit') || !$rowId || ($this->inRepeatGroup && $this->_inJoin && $this->_repeatGroupTotal == $repeatCounter))
 		{
-			$ip = FabrikString::filteredIp();
+			$ip = StringHelper::filteredIp();
 		}
 		else
 		{
 			if (empty($data) || empty($data[$name]))
 			{
 				// If $data is empty, we must (?) be a new row, so just grab the IP
-				$ip = FabrikString::filteredIp();
+				$ip = StringHelper::filteredIp();
 			}
 			else
 			{
@@ -105,7 +111,7 @@ class PlgFabrik_ElementIp extends PlgFabrik_Element
 		$formModel = $this->getFormModel();
 		$formData = $formModel->formData;
 
-		if (FArrayHelper::getValue($formData, 'rowid', 0) == 0 && !in_array($element->name, $data))
+		if (ArrayHelper::getValue($formData, 'rowid', 0) == 0 && !in_array($element->name, $data))
 		{
 			$data[$element->name] = $_SERVER['REMOTE_ADDR'];
 		}
@@ -115,8 +121,8 @@ class PlgFabrik_ElementIp extends PlgFabrik_Element
 
 			if ($params->get('ip_update_on_edit', 0))
 			{
-				$data[$element->name] = FabrikString::filteredIp();
-				$data[$element->name . '_raw'] = FabrikString::filteredIp();
+				$data[$element->name] = StringHelper::filteredIp();
+				$data[$element->name . '_raw'] = StringHelper::filteredIp();
 			}
 		}
 
@@ -134,7 +140,7 @@ class PlgFabrik_ElementIp extends PlgFabrik_Element
 	{
 		if (!isset($this->default))
 		{
-			$this->default = FabrikString::filteredIp();
+			$this->default = StringHelper::filteredIp();
 		}
 
 		return $this->default;

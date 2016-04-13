@@ -8,12 +8,15 @@
  * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
+namespace Fabrik\Plugins\Element;
+
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-jimport('joomla.application.component.model');
-
-require_once JPATH_SITE . '/components/com_fabrik/models/element.php';
+use \stdClass;
+use Fabrik\Helpers\Worker;
+use \JRoute;
+use Fabrik\Helpers\Html;
 
 /**
  * Plugin element to render facebook open graph comment widget
@@ -22,8 +25,7 @@ require_once JPATH_SITE . '/components/com_fabrik/models/element.php';
  * @subpackage  Fabrik.element.facebookcomment
  * @since       3.0
  */
-
-class PlgFabrik_ElementFbcomment extends PlgFabrik_Element
+class Fbcomment extends Element
 {
 	/**
 	 * Does the element have a label
@@ -66,7 +68,7 @@ class PlgFabrik_ElementFbcomment extends PlgFabrik_Element
 
 		if (empty($data->href))
 		{
-			$rowId = $this->app->input->getString('rowid', '', 'string');
+			$rowId = $this->app->input->getString('rowid', '');
 
 			if ($rowId != '')
 			{
@@ -80,8 +82,8 @@ class PlgFabrik_ElementFbcomment extends PlgFabrik_Element
 
 		if (!empty($displayData->href))
 		{
-			$w = new FabrikWorker;
-			$displayData->href = $w->parseMessageForPlaceHolder($data->href, $data);
+			$w = new Worker;
+			$displayData->href = $w->parseMessageForPlaceHolder($displayData->href, $data);
 			$locale = $params->get('fbcomment_locale', 'en_US');
 
 			if (empty($locale))
@@ -89,7 +91,7 @@ class PlgFabrik_ElementFbcomment extends PlgFabrik_Element
 				$locale = 'en_US';
 			}
 
-			$displayData->graphApi = FabrikHelperHTML::facebookGraphAPI($params->get('opengraph_applicationid'), $locale);
+			$displayData->graphApi = Html::facebookGraphAPI($params->get('opengraph_applicationid'), $locale);
 		}
 
 		$layout = $this->getLayout('form');

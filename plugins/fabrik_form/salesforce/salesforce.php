@@ -11,6 +11,9 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Fabrik\Helpers\StringHelper;
+use Fabrik\Helpers\Text;
+
 // Require the abstract plugin class
 require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
 
@@ -60,7 +63,7 @@ class PlgFabrik_FormSalesforce extends PlgFabrik_Form
 	{
 		if (!class_exists('SoapClient'))
 		{
-			throw new Exception(FText::_('PLG_FORM_SALESFORCE_ERR_SOAP_NOT_INSTALLED'));
+			throw new Exception(Text::_('PLG_FORM_SALESFORCE_ERR_SOAP_NOT_INSTALLED'));
 		}
 	}
 
@@ -116,14 +119,14 @@ class PlgFabrik_FormSalesforce extends PlgFabrik_Form
 
 				$key = array_pop(explode('___', $key));
 
-				if (JString::strtolower($key) == JString::strtolower($name) && JString::strtolower($name) != 'id')
+				if (StringHelper::strtolower($key) == StringHelper::strtolower($name) && StringHelper::strtolower($name) != 'id')
 				{
 					$submission[$name] = $val;
 				}
 				else
 				{
 					// Check custom fields
-					if (JString::strtolower($key . '__c') == JString::strtolower($name) && JString::strtolower($name) != 'id')
+					if (StringHelper::strtolower($key . '__c') == StringHelper::strtolower($name) && StringHelper::strtolower($name) != 'id')
 					{
 						$submission[$name] = $val;
 					}
@@ -160,11 +163,11 @@ class PlgFabrik_FormSalesforce extends PlgFabrik_Form
 		{
 			if ($result->created == '' && $params->get('salesforce_allowupsert', 0))
 			{
-				$this->app->enqueueMessage(JText::sprintf(SALESFORCE_UPDATED, $updateObject));
+				$this->app->enqueueMessage(Text::sprintf(SALESFORCE_UPDATED, $updateObject));
 			}
 			else
 			{
-				$this->app->enqueueMessage(JText::sprintf(SALESFORCE_CREATED, $updateObject));
+				$this->app->enqueueMessage(Text::sprintf(SALESFORCE_CREATED, $updateObject));
 			}
 		}
 		else
@@ -175,17 +178,17 @@ class PlgFabrik_FormSalesforce extends PlgFabrik_Form
 				{
 					foreach ($result->errors as $error)
 					{
-						JError::raiseWarning(500, FText::_('SALESFORCE_ERR') . $error->message);
+						JError::raiseWarning(500, Text::_('SALESFORCE_ERR') . $error->message);
 					}
 				}
 				else
 				{
-					JError::raiseWarning(500, FText::_('SALESFORCE_ERR') . $result->errors->message);
+					JError::raiseWarning(500, Text::_('SALESFORCE_ERR') . $result->errors->message);
 				}
 			}
 			else
 			{
-				JError::raiseWarning(500, JText::sprintf(SALESFORCE_NOCREATE, $updateObject));
+				JError::raiseWarning(500, Text::sprintf(SALESFORCE_NOCREATE, $updateObject));
 			}
 		}
 	}

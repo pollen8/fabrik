@@ -76,7 +76,8 @@ define(['jquery', 'fab/element'], function (jQuery, FbElement) {
             } else {
                 c = this.form.form;
 
-                // Added name^= for http://fabrikar.com/forums/showthread.php?t=30563 (js events to show hide multiple groups)
+                // Added name^= for http://fabrikar.com/forums/showthread.php?t=30563
+                // (js events to show hide multiple groups)
                 delegate = this.eventDelegate();
                 if (typeOf(this.form.events[action]) === 'null') {
                     this.form.events[action] = {};
@@ -93,14 +94,16 @@ define(['jquery', 'fab/element'], function (jQuery, FbElement) {
                     this.form.events[action][uid] = true;
 
                     jQuery(c).on(action, delegate, function (event) {
-                        // Changed from preventDefault() to stopPropagation() as the former prevents radios from selecting
+                        // Changed from preventDefault() to stopPropagation() as the
+                        // former prevents radios from selecting
                         event.stopPropagation();
                         // Don't use the usual jQuery this, as we need to bind the plugin as 'this' to the event.
                         var target = jQuery(event.currentTarget), elid, that, subEls;
                         if (target.prop('tagName') === 'LABEL') {
                             target = target.find('input');
                         }
-                        // As we are delegating the event, and reference to 'this' in the js will refer to the first element
+                        // As we are delegating the event, and reference to 'this'
+                        // in the js will refer to the first element
                         // When in a repeat group we want to replace that with a reference to the current element.
                         elid = target.closest('.fabrikSubElementContainer').prop('id');
                         that = this.form.formElements[elid];
@@ -128,12 +131,13 @@ define(['jquery', 'fab/element'], function (jQuery, FbElement) {
         },
 
         startAddNewOption: function () {
-            var c = this.getContainer(), val;
-            var l = c.getElement('input[name=addPicklistLabel]');
-            var v = c.getElement('input[name=addPicklistValue]');
-            var label = l.value;
-            if (v) {
-                val = v.value;
+            debugger;
+            var c = jQuery(this.getContainer()), val,
+                l = c.find('input[name=addPicklistLabel]'),
+                v = c.find('input[name=addPicklistValue]'),
+                label = l.val(), r, i, last;
+            if (v.length > 0) {
+                val = v.val();
             } else {
                 val = label;
             }
@@ -141,25 +145,28 @@ define(['jquery', 'fab/element'], function (jQuery, FbElement) {
                 window.alert(Joomla.JText._('PLG_ELEMENT_CHECKBOX_ENTER_VALUE_LABEL'));
             }
             else {
-                var r = this.subElements.getLast().findClassUp('fabrikgrid_' + this.type).clone();
-                var i = r.getElement('input');
-                i.value = val;
-                i.checked = 'checked';
+                last = jQuery(this.subElements[this.subElements.length - 1])
+                    .closest('fabrikgrid_' + this.type);
+                r = jQuery(last).clone();
+                i = r.find('input');
+                i.val(val);
+                i.prop('checked', 'checked');
                 if (this.type === 'checkbox') {
 
-                    // Remove the last [*] from the checkbox sub option name (seems only these use incremental []'s)
-                    var name = i.name.replace(/^(.*)\[.*\](.*?)$/, '$1$2');
+                    // Remove the last [*] from the checkbox sub option name
+                    // (seems only these use incremental []'s)
+                    var name = i.prop('name').replace(/^(.*)\[.*\](.*?)$/, '$1$2');
                     i.name = name + '[' + (this.subElements.length) + ']';
                 }
-                r.getElement('.' + this.type + ' span').set('text', label);
-                r.inject(this.subElements.getLast().findClassUp('fabrikgrid_' + this.type), 'after');
+                r.find('.' + this.type + ' span').text(label);
+                r.after(last);
 
                 var index = 0;
                 if (this.type === 'radio') {
                     index = this.subElements.length;
                 }
-                var is = $$('input[name=' + i.name + ']');
-                document.id(this.form.form).fireEvent('change', {target: is[index]});
+                var is = jQuery('input[name=' + i.name + ']');
+                jQuery(this.form.form).trigger('change', {target: is[index]});
 
                 this._getSubElements();
                 if (v) {
@@ -174,20 +181,22 @@ define(['jquery', 'fab/element'], function (jQuery, FbElement) {
         },
 
         watchAdd: function () {
+            var self = this,
+                c = jQuery(this.getContainer());
             if (this.options.allowadd === true && this.options.editable !== false) {
-                var c = this.getContainer();
-                c.getElements('input[name=addPicklistLabel], input[name=addPicklistValue]').addEvent('keypress', function (e) {
-                    this.checkEnter(e);
-                }.bind(this));
-                c.getElement('input[type=button]').addEvent('click', function (e) {
-                    e.stop();
-                    this.startAddNewOption();
-                }.bind(this));
-                document.addEvent('keypress', function (e) {
+                c.find('input[name=addPicklistLabel], input[name=addPicklistValue]')
+                    .on('keypress', function (e) {
+                    self.checkEnter(e);
+                });
+                c.find('input[type=button]').on('click', function (e) {
+                    e.preventDefault();
+                    self.startAddNewOption();
+                });
+                jQuery(document).on('keypress', function (e) {
                     if (e.key === 'esc' && this.mySlider) {
-                        this.mySlider.slideOut();
+                        self.mySlider.slideUp();
                     }
-                }.bind(this));
+                });
             }
         }
 

@@ -9,6 +9,9 @@
 
 defined('JPATH_PLATFORM') or die;
 
+use Fabrik\Helpers\Text;
+use Fabrik\Helpers\StringHelper;
+
 /**
  * Abstract Form Field class for the Joomla Platform.
  *
@@ -347,11 +350,11 @@ abstract class JFormField
 
 			if ($parts[0] == 'J')
 			{
-				$this->type = JString::ucfirst($parts[count($parts) - 1], '_');
+				$this->type = StringHelper::ucfirst($parts[count($parts) - 1], '_');
 			}
 			else
 			{
-				$this->type = JString::ucfirst($parts[0], '_') . JString::ucfirst($parts[count($parts) - 1], '_');
+				$this->type = StringHelper::ucfirst($parts[0], '_') . StringHelper::ucfirst($parts[count($parts) - 1], '_');
 			}
 		}
 	}
@@ -718,7 +721,7 @@ abstract class JFormField
 
 		// Get the label text from the XML element, defaulting to the element name.
 		$title = $this->element['label'] ? (string) $this->element['label'] : (string) $this->element['name'];
-		$title = $this->translateLabel ? JText::_($title) : $title;
+		$title = $this->translateLabel ? Text::_($title) : $title;
 
 		return $title;
 	}
@@ -989,11 +992,11 @@ abstract class JFormField
 	{
 		// Label preprocess
 		$label = $this->element['label'] ? (string) $this->element['label'] : (string) $this->element['name'];
-		$label = $this->translateLabel ? JText::_($label) : $label;
+		$label = $this->translateLabel ? Text::_($label) : $label;
 
 		// Description preprocess
 		$description = !empty($this->description) ? $this->description : null;
-		$description = !empty($description) && $this->translateDescription ? JText::_($description) : $description;
+		$description = !empty($description) && $this->translateDescription ? Text::_($description) : $description;
 
 		$alt = preg_replace('/[^a-zA-Z0-9_\-]/', '_', $this->fieldname);
 
@@ -1006,7 +1009,7 @@ abstract class JFormField
 			'field'        => $this,
 			'group'        => $this->group,
 			'hidden'       => $this->hidden,
-			'hint'         => $this->translateHint ? JText::alt($this->hint, $alt) : $this->hint,
+			'hint'         => $this->translateHint ? Text::alt($this->hint, $alt) : $this->hint,
 			'id'           => $this->id,
 			'label'        => $label,
 			'labelclass'   => $this->labelclass,

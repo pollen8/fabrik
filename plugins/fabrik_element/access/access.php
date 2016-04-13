@@ -8,8 +8,15 @@
  * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
+namespace Fabrik\Plugins\Element;
+
 // No direct access
 defined('_JEXEC') or die('Restricted access');
+
+use \stdClass;
+use Fabrik\Helpers\StringHelper;
+use Fabrik\Helpers\Text;
+use \JHtml;
 
 /**
  * Access element
@@ -18,7 +25,7 @@ defined('_JEXEC') or die('Restricted access');
  * @subpackage  Fabrik.element.access
  * @since       3.0
  */
-class PlgFabrik_ElementAccess extends PlgFabrik_Element
+class Access extends Element
 {
 	/**
 	 * If the element 'Include in search all' option is set to 'default' then this states if the
@@ -114,7 +121,7 @@ class PlgFabrik_ElementAccess extends PlgFabrik_Element
 			// If in front end we need to load the admin language..
 			$this->lang->load('joomla', JPATH_ADMINISTRATOR, null, false, false);
 
-			array_unshift($options, JHtml::_('select.option', '', FText::_('JOPTION_ACCESS_SHOW_ALL_GROUPS')));
+			array_unshift($options, JHtml::_('select.option', '', Text::_('JOPTION_ACCESS_SHOW_ALL_GROUPS')));
 		}
 
 		return $options;
@@ -140,7 +147,7 @@ class PlgFabrik_ElementAccess extends PlgFabrik_Element
 			{
 				if ($o->value == $data)
 				{
-					$text = JString::ltrim(str_replace('-', '', $o->text));
+					$text = StringHelper::ltrim(str_replace('-', '', $o->text));
 				}
 			}
 		}

@@ -8,8 +8,16 @@
  * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
+namespace Fabrik\Helpers;
+
 // No direct access
 defined('_JEXEC') or die('Restricted access');
+
+use \JFile;
+use \JFolder;
+use \RuntimeException;
+use \JFactory;
+use \Joomla\Registry\Registry;
 
 /**
  * Fabrik upload helper
@@ -19,7 +27,7 @@ defined('_JEXEC') or die('Restricted access');
  * @since       3.0
  */
 
-class FabrikUploader extends JObject
+class Uploader extends \JObject
 {
 	/**
 	 * Form model
@@ -151,13 +159,12 @@ class FabrikUploader extends JObject
 	/**
 	 * Checks if the file can be uploaded
 	 *
-	 * @param   array    $file     File information
-	 * @param   string   &$err     An error message to be returned
-	 * @param   JParams  &$params  Params
+	 * @param   array     $file            File information
+	 * @param   string    &$err            An error message to be returned
+	 * @param   Registry  &$params  Params
 	 *
 	 * @return  bool
 	 */
-
 	public static function canUpload($file, &$err, &$params)
 	{
 		if (empty($file['name']))
@@ -170,15 +177,15 @@ class FabrikUploader extends JObject
 		if (!is_uploaded_file($file['tmp_name']))
 		{
 			// Handle potential malicious attack
-			$err = FText::_('File has not been uploaded');
+			$err = Text::_('File has not been uploaded');
 
 			return false;
 		}
 
 		jimport('joomla.filesystem.file');
-		$format = JString::strtolower(JFile::getExt($file['name']));
-		$allowable = explode(',', JString::strtolower($params->get('ul_file_types')));
-		$format = FabrikString::ltrimword($format, '.');
+		$format = StringHelper::strtolower(JFile::getExt($file['name']));
+		$allowable = explode(',', StringHelper::strtolower($params->get('ul_file_types')));
+		$format = StringHelper::ltrimword($format, '.');
 		$format2 = ".$format";
 
 		if (!in_array($format, $allowable) && !in_array($format2, $allowable))
@@ -234,7 +241,7 @@ class FabrikUploader extends JObject
 		foreach ($html_tags as $tag)
 		{
 			// A tag is '<tagname ', so we need to add < and a space or '<tagname>'
-			if (JString::stristr($xss_check, '<' . $tag . ' ') || JString::stristr($xss_check, '<' . $tag . '>'))
+			if (StringHelper::stristr($xss_check, '<' . $tag . ' ') || StringHelper::stristr($xss_check, '<' . $tag . '>'))
 			{
 				$err = 'WARNIEXSS';
 
@@ -263,7 +270,7 @@ class FabrikUploader extends JObject
 			$bits = explode('.', $newFileName);
 			$ext = array_pop($bits);
 			$f = implode('.', $bits);
-			$f = JString::rtrim($f, $version - 1);
+			$f = StringHelper::rtrim($f, $version - 1);
 			$newFileName = $f . $version . "." . $ext;
 			$version++;
 			$newFileName = self::incrementFileName($origFileName, $newFileName, $version);

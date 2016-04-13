@@ -4,7 +4,11 @@
  */
 defined('JPATH_BASE') or die;
 
+use Fabrik\Helpers\Text;
+
 $d = $displayData;
+
+use Fabrik\Helpers\Html;
 
 // If add and select put them in a button group.
 if ($d->frontEndSelect && $d->frontEndAdd && $d->editable) :
@@ -15,19 +19,19 @@ if ($d->frontEndSelect && $d->frontEndAdd && $d->editable) :
 endif;
 
 if ($d->frontEndSelect && $d->editable) :
-	JText::script('PLG_ELEMENT_DBJOIN_SELECT');
+	Text::script('PLG_ELEMENT_DBJOIN_SELECT');
 ?>
-	<a href="<?php echo $d->chooseUrl; ?>" class="toggle-selectoption btn" title="<?php echo FText::_('COM_FABRIK_SELECT'); ?>">
-		<?php echo FabrikHelperHTML::image('search.png', 'form', @$d->tmpl, array('alt' => FText::_('COM_FABRIK_SELECT'))); ?>
+	<a href="<?php echo $d->chooseUrl; ?>" class="toggle-selectoption btn" title="<?php echo Text::_('COM_FABRIK_SELECT'); ?>">
+		<?php echo Html::image('search.png', 'form', @$d->tmpl, array('alt' => Text::_('COM_FABRIK_SELECT'))); ?>
 	</a>
 <?php
 endif;
 
 if ($d->frontEndAdd && $d->editable) :
-	JText::script('PLG_ELEMENT_DBJOIN_ADD');
+	Text::script('PLG_ELEMENT_DBJOIN_ADD');
 	?>
-	<a href="<?php echo $d->addURL; ?>" title="<?php echo FText::_('COM_FABRIK_ADD');?>" class="toggle-addoption btn">
-		<?php echo FabrikHelperHTML::image('plus.png', 'form', @$d->tmpl, array('alt' => FText::_('COM_FABRIK_SELECT'))); ?>
+	<a href="<?php echo $d->addURL; ?>" title="<?php echo Text::_('COM_FABRIK_ADD');?>" class="toggle-addoption btn">
+		<?php echo Html::image('plus.png', 'form', @$d->tmpl, array('alt' => Text::_('COM_FABRIK_SELECT'))); ?>
 	</a>
 <?php
 endif;

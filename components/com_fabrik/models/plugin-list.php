@@ -11,6 +11,12 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Fabrik\Helpers\Html;
+use Fabrik\Helpers\StringHelper;
+use Fabrik\Helpers\Worker;
+use Fabrik\Helpers\LayoutFile;
+use Fabrik\Helpers\Text;
+
 jimport('joomla.application.component.model');
 
 /**
@@ -50,8 +56,8 @@ class PlgFabrik_List extends FabrikPlugin
 	 * Determine if we use the plugin or not
 	 * both location and event criteria have to be match when form plug-in
 	 *
-	 * @param   string  $location  Location to trigger plugin on
-	 * @param   string  $event     Event to trigger plugin on
+	 * @param   string $location Location to trigger plugin on
+	 * @param   string $event    Event to trigger plugin on
 	 *
 	 * @return  bool  true if we should run the plugin otherwise false
 	 */
@@ -97,15 +103,15 @@ class PlgFabrik_List extends FabrikPlugin
 	 */
 	protected function buttonLabel()
 	{
-		$s = JString::strtoupper($this->buttonPrefix);
+		$s = StringHelper::strtoupper($this->buttonPrefix);
 
-		return FText::_('PLG_LIST_' . $s . '_' . $s);
+		return Text::_('PLG_LIST_' . $s . '_' . $s);
 	}
 
 	/**
 	 * Prep the button if needed
 	 *
-	 * @param   array  &$args  Arguments
+	 * @param   array &$args Arguments
 	 *
 	 * @since  3.0.6.2
 	 *
@@ -113,9 +119,9 @@ class PlgFabrik_List extends FabrikPlugin
 	 */
 	public function button(&$args)
 	{
-		$model = $this->getModel();
+		$model              = $this->getModel();
 		$this->buttonAction = $model->actionMethod();
-		$this->context = $model->getRenderContext();
+		$this->context      = $model->getRenderContext();
 
 		return false;
 	}
@@ -129,30 +135,29 @@ class PlgFabrik_List extends FabrikPlugin
 	{
 		if ($this->canUse())
 		{
-			$p = $this->onGetFilterKey_result();
-			$j3 = FabrikWorker::j3();
-			FabrikHelperHTML::addPath('plugins/fabrik_list/' . $p . '/images/', 'image', 'list');
-			$name = $this->_getButtonName();
-			$label = $this->buttonLabel();
-			$imageName = $this->getImageName();
-			$tmpl = $this->getModel()->getTmpl();
+			$p  = $this->onGetFilterKey_result();
+			$j3 = Worker::j3();
+			Html::addPath('plugins/fabrik_list/' . $p . '/images/', 'image', 'list');
+			$name       = $this->_getButtonName();
+			$label      = $this->buttonLabel();
+			$imageName  = $this->getImageName();
+			$tmpl       = $this->getModel()->getTmpl();
 			$properties = array();
-			$opts =  array(
+			$opts       = array(
 				'forceImage' => false
 			);
 
-			if (FabrikWorker::isImageExtension($imageName))
+			if (Worker::isImageExtension($imageName))
 			{
 				$opts['forceImage'] = true;
 			}
 
-
-			$img = FabrikHelperHTML::image($imageName, 'list', $tmpl, $properties, false, $opts);
+			$img  = Html::image($imageName, 'list', $tmpl, $properties, false, $opts);
 			$text = $this->buttonAction == 'dropdown' ? $label : '<span class="hidden">' . $label . '</span>';
 
 			if ($j3 && $this->buttonAction != 'dropdown')
 			{
-				$layout = FabrikHelperHTML::getLayout('fabrik-button');
+				$layout     = Html::getLayout('fabrik-button');
 				$layoutData = (object) array(
 					'tag' => 'a',
 					'attributes' => 'data-list="' . $this->context . '" title="' . $label . '"',
@@ -192,11 +197,11 @@ class PlgFabrik_List extends FabrikPlugin
 	 */
 	public function getElementJSOptions()
 	{
-		$opts = new stdClass;
-		$model = $this->getModel();
-		$opts->ref = $model->getRenderContext();
-		$opts->name = $this->_getButtonName();
-		$opts->listid = $model->getId();
+		$opts          = new stdClass;
+		$model         = $this->getModel();
+		$opts->ref     = $model->getRenderContext();
+		$opts->name    = $this->_getButtonName();
+		$opts->listid  = $model->getId();
 		$opts->canAJAX = $this->canAJAX();
 
 		return $opts;
@@ -205,13 +210,13 @@ class PlgFabrik_List extends FabrikPlugin
 	/**
 	 * Return the javascript to create an instance of the class defined in formJavascriptClass
 	 *
-	 * @param   array  $args  [0] => string table's form id to contain plugin
+	 * @param   array $args [0] => string table's form id to contain plugin
 	 *
-	 * @return	bool
+	 * @return    bool
 	 */
 	public function onLoadJavascriptInstance($args)
 	{
-		JText::script('COM_FABRIK_PLEASE_SELECT_A_ROW');
+		Text::script('COM_FABRIK_PLEASE_SELECT_A_ROW');
 
 		return true;
 	}
@@ -268,7 +273,7 @@ class PlgFabrik_List extends FabrikPlugin
 	/**
 	 * Preflight check to ensure that the list plugin should process
 	 *
-	 * @return	string|boolean
+	 * @return    string|boolean
 	 */
 	public function process_preflightCheck()
 	{
@@ -277,7 +282,7 @@ class PlgFabrik_List extends FabrikPlugin
 			return false;
 		}
 
-		$input = $this->app->input;
+		$input             = $this->app->input;
 		$postedRenderOrder = $input->getInt('fabrik_listplugin_renderOrder', -1);
 
 		return $input->get('fabrik_listplugin_name') == $this->buttonPrefix && $this->renderOrder == $postedRenderOrder;
@@ -292,7 +297,7 @@ class PlgFabrik_List extends FabrikPlugin
 	 */
 	public function onGetFilterKey()
 	{
-		$this->filterKey = JString::strtolower(str_ireplace('PlgFabrik_List', '', get_class($this)));
+		$this->filterKey = StringHelper::strtolower(str_ireplace('PlgFabrik_List', '', get_class($this)));
 
 		return $this->filterKey;
 	}
@@ -337,9 +342,9 @@ class PlgFabrik_List extends FabrikPlugin
 	/**
 	 * Allows to to alter the table's select query
 	 *
-	 * @param   array  &$args  Arguments - first value is an object with a JQuery object
-	 * contains the current query:
-	 * $args[0]->query
+	 * @param   array &$args Arguments - first value is an object with a JQuery object
+	 *                       contains the current query:
+	 *                       $args[0]->query
 	 *
 	 * @return  void;
 	 */
@@ -361,16 +366,24 @@ class PlgFabrik_List extends FabrikPlugin
 	/**
 	 * Get the src(s) for the list plugin js class
 	 *
-	 * @return  mixed  string or array or null. If string then is relative path to either compressed or uncompress js file.
+	 * @return  mixed   array or null. If array then key is class name and value
+	 * is relative path to either compressed or uncompress js file.
 	 */
 	public function loadJavascriptClass_result()
 	{
 		$this->onGetFilterKey();
-		$p = $this->onGetFilterKey_result();
-		$ext = FabrikHelperHTML::isDebug() ? '.js' : '-min.js';
+		$p    = $this->onGetFilterKey_result();
+		$ext  = Html::isDebug() ? '.js' : '-min.js';
 		$file = 'plugins/fabrik_list/' . $p . '/' . $p . $ext;
 
-		return JFile::exists(JPATH_SITE . '/' . $file) ? $file : null;
+		if (JFile::exists(JPATH_SITE . '/' . $file))
+		{
+			return array('FbList' . ucfirst(($p)) => $file);
+		}
+		else
+		{
+			return null;
+		}
 	}
 
 	public function loadJavascriptClassName()
@@ -404,8 +417,8 @@ class PlgFabrik_List extends FabrikPlugin
 	 */
 	public function requireJSShim_result()
 	{
-		$deps = new stdClass;
-		$deps->deps = array('fab/list-plugin');
+		$deps                                                      = new stdClass;
+		$deps->deps                                                = array('fab/list-plugin');
 		$shim['list/' . $this->filterKey . '/' . $this->filterKey] = $deps;
 
 		return $shim;
@@ -436,19 +449,19 @@ class PlgFabrik_List extends FabrikPlugin
 
 	/**
 	 * Get the element's JLayout file
-	 * Its actually an instance of FabrikLayoutFile which inverses the ordering added include paths.
-	 * In FabrikLayoutFile the addedPath takes precedence over the default paths, which makes more sense!
+	 * Its actually an instance of LayoutFile which inverses the ordering added include paths.
+	 * In LayoutFile the addedPath takes precedence over the default paths, which makes more sense!
 	 *
-	 * @param   string  $type  form/details/list
+	 * @param   string $type form/details/list
 	 *
-	 * @return FabrikLayoutFile
+	 * @return LayoutFile
 	 */
 	public function getLayout($type)
 	{
-		$name = get_class($this);
-		$name = strtolower(JString::str_ireplace('PlgFabrik_List', '', $name));
+		$name     = get_class($this);
+		$name     = strtolower(StringHelper::str_ireplace('PlgFabrik_List', '', $name));
 		$basePath = COM_FABRIK_BASE . '/plugins/fabrik_list/' . $name . '/layouts';
-		$layout = new FabrikLayoutFile('fabrik-list-' . $name. '-' . $type, $basePath, array('debug' => false, 'component' => 'com_fabrik', 'client' => 'site'));
+		$layout   = new LayoutFile('fabrik-list-' . $name . '-' . $type, $basePath, array('debug' => false, 'component' => 'com_fabrik', 'client' => 'site'));
 		$layout->addIncludePaths(JPATH_THEMES . '/' . $this->app->getTemplate() . '/html/layouts');
 
 		return $layout;

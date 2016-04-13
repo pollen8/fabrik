@@ -11,7 +11,9 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Joomla\Utilities\ArrayHelper;
+use Fabrik\Helpers\ArrayHelper;
+use Fabrik\Helpers\Worker;
+use Fabrik\Helpers\StringHelper;
 
 jimport('joomla.application.component.model');
 
@@ -77,7 +79,7 @@ class FabrikModelTimeline extends FabrikFEModelVisualization
 			if ($start + $this->step > $totals[$currentList])
 			{
 				// Move onto next list?
-				$nextListId = FArrayHelper::getValue($lists, $c + 1, null);
+				$nextListId = ArrayHelper::getValue($lists, $c + 1, null);
 				$fabrik->nextListId = $nextListId;
 
 				if (is_null($nextListId))
@@ -95,7 +97,7 @@ class FabrikModelTimeline extends FabrikFEModelVisualization
 		else
 		{
 			// Move onto next list?
-			$nextListId = FArrayHelper::getValue($lists, $c + 1, null);
+			$nextListId = ArrayHelper::getValue($lists, $c + 1, null);
 			$fabrik->nextListId = $nextListId;
 
 			if (is_null($nextListId))
@@ -160,7 +162,7 @@ class FabrikModelTimeline extends FabrikFEModelVisualization
 		$input = $this->app->input;
 		$params = $this->getParams();
 		$timeZone = new DateTimeZone($this->config->get('offset'));
-		$w = new FabrikWorker;
+		$w = new Worker;
 		jimport('string.normalise');
 		$templates = (array) $params->get('timeline_detailtemplate', array());
 		$startdates = (array) $params->get('timeline_startdate', array());
@@ -171,14 +173,14 @@ class FabrikModelTimeline extends FabrikFEModelVisualization
 		$classNames = (array) $params->get('timeline_class', array());
 		$evals = (array) $params->get('eval_template', array());
 
-		$template = FArrayHelper::getValue($templates, $c);
-		$colour = FArrayHelper::getValue($colours, $c);
-		$startdate = FArrayHelper::getValue($startdates, $c);
-		$enddate = FArrayHelper::getValue($enddates, $c);
-		$title = FArrayHelper::getValue($labels, $c);
-		$textColour = FArrayHelper::getValue($textColours, $c);
-		$className = FArrayHelper::getValue($classNames, $c);
-		$eval = FArrayHelper::getValue($evals, $c);
+		$template = ArrayHelper::getValue($templates, $c);
+		$colour = ArrayHelper::getValue($colours, $c);
+		$startdate = ArrayHelper::getValue($startdates, $c);
+		$enddate = ArrayHelper::getValue($enddates, $c);
+		$title = ArrayHelper::getValue($labels, $c);
+		$textColour = ArrayHelper::getValue($textColours, $c);
+		$className = ArrayHelper::getValue($classNames, $c);
+		$eval = ArrayHelper::getValue($evals, $c);
 
 		$listModel = JModelLegacy::getInstance('List', 'FabrikFEModel');
 		$listModel->setId($listId);
@@ -192,14 +194,14 @@ class FabrikModelTimeline extends FabrikFEModelVisualization
 
 		if ($listModel->canView() || $listModel->canEdit())
 		{
-			$where = FArrayHelper::getValue($where, $listId, '');
+			$where = ArrayHelper::getValue($where, $listId, '');
 			$listModel->setPluginQueryWhere('timeline', $where);
 			$data = $listModel->getData();
 			$elements = $listModel->getElements();
 			$enddate2 = $enddate;
 			$startdate2 = $startdate;
-			$endKey = FabrikString::safeColName($enddate2);
-			$startKey = FabrikString::safeColName($startdate2);
+			$endKey = StringHelper::safeColName($enddate2);
+			$startKey = StringHelper::safeColName($startdate2);
 
 			if (!array_key_exists($endKey, $elements))
 			{
@@ -308,7 +310,7 @@ class FabrikModelTimeline extends FabrikFEModelVisualization
 
 		foreach ($lists as $listId)
 		{
-			$where = FArrayHelper::getValue($where, $listId, '');
+			$where = ArrayHelper::getValue($where, $listId, '');
 			$listModel = JModelLegacy::getInstance('List', 'FabrikFEModel');
 			$listModel->setId($listId);
 			$listModel->setPluginQueryWhere('timeline', $where);
@@ -409,11 +411,11 @@ class FabrikModelTimeline extends FabrikFEModelVisualization
 		$input = preg_replace('#^[\d\.]*#', '', $input);
 
 		// Lowercase the first character.
-		$first = JString::substr($input, 0, 1);
-		$first = JString::strtolower($first);
+		$first = StringHelper::substr($input, 0, 1);
+		$first = StringHelper::strtolower($first);
 
 		// Replace the first character with the lowercase character.
-		$input = JString::substr_replace($input, $first, 0, 1);
+		$input = StringHelper::substr_replace($input, $first, 0, 1);
 
 		return $input;
 	}
@@ -429,10 +431,10 @@ class FabrikModelTimeline extends FabrikFEModelVisualization
 	 */
 	protected function getLinkURL($listModel, $row, $c)
 	{
-		$w = new FabrikWorker;
+		$w = new Worker;
 		$params = $this->getParams();
 		$customLink = (array) $params->get('timeline_customlink');
-		$customLink = FArrayHelper::getValue($customLink, $c, '');
+		$customLink = ArrayHelper::getValue($customLink, $c, '');
 
 		if ($customLink !== '')
 		{
@@ -467,11 +469,11 @@ class FabrikModelTimeline extends FabrikFEModelVisualization
 	{
 		$params = $this->getParams();
 		$bands = $params->get('timeline_bands');
-		$bands = FabrikWorker::JSONtoData($bands, true);
-		$intervals = FArrayHelper::getValue($bands, 'timelne_band_interval_unit', array());
-		$widths = FArrayHelper::getValue($bands, 'timeline_band_width', array());
-		$overviews = FArrayHelper::getValue($bands, 'timeline_band_as_overview', array());
-		$bgs = FArrayHelper::getValue($bands, 'timeline_band_background_colour', array());
+		$bands = Worker::JSONtoData($bands, true);
+		$intervals = ArrayHelper::getValue($bands, 'timelne_band_interval_unit', array());
+		$widths = ArrayHelper::getValue($bands, 'timeline_band_width', array());
+		$overviews = ArrayHelper::getValue($bands, 'timeline_band_as_overview', array());
+		$bgs = ArrayHelper::getValue($bands, 'timeline_band_background_colour', array());
 		$data = array();
 		$length = count($intervals);
 		$css = array();
@@ -483,8 +485,8 @@ class FabrikModelTimeline extends FabrikFEModelVisualization
 			$o->width = strstr($widths[$i], '%') ? $widths[$i] : $widths[$i] . '%';
 			$o->intervalUnit = (int) $intervals[$i];
 			$defaultOverview = $i === $length - 1 ? true : false;
-			$o->overview = (bool) FArrayHelper::getValue($overviews, $i, $defaultOverview);
-			$bg = FArrayHelper::getValue($bgs, $i, '');
+			$o->overview = (bool) ArrayHelper::getValue($overviews, $i, $defaultOverview);
+			$bg = ArrayHelper::getValue($bgs, $i, '');
 
 			if ($bg !== '')
 			{

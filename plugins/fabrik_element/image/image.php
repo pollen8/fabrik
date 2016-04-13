@@ -8,6 +8,8 @@
  * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
+namespace Fabrik\Plugins\Element;
+
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
@@ -16,6 +18,15 @@ if (!defined('DS'))
 	define('DS', DIRECTORY_SEPARATOR);
 }
 
+use \JHtml;
+use \stdClass;
+use Fabrik\Helpers\ArrayHelper;
+use Fabrik\Helpers\Worker;
+use \JFolder;
+use \JPath;
+use Fabrik\Helpers\StringHelper;
+use Fabrik\Helpers\Html;
+
 /**
  * Plugin element to render an image already located on the server
  *
@@ -23,8 +34,7 @@ if (!defined('DS'))
  * @subpackage  Fabrik.element.image
  * @since       3.0
  */
-
-class PlgFabrik_ElementImage extends PlgFabrik_Element
+class Image extends Element
 {
 	/**
 	 * Ignored folders
@@ -54,21 +64,21 @@ class PlgFabrik_ElementImage extends PlgFabrik_Element
 		{
 			$params = $this->getParams();
 			$element = $this->getElement();
-			$w = new FabrikWorker;
+			$w = new Worker;
 			$this->default = $params->get('imagepath');
 
 			// $$$ hugh - this gets us the default image, with the root folder prepended.
 			// But ... if the root folder option is set, we need to strip it.
 			$rootFolder = $params->get('selectImage_root_folder', '/');
-			$rootFolder = JString::ltrim($rootFolder, '/');
-			$rootFolder = JString::rtrim($rootFolder, '/') . '/';
+			$rootFolder = StringHelper::ltrim($rootFolder, '/');
+			$rootFolder = StringHelper::rtrim($rootFolder, '/') . '/';
 			$this->default = preg_replace("#^$rootFolder#", '', $this->default);
 			$this->default = $w->parseMessageForPlaceHolder($this->default, $data);
 
 			if ($element->eval == "1")
 			{
 				$this->default = @eval((string) stripslashes($this->default));
-				FabrikWorker::logEval($this->default, 'Caught exception on eval in ' . $element->name . '::getDefaultValue() : %s');
+				Worker::logEval($this->default, 'Caught exception on eval in ' . $element->name . '::getDefaultValue() : %s');
 			}
 		}
 
@@ -99,7 +109,7 @@ class PlgFabrik_ElementImage extends PlgFabrik_Element
 		 * selection was being applied instead
 		 * otherwise get the default value so if we don't find the element's value in $data we fall back on this value
 		 */
-		return FArrayHelper::getValue($opts, 'use_default', true) == false ? '' : $this->getDefaultValue($data);
+		return ArrayHelper::getValue($opts, 'use_default', true) == false ? '' : $this->getDefaultValue($data);
 	}
 
 	/**
@@ -113,8 +123,8 @@ class PlgFabrik_ElementImage extends PlgFabrik_Element
 	 */
 	public function renderListData($data, stdClass &$thisRow, $opts = array())
 	{
-		$w = new FabrikWorker;
-		$data = FabrikWorker::JSONtoData($data, true);
+		$w = new Worker;
+		$data = Worker::JSONtoData($data, true);
 		$params = $this->getParams();
 		$pathset = false;
 
@@ -135,7 +145,7 @@ class PlgFabrik_ElementImage extends PlgFabrik_Element
 			if (!strstr($iPath, '/'))
 			{
 				// Single file specified so find it in tmpl folder
-				$data = (array) FabrikHelperHTML::image($iPath, 'list', @$this->tmpl, array(), true);
+				$data = (array) Html::image($iPath, 'list', @$this->tmpl, array(), true);
 			}
 			else
 			{
@@ -146,8 +156,8 @@ class PlgFabrik_ElementImage extends PlgFabrik_Element
 		$selectImage_root_folder = $this->rootFolder();
 
 		// $$$ hugh - tidy up a bit so we don't have so many ///'s in the URL's
-		$selectImage_root_folder = JString::ltrim($selectImage_root_folder, '/');
-		$selectImage_root_folder = JString::rtrim($selectImage_root_folder, '/');
+		$selectImage_root_folder = StringHelper::ltrim($selectImage_root_folder, '/');
+		$selectImage_root_folder = StringHelper::rtrim($selectImage_root_folder, '/');
 		$selectImage_root_folder = $selectImage_root_folder === '' ? '' : $selectImage_root_folder . '/';
 
 		$showImage = $params->get('show_image_in_table', 0);
@@ -163,13 +173,13 @@ class PlgFabrik_ElementImage extends PlgFabrik_Element
 			if ($showImage)
 			{
 				// $$$ rob 30/06/2011 - say if we import via csv a url to the image check that and use that rather than the relative path
-				if (JString::substr($data[$i], 0, 4) == 'http')
+				if (StringHelper::substr($data[$i], 0, 4) == 'http')
 				{
 					$src = $data[$i];
 				}
 				else
 				{
-					$data[$i] = JString::ltrim($data[$i], '/');
+					$data[$i] = StringHelper::ltrim($data[$i], '/');
 					$src = COM_FABRIK_LIVESITE . $selectImage_root_folder . $data[$i];
 				}
 
@@ -266,8 +276,8 @@ class PlgFabrik_ElementImage extends PlgFabrik_Element
 	{
 		$params = $this->getParams();
 		$selectImage_root_folder = $params->get('selectImage_root_folder', '');
-		$selectImage_root_folder = JString::ltrim($selectImage_root_folder, '/');
-		$selectImage_root_folder = JString::rtrim($selectImage_root_folder, '/');
+		$selectImage_root_folder = StringHelper::ltrim($selectImage_root_folder, '/');
+		$selectImage_root_folder = StringHelper::rtrim($selectImage_root_folder, '/');
 		$selectImage_root_folder = $selectImage_root_folder === '' ? '' : $selectImage_root_folder . '/';
 
 		return '<img src="' . COM_FABRIK_LIVESITE . $selectImage_root_folder . $data . '" />';
@@ -296,14 +306,14 @@ class PlgFabrik_ElementImage extends PlgFabrik_Element
 		}
 
 		// $$$ rob - 30/06/2011 can only select an image if its not a remote image
-		$canSelect = ($params->get('image_front_end_select', '0') && JString::substr($value, 0, 4) !== 'http');
+		$canSelect = ($params->get('image_front_end_select', '0') && StringHelper::substr($value, 0, 4) !== 'http');
 
 		// $$$ rob - 30/062011 allow for full urls in the image. (e.g from csv import)
-		$defaultImage = JString::substr($value, 0, 4) == 'http' ? $value : COM_FABRIK_LIVESITE . $rootFolder . $value;
+		$defaultImage = StringHelper::substr($value, 0, 4) == 'http' ? $value : COM_FABRIK_LIVESITE . $rootFolder . $value;
 
 		$float = $params->get('image_float');
 		$float = $float != '' ? "style='float:$float;'" : '';
-		$w     = new FabrikWorker;
+		$w     = new Worker;
 		$rootFolder = str_replace('/', DS, $rootFolder);
 
 		$layout = $this->getLayout('form');
@@ -329,7 +339,7 @@ class PlgFabrik_ElementImage extends PlgFabrik_Element
 			}
 
 			// $$$rob not sure about his name since we are adding $repeatCounter to getHTMLName();
-			$layoutData->imageName = $this->getGroupModel()->canRepeat() ? FabrikString::rtrimWord($name, "][$repeatCounter]") . "_image][$repeatCounter]"
+			$layoutData->imageName = $this->getGroupModel()->canRepeat() ? StringHelper::rtrimWord($name, "][$repeatCounter]") . "_image][$repeatCounter]"
 				: $id . '_image';
 			$bits = explode('/', $value);
 			$image = array_pop($bits);
@@ -402,7 +412,7 @@ class PlgFabrik_ElementImage extends PlgFabrik_Element
 		$folder = array();
 		$files = array();
 		$images = array();
-		FabrikWorker::readImages($pathA, "/", $folders, $images, $this->ignoreFolders);
+		Worker::readImages($pathA, "/", $folders, $images, $this->ignoreFolders);
 
 		if (!array_key_exists('/', $images))
 		{
@@ -447,7 +457,7 @@ class PlgFabrik_ElementImage extends PlgFabrik_Element
 	{
 		$rootFolder = '';
 		$params = $this->getParams();
-		$canSelect = ($params->get('image_front_end_select', '0') && JString::substr($value, 0, 4) !== 'http');
+		$canSelect = ($params->get('image_front_end_select', '0') && StringHelper::substr($value, 0, 4) !== 'http');
 		$defaultImg = $params->get('imagepath');
 
 		// Changed first || from a && - http://fabrikar.com/forums/index.php?threads/3-1rc1-image-list-options-bug.36585/#post-184266
@@ -457,8 +467,8 @@ class PlgFabrik_ElementImage extends PlgFabrik_Element
 		}
 
 		// $$$ hugh - tidy up a bit so we don't have so many ///'s in the URL's
-		$rootFolder = JString::ltrim($rootFolder, '/');
-		$rootFolder = JString::rtrim($rootFolder, '/');
+		$rootFolder = StringHelper::ltrim($rootFolder, '/');
+		$rootFolder = StringHelper::rtrim($rootFolder, '/');
 		$rootFolder = $rootFolder === '' ? '' : $rootFolder . '/';
 
 

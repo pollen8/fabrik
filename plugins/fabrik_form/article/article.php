@@ -6,13 +6,28 @@
  * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
+namespace Fabrik\Plugins\Form;
+
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Joomla\Utilities\ArrayHelper;
-
-// Require the abstract plugin class
-require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
+use \stdClass;
+use \Exception;
+use \RuntimeException;
+use \JApplication;
+use \JPath;
+use \JStringNormalise;
+use \JFactory;
+use \JTable;
+use \JPluginHelper;
+use \JFile;
+use \JEventDispatcher;
+use \JModelLegacy;
+use \FabrikFEModelForm;
+use Fabrik\Helpers\ArrayHelper;
+use Fabrik\Helpers\StringHelper;
+use Fabrik\Helpers\Text;
+use Fabrik\Helpers\Worker;
 
 /**
  * Create Joomla article(s) upon form submission
@@ -21,7 +36,7 @@ require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
  * @subpackage  Fabrik.form.article
  * @since       3.0
  */
-class PlgFabrik_FormArticle extends PlgFabrik_Form
+class Article extends \PlgFabrik_Form
 {
 	/**
 	 * Images
@@ -47,7 +62,7 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 
 		if (!$this->shouldProcess('article_conditon', $this->data, $params))
 		{
-			return;
+			return true;
 		}
 
 		$store = $this->metaStore();
@@ -55,7 +70,7 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 		if ($catElement = $formModel->getElement($params->get('categories_element'), true))
 		{
 			$cat        = $catElement->getFullName() . '_raw';
-			$categories = (array) FArrayHelper::getValue($this->data, $cat);
+			$categories = (array) ArrayHelper::getValue($this->data, $cat);
 			$this->mapCategoryChanges($categories, $store);
 		}
 		else
@@ -67,7 +82,7 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 		{
 			$id               = isset($store->$category) ? $store->$category : null;
 			$item             = $this->saveArticle($id, $category);
-			$store->$category = $item->id;
+			$store->$category = $item->get('id');
 		}
 
 		$this->setMetaStore($store);
@@ -193,11 +208,11 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 		{
 			JModelLegacy::addIncludePath(COM_FABRIK_BASE . 'administrator/components/com_content/models');
 			$articleModel = JModelLegacy::getInstance('Article', 'ContentModel');
-			$articleModel->featured($item->id, $item->featured);
+			$articleModel->featured($item->get('id'), $item->get('featured'));
 		}
 		else
 		{
-			$this->featured($item->id, $item->featured);
+			$this->featured($item->get('id'), $item->get('featured'));
 		}
 
 		// Trigger the onContentAfterSave event.
@@ -206,7 +221,7 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 		// New record - need to re-save with {readmore} replacement
 		if ($isNew && strstr($data['articletext'], '{readmore}'))
 		{
-			$readMore            = 'index.php?option=com_content&view=article&id=' . $item->id;
+			$readMore            = 'index.php?option=com_content&view=article&id=' . $item->get('id');
 			$data['articletext'] = str_replace('{readmore}', $readMore, $data['articletext']);
 			$item->bind($data);
 			$item->store();
@@ -225,8 +240,8 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 	 * Copied from admin content model
 	 * Method to toggle the featured setting of articles.
 	 *
-	 * @param   array    The ids of the items to toggle.
-	 * @param   integer  The value to toggle to.
+	 * @param   array    $pks    The ids of the items to toggle.
+	 * @param   integer  $value  The value to toggle to.
 	 *
 	 * @return  boolean  True on success.
 	 */
@@ -239,7 +254,7 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 
 		if (empty($pks))
 		{
-			$this->setError(JText::_('COM_CONTENT_NO_ITEM_SELECTED'));
+			$this->setError(Text::_('COM_CONTENT_NO_ITEM_SELECTED'));
 
 			return false;
 		}
@@ -341,7 +356,7 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 			}
 
 			// Dates need to have date element tz options applied
-			if (is_a($elementModel, 'PlgFabrik_ElementDate'))
+			if (is_a($elementModel, 'Fabrik\Plugins\Element\Date'))
 			{
 				if (is_array($value) && array_key_exists('date', $value))
 				{
@@ -383,14 +398,14 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 			if ($file !== '')
 			{
 				$img->image_intro         = str_replace('\\', '/', $file);
-				$img->image_intro         = FabrikString::ltrimword($img->image_intro, '/');
+				$img->image_intro         = StringHelper::ltrimword($img->image_intro, '/');
 				$img->float_intro         = '';
 				$img->image_intro_alt     = '';
 				$img->image_intro_caption = '';
 
 				$elementModel = $formModel->getElement($introImg, true);
 
-				if (get_class($elementModel) === 'PlgFabrik_ElementFileupload')
+				if (get_class($elementModel) === 'Fabrik\Plugins\Element\Fileupload')
 				{
 					$name       = $elementModel->getFullName(true, false);
 					$img->$name = $placeholder;
@@ -406,14 +421,14 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 			if ($file !== '')
 			{
 				$img->image_fulltext         = str_replace('\\', '/', $file);
-				$img->image_fulltext         = FabrikString::ltrimword($img->image_fulltext, '/');
+				$img->image_fulltext         = StringHelper::ltrimword($img->image_fulltext, '/');
 				$img->float_fulltext         = '';
 				$img->image_fulltext_alt     = '';
 				$img->image_fulltext_caption = '';
 
 				$elementModel = $formModel->getElement($fullImg, true);
 
-				if (get_class($elementModel) === 'PlgFabrik_ElementFileupload')
+				if (get_class($elementModel) === 'Fabrik\Plugins\Element\Fileupload')
 				{
 					$name       = $elementModel->getFullName(true, false);
 					$img->$name = $placeholder;
@@ -469,10 +484,10 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 		/** @var FabrikFEModelForm $formModel */
 		$formModel    = $this->getModel();
 
-		/** @var PlgFabrik_ElementFileupload $elementModel */
+		/** @var \Fabrik\Plugins\Element\Fileupload $elementModel */
 		$elementModel = $formModel->getElement($elementId, true);
 
-		if (get_class($elementModel) === 'PlgFabrik_ElementFileupload')
+		if (get_class($elementModel) === 'Fabrik\Plugins\Element\Fileupload')
 		{
 			$name        = $elementModel->getHTMLName();
 			$data[$name] = $file;
@@ -499,7 +514,7 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 
 			if ($first === '\\' || $first == '/')
 			{
-				$file = FabrikString::ltrimiword($file, $first);
+				$file = StringHelper::ltrimiword($file, $first);
 			}
 		}
 
@@ -529,9 +544,9 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 		// should increment the Joomla article title.
 		while ($table->load(array('alias' => $alias, 'catid' => $catId)))
 		{
-			$title                      = JString::increment($title);
+			$title                      = StringHelper::increment($title);
 			$titles[$table->get('id')]  = $title;
-			$alias                      = JString::increment($alias, 'dash');
+			$alias                      = StringHelper::increment($alias, 'dash');
 			$aliases[$table->get('id')] = $alias;
 		}
 
@@ -598,7 +613,6 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 		/** @var FabrikFEModelForm $formModel */
 		$formModel = $this->getModel();
 		$params    = $this->getParams();
-		$metaStore = new stdClass;
 
 		if ($elementModel = $formModel->getElement($params->get('meta_store'), true))
 		{
@@ -685,6 +699,7 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 	protected function buildContent()
 	{
 		$images          = $this->images();
+		/* @var FabrikFEModelForm */
 		$formModel       = $this->getModel();
 		$input           = $this->app->input;
 		$params          = $this->getParams();
@@ -722,8 +737,8 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 			. $input->get('rowid', '', 'string');
 		$viewURL  = COM_FABRIK_LIVESITE . 'index.php?option=com_' . $this->package . '&amp;view=details&amp;formid=' . $formModel->get('id') . '&amp;rowid='
 			. $input->get('rowid', '', 'string');
-		$editLink = '<a href="' . $editURL . '">' . FText::_('EDIT') . '</a>';
-		$viewLink = '<a href="' . $viewURL . '">' . FText::_('VIEW') . '</a>';
+		$editLink = '<a href="' . $editURL . '">' . Text::_('EDIT') . '</a>';
+		$viewLink = '<a href="' . $viewURL . '">' . Text::_('VIEW') . '</a>';
 		$message  = str_replace('{fabrik_editlink}', $editLink, $message);
 		$message  = str_replace('{fabrik_viewlink}', $viewLink, $message);
 		$message  = str_replace('{fabrik_editurl}', $editURL, $message);
@@ -734,7 +749,7 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 			$this->data[$key] = $val;
 		}
 
-		$w      = new FabrikWorker;
+		$w      = new Worker;
 		$output = $w->parseMessageForPlaceholder($message, $this->data, true);
 
 		return $output;
@@ -826,11 +841,11 @@ class PlgFabrik_FormArticle extends PlgFabrik_Form
 		{
 			$catName    = $catElement->getFullName();
 			$cat        = $catName . '_raw';
-			$categories = (array) FArrayHelper::getValue($this->data, $cat);
+			$categories = (array) ArrayHelper::getValue($this->data, $cat);
 
 			if (empty($categories) || is_array($categories) && $categories[0] === '')
 			{
-				$this->raiseError($formModel->errors, $catName, FText::_('PLG_FABRIK_FORM_ARTICLE_ERR_NO_CATEGORY'));
+				$this->raiseError($formModel->errors, $catName, Text::_('PLG_FABRIK_FORM_ARTICLE_ERR_NO_CATEGORY'));
 
 				return false;
 			}

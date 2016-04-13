@@ -11,6 +11,10 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Fabrik\Helpers\Html;
+use Fabrik\Helpers\Worker;
+use Fabrik\Helpers\Text;
+
 jimport('joomla.form.formfield');
 
 /**
@@ -48,7 +52,7 @@ class JFormFieldFabrikModalrepeat extends JFormField
 		$subForm = new JForm($this->name, array('control' => 'jform'));
 		$xml = $this->element->children()->asXML();
 		$subForm->load($xml);
-		$j3 = FabrikWorker::j3();
+		$j3 = Worker::j3();
 
 		// Needed for repeating modals in gmaps viz
 		$subForm->repeatCounter = (int) @$this->form->repeatCounter;
@@ -77,7 +81,7 @@ class JFormFieldFabrikModalrepeat extends JFormField
 
 		if ($view === 'element')
 		{
-			$pluginManager = FabrikWorker::getPluginManager();
+			$pluginManager = Worker::getPluginManager();
 			$feModel = $pluginManager->getPluginFromId($id);
 		}
 		else
@@ -137,7 +141,7 @@ class JFormFieldFabrikModalrepeat extends JFormField
 		{
 			$names[] = (string) $field->element->attributes()->name;
 			$str[] = '<th>' . strip_tags($field->getLabel($field->name));
-			$str[] = '<br /><small style="font-weight:normal">' . FText::_($field->description) . '</small>';
+			$str[] = '<br /><small style="font-weight:normal">' . Text::_($field->description) . '</small>';
 			$str[] = '</th>';
 		}
 
@@ -147,7 +151,7 @@ class JFormFieldFabrikModalrepeat extends JFormField
 		}
 		else
 		{
-			$str[] = '<th><a href="#" class="add"><img src="' . $path . '/icon-16-new.png" alt="' . FText::_('ADD') . '" /></a></th>';
+			$str[] = '<th><a href="#" class="add"><img src="' . $path . '/icon-16-new.png" alt="' . Text::_('ADD') . '" /></a></th>';
 		}
 
 		$str[] = '</tr></thead>';
@@ -168,8 +172,8 @@ class JFormFieldFabrikModalrepeat extends JFormField
 		}
 		else
 		{
-			$str[] = '<a href="#" class="add"><img src="' . $path . '/icon-16-new.png" alt="' . FText::_('ADD') . '" /></a>';
-			$str[] = '<a href="#" class="remove"><img src="' . $path . '/icon-16-delete.png" alt="' . FText::_('REMOVE') . '" /></a>';
+			$str[] = '<a href="#" class="add"><img src="' . $path . '/icon-16-new.png" alt="' . Text::_('ADD') . '" /></a>';
+			$str[] = '<a href="#" class="remove"><img src="' . $path . '/icon-16-delete.png" alt="' . Text::_('REMOVE') . '" /></a>';
 		}
 
 		$str[] = '</td>';
@@ -209,7 +213,7 @@ class JFormFieldFabrikModalrepeat extends JFormField
 
 			if ($option === 'com_fabrik')
 			{
-				FabrikHelperHTML::script('administrator/components/com_fabrik/models/fields/fabrikmodalrepeat.js', $script);
+				Html::script('administrator/components/com_fabrik/models/fields/fabrikmodalrepeat.js', $script);
 			}
 			else
 			{
@@ -268,7 +272,7 @@ class JFormFieldFabrikModalrepeat extends JFormField
 
 				// Wont work when rendering in admin module page
 				// @TODO test this now that the list and form pages are loading plugins via ajax (18/08/2012)
-				FabrikHelperHTML::script('administrator/components/com_fabrik/models/fields/fabrikmodalrepeat.js', $script);
+				Html::script('administrator/components/com_fabrik/models/fields/fabrikmodalrepeat.js', $script);
 			}
 		}
 
@@ -282,7 +286,7 @@ class JFormFieldFabrikModalrepeat extends JFormField
 		if ($j3)
 		{
 			$icon = $this->element['icon'] ? '<i class="icon-' . $this->element['icon'] . '"></i> ' : '';
-			$icon .= FText::_('JLIB_FORM_BUTTON_SELECT');
+			$icon .= Text::_('JLIB_FORM_BUTTON_SELECT');
 			$str[] = '<button class="btn" id="' . $modalId . '_button" data-modal="' . $modalId . '">' . $icon . '</button>';
 			$str[] = '<input type="hidden" name="' . $this->name . '" id="' . $this->id . '" value="' . $value . '" />';
 		}
@@ -290,14 +294,14 @@ class JFormFieldFabrikModalrepeat extends JFormField
 		{
 			$str[] = '<div class="button2-left">';
 			$str[] = '	<div class="blank">';
-			$str[] = '		<a id="' . $modalId . '_button" data-modal="' . $modalId . '">' . FText::_('JLIB_FORM_BUTTON_SELECT') . '</a>';
+			$str[] = '		<a id="' . $modalId . '_button" data-modal="' . $modalId . '">' . Text::_('JLIB_FORM_BUTTON_SELECT') . '</a>';
 			$str[] = '		<input type="hidden" name="' . $this->name . '" id="' . $this->id . '" value="' . $value . '" />';
 			$str[] = '	</div>';
 			$str[] = '</div>';
 		}
 
-		FabrikHelperHTML::framework();
-		FabrikHelperHTML::iniRequireJS();
+		Html::framework();
+		Html::iniRequireJS();
 
 		return implode("\n", $str);
 	}

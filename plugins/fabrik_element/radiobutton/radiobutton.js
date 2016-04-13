@@ -9,6 +9,8 @@ define(['jquery', 'fab/elementlist'], function (jQuery, FbElementList) {
     window.FbRadio = new Class({
         Extends: FbElementList,
 
+        mySlider: false,
+
         options: {
             btnGroup: true
         },
@@ -28,21 +30,16 @@ define(['jquery', 'fab/elementlist'], function (jQuery, FbElementList) {
             }
             // Turn radios into btn-group
             this.btnGroupRelay();
-
-            var c = this.getContainer();
-            if (!c) {
-                return;
-            }
-            c.getElements('.radio.btn-group label').addClass('btn');
-
-
-            c.getElements(".btn-group input[checked=checked]").each(function (input) {
-                var label = input.getParent('label'), v;
-                if (typeOf(label) === 'null') {
+            var c = jQuery(this.getContainer());
+            c.find('.radio.btn-group label').addClass('btn');
+            c.find('.btn-group input[checked=checked]').each(function () {
+                var input = jQuery(this),
+                    label = input.closest('label'), v;
+                if (label.length === 0) {
                     // J3.2 button group markup - label is after input (no longer the case)
-                    label = input.getNext();
+                    label = input.next();
                 }
-                v = input.get('value');
+                v = input.val();
                 if (v === '') {
                     label.addClass('active btn-primary');
                 } else if (v === '0') {
@@ -54,77 +51,81 @@ define(['jquery', 'fab/elementlist'], function (jQuery, FbElementList) {
         },
 
         btnGroupRelay: function () {
-            var c = this.getContainer();
-            if (!c) {
-                return;
-            }
-            c.getElements('.radio.btn-group label').addClass('btn');
-            c.addEvent('click:relay(.btn-group label)', function (e, label) {
-                var id = label.get('for'), input;
+            var c = jQuery(this.getContainer()), self = this;
+            c.find('.radio.btn-group label').addClass('btn');
+            c.on('click', '.btn-group label', function () {
+                var label = jQuery(this),
+                    input = [],
+                    id = label.prop('for');
                 if (id !== '') {
-                    input = document.id(id);
+                    input = jQuery('#' + id);
                 }
-                if (typeOf(input) === 'null') {
-                    input = label.getElement('input');
+                if (input.length === 0) {
+                    input = label.find('input');
                 }
-                this.setButtonGroupCSS(input);
-            }.bind(this));
+                self.setButtonGroupCSS(input);
+            });
         },
 
+	    /**
+         *
+         * @param {jQuery} input
+         */
         setButtonGroupCSS: function (input) {
-            var label;
-            if (input.id !== '') {
-                label = document.getElement('label[for=' + input.id + ']');
+            var label = [];
+            if (input.prop('id') !== '') {
+                label = jQuery('label[for=' + input.id + ']');
             }
-            if (typeOf(label) === 'null') {
-                label = input.getParent('label.btn');
+            if (label.length === 0) {
+                label = input.closest('label.btn');
             }
-            var v = input.get('value');
-            var fabchecked = parseInt(input.get('fabchecked'), 10);
+            var v = input.val();
+            var fabChecked = parseInt(input.prop('fabchecked'), 10);
 
             // Protostar in J3.2 adds its own btn-group js code -
             // need to thus apply this section even after input has been unchecked
-            if (!input.get('checked') || fabchecked === 1) {
+            if (!input.prop('checked') || fabChecked === 1) {
                 if (label) {
-                    label.getParent('.btn-group').getElements('label').removeClass('active').removeClass('btn-success')
+                    label.closest('.btn-group').find('label').removeClass('active').removeClass('btn-success')
                         .removeClass('btn-danger').removeClass('btn-primary');
                     if (v === '') {
                         label.addClass('active btn-primary');
-                    } else if (v.toInt() === 0) {
+                    } else if (parseInt(v, 10) === 0) {
                         label.addClass('active btn-danger');
                     } else {
                         label.addClass('active btn-success');
                     }
                 }
-                input.set('checked', true);
+                input.prop('checked', true);
+                input.trigger('change');
+                input.trigger('click');
 
-                if (typeOf(fabchecked) === 'null') {
-                    input.set('fabchecked', 1);
+                if (fabChecked === null) {
+                    input.prop('fabchecked', 1);
                 }
             }
         },
 
         watchAddToggle: function () {
-            var c = this.getContainer();
-            var d = c.getElement('div.addoption');
-            var a = c.getElement('.toggle-addoption');
+            var c = jQuery(this.getContainer()),
+                d = c.find('div.addoption'),
+                a = c.find('.toggle-addoption');
             if (this.mySlider) {
                 // Copied in repeating group so need to remove old slider html first
                 var clone = d.clone();
-                var fe = c.getElement('.fabrikElement');
-                d.getParent().destroy();
-                fe.adopt(clone);
-                d = c.getElement('div.addoption');
-                d.setStyle('margin', 0);
+                var fe = c.find('.fabrikElement');
+                d.parent().remove();
+                fe.append(clone);
+                d = c.find('div.addoption');
+                d.css('margin', 0);
             }
-            this.mySlider = new Fx.Slide(d, {
-                duration: 500
+            d.slideToggle();
+            this.mySlider = d;
+
+            a.on('click', function (e) {
+                e.preventDefault();
+                d.slideToggle();
             });
-            this.mySlider.hide();
-            a.addEvent('click', function (e) {
-                e.stop();
-                this.mySlider.toggle();
-            }.bind(this));
         },
 
         getValue: function () {
@@ -142,6 +143,10 @@ define(['jquery', 'fab/elementlist'], function (jQuery, FbElementList) {
             return v;
         },
 
+	    /**
+         * Set Value
+         * @param {string} v
+         */
         setValue: function (v) {
             if (!this.options.editable) {
                 return;
@@ -154,27 +159,28 @@ define(['jquery', 'fab/elementlist'], function (jQuery, FbElementList) {
         },
 
         update: function (val) {
+            var self = this;
             if (!this.options.editable) {
                 if (val === '') {
                     this.element.innerHTML = '';
                     return;
                 }
-                this.element.innerHTML = $H(this.options.data).get(val);
+                this.element.innerHTML = this.options.data[val];
                 return;
             } else {
                 var els = this._getSubElements();
                 if (typeOf(val) === 'array') {
                     els.each(function (el) {
                         if (val.contains(el.value)) {
-                            this.setButtonGroupCSS(el);
+                            self.setButtonGroupCSS(el);
                         }
-                    }.bind(this));
+                    });
                 } else {
                     els.each(function (el) {
                         if (el.value === val) {
-                            this.setButtonGroupCSS(el);
+                            self.setButtonGroupCSS(el);
                         }
-                    }.bind(this));
+                    });
                 }
             }
         },

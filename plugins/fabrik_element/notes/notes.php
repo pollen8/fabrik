@@ -8,10 +8,14 @@
  * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
+namespace Fabrik\Plugins\Element;
+
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-require_once JPATH_SITE . '/plugins/fabrik_element/databasejoin/databasejoin.php';
+use \stdClass;
+use Fabrik\Helpers\Worker;
+use Fabrik\Helpers\StringHelper;
 
 /**
  * Plugin element to enable users to make notes on a give record
@@ -20,7 +24,7 @@ require_once JPATH_SITE . '/plugins/fabrik_element/databasejoin/databasejoin.php
  * @subpackage  Fabrik.element.notes
  * @since       3.0
  */
-class PlgFabrik_ElementNotes extends PlgFabrik_ElementDatabasejoin
+class Notes extends Databasejoin
 {
 	/**
 	 * Last row id to be inserted via ajax call
@@ -42,7 +46,7 @@ class PlgFabrik_ElementNotes extends PlgFabrik_ElementDatabasejoin
 		$opts = $this->getElementJSOptions($repeatCounter);
 		$opts->rowid = (int) $this->getFormModel()->getRowId();
 		$opts->id = $this->id;
-		$opts->j3 = FabrikWorker::j3();
+		$opts->j3 = Worker::j3();
 
 		return array('FbNotes', $id, $opts);
 	}
@@ -59,7 +63,7 @@ class PlgFabrik_ElementNotes extends PlgFabrik_ElementDatabasejoin
 	{
 		$params = $this->getParams();
 		$tmp = $this->_getOptions($data, $repeatCounter, true);
-		$layoutName = FabrikWorker::j3() ? 'form' : 'form-25';
+		$layoutName = Worker::j3() ? 'form' : 'form-25';
 		$layout = $this->getLayout($layoutName);
 		$layoutData = new stdClass;
 		$layoutData->id = $this->getHTMLId($repeatCounter);
@@ -196,9 +200,9 @@ class PlgFabrik_ElementNotes extends PlgFabrik_ElementDatabasejoin
 
 		if (!array_key_exists($c, $this->components))
 		{
-			$query = $this->_db->getQuery(true);
-			$query->select('COUNT(id)')->from('#__extensions')->where('name = ' . $this->_db->q($c));
-			$this->_db->seQuery($query);
+			$query = $this->db->getQuery(true);
+			$query->select('COUNT(id)')->from('#__extensions')->where('name = ' . $this->db->q($c));
+			$this->db->seQuery($query);
 			$found = $this->db->loadResult();
 			$this->components[$c] = $found;
 		}
@@ -213,9 +217,9 @@ class PlgFabrik_ElementNotes extends PlgFabrik_ElementDatabasejoin
 	 * @param   bool                 $incWhere        Should the additional user defined WHERE statement be included
 	 * @param   string               $thisTableAlias  Db table alias
 	 * @param   array                $opts            Options
-	 * @param   JDatabaseQuery|bool  $query           Append where to JDatabaseQuery object or return string (false)
+	 * @param   \JDatabaseQuery|bool  $query           Append where to JDatabaseQuery object or return string (false)
 	 *
-	 * @return string|JDatabaseQuery
+	 * @return string|\JDatabaseQuery
 	 */
 	protected function buildQueryWhere($data = array(), $incWhere = true, $thisTableAlias = null, $opts = array(), $query = false)
 	{
@@ -279,7 +283,7 @@ class PlgFabrik_ElementNotes extends PlgFabrik_ElementDatabasejoin
 	 * Get options order by
 	 *
 	 * @param   string               $view   View mode '' or 'filter'
-	 * @param   JDatabaseQuery|bool  $query  Set to false to return a string
+	 * @param   \JDatabaseQuery|bool  $query  Set to false to return a string
 	 *
 	 * @return  string  order by statement
 	 */
@@ -294,7 +298,7 @@ class PlgFabrik_ElementNotes extends PlgFabrik_ElementDatabasejoin
 		}
 		else
 		{
-			$order = FabrikString::safeQuoteName($params->get('join_db_name') . '.' . $orderBy) . ' ' . $params->get('notes_order_dir', 'ASC');
+			$order = StringHelper::safeQuoteName($params->get('join_db_name') . '.' . $orderBy) . ' ' . $params->get('notes_order_dir', 'ASC');
 
 			if ($query)
 			{
@@ -350,7 +354,7 @@ class PlgFabrik_ElementNotes extends PlgFabrik_ElementDatabasejoin
 	 *
 	 * @since 3.0rc1
 	 *
-	 * @return string|JDatabaseQuery join statement to add
+	 * @return string|\JDatabaseQuery join statement to add
 	 */
 	protected function buildQueryJoin($query = false)
 	{
@@ -407,7 +411,7 @@ class PlgFabrik_ElementNotes extends PlgFabrik_ElementDatabasejoin
 		$params = $this->getParams();
 		$table = $db->qn($params->get('join_db_name'));
 		$col = $params->get('join_val_column');
-		$v = $input->get('v', '', '', 'string');
+		$v = $input->get('v', '', 'string');
 		$rowId = $this->getFormModel()->getRowId();
 
 		// Jaanus - avoid inserting data when the form is 'new' not submitted ($rowId == '')

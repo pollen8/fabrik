@@ -8,16 +8,28 @@
  * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
+namespace Fabrik\Helpers;
+
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Joomla\Utilities\ArrayHelper;
+use \JComponentHelper;
+use \stdClass;
+use \JModelLegacy;
+use \JBrowser;
+use \JHtmlBootstrap;
+use \JVersion;
+use \JUri;
+use \JRoute;
+use \JHtml;
+use \JFactory;
+use \JFile;
 
 jimport('joomla.filesystem.file');
 
 if (!defined('COM_FABRIK_FRONTEND'))
 {
-	throw new RuntimeException(FText::_('COM_FABRIK_SYSTEM_PLUGIN_NOT_ACTIVE'), 400);
+	throw new RuntimeException(Text::_('COM_FABRIK_SYSTEM_PLUGIN_NOT_ACTIVE'), 400);
 }
 
 /**
@@ -28,7 +40,7 @@ if (!defined('COM_FABRIK_FRONTEND'))
  * @subpackage  Fabrik.helpers
  * @since       1.5
  */
-class FabrikHelperHTML
+class Html
 {
 	/**
 	 * Is the Fabrik JavaScript framework loaded
@@ -253,7 +265,7 @@ class FabrikHelperHTML
 		// Don't include in an Request.JSON call - for auto-fill form plugin
 		$headers = self::parseRequestHeaders();
 
-		if (FArrayHelper::getValue($headers, 'X-Request') === 'JSON')
+		if (ArrayHelper::getValue($headers, 'X-Request') === 'JSON')
 		{
 			return;
 		}
@@ -293,7 +305,7 @@ class FabrikHelperHTML
 
 		$opts              = new stdClass;
 		$opts->id          = 'fabwin';
-		$opts->title       = FText::_('COM_FABRIK_ADVANCED_SEARCH');
+		$opts->title       = Text::_('COM_FABRIK_ADVANCED_SEARCH');
 		$opts->loadMethod  = 'xhr';
 		$opts->minimizable = false;
 		$opts->collapsible = true;
@@ -340,7 +352,7 @@ EOD;
 		$input                 = $app->input;
 		$layout                = self::getLayout('form.fabrik-email-form');
 		$displayData           = new stdClass;
-		$displayData->j3       = FabrikWorker::j3();
+		$displayData->j3       = Worker::j3();
 		$displayData->package  = $app->getUserState('com_fabrik.package', 'fabrik');
 		$displayData->referrer = $input->get('referrer', '', 'string');
 		$document              = JFactory::getDocument();
@@ -359,13 +371,13 @@ EOD;
 	{
 		$config   = JFactory::getConfig();
 		$document = JFactory::getDocument();
-		$j3       = FabrikWorker::j3();
+		$j3       = Worker::j3();
 		$document->setTitle($config->get('sitename'));
 
 		if (!$j3)
 		{
 			?>
-			<a href='javascript:window.close();'> <span class="small"><?php echo FText::_('COM_FABRIK_CLOSE_WINDOW'); ?>
+			<a href='javascript:window.close();'> <span class="small"><?php echo Text::_('COM_FABRIK_CLOSE_WINDOW'); ?>
 </span>
 			</a>
 			<?php
@@ -395,7 +407,7 @@ EOD;
 		}
 		else
 		{
-			$displayData->image = '&nbsp;' . FText::_('COM_FABRIK_PRINT');
+			$displayData->image = '&nbsp;' . Text::_('COM_FABRIK_PRINT');
 		}
 
 		return $layout->render($displayData);
@@ -421,7 +433,7 @@ EOD;
 		$url = COM_FABRIK_LIVESITE . 'index.php?option=com_' . $package . '&view=details&tmpl=component&formid=' . $form->id . '&listid=' . $table->id
 			. '&rowid=' . $formModel->getRowId() . '&iframe=1&print=1';
 
-		$url .= '&Itemid=' . FabrikWorker::itemId();
+		$url .= '&Itemid=' . Worker::itemId();
 
 		/* $$$ hugh - @TODO - FIXME - if they were using rowid=-1, we don't need this, as rowid has already been transmogrified
 		 * to the correct (PK based) rowid.  but how to tell if original rowid was -1???
@@ -490,7 +502,7 @@ EOD;
 			$url .= '&usekey=' . $input->get('usekey');
 		}
 
-		$url .= '&referrer=' . urlencode(JURI::getInstance()->toString());
+		$url .= '&referrer=' . urlencode(JUri::getInstance()->toString());
 		self::$emailURL = JRoute::_($url);
 
 		return self::$emailURL;
@@ -507,11 +519,11 @@ EOD;
 	public static function conditionList($listId, $sel = '')
 	{
 		$conditions   = array();
-		$conditions[] = JHTML::_('select.option', 'AND', FText::_('COM_FABRIK_AND'));
-		$conditions[] = JHTML::_('select.option', 'OR', FText::_('COM_FABRIK_OR'));
+		$conditions[] = JHtml::_('select.option', 'AND', Text::_('COM_FABRIK_AND'));
+		$conditions[] = JHtml::_('select.option', 'OR', Text::_('COM_FABRIK_OR'));
 		$name         = 'fabrik___filter[list_' . $listId . '][join][]';
 
-		return JHTML::_('select.genericlist', $conditions, $name, 'class="inputbox input-mini" size="1" ', 'value', 'text', $sel);
+		return JHtml::_('select.genericlist', $conditions, $name, 'class="inputbox input-mini" size="1" ', 'value', 'text', $sel);
 	}
 
 	/**
@@ -523,13 +535,13 @@ EOD;
 	 */
 	public static function tableList($sel = '')
 	{
-		$db    = FabrikWorker::getDbo(true);
+		$db    = Worker::getDbo(true);
 		$query = $db->getQuery(true);
 		$query->select('id, label')->from('#__{package}_lists')->where('published = 1')->order('label');
 		$db->setQuery($query);
 		$rows = $db->loadObjectList();
 
-		return JHTML::_('select.genericlist', $rows, 'fabrik__swaptable', 'class="inputbox" size="1" ', 'id', 'label', $sel);
+		return JHtml::_('select.genericlist', $rows, 'fabrik__swaptable', 'class="inputbox" size="1" ', 'id', 'label', $sel);
 	}
 
 	/**
@@ -581,7 +593,7 @@ EOD;
 		else
 		{
 			$document = JFactory::getDocument();
-			/* $$$ rob 27/04/2011 changed from JHTML::styleSheet as that doesn't work loading
+			/* $$$ rob 27/04/2011 changed from JHtml::styleSheet as that doesn't work loading
 			 * php style sheets with querystrings in them
 			*/
 			$document->addStylesheet($file);
@@ -837,7 +849,7 @@ EOD;
 		{
 			$app     = JFactory::getApplication();
 			$version = new JVersion;
-			FabrikHelperHTML::modalJLayouts();
+			Html::modalJLayouts();
 			$liveSiteSrc = array();
 			$liveSiteReq = array();
 			$fbConfig    = JComponentHelper::getParams('com_fabrik');
@@ -859,17 +871,17 @@ EOD;
 			}
 
 			// Require js test - list with no cal loading ajax form with cal
-			JHTML::_('behavior.calendar');
-			$liveSiteReq[] = $mediaFolder . '/chosen-loader';
-			$liveSiteReq[] = $mediaFolder . '/fabrik';
+			JHtml::_('behavior.calendar');
+			$liveSiteReq['Chosen'] = $mediaFolder . '/chosen-loader';
+			$liveSiteReq['Fabrik'] = $mediaFolder . '/fabrik';
 
 			if ($bootstrapped)
 			{
-				$liveSiteReq[] = $mediaFolder . '/tipsBootStrapMock';
+				$liveSiteReq['FloatingTips'] = $mediaFolder . '/tipsBootStrapMock';
 			}
 			else
 			{
-				$liveSiteReq[] = $mediaFolder . '/tips';
+				$liveSiteReq['FloatingTips'] = $mediaFolder . '/tips';
 			}
 
 			if ($fbConfig->get('advanced_behavior', '0') == '1')
@@ -899,8 +911,8 @@ EOD;
 			if (!self::inAjaxLoadedPage())
 			{
 				// Require.js now added in fabrik system plugin onAfterRender()
-				JText::script('COM_FABRIK_LOADING');
-				$src[] = $mediaFolder . '/window.js';
+				Text::script('COM_FABRIK_LOADING');
+				$src['Window'] = $mediaFolder . '/window.js';
 
 				self::styleSheet(COM_FABRIK_LIVESITE . 'media/com_fabrik/css/fabrik.css');
 
@@ -943,7 +955,7 @@ EOD;
 				Fabrik.jLayouts = jQuery.extend(Fabrik.jLayouts, %%jLayouts%%);";
 			}
 
-			self::script($liveSiteReq, $liveSiteSrc, '-min.js', array('Chosen', 'Fabrik', 'FloatingTips'));
+			self::script($liveSiteReq, $liveSiteSrc, '-min.js');
 			self::$framework = $src;
 		}
 
@@ -1033,7 +1045,7 @@ EOD;
 		$requirePaths = self::requirePaths();
 		$framework    = array();
 		$deps         = array();
-		$j3           = FabrikWorker::j3();
+		$j3           = Worker::j3();
 
 		$requirejsBaseURI = self::getJSAssetBaseURI();
 
@@ -1363,18 +1375,17 @@ EOD;
 	}
 
 	/**
-	 * Wrapper for JHTML::Script() loading with require.js
+	 * Wrapper for JHtml::Script() loading with require.js
 	 * If not debugging will replace file names .js => -min.js
 	 *
 	 * @param   mixed  $file       String or array of files to load, relative path to root for local files
 	 *                             e.g. 'administrator/components/com_fabrik/models/fields/tables.js'
 	 * @param   string $onLoad     Optional js to run once the Js file has been loaded
 	 * @param   string $minSuffix  The minimised file suffix to use, replaces '.js'
-	 * @param   array  $names
 	 *
 	 * @return  void
 	 */
-	public static function script($file, $onLoad = '', $minSuffix = '-min.js', $names = array())
+	public static function script($file, $onLoad = '', $minSuffix = '-min.js')
 	{
 		if (empty($file))
 		{
@@ -1393,7 +1404,7 @@ EOD;
 		// Replace with minified files if found
 		foreach ($files as &$file)
 		{
-			if (!(JString::stristr($file, 'http://') || JString::stristr($file, 'https://')))
+			if (!(StringHelper::stristr($file, 'http://') || StringHelper::stristr($file, 'https://')))
 			{
 				if (JFile::exists(COM_FABRIK_BASE . $file))
 				{
@@ -1422,7 +1433,7 @@ EOD;
 
 			if (!$pathMatched)
 			{
-				if (!(JString::stristr($file, 'http://') || JString::stristr($file, 'https://')))
+				if (!(StringHelper::stristr($file, 'http://') || StringHelper::stristr($file, 'https://')))
 				{
 					$file = COM_FABRIK_LIVESITE . $file;
 				}
@@ -1432,7 +1443,7 @@ EOD;
 		// Need to load element for ajax popup forms in IE.
 		$needed = array();
 
-		if (!FabrikWorker::j3())
+		if (!Worker::j3())
 		{
 			$needed[] = self::isDebug() ? 'fab/icongen' : 'fab/icongen-min';
 			$needed[] = self::isDebug() ? 'fab/icons' : 'fab/icons-min';
@@ -1447,6 +1458,10 @@ EOD;
 		}
 
 		$files     = array_unique($files);
+
+		// Set names from $files keys if assoc array. In general it is for require js files
+		$names = array_keys($files) !== range(0, count($files) - 1) ? array_keys($files) : array();
+
 		$files     = "['" . implode("', '", $files) . "']";
 		$require[] = 'requirejs(' . ($files) . ', function (' . implode(", ", $names) . ') {';
 		$require[] = $onLoad;
@@ -1551,19 +1566,19 @@ EOD;
 			{
 				$folder  = 'components/com_fabrik/libs/mediabox-advanced/';
 				$mbStyle = $fbConfig->get('mediabox_style', 'Dark');
-				JHTML::stylesheet($folder . 'mediabox-' . $mbStyle . '.css');
+				JHtml::stylesheet($folder . 'mediabox-' . $mbStyle . '.css');
 				self::script($folder . 'mediaboxAdv.js');
 			}
 			else
 			{
-				if (FabrikWorker::j3())
+				if (Worker::j3())
 				{
-					JHTML::stylesheet('components/com_fabrik/libs/slimbox2/css/slimbox2.css');
+					JHtml::stylesheet('components/com_fabrik/libs/slimbox2/css/slimbox2.css');
 					self::script('components/com_fabrik/libs/slimbox2/js/slimbox2.js');
 				}
 				else
 				{
-					JHTML::stylesheet('components/com_fabrik/libs/slimbox1.64/css/slimbox.css');
+					JHtml::stylesheet('components/com_fabrik/libs/slimbox1.64/css/slimbox.css');
 					self::script('components/com_fabrik/libs/slimbox1.64/js/slimbox.js');
 				}
 			}
@@ -1706,11 +1721,11 @@ EOD;
 	public static function folderAjaxSelect($folders, $path = '', $tpl = '')
 	{
 		$str   = array();
-		$str[] = '<a href="#" class="btn btn-default toggle" title="' . FText::_('COM_FABRIK_BROWSE_FOLDERS') . '">';
-		$str[] = self::image('orderneutral.png', 'form', $tpl, array('alt' => FText::_('COM_FABRIK_BROWSE_FOLDERS'), 'icon-class' => 'icon-menu-2'));
+		$str[] = '<a href="#" class="btn btn-default toggle" title="' . Text::_('COM_FABRIK_BROWSE_FOLDERS') . '">';
+		$str[] = self::image('orderneutral.png', 'form', $tpl, array('alt' => Text::_('COM_FABRIK_BROWSE_FOLDERS'), 'icon-class' => 'icon-menu-2'));
 		$str[] = '</a>';
 		$str[] = '<div class="folderselect-container">';
-		$str[] = '<span class="breadcrumbs"><a href="#">' . FText::_('HOME') . '</a><span> / </span>';
+		$str[] = '<span class="breadcrumbs"><a href="#">' . Text::_('HOME') . '</a><span> / </span>';
 		$i     = 1;
 		$path  = explode("/", $path);
 
@@ -1768,11 +1783,11 @@ EOD;
 
 		$json = self::autoCompleteOptions($htmlId, $elementId, $formId, $plugin, $opts);
 		$str  = json_encode($json);
-		JText::script('COM_FABRIK_NO_RECORDS');
-		JText::script('COM_FABRIK_AUTOCOMPLETE_AJAX_ERROR');
+		Text::script('COM_FABRIK_NO_RECORDS');
+		Text::script('COM_FABRIK_AUTOCOMPLETE_AJAX_ERROR');
 		$jsFile = 'autocomplete';
 
-		if (FabrikWorker::j3())
+		if (Worker::j3())
 		{
 			$jsFile = $plugin === 'cascadingdropdown' ? 'autocomplete-bootstrap-cdd' : 'autocomplete-bootstrap';
 		}
@@ -1792,14 +1807,14 @@ EOD;
 	 * Gets auto complete js options (needed separate from autoComplete as db js class needs these values for repeat
 	 * group duplication)
 	 *
-	 * @param   string $htmlId      Element to turn into autocomplete
+	 * @param   string $htmlId      Element to turn into auto-complete
 	 * @param   int    $elementId   Element id
 	 * @param   int    $formId      Form id
 	 * @param   string $plugin      Plugin type
 	 * @param   array  $opts        * onSelection - function to run when option selected
 	 *                              * max - max number of items to show in selection list
 	 *
-	 * @return  array    Autocomplete options (needed for elements so when duplicated we can create a new
+	 * @return  array    Auto-complete options (needed for elements so when duplicated we can create a new
 	 *                   FabAutocomplete object
 	 */
 	public static function autoCompleteOptions($htmlId, $elementId, $formId, $plugin = 'field', $opts = array())
@@ -1818,7 +1833,7 @@ EOD;
 		$json->url .= $app->isAdmin() ? '&task=plugin.pluginAjax' : '&view=plugin&task=pluginAjax';
 		$json->url .= '&g=element&element_id=' . $elementId
 			. '&formid=' . $formId . '&plugin=' . $plugin . '&method=autocomplete_options&package=' . $package;
-		$c = FArrayHelper::getValue($opts, 'onSelection');
+		$c = ArrayHelper::getValue($opts, 'onSelection');
 
 		if ($c != '')
 		{
@@ -1830,9 +1845,9 @@ EOD;
 			$json->$k = $v;
 		}
 
-		$json->formRef   = FArrayHelper::getValue($opts, 'formRef', 'form_' . $formId);
-		$json->container = FArrayHelper::getValue($opts, 'container', 'fabrikElementContainer');
-		$json->menuclass = FArrayHelper::getValue($opts, 'menuclass', 'auto-complete-container');
+		$json->formRef   = ArrayHelper::getValue($opts, 'formRef', 'form_' . $formId);
+		$json->container = ArrayHelper::getValue($opts, 'container', 'fabrikElementContainer');
+		$json->menuclass = ArrayHelper::getValue($opts, 'menuclass', 'auto-complete-container');
 
 		return $json;
 	}
@@ -1855,7 +1870,7 @@ EOD;
 
 		if (!array_key_exists($key, self::$atWho))
 		{
-			$replacements = FabrikWorker::globalReplacements();
+			$replacements = Worker::globalReplacements();
 			$replacements = array_keys($replacements);
 
 			$replacements = array_map(function ($v)
@@ -1876,7 +1891,7 @@ EOD;
             });";
 			self::$atWho[$key] = true;
 			$css               = self::isDebug() ? 'jquery.atwho.css' : 'jquery.atwho.min.css';
-			FabrikHelperHTML::stylesheet('media/com_fabrik/js/lib/at/' . $css);
+			Html::stylesheet('media/com_fabrik/js/lib/at/' . $css);
 
 			$needed[] = self::isDebug() ? '\'lib/caret/caret\'' : '\'lib/caret/caret-min\'';
 			$needed[] = self::isDebug() ? '\'lib/at/atwho\'' : '\'lib/at/atwho-min\'';
@@ -2014,7 +2029,7 @@ EOD;
 	 */
 	public static function getImagePath($file, $type = 'form', $tmpl = '')
 	{
-		$file  = JString::ltrim($file, DIRECTORY_SEPARATOR);
+		$file  = StringHelper::ltrim($file, DIRECTORY_SEPARATOR);
 		$paths = self::addPath('', 'image', $type, true);
 
 		foreach ($paths as $path)
@@ -2054,21 +2069,21 @@ EOD;
 			$properties = array('alt' => $properties);
 		}
 
-		$forceImage = FArrayHelper::getValue($opts, 'forceImage', false);
+		$forceImage = ArrayHelper::getValue($opts, 'forceImage', false);
 
-		if (FabrikWorker::j3() && $forceImage !== true)
+		if (Worker::j3() && $forceImage !== true)
 		{
 			unset($properties['alt']);
-			$class = FArrayHelper::getValue($properties, 'icon-class', '');
+			$class = ArrayHelper::getValue($properties, 'icon-class', '');
 			$class = 'icon-' . JFile::stripExt($file) . ($class ? ' ' . $class : '');
 			unset($properties['icon-class']);
-			$class .= ' ' . FArrayHelper::getValue($properties, 'class', '');
+			$class .= ' ' . ArrayHelper::getValue($properties, 'class', '');
 			unset($properties['class']);
 			$p = self::propertiesFromArray($properties);
 
 			if (!$srcOnly)
 			{
-				return FabrikHelperHTML::icon($class, '', $p);
+				return Html::icon($class, '', $p);
 			}
 			else
 			{
@@ -2193,7 +2208,7 @@ EOD;
 		$elementBeforeLabel = true, $optionsPerRow = 4, $classes = array(), $buttonGroup = false, $dataAttributes = array(),
 		$inputDataAttributes = array())
 	{
-		if (FabrikWorker::j3())
+		if (Worker::j3())
 		{
 			$elementBeforeLabel = true;
 		}
@@ -2220,7 +2235,7 @@ EOD;
 		}
 		else
 		{
-			if (FabrikWorker::j3())
+			if (Worker::j3())
 			{
 				$grid = self::bootstrapGrid($items, $optionsPerRow, 'fabrikgrid_' . $type);
 			}
@@ -2314,12 +2329,12 @@ EOD;
 			$text .= '{emailcloak=off}';
 		}
 
-		$text = JHTML::_('content.prepare', $text);
+		$text = JHtml::_('content.prepare', $text);
 
 		if ($view !== 'details' || $input->get('format') === 'pdf')
 
 		{
-			$text = FabrikString::rtrimword($text, '{emailcloak=off}');
+			$text = StringHelper::rtrimword($text, '{emailcloak=off}');
 		}
 
 		$input->set('option', $opt);
@@ -2432,8 +2447,8 @@ EOD;
 	{
 		$url  = filter_var(ArrayHelper::getValue($_SERVER, 'REQUEST_URI', 'index.php'), FILTER_SANITIZE_URL);
 		$bits = explode('?', $url);
-		$root = isset($rootUrl) ? $rootUrl : FArrayHelper::getValue($bits, 0, '', 'string');
-		$bits = FArrayHelper::getValue($bits, 1, '', 'string');
+		$root = isset($rootUrl) ? $rootUrl : ArrayHelper::getValue($bits, 0, '', 'string');
+		$bits = ArrayHelper::getValue($bits, 1, '', 'string');
 		$bits = explode("&", $bits);
 
 		for ($b = count($bits) - 1; $b >= 0; $b--)
@@ -2442,7 +2457,7 @@ EOD;
 
 			if (count($parts) > 1)
 			{
-				$key = FabrikString::ltrimword(FabrikString::safeColNameToArrayKey($parts[0]), '&');
+				$key = StringHelper::ltrimword(StringHelper::safeColNameToArrayKey($parts[0]), '&');
 
 				if ($key == $fullName)
 				{
@@ -2574,17 +2589,17 @@ EOD;
 	 */
 	public static function a($href, $lbl = '', $opts = array())
 	{
-		if (empty($href) || JString::strtolower($href) == 'http://' || JString::strtolower($href) == 'https://')
+		if (empty($href) || StringHelper::strtolower($href) == 'http://' || StringHelper::strtolower($href) == 'https://')
 		{
 			// Don't return empty links
 			return '';
 		}
 
-		if (FabrikWorker::isEmail($href))
+		if (Worker::isEmail($href))
 		{
 			jimport('joomla.mail.helper');
 
-			return JHTML::_('email.cloak', $href);
+			return JHtml::_('email.cloak', $href);
 		}
 
 		if (empty($lbl))
@@ -2593,8 +2608,8 @@ EOD;
 			$lbl = $href;
 		}
 
-		$smart_link = FArrayHelper::getValue($opts, 'smart_link', false);
-		$target     = FArrayHelper::getValue($opts, 'target', false);
+		$smart_link = ArrayHelper::getValue($opts, 'smart_link', false);
+		$target     = ArrayHelper::getValue($opts, 'target', false);
 
 		if ($smart_link || $target == 'mediabox')
 		{
@@ -2706,7 +2721,7 @@ EOD;
 
 			if ($ret['type'] == 'mediabox')
 			{
-				$ext = JString::strtolower(JFile::getExt($link));
+				$ext = StringHelper::strtolower(JFile::getExt($link));
 
 				switch ($ext)
 				{
@@ -2738,7 +2753,7 @@ EOD;
 		}
 
 		// Add validate.js language strings
-		JText::script('JLIB_FORM_FIELD_INVALID');
+		Text::script('JLIB_FORM_FIELD_INVALID');
 
 		// Include MooTools More framework
 		static::framework('more');
@@ -2749,7 +2764,7 @@ EOD;
 		if ($version->RELEASE >= 3.2 && $version->DEV_LEVEL > 1)
 		{
 			$file = $debug ? 'punycode-uncompressed' : 'punycode';
-			$path = JURI::root() . 'media/system/js/' . $file;
+			$path = JUri::root() . 'media/system/js/' . $file;
 
 			$js   = array();
 			$js[] = "requirejs({";
@@ -2770,21 +2785,21 @@ EOD;
 
 	/**
 	 * Get the element's JLayout file
-	 * Its actually an instance of FabrikLayoutFile which inverses the ordering added include paths.
-	 * In FabrikLayoutFile the addedPath takes precedence over the default paths, which makes more sense!
+	 * Its actually an instance of LayoutFile which inverses the ordering added include paths.
+	 * In LayoutFile the addedPath takes precedence over the default paths, which makes more sense!
 	 *
 	 * @param   string $name    Layout file name (eg. fabrik-element-label)
 	 * @param   array  $paths   Optional paths to add as includes
 	 * @param   array  $options Layout options
 	 *
-	 * @return FabrikLayoutFile
+	 * @return LayoutFile
 	 */
 	public static function getLayout($name, $paths = array(), $options = array())
 	{
 		$defaultOptions = array('debug' => false, 'component' => 'com_fabrik', 'client' => 'site');
 		$options        = array_merge($defaultOptions, $options);
 		$basePath       = COM_FABRIK_BASE . '/com_fabrik/layouts';
-		$layout         = new FabrikLayoutFile($name, $basePath, $options);
+		$layout         = new LayoutFile($name, $basePath, $options);
 
 		$layout->addIncludePaths(JPATH_SITE . '/layouts');
 		$layout->addIncludePaths(JPATH_THEMES . '/' . JFactory::getApplication()->getTemplate() . '/html/layouts');
@@ -2809,7 +2824,7 @@ EOD;
 	 */
 	public static function icon($icon, $label = '', $properties = '')
 	{
-		$icon = FabrikHelperHTML::getLayout('fabrik-icon')->render((object) array('icon' => $icon, 'properties' => $properties));
+		$icon = Html::getLayout('fabrik-icon')->render((object) array('icon' => $icon, 'properties' => $properties));
 
 		if ($label != '')
 		{
@@ -2826,8 +2841,8 @@ EOD;
 	 */
 	public static function modalJLayouts()
 	{
-		FabrikHelperHTML::jLayoutJs('modal-close', 'modal.fabrik-close');
-		FabrikHelperHTML::jLayoutJs('icon-expand', 'fabrik-icon', (object) array('icon' => 'icon-expand'));
-		FabrikHelperHTML::jLayoutJs('icon-full-screen', 'fabrik-icon', (object) array('icon' => 'icon-out-2 icon-fullscreen'));
+		Html::jLayoutJs('modal-close', 'modal.fabrik-close');
+		Html::jLayoutJs('icon-expand', 'fabrik-icon', (object) array('icon' => 'icon-expand'));
+		Html::jLayoutJs('icon-full-screen', 'fabrik-icon', (object) array('icon' => 'icon-out-2 icon-fullscreen'));
 	}
 }

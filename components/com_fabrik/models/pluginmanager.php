@@ -11,6 +11,12 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Fabrik\Helpers\ArrayHelper;
+use Fabrik\Helpers\Html;
+use Fabrik\Helpers\Worker;
+use Fabrik\Helpers\StringHelper;
+use Fabrik\Helpers\Text;
+
 jimport('joomla.application.component.model');
 jimport('joomla.filesystem.file');
 
@@ -88,7 +94,7 @@ class FabrikFEModelPluginmanager extends FabModel
 		{
 			if ($defaultLabel == '')
 			{
-				$defaultLabel = FText::_('COM_FABRIK_PLEASE_SELECT');
+				$defaultLabel = Text::_('COM_FABRIK_PLEASE_SELECT');
 			}
 
 			$a = array(JHTML::_('select.option', '', $defaultLabel));
@@ -147,7 +153,7 @@ class FabrikFEModelPluginmanager extends FabModel
 	 */
 	protected function _getList($query = null, $limitstart = 0, $limit = 0)
 	{
-		$db = FabrikWorker::getDbo(true);
+		$db = Worker::getDbo(true);
 
 		if (is_null($this->group))
 		{
@@ -203,8 +209,8 @@ class FabrikFEModelPluginmanager extends FabModel
 			$f = str_replace("\\", "/", str_replace(JPATH_SITE, '', $f));
 			$file = basename($f);
 			$folder = dirname($f);
-			$folder = FabrikString::ltrimword($folder, '/') . '/';
-			FabrikHelperHTML::script($folder . $file);
+			$folder = StringHelper::ltrimword($folder, '/') . '/';
+			Html::script($folder . $file);
 		}
 	}
 
@@ -292,7 +298,7 @@ class FabrikFEModelPluginmanager extends FabModel
 			$group = 'list';
 		}
 
-		$group = JString::strtolower($group);
+		$group = StringHelper::strtolower($group);
 		/* $$$ rob ONLY import the actual plugin you need otherwise ALL $group plugins are loaded regardless of whether they
 		* are used or not memory changes:
 		* Application 0.322 seconds (+0.081); 22.92 MB (+3.054) - pluginmanager: form email imported
@@ -324,10 +330,10 @@ class FabrikFEModelPluginmanager extends FabModel
 			}
 		}
 
-		$class = 'plgFabrik_' . JString::ucfirst($group) . JString::ucfirst($className);
+		$class = 'plgFabrik_' . StringHelper::ucfirst($group) . StringHelper::ucfirst($className);
 		$conf = array();
-		$conf['name'] = JString::strtolower($className);
-		$conf['type'] = JString::strtolower('fabrik_' . $group);
+		$conf['name'] = StringHelper::strtolower($className);
+		$conf['type'] = StringHelper::strtolower('fabrik_' . $group);
 
 		if (class_exists($class))
 		{
@@ -336,7 +342,7 @@ class FabrikFEModelPluginmanager extends FabModel
 		else
 		{
 			// Allow for namespaced plugins
-			$class = 'Fabrik\\Plugins\\' . JString::ucfirst($group) . '\\' . JString::ucfirst($className);
+			$class = 'Fabrik\\Plugins\\' . StringHelper::ucfirst($group) . '\\' . StringHelper::ucfirst($className);
 			$plugIn = new $class($dispatcher, $conf);
 		}
 
@@ -417,7 +423,7 @@ class FabrikFEModelPluginmanager extends FabModel
 			 */
 
 			// build list of plugins used on this form ...
-			$db = FabrikWorker::getDbo(true);
+			$db = Worker::getDbo(true);
 			$query = $db->getQuery(true);
 			$select = '*, e.name AS name, e.id AS id, e.published AS published, e.label AS label,'
 				. 'e.plugin, e.params AS params, e.access AS access, e.ordering AS ordering';
@@ -457,7 +463,7 @@ class FabrikFEModelPluginmanager extends FabModel
 
 				JDEBUG ? $profiler->mark('pluginmanager:getFormPlugins:' . $element->id . '' . $element->plugin) : null;
 				require_once JPATH_PLUGINS . '/fabrik_element/' . $element->plugin . '/' . $element->plugin . '.php';
-				$class = 'PlgFabrik_Element' . $element->plugin;
+				$class = 'Fabrik\Plugins\Element\\' . ucfirst($element->plugin);
 
 				if (class_exists($class))
 				{
@@ -466,7 +472,7 @@ class FabrikFEModelPluginmanager extends FabModel
 				else
 				{
 					// Allow for namespaced plugins
-					$class = 'Fabrik\\Plugins\\' . JString::ucfirst($group) . '\\' . JString::ucfirst($element->plugin);
+					$class = 'Fabrik\\Plugins\\' . StringHelper::ucfirst($group) . '\\' . StringHelper::ucfirst($element->plugin);
 					$pluginModel = new $class($dispatcher, array());
 				}
 
@@ -503,7 +509,7 @@ class FabrikFEModelPluginmanager extends FabModel
 	 *
 	 * @param   int  $id  Element id
 	 *
-	 * @return PlgFabrik_Element  Element plugin
+	 * @return Fabrik\Plugins\Element\Element  Element plugin
 	 */
 	public function getElementPlugin($id)
 	{
@@ -516,7 +522,7 @@ class FabrikFEModelPluginmanager extends FabModel
 	 * @param   int     $id    Plugin id
 	 * @param   string  $type  Plugin type
 	 *
-	 * @return PlgFabrik_Element|?  plugin
+	 * @return Fabrik\Plugins\Element\Element|?  plugin
 	 */
 	public function getPluginFromId($id, $type = 'Element')
 	{
@@ -573,7 +579,7 @@ class FabrikFEModelPluginmanager extends FabModel
 			 * $$$ rob allow for list plugins to hook into form plugin calls - methods are mapped as:
 			 * form method = 'onLoad' => list method => 'onFormLoad'
 			 */
-			$tmethod = 'onForm' . FabrikString::ltrimword($method, 'on');
+			$tmethod = 'onForm' . StringHelper::ltrimword($method, 'on');
 			$listModel = $parentModel->getListModel();
 			$this->runPlugins($tmethod, $listModel, 'list');
 		}
@@ -625,7 +631,7 @@ class FabrikFEModelPluginmanager extends FabModel
 				break;
 			}
 
-			$state = FArrayHelper::getValue($states, $c, 1);
+			$state = ArrayHelper::getValue($states, $c, 1);
 
 			if ($state == false)
 			{
@@ -645,8 +651,8 @@ class FabrikFEModelPluginmanager extends FabModel
 					$plugin->renderOrder = $c;
 					$modelTable = $parentModel->getTable();
 					$pluginParams = $plugin->setParams($params, $c);
-					$location = FArrayHelper::getValue($usedLocations, $c);
-					$event = FArrayHelper::getValue($usedEvents, $c);
+					$location = ArrayHelper::getValue($usedLocations, $c);
+					$event = ArrayHelper::getValue($usedEvents, $c);
 					$plugin->setModel($parentModel);
 
 					if ($plugin->canUse($location, $event))

@@ -12,6 +12,9 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Fabrik\Helpers\Text;
+use Fabrik\Helpers\ArrayHelper;
+
 require_once 'fabcontrolleradmin.php';
 
 /**
@@ -79,7 +82,7 @@ class FabrikAdminControllerConnections extends FabControllerAdmin
 	public function setDefault()
 	{
 		// Check for request forgeries
-		JSession::checkToken() or die(FText::_('JINVALID_TOKEN'));
+		JSession::checkToken() or die(Text::_('JINVALID_TOKEN'));
 		$app = JFactory::getApplication();
 		$input = $app->input;
 
@@ -87,16 +90,16 @@ class FabrikAdminControllerConnections extends FabControllerAdmin
 		$cid = $input->get('cid', array(), 'array');
 		$data = array('setDefault' => 1, 'unsetDefault' => 0);
 		$task = $this->getTask();
-		$value = FArrayHelper::getValue($data, $task, 0, 'int');
+		$value = ArrayHelper::getValue($data, $task, 0, 'int');
 
 		if ($value == 0)
 		{
-			$this->setMessage(FText::_('COM_FABRIK_CONNECTION_CANT_UNSET_DEFAULT'));
+			$this->setMessage(Text::_('COM_FABRIK_CONNECTION_CANT_UNSET_DEFAULT'));
 		}
 
 		if (empty($cid))
 		{
-			JError::raiseWarning(500, FText::_($this->text_prefix . '_NO_ITEM_SELECTED'));
+			JError::raiseWarning(500, Text::_($this->text_prefix . '_NO_ITEM_SELECTED'));
 		}
 		else
 		{
@@ -114,7 +117,7 @@ class FabrikAdminControllerConnections extends FabControllerAdmin
 				}
 				else
 				{
-					$this->setMessage(FText::_('COM_FABRIK_CONNECTION_SET_DEFAULT'));
+					$this->setMessage(Text::_('COM_FABRIK_CONNECTION_SET_DEFAULT'));
 				}
 			}
 		}

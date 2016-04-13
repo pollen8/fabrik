@@ -11,6 +11,10 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Fabrik\Helpers\Html;
+use Fabrik\Helpers\Text;
+use Fabrik\Helpers\Worker;
+
 jimport('joomla.application.component.view');
 
 /**
@@ -35,9 +39,9 @@ class FabrikViewGooglemap extends JViewLegacy
 	{
 		$app = JFactory::getApplication();
 		$input = $app->input;
-		$j3 = FabrikWorker::j3();
-		$srcs = FabrikHelperHTML::framework();
-		FabrikHelperHTML::slimbox();
+		$j3 = Worker::j3();
+		$srcs = Html::framework();
+		Html::slimbox();
 		$usersConfig = JComponentHelper::getParams('com_fabrik');
 		$model = $this->getModel();
 		$model->setId($input->getInt('id', $usersConfig->get('visualizationid', $input->getInt('visualizationid', 0))));
@@ -45,7 +49,7 @@ class FabrikViewGooglemap extends JViewLegacy
 
 		if (!$model->canView())
 		{
-			echo FText::_('JERROR_ALERTNOAUTHOR');
+			echo Text::_('JERROR_ALERTNOAUTHOR');
 
 			return false;
 		}
@@ -57,13 +61,13 @@ class FabrikViewGooglemap extends JViewLegacy
 		$tpl = $j3 ? 'bootstrap' : 'default';
 		$tpl = $params->get('fb_gm_layout', $tpl);
 		$tmplpath = JPATH_ROOT . '/plugins/fabrik_visualization/googlemap/views/googlemap/tmpl/' . $tpl;
-		$srcs[] = 'media/com_fabrik/js/list-plugin.js';
-		$srcs[] = 'media/com_fabrik/js/listfilter.js';
+		$srcs['ListPlugin'] = 'media/com_fabrik/js/list-plugin.js';
+		$srcs['FbListFilter'] = 'media/com_fabrik/js/listfilter.js';
 
 		if ($params->get('fb_gm_center') == 'userslocation')
 		{
-			$ext = FabrikHelperHTML::isDebug() ? '.js' : '-min.js';
-			FabrikHelperHTML::script('media/com_fabrik/js/lib/geo-location/geo' . $ext);
+			$ext = Html::isDebug() ? '.js' : '-min.js';
+			Html::script('media/com_fabrik/js/lib/geo-location/geo' . $ext);
 		}
 
 		$model->getPluginJsClasses($srcs);
@@ -78,30 +82,31 @@ class FabrikViewGooglemap extends JViewLegacy
 		}
 		else
 		{
-			if (FabrikHelperHTML::isDebug())
+			/*if (Html::isDebug())
 			{
-				$srcs[] = 'plugins/fabrik_visualization/googlemap/googlemap.js';
+				$srcs['GoogleMap'] = 'plugins/fabrik_visualization/googlemap/googlemap.js';
 			}
 			else
 			{
-				$srcs[] = 'plugins/fabrik_visualization/googlemap/googlemap-min.js';
-			}
+				$srcs['GoogleMap'] = 'plugins/fabrik_visualization/googlemap/googlemap-min.js';
+			}*/
+			$srcs['GoogleMap'] = 'plugins/fabrik_visualization/googlemap/googlemap.js';
 
 			if ((int) $this->params->get('fb_gm_clustering', '0') == 1)
 			{
-				if (FabrikHelperHTML::isDebug())
+				if (Html::isDebug())
 				{
-					$srcs[] = 'components/com_fabrik/libs/googlemaps/markerclustererplus/src/markerclusterer.js';
+					$srcs['Cluster'] = 'components/com_fabrik/libs/googlemaps/markerclustererplus/src/markerclusterer.js';
 				}
 				else
 				{
-					$srcs[] = 'components/com_fabrik/libs/googlemaps/markerclustererplus/src/markerclusterer_packed.js';
+					$srcs['Cluster'] = 'components/com_fabrik/libs/googlemaps/markerclustererplus/src/markerclusterer_packed.js';
 				}
 			}
 			else
 			{
 				// Doesn't work in v3
-				// FabrikHelperHTML::script('components/com_fabrik/libs/googlemaps/markermanager.js');
+				// Html::script('components/com_fabrik/libs/googlemaps/markermanager.js');
 			}
 
 			$template = null;
@@ -119,15 +124,15 @@ class FabrikViewGooglemap extends JViewLegacy
 
 		$js .= $model->getFilterJs();
 
-		FabrikHelperHTML::iniRequireJs($model->getShim());
-		FabrikHelperHTML::script($srcs, $js, '-min.js', array('Window', 'FbListFilter'));
-		FabrikHelperHTML::stylesheetFromPath('plugins/fabrik_visualization/googlemap/views/googlemap/tmpl/' . $tpl . '/template.css');
+		Html::iniRequireJs($model->getShim());
+		Html::script($srcs, $js);
+		Html::stylesheetFromPath('plugins/fabrik_visualization/googlemap/views/googlemap/tmpl/' . $tpl . '/template.css');
 
 		// Check and add a general fabrik custom css file overrides template css and generic table css
-		FabrikHelperHTML::stylesheetFromPath('media/com_fabrik/css/custom.css');
+		Html::stylesheetFromPath('media/com_fabrik/css/custom.css');
 
 		// Check and add a specific viz template css file overrides template css generic table css and generic custom css
-		FabrikHelperHTML::stylesheetFromPath('plugins/fabrik_visualization/googlemap/views/googlemap/tmpl/' . $tpl . '/custom.css');
+		Html::stylesheetFromPath('plugins/fabrik_visualization/googlemap/views/googlemap/tmpl/' . $tpl . '/custom.css');
 		$this->filters = $model->getFilters();
 		$this->showFilters = $model->showFilters();
 		$this->filterFormURL = $model->getFilterFormURL();

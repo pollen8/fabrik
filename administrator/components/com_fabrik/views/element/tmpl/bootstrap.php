@@ -12,14 +12,17 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Fabrik\Helpers\Html;
+use Fabrik\Helpers\Text;
+
 JHtml::addIncludePath(JPATH_COMPONENT . '/helpers/html');
 JHTML::stylesheet('administrator/components/com_fabrik/views/fabrikadmin.css');
 JHtml::_('behavior.tooltip');
 JHtml::_('behavior.framework', true);
-FabrikHelperHTML::formvalidation();
+Html::formvalidation();
 JHtml::_('behavior.keepalive');
 
-JText::script('COM_FABRIK_SUBOPTS_VALUES_ERROR');
+Text::script('COM_FABRIK_SUBOPTS_VALUES_ERROR');
 ?>
 
 <script type="text/javascript">
@@ -34,7 +37,7 @@ JText::script('COM_FABRIK_SUBOPTS_VALUES_ERROR');
 				window.fireEvent('form.save');
 				Joomla.submitform(task, document.getElementById('adminForm'));
 			} else {
-				window.alert('<?php echo $this->escape(FText::_('JGLOBAL_VALIDATION_FORM_FAILED'));?>');
+				window.alert('<?php echo $this->escape(Text::_('JGLOBAL_VALIDATION_FORM_FAILED'));?>');
 			}
 		});
 	}
@@ -45,13 +48,13 @@ JText::script('COM_FABRIK_SUBOPTS_VALUES_ERROR');
 {
 	?>
 	<div id="system-message" class="alert alert-notice">
-		<strong><?php echo FText::_('COM_FABRIK_ELEMENT_PROPERTIES_LINKED_TO') ?>: <?php echo $this->parent->label ?></strong>
+		<strong><?php echo Text::_('COM_FABRIK_ELEMENT_PROPERTIES_LINKED_TO') ?>: <?php echo $this->parent->label ?></strong>
 
 		<p><a href="#" id="swapToParent" class="element_<?php echo $this->parent->id ?>"><span class="icon-pencil"></span>
-		<?php echo FText::_('COM_FABRIK_EDIT') . ' ' . $this->parent->label ?></a></p>
+		<?php echo Text::_('COM_FABRIK_EDIT') . ' ' . $this->parent->label ?></a></p>
 
-		<label><?php echo FText::_('COM_FABRIK_OR')?> <span class="icon-magnet"></span>
-		<input id="unlink" name="unlink" id="unlinkFromParent" type="checkbox"> <?php echo FText::_('COM_FABRIK_UNLINK') ?>
+		<label><?php echo Text::_('COM_FABRIK_OR')?> <span class="icon-magnet"></span>
+		<input id="unlink" name="unlink" id="unlinkFromParent" type="checkbox"> <?php echo Text::_('COM_FABRIK_UNLINK') ?>
 		</label>
 	</div>
 <?php
@@ -63,32 +66,32 @@ JText::script('COM_FABRIK_SUBOPTS_VALUES_ERROR');
 			<ul class="nav nav-list">
 				<li class="active">
 			    	<a data-toggle="tab" href="#tab-details">
-			    		<?php echo FText::_('COM_FABRIK_DETAILS')?>
+			    		<?php echo Text::_('COM_FABRIK_DETAILS')?>
 			    	</a>
 			    </li>
 			    <li>
 			    	<a data-toggle="tab" href="#tab-publishing">
-			    		<?php echo FText::_('COM_FABRIK_PUBLISHING')?>
+			    		<?php echo Text::_('COM_FABRIK_PUBLISHING')?>
 			    	</a>
 			    </li>
 			    <li>
 			    	<a data-toggle="tab" href="#tab-access">
-			    		<?php echo FText::_('COM_FABRIK_GROUP_LABEL_RULES_DETAILS')?>
+			    		<?php echo Text::_('COM_FABRIK_GROUP_LABEL_RULES_DETAILS')?>
 			    	</a>
 			    </li>
 			    <li>
 			    	<a data-toggle="tab" href="#tab-listview">
-			    		<?php echo FText::_('COM_FABRIK_LIST_VIEW_SETTINGS')?>
+			    		<?php echo Text::_('COM_FABRIK_LIST_VIEW_SETTINGS')?>
 			    	</a>
 			    </li>
 			    <li>
 			    	<a data-toggle="tab" href="#tab-validations">
-			    		<?php echo FText::_('COM_FABRIK_VALIDATIONS')?>
+			    		<?php echo Text::_('COM_FABRIK_VALIDATIONS')?>
 			    	</a>
 			    </li>
 			    <li>
 			    	<a data-toggle="tab" href="#tab-javascript">
-			    		<?php echo FText::_('COM_FABRIK_JAVASCRIPT')?>
+			    		<?php echo Text::_('COM_FABRIK_JAVASCRIPT')?>
 			    	</a>
 			    </li>
 			</ul>

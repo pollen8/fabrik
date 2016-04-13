@@ -14,7 +14,7 @@ defined('_JEXEC') or die('Restricted access');
 
 jimport('joomla.application.component.modeladmin');
 
-use Joomla\Utilities\ArrayHelper;
+use Fabrik\Helpers\ArrayHelper;
 
 /**
  * Abstract Fabrik Admin model
@@ -92,7 +92,7 @@ abstract class FabModelAdmin extends JModelAdmin
 		$item = $this->getItem();
 
 		// Load up the active plug-ins
-		$plugins = FArrayHelper::getValue($item->params, 'plugins', array());
+		$plugins = ArrayHelper::getValue($item->params, 'plugins', array());
 
 		return $plugins;
 	}

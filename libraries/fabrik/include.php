@@ -14,7 +14,6 @@ use Fabble\Helpers\Factory;
 use Joomla\String\Normalise;
 use Joomla\String\Inflector;
 
-
 /**'
  * Autoloader Class
  *
@@ -30,7 +29,10 @@ class FabrikAutoloader
 		spl_autoload_register(array($this, 'model'));
 		spl_autoload_register(array($this, 'view'));
 		spl_autoload_register(array($this, 'library'));
-		spl_autoload_register(array($this, 'plugin'));*/
+		*/
+		spl_autoload_register(array($this, 'formPlugin'));
+		spl_autoload_register(array($this, 'element'));
+		spl_autoload_register(array($this, 'helper'));
 	}
 
 	/**
@@ -38,18 +40,58 @@ class FabrikAutoloader
 	 *
 	 * @param   string $class Class name
 	 */
-	private function plugin($class)
+	private function formPlugin($class)
 	{
-
-		if (!strstr(strtolower($class), 'fabble\form\plugin\\') && !strstr(strtolower($class), 'fabble\lizt\plugin\\'))
+		if (!strstr(($class), 'Fabrik\Plugins\Form'))
 		{
 			return;
 		}
 
-		$class = str_replace('\\', '/', str_replace('Fabble\\', '', $class));
+		$class = str_replace('\\', '/', $class);
 		$file  = explode('/', $class);
-		$file  = array_pop($file);
-		$path  = JPATH_SITE . '/libraries/fabble/' . $class . '/' . $file . '.php';
+		$file  = strtolower(array_pop($file));
+		$path  = JPATH_SITE . '/plugins/fabrik_form/' . $file . '/' . $file . '.php';
+
+		if (file_exists($path))
+		{
+			require_once $path;
+		}
+	}
+
+	/**
+	 * Load element plugin class
+	 *
+	 * @param   string $class Class name
+	 */
+	private function element($class)
+	{
+		if (!strstr(($class), 'Fabrik\Plugins\Element'))
+		{
+			return;
+		}
+
+		$class = str_replace('\\', '/', $class);
+		$file  = explode('/', $class);
+		$file  = strtolower(array_pop($file));
+		$path  = JPATH_SITE . '/plugins/fabrik_element/' . $file . '/' . $file . '.php';
+
+		if (file_exists($path))
+		{
+			require_once $path;
+		}
+	}
+
+	private function helper($class)
+	{
+		if (!strstr(($class), 'Fabrik\Helpers'))
+		{
+			return;
+		}
+
+		$class = str_replace('\\', '/', $class);
+		$file  = explode('/', $class);
+		$file  = strtolower(array_pop($file));
+		$path  = JPATH_SITE . '/components/com_fabrik/helpers/' . $file . '.php';
 
 		require_once $path;
 	}

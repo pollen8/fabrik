@@ -12,6 +12,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Fabrik\Helpers\Text;
+
 ?>
 <div class="tab-pane" id="tab-layout">
 
@@ -19,7 +21,7 @@ defined('_JEXEC') or die('Restricted access');
 	<div class="span6">
 		<fieldset class="form-horizontal">
 	    <legend>
-			<?php echo FText::_('COM_FABRIK_FRONT_END_TEMPLATES'); ?>
+			<?php echo Text::_('COM_FABRIK_FRONT_END_TEMPLATES'); ?>
 		</legend>
 		<?php foreach ($this->form->getFieldset('templates') as $this->field) :
 			echo $this->loadTemplate('control_group');
@@ -36,7 +38,7 @@ defined('_JEXEC') or die('Restricted access');
 
     <fieldset class="form-horizontal">
     	<legend>
-			<?php echo FText::_('COM_FABRIK_ADMIN_TEMPLATES'); ?>
+			<?php echo Text::_('COM_FABRIK_ADMIN_TEMPLATES'); ?>
 		</legend>
 		<?php foreach ($this->form->getFieldset('admintemplates') as $this->field) :
 			echo $this->loadTemplate('control_group');
@@ -50,7 +52,7 @@ defined('_JEXEC') or die('Restricted access');
 
 	<fieldset class="form-horizontal">
     	<legend>
-			<?php echo FText::_('COM_FABRIK_LAYOUT'); ?>
+			<?php echo Text::_('COM_FABRIK_LAYOUT'); ?>
 		</legend>
 		<?php foreach ($this->form->getFieldset('layout') as $this->field) :
 			echo $this->loadTemplate('control_group');

@@ -11,11 +11,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-require_once JPATH_ADMINISTRATOR . '/components/com_fabrik/helpers/element.php';
-
-// Needed for when you make a menu item link to a form.
-require_once JPATH_SITE . '/components/com_fabrik/helpers/parent.php';
-require_once JPATH_SITE . '/components/com_fabrik/helpers/string.php';
+use Fabrik\Helpers\Worker;
+use Fabrik\Helpers\Text;
 
 jimport('joomla.html.html');
 jimport('joomla.form.formfield');
@@ -55,7 +52,7 @@ class JFormFieldFormList extends JFormFieldList
 			$package = $app->setUserState('com_fabrik.package', $this->element['package']);
 		}
 
-		$db = FabrikWorker::getDbo(true);
+		$db = Worker::getDbo(true);
 		$query = $db->getQuery(true);
 		$query->select('id AS value, label AS ' . $db->quote('text') . ', published');
 		$query->from('#__{package}_forms');
@@ -74,10 +71,10 @@ class JFormFieldFormList extends JFormFieldList
 			switch ($row->published)
 			{
 				case '0':
-					$row->text .= ' [' . FText::_('JUNPUBLISHED') . ']';
+					$row->text .= ' [' . Text::_('JUNPUBLISHED') . ']';
 					break;
 				case '-2':
-					$row->text .= ' [' . FText::_('JTRASHED') . ']';
+					$row->text .= ' [' . Text::_('JTRASHED') . ']';
 					break;
 			}
 		}
@@ -104,7 +101,7 @@ class JFormFieldFormList extends JFormFieldList
 
 		if (!in_array($option, array('com_modules', 'com_menus', 'com_advancedmodules')))
 		{
-			$db = FabrikWorker::getDbo(true);
+			$db = Worker::getDbo(true);
 			$query = $db->getQuery(true);
 			$query->select('form_id')->from('#__{package}_formgroup')->where('group_id = ' . (int) $this->form->getValue('id'));
 			$db->setQuery($query);

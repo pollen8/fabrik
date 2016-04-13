@@ -12,6 +12,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Fabrik\Helpers\Worker;
+
 jimport('joomla.application.component.modellist');
 
 /**
@@ -106,7 +108,7 @@ class FabrikAdminModelConnections extends JModelList
 
 	public function getTable($type = 'Connection', $prefix = 'FabrikTable', $config = array())
 	{
-		$config['dbo'] = FabrikWorker::getDbo();
+		$config['dbo'] = Worker::getDbo();
 
 		return FabTable::getInstance($type, $prefix, $config);
 	}

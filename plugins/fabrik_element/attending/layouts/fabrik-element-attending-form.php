@@ -1,12 +1,14 @@
 <?php
 defined('JPATH_BASE') or die;
 
+use Fabrik\Helpers\Text;
+
 $d = $displayData;
 ?>
 
 <div id="<?php echo $d->id; ?>" class="fabrikSubElementContainer">
 	<div class="msg"></div>
-	<a class="btn btn-primary" data-action="add"><?php echo FText::_('PLG_FABRIK_ELEMENT_ATTENDING_JOIN');?></a>
+	<a class="btn btn-primary" data-action="add"><?php echo Text::_('PLG_FABRIK_ELEMENT_ATTENDING_JOIN');?></a>
 	<div class="media">
 	<?php foreach ($d->attendees as $user) :
 	?>

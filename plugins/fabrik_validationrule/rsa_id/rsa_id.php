@@ -11,6 +11,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Fabrik\Helpers\Text;
+
 // Require the abstract plugin class
 require_once COM_FABRIK_FRONTEND . '/models/validation_rule.php';
 
@@ -140,13 +142,13 @@ class PlgFabrik_ValidationruleRsa_id extends PlgFabrik_Validationrule
 
 			if (!(($year > 1900) && ($year < $currentTime->format('Y'))))
 			{
-				$errors[] = FText::_('PLG_VALIDATION_RSA_YEAR_IS_NOT_VALID');
+				$errors[] = Text::_('PLG_VALIDATION_RSA_YEAR_IS_NOT_VALID');
 			}
 
 			/* DO MONTH TEST */
 			if (!(($month > 0) && ($month < 13)))
 			{
-				$errors[] = FText::_('PLG_VALIDATION_RSA_MONTH_IS_NOT_VALID');
+				$errors[] = Text::_('PLG_VALIDATION_RSA_MONTH_IS_NOT_VALID');
 			}
 
 			/* DO DAY TEST */
@@ -158,21 +160,21 @@ class PlgFabrik_ValidationruleRsa_id extends PlgFabrik_Validationrule
 			/* DO DATE TEST */
 			if (($month == 4 || $month == 6 || $month == 9 || $month == 11) && $day == 31)
 			{
-				$errors[] = FText::_('PLG_VALIDATION_RSA_MONTH_NOT_31_DAYS');
+				$errors[] = Text::_('PLG_VALIDATION_RSA_MONTH_NOT_31_DAYS');
 			}
 			if ($month == 2)
 			{ // check for february 29th
 				$isLeap = ($year % 4 == 0 && ($year % 100 != 0 || $year % 400 == 0));
 				if ($day > 29 || ($day == 29 && !$isLeap))
 				{
-					$errors[] = FText::sprintf('PLG_VALIDATION_RSA_FEB_CHECK', $day, $year);
+					$errors[] = Text::sprintf('PLG_VALIDATION_RSA_FEB_CHECK', $day, $year);
 				}
 			}
 
 			/* DO GENDER TEST */
 			if (!(($gender >= 0) && ($gender < 10000)))
 			{
-				$errors[] = FText::sprintf('PLG_VALIDATION_RSA_GENDER_NOT_VALID');
+				$errors[] = Text::sprintf('PLG_VALIDATION_RSA_GENDER_NOT_VALID');
 			}
 
 			/* DO CITIZEN TEST */
@@ -180,7 +182,7 @@ class PlgFabrik_ValidationruleRsa_id extends PlgFabrik_Validationrule
 			//18 or 19 Not SA citizen but with residence permit
 			if (!(($citizen == 8) || ($citizen == 9) || ($citizen == 18) || ($citizen == 19)))
 			{
-				$errors[] = FText::sprintf('PLG_VALIDATION_RSA_CITIZEN_NOT_VALID');
+				$errors[] = Text::sprintf('PLG_VALIDATION_RSA_CITIZEN_NOT_VALID');
 			}
 
 			/* GET CHECKSUM VALUE */
@@ -221,13 +223,13 @@ class PlgFabrik_ValidationruleRsa_id extends PlgFabrik_Validationrule
 			/* DO CHECKSUM TEST */
 			if ($checkSumValue !== $check_sum)
 			{
-				$errors[] = FText::_('PLG_VALIDATION_RSA_CHECKSUM_NOT_VALID');
+				$errors[] = Text::_('PLG_VALIDATION_RSA_CHECKSUM_NOT_VALID');
 			}
 
 		}
 		else
 		{
-			$errors[] = FText::_('PLG_VALIDATION_RSA_ID_NOT_THE_RIGHT_LENGTH');
+			$errors[] = Text::_('PLG_VALIDATION_RSA_ID_NOT_THE_RIGHT_LENGTH');
 		}
 
 		if (!empty($errors))

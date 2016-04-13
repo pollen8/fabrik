@@ -100,26 +100,6 @@ class Fedex extends AbstractAdapter
 	protected $dropOfType = 'REGULAR_PICKUP';
 
     /**
-     * Package dimensions
-     * @var array
-     */
-    protected $dimensions = [
-        'Length' => null,
-        'Width'  => null,
-        'Height' => null,
-        'Units'  => 'IN'
-    ];
-
-    /**
-     * Package weight
-     * @var array
-     */
-    protected $weight = [
-        'Value' => null,
-        'Units' => 'LB'
-    ];
-
-    /**
      * Services
      * @var array
      */
@@ -153,15 +133,11 @@ class Fedex extends AbstractAdapter
      * @param  string $password
      * @param  string $account
      * @param  string $meter
-     * @param  string $wsdl
+     * @param  array $wsdl keys rates, shipping
      * @return Fedex
      */
     public function __construct($key, $password, $account, $meter, $wsdl)
     {
-        if (!is_array($wsdl))
-        {
-            $wsdl = ['rates' => $wsdl];
-        }
         $this->wsdl = $wsdl;
         $this->accountNumber = $account;
         ini_set('soap.wsdl_cache_enabled', '0');
@@ -306,43 +282,7 @@ class Fedex extends AbstractAdapter
      */
     protected function addPackageLineItem1()
     {
-        // @TODO - insured value & amount & customer reference
-        $packageLineItem = array(
-            'SequenceNumber'=> 1,
-            'GroupPackageCount'=> 1,
-            'InsuredValue' => array(
-                'Amount' => floatval($this->insuranceValue),
-                'Currency' => 'USD'
-            ),
-            'Weight' => $this->weight,
-            'Dimensions' => $this->dimensions,
-            'CustomerReferences' => array(
-                '0' => array(
-                    'CustomerReferenceType' => 'CUSTOMER_REFERENCE', // valid values CUSTOMER_REFERENCE, INVOICE_NUMBER, P_O_NUMBER and SHIPMENT_INTEGRITY
-                    'Value' => 'GR4567892'
-                ),
-                '1' => array(
-                    'CustomerReferenceType' => 'INVOICE_NUMBER',
-                    'Value' => 'INV4567892'
-                ),
-                '2' => array(
-                    'CustomerReferenceType' => 'P_O_NUMBER',
-                    'Value' => 'PO4567892'
-                )
-            )
-        );
 
-        if ($this->shippingOptions['alcohol'])
-        {
-            $packageLineItem['SpecialServicesRequested'] = [
-                'SpecialServiceTypes' => 'ALCOHOL',
-                'AlcoholDetail' => [
-                    'RecipientType' => $this->shippingOptions['alcoholRecipientType']
-                ]
-            ];
-        }
-
-        return $packageLineItem;
     }
 
     /**
@@ -368,7 +308,7 @@ class Fedex extends AbstractAdapter
      *
      * @throws \Exception
      *
-     * @return string Shipping label
+     * @return array label file format, label image data
      */
     public function ship($verifyPeer = true)
     {
@@ -396,10 +336,27 @@ class Fedex extends AbstractAdapter
 
             'CustomerSpecifiedDetail' => array('MaskedData'=> 'SHIPPER_ACCOUNT_NUMBER'),
             'PackageCount' => 1,
-            'RequestedPackageLineItems' => array(
-                '0' => $this->addPackageLineItem1()
-            )
+            'RequestedPackageLineItems' => []
         );
+
+        $opts = [
+            'alcohol' => $this->shippingOptions['alcohol'],
+            'RecipientType' => $this->shippingOptions['alcoholRecipientType'],
+            'insuranceValue' => $this->insuranceValue,
+            'GroupPackageCount' => count($this->packages),
+            'CustomerReferences' => [
+                '0' => [
+                    'CustomerReferenceType' => 'CUSTOMER_REFERENCE', // valid values CUSTOMER_REFERENCE, INVOICE_NUMBER, P_O_NUMBER and SHIPMENT_INTEGRITY
+                    'Value' => 'GR4567892'
+                ]
+            ]
+        ];
+
+        foreach ($this->packages as $i => $package)
+        {
+            $opts['sequenceNumber'] = $i;
+            $request['RequestedShipment']['RequestedPackageLineItems'] = $package->rateRequest($opts);
+        }
 
         $request = array_merge($this->requestHeader, $request);
         $this->client = new \SoapClient($this->wsdl['shipping'], ['trace' => 1]);
@@ -427,7 +384,7 @@ class Fedex extends AbstractAdapter
 
         $label = $this->response->CompletedShipmentDetail->CompletedPackageDetails->Label->Parts->Image;
 
-       return $label;
+        return ['png', base64_decode($label)];
     }
 
     /**

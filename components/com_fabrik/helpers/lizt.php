@@ -8,6 +8,8 @@
  * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
+namespace Fabrik\Helpers;
+
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
@@ -18,20 +20,18 @@ defined('_JEXEC') or die('Restricted access');
  * @subpackage  Fabrik.helpers
  * @since       3.0.6
  */
-
-class FabrikHelperList
+class Lizt
 {
 	/**
 	 * Get a list of elements which match a set of criteria
 	 *
-	 * @param   object  $listModel  list model to search
-	 * @param   array   $filter     array of element properties to match on
+	 * @param   \FabrikFEModelList  $listModel  list model to search
+	 * @param   array               $filter     array of element properties to match on
 	 *
-	 * @throws Exception
+	 * @throws \Exception
 	 *
 	 * @return  array
 	 */
-
 	public static function getElements($listModel, $filter = array())
 	{
 		$found = array();
@@ -64,7 +64,7 @@ class FabrikHelperList
 		if (empty($found))
 		{
 			$filterNames = implode(', ', $filter);
-			throw new Exception(JText::sprintf('COM_FABRIK_ERR_NO_ELEMENTS_MATCHED_FILTER', $filterNames));
+			throw new \Exception(Text::sprintf('COM_FABRIK_ERR_NO_ELEMENTS_MATCHED_FILTER', $filterNames));
 		}
 
 		return $found;

@@ -11,6 +11,10 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Fabrik\Helpers\Html;
+use Fabrik\Helpers\Text;
+use Fabrik\Helpers\Worker;
+
 jimport('joomla.application.component.view');
 
 /**
@@ -34,7 +38,7 @@ class FabrikViewApprovals extends JViewLegacy
 	public function display($tpl = 'default')
 	{
 		$model = $this->getModel();
-		$j3 = FabrikWorker::j3();
+		$j3 = Worker::j3();
 		$app = JFactory::getApplication();
 		$input = $app->input;
 		$usersConfig = JComponentHelper::getParams('com_fabrik');
@@ -43,7 +47,7 @@ class FabrikViewApprovals extends JViewLegacy
 
 		if (!$model->canView())
 		{
-			echo FText::_('JERROR_ALERTNOAUTHOR');
+			echo Text::_('JERROR_ALERTNOAUTHOR');
 
 			return false;
 		}
@@ -57,22 +61,22 @@ class FabrikViewApprovals extends JViewLegacy
 		$tpl = $j3 ? 'bootstrap' : $tpl;
 		$this->_setPath('template', JPATH_SITE . '/plugins/fabrik_visualization/approvals/views/approvals/tmpl/' . $tpl);
 
-		FabrikHelperHTML::stylesheetFromPath('plugins/fabrik_visualization/approvals/views/approvals/tmpl/' . $tpl . '/template.css');
+		Html::stylesheetFromPath('plugins/fabrik_visualization/approvals/views/approvals/tmpl/' . $tpl . '/template.css');
 
 		$ref = $model->getJSRenderContext();
 		$js = "var $ref = new fbVisApprovals('approvals_" . $id . "');\n";
 		$js .= "Fabrik.addBlock('" . $ref . "', $ref);\n";
 		$js .= $model->getFilterJs();
 
-		$srcs = FabrikHelperHTML::framework();
-		$srcs[] = 'media/com_fabrik/js/listfilter.js';
-		$srcs[] = 'plugins/fabrik_visualization/approvals/approvals.js';
+		$srcs = Html::framework();
+		$srcs['FbListFilter'] = 'media/com_fabrik/js/listfilter.js';
+		$srcs['Approvals'] = 'plugins/fabrik_visualization/approvals/approvals.js';
 
-		FabrikHelperHTML::iniRequireJs($model->getShim());
-		FabrikHelperHTML::script($srcs, $js, '-min.js', array('Window', 'FbListFilter'));
+		Html::iniRequireJs($model->getShim());
+		Html::script($srcs, $js);
 
 		$text = $this->loadTemplate();
-		FabrikHelperHTML::runContentPlugins($text);
+		Html::runContentPlugins($text);
 		echo $text;
 	}
 }

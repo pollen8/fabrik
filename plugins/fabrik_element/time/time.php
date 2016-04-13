@@ -9,18 +9,26 @@
  * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
+namespace Fabrik\Plugins\Element;
+
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use \JHtml;
+use \stdClass;
+use Fabrik\Helpers\ArrayHelper;
+use Fabrik\Helpers\Worker;
+use Fabrik\Helpers\StringHelper;
+use Fabrik\Helpers\Text;
+
 /**
- * Plugin element to render time dropdowns - derived from birthday element
+ * Plugin element to render time drop-downs - derived from birthday element
  *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.element.time
  * @since       3.0
  */
-
-class PlgFabrik_ElementTime extends PlgFabrik_Element
+class Time extends Element
 {
 	/**
 	 * Does the element contain sub elements e.g checkboxes radiobuttons
@@ -65,7 +73,7 @@ class PlgFabrik_ElementTime extends PlgFabrik_Element
 		}
 
 		$value = $this->getValue($data, $repeatCounter);
-		$sep = $params->get('time_separatorlabel', FText::_(':'));
+		$sep = $params->get('time_separatorlabel', Text::_(':'));
 		$fd = $params->get('details_time_format', 'H:i:s');
 
 		if (!$this->isEditable())
@@ -82,9 +90,9 @@ class PlgFabrik_ElementTime extends PlgFabrik_Element
 					$bits = $value;
 				}
 
-				$hour = FArrayHelper::getValue($bits, 0, '00');
-				$min = FArrayHelper::getValue($bits, 1, '00');
-				$sec = FArrayHelper::getValue($bits, 2, '00');
+				$hour = ArrayHelper::getValue($bits, 0, '00');
+				$min = ArrayHelper::getValue($bits, 1, '00');
+				$sec = ArrayHelper::getValue($bits, 2, '00');
 
 				// $$$ rob - all this below is nice but ... you still need to set a default
 				$detailvalue = '';
@@ -123,11 +131,11 @@ class PlgFabrik_ElementTime extends PlgFabrik_Element
 				$value = strstr($value, ',') ? (explode(',', $value)) : explode(':', $value);
 			}
 
-			$hourvalue = FArrayHelper::getValue($value, 0);
-			$minvalue = FArrayHelper::getValue($value, 1);
-			$secvalue = FArrayHelper::getValue($value, 2);
+			$hourvalue = ArrayHelper::getValue($value, 0);
+			$minvalue = ArrayHelper::getValue($value, 1);
+			$secvalue = ArrayHelper::getValue($value, 2);
 
-			$hours = array(JHTML::_('select.option', '', $params->get('time_hourlabel', FText::_('PLG_ELEMENT_TIME_SEPARATOR_HOUR'))));
+			$hours = array(JHTML::_('select.option', '', $params->get('time_hourlabel', Text::_('PLG_ELEMENT_TIME_SEPARATOR_HOUR'))));
 
 			for ($i = 0; $i < 24; $i++)
 			{
@@ -135,7 +143,7 @@ class PlgFabrik_ElementTime extends PlgFabrik_Element
 				$hours[] = JHTML::_('select.option', $i);
 			}
 
-			$mins = array(JHTML::_('select.option', '', $params->get('time_minlabel', FText::_('PLG_ELEMENT_TIME_SEPARATOR_MINUTE'))));
+			$mins = array(JHTML::_('select.option', '', $params->get('time_minlabel', Text::_('PLG_ELEMENT_TIME_SEPARATOR_MINUTE'))));
 			$increment = (int) $params->get('minutes_increment', 1);
 
 			// Siin oli enne $monthlabels, viisin ülespoole
@@ -146,7 +154,7 @@ class PlgFabrik_ElementTime extends PlgFabrik_Element
 				$mins[] = JHTML::_('select.option', $i);
 			}
 
-			$secs = array(JHTML::_('select.option', '', $params->get('time_seclabel', FText::_('PLG_ELEMENT_TIME_SEPARATOR_SECOND'))));
+			$secs = array(JHTML::_('select.option', '', $params->get('time_seclabel', Text::_('PLG_ELEMENT_TIME_SEPARATOR_SECOND'))));
 
 			for ($i = 0; $i < 60; $i++)
 			{
@@ -199,9 +207,9 @@ class PlgFabrik_ElementTime extends PlgFabrik_Element
 	{
 		if (is_array($val) && implode($val) != '')
 		{
-			$h = FArrayHelper::getValue($val, 0, '00');
-			$m = FArrayHelper::getValue($val, 1, '00');
-			$s = FArrayHelper::getValue($val, 2, '00');
+			$h = ArrayHelper::getValue($val, 0, '00');
+			$m = ArrayHelper::getValue($val, 1, '00');
+			$s = ArrayHelper::getValue($val, 2, '00');
 
 			return $h . ':' . $m . ':' . $s;
 		}
@@ -235,20 +243,19 @@ class PlgFabrik_ElementTime extends PlgFabrik_Element
 	/**
 	 * Get sum query
 	 *
-	 * @param   object  &$listModel  List model
+	 * @param   \FabrikFEModelList  &$listModel  List model
 	 * @param   array   $labels      Label
 	 *
 	 * @return string
 	 */
-
 	protected function getSumQuery(&$listModel, $labels = array())
 	{
 		$label = count($labels) == 0 ? "'calc' AS label" : 'CONCAT(' . implode(', " & " , ', $labels) . ')  AS label';
 		$table = $listModel->getTable();
 		$db = $listModel->getDb();
-		$joinSQL = $listModel->_buildQueryJoin();
-		$whereSQL = $listModel->_buildQueryWhere();
-		$name = $this->getFullName(false, false, false);
+		$joinSQL = $listModel->buildQueryJoin();
+		$whereSQL = $listModel->buildQueryWhere();
+		$name = $this->getFullName(false, false);
 
 		return 'SELECT SUM(substr(' . $name . ' FROM 1 FOR 2) * 60 * 60 + substr(' . $name . ' FROM 4 FOR 2) * 60
 			+ substr(' . $name . ' FROM 7 FOR 2))  AS value, ' . $label . ' FROM '
@@ -258,8 +265,8 @@ class PlgFabrik_ElementTime extends PlgFabrik_Element
 	/**
 	 * Build the query for the avg calculation
 	 *
-	 * @param   model  &$listModel  list model
-	 * @param   array  $labels      Labels
+	 * @param   \FabrikFEModelList  &$listModel  list model
+	 * @param   array               $labels      Labels
 	 *
 	 * @return  string	sql statement
 	 */
@@ -268,16 +275,15 @@ class PlgFabrik_ElementTime extends PlgFabrik_Element
 	{
 		$label = count($labels) == 0 ? "'calc' AS label" : 'CONCAT(' . implode(', " & " , ', $labels) . ')  AS label';
 		$item = $listModel->getTable();
-		$joinSQL = $listModel->_buildQueryJoin();
-		$whereSQL = $listModel->_buildQueryWhere();
-		$name = $this->getFullName(false, false, false);
-		$groupModel = $this->getGroup();
+		$joinSQL = $listModel->buildQueryJoin();
+		$whereSQL = $listModel->buildQueryWhere();
+		$name = $this->getFullName(false, false);
 		$roundTo = (int) $this->getParams()->get('avg_round');
 
 		$valueSelect = 'substr(' . $name . ' FROM 1 FOR 2) * 60 * 60 + substr(' . $name . ' FROM 4 FOR 2) * 60 + substr(' . $name . ' FROM 7 FOR 2)';
 
 		// Element is in a joined column - lets presume the user wants to sum all cols, rather than reducing down to the main cols totals
-		return "SELECT ROUND(AVG($valueSelect), $roundTo) AS value, $label FROM " . FabrikString::safeColName($item->db_table_name)
+		return "SELECT ROUND(AVG($valueSelect), $roundTo) AS value, $label FROM " . StringHelper::safeColName($item->db_table_name)
 		. " $joinSQL $whereSQL";
 	}
 
@@ -347,10 +353,10 @@ class PlgFabrik_ElementTime extends PlgFabrik_Element
 		 * Jaanus: removed condition canrepeat() from renderListData:
 		 * weird result such as ["00:03:45","00 when not repeating but still join and merged. Using isJoin() instead
 		 */
-		$data = $groupModel->isJoin() ? FabrikWorker::JSONtoData($data, true) : array($data);
+		$data = $groupModel->isJoin() ? Worker::JSONtoData($data, true) : array($data);
 		$data = (array) $data;
 		$ft = $params->get('list_time_format', 'H:i:s');
-		$sep = $params->get('time_separatorlabel', FText::_(':'));
+		$sep = $params->get('time_separatorlabel', Text::_(':'));
 		$format = array();
 
 		foreach ($data as $d)
@@ -358,9 +364,9 @@ class PlgFabrik_ElementTime extends PlgFabrik_Element
 			if ($d)
 			{
 				$bits = explode(':', $d);
-				$hour = FArrayHelper::getValue($bits, 0, '00');
-				$min = FArrayHelper::getValue($bits, 1, '00');
-				$sec = FArrayHelper::getValue($bits, 2, '00');
+				$hour = ArrayHelper::getValue($bits, 0, '00');
+				$min = ArrayHelper::getValue($bits, 1, '00');
+				$sec = ArrayHelper::getValue($bits, 2, '00');
 				$hms = $hour . $sep . $min . $sep . $sec;
 				$hm = $hour . $sep . $min;
 				$ms = $min . $sep . $sec;

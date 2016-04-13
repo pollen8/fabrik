@@ -12,6 +12,10 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Fabrik\Helpers\Worker;
+use \Fabrik\Helpers\StringHelper;
+use Fabrik\Helpers\Text;
+
 require_once 'fabmodeladmin.php';
 
 /**
@@ -41,7 +45,7 @@ class FabrikAdminModelHome extends FabModelAdmin
 	 */
 	public function getTable($type = 'Cron', $prefix = 'FabrikTable', $config = array())
 	{
-		$config['dbo'] = FabrikWorker::getDbo(true);
+		$config['dbo'] = Worker::getDbo(true);
 
 		return parent::getTable($type, $prefix, $config);
 	}
@@ -87,7 +91,7 @@ class FabrikAdminModelHome extends FabModelAdmin
 
 		if ($rssDoc == false)
 		{
-			$output = FText::_('Error: Feed not retrieved');
+			$output = Text::_('Error: Feed not retrieved');
 		}
 		else
 		{
@@ -96,14 +100,14 @@ class FabrikAdminModelHome extends FabModelAdmin
 			$link  = $rssDoc->get_link();
 
 			$output = '<table class="adminlist">';
-			$output .= '<tr><th colspan="3"><a href="' . $link . '" target="_blank">' . FText::_($title) . '</th></tr>';
+			$output .= '<tr><th colspan="3"><a href="' . $link . '" target="_blank">' . Text::_($title) . '</th></tr>';
 
 			$items    = array_slice($rssDoc->get_items(), 0, 3);
 			$numItems = count($items);
 
 			if ($numItems == 0)
 			{
-				$output .= '<tr><th>' . FText::_('No news items found') . '</th></tr>';
+				$output .= '<tr><th>' . Text::_('No news items found') . '</th></tr>';
 			}
 			else
 			{
@@ -118,7 +122,7 @@ class FabrikAdminModelHome extends FabModelAdmin
 
 					if ($item->get_description())
 					{
-						$description = FabrikString::truncate($item->get_description(), array('wordcount' => 50));
+						$description = StringHelper::truncate($item->get_description(), array('wordcount' => 50));
 						$output .= '<br />' . $description;
 					}
 
@@ -142,9 +146,9 @@ class FabrikAdminModelHome extends FabModelAdmin
 	 */
 	public function installSampleData()
 	{
-		$cnn       = FabrikWorker::getConnection();
+		$cnn       = Worker::getConnection();
 		$defaultDb = $cnn->getDb();
-		$db        = FabrikWorker::getDbo(true);
+		$db        = Worker::getDbo(true);
 		$group     = $this->getTable('Group');
 		$config    = $this->config;
 
@@ -250,7 +254,7 @@ class FabrikAdminModelHome extends FabModelAdmin
 	 */
 	public function reset()
 	{
-		$db     = FabrikWorker::getDbo(true);
+		$db     = Worker::getDbo(true);
 		$prefix = '#__{package}_';
 		$tables = array('cron', 'elements', 'formgroup', 'forms', 'form_sessions', 'groups', 'joins', 'jsactions', 'packages', 'lists',
 			'validations', 'visualizations');
@@ -271,7 +275,7 @@ class FabrikAdminModelHome extends FabModelAdmin
 	{
 		$connModel = JModelLegacy::getInstance('Connection', 'FabrikFEModel');
 		$connModel->setId($item->connection_id);
-		$db    = FabrikWorker::getDbo(true);
+		$db    = Worker::getDbo(true);
 		$query = $db->getQuery(true);
 		$query->select("connection_id, db_table_name")->from('#__{package}_lists');
 		$db->setQuery($query);

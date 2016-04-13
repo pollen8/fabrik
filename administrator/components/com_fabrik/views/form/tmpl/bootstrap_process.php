@@ -12,6 +12,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Fabrik\Helpers\Text;
+
 ?>
 <div class="tab-pane" id="tab-process">
 
@@ -46,7 +48,7 @@ defined('_JEXEC') or die('Restricted access');
 	</fieldset>
 
     <fieldset class="form-horizontal">
-		<legend><?php echo FText::_('COM_FABRIK_NOTES');?></legend>
+		<legend><?php echo Text::_('COM_FABRIK_NOTES');?></legend>
 		<?php foreach ($this->form->getFieldset('notes') as $this->field) :
 			echo $this->loadTemplate('control_group');
 		endforeach;

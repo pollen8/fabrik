@@ -8,10 +8,16 @@
  * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
+namespace Fabrik\Plugins\Element;
+
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-require_once JPATH_SITE . '/components/com_fabrik/models/element.php';
+use \stdClass;
+use Fabrik\Helpers\ArrayHelper;
+use Fabrik\Helpers\Html;
+use Fabrik\Helpers\StringHelper;
+use Fabrik\Helpers\Text;
 
 /**
  * Plugin element to two lists - one to select from the other to select into
@@ -20,7 +26,7 @@ require_once JPATH_SITE . '/components/com_fabrik/models/element.php';
  * @subpackage  Fabrik.element.picklist
  * @since       3.0
  */
-class PlgFabrik_ElementPicklist extends PlgFabrik_ElementList
+class Picklist extends ElementList
 {
 	/**
 	 * Does the element have sub elements
@@ -84,8 +90,8 @@ class PlgFabrik_ElementPicklist extends PlgFabrik_ElementList
 				continue;
 			}
 
-			$k      = FArrayHelper::getValue($lookup, $v);
-			$tmpTxt = addslashes(htmlspecialchars(FArrayHelper::getValue($labels, $k)));
+			$k      = ArrayHelper::getValue($lookup, $v);
+			$tmpTxt = addslashes(htmlspecialchars(ArrayHelper::getValue($labels, $k)));
 			$to[$v] = $tmpTxt;
 			$i++;
 		}
@@ -95,7 +101,7 @@ class PlgFabrik_ElementPicklist extends PlgFabrik_ElementList
 			return implode(', ', $to);
 		}
 
-		FabrikHelperHTML::stylesheet(COM_FABRIK_LIVESITE . 'plugins/fabrik_element/picklist/picklist.css');
+		Html::stylesheet(COM_FABRIK_LIVESITE . 'plugins/fabrik_element/picklist/picklist.css');
 
 		$layout                   = $this->getLayout('form');
 		$layoutData               = new stdClass;
@@ -129,7 +135,7 @@ class PlgFabrik_ElementPicklist extends PlgFabrik_ElementList
 
 		$opts->hovercolour   = $params->get('picklist-hovercolour', '#AFFFFD');
 		$opts->bghovercolour = $params->get('picklist-bghovercolour', '#FFFFDF');
-		JText::script('PLG_ELEMENT_PICKLIST_ENTER_VALUE_LABEL');
+		Text::script('PLG_ELEMENT_PICKLIST_ENTER_VALUE_LABEL');
 
 		return array('FbPicklist', $id, $opts);
 	}
@@ -151,7 +157,7 @@ class PlgFabrik_ElementPicklist extends PlgFabrik_ElementList
 
 		for ($i = 0; $i < count($labels); $i++)
 		{
-			if (JString::strtolower($labels[$i]) == JString::strtolower($value))
+			if (StringHelper::strtolower($labels[$i]) == StringHelper::strtolower($value))
 			{
 				$val = $values[$i];
 

@@ -11,6 +11,10 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Fabrik\Helpers\ArrayHelper;
+use Fabrik\Helpers\Text;
+use Fabrik\Helpers\Worker;
+
 // Require the abstract plugin class
 require_once COM_FABRIK_FRONTEND . '/models/plugin-list.php';
 
@@ -43,7 +47,7 @@ class PlgFabrik_ListPhp extends plgFabrik_List
 
 		if (!empty($args))
 		{
-			$heading = FArrayHelper::getValue($args[0], 'heading');
+			$heading = ArrayHelper::getValue($args[0], 'heading');
 		}
 
 		if ($heading)
@@ -68,7 +72,7 @@ class PlgFabrik_ListPhp extends plgFabrik_List
 	{
 		$img = parent::getImageName();
 
-		if (FabrikWorker::j3() && $img === 'php.png')
+		if (Worker::j3() && $img === 'php.png')
 		{
 			$img = 'lightning';
 		}
@@ -160,7 +164,7 @@ class PlgFabrik_ListPhp extends plgFabrik_List
 		else
 		{
 			$params = $this->getParams();
-			$msg = $params->get('table_php_msg', FText::_('PLG_LIST_PHP_CODE_RUN'));
+			$msg = $params->get('table_php_msg', Text::_('PLG_LIST_PHP_CODE_RUN'));
 
 			return $msg;
 		}

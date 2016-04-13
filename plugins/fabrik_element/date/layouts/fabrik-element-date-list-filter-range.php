@@ -1,7 +1,8 @@
 <?php
 defined('JPATH_BASE') or die;
 
-use Joomla\Utilities\ArrayHelper;
+use Fabrik\Helpers\ArrayHelper;
+use Fabrik\Helpers\Text;
 
 $d    = $displayData;
 $from = $d->from;
@@ -33,7 +34,7 @@ else :
 	?>
 <div class="fabrikDateListFilterRange">
 	<div style="text-align: right">
-	<?php echo FText::_('COM_FABRIK_DATE_RANGE_BETWEEN') . ' '; ?>
+	<?php echo Text::_('COM_FABRIK_DATE_RANGE_BETWEEN') . ' '; ?>
 	<?php echo $prepend; ?>
 	<input type="text" name="<?php echo $from->name; ?>" id="<?php echo $from->id; ?>"
 		value="<?php echo $from->value; ?>"<?php echo $calOpts; ?> />
@@ -41,7 +42,7 @@ else :
 	<?php echo $append; ?>
 	</div>
 	<div style="text-align: right">
-	<?php echo FText::_('COM_FABRIK_DATE_RANGE_AND') . ' '; ?>
+	<?php echo Text::_('COM_FABRIK_DATE_RANGE_AND') . ' '; ?>
 	<?php echo $prepend; ?>
 	<input type="text" name="<?php echo $to->name; ?>" id="<?php echo $to->id; ?>"
 		value="<?php echo $to->value; ?>"<?php echo $calOpts; ?> />

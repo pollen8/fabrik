@@ -12,6 +12,9 @@
 defined('_JEXEC') or die('Restricted access');
 
 use \Joomla\Registry\Registry;
+use Fabrik\Helpers\ArrayHelper;
+use Fabrik\Helpers\StringHelper;
+use Fabrik\Helpers\Worker;
 
 require_once JPATH_SITE . '/components/com_fabrik/views/list/view.base.php';
 
@@ -35,7 +38,7 @@ class FabrikViewList extends FabrikViewListBase
 	public function display($tpl = null)
 	{
 		$input = $this->app->input;
-		$itemId = FabrikWorker::itemId();
+		$itemId = Worker::itemId();
 		$model = $this->getModel();
 		$model->setOutPutFormat('feed');
 
@@ -148,7 +151,7 @@ class FabrikViewList extends FabrikViewListBase
 			}
 		}
 
-		$w = new FabrikWorker;
+		$w = new Worker;
 		$rows = $model->getData();
 
 		$this->doc->title = htmlspecialchars($w->parseMessageForPlaceHolder($table->label, $_REQUEST), ENT_COMPAT, 'UTF-8');
@@ -223,7 +226,7 @@ class FabrikViewList extends FabrikViewListBase
 							{
 								$enclosureType = '';
 
-								if ($enclosureType = FabrikWorker::getPodcastMimeType($enclosureFile))
+								if ($enclosureType = Worker::getPodcastMimeType($enclosureFile))
 								{
 									$enclosure_size = $this->get_filesize($enclosureFile, $remoteFile);
 									$enclosures[] = array(
@@ -256,7 +259,7 @@ class FabrikViewList extends FabrikViewListBase
 						if (strstr($rssContent, $rssTag))
 						{
 							$found = true;
-							$rssTag = JString::substr($rssTag, 1, JString::strlen($rssTag) - 2);
+							$rssTag = StringHelper::substr($rssTag, 1, StringHelper::strlen($rssTag) - 2);
 
 							if (!strstr($this->doc->_namespace, $namespace))
 							{
@@ -291,7 +294,7 @@ class FabrikViewList extends FabrikViewListBase
 				}
 
 
-				if (FArrayHelper::getValue($dbColName, 'label') != '')
+				if (ArrayHelper::getValue($dbColName, 'label') != '')
 				{
 					$str = $tStart . $str . "</table>";
 				}

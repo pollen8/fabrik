@@ -1,7 +1,7 @@
 <?php
 defined('JPATH_BASE') or die;
 
-use Joomla\Utilities\ArrayHelper;
+use Fabrik\Helpers\ArrayHelper;
 
 $d    = $displayData;
 $from = $d->from;

@@ -12,6 +12,8 @@
 defined('_JEXEC') or die('Restricted access');
 
 use \Joomla\Utilities\ArrayHelper;
+use Fabrik\Helpers\StringHelper;
+use Fabrik\Helpers\Worker;
 
 jimport('joomla.application.component.controller');
 
@@ -47,7 +49,7 @@ class FabrikControllerPlugin extends JControllerLegacy
 		$method = $input->get('method', '');
 		$group  = $input->get('g', 'element');
 
-		$pluginManager = FabrikWorker::getPluginManager();
+		$pluginManager = Worker::getPluginManager();
 
 		try
 		{
@@ -67,7 +69,7 @@ class FabrikControllerPlugin extends JControllerLegacy
 
 		if (substr($method, 0, 2) !== 'on')
 		{
-			$method = 'on' . JString::ucfirst($method);
+			$method = 'on' . StringHelper::ucfirst($method);
 		}
 
 		$dispatcher = JEventDispatcher::getInstance();
@@ -81,7 +83,7 @@ class FabrikControllerPlugin extends JControllerLegacy
 	 */
 	public function userAjax()
 	{
-		$db = FabrikWorker::getDbo();
+		$db = Worker::getDbo();
 		require_once COM_FABRIK_FRONTEND . '/user_ajax.php';
 		$app      = JFactory::getApplication();
 		$input    = $app->input;
@@ -103,7 +105,7 @@ class FabrikControllerPlugin extends JControllerLegacy
 	 */
 	public function doCron(&$pluginManager)
 	{
-		$db    = FabrikWorker::getDbo();
+		$db    = Worker::getDbo();
 		$app   = JFactory::getApplication();
 		$input = $app->input;
 		$cid   = $input->get('element_id', array(), 'array');

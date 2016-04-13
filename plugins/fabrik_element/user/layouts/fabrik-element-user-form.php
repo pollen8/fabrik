@@ -2,6 +2,8 @@
 
 defined('JPATH_BASE') or die;
 
+use Fabrik\Helpers\Html;
+
 $d = $displayData;
 
 /**
@@ -23,7 +25,7 @@ else :
 			<div class="input-append">
 				<?php echo $d->input;?>
 				<span class="add-on">
-					<?php echo FabrikHelperHTML::icon('icon-user'); ?>
+					<?php echo Html::icon('icon-user'); ?>
 				</span>
 			</div>
 		<?php

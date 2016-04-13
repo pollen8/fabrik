@@ -12,6 +12,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Fabrik\Helpers\Worker;
+
 require_once 'fabmodellist.php';
 
 /**
@@ -109,7 +111,7 @@ class FabrikAdminModelForms extends FabModelList
 	 */
 	public function getTable($type = 'Form', $prefix = 'FabrikTable', $config = array())
 	{
-		$config['dbo'] = FabrikWorker::getDbo();
+		$config['dbo'] = Worker::getDbo();
 
 		return FabTable::getInstance($type, $prefix, $config);
 	}

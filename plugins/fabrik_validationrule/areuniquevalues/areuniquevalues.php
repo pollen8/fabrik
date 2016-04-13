@@ -11,6 +11,10 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Fabrik\Helpers\ArrayHelper;
+use Fabrik\Helpers\Text;
+use Fabrik\Helpers\Worker;
+
 // Require the abstract plugin class
 require_once COM_FABRIK_FRONTEND . '/models/validation_rule.php';
 
@@ -76,12 +80,12 @@ class PlgFabrik_ValidationruleAreUniqueValues extends PlgFabrik_Validationrule
 		if (!empty($otherField))
 		{
 			// $$$ the array thing needs fixing, for now just grab 0
-			$formData = $elementModel->getForm()->formData;
-			$v = FArrayHelper::getValue($formData, $otherFullName . '_raw', FArrayHelper::getValue($formData, $otherFullName, ''));
+			$formData = $elementModel->getFormModel()->formData;
+			$v = ArrayHelper::getValue($formData, $otherFullName . '_raw', ArrayHelper::getValue($formData, $otherFullName, ''));
 
 			if (is_array($v))
 			{
-				$v = FArrayHelper::getValue($v, 0, '');
+				$v = ArrayHelper::getValue($v, 0, '');
 			}
 
 			$query->where($db->qn($otherField) . ' = ' . $db->quote($v));
@@ -114,7 +118,7 @@ class PlgFabrik_ValidationruleAreUniqueValues extends PlgFabrik_Validationrule
 		$params = $this->getParams();
 		$otherField = $params->get('areuniquevalues-otherfield');
 
-		return FabrikWorker::getPluginManager()->getElementPlugin($otherField);
+		return Worker::getPluginManager()->getElementPlugin($otherField);
 	}
 
 	/**
@@ -130,7 +134,7 @@ class PlgFabrik_ValidationruleAreUniqueValues extends PlgFabrik_Validationrule
 
 		if ((int) $otherField !== 0)
 		{
-			return JText::sprintf('PLG_VALIDATIONRULE_AREUNIQUEVALUES_ADDITIONAL_LABEL', $otherElementModel->getElement()->label);
+			return Text::sprintf('PLG_VALIDATIONRULE_AREUNIQUEVALUES_ADDITIONAL_LABEL', $otherElementModel->getElement()->label);
 		}
 		else
 		{

@@ -12,6 +12,10 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Fabrik\Helpers\ArrayHelper;
+use Fabrik\Helpers\Worker;
+use Fabrik\Helpers\Text;
+
 jimport('joomla.application.component.controllerform');
 
 /**
@@ -99,7 +103,7 @@ class FabrikAdminControllerForm extends JControllerForm
 					{
 						if (in_array($errorKey, $toValidate) && count($e[0]) > 0)
 						{
-							array_walk_recursive($e, array('FabrikString', 'forHtml'));
+							array_walk_recursive($e, array('StringHelper', 'forHtml'));
 							$eMsgs[] = count($e[0]) === 1 ? '<li>' . $e[0][0] . '</li>' : '<ul><li>' . implode('</li><li>', $e[0]) . '</ul>';
 						}
 					}
@@ -107,7 +111,7 @@ class FabrikAdminControllerForm extends JControllerForm
 					if (!empty($eMsgs))
 					{
 						$eMsgs = '<ul>' . implode('</li><li>', $eMsgs) . '</ul>';
-						header('HTTP/1.1 500 ' . FText::_('COM_FABRIK_FAILED_VALIDATION') . $eMsgs);
+						header('HTTP/1.1 500 ' . Text::_('COM_FABRIK_FAILED_VALIDATION') . $eMsgs);
 						jexit();
 					}
 					else
@@ -130,7 +134,7 @@ class FabrikAdminControllerForm extends JControllerForm
 			{
 				if ($this->isMambot)
 				{
-					$referrer = filter_var(FArrayHelper::getValue($_SERVER, 'HTTP_REFERER', ''), FILTER_SANITIZE_URL);
+					$referrer = filter_var(ArrayHelper::getValue($_SERVER, 'HTTP_REFERER', ''), FILTER_SANITIZE_URL);
 					$input->post->set('fabrik_referrer', $referrer);
 
 					/**
@@ -156,7 +160,7 @@ class FabrikAdminControllerForm extends JControllerForm
 		// Check if any plugin has created a new validation error
 		if ($model->hasErrors())
 		{
-			FabrikWorker::getPluginManager()->runPlugins('onError', $model);
+			Worker::getPluginManager()->runPlugins('onError', $model);
 			$view->display();
 
 			return;
@@ -274,7 +278,7 @@ class FabrikAdminControllerForm extends JControllerForm
 
 		if (is_null($msg))
 		{
-			$msg = FText::_('COM_FABRIK_RECORD_ADDED_UPDATED');
+			$msg = Text::_('COM_FABRIK_RECORD_ADDED_UPDATED');
 		}
 
 		if (array_key_exists('apply', $model->formData))

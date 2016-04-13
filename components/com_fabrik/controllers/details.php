@@ -12,6 +12,8 @@
 defined('_JEXEC') or die('Restricted access');
 
 use \Joomla\Utilities\ArrayHelper;
+use Fabrik\Helpers\Worker;
+use Fabrik\Helpers\Text;
 
 jimport('joomla.application.component.controller');
 
@@ -197,7 +199,7 @@ class FabrikControllerDetails extends JControllerLegacy
 		// Check if any plugin has created a new validation error
 		if (!empty($model->errors))
 		{
-			FabrikWorker::getPluginManager()->runPlugins('onError', $model);
+			Worker::getPluginManager()->runPlugins('onError', $model);
 			$view->display();
 
 			return;
@@ -325,7 +327,7 @@ class FabrikControllerDetails extends JControllerLegacy
 
 		if (is_null($msg))
 		{
-			$msg = FText::_('COM_FABRIK_RECORD_ADDED_UPDATED');
+			$msg = Text::_('COM_FABRIK_RECORD_ADDED_UPDATED');
 		}
 
 		if ($app->isAdmin())
@@ -361,7 +363,7 @@ class FabrikControllerDetails extends JControllerLegacy
 					$url = urldecode($input->post->get('fabrik_referrer', 'index.php', 'string'));
 				}
 
-				$itemId = FabrikWorker::itemId();
+				$itemId = Worker::itemId();
 
 				if ($url == '')
 				{
@@ -498,7 +500,7 @@ class FabrikControllerDetails extends JControllerLegacy
 		else
 		{
 			// @TODO: test this
-			$app->enqueueMessage(count($ids) . " " . FText::_('COM_FABRIK_RECORDS_DELETED'));
+			$app->enqueueMessage(count($ids) . " " . Text::_('COM_FABRIK_RECORDS_DELETED'));
 			$app->redirect($ref);
 		}
 	}

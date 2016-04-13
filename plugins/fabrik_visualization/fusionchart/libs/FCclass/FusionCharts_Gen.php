@@ -17,6 +17,8 @@
 
  */
 
+use Fabrik\Helpers\StringHelper;
+
 class FusionCharts{
 
 	var $chartType;               # Chart Friendly Name
@@ -436,7 +438,7 @@ class FusionCharts{
 	   $tempParam .= $this->ConvertParamToXMLAttribute($strParam);
 
 	   $colorParam="";
-	   $pos = JString::strpos(strtolower($tempParam), " color");
+	   $pos = StringHelper::strpos(strtolower($tempParam), " color");
 	   if ($pos === false) {
 	     $colorParam=" color='" . $this->getColor($this->datasetCounter-1) . "'";
 	   }

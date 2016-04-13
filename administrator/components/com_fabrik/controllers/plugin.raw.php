@@ -12,6 +12,9 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Fabrik\Helpers\Worker;
+use Fabrik\Helpers\StringHelper;
+
 jimport('joomla.application.component.controller');
 
 require_once 'fabcontrollerform.php';
@@ -39,7 +42,23 @@ class FabrikAdminControllerPlugin extends FabControllerForm
 		$method = $input->get('method', '');
 		$group = $input->get('g', 'element');
 
-		if (!JPluginHelper::importPlugin('fabrik_' . $group, $plugin))
+		$dispatcher = JEventDispatcher::getInstance();
+
+		if ($group === 'element')
+		{
+			// As elements are namespaced the default importPlugin wont work in registering the
+			// plugin with the dispatcher
+			$className = '\\Fabrik\\Plugins\\Element\\' . ucfirst($plugin);
+			$plg = JPluginHelper::getPlugin($group, $plugin);
+			new $className($dispatcher, (array) ($plg));
+			$res = 1;
+		}
+		else
+		{
+			$res = JPluginHelper::importPlugin('fabrik_' . $group, $plugin);
+		}
+
+		if (!$res)
 		{
 			$o = new stdClass;
 			$o->err = 'unable to import plugin fabrik_' . $group . ' ' . $plugin;
@@ -50,7 +69,7 @@ class FabrikAdminControllerPlugin extends FabControllerForm
 
 		if (substr($method, 0, 2) !== 'on')
 		{
-			$method = 'on' . JString::ucfirst($method);
+			$method = 'on' . StringHelper::ucfirst($method);
 		}
 
 		$dispatcher = JEventDispatcher::getInstance();
@@ -66,7 +85,7 @@ class FabrikAdminControllerPlugin extends FabControllerForm
 	 */
 	public function userAjax()
 	{
-		$db = FabrikWorker::getDbo();
+		$db = Worker::getDbo();
 		require_once COM_FABRIK_FRONTEND . '/user_ajax.php';
 		$app = JFactory::getApplication();
 		$input = $app->input;

@@ -11,7 +11,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Joomla\Utilities\ArrayHelper;
+use Fabrik\Helpers\ArrayHelper;
+use Fabrik\Helpers\Worker;
 
 // Require the abstract plugin class
 require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
@@ -133,7 +134,7 @@ class PlgFabrik_FormJ2Store extends PlgFabrik_Form
 	 */
 	private function storeFiles($placeholderData, $productId)
 	{
-		$w      = new FabrikWorker;
+		$w      = new Worker;
 		$params = $this->getParams();
 
 		// Map Fabrik repeat data into rows ready for insertion into the database.
@@ -217,7 +218,7 @@ class PlgFabrik_FormJ2Store extends PlgFabrik_Form
 	private function appendProperty(&$data, $propName, $placeholderData)
 	{
 		$params          = $this->getParams();
-		$w               = new FabrikWorker;
+		$w               = new Worker;
 		$key             = 'j2store_' . $propName;
 		$data[$propName] = trim($w->parseMessageForPlaceHolder($params->get($key), $placeholderData));
 	}

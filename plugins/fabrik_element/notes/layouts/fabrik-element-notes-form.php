@@ -1,6 +1,8 @@
 <?php
 defined('JPATH_BASE') or die;
 
+use Fabrik\Helpers\Text;
+
 $d = $displayData;
 ?>
 <?php
@@ -49,10 +51,10 @@ if ($d->rowid > 0) :
 	endif;
 	?>
 
-	<input type="button" class="button btn" value="<?php echo FText::_('PLG_ELEMENT_NOTES_ADD');?>" />
+	<input type="button" class="button btn" value="<?php echo Text::_('PLG_ELEMENT_NOTES_ADD');?>" />
 <?php
 else :
-	echo FText::_('PLG_ELEMENT_NOTES_SAVEFIRST');
+	echo Text::_('PLG_ELEMENT_NOTES_SAVEFIRST');
 endif;
 
 ?>

@@ -1,6 +1,8 @@
 <?php
 defined('JPATH_BASE') or die;
 
+use Fabrik\Helpers\Text;
+
 $d = $displayData;
 
 ?>
@@ -11,13 +13,13 @@ $d = $displayData;
 	<?php if ($d->canCrop) : ?>
 		<div class="row-fluid" style="margin-top:20px">
 			<div class="zoom span6">
-				<?php echo FText::_('PLG_ELEMENT_FILEUPLOAD_ZOOM'); ?>:
+				<?php echo Text::_('PLG_ELEMENT_FILEUPLOAD_ZOOM'); ?>:
 				<div class="fabrikslider-line" style="width: 100px;float:left;">
 					<div class="knob"></div>
 				</div><br />
 				<input type="number" name="zoom-val" value="" size="3" class="input-mini">
 			</div>
-			<div class="rotate span5"><?php echo FText::_('PLG_ELEMENT_FILEUPLOAD_ROTATE'); ?>:
+			<div class="rotate span5"><?php echo Text::_('PLG_ELEMENT_FILEUPLOAD_ROTATE'); ?>:
 				<div class="fabrikslider-line" style="width: 100px;float:left;">
 					<div class="knob"></div>
 				</div><br />

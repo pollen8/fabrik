@@ -11,6 +11,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Fabrik\Helpers\Worker;
+
 jimport('joomla.application.component.controller');
 
 /**
@@ -56,13 +58,13 @@ class FabrikControllerPackage extends JControllerLegacy
 
 		$view->formView = $this->getView('Form', $viewType);
 		$formModel = $this->getModel('Form', 'FabrikFEModel');
-		$formModel->setDbo(FabrikWorker::getDbo());
+		$formModel->setDbo(Worker::getDbo());
 		$view->formView->setModel($formModel, true);
 
 		// Push a model into the view
 		if ($model = $this->getModel($viewName, 'FabrikFEModel'))
 		{
-			$model->setDbo(FabrikWorker::getDbo());
+			$model->setDbo(Worker::getDbo());
 			$view->setModel($model, true);
 		}
 		// Display the view

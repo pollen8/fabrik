@@ -23,6 +23,8 @@
 
 defined('JPATH_PLATFORM') or die;
 
+use Fabrik\Helpers\Text;
+
 jimport('joomla.filesystem.path');
 jimport('joomla.utilities.arrayhelper');
 
@@ -1747,12 +1749,12 @@ class JForm
 				if ($lang->hasKey($default))
 				{
 					$debug = $lang->setDebug(false);
-					$default = FText::_($default);
+					$default = Text::_($default);
 					$lang->setDebug($debug);
 				}
 				else
 				{
-					$default = FText::_($default);
+					$default = Text::_($default);
 				}
 			}
 
@@ -1873,7 +1875,7 @@ class JForm
 		// Make sure there is a valid SimpleXMLElement.
 		if (!$element instanceof SimpleXMLElement)
 		{
-			return new JException(FText::_('JLIB_FORM_ERROR_VALIDATE_FIELD'), -1, E_ERROR);
+			return new JException(Text::_('JLIB_FORM_ERROR_VALIDATE_FIELD'), -1, E_ERROR);
 		}
 
 		// Initialise variables.
@@ -1896,14 +1898,14 @@ class JForm
 				{
 					if ($element['label'])
 					{
-						$message = FText::_($element['label']);
+						$message = Text::_($element['label']);
 					}
 					else
 					{
-						$message = FText::_($element['name']);
+						$message = Text::_($element['name']);
 					}
 
-					$message = JText::sprintf('JLIB_FORM_VALIDATE_FIELD_REQUIRED', $message);
+					$message = Text::sprintf('JLIB_FORM_VALIDATE_FIELD_REQUIRED', $message);
 				}
 
 				return new JException($message, 2, E_WARNING);
@@ -1919,7 +1921,7 @@ class JForm
 			// If the object could not be loaded return an error message.
 			if ($rule === false)
 			{
-				return new JException(JText::sprintf('JLIB_FORM_VALIDATE_FIELD_RULE_MISSING', $type), -2, E_ERROR);
+				return new JException(Text::sprintf('JLIB_FORM_VALIDATE_FIELD_RULE_MISSING', $type), -2, E_ERROR);
 			}
 
 			// Run the field validation rule test.
@@ -1940,11 +1942,11 @@ class JForm
 
 			if ($message)
 			{
-				return new JException(FText::_($message), 1, E_WARNING);
+				return new JException(Text::_($message), 1, E_WARNING);
 			}
 			else
 			{
-				return new JException(JText::sprintf('JLIB_FORM_VALIDATE_FIELD_INVALID', FText::_((string) $element['label'])), 1, E_WARNING);
+				return new JException(Text::sprintf('JLIB_FORM_VALIDATE_FIELD_INVALID', Text::_((string) $element['label'])), 1, E_WARNING);
 			}
 		}
 
@@ -2022,7 +2024,7 @@ class JForm
 
 			if (empty($data))
 			{
-				throw new Exception(FText::_('JLIB_FORM_ERROR_NO_DATA'));
+				throw new Exception(Text::_('JLIB_FORM_ERROR_NO_DATA'));
 			}
 
 			// Instantiate the form.
@@ -2033,7 +2035,7 @@ class JForm
 			{
 				if ($forms[$name]->load($data, $replace, $xpath) == false)
 				{
-					throw new Exception(FText::_('JLIB_FORM_ERROR_XML_FILE_DID_NOT_LOAD'));
+					throw new Exception(Text::_('JLIB_FORM_ERROR_XML_FILE_DID_NOT_LOAD'));
 
 					return false;
 				}
@@ -2042,7 +2044,7 @@ class JForm
 			{
 				if ($forms[$name]->loadFile($data, $replace, $xpath) == false)
 				{
-					throw new Exception(FText::_('JLIB_FORM_ERROR_XML_FILE_DID_NOT_LOAD'));
+					throw new Exception(Text::_('JLIB_FORM_ERROR_XML_FILE_DID_NOT_LOAD'));
 
 					return false;
 				}

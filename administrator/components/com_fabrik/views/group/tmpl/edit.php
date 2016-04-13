@@ -12,9 +12,12 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Fabrik\Helpers\Html;
+use Fabrik\Helpers\Text;
+
 JHtml::addIncludePath(JPATH_COMPONENT . '/helpers/html');
 JHtml::_('behavior.tooltip');
-FabrikHelperHTML::formvalidation();
+Html::formvalidation();
 JHtml::_('behavior.keepalive');
 
 ?>
@@ -22,7 +25,7 @@ JHtml::_('behavior.keepalive');
 <form action="<?php JRoute::_('index.php?option=com_fabrik'); ?>" method="post" name="adminForm" id="adminForm" class="form-validate">
 	<div class="width-60 fltlft">
 		<fieldset class="adminform">
-			<legend><?php echo FText::_('COM_FABRIK_DETAILS');?></legend>
+			<legend><?php echo Text::_('COM_FABRIK_DETAILS');?></legend>
 			<ul class="adminformlist">
 
 				<?php foreach ($this->form->getFieldset('details') as $field) :?>
@@ -46,7 +49,7 @@ JHtml::_('behavior.keepalive');
 	<div class="width-40 fltlft">
 
 		<fieldset class="adminform">
-			<legend><?php echo FText::_('COM_FABRIK_REPEAT');?></legend>
+			<legend><?php echo Text::_('COM_FABRIK_REPEAT');?></legend>
 			<ul class="adminformlist">
 				<?php foreach ($this->form->getFieldset('repeat') as $field) :?>
 				<li>
@@ -57,7 +60,7 @@ JHtml::_('behavior.keepalive');
 		</fieldset>
 
 		<fieldset class="adminform">
-			<legend><?php echo FText::_('COM_FABRIK_LAYOUT');?></legend>
+			<legend><?php echo Text::_('COM_FABRIK_LAYOUT');?></legend>
 			<ul class="adminformlist">
 				<?php foreach ($this->form->getFieldset('layout') as $field) :?>
 				<li>
@@ -68,7 +71,7 @@ JHtml::_('behavior.keepalive');
 		</fieldset>
 
 		<fieldset class="adminform">
-			<legend><?php echo FText::_('COM_FABRIK_GROUP_MULTIPAGE');?></legend>
+			<legend><?php echo Text::_('COM_FABRIK_GROUP_MULTIPAGE');?></legend>
 			<ul class="adminformlist">
 				<?php foreach ($this->form->getFieldset('pagination') as $field) :?>
 				<li>

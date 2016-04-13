@@ -11,6 +11,12 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Fabrik\Helpers\ArrayHelper;
+use Fabrik\Helpers\Html;
+use Fabrik\Helpers\Worker;
+use Fabrik\Helpers\StringHelper;
+use Fabrik\Helpers\Text;
+
 // Require the abstract plugin class
 require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
 
@@ -64,10 +70,10 @@ class PlgFabrik_FormPaginate extends PlgFabrik_Form
 			return;
 		}
 
-		$j3 = FabrikWorker::j3();
+		$j3 = Worker::j3();
 		$input = $this->app->input;
 		$formId = $formModel->getForm()->id;
-		$mode = JString::strtolower($input->get('view', 'form'));
+		$mode = StringHelper::strtolower($input->get('view', 'form'));
 		$this->ids = $this->getNavIds();
 		$linkStartPrev = $this->ids->index == 0 ? ' disabled' : '';
 		$linkNextEnd = $this->ids->index == $this->ids->lastKey ? ' disabled' : '';
@@ -96,18 +102,18 @@ class PlgFabrik_FormPaginate extends PlgFabrik_Form
 		}
 		else
 		{
-			$firstLink = ($linkStartPrev) ? '<span>&lt;&lt;</span>' . FText::_('COM_FABRIK_START')
+			$firstLink = ($linkStartPrev) ? '<span>&lt;&lt;</span>' . Text::_('COM_FABRIK_START')
 				: '<a href="' . $links['first'] . '" class="pagenav paginateFirst ' . $linkStartPrev . '"><span>&lt;&lt;</span>'
-					. FText::_('COM_FABRIK_START') . '</a>';
-			$prevLink = ($linkStartPrev) ? '<span>&lt;</span>' . FText::_('COM_FABRIK_PREV')
+					. Text::_('COM_FABRIK_START') . '</a>';
+			$prevLink = ($linkStartPrev) ? '<span>&lt;</span>' . Text::_('COM_FABRIK_PREV')
 				: '<a href="' . $links['prev'] . '" class="pagenav paginatePrevious ' . $linkStartPrev . '"><span>&lt;</span>'
-					. FText::_('COM_FABRIK_PREV') . '</a>';
+					. Text::_('COM_FABRIK_PREV') . '</a>';
 
-			$nextLink = ($linkNextEnd) ? FText::_('COM_FABRIK_NEXT') . '<span>&gt;</span>'
-				: '<a href="' . $links['next'] . '" class="pagenav paginateNext' . $linkNextEnd . '">' . FText::_('COM_FABRIK_NEXT')
+			$nextLink = ($linkNextEnd) ? Text::_('COM_FABRIK_NEXT') . '<span>&gt;</span>'
+				: '<a href="' . $links['next'] . '" class="pagenav paginateNext' . $linkNextEnd . '">' . Text::_('COM_FABRIK_NEXT')
 					. '<span>&gt;</span></a>';
-			$endLink = ($linkNextEnd) ? FText::_('COM_FABRIK_END') . '<span>&gt;&gt;</span>'
-				: '<a href="' . $links['last'] . '" class="pagenav paginateLast' . $linkNextEnd . '">' . FText::_('COM_FABRIK_END')
+			$endLink = ($linkNextEnd) ? Text::_('COM_FABRIK_END') . '<span>&gt;&gt;</span>'
+				: '<a href="' . $links['last'] . '" class="pagenav paginateLast' . $linkNextEnd . '">' . Text::_('COM_FABRIK_END')
 					. '<span>&gt;&gt;</span></a>';
 			$this->data = '<ul id="fabrik-from-pagination" class="pagination">
 					<li>' . $firstLink . '</li>
@@ -117,7 +123,7 @@ class PlgFabrik_FormPaginate extends PlgFabrik_Form
 			</ul>';
 		}
 
-		FabrikHelperHTML::stylesheet('plugins/fabrik_form/paginate/paginate.css');
+		Html::stylesheet('plugins/fabrik_form/paginate/paginate.css');
 	}
 
 	/**
@@ -142,15 +148,15 @@ class PlgFabrik_FormPaginate extends PlgFabrik_Form
 
 		foreach ($listModel->orderEls as $orderName)
 		{
-			$orderName = FabrikString::safeColNameToArrayKey($orderName);
-			$query->select(FabrikString::safeColName($orderName) . ' AS ' . $orderName);
+			$orderName = StringHelper::safeColNameToArrayKey($orderName);
+			$query->select(StringHelper::safeColName($orderName) . ' AS ' . $orderName);
 		}
 
 		$db->setQuery($query);
 		$rows = $db->loadColumn();
 		$keys = array_flip($rows);
 		$o = new stdClass;
-		$o->index = FArrayHelper::getValue($keys, $formModel->getRowId(), 0);
+		$o->index = ArrayHelper::getValue($keys, $formModel->getRowId(), 0);
 		$o->first = $rows[0];
 		$o->lastKey = count($rows) - 1;
 		$o->last = $rows[$o->lastKey];
@@ -226,7 +232,7 @@ class PlgFabrik_FormPaginate extends PlgFabrik_Form
 		$opts = json_encode($opts);
 		$container = $formModel->jsKey();
 		$this->formJavascriptClass();
-		$formModel->formPluginJS .= "\n var " . $container . "_paginate = new FabRecordSet($container, $opts);";
+		$formModel->formPluginJS['FabRecordSet'] = "var " . $container . "_paginate = new FabRecordSet($container, $opts);";
 	}
 
 	/**

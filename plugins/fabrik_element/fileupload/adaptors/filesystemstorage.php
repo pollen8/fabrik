@@ -11,6 +11,10 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Fabrik\Helpers\Worker;
+use Fabrik\Helpers\StringHelper;
+use Fabrik\Helpers\Text;
+
 require_once JPATH_ROOT . '/plugins/fabrik_element/fileupload/adaptor.php';
 
 /**
@@ -46,7 +50,7 @@ class Filesystemstorage extends FabrikStorageAdaptor
 
 		if ($prependRoot)
 		{
-			$filepath = COM_FABRIK_BASE . '/' . FabrikString::ltrimword($filepath, COM_FABRIK_BASE . '/');
+			$filepath = COM_FABRIK_BASE . '/' . StringHelper::ltrimword($filepath, COM_FABRIK_BASE . '/');
 
 			return JFile::exists($filepath);
 		}
@@ -87,7 +91,7 @@ class Filesystemstorage extends FabrikStorageAdaptor
 
 		if (!$this->exists($index_file))
 		{
-			$content = FText::_('PLG_ELEMENT_FILEUPLOAD_INDEX_FILE_CONTENT');
+			$content = Text::_('PLG_ELEMENT_FILEUPLOAD_INDEX_FILE_CONTENT');
 
 			return JFile::write($index_file, $content);
 		}
@@ -282,7 +286,7 @@ class Filesystemstorage extends FabrikStorageAdaptor
 	{
 		$livesite = COM_FABRIK_LIVESITE;
 		$livesite = rtrim($livesite, '/\\');
-		$file = JString::ltrim($file, '/\\');
+		$file = StringHelper::ltrim($file, '/\\');
 
 		return str_replace("\\", "/", $livesite . '/' . $file);
 	}
@@ -312,7 +316,7 @@ class Filesystemstorage extends FabrikStorageAdaptor
 	protected function _getSmallerFile($file, $type)
 	{
 		$params = $this->getParams();
-		$w = new FabrikWorker;
+		$w = new Worker;
 
 		// $$$ rob wasn't working when getting thumb path on upload
 		$ulDir = JPath::clean($params->get('ul_directory'));
@@ -323,9 +327,9 @@ class Filesystemstorage extends FabrikStorageAdaptor
 
 		// Replace things like $my->id may barf on other stuff
 		$afile = str_replace(JURI::root(), '', $file);
-		$afile = JString::ltrim($afile, "/");
-		$ulDir = JString::ltrim($ulDir, "/");
-		$ulDir = JString::rtrim($ulDir, "/");
+		$afile = StringHelper::ltrim($afile, "/");
+		$ulDir = StringHelper::ltrim($ulDir, "/");
+		$ulDir = StringHelper::rtrim($ulDir, "/");
 		$ulDirbits = explode('/', $ulDir);
 		$filebits = explode('/', $afile);
 

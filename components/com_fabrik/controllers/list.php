@@ -11,6 +11,9 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Fabrik\Helpers\Html;
+use Fabrik\Helpers\Text;
+
 jimport('joomla.application.component.controller');
 
 /**
@@ -122,7 +125,7 @@ class FabrikControllerList extends JControllerLegacy
 	public function clearfilter()
 	{
 		$app = JFactory::getApplication();
-		$msg = FText::_('COM_FABRIK_FILTERS_CLEARED');
+		$msg = Text::_('COM_FABRIK_FILTERS_CLEARED');
 
 		if (!empty($msg))
 		{
@@ -156,7 +159,7 @@ class FabrikControllerList extends JControllerLegacy
 		$modelName = $input->get('view', 'list');
 		$model = $this->getModel($modelName, 'FabrikFEModel');
 		$model->setId($input->getInt('listid'));
-		FabrikHelperHTML::debug('', 'list model: getRequestData');
+		Html::debug('', 'list model: getRequestData');
 		$request = $model->getRequestData();
 		$model->storeRequestData($request);
 
@@ -188,7 +191,7 @@ class FabrikControllerList extends JControllerLegacy
 		try
 		{
 			$ok = $model->deleteRows($ids);
-			$msg = $ok ? count($ids) . ' ' . FText::_('COM_FABRIK_RECORDS_DELETED') : '';
+			$msg = $ok ? count($ids) . ' ' . Text::_('COM_FABRIK_RECORDS_DELETED') : '';
 			$msgType = 'message';
 		}
 		catch (Exception $e)

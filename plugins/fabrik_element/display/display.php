@@ -8,10 +8,15 @@
  * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
+namespace Fabrik\Plugins\Element;
+
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Joomla\Utilities\ArrayHelper;
+use \stdClass;
+use \JLayoutFile;
+use Fabrik\Helpers\ArrayHelper;
+use Fabrik\Helpers\Worker;
 
 /**
  * Plugin element to render plain text/HTML
@@ -21,7 +26,7 @@ use Joomla\Utilities\ArrayHelper;
  * @since       3.0
  */
 
-class PlgFabrik_ElementDisplay extends PlgFabrik_Element
+class Display extends Element
 {
 	/**
 	 * Db table field type
@@ -82,7 +87,7 @@ class PlgFabrik_ElementDisplay extends PlgFabrik_Element
 	{
 		if (!$this->getParams()->get('display_showlabel', true))
 		{
-			return $this->getValue(array());;
+			return $this->getValue(array());
 		}
 
 		return parent::getRawLabel();
@@ -140,7 +145,7 @@ class PlgFabrik_ElementDisplay extends PlgFabrik_Element
 
 	protected function getDefaultOnACL($data, $opts)
 	{
-		return FArrayHelper::getValue($opts, 'use_default', true) == false ? '' : $this->getDefaultValue($data);
+		return ArrayHelper::getValue($opts, 'use_default', true) == false ? '' : $this->getDefaultValue($data);
 	}
 
 	/**
@@ -160,7 +165,7 @@ class PlgFabrik_ElementDisplay extends PlgFabrik_Element
 		if ($value === '')
 		{
 			// Query string for joined data
-			$value = FArrayHelper::getValue($data, $value);
+			$value = ArrayHelper::getValue($data, $value);
 		}
 
 		$formModel = $this->getFormModel();
@@ -169,7 +174,7 @@ class PlgFabrik_ElementDisplay extends PlgFabrik_Element
 
 		if (array_key_exists('runplugins', $opts) && $opts['runplugins'] == 1)
 		{
-			FabrikWorker::getPluginManager()->runPlugins('onGetElementDefault', $formModel, 'form', $this);
+			Worker::getPluginManager()->runPlugins('onGetElementDefault', $formModel, 'form', $this);
 		}
 
 		return $value;

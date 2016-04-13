@@ -12,7 +12,11 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Joomla\Utilities\ArrayHelper;
+use Fabrik\Helpers\ArrayHelper;
+use Fabrik\Helpers\Html;
+use Fabrik\Helpers\Worker;
+use Fabrik\Helpers\StringHelper;
+use Fabrik\Helpers\Text;
 
 jimport('joomla.plugin.plugin');
 jimport('joomla.filesystem.file');
@@ -37,7 +41,7 @@ class PlgSystemFabrik extends JPlugin
 	public function __construct(&$subject, $config)
 	{
 		// Could be component was uninstalled but not the plugin
-		if (!JFile::exists(JPATH_SITE . '/components/com_fabrik/helpers/file.php'))
+		if (!JFile::exists(JPATH_SITE . '/components/com_fabrik/helpers/html.php'))
 		{
 			return;
 		}
@@ -75,8 +79,6 @@ class PlgSystemFabrik extends JPlugin
 			JLoader::import($base . '.layout.file', JPATH_SITE . '/administrator', 'administrator.');
 			JLoader::import($base . '.layout.helper', JPATH_SITE . '/administrator', 'administrator.');
 		}
-
-		require_once JPATH_SITE . '/components/com_fabrik/helpers/file.php';
 
 		require_once JPATH_LIBRARIES . '/fabrik/include.php';
 		parent::__construct($subject, $config);
@@ -142,7 +144,7 @@ class PlgSystemFabrik extends JPlugin
 			 * tests if its inside requirejs (false) then loads scripts via <script> node creation. By the time the secondary
 			 * scripts were loaded, Fabrik had loaded requires js, and conflicts occurred.
 			 */
-			$jsAssetBaseURI = FabrikHelperHTML::getJSAssetBaseURI();
+			$jsAssetBaseURI = Html::getJSAssetBaseURI();
 			$rjs            = $jsAssetBaseURI . 'media/com_fabrik/js/lib/require/require.js';
 			$script         = '<script>
             setTimeout(function(){
@@ -172,7 +174,7 @@ class PlgSystemFabrik extends JPlugin
 	public function onAfterRender()
 	{
 		// Could be component was uninstalled but not the plugin
-		if (!class_exists('FabrikString'))
+		if (!class_exists('Fabrik\Helpers\StringHelper'))
 		{
 			return;
 		}
@@ -191,7 +193,7 @@ class PlgSystemFabrik extends JPlugin
 		}
 		else
 		{
-			$content = FabrikString::replaceLast('</body>', $script . '</body>', $content);
+			$content = StringHelper::replaceLast('</body>', $script . '</body>', $content);
 		}
 
 		$lessThanThreeFour ? JResponse::setBody($content) : $app->setBody($content);
@@ -233,7 +235,7 @@ class PlgSystemFabrik extends JPlugin
 	protected function setBigSelects()
 	{
 		$db = JFactory::getDbo();
-		FabrikWorker::bigSelects($db);
+		Worker::bigSelects($db);
 	}
 
 	/**
@@ -265,7 +267,7 @@ class PlgSystemFabrik extends JPlugin
 		define('COM_FABRIK_SEARCH_RUN', true);
 		JModelLegacy::addIncludePath(COM_FABRIK_FRONTEND . '/models', 'FabrikFEModel');
 
-		$db = FabrikWorker::getDbo(true);
+		$db = Worker::getDbo(true);
 
 		require_once JPATH_SITE . '/components/com_content/helpers/route.php';
 
@@ -322,7 +324,7 @@ class PlgSystemFabrik extends JPlugin
 
 		// Ensure search doesn't go over memory limits
 		$memory    = ini_get('memory_limit');
-		$memory    = (int) FabrikString::rtrimword($memory, 'M') * 1000000;
+		$memory    = (int) StringHelper::rtrimword($memory, 'M') * 1000000;
 		$usage     = array();
 		$memSafety = 0;
 
@@ -345,7 +347,7 @@ class PlgSystemFabrik extends JPlugin
 
 				if ($diff + $usage[count($usage) - 1] > $memory - $memSafety)
 				{
-					$msg = FText::_('PLG_FABRIK_SYSTEM_SEARCH_MEMORY_LIMIT');
+					$msg = Text::_('PLG_FABRIK_SYSTEM_SEARCH_MEMORY_LIMIT');
 					$app->enqueueMessage($msg);
 					break;
 				}
@@ -462,7 +464,7 @@ class PlgSystemFabrik extends JPlugin
 						$o->href    = $href;
 
 						// Need to make sure it's a valid date in MySQL format, otherwise J!'s code will pitch a fatal error
-						if (isset($oData->$dateElement) && FabrikString::isMySQLDate($oData->$dateElement))
+						if (isset($oData->$dateElement) && StringHelper::isMySQLDate($oData->$dateElement))
 						{
 							$o->created = $oData->$dateElement;
 						}
@@ -505,7 +507,7 @@ class PlgSystemFabrik extends JPlugin
 		{
 			$language = JFactory::getLanguage();
 			$language->load('plg_system_fabrik', JPATH_SITE . '/plugins/system/fabrik');
-			$msg = FText::_('PLG_FABRIK_SYSTEM_SEARCH_LIMIT');
+			$msg = Text::_('PLG_FABRIK_SYSTEM_SEARCH_LIMIT');
 			$app->enqueueMessage($msg);
 		}
 

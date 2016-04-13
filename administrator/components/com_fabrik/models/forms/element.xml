@@ -679,6 +679,15 @@
 							<option value="0">JNO</option>
 							<option value="1">JYES</option>
 					</field>
+
+					<field name="store_in_db" type="radio"
+					       class="btn-group"
+					       default="1"
+					       description="COM_FABRIK_STORE_IN_DB_DESC"
+					       label="COM_FABRIK_STORE_IN_DB_LABEL">
+						<option value="0">JNO</option>
+						<option value="1">JYES</option>
+					</field>
 				</fieldset>
 
 	</fields>

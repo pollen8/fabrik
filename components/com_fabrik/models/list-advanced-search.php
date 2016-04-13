@@ -11,6 +11,12 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Fabrik\Helpers\ArrayHelper;
+use Fabrik\Helpers\Html;
+use Fabrik\Helpers\Worker;
+use Fabrik\Helpers\StringHelper;
+use Fabrik\Helpers\Text;
+
 jimport('joomla.application.component.model');
 
 /**
@@ -68,7 +74,7 @@ class FabrikFEModelAdvancedSearch extends FabModel
 
 		$list = $model->getTable();
 		$listRef = $model->getRenderContext();
-		$opts->conditionList = FabrikHelperHTML::conditionList($listRef, '');
+		$opts->conditionList = Html::conditionList($listRef, '');
 		list($fieldNames, $firstFilter) = $this->getAdvancedSearchElementList();
 		$statements = $this->getStatementsOpts();
 		$opts->elementList = JHTML::_('select.genericlist', $fieldNames, 'fabrik___filter[list_' . $listRef . '][key][]',
@@ -103,7 +109,7 @@ class FabrikFEModelAdvancedSearch extends FabModel
 		$model = $this->model;
 		$first = false;
 		$firstFilter = false;
-		$fieldNames[] = JHTML::_('select.option', '', FText::_('COM_FABRIK_PLEASE_SELECT'));
+		$fieldNames[] = JHTML::_('select.option', '', Text::_('COM_FABRIK_PLEASE_SELECT'));
 		$elementModels = $model->getElements();
 
 		foreach ($elementModels as $elementModel)
@@ -126,7 +132,7 @@ class FabrikFEModelAdvancedSearch extends FabModel
 					$firstFilter = $elementModel->getFilter(0, false);
 				}
 
-				$fieldNames[] = JHTML::_('select.option', $elName, strip_tags(FText::_($element->label)));
+				$fieldNames[] = JHTML::_('select.option', $elName, strip_tags(Text::_($element->label)));
 			}
 		}
 
@@ -163,7 +169,7 @@ class FabrikFEModelAdvancedSearch extends FabModel
 			{
 				foreach ($elementModels as $elementModel)
 				{
-					$testKey = FabrikString::safeColName($elementModel->getFullName(false, false));
+					$testKey = StringHelper::safeColName($elementModel->getFullName(false, false));
 
 					if ($testKey == $key)
 					{
@@ -198,8 +204,8 @@ class FabrikFEModelAdvancedSearch extends FabModel
 						$jsSel = '>';
 						break;
 					default:
-						$firstChar = JString::substr($v2, 1, 1);
-						$lastChar = JString::substr($v2, -2, 1);
+						$firstChar = StringHelper::substr($v2, 1, 1);
+						$lastChar = StringHelper::substr($v2, -2, 1);
 
 						switch ($firstChar)
 						{
@@ -223,14 +229,14 @@ class FabrikFEModelAdvancedSearch extends FabModel
 
 				if ($counter == 0)
 				{
-					$join = FText::_('COM_FABRIK_WHERE') . '<input type="hidden" value="WHERE" name="' . $prefix . 'join][]" />';
+					$join = Text::_('COM_FABRIK_WHERE') . '<input type="hidden" value="WHERE" name="' . $prefix . 'join][]" />';
 				}
 				else
 				{
-					$join = FabrikHelperHTML::conditionList($model->getRenderContext(), $join);
+					$join = Html::conditionList($model->getRenderContext(), $join);
 				}
 
-				$lineElName = FabrikString::safeColName($elementModel->getFullName(true, false));
+				$lineElName = StringHelper::safeColName($elementModel->getFullName(true, false));
 				$orig = $input->get($lineElName);
 				$input->set($lineElName, array('value' => $value));
 				$filter = $elementModel->getFilter($counter, false);
@@ -246,7 +252,7 @@ class FabrikFEModelAdvancedSearch extends FabModel
 		if ($counter == 0)
 		{
 			$params = $model->getParams();
-			$join = FText::_('COM_FABRIK_WHERE') . '<input type="hidden" name="' . $prefix . 'join][]" value="WHERE" />';
+			$join = Text::_('COM_FABRIK_WHERE') . '<input type="hidden" name="' . $prefix . 'join][]" value="WHERE" />';
 			$key = JHTML::_('select.genericlist', $fieldNames, $prefix . 'key][]', 'class="inputbox key" size="1" ', 'value', 'text', '');
 			$defaultStatement = $params->get('advanced-filter-default-statement', '<>');
 			$jsSel = JHTML::_('select.genericlist', $statements, $prefix . 'condition][]', 'class="inputbox" size="1" ', 'value', 'text', $defaultStatement);
@@ -269,11 +275,11 @@ class FabrikFEModelAdvancedSearch extends FabModel
 		$model = $this->model;
 		$filters = $model->getFilterArray();
 		$advanced = array();
-		$iKeys = array_keys(FArrayHelper::getValue($filters, 'key', array()));
+		$iKeys = array_keys(ArrayHelper::getValue($filters, 'key', array()));
 
 		foreach ($iKeys as $i)
 		{
-			$searchType = FArrayHelper::getValue($filters['search_type'], $i);
+			$searchType = ArrayHelper::getValue($filters['search_type'], $i);
 
 			if (!is_null($searchType) && $searchType == 'advanced')
 			{
@@ -281,7 +287,7 @@ class FabrikFEModelAdvancedSearch extends FabModel
 				{
 					if (array_key_exists($k, $advanced))
 					{
-						$advanced[$k][] = FArrayHelper::getValue($filters[$k], $i, '');
+						$advanced[$k][] = ArrayHelper::getValue($filters[$k], $i, '');
 					}
 					else
 					{
@@ -309,7 +315,7 @@ class FabrikFEModelAdvancedSearch extends FabModel
 			$displayData = new stdClass;
 			$displayData->url = $this->url();
 			$displayData->tmpl = $model->getTmpl();
-			$layout = FabrikHelperHTML::getLayout('list.fabrik-advanced-search-button');
+			$layout = Html::getLayout('list.fabrik-advanced-search-button');
 
 			return $layout->render($displayData);
 		}
@@ -349,7 +355,7 @@ class FabrikFEModelAdvancedSearch extends FabModel
 		$model = $this->model;
 		$input = $this->app->input;
 		$elementId = $input->getId('elid');
-		$pluginManager = FabrikWorker::getPluginManager();
+		$pluginManager = Worker::getPluginManager();
 		$className = $input->get('plugin');
 		$plugin = $pluginManager->getPlugIn($className, 'element');
 		$plugin->setId($elementId);
@@ -365,7 +371,7 @@ class FabrikFEModelAdvancedSearch extends FabModel
 		}
 
 		$script = $plugin->filterJS(false, $container);
-		FabrikHelperHTML::addScriptDeclaration($script);
+		Html::addScriptDeclaration($script);
 
 		echo $plugin->getFilter($input->getInt('counter', 0), false);
 	}
@@ -378,15 +384,15 @@ class FabrikFEModelAdvancedSearch extends FabModel
 	protected function getStatementsOpts()
 	{
 		$statements = array();
-		$statements[] = JHTML::_('select.option', '=', FText::_('COM_FABRIK_EQUALS'));
-		$statements[] = JHTML::_('select.option', '<>', FText::_('COM_FABRIK_NOT_EQUALS'));
-		$statements[] = JHTML::_('select.option', 'BEGINS WITH', FText::_('COM_FABRIK_BEGINS_WITH'));
-		$statements[] = JHTML::_('select.option', 'CONTAINS', FText::_('COM_FABRIK_CONTAINS'));
-		$statements[] = JHTML::_('select.option', 'ENDS WITH', FText::_('COM_FABRIK_ENDS_WITH'));
-		$statements[] = JHTML::_('select.option', '>', FText::_('COM_FABRIK_GREATER_THAN'));
-		$statements[] = JHTML::_('select.option', '<', FText::_('COM_FABRIK_LESS_THAN'));
-		$statements[] = JHTML::_('select.option', 'EMPTY', FText::_('COM_FABRIK_IS_EMPTY'));
-		$statements[] = JHTML::_('select.option', 'NOTEMPTY', FText::_('COM_FABRIK_IS_NOT_EMPTY'));
+		$statements[] = JHTML::_('select.option', '=', Text::_('COM_FABRIK_EQUALS'));
+		$statements[] = JHTML::_('select.option', '<>', Text::_('COM_FABRIK_NOT_EQUALS'));
+		$statements[] = JHTML::_('select.option', 'BEGINS WITH', Text::_('COM_FABRIK_BEGINS_WITH'));
+		$statements[] = JHTML::_('select.option', 'CONTAINS', Text::_('COM_FABRIK_CONTAINS'));
+		$statements[] = JHTML::_('select.option', 'ENDS WITH', Text::_('COM_FABRIK_ENDS_WITH'));
+		$statements[] = JHTML::_('select.option', '>', Text::_('COM_FABRIK_GREATER_THAN'));
+		$statements[] = JHTML::_('select.option', '<', Text::_('COM_FABRIK_LESS_THAN'));
+		$statements[] = JHTML::_('select.option', 'EMPTY', Text::_('COM_FABRIK_IS_EMPTY'));
+		$statements[] = JHTML::_('select.option', 'NOTEMPTY', Text::_('COM_FABRIK_IS_NOT_EMPTY'));
 
 		return $statements;
 	}

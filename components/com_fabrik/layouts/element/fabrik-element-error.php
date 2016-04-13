@@ -9,6 +9,8 @@
  */
 defined('JPATH_BASE') or die;
 
+use Fabrik\Helpers\Html;
+
 $d = $displayData;
 $usersConfig = JComponentHelper::getParams('com_fabrik');
 $icon        = $usersConfig->get('error_icon', 'exclamation-sign') . '.png';
@@ -19,7 +21,7 @@ $icon        = $usersConfig->get('error_icon', 'exclamation-sign') . '.png';
 if ($d->err !== '') :
 	?>
 	<a href="#" class="fabrikTip" title="<span><?php echo $d->err;?></span>" opts="{notice:true}">
-	<?php echo FabrikHelperHTML::image($icon, 'form', $d->tmpl);?>
+	<?php echo Html::image($icon, 'form', $d->tmpl);?>
 	</a>
 <?php
 endif;

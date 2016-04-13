@@ -8,8 +8,16 @@
  * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
+namespace Fabrik\Plugins\Element;
+
 // No direct access
 defined('_JEXEC') or die('Restricted access');
+
+use \JHtml;
+use \stdClass;
+use Fabrik\Helpers\ArrayHelper;
+use Fabrik\Helpers\Worker;
+use \JFactory;
 
 /**
  * Plugin element to render multi select user group list
@@ -18,7 +26,7 @@ defined('_JEXEC') or die('Restricted access');
  * @subpackage  Fabrik.element.usergroup
  * @since       3.0.6
  */
-class PlgFabrik_ElementUsergroup extends PlgFabrik_ElementList
+class Usergroup extends ElementList
 {
 	/**
 	 * Db table field type
@@ -60,12 +68,12 @@ class PlgFabrik_ElementUsergroup extends PlgFabrik_ElementList
 		if ($userEl)
 		{
 			$data = $formModel->getData();
-			$userId = FArrayHelper::getValue($data, $userEl->getFullName(true, false) . '_raw', 0);
+			$userId = ArrayHelper::getValue($data, $userEl->getFullName(true, false) . '_raw', 0);
 
 			// Failed validation
 			if (is_array($userId))
 			{
-				$userId = FArrayHelper::getValue($userId, 0);
+				$userId = ArrayHelper::getValue($userId, 0);
 			}
 
 			$thisUser = !empty($userId) ? JFactory::getUser($userId) : false;
@@ -86,7 +94,7 @@ class PlgFabrik_ElementUsergroup extends PlgFabrik_ElementList
 			}
 			// Get the titles for the user groups.
 			//if (count($selected) > 0)
-			if (!FArrayHelper::emptyish($selected))
+			if (!ArrayHelper::emptyish($selected))
 			{
 				$query = $this->_db->getQuery(true);
 				$query->select($this->_db->qn('title'));
@@ -171,7 +179,7 @@ class PlgFabrik_ElementUsergroup extends PlgFabrik_ElementList
 
 		foreach ($tmpIds as $tmpId)
 		{
-			$tmpId = FabrikWorker::JSONtoData($tmpId, true);
+			$tmpId = Worker::JSONtoData($tmpId, true);
 			$ids = array_merge($ids, $tmpId);
 		}
 
@@ -241,7 +249,7 @@ class PlgFabrik_ElementUsergroup extends PlgFabrik_ElementList
 	public function getValue($data, $repeatCounter = 0, $opts = array())
 	{
 		$value = parent::getValue($data, $repeatCounter, $opts);
-		$value = FabrikWorker::JSONtoData($value);
+		$value = Worker::JSONtoData($value);
 
 		if (is_string($value))
 		{

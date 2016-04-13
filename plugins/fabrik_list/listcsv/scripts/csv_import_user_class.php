@@ -8,6 +8,9 @@
  * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
+use Fabrik\Helpers\Text;
+use Fabrik\Helpers\Worker;
+
 /**
  *
  * Here is an example class file for creating users when importing a CSV file in Fabrik.
@@ -114,7 +117,7 @@ class ImportCSVCreateUser
 		$userdata['email'] = $data[$this->email_element];
 		$userdata['name'] = $data[$this->name_element];
 
-		if (!FabrikWorker::isEmail($userdata['email']))
+		if (!Worker::isEmail($userdata['email']))
 		{
 			if ($app->isAdmin())
 			{
@@ -185,7 +188,7 @@ class ImportCSVCreateUser
 		{
 			if ($app->isAdmin())
 			{
-				$app->enqueueMessage(FText::_('CANNOT SAVE THE USER INFORMATION'), 'message');
+				$app->enqueueMessage(Text::_('CANNOT SAVE THE USER INFORMATION'), 'message');
 				$app->enqueueMessage($user->getError(), 'error');
 			}
 
@@ -198,7 +201,7 @@ class ImportCSVCreateUser
 		{
 			if ($app->isAdmin())
 			{
-				$app->enqueueMessage(FText::_('CANNOT SAVE THE USER INFORMATION'), 'message');
+				$app->enqueueMessage(Text::_('CANNOT SAVE THE USER INFORMATION'), 'message');
 				$app->enqueueMessage($user->getError(), 'error');
 			}
 

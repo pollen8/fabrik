@@ -11,6 +11,10 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Fabrik\Helpers\Html;
+use Fabrik\Helpers\Text;
+use Fabrik\Helpers\Worker;
+
 jimport('joomla.application.component.view');
 
 /**
@@ -35,10 +39,10 @@ class FabrikViewFusionchart extends JViewLegacy
 	{
 		$app = JFactory::getApplication();
 		$input = $app->input;
-		$j3 = FabrikWorker::j3();
-		$srcs = FabrikHelperHTML::framework();
-		$srcs[] = 'media/com_fabrik/js/listfilter.js';
-		$srcs[] = 'media/com_fabrik/js/advanced-search.js';
+		$j3 = Worker::j3();
+		$srcs = Html::framework();
+		$srcs['FbListFilter'] = 'media/com_fabrik/js/listfilter.js';
+		$srcs['AdvancedSearch'] = 'media/com_fabrik/js/advanced-search.js';
 		$model = $this->getModel();
 		$usersConfig = JComponentHelper::getParams('com_fabrik');
 		$model->setId($input->getInt('id', $usersConfig->get('visualizationid', $input->getInt('visualizationid', 0))));
@@ -46,7 +50,7 @@ class FabrikViewFusionchart extends JViewLegacy
 
 		if (!$model->canView())
 		{
-			echo FText::_('JERROR_ALERTNOAUTHOR');
+			echo Text::_('JERROR_ALERTNOAUTHOR');
 
 			return false;
 		}
@@ -75,17 +79,17 @@ class FabrikViewFusionchart extends JViewLegacy
 		$tpl = $params->get('fusionchart_layout', $tpl);
 		$this->_setPath('template', JPATH_ROOT . '/plugins/fabrik_visualization/fusionchart/views/fusionchart/tmpl/' . $tpl);
 
-		FabrikHelperHTML::stylesheetFromPath('plugins/fabrik_visualization/fusionchart/views/fusionchart/tmpl/' . $tpl . '/template.css');
+		Html::stylesheetFromPath('plugins/fabrik_visualization/fusionchart/views/fusionchart/tmpl/' . $tpl . '/template.css');
 
 		// Assign something to Fabrik.blocks to ensure we can clear filters
 		$ref = $model->getJSRenderContext();
 		$js = "$ref = {};";
 		$js .= "\n" . "Fabrik.addBlock('$ref', $ref);";
 		$js .= $model->getFilterJs();
-		FabrikHelperHTML::iniRequireJs($model->getShim());
-		FabrikHelperHTML::script($srcs, $js, '-min.js', array('Window', 'FbListFilter'));
+		Html::iniRequireJs($model->getShim());
+		Html::script($srcs, $js);
 		$text = $this->loadTemplate();
-		FabrikHelperHTML::runContentPlugins($text);
+		Html::runContentPlugins($text);
 		echo $text;
 	}
 }

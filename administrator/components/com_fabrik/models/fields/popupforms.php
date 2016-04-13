@@ -12,7 +12,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-require_once JPATH_ADMINISTRATOR . '/components/com_fabrik/helpers/element.php';
+use Fabrik\Helpers\Worker;
+use Fabrik\Helpers\Text;
 
 jimport('joomla.html.html');
 jimport('joomla.form.formfield');
@@ -48,7 +49,7 @@ class JFormFieldPopupforms extends JFormFieldList
 		// Initialize variables.
 		$options = array();
 
-		$db = FabrikWorker::getDbo(true);
+		$db = Worker::getDbo(true);
 		$query = $db->getQuery(true);
 		$query->select('f.id AS value, f.label AS text, l.id AS listid')->from('#__{package}_forms AS f')
 			->join('LEFT', '#__{package}_lists As l ON f.id = l.form_id')
@@ -60,7 +61,7 @@ class JFormFieldPopupforms extends JFormFieldList
 
 		if (empty($options))
 		{
-			$options[] = JHTML::_('select.option', '', FText::_('COM_FABRIK_NO_POPUP_FORMS_AVAILABLE'));
+			$options[] = JHTML::_('select.option', '', Text::_('COM_FABRIK_NO_POPUP_FORMS_AVAILABLE'));
 		}
 
 		return $options;

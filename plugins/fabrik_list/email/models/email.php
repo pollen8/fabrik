@@ -11,7 +11,11 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Joomla\Utilities\ArrayHelper;
+use Fabrik\Helpers\ArrayHelper;
+use Fabrik\Helpers\Html;
+use Fabrik\Helpers\Worker;
+use Fabrik\Helpers\StringHelper;
+use Fabrik\Helpers\Text;
 
 require_once COM_FABRIK_FRONTEND . '/models/plugin-list.php';
 
@@ -91,7 +95,7 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 	 */
 	public function onLoadJavascriptInstance($args)
 	{
-		FabrikHelperHTML::slimbox();
+		Html::slimbox();
 		parent::onLoadJavascriptInstance($args);
 		$opts              = $this->getElementJSOptions();
 		$opts->renderOrder = $this->renderOrder;
@@ -158,8 +162,8 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 			$toTableModel->setId($table);
 			$toDb = $toTableModel->getDb();
 
-			$tableName          = FabrikString::safeColName($tableName);
-			$tableEmail         = FabrikString::safeColName($tableEmail);
+			$tableName          = StringHelper::safeColName($tableName);
+			$tableEmail         = StringHelper::safeColName($tableEmail);
 			$emailTableTo_table = $toDb->qn($toTableModel->getTable()->db_table_name);
 
 			$query = $toDb->getQuery(true);
@@ -170,7 +174,7 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 
 			if (empty($results))
 			{
-				return FText::_('PLG_LIST_EMAIL_TO_TABLE_NO_DATA');
+				return Text::_('PLG_LIST_EMAIL_TO_TABLE_NO_DATA');
 			}
 
 			$empty   = new stdClass;
@@ -180,12 +184,12 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 			{
 				$html = '<div class="pull-left" style="margin:0 20px 20px 0">';
 				$html .= JHTML::_('select.genericlist', $results, 'email_to_selectfrom[]', $attribs, 'email', 'name', '', 'email_to_selectfrom');
-				$html .= '<br /><a href="#" class="btn btn-small" id="email_add">' . FabrikHelperHTML::icon('icon-plus') . ' ' . FText::_('COM_FABRIK_ADD') . ' &gt;&gt;</a>';
+				$html .= '<br /><a href="#" class="btn btn-small" id="email_add">' . Html::icon('icon-plus') . ' ' . Text::_('COM_FABRIK_ADD') . ' &gt;&gt;</a>';
 				$html .= '</div>';
 				$html .= '<div class="span6">';
 				$html .= JHTML::_('select.genericlist', $empty, 'list_email_to[]', $attribs, 'email', 'name', '', 'list_email_to');
 				$html .= '<br /><a href="#" class="btn btn-small" id="email_remove">&lt;&lt; '
-					. FText::_('COM_FABRIK_DELETE') . ' ' . FabrikHelperHTML::icon('icon-delete') . '</a>';
+					. Text::_('COM_FABRIK_DELETE') . ' ' . Html::icon('icon-delete') . '</a>';
 				$html .= '</div>';
 				$html .= '<div style="clear:both"></div>';
 			}
@@ -269,7 +273,7 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 		$input  = $this->app->input;
 
 		$pk  = $model->getPrimaryKey();
-		$pk2 = FabrikString::safeColNameToArrayKey($pk) . '_raw';
+		$pk2 = StringHelper::safeColNameToArrayKey($pk) . '_raw';
 
 		/**
 		 * If the 'checkall' param is set, and the checkAll checkbox was used, ignore pagination and selected
@@ -296,7 +300,7 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 
 			if (empty($ids))
 			{
-				throw new RuntimeException(FText::_('PLG_LIST_EMAIL_ERR_NO_RECORDS_SELECTED'), 400);
+				throw new RuntimeException(Text::_('PLG_LIST_EMAIL_ERR_NO_RECORDS_SELECTED'), 400);
 			}
 
 			$whereClause = '(' . $pk . ' IN (' . implode(',', $ids) . '))';
@@ -363,7 +367,7 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 
 			if (!JFile::upload($file['tmp_name'], $path))
 			{
-				JError::raiseWarning(100, FText::_('PLG_LIST_EMAIL_ERR_CANT_UPLOAD_FILE'));
+				JError::raiseWarning(100, Text::_('PLG_LIST_EMAIL_ERR_CANT_UPLOAD_FILE'));
 
 				return false;
 			}
@@ -425,7 +429,7 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 		}
 
 		$listModel->setId($input->getInt('id', 0));
-		$w           = new FabrikWorker;
+		$w           = new Worker;
 		$this->_type = 'table';
 		$mergeEmails = $params->get('emailtable_mergemessages', 0);
 		$sendSMS     = $params->get('emailtable_email_or_sms', 'email') == 'sms';
@@ -492,7 +496,7 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 							{
 								$mailTo = trim($w->parseMessageForPlaceholder($mailTo, $row));
 
-								if (FabrikWorker::isEmail($mailTo, $sendSMS))
+								if (Worker::isEmail($mailTo, $sendSMS))
 								{
 									$res = $this->_send($row, $mailTo);
 									$res ? $sent++ : $notSent++;
@@ -525,11 +529,11 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 		$this->_updateRows($updated);
 
 		// T3 blank tmpl doesn't seem to render messages when tmpl=component
-		$this->app->enqueueMessage(JText::sprintf('%s emails sent', $sent));
+		$this->app->enqueueMessage(Text::sprintf('%s emails sent', $sent));
 
 		if ($notSent != 0)
 		{
-			$this->app->enqueueMessage(JText::sprintf('%s emails not sent', $notSent), 'notice');
+			$this->app->enqueueMessage(Text::sprintf('%s emails not sent', $notSent), 'notice');
 		}
 
 		return true;
@@ -546,13 +550,13 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 	{
 		$params  = $this->getParams();
 		$sendSMS = $params->get('emailtable_email_or_sms', 'email') == 'sms';
-		$w       = new FabrikWorker;
+		$w       = new Worker;
 
 		foreach ($mailTos as $toKey => $thisTo)
 		{
 			$thisTo = $w->parseMessageForPlaceholder($thisTo, $row);
 
-			if (!FabrikWorker::isEmail($thisTo, $sendSMS))
+			if (!Worker::isEmail($thisTo, $sendSMS))
 			{
 				unset($mailTos[$toKey]);
 				$notSent++;
@@ -607,7 +611,7 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 		$coverMessage  = nl2br($coverMessage);
 		$oldStyle      = $this->_oldStyle();
 		$emailTemplate = $this->_emailTemplate();
-		$w             = new FabrikWorker;
+		$w             = new Worker;
 		$thisMsg       = $coverMessage;
 		list($phpMsg, $message) = $this->_message();
 
@@ -615,7 +619,7 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 		{
 			if ($phpMsg)
 			{
-				$thisMsg .= FabrikHelperHTML::getPHPTemplate($emailTemplate, $row, $this->listModel);
+				$thisMsg .= Html::getPHPTemplate($emailTemplate, $row, $this->listModel);
 			}
 			else
 			{
@@ -719,7 +723,7 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 		$phpMsg          = false;
 		$params          = $this->getParams();
 		$contentTemplate = $params->get('emailtable_template_content', '');
-		$content         = empty($contentTemplate) ? '' : FabrikHelperHTML::getContentTemplate($contentTemplate);
+		$content         = empty($contentTemplate) ? '' : Html::getContentTemplate($contentTemplate);
 		$emailTemplate   = $this->_emailTemplate();
 
 		if (JFile::exists($emailTemplate))
@@ -731,7 +735,7 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 			}
 			else
 			{
-				$message = FabrikHelperHTML::getTemplateFile($emailTemplate);
+				$message = Html::getTemplateFile($emailTemplate);
 			}
 
 			$message = str_replace('{content}', $content, $message);
@@ -773,7 +777,7 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 	private function _thisMsg($row)
 	{
 		list($phpMsg, $message) = $this->_message();
-		$w             = new FabrikWorker;
+		$w             = new Worker;
 		$input         = $this->app->input;
 		$coverMessage  = nl2br($input->get('message', '', 'html'));
 		$emailTemplate = $this->_emailTemplate();
@@ -787,7 +791,7 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 		{
 			if ($phpMsg)
 			{
-				$thisMsg = FabrikHelperHTML::getPHPTemplate($emailTemplate, $row, $this->listModel);
+				$thisMsg = Html::getPHPTemplate($emailTemplate, $row, $this->listModel);
 			}
 			else
 			{
@@ -815,7 +819,7 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 		$input  = $this->app->input;
 		list($replyEmail, $replyEmailName) = $this->_replyEmailName($firstRow);
 		list($emailFrom, $fromName) = $this->_fromEmailName($firstRow);
-		$w            = new FabrikWorker;
+		$w            = new Worker;
 		$toType       = $this->_toType();
 		$to           = $this->_to();
 		$oldStyle     = $this->_oldStyle();
@@ -842,7 +846,7 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 			{
 				$thisTo = $w->parseMessageForPlaceholder($thisTo, $firstRow);
 
-				if (!FabrikWorker::isEmail($thisTo))
+				if (!Worker::isEmail($thisTo))
 				{
 					unset($thisTos[$toKey]);
 					$notSent++;
@@ -871,7 +875,7 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 		{
 			foreach ($thisTos as $thisTo)
 			{
-				if (FabrikWorker::isEmail($thisTo))
+				if (Worker::isEmail($thisTo))
 				{
 					$mail = JFactory::getMailer();
 					$res  = $mail->sendMail($emailFrom, $fromName, $thisTo, $thisSubject, $mergedMsg, true, $cc, $bcc, $this->filepath,
@@ -949,7 +953,7 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 	 */
 	private function _replyEmailName($data = array())
 	{
-		$w      = new FabrikWorker;
+		$w      = new Worker;
 		$params = $this->getParams();
 		$reply  = $w->parseMessageForPlaceholder($params->get('email_reply_to'), $data, false);
 		@list($replyEmail, $replyEmailName) = explode(':', $reply, 2);
@@ -978,7 +982,7 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 	 */
 	private function _fromEmailName($data = array())
 	{
-		$w        = new FabrikWorker;
+		$w        = new Worker;
 		$params   = $this->getParams();
 		$fromUser = $params->get('emailtable_from_user');
 
@@ -1027,7 +1031,7 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 	protected function sendSMS($to, $message, $data)
 	{
 		$params               = $this->getParams();
-		$w                    = new FabrikWorker;
+		$w                    = new Worker;
 		$opts                 = array();
 		$userName             = $params->get('emailtable_sms_username');
 		$password             = $params->get('emailtable_sms_password');
@@ -1055,7 +1059,8 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 			$gateway = $params->get('emailtable_sms_gateway', 'kapow.php');
 			$input   = new JFilterInput;
 			$gateway = $input->clean($gateway, 'CMD');
-			require_once JPATH_ROOT . '/components/com_fabrik/helpers/sms_gateways/' . JString::strtolower($gateway);
+			require_once JPATH_ROOT . '/components/com_fabrik/helpers/sms_gateways/'
+				. StringHelper::strtolower($gateway);
 			$gateway               = JFile::stripExt($gateway);
 			$this->gateway         = new $gateway;
 			$this->gateway->params = $params;

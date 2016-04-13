@@ -12,6 +12,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Fabrik\Helpers\Text;
+
 $app = JFactory::getApplication();
 ?>
 <script type="text/javascript">
@@ -41,7 +43,7 @@ Joomla.submitform = function(task, form) {
 	<?php endforeach; ?>
 
 	<fieldset class="form-horizontal">
-		<legend><?php echo FText::_('COM_FABRIK_DELETE_FROM');?></legend>
+		<legend><?php echo Text::_('COM_FABRIK_DELETE_FROM');?></legend>
 		<ul class="adminformlist">
 		<?php for ($i = 0; $i < count($this->items); $i++) :?>
   			<li>

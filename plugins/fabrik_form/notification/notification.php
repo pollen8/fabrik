@@ -9,7 +9,10 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Joomla\Utilities\ArrayHelper;
+use Fabrik\Helpers\ArrayHelper;
+use Fabrik\Helpers\Html;
+use Fabrik\Helpers\Worker;
+use Fabrik\Helpers\Text;
 
 // Require the abstract plugin class
 require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
@@ -49,7 +52,7 @@ class PlgFabrik_FormNotification extends PlgFabrik_Form
 
 		if ($this->user->get('id') == 0)
 		{
-			$this->html = FText::_('PLG_CRON_NOTIFICATION_SIGN_IN_TO_RECEIVE_NOTIFICATIONS');
+			$this->html = Text::_('PLG_CRON_NOTIFICATION_SIGN_IN_TO_RECEIVE_NOTIFICATIONS');
 
 			return;
 		}
@@ -70,13 +73,13 @@ class PlgFabrik_FormNotification extends PlgFabrik_Form
 
 		if ($params->get('notification_ajax', 0) == 1)
 		{
-			$src[] = 'media/com_fabrik/js/fabrik.js';
-			$src[] = '/plugins/fabrik_form/notification/notify.js';
-			FabrikHelperHTML::script($src, "var notify = new Notify('$id', $opts);");
+			$src['Fabrik'] = 'media/com_fabrik/js/fabrik.js';
+			$src['Notify'] = '/plugins/fabrik_form/notification/notify.js';
+			Html::script($src, "var notify = new Notify('$id', $opts);");
 		}
 
 		// See if the checkbox should be checked
-		$db = FabrikWorker::getDbo();
+		$db = Worker::getDbo();
 		$ref = $this->getRef($formModel->getListModel()->getId());
 		$query = $db->getQuery(true);
 		$query->select('COUNT(id)')->from('#__{package}_notification')->where('user_id = ' .
@@ -86,7 +89,7 @@ class PlgFabrik_FormNotification extends PlgFabrik_Form
 		$checked = $found ? 'checked="checked"' : '';
 		$this->html = '
 		<label><input id="' . $id . '" ' . $checked . ' type="checkbox" name="fabrik_notification" class="input" value="1" />
-		 ' . FText::_('PLG_CRON_NOTIFICATION_NOTIFY_ME') . '</label>';
+		 ' . Text::_('PLG_CRON_NOTIFICATION_NOTIFY_ME') . '</label>';
 	}
 
 	/**
@@ -109,7 +112,7 @@ class PlgFabrik_FormNotification extends PlgFabrik_Form
 	 */
 	protected function getRef($listId = 0)
 	{
-		$db = FabrikWorker::getDbo();
+		$db = Worker::getDbo();
 		$input = $this->app->input;
 
 		return $db->q($input->getInt('listid', $listId) . '.' . $input->getInt('formid', 0) . '.' . $input->get('rowid', '', 'string'));
@@ -129,7 +132,7 @@ class PlgFabrik_FormNotification extends PlgFabrik_Form
 		$user = JFactory::getUser();
 		$userId = (int) $user->get('id');
 		$ref = $this->getRef();
-		$db = FabrikWorker::getDbo();
+		$db = Worker::getDbo();
 		$query = $db->getQuery(true);
 		$fields = array('reference = ' . $ref);
 
@@ -156,7 +159,7 @@ class PlgFabrik_FormNotification extends PlgFabrik_Form
 
 				if ($ok)
 				{
-					echo FText::_('PLG_CRON_NOTIFICATION_ADDED');
+					echo Text::_('PLG_CRON_NOTIFICATION_ADDED');
 				}
 				else
 				{
@@ -167,7 +170,7 @@ class PlgFabrik_FormNotification extends PlgFabrik_Form
 			else
 			{
 				$query->delete('#__{package}_notification')->where($fields);
-				echo FText::_('PLG_CRON_NOTIFICATION_REMOVED');
+				echo Text::_('PLG_CRON_NOTIFICATION_REMOVED');
 				$db->setQuery($query);
 				$db->execute();
 			}
@@ -254,11 +257,11 @@ class PlgFabrik_FormNotification extends PlgFabrik_Form
 		 * Add entry indicating the form has been updated this record will then be used by the cron plugin to
 		 * see which new events have been generated and notify subscribers of said events.
 		 */
-		$db = FabrikWorker::getDbo();
-		$event = $rowId == '' ? $db->q(FText::_('RECORD_ADDED')) : $db->q(FText::_('RECORD_UPDATED'));
+		$db = Worker::getDbo();
+		$event = $rowId == '' ? $db->q(Text::_('RECORD_ADDED')) : $db->q(Text::_('RECORD_UPDATED'));
 		$date = $db->q($this->date->toSql());
 		$ref = $this->getRef();
-		$msg = $notify ? FText::_('PLG_CRON_NOTIFICATION_ADDED') : FText::_('PLG_CRON_NOTIFICATION_REMOVED');
+		$msg = $notify ? Text::_('PLG_CRON_NOTIFICATION_ADDED') : Text::_('PLG_CRON_NOTIFICATION_REMOVED');
 		$app = JFactory::getApplication();
 		$app->enqueueMessage($msg);
 		$query = $db->getQuery(true);

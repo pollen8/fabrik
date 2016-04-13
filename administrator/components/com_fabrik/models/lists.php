@@ -12,7 +12,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Joomla\Utilities\ArrayHelper;
+use Fabrik\Helpers\ArrayHelper;
+use Fabrik\Helpers\Worker;
 
 require_once 'fabmodellist.php';
 
@@ -157,7 +158,7 @@ class FabrikAdminModelLists extends FabModelList
 	 */
 	public function getTable($type = 'View', $prefix = 'FabrikTable', $config = array())
 	{
-		$config['dbo'] = FabrikWorker::getDbo();
+		$config['dbo'] = Worker::getDbo();
 
 		return FabTable::getInstance($type, $prefix, $config);
 	}
@@ -206,7 +207,7 @@ class FabrikAdminModelLists extends FabModelList
 		$input = $app->input;
 		$cid   = $input->get('cid', array(), 'array');
 		$cid   = ArrayHelper::toInteger($cid);
-		$db    = FabrikWorker::getDbo(true);
+		$db    = Worker::getDbo(true);
 		$query = $db->getQuery(true);
 		$query->select('db_table_name')->from('#__{package}_lists')->where('id IN(' . implode(',', $cid) . ')');
 		$db->setQuery($query);

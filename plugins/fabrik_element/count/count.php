@@ -8,12 +8,13 @@
  * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
+namespace Fabrik\Plugins\Element;
+
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-jimport('joomla.application.component.model');
-
-require_once JPATH_SITE . '/components/com_fabrik/models/element.php';
+use Fabrik\Helpers\Worker;
+use Fabrik\Helpers\ArrayHelper;
 
 /**
  * Plugin element to:
@@ -26,7 +27,7 @@ require_once JPATH_SITE . '/components/com_fabrik/models/element.php';
  * @subpackage  Fabrik.element.count
  * @since       3.0
  */
-class PlgFabrik_ElementCount extends PlgFabrik_Element
+class Count extends Element
 {
 	/**
 	 * Get group by query
@@ -52,12 +53,12 @@ class PlgFabrik_ElementCount extends PlgFabrik_Element
 	public function getAsField_html(&$aFields, &$aAsFields, $opts = array())
 	{
 		$dbTable = $this->actualTableName();
-		$db = FabrikWorker::getDbo();
+		$db = Worker::getDbo();
 
 		if ($this->app->input->get('c') != 'form')
 		{
 			$params = $this->getParams();
-			$fullElName = FArrayHelper::getValue($opts, 'alias', $db->qn($dbTable . '___' . $this->getElement()->name));
+			$fullElName = ArrayHelper::getValue($opts, 'alias', $db->qn($dbTable . '___' . $this->getElement()->name));
 			$r = 'COUNT(' . $params->get('count_field', '*') . ')';
 			$aFields[] = $r . ' AS ' . $fullElName;
 			$aAsFields[] = $fullElName;

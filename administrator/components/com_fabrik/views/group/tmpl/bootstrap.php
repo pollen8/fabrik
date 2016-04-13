@@ -12,9 +12,12 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Fabrik\Helpers\Html;
+use Fabrik\Helpers\Text;
+
 JHtml::addIncludePath(JPATH_COMPONENT . '/helpers/html');
 JHtml::_('behavior.tooltip');
-FabrikHelperHTML::formvalidation();
+Html::formvalidation();
 JHtml::_('behavior.keepalive');
 
 ?>
@@ -24,22 +27,22 @@ JHtml::_('behavior.keepalive');
 <ul class="nav nav-tabs">
 		<li class="active">
 	    	<a data-toggle="tab" href="#details-info">
-	    		<?php echo FText::_('COM_FABRIK_DETAILS'); ?>
+	    		<?php echo Text::_('COM_FABRIK_DETAILS'); ?>
 	    	</a>
 	    </li>
 	    <li>
 	    	<a data-toggle="tab" href="#details-repeat">
-	    		<?php echo FText::_('COM_FABRIK_REPEAT')?>
+	    		<?php echo Text::_('COM_FABRIK_REPEAT')?>
 	    	</a>
 	    </li>
 	    <li>
 	    	<a data-toggle="tab" href="#details-layout">
-	    		<?php echo FText::_('COM_FABRIK_LAYOUT')?>
+	    		<?php echo Text::_('COM_FABRIK_LAYOUT')?>
 	    	</a>
 	    </li>
 	    <li>
 	    	<a data-toggle="tab" href="#details-multipage">
-	    		<?php echo FText::_('COM_FABRIK_GROUP_MULTIPAGE')?>
+	    		<?php echo Text::_('COM_FABRIK_GROUP_MULTIPAGE')?>
 	    	</a>
 	    </li>
 	</ul>
@@ -49,7 +52,7 @@ JHtml::_('behavior.keepalive');
 		<div class="tab-pane active" id="details-info">
 			<fieldset class="form-horizontal">
 		    	<legend>
-		    		<?php echo FText::_('COM_FABRIK_DETAILS');?>
+		    		<?php echo Text::_('COM_FABRIK_DETAILS');?>
 		    	</legend>
 				<?php foreach ($this->form->getFieldset('details') as $this->field) :
 					echo $this->loadTemplate('control_group');
@@ -64,7 +67,7 @@ JHtml::_('behavior.keepalive');
 		<div class="tab-pane" id="details-repeat">
 			<fieldset class="form-horizontal">
 		    	<legend>
-		    		<?php echo FText::_('COM_FABRIK_REPEAT');?>
+		    		<?php echo Text::_('COM_FABRIK_REPEAT');?>
 		    	</legend>
 				<?php foreach ($this->form->getFieldset('repeat') as $this->field) :
 					echo $this->loadTemplate('control_group');
@@ -76,7 +79,7 @@ JHtml::_('behavior.keepalive');
 		<div class="tab-pane" id="details-layout">
 			<fieldset class="form-horizontal">
 		    	<legend>
-		    		<?php echo FText::_('COM_FABRIK_LAYOUT');?>
+		    		<?php echo Text::_('COM_FABRIK_LAYOUT');?>
 		    	</legend>
 				<?php foreach ($this->form->getFieldset('layout') as $this->field) :
 					echo $this->loadTemplate('control_group');
@@ -88,7 +91,7 @@ JHtml::_('behavior.keepalive');
 		<div class="tab-pane" id="details-multipage">
 			<fieldset class="form-horizontal">
 		    	<legend>
-		    		<?php echo FText::_('COM_FABRIK_GROUP_MULTIPAGE');?>
+		    		<?php echo Text::_('COM_FABRIK_GROUP_MULTIPAGE');?>
 		    	</legend>
 				<?php foreach ($this->form->getFieldset('pagination') as $this->field) :
 					echo $this->loadTemplate('control_group');

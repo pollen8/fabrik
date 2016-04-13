@@ -12,6 +12,9 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Fabrik\Helpers\Html;
+use Fabrik\Helpers\Text;
+
 $document = JFactory::getDocument();
 $document->setMetaData("apple-mobile-web-app-capable", "yes");
 $document->setMetaData("viewport", "minimum-scale=1.0, width=device-width, maximum-scale=0.6667, user-scalable=no");
@@ -161,12 +164,12 @@ echo "<div class=\"fabrikMainError fabrikError$active\">$form->error</div>";?>
 						<div class="fabrikGroupRepeater">
 							<?php if ($group->canAddRepeat) {?>
 							<a class="addGroup" href="#">
-								<?php echo FabrikHelperHTML::image('add.png', 'form', $this->tmpl, FText::_('COM_FABRIK_ADD_GROUP'));?>
+								<?php echo Html::image('add.png', 'form', $this->tmpl, Text::_('COM_FABRIK_ADD_GROUP'));?>
 							</a>
 							<?php }?>
 							<?php if ($group->canDeleteRepeat) {?>
 							<a class="deleteGroup" href="#">
-								<?php echo FabrikHelperHTML::image('del.png', 'form', $this->tmpl, FText::_('COM_FABRIK_DELETE_GROUP'));?>
+								<?php echo Html::image('del.png', 'form', $this->tmpl, Text::_('COM_FABRIK_DELETE_GROUP'));?>
 							</a>
 							<?php }?>
 						</div>
@@ -210,6 +213,6 @@ echo "<div class=\"fabrikMainError fabrikError$active\">$form->error</div>";?>
 <?php
 echo $form->outro;
 echo $this->pluginend;
-echo FabrikHelperHTML::keepalive();
+echo Html::keepalive();
 ?>
 </div>

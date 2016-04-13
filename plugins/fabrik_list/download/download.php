@@ -11,6 +11,10 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Fabrik\Helpers\Image;
+use Fabrik\Helpers\Worker;
+use Fabrik\Helpers\Text;
+
 // Require the abstract plugin class
 require_once COM_FABRIK_FRONTEND . '/models/plugin-list.php';
 
@@ -165,7 +169,7 @@ class PlgFabrik_ListDownload extends PlgFabrik_List
 		}
 		else
 		{
-			$db = FabrikWorker::getDbo();
+			$db = Worker::getDbo();
 			$query = $db->getQuery(true);
 			$query->select($db->qn($downloadFile))
 				->from($db->qn($downloadTable))
@@ -192,7 +196,7 @@ class PlgFabrik_ListDownload extends PlgFabrik_List
 				require_once COM_FABRIK_FRONTEND . '/helpers/image.php';
 				$storage              = $this->getStorage();
 				$downloadImageLibrary = $params->get('download_image_library');
-				$oImage               = FabimageHelper::loadLib($downloadImageLibrary);
+				$oImage               = Image::loadLib($downloadImageLibrary);
 				$oImage->setStorage($storage);
 			}
 
@@ -231,13 +235,13 @@ class PlgFabrik_ListDownload extends PlgFabrik_List
 					}
 					else
 					{
-						$zipErr .= FText::_('ZipArchive add error: ' . $zipAdd);
+						$zipErr .= Text::_('ZipArchive add error: ' . $zipAdd);
 					}
 				}
 
 				if (!$zip->close())
 				{
-					$zipErr = FText::_('ZipArchive close error') . ($zip->status);
+					$zipErr = Text::_('ZipArchive close error') . ($zip->status);
 				}
 
 				if ($downloadResize)
@@ -272,18 +276,18 @@ class PlgFabrik_ListDownload extends PlgFabrik_List
 					}
 					else
 					{
-						$zipErr .= FText::_('PLG_FABRIK_LIST_DOWNLOAD_ZIP_EMPTY');
+						$zipErr .= Text::_('PLG_FABRIK_LIST_DOWNLOAD_ZIP_EMPTY');
 					}
 				}
 			}
 			else
 			{
-				$zipErr = FText::_('ZipArchive open error, cannot create file : ' . $zipFile . ' : ' . $zipRes);
+				$zipErr = Text::_('ZipArchive open error, cannot create file : ' . $zipFile . ' : ' . $zipRes);
 			}
 		}
 		else
 		{
-			$zipErr = FText::_("PLG_FABRIK_LIST_DOWNLOAD_ZIP_NO_FILES");
+			$zipErr = Text::_("PLG_FABRIK_LIST_DOWNLOAD_ZIP_NO_FILES");
 		}
 
 		if (empty($zipErr))

@@ -11,6 +11,11 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Fabrik\Helpers\Html;
+use Fabrik\Helpers\Worker;
+use Fabrik\Helpers\StringHelper;
+use Fabrik\Helpers\Text;
+
 jimport('joomla.application.component.controller');
 
 /**
@@ -257,7 +262,7 @@ class FabrikControllerForm extends JControllerLegacy
 		// Check if any plugin has created a new validation error
 		if ($model->hasErrors())
 		{
-			FabrikWorker::getPluginManager()->runPlugins('onError', $model);
+			Worker::getPluginManager()->runPlugins('onError', $model);
 			$this->handleError($view, $model);
 
 			return;
@@ -268,7 +273,7 @@ class FabrikControllerForm extends JControllerLegacy
 		 * bypass any and all redirects, so we can see the profile for the submit
 		 */
 
-		if (FabrikHelperHTML::isDebugSubmit())
+		if (Html::isDebugSubmit())
 		{
 			return;
 		}
@@ -389,7 +394,7 @@ class FabrikControllerForm extends JControllerLegacy
 				{
 					if (in_array($errorKey, $toValidate) && count($e[0]) > 0)
 					{
-						array_walk_recursive($e, array('FabrikString', 'forHtml'));
+						array_walk_recursive($e, array('StringHelper', 'forHtml'));
 						$messages[] = count($e[0]) === 1 ? '<li>' . $e[0][0] . '</li>' : '<ul><li>' . implode('</li><li>', $e[0]) . '</ul>';
 					}
 				}
@@ -397,7 +402,7 @@ class FabrikControllerForm extends JControllerLegacy
 				if (!empty($messages))
 				{
 					$messages = '<ul>' . implode('</li><li>', $messages) . '</ul>';
-					header('HTTP/1.1 500 ' . FText::_('COM_FABRIK_FAILED_VALIDATION') . $messages);
+					header('HTTP/1.1 500 ' . Text::_('COM_FABRIK_FAILED_VALIDATION') . $messages);
 					jexit();
 				}
 				else
@@ -598,7 +603,7 @@ class FabrikControllerForm extends JControllerLegacy
 		}
 		else
 		{
-			$msg = $ok ? count($ids) . ' ' . FText::_('COM_FABRIK_RECORDS_DELETED') : '';
+			$msg = $ok ? count($ids) . ' ' . Text::_('COM_FABRIK_RECORDS_DELETED') : '';
 			$app->enqueueMessage($msg);
 			$app->redirect($ref);
 		}

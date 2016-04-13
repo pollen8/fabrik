@@ -8,10 +8,19 @@
  * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
+namespace Fabrik\Plugins\Element;
+
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Joomla\Utilities\ArrayHelper;
+use Fabrik\Helpers\ArrayHelper;
+use Fabrik\Helpers\Html;
+use \JHtml;
+use \stdClass;
+use Fabrik\Helpers\Worker;
+use Fabrik\Helpers\StringHelper;
+use Fabrik\Helpers\Text;
+use \JEditor;
 
 /**
  * Plugin element to render text area or wysiwyg editor
@@ -20,7 +29,7 @@ use Joomla\Utilities\ArrayHelper;
  * @subpackage  Fabrik.element.textarea
  * @since       3.0
  */
-class PlgFabrik_ElementTextarea extends PlgFabrik_Element
+class Textarea extends Element
 {
 	/**
 	 * Db table field type
@@ -60,8 +69,8 @@ class PlgFabrik_ElementTextarea extends PlgFabrik_Element
 		// $$$ hugh - strip spaces first, account for "foo,bar, baz, foo"
 		$data = array_map('trim', $data);
 		$data = array_unique($data);
-		$img = FabrikWorker::j3() ? 'bookmark.png' : 'tag.png';
-		$icon = FabrikHelperHTML::image($img, 'form', @$this->tmpl, array('alt' => 'tag'));
+		$img = Worker::j3() ? 'bookmark.png' : 'tag.png';
+		$icon = Html::image($img, 'form', @$this->tmpl, array('alt' => 'tag'));
 		$tmplData = new stdClass;
 		$tmplData->tags = array();
 
@@ -148,7 +157,7 @@ class PlgFabrik_ElementTextarea extends PlgFabrik_Element
 			if ($data !== '' && ($truncateWhere === 1 || $truncateWhere === 3))
 			{
 				$opts = $this->truncateOpts();
-				$data = fabrikString::truncate($data, $opts);
+				$data = StringHelper::truncate($data, $opts);
 				$listModel = $this->getListModel();
 
 				if (ArrayHelper::getValue($opts, 'link', 1))
@@ -288,7 +297,7 @@ class PlgFabrik_ElementTextarea extends PlgFabrik_Element
 					((int) $params->get('textarea-truncate-where', 0) === 2 || (int) $params->get('textarea-truncate-where', 0) === 3))
 				{
 					$opts = $this->truncateOpts();
-					$value = fabrikString::truncate($value, $opts);
+					$value = StringHelper::truncate($value, $opts);
 				}
 			}
 
@@ -297,7 +306,7 @@ class PlgFabrik_ElementTextarea extends PlgFabrik_Element
 
 		if ($params->get('textarea_placeholder', '') !== '')
 		{
-			$bits['placeholder'] = FText::_($params->get('textarea_placeholder'));
+			$bits['placeholder'] = Text::_($params->get('textarea_placeholder'));
 		}
 
 		if ($this->elementError != '')
@@ -358,12 +367,12 @@ class PlgFabrik_ElementTextarea extends PlgFabrik_Element
 		{
 			if ($params->get('textarea_limit_type', 'char') === 'char')
 			{
-				$label = FText::_('PLG_ELEMENT_TEXTAREA_CHARACTERS_LEFT');
-				$charsLeft = $params->get('textarea-maxlength') - JString::strlen($value);
+				$label = Text::_('PLG_ELEMENT_TEXTAREA_CHARACTERS_LEFT');
+				$charsLeft = $params->get('textarea-maxlength') - StringHelper::strlen($value);
 			}
 			else
 			{
-				$label = FText::_('PLG_ELEMENT_TEXTAREA_WORDS_LEFT');
+				$label = Text::_('PLG_ELEMENT_TEXTAREA_WORDS_LEFT');
 				$charsLeft = $params->get('textarea-maxlength') - count(explode(' ', $value));
 			}
 
@@ -517,7 +526,7 @@ class PlgFabrik_ElementTextarea extends PlgFabrik_Element
 			return true;
 		}
 
-		if (JString::strlen($data) > (int) $params->get('textarea-maxlength'))
+		if (StringHelper::strlen($data) > (int) $params->get('textarea-maxlength'))
 		{
 			return false;
 		}
@@ -532,7 +541,7 @@ class PlgFabrik_ElementTextarea extends PlgFabrik_Element
 	 */
 	public function getValidationErr()
 	{
-		return FText::_('PLG_ELEMENT_TEXTAREA_CONTENT_TOO_LONG');
+		return Text::_('PLG_ELEMENT_TEXTAREA_CONTENT_TOO_LONG');
 	}
 
 	/**

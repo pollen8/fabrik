@@ -12,6 +12,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Fabrik\Helpers\Html;
+
 $form = $this->form;
 $model = $this->getModel();
 $groupTmpl = $model->editable ? 'group' : 'group_details';
@@ -103,4 +105,4 @@ echo $this->loadTemplate('actions');
 <?php
 echo $form->outro;
 echo $this->pluginend;
-echo FabrikHelperHTML::keepalive();
+echo Html::keepalive();

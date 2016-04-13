@@ -12,6 +12,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Fabrik\Helpers\Worker;
+
 jimport('joomla.application.component.view');
 require_once JPATH_SITE . '/components/com_fabrik/views/form/view.base.php';
 
@@ -44,7 +46,7 @@ class FabrikViewForm extends FabrikViewFormBase
 				$model        = $this->getModel();
 				$this->params = $this->state->get('params');
 				$row          = $model->getData();
-				$w            = new FabrikWorker;
+				$w            = new Worker;
 
 				if ($this->params->get('menu-meta_description'))
 				{

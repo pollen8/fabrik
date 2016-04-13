@@ -12,6 +12,9 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Fabrik\Helpers\Html;
+use Fabrik\Helpers\Text;
+
 if ($this->params->get('show_page_heading', 1)) { ?>
 	<div class="componentheading<?php echo $this->params->get('pageclass_sfx')?>"><?php echo $this->escape($this->params->get('page_heading')); ?></div>
 <?php }
@@ -28,7 +31,7 @@ if ($this->params->get('show-title', 1)) {?>
 echo $this->plugintop;
 $active = ($form->error != '') ? '' : ' fabrikHide';
 echo "<div class=\"fabrikMainError fabrikError$active\">";
-echo FabrikHelperHTML::image('alert.png', 'form', $this->tmpl);
+echo Html::image('alert.png', 'form', $this->tmpl);
 echo "$form->error</div>";?>
 	<?php
 	if ($this->showEmail) {
@@ -70,12 +73,12 @@ echo "$form->error</div>";?>
 						<div class="fabrikGroupRepeater">
 							<?php if ($group->canAddRepeat) {?>
 							<a class="addGroup" href="#">
-								<?php echo FabrikHelperHTML::image('plus-sign.png', 'form', $this->tmpl, array('class' => 'fabrikTip', 'title' => FText::_('COM_FABRIK_ADD_GROUP')));?>
+								<?php echo Html::image('plus-sign.png', 'form', $this->tmpl, array('class' => 'fabrikTip', 'title' => Text::_('COM_FABRIK_ADD_GROUP')));?>
 							</a>
 							<?php } ?>
 							<?php if ($group->canDeleteRepeat) {?>
 							<a class="deleteGroup" href="#">
-								<?php echo FabrikHelperHTML::image('minus-sign.png', 'form', $this->tmpl, array('class' => 'fabrikTip', 'title' => FText::_('COM_FABRIK_DELETE_GROUP')));?>
+								<?php echo Html::image('minus-sign.png', 'form', $this->tmpl, array('class' => 'fabrikTip', 'title' => Text::_('COM_FABRIK_DELETE_GROUP')));?>
 							</a>
 							<?php }?>
 						</div>
@@ -109,4 +112,4 @@ echo "$form->error</div>";?>
 <?php
 echo $form->outro;
 echo $this->pluginend;
-echo FabrikHelperHTML::keepalive();?>
+echo Html::keepalive();?>

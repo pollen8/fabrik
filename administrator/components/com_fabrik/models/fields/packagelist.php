@@ -11,7 +11,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-require_once JPATH_ADMINISTRATOR . '/components/com_fabrik/helpers/element.php';
+use Fabrik\Helpers\Worker;
+use Fabrik\Helpers\Text;
 
 jimport('joomla.html.html');
 jimport('joomla.form.formfield');
@@ -44,7 +45,7 @@ class JFormFieldPackageList extends JFormFieldList
 
 	protected function getOptions()
 	{
-		$db = FabrikWorker::getDbo();
+		$db = Worker::getDbo();
 		$query = $db->getQuery(true);
 		$query->select("id AS value, CONCAT(label, '(', version , ')') AS " . $db->quote('text'));
 		$query->from('#__{package}_packages');
@@ -53,7 +54,7 @@ class JFormFieldPackageList extends JFormFieldList
 		$rows = $db->loadObjectList();
 		$o = new stdClass;
 		$o->value = 0;
-		$o->text = FText::_('COM_FABRIK_NO_PACKAGE');
+		$o->text = Text::_('COM_FABRIK_NO_PACKAGE');
 		array_unshift($rows, $o);
 
 		return $rows;

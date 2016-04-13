@@ -8,8 +8,20 @@
  * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
+namespace Fabrik\Plugins\Element;
+
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
+
+use Fabrik\Helpers\Worker;
+use Fabrik\Helpers\ArrayHelper;
+use \stdClass;
+use \JFactory;
+use Fabrik\Helpers\Text;
+use Fabrik\Helpers\StringHelper;
+use \JHtml;
+use \DateTime;
+use \DateInterval;
 
 /**
  * Plugin element to render day/month/year drop-downs
@@ -18,8 +30,7 @@ defined('_JEXEC') or die();
  * @subpackage  Fabrik.element.birthday
  * @since       3.0
  */
-
-class PlgFabrik_ElementBirthday extends PlgFabrik_Element
+class Birthday extends Element
 {
 	/**
 	 * Does the element contain sub elements e.g checkboxes radio-buttons
@@ -54,9 +65,9 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 
 		if (is_array($value))
 		{
-			$day = FArrayHelper::getValue($value, 0);
-			$month = FArrayHelper::getValue($value, 1);
-			$year = FArrayHelper::getValue($value, 2);
+			$day = ArrayHelper::getValue($value, 0);
+			$month = ArrayHelper::getValue($value, 1);
+			$year = ArrayHelper::getValue($value, 2);
 			$value = $year . '-' . $month . '-' . $day;
 		}
 
@@ -102,6 +113,7 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 		$value = $this->getValue($data, $repeatCounter);
 		$fd = $params->get('details_date_format', 'd.m.Y');
 		$dateAndAge = (int) $params->get('details_dateandage', '0');
+		$monthDayValue = '';
 
 		if (!$this->isEditable())
 		{
@@ -117,9 +129,9 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 
 				// $$$ rob - all this below is nice but ... you still need to set a default
 				$detailValue = '';
-				$year = JString::ltrim($year, '0');
+				$year = StringHelper::ltrim($year, '0');
 
-				if (FabrikWorker::isDate($value))
+				if (Worker::isDate($value))
 				{
 					$date = JFactory::getDate($value);
 					$detailValue = $date->format($fd);
@@ -182,7 +194,7 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 
 						if (date('m-d') == $month . '-' . $day)
 						{
-							$detailValue .= '<span style="color:#CC0000"><b> ' . FText::_('TODAY') . '!</b></span>';
+							$detailValue .= '<span style="color:#CC0000"><b> ' . Text::_('TODAY') . '!</b></span>';
 
 							if (date('m') == '12')
 							{
@@ -226,7 +238,7 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 				$layout = $this->getLayout('detail');
 				$layoutData = new stdClass;
 				$layoutData->text =  $this->replaceWithIcons($detailValue);
-				$layoutData->hidden = $element->hidden;
+				$layoutData->hidden = $element->get('hidden');
 
 				return $layout->render($layoutData);
 			}
@@ -239,9 +251,9 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 		{
 			// Weirdness for failed validation
 			$value = strstr($value, ',') ? array_reverse(explode(',', $value)) : explode('-', $value);
-			$yearValue = FArrayHelper::getValue($value, 0);
-			$monthValue = FArrayHelper::getValue($value, 1);
-			$dayValue = FArrayHelper::getValue($value, 2);
+			$yearValue = ArrayHelper::getValue($value, 0);
+			$monthValue = ArrayHelper::getValue($value, 1);
+			$dayValue = ArrayHelper::getValue($value, 2);
 			$errorCSS = (isset($this->_elementError) && $this->_elementError != '') ? ' elementErrorHighlight' : '';
 			$advancedClass = $this->getAdvancedSelectClass();
 
@@ -250,7 +262,7 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 			$layout = $this->getLayout('form');
 			$layoutData = new stdClass;
 			$layoutData->id = $id;
-			$layoutData->separator = $params->get('birthday_separatorlabel', FText::_('/'));
+			$layoutData->separator = $params->get('birthday_separatorlabel', Text::_('/'));
 			$layoutData->attribs = $attributes;
 			$layoutData->day_name = preg_replace('#(\[\])$#', '[0]', $name);
 			$layoutData->day_id = $id . '_0';
@@ -279,8 +291,8 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 	 */
 	private function _monthLabels()
 	{
-		return array(FText::_('January'), FText::_('February'), FText::_('March'), FText::_('April'), FText::_('May'), FText::_('June'),
-		FText::_('July'), FText::_('August'), FText::_('September'), FText::_('October'), FText::_('November'), FText::_('December'));
+		return array(Text::_('January'), Text::_('February'), Text::_('March'), Text::_('April'), Text::_('May'), Text::_('June'),
+		Text::_('July'), Text::_('August'), Text::_('September'), Text::_('October'), Text::_('November'), Text::_('December'));
 	}
 
 	/**
@@ -290,7 +302,7 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 	private function _dayOptions()
 	{
 		$params = $this->getParams();
-		$days = array(JHTML::_('select.option', '', $params->get('birthday_daylabel', FText::_('DAY'))));
+		$days = array(JHTML::_('select.option', '', $params->get('birthday_daylabel', Text::_('DAY'))));
 
 		for ($i = 1; $i < 32; $i++)
 		{
@@ -308,7 +320,7 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 	private function _monthOptions()
 	{
 		$params = $this->getParams();
-		$months = array(JHTML::_('select.option', '', $params->get('birthday_monthlabel', FText::_('MONTH'))));
+		$months = array(JHTML::_('select.option', '', $params->get('birthday_monthlabel', Text::_('MONTH'))));
 		$monthLabels = $this->_monthLabels();
 
 		for ($i = 0; $i < count($monthLabels); $i++)
@@ -326,7 +338,7 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 	private function _yearOptions()
 	{
 		$params = $this->getParams();
-		$years = array(JHTML::_('select.option', '', $params->get('birthday_yearlabel', FText::_('YEAR'))));
+		$years = array(JHTML::_('select.option', '', $params->get('birthday_yearlabel', Text::_('YEAR'))));
 
 		// Jaanus: now we can choose one exact year A.C to begin the dropdown AND would the latest year be current year or some years earlier/later.
 		$date = date('Y') + (int) $params->get('birthday_forward', 0);
@@ -441,7 +453,7 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 		$params = $this->getParams();
 		$id = $this->getHTMLId($repeatCounter);
 		$opts = $this->getElementJSOptions($repeatCounter);
-		$opts->separator = $params->get('birthday_separatorlabel', FText::_('/'));
+		$opts->separator = $params->get('birthday_separatorlabel', Text::_('/'));
 
 		return array('FbBirthday', $id, $opts);
 	}
@@ -473,12 +485,12 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 	{
 		$groupModel = $this->getGroup();
 		/**
-		 * Jaanus: json_decode replaced with FabrikWorker::JSONtoData that made visible also single data in repeated group
+		 * Jaanus: json_decode replaced with Worker::JSONtoData that made visible also single data in repeated group
 		 *
 		 * Jaanus: removed condition canrepeat() from renderListData: weird result such as 05",null,
 		 * "1940.07.["1940 (2011) when not repeating but still join and merged. Using isJoin() instead
 		*/
-		$data = $groupModel->isJoin() ? FabrikWorker::JSONtoData($data, true) : array($data);
+		$data = $groupModel->isJoin() ? Worker::JSONtoData($data, true) : array($data);
 		$data = (array) $data;
 		$format = array();
 
@@ -504,15 +516,15 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 
 	private function listFormat($d)
 	{
-		if (!FabrikWorker::isDate($d))
+		if (!Worker::isDate($d))
 		{
 			return '';
 		}
 
 		$params = $this->getParams();
 
-		$monthLabels = array(FText::_('January'), FText::_('February'), FText::_('March'), FText::_('April'), FText::_('May'), FText::_('June'),
-				FText::_('July'), FText::_('August'), FText::_('September'), FText::_('October'), FText::_('November'), FText::_('December'));
+		$monthLabels = array(Text::_('January'), Text::_('February'), Text::_('March'), Text::_('April'), Text::_('May'), Text::_('June'),
+				Text::_('July'), Text::_('August'), Text::_('September'), Text::_('October'), Text::_('November'), Text::_('December'));
 
 		$monthNumbers = array('01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12');
 		$daySys = array('01', '02', '03', '04', '05', '06', '07', '08', '09');
@@ -536,7 +548,7 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 		$nextYear = date('Y') + 1;
 		$lastYear = date('Y') - 1;
 		$thisYear = date('Y');
-		$year = JString::ltrim($year, '0');
+		$year = StringHelper::ltrim($year, '0');
 		$dmy = $day . '.' . $month . '.' . $year;
 		$mdy = $month . '.' . $day . '.' . $year;
 		$dmy_slash = $day . '/' . $month . '/' . $year;
@@ -710,7 +722,7 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 		$params = $this->getParams();
 		$element = $this->getElement();
 
-		if ($element->filter_type === 'dropdown' && $params->get('list_filter_layout', 'individual') === 'day_mont_year')
+		if ($element->get('filter_type') === 'dropdown' && $params->get('list_filter_layout', 'individual') === 'day_mont_year')
 		{
 			$layout = $this->getLayout('filter-select-day-month-year');
 			$elName = $this->getFullName(true, false);
@@ -747,10 +759,10 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 
 	protected function getRangedFilterValue($value, $condition = '')
 	{
-		$db = FabrikWorker::getDbo();
+		$db = Worker::getDbo();
 		$element = $this->getElement();
 
-		if ($element->filter_type === 'range' || strtoupper($condition) === 'BETWEEN')
+		if ($element->get('filter_type') === 'range' || strtoupper($condition) === 'BETWEEN')
 		{
 			if (strtotime($value[0]) > strtotime($value[1]))
 			{
@@ -816,7 +828,6 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 	 *
 	 * @return  string	sql query part e,g, "key = value"
 	 */
-
 	public function getFilterQuery($key, $condition, $value, $originalValue, $type = 'normal')
 	{
 		$params = $this->getParams();
@@ -827,10 +838,10 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 			switch ($condition)
 			{
 				case 'earlierthisyear':
-					throw new UnexpectedValueException('The birthday element can not deal with "Earlier This Year" prefilters');
+					throw new \UnexpectedValueException('The birthday element can not deal with "Earlier This Year" prefilters');
 					break;
 				case 'laterthisyear':
-					throw new UnexpectedValueException('The birthday element can not deal with "Later This Year" prefilters');
+					throw new \UnexpectedValueException('The birthday element can not deal with "Later This Year" prefilters');
 					break;
 				case 'today':
 					$search = array(date('Y'), date('n'), date('j'));
@@ -868,7 +879,7 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 			}
 		}
 
-		if ($element->filter_type === 'dropdown' && $params->get('list_filter_layout', 'individual') === 'day_mont_year')
+		if ($element->get('filter_type') === 'dropdown' && $params->get('list_filter_layout', 'individual') === 'day_mont_year')
 		{
 			return $this->_dayMonthYearFilterQuery($key, $originalValue);
 		}

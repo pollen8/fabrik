@@ -11,6 +11,9 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Fabrik\Helpers\Html;
+use Fabrik\Helpers\Text;
+
 jimport('joomla.application.component.view');
 
 /**
@@ -43,16 +46,16 @@ class FabrikViewNvd3_Chart extends JViewLegacy
 
 		if (!$model->canView())
 		{
-			echo FText::_('JERROR_ALERTNOAUTHOR');
+			echo Text::_('JERROR_ALERTNOAUTHOR');
 
 			return false;
 		}
 
-		$srcs = FabrikHelperHTML::framework();
-		FabrikHelperHTML::styleSheet('plugins/fabrik_visualization/nvd3_chart/lib/novus-nvd3/src/nv.d3.css');
+		$srcs = Html::framework();
+		Html::styleSheet('plugins/fabrik_visualization/nvd3_chart/lib/novus-nvd3/src/nv.d3.css');
 
-		$srcs[] = 'media/com_fabrik/js/listfilter.js';
-		$srcs[] = 'media/com_fabrik/js/advanced-search.js';
+		$srcs['FbListFilter'] = 'media/com_fabrik/js/listfilter.js';
+		$srcs['AdvancedSearch'] = 'media/com_fabrik/js/advanced-search.js';
 
 		$lib = COM_FABRIK_LIVESITE . 'plugins/fabrik_visualization/nvd3_chart/lib/novus-nvd3/';
 		$document->addScript($lib . 'lib/d3.v2.js');
@@ -72,7 +75,7 @@ class FabrikViewNvd3_Chart extends JViewLegacy
 		$this->requiredFiltersFound = $model->getRequiredFiltersFound();
 		$params = $model->getParams();
 		$js = $model->js();
-		FabrikHelperHTML::addScriptDeclaration($js);
+		Html::addScriptDeclaration($js);
 
 		$this->params = $params;
 		$viewName = $this->getName();
@@ -88,7 +91,7 @@ class FabrikViewNvd3_Chart extends JViewLegacy
 		$tpl = $params->get('nvd3_chart_layout', $tpl);
 		$this->_setPath('template', JPATH_ROOT . '/plugins/fabrik_visualization/nvd3_chart/views/nvd3_chart/tmpl/' . $tpl);
 
-		FabrikHelperHTML::stylesheetFromPath(
+		Html::stylesheetFromPath(
 			'plugins/fabrik_visualization/nvd3_chart/views/nvd3_chart/tmpl/' . $tpl . '/template.css');
 
 		// Assign something to Fabrik.blocks to ensure we can clear filters
@@ -97,11 +100,11 @@ class FabrikViewNvd3_Chart extends JViewLegacy
 		$js .= "\n" . "Fabrik.addBlock('$ref', $ref);";
 		$js .= $model->getFilterJs();
 
-		FabrikHelperHTML::iniRequireJs($model->getShim());
-		FabrikHelperHTML::script($srcs, $js, '-min.js', array('Window', 'FbListFilter'));
+		Html::iniRequireJs($model->getShim());
+		Html::script($srcs, $js);
 
 		$text = $this->loadTemplate();
-		FabrikHelperHTML::runContentPlugins($text);
+		Html::runContentPlugins($text);
 		echo $text;
 	}
 }

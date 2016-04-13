@@ -8,12 +8,22 @@
  * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
+namespace Fabrik\Plugins\Element;
+
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-jimport('joomla.application.component.model');
-
-require_once JPATH_SITE . '/components/com_fabrik/models/element.php';
+use \JHtml;
+use \stdClass;
+use Fabrik\Helpers\ArrayHelper;
+use Fabrik\Helpers\Worker;
+use Fabrik\Helpers\StringHelper;
+use \JComponentHelper;
+use Fabrik\Helpers\Text;
+use \RuntimeException;
+use \JApplication;
+use \JApplicationHelper;
+use \JVersion;
 
 /**
  * Plugin element to render thumbs-up/down widget
@@ -22,7 +32,7 @@ require_once JPATH_SITE . '/components/com_fabrik/models/element.php';
  * @subpackage  Fabrik.element.thumbs
  * @since       3.0
  */
-class PlgFabrik_ElementThumbs extends PlgFabrik_Element
+class Thumbs extends Element
 {
 	/**
 	 * States the element should be ignored from advanced search all queries.
@@ -71,10 +81,10 @@ class PlgFabrik_ElementThumbs extends PlgFabrik_Element
 	public function renderListData($data, stdClass &$thisRow, $opts = array())
 	{
 		$input = $this->app->input;
-		$j3 = FabrikWorker::j3();
+		$j3 = Worker::j3();
 		$params = $this->getParams();
 		$imagePath = COM_FABRIK_LIVESITE . 'plugins/fabrik_element/thumbs/images/';
-		$data = FabrikWorker::JSONtoData($data, true);
+		$data = Worker::JSONtoData($data, true);
 		$listId = $this->getlistModel()->getTable()->id;
 		$formModel = $this->getFormModel();
 		$formId = $formModel->getId();
@@ -105,7 +115,7 @@ class PlgFabrik_ElementThumbs extends PlgFabrik_Element
 			}
 
 			$count = $this->_renderListData($data[$i], $thisRow);
-			$count = FabrikWorker::JSONtoData($count, true);
+			$count = Worker::JSONtoData($count, true);
 			$countUp = $count[0];
 			$countDown = $count[1];
 			$str = array();
@@ -178,7 +188,7 @@ class PlgFabrik_ElementThumbs extends PlgFabrik_Element
 	 */
 	protected function getThumbsCount($data, $listId, $formId, $rowId)
 	{
-		$db = FabrikWorker::getDbo();
+		$db = Worker::getDbo();
 		$elementId = $this->getElement()->id;
 
 		$sql = isset($this->special) ? " AND special = " . $db->q($this->special) : '';
@@ -208,7 +218,7 @@ class PlgFabrik_ElementThumbs extends PlgFabrik_Element
 	{
 		$listId = isset($this->listid) ? $this->listid : $this->getListModel()->getId();
 		$formId = isset($this->formid) ? $this->formid : $this->getFormModel()->getId();
-		$db = FabrikWorker::getDbo();
+		$db = Worker::getDbo();
 		$return = array();
 
 		foreach (array('up', 'down') as $dir)
@@ -245,7 +255,7 @@ class PlgFabrik_ElementThumbs extends PlgFabrik_Element
 		$input = $this->app->input;
 		$id = $this->getHTMLId($repeatCounter);
 		$params = $this->getParams();
-		$j3 = FabrikWorker::j3();
+		$j3 = Worker::j3();
 
 		if ($input->get('view') == 'form' && ((bool) $params->get('rate_in_from', false) === false || $this->getFormModel()->isNewRecord()))
 		{
@@ -283,9 +293,9 @@ class PlgFabrik_ElementThumbs extends PlgFabrik_Element
 		}
 
 
-		$id2 = FabrikString::rtrimword($id, '_ro');
-		$count = $this->_renderListData(FArrayHelper::getValue($data, $id2), $thisRow);
-		$count = FabrikWorker::JSONtoData($count, true);
+		$id2 = StringHelper::rtrimword($id, '_ro');
+		$count = $this->_renderListData(ArrayHelper::getValue($data, $id2), $thisRow);
+		$count = Worker::JSONtoData($count, true);
 
 
 		$layout = $this->getLayout('form');
@@ -343,7 +353,7 @@ class PlgFabrik_ElementThumbs extends PlgFabrik_Element
 	 */
 	protected function getMyThumb($listId, $formId, $rowId)
 	{
-		$db = FabrikWorker::getDbo();
+		$db = Worker::getDbo();
 		$elementId = $this->getElement()->id;
 		$userId = $this->user->get('id');
 		$query = $db->getQuery(true);
@@ -403,7 +413,7 @@ class PlgFabrik_ElementThumbs extends PlgFabrik_Element
 	 */
 	private function getCookieName($listId, $rowId)
 	{
-		$cookieName = 'thumb-table_' . $listId . '_row_' . $rowId . '_ip_' . FabrikString::filteredIp();
+		$cookieName = 'thumb-table_' . $listId . '_row_' . $rowId . '_ip_' . StringHelper::filteredIp();
 		jimport('joomla.utilities.utility');
 		$version = new JVersion;
 
@@ -430,7 +440,7 @@ class PlgFabrik_ElementThumbs extends PlgFabrik_Element
 	private function deleteThumb($listId, $formId, $rowId, $thumb)
 	{
 		$userId = $this->getUserId($listId, $rowId);
-		$db = FabrikWorker::getDbo();
+		$db = Worker::getDbo();
 		$query = $db->getQuery(true);
 		$query->delete('#__{package}_thumbs')->where('user_id = ' . $db->q($userId))
 		->where('listid = ' . $listId . ' AND row_id = ' . $rowId . ' AND thumb = ' . $db->q($thumb));
@@ -482,7 +492,7 @@ class PlgFabrik_ElementThumbs extends PlgFabrik_Element
 			return;
 		}
 
-		$db = FabrikWorker::getDbo();
+		$db = Worker::getDbo();
 		$date = $this->date->toSql();
 		$userId = $this->getUserId($listId, $rowId);
 		$elementId = $this->getElement()->id;
@@ -532,7 +542,7 @@ class PlgFabrik_ElementThumbs extends PlgFabrik_Element
 	 */
 	private function updateDB($listId, $formId, $rowId, $elementId)
 	{
-		$db = FabrikWorker::getDbo();
+		$db = Worker::getDbo();
 		$name = $this->getElement()->name;
 
 		// Name can be blank for comments
@@ -590,7 +600,7 @@ class PlgFabrik_ElementThumbs extends PlgFabrik_Element
 		$this->lang->load('plg_fabrik_element_thumbs', JPATH_BASE . '/plugns/fabrik_element/thumbs');
 		$opts = new stdClass;
 		$opts->canUse = $this->canUse();
-		$opts->noAccessMsg = trim(FText::_($params->get('thumbs_no_access_msg', FText::_('PLG_ELEMENT_THUMBS_NO_ACCESS_MSG_DEFAULT'))));
+		$opts->noAccessMsg = trim(Text::_($params->get('thumbs_no_access_msg', Text::_('PLG_ELEMENT_THUMBS_NO_ACCESS_MSG_DEFAULT'))));
 		$opts->row_id = $rowId;
 		$opts->myThumb = $this->getMyThumb($listId, $formId, $rowId);
 		$opts->elid = $this->getElement()->id;
@@ -645,7 +655,7 @@ class PlgFabrik_ElementThumbs extends PlgFabrik_Element
 
 		$opts = new stdClass;
 		$opts->canUse = $this->canUse();
-		$opts->noAccessMsg = FText::_($params->get('thumbs_no_access_msg', FText::_('PLG_ELEMENT_THUMBS_NO_ACCESS_MSG_DEFAULT')));
+		$opts->noAccessMsg = Text::_($params->get('thumbs_no_access_msg', Text::_('PLG_ELEMENT_THUMBS_NO_ACCESS_MSG_DEFAULT')));
 		$opts->listid = $list->id;
 		$opts->formid = $this->getFormModel()->getId();
 		$opts->imagepath = COM_FABRIK_LIVESITE . 'plugins/fabrik_element/thumbs/images/';
@@ -736,7 +746,7 @@ class PlgFabrik_ElementThumbs extends PlgFabrik_Element
 	 */
 	public function install()
 	{
-		$db = FabrikWorker::getDbo();
+		$db = Worker::getDbo();
 		$query = "CREATE TABLE IF NOT EXISTS  `#__{package}_thumbs` (
 	`user_id` VARCHAR( 255 ) NOT NULL ,
 	`listid` INT( 6 ) NOT NULL ,

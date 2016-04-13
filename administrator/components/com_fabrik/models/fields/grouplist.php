@@ -11,7 +11,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-require_once JPATH_ADMINISTRATOR . '/components/com_fabrik/helpers/element.php';
+use Fabrik\Helpers\Worker;
+use Fabrik\Helpers\Text;
 
 jimport('joomla.html.html');
 jimport('joomla.form.formfield');
@@ -52,7 +53,7 @@ class JFormFieldGroupList extends JFormFieldGroupedList
 
 		// Initialize variables.
 		$options = array();
-		$db = FabrikWorker::getDbo(true);
+		$db = Worker::getDbo(true);
 		$query = $db->getQuery(true);
 
 		$query->select('g.id AS value, g.name AS text, f.label AS form');
@@ -71,7 +72,7 @@ class JFormFieldGroupList extends JFormFieldGroupedList
 		$sel = new stdClass;
 		$sel->value = '';
 		$sel->form = '';
-		$sel->text = FText::_('COM_FABRIK_PLEASE_SELECT');
+		$sel->text = Text::_('COM_FABRIK_PLEASE_SELECT');
 		array_unshift($options, $sel);
 
 		foreach ($options as $option)

@@ -11,6 +11,9 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Fabrik\Helpers\Html;
+use Fabrik\Helpers\Text;
+
 jimport('joomla.application.component.view');
 
 /**
@@ -32,9 +35,9 @@ class FabrikViewCron extends FabrikView
 
 	public function display($tmpl = 'default')
 	{
-		$srcs  = FabrikHelperHTML::framework();
+		$srcs  = Html::framework();
 		$input = $this->app->input;
-		FabrikHelperHTML::script($srcs);
+		Html::script($srcs);
 		$model       = $this->getModel();
 		$usersConfig = JComponentHelper::getParams('com_fabrik');
 		$model->setId($input->getInt('id', $usersConfig->get('visualizationid', $input->getInt('visualizationid', 0))));
@@ -47,7 +50,7 @@ class FabrikViewCron extends FabrikView
 
 		if ($visualization->published == 0)
 		{
-			$this->app->enqueueMessage(FText::_('COM_FABRIK_SORRY_THIS_VISUALIZATION_IS_UNPUBLISHED'), 'warning');
+			$this->app->enqueueMessage(Text::_('COM_FABRIK_SORRY_THIS_VISUALIZATION_IS_UNPUBLISHED'), 'warning');
 
 			return '';
 		}

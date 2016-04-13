@@ -12,9 +12,12 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Fabrik\Helpers\Html;
+use Fabrik\Helpers\Text;
+
 JHtml::addIncludePath(JPATH_COMPONENT . '/helpers/html');
 JHtml::_('behavior.tooltip');
-FabrikHelperHTML::formvalidation();
+Html::formvalidation();
 JHtml::_('behavior.keepalive');
 JHTML::stylesheet('media/com_fabrik/css/package.css');
 ?>
@@ -33,7 +36,7 @@ Joomla.submitbutton = function(task)
 		submitform(task);
 	}
 	else {
-		alert('<?php echo $this->escape(FText::_('JGLOBAL_VALIDATION_FORM_FAILED'));?>');
+		alert('<?php echo $this->escape(Text::_('JGLOBAL_VALIDATION_FORM_FAILED'));?>');
 	}
 }
 
@@ -50,7 +53,7 @@ submitform = function(task){
 			echo $field->input;
 		endforeach; ?>
 		<fieldset class="adminform">
-			<legend><?php echo FText::_('COM_FABRIK_DETAILS');?></legend>
+			<legend><?php echo Text::_('COM_FABRIK_DETAILS');?></legend>
 			<ul class="adminformlist twocols">
 				<?php foreach ($this->form->getFieldset('details') as $field): ?>
 				<li>
@@ -81,14 +84,14 @@ submitform = function(task){
 <a id="redo" href="#">Redo</a> <br />
 -->
 	<fieldset class="adminform">
-	<legend><?php echo FText::_('COM_FABRIK_LISTS')?></legend>
+	<legend><?php echo Text::_('COM_FABRIK_LISTS')?></legend>
 		<ul class="adminformlist">
 			<li>
 				<?php echo JHtml::_('select.genericlist', $this->listOpts, 'list-pick[]', 'multiple="true" size="10"');?>
 			</li>
 			<li>
-				<button id="add-list"><?php echo FText::_('COM_FABRIK_ADD')?> &gt;</button>
-				<button id="remove-list"><?php echo FText::_('COM_FABRIK_REMOVE')?> &lt;</button>
+				<button id="add-list"><?php echo Text::_('COM_FABRIK_ADD')?> &gt;</button>
+				<button id="remove-list"><?php echo Text::_('COM_FABRIK_REMOVE')?> &lt;</button>
 			</li>
 			<li>
 				<?php echo JHtml::_('select.genericlist', $this->selListOpts, 'blocks[list][]', 'multiple="true" size="10"');?>
@@ -100,14 +103,14 @@ submitform = function(task){
 	<div class="clr"></div>
 
 	<fieldset class="adminform">
-		<legend><?php echo FText::_('COM_FABRIK_FORMS')?></legend>
+		<legend><?php echo Text::_('COM_FABRIK_FORMS')?></legend>
 		<ul class="adminformlist">
 			<li>
 				<?php echo JHtml::_('select.genericlist', $this->formOpts, 'form-pick', 'multiple="true" size="10"')?>
 			</li>
 			<li>
-				<button id="add-form"><?php echo FText::_('COM_FABRIK_ADD')?> &gt;</button>
-				<button id="remove-form"><?php echo FText::_('COM_FABRIK_REMOVE')?> &lt;</button>
+				<button id="add-form"><?php echo Text::_('COM_FABRIK_ADD')?> &gt;</button>
+				<button id="remove-form"><?php echo Text::_('COM_FABRIK_REMOVE')?> &lt;</button>
 			</li>
 			<li>
 				<?php echo JHtml::_('select.genericlist', $this->selFormOpts, 'blocks[form][]', 'multiple="true" size="10"')?>

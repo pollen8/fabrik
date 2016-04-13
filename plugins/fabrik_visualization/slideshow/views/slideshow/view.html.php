@@ -11,6 +11,10 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Fabrik\Helpers\Html;
+use Fabrik\Helpers\Text;
+use Fabrik\Helpers\Worker;
+
 jimport('joomla.application.component.view');
 
 /**
@@ -35,8 +39,8 @@ class FabrikViewSlideshow extends JViewLegacy
 	{
 		$app = JFactory::getApplication();
 		$input = $app->input;
-		$j3 = FabrikWorker::j3();
-		$srcs = FabrikHelperHTML::framework();
+		$j3 = Worker::j3();
+		$srcs = Html::framework();
 		$model = $this->getModel();
 		$usersConfig = JComponentHelper::getParams('com_fabrik');
 		$model->setId($input->getInt('id', $usersConfig->get('visualizationid', $input->getInt('visualizationid', 0))));
@@ -44,7 +48,7 @@ class FabrikViewSlideshow extends JViewLegacy
 
 		if (!$model->canView())
 		{
-			echo FText::_('JERROR_ALERTNOAUTHOR');
+			echo Text::_('JERROR_ALERTNOAUTHOR');
 
 			return false;
 		}
@@ -60,11 +64,11 @@ class FabrikViewSlideshow extends JViewLegacy
 		$this->filterFormURL = $this->get('FilterFormURL');
 		$this->params = $model->getParams();
 		$this->containerId = $this->get('ContainerId');
-		$srcs[] = 'media/com_fabrik/js/listfilter.js';
+		$srcs['FbListFilter'] = 'media/com_fabrik/js/listfilter.js';
 
 		if ($this->get('RequiredFiltersFound'))
 		{
-			$srcs[] = 'components/com_fabrik/libs/slideshow2/js/slideshow.js';
+			$srcs['Slideshow2'] = 'components/com_fabrik/libs/slideshow2/js/slideshow.js';
 			$mode = $params->get('slideshow_viz_type', 1);
 
 			switch ($mode)
@@ -72,34 +76,34 @@ class FabrikViewSlideshow extends JViewLegacy
 				case 1:
 					break;
 				case 2:
-					$srcs[] = 'components/com_fabrik/libs/slideshow2/js/slideshow.kenburns.js';
+					$srcs['Kenburns'] = 'components/com_fabrik/libs/slideshow2/js/slideshow.kenburns.js';
 					break;
 				case 3:
-					$srcs[] = 'components/com_fabrik/libs/slideshow2/js/slideshow.push.js';
+					$srcs['Push'] = 'components/com_fabrik/libs/slideshow2/js/slideshow.push.js';
 					break;
 				case 4:
-					$srcs[] = 'components/com_fabrik/libs/slideshow2/js/slideshow.fold.js';
+					$srcs['Fold'] = 'components/com_fabrik/libs/slideshow2/js/slideshow.fold.js';
 					break;
 				default:
 					break;
 			}
 
 			JHTML::stylesheet('components/com_fabrik/libs/slideshow2/css/slideshow.css');
-			$srcs[] = 'plugins/fabrik_visualization/slideshow/slideshow.js';
+			$srcs['SlideShow'] = 'plugins/fabrik_visualization/slideshow/slideshow.js';
 		}
 
-		FabrikHelperHTML::slimbox();
-		FabrikHelperHTML::iniRequireJs($model->getShim());
-		FabrikHelperHTML::script($srcs, $this->js, '-min.js', array('Window', 'FbListFilter'));
+		Html::slimbox();
+		Html::iniRequireJs($model->getShim());
+		Html::script($srcs, $this->js);
 
-		//FabrikHelperHTML::slimbox();
+		//Html::slimbox();
 
 		$tpl = $j3 ? 'bootstrap' : 'default';
 		$tpl = $params->get('slideshow_viz_layout', $tpl);
 		$tmplpath = $model->pathBase . 'slideshow/views/slideshow/tmpl/' . $tpl;
 		$this->_setPath('template', $tmplpath);
-		FabrikHelperHTML::stylesheetFromPath('plugins/fabrik_visualization/slideshow/views/slideshow/tmpl/' . $tpl . '/template.css');
-		FabrikHelperHTML::stylesheetFromPath('plugins/fabrik_visualization/slideshow/views/slideshow/tmpl/' . $tpl . '/custom.css');
+		Html::stylesheetFromPath('plugins/fabrik_visualization/slideshow/views/slideshow/tmpl/' . $tpl . '/template.css');
+		Html::stylesheetFromPath('plugins/fabrik_visualization/slideshow/views/slideshow/tmpl/' . $tpl . '/custom.css');
 		echo parent::display();
 	}
 }

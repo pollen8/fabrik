@@ -13,6 +13,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Fabrik\Helpers\Text;
+
 jimport('joomla.application.component.view');
 
 /**
@@ -35,7 +37,6 @@ class FabrikViewGooglemap extends JViewLegacy
 
 	public function display($tmpl = 'default')
 	{
-		$document = JFactory::getDocument();
 		$app = JFactory::getApplication();
 		$input = $app->input;
 		$usersConfig = JComponentHelper::getParams('com_fabrik');
@@ -45,7 +46,7 @@ class FabrikViewGooglemap extends JViewLegacy
 
 		if (!$model->canView())
 		{
-			echo FText::_('JERROR_ALERTNOAUTHOR');
+			echo Text::_('JERROR_ALERTNOAUTHOR');
 
 			return false;
 		}

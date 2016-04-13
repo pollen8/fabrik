@@ -11,6 +11,9 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Fabrik\Helpers\Html;
+use Fabrik\Helpers\Worker;
+
 jimport('joomla.application.component.view');
 
 /**
@@ -45,11 +48,9 @@ class FabrikAdminViewHome extends JViewLegacy
 
 	public function display($tpl = null)
 	{
-		$app = JFactory::getApplication();
-		$input = $app->input;
-		$srcs = FabrikHelperHTML::framework();
-		FabrikHelperHTML::script($srcs);
-		$db = FabrikWorker::getDbo(true);
+		$srcs = Html::framework();
+		Html::script($srcs);
+		$db = Worker::getDbo(true);
 		$query = $db->getQuery(true);
 		$query->select('*')->from('#__{package}_log')->where('message_type != ""')->order('timedate_created DESC');
 		$db->setQuery($query, 0, 10);
@@ -59,7 +60,7 @@ class FabrikAdminViewHome extends JViewLegacy
 		FabrikAdminHelper::addSubmenu('home');
 		FabrikAdminHelper::setViewLayout($this);
 
-		if (FabrikWorker::j3())
+		if (Worker::j3())
 		{
 			$this->sidebar = JHtmlSidebar::render();
 		}

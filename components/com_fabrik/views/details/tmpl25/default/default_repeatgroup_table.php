@@ -12,6 +12,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Fabrik\Helpers\ArrayHelper;
+
 $group = $this->group;
 ?>
 <table class="repeatGroupTable fabrikList">
@@ -19,7 +21,7 @@ $group = $this->group;
 		<tr>
 	<?php
 	// Add in the table heading
-	$firstGroup = FArrayHelper::getValue($group->subgroups, 0, array());
+	$firstGroup = ArrayHelper::getValue($group->subgroups, 0, array());
 	foreach ($firstGroup as $el) :
 		$style = $el->hidden ? 'style="display:none"' : '';
 		?>

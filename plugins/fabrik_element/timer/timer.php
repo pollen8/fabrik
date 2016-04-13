@@ -8,13 +8,14 @@
  * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
+namespace Fabrik\Plugins\Element;
+
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-jimport('joomla.application.component.model');
-
-require_once JPATH_SITE . '/components/com_fabrik/models/element.php';
-require_once JPATH_SITE . '/plugins/fabrik_element/date/date.php';
+use \stdClass;
+use \JFactory;
+use Fabrik\Helpers\Text;
 
 /**
  * Plugin element to render a user controllable stopwatch timer
@@ -23,8 +24,7 @@ require_once JPATH_SITE . '/plugins/fabrik_element/date/date.php';
  * @subpackage  Fabrik.element.timer
  * @since       3.0
  */
-
-class PlgFabrik_ElementTimer extends PlgFabrik_Element
+class Timer extends Element
 {
 	/**
 	 * Does the element contain sub elements e.g checkboxes radiobuttons
@@ -102,8 +102,8 @@ class PlgFabrik_ElementTimer extends PlgFabrik_Element
 		$id = $this->getHTMLId($repeatCounter);
 		$opts = $this->getElementJSOptions($repeatCounter);
 		$opts->autostart = (bool) $params->get('timer_autostart', false);
-		JText::script('PLG_ELEMENT_TIMER_START');
-		JText::script('PLG_ELEMENT_TIMER_STOP');
+		Text::script('PLG_ELEMENT_TIMER_START');
+		Text::script('PLG_ELEMENT_TIMER_STOP');
 
 		return array('FbTimer', $id, $opts);
 	}
@@ -133,8 +133,8 @@ class PlgFabrik_ElementTimer extends PlgFabrik_Element
 	/**
 	 * Build the query for the avg calculation
 	 *
-	 * @param   model  &$listModel  list model
-	 * @param   array  $labels      Labels
+	 * @param   \FabrikFEModelList  &$listModel  list model
+	 * @param   array               $labels      Labels
 	 *
 	 * @return  string	sql statement
 	 */

@@ -12,7 +12,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Joomla\Utilities\ArrayHelper;
+use Fabrik\Helpers\ArrayHelper;
+use Fabrik\Helpers\Text;
 
 jimport('joomla.application.component.controllerform');
 
@@ -68,14 +69,14 @@ class FabControllerForm extends JControllerForm
 
 		if (empty($cid))
 		{
-			throw new Exception(FText::_($this->text_prefix . '_NO_ITEM_SELECTED'));
+			throw new Exception(Text::_($this->text_prefix . '_NO_ITEM_SELECTED'));
 		}
 		else
 		{
 			if ($model->copy())
 			{
 				$nText = $this->text_prefix . '_N_ITEMS_COPIED';
-				$this->setMessage(JText::plural($nText, count($cid)));
+				$this->setMessage(Text::plural($nText, count($cid)));
 			}
 		}
 

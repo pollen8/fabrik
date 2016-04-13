@@ -55,15 +55,15 @@ JLoader::register('JElement', JPATH_SITE . '/administrator/components/com_fabrik
 require_once JPATH_ADMINISTRATOR . '/components/com_fabrik/tables/fabtable.php';
 require_once COM_FABRIK_FRONTEND . '/models/fabrik.php';
 require_once COM_FABRIK_FRONTEND . '/helpers/arrayhelper.php';
-require_once COM_FABRIK_FRONTEND . '/helpers/html.php';
 require_once COM_FABRIK_FRONTEND . '/models/parent.php';
-
-require_once COM_FABRIK_FRONTEND . '/helpers/parent.php';
-require_once COM_FABRIK_FRONTEND . '/helpers/string.php';
 require_once COM_FABRIK_FRONTEND . '/models/plugin.php';
 require_once COM_FABRIK_FRONTEND . '/models/element.php';
+require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
 require_once COM_FABRIK_FRONTEND . '/models/elementlist.php';
 require_once COM_FABRIK_FRONTEND . '/views/FabrikView.php';
+
+// Legacy requires to ensure old F3.4 helper class names work in 3.5
+require_once COM_FABRIK_FRONTEND . '/helpers/legacy/aliases.php';
 
 if ($app->isAdmin())
 {

@@ -11,6 +11,10 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Fabrik\Helpers\ArrayHelper;
+use Fabrik\Helpers\Html;
+use Fabrik\Helpers\Worker;
+
 /**
  * Fileupload adaptor to render uploaded images
  *
@@ -94,13 +98,13 @@ class ImageRenderModel
 			{
 				if (is_array($formModel->data))
 				{
-					$title = FArrayHelper::getValue($formModel->data, $title_name, '');
+					$title = ArrayHelper::getValue($formModel->data, $title_name, '');
 				}
 			}
 		}
 
-		$bits  = FabrikWorker::JSONtoData($title, true);
-		$title = FArrayHelper::getValue($bits, $model->_repeatGroupCounter, $title);
+		$bits  = Worker::JSONtoData($title, true);
+		$title = ArrayHelper::getValue($bits, $model->_repeatGroupCounter, $title);
 		$title = htmlspecialchars(strip_tags($title, ENT_NOQUOTES));
 		$file  = $model->getStorage()->getFileUrl($file);
 
@@ -131,7 +135,7 @@ class ImageRenderModel
 
 		$layout                     = $model->getLayout('image');
 		$displayData                = new stdClass;
-		$displayData->lightboxAttrs = FabrikHelperHTML::getLightboxAttributes($title, $n);
+		$displayData->lightboxAttrs = Html::getLightboxAttributes($title, $n);
 		$displayData->fullSize      = $model->storage->preRenderPath($fullSize);
 		$displayData->file          = $file;
 		$displayData->makeLink      = $params->get('make_link', true) && !$this->fullImageInRecord($params);

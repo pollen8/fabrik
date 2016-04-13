@@ -8,10 +8,16 @@
  * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
+namespace Fabrik\Plugins\Element;
+
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-require_once JPATH_SITE . '/components/com_fabrik/models/element.php';
+use \JHtml;
+use \stdClass;
+use \JFactory;
+use \DateTimeZone;
+use Fabrik\Helpers\Text;
 
 /**
  * Plugin element to render a timestamp
@@ -20,7 +26,7 @@ require_once JPATH_SITE . '/components/com_fabrik/models/element.php';
  * @subpackage  Fabrik.element.timestamp
  * @since       3.0
  */
-class PlgFabrik_ElementTimestamp extends PlgFabrik_Element
+class Timestamp extends Element
 {
 	/**
 	 * If the element 'Include in search all' option is set to 'default' then this states if the
@@ -88,7 +94,7 @@ class PlgFabrik_ElementTimestamp extends PlgFabrik_Element
 	{
 		$params = $this->getParams();
 		$tz_offset = $params->get('gmt_or_local', '0') == '0';
-		$data = JHTML::_('date', $data, FText::_($params->get('timestamp_format', 'DATE_FORMAT_LC2')), $tz_offset);
+		$data = JHTML::_('date', $data, Text::_($params->get('timestamp_format', 'DATE_FORMAT_LC2')), $tz_offset);
 
 		return parent::renderListData($data, $thisRow, $opts);
 	}

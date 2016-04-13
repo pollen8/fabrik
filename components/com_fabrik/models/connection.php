@@ -11,6 +11,10 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Fabrik\Helpers\Worker;
+use Fabrik\Helpers\StringHelper;
+use Fabrik\Helpers\Text;
+
 jimport('joomla.application.component.model');
 
 /**
@@ -123,7 +127,7 @@ class FabrikFEModelConnection extends FabModel
 			return;
 		}
 
-		$crypt = FabrikWorker::getCrypt();
+		$crypt = Worker::getCrypt();
 		$params = json_decode($cnn->params);
 
 		if (is_object($params) && $params->encryptedPw == true)
@@ -197,7 +201,7 @@ class FabrikFEModelConnection extends FabModel
 		{
 			if ($this->isJdb())
 			{
-				$db = FabrikWorker::getDbo();
+				$db = Worker::getDbo();
 			}
 			else
 			{
@@ -225,7 +229,7 @@ class FabrikFEModelConnection extends FabModel
 				 */
 				if ($cn->default == 1 && $input->get('task') !== 'test')
 				{
-					self::$dbs[$cn->id] = FabrikWorker::getDbo();
+					self::$dbs[$cn->id] = Worker::getDbo();
 
 					// $$$rob remove the error from the error stack
 					// if we don't do this the form is not rendered
@@ -272,7 +276,7 @@ class FabrikFEModelConnection extends FabModel
 	 */
 	private function getBaseDriverName($driverName = '')
 	{
-		return FabrikString::rtrimword($driverName, '_fab');
+		return StringHelper::rtrimword($driverName, '_fab');
 	}
 
 	/**
@@ -331,7 +335,7 @@ class FabrikFEModelConnection extends FabModel
 	 */
 	public function getConnections()
 	{
-		$db = FabrikWorker::getDbo();
+		$db = Worker::getDbo();
 		$query = $db->getQuery(true);
 		$query->select('*, id AS value, description AS text')->from('#__fabrik_connections')->where('published = 1');
 		$db->setQuery($query);
@@ -357,7 +361,7 @@ class FabrikFEModelConnection extends FabModel
 	{
 		$connectionTables = array();
 		$connectionTables[-1] = array();
-		$connectionTables[-1][] = JHTML::_('select.option', '-1', FText::_('COM_FABRIK_PLEASE_SELECT'));
+		$connectionTables[-1][] = JHTML::_('select.option', '-1', Text::_('COM_FABRIK_PLEASE_SELECT'));
 
 		foreach ($connections as $cn)
 		{

@@ -5,6 +5,8 @@
 
 defined('JPATH_BASE') or die;
 
+use Fabrik\Helpers\Text;
+
 $d = $displayData;
 $i = 0;
 ?>
@@ -22,7 +24,7 @@ $i = 0;
 
 				<a href="<?php echo $href; ?>"
 					id="<?php echo $tab->id; ?>">
-					<?php echo FText::_($tab->label); ?>
+					<?php echo Text::_($tab->label); ?>
 				</a>
 
 			<?php
@@ -34,7 +36,7 @@ $i = 0;
 				role="tab"
 				data-toggle="tab"
 				class="mootools-noconflict">
-				<?php echo FText::_($tab->label); ?>
+				<?php echo Text::_($tab->label); ?>
 			</a>
 				<?php endif;
 			?>

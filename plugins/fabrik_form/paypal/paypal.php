@@ -11,7 +11,10 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Joomla\Utilities\ArrayHelper;
+use Fabrik\Helpers\ArrayHelper;
+use Fabrik\Helpers\Worker;
+use Fabrik\Helpers\StringHelper;
+use Fabrik\Helpers\Text;
 
 // Require the abstract plugin class
 require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
@@ -51,7 +54,7 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 			return true;
 		}
 
-		$w = new FabrikWorker;
+		$w = new Worker;
 		$userId = $this->user->get('id');
 		$ipn = $this->getIPNHandler($params);
 
@@ -74,7 +77,7 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 
 		if (trim($email) == '')
 		{
-			$email = $this->data[FabrikString::safeColNameToArrayKey($params->get('paypal_accountemail_element'))];
+			$email = $this->data[StringHelper::safeColNameToArrayKey($params->get('paypal_accountemail_element'))];
 
 			if (is_array($email))
 			{
@@ -104,16 +107,16 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 				$msg->msg = "Eval amount code returned false.";
 				$msg = json_encode($msg);
 				$this->doLog($msgType, $msg);
-				throw new RuntimeException(FText::_('PLG_FORM_PAYPAL_COST_ELEMENT_ERROR'), 500);
+				throw new RuntimeException(Text::_('PLG_FORM_PAYPAL_COST_ELEMENT_ERROR'), 500);
 			}
 		}
 
 		if (trim($amount) == '')
 		{
 			// Priority to raw data.
-			$amountKey = FabrikString::safeColNameToArrayKey($params->get('paypal_cost_element'));
-			$amount = FArrayHelper::getValue($this->data, $amountKey);
-			$amount = FArrayHelper::getValue($this->data, $amountKey . '_raw', $amount);
+			$amountKey = StringHelper::safeColNameToArrayKey($params->get('paypal_cost_element'));
+			$amount = ArrayHelper::getValue($this->data, $amountKey);
+			$amount = ArrayHelper::getValue($this->data, $amountKey . '_raw', $amount);
 
 			if (is_array($amount))
 			{
@@ -133,7 +136,7 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 
 		if (trim($shippingAmount) == '')
 		{
-			$shippingAmount = FArrayHelper::getValue($this->data, FabrikString::safeColNameToArrayKey($params->get('paypal_shipping_cost_element')));
+			$shippingAmount = ArrayHelper::getValue($this->data, StringHelper::safeColNameToArrayKey($params->get('paypal_shipping_cost_element')));
 
 			if (is_array($shippingAmount))
 			{
@@ -153,8 +156,8 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 
 		if (trim($item) == '')
 		{
-			$itemRaw = FArrayHelper::getValue($this->data, FabrikString::safeColNameToArrayKey($params->get('paypal_item_element') . '_raw'));
-			$item = $this->data[FabrikString::safeColNameToArrayKey($params->get('paypal_item_element'))];
+			$itemRaw = ArrayHelper::getValue($this->data, StringHelper::safeColNameToArrayKey($params->get('paypal_item_element') . '_raw'));
+			$item = $this->data[StringHelper::safeColNameToArrayKey($params->get('paypal_item_element'))];
 
 			if (is_array($item))
 			{
@@ -176,9 +179,9 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 			$subTable = JModelLegacy::getInstance('List', 'FabrikFEModel');
 			$subTable->setId((int) $params->get('paypal_subs_table'));
 
-			$idEl = FabrikString::safeColName($params->get('paypal_subs_id', ''));
-			$durationEl = FabrikString::safeColName($params->get('paypal_subs_duration', ''));
-			$durationPerEl = FabrikString::safeColName($params->get('paypal_subs_duration_period', ''));
+			$idEl = StringHelper::safeColName($params->get('paypal_subs_id', ''));
+			$durationEl = StringHelper::safeColName($params->get('paypal_subs_duration', ''));
+			$durationPerEl = StringHelper::safeColName($params->get('paypal_subs_duration_period', ''));
 			$name = $params->get('paypal_subs_name', '');
 
 			$subDb = $subTable->getDb();
@@ -254,54 +257,54 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 			{
 				$shippingSelect = array();
 
-				$db = FabrikWorker::getDbo();
+				$db = Worker::getDbo();
 				$query = $db->getQuery(true);
 
 				if ($params->get('paypal_shippingdata_firstname'))
 				{
-					$shippingFirstName = FabrikString::shortColName($params->get('paypal_shippingdata_firstname'));
+					$shippingFirstName = StringHelper::shortColName($params->get('paypal_shippingdata_firstname'));
 					$shippingSelect['first_name'] = $shippingFirstName;
 				}
 
 				if ($params->get('paypal_shippingdata_lastname'))
 				{
-					$shippingLastName = FabrikString::shortColName($params->get('paypal_shippingdata_lastname'));
+					$shippingLastName = StringHelper::shortColName($params->get('paypal_shippingdata_lastname'));
 					$shippingSelect['last_name'] = $shippingLastName;
 				}
 
 				if ($params->get('paypal_shippingdata_address1'))
 				{
-					$shippingAddress1 = FabrikString::shortColName($params->get('paypal_shippingdata_address1'));
+					$shippingAddress1 = StringHelper::shortColName($params->get('paypal_shippingdata_address1'));
 					$shippingSelect['address1'] = $shippingAddress1;
 				}
 
 				if ($params->get('paypal_shippingdata_address2'))
 				{
-					$shippingAddress2 = FabrikString::shortColName($params->get('paypal_shippingdata_address2'));
+					$shippingAddress2 = StringHelper::shortColName($params->get('paypal_shippingdata_address2'));
 					$shippingSelect['address2'] = $shippingAddress2;
 				}
 
 				if ($params->get('paypal_shippingdata_zip'))
 				{
-					$shippingZip = FabrikString::shortColName($params->get('paypal_shippingdata_zip'));
+					$shippingZip = StringHelper::shortColName($params->get('paypal_shippingdata_zip'));
 					$shippingSelect['zip'] = $shippingZip;
 				}
 
 				if ($params->get('paypal_shippingdata_state'))
 				{
-					$shippingState = FabrikString::shortColName($params->get('paypal_shippingdata_state'));
+					$shippingState = StringHelper::shortColName($params->get('paypal_shippingdata_state'));
 					$shippingSelect['state'] = $shippingState;
 				}
 
 				if ($params->get('paypal_shippingdata_city'))
 				{
-					$shippingCity = FabrikString::shortColName($params->get('paypal_shippingdata_city'));
+					$shippingCity = StringHelper::shortColName($params->get('paypal_shippingdata_city'));
 					$shippingSelect['city'] = $shippingCity;
 				}
 
 				if ($params->get('paypal_shippingdata_country'))
 				{
-					$shippingCountry = FabrikString::shortColName($params->get('paypal_shippingdata_country'));
+					$shippingCountry = StringHelper::shortColName($params->get('paypal_shippingdata_country'));
 					$shippingSelect['country'] = $shippingCountry;
 				}
 
@@ -314,7 +317,7 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 				else
 				{
 					$query->select($shippingSelect)->from($shipping_table)
-					->where(FabrikString::shortColName($params->get('paypal_shippingdata_id')) . ' = ' . $db->q($shippingUserId));
+					->where(StringHelper::shortColName($params->get('paypal_shippingdata_id')) . ' = ' . $db->q($shippingUserId));
 
 					$db->setQuery($query);
 					$userShippingData = $db->loadObject();
@@ -458,21 +461,7 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 
 		$url .= implode('&', $qs);
 
-		/* $$$ rob 04/02/2011 no longer doing redirect from ANY plugin EXCEPT the redirect plugin
-		 * - instead a session var is set (com_fabrik.form.X.redirect.url)
-		 * as the preferred redirect url
-		 */
-
-		$context = $formModel->getRedirectContext();
-
-		/* $$$ hugh - fixing issue with new redirect, which now needs to be an array.
-		 * Not sure if we need to preserve existing session data, or just create a new surl array,
-		 * to force ONLY redirect to PayPal?
-		 */
-		$surl = (array) $this->session->get($context . 'url', array());
-		$surl[$this->renderOrder] = $url;
-		$this->session->set($context . 'url', $surl);
-		$this->session->set($context . 'redirect_content_how', 'samepage');
+		$this->setDelayedRedirect($url);
 
 		// Log the info
 		$msgType = 'fabrik.paypal.onAfterProcess';
@@ -508,7 +497,7 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 
 		if (trim($subSwitch) !== '')
 		{
-			$w = new FabrikWorker;
+			$w = new Worker;
 			$subSwitch = $w->parseMessageForPlaceHolder($subSwitch, $data);
 
 			return @eval($subSwitch);
@@ -534,7 +523,7 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 			return false;
 		}
 
-		$db = FabrikWorker::getDbo();
+		$db = Worker::getDbo();
 		$query = $db->getQuery(true);
 		$query->select('db_table_name')->from('#__{package}_lists')->where('id = ' . (int) $params->get('paypal_shippingdata_table'));
 		$db->setQuery($query);
@@ -573,12 +562,12 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 
 		if ($retMsg)
 		{
-			$w = new FabrikWorker;
+			$w = new Worker;
 			$listModel = $formModel->getlistModel();
 			$row = $listModel->getRow($rowId);
 			$retMsg = $w->parseMessageForPlaceHolder($retMsg, $row);
 
-			if (JString::stristr($retMsg, '[show_all]'))
+			if (StringHelper::stristr($retMsg, '[show_all]'))
 			{
 				$all_data = array();
 
@@ -601,7 +590,7 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 		}
 		else
 		{
-			echo FText::_("thanks");
+			echo Text::_("thanks");
 		}
 	}
 
@@ -643,25 +632,25 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 		 */
 		$renderOrder = $input->getInt('renderOrder');
 		$ipnTxnField = (array) $params->get('paypal_ipn_txn_id_element', array());
-		$ipnTxnField = FabrikString::shortColName($ipnTxnField[$renderOrder]);
+		$ipnTxnField = StringHelper::shortColName($ipnTxnField[$renderOrder]);
 
 		$ipnPaymentField = (array) $params->get('paypal_ipn_payment_element', array());
-		$ipnPaymentField = FabrikString::shortColName($ipnPaymentField[$renderOrder]);
+		$ipnPaymentField = StringHelper::shortColName($ipnPaymentField[$renderOrder]);
 
 		$ipnField = (array) $params->get('paypal_ipn_element', array());
-		$ipnField = FabrikString::shortColName($ipnField[$renderOrder]);
+		$ipnField = StringHelper::shortColName($ipnField[$renderOrder]);
 
 		$ipnStatusField = (array) $params->get('paypal_ipn_status_element', array());
-		$ipnStatusField = FabrikString::shortColName($ipnStatusField[$renderOrder]);
+		$ipnStatusField = StringHelper::shortColName($ipnStatusField[$renderOrder]);
 
 		$ipnAddressField = (array) $params->get('paypal_ipn_address_element', array());
-		$ipnAddressField = FabrikString::shortColName($ipnAddressField[$renderOrder]);
+		$ipnAddressField = StringHelper::shortColName($ipnAddressField[$renderOrder]);
 
 		$ipnSubscriberIDField = (array) $params->get('paypal_ipn_subscr_id_element', array());
-		$ipnSubscriberIDField = FabrikString::shortColName($ipnSubscriberIDField[$renderOrder]);
+		$ipnSubscriberIDField = StringHelper::shortColName($ipnSubscriberIDField[$renderOrder]);
 
 
-		$w = new FabrikWorker;
+		$w = new Worker;
 		$ipnValue = str_replace('[', '{', $ipnValue);
 		$ipnValue = str_replace(']', '}', $ipnValue);
 		$ipnValue = $w->parseMessageForPlaceHolder($ipnValue, $_POST);
@@ -694,7 +683,7 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 		$header .= "Connection: close\r\n";
 		$header .= "User-Agent: Fabrik Joomla Plugin\r\n";
 		$header .= "Content-Type: application/x-www-form-urlencoded\r\n";
-		$header .= "Content-Length: " . JString::strlen($req) . "\r\n\r\n";
+		$header .= "Content-Length: " . StringHelper::strlen($req) . "\r\n\r\n";
 
 
 		// Assign posted variables to local variables
@@ -748,7 +737,7 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 					 * check that payment_amount/payment_currency are correct
 					 * process payment
 					 */
-					if (JString::strcmp($tres, "VERIFIED") === 0)
+					if (StringHelper::strcmp($tres, "VERIFIED") === 0)
 					{
 						$status = 'ok';
 
@@ -913,7 +902,7 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 							}
 						}
 					}
-					elseif (JString::strcmp($tres, "INVALID") === 0)
+					elseif (StringHelper::strcmp($tres, "INVALID") === 0)
 					{
 						$status = 'form.paypal.ipnfailure.invalid';
 						$errMsg = 'paypal postback failed with INVALID';
@@ -957,7 +946,7 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 				if ($send_default_email == '1')
 				{
 					$subject = $this->config->get('sitename') . ": Error with PayPal IPN from Fabrik";
-					$payerEmailText = FText::_('PLG_FORM_PAYPAL_ERR_PROCESSING_PAYMENT');
+					$payerEmailText = Text::_('PLG_FORM_PAYPAL_ERR_PROCESSING_PAYMENT');
 					$mail->sendMail($emailFrom, $emailFrom, $payer_email, $subject, $payerEmailText, false);
 				}
 			}

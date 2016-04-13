@@ -6,11 +6,14 @@
  * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
+namespace Fabrik\Plugins\Form;
+
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-// Require the abstract plugin class
-require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
+use Fabrik\Helpers\ArrayHelper;
+use Fabrik\Helpers\StringHelper;
+use Fabrik\Helpers\Worker;
 
 /**
  * Process exif info from images, allowing you to insert the exif data into selected fields
@@ -19,8 +22,7 @@ require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
  * @subpackage  Fabrik.form.exif
  * @since       3.0
  */
-
-class PlgFabrik_FormExif extends PlgFabrik_Form
+class Exif extends \PlgFabrik_Form
 {
 	/**
 	 * Map field
@@ -46,7 +48,7 @@ class PlgFabrik_FormExif extends PlgFabrik_Form
 	 */
 	protected function exifToNumber($value, $format)
 	{
-		$spos = JString::strpos($value, '/');
+		$spos = StringHelper::strpos($value, '/');
 
 		if ($spos === false)
 		{
@@ -55,8 +57,8 @@ class PlgFabrik_FormExif extends PlgFabrik_Form
 		else
 		{
 			$bits = explode('/', $value, 2);
-			$base = FArrayHelper::getValue($bits, 0);
-			$divider = FArrayHelper::getValue($bits, 1);
+			$base = ArrayHelper::getValue($bits, 0);
+			$divider = ArrayHelper::getValue($bits, 1);
 
 			return ($divider == 0) ? sprintf($format, 0) : sprintf($format, ($base / $divider));
 		}
@@ -86,7 +88,7 @@ class PlgFabrik_FormExif extends PlgFabrik_Form
 	 *
 	 * @param   string  $filename  File name
 	 *
-	 * @return multitype:string |boolean
+	 * @return string|boolean
 	 */
 	protected function getCoordinates($filename)
 	{
@@ -134,24 +136,23 @@ class PlgFabrik_FormExif extends PlgFabrik_Form
 
 	public function onBeforeStore()
 	{
-		// Initialize some variables
+		/** @var \FabrikFEModelForm $formModel */
 		$formModel = $this->getModel();
 		$data = $formModel->formData;
 		$params = $this->getParams();
-		$plugin = FabrikWorker::getPluginManager()->getElementPlugin($params->get('exif_map_field'));
+		$plugin = Worker::getPluginManager()->getElementPlugin($params->get('exif_map_field'));
 		$this->map_field = $plugin->getFullName();
 		$plugin->setId($params->get('exif_upload_field'));
-		$element = $plugin->getElement(true);
 		$this->upload_field = $plugin->getFullName();
 		$file_path = JPATH_SITE . '/' . $data[$this->upload_field];
 
 		if (JFile::exists($file_path))
 		{
-			$coords = $this->getCoordinates($file_path);
+			$coordinates = $this->getCoordinates($file_path);
 
-			if (!empty($coords))
+			if (!empty($coordinates))
 			{
-				$c = $coords[0] . ',' . $coords[1] . ':4';
+				$c = $coordinates[0] . ',' . $coordinates[1] . ':4';
 				$formModel->updateFormData($this->map_field, $c, true);
 			}
 		}

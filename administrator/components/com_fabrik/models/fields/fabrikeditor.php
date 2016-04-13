@@ -15,6 +15,9 @@ defined('_JEXEC') or die('Restricted access');
 jimport('joomla.form.formfield');
 JFormHelper::loadFieldClass('textarea');
 
+use Fabrik\Helpers\Html;
+use Fabrik\Helpers\Worker;
+
 /**
  * Form Field class for the Joomla Platform.
  * An ace.js code editor field
@@ -52,19 +55,19 @@ class JFormFieldFabrikeditor extends JFormFieldTextArea
 		$required = $this->required ? ' required="required" aria-required="true"' : '';
 
 		// JS events are saved as encoded html - so we don't want to double encode them
-		$encoded = FabrikWorker::toBoolean($this->getAttribute('encoded', false), false);
+		$encoded = Worker::toBoolean($this->getAttribute('encoded', false), false);
 
 		if (!$encoded)
 		{
 			$this->value = htmlspecialchars($this->value, ENT_COMPAT, 'UTF-8');
 		}
 
-		$onChange = FabrikWorker::toBoolean($this->getAttribute('onchange', false), false);
+		$onChange = Worker::toBoolean($this->getAttribute('onchange', false), false);
 
 		$onChange = $onChange ? ' onchange="' . (string) $onChange . '"' : '';
 
 		// Joomla 3 version
-		FabrikWorker::toBoolean($this->getAttribute('highlightpk', false), false);
+		Worker::toBoolean($this->getAttribute('highlightpk', false), false);
 
 		$mode      = $this->getAttribute('mode', 'html');
 		$theme     = $this->getAttribute('theme', 'github');
@@ -83,8 +86,8 @@ class JFormFieldFabrikeditor extends JFormFieldTextArea
 			return $editor;
 		}
 
-		FabrikHelperHTML::framework();
-		FabrikHelperHTML::iniRequireJS();
+		Html::framework();
+		Html::iniRequireJS();
 
 		if ($mode === 'php')
 		{
@@ -153,8 +156,10 @@ window.addEvent(\'domready\', function () {
 });
 		';
 
-		$src = array('media/com_fabrik/js/lib/ace/src-min-noconflict/ace.js', 'media/com_fabrik/js/fabrik.js');
-		FabrikHelperHTML::script($src, $script, '-min.js', array('Ace', 'Fabrik'));
+		$src = array(
+			'Ace' => 'media/com_fabrik/js/lib/ace/src-min-noconflict/ace.js',
+			'Fabrik' => 'media/com_fabrik/js/fabrik.js');
+		Html::script($src, $script);
 
 		echo '<style type="text/css" media="screen">
 	#' . $aceId . '-ace {

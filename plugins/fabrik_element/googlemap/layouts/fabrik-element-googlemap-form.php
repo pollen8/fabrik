@@ -1,6 +1,9 @@
+
 <?php
 
 defined('JPATH_BASE') or die;
+
+use Fabrik\Helpers\Text;
 
 // Add span with id so that element fxs work.
 $d = $displayData;
@@ -33,7 +36,7 @@ endif;
 
 <?php if ($d->geocode != '0' && $d->geoCodeEvent == 'button' && $d->editable) : ?>
 	<button class="button btn btn-info geocode" type="button">
-		<?php echo FText::_('PLG_ELEMENT_GOOGLE_MAP_GEOCODE');?>
+		<?php echo Text::_('PLG_ELEMENT_GOOGLE_MAP_GEOCODE');?>
 	</button>
 <?php
 endif;

@@ -8,10 +8,37 @@
  * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
+namespace Fabrik\Helpers;
+
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Joomla\Utilities\ArrayHelper;
+use \JSession;
+use \FabTable;
+use \JCryptCipherSimple;
+use \JCrypt;
+use \JCryptKey;
+use \JModelLegacy;
+use \DateTime;
+use \JTable;
+use \JAccess;
+use \JFilterInput;
+use \JLanguageHelper;
+use \JHtml;
+use \JLanguageMultilang;
+use \JPath;
+use \Exception;
+use \JFactory;
+use \JMail;
+use \JVersion;
+use \JForm;
+use \JCache;
+use \RuntimeException;
+use \JDatabaseDriver;
+use \JComponentHelper;
+use \JFile;
+use \JUri;
+use \JMailHelper;
 
 /**
  * Generic tools that all models use
@@ -21,7 +48,7 @@ use Joomla\Utilities\ArrayHelper;
  * @subpackage  Fabrik.helpers
  * @since       3.0
  */
-class FabrikWorker
+class Worker
 {
 	/**
 	 * Fabrik database objects
@@ -277,8 +304,8 @@ class FabrikWorker
 			return;
 		}
 
-		$shortMonths = array(FText::_('Jan'), FText::_('Feb'), FText::_('Mar'), FText::_('Apr'), FText::_('May'), FText::_('Jun'), FText::_('Jul'),
-			FText::_('Aug'), FText::_('Sept'), FText::_('Oct'), FText::_('Nov'), FText::_('Dec'));
+		$shortMonths = array(Text::_('Jan'), Text::_('Feb'), Text::_('Mar'), Text::_('Apr'), Text::_('May'), Text::_('Jun'), Text::_('Jul'),
+			Text::_('Aug'), Text::_('Sept'), Text::_('Oct'), Text::_('Nov'), Text::_('Dec'));
 
 		/*$$ rob set day default to 1, so that if you have a date format string of %m-%Y the day is set to the first day of the month
 		 * and not the last day of the previous month (which is what a 0 here would represent)
@@ -509,23 +536,23 @@ class FabrikWorker
 	{
 		if ($abrv)
 		{
-			$date = str_replace(FText::_('SUN'), '', $date);
-			$date = str_replace(FText::_('MON'), '', $date);
-			$date = str_replace(FText::_('TUE'), '', $date);
-			$date = str_replace(FText::_('WED'), '', $date);
-			$date = str_replace(FText::_('THU'), '', $date);
-			$date = str_replace(FText::_('FRI'), '', $date);
-			$date = str_replace(FText::_('SAT'), '', $date);
+			$date = str_replace(Text::_('SUN'), '', $date);
+			$date = str_replace(Text::_('MON'), '', $date);
+			$date = str_replace(Text::_('TUE'), '', $date);
+			$date = str_replace(Text::_('WED'), '', $date);
+			$date = str_replace(Text::_('THU'), '', $date);
+			$date = str_replace(Text::_('FRI'), '', $date);
+			$date = str_replace(Text::_('SAT'), '', $date);
 		}
 		else
 		{
-			$date = str_replace(FText::_('SUNDAY'), '', $date);
-			$date = str_replace(FText::_('MONDAY'), '', $date);
-			$date = str_replace(FText::_('TUESDAY'), '', $date);
-			$date = str_replace(FText::_('WEDNESDAY'), '', $date);
-			$date = str_replace(FText::_('THURSDAY'), '', $date);
-			$date = str_replace(FText::_('FRIDAY'), '', $date);
-			$date = str_replace(FText::_('SATURDAY'), '', $date);
+			$date = str_replace(Text::_('SUNDAY'), '', $date);
+			$date = str_replace(Text::_('MONDAY'), '', $date);
+			$date = str_replace(Text::_('TUESDAY'), '', $date);
+			$date = str_replace(Text::_('WEDNESDAY'), '', $date);
+			$date = str_replace(Text::_('THURSDAY'), '', $date);
+			$date = str_replace(Text::_('FRIDAY'), '', $date);
+			$date = str_replace(Text::_('SATURDAY'), '', $date);
 		}
 
 		return $date;
@@ -543,33 +570,33 @@ class FabrikWorker
 	{
 		if ($abrv)
 		{
-			$date = str_replace(FText::_('JANUARY_SHORT'), '01', $date);
-			$date = str_replace(FText::_('FEBRUARY_SHORT'), '02', $date);
-			$date = str_replace(FText::_('MARCH_SHORT'), '03', $date);
-			$date = str_replace(FText::_('APRIL_SHORT'), '04', $date);
-			$date = str_replace(FText::_('MAY_SHORT'), '05', $date);
-			$date = str_replace(FText::_('JUNE_SHORT'), '06', $date);
-			$date = str_replace(FText::_('JULY_SHORT'), '07', $date);
-			$date = str_replace(FText::_('AUGUST_SHORT'), '08', $date);
-			$date = str_replace(FText::_('SEPTEMBER_SHORT'), '09', $date);
-			$date = str_replace(FText::_('OCTOBER_SHORT'), 10, $date);
-			$date = str_replace(FText::_('NOVEMBER_SHORT'), 11, $date);
-			$date = str_replace(FText::_('DECEMBER_SHORT'), 12, $date);
+			$date = str_replace(Text::_('JANUARY_SHORT'), '01', $date);
+			$date = str_replace(Text::_('FEBRUARY_SHORT'), '02', $date);
+			$date = str_replace(Text::_('MARCH_SHORT'), '03', $date);
+			$date = str_replace(Text::_('APRIL_SHORT'), '04', $date);
+			$date = str_replace(Text::_('MAY_SHORT'), '05', $date);
+			$date = str_replace(Text::_('JUNE_SHORT'), '06', $date);
+			$date = str_replace(Text::_('JULY_SHORT'), '07', $date);
+			$date = str_replace(Text::_('AUGUST_SHORT'), '08', $date);
+			$date = str_replace(Text::_('SEPTEMBER_SHORT'), '09', $date);
+			$date = str_replace(Text::_('OCTOBER_SHORT'), 10, $date);
+			$date = str_replace(Text::_('NOVEMBER_SHORT'), 11, $date);
+			$date = str_replace(Text::_('DECEMBER_SHORT'), 12, $date);
 		}
 		else
 		{
-			$date = str_replace(FText::_('JANUARY'), '01', $date);
-			$date = str_replace(FText::_('FEBRUARY'), '02', $date);
-			$date = str_replace(FText::_('MARCH'), '03', $date);
-			$date = str_replace(FText::_('APRIL'), '04', $date);
-			$date = str_replace(FText::_('MAY'), '05', $date);
-			$date = str_replace(FText::_('JUNE'), '06', $date);
-			$date = str_replace(FText::_('JULY'), '07', $date);
-			$date = str_replace(FText::_('AUGUST'), '08', $date);
-			$date = str_replace(FText::_('SEPTEMBER'), '09', $date);
-			$date = str_replace(FText::_('OCTOBER'), 10, $date);
-			$date = str_replace(FText::_('NOVEMBER'), 11, $date);
-			$date = str_replace(FText::_('DECEMBER'), 12, $date);
+			$date = str_replace(Text::_('JANUARY'), '01', $date);
+			$date = str_replace(Text::_('FEBRUARY'), '02', $date);
+			$date = str_replace(Text::_('MARCH'), '03', $date);
+			$date = str_replace(Text::_('APRIL'), '04', $date);
+			$date = str_replace(Text::_('MAY'), '05', $date);
+			$date = str_replace(Text::_('JUNE'), '06', $date);
+			$date = str_replace(Text::_('JULY'), '07', $date);
+			$date = str_replace(Text::_('AUGUST'), '08', $date);
+			$date = str_replace(Text::_('SEPTEMBER'), '09', $date);
+			$date = str_replace(Text::_('OCTOBER'), 10, $date);
+			$date = str_replace(Text::_('NOVEMBER'), 11, $date);
+			$date = str_replace(Text::_('DECEMBER'), 12, $date);
 		}
 
 		return $date;
@@ -592,14 +619,14 @@ class FabrikWorker
 		 * log files, which include field names like rowid and itemid.  So when saving an element, we now set strict mode
 		 * to false if it's not a new element.
 		 */
-		$strictWords = array("listid", 'rowid', 'itemid');
+		$strictWords = array('listid', 'rowid', 'itemid');
 
 		if ($strict)
 		{
 			$reservedWords = array_merge($reservedWords, $strictWords);
 		}
 
-		if (in_array(JString::strtolower($str), $reservedWords))
+		if (in_array(StringHelper::strtolower($str), $reservedWords))
 		{
 			return true;
 		}
@@ -676,10 +703,10 @@ class FabrikWorker
 	 * which just handles this one very specific data replacement.  Will look at merging it in with the main
 	 * parsing once we have a better understanding of where / when / how to do it.
 	 *
-	 * @param  string $msg           Text to parse
-	 * @param  array  $searchData    Data to search for placeholders
-	 * @param  object $el            Element model of the element which is doing the replacing
-	 * @param  int    $repeatCounter Repeat instance
+	 * @param  string                          $msg           Text to parse
+	 * @param  array                           $searchData    Data to search for placeholders
+	 * @param  \Fabrik\Plugins\Element\Element $el            Element model of the element which is doing the replacing
+	 * @param  int                             $repeatCounter Repeat instance
 	 *
 	 * @return  string  parsed message
 	 */
@@ -688,10 +715,10 @@ class FabrikWorker
 		if (strstr($msg, '{') && !empty($searchData))
 		{
 			$groupModel = $el->getGroupModel();
+
 			if ($groupModel->canRepeat())
 			{
 				$elementModels = $groupModel->getPublishedElements();
-				$formModel     = $el->getFormModel();
 
 				foreach ($elementModels as $elementModel)
 				{
@@ -718,14 +745,14 @@ class FabrikWorker
 	 * Iterates through string to replace every
 	 * {placeholder} with posted data
 	 *
-	 * @param   mixed  $msg              Text|Array to parse
-	 * @param   array  $searchData       Data to search for placeholders (default $_REQUEST)
-	 * @param   bool   $keepPlaceholders If no data found for the place holder do we keep the {...} string in the
-	 *                                   message
-	 * @param   bool   $addSlashes       Add slashed to the text?
-	 * @param   object $theirUser        User to use in replaceWithUserData (defaults to logged in user)
-	 * @param   bool   $unsafe           If true (default) will not replace certain placeholders like $jConfig_secret
-	 *                                   must not be shown to users
+	 * @param   mixed         $msg              Text|Array to parse
+	 * @param   array|object  $searchData       Data to search for placeholders (default $_REQUEST)
+	 * @param   bool          $keepPlaceholders If no data found for the place holder do we keep the {...} string in the
+	 *                                          message
+	 * @param   bool          $addSlashes       Add slashed to the text?
+	 * @param   object        $theirUser        User to use in replaceWithUserData (defaults to logged in user)
+	 * @param   bool          $unsafe           If true (default) will not replace certain placeholders like $jConfig_secret
+	 *                                          must not be shown to users
 	 *
 	 * @return  string  parsed message
 	 */
@@ -738,7 +765,7 @@ class FabrikWorker
 		{
 			$this->parseAddSlashes = $addSlashes;
 
-			if (!($msg == '' || is_array($msg) || JString::strpos($msg, '{') === false))
+			if (!($msg == '' || is_array($msg) || StringHelper::strpos($msg, '{') === false))
 			{
 				$msg = str_replace(array('%7B', '%7D'), array('{', '}'), $msg);
 
@@ -782,7 +809,7 @@ class FabrikWorker
 			}
 		}
 
-		return $returnType === 'array' ? $messages : FArrayHelper::getValue($messages, 0, '');
+		return $returnType === 'array' ? $messages : ArrayHelper::getValue($messages, 0, '');
 	}
 
 	/**
@@ -860,12 +887,12 @@ class FabrikWorker
 		foreach ($matches as $match)
 		{
 			$bits   = explode('->', str_replace(array('{', '}'), '', $match));
-			$userId = $app->input->getInt(FArrayHelper::getValue($bits, 1));
+			$userId = $app->input->getInt(ArrayHelper::getValue($bits, 1));
 
 			if ($userId !== 0)
 			{
 				$user = JFactory::getUser($userId);
-				$val  = $user->get(FArrayHelper::getValue($bits, 2));
+				$val  = $user->get(ArrayHelper::getValue($bits, 2));
 				$msg  = str_replace($match, $val, $msg);
 			}
 		}
@@ -915,7 +942,7 @@ class FabrikWorker
 
 	/**
 	 * Get an associative array of replacements for 'unsafe' value, like $jConfig_secret, which we
-	 * only want to use for stricty internal use that won't ever get shown to the user
+	 * only want to use for strictly internal use that won't ever get shown to the user
 	 *
 	 * @return array
 	 * @throws Exception
@@ -947,9 +974,9 @@ class FabrikWorker
 		$token     = $session->get('session.token');
 		$lang      = JFactory::getLanguage()->getTag();
 		$lang      = str_replace('-', '_', $lang);
-		$shortlang = explode('_', $lang);
-		$shortlang = $shortlang[0];
-		$multilang = FabrikWorker::getMultiLangURLCode();
+		$shortLang = explode('_', $lang);
+		$shortLang = $shortLang[0];
+		$multiLang = Worker::getMultiLangURLCode();
 
 		$replacements = array(
 			'{$jConfig_live_site}' => COM_FABRIK_LIVESITE,
@@ -961,8 +988,8 @@ class FabrikWorker
 			'{date}' => date('Ymd'),
 			'{mysql_date}' => date('Y-m-d H:i:s'),
 			'{lang}' => $lang,
-			'{multilang}' => $multilang,
-			'{shortlang}' => $shortlang,
+			'{multilang}' => $multiLang,
+			'{shortlang}' => $shortLang,
 			'{session.token}' => $token,
 		);
 
@@ -989,9 +1016,9 @@ class FabrikWorker
 	protected function replaceWithFormData($matches)
 	{
 		// Merge any join data key val pairs down into the main data array
-		$joins = FArrayHelper::getValue($this->_searchData, 'join', array());
+		$joins = ArrayHelper::getValue($this->_searchData, 'join', array());
 
-		foreach ($joins as $k => $data)
+		foreach ($joins as $jk => $data)
 		{
 			foreach ($data as $k => $v)
 			{
@@ -1011,7 +1038,7 @@ class FabrikWorker
 		$orig  = $match;
 
 		// Strip the {}
-		$match = JString::substr($match, 1, JString::strlen($match) - 2);
+		$match = StringHelper::substr($match, 1, StringHelper::strlen($match) - 2);
 
 		/* $$$ hugh - added dbprefix substitution
 		 * Not 100% if we should do this on $match before copying to $orig, but for now doing it
@@ -1090,7 +1117,7 @@ class FabrikWorker
 						}
 					}
 
-					$match = JString::ltrim($newMatch, ',');
+					$match = StringHelper::ltrim($newMatch, ',');
 				}
 			}
 			else
@@ -1156,15 +1183,15 @@ class FabrikWorker
 			{
 				if (!in_array($file, $aFolderFilter))
 				{
-					$folders[] = JHTML::_('select.option', $ff_);
+					$folders[] = JHtml::_('select.option', $ff_);
 					self::readImages($i_f, $ff_, $folders, $images, $aFolderFilter);
 				}
 			}
 			elseif (preg_match('/bmp|gif|jpg|png/i', $file) && is_file($i_f))
 			{
 				// Leading / we don't need
-				$imageFile             = JString::substr($ff, 1);
-				$images[$folderPath][] = $makeOptions ? JHTML::_('select.option', $imageFile, $file) : $file;
+				$imageFile             = StringHelper::substr($ff, 1);
+				$images[$folderPath][] = $makeOptions ? JHtml::_('select.option', $imageFile, $file) : $file;
 			}
 		}
 	}
@@ -1339,7 +1366,7 @@ class FabrikWorker
 
 			// Each group the user is in could have different filtering properties.
 			$filterData = $filters->$groupId;
-			$filterType = JString::strtoupper($filterData->filter_type);
+			$filterType = StringHelper::strtoupper($filterData->filter_type);
 
 			if ($filterType == 'NH')
 			{
@@ -1485,7 +1512,7 @@ class FabrikWorker
 
 		$enqMsgType = 'error';
 		$indentHTML = '<br/>&nbsp;&nbsp;&nbsp;&nbsp;Debug:&nbsp;';
-		$errString  = FText::_('COM_FABRIK_EVAL_ERROR_USER_WARNING');
+		$errString  = Text::_('COM_FABRIK_EVAL_ERROR_USER_WARNING');
 
 		// Give a technical error message to the developer
 		if (version_compare(phpversion(), '5.2.0', '>=') && $error && is_array($error))
@@ -1510,7 +1537,7 @@ class FabrikWorker
 	 */
 	public static function logError($errString, $msgType)
 	{
-		if (FabrikHelperHTML::isDebug())
+		if (Html::isDebug())
 		{
 			$app = JFactory::getApplication();
 			$app->enqueueMessage($errString, $msgType);
@@ -1570,7 +1597,7 @@ class FabrikWorker
 	 * @param   mixed $cnnId        If null then loads the fabrik default connection, if an int then loads the
 	 *                              specified connection by its id
 	 *
-	 * @return  JDatabaseDriver object
+	 * @return  \JDatabaseDriver object
 	 */
 	public static function getDbo($loadJoomlaDb = false, $cnnId = null)
 	{
@@ -1612,9 +1639,9 @@ class FabrikWorker
 				'prefix' => $dbPrefix);
 
 			$version              = new JVersion;
-			self::$database[$sig] = $version->RELEASE > 2.5 ? JDatabaseDriver::getInstance($options) : JDatabase::getInstance($options);
+			self::$database[$sig] = $version->RELEASE > 2.5 ? JDatabaseDriver::getInstance($options) : \JDatabase::getInstance($options);
 
-			FabrikWorker::bigSelects(self::$database[$sig]);
+			Worker::bigSelects(self::$database[$sig]);
 
 		}
 
@@ -1628,7 +1655,7 @@ class FabrikWorker
 	 *  just on their List specific queries.  So we need to apply 'big selects' to our
 	 *  default connection as well, essentially enabling it for ALL queries we do.
 	 *
-	 * @param  JDatabaseDriver $fabrikDb
+	 * @param  \JDatabaseDriver $fabrikDb
 	 *
 	 * @return void
 	 */
@@ -1642,7 +1669,7 @@ class FabrikWorker
 			 * Use of OPTION in SET deprecated from MySQL 5.1. onward
 			 * http://www.fabrikar.com/forums/index.php?threads/enable-big-selects-error.39463/#post-198293
 			 * NOTE - technically, using verison_compare on MySQL version could fail, if it's a "gamma"
-			 * release, which PHP desn't grok!
+			 * release, which PHP doesn't grok!
 			 */
 
 			if (version_compare($fabrikDb->getVersion(), '5.1.0', '>='))
@@ -1671,7 +1698,7 @@ class FabrikWorker
 	 *
 	 * @since 3.0b
 	 *
-	 * @return FabrikFEModelConnection  connection
+	 * @return \FabrikFEModelConnection  connection
 	 */
 	public static function getConnection($item = null)
 	{
@@ -1681,7 +1708,7 @@ class FabrikWorker
 
 		if (is_object($item))
 		{
-			$item = is_null($item->connection_id) ? FArrayHelper::getValue($jForm, 'connection_id', -1) : $item->connection_id;
+			$item = is_null($item->connection_id) ? ArrayHelper::getValue($jForm, 'connection_id', -1) : $item->connection_id;
 		}
 
 		$connId = (int) $item;
@@ -1715,7 +1742,7 @@ class FabrikWorker
 	 *
 	 * @since    3.0b
 	 *
-	 * @return    FabrikFEModelPluginmanager    Plugin manager
+	 * @return    \FabrikFEModelPluginmanager    Plugin manager
 	 */
 	public static function getPluginManager()
 	{
@@ -1812,7 +1839,7 @@ class FabrikWorker
 		try
 		{
 			$dt = new DateTime($d);
-		} catch (Exception $e)
+		} catch (\Exception $e)
 		{
 			return false;
 		}
@@ -2205,7 +2232,7 @@ class FabrikWorker
 
 			if ($userCol != '')
 			{
-				$userCol = FabrikString::safeColNameToArrayKey($userCol);
+				$userCol = StringHelper::safeColNameToArrayKey($userCol);
 
 				if (!array_key_exists($userCol, $row))
 				{
@@ -2264,7 +2291,7 @@ class FabrikWorker
 
 		if (!JFile::exists($file))
 		{
-			throw new RuntimeException(FText::_('COM_FABRIK_NOTICE_DOMPDF_NOT_FOUND'));
+			throw new RuntimeException(Text::_('COM_FABRIK_NOTICE_DOMPDF_NOT_FOUND'));
 		}
 
 		return true;
@@ -2369,14 +2396,14 @@ class FabrikWorker
 	/**
 	 * Remove messages from JApplicationCMS
 	 *
-	 * @param   JApplicationCMS $app  Application to kill messages from
-	 * @param   string          $type Message type e.g. 'warning', 'error'
+	 * @param   \JApplicationCMS $app  Application to kill messages from
+	 * @param   string           $type Message type e.g. 'warning', 'error'
 	 *
 	 * @return  array  Remaining messages.
 	 */
-	public static function killMessage(JApplicationCMS $app, $type)
+	public static function killMessage(\JApplicationCMS $app, $type)
 	{
-		$appReflection = new ReflectionClass(get_class($app));
+		$appReflection = new \ReflectionClass(get_class($app));
 		$_messageQueue = $appReflection->getProperty('_messageQueue');
 		$_messageQueue->setAccessible(true);
 		$messages = $_messageQueue->getValue($app);

@@ -11,11 +11,11 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Fabrik\Helpers\Text;
+
 // Required for menus
-require_once JPATH_SITE . '/components/com_fabrik/helpers/html.php';
-require_once JPATH_SITE . '/components/com_fabrik/helpers/string.php';
-require_once JPATH_SITE . '/components/com_fabrik/helpers/parent.php';
-require_once JPATH_ADMINISTRATOR . '/components/com_fabrik/helpers/element.php';
+use Fabrik\Helpers\Html;
+use Fabrik\Helpers\Worker;
 
 jimport('joomla.html.html');
 jimport('joomla.form.formfield');
@@ -59,7 +59,7 @@ class JFormFieldFabrikTables extends JFormFieldList
 		}
 
 		$connectionDd = $this->element['observe'];
-		$db           = FabrikWorker::getDbo(true);
+		$db           = Worker::getDbo(true);
 
 		if ($connectionDd == '')
 		{
@@ -71,7 +71,7 @@ class JFormFieldFabrikTables extends JFormFieldList
 		}
 		else
 		{
-			$rows = array(JHTML::_('select.option', '', FText::_('COM_FABRIK_SELECT_A_CONNECTION_FIRST'), 'value', 'text'));
+			$rows = array(JHTML::_('select.option', '', Text::_('COM_FABRIK_SELECT_A_CONNECTION_FIRST'), 'value', 'text'));
 		}
 
 		return $rows;
@@ -87,7 +87,7 @@ class JFormFieldFabrikTables extends JFormFieldList
 	{
 		$c                  = isset($this->form->repeatCounter) ? (int) $this->form->repeatCounter : 0;
 		$connectionDd       = $this->getAttribute('observe');
-		$connectionInRepeat = FabrikWorker::toBoolean($this->getAttribute('connection_in_repeat', 'true'), true);
+		$connectionInRepeat = Worker::toBoolean($this->getAttribute('connection_in_repeat', 'true'), true);
 		$script             = array();
 
 		if (!isset($fabrikTables))
@@ -123,17 +123,17 @@ class JFormFieldFabrikTables extends JFormFieldList
 			$script[]            = "FabrikAdmin.model.fields.fabriktable['$this->id'] = p;";
 
 			$fabrikTables[$this->id] = true;
-			$src[]                   = 'media/com_fabrik/js/fabrik.js';
-			$src[]                   = 'administrator/components/com_fabrik/views/namespace.js';
-			$src[]                   = 'administrator/components/com_fabrik/models/fields/fabriktables.js';
-			FabrikHelperHTML::script($src, $script);
+			$src['Fabrik']           = 'media/com_fabrik/js/fabrik.js';
+			$src['Namespace']        = 'administrator/components/com_fabrik/views/namespace.js';
+			$src['FabrikTables']     = 'administrator/components/com_fabrik/models/fields/fabriktables.js';
+			Html::script($src, $script);
 		}
 
 		$html = parent::getInput();
 		$html .= '<img style="margin-left:10px;display:none" id="' . $this->id . '_loader" src="components/com_fabrik/images/ajax-loader.gif" alt="'
-			. FText::_('LOADING') . '" />';
-		FabrikHelperHTML::framework();
-		FabrikHelperHTML::iniRequireJS();
+			. Text::_('LOADING') . '" />';
+		Html::framework();
+		Html::iniRequireJS();
 
 		return $html;
 	}

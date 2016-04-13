@@ -11,6 +11,11 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Fabrik\Helpers\ArrayHelper;
+use Fabrik\Helpers\Worker;
+use Fabrik\Helpers\StringHelper;
+use Fabrik\Helpers\Text;
+
 jimport('joomla.application.component.model');
 jimport('joomla.application.component.modelform');
 
@@ -167,7 +172,7 @@ class FabrikFEModelImportcsv extends JModelForm
 	{
 		if (!(bool) ini_get('file_uploads'))
 		{
-			throw new Exception(FText::_('COM_FABRIK_ERR_UPLOADS_DISABLED'));
+			throw new Exception(Text::_('COM_FABRIK_ERR_UPLOADS_DISABLED'));
 
 			return false;
 		}
@@ -178,7 +183,7 @@ class FabrikFEModelImportcsv extends JModelForm
 
 		if (!$userFile)
 		{
-			throw new Exception(FText::_('COM_FABRIK_IMPORT_CSV_NO_FILE_SELECTED'));
+			throw new Exception(Text::_('COM_FABRIK_IMPORT_CSV_NO_FILE_SELECTED'));
 
 			return false;
 		}
@@ -198,7 +203,7 @@ class FabrikFEModelImportcsv extends JModelForm
 
 		if ($resultDir == false && !JFile::exists($to))
 		{
-			throw new Exception(FText::_('Upload Error'));
+			throw new Exception(Text::_('Upload Error'));
 		}
 
 		return true;
@@ -224,8 +229,8 @@ class FabrikFEModelImportcsv extends JModelForm
 				$this->fieldDelimiter = $session->get('com_fabrik.csv.fielddelimiter');
 			}
 
-			$tabDelimiter         = FArrayHelper::getValue($data, 'tabdelimited');
-			$this->fieldDelimiter = $tabDelimiter == 1 ? "\t" : FArrayHelper::getValue($data, 'field_delimiter', $this->fieldDelimiter);
+			$tabDelimiter         = ArrayHelper::getValue($data, 'tabdelimited');
+			$this->fieldDelimiter = $tabDelimiter == 1 ? "\t" : ArrayHelper::getValue($data, 'field_delimiter', $this->fieldDelimiter);
 			$session->set('com_fabrik.csv.fielddelimiter', $this->fieldDelimiter);
 		}
 
@@ -260,7 +265,7 @@ class FabrikFEModelImportcsv extends JModelForm
 		$this->data       = array();
 		$data             = $this->getFormData();
 		$field_delimiter  = $this->getFieldDelimiter();
-		$text_delimiter   = stripslashes(FArrayHelper::getValue($data, 'text_delimiter', '"'));
+		$text_delimiter   = stripslashes(ArrayHelper::getValue($data, 'text_delimiter', '"'));
 
 		if (!JFile::exists($baseDir . '/' . $file))
 		{
@@ -268,7 +273,7 @@ class FabrikFEModelImportcsv extends JModelForm
 		}
 
 		$csv              = new Csv_Bv($baseDir . '/' . $file, $field_delimiter, $text_delimiter, '\\');
-		$csv->inPutFormat = FArrayHelper::getValue($data, 'inPutFormat', 'csv');
+		$csv->inPutFormat = ArrayHelper::getValue($data, 'inPutFormat', 'csv');
 
 		// Will skip empty rows. TRUE by default. (Shown here for example only).
 		$csv->SkipEmptyRows(true);
@@ -298,7 +303,7 @@ class FabrikFEModelImportcsv extends JModelForm
 					$bom = pack("CCC", 0xef, 0xbb, 0xbf);
 					if (0 === strncmp($heading, $bom, 3))
 					{
-						$heading = JString::substr($heading, 3);
+						$heading = StringHelper::substr($heading, 3);
 					}
 
 					if ($mode != 2)
@@ -518,7 +523,7 @@ class FabrikFEModelImportcsv extends JModelForm
 
 					$paramsKey = $elementModel->getFullName(false, false);
 
-					if (JString::strtolower(trim($heading)) == JString::strtolower(trim($name)))
+					if (StringHelper::strtolower(trim($heading)) == StringHelper::strtolower(trim($name)))
 					{
 						if (!array_key_exists($paramsKey, $this->matchedHeadings))
 						{
@@ -536,7 +541,7 @@ class FabrikFEModelImportcsv extends JModelForm
 
 					$paramsKey .= '_raw';
 
-					if (JString::strtolower(trim($heading)) == JString::strtolower(trim($name)) . '_raw')
+					if (StringHelper::strtolower(trim($heading)) == StringHelper::strtolower(trim($name)) . '_raw')
 					{
 						if (!array_key_exists($paramsKey, $this->matchedHeadings))
 						{
@@ -606,7 +611,7 @@ class FabrikFEModelImportcsv extends JModelForm
 			if (!array_key_exists($e2, $this->matchedHeadings) && !array_key_exists($e2 . '_raw', $this->matchedHeadings))
 			{
 				$elementModel                                           = $elements[$e];
-				$defaultsToAdd[FabrikString::safeColNameToArrayKey($e)] = $elementModel;
+				$defaultsToAdd[StringHelper::safeColNameToArrayKey($e)] = $elementModel;
 			}
 		}
 
@@ -634,8 +639,8 @@ class FabrikFEModelImportcsv extends JModelForm
 	{
 		$app                 = JFactory::getApplication();
 		$jForm               = $app->input->get('jform', array(), 'array');
-		$dropData            = (int) FArrayHelper::getValue($jForm, 'drop_data', 0);
-		$overWrite           = (int) FArrayHelper::getValue($jForm, 'overwrite', 0);
+		$dropData            = (int) ArrayHelper::getValue($jForm, 'drop_data', 0);
+		$overWrite           = (int) ArrayHelper::getValue($jForm, 'overwrite', 0);
 		$model               = $this->getlistModel();
 		$model->importingCSV = true;
 		$item                = $model->getTable();
@@ -644,7 +649,7 @@ class FabrikFEModelImportcsv extends JModelForm
 		// $$$ rob 27/17/212 we need to reset the form as it was first generated before its elements were created.
 		$formModel->reset();
 
-		FabrikWorker::getPluginManager()->runPlugins('onStartImportCSV', $model, 'list');
+		Worker::getPluginManager()->runPlugins('onStartImportCSV', $model, 'list');
 
 		if ($dropData && $model->canEmpty())
 		{
@@ -655,7 +660,7 @@ class FabrikFEModelImportcsv extends JModelForm
 		$tableParams = $model->getParams();
 		$csvFullName = $tableParams->get('csvfullname', 0);
 
-		$key = FabrikString::shortColName($item->db_primary_key);
+		$key = StringHelper::shortColName($item->db_primary_key);
 
 		// Get a list of existing primary key vals
 		$db    = $model->getDb();
@@ -695,9 +700,9 @@ class FabrikFEModelImportcsv extends JModelForm
 				}
 
 				// Test _raw key and use that
-				if (JString::substr($heading, JString::strlen($heading) - 4, JString::strlen($heading)) == '_raw')
+				if (StringHelper::substr($heading, StringHelper::strlen($heading) - 4, StringHelper::strlen($heading)) == '_raw')
 				{
-					$pktestHeading = JString::substr($heading, 0, JString::strlen($heading) - 4);
+					$pktestHeading = StringHelper::substr($heading, 0, StringHelper::strlen($heading) - 4);
 				}
 				else
 				{
@@ -733,7 +738,7 @@ class FabrikFEModelImportcsv extends JModelForm
 				if ($item->auto_inc)
 				{
 					// If not overwriting ensure the any existing PK's are removed and the form rowId set to ''
-					$pk    = FabrikString::safeColNameToArrayKey($item->db_primary_key);
+					$pk    = StringHelper::safeColNameToArrayKey($item->db_primary_key);
 					$rawPk = $pk . '_raw';
 					unset($aRow[$pk]);
 					unset($aRow[$rawPk]);
@@ -759,9 +764,9 @@ class FabrikFEModelImportcsv extends JModelForm
 			// into the none raw key. Otherwise if just importing raw data no data stored
 			foreach ($aRow as $k => $val)
 			{
-				if (JString::substr($k, JString::strlen($k) - 4, JString::strlen($k)) == '_raw')
+				if (StringHelper::substr($k, StringHelper::strlen($k) - 4, StringHelper::strlen($k)) == '_raw')
 				{
-					$noneraw        = JString::substr($k, 0, strlen($k) - 4);
+					$noneraw        = StringHelper::substr($k, 0, strlen($k) - 4);
 					$aRow[$noneraw] = $val;
 				}
 			}
@@ -770,10 +775,10 @@ class FabrikFEModelImportcsv extends JModelForm
 			{
 				$formModel->formData = $formModel->formDataWithTableName = $aRow;
 
-				if (!in_array(false, FabrikWorker::getPluginManager()->runPlugins('onImportCSVRow', $model, 'list')))
+				if (!in_array(false, Worker::getPluginManager()->runPlugins('onImportCSVRow', $model, 'list')))
 				{
 					$rowid = $formModel->processToDB();
-					FabrikWorker::getPluginManager()->runPlugins('onAfterImportCSVRow', $model, 'list');
+					Worker::getPluginManager()->runPlugins('onAfterImportCSVRow', $model, 'list');
 				}
 			}
 			else
@@ -791,7 +796,7 @@ class FabrikFEModelImportcsv extends JModelForm
 		$this->removeCSVFile();
 		$this->updatedCount = $updatedCount;
 
-		FabrikWorker::getPluginManager()->runPlugins('onCompleteImportCSV', $model, 'list');
+		Worker::getPluginManager()->runPlugins('onCompleteImportCSV', $model, 'list');
 	}
 
 	/**
@@ -829,9 +834,9 @@ class FabrikFEModelImportcsv extends JModelForm
 	{
 		foreach ($aRow as $k => $val)
 		{
-			if (JString::substr($k, JString::strlen($k) - 4, JString::strlen($k)) == '_raw')
+			if (StringHelper::substr($k, StringHelper::strlen($k) - 4, StringHelper::strlen($k)) == '_raw')
 			{
-				$noneraw = JString::substr($k, 0, JString::strlen($k) - 4);
+				$noneraw = StringHelper::substr($k, 0, StringHelper::strlen($k) - 4);
 
 				if (array_key_exists($noneraw, $aRow))
 				{
@@ -884,11 +889,11 @@ class FabrikFEModelImportcsv extends JModelForm
 
 		if ($elementsCreated == 0)
 		{
-			$msg = JText::sprintf('COM_FABRIK_CSV_ADDED_AND_UPDATED', $this->addedCount, $this->updatedCount);
+			$msg = Text::sprintf('COM_FABRIK_CSV_ADDED_AND_UPDATED', $this->addedCount, $this->updatedCount);
 		}
 		else
 		{
-			$msg = JText::sprintf('COM_FABRIK_CSV_ADD_ELEMENTS_AND_RECORDS_AND_UPDATED', $elementsCreated, $this->addedCount, $this->updatedCount);
+			$msg = Text::sprintf('COM_FABRIK_CSV_ADD_ELEMENTS_AND_RECORDS_AND_UPDATED', $elementsCreated, $this->addedCount, $this->updatedCount);
 		}
 
 		return $msg;
@@ -975,7 +980,7 @@ class FabrikFEModelImportcsv extends JModelForm
 			// Reset the table's name back to the main table
 			$table->db_table_name = $dbName;
 			$fabrik_repeat_group  = array();
-			$js                   = FArrayHelper::getValue($data, 'join', array());
+			$js                   = ArrayHelper::getValue($data, 'join', array());
 
 			foreach ($js as $jid => $jdata)
 			{
@@ -997,7 +1002,7 @@ class FabrikFEModelImportcsv extends JModelForm
 			$app->input->set('fabrik_repeat_group', $fabrik_repeat_group);
 			$formModel->formData = $data;
 
-			if (!in_array(false, FabrikWorker::getPluginManager()->runPlugins('onImportCSVRow', $model, 'list')))
+			if (!in_array(false, Worker::getPluginManager()->runPlugins('onImportCSVRow', $model, 'list')))
 			{
 				$formModel->processToDB();
 			}
@@ -1150,7 +1155,7 @@ class FabrikFEModelImportcsv extends JModelForm
 	 */
 	public function makeError()
 	{
-		$str = FText::_('COM_FABRIK_CSV_FIELDS_NOT_IN_TABLE');
+		$str = Text::_('COM_FABRIK_CSV_FIELDS_NOT_IN_TABLE');
 
 		foreach ($this->newHeadings as $heading)
 		{
@@ -1203,7 +1208,7 @@ class FabrikFEModelImportcsv extends JModelForm
 
 		$post = $input->get('jform', array(), 'array');
 
-		if (FArrayHelper::getValue($post, 'addkey', 0) == 1)
+		if (ArrayHelper::getValue($post, 'addkey', 0) == 1)
 		{
 			return false;
 		}

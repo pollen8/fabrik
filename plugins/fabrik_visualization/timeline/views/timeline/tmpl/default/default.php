@@ -11,6 +11,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Fabrik\Helpers\Text;
+
 $row = $this->row;
 ?>
 <div id="<?php echo $this->containerId;?>" class="fabrik_visualization fabrik_timeline">
@@ -23,7 +25,7 @@ $row = $this->row;
 	<div><?php echo $row->intro_text;?></div>
 	<?php echo $this->loadTemplate('filter'); ?>
 	<div class="datePicker">
-	<?php echo FText::_('PLG_VIZ_TIMELINE_JUMP_TO') . ': ' . $this->datePicker; ?>
+	<?php echo Text::_('PLG_VIZ_TIMELINE_JUMP_TO') . ': ' . $this->datePicker; ?>
 	</div>
 	<div id="my-timeline" style="margin-top:20px;border:1px solid #ccc;width:<?php echo $this->width?>px;height:<?php echo $this->height?>px;"></div>
 </div>

@@ -8,13 +8,20 @@
  * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
+namespace Fabrik\Plugins\Element;
+
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
 use Joomla\Registry\Registry;
-use Joomla\Utilities\ArrayHelper;
-
-require_once JPATH_SITE . '/plugins/fabrik_element/databasejoin/databasejoin.php';
+use Fabrik\Helpers\ArrayHelper;
+use \JHtml;
+use Fabrik\Helpers\Worker;
+use Fabrik\Helpers\StringHelper;
+use Fabrik\Helpers\Text;
+use Fabrik\Helpers\Html;
+use \TagsModelTag;
+use \JTable;
 
 /**
  * Plugin element to render Joomla's tags field
@@ -23,7 +30,7 @@ require_once JPATH_SITE . '/plugins/fabrik_element/databasejoin/databasejoin.php
  * @subpackage  Fabrik.element.tags
  * @since       3.0
  */
-class PlgFabrik_ElementTags extends PlgFabrik_ElementDatabasejoin
+class Tags extends Databasejoin
 {
 	/**
 	 * Multi-db join option - can we add duplicate options (set to false in tags element)
@@ -88,20 +95,20 @@ class PlgFabrik_ElementTags extends PlgFabrik_ElementDatabasejoin
 			JHtml::_('jquery.framework');
 
 			// Requires chosen to work
-			JText::script('JGLOBAL_KEEP_TYPING');
-			JText::script('JGLOBAL_LOOKING_FOR');
-			JText::script('JGLOBAL_SELECT_SOME_OPTIONS');
-			JText::script('JGLOBAL_SELECT_AN_OPTION');
-			JText::script('JGLOBAL_SELECT_NO_RESULTS_MATCH');
+			Text::script('JGLOBAL_KEEP_TYPING');
+			Text::script('JGLOBAL_LOOKING_FOR');
+			Text::script('JGLOBAL_SELECT_SOME_OPTIONS');
+			Text::script('JGLOBAL_SELECT_AN_OPTION');
+			Text::script('JGLOBAL_SELECT_NO_RESULTS_MATCH');
 
-			$ext = FabrikHelperHTML::isDebug() ? '.min.js' : '.js';
+			$ext = Html::isDebug() ? '.min.js' : '.js';
 			JHtml::_('script', 'jui/chosen.jquery' . $ext, false, true, false, false);
 			JHtml::_('stylesheet', 'jui/chosen.css', false, true);
 			JHtml::_('script', 'jui/ajax-chosen' . $ext, false, true, false, false);
 
 			$bootstrapClass = $params->get('bootstrap_class', 'span12');
 			$attr = 'multiple="multiple" class="inputbox ' . $bootstrapClass. ' small"';
-			$attr .= ' data-placeholder="' . JText::_('JGLOBAL_SELECT_SOME_OPTIONS') . '"';
+			$attr .= ' data-placeholder="' . Text::_('JGLOBAL_SELECT_SOME_OPTIONS') . '"';
 			$selected = $tmp;
 			$str[] = JHtml::_('select.genericlist', $tmp, $name, trim($attr), 'value', 'text', $selected, $id);
 
@@ -121,7 +128,7 @@ class PlgFabrik_ElementTags extends PlgFabrik_ElementDatabasejoin
 			$name = $this->getFullName(true, false);
 			$baseUrl = $this->tagUrl();
 			$icon = $this->tagIcon();
-			$data = FabrikHelperHTML::tagify($d, $baseUrl, $name, $icon);
+			$data = Html::tagify($d, $baseUrl, $name, $icon);
 			return implode("\n", $data);
 		}
 	}
@@ -129,13 +136,13 @@ class PlgFabrik_ElementTags extends PlgFabrik_ElementDatabasejoin
 	/**
 	 * Create the where part for the query that selects the list options
 	 *
-	 * @param   array           $data            Current row data to use in placeholder replacements
-	 * @param   bool            $incWhere        Should the additional user defined WHERE statement be included
-	 * @param   string          $thisTableAlias  Db table alias
-	 * @param   array           $opts            Options
-	 * @param   JDatabaseQuery  $query           Append where to JDatabaseQuery object or return string (false)
+	 * @param   array                $data            Current row data to use in placeholder replacements
+	 * @param   bool                 $incWhere        Should the additional user defined WHERE statement be included
+	 * @param   string               $thisTableAlias  Db table alias
+	 * @param   array                $opts            Options
+	 * @param  bool|\JDatabaseQuery  $query           Append where to JDatabaseQuery object or return string (false)
 	 *
-	 * @return string|JDatabaseQuery
+	 * @return string|\JDatabaseQuery
 	 */
 	protected function buildQueryWhere($data = array(), $incWhere = true, $thisTableAlias = null, $opts = array(), $query = false)
 	{
@@ -153,9 +160,9 @@ class PlgFabrik_ElementTags extends PlgFabrik_ElementDatabasejoin
 		{
 			$pk = $db->qn($join->table_join_alias . '.' . $join->table_key);
 			$name = $this->getFullName(true, false) . '_raw';
-			$tagIds = FArrayHelper::getValue($data, $name, array());
+			$tagIds = ArrayHelper::getValue($data, $name, array());
 			$tagIds = ArrayHelper::toInteger($tagIds);
-			$where = FArrayHelper::emptyIsh($tagIds) ? '6 = -6' : $pk . ' IN (' . implode(', ', $tagIds) . ')';
+			$where = ArrayHelper::emptyIsh($tagIds) ? '6 = -6' : $pk . ' IN (' . implode(', ', $tagIds) . ')';
 		}
 		else
 		{
@@ -170,7 +177,7 @@ class PlgFabrik_ElementTags extends PlgFabrik_ElementDatabasejoin
 				$where = '';
 			}
 			*/
-			if (FArrayHelper::getValue($opts, 'mode', '') !== 'filter')
+			if (ArrayHelper::getValue($opts, 'mode', '') !== 'filter')
 			{
 				$where = $fk . ' = ' . $db->quote($rowId);
 			}
@@ -194,7 +201,7 @@ class PlgFabrik_ElementTags extends PlgFabrik_ElementDatabasejoin
 	 *
 	 * @since 3.0rc1
 	 *
-	 * @return string|JQueryerBuilder join statement to add
+	 * @return string|\JDatabaseQuery join statement to add
 	 */
 	protected function buildQueryJoin($query = false)
 	{
@@ -367,7 +374,7 @@ class PlgFabrik_ElementTags extends PlgFabrik_ElementDatabasejoin
 		$params = $this->getParams();
 		$name = $this->getFullName(true, false);
 		$rawName = $name . '_raw';
-		$db = FabrikWorker::getDbo(true);
+		$db = Worker::getDbo(true);
 		$formData =& $this->getFormModel()->formDataWithTableName;
 		$tagIds = (array) $formData[$rawName];
 
@@ -392,7 +399,7 @@ class PlgFabrik_ElementTags extends PlgFabrik_ElementDatabasejoin
 				if ($tagsTableName === '' || $tagsTableName === $jTagsTableName)
 				{
 					JTable::addIncludePath(COM_FABRIK_BASE . '/administrator/components/com_tags/tables');
-					require(JPATH_ADMINISTRATOR . '/components/com_tags/models/tag.php');
+					require JPATH_ADMINISTRATOR . '/components/com_tags/models/tag.php';
 					$tagModel = new TagsModelTag;
 
 					/*
@@ -511,7 +518,7 @@ class PlgFabrik_ElementTags extends PlgFabrik_ElementDatabasejoin
 			$merged = array_combine($ids, $data);
 			$baseUrl = $this->tagUrl();
 			$icon = $this->tagIcon();
-			$data = FabrikHelperHTML::tagify($merged, $baseUrl, $name, $icon);
+			$data = Html::tagify($merged, $baseUrl, $name, $icon);
 		}
 	}
 
@@ -524,8 +531,8 @@ class PlgFabrik_ElementTags extends PlgFabrik_ElementDatabasejoin
 	{
 		$name = $this->getFullName(true, false);
 		$rawName = $name . '_raw';
-		$baseUrl = FabrikHelperHTML::tagBaseUrl($rawName, $this->tagListURL());
-		$baseUrl .= FabrikString::qsSepChar($baseUrl);
+		$baseUrl = Html::tagBaseUrl($rawName, $this->tagListURL());
+		$baseUrl .= StringHelper::qsSepChar($baseUrl);
 		$baseUrl .= $rawName . '={key}';
 
 		return $baseUrl;
@@ -540,7 +547,7 @@ class PlgFabrik_ElementTags extends PlgFabrik_ElementDatabasejoin
 	{
 		$params = $this->getParams();
 		$icon = $params->get('tag_icon', '');
-		$icon = $icon === '' ? '' : FabrikHelperHTML::icon($icon);
+		$icon = $icon === '' ? '' : Html::icon($icon);
 
 		return $icon;
 	}

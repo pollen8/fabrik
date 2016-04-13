@@ -12,6 +12,9 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Fabrik\Helpers\ArrayHelper;
+use Fabrik\Helpers\Text;
+
 $data = $displayData;
 $renderOrder = $data['renderOrder'];
 $vals = $data['vals'];
@@ -26,9 +29,9 @@ $listData = $data['data'];
 		<input type="hidden" name="radius_search_lon<?php echo $renderOrder; ?>" value="<?php echo $lon; ?>" />
 		<table class="table">
 		<tr>
-		<th><?php echo JText::_('PLG_LIST_RADIUS_LOOKUP_NAME'); ?></th>
-		<th><?php echo JText::_('PLG_LIST_RADIUS_DISTANCE'); ?></th>
-		<th><?php echo JText::_('PLG_LIST_RADIUS_LOOKUP_VISIBLE'); ?></th>
+		<th><?php echo Text::_('PLG_LIST_RADIUS_LOOKUP_NAME'); ?></th>
+		<th><?php echo Text::_('PLG_LIST_RADIUS_DISTANCE'); ?></th>
+		<th><?php echo Text::_('PLG_LIST_RADIUS_LOOKUP_VISIBLE'); ?></th>
 		</tr>
 
 	<?php
@@ -36,15 +39,15 @@ $listData = $data['data'];
 		{
 			foreach ($group as $row)
 			{
-				$val = FArrayHelper::getValue($vals, $row->__pk_val);
+				$val = ArrayHelper::getValue($vals, $row->__pk_val);
 				$noneSel = (string) $val === '' ? 'selected' : '';
 				$noSel = (string) $val === '0' ? 'selected' : '';
 				$yesSel = (string) $val === '1' ? 'selected' : '';
 				$distance = $row->$distanceField;
 				$drop = '<select name="radius_lookup' . $renderOrder . '[' . $row->__pk_val . ']">
-				<option ' . $noneSel . '>' . JText::_('COM_FABRIK_PLEASE_SELECT') . '</option>
+				<option ' . $noneSel . '>' . Text::_('COM_FABRIK_PLEASE_SELECT') . '</option>
 				<option ' . $noSel. ' value="0">'
-						 . JText::_('JNO') . '</option><option ' . $yesSel. ' value="1">' . JText::_('JYES') . '</option></select>';?>
+						 . Text::_('JNO') . '</option><option ' . $yesSel. ' value="1">' . Text::_('JYES') . '</option></select>';?>
 				<tr>
 				<td><?php echo $row->$nameField?></td>
 				<td><?php echo $distance ?></td>

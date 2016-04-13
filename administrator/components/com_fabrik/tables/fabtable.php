@@ -11,6 +11,9 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Fabrik\Helpers\ArrayHelper;
+use Fabrik\Helpers\Worker;
+
 /**
  * Base Fabrik Table
  *
@@ -41,7 +44,7 @@ class FabTable extends JTable
 	 */
 	public static function getInstance($type, $prefix = 'JTable', $config = array())
 	{
-		$config['dbo'] = FabrikWorker::getDbo(true);
+		$config['dbo'] = Worker::getDbo(true);
 
 		$instance = parent::getInstance($type, $prefix, $config);
 
@@ -72,7 +75,7 @@ class FabTable extends JTable
 	 */
 	public function batch($batch)
 	{
-		$batchParams = FArrayHelper::getValue($batch, 'params');
+		$batchParams = ArrayHelper::getValue($batch, 'params');
 		unset($batch['params']);
 		$query = $this->_db->getQuery(true);
 		$this->bind($batch);
@@ -100,7 +103,7 @@ class FabTable extends JTable
 	{
 		static $cache = array();
 
-		if (FArrayHelper::getValue($cache, $this->_tbl) === null)
+		if (ArrayHelper::getValue($cache, $this->_tbl) === null)
 		{
 			// Lookup the fields for this table only once. PER TABLE NAME!
 			$name   = $this->_tbl;
