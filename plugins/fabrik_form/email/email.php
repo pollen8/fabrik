@@ -316,6 +316,20 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 
 				$this->pdfAttachment($thisAttachments);
 
+				/*
+				 * Sanity check for attachment files existing.  Could have base folder paths for things
+				 * like file upload elements with no file.  As of J! 3.5.1, the J! mailer tosses an exception
+				 * if files don't exist.  We catch that in the sendMail helper, but remove non-files here anyway
+				 */
+
+				foreach ($thisAttachments as $aKey => $attachFile)
+				{
+					if (!JFile::exists($attachFile))
+					{
+						unset($thisAttachments[$aKey]);
+					}
+				}
+
 				$res = FabrikWorker::sendMail(
 					$emailFrom, $emailFromName, $email, $thisSubject, $thisMessage,
 					$htmlEmail, $cc, $bcc, $thisAttachments, $returnPath, $returnPathName
