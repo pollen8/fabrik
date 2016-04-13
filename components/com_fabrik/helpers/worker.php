@@ -1965,10 +1965,41 @@ class Worker
 		// Are we sending the email as HTML?
 		$mailer->isHtml($mode);
 
-		$mailer->addRecipient($recipient, $recipientName);
-		$mailer->addCc($cc);
-		$mailer->addBcc($bcc);
-		$mailer->addAttachment($attachment);
+		try
+		{
+			$mailer->addRecipient($recipient, $recipientName);
+		}
+		catch (Exception $e)
+		{
+			return false;
+		}
+
+		try
+		{
+			$mailer->addCc($cc);
+		}
+		catch (Exception $e)
+		{
+			// not sure if we should bail if Cc is bad, for now just soldier on
+		}
+
+		try
+		{
+			$mailer->addBcc($bcc);
+		}
+		catch (Exception $e)
+		{
+			// not sure if we should bail if Bcc is bad, for now just soldier on
+		}
+
+		try
+		{
+			$mailer->addAttachment($attachment);
+		}
+		catch (Exception $e)
+		{
+			// most likely file didn't exist, ignore
+		}
 
 		$autoReplyTo = false;
 
@@ -1979,19 +2010,40 @@ class Worker
 
 			for ($i = 0; $i < $numReplyTo; $i++)
 			{
-				$mailer->addReplyTo($replyTo[$i], $replyToName[$i]);
+				try
+				{
+					$mailer->addReplyTo($replyTo[$i], $replyToName[$i]);
+				}
+				catch (Exception $e)
+				{
+					// carry on
+				}
 			}
 		}
 		elseif (isset($replyTo))
 		{
-			$mailer->addReplyTo($replyTo, $replyToName);
+			try
+			{
+				$mailer->addReplyTo($replyTo, $replyToName);
+			}
+			catch (Exception $e)
+			{
+				// carry on
+			}
 		}
 		else
 		{
 			$autoReplyTo = true;
 		}
 
-		$mailer->setSender(array($from, $fromName, $autoReplyTo));
+		try
+		{
+			$mailer->setSender(array($from, $fromName, $autoReplyTo));
+		}
+		catch (Exception $e)
+		{
+			return false;
+		}
 
 		/**
 		 * Set the plain text AltBody, which forces the PHP mailer class to make this
@@ -2004,7 +2056,16 @@ class Worker
 			$mailer->AltBody = JMailHelper::cleanText(strip_tags($body));
 		}
 
-		return $mailer->Send();
+		try
+		{
+			$ret = $mailer->Send();
+		}
+		catch (Exception $e)
+		{
+			return false;
+		}
+
+		return $ret;
 	}
 
 	/**
