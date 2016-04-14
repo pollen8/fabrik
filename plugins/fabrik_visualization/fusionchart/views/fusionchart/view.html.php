@@ -37,8 +37,8 @@ class FabrikViewFusionchart extends JViewLegacy
 		$input = $app->input;
 		$j3 = FabrikWorker::j3();
 		$srcs = FabrikHelperHTML::framework();
-		$srcs[] = 'media/com_fabrik/js/listfilter.js';
-		$srcs[] = 'media/com_fabrik/js/advanced-search.js';
+		$srcs['FbListFilter'] = 'media/com_fabrik/js/listfilter.js';
+		$srcs['AdvancedSearch'] = 'media/com_fabrik/js/advanced-search.js';
 		$model = $this->getModel();
 		$usersConfig = JComponentHelper::getParams('com_fabrik');
 		$model->setId($input->getInt('id', $usersConfig->get('visualizationid', $input->getInt('visualizationid', 0))));
@@ -83,7 +83,7 @@ class FabrikViewFusionchart extends JViewLegacy
 		$js .= "\n" . "Fabrik.addBlock('$ref', $ref);";
 		$js .= $model->getFilterJs();
 		FabrikHelperHTML::iniRequireJs($model->getShim());
-		FabrikHelperHTML::script($srcs, $js, '-min.js', array('Window', 'FbListFilter'));
+		FabrikHelperHTML::script($srcs, $js);
 		$text = $this->loadTemplate();
 		FabrikHelperHTML::runContentPlugins($text);
 		echo $text;

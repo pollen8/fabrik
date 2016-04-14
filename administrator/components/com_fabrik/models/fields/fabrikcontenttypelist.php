@@ -77,9 +77,9 @@ class JFormFieldFabrikContentTypeList extends JFormFieldList
 
 		$str .= '</div>';
 		$script = 'new FabrikContentTypeList(\'' . $this->id . '\');';
-		$src = array(
-				'media/com_fabrik/js/fabrik.js',
-				'administrator/components/com_fabrik/models/fields/fabrikcontenttypelist.js'
+		$src    = array(
+			'Fabrik' => 'media/com_fabrik/js/fabrik.js',
+			'ContentTypeList' => 'administrator/components/com_fabrik/models/fields/fabrikcontenttypelist.js'
 		);
 		FabrikHelperHTML::script($src, $script);
 

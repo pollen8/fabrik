@@ -269,9 +269,9 @@ class FabrikFEModelForm extends FabModelForm
 	 *
 	 * @since 3.1b
 	 *
-	 * @var string
+	 * @var array
 	 */
-	public $formPluginJS = '';
+	public $formPluginJS = array();
 
 	/**
 	 * Form plugin files to load
@@ -1401,7 +1401,7 @@ class FabrikFEModelForm extends FabModelForm
 
 				$nsRaw = $val;
 
-				$nsRawFull = $this->_fullFormData;
+				$nsRawFull = $this->fullFormData;
 
 				for ($i = 0; $i <= $pathNodes; $i++)
 				{
@@ -1425,9 +1425,9 @@ class FabrikFEModelForm extends FabModelForm
 				$this->formDataWithTableName[$key] = $val;
 			}
 			// Check if set - for case where you have a fileupload element & confirmation plugin - when plugin is trying to update non-existent data
-			if (isset($this->_fullFormData))
+			if (isset($this->fullFormData))
 			{
-				$this->_fullFormData[$key] = $val;
+				$this->fullFormData[$key] = $val;
 			}
 			/*
 			 * Need to allow RO (encrypted) elements to be updated.  Consensus is that
@@ -1463,9 +1463,9 @@ class FabrikFEModelForm extends FabModelForm
 				$this->formData[$key] = $val;
 				$this->formDataWithTableName[$key] = $val;
 
-				if (isset($this->_fullFormData))
+				if (isset($this->fullFormData))
 				{
-					$this->_fullFormData[$key] = $val;
+					$this->fullFormData[$key] = $val;
 				}
 
 				if ($override_ro)
@@ -1505,7 +1505,7 @@ class FabrikFEModelForm extends FabModelForm
 		}
 		/* Maybe we are being called from onAfterProcess hook, or somewhere else
 		 * running after store, when non-joined data names have been reduced to short
-		 * names in formData, so peek in _fullFormData
+		 * names in formData, so peek in fullFormData
 		 */
 		elseif (isset($this->fullFormData) && array_key_exists($fullName, $this->fullFormData))
 		{

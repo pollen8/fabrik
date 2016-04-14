@@ -860,16 +860,16 @@ EOD;
 
 			// Require js test - list with no cal loading ajax form with cal
 			JHTML::_('behavior.calendar');
-			$liveSiteReq[] = $mediaFolder . '/chosen-loader';
-			$liveSiteReq[] = $mediaFolder . '/fabrik';
+			$liveSiteReq['Chosen'] = $mediaFolder . '/chosen-loader';
+			$liveSiteReq['Fabrik'] = $mediaFolder . '/fabrik';
 
 			if ($bootstrapped)
 			{
-				$liveSiteReq[] = $mediaFolder . '/tipsBootStrapMock';
+				$liveSiteReq['FloatingTips'] = $mediaFolder . '/tipsBootStrapMock';
 			}
 			else
 			{
-				$liveSiteReq[] = $mediaFolder . '/tips';
+				$liveSiteReq['FloatingTips'] = $mediaFolder . '/tips';
 			}
 
 			if ($fbConfig->get('advanced_behavior', '0') == '1')
@@ -900,7 +900,7 @@ EOD;
 			{
 				// Require.js now added in fabrik system plugin onAfterRender()
 				JText::script('COM_FABRIK_LOADING');
-				$src[] = $mediaFolder . '/window.js';
+				$src['Window'] = $mediaFolder . '/window.js';
 
 				self::styleSheet(COM_FABRIK_LIVESITE . 'media/com_fabrik/css/fabrik.css');
 
@@ -943,7 +943,7 @@ EOD;
 				Fabrik.jLayouts = jQuery.extend(Fabrik.jLayouts, %%jLayouts%%);";
 			}
 
-			self::script($liveSiteReq, $liveSiteSrc, '-min.js', array('Chosen', 'Fabrik', 'FloatingTips'));
+			self::script($liveSiteReq, $liveSiteSrc, '-min.js');
 			self::$framework = $src;
 		}
 
@@ -1370,11 +1370,10 @@ EOD;
 	 *                             e.g. 'administrator/components/com_fabrik/models/fields/tables.js'
 	 * @param   string $onLoad     Optional js to run once the Js file has been loaded
 	 * @param   string $minSuffix  The minimised file suffix to use, replaces '.js'
-	 * @param   array  $names
 	 *
 	 * @return  void
 	 */
-	public static function script($file, $onLoad = '', $minSuffix = '-min.js', $names = array())
+	public static function script($file, $onLoad = '', $minSuffix = '-min.js')
 	{
 		if (empty($file))
 		{
@@ -1447,6 +1446,10 @@ EOD;
 		}
 
 		$files     = array_unique($files);
+
+		// Set names from $files keys if assoc array. In general it is for require js files
+		$names = array_keys($files) !== range(0, count($files) - 1) ? array_keys($files) : array();
+
 		$files     = "['" . implode("', '", $files) . "']";
 		$require[] = 'requirejs(' . ($files) . ', function (' . implode(", ", $names) . ') {';
 		$require[] = $onLoad;

@@ -1000,17 +1000,11 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 	{
 		$mediaFolder = FabrikHelperHTML::getMediaFolder();
 		$files = array(
-			$mediaFolder . '/element.js',
-			$mediaFolder . '/elementlist.js'
+			'Element' => $mediaFolder . '/element.js',
+			'ElementList' => $mediaFolder . '/elementlist.js'
 		);
 
-		foreach ($files as $file)
-		{
-			if (!in_array($file, $srcs))
-			{
-				$srcs[] = $file;
-			}
-		}
+		$srcs = array_merge($srcs, $files);
 
 		parent::formJavascriptClass($srcs, $script, $shim);
 	}

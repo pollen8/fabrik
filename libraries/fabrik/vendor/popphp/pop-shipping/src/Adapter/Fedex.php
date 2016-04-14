@@ -153,15 +153,11 @@ class Fedex extends AbstractAdapter
      * @param  string $password
      * @param  string $account
      * @param  string $meter
-     * @param  string $wsdl
+     * @param  array $wsdl keys rates, shipping
      * @return Fedex
      */
     public function __construct($key, $password, $account, $meter, $wsdl)
     {
-        if (!is_array($wsdl))
-        {
-            $wsdl = ['rates' => $wsdl];
-        }
         $this->wsdl = $wsdl;
         $this->accountNumber = $account;
         ini_set('soap.wsdl_cache_enabled', '0');
@@ -368,7 +364,7 @@ class Fedex extends AbstractAdapter
      *
      * @throws \Exception
      *
-     * @return string Shipping label
+     * @return array label file format, label image data
      */
     public function ship($verifyPeer = true)
     {
@@ -427,7 +423,7 @@ class Fedex extends AbstractAdapter
 
         $label = $this->response->CompletedShipmentDetail->CompletedPackageDetails->Label->Parts->Image;
 
-       return $label;
+        return ['png', base64_decode($label)];
     }
 
     /**

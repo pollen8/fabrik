@@ -194,9 +194,9 @@ class PlgFabrik_FormComment extends PlgFabrik_Form
 		$this->formModel = $formModel;
 		$jsFiles = array();
 		JHTML::stylesheet('plugins/fabrik_form/comment/comments.css');
-		$jsFiles[] = 'media/com_fabrik/js/fabrik.js';
-		$jsFiles[] = 'plugins/fabrik_form/comment/comments.js';
-		$jsFiles[] = 'plugins/fabrik_form/comment/inlineedit.js';
+		$jsFiles['Fabrik'] = 'media/com_fabrik/js/fabrik.js';
+		$jsFiles['Comments'] = 'plugins/fabrik_form/comment/comments.js';
+		$jsFiles['InlineEdit'] = 'plugins/fabrik_form/comment/inlineedit.js';
 
 		$thumbOpts = $this->doThumbs() ? $thumbOpts = $this->loadThumbJsOpts() : "{}";
 		$rowId = $input->get('rowid', '', 'string');
@@ -250,7 +250,7 @@ class PlgFabrik_FormComment extends PlgFabrik_Form
 
 		if ($this->doThumbs())
 		{
-			$jsFiles[] = 'plugins/fabrik_element/thumbs/list-thumbs.js';
+			$jsFiles['FbThumbsList'] = 'plugins/fabrik_element/thumbs/list-thumbs.js';
 			$script .= "\n comments.thumbs = new FbThumbsList(" . $this->formModel->getId() . ", $thumbOpts);";
 		}
 

@@ -123,9 +123,9 @@ class JFormFieldFabrikTables extends JFormFieldList
 			$script[]            = "FabrikAdmin.model.fields.fabriktable['$this->id'] = p;";
 
 			$fabrikTables[$this->id] = true;
-			$src[]                   = 'media/com_fabrik/js/fabrik.js';
-			$src[]                   = 'administrator/components/com_fabrik/views/namespace.js';
-			$src[]                   = 'administrator/components/com_fabrik/models/fields/fabriktables.js';
+			$src['Fabrik']           = 'media/com_fabrik/js/fabrik.js';
+			$src['Namespace']        = 'administrator/components/com_fabrik/views/namespace.js';
+			$src['FabrikTables']     = 'administrator/components/com_fabrik/models/fields/fabriktables.js';
 			FabrikHelperHTML::script($src, $script);
 		}
 

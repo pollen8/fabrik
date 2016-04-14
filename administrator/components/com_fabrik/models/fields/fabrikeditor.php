@@ -153,8 +153,10 @@ window.addEvent(\'domready\', function () {
 });
 		';
 
-		$src = array('media/com_fabrik/js/lib/ace/src-min-noconflict/ace.js', 'media/com_fabrik/js/fabrik.js');
-		FabrikHelperHTML::script($src, $script, '-min.js', array('Ace', 'Fabrik'));
+		$src = array(
+			'Ace' => 'media/com_fabrik/js/lib/ace/src-min-noconflict/ace.js',
+			'Fabrik' => 'media/com_fabrik/js/fabrik.js');
+		FabrikHelperHTML::script($src, $script);
 
 		echo '<style type="text/css" media="screen">
 	#' . $aceId . '-ace {

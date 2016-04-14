@@ -393,9 +393,10 @@ class JFormFieldListfields extends JFormFieldList
 		$script[]          = "}";
 		$script            = implode("\n", $script);
 
-		$srcs   = array();
-		$srcs[] = 'media/com_fabrik/js/fabrik.js';
-		$srcs[] = 'administrator/components/com_fabrik/models/fields/listfields.js';
+		$srcs   = array(
+			'Fabrik' => 'media/com_fabrik/js/fabrik.js',
+			'ListFields' => 'administrator/components/com_fabrik/models/fields/listfields.js'
+		);
 		FabrikHelperHTML::script($srcs, $script);
 	}
 

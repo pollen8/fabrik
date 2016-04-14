@@ -112,13 +112,13 @@ class FabrikAdminViewList extends JViewLegacy
 
 		FabrikAdminHelper::setViewLayout($this);
 
-		$srcs   = FabrikHelperHTML::framework();
-		$srcs[] = FabrikHelperHTML::mediaFile('fabrik.js');
-		$srcs[] = 'administrator/components/com_fabrik/views/namespace.js';
-		$srcs[] = 'administrator/components/com_fabrik/views/pluginmanager.js';
-		$srcs[] = 'administrator/components/com_fabrik/views/list/tmpl/adminlist.js';
-		$srcs[] = 'administrator/components/com_fabrik/views/listform.js';
-		$srcs[] = 'administrator/components/com_fabrik/views/list/tmpl/admin-filters.js';
+		$srcs                  = FabrikHelperHTML::framework();
+		$srcs['Fabrik']        = FabrikHelperHTML::mediaFile('fabrik.js');
+		$srcs['NameSpace']     = 'administrator/components/com_fabrik/views/namespace.js';
+		$srcs['PluginManager'] = 'administrator/components/com_fabrik/views/pluginmanager.js';
+		$srcs['AdminList']     = 'administrator/components/com_fabrik/views/list/tmpl/adminlist.js';
+		$srcs['ListForm']      = 'administrator/components/com_fabrik/views/listform.js';
+		$srcs['adminFilters']  = 'administrator/components/com_fabrik/views/list/tmpl/admin-filters.js';
 
 		$shim                              = array();
 		$dep                               = new stdClass;
@@ -126,8 +126,7 @@ class FabrikAdminViewList extends JViewLegacy
 		$shim['admin/list/tmpl/adminlist'] = $dep;
 		$shim['adminfields/tables']        = $dep;
 		FabrikHelperHTML::iniRequireJS($shim);
-		FabrikHelperHTML::script($srcs, $this->js, '-min.js',
-			array('Window', 'Fabrik', 'NameSpace', 'PluginManager', 'AdminList', 'ListForm', 'adminFilters'));
+		FabrikHelperHTML::script($srcs, $this->js);
 		parent::display($tpl);
 	}
 

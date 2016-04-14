@@ -72,7 +72,7 @@ class FabrikAdminViewConnection extends JViewLegacy
 		FabrikAdminHelper::setViewLayout($this);
 
 		$srcs = FabrikHelperHTML::framework();
-		$srcs[] = 'media/com_fabrik/js/fabrik.js';
+		$srcs['Fabrik'] = 'media/com_fabrik/js/fabrik.js';
 
 		FabrikHelperHTML::iniRequireJS();
 		FabrikHelperHTML::script($srcs);

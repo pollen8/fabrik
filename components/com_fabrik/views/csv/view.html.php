@@ -127,8 +127,8 @@ class FabrikViewCsv extends FabrikView
 		JText::script('COM_FABRIK_SAVING_TO');
 
 		$srcs   = FabrikHelperHTML::framework();
-		$srcs[] = 'media/com_fabrik/js/list-plugin.js';
-		$srcs[] = 'media/com_fabrik/js/list.js';
+		$srcs['ListPlugin'] = 'media/com_fabrik/js/list-plugin.js';
+		$srcs['List'] = 'media/com_fabrik/js/list.js';
 
 		$script[] = 'var list = new FbList(' . $listId . ',' . $opts . ');';
 		$script[] = 'Fabrik.addBlock(\'list_' . $listId . '\', list);';

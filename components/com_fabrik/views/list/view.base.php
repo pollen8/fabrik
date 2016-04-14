@@ -143,23 +143,20 @@ class FabrikViewListBase extends FabrikView
 		$src  = FabrikHelperHTML::framework();
 		$shim = array();
 
-		$dep              = new stdClass;
-		$dep->deps        = array();
-		$shim['fab/list'] = $dep;
-		$src[]            = FabrikHelperHTML::mediaFile('list.js');
-		$src[]            = FabrikHelperHTML::mediaFile('listfilter.js');
-		$src[]            = FabrikHelperHTML::mediaFile('list-plugin.js');
-		$src              = $model->getPluginJsClasses($src, $shim);
+		$dep                 = new stdClass;
+		$dep->deps           = array();
+		$shim['fab/list']    = $dep;
+		$src['FbList']       = FabrikHelperHTML::mediaFile('list.js');
+		$src['FbListFilter'] = FabrikHelperHTML::mediaFile('listfilter.js');
+		$src['ListPlugin']   = FabrikHelperHTML::mediaFile('list-plugin.js');
+		$src                 = $model->getPluginJsClasses($src, $shim);
+
 		$pluginManager->runPlugins('loadJavascriptClassName', $model, 'list');
 
-		$pluginManager->data = array_filter($pluginManager->data, function($v) {
+		$pluginManager->data = array_filter($pluginManager->data, function ($v)
+		{
 			return $v !== '';
 		});
-
-		$names            = array_merge(
-			array('Window', 'FbList', 'FbListFilter', 'ListPlugin'),
-			$pluginManager->data
-		);
 
 		$model->getCustomJsAction($src);
 
@@ -173,7 +170,7 @@ class FabrikViewListBase extends FabrikView
 
 		if (JFile::exists($aJsPath))
 		{
-			$src[] = 'components/com_fabrik/views/list/tmpl/' . $tmpl . '/javascript.js';
+			$src['CustomJs'] = 'components/com_fabrik/views/list/tmpl/' . $tmpl . '/javascript.js';
 		}
 
 		$origRows   = $this->rows;
@@ -309,18 +306,14 @@ class FabrikViewListBase extends FabrikView
 		$pluginManager->runPlugins('onGetContentBeforeList', $model, 'list');
 		$this->pluginBeforeList = $pluginManager->data;
 		$script[]               = $model->filterJs;
-
-		// Was separate but should now load in with the rest of the require js code
-		$model    = $this->getModel();
-		$script[] = $model->getElementJs($src);
+		$script[]               = $this->getModel()->getElementJs($src);
 
 		// End domready wrapper
 		$script[] = '})';
 		$script   = implode("\n", $script);
 
 		FabrikHelperHTML::iniRequireJS($shim);
-		FabrikHelperHTML::script($src, $script, '-min.js',
-			$names);
+		FabrikHelperHTML::script($src, $script);
 	}
 
 	private function jsText()
