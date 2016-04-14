@@ -11276,14 +11276,16 @@ class FabrikFEModelList extends JModelForm
 	 */
 	public function getCustomJsAction(&$scripts)
 	{
+		$scriptKey = 'list_' . $this->getId();
+
 		if (JFile::exists(COM_FABRIK_FRONTEND . '/js/table_' . $this->getId() . '.js'))
 		{
-			$scripts[] = 'components/com_fabrik/js/table_' . $this->getId() . '.js';
+			$scripts[$scriptKey] = 'components/com_fabrik/js/table_' . $this->getId() . '.js';
 		}
 
 		if (JFile::exists(COM_FABRIK_FRONTEND . '/js/list_' . $this->getId() . '.js'))
 		{
-			$scripts[] = 'components/com_fabrik/js/list_' . $this->getId() . '.js';
+			$scripts[$scriptKey] = 'components/com_fabrik/js/list_' . $this->getId() . '.js';
 		}
 	}
 
