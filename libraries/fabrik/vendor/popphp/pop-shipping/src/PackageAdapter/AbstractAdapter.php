@@ -31,21 +31,19 @@ abstract class AbstractAdapter implements AdapterInterface
 	protected $dimensions = [];
 
 	/**
-	 * @param  number    $weight
-	 * @param string $unit
+	 * @param      $weight
+	 * @param null $unit
 	 *
-	 * @return \Pop\Shipping\PackageAdapter\AbstractAdapter
+	 * @return mixed
 	 */
-	public function setWeight($weight, $unit = 'LB')
+	public function setWeight($weight, $unit = null)
 	{
-		if ($unit == 'LB' || $unit == 'KG')
+		if ((null !== $unit) && (($unit == 'LB') || ($unit == 'KG')))
 		{
 			$this->weight['Units'] = $unit;
 		}
 
 		$this->weight['Value'] = $weight;
-
-		return $this;
 	}
 
 	/**
@@ -58,14 +56,14 @@ abstract class AbstractAdapter implements AdapterInterface
 	}
 
 	/**
-	 * @param array $dimensions key = [length, width, height]
-	 * @param string  $unit
+	 * @param array $dimensions
+	 * @param null  $unit
 	 *
-	 * @return \Pop\Shipping\PackageAdapter\AbstractAdapter
+	 * @return mixed
 	 */
-	public function setDimensions(array $dimensions, $unit = 'IN')
+	public function setDimensions(array $dimensions, $unit = null)
 	{
-		if ($unit == 'IN' || $unit == 'CM')
+		if ((null !== $unit) && (($unit == 'IN') || ($unit == 'CM')))
 		{
 			$this->dimensions['Units'] = $unit;
 		}
@@ -85,8 +83,6 @@ abstract class AbstractAdapter implements AdapterInterface
 					break;
 			}
 		}
-
-		return $this;
 	}
 
 	/**

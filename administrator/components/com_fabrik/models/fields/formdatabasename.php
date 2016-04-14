@@ -11,7 +11,7 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Fabrik\Helpers\Worker;
+require_once JPATH_ADMINISTRATOR . '/components/com_fabrik/helpers/element.php';
 
 /**
  * Renders the form's database name or a field to create one
@@ -45,7 +45,7 @@ class JFormFieldFormDatabaseName extends JFormFieldText
 	{
 		if ($this->form->getValue('record_in_database'))
 		{
-			$db = Worker::getDbo(true);
+			$db = FabrikWorker::getDbo(true);
 			$query = $db->getQuery(true);
 			$id = (int) $this->form->getValue('id');
 			$query->select('db_table_name')->from('#__{package}_lists')->where('form_id = ' . $id);

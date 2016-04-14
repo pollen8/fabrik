@@ -8,14 +8,11 @@
  * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
-namespace Fabrik\Plugins\Form;
-
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use \Exception;
-use \JFile;
-use Fabrik\Helpers\Worker;
+// Require the abstract plugin class
+require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
 
 /**
  * Insert points into the Alpha User Points http://www.alphaplug.com component
@@ -25,7 +22,7 @@ use Fabrik\Helpers\Worker;
  * @since       3.0.7
  */
 
-class AlphaUserPoints extends \PlgFabrik_Form
+class PlgFabrik_FormAlphaUserPoints extends PlgFabrik_Form
 {
 	/**
 	 * Run right at the end of the form processing
@@ -43,10 +40,10 @@ class AlphaUserPoints extends \PlgFabrik_Form
 
 		if (JFile::exists($api_AUP))
 		{
-			$w = new Worker;
+			$w = new FabrikWorker;
 			$this->data = $this->getProcessData();
 			require_once $api_AUP;
-			$aup = new \AlphaUserPointsHelper;
+			$aup = new AlphaUserPointsHelper;
 
 			// Define which user will receive the points.
 			$userId = $params->get('user_id', '');
@@ -70,7 +67,7 @@ class AlphaUserPoints extends \PlgFabrik_Form
 				{
 					$randomPoints = $w->parseMessageForPlaceholder($randomPoints, $this->data, false);
 					$randomPoints = @eval($randomPoints);
-					Worker::logEval($randomPoints, 'Caught exception on eval in aup plugin : %s');
+					FabrikWorker::logEval($randomPoints, 'Caught exception on eval in aup plugin : %s');
 				}
 
 				$randomPoints = (float) $randomPoints;

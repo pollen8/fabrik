@@ -4,15 +4,13 @@
  */
 
 defined('JPATH_BASE') or die;
-use Fabrik\Helpers\Worker;
-use Fabrik\Helpers\StringHelper;
 
 $d = $displayData;
 
-$thisName = $d->type === 'checkbox' ? StringHelper::rtrimword($d->name, '[]') . '[' . $d->i . ']' : $d->name;
+$thisName = $d->type === 'checkbox' ? FabrikString::rtrimword($d->name, '[]') . '[' . $d->i . ']' : $d->name;
 $label    = '<span>' . $d->label . '</span>';
 
-$inputClass = Worker::j3() ? '' : $d->type;
+$inputClass = FabrikWorker::j3() ? '' : $d->type;
 
 if (array_key_exists('input', $d->classes))
 {
@@ -24,7 +22,7 @@ $chx = '<input type="' . $d->type . '" class="fabrikinput ' . $inputClass . '" '
 
 $sel = in_array($d->value, $d->selected);
 $chx .= $sel ? ' checked="checked" />' : ' />';
-$labelClass = Worker::j3() && !$d->buttonGroup ? $d->type : '';
+$labelClass = FabrikWorker::j3() && !$d->buttonGroup ? $d->type : '';
 
 if (array_key_exists('label', $d->classes))
 {

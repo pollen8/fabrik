@@ -12,19 +12,16 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Fabrik\Helpers\Html;
-use Fabrik\Helpers\Text;
-
 JHtml::addIncludePath(JPATH_COMPONENT . '/helpers/html');
 JHtml::_('behavior.tooltip');
-Html::formvalidation();
+FabrikHelperHTML::formvalidation();
 JHtml::_('behavior.keepalive');
 ?>
 
 <form action="<?php JRoute::_('index.php?option=com_fabrik'); ?>" method="post" name="adminForm" id="adminForm" class="form-validate">
 	<div class="width-100 fltlft">
 		<fieldset class="adminform">
-			<legend><?php echo Text::_('COM_FABRIK_DETAILS');?></legend>
+			<legend><?php echo FText::_('COM_FABRIK_DETAILS');?></legend>
 			<ul class="adminformlist">
 				<li>
 					<?php echo $this->form->getLabel('description') . $this->form->getInput('description'); ?>
@@ -44,7 +41,7 @@ JHtml::_('behavior.keepalive');
 
 			<?php if ($this->item->host != ""){?>
 				<li>
-					<label><?php echo Text::_('COM_FABRIK_ENTER_PASSWORD_OR_LEAVE_AS_IS'); ?></label>
+					<label><?php echo FText::_('COM_FABRIK_ENTER_PASSWORD_OR_LEAVE_AS_IS'); ?></label>
 				</li>
 			<?php } ?>
 

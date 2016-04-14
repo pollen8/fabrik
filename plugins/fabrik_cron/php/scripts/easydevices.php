@@ -1,12 +1,11 @@
 <?php
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
-use Fabrik\Helpers\Worker;
 
 $data = $listModel->getData();
 $data = $data[0][0];
 
-$db = Worker::getDbo();
+$db = FabrikWorker::getDbo();
 
 $location = $db->quote("(".$data->gate_user___latitude .",".$data->gate_user___longitude."):4");
 $time = $db->quote($data->gate_user___time_stamp_raw);

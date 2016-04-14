@@ -8,19 +8,10 @@
  * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
-namespace Fabrik\Plugins\Element;
-
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Fabrik\Helpers\ArrayHelper;
-use Fabrik\Helpers\Html;
-use \JHtml;
-use \stdClass;
-use Fabrik\Helpers\Worker;
-use Fabrik\Helpers\StringHelper;
-use Fabrik\Helpers\Text;
-use \JEditor;
+use Joomla\Utilities\ArrayHelper;
 
 /**
  * Plugin element to render text area or wysiwyg editor
@@ -29,7 +20,7 @@ use \JEditor;
  * @subpackage  Fabrik.element.textarea
  * @since       3.0
  */
-class Textarea extends Element
+class PlgFabrik_ElementTextarea extends PlgFabrik_Element
 {
 	/**
 	 * Db table field type
@@ -69,8 +60,8 @@ class Textarea extends Element
 		// $$$ hugh - strip spaces first, account for "foo,bar, baz, foo"
 		$data = array_map('trim', $data);
 		$data = array_unique($data);
-		$img = Worker::j3() ? 'bookmark.png' : 'tag.png';
-		$icon = Html::image($img, 'form', @$this->tmpl, array('alt' => 'tag'));
+		$img = FabrikWorker::j3() ? 'bookmark.png' : 'tag.png';
+		$icon = FabrikHelperHTML::image($img, 'form', @$this->tmpl, array('alt' => 'tag'));
 		$tmplData = new stdClass;
 		$tmplData->tags = array();
 
@@ -157,7 +148,7 @@ class Textarea extends Element
 			if ($data !== '' && ($truncateWhere === 1 || $truncateWhere === 3))
 			{
 				$opts = $this->truncateOpts();
-				$data = StringHelper::truncate($data, $opts);
+				$data = fabrikString::truncate($data, $opts);
 				$listModel = $this->getListModel();
 
 				if (ArrayHelper::getValue($opts, 'link', 1))
@@ -297,7 +288,7 @@ class Textarea extends Element
 					((int) $params->get('textarea-truncate-where', 0) === 2 || (int) $params->get('textarea-truncate-where', 0) === 3))
 				{
 					$opts = $this->truncateOpts();
-					$value = StringHelper::truncate($value, $opts);
+					$value = fabrikString::truncate($value, $opts);
 				}
 			}
 
@@ -306,7 +297,7 @@ class Textarea extends Element
 
 		if ($params->get('textarea_placeholder', '') !== '')
 		{
-			$bits['placeholder'] = Text::_($params->get('textarea_placeholder'));
+			$bits['placeholder'] = FText::_($params->get('textarea_placeholder'));
 		}
 
 		if ($this->elementError != '')
@@ -367,12 +358,12 @@ class Textarea extends Element
 		{
 			if ($params->get('textarea_limit_type', 'char') === 'char')
 			{
-				$label = Text::_('PLG_ELEMENT_TEXTAREA_CHARACTERS_LEFT');
-				$charsLeft = $params->get('textarea-maxlength') - StringHelper::strlen($value);
+				$label = FText::_('PLG_ELEMENT_TEXTAREA_CHARACTERS_LEFT');
+				$charsLeft = $params->get('textarea-maxlength') - JString::strlen($value);
 			}
 			else
 			{
-				$label = Text::_('PLG_ELEMENT_TEXTAREA_WORDS_LEFT');
+				$label = FText::_('PLG_ELEMENT_TEXTAREA_WORDS_LEFT');
 				$charsLeft = $params->get('textarea-maxlength') - count(explode(' ', $value));
 			}
 
@@ -526,7 +517,7 @@ class Textarea extends Element
 			return true;
 		}
 
-		if (StringHelper::strlen($data) > (int) $params->get('textarea-maxlength'))
+		if (JString::strlen($data) > (int) $params->get('textarea-maxlength'))
 		{
 			return false;
 		}
@@ -541,7 +532,7 @@ class Textarea extends Element
 	 */
 	public function getValidationErr()
 	{
-		return Text::_('PLG_ELEMENT_TEXTAREA_CONTENT_TOO_LONG');
+		return FText::_('PLG_ELEMENT_TEXTAREA_CONTENT_TOO_LONG');
 	}
 
 	/**

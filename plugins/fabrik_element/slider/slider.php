@@ -8,14 +8,12 @@
  * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
-namespace Fabrik\Plugins\Element;
-
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use \stdClass;
-use Fabrik\Helpers\Worker;
-use Fabrik\Helpers\Html;
+jimport('joomla.application.component.model');
+
+require_once JPATH_SITE . '/components/com_fabrik/models/element.php';
 
 /**
  * Plugin element to render mootools slider
@@ -25,7 +23,7 @@ use Fabrik\Helpers\Html;
  * @since       3.0
  */
 
-class Slider extends Element
+class PlgFabrik_ElementSlider extends PlgFabrik_Element
 {
 	/**
 	 * If the element 'Include in search all' option is set to 'default' then this states if the
@@ -59,7 +57,7 @@ class Slider extends Element
 
 	public function render($data, $repeatCounter = 0)
 	{
-		Html::stylesheet(COM_FABRIK_LIVESITE . 'media/com_fabrik/css/slider.css');
+		FabrikHelperHTML::stylesheet(COM_FABRIK_LIVESITE . 'media/com_fabrik/css/slider.css');
 		$params = $this->getParams();
 		$width = (int) $params->get('slider_width', 250);
 		$val = $this->getValue($data, $repeatCounter);
@@ -70,7 +68,7 @@ class Slider extends Element
 		}
 
 		$labels = (explode(',', $params->get('slider-labels')));
-		Html::addPath(COM_FABRIK_BASE . 'plugins/fabrik_element/slider/images/', 'image', 'form', false);
+		FabrikHelperHTML::addPath(COM_FABRIK_BASE . 'plugins/fabrik_element/slider/images/', 'image', 'form', false);
 
 		$layout = $this->getLayout('form');
 		$layoutData = new stdClass;
@@ -78,9 +76,9 @@ class Slider extends Element
 		$layoutData->name = $this->getHTMLName($repeatCounter);;
 		$layoutData->value = $val;
 		$layoutData->width = $width;
-		$layoutData->j3 = Worker::j3();
+		$layoutData->j3 = FabrikWorker::j3();
 		$layoutData->showNone = $params->get('slider-shownone');
-		$layoutData->outSrc = Html::image('clear_rating_out.png', 'form', $this->tmpl, array(), true);
+		$layoutData->outSrc = FabrikHelperHTML::image('clear_rating_out.png', 'form', $this->tmpl, array(), true);
 		$layoutData->labels = $labels;
 		$layoutData->spanWidth = floor(($width - (2 * count($labels))) / count($labels));
 

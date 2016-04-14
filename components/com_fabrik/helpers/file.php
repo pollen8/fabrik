@@ -7,12 +7,7 @@
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
-namespace Fabrik\Helpers;
-
 defined('JPATH_BASE') or die;
-
-use \JLoader;
-use \JPath;
 
 /**
  * Base class for rendering a display layout
@@ -23,7 +18,7 @@ use \JPath;
  * @see         http://docs.joomla.org/Sharing_layouts_across_views_or_extensions_with_JLayout
  * @since       3.0
  */
-class LayoutFile extends \JLayoutFile
+class FabrikLayoutFile extends JLayoutFile
 {
 	/**
 	 * Method to finds the full real file path, checking possible overrides

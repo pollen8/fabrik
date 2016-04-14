@@ -8,8 +8,6 @@
  * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
-namespace Fabrik\Helpers;
-
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
@@ -21,7 +19,7 @@ defined('_JEXEC') or die('Restricted access');
  * @since       3.0
  */
 
-class ArrayHelper extends \JArrayHelper
+class FArrayHelper extends JArrayHelper
 {
 	/**
 	 * Get a value from a nested array
@@ -42,7 +40,7 @@ class ArrayHelper extends \JArrayHelper
 		{
 			if (is_object($array) && $allowObjects)
 			{
-				$array = \JArrayHelper::fromObject($array);
+				$array = JArrayHelper::fromObject($array);
 			}
 
 			if (!is_array($array))
@@ -152,7 +150,7 @@ class ArrayHelper extends \JArrayHelper
 			{
 				if (is_array($v) && $recurse)
 				{
-					$obj->$k = \JArrayHelper::toObject($v, $class);
+					$obj->$k = JArrayHelper::toObject($v, $class);
 				}
 				else
 				{
@@ -303,7 +301,7 @@ class ArrayHelper extends \JArrayHelper
 			return false;
 		}
 
-		$val = self::getValue($array, self::firstKey($array), '');
+		$val = FArrayHelper::getValue($array, self::firstKey($array), '');
 
 		return  $even_emptierish ? empty($val) : $val === '' || !isset($val);
 	}
@@ -326,7 +324,7 @@ class ArrayHelper extends \JArrayHelper
 	{
 		if (is_object($array))
 		{
-			$array = \JArrayHelper::fromObject($array);
+			$array = JArrayHelper::fromObject($array);
 		}
 
 		$result = null;

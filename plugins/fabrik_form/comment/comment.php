@@ -8,20 +8,11 @@
  * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
-namespace Fabrik\Plugins\Form;
-
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Fabrik\Helpers\Html;
-use \stdClass;
-use \FabTable;
-use Fabrik\Helpers\Text;
-use \JEditor;
-use \RuntimeException;
-use \JHtml;
-use Fabrik\Helpers\Worker;
-use Fabrik\Helpers\StringHelper;
+// Require the abstract plugin class
+require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
 
 /**
  * Comment J Table
@@ -30,12 +21,12 @@ use Fabrik\Helpers\StringHelper;
  * @subpackage  Fabrik
  * @since       3.0
  */
-class FabrikTableComment extends \FabTable
+class FabrikTableComment extends FabTable
 {
 	/**
 	 * Object constructor to set table and key fields.
 	 *
-	 * @param   \JDatabaseDriver  &$db  JDatabase connector object.
+	 * @param   JDatabase  &$db  JDatabase connector object.
 	 */
 
 	public function __construct(&$db)
@@ -56,7 +47,7 @@ class FabrikTableComment extends \FabTable
  * @subpackage  Fabrik.form.comment
  * @since       3.0
  */
-class Comment extends \PlgFabrik_Form
+class PlgFabrik_FormComment extends PlgFabrik_Form
 {
 	/**
 	 * HTML comment form
@@ -166,12 +157,12 @@ class Comment extends \PlgFabrik_Form
 		$opts = new stdClass;
 		$thumb = $this->getThumb();
 		$opts->livesite = COM_FABRIK_LIVESITE;
-		$opts->row_id = $input->getString('rowid', '');
+		$opts->row_id = $input->getString('rowid', '', 'string');
 		$opts->voteType = 'comment';
 
-		Html::addPath(COM_FABRIK_BASE . 'plugins/fabrik_element/thumbs/images/', 'image', 'form', false);
+		FabrikHelperHTML::addPath(COM_FABRIK_BASE . 'plugins/fabrik_element/thumbs/images/', 'image', 'form', false);
 		$opts->formid = $this->formModel->getId();
-		$opts->j3 = Worker::j3();
+		$opts->j3 = FabrikWorker::j3();
 		$opts->listid = $this->formModel->getListModel()->getTable()->id;
 		$opts = json_encode($opts);
 
@@ -251,10 +242,10 @@ class Comment extends \PlgFabrik_Form
 		}
 
 		$opts = json_encode($opts);
-		Text::script('PLG_FORM_COMMENT_TYPE_A_COMMENT_HERE');
-		Text::script('PLG_FORM_COMMENT_PLEASE_ENTER_A_COMMENT_BEFORE_POSTING');
-		Text::script('PLG_FORM_COMMENT_PLEASE_ENTER_A_NAME_BEFORE_POSTING');
-		Text::script('PLG_FORM_COMMENT_ENTER_EMAIL_BEFORE_POSTNG');
+		JText::script('PLG_FORM_COMMENT_TYPE_A_COMMENT_HERE');
+		JText::script('PLG_FORM_COMMENT_PLEASE_ENTER_A_COMMENT_BEFORE_POSTING');
+		JText::script('PLG_FORM_COMMENT_PLEASE_ENTER_A_NAME_BEFORE_POSTING');
+		JText::script('PLG_FORM_COMMENT_ENTER_EMAIL_BEFORE_POSTNG');
 		$script = "var comments = new FabrikComment('fabrik-comments', $opts);";
 
 		if ($this->doThumbs())
@@ -263,7 +254,7 @@ class Comment extends \PlgFabrik_Form
 			$script .= "\n comments.thumbs = new FbThumbsList(" . $this->formModel->getId() . ", $thumbOpts);";
 		}
 
-		Html::script($jsFiles, $script);
+		FabrikHelperHTML::script($jsFiles, $script);
 
 		$this->data = $layout->render($layoutData);
 	}
@@ -306,8 +297,7 @@ class Comment extends \PlgFabrik_Form
 		$layoutData->anonymous = $params->get('comment-internal-anonymous');
 		$layoutData->replyTo = $reply_to;
 		$layoutData->notify = $params->get('comment_allow_user_subscriptions_to_notifications') == 1;
-		$layoutData->name = trim($input->get('ide_people___voornaam', '', 'cookie') . ' '
-			. $input->get('ide_people___achternaam', '', 'cookie'));
+		$layoutData->name = trim($input->get('ide_people___voornaam', '', 'cookie') . ' ' . $input->get('ide_people___achternaam', '', 'cookie'));
 		$layoutData->email = $input->get('ide_people___email', '', 'cookie');
 		$layoutData->renderOrder = $this->renderOrder;
 		$layoutData->wysiwyg = $this->isWYSIWYG();
@@ -340,7 +330,7 @@ class Comment extends \PlgFabrik_Form
 	protected function getComments($formId, $rowId)
 	{
 		$formId = (int) $formId;
-		$db = Worker::getDbo();
+		$db = FabrikWorker::getDbo();
 		$formModel = $this->setFormModel();
 		$query = $db->getQuery(true);
 		$query->select('c.*');
@@ -451,11 +441,11 @@ class Comment extends \PlgFabrik_Form
 	 */
 	private function writeComment($params, $comment)
 	{
-		Html::addPath(COM_FABRIK_BASE . 'plugins/fabrik_form/comment/images/', 'image', 'form', false);
+		FabrikHelperHTML::addPath(COM_FABRIK_BASE . 'plugins/fabrik_form/comment/images/', 'image', 'form', false);
 		$input = $this->app->input;
 		$layoutData = new stdClass;
-		$layoutData->insrc = Html::image("star_in.png", 'form', @$this->tmpl, array(), true);
-		$layoutData->name = (int) $comment->annonymous == 0 ? $comment->name : Text::_('PLG_FORM_COMMENT_ANONYMOUS_SHORT');
+		$layoutData->insrc = FabrikHelperHTML::image("star_in.png", 'form', @$this->tmpl, array(), true);
+		$layoutData->name = (int) $comment->annonymous == 0 ? $comment->name : FText::_('PLG_FORM_COMMENT_ANONYMOUS_SHORT');
 		$layoutData->comment = $comment;
 		$layoutData->dateFormat = $params->get('comment-date-format');
 		$layoutData->internalRating = $params->get('comment-internal-rating') == 1;
@@ -463,7 +453,7 @@ class Comment extends \PlgFabrik_Form
 		$layoutData->canAdd = !$this->commentsLocked && $this->canAddComment();
 		$layoutData->commentsLocked = $this->commentsLocked;
 		$layoutData->form = $this->getAddCommentForm($comment->id);
-		$layoutData->j3 = Worker::j3();
+		$layoutData->j3 = FabrikWorker::j3();
 
 		if ($this->doThumbs())
 		{
@@ -503,7 +493,7 @@ class Comment extends \PlgFabrik_Form
 	{
 		if (!isset($this->thumb))
 		{
-			$this->thumb = Worker::getPluginManager()->getPlugIn('thumbs', 'element');
+			$this->thumb = FabrikWorker::getPluginManager()->getPlugIn('thumbs', 'element');
 			$this->thumb->setEditable(true);
 			$this->thumb->commentThumb = true;
 			$this->thumb->formid = $this->getModel()->getId();
@@ -521,7 +511,7 @@ class Comment extends \PlgFabrik_Form
 	 */
 	public function onDeleteComment()
 	{
-		$db = Worker::getDbo();
+		$db = FabrikWorker::getDbo();
 		$id = $this->app->input->getInt('comment_id');
 		$query = $db->getQuery(true);
 		$query->delete('#__{package}_comments')->where('id =' . $id);
@@ -537,7 +527,7 @@ class Comment extends \PlgFabrik_Form
 	 */
 	public function onUpdateComment()
 	{
-		$db = Worker::getDbo();
+		$db = FabrikWorker::getDbo();
 		$input = $this->app->input;
 		$id = $input->getInt('comment_id');
 		$comment = $db->q($input->get('comment', '', 'string'));
@@ -574,7 +564,7 @@ class Comment extends \PlgFabrik_Form
 		$filter = JFilterInput::getInstance();
 		$request = $filter->clean($_REQUEST, 'array');
 		$row->bind($request);
-		$row->ipaddress = StringHelper::filteredIp();
+		$row->ipaddress = FabrikString::filteredIp();
 		$row->user_id = $this->user->get('id');
 		$row->approved = 1;
 
@@ -662,7 +652,7 @@ class Comment extends \PlgFabrik_Form
 	{
 		$formModel = $this->getModel();
 		$input = $this->app->input;
-		$db = Worker::getDbo();
+		$db = FabrikWorker::getDbo();
 		$event = $db->q('COMMENT_ADDED');
 		$userId = (int) $this->user->get('id');
 		$rowId = $input->get('rowid', '', 'string');
@@ -700,7 +690,7 @@ class Comment extends \PlgFabrik_Form
 		$params = $this->getParams();
 		$formModel = $this->getModel();
 		$input = $this->app->input;
-		$db = Worker::getDbo();
+		$db = FabrikWorker::getDbo();
 		$userId = (int) $this->user->get('id');
 		$rowId = $input->get('rowid', '', 'string');
 		$label = $db->quote($input->get('label', '', 'string'));
@@ -762,7 +752,7 @@ class Comment extends \PlgFabrik_Form
 	 */
 	protected function notificationPluginInstalled()
 	{
-		return Worker::getPluginManager()->pluginExists('cron', 'notification');
+		return FabrikWorker::getPluginManager()->pluginExists('cron', 'notification');
 	}
 
 	/**
@@ -787,7 +777,7 @@ class Comment extends \PlgFabrik_Form
 	{
 		$params = $this->getParams();
 
-		return $params->get('comment-thumb') && Worker::getPluginManager()->pluginExists('element', 'thumbs');
+		return $params->get('comment-thumb') && FabrikWorker::getPluginManager()->pluginExists('element', 'thumbs');
 	}
 
 	/**
@@ -803,7 +793,7 @@ class Comment extends \PlgFabrik_Form
 		$formModel = $this->getModel();
 		$params = $this->getParams();
 		$sentTo = array();
-		$title = Text::_('PLG_FORM_COMMENT_NEW_COMMENT_ADDED_TITLE');
+		$title = FText::_('PLG_FORM_COMMENT_NEW_COMMENT_ADDED_TITLE');
 
 		$layoutData = new stdClass;
 		$layoutData->row = $row;
@@ -885,7 +875,7 @@ class Comment extends \PlgFabrik_Form
 	protected function _intensedebate()
 	{
 		$params = $this->getParams();
-		Html::addScriptDeclaration(
+		FabrikHelperHTML::addScriptDeclaration(
 			"
 				var idcomments_acct = '" . $params->get('comment-intesedebate-code') . "';
 						var idcomments_post_id;
@@ -912,7 +902,7 @@ class Comment extends \PlgFabrik_Form
 			return;
 		}
 
-		Html::addScriptDeclaration(
+		FabrikHelperHTML::addScriptDeclaration(
 			"
 				(function() {
 				var links = document.getElementsByTagName('a');

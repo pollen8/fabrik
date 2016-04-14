@@ -12,12 +12,10 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Fabrik\Helpers\ArrayHelper;
-use Fabrik\Helpers\Html;
-use Fabrik\Helpers\Worker;
+use Joomla\Utilities\ArrayHelper;
 
 JHtml::_('behavior.tooltip');
-Html::formvalidation();
+FabrikHelperHTML::formvalidation();
 $app = JFactory::getApplication();
 $input = $app->input;
 $input->set('hidemainmenu', true);
@@ -36,7 +34,7 @@ $cid = ArrayHelper::toInteger($cid);
 }
 if (($id !== 0))
 {
-	$db = Worker::getDbo(true);
+	$db = FabrikWorker::getDbo(true);
 	$query = $db->getQuery(true);
 	$query->select('label')->from('#__{package}_lists')->where('id = ' . $id);
 	$db->setQuery($query);

@@ -11,9 +11,7 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Fabrik\Helpers\ArrayHelper;
-use Fabrik\Helpers\Html;
-use Fabrik\Helpers\Worker;
+use Joomla\Utilities\ArrayHelper;
 
 jimport('joomla.application.component.view');
 
@@ -35,8 +33,8 @@ class FabrikViewImport extends FabrikView
 	 */
 	public function display($tpl = null)
 	{
-		$srcs = Html::framework();
-		Html::script($srcs);
+		$srcs = FabrikHelperHTML::framework();
+		FabrikHelperHTML::script($srcs);
 		$input        = $this->app->input;
 		$this->listid = $input->getInt('listid', 0);
 		$this->model  = JModelLegacy::getInstance('List', 'FabrikFEModel');
@@ -49,7 +47,7 @@ class FabrikViewImport extends FabrikView
 			throw new RuntimeException('Naughty naughty!', 400);
 		}
 
-		$layout = Worker::j3() ? 'bootstrap' : 'default';
+		$layout = FabrikWorker::j3() ? 'bootstrap' : 'default';
 		$this->setLayout($layout);
 		$this->fieldsets = $this->setFieldSets();
 		parent::display($tpl);
@@ -82,7 +80,7 @@ class FabrikViewImport extends FabrikView
 
 		if (($id !== 0))
 		{
-			$db    = Worker::getDbo();
+			$db    = FabrikWorker::getDbo();
 			$query = $db->getQuery(true);
 			$query->select('label')->from('#__{package}_lists')->where('id = ' . $id);
 			$db->setQuery($query);

@@ -11,8 +11,6 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Fabrik\Helpers\Html;
-
 jimport('joomla.application.component.view');
 require_once JPATH_SITE . '/components/com_fabrik/views/form/view.base.php';
 
@@ -70,7 +68,7 @@ class FabrikViewForm extends FabrikViewFormBase
 
 		// Set the download file name based on the document title
 
-		$layout                 = Html::getLayout('form.fabrik-pdf-title');
+		$layout                 = FabrikHelperHTML::getLayout('form.fabrik-pdf-title');
 		$displayData         = new stdClass;
 		$displayData->doc	= $this->doc;
 		$displayData->model	= $this->getModel();

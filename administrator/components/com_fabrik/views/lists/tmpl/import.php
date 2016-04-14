@@ -12,10 +12,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Fabrik\Helpers\Html;
-
 JHtml::_('behavior.tooltip');
-Html::formvalidation();
+FabrikHelperHTML::formvalidation();
 $app = JFactory::getApplication();
 $input = $app->input;
 ?>

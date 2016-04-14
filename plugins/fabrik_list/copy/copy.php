@@ -11,8 +11,6 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Fabrik\Helpers\Text;
-
 // Require the abstract plugin class
 require_once COM_FABRIK_FRONTEND . '/models/plugin-list.php';
 
@@ -93,7 +91,7 @@ class PlgFabrik_ListCopy extends PlgFabrik_List
 	{
 		$ids = $this->app->input->get('ids', array(), 'array');
 
-		return Text::sprintf('PLG_LIST_ROWS_COPIED', count($ids));
+		return JText::sprintf('PLG_LIST_ROWS_COPIED', count($ids));
 	}
 
 	/**

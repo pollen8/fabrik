@@ -8,14 +8,10 @@
  * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
-namespace Fabrik\Plugins\Element;
-
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use \stdClass;
-use Fabrik\Helpers\Worker;
-use Fabrik\Helpers\StringHelper;
+require_once JPATH_SITE . '/plugins/fabrik_element/databasejoin/databasejoin.php';
 
 /**
  * Plugin element to enable users to make notes on a give record
@@ -24,7 +20,7 @@ use Fabrik\Helpers\StringHelper;
  * @subpackage  Fabrik.element.notes
  * @since       3.0
  */
-class Notes extends Databasejoin
+class PlgFabrik_ElementNotes extends PlgFabrik_ElementDatabasejoin
 {
 	/**
 	 * Last row id to be inserted via ajax call
@@ -46,7 +42,7 @@ class Notes extends Databasejoin
 		$opts = $this->getElementJSOptions($repeatCounter);
 		$opts->rowid = (int) $this->getFormModel()->getRowId();
 		$opts->id = $this->id;
-		$opts->j3 = Worker::j3();
+		$opts->j3 = FabrikWorker::j3();
 
 		return array('FbNotes', $id, $opts);
 	}
@@ -63,7 +59,7 @@ class Notes extends Databasejoin
 	{
 		$params = $this->getParams();
 		$tmp = $this->_getOptions($data, $repeatCounter, true);
-		$layoutName = Worker::j3() ? 'form' : 'form-25';
+		$layoutName = FabrikWorker::j3() ? 'form' : 'form-25';
 		$layout = $this->getLayout($layoutName);
 		$layoutData = new stdClass;
 		$layoutData->id = $this->getHTMLId($repeatCounter);
@@ -200,9 +196,9 @@ class Notes extends Databasejoin
 
 		if (!array_key_exists($c, $this->components))
 		{
-			$query = $this->db->getQuery(true);
-			$query->select('COUNT(id)')->from('#__extensions')->where('name = ' . $this->db->q($c));
-			$this->db->seQuery($query);
+			$query = $this->_db->getQuery(true);
+			$query->select('COUNT(id)')->from('#__extensions')->where('name = ' . $this->_db->q($c));
+			$this->_db->seQuery($query);
 			$found = $this->db->loadResult();
 			$this->components[$c] = $found;
 		}
@@ -217,9 +213,9 @@ class Notes extends Databasejoin
 	 * @param   bool                 $incWhere        Should the additional user defined WHERE statement be included
 	 * @param   string               $thisTableAlias  Db table alias
 	 * @param   array                $opts            Options
-	 * @param   \JDatabaseQuery|bool  $query           Append where to JDatabaseQuery object or return string (false)
+	 * @param   JDatabaseQuery|bool  $query           Append where to JDatabaseQuery object or return string (false)
 	 *
-	 * @return string|\JDatabaseQuery
+	 * @return string|JDatabaseQuery
 	 */
 	protected function buildQueryWhere($data = array(), $incWhere = true, $thisTableAlias = null, $opts = array(), $query = false)
 	{
@@ -283,7 +279,7 @@ class Notes extends Databasejoin
 	 * Get options order by
 	 *
 	 * @param   string               $view   View mode '' or 'filter'
-	 * @param   \JDatabaseQuery|bool  $query  Set to false to return a string
+	 * @param   JDatabaseQuery|bool  $query  Set to false to return a string
 	 *
 	 * @return  string  order by statement
 	 */
@@ -298,7 +294,7 @@ class Notes extends Databasejoin
 		}
 		else
 		{
-			$order = StringHelper::safeQuoteName($params->get('join_db_name') . '.' . $orderBy) . ' ' . $params->get('notes_order_dir', 'ASC');
+			$order = FabrikString::safeQuoteName($params->get('join_db_name') . '.' . $orderBy) . ' ' . $params->get('notes_order_dir', 'ASC');
 
 			if ($query)
 			{
@@ -354,7 +350,7 @@ class Notes extends Databasejoin
 	 *
 	 * @since 3.0rc1
 	 *
-	 * @return string|\JDatabaseQuery join statement to add
+	 * @return string|JDatabaseQuery join statement to add
 	 */
 	protected function buildQueryJoin($query = false)
 	{
@@ -411,7 +407,7 @@ class Notes extends Databasejoin
 		$params = $this->getParams();
 		$table = $db->qn($params->get('join_db_name'));
 		$col = $params->get('join_val_column');
-		$v = $input->get('v', '', 'string');
+		$v = $input->get('v', '', '', 'string');
 		$rowId = $this->getFormModel()->getRowId();
 
 		// Jaanus - avoid inserting data when the form is 'new' not submitted ($rowId == '')

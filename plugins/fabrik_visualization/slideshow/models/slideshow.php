@@ -11,8 +11,6 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Fabrik\Helpers\StringHelper;
-
 jimport('joomla.application.component.model');
 
 require_once JPATH_SITE . '/components/com_fabrik/models/visualization.php';
@@ -111,7 +109,7 @@ class FabrikModelSlideshow extends FabrikFEModelVisualization
 				}
 
 				$location = str_replace('\\', '/', $location);
-				$location = StringHelper::ltrim($location, '/');
+				$location = JString::ltrim($location, '/');
 				$location = COM_FABRIK_LIVESITE . $location;
 				$str .= "		<track>\n";
 				$str .= "			<location>" . $location . "</location>\n";
@@ -129,7 +127,7 @@ class FabrikModelSlideshow extends FabrikFEModelVisualization
 					if (!empty($image))
 					{
 						$image = str_replace('\\', '/', $image);
-						$image = StringHelper::ltrim($image, '/');
+						$image = JString::ltrim($image, '/');
 						$image = COM_FABRIK_LIVESITE . $image;
 						$str .= "			<image>" . $image . "</image>\n";
 					}

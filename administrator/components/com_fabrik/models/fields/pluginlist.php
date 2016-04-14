@@ -11,8 +11,6 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Fabrik\Helpers\Text;
-
 jimport('joomla.html.html');
 jimport('joomla.form.formfield');
 jimport('joomla.form.helper');
@@ -65,7 +63,7 @@ class JFormFieldPluginList extends JFormFieldList
 		$db->setQuery($query);
 		$options = $db->loadObjectList();
 
-		array_unshift($options, JHtml::_('select.option', '', Text::_('COM_FABRIK_PLEASE_SELECT')));
+		array_unshift($options, JHtml::_('select.option', '', FText::_('COM_FABRIK_PLEASE_SELECT')));
 
 		return $options;
 	}

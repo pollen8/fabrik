@@ -29,7 +29,7 @@ interface AdapterInterface
      * @param      $weight
      * @param null $unit
      *
-     * @return \Pop\Shipping\PackageAdapter\AbstractAdapter
+     * @return mixed
      */
     public function setWeight($weight, $unit = null);
 
@@ -37,7 +37,7 @@ interface AdapterInterface
      * @param array $dimensions
      * @param null  $unit
      *
-     * @return \Pop\Shipping\PackageAdapter\AbstractAdapter
+     * @return mixed
      */
     public function setDimensions(array $dimensions, $unit = null);
 

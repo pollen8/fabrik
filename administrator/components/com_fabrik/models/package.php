@@ -12,9 +12,7 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Fabrik\Helpers\ArrayHelper;
-use Fabrik\Helpers\Worker;
-use Fabrik\Helpers\StringHelper;
+use Joomla\Utilities\ArrayHelper;
 
 require_once 'fabmodeladmin.php';
 
@@ -56,7 +54,7 @@ class FabrikAdminModelPackage extends FabModelAdmin
 	 */
 	public function getTable($type = 'Package', $prefix = 'FabrikTable', $config = array())
 	{
-		$config['dbo'] = Worker::getDbo(true);
+		$config['dbo'] = FabrikWorker::getDbo(true);
 
 		return FabTable::getInstance($type, $prefix, $config);
 	}
@@ -140,9 +138,9 @@ class FabrikAdminModelPackage extends FabModelAdmin
 	protected function selectedBlocks($type = 'form')
 	{
 		$item   = $this->getItem();
-		$canvas = ArrayHelper::getValue($item->params, 'canvas', array());
-		$b      = ArrayHelper::getValue($canvas, 'blocks', array());
-		$ids    = ArrayHelper::getValue($b, $type, array());
+		$canvas = FArrayHelper::getValue($item->params, 'canvas', array());
+		$b      = FArrayHelper::getValue($canvas, 'blocks', array());
+		$ids    = FArrayHelper::getValue($b, $type, array());
 
 		return $ids;
 	}
@@ -234,7 +232,7 @@ class FabrikAdminModelPackage extends FabModelAdmin
 
 		foreach ($blocks as $type => $values)
 		{
-			$tbl = StringHelper::ucfirst($type);
+			$tbl = JString::ucfirst($type);
 
 			foreach ($values as $id)
 			{
@@ -356,7 +354,7 @@ class FabrikAdminModelPackage extends FabModelAdmin
 
 			$plugins = $this->findPlugins($row);
 			$this->zipPlugins($row, $plugins);
-			$filenames = ArrayHelper::extract($plugins, 'fullfile');
+			$filenames = FArrayHelper::extract($plugins, 'fullfile');
 
 			$filenames[] = $componentZipPath;
 
@@ -513,7 +511,7 @@ class FabrikAdminModelPackage extends FabModelAdmin
 		$lookups   = $this->getInstallItems($row);
 		$listModel = JModelLegacy::getInstance('list', 'FabrikFEModel');
 		$lists     = $lookups->list;
-		$db        = Worker::getDbo(true);
+		$db        = FabrikWorker::getDbo(true);
 		$query     = $db->getQuery(true);
 
 		if (isset($lookups->visualization))
@@ -651,7 +649,7 @@ class FabrikAdminModelPackage extends FabModelAdmin
 	 */
 	protected function rowsToInsert($table, $rows, &$return)
 	{
-		$db = Worker::getDbo(true);
+		$db = FabrikWorker::getDbo(true);
 
 		foreach ($rows as $row)
 		{
@@ -814,7 +812,7 @@ class FabrikAdminModelPackage extends FabModelAdmin
 	protected function makeInstallSQL($row)
 	{
 		$sql = '';
-		$db  = Worker::getDbo(true);
+		$db  = FabrikWorker::getDbo(true);
 
 		// Create the sql for the cloned fabrik meta data tables
 		foreach ($this->tables as $table)
@@ -832,7 +830,7 @@ class FabrikAdminModelPackage extends FabModelAdmin
 
 		foreach ($row->blocks as $block => $ids)
 		{
-			$key = StringHelper::rtrimword($block, 's');
+			$key = FabrikString::rtrimword($block, 's');
 		}
 
 		// Create the sql to build the db tables that store the data.

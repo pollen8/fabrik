@@ -11,9 +11,6 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Fabrik\Helpers\StringHelper;
-use Fabrik\Helpers\Text;
-
 /**
  * Fileupload adaptor to render allvideos
  *
@@ -64,11 +61,11 @@ class AllVideosRenderModel
 	public function render(&$model, &$params, $file, $thisRow = null)
 	{
 		$src = str_replace("\\", "/", COM_FABRIK_LIVESITE . $file);
-		$ext = StringHelper::strtolower(JFile::getExt($file));
+		$ext = JString::strtolower(JFile::getExt($file));
 
 		if (!JPluginHelper::isEnabled('content', 'jw_allvideos'))
 		{
-			$this->output = Text::_('PLG_ELEMENT_FILEUPLOAD_INSTALL_ALL_VIDEOS');
+			$this->output = FText::_('PLG_ELEMENT_FILEUPLOAD_INSTALL_ALL_VIDEOS');
 			return;
 		}
 

@@ -11,10 +11,6 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Fabrik\Helpers\ArrayHelper;
-use Fabrik\Helpers\Worker;
-use Fabrik\Helpers\StringHelper;
-
 // Require the abstract plugin class
 require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
 
@@ -52,7 +48,7 @@ class PlgFabrik_FormRedirect extends PlgFabrik_Form
 		$sshowsystemmsg = (array) $this->session->get($context . 'showsystemmsg', array());
 
 		$this->formModel = $formModel;
-		$w = new Worker;
+		$w = new FabrikWorker;
 
 		$form = $formModel->getForm();
 		$this->data = $this->getProcessData();
@@ -87,11 +83,11 @@ class PlgFabrik_FormRedirect extends PlgFabrik_Form
 		{
 			$navIds = $this->getNavIds();
 			$next_rowid = $navIds->next == $navIds->last ? '' : '&rowid=' . $navIds->next;
-			$itemId = Worker::itemId();
+			$itemId = FabrikWorker::itemId();
 
 			if ($this->app->isAdmin())
 			{
-				$url = 'index.php?option=com_' . $this->package . '&task=form.view&formid=' . $form->id;
+				$url = 'index.php?option=com_' . $this->package . '&task=form.view&formid=' . $form->id . $keyIdentifier;
 			}
 			else
 			{
@@ -130,6 +126,7 @@ class PlgFabrik_FormRedirect extends PlgFabrik_Form
 				$stitle[$this->renderOrder] = $form->label;
 				$this->session->set($context . 'title', $stitle);
 
+
 				$surl[$this->renderOrder] = 'index.php?option=com_' . $this->package . '&view=plugin&g=form&plugin=redirect&method=displayThanks&task=pluginAjax';
 				$this->session->set($context . 'url', $surl);
 			}
@@ -138,7 +135,7 @@ class PlgFabrik_FormRedirect extends PlgFabrik_Form
 		$smsg[$this->renderOrder] = $this->data['thanks_message'];
 
 		// Don't display system message if thanks is empty
-		if (ArrayHelper::getValue($this->data, 'thanks_message', '') !== '')
+		if (FArrayHelper::getValue($this->data, 'thanks_message', '') !== '')
 		{
 			$this->session->set($context . 'msg', $smsg);
 		}
@@ -425,7 +422,7 @@ class PlgFabrik_FormRedirect extends PlgFabrik_Form
 							if ($v != '')
 							{
 								$store['join'][] = $join;
-								$store['key'][] = StringHelper::safeColName($name);
+								$store['key'][] = FabrikString::safeColName($name);
 								$store['condition'][] = '=';
 								$store['search_type'][] = 'search';
 								$store['access'][] = 0;
@@ -478,7 +475,7 @@ class PlgFabrik_FormRedirect extends PlgFabrik_Form
 		 * If noredirect QS present and non 0, don't redirect.
 		 * Used by things like frontend add option on joins to squash any redirection on the join's form.
 		 */
-		if (ArrayHelper::getValue($this->formModel->formData, 'noredirect', 0) !== 0)
+		if (FArrayHelper::getValue($this->formModel->formData, 'noredirect', 0) !== 0)
 		{
 			return false;
 		}
@@ -519,15 +516,15 @@ class PlgFabrik_FormRedirect extends PlgFabrik_Form
 
 		foreach ($listModel->orderEls as $orderName)
 		{
-			$orderName = StringHelper::safeColNameToArrayKey($orderName);
-			$query->select(StringHelper::safeColName($orderName) . ' AS ' . $orderName);
+			$orderName = FabrikString::safeColNameToArrayKey($orderName);
+			$query->select(FabrikString::safeColName($orderName) . ' AS ' . $orderName);
 		}
 
 		$db->setQuery($query);
 		$rows = $db->loadColumn();
 		$keys = array_flip($rows);
 		$o = new stdClass;
-		$o->index = ArrayHelper::getValue($keys, $formModel->getRowId(), 0);
+		$o->index = FArrayHelper::getValue($keys, $formModel->getRowId(), 0);
 		$o->first = $rows[0];
 		$o->lastKey = count($rows) - 1;
 		$o->last = $rows[$o->lastKey];

@@ -11,7 +11,7 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Fabrik\Helpers\ArrayHelper;
+use Joomla\Utilities\ArrayHelper;
 
 /**
  * Installer manifest class

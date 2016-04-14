@@ -11,8 +11,6 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Fabrik\Helpers\Html;
-
 jimport('joomla.application.component.view');
 
 /**
@@ -64,9 +62,9 @@ class FabrikViewPopupwin extends JViewLegacy
 		$this->allowAttachment = $model->getAllowAttachment();
 		$this->editor = $model->getEditor();
 
-		$srcs = Html::framework();
-		Html::iniRequireJs();
-		Html::script($srcs);
+		$srcs = FabrikHelperHTML::framework();
+		FabrikHelperHTML::iniRequireJs();
+		FabrikHelperHTML::script($srcs);
 
 		return parent::display();
 	}

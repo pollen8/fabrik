@@ -11,8 +11,6 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Fabrik\Helpers\Text;
-
 $pageClass = $this->params->get('pageclass_sfx', '');
 
 if ($pageClass !== '') :
@@ -76,7 +74,7 @@ print_r($this->hiddenFields);
 		<li>
 		<a href="<?php echo $this->emptyLink?>" class="doempty">
 		<?php echo $this->buttons->empty;?>
-		<span><?php echo Text::_('COM_FABRIK_EMPTY')?></span>
+		<span><?php echo FText::_('COM_FABRIK_EMPTY')?></span>
 		</a>
 		</li>
 	<?php }?>

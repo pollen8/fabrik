@@ -11,8 +11,7 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Fabrik\Helpers\ArrayHelper;
-use Fabrik\Helpers\Sms;
+require_once COM_FABRIK_FRONTEND . '/helpers/sms.php';
 
 /**
  * Kapow SMS gateway class
@@ -42,16 +41,16 @@ class Kapow extends JObject
 
 	public function process($message, $opts)
 	{
-		$username = ArrayHelper::getValue($opts, 'sms-username');
-		$password = ArrayHelper::getValue($opts, 'sms-password');
-		$smsfrom = ArrayHelper::getValue($opts, 'sms-from');
-		$smsto = ArrayHelper::getValue($opts, 'sms-to');
+		$username = FArrayHelper::getValue($opts, 'sms-username');
+		$password = FArrayHelper::getValue($opts, 'sms-password');
+		$smsfrom = FArrayHelper::getValue($opts, 'sms-from');
+		$smsto = FArrayHelper::getValue($opts, 'sms-to');
 		$smstos = explode(',', $smsto);
 
 		foreach ($smstos as $smsto)
 		{
 			$url = sprintf($this->url, $username, $password, $smsto, $message);
-			Sms::doRequest('GET', $url, '');
+			FabrikSMS::doRequest('GET', $url, '');
 		}
 	}
 }

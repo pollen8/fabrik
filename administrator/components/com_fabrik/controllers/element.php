@@ -12,9 +12,6 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Fabrik\Helpers\ArrayHelper;
-use Fabrik\Helpers\Text;
-
 require_once 'fabcontrollerform.php';
 
 /**
@@ -125,7 +122,7 @@ class FabrikAdminControllerElement extends FabControllerForm
 		}
 		else
 		{
-			$msg = Text::_('COM_FABRIK_STRUCTURE_UPDATED');
+			$msg = FText::_('COM_FABRIK_STRUCTURE_UPDATED');
 		}
 
 		if ($input->get('origtask') == 'save')
@@ -200,7 +197,7 @@ class FabrikAdminControllerElement extends FabControllerForm
 		$app = JFactory::getApplication();
 		$input = $app->input;
 		$jForm = $input->get('jform', array(), 'array');
-		$id = (int) ArrayHelper::getValue($jForm, 'id', 0);
+		$id = (int) FArrayHelper::getValue($jForm, 'id', 0);
 		$pluginManager = JModelLegacy::getInstance('Pluginmanager', 'FabrikFEModel');
 		$className = $input->post->get('plugin', 'field');
 		$elementModel = $pluginManager->getPlugIn($className, 'element');

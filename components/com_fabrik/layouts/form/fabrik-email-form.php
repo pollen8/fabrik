@@ -5,29 +5,27 @@
 
 defined('JPATH_BASE') or die;
 
-use Fabrik\Helpers\Text;
-
 $d = $displayData;
 ?>
 <form method="post" action="index.php" name="frontendForm">
 	<table>
 		<tr>
-			<td><label for="email"><?php echo Text::_('COM_FABRIK_YOUR_FRIENDS_EMAIL') ?>:</label>
+			<td><label for="email"><?php echo FText::_('COM_FABRIK_YOUR_FRIENDS_EMAIL') ?>:</label>
 			</td>
 			<td><input class="input" type="text" size="25" name="email" id="email" /></td>
 		</tr>
 		<tr>
-			<td><label for="yourname"><?php echo Text::_('COM_FABRIK_YOUR_NAME'); ?>:</label>
+			<td><label for="yourname"><?php echo FText::_('COM_FABRIK_YOUR_NAME'); ?>:</label>
 			</td>
 			<td><input class="input" type="text" size="25" name="yourname" id="yourname" /></td>
 		</tr>
 		<tr>
-			<td><label for="youremail"><?php echo Text::_('COM_FABRIK_YOUR_EMAIL'); ?>:</label>
+			<td><label for="youremail"><?php echo FText::_('COM_FABRIK_YOUR_EMAIL'); ?>:</label>
 			</td>
 			<td><input class="input" type="text" size="25" name="youremail" id="youremail" /></td>
 		</tr>
 		<tr>
-			<td><label for="subject"><?php echo Text::_('COM_FABRIK_MESSAGE_SUBJECT'); ?>:</label>
+			<td><label for="subject"><?php echo FText::_('COM_FABRIK_MESSAGE_SUBJECT'); ?>:</label>
 			</td>
 			<td><input class="input" type="text" size="40" maxlength="40" name="subject"
 					id="subject" /></td>
@@ -35,12 +33,12 @@ $d = $displayData;
 		<tr>
 			<td colspan="2">
 				<input type="submit" name="submit" class="button btn btn-primary"
-					value="<?php echo Text::_('COM_FABRIK_SEND_EMAIL'); ?>" />
+					value="<?php echo FText::_('COM_FABRIK_SEND_EMAIL'); ?>" />
 				<?php
 
 				if (!$d->j3) :?>
 				<input type="button" name="cancel"
-					value="<?php echo Text::_('COM_FABRIK_CANCEL'); ?>" class="button btn"
+					value="<?php echo FText::_('COM_FABRIK_CANCEL'); ?>" class="button btn"
 					onclick="window.close();" /></td>
 			<?php
 			endif;

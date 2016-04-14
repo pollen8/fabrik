@@ -11,8 +11,6 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Fabrik\Helpers\Text;
-
 require_once 'fabcontrollerform.php';
 
 /**
@@ -57,7 +55,7 @@ class FabrikAdminControllerList extends FabControllerForm
 
 		// Set the layout
 		$view->setLayout($viewLayout);
-		JToolBarHelper::title(Text::_('COM_FABRIK_MANAGER_LISTS'), 'list');
+		JToolBarHelper::title(FText::_('COM_FABRIK_MANAGER_LISTS'), 'list');
 		$view->display();
 	}
 }

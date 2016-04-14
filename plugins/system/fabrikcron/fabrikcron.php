@@ -1,7 +1,5 @@
 <?php
-use Fabrik\Helpers\Worker;
-use Fabrik\Helpers\ArrayHelper;
-
+use Zend\Form\Annotation\Object;
 /**
  * Joomla! Fabrik cron job plugin
  *
@@ -171,7 +169,7 @@ class PlgSystemFabrikcron extends JPlugin
 		}
 
 		// Get all active tasks
-		$this->db = Worker::getDbo(true);
+		$this->db = FabrikWorker::getDbo(true);
 		$this->query = $this->db->getQuery(true);
 
 		$now = $input->get('fabrikcron_run', false);
@@ -286,7 +284,7 @@ class PlgSystemFabrikcron extends JPlugin
 
 			// Email log message
 			$recipient = explode(',', $params->get('log_email', ''));
-			if (!ArrayHelper::emptyish($recipient))
+			if (!FArrayHelper::emptyish($recipient))
 			{
 				$subject = $config->get('sitename') . ': ' . $this->row->plugin . ' scheduled task';
 				$mailer->sendMail($config->get('mailfrom'), $config->get('fromname'), $recipient, $subject, $this->log->message, true);

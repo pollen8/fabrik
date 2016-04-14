@@ -11,12 +11,9 @@
 
 // No direct access
 defined('_JEXEC') or die('Restricted access');
-
-use Fabrik\Helpers\Html;
-
 $d = $displayData;
 
 ?>
 <a data-loadmethod="<?php echo $d->loadMethod; ?>" class="<?php echo $d->class;?> btn-default" <?php echo $d->editAttributes;?>
  data-list="<?php echo $d->dataList;?>" href="<?php echo $d->editLink;?>" title="<?php echo $d->editLabel;?>">
-	<?php echo Html::image('edit.png', 'list', '', array('alt' => $d->editLabel));?> <?php echo $d->editText; ?></a>
+	<?php echo FabrikHelperHTML::image('edit.png', 'list', '', array('alt' => $d->editLabel));?> <?php echo $d->editText; ?></a>

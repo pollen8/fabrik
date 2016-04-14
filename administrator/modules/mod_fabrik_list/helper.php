@@ -8,8 +8,6 @@
 
 defined('_JEXEC') or die;
 
-use Fabrik\Helpers\ArrayHelper;
-
 /**
  * Helper for mod_fabrik_list
  *
@@ -77,13 +75,13 @@ class ModFabrikListHelper
 
 		if (!empty($conditions))
 		{
-			$joins = ArrayHelper::getValue($prefilters, 'filter-join', array());
+			$joins = FArrayHelper::getValue($prefilters, 'filter-join', array());
 			$listParams->set('filter-join', $joins);
 			$listParams->set('filter-fields', $prefilters['filter-fields']);
 			$listParams->set('filter-conditions', $prefilters['filter-conditions']);
 			$listParams->set('filter-value', $prefilters['filter-value']);
 			$listParams->set('filter-access', $prefilters['filter-access']);
-			$listParams->set('filter-eval', ArrayHelper::getValue($prefilters, 'filter-eval'));
+			$listParams->set('filter-eval', FArrayHelper::getValue($prefilters, 'filter-eval'));
 		}
 
 		return $model;

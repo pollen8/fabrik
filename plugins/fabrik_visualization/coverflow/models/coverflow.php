@@ -11,10 +11,6 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Fabrik\Helpers\ArrayHelper;
-use Fabrik\Helpers\Html;
-use Fabrik\Helpers\StringHelper;
-
 jimport('joomla.application.component.model');
 
 require_once JPATH_SITE . '/components/com_fabrik/models/visualization.php';
@@ -62,7 +58,7 @@ class FabrikModelCoverflow extends FabrikFEModelVisualization
 			if ($listModel->canView() || $listModel->canEdit())
 			{
 				$elements = $listModel->getElements();
-				$imageElement = ArrayHelper::getValue($elements, StringHelper::safeColName($image));
+				$imageElement = FArrayHelper::getValue($elements, FabrikString::safeColName($image));
 
 				foreach ($data as $group)
 				{
@@ -78,8 +74,8 @@ class FabrikModelCoverflow extends FabrikFEModelVisualization
 								{
 									case 'FabrikModelFabrikImage':
 										$rootFolder = $imageElement->getParams()->get('selectImage_root_folder');
-										$rootFolder = StringHelper::ltrim($rootFolder, '/');
-										$rootFolder = StringHelper::rtrim($rootFolder, '/');
+										$rootFolder = JString::ltrim($rootFolder, '/');
+										$rootFolder = JString::rtrim($rootFolder, '/');
 										$event->image = COM_FABRIK_LIVESITE . 'images/stories/' . $rootFolder . '/' . $row->{$image . '_raw'};
 										break;
 									default:
@@ -105,9 +101,9 @@ class FabrikModelCoverflow extends FabrikFEModelVisualization
 
 		$json = json_encode($eventData);
 		$str = "var coverflow = new FbVisCoverflow($json);";
-		$srcs = Html::framework();
+		$srcs = FabrikHelperHTML::framework();
 		$srcs['Coverflow'] = $this->srcBase . 'coverflow/coverflow.js';
-		Html::script($srcs, $str);
+		FabrikHelperHTML::script($srcs, $str);
 	}
 
 	/**

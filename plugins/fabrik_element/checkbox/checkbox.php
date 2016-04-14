@@ -8,15 +8,8 @@
  * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
-namespace Fabrik\Plugins\Element;
-
 // No direct access
 defined('_JEXEC') or die('Restricted access');
-
-use Fabrik\Helpers\ArrayHelper;
-use Fabrik\Helpers\StringHelper;
-use Fabrik\Helpers\Text;
-use Fabrik\Helpers\Worker;
 
 /**
  * Plugin element to render series of checkboxes
@@ -25,7 +18,7 @@ use Fabrik\Helpers\Worker;
  * @subpackage  Fabrik.element.checkbox
  * @since       3.0
  */
-class Checkbox extends ElementList
+class PlgFabrik_ElementCheckbox extends PlgFabrik_ElementList
 {
 	protected $inputType = 'checkbox';
 
@@ -93,7 +86,7 @@ class Checkbox extends ElementList
 		$opts->defaultVal = $this->getDefaultValue($data);
 		$opts->data       = (empty($values) && empty($labels)) ? array() : array_combine($values, $labels);
 		$opts->allowadd   = (bool) $params->get('allow_frontend_addtocheckbox', false);
-		Text::script('PLG_ELEMENT_CHECKBOX_ENTER_VALUE_LABEL');
+		JText::script('PLG_ELEMENT_CHECKBOX_ENTER_VALUE_LABEL');
 
 		return array('FbCheckBox', $id, $opts);
 	}
@@ -111,7 +104,7 @@ class Checkbox extends ElementList
 		$params  = $this->getParams();
 		$element = $this->getElement();
 
-		$value = ArrayHelper::getValue($data, $element->name, '');
+		$value = FArrayHelper::getValue($data, $element->name, '');
 
 		if ($value === '')
 		{
@@ -136,7 +129,7 @@ class Checkbox extends ElementList
 
 		for ($i = 0; $i < count($labels); $i++)
 		{
-			if (StringHelper::strtolower($labels[$i]) == StringHelper::strtolower($value))
+			if (JString::strtolower($labels[$i]) == JString::strtolower($value))
 			{
 				return $values[$i];
 			}
@@ -194,7 +187,7 @@ class Checkbox extends ElementList
 					// produces valid JSON
 					$json_val = '["' . $val . '"]';
 
-					if (Worker::isJSON($json_val))
+					if (FabrikWorker::isJSON($json_val))
 					{
 						// Looks like we we have a valid JSON array, so return that
 						return $json_val;

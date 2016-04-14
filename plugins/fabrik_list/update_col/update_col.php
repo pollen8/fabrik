@@ -11,10 +11,7 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Fabrik\Helpers\ArrayHelper;
-use Fabrik\Helpers\Html;
-use Fabrik\Helpers\Text;
-use Fabrik\Helpers\Worker;
+use Joomla\Utilities\ArrayHelper;
 
 // Require the abstract plugin class
 require_once COM_FABRIK_FRONTEND . '/models/plugin-list.php';
@@ -66,7 +63,7 @@ class PlgFabrik_ListUpdate_Col extends PlgFabrik_List
 	/**
 	 * Element containing email notification addresses
 	 *
-	 * @var  Fabrik\Plugins\Element\Element
+	 * @var  PlgFabrik_Element
 	 */
 	protected $emailElement = null;
 
@@ -91,7 +88,7 @@ class PlgFabrik_ListUpdate_Col extends PlgFabrik_List
 	 */
 	protected function buttonLabel()
 	{
-		return Text::_($this->getParams()->get('button_label', parent::buttonLabel()));
+		return FText::_($this->getParams()->get('button_label', parent::buttonLabel()));
 	}
 
 	/**
@@ -145,8 +142,8 @@ class PlgFabrik_ListUpdate_Col extends PlgFabrik_List
 			parse_str($qs, $output);
 			$key = 'list_' . $model->getRenderContext();
 
-			$values = ArrayHelper::getValue($output, 'fabrik___filter', array());
-			$values = ArrayHelper::getValue($values, $key, array());
+			$values = FArrayHelper::getValue($output, 'fabrik___filter', array());
+			$values = FArrayHelper::getValue($values, $key, array());
 
 			for ($i = 0; $i < count($values['elementid']); $i ++)
 			{
@@ -244,17 +241,17 @@ class PlgFabrik_ListUpdate_Col extends PlgFabrik_List
 
 		if (empty($this->msg))
 		{
-			$this->msg = Text::sprintf('PLG_LIST_UPDATE_COL_UPDATE_MESSAGE', $this->row_count, $this->sent);
+			$this->msg = JText::sprintf('PLG_LIST_UPDATE_COL_UPDATE_MESSAGE', $this->row_count, $this->sent);
 		}
 		else
 		{
-			$this->msg = Text::sprintf($this->msg, $this->row_count, $this->sent);
+			$this->msg = JText::sprintf($this->msg, $this->row_count, $this->sent);
 		}
 
 		if (!empty($postEval))
 		{
 			$err = @eval($postEval);
-			Worker::logEval($err, 'Caught exception on eval in updatecol::process() : %s');
+			FabrikWorker::logEval($err, 'Caught exception on eval in updatecol::process() : %s');
 		}
 
 		// Clean the cache.
@@ -283,7 +280,7 @@ class PlgFabrik_ListUpdate_Col extends PlgFabrik_List
 
 		if (!empty($emailColID) || !empty($emailTo))
 		{
-			$w = new Worker;
+			$w = new FabrikWorker;
 			jimport('joomla.mail.helper');
 			$aids = explode(',', $ids);
 			$message = $params->get('update_email_msg');
@@ -312,7 +309,7 @@ class PlgFabrik_ListUpdate_Col extends PlgFabrik_List
 				{
 					$email = trim($email);
 
-					if (!(JMailHelper::cleanAddress($email) && Worker::isEmail($email)))
+					if (!(JMailHelper::cleanAddress($email) && FabrikWorker::isEmail($email)))
 					{
 						$cleanTo = false;
 					}
@@ -331,7 +328,7 @@ class PlgFabrik_ListUpdate_Col extends PlgFabrik_List
 					if ($eval)
 					{
 						$thisMessage = @eval($thisMessage);
-						Worker::logEval($thisMessage, 'Caught exception on eval in updatecol::process() : %s');
+						FabrikWorker::logEval($thisMessage, 'Caught exception on eval in updatecol::process() : %s');
 					}
 
 					$mail = JFactory::getMailer();
@@ -412,7 +409,7 @@ class PlgFabrik_ListUpdate_Col extends PlgFabrik_List
 	/**
 	 * Get Email Element
 	 *
-	 * @return Fabrik\Plugins\Element\Element
+	 * @return PlgFabrik_Element
 	 */
 	private function getEmailElement()
 	{
@@ -424,7 +421,7 @@ class PlgFabrik_ListUpdate_Col extends PlgFabrik_List
 		$params = $this->getParams();
 		$emailColID = $params->get('update_email_element', '');
 
-		return Worker::getPluginManager()->getElementPlugin($emailColID);
+		return FabrikWorker::getPluginManager()->getElementPlugin($emailColID);
 	}
 
 	/**
@@ -450,7 +447,7 @@ class PlgFabrik_ListUpdate_Col extends PlgFabrik_List
 			$ids = ArrayHelper::toInteger($ids);
 			$ids = implode(',', $ids);
 			$userIdsEmails = $this->getEmailUserIds($ids);
-			$to = ArrayHelper::getValue($userIdsEmails, $userId);
+			$to = FArrayHelper::getValue($userIdsEmails, $userId);
 		}
 		elseif ($emailWhich == 'field')
 		{
@@ -492,7 +489,7 @@ class PlgFabrik_ListUpdate_Col extends PlgFabrik_List
 		if ($eval)
 		{
 			$val = @eval($val);
-			Worker::logEval($val, 'Caught exception on eval in updatecol::_process() : %s');
+			FabrikWorker::logEval($val, 'Caught exception on eval in updatecol::_process() : %s');
 		}
 
 		$model->updateRows($ids, $col, $val);
@@ -531,8 +528,8 @@ class PlgFabrik_ListUpdate_Col extends PlgFabrik_List
 
 		/** @var FabrikFEModelList $model */
 		$model = $this->getModel();
-		Text::script('PLG_LIST_UPDATE_COL_UPDATE');
-		$options[] = '<option value="">' . Text::_('COM_FABRIK_PLEASE_SELECT') . '</option>';
+		JText::script('PLG_LIST_UPDATE_COL_UPDATE');
+		$options[] = '<option value="">' . FText::_('COM_FABRIK_PLEASE_SELECT') . '</option>';
 		$elementModels = $model->getElements(0, false, true);
 
 		foreach ($elementModels as $elementModel)
@@ -559,7 +556,7 @@ class PlgFabrik_ListUpdate_Col extends PlgFabrik_List
 		$listRef = $model->getRenderContext();
 		$prefix = 'fabrik___update_col[list_' . $listRef . '][';
 		$elements = '<select class="inputbox key update_col_elements" size="1" name="' . $prefix . 'key][]">' . implode("\n", $options) . '</select>';
-		$j3 = Worker::j3();
+		$j3 = FabrikWorker::j3();
 		$addImg = $j3 ? 'plus.png' : 'add.png';
 		$removeImg = $j3 ? 'remove.png' : 'del.png';
 
@@ -569,8 +566,8 @@ class PlgFabrik_ListUpdate_Col extends PlgFabrik_List
 		$layoutData->listRef = $listRef;
 		$layoutData->renderOrder = $this->renderOrder;
 		$layoutData->j3 = $j3;
-		$layoutData->addImg = Html::image($addImg, 'list', $model->getTmpl());
-		$layoutData->delImg = Html::image($removeImg, 'list', $model->getTmpl());
+		$layoutData->addImg = FabrikHelperHTML::image($addImg, 'list', $model->getTmpl());
+		$layoutData->delImg = FabrikHelperHTML::image($removeImg, 'list', $model->getTmpl());
 		$layoutData->elements = $elements;
 		$layoutData->user_select_message = $params->get('update_user_select_message', '');
 

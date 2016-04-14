@@ -8,17 +8,8 @@
  * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
-namespace Fabrik\Plugins\Form;
-
 // No direct access
 defined('_JEXEC') or die('Restricted access');
-
-use \stdClass;
-use \FabrikFEModelList;
-use \JModelLegacy;
-use Fabrik\Helpers\Text;
-use Fabrik\Helpers\Worker;
-use \FabrikFEModelForm;
 
 /**
  * other records in the table to auto fill in the rest of the form with that records data
@@ -32,6 +23,9 @@ use \FabrikFEModelForm;
  * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
+// Require the abstract plugin class
+require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
+
 /**
  * Allows you to observe an element, and when it its blurred asks if you want to lookup related data to fill
  * into additional fields
@@ -40,7 +34,7 @@ use \FabrikFEModelForm;
  * @subpackage  Fabrik.form.autofill
  * @since       3.0
  */
-class Autofill extends \PlgFabrik_Form
+class PlgFabrik_FormAutofill extends PlgFabrik_Form
 {
 	/**
 	 * Need to do this rather than on onLoad as otherwise in chrome form.js addevents is fired
@@ -84,16 +78,16 @@ class Autofill extends \PlgFabrik_Form
 		}
 
 		$opts = json_encode($opts);
-		Text::script('PLG_FORM_AUTOFILL_DO_UPDATE');
-		Text::script('PLG_FORM_AUTOFILL_SEARCHING');
-		Text::script('PLG_FORM_AUTOFILL_NORECORDS_FOUND');
+		JText::script('PLG_FORM_AUTOFILL_DO_UPDATE');
+		JText::script('PLG_FORM_AUTOFILL_SEARCHING');
+		JText::script('PLG_FORM_AUTOFILL_NORECORDS_FOUND');
 
 		if (!isset($formModel->formPluginJS))
 		{
 			$formModel->formPluginJS = array();
 		}
 
-		$this->formJavascriptClass();
+		$this->formJavascriptClass($params, $formModel);
 		$formModel->formPluginJS['Autofill'] = 'var autofill = new Autofill(' . $opts . ');';
 	}
 
@@ -224,7 +218,7 @@ class Autofill extends \PlgFabrik_Form
 
 		if (!$matched)
 		{
-			$w               = new Worker;
+			$w               = new FabrikWorker;
 			$newData->$toRaw = $newData->$to = $w->parseMessageForPlaceHolder($from, $data);
 		}
 		else

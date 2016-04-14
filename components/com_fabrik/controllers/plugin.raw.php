@@ -11,9 +11,6 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Fabrik\Helpers\StringHelper;
-use Fabrik\Helpers\Worker;
-
 jimport('joomla.application.component.controller');
 
 /**
@@ -58,7 +55,7 @@ class FabrikControllerPlugin extends JControllerLegacy
 
 		if (substr($method, 0, 2) !== 'on')
 		{
-			$method = 'on' . StringHelper::ucfirst($method);
+			$method = 'on' . JString::ucfirst($method);
 		}
 
 		$dispatcher->trigger($method);
@@ -72,7 +69,7 @@ class FabrikControllerPlugin extends JControllerLegacy
 
 	public function userAjax()
 	{
-		$db = Worker::getDbo();
+		$db = FabrikWorker::getDbo();
 		require_once COM_FABRIK_FRONTEND . '/user_ajax.php';
 		$app = JFactory::getApplication();
 		$method = $app->input->get('method', '');
@@ -94,7 +91,7 @@ class FabrikControllerPlugin extends JControllerLegacy
 
 	public function doCron(&$pluginManager)
 	{
-		$db = Worker::getDbo();
+		$db = FabrikWorker::getDbo();
 		$app = JFactory::getApplication();
 		$cid = $app->input->get('element_id', array(), 'array');
 		$query = $db->getQuery(true);

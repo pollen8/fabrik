@@ -12,8 +12,6 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Fabrik\Helpers\Text;
-
 jimport('joomla.application.component.controllerform');
 
 /**
@@ -56,7 +54,7 @@ class FabrikAdminControllerDetails extends JControllerForm
 		$view->setLayout($viewLayout);
 
 		// @TODO check for cached version
-		JToolBarHelper::title(Text::_('COM_FABRIK_MANAGER_FORMS'), 'file-2');
+		JToolBarHelper::title(FText::_('COM_FABRIK_MANAGER_FORMS'), 'file-2');
 
 		$view->display();
 		FabrikAdminHelper::addSubmenu($input->getWord('view', 'lists'));

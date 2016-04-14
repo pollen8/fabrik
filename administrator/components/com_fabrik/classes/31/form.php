@@ -9,8 +9,6 @@
 
 defined('JPATH_PLATFORM') or die;
 
-use Fabrik\Helpers\Text;
-
 jimport('joomla.filesystem.path');
 jimport('joomla.utilities.arrayhelper');
 
@@ -1706,12 +1704,12 @@ class JForm
 				if ($lang->hasKey($default))
 				{
 					$debug = $lang->setDebug(false);
-					$default = Text::_($default);
+					$default = FText::_($default);
 					$lang->setDebug($debug);
 				}
 				else
 				{
-					$default = Text::_($default);
+					$default = FText::_($default);
 				}
 			}
 
@@ -1843,14 +1841,14 @@ class JForm
 			{
 				if ($element['label'])
 				{
-					$message = Text::_($element['label']);
+					$message = FText::_($element['label']);
 				}
 				else
 				{
-					$message = Text::_($element['name']);
+					$message = FText::_($element['name']);
 				}
 
-				$message = Text::sprintf('JLIB_FORM_VALIDATE_FIELD_REQUIRED', $message);
+				$message = JText::sprintf('JLIB_FORM_VALIDATE_FIELD_REQUIRED', $message);
 
 				return new RuntimeException($message);
 			}
@@ -1886,14 +1884,14 @@ class JForm
 
 			if ($message)
 			{
-				$message = Text::_($element['message']);
+				$message = FText::_($element['message']);
 
 				return new UnexpectedValueException($message);
 			}
 			else
 			{
-				$message = Text::_($element['label']);
-				$message = Text::sprintf('JLIB_FORM_VALIDATE_FIELD_INVALID', $message);
+				$message = FText::_($element['label']);
+				$message = JText::sprintf('JLIB_FORM_VALIDATE_FIELD_INVALID', $message);
 
 				return new UnexpectedValueException($message);
 			}

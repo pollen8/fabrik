@@ -12,8 +12,6 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Fabrik\Helpers\Html;
-
 $form = $this->form;
 $model = $this->getModel();
 $groupTmpl = $model->editable ? 'group' : 'group_details';
@@ -79,7 +77,7 @@ echo $this->plugintop;
 	endforeach;
 	?>
 <?php
-echo Html::getLayout('fabrik-tabs')->render((object) array('tabs' => $tabs));
+echo FabrikHelperHTML::getLayout('fabrik-tabs')->render((object) array('tabs' => $tabs));
 ?>
 <div class="tab-content">
 	<?php
@@ -145,4 +143,4 @@ echo $this->loadTemplate('actions');
 <?php
 echo $form->outro;
 echo $this->pluginend;
-echo Html::keepalive();
+echo FabrikHelperHTML::keepalive();

@@ -11,8 +11,6 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Fabrik\Helpers\Html;
-
 require_once JPATH_SITE . '/components/com_fabrik/views/list/view.base.php';
 
 /**
@@ -92,7 +90,7 @@ class FabrikViewList extends FabrikViewListBase
 		$displayData->title = $this->grouptemplates[$groupedBy];
 		$displayData->count = count($group);
 		$displayData->group_by_show_count = $this->params->get('group_by_show_count','1');
-		$layout = Html::getLayout('list.fabrik-group-by-heading');
+		$layout = FabrikHelperHTML::getLayout('list.fabrik-group-by-heading');
 
 		return $layout->render($displayData);
 	}
@@ -112,7 +110,7 @@ class FabrikViewList extends FabrikViewListBase
 		$displayData->filters = $this->filters;
 		$displayData->filter_action = $this->filter_action;
 		$layoutFile =  $this->filterMode === 5 ? 'fabrik-filters-modal' : 'fabrik-filters';
-		$layout = Html::getLayout('list.' . $layoutFile);
+		$layout = FabrikHelperHTML::getLayout('list.' . $layoutFile);
 
 		return $layout->render($displayData);
 	}

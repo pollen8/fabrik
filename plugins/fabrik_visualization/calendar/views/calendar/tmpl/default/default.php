@@ -11,8 +11,6 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Fabrik\Helpers\Text;
-
 //@TODO if we ever get calendars inside packages then the ids will need to be
 // Replaced with classes contained within a distinct id
 
@@ -30,7 +28,7 @@ $row = $this->row;
 		<?php if ($this->canAdd)
 		{
 		?>
-		<a href="#" class="addEventButton" title="Add an event"><?php echo Text::_('PLG_VISUALIZATION_CALENDAR_ADD') ?></a>
+		<a href="#" class="addEventButton" title="Add an event"><?php echo FText::_('PLG_VISUALIZATION_CALENDAR_ADD') ?></a>
 	<?php }
 	?>
 	<?php if ($row->intro_text != '')

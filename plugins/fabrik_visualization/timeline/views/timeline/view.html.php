@@ -11,10 +11,6 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Fabrik\Helpers\Html;
-use Fabrik\Helpers\Worker;
-use Fabrik\Helpers\Text;
-
 jimport('joomla.application.component.view');
 
 /**
@@ -38,8 +34,8 @@ class FabrikViewTimeline extends JViewLegacy
 	{
 		$app   = JFactory::getApplication();
 		$input = $app->input;
-		$j3    = Worker::j3();
-		$srcs  = Html::framework();
+		$j3    = FabrikWorker::j3();
+		$srcs  = FabrikHelperHTML::framework();
 
 		$usersConfig = JComponentHelper::getParams('com_fabrik');
 		$model       = $this->getModel();
@@ -49,7 +45,7 @@ class FabrikViewTimeline extends JViewLegacy
 
 		if (!$model->canView())
 		{
-			echo Text::_('JERROR_ALERTNOAUTHOR');
+			echo FText::_('JERROR_ALERTNOAUTHOR');
 
 			return false;
 		}
@@ -72,26 +68,26 @@ class FabrikViewTimeline extends JViewLegacy
 
 		JHTML::stylesheet('media/com_fabrik/css/list.css');
 
-		Html::stylesheetFromPath($tmplpath . '/template.css');
+		FabrikHelperHTML::stylesheetFromPath($tmplpath . '/template.css');
 		$srcs['FbListFilter']   = 'media/com_fabrik/js/listfilter.js';
 		$srcs['Timeline']       = 'plugins/fabrik_visualization/timeline/timeline.js';
 		$srcs['AdvancedSearch'] = 'media/com_fabrik/js/advanced-search.js';
 
 		$js .= $model->getFilterJs();
-		Html::iniRequireJs($model->getShim());
-		Html::script($srcs, $js);
+		FabrikHelperHTML::iniRequireJs($model->getShim());
+		FabrikHelperHTML::script($srcs, $js);
 
-		Text::script('COM_FABRIK_ADVANCED_SEARCH');
-		Text::script('COM_FABRIK_LOADING');
+		JText::script('COM_FABRIK_ADVANCED_SEARCH');
+		JText::script('COM_FABRIK_LOADING');
 		$opts             = array('alt' => 'calendar', 'class' => 'calendarbutton', 'id' => 'timelineDatePicker_cal_img');
-		$img              = Html::image('calendar.png', 'form', @$this->tmpl, $opts);
+		$img              = FabrikHelperHTML::image('calendar.png', 'form', @$this->tmpl, $opts);
 		$this->datePicker = '<input type="text" name="timelineDatePicker" id="timelineDatePicker" value="" />' . $img;
 
 		// Check and add a general fabrik custom css file overrides template css and generic table css
-		Html::stylesheetFromPath('media/com_fabrik/css/custom.css');
+		FabrikHelperHTML::stylesheetFromPath('media/com_fabrik/css/custom.css');
 
 		// Check and add a specific biz  template css file overrides template css generic table css and generic custom css
-		Html::stylesheetFromPath('plugins/fabrik_visualization/timeline/views/timeline/tmpl/' . $tpl . '/custom.css');
+		FabrikHelperHTML::stylesheetFromPath('plugins/fabrik_visualization/timeline/views/timeline/tmpl/' . $tpl . '/custom.css');
 
 		return parent::display();
 	}

@@ -9,8 +9,6 @@
 // no direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Fabrik\Helpers\Text;
-
 require_once( JPATH_ROOT .'/components/com_community/libraries/core.php');
 
 class plgCommunityFabrik extends CApplications
@@ -51,7 +49,7 @@ class plgCommunityFabrik extends CApplications
 			$content = $cache->call($callback, $view, $id, $rowid, $usekey, $layout, $element, $additional, $this->userparams, $user->id);
 		}else{
 			$content = "<div class=\"icon-nopost\"><img src='".JURI::base()."components/com_community/assets/error.gif' alt=\"\" /></div>";
-			$content .= "<div class=\"content-nopost\">".Text::_('Fabrik view details not set.')."</div>";
+			$content .= "<div class=\"content-nopost\">".JText::_('Fabrik view details not set.')."</div>";
 		}
 
 		return $content;

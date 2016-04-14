@@ -11,8 +11,7 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Fabrik\Helpers\ArrayHelper;
-use Fabrik\Helpers\Worker;
+use Joomla\Utilities\ArrayHelper;
 
 jimport('joomla.application.component.model');
 
@@ -156,7 +155,7 @@ class FabrikModelNvd3_Chart extends FabrikFEModelVisualization
 	 */
 	public function getElementData($elementId)
 	{
-		$pluginManager = Worker::getPluginManager();
+		$pluginManager = FabrikWorker::getPluginManager();
 
 		$elementModel = $pluginManager->getPluginFromId($elementId);
 		$params       = $elementModel->getParams();
@@ -287,7 +286,7 @@ class FabrikModelNvd3_Chart extends FabrikFEModelVisualization
 		$table  = $params->get('tbl');
 		$split  = $params->get('single_line_split', '');
 
-		$db    = Worker::getDbo(false, $params->get('conn_id'));
+		$db    = FabrikWorker::getDbo(false, $params->get('conn_id'));
 		$query = $db->getQuery(true);
 
 		$xCol = $params->get('single_line_x_column', '');
@@ -405,7 +404,7 @@ class FabrikModelNvd3_Chart extends FabrikFEModelVisualization
 		$table        = $params->get('tbl');
 		$split        = $params->get('split', '');
 
-		$db    = Worker::getDbo(false, $params->get('conn_id'));
+		$db    = FabrikWorker::getDbo(false, $params->get('conn_id'));
 		$query = $db->getQuery(true);
 		$query->select($db->qn($labelColumns))->from($table);
 

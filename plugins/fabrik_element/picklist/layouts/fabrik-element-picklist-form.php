@@ -3,16 +3,12 @@
 defined('JPATH_BASE') or die;
 
 $d = $displayData;
-
-use Fabrik\Helpers\Html;
-use Fabrik\Helpers\Text;
-
 ?>
 <div class="<?php echo $d->name; ?>_container" id="<?php echo $d->id; ?>_container">
 	<div class="row">
 		<div class="span6 <?php echo $d->errorCSS; ?>">
 
-			<?php echo Text::_('PLG_FABRIK_PICKLIST_FROM'); ?>:
+			<?php echo FText::_('PLG_FABRIK_PICKLIST_FROM'); ?>:
 			<ul id="<?php echo $d->id; ?>_fromlist" class="picklist well well-small fromList">
 
 				<?php
@@ -25,13 +21,13 @@ use Fabrik\Helpers\Text;
 				endforeach;
 				?>
 
-				<li class="emptypicklist" style="display:none"><?php echo Html::icon('icon-move'); ?>
-					<?php echo Text::_('PLG_ELEMENT_PICKLIST_DRAG_OPTIONS_HERE'); ?>
+				<li class="emptypicklist" style="display:none"><?php echo FabrikHelperHTML::icon('icon-move'); ?>
+					<?php echo FText::_('PLG_ELEMENT_PICKLIST_DRAG_OPTIONS_HERE'); ?>
 				</li>
 			</ul>
 		</div>
 		<div class="span6">
-			<?php echo Text::_('PLG_FABRIK_PICKLIST_TO'); ?>:
+			<?php echo FText::_('PLG_FABRIK_PICKLIST_TO'); ?>:
 			<ul id="<?php echo $d->id; ?>_tolist" class="picklist well well-small toList">
 
 				<?php
@@ -44,8 +40,8 @@ use Fabrik\Helpers\Text;
 				endforeach;
 				?>
 
-				<li class="emptypicklist" style="display:none"><?php echo Html::icon('icon-move'); ?>
-					<?php echo Text::_('PLG_ELEMENT_PICKLIST_DRAG_OPTIONS_HERE'); ?>
+				<li class="emptypicklist" style="display:none"><?php echo FabrikHelperHTML::icon('icon-move'); ?>
+					<?php echo FText::_('PLG_ELEMENT_PICKLIST_DRAG_OPTIONS_HERE'); ?>
 				</li>
 			</ul>
 		</div>

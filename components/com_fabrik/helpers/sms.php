@@ -8,13 +8,8 @@
  * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
-namespace Fabrik\Helpers;
-
 // No direct access
 defined('_JEXEC') or die('Restricted access');
-
-use \JFactory;
-use \RuntimeException;
 
 /**
  * Send sms's
@@ -23,7 +18,8 @@ use \RuntimeException;
  * @subpackage  Fabrik.helpers
  * @since       3.0
  */
-class Sms
+
+class FabrikSMS
 {
 	/**
 	 * Send sms
@@ -42,7 +38,9 @@ class Sms
 		$app = JFactory::getApplication();
 		if (!function_exists('curl_init'))
 		{
-			throw new RuntimeException(Text::_('COM_FABRIK_ERR_CURL_NOT_INSTALLED'));
+			throw new RuntimeException(FText::_('COM_FABRIK_ERR_CURL_NOT_INSTALLED'));
+
+			return;
 		}
 
 		$ch = curl_init();

@@ -12,7 +12,6 @@
 defined('_JEXEC') or die('Restricted access');
 
 use \Joomla\Registry\Registry;
-use Fabrik\Helpers\Text;
 
 require_once JPATH_ADMINISTRATOR . '/components/com_fabrik/tables/fabtable.php';
 
@@ -145,7 +144,7 @@ class FabrikTableForm extends FabTable
 			// Check that $field is in the table.
 			if (!in_array($field, $fields))
 			{
-				$e = new JException(Text::sprintf('JLIB_DATABASE_ERROR_CLASS_IS_MISSING_FIELD', get_class($this), $field));
+				$e = new JException(JText::sprintf('JLIB_DATABASE_ERROR_CLASS_IS_MISSING_FIELD', get_class($this), $field));
 				$this->setError($e);
 
 				return false;
@@ -161,7 +160,7 @@ class FabrikTableForm extends FabTable
 		// Check that we have a result.
 		if (empty($row))
 		{
-			$e = new JException(Text::_('JLIB_DATABASE_ERROR_EMPTY_ROW_RETURNED'));
+			$e = new JException(FText::_('JLIB_DATABASE_ERROR_EMPTY_ROW_RETURNED'));
 			$this->setError($e);
 
 			return false;

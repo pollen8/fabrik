@@ -11,10 +11,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Fabrik\Helpers\Text;
-
 if (count($this->rows) == 0) :
-	echo Text::_('YOU_ARE_NOT_SUBSCRIBED_TO_ANY_NOTIFICATIONS');
+	echo FText::_('YOU_ARE_NOT_SUBSCRIBED_TO_ANY_NOTIFICATIONS');
 else:
 ?>
 <form action="index.php" method="post" name="adminForm">
@@ -23,10 +21,10 @@ else:
 			<tr>
 				<th width="1%"> <input type="checkbox" name="toggle" value="" onclick="checkAll(<?php echo count($this->rows);?>);" /> </th>
 				<th width="49%">
-					<?php echo Text::_('NOTIFICATION')?>
+					<?php echo FText::_('NOTIFICATION')?>
 				</th>
 				<th width ="50%">
-					<?php echo Text::_('NOTIFICATION_REASON')?>
+					<?php echo FText::_('NOTIFICATION_REASON')?>
 				</th>
 			</tr>
 </thead>
@@ -51,7 +49,7 @@ endfor;
 </tbody>
 </table>
 <div class="readon-wrap1"><div class="readon1-l"></div><a class="readon-main"><span class="readon1-m"><span class="readon1-r">
-<input type="submit" value="<?php echo Text::_('DELETE')?>" class="button"/></span></span></a></div>
+<input type="submit" value="<?php echo FText::_('DELETE')?>" class="button"/></span></span></a></div>
 
 <input type="hidden" name="option" value="com_fabrik" />
 <input type="hidden" name="view" value="cron.notification" />

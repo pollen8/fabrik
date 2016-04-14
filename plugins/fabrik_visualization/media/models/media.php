@@ -11,9 +11,6 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Fabrik\Helpers\StringHelper;
-use Fabrik\Helpers\Worker;
-
 jimport('joomla.application.component.model');
 
 require_once JPATH_SITE . '/components/com_fabrik/models/visualization.php';
@@ -36,7 +33,7 @@ class FabrikModelMedia extends FabrikFEModelVisualization
 
 	public function getMedia()
 	{
-		$itemId = Worker::itemId();
+		$itemId = FabrikWorker::itemId();
 		$params = $this->getParams();
 		$w = $params->get('media_width');
 		$h = $params->get('media_height');
@@ -107,7 +104,7 @@ class FabrikModelMedia extends FabrikFEModelVisualization
 		 */
 		$context = 'com_' . $this->package . '.list' . $listModel->getRenderContext() . '.';
 		$item = $listModel->getTable();
-		$rowsPerPage = Worker::getMenuOrRequestVar('rows_per_page', $item->rows_per_page);
+		$rowsPerPage = FabrikWorker::getMenuOrRequestVar('rows_per_page', $item->rows_per_page);
 		$orig_limitstart = $this->app->getUserState('limitstart', 0);
 		$orig_limitlength = $this->app->getUserState('limitlength', $rowsPerPage);
 		$this->app->setUserState($context . 'limitstart', 0);
@@ -143,7 +140,7 @@ class FabrikModelMedia extends FabrikFEModelVisualization
 					}
 
 					$location = str_replace('\\', '/', $location);
-					$location = StringHelper::ltrim($location, '/');
+					$location = JString::ltrim($location, '/');
 					$location = COM_FABRIK_LIVESITE . $location;
 					$str .= "		<track>\n";
 					$str .= "			<location>" . $location . "</location>\n";
@@ -161,7 +158,7 @@ class FabrikModelMedia extends FabrikFEModelVisualization
 						if (!empty($image))
 						{
 							$image = str_replace('\\', '/', $image);
-							$image = StringHelper::ltrim($image, '/');
+							$image = JString::ltrim($image, '/');
 							$image = COM_FABRIK_LIVESITE . $image;
 							$str .= "			<image>" . $image . "</image>\n";
 						}
@@ -215,7 +212,7 @@ class FabrikModelMedia extends FabrikFEModelVisualization
 					}
 
 					$location = str_replace('\\', '/', $location);
-					$location = StringHelper::ltrim($location, '/');
+					$location = JString::ltrim($location, '/');
 					$location = COM_FABRIK_LIVESITE . $location;
 					$str .= "		<item>\n";
 					$str .= '			<media:content url="' . $location . '" />' . "\n";
@@ -233,7 +230,7 @@ class FabrikModelMedia extends FabrikFEModelVisualization
 						if (!empty($image))
 						{
 							$image = str_replace('\\', '/', $image);
-							$image = StringHelper::ltrim($image, '/');
+							$image = JString::ltrim($image, '/');
 							$image = COM_FABRIK_LIVESITE . $image;
 							$str .= '			<media:thumbnail url="' . $image . '" />' . "\n";
 						}

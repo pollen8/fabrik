@@ -11,10 +11,6 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Fabrik\Helpers\Html;
-use Fabrik\Helpers\Worker;
-use Fabrik\Helpers\StringHelper;
-
 jimport('joomla.application.component.model');
 
 require_once JPATH_SITE . '/components/com_fabrik/models/visualization.php';
@@ -117,7 +113,7 @@ class FabrikModelApprovals extends FabrikFEModelVisualization
 	public function disapprove()
 	{
 		$this->decide(0);
-		echo Worker::j3() ? Html::icon('icon-remove') : Html::image('delete.png', 'list', '');
+		echo FabrikWorker::j3() ? FabrikHelperHTML::icon('icon-remove') : FabrikHelperHTML::image('delete.png', 'list', '');
 	}
 
 	/**
@@ -128,7 +124,7 @@ class FabrikModelApprovals extends FabrikFEModelVisualization
 	public function approve()
 	{
 		$this->decide(1);
-		echo Worker::j3() ? Html::icon('icon-ok') : Html::image('ok.png', 'list', '');
+		echo FabrikWorker::j3() ? FabrikHelperHTML::icon('icon-ok') : FabrikHelperHTML::image('ok.png', 'list', '');
 	}
 
 	/**
@@ -154,7 +150,7 @@ class FabrikModelApprovals extends FabrikFEModelVisualization
 				$item = $listModel->getTable();
 				$db = $listModel->getDbo();
 				$query = $db->getQuery(true);
-				$el = StringHelper::safeColName($approveEls[$key]);
+				$el = FabrikString::safeColName($approveEls[$key]);
 				$query->update($db->quoteName($item->db_table_name))->set($el . ' = ' . $db->quote($v))
 					->where($item->db_primary_key . ' = ' . $db->quote($input->get('rowid')));
 				$db->setQuery($query);

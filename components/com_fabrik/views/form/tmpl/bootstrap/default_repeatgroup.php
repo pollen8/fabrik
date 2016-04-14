@@ -12,12 +12,10 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Fabrik\Helpers\Worker;
-
 $input = JFactory::getApplication()->input;
 $group = $this->group;
 $i = 1;
-$w = new Worker;
+$w = new FabrikWorker;
 
 foreach ($group->subgroups as $subgroup) :
 	$introData = array_merge($input->getArray(), array('i' => $i));

@@ -2,7 +2,7 @@
 /**
  * Fabrik List Template: Div Row
  * Note the div cell container is now generated in the default template
- * in Fabrik\Helpers\Html::bootstrapGrid();
+ * in FabrikHelperHTML::bootstrapGrid();
  *
  * @package     Joomla
  * @subpackage  Fabrik

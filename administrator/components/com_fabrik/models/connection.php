@@ -12,9 +12,7 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Fabrik\Helpers\ArrayHelper;
-use Fabrik\Helpers\Worker;
-use Fabrik\Helpers\Text;
+use Joomla\Utilities\ArrayHelper;
 
 require_once 'fabmodeladmin.php';
 
@@ -50,7 +48,7 @@ class FabrikAdminModelConnection extends FabModelAdmin
 		 * issue with using Fabtable is that it will always load the cached version of the cnn
 		 * which might cause issues when migrating from test to live sites???
 		 */
-		$config['dbo'] = Worker::getDbo(true);
+		$config['dbo'] = FabrikWorker::getDbo(true);
 
 		return FabTable::getInstance($type, $prefix, $config);
 	}
@@ -103,7 +101,7 @@ class FabrikAdminModelConnection extends FabModelAdmin
 	 */
 	public function setDefault($id)
 	{
-		$db = Worker::getDbo(true);
+		$db = FabrikWorker::getDbo(true);
 		$query = $db->getQuery(true);
 		$query->update('#__fabrik_connections')->set($db->quoteName('default') . ' = 0');
 		$db->setQuery($query);
@@ -127,7 +125,7 @@ class FabrikAdminModelConnection extends FabModelAdmin
 	{
 		if ($item->id == 1)
 		{
-			$this->app->enqueueMessage(Text::_('COM_FABRIK_ORIGINAL_CONNECTION'));
+			$this->app->enqueueMessage(FText::_('COM_FABRIK_ORIGINAL_CONNECTION'));
 
 			if (!$this->matchesDefault($item))
 			{
@@ -135,7 +133,7 @@ class FabrikAdminModelConnection extends FabModelAdmin
 				$item->user = $this->config->get('user');
 				$item->password = $this->config->get('password');
 				$item->database = $this->config->get('db');
-				JError::raiseWarning(E_WARNING, Text::_('COM_FABRIK_YOU_MUST_SAVE_THIS_CNN'));
+				JError::raiseWarning(E_WARNING, FText::_('COM_FABRIK_YOU_MUST_SAVE_THIS_CNN'));
 			}
 		}
 	}
@@ -150,7 +148,7 @@ class FabrikAdminModelConnection extends FabModelAdmin
 	protected function matchesDefault($item)
 	{
 		$config = $this->config;
-		$crypt = Worker::getCrypt();
+		$crypt = FabrikWorker::getCrypt();
 		$pwMatch = $config->get('password') == $item->password || $crypt->encrypt($config->get('password')) == $item->password;
 
 		return $config->get('host') == $item->host && $config->get('user') == $item->user && $pwMatch
@@ -169,7 +167,7 @@ class FabrikAdminModelConnection extends FabModelAdmin
 	{
 		$model = JModelLegacy::getInstance('Connection', 'FabrikFEModel');
 		$model->setId($data['id']);
-		$crypt = Worker::getCrypt();
+		$crypt = FabrikWorker::getCrypt();
 
 		$params = new stdClass;
 		$params->encryptedPw = true;
@@ -207,7 +205,7 @@ class FabrikAdminModelConnection extends FabModelAdmin
 	{
 		if ($data['password'] !== $data['passwordConf'])
 		{
-			$this->setError(Text::_('COM_FABRIK_PASSWORD_MISMATCH'));
+			$this->setError(FText::_('COM_FABRIK_PASSWORD_MISMATCH'));
 
 			return false;
 		}

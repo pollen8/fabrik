@@ -11,8 +11,6 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Fabrik\Helpers\Text;
-
 require_once JPATH_ADMINISTRATOR . '/components/com_fabrik/tables/fabtable.php';
 
 /**
@@ -60,7 +58,7 @@ class FabrikTableGroup extends FabTable
 	{
 		if (trim($this->name) == '')
 		{
-			$this->_error = Text::_("YOUR GROUP MUST CONTAIN A NAME");
+			$this->_error = FText::_("YOUR GROUP MUST CONTAIN A NAME");
 
 			return false;
 		}

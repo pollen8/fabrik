@@ -8,16 +8,8 @@
  * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
-namespace Fabrik\Plugins\Element;
-
 // No direct access
 defined('_JEXEC') or die('Restricted access');
-
-use \JHtml;
-use \stdClass;
-use Fabrik\Helpers\ArrayHelper;
-use Fabrik\Helpers\Worker;
-use \JFactory;
 
 /**
  * Plugin element to render multi select user group list
@@ -26,7 +18,7 @@ use \JFactory;
  * @subpackage  Fabrik.element.usergroup
  * @since       3.0.6
  */
-class Usergroup extends ElementList
+class PlgFabrik_ElementUsergroup extends PlgFabrik_ElementList
 {
 	/**
 	 * Db table field type
@@ -68,12 +60,12 @@ class Usergroup extends ElementList
 		if ($userEl)
 		{
 			$data = $formModel->getData();
-			$userId = ArrayHelper::getValue($data, $userEl->getFullName(true, false) . '_raw', 0);
+			$userId = FArrayHelper::getValue($data, $userEl->getFullName(true, false) . '_raw', 0);
 
 			// Failed validation
 			if (is_array($userId))
 			{
-				$userId = ArrayHelper::getValue($userId, 0);
+				$userId = FArrayHelper::getValue($userId, 0);
 			}
 
 			$thisUser = !empty($userId) ? JFactory::getUser($userId) : false;
@@ -94,7 +86,7 @@ class Usergroup extends ElementList
 			}
 			// Get the titles for the user groups.
 			//if (count($selected) > 0)
-			if (!ArrayHelper::emptyish($selected))
+			if (!FArrayHelper::emptyish($selected))
 			{
 				$query = $this->_db->getQuery(true);
 				$query->select($this->_db->qn('title'));
@@ -179,7 +171,7 @@ class Usergroup extends ElementList
 
 		foreach ($tmpIds as $tmpId)
 		{
-			$tmpId = Worker::JSONtoData($tmpId, true);
+			$tmpId = FabrikWorker::JSONtoData($tmpId, true);
 			$ids = array_merge($ids, $tmpId);
 		}
 
@@ -249,7 +241,7 @@ class Usergroup extends ElementList
 	public function getValue($data, $repeatCounter = 0, $opts = array())
 	{
 		$value = parent::getValue($data, $repeatCounter, $opts);
-		$value = Worker::JSONtoData($value);
+		$value = FabrikWorker::JSONtoData($value);
 
 		if (is_string($value))
 		{

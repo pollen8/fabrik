@@ -12,26 +12,24 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Fabrik\Helpers\Text;
-
 ?>
 <div class="tab-pane" id="tab-publishing">
 	<fieldset class="form-horizontal">
-		<legend><?php echo Text::_('COM_FABRIK_PUBLISHING');?></legend>
+		<legend><?php echo FText::_('COM_FABRIK_PUBLISHING');?></legend>
 		<ul class="nav nav-tabs">
 			<li class="active">
 					<a data-toggle="tab" href="#publishing-details">
-						<?php echo Text::_('COM_FABRIK_ELEMENT_LABEL_PUBLISHING_DETAILS'); ?>
+						<?php echo FText::_('COM_FABRIK_ELEMENT_LABEL_PUBLISHING_DETAILS'); ?>
 					</a>
 				</li>
 				<li>
 					<a data-toggle="tab" href="#publishing-rss">
-						<?php echo Text::_('COM_FABRIK_ELEMENT_LABEL_RSS')?>
+						<?php echo FText::_('COM_FABRIK_ELEMENT_LABEL_RSS')?>
 					</a>
 				</li>
 				<li>
 					<a data-toggle="tab" href="#publishing-tips">
-						<?php echo Text::_('COM_FABRIK_ELEMENT_LABEL_TIPS')?>
+						<?php echo FText::_('COM_FABRIK_ELEMENT_LABEL_TIPS')?>
 					</a>
 				</li>
 		</ul>

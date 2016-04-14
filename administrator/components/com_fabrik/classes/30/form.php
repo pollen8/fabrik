@@ -9,8 +9,6 @@
 
 defined('JPATH_PLATFORM') or die;
 
-use Fabrik\Helpers\Text;
-
 jimport('joomla.filesystem.path');
 jimport('joomla.utilities.arrayhelper');
 
@@ -1719,12 +1717,12 @@ class JForm
 				if ($lang->hasKey($default))
 				{
 					$debug = $lang->setDebug(false);
-					$default = Text::_($default);
+					$default = FText::_($default);
 					$lang->setDebug($debug);
 				}
 				else
 				{
-					$default = Text::_($default);
+					$default = FText::_($default);
 				}
 			}
 
@@ -1864,11 +1862,11 @@ class JForm
 				{
 					if ($element['label'])
 					{
-						$message = Text::_($element['label']);
+						$message = FText::_($element['label']);
 					}
 					else
 					{
-						$message = Text::_($element['name']);
+						$message = FText::_($element['name']);
 					}
 
 					$message = sprintf('Field required: %s', $message);

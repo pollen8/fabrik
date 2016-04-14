@@ -8,14 +8,8 @@
  * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
-namespace Fabrik\Plugins\Element;
-
 // No direct access
 defined('_JEXEC') or die('Restricted access');
-
-use Fabrik\Helpers\ArrayHelper;
-use \stdClass;
-use Fabrik\Helpers\StringHelper;
 
 /**
  * Plugin element to store the user's IP address
@@ -24,7 +18,7 @@ use Fabrik\Helpers\StringHelper;
  * @subpackage  Fabrik.element.ip
  * @since       3.0
  */
-class Ip extends Element
+class PlgFabrik_ElementIp extends PlgFabrik_Element
 {
 	/**
 	 * Draws the html form element
@@ -48,14 +42,14 @@ class Ip extends Element
 
 		if ($params->get('ip_update_on_edit') || !$rowId || ($this->inRepeatGroup && $this->_inJoin && $this->_repeatGroupTotal == $repeatCounter))
 		{
-			$ip = StringHelper::filteredIp();
+			$ip = FabrikString::filteredIp();
 		}
 		else
 		{
 			if (empty($data) || empty($data[$name]))
 			{
 				// If $data is empty, we must (?) be a new row, so just grab the IP
-				$ip = StringHelper::filteredIp();
+				$ip = FabrikString::filteredIp();
 			}
 			else
 			{
@@ -111,7 +105,7 @@ class Ip extends Element
 		$formModel = $this->getFormModel();
 		$formData = $formModel->formData;
 
-		if (ArrayHelper::getValue($formData, 'rowid', 0) == 0 && !in_array($element->name, $data))
+		if (FArrayHelper::getValue($formData, 'rowid', 0) == 0 && !in_array($element->name, $data))
 		{
 			$data[$element->name] = $_SERVER['REMOTE_ADDR'];
 		}
@@ -121,8 +115,8 @@ class Ip extends Element
 
 			if ($params->get('ip_update_on_edit', 0))
 			{
-				$data[$element->name] = StringHelper::filteredIp();
-				$data[$element->name . '_raw'] = StringHelper::filteredIp();
+				$data[$element->name] = FabrikString::filteredIp();
+				$data[$element->name . '_raw'] = FabrikString::filteredIp();
 			}
 		}
 
@@ -140,7 +134,7 @@ class Ip extends Element
 	{
 		if (!isset($this->default))
 		{
-			$this->default = StringHelper::filteredIp();
+			$this->default = FabrikString::filteredIp();
 		}
 
 		return $this->default;

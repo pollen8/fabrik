@@ -12,8 +12,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 use Joomla\Registry\Registry;
-use Fabrik\Helpers\ArrayHelper;
-use Fabrik\Helpers\Text;
+use Joomla\Utilities\ArrayHelper;
 
 require_once JPATH_ADMINISTRATOR . '/components/com_fabrik/tables/fabtable.php';
 
@@ -40,37 +39,6 @@ class FabrikTableElement extends FabTable
 	 * @var string
 	 */
 	public $name = '';
-
-	/**
-	 * @var int
-	 */
-	public $width;
-
-	/**
-	 * @var int
-	 */
-	public $height;
-
-	/**
-	 * @var bool
-	 */
-	public $hidden = false;
-
-	/**
-	 * @var string
-	 */
-	public $filter_type = '';
-	/**
-	 * @var mixed
-	 */
-	public $default;
-
-	/**
-	 * @var bool
-	 */
-	public $eval = false;
-
-	public $id;
 
 	/**
 	 * Construct
@@ -167,7 +135,7 @@ class FabrikTableElement extends FabTable
 			// Nothing to set publishing state on, return false.
 			else
 			{
-				throw new Exception(Text::_('JLIB_DATABASE_ERROR_NO_ROWS_SELECTED'));
+				throw new Exception(FText::_('JLIB_DATABASE_ERROR_NO_ROWS_SELECTED'));
 			}
 		}
 
@@ -195,7 +163,7 @@ class FabrikTableElement extends FabTable
 		// Check for a database error.
 		if (!$this->_db->execute())
 		{
-			throw new Exception(Text::sprintf('JLIB_DATABASE_ERROR_PUBLISH_FAILED', get_class($this)));
+			throw new Exception(JText::sprintf('JLIB_DATABASE_ERROR_PUBLISH_FAILED', get_class($this)));
 		}
 
 		// If check-in is supported and all rows were adjusted, check them in.

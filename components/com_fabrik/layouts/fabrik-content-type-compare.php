@@ -5,8 +5,7 @@
 
 defined('JPATH_BASE') or die;
 
-use Fabrik\Helpers\ArrayHelper;
-use Fabrik\Helpers\Text;
+use Joomla\Utilities\ArrayHelper;
 
 $d                     = $displayData;
 $viewLevels            = $d->viewLevels;
@@ -18,14 +17,14 @@ $max = max(count($viewLevels), count($contentTypeViewLevels));
 	<hr />
 <?php if ($d->versionMismatch) : ?>
 	<div class="alert alert-warning"><span class="icon-stack"></span>
-		<?php echo Text::sprintf('COM_FABRIK_CONTENT_TYPE_VERSION_MISMATCH', $d->contentTypeVersion, $d->siteVersion); ?>
+		<?php echo JText::sprintf('COM_FABRIK_CONTENT_TYPE_VERSION_MISMATCH', $d->contentTypeVersion, $d->siteVersion); ?>
 	</div>
 <?php endif; ?>
 <?php if (!empty($d->alteredGroups)) : ?>
 	<div class="alert alert-warning"><span class="icon-stack"></span>
-		<?php echo Text::_('COM_FABRIK_CONTENT_TYPE_ACL_GROUP_MISMATCH'); ?>
+		<?php echo JText::_('COM_FABRIK_CONTENT_TYPE_ACL_GROUP_MISMATCH'); ?>
 		<hr />
-		<p><?php echo Text::_('COM_FABRIK_CONTENT_TYPE_ACL_GROUP_MISMATCH_FOLLOWING'); ?></p>
+		<p><?php echo JText::_('COM_FABRIK_CONTENT_TYPE_ACL_GROUP_MISMATCH_FOLLOWING'); ?></p>
 
 		<div>
 			<?php
@@ -43,25 +42,25 @@ endif; ?>
 if ($d->match) :
 	?>
 	<div class="alert alert-info"><span class="icon-ok"></span>
-		<?php echo Text::_('COM_FABRIK_CONTENT_TYPE_ACL_MATCH'); ?>
+		<?php echo JText::_('COM_FABRIK_CONTENT_TYPE_ACL_MATCH'); ?>
 	</div>
 	<?php
 else:
 	?>
 	<div class="alert alert-warning"><span class="icon-warning"></span>
-		<?php echo Text::_('COM_FABRIK_CONTENT_TYPE_ACL_MISMATCH'); ?>
+		<?php echo JText::_('COM_FABRIK_CONTENT_TYPE_ACL_MISMATCH'); ?>
 	</div>
 
 	<div class="alert alert-info"><span class="icon-question"></span>
-		<?php echo Text::_('COM_FABRIK_CONTENT_TYPE_ACL_MISMATCH_INFO'); ?>
+		<?php echo JText::_('COM_FABRIK_CONTENT_TYPE_ACL_MISMATCH_INFO'); ?>
 	</div>
 
 	<table class="table table-striped">
 		<thead>
 		<tr>
-			<th><?php echo Text::_('COM_FABRIK_CONTENT_TYPE_ACCESS_LEVEL'); ?></th>
-			<th class="muted"><?php echo Text::_('COM_FABRIK_GROUPS'); ?></th>
-			<th><?php echo Text::_('COM_FABRIK_CONTENT_TYPE_SITE_ACCESS_LEVEL'); ?></th>
+			<th><?php echo JText::_('COM_FABRIK_CONTENT_TYPE_ACCESS_LEVEL'); ?></th>
+			<th class="muted"><?php echo JText::_('COM_FABRIK_GROUPS'); ?></th>
+			<th><?php echo JText::_('COM_FABRIK_CONTENT_TYPE_SITE_ACCESS_LEVEL'); ?></th>
 		</tr>
 		<tbody>
 		<?php

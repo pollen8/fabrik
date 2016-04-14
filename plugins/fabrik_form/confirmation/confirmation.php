@@ -8,17 +8,11 @@
  * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
-namespace Fabrik\Plugins\Form;
-
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Fabrik\Helpers\Html;
-use Fabrik\Helpers\StringHelper;
-use Fabrik\Helpers\Text;
-use Fabrik\Helpers\Worker;
-use \JFilterInput;
-use \JModelLegacy;
+// Require the abstract plugin class
+require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
 
 /**
  * After submission, shows a page where the user can confirm the data they are posting
@@ -27,7 +21,7 @@ use \JModelLegacy;
  * @subpackage  Fabrik.form.confirmation
  * @since       3.0
  */
-class Confirmation extends \PlgFabrik_Form
+class PlgFabrik_FormConfirmation extends PlgFabrik_Form
 {
 	protected $runAway = false;
 
@@ -73,7 +67,7 @@ class Confirmation extends \PlgFabrik_Form
 	 */
 	public function onBeforeStore()
 	{
-		/** @var \FabrikFEModelForm $formModel */
+		/** @var FabrikFEModelForm $formModel */
 		$formModel = $this->getModel();
 		$params = $this->getParams();
 		$input = $this->app->input;
@@ -126,8 +120,8 @@ class Confirmation extends \PlgFabrik_Form
 		$session->set('com_' . $this->package . '.form.' . $formModel->getId() . '.session.hash', $sessionModel->getHash());
 
 		// Set an error so we can reshow the same form for confirmation purposes
-		$formModel->errors['confirmation_required'] = array(Text::_('PLG_FORM_CONFIRMATION_PLEASE_CONFIRM_YOUR_DETAILS'));
-		$form->set('error', Text::_('PLG_FORM_CONFIRMATION_PLEASE_CONFIRM_YOUR_DETAILS'));
+		$formModel->errors['confirmation_required'] = array(FText::_('PLG_FORM_CONFIRMATION_PLEASE_CONFIRM_YOUR_DETAILS'));
+		$form->error = FText::_('PLG_FORM_CONFIRMATION_PLEASE_CONFIRM_YOUR_DETAILS');
 		$formModel->setEditable(false);
 
 		// Clear out unwanted buttons
@@ -152,7 +146,7 @@ class Confirmation extends \PlgFabrik_Form
 			{
 				// $$$ rob 20/04/2012 unset the element access otherwise previously cached acl is used.
 				$elementModel->clearAccess();
-				$elementModel->getElement()->set('access', -1);
+				$elementModel->getElement()->access = -1;
 			}
 		}
 
@@ -166,7 +160,6 @@ class Confirmation extends \PlgFabrik_Form
 	 */
 	public function getBottomContent()
 	{
-		/** @var \FabrikFEModelForm $formModel */
 		$formModel = $this->getModel();
 		$input = $this->app->input;
 
@@ -188,7 +181,7 @@ class Confirmation extends \PlgFabrik_Form
 			// $$$ 24/10/2011 testing removing this as data is retrieved via the session not through posted data
 			foreach ($post as $key => $val)
 			{
-				$noneRaw = StringHelper::substr($key, 0, StringHelper::strlen($key) - 4);
+				$noneRaw = JString::substr($key, 0, JString::strlen($key) - 4);
 
 				if ($key == 'fabrik_vars')
 				{
@@ -209,7 +202,7 @@ class Confirmation extends \PlgFabrik_Form
 					{
 						foreach ($val as $val2)
 						{
-							if (!Worker::isReserved($key))
+							if (!FabrikWorker::isReserved($key))
 							{
 								if (!strstr($key, '[]'))
 								{
@@ -223,7 +216,7 @@ class Confirmation extends \PlgFabrik_Form
 					}
 					else
 					{
-						if (!Worker::isReserved($key))
+						if (!FabrikWorker::isReserved($key))
 						{
 							// $fields[] = '<input type="hidden" name="'.str_replace('_raw','',$key).'" value="'.urlencode($val).'" />';
 							// $fields[] = '<input type="hidden" name="'.$key.'" value="'.urlencode($val).'" />';
@@ -238,11 +231,11 @@ class Confirmation extends \PlgFabrik_Form
 			$fields[] = '<input type="hidden" name="fabrik_confirmation" value="2" />';
 
 			// Add in a button to allow you to go back to the form and edit your data
-			$fields[] = "<input type=\"button\" id=\"fabrik_redoconfirmation\" class=\"button btn\" value=\"" . Text::_('PLG_FORM_CONFIRMATION_RE_EDIT')
+			$fields[] = "<input type=\"button\" id=\"fabrik_redoconfirmation\" class=\"button btn\" value=\"" . FText::_('PLG_FORM_CONFIRMATION_RE_EDIT')
 				. "\" />";
 
 			// Unset the task otherwise we will submit the form to be processed.
-			Html::addScriptDeclaration("
+			FabrikHelperHTML::addScriptDeclaration("
 				window.addEvent('fabrik.loaded', function() {
 					$('fabrik_redoconfirmation').addEvent('click', function(e) {;
 						this.form.task.value = '';

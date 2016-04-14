@@ -8,16 +8,12 @@
  * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
-namespace Fabrik\Plugins\Element;
-
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Fabrik\Helpers\ArrayHelper;
-use \stdClass;
-use Fabrik\Helpers\Worker;
-use Fabrik\Helpers\Html;
-use \JModelLegacy;
+jimport('joomla.application.component.model');
+
+require_once JPATH_SITE . '/components/com_fabrik/models/element.php';
 
 /**
  * Plugin element to render facebook open graph like button
@@ -27,7 +23,7 @@ use \JModelLegacy;
  * @since       3.0
  */
 
-class Fblike extends Element
+class PlgFabrik_ElementFblike extends PlgFabrik_Element
 {
 	/**
 	 * Does the element have a label
@@ -84,7 +80,7 @@ class Fblike extends Element
 		$meta['og:url'] = $ex . $input->server->getString('SERVER_NAME') . $input->server->getString('REQUEST_URI');
 		$meta['og:site_name'] = $this->config->get('sitename');
 		$meta['fb:admins'] = $params->get('fblike_opengraph_applicationid');
-		$str = Html::facebookGraphAPI($params->get('opengraph_applicationid'), $params->get('fblike_locale', 'en_US'), $meta);
+		$str = FabrikHelperHTML::facebookGraphAPI($params->get('opengraph_applicationid'), $params->get('fblike_locale', 'en_US'), $meta);
 
 		// In list view we link to the detailed record not the list view itself
 		// means form or details view must be viewable by the user
@@ -136,14 +132,10 @@ class Fblike extends Element
 				if (is_object($el))
 				{
 					$name = $el->getFullName(true, false);
-					$v = ArrayHelper::getValue($data, $name);
+					$v = FArrayHelper::getValue($data, $name);
 
 					if ($k == 'og:image')
 					{
-						if (is_array($v))
-						{
-							$v = ArrayHelper::getValue($v, 0, '');
-						}
 						$v = $ex . $input->server->getString('SERVER_NAME') . $v;
 					}
 
@@ -159,7 +151,7 @@ class Fblike extends Element
 
 		if ($locEl != '')
 		{
-			$loc = ArrayHelper::getValue($data, $locEl->getFullName(true, false));
+			$loc = FArrayHelper::getValue($data, $locEl->getFullName(true, false));
 			$loc = array_shift(explode(':', $loc));
 			$loc = explode(",", $loc);
 
@@ -173,9 +165,9 @@ class Fblike extends Element
 		$meta['og:url'] = $ex . $input->server->getString('SERVER_NAME') . $input->server->getString('REQUEST_URI');
 		$meta['og:site_name'] = $this->config->get('sitename');
 		$meta['fb:app_id'] = $params->get('fblike_opengraph_applicationid');
-		$str = Html::facebookGraphAPI($params->get('fblike_opengraph_applicationid'), $params->get('fblike_locale', 'en_US'), $meta);
+		$str = FabrikHelperHTML::facebookGraphAPI($params->get('fblike_opengraph_applicationid'), $params->get('fblike_locale', 'en_US'), $meta);
 		$url = $params->get('fblike_url');
-		$w = new Worker;
+		$w = new FabrikWorker;
 		$url = $w->parseMessageForPlaceHolder($url, $data);
 		$this->getElement()->hidden = true;
 
@@ -256,7 +248,7 @@ class Fblike extends Element
 		$list->setId($listId);
 		$rowId = $input->get('row_id');
 		$direction = $input->get('direction', '+');
-		$field = $this->getFullName(false, false);
+		$field = $this->getFullName(false, false, false);
 		$update = $field . ' = ' . $field . ' ' . $direction . ' 1';
 		$list->updateRows(array($rowId), $field, null, $update);
 	}

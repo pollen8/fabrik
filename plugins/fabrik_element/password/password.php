@@ -8,16 +8,8 @@
  * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
-namespace Fabrik\Plugins\Element;
-
 // No direct access
 defined('_JEXEC') or die('Restricted access');
-
-use Fabrik\Helpers\Worker;
-use Fabrik\Helpers\ArrayHelper;
-use \stdClass;
-use Fabrik\Helpers\Text;
-use \JUserHelper;
 
 /**
  * Plugin element to render 2 fields to capture and confirm a password
@@ -26,7 +18,7 @@ use \JUserHelper;
  * @subpackage  Fabrik.element.password
  * @since       3.0
  */
-class Password extends Element
+class PlgFabrik_ElementPassword extends PlgFabrik_Element
 {
 	/**
 	 * States if the element contains data which is recorded in the database
@@ -97,21 +89,21 @@ class Password extends Element
 
 		$bits                = $this->inputProperties($repeatCounter, 'password');
 		$bits['value']       = $value;
-		$bits['placeholder'] = Text::_('PLG_ELEMENT_PASSWORD_TYPE_PASSWORD');
+		$bits['placeholder'] = FText::_('PLG_ELEMENT_PASSWORD_TYPE_PASSWORD');
 
 		$layoutData->pw1Attributes = $bits;
 
 		$origName            = $element->name;
 		$element->name       = $element->name . '_check';
 		$name                = $this->getHTMLName($repeatCounter);
-		$bits['placeholder'] = Text::_('PLG_ELEMENT_PASSWORD_CONFIRM_PASSWORD');
+		$bits['placeholder'] = FText::_('PLG_ELEMENT_PASSWORD_CONFIRM_PASSWORD');
 		$bits['class'] .= ' fabrikSubElement';
 		$bits['name'] = $name;
 		$bits['id']   = $name;
 
 		$layoutData->pw2Attributes     = $bits;
 		$element->name                 = $origName;
-		$layoutData->j3                = Worker::j3();
+		$layoutData->j3                = FabrikWorker::j3();
 		$layoutData->showStrengthMeter = $params->get('strength_meter', 1) == 1;
 
 		return $layout->render($layoutData);
@@ -175,18 +167,18 @@ class Password extends Element
 
 		if ($checkValue != $value)
 		{
-			$this->validationError = Text::_('PLG_ELEMENT_PASSWORD_PASSWORD_CONFIRMATION_DOES_NOT_MATCH');
+			$this->validationError = FText::_('PLG_ELEMENT_PASSWORD_PASSWORD_CONFIRMATION_DOES_NOT_MATCH');
 
 			return false;
 		}
 		else
 		{
 			// If its coming from an ajax form submit then the key is possibly an array.
-			$keyVal = ArrayHelper::getValue($_REQUEST, $k);
+			$keyVal = FArrayHelper::getValue($_REQUEST, $k);
 
 			if (is_array($keyVal))
 			{
-				$keyVal = ArrayHelper::getValue($keyVal, 0);
+				$keyVal = FArrayHelper::getValue($keyVal, 0);
 			}
 
 			// $$$ rob add rowid test as well as if using row=-1 and usekey=field $k may have a value
@@ -195,7 +187,7 @@ class Password extends Element
 				/**
 				 * Why are we using .= here, but nowhere else?
 				 */
-				$this->validationError .= Text::_('PLG_ELEMENT_PASSWORD_PASSWORD_CONFIRMATION_EMPTY_NOT_ALLOWED');
+				$this->validationError .= FText::_('PLG_ELEMENT_PASSWORD_PASSWORD_CONFIRMATION_EMPTY_NOT_ALLOWED');
 
 				return false;
 			}
@@ -217,13 +209,13 @@ class Password extends Element
 		$opts                  = $this->getElementJSOptions($repeatCounter);
 		$formParams            = $this->getFormModel()->getParams();
 		$opts->ajax_validation = $formParams->get('ajax_validations') === '1';
-		$opts->progressbar     = Worker::j3() ? true : false;
+		$opts->progressbar     = FabrikWorker::j3() ? true : false;
 
-		Text::script('PLG_ELEMENT_PASSWORD_STRONG');
-		Text::script('PLG_ELEMENT_PASSWORD_MEDIUM');
-		Text::script('PLG_ELEMENT_PASSWORD_WEAK');
-		Text::script('PLG_ELEMENT_PASSWORD_TYPE_PASSWORD');
-		Text::script('PLG_ELEMENT_PASSWORD_MORE_CHARACTERS');
+		JText::script('PLG_ELEMENT_PASSWORD_STRONG');
+		JText::script('PLG_ELEMENT_PASSWORD_MEDIUM');
+		JText::script('PLG_ELEMENT_PASSWORD_WEAK');
+		JText::script('PLG_ELEMENT_PASSWORD_TYPE_PASSWORD');
+		JText::script('PLG_ELEMENT_PASSWORD_MORE_CHARACTERS');
 
 		return array('FbPassword', $id, $opts);
 	}
@@ -262,6 +254,6 @@ class Password extends Element
 	 */
 	public function internalValidataionText()
 	{
-		return Text::_('PLG_ELEMENT_PASSWORD_VALIDATION_TIP');
+		return FText::_('PLG_ELEMENT_PASSWORD_VALIDATION_TIP');
 	}
 }

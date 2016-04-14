@@ -11,9 +11,6 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Fabrik\Helpers\Html;
-use Fabrik\Helpers\Text;
-
 ?>
 <div class="fabrikFilterContainer">
 <?php if ($this->filterMode === 3 || $this->filterMode === 4) {
@@ -25,11 +22,11 @@ use Fabrik\Helpers\Text;
 	}?>
 		<?php if ($this->filter_action != 'onchange') {?>
 	<li>
-	<button class="fabrik_filter_submit button" value="<?php echo Text::_('COM_FABRIK_GO');?>"
+	<button class="fabrik_filter_submit button" value="<?php echo FText::_('COM_FABRIK_GO');?>"
 				name="filter" >
-	<?php echo Html::image('search.png', 'list', $this->tmpl);?>
+	<?php echo FabrikHelperHTML::image('search.png', 'list', $this->tmpl);?>
 	</button>
-<!-- 	<input type="button" class="fabrik_filter_submit button" value="<?php echo Text::_('COM_FABRIK_GO');?>"
+<!-- 	<input type="button" class="fabrik_filter_submit button" value="<?php echo FText::_('COM_FABRIK_GO');?>"
 				name="filter" /> -->
 	</li>
 	<?php } ?>
@@ -41,7 +38,7 @@ use Fabrik\Helpers\Text;
 <table class="filtertable fabrikList">
 	<thead>
 	<tr class="fabrik___heading">
-			<th style="text-align:left"><?php echo Text::_('COM_FABRIK_SEARCH');?>:</th>
+			<th style="text-align:left"><?php echo FText::_('COM_FABRIK_SEARCH');?>:</th>
 			<th style="text-align:right"></th>
 		</tr>
 	</thead>
@@ -58,7 +55,7 @@ use Fabrik\Helpers\Text;
 	<?php if ($this->filter_action != 'onchange') {?>
 	<tr class="fabrik_row oddRow<?php echo $c % 2;?>">
 		<td colspan="2" style="text-align:right;">
-		<input type="button" class="fabrik_filter_submit button" value="<?php echo Text::_('COM_FABRIK_GO');?>"
+		<input type="button" class="fabrik_filter_submit button" value="<?php echo FText::_('COM_FABRIK_GO');?>"
 			name="filter" />
 		</td>
 	</tr>

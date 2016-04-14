@@ -11,11 +11,6 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Fabrik\Helpers\ArrayHelper;
-use Fabrik\Helpers\StringHelper;
-use Fabrik\Helpers\Text;
-use Fabrik\Helpers\Worker;
-
 jimport('joomla.plugin.plugin');
 
 /**
@@ -67,7 +62,7 @@ class PlgContentFabrik extends JPlugin
 
 		if (!defined('COM_FABRIK_FRONTEND'))
 		{
-			throw new RuntimeException(Text::_('COM_FABRIK_SYSTEM_PLUGIN_NOT_ACTIVE'), 400);
+			throw new RuntimeException(JText::_('COM_FABRIK_SYSTEM_PLUGIN_NOT_ACTIVE'), 400);
 		}
 
 		// Get plugin info
@@ -80,7 +75,7 @@ class PlgContentFabrik extends JPlugin
 		// Simple performance check to determine whether bot should process further
 		$botRegex = $fParams->get('botRegex') != '' ? $fParams->get('botRegex') : 'fabrik';
 
-		if (StringHelper::strpos($row->text, '{' . $botRegex) === false)
+		if (JString::strpos($row->text, '{' . $botRegex) === false)
 		{
 			return true;
 		}
@@ -108,8 +103,8 @@ class PlgContentFabrik extends JPlugin
 	protected function preplace($match)
 	{
 		$match = $match[0];
-		$match = StringHelper::str_ireplace('<p>', '<div>', $match);
-		$match = StringHelper::str_ireplace('</p>', '</div>', $match);
+		$match = JString::str_ireplace('<p>', '<div>', $match);
+		$match = JString::str_ireplace('</p>', '</div>', $match);
 
 		return $match;
 	}
@@ -127,7 +122,7 @@ class PlgContentFabrik extends JPlugin
 
 		// $$$ hugh - see if we can remove formatting added by WYSIWYG editors
 		$match = strip_tags($match);
-		$w     = new Worker;
+		$w     = new FabrikWorker;
 		$match = preg_replace('/\s+/', ' ', $match);
 		/* $$$ hugh - only replace []'s in value, not key, so we handle
 		 * ranged filters and 'complex' filters
@@ -207,12 +202,12 @@ class PlgContentFabrik extends JPlugin
 			$m = explode('=', $m);
 
 			// $$$ hugh - deal with %20 as space in arguments
-			$m[1] = urldecode(ArrayHelper::getValue($m, 1));
+			$m[1] = urldecode(FArrayHelper::getValue($m, 1));
 
 			switch ($m[0])
 			{
 				case 'view':
-					$viewName = StringHelper::strtolower($m[1]);
+					$viewName = JString::strtolower($m[1]);
 					break;
 				case 'id':
 				case 'formid':
@@ -391,13 +386,13 @@ class PlgContentFabrik extends JPlugin
 				$this->_setRequest($unused);
 				$row = $model->getRow($rowId, false, true);
 
-				if (substr($element, StringHelper::strlen($element) - 4, StringHelper::strlen($element)) !== '_raw')
+				if (substr($element, JString::strlen($element) - 4, JString::strlen($element)) !== '_raw')
 				{
 					$element = $element . '_raw';
 				}
 				// $$$ hugh - need to pass all row data, or calc elements that use {placeholders} won't work
 				//$defaultData = is_object($row) ? get_object_vars($row) : $row;
-				$defaultData = is_object($row) ? ArrayHelper::fromObject($row, true) : $row;
+				$defaultData = is_object($row) ? FArrayHelper::fromObject($row, true) : $row;
 
 				/* $$$ hugh - if we don't do this, our passed data gets blown away when render() merges the form data
 				 * not sure why, but apparently if you do $foo =& $bar and $bar is NULL ... $foo ends up NULL
@@ -558,12 +553,12 @@ class PlgContentFabrik extends JPlugin
 				 *
 				 * $$$ hugh - nasty little hack to reduce 'emptyish' array, 'cos if no 'elements' in the request, the following ends up setting
 				 * returning an array with a single empty string.  This ends up meaning that we render a list with no
-				 * elements in it.  We've run across this before, so we have a ArrayHelper:;emptyish() to detect it.
+				 * elements in it.  We've run across this before, so we have a FArrayHelper:;emptyish() to detect it.
 				 */
 
 				$show_in_list = explode('|', $input->getString('elements', ''));
 
-				if (ArrayHelper::emptyIsh($show_in_list, true))
+				if (FArrayHelper::emptyIsh($show_in_list, true))
 				{
 					$show_in_list = array();
 				}
@@ -799,7 +794,7 @@ class PlgContentFabrik extends JPlugin
 
 		if (!array_key_exists($id, $this->pluginVizName))
 		{
-			$db    = Worker::getDbo(true);
+			$db    = FabrikWorker::getDbo(true);
 			$query = $db->getQuery(true);
 			$query->select('plugin')->from('#__{package}_visualizations')->where('id = ' . (int) $id);
 			$db->setQuery($query);
@@ -879,7 +874,7 @@ class PlgContentFabrik extends JPlugin
 			$view = 'form';
 		}
 
-		if (!Worker::isViewType($view))
+		if (!FabrikWorker::isViewType($view))
 		{
 			throw new RuntimeException('Please specify a valid view type in your fabrik {} code: ' . $view, 500);
 		}

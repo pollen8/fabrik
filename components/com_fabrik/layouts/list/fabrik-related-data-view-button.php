@@ -5,13 +5,10 @@
 
 defined('JPATH_BASE') or die;
 
-use Fabrik\Helpers\Html;
-use Fabrik\Helpers\Text;
-
 $d       = $displayData;
 $trigger = $d->popUp ? 'data-fabrik-view="list"' : '';
 $label   = '<span class="fabrik_related_data_count">(' . $d->count . ')</span> ' . $d->label;
-$icon    = Html::icon('icon-list-view', $label);
+$icon    = FabrikHelperHTML::icon('icon-list-view', $label);
 ?>
 
 <?php if ($d->canView) :
@@ -35,9 +32,9 @@ $icon    = Html::icon('icon-list-view', $label);
 	endif;
 else :?>
 	<div style="text-align:center">
-		<a title="<?php echo Text::_('COM_FABRIK_NO_ACCESS_PLEASE_LOGIN'); ?>">
+		<a title="<?php echo FText::_('COM_FABRIK_NO_ACCESS_PLEASE_LOGIN'); ?>">
 			<img src="<?php echo COM_FABRIK_LIVESITE; ?>media/com_fabrik/images/login.png"
-				alt="<?php echo Text::_('COM_FABRIK_NO_ACCESS_PLEASE_LOGIN'); ?>" />
+				alt="<?php echo FText::_('COM_FABRIK_NO_ACCESS_PLEASE_LOGIN'); ?>" />
 		</a>
 	</div>
 <?php endif; ?>

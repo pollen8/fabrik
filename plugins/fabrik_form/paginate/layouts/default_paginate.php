@@ -7,13 +7,10 @@
  */
 
 defined('_JEXEC') or die;
-
-use Fabrik\Helpers\Text;
-
-$start = Text::_('COM_FABRIK_START');
-$next = Text::_('COM_FABRIK_NEXT');
-$prev = Text::_('COM_FABRIK_PREV');
-$end = Text::_('COM_FABRIK_END');
+$start = FText::_('COM_FABRIK_START');
+$next = FText::_('COM_FABRIK_NEXT');
+$prev = FText::_('COM_FABRIK_PREV');
+$end = FText::_('COM_FABRIK_END');
 ?>
 <div class="pagination">
 	<ul class="pagination-list">

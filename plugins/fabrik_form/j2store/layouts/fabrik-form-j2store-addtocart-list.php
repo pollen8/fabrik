@@ -12,17 +12,15 @@
 
 defined('_JEXEC') or die;
 
-use Fabrik\Helpers\Text;
-
 $product = $displayData->product;
 
 $action  = 'index.php?option=com_j2store&view=carts&task=addItem&product_id=' . $product->j2store_product_id;
 ?>
 <div class="cart-action-complete" style="display:none;">
 	<p class="text-success">
-		<?php echo Text::_('J2STORE_ITEM_ADDED_TO_CART');?>
+		<?php echo JText::_('J2STORE_ITEM_ADDED_TO_CART');?>
 		<a href="<?php echo $product->checkout_link; ?>" class="j2store-checkout-link">
-			<?php echo Text::_('J2STORE_CHECKOUT'); ?>
+			<?php echo JText::_('J2STORE_CHECKOUT'); ?>
 		</a>
 	</p>
 </div>

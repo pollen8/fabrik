@@ -10,8 +10,6 @@
 // Allow direct access!!!!
 define('_JEXEC', 1);
 
-use Fabrik\Helpers\StringHelper;
-
 $jpath = dirname(__FILE__);
 $jpath = str_replace('/plugins/fabrik_element/captcha', '', $jpath);
 $jpath = str_replace('\plugins\fabrik_element\captcha', '', $jpath);
@@ -118,7 +116,7 @@ header('Accept-Ranges: bytes');
 // http://fabrikar.com/forums/showthread.php?t=26941&page=5
 if (version_compare(PHP_VERSION, '5.3.0') < 0)
 {
-	header('Content-Length: ' . StringHelper::strlen($img));
+	header('Content-Length: ' . JString::strlen($img));
 }
 
 header('Content-Type: image/jpeg');

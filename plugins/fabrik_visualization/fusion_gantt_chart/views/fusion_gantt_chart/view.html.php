@@ -11,10 +11,6 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Fabrik\Helpers\Html;
-use Fabrik\Helpers\Text;
-use Fabrik\Helpers\Worker;
-
 jimport('joomla.application.component.view');
 
 /**
@@ -39,7 +35,7 @@ class FabrikViewFusion_Gantt_Chart extends JViewLegacy
 	{
 		$app = JFactory::getApplication();
 		$input = $app->input;
-		$srcs = Html::framework();
+		$srcs = FabrikHelperHTML::framework();
 		$srcs['FbListFilter'] = 'media/com_fabrik/js/listfilter.js';
 		$srcs['AdvancedSearch'] = 'media/com_fabrik/js/advanced-search.js';
 		$model = $this->getModel();
@@ -49,14 +45,14 @@ class FabrikViewFusion_Gantt_Chart extends JViewLegacy
 
 		if (!$model->canView())
 		{
-			echo Text::_('JERROR_ALERTNOAUTHOR');
+			echo FText::_('JERROR_ALERTNOAUTHOR');
 
 			return false;
 		}
 
 		if ($this->row->published == 0)
 		{
-			JError::raiseWarning(500, Text::_('JERROR_ALERTNOAUTHOR'));
+			JError::raiseWarning(500, FText::_('JERROR_ALERTNOAUTHOR'));
 
 			return '';
 		}
@@ -71,25 +67,25 @@ class FabrikViewFusion_Gantt_Chart extends JViewLegacy
 		$params = $model->getParams();
 		$this->params = $params;
 		$viewName = $this->getName();
-		$pluginManager = Worker::getPluginManager();
+		$pluginManager = FabrikWorker::getPluginManager();
 		$plugin = $pluginManager->getPlugIn('fusion_gantt_chart', 'visualization');
 		$this->containerId = $this->get('ContainerId');
 		$this->filters = $this->get('Filters');
 		$this->showFilters = $model->showFilters();
 		$this->filterFormURL = $this->get('FilterFormURL');
-		$tpl = Worker::j3() ? 'bootstrap' : 'default';
+		$tpl = FabrikWorker::j3() ? 'bootstrap' : 'default';
 		$tpl = $params->get('fusion_gantt_chart_layout', $tpl);
 		$tmplpath = JPATH_ROOT . '/plugins/fabrik_visualization/fusion_gantt_chart/views/fusion_gantt_chart/tmpl/' . $tpl;
 		$this->_setPath('template', $tmplpath);
-		Html::stylesheetFromPath('plugins/fabrik_visualization/fusion_gantt_chart/views/fusion_gantt_chart/tmpl/' . $tpl . '/template.css');
+		FabrikHelperHTML::stylesheetFromPath('plugins/fabrik_visualization/fusion_gantt_chart/views/fusion_gantt_chart/tmpl/' . $tpl . '/template.css');
 
 		// Assign something to Fabrik.blocks to ensure we can clear filters
 		$ref = $model->getJSRenderContext();
 		$js = "$ref = {};";
 		$js .= "\n" . "Fabrik.addBlock('$ref', $ref);";
 		$js .= $model->getFilterJs();
-		Html::iniRequireJs($model->getShim());
-		Html::script($srcs, $js);
+		FabrikHelperHTML::iniRequireJs($model->getShim());
+		FabrikHelperHTML::script($srcs, $js);
 
 		echo parent::display();
 	}

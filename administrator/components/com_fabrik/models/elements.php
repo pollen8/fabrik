@@ -13,9 +13,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 use Joomla\Registry\Registry;
-use Fabrik\Helpers\ArrayHelper;
-use Fabrik\Helpers\Worker;
-use Fabrik\Helpers\Text;
+use Joomla\Utilities\ArrayHelper;
 
 require_once 'fabmodellist.php';
 
@@ -205,18 +203,18 @@ class FabrikAdminModelElements extends FabModelList
 			// Add a tip containing the access level information
 			$params = new Registry($item->params);
 
-			$addAccessTitle = ArrayHelper::getValue($viewLevels, $item->access);
+			$addAccessTitle = FArrayHelper::getValue($viewLevels, $item->access);
 			$addAccessTitle = is_object($addAccessTitle) ? $addAccessTitle->title : 'n/a';
 
-			$editAccessTitle = ArrayHelper::getValue($viewLevels, $params->get('edit_access', 1));
+			$editAccessTitle = FArrayHelper::getValue($viewLevels, $params->get('edit_access', 1));
 			$editAccessTitle = is_object($editAccessTitle) ? $editAccessTitle->title : 'n/a';
 
-			$viewAccessTitle = ArrayHelper::getValue($viewLevels, $params->get('view_access', 1));
+			$viewAccessTitle = FArrayHelper::getValue($viewLevels, $params->get('view_access', 1));
 			$viewAccessTitle = is_object($viewAccessTitle) ? $viewAccessTitle->title : 'n/a';
 
-			$item->tip = Text::_('COM_FABRIK_ACCESS_EDITABLE_ELEMENT') . ': ' . $addAccessTitle
-				. '<br />' . Text::_('COM_FABRIK_ELEMENT_EDIT_ACCESS_LABEL') . ': ' . $editAccessTitle
-				. '<br />' . Text::_('COM_FABRIK_ACCESS_VIEWABLE_ELEMENT') . ': ' . $viewAccessTitle;
+			$item->tip = FText::_('COM_FABRIK_ACCESS_EDITABLE_ELEMENT') . ': ' . $addAccessTitle
+				. '<br />' . FText::_('COM_FABRIK_ELEMENT_EDIT_ACCESS_LABEL') . ': ' . $editAccessTitle
+				. '<br />' . FText::_('COM_FABRIK_ACCESS_VIEWABLE_ELEMENT') . ': ' . $viewAccessTitle;
 
 			$validations = $params->get('validations');
 			$v           = array();
@@ -233,7 +231,7 @@ class FabrikAdminModelElements extends FabModelList
 					 */
 					if (empty($pname))
 					{
-						$v[] = '&nbsp;&nbsp;<strong>' . Text::_('COM_FABRIK_ELEMENTS_NO_VALIDATION_SELECTED') . '</strong>';
+						$v[] = '&nbsp;&nbsp;<strong>' . FText::_('COM_FABRIK_ELEMENTS_NO_VALIDATION_SELECTED') . '</strong>';
 						continue;
 					}
 
@@ -244,15 +242,15 @@ class FabrikAdminModelElements extends FabModelList
 					 */
 					if (!isset($validations->plugin_published))
 					{
-						$published = Text::_('JPUBLISHED');
+						$published = FText::_('JPUBLISHED');
 					}
 					else
 					{
-						$published = $validations->plugin_published[$i] ? Text::_('JPUBLISHED') : Text::_('JUNPUBLISHED');
+						$published = $validations->plugin_published[$i] ? FText::_('JPUBLISHED') : FText::_('JUNPUBLISHED');
 					}
 
 					$v[] = '&nbsp;&nbsp;<strong>' . $pname . ': <em>' . $published . '</em></strong>'
-						. '<br />&nbsp;&nbsp;&nbsp;&nbsp;' . Text::_('COM_FABRIK_FIELD_ERROR_MSG_LABEL') . ': <em>' . htmlspecialchars(ArrayHelper::getValue($msgs, $i, 'n/a')) . '</em>';
+						. '<br />&nbsp;&nbsp;&nbsp;&nbsp;' . FText::_('COM_FABRIK_FIELD_ERROR_MSG_LABEL') . ': <em>' . htmlspecialchars(FArrayHelper::getValue($msgs, $i, 'n/a')) . '</em>';
 				}
 			}
 
@@ -277,7 +275,7 @@ class FabrikAdminModelElements extends FabModelList
 
 	public function getTable($type = 'Element', $prefix = 'FabrikTable', $config = array())
 	{
-		$config['dbo'] = Worker::getDbo();
+		$config['dbo'] = FabrikWorker::getDbo();
 
 		return FabTable::getInstance($type, $prefix, $config);
 	}
@@ -338,7 +336,7 @@ class FabrikAdminModelElements extends FabModelList
 
 	public function getShowInListOptions()
 	{
-		return array(JHtml::_('select.option', 0, Text::_('JNO')), JHtml::_('select.option', 1, Text::_('JYES')));
+		return array(JHtml::_('select.option', 0, FText::_('JNO')), JHtml::_('select.option', 1, FText::_('JYES')));
 	}
 
 	/**
@@ -349,7 +347,7 @@ class FabrikAdminModelElements extends FabModelList
 
 	public function getPluginOptions()
 	{
-		$db     = Worker::getDbo(true);
+		$db     = FabrikWorker::getDbo(true);
 		$user   = JFactory::getUser();
 		$levels = implode(',', $user->getAuthorisedViewLevels());
 		$query  = $db->getQuery(true);
@@ -410,7 +408,7 @@ class FabrikAdminModelElements extends FabModelList
 		if (!empty($blocked))
 		{
 			$app = JFactory::getApplication();
-			$app->enqueueMessage(Text::_('COM_FABRIK_CANT_UNPUBLISHED_PK_ELEMENT'), 'warning');
+			$app->enqueueMessage(FText::_('COM_FABRIK_CANT_UNPUBLISHED_PK_ELEMENT'), 'warning');
 		}
 
 		return array_diff($ids, $blocked);

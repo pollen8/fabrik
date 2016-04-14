@@ -10,8 +10,7 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Fabrik\Helpers\Html;
-use Fabrik\Helpers\Text;
+require_once JPATH_ADMINISTRATOR . '/components/com_fabrik/helpers/element.php';
 
 jimport('joomla.html.html');
 jimport('joomla.form.formfield');
@@ -73,7 +72,7 @@ class JFormFieldFabrikContentTypeList extends JFormFieldList
 	{
 		$str = '<div class="row-fluid">
 		<div class="span5">' . parent::getInput() . '<div id="contentTypeListAclUi"></div></div><div class="span7">';
-		$str .= '<legend>' . Text::_('COM_FABRIK_PREVIEW') . ': </legend>';
+		$str .= '<legend>' . JText::_('COM_FABRIK_PREVIEW') . ': </legend>';
 		$str .= '<div class="well" id="contentTypeListPreview"></div>';
 
 		$str .= '</div>';
@@ -82,7 +81,7 @@ class JFormFieldFabrikContentTypeList extends JFormFieldList
 			'Fabrik' => 'media/com_fabrik/js/fabrik.js',
 			'ContentTypeList' => 'administrator/components/com_fabrik/models/fields/fabrikcontenttypelist.js'
 		);
-		Html::script($src, $script);
+		FabrikHelperHTML::script($src, $script);
 
 		return $str;
 	}

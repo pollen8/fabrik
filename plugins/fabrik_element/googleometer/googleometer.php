@@ -8,14 +8,12 @@
  * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
-namespace Fabrik\Plugins\Element;
-
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use \stdClass;
-use Fabrik\Helpers\ArrayHelper;
-use Fabrik\Helpers\Worker;
+use Joomla\Utilities\ArrayHelper;
+
+require_once JPATH_SITE . '/components/com_fabrik/models/element.php';
 
 /**
  * Plugin element to render a google o meter chart
@@ -24,7 +22,7 @@ use Fabrik\Helpers\Worker;
  * @subpackage  Fabrik.element.googleometer
  * @since       3.0
  */
-class Googleometer extends Element
+class PlgFabrik_ElementGoogleometer extends PlgFabrik_Element
 {
 	/**
 	 * Db table field type
@@ -52,14 +50,14 @@ class Googleometer extends Element
 	{
 		$range    = $this->getRange();
 		$fullName = $this->getDataElementFullName();
-		$data     = ArrayHelper::getValue($data, $fullName);
+		$data     = FArrayHelper::getValue($data, $fullName);
 
 		if (is_array($data))
 		{
 			$data = ArrayHelper::getValue($data, $repeatCounter);
 		}
 
-		return $this->_renderListData($data, $range);
+		return $this->_renderListData($data, $range, $repeatCounter);
 	}
 
 	/**
@@ -78,21 +76,13 @@ class Googleometer extends Element
 	/**
 	 * Get the data element
 	 *
-	 * @throws \Exception
-	 *
-	 * @return  \Fabrik\Plugins\Element\Element
+	 * @return  PlgFabrik_Element
 	 */
 	private function getDataElement()
 	{
 		$params    = $this->getParams();
 		$elementId = (int) $params->get('googleometer_element');
-
-		if ($elementId === 0)
-		{
-			throw new \Exception('Google o meter fabrik field requires an "Element" to be selected');
-		}
-
-		$element   = Worker::getPluginManager()->getPlugIn('field', 'element');
+		$element   = FabrikWorker::getPluginManager()->getPlugIn('', 'element');
 		$element->setId($elementId);
 
 		return $element;
@@ -144,7 +134,7 @@ class Googleometer extends Element
 
 		if ($dataElement->getGroupModel()->canRepeat())
 		{
-			$data = Worker::JSONtoData($data, true);
+			$data = FabrikWorker::JSONtoData($data, true);
 
 			foreach ($data as $i => &$d)
 			{

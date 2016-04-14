@@ -13,8 +13,6 @@
 defined('_JEXEC') or die('Restricted access');
 
 use \Joomla\Registry\Registry;
-use Fabrik\Helpers\StringHelper;
-use Fabrik\Helpers\Text;
 
 require_once 'fabcontrollerform.php';
 
@@ -54,7 +52,7 @@ class FabrikAdminControllerList extends FabControllerForm
 
 		if ($table != '')
 		{
-			$table = StringHelper::safeColName($table);
+			$table = FabrikString::safeColName($table);
 			$sql = 'DESCRIBE ' . $table;
 			$db->setQuery($sql);
 			$aFields = $db->loadObjectList();
@@ -210,7 +208,7 @@ class FabrikAdminControllerList extends FabControllerForm
 	public function clearfilter()
 	{
 		$app = JFactory::getApplication();
-		$app->enqueueMessage(Text::_('COM_FABRIK_FILTERS_CLEARED'));
+		$app->enqueueMessage(FText::_('COM_FABRIK_FILTERS_CLEARED'));
 		$app->input->set('clearfilters', 1);
 		$this->filter();
 	}

@@ -12,13 +12,10 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Fabrik\Helpers\ArrayHelper;
-use Fabrik\Helpers\Html;
-use Fabrik\Helpers\Worker;
-use Fabrik\Helpers\Text;
+use Joomla\Utilities\ArrayHelper;
 
 JHtml::_('behavior.tooltip');
-Html::formvalidation();
+FabrikHelperHTML::formvalidation();
 $app = JFactory::getApplication();
 $input = $app->input;
 
@@ -53,7 +50,7 @@ window.addEvent('domready', function () {
 		$id = $cid[0];
 	endif;
 	if (($id !== 0)) :
-		$db = Worker::getDbo(true);
+		$db = FabrikWorker::getDbo(true);
 		$query = $db->getQuery(true);
 		$query->select('label')->from('#__{package}_lists')->where('id = ' . $id);
 		$db->setQuery($query);
@@ -70,7 +67,7 @@ window.addEvent('domready', function () {
 	<fieldset class="form-horizontal">
 		<?php
 		if ($n == 0) :
-			echo '<legend>' . Text::_('COM_FABRIK_IMPORT_CSV') . '</legend>';
+			echo '<legend>' . FText::_('COM_FABRIK_IMPORT_CSV') . '</legend>';
 		endif;
 		foreach ($this->form->getFieldset($fieldset) as $this->field) :
 			echo $this->loadTemplate('control_group');

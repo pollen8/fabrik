@@ -11,9 +11,6 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Fabrik\Helpers\ArrayHelper;
-use Fabrik\Helpers\Sms;
-
 /**
  * SMSS (ZA) SMS gateway class
  *
@@ -21,6 +18,9 @@ use Fabrik\Helpers\Sms;
  * @subpackage  Fabrik.form.sms
  * @since       3.0
  */
+
+require_once COM_FABRIK_FRONTEND . '/helpers/sms.php';
+
 class Smssza extends JObject
 {
 	/**
@@ -41,13 +41,13 @@ class Smssza extends JObject
 
 	public function process($message, $opts)
 	{
-		$username = ArrayHelper::getValue($opts, 'sms-username');
-		$password = ArrayHelper::getValue($opts, 'sms-password');
-		$smsfrom = ArrayHelper::getValue($opts, 'sms-from');
-		$smsto = ArrayHelper::getValue($opts, 'sms-to');
+		$username = FArrayHelper::getValue($opts, 'sms-username');
+		$password = FArrayHelper::getValue($opts, 'sms-password');
+		$smsfrom = FArrayHelper::getValue($opts, 'sms-from');
+		$smsto = FArrayHelper::getValue($opts, 'sms-to');
 
 		$url = sprintf($this->url, $username, $smsto, $smsfrom, urlencode($message));
-		$response = Sms::doRequest('GET', $url, '');
+		$response = FabrikSMS::doRequest('GET', $url, '');
 		return strstr($response, 'api_') !== false;
 	}
 }

@@ -11,8 +11,7 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Fabrik\Helpers\ArrayHelper;
-use Fabrik\Helpers\Text;
+require_once JPATH_ADMINISTRATOR . '/components/com_fabrik/helpers/element.php';
 
 jimport('joomla.html.html');
 jimport('joomla.form.formfield');
@@ -47,15 +46,15 @@ class JFormFieldFacetedlinks extends JFormFieldList
 
 		if (empty($joins))
 		{
-			return '<i>' . Text::_('COM_FABRIK_NO_RELATED_DATA') . '</i>';
+			return '<i>' . FText::_('COM_FABRIK_NO_RELATED_DATA') . '</i>';
 		}
 
 		$listParams = $feListModel->getParams();
 		$formOrder = json_decode($listParams->get('faceted_form_order'));
 		$listOrder = json_decode($listParams->get('faceted_list_order'));
 		$this->value = (array) $this->value;
-		$linkedLists = ArrayHelper::getValue($this->value, 'linkedlist', array());
-		$linkedForms = ArrayHelper::getValue($this->value, 'linkedform', array());
+		$linkedLists = FArrayHelper::getValue($this->value, 'linkedlist', array());
+		$linkedForms = FArrayHelper::getValue($this->value, 'linkedform', array());
 
 		if (empty($listOrder) || is_null($listOrder))
 		{
@@ -83,40 +82,40 @@ class JFormFieldFacetedlinks extends JFormFieldList
 			}
 		}
 
-		$listHeaders = ArrayHelper::getValue($this->value, 'linkedlistheader', array());
-		$formHeaders = ArrayHelper::getValue($this->value, 'linkedformheader', array());
-		$formLinkTypes = ArrayHelper::getValue($this->value, 'linkedform_linktype', array());
-		$listLinkTypes = ArrayHelper::getValue($this->value, 'linkedlist_linktype', array());
-		$listLinkTexts = ArrayHelper::getValue($this->value, 'linkedlisttext', array());
-		$formLinkTexts = ArrayHelper::getValue($this->value, 'linkedformtext', array());
+		$listHeaders = FArrayHelper::getValue($this->value, 'linkedlistheader', array());
+		$formHeaders = FArrayHelper::getValue($this->value, 'linkedformheader', array());
+		$formLinkTypes = FArrayHelper::getValue($this->value, 'linkedform_linktype', array());
+		$listLinkTypes = FArrayHelper::getValue($this->value, 'linkedlist_linktype', array());
+		$listLinkTexts = FArrayHelper::getValue($this->value, 'linkedlisttext', array());
+		$formLinkTexts = FArrayHelper::getValue($this->value, 'linkedformtext', array());
 
 		$this->linkedlists = array();
 		$f = 0;
 		$listReturn = array();
 		$formReturn = array();
-		$listReturn[] = '<h4>' . Text::_('COM_FABRIK_LISTS')
+		$listReturn[] = '<h4>' . FText::_('COM_FABRIK_LISTS')
 			. '</h4><table class="adminlist linkedLists table table-striped">
 					<thead>
 					<tr>
 						<th></th>
-						<th>' . Text::_('COM_FABRIK_LIST') . '</th>
-						<th>' . Text::_('COM_FABRIK_LINK_TO_LIST') . '</th>
-						<th>' . Text::_('COM_FABRIK_HEADING') . '</th>
-						<th>' . Text::_('COM_FABRIK_BUTTON_TEXT') . '</th>
-						<th>' . Text::_('COM_FABRIK_POPUP') . '</th>
+						<th>' . FText::_('COM_FABRIK_LIST') . '</th>
+						<th>' . FText::_('COM_FABRIK_LINK_TO_LIST') . '</th>
+						<th>' . FText::_('COM_FABRIK_HEADING') . '</th>
+						<th>' . FText::_('COM_FABRIK_BUTTON_TEXT') . '</th>
+						<th>' . FText::_('COM_FABRIK_POPUP') . '</th>
 					</tr>
 				</thead>
 				<tbody>';
-		$formReturn[] = '<h4>' . Text::_('COM_FABRIK_FORMS')
+		$formReturn[] = '<h4>' . FText::_('COM_FABRIK_FORMS')
 			. '</h4><table class="adminlist linkedForms table table-striped">
 					<thead>
 					<tr>
 						<th></th>
-						<th>' . Text::_('COM_FABRIK_LIST') . '</th>
-						<th>' . Text::_('COM_FABRIK_LINK_TO_FORM') . '</th>
-						<th>' . Text::_('COM_FABRIK_HEADING') . '</th>
-						<th>' . Text::_('COM_FABRIK_BUTTON_TEXT') . '</th>
-						<th>' . Text::_('COM_FABRIK_POPUP') . '</th>
+						<th>' . FText::_('COM_FABRIK_LIST') . '</th>
+						<th>' . FText::_('COM_FABRIK_LINK_TO_FORM') . '</th>
+						<th>' . FText::_('COM_FABRIK_HEADING') . '</th>
+						<th>' . FText::_('COM_FABRIK_BUTTON_TEXT') . '</th>
+						<th>' . FText::_('COM_FABRIK_POPUP') . '</th>
 					</tr>
 				</thead>
 				<tbody>';
@@ -132,20 +131,20 @@ class JFormFieldFacetedlinks extends JFormFieldList
 
 			$key = $linkedList->list_id . '-' . $linkedList->form_id . '-' . $linkedList->element_id;
 			$label = str_replace(array("\n", "\r", '<br>', '</br>'), '', $linkedList->listlabel);
-			$hover = Text::_('ELEMENT') . ': ' . $linkedList->element_label . ' [' . $linkedList->plugin . ']';
+			$hover = FText::_('ELEMENT') . ': ' . $linkedList->element_label . ' [' . $linkedList->plugin . ']';
 
 			$listReturn[] = '<tr class="row' . ($f % 2) . '">';
 			$listReturn[] = '<td class="handle"></td>';
 			$listReturn[] = '<td>' . JHTML::_('tooltip', $hover, $label, 'tooltip.png', $label);
 
-			$yesChecked = ArrayHelper::getValue($linkedLists, $key, 0) != '0' ? 'checked="checked"' : '';
+			$yesChecked = FArrayHelper::getValue($linkedLists, $key, 0) != '0' ? 'checked="checked"' : '';
 			$noChecked = $yesChecked == '' ? 'checked="checked"' : '';
 
 			$listReturn[] = '<td>';
 			$listReturn[] = '<label><input name="' . $this->name . '[linkedlist][' . $key . ']" value="0" ' . $noChecked . ' type="radio" />'
-				. Text::_('JNO') . '</label>';
+				. FText::_('JNO') . '</label>';
 			$listReturn[] = '<label><input name="' . $this->name . '[linkedlist][' . $key . ']" value="' . $key . '" ' . $yesChecked
-				. ' type="radio" />' . Text::_('JYES') . '</label>';
+				. ' type="radio" />' . FText::_('JYES') . '</label>';
 			$listReturn[] = '</td>';
 
 			$listReturn[] = '<td>';
@@ -156,14 +155,14 @@ class JFormFieldFacetedlinks extends JFormFieldList
 			$listReturn[] = '<input type="text" name="' . $this->name . '[linkedlisttext][' . $key . ']" value="' . @$listLinkTexts[$key] . '" size="16" />';
 			$listReturn[] = '</td>';
 
-			$yesChecked = ArrayHelper::getValue($listLinkTypes, $key, 0) != '0' ? 'checked="checked"' : '';
+			$yesChecked = FArrayHelper::getValue($listLinkTypes, $key, 0) != '0' ? 'checked="checked"' : '';
 			$noChecked = $yesChecked == '' ? 'checked="checked"' : '';
 
 			$listReturn[] = '<td>';
 			$listReturn[] = '<label><input name="' . $this->name . '[linkedlist_linktype][' . $key . ']" value="0" ' . $noChecked
-				. ' type="radio" />' . Text::_('JNO') . '</label>';
+				. ' type="radio" />' . FText::_('JNO') . '</label>';
 			$listReturn[] = '<label><input name="' . $this->name . '[linkedlist_linktype][' . $key . ']" value="' . $key . '" ' . $yesChecked
-				. ' type="radio" />' . Text::_('JYES') . '</label>';
+				. ' type="radio" />' . FText::_('JYES') . '</label>';
 			$listReturn[] = '</td>';
 			$listReturn[] = '</tr>';
 		}
@@ -179,9 +178,9 @@ class JFormFieldFacetedlinks extends JFormFieldList
 
 			$key = $linkedList->list_id . '-' . $linkedList->form_id . '-' . $linkedList->element_id;
 			$label = str_replace(array("\n", "\r", '<br>', '</br>'), '', $linkedList->listlabel);
-			$hover = Text::_('ELEMENT') . ': ' . $linkedList->element_label . ' [' . $linkedList->plugin . ']';
+			$hover = FText::_('ELEMENT') . ': ' . $linkedList->element_label . ' [' . $linkedList->plugin . ']';
 
-			$yesChecked = ArrayHelper::getValue($linkedForms, $key, 0) != '0' ? 'checked="checked"' : '';
+			$yesChecked = FArrayHelper::getValue($linkedForms, $key, 0) != '0' ? 'checked="checked"' : '';
 			$noChecked = $yesChecked == '' ? 'checked="checked"' : '';
 
 			$formReturn[] = '<tr class="row' . ($f % 2) . '">';
@@ -189,9 +188,9 @@ class JFormFieldFacetedlinks extends JFormFieldList
 			$formReturn[] = '<td>' . JHTML::_('tooltip', $hover, $label, 'tooltip.png', $label);
 			$formReturn[] = '<td>';
 			$formReturn[] = '<label><input name="' . $this->name . '[linkedform][' . $key . ']" value="0" ' . $noChecked . ' type="radio" />'
-				. Text::_('JNO') . '</label>';
+				. FText::_('JNO') . '</label>';
 			$formReturn[] = '<label><input name="' . $this->name . '[linkedform][' . $key . ']" value="' . $key . '" ' . $yesChecked
-				. ' type="radio" />' . Text::_('JYES') . '</label>';
+				. ' type="radio" />' . FText::_('JYES') . '</label>';
 			$formReturn[] = '</td>';
 
 			$formReturn[] = '<td>';
@@ -202,14 +201,14 @@ class JFormFieldFacetedlinks extends JFormFieldList
 			$formReturn[] = '<input type="text" name="' . $this->name . '[linkedformtext][' . $key . ']" value="' . @$formLinkTexts[$key] . '" size="16" />';
 			$formReturn[] = '</td>';
 
-			$yesChecked = ArrayHelper::getValue($formLinkTypes, $key, 0) != '0' ? 'checked="checked"' : '';
+			$yesChecked = FArrayHelper::getValue($formLinkTypes, $key, 0) != '0' ? 'checked="checked"' : '';
 			$noChecked = $yesChecked == '' ? 'checked="checked"' : '';
 
 			$formReturn[] = '<td>';
 			$formReturn[] = '<label><input name="' . $this->name . '[linkedform_linktype][' . $key . ']" value="0" ' . $noChecked
-				. ' type="radio" />' . Text::_('JNO') . '</label>';
+				. ' type="radio" />' . FText::_('JNO') . '</label>';
 			$formReturn[] = '<label><input name="' . $this->name . '[linkedform_linktype][' . $key . ']" value="' . $key . '" ' . $yesChecked
-				. ' type="radio" />' . Text::_('JYES') . '</label>';
+				. ' type="radio" />' . FText::_('JYES') . '</label>';
 			$formReturn[] = '</td>';
 			$formReturn[] = '</tr>';
 

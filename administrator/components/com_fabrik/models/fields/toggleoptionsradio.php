@@ -11,7 +11,7 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Fabrik\Helpers\Html;
+require_once JPATH_ADMINISTRATOR . '/components/com_fabrik/helpers/element.php';
 
 jimport('joomla.html.html');
 jimport('joomla.form.formfield');
@@ -134,7 +134,7 @@ class JFormFieldToggleoptionsradio extends JFormFieldRadio
 		}
 
 
-		Html::addScriptDeclaration(implode("\n", $script));
+		FabrikHelperHTML::addScriptDeclaration(implode("\n", $script));
 
 		return parent::getInput();
 	}

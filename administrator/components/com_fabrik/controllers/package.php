@@ -12,9 +12,6 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Fabrik\Helpers\Text;
-use Fabrik\Helpers\Worker;
-
 jimport('joomla.application.component.controllerform');
 require_once 'fabcontrollerform.php';
 
@@ -47,7 +44,7 @@ class FabrikAdminControllerPackage extends FabControllerForm
 		$model = $this->getModel();
 		$model->export($cid);
 		$nText = $this->text_prefix . '_N_ITEMS_EXPORTED';
-		$this->setMessage(Text::plural($nText, count($cid)));
+		$this->setMessage(JText::plural($nText, count($cid)));
 		$this->setRedirect('index.php?option=com_fabrik&view=packages');
 	}
 
@@ -78,7 +75,7 @@ class FabrikAdminControllerPackage extends FabControllerForm
 
 		$view->formView = $this->getView('Form', $viewType);
 		$formModel = $this->getModel('Form', 'FabrikFEModel');
-		$formModel->setDbo(Worker::getDbo());
+		$formModel->setDbo(FabrikWorker::getDbo());
 		$view->formView->setModel($formModel, true);
 
 		// Push a model into the view
@@ -87,7 +84,7 @@ class FabrikAdminControllerPackage extends FabControllerForm
 			$view->setModel($model, true);
 		}
 
-		$model->setDbo(Worker::getDbo());
+		$model->setDbo(FabrikWorker::getDbo());
 
 		// @TODO check for cached version
 		$view->display();
@@ -109,7 +106,7 @@ class FabrikAdminControllerPackage extends FabControllerForm
 		if ($model = $this->getModel())
 		{
 			$view->setModel($model, true);
-			$db = Worker::getDbo();
+			$db = FabrikWorker::getDbo();
 			$model->setDbo($db);
 		}
 

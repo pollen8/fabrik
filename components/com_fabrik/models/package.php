@@ -12,8 +12,6 @@
 defined('_JEXEC') or die('Restricted access');
 
 use \Joomla\Registry\Registry;
-use Fabrik\Helpers\Worker;
-use Fabrik\Helpers\Text;
 
 jimport('joomla.application.component.modelitem');
 
@@ -114,7 +112,7 @@ class FabrikFEModelPackage extends FabModel
 		{
 			try
 			{
-				$db = Worker::getDbo();
+				$db = FabrikWorker::getDbo();
 				$query = $db->getQuery(true);
 
 				$query->select('label, params, published, component_name');
@@ -141,13 +139,13 @@ class FabrikFEModelPackage extends FabModel
 
 				if (empty($data))
 				{
-					throw new JException(Text::_('COM_FABRIK_ERROR_PACKAGE_NOT_FOUND'), 404);
+					throw new JException(FText::_('COM_FABRIK_ERROR_PACKAGE_NOT_FOUND'), 404);
 				}
 
 				// Check for published state if filter set.
 				if (((is_numeric($published)) || (is_numeric($archived))) && (($data->published != $published) && ($data->published != $archived)))
 				{
-					throw new JException(Text::_('COM_FABRIK_ERROR_PACKAGE_NOT_FOUND'), 404);
+					throw new JException(FText::_('COM_FABRIK_ERROR_PACKAGE_NOT_FOUND'), 404);
 				}
 
 				// Convert parameter fields to objects.

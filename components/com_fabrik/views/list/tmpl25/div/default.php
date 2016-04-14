@@ -11,9 +11,6 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Fabrik\Helpers\Html;
-use Fabrik\Helpers\Text;
-
 $pageClass = $this->params->get('pageclass_sfx', '');
 
 if ($pageClass !== '') :
@@ -22,7 +19,7 @@ endif;
 
 ?>
 <?php if ($this->tablePicker != '') { ?>
-	<div style="text-align:right"><?php echo Text::_('COM_FABRIK_LIST') ?>: <?php echo $this->tablePicker; ?></div>
+	<div style="text-align:right"><?php echo FText::_('COM_FABRIK_LIST') ?>: <?php echo $this->tablePicker; ?></div>
 <?php } ?>
 <?php if ($this->getModel()->getParams()->get('show-title', 1)) {?>
 	<h1><?php echo $this->table->label;?></h1>
@@ -54,7 +51,7 @@ if ($this->showFilters) {
 			?>
 			<div class="fabrik_groupheading">
 				<a href="#" class="toggle">
-					<?php echo Html::image('orderasc.png', 'list', $this->tmpl, Text::_('COM_FABRIK_TOGGLE'));?>
+					<?php echo FabrikHelperHTML::image('orderasc.png', 'list', $this->tmpl, FText::_('COM_FABRIK_TOGGLE'));?>
 					<span class="groupTitle">
 						<?php echo $this->grouptemplates[$groupedby]; ?> ( <?php echo count($group)?> )
 					</span>

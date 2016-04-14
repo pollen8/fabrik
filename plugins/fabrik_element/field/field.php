@@ -8,19 +8,10 @@
  * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
-namespace Fabrik\Plugins\Element;
-
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use \QRCode;
-use \stdClass;
-use \JComponentHelper;
-use Fabrik\Helpers\ArrayHelper;
-use Fabrik\Helpers\Html;
-use Fabrik\Helpers\StringHelper;
-use Fabrik\Helpers\Text;
-use Fabrik\Helpers\Worker;
+use Joomla\Utilities\ArrayHelper;
 
 jimport('joomla.application.component.model');
 
@@ -31,7 +22,7 @@ jimport('joomla.application.component.model');
  * @subpackage  Fabrik.element.field
  * @since       3.0
  */
-class Field extends Element
+class PlgFabrik_ElementField extends PlgFabrik_Element
 {
 
 	/**
@@ -45,7 +36,7 @@ class Field extends Element
 	 */
 	public function renderListData($data, stdClass &$thisRow, $opts = array())
 	{
-		$data = Worker::JSONtoData($data, true);
+		$data = FabrikWorker::JSONtoData($data, true);
 		$params = $this->getParams();
 
 		foreach ($data as &$d)
@@ -92,7 +83,7 @@ class Field extends Element
 
 		if ($params->get('password') == '1')
 		{
-			$d = str_pad('', StringHelper::strlen($d), '*');
+			$d = str_pad('', JString::strlen($d), '*');
 		}
 
 		return $d;
@@ -235,14 +226,14 @@ class Field extends Element
 
 		if ($params->get('guess_linktype') == '1')
 		{
-			$w = new Worker;
+			$w = new FabrikWorker;
 			$opts = $this->linkOpts();
 			$title = $params->get('link_title', '');
 
-			if (Worker::isEmail($value) || StringHelper::stristr($value, 'http'))
+			if (FabrikWorker::isEmail($value) || JString::stristr($value, 'http'))
 			{
 			}
-			elseif (StringHelper::stristr($value, 'www.'))
+			elseif (JString::stristr($value, 'www.'))
 			{
 				$value = 'http://' . $value;
 			}
@@ -252,9 +243,9 @@ class Field extends Element
 				$opts['title'] = strip_tags($w->parseMessageForPlaceHolder($title, $data));
 			}
 
-			$label = ArrayHelper::getValue($opts, 'title', '') !== '' ? $opts['title'] : $value;
+			$label = FArrayHelper::getValue($opts, 'title', '') !== '' ? $opts['title'] : $value;
 
-			$value = Html::a($value, $label, $opts);
+			$value = FabrikHelperHTML::a($value, $label, $opts);
 		}
 	}
 
@@ -279,7 +270,7 @@ class Field extends Element
 			case 'default':
 				break;
 			case 'lightbox':
-				Html::slimbox();
+				FabrikHelperHTML::slimbox();
 				$opts['rel'] = 'lightbox[]';
 
 				if ($fbConfig->get('use_mediabox', false))
@@ -327,7 +318,7 @@ class Field extends Element
 			$autoOpts = array();
 			$autoOpts['max'] = $this->getParams()->get('autocomplete_rows', '10');
 			$autoOpts['storeMatchedResultsOnly'] = false;
-			Html::autoComplete($id, $this->getElement()->id, $this->getFormModel()->getId(), 'field', $autoOpts);
+			FabrikHelperHTML::autoComplete($id, $this->getElement()->id, $this->getFormModel()->getId(), 'field', $autoOpts);
 		}
 
 		return array('FbField', $id, $opts);
@@ -345,7 +336,7 @@ class Field extends Element
 	 */
 	public function formJavascriptClass(&$srcs, $script = '', &$shim = array())
 	{
-		$key = Html::isDebug() ? 'element/field/field' : 'element/field/field-min';
+		$key = FabrikHelperHTML::isDebug() ? 'element/field/field' : 'element/field/field-min';
 		$params = $this->getParams();
 		$inputMask = trim($params->get('text_input_mask', ''));
 		$geoComplete = $params->get('autocomplete', '0') === '3';
@@ -538,7 +529,7 @@ class Field extends Element
 
 		if (!$this->canView())
 		{
-			$this->app->enqueueMessage(Text::_('PLG_ELEMENT_FIELD_NO_PERMISSION'));
+			$this->app->enqueueMessage(FText::_('PLG_ELEMENT_FIELD_NO_PERMISSION'));
 			$this->app->redirect($url);
 			exit;
 		}
@@ -631,7 +622,7 @@ class Field extends Element
 			 * But check __pk_val first anyway, what the heck.
 			 */
 
-			$rowId = ArrayHelper::getValue($thisRow, '__pk_val', '');
+			$rowId = FArrayHelper::getValue($thisRow, '__pk_val', '');
 
 			if (empty($rowId))
 			{

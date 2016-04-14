@@ -12,8 +12,7 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Fabrik\Helpers\ArrayHelper;
-use Fabrik\Helpers\Text;
+use Joomla\Utilities\ArrayHelper;
 
 require_once 'fabcontrollerform.php';
 
@@ -55,7 +54,7 @@ class FabrikAdminControllerList extends FabControllerForm
 
 		if (count($model->activeConnections()) == 0)
 		{
-			throw new RuntimeException(Text::_('COM_FABRIK_ENUSRE_ONE_CONNECTION_PUBLISHED'));
+			throw new RuntimeException(FText::_('COM_FABRIK_ENUSRE_ONE_CONNECTION_PUBLISHED'));
 		}
 
 		parent::edit($key, $urlVar);
@@ -83,7 +82,7 @@ class FabrikAdminControllerList extends FabControllerForm
 		}
 		else
 		{
-			throw new Exception(Text::_('NO ITEMS SELECTED'));
+			throw new Exception(FText::_('NO ITEMS SELECTED'));
 		}
 	}
 
@@ -100,7 +99,7 @@ class FabrikAdminControllerList extends FabControllerForm
 		$model = $this->getModel();
 		$model->copy();
 		$nText = $this->text_prefix . '_N_ITEMS_COPIED';
-		$this->setMessage(Text::plural($nText, count($input->get('cid', array(), 'array'))));
+		$this->setMessage(JText::plural($nText, count($input->get('cid', array(), 'array'))));
 		$this->setRedirect(JRoute::_('index.php?option=' . $this->option . '&view=' . $this->view_list, false));
 	}
 
@@ -136,7 +135,7 @@ class FabrikAdminControllerList extends FabControllerForm
 
 		// Set the layout
 		$view->setLayout($viewLayout);
-		JToolBarHelper::title(Text::_('COM_FABRIK_MANAGER_LISTS'), 'list');
+		JToolBarHelper::title(FText::_('COM_FABRIK_MANAGER_LISTS'), 'list');
 
 		// Build unique cache id on url, post and user id
 		$user    = JFactory::getUser();
@@ -211,7 +210,7 @@ class FabrikAdminControllerList extends FabControllerForm
 	 */
 	public function clearfilter()
 	{
-		$this->app->enqueueMessage(Text::_('COM_FABRIK_FILTERS_CLEARED'));
+		$this->app->enqueueMessage(FText::_('COM_FABRIK_FILTERS_CLEARED'));
 		$this->filter();
 	}
 
@@ -278,7 +277,7 @@ class FabrikAdminControllerList extends FabControllerForm
 		}
 		else
 		{
-			$msg = $ok ? count($ids) . ' ' . Text::_('COM_FABRIK_RECORDS_DELETED') : '';
+			$msg = $ok ? count($ids) . ' ' . FText::_('COM_FABRIK_RECORDS_DELETED') : '';
 			$this->app->enqueueMessage($msg);
 			$this->app->redirect($ref);
 		}

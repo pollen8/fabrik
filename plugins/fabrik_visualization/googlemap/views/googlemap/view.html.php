@@ -11,10 +11,6 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Fabrik\Helpers\Html;
-use Fabrik\Helpers\Text;
-use Fabrik\Helpers\Worker;
-
 jimport('joomla.application.component.view');
 
 /**
@@ -39,9 +35,9 @@ class FabrikViewGooglemap extends JViewLegacy
 	{
 		$app = JFactory::getApplication();
 		$input = $app->input;
-		$j3 = Worker::j3();
-		$srcs = Html::framework();
-		Html::slimbox();
+		$j3 = FabrikWorker::j3();
+		$srcs = FabrikHelperHTML::framework();
+		FabrikHelperHTML::slimbox();
 		$usersConfig = JComponentHelper::getParams('com_fabrik');
 		$model = $this->getModel();
 		$model->setId($input->getInt('id', $usersConfig->get('visualizationid', $input->getInt('visualizationid', 0))));
@@ -49,7 +45,7 @@ class FabrikViewGooglemap extends JViewLegacy
 
 		if (!$model->canView())
 		{
-			echo Text::_('JERROR_ALERTNOAUTHOR');
+			echo FText::_('JERROR_ALERTNOAUTHOR');
 
 			return false;
 		}
@@ -66,8 +62,8 @@ class FabrikViewGooglemap extends JViewLegacy
 
 		if ($params->get('fb_gm_center') == 'userslocation')
 		{
-			$ext = Html::isDebug() ? '.js' : '-min.js';
-			Html::script('media/com_fabrik/js/lib/geo-location/geo' . $ext);
+			$ext = FabrikHelperHTML::isDebug() ? '.js' : '-min.js';
+			FabrikHelperHTML::script('media/com_fabrik/js/lib/geo-location/geo' . $ext);
 		}
 
 		$model->getPluginJsClasses($srcs);
@@ -82,7 +78,7 @@ class FabrikViewGooglemap extends JViewLegacy
 		}
 		else
 		{
-			/*if (Html::isDebug())
+			/*if (FabrikHelperHTML::isDebug())
 			{
 				$srcs['GoogleMap'] = 'plugins/fabrik_visualization/googlemap/googlemap.js';
 			}
@@ -94,7 +90,7 @@ class FabrikViewGooglemap extends JViewLegacy
 
 			if ((int) $this->params->get('fb_gm_clustering', '0') == 1)
 			{
-				if (Html::isDebug())
+				if (FabrikHelperHTML::isDebug())
 				{
 					$srcs['Cluster'] = 'components/com_fabrik/libs/googlemaps/markerclustererplus/src/markerclusterer.js';
 				}
@@ -106,7 +102,7 @@ class FabrikViewGooglemap extends JViewLegacy
 			else
 			{
 				// Doesn't work in v3
-				// Html::script('components/com_fabrik/libs/googlemaps/markermanager.js');
+				// FabrikHelperHTML::script('components/com_fabrik/libs/googlemaps/markermanager.js');
 			}
 
 			$template = null;
@@ -124,15 +120,15 @@ class FabrikViewGooglemap extends JViewLegacy
 
 		$js .= $model->getFilterJs();
 
-		Html::iniRequireJs($model->getShim());
-		Html::script($srcs, $js);
-		Html::stylesheetFromPath('plugins/fabrik_visualization/googlemap/views/googlemap/tmpl/' . $tpl . '/template.css');
+		FabrikHelperHTML::iniRequireJs($model->getShim());
+		FabrikHelperHTML::script($srcs, $js);
+		FabrikHelperHTML::stylesheetFromPath('plugins/fabrik_visualization/googlemap/views/googlemap/tmpl/' . $tpl . '/template.css');
 
 		// Check and add a general fabrik custom css file overrides template css and generic table css
-		Html::stylesheetFromPath('media/com_fabrik/css/custom.css');
+		FabrikHelperHTML::stylesheetFromPath('media/com_fabrik/css/custom.css');
 
 		// Check and add a specific viz template css file overrides template css generic table css and generic custom css
-		Html::stylesheetFromPath('plugins/fabrik_visualization/googlemap/views/googlemap/tmpl/' . $tpl . '/custom.css');
+		FabrikHelperHTML::stylesheetFromPath('plugins/fabrik_visualization/googlemap/views/googlemap/tmpl/' . $tpl . '/custom.css');
 		$this->filters = $model->getFilters();
 		$this->showFilters = $model->showFilters();
 		$this->filterFormURL = $model->getFilterFormURL();

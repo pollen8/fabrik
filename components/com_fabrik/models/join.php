@@ -12,7 +12,6 @@
 defined('_JEXEC') or die('Restricted access');
 
 use \Joomla\Registry\Registry;
-use Fabrik\Helpers\Worker;
 
 jimport('joomla.application.component.model');
 
@@ -250,7 +249,7 @@ class FabrikFEModelJoin extends FabModel
 	 */
 	public function deleteAll($groupId)
 	{
-		$db = Worker::getDbo(true);
+		$db = FabrikWorker::getDbo(true);
 		$query = $db->getQuery(true);
 		$query->delete(' #__{package}_elements')->where('group_id = ' . (int) $groupId);
 		$db->setQuery($query);
@@ -319,7 +318,7 @@ class FabrikFEModelJoin extends FabModel
 			return $this->isView;
 		}
 
-		$db = Worker::getDbo();
+		$db = FabrikWorker::getDbo();
 		$dbname = $join->table_join;
 		$sql = " SELECT table_name, table_type, engine FROM INFORMATION_SCHEMA.tables " . "WHERE table_name = " . $db->quote($table->db_table_name)
 		. " AND table_type = 'view' AND table_schema = " . $db->quote($dbname);

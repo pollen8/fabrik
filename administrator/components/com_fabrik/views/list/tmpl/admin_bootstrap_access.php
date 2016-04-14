@@ -12,12 +12,11 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Fabrik\Helpers\Text;
 ?>
 <div class="tab-pane" id="access">
     <fieldset class="form-horizontal">
     	<legend>
-    		<?php echo Text::_('COM_FABRIK_GROUP_LABEL_RULES_DETAILS'); ?>
+    		<?php echo FText::_('COM_FABRIK_GROUP_LABEL_RULES_DETAILS'); ?>
     	</legend>
 		<?php
 		foreach ($this->form->getFieldset('access') as $this->field) :

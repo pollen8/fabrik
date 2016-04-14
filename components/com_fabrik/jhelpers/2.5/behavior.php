@@ -11,10 +11,6 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Fabrik\Helpers\Html;
-use Fabrik\Helpers\Text;
-use Fabrik\Helpers\StringHelper;
-
 /**
  * Utility class for javascript behaviors
  *
@@ -46,7 +42,7 @@ abstract class JHtmlBehavior
 		// $$$ rob this is to stop mootools from being re-loaded when in an ajax loaded page, as that
 		// resets the window events, stopping Fabriks mediator js system from working (e.g. fabrik.form.submitted will not
 		// fire the events added when the url initially loads.)
-		if (Html::inAjaxLoadedPage()) {
+		if (FabrikHelperHTML::inAjaxLoadedPage()) {
 			return;
 		}
 		$type = $extras ? 'more' : 'core';
@@ -431,27 +427,27 @@ abstract class JHtmlBehavior
 
 		if (!isset(self::$loaded[__METHOD__]))
 		{
-			Text::script('JLIB_HTML_BEHAVIOR_UPLOADER_FILENAME');
-			Text::script('JLIB_HTML_BEHAVIOR_UPLOADER_UPLOAD_COMPLETED');
-			Text::script('JLIB_HTML_BEHAVIOR_UPLOADER_ERROR_OCCURRED');
-			Text::script('JLIB_HTML_BEHAVIOR_UPLOADER_ALL_FILES');
-			Text::script('JLIB_HTML_BEHAVIOR_UPLOADER_PROGRESS_OVERALL');
-			Text::script('JLIB_HTML_BEHAVIOR_UPLOADER_CURRENT_TITLE');
-			Text::script('JLIB_HTML_BEHAVIOR_UPLOADER_REMOVE');
-			Text::script('JLIB_HTML_BEHAVIOR_UPLOADER_REMOVE_TITLE');
-			Text::script('JLIB_HTML_BEHAVIOR_UPLOADER_CURRENT_FILE');
-			Text::script('JLIB_HTML_BEHAVIOR_UPLOADER_CURRENT_PROGRESS');
-			Text::script('JLIB_HTML_BEHAVIOR_UPLOADER_FILE_ERROR');
-			Text::script('JLIB_HTML_BEHAVIOR_UPLOADER_FILE_SUCCESSFULLY_UPLOADED');
-			Text::script('JLIB_HTML_BEHAVIOR_UPLOADER_VALIDATION_ERROR_DUPLICATE');
-			Text::script('JLIB_HTML_BEHAVIOR_UPLOADER_VALIDATION_ERROR_SIZELIMITMIN');
-			Text::script('JLIB_HTML_BEHAVIOR_UPLOADER_VALIDATION_ERROR_SIZELIMITMAX');
-			Text::script('JLIB_HTML_BEHAVIOR_UPLOADER_VALIDATION_ERROR_FILELISTMAX');
-			Text::script('JLIB_HTML_BEHAVIOR_UPLOADER_VALIDATION_ERROR_FILELISTSIZEMAX');
-			Text::script('JLIB_HTML_BEHAVIOR_UPLOADER_ERROR_HTTPSTATUS');
-			Text::script('JLIB_HTML_BEHAVIOR_UPLOADER_ERROR_SECURITYERROR');
-			Text::script('JLIB_HTML_BEHAVIOR_UPLOADER_ERROR_IOERROR');
-			Text::script('JLIB_HTML_BEHAVIOR_UPLOADER_ALL_FILES');
+			JText::script('JLIB_HTML_BEHAVIOR_UPLOADER_FILENAME');
+			JText::script('JLIB_HTML_BEHAVIOR_UPLOADER_UPLOAD_COMPLETED');
+			JText::script('JLIB_HTML_BEHAVIOR_UPLOADER_ERROR_OCCURRED');
+			JText::script('JLIB_HTML_BEHAVIOR_UPLOADER_ALL_FILES');
+			JText::script('JLIB_HTML_BEHAVIOR_UPLOADER_PROGRESS_OVERALL');
+			JText::script('JLIB_HTML_BEHAVIOR_UPLOADER_CURRENT_TITLE');
+			JText::script('JLIB_HTML_BEHAVIOR_UPLOADER_REMOVE');
+			JText::script('JLIB_HTML_BEHAVIOR_UPLOADER_REMOVE_TITLE');
+			JText::script('JLIB_HTML_BEHAVIOR_UPLOADER_CURRENT_FILE');
+			JText::script('JLIB_HTML_BEHAVIOR_UPLOADER_CURRENT_PROGRESS');
+			JText::script('JLIB_HTML_BEHAVIOR_UPLOADER_FILE_ERROR');
+			JText::script('JLIB_HTML_BEHAVIOR_UPLOADER_FILE_SUCCESSFULLY_UPLOADED');
+			JText::script('JLIB_HTML_BEHAVIOR_UPLOADER_VALIDATION_ERROR_DUPLICATE');
+			JText::script('JLIB_HTML_BEHAVIOR_UPLOADER_VALIDATION_ERROR_SIZELIMITMIN');
+			JText::script('JLIB_HTML_BEHAVIOR_UPLOADER_VALIDATION_ERROR_SIZELIMITMAX');
+			JText::script('JLIB_HTML_BEHAVIOR_UPLOADER_VALIDATION_ERROR_FILELISTMAX');
+			JText::script('JLIB_HTML_BEHAVIOR_UPLOADER_VALIDATION_ERROR_FILELISTSIZEMAX');
+			JText::script('JLIB_HTML_BEHAVIOR_UPLOADER_ERROR_HTTPSTATUS');
+			JText::script('JLIB_HTML_BEHAVIOR_UPLOADER_ERROR_SECURITYERROR');
+			JText::script('JLIB_HTML_BEHAVIOR_UPLOADER_ERROR_IOERROR');
+			JText::script('JLIB_HTML_BEHAVIOR_UPLOADER_ALL_FILES');
 		}
 
 		if (isset(self::$loaded[__METHOD__][$id]))
@@ -464,11 +460,11 @@ abstract class JHtmlBehavior
 
 			if (json.get(\'status\') == \'1\') {
 				file.element.addClass(\'file-success\');
-				file.info.set(\'html\', \'<strong>\' + Joomla.Text._(\'JLIB_HTML_BEHAVIOR_UPLOADER_FILE_SUCCESSFULLY_UPLOADED\') + \'</strong>\');
+				file.info.set(\'html\', \'<strong>\' + Joomla.JText._(\'JLIB_HTML_BEHAVIOR_UPLOADER_FILE_SUCCESSFULLY_UPLOADED\') + \'</strong>\');
 			} else {
 				file.element.addClass(\'file-failed\');
 				file.info.set(\'html\', \'<strong>\' +
-					Joomla.Text._(\'JLIB_HTML_BEHAVIOR_UPLOADER_ERROR_OCCURRED\',
+					Joomla.JText._(\'JLIB_HTML_BEHAVIOR_UPLOADER_ERROR_OCCURRED\',
 						\'An Error Occurred\').substitute({ error: json.get(\'error\') }) + \'</strong>\');
 			}
 		}';
@@ -496,7 +492,7 @@ abstract class JHtmlBehavior
 		$opt['fileListSizeMax'] = (isset($params['fileListSizeMax']) && ($params['fileListSizeMax'])) ? (int) $params['fileListSizeMax'] : null;
 		// types is the old parameter name.  Remove in 1.7
 		$opt['typeFilter']		= (isset($params['types'])) ? '\\' . $params['types']
-		: '\\{Joomla.Text._(\'JLIB_HTML_BEHAVIOR_UPLOADER_ALL_FILES\'): \'*.*\'}';
+		: '\\{Joomla.JText._(\'JLIB_HTML_BEHAVIOR_UPLOADER_ALL_FILES\'): \'*.*\'}';
 		$opt['typeFilter']		= (isset($params['typeFilter'])) ? '\\' . $params['typeFilter'] : $opt['typeFilter'];
 
 		// Optional functions
@@ -647,7 +643,7 @@ abstract class JHtmlBehavior
 			return;
 		}
 
-		JHtml::_('stylesheet', 'system/calendar-jos.css', array(' title' => Text::_('JLIB_HTML_BEHAVIOR_GREEN'), ' media' => 'all'), true);
+		JHtml::_('stylesheet', 'system/calendar-jos.css', array(' title' => FText::_('JLIB_HTML_BEHAVIOR_GREEN'), ' media' => 'all'), true);
 		$translation = JHtmlBehavior::_calendartranslation();
 		$document = JFactory::getDocument();
 		$tag = JFactory::getLanguage()->getTag();
@@ -910,7 +906,7 @@ abstract class JHtmlBehavior
 			elseif (!is_array($v) && !is_object($v))
 			{
 				$object .= ' ' . $k . ': ';
-				$object .= (is_numeric($v) || StringHelper::strpos($v, '\\') === 0) ? (is_numeric($v)) ? $v : StringHelper::substr($v, 1) : "'" . $v . "'";
+				$object .= (is_numeric($v) || JString::strpos($v, '\\') === 0) ? (is_numeric($v)) ? $v : JString::substr($v, 1) : "'" . $v . "'";
 				$object .= ',';
 			}
 			else
@@ -921,7 +917,7 @@ abstract class JHtmlBehavior
 
 		if (substr($object, -1) == ',')
 		{
-			$object = StringHelper::substr($object, 0, -1);
+			$object = JString::substr($object, 0, -1);
 		}
 
 		$object .= '}';
@@ -942,31 +938,31 @@ abstract class JHtmlBehavior
 
 		if ($jsscript == 0)
 		{
-			$return = 'Calendar._DN = new Array ("' . Text::_('SUNDAY', true) . '", "' . Text::_('MONDAY', true) . '", "'
-				. Text::_('TUESDAY', true) . '", "' . Text::_('WEDNESDAY', true) . '", "' . Text::_('THURSDAY', true) . '", "'
-				. Text::_('FRIDAY', true) . '", "' . Text::_('SATURDAY', true) . '", "' . Text::_('SUNDAY', true) . '");'
-				. ' Calendar._SDN = new Array ("' . Text::_('SUN', true) . '", "' . Text::_('MON', true) . '", "' . Text::_('TUE', true) . '", "'
-				. Text::_('WED', true) . '", "' . Text::_('THU', true) . '", "' . Text::_('FRI', true) . '", "' . Text::_('SAT', true) . '", "'
-				. Text::_('SUN', true) . '");' . ' Calendar._FD = 0;' . ' Calendar._MN = new Array ("' . Text::_('JANUARY', true) . '", "'
-				. Text::_('FEBRUARY', true) . '", "' . Text::_('MARCH', true) . '", "' . Text::_('APRIL', true) . '", "' . Text::_('MAY', true)
-				. '", "' . Text::_('JUNE', true) . '", "' . Text::_('JULY', true) . '", "' . Text::_('AUGUST', true) . '", "'
-				. Text::_('SEPTEMBER', true) . '", "' . Text::_('OCTOBER', true) . '", "' . Text::_('NOVEMBER', true) . '", "'
-				. Text::_('DECEMBER', true) . '");' . ' Calendar._SMN = new Array ("' . Text::_('JANUARY_SHORT', true) . '", "'
-				. Text::_('FEBRUARY_SHORT', true) . '", "' . Text::_('MARCH_SHORT', true) . '", "' . Text::_('APRIL_SHORT', true) . '", "'
-				. Text::_('MAY_SHORT', true) . '", "' . Text::_('JUNE_SHORT', true) . '", "' . Text::_('JULY_SHORT', true) . '", "'
-				. Text::_('AUGUST_SHORT', true) . '", "' . Text::_('SEPTEMBER_SHORT', true) . '", "' . Text::_('OCTOBER_SHORT', true) . '", "'
-				. Text::_('NOVEMBER_SHORT', true) . '", "' . Text::_('DECEMBER_SHORT', true) . '");'
-				. ' Calendar._TT = {};Calendar._TT["INFO"] = "' . Text::_('JLIB_HTML_BEHAVIOR_ABOUT_THE_CALENDAR', true) . '";'
+			$return = 'Calendar._DN = new Array ("' . FText::_('SUNDAY', true) . '", "' . FText::_('MONDAY', true) . '", "'
+				. FText::_('TUESDAY', true) . '", "' . FText::_('WEDNESDAY', true) . '", "' . FText::_('THURSDAY', true) . '", "'
+				. FText::_('FRIDAY', true) . '", "' . FText::_('SATURDAY', true) . '", "' . FText::_('SUNDAY', true) . '");'
+				. ' Calendar._SDN = new Array ("' . FText::_('SUN', true) . '", "' . FText::_('MON', true) . '", "' . FText::_('TUE', true) . '", "'
+				. FText::_('WED', true) . '", "' . FText::_('THU', true) . '", "' . FText::_('FRI', true) . '", "' . FText::_('SAT', true) . '", "'
+				. FText::_('SUN', true) . '");' . ' Calendar._FD = 0;' . ' Calendar._MN = new Array ("' . FText::_('JANUARY', true) . '", "'
+				. FText::_('FEBRUARY', true) . '", "' . FText::_('MARCH', true) . '", "' . FText::_('APRIL', true) . '", "' . FText::_('MAY', true)
+				. '", "' . FText::_('JUNE', true) . '", "' . FText::_('JULY', true) . '", "' . FText::_('AUGUST', true) . '", "'
+				. FText::_('SEPTEMBER', true) . '", "' . FText::_('OCTOBER', true) . '", "' . FText::_('NOVEMBER', true) . '", "'
+				. FText::_('DECEMBER', true) . '");' . ' Calendar._SMN = new Array ("' . FText::_('JANUARY_SHORT', true) . '", "'
+				. FText::_('FEBRUARY_SHORT', true) . '", "' . FText::_('MARCH_SHORT', true) . '", "' . FText::_('APRIL_SHORT', true) . '", "'
+				. FText::_('MAY_SHORT', true) . '", "' . FText::_('JUNE_SHORT', true) . '", "' . FText::_('JULY_SHORT', true) . '", "'
+				. FText::_('AUGUST_SHORT', true) . '", "' . FText::_('SEPTEMBER_SHORT', true) . '", "' . FText::_('OCTOBER_SHORT', true) . '", "'
+				. FText::_('NOVEMBER_SHORT', true) . '", "' . FText::_('DECEMBER_SHORT', true) . '");'
+				. ' Calendar._TT = {};Calendar._TT["INFO"] = "' . FText::_('JLIB_HTML_BEHAVIOR_ABOUT_THE_CALENDAR', true) . '";'
 				. ' Calendar._TT["ABOUT"] =
  "DHTML Date/Time Selector\n" +
  "(c) dynarch.com 2002-2005 / Author: Mihai Bazon\n" +
 "For latest version visit: http://www.dynarch.com/projects/calendar/\n" +
 "Distributed under GNU LGPL.  See http://gnu.org/licenses/lgpl.html for details." +
 "\n\n" +
-"' . Text::_('JLIB_HTML_BEHAVIOR_DATE_SELECTION', false, false) . '" +
-"' . Text::_('JLIB_HTML_BEHAVIOR_YEAR_SELECT', false, false) . '" +
-"' . Text::_('JLIB_HTML_BEHAVIOR_MONTH_SELECT', false, false) . '" +
-"' . Text::_('JLIB_HTML_BEHAVIOR_HOLD_MOUSE', false, false)
+"' . FText::_('JLIB_HTML_BEHAVIOR_DATE_SELECTION', false, false) . '" +
+"' . FText::_('JLIB_HTML_BEHAVIOR_YEAR_SELECT', false, false) . '" +
+"' . FText::_('JLIB_HTML_BEHAVIOR_MONTH_SELECT', false, false) . '" +
+"' . FText::_('JLIB_HTML_BEHAVIOR_HOLD_MOUSE', false, false)
 				. '";
 Calendar._TT["ABOUT_TIME"] = "\n\n" +
 "Time selection:\n" +
@@ -974,20 +970,20 @@ Calendar._TT["ABOUT_TIME"] = "\n\n" +
 "- or Shift-click to decrease it\n" +
 "- or click and drag for faster selection.";
 
-		Calendar._TT["PREV_YEAR"] = "' . Text::_('JLIB_HTML_BEHAVIOR_PREV_YEAR_HOLD_FOR_MENU', true) . '";' . ' Calendar._TT["PREV_MONTH"] = "'
-				. Text::_('JLIB_HTML_BEHAVIOR_PREV_MONTH_HOLD_FOR_MENU', true) . '";' . ' Calendar._TT["GO_TODAY"] = "'
-				. Text::_('JLIB_HTML_BEHAVIOR_GO_TODAY', true) . '";' . ' Calendar._TT["NEXT_MONTH"] = "'
-				. Text::_('JLIB_HTML_BEHAVIOR_NEXT_MONTH_HOLD_FOR_MENU', true) . '";' . ' Calendar._TT["NEXT_YEAR"] = "'
-				. Text::_('JLIB_HTML_BEHAVIOR_NEXT_YEAR_HOLD_FOR_MENU', true) . '";' . ' Calendar._TT["SEL_DATE"] = "'
-				. Text::_('JLIB_HTML_BEHAVIOR_SELECT_DATE', true) . '";' . ' Calendar._TT["DRAG_TO_MOVE"] = "'
-				. Text::_('JLIB_HTML_BEHAVIOR_DRAG_TO_MOVE', true) . '";' . ' Calendar._TT["PART_TODAY"] = "'
-				. Text::_('JLIB_HTML_BEHAVIOR_TODAY', true) . '";' . ' Calendar._TT["DAY_FIRST"] = "'
-				. Text::_('JLIB_HTML_BEHAVIOR_DISPLAY_S_FIRST', true) . '";' . ' Calendar._TT["WEEKEND"] = "0,6";' . ' Calendar._TT["CLOSE"] = "'
-				. Text::_('JLIB_HTML_BEHAVIOR_CLOSE', true) . '";' . ' Calendar._TT["TODAY"] = "' . Text::_('JLIB_HTML_BEHAVIOR_TODAY', true)
-				. '";' . ' Calendar._TT["TIME_PART"] = "' . Text::_('JLIB_HTML_BEHAVIOR_SHIFT_CLICK_OR_DRAG_TO_CHANGE_VALUE', true) . '";'
+		Calendar._TT["PREV_YEAR"] = "' . FText::_('JLIB_HTML_BEHAVIOR_PREV_YEAR_HOLD_FOR_MENU', true) . '";' . ' Calendar._TT["PREV_MONTH"] = "'
+				. FText::_('JLIB_HTML_BEHAVIOR_PREV_MONTH_HOLD_FOR_MENU', true) . '";' . ' Calendar._TT["GO_TODAY"] = "'
+				. FText::_('JLIB_HTML_BEHAVIOR_GO_TODAY', true) . '";' . ' Calendar._TT["NEXT_MONTH"] = "'
+				. FText::_('JLIB_HTML_BEHAVIOR_NEXT_MONTH_HOLD_FOR_MENU', true) . '";' . ' Calendar._TT["NEXT_YEAR"] = "'
+				. FText::_('JLIB_HTML_BEHAVIOR_NEXT_YEAR_HOLD_FOR_MENU', true) . '";' . ' Calendar._TT["SEL_DATE"] = "'
+				. FText::_('JLIB_HTML_BEHAVIOR_SELECT_DATE', true) . '";' . ' Calendar._TT["DRAG_TO_MOVE"] = "'
+				. FText::_('JLIB_HTML_BEHAVIOR_DRAG_TO_MOVE', true) . '";' . ' Calendar._TT["PART_TODAY"] = "'
+				. FText::_('JLIB_HTML_BEHAVIOR_TODAY', true) . '";' . ' Calendar._TT["DAY_FIRST"] = "'
+				. FText::_('JLIB_HTML_BEHAVIOR_DISPLAY_S_FIRST', true) . '";' . ' Calendar._TT["WEEKEND"] = "0,6";' . ' Calendar._TT["CLOSE"] = "'
+				. FText::_('JLIB_HTML_BEHAVIOR_CLOSE', true) . '";' . ' Calendar._TT["TODAY"] = "' . FText::_('JLIB_HTML_BEHAVIOR_TODAY', true)
+				. '";' . ' Calendar._TT["TIME_PART"] = "' . FText::_('JLIB_HTML_BEHAVIOR_SHIFT_CLICK_OR_DRAG_TO_CHANGE_VALUE', true) . '";'
 				. ' Calendar._TT["DEF_DATE_FORMAT"] = "%Y-%m-%d";' . ' Calendar._TT["TT_DATE_FORMAT"] = "'
-				. Text::_('JLIB_HTML_BEHAVIOR_TT_DATE_FORMAT', true) . '";' . ' Calendar._TT["WK"] = "' . Text::_('JLIB_HTML_BEHAVIOR_WK', true) . '";'
-				. ' Calendar._TT["TIME"] = "' . Text::_('JLIB_HTML_BEHAVIOR_TIME', true) . '";';
+				. FText::_('JLIB_HTML_BEHAVIOR_TT_DATE_FORMAT', true) . '";' . ' Calendar._TT["WK"] = "' . FText::_('JLIB_HTML_BEHAVIOR_WK', true) . '";'
+				. ' Calendar._TT["TIME"] = "' . FText::_('JLIB_HTML_BEHAVIOR_TIME', true) . '";';
 			$jsscript = 1;
 			return $return;
 		}

@@ -2,22 +2,19 @@
 
 defined('JPATH_BASE') or die;
 
-use Fabrik\Helpers\Html;
-use Fabrik\Helpers\Text;
-
 $d = $displayData;
 ?>
 <div id="<?php echo $d->id; ?>" class="fabrikSubElementContainer">
 <?php
 	if ($d->showNone) :
 		if ($d->j3) :?>
-		<button class="btn btn-mini clearslider pull-left" style="margin-right:10px"><?php echo Html::icon('icon-remove'); ?></button>
+		<button class="btn btn-mini clearslider pull-left" style="margin-right:10px"><?php echo FabrikHelperHTML::icon('icon-remove'); ?></button>
 		<?php
 		else:
 			?>
 		<div class="clearslider_cont">
 			<img src="<?php echo $d->outSrc; ?>" style="cursor:pointer;padding:3px;"
-				alt="<?php echo Text::_('PLG_ELEMENT_SLIDER_CLEAR'); ?>" class="clearslider" />
+				alt="<?php echo FText::_('PLG_ELEMENT_SLIDER_CLEAR'); ?>" class="clearslider" />
 		</div>
 		<?php
 		endif;

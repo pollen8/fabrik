@@ -12,9 +12,6 @@
 // Don't allow direct linking
 defined('JPATH_BASE') or die('Direct Access to this location is not allowed.');
 
-use Fabrik\Helpers\Worker;
-use Fabrik\Helpers\Text;
-
 /**
  * Joomfish translation class
  *
@@ -45,7 +42,7 @@ class TranslationFabrikGroupFilter extends translationFilter
 	 */
 	public function _createfilterHTML()
 	{
-		$db = Worker::getDbo(true);
+		$db = FabrikWorker::getDbo(true);
 
 		if (!$this->filterField)
 		{
@@ -53,8 +50,8 @@ class TranslationFabrikGroupFilter extends translationFilter
 		}
 
 		$groupOptions = array();
-		$groupOptions[] = JHTML::_('select.option', '-1', Text::_('All Groups'));
-		$groupOptions[] = JHTML::_('select.option', '0', Text::_('Uncategorized'));
+		$groupOptions[] = JHTML::_('select.option', '-1', FText::_('All Groups'));
+		$groupOptions[] = JHTML::_('select.option', '0', FText::_('Uncategorized'));
 
 		$query = $db->getQuery(true);
 		$query->select("DISTINCT e.group_id, g.name, g.id")->from("#__{package}_groups as g, #__" . $this->tableName . " as e")
@@ -71,7 +68,7 @@ class TranslationFabrikGroupFilter extends translationFilter
 		}
 
 		$groupList = array();
-		$groupList["title"] = Text::_('Group filter');
+		$groupList["title"] = FText::_('Group filter');
 		$attribs = 'class="inputbox" size="1" onchange="document.adminForm.submit();"';
 		$groupList["html"] = JHTML::_('select.genericlist', $groupOptions, 'fabrikgroup_filter_value', $attribs, 'value', 'text', $this->filter_value);
 

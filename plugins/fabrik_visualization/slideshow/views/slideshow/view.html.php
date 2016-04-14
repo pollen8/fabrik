@@ -11,10 +11,6 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Fabrik\Helpers\Html;
-use Fabrik\Helpers\Text;
-use Fabrik\Helpers\Worker;
-
 jimport('joomla.application.component.view');
 
 /**
@@ -39,8 +35,8 @@ class FabrikViewSlideshow extends JViewLegacy
 	{
 		$app = JFactory::getApplication();
 		$input = $app->input;
-		$j3 = Worker::j3();
-		$srcs = Html::framework();
+		$j3 = FabrikWorker::j3();
+		$srcs = FabrikHelperHTML::framework();
 		$model = $this->getModel();
 		$usersConfig = JComponentHelper::getParams('com_fabrik');
 		$model->setId($input->getInt('id', $usersConfig->get('visualizationid', $input->getInt('visualizationid', 0))));
@@ -48,7 +44,7 @@ class FabrikViewSlideshow extends JViewLegacy
 
 		if (!$model->canView())
 		{
-			echo Text::_('JERROR_ALERTNOAUTHOR');
+			echo FText::_('JERROR_ALERTNOAUTHOR');
 
 			return false;
 		}
@@ -92,18 +88,18 @@ class FabrikViewSlideshow extends JViewLegacy
 			$srcs['SlideShow'] = 'plugins/fabrik_visualization/slideshow/slideshow.js';
 		}
 
-		Html::slimbox();
-		Html::iniRequireJs($model->getShim());
-		Html::script($srcs, $this->js);
+		FabrikHelperHTML::slimbox();
+		FabrikHelperHTML::iniRequireJs($model->getShim());
+		FabrikHelperHTML::script($srcs, $this->js);
 
-		//Html::slimbox();
+		//FabrikHelperHTML::slimbox();
 
 		$tpl = $j3 ? 'bootstrap' : 'default';
 		$tpl = $params->get('slideshow_viz_layout', $tpl);
 		$tmplpath = $model->pathBase . 'slideshow/views/slideshow/tmpl/' . $tpl;
 		$this->_setPath('template', $tmplpath);
-		Html::stylesheetFromPath('plugins/fabrik_visualization/slideshow/views/slideshow/tmpl/' . $tpl . '/template.css');
-		Html::stylesheetFromPath('plugins/fabrik_visualization/slideshow/views/slideshow/tmpl/' . $tpl . '/custom.css');
+		FabrikHelperHTML::stylesheetFromPath('plugins/fabrik_visualization/slideshow/views/slideshow/tmpl/' . $tpl . '/template.css');
+		FabrikHelperHTML::stylesheetFromPath('plugins/fabrik_visualization/slideshow/views/slideshow/tmpl/' . $tpl . '/custom.css');
 		echo parent::display();
 	}
 }

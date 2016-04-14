@@ -8,17 +8,10 @@
  * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
-namespace Fabrik\Plugins\Element;
-
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Fabrik\Helpers\Html;
-use Fabrik\Helpers\ArrayHelper;
-use \stdClass;
-use Fabrik\Helpers\Worker;
-use Fabrik\Helpers\StringHelper;
-use Fabrik\Helpers\Text;
+use Joomla\Utilities\ArrayHelper;
 
 /**
  * Plugin element to render two fields to capture a link (url/label)
@@ -27,7 +20,8 @@ use Fabrik\Helpers\Text;
  * @subpackage  Fabrik.element.link
  * @since       3.0
  */
-class Link extends Element
+
+class PlgFabrik_ElementLink extends PlgFabrik_Element
 {
 	/**
 	 * Does the element contain sub elements e.g checkboxes radiobuttons
@@ -61,10 +55,10 @@ class Link extends Element
 
 		if ($listModel->getOutPutFormat() != 'rss' && ($smart_link || $target == 'mediabox'))
 		{
-			Html::slimbox();
+			FabrikHelperHTML::slimbox();
 		}
 
-		$data = Worker::JSONtoData($data, true);
+		$data = FabrikWorker::JSONtoData($data, true);
 
 		if (!empty($data))
 		{
@@ -99,11 +93,11 @@ class Link extends Element
 
 	protected function _renderListData($data, $thisRow)
 	{
-		$w = new Worker;
+		$w = new FabrikWorker;
 
 		if (is_string($data))
 		{
-			$data = Worker::JSONtoData($data, true);
+			$data = FabrikWorker::JSONtoData($data, true);
 		}
 
 		$listModel = $this->getlistModel();
@@ -113,22 +107,22 @@ class Link extends Element
 		{
 			if (count($data) == 1)
 			{
-				$data['label'] = ArrayHelper::getValue($data, 'link');
+				$data['label'] = FArrayHelper::getValue($data, 'link');
 			}
 
 			$href = trim($data['link']);
 			$lbl = trim($data['label']);
 			$href = $w->parseMessageForPlaceHolder(urldecode($href), ArrayHelper::fromObject($thisRow));
 
-			if (StringHelper::strtolower($href) == 'http://' || StringHelper::strtolower($href) == 'https://')
+			if (JString::strtolower($href) == 'http://' || JString::strtolower($href) == 'https://')
 			{
 				// Treat some default values as empty
 				$href = '';
 			}
 			else if (strlen($href) > 0 && substr($href, 0, 1) != "/"
-				&& substr(StringHelper::strtolower($href), 0, 7) != 'http://'
-				&& substr(StringHelper::strtolower($href), 0, 8) != 'https://'
-				&& substr(StringHelper::strtolower($href), 0, 6) != 'ftp://'
+				&& substr(JString::strtolower($href), 0, 7) != 'http://'
+				&& substr(JString::strtolower($href), 0, 8) != 'https://'
+				&& substr(JString::strtolower($href), 0, 6) != 'ftp://'
 				)
 			{
 					$href = 'http://' . $href;
@@ -151,13 +145,14 @@ class Link extends Element
 					$opts['title'] = strip_tags($w->parseMessageForPlaceHolder($title, $data));
 				}
 
-				return Html::a($href, $lbl, $opts);
+				return FabrikHelperHTML::a($href, $lbl, $opts);
 			}
 			else
 			{
 				$link = $href;
 			}
 
+			$w = new FabrikWorker;
 			$aRow = ArrayHelper::fromObject($thisRow);
 			$link = $listModel->parseMessageForRowHolder($link, $aRow);
 
@@ -209,7 +204,7 @@ class Link extends Element
 		{
 			if (!is_array($value))
 			{
-				$value = Worker::JSONtoData($value, true);
+				$value = FabrikWorker::JSONtoData($value, true);
 				/**
 				 * In some legacy case, data is like ...
 				 * [{"label":"foo","link":"bar"}]
@@ -232,16 +227,16 @@ class Link extends Element
 			$value = array('label' => '', 'link' => '');
 		}
 
-		if (Worker::getMenuOrRequestVar('rowid') == 0 && ArrayHelper::getValue($value, 'link', '') === '')
+		if (FabrikWorker::getMenuOrRequestVar('rowid') == 0 && FArrayHelper::getValue($value, 'link', '') === '')
 		{
 			$value['link'] = $params->get('link_default_url');
 		}
 
 		if (!$this->isEditable())
 		{
-			$lbl = trim(ArrayHelper::getValue($value, 'label'));
-			$href = trim(ArrayHelper::getValue($value, 'link'));
-			$w = new Worker;
+			$lbl = trim(FArrayHelper::getValue($value, 'label'));
+			$href = trim(FArrayHelper::getValue($value, 'link'));
+			$w = new FabrikWorker;
 			$href = is_array($data) ? $w->parseMessageForPlaceHolder($href, $data) : $w->parseMessageForPlaceHolder($href);
 
 			$opts['target'] = trim($params->get('link_target', ''));
@@ -254,14 +249,14 @@ class Link extends Element
 				$opts['title'] = strip_tags($w->parseMessageForPlaceHolder($title, $data));
 			}
 
-			return Html::a($href, $lbl, $opts);
+			return FabrikHelperHTML::a($href, $lbl, $opts);
 		}
 
-		$labelname = StringHelper::rtrimword($name, '[]') . '[label]';
-		$linkname = StringHelper::rtrimword($name, '[]') . '[link]';
+		$labelname = FabrikString::rtrimword($name, '[]') . '[label]';
+		$linkname = FabrikString::rtrimword($name, '[]') . '[link]';
 
 		$bits['name'] = $labelname;
-		$bits['placeholder'] = Text::_('PLG_ELEMENT_LINK_LABEL');
+		$bits['placeholder'] = FText::_('PLG_ELEMENT_LINK_LABEL');
 		$bits['value'] = $value['label'];
 		$bits['class'] .= ' fabrikSubElement';
 		unset($bits['id']);
@@ -272,9 +267,9 @@ class Link extends Element
 		$layoutData->name = $name;
 		$layoutData->linkAttributes = $bits;
 
-		$bits['placeholder'] = Text::_('PLG_ELEMENT_LINK_URL');
+		$bits['placeholder'] = FText::_('PLG_ELEMENT_LINK_URL');
 		$bits['name'] = $linkname;
-		$bits['value'] = ArrayHelper::getValue($value, 'link');
+		$bits['value'] = FArrayHelper::getValue($value, 'link');
 
 		if (is_a($bits['value'], 'stdClass'))
 		{
@@ -300,14 +295,14 @@ class Link extends Element
 	{
 		if (is_string($value))
 		{
-			$value = Worker::JSONtoData($value, true);
-			$value['label'] = ArrayHelper::getValue($value, 0);
-			$value['link'] = ArrayHelper::getValue($value, 1);
+			$value = FabrikWorker::JSONtoData($value, true);
+			$value['label'] = FArrayHelper::getValue($value, 0);
+			$value['link'] = FArrayHelper::getValue($value, 1);
 		}
 
 		if (is_array($value))
 		{
-			$w = new Worker;
+			$w = new FabrikWorker;
 			$link = $w->parseMessageForPlaceHolder($value['link']);
 			$value = '<a href="' . $link . '" >' . $value['label'] . '</a>';
 		}
@@ -339,7 +334,7 @@ class Link extends Element
 				require_once JPATH_SITE . '/components/com_fabrik/libs/bitly/bitly.php';
 				$login = $params->get('bitly_login');
 				$key = $params->get('bitly_apikey');
-				$bitly = new \bitly($login, $key);
+				$bitly = new bitly($login, $key);
 			}
 
 			foreach ($val as $key => &$v)
@@ -361,7 +356,7 @@ class Link extends Element
 				{
 					if ($key == 'link')
 					{
-						$v = StringHelper::encodeurl($v);
+						$v = FabrikString::encodeurl($v);
 					}
 					// Not in repeat group
 					if ($key == 'link' && $params->get('use_bitly'))
@@ -404,7 +399,7 @@ class Link extends Element
 
 		if ($listModel->getOutPutFormat() != 'rss' && ($smart_link || $target == 'mediabox'))
 		{
-			Html::slimbox();
+			FabrikHelperHTML::slimbox();
 		}
 
 		$id = $this->getHTMLId($repeatCounter);
@@ -437,13 +432,13 @@ class Link extends Element
 				$values[$name]['data']['link'] = array();
 			}
 
-			$values[$name]['data']['label'][$c] = ArrayHelper::getValue($data, 'label');
-			$values[$name]['data']['link'][$c] = ArrayHelper::getValue($data, 'link');
+			$values[$name]['data']['label'][$c] = FArrayHelper::getValue($data, 'label');
+			$values[$name]['data']['link'][$c] = FArrayHelper::getValue($data, 'link');
 		}
 		else
 		{
-			$values[$name]['data']['label'] = ArrayHelper::getValue($data, 'label');
-			$values[$name]['data']['link'] = ArrayHelper::getValue($data, 'link');
+			$values[$name]['data']['label'] = FArrayHelper::getValue($data, 'label');
+			$values[$name]['data']['link'] = FArrayHelper::getValue($data, 'link');
 		}
 	}
 
@@ -459,7 +454,7 @@ class Link extends Element
 	{
 		if (!isset($this->default))
 		{
-			$w = new Worker;
+			$w = new FabrikWorker;
 			$params = $this->getParams();
 			$link = $params->get('link_default_url');
 			/* $$$ hugh - no idea what this was here for, but it was causing some BIZARRE bugs!
@@ -506,7 +501,7 @@ class Link extends Element
 				$d = strip_tags($d);
 			}
 
-			$link = ArrayHelper::getValue($data, 'link', '');
+			$link = FArrayHelper::getValue($data, 'link', '');
 
 			return $link === '' || $link === 'http://';
 		}

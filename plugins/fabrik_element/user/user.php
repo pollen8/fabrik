@@ -8,29 +8,19 @@
  * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
-namespace Fabrik\Plugins\Element;
-
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use \JHtml;
-use \stdClass;
-use Fabrik\Helpers\ArrayHelper;
-use Fabrik\Helpers\Worker;
-use Fabrik\Helpers\StringHelper;
-use Fabrik\Helpers\Text;
-use \JFilterInput;
-use \JFactory;
-
+require_once JPATH_SITE . '/plugins/fabrik_element/databasejoin/databasejoin.php';
 
 /**
- * Plugin element to render drop-down list to select user
+ * Plugin element to render dropdown list to select user
  *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.element.user
  * @since       3.0
  */
-class User extends Databasejoin
+class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 {
 	/**
 	 * Db table field type
@@ -137,7 +127,7 @@ class User extends Databasejoin
 					}
 				}
 
-				$id = ArrayHelper::getValue($data, $id, '');
+				$id = FArrayHelper::getValue($data, $id, '');
 
 				if ($id === '')
 				{
@@ -153,9 +143,9 @@ class User extends Databasejoin
 				$id = is_array($id) ? $id[0] : $id;
 
 				$id = html_entity_decode($id);
-				if (Worker::isJSON($id))
+				if (FabrikWorker::isJSON($id))
 				{
-					$id = Worker::JSONtoData($id, true);
+					$id = FabrikWorker::JSONtoData($id, true);
 				}
 
 				$id = is_array($id) ? $id[0] : $id;
@@ -228,7 +218,7 @@ class User extends Databasejoin
 		 */
 		if ((int) $params->get('user_use_social_plugin_profile', 0))
 		{
-			if ($input->getString('rowid', '') == '' && $input->get('task') !== 'doimport')
+			if ($input->getString('rowid', '', 'string') == '' && $input->get('task') !== 'doimport')
 			{
 				$context = 'fabrik.plugin.profile_id';
 
@@ -331,9 +321,9 @@ class User extends Databasejoin
 
 		$data[$element->name] = html_entity_decode($data[$element->name]);
 
-		if (Worker::isJSON($data[$element->name]))
+		if (FabrikWorker::isJSON($data[$element->name]))
 		{
-			$data[$element->name] = Worker::JSONtoData($data[$element->name], true);
+			$data[$element->name] = FabrikWorker::JSONtoData($data[$element->name], true);
 		}
 
 		$data[$element->name] = is_array($data[$element->name]) ? $data[$element->name][0] : $data[$element->name];
@@ -366,7 +356,7 @@ class User extends Databasejoin
 
 		// $$$ rob also check we aren't importing from CSV - if we are ignore
 		//if ($input->getString('rowid', '', 'string') == '' && $input->get('task') !== 'doimport')
-		if ($input->getString('rowid', '') == '' && !$this->getListModel()->importingCSV)
+		if ($input->getString('rowid', '', 'string') == '' && !$this->getListModel()->importingCSV)
 		{
 			// $$$ rob if we cant use the element or its hidden force the use of current logged in user
 			if (!$this->canUse() || $this->getElement()->hidden == 1)
@@ -430,19 +420,19 @@ class User extends Databasejoin
 				if ($this->getListModel()->importingCSV)
 				{
 					$formData = $this->getFormModel()->formData;
-					$userId   = ArrayHelper::getValue($formData, $element->name, '');
+					$userId   = FArrayHelper::getValue($formData, $element->name, '');
 					if (!empty($userId) && !is_numeric($userId))
 					{
 						$user      = JFactory::getUser($userId);
 						$newUserId = $user->get('id');
 
-						if (empty($newUserId) && Worker::isEmail($userId))
+						if (empty($newUserId) && FabrikWorker::isEmail($userId))
 						{
 							$db    = $this->_db;
 							$query = $db->getQuery(true)
 								->select($db->qn('id'))
 								->from($db->qn('#__users'))
-								->where($db->qn('email') . ' = ' . $db->q($userId));
+								->where($db->qn('email') . ' = ' . $db-- > q($userId));
 							$db->setQuery($query, 0, 1);
 
 							$newUserId = (int) $db->loadResult();
@@ -532,7 +522,7 @@ class User extends Databasejoin
 	 */
 	protected function _getSelectLabel($filter = false)
 	{
-		return $this->getParams()->get('user_noselectionlabel', Text::_('COM_FABRIK_PLEASE_SELECT'));
+		return $this->getParams()->get('user_noselectionlabel', FText::_('COM_FABRIK_PLEASE_SELECT'));
 	}
 
 	/**
@@ -548,8 +538,8 @@ class User extends Databasejoin
 	{
 		$table      = $this->actualTableName();
 		$element    = $this->getElement();
-		$db         = Worker::getDbo();
-		$fullElName = ArrayHelper::getValue($opts, 'alias', $table . '___' . $element->name);
+		$db         = FabrikWorker::getDbo();
+		$fullElName = FArrayHelper::getValue($opts, 'alias', $table . '___' . $element->name);
 
 		// Check if main database is the same as the elements database
 		if ($this->inJDb())
@@ -563,10 +553,10 @@ class User extends Databasejoin
 
 			// $$$ rob in csv import keytable not set
 			$k  = isset($join->keytable) ? $join->keytable : $join->join_from_table;
-			$k  = StringHelper::safeColName($k . '.' . $element->name);
-			$k2 = StringHelper::safeColName($this->getJoinLabelColumn());
+			$k  = FabrikString::safeColName($k . '.' . $element->name);
+			$k2 = FabrikString::safeColName($this->getJoinLabelColumn());
 
-			if (ArrayHelper::getValue($opts, 'inc_raw', true))
+			if (FArrayHelper::getValue($opts, 'inc_raw', true))
 			{
 				$aFields[]   = $k . ' AS ' . $db->qn($fullElName . '_raw');
 				$aAsFields[] = $db->qn($fullElName . '_raw');
@@ -600,7 +590,7 @@ class User extends Databasejoin
 
 		if (!$this->canEncrypt() && !empty($params->encrypt))
 		{
-			throw new \InvalidArgumentException('The encryption option is only available for field and text area plugins');
+			throw new InvalidArgumentException('The encryption option is only available for field and text area plugins');
 		}
 
 		$label = (isset($params->my_table_data) && $params->my_table_data !== '') ? $params->my_table_data : 'username';
@@ -704,7 +694,6 @@ class User extends Databasejoin
 	 */
 	public function getFilter($counter = 0, $normal = true)
 	{
-		$rows = array();
 		$listModel = $this->getlistModel();
 		$formModel = $listModel->getFormModel();
 		$elName2   = $this->getFullName(false, false);
@@ -725,7 +714,7 @@ class User extends Databasejoin
 		$return                    = array();
 		$tableType                 = $this->getLabelOrConcatVal();
 		$join                      = $this->getJoin();
-		$joinTableName             = StringHelper::safeColName($join->table_join_alias);
+		$joinTableName             = FabrikString::safeColName($join->table_join_alias);
 
 		// If filter type isn't set was blowing up in switch below 'cos no $rows
 		// so added '' to this test.  Should probably set $element->filter_type to a default somewhere.
@@ -792,11 +781,11 @@ class User extends Databasejoin
 	protected function buildFilterJoin()
 	{
 		$params        = $this->getParams();
-		$joinTable     = StringHelper::safeColName($params->get('join_db_name'));
+		$joinTable     = FabrikString::safeColName($params->get('join_db_name'));
 		$join          = $this->getJoin();
-		$joinTableName = StringHelper::safeColName($join->table_join_alias);
+		$joinTableName = FabrikString::safeColName($join->table_join_alias);
 		$joinKey       = $this->getJoinValueColumn();
-		$elName        = StringHelper::safeColName($this->getFullName(true, false));
+		$elName        = FabrikString::safeColName($this->getFullName(true, false));
 
 		return 'INNER JOIN ' . $joinTable . ' AS ' . $joinTableName . ' ON ' . $joinKey . ' = ' . $elName;
 	}
@@ -837,7 +826,7 @@ class User extends Databasejoin
 
 		if ($type == 'querystring' || $type == 'jpluginfilters')
 		{
-			$key = StringHelper::safeColNameToArrayKey($key);
+			$key = FabrikString::safeColNameToArrayKey($key);
 			/* $$$ rob no matter whether you use elementname_raw or elementname in the querystring filter
 			 * by the time it gets here we have normalized to elementname. So we check if the original qs filter was looking at the raw
 			 * value if it was then we want to filter on the key and not the label
@@ -904,7 +893,7 @@ class User extends Databasejoin
 	 */
 	public function getDb()
 	{
-		return Worker::getDbo(true);
+		return FabrikWorker::getDbo(true);
 	}
 
 	/**
@@ -933,7 +922,7 @@ class User extends Databasejoin
 
 		if ($this->getGroup()->canRepeat())
 		{
-			$userId = ArrayHelper::getValue($userId, $repeatCounter, 0);
+			$userId = FArrayHelper::getValue($userId, $repeatCounter, 0);
 		}
 
 		if (is_array($userId))
@@ -945,8 +934,8 @@ class User extends Databasejoin
 			// Test json string e.g. ["350"] - fixes JUser: :_load: User does not exist notices
 			if (!is_int($userId))
 			{
-				$userId = Worker::JSONtoData($userId, true);
-				$userId = (int) ArrayHelper::getValue($userId, 0, 0);
+				$userId = FabrikWorker::JSONtoData($userId, true);
+				$userId = (int) FArrayHelper::getValue($userId, 0, 0);
 			}
 		}
 
@@ -984,7 +973,7 @@ class User extends Databasejoin
 	protected function getJoinValueColumn()
 	{
 		$join = $this->getJoin();
-		$db   = Worker::getDbo();
+		$db   = FabrikWorker::getDbo();
 
 		if ((string) $join->table_join_alias === '')
 		{
@@ -1004,7 +993,7 @@ class User extends Databasejoin
 	{
 		$elName = $this->getFullName(true, false);
 
-		return StringHelper::safeColName($elName);
+		return FabrikString::safeColName($elName);
 	}
 
 	/**
@@ -1063,7 +1052,7 @@ class User extends Databasejoin
 
 			if (!isset($displayMessage))
 			{
-				$this->app->enqueueMessage(Text::sprintf('PLG_ELEMENT_USER_NOTICE_GID', $this->getElement()->id), 'notice');
+				$this->app->enqueueMessage(JText::sprintf('PLG_ELEMENT_USER_NOTICE_GID', $this->getElement()->id), 'notice');
 				$displayMessage = true;
 			}
 		}

@@ -12,11 +12,10 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Fabrik\Helpers\Text;
 ?>
 <fieldset class="adminform">
 	<legend>
-		<?php echo Text::_('COM_FABRIK_FRONT_END_TEMPLATES'); ?>
+		<?php echo FText::_('COM_FABRIK_FRONT_END_TEMPLATES'); ?>
 	</legend>
 	<ul class="adminformlist">
 		<?php foreach ($this->form->getFieldset('templates') as $field) :?>
@@ -34,7 +33,7 @@ use Fabrik\Helpers\Text;
 
 <fieldset class="adminform">
 <legend>
-		<?php echo Text::_('COM_FABRIK_ADMIN_TEMPLATES'); ?>
+		<?php echo FText::_('COM_FABRIK_ADMIN_TEMPLATES'); ?>
 	</legend>
 	<ul class="adminformlist">
 		<?php foreach ($this->form->getFieldSet('admintemplates') as $field) :?>
@@ -47,7 +46,7 @@ use Fabrik\Helpers\Text;
 
 <fieldset class="adminform">
 <legend>
-		<?php echo Text::_('COM_FABRIK_LAYOUT'); ?>
+		<?php echo FText::_('COM_FABRIK_LAYOUT'); ?>
 	</legend>
 	<ul class="adminformlist">
 		<?php foreach ($this->form->getFieldSet('layout') as $field) :?>

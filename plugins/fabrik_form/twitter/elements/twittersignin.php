@@ -16,8 +16,7 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Fabrik\Helpers\ArrayHelper;
-use Fabrik\Helpers\Text;
+require_once JPATH_ADMINISTRATOR . '/components/com_fabrik/helpers/element.php';
 
 /**
  * Renders a twitter sign in button
@@ -48,7 +47,7 @@ class JFormFieldTwittersignin extends JFormField
 		$app = JFactory::getApplication();
 		$input = $app->input;
 		$cid = $input->get('id', array(0), 'array');
-		$cid = ArrayHelper::getValue($cid, 0);
+		$cid = FArrayHelper::getValue($cid, 0);
 
 		// $$$ hugh - when creating a new form, no 'cid' ... not sure what to do, so just set it to 0.  Should
 		// prolly just return something like 'available after save' ?
@@ -88,7 +87,7 @@ window.addEventListener('message', function(event) {
 		$str .= '<a href="#" onclick="' . $js . '">';
 		$str .= '<img src="' . $src . '" alt="Sign in with Twitter"/></a>';
 		$str .= " | <button class=\"button btn\" href=\"#\" onclick=\"$clearjs\">";
-		$str .= Text::_('PLG_FORM_TWITTER_CLEAR_CREDENTIALS') . "</button><br/>";
+		$str .= FText::_('PLG_FORM_TWITTER_CLEAR_CREDENTIALS') . "</button><br/>";
 		$str .= "<br /><input type=\"hidden\" readonly=\"readonly\" name=\""
 			. $this->name . "\" id=\"" . $this->id . "\" value=\"" . $this->value . "\" />";
 

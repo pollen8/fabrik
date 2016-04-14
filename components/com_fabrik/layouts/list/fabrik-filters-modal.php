@@ -12,9 +12,6 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Fabrik\Helpers\Html;
-use Fabrik\Helpers\Text;
-
 $d = $displayData;
 
 $cols = array();
@@ -38,7 +35,7 @@ endforeach;
 ?>
 <?php if ($showClearFilters) : ?>
 	<div>
-		<?php echo Text::_('COM_FABRIK_FILTERS_ACTIVE') ?>
+		<?php echo JText::_('COM_FABRIK_FILTERS_ACTIVE') ?>
 		<?php
 		foreach ($d->filters as $key => $filter) :
 			if ($filter->displayValue !== '') :
@@ -46,7 +43,7 @@ endforeach;
 				<span class="label label-inverse">
 				<?php echo $filter->label . ': ' . $filter->displayValue . ' '; ?>
 					<a data-filter-clear="<?php echo $key; ?>" href="#" style="color: white;">
-						<?php echo Html::icon('icon-cancel', '', 'style="text-align: right; "'); ?>
+						<?php echo FabrikHelperHTML::icon('icon-cancel', '', 'style="text-align: right; "'); ?>
 					</a>
 			</span>
 				<?php
@@ -61,12 +58,12 @@ endif;
 
 	<div class="modal-header">
 		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-		<h3><?php echo Html::icon('icon-filter', Text::_('COM_FABRIK_FILTER')); ?></h3>
+		<h3><?php echo FabrikHelperHTML::icon('icon-filter', FText::_('COM_FABRIK_FILTER')); ?></h3>
 	</div>
 	<div class="modal-body">
 		<table class="table table-stripped">
 			<?php
-			echo implode("\n", Html::bootstrapGrid($cols, $d->filterCols));
+			echo implode("\n", FabrikHelperHTML::bootstrapGrid($cols, $d->filterCols));
 			?>
 		</table>
 	</div>
@@ -75,14 +72,14 @@ endif;
 		<?php
 		if ($d->showClearFilters) : ?>
 			<a class="btn clearFilters" href="#">
-				<?php echo Html::icon('icon-refresh', Text::_('COM_FABRIK_CLEAR')); ?>
+				<?php echo FabrikHelperHTML::icon('icon-refresh', FText::_('COM_FABRIK_CLEAR')); ?>
 			</a>
 		<?php endif ?>
 		<?php
 		if ($d->filter_action != 'onchange') :
 			?>
 			<input type="button" class="btn btn-primary fabrik_filter_submit"
-				value="<?php echo Text::_('COM_FABRIK_GO'); ?>" name="filter">
+				value="<?php echo FText::_('COM_FABRIK_GO'); ?>" name="filter">
 			<?php
 		endif;
 		?>

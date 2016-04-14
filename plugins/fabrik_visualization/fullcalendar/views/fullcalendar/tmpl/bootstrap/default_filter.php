@@ -11,8 +11,6 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Fabrik\Helpers\Text;
-
 if ($this->showFilters) :?>
 <form method="post" name="filter" action="">
 <?php
@@ -21,8 +19,8 @@ if ($this->showFilters) :?>
 		?>
 	  <table class="filtertable table table-striped"><tbody>
 	  <tr>
-		<th style="text-align:left"><?php echo Text::_('PLG_VISUALIZATION_FULLCALENDAR_SEARCH'); ?>:</th>
-		<th style="text-align:right"><a href="#" class="clearFilters"><i class="icon-refresh"></i> <?php echo Text::_('PLG_VISUALIZATION_FULLCALENDAR_CLEAR'); ?></a></th>
+		<th style="text-align:left"><?php echo FText::_('PLG_VISUALIZATION_FULLCALENDAR_SEARCH'); ?>:</th>
+		<th style="text-align:right"><a href="#" class="clearFilters"><i class="icon-refresh"></i> <?php echo FText::_('PLG_VISUALIZATION_FULLCALENDAR_CLEAR'); ?></a></th>
 	</tr>
 	  <?php
 			$c = 0;
@@ -39,7 +37,7 @@ if ($this->showFilters) :?>
 	  <thead><tr><th colspan='2'><?php echo $table ?></th></tr></thead>
 	  <tfoot><tr><th colspan='2' style="text-align:right;">
 	  <button type="submit" class="btn btn-info">
-	  	<i class="icon-filter"></i> <?php echo Text::_('PLG_VISUALIZATION_FULLCALENDAR_GO') ?>
+	  	<i class="icon-filter"></i> <?php echo FText::_('PLG_VISUALIZATION_FULLCALENDAR_GO') ?>
 	  </button>
 	  </th></tr></tfoot></table>
 	  <?php

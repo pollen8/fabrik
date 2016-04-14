@@ -9,9 +9,6 @@
  * @since       3.1
  */
 
-use Fabrik\Helpers\Html;
-use Fabrik\Helpers\Text;
-
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
@@ -20,10 +17,10 @@ $model = $this->getModel();
 $groupTmpl = $model->editable ? 'group' : 'group_details';
 $active = ($form->error != '') ? '' : ' fabrikHide';
 
-if ($model->isMultiPage() && Html::isDebug())
+if ($model->isMultiPage() && FabrikHelperHTML::isDebug())
 {
 	$app = JFactory::getApplication();
-	$app->enqueueMessage(Text::_('COM_FABRIK_ERR_TAB_FORM_TEMPLATE_INCOMPATIBLE_WITH_MULTIPAGE_FORMS'), 'error');
+	$app->enqueueMessage(FText::_('COM_FABRIK_ERR_TAB_FORM_TEMPLATE_INCOMPATIBLE_WITH_MULTIPAGE_FORMS'), 'error');
 }
 
 if ($this->params->get('show_page_heading', 1)) : ?>
@@ -86,7 +83,7 @@ foreach ($this->groups as $group) :
 	endif;
 endforeach;
 
-echo Html::getLayout('fabrik-tabs')->render((object) array('tabs' => $tabs));
+echo FabrikHelperHTML::getLayout('fabrik-tabs')->render((object) array('tabs' => $tabs));
 ?>
 
 <div class="tab-content">
@@ -151,5 +148,5 @@ echo $this->loadTemplate('actions');
 <?php
 echo $form->outro;
 echo $this->pluginend;
-echo Html::keepalive();
+echo FabrikHelperHTML::keepalive();
 ?>

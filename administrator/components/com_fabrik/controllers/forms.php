@@ -11,8 +11,6 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Fabrik\Helpers\Text;
-
 require_once 'fabcontrolleradmin.php';
 
 /**
@@ -67,7 +65,7 @@ class FabrikAdminControllerForms extends FabControllerAdmin
 		JSession::checkToken() or die('Invalid Token');
 		$this->setRedirect('index.php?option=com_fabrik&view=forms');
 		$this->getModel()->updateDatabase();
-		$this->setMessage(Text::_('COM_FABRIK_DATABASE_UPDATED'));
+		$this->setMessage(FText::_('COM_FABRIK_DATABASE_UPDATED'));
 	}
 
 	/**

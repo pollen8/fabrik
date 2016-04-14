@@ -11,11 +11,7 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Fabrik\Helpers\ArrayHelper;
-use Fabrik\Helpers\Html;
-use Fabrik\Helpers\StringHelper;
-use Fabrik\Helpers\Worker;
-use Fabrik\Helpers\LayoutFile;
+use Joomla\Utilities\ArrayHelper;
 
 jimport('joomla.application.component.model');
 
@@ -34,13 +30,6 @@ class PlgFabrik_Form extends FabrikPlugin
 	 * @var array
 	 */
 	protected $emailData = null;
-
-	/**
-	 * Use in image rendering
-	 *
-	 * @var string
-	 */
-	protected $tmpl;
 
 	/**
 	 * HTML to return from plugin rendering
@@ -332,7 +321,7 @@ class PlgFabrik_Form extends FabrikPlugin
 						{
 							$tmpElement        = current($elementModels);
 							$smallerElHTMLName = $tmpElement->getFullName(true, false);
-							$tmpEl             = ArrayHelper::getValue($model->formDataWithTableName, $smallerElHTMLName, array(), 'array');
+							$tmpEl             = FArrayHelper::getValue($model->formDataWithTableName, $smallerElHTMLName, array(), 'array');
 							$repeatGroup       = count($tmpEl);
 						}
 					}
@@ -364,7 +353,7 @@ class PlgFabrik_Form extends FabrikPlugin
 					{
 						if ($groupModel->canRepeat())
 						{
-							$raw                              = ArrayHelper::getValue($model->formDataWithTableName[$k], $c, '');
+							$raw                              = FArrayHelper::getValue($model->formDataWithTableName[$k], $c, '');
 							$this->emailData[$k . '_raw'][$c] = $raw;
 							$this->emailData[$k][$c]          = $elementModel->getEmailValue($raw, $model->formDataWithTableName, $c);
 							continue;
@@ -385,7 +374,7 @@ class PlgFabrik_Form extends FabrikPlugin
 					}
 					elseif (array_key_exists($key, $model->formDataWithTableName))
 					{
-						$rawValue = ArrayHelper::getValue($model->formDataWithTableName, $k . '_raw', '');
+						$rawValue = FArrayHelper::getValue($model->formDataWithTableName, $k . '_raw', '');
 
 						if ($rawValue == '')
 						{
@@ -474,7 +463,7 @@ class PlgFabrik_Form extends FabrikPlugin
 	public function formJavascriptClass()
 	{
 		$formModel = $this->getModel();
-		$ext       = Html::isDebug() ? '.js' : '-min.js';
+		$ext       = FabrikHelperHTML::isDebug() ? '.js' : '-min.js';
 		$name      = $this->get('_name');
 		static $jsClasses;
 
@@ -536,19 +525,19 @@ class PlgFabrik_Form extends FabrikPlugin
 
 	/**
 	 * Get the element's JLayout file
-	 * Its actually an instance of LayoutFile which inverses the ordering added include paths.
-	 * In LayoutFile the addedPath takes precedence over the default paths, which makes more sense!
+	 * Its actually an instance of FabrikLayoutFile which inverses the ordering added include paths.
+	 * In FabrikLayoutFile the addedPath takes precedence over the default paths, which makes more sense!
 	 *
 	 * @param   string $type form/details/list
 	 *
-	 * @return LayoutFile
+	 * @return FabrikLayoutFile
 	 */
 	public function getLayout($type)
 	{
 		$name     = get_class($this);
-		$name     = strtolower(StringHelper::str_ireplace('PlgFabrik_Form', '', $name));
+		$name     = strtolower(JString::str_ireplace('PlgFabrik_Form', '', $name));
 		$basePath = COM_FABRIK_BASE . '/plugins/fabrik_form/' . $name . '/layouts';
-		$layout   = new LayoutFile('fabrik-form-' . $name . '-' . $type, $basePath, array('debug' => false, 'component' => 'com_fabrik', 'client' => 'site'));
+		$layout   = new FabrikLayoutFile('fabrik-form-' . $name . '-' . $type, $basePath, array('debug' => false, 'component' => 'com_fabrik', 'client' => 'site'));
 		$layout->addIncludePaths(JPATH_THEMES . '/' . $this->app->getTemplate() . '/html/layouts');
 		$layout->addIncludePaths(JPATH_THEMES . '/' . $this->app->getTemplate() . '/html/layouts/com_fabrik');
 
@@ -573,7 +562,7 @@ class PlgFabrik_Form extends FabrikPlugin
 			return $default;
 		}
 
-		$elementModel = Worker::getPluginManager()->getElementPlugin($params->get($pName));
+		$elementModel = FabrikWorker::getPluginManager()->getElementPlugin($params->get($pName));
 		$name         = $elementModel->getFullName(true, false);
 
 		return ArrayHelper::getValue($data, $name, $default);
@@ -589,7 +578,7 @@ class PlgFabrik_Form extends FabrikPlugin
 	public function placeholder($pName)
 	{
 		$params = $this->getParams();
-		$w      = new Worker;
+		$w      = new FabrikWorker;
 
 		return $w->parseMessageForPlaceHolder($params->get($pName), $this->data);
 	}

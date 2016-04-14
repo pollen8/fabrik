@@ -239,7 +239,7 @@ define(['jquery', 'fab/fabrik', 'jQueryUI', 'fab/utils'], function (jQuery, Fabr
 
         /**
          * Build the window from a JLayout file. Note to ensure that content is unique you must create
-         * a unique $modalId in your PHP: Fabrik\Helpers\Html;::jLayoutJs($modalId, 'fabrik-modal')
+         * a unique $modalId in your PHP: FabrikHelperHTML::jLayoutJs($modalId, 'fabrik-modal')
          *
          * @return {jQuery}
          */

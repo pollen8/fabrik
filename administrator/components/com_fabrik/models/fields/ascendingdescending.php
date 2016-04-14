@@ -11,7 +11,7 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Fabrik\Helpers\Text;
+require_once JPATH_ADMINISTRATOR . '/components/com_fabrik/helpers/element.php';
 
 /**
  * Renders a list of ascending / descending options
@@ -37,8 +37,8 @@ class JFormFieldAscendingdescending extends JFormFieldList
 
 	protected function getOptions()
 	{
-		$opts[] = JHTML::_('select.option', 'ASC', Text::_('COM_FABRIK_ASCENDING'));
-		$opts[] = JHTML::_('select.option', 'DESC', Text::_('COM_FABRIK_DESCENDING'));
+		$opts[] = JHTML::_('select.option', 'ASC', FText::_('COM_FABRIK_ASCENDING'));
+		$opts[] = JHTML::_('select.option', 'DESC', FText::_('COM_FABRIK_DESCENDING'));
 
 		return $opts;
 	}

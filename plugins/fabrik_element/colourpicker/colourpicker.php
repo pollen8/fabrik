@@ -8,15 +8,8 @@
  * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
-namespace Fabrik\Plugins\Element;
-
 // No direct access
 defined('_JEXEC') or die('Restricted access');
-
-use Fabrik\Helpers\Worker;
-use \stdClass;
-use Fabrik\Helpers\Html;
-use Fabrik\Helpers\StringHelper;
 
 /**
  * Plugin element to render colour picker
@@ -25,7 +18,7 @@ use Fabrik\Helpers\StringHelper;
  * @subpackage  Fabrik.element.colourpicker
  * @since       3.0
  */
-class Colourpicker extends Element
+class PlgFabrik_ElementColourpicker extends PlgFabrik_Element
 {
 	/**
 	 * Db table field type
@@ -52,7 +45,7 @@ class Colourpicker extends Element
 	 */
 	public function renderListData($data, stdClass &$thisRow, $opts = array())
 	{
-		$data              = Worker::JSONtoData($data, true);
+		$data              = FabrikWorker::JSONtoData($data, true);
 		$layout            = $this->getLayout('list');
 		$displayData       = new stdClass;
 		$displayData->data = $data;
@@ -89,7 +82,7 @@ class Colourpicker extends Element
 			return array();
 		}
 
-		Html::addPath(COM_FABRIK_BASE . 'plugins/fabrik_element/colourpicker/images/', 'image', 'form', false);
+		FabrikHelperHTML::addPath(COM_FABRIK_BASE . 'plugins/fabrik_element/colourpicker/images/', 'image', 'form', false);
 		$params = $this->getParams();
 		$id     = $this->getHTMLId($repeatCounter);
 		$data   = $this->getFormModel()->data;
@@ -135,7 +128,7 @@ class Colourpicker extends Element
 	public function getValue($data, $repeatCounter = 0, $opts = array())
 	{
 		$value = parent::getValue($data, $repeatCounter, $opts);
-		$value = strstr($value, '#') ? StringHelper::hex2rgb($value) : $value;
+		$value = strstr($value, '#') ? FabrikString::hex2rgb($value) : $value;
 
 		return $value;
 	}
@@ -159,7 +152,7 @@ class Colourpicker extends Element
 		$displayData->name = $this->getHTMLName($repeatCounter);;
 		$displayData->value      = $value;
 		$displayData->editable   = $this->isEditable();
-		$displayData->j3         = Worker::j3();
+		$displayData->j3         = FabrikWorker::j3();
 		$displayData->showPicker = (bool) $params->get('show_picker', 1);
 
 		return $layout->render($displayData);

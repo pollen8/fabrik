@@ -11,8 +11,6 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Fabrik\Helpers\Text;
-
 jimport('joomla.application.component.view');
 require_once JPATH_SITE . '/components/com_fabrik/views/form/view.base.php';
 
@@ -67,7 +65,7 @@ class FabrikViewForm extends FabrikViewFormBase
 		{
 			if (!$this->app->isAdmin())
 			{
-				echo Text::_('COM_FABRIK_FORM_NOT_PUBLISHED');
+				echo FText::_('COM_FABRIK_FORM_NOT_PUBLISHED');
 
 				return false;
 			}
@@ -77,7 +75,7 @@ class FabrikViewForm extends FabrikViewFormBase
 
 		if ($this->access == 0)
 		{
-			$this->app->enqueueMessage(Text::_('JERROR_ALERTNOAUTHOR'), 'error');
+			$this->app->enqueueMessage(FText::_('JERROR_ALERTNOAUTHOR'), 'error');
 		}
 
 		$listModel = $model->getListModel();

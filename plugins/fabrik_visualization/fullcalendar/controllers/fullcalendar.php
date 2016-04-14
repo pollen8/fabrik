@@ -11,9 +11,9 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Fabrik\Helpers\StringHelper;
-
 jimport('joomla.application.component.controller');
+
+require_once COM_FABRIK_FRONTEND . '/helpers/params.php';
 
 /**
  * Fabrik Calendar Plug-in Controller
@@ -135,8 +135,8 @@ class FabrikControllerVisualizationfullcalendar extends FabrikControllerVisualiz
 			$endDateField = $prefix . 'fabrik_calendar_events___end_date';
 		}
 
-		$startDateField = StringHelper::safeColNameToArrayKey($startDateField);
-		$endDateField = StringHelper::safeColNameToArrayKey($endDateField);
+		$startDateField = FabrikString::safeColNameToArrayKey($startDateField);
+		$endDateField = FabrikString::safeColNameToArrayKey($endDateField);
 		$rowid = $input->getString('rowid', '', 'string');
 		$listModel = JModelLegacy::getInstance('list', 'FabrikFEModel');
 		$listModel->setId($listid);

@@ -11,10 +11,6 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Fabrik\Helpers\ArrayHelper;
-use Fabrik\Helpers\Text;
-use Fabrik\Helpers\Worker;
-
 // Require the abstract plugin class
 require_once COM_FABRIK_FRONTEND . '/models/validation_rule.php';
 
@@ -62,7 +58,7 @@ class PlgFabrik_ValidationruleEmailExists extends PlgFabrik_Validationrule
 
 		if ((int) $userField !== 0)
 		{
-			$user_elementModel = Worker::getPluginManager()->getElementPlugin($userField);
+			$user_elementModel = FabrikWorker::getPluginManager()->getElementPlugin($userField);
 			$user_fullName = $user_elementModel->getFullName(true, false);
 			$userField = $user_elementModel->getFullName(false, false);
 		}
@@ -70,17 +66,17 @@ class PlgFabrik_ValidationruleEmailExists extends PlgFabrik_Validationrule
 		if (!empty($userField))
 		{
 			// $$$ the array thing needs fixing, for now just grab 0
-			$formData = $elementModel->getFormModel()->formData;
-			$userId = ArrayHelper::getValue($formData, $user_fullName . '_raw', ArrayHelper::getValue($formData, $user_fullName, ''));
+			$formData = $elementModel->getForm()->formData;
+			$userId = FArrayHelper::getValue($formData, $user_fullName . '_raw', FArrayHelper::getValue($formData, $user_fullName, ''));
 
 			if (is_array($userId))
 			{
-				$userId = ArrayHelper::getValue($userId, 0, '');
+				$userId = FArrayHelper::getValue($userId, 0, '');
 			}
 		}
 
 		jimport('joomla.user.helper');
-		$db = Worker::getDbo(true);
+		$db = FabrikWorker::getDbo(true);
 		$query = $db->getQuery(true);
 		$query->select('id')->from('#__users')->where('email = ' . $db->quote($data));
 		$db->setQuery($query);
@@ -149,7 +145,7 @@ class PlgFabrik_ValidationruleEmailExists extends PlgFabrik_Validationrule
 
 		if ($cond == 'fail_if_not_exists')
 		{
-			return Text::_('PLG_VALIDATIONRULE_EMAILEXISTS_LABEL_NOT');
+			return FText::_('PLG_VALIDATIONRULE_EMAILEXISTS_LABEL_NOT');
 		}
 		else
 		{

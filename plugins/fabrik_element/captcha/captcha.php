@@ -8,20 +8,8 @@
  * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
-namespace Fabrik\Plugins\Element;
-
 // No direct access
 defined('_JEXEC') or die('Restricted access');
-
-use \AYAH;
-use Fabrik\Helpers\StringHelper;
-use Fabrik\Helpers\Text;
-use Fabrik\Helpers\Html;
-use \JBrowser;
-use \JFactory;
-use \JRoute;
-use \RuntimeException;
-use \stdClass;
 
 /**
  * Plugin element to captcha
@@ -30,7 +18,7 @@ use \stdClass;
  * @subpackage  Fabrik.element.captcha
  * @since       3.0
  */
-class Captcha extends Element
+class PlgFabrik_ElementCaptcha extends PlgFabrik_Element
 {
 	protected $font = 'monofont.ttf';
 
@@ -50,7 +38,7 @@ class Captcha extends Element
 
 		while ($i < $characters)
 		{
-			$code .= StringHelper::substr($possible, mt_rand(0, StringHelper::strlen($possible) - 1), 1);
+			$code .= JString::substr($possible, mt_rand(0, JString::strlen($possible) - 1), 1);
 			$i++;
 		}
 
@@ -170,7 +158,7 @@ class Captcha extends Element
 		$str      = '  <div id="' . $id . '"></div> ';
 		$document = JFactory::getDocument();
 		$document->addScript($server . '/js/recaptcha_ajax.js');
-		Html::addScriptDeclaration(
+		FabrikHelperHTML::addScriptDeclaration(
 			'window.addEvent("fabrik.loaded", function() {
 			Recaptcha.create(
 				"' . $pubkey . '",
@@ -204,7 +192,7 @@ class Captcha extends Element
 
 		if (!$this->isEditable())
 		{
-			if ($element->get('hidden') == '1')
+			if ($element->hidden == '1')
 			{
 				return '<!-- ' . stripslashes($value) . ' -->';
 			}
@@ -225,7 +213,7 @@ class Captcha extends Element
 
 			// $$$tom added lang & theme options
 			$theme = $params->get('recaptcha_theme', 'red');
-			$lang  = StringHelper::strtolower($params->get('recaptcha_lang', 'en'));
+			$lang  = JString::strtolower($params->get('recaptcha_lang', 'en'));
 			$error = null;
 
 			if ($this->user->get('id') != 0 && $params->get('captcha-showloggedin', 0) == false)
@@ -272,10 +260,10 @@ class Captcha extends Element
 		{
 			if (!function_exists('imagettfbbox'))
 			{
-				throw new RuntimeException(Text::_('PLG_FABRIK_ELEMENT_CAPTCHA_STANDARD_TTF_ERROR'));
+				throw new RuntimeException(FText::_('PLG_FABRIK_ELEMENT_CAPTCHA_STANDARD_TTF_ERROR'));
 			}
 
-			$size       = $element->get('width');
+			$size       = $element->width;
 			$fontSize   = $params->get('captcha-font-size', 22);
 			$angle      = $params->get('captcha-angle', 0);
 			$padding    = $params->get('captcha-padding', 10);
@@ -312,7 +300,7 @@ class Captcha extends Element
 				$type .= ' elementErrorHighlight';
 			}
 
-			if ($element->get('hidden') == '1')
+			if ($element->hidden == '1')
 			{
 				$type = 'hidden';
 			}
@@ -326,11 +314,7 @@ class Captcha extends Element
 			//$displayData->url = COM_FABRIK_LIVESITE . 'plugins/fabrik_element/captcha/image.php?foo=' . rand();
 
 			// Changed to relative path as some sites were on site.com and loading from www.site.com (thus sessions different)
-
-			// $$$ rob - using jroute in admin does not work
-			$displayData->url  = $this->app->isAdmin() ?
-				COM_FABRIK_LIVESITE . 'plugins/fabrik_element/captcha/image.php?foo=' . rand()
-				: JRoute::_('plugins/fabrik_element/captcha/image.php?foo=' . rand());
+			$displayData->url  = JRoute::_('plugins/fabrik_element/captcha/image.php?foo=' . rand());
 			$displayData->type = $type;
 			$displayData->size = $size;
 
@@ -369,7 +353,7 @@ class Captcha extends Element
 			{
 				$challenge = $input->get('recaptcha_challenge_field');
 				$response  = $input->get('recaptcha_response_field');
-				$resp      = recaptcha_check_answer($privateKey, StringHelper::filteredIp(), $challenge, $response);
+				$resp      = recaptcha_check_answer($privateKey, FabrikString::filteredIp(), $challenge, $response);
 
 				return ($resp->is_valid) ? true : false;
 			}
@@ -398,7 +382,7 @@ class Captcha extends Element
 				}
 				else
 				{
-					if (Html::isDebug())
+					if (FabrikHelperHTML::isDebug())
 					{
 						$msg = "noCaptcha error: ";
 						foreach ($resp->getErrorCodes() as $code) {
@@ -410,7 +394,7 @@ class Captcha extends Element
 				}
 			}
 
-			if (Html::isDebug())
+			if (FabrikHelperHTML::isDebug())
 			{
 				$this->app->enqueueMessage("No g-recaptcha-response!");
 			}
@@ -450,7 +434,7 @@ class Captcha extends Element
 	 */
 	public function getValidationErr()
 	{
-		return Text::_('PLG_ELEMENT_CAPTCHA_FAILED');
+		return FText::_('PLG_ELEMENT_CAPTCHA_FAILED');
 	}
 
 	/**
@@ -535,7 +519,7 @@ class Captcha extends Element
 
 		for ($i = 0; $i < 3; $i++)
 		{
-			if (StringHelper::strlen($rgb[$i]) == 1)
+			if (JString::strlen($rgb[$i]) == 1)
 			{
 				$rgb[$i] .= $rgb[$i];
 			}

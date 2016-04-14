@@ -10,8 +10,6 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Fabrik\Helpers\Text;
-
 /**
  * Abstract Form Field class for the Joomla Framework.
  *
@@ -481,7 +479,7 @@ abstract class JFormField
 
 		// Get the label text from the XML element, defaulting to the element name.
 		$title = $this->element['label'] ? (string) $this->element['label'] : (string) $this->element['name'];
-		$title = $this->translateLabel ? Text::_($title) : $title;
+		$title = $this->translateLabel ? FText::_($title) : $title;
 
 		return $title;
 	}
@@ -505,7 +503,7 @@ abstract class JFormField
 
 		// Get the label text from the XML element, defaulting to the element name.
 		$text = $this->element['label'] ? (string) $this->element['label'] : (string) $this->element['name'];
-		$text = $this->translateLabel ? Text::_($text) : $text;
+		$text = $this->translateLabel ? FText::_($text) : $text;
 
 		// Build the class for the label.
 		$class = !empty($this->description) ? 'hasTip' : '';
@@ -517,7 +515,7 @@ abstract class JFormField
 		// If a description is specified, use it to build a tooltip.
 		if (!empty($this->description))
 		{
-			$desc = $this->translateDescription ? Text::_($this->description) : $this->description;
+			$desc = $this->translateDescription ? FText::_($this->description) : $this->description;
 			$label .= ' title="' . htmlspecialchars(trim($text, ':') . '::' . $desc, ENT_COMPAT, 'UTF-8') . '"';
 		}
 

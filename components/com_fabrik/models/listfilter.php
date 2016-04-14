@@ -11,11 +11,7 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Fabrik\Helpers\ArrayHelper;
-use Fabrik\Helpers\Html;
-use Fabrik\Helpers\Worker;
-use Fabrik\Helpers\StringHelper;
-use Fabrik\Helpers\Text;
+use Joomla\Utilities\ArrayHelper;
 
 /**
  * List filter model
@@ -134,7 +130,7 @@ class FabrikFEModelListfilter extends FabModel
 		 */
 
 		// $$$ rob 20/03/2011 - request resetfilters should overwrite menu option - otherwise filter then nav will remove filter.
-		if (($input->get('filterclear') == 1 || Worker::getMenuOrRequestVar('resetfilters', 0, false, 'request') == 1)
+		if (($input->get('filterclear') == 1 || FabrikWorker::getMenuOrRequestVar('resetfilters', 0, false, 'request') == 1)
 			&& $this->activeTable())
 		{
 			$this->clearFilters();
@@ -145,10 +141,10 @@ class FabrikFEModelListfilter extends FabModel
 		// Overwrite filters with querystring filter
 		$this->getQuerystringFilters($filters);
 		JDEBUG ? $profiler->mark('listfilter:querystring filters got') : null;
-		Html::debug($filters, 'filter array: after querystring filters');
+		FabrikHelperHTML::debug($filters, 'filter array: after querystring filters');
 		$request = $this->getPostFilterArray();
 		JDEBUG ? $profiler->mark('listfilter:request got') : null;
-		$this->counter = count(ArrayHelper::getValue($request, 'key', array()));
+		$this->counter = count(FArrayHelper::getValue($request, 'key', array()));
 
 		// Overwrite filters with session filters (fabrik_incsessionfilters set to false in listModel::getRecordCounts / for faceted data counts
 		if ($input->get('fabrik_incsessionfilters', true))
@@ -156,7 +152,7 @@ class FabrikFEModelListfilter extends FabModel
 			$this->getSessionFilters($filters);
 		}
 
-		Html::debug($filters, 'filter array: after session filters');
+		FabrikHelperHTML::debug($filters, 'filter array: after session filters');
 		JDEBUG ? $profiler->mark('listfilter:session filters got') : null;
 
 		// The search form search all has lower priority than the filter search all and search form filters
@@ -164,7 +160,7 @@ class FabrikFEModelListfilter extends FabModel
 
 		// Overwrite session filters with search form filters
 		$this->getSearchFormFilters($filters);
-		Html::debug($filters, 'filter array: search form');
+		FabrikHelperHTML::debug($filters, 'filter array: search form');
 
 		// Overwrite filters with 'search all' filter
 		$this->getSearchAllFilters($filters);
@@ -173,9 +169,9 @@ class FabrikFEModelListfilter extends FabModel
 		// Finally overwrite filters with post filters
 		$this->getPostFilters($filters);
 		JDEBUG ? $profiler->mark('listfilter:post filters got') : null;
-		Html::debug($filters, 'filter array: after getpostfilters');
+		FabrikHelperHTML::debug($filters, 'filter array: after getpostfilters');
 		$this->request = $filters;
-		Html::debug($this->request, 'filter array');
+		FabrikHelperHTML::debug($this->request, 'filter array');
 		$this->checkAccess($filters);
 		$this->normalizeKeys($filters);
 
@@ -223,7 +219,7 @@ class FabrikFEModelListfilter extends FabModel
 	 */
 	public function checkAccess(&$filters)
 	{
-		$access = ArrayHelper::getValue($filters, 'access', array());
+		$access = FArrayHelper::getValue($filters, 'access', array());
 		$viewLevels = $this->user->getAuthorisedViewLevels();
 
 		foreach ($access as $key => $selAccess)
@@ -239,7 +235,7 @@ class FabrikFEModelListfilter extends FabModel
 			}
 		}
 
-		Html::debug($filters, 'filter array: after access taken into account');
+		FabrikHelperHTML::debug($filters, 'filter array: after access taken into account');
 	}
 
 	/**
@@ -313,11 +309,11 @@ class FabrikFEModelListfilter extends FabModel
 			{
 				// Empty search string sent unset any searchall filters
 				$ks = array_keys($filters);
-				$filterKeys = array_keys(ArrayHelper::getValue($filters, 'search_type', array()));
+				$filterKeys = array_keys(FArrayHelper::getValue($filters, 'search_type', array()));
 
 				foreach ($filterKeys as $filterKey)
 				{
-					if (ArrayHelper::getValue($filters['search_type'], $filterKey, '') == 'searchall')
+					if (FArrayHelper::getValue($filters['search_type'], $filterKey, '') == 'searchall')
 					{
 						foreach ($ks as $k)
 						{
@@ -402,9 +398,9 @@ class FabrikFEModelListfilter extends FabModel
 		$this->_db->setQuery('SHOW VARIABLES LIKE \'ft_min_word_len\'');
 		$res = $this->_db->loadObject();
 
-		if (!StringHelper::strlen($s) >= $res->Value)
+		if (!JString::strlen($s) >= $res->Value)
 		{
-			throw new UnexpectedValueException(Text::_('COM_FABRIK_NOTICE_SEARCH_STRING_TOO_SHORT'));
+			throw new UnexpectedValueException(FText::_('COM_FABRIK_NOTICE_SEARCH_STRING_TOO_SHORT'));
 		}
 
 		return true;
@@ -527,7 +523,7 @@ class FabrikFEModelListfilter extends FabModel
 		 * #post-184335
 		 */
 		$reg = ArrayHelper::fromObject($reg);
-		$searchTypes = ArrayHelper::getValue($reg, 'search_type', array());
+		$searchTypes = FArrayHelper::getValue($reg, 'search_type', array());
 
 		for ($i = 0; $i < count($searchTypes); $i++)
 		{
@@ -595,7 +591,7 @@ class FabrikFEModelListfilter extends FabModel
 	{
 		$accessLevels = $this->user->getAuthorisedViewLevels();
 
-		return ArrayHelper::getValue($accessLevels, 0, 1);
+		return FArrayHelper::getValue($accessLevels, 0, 1);
 	}
 
 	/**
@@ -629,7 +625,7 @@ class FabrikFEModelListfilter extends FabModel
 
 			$searchable = true;
 			$k = $elementModel->getFullName(false, false);
-			$k = StringHelper::safeColName($k);
+			$k = FabrikString::safeColName($k);
 
 			// Lower case for search on accented characters e.g. Ö
 			$k = 'LOWER(' . $k . ')';
@@ -641,13 +637,13 @@ class FabrikFEModelListfilter extends FabModel
 			 * This line was setting eval to 1 as array_search returns the key, think we want the value
 			 */
 			// $eval = array_key_exists('eval', $filters) ? array_search($k, $filters['eval']) : FABRIKFILTER_TEXT;
-			$eval = array_key_exists('eval', $filters) ? ArrayHelper::getValue($filters['eval'], $key, FABRIKFILTER_TEXT) : FABRIKFILTER_TEXT;
+			$eval = array_key_exists('eval', $filters) ? FArrayHelper::getValue($filters['eval'], $key, FABRIKFILTER_TEXT) : FABRIKFILTER_TEXT;
 
-			if (!is_a($elementModel, '\Fabrik\Plugins\Element\Databasejoin'))
+			if (!is_a($elementModel, 'PlgFabrik_ElementDatabasejoin'))
 			{
 				$fieldDesc = $elementModel->getFieldDescription();
 
-				if (StringHelper::stristr($fieldDesc, 'INT'))
+				if (JString::stristr($fieldDesc, 'INT'))
 				{
 					if (is_numeric($search) && $condition == '=')
 					{
@@ -753,7 +749,7 @@ class FabrikFEModelListfilter extends FabModel
 
 		if (!$searchable)
 		{
-			$this->app->enqueueMessage(Text::_('COM_FABRIK_NOTICE_SEARCH_ALL_BUT_NO_ELEMENTS'));
+			$this->app->enqueueMessage(FText::_('COM_FABRIK_NOTICE_SEARCH_ALL_BUT_NO_ELEMENTS'));
 		}
 	}
 
@@ -823,8 +819,8 @@ class FabrikFEModelListfilter extends FabModel
 		if (!empty($fromFormId))
 		{
 			$formModel = $this->listModel->getFormModel();
-			$db = Worker::getDbo();
-			$lookupKeys = ArrayHelper::getValue($filters, 'key', array());
+			$db = FabrikWorker::getDbo();
+			$lookupKeys = FArrayHelper::getValue($filters, 'key', array());
 
 			if ($fromFormId != $formModel->get('id'))
 			{
@@ -885,7 +881,7 @@ class FabrikFEModelListfilter extends FabModel
 							}
 						}
 
-						if (!isset($elementModel) || !is_a($elementModel, 'Fabrik\Plugins\Element\Element') || $found === false)
+						if (!isset($elementModel) || !is_a($elementModel, 'plgFabrik_Element') || $found === false)
 						{
 							// Could be looking for an element which exists in a join
 							continue;
@@ -971,7 +967,7 @@ class FabrikFEModelListfilter extends FabModel
 		foreach ($request as $key => $val)
 		{
 			$oldKey = $key;
-			$key = StringHelper::safeColName($key);
+			$key = FabrikString::safeColName($key);
 			$index = array_key_exists('key', $filters) ? array_search($key, $filters['key']) : false;
 
 			if ($index !== false)
@@ -995,24 +991,24 @@ class FabrikFEModelListfilter extends FabModel
 				$raw = 1;
 
 				// Without this line related data links 'listname___elementname_raw=X' where not having their filter applied
-				$key = StringHelper::safeColName(StringHelper::rtrimword($oldKey, '_raw'));
+				$key = FabrikString::safeColName(FabrikString::rtrimword($oldKey, '_raw'));
 			}
 
-			$elementModel = $formModel->getElement(StringHelper::rtrimword($oldKey, '_raw'), false, false);
+			$elementModel = $formModel->getElement(FabrikString::rtrimword($oldKey, '_raw'), false, false);
 
-			if (!is_a($elementModel, 'Fabrik\Plugins\Element\Element'))
+			if (!is_a($elementModel, 'PlgFabrik_Element'))
 			{
 				continue;
 			}
 
-			$eval = is_array($val) ? ArrayHelper::getValue($val, 'eval', FABRIKFILTER_TEXT) : FABRIKFILTER_TEXT;
-			$condition = is_array($val) ? ArrayHelper::getValue($val, 'condition', $elementModel->getDefaultFilterCondition())
+			$eval = is_array($val) ? FArrayHelper::getValue($val, 'eval', FABRIKFILTER_TEXT) : FABRIKFILTER_TEXT;
+			$condition = is_array($val) ? FArrayHelper::getValue($val, 'condition', $elementModel->getDefaultFilterCondition())
 				: $elementModel->getDefaultFilterCondition();
 
 			{
 				$fieldDesc = $elementModel->getFieldDescription();
 
-				if (StringHelper::stristr($fieldDesc, 'INT'))
+				if (JString::stristr($fieldDesc, 'INT'))
 				{
 					if (is_numeric($val) && $condition == '=')
 					{
@@ -1024,9 +1020,9 @@ class FabrikFEModelListfilter extends FabModel
 			// Add request filter to end of filter array
 			if (is_array($val))
 			{
-				$value = ArrayHelper::getValue($val, 'value', '');
-				$join = ArrayHelper::getValue($val, 'join', 'AND');
-				$grouped = ArrayHelper::getValue($val, 'grouped_to_previous', 0);
+				$value = FArrayHelper::getValue($val, 'value', '');
+				$join = FArrayHelper::getValue($val, 'join', 'AND');
+				$grouped = FArrayHelper::getValue($val, 'grouped_to_previous', 0);
 
 				/**
 				 * do a ranged querystring search with this syntax
@@ -1092,7 +1088,7 @@ class FabrikFEModelListfilter extends FabModel
 			$value = trim($value);
 		}
 
-		$k2 = StringHelper::safeColNameToArrayKey($key);
+		$k2 = FabrikString::safeColNameToArrayKey($key);
 		/**
 		 * $$$ rob fabrik_sticky_filters set in J content plugin
 		 * Treat these as prefilters so we don't unset them
@@ -1165,27 +1161,27 @@ class FabrikFEModelListfilter extends FabModel
 		$request = $this->getPostFilterArray();
 		$elements = $this->listModel->getElements('id');
 		$filterKeys = array_keys($filters);
-		$values = ArrayHelper::getValue($request, 'value', array());
-		$searchTypes = ArrayHelper::getValue($filters, 'search_type', array());
-		$conditions = ArrayHelper::getValue($request, 'condition', array());
+		$values = FArrayHelper::getValue($request, 'value', array());
+		$searchTypes = FArrayHelper::getValue($filters, 'search_type', array());
+		$conditions = FArrayHelper::getValue($request, 'condition', array());
 
 		$usedMerges = array();
 
-		Html::debug($filters, 'filter array: start getPostFilters');
+		FabrikHelperHTML::debug($filters, 'filter array: start getPostFilters');
 
 		if (!empty($request) && array_key_exists('key', $request))
 		{
 			$keyInts = array_keys($request['key']);
-			$ajaxPost = StringHelper::strtolower($input->server->get('HTTP_X_REQUESTED_WITH'));
+			$ajaxPost = JString::strtolower($input->server->get('HTTP_X_REQUESTED_WITH'));
 			$this->listModel->ajaxPost = $ajaxPost;
 			$this->listModel->postValues = $values;
 
 			foreach ($keyInts as $i)
 			{
-				$value = ArrayHelper::getValue($values, $i, '');
-				$key = ArrayHelper::getValue($request['key'], $i);
-				$elid = ArrayHelper::getValue($request['elementid'], $i);
-				$condition = ArrayHelper::getValue($conditions, $i);
+				$value = FArrayHelper::getValue($values, $i, '');
+				$key = FArrayHelper::getValue($request['key'], $i);
+				$elid = FArrayHelper::getValue($request['elementid'], $i);
+				$condition = FArrayHelper::getValue($conditions, $i);
 
 				if ($key == '')
 				{
@@ -1244,7 +1240,7 @@ class FabrikFEModelListfilter extends FabModel
 					 * Testing clearing only if normal filter, previous test on searchType != 'searchall'
 					 * meant advanced search filters were removed on page nav
 					 */
-					if (ArrayHelper::getValue($searchTypes, $index) == 'normal')
+					if (FArrayHelper::getValue($searchTypes, $index) == 'normal')
 					{
 						$this->clearAFilter($filters, $index);
 					}
@@ -1270,7 +1266,7 @@ class FabrikFEModelListfilter extends FabModel
 
 				$elementModel = $elements[$elid];
 
-				if (!is_a($elementModel, 'Fabrik\Plugins\Element\Element'))
+				if (!is_a($elementModel, 'PlgFabrik_Element'))
 				{
 					continue;
 				}
@@ -1289,7 +1285,7 @@ class FabrikFEModelListfilter extends FabModel
 						if (is_array($filters[$fKey]) && array_key_exists($index, $filters[$fKey]))
 						{
 							// Don't unset search all filters when the value is empty and continue so we don't add in a new filter
-							if (ArrayHelper::getValue($searchTypes, $index) == 'searchall' && $value == '')
+							if (FArrayHelper::getValue($searchTypes, $index) == 'searchall' && $value == '')
 							{
 								continue 2;
 							}
@@ -1306,19 +1302,19 @@ class FabrikFEModelListfilter extends FabModel
 					$value = array_values($value);
 
 					// Empty ranged data test
-					if (ArrayHelper::getValue($value, 0) == '' && ArrayHelper::getValue($value, 1) == '')
+					if (FArrayHelper::getValue($value, 0) == '' && FArrayHelper::getValue($value, 1) == '')
 					{
 						continue;
 					}
 				}
 
-				$eval = is_array($value) ? ArrayHelper::getValue($value, 'eval', FABRIKFILTER_TEXT) : FABRIKFILTER_TEXT;
+				$eval = is_array($value) ? FArrayHelper::getValue($value, 'eval', FABRIKFILTER_TEXT) : FABRIKFILTER_TEXT;
 
-				if (!is_a($elementModel, '\Fabrik\Plugins\Element\Databasejoin'))
+				if (!is_a($elementModel, 'PlgFabrik_ElementDatabasejoin'))
 				{
 					$fieldDesc = $elementModel->getFieldDescription();
 
-					if (StringHelper::stristr($fieldDesc, 'INT'))
+					if (JString::stristr($fieldDesc, 'INT'))
 					{
 						if (is_numeric($value) && $request['condition'][$i] == '=')
 						{
@@ -1332,17 +1328,17 @@ class FabrikFEModelListfilter extends FabModel
 				 * post filter query overwrites search all query, but uses add so = where id REGEX 'USA' AND country LIKE '%USA'
 				 * this code swaps the first
 				 */
-				$joinMode = StringHelper::strtolower($request['join'][$i]) != 'where' ? $request['join'][$i] : 'AND';
+				$joinMode = JString::strtolower($request['join'][$i]) != 'where' ? $request['join'][$i] : 'AND';
 
 				if (!empty($filters))
 				{
 					if ($i == 0)
 					{
-						$joinModes = ArrayHelper::getValue($filters, 'join', array('AND'));
+						$joinModes = FArrayHelper::getValue($filters, 'join', array('AND'));
 						$joinMode = array_pop($joinModes);
 
 						// $$$ rob - If search all made, then the post filters should filter further the results
-						$tmpSearchTypes = ArrayHelper::getValue($filters, 'search_type', array('normal'));
+						$tmpSearchTypes = FArrayHelper::getValue($filters, 'search_type', array('normal'));
 						$lastSearchType = array_pop($tmpSearchTypes);
 
 						if ($lastSearchType == 'searchall')
@@ -1374,13 +1370,13 @@ class FabrikFEModelListfilter extends FabModel
 					$filters['key'][] = urldecode($key);
 				}
 
-				$filters['search_type'][] = ArrayHelper::getValue($request['search_type'], $i, 'normal');
+				$filters['search_type'][] = FArrayHelper::getValue($request['search_type'], $i, 'normal');
 				$filters['match'][] = $element->filter_exact_match;
 				$filters['full_words_only'][] = $elParams->get('full_words_only');
 				$filters['eval'][] = $eval;
 				$filters['required'][] = $elParams->get('filter_required');
 				$filters['access'][] = $elParams->get('filter_access');
-				$filters['grouped_to_previous'][] = ArrayHelper::getValue($request['grouped_to_previous'], $i, '0');
+				$filters['grouped_to_previous'][] = FArrayHelper::getValue($request['grouped_to_previous'], $i, '0');
 				$filters['label'][] = $elementModel->getListHeading();
 				$filters['elementid'][] = $elid;
 				$filters['raw'][] = false;
@@ -1388,9 +1384,9 @@ class FabrikFEModelListfilter extends FabModel
 		}
 
 		$this->listModel->tmpFilters = $filters;
-		Html::debug($filters, 'filter array: before onGetPostFilter');
-		Worker::getPluginManager()->runPlugins('onGetPostFilter', $this->listModel, 'list', $filters);
-		Html::debug($filters, 'filter array: after onGetPostFilter');
+		FabrikHelperHTML::debug($filters, 'filter array: before onGetPostFilter');
+		FabrikWorker::getPluginManager()->runPlugins('onGetPostFilter', $this->listModel, 'list', $filters);
+		FabrikHelperHTML::debug($filters, 'filter array: after onGetPostFilter');
 		$filters = $this->listModel->tmpFilters;
 	}
 
@@ -1432,17 +1428,17 @@ class FabrikFEModelListfilter extends FabModel
 		$pluginKeys = $this->getPluginFilterKeys();
 		JDEBUG ? $profiler->mark('listfilter:session filters getPluginFilterKeys') : null;
 		$search = $this->app->getUserStateFromRequest($key, $requestKey);
-		$postKeys = ArrayHelper::getValue($request, 'key', array());
+		$postKeys = FArrayHelper::getValue($request, 'key', array());
 
 		for ($i = 0; $i < count($sessionFilters['key']); $i++)
 		{
-			$elid = ArrayHelper::getValue($sessionFilters['elementid'], $i);
-			$key = ArrayHelper::getValue($sessionFilters['key'], $i, null);
-			$index = ArrayHelper::getValue($filters['elementid'], $key, false);
-			$origCondition = ArrayHelper::getValue($filters['orig_condition'], $i, '');
+			$elid = FArrayHelper::getValue($sessionFilters['elementid'], $i);
+			$key = FArrayHelper::getValue($sessionFilters['key'], $i, null);
+			$index = FArrayHelper::getValue($filters['elementid'], $key, false);
+			$origCondition = FArrayHelper::getValue($filters['orig_condition'], $i, '');
 
 			// Used by radius search plugin
-			$sqlConds = ArrayHelper::getValue($sessionFilters, 'sqlCond', array());
+			$sqlConds = FArrayHelper::getValue($sessionFilters, 'sqlCond', array());
 
 			if ($index !== false)
 			{
@@ -1466,7 +1462,7 @@ class FabrikFEModelListfilter extends FabModel
 			}
 
 			$value = $sessionFilters['value'][$i];
-			$key2 = array_key_exists('key2', $sessionFilters) ? ArrayHelper::getValue($sessionFilters['key2'], $i, '') : '';
+			$key2 = array_key_exists('key2', $sessionFilters) ? FArrayHelper::getValue($sessionFilters['key2'], $i, '') : '';
 
 			if ($elid == -1)
 			{
@@ -1494,9 +1490,9 @@ class FabrikFEModelListfilter extends FabModel
 			}
 			else
 			{
-				$elementModel = ArrayHelper::getValue($elements, $elid);
+				$elementModel = FArrayHelper::getValue($elements, $elid);
 
-				if (!is_a($elementModel, 'Fabrik\Plugins\Element\Element') && !in_array($elid, $pluginKeys))
+				if (!is_a($elementModel, 'plgFabrik_Element') && !in_array($elid, $pluginKeys))
 				{
 					continue;
 				}
@@ -1516,7 +1512,7 @@ class FabrikFEModelListfilter extends FabModel
 					$required = $sessionFilters['required'][$i];
 					$access = $sessionFilters['access'][$i];
 					$label = $sessionFilters['label'][$i];
-					$sqlCond = ArrayHelper::getValue($sqlConds, $i);
+					$sqlCond = FArrayHelper::getValue($sqlConds, $i);
 					$raw = $sessionFilters['raw'][$i];
 					$counter = $elid;
 				}
@@ -1531,11 +1527,11 @@ class FabrikFEModelListfilter extends FabModel
 					$raw = array_key_exists($i, $sessionFilters['raw']) ? $sessionFilters['raw'][$i] : 0;
 					$eval = array_key_exists($i, $sessionFilters['eval']) ? $sessionFilters['eval'][$i] : FABRIKFILTER_TEXT;
 
-					if (!is_a($elementModel, '\Fabrik\Plugins\Element\Databasejoin'))
+					if (!is_a($elementModel, 'PlgFabrik_ElementDatabasejoin'))
 					{
 						$fieldDesc = $elementModel->getFieldDescription();
 
-						if (StringHelper::stristr($fieldDesc, 'INT'))
+						if (JString::stristr($fieldDesc, 'INT'))
 						{
 							if (is_numeric($search) && $condition == '=')
 							{
@@ -1617,7 +1613,7 @@ class FabrikFEModelListfilter extends FabModel
 	 */
 	public function getPluginFilterKeys()
 	{
-		$pluginManager = Worker::getPluginManager();
+		$pluginManager = FabrikWorker::getPluginManager();
 		$pluginManager->runPlugins('onGetFilterKey', $this->listModel, 'list');
 
 		return $pluginManager->data;

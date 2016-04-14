@@ -11,15 +11,12 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Fabrik\Helpers\Worker;
-use Fabrik\Helpers\Text;
+require_once JPATH_ADMINISTRATOR . '/components/com_fabrik/helpers/element.php';
 
 jimport('joomla.html.html');
 jimport('joomla.form.formfield');
 jimport('joomla.form.helper');
 JFormHelper::loadFieldClass('list');
-
-use Fabrik\Helpers\Html;
 
 /**
  * Renders a fabrik element drop down
@@ -75,10 +72,10 @@ class JFormFieldElement extends JFormFieldList
 		$includeCalculations = (int) $this->getAttribute('include_calculations');
 		$published           = (int) $this->getAttribute('published');
 		$showInTable         = (int) $this->getAttribute('showintable');
-		$highlightPk         = Worker::toBoolean($this->getAttribute('highlightpk', false), false);
+		$highlightPk         = FabrikWorker::toBoolean($this->getAttribute('highlightpk', false), false);
 		$mode                = $this->getAttribute('mode');
 		$connection          = $this->getAttribute('connection');
-		$connectionInRepeat  = Worker::toBoolean($this->getAttribute('connection_in_repeat', true), true);
+		$connectionInRepeat  = FabrikWorker::toBoolean($this->getAttribute('connection_in_repeat', true), true);
 		$excludeJoined       = (int) $this->getAttribute('excludejoined');
 
 		if ($includeCalculations != 1)
@@ -115,7 +112,7 @@ class JFormFieldElement extends JFormFieldList
 		$script                     = implode("\n", $script);
 		$fabrikElements[$this->id]  = true;
 		$src['AdmininElelent']      = 'administrator/components/com_fabrik/models/fields/element.js';
-		Html::script($src, $script);
+		FabrikHelperHTML::script($src, $script);
 
 		if ($mode === 'gui')
 		{
@@ -125,11 +122,11 @@ class JFormFieldElement extends JFormFieldList
 		{
 			$return = parent::getInput();
 			$return .= '<img style="margin-left:10px;display:none" id="' . $this->id
-				. '_loader" src="components/com_fabrik/images/ajax-loader.gif" alt="' . Text::_('COM_FABRIK_LOADING') . '" />';
+				. '_loader" src="components/com_fabrik/images/ajax-loader.gif" alt="' . FText::_('COM_FABRIK_LOADING') . '" />';
 		}
 
-		Html::framework();
-		Html::iniRequireJS();
+		FabrikHelperHTML::framework();
+		FabrikHelperHTML::iniRequireJS();
 
 		return $return;
 	}
@@ -144,7 +141,7 @@ class JFormFieldElement extends JFormFieldList
 	{
 		$str   = array();
 		$str[] = '<textarea cols="20" row="3" id="' . $this->id . '" name="' . $this->name . '">' . $this->value . '</textarea>';
-		$str[] = '<button class="button btn">' . Text::_('COM_FABRIK_ADD') . '</button>';
+		$str[] = '<button class="button btn">' . FText::_('COM_FABRIK_ADD') . '</button>';
 		$str[] = '<select class="elements"></select>';
 
 		return implode("\n", $str);

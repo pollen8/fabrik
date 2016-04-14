@@ -8,19 +8,10 @@
  * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
-namespace Fabrik\Plugins\Element;
-
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Fabrik\Helpers\Worker;
-use Fabrik\Helpers\ArrayHelper;
-use \JFilterInput;
-use \FabrikFEModelList;
-use \stdClass;
-use \JModelLegacy;
-use Fabrik\Helpers\Text;
-use Fabrik\Helpers\Html;
+use Joomla\Utilities\ArrayHelper;
 
 /**
  * Plugin element to render field with PHP calculated value
@@ -29,7 +20,7 @@ use Fabrik\Helpers\Html;
  * @subpackage  Fabrik.element.calc
  * @since       3.0
  */
-class Calc extends Element
+class PlgFabrik_ElementCalc extends PlgFabrik_Element
 {
 	/**
 	 * This really does get just the default value (as defined in the element's settings)
@@ -42,13 +33,13 @@ class Calc extends Element
 	{
 		if (!isset($this->default))
 		{
-			$w = new Worker;
+			$w = new FabrikWorker;
 			$element = $this->getElement();
-			$default = $w->parseMessageForPlaceHolder($element->get('default'), $data, true, true);
+			$default = $w->parseMessageForPlaceHolder($element->default, $data, true, true);
 			/* calc in fabrik3.0/3.1 doesn't have eval, issues if F2.0 calc elements are migrated*/
 			/*if ($element->eval == '1')
 			{
-				if (Html::isDebug())
+				if (FabrikHelperHTML::isDebug())
 				{
 					$res = eval($default);
 				}
@@ -56,7 +47,7 @@ class Calc extends Element
 				{
 					$res = @eval($default);
 				}
-				Worker::logEval($res, 'Eval exception : ' . $element->name . '::getDefaultValue() : ' . $default . ' : %s');
+				FabrikWorker::logEval($res, 'Eval exception : ' . $element->name . '::getDefaultValue() : ' . $default . ' : %s');
 				$default = $res;
 			}
 			*/
@@ -76,7 +67,7 @@ class Calc extends Element
 	 */
 	private function _getV($data, $repeatCounter)
 	{
-		$w = new Worker;
+		$w = new FabrikWorker;
 		$groupModel = $this->getGroup();
 		$name = $this->getFullName(true, false);
 		$params = $this->getParams();
@@ -129,8 +120,8 @@ class Calc extends Element
 			//  $$$ hugh - standardizing on $data but need need $d here for backward compat
 			$d = $data;
 
-			$res = Html::isDebug() ? eval($default) : @eval($default);
-			Worker::logEval($res, 'Eval exception : ' . $this->getElement()->name . '::_getV() : ' . $default . ' : %s');
+			$res = FabrikHelperHTML::isDebug() ? eval($default) : @eval($default);
+			FabrikWorker::logEval($res, 'Eval exception : ' . $this->getElement()->name . '::_getV() : ' . $default . ' : %s');
 
 			return $res;
 		}
@@ -217,21 +208,21 @@ class Calc extends Element
 		if (!array_key_exists($repeatCounter, $this->defaults))
 		{
 			$element = $this->getElement();
-			$element->set('default', $this->_getV($data, $repeatCounter));
+			$element->default = $this->_getV($data, $repeatCounter);
 			$formModel = $this->getFormModel();
 
 			// Stops this getting called from form validation code as it messes up repeated/join group validations
 			if (array_key_exists('runplugins', $opts) && $opts['runplugins'] == 1)
 			{
-				Worker::getPluginManager()->runPlugins('onGetElementDefault', $formModel, 'form', $this);
+				FabrikWorker::getPluginManager()->runPlugins('onGetElementDefault', $formModel, 'form', $this);
 			}
 
-			if (is_array($element->get('default')))
+			if (is_array($element->default))
 			{
-				$element->set('default', implode(',', $element->get('default')));
+				$element->default = implode(',', $element->default);
 			}
 
-			$this->defaults[$repeatCounter] = $element->get('default');
+			$this->defaults[$repeatCounter] = $element->default;
 		}
 
 		return $this->defaults[$repeatCounter];
@@ -308,21 +299,21 @@ class Calc extends Element
 			{
 				$elementModel = $elementModels[$j];
 				$elKey = $elementModel->getFullName(true, false);
-				$v = ArrayHelper::getValue($d, $elKey);
+				$v = FArrayHelper::getValue($d, $elKey);
 
 				if (is_array($v))
 				{
-					$origData = ArrayHelper::getValue($d, $elKey, array());
+					$origData = FArrayHelper::getValue($d, $elKey, array());
 
 					foreach (array_keys($v) as $x)
 					{
-						$origVal = ArrayHelper::getValue($origData, $x);
+						$origVal = FArrayHelper::getValue($origData, $x);
 						$d[$elKey][$x] = $elementModel->getLabelForValue($v[$x], $origVal, true);
 					}
 				}
 				else
 				{
-					$d[$elKey] = $elementModel->getLabelForValue($v, ArrayHelper::getValue($d, $elKey), true);
+					$d[$elKey] = $elementModel->getLabelForValue($v, FArrayHelper::getValue($d, $elKey), true);
 				}
 			}
 		}
@@ -369,7 +360,7 @@ class Calc extends Element
 			$d = $data;
 			$cal = $listModel->parseMessageForRowHolder($cal, $data, true);
 
-			if (Html::isDebug())
+			if (FabrikHelperHTML::isDebug())
 			{
 				$res = eval($cal);
 			}
@@ -378,7 +369,7 @@ class Calc extends Element
 				$res = @eval($cal);
 			}
 
-			Worker::logEval($res, 'Eval exception : ' . $element->name . '::preFormatFormJoins() : ' . $cal . ' : %s');
+			FabrikWorker::logEval($res, 'Eval exception : ' . $element->name . '::preFormatFormJoins() : ' . $cal . ' : %s');
 
 			if ($format != '')
 			{
@@ -447,14 +438,13 @@ class Calc extends Element
 			else
 			{
 				$layout = $this->getLayout('form');
-				$layoutData = (object) array(
-					'id' => $id,
-					'name' => $name,
-					'height' => $element->get('height'),
-					'value' => $value,
-					'cols' => $element->get('width'),
-					'rows' => $element->get('height')
-				);
+				$layoutData = new stdClass;
+				$layoutData->id = $id;
+				$layoutData->name = $name;
+				$layoutData->height = $element->height;
+				$layoutData->value = $value;
+				$layoutData->cols = $element->width;
+				$layoutData->rows = $element->height;
 				$str[] = $layout->render($layoutData);
 			}
 		}
@@ -464,8 +454,8 @@ class Calc extends Element
 			$str[] = '<input type="hidden" class="fabrikinput" name="' . $name . '" id="' . $id . '" value="' . $value . '" />';
 		}
 
-		$opts = array('alt' => Text::_('PLG_ELEMENT_CALC_LOADING'), 'style' => 'display:none;padding-left:10px;', 'class' => 'loader');
-		$str[] = Html::image('ajax-loader.gif', 'form', @$this->tmpl, $opts);
+		$opts = array('alt' => FText::_('PLG_ELEMENT_CALC_LOADING'), 'style' => 'display:none;padding-left:10px;', 'class' => 'loader');
+		$str[] = FabrikHelperHTML::image('ajax-loader.gif', 'form', @$this->tmpl, $opts);
 
 		return implode("\n", $str);
 	}
@@ -527,7 +517,7 @@ class Calc extends Element
 		$this->setId($input->getInt('element_id'));
 		$this->loadMeForAjax();
 		$params = $this->getParams();
-		$w = new Worker;
+		$w = new FabrikWorker;
 		$filter = JFilterInput::getInstance();
 		$d = $filter->clean($_REQUEST, 'array');
 		$formModel = $this->getFormModel();
@@ -540,7 +530,7 @@ class Calc extends Element
 		// $$$ hugh - trying to standardize on $data so scripts know where data is
 		$data = $d;
 		$calc = $w->parseMessageForPlaceHolder($calc, $d);
-		$c = Html::isDebug() ? eval($calc): @eval($calc);
+		$c = FabrikHelperHTML::isDebug() ? eval($calc): @eval($calc);
 		$c = preg_replace('#(\/\*.*?\*\/)#', '', $c);
 		echo $c;
 	}
@@ -570,7 +560,7 @@ class Calc extends Element
 
 				if ($this->getGroupModel()->canRepeat() && is_array($value))
 				{
-					$value = ArrayHelper::getValue($value, $repeatCounter);
+					$value = FArrayHelper::getValue($value, $repeatCounter);
 				}
 
 				// For radio buttons and dropdowns otherwise nothing is stored for them??
@@ -591,7 +581,7 @@ class Calc extends Element
 	{
 		$fields = $listModel->getDBFields($this->getTableName(), 'Field');
 		$name = $this->getElement()->name;
-		$field = ArrayHelper::getValue($fields, $name, false);
+		$field = FArrayHelper::getValue($fields, $name, false);
 
 		if ($field !== false && $field->Type == 'time')
 		{
@@ -623,7 +613,7 @@ class Calc extends Element
 	{
 		$fields = $listModel->getDBFields($this->getTableName(), 'Field');
 		$name = $this->getElement()->name;
-		$field = ArrayHelper::getValue($fields, $name, false);
+		$field = FArrayHelper::getValue($fields, $name, false);
 
 		if ($field !== false && $field->Type == 'time')
 		{
@@ -655,7 +645,7 @@ class Calc extends Element
 	{
 		$fields = $listModel->getDBFields($this->getTableName(), 'Field');
 		$name = $this->getElement()->name;
-		$field = ArrayHelper::getValue($fields, $name, false);
+		$field = FArrayHelper::getValue($fields, $name, false);
 
 		if ($field !== false && $field->Type == 'time')
 		{
@@ -705,7 +695,7 @@ class Calc extends Element
 		$opts->listid = $list->id;
 		$opts->listRef = 'list_' . $this->getlistModel()->getRenderContext();
 		$opts->formid = $this->getFormModel()->getId();
-		$opts->elid = $this->getElement()->get('id');
+		$opts->elid = $this->getElement()->id;
 		$opts->doListUpdate = $params->get('calc_on_save_only', '1') == '0' && $params->get('calc_ajax', '0') == '1';
 		$opts = json_encode($opts);
 

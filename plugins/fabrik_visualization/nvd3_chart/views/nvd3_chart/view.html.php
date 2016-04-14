@@ -11,9 +11,6 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Fabrik\Helpers\Html;
-use Fabrik\Helpers\Text;
-
 jimport('joomla.application.component.view');
 
 /**
@@ -46,13 +43,13 @@ class FabrikViewNvd3_Chart extends JViewLegacy
 
 		if (!$model->canView())
 		{
-			echo Text::_('JERROR_ALERTNOAUTHOR');
+			echo FText::_('JERROR_ALERTNOAUTHOR');
 
 			return false;
 		}
 
-		$srcs = Html::framework();
-		Html::styleSheet('plugins/fabrik_visualization/nvd3_chart/lib/novus-nvd3/src/nv.d3.css');
+		$srcs = FabrikHelperHTML::framework();
+		FabrikHelperHTML::styleSheet('plugins/fabrik_visualization/nvd3_chart/lib/novus-nvd3/src/nv.d3.css');
 
 		$srcs['FbListFilter'] = 'media/com_fabrik/js/listfilter.js';
 		$srcs['AdvancedSearch'] = 'media/com_fabrik/js/advanced-search.js';
@@ -75,7 +72,7 @@ class FabrikViewNvd3_Chart extends JViewLegacy
 		$this->requiredFiltersFound = $model->getRequiredFiltersFound();
 		$params = $model->getParams();
 		$js = $model->js();
-		Html::addScriptDeclaration($js);
+		FabrikHelperHTML::addScriptDeclaration($js);
 
 		$this->params = $params;
 		$viewName = $this->getName();
@@ -91,7 +88,7 @@ class FabrikViewNvd3_Chart extends JViewLegacy
 		$tpl = $params->get('nvd3_chart_layout', $tpl);
 		$this->_setPath('template', JPATH_ROOT . '/plugins/fabrik_visualization/nvd3_chart/views/nvd3_chart/tmpl/' . $tpl);
 
-		Html::stylesheetFromPath(
+		FabrikHelperHTML::stylesheetFromPath(
 			'plugins/fabrik_visualization/nvd3_chart/views/nvd3_chart/tmpl/' . $tpl . '/template.css');
 
 		// Assign something to Fabrik.blocks to ensure we can clear filters
@@ -100,11 +97,11 @@ class FabrikViewNvd3_Chart extends JViewLegacy
 		$js .= "\n" . "Fabrik.addBlock('$ref', $ref);";
 		$js .= $model->getFilterJs();
 
-		Html::iniRequireJs($model->getShim());
-		Html::script($srcs, $js);
+		FabrikHelperHTML::iniRequireJs($model->getShim());
+		FabrikHelperHTML::script($srcs, $js);
 
 		$text = $this->loadTemplate();
-		Html::runContentPlugins($text);
+		FabrikHelperHTML::runContentPlugins($text);
 		echo $text;
 	}
 }

@@ -11,10 +11,6 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Fabrik\Helpers\Html;
-use Fabrik\Helpers\Worker;
-use Fabrik\Helpers\Text;
-
 jimport('joomla.application.component.view');
 
 /**
@@ -39,9 +35,9 @@ class FabrikViewVisualization extends FabrikView
 	 */
 	public function display($tmpl = 'default')
 	{
-		$srcs = Html::framework();
+		$srcs = FabrikHelperHTML::framework();
 		$input = $this->app->input;
-		Html::script($srcs);
+		FabrikHelperHTML::script($srcs);
 		$model = $this->getModel();
 		$usersConfig = JComponentHelper::getParams('com_fabrik');
 		$model->setId($input->get('id', $usersConfig->get('visualizationid', $input->getInt('visualizationid', 0))));
@@ -53,7 +49,7 @@ class FabrikViewVisualization extends FabrikView
 
 		if ($visualization->published == 0)
 		{
-			$this->app->enqueueMessage(Text::_('COM_FABRIK_SORRY_THIS_VISUALIZATION_IS_UNPUBLISHED'), 'error');
+			$this->app->enqueueMessage(FText::_('COM_FABRIK_SORRY_THIS_VISUALIZATION_IS_UNPUBLISHED'), 'error');
 			return;
 		}
 
@@ -65,7 +61,7 @@ class FabrikViewVisualization extends FabrikView
 		$tmpl = $plugin->getParams()->get('calendar_layout', $tmpl);
 		$plugin->$pluginTask($this);
 		$this->plugin = $plugin;
-		$jTmplFolder = Worker::j3() ? 'tmpl' : 'tmpl25';
+		$jTmplFolder = FabrikWorker::j3() ? 'tmpl' : 'tmpl25';
 		$this->addTemplatePath($this->_basePath . '/plugins/' . $this->_name . '/' . $plugin->_name . '/' . $jTmplFolder . '/' . $tmpl);
 
 		$root = $this->app->isAdmin() ? JPATH_ADMINISTRATOR : JPATH_SITE;

@@ -11,8 +11,6 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Fabrik\Helpers\Worker;
-
 /**
  * This is an example file.  To use userAjax, copy this file to user_ajax.php,
  * and insert your function into the userAjax class, as per the example
@@ -96,7 +94,7 @@ class UserAjax
 
 	public function userExists()
 	{
-		$db = Worker::getDbo();
+		$db = FabrikWorker::getDbo();
 		$query = $db->getQuery(true);
 		$retStr = '';
 		$app = JFactory::getApplication();

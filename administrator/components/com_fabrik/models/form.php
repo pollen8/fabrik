@@ -14,10 +14,7 @@ defined('_JEXEC') or die('Restricted access');
 
 require_once 'fabmodeladmin.php';
 
-use Fabrik\Helpers\ArrayHelper;
-use Fabrik\Helpers\Worker;
-use Fabrik\Helpers\StringHelper;
-use Fabrik\Helpers\Text;
+use Joomla\Utilities\ArrayHelper;
 
 /**
  * Fabrik Admin Form Model
@@ -62,7 +59,7 @@ class FabrikAdminModelForm extends FabModelAdmin
 	 */
 	public function getTable($type = 'Form', $prefix = 'FabrikTable', $config = array())
 	{
-		$config['dbo'] = Worker::getDbo(true);
+		$config['dbo'] = FabrikWorker::getDbo(true);
 
 		return FabTable::getInstance($type, $prefix, $config);
 	}
@@ -138,10 +135,10 @@ class FabrikAdminModelForm extends FabModelAdmin
 	{
 		$input                                = $this->app->input;
 		$jForm                                = $input->get('jform', array(), 'array');
-		$data['params']['plugins']            = (array) ArrayHelper::getValue($jForm, 'plugin');
-		$data['params']['plugin_locations']   = (array) ArrayHelper::getValue($jForm, 'plugin_locations');
-		$data['params']['plugin_events']      = (array) ArrayHelper::getValue($jForm, 'plugin_events');
-		$data['params']['plugin_description'] = (array) ArrayHelper::getValue($jForm, 'plugin_description');
+		$data['params']['plugins']            = (array) FArrayHelper::getValue($jForm, 'plugin');
+		$data['params']['plugin_locations']   = (array) FArrayHelper::getValue($jForm, 'plugin_locations');
+		$data['params']['plugin_events']      = (array) FArrayHelper::getValue($jForm, 'plugin_events');
+		$data['params']['plugin_description'] = (array) FArrayHelper::getValue($jForm, 'plugin_description');
 
 		/**
 		 * Move back into the main data array some values we are rendering as
@@ -154,7 +151,7 @@ class FabrikAdminModelForm extends FabModelAdmin
 			$data[$opt] = $data['params'][$opt];
 		}
 
-		$tmpName = ArrayHelper::getValue($data, 'db_table_name');
+		$tmpName = FArrayHelper::getValue($data, 'db_table_name');
 		unset($data['db_table_name']);
 		$return = parent::save($data);
 
@@ -213,7 +210,7 @@ class FabrikAdminModelForm extends FabModelAdmin
 
 		if (!$dbTableExists || $isNew)
 		{
-			$connection = Worker::getConnection(-1);
+			$connection = FabrikWorker::getConnection(-1);
 			$item->set('id', null);
 			$item->set('label', $data['label']);
 			$item->set('form_id', $formId);
@@ -237,7 +234,7 @@ class FabrikAdminModelForm extends FabModelAdmin
 			// Update existing table (seems to need to reload here to ensure that _table is set)
 			$listModel->loadFromFormId($formId);
 			$listModel->ammendTable();
-			$currentGroups = (array) ArrayHelper::getValue($data, 'current_groups');
+			$currentGroups = (array) FArrayHelper::getValue($data, 'current_groups');
 			$this->_makeFormGroups($currentGroups);
 		}
 	}
@@ -253,13 +250,13 @@ class FabrikAdminModelForm extends FabModelAdmin
 	 */
 	private function getInsertFields($isNew, $data, $listModel, $dbTableName)
 	{
-		$db                     = Worker::getDbo(true);
+		$db                     = FabrikWorker::getDbo(true);
 		$fields                 = array('id' => 'internalid', 'date_time' => 'date');
 		$createGroup            = $data['_createGroup'];
 		$recordInDatabase       = $data['record_in_database'];
 		$jForm                  = $this->app->input->get('jform', array(), 'array');
 		$this->contentTypeModel = JModelLegacy::getInstance('ContentTypeImport', 'FabrikAdminModel', array('listModel' => $listModel));
-		$groups                 = ArrayHelper::getValue($data, 'current_groups');
+		$groups                 = FArrayHelper::getValue($data, 'current_groups');
 		$contentType            = ArrayHelper::getValue($jForm, 'contenttype');
 
 		if ($createGroup)
@@ -269,7 +266,7 @@ class FabrikAdminModelForm extends FabModelAdmin
 
 		if (empty($groups) && !$isNew)
 		{
-			throw new Exception(Text::_('COM_FABRIK_ERR_ONE_GROUP_MUST_BE_SELECTED'));
+			throw new Exception(FText::_('COM_FABRIK_ERR_ONE_GROUP_MUST_BE_SELECTED'));
 		}
 
 		// If new and record in db and group selected then we want to get those groups elements to create fields for in the db table
@@ -316,7 +313,7 @@ class FabrikAdminModelForm extends FabModelAdmin
 			$dbTableName = $data['db_table_name'] !== '' ? $data['db_table_name'] : $data['label'];
 
 			// Mysql will force db table names to lower case even if you set the db name to upper case - so use clean()
-			$dbTableName = StringHelper::clean($dbTableName);
+			$dbTableName = FabrikString::clean($dbTableName);
 
 			// Otherwise part of the table name is taken for element names
 			$dbTableName = str_replace('___', '_', $dbTableName);
@@ -339,7 +336,7 @@ class FabrikAdminModelForm extends FabModelAdmin
 	protected function _makeFormGroups($currentGroups)
 	{
 		$formId        = $this->getState($this->getName() . '.id');
-		$db            = Worker::getDbo(true);
+		$db            = FabrikWorker::getDbo(true);
 		$query         = $db->getQuery(true);
 		$currentGroups = ArrayHelper::toInteger($currentGroups);
 		$query->delete('#__{package}_formgroup')->where('form_id = ' . (int) $formId);
@@ -402,7 +399,7 @@ class FabrikAdminModelForm extends FabModelAdmin
 		}
 
 		$ids   = ArrayHelper::toInteger($ids);
-		$db    = Worker::getDbo(true);
+		$db    = FabrikWorker::getDbo(true);
 		$query = $db->getQuery(true);
 		$query->select('form_id')->from('#__{package}_lists')->where('id IN (' . implode(',', $ids) . ')');
 
@@ -442,7 +439,7 @@ class FabrikAdminModelForm extends FabModelAdmin
 				 * NOTE 1 - this code ignores joined groups, so only recreates the original table
 				 * NOTE 2 - this code ignores any 'alter existing fields' settings.
 				 */
-				$db    = Worker::getDbo(true);
+				$db    = FabrikWorker::getDbo(true);
 				$query = $db->getQuery(true);
 				$query->select('group_id')->from('#__{package}_formgroup AS fg')->join('LEFT', '#__{package}_groups AS g ON g.id = fg.group_id')
 					->where('fg.form_id = ' . $formId . ' AND g.is_join != 1');

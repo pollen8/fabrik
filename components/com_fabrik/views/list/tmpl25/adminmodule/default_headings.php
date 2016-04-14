@@ -11,8 +11,6 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Fabrik\Helpers\Html;
-
 ?>
 <tr class="fabrik___heading">
 <?php foreach ($this->headings as $key=>$heading) {
@@ -35,7 +33,7 @@ use Fabrik\Helpers\Html;
 </tr>
 <?php $doc = JFactory::getDocument();
 $doc->addScript(JURI::root(true).'/media/com_fabrik/js/filtertoggle.js');
-Html::addScriptDeclaration("
+FabrikHelperHTML::addScriptDeclaration("
 window.addEvent('fabrik.loaded', function() {
 	new FabFilterToggle('".$this->list->renderid."');
 });

@@ -11,9 +11,6 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Fabrik\Helpers\Html;
-use Fabrik\Helpers\Text;
-
 jimport('joomla.application.component.view');
 
 /**
@@ -83,14 +80,14 @@ class FabrikAdminViewForm extends JViewLegacy
 		$dep                         = new stdClass;
 		$dep->deps                   = array('fab/fabrik');
 		$shim['admin/pluginmanager'] = $dep;
-		Html::iniRequireJS($shim);
+		FabrikHelperHTML::iniRequireJS($shim);
 
-		$srcs                  = Html::framework();
-		$srcs['Fabrik']        = Html::mediaFile('fabrik.js');
+		$srcs                  = FabrikHelperHTML::framework();
+		$srcs['Fabrik']        = FabrikHelperHTML::mediaFile('fabrik.js');
 		$srcs['Namespace']     = 'administrator/components/com_fabrik/views/namespace.js';
 		$srcs['PluginManager'] = 'administrator/components/com_fabrik/views/pluginmanager.js';
 
-		Html::script($srcs, $this->js);
+		FabrikHelperHTML::script($srcs, $this->js);
 		parent::display($tpl);
 	}
 
@@ -123,8 +120,8 @@ class FabrikAdminViewForm extends JViewLegacy
 		$isNew      = ($this->item->id == 0);
 		$checkedOut = !($this->item->checked_out == 0 || $this->item->checked_out == $user->get('id'));
 		$canDo      = FabrikAdminHelper::getActions($this->state->get('filter.category_id'));
-		$title      = $isNew ? Text::_('COM_FABRIK_MANAGER_FORM_NEW') : Text::_('COM_FABRIK_MANAGER_FORM_EDIT') . ' "'
-			. Text::_($this->item->label) . '"';
+		$title      = $isNew ? FText::_('COM_FABRIK_MANAGER_FORM_NEW') : FText::_('COM_FABRIK_MANAGER_FORM_EDIT') . ' "'
+			. FText::_($this->item->label) . '"';
 		JToolBarHelper::title($title, 'file-2');
 
 		if ($isNew)
@@ -162,7 +159,7 @@ class FabrikAdminViewForm extends JViewLegacy
 		}
 
 		JToolBarHelper::divider();
-		JToolBarHelper::help('JHELP_COMPONENTS_FABRIK_FORMS_EDIT', false, Text::_('JHELP_COMPONENTS_FABRIK_FORMS_EDIT'));
+		JToolBarHelper::help('JHELP_COMPONENTS_FABRIK_FORMS_EDIT', false, FText::_('JHELP_COMPONENTS_FABRIK_FORMS_EDIT'));
 	}
 
 	/**
@@ -179,8 +176,8 @@ class FabrikAdminViewForm extends JViewLegacy
 		$input      = JFactory::getApplication()->input;
 		$this->data = $input->post->get('jform', array(), 'array');
 		$this->addSelectSaveToolBar();
-		Html::framework();
-		Html::iniRequireJS();
+		FabrikHelperHTML::framework();
+		FabrikHelperHTML::iniRequireJS();
 
 		parent::display($tpl);
 	}
@@ -199,7 +196,7 @@ class FabrikAdminViewForm extends JViewLegacy
 		$input       = $app->input;
 		$input->set('hidemainmenu', true);
 		$canDo = FabrikAdminHelper::getActions($this->state->get('filter.category_id'));
-		JToolBarHelper::title(Text::_('COM_FABRIK_MANAGER_SELECT_CONTENT_TYPE'), 'puzzle');
+		JToolBarHelper::title(FText::_('COM_FABRIK_MANAGER_SELECT_CONTENT_TYPE'), 'puzzle');
 
 		// For new records, check the create permission.
 		if ($canDo->get('core.create'))

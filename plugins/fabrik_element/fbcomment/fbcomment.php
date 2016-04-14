@@ -8,15 +8,12 @@
  * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
-namespace Fabrik\Plugins\Element;
-
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use \stdClass;
-use Fabrik\Helpers\Worker;
-use \JRoute;
-use Fabrik\Helpers\Html;
+jimport('joomla.application.component.model');
+
+require_once JPATH_SITE . '/components/com_fabrik/models/element.php';
 
 /**
  * Plugin element to render facebook open graph comment widget
@@ -25,7 +22,8 @@ use Fabrik\Helpers\Html;
  * @subpackage  Fabrik.element.facebookcomment
  * @since       3.0
  */
-class Fbcomment extends Element
+
+class PlgFabrik_ElementFbcomment extends PlgFabrik_Element
 {
 	/**
 	 * Does the element have a label
@@ -68,7 +66,7 @@ class Fbcomment extends Element
 
 		if (empty($data->href))
 		{
-			$rowId = $this->app->input->getString('rowid', '');
+			$rowId = $this->app->input->getString('rowid', '', 'string');
 
 			if ($rowId != '')
 			{
@@ -82,8 +80,8 @@ class Fbcomment extends Element
 
 		if (!empty($displayData->href))
 		{
-			$w = new Worker;
-			$displayData->href = $w->parseMessageForPlaceHolder($displayData->href, $data);
+			$w = new FabrikWorker;
+			$displayData->href = $w->parseMessageForPlaceHolder($data->href, $data);
 			$locale = $params->get('fbcomment_locale', 'en_US');
 
 			if (empty($locale))
@@ -91,7 +89,7 @@ class Fbcomment extends Element
 				$locale = 'en_US';
 			}
 
-			$displayData->graphApi = Html::facebookGraphAPI($params->get('opengraph_applicationid'), $locale);
+			$displayData->graphApi = FabrikHelperHTML::facebookGraphAPI($params->get('opengraph_applicationid'), $locale);
 		}
 
 		$layout = $this->getLayout('form');

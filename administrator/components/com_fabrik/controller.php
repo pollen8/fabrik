@@ -11,8 +11,6 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Fabrik\Helpers\Worker;
-
 jimport('joomla.application.component.controller');
 
 /**
@@ -57,7 +55,7 @@ class FabrikAdminController extends JControllerLegacy
 		 * Use true so that we always use the Joomla db when in admin.
 		 * otherwise if alt cnn set to default that is loaded and the fabrik tables are not found
 		 */
-		$db = Worker::getDbo(true);
+		$db = FabrikWorker::getDbo(true);
 		$config['dbo'] = $db;
 		$r = parent::createModel($name, $prefix, $config);
 

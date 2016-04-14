@@ -11,8 +11,6 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Fabrik\Helpers\Text;
-
 //@TODO if we ever get calendars inside packages then the ids will need to be
 // Replaced with classes contained within a distinct id
 
@@ -43,7 +41,7 @@ $row = $this->row;
 			<?php if ($this->canAdd && $this->params->get('add_type', 'both') != 'dblClickOnly') :
 				?>
 				<div id="addEventButton" style='display:inline;'>
-					<a href="#" class="btn btn-success addEventButton" title="Add an event"><i class="icon-plus"></i> <?php echo Text::_('PLG_VISUALIZATION_FULLCALENDAR_ADD') ?>
+					<a href="#" class="btn btn-success addEventButton" title="Add an event"><i class="icon-plus"></i> <?php echo FText::_('PLG_VISUALIZATION_FULLCALENDAR_ADD') ?>
 					</a>
 				</div>
 
@@ -57,7 +55,7 @@ $row = $this->row;
 		<?php if ($this->params->get('show_fullcalendar_legend', 0))
 		{
 			$legends = $this->getModel()->getLegend();
-			echo "<h3>" . Text::_('PLG_VISUALIZATION_FULLCALENDAR_KEY') . "</h3>";
+			echo "<h3>" . JText::_('PLG_VISUALIZATION_FULLCALENDAR_KEY') . "</h3>";
 			echo "<ul>";
 
 			foreach ($legends as $legend)

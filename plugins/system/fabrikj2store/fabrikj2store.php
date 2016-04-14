@@ -9,8 +9,6 @@
  */
 defined('_JEXEC') or die();
 
-use Fabrik\Helpers\Worker;
-
 class plgSystemFabrikj2store extends JPlugin
 {
 
@@ -90,8 +88,8 @@ class plgSystemFabrikj2store extends JPlugin
 			$params = $formModel->getParams();
 			$index  = array_search('j2store', (array) $params->get('plugins', array(), 'array'));
 
-			$w      = new Worker;
-			$plugIn = Worker::getPluginManager()->loadPlugIn('j2store', 'form');
+			$w      = new FabrikWorker;
+			$plugIn = FabrikWorker::getPluginManager()->loadPlugIn('j2store', 'form');
 
 			// Set params relative to plugin render order
 			$plugInParams = $plugIn->setParams($params, $index);

@@ -8,15 +8,10 @@
  * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
-namespace Fabrik\Plugins\Element;
-
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use \stdClass;
-use \JLayoutFile;
-use Fabrik\Helpers\ArrayHelper;
-use Fabrik\Helpers\Worker;
+use Joomla\Utilities\ArrayHelper;
 
 /**
  * Plugin element to render plain text/HTML
@@ -26,7 +21,7 @@ use Fabrik\Helpers\Worker;
  * @since       3.0
  */
 
-class Display extends Element
+class PlgFabrik_ElementDisplay extends PlgFabrik_Element
 {
 	/**
 	 * Db table field type
@@ -87,7 +82,7 @@ class Display extends Element
 	{
 		if (!$this->getParams()->get('display_showlabel', true))
 		{
-			return $this->getValue(array());
+			return $this->getValue(array());;
 		}
 
 		return parent::getRawLabel();
@@ -145,7 +140,7 @@ class Display extends Element
 
 	protected function getDefaultOnACL($data, $opts)
 	{
-		return ArrayHelper::getValue($opts, 'use_default', true) == false ? '' : $this->getDefaultValue($data);
+		return FArrayHelper::getValue($opts, 'use_default', true) == false ? '' : $this->getDefaultValue($data);
 	}
 
 	/**
@@ -165,7 +160,7 @@ class Display extends Element
 		if ($value === '')
 		{
 			// Query string for joined data
-			$value = ArrayHelper::getValue($data, $value);
+			$value = FArrayHelper::getValue($data, $value);
 		}
 
 		$formModel = $this->getFormModel();
@@ -174,7 +169,7 @@ class Display extends Element
 
 		if (array_key_exists('runplugins', $opts) && $opts['runplugins'] == 1)
 		{
-			Worker::getPluginManager()->runPlugins('onGetElementDefault', $formModel, 'form', $this);
+			FabrikWorker::getPluginManager()->runPlugins('onGetElementDefault', $formModel, 'form', $this);
 		}
 
 		return $value;

@@ -8,17 +8,8 @@
  * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
-namespace Fabrik\Plugins\Element;
-
 // No direct access
 defined('_JEXEC') or die('Restricted access');
-
-use Fabrik\Helpers\ArrayHelper;
-use \JHtml;
-use \stdClass;
-use Fabrik\Helpers\StringHelper;
-use Fabrik\Helpers\Text;
-use Fabrik\Helpers\Worker;
 
 /**
  * Plugin element to render dropdown
@@ -28,7 +19,7 @@ use Fabrik\Helpers\Worker;
  * @since       3.0
  */
 
-class Dropdown extends ElementList
+class PlgFabrik_ElementDropdown extends PlgFabrik_ElementList
 {
 	/**
 	 * Method to set the element id
@@ -92,12 +83,12 @@ class Dropdown extends ElementList
 				$optGroup = true;
 			}
 
-			$tmpLabel = ArrayHelper::getValue($labels, $i);
-			$disable = ArrayHelper::getValue($endIs, $i);
+			$tmpLabel = FArrayHelper::getValue($labels, $i);
+			$disable = FArrayHelper::getValue($endIs, $i);
 
 			// For values like '1"'
 			$tmpVal = htmlspecialchars($tmpVal, ENT_QUOTES);
-			$opt = JHtml::_('select.option', $tmpVal, $tmpLabel);
+			$opt = JHTML::_('select.option', $tmpVal, $tmpLabel);
 			$opt->disable = $disable;
 			$opts[] = $opt;
 
@@ -118,7 +109,7 @@ class Dropdown extends ElementList
 			{
 				if (!in_array($sel, $values) && $sel !== '')
 				{
-					$opts[] = JHtml::_('select.option', $sel, $sel);
+					$opts[] = JHTML::_('select.option', $sel, $sel);
 					$aRoValues[] = $this->getReadOnlyOutput($sel, $sel);
 				}
 			}
@@ -153,7 +144,7 @@ class Dropdown extends ElementList
 			}
 
 			// @todo JLayout list
-			$str = JHtml::_('select.groupedlist', $groupedOpts, $name, $settings);
+			$str = JHTML::_('select.groupedlist', $groupedOpts, $name, $settings);
 		}
 		else
 		{
@@ -204,7 +195,7 @@ class Dropdown extends ElementList
 		$opts->data = (empty($values) && empty($labels)) ? array() : array_combine($values, $labels);
 		$opts->multiple = (bool) $params->get('multiple', '0') == '1';
 		$opts->advanced = $this->getAdvancedSelectClass() != '';
-		Text::script('PLG_ELEMENT_DROPDOWN_ENTER_VALUE_LABEL');
+		JText::script('PLG_ELEMENT_DROPDOWN_ENTER_VALUE_LABEL');
 
 		return array('FbDropdown', $id, $opts);
 	}
@@ -236,13 +227,13 @@ class Dropdown extends ElementList
 				}
 				else
 				{
-					$w = new Worker;
+					$w = new FabrikWorker;
 					$default = $w->parseMessageForPlaceHolder($default, $data);
 
 					if ($element->eval == "1")
 					{
 						$v = @eval((string) stripslashes($default));
-						Worker::logEval($default, 'Caught exception on eval in ' . $element->name . '::getDefaultValue() : %s');
+						FabrikWorker::logEval($default, 'Caught exception on eval in ' . $element->name . '::getDefaultValue() : %s');
 					}
 					else
 					{
@@ -378,7 +369,7 @@ class Dropdown extends ElementList
 
 		for ($i = 0; $i < count($labels); $i++)
 		{
-			if (StringHelper::strtolower($labels[$i]) == StringHelper::strtolower($value))
+			if (JString::strtolower($labels[$i]) == JString::strtolower($value))
 			{
 				return $values[$i];
 			}
@@ -419,7 +410,7 @@ class Dropdown extends ElementList
 	public function getFilterQuery($key, $condition, $value, $originalValue, $type = 'normal')
 	{
 		$params = $this->getParams();
-		$condition = StringHelper::strtoupper($condition);
+		$condition = JString::strtoupper($condition);
 		$this->encryptFieldName($key);
 
 		if ((bool) $params->get('multiple', false))

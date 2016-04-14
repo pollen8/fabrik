@@ -12,7 +12,6 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Fabrik\Helpers\Html;
 /*
  This is an example of how to customize a form template, placing your elements in some specific layout,
  rather than using the simple 'list of elements' the Fabrik default templates use.
@@ -69,4 +68,4 @@ echo "<div class=\"fabrikMainError fabrikError$active\">$form->error</div>";?>
 <?php
 echo $form->outro;
 echo $this->pluginend;
-echo Html::keepalive();?>
+echo FabrikHelperHTML::keepalive();?>

@@ -12,8 +12,6 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Fabrik\Helpers\Worker;
-
 jimport('joomla.application.component.modellist');
 
 /**
@@ -33,7 +31,7 @@ class FabModelList extends JModelList
 	 */
 	public function __construct($config = array())
 	{
-		$config['dbo'] = Worker::getDbo(true);
+		$config['dbo'] = FabrikWorker::getDbo(true);
 		parent::__construct($config);
 	}
 

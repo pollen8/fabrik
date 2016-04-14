@@ -8,12 +8,12 @@
  * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
-namespace Fabrik\Plugins\Element;
-
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use \stdClass;
+jimport('joomla.application.component.model');
+
+require_once JPATH_SITE . '/components/com_fabrik/models/element.php';
 
 /**
  * Render an embedded youtube video play
@@ -22,7 +22,7 @@ use \stdClass;
  * @subpackage  Fabrik.element.youtube
  * @since       3.0
  */
-class Youtube extends Element
+class PlgFabrik_ElementYoutube extends PlgFabrik_Element
 {
 	protected $pluginName = 'youtube';
 

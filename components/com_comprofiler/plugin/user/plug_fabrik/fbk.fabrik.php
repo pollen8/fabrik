@@ -6,7 +6,6 @@ use CB\Database\Table\PluginTable;
 use CB\Database\Table\TabTable;
 use CB\Database\Table\UserTable;
 use CBLib\Language\CBTxt;
-use Fabrik\Helpers\Text;
 
 if ( ! ( defined( '_VALID_CB' ) || defined( '_JEXEC' ) || defined( '_VALID_MOS' ) ) ) { die( 'Direct Access to this location is not allowed.' ); }
 
@@ -48,7 +47,7 @@ class getFabrikTab extends cbTabHandler {
 		JPluginHelper::importPlugin('content', 'fabrik', true, $dispatcher);
 		if (JPluginHelper::importPlugin('content', 'fabrik', true, $dispatcher) !== true)
 		{
-			throw new RuntimeException(Text::_('Fabrik content plugin not loaded in CB tab!  Check that it is installed and enabled.'), 400);
+			throw new RuntimeException(JText::_('Fabrik content plugin not loaded in CB tab!  Check that it is installed and enabled.'), 400);
 		}
 		$dispatcher->register('content', 'plgContentFabrik');
 		$args = array();

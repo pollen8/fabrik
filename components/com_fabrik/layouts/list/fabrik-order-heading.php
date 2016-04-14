@@ -6,9 +6,6 @@
 
 defined('JPATH_BASE') or die;
 
-use Fabrik\Helpers\Html;
-use Fabrik\Helpers\Text;
-
 $d = $displayData;
 $d->class = '';
 $heading = '';
@@ -24,18 +21,18 @@ switch ($d->orderDir)
 	case 'desc':
 		$d->orderDir = '-';
 		$d->class = 'class="fabrikorder-desc"';
-		$img = Html::image('arrow-up.png', 'list', $d->tmpl, array('alt' => Text::_('COM_FABRIK_ORDER')));
+		$img = FabrikHelperHTML::image('arrow-up.png', 'list', $d->tmpl, array('alt' => FText::_('COM_FABRIK_ORDER')));
 		break;
 	case 'asc':
 		$d->orderDir = 'desc';
 		$d->class = 'class="fabrikorder-asc"';
-		$img = Html::image('arrow-down.png', 'list', $d->tmpl, array('alt' => Text::_('COM_FABRIK_ORDER')));
+		$img = FabrikHelperHTML::image('arrow-down.png', 'list', $d->tmpl, array('alt' => FText::_('COM_FABRIK_ORDER')));
 		break;
 	case '':
 	case '-':
 		$d->orderDir = 'asc';
 		$d->class = 'class="fabrikorder"';
-		$img = Html::image('menu-2.png', 'list', $d->tmpl, array('alt' => Text::_('COM_FABRIK_ORDER')));
+		$img = FabrikHelperHTML::image('menu-2.png', 'list', $d->tmpl, array('alt' => FText::_('COM_FABRIK_ORDER')));
 		break;
 }
 
@@ -46,14 +43,14 @@ if ($d->class === '')
 		if ($d->item->order_dir === 'desc')
 		{
 			$d->class = 'class="fabrikorder-desc"';
-			$img = Html::image('arrow-up.png', 'list', $d->tmpl, array('alt' => Text::_('COM_FABRIK_ORDER')));
+			$img = FabrikHelperHTML::image('arrow-up.png', 'list', $d->tmpl, array('alt' => FText::_('COM_FABRIK_ORDER')));
 		}
 	}
 }
 
 if ($d->elementParams->get('can_order', false))
 {
-	$heading = '<a ' . $d->class . ' ' . Html::propertiesFromArray($headingProperties) . ' href="#">' . $img . $d->label . '</a>';
+	$heading = '<a ' . $d->class . ' ' . FabrikHelperHTML::propertiesFromArray($headingProperties) . ' href="#">' . $img . $d->label . '</a>';
 }
 else
 {

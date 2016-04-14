@@ -11,9 +11,6 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Fabrik\Helpers\Worker;
-use Fabrik\Helpers\StringHelper;
-
 require_once 'fabcontrollerform.php';
 
 /**
@@ -57,7 +54,7 @@ class FabrikAdminControllerImport extends FabControllerForm
 		$adminListModel->setFormModel($formModel);
 		$groupId       = current(array_keys($formModel->getGroupsHiarachy()));
 		$plugins       = $input->get('plugin', array(), 'array');
-		$pluginManager = Worker::getPluginManager();
+		$pluginManager = FabrikWorker::getPluginManager();
 		$elementModel  = $pluginManager->getPlugIn('field', 'element');
 		$element       = FabTable::getInstance('Element', 'FabrikTable');
 		$newElements   = $input->get('createElements', array(), 'array');
@@ -68,8 +65,8 @@ class FabrikAdminControllerImport extends FabControllerForm
 			if ($add)
 			{
 				$element->id                   = 0;
-				$element->name                 = StringHelper::dbFieldName($elName);
-				$element->label                = StringHelper::strtolower($elName);
+				$element->name                 = FabrikString::dbFieldName($elName);
+				$element->label                = JString::strtolower($elName);
 				$element->plugin               = $plugins[$c];
 				$element->group_id             = $groupId;
 				$element->eval                 = 0;
@@ -168,7 +165,7 @@ class FabrikAdminControllerImport extends FabControllerForm
 			{
 				if ($add)
 				{
-					$name                                          = StringHelper::dbFieldName($elName);
+					$name                                          = FabrikString::dbFieldName($elName);
 					$plugin                                        = $plugins[$c];
 					$newElements[$name]                            = $plugin;
 					$model->matchedHeadings[$dbName . '.' . $name] = $name;

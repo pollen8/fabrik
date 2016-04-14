@@ -11,8 +11,6 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Fabrik\Helpers\Text;
-
 jimport('joomla.application.component.controlleradmin');
 
 /**
@@ -33,7 +31,7 @@ class FabrikAdminControllerHome extends JControllerAdmin
 	{
 		$model = $this->getModel('Home');
 		$model->reset();
-		$this->setRedirect('index.php?option=com_fabrik', Text::_('COM_FABRIK_HOME_FABRIK_RESET'));
+		$this->setRedirect('index.php?option=com_fabrik', FText::_('COM_FABRIK_HOME_FABRIK_RESET'));
 	}
 
 	/**
@@ -45,7 +43,7 @@ class FabrikAdminControllerHome extends JControllerAdmin
 	{
 		$model = $this->getModel('Home');
 		$model->installSampleData();
-		$this->setRedirect('index.php?option=com_fabrik', Text::_('COM_FABRIK_HOME_SAMPLE_DATA_INSTALLED'));
+		$this->setRedirect('index.php?option=com_fabrik', FText::_('COM_FABRIK_HOME_SAMPLE_DATA_INSTALLED'));
 	}
 
 	/**
@@ -60,7 +58,7 @@ class FabrikAdminControllerHome extends JControllerAdmin
 
 		if ($rssDoc == false)
 		{
-			$output = Text::_('Error: Feed not retrieved');
+			$output = FText::_('Error: Feed not retrieved');
 		}
 		else
 		{
@@ -68,13 +66,13 @@ class FabrikAdminControllerHome extends JControllerAdmin
 			$title = $rssDoc->get_title();
 			$link = $rssDoc->get_link();
 			$output = '<table class="adminlist">';
-			$output .= '<tr><th colspan="3"><a href="' . $link . '" target="_blank">' . Text::_($title) . '</th></tr>';
+			$output .= '<tr><th colspan="3"><a href="' . $link . '" target="_blank">' . FText::_($title) . '</th></tr>';
 			$items = array_slice($rssDoc->get_items(), 0, 3);
 			$numItems = count($items);
 
 			if ($numItems == 0)
 			{
-				$output .= '<tr><th>' . Text::_('No news items found') . '</th></tr>';
+				$output .= '<tr><th>' . FText::_('No news items found') . '</th></tr>';
 			}
 			else
 			{

@@ -11,9 +11,6 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Fabrik\Helpers\Html;
-use Fabrik\Helpers\Text;
-
 jimport('joomla.application.component.view');
 
 /**
@@ -77,8 +74,8 @@ class FabrikAdminViewVisualization extends JViewLegacy
 		$this->addToolbar();
 		FabrikAdminHelper::setViewLayout($this);
 
-		$source                       = Html::framework();
-		$source['Fabrik']             = Html::mediaFile('fabrik.js');
+		$source                       = FabrikHelperHTML::framework();
+		$source['Fabrik']             = FabrikHelperHTML::mediaFile('fabrik.js');
 		$source['Namespace']          = 'administrator/components/com_fabrik/views/namespace.js';
 		$source['PluginManager']      = 'administrator/components/com_fabrik/views/pluginmanager.js';
 		$source['AdminVisualization'] = 'administrator/components/com_fabrik/views/visualization/adminvisualization.js';
@@ -88,7 +85,7 @@ class FabrikAdminViewVisualization extends JViewLegacy
 		$dep->deps                                      = array('admin/pluginmanager');
 		$shim['admin/visualization/adminvisualization'] = $dep;
 
-		Html::iniRequireJS($shim);
+		FabrikHelperHTML::iniRequireJS($shim);
 
 		$opts         = new stdClass;
 		$opts->plugin = $this->item->plugin;
@@ -98,7 +95,7 @@ class FabrikAdminViewVisualization extends JViewLegacy
 		Fabrik.controller = new AdminVisualization(options);
 ";
 
-		Html::script($source, $js, '-min.js');
+		FabrikHelperHTML::script($source, $js, '-min.js');
 		parent::display($tpl);
 	}
 
@@ -119,7 +116,7 @@ class FabrikAdminViewVisualization extends JViewLegacy
 		$checkedOutBy = $this->item->get('checked_out');
 		$checkedOut   = !($checkedOutBy == 0 || $checkedOutBy == $user->get('id'));
 		$canDo        = FabrikAdminHelper::getActions($this->state->get('filter.category_id'));
-		$title        = $isNew ? Text::_('COM_FABRIK_MANAGER_VISUALIZATION_NEW') : Text::_('COM_FABRIK_MANAGER_VISUALIZATION_EDIT');
+		$title        = $isNew ? FText::_('COM_FABRIK_MANAGER_VISUALIZATION_NEW') : FText::_('COM_FABRIK_MANAGER_VISUALIZATION_EDIT');
 		$title .= $isNew ? '' : ' "' . $this->item->get('label') . '"';
 		JToolBarHelper::title($title, 'chart');
 
@@ -163,6 +160,6 @@ class FabrikAdminViewVisualization extends JViewLegacy
 		}
 
 		JToolBarHelper::divider();
-		JToolBarHelper::help('JHELP_COMPONENTS_FABRIK_VISUALIZATIONS_EDIT', false, Text::_('JHELP_COMPONENTS_FABRIK_VISUALIZATIONS_EDIT'));
+		JToolBarHelper::help('JHELP_COMPONENTS_FABRIK_VISUALIZATIONS_EDIT', false, FText::_('JHELP_COMPONENTS_FABRIK_VISUALIZATIONS_EDIT'));
 	}
 }

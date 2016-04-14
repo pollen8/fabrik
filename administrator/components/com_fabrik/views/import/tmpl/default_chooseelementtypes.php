@@ -12,10 +12,6 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Fabrik\Helpers\ArrayHelper;
-use Fabrik\Helpers\Text;
-use Fabrik\Helpers\StringHelper;
-
 $app = JFactory::getApplication();
 $input = $app->input;
 $jform = $input->get('jform', array(), 'array');
@@ -23,20 +19,20 @@ $jform = $input->get('jform', array(), 'array');
 <form action="index.php" method="post" name="adminForm" id="adminForm">
 	<?php if (!empty($this->newHeadings)) :
 		if ((int) $this->table->id !== 0) :
-		echo "<H3>" . Text::_('COM_FABRIK_IMPORT_NEW_HEADINGS_FOUND') . "</h3>";
-		echo Text::sprintf('COM_FABRIK_IMPORT_NEW_HEADINGS_FOUND_DESC', $this->table->label, $this->table->label);
+		echo "<H3>" . FText::_('COM_FABRIK_IMPORT_NEW_HEADINGS_FOUND') . "</h3>";
+		echo JText::sprintf('COM_FABRIK_IMPORT_NEW_HEADINGS_FOUND_DESC', $this->table->label, $this->table->label);
 	endif;?>
 
 		<table class="adminlist table table-striped">
 			<thead>
 			<tr>
-				<th class="title"><?php echo Text::_('COM_FABRIK_IMPORT_CREATE_ELEMENT');?></th>
-				<th class="title"><?php echo Text::_('COM_FABRIK_IMPORT_LABEL');?></th>
-				<th class="title"><?php echo Text::_('COM_FABRIK_IMPORT_ELEMENT_TYPE');?></th>
+				<th class="title"><?php echo FText::_('COM_FABRIK_IMPORT_CREATE_ELEMENT');?></th>
+				<th class="title"><?php echo FText::_('COM_FABRIK_IMPORT_LABEL');?></th>
+				<th class="title"><?php echo FText::_('COM_FABRIK_IMPORT_ELEMENT_TYPE');?></th>
 				<?php if ($this->selectPKField) :?>
-					<th class="title"><?php echo Text::_('COM_FABRIK_PRIMARY_KEY');?></th>
+					<th class="title"><?php echo FText::_('COM_FABRIK_PRIMARY_KEY');?></th>
 				<?php endif; ?>
-				<th><?php echo Text::_('COM_FABRIK_IMPORT_SAMPLE_DATA');?></th>
+				<th><?php echo FText::_('COM_FABRIK_IMPORT_SAMPLE_DATA');?></th>
 			</tr>
 			</thead>
 			<tbody>
@@ -47,7 +43,7 @@ $jform = $input->get('jform', array(), 'array');
 				$heading = trim($this->newHeadings[$i]);
 				$sample = '';
 				foreach ($this->headings as $sKey => $sVal) :
-					if(StringHelper::strtolower($heading) == StringHelper::strtolower($sVal)) :
+					if(JString::strtolower($heading) == JString::strtolower($sVal)) :
 						$sample = $this->sample[$sKey];
 					endif;
 				endforeach;
@@ -55,15 +51,15 @@ $jform = $input->get('jform', array(), 'array');
 			<tr>
 				<td>
 				<?php if ($i == 0 && !$this->selectPKField) :?>
-					<input type="hidden" name="createElements[<?php echo $heading;?>]" value="1" /><?php echo Text::_('JYES');?>
+					<input type="hidden" name="createElements[<?php echo $heading;?>]" value="1" /><?php echo FText::_('JYES');?>
 				<?php else : ?>
 					<label>
 						<input type="radio" name="createElements[<?php echo $heading;?>]" value="0" <?php echo $chx?>>
-						<?php echo Text::_('JNO');?>
+						<?php echo FText::_('JNO');?>
 					</label>
 					<label>
 						<input type="radio" name="createElements[<?php echo $heading;?>]" value="1" <?php echo $chx2?>>
-						<?php echo Text::_('JYES');?>
+						<?php echo FText::_('JYES');?>
 					</label>
 				<?php endif; ?>
 			</td>
@@ -99,9 +95,9 @@ endif;
 	<input type="hidden" name="boxchecked" value="" />
 	<input type="hidden" name="jform[drop_data]" value="<?php echo $this->drop_data ?>" />
 	<input type="hidden" name="jform[overwrite]" value="<?php echo $this->overwrite ?>" />
-	<input type="hidden" name="connection_id" value="<?php echo ArrayHelper::getValue($jform, 'connection_id')?>" />
-	<input type="hidden" name="jform[addkey]" value="<?php echo ArrayHelper::getValue($jform, 'addkey');?>" />
-	<input type="hidden" name="label" value="<?php echo ArrayHelper::getValue($jform, 'label')?>" />
-	<input type="hidden" name="db_table_name" value="<?php echo ArrayHelper::getValue($jform, 'db_table_name')?>" />
+	<input type="hidden" name="connection_id" value="<?php echo FArrayHelper::getValue($jform, 'connection_id')?>" />
+	<input type="hidden" name="jform[addkey]" value="<?php echo FArrayHelper::getValue($jform, 'addkey');?>" />
+	<input type="hidden" name="label" value="<?php echo FArrayHelper::getValue($jform, 'label')?>" />
+	<input type="hidden" name="db_table_name" value="<?php echo FArrayHelper::getValue($jform, 'db_table_name')?>" />
 	<?php echo JHTML::_('form.token'); ?>
 </form>

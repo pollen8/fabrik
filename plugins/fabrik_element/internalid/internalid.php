@@ -8,12 +8,8 @@
  * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
-namespace Fabrik\Plugins\Element;
-
 // No direct access
 defined('_JEXEC') or die('Restricted access');
-
-use \stdClass;
 
 /**
  * Plugin element to render internal id
@@ -22,12 +18,12 @@ use \stdClass;
  * @subpackage  Fabrik.element.internalid
  * @since       3.0
  */
-class Internalid extends Element
+
+class PlgFabrik_ElementInternalid extends PlgFabrik_Element
 {
 	/**
 	 * If the element 'Include in search all' option is set to 'default' then this states if the
 	 * element should be ignored from search all.
-	 *
 	 * @var bool  True, ignore in extended search all.
 	 */
 	protected $ignoreSearchAllDefault = true;
@@ -35,25 +31,25 @@ class Internalid extends Element
 	/**
 	 * Draws the html form element
 	 *
-	 * @param   array $data          to pre-populate element with
-	 * @param   int   $repeatCounter repeat group counter
+	 * @param   array  $data           to pre-populate element with
+	 * @param   int    $repeatCounter  repeat group counter
 	 *
-	 * @return  string    elements html
+	 * @return  string	elements html
 	 */
 
 	public function render($data, $repeatCounter = 0)
 	{
 		$element = $this->getElement();
-		$value   = $this->getValue($data, $repeatCounter);
-		$value   = stripslashes($value);
+		$value = $this->getValue($data, $repeatCounter);
+		$value = stripslashes($value);
 
 		if (!$this->isEditable())
 		{
 			return ($element->hidden == '1') ? "<!-- " . $value . " -->" : $value;
 		}
 
-		$layout           = $this->getLayout('form');
-		$layoutData       = new stdClass;
+		$layout = $this->getLayout('form');
+		$layoutData = new stdClass;
 		$layoutData->name = $this->getHTMLName($repeatCounter);;
 		$layoutData->id = $this->getHTMLId($repeatCounter);;
 		$layoutData->value = htmlspecialchars($value, ENT_COMPAT, 'UTF-8');
@@ -76,14 +72,14 @@ class Internalid extends Element
 	/**
 	 * Returns javascript which creates an instance of the class defined in formJavascriptClass()
 	 *
-	 * @param   int $repeatCounter Repeat group counter
+	 * @param   int  $repeatCounter  Repeat group counter
 	 *
 	 * @return  array
 	 */
 
 	public function elementJavascript($repeatCounter)
 	{
-		$id   = $this->getHTMLId($repeatCounter);
+		$id = $this->getHTMLId($repeatCounter);
 		$opts = $this->getElementJSOptions($repeatCounter);
 
 		return array('FbInternalId', $id, $opts);
@@ -105,14 +101,14 @@ class Internalid extends Element
 	 *
 	 * @param   array $properties Default props
 	 *
-	 * @return  \FabrikTableElement    element (id = 0)
+	 * @return  FabrikTableElement	element (id = 0)
 	 */
 	public function getDefaultProperties($properties = array())
 	{
-		$item                 = parent::getDefaultProperties();
-		$item->primary_key    = true;
-		$item->width          = 3;
-		$item->hidden         = 1;
+		$item = parent::getDefaultProperties();
+		$item->primary_key = true;
+		$item->width = 3;
+		$item->hidden = 1;
 		$item->auto_increment = 1;
 
 		return $item;

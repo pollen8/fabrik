@@ -11,9 +11,6 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Fabrik\Helpers\Worker;
-use Fabrik\Helpers\Text;
-
 // Require the abstract plugin class
 require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
 
@@ -75,7 +72,7 @@ class PlgFabrik_FormKunena extends PlgFabrik_Form
 		$app = $this->app;
 		$formModel = $this->getModel();
 		$input = $app->input;
-		$w = new Worker;
+		$w = new FabrikWorker;
 
 		$catid = $params->get('kunena_category', 0);
 
@@ -142,7 +139,7 @@ class PlgFabrik_FormKunena extends PlgFabrik_Form
 
 		$user = $this->user;
 		$now = $this->date;
-		$w = new Worker;
+		$w = new FabrikWorker;
 
 		$catid = $params->get('kunena_category', 0);
 
@@ -176,12 +173,12 @@ class PlgFabrik_FormKunena extends PlgFabrik_Form
 
 			if (!$message->save())
 			{
-				$app->enqueueMessage(Text::_('PLG_FORM_KUNENA_ERR_DIDNT_SAVE_MESSAGE') . ': ' . $message->getError(), 'error');
+				$app->enqueueMessage(FText::_('PLG_FORM_KUNENA_ERR_DIDNT_SAVE_MESSAGE') . ': ' . $message->getError(), 'error');
 			}
 		}
 		else
 		{
-			$app->enqueueMessage(Text::_('PLG_FORM_KUNENA_ERR_DIDNT_SAVE_TOPIC') . ': ' . $topic->getError(), 'error');
+			$app->enqueueMessage(FText::_('PLG_FORM_KUNENA_ERR_DIDNT_SAVE_TOPIC') . ': ' . $topic->getError(), 'error');
 		}
 
 		$input->set('id', $origId);

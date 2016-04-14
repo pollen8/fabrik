@@ -11,12 +11,9 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Fabrik\Helpers\Html;
-use Fabrik\Helpers\Worker;
-use Fabrik\Helpers\Text;
-
 jimport('joomla.application.component.model');
 require_once 'fabrikmodelform.php';
+require_once COM_FABRIK_FRONTEND . '/helpers/element.php';
 
 /**
  * Fabrik Form Model
@@ -41,7 +38,7 @@ class FabrikFEModelFormInlineEdit extends FabModelForm
 	{
 		$this->formModel = JModelLegacy::getInstance('Form', 'FabrikFEModel');
 		$input = $this->app->input;
-		$j3 = Worker::j3();
+		$j3 = FabrikWorker::j3();
 
 		// Need to render() with all element ids in case canEditRow plugins etc. use the row data.
 		$elids = $input->get('elementid', array(), 'array');
@@ -87,7 +84,7 @@ class FabrikFEModelFormInlineEdit extends FabModelForm
 		}
 
 		$onLoad[] = "Fabrik.fireEvent('fabrik.list.inlineedit.setData');";
-		Html::script($srcs, implode("\n", $onLoad));
+		FabrikHelperHTML::script($srcs, implode("\n", $onLoad));
 	}
 
 	/**
@@ -103,7 +100,7 @@ class FabrikFEModelFormInlineEdit extends FabModelForm
 		$input = $this->app->input;
 		$html = array();
 		$html[] = '<div class="modal">';
-		$html[] = ' <div class="modal-header"><h3>' . Text::_('COM_FABRIK_EDIT') . '</h3></div>';
+		$html[] = ' <div class="modal-header"><h3>' . FText::_('COM_FABRIK_EDIT') . '</h3></div>';
 		$html[] = '<div class="modal-body">';
 		$html[] = '<form>';
 
@@ -131,15 +128,15 @@ class FabrikFEModelFormInlineEdit extends FabModelForm
 			if ($input->getBool('inlinecancel') == true)
 			{
 				$html[] = '<a href="#" class="btn inline-cancel">';
-				$html[] = Html::image('delete.png', 'list', $thisTmpl, array('alt' => Text::_('COM_FABRIK_CANCEL')));
-				$html[] = '<span>' . Text::_('COM_FABRIK_CANCEL') . '</span></a>';
+				$html[] = FabrikHelperHTML::image('delete.png', 'list', $thisTmpl, array('alt' => FText::_('COM_FABRIK_CANCEL')));
+				$html[] = '<span>' . FText::_('COM_FABRIK_CANCEL') . '</span></a>';
 			}
 
 			if ($input->getBool('inlinesave') == true)
 			{
 				$html[] = '<a href="#" class="btn btn-primary inline-save">';
-				$html[] = Html::image('save.png', 'list', $thisTmpl, array('alt' => Text::_('COM_FABRIK_SAVE')));
-				$html[] = '<span>' . Text::_('COM_FABRIK_SAVE') . '</span></a>';
+				$html[] = FabrikHelperHTML::image('save.png', 'list', $thisTmpl, array('alt' => FText::_('COM_FABRIK_SAVE')));
+				$html[] = '<span>' . FText::_('COM_FABRIK_SAVE') . '</span></a>';
 			}
 
 			$html[] = '</div>';
@@ -188,8 +185,8 @@ class FabrikFEModelFormInlineEdit extends FabModelForm
 			{
 				$html[] = '<li class="ajax-controls inline-cancel">';
 				$html[] = '<a href="#" class="">';
-				$html[] = Html::image('delete.png', 'list', $thisTmpl, array('alt' => Text::_('COM_FABRIK_CANCEL')));
-				$html[] = '<span>' . Text::_('COM_FABRIK_CANCEL') . '</span></a>';
+				$html[] = FabrikHelperHTML::image('delete.png', 'list', $thisTmpl, array('alt' => FText::_('COM_FABRIK_CANCEL')));
+				$html[] = '<span>' . FText::_('COM_FABRIK_CANCEL') . '</span></a>';
 				$html[] = '</li>';
 			}
 
@@ -197,8 +194,8 @@ class FabrikFEModelFormInlineEdit extends FabModelForm
 			{
 				$html[] = '<li class="ajax-controls inline-save">';
 				$html[] = '<a href="#" class="">';
-				$html[] = Html::image('save.png', 'list', $thisTmpl, array('alt' => Text::_('COM_FABRIK_SAVE')));
-				$html[] = '<span>' . Text::_('COM_FABRIK_SAVE') . '</span></a>';
+				$html[] = FabrikHelperHTML::image('save.png', 'list', $thisTmpl, array('alt' => FText::_('COM_FABRIK_SAVE')));
+				$html[] = '<span>' . FText::_('COM_FABRIK_SAVE') . '</span></a>';
 				$html[] = '</li>';
 			}
 

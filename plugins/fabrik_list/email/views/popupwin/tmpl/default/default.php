@@ -11,20 +11,17 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Fabrik\Helpers\Html;
-use Fabrik\Helpers\Text;
-
 ?>
 <form method="post" enctype="multipart/form-data" action="<?php echo JURI::base();?>index.php" name="emailtable" id="emailtable">
 	<div class="alert alert-info">
-		<?php echo Html::icon('icon-envelope'); ?> <?php echo Text::plural('PLG_LIST_EMAIL_N_RECORDS', $this->recordcount) ?>
+		<?php echo FabrikHelperHTML::icon('icon-envelope'); ?> <?php echo JText::plural('PLG_LIST_EMAIL_N_RECORDS', $this->recordcount) ?>
 	</div>
 	<?php
 	if ($this->showToField)
 	{
 	?>
 	<label>
-		<?php echo Text::_('PLG_LIST_EMAIL_TO') ?><br />
+		<?php echo FText::_('PLG_LIST_EMAIL_TO') ?><br />
 	</label>
 	<?php echo $this->fieldList ?>
 	<?php
@@ -35,14 +32,14 @@ use Fabrik\Helpers\Text;
 	{
 	?>
 	<label>
-		<?php echo Text::_('PLG_LIST_EMAIL_SUBJECT') ?><br />
+		<?php echo FText::_('PLG_LIST_EMAIL_SUBJECT') ?><br />
 	</label>
 		<input class="inputbox fabrikinput span12" type="text" name="subject" id="subject" value="<?php echo $this->subject?>" size="50" />
 	<?php
 	}
 	?>
 	<label>
-		<?php echo Text::_('PLG_LIST_EMAIL_MESSAGE') ?><br />
+		<?php echo FText::_('PLG_LIST_EMAIL_MESSAGE') ?><br />
 	</label>
 	<?php
 	echo $this->editor;
@@ -51,21 +48,21 @@ use Fabrik\Helpers\Text;
 {?>
 	<div class="attachment">
 		<label>
-			<?php echo Text::_('PLG_LIST_EMAIL_ATTACHMENTS') ?><br />
+			<?php echo FText::_('PLG_LIST_EMAIL_ATTACHMENTS') ?><br />
 			<input class="inputbox fabrikinput" name="attachment[]" type="file" id="attachment" />
 		</label>
 		<a href="#" class="addattachment">
-		<?php echo Html::image('plus.png', 'form', @$this->tmpl, Text::_('COM_FABRIK_ADD'));?>
+		<?php echo FabrikHelperHTML::image('plus.png', 'form', @$this->tmpl, FText::_('COM_FABRIK_ADD'));?>
 		</a>
 		<a href="#" class="delattachment">
-			<?php echo Html::image('minus-sign.png', 'form', @$this->tmpl, Text::_('COM_FABRIK_DELETE'));?>
+			<?php echo FabrikHelperHTML::image('minus-sign.png', 'form', @$this->tmpl, FText::_('COM_FABRIK_DELETE'));?>
 		</a>
 	</div>
 	<?php
 }
 		?>
 	<div class="form-actions">
-		<input type="submit" id="submit" value="<?php echo Text::_('PLG_LIST_EMAIL_SEND') ?>" class="button btn btn-primary" />
+		<input type="submit" id="submit" value="<?php echo FText::_('PLG_LIST_EMAIL_SEND') ?>" class="button btn btn-primary" />
 	</div>
 	<input type="hidden" name="option" value="com_fabrik" />
 	<input type="hidden" name="controller" value=list.email />

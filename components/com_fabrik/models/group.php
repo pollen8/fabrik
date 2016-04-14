@@ -12,10 +12,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 use \Joomla\Registry\Registry;
-use Fabrik\Helpers\ArrayHelper;
-use Fabrik\Helpers\Worker;
-use Fabrik\Helpers\StringHelper;
-use Fabrik\Helpers\Text;
+use Joomla\Utilities\ArrayHelper;
 
 jimport('joomla.application.component.model');
 
@@ -207,7 +204,7 @@ class FabrikFEModelGroup extends FabModel
 		}
 
 		$formModel = $this->getFormModel();
-		$pluginCanEdit = Worker::getPluginManager()->runPlugins('onCanEditGroup', $formModel, 'form', $this);
+		$pluginCanEdit = FabrikWorker::getPluginManager()->runPlugins('onCanEditGroup', $formModel, 'form', $this);
 
 		if (empty($pluginCanEdit))
 		{
@@ -329,7 +326,7 @@ class FabrikFEModelGroup extends FabModel
 	{
 		if (!isset($this->formsIamIn))
 		{
-			$db = Worker::getDbo(true);
+			$db = FabrikWorker::getDbo(true);
 			$query = $db->getQuery(true);
 			$query->select('form_id')->from('#__{package}_formgroup')->where('group_id = ' . (int) $this->getId());
 			$db->setQuery($query);
@@ -346,7 +343,7 @@ class FabrikFEModelGroup extends FabModel
 	 * NOTE: pretty sure that ->elements will already be loaded
 	 * within $formModel->getGroupsHiarachy()
 	 *
-	 * @return  Fabrik\Plugins\Element\Element[]	Element objects (bound to element plugin)
+	 * @return  PlgFabrik_Element[]	Element objects (bound to element plugin)
 	 */
 	public function getMyElements()
 	{
@@ -355,7 +352,7 @@ class FabrikFEModelGroup extends FabModel
 		{
 			$this->getGroup();
 			$this->elements = array();
-			$pluginManager = Worker::getPluginManager();
+			$pluginManager = FabrikWorker::getPluginManager();
 			$formModel = $this->getFormModel();
 			$allGroups = $pluginManager->getFormPlugins($formModel);
 
@@ -438,7 +435,7 @@ class FabrikFEModelGroup extends FabModel
 		if ($widths !== '')
 		{
 			$widths = explode(',', $widths);
-			$w = ArrayHelper::getValue($widths, ($rowIx) % $colCount, $w);
+			$w = FArrayHelper::getValue($widths, ($rowIx) % $colCount, $w);
 		}
 
 		$element->column = ' style="float:left;width:' . $w . ';';
@@ -468,7 +465,7 @@ class FabrikFEModelGroup extends FabModel
 		$element->column .= '" ';
 		$spans = $this->columnSpans();
 		$spanKey = $rowIx % $colCount;
-		$element->span = $element->hidden ? '' : ArrayHelper::getValue($spans, $spanKey, 'span' . floor(12 / $colCount));
+		$element->span = $element->hidden ? '' : FArrayHelper::getValue($spans, $spanKey, 'span' . floor(12 / $colCount));
 
 		if (!$element->hidden)
 		{
@@ -510,7 +507,7 @@ class FabrikFEModelGroup extends FabModel
 
 		$widths = explode(',', $widths);
 
-		if (Worker::j3())
+		if (FabrikWorker::j3())
 		{
 			foreach ($widths as &$w)
 			{
@@ -579,7 +576,7 @@ class FabrikFEModelGroup extends FabModel
 	 *
 	 * @since 120/10/2011 - can override with elementid request data (used in inline edit to limit which elements are shown)
 	 *
-	 * @return  Fabrik\Plugins\Element\Element[]	published element objects
+	 * @return  PlgFabrik_Element[]	published element objects
 	 */
 	public function getPublishedElements()
 	{
@@ -765,7 +762,7 @@ class FabrikFEModelGroup extends FabModel
 	/**
 	 * Get published elements to show in list
 	 *
-	 * @return  Fabrik\Plugins\Element\Element[]
+	 * @return  PlgFabrik_Element[]
 	 */
 	public function getPublishedListElements()
 	{
@@ -860,7 +857,7 @@ class FabrikFEModelGroup extends FabModel
 		{
 			$params = $this->getParams();
 			$row = $this->getFormModel()->getData();
-			$ok = Worker::canUserDo($params, $row, 'repeat_delete_access_user');
+			$ok = FabrikWorker::canUserDo($params, $row, 'repeat_delete_access_user');
 
 			if ($ok === -1)
 			{
@@ -965,7 +962,7 @@ class FabrikFEModelGroup extends FabModel
 	 */
 	public function getGroupProperties(&$formModel)
 	{
-		$w = new Worker;
+		$w = new FabrikWorker;
 		$input = $this->app->input;
 		$group = new stdClass;
 		$groupTable = $this->getGroup();
@@ -1019,26 +1016,26 @@ class FabrikFEModelGroup extends FabModel
 
 		$label = $input->getString('group' . $group->id . '_label', $groupTable->label);
 
-		if (StringHelper::stristr($label, "{Add/Edit}"))
+		if (JString::stristr($label, "{Add/Edit}"))
 		{
-			$replace = $formModel->isNewRecord() ? Text::_('COM_FABRIK_ADD') : Text::_('COM_FABRIK_EDIT');
+			$replace = $formModel->isNewRecord() ? FText::_('COM_FABRIK_ADD') : FText::_('COM_FABRIK_EDIT');
 			$label = str_replace("{Add/Edit}", $replace, $label);
 		}
 
 		$groupTable->label = $label;
 		$group->title = $w->parseMessageForPlaceHolder($groupTable->label, $formModel->data, false);
-		$group->title = Text::_($group->title);
+		$group->title = FText::_($group->title);
 		$group->name = $groupTable->name;
 		$group->displaystate = ($group->canRepeat == 1 && $formModel->isEditable()) ? 1 : 0;
 		$group->maxRepeat = (int) $params->get('repeat_max');
 		$group->minRepeat = $params->get('repeat_min', '') === '' ? 1 : (int) $params->get('repeat_min', '');
 		$group->showMaxRepeats  = $params->get('show_repeat_max', '0') == '1';
 		$group->minMaxErrMsg = $params->get('repeat_error_message', '');
-		$group->minMaxErrMsg = Text::_($group->minMaxErrMsg);
+		$group->minMaxErrMsg = FText::_($group->minMaxErrMsg);
 		$group->canAddRepeat = $this->canAddRepeat();
 		$group->canDeleteRepeat = $this->canDeleteRepeat();
-		$group->intro = $text = StringHelper::translate($params->get('intro'));
-		$group->outro = Text::_($params->get('outro'));
+		$group->intro = $text = FabrikString::translate($params->get('intro'));
+		$group->outro = FText::_($params->get('outro'));
 		$group->columns = $params->get('group_columns', 1);
 		$group->splitPage = $params->get('split_page', 0);
 		$group->showLegend = $this->showLegend($group);
@@ -1249,7 +1246,7 @@ class FabrikFEModelGroup extends FabModel
 		$input = $this->app->input;
 		$repeatTotals = $input->get('fabrik_repeat_group', array(0), 'post', 'array');
 
-		return (int) ArrayHelper::getValue($repeatTotals, $this->getGroup()->id, 0);
+		return (int) FArrayHelper::getValue($repeatTotals, $this->getGroup()->id, 0);
 	}
 
 	/**
@@ -1324,7 +1321,7 @@ class FabrikFEModelGroup extends FabModel
 				}
 				else
 				{
-					$pk = $canRepeat ? ArrayHelper::getValue($formData[$pkField], $i, '') : $formData[$pkField];
+					$pk = $canRepeat ? FArrayHelper::getValue($formData[$pkField], $i, '') : $formData[$pkField];
 
 					// Say for some reason the pk was set as a dbjoin!
 					if (is_array($pk))
@@ -1369,7 +1366,7 @@ class FabrikFEModelGroup extends FabModel
 			 * when we're in $fkOnParent mode!  So it's actually the FK field on the parent table.
 			 */
 			$fkField = $joinModel->getPrimaryKey('___');
-			$pk = ArrayHelper::getValue($formData, $fkField . '_raw', ArrayHelper::getValue($formData, $fkField, ''));
+			$pk = FArrayHelper::getValue($formData, $fkField . '_raw', FArrayHelper::getValue($formData, $fkField, ''));
 
 			if (is_array($pk))
 			{
@@ -1505,8 +1502,8 @@ class FabrikFEModelGroup extends FabModel
 	{
 		$groupId = $this->getId();
 		$formModel = $this->getFormModel();
-		$origGroupRowsIds = ArrayHelper::getValue($formModel->formData, 'fabrik_group_rowids', array());
-		$origGroupRowsIds = ArrayHelper::getValue($origGroupRowsIds, $groupId, array());
+		$origGroupRowsIds = FArrayHelper::getValue($formModel->formData, 'fabrik_group_rowids', array());
+		$origGroupRowsIds = FArrayHelper::getValue($origGroupRowsIds, $groupId, array());
 		$origGroupRowsIds = json_decode($origGroupRowsIds);
 
 		return $origGroupRowsIds;
@@ -1538,7 +1535,7 @@ class FabrikFEModelGroup extends FabModel
 			}
 		}
 
-		JError::raiseWarning(E_ERROR, Text::sprintf('COM_FABRIK_JOINED_DATA_BUT_FK_NOT_PUBLISHED', $fullFk));
+		JError::raiseWarning(E_ERROR, JText::sprintf('COM_FABRIK_JOINED_DATA_BUT_FK_NOT_PUBLISHED', $fullFk));
 
 		return false;
 	}
@@ -1560,7 +1557,7 @@ class FabrikFEModelGroup extends FabModel
 		if (!empty($elementModels))
 		{
 			$smallerElHTMLName = $tmpElement->getFullName(true, false);
-			$d = ArrayHelper::getValue($data, $smallerElHTMLName, array());
+			$d = FArrayHelper::getValue($data, $smallerElHTMLName, array());
 
 			if (is_object($d))
 			{

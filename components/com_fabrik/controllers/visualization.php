@@ -13,6 +13,8 @@ defined('_JEXEC') or die('Restricted access');
 
 jimport('joomla.application.component.controller');
 
+require_once COM_FABRIK_FRONTEND . '/helpers/params.php';
+
 /**
  * Abstract Visualization Controller
  *

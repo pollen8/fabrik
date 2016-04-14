@@ -11,8 +11,6 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Fabrik\Helpers\Worker;
-
 jimport('joomla.html.html');
 jimport('joomla.form.formfield');
 jimport('joomla.form.helper');
@@ -44,7 +42,7 @@ class JFormFieldFabrikTemplate extends JFormFieldFolderList
 	{
 		$view = $this->element['view'] ? $this->element['view'] : 'list';
 
-		if (Worker::j3())
+		if (FabrikWorker::j3())
 		{
 			$this->element['directory'] = $this->directory = '/components/com_fabrik/views/' . $view . '/tmpl/';
 		}

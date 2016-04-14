@@ -12,8 +12,6 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Fabrik\Helpers\Text;
-
 JHtml::_('behavior.framework', true);
 
 ?>
@@ -42,8 +40,8 @@ JHtml::_('behavior.framework', true);
 	</tbody>
 	<thead>
 	<tr>
-		<th><?php echo Text::_('COM_FABRIK_NAME')?></th>
-		<th><?php echo Text::_('COM_FABRIK_COPY_TO_GROUP')?></th>
+		<th><?php echo FText::_('COM_FABRIK_NAME')?></th>
+		<th><?php echo FText::_('COM_FABRIK_COPY_TO_GROUP')?></th>
 	</tr>
 	</thead>
 	</table>

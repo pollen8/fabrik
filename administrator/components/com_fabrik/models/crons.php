@@ -12,8 +12,6 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Fabrik\Helpers\Worker;
-
 require_once 'fabmodellist.php';
 
 /**
@@ -108,7 +106,7 @@ class FabrikAdminModelCrons extends FabModelList
 	 */
 	public function getTable($type = 'Cron', $prefix = 'FabrikTable', $config = array())
 	{
-		$config['dbo'] = Worker::getDbo();
+		$config['dbo'] = FabrikWorker::getDbo();
 
 		return FabTable::getInstance($type, $prefix, $config);
 	}

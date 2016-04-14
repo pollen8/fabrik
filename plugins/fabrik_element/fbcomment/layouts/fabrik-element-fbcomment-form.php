@@ -1,8 +1,6 @@
 <?php
 defined('JPATH_BASE') or die;
 
-use Fabrik\Helpers\Text;
-
 $d = $displayData;
 ?>
 
@@ -15,6 +13,6 @@ if ($d->href !== '') :
 <?php
 else :
 	?>
-	<?php echo Text::_('PLG_ELEMENT_FBCOMMENT_AVAILABLE_WHEN_SAVED');?>
+	<?php echo FText::_('PLG_ELEMENT_FBCOMMENT_AVAILABLE_WHEN_SAVED');?>
 <?php
 endif;

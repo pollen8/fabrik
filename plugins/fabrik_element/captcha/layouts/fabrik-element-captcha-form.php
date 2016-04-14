@@ -1,12 +1,10 @@
 <?php
 defined('JPATH_BASE') or die;
 
-use Fabrik\Helpers\Text;
-
 $d = $displayData;
 ?>
 
-<img src="<?php echo $d->url;?>" alt="<?php echo Text::_('security image'); ?>" />
+<img src="<?php echo $d->url;?>" alt="<?php echo FText::_('security image'); ?>" />
 
 <div class="captcha_input">
 	<input class="inputbox <?php echo $d->type;?>"

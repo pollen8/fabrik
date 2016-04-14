@@ -9,8 +9,6 @@
 
 defined('JPATH_PLATFORM') or die;
 
-use Fabrik\Helpers\Text;
-
 /**
  * JDocument system message renderer
  *
@@ -63,7 +61,7 @@ class JDocumentRendererMessage extends JDocumentRenderer
 			{
 				if (count($msgs))
 				{
-					$buffer .= "\n<dt class=\"" . strtolower($type) . "\">" . Text::_($type) . "</dt>";
+					$buffer .= "\n<dt class=\"" . strtolower($type) . "\">" . FText::_($type) . "</dt>";
 					$buffer .= "\n<dd class=\"" . strtolower($type) . " message\">";
 					$buffer .= "\n\t<ul>";
 					foreach ($msgs as $msg)

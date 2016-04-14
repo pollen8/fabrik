@@ -14,10 +14,6 @@ defined('_JEXEC') or die('Restricted access');
 
 jimport('joomla.application.component.controllerform');
 
-use Fabrik\Helpers\Html;
-use Fabrik\Helpers\Text;
-use Fabrik\Helpers\Worker;
-
 /**
  * Raw Package controller class.
  *
@@ -44,7 +40,7 @@ class FabrikAdminControllerPackage extends JControllerForm
 	{
 		$app = JFactory::getApplication();
 		$input = $app->input;
-		$db = Worker::getDbo(true);
+		$db = FabrikWorker::getDbo(true);
 		$query = $db->getQuery(true);
 		$list = $input->get('list', 'form');
 		$selected = $input->get('selected');
@@ -61,7 +57,7 @@ class FabrikAdminControllerPackage extends JControllerForm
 
 		if (empty($rows))
 		{
-			echo "<li>" . Text::sprintf('COM_FABRIK_NO_FREE_ITEMS_FOUND') . "</li>";
+			echo "<li>" . JText::sprintf('COM_FABRIK_NO_FREE_ITEMS_FOUND') . "</li>";
 		}
 		else
 		{
@@ -75,6 +71,6 @@ class FabrikAdminControllerPackage extends JControllerForm
 		$script = "$('$list-additems').getElements('a').addEvent('click', function(e){
 			Fabrik.fireEvent('fabrik.package.item.selected', [e]);
 		});";
-		Html::addScriptDeclaration($script);
+		FabrikHelperHTML::addScriptDeclaration($script);
 	}
 }

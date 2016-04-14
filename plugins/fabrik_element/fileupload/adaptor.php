@@ -11,8 +11,6 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Fabrik\Helpers\StringHelper;
-
 /**
  * Abstract Storage adaptor for Fabrik file upload element
  *
@@ -187,7 +185,7 @@ abstract class FabrikStorageAdaptor
 	public function pathToURL($path)
 	{
 		$path = str_replace(COM_FABRIK_BASE, '', $path);
-		$path = StringHelper::ltrimiword($path, '/');
+		$path = FabrikString::ltrimiword($path, '/');
 		$path = COM_FABRIK_LIVESITE . $path;
 		$path = str_replace('\\', '/', $path);
 
@@ -278,7 +276,7 @@ abstract class FabrikStorageAdaptor
 
 			while ($i < $length)
 			{
-				$char = StringHelper::substr($possible, mt_rand(0, StringHelper::strlen($possible) - 1), 1);
+				$char = JString::substr($possible, mt_rand(0, JString::strlen($possible) - 1), 1);
 				$key .= $char;
 				$i++;
 			}

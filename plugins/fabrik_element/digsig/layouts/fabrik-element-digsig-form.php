@@ -1,8 +1,5 @@
 <?php
 defined('JPATH_BASE') or die;
-
-use Fabrik\Helpers\Text;
-
 $d = $displayData;
 ?>
 
@@ -10,7 +7,7 @@ $d = $displayData;
 	<div class="ccms_form_element cfdiv_custom spad_container_div" id="<?php echo $d->id; ?>_oc_spad">
 		<ul class="sigNav">
 			<li class="clearButton">
-				<a href="#clear"><?php echo Text::_('PLG_ELEMENT_DIGSIG_CLEAR'); ?></a>
+				<a href="#clear"><?php echo JText::_('PLG_ELEMENT_DIGSIG_CLEAR'); ?></a>
 			</li>
 		</ul>
 		<div class="sig sigWrapper">

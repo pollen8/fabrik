@@ -11,9 +11,6 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Fabrik\Helpers\ArrayHelper;
-use Fabrik\Helpers\StringHelper;
-
 jimport('joomla.application.component.model');
 
 require_once JPATH_SITE . '/components/com_fabrik/models/visualization.php';
@@ -127,17 +124,17 @@ class FabrikModelChart extends FabrikFEModelVisualization
 			$listModel = $tableData['model'];
 			$pref = substr($column, 0, 6);
 
-			$label = ArrayHelper::getValue($x_axis_label, $c, '');
+			$label = FArrayHelper::getValue($x_axis_label, $c, '');
 			$tmpgdata = array();
 			$calcfound = $this->getCalcFound();
 
 			if ($calcfound)
 			{
-				$column = StringHelper::substr($column, 6);
+				$column = JString::substr($column, 6);
 			}
 
 			$elements = $listModel->getElements('filtername');
-			$safename = StringHelper::safeColName($column);
+			$safename = FabrikString::safeColName($column);
 			$colElement = $elements[$safename];
 
 			if ($calcfound)
@@ -300,7 +297,7 @@ class FabrikModelChart extends FabrikFEModelVisualization
 
 		for ($c = 0; $c < count($tableDatas); $c++)
 		{
-			$colour = ArrayHelper::getValue($chartColours, $c, '');
+			$colour = FArrayHelper::getValue($chartColours, $c, '');
 			$colour = str_replace("#", '', $colour);
 
 			if ($fillGraphs)
@@ -335,7 +332,7 @@ class FabrikModelChart extends FabrikFEModelVisualization
 		$chds_override = trim(str_replace('|', ',', $chds_override), '|');
 		$axisLabels = implode("|", $this->getAxisLabels($c));
 		$calcfound = $this->getCalcFound();
-		$measurement_unit = ArrayHelper::getValue($measurement_units, $c, '');
+		$measurement_unit = FArrayHelper::getValue($measurement_units, $c, '');
 		$minmax = $this->getMinMax($gdata, $gsums);
 
 		$chd = implode('|', $gdata);
@@ -381,7 +378,7 @@ class FabrikModelChart extends FabrikFEModelVisualization
 	{
 		$params = $this->getParams();
 		$minmax = $this->getMinMax($gdata, $gsums);
-		$measurement_unit = ArrayHelper::getValue($measurement_units, $c, '');
+		$measurement_unit = FArrayHelper::getValue($measurement_units, $c, '');
 		$chds_override = $params->get('chart_chds', '');
 
 		if (preg_match('#^\d+,$#', $chds_override))
@@ -513,13 +510,13 @@ class FabrikModelChart extends FabrikFEModelVisualization
 			$column = $chartElements[$c];
 			$listModel = $tableData['model'];
 			$pref = substr($column, 0, 6);
-			$label = ArrayHelper::getValue($x_axis_label, $c, '');
+			$label = FArrayHelper::getValue($x_axis_label, $c, '');
 			$tmpglabels = array();
 			$calcfound = $this->getCalcFound();
 
 			if ($calcfound)
 			{
-				$column = StringHelper::substr($column, 6);
+				$column = JString::substr($column, 6);
 			}
 
 			if ($calcfound)

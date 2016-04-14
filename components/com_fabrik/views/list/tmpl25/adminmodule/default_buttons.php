@@ -11,9 +11,6 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Fabrik\Helpers\Html;
-use Fabrik\Helpers\Text;
-
 ?>
 <div class="fabrik_buttons">
 	<ul class=""><?php if ($this->showAdd) {?>
@@ -26,8 +23,8 @@ use Fabrik\Helpers\Text;
 	<?php }?>
 		<li class="button">
 			<a href="index.php?option=com_fabrik&amp;task=list.view&amp;listid=<?php echo $this->list->id?>">
-				<?php echo Html::image('view.png', 'list', $this->tmpl, 'view all');?>
-				<span><?php echo Text::_('view all');?></span>
+				<?php echo FabrikHelperHTML::image('view.png', 'list', $this->tmpl, 'view all');?>
+				<span><?php echo FText::_('view all');?></span>
 			</a>
 		</li>
 	</ul>

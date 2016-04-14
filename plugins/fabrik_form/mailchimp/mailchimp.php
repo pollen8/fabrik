@@ -11,8 +11,7 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Fabrik\Helpers\ArrayHelper;
-use Fabrik\Helpers\Worker;
+use Joomla\Utilities\ArrayHelper;
 
 // Require the abstract plugin class
 require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
@@ -148,7 +147,7 @@ class PlgFabrik_FormMailchimp extends PlgFabrik_Form
 		}
 
 		$email = $formModel->formDataWithTableName[$emailKey];
-		$w = new Worker;
+		$w = new FabrikWorker;
 		$groupOpts = json_decode($params->get('mailchimp_groupopts', "[]"));
 
 		if (!empty($groupOpts))

@@ -11,8 +11,6 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Fabrik\Helpers\Html;
-
 $document = JFactory::getDocument();
 $document->setMetaData("apple-mobile-web-app-capable", "yes");
 $document->setMetaData("viewport", "minimum-scale=1.0, width=device-width, maximum-scale=0.6667, user-scalable=no");
@@ -24,7 +22,7 @@ $document->addHeadLink('components/com_fabrik/views/list/tmpl/iwebkit/startup.pn
 $script = "window.addEvent('fabrik.loaded', function() {
 	document.getElement('body').addClass('list');
 });";
-Html::addScriptDeclaration($script);
+FabrikHelperHTML::addScriptDeclaration($script);
 ?>
 <div id="topbar">
 	<div id="title">
@@ -74,12 +72,12 @@ if ($this->showFilters) {
 <?php
 //$style = $this->params->get('mobile_image') == '' ? 'musiclist' : 'list';
 $style = 'list';
-$Html::addScriptDeclaration("window.addEvent('fabrik.loaded', function() {
+$FabrikHelperHTML::addScriptDeclaration("window.addEvent('fabrik.loaded', function() {
 document.body.addClass('$style');
 })");
 
 if ($this->params->get('mobile_image') == '') {
-	Html::addStyleDeclaration('body.list li.withimage .comment,
+	FabrikHelperHTML::addStyleDeclaration('body.list li.withimage .comment,
 	body.list li.withimage .name{
 	margin-left:10px !important
 	}');

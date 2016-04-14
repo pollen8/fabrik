@@ -12,12 +12,10 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Fabrik\Helpers\Html;
-
 $rowStarted      = false;
-$layout          = Html::getLayout('form.fabrik-control-group');
-$gridStartLayout = Html::getLayout('grid.fabrik-grid-start');
-$gridEndLayout   = Html::getLayout('grid.fabrik-grid-end');
+$layout          = FabrikHelperHTML::getLayout('form.fabrik-control-group');
+$gridStartLayout = FabrikHelperHTML::getLayout('grid.fabrik-grid-start');
+$gridEndLayout   = FabrikHelperHTML::getLayout('grid.fabrik-grid-end');
 
 foreach ($this->elements as $element) :
 	$this->element = $element;

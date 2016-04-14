@@ -12,8 +12,6 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Fabrik\Helpers\Html;
-
 /* The default template includes the following folder and files:
 
 images - this is the folder for the form template's images
@@ -73,7 +71,7 @@ echo $this->plugintop;
 // Error message
 $active = ($form->error != '') ? '' : ' fabrikHide';
 echo '<div class="fabrikMainError fabrikError' . $active . '">';
-echo Html::image('alert.png', 'form', $this->tmpl);
+echo FabrikHelperHTML::image('alert.png', 'form', $this->tmpl);
 echo "$form->error</div>";
 
 // Buttons
@@ -151,4 +149,4 @@ endif;
 <?php
 echo $form->outro;
 echo $this->pluginend;
-echo Html::keepalive();
+echo FabrikHelperHTML::keepalive();

@@ -8,16 +8,10 @@
  * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
-namespace Fabrik\Plugins\Element;
-
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use \stdClass;
-use Fabrik\Helpers\ArrayHelper;
-use Fabrik\Helpers\Html;
-use Fabrik\Helpers\StringHelper;
-use Fabrik\Helpers\Text;
+require_once JPATH_SITE . '/components/com_fabrik/models/element.php';
 
 /**
  * Plugin element to two lists - one to select from the other to select into
@@ -26,7 +20,7 @@ use Fabrik\Helpers\Text;
  * @subpackage  Fabrik.element.picklist
  * @since       3.0
  */
-class Picklist extends ElementList
+class PlgFabrik_ElementPicklist extends PlgFabrik_ElementList
 {
 	/**
 	 * Does the element have sub elements
@@ -90,8 +84,8 @@ class Picklist extends ElementList
 				continue;
 			}
 
-			$k      = ArrayHelper::getValue($lookup, $v);
-			$tmpTxt = addslashes(htmlspecialchars(ArrayHelper::getValue($labels, $k)));
+			$k      = FArrayHelper::getValue($lookup, $v);
+			$tmpTxt = addslashes(htmlspecialchars(FArrayHelper::getValue($labels, $k)));
 			$to[$v] = $tmpTxt;
 			$i++;
 		}
@@ -101,7 +95,7 @@ class Picklist extends ElementList
 			return implode(', ', $to);
 		}
 
-		Html::stylesheet(COM_FABRIK_LIVESITE . 'plugins/fabrik_element/picklist/picklist.css');
+		FabrikHelperHTML::stylesheet(COM_FABRIK_LIVESITE . 'plugins/fabrik_element/picklist/picklist.css');
 
 		$layout                   = $this->getLayout('form');
 		$layoutData               = new stdClass;
@@ -135,7 +129,7 @@ class Picklist extends ElementList
 
 		$opts->hovercolour   = $params->get('picklist-hovercolour', '#AFFFFD');
 		$opts->bghovercolour = $params->get('picklist-bghovercolour', '#FFFFDF');
-		Text::script('PLG_ELEMENT_PICKLIST_ENTER_VALUE_LABEL');
+		JText::script('PLG_ELEMENT_PICKLIST_ENTER_VALUE_LABEL');
 
 		return array('FbPicklist', $id, $opts);
 	}
@@ -157,7 +151,7 @@ class Picklist extends ElementList
 
 		for ($i = 0; $i < count($labels); $i++)
 		{
-			if (StringHelper::strtolower($labels[$i]) == StringHelper::strtolower($value))
+			if (JString::strtolower($labels[$i]) == JString::strtolower($value))
 			{
 				$val = $values[$i];
 

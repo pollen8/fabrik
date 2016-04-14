@@ -8,12 +8,8 @@
  * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
-namespace Fabrik\Helpers;
-
 // No direct access
 defined('_JEXEC') or die('Restricted access');
-
-use \stdClass;
 
 /**
  * Google Map class
@@ -22,7 +18,8 @@ use \stdClass;
  * @subpackage  Fabrik.helpers
  * @since       3.0
  */
-class Googlemap
+
+class FabGoogleMapHelper
 {
 	/**
 	 * Set the google map style
@@ -56,8 +53,8 @@ class Googlemap
 
 		for ($i = 0; $i < count($features); $i ++)
 		{
-			$feature = ArrayHelper::getValue($features, $i);
-			$element = ArrayHelper::getValue($elements, $i);
+			$feature = FArrayHelper::getValue($features, $i);
+			$element = FArrayHelper::getValue($elements, $i);
 			$key = $feature . '|' . $element;
 
 			if (!array_key_exists($key, $stylers))
@@ -66,8 +63,8 @@ class Googlemap
 			}
 
 			$aStyle = new stdClass;
-			$styleKey = ArrayHelper::getValue($styleKeys, $i);
-			$styleValue = ArrayHelper::getValue($styleValues, $i);
+			$styleKey = FArrayHelper::getValue($styleKeys, $i);
+			$styleValue = FArrayHelper::getValue($styleValues, $i);
 
 			if ($styleKey && $styleValue)
 			{

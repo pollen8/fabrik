@@ -12,13 +12,11 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Fabrik\Helpers\Worker;
-use Fabrik\Helpers\Text;
-
 jimport('joomla.html.html');
 jimport('joomla.form.formfield');
 jimport('joomla.form.helper');
 JFormHelper::loadFieldClass('list');
+require_once JPATH_ADMINISTRATOR . '/components/com_fabrik/helpers/element.php';
 
 /**
  * Renders a list of elements found in the current group
@@ -47,7 +45,7 @@ class JFormFieldSpecificordering extends JFormFieldList
 	protected function getOptions()
 	{
 		// ONLY WORKS INSIDE ELEMENT :(
-		$db = Worker::getDbo();
+		$db = FabrikWorker::getDbo();
 		$group_id = $this->form->getValue('group_id');
 		$query = "SELECT ordering AS value, name AS text" . "\n FROM #__{package}_elements " . "\n WHERE group_id = " . (int) $group_id
 			. "\n AND published >= 0" . "\n ORDER BY ordering";
@@ -55,7 +53,7 @@ class JFormFieldSpecificordering extends JFormFieldList
 		 * $$$ rob - rather than trying to override the JHTML class lets
 		 * just swap {package} for the current package.
 		 */
-		$query = Worker::getDbo(true)->replacePrefix($query);
+		$query = FabrikWorker::getDbo(true)->replacePrefix($query);
 
 		return JHTML::_('list.genericordering', $query);
 	}
@@ -78,7 +76,7 @@ class JFormFieldSpecificordering extends JFormFieldList
 		}
 		else
 		{
-			$text = Text::_('COM_FABRIK_NEW_ITEMS_LAST');
+			$text = FText::_('COM_FABRIK_NEW_ITEMS_LAST');
 			$ordering = '<input type="text" size="40" readonly="readonly" class="readonly" name="' . $this->name . '" value="' . $this->value . $text
 				. '" />';
 		}

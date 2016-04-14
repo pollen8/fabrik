@@ -11,11 +11,6 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Fabrik\Helpers\ArrayHelper;
-use Fabrik\Helpers\Html;
-use Fabrik\Helpers\StringHelper;
-use Fabrik\Helpers\Text;
-
 // Require the abstract plugin class
 require_once COM_FABRIK_FRONTEND . '/models/plugin-list.php';
 
@@ -50,7 +45,7 @@ class PlgFabrik_ListRadius_Search extends PlgFabrik_List
 
 		if ($params->get('myloc', 1) == 1)
 		{
-			$options[] = JHtml::_('select.option', 'mylocation', Text::_('PLG_VIEW_RADIUS_MY_LOCATION'));
+			$options[] = JHtml::_('select.option', 'mylocation', FText::_('PLG_VIEW_RADIUS_MY_LOCATION'));
 		}
 		else if ($default_search == 'mylocation')
 		{
@@ -69,7 +64,7 @@ class PlgFabrik_ListRadius_Search extends PlgFabrik_List
 
 		if ($params->get('coords', 1) == 1)
 		{
-			$options[] = JHtml::_('select.option', 'latlon', Text::_('PLG_VIEW_RADIUS_COORDINATES'));
+			$options[] = JHtml::_('select.option', 'latlon', FText::_('PLG_VIEW_RADIUS_COORDINATES'));
 		}
 		else if ($default_search == 'latlon')
 		{
@@ -78,7 +73,7 @@ class PlgFabrik_ListRadius_Search extends PlgFabrik_List
 
 		if ($params->get('geocode', 1) == 1)
 		{
-			$options[] = JHtml::_('select.option', 'geocode', Text::_('PLG_VIEW_RADIUS_GEOCODE'));
+			$options[] = JHtml::_('select.option', 'geocode', FText::_('PLG_VIEW_RADIUS_GEOCODE'));
 		}
 
 		$selectName = 'radius_search_type' . $this->renderOrder . '[]';
@@ -104,8 +99,8 @@ class PlgFabrik_ListRadius_Search extends PlgFabrik_List
 		$model = $this->getModel();
 		$params = $this->getParams();
 		$f = new stdClass;
-		$f->label = Text::_($params->get('radius_label', 'Radius search'));
-		Html::stylesheet('plugins/fabrik_list/radius_search/radius_search.css');
+		$f->label = FText::_($params->get('radius_label', 'Radius search'));
+		FabrikHelperHTML::stylesheet('plugins/fabrik_list/radius_search/radius_search.css');
 
 		$layoutData = new stdClass;
 		$layoutData->renderOrder = $this->renderOrder;
@@ -126,7 +121,7 @@ class PlgFabrik_ListRadius_Search extends PlgFabrik_List
 
 		$lat   = $this->app->getUserStateFromRequest($layoutData->baseContext . 'lat' . $this->renderOrder, 'radius_search_lat' . $this->renderOrder);
 		$lon   = $this->app->getUserStateFromRequest($layoutData->baseContext . 'lon' . $this->renderOrder, 'radius_search_lon' . $this->renderOrder);
-		$o = StringHelper::mapStrToCoords($layoutData->geocodeDefault);
+		$o = FabrikString::mapStrToCoords($layoutData->geocodeDefault);
 		$layoutData->defaultLat  = $lat ? $lat : (float) $o->lat;
 		$layoutData->defaultLon  = $lon ? $lon : (float) $o->long;
 		$layoutData->defaultZoom = (int) $o->zoom === 0 ? 7 : (int) $o->zoom;
@@ -142,13 +137,13 @@ class PlgFabrik_ListRadius_Search extends PlgFabrik_List
 
 		if ($this->app->input->get('format') !== 'raw')
 		{
-			Html::addStyleDeclaration("table.radius_table{border-collapse:collapse;border:0;}
+			FabrikHelperHTML::addStyleDeclaration("table.radius_table{border-collapse:collapse;border:0;}
 			table.radius_table td{border:0;}");
 		}
 
-		Text::script('PLG_VIEW_RADIUS_NO_GEOLOCATION_AVAILABLE');
-		Text::script('COM_FABRIK_SEARCH');
-		Text::script('PLG_LIST_RADIUS_SEARCH');
+		JText::script('PLG_VIEW_RADIUS_NO_GEOLOCATION_AVAILABLE');
+		JText::script('COM_FABRIK_SEARCH');
+		JText::script('PLG_LIST_RADIUS_SEARCH');
 
 		$mapElement = $this->getMapElement();
 		$mapName = $mapElement->getFullName(true, false);
@@ -243,7 +238,7 @@ class PlgFabrik_ListRadius_Search extends PlgFabrik_List
 		// Need to unset for multiple radius searches to work
 		unset($this->mapElement);
 		$el = $this->getMapElement();
-		$el = StringHelper::safeColName($el->getFullName(false, false));
+		$el = FabrikString::safeColName($el->getFullName(false, false));
 
 		// Crazy sql to get the lat/lon from google map element
 		$latField = "SUBSTRING_INDEX(TRIM(LEADING '(' FROM $el), ',', 1)";
@@ -276,7 +271,7 @@ class PlgFabrik_ListRadius_Search extends PlgFabrik_List
 	{
 		$baseContext = $this->getSessionContext();
 		$type = $this->app->input->get('radius_search_type' . $this->renderOrder, array(), 'array');
-		$type = ArrayHelper::getValue($type, 0);
+		$type = FArrayHelper::getValue($type, 0);
 
 		switch ($type)
 		{
@@ -411,7 +406,7 @@ class PlgFabrik_ListRadius_Search extends PlgFabrik_List
 		$params = $this->getParams();
 		$model = $this->getModel();
 		$elements = $model->getElements('id');
-		$this->mapElement = ArrayHelper::getValue($elements, $params->get('radius_mapelement'), false);
+		$this->mapElement = FArrayHelper::getValue($elements, $params->get('radius_mapelement'), false);
 
 		if ($this->mapElement === false)
 		{
@@ -450,13 +445,13 @@ class PlgFabrik_ListRadius_Search extends PlgFabrik_List
 		if ($params->get('place', 1) == 1)
 		{
 			$el = $this->getPlaceElement();
-			Html::autoComplete("radius_search_place{$this->renderOrder}", $el->getElement()->id, $formId, $el->getElement()->plugin, $opts);
+			FabrikHelperHTML::autoComplete("radius_search_place{$this->renderOrder}", $el->getElement()->id, $formId, $el->getElement()->plugin, $opts);
 		}
 
 		if ($params->get('myloc', 1) == 1)
 		{
-			$ext = Html::isDebug() ? '.js' : '-min.js';
-			Html::script('media/com_fabrik/js/lib/geo-location/geo' . $ext);
+			$ext = FabrikHelperHTML::isDebug() ? '.js' : '-min.js';
+			FabrikHelperHTML::script('media/com_fabrik/js/lib/geo-location/geo' . $ext);
 		}
 
 		parent::loadJavascriptClass();
@@ -481,7 +476,7 @@ class PlgFabrik_ListRadius_Search extends PlgFabrik_List
 		$params = $this->getParams();
 		list($latitude, $longitude) = $this->getSearchLatLon();
 		$opts = $this->getElementJSOptions();
-		$containerOverride = ArrayHelper::getValue($args, 0, '');
+		$containerOverride = FArrayHelper::getValue($args, 0, '');
 
 		if (strstr($containerOverride, 'visualization'))
 		{
@@ -498,7 +493,7 @@ class PlgFabrik_ListRadius_Search extends PlgFabrik_List
 		$opts->prefilterDone = (bool) $this->app->input->getBool('radius_prefilter', false);
 		$opts->prefilterDistance = $preFilterDistance;
 		$opts->myloc = $params->get('myloc', 1) == 1 ? true : false;
-		$o = StringHelper::mapStrToCoords($params->get('geocode_default', ''));
+		$o = FabrikString::mapStrToCoords($params->get('geocode_default', ''));
 		$opts->geocode_default_lat = $o->lat;
 		$opts->geocode_default_long = $o->long;
 		$opts->geocode_default_zoom = (int) $o->zoom;
@@ -508,8 +503,8 @@ class PlgFabrik_ListRadius_Search extends PlgFabrik_List
 		$opts = json_encode($opts);
 		$this->jsInstance = "new FbListRadiusSearch($opts)";
 
-		Text::script('PLG_LIST_RADIUS_SEARCH_CLEAR_CONFIRM');
-		Text::script('PLG_LIST_RADIUS_SEARCH_GEOCODE_ERROR');
+		JText::script('PLG_LIST_RADIUS_SEARCH_CLEAR_CONFIRM');
+		JText::script('PLG_LIST_RADIUS_SEARCH_GEOCODE_ERROR');
 
 		return true;
 	}

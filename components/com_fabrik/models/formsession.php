@@ -11,10 +11,6 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Fabrik\Helpers\ArrayHelper;
-use Fabrik\Helpers\Worker;
-use Fabrik\Helpers\Text;
-
 jimport('joomla.application.component.model');
 
 /**
@@ -119,7 +115,7 @@ class FabrikFEModelFormsession extends FabModel
 		$formModel->copyToRaw($post);
 		$formModel->addEncrytedVarsToArray($post);
 
-		$pluginManager = Worker::getPluginManager();
+		$pluginManager = FabrikWorker::getPluginManager();
 		if (in_array(false, $pluginManager->runPlugins('onSavePage', $formModel)))
 		{
 			return false;
@@ -193,7 +189,7 @@ class FabrikFEModelFormsession extends FabModel
 	protected function getCrypt()
 	{
 		/**
-		 * $$$ hugh - might want to alter this to use Worker::getCrypt()
+		 * $$$ hugh - might want to alter this to use FabrikWorker::getCrypt()
 		 * as we now use that everywhere else.
 		 */
 		if (!isset($this->crypt))
@@ -237,7 +233,7 @@ class FabrikFEModelFormsession extends FabModel
 		if ((int) $this->user->get('id') !== 0)
 		{
 			$hash = $this->getHash();
-			$this->status = Text::_('LOADING FROM DATABASE');
+			$this->status = FText::_('LOADING FROM DATABASE');
 			$this->statusId = _FABRIKFORMSESSION_LOADED_FROM_TABLE;
 		}
 		else
@@ -246,11 +242,11 @@ class FabrikFEModelFormsession extends FabModel
 			{
 				$crypt = $this->getCrypt();
 				$cookieKey = $this->getCookieKey();
-				$cookieVal = ArrayHelper::getValue($_COOKIE, $cookieKey, '');
+				$cookieVal = FArrayHelper::getValue($_COOKIE, $cookieKey, '');
 
 				if ($cookieVal !== '')
 				{
-					$this->status = Text::_('COM_FABRIK_LOADING_FROM_COOKIE');
+					$this->status = FText::_('COM_FABRIK_LOADING_FROM_COOKIE');
 					$this->statusId = _FABRIKFORMSESSION_LOADED_FROM_COOKIE;
 					$hash = $crypt->decrypt($cookieVal);
 				}
@@ -333,7 +329,7 @@ class FabrikFEModelFormsession extends FabModel
 			{
 				$crypt = $this->getCrypt();
 				$cookieKey = (int) $this->user->get('id') . ':' . $this->getFormId() . ':' . $this->getRowId();
-				$cookieVal = ArrayHelper::getValue($_COOKIE, $cookieKey, '');
+				$cookieVal = FArrayHelper::getValue($_COOKIE, $cookieKey, '');
 
 				if ($cookieVal !== '')
 				{

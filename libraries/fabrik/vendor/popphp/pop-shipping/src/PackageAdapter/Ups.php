@@ -58,7 +58,7 @@ class Ups extends AbstractAdapter
 	 * @param  array  $dimensions
 	 * @param  string $unit
 	 *
-	 * @return Ups
+	 * @return void
 	 */
 	public function setDimensions(array $dimensions, $unit = null)
 	{
@@ -68,17 +68,15 @@ class Ups extends AbstractAdapter
 		{
 			$this->dimensions['UnitOfMeasurement'] = $unit;
 		}
-
-		return $this;
 	}
 
 	/**
-	 * Set weight
+	 * Set dimensions
 	 *
 	 * @param  string $weight
 	 * @param  string $unit
 	 *
-	 * @return Ups
+	 * @return void
 	 */
 	public function setWeight($weight, $unit = null)
 	{
@@ -92,8 +90,6 @@ class Ups extends AbstractAdapter
 		}
 
 		$this->weight['Weight'] = $weight;
-
-		return $this;
 	}
 
 	/**
@@ -102,7 +98,7 @@ class Ups extends AbstractAdapter
 	 * @param  string $code
 	 *
 	 * @throws Exception
-	 * @return Ups
+	 * @return void
 	 */
 	public function setPackage($code)
 	{
@@ -112,8 +108,6 @@ class Ups extends AbstractAdapter
 		}
 
 		$this->packageType = $code;
-
-		return $this;
 	}
 
 	/**

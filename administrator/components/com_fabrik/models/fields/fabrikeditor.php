@@ -15,9 +15,6 @@ defined('_JEXEC') or die('Restricted access');
 jimport('joomla.form.formfield');
 JFormHelper::loadFieldClass('textarea');
 
-use Fabrik\Helpers\Html;
-use Fabrik\Helpers\Worker;
-
 /**
  * Form Field class for the Joomla Platform.
  * An ace.js code editor field
@@ -55,19 +52,19 @@ class JFormFieldFabrikeditor extends JFormFieldTextArea
 		$required = $this->required ? ' required="required" aria-required="true"' : '';
 
 		// JS events are saved as encoded html - so we don't want to double encode them
-		$encoded = Worker::toBoolean($this->getAttribute('encoded', false), false);
+		$encoded = FabrikWorker::toBoolean($this->getAttribute('encoded', false), false);
 
 		if (!$encoded)
 		{
 			$this->value = htmlspecialchars($this->value, ENT_COMPAT, 'UTF-8');
 		}
 
-		$onChange = Worker::toBoolean($this->getAttribute('onchange', false), false);
+		$onChange = FabrikWorker::toBoolean($this->getAttribute('onchange', false), false);
 
 		$onChange = $onChange ? ' onchange="' . (string) $onChange . '"' : '';
 
 		// Joomla 3 version
-		Worker::toBoolean($this->getAttribute('highlightpk', false), false);
+		FabrikWorker::toBoolean($this->getAttribute('highlightpk', false), false);
 
 		$mode      = $this->getAttribute('mode', 'html');
 		$theme     = $this->getAttribute('theme', 'github');
@@ -86,8 +83,8 @@ class JFormFieldFabrikeditor extends JFormFieldTextArea
 			return $editor;
 		}
 
-		Html::framework();
-		Html::iniRequireJS();
+		FabrikHelperHTML::framework();
+		FabrikHelperHTML::iniRequireJS();
 
 		if ($mode === 'php')
 		{
@@ -159,7 +156,7 @@ window.addEvent(\'domready\', function () {
 		$src = array(
 			'Ace' => 'media/com_fabrik/js/lib/ace/src-min-noconflict/ace.js',
 			'Fabrik' => 'media/com_fabrik/js/fabrik.js');
-		Html::script($src, $script);
+		FabrikHelperHTML::script($src, $script);
 
 		echo '<style type="text/css" media="screen">
 	#' . $aceId . '-ace {

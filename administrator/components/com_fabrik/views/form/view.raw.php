@@ -11,8 +11,6 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Fabrik\Helpers\Text;
-
 jimport('joomla.application.component.view');
 
 /**
@@ -57,6 +55,9 @@ class FabrikAdminViewForm extends JViewLegacy
 	public function display($tpl = null)
 	{
 		$app = JFactory::getApplication();
+		$input = $app->input;
+		$w = new FabrikWorker;
+		$config = JFactory::getConfig();
 		$model = JModelLegacy::getInstance('Form', 'FabrikFEModel');
 		$model->render();
 
@@ -64,7 +65,7 @@ class FabrikAdminViewForm extends JViewLegacy
 		{
 			if (!$app->isAdmin())
 			{
-				echo Text::_('COM_FABRIK_FORM_NOT_PUBLISHED');
+				echo FText::_('COM_FABRIK_FORM_NOT_PUBLISHED');
 
 				return false;
 			}
@@ -74,7 +75,7 @@ class FabrikAdminViewForm extends JViewLegacy
 
 		if ($this->access == 0)
 		{
-			return JError::raiseWarning(500, Text::_('JERROR_ALERTNOAUTHOR'));
+			return JError::raiseWarning(500, FText::_('JERROR_ALERTNOAUTHOR'));
 		}
 
 		$model->getJoinGroupIds();
@@ -200,7 +201,7 @@ class FabrikAdminViewForm extends JViewLegacy
 		$isNew = ($this->item->id == 0);
 		$checkedOut = !($this->item->checked_out == 0 || $this->item->checked_out == $user->get('id'));
 		$canDo = FabrikAdminHelper::getActions($this->state->get('filter.category_id'));
-		$title = $isNew ? Text::_('COM_FABRIK_MANAGER_FORM_NEW') : Text::_('COM_FABRIK_MANAGER_FORM_EDIT') . ' "' . $this->item->label . '"';
+		$title = $isNew ? FText::_('COM_FABRIK_MANAGER_FORM_NEW') : FText::_('COM_FABRIK_MANAGER_FORM_EDIT') . ' "' . $this->item->label . '"';
 		JToolBarHelper::title($title, 'file-2');
 
 		if ($isNew)

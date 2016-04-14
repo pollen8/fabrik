@@ -8,17 +8,8 @@
  * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
-namespace Fabrik\Helpers;
-
 // No direct access
 defined('_JEXEC') or die('Restricted access');
-
-use \Exception;
-use \JUri;
-use \JFactory;
-use \JFile;
-use \JComponentHelper;
-use \SimpleXMLElement;
 
 jimport('joomla.filesystem.file');
 
@@ -29,15 +20,20 @@ jimport('joomla.filesystem.file');
  * @subpackage  Fabrik.helpers
  * @since       3.1rc3
  */
-class Pdf
+
+class FabrikPDFHelper
 {
 	/**
 	 * Set up DomPDF engine
 	 *
 	 * @return  bool
 	 */
+
 	public static function iniDomPdf()
 	{
+		$app = JFactory::getApplication();
+		$input = $app->input;
+
 		$file = JPATH_LIBRARIES . '/dompdf/dompdf_config.inc.php';
 
 		if (!JFile::exists($file))

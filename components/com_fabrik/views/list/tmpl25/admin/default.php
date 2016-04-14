@@ -11,13 +11,11 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Fabrik\Helpers\Text;
-
 $app = JFactory::getApplication();
 $input = $app->input;
 $pageClass = $this->params->get('pageclass_sfx', '');
 if (!$app->isAdmin()) :
-	throw new RuntimeException(Text::_('COM_FABRIK_ERR_ADMIN_LIST_TMPL_IN_FRONTEND'));
+	throw new RuntimeException(FText::_('COM_FABRIK_ERR_ADMIN_LIST_TMPL_IN_FRONTEND'));
 endif;
 if ($pageClass !== '') :
 echo '<div class="' . $pageClass . '">';
@@ -28,7 +26,7 @@ if ($this->params->get('show_page_heading', 1)) : ?>
 <?php endif;
 if ($this->tablePicker != '') : ?>
 	<div style="text-align: right">
-		<?php echo Text::_('COM_FABRIK_LIST') ?>: <?php echo $this->tablePicker; ?>
+		<?php echo FText::_('COM_FABRIK_LIST') ?>: <?php echo $this->tablePicker; ?>
 	</div>
 <?php endif;
 if ($this->getModel()->getParams()->get('show-title', 1)) :?>
@@ -57,7 +55,7 @@ $this->showGroup = true;
 <label>
 <?php $checked = $input->get('fabrikdebug', 0) == 1 ? 'checked="checked"' : '';?>
 	<input type="checkbox" name="fabrikdebug" value="1" <?php echo $checked?> onclick="document.fabrikList.submit()" />
-	<?php echo Text::_('debug')?>
+	<?php echo FText::_('debug')?>
 </label>
 <?php endif; ?>
 
