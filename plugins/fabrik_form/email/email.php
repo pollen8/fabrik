@@ -69,6 +69,8 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 		$input = $this->app->input;
 		jimport('joomla.mail.helper');
 		$w = new FabrikWorker;
+
+		/** @var \FabrikFEModelForm $formModel */
 		$formModel = $this->getModel();
 		$emailTemplate = JPath::clean(JPATH_SITE . '/plugins/fabrik_form/email/tmpl/' . $params->get('email_template', ''));
 
@@ -79,7 +81,7 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 		 */
 		if ($this->alreadySent() || !$this->shouldProcess('email_conditon', null, $params))
 		{
-			return;
+			return true;
 		}
 
 		/**
@@ -107,7 +109,7 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 			// $$$ hugh - added ability for PHP template to return false to abort, same as if 'condition' was was false
 			if ($messageTemplate === false)
 			{
-				return;
+				return true;
 			}
 
 			if ($runContentPlugins === true)
@@ -132,8 +134,6 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 			$messageText = str_replace('{template}', $messageTemplate, $messageText);
 			$messageText = $w->parseMessageForPlaceholder($messageText, $this->data, false);
 		}
-
-		$message = '';
 
 		if (!empty($messageText))
 		{
@@ -315,6 +315,20 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 				}
 
 				$this->pdfAttachment($thisAttachments);
+
+				/*
+				 * Sanity check for attachment files existing.  Could have base folder paths for things
+				 * like file upload elements with no file.  As of J! 3.5.1, the J! mailer tosses an exception
+				 * if files don't exist.  We catch that in the sendMail helper, but remove non-files here anyway
+				 */
+
+				foreach ($thisAttachments as $aKey => $attachFile)
+				{
+					if (!JFile::exists($attachFile))
+					{
+						unset($thisAttachments[$aKey]);
+					}
+				}
 
 				$res = FabrikWorker::sendMail(
 					$emailFrom, $emailFromName, $email, $thisSubject, $thisMessage,
