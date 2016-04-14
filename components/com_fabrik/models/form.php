@@ -660,13 +660,19 @@ class FabrikFEModelForm extends FabModelForm
 		// $$$ hugh - added ability to use form_XX, as am adding custom list_XX
 		$view = $this->isEditable() ? 'form' : 'details';
 
+		/**
+		 * $$$ hugh - need to use an assoc key name for the scripts array, as it gets used in the requirejs
+		 * to pass in as a function arg, which then blows up with "unexpected number" if we don't use a key name
+		 */
+		$scriptsKey = $view . '_' . $this->getId();
+
 		if (JFile::exists(COM_FABRIK_FRONTEND . '/js/' . $this->getId() . '.js'))
 		{
-			$scripts[] = 'components/com_fabrik/js/' . $this->getId() . '.js';
+			$scripts[$scriptsKey] = 'components/com_fabrik/js/' . $this->getId() . '.js';
 		}
 		elseif (JFile::exists(COM_FABRIK_FRONTEND . '/js/' . $view . '_' . $this->getId() . '.js'))
 		{
-			$scripts[] = 'components/com_fabrik/js/' . $view . '_' . $this->getId() . '.js';
+			$scripts[$scriptsKey] = 'components/com_fabrik/js/' . $view . '_' . $this->getId() . '.js';
 		}
 	}
 

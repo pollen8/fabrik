@@ -910,7 +910,7 @@ EOD;
 
 				// need to put jLayouts in session data, and add it in the system plugin buildjs(), so just add %%jLayouts%% placeholder
 				//$liveSiteSrc[] = "\tFabrik.jLayouts = " . json_encode(ArrayHelper::toObject(self::$jLayoutsJs)) . ";";
-				$liveSiteSrc[] = "\tFabrik.jLayouts = %%jLayouts%%\n";
+				$liveSiteSrc[] = "\tFabrik.jLayouts = %%jLayouts%%;\n";
 
 				if ($bootstrapped)
 				{
