@@ -21,7 +21,7 @@ require_once COM_FABRIK_FRONTEND . '/models/plugin-list.php';
  * @subpackage  Fabrik.list.radiussearch
  * @since       3.0
  */
-class PlgFabrik_ListRadius_Search extends PlgFabrik_List
+class PlgFabrik_ListRadius_search extends PlgFabrik_List
 {
 	/**
 	 * Place coordinates

@@ -6,7 +6,7 @@
  */
 
 define(['jquery', 'fab/list-plugin'], function (jQuery, FbListPlugin) {
-	var FbListRadiusLookup = new Class({
+	var FbListRadius_lookup = new Class({
 		Extends: FbListPlugin,
 
 		options: {},
@@ -71,5 +71,5 @@ define(['jquery', 'fab/list-plugin'], function (jQuery, FbListPlugin) {
 		}
 	});
 
-	return FbListRadiusLookup;
+	return FbListRadius_lookup;
 });
