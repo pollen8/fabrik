@@ -89,10 +89,10 @@ class PlgFabrik_ListInlineedit extends PlgFabrik_List
 	 */
 	public function loadJavascriptClass_result()
 	{
-		$ext = FabrikHelperHTML::isDebug() ? '.js' : '-min.js';
+		$mediaFolder = FabrikHelperHTML::getMediaFolder();
 		$src = parent::loadJavascriptClass_result();
-
-		return array($src, 'media/com_fabrik/js/element' . $ext);
+		$src['element'] = $mediaFolder . '/element.js';
+		return $src;
 	}
 
 	/**
