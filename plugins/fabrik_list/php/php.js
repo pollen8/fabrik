@@ -5,7 +5,7 @@
  * @license:   GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 define(['jquery', 'fab/list-plugin'], function (jQuery, FbListPlugin) {
-    var FbListPHP = new Class({
+    var FbListPhp = new Class({
         Extends   : FbListPlugin,
         initialize: function (options) {
             this.parent(options);
@@ -61,5 +61,5 @@ define(['jquery', 'fab/list-plugin'], function (jQuery, FbListPlugin) {
             this.list.submit('list.doPlugin');
         }
     });
-    return FbListPHP;
+    return FbListPhp;
 });
