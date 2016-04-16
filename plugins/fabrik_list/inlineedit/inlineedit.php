@@ -218,6 +218,6 @@ class PlgFabrik_ListInlineedit extends PlgFabrik_List
 	 */
 	public function loadJavascriptClassName_result()
 	{
-		return 'FbListInlineEdit';
+		return 'FbListInlineedit';
 	}
 }
