@@ -10364,9 +10364,9 @@ class FabrikFEModelList extends JModelForm
 					{
 						if ($merge == 2
 							&& !isset($canRepeatsPkValues[$canRepeatsKeys[$shortKey]][$i])
-							&& isset($data[$i]->$canRepeatsKeys[$shortKey]))
+							&& isset($data[$i]->{$canRepeatsKeys[$shortKey]}))
 						{
-							$canRepeatsPkValues[$canRepeatsKeys[$shortKey]][$i] = $data[$i]->$canRepeatsKeys[$shortKey];
+							$canRepeatsPkValues[$canRepeatsKeys[$shortKey]][$i] = $data[$i]->{$canRepeatsKeys[$shortKey]};
 						}
 
 						if ($origKey == $shortKey)
@@ -10381,9 +10381,9 @@ class FabrikFEModelList extends JModelForm
 							{
 								$pk_vals = array_count_values(array_filter($canRepeatsPkValues[$canRepeatsKeys[$shortKey]]));
 
-								if (isset($data[$i]->$canRepeatsKeys[$shortKey]))
+								if (isset($data[$i]->{$canRepeatsKeys[$shortKey]}))
 								{
-									if ($pk_vals[$data[$i]->$canRepeatsKeys[$shortKey]] > 1)
+									if ($pk_vals[$data[$i]->{$canRepeatsKeys[$shortKey]}] > 1)
 									{
 										$do_merge = false;
 									}
@@ -10446,7 +10446,7 @@ class FabrikFEModelList extends JModelForm
 
 						if ($canRepeats[$shortKey]
 							&& !isset($canRepeatsPkValues[$canRepeatsKeys[$shortKey]][$i])
-							&& isset($data[$i]->$canRepeatsKeys[$shortKey]))
+							&& isset($data[$i]->{$canRepeatsKeys[$shortKey]}))
 						{
 							$canRepeatsPkValues[$canRepeatsKeys[$shortKey]][$i] = $data[$i]->{$canRepeatsKeys[$shortKey]};
 						}
