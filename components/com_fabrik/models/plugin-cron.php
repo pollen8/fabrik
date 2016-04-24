@@ -88,7 +88,7 @@ class PlgFabrik_Cron extends FabrikPlugin
 	 * Only applicable to cron plugins but as there's no sub class for them
 	 * the methods here for now
 	 * Determines if the cron plug-in should be run - if require_qs is true
-	 * then fabrik_cron=1 needs to be in the querystring
+	 * then fabrik_cron=1 needs to be in the query string
 	 *
 	 * @return  bool
 	 */
@@ -142,11 +142,10 @@ class PlgFabrik_Cron extends FabrikPlugin
 	/**
 	 * Allow plugin to decide if it wants to be rescheduled
 	 *
-	 * @param   int  $c  plugin render order
+	 * @param   bool  $reschedule  Switch to turn off rescheduling if set to false
 	 *
 	 * @return  bool
 	 */
-
 	public function shouldReschedule($reschedule = true)
 	{
 		if ($reschedule === false)
@@ -157,4 +156,15 @@ class PlgFabrik_Cron extends FabrikPlugin
 		return $this->reschedule;
 	}
 
+	/**
+	 * Do the plugin action
+	 *
+	 * @param   array &$data data
+	 *
+	 * @return  int  number of records updated
+	 */
+	public function process(&$data)
+	{
+		return 0;
+	}
 }
