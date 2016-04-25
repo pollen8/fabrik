@@ -657,7 +657,9 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 				}
 				else
 				{
-					$lis[] = '&nbsp;';
+					// was trying to fix issue with empty merged repeat rows not having height but messes CSV export
+					//$lis[] = '&nbsp;';
+					$lis[] = '';
 				}
 			}
 

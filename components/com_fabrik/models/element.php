@@ -2347,7 +2347,7 @@ class PlgFabrik_Element extends FabrikPlugin
 
 			// Placeholder to be updated by ajax code
 			$v = $this->getROElement($data, $repeatCounter);
-			$v = $v == '' ? '&nbsp;' : $v;
+			//$v = $v == '' ? '&nbsp;' : $v;
 
 			return '<div id="' . $htmlId . '">' . $v . '</div>';
 		}
