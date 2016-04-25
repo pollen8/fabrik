@@ -42,13 +42,12 @@ class PlgFabrik_Cronphp extends PlgFabrik_Cron
 	 * Do the plugin action
 	 *
 	 * @param   array   &$data       array data to process
-	 * @param   object  &$listModel  plugin's list model
 	 *
 	 * @return  int  number of records run, you can set this by setting the varaible $processed
 	 * in either your included script in php code.
 	 */
 
-	public function process(&$data, &$listModel)
+	public function process(&$data)
 	{
 		$params = $this->getParams();
 		$filter = JFilterInput::getInstance();
