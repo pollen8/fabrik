@@ -3172,9 +3172,12 @@ class FabrikFEModelForm extends FabModelForm
 						 * rendering a form with a content plugin in a list intro.  And I don't think we ever need to
 						 * apply ordering to a form's select, by definition it's only one row.  Leaving this here for
 						 * now just as a reminder in case there's any unforeseen side effects.
+						 *
+						 * $$$ hugh - 4/25/2016 - yes, there is an issue, as (duh!) ordering is needed for repeat groups.
+						 * Changing this back to original for now, will need to work out how to handle that corner case
 						 */
-						// $opts = $input->get('task') == 'form.inlineedit' ? array('ignoreOrder' => true) : array();
-						$opts = array('ignoreOrder' => true);
+						$opts = $input->get('task') == 'form.inlineedit' ? array('ignoreOrder' => true) : array();
+						// $opts = array('ignoreOrder' => true);
 						$sql = $this->buildQuery($opts);
 						$fabrikDb->setQuery($sql);
 						FabrikHelperHTML::debug((string) $fabrikDb->getQuery(), 'form:render');
