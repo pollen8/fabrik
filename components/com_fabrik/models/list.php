@@ -6245,6 +6245,7 @@ class FabrikFEModelList extends JModelForm
 	protected function &makeFilters($container = 'listform_1', $type = 'list', $id = '', $ref = '')
 	{
 		$aFilters = array();
+		$fScript  = array();
 		$opts = new stdClass;
 		$opts->container = $container;
 		$opts->type = $type;
