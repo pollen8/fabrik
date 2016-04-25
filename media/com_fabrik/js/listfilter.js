@@ -21,6 +21,7 @@ define(['jquery', 'fab/fabrik', 'fab/advanced-search'], function (jQuery, Fabrik
         },
 
         initialize: function (options) {
+            debugger;
             var self = this,
                 advancedSearchButton;
             this.filters = {};
