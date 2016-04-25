@@ -6252,8 +6252,6 @@ class FabrikFEModelList extends JModelForm
 		$opts->ref = $this->getRenderContext();
 		$opts->advancedSearch = $this->advancedSearch->opts();
 		$opts->advancedSearch->controller = $type;
-		$opts = json_encode($opts);
-		$fScript = "\tFabrik.filter_{$container} = new FbListFilter($opts);\n";
 		$package = $this->app->getUserState('com_fabrik.package', 'fabrik');
 		$filters = $this->getFilterArray();
 		$params = $this->getParams();
@@ -6329,7 +6327,7 @@ class FabrikFEModelList extends JModelForm
 						$o->name = $elementModel->getFullName(true, false);
 						$o->id = $elementModel->getHTMLId() . 'value';
 						$o->filter = $elementModel->getFilter($counter, true);
-						$fScript .= $elementModel->filterJS(true, $container);
+						$fScript[] = $elementModel->filterJS(true, $container);
 						$o->required = $elementModel->getParams()->get('filter_required');
 						$o->label = $elementModel->getListHeading();
 						$o->displayValue = $elementModel->filterDisplayValues;
@@ -6340,8 +6338,11 @@ class FabrikFEModelList extends JModelForm
 			}
 		}
 
-		$fScript .= 'Fabrik.filter_' . $container . ".update();\n";
-		$this->filterJs = $fScript;
+		$opts->filters = $aFilters;
+		$opts = json_encode($opts);
+		array_unshift($fScript, "\tFabrik.filter_{$container} = new FbListFilter($opts);");
+		$fScript[] = 'Fabrik.filter_' . $container . ".update();";
+		$this->filterJs = implode("\n", $fScript);
 
 		// Check for search form filters - if they exists create hidden elements for them
 		$keys = FArrayHelper::getValue($filters, 'key', array());

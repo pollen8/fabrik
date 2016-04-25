@@ -128,6 +128,12 @@ class FabrikViewListBase extends FabrikView
 			FabrikHelperHTML::jLayoutJs('advanced-filter', 'fabrik-modal', (object) $modalOpts);
 		}
 
+		FabrikHelperHTML::jLayoutJs('modal-state-label', 'list.fabrik-filters-modal-state-label', $layoutData = (object) array(
+			'label' => '',
+			'displayValue' => '',
+			'key' => ''
+		));
+
 		$this->csvJS($opts, $model);
 
 		if ($model->requiresSlimbox())

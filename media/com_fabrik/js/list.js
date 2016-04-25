@@ -700,8 +700,9 @@ define(['jquery', 'fab/fabrik', 'fab/list-toggle', 'fab/list-grouped-toggler', '
             },
 
             watchFilters: function () {
-                var e = '';
-                var submit = document.id(this.options.form).getElements('.fabrik_filter_submit');
+                var e = '',
+                    self = this,
+                    submit = jQuery('#' + this.options.form).find('.fabrik_filter_submit');
                 this.getFilters().each(function (f) {
                     e = f.get('tag') === 'select' ? 'change' : 'blur';
                     if (this.options.filterMethod !== 'submitform') {
@@ -714,19 +715,17 @@ define(['jquery', 'fab/fabrik', 'fab/list-toggle', 'fab/list-grouped-toggler', '
                         }.bind(this));
                     } else {
                         f.addEvent(e, function (e) {
-                            submit.highlight('#ffaa00');
+                            submit[0].highlight('#ffaa00');
                         }.bind(this));
                     }
                 }.bind(this));
 
                 // Watch submit if present regardless of this.options.filterMethod
-                if (submit) {
-                    submit.removeEvents();
-                    submit.addEvent('click', function (e) {
-                        e.stop();
-                        this.doFilter();
-                    }.bind(this));
-                }
+                submit.off();
+                submit.on('click', function (e) {
+                    e.preventDefault();
+                    self.doFilter();
+                });
                 this.getFilters().addEvent('keydown', function (e) {
                     if (e.code === 13) {
                         e.stop();
