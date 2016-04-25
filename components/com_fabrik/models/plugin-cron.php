@@ -37,6 +37,7 @@ class PlgFabrik_Cron extends FabrikPlugin
 	 */
 	protected $log = null;
 
+
 	/**
 	 * Allow plugin to stop rescheduling
 	 *
