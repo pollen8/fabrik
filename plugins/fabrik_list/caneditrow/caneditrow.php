@@ -158,7 +158,7 @@ class PlgFabrik_ListCaneditrow extends PlgFabrik_List
 		$opts = $this->getElementJSOptions();
 		$opts->acl = $this->acl;
 		$opts = json_encode($opts);
-		$this->jsInstance = "new FbListCanEditRow($opts)";
+		$this->jsInstance = "new FbListcaneditrow($opts)";
 
 		return true;
 	}
@@ -170,6 +170,6 @@ class PlgFabrik_ListCaneditrow extends PlgFabrik_List
 	 */
 	public function loadJavascriptClassName_result()
 	{
-		return 'FbListCanEditRow';
+		return 'FbListcaneditrow';
 	}
 }
