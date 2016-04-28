@@ -5,7 +5,7 @@
  * @license:   GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 define(['jquery', 'fab/list-plugin', 'fab/fabrik'], function (jQuery, FbListPlugin, Fabrik) {
-	var FbListInlineEdit = new Class({
+	var FbListInlineedit = new Class({
 		Extends: FbListPlugin,
 
 		initialize: function (options) {
@@ -717,5 +717,5 @@ define(['jquery', 'fab/list-plugin', 'fab/fabrik'], function (jQuery, FbListPlug
 		}
 	});
 
-	return FbListInlineEdit;
+	return FbListInlineedit;
 });

@@ -23,7 +23,7 @@ require_once COM_FABRIK_FRONTEND . '/models/plugin-list.php';
  * @subpackage  Fabrik.list.updatecol
  * @since       3.0
  */
-class PlgFabrik_ListUpdate_Col extends PlgFabrik_List
+class PlgFabrik_ListUpdate_col extends PlgFabrik_List
 {
 	/**
 	 * Button prefix
@@ -511,7 +511,7 @@ class PlgFabrik_ListUpdate_Col extends PlgFabrik_List
 		$opts->form = $this->userSelectForm();
 		$opts->renderOrder = $this->renderOrder;
 		$opts = json_encode($opts);
-		$this->jsInstance = "new FbListUpdateCol($opts)";
+		$this->jsInstance = "new FbListUpdate_col($opts)";
 
 		return true;
 	}

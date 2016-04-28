@@ -6241,10 +6241,10 @@ class FabrikFEModelList extends JModelForm
 	 *
 	 * @return  array	of html code for each filter
 	 */
-
 	protected function &makeFilters($container = 'listform_1', $type = 'list', $id = '', $ref = '')
 	{
 		$aFilters = array();
+		$fScript  = array();
 		$opts = new stdClass;
 		$opts->container = $container;
 		$opts->type = $type;
@@ -6252,8 +6252,6 @@ class FabrikFEModelList extends JModelForm
 		$opts->ref = $this->getRenderContext();
 		$opts->advancedSearch = $this->advancedSearch->opts();
 		$opts->advancedSearch->controller = $type;
-		$opts = json_encode($opts);
-		$fScript = "\tFabrik.filter_{$container} = new FbListFilter($opts);\n";
 		$package = $this->app->getUserState('com_fabrik.package', 'fabrik');
 		$filters = $this->getFilterArray();
 		$params = $this->getParams();
@@ -6275,14 +6273,14 @@ class FabrikFEModelList extends JModelForm
 
 			if ($params->get('search-mode-advanced') == 1)
 			{
-				$opts = array();
-				$opts[] = JHTML::_('select.option', 'all', FText::_('COM_FABRIK_ALL_OF_THESE_TERMS'));
-				$opts[] = JHTML::_('select.option', 'any', FText::_('COM_FABRIK_ANY_OF_THESE_TERMS'));
-				$opts[] = JHTML::_('select.option', 'exact', FText::_('COM_FABRIK_EXACT_TERMS'));
-				$opts[] = JHTML::_('select.option', 'none', FText::_('COM_FABRIK_NONE_OF_THESE_TERMS'));
+				$searchOpts = array();
+				$searchOpts[] = JHTML::_('select.option', 'all', FText::_('COM_FABRIK_ALL_OF_THESE_TERMS'));
+				$searchOpts[] = JHTML::_('select.option', 'any', FText::_('COM_FABRIK_ANY_OF_THESE_TERMS'));
+				$searchOpts[] = JHTML::_('select.option', 'exact', FText::_('COM_FABRIK_EXACT_TERMS'));
+				$searchOpts[] = JHTML::_('select.option', 'none', FText::_('COM_FABRIK_NONE_OF_THESE_TERMS'));
 				$mode = $this->app->getUserStateFromRequest('com_' . $package . '.list' . $this->getRenderContext() . '.searchallmode', 'search-mode-advanced');
 				$o->filter .= '&nbsp;'
-						. JHTML::_('select.genericList', $opts, 'search-mode-advanced', "class='fabrik_filter'", 'value', 'text', $mode);
+						. JHTML::_('select.genericList', $searchOpts, 'search-mode-advanced', "class='fabrik_filter'", 'value', 'text', $mode);
 			}
 
 			$o->name = 'all';
@@ -6329,7 +6327,7 @@ class FabrikFEModelList extends JModelForm
 						$o->name = $elementModel->getFullName(true, false);
 						$o->id = $elementModel->getHTMLId() . 'value';
 						$o->filter = $elementModel->getFilter($counter, true);
-						$fScript .= $elementModel->filterJS(true, $container);
+						$fScript[] = $elementModel->filterJS(true, $container);
 						$o->required = $elementModel->getParams()->get('filter_required');
 						$o->label = $elementModel->getListHeading();
 						$o->displayValue = $elementModel->filterDisplayValues;
@@ -6340,8 +6338,11 @@ class FabrikFEModelList extends JModelForm
 			}
 		}
 
-		$fScript .= 'Fabrik.filter_' . $container . ".update();\n";
-		$this->filterJs = $fScript;
+		$opts->filters = $aFilters;
+		$opts = json_encode($opts);
+		array_unshift($fScript, "\tFabrik.filter_{$container} = new FbListFilter($opts);");
+		$fScript[] = 'Fabrik.filter_' . $container . ".update();";
+		$this->filterJs = implode("\n", $fScript);
 
 		// Check for search form filters - if they exists create hidden elements for them
 		$keys = FArrayHelper::getValue($filters, 'key', array());
@@ -10364,9 +10365,9 @@ class FabrikFEModelList extends JModelForm
 					{
 						if ($merge == 2
 							&& !isset($canRepeatsPkValues[$canRepeatsKeys[$shortKey]][$i])
-							&& isset($data[$i]->$canRepeatsKeys[$shortKey]))
+							&& isset($data[$i]->{$canRepeatsKeys[$shortKey]}))
 						{
-							$canRepeatsPkValues[$canRepeatsKeys[$shortKey]][$i] = $data[$i]->$canRepeatsKeys[$shortKey];
+							$canRepeatsPkValues[$canRepeatsKeys[$shortKey]][$i] = $data[$i]->{$canRepeatsKeys[$shortKey]};
 						}
 
 						if ($origKey == $shortKey)
@@ -10381,9 +10382,9 @@ class FabrikFEModelList extends JModelForm
 							{
 								$pk_vals = array_count_values(array_filter($canRepeatsPkValues[$canRepeatsKeys[$shortKey]]));
 
-								if (isset($data[$i]->$canRepeatsKeys[$shortKey]))
+								if (isset($data[$i]->{$canRepeatsKeys[$shortKey]}))
 								{
-									if ($pk_vals[$data[$i]->$canRepeatsKeys[$shortKey]] > 1)
+									if ($pk_vals[$data[$i]->{$canRepeatsKeys[$shortKey]}] > 1)
 									{
 										$do_merge = false;
 									}
@@ -10446,7 +10447,7 @@ class FabrikFEModelList extends JModelForm
 
 						if ($canRepeats[$shortKey]
 							&& !isset($canRepeatsPkValues[$canRepeatsKeys[$shortKey]][$i])
-							&& isset($data[$i]->$canRepeatsKeys[$shortKey]))
+							&& isset($data[$i]->{$canRepeatsKeys[$shortKey]}))
 						{
 							$canRepeatsPkValues[$canRepeatsKeys[$shortKey]][$i] = $data[$i]->{$canRepeatsKeys[$shortKey]};
 						}
@@ -11276,14 +11277,16 @@ class FabrikFEModelList extends JModelForm
 	 */
 	public function getCustomJsAction(&$scripts)
 	{
+		$scriptKey = 'list_' . $this->getId();
+
 		if (JFile::exists(COM_FABRIK_FRONTEND . '/js/table_' . $this->getId() . '.js'))
 		{
-			$scripts[] = 'components/com_fabrik/js/table_' . $this->getId() . '.js';
+			$scripts[$scriptKey] = 'components/com_fabrik/js/table_' . $this->getId() . '.js';
 		}
 
 		if (JFile::exists(COM_FABRIK_FRONTEND . '/js/list_' . $this->getId() . '.js'))
 		{
-			$scripts[] = 'components/com_fabrik/js/list_' . $this->getId() . '.js';
+			$scripts[$scriptKey] = 'components/com_fabrik/js/list_' . $this->getId() . '.js';
 		}
 	}
 

@@ -21,7 +21,13 @@ define(['jquery', 'fab/element'], function (jQuery, FbElement) {
 				if (e) {
 					e.stopPropagation();
 				}
-				jQuery.type(js) === 'function' ? js.delay(0, self, self) : eval(js);
+				if (jQuery.type(js) === 'function') {
+					js.delay(0, self, self);
+				}
+				else {
+					js = js.replace(/\bthis\b/g, 'self');
+					eval(js);
+				}
 			});
 		}
 	});

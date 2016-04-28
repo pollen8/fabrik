@@ -471,6 +471,15 @@
 				<option value="2">COM_FABRIK_FABRIK_DEBUG_JS</option>
 		</field>
 
+		<field name="burst_js"
+		       type="list"
+		       default="0"
+		       description="COM_FABRIK_BURST_JS_DESC"
+		       label="COM_FABRIK_BURST_JS_LABEL">
+			<option value="0">JNO</option>
+			<option value="1">JYES</option>
+		</field>
+
 		<field name="pdf_debug"
 			type="radio"
 			default="0"

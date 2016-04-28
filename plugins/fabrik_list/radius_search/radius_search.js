@@ -109,7 +109,7 @@ define(['jquery', 'fab/list-plugin', 'fab/fabrik'], function (jQuery, FbListPlug
 	}
 
 
-	var FbListRadiusSearch = new Class({
+	var FbListRadius_search = new Class({
 		Extends: FbListPlugin,
 
 		options: {
@@ -378,5 +378,5 @@ define(['jquery', 'fab/list-plugin', 'fab/fabrik'], function (jQuery, FbListPlug
 
 	});
 
-	return FbListRadiusSearch;
+	return FbListRadius_search;
 });

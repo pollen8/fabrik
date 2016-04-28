@@ -5,7 +5,7 @@
  * @license:   GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 define(['jquery', 'fab/list-plugin', 'fab/fabrik'], function (jQuery, FbListPlugin, Fabrik) {
-	var FbListCanEditRow = new Class({
+	var FbListcaneditrow = new Class({
 		Extends: FbListPlugin,
 
 		initialize: function (options) {
@@ -20,5 +20,5 @@ define(['jquery', 'fab/list-plugin', 'fab/fabrik'], function (jQuery, FbListPlug
 			list.result = this.options.acl[rowid];
 		}
 	});
-	return FbListCanEditRow;
+	return FbListcaneditrow;
 });

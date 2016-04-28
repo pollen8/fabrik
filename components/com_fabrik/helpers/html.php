@@ -910,7 +910,7 @@ EOD;
 
 				// need to put jLayouts in session data, and add it in the system plugin buildjs(), so just add %%jLayouts%% placeholder
 				//$liveSiteSrc[] = "\tFabrik.jLayouts = " . json_encode(ArrayHelper::toObject(self::$jLayoutsJs)) . ";";
-				$liveSiteSrc[] = "\tFabrik.jLayouts = %%jLayouts%%\n";
+				$liveSiteSrc[] = "\tFabrik.jLayouts = %%jLayouts%%;\n";
 
 				if ($bootstrapped)
 				{
@@ -1094,12 +1094,11 @@ EOD;
 			'waitSeconds' => 30
 		);
 
-		// Force script reloads if in debug.
-		if (self::isDebug())
+		// Force script reloads if in burst is on.
+		if (self::getBurstJs())
 		{
 			$opts['urlArgs'] = 'bust=' . time();
 		}
-		$opts['urlArgs'] = 'bust=' . time();
 
 		$config[] = "requirejs.config(";
 		$config[] = json_encode($opts, self::isDebug() && defined('JSON_PRETTY_PRINT') ? JSON_PRETTY_PRINT : false);
@@ -1109,6 +1108,22 @@ EOD;
 		// Store in session - included in fabrik system plugin
 		$session->set('fabrik.js.shim', $newShim);
 		$session->set('fabrik.js.config', $config);
+	}
+
+	/**
+	 * Should we 'burst' the loading of JS files. If true then loaded
+	 * js files will be appended with a random query string ensuring they
+	 * are not loaded from cache
+	 *
+	 * @return boolean
+	 * @throws Exception
+	 */
+	protected static function getBurstJs()
+	{
+		$app    = JFactory::getApplication();
+		$config = JComponentHelper::getParams('com_fabrik');
+
+		return (bool) $app->input->get('burst', $config->get('burst_js', 0));
 	}
 
 	/**

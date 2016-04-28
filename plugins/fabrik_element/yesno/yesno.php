@@ -73,7 +73,7 @@ class PlgFabrik_ElementYesno extends PlgFabrik_ElementRadiobutton
 		$rawData = $thisRow->$raw;
 		$rawData = FabrikWorker::JSONtoData($rawData, true);
 		$displayData        = new stdClass;
-		$displayData->tmpl  = @$this->tmpl;
+		$displayData->tmpl  = isset($this->tmpl) ? $this->tmpl : '';
 		$basePath           = JPATH_ROOT . '/plugins/fabrik_element/yesno/layouts';
 		$layout             = new FabrikLayoutFile('fabrik_element_yesno_list', $basePath);
 		$layout->addIncludePaths(JPATH_THEMES . '/' . $this->app->getTemplate() . '/html/layouts');

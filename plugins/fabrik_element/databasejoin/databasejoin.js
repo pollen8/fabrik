@@ -6,7 +6,7 @@
  */
 
 define(['jquery', 'fab/element', 'fab/encoder', 'fab/fabrik', 'fab/autocomplete'],
-    function (jQuery, FbElement, Encoder, Fabrik, AutoComplete) {
+    function (jQuery, FbElement, Encoder, Fabrik, FbAutocomplete) {
     window.FbDatabasejoin = new Class({
         Extends: FbElement,
 
@@ -853,7 +853,7 @@ define(['jquery', 'fab/element', 'fab/encoder', 'fab/fabrik', 'fab/autocomplete'
             f.id = this.element.id + '-auto-complete';
             f.name = this.element.name.replace('[]', '') + '-auto-complete';
             document.id(f.id).value = '';
-            new AutoComplete(this.element.id, this.options.autoCompleteOpts);
+            new FbAutocomplete(this.element.id, this.options.autoCompleteOpts);
         },
 
         watchObserve: function () {

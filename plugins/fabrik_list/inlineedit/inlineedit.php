@@ -89,10 +89,10 @@ class PlgFabrik_ListInlineedit extends PlgFabrik_List
 	 */
 	public function loadJavascriptClass_result()
 	{
-		$ext = FabrikHelperHTML::isDebug() ? '.js' : '-min.js';
+		$mediaFolder = FabrikHelperHTML::getMediaFolder();
 		$src = parent::loadJavascriptClass_result();
-
-		return array($src, 'media/com_fabrik/js/element' . $ext);
+		$src['element'] = $mediaFolder . '/element.js';
+		return $src;
 	}
 
 	/**
@@ -206,7 +206,7 @@ class PlgFabrik_ListInlineedit extends PlgFabrik_List
 		$opts->showSave = (bool) $params->get('inline_show_save', true);
 		$opts->loadFirst = (bool) $params->get('inline_load_first', false);
 		$opts = json_encode($opts);
-		$this->jsInstance = "new FbListInlineEdit($opts)";
+		$this->jsInstance = "new FbListInlineedit($opts)";
 
 		return true;
 	}
@@ -218,6 +218,6 @@ class PlgFabrik_ListInlineedit extends PlgFabrik_List
 	 */
 	public function loadJavascriptClassName_result()
 	{
-		return 'FbListInlineEdit';
+		return 'FbListInlineedit';
 	}
 }

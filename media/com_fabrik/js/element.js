@@ -561,7 +561,9 @@ define(['jquery'], function (jQuery) {
             switch (classname) {
                 case 'fabrikError':
                     Fabrik.loader.stop(this.element);
-                    if (Fabrik.bootstrapped) {
+                    // repeat groups in table format don't have anything to attach a tip msg to!
+                    var t = this.tips();
+                    if (Fabrik.bootstrapped && t.length !== 0) {
                         this.addTipMsg(msg);
                     } else {
                         a = new Element('a', {
