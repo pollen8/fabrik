@@ -46,7 +46,6 @@ define(['jquery', 'fab/list-plugin'], function (jQuery, FbListPlugin) {
 
 			if (options.enabled === false) {
 				fconsole('drag n drop reordering not enabled - need to order by ordering element');
-				this.sortable.detach();
 			} else {
 				if (this.options.handle) {
 					container.getElements(this.options.handle).setStyle('cursor', 'move');
