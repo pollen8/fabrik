@@ -479,6 +479,8 @@ class FabrikFEModelImportcsv extends JModelForm
 	{
 		$model = $this->getlistModel();
 		$model->getFormGroupElementData();
+
+		/** @var FabrikFEModelPluginmanager $pluginManager */
 		$pluginManager = JModelLegacy::getInstance('Pluginmanager', 'FabrikFEModel');
 		$pluginManager->getPlugInGroup('list');
 		$formModel     = $model->getFormModel();
@@ -638,7 +640,6 @@ class FabrikFEModelImportcsv extends JModelForm
 		$overWrite           = (int) FArrayHelper::getValue($jForm, 'overwrite', 0);
 		$model               = $this->getlistModel();
 		$model->importingCSV = true;
-		$item                = $model->getTable();
 		$formModel           = $model->getFormModel();
 
 		// $$$ rob 27/17/212 we need to reset the form as it was first generated before its elements were created.
@@ -657,7 +658,7 @@ class FabrikFEModelImportcsv extends JModelForm
 
 		$key = FabrikString::shortColName($item->db_primary_key);
 
-		// Get a list of existing primary key vals
+		// Get a list of existing primary key values
 		$db    = $model->getDb();
 		$query = $db->getQuery(true);
 		$query->select($item->db_primary_key)->from($item->db_table_name);
@@ -697,11 +698,11 @@ class FabrikFEModelImportcsv extends JModelForm
 				// Test _raw key and use that
 				if (JString::substr($heading, JString::strlen($heading) - 4, JString::strlen($heading)) == '_raw')
 				{
-					$pktestHeading = JString::substr($heading, 0, JString::strlen($heading) - 4);
+					$pkTestHeading = JString::substr($heading, 0, JString::strlen($heading) - 4);
 				}
 				else
 				{
-					$pktestHeading = $heading;
+					$pkTestHeading = $heading;
 				}
 				/*
 				 * $$$rob isset($pkVal) because: It could be that you have two elements (short names) with the
@@ -709,7 +710,7 @@ class FabrikFEModelImportcsv extends JModelForm
 				 * presuming that the master table's pkval is the first one you come to
 				 */
 
-				if ($pktestHeading == $key && !isset($pkVal))
+				if ($pkTestHeading == $key && !isset($pkVal))
 				{
 					$pkVal = $data[$i];
 				}
@@ -1180,6 +1181,8 @@ class FabrikFEModelImportcsv extends JModelForm
 	{
 		$app   = JFactory::getApplication();
 		$input = $app->input;
+		$post = $input->get('jform', array(), 'array');
+		$addKey = (int) FArrayHelper::getValue($post, 'addkey', 0);
 
 		// $$$ rob 30/01/2012 - if in csvimport cron plugin then we have to return true here
 		// otherwise a blank column is added to the import data meaning overwrite date dunna workie
@@ -1189,7 +1192,9 @@ class FabrikFEModelImportcsv extends JModelForm
 		}
 
 		// $$$ rob 13/03/2012 - reimporting into existing list - should return true
-		if ($input->getInt('listid') !== 0)
+		// 29/04/2016 - now in admin  import when creating a list from the csv file, the listid is already set
+		// if we are adding a pk then return true otherwise the headings and data do not match
+		if ($input->getInt('listid') !== 0 && $addKey !== 0)
 		{
 			return true;
 		}
@@ -1201,9 +1206,7 @@ class FabrikFEModelImportcsv extends JModelForm
 			return false;
 		}
 
-		$post = $input->get('jform', array(), 'array');
-
-		if (FArrayHelper::getValue($post, 'addkey', 0) == 1)
+		if ($addKey == 1)
 		{
 			return false;
 		}
