@@ -52,6 +52,13 @@ class FabrikFEModelImportcsv extends JModelForm
 	public $matchedHeadings = array();
 
 	/**
+	 * Used to store the heading key for any heading deselected on admin import into a new list
+	 *
+	 * @var array
+	 */
+	protected $unmatchedKeys = array();
+
+	/**
 	 * List's join objects
 	 *
 	 * @var array
@@ -276,58 +283,32 @@ class FabrikFEModelImportcsv extends JModelForm
 		// Remove leading and trailing \s and \t. TRUE by default.
 		$csv->TrimFields(true);
 
-		$model       = $this->getlistModel();
-		$tableParams = $model->getParams();
-		$mode        = $tableParams->get('csvfullname');
-
-		while ($arr_data = $csv->NextLine())
+		while ($row = $csv->NextLine())
 		{
 			if (empty($this->headings))
 			{
-				foreach ($arr_data as &$heading)
-				{
-					// Remove UFT8 Byte-Order-Mark if present
-
-					/*
-					 * $$$ hugh - for some bizarre reason, this code was stripping the first two characters of the heading
-					 * on one of my client sites, so "Foo Bar" was becoming "o_Bar" if the CSV had a BOM.  So I'm experimenting with just using a str_replace,
-					 * which works on the CSV I'm having issues with.  I've left the original code in place as belt-and-braces.
-					 */
-					$heading = str_replace("\xEF\xBB\xBF", '', $heading);
-
-					$bom = pack("CCC", 0xef, 0xbb, 0xbf);
-					if (0 === strncmp($heading, $bom, 3))
-					{
-						$heading = JString::substr($heading, 3);
-					}
-
-					if ($mode != 2)
-					{
-						// $$$ rob replacing with this as per thread - http://fabrikar.com/forums/showthread.php?p=83304
-						$heading = str_replace(' ', '_', $heading);
-					}
-				}
+				$this->sanitizeHeadings($row);
 
 				if (!$this->getSelectKey())
 				{
 					// If no table loaded and the user asked to automatically add a key then put id at the beginning of the new headings
 					$idHeading = 'id';
 
-					if (in_array($idHeading, $arr_data))
+					if (in_array($idHeading, $row))
 					{
 						$idHeading .= rand(0, 9);
 					}
 
-					array_unshift($arr_data, $idHeading);
+					array_unshift($row, $idHeading);
 				}
 
-				$this->headings = $arr_data;
+				$this->headings = $row;
 			}
 			else
 			{
 				if (function_exists('iconv'))
 				{
-					foreach ($arr_data as &$d)
+					foreach ($row as &$d)
 					{
 						/**
 						 * strip any none utf-8 characters from the import data
@@ -339,27 +320,76 @@ class FabrikFEModelImportcsv extends JModelForm
 
 				if (!$this->getSelectKey())
 				{
-					array_unshift($arr_data, '');
+					array_unshift($row, '');
+				}
+				
+				// In admin import the user has deselected some columns for import. Remove them from the row
+				if (!empty($this->unmatchedKeys))
+				{
+					$row = array_diff_key($row , $this->unmatchedKeys);
+					$row = array_values($row);
 				}
 
-				if (count($arr_data) == 1 && $arr_data[0] == '')
+				if (count($row) == 1 && $row[0] == '')
 				{
 					// CSV import from excel saved as unicode has blank record @ end
 				}
 				else
 				{
-					$this->data[] = $arr_data;
+					$this->data[] = $row;
 				}
 			}
 		}
 
 		fclose($csv->mHandle);
-		/*
-		 * $$$ hugh - remove the temp file, but don't clear session
-		 * $$$ rob 07/11/2011 - NO!!! as import in admin reads the file twice.
-		 * once for getting the headings and a second time for importing/
-		 * $this->removeCSVFile(false);
-		 */
+	}
+
+	/**
+	 * sanitize Headings
+	 *
+	 * @param  array &$row
+	 *
+	 * @return void
+	 */
+	private function sanitizeHeadings(&$row)
+	{
+		$model       = $this->getlistModel();
+		$tableParams = $model->getParams();
+		$mode        = $tableParams->get('csvfullname');
+
+		foreach ($row as $key => &$heading)
+		{
+			// Remove UFT8 Byte-Order-Mark if present
+
+			/*
+			 * $$$ hugh - for some bizarre reason, this code was stripping the first two characters of the heading
+			 * on one of my client sites, so "Foo Bar" was becoming "o_Bar" if the CSV had a BOM.  So I'm experimenting with just using a str_replace,
+			 * which works on the CSV I'm having issues with.  I've left the original code in place as belt-and-braces.
+			 */
+			$heading = str_replace("\xEF\xBB\xBF", '', $heading);
+			$bom     = pack("CCC", 0xef, 0xbb, 0xbf);
+
+			if (0 === strncmp($heading, $bom, 3))
+			{
+				$heading = JString::substr($heading, 3);
+			}
+
+			if ($mode != 2)
+			{
+				// $$$ rob replacing with this as per thread - http://fabrikar.com/forums/showthread.php?p=83304
+				$heading = str_replace(' ', '_', $heading);
+			}
+
+			if (!empty($this->matchedHeadings) && !in_array($heading, $this->matchedHeadings))
+			{
+				$this->unmatchedKeys[$key] = 1;
+				unset($row[$key]);
+
+			}
+
+		}
+
+		$row = array_values($row);
 	}
 
 	/**
@@ -664,7 +694,6 @@ class FabrikFEModelImportcsv extends JModelForm
 		$query->select($item->db_primary_key)->from($item->db_table_name);
 		$db->setQuery($query);
 		$aExistingKeys = $db->loadColumn();
-
 		$this->addedCount = 0;
 		$updatedCount     = 0;
 
@@ -1251,10 +1280,10 @@ class FabrikFEModelImportcsv extends JModelForm
  * $csv->SkipEmptyRows(TRUE); // Will skip empty rows. TRUE by default. (Shown here for example only).
  * $csv->TrimFields(TRUE); // Remove leading and trailing \s and \t. TRUE by default.
  *
- * while ($arr_data = $csv->NextLine()) {
+ * while ($row = $csv->NextLine()) {
  *
  *         echo "<br><br>Processing line ". $csv->RowCount() . "<br>";
- *         echo implode(' , ', $arr_data);
+ *         echo implode(' , ', $row);
  *
  * }
  *

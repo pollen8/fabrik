@@ -13,8 +13,6 @@ defined('_JEXEC') or die('Restricted access');
 
 require_once 'fabcontrollerform.php';
 
-use \Joomla\Utilities\ArrayHelper;
-
 /**
  * Fabrik Import Controller
  *
