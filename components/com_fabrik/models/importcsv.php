@@ -1183,10 +1183,17 @@ class FabrikFEModelImportcsv extends JModelForm
 		$input = $app->input;
 		$post = $input->get('jform', array(), 'array');
 		$addKey = (int) FArrayHelper::getValue($post, 'addkey', 0);
+		$task = $input->get('task', '', 'string');
 
 		// $$$ rob 30/01/2012 - if in csvimport cron plugin then we have to return true here
 		// otherwise a blank column is added to the import data meaning overwrite date dunna workie
 		if ($input->getBool('cron_csvimport'))
+		{
+			return true;
+		}
+
+		// Admin import csv to new list: not asking to create a pk
+		if ($task === 'makeTableFromCSV' && $addKey === 0)
 		{
 			return true;
 		}
