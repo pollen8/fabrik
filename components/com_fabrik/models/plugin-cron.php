@@ -161,10 +161,11 @@ class PlgFabrik_Cron extends FabrikPlugin
 	 * Do the plugin action
 	 *
 	 * @param   array &$data data
+	 * @param   object  &$listModel  List model
 	 *
 	 * @return  int  number of records updated
 	 */
-	public function process(&$data)
+	public function process(&$data, &$listModel)
 	{
 		return 0;
 	}

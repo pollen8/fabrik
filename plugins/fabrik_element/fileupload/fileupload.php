@@ -276,7 +276,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 			 * $$$ hugh - nasty hack for now, if repeat group with simple
 			 * uploads, all raw values are in an array in $rawValues[0]
 			 */
-			if (is_array(FArrayHelper::getValue($rawValues, 0)))
+			if (array_key_exists(0, $rawValues) && is_array(FArrayHelper::getValue($rawValues, 0)))
 			{
 				$rawValues = $rawValues[0];
 			}
@@ -295,7 +295,17 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		{
 			$imgParams = array_values($value['crop']);
 			$value     = array_keys($value['id']);
-			$rawValues = $value;
+
+			/**
+			 * Another nasty hack for failed validations, need to massage $rawValues back into expected shape,
+			 * as they will be keyed by filename instead of parent ID after validation fail.
+			 */
+			$newRawValues = array();
+			foreach ($value as $k => $v)
+			{
+				$newRawValues[$k] = $rawValues['id'][$v];
+			}
+			$rawValues = $newRawValues;
 		}
 
 		for ($x = 0; $x < count($value); $x++)
