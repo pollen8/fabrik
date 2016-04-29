@@ -198,7 +198,7 @@ class FabrikAdminControllerImport extends FabControllerForm
 					'id' => 0,
 					'_database_name' => $dbName,
 					'db_table_name' => '',
-					'contenttype' => null,
+					'contenttype' => null
 				)
 			);
 
