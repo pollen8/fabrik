@@ -255,12 +255,12 @@ class FabrikFEModelImportcsv extends JModelForm
 	 */
 	public function readCSV($file)
 	{
-		$baseDir          = $this->getBaseDir();
-		$this->headings   = array();
-		$this->data       = array();
-		$data             = $this->getFormData();
-		$field_delimiter  = $this->getFieldDelimiter();
-		$text_delimiter   = stripslashes(FArrayHelper::getValue($data, 'text_delimiter', '"'));
+		$baseDir         = $this->getBaseDir();
+		$this->headings  = array();
+		$this->data      = array();
+		$data            = $this->getFormData();
+		$field_delimiter = $this->getFieldDelimiter();
+		$text_delimiter  = stripslashes(FArrayHelper::getValue($data, 'text_delimiter', '"'));
 
 		if (!JFile::exists($baseDir . '/' . $file))
 		{
@@ -293,7 +293,7 @@ class FabrikFEModelImportcsv extends JModelForm
 					 * on one of my client sites, so "Foo Bar" was becoming "o_Bar" if the CSV had a BOM.  So I'm experimenting with just using a str_replace,
 					 * which works on the CSV I'm having issues with.  I've left the original code in place as belt-and-braces.
 					 */
-					$heading = str_replace("\xEF\xBB\xBF",'',$heading);
+					$heading = str_replace("\xEF\xBB\xBF", '', $heading);
 
 					$bom = pack("CCC", 0xef, 0xbb, 0xbf);
 					if (0 === strncmp($heading, $bom, 3))
@@ -483,12 +483,12 @@ class FabrikFEModelImportcsv extends JModelForm
 		/** @var FabrikFEModelPluginmanager $pluginManager */
 		$pluginManager = JModelLegacy::getInstance('Pluginmanager', 'FabrikFEModel');
 		$pluginManager->getPlugInGroup('list');
-		$formModel     = $model->getFormModel();
-		$tableParams   = $model->getParams();
-		$mode          = $tableParams->get('csvfullname');
-		$intKey        = 0;
-		$groups        = $formModel->getGroupsHiarachy();
-		$elementMap    = array();
+		$formModel   = $model->getFormModel();
+		$tableParams = $model->getParams();
+		$mode        = $tableParams->get('csvfullname');
+		$intKey      = 0;
+		$groups      = $formModel->getGroupsHiarachy();
+		$elementMap  = array();
 
 		// $$ hugh - adding $rawMap so we can tell prepareCSVData() if data is already raw
 		$rawMap = array();
@@ -1173,17 +1173,19 @@ class FabrikFEModelImportcsv extends JModelForm
 
 	/**
 	 * Determine if the choose-element-types view should contain a column where
-	 * the user selects the field to be the pk
+	 * the user selects the field to be the pk.
+	 * Should return false if the user has asked for the importer to automatically create a
+	 * primary key
 	 *
 	 * @return  bool    true if column shown
 	 */
 	public function getSelectKey()
 	{
-		$app   = JFactory::getApplication();
-		$input = $app->input;
-		$post = $input->get('jform', array(), 'array');
+		$app    = JFactory::getApplication();
+		$input  = $app->input;
+		$post   = $input->get('jform', array(), 'array');
 		$addKey = (int) FArrayHelper::getValue($post, 'addkey', 0);
-		$task = $input->get('task', '', 'string');
+		$task   = $input->get('task', '', 'string');
 
 		// $$$ rob 30/01/2012 - if in csvimport cron plugin then we have to return true here
 		// otherwise a blank column is added to the import data meaning overwrite date dunna workie
@@ -1192,28 +1194,24 @@ class FabrikFEModelImportcsv extends JModelForm
 			return true;
 		}
 
-		// Admin import csv to new list: not asking to create a pk
+		if ($addKey === 1)
+		{
+			return false;
+		}
+
+		// Admin import csv to new list: user not asking Fabrik to automatically create a pk
 		if ($task === 'makeTableFromCSV' && $addKey === 0)
 		{
 			return true;
 		}
 
-		// $$$ rob 13/03/2012 - reimporting into existing list - should return true
-		// 29/04/2016 - now in admin  import when creating a list from the csv file, the listid is already set
-		// if we are adding a pk then return true otherwise the headings and data do not match
-		if ($input->getInt('listid') !== 0 && $addKey !== 0)
+		// Reimporting into existing list - should return true
+		if ($input->getInt('listid') !== 0 && $task === 'doimport')
 		{
 			return true;
 		}
 
-		$model = $this->getlistModel();
-
-		if (trim($model->getPrimaryKey()) !== '')
-		{
-			return false;
-		}
-
-		if ($addKey == 1)
+		if (trim($this->getlistModel()->getPrimaryKey()) !== '')
 		{
 			return false;
 		}
@@ -1424,8 +1422,9 @@ class Csv_Bv
 		$pattern = "/([\340-\357])([\200-\277])([\200-\277])/";
 		$string  = preg_replace_callback(
 			$pattern,
-			function($m) {
-				return '&#' . ((ord($m[1])-224)*4096 + (ord($m[2])-128)*64 + (ord($m[3])-128));
+			function ($m)
+			{
+				return '&#' . ((ord($m[1]) - 224) * 4096 + (ord($m[2]) - 128) * 64 + (ord($m[3]) - 128));
 			},
 			$string
 		);
@@ -1433,8 +1432,9 @@ class Csv_Bv
 		// Decode two byte unicode characters
 		$string = preg_replace_callback(
 			"/([\300-\337])([\200-\277])/",
-			function ($m) {
-				return '&#' . ((ord($m[1])-192)*64+(ord($m[2])-128));
+			function ($m)
+			{
+				return '&#' . ((ord($m[1]) - 192) * 64 + (ord($m[2]) - 128));
 			},
 			$string
 		);

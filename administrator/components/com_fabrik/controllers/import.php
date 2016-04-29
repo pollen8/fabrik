@@ -13,6 +13,8 @@ defined('_JEXEC') or die('Restricted access');
 
 require_once 'fabcontrollerform.php';
 
+use \Joomla\Utilities\ArrayHelper;
+
 /**
  * Fabrik Import Controller
  *
@@ -146,6 +148,7 @@ class FabrikAdminControllerImport extends FabControllerForm
 		$session = JFactory::getSession();
 		$app     = JFactory::getApplication();
 		$input   = $app->input;
+		$jform   = $input->get('jform', null, 'array');
 
 		/** @var FabrikFEModelImportcsv $model */
 		$model  = $this->getModel('Importcsv', 'FabrikFEModel');
@@ -206,6 +209,9 @@ class FabrikAdminControllerImport extends FabControllerForm
 			$listModel->save($data);
 			$model->listModel = null;
 			$input->set('listid', $listModel->getItem()->id);
+
+			// Reset back to import CSV jForm data.
+			$input->set('jform', $jform);
 		}
 		else
 		{
