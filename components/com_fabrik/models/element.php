@@ -7570,11 +7570,7 @@ class PlgFabrik_Element extends FabrikPlugin
 
 		if ($globalAdvanced !== 0)
 		{
-			// $$$ hugh - may have fixed the repeat group issues
-			//if (!$this->getGroup()->canRepeat())
-			//{
 			$advancedClass = $params->get('advanced_behavior', '0') == '1' || $globalAdvanced === 2 ? 'advancedSelect' : '';
-			//}
 		}
 
 		return $advancedClass;
