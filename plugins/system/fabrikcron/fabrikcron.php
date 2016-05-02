@@ -257,7 +257,8 @@ class PlgSystemFabrikcron extends JPlugin
 					$thisListModel->setLimits(0, $cron_row_limit);
 					$thisListModel->getPagination(0, 0, $cron_row_limit);
 					$data = $thisListModel->getData();
-					$this->log->message .= "\n" . $thisListModel->buildQuery();
+					// for some reason this hoses up next query
+					//$this->log->message .= "\n" . $thisListModel->buildQuery();
 				}
 			}
 			else
