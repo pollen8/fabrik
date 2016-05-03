@@ -576,8 +576,8 @@ define(['jquery', 'fab/fabrik', 'jQueryUI', 'fab/utils'], function (jQuery, Fabr
                 'width'      : opts.width ? opts.width : 300,
                 'height'     : opts.height ? opts.height : 320,
                 'minimizable': false,
-                'collapsible': true
-
+                'collapsible': true,
+                'contentURL' : opts.contentURL ? opts.contentURL : ''
             };
             opts2.id = 'redirect';
             opts = jQuery.merge(opts2, opts);
