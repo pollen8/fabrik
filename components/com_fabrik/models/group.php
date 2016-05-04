@@ -363,7 +363,14 @@ class FabrikFEModelGroup extends FabModel
 				 * $$$ rob Using @ for now as in inline edit in podion you get multiple notices when
 				* saving the status element
 				*/
-				$this->elements = @$allGroups[$this->getId()]->elements;
+				/* Bauer note: this error prevents adding new elements 
+				 * in a new list (where Id is not yet known) in php 7 
+				 */
+				// $this->elements = @$allGroups[$this->getId()]->elements;
+				$thisId = $this->getId();
+				if(!empty($thisId)){
+					$this->elements = $allGroups[$thisId]->elements;
+				}
 			}
 		}
 
