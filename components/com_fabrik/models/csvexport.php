@@ -525,12 +525,25 @@ class FabrikFEModelCSVExport extends FabModel
 	 */
 	protected function quote($n)
 	{
-		$cleanhtml = $this->model->getParams()->get('csv_clean_html', '0') === '1';
-		if ($cleanhtml == true)
+		$cleanhtml = $this->model->getParams()->get('csv_clean_html', 'leave');
+		
+		switch ($cleanhtml)
 		{
-			$n = strip_tags($n);
-			$n =  html_entity_decode($n);
-			//$n = str_replace('&nbsp;', '', $n);
+			default:
+			case 'leave':
+				break;
+			
+			case 'remove':
+				$n = strip_tags($n);
+				$n =  html_entity_decode($n);
+				break;
+				
+			case 'replaceli':
+				$n = str_replace ('<li>', '', $n);
+				$n = str_replace ('</li>', "\n", $n);
+				$n = strip_tags($n);
+				$n =  html_entity_decode($n);
+				break;
 		}
 		
 		$doubleQuote  = $this->model->getParams()->get('csv_double_quote', '1') === '1';

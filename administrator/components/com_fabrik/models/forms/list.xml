@@ -692,14 +692,14 @@
 			</field>
             
             <field name="csv_clean_html"
-                type="radio"
-                class="btn-group"
-                default="0"
+                type="list"
+                default="leave"
                 label="COM_FABRIK_FIELD_CSV_CLEAN_HTML_LABEL"
                 description="COM_FABRIK_FIELD_CSV_CLEAN_HTML_DESC"
                 >
-                <option value="0">JNO</option>
-                <option value="1">JYES</option>
+                <option value="leave">COM_FABRIK_LEAVE_HTML</option>
+                <option value="replaceli">COM_FABRIK_REPLACE_LI</option>
+                <option value="remove">COM_FABRIK_REMOVE</option>
             </field>
             
 			<field name="csv_custom_qs"
