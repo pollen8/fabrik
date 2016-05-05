@@ -5952,11 +5952,6 @@ class PlgFabrik_Element extends FabrikPlugin
 
 		foreach ($data as $i => &$d)
 		{
-			if (empty($d))
-			{
-				$d = '&nbsp;';
-			}
-
 			if ($params->get('icon_folder') == '1' && ArrayHelper::getValue($opts, 'icon', 1))
 			{
 				// $$$ rob was returning here but that stopped us being able to use links and icons together
@@ -7575,11 +7570,7 @@ class PlgFabrik_Element extends FabrikPlugin
 
 		if ($globalAdvanced !== 0)
 		{
-			// $$$ hugh - may have fixed the repeat group issues
-			//if (!$this->getGroup()->canRepeat())
-			//{
 			$advancedClass = $params->get('advanced_behavior', '0') == '1' || $globalAdvanced === 2 ? 'advancedSelect' : '';
-			//}
 		}
 
 		return $advancedClass;

@@ -847,7 +847,7 @@ EOD;
 
 			//$ext = self::isDebug() ? '.js' : '-min.js';
 			$mediaFolder = self::getMediaFolder();
-			$src = array();
+			$src         = array();
 			JHtml::_('behavior.framework', true);
 
 			// Ensure bootstrap js is loaded - as J template may not load it.
@@ -1087,7 +1087,7 @@ EOD;
 			return moment;
 		});";
 
-		$opts     = array(
+		$opts = array(
 			'baseUrl' => $requirejsBaseURI,
 			'paths' => $requirePaths,
 			'shim' => $newShim,
@@ -1168,6 +1168,8 @@ EOD;
 		$r->adminfields = 'administrator/components/com_fabrik/models/fields';
 
 		$r->jQueryUI = 'media/com_fabrik/js/lib/jquery-ui/jquery-ui';
+		$r->chosen   = 'media/jui/js/chosen.jquery.min';
+		$r->ajaxChosen   = 'media/jui/js/ajax-chosen.min';
 
 		// We are now loading compressed js fabrik files from the media/com_fabrik/js/dist folder
 		// This avoids AMD issues where we were loading fab/form or fab/form-min.
@@ -1460,7 +1462,7 @@ EOD;
 			}
 		}
 
-		$files     = array_unique($files);
+		$files = array_unique($files);
 
 		// Set names from $files keys if assoc array. In general it is for require js files
 		$names = array_keys($files) !== range(0, count($files) - 1) ? array_keys($files) : array();
@@ -1796,7 +1798,7 @@ EOD;
 		}
 
 		$needed   = array();
-		$needed[] = 'fab/' . $jsFile ;
+		$needed[] = 'fab/' . $jsFile;
 		$needed[] = 'lib/Event.mock';
 		$needed   = implode("', '", $needed);
 		self::addScriptDeclaration(
@@ -2309,7 +2311,7 @@ EOD;
 	 */
 	public static function runContentPlugins(&$text)
 	{
-		$app   = JFactory::getApplication();
+		$app    = JFactory::getApplication();
 		$input  = $app->input;
 		$opt    = $input->get('option');
 		$view   = $input->get('view');

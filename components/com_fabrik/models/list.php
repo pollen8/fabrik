@@ -10403,6 +10403,13 @@ class FabrikFEModelList extends JModelForm
 								array_push($data[$last_i]->$key, $val);
 								*/
 								$data[$first_pk_i[$next_pk]]->$key = (array) $data[$first_pk_i[$next_pk]]->$key;
+
+								// if first occurrence is null, casting to array will give empty array
+								if (count($data[$first_pk_i[$next_pk]]->$key) === 0)
+								{
+									array_push($data[$first_pk_i[$next_pk]]->$key, null);
+								}
+
 								array_push($data[$first_pk_i[$next_pk]]->$key, $val);
 
 								$rawKey = $key . '_raw';
