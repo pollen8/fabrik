@@ -62,7 +62,7 @@ class FabrikViewListBase extends FabrikView
 		if ($opts->csvChoose)
 		{
 			$modalOpts['footer'] = 'export';
-			$layout              = FabrikHelperHTML::getLayout('fabrik-button');
+			$layout              = $model->getLayout('fabrik-button');
 			$layoutData          = (object) array(
 				'name' => 'submit',
 				'class' => 'exportCSVButton btn-primary',

@@ -11,7 +11,7 @@
 
 // No direct access
 defined('_JEXEC') or die('Restricted access');
-$btnLayout  = FabrikHelperHTML::getLayout('fabrik-button');
+$btnLayout  = $this->getModel()->getLayout('fabrik-button');
 $layoutData = (object) array(
 	'class' => 'btn-info fabrik_filter_submit button',
 	'name' => 'filter',
