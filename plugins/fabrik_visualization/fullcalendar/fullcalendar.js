@@ -47,14 +47,7 @@ define(['jquery', 'fab/fabrik'], function (jQuery, Fabrik) {
             });
 
             Fabrik.addEvent('fabrik.form.submitted', function (form, json) {
-                // Hack - the pop up form has reloaded jQuery and blown away the $.fullCalendar reference
-                if (!jQuery.fullCalendar) {
-                    script = Fabrik.liveSite + 'plugins/fabrik_visualization/fullcalendar/libs/fullcalendar/fullcalendar.js';
-                    jQuery.getScript(script, function () {
-                        self.calendar.fullCalendar(self.calOptions);
-                        self.calendar.fullCalendar('refetchEvents');
-                    });
-                }
+                self.calendar.fullCalendar('refetchEvents');
                 Fabrik.Windows.addeventwin.close();
             });
 
