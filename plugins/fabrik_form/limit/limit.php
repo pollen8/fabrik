@@ -58,6 +58,13 @@ class PlgFabrik_FormLimit extends PlgFabrik_Form
 		}
 
 		$limit = $this->limit();
+
+		// Allow for unlimited
+		if ($limit == -1)
+		{
+			return true;
+		}
+
 		$c = $this->count();
 
 		if ($c === false)
@@ -65,12 +72,6 @@ class PlgFabrik_FormLimit extends PlgFabrik_Form
 			$this->app->enqueueMessage(FText::_("PLG_FORM_LIMIT_NOT_SETUP"));
 
 			return false;
-		}
-
-		// Allow for unlimited
-		if ($limit == -1)
-		{
-			return true;
 		}
 
 		if ($c >= $limit)
@@ -105,10 +106,12 @@ class PlgFabrik_FormLimit extends PlgFabrik_Form
 		$fk = $params->get('limit_fk');
 		$fkVal = '';
 
+		/*
 		if (empty($field))
 		{
 			return false;
 		}
+		*/
 
 		if (!empty($fk))
 		{
@@ -127,8 +130,13 @@ class PlgFabrik_FormLimit extends PlgFabrik_Form
 		$list = $listModel->getTable();
 		$db = $listModel->getDb();
 		$query = $db->getQuery(true);
-		$query->clear()->select(' COUNT(' . $field . ')')->from($list->db_table_name)->where($field . ' = ' .
+		$query->clear()->select(' COUNT(*)')->from($list->db_table_name);
+
+		if (!empty($field))
+		{
+			$query->where($field . ' = ' .
 			(int) $this->user->get('id'));
+		}
 
 		if (!empty($fkVal))
 		{
