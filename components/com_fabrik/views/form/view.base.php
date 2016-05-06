@@ -127,24 +127,9 @@ class FabrikViewFormBase extends FabrikView
 		list($this->plugintop, $this->pluginbottom, $this->pluginend) = $model->getFormPluginHTML();
 		$listModel = $model->getlistModel();
 
-		if (!$model->canPublish())
+		if (!$this->canAccess())
 		{
-			if (!$this->app->isAdmin())
-			{
-				echo FText::_('COM_FABRIK_FORM_NOT_PUBLISHED');
-
-				return false;
-			}
-		}
-
-		$this->rowid  = $model->getRowId();
-		$this->access = $model->checkAccessFromListSettings();
-
-		if ($this->access == 0)
-		{
-			$this->app->enqueueMessage(FText::_('JERROR_ALERTNOAUTHOR'), 'error');
-
-			return false;
+			return false; 
 		}
 
 		JDEBUG ? $profiler->mark('form view before join group ids got') : null;
@@ -215,6 +200,41 @@ class FabrikViewFormBase extends FabrikView
 		}
 
 		JDEBUG ? $profiler->mark('form view before template load') : null;
+	}
+
+	/**
+	 * Test the form exists and can be accessed
+	 * @return bool
+	 */
+	protected function canAccess()
+	{
+		$model = $this->getModel();
+
+		if ($model->getForm()->get('id', '') === '')
+		{
+			throw new UnexpectedValueException('Form does not exists');
+		}
+		if (!$model->canPublish())
+		{
+			if (!$this->app->isAdmin())
+			{
+				echo FText::_('COM_FABRIK_FORM_NOT_PUBLISHED');
+
+				return false;
+			}
+		}
+
+		$this->rowid  = $model->getRowId();
+		$this->access = $model->checkAccessFromListSettings();
+
+		if ($this->access == 0)
+		{
+			$this->app->enqueueMessage(FText::_('JERROR_ALERTNOAUTHOR'), 'error');
+
+			return false;
+		}
+
+		return true;
 	}
 
 	/**

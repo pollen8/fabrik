@@ -61,21 +61,9 @@ class FabrikViewForm extends FabrikViewFormBase
 		$model->render();
 
 		// @TODO replace with OAI errors.
-		if (!$model->canPublish())
+		if (!$this->canAccess())
 		{
-			if (!$this->app->isAdmin())
-			{
-				echo FText::_('COM_FABRIK_FORM_NOT_PUBLISHED');
-
-				return false;
-			}
-		}
-
-		$this->access = $model->checkAccessFromListSettings();
-
-		if ($this->access == 0)
-		{
-			$this->app->enqueueMessage(FText::_('JERROR_ALERTNOAUTHOR'), 'error');
+			return false;
 		}
 
 		$listModel = $model->getListModel();

@@ -2552,9 +2552,9 @@ class FabrikFEModelForm extends FabModelForm
 		asort($aEls);
 
 		// Paul - Prepend rather than append "none" option.
-		array_unshift($aEls, JHTML::_('select.option', '', '-'));
+		array_unshift($aEls, JHtml::_('select.option', '', '-'));
 
-		return JHTML::_('select.genericlist', $aEls, $name, $attribs, 'value', 'text', $default);
+		return JHtml::_('select.genericlist', $aEls, $name, $attribs, 'value', 'text', $default);
 	}
 
 	/**
@@ -2699,12 +2699,12 @@ class FabrikFEModelForm extends FabModelForm
 								$rawVal = str_replace('`', '', $rawVal);
 							}
 
-							$aEls[$label . '(raw)'] = JHTML::_('select.option', $rawVal, $label . '(raw)');
+							$aEls[$label . '(raw)'] = JHtml::_('select.option', $rawVal, $label . '(raw)');
 						}
 					}
 				}
 
-				$aEls[] = JHTML::_('select.option', $val, $label);
+				$aEls[] = JHtml::_('select.option', $val, $label);
 			}
 		}
 		// Paul - Sort removed so that list is presented in group/id order regardless of whether $key is name or id
