@@ -37,7 +37,7 @@ define(['jquery'], function (jQuery) {
             this.events = $H({}); // was changeEvents
             this.setOptions(options);
             // If this element is a 'chosen' select, we need to relay the jQuery change event to Moo
-            if (document.id(this.options.element + '_chzn')) {
+            if (this.options.advanced) {
                 var changeEvent = this.getChangeEvent();
                 jQuery('#' + this.options.element).on('change', {changeEvent: changeEvent}, function (event) {
                     document.id(this.id).fireEvent(event.data.changeEvent, new Event.Mock(document.id(this.id),
