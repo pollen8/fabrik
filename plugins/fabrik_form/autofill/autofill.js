@@ -49,7 +49,7 @@ define(['jquery', 'fab/fabrik'], function (jQuery, Fabrik) {
 					return;
 				}
 				// A group has been duplicated
-				if (oEl.strElement === this.element.strElement) {
+				if (oEl.strElement === self.element.strElement) {
 					// The element is a clone of our observable element
 					self.element = false;
 					self.setupDone = false;
