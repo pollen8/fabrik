@@ -241,7 +241,7 @@ define(['jquery', 'fab/list-plugin', 'fab/fabrik'], function (jQuery, FbListPlug
 		 */
 		makeWin: function (mapid) {
 			var c = document.id(mapid).getParent('.radius_search');
-			var b = new Element('button.btn.button').set('html', '<i class="icon-location"></i> ' + Joomla.JText._('COM_FABRIK_SEARCH'));
+			var b = new Element('button.btn.button').set('html', '<i class="icon-location"></i> ' + Joomla.JText._('PLG_LIST_RADIUS_SEARCH_BUTTON'));
 			c.getParent().adopt(b);
 			var offset_y = this.options.offset_y > 0 ? this.options.offset_y : null;
 			var winOpts = {

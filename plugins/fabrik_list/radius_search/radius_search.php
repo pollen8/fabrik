@@ -144,6 +144,7 @@ class PlgFabrik_ListRadius_search extends PlgFabrik_List
 		JText::script('PLG_VIEW_RADIUS_NO_GEOLOCATION_AVAILABLE');
 		JText::script('COM_FABRIK_SEARCH');
 		JText::script('PLG_LIST_RADIUS_SEARCH');
+		JText::script('PLG_LIST_RADIUS_SEARCH_BUTTON');
 
 		$mapElement = $this->getMapElement();
 		$mapName = $mapElement->getFullName(true, false);
