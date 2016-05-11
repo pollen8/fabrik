@@ -5,7 +5,7 @@
  * @license:   GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
-define(['jquery'], function (jQuery) {
+define(['jquery', 'fab/encoder'], function (jQuery, Encoder) {
 	var FbCalcList = new Class({
 
 		options: {},
