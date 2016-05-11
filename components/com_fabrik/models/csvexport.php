@@ -400,27 +400,32 @@ class FabrikFEModelCSVExport extends FabModel
 		jimport('joomla.filesystem.file');
 		$filename = $this->getFileName();
 		$filePath = $this->getFilePath();
-		$document = JFactory::getDocument();
-		$document->setMimeEncoding('application/zip');
-		$str = $this->getCSVContent();
-		$this->app->clearHeaders();
-		$encoding = $this->getEncoding();
+		// Do additional processing if post-processing php file exists
+		$listid = $this->app->input->getInt('listid');
+		if(file_exists(JPATH_PLUGINS.'/fabrik_list/listcsv/scripts/list_'.$listid.'_csv_export.php')){	
+			require(JPATH_PLUGINS.'/fabrik_list/listcsv/scripts/list_260_csv_export.php');
+		}else{		
+			$document = JFactory::getDocument();
+			$document->setMimeEncoding('application/zip');
+			$str = $this->getCSVContent();
+			$this->app->clearHeaders();
+			$encoding = $this->getEncoding();
 
-		// Set the response to indicate a file download
-		$this->app->setHeader('Content-Type', 'application/zip');
-		$this->app->setHeader('Content-Disposition', "attachment;filename=\"" . $filename . "\"");
+			// Set the response to indicate a file download
+			$this->app->setHeader('Content-Type', 'application/zip');
+			$this->app->setHeader('Content-Disposition', "attachment;filename=\"" . $filename . "\"");
 
-		// Xls formatting for accents
-		if ($this->outPutFormat == 'excel')
-		{
-			$this->app->setHeader('Content-Type', 'application/vnd.ms-excel');
+			// Xls formatting for accents
+			if ($this->outPutFormat == 'excel')
+			{
+				$this->app->setHeader('Content-Type', 'application/vnd.ms-excel');
+			}
+
+			$this->app->setHeader('charset', $encoding);
+			$this->app->setBody($str);
+			echo $this->app->toString(false);
+			JFile::delete($filePath);
 		}
-
-		$this->app->setHeader('charset', $encoding);
-		$this->app->setBody($str);
-		echo $this->app->toString(false);
-		JFile::delete($filePath);
-
 		// $$$ rob 21/02/2012 - need to exit otherwise Chrome give 349 download error
 		exit;
 	}
