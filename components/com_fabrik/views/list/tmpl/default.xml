@@ -173,6 +173,24 @@
 				description="COM_FABRIK_FIELD_ROWS_PER_PAGE_DESC"
 			/>
 			
+			<field name="popup_width"
+				type="text"
+				default="340"
+				class="input-mini"
+				size="5"
+				label="COM_FABRIK_FIELD_POPUP_WIDTH"
+				description="COM_FABRIK_FIELD_POPUP_WIDTH"
+			/>	
+
+			<field name="popup_opts_width"
+				type="text"
+				default="200"
+				class="input-mini"
+				size="5"
+				label="COM_FABRIK_FIELD_POPUP_OPTS_WIDTH"
+				description="COM_FABRIK_FIELD_POPUP_OPTS_WIDTH"
+			/>	
+			
 			<!-- <field name="query_string"
 				type="text"
 				class="input-xlarge"
