@@ -2113,6 +2113,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		$groupModel                = $this->getGroup();
 		$element                   = $this->getElement();
 		$params                    = $this->getParams();
+		$isAjax                    = $params->get('ajax_upload', '0') === '1';
 
 		$use_wip        = $params->get('upload_use_wip', '0') == '1';
 		$device_capture = $params->get('ul_device_capture', '0');
@@ -2127,7 +2128,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		$value = is_array($value) ? $value : FabrikWorker::JSONtoData($value, true);
 		$value = $this->checkForSingleCropValue($value);
 
-		if ($params->get('ajax_upload'))
+		if ($isAjax)
 		{
 			if (isset($value->file))
 			{
@@ -2153,7 +2154,14 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 
 			foreach ($values as $k => $v)
 			{
-				$links[] = $this->downloadLink($v, $data, $repeatCounter, $k);
+				if ($isAjax)
+				{
+					$links[] = $this->downloadLink($v, $data, $repeatCounter, $k);
+				}
+				else
+				{
+					$links[] = $this->downloadLink($v, $data, $repeatCounter, '');
+				}
 			}
 
 			return count($links) < 2 ? implode("\n", $links) : '<ul class="fabrikRepeatData"><li>' . implode('</li><li>', $links) . '</li></ul>';
@@ -3000,7 +3008,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		$this->lang->load('com_fabrik.plg.element.fabrikfileupload', JPATH_ADMINISTRATOR);
 		$rowId       = $input->get('rowid', '', 'string');
 		$repeatCount = $input->getInt('repeatcount', 0);
-		$ajaxIndex   = $input->getInt('ajaxIndex', 0);
+		$ajaxIndex   = $input->getStr('ajaxIndex', '');
 		$listModel   = $this->getListModel();
 		$row         = $listModel->getRow($rowId, false, true);
 
@@ -3056,7 +3064,11 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 			$filePath = FArrayHelper::getValue($filePath, $repeatCount);
 		}
 
-		$filePath    = FArrayHelper::getValue($filePath, $ajaxIndex);
+		if ($ajaxIndex !== '')
+		{
+			$filePath = FArrayHelper::getValue($filePath, $ajaxIndex);
+		}
+
 		$filePath    = $storage->getFullPath($filePath);
 		$fileContent = $storage->read($filePath);
 
