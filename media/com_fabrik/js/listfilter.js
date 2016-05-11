@@ -91,12 +91,12 @@ define(['jquery', 'fab/fabrik', 'fab/advanced-search'], function (jQuery, Fabrik
                 Fabrik.getWindow(windowopts);
             });
 
-            this.filterContainer.find('.advancedSelect').each(function () {
-                jQuery('#' + this.id).on('change', {changeEvent: 'change'}, function (event) {
-                    jQuery(this).fireEvent(event.data.changeEvent,
-                        new Event.Mock(document.getElementById(this.id), event.data.changeEvent));
-                });
+
+            jQuery('.fabrik_filter.advancedSelect').on('change', {changeEvent: 'change'}, function (event) {
+                this.fireEvent(event.data.changeEvent,
+                    new Event.Mock(document.getElementById(this.id), event.data.changeEvent));
             });
+
             this.watchClearOne();
         },
 
