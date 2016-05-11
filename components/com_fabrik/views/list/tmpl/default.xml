@@ -178,8 +178,8 @@
 				default="340"
 				class="input-mini"
 				size="5"
-				label="COM_FABRIK_FIELD_POPUP_WIDTH"
-				description="COM_FABRIK_FIELD_POPUP_WIDTH"
+				label="COM_FABRIK_MENU_CSV_POPUP_WIDTH_LABEL"
+				description="COM_FABRIK_MENU_CSV_POPUP_WIDTH_DESC"
 			/>	
 
 			<field name="popup_opts_width"
@@ -187,8 +187,8 @@
 				default="200"
 				class="input-mini"
 				size="5"
-				label="COM_FABRIK_FIELD_POPUP_OPTS_WIDTH"
-				description="COM_FABRIK_FIELD_POPUP_OPTS_WIDTH"
+				label="COM_FABRIK_MENU_CSV_POPUP_OPTS_WIDTH_LABEL"
+				description="COM_FABRIK_MENU_CSV_POPUP_OPTS_WIDTH_DESC"
 			/>	
 			
 			<!-- <field name="query_string"
