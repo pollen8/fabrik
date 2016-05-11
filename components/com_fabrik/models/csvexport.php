@@ -403,7 +403,7 @@ class FabrikFEModelCSVExport extends FabModel
 		// Do additional processing if post-processing php file exists
 		$listid = $this->app->input->getInt('listid');
 		if(file_exists(JPATH_PLUGINS.'/fabrik_list/listcsv/scripts/list_'.$listid.'_csv_export.php')){	
-			require(JPATH_PLUGINS.'/fabrik_list/listcsv/scripts/list_260_csv_export.php');
+			require(JPATH_PLUGINS.'/fabrik_list/listcsv/scripts/list_'.$listid.'_csv_export.php');
 		}else{		
 			$document = JFactory::getDocument();
 			$document->setMimeEncoding('application/zip');
