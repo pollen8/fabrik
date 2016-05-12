@@ -1021,16 +1021,17 @@ EOD;
 	 * Stores the shim and config to the session, which Fabrik system plugin
 	 * then uses to inject scripts into document.
 	 *
-	 * @param   array $shim Shim js files
+	 * @param   array $shim  Shim js files
+	 * @param   array $paths Additional require js paths
 	 *
 	 * @since   3.1
 	 *
 	 * @return  void
 	 */
-	public static function iniRequireJs($shim = array())
+	public static function iniRequireJs($shim = array(), $paths = array())
 	{
 		$session      = JFactory::getSession();
-		$requirePaths = self::requirePaths();
+		$requirePaths = (object) array_merge((array) self::requirePaths(), $paths);
 		$framework    = array();
 		$deps         = array();
 		$j3           = FabrikWorker::j3();
@@ -1295,7 +1296,6 @@ EOD;
 	 *
 	 * @return  bool
 	 */
-
 	public static function inAjaxLoadedPage()
 	{
 		$app     = JFactory::getApplication();

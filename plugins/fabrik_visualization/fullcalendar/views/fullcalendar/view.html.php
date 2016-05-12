@@ -206,15 +206,15 @@ class FabrikViewFullcalendar extends JViewLegacy
 
 		$shim = $model->getShim();
 
-		$shim['viz/fullcalendar/libs/fullcalendar/fullcalendar'] = (object) array('deps' =>
-			array('fab/fabrik', 'lib/moment/moment')
+		$shim['fullcalendar'] = (object) array('deps' =>
+			array('lib/moment/moment')
 		);
 
 		$shim['viz/fullcalendar/fullcalendar'] = (object) array('deps' =>
-			array('viz/fullcalendar/libs/fullcalendar/fullcalendar')
+			array('fullcalendar', 'jquery')
 		);
 
-		FabrikHelperHTML::iniRequireJs($shim);
+		FabrikHelperHTML::iniRequireJs($shim, array('fullcalendar' => 'plugins/fabrik_visualization/fullcalendar/libs/fullcalendar/fullcalendar.min'));
 		FabrikHelperHTML::script($srcs, $js);
 	}
 

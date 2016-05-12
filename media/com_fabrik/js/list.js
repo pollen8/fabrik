@@ -6,7 +6,7 @@
  */
 
 define(['jquery', 'fab/fabrik', 'fab/list-toggle', 'fab/list-grouped-toggler', 'fab/list-keys',
-'fab/list-actions', 'fab/mootools-ext'],
+        'fab/list-actions', 'fab/mootools-ext'],
     function (jQuery, Fabrik, FbListToggle, FbGroupedToggler, FbListKeys, FbListActions) {
         var FbList = new Class({
 
@@ -36,6 +36,7 @@ define(['jquery', 'fab/fabrik', 'fab/list-toggle', 'fab/list-grouped-toggler', '
                 'itemTemplate'       : '',
                 'floatPos'           : 'left', // deprecated in 3.1
                 'csvChoose'          : false,
+                advancedFilters      : null,
                 'csvOpts'            : {
                     excel       : false,
                     incfilters  : false,
@@ -59,6 +60,7 @@ define(['jquery', 'fab/fabrik', 'fab/list-toggle', 'fab/list-grouped-toggler', '
             },
 
             initialize: function (id, options) {
+                var self = this;
                 this.id = id;
                 this.setOptions(options);
                 this.getForm();
@@ -93,8 +95,8 @@ define(['jquery', 'fab/fabrik', 'fab/list-toggle', 'fab/list-grouped-toggler', '
                 }
                 this.watchAll(false);
                 Fabrik.addEvent('fabrik.form.submitted', function () {
-                    this.updateRows();
-                }.bind(this));
+                    self.updateRows();
+                });
 
                 /**
                  * once an ajax form has been submitted lets clear out any loose events and the form object itself
@@ -110,7 +112,8 @@ define(['jquery', 'fab/fabrik', 'fab/list-toggle', 'fab/list-grouped-toggler', '
                  });*/
 
                 // Reload state only if reset filters is not on
-                if (!this.options.resetFilters && ((window.history && history.pushState) && history.state && this.options.ajax)) {
+                if (!this.options.resetFilters && ((window.history && history.pushState) &&
+                    history.state && this.options.ajax)) {
                     this._updateRows(history.state);
                 }
 
@@ -132,18 +135,19 @@ define(['jquery', 'fab/fabrik', 'fab/list-toggle', 'fab/list-grouped-toggler', '
              * Used for db join select states.
              */
             rowClicks: function () {
-                this.list.addEvent('click:relay(.fabrik_row)', function (e, r) {
-                    var d = Array.from(r.id.split('_')),
-                        data = {};
-                    data.rowid = d.getLast();
-                    var json = {
-                        'errors': {},
-                        'data'  : data,
-                        'rowid' : d.getLast(),
-                        listid  : this.id
+                var self = this, rowId, json;
+                jQuery(this.list).on('click', '.fabrik_row', function () {
+                    rowId = this.id.split('_').pop();
+                    json = {
+                        errors: {},
+                        data  : {
+                            rowid: rowId
+                        },
+                        rowid : rowId,
+                        listid: self.id
                     };
                     Fabrik.fireEvent('fabrik.list.row.selected', json);
-                }.bind(this));
+                });
             },
 
             watchAll: function (ajaxUpdate) {
@@ -162,20 +166,25 @@ define(['jquery', 'fab/fabrik', 'fab/list-toggle', 'fab/list-grouped-toggler', '
                 }
             },
 
+            /**
+             * Watch the group by buttons when list rendering as ajax
+             */
             watchGroupByMenu: function () {
+                var self = this;
                 if (this.options.ajax) {
-                    this.form.addEvent('click:relay(*[data-groupBy])', function (e, target) {
-                        this.options.groupedBy = target.get('data-groupBy');
+                    jQuery(this.form).on('click', '*[data-groupBy]', function (e) {
+                        self.options.groupedBy = jQuery(this).data('groupby');
                         if (e.rightClick) {
                             return;
                         }
                         e.preventDefault();
-                        this.updateRows();
-                    }.bind(this));
+                        self.updateRows();
+                    });
                 }
             },
 
             watchButtons: function () {
+                var self = this;
                 this.exportWindowOpts = {
                     modalId    : 'exportcsv',
                     type       : 'modal',
@@ -194,19 +203,22 @@ define(['jquery', 'fab/fabrik', 'fab/list-toggle', 'fab/list-grouped-toggler', '
                     // For csv links e.g. index.php?option=com_fabrik&view=csv&listid=10
                     this.openCSVWindow();
                 } else {
-                    if (this.form.getElements('.csvExportButton')) {
-                        this.form.getElements('.csvExportButton').each(function (b) {
-                            if (b.hasClass('custom') === false) {
-                                b.addEvent('click', function (e) {
-                                    this.openCSVWindow();
-                                    e.stop();
-                                }.bind(this));
-                            }
-                        }.bind(this));
-                    }
+                    jQuery(this.form).find('.csvExportButton').each(function (x, b) {
+                        b = jQuery(b);
+                        if (b.hasClass('custom') === false) {
+                            b.on('click', function (e) {
+                                e.preventDefault();
+                                self.openCSVWindow();
+                            });
+                        }
+                    });
                 }
             },
 
+            /**
+             * Open either the window to choose csv export options or auto-start the CSV
+             * download
+             */
             openCSVWindow: function () {
                 var self = this;
                 this.exportWindowOpts.content = this.makeCSVExportForm();
@@ -229,6 +241,11 @@ define(['jquery', 'fab/fabrik', 'fab/list-toggle', 'fab/list-grouped-toggler', '
                 });
             },
 
+            /**
+             * Create the CSV export window content, either
+             * export options form our auto-start export
+             * @returns {jQuery}
+             */
             makeCSVExportForm: function () {
                 if (this.options.csvChoose) {
                     this.csvExportForm = this._csvExportForm();
@@ -238,6 +255,11 @@ define(['jquery', 'fab/fabrik', 'fab/list-toggle', 'fab/list-grouped-toggler', '
                 }
             },
 
+            /**
+             * Create the content for the CSV export window's auto-start
+             * @returns {jQuery}
+             * @private
+             */
             _csvAutoStart: function () {
                 var c = jQuery('<div />').attr({
                     'id': 'csvmsg'
@@ -296,7 +318,7 @@ define(['jquery', 'fab/fabrik', 'fab/list-toggle', 'fab/list-grouped-toggler', '
 
             /**
              * Build the export csv form
-             * @returns {*}
+             * @returns {jQuery}
              * @private
              */
             _csvExportForm: function () {
@@ -455,17 +477,18 @@ define(['jquery', 'fab/fabrik', 'fab/list-toggle', 'fab/list-grouped-toggler', '
                             jQuery('#csvtotal').text(res.total);
                             jQuery('#csvfile').text(res.file);
                             if (res.count < res.total) {
-                                this.triggerCSVExport(res.count);
+                                self.triggerCSVExport(res.count);
                             } else {
-                                var finalurl = 'index.php?option=com_fabrik&view=list&format=csv&listid=' + this.id +
-                                    '&start=' + res.count + '&Itemid=' + this.options.Itemid;
-                                var msg = '<div class="alert alert-success"><h3>' + Joomla.JText._('COM_FABRIK_CSV_COMPLETE');
+                                var finalurl = 'index.php?option=com_fabrik&view=list&format=csv&listid=' + self.id +
+                                    '&start=' + res.count + '&Itemid=' + self.options.Itemid;
+                                var msg = '<div class="alert alert-success"><h3>' +
+                                    Joomla.JText._('COM_FABRIK_CSV_COMPLETE');
                                 msg += '</h3><p><a class="btn btn-success" href="' + finalurl + '">' +
                                     '<i class="icon-download"></i> ' +
                                     Joomla.JText._('COM_FABRIK_CSV_DOWNLOAD_HERE') + '</a></p></div>';
                                 jQuery('#csvmsg').html(msg);
-                                this.csvWindow.fitToContent(false);
-                                this.csvWindow.center();
+                                self.csvWindow.fitToContent(false);
+                                self.csvWindow.center();
                                 document.getElements('input.exportCSVButton').removeProperty('disabled');
 
                                 jQuery('#csvmsg a.btn-success').focusout(function () {
@@ -473,7 +496,7 @@ define(['jquery', 'fab/fabrik', 'fab/list-toggle', 'fab/list-grouped-toggler', '
                                 });
                             }
                         }
-                    }.bind(this)
+                    }
                 });
                 myAjax.send();
             },
@@ -481,12 +504,13 @@ define(['jquery', 'fab/fabrik', 'fab/list-toggle', 'fab/list-grouped-toggler', '
             /**
              * Add filter options to CSV export info
              *
-             * @param   objet  opts
+             * @param {object}  opts
              *
-             * @return  opts
+             * @return {object} opts
              */
             csvExportFilterOpts: function (opts) {
                 var ii = 0,
+                    self = this,
                     aa, bits, aName,
                     advancedPointer = 0,
                     testii,
@@ -504,21 +528,22 @@ define(['jquery', 'fab/fabrik', 'fab/list-toggle', 'fab/list-grouped-toggler', '
                         'elementid'
                     ];
 
-                this.getFilters().each(function (f) {
-                    bits = f.name.split('[');
+                this.getFilters().each(function (x, f) {
+                    f = jQuery(f);
+                    bits = f.prop('name').split('[');
                     if (bits.length > 3) {
-                        testii = bits[3].replace(']', '').toInt();
+                        testii = parseInt(bits[3].replace(']', ''), 10);
                         ii = testii > ii ? testii : ii;
 
-                        if (f.get('type') === 'checkbox' || f.get('type') === 'radio') {
-                            if (f.checked) {
-                                opts[f.name] = f.get('value');
+                        if (f.prop('type') === 'checkbox' || f.prop('type') === 'radio') {
+                            if (f[0].checked) {
+                                opts[f.name] = f.val();
                             }
                         } else {
-                            opts[f.name] = f.get('value');
+                            opts[f.name] = f.val();
                         }
                     }
-                }.bind(this));
+                });
 
                 ii++;
 
@@ -527,198 +552,214 @@ define(['jquery', 'fab/fabrik', 'fab/list-toggle', 'fab/list-grouped-toggler', '
                         advancedPointer = 0;
                         for (aa = 0; aa < values.length; aa++) {
                             advancedPointer = aa + ii;
-                            aName = 'fabrik___filter[list_' + this.options.listRef +
+                            aName = 'fabrik___filter[list_' + self.options.listRef +
                                 '][' + key + '][' + advancedPointer + ']';
                             if (key === 'value') {
-                                opts[aName] = this.options.advancedFilters.origvalue[aa];
+                                opts[aName] = self.options.advancedFilters.origvalue[aa];
                             }
                             else if (key === 'condition') {
-                                opts[aName] = this.options.advancedFilters.orig_condition[aa];
+                                opts[aName] = self.options.advancedFilters.orig_condition[aa];
                             }
                             else {
                                 opts[aName] = values[aa];
                             }
                         }
                     }
-                }.bind(this));
+                });
 
                 return opts;
             },
 
             addPlugins: function (a) {
+                var self = this;
                 a.each(function (p) {
-                    p.list = this;
-                }.bind(this));
+                    p.list = self;
+                });
                 this.plugins = a;
             },
 
             firePlugin: function (method) {
-                var args = Array.prototype.slice.call(arguments);
+                var args = Array.prototype.slice.call(arguments), self = this;
                 args = args.slice(1, args.length);
                 this.plugins.each(function (plugin) {
-                    Fabrik.fireEvent(method, [this, args]);
-                }.bind(this));
+                    Fabrik.fireEvent(method, [self, args]);
+                });
                 return this.result === false ? false : true;
             },
 
-            watchEmpty: function (e) {
-                var b = document.id(this.options.form).getElement('.doempty');
-                if (b) {
-                    b.addEvent('click', function (e) {
-                        e.stop();
-                        if (window.confirm(Joomla.JText._('COM_FABRIK_CONFIRM_DROP'))) {
-                            this.submit('list.doempty');
+            /**
+             * Watch the empty data button
+             */
+            watchEmpty: function () {
+                var self = this,
+                    b = jQuery(this.form).find('.doempty');
+                b.on('click', function (e) {
+                    e.preventDefault();
+                    if (window.confirm(Joomla.JText._('COM_FABRIK_CONFIRM_DROP'))) {
+                        self.submit('list.doempty');
+                    }
+                });
+            },
+
+            /**
+             * Watch order buttons
+             */
+            watchOrder: function () {
+                var elementId = false, i, icon, otherIcon, src,
+                    form = jQuery(this.form), self = this,
+                    hs = form.find('.fabrikorder, .fabrikorder-asc, .fabrikorder-desc');
+                hs.off('click');
+                hs.on('click', function (e) {
+                    var img = 'ordernone.png',
+                        orderDir = '',
+                        newOrderClass = '',
+                        bsClassAdd = '',
+                        bsClassRemove = '',
+                        h = jQuery(this),
+                        td = h.closest('.fabrik_ordercell');
+
+                    if (h.prop('tagName') !== 'A') {
+                        h = td.find('a');
+                    }
+
+                    /**
+                     * Figure out what we need to change the icon from / to.  We don't know in advance for
+                     * bootstrapped templates what icons will be used, so the fabrik-order-header layout
+                     * will have set data-sort-foo properties of each of the three states.  Another wrinkle
+                     * is that we can't just set the new icon class blindly, because there
+                     * may be other classes
+                     * on the icon.  For instancee BS3 using Font Awesome will have "fa fa-sort-foo".
+                     * So we have
+                     * to specifically remove the current class and add the new one.
+                     */
+
+                    switch (h.attr('class')) {
+                        case 'fabrikorder-asc':
+                            newOrderClass = 'fabrikorder-desc';
+                            bsClassAdd = h.data('data-sort-desc-icon');
+                            bsClassRemove = h.data('data-sort-asc-icon');
+                            orderDir = 'desc';
+                            img = 'orderdesc.png';
+                            break;
+                        case 'fabrikorder-desc':
+                            newOrderClass = 'fabrikorder';
+                            bsClassAdd = h.data('data-sort-icon');
+                            bsClassRemove = h.data('data-sort-desc-icon');
+                            orderDir = '-';
+                            img = 'ordernone.png';
+                            break;
+                        case 'fabrikorder':
+                            newOrderClass = 'fabrikorder-asc';
+                            bsClassAdd = h.data('data-sort-asc-icon');
+                            bsClassRemove = h.data('data-sort-icon');
+                            orderDir = 'asc';
+                            img = 'orderasc.png';
+                            break;
+                    }
+                    td.attr('class').split(' ').each(function (c) {
+                        if (c.contains('_order')) {
+                            elementId = c.replace('_order', '').replace(/^\s+/g, '').replace(/\s+$/g, '');
                         }
-                    }.bind(this));
+                    });
+                    if (!elementId) {
+                        fconsole('woops didnt find the element id, cant order');
+                        return;
+                    }
+                    h.attr('class', newOrderClass);
+                    i = h.find('img');
+                    icon = h.firstElementChild;
+
+                    // Swap images - if list doing ajax nav then we need to do this
+                    if (self.options.singleOrdering) {
+                        form.find('.fabrikorder, .fabrikorder-asc, .fabrikorder-desc')
+                            .each(function (otherH) {
+                                if (Fabrik.bootstrapped) {
+                                    otherIcon = otherH.firstElementChild;
+                                    switch (otherH.className) {
+                                        case 'fabrikorder-asc':
+                                            otherIcon.removeClass(otherH.data('sort-asc-icon'));
+                                            otherIcon.addClass(otherH.data('sort-icon'));
+                                            break;
+                                        case 'fabrikorder-desc':
+                                            otherIcon.removeClass(otherH.data('sort-desc-icon'));
+                                            otherIcon.addClass(otherH.data('sort-icon'));
+                                            break;
+                                        case 'fabrikorder':
+                                            break;
+                                    }
+                                } else {
+                                    i = otherH.find('img');
+                                    if (i.length > 0) {
+                                        src = i.attr('src');
+                                        src = src.replace('ordernone.png', '')
+                                            .replace('orderasc.png', '').replace('orderdesc.png', '');
+                                        src += 'ordernone.png';
+                                        i.attr('src', src);
+                                    }
+                                }
+                            });
+                    }
+
+                    if (Fabrik.bootstrapped) {
+                        icon.removeClass(bsClassRemove);
+                        icon.addClass(bsClassAdd);
+                    } else {
+                        if (i) {
+                            src = i.attr('src');
+                            src = src.replace('ordernone.png', '').replace('orderasc.png', '')
+                                .replace('orderdesc.png', '');
+                            i.attr('src', src);
+                        }
+                    }
+
+                    self.fabrikNavOrder(elementId, orderDir);
+                    e.preventDefault();
+                });
+
+            },
+
+            /**
+             * Get dom nodes with class fabrik_filter
+             * @returns {jQuery}
+             */
+            getFilters: function () {
+                return jQuery(this.form).find('.fabrik_filter');
+            },
+
+            /**
+             * Store filter current values when the list is set to update on filter change
+             * rather than filter form submission
+             */
+            storeCurrentValue: function () {
+                if (this.options.filterMethod !== 'submitform') {
+                    this.getFilters().each(function (x, f) {
+                        f = jQuery(f);
+                        f.data('initialvalue', f.val());
+                    });
                 }
             },
 
-            watchOrder: function () {
-                var elementId = false;
-                var hs = document.id(this.options.form)
-                    .getElements('.fabrikorder, .fabrikorder-asc, .fabrikorder-desc');
-                hs.removeEvents('click');
-                hs.each(function (h) {
-                    h.addEvent('click', function (e) {
-                        var img = 'ordernone.png',
-                            orderdir = '',
-                            newOrderClass = '',
-                            bsClassAdd = '',
-                            bsClassRemove = '';
-                        // $$$ rob in pageadaycalendar.com h was null so reset to e.target
-                        h = document.id(e.target);
-                        var td = h.getParent('.fabrik_ordercell');
-                        if (h.tagName !== 'a') {
-                            h = td.getElement('a');
-                        }
-
-                        /**
-                         * Figure out what we need to change the icon from / to.  We don't know in advance for
-                         * bootstrapped templates what icons will be used, so the fabrik-order-header layout
-                         * will have set data-sort-foo properties of each of the three states.  Another wrinkle
-                         * is that we can't just set the new icon class blindly, because there
-                         * may be other classes
-                         * on the icon.  For instancee BS3 using Font Awesome will have "fa fa-sort-foo".
-                         * So we have
-                         * to specifically remove the current class and add the new one.
-                         */
-
-                        switch (h.className) {
-                            case 'fabrikorder-asc':
-                                newOrderClass = 'fabrikorder-desc';
-                                bsClassAdd = h.get('data-sort-desc-icon');
-                                bsClassRemove = h.get('data-sort-asc-icon');
-                                orderdir = 'desc';
-                                img = 'orderdesc.png';
-                                break;
-                            case 'fabrikorder-desc':
-                                newOrderClass = 'fabrikorder';
-                                bsClassAdd = h.get('data-sort-icon');
-                                bsClassRemove = h.get('data-sort-desc-icon');
-                                orderdir = '-';
-                                img = 'ordernone.png';
-                                break;
-                            case 'fabrikorder':
-                                newOrderClass = 'fabrikorder-asc';
-                                bsClassAdd = h.get('data-sort-asc-icon');
-                                bsClassRemove = h.get('data-sort-icon');
-                                orderdir = 'asc';
-                                img = 'orderasc.png';
-                                break;
-                        }
-                        td.className.split(' ').each(function (c) {
-                            if (c.contains('_order')) {
-                                elementId = c.replace('_order', '').replace(/^\s+/g, '').replace(/\s+$/g, '');
-                            }
-                        });
-                        if (!elementId) {
-                            fconsole('woops didnt find the element id, cant order');
-                            return;
-                        }
-                        h.className = newOrderClass;
-                        var i = h.getElement('img');
-                        var icon = h.firstElementChild;
-
-                        // Swap images - if list doing ajax nav then we need to do this
-                        if (this.options.singleOrdering) {
-                            document.id(this.options.form)
-                                .getElements('.fabrikorder, .fabrikorder-asc, .fabrikorder-desc')
-                                .each(function (otherH) {
-                                    if (Fabrik.bootstrapped) {
-                                        var otherIcon = otherH.firstElementChild;
-                                        switch (otherH.className) {
-                                            case 'fabrikorder-asc':
-                                                otherIcon.removeClass(otherH.get('data-sort-asc-icon'));
-                                                otherIcon.addClass(otherH.get('data-sort-icon'));
-                                                break;
-                                            case 'fabrikorder-desc':
-                                                otherIcon.removeClass(otherH.get('data-sort-desc-icon'));
-                                                otherIcon.addClass(otherH.get('data-sort-icon'));
-                                                break;
-                                            case 'fabrikorder':
-                                                break;
-                                        }
-                                    } else {
-                                        var i = otherH.getElement('img');
-                                        if (i) {
-                                            i.src = i.src.replace('ordernone.png', '')
-                                                .replace('orderasc.png', '').replace('orderdesc.png', '');
-                                            i.src += 'ordernone.png';
-                                        }
-                                    }
-                                });
-                        }
-
-                        if (Fabrik.bootstrapped) {
-                            icon.removeClass(bsClassRemove);
-                            icon.addClass(bsClassAdd);
-                        } else {
-                            if (i) {
-                                i.src = i.src.replace('ordernone.png', '').replace('orderasc.png', '')
-                                    .replace('orderdesc.png', '');
-                                i.src += img;
-                            }
-                        }
-
-                        this.fabrikNavOrder(elementId, orderdir);
-                        e.stop();
-                    }.bind(this));
-                }.bind(this));
-
-            },
-
-            getFilters: function () {
-                return document.id(this.options.form).getElements('.fabrik_filter');
-            },
-
-            storeCurrentValue: function () {
-                this.getFilters().each(function (f) {
-                    if (this.options.filterMethod !== 'submitform') {
-                        f.store('initialvalue', f.get('value'));
-                    }
-                }.bind(this));
-            },
-
+            /**
+             * Watch filters, for changes which may trigger the list to be re-rendered
+             */
             watchFilters: function () {
                 var e = '',
                     self = this,
-                    submit = jQuery('#' + this.options.form).find('.fabrik_filter_submit');
-                this.getFilters().each(function (f) {
-                    e = f.get('tag') === 'select' ? 'change' : 'blur';
-                    if (this.options.filterMethod !== 'submitform') {
-                        f.removeEvent(e);
-                        f.addEvent(e, function (e) {
-                            e.stop();
-                            if (e.target.retrieve('initialvalue') !== e.target.get('value')) {
-                                this.doFilter();
+                    submit = jQuery(this.form).find('.fabrik_filter_submit');
+
+                this.getFilters().each(function (x, f) {
+                    f = jQuery(f);
+                    e = f.prop('tagName') === 'SELECT' ? 'change' : 'blur';
+                    if (self.options.filterMethod !== 'submitform') {
+                        f.off(e);
+                        f.on(e, function (e) {
+                            e.preventDefault();
+                            if (f.data('initialvalue') !== f.val()) {
+                                self.doFilter();
                             }
-                        }.bind(this));
-                    } else {
-                        f.addEvent(e, function (e) {
-                            submit[0].highlight('#ffaa00');
-                        }.bind(this));
+                        });
                     }
-                }.bind(this));
+                });
 
                 // Watch submit if present regardless of this.options.filterMethod
                 submit.off();
@@ -726,17 +767,20 @@ define(['jquery', 'fab/fabrik', 'fab/list-toggle', 'fab/list-grouped-toggler', '
                     e.preventDefault();
                     self.doFilter();
                 });
-                this.getFilters().addEvent('keydown', function (e) {
-                    if (e.code === 13) {
-                        e.stop();
-                        this.doFilter();
+                this.getFilters().on('keydown', function (e) {
+                    if (e.keyCode === 13) {
+                        e.preventDefault();
+                        self.doFilter();
                     }
-                }.bind(this));
+                });
             },
 
+            /**
+             * Perform list filter
+             */
             doFilter: function () {
                 var res = Fabrik.fireEvent('list.filter', [this]).eventResults;
-                if (typeOf(res) === 'null') {
+                if (res === null) {
                     this.submit('list.filter');
                 }
                 if (res.length === 0 || !res.contains(false)) {
@@ -744,7 +788,10 @@ define(['jquery', 'fab/fabrik', 'fab/list-toggle', 'fab/list-grouped-toggler', '
                 }
             },
 
-            // highlight active row, deselect others
+            /**
+             * Highlight active row, deselect others
+             * @param {jQuery} activeTr
+             */
             setActive: function (activeTr) {
                 this.list.getElements('.fabrik_row').each(function (tr) {
                     tr.removeClass('activeRow');
@@ -752,9 +799,16 @@ define(['jquery', 'fab/fabrik', 'fab/list-toggle', 'fab/list-grouped-toggler', '
                 activeTr.addClass('activeRow');
             },
 
+            /**
+             * Get the active list row for a given mouse event.
+             * If none found return the current active row
+             *
+             * @param {event} e
+             * @returns {jQuery}
+             */
             getActiveRow: function (e) {
-                var row = e.target.getParent('.fabrik_row');
-                if (!row) {
+                var row = jQuery(e.target).closest('.fabrik_row');
+                if (row.length === 0) {
                     row = Fabrik.activeRow;
                 }
                 return row;
@@ -774,48 +828,67 @@ define(['jquery', 'fab/fabrik', 'fab/list-toggle', 'fab/list-grouped-toggler', '
                 return this.form;
             },
 
+            /**
+             * Un-check all the row's checkboxes
+             */
             uncheckAll: function () {
-                this.form.getElements('input[name^=ids]').each(function (c) {
+                jQuery(this.form).find('input[name^=ids]').each(function (i, c) {
                     c.checked = '';
                 });
             },
 
+            /**
+             * Check if there are some selected records to delete and asks the user if they really want to delete
+             * those records
+             * Returns false to stop the list's form from being submitted
+             *
+             * @returns {boolean}
+             */
+            submitDeleteCheck: function () {
+                var ok = false,
+                    delCount = 0;
+                jQuery(this.form).find('input[name^=ids]').each(function (x, c) {
+                    if (c.checked) {
+                        delCount++;
+                        ok = true;
+                    }
+                });
+                if (!ok) {
+                    window.alert(Joomla.JText._('COM_FABRIK_SELECT_ROWS_FOR_DELETION'));
+                    Fabrik.loader.stop('listform_' + this.options.listRef);
+                    return false;
+                }
+                var delMsg = delCount === 1 ? Joomla.JText._('COM_FABRIK_CONFIRM_DELETE_1')
+                    : Joomla.JText._('COM_FABRIK_CONFIRM_DELETE').replace('%s', delCount);
+                if (!window.confirm(delMsg)) {
+                    Fabrik.loader.stop('listform_' + this.options.listRef);
+                    this.uncheckAll();
+                    return false;
+                }
+
+                return true;
+            },
+
             submit: function (task) {
                 this.getForm();
-                var doAJAX = this.options.ajax;
+                var doAJAX = this.options.ajax,
+                    self = this,
+                    form = jQuery(this.form);
                 if (task === 'list.doPlugin.noAJAX') {
                     task = 'list.doPlugin';
                     doAJAX = false;
                 }
-                if (task === 'list.delete') {
-                    var ok = false;
-                    var delCount = 0;
-                    this.form.getElements('input[name^=ids]').each(function (c) {
-                        if (c.checked) {
-                            delCount++;
-                            ok = true;
-                        }
-                    });
-                    if (!ok) {
-                        window.alert(Joomla.JText._('COM_FABRIK_SELECT_ROWS_FOR_DELETION'));
-                        Fabrik.loader.stop('listform_' + this.options.listRef);
-                        return false;
-                    }
-                    var delMsg = delCount === 1 ? Joomla.JText._('COM_FABRIK_CONFIRM_DELETE_1')
-                        : Joomla.JText._('COM_FABRIK_CONFIRM_DELETE').replace('%s', delCount);
-                    if (!window.confirm(delMsg)) {
-                        Fabrik.loader.stop('listform_' + this.options.listRef);
-                        this.uncheckAll();
-                        return false;
-                    }
+                if (task === 'list.delete' && !this.submitDeleteCheck()) {
+                    return false;
                 }
-                // We may want to set this as an option - if long page loads feedback that list is doing something might be useful
+                // We may want to set this as an option - if long page loads feedback that list
+                // is doing something might be useful
                 // Fabrik.loader.start('listform_' + this.options.listRef);
                 if (task === 'list.filter') {
                     Fabrik['filter_listform_' + this.options.listRef].onSubmit();
                     this.form.task.value = task;
                     if (this.form['limitstart' + this.id]) {
-                        this.form.getElement('#limitstart' + this.id).value = 0;
+                        form.find('#limitstart' + this.id).val(0);
                     }
                 } else {
                     if (task !== '') {
@@ -826,9 +899,9 @@ define(['jquery', 'fab/fabrik', 'fab/list-toggle', 'fab/list-grouped-toggler', '
                     Fabrik.loader.start('listform_' + this.options.listRef);
                     // For module & mambot
                     // $$$ rob with modules only set view/option if ajax on
-                    this.form.getElement('input[name=option]').value = 'com_fabrik';
-                    this.form.getElement('input[name=view]').value = 'list';
-                    this.form.getElement('input[name=format]').value = 'raw';
+                    form.find('input[name=option]').val('com_fabrik');
+                    form.find('input[name=view]').val('list');
+                    form.find('input[name=format]').val('raw');
 
                     var data = this.form.toQueryString();
 
@@ -857,14 +930,14 @@ define(['jquery', 'fab/fabrik', 'fab/list-toggle', 'fab/list-grouped-toggler', '
                             'data'    : data,
                             onComplete: function (json) {
                                 json = JSON.decode(json);
-                                this._updateRows(json);
-                                Fabrik.loader.stop('listform_' + this.options.listRef);
-                                Fabrik['filter_listform_' + this.options.listRef].onUpdateData();
-                                Fabrik.fireEvent('fabrik.list.submit.ajax.complete', [this, json]);
+                                self._updateRows(json);
+                                Fabrik.loader.stop('listform_' + self.options.listRef);
+                                Fabrik['filter_listform_' + self.options.listRef].onUpdateData();
+                                Fabrik.fireEvent('fabrik.list.submit.ajax.complete', [self, json]);
                                 if (json.msg) {
                                     window.alert(json.msg);
                                 }
-                            }.bind(this)
+                            }
                         });
                     } else {
                         this.request.options.data = data;
@@ -882,6 +955,11 @@ define(['jquery', 'fab/fabrik', 'fab/list-toggle', 'fab/list-grouped-toggler', '
                 return false;
             },
 
+            /**
+             *
+             * @param limitStart
+             * @returns {boolean}
+             */
             fabrikNav: function (limitStart) {
                 this.options.limitStart = limitStart;
                 this.form.getElement('#limitstart' + this.id).value = limitStart;
@@ -947,10 +1025,13 @@ define(['jquery', 'fab/fabrik', 'fab/list-toggle', 'fab/list-grouped-toggler', '
             },
 
             removeRows: function (rowids) {
-                // @TODO: try to do this with FX.Elements
-                var i;
+                var i, self = this,
+                    end = function () {
+                        row.dispose();
+                        self.checkEmpty();
+                    };
                 for (i = 0; i < rowids.length; i++) {
-                    var row = document.id('list_' + this.id + '_row_' + rowids[i]);
+                    var row = document.id('list_' + self.id + '_row_' + rowids[i]);
                     var highlight = new Fx.Morph(row, {
                         duration: 1000
                     });
@@ -960,10 +1041,7 @@ define(['jquery', 'fab/fabrik', 'fab/list-toggle', 'fab/list-grouped-toggler', '
                         this.start({
                             'opacity': 0
                         });
-                    }).chain(function () {
-                        row.dispose();
-                        this.checkEmpty();
-                    }.bind(this));
+                    }).chain(end);
                 }
             },
 
@@ -977,16 +1055,17 @@ define(['jquery', 'fab/fabrik', 'fab/list-toggle', 'fab/list-grouped-toggler', '
             },
 
             updateRows: function (extraData) {
-                var data = {
-                    'option'  : 'com_fabrik',
-                    'view'    : 'list',
-                    'task'    : 'list.view',
-                    'format'  : 'raw',
-                    'listid'  : this.id,
-                    'group_by': this.options.groupedBy,
-                    'listref' : this.options.listRef
-                };
-                var url = '';
+                var self = this,
+                    url = '',
+                    data = {
+                        'option'  : 'com_fabrik',
+                        'view'    : 'list',
+                        'task'    : 'list.view',
+                        'format'  : 'raw',
+                        'listid'  : this.id,
+                        'group_by': this.options.groupedBy,
+                        'listref' : this.options.listRef
+                    };
                 data['limit' + this.id] = this.options.limitLength;
 
                 if (extraData) {
@@ -1000,9 +1079,9 @@ define(['jquery', 'fab/fabrik', 'fab/list-toggle', 'fab/list-grouped-toggler', '
                     onSuccess    : function (json) {
                         json = json.stripScripts();
                         json = JSON.decode(json);
-                        this._updateRows(json);
+                        self._updateRows(json);
                         // Fabrik.fireEvent('fabrik.list.update', [this, json]);
-                    }.bind(this),
+                    },
                     onError      : function (text, error) {
                         fconsole(text, error);
                     },
@@ -1241,6 +1320,9 @@ define(['jquery', 'fab/fabrik', 'fab/list-toggle', 'fab/list-grouped-toggler', '
                 }
             },
 
+            /**
+             * Check if the list contains no data and if so add a row with 'no records' text
+             */
             checkEmpty: function () {
                 var trs = this.list.getElements('tr');
                 if (trs.length === 2) {
@@ -1250,27 +1332,28 @@ define(['jquery', 'fab/fabrik', 'fab/list-toggle', 'fab/list-grouped-toggler', '
                 }
             },
 
-            watchCheckAll: function (e) {
-                var checkAll = this.form.getElement('input[name=checkAll]'), c, i;
-                if (typeOf(checkAll) !== 'null') {
-                    // IE wont fire an event on change until the checkbxo is blurred!
-                    checkAll.addEvent('click', function (e) {
-                        var p = this.list.getParent('.fabrikList') ? this.list.getParent('.fabrikList') : this.list;
-                        var chkBoxes = p.getElements('input[name^=ids]');
-                        c = !e.target.checked ? '' : 'checked';
-                        for (i = 0; i < chkBoxes.length; i++) {
-                            chkBoxes[i].checked = c;
-                            this.toggleJoinKeysChx(chkBoxes[i]);
-                        }
-                        // event.stop(); dont event stop as this stops the checkbox being
-                        // selected
-                    }.bind(this));
-                }
-                this.form.getElements('input[name^=ids]').each(function (i) {
-                    i.addEvent('change', function (e) {
-                        this.toggleJoinKeysChx(i);
-                    }.bind(this));
-                }.bind(this));
+            /**
+             * Watch the check all checkbox
+             */
+            watchCheckAll: function () {
+                var form = jQuery(this.form),
+                    checkAll = form.find('input[name=checkAll]'), c, i,
+                    self = this, list = jQuery(this.list), p, chkBoxes;
+                // IE wont fire an event on change until the checkbox is blurred!
+                checkAll.on('click', function (e) {
+                    p = list.closest('.fabrikList').length > 0 ? list.closest('.fabrikList') : list;
+                    chkBoxes = p.find('input[name^=ids]');
+                    c = !e.target.checked ? '' : 'checked';
+                    for (i = 0; i < chkBoxes.length; i++) {
+                        chkBoxes[i].checked = c;
+                        self.toggleJoinKeysChx(chkBoxes[i]);
+                    }
+                });
+                form.find('input[name^=ids]').each(function (x, i) {
+                    jQuery(i).on('change', function () {
+                        self.toggleJoinKeysChx(i);
+                    });
+                });
             },
 
             toggleJoinKeysChx: function (i) {
@@ -1280,90 +1363,67 @@ define(['jquery', 'fab/fabrik', 'fab/list-toggle', 'fab/list-grouped-toggler', '
             },
 
             watchNav: function (e) {
-                var limitBox, addRecord;
-                if (this.form !== null) {
-                    limitBox = this.form.getElement('select[name*=limit]');
-                    addRecord = this.form.getElement('.addRecord');
-                } else {
-                    limitBox = null;
-                    addRecord = null;
-                }
-                if (limitBox) {
-                    limitBox.addEvent('change', function (e) {
-                        var res = Fabrik.fireEvent('fabrik.list.limit', [this]);
-                        if (this.result === false) {
-                            this.result = true;
-                            return false;
-                        }
-                        this.doFilter();
-                    }.bind(this));
-                }
-                if (typeOf(addRecord) !== 'null' && (this.options.ajax_links)) {
-                    addRecord.removeEvents();
-                    var loadMethod = (this.options.links.add === ''
-                    || addRecord.href.contains(Fabrik.liveSite)) ? 'xhr' : 'iframe';
-                    var url = addRecord.href;
+                var form = jQuery(this.form),
+                    limitBox = form.find('select[name*=limit]'),
+                    addRecord = form.find('.addRecord'),
+                    self = this, loadMethod, href;
+
+                limitBox.on('change', function () {
+                    Fabrik.fireEvent('fabrik.list.limit', [self]);
+                    if (self.result === false) {
+                        self.result = true;
+                        return false;
+                    }
+                    self.doFilter();
+                });
+                if (this.options.ajax_links) {
+                    addRecord.off();
+                    href = addRecord.prop('href');
+                    loadMethod = (this.options.links.add === '' ||
+                    href.contains(Fabrik.liveSite)) ? 'xhr' : 'iframe';
+                    var url = href;
                     url += url.contains('?') ? '&' : '?';
                     url += 'tmpl=component&ajax=1';
-                    addRecord.addEvent('click', function (e) {
-                        e.stop();
-                        // top.Fabrik.fireEvent('fabrik.list.add', this);//for packages?
+                    addRecord.on('click', function (e) {
+                        e.preventDefault();
+
                         var winOpts = {
-                            'id'        : 'add.' + this.id,
-                            'title'     : this.options.popup_add_label,
+                            'id'        : 'add.' + self.id,
+                            'title'     : self.options.popup_add_label,
                             'loadMethod': loadMethod,
                             'contentURL': url,
-                            'width'     : this.options.popup_width,
-                            'height'    : this.options.popup_height
+                            'width'     : self.options.popup_width,
+                            'height'    : self.options.popup_height
                         };
-                        if (typeOf(this.options.popup_offset_x) !== 'null') {
-                            winOpts.offset_x = this.options.popup_offset_x;
+                        if (self.options.popup_offset_x !== null) {
+                            winOpts.offset_x = self.options.popup_offset_x;
                         }
-                        if (typeOf(this.options.popup_offset_y) !== 'null') {
-                            winOpts.offset_y = this.options.popup_offset_y;
+                        if (self.options.popup_offset_y !== null) {
+                            winOpts.offset_y = self.options.popup_offset_y;
                         }
                         Fabrik.getWindow(winOpts);
-                    }.bind(this));
+                    });
                 }
-                if (document.id('fabrik__swaptable')) {
-                    document.id('fabrik__swaptable').addEvent('change', function (e) {
-                        window.location = 'index.php?option=com_fabrik&task=list.view&cid=' + e.target.get('value');
-                    }.bind(this));
-                }
+                jQuery('#fabrik__swaptable').on('change', function () {
+                    window.location = 'index.php?option=com_fabrik&task=list.view&cid=' + this.value;
+                });
                 // All nav links should submit the form, if we dont then filters are not taken into account when
                 // building the list cache id
                 // Can result in 2nd pages of cached data being shown, but without filters applied
-                if (typeOf(this.form.getElement('.pagination')) !== 'null') {
-                    var as = this.form.getElement('.pagination').getElements('.pagenav');
-                    if (as.length === 0) {
-                        as = this.form.getElement('.pagination').getElements('a');
-                    }
-                    as.each(function (a) {
-                        a.addEvent('click', function (e) {
-                            e.stop();
-                            if (a.get('tag') === 'a') {
-                                var o = a.href.toObject();
-                                this.fabrikNav(o['limitstart' + this.id]);
-                            }
-                        }.bind(this));
-                    }.bind(this));
+                var as = form.find('.pagination .pagenav');
+                if (as.length === 0) {
+                    as = form.find('.pagination a');
                 }
+                as.each(function (a) {
+                    jQuery(a).on('click', function (e) {
+                        e.stop();
+                        if (a.get('tag') === 'a') {
+                            var o = a.href.toObject();
+                            self.fabrikNav(o['limitstart' + self.id]);
+                        }
+                    });
+                });
 
-                // Not working in J3.2 see
-                // http://fabrikar.com/forums/index.php?threads/bug-pagination-not-working-in-chrome.37277
-                /*	if (this.options.admin) {
-                 Fabrik.addEvent('fabrik.block.added', function (block) {
-                 if (block.options.listRef === this.options.listRef) {
-                 var nav = block.form.getElement('.fabrikNav');
-                 if (typeOf(nav) !== 'null') {
-                 nav.getElements('a').addEvent('click', function (e) {
-                 e.stop();
-                 block.fabrikNav(e.target.get('href'));
-                 });
-                 }
-                 }
-                 }.bind(this));
-                 }*/
                 this.watchCheckAll();
             },
 

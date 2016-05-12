@@ -4,7 +4,8 @@
  * @copyright: Copyright (C) 2005-2013, fabrikar.com - All rights reserved.
  * @license:   GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
-define(['jquery', 'fab/fabrik'], function (jQuery, Fabrik) {
+define(['jquery', 'fab/fabrik', 'fullcalendar'], function (jQuery, Fabrik, fc) {
+
     var FullCalendar = new Class({
         Implements: [Options],
         options   : {
@@ -18,7 +19,8 @@ define(['jquery', 'fab/fabrik'], function (jQuery, Fabrik) {
             greyscaledweekend: false,
             calOptions       : {},
             url              : {
-                'del': 'index.php?option=com_fabrik&controller=visualization.fullcalendar&view=visualization&task=deleteEvent&format=raw'
+                'del': 'index.php?option=com_fabrik&controller=visualization.fullcalendar&view=visualization&' +
+                'task=deleteEvent&format=raw'
             }
         },
 
@@ -55,7 +57,8 @@ define(['jquery', 'fab/fabrik'], function (jQuery, Fabrik) {
                 eventSources.push({
                     events: function (start, end, timezone, callback) {
                         new Request({
-                            url        : this.options.url.add + '&listid=' + eventList.value + '&eventListKey=' + eventListKey,
+                            url        : this.options.url.add + '&listid=' + eventList.value + '&eventListKey=' +
+                            eventListKey,
                             evalScripts: true,
                             onSuccess  : function (e, json) {
                                 if (typeOf(json) !== 'null') {
@@ -111,7 +114,7 @@ define(['jquery', 'fab/fabrik'], function (jQuery, Fabrik) {
                 self.calendar.off('mousemove', forgetSlot);
             }
 
-            self.calendar.dblclick(function (e) {
+            this.calendar.dblclick(function (e) {
                 if (slotMoment) {
                     self.openAddEvent(e, slotView, slotMoment);
                 }
@@ -160,25 +163,27 @@ define(['jquery', 'fab/fabrik'], function (jQuery, Fabrik) {
             };
             /* Now merge any calendar overrides/additions from the visualisation */
             jQuery.extend(true, this.calOptions, JSON.parse(self.options.calOptions));
-            self.calendar.fullCalendar(this.calOptions);
+            this.calendar.fullCalendar(this.calOptions);
 
-            document.addEvent('click:relay(button[data-task=viewCalEvent], a[data-task=viewCalEvent])', function (event) {
-                event.preventDefault();
-                var id = event.target.findClassUp('calEventButtons').id;
-                id = id.replace(/_buttons/, '');
-                var calEvent = self.calendar.fullCalendar('clientEvents', id)[0];
-                jQuery('#' + id).popover('hide');
-                self.viewEntry(calEvent);
-            });
+            document.addEvent('click:relay(button[data-task=viewCalEvent], a[data-task=viewCalEvent])',
+                function (event) {
+                    event.preventDefault();
+                    var id = event.target.findClassUp('calEventButtons').id;
+                    id = id.replace(/_buttons/, '');
+                    var calEvent = self.calendar.fullCalendar('clientEvents', id)[0];
+                    jQuery('#' + id).popover('hide');
+                    self.viewEntry(calEvent);
+                });
 
-            document.addEvent('click:relay(button[data-task=editCalEvent], a[data-task=editCalEvent])', function (event) {
-                event.preventDefault();
-                var id = event.target.findClassUp('calEventButtons').id;
-                id = id.replace(/_buttons/, '');
-                var calEvent = self.calendar.fullCalendar('clientEvents', id)[0];
-                jQuery('#' + id).popover('hide');
-                self.editEntry(calEvent);
-            });
+            document.addEvent('click:relay(button[data-task=editCalEvent], a[data-task=editCalEvent])',
+                function (event) {
+                    event.preventDefault();
+                    var id = event.target.findClassUp('calEventButtons').id;
+                    id = id.replace(/_buttons/, '');
+                    var calEvent = self.calendar.fullCalendar('clientEvents', id)[0];
+                    jQuery('#' + id).popover('hide');
+                    self.editEntry(calEvent);
+                });
 
             document.addEvent('click:relay(button[data-task=deleteCalEvent], a[data-task=deleteCalEvent])',
                 function (event) {
@@ -253,7 +258,8 @@ define(['jquery', 'fab/fabrik'], function (jQuery, Fabrik) {
                 jQuery(popup).attr('data-title', '<div style="width:' + width +
                     '"><div style="float:left;"><button class="btn jclose" data-popover="' + popup.id +
                     '" data-toggle="tooltip" title="' + Joomla.JText._('PLG_VISUALIZATION_FULLCALENDAR_CLOSE') +
-                    '"><i class="icon-delete"></i></button></div><div style="text-align:center;">' + e.label + '</div></div>');
+                    '"><i class="icon-delete"></i></button></div><div style="text-align:center;">' +
+                    e.label + '</div></div>');
                 jQuery(popup).append(e.label);
 
                 events.push(
@@ -462,7 +468,7 @@ define(['jquery', 'fab/fabrik'], function (jQuery, Fabrik) {
             url += '&renderContext=' + this.el.prop('id').replace(/visualization_/, '');
             this.windowopts.contentURL = url;
             this.windowopts.id = 'chooseeventwin';
-            this.windowopts.modalId = 'fullcalendar_chooseeventwin';
+            this.windowopts.modalId = 'fullcalendar_!chooseeventwin';
             Fabrik.getWindow(this.windowopts);
         }
 
