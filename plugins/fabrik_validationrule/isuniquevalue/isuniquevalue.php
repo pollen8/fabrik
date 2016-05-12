@@ -33,14 +33,14 @@ class PlgFabrik_ValidationruleIsUniqueValue extends PlgFabrik_Validationrule
 	/**
 	 * Validate the elements data against the rule
 	 *
-	 * @param   string  $data           To check
-	 * @param   int     $repeatCounter  Repeat group counter
+	 * @param   string $data          To check
+	 * @param   int    $repeatCounter Repeat group counter
 	 *
 	 * @return  bool  true if validation passes, false if fails
 	 */
 	public function validate($data, $repeatCounter)
 	{
-		$input = $this->app->input;
+		$input        = $this->app->input;
 		$elementModel = $this->elementModel;
 
 		// Could be a drop-down with multi-values
@@ -49,16 +49,27 @@ class PlgFabrik_ValidationruleIsUniqueValue extends PlgFabrik_Validationrule
 			$data = implode('', $data);
 		}
 
-		$params = $this->getParams();
-		$element = $elementModel->getElement();
-		$listModel = $elementModel->getlistModel();
-		$table = $listModel->getTable();
-		$db = $listModel->getDb();
+		$params      = $this->getParams();
+		$element     = $elementModel->getElement();
+		$listModel   = $elementModel->getlistModel();
+		$table       = $listModel->getTable();
+		$db          = $listModel->getDb();
 		$lookupTable = $db->qn($table->db_table_name);
-		$data = $db->q($data);
-		$query = $db->getQuery(true);
-		$cond = $params->get('isuniquevalue-caseinsensitive') == 1 ? 'LIKE' : '=';
-		$query->select('COUNT(*)')->from($lookupTable)->where($db->qn($element->name) . ' ' . $cond . ' ' . $data);
+		$data        = $db->q($data);
+		$query       = $db->getQuery(true);
+		$cond        = $params->get('isuniquevalue-caseinsensitive') == 1 ? 'LIKE' : '=';
+		$secret      = $this->config->get('secret');
+
+		if ($elementModel->encryptMe())
+		{
+			$k = 'AES_DECRYPT(' . $element->name . ', ' . $db->q($secret) . ')';
+		}
+		else
+		{
+			$k = $db->qn($element->name);
+		}
+
+		$query->select('COUNT(*)')->from($lookupTable)->where($k . ' ' . $cond . ' ' . $data);
 
 		/* $$$ hugh - need to check to see if we're editing a record, otherwise
 		 * will fail 'cos it finds the original record (assuming this element hasn't changed)
