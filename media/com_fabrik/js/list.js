@@ -1145,11 +1145,15 @@ define(['jquery', 'fab/fabrik', 'fab/list-toggle', 'fab/list-grouped-toggler', '
                 if (!(data.id === this.id && data.model === 'list')) {
                     return;
                 }
+
                 this._updateHeadings(data);
                 this.setItemTemplate();
 
                 cell = jQuery(this.list).find('.fabrik_row').first();
 
+                if (cell.length === 0) {
+                    cell = jQuery(this.options.itemTemplate);
+                }
                 if (cell.prop('tagName') === 'TR') {
                     parent = cell;
                     columnCount = 1;
@@ -1431,7 +1435,6 @@ define(['jquery', 'fab/fabrik', 'fab/list-toggle', 'fab/list-grouped-toggler', '
              * currently only called from element raw view when using inline edit plugin
              * might need to use for ajax nav as well?
              */
-
             updateCals: function (json) {
                 var types = ['sums', 'avgs', 'count', 'medians'];
                 this.form.getElements('.fabrik_calculations').each(function (c) {
