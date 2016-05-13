@@ -263,21 +263,23 @@ class FabrikControllerForm extends JControllerLegacy
 			return;
 		}
 
+		$url = $this->getRedirectURL($model);
+		$msg = $this->getRedirectMessage($model);
+
 		/**
 		 * If debug submit is requested (&fabrikdebug=2, and J! debug on, and Fabrik debug allowed),
 		 * bypass any and all redirects, so we can see the profile for the submit
 		 */
-
 		if (FabrikHelperHTML::isDebugSubmit())
 		{
+			echo '<p>' . $msg . '</p>';
+			echo '<p>Form submission profiling has stopped the automatic redirect. </p>';
+			echo '<a href="' . $url . '">continue to redirect URL</a>';
 			return;
 		}
 
 		$listModel = $model->getListModel();
 		$listModel->set('_table', null);
-
-		$url = $this->getRedirectURL($model);
-		$msg = $this->getRedirectMessage($model);
 
 		// @todo -should get handed off to the json view to do this
 		if ($input->getInt('fabrik_ajax') == 1)
