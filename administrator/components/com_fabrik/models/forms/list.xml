@@ -1193,6 +1193,14 @@
 				<option value="beginning">COM_FABRIK_BEGINNING</option>
 				<option value="end">COM_FABRIK_END</option>
 			</field>
+			
+			<field name="hidecheckbox"
+				type="checkbox"
+				id="hidecheckbox"
+				label="COM_FABRIK_FIELD_CHECKBOX_HIDE_LABEL"
+				description="COM_FABRIK_FIELD_CHECKBOX_HIDE_DESC"
+				default="0"
+			/>			
 
 			<field name="addurl"
 			       type="text"
