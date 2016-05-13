@@ -4047,12 +4047,7 @@ class FabrikFEModelForm extends FabModelForm
 			$remove = "/{edit:\s*.*?}/is";
 			$text = preg_replace($remove, '', $text);
 			$match = "/{details:\s*.*?}/is";
-
 			$text = preg_replace_callback($match, array($this, '_getIntroOutro'), $text);
-
-			// Was removing [rowid] from  {fabrik view=list id=2 countries___id=[rowid]} in details intro
-			//$text = str_replace('[', '{', $text);
-			//$text = str_replace(']', '}', $text);
 		}
 		else
 		{
@@ -4062,10 +4057,6 @@ class FabrikFEModelForm extends FabModelForm
 			$remove = "/{" . $remove . ":\s*.*?}/is";
 			$text = preg_replace_callback($match, array($this, '_getIntroOutro'), $text);
 			$text = preg_replace($remove, '', $text);
-
-			// Was removing [rowid] from  {fabrik view=list id=2 countries___id=[rowid]} in form intro
-			//$text = str_replace('[', '{', $text);
-			//$text = str_replace(']', '}', $text);
 			$text = preg_replace("/{details:\s*.*?}/is", '', $text);
 		}
 
@@ -4099,7 +4090,9 @@ class FabrikFEModelForm extends FabModelForm
 		$m = explode(":", $match[0]);
 		array_shift($m);
 		$m = implode(":", $m);
-		return FabrikString::rtrimword($m, "}");
+		$m = FabrikString::rtrimword($m, "}");
+		$m = preg_replace('/\[(\S+)\]/', '{${1}}', $m);
+		return $m;
 	}
 
 	/**
