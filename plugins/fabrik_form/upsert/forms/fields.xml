@@ -66,19 +66,25 @@
 							connection="params_connection_id"
 							table="params_table"
 							valueformat="tableelement"
-							repeat="true"
 							label="PLG_FORM_UPSERT_KEY_LABEL" />
 
 						<field name="upsert_value"
 							type="text"
 							size="40"
-							repeat="true"
 							label="PLG_FORM_UPSERT_VALUE_LABEL"/>
 
 						<field name="upsert_default"
 							type="text"
-							repeat="true"
 							label="PLG_FORM_UPSERT_DEFAULT_LABEL" />
+
+						<field name="upsert_eval_value"
+						       default="0"
+						       description="PLG_FORM_UPSERT_VALUE_EVAL_DESC"
+						       label="PLG_FORM_UPSERT_VALUE_EVAL_LABEL"
+						       type="list">
+							<option value="0">JNO</option>
+							<option value="1">JYES</option>
+						</field>
 
 					</fieldset>
 				</fields>

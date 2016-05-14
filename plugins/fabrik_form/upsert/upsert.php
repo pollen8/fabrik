@@ -162,6 +162,13 @@ class PlgFabrik_FormUpsert extends PlgFabrik_Form
 			$v = $upsert->upsert_value[$i];
 			$v = $w->parseMessageForPlaceholder($v, $this->data);
 
+			if ($upsert->upsert_eval_value[$i] === '1')
+			{
+				$res = FabrikHelperHTML::isDebug() ? eval($v) : @eval($v);
+				FabrikWorker::logEval($res, 'Eval exception : upsert : ' . $v . ' : %s');
+				$v = $res;
+			}
+
 			if ($v == '')
 			{
 				$v = $w->parseMessageForPlaceholder($upsert->upsert_default[$i], $this->data);
