@@ -1385,32 +1385,34 @@ define(['jquery', 'fab/fabrik', 'fab/list-toggle', 'fab/list-grouped-toggler', '
                     self.doFilter();
                 });
                 if (this.options.ajax_links) {
-                    addRecord.off();
-                    href = addRecord.prop('href');
-                    loadMethod = (this.options.links.add === '' ||
-                    href.contains(Fabrik.liveSite)) ? 'xhr' : 'iframe';
-                    var url = href;
-                    url += url.contains('?') ? '&' : '?';
-                    url += 'tmpl=component&ajax=1';
-                    addRecord.on('click', function (e) {
-                        e.preventDefault();
+                    if (addRecord.size() > 0) {
+                        addRecord.off();
+                        href = addRecord.prop('href');
+                        loadMethod = (this.options.links.add === '' ||
+                        href.contains(Fabrik.liveSite)) ? 'xhr' : 'iframe';
+                        var url = href;
+                        url += url.contains('?') ? '&' : '?';
+                        url += 'tmpl=component&ajax=1';
+                        addRecord.on('click', function (e) {
+                            e.preventDefault();
 
-                        var winOpts = {
-                            'id'        : 'add.' + self.id,
-                            'title'     : self.options.popup_add_label,
-                            'loadMethod': loadMethod,
-                            'contentURL': url,
-                            'width'     : self.options.popup_width,
-                            'height'    : self.options.popup_height
-                        };
-                        if (self.options.popup_offset_x !== null) {
-                            winOpts.offset_x = self.options.popup_offset_x;
-                        }
-                        if (self.options.popup_offset_y !== null) {
-                            winOpts.offset_y = self.options.popup_offset_y;
-                        }
-                        Fabrik.getWindow(winOpts);
-                    });
+                            var winOpts = {
+                                'id'        : 'add.' + self.id,
+                                'title'     : self.options.popup_add_label,
+                                'loadMethod': loadMethod,
+                                'contentURL': url,
+                                'width'     : self.options.popup_width,
+                                'height'    : self.options.popup_height
+                            };
+                            if (self.options.popup_offset_x !== null) {
+                                winOpts.offset_x = self.options.popup_offset_x;
+                            }
+                            if (self.options.popup_offset_y !== null) {
+                                winOpts.offset_y = self.options.popup_offset_y;
+                            }
+                            Fabrik.getWindow(winOpts);
+                        });
+                    }
                 }
                 jQuery('#fabrik__swaptable').on('change', function () {
                     window.location = 'index.php?option=com_fabrik&task=list.view&cid=' + this.value;
