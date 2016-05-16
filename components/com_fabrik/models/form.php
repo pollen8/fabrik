@@ -481,7 +481,7 @@ class FabrikFEModelForm extends FabModelForm
 		 * NOTE - testing to see if $data exists rather than looking at rowid to decide if editing, as when using
 		 * rowid=-1, things get funky, as rowid is never empty, even for new form, as it's set to user id
 		 */
-		if (empty($data) || !array_key_exists('__pk_val', $data))
+		if (empty($data) || !array_key_exists('__pk_val', $data) || empty($data['__pk_val']))
 		{
 			if ($listModel->canAdd())
 			{
