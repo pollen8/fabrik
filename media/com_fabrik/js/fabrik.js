@@ -428,7 +428,7 @@ define(['jquery', 'fab/loader', 'fab/requestqueue'], function (jQuery, Loader, R
             winOpts.width = list.options.popup_width;
         }
         if (list.options.popup_height !== '') {
-            winOpts.width = list.options.popup_height;
+            winOpts.height = list.options.popup_height;
         }
         winOpts.id = view === 'details' ? 'view.' + winOpts.id : 'add.' + winOpts.id;
         if (list.options.popup_offset_x !== null) {
