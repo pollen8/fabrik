@@ -150,7 +150,7 @@ define(['jquery', 'fab/fileelement'], function (jQuery, FbFileElement) {
          * @param {Event} e
          */
         doDelete: function (e) {
-            e.stop();
+            e.preventDefault();
             var c = jQuery(this.getContainer()),
                 self = this,
                 b = c.find('[data-file]');
