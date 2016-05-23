@@ -1424,14 +1424,12 @@ define(['jquery', 'fab/fabrik', 'fab/list-toggle', 'fab/list-grouped-toggler', '
                 if (as.length === 0) {
                     as = form.find('.pagination a');
                 }
-                as.each(function (a) {
-                    jQuery(a).on('click', function (e) {
-                        e.stop();
-                        if (a.get('tag') === 'a') {
-                            var o = a.href.toObject();
-                            self.fabrikNav(o['limitstart' + self.id]);
-                        }
-                    });
+                jQuery(as).on('click', function (e) {
+                    e.preventDefault();
+                    if (this.tagName === 'A') {
+                        var o = this.href.toObject();
+                        self.fabrikNav(o['limitstart' + self.id]);
+                    }
                 });
 
                 this.watchCheckAll();
