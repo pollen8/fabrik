@@ -616,6 +616,7 @@ define(['jquery', 'fab/encoder', 'fab/fabrik', 'lib/debounce/jquery.ba-throttle-
                 }
 
                 Fabrik.loader.start(this.getBlock(), Joomla.JText._('COM_FABRIK_VALIDATING'));
+                this.clearErrors();
 
                 // Only validate the current groups elements, otherwise validations on
                 // other pages cause the form to show an error.
@@ -2123,9 +2124,16 @@ define(['jquery', 'fab/encoder', 'fab/fabrik', 'lib/debounce/jquery.ba-throttle-
                 }
                 el.update('');
             }.bind(this));
-            // reset errors
             this.form.getElements('.fabrikError').empty();
             this.form.getElements('.fabrikError').addClass('fabrikHide');
+        },
+
+	    /**
+	     * Reset errors
+         */
+        clearErrors: function () {
+            jQuery(this.form).find('.fabrikError').removeClass('fabrikError')
+                .removeClass('error').removeClass('has-error');
         },
 
         stopEnterSubmitting: function () {
