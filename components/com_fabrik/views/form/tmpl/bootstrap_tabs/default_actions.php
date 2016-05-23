@@ -23,14 +23,15 @@ if ($this->hasActions) : ?>
 			echo $form->copyButton;
 			?>
 		</div>
-		<?php if ($form->gobackButton . $form->resetButton . $form->deleteButton !== '') : ?>
+		<?php if ( $form->gobackButton || $form->resetButton || $form->deleteButton || $form->clearMultipageSessionButton): ?>
 		<div class="span4"><!-- No Page buttons --></div>
 		<div class="span4">
 			<div class="pull-right btn-group">
 				<?php
-				echo $form->gobackButton . ' ' . $this->message;
-				echo $form->resetButton . ' ';
+				echo $form->gobackButton;
+				echo $form->resetButton;
 				echo $form->deleteButton;
+				echo $form->clearMultipageSessionButton;
 				?>
 			</div>
 		</div>

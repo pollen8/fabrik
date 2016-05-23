@@ -129,7 +129,7 @@ class FabrikViewFormBase extends FabrikView
 
 		if (!$this->canAccess())
 		{
-			return false; 
+			return false;
 		}
 
 		JDEBUG ? $profiler->mark('form view before join group ids got') : null;
@@ -338,6 +338,7 @@ class FabrikViewFormBase extends FabrikView
 
 			// See http://fabrikar.com/forums/showpost.php?p=73833&postcount=14
 			// if ($model->sessionModel->statusid == _FABRIKFORMSESSION_LOADED_FROM_COOKIE) {
+
 			if ($model->sessionModel->last_page > 0)
 			{
 				$message .= ' <a href="#" class="clearSession">' . FText::_('COM_FABRIK_CLEAR') . '</a>';
@@ -1079,6 +1080,17 @@ class FabrikViewFormBase extends FabrikView
 			$goBackLabel = $before ? $goBackIcon . '&nbsp;' . $goBackLabel : $goBackLabel . '&nbsp;' . $goBackIcon;
 		}
 
+
+		$layoutData = (object) array(
+			'type' => 'button',
+			'class' => 'clearSession',
+			'name' => '',
+			'label' => FText::_('COM_FABRIK_CLEAR_MULTI_PAGE_SESSION')
+		);
+
+		$multiPageSession = $model->sessionModel && $model->sessionModel->last_page > 0;
+		$form->clearMultipageSessionButton = $multiPageSession ? $btnLayout->render($layoutData) : '';
+
 		$layoutData = (object) array(
 			'type' => 'button',
 			'class' => 'button',
@@ -1143,7 +1155,8 @@ class FabrikViewFormBase extends FabrikView
 
 		// $$$ hugh - hide actions section is we're printing, or if not actions selected
 		$noButtons = (empty($form->nextButton) && empty($form->prevButton) && empty($form->submitButton) && empty($form->gobackButton)
-			&& empty($form->deleteButton) && empty($form->applyButton) && empty($form->copyButton) && empty($form->resetButton));
+			&& empty($form->deleteButton) && empty($form->applyButton) && empty($form->copyButton)
+			&& empty($form->resetButton) && empty($form->clearMultipageSessionButton));
 
 		$this->hasActions = ($input->get('print', '0') == '1' || $noButtons) ? false : true;
 
