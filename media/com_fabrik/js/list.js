@@ -1515,6 +1515,7 @@ define(['jquery', 'fab/fabrik', 'fab/list-toggle', 'fab/list-grouped-toggler', '
                         var url = href;
                         url += url.contains('?') ? '&' : '?';
                         url += 'tmpl=component&ajax=1';
+                        url += '&format=partial';
                         addRecord.on('click', function (e) {
                             e.preventDefault();
 
