@@ -112,11 +112,8 @@ define(['jquery', 'fab/fabrik'], function (jQuery, Fabrik) {
                         // Issues loading tips in pop up wins
                         console.log('failed to apply popoverex tips');
                     }
-
                 }
-
             });
-
         },
 
         addStartEvent: function (trigger, evnt) {
