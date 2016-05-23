@@ -142,7 +142,7 @@ class FabrikViewFormBase extends FabrikView
 
 		$params = $model->getParams();
 		$this->setTitle($w, $params);
-		$this->setCanonicalLink($model);
+
 		FabrikHelperHTML::debug($params->get('note'), 'note');
 		$params->def('icons', $this->app->get('icons'));
 		$params->set('popup', ($input->get('tmpl') == 'component') ? 1 : 0);
@@ -346,55 +346,6 @@ class FabrikViewFormBase extends FabrikView
 		}
 
 		$this->message = $message;
-	}
-
-	/**
-	 * Set the canonical link - this is the definitive URL that Google et all, will use
-	 * to determine if duplicate URLs are the same content
-	 *
-	 * @return  string
-	 */
-	public function getCanonicalLink()
-	{
-		$url = '';
-		if (!$this->app->isAdmin() && !$this->isMambot)
-		{
-			/** @var FabrikFEModelForm $model */
-			$model  = $this->getModel();
-			$data   = $model->getData();
-			$formId = $model->getId();
-			$slug   = $model->getListModel()->getSlug(ArrayHelper::toObject($data));
-			$rowId  = $slug === '' ? $model->getRowId() : $slug;
-			$view   = $model->isEditable() ? 'form' : 'details';
-			$url    = JRoute::_('index.php?option=com_' . $this->package . '&view=' . $view . '&formid=' . $formId . '&rowid=' . $rowId);
-		}
-
-		return $url;
-	}
-
-	/**
-	 * Set the canonical link - this is the definitive URL that Google et all, will use
-	 * to determine if duplicate URLs are the same content
-	 *
-	 * @throws Exception
-	 */
-	public function setCanonicalLink()
-	{
-		if (!$this->app->isAdmin() && !$this->isMambot)
-		{
-			$url = $this->getCanonicalLink();
-
-			// Set a flag so that the system plugin can clear out any other canonical links.
-			$this->session->set('fabrik.clearCanonical', true);
-			try
-			{
-				$this->doc->addCustomTag('<link rel="canonical" href="' . htmlspecialchars($url) . '" />');
-			} catch (Exception $err)
-			{
-
-			}
-
-		}
 	}
 
 	/**

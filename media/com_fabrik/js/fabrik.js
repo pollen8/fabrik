@@ -9,6 +9,9 @@
  * Create the Fabrik name space
  */
 define(['jquery', 'fab/loader', 'fab/requestqueue'], function (jQuery, Loader, RequestQueue) {
+
+    var doc = jQuery(document);
+
     document.addEvent('click:relay(.popover button.close)', function (event, target) {
         var popover = '#' + target.get('data-popover'),
             pEl = document.getElement(popover);
@@ -18,8 +21,9 @@ define(['jquery', 'fab/loader', 'fab/requestqueue'], function (jQuery, Loader, R
             pEl.checked = false;
         }
     });
-    var Fabrik = {};
-    Fabrik.events = {};
+    var Fabrik = {
+        events: {}
+    };
 
     /**
      * Get the bootstrap version. Returns either 2.x of 3.x
@@ -107,23 +111,23 @@ define(['jquery', 'fab/loader', 'fab/requestqueue'], function (jQuery, Loader, R
         return Fabrik.blocks[foundBlockId];
     };
 
-    document.addEvent('click:relay(.fabrik_delete a, .fabrik_action a.delete, .btn.delete)', function (e, target) {
+    doc.on('click', '.fabrik_delete a, .fabrik_action a.delete, .btn.delete', function (e) {
         if (e.rightClick) {
             return;
         }
-        Fabrik.watchDelete(e, target);
+        Fabrik.watchDelete(e, this);
     });
-    document.addEvent('click:relay(.fabrik_edit a, a.fabrik_edit)', function (e, target) {
+    doc.on('click', '.fabrik_edit a, a.fabrik_edit', function (e) {
         if (e.rightClick) {
             return;
         }
-        Fabrik.watchEdit(e, target);
+        Fabrik.watchEdit(e, this);
     });
-    document.addEvent('click:relay(.fabrik_view a, a.fabrik_view)', function (e, target) {
+    doc.on('click', '.fabrik_view a, a.fabrik_view', function (e) {
         if (e.rightClick) {
             return;
         }
-        Fabrik.watchView(e, target);
+        Fabrik.watchView(e, this);
     });
 
     // Related data links
@@ -391,6 +395,7 @@ define(['jquery', 'fab/loader', 'fab/requestqueue'], function (jQuery, Loader, R
         }
         url = a.prop('href');
         url += url.contains('?') ? '&tmpl=component&ajax=1' : '?tmpl=component&ajax=1';
+        url += '&format=partial';
         title = a.prop('title');
         loadMethod = a.data('loadmethod');
         if (loadMethod === undefined) {
