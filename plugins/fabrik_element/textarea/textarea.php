@@ -123,7 +123,7 @@ class PlgFabrik_ElementTextarea extends PlgFabrik_Element
 		}
 		else
 		{
-			if (!$this->useWysiwyg())
+			if (!$this->useWysiwyg(false))
 			{
 				if (is_array($data))
 				{
