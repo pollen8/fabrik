@@ -6727,6 +6727,10 @@ class PlgFabrik_Element extends FabrikPlugin
 		{
 			$thousandSep = ' ';
 		}
+		else if ($thousandSep == '#00')
+		{
+			$thousandSep = '';
+		}
 
 		return number_format((float) $data, $decimalLength, $decimalSep, $thousandSep);
 	}
