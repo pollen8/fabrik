@@ -387,41 +387,6 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 	}
 
 	/**
-	 * If a url/querystring is loading a form and trying to load in a default date value
-	 * in the QS then we should call this method to apply the timezone according to the
-	 * models convoluted settings.
-	 * E.g. Calendar links to open an add/edit link
-	 *
-	 * @param   string  $date  Date
-	 *
-	 * @return string
-	 */
-	public function getQueryStringDate($date)
-	{
-		$params = $this->getParams();
-		$startStoreAsLocal = (bool) $params->get('date_store_as_local', false);
-		$startDefaultToToday = (bool) $params->get('date_defaulttotoday', false);
-
-		if ($startStoreAsLocal)
-		{
-			$localTimeZone = new DateTimeZone($this->config->get('offset'));
-			$date    = new DateTime($date, new DateTimeZone('UTC'));
-			$date->setTimezone($localTimeZone);
-			$date = $date->format('Y-m-d H:i:s');
-		}
-
-		if ($startDefaultToToday)
-		{
-			$localTimeZone = new DateTimeZone($this->config->get('offset'));
-			$date = new DateTime($date, $localTimeZone);
-			$date->setTimeZone(new DateTimeZone('UTC'));
-			$date = $date->format('Y-m-d H:i:s');
-		}
-
-		return $date;
-	}
-
-	/**
 	 * Should we apply the users timezone offset to the date for display purposes
 	 *
 	 * This is a bit long winded and could be reduced. BUT the logic is such that I think the
@@ -1085,6 +1050,22 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 
 		$timeZone = new DateTimeZone($this->config->get('offset'));
 		$date     = JFactory::getDate($value, $timeZone);
+
+		// Querystring value passed into new record
+		if ($formModel->isNewRecord() && $value !== '')
+		{
+			// OK for : Default to current  = no Local time = yes
+			if (!$defaultToday)
+			{
+				$date = new DateTime($date, $timeZone);
+				return $date->format('Y-m-d H:i:s');
+			}
+
+			// Ok for : Default to current = yes, Local time = yes OR no
+			$date = new DateTime($date, $timeZone);
+			$date->setTimeZone(new DateTimeZone('UTC'));
+			return $date->format('Y-m-d H:i:s');
+		}
 
 		// If value = '' don't offset it (not sure what the logic is but testing seems to indicate this to be true)
 		$local = $formModel->hasErrors() || $value == '' || $params->get('date_store_as_local', 0) == 1 ? false : true;

@@ -103,7 +103,7 @@ class FabrikControllerVisualizationfullcalendar extends FabrikControllerVisualiz
 		$rowId          = $input->getString('rowid', '');
 
 		/** @var FabrikFEModelList $listModel */
-		$listModel      = JModelLegacy::getInstance('list', 'FabrikFEModel');
+		$listModel = JModelLegacy::getInstance('list', 'FabrikFEModel');
 		$listModel->setId($listId);
 		$table = $listModel->getTable();
 		$input->set('view', 'form');
@@ -119,27 +119,11 @@ class FabrikControllerVisualizationfullcalendar extends FabrikControllerVisualiz
 
 		if (!empty($startDate))
 		{
-			// Check to see if we need to convert to UTC
-			$startDateEl = $listModel->getFormModel()->getElement($startDateField);
-
-			if ($startDateEl !== false)
-			{
-				$startDate = $startDateEl->getQueryStringDate($startDate);
-			}
-
 			$link .= "&$startDateField=" . $startDate;
 		}
 
 		if (!empty($endDate))
 		{
-			// Check to see if we need to convert to UTC
-			$endDateEl = $listModel->getFormModel()->getElement($endDateField);
-
-			if ($endDateEl !== false)
-			{
-				$endDate = $endDateEl->getQueryStringDate($endDate);
-			}
-			
 			$link .= "&$endDateField=" . $endDate;
 		}
 
