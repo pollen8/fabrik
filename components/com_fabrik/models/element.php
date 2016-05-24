@@ -6762,7 +6762,11 @@ class PlgFabrik_Element extends FabrikPlugin
 		{
 			$thousandSep = ' ';
 		}
-
+		else if ($thousandSep == '#00')
+		{
+			$thousandSep = '';
+		}
+		
 		$val = str_replace($thousandSep, '', $val);
 		$val = str_replace($decimalSep, '.', $val);
 
