@@ -348,7 +348,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 		$opts  = array('alt' => FText::_('PLG_ELEMENT_DATE_TIME'), 'class' => 'timeButton');
 		$file  = FabrikWorker::j3() ? 'clock.png' : 'time.png';
 
-		$btnLayout = FabrikHelperHTML::getLayout('fabrik-button');
+		$btnLayout  = FabrikHelperHTML::getLayout('fabrik-button');
 		$layoutData = (object) array(
 			'class' => 'timeButton',
 			'label' => FabrikHelperHTML::image($file, 'form', @$this->tmpl, $opts)
@@ -382,6 +382,41 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 		}
 
 		$this->offsetDate = $date->toSql(true);
+
+		return $date;
+	}
+
+	/**
+	 * If a url/querystring is loading a form and trying to load in a default date value
+	 * in the QS then we should call this method to apply the timezone according to the
+	 * models convoluted settings.
+	 * E.g. Calendar links to open an add/edit link
+	 *
+	 * @param   string  $date  Date
+	 *
+	 * @return string
+	 */
+	public function getQueryStringDate($date)
+	{
+		$params = $this->getParams();
+		$startStoreAsLocal = (bool) $params->get('date_store_as_local', false);
+		$startDefaultToToday = (bool) $params->get('date_defaulttotoday', false);
+
+		if ($startStoreAsLocal)
+		{
+			$localTimeZone = new DateTimeZone($this->config->get('offset'));
+			$date    = new DateTime($date, new DateTimeZone('UTC'));
+			$date->setTimezone($localTimeZone);
+			$date = $date->format('Y-m-d H:i:s');
+		}
+
+		if ($startDefaultToToday)
+		{
+			$localTimeZone = new DateTimeZone($this->config->get('offset'));
+			$date = new DateTime($date, $localTimeZone);
+			$date->setTimeZone(new DateTimeZone('UTC'));
+			$date = $date->format('Y-m-d H:i:s');
+		}
 
 		return $date;
 	}
@@ -754,20 +789,20 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 		}
 
 		FabrikHelperHTML::addPath(COM_FABRIK_BASE . 'media/system/images/', 'image', 'form', false);
-		$opts      = $j3 ? array('alt' => 'calendar') : array('alt' => 'calendar', 'class' => 'calendarbutton', 'id' => $id . '_cal_img');
-		$img       = FabrikHelperHTML::image('calendar.png', 'form', @$this->tmpl, $opts);
-		$html      = array();
+		$opts = $j3 ? array('alt' => 'calendar') : array('alt' => 'calendar', 'class' => 'calendarbutton', 'id' => $id . '_cal_img');
+		$img  = FabrikHelperHTML::image('calendar.png', 'form', @$this->tmpl, $opts);
+		$html = array();
 
 		if ($j3)
 		{
-			$btnLayout = FabrikHelperHTML::getLayout('fabrik-button');
+			$btnLayout  = FabrikHelperHTML::getLayout('fabrik-button');
 			$layoutData = (object) array(
 				'class' => 'calendarbutton',
-				'id' => $id . '_cal_img',
+				'id'    => $id . '_cal_img',
 				'label' => $img
 			);
-			$img = $btnLayout->render($layoutData);
-			$html[] = '<div class="input-append">';
+			$img        = $btnLayout->render($layoutData);
+			$html[]     = '<div class="input-append">';
 		}
 
 		$html[] = '<input type="text" name="' . $name . '" id="' . $id . '" value="' . $value . '" ' . $attribs . ' />' . $img;
@@ -1375,7 +1410,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 		$v         = $this->filterName($counter, $normal);
 
 		// Correct default got
-		$default = $this->getDefaultFilterVal($normal, $counter);
+		$default                   = $this->getDefaultFilterVal($normal, $counter);
 		$this->filterDisplayValues = (array) $default;
 
 		// $$$ hugh - in advanced search, _aJoins wasn't getting set
@@ -1459,7 +1494,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 	/**
 	 * Override for main model getFilterRO to handle search all corner case
 	 *
-	 * @param   mixed  $data  String or array of filter value(s)
+	 * @param   mixed $data String or array of filter value(s)
 	 *
 	 * @since   3.0.7
 	 *
@@ -1646,8 +1681,8 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 		$from->value     = $default;
 		$from->name      = $v;
 
-		$imageOpts = $displayData->j3 ? array('alt' => 'calendar') : array('alt' => 'calendar',
-				'class' => 'calendarbutton', 'id' => $from->id . '_cal_img');
+		$imageOpts = $displayData->j3 ? array('alt' => 'calendar') : array('alt'   => 'calendar',
+		                                                                   'class' => 'calendarbutton', 'id' => $from->id . '_cal_img');
 		$from->img = FabrikHelperHTML::image('calendar.png', 'form', @$this->tmpl, $imageOpts);
 
 		$displayData->from = $from;
@@ -1812,7 +1847,8 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 				{
 					$data[$j][$key] = $orig_data;
 				}
-			} catch (Exception $e)
+			}
+			catch (Exception $e)
 			{
 				// Suppress date time format error
 			}
@@ -2367,7 +2403,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 	 *
 	 * @param   array $properties Default props
 	 *
-	 * @return  FabrikTableElement	element (id = 0)
+	 * @return  FabrikTableElement    element (id = 0)
 	 */
 	public function getDefaultProperties($properties = array())
 	{
@@ -2558,7 +2594,8 @@ class FabDate extends JDate
 		try
 		{
 			$dt = new DateTime($date);
-		} catch (Exception $e)
+		}
+		catch (Exception $e)
 		{
 			JDEBUG ? $app->enqueueMessage('date format unknown for ' . $orig . ' replacing with today\'s date', 'notice') : '';
 			$date = 'now';

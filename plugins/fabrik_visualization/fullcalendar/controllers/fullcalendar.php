@@ -119,40 +119,27 @@ class FabrikControllerVisualizationfullcalendar extends FabrikControllerVisualiz
 
 		if (!empty($startDate))
 		{
-			// check to see if we need to convert to UTC
+			// Check to see if we need to convert to UTC
 			$startDateEl = $listModel->getFormModel()->getElement($startDateField);
 
 			if ($startDateEl !== false)
 			{
-				$startStoreAsLocal = $startDateEl->getParams()->get('date_store_as_local', '0') === '1';
-
-				if ($startStoreAsLocal)
-				{
-					$localTimeZone = new DateTimeZone($this->config->get('offset'));
-					$startDate    = new DateTime($startDate, new DateTimeZone('UTC'));
-					$startDate->setTimezone($localTimeZone);
-					$startDate = $startDate->format('Y-m-d H:i:s');
-				}
+				$startDate = $startDateEl->getQueryStringDate($startDate);
 			}
+
 			$link .= "&$startDateField=" . $startDate;
 		}
+
 		if (!empty($endDate))
 		{
-			// check to see if we need to convert to UTC
+			// Check to see if we need to convert to UTC
 			$endDateEl = $listModel->getFormModel()->getElement($endDateField);
 
 			if ($endDateEl !== false)
 			{
-				$endStoreAsLocal = $endDateEl->getParams()->get('date_store_as_local', '0') === '1';
-
-				if ($endStoreAsLocal)
-				{
-					$localTimeZone = new DateTimeZone($this->config->get('offset'));
-					$endDate      = new DateTime($endDate, new DateTimeZone('UTC'));
-					$endDate->setTimezone($localTimeZone);
-					$endDate = $endDate->format('Y-m-d H:i:s');
-				}
+				$endDate = $endDateEl->getQueryStringDate($endDate);
 			}
+			
 			$link .= "&$endDateField=" . $endDate;
 		}
 
