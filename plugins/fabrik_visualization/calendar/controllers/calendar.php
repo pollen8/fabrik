@@ -25,28 +25,6 @@ require_once COM_FABRIK_FRONTEND . '/helpers/params.php';
 class FabrikControllerVisualizationcalendar extends FabrikControllerVisualization
 {
 	/**
-	 * Display the view
-	 *
-	 * @param   boolean    $cachable  If true, the view output will be cached - NOTE does not actually control caching
-	 *                                !!!
-	 * @param   array|bool $urlparams An array of safe url parameters and their variable types, for valid values see
-	 *                                {@link JFilterInput::clean()}.
-	 *
-	 * @return  JController  A JController object to support chaining.
-	 *
-	 * @since   11.1
-	 */
-	public function display($cachable = false, $urlparams = false)
-	{
-		// Set the default view name from the Request
-		$view      = $this->getView('calendar', $this->doc->getType());
-		$formModel = JModelLegacy::getInstance('Form', 'FabrikFEModel');
-		parent::display();
-
-		return $this;
-	}
-
-	/**
 	 * Delete an event
 	 *
 	 * @return  void
@@ -67,7 +45,7 @@ class FabrikControllerVisualizationcalendar extends FabrikControllerVisualizatio
 	{
 		$input  = $this->input;
 		$config = JComponentHelper::getParams('com_fabrik');
-		$model  = &$this->getModel('calendar');
+		$model  = $this->getModel('calendar');
 		$id     = $input->getInt('id', $config->get('visualizationid', $input->getInt('visualizationid', 0)));
 		$model->setId($id);
 		echo $model->getEvents();
@@ -98,7 +76,7 @@ class FabrikControllerVisualizationcalendar extends FabrikControllerVisualizatio
 	 */
 	public function addEvForm()
 	{
-		$package     = $this->app->getUserState('com_fabrik.package', 'fabrik');
+		$package     = $this->package;
 		$input       = $this->input;
 		$listId      = $input->getInt('listid');
 		$viewName    = 'calendar';
@@ -119,7 +97,7 @@ class FabrikControllerVisualizationcalendar extends FabrikControllerVisualizatio
 		}
 
 		$dateField = FabrikString::safeColNameToArrayKey($dateField);
-		$rowId     = $input->getString('rowid', '', 'string');
+		$rowId     = $input->getString('rowid', '');
 		$listModel = JModelLegacy::getInstance('list', 'FabrikFEModel');
 		$listModel->setId($listId);
 		$table = $listModel->getTable();
