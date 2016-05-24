@@ -319,7 +319,7 @@ define(['jquery', 'fab/fabrik', 'fullcalendar'], function (jQuery, Fabrik, fc) {
             this.windowopts.modalId = 'fullcalendar_addeventwin';
             var f = this.options.filters;
 
-            this.windowopts.onContentLoaded = function (win) {
+            this.windowopts.onContentLoaded = function () {
                 f.each(function (o) {
                     if (document.id(o.key)) {
                         switch (document.id(o.key).get('tag')) {

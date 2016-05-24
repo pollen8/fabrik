@@ -11,8 +11,7 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-use Joomla\Utilities\ArrayHelper;
-use Joomla\Registry\Registry;
+use Fabrik\Controllers\Controller;
 
 jimport('joomla.application.component.controller');
 
@@ -26,7 +25,7 @@ require_once COM_FABRIK_FRONTEND . '/helpers/params.php';
  * @subpackage  Fabrik
  * @since       1.5
  */
-class FabrikControllerVisualization extends JControllerLegacy
+class FabrikControllerVisualization extends Controller
 {
 	/**
 	 * Id used from content plugin when caching turned on to ensure correct element rendered
@@ -35,37 +34,6 @@ class FabrikControllerVisualization extends JControllerLegacy
 	 */
 	public $cacheId = 0;
 
-	/**
-	 * @var JApplicationCms
-	 */
-	protected $app;
-
-	/**
-	 * @var JDocument
-	 */
-	protected $doc;
-
-	/**
-	 * @var Registry
-	 */
-	protected $config;
-	
-	/**
-	 * Constructor.
-	 *
-	 * @param   array  $config  An optional associative array of configuration settings.
-	 * Recognized key values include 'name', 'default_task', 'model_path', and
-	 * 'view_path' (this list is not meant to be comprehensive).
-	 *
-	 * @since   12.2
-	 */
-	public function __construct($config = array())
-	{
-		$this->app = ArrayHelper::getValue($config, 'app', JFactory::getApplication());
-		$this->doc = ArrayHelper::getValue($config, 'doc', JFactory::getDocument());
-		$this->config = ArrayHelper::getValue($config, 'config', JFactory::getConfig());
-		parent::__construct($config);
-	}
 	/**
 	 * Display the view
 	 *

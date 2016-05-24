@@ -25,28 +25,6 @@ require_once COM_FABRIK_FRONTEND . '/helpers/params.php';
 class FabrikControllerVisualizationfullcalendar extends FabrikControllerVisualization
 {
 	/**
-	 * Display the view
-	 *
-	 * @param   boolean       $cachable  If true, the view output will be cached - NOTE does not actually control
-	 *                                   caching !!!
-	 * @param   array|boolean $urlparams An array of safe url parameters and their variable types,
-	 *                                   for valid values see {@link JFilterInput::clean()}.
-	 *
-	 * @return  JController  A JController object to support chaining.
-	 *
-	 * @since   11.1
-	 */
-	public function display($cachable = false, $urlparams = false)
-	{
-		// Set the default view name from the Request
-		$view      = $this->getView('fullcalendar', $this->doc->getType());
-		$formModel = JModelLegacy::getInstance('Form', 'FabrikFEModel');
-		parent::display();
-
-		return $this;
-	}
-
-	/**
 	 * Delete an event
 	 *
 	 * @return  void
@@ -98,7 +76,7 @@ class FabrikControllerVisualizationfullcalendar extends FabrikControllerVisualiz
 	 */
 	public function addEvForm()
 	{
-		$package     = $this->app->getUserState('com_fabrik.package', 'fabrik');
+		$package     = $this->package;
 		$input       = $this->input;
 		$listId      = $input->getInt('listid');
 		$viewName    = 'fullcalendar';
@@ -107,8 +85,7 @@ class FabrikControllerVisualizationfullcalendar extends FabrikControllerVisualiz
 		$id          = $input->getInt('visualizationid', $usersConfig->get('visualizationid', 0));
 		$model->setId($id);
 		$model->setupEvents();
-		$config = JFactory::getConfig();
-		$prefix = $config->get('dbprefix');
+		$prefix = $this->config->get('dbprefix');
 
 		if (array_key_exists($listId, $model->events))
 		{
@@ -123,7 +100,9 @@ class FabrikControllerVisualizationfullcalendar extends FabrikControllerVisualiz
 
 		$startDateField = FabrikString::safeColNameToArrayKey($startDateField);
 		$endDateField   = FabrikString::safeColNameToArrayKey($endDateField);
-		$rowId          = $input->getString('rowid', '', 'string');
+		$rowId          = $input->getString('rowid', '');
+
+		/** @var FabrikFEModelList $listModel */
 		$listModel      = JModelLegacy::getInstance('list', 'FabrikFEModel');
 		$listModel->setId($listId);
 		$table = $listModel->getTable();
@@ -135,10 +114,10 @@ class FabrikControllerVisualizationfullcalendar extends FabrikControllerVisualiz
 		$link     = 'index.php?option=com_' . $package . '&view=' . $nextView . '&formid=' . $table->form_id . '&rowid=' . $rowId . '&tmpl=component&ajax=1';
 		$link .= '&fabrik_window_id=' . $input->get('fabrik_window_id');
 
-		$start_date = $input->getString('start_date', '');
-		$end_date   = $input->getString('end_date', '');
+		$startDate = $input->getString('start_date', '');
+		$endDate   = $input->getString('end_date', '');
 
-		if (!empty($start_date))
+		if (!empty($startDate))
 		{
 			// check to see if we need to convert to UTC
 			$startDateEl = $listModel->getFormModel()->getElement($startDateField);
@@ -147,17 +126,17 @@ class FabrikControllerVisualizationfullcalendar extends FabrikControllerVisualiz
 			{
 				$startStoreAsLocal = $startDateEl->getParams()->get('date_store_as_local', '0') === '1';
 
-				if (!$startStoreAsLocal)
+				if ($startStoreAsLocal)
 				{
-					$localTimeZone = new DateTimeZone($config->get('offset'));
-					$start_date    = new DateTime($start_date, $localTimeZone);
-					$start_date->setTimeZone(new DateTimeZone('UTC'));
-					$start_date = $start_date->format('Y-m-d H:i:s');
+					$localTimeZone = new DateTimeZone($this->config->get('offset'));
+					$startDate    = new DateTime($startDate, new DateTimeZone('UTC'));
+					$startDate->setTimezone($localTimeZone);
+					$startDate = $startDate->format('Y-m-d H:i:s');
 				}
 			}
-			$link .= "&$startDateField=" . $start_date;
+			$link .= "&$startDateField=" . $startDate;
 		}
-		if (!empty($end_date))
+		if (!empty($endDate))
 		{
 			// check to see if we need to convert to UTC
 			$endDateEl = $listModel->getFormModel()->getElement($endDateField);
@@ -166,15 +145,15 @@ class FabrikControllerVisualizationfullcalendar extends FabrikControllerVisualiz
 			{
 				$endStoreAsLocal = $endDateEl->getParams()->get('date_store_as_local', '0') === '1';
 
-				if (!$endStoreAsLocal)
+				if ($endStoreAsLocal)
 				{
-					$localTimeZone = new DateTimeZone($config->get('offset'));
-					$end_date      = new DateTime($end_date, $localTimeZone);
-					$end_date->setTimeZone(new DateTimeZone('UTC'));
-					$end_date = $end_date->format('Y-m-d H:i:s');
+					$localTimeZone = new DateTimeZone($this->config->get('offset'));
+					$endDate      = new DateTime($endDate, new DateTimeZone('UTC'));
+					$endDate->setTimezone($localTimeZone);
+					$endDate = $endDate->format('Y-m-d H:i:s');
 				}
 			}
-			$link .= "&$endDateField=" . $end_date;
+			$link .= "&$endDateField=" . $endDate;
 		}
 
 		// $$$ rob have to add this to stop the calendar filtering itself after adding an new event?
