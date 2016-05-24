@@ -1440,6 +1440,9 @@ class FabrikFEModelList extends JModelForm
 				$row->fabrik_view = '';
 				$row->fabrik_edit = '';
 
+				$rowId = $this->getSlug($row);
+				$isAjax = $this->isAjaxLinks() ? '1' : '0';
+				
 				$editLabel = $this->editLabel($data[$groupKey][$i]);
 				$editText = $buttonAction == 'dropdown' ? $editLabel : '<span class="hidden">' . $editLabel . '</span>';
 
@@ -1459,6 +1462,8 @@ class FabrikFEModelList extends JModelForm
 					$displayData->editLabel = $editLabel;
 					$displayData->editText = $editText;
 					$displayData->rowData = $row;
+					$displayData->rowId = $rowId;
+					$displayData->isAjax = $isAjax;
 					$layout = $this->getLayout('listactions.fabrik-edit-button');
 					$editLink = $layout->render($displayData);
 				}
@@ -1488,6 +1493,8 @@ class FabrikFEModelList extends JModelForm
 					$displayData->viewText = $viewText;
 					$displayData->dataList = $dataList;
 					$displayData->rowData = $row;
+					$displayData->rowId = $rowId;
+					$displayData->isAjax = $isAjax;
 					$displayData->list_detail_link_icon = $params->get('list_detail_link_icon', 'search.png');
 					$layout = $this->getLayout('listactions.fabrik-view-button');
 					$viewLink = $layout->render($displayData);
