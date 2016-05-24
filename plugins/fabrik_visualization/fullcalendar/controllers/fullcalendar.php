@@ -22,14 +22,15 @@ require_once COM_FABRIK_FRONTEND . '/helpers/params.php';
  * @subpackage  Fabrik.visualization.calendar
  * @since       3.0
  */
-
 class FabrikControllerVisualizationfullcalendar extends FabrikControllerVisualization
 {
 	/**
 	 * Display the view
 	 *
-	 * @param   boolean  $cachable   If true, the view output will be cached - NOTE does not actually control caching !!!
-	 * @param   array    $urlparams  An array of safe url parameters and their variable types, for valid values see {@link JFilterInput::clean()}.
+	 * @param   boolean       $cachable  If true, the view output will be cached - NOTE does not actually control
+	 *                                   caching !!!
+	 * @param   array|boolean $urlparams An array of safe url parameters and their variable types,
+	 *                                   for valid values see {@link JFilterInput::clean()}.
 	 *
 	 * @return  JController  A JController object to support chaining.
 	 *
@@ -37,12 +38,8 @@ class FabrikControllerVisualizationfullcalendar extends FabrikControllerVisualiz
 	 */
 	public function display($cachable = false, $urlparams = false)
 	{
-		$document = JFactory::getDocument();
-		$viewName = 'fullcalendar';
-		$viewType = $document->getType();
-
 		// Set the default view name from the Request
-		$view = $this->getView($viewName, $viewType);
+		$view      = $this->getView('fullcalendar', $this->doc->getType());
 		$formModel = JModelLegacy::getInstance('Form', 'FabrikFEModel');
 		parent::display();
 
@@ -54,7 +51,6 @@ class FabrikControllerVisualizationfullcalendar extends FabrikControllerVisualiz
 	 *
 	 * @return  void
 	 */
-
 	public function deleteEvent()
 	{
 		$model = $this->getModel('fullcalendar');
@@ -69,12 +65,10 @@ class FabrikControllerVisualizationfullcalendar extends FabrikControllerVisualiz
 	 */
 	public function getEvents()
 	{
-		$viewName = 'calendar';
-		$app = JFactory::getApplication();
-		$input = $app->input;
-		$usersConfig = JComponentHelper::getParams('com_fabrik');
-		$model = &$this->getModel($viewName);
-		$id = $input->getInt('id', $usersConfig->get('visualizationid', $input->getInt('visualizationid', 0)), 'get');
+		$input  = $this->input;
+		$config = JComponentHelper::getParams('com_fabrik');
+		$model  = $this->getModel('calendar');
+		$id     = $input->getInt('id', $config->get('visualizationid', $config->getInt('visualizationid', 0)));
 		$model->setId($id);
 		echo $model->getEvents();
 	}
@@ -86,19 +80,13 @@ class FabrikControllerVisualizationfullcalendar extends FabrikControllerVisualiz
 	 */
 	public function chooseAddEvent()
 	{
-		$document = JFactory::getDocument();
-		$viewName = 'fullcalendar';
-
-		$viewType = $document->getType();
-
-		// Set the default view name from the Request
-		$view = $this->getView($viewName, $viewType);
-
+		// Set the default view name
+		$view      = $this->getView('fullcalendar', $this->doc->getType());
 		$formModel = $this->getModel('Form', 'FabrikFEModel');
 		$view->setModel($formModel);
 
 		// Push a model into the view
-		$model = $this->getModel($viewName);
+		$model = $this->getModel('fullcalendar');
 		$view->setModel($model, true);
 		$view->chooseAddEvent();
 	}
@@ -108,49 +96,47 @@ class FabrikControllerVisualizationfullcalendar extends FabrikControllerVisualiz
 	 *
 	 * @return  void
 	 */
-
 	public function addEvForm()
 	{
-		$app = JFactory::getApplication();
-		$package = $app->getUserState('com_fabrik.package', 'fabrik');
-		$input = $app->input;
-		$listid = $input->getInt('listid');
-		$viewName = 'fullcalendar';
+		$package     = $this->app->getUserState('com_fabrik.package', 'fabrik');
+		$input       = $this->input;
+		$listId      = $input->getInt('listid');
+		$viewName    = 'fullcalendar';
 		$usersConfig = JComponentHelper::getParams('com_fabrik');
-		$model = $this->getModel($viewName);
-		$id = $input->getInt('visualizationid', $usersConfig->get('visualizationid', 0));
+		$model       = $this->getModel($viewName);
+		$id          = $input->getInt('visualizationid', $usersConfig->get('visualizationid', 0));
 		$model->setId($id);
 		$model->setupEvents();
 		$config = JFactory::getConfig();
 		$prefix = $config->get('dbprefix');
 
-		if (array_key_exists($listid, $model->events))
+		if (array_key_exists($listId, $model->events))
 		{
-			$startDateField = $model->events[$listid][0]['startdate'];
-			$endDateField = $model->events[$listid][0]['enddate'];
+			$startDateField = $model->events[$listId][0]['startdate'];
+			$endDateField   = $model->events[$listId][0]['enddate'];
 		}
 		else
 		{
 			$startDateField = $prefix . 'fabrik_calendar_events___start_date';
-			$endDateField = $prefix . 'fabrik_calendar_events___end_date';
+			$endDateField   = $prefix . 'fabrik_calendar_events___end_date';
 		}
 
 		$startDateField = FabrikString::safeColNameToArrayKey($startDateField);
-		$endDateField = FabrikString::safeColNameToArrayKey($endDateField);
-		$rowid = $input->getString('rowid', '', 'string');
-		$listModel = JModelLegacy::getInstance('list', 'FabrikFEModel');
-		$listModel->setId($listid);
+		$endDateField   = FabrikString::safeColNameToArrayKey($endDateField);
+		$rowId          = $input->getString('rowid', '', 'string');
+		$listModel      = JModelLegacy::getInstance('list', 'FabrikFEModel');
+		$listModel->setId($listId);
 		$table = $listModel->getTable();
 		$input->set('view', 'form');
 		$input->set('formid', $table->form_id);
 		$input->set('tmpl', 'component');
 		$input->set('ajax', '1');
 		$nextView = $input->get('nextview', 'form');
-		$link = 'index.php?option=com_' . $package . '&view=' . $nextView . '&formid=' . $table->form_id . '&rowid=' . $rowid . '&tmpl=component&ajax=1';
+		$link     = 'index.php?option=com_' . $package . '&view=' . $nextView . '&formid=' . $table->form_id . '&rowid=' . $rowId . '&tmpl=component&ajax=1';
 		$link .= '&fabrik_window_id=' . $input->get('fabrik_window_id');
 
 		$start_date = $input->getString('start_date', '');
-		$end_date = $input->getString('end_date', '');
+		$end_date   = $input->getString('end_date', '');
 
 		if (!empty($start_date))
 		{
@@ -164,7 +150,7 @@ class FabrikControllerVisualizationfullcalendar extends FabrikControllerVisualiz
 				if (!$startStoreAsLocal)
 				{
 					$localTimeZone = new DateTimeZone($config->get('offset'));
-					$start_date = new DateTime($start_date, $localTimeZone);
+					$start_date    = new DateTime($start_date, $localTimeZone);
 					$start_date->setTimeZone(new DateTimeZone('UTC'));
 					$start_date = $start_date->format('Y-m-d H:i:s');
 				}
@@ -183,7 +169,7 @@ class FabrikControllerVisualizationfullcalendar extends FabrikControllerVisualiz
 				if (!$endStoreAsLocal)
 				{
 					$localTimeZone = new DateTimeZone($config->get('offset'));
-					$end_date = new DateTime($end_date, $localTimeZone);
+					$end_date      = new DateTime($end_date, $localTimeZone);
 					$end_date->setTimeZone(new DateTimeZone('UTC'));
 					$end_date = $end_date->format('Y-m-d H:i:s');
 				}

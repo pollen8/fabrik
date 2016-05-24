@@ -11,6 +11,9 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\Utilities\ArrayHelper;
+use Joomla\Registry\Registry;
+
 jimport('joomla.application.component.controller');
 
 require_once COM_FABRIK_FRONTEND . '/helpers/params.php';
@@ -33,6 +36,37 @@ class FabrikControllerVisualization extends JControllerLegacy
 	public $cacheId = 0;
 
 	/**
+	 * @var JApplicationCms
+	 */
+	protected $app;
+
+	/**
+	 * @var JDocument
+	 */
+	protected $doc;
+
+	/**
+	 * @var Registry
+	 */
+	protected $config;
+	
+	/**
+	 * Constructor.
+	 *
+	 * @param   array  $config  An optional associative array of configuration settings.
+	 * Recognized key values include 'name', 'default_task', 'model_path', and
+	 * 'view_path' (this list is not meant to be comprehensive).
+	 *
+	 * @since   12.2
+	 */
+	public function __construct($config = array())
+	{
+		$this->app = ArrayHelper::getValue($config, 'app', JFactory::getApplication());
+		$this->doc = ArrayHelper::getValue($config, 'doc', JFactory::getDocument());
+		$this->config = ArrayHelper::getValue($config, 'config', JFactory::getConfig());
+		parent::__construct($config);
+	}
+	/**
 	 * Display the view
 	 *
 	 * @param   boolean  $cachable   If true, the view output will be cached - NOTE not actually used to control caching!!
@@ -45,8 +79,7 @@ class FabrikControllerVisualization extends JControllerLegacy
 	public function display($cachable = false, $urlparams = array())
 	{
 		$document = JFactory::getDocument();
-		$app = JFactory::getApplication();
-		$input = $app->input;
+		$input = $this->input;
 		$viewName = str_replace('FabrikControllerVisualization', '', get_class($this));
 
 		if ($viewName == '')
@@ -98,8 +131,7 @@ class FabrikControllerVisualization extends JControllerLegacy
 	protected function getViewName()
 	{
 		$viz = FabTable::getInstance('Visualization', 'FabrikTable');
-		$app = JFactory::getApplication();
-		$viz->load($app->input->getInt('id'));
+		$viz->load($this->input->getInt('id'));
 		$viewName = $viz->plugin;
 		$this->addViewPath(JPATH_SITE . '/plugins/fabrik_visualization/' . $viewName . '/views');
 		JModelLegacy::addIncludePath(JPATH_SITE . '/plugins/fabrik_visualization/' . $viewName . '/models');

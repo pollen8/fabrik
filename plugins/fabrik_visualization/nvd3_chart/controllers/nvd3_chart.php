@@ -20,7 +20,6 @@ jimport('joomla.application.component.controller');
  * @subpackage  Fabrik.visualization.nvd3_chart
  * @since       3.0
  */
-
 class FabrikControllerVisualizationNvd3_Chart extends FabrikControllerVisualization
 {
 }

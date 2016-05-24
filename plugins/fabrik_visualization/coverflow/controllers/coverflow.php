@@ -20,7 +20,6 @@ jimport('joomla.application.component.controller');
  * @subpackage  Fabrik.visualization.coverflow
  * @since       3.0
  */
-
 class FabrikControllerVisualizationcoverflow extends FabrikControllerVisualization
 {
 }
