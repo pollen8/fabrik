@@ -377,16 +377,27 @@ define(['jquery', 'fab/loader', 'fab/requestqueue'], function (jQuery, Loader, R
             listRef = jQuery(target).data('list'),
             list = Fabrik.blocks[listRef];
 
-        if (!list.options.ajax_links) {
+        if (jQuery(target).data('isajax') !== 1) {
             return;
         }
+
+        if (list) {
+            if (!list.options.ajax_links) {
+                return;
+            }
+
+            row = list.getActiveRow(e);
+            if (!row || row.length === 0) {
+                return;
+            }
+            list.setActive(row);
+            rowId = row.prop('id').split('_').pop();
+        }
+        else {
+            rowId = jQuery(target).data('rowid');
+        }
+
         e.preventDefault();
-        row = list.getActiveRow(e);
-        if (!row || row.length === 0) {
-            return;
-        }
-        list.setActive(row);
-        rowId = row.prop('id').split('_').pop();
 
         if (jQuery(e.target).prop('tagName') === 'A') {
             a = jQuery(e.target);
@@ -428,19 +439,21 @@ define(['jquery', 'fab/loader', 'fab/requestqueue'], function (jQuery, Loader, R
             }
         };
 
-        // Only set width/height if specified, otherwise default to window defaults
-        if (list.options.popup_width !== '') {
-            winOpts.width = list.options.popup_width;
-        }
-        if (list.options.popup_height !== '') {
-            winOpts.height = list.options.popup_height;
-        }
-        winOpts.id = view === 'details' ? 'view.' + winOpts.id : 'add.' + winOpts.id;
-        if (list.options.popup_offset_x !== null) {
-            winOpts.offset_x = list.options.popup_offset_x;
-        }
-        if (list.options.popup_offset_y !== null) {
-            winOpts.offset_y = list.options.popup_offset_y;
+        if (list) {
+            // Only set width/height if specified, otherwise default to window defaults
+            if (list.options.popup_width !== '') {
+                winOpts.width = list.options.popup_width;
+            }
+            if (list.options.popup_height !== '') {
+                winOpts.height = list.options.popup_height;
+            }
+            winOpts.id = view === 'details' ? 'view.' + winOpts.id : 'add.' + winOpts.id;
+            if (list.options.popup_offset_x !== null) {
+                winOpts.offset_x = list.options.popup_offset_x;
+            }
+            if (list.options.popup_offset_y !== null) {
+                winOpts.offset_y = list.options.popup_offset_y;
+            }
         }
         Fabrik.getWindow(winOpts);
     };

@@ -2236,9 +2236,17 @@ class FabrikFEModelList extends JModelForm
 		$loadMethod = $this->getLoadMethod('custom_link');
 		$class = 'fabrik___rowlink ' . $class;
 		$dataList = 'list_' . $this->getRenderContext();
+		$rowId = $this->getSlug($row);
+		$isAjax = $this->isAjaxLinks() ? '1' : '0';
 		if ($target !== '') $target = 'target="' . $target . '"';
-		$data = '<a data-loadmethod="' . $loadMethod . '" data-list="' . $dataList . '" class="' . $class . '" href="' . $link . '"' . $target . '>' . $data
-		. '</a>';
+		$data = '<a data-loadmethod="' . $loadMethod
+			. '" data-list="' . $dataList
+			. '" data-rowid="' . $rowId
+			. '" data-isajax="' . $isAjax
+			. '" class="' . $class
+			. '" href="' . $link
+			. '"' . $target . '>' . $data
+			. '</a>';
 
 		return $data;
 	}
