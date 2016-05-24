@@ -195,8 +195,8 @@ define(['jquery', 'fab/fabrik', 'jQueryUI', 'fab/utils'], function (jQuery, Fabr
 
             this.contentWrapperEl.css({'height': ch, 'width': cw + 'px'});
             var handle = this.window.find('*[data-role="title"]');
-
-            if (!this.options.modal) {
+// Bauer asks... why?
+//            if (!this.options.modal) {
                 this.window.draggable(
                     {
                         'handle': handle,
@@ -224,9 +224,24 @@ define(['jquery', 'fab/fabrik', 'jQueryUI', 'fab/utils'], function (jQuery, Fabr
                         self.drawWindow();
                     }
                 });
-            }
-            // Set window dimensions before center - needed for fileupload crop
+//            }
+            
+            /* Prevent browser window from being scrolled */
+            jQuery('body').css({'height':'100%','overflow':'hidden'});
 
+            /* Allow browser window to be scrolled again when modal is released from DOM */
+            jQuery('div.modal').on('remove', function () {
+                jQuery('body').css({'height':'initial','overflow':'initial'});
+            });
+
+            /* Use form title if modal handlelabel is blank */
+            if(jQuery('div.modal-header .handlelabel').text().length==0){
+                if(jQuery('div.itemContentPadder form').context.title.length){
+                    jQuery('div.modal-header .handlelabel').text(jQuery('div.itemContentPadder form').context.title);
+                }
+            }
+            
+            // Set window dimensions before center - needed for fileupload crop
             this.window.css('width', this.options.width);
             this.window.css('height', this.options.height + this.window.find('*[data-role="title"]').height());
 
