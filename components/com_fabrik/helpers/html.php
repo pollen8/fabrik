@@ -1411,6 +1411,22 @@ EOD;
 		{
 			if (!(JString::stristr($file, 'http://') || JString::stristr($file, 'https://')))
 			{
+				/**
+				 * Fix for new media compressed JS paths, which we switched from ./js/foo-mins.js to ./js/dist/foo.js.
+				 * Some code feeds us the new dist path, but some still uses just media/com_fabrik/js.  So, if we're
+				 * not in debug mode, and the path is media/com_fabrik/js and doesn't have /dist, add it.
+				 **/
+				if (!self::isDebug())
+				{
+					if (strpos($file, 'media/com_fabrik/js/') !== false)
+					{
+						if (strpos($file, 'media/com_fabrik/js/dist/') === false)
+						{
+							$file = str_replace('media/com_fabrik/js/', 'media/com_fabrik/js/dist/', $file);
+						}
+					}
+				}
+
 				if (JFile::exists(COM_FABRIK_BASE . $file))
 				{
 					$compressedFile = str_replace('.js', $ext, $file);
