@@ -123,10 +123,11 @@ define(['jquery', 'fab/fabrik', 'jQueryUI', 'fab/utils'], function (jQuery, Fabr
          * Center the modal window
          */
         center: function () {
-            var pxWidth = this.windowDimensionInPx('width'),
+            var source = this.window.find('*[data-draggable]').length === 0 ? this.window : this.window.find('*[data-draggable]'),
+                pxWidth = this.windowDimensionInPx('width'),
                 pxHeight = this.windowDimensionInPx('height'),
-                w = this.window.width(),
-                h = this.window.height(),
+                w = source.width(),
+                h = source.height(),
                 d = {}, yy, xx;
             w = (w === null || w === 'auto') ? pxWidth : w;
             h = (h === null || h === 'auto') ? pxHeight : h;
@@ -141,7 +142,7 @@ define(['jquery', 'fab/fabrik', 'jQueryUI', 'fab/utils'], function (jQuery, Fabr
 
             // Prototype J template css puts margin left on .modals
             d['margin-left'] = 0;
-            this.window.css(d);
+            source.css(d);
         },
 
         /**
@@ -195,9 +196,13 @@ define(['jquery', 'fab/fabrik', 'jQueryUI', 'fab/utils'], function (jQuery, Fabr
 
             this.contentWrapperEl.css({'height': ch, 'width': cw + 'px'});
             var handle = this.window.find('*[data-role="title"]');
-// Bauer asks... why?
-//            if (!this.options.modal) {
-                this.window.draggable(
+            // Bauer asks... why?
+            // Rob - because modals should not be resizeable or movable - those are Windows (uncommenting)
+            if (!this.options.modal) {
+
+                // Needed for UIKIt overrides as window root is actually its mask
+                var source = this.window.find('*[data-draggable]').length === 0 ? this.window : this.window.find('*[data-draggable]');
+                source.draggable(
                     {
                         'handle': handle,
                         drag    : function () {
@@ -207,7 +212,7 @@ define(['jquery', 'fab/fabrik', 'jQueryUI', 'fab/utils'], function (jQuery, Fabr
                     }
                 );
 
-                this.window.resizable({
+                source.resizable({
                     containment: this.options.container ? jQuery('#' + this.options.container) : null,
                     handles    : {
                         'n' : '.ui-resizable-n',
@@ -224,23 +229,27 @@ define(['jquery', 'fab/fabrik', 'jQueryUI', 'fab/utils'], function (jQuery, Fabr
                         self.drawWindow();
                     }
                 });
-//            }
-            
-            /* Prevent browser window from being scrolled */
-            jQuery('body').css({'height':'100%','overflow':'hidden'});
+            }
 
-            /* Allow browser window to be scrolled again when modal is released from DOM */
+            // Rob - removed this caused any form with a file upload in it to be unscrollable - as we load the window
+            // in the background. 
+            /* Prevent browser window from being scrolled */
+           /* jQuery('body').css({'height':'100%','overflow':'hidden'});
+
+            /!* Allow browser window to be scrolled again when modal is released from DOM *!/
             jQuery('div.modal').on('remove', function () {
                 jQuery('body').css({'height':'initial','overflow':'initial'});
-            });
+            });*/
 
-            /* Use form title if modal handlelabel is blank */
-            if(jQuery('div.modal-header .handlelabel').text().length==0){
-                if(jQuery('div.itemContentPadder form').context.title.length){
+            /* Use form title if modal handlelabel is blank
+            * $$$ Rob - this is not going to work with UIKit for example - try not to rely on the DOM classes/markup
+            * for this type of thing - assign data-foo attributes to the layouts instead */
+            if (jQuery('div.modal-header .handlelabel').text().length === 0) {
+                if (jQuery('div.itemContentPadder form').context.title.length) {
                     jQuery('div.modal-header .handlelabel').text(jQuery('div.itemContentPadder form').context.title);
                 }
             }
-            
+
             // Set window dimensions before center - needed for fileupload crop
             this.window.css('width', this.options.width);
             this.window.css('height', this.options.height + this.window.find('*[data-role="title"]').height());
@@ -249,6 +258,10 @@ define(['jquery', 'fab/fabrik', 'jQueryUI', 'fab/utils'], function (jQuery, Fabr
                 this.fitToContent(false);
             } else {
                 this.center();
+            }
+
+            if (this.options.visible) {
+                this.open();
             }
         },
 
@@ -463,8 +476,11 @@ define(['jquery', 'fab/fabrik', 'jQueryUI', 'fab/utils'], function (jQuery, Fabr
         drawWindow: function () {
             var titleHeight = this.titleHeight(),
                 footer = this.footerHeight(),
-                h = this.contentHeight(),
-                w = this.window.width();
+                h = this.contentHeight();
+
+            // Needed for UIKIt overrides as window root is actually its mask
+            var source = this.window.find('*[data-draggable]').length === 0 ? this.window : this.window.find('*[data-draggable]');
+            var w = source.width();
 
             // If content larger than window - set it to the window (minus footer/title)
             if (h > this.window.height()) {
