@@ -1420,9 +1420,12 @@ EOD;
 				{
 					if (strpos($file, 'media/com_fabrik/js/') !== false)
 					{
-						if (strpos($file, 'media/com_fabrik/js/dist/') === false)
+						if (strpos($file, 'media/com_fabrik/js/lib/') === false)
 						{
-							$file = str_replace('media/com_fabrik/js/', 'media/com_fabrik/js/dist/', $file);
+							if (strpos($file, 'media/com_fabrik/js/dist/') === false)
+							{
+								$file = str_replace('media/com_fabrik/js/', 'media/com_fabrik/js/dist/', $file);
+							}
 						}
 					}
 				}
