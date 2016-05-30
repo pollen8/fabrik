@@ -513,7 +513,7 @@ define(['jquery', 'fab/fabrik', 'jQueryUI', 'fab/utils'], function (jQuery, Fabr
             }
             if (!this.options.offset_y && scroll) {
                 //new Fx.Scroll(window).toElement(this.window);
-                jQuery('body').scrollTop(this.window);
+                jQuery('body').scrollTop(this.window.offset().top);
             }
         },
 
