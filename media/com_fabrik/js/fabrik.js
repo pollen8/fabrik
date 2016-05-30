@@ -145,7 +145,8 @@ define(['jquery', 'fab/loader', 'fab/requestqueue'], function (jQuery, Loader, R
 
         url = a.get('href');
         url += url.contains('?') ? '&tmpl=component&ajax=1' : '?tmpl=component&ajax=1';
-
+        url += '&format=partial';
+        
         // Only one edit window open at the same time.
         $H(Fabrik.Windows).each(function (win, key) {
             win.close();
