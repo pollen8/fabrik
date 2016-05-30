@@ -1736,8 +1736,12 @@ define(['jquery', 'fab/encoder', 'fab/fabrik', 'lib/debounce/jquery.ba-throttle-
             if (typeOf(sge) === 'null') {
                 sge = subGroup;
                 var add = sge.getElement('.addGroup');
-                var lastth = sge.getParent('table').getElements('thead th').getLast();
                 if (typeOf(add) !== 'null') {
+                    var lastth = sge.getParent('table').getElements('*[data-role="fabrik-group-repeaters"]').getLast();
+                    if (!lastth) {
+                        // for old custom templates that don't have the data-role, fall back to just grabbing last th
+                        lastth = sge.getParent('table').getElements('thead th').getLast();
+                    }
                     add.inject(lastth);
                 }
             }
