@@ -330,6 +330,7 @@ define(['jquery', 'fab/element'], function (jQuery, FbElement) {
             this.cal.create();
             this.cal.refresh();
             this.cal.hide();
+            Fabrik.fireEvent('fabrik.element.date.calendar.created', this);
         },
 
         disableTyping: function () {
