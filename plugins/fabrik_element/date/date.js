@@ -100,6 +100,7 @@ define(['jquery', 'fab/element'], function (jQuery, FbElement) {
                 h.delay(100, this);
                 this.getCalendarImg().addEvent('click', function (e) {
                     e.stop();
+                    Fabrik.fireEvent('fabrik.element.date.calendar.show', this);
                     if (!this.cal.params.position) {
                         this.cal.showAtElement(this.cal.params.button || this.cal.params.displayArea || this.cal.params.inputField, this.cal.params.align);
                     } else {
