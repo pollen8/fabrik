@@ -541,10 +541,11 @@ class FabrikFEModelImportcsv extends JModelForm
 		$groups      = $formModel->getGroupsHiarachy();
 		$elementMap  = array();
 
-        // $$ Phil - Get array of 'Show in List' elements from menu or set as empty array if none
-        $list_elements = FabrikWorker::getMenuOrRequestVar('list_elements','',false,'menu');
+        	// $$ Phil - Get 'Show in List' elements from menu (if 'use show in list') or set as empty array if not
+        	$use_sil = FabrikWorker::getMenuOrRequestVar('csv_import_sil_only','0',false,'menu');
+		$list_elements = $use_sil ? FabrikWorker::getMenuOrRequestVar('list_elements','',false,'menu') : '';
 		$showinlist = !empty($list_elements) ? json_decode($list_elements,1) : array();
-        if(!empty($showinlist)) $showinlist = $showinlist['show_in_list'];
+        	if(!empty($showinlist)) $showinlist = $showinlist['show_in_list'];
         
 		// $$ hugh - adding $rawMap so we can tell prepareCSVData() if data is already raw
 		$rawMap = array();
