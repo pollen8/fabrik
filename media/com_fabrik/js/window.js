@@ -134,15 +134,15 @@ define(['jquery', 'fab/fabrik', 'jQueryUI', 'fab/utils'], function (jQuery, Fabr
             w = parseInt(w, 10);
             h = parseInt(h, 10);
 
-            //yy = window.getSize().y / 2 + window.getScroll().y - (h / 2);
-            yy = (window.getSize().y / 2) - (h / 2);
-            //d.top = this.options.offset_y !== null ? window.getScroll().y + this.options.offset_y : yy;
-            d.top = this.options.offset_y !== null ? this.options.offset_y : yy;
+            yy = window.getSize().y / 2 + window.getScroll().y - (h / 2);
+            //yy = (window.getSize().y / 2) - (h / 2);
+            d.top = this.options.offset_y !== null ? window.getScroll().y + this.options.offset_y : yy;
+            //d.top = this.options.offset_y !== null ? this.options.offset_y : yy;
 
-            //xx = window.getSize().x / 2 + window.getScroll().x - w / 2;
-            xx = (window.getSize().x / 2) - (w / 2);
-            //d.left = this.options.offset_x !== null ? window.getScroll().x + this.options.offset_x : xx;
-            d.left = this.options.offset_x !== null ? this.options.offset_x : xx;
+            xx = window.getSize().x / 2 + window.getScroll().x - w / 2;
+            //xx = (window.getSize().x / 2) - (w / 2);
+            d.left = this.options.offset_x !== null ? window.getScroll().x + this.options.offset_x : xx;
+            //d.left = this.options.offset_x !== null ? this.options.offset_x : xx;
 
             // Prototype J template css puts margin left on .modals
             d['margin-left'] = 0;
