@@ -200,7 +200,18 @@
 			       description="COM_FABRIK_FIELD_CSV_IMPORT_EXTENSIONS_DESC"
 			/>              
             
-			<field name="csv_import_dropdata"
+		        <field name="csv_import_sil_only"
+ 				type="radio"
+ 				class="btn-group"
+ 				default="0"
+ 				description="COM_FABRIK_FIELD_CSV_IMPORT_SIL_ONLY_DESC"
+ 				label="COM_FABRIK_FIELD_CSV_IMPORT_SIL_ONLY_LABEL"
+ 			>
+ 					<option value="0">JNO</option>
+ 					<option value="1">JYES</option>
+ 			</field>            
+            
+			field name="csv_import_dropdata"
 				type="radio"
 				class="btn-group"
 				default="0"
