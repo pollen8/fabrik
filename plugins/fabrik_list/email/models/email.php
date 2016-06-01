@@ -39,6 +39,20 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 	private $gateway = null;
 
 	/**
+	 * Mails sent
+	 * 
+	 * @var int
+	 */
+	private $sent = 0;
+
+	/**
+	 * Mails not sent
+	 * 
+	 * @var int
+	 */
+	private $notSent = 0;
+
+	/**
 	 * Can the plug-in select list rows
 	 *
 	 * @return  bool
@@ -389,7 +403,7 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 		$input     = $this->app->input;
 		$updateVal = $params->get($name);
 
-		if ($updateVal === 'now()')
+		if ($updateVal === 'now()' || $updateVal === '{now}')
 		{
 			$updateVal = $this->date->toSql();
 		}
@@ -402,6 +416,16 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 		if ($updateVal === '{$my->id}')
 		{
 			$updateVal = $this->user->get('id', 0, 'int');
+		}
+		
+		if ($updateVal === '{sent}')
+		{
+			$updateVal = $this->sent;
+		}
+		
+		if ($updateVal === '{notsent}')
+		{
+			$updateVal = $this->notSent;
 		}
 
 		return $updateVal;
@@ -522,6 +546,8 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 			list($sent, $notSent) = $this->mailMerged($firstRow, $mergedMsg, $sent, $notSent);
 		}
 
+		$this->sent = $sent;
+		$this->notSent = $notSent;
 		$this->_updateRows($updated);
 
 		// T3 blank tmpl doesn't seem to render messages when tmpl=component
