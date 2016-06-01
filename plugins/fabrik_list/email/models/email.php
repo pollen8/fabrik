@@ -40,14 +40,14 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 
 	/**
 	 * Mails sent
-	 * 
+	 *
 	 * @var int
 	 */
 	private $sent = 0;
 
 	/**
 	 * Mails not sent
-	 * 
+	 *
 	 * @var int
 	 */
 	private $notSent = 0;
@@ -115,7 +115,7 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 		return true;
 	}
 
-	private function _toType()
+	public function _toType()
 	{
 		return $this->getParams()->get('emailtable_to_type');
 	}
@@ -417,12 +417,12 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 		{
 			$updateVal = $this->user->get('id', 0, 'int');
 		}
-		
+
 		if ($updateVal === '{sent}')
 		{
 			$updateVal = $this->sent;
 		}
-		
+
 		if ($updateVal === '{notsent}')
 		{
 			$updateVal = $this->notSent;
@@ -447,6 +447,7 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 		{
 			return false;
 		}
+
 
 		$listModel->setId($input->getInt('id', 0));
 		$w           = new FabrikWorker;
@@ -727,12 +728,40 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 	 *
 	 * @return string
 	 */
-	private function _emailTo()
+	public function _emailTo()
 	{
 		$params  = $this->getParams();
 		$emailTo = $params->get('emailtable_to', '');
 
 		return $emailTo;
+	}
+
+	/**
+	 * Get address book
+	 * @return array
+	 */
+	public function addressBook()
+	{
+		$params = $this->getParams();
+		$table      = $params->get('emailtable_to_table_table');
+		$tableEmail = $params->get('emailtable_to_table_email');
+		$tableName  = $params->get('emailtable_to_table_name');
+
+		$toTableModel = JModelLegacy::getInstance('list', 'FabrikFEModel');
+		$toTableModel->setId($table);
+		$toDb = $toTableModel->getDb();
+
+		$tableName          = FabrikString::safeColName($tableName);
+		$tableEmail         = FabrikString::safeColName($tableEmail);
+		$emailTableTo_table = $toDb->qn($toTableModel->getTable()->db_table_name);
+
+		$query = $toDb->getQuery(true);
+		$query->select($tableEmail . ' AS email, ' . $tableName . ' AS name')
+			->from($emailTableTo_table)->order('name ASC');
+		$toDb->setQuery($query);
+		$results = $toDb->loadObjectList();
+
+		return $results;
 	}
 
 	/**

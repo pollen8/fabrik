@@ -419,6 +419,7 @@ define(['jquery', 'fab/fabrik', 'jQueryUI', 'fab/utils'], function (jQuery, Fabr
                         self.options.onContentLoaded.apply(self);
                     });
                     break;
+                // Deprecated - causes all sorts of issues with window resizing.
                 case 'iframe':
                     var h = parseInt(this.options.height, 10) - 40,
                         scrollX = this.contentEl[0].scrollWidth,
@@ -501,7 +502,7 @@ define(['jquery', 'fab/fabrik', 'jQueryUI', 'fab/utils'], function (jQuery, Fabr
 
             // Resize iframe when window is resized
             if (this.options.loadMethod === 'iframe') {
-                this.iframeEl.css('height', this.contentWrapperEl[0].offsetHeight - 40);
+                this.iframeEl.css('height', this.contentWrapperEl[0].offsetHeight);
                 this.iframeEl.css('width', this.contentWrapperEl[0].offsetWidth - 10);
             }
         },
