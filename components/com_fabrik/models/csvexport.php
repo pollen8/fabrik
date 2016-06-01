@@ -402,30 +402,31 @@ class FabrikFEModelCSVExport extends FabModel
 		$filePath = $this->getFilePath();
 		// Do additional processing if post-processing php file exists
 		$listid = $this->app->input->getInt('listid');
+		// Allows for custom csv file processing. Included php file should kill php processing
+		// with die; or exit; to prevent continuation of this script (normal download). See Wiki.
 		if(file_exists(JPATH_PLUGINS.'/fabrik_list/listcsv/scripts/list_'.$listid.'_csv_export.php')){	
-			require(JPATH_PLUGINS.'/fabrik_list/listcsv/scripts/list_'.$listid.'_csv_export.php');
-		}else{		
-			$document = JFactory::getDocument();
-			$document->setMimeEncoding('application/zip');
-			$str = $this->getCSVContent();
-			$this->app->clearHeaders();
-			$encoding = $this->getEncoding();
-
-			// Set the response to indicate a file download
-			$this->app->setHeader('Content-Type', 'application/zip');
-			$this->app->setHeader('Content-Disposition', "attachment;filename=\"" . $filename . "\"");
-
-			// Xls formatting for accents
-			if ($this->outPutFormat == 'excel')
-			{
-				$this->app->setHeader('Content-Type', 'application/vnd.ms-excel');
-			}
-
-			$this->app->setHeader('charset', $encoding);
-			$this->app->setBody($str);
-			echo $this->app->toString(false);
-			JFile::delete($filePath);
+   			require(JPATH_PLUGINS.'/fabrik_list/listcsv/scripts/list_'.$listid.'_csv_export.php');
 		}
+		$document = JFactory::getDocument();
+		$document->setMimeEncoding('application/zip');
+		$str = $this->getCSVContent();
+		$this->app->clearHeaders();
+		$encoding = $this->getEncoding();
+
+		// Set the response to indicate a file download
+		$this->app->setHeader('Content-Type', 'application/zip');
+		$this->app->setHeader('Content-Disposition', "attachment;filename=\"" . $filename . "\"");
+
+		// Xls formatting for accents
+		if ($this->outPutFormat == 'excel')
+		{
+			$this->app->setHeader('Content-Type', 'application/vnd.ms-excel');
+		}
+
+		$this->app->setHeader('charset', $encoding);
+		$this->app->setBody($str);
+		echo $this->app->toString(false);
+		JFile::delete($filePath);
 		// $$$ rob 21/02/2012 - need to exit otherwise Chrome give 349 download error
 		exit;
 	}
