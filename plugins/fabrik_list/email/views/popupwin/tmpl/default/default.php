@@ -31,7 +31,7 @@ $params = $this->params;
 			<?php
 			if ($this->toType == 'field')
 			{
-				$to = $this->_emailTo();
+				$to = $this->emailTo;
 				?>
 				<div class="span12">
 					<?php

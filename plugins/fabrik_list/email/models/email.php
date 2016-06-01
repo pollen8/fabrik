@@ -665,9 +665,7 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 			list($replyEmail, $replyEmailName) = $this->_replyEmailName($row);
 			$thisSubject = $w->parseMessageForPlaceholder($subject, $row);
 
-			$mail = JFactory::getMailer();
-
-			return $mail->sendMail($emailFrom, $fromName, $mailTo, $thisSubject, $thisMsg, 1, $cc, $bcc, $this->filepath,
+			return FabrikWorker::sendMail($emailFrom, $fromName, $mailTo, $thisSubject, $thisMsg, 1, $cc, $bcc, $this->filepath,
 				$replyEmail, $replyEmailName);
 		}
 	}
@@ -744,6 +742,12 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 	{
 		$params = $this->getParams();
 		$table      = $params->get('emailtable_to_table_table');
+
+		if (empty($table))
+		{
+			return array();
+		}
+
 		$tableEmail = $params->get('emailtable_to_table_email');
 		$tableName  = $params->get('emailtable_to_table_name');
 
@@ -917,8 +921,7 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 
 			if ($sent > 0)
 			{
-				$mail = JFactory::getMailer();
-				$res  = $mail->sendMail($emailFrom, $fromName, $thisTos, $thisSubject, $mergedMsg, true, $cc, $bcc, $this->filepath,
+				$res = FabrikWorker::sendMail($emailFrom, $fromName, $thisTos, $thisSubject, $mergedMsg, true, $cc, $bcc, $this->filepath,
 					$replyEmail, $replyEmailName);
 			}
 		}
@@ -928,8 +931,7 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 			{
 				if (FabrikWorker::isEmail($thisTo))
 				{
-					$mail = JFactory::getMailer();
-					$res  = $mail->sendMail($emailFrom, $fromName, $thisTo, $thisSubject, $mergedMsg, true, $cc, $bcc, $this->filepath,
+					$res = FabrikWorker::sendMail($emailFrom, $fromName, $thisTo, $thisSubject, $mergedMsg, true, $cc, $bcc, $this->filepath,
 						$replyEmail, $replyEmailName);
 
 					if ($res)

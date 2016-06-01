@@ -59,7 +59,7 @@ class FabrikViewPopupwin extends JViewLegacy
 		$this->allowAttachment = $model->getAllowAttachment();
 		$this->editor          = $model->getEditor();
 		$this->toType          = $model->_toType();
-		$this->emailtTo        = $model->_emailTo();
+		$this->emailTo        = $model->_emailTo();
 		$this->params          = $model->getParams();
 		$this->listEmailTo     = $model->formModel->getElementList('list_email_to');
 		$this->addressBook     = $model->addressBook();
