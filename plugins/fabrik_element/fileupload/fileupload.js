@@ -437,7 +437,6 @@ define(['jquery', 'fab/fileelement'], function (jQuery, FbFileElement) {
             });
 
             this.uploader.bind('Error', function (up, err) {
-                var self = this;
                 self.lastAddedFiles.each(function (file) {
                     var row = jQuery('#' + file.id);
                     if (row.length > 0) {
