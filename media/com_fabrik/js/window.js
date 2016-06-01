@@ -134,7 +134,12 @@ define(['jquery', 'fab/fabrik', 'jQueryUI', 'fab/utils'], function (jQuery, Fabr
             w = parseInt(w, 10);
             h = parseInt(h, 10);
 
-            yy = window.getSize().y / 2 + window.getScroll().y - (h / 2);
+
+            yy = window.getSize().y / 2 - (h / 2);
+
+            if ( jQuery(source).css('position') !== 'fixed') {
+                yy += window.getScroll().y;
+            }
             //yy = (window.getSize().y / 2) - (h / 2);
             d.top = this.options.offset_y !== null ? window.getScroll().y + this.options.offset_y : yy;
             //d.top = this.options.offset_y !== null ? this.options.offset_y : yy;
@@ -236,7 +241,7 @@ define(['jquery', 'fab/fabrik', 'jQueryUI', 'fab/utils'], function (jQuery, Fabr
             }
 
             // Rob - removed this caused any form with a file upload in it to be unscrollable - as we load the window
-            // in the background. 
+            // in the background.
             /* Prevent browser window from being scrolled */
            /* jQuery('body').css({'height':'100%','overflow':'hidden'});
 
