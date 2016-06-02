@@ -64,7 +64,7 @@ class JDocumentpartial extends JDocumentHTML
 			$buffer .= $tab . '</script>' . $lnEnd;
 		}
 
-		return $buffer . $this->_buffer['component'];
+		return $buffer . $data;
 	}
 
 	/**
@@ -87,4 +87,32 @@ class JDocumentpartial extends JDocumentHTML
 			return '';
 		}
 	}
+
+	/**
+	 * Render pre-parsed template
+	 *
+	 * @return string rendered template
+	 *
+	 * @since   11.1
+	 */
+	protected function _renderTemplate()
+	{
+		$replace = array();
+		$with = array();
+
+		$template = <<<EOT
+	<jdoc:include type="message" />
+	<jdoc:include type="component" />
+EOT;
+
+
+		foreach ($this->_template_tags as $jdoc => $args)
+		{
+			$replace[] = $jdoc;
+			$with[] = $this->getBuffer($args['type'], $args['name'], $args['attribs']);
+		}
+
+		return str_replace($replace, $with, $template);
+	}
+
 }
