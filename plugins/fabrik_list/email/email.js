@@ -66,7 +66,7 @@ define(['jquery', 'fab/list-plugin', 'fab/fabrik'], function (jQuery, FbListPlug
         },
 
         buttonAction: function () {
-            var url = 'index.php?option=com_fabrik&controller=list.email&task=popupwin&tmpl=component&ajax=1&id=' +
+            var url = 'index.php?option=com_fabrik&format=partial&controller=list.email&task=popupwin&tmpl=component&ajax=1&id=' +
                     this.listid + '&renderOrder=' + this.options.renderOrder,
                 self = this;
             this.listform.getElements('input[name^=ids]').each(function (id) {
