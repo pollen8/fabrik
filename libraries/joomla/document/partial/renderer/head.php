@@ -183,13 +183,16 @@ class JDocumentRendererHead extends JDocumentRendererHtmlHead
 		}
 
 		// Generate script file links
+
+		$excludeJsFiles = $this->getHeadCache();
+
 		foreach ($document->_scripts as $strSrc => $strAttr)
 		{
-			foreach ($this->excludeJsFiles as $exclude)
+			foreach ($excludeJsFiles as $exclude)
 			{
 				if (strstr($strSrc, $exclude))
 				{
-					continue;
+					continue 2;
 				}
 			}
 
@@ -267,5 +270,37 @@ class JDocumentRendererHead extends JDocumentRendererHtmlHead
 		}
 
 		return $buffer;
+	}
+
+	private function getHeadCache()
+	{
+		$session = JFactory::getSession();
+		$doc = JFactory::getDocument();
+		$app = JFactory::getApplication();
+		$uri = parse_url($app->input->server->get('HTTP_REFERER', '', 'string'));
+		$key = $uri['path'];
+		$qs = FArrayHelper::getValue($uri, 'query', '');
+
+		if (!empty($qs))
+		{
+			$key .= '?' . $qs;
+		}
+
+		$key = md5($key);
+		$scripts = $this->excludeJsFiles;
+
+		if (!empty($key))
+		{
+			$key = 'fabrik.js.head.cache.' . $key;
+			$cachedScripts = $session->get($key, '');
+			if (!empty($cachedScripts))
+			{
+				$scripts = json_decode($cachedScripts);
+				$scripts = ArrayHelper::fromObject($scripts);
+				$scripts = array_keys($scripts);
+			}
+		}
+
+		return $scripts;
 	}
 }
