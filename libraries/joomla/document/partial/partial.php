@@ -36,83 +36,8 @@ class JDocumentpartial extends JDocumentHTML
 	 */
 	public function render($cache = false, $params = array())
 	{
-		$data = parent::render();
+		$this->setType('partial');
 
-		$lnEnd = $this->_getLineEnd();
-		$tab = $this->_getTab();
-		$tagEnd = ' />';
-		$buffer = '';
-
-		// Generate script declarations
-		foreach ($this->_script as $type => $content)
-		{
-			$buffer .= $tab . '<script type="' . $type . '">' . $lnEnd;
-
-			// This is for full XHTML support.
-			if ($this->_mime != 'text/html')
-			{
-				$buffer .= $tab . $tab . '<![CDATA[' . $lnEnd;
-			}
-
-			$buffer .= $content . $lnEnd;
-
-			// See above note
-			if ($this->_mime != 'text/html')
-			{
-				$buffer .= $tab . $tab . ']]>' . $lnEnd;
-			}
-			$buffer .= $tab . '</script>' . $lnEnd;
-		}
-
-		return $buffer . $data;
+		return parent::render();
 	}
-
-	/**
-	 * Get the contents of a document include
-	 *
-	 * @param   string  $type     The type of renderer
-	 * @param   string  $name     The name of the element to render
-	 * @param   array   $attribs  Associative array of remaining attributes.
-	 *
-	 * @return  The output of the renderer
-	 */
-	public function getBuffer($type = null, $name = null, $attribs = array())
-	{
-		if ($type == 'head' || $type == 'component')
-		{
-			return parent::getBuffer($type, $name, $attribs);
-		}
-		else
-		{
-			return '';
-		}
-	}
-
-	/**
-	 * Render pre-parsed template
-	 *
-	 * @return string rendered template
-	 *
-	 * @since   11.1
-	 */
-	protected function _renderTemplate()
-	{
-		$replace = array();
-		$with = array();
-
-		$template = <<<EOT
-	<jdoc:include type="message" />
-	<jdoc:include type="component" />
-EOT;
-
-
-		foreach ($this->_template_tags as $jdoc => $args)
-		{
-			$replace[] = $jdoc;
-			$with[] = $this->getBuffer($args['type'], $args['name'], $args['attribs']);
-		}
-
-		return str_replace($replace, $with, $template);
-	}
-
 }
