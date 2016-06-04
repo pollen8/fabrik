@@ -138,17 +138,18 @@ define(['jquery', 'fab/fabrik', 'fullcalendar'], function (jQuery, Fabrik, fc) {
                 defaultTimedEventDuration: this.options.minDuration,
                 minTime                  : this.options.open, // a start time (10am in this example)
                 maxTime                  : this.options.close, // an end time (6pm in this example)
+				weekends				 : this.options.showweekends,
                 eventClick               : function (calEvent, jsEvent, view) {
                     self.clickEntry(calEvent);
                     return false;
                 },
                 dayClick                 : dayClickCallback,
                 viewRender               : function (view, e) {
-                    if (view.name === 'month' && self.options.greyscaledweekend === true) {
+                    if (self.options.greyscaledweekend === true) {
                         jQuery('td.fc-sat').css('background', '#f2f2f2');
                         jQuery('td.fc-sun').css('background', '#f2f2f2');
                     }
-                },
+               },
                 eventRender              : function (event, element) {
                     element.find('.fc-title').html(event.title);
                 },
@@ -256,9 +257,9 @@ define(['jquery', 'fab/fabrik', 'fullcalendar'], function (jQuery, Fabrik, fc) {
 
                 width = (dispStartDate === '' ? 'auto' : '200px');
                 jQuery(popup).attr('data-title', '<div style="width:' + width +
-                    '"><div style="float:left;"><button class="btn jclose" data-popover="' + popup.id +
+                    '; height: 35px;"><div style="float:right;"><button class="btn jclose" data-popover="' + popup.id +
                     '" data-toggle="tooltip" title="' + Joomla.JText._('PLG_VISUALIZATION_FULLCALENDAR_CLOSE') +
-                    '"><i class="icon-delete"></i></button></div><div style="text-align:center;">' +
+                    '"><i class="icon-remove"></i></button></div><div style="text-align:center;">' +
                     e.label + '</div></div>');
                 jQuery(popup).append(e.label);
 

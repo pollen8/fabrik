@@ -156,7 +156,8 @@ class FabrikViewFullcalendar extends JViewLegacy
 		$options->open           = $params->get('open-hour', "00:00:00");
 		$options->close          = $params->get('close-hour', "23:59:59");
 		$options->lang           = FabrikWorker::getShortLang();
-		$options->showweekends   = (bool) $params->get('calendar-show-weekends', true);
+		$options->showweekends   = (bool) $params->get('show-weekends', true);
+		$options->greyscaledweekend = (bool) $params->get('greyscaled-weekend', false);
 		$options->readonly       = (bool) $params->get('calendar-read-only', false);
 		$options->timeFormat     = $params->get('time_format', '%X');
 		$options->readonlyMonth  = (bool) $params->get('readonly_monthview', false);
