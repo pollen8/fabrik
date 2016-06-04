@@ -80,6 +80,7 @@ define(['jquery', 'fab/list-plugin', 'fab/fabrik'], function (jQuery, FbListPlug
             else {
                 url += '&checkAll=0';
             }
+            url += '&format=partial';
             var id = 'email-list-plugin';
             this.windowopts = {
                 id             : id,
