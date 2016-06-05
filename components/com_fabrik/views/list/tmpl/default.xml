@@ -189,8 +189,51 @@
 				size="5"
 				label="COM_FABRIK_MENU_CSV_POPUP_OPTS_WIDTH_LABEL"
 				description="COM_FABRIK_MENU_CSV_POPUP_OPTS_WIDTH_DESC"
-			/>	
+			/>
 			
+			<field name="csv_import_extensions"
+			       type="text"
+			       class="input-medium"
+			       size="20"
+			       default="txt,csv,tsv"
+			       label="COM_FABRIK_FIELD_CSV_IMPORT_EXTENSIONS_LABEL"
+			       description="COM_FABRIK_FIELD_CSV_IMPORT_EXTENSIONS_DESC"
+			/>              
+            
+		        <field name="csv_import_sil_only"
+ 				type="radio"
+ 				class="btn-group"
+ 				default="0"
+ 				description="COM_FABRIK_FIELD_CSV_IMPORT_SIL_ONLY_DESC"
+ 				label="COM_FABRIK_FIELD_CSV_IMPORT_SIL_ONLY_LABEL"
+ 			>
+ 					<option value="0">JNO</option>
+ 					<option value="1">JYES</option>
+ 			</field>            
+            
+			<field name="csv_import_dropdata"
+				type="radio"
+				class="btn-group"
+				default="0"
+				description="COM_FABRIK_FIELD_CSV_IMPORT_DROPDATA_DESC"
+				label="COM_FABRIK_FIELD_CSV_IMPORT_DROPDATA_LABEL"
+			>
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+			</field>
+            
+            
+			<field name="csv_import_overwrite"
+				type="radio"
+				class="btn-group"
+				default="0"
+				description="COM_FABRIK_FIELD_CSV_IMPORT_OVERWRITE_DESC"
+				label="COM_FABRIK_FIELD_CSV_IMPORT_OVERWRITE_LABEL"
+			>
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+			</field>
+
 			<!-- <field name="query_string"
 				type="text"
 				class="input-xlarge"
