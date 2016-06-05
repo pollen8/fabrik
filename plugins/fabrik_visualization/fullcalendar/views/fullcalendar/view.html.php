@@ -208,16 +208,29 @@ class FabrikViewFullcalendar extends JViewLegacy
 		$srcs['fabrikFullcalendar'] = 'plugins/fabrik_visualization/fullcalendar/fullcalendar.js';
 
 		$shim = $model->getShim();
+		
+		$fcLangFolder = 'plugins/fabrik_visualization/fullcalendar/libs/fullcalendar/lang/';
+		
+		// Figure out what language we are using
+		$lang = strtolower(JFactory::getUser()->getParam('language', JFactory::getLanguage()->getTag()));
+		if ( file_exists( JPATH_BASE . '/' . $fcLangFolder . $lang . '.js') === false ) {
+			$lang = FabrikWorker::getShortLang();
+			if ( file_exists( JPATH_BASE . '/' . $fcLangFolder . $lang . '.js') === false ) {
+				$lang = 'en-gb';
+			}
+		}
 
-		$shim['fullcalendar'] = (object) array('deps' =>
-			array('lib/moment/moment')
+		$shim['lang'] = (object) array('deps' =>
+			array('lib/moment/moment', 'fullcalendar')
 		);
 
 		$shim['viz/fullcalendar/fullcalendar'] = (object) array('deps' =>
-			array('fullcalendar', 'jquery')
+			array('lang', 'jquery')
 		);
 
-		FabrikHelperHTML::iniRequireJs($shim, array('fullcalendar' => 'plugins/fabrik_visualization/fullcalendar/libs/fullcalendar/fullcalendar.min'));
+		FabrikHelperHTML::iniRequireJs($shim, 
+			array('fullcalendar' => 'plugins/fabrik_visualization/fullcalendar/libs/fullcalendar/fullcalendar.min',
+				'lang' => $fcLangFolder . $lang));
 		FabrikHelperHTML::script($srcs, $js);
 	}
 
