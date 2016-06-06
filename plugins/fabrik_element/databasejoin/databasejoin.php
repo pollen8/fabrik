@@ -1450,6 +1450,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 			$displayData                   = new stdClass;
 			$displayData->opts             = $options;
 			$displayData->default          = FArrayHelper::getValue($default, 0);
+			$displayData->editable         = $this->isEditable();
 			$displayData->showPleaseSelect = $this->showPleaseSelect();
 
 			return $layout->render($displayData);
