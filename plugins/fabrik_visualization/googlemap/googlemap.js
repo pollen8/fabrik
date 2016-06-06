@@ -299,17 +299,9 @@ var FbGoogleMapViz = new Class({
 			}
 			this.cluster = new MarkerClusterer(this.map, this.clusterMarkers, {'splits': this.options.cluster_splits, 'icon_increment': this.options.icon_increment, maxZoom: zoom, gridSize: size, styles: styles});
 		}
-		/*
-		if (this.options.clustering) {
-			google.maps.event.addListener(this.markerMgr, 'loaded', function () {
-				this.markerMgr.addMarkers(this.markers, 0, 15);
-				this.markerMgr.refresh();
-			}.bind(this));
+		if (this.options.fitbounds) {
+			this.map.fitBounds(this.bounds);
 		}
-		*/
-		/* this.cluster=new ClusterMarker(this.map, { markers:this.clusterMarkers, 'splits':this.options.cluster_splits, 'icon_increment':this.options.icon_increment});
-		this.cluster.fitMapToMarkers();
-		this.map.savePosition();	//	enables the large map control centre button to return the map to initial view*/
 	},
 
 	center: function () {
@@ -358,6 +350,7 @@ var FbGoogleMapViz = new Class({
 
 	geoCenterErr: function (p) {
 		fconsole('geo location error=' + p.message);
+		var c;
 		if (this.noData()) {
 			c = new google.maps.LatLng(this.options.lat, this.options.lon);
 		}

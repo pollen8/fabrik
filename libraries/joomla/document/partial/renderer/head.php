@@ -25,6 +25,10 @@ class JDocumentRendererHead extends JDocumentRendererHtmlHead
 		'/bootstrap.js'
 	);
 
+	public $keeperJsFiles = array(
+		'/components/com_fabrik/js/'
+	);
+
 	/**
 	 * Renders the document head and returns the results as a string
 	 *
@@ -190,6 +194,14 @@ class JDocumentRendererHead extends JDocumentRendererHtmlHead
 		{
 			foreach ($excludeJsFiles as $exclude)
 			{
+				foreach ($this->keeperJsFiles as $keeper)
+				{
+					if (strstr($exclude, $keeper))
+					{
+						continue 2;
+					}
+				}
+
 				if (strstr($strSrc, $exclude))
 				{
 					continue 2;

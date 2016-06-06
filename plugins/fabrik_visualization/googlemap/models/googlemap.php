@@ -84,6 +84,7 @@ class FabrikModelGooglemap extends FabrikFEModelVisualization
 		$opts->polyline = $this->getPolyline();
 		$opts->id = $viz->id;
 		$opts->zoomlevel = (int) $params->get('fb_gm_zoomlevel');
+		$opts->fitbounds = (bool) $params->get('fb_gm_fitbounds');
 		$opts->scalecontrol = (bool) $params->get('fb_gm_scalecontrol');
 		$opts->scrollwheel = (bool) $params->get('fb_gm_scrollwheelcontrol');
 		$opts->maptypecontrol = (bool) $params->get('fb_gm_maptypecontrol');
