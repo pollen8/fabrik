@@ -576,14 +576,23 @@ define(['jquery', 'fab/element', 'lib/debounce/jquery.ba-throttle-debounce', 'fa
                         var f = document.id(field);
                         if (typeOf(f) !== 'null') {
                             var that = this;
-                            jQuery(f).on('keyup', Debounce(this.options.debounceDelay, function (e) {
-                                that.geoCode(e);
-                            }));
-                            // Select lists, radios whatnots
-                            f.addEvent('change', function (e) {
-                                this.geoCode();
-                            }.bind(this));
-
+                            var el = this.form.formElements.get(field);
+                            // if it's a field element with geocomplete, don't do keyup, wait for element to fire change
+                            if (!el.options.geocomplete) {
+                                jQuery(f).on('keyup', Debounce(this.options.debounceDelay, function (e) {
+                                    that.geoCode(e);
+                                }));
+                                // Select lists, radios whatnots
+                                f.addEvent('change', function (e) {
+                                    this.geoCode();
+                                }.bind(this));
+                            }
+                            else {
+                                Fabrik.addEvent('fabrik.element.field.geocode', function(el) {
+                                   //fconsole('fired: ' + el.element.id);
+                                    this.geoCode();
+                                }.bind(this));
+                            }
                         }
                     }.bind(this));
                 } else {

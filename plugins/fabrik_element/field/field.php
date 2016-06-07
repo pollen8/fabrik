@@ -361,8 +361,8 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 			$s->deps[] = $folder . 'jquery.geocomplete';
 		}
 
-		if (count($s->deps) > 1)
-		{
+		//if (count($s->deps) > 1)
+		//{
 			if (array_key_exists($key, $shim))
 			{
 				$shim[$key]->deps = array_merge($shim[$key]->deps, $s->deps);
@@ -371,7 +371,7 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 			{
 				$shim[$key] = $s;
 			}
-		}
+		//}
 
 		parent::formJavascriptClass($srcs, $script, $shim);
 
