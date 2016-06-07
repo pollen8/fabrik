@@ -402,33 +402,42 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 		$params    = $this->getParams();
 		$input     = $this->app->input;
 		$updateVal = $params->get($name);
+		$search    = array();
+		$replace   = array();
 
 		if ($updateVal === 'now()' || $updateVal === '{now}')
 		{
-			$updateVal = $this->date->toSql();
+			$search[]  = 'now()';
+			$replace[] = $this->date->toSql();
+			$search[]  = '{now}';
+			$replace[] = $this->date->toSql();
 		}
 
 		if ($updateVal === '{subject}')
 		{
-			$updateVal = $input->get('subject', '', 'string');
+			$search[]  = '{subject}';
+			$replace[] = $input->get('subject', '', 'string');
 		}
 
 		if ($updateVal === '{$my->id}')
 		{
-			$updateVal = $this->user->get('id', 0, 'int');
+			$search[]  = '{$my->id}';
+			$replace[] = $this->user->get('id', 0, 'int');
 		}
 
 		if ($updateVal === '{sent}')
 		{
-			$updateVal = $this->sent;
+			$search[]  = '{sent}';
+			$replace[] = $this->sent;
 		}
 
 		if ($updateVal === '{notsent}')
 		{
-			$updateVal = $this->notSent;
+			$search[]  = '{notsent}';
+			$replace[] = $this->notSent;
 		}
 
-		return $updateVal;
+		return str_replace($search, $replace, $updateVal);
 	}
 
 	/**
