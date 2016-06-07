@@ -1240,8 +1240,9 @@ define(['jquery', 'fab/encoder', 'fab/fabrik', 'lib/debounce/jquery.ba-throttle-
             }.bind(this));
         },
 
-        mockSubmit: function () {
-            var btn = this._getButton('Submit');
+        mockSubmit: function (btnName) {
+            btnName = typeof btnName !== 'undefined' ? btnName : 'Submit';
+            var btn = this._getButton(btnName);
             if (!btn) {
                 btn = new Element('button', {'name': 'Submit', 'type': 'submit'});
             }
