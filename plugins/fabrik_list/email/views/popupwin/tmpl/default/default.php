@@ -129,6 +129,7 @@ $params = $this->params;
 		<input type="hidden" name="controller" value=list.email />
 		<input type="hidden" name="task" value="doemail" />
 		<input type="hidden" name="tmpl" value="component" />
+		<input type="hidden" name="format" value="partial" />
 		<input type="hidden" name="renderOrder" value="<?php echo $this->renderOrder ?>" />
 		<input type="hidden" name="id" value="<?php echo $this->listid ?>" />
 		<input type="hidden" name="recordids" value="<?php echo $this->recordids ?>" />
