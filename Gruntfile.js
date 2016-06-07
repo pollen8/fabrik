@@ -263,12 +263,14 @@ var refreshFiles = function () {
     fs.mkdirsSync('./fabrik_build/output/component/admin');
     fs.mkdirsSync('./fabrik_build/output/component/site/fabrikfeed');
     fs.mkdirsSync('./fabrik_build/output/component/site/pdf');
+    fs.mkdirsSync('./fabrik_build/output/component/site/partial');
     fs.mkdirsSync('./fabrik_build/output/component/media');
     fs.mkdirsSync('./fabrik_build/library/fabrik');
 
 
     fs.copySync('libraries/joomla/document/fabrikfeed', './fabrik_build/output/component/site/fabrikfeed');
     fs.copySync('libraries/joomla/document/pdf', './fabrik_build/output/component/site/pdf');
+    fs.copySync('libraries/joomla/document/partial', './fabrik_build/output/component/site/partial');
 
     // Library folder
     fs.copySync('libraries/fabrik', './fabrik_build/library/fabrik');

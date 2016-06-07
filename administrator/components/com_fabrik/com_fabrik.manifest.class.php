@@ -114,7 +114,7 @@ class Com_FabrikInstallerScript
 	{
 		jimport('joomla.filesystem.file');
 		$componentFrontend = 'components/com_fabrik';
-		$docTypes          = array('fabrikfeed', 'pdf');
+		$docTypes          = array('fabrikfeed', 'pdf', 'partial');
 
 		foreach ($docTypes as $docType)
 		{
