@@ -456,7 +456,7 @@ var FbGoogleMapViz = new Class({
 				this.options.overlays[k] = new google.maps.KmlLayer({
 					url: overlay_url,
 					preserveViewport: pv,
-					suppressInfowindows: so
+					suppressInfoWindows: so
 				});
 				this.options.overlays[k].setMap(this.map);
 				this.options.overlay_events[k] = function (e) {
