@@ -560,4 +560,44 @@ class PlgFabrik_ElementTags extends PlgFabrik_ElementDatabasejoin
 		}
 		return $url;
 	}
+
+	/**
+	 * Get the class to manage the form element
+	 * to ensure that the file is loaded only once
+	 *
+	 * @param   array   &$srcs   Scripts previously loaded
+	 * @param   string  $script  Script to load once class has loaded
+	 * @param   array   &$shim   Dependant class names to load before loading the class - put in requirejs.config shim
+	 *
+	 * @return void|boolean
+	 */
+	public function formJavascriptClass(&$srcs, $script = '', &$shim = array())
+	{
+		$key = FabrikHelperHTML::isDebug() ? 'element/tags/tags' : 'element/tags/tags-min';
+
+		$s = new stdClass;
+
+		// Even though fab/element is now an AMD defined module we should still keep it in here
+		// otherwise (not sure of the reason) jQuery.mask is not defined in field.js
+
+		// Seems OK now - reverting to empty array
+		$s->deps = array();
+
+		$folder = 'media/jui/js/';
+		$s->deps[] = $folder . 'ajax-chosen';
+
+		if (array_key_exists($key, $shim))
+		{
+			$shim[$key]->deps = array_merge($shim[$key]->deps, $s->deps);
+		}
+		else
+		{
+			$shim[$key] = $s;
+		}
+
+		parent::formJavascriptClass($srcs, $script, $shim);
+
+		// $$$ hugh - added this, and some logic in the view, so we will get called on a per-element basis
+		return false;
+	}
 }
