@@ -451,7 +451,13 @@ var FbGoogleMapViz = new Class({
 	addOverlays: function () {
 		if (this.options.use_overlays) {
 			this.options.overlay_urls.each(function (overlay_url, k) {
-				this.options.overlays[k] = new google.maps.KmlLayer(overlay_url);
+				var pv = this.options.overlay_preserveviewports[k] === '1';
+				var so = this.options.overlay_suppressinfowindows[k] === '1';
+				this.options.overlays[k] = new google.maps.KmlLayer({
+					url: overlay_url,
+					preserveViewport: pv,
+					suppressInfowindows: so
+				});
 				this.options.overlays[k].setMap(this.map);
 				this.options.overlay_events[k] = function (e) {
 					this.toggleOverlay(e);

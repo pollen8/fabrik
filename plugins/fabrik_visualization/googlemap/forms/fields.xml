@@ -744,6 +744,28 @@
 				size="100"
 				type="text" />
 
+			<field
+					default="0"
+					class="btn-group"
+					description="PLG_VISUALIZATION_GOOGLEMAP_OVERLAYS_PRESERVEVIEWPORT_DESC"
+					label="PLG_VISUALIZATION_GOOGLEMAP_OVERLAYS_PRESERVEVIEWPORT_LABEL"
+					name="fb_gm_overlay_preserveviewport"
+					type="radio">
+				<option value="0">JNO</option>
+				<option value="1">JYES</option>
+			</field>
+
+			<field
+					default="0"
+					class="btn-group"
+					description="PLG_VISUALIZATION_GOOGLEMAP_OVERLAYS_SUPPRESSINFOWINDOWS_DESC"
+					label="PLG_VISUALIZATION_GOOGLEMAP_OVERLAYS_SUPPRESSINFOWINDOWS_LABEL"
+					name="fb_gm_overlay_suppressinfowindows"
+					type="radio">
+				<option value="0">JNO</option>
+				<option value="1">JYES</option>
+			</field>
+
 		</fieldset>
 	</fields>
 </form>

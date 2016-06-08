@@ -118,6 +118,8 @@ class FabrikModelGooglemap extends FabrikFEModelVisualization
 		$opts->polygonfillcolour = (array) $params->get('fb_gm_polygon_fillColor');
 		$opts->overlay_urls = (array) $params->get('fb_gm_overlay_urls');
 		$opts->overlay_labels = (array) $params->get('fb_gm_overlay_labels');
+		$opts->overlay_preserveviewports = (array) $params->get('fb_gm_overlay_preserveviewport');
+		$opts->overlay_suppressinfowindows = (array) $params->get('fb_gm_overlay_suppressinfowindows');
 		$opts->use_overlays = (int) $params->get('fb_gm_use_overlays', '0');
 		$opts->use_overlays_sidebar = $opts->use_overlays && (int) $params->get('fb_gm_use_overlays_sidebar', '0');
 		$opts->use_groups = (bool) $params->get('fb_gm_group_sidebar', 0);
