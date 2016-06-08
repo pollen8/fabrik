@@ -249,6 +249,7 @@ var FbGoogleMapViz = new Class({
 		this.markers.each(function (marker) {
 			marker.setMap(null);
 		});
+		this.bounds = new google.maps.LatLngBounds(null);
 	},
 
 	noData: function () {
