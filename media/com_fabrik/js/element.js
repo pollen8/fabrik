@@ -30,6 +30,7 @@ define(['jquery'], function (jQuery) {
          */
 
         initialize: function (element, options) {
+            var self = this;
             this.setPlugin('');
             options.element = element;
             this.strElement = element;
@@ -44,6 +45,14 @@ define(['jquery'], function (jQuery) {
                         event.data.changeEvent));
                 });
             }
+
+            // In ajax pop up form. Close the validation tip message when we focus in the element
+            Fabrik.on('fabrik.form.element.added', function () {
+                self.addNewEvent(self.getFocusEvent(), function () {
+                    self.removeTipMsg();
+                });
+            });
+
             return this.setElement();
         },
 
@@ -116,8 +125,10 @@ define(['jquery'], function (jQuery) {
             //is only set when the element is assigned to the form.
         },
 
-        /** allows you to fire an array of events to element /  sub elements, used in calendar
+        /**
+         * Allows you to fire an array of events to element /  sub elements, used in calendar
          * to trigger js events when the calendar closes
+         * @param {array} evnts
          */
         fireEvents: function (evnts) {
             if (this.hasSubElements()) {
@@ -229,6 +240,11 @@ define(['jquery'], function (jQuery) {
             }.bind(this));
         },
 
+        /**
+         * Add a JS event to the element
+         * @param {string} action
+         * @param {string|function} js
+         */
         addNewEvent: function (action, js) {
             if (action === 'load') {
                 this.loadEvents.push(js);
@@ -440,11 +456,12 @@ define(['jquery'], function (jQuery) {
          * @return array of tips
          */
         tips: function () {
+            var self = this;
             return jQuery(Fabrik.tips.elements).filter(function (index, t) {
-                if (t === this.getContainer() || t.getParent() === this.getContainer()) {
+                if (t === self.getContainer() || t.getParent() === self.getContainer()) {
                     return true;
                 }
-            }.bind(this));
+            });
         },
 
         /**
@@ -549,6 +566,32 @@ define(['jquery'], function (jQuery) {
             }
         },
 
+        /**
+         * Move the tip using its position top property. Used when inside a modal form that
+         * scrolls vertically, and ensures the tip stays attached to the triggering element
+         * @param {number} top
+         */
+        moveTip: function (top) {
+            var t = this.tips(), tip, origTop;
+            t = jQuery(t[0]);
+            if (t.length > 0) {
+                tip = t.data('popover').$tip;
+                if (tip) {
+                    origTop = tip.data('origTop');
+                    if (origTop === undefined) {
+                        origTop = parseInt(t.data('popover').$tip.css('top'), 10);
+                        tip.data('origTop', origTop);
+                    }
+                    tip.css('top', origTop - top);
+                }
+            }
+        },
+
+        /**
+         * Set the failed validation message
+         * @param {string} msg
+         * @param {string} classname
+         */
         setErrorMessage: function (msg, classname) {
             var a, i;
             var classes = ['fabrikValidating', 'fabrikError', 'fabrikSuccess'];
@@ -769,6 +812,14 @@ define(['jquery'], function (jQuery) {
             return this.element.get('tag') === 'select' ? 'change' : 'blur';
         },
 
+        /**
+         * Get focus event
+         * @returns {string}
+         */
+        getFocusEvent: function () {
+            return this.element.get('tag') === 'select' ? 'click' : 'focus';
+        },
+
         getChangeEvent: function () {
             return 'change';
         },
@@ -776,6 +827,7 @@ define(['jquery'], function (jQuery) {
         select: function () {
         },
         focus : function () {
+            this.removeTipMsg();
         },
 
         hide: function () {

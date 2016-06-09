@@ -72,7 +72,7 @@ define(['jquery', 'fab/encoder', 'fab/fabrik', 'lib/debounce/jquery.ba-throttle-
             this.events = {};
 
             this.submitBroker = new FbFormSubmit();
-
+            this.scrollTips();
             Fabrik.fireEvent('fabrik.form.loaded', [this]);
         },
 
@@ -1022,6 +1022,13 @@ define(['jquery', 'fab/encoder', 'fab/fabrik', 'lib/debounce/jquery.ba-throttle-
             }).send();
         },
 
+        /**
+         * Run once a validation is completed
+         * @param {string} r
+         * @param {string} id
+         * @param {string} origid
+         * @private
+         */
         _completeValidaton: function (r, id, origid) {
             r = JSON.decode(r);
             if (typeOf(r) === 'null') {
@@ -1120,6 +1127,13 @@ define(['jquery', 'fab/encoder', 'fab/fabrik', 'lib/debounce/jquery.ba-throttle-
             return err;
         },
 
+        /**
+         * Show element error
+         * @param {array} r
+         * @param {string} id
+         * @returns {boolean}
+         * @private
+         */
         _showElementError: function (r, id) {
             // r should be the errors for the specific element, down to its repeat group
             // id.
@@ -2162,7 +2176,22 @@ define(['jquery', 'fab/encoder', 'fab/fabrik', 'lib/debounce/jquery.ba-throttle-
         hideTips: function () {
           this.elements.each(function(element) {
               element.removeTipMsg();
-          })
+          });
+        },
+
+        /**
+         * If the form is in a modal and the modal scrolls we should update the
+         * elements tips to keep the tip attached to the element.
+         */
+        scrollTips: function () {
+            var self = this,
+                modal = jQuery(this.form).closest('.fabrikWindow .itemContent');
+            modal.on('scroll', function () {
+                var top = jQuery(this).scrollTop();
+                self.elements.each(function(element) {
+                    element.moveTip(top);
+                });
+            })
         },
 
         stopEnterSubmitting: function () {
