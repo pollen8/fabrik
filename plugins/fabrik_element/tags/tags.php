@@ -366,6 +366,11 @@ class PlgFabrik_ElementTags extends PlgFabrik_ElementDatabasejoin
 		$formData =& $this->getFormModel()->formDataWithTableName;
 		$tagIds = (array) $formData[$rawName];
 
+		if (!class_exists('TagsModelTag'))
+		{
+			require_once JPATH_ADMINISTRATOR . '/components/com_tags/models/tag.php';
+		}
+
 		foreach ($tagIds as $tagKey => &$tagId)
 		{
 			if (empty($tagId))
@@ -378,7 +383,6 @@ class PlgFabrik_ElementTags extends PlgFabrik_ElementDatabasejoin
 			if (strstr($tagId, '#fabrik#'))
 			{
 				$tagId = str_replace('#fabrik#', '', $tagId);
-
 				/**
 				 * We need to use the J! com_tags model to save, so it can handle the nested set stuff
 				 */
@@ -387,7 +391,7 @@ class PlgFabrik_ElementTags extends PlgFabrik_ElementDatabasejoin
 				if ($tagsTableName === '' || $tagsTableName === $jTagsTableName)
 				{
 					JTable::addIncludePath(COM_FABRIK_BASE . '/administrator/components/com_tags/tables');
-					require(JPATH_ADMINISTRATOR . '/components/com_tags/models/tag.php');
+
 					$tagModel = new TagsModelTag;
 
 					/*
