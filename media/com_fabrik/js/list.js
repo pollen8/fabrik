@@ -287,14 +287,6 @@ define(['jquery', 'fab/fabrik', 'fab/list-toggle', 'fab/list-grouped-toggler', '
                 
                 /* set modal window height to auto to allow collapes/expansion */
                 jQuery('div.modal').css('height','auto');
-                
-                /* Prevent browser window from being scrolled */
-                jQuery('body').css({'height':'100%','overflow':'hidden'});
-
-                /* Allow browser window to be scrolled again when modal is released from DOM */
-                jQuery('div.modal').on('remove', function () {
-                    jQuery('body').css({'height':'initial','overflow':'initial'});  
-                }); 
 
                 /* adds draggable feature to modal popup */
                 jQuery('div.modal').draggable({
