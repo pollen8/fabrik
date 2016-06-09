@@ -2184,14 +2184,35 @@ define(['jquery', 'fab/encoder', 'fab/fabrik', 'lib/debounce/jquery.ba-throttle-
          * elements tips to keep the tip attached to the element.
          */
         scrollTips: function () {
-            var self = this,
-                modal = jQuery(this.form).closest('.fabrikWindow .itemContent');
-            modal.on('scroll', function () {
-                var top = jQuery(this).scrollTop();
+            var self = this, top, left,
+                match = jQuery(self.form).closest('.fabrikWindow'),
+                modal = match.find('.itemContent'),
+                currentPos;
+
+            var pos = function () {
+                var origPos = match.data('origPosition');
+                if (origPos === undefined) {
+                    origPos = match.position();
+                    match.data('origPosition', origPos);
+                }
+
+                currentPos = match.position();
+                top = origPos.top - currentPos.top + modal.scrollTop();
+                left = origPos.left - currentPos.left + modal.scrollLeft();
                 self.elements.each(function(element) {
-                    element.moveTip(top);
+                    element.moveTip(top, left);
                 });
-            })
+            };
+
+            modal.on('scroll', function () {
+                pos();
+            });
+
+            Fabrik.on('fabrik.window.resized', function (window) {
+                if (match.length > 0 && window === match[0]) {
+                    pos();
+                }
+            });
         },
 
         stopEnterSubmitting: function () {
