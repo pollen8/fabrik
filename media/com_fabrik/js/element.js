@@ -568,21 +568,28 @@ define(['jquery'], function (jQuery) {
 
         /**
          * Move the tip using its position top property. Used when inside a modal form that
-         * scrolls vertically, and ensures the tip stays attached to the triggering element
+         * scrolls vertically or modal is moved, and ensures the tip stays attached to the triggering element
          * @param {number} top
+         * @param {number} left
          */
-        moveTip: function (top) {
-            var t = this.tips(), tip, origTop;
+        moveTip: function (top, left) {
+            var t = this.tips(), tip, origPos;
             t = jQuery(t[0]);
             if (t.length > 0) {
                 tip = t.data('popover').$tip;
                 if (tip) {
-                    origTop = tip.data('origTop');
-                    if (origTop === undefined) {
-                        origTop = parseInt(t.data('popover').$tip.css('top'), 10) + top;
-                        tip.data('origTop', origTop);
+                    origPos = tip.data('origPos');
+                    if (origPos === undefined) {
+                        origPos = {
+                            'top' : parseInt(t.data('popover').$tip.css('top'), 10) + top,
+                            'left': parseInt(t.data('popover').$tip.css('left'), 10) + left
+                        };
+                        tip.data('origPos', origPos);
                     }
-                    tip.css('top', origTop - top);
+                    tip.css({
+                        'top': origPos.top - top,
+                        'left': origPos.left - left
+                    });
                 }
             }
         },

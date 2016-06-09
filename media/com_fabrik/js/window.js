@@ -215,14 +215,14 @@ define(['jquery', 'fab/fabrik', 'jQueryUI', 'fab/utils'], function (jQuery, Fabr
                     {
                         'handle': handle,
                         drag    : function () {
-                            Fabrik.fireEvent('fabrik.window.resized', this.window);
+                            Fabrik.fireEvent('fabrik.window.resized', self.window);
                             self.drawWindow();
                         }
                     }
                 );
 
                 source.resizable({
-                    containment: this.options.container ? jQuery('#' + this.options.container) : null,
+                    containment: self.options.container ? jQuery('#' + self.options.container) : null,
                     handles    : {
                         'n' : '.ui-resizable-n',
                         'e' : '.ui-resizable-e',
@@ -235,6 +235,7 @@ define(['jquery', 'fab/fabrik', 'jQueryUI', 'fab/utils'], function (jQuery, Fabr
                     },
 
                     resize: function () {
+                        Fabrik.fireEvent('fabrik.window.resized', self.window);
                         self.drawWindow();
                     }
                 });
@@ -294,7 +295,8 @@ define(['jquery', 'fab/fabrik', 'jQueryUI', 'fab/utils'], function (jQuery, Fabr
          * @returns {*}
          */
         buildWinViaJS: function () {
-            var draggerC, dragger, expandButton, expandIcon, resizeIcon, label, handleParts = [], self = this;
+            var draggerC, dragger, expandButton, expandIcon, resizeIcon, label, handleParts = [], self = this,
+                directions, i;
             this.window = new Element('div', {
                 'id'   : this.options.id,
                 'class': 'fabrikWindow ' + this.classSuffix + ' modal'
@@ -346,6 +348,10 @@ define(['jquery', 'fab/fabrik', 'jQueryUI', 'fab/utils'], function (jQuery, Fabr
                 this.window.append([this.handle, this.contentWrapperEl]);
             } else {
                 this.window.append([this.handle, this.contentWrapperEl, draggerC]);
+                directions = ['n', 'e', 's', 'w', 'nw', 'ne', 'se', 'sw'];
+                for (i = 0; i < directions.length; i ++) {
+                    this.window.append(jQuery('<div class="ui-resizable-' + directions[i] + ' ui-resizable-handle"></div>'));
+                }
             }
 
             return this.window;
