@@ -77,6 +77,7 @@ define(['jquery', 'fab/element', 'components/com_fabrik/libs/masked_input/jquery
             if (element) {
                 this.getElement().focus();
             }
+            this.parent();
         },
 
         cloned: function (c) {

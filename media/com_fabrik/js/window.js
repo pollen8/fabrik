@@ -563,6 +563,7 @@ define(['jquery', 'fab/fabrik', 'jQueryUI', 'fab/utils'], function (jQuery, Fabr
             } else {
                 this.window.fadeOut({duration: 0});
             }
+            Fabrik.tips.hideAll();
             this.fireEvent('onClose', [this]);
         },
 
