@@ -72,7 +72,7 @@ define(['jquery', 'fab/encoder', 'fab/fabrik', 'lib/debounce/jquery.ba-throttle-
             this.events = {};
 
             this.submitBroker = new FbFormSubmit();
-
+            this.scrollTips();
             Fabrik.fireEvent('fabrik.form.loaded', [this]);
         },
 
@@ -1128,7 +1128,7 @@ define(['jquery', 'fab/encoder', 'fab/fabrik', 'lib/debounce/jquery.ba-throttle-
         },
 
         /**
-         * Show element error 
+         * Show element error
          * @param {array} r
          * @param {string} id
          * @returns {boolean}
@@ -2176,7 +2176,22 @@ define(['jquery', 'fab/encoder', 'fab/fabrik', 'lib/debounce/jquery.ba-throttle-
         hideTips: function () {
           this.elements.each(function(element) {
               element.removeTipMsg();
-          })
+          });
+        },
+
+        /**
+         * If the form is in a modal and the modal scrolls we should update the
+         * elements tips to keep the tip attached to the element.
+         */
+        scrollTips: function () {
+            var self = this,
+                modal = jQuery(this.form).closest('.fabrikWindow .itemContent');
+            modal.on('scroll', function () {
+                var top = jQuery(this).scrollTop();
+                self.elements.each(function(element) {
+                    element.moveTip(top);
+                });
+            })
         },
 
         stopEnterSubmitting: function () {
