@@ -13,7 +13,7 @@ require(['fab/fabrik', 'jquery'], function (Fabrik, $) {
         Fabrik.buildChosen = function (selector, options)
         {
             if ($(selector).chosen !== undefined) {
-                $(selector).chosen(options);
+                return $(selector).chosen(options);
             }
         };
 
@@ -25,8 +25,8 @@ require(['fab/fabrik', 'jquery'], function (Fabrik, $) {
          */
         Fabrik.buildAjaxChosen = function (selector, options, func) {
             if ($(selector).ajaxChosen !== undefined) {
-                $(selector).ajaxChosen(options, func);
+                return $(selector).ajaxChosen(options, func);
             }
-        }
+        };
     }
 });

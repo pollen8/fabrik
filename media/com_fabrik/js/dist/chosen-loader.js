@@ -1,2 +1,2 @@
 /*! Fabrik */
-require(["fab/fabrik","jquery"],function(a,b){a.buildChosen||(a.buildChosen=function(a,c){void 0!==b(a).chosen&&b(a).chosen(c)},a.buildAjaxChosen=function(a,c,d){void 0!==b(a).ajaxChosen&&b(a).ajaxChosen(c,d)})});
+require(["fab/fabrik","jquery"],function(a,b){a.buildChosen||(a.buildChosen=function(a,c){return void 0!==b(a).chosen?b(a).chosen(c):void 0},a.buildAjaxChosen=function(a,c,d){return void 0!==b(a).ajaxChosen?b(a).ajaxChosen(c,d):void 0})});

@@ -672,7 +672,7 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 
 				if (!$this->watchElement)
 				{
-					throw new RuntimeException('No watch element found for cdd: ' . $this->getElement()->id . ' trying to find children of' . $watch, 500);
+					throw new RuntimeException('No watch element found for cdd: ' . $this->getElement()->id . ', trying to find children of: ' . $watch, 500);
 				}
 			}
 		}

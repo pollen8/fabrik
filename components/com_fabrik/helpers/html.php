@@ -879,6 +879,7 @@ EOD;
 				$chosenOptions = empty($chosenOptions) ? new stdClass : ArrayHelper::fromObject(json_decode($chosenOptions));
 				JHtml::_('stylesheet', 'jui/chosen.css', false, true);
 				JHtml::_('script', 'jui/chosen.jquery.min.js', false, true, false, false, self::isDebug());
+				JHtml::_('script', 'jui/ajax-chosen.min', false, true, false, false, self::isDebug());
 			}
 
 			if (self::inAjaxLoadedPage() && !$bootstrapped)

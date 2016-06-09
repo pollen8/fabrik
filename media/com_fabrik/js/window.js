@@ -137,7 +137,7 @@ define(['jquery', 'fab/fabrik', 'jQueryUI', 'fab/utils'], function (jQuery, Fabr
 
             yy = window.getSize().y / 2 - (h / 2);
 
-            if ( jQuery(source).css('position') !== 'fixed') {
+            if ( jQuery.inArray(jQuery(source).css('position'),['fixed','static']) === -1) {
                 yy += window.getScroll().y;
             }
             //yy = (window.getSize().y / 2) - (h / 2);
