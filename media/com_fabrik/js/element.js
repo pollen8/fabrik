@@ -579,7 +579,7 @@ define(['jquery'], function (jQuery) {
                 if (tip) {
                     origTop = tip.data('origTop');
                     if (origTop === undefined) {
-                        origTop = parseInt(t.data('popover').$tip.css('top'), 10);
+                        origTop = parseInt(t.data('popover').$tip.css('top'), 10) + top;
                         tip.data('origTop', origTop);
                     }
                     tip.css('top', origTop - top);
