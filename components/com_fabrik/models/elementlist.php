@@ -193,10 +193,11 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 	 * @param   string  $value          Search string - already quoted if specified in filter array options
 	 * @param   string  $originalValue  Original filter value without quotes or %'s applied
 	 * @param   string  $type           Filter type advanced/normal/prefilter/search/querystring/searchall
-	 *
+	 * @param   string  $evalFilter     evaled (only used for multiselect types)
+	 *                                  
 	 * @return  string	sql query part e,g, "key = value"
 	 */
-	public function getFilterQuery($key, $condition, $value, $originalValue, $type = 'normal')
+	public function getFilterQuery($key, $condition, $value, $originalValue, $type = 'normal', $evalFilter = '0')
 	{
 		$element = $this->getElement();
 		$condition = JString::strtoupper($condition);
@@ -205,7 +206,7 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 
 		if ($element->filter_type == 'checkbox' || $element->filter_type == 'multiselect')
 		{
-			$str = $this->filterQueryMultiValues($key, $condition, $originalValue);
+			$str = $this->filterQueryMultiValues($key, $condition, $originalValue, $evalFilter);
 		}
 		else
 		{
@@ -246,12 +247,20 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 	 * @param $key
 	 * @param $condition
 	 * @param $originalValue
+	 * @param $evalFilter
 	 *
 	 * @return string
 	 */
-	protected function filterQueryMultiValues ($key, $condition, $originalValue)
+	protected function filterQueryMultiValues ($key, $condition, $originalValue, $evalFilter)
 	{
 		$str = array();
+
+		if ($evalFilter)
+		{
+			$originalValue = stripslashes(htmlspecialchars_decode($originalValue, ENT_QUOTES));
+			$originalValue = @eval($originalValue);
+			FabrikWorker::logEval($originalValue, 'Caught exception on eval of elementList::filterQueryMultiValues() ' . $key . ': %s');
+		}
 
 		if ($condition === 'NOT IN')
 		{
