@@ -2510,10 +2510,11 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 	 * @param   string $value         search string - already quoted if specified in filter array options
 	 * @param   string $originalValue original filter value without quotes or %'s applied
 	 * @param   string $type          filter type advanced/normal/prefilter/search/querystring/searchall
-	 *
+	 * @param   string  $evalFilter     evaled
+	 *                                  
 	 * @return  string    sql query part e,g, "key = value"
 	 */
-	public function getFilterQuery($key, $condition, $value, $originalValue, $type = 'normal')
+	public function getFilterQuery($key, $condition, $value, $originalValue, $type = 'normal', $evalFilter = '0')
 	{
 		/* $$$ rob $this->_rawFilter set in tableModel::getFilterArray()
 		 used in pre-filter drop-down in admin to allow users to pre-filter on raw db join value */

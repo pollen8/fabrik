@@ -5312,7 +5312,7 @@ class FabrikFEModelList extends JModelForm
 				}
 				else
 				{
-					$query = $elementModel->getFilterQuery($key, $condition, $value, $originalValue, $this->filters['search_type'][$i]);
+					$query = $elementModel->getFilterQuery($key, $condition, $value, $originalValue, $this->filters['search_type'][$i], $filterEval);
 				}
 
 				$this->filters['sqlCond'][$i] = $query;

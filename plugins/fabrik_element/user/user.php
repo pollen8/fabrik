@@ -799,10 +799,11 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 	 * @param   string $value         search string - already quoted if specified in filter array options
 	 * @param   string $originalValue original filter value without quotes or %'s applied
 	 * @param   string $type          filter type advanced/normal/prefilter/search/querystring/searchall
-	 *
+	 * @param   string  $evalFilter     evaled
+	 *                                  
 	 * @return  string    sql query part e,g, "key = value"
 	 */
-	public function getFilterQuery($key, $condition, $value, $originalValue, $type = 'normal')
+	public function getFilterQuery($key, $condition, $value, $originalValue, $type = 'normal', $evalFilter = '0')
 	{
 		if (!$this->inJDb())
 		{
