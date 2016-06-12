@@ -27,6 +27,7 @@ $action  = 'index.php?option=com_j2store&view=carts&task=addItem&product_id=' . 
 
 <input type="number" name="product_qty" data-product_id="<?php echo $product->j2store_product_id; ?>" value="1" class="form-control" style="width:40px" placeholder="Quantity">
 <a class="btn btn-default j2store_add_to_cart_button"
+	onclick="Fabrik.loader.start(jQuery(event.target).closest('.fabrikForm'), Joomla.JText._('COM_FABRIK_LOADING'));"
 	href="<?php echo JRoute::_($action); ?>" data-product_qty="1" data-product_id="<?php echo $product->j2store_product_id; ?>"
 	rel="nofollow">
 	<span class="icon-cart"></span><?php echo $product->addtocart_text; ?>
