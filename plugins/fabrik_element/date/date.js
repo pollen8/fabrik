@@ -457,6 +457,11 @@ define(['jquery', 'fab/element'], function (jQuery, FbElement) {
                     d.setSeconds(0);
                 }
             }
+            else {
+                d.setHours(0);
+                d.setMinutes(0);
+                d.setSeconds(0);
+            }
             return d;
         },
 
