@@ -26,18 +26,18 @@ require_once JPATH_SITE . '/components/com_fabrik/helpers/pdf.php';
  */
 class JDocumentpartial extends JDocumentHTML
 {
-	/**
-	 * Render the document.
-	 *
-	 * @param   boolean  $cache   If true, cache the output
-	 * @param   array    $params  Associative array of attributes
-	 *
-	 * @return	string
-	 */
-	public function render($cache = false, $params = array())
-	{
-		$this->setType('partial');
 
-		return parent::render();
+	/**
+	 * Class constructor
+	 *
+	 * @access protected
+	 * @param   array	$options Associative array of options
+	 */
+	function __construct($options = array())
+	{
+		parent::__construct($options);
+
+		//set document type
+		$this->_type = 'partial';
 	}
 }

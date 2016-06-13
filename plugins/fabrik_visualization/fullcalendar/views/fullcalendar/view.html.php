@@ -163,6 +163,7 @@ class FabrikViewFullcalendar extends JViewLegacy
 		$options->readonlyMonth  = (bool) $params->get('readonly_monthview', false);
 		$options->j3             = FabrikWorker::j3();
 		$options->calOptions     = $params->get('calOptions', '{}');
+		$options->startOffset    = (int) $params->get('startdate_hour_offest', '0');
 
 		return $options;
 	}
@@ -207,6 +208,7 @@ class FabrikViewFullcalendar extends JViewLegacy
 		$srcs['FbListFilter'] = $mediaFolder . '/listfilter.js';
 		$srcs['fabrikFullcalendar'] = 'plugins/fabrik_visualization/fullcalendar/fullcalendar.js';
 
+		/*
 		$shim = $model->getShim();
 		
 		$fcLangFolder = 'plugins/fabrik_visualization/fullcalendar/libs/fullcalendar/lang/';
@@ -231,6 +233,20 @@ class FabrikViewFullcalendar extends JViewLegacy
 		FabrikHelperHTML::iniRequireJs($shim, 
 			array('fullcalendar' => 'plugins/fabrik_visualization/fullcalendar/libs/fullcalendar/fullcalendar.min',
 				'lang' => $fcLangFolder . $lang));
+		FabrikHelperHTML::script($srcs, $js);
+		*/
+
+		$shim = $model->getShim();
+
+		$shim['fullcalendar'] = (object) array(
+			'deps' => array('lib/moment/moment')
+		);
+
+		$shim['viz/fullcalendar/fullcalendar'] = (object) array(
+			'deps' => array('fullcalendar', 'jquery')
+		);
+
+		FabrikHelperHTML::iniRequireJs($shim, array('fullcalendar' => 'plugins/fabrik_visualization/fullcalendar/libs/fullcalendar/fullcalendar.min'));
 		FabrikHelperHTML::script($srcs, $js);
 	}
 

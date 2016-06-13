@@ -18,6 +18,7 @@ define(['jquery', 'fab/fabrik', 'fullcalendar'], function (jQuery, Fabrik, fc) {
             minDuration      : 0,
             greyscaledweekend: false,
             calOptions       : {},
+            startOffset      : 0,
             url              : {
                 'del': 'index.php?option=com_fabrik&controller=visualization.fullcalendar&view=visualization&' +
                 'task=deleteEvent&format=raw'
@@ -295,9 +296,10 @@ define(['jquery', 'fab/fabrik', 'fullcalendar'], function (jQuery, Fabrik, fc) {
 
             this.windowopts.id = 'addeventwin';
             var url = 'index.php?option=com_fabrik&controller=visualization.fullcalendar' +
-                '&view=visualization&task=addEvForm&format=raw&listid=' + o.listid + '&rowid=' + o.rowid;
+                '&view=visualization&task=addEvForm&listid=' + o.listid + '&rowid=' + o.rowid;
             //	url += '&jos_fabrik_calendar_events___visualization_id=' + this.options.calendarId;
             url += '&visualizationid=' + this.options.calendarId;
+            url += '&format=partial';
 
             if (o.nextView) {
                 url += '&nextview=' + o.nextView;
@@ -312,6 +314,7 @@ define(['jquery', 'fab/fabrik', 'fullcalendar'], function (jQuery, Fabrik, fc) {
                     m: minDur[1],
                     s: minDur[2]
                 }).format('YYYY-MM-DD HH:mm:ss');
+                this.clickdate = moment(this.clickdate).add({h:this.options.startOffset}).format('YYYY-MM-DD HH:mm:ss');
                 url += '&start_date=' + this.clickdate + '&end_date=' + endDate;
             }
             this.windowopts.type = 'window';
