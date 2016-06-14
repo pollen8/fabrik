@@ -231,7 +231,7 @@ define(['jquery', 'fab/loader', 'fab/requestqueue'], function (jQuery, Loader, R
     Fabrik.loadGoogleMap = function (s, cb) {
 
         var prefix = document.location.protocol === 'https:' ? 'https:' : 'http:';
-        var src = prefix + '//maps.googleapis.com/maps/api/js?&sensor=' + s + '&libraries=places&callback=Fabrik.mapCb';
+        var src = prefix + '//maps.googleapis.com/maps/api/js?libraries=places&callback=Fabrik.mapCb';
 
         // Have we previously started to load the Googlemaps script?
         var gmapScripts = Array.from(document.scripts).filter(function (f) {
