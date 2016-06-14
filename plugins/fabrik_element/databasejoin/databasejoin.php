@@ -2608,10 +2608,10 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 
 					if (!empty($rows))
 					{
-						// Either look for the parent_ids in the main fabrik list or the group's list.
+						// Either look for the ids in the main fabrik list or the group's list.
 						$groupJoinModel = $group->getJoinModel();
-						$groupFk        = $groupJoinModel->getForeignKey('.');
-						$lookupTable    = $group->isJoin() ? $groupFk : $this->getListModel()->getPrimaryKey();
+						$groupPk        = $groupJoinModel->getForeignID('.');
+						$lookupTable    = $group->isJoin() ? $groupPk : $this->getListModel()->getPrimaryKey();
 						$str            = $lookupTable . ' IN (' . implode(', ', $joinIds) . ')';
 					}
 					else
